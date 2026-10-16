@@ -176,19 +176,85 @@ u32 lz_decompress_dispatch(const u8 *src, void *dst)
 
 INCLUDE_ASM("asm/nonmatching/code_0800025C", lz_decompress_custom_08000A0C);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", lz_decompress_custom_08000B14);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", set_tilemap_and_decompress_bg);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", decompress_to_ewram_buffer);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", decompress_to_bg_scroll_buffer);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", write_tilemap_to_vram_08000E94);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", load_tilemap_rows_to_vram);
+
+void set_tilemap_and_decompress_bg(u32 x, u32 y, const u8 *src, u32 bgcnt, u16 base)
+{
+    gTilemapBaseEntry = base;
+    lz_decompress_dispatch(src, gDecompressBuffer);
+    write_tilemap_to_vram_08000E94(x, y, (struct Tilemap *)gDecompressBuffer, bgcnt);
+}
+
+void decompress_to_ewram_buffer(u32 x, u32 y, const u8 *src, u32 bgcnt)
+{
+    lz_decompress_dispatch(src, gDecompressBuffer);
+    load_tilemap_rows_to_vram(x, y, (struct Tilemap *)gDecompressBuffer, bgcnt);
+}
+
+void decompress_to_bg_scroll_buffer(const u8 *src, void *dst)
+{
+    u32 size = lz_decompress_dispatch(src, gDecompressBuffer);
+    CpuCopy16(gDecompressBuffer, dst, size);
+}
+
+void write_tilemap_to_vram_08000E94(u32 x, u32 y, struct Tilemap *map, u32 bgcnt)
+{
+    u16 *dst = (u16 *)((((bgcnt >> 8) & 0x1F) * 0x800) + VRAM) + x + y * 32;
+    u16 *src = map->data;
+    u16 *d; u32 i, j;
+
+    if (((bgcnt & 0xC000) >> 14) & 1)
+    {
+        copy_tilemap_with_offset_08000F78(dst, map);
+    }
+    else
+    {
+for (i = 0; i < map->height; i++) { d = dst + (i << 5); for (j = 0; j < map->width; j++) *d++ = *src++ + gTilemapBaseEntry; }
+    }
+}
+
+void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt)
+{
+    u32 shift = ((bgcnt & 0xC000) >> 14) + 3;
+    u8 *dst = (u8 *)((((bgcnt >> 8) & 0x1F) * 0x800) + VRAM) + x + (y << shift);
+    u8 *src = (u8 *)map->data;
+    u32 i;
+    for (i = 0; i < map->height; i++) { CpuCopy16(src, (u16 *)dst + (i << shift), map->width); src += map->width; }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", copy_tilemap_with_offset_08000F78);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", set_bg2_affine_transform);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", compute_bg_affine_scanline_params);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", hblank_dma0_bg2affine);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", rng_next_080012F0);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", copy_obj_palette_to_buffer);
+
+u32 rng_next_080012F0(u16 range)
+{
+    gRngCounter++;
+    gRngValue = gRngTable[gRngCounter & 0xF] ^ gRngState;
+    { u32 n = ~gRngValue; u32 t = ((s16 *)&gRngState)[1] + 0x55555555; gRngState = n + t; }
+    if (range == 0) return gRngValue;
+    return (u32)(((s16 *)&gRngValue)[1] * range) >> 16;
+}
+
+// Linear interpolation in 4.12 fixed point: a at t = 0, b at t = 0x1000. Not called.
+s32 sub_0800134C(s32 a, s32 b, s32 t)
+{
+    return b * t / 4096 + a * (4096 - t) / 4096;
+}
+
+void copy_obj_palette_to_buffer(void)
+{
+    CpuFastSet((void *)OBJ_PLTT, gPaletteBackup, 0x80);
+    CpuFastSet((void *)PLTT, gPaletteBackupBg, 0x80);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", palette_blend_to_color_080013A8);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", dma_obj_palette_to_hardware);
+
+void dma_obj_palette_to_hardware(void)
+{
+    CpuFastSet(gPaletteBuffer, (void *)OBJ_PLTT, 0x80);
+    CpuFastSet(gPaletteBufferBg, (void *)PLTT, 0x80);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", palette_blend_16_colors);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", check_flag_and_fast_copy);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", set_oam_affine_params);

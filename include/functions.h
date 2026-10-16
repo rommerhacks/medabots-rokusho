@@ -141,6 +141,11 @@ void sound_init_wave_channel(void);
 u32 sound_set_pitch_offset(struct SoundMixChannel *ch, s32 note);
 void CpuSet(const void *src, void *dest, u32 control);
 void CpuFastSet(const void *src, void *dest, u32 control);
+#define CpuCopy16(src, dest, size) CpuSet(src, dest, ((size) / 2) & 0x1FFFFF)
+void write_tilemap_to_vram_08000E94(u32 x, u32 y, struct Tilemap *map, u32 bgcnt);
+void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt);
+void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map);
+void dma_obj_palette_to_hardware(void);
 u32 lz_decompress_custom_08000A0C(const u8 *src, void *dst, u32 size);
 u32 lz_decompress_custom_08000B14(const u8 *src, void *dst);
 u32 check_soft_reset(void);

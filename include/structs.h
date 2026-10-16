@@ -198,6 +198,16 @@ struct Unk_03005010
     u8 unk1E;
 };
 
+// Decompressed tilemap (write_tilemap_to_vram_08000E94, load_tilemap_rows_to_vram).
+struct Tilemap
+{
+    u32 width;
+    u32 height;
+    u32 unk8;
+    u32 unkC;
+    u16 data[0];
+};
+
 struct OamData
 {
     u16 attr0;

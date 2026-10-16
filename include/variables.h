@@ -45,9 +45,19 @@ extern Func gVBlankCallback;          // called every vblank
 extern Func gVBlankOnceCallback;      // called at the next vblank, then reset to nullsub_08000840
 extern Func gHBlankCallback;          // called by hblank_irq
 extern struct OamData gOamBuffer[128]; // copied to OAM in vblank_body
+extern u16 gTilemapBaseEntry;          // added to every tilemap entry by write_tilemap_to_vram_08000E94
+extern u8 gDecompressBuffer[];         // EWRAM buffer the tilemap loaders decompress into
+extern u16 gPaletteBackup[0x200];      // OBJ then BG palette (copy_obj_palette_to_buffer)
+extern u16 gPaletteBackupBg[0x100];    // = gPaletteBackup + 0x100
+extern u16 gPaletteBuffer[0x200];      // OBJ then BG palette (dma_obj_palette_to_hardware)
+extern u16 gPaletteBufferBg[0x100];    // = gPaletteBuffer + 0x100
+extern u32 gRngCounter;
+extern u32 gRngValue;
+extern u32 gRngState;
 
 // ROM data
 extern const Func gIntrTableTemplate[14];
+extern const u32 gRngTable[16];
 extern struct SoundSongHeader *gUnk_080AFFB8[]; // song table (sound_init)
 extern struct SoundSongHeader *gUnk_080B06EC[]; // sound effect table (sound_init)
 extern struct SoundNoteTable gUnk_080B1788;
