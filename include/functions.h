@@ -55,6 +55,7 @@ u32 run_blend_fade_transition(u16 a);
 void sub_0804A1C4(void);
 void sub_0804B70C(void);
 void sub_08053234(u16 id);
+u32 sub_08053288(u16 id);
 void spawn_battle_medapart_sprite(u8 a, u8 b, u8 c, u8 d);
 void set_battle_sprite_animation(u8 id, u8 state);
 void sub_08050508(u8 id);

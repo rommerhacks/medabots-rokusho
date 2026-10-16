@@ -305,7 +305,8 @@ struct Unk_030057E0
     u8 unkC93;
     u8 unkC94[0x10]; // map script command arguments (read_map_script_bytes)
     u8 unkCA4[0x10];
-    u8 unkCB4;
+    u8 unkCB4; // index of the map object running the script (unk5DC)
+    u8 unkCB5;
 };
 
 struct Unk_03005310

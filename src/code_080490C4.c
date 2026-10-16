@@ -521,19 +521,108 @@ void sub_0804C154(void)
     sub_08050508(gUnk_030057E0.unkC94[0]);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C174);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C1C4);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C220);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C27C);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C2A4);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C2CC);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C318);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C360);
+void sub_0804C174(void)
+{
+    read_map_script_bytes(2);
+    gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
+    gUnk_03006D20.unk0 = gUnk_030057E0.unkC94[1];
+    gUnk_03006D20.unk1 = 0;
+    gUnk_03006D20.unk2 = 8;
+    gUnk_03006D20.unk3 = 8;
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804C1C4(void)
+{
+    read_map_script_bytes(3);
+    gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
+    set_sprite_animation_state(gUnk_03006D20.unkA, gUnk_030057E0.unkC94[1] & 0xF);
+    gUnk_03006D20.unk0 = 0;
+    gUnk_03006D20.unk2 = gUnk_030057E0.unkC94[2];
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804C220(void)
+{
+    gUnk_030057E0.unkC94[0] = read_map_script_byte();
+    gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
+    gUnk_03006D20.unk8 = gUnk_03002C30[gUnk_03006D20.unkA].unk10_8;
+    gUnk_03002C30[gUnk_03006D20.unkA].unk28 = 0;
+    sub_08047BA8(0x70);
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804C27C(void)
+{
+    gUnk_030057E0.unkC94[0] = read_map_script_byte();
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804C2A4(void)
+{
+    gUnk_030057E0.unkC94[0] = read_map_script_byte();
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804C2CC(void)
+{
+    u8 id;
+    read_map_script_bytes(5);
+    id = gUnk_030057E0.unkC94[0];
+    sub_0804DB84(id, find_next_available_battle_sprite_slot());
+    gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804C318(void)
+{
+    if ((gUnk_030057E0.unkC94[0] = read_map_script_byte()) == 1)
+        gUnk_030057E0.unkC5D = (gUnk_030057E0.unkC5D & ~0x10) | 0x10;
+    else
+        gUnk_030057E0.unkC5D &= ~0x10;
+}
+
+void sub_0804C360(void)
+{
+    read_map_script_bytes(2);
+    gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
+    gUnk_030057E0.unkC89 = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C398);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C3F8);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C42C);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C468);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C4AC);
+
+// guess: jump by a byte offset, selected by the flag nibble sub_08053288(script id)
+void sub_0804C3F8(void)
+{
+    u16 start = gUnk_030057E0.unkC8A;
+    gUnk_030057E0.unkC8A += sub_08053288(gUnk_030057E0.unkC8E);
+    gUnk_030057E0.unkC8A = start + read_map_script_byte();
+}
+
+// guess: relative jump (read offset += 16-bit big-endian argument, from the opcode's offset)
+void sub_0804C42C(void)
+{
+    u16 start = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(2);
+    gUnk_030057E0.unkC8A = start + ((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]);
+}
+
+void sub_0804C468(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    gUnk_030057E0.unkC94[0] = read_map_script_byte();
+    gUnk_030057E0.unkCB5 = 0;
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804C4AC(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    gUnk_030057E0.unkC94[0] = read_map_script_byte();
+    gUnk_030057E0.unkCB5 = 1;
+    gUnk_030057E0.unkC89 = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C4F0);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C53C);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C598);
