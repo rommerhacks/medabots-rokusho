@@ -62,7 +62,7 @@ void medabot_detail_handle_input(void)
     }
     else
     {
-        r = sub_08006F34();
+        r = medabot_detail_check_row_select();
         if (r == 2)
             play_sound_effect(6);
         else if (r == 1)
@@ -1524,9 +1524,70 @@ u32 medabot_detail_prev_part_id(volatile u32 part)
     return part;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080043A8", battle_update_medabot_display);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006F14);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006F34);
+// unk53 set while validate_medapart_stats rejects the shown Medal + Medaparts: the Medabot sprite
+// switches to palette 8 (and sub_08006F14 animates it); cleared and redrawn once valid again.
+void battle_update_medabot_display(void)
+{
+    u32 r;
+
+    if (gUnk_03000440.unk53)
+    {
+        r = validate_medapart_stats(gUnk_03000440.unk97, gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B);
+        if (r == 0)
+        {
+            init_battle_medabot_sprites(gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
+                                        r, 6, 0xA8, 0x20, gUnk_03000440.unk5E, 1, 5);
+            gUnk_03000440.unk53 = r;
+        }
+    }
+    else
+    {
+        if (validate_medapart_stats(gUnk_03000440.unk97, gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B))
+        {
+            battle_sprite_set_palette_index(6, 8);
+            gUnk_03000440.unk53 = 1;
+        }
+    }
+}
+
+void sub_08006F14(void)
+{
+    if (gUnk_03000440.unk53)
+        update_battle_sprite_orbiting_positions(6, 0, 0);
+}
+
+// A on the detail screen: 1 if the selected row holds a Medal / Medapart, 2 if it is empty.
+// No A press falls off the end (no return value, r0 is left as is; the caller tests 1 / 2).
+u8 medabot_detail_check_row_select(void)
+{
+    if (KEYS_LO(gNewKeys) & 1)
+    {
+        switch (gUnk_03000440.unk5A)
+        {
+        case 0:
+            if (gUnk_03000440.unk97 == 30)
+                return 2;
+            return 1;
+        case 1:
+            if (gUnk_03000440.unk98 > 119)
+                return 2;
+            return 1;
+        case 2:
+            if (gUnk_03000440.unk99 > 119)
+                return 2;
+            return 1;
+        case 3:
+            if (gUnk_03000440.unk9A > 119)
+                return 2;
+            return 1;
+        case 4:
+            if (gUnk_03000440.unk9B > 119)
+                return 2;
+            return 1;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080043A8", assign_medal_to_team_slot);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080070F0);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_0800712C);

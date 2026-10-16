@@ -65,7 +65,7 @@ u32 medabot_detail_equip_full_set_input(void);
 u32 medabot_detail_prev_part_id(u32 part); // previous Medapart id: 0 wraps to 120 + slot unk1, >= 120 clamps to 119
 void battle_update_medabot_display(void);
 void sub_08006F14(void);
-u8 sub_08006F34(void);
+u8 medabot_detail_check_row_select(void);
 void sub_080070F0(void);
 void assign_medal_to_team_slot(void);
 void sub_0800712C(void);
