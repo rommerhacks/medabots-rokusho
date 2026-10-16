@@ -165,3 +165,16 @@ gUnk_02020800       = 0x02020800;
 
 /* code_0800025C: game state 3 */
 gUnk_083AC320       = 0x083AC320;
+gUnk_084E5650       = 0x084E5650;
+gUnk_084C48B4       = 0x084C48B4;
+gUnk_084C4A34       = 0x084C4A34;
+gUnk_084C7428       = 0x084C7428;
+gUnk_084EF2D8       = 0x084EF2D8;
+gUnk_084EF95C       = 0x084EF95C;
+gUnk_084F02B8       = 0x084F02B8;
+gUnk_084F122C       = 0x084F122C;
+gUnk_084F2680       = 0x084F2680;
+gUnk_0850DEF8       = 0x0850DEF8;
+gUnk_0850DD18       = 0x0850DD18;
+gUnk_084E2EB8       = 0x084E2EB8;
+gUnk_084E2ED8       = 0x084E2ED8;

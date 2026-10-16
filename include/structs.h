@@ -142,7 +142,11 @@ struct Unk_03000440
     u8 fillerF[0x19];
     u8 unk28;
     u8 unk29; // choice menu state (poll_choice_menu)
-    u8 filler2A[0x2C];
+    u8 filler2A[0x26];
+    u8 unk50; // team select: cursor / phase (team_select_confirm_pick)
+    u8 filler51;
+    u8 unk52;
+    u8 filler53[0x3];
     u8 unk56;
     u8 filler57[0x2D];
     u8 unk84; // field menu: animation frame counter
@@ -161,6 +165,8 @@ struct Unk_03000440
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
     u8 filler12F[2];
     u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2
+    u8 filler132[0x7];
+    u8 unk139; // game state 3 setup step (sub_08003A38)
 };
 
 

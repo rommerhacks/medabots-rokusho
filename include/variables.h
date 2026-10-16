@@ -151,5 +151,18 @@ extern const u8 gUnk_084C1E04[];
 extern const u8 gUnk_084C1FD4[];
 extern u8 gUnk_02020800[]; // BG tile backup (0x800 bytes of VRAM 0x06002800 while a Medawatch submenu runs)
 extern const Func gUnk_083AC320[]; // game state 3 sub-state handlers
+extern const u8 gUnk_084E5650[];
+extern const u8 gUnk_084C48B4[];
+extern const u8 gUnk_084C4A34[];
+extern const u8 gUnk_084C7428[];
+extern const u8 gUnk_084EF2D8[];
+extern const u8 gUnk_084EF95C[];
+extern const u8 gUnk_084F02B8[];
+extern const u8 gUnk_084F122C[];
+extern const u16 gUnk_084F2680[];
+extern const u16 gUnk_0850DEF8[];
+extern const u16 gUnk_0850DD18[];
+extern const u16 gUnk_084E2EB8[];
+extern const u16 gUnk_084E2ED8[];
 
 #endif // GUARD_VARIABLES_H
