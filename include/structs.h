@@ -142,7 +142,11 @@ struct Unk_03000440
     u8 fillerF[0x19];
     u8 unk28;
     u8 unk29; // choice menu state (poll_choice_menu)
-    u8 filler2A[0x26];
+    u8 filler2A[0x12];
+    u8 unk3C;
+    u8 unk3D;
+    u8 unk3E;
+    u8 filler3F[0x11];
     u8 unk50; // team select: cursor / phase (team_select_confirm_pick)
     u8 filler51;
     u8 unk52;
@@ -151,7 +155,8 @@ struct Unk_03000440
     u8 unk56; // game state 3: 0 = entered from the field (fades from the backup palette), 1 = from a submenu
     u8 filler57[0x3];
     u8 unk5A;
-    u8 filler5B[0x3];
+    u8 filler5B;
+    u16 unk5C;
     u8 unk5E;
     u8 filler5F[0x25];
     u8 unk84; // field menu: animation frame counter
@@ -163,7 +168,7 @@ struct Unk_03000440
     u8 unk8F; // Medawatch menu cursor (0..2)
     u8 filler90[0x6];
     u8 unk96;
-    u8 filler97;
+    u8 unk97;
     u8 unk98;
     u8 unk99;
     u8 unk9A;
