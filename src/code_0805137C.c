@@ -37,14 +37,53 @@ void sub_08051E8C(void)
 INCLUDE_ASM("asm/nonmatching/code_0805137C", update_battle_direction_indicator);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", battle_camera_scroll_update);
 
-void set_sprite_anim_and_store(u8 idx, u8 state, u8 *out)
+void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj)
 {
     set_sprite_animation_state(idx, state);
-    out[5] = state;
+    obj->unk5 = state;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", update_npc_random_animation);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", update_npc_sprite_animations);
+void update_npc_random_animation(void)
+{
+    struct MapObject *obj = gUnk_030057E0.unk5DC;
+
+    if ((gUnk_03005310.unk4 & 3) == 0)
+    {
+        obj += get_entity_speed_fraction(64);
+        if (obj->unk4_7 && (obj->unk2 >> 12) == 0)
+            set_sprite_anim_and_store(obj->unk4_0 + 49, get_entity_speed_fraction(4), obj);
+    }
+}
+
+void update_npc_sprite_animations(void)
+{
+    struct MapObject *obj = gUnk_030057E0.unk5DC;
+    s32 i;
+    u32 active;
+
+    for (i = 0; i < 64; obj++, i++)
+    {
+        if (gUnk_030057E0.unkC88)
+        {
+            active = gUnk_030057E0.unkCB4 != i;
+            if (gUnk_030057E0.unkC92 != 0x87)
+                goto check;
+            continue;
+        }
+        else
+        {
+            active = 1;
+        }
+    check:
+        if (active && (obj->unk2 >> 12) == 6)
+        {
+            s32 idx = obj->unk4_0 + 49;
+            if (gUnk_03002C30[idx].unk24 != 0xFF)
+                advance_sprite_animation_frame(idx);
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805137C", map_cursor_move_and_check_event);
 
 u8 find_npc_event_match(void)
@@ -76,7 +115,27 @@ u8 find_npc_event_match(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", get_adjacent_tile_value);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", check_tile_and_trigger_battle_action);
+
+u8 check_tile_and_trigger_battle_action(u8 dir)
+{
+    u8 tile;
+    u32 ret;
+
+    if (gUnk_030057E0.unkC5C == 2)
+    {
+        tile = get_adjacent_tile_value(dir);
+        if (tile == 0 || tile == 2)
+        {
+            gUnk_030057E0.unkC5C = gUnk_030057E0.unkC69;
+            load_battle_palette_via_dma(0);
+        }
+    }
+    tile = get_adjacent_tile_value(dir);
+    ret = gUnk_030057E0.unkC10[tile];
+    if (ret)
+        set_battle_entity_animation_attack(dir);
+    return ret;
+}
 
 s32 check_room_exit_at_position(void)
 {
@@ -317,7 +376,13 @@ INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_080531D0);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_080531EC);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053234);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053288);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", load_battle_terrain_data);
+
+void load_battle_terrain_data(void)
+{
+    memcpy_u8(gUnk_083D2918[gUnk_030057E0.unkC28], gUnk_030057E0.unkC10, 8);
+    gUnk_03002C30[47].unk2A = gUnk_083D2908[gUnk_030057E0.unkC5C];
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805137C", float_default_to_one_if_zero);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", float_sign);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", float_abs_if_negative);

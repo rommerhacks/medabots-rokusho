@@ -137,7 +137,8 @@ struct Unk_03002C30
     u8 filler14[0xC];
     u8 unk20; // animation state (0-3)
     u8 unk21;
-    u8 filler22[0x3];
+    u8 filler22[0x2];
+    u8 unk24;
     u8 unk25;
     u8 filler26[0x4];
     u8 unk2A;
@@ -206,7 +207,11 @@ struct MapObject
     u8 x;
     u8 y;
     u16 unk2; // bits 12-15: type (8 = event), bits 0-11: event id
-    u8 filler4[0x4];
+    u8 unk4_0:5; // sprite slot (gUnk_03002C30 index - 49)
+    u8 unk4_5:2;
+    u8 unk4_7:1; // animates at random
+    u8 unk5; // animation state
+    u8 filler6[0x2];
 };
 
 struct Unk_030057E0
@@ -219,7 +224,13 @@ struct Unk_030057E0
     u16 unk800; // map width * 2 (tiles are bytes, unk810 rows are unk800 / 2 long)
     u16 unk802; // map height * 2
     u8 filler804[0xC];
-    u8 unk810[0x438]; // tile map
+    u8 unk810[0x400]; // tile map
+    u8 unkC10[0x8]; // tile value -> result of check_tile_and_trigger_battle_action
+    u8 fillerC18[0x10];
+    u8 unkC28;
+    u8 fillerC29[0xE];
+    u8 unkC37; // random seed
+    u8 fillerC38[0x10];
     u16 unkC48;
     u16 unkC4A;
     u8 fillerC4C[0x6];
@@ -252,8 +263,15 @@ struct Unk_030057E0
     u8 fillerC8C[0x2];
     u16 unkC8E;
     u16 unkC90;
-    u8 fillerC92[0x22];
+    u8 unkC92;
+    u8 fillerC93[0x21];
     u8 unkCB4;
+};
+
+struct Unk_03005310
+{
+    u8 filler0[0x4];
+    u32 unk4; // frame counter
 };
 
 struct Unk_03006D38

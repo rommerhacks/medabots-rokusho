@@ -204,5 +204,13 @@ u8 sub_080526F0(u16 x);
 u8 sub_08052714(u16 y);
 void set_battle_state_byte_c83(u8 dir);
 u32 sub_0804803C(u8 arg);
+u8 get_adjacent_tile_value(u8 dir);
+void set_battle_entity_animation_attack(u8 dir);
+void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj);
+
+// code_080490C4
+void advance_sprite_animation_frame(u8 idx);
+u8 get_entity_speed_fraction(u8 n);
+void memcpy_u8(const void *src, void *dst, u32 n);
 
 #endif // GUARD_FUNCTIONS_H

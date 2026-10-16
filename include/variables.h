@@ -24,6 +24,7 @@ extern struct Unk_030057E0 gUnk_030057E0;
 extern struct Unk_03006D20 gUnk_03006D20;
 extern struct Unk_03007014 *gUnk_03007014;
 extern struct Vec16 gUnk_03004C30;
+extern struct Unk_03005310 gUnk_03005310;
 extern struct Unk_030055A0 gUnk_030055A0[];
 extern struct Vec16 gUnk_0300057C;
 extern struct Vec16 gUnk_03001C04;
@@ -33,6 +34,8 @@ extern struct Unk_03006D38 gUnk_03006D38;
 
 // ROM data
 extern const u8 gUnk_083D28C0[];
+extern const u8 gUnk_083D2908[];
+extern const u8 gUnk_083D2918[][8];
 extern const u8 gUnk_083D2B8D[];
 extern const u8 gUnk_083D28C3[][16];
 extern const u8 gUnk_083F8B74[][2];
