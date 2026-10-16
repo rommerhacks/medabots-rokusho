@@ -55,6 +55,7 @@ gUnk_0847E948       = 0x0847E948;
 gUnk_08413114       = 0x08413114;
 gUnk_08414968       = 0x08414968;
 gUnk_0847E45C       = 0x0847E45C;
+gUnk_083D69A0       = 0x083D69A0;
 gMapScriptCommands  = 0x083D20AC;
 gUnk_084045A8       = 0x084045A8;
 gUnk_0840FAF4       = 0x0840FAF4;

@@ -81,5 +81,6 @@ extern const u8 gSoundOutputMasks[4]; // SOUNDCNT_L high byte: clears the left/r
 extern const u8 gSoundOutputBits[4][4]; // [channel][output: 0 off, 1, 2, 3 both] SOUNDCNT_L high byte bits // REG_DMA1CNT_H, REG_DMA2CNT_H
 extern const u32 *const gUnk_08414968[]; // text pointers, banks 0-1 (guess)
 extern const u32 *const *const gUnk_0847E45C[]; // text pointer tables, bank 2+ (guess)
+extern const s16 gUnk_083D69A0[][8]; // 16 steps; [n][0] / 16 = player sprite y offset (sub_0804DE28, guess: jump arc)
 
 #endif // GUARD_VARIABLES_H
