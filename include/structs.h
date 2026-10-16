@@ -243,6 +243,7 @@ struct Unk_030064A0
     u8 unk52;
     u8 unk53;
     u8 unk54[8];
+    u8 unk5C[8];
 };
 
 struct Unk_030057E0
