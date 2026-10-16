@@ -53,8 +53,16 @@ void sub_08047BC0(u32 a)
     sound_stop_all_with_fade_guard(a);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047BCC);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047BDC);
+u32 sub_08047BCC(u32 idx)
+{
+    return gUnk_083B6410[idx];
+}
+
+u32 sub_08047BDC(u32 idx)
+{
+    return gUnk_083BA4D8[idx];
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047BEC);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", init_cursor_state);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", scene_transition_step_08047C24);
@@ -69,16 +77,38 @@ u32 sub_08047D4C(void)
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D58);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D74);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D8C);
+
+u32 sub_08047D8C(u8 id)
+{
+    return get_item_quantity_by_id(id);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D9C);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047DB0);
+
+u32 sub_08047DB0(u8 id)
+{
+    return find_medal_slot_by_id(id);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047DC0);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047DD8);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047DF0);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047E08);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047E20);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047E30);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047E3C);
+
+u32 sub_08047E20(u8 id)
+{
+    return load_palette_entry(id);
+}
+
+u32 sub_08047E30(void)
+{
+    return sub_08042218();
+}
+
+void sub_08047E3C(u8 id)
+{
+    add_position_entry(id);
+}
 
 void sub_08047E4C(void)
 {
@@ -91,7 +121,12 @@ INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047F70);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", init_bg0_for_cursor);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047FEC);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_0804803C);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08048088);
+
+u32 sub_08048088(u32 idx)
+{
+    return gUnk_08484444[idx];
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", update_battle_field_frame);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", update_sprite_animation_dma);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_080481C4);

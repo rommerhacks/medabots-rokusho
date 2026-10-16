@@ -1,7 +1,12 @@
 #include "global.h"
 
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_engine_tick);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08073140);
+
+u16 sub_08073140(u32 idx)
+{
+    return gUnk_083AB9D0[idx];
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_read_pending_note);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_set_note_attributes);
 INCLUDE_ASM("asm/nonmatching/sound_driver", update_wave_channel_params);
@@ -110,4 +115,9 @@ INCLUDE_ASM("asm/nonmatching/sound_driver", sound_stop_all_with_fade_guard);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074FB8);
 INCLUDE_ASM("asm/nonmatching/sound_driver", audio_get_volume_and_tick_fade);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_set_volume);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_080750CC);
+
+struct Unk_03007014 *sub_080750CC(void)
+{
+    return gUnk_03007014;
+}
+

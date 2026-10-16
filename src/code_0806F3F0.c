@@ -77,7 +77,12 @@ INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_channel_handle_end);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_channel_tick_duration);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072458);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080724A0);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080724E8);
+
+void sub_080724E8(struct SoundTrack *track)
+{
+    sound_channel_check_and_advance(track);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_dispatch_command);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0807255C);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080725BC);
@@ -97,15 +102,30 @@ void sub_080729A0(struct SoundTrack *obj, u8 val)
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080729A8);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080729BC);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080729D8);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080729EC);
+
+void sub_080729EC(struct SoundTrack *track)
+{
+    track->unk6A = *track->unk14++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080729FC);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A18);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A34);
+
+void sub_08072A34(struct SoundTrack *track)
+{
+    track->unk4C++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A40);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A54);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A6C);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A80);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", stream_read_u32_to_field);
+
+void stream_read_u32_to_field(struct SoundTrack *track)
+{
+    track->unk14 = (u8 *)sub_08072708(track);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", stream_read_and_shift_u32);
 
 void sub_08072ABC(struct SoundTrack *obj)
@@ -114,14 +134,33 @@ void sub_08072ABC(struct SoundTrack *obj)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072AC4);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072AEC);
+
+void sub_08072AEC(struct SoundTrack *track)
+{
+    track->unk55 = *track->unk14++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072AFC);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072B28);
+
+void sub_08072B28(struct SoundTrack *track)
+{
+    track->unk6E = *track->unk14++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_read_envelope_params);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_channel_enable);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_channel_disable);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072BD4);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072BE4);
+
+void sub_08072BD4(struct SoundTrack *track)
+{
+    track->unk63 = *track->unk14++;
+}
+
+void sub_08072BE4(struct SoundTrack *track)
+{
+    sound_channel_finish_and_callback(track);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_channel_process_event);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_channel_process_command_08072E04);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072E7C);

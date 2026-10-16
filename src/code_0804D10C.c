@@ -105,8 +105,17 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E4E8);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E540);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E55C);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E570);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E584);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E594);
+
+void sub_0804E584(void)
+{
+    sub_0804E5A4(0, 1);
+}
+
+void sub_0804E594(void)
+{
+    sub_0804E5A4(1, 1);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E5A4);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E6B4);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E738);
@@ -237,7 +246,12 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FAD0);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FB40);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FB90);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FBD0);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FC20);
+
+void sub_0804FC20(void)
+{
+    sub_0804E5A4(0, 0);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FC30);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FCC4);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FE20);
@@ -253,7 +267,11 @@ u8 sub_08050264(u8 a)
     return a >> 4;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0805026C);
+u8 sub_0805026C(u8 a)
+{
+    return a & 3;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", calc_medapart_table_index);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080502B4);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", compute_battle_sprite_anim_offset);
@@ -264,7 +282,12 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", populate_battle_entity_tile_positio
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", init_battle_medapart_sprites_all);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", find_next_available_battle_sprite_slot);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", set_battle_sprite_animation);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050770);
+
+void sub_08050770(u32 idx, u8 val)
+{
+    gUnk_03002C30[idx].unkB = val;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050780);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080507A0);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080507C0);

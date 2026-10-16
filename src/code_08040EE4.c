@@ -93,7 +93,12 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080440D4);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044100);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", read_vram_tilemap_rect);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", write_vram_tilemap_rect);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_to_ewram_27000);
+
+void decompress_to_ewram_27000(const u8 *src)
+{
+    lz_decompress_dispatch(src, (void *)0x02027000);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", race_enter_team_select);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_sprite_animation_position);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", calculate_direction_index);

@@ -100,7 +100,16 @@ INCLUDE_ASM("asm/nonmatching/code_08034CB8", battle_calc_damage_split);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", battle_check_action_counter);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08036D64);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", medal_update_exp_progress);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08036E54);
+
+u32 sub_08036E54(u32 a)
+{
+    if (a > 99)
+        a = 99;
+    else if (a == 0)
+        a = 1;
+    return a;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", battle_set_action_params);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", reset_battle_bot_state);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", setup_battle_cursor_sprite_08036FF8);

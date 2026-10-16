@@ -8,18 +8,40 @@ INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057044);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_080572F8);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_0805738C);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057494);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057540);
+
+void sub_08057540(void)
+{
+    sub_08047878(0x40, 0);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057550);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057574);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057588);
+
+void sub_08057588(void)
+{
+    sub_08047878(6, 0);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057598);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057988);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_080579C4);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057A24);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057B68);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057BBC);
+
+void sub_08057BBC(void)
+{
+    init_cursor_state();
+    sub_0804A1C4();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057BCC);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057BF8);
+
+void sub_08057BF8(void)
+{
+    init_cursor_state();
+    sub_0804A1C4();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057C08);
 
 void nullsub_08057C34(void)

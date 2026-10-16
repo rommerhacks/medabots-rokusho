@@ -122,7 +122,12 @@ INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FB94);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FC20);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FCC8);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FD28);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FEA8);
+
+void sub_0803FEA8(void)
+{
+    gUnk_03000440.unkC++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FEB8);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", text_render_glyph_step);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_080402B4);

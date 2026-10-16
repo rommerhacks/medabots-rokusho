@@ -58,7 +58,12 @@ INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806DFC4);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", scene_complete_dma_and_restore_state);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_init_tilemap_and_palette);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", dispatch_battle_event_script);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806E26C);
+
+void sub_0806E26C(void)
+{
+    sub_08047850(2);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806B160", scene_transition_countdown_tick);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_scene_dispatch);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", blend_fade_step_0806E2F8);

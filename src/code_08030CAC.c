@@ -53,8 +53,33 @@ INCLUDE_ASM("asm/nonmatching/code_08030CAC", battle_ai_select_target_status58);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", select_player_battle_target);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", ai_select_target_player_side_ability22);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", clear_battle_action_selection);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08032FB8);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08032FC4);
+
+u32 sub_08032FB8(u32 a)
+{
+    switch (a)
+    {
+    case 0:
+    case 1:
+    case 2:
+        return 3;
+    default:
+        return 0;
+    }
+}
+
+u32 sub_08032FC4(u32 a)
+{
+    switch (a)
+    {
+    case 0:
+    case 1:
+    case 2:
+        return 0;
+    default:
+        return 3;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08032FD0);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08032FFC);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", select_battle_pending_action);
@@ -95,13 +120,45 @@ INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033A94);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033AB0);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033ACC);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033B7C);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033C00);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033C10);
+
+void sub_08033C00(void)
+{
+    sub_08038BC0();
+    sub_08034F08();
+}
+
+void sub_08033C10(void)
+{
+    sub_08038D30();
+    sub_08034F08();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033C20);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033CD0);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033CE0);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033CF0);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033D00);
+
+void sub_08033CD0(void)
+{
+    battle_begin_action_phase();
+    sub_08034F08();
+}
+
+void sub_08033CE0(void)
+{
+    sub_08039188();
+    sub_08034F08();
+}
+
+void sub_08033CF0(void)
+{
+    sub_080391C4();
+    sub_08034F08();
+}
+
+void sub_08033D00(void)
+{
+    sub_080392D8();
+    sub_08034F08();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033D10);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033D30);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033F04);
@@ -152,7 +209,13 @@ INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080346C4);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034708);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034728);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_0803476C);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080347AC);
+
+void sub_080347AC(void)
+{
+    sub_08036270();
+    sub_08034F08();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080347BC);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080347F8);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080348D0);
