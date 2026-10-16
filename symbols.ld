@@ -177,6 +177,42 @@ gUnk_02020800       = 0x02020800;
 
 /* code_0800025C: game state 3 */
 gMedabotsScreenHandlers       = 0x083AC320;
+gMedalsScreenHandlers         = 0x083AC6EC;
+
+/* code_080043A8: game state 4 (Medals screen) */
+gUnk_084E7264       = 0x084E7264;
+gUnk_084C32DC       = 0x084C32DC;
+gUnk_0848833C       = 0x0848833C;
+gUnk_084EF348       = 0x084EF348;
+gUnk_084EFB5C       = 0x084EFB5C;
+gUnk_084F04F0       = 0x084F04F0;
+gUnk_084F1554       = 0x084F1554;
+gUnk_084F2BA0       = 0x084F2BA0;
+gUnk_08488B44       = 0x08488B44;
+gUnk_084E2E98       = 0x084E2E98;
+gUnk_084E80B0       = 0x084E80B0;
+gUnk_084EF380       = 0x084EF380;
+gUnk_084EFBE0       = 0x084EFBE0;
+gUnk_084F0688       = 0x084F0688;
+gUnk_084F16E8       = 0x084F16E8;
+gUnk_084F2D60       = 0x084F2D60;
+gUnk_084E9020       = 0x084E9020;
+gUnk_084C3524       = 0x084C3524;
+gUnk_084C3648       = 0x084C3648;
+gUnk_084EF3F4       = 0x084EF3F4;
+gUnk_084EFCDC       = 0x084EFCDC;
+gUnk_084F07B8       = 0x084F07B8;
+gUnk_084F187C       = 0x084F187C;
+gUnk_084F2F20       = 0x084F2F20;
+gUnk_084E9E68       = 0x084E9E68;
+gUnk_084C37A4       = 0x084C37A4;
+gUnk_084C3990       = 0x084C3990;
+gUnk_084EF46C       = 0x084EF46C;
+gUnk_084EFD74       = 0x084EFD74;
+gUnk_084F08F0       = 0x084F08F0;
+gUnk_084F1A10       = 0x084F1A10;
+gUnk_084F30E0       = 0x084F30E0;
+gUnk_083B7C00       = 0x083B7C00;
 gUnk_084E5650       = 0x084E5650;
 gUnk_084C48B4       = 0x084C48B4;
 gUnk_084C4A34       = 0x084C4A34;

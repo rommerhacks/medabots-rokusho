@@ -163,6 +163,40 @@ extern const u8 gUnk_084C1E04[];
 extern const u8 gUnk_084C1FD4[];
 extern u8 gUnk_02020800[]; // BG tile backup (0x800 bytes of VRAM 0x06002800 while a Medawatch submenu runs)
 extern const Func gMedabotsScreenHandlers[]; // game state 3 sub-state handlers
+extern const Func gMedalsScreenHandlers[]; // game state 4 (Medals screen) sub-state handlers
+extern const u8 gUnk_084E7264[];
+extern const u8 gUnk_084C32DC[];
+extern const u8 gUnk_0848833C[];
+extern const u8 gUnk_084EF348[];
+extern const u8 gUnk_084EFB5C[];
+extern const u8 gUnk_084F04F0[];
+extern const u8 gUnk_084F1554[];
+extern const u16 gUnk_084F2BA0[];
+extern const u16 gUnk_08488B44[];
+extern const u16 gUnk_084E2E98[];
+extern const u8 gUnk_084E80B0[];
+extern const u8 gUnk_084EF380[];
+extern const u8 gUnk_084EFBE0[];
+extern const u8 gUnk_084F0688[];
+extern const u8 gUnk_084F16E8[];
+extern const u16 gUnk_084F2D60[];
+extern const u8 gUnk_084E9020[];
+extern const u8 gUnk_084C3524[];
+extern const u8 gUnk_084C3648[];
+extern const u8 gUnk_084EF3F4[];
+extern const u8 gUnk_084EFCDC[];
+extern const u8 gUnk_084F07B8[];
+extern const u8 gUnk_084F187C[];
+extern const u16 gUnk_084F2F20[];
+extern const u8 gUnk_084E9E68[];
+extern const u8 gUnk_084C37A4[];
+extern const u8 gUnk_084C3990[];
+extern const u8 gUnk_084EF46C[];
+extern const u8 gUnk_084EFD74[];
+extern const u8 gUnk_084F08F0[];
+extern const u8 gUnk_084F1A10[];
+extern const u16 gUnk_084F30E0[];
+extern const void *const gUnk_083B7C00[]; // messages (run_message), indexed by sub_0800A960()
 extern const u8 gUnk_084E5650[];
 extern const u8 gUnk_084C48B4[];
 extern const u8 gUnk_084C4A34[];

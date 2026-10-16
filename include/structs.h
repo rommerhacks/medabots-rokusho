@@ -104,8 +104,8 @@ struct SoundMixChannel
     u8 unk3C;
     u8 filler3D[0x1];
     u8 unk3E; // state
-    u8 unk3F;
-    u8 unk40;
+    u8 unk3F; // Medals list: tab (6 Medals per tab)
+    u8 unk40; // Medals list: row
     u8 filler41[0x3];
     u32 unk44; // counts frames while no sample is set
 };
@@ -143,12 +143,20 @@ struct Unk_03000440
     u8 unk28;
     u8 unk29; // choice menu state (poll_choice_menu)
     u8 filler2A[0x12];
-    u8 unk3C; // info screen request (medabot_detail_open_info sets 1)
+    u8 unk3C; // where the Medals / Medaparts screen was opened from: 0 Medawatch, 1 Medabot detail (medabot_detail_open_info), 2/4 others
     u8 unk3D; // Medal / Medapart id to show
     u8 unk3E; // Medapart slot 0-3
-    u8 filler3F[0x2];
+    u8 unk3F; // Medals list: tab (6 Medals per tab)
+    u8 unk40; // Medals list: row
     u8 unk41; // count of owned, unequipped Medals (count_unequipped_medals)
-    u8 filler42[0xE];
+    u8 unk42; // Medal pages: 0 Ability, 1 Medaforce, 2 Rotation, 3 Skill (L/R, runtime-checked)
+    u8 unk43; // Medal pages: help opened from 0 Ability, 1 Medaforce
+    u8 unk44;
+    u8 filler45;
+    u8 unk46;
+    u8 filler47[0x4];
+    u8 unk4B; // Medals screen: song 7 started (when opened with unk3C == 4)
+    u8 filler4C[0x4];
     u8 unk50; // Medabots screen mode: 0 plain (from the Medawatch), 1-3 team select (guess: battle type; 3 needs all three picks)
     u8 unk51; // Medabots screen: cursor slot (0-8)
     u8 unk52; // Medabots screen: reorder pick, slot | 0x80 while holding
@@ -297,7 +305,9 @@ struct Unk_03001800
     u8 unk52;
     u8 unk53;
     u8 unk54;
-    u8 filler55[0x32];
+    u8 filler55[0x6];
+    u8 unk5B;
+    u8 filler5C[0x2B];
     u8 unk87;
     u8 filler88[0x4];
     u8 unk8C[3];
