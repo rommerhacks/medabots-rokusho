@@ -74,7 +74,7 @@ _0804F024:
 _0804F044: .4byte 0x00007FFF
 _0804F048: .4byte 0x00000C94
 _0804F04C:
-	bl sub_08050244
+	bl map_script_command_done
 _0804F050:
 	pop {r4, r5}
 	pop {r0}

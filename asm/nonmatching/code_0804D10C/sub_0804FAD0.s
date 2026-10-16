@@ -39,7 +39,7 @@ _0804FB04:
 	.align 2, 0
 _0804FB14: .4byte 0x03006D20
 _0804FB18:
-	bl sub_08050244
+	bl map_script_command_done
 	b _0804FB3A
 _0804FB1E:
 	bl sub_08050C74
@@ -54,7 +54,7 @@ _0804FB2A:
 	bl scene_state_dispatch
 	cmp r0, #0
 	beq _0804FB3A
-	bl sub_08050244
+	bl map_script_command_done
 _0804FB3A:
 	pop {r4}
 	pop {r0}

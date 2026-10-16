@@ -227,7 +227,7 @@ _0804E0A4:
 	bl sub_08052BA0
 	adds r4, #0x47
 	strb r7, [r4]
-	bl sub_08050244
+	bl map_script_command_done
 _0804E0D8:
 	pop {r4, r5, r6, r7}
 	pop {r0}

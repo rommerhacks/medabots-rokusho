@@ -34,7 +34,7 @@ _0804FB68:
 	adds r0, #0x39
 	strb r5, [r0]
 _0804FB82:
-	bl sub_08050244
+	bl map_script_command_done
 _0804FB86:
 	pop {r4, r5}
 	pop {r0}

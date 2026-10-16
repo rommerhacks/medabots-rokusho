@@ -56,7 +56,7 @@ _0804E800:
 	bl game_state_execute_handler_a
 	cmp r0, #0
 	beq _0804E80C
-	bl sub_08050244
+	bl map_script_command_done
 _0804E80C:
 	pop {r4, r5}
 	pop {r0}

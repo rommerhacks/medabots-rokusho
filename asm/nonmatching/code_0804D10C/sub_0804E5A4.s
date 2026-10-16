@@ -123,11 +123,11 @@ _0804E692:
 	ble _0804E65C
 	cmp r7, #4
 	bne _0804E6A0
-	bl sub_08050244
+	bl map_script_command_done
 _0804E6A0:
 	cmp r4, #0
 	beq _0804E6A8
-	bl sub_08050244
+	bl map_script_command_done
 _0804E6A8:
 	pop {r3, r4}
 	mov r8, r3

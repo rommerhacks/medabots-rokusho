@@ -8,7 +8,7 @@ sub_0804E418: @ 0x0804E418
 	bl sub_080507E0
 	cmp r0, #0
 	beq _0804E42A
-	bl sub_08050244
+	bl map_script_command_done
 _0804E42A:
 	pop {r0}
 	bx r0

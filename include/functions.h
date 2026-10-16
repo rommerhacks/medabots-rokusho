@@ -84,7 +84,7 @@ void sub_0804DD80(void);
 void sub_0804E44C(void);
 void sub_0804E4E8(void);
 void sub_0804E5A4(u8 a, u8 b);
-void sub_08050244(void);
+void map_script_command_done(void);
 u32 find_next_available_battle_sprite_slot(void);
 void sub_08050770(u32 idx, u8 val);
 void sub_08050780(u8 i, u32 val);

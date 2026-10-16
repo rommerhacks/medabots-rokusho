@@ -27,7 +27,7 @@ _0804FAB8:
 	bl scene_state_dispatch
 	cmp r0, #0
 	beq _0804FAC8
-	bl sub_08050244
+	bl map_script_command_done
 _0804FAC8:
 	pop {r4}
 	pop {r0}

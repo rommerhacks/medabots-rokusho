@@ -49,7 +49,7 @@ _0804F0A6:
 _0804F0B2:
 	cmp r6, #0
 	beq _0804F0BA
-	bl sub_08050244
+	bl map_script_command_done
 _0804F0BA:
 	pop {r3}
 	mov r8, r3

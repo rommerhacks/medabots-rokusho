@@ -87,7 +87,7 @@ _0804E3D0:
 	ldr r0, _0804E3EC @ =0x84000008
 	str r0, [r1, #8]
 	ldr r0, [r1, #8]
-	bl sub_08050244
+	bl map_script_command_done
 	pop {r4, r5}
 	pop {r0}
 	bx r0

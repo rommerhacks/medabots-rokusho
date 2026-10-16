@@ -396,13 +396,18 @@ u32 sub_0804DBA4(u8 i)
     return gUnk_030057E0.unkCA4[i] - 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", call_battle_handler_by_state_0804DBC0);
+void map_script_update_command(void)
+{
+    gMapScriptUpdates[gUnk_030057E0.unkC92]();
+}
 
 void nullsub_0804DBE8(void)
 {
 }
 
-void sub_0804DBEC(void)
+// Opcode 1 update: shows message (C94[1] << 8 | C94[2]) of text bank C94[0] (runtime: bank 2, id 1
+// is the lab intro "Good afternoon!"), finishes once the text window closes.
+void map_script_update_message(void)
 {
     struct Unk_030057E0 *s = &gUnk_030057E0;
     const u32 *const *tbl;
@@ -414,29 +419,29 @@ void sub_0804DBEC(void)
         gUnk_030057A0.unk2E = s->unkC94[0] - 2;
         gUnk_030057A0.unk30 = (s->unkC94[1] << 8) | s->unkC94[2];
         if (sub_0804B6EC())
-            sub_08050244();
+            map_script_command_done();
         s->unkC93++;
         break;
     case 1:
         if (s->unkC94[0] < 2)
-            tbl = (const u32 *const *)gUnk_08414968;
+            tbl = (const u32 *const *)gTextTable;
         else
-            tbl = gUnk_0847E45C[s->unkC94[0] - 2];
+            tbl = gTextBankTables[s->unkC94[0] - 2];
         if (scene_transition_step_08047C24(0, 0, 0, tbl[(s->unkC94[1] << 8) | s->unkC94[2]]))
-            sub_08050244();
+            map_script_command_done();
         break;
     }
 }
 
 void sub_0804DCAC(void)
 {
-    sub_08050244();
+    map_script_command_done();
 }
 
 void sub_0804DCB8(void)
 {
     if (game_state_execute_handler_a())
-        sub_08050244();
+        map_script_command_done();
 }
 
 void sub_0804DCCC(void)
@@ -444,37 +449,37 @@ void sub_0804DCCC(void)
     if (gUnk_030057E0.unkC94[0] != 0)
         gUnk_030057E0.unkC94[0]--;
     else
-        sub_08050244();
+        map_script_command_done();
 }
 
 void sub_0804DCF0(void)
 {
     if (KEY_BITS(gNewKeys).a | KEY_BITS(gNewKeys).start)
-        sub_08050244();
+        map_script_command_done();
 }
 
 void sub_0804DD10(void)
 {
     if (run_blend_fade_transition(0))
-        sub_08050244();
+        map_script_command_done();
 }
 
 void sub_0804DD24(void)
 {
     if (run_blend_fade_transition(0))
-        sub_08050244();
+        map_script_command_done();
 }
 
 void sub_0804DD38(void)
 {
     if (run_blend_fade_transition(0x7FFF))
-        sub_08050244();
+        map_script_command_done();
 }
 
 void sub_0804DD50(void)
 {
     if (run_blend_fade_transition(0x7FFF))
-        sub_08050244();
+        map_script_command_done();
 }
 
 void sub_0804DD68(void)
@@ -505,7 +510,7 @@ void sub_0804DD80(void)
     field_set_player_facing(gUnk_030057E0.unkC67);
     update_cursor_tile_position();
     decompress_battle_tile_graphics();
-    sub_08050244();
+    map_script_command_done();
 }
 
 void sub_0804DE28(void)
@@ -531,7 +536,7 @@ void sub_0804DE28(void)
     case 1:
         sub_0804877C(47);
         gUnk_03002C30[47].unk4 = gUnk_030057E0.unkC94[0];
-        sub_08050244();
+        map_script_command_done();
         break;
     }
 }
@@ -543,13 +548,13 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E324);
 void sub_0804E3F0(void)
 {
     if (sub_08050868())
-        sub_08050244();
+        map_script_command_done();
 }
 
 void sub_0804E404(void)
 {
     if (sub_080508CC())
-        sub_08050244();
+        map_script_command_done();
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E418);
@@ -582,13 +587,13 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E540);
 void sub_0804E55C(void)
 {
     if (sub_08050868())
-        sub_08050244();
+        map_script_command_done();
 }
 
 void sub_0804E570(void)
 {
     if (sub_080508CC())
-        sub_08050244();
+        map_script_command_done();
 }
 
 void sub_0804E584(void)
@@ -708,12 +713,12 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F694);
 void sub_0804F7F0(void)
 {
     if (sub_080509A0())
-        sub_08050244();
+        map_script_command_done();
 }
 
 void sub_0804F804(void)
 {
-    sub_08050244();
+    map_script_command_done();
 }
 
 void nullsub_0804F810(void)
@@ -751,7 +756,8 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080500D8);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", advance_sprite_by_terrain_modifier);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", update_battle_sprite_movement);
 
-void sub_08050244(void)
+// Ends the current command: the next frame runs the next one (map_script_run_command).
+void map_script_command_done(void)
 {
     gUnk_030057E0.unkC93 = 0;
     gUnk_030057E0.unkC89 = 0;

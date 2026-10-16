@@ -62,7 +62,7 @@ _0804EEB0:
 	bl scene_transition_step_08047C24
 	cmp r0, #0
 	beq _0804EF04
-	bl sub_08050244
+	bl map_script_command_done
 	b _0804EF04
 	.align 2, 0
 _0804EEC8: .4byte 0x0847E8C4
@@ -90,7 +90,7 @@ _0804EEF0:
 	bl scene_state_dispatch
 	cmp r0, #0
 	beq _0804EF04
-	bl sub_08050244
+	bl map_script_command_done
 _0804EF04:
 	pop {r4, r5, r6}
 	pop {r0}

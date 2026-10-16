@@ -18,7 +18,7 @@ sub_0804A1D4: @ 0x0804A1D4
 	ldrb r0, [r0]
 	cmp r0, #0
 	beq _0804A208
-	bl call_battle_handler_by_state_0804DBC0
+	bl map_script_update_command
 	b _0804A20C
 	.align 2, 0
 _0804A1FC: .4byte 0x03005310

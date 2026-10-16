@@ -48,6 +48,7 @@ extern const u8 gUnk_083F8B74[][2];
 extern const u8 gUnk_0847E948[];
 extern const struct AreaWarp *const gUnk_08413114[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
+extern void (*const gMapScriptUpdates[])(void); // per-command update handlers, run each frame while unkC89 is set
 extern const u8 gUnk_083D24AC[]; // indexed by the player's facing (gUnk_03002C30[47].unk21)
 extern const u8 gUnk_083D28B0[]; // indexed by gUnk_030057E0.unkC5C, passed to setup_battle_sprite_terrain
 extern const u8 *const gUnk_084045A8[]; // per area: tile map
@@ -79,8 +80,8 @@ extern vu16 *const gSoundFifoDmaCnt[];
 extern const struct SoundTrackConfig gSoundTrackConfigs[13];
 extern const u8 gSoundOutputMasks[4]; // SOUNDCNT_L high byte: clears the left/right enables of PSG channel i
 extern const u8 gSoundOutputBits[4][4]; // [channel][output: 0 off, 1, 2, 3 both] SOUNDCNT_L high byte bits // REG_DMA1CNT_H, REG_DMA2CNT_H
-extern const u32 *const gUnk_08414968[]; // text pointers, banks 0-1 (guess)
-extern const u32 *const *const gUnk_0847E45C[]; // text pointer tables, bank 2+ (guess)
+extern const u32 *const gTextTable[]; // text pointers, banks 0-1 (guess)
+extern const u32 *const *const gTextBankTables[]; // text pointer tables, bank 2+ (guess)
 extern const s16 gUnk_083D69A0[][8]; // 16 steps; [n][0] / 16 = player sprite y offset (sub_0804DE28, guess: jump arc)
 
 #endif // GUARD_VARIABLES_H

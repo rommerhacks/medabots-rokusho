@@ -59,7 +59,7 @@ _0804EE20:
 	bl scene_transition_step_08047C24
 	cmp r0, #0
 	beq _0804EE36
-	bl sub_08050244
+	bl map_script_command_done
 _0804EE36:
 	pop {r4, r5}
 	pop {r0}

@@ -50,7 +50,7 @@ _0804EF64:
 	bl scene_transition_step_08047C24
 	cmp r0, #0
 	beq _0804EFA2
-	bl sub_08050244
+	bl map_script_command_done
 	b _0804EFA2
 	.align 2, 0
 _0804EF7C: .4byte 0x0847E8C4
@@ -69,7 +69,7 @@ _0804EF80:
 	bl scene_transition_step_08047C24
 	cmp r0, #0
 	beq _0804EFA2
-	bl sub_08050244
+	bl map_script_command_done
 _0804EFA2:
 	pop {r4, r5}
 	pop {r0}

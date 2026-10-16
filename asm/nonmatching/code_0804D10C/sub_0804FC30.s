@@ -55,7 +55,7 @@ sub_0804FC30: @ 0x0804FC30
 	adds r1, r1, r4
 	movs r2, #0x40
 	bl memcpy_u8
-	bl sub_08050244
+	bl map_script_command_done
 	pop {r4, r5}
 	pop {r0}
 	bx r0

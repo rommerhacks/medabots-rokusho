@@ -272,7 +272,7 @@ _0804E2FC:
 	adds r1, r4, r3
 	movs r0, #0
 	strb r0, [r1]
-	bl sub_08050244
+	bl map_script_command_done
 _0804E31A:
 	pop {r4, r5, r6, r7}
 	pop {r0}

@@ -42,7 +42,7 @@ _0804E83E:
 	adds r1, r5, r2
 	strh r0, [r1]
 _0804E864:
-	bl sub_08050244
+	bl map_script_command_done
 _0804E868:
 	pop {r4, r5}
 	pop {r0}

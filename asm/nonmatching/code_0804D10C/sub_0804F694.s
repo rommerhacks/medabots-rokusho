@@ -45,7 +45,7 @@ _0804F6E4:
 	bl battle_scene_state_dispatch
 	cmp r0, #0
 	beq _0804F7C6
-	bl sub_08050244
+	bl map_script_command_done
 	b _0804F7C6
 _0804F6F2:
 	movs r0, #0x2f
@@ -141,7 +141,7 @@ _0804F760:
 	bl field_set_player_facing
 	bl update_bg_scroll_offsets_a
 	bl init_battle_sprites
-	bl sub_08050244
+	bl map_script_command_done
 _0804F7C6:
 	pop {r4, r5, r6}
 	pop {r0}

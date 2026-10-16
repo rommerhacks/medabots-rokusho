@@ -15,7 +15,7 @@ sub_0804FE20: @ 0x0804FE20
 	subs r3, #0x60
 	adds r0, r2, r3
 	strb r1, [r0]
-	bl sub_08050244
+	bl map_script_command_done
 _0804FE3E:
 	pop {r0}
 	bx r0

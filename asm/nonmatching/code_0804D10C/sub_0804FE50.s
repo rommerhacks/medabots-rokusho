@@ -262,7 +262,7 @@ _08050042:
 	adds r0, #0x12
 	movs r1, #0x40
 	bl sub_080496C8
-	bl sub_08050244
+	bl map_script_command_done
 _0805005E:
 	pop {r3, r4, r5}
 	mov r8, r3

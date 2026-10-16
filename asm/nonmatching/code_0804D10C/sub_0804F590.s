@@ -53,7 +53,7 @@ sub_0804F590: @ 0x0804F590
 	strb r0, [r4]
 	bl load_map_npc_sprites
 	bl update_entity_sprites_on_screen
-	bl sub_08050244
+	bl map_script_command_done
 	pop {r4, r5}
 	pop {r0}
 	bx r0

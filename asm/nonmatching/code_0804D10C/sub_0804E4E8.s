@@ -37,7 +37,7 @@ _0804E524:
 	bl update_battle_sprite_movement
 	cmp r0, #0
 	beq _0804E536
-	bl sub_08050244
+	bl map_script_command_done
 _0804E536:
 	pop {r4}
 	pop {r0}

@@ -205,7 +205,7 @@ _0804F550:
 	beq _0804F564
 	bl update_bg_scroll_offsets_b
 _0804F564:
-	bl sub_08050244
+	bl map_script_command_done
 _0804F568:
 	pop {r4, r5}
 	pop {r0}
