@@ -557,7 +557,11 @@ void sub_0804E404(void)
         map_script_command_done();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E418);
+void sub_0804E418(void)
+{
+    if (sub_080507E0(gUnk_03006D20.unkA))
+        map_script_command_done();
+}
 
 void sub_0804E434(void)
 {
@@ -569,7 +573,23 @@ void sub_0804E440(void)
     sub_0804E44C();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E44C);
+void sub_0804E44C(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        spawn_battle_medapart_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
+        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 0);
+        s->unkC93++;
+        break;
+    case 1:
+        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 1))
+            map_script_command_done();
+        break;
+    }
+}
 
 void sub_0804E4D0(void)
 {
@@ -581,8 +601,28 @@ void sub_0804E4DC(void)
     sub_0804E4E8();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E4E8);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E540);
+void sub_0804E4E8(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[1], 0);
+        s->unkC93++;
+        break;
+    case 1:
+        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 1))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804E540(void)
+{
+    if (sub_080507E0(gUnk_03006D20.unkA))
+        map_script_command_done();
+}
 
 void sub_0804E55C(void)
 {

@@ -92,6 +92,8 @@ void sub_080507A0(u32 idx, u32 val);
 void sub_080507C0(u8 i, u8 val);
 void sub_08052BA0(u8 on);
 u32 sub_0804B6EC(void);
+u32 sub_080507E0(u8 slot);
+u32 update_battle_sprite_movement(u8 slot, u8 a);
 void sub_080482C0(void);
 void load_room_graphics(void);
 void load_battlefield_data_to_buffer(void);
