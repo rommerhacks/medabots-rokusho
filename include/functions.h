@@ -97,4 +97,11 @@ void sub_08072458(struct SoundTrack *track);
 void sub_080724A0(struct SoundTrack *track);
 void sub_080724E8(struct SoundTrack *track);
 
+void sub_08072984(struct SoundTrack *track, u8 val);
+void sub_080729A0(struct SoundTrack *track, u8 val);
+void sub_080729A8(struct SoundTrack *track, u32 val);
+void sound_dispatch_command(struct SoundTrack *track);
+void sound_channel_process_command_08072E04(struct SoundTrack *track);
+void sound_channel_process_event(struct SoundTrack *track);
+
 #endif // GUARD_FUNCTIONS_H

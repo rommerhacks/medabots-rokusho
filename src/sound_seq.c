@@ -331,8 +331,18 @@ void sub_080729EC(struct SoundTrack *track)
     track->unk6A = *track->unk14++;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_seq", sub_080729FC);
-INCLUDE_ASM("asm/nonmatching/sound_seq", sub_08072A18);
+void sub_080729FC(struct SoundTrack *track)
+{
+    track->unk6B = *track->unk14++;
+    if (track->unk6B > 0x30)
+        track->unk6B = 0x30;
+}
+
+void sub_08072A18(struct SoundTrack *track)
+{
+    track->unk6F = *track->unk14++;
+    track->unk50 |= 0x40;
+}
 
 void sub_08072A34(struct SoundTrack *track)
 {
@@ -345,7 +355,11 @@ void sub_08072A40(struct SoundTrack *track)
     track->unk18 = track->unk14;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_seq", sub_08072A54);
+void sub_08072A54(struct SoundTrack *track)
+{
+    if (--track->unk52 != 0)
+        track->unk14 = track->unk18;
+}
 
 void sub_08072A6C(struct SoundTrack *track)
 {
@@ -353,7 +367,11 @@ void sub_08072A6C(struct SoundTrack *track)
     track->unk1C = track->unk14;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_seq", sub_08072A80);
+void sub_08072A80(struct SoundTrack *track)
+{
+    if (--track->unk53 != 0)
+        track->unk14 = track->unk1C;
+}
 
 void stream_read_u32_to_field(struct SoundTrack *track)
 {
@@ -372,23 +390,76 @@ void sub_08072ABC(struct SoundTrack *obj)
     obj->unk14 = obj->unk20;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_seq", sub_08072AC4);
+void sub_08072AC4(struct SoundTrack *track)
+{
+    track->unk54 = *track->unk14++;
+    if (track->unk54 == 0)
+        track->unk54 = 8;
+    track->unk50 |= 8;
+}
 
 void sub_08072AEC(struct SoundTrack *track)
 {
     track->unk55 = *track->unk14++;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_seq", sub_08072AFC);
+void sub_08072AFC(struct SoundTrack *track)
+{
+    u8 val;
+
+    track->unk56 = *track->unk14++;
+    val = *track->unk14++;
+    track->unk58 = val >> 4;
+    track->unk57 = val & 0xF;
+}
 
 void sub_08072B28(struct SoundTrack *track)
 {
     track->unk6E = *track->unk14++;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_seq", sound_read_envelope_params);
-INCLUDE_ASM("asm/nonmatching/sound_seq", sound_channel_enable);
-INCLUDE_ASM("asm/nonmatching/sound_seq", sound_channel_disable);
+void sound_read_envelope_params(struct SoundTrack *track)
+{
+    track->unk5B = *track->unk14++;
+    track->unk5C = *track->unk14++;
+    track->unk5D = *track->unk14++;
+    track->unk5E = *track->unk14++;
+    track->unk62 = 1;
+    switch (track->unk64)
+    {
+    case 0:
+    case 1:
+    case 2:
+        sound_channel_handle_end(track);
+        break;
+    }
+}
+
+void sound_channel_enable(struct SoundTrack *track)
+{
+    track->unk62 = 1;
+    switch (track->unk64)
+    {
+    case 0:
+    case 1:
+    case 2:
+        sound_channel_handle_end(track);
+        break;
+    }
+}
+
+void sound_channel_disable(struct SoundTrack *track)
+{
+    track->unk62 = 0;
+    switch (track->unk64)
+    {
+    case 0:
+    case 1:
+    case 2:
+        sound_channel_handle_end(track);
+        break;
+    }
+}
 
 void sub_08072BD4(struct SoundTrack *track)
 {
@@ -402,8 +473,29 @@ void sub_08072BE4(struct SoundTrack *track)
 
 INCLUDE_ASM("asm/nonmatching/sound_seq", sound_channel_process_event);
 INCLUDE_ASM("asm/nonmatching/sound_seq", sound_channel_process_command_08072E04);
-INCLUDE_ASM("asm/nonmatching/sound_seq", sub_08072E7C);
-INCLUDE_ASM("asm/nonmatching/sound_seq", sub_08072E98);
+
+void sub_08072E7C(struct SoundTrack *track)
+{
+    sub_08072658(track);
+    sound_dispatch_command(track);
+    sound_channel_update_pitch_sweep(track);
+}
+
+void sub_08072E98(struct SoundTrack *track)
+{
+    if (track->unk24 != NULL)
+    {
+        if (track->unk30 != 0)
+            track->unk30--;
+        while (track->unk30 == 0)
+        {
+            sound_channel_process_command_08072E04(track);
+            if (track->unk24 == NULL)
+                break;
+        }
+    }
+    sound_channel_update_pitch_sweep(track);
+}
 
 void sub_08072ECC(struct SoundTrack *track)
 {
@@ -411,5 +503,21 @@ void sub_08072ECC(struct SoundTrack *track)
     sound_channel_update_pitch_sweep(track);
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_seq", sound_channel_advance_sequence);
+void sound_channel_advance_sequence(struct SoundTrack *track)
+{
+    if (track->unk14 != NULL)
+    {
+        track->unk6E = 0;
+        if (track->unk28 != 0)
+            track->unk28--;
+        while (track->unk28 == 0)
+        {
+            sound_channel_process_event(track);
+            if (track->unk14 == NULL)
+                break;
+        }
+        track->unk10(track);
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_seq", sound_engine_update_all_channels);
