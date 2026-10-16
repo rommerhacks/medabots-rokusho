@@ -314,7 +314,12 @@ struct Unk_03001800
 struct Unk_03000BE0
 {
     u8 unk0;
-    u8 filler1[0x3F];
+    u8 unk1; // Medal graphic index (0x80-byte tiles at 0x084C21BC)
+    u8 filler2[0x3];
+    u8 unk5; // level (guess: shown as a number by fill_tilemap_pair_or_divide)
+    u8 filler6[0x4];
+    u8 unkA[0x36]; // name text
+
 };
 
 struct Unk_030017A0

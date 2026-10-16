@@ -114,6 +114,8 @@ void setup_scene_bg_layers_and_sprites(void *oam, struct Unk_08047414 *obj, u32 
 void battle_sprite_set_palette_index(u32 sprite, u32 pal);
 void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c);
 u32 validate_medapart_stats(u8 medal, u8 head, u8 rarm, u8 larm, u8 legs);
+void modify_medapart_quantity(u32 part, u32 kind, u32 amount, u32 add, u32 e);
+void fill_tilemap_pair_or_divide(u8 value, u32 x, u32 y, u32 bgcnt, u16 entry);
 void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags);
 void sub_08043CA8(void);
 void update_scroll_movement_a(void);
@@ -452,6 +454,7 @@ void clear_sprite_table_mask(u8 first, u8 count);
 void fill_text_blank(u8 *buf, u8 n);
 void fill_tilemap_rect_08042698(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 entry);
 void memcpy_bytes_0803F63C(const void *src, void *dst, u32 n);
+void memswap(void *a, void *b, u32 n);
 void render_text_sprites_08040DB8(u8 *digits, u8 a, u32 b, u32 c, u8 d, u8 e, u8 f, u16 g);
 void process_sprite_anim_commands(const void *cmds, u8 slot);
 void sub_08044094(void);

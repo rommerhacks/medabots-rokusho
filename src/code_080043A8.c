@@ -794,7 +794,38 @@ void update_battle_icon_blink_and_orbit(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080058A4);
+u32 sub_080058A4(void)
+{
+    if (gUnk_03000440.unk50 == 0 && (KEYS_LO(gNewKeys) & 4))
+    {
+        play_sound_effect(2);
+        if (gUnk_03000440.unk52 & 0x80)
+        {
+            gUnk_03000440.unk52 &= 0x7F;
+            if (gUnk_03000440.unk52 != gUnk_03000440.unk51)
+            {
+                memswap(&gUnk_030017A0[gUnk_03000440.unk52], &gUnk_030017A0[gUnk_03000440.unk51], 8);
+                sub_08004FD0();
+                sub_08005000();
+                sub_0800508C();
+                sub_08005118();
+                sub_0800519C();
+                sub_0800522C();
+                sub_080053C8();
+                sub_08005948();
+            }
+            gUnk_03000440.unk52 = 0;
+        }
+        else
+        {
+            gUnk_03000440.unk52 = gUnk_03000440.unk51 + 0x80;
+            sub_08005628();
+        }
+        update_battle_icon_blink_and_orbit();
+        return 1;
+    }
+    return 0;
+}
 
 void sub_08005948(void)
 {
@@ -808,11 +839,73 @@ void check_and_update_battle_sprite_orbit(void)
         update_battle_sprite_orbiting_positions(gUnk_03000440.unk51 * 4 + 10, gUnk_03000440.unk51, 0);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080059D0);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08005AD0);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08005B44);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08005BB4);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08005C10);
+void sub_080059D0(void)
+{
+    if (gUnk_030017A0[gUnk_03000440.unk51].unk2 == 0x1E)
+        gUnk_03000440.unk97 = 0x1E;
+    else
+        gUnk_03000440.unk97 = find_medal_slot_by_id(gUnk_030017A0[gUnk_03000440.unk51].unk2) - 1;
+    gUnk_03000440.unk98 = gUnk_030017A0[gUnk_03000440.unk51].unk3;
+    gUnk_03000440.unk99 = gUnk_030017A0[gUnk_03000440.unk51].unk4;
+    gUnk_03000440.unk9A = gUnk_030017A0[gUnk_03000440.unk51].unk5;
+    gUnk_03000440.unk9B = gUnk_030017A0[gUnk_03000440.unk51].unk6;
+    if (gUnk_03000440.unk97 != 0x1E)
+        gUnk_03000BE0[gUnk_03000440.unk97].unk0 &= 0xBF;
+    gUnk_030017A0[gUnk_03000440.unk51].unk0 = 1;
+    if (gUnk_03000440.unk98 <= 0x77)
+        modify_medapart_quantity(gUnk_03000440.unk98, 0, 1, 1, 1);
+    if (gUnk_03000440.unk99 <= 0x77)
+        modify_medapart_quantity(gUnk_03000440.unk99, 1, 1, 1, 1);
+    if (gUnk_03000440.unk9A <= 0x77)
+        modify_medapart_quantity(gUnk_03000440.unk9A, 2, 1, 1, 1);
+    if (gUnk_03000440.unk9B <= 0x77)
+        modify_medapart_quantity(gUnk_03000440.unk9B, 3, 1, 1, 1);
+}
+
+void sub_08005AD0(void)
+{
+    clear_sprite_table_mask(10, 10);
+    if (gUnk_03000440.unk97 < 30)
+        render_text_sprites_08040DB8(gUnk_03000BE0[gUnk_03000440.unk97].unkA, 10, 1, 13, 10, 15, 0, 2);
+    else
+    {
+        fill_text_blank(gUnk_03000440.unk9E, 10);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 10, 1, 13, 10, 15, 0, 2);
+    }
+}
+
+void sub_08005B44(void)
+{
+    if (gUnk_03000440.unk97 < 30)
+        CpuFastSet((const u8 *)0x084C21BC + gUnk_03000BE0[gUnk_03000440.unk97].unk1 * 0x80, (void *)0x06007800, 0x20);
+    else
+        CpuFastSet((const void *)0x084C30BC, (void *)0x06007800, 0x20);
+    fill_tilemap_rect_08042698(2, 2, 16, 9, REG_BG1CNT, 0x63C0);
+}
+
+void sub_08005BB4(void)
+{
+    if (gUnk_03000440.unk97 < 30)
+        fill_tilemap_pair_or_divide(gUnk_03000BE0[gUnk_03000440.unk97].unk5, 0x1A, 9, REG_BG1CNT, 0xD3A4);
+    else
+        fill_tilemap_pair_or_divide(0xFF, 0x1A, 9, REG_BG1CNT, 0xD3A4);
+}
+
+void sub_08005C10(void)
+{
+    clear_sprite_table_mask(0x14, 10);
+    if (gUnk_03000440.unk97 < 30)
+    {
+        memcpy_bytes_0803F63C((const void *)gUnk_083B6410[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk9E, 11);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x14, 0x12, 9, 7, 12, 1, 2);
+    }
+    else
+    {
+        fill_text_blank(gUnk_03000440.unk9E, 9);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x14, 0x12, 9, 7, 12, 1, 2);
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080043A8", render_script_text_window);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", render_medal_skill_row_0);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", render_medal_name_text);
