@@ -260,12 +260,15 @@ struct Unk_030057E0
     u8 unkC28;
     u8 fillerC29[0x1];
     u8 unkC2A;
-    u8 fillerC2B[0x3];
+    u8 fillerC2B[0x1];
+    u8 unkC2C;
+    u8 fillerC2D[0x1];
     u8 unkC2E;
     u8 unkC2F;
     u8 fillerC30[0x2];
     u8 unkC32;
-    u8 fillerC33[0x4];
+    u8 unkC33;
+    u8 fillerC34[0x3];
     u8 unkC37; // random seed
     u8 unkC38[0x10];
     u16 unkC48;

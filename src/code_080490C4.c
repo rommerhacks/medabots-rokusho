@@ -922,14 +922,92 @@ void nullsub_0804CD34(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CD38);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CD58);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CDB8);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CDF8);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CE44);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CEAC);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CEF4);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CF10);
+void sub_0804CD38(void)
+{
+    read_map_script_bytes(1);
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804CD58(void)
+{
+    gUnk_030057E0.unkC94[0] = read_map_script_byte();
+    gUnk_03002C30[48].unk21 = gUnk_030057E0.unkC94[0];
+    gUnk_03002C30[48].unk20 = gUnk_030057E0.unkC94[0];
+    sub_080493D4(48, sub_080502B4(48, gUnk_030057E0.unkC94[0] + gUnk_03002C30[48].unk2B * 4));
+    set_battle_state_byte_c83(gUnk_030057E0.unkC94[0]);
+}
+
+void sub_0804CDB8(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(1);
+    if (sub_08047F50() <= 2)
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
+}
+
+void sub_0804CDF8(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(2);
+    if (sub_08047F70(gUnk_030057E0.unkC94[0]) == 0)
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
+}
+
+void sub_0804CE44(void)
+{
+    read_map_script_bytes(1);
+    if (gUnk_030057E0.unkC94[0] & 0x80)
+    {
+        if ((gUnk_030057E0.unkC94[0] & 0xF) == 1)
+            gUnk_030057E0.unkC5D = (gUnk_030057E0.unkC5D & ~0x20) | 0x20;
+        else
+            gUnk_030057E0.unkC5D &= ~0x20;
+    }
+    else
+    {
+        gUnk_030057E0.unkC33 = gUnk_030057E0.unkC94[0] & 0xF;
+    }
+}
+
+void sub_0804CEAC(void)
+{
+    if ((gUnk_030057E0.unkC94[0] = read_map_script_byte()) == 1)
+        gUnk_030057E0.unkC5D = (gUnk_030057E0.unkC5D & ~0x01) | 0x01;
+    else
+        gUnk_030057E0.unkC5D &= ~0x01;
+}
+
+void sub_0804CEF4(void)
+{
+    gUnk_030057E0.unkC2C = read_map_script_byte();
+}
+
+void sub_0804CF10(void)
+{
+    u16 id;
+    struct MapObject *obj;
+    read_map_script_bytes(3);
+    switch (gUnk_030057E0.unkC94[0])
+    {
+    case 0:
+        if (sub_0804DBA4(gUnk_030057E0.unkC94[2]) != -1)
+            sub_0804D9AC(sub_0804DBA4(gUnk_030057E0.unkC94[2]) + 79);
+        break;
+    case 1:
+        id = (gUnk_030057E0.unkC94[1] << 8) | gUnk_030057E0.unkC94[2];
+        if (id != 0)
+        {
+            obj = battle_find_entity_by_id(id);
+            if (obj != NULL)
+                sub_0804D9AC(obj->unk4_0 + 49);
+        }
+        else
+        {
+            sub_0804D9AC(gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4].unk4_0 + 49);
+        }
+        break;
+    }
+}
 
 void sub_0804CFC0(void)
 {
@@ -941,7 +1019,14 @@ void sub_0804CFCC(void)
     sub_08044B58();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CFD8);
+void sub_0804CFD8(void)
+{
+    read_map_script_bytes(3);
+    init_sprite_affine_matrices_and_state(gUnk_030057E0.unkC94[0],
+        (gUnk_030057E0.unkC94[1] & 0x7F) * 16 + gUnk_030057E0.unkC48,
+        (gUnk_030057E0.unkC94[2] & 0x7F) * 16 + gUnk_030057E0.unkC4A, 0);
+    gUnk_030057E0.unkC89 = 1;
+}
 
 void sub_0804D038(void)
 {
@@ -952,6 +1037,26 @@ void nullsub_0804D044(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804D048);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804D094);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804D0B4);
+void sub_0804D048(void)
+{
+    read_map_script_bytes(2);
+    gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
+    gUnk_03002C30[gUnk_03006D20.unkA].unk26 = 0;
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804D094(void)
+{
+    read_map_script_bytes(2);
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804D0B4(void)
+{
+    struct MapObject *obj;
+    read_map_script_bytes(2);
+    obj = &gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4];
+    if ((obj->unk2 & 0xFFF) == ((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]))
+        set_tile_data(obj->x, obj->y, 0);
+}
+
