@@ -83,13 +83,27 @@ INCLUDE_ASM("asm/nonmatching/code_08044F54", format_number_to_text_buffer);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_string_to_text_buffer);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D24);
 
-u32 sub_08047D4C(void)
+u32 get_money(void)
 {
-    return gUnk_03002B70;
+    return gMoney;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D58);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D74);
+void add_money(u32 n)
+{
+    gMoney += n;
+    if (gMoney > 99999)
+        gMoney = 99999;
+}
+
+void sub_money(u32 n)
+{
+    s32 left = gMoney - n;
+
+    if (left < 0)
+        gMoney = 0;
+    else
+        gMoney = left;
+}
 
 u32 sub_08047D8C(u8 id)
 {

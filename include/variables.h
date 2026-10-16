@@ -13,7 +13,7 @@ extern u32 gFrameCounter;
 extern u32 gGameMode;
 extern struct Unk_030017A0 gUnk_030017A0[];
 extern struct Unk_03001800 gUnk_03001800;
-extern u32 gUnk_03002B70;
+extern u32 gMoney; // money, capped at 99999 (add_money)
 extern u32 gGameState;
 extern u32 gGameSubState;
 extern struct Unk_03002C30 gUnk_03002C30[];

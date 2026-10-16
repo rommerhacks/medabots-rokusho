@@ -849,6 +849,7 @@ void nullsub_0804E8D8(void)
 {
 }
 
+// guess: opcode 0x36, give arg1 of item arg0 (capped at 99) and show the text.
 void sub_0804E8DC(void)
 {
     struct Unk_030057E0 *s = &gUnk_030057E0;
@@ -888,6 +889,7 @@ void sub_0804E8DC(void)
     }
 }
 
+// guess: opcode 0x37, take arg1 of item arg0 and show the text.
 void sub_0804E9CC(void)
 {
     struct Unk_030057E0 *s = &gUnk_030057E0;
@@ -935,7 +937,8 @@ void sub_0804E9CC(void)
     }
 }
 
-void sub_0804EAC0(void)
+// Opcode 0x38: give arg2 of Medapart (arg0, arg1), capped at 99 (medapart_add_quantity), then show the text.
+void map_script_update_give_medapart(void)
 {
     struct Unk_030057E0 *s = &gUnk_030057E0;
     s32 have;
@@ -974,6 +977,7 @@ void sub_0804EAC0(void)
     }
 }
 
+// guess: opcode 0x39, take arg2 of Medapart (arg0, arg1) and show the text.
 void sub_0804EBEC(void)
 {
     struct Unk_030057E0 *s = &gUnk_030057E0;
@@ -1021,7 +1025,8 @@ void sub_0804EBEC(void)
     }
 }
 
-void sub_0804ED3C(void)
+// Opcode 0x3A: add the 16-bit argument * 10 to gMoney and show the "got money" text (runtime: +5000 in the intro).
+void map_script_update_give_money(void)
 {
     struct Unk_030057E0 *s = &gUnk_030057E0;
     u32 n;
@@ -1032,7 +1037,7 @@ void sub_0804ED3C(void)
         init_cursor_state();
         n = ((s->unkC94[0] << 8) | s->unkC94[1]) * 10;
         sub_08047BA8(7);
-        sub_08047D58(n);
+        add_money(n);
         sub_08047D24(0, n);
         s->unkC93 = 1;
         break;
@@ -1043,7 +1048,8 @@ void sub_0804ED3C(void)
     }
 }
 
-void sub_0804EDB4(void)
+// Opcode 0x3B: subtract the 16-bit argument * 10 from gMoney, at most what is left (runtime: -4980 buying Rokusho).
+void map_script_update_take_money(void)
 {
     struct Unk_030057E0 *s = &gUnk_030057E0;
     s32 n;
@@ -1055,11 +1061,11 @@ void sub_0804EDB4(void)
         init_cursor_state();
         n = ((s->unkC94[0] << 8) | s->unkC94[1]) * 10;
         sub_08047BA8(5);
-        money = sub_08047D4C();
+        money = get_money();
         if (money - n <= 0)
             n = money;
         sub_08047BA8(5);
-        sub_08047D74(n);
+        sub_money(n);
         sub_08047D24(0, n);
         s->unkC93 = 1;
         break;
@@ -1070,7 +1076,8 @@ void sub_0804EDB4(void)
     }
 }
 
-void sub_0804EE40(void)
+// Opcode 0x3C: give medal arg0 unless already owned (find_medal_slot_by_id), then run scene 1.
+void map_script_update_give_medal(void)
 {
     struct Unk_030057E0 *s = &gUnk_030057E0;
 
@@ -1106,6 +1113,7 @@ void sub_0804EE40(void)
     }
 }
 
+// guess: opcode 0x3D, add position entry arg0 unless all slots are occupied (runs in walkthrough 01).
 void sub_0804EF10(void)
 {
     struct Unk_030057E0 *s = &gUnk_030057E0;
@@ -1134,6 +1142,7 @@ void sub_0804EF10(void)
     }
 }
 
+// guess: opcode 0x40, flash the screen white arg0 times.
 void sub_0804EFB0(void)
 {
     struct Unk_030057E0 *s = &gUnk_030057E0;
@@ -1203,6 +1212,7 @@ void sub_0804F0C4(void)
     }
 }
 
+// guess: scripted player step in dir (field_player_step without the input checks); returns 1 when the step ends.
 u32 sub_0804F13C(u8 dir)
 {
     u32 ret;
@@ -1295,6 +1305,7 @@ void nullsub_0804F58C(void)
 {
 }
 
+// guess: opcode 0x56, reload the map (clears tile buffers, recopies the collision map, reloads NPC sprites).
 void sub_0804F590(void)
 {
     populate_battle_entity_tile_positions();
@@ -1548,6 +1559,7 @@ void sub_0804FA50(void)
     }
 }
 
+// guess: opcode 0x73, run scene 8 until it ends (coverage: runs in the shop scenario).
 void sub_0804FA90(void)
 {
     struct Unk_030057E0 *s = &gUnk_030057E0;
@@ -1656,6 +1668,7 @@ void sub_0804FC20(void)
     sub_0804E5A4(0, 0);
 }
 
+// guess: opcode 0x7F, end the follower: copy sprite 48 and its shadow back to map object arg0.
 void sub_0804FC30(void)
 {
     gUnk_03002C30[48].unkC_8 = gUnk_030057E0.unkC6E;
@@ -1726,6 +1739,7 @@ u8 compute_battle_sprite_anim_offset(u8 id, u8 a)
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", spawn_battle_medapart_sprite);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", init_battle_medapart_sprite);
 
+// guess: remove the sprite of map object (arg & 0xF); if arg & 0xF0, play the exit sound when it stands on an exit.
 void sub_08050508(u8 arg)
 {
     u32 id = arg & 0xF;
@@ -1788,6 +1802,7 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050868);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080508CC);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080509A0);
 
+// Clears gNewKeys, gRepeatKeys and gHeldKeys (called every frame by sub_0804E0E8 during scripted scenes).
 void sub_08050B50(void)
 {
     sub_080496C8((u8 *)&gNewKeys, 4);

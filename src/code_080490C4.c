@@ -843,12 +843,12 @@ void sub_0804CA9C(void)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
 }
 
-// guess: opcode 0x4E, skip ahead by arg2 if money (gUnk_03002B70) < 16-bit arg * 10
+// guess: opcode 0x4E, skip ahead by arg2 if money (gMoney) < 16-bit arg * 10
 void sub_0804CAE8(void)
 {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
     read_map_script_bytes(3);
-    if ((s32)sub_08047D4C() < ((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]) * 10)
+    if ((s32)get_money() < ((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]) * 10)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
 }
 

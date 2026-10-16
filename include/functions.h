@@ -46,7 +46,7 @@ void sub_08047878(u32 a, u32 b);
 void sub_08047BA8(u32 id);
 void sub_08047BC0(u32 a);
 void init_cursor_state(void);
-u32 sub_08047D4C(void); // returns gUnk_03002B70 (money)
+u32 get_money(void);
 u32 sub_08047D8C(u8 id);
 u32 sub_08047D9C(u8 a, u8 b);
 u32 sub_08047DB0(u8 id);
@@ -296,8 +296,8 @@ void init_bg0_for_cursor(u32 mode);
 u32 sub_08047FEC(void);
 void sub_08050C74(void);
 void sub_08047D24(u32 a, u32 n);
-void sub_08047D58(u32 n);
-void sub_08047D74(u32 n);
+void add_money(u32 n);
+void sub_money(u32 n);
 void sub_080500D8(u8 slot, u8 a, u8 b);
 u32 sub_0804F13C(u8 a);
 void sub_080492CC(void);
@@ -320,5 +320,6 @@ u32 sub_08047BEC(u32 a, u32 b);
 void sub_08047DF0(u8 a, u8 b, u8 n);
 void sub_08047E08(u8 a, u8 b, u8 n);
 u32 battle_scene_state_dispatch(void);
+void update_bg_scroll_offsets_b(void);
 
 #endif // GUARD_FUNCTIONS_H

@@ -337,7 +337,11 @@ struct Unk_03005310
     u8 unk1;
     u8 filler2[0x2];
     u32 unk4; // frame counter
-    u8 filler8[0x30];
+    u8 filler8[0x16];
+    u16 unk1E;
+    u8 filler20[0x6];
+    u16 unk26;
+    u8 filler28[0x10];
     u8 unk38;
     u8 unk39;
 };
