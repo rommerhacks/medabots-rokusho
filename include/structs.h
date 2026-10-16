@@ -21,10 +21,10 @@ struct SoundTrack
     u32 unk30;
     s32 unk34;
     s32 unk38;
-    u32 unk3C;
-    u16 unk40;
-    u16 unk42;
-    s16 unk44;
+    u32 unk3C; // fade: frames left
+    u16 unk40; // fade: current volume scale (0x1000 = full)
+    u16 unk42; // fade: target volume scale
+    s16 unk44; // fade: step per frame
     u16 unk46;
     u16 unk48;
     u16 unk4A;

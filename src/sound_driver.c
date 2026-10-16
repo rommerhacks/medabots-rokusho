@@ -344,8 +344,20 @@ void sub_08073EAC(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_tick);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_tick_both_channels);
+void sound_tick_both_channels(void)
+{
+    void sound_channel_tick(u32 i)
+    {
+        struct SoundMixChannel *ch = &gUnk_03007014->unk690 + i;
+
+        if (ch->unk0 && !(ch->unkC & 1))
+            ch->unk38++;
+        sound_channel_state_dispatch(ch);
+    }
+
+    sound_channel_tick(0);
+    sound_channel_tick(1);
+}
 
 void sound_update_channel_at_690(void)
 {
@@ -760,8 +772,24 @@ void play_song_alt(u32 id, u32 arg)
     sound_unlock();
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074A94);
-INCLUDE_ASM("asm/nonmatching/sound_driver", set_all_sound_channels_flag_0x40);
+void set_all_sound_channels_flag_0x40(u32 val)
+{
+    struct Unk_03007014 *work = gUnk_03007014;
+
+    void sub_08074A94(struct SoundTrack *track)
+    {
+        track->unk70 = val;
+        track->unk50 |= 0x40;
+    }
+
+    sub_08074A94(&work->tracks[0]);
+    sub_08074A94(&work->tracks[1]);
+    sub_08074A94(&work->tracks[2]);
+    sub_08074A94(&work->tracks[3]);
+    sub_08074A94(&work->tracks[8]);
+    sub_08074A94(&work->tracks[9]);
+    sub_08074A94(&work->tracks[12]);
+}
 
 void sound_update_with_lock(u32 a)
 {
@@ -793,8 +821,26 @@ void play_sound_effect_alt(u32 id, u32 arg)
     sound_unlock();
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074CEC);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_reset_channel_callbacks);
+void sound_reset_channel_callbacks(u32 id, u32 val)
+{
+    struct Unk_03007014 *work = gUnk_03007014;
+
+    void sub_08074CEC(struct SoundTrack *track)
+    {
+        if (track->unk4E == id && track->unk14)
+        {
+            track->unk70 = val;
+            track->unk50 |= 0x40;
+        }
+    }
+
+    sub_08074CEC(&work->tracks[4]);
+    sub_08074CEC(&work->tracks[5]);
+    sub_08074CEC(&work->tracks[6]);
+    sub_08074CEC(&work->tracks[7]);
+    sub_08074CEC(&work->tracks[10]);
+    sub_08074CEC(&work->tracks[11]);
+}
 
 void sound_reset_callbacks_with_lock(u32 a, u32 b)
 {
@@ -832,7 +878,7 @@ void sub_08074E70(struct SoundNoteTable *val)
     gUnk_03007014->unk728 = val;
 }
 
-void sub_08074E84(struct SoundTrack *track, u32 target, u32 frames)
+void sound_track_start_fade(struct SoundTrack *track, u32 target, u32 frames)
 {
     s32 step = (s32)(target - track->unk40) / (s32)frames;
 
@@ -847,17 +893,30 @@ void sub_08074E84(struct SoundTrack *track, u32 target, u32 frames)
 void sound_play_with_lock(struct SoundTrack *track, u32 target, u32 frames)
 {
     sound_lock();
-    sub_08074E84(track, target, frames);
+    sound_track_start_fade(track, target, frames);
     sound_unlock();
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074EF4);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074F34);
+void sound_fade_out_music(u32 frames)
+{
+    void sound_fade_out_track(u32 idx)
+    {
+        if (gUnk_03007014->tracks[idx].unk14)
+            sound_play_with_lock(&gUnk_03007014->tracks[idx], 0, frames);
+    }
+
+    sound_fade_out_track(0);
+    sound_fade_out_track(1);
+    sound_fade_out_track(2);
+    sound_fade_out_track(3);
+    sound_fade_out_track(8);
+    sound_fade_out_track(9);
+}
 
 void sound_stop_all_with_fade_guard(u32 a)
 {
     sound_lock();
-    sub_08074F34(a);
+    sound_fade_out_music(a);
     sound_unlock();
 }
 
