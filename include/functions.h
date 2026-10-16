@@ -183,6 +183,8 @@ void sound_set_paused(u32 pause);
 void init_sound_channel(struct SoundTrack *track, u8 *seq);
 void clear_sound_channel_wave_data(struct SoundTrack *track);
 void sound_track_link(struct SoundTrack *track);
+void sub_08073EAC(struct SoundMixChannel *ch);
+void sound_engine_update_all_channels(void);
 void sound_play_with_lock(struct SoundTrack *track, u32 target, u32 frames);
 void sound_update_master_volume(void);
 void sound_channel_advance_sequence(struct SoundTrack *track);

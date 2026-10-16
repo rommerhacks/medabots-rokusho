@@ -43,6 +43,7 @@ gUnk_083ABAB2       = 0x083ABAB2;
 gUnk_083ABAC2       = 0x083ABAC2;
 gSoundFifoAddrs     = 0x084873B8;
 gSoundFifoDmaCnt    = 0x084873C8;
+gSoundTrackConfigs  = 0x083ABBE0;
 gSoundSemitoneRatios = 0x083ABAC6;
 gSoundFinetuneRatios = 0x083ABADE;
 gSoundEffectTracks  = 0x083ABC7C;

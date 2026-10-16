@@ -1,5 +1,8 @@
 #include "global.h"
 
+// Sample played by a Direct Sound channel.
+#define SAMPLE(ch) ((struct SoundSampleHeader *)(ch)->unk0)
+
 // Nesting counter at gUnk_03007014->unk730 around updates of the sound work area.
 static inline void sound_lock(void)
 {
@@ -13,7 +16,15 @@ static inline void sound_unlock(void)
         gUnk_03007014->unk730--;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_engine_tick);
+void sound_engine_tick(void)
+{
+    if (gUnk_03007014->unk730 == 0)
+    {
+        sound_lock();
+        sound_engine_update_all_channels();
+        sound_unlock();
+    }
+}
 
 u16 sub_08073140(u32 idx)
 {
@@ -340,7 +351,7 @@ void sound_channel_state_dispatch(struct SoundMixChannel *ch)
     *state = 0;
 }
 
-void sub_08073EAC(void)
+void sub_08073EAC(struct SoundMixChannel *ch)
 {
 }
 
@@ -373,7 +384,50 @@ void sound_update_channel_at_6d8(void)
     sound_unlock();
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_update);
+void sound_channel_update(struct SoundMixChannel *ch)
+{
+    if (ch->unk0 == 0)
+    {
+        ch->unk44++;
+        return;
+    }
+    if (ch->unkC & 1)
+        return;
+    sub_08073EAC(ch);
+    ch->unk8 += 0x10;
+    if (ch->unk38)
+    {
+        ch->unk36 += ch->unk38;
+        ch->unk38 = 0;
+    }
+    if (SAMPLE(ch)->unk0 <= ch->unk8)
+    {
+        if (!(SAMPLE(ch)->unk8 & 1))
+            goto restart;
+        sound_stop_fifo_dma(ch->unk3A);
+        ch->unk8 = SAMPLE(ch)->unkC;
+        sound_start_fifo_dma(ch->unk3A, (u32)&SAMPLE(ch)->data[SAMPLE(ch)->unkC]);
+    }
+    if (ch->unk34 <= ch->unk36)
+    {
+    restart:
+        sound_restart_channel(ch);
+        return;
+    }
+    if (ch->unkC & 2)
+    {
+        u32 reload = (0x10000 - 0x1000000 / (ch->unk4 + ch->unk14)) | 0x800000;
+
+        ch->unk10 = reload;
+        *gSoundTimerRegs[ch->unk3A - 1] = reload;
+        ch->unkC &= ~2;
+    }
+    if (ch->unkC & 4)
+    {
+        sound_configure_mixing_channel(ch);
+        ch->unkC &= ~4;
+    }
+}
 
 void clear_sound_channel_wave_data(struct SoundTrack *track)
 {

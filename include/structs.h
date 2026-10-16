@@ -106,7 +106,8 @@ struct SoundMixChannel
     u8 unk3E; // state
     u8 unk3F;
     u8 unk40;
-    u8 filler41[0x7];
+    u8 filler41[0x3];
+    u32 unk44; // counts frames while no sample is set
 };
 
 struct Unk_03006D20
@@ -186,6 +187,16 @@ struct SoundNoteTable
     u8 *entries[1]; // count entries
 };
 
+// Per-track configuration (gSoundTrackConfigs, one per SoundTrack).
+struct SoundTrackConfig
+{
+    u32 unk0; // -> SoundTrack.unkC
+    void (*unk4)(struct SoundTrack *track); // -> SoundTrack.unk10
+    u8 unk8; // -> SoundTrack.unk64
+    u8 unk9; // ring buffer index (work+0x5EC), 0xFF = none
+    u8 fillerA[2];
+};
+
 // Song / sound effect header (tables at gUnk_03007014->unk688 / unk68C).
 struct SoundSongHeader
 {
@@ -200,7 +211,8 @@ struct Unk_03007014
 {
     struct SoundTrack tracks[13];
     struct SoundTrack *unk5E4;
-    u8 filler5E8[0xA0];
+    u32 unk5E8;
+    u8 unk5EC[3][0x34]; // SoundTrack.unk8 ring buffers (0x30 bytes + write index)
     struct SoundSongHeader **unk688; // songs
     struct SoundSongHeader **unk68C; // sound effects
     struct SoundMixChannel unk690;
