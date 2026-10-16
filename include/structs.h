@@ -255,7 +255,7 @@ struct Unk_030057E0
     u8 filler804[0xC];
     u8 unk810[0x400]; // tile map
     u8 unkC10[0x8]; // tile value -> result of check_tile_and_trigger_battle_action
-    u8 fillerC18[0x8];
+    u8 unkC18[0x8]; // saved copy of unkC10
     u8 unkC20[0x8];
     u8 unkC28;
     u8 fillerC29[0x1];

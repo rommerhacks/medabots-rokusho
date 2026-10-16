@@ -1,6 +1,33 @@
 #include "global.h"
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D10C);
+void sub_0804D10C(void)
+{
+    read_map_script_bytes(2);
+    if (gUnk_030057E0.unkC94[0] == gUnk_030057E0.unkC5B)
+    {
+        gUnk_030057E0.unkC5B = gUnk_030057E0.unkC94[0] ^ 1;
+        sub_08052BA0(gUnk_030057E0.unkC5B);
+        if (gUnk_030057E0.unkC94[1] == 0)
+        {
+            if (gUnk_030057E0.unkC5B)
+            {
+                memcpy_u8(gUnk_030057E0.unkC18, gUnk_030057E0.unkC10, 8);
+            }
+            else
+            {
+                memcpy_u8(gUnk_030057E0.unkC10, gUnk_030057E0.unkC18, 8);
+                gUnk_030057E0.unkC10[0] = 0;
+                gUnk_030057E0.unkC10[1] = 0;
+                gUnk_030057E0.unkC10[2] = 0;
+                gUnk_030057E0.unkC10[3] = 0;
+                gUnk_030057E0.unkC10[4] = 0;
+                gUnk_030057E0.unkC10[5] = 0;
+                gUnk_030057E0.unkC10[6] = 0;
+                gUnk_030057E0.unkC10[7] = 0;
+            }
+        }
+    }
+}
 
 void nullsub_0804D1B8(void)
 {
@@ -34,7 +61,12 @@ void sub_0804D25C(void)
     gUnk_030057E0.unkC89 = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D2A8);
+void sub_0804D2A8(void)
+{
+    read_map_script_bytes(2);
+    gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
+    gUnk_030057E0.unkC89 = 1;
+}
 
 // Not called directly (hidden in the tail of sub_0804D2A8).
 void sub_0804D2E0(void)
@@ -164,7 +196,59 @@ void sub_0804D590(void)
     gUnk_030057E0.unkC89 = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D5A4);
+void sub_0804D5A4(void)
+{
+    u8 slot;
+
+    read_map_script_bytes(2);
+    if (gUnk_030057E0.unkC94[0] & 0x10)
+    {
+        if (gUnk_030057E0.unkC94[0] & 0x40)
+        {
+            if (gUnk_030057E0.unkC94[1] == 0)
+                sub_0804877C(47);
+            else
+                sub_08050770(47, gUnk_030057E0.unkC94[1]);
+        }
+        else if (gUnk_030057E0.unkC94[0] & 0x20)
+        {
+            if ((gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4].unk2 & 0xFFF) == gUnk_030057E0.unkC8E)
+            {
+                slot = gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4].unk4_0 + 49;
+                if (gUnk_030057E0.unkC94[1] == 0)
+                    sub_0804877C(slot);
+                else
+                    sub_08050770(slot, gUnk_030057E0.unkC94[1]);
+            }
+        }
+        else
+        {
+            if (gUnk_030057E0.unkC94[1] == 0)
+                sub_0804877C(sub_0804DBA4(gUnk_030057E0.unkC94[0] & 0xF) + 79);
+            else
+                sub_08050780(gUnk_030057E0.unkC94[0] & 0xF, gUnk_030057E0.unkC94[1]);
+        }
+    }
+    else
+    {
+        if (gUnk_030057E0.unkC94[0] & 0x40)
+        {
+            sub_080507A0(47, gUnk_030057E0.unkC94[1]);
+        }
+        else if (gUnk_030057E0.unkC94[0] & 0x20)
+        {
+            if ((gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4].unk2 & 0xFFF) == gUnk_030057E0.unkC8E)
+            {
+                slot = gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4].unk4_0 + 49;
+                sub_080507A0(slot, gUnk_030057E0.unkC94[1]);
+            }
+        }
+        else
+        {
+            sub_080507C0(gUnk_030057E0.unkC94[0] & 0xF, gUnk_030057E0.unkC94[1]);
+        }
+    }
+}
 
 void sub_0804D70C(void)
 {
@@ -594,9 +678,23 @@ void sub_08050770(u32 idx, u8 val)
     gUnk_03002C30[idx].unkB = val;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050780);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080507A0);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080507C0);
+void sub_08050780(u8 i, u32 val)
+{
+    gUnk_03002C30[sub_0804DBA4(i) + 79].unkB = val;
+}
+
+void sub_080507A0(u32 idx, u32 val)
+{
+    u32 v = (gUnk_03002C30[idx].unk32 & 0xF3FF) | (val << 10);
+    gUnk_03002C30[idx].unk0 = v;
+    gUnk_03002C30[idx].unk32 = v;
+}
+
+void sub_080507C0(u8 i, u8 val)
+{
+    sub_080507A0(sub_0804DBA4(i) + 79, val);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080507E0);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050868);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080508CC);
