@@ -54,6 +54,7 @@ gUnk_083F8B74       = 0x083F8B74;
 gUnk_0847E948       = 0x0847E948;
 gUnk_08413114       = 0x08413114;
 gTextTable       = 0x08414968;
+gUnk_0847E8C4    = 0x0847E8C4;
 gTextBankTables       = 0x0847E45C;
 gUnk_083D69A0       = 0x083D69A0;
 gUnk_083D2998       = 0x083D2998;

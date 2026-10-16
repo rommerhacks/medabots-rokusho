@@ -725,9 +725,79 @@ void nullsub_0804E798(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E79C);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E814);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E878);
+void sub_0804E79C(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+    u32 r;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        init_bg0_for_cursor(0);
+        s->unkC93++;
+        break;
+    case 1:
+        r = sub_08047FEC();
+        if (r)
+        {
+            if (r & 0xF0)
+                s->unkC8A = s->unkC8C + s->unkC94[0];
+            s->unkC93++;
+        }
+        break;
+    case 2:
+        if (game_state_execute_handler_a())
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804E814(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+    u32 r;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        init_bg0_for_cursor(1);
+        s->unkC93++;
+        break;
+    case 1:
+        r = sub_08047FEC();
+        if (r)
+        {
+            if (r & 0xF0)
+                s->unkC8A = s->unkC8C + s->unkC94[0];
+            map_script_command_done();
+        }
+        break;
+    }
+}
+
+void sub_0804E878(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        sub_08050C74();
+        s->unkC93++;
+        break;
+    case 1:
+        if (scene_state_dispatch(0x20, 0))
+        {
+            u32 v = s->unkC4F;
+            if (v == 1)
+                gUnk_03005310.unk39 = v;
+            else if (v == 2)
+                gUnk_03005310.unk39 = v;
+            map_script_command_done();
+        }
+        break;
+    }
+}
 
 void nullsub_0804E8D4(void)
 {
@@ -741,13 +811,100 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E8DC);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E9CC);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804EAC0);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804EBEC);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804ED3C);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804EDB4);
+
+void sub_0804ED3C(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+    u32 n;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        init_cursor_state();
+        n = ((s->unkC94[0] << 8) | s->unkC94[1]) * 10;
+        sub_08047BA8(7);
+        sub_08047D58(n);
+        sub_08047D24(0, n);
+        s->unkC93 = 1;
+        break;
+    case 1:
+        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[26]))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804EDB4(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+    s32 n;
+    s32 money;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        init_cursor_state();
+        n = ((s->unkC94[0] << 8) | s->unkC94[1]) * 10;
+        sub_08047BA8(5);
+        money = sub_08047D4C();
+        if (money - n <= 0)
+            n = money;
+        sub_08047BA8(5);
+        sub_08047D74(n);
+        sub_08047D24(0, n);
+        s->unkC93 = 1;
+        break;
+    case 1:
+        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[27]))
+            map_script_command_done();
+        break;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804EE40);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804EF10);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804EFB0);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F058);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F0C4);
+
+void sub_0804F058(void)
+{
+    s32 empty = 0;
+    s32 done = 0;
+    s32 i;
+
+    for (i = 0; i <= 3; i++)
+    {
+        if (sub_0804DBA4(i) != -1)
+        {
+            if (gUnk_030055A0[sub_0804DBA4(i) + 79].unk0 != 0)
+                done += sub_080507E0(sub_0804DBA4(i) + 79);
+            else
+                empty++;
+        }
+    }
+    if (empty == 4)
+        done = 1;
+    if (done)
+        map_script_command_done();
+}
+
+void sub_0804F0C4(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        s->unkC8A = 16 / sub_080518F4(47);
+        sub_080500D8(47, (s->unkC94[0] << 4) | s->unkC94[1], 0);
+        s->unkC93++;
+        break;
+    case 1:
+        if (sub_0804F13C(s->unkC94[0]))
+            map_script_command_done();
+        break;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F13C);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F3AC);
 
@@ -832,25 +989,245 @@ void nullsub_0804F814(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F818);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F89C);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F8F4);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F978);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F9D0);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FA10);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FA50);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FA90);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FAD0);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FB40);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FB90);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FBD0);
+void sub_0804F818(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        spawn_battle_medapart_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
+        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 1);
+        s->unkC93++;
+        break;
+    case 1:
+        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 1))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804F89C(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[1], 1);
+        s->unkC93++;
+        break;
+    case 1:
+        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 1))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804F8F4(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        spawn_battle_medapart_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
+        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 1);
+        s->unkC93++;
+        break;
+    case 1:
+        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 0))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804F978(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[1], 1);
+        s->unkC93++;
+        break;
+    case 1:
+        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 0))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804F9D0(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        sub_08050C74();
+        s->unkC93++;
+        break;
+    case 1:
+        if (scene_state_dispatch(0x13, 0))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804FA10(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        sub_08050C74();
+        s->unkC93++;
+        break;
+    case 1:
+        if (scene_state_dispatch(0, 0))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804FA50(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        sub_08050C74();
+        s->unkC93++;
+        break;
+    case 1:
+        if (scene_state_dispatch(2, 0))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804FA90(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        sub_08050C74();
+        s->unkC93++;
+        break;
+    case 1:
+        if (scene_state_dispatch(8, 0))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804FAD0(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        sub_08047878(4, 0);
+        s->unkC93++;
+        break;
+    case 1:
+        if (gUnk_03006D20.unkC == 7)
+            s->unkC93 = 2;
+        else
+            map_script_command_done();
+        break;
+    case 2:
+        sub_08050C74();
+        s->unkC93++;
+        break;
+    case 3:
+        if (scene_state_dispatch(5, 0))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804FB40(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        sub_08050C74();
+        s->unkC93++;
+        break;
+    case 1:
+        if (scene_state_dispatch(0x10, 0))
+        {
+            if (sub_0804B6EC())
+                gUnk_03005310.unk39 = 1;
+            map_script_command_done();
+        }
+        break;
+    }
+}
+
+void sub_0804FB90(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        sub_08050C74();
+        s->unkC93++;
+        break;
+    case 1:
+        if (scene_state_dispatch(0x12, 0))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804FBD0(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        sub_08050C74();
+        s->unkC93++;
+        break;
+    case 1:
+        if (scene_state_dispatch(0x11, 0))
+        {
+            if (sub_0804B6EC())
+                gUnk_03005310.unk39 = 1;
+            map_script_command_done();
+        }
+        break;
+    }
+}
 
 void sub_0804FC20(void)
 {
     sub_0804E5A4(0, 0);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FC30);
+void sub_0804FC30(void)
+{
+    gUnk_03002C30[48].unkC_8 = gUnk_030057E0.unkC6E;
+    gUnk_03002C30[48].unk10_8 = gUnk_030057E0.unkC70;
+    memcpy_u8(&gUnk_03002C30[48], &gUnk_03002C30[gUnk_030057E0.unkC94[0] + 79], 0x40);
+    gUnk_030055A0[gUnk_030057E0.unkC94[0] + 79].unk0 = 0xFFFF;
+    memcpy_u8(&gUnk_03002C30[90], &gUnk_03002C30[gUnk_030057E0.unkC94[0] + 121], 0x40);
+    map_script_command_done();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FCC4);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FE20);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FE50);

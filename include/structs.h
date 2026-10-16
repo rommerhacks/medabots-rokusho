@@ -120,7 +120,8 @@ struct Unk_03006D20
     s16 unk8;
     u8 unkA; // sprite slot (gUnk_03002C30 index)
     u8 unkB;
-    u8 fillerC[0x4];
+    u8 unkC;
+    u8 fillerD[0x3];
 };
 
 struct Unk_03000440
@@ -278,7 +279,9 @@ struct Unk_030057E0
     u8 unkC38[0x10];
     u16 unkC48;
     u16 unkC4A;
-    u8 fillerC4C[0x6];
+    u8 fillerC4C[0x3];
+    u8 unkC4F;
+    u8 fillerC50[0x2];
     u16 unkC52;
     u16 unkC54;
     u8 unkC56; // player tile x

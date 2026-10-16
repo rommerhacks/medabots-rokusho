@@ -291,4 +291,14 @@ void advance_sprite_animation_frame(u8 idx);
 u8 field_random(u8 n); // returns 0..n-1
 void memcpy_u8(const void *src, void *dst, u32 n);
 
+u32 scene_state_dispatch(u8 a, u8 b);
+void init_bg0_for_cursor(u32 mode);
+u32 sub_08047FEC(void);
+void sub_08050C74(void);
+void sub_08047D24(u32 a, u32 n);
+void sub_08047D58(u32 n);
+void sub_08047D74(u32 n);
+void sub_080500D8(u8 slot, u8 a, u8 b);
+u32 sub_0804F13C(u8 a);
+
 #endif // GUARD_FUNCTIONS_H
