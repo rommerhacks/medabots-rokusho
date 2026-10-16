@@ -143,6 +143,7 @@ gUnk_083AC420       = 0x083AC420;
 gUnk_083AC432       = 0x083AC432;
 gUnk_083AC43B       = 0x083AC43B;
 gUnk_083AC44D       = 0x083AC44D;
+gMedabotSlotDpadMoves = 0x083AC484;
 gUnk_083B4AE0       = 0x083B4AE0;
 gUnk_083B5F80       = 0x083B5F80;
 gUnk_084C1608       = 0x084C1608;

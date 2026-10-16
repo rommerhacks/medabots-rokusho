@@ -18,6 +18,8 @@ void sub_0800508C(void);
 void sub_08005118(void);
 void sub_0800519C(void);
 void sub_0800522C(void);
+void sub_080053C8(void);
+void update_battle_sprite_orbit_counterclockwise(u32 i);
 void sub_0800529C(void);
 void setup_overworld_scene_from_position(void);
 u32 sub_08005588(void);
