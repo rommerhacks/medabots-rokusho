@@ -154,7 +154,7 @@ struct Unk_03000440
     u8 filler54[0x2];
     u8 unk56; // game state 3: 0 = entered from the field (fades from the backup palette), 1 = from a submenu
     u8 filler57[0x3];
-    u8 unk5A;
+    u8 unk5A; // Medabot detail: row cursor, 0 Medal, 1-4 head / right arm / left arm / legs (runtime-checked)
     u8 filler5B;
     u16 unk5C; // timer
     u8 unk5E; // Medabot detail: which Medabot is shown, L/R toggle (runtime-checked)

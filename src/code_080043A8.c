@@ -12,8 +12,8 @@ void medabot_detail_fade_in(void)
 
     medabots_scroll_bg3();
     sub_08006764();
-    toggle_sprite_pair_visibility();
-    dispatch_game_substate_handler_08006824();
+    medabot_detail_blink_row_arrows();
+    medabot_detail_blink_row_icon();
     battle_update_medabot_display();
     sub_08006F14();
     st = &gUnk_03000440;
@@ -41,11 +41,11 @@ void medabot_detail_handle_input(void)
 
     medabots_scroll_bg3();
     sub_08006764();
-    toggle_sprite_pair_visibility();
-    dispatch_game_substate_handler_08006824();
+    medabot_detail_blink_row_arrows();
+    medabot_detail_blink_row_icon();
     battle_update_medabot_display();
     sub_08006F14();
-    if (sub_080068EC() || sub_08006980() || sub_08006A00() || sub_08006A98() || sub_08006B30() || sub_08006BC8()
+    if (medabot_detail_row_cursor_input() || medabot_detail_cycle_medal_input() || sub_08006A00() || sub_08006A98() || sub_08006B30() || sub_08006BC8()
         || sub_08006C64())
         return;
     if (KEYS_LO(gNewKeys) & 2)
@@ -80,8 +80,8 @@ void medabot_detail_exit_start(void)
 
     medabots_scroll_bg3();
     sub_08006764();
-    toggle_sprite_pair_visibility();
-    dispatch_game_substate_handler_08006824();
+    medabot_detail_blink_row_arrows();
+    medabot_detail_blink_row_icon();
     battle_update_medabot_display();
     sub_08006F14();
     st = &gUnk_03000440;
@@ -102,8 +102,8 @@ void medabot_detail_exit_fade(void)
 
     medabots_scroll_bg3();
     sub_08006764();
-    toggle_sprite_pair_visibility();
-    dispatch_game_substate_handler_08006824();
+    medabot_detail_blink_row_arrows();
+    medabot_detail_blink_row_icon();
     battle_update_medabot_display();
     sub_08006F14();
     if (gUnk_03000440.unk50 == 0)
@@ -133,8 +133,8 @@ void medabot_detail_open_info_start(void)
 {
     medabots_scroll_bg3();
     sub_08006764();
-    toggle_sprite_pair_visibility();
-    dispatch_game_substate_handler_08006824();
+    medabot_detail_blink_row_arrows();
+    medabot_detail_blink_row_icon();
     battle_update_medabot_display();
     sub_08006F14();
     set_blend_effect_mode(6, 0x3F, 0x20);
@@ -145,8 +145,8 @@ void medabot_detail_open_info_fade(void)
 {
     medabots_scroll_bg3();
     sub_08006764();
-    toggle_sprite_pair_visibility();
-    dispatch_game_substate_handler_08006824();
+    medabot_detail_blink_row_arrows();
+    medabot_detail_blink_row_icon();
     battle_update_medabot_display();
     sub_08006F14();
     if (update_blend_effect())
@@ -1072,8 +1072,9 @@ void medabot_detail_draw_legs_skill_icon(void)
     }
 }
 
-// guess: icon left of detail row 0-4 (Medal, head, arms, legs); a != 0 draws the alternate (highlighted?) tile.
-void sub_08006238(u32 a)
+// Icon left of detail row 0-4 (Medal, head, right arm, left arm, legs); medabot_detail_blink_row_icon
+// alternates a = 0 / 1 on the selected row every 8 frames.
+void medabot_detail_draw_row_icon_0(u32 a)
 {
     if (a == 0)
         fill_tilemap_rect_08042698(2, 2, 14, 9, REG_BG1CNT, 0xC370);
@@ -1081,7 +1082,7 @@ void sub_08006238(u32 a)
         fill_tilemap_rect_08042698(2, 2, 14, 9, REG_BG1CNT, 0xC384);
 }
 
-void sub_08006284(u32 a)
+void medabot_detail_draw_row_icon_1(u32 a)
 {
     if (a == 0)
         fill_tilemap_rect_08042698(2, 2, 14, 11, REG_BG1CNT, 0xC374);
@@ -1089,7 +1090,7 @@ void sub_08006284(u32 a)
         fill_tilemap_rect_08042698(2, 2, 14, 11, REG_BG1CNT, 0xC388);
 }
 
-void sub_080062D0(u32 a)
+void medabot_detail_draw_row_icon_2(u32 a)
 {
     if (a == 0)
         fill_tilemap_rect_08042698(2, 2, 14, 13, REG_BG1CNT, 0xC378);
@@ -1097,7 +1098,7 @@ void sub_080062D0(u32 a)
         fill_tilemap_rect_08042698(2, 2, 14, 13, REG_BG1CNT, 0xC388);
 }
 
-void sub_0800631C(u32 a)
+void medabot_detail_draw_row_icon_3(u32 a)
 {
     if (a == 0)
         fill_tilemap_rect_08042698(2, 2, 14, 15, REG_BG1CNT, 0xC37C);
@@ -1105,7 +1106,7 @@ void sub_0800631C(u32 a)
         fill_tilemap_rect_08042698(2, 2, 14, 15, REG_BG1CNT, 0xC388);
 }
 
-void sub_08006368(u32 a)
+void medabot_detail_draw_row_icon_4(u32 a)
 {
     if (a == 0)
         fill_tilemap_rect_08042698(2, 2, 14, 17, REG_BG1CNT, 0xC380);
@@ -1127,16 +1128,215 @@ void medabot_detail_draw_legs_type_icon(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080043A8", decompress_sprite_from_game_state);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", setup_battle_sprite_from_game_state);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", setup_battle_cursor_sprites);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", toggle_sprite_pair_visibility);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", init_scene_state);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", setup_scene_with_link_check);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006764);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", dispatch_game_substate_handler_08006824);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080068EC);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006980);
+void decompress_sprite_from_game_state(void)
+{
+    decompress_sprite_to_vram_08042D94(gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0);
+}
+
+void setup_battle_sprite_from_game_state(void)
+{
+    setup_battle_sprite_group(gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
+                              0, 6, 0xA8, 0x20, gUnk_03000440.unk5E, 1, 5);
+}
+
+void medabot_detail_place_row_arrows(void)
+{
+    gUnk_03002C30[1].unk0 = 0xC804;
+    gUnk_03002C30[1].unk2 = 0x6C;
+    gUnk_03002C30[1].unk4 = gUnk_03000440.unk5A * 16 + 0x50;
+    gUnk_03002C30[1].unk6 = 0x302;
+    gUnk_03002C30[1].unkA = 14;
+    gUnk_03002C30[1].unk1C = 0;
+    gUnk_03002C30[1].unkB = 0x40;
+    gUnk_03002C30[2].unk0 = 0xC804;
+    gUnk_03002C30[2].unk2 = 0xE4;
+    gUnk_03002C30[2].unk4 = gUnk_03000440.unk5A * 16 + 0x50;
+    gUnk_03002C30[2].unk6 = 0x303;
+    gUnk_03002C30[2].unkA = 14;
+    gUnk_03002C30[2].unk1C = 0;
+    gUnk_03002C30[2].unkB = 0x40;
+}
+
+void medabot_detail_blink_row_arrows(void)
+{
+    if (gFrameCounter & 8)
+    {
+        gUnk_03002C30[1].unk0 &= 0xBFFF;
+        gUnk_03002C30[2].unk0 &= 0xBFFF;
+    }
+    else
+    {
+        gUnk_03002C30[1].unk0 |= 0x4000;
+        gUnk_03002C30[2].unk0 |= 0x4000;
+    }
+}
+
+void init_scene_state(void)
+{
+    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    u8 *b;
+    u8 *c;
+    u32 fill;
+
+    sub_0803F624((u8 *)obj, 0xD0, 0);
+    b = (u8 *)0x020260D0;
+    sub_0803F624(b, 0x800, 0);
+    c = (u8 *)0x020268D0;
+    sub_0803F624(c, 0x60, 0);
+    gUnk_03000430 = 2;
+    gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+    fill = 0;
+    CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+    gUnk_03005308 = c;
+    sub_08047414(obj, (u8 *)gUnk_03002414, (u32)gUnk_083D1BF8, (u32)b);
+    obj->unk8 = (u32)b;
+    if (gUnk_03000440.unk5E)
+        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
+            gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
+            0x28, 0x28, 0x1C2, 8, 1, 1);
+    else
+        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
+            gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
+            0x28, 0x28, 0x1C2, 8, 1, 0);
+}
+
+void setup_scene_with_link_check(void)
+{
+    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    u32 fill;
+
+    obj->unk8 = 0x020260D0;
+    if (gUnk_03000440.unk5E)
+        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
+            gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
+            0x28, 0x28, 0x1C2, 8, 1, 1);
+    else
+        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
+            gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
+            0x28, 0x28, 0x1C2, 8, 1, 0);
+    fill = 0x200;
+    CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+    gUnk_03002414->unk1094 = 0;
+    gUnk_03002414->unk1095 = 0;
+}
+
+void sub_08006764(void)
+{
+    if (gUnk_03000440.unk5E)
+        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000,
+            gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
+            0x3C, 0x32, 0x1C2, 8, 5, 1);
+    else
+        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000,
+            gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
+            0x3C, 0x32, 0x1C2, 8, 5, 0);
+}
+
+void medabot_detail_blink_row_icon(void)
+{
+    if (gFrameCounter & 8)
+    {
+        switch (gUnk_03000440.unk5A)
+        {
+        case 0:
+            medabot_detail_draw_row_icon_0(0);
+            break;
+        case 1:
+            medabot_detail_draw_row_icon_1(0);
+            break;
+        case 2:
+            medabot_detail_draw_row_icon_2(0);
+            break;
+        case 3:
+            medabot_detail_draw_row_icon_3(0);
+            break;
+        case 4:
+            medabot_detail_draw_row_icon_4(0);
+            break;
+        }
+    }
+    else
+    {
+        switch (gUnk_03000440.unk5A)
+        {
+        case 0:
+            medabot_detail_draw_row_icon_0(1);
+            break;
+        case 1:
+            medabot_detail_draw_row_icon_1(1);
+            break;
+        case 2:
+            medabot_detail_draw_row_icon_2(1);
+            break;
+        case 3:
+            medabot_detail_draw_row_icon_3(1);
+            break;
+        case 4:
+            medabot_detail_draw_row_icon_4(1);
+            break;
+        }
+    }
+}
+
+u32 medabot_detail_row_cursor_input(void)
+{
+    if (KEYS_LO(gRepeatKeys) & 0x40)
+    {
+        if (gUnk_03000440.unk5A == 0)
+            gUnk_03000440.unk5A = 4;
+        else
+            gUnk_03000440.unk5A--;
+    }
+    if (KEYS_LO(gRepeatKeys) & 0x80)
+    {
+        if (gUnk_03000440.unk5A == 4)
+            gUnk_03000440.unk5A = 0;
+        else
+            gUnk_03000440.unk5A++;
+    }
+    if (KEY_BITS(gRepeatKeys).up | KEY_BITS(gRepeatKeys).down)
+    {
+    play_sound_effect(2);
+    medabot_detail_draw_row_icon_0(0);
+    medabot_detail_draw_row_icon_1(0);
+    medabot_detail_draw_row_icon_2(0);
+    medabot_detail_draw_row_icon_3(0);
+    medabot_detail_draw_row_icon_4(0);
+    medabot_detail_place_row_arrows();
+    return 1;
+    }
+    else
+        return 0;
+}
+
+u32 medabot_detail_cycle_medal_input(void)
+{
+    u32 old;
+
+    if (gUnk_03000440.unk5A != 0)
+        goto none;
+    old = gUnk_03000440.unk97;
+    if (KEYS_LO(gRepeatKeys) & 0x20)
+        gUnk_03000440.unk97 = sub_0804361C(old, 1);
+    if (KEYS_LO(gRepeatKeys) & 0x10)
+        gUnk_03000440.unk97 = sub_0804361C(gUnk_03000440.unk97, 0);
+    if (old == gUnk_03000440.unk97)
+    {
+    none:
+        return 0;
+    }
+    play_sound_effect(2);
+    sub_08005AD0();
+    sub_08005B44();
+    sub_08005C10();
+    sub_08005BB4();
+    medabot_detail_draw_head_skill_icon();
+    medabot_detail_draw_rarm_skill_icon();
+    medabot_detail_draw_larm_skill_icon();
+    medabot_detail_draw_legs_skill_icon();
+    return 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006A00);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006A98);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006B30);

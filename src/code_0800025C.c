@@ -1199,11 +1199,11 @@ void medabot_detail_load_gfx(void)
     REG_DISPCNT &= 0xFFDF;
     gUnk_03000440.unk53 = 0;
     gUnk_03000440.unk96 = 1;
-    sub_08006238(0);
-    sub_08006284(0);
-    sub_080062D0(0);
-    sub_0800631C(0);
-    sub_08006368(0);
+    medabot_detail_draw_row_icon_0(0);
+    medabot_detail_draw_row_icon_1(0);
+    medabot_detail_draw_row_icon_2(0);
+    medabot_detail_draw_row_icon_3(0);
+    medabot_detail_draw_row_icon_4(0);
     sub_08005AD0();
     sub_08005B44();
     sub_08005C10();
@@ -1220,7 +1220,7 @@ void medabot_detail_load_gfx(void)
     decompress_sprite_from_game_state();
     init_battle_medabot_sprites(gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
                                 0, 6, 0xA8, 0x20, gUnk_03000440.unk5E, 1, 5);
-    setup_battle_cursor_sprites();
+    medabot_detail_place_row_arrows();
     if (gUnk_03000440.unk56)
         init_scene_state();
     gUnk_03000440.unk84 = 0;
