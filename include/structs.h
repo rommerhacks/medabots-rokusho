@@ -112,9 +112,15 @@ struct SoundMixChannel
 
 struct Unk_03006D20
 {
-    u8 filler0[0xA];
-    u8 unkA;
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u8 filler4[0x4];
+    s16 unk8;
+    u8 unkA; // sprite slot (gUnk_03002C30 index)
     u8 unkB;
+    u8 fillerC[0x4];
 };
 
 struct Unk_03000440
@@ -135,9 +141,9 @@ struct Unk_03002C30
     u8 unkA;
     u8 unkB;
     u32 unkC_0:8; // x, 24.8 fixed point: fraction
-    u32 unkC_8:24; // integer part
+    s32 unkC_8:24; // integer part
     u32 unk10_0:8; // y, 24.8 fixed point
-    u32 unk10_8:24;
+    s32 unk10_8:24;
     u8 filler14[0x8];
     u8 unk1C;
     u8 filler1D[0x3];
