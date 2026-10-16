@@ -24,7 +24,7 @@ sub_0806DEE8: @ 0x0806DEE8
 	strh r0, [r5, #2]
 	strb r1, [r3]
 	movs r0, #0
-	bl rng_next_080012F0
+	bl rng_next
 	ldr r2, _0806DF30 @ =0x000001FF
 	adds r1, r2, #0
 	ands r0, r1

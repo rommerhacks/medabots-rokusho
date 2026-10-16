@@ -45,6 +45,11 @@ extern Func gVBlankCallback;          // called every vblank
 extern Func gVBlankOnceCallback;      // called at the next vblank, then reset to nullsub_08000840
 extern Func gHBlankCallback;          // called by hblank_irq
 extern struct OamData gOamBuffer[128]; // copied to OAM in vblank_body
+extern struct Unk_03002414 *gUnk_03002414;
+extern u32 gUnk_03000430;              // vblank_body OAM mode (0, 2)
+extern u8 gUnk_03000434;               // bit 0: vblank_body skips the BG scroll registers
+extern struct Vec16 gUnk_03002C2C;     // scroll added to every BG layer
+extern struct Vec16 gUnk_03005000;     // BG0 scroll
 extern u16 gTilemapBaseEntry;          // added to every tilemap entry by write_tilemap_to_vram_08000E94
 extern u8 gDecompressBuffer[];         // EWRAM buffer the tilemap loaders decompress into
 extern u16 gPaletteBackup[0x200];      // OBJ then BG palette (copy_obj_palette_to_buffer)

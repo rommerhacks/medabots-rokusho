@@ -20,7 +20,7 @@ battle_sprite_set_action: @ 0x08070644
 	cmp r5, #0
 	beq _0807067A
 	movs r0, #0
-	bl rng_next_080012F0
+	bl rng_next
 	movs r1, #3
 	ands r0, r1
 	adds r1, r4, #0

@@ -12,7 +12,7 @@ sub_0805F8B0: @ 0x0805F8B0
 	bl play_song
 	movs r0, #0
 	bl play_sound_effect
-	bl get_medal_count_or_status
+	bl eeprom_setup_timer_irq
 	ldr r0, _0805F8E8 @ =0x03006F74
 	ldr r1, [r0]
 	movs r0, #0

@@ -12,7 +12,28 @@ INCLUDE_ASM("asm/nonmatching/code_08044F54", sorted_array_insert_shift);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_oam_entries_with_priority);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_sprite_oam_entries);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", batch_copy_oam_entries);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08045A14);
+
+void copy_oam_affine_params(struct OamData *oam, u16 *affine)
+{
+    s32 i;
+
+    for (i = 31; i >= 0; i--)
+    {
+        oam->affineParam = *affine;
+        affine++;
+        oam++;
+        oam->affineParam = *affine;
+        affine++;
+        oam++;
+        oam->affineParam = *affine;
+        affine++;
+        oam++;
+        oam->affineParam = *affine;
+        affine++;
+        oam++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08045A40);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_sprite_oam_with_vflip);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", render_sprite_if_visible);

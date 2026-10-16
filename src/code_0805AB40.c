@@ -82,7 +82,12 @@ INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DB64);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DBE8);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", init_linking_mode);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", save_dispatch);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", get_medal_count_or_status);
+
+u16 eeprom_setup_timer_irq(void)
+{
+    return sub_0807C7A8(2, &gIntrTable[11]);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DD60);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", load_save_data);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", serialize_save_data);

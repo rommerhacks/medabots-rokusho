@@ -14,7 +14,7 @@ void irq_init(void)
     REG_DISPSTAT = 8;
     REG_IME = 1;
     sub_0807C740(0x40);
-    get_medal_count_or_status();
+    eeprom_setup_timer_irq();
 }
 
 void hw_reset_init(void)
@@ -226,7 +226,7 @@ INCLUDE_ASM("asm/nonmatching/code_0800025C", set_bg2_affine_transform);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", compute_bg_affine_scanline_params);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", hblank_dma0_bg2affine);
 
-u32 rng_next_080012F0(u16 range)
+u32 rng_next(u16 range)
 {
     gRngCounter++;
     gRngValue = gRngTable[gRngCounter & 0xF] ^ gRngState;

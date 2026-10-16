@@ -130,7 +130,12 @@ struct Unk_03000440
     u16 unkC;
     u8 fillerE[0xE1];
     u8 unkEF;
+    u8 fillerF0[0x3E];
+    u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
+    u8 filler12F[2];
+    u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2
 };
+
 
 struct Unk_03002C30
 {
@@ -214,6 +219,16 @@ struct OamData
     u16 attr1;
     u16 attr2;
     u16 affineParam;
+};
+
+// Pointed to by gUnk_03002414; holds its own copy of OAM slots and affine parameters.
+struct Unk_03002414
+{
+    u8 filler0[0xB84];
+    struct OamData unkB84[129];
+    u16 unkF8C[0x84];   // affine parameters (copy_oam_affine_params)
+    u8 unk1094;
+    u8 unk1095;
 };
 
 struct Unk_03001800

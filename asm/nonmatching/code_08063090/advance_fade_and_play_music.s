@@ -17,7 +17,7 @@ advance_fade_and_play_music: @ 0x080663A0
 	bl play_song
 	movs r0, #0
 	bl play_sound_effect
-	bl get_medal_count_or_status
+	bl eeprom_setup_timer_irq
 	ldr r1, _080663DC @ =0x0300137C
 	ldr r0, [r1]
 	adds r0, #2

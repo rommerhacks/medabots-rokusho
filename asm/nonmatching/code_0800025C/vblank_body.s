@@ -62,7 +62,7 @@ _080006B8:
 	adds r0, r1, r3
 	ldr r5, _0800078C @ =0x00000F8C
 	adds r1, r1, r5
-	bl sub_08045A14
+	bl copy_oam_affine_params
 	movs r2, #0
 	ldr r5, _08000790 @ =0x00000B8A
 	ldr r3, _08000794 @ =0x03001380

@@ -141,11 +141,14 @@ void sound_init_wave_channel(void);
 u32 sound_set_pitch_offset(struct SoundMixChannel *ch, s32 note);
 void CpuSet(const void *src, void *dest, u32 control);
 void CpuFastSet(const void *src, void *dest, u32 control);
+u32 rng_next(u16 range);
 #define CpuCopy16(src, dest, size) CpuSet(src, dest, ((size) / 2) & 0x1FFFFF)
 void write_tilemap_to_vram_08000E94(u32 x, u32 y, struct Tilemap *map, u32 bgcnt);
 void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt);
 void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map);
 void dma_obj_palette_to_hardware(void);
+void update_anim_object_flags(void);
+void copy_oam_affine_params(struct OamData *oam, u16 *affine);
 u32 lz_decompress_custom_08000A0C(const u8 *src, void *dst, u32 size);
 u32 lz_decompress_custom_08000B14(const u8 *src, void *dst);
 u32 check_soft_reset(void);
@@ -162,7 +165,8 @@ void vblank_body(void);
 void soft_reset(void);
 void read_keys(void);
 void sound_init(struct Unk_03007014 *work);
-u16 get_medal_count_or_status(void);
+u16 eeprom_setup_timer_irq(void);
+u16 sub_0807C7A8(u8 timer, Func *slot); // EEPROM library: sets the timer and its IRQ handler slot
 void sub_080023D8(void);
 void serial_link_init(void);
 void serial_multiplayer_init(void);

@@ -220,7 +220,7 @@ _080657F8:
 	bl play_song
 	movs r0, #0
 	bl play_sound_effect
-	bl get_medal_count_or_status
+	bl eeprom_setup_timer_irq
 	ldr r1, [r4]
 	movs r0, #0
 	strh r0, [r1, #2]
