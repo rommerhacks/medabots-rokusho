@@ -35,7 +35,17 @@ void sub_0804D25C(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D2A8);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D350);
+
+void sub_0804D350(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(2);
+    gUnk_03006D38.unk0 = gUnk_030057E0.unkC94[0];
+    if (sub_08047F50() > 2)
+        gUnk_030057E0.unkC89 = 1;
+    else
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
+}
 
 void sub_0804D3B4(void)
 {
@@ -78,8 +88,37 @@ void sub_0804D488(void)
     gUnk_030057E0.unkC89 = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D4B0);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D534);
+void sub_0804D4B0(void)
+{
+    gUnk_030064A0.unk52 = 0;
+    sub_080496C8(gUnk_030064A0.unk2, 8);
+    sub_080496C8(gUnk_030064A0.unkA, 8);
+    sub_080496C8(gUnk_030064A0.unk12[0], 64);
+    sub_080496C8(&gUnk_030064A0.unk52, 1);
+    sub_080496C8(&gUnk_030064A0.unk53, 1);
+    sub_080496C8(gUnk_030064A0.unk54, 8);
+    gUnk_030057E0.unkC92 = read_map_script_byte();
+    gUnk_030057E0.unkC89 = 0;
+    gUnk_030057E0.unkC93 = 0;
+    gMapScriptCommands[gUnk_030057E0.unkC92]();
+}
+
+void sub_0804D534(void)
+{
+    read_map_script_bytes(8);
+    memcpy_u8(gUnk_030057E0.unkC94, gUnk_030064A0.unk12[gUnk_030064A0.unk52++], 8);
+    gUnk_030057E0.unkC92 = read_map_script_byte();
+    gUnk_030057E0.unkC89 = 0;
+    gUnk_030057E0.unkC93 = 0;
+    gMapScriptCommands[gUnk_030057E0.unkC92]();
+}
+
+// Not called directly (hidden in the tail of sub_0804D534).
+void sub_0804D590(void)
+{
+    gUnk_030057E0.unkC89 = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D5A4);
 
 void sub_0804D70C(void)
@@ -119,7 +158,7 @@ void sub_0804D7AC(void)
 
 u8 read_map_script_byte(void)
 {
-    u8 *data = gUnk_03005590;
+    u8 *data = gMapScriptData;
     u32 offsets = (u16)((data[0] | (data[1] << 8)) - 0x4000);
     u16 banks = (data[2] | (data[3] << 8)) - 0x4000;
     u16 script = gUnk_030057E0.unkC8E;
@@ -168,7 +207,19 @@ struct MapObject *battle_find_entity_by_id(u16 id)
         return NULL;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D934);
+void sub_0804D934(struct MapObject *obj)
+{
+    u8 *raw = (u8 *)obj;
+    const u8 *tiles = gUnk_084045A8[gUnk_030057E0.unk7FE];
+    set_tile_data(obj->x, obj->y, tiles[obj->y * (gUnk_030057E0.unk800 >> 1) + obj->x]);
+    if (obj->unk4_6)
+    {
+        clear_battle_sprite_entry(obj->unk4_0 + 49);
+        clear_battle_sprite_entry(obj->unk4_0 + 91);
+    }
+    sub_080496C8(raw, 8);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D9AC);
 
 void sub_0804DB34(void)

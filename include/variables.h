@@ -20,7 +20,7 @@ extern struct Unk_03002C30 gUnk_03002C30[];
 extern struct Unk_03005170 gUnk_03005170;
 extern struct Unk_03005350 gUnk_03005350;
 extern struct Unk_030057A0 gUnk_030057A0;
-extern u8 *gUnk_03005590; // current map script data (banked, see read_map_script_byte)
+extern u8 *gMapScriptData; // current map script data (banked, see read_map_script_byte)
 extern struct Unk_030057E0 gUnk_030057E0;
 extern struct Unk_030064A0 gUnk_030064A0;
 extern struct Unk_03006D20 gUnk_03006D20;
@@ -46,6 +46,8 @@ extern const u8 gUnk_083D28C3[][16];
 extern const u8 gUnk_083F8B74[][2];
 extern const u8 gUnk_0847E948[];
 extern const struct AreaWarp *const gUnk_08413114[];
+extern void (*const gMapScriptCommands[])(void); // map script command handlers
+extern const u8 *const gUnk_084045A8[]; // per area: tile map
 extern const struct AreaGfx gUnk_083F92F4[];
 extern const u8 gUnk_083D2903[];
 extern const u8 gUnk_083D29E6[];

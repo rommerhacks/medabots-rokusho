@@ -214,7 +214,8 @@ struct MapObject
     u8 y;
     u16 unk2; // bits 12-15: type (8 = event), bits 0-11: event id
     u8 unk4_0:5; // sprite slot (gUnk_03002C30 index - 49)
-    u8 unk4_5:2;
+    u8 unk4_5:1;
+    u8 unk4_6:1; // has a sprite (slot + 49, shadow slot + 91)
     u8 unk4_7:1; // animates at random
     u8 unk5; // animation state
     u8 filler6[0x2];
@@ -227,6 +228,8 @@ struct Unk_030064A0
     u8 unkA[8];
     u8 unk12[8][8];
     u8 unk52;
+    u8 unk53;
+    u8 unk54[8];
 };
 
 struct Unk_030057E0
@@ -282,10 +285,10 @@ struct Unk_030057E0
     u8 unkC89;
     u16 unkC8A; // map script read offset
     u16 unkC8C;
-    u16 unkC8E;
+    u16 unkC8E; // current map script id
     u16 unkC90;
-    u8 unkC92;
-    u8 fillerC93[0x1];
+    u8 unkC92; // current map script command (gMapScriptCommands index)
+    u8 unkC93;
     u8 unkC94[0x10]; // map script command arguments (read_map_script_bytes)
     u8 unkCA4[0x10];
     u8 unkCB4;
@@ -301,7 +304,7 @@ struct Unk_03005310
 
 struct Unk_03006D38
 {
-    u8 filler0[0x1];
+    u8 unk0;
     u8 unk1;
     u8 unk2;
     u8 unk3;

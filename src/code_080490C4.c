@@ -172,7 +172,13 @@ u32 sub_0804B694(void)
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B6A8);
+void map_script_run_command(void)
+{
+    gUnk_030057E0.unkC92 = read_map_script_byte();
+    gUnk_030057E0.unkC89 = 0;
+    gUnk_030057E0.unkC93 = 0;
+    gMapScriptCommands[gUnk_030057E0.unkC92]();
+}
 
 u32 sub_0804B6EC(void)
 {

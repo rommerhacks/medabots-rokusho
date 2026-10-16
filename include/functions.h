@@ -48,6 +48,7 @@ void sub_08047BC0(u32 a);
 void init_cursor_state(void);
 u32 sub_08047D9C(u8 a, u8 b);
 u32 dispatch_jump_table_29(u32 a, u32 b);
+s32 sub_08047F50(void);
 void clear_battle_sprite_entry(u8 slot);
 void sub_080496C8(u8 *dst, u32 size);
 u32 run_blend_fade_transition(u16 a);
@@ -207,6 +208,7 @@ u8 sub_080502B4(u8 idx, u8 dir);
 
 // code_0805137C (field)
 void sub_08051E8C(void);
+void set_tile_data(u8 x, u8 y, u8 val);
 s32 sub_080518F4(u8 idx);
 void update_battle_direction_indicator(u8 arg);
 void load_battle_palette_via_dma(u32 toBuffer);

@@ -25,7 +25,7 @@ _0804A1FC: .4byte 0x03005310
 _0804A200: .4byte 0x030057E0
 _0804A204: .4byte 0x00000C88
 _0804A208:
-	bl sub_0804B6A8
+	bl map_script_run_command
 _0804A20C:
 	ldr r0, _0804A22C @ =0x030057E0
 	ldr r1, _0804A230 @ =0x00000C5F
