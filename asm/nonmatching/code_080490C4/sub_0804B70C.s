@@ -1,0 +1,21 @@
+	.syntax unified
+
+	thumb_func_start sub_0804B70C
+sub_0804B70C: @ 0x0804B70C
+	push {lr}
+	movs r0, #3
+	bl read_map_script_bytes
+	ldr r0, _0804B724 @ =0x030057E0
+	ldr r1, _0804B728 @ =0x00000C89
+	adds r0, r0, r1
+	movs r1, #1
+	strb r1, [r0]
+	pop {r0}
+	bx r0
+	.align 2, 0
+_0804B724: .4byte 0x030057E0
+_0804B728: .4byte 0x00000C89
+_0804B72C:
+	.byte 0x02, 0x48, 0x03, 0x49
+	.byte 0x40, 0x18, 0x01, 0x21, 0x01, 0x70, 0x70, 0x47, 0xE0, 0x57, 0x00, 0x03, 0x89, 0x0C, 0x00, 0x00
+	.syntax divided

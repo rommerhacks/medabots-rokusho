@@ -1,0 +1,13 @@
+# ROMs and build output (never commit game data)
+*.gba
+*.sav
+*.elf
+*.map
+build/
+# local toolchain (see INSTALL.md)
+tools/agbcc/
+tools/agbcc-src/
+tools/gbadisasm
+tools/gbadisasm-src/
+__pycache__/
+*.pyc

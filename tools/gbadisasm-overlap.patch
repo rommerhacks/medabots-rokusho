@@ -1,0 +1,18 @@
+--- a/disasm.c	2026-10-16 02:52:54.804815323 +0000
++++ b/disasm.c	2026-10-16 02:54:15.894022743 +0000
+@@ -1283,7 +1283,14 @@
+         if (i >= gLabelsCount)
+             break;
+         nextAddr = gLabels[i].addr;
+-        assert(addr <= nextAddr);
++        if (addr > nextAddr)
++        {
++            fprintf(stderr, "OVERLAP: emitted up to 0x%08X but next label 0x%08X (type %d)\n", addr, nextAddr, gLabels[i].type);
++            printf("@ OVERLAP: label 0x%08X skipped\n", nextAddr);
++            while (i < gLabelsCount && gLabels[i].addr < addr) i++;
++            if (i >= gLabelsCount) break;
++            nextAddr = gLabels[i].addr;
++        }
+ 
+         if (nextAddr <= ROM_LOAD_ADDR + gInputFileBufferSize) // prevent out-of-bound read
+             print_gap(addr, nextAddr);

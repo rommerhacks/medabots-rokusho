@@ -1,0 +1,55 @@
+	.syntax unified
+
+	thumb_func_start rng_next_080012F0
+	.global rng_next_080012F0
+rng_next_080012F0: @ 0x080012F0
+	push {r4, r5, r6, lr}
+	lsls r0, r0, #0x10
+	lsrs r4, r0, #0x10
+	ldr r1, _08001330 @ =0x03005034
+	ldr r0, [r1]
+	adds r0, #1
+	str r0, [r1]
+	ldr r5, _08001334 @ =0x03005038
+	ldr r2, _08001338 @ =0x0807E728
+	movs r1, #0xf
+	ands r0, r1
+	lsls r0, r0, #2
+	adds r0, r0, r2
+	ldr r2, _0800133C @ =0x0300503C
+	ldr r3, [r0]
+	ldr r0, [r2]
+	eors r3, r0
+	str r3, [r5]
+	mvns r1, r3
+	movs r6, #2
+	ldrsh r0, [r2, r6]
+	ldr r6, _08001340 @ =0x55555555
+	adds r0, r0, r6
+	adds r1, r1, r0
+	str r1, [r2]
+	cmp r4, #0
+	beq _08001344
+	movs r1, #2
+	ldrsh r0, [r5, r1]
+	muls r0, r4, r0
+	lsrs r0, r0, #0x10
+	b _08001346
+	.align 2, 0
+_08001330: .4byte 0x03005034
+_08001334: .4byte 0x03005038
+_08001338: .4byte 0x0807E728
+_0800133C: .4byte 0x0300503C
+_08001340: .4byte 0x55555555
+_08001344:
+	adds r0, r3, #0
+_08001346:
+	pop {r4, r5, r6}
+	pop {r1}
+	bx r1
+_0800134C:
+	.byte 0x10, 0xB5, 0x04, 0x1C
+	.byte 0x13, 0x1C, 0x08, 0x1C, 0x50, 0x43, 0x00, 0x28, 0x01, 0xDA, 0x08, 0x49, 0x40, 0x18, 0x01, 0x13
+	.byte 0x80, 0x20, 0x40, 0x01, 0xC0, 0x1A, 0x60, 0x43, 0x00, 0x28, 0x01, 0xDA, 0x03, 0x4A, 0x80, 0x18
+	.byte 0x00, 0x13, 0x08, 0x18, 0x10, 0xBC, 0x02, 0xBC, 0x08, 0x47, 0x00, 0x00, 0xFF, 0x0F, 0x00, 0x00
+	.syntax divided

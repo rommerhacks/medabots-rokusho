@@ -1,0 +1,55 @@
+	.syntax unified
+
+	thumb_func_start sub_080202E0
+sub_080202E0: @ 0x080202E0
+	push {r4, lr}
+	ldr r2, _0802030C @ =0x03002C30
+	ldr r0, _08020310 @ =0x000002AB
+	adds r4, r2, r0
+	ldrb r3, [r4]
+	cmp r3, #0x28
+	bne _0802031C
+	ldr r0, _08020314 @ =0x03000440
+	adds r0, #0x86
+	movs r2, #0
+	movs r1, #0x3c
+	strh r1, [r0]
+	ldr r1, _08020318 @ =0x03001800
+	adds r0, r1, #0
+	adds r0, #0xab
+	strb r2, [r0]
+	adds r1, #0xaa
+	ldrb r0, [r1]
+	adds r0, #1
+	strb r0, [r1]
+	b _08020338
+	.align 2, 0
+_0802030C: .4byte 0x03002C30
+_08020310: .4byte 0x000002AB
+_08020314: .4byte 0x03000440
+_08020318: .4byte 0x03001800
+_0802031C:
+	movs r0, #0xab
+	lsls r0, r0, #2
+	adds r1, r2, r0
+	ldrb r0, [r1]
+	adds r0, #1
+	strb r0, [r1]
+	movs r0, #0xa1
+	lsls r0, r0, #2
+	adds r1, r2, r0
+	ldrh r0, [r1]
+	adds r0, #1
+	strh r0, [r1]
+	adds r0, r3, #1
+	strb r0, [r4]
+_08020338:
+	pop {r4}
+	pop {r0}
+	bx r0
+	.align 2, 0
+_08020340:
+	.byte 0x04, 0x49, 0x08, 0x1C, 0xB8, 0x30, 0x00, 0x78, 0x02, 0x28, 0x05, 0xD1, 0xAA, 0x31, 0x0B, 0x20
+	.byte 0x0A, 0xE0, 0x00, 0x00, 0x00, 0x18, 0x00, 0x03, 0x04, 0x28, 0x02, 0xD1, 0xAA, 0x31, 0x0F, 0x20
+	.byte 0x02, 0xE0, 0xAA, 0x31, 0x08, 0x78, 0x01, 0x30, 0x08, 0x70, 0x70, 0x47
+	.syntax divided

@@ -1,0 +1,70 @@
+	.syntax unified
+
+	thumb_func_start sub_0806B0B4
+sub_0806B0B4: @ 0x0806B0B4
+	push {r4, r5, lr}
+	lsls r0, r0, #0x18
+	lsrs r3, r0, #0x18
+	ldr r1, _0806B0D4 @ =0x03002C30
+	lsls r0, r3, #6
+	adds r0, r0, r1
+	ldrh r2, [r0, #0x1a]
+	adds r0, r2, #0
+	adds r4, r1, #0
+	cmp r0, #0xf
+	bhi _0806B0DC
+	ldr r0, _0806B0D8 @ =0x04000052
+	movs r5, #0x80
+	lsls r5, r5, #5
+	adds r1, r5, #0
+	b _0806B0EA
+	.align 2, 0
+_0806B0D4: .4byte 0x03002C30
+_0806B0D8: .4byte 0x04000052
+_0806B0DC:
+	cmp r0, #0x1f
+	bhi _0806B0EE
+	ldr r0, _0806B10C @ =0x04000052
+	movs r1, #0x20
+	subs r1, r1, r2
+	lsls r1, r1, #8
+	movs r2, #0x10
+_0806B0EA:
+	orrs r1, r2
+	strh r1, [r0]
+_0806B0EE:
+	lsls r0, r3, #6
+	adds r2, r0, r4
+	ldrh r1, [r2, #0x1a]
+	movs r0, #1
+	ands r0, r1
+	cmp r0, #0
+	beq _0806B102
+	ldrh r0, [r2, #4]
+	subs r0, #1
+	strh r0, [r2, #4]
+_0806B102:
+	ldrh r0, [r2, #0x1a]
+	cmp r0, #0x3f
+	bhi _0806B110
+	movs r0, #1
+	b _0806B118
+	.align 2, 0
+_0806B10C: .4byte 0x04000052
+_0806B110:
+	ldr r1, _0806B120 @ =0x04000050
+	movs r0, #0
+	strh r0, [r1]
+	movs r0, #0
+_0806B118:
+	pop {r4, r5}
+	pop {r1}
+	bx r1
+	.align 2, 0
+_0806B120: .4byte 0x04000050
+_0806B124:
+	.byte 0x00, 0x06, 0x0B, 0x49, 0x80, 0x0C, 0x42, 0x18, 0x51, 0x8B, 0x01, 0x20
+	.byte 0x08, 0x40, 0x00, 0x28, 0x05, 0xD0, 0x10, 0x7A, 0x01, 0x38, 0x10, 0x72, 0x50, 0x7A, 0x01, 0x38
+	.byte 0x50, 0x72, 0x10, 0x8B, 0x40, 0x30, 0x10, 0x83, 0x50, 0x8B, 0x8F, 0x28, 0x04, 0xD8, 0x01, 0x20
+	.byte 0x04, 0xE0, 0x00, 0x00, 0x30, 0x2C, 0x00, 0x03, 0x00, 0x20, 0x10, 0x83, 0x70, 0x47, 0x00, 0x00
+	.syntax divided

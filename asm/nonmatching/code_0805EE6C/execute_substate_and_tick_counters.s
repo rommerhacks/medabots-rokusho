@@ -1,0 +1,38 @@
+	.syntax unified
+
+	thumb_func_start execute_substate_and_tick_counters
+execute_substate_and_tick_counters: @ 0x08060C04
+	push {lr}
+	ldr r1, _08060C34 @ =0x08483E10
+	ldr r0, _08060C38 @ =0x0300137C
+	ldr r0, [r0]
+	lsls r0, r0, #2
+	adds r0, r0, r1
+	ldr r0, [r0]
+	bl _call_via_r0
+	ldr r0, _08060C3C @ =0x03001780
+	ldr r0, [r0]
+	movs r1, #1
+	ands r0, r1
+	cmp r0, #0
+	beq _08060C30
+	ldr r0, _08060C40 @ =0x03001C04
+	ldrh r1, [r0]
+	adds r1, #1
+	strh r1, [r0]
+	ldrh r1, [r0, #2]
+	adds r1, #1
+	strh r1, [r0, #2]
+_08060C30:
+	pop {r0}
+	bx r0
+	.align 2, 0
+_08060C34: .4byte 0x08483E10
+_08060C38: .4byte 0x0300137C
+_08060C3C: .4byte 0x03001780
+_08060C40: .4byte 0x03001C04
+_08060C44:
+	.byte 0x04, 0x4A, 0x10, 0x68, 0x00, 0x21, 0x41, 0x71, 0x10, 0x68, 0x81, 0x71
+	.byte 0x02, 0x49, 0x0E, 0x20, 0x08, 0x60, 0x70, 0x47, 0x74, 0x6F, 0x00, 0x03, 0x7C, 0x13, 0x00, 0x03
+	.byte 0x01, 0x49, 0x01, 0x20, 0x08, 0x60, 0x70, 0x47, 0x7C, 0x13, 0x00, 0x03
+	.syntax divided
