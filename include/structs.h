@@ -126,9 +126,14 @@ struct Unk_03000440
 
 struct Unk_03002C30
 {
-    u8 filler0[0xB];
+    u16 unk0;
+    s16 unk2;
+    s16 unk4;
+    u8 filler6[0x5];
     u8 unkB;
-    u8 fillerC[0x34];
+    u8 fillerC[0x1E];
+    u8 unk2A;
+    u8 filler2B[0x15];
 };
 
 struct Unk_03005170
@@ -166,14 +171,48 @@ struct Unk_030057A0
 
 struct Unk_030057E0
 {
-    u8 filler0[0xC48];
+    u8 filler0[0x7FE];
+    u8 unk7FE; // area id
+    u8 filler7FF[0x1];
+    u16 unk800; // map width * 2 (tiles are bytes, unk810 rows are unk800 / 2 long)
+    u8 filler802[0xE];
+    u8 unk810[0x438]; // tile map
     u16 unkC48;
     u16 unkC4A;
+    u8 fillerC4C[0x6];
+    u16 unkC52;
+    u16 unkC54;
+    u8 unkC56; // player tile x
+    u8 unkC57; // player tile y
+    u8 fillerC58[0x16];
+    u16 unkC6E;
+    u16 unkC70;
+    u8 fillerC72[0x3];
+    u8 unkC75;
+    u8 unkC76;
+};
+
+struct Unk_03006D38
+{
+    u8 filler0[0x2];
+    u8 unk2;
+    u8 unk3;
+};
+
+// Three copies at gUnk_03004C30, gUnk_0300057C, gUnk_03001C04 (camera / scroll position).
+struct Vec16
+{
+    u16 x;
+    u16 y;
 };
 
 struct Unk_03005350
 {
-    u8 filler0[0xB4];
+    u8 filler0[0x40];
+    s32 unk40; // position x, y, z
+    s32 unk44;
+    s32 unk48;
+    u8 filler4C[0x68];
     s32 unkB4;
     s32 unkB8;
 };

@@ -16,12 +16,12 @@ sound and data are copied out of it at build time.
 ## Status
 
 Every function has been disassembled into `asm/nonmatching/`. The C files in `src/` include them
-with `INCLUDE_ASM(...)`; decompiling a function replaces its `INCLUDE_ASM` line with C that old_agbcc
+with `INCLUDE_ASM(...)`; decompiling a function replaces its `INCLUDE_ASM` line with C that agbcc
 compiles to the original bytes. Run `make progress` to see the current numbers.
 
 | | |
 |---|---|
-| Compiler | old_agbcc (`gcc 2.9-arm-000512`, the Nintendo AGB SDK compiler, without pret's agbcc changes), `-O2 -mthumb-interwork`; the sound sequencer and driver (`src/sound_seq.c`, `src/sound_driver.c`) match pret's agbcc with `-fprologue-bugfix` |
+| Compiler | pret's agbcc (gcc 2.95-based), `-O2 -mthumb-interwork -fprologue-bugfix` for every C file |
 | Code | `0x0800025C`-`0x080750D7` game code (Thumb), `0x0807C740`-`0x0807E6EF` SDK libraries |
 | Libraries | EEPROM_V122, libgcc, BIOS syscall stubs (kept as asm in `asm/lib/`) |
 | Sound | custom sequencer and driver (`src/sound_seq.c`, `src/sound_driver.c`), not m4a |

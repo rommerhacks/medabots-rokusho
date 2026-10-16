@@ -4,7 +4,7 @@
 Usage: match.py FUNC FILE.c [--new]
 
 FILE.c is a standalone C file (it may #include "global.h" and other headers) that defines FUNC.
-It is compiled like the Makefile does: old_agbcc, or agbcc -fprologue-bugfix for the sound modules (--new: agbcc), linked at FUNC's original address
+It is compiled like the Makefile does: agbcc -fprologue-bugfix (--old: old_agbcc, --new: plain agbcc), linked at FUNC's original address
 against the symbols of the last full build (medabots_rokusho.elf, so run `make` once first), and
 compared byte for byte with baserom.gba over the original function's size (code and literal pool).
 
@@ -30,8 +30,6 @@ def run(cmd, **kw):
     return r.stdout
 
 
-# Modules the Makefile builds with agbcc -fprologue-bugfix instead of old_agbcc (keep in sync with SOUND_OBJS)
-BUGFIX_MODULES = {"sound_seq", "sound_driver"}
 
 
 def func_info(name):
@@ -58,12 +56,12 @@ def main():
     ap.add_argument("func")
     ap.add_argument("cfile")
     ap.add_argument("--new", action="store_true", help="use agbcc instead of old_agbcc")
-    ap.add_argument("--old", action="store_true", help="use old_agbcc (default, except for BUGFIX_MODULES)")
-    ap.add_argument("--bugfix", action="store_true", help="agbcc -fprologue-bugfix (implies --new)")
+    ap.add_argument("--old", action="store_true", help="use old_agbcc")
+    ap.add_argument("--bugfix", action="store_true", help="agbcc -fprologue-bugfix (the default)")
     args = ap.parse_args()
 
     addr, size, module = func_info(args.func)
-    if module in BUGFIX_MODULES and not args.new and not args.old:
+    if not args.new and not args.old:
         args.bugfix = True
     base = open(BASEROM, "rb").read()[addr - 0x08000000: addr - 0x08000000 + size]
 

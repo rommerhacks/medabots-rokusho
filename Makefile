@@ -14,17 +14,13 @@ OBJCOPY := $(PREFIX)objcopy
 CPP     := $(PREFIX)cpp
 
 AGBCC_DIR := tools/agbcc
-# old_agbcc: leaf functions with branches match it, not agbcc (agbcc adds a push {lr})
-CC1       := $(AGBCC_DIR)/bin/old_agbcc
-
-# The sound sequencer/driver (0x08072234-) was built with agbcc and its -fprologue-bugfix behaviour
-SOUND_OBJS := $(BUILD_DIR)/src/sound_seq.o $(BUILD_DIR)/src/sound_driver.o
-$(SOUND_OBJS): CC1 := $(AGBCC_DIR)/bin/agbcc
-$(SOUND_OBJS): CFLAGS += -fprologue-bugfix
+# pret agbcc with -fprologue-bugfix (no push {lr} in leaf functions that branch). old_agbcc also
+# builds most functions identically, but some (e.g. sub_080518F4) only match agbcc.
+CC1       := $(AGBCC_DIR)/bin/agbcc
 
 ASFLAGS  := -mcpu=arm7tdmi -I include -I .
 CPPFLAGS := -nostdinc -I include -I $(AGBCC_DIR)/include -undef
-CFLAGS   := -mthumb-interwork -Wimplicit -Wparentheses -Werror -O2 -fhex-asm
+CFLAGS   := -mthumb-interwork -Wimplicit -Wparentheses -Werror -O2 -fhex-asm -fprologue-bugfix
 
 SHA1 := $(shell { command -v sha1sum || command -v shasum; } 2>/dev/null) -c
 
