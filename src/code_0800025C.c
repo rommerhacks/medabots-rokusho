@@ -984,7 +984,7 @@ void medabots_screen_load_gfx(void)
         }
         else if (gUnk_03000440.unk52 & 0x80)
         {
-            sub_08005628();
+            medabots_screen_start_reorder_orbit();
         }
         gGameSubState++;
         gUnk_03000440.unk139 = 0;
@@ -1034,7 +1034,7 @@ void medabots_screen_handle_input(void)
     update_battle_icon_blink_and_orbit();
     check_and_update_battle_sprite_orbit();
     sub_0800712C();
-    if (sub_080058A4() == 0 && sub_08005588() == 0)
+    if (medabots_screen_reorder_input() == 0 && medabots_screen_cursor_input() == 0)
     {
         if (KEYS_LO(gNewKeys) & 2)
             sub_0800725C();

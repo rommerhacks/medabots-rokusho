@@ -148,8 +148,8 @@ struct Unk_03000440
     u8 unk3E; // Medapart slot 0-3
     u8 filler3F[0x11];
     u8 unk50; // team select: cursor / phase (team_select_confirm_pick)
-    u8 unk51;
-    u8 unk52;
+    u8 unk51; // Medabots screen: cursor slot (0-8)
+    u8 unk52; // Medabots screen: reorder pick, slot | 0x80 while holding
     u8 unk53;
     u8 filler54[0x2];
     u8 unk56; // game state 3: 0 = entered from the field (fades from the backup palette), 1 = from a submenu

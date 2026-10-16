@@ -575,6 +575,7 @@ void sub_0800508C(void)
     }
 }
 
+// guess: draws the selected Medabot's Medal name (or blanks).
 void sub_08005118(void)
 {
     clear_sprite_table_mask(0x32, 10);
@@ -587,6 +588,7 @@ void sub_08005118(void)
     }
 }
 
+// guess: draws the selected Medabot's Medal type name (gUnk_083B6410) (or blanks).
 void sub_0800519C(void)
 {
     clear_sprite_table_mask(0x3C, 10);
@@ -681,7 +683,9 @@ void setup_overworld_scene_from_position(void)
     }
 }
 
-u32 sub_08005588(void)
+// D-pad moves the slot cursor (gUnk_03000440.unk51) through gMedabotSlotDpadMoves and redraws the
+// selected Medabot's info. Runtime: RIGHT from slot 0 -> 3. Returns 1 if the cursor moved.
+u32 medabots_screen_cursor_input(void)
 {
     u32 moved = 0;
     const u8 *next;
@@ -725,7 +729,7 @@ u32 sub_08005588(void)
     return 0;
 }
 
-void sub_08005628(void)
+void medabots_screen_start_reorder_orbit(void)
 {
     gUnk_03002C30[4].unk0 = 0xC604;
     gUnk_03002C30[4].unk23 = 0;
@@ -794,7 +798,9 @@ void update_battle_icon_blink_and_orbit(void)
     }
 }
 
-u32 sub_080058A4(void)
+// SELECT ("REORDER"): first press picks the slot (unk52 = slot | 0x80, icons orbit it), second press
+// swaps the two gUnk_030017A0 entries. Runtime-checked: slot 3 picked (unk52 0x83), then swapped with 0.
+u32 medabots_screen_reorder_input(void)
 {
     if (gUnk_03000440.unk50 == 0 && (KEYS_LO(gNewKeys) & 4))
     {
@@ -819,7 +825,7 @@ u32 sub_080058A4(void)
         else
         {
             gUnk_03000440.unk52 = gUnk_03000440.unk51 + 0x80;
-            sub_08005628();
+            medabots_screen_start_reorder_orbit();
         }
         update_battle_icon_blink_and_orbit();
         return 1;
@@ -839,6 +845,8 @@ void check_and_update_battle_sprite_orbit(void)
         update_battle_sprite_orbiting_positions(gUnk_03000440.unk51 * 4 + 10, gUnk_03000440.unk51, 0);
 }
 
+// guess: takes the selected Medabot apart: Medal (unk97, 0x1E = none) and parts to unk98-9B, parts
+// back into the inventory (modify_medapart_quantity), slot marked empty.
 void sub_080059D0(void)
 {
     if (gUnk_030017A0[gUnk_03000440.unk51].unk2 == 0x1E)
