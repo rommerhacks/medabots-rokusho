@@ -146,7 +146,10 @@ struct Unk_03002C30
     u8 filler22[0x2];
     u8 unk24;
     u8 unk25;
-    u8 filler26[0x4];
+    u8 unk26;
+    u8 unk27;
+    u8 unk28;
+    u8 filler29[0x1];
     u8 unk2A;
     u8 unk2B; // animation set
     u8 unk2C;
@@ -236,7 +239,9 @@ struct Unk_030057E0
 {
     u8 filler0[0x5DC];
     struct MapObject unk5DC[64];
-    u8 filler7DC[0x22];
+    u8 filler7DC[0x20];
+    u8 unk7FC;
+    u8 unk7FD;
     u8 unk7FE; // area id
     u8 unk7FF;
     u16 unk800; // map width * 2 (tiles are bytes, unk810 rows are unk800 / 2 long)
@@ -244,13 +249,14 @@ struct Unk_030057E0
     u8 filler804[0xC];
     u8 unk810[0x400]; // tile map
     u8 unkC10[0x8]; // tile value -> result of check_tile_and_trigger_battle_action
-    u8 fillerC18[0x10];
+    u8 fillerC18[0x8];
+    u8 unkC20[0x8];
     u8 unkC28;
     u8 fillerC29[0x9];
     u8 unkC32;
     u8 fillerC33[0x4];
     u8 unkC37; // random seed
-    u8 fillerC38[0x10];
+    u8 unkC38[0x10];
     u16 unkC48;
     u16 unkC4A;
     u8 fillerC4C[0x6];
@@ -265,7 +271,9 @@ struct Unk_030057E0
     u8 unkC5C;
     u8 unkC5D;
     u8 unkC5E;
-    u8 fillerC5F[0x8];
+    u8 unkC5F;
+    u8 unkC60;
+    u8 fillerC61[0x6];
     u8 unkC67;
     u8 fillerC68[0x1];
     u8 unkC69;
@@ -300,6 +308,8 @@ struct Unk_03005310
     u8 unk1;
     u8 filler2[0x2];
     u32 unk4; // frame counter
+    u8 filler8[0x30];
+    u8 unk38;
 };
 
 struct Unk_03006D38
@@ -308,6 +318,8 @@ struct Unk_03006D38
     u8 unk1;
     u8 unk2;
     u8 unk3;
+    u8 filler4[0x2];
+    u8 unk6;
 };
 
 // Three copies at gUnk_03004C30, gUnk_0300057C, gUnk_03001C04 (camera / scroll position).

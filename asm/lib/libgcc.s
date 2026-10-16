@@ -3564,6 +3564,9 @@ _0807E442:
 
 	thumb_func_start int_to_softfloat
 	.global int_to_softfloat
+	.global __floatsisf
+	.thumb_func
+__floatsisf:
 int_to_softfloat: @ 0x0807E448
 	push {lr}
 	sub sp, #0x10

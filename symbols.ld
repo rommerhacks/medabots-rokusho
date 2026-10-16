@@ -82,3 +82,4 @@ gSoundTimerRegs     = 0x084873C0;
 gSoundFifoResetBits = 0x083ABAAC;
 gSoundFifoEnableBits = 0x083ABAAE;
 gUnk_083ABA62       = 0x083ABA62;
+gUnk_083D28B0       = 0x083D28B0;

@@ -47,6 +47,7 @@ extern const u8 gUnk_083F8B74[][2];
 extern const u8 gUnk_0847E948[];
 extern const struct AreaWarp *const gUnk_08413114[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
+extern const u8 gUnk_083D28B0[]; // indexed by gUnk_030057E0.unkC5C, passed to setup_battle_sprite_terrain
 extern const u8 *const gUnk_084045A8[]; // per area: tile map
 extern const struct AreaGfx gUnk_083F92F4[];
 extern const u8 gUnk_083D2903[];
