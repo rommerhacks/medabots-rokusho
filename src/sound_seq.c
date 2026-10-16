@@ -471,7 +471,126 @@ void sub_08072BE4(struct SoundTrack *track)
     sound_channel_finish_and_callback(track);
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_seq", sound_channel_process_event);
+void sound_channel_process_event(struct SoundTrack *track)
+{
+    u8 cmd;
+
+    if (track->unk14 == NULL)
+        return;
+    cmd = *track->unk14++;
+    switch (cmd)
+    {
+    case 0xE0:
+        sub_08072948(track);
+        break;
+    case 0xE1:
+        sub_080729A0(track, *track->unk14++);
+        break;
+    case 0xE2:
+        sub_080729A8(track, *track->unk14++);
+        break;
+    case 0xE3:
+        sub_080729BC(track);
+        break;
+    case 0xE4:
+        sub_080729D8(track, 0);
+        break;
+    case 0xE5:
+        sub_080729D8(track, 0x40);
+        break;
+    case 0xE6:
+        sub_080729D8(track, 0x80);
+        break;
+    case 0xE7:
+        sub_080729D8(track, 0xC0);
+        break;
+    case 0xE8:
+        sub_080729EC(track);
+        break;
+    case 0xE9:
+        sub_080729FC(track);
+        break;
+    case 0xEA:
+        sub_08072A18(track);
+        break;
+    case 0xEB:
+        sub_08072A34(track);
+        break;
+    case 0xF0:
+        sub_08072A40(track);
+        break;
+    case 0xF1:
+        sub_08072A54(track);
+        break;
+    case 0xF2:
+        sub_08072A6C(track);
+        break;
+    case 0xF3:
+        sub_08072A80(track);
+        break;
+    case 0xF4:
+        stream_read_u32_to_field(track);
+        break;
+    case 0xF5:
+        stream_read_and_shift_u32(track);
+        break;
+    case 0xF6:
+        sub_08072ABC(track);
+        break;
+    case 0xF7:
+        sub_08072AC4(track);
+        break;
+    case 0xF8:
+        sub_08072AEC(track);
+        break;
+    case 0xF9:
+        sub_08072AFC(track);
+        break;
+    case 0xFA:
+        sub_08072B28(track);
+        break;
+    case 0xFB:
+        sound_read_envelope_params(track);
+        break;
+    case 0xFC:
+        sound_channel_enable(track);
+        break;
+    case 0xFD:
+        sound_channel_disable(track);
+        break;
+    case 0xFE:
+        sub_08072BD4(track);
+        break;
+    case 0xFF:
+        sub_08072BE4(track);
+        break;
+    default:
+        switch (cmd & 0xF0)
+        {
+        case 0x80:
+            sub_08072948(track);
+            break;
+        case 0x90:
+        case 0xA0:
+        case 0xB0:
+        case 0xC0:
+            break;
+        case 0xD0:
+            sub_08072984(track, cmd & 0xF);
+            if (track->unk63 == 1 && track->unk64 == 3 && track->unk24 == NULL)
+            {
+                track->unk28 = track->unk2C;
+                track->unk50 |= 0x50;
+            }
+            break;
+        default:
+            sound_channel_update_note_08072798(track, cmd);
+            break;
+        }
+        break;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_seq", sound_channel_process_command_08072E04);
 
 void sub_08072E7C(struct SoundTrack *track)

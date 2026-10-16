@@ -104,4 +104,42 @@ void sound_dispatch_command(struct SoundTrack *track);
 void sound_channel_process_command_08072E04(struct SoundTrack *track);
 void sound_channel_process_event(struct SoundTrack *track);
 
+void sub_08072948(struct SoundTrack *track);
+void sub_080729BC(struct SoundTrack *track);
+void sub_080729D8(struct SoundTrack *track, u32 val);
+void sub_080729EC(struct SoundTrack *track);
+void sub_080729FC(struct SoundTrack *track);
+void sub_08072A18(struct SoundTrack *track);
+void sub_08072A34(struct SoundTrack *track);
+void sub_08072A40(struct SoundTrack *track);
+void sub_08072A54(struct SoundTrack *track);
+void sub_08072A6C(struct SoundTrack *track);
+void sub_08072A80(struct SoundTrack *track);
+void stream_read_u32_to_field(struct SoundTrack *track);
+void stream_read_and_shift_u32(struct SoundTrack *track);
+void sub_08072ABC(struct SoundTrack *track);
+void sub_08072AC4(struct SoundTrack *track);
+void sub_08072AEC(struct SoundTrack *track);
+void sub_08072AFC(struct SoundTrack *track);
+void sub_08072B28(struct SoundTrack *track);
+void sound_read_envelope_params(struct SoundTrack *track);
+void sound_channel_enable(struct SoundTrack *track);
+void sound_channel_disable(struct SoundTrack *track);
+void sub_08072BD4(struct SoundTrack *track);
+void sub_08072BE4(struct SoundTrack *track);
+void sound_channel_update_note_08072798(struct SoundTrack *track, u8 cmd);
+
+void sound_set_channel_note(struct SoundTrack *track, u8 note);
+void sub_0807255C(struct SoundTrack *track);
+void sound_channel1_update(struct SoundTrack *track);
+void sound_channel_process_tone(struct SoundTrack *track);
+void update_wave_channel(struct SoundTrack *track);
+void sound_update_channel_3(struct SoundTrack *track);
+void sound_channel_6_update_note(struct SoundTrack *track);
+void sound_channel_7_update_note(struct SoundTrack *track);
+void sub_080740D4(struct SoundTrack *track);
+u32 sub_080743C8(void);
+void sound_update_master_volume(void);
+void sound_channel_advance_sequence(struct SoundTrack *track);
+
 #endif // GUARD_FUNCTIONS_H

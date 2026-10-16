@@ -3,10 +3,12 @@
 
 // Structures that are not understood yet. Fields are named by offset.
 
-// Sound sequence track (code_0806F3F0); unk14 is the read pointer into the sequence data.
+// Sound sequence track (sound_seq.c), 0x74 bytes; unk14 is the read pointer into the sequence data.
 struct SoundTrack
 {
-    u8 filler0[0x10];
+    u8 filler0[0x4];
+    struct SoundTrack *unk4; // next in the circular list at gUnk_03007014->unk5E4
+    u8 filler8[0x8];
     void (*unk10)(struct SoundTrack *track);
     u8 *unk14;
     u8 *unk18;
@@ -28,7 +30,7 @@ struct SoundTrack
     u16 unk4C;
     u8 filler4E[0x2];
     u8 unk50; // dirty flags
-    u8 filler51[0x1];
+    u8 unk51;
     u8 unk52;
     u8 unk53;
     u8 unk54;
@@ -59,6 +61,7 @@ struct SoundTrack
     u8 filler6D[0x1];
     u8 unk6E;
     u8 unk6F;
+    u8 filler70[0x4];
 };
 
 struct UnkSound_08073CA4
@@ -147,7 +150,9 @@ struct SoundNoteTable
 // Sound driver work area (0x734 bytes, cleared by sound_engine_init).
 struct Unk_03007014
 {
-    u8 filler0[0x688];
+    struct SoundTrack tracks[13];
+    struct SoundTrack *unk5E4;
+    u8 filler5E8[0xA0];
     u32 unk688;
     u32 unk68C;
     u8 unk690[0x3A]; // channel at 0x690
@@ -159,7 +164,8 @@ struct Unk_03007014
     u32 unk720;
     u32 unk724;
     struct SoundNoteTable *unk728;
-    u8 filler72C[0x8];
+    u8 unk72C;
+    u8 filler72D[0x7];
 };
 
 struct Unk_08047414
