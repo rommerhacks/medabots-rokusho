@@ -68,7 +68,7 @@ _080095C0: .4byte 0x083B6410
 _080095C4:
 	adds r0, r6, #0
 	movs r1, #9
-	bl sub_08042678
+	bl fill_text_blank
 	lsls r1, r4, #2
 	adds r1, r1, r4
 	lsls r1, r1, #0x19

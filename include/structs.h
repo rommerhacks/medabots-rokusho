@@ -320,7 +320,8 @@ struct Unk_03000BE0
 struct Unk_030017A0
 {
     u8 unk0; // slot in use
-    u8 filler1[0x2];
+    u8 unk1;
+    u8 unk2;
     u8 unk3;
     u8 unk4;
     u8 unk5;

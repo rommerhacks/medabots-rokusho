@@ -47,7 +47,7 @@ _08009834:
 	adds r4, #0x9e
 	adds r0, r4, #0
 	movs r1, #5
-	bl sub_08042678
+	bl fill_text_blank
 _08009840:
 	movs r0, #6
 	str r0, [sp]
@@ -67,7 +67,7 @@ _0800985C:
 	adds r4, #0x9e
 	adds r0, r4, #0
 	movs r1, #5
-	bl sub_08042678
+	bl fill_text_blank
 	movs r0, #6
 	str r0, [sp]
 	movs r0, #0xa

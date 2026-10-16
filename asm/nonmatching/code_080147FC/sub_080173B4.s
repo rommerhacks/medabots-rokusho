@@ -33,7 +33,7 @@ _080173E0:
 _080173EA:
 	ldr r0, _080173F8 @ =0x030004DE
 	movs r1, #0xd
-	bl sub_08042678
+	bl fill_text_blank
 	movs r7, #1
 	b _0801756E
 	.align 2, 0

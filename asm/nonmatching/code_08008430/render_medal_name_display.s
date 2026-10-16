@@ -56,7 +56,7 @@ _08009724:
 	adds r4, #0x9e
 	adds r0, r4, #0
 	movs r1, #0xa
-	bl sub_08042678
+	bl fill_text_blank
 	movs r0, #0xa
 	str r0, [sp]
 	movs r0, #9

@@ -70,7 +70,7 @@ _0800ECCC: .4byte 0x083BB9CC
 _0800ECD0:
 	adds r0, r7, #0
 	movs r1, #0xd
-	bl sub_08042678
+	bl fill_text_blank
 	lsrs r1, r6, #0x18
 	movs r0, #0xa
 	str r0, [sp]

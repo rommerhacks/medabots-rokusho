@@ -92,7 +92,7 @@ _08017324: .4byte 0x083B7338
 _08017328:
 	ldr r0, _08017334 @ =0x030004DE
 	movs r1, #0xd
-	bl sub_08042678
+	bl fill_text_blank
 	b _0801738C
 	.align 2, 0
 _08017334: .4byte 0x030004DE
@@ -133,7 +133,7 @@ _08017380: .4byte 0x083B7338
 _08017384:
 	ldr r0, _080173B0 @ =0x030004DE
 	movs r1, #0xd
-	bl sub_08042678
+	bl fill_text_blank
 _0801738C:
 	ldr r0, _080173B0 @ =0x030004DE
 	movs r1, #0xa

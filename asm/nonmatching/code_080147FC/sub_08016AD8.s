@@ -16,7 +16,7 @@ sub_08016AD8: @ 0x08016AD8
 	bne _08016B04
 	ldr r0, _08016B00 @ =0x030004DE
 	movs r1, #0xd
-	bl sub_08042678
+	bl fill_text_blank
 	b _08016BDE
 	.align 2, 0
 _08016AFC: .4byte 0x03001800

@@ -48,6 +48,7 @@ extern Func gVBlankOnceCallback;      // called at the next vblank, then reset t
 extern Func gHBlankCallback;          // called by hblank_irq
 extern struct OamData gOamBuffer[128]; // copied to OAM in vblank_body
 extern struct Unk_03002414 *gUnk_03002414;
+extern u8 *gUnk_03005308;
 extern u32 gUnk_03000430;              // vblank_body OAM mode (0, 2)
 extern u8 gUnk_03000434;               // bit 0: vblank_body skips the BG scroll registers
 extern struct Vec16 gUnk_03002C2C;     // scroll added to every BG layer
@@ -103,6 +104,7 @@ extern const u16 gSoundFinetuneRatios[128]; // 2^(i/(12*128)) * 0x1000
 extern const u32 gSoundEffectTracks[6]; // track indices of the sound effect tracks (4-7, 10, 11)
 extern const Func gGameStateHandlers_083AC148[];
 extern const u32 gUnk_083B6410[];
+extern const u8 gUnk_083D1BF8[];
 extern const u32 gUnk_083BA4D8[];
 extern const u32 gUnk_083BB9CC[][4];
 extern const u32 gUnk_08484444[];

@@ -72,7 +72,16 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_0804242C);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", rng_next_080424B8);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", set_blend_effect_mode);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_blend_effect);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08042678);
+
+void fill_text_blank(u8 *buf, u8 n)
+{
+    u32 i;
+
+    for (i = 0; i < n; i++)
+        *buf++ = 0x43;
+    *buf = 0xFE;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", fill_tilemap_rect_08042698);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", fill_tilemap_pair_or_divide);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", divide_by_100000_08042838);
