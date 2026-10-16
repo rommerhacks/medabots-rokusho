@@ -889,15 +889,172 @@ void sub_080039BC(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_080039E0);
+void sub_080039E0(void)
+{
+    if (sub_0803EED8() == 0)
+    {
+        if (gUnk_03000430 == 2)
+        {
+            u32 fill = 0x200;
+            CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+        }
+        gUnk_083AC320[gGameSubState]();
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08003A38);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08003D4C);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08003DE0);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08003E54);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08003EA0);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08003EE0);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08003F28);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08003F74);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08003FE8);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08004028);
+
+void sub_08003D4C(void)
+{
+    struct Unk_03000440 *s;
+    u8 *flag;
+
+    sub_08004E74();
+    update_battle_sprite_orbit_clockwise(0);
+    update_battle_sprite_orbit_clockwise(1);
+    update_battle_sprite_orbit_clockwise(2);
+    update_battle_sprite_orbit_clockwise(3);
+    setup_overworld_scene_from_position();
+    update_battle_icon_blink_and_orbit();
+    check_and_update_battle_sprite_orbit();
+    s = &gUnk_03000440;
+    flag = &s->unk56;
+    if (*flag == 1)
+    {
+        if (s->unk84 > 8)
+            goto done;
+        blend_obj_palettes_to_color_0803F684(0, 32 - s->unk84 * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, 32 - s->unk84 * 4, 0xF0FF);
+        s->unk84++;
+    }
+    else if (update_blend_effect())
+    {
+    done:
+        *flag = 0;
+        gGameSubState++;
+    }
+}
+
+void sub_08003DE0(void)
+{
+    sub_08004E74();
+    update_battle_sprite_orbit_clockwise(0);
+    update_battle_sprite_orbit_clockwise(1);
+    update_battle_sprite_orbit_clockwise(2);
+    update_battle_sprite_orbit_clockwise(3);
+    setup_overworld_scene_from_position();
+    update_battle_icon_blink_and_orbit();
+    check_and_update_battle_sprite_orbit();
+    sub_0800712C();
+    if (sub_080058A4() == 0 && sub_08005588() == 0)
+    {
+        if (KEYS_LO(gNewKeys) & 2)
+            sub_0800725C();
+        else if (KEYS_LO(gNewKeys) & 1)
+            team_select_confirm_pick();
+        else if (KEYS_LO(gNewKeys) & 8)
+            battle_play_alert_sound();
+    }
+}
+
+void sub_08003E54(void)
+{
+    sub_08004E74();
+    update_battle_sprite_orbit_clockwise(0);
+    update_battle_sprite_orbit_clockwise(1);
+    update_battle_sprite_orbit_clockwise(2);
+    update_battle_sprite_orbit_clockwise(3);
+    setup_overworld_scene_from_position();
+    check_and_update_battle_sprite_orbit();
+    set_blend_effect_mode(6, 0x3F, 0x20);
+    gUnk_03000440.unk84 = 0;
+    gGameSubState++;
+}
+
+void sub_08003EA0(void)
+{
+    sub_08004E74();
+    update_battle_sprite_orbit_clockwise(0);
+    update_battle_sprite_orbit_clockwise(1);
+    update_battle_sprite_orbit_clockwise(2);
+    update_battle_sprite_orbit_clockwise(3);
+    setup_overworld_scene_from_position();
+    check_and_update_battle_sprite_orbit();
+    if (update_blend_effect())
+        gGameSubState++;
+}
+
+void sub_08003EE0(void)
+{
+    CpuFastSet(gUnk_084E2E38, (void *)0x050003E0, 8);
+    clear_battle_sprite_slot(0, 0x80);
+    gUnk_03000440.unk96 = 0;
+    gUnk_03000430 = 0;
+    gGameState = 2;
+    gGameSubState = 16;
+}
+
+void sub_08003F28(void)
+{
+    sub_08004E74();
+    update_battle_sprite_orbit_clockwise(0);
+    update_battle_sprite_orbit_clockwise(1);
+    update_battle_sprite_orbit_clockwise(2);
+    update_battle_sprite_orbit_clockwise(3);
+    setup_overworld_scene_from_position();
+    update_battle_icon_blink_and_orbit();
+    check_and_update_battle_sprite_orbit();
+    copy_obj_palette_to_buffer();
+    gUnk_03000440.unk84 = 0;
+    gGameSubState++;
+}
+
+void sub_08003F74(void)
+{
+    sub_08004E74();
+    update_battle_sprite_orbit_clockwise(0);
+    update_battle_sprite_orbit_clockwise(1);
+    update_battle_sprite_orbit_clockwise(2);
+    update_battle_sprite_orbit_clockwise(3);
+    setup_overworld_scene_from_position();
+    update_battle_icon_blink_and_orbit();
+    check_and_update_battle_sprite_orbit();
+    if (gUnk_03000440.unk84 <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xF0FF);
+        gUnk_03000440.unk84++;
+    }
+    else
+    {
+        gGameSubState = 16;
+    }
+}
+
+void sub_08003FE8(void)
+{
+    sub_08004E74();
+    update_battle_sprite_orbit_clockwise(0);
+    update_battle_sprite_orbit_clockwise(1);
+    update_battle_sprite_orbit_clockwise(2);
+    update_battle_sprite_orbit_clockwise(3);
+    setup_overworld_scene_from_position();
+    check_and_update_battle_sprite_orbit();
+    text_window_init(1, 2, 0);
+    gGameSubState++;
+}
+
+void sub_08004028(void)
+{
+    sub_08004E74();
+    update_battle_sprite_orbit_clockwise(0);
+    update_battle_sprite_orbit_clockwise(1);
+    update_battle_sprite_orbit_clockwise(2);
+    update_battle_sprite_orbit_clockwise(3);
+    setup_overworld_scene_from_position();
+    check_and_update_battle_sprite_orbit();
+    if (run_message(gUnk_083B53F8[22]))
+        gGameSubState = 2;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_0800406C);

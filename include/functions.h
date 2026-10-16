@@ -9,6 +9,17 @@ void palette_blend_to_color_080013A8(u16 color, u32 amount);
 void sub_08003904(void);
 void sub_0800393C(void);
 void sub_080039BC(void);
+void sub_08004E74(void);
+void update_battle_sprite_orbit_clockwise(u32 i);
+void setup_overworld_scene_from_position(void);
+void update_battle_icon_blink_and_orbit(void);
+void check_and_update_battle_sprite_orbit(void);
+u32 sub_08005588(void);
+u32 sub_080058A4(void);
+void sub_0800712C(void);
+void sub_0800725C(void);
+void team_select_confirm_pick(void);
+void battle_play_alert_sound(void);
 void sub_08006764(void);
 void assign_medal_to_team_slot(void);
 void sub_08015F90(u32 a);
@@ -384,5 +395,6 @@ void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot);
 void sub_080415BC(void); // zeroes the four BG scroll positions
 void set_blend_effect_mode(u8 mode, u16 a, u16 b);
 u32 update_blend_effect(void);
+u32 sub_0803EED8(void); // nonzero: waiting on the serial link (reads gUnk_03005010)
 
 #endif // GUARD_FUNCTIONS_H

@@ -142,15 +142,19 @@ struct Unk_03000440
     u8 fillerF[0x19];
     u8 unk28;
     u8 unk29; // choice menu state (poll_choice_menu)
-    u8 filler2A[0x5A];
+    u8 filler2A[0x2C];
+    u8 unk56;
+    u8 filler57[0x2D];
     u8 unk84; // field menu: animation frame counter
     u8 unk85;
     u8 filler86[0x2];
     u8 unk88; // field menu: row animation counter
     u8 filler89[0x5];
     u8 unk8E; // field menu cursor: 0 Medawatch, 1 Item, 2 Vehicle, 3 Save (runtime-checked)
-    u8 unk8F;
-    u8 filler90[0xE];
+    u8 unk8F; // Medawatch menu cursor (0..2)
+    u8 filler90[0x6];
+    u8 unk96;
+    u8 filler97[0x7];
     u8 unk9E[0x51]; // digit buffer (divide_by_10000)
     u8 unkEF;
     u8 fillerF0[0x3E];

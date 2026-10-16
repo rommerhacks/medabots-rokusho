@@ -162,3 +162,6 @@ gUnk_084C1C24       = 0x084C1C24;
 gUnk_084C1E04       = 0x084C1E04;
 gUnk_084C1FD4       = 0x084C1FD4;
 gUnk_02020800       = 0x02020800;
+
+/* code_0800025C: game state 3 */
+gUnk_083AC320       = 0x083AC320;
