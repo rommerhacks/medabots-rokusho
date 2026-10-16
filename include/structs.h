@@ -40,18 +40,18 @@ struct SoundTrack
     u8 unk58;
     u8 unk59;
     u8 unk5A;
-    u8 unk5B;
-    u8 unk5C;
-    u8 unk5D;
-    u8 unk5E;
-    u8 unk5F; // envelope step counter
-    s8 unk60; // envelope step delta
-    u8 unk61; // envelope phase (1..5)
-    u8 unk62;
+    u8 envAttack; // high nibble: frames per step, low nibble: volume step
+    u8 envDecay; // same layout as envAttack
+    u8 envReleaseAt; // release starts when this many frames of the note remain
+    u8 envRelease; // high nibble: frames per step, low nibble: steps
+    u8 envCounter; // frames until the next envelope step
+    s8 envStep; // volume change per step / steps left in release
+    u8 envPhase; // 0 off, 1 key-on delay, 2 attack, 3 decay, 4 sustain, 5 release
+    u8 envEnabled;
     u8 unk63;
     u8 unk64;
-    u8 unk65;
-    u8 unk66; // envelope volume (0..15)
+    u8 volume;
+    u8 envVolume; // current envelope volume (0..15)
     u8 unk67;
     u8 filler68[0x1];
     u8 unk69;

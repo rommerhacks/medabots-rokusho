@@ -102,7 +102,7 @@ _08072832:
 	adds r0, r4, #0
 	bl sub_0807255C
 	adds r0, r4, #0
-	bl sound_channel_handle_end
+	bl sound_env_key_on
 	b _08072940
 _08072866:
 	adds r0, r4, #0

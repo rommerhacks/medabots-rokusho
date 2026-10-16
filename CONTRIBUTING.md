@@ -10,7 +10,8 @@
    python3 tools/scripts/match.py <name> scratch.c
    ```
 
-   This compiles with old_agbcc (the compiler the Makefile uses), links at the function's original address and compares the bytes
+   This compiles the way the Makefile does for that function's module (old_agbcc, or agbcc
+   `-fprologue-bugfix` for the sound modules listed in `SOUND_OBJS`), links at the function's original address and compares the bytes
    (code and literal pool). On a mismatch it prints both disassemblies side by side.
 4. Declare what it uses in `include/`: prototypes in `functions.h`, RAM variables and ROM data in
    `variables.h`, with their addresses in `symbols.ld`.
@@ -34,6 +35,15 @@
   combined assignments (`a = b = c;`). Small rewrites often fix "almost" matches.
 * The game was built with what pret ships as `old_agbcc`: with `agbcc`, leaf functions that branch
   get an extra `push {lr}` that the original doesn't have. `match.py --new` tries `agbcc`.
+* The sound code from `0x08072234` on (`sound_seq.c`, `sound_driver.c`) was built differently: it
+  matches pret's `agbcc` with `-fprologue-bugfix` (no `push {lr}` in branching leaf functions, but
+  agbcc's better address CSE, e.g. `subs r2, #0x16` to reach a neighbouring field). The Makefile sets
+  this per object (`SOUND_OBJS`) and `match.py` picks it from the module (`BUGFIX_MODULES`).
+* A `ldr rX, =0x414` + `ldr r0, [rX, #0x14]` where you expect a single folded offset
+  (`ldr r0, [rX]` with `rX = base + 0x428`) means the original took the address of a struct first,
+  typically through a small `static inline` helper that takes the struct pointer.
+* A value that must stay in a callee-saved register across calls (e.g. a zero stored at the end)
+  is often a separate variable assigned in the middle of the code, not a constant.
 
 ## Naming
 

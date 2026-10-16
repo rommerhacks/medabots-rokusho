@@ -21,10 +21,10 @@ compiles to the original bytes. Run `make progress` to see the current numbers.
 
 | | |
 |---|---|
-| Compiler | old_agbcc (`gcc 2.9-arm-000512`, the Nintendo AGB SDK compiler, without pret's agbcc changes), `-O2 -mthumb-interwork` |
+| Compiler | old_agbcc (`gcc 2.9-arm-000512`, the Nintendo AGB SDK compiler, without pret's agbcc changes), `-O2 -mthumb-interwork`; the sound sequencer and driver (`src/sound_seq.c`, `src/sound_driver.c`) match pret's agbcc with `-fprologue-bugfix` |
 | Code | `0x0800025C`-`0x080750D7` game code (Thumb), `0x0807C740`-`0x0807E6EF` SDK libraries |
 | Libraries | EEPROM_V122, libgcc, BIOS syscall stubs (kept as asm in `asm/lib/`) |
-| Sound | custom driver (`src/sound_driver.c`), not m4a |
+| Sound | custom sequencer and driver (`src/sound_seq.c`, `src/sound_driver.c`), not m4a |
 | Data | still `.incbin` from `baserom.gba` (`data/`, `sound/`, `graphics/`) |
 
 ## Layout
