@@ -126,7 +126,7 @@ INCLUDE_ASM("asm/nonmatching/sound_driver", get_sound_channel_position);
 INCLUDE_ASM("asm/nonmatching/sound_driver", is_sound_playing_at_position);
 INCLUDE_ASM("asm/nonmatching/sound_driver", is_sound_playing_with_lock);
 
-void sub_08074E70(u32 val)
+void sub_08074E70(struct SoundNoteTable *val)
 {
     gUnk_03007014->unk728 = val;
 }

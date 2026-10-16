@@ -4,7 +4,7 @@
 Usage: match.py FUNC FILE.c [--new]
 
 FILE.c is a standalone C file (it may #include "global.h" and other headers) that defines FUNC.
-It is compiled with old_agbcc like the Makefile (--new: agbcc), linked at FUNC's original address
+It is compiled like the Makefile does: old_agbcc, or agbcc -fprologue-bugfix for the sound modules (--new: agbcc), linked at FUNC's original address
 against the symbols of the last full build (medabots_rokusho.elf, so run `make` once first), and
 compared byte for byte with baserom.gba over the original function's size (code and literal pool).
 
@@ -30,12 +30,16 @@ def run(cmd, **kw):
     return r.stdout
 
 
+# Modules the Makefile builds with agbcc -fprologue-bugfix instead of old_agbcc (keep in sync with SOUND_OBJS)
+BUGFIX_MODULES = {"sound_seq", "sound_driver"}
+
+
 def func_info(name):
     """Original address and size (code + literal pool + padding) from config/functions.tsv."""
     for line in open(os.path.join(ROOT, "config", "functions.tsv")):
         p = line.rstrip("\n").split("\t")
         if len(p) >= 3 and p[2] == name:
-            return int(p[0], 16), int(p[1], 16)
+            return int(p[0], 16), int(p[1], 16), (p[3] if len(p) > 3 else "")
     raise SystemExit(f"{name}: not in config/functions.tsv")
 
 
@@ -54,18 +58,22 @@ def main():
     ap.add_argument("func")
     ap.add_argument("cfile")
     ap.add_argument("--new", action="store_true", help="use agbcc instead of old_agbcc")
-    ap.add_argument("--old", action="store_true", help="(default) use old_agbcc")
+    ap.add_argument("--old", action="store_true", help="use old_agbcc (default, except for BUGFIX_MODULES)")
+    ap.add_argument("--bugfix", action="store_true", help="agbcc -fprologue-bugfix (implies --new)")
     args = ap.parse_args()
 
-    addr, size = func_info(args.func)
+    addr, size, module = func_info(args.func)
+    if module in BUGFIX_MODULES and not args.new and not args.old:
+        args.bugfix = True
     base = open(BASEROM, "rb").read()[addr - 0x08000000: addr - 0x08000000 + size]
 
     with tempfile.TemporaryDirectory() as tmp:
         i, s, o, elf, binf, syms = (os.path.join(tmp, n) for n in ("f.i", "f.s", "f.o", "f.elf", "f.bin", "syms.elf"))
         run(["arm-none-eabi-cpp", "-nostdinc", "-I", "include", "-I", "tools/agbcc/include", "-undef",
              os.path.abspath(args.cfile), "-o", i])
-        cc1 = "tools/agbcc/bin/agbcc" if args.new else "tools/agbcc/bin/old_agbcc"
-        run([cc1, "-mthumb-interwork", "-Wimplicit", "-Wparentheses", "-O2", "-fhex-asm", i, "-o", s])
+        cc1 = "tools/agbcc/bin/agbcc" if args.new or args.bugfix else "tools/agbcc/bin/old_agbcc"
+        extra = ["-fprologue-bugfix"] if args.bugfix else []
+        run([cc1, "-mthumb-interwork", "-Wimplicit", "-Wparentheses", "-O2", "-fhex-asm"] + extra + [i, "-o", s])
         with open(s, "a") as f:
             f.write("\t.text\n\t.align\t2, 0\n")
         run(["arm-none-eabi-as", "-mcpu=arm7tdmi", "-I", "include", "-I", ".", "-o", o, s])

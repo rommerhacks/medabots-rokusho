@@ -80,4 +80,21 @@ void play_song(u32 id);
 void play_sound_effect(u32 id);
 void sound_stop_all_with_fade_guard(u32 a);
 
+u16 sub_08073140(u32 idx);
+void init_all_sound_channels(void);
+void sound_init_wave_channel(void);
+s32 sound_set_pitch_offset(void *channel, u32 note);
+void CpuSet(const void *src, void *dest, u32 control);
+void sub_08072280(struct SoundTrack *track);
+void sound_channel_parse_note_param(struct SoundTrack *track);
+void sound_channel_tick_decay(struct SoundTrack *track);
+void sound_channel_update_position(struct SoundTrack *track);
+void sound_channel_init_vibrato(struct SoundTrack *track);
+void sound_channel_process_command_080723D4(struct SoundTrack *track);
+void sound_channel_handle_end(struct SoundTrack *track);
+void sound_channel_tick_duration(struct SoundTrack *track);
+void sub_08072458(struct SoundTrack *track);
+void sub_080724A0(struct SoundTrack *track);
+void sub_080724E8(struct SoundTrack *track);
+
 #endif // GUARD_FUNCTIONS_H
