@@ -26,7 +26,17 @@ u8 handle_battle_movement_input(u8 dir)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", battle_field_movement_dispatch);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", load_battle_palette_via_dma);
+
+void load_battle_palette_via_dma(u32 toBuffer)
+{
+    decompress_battle_tile_graphics();
+    if (toBuffer == 0)
+        DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.unkC5C]], OBJ_PLTT, 32)
+    else
+        DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.unkC5C]], 0x0202F800, 32)
+    gUnk_030057E0.unkC28 = gUnk_030057E0.unkC5C;
+    load_battle_terrain_data();
+}
 
 void sub_08051E8C(void)
 {
@@ -305,7 +315,34 @@ void check_and_update_battlefield_palette(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", find_map_event_by_coords);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", check_battle_animation_complete);
+
+u8 check_battle_animation_complete(u8 dir)
+{
+    u8 ret = 0;
+
+    switch (dir)
+    {
+    case 0:
+        if (gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A == 0)
+            ret = 1;
+        break;
+    case 1:
+        if (gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A + 16 == gUnk_030057E0.unk802 * 8)
+            ret = 1;
+        break;
+    case 2:
+        if (gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 == 0)
+            ret = 1;
+        break;
+    case 3:
+        if (gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 + 16 == gUnk_030057E0.unk800 * 8)
+            ret = 1;
+        break;
+    }
+    if (ret)
+        set_battle_entity_animation_attack(dir);
+    return ret;
+}
 
 void set_sprite_animation_state(u8 idx, u8 state)
 {

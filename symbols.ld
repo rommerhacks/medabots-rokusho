@@ -41,6 +41,8 @@ gUnk_03006D38       = 0x03006D38;
 /* ===== ROM data ===== */
 gUnk_083D28C0       = 0x083D28C0;
 gUnk_083D2908       = 0x083D2908;
+gUnk_083D29A6       = 0x083D29A6;
+gUnk_083F8634       = 0x083F8634;
 gUnk_083D2918       = 0x083D2918;
 gUnk_083D2B8D       = 0x083D2B8D;
 gUnk_083D28C3       = 0x083D28C3;

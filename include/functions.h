@@ -198,7 +198,7 @@ void sound_channel_advance_sequence(struct SoundTrack *track);
 // code_0805137C (field)
 void sub_08051E8C(void);
 void update_battle_direction_indicator(u8 arg);
-void load_battle_palette_via_dma(u8 arg);
+void load_battle_palette_via_dma(u32 toBuffer);
 void set_sprite_animation_state(u8 idx, u8 state);
 u8 sub_080526F0(u16 x);
 u8 sub_08052714(u16 y);
@@ -207,6 +207,10 @@ u32 sub_0804803C(u8 arg);
 u8 get_adjacent_tile_value(u8 dir);
 void set_battle_entity_animation_attack(u8 dir);
 void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj);
+void load_battle_terrain_data(void);
+
+// code_08044F54
+void decompress_battle_tile_graphics(void);
 
 // code_080490C4
 void advance_sprite_animation_frame(u8 idx);
