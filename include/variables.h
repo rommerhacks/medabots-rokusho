@@ -20,7 +20,9 @@ extern struct Unk_03002C30 gUnk_03002C30[];
 extern struct Unk_03005170 gUnk_03005170;
 extern struct Unk_03005350 gUnk_03005350;
 extern struct Unk_030057A0 gUnk_030057A0;
+extern u8 *gUnk_03005590; // current map script data (banked, see read_map_script_byte)
 extern struct Unk_030057E0 gUnk_030057E0;
+extern struct Unk_030064A0 gUnk_030064A0;
 extern struct Unk_03006D20 gUnk_03006D20;
 extern struct Unk_03007014 *gUnk_03007014;
 extern struct Vec16 gUnk_03004C30;

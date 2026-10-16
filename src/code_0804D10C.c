@@ -6,39 +6,194 @@ void nullsub_0804D1B8(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D1BC);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D1D8);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D224);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D25C);
+void sub_0804D1BC(void)
+{
+    gUnk_030057E0.unk7FF = read_map_script_byte();
+}
+
+void sub_0804D1D8(void)
+{
+    read_map_script_bytes(5);
+    sub_0804DB84(gUnk_030057E0.unkC94[0], find_next_available_battle_sprite_slot());
+    gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804D224(void)
+{
+    read_map_script_bytes(2);
+    gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804D25C(void)
+{
+    read_map_script_bytes(5);
+    sub_0804DB84(gUnk_030057E0.unkC94[0], find_next_available_battle_sprite_slot());
+    gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
+    gUnk_030057E0.unkC89 = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D2A8);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D350);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D3B4);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D3EC);
+
+void sub_0804D3B4(void)
+{
+    gUnk_03006D38.unk1 = read_map_script_byte();
+    gUnk_030057E0.unkC89 = 1;
+}
+
+// Not called directly (hidden in the tail of sub_0804D3B4).
+void sub_0804D3D8(void)
+{
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804D3EC(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(3);
+    if ((u8)((u16)sub_08047D9C(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1]) >> 8) == 0)
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
+}
 
 void nullsub_0804D440(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D444);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D460);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D488);
+void sub_0804D444(void)
+{
+    gUnk_030057E0.unkC32 = read_map_script_byte();
+}
+
+void sub_0804D460(void)
+{
+    gUnk_030057E0.unkC94[0] = read_map_script_byte();
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804D488(void)
+{
+    gUnk_030057E0.unkC94[0] = read_map_script_byte();
+    gUnk_030057E0.unkC89 = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D4B0);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D534);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D5A4);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D70C);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D72C);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D760);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D7AC);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", read_map_script_byte);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", read_map_script_bytes);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D8A8);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", battle_find_entity_by_id);
+
+void sub_0804D70C(void)
+{
+    read_map_script_bytes(1);
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804D72C(void)
+{
+    struct Unk_030064A0 *v = &gUnk_030064A0;
+    v->unk52 = 0;
+    sub_080496C8(v->unk2, 8);
+    sub_080496C8(v->unkA, 8);
+    sub_080496C8(v->unk12[0], 64);
+}
+
+void sub_0804D760(void)
+{
+    read_map_script_bytes(8);
+    memcpy_u8(gUnk_030057E0.unkC94, gUnk_030064A0.unk12[gUnk_030064A0.unk52++], 8);
+}
+
+// Not called directly (hidden in the tail of sub_0804D760).
+void sub_0804D798(void)
+{
+    gUnk_030057E0.unkC89 = 1;
+}
+
+void sub_0804D7AC(void)
+{
+    u16 start = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(2);
+    if (gUnk_030057E0.unkC76 == 0)
+        gUnk_030057E0.unkC8A = start + ((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]);
+}
+
+u8 read_map_script_byte(void)
+{
+    u8 *data = gUnk_03005590;
+    u32 offsets = (u16)((data[0] | (data[1] << 8)) - 0x4000);
+    u16 banks = (data[2] | (data[3] << 8)) - 0x4000;
+    u16 script = gUnk_030057E0.unkC8E;
+    u8 *header;
+    u16 start;
+    u8 bank;
+    u32 pos;
+    u8 ret;
+
+    offsets += script * 2;
+    header = data + 0x4000;
+    start = header[offsets];
+    offsets++;
+    start = (start | (header[offsets] << 8)) - 0x4000;
+    bank = header[banks + script];
+    pos = start + gUnk_030057E0.unkC8A;
+    ret = data[pos + (bank << 14)];
+    gUnk_030057E0.unkC8A++;
+    return ret;
+}
+
+void read_map_script_bytes(u8 n)
+{
+    s32 i;
+    for (i = 0; i < n; i++)
+        gUnk_030057E0.unkC94[i] = read_map_script_byte();
+}
+
+s32 sub_0804D8A8(u16 id)
+{
+    s32 i;
+    for (i = 0; i < 64; i++)
+        if ((gUnk_030057E0.unk5DC[i].unk2 & 0xFFF) == id)
+            return i;
+    if (i == 64)
+        return -1;
+}
+
+struct MapObject *battle_find_entity_by_id(u16 id)
+{
+    s32 i;
+    for (i = 0; i < 64; i++)
+        if ((gUnk_030057E0.unk5DC[i].unk2 & 0xFFF) == id)
+            return &gUnk_030057E0.unk5DC[i];
+    if (i == 64)
+        return NULL;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D934);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D9AC);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DB34);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DB68);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DB84);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DBA4);
+
+void sub_0804DB34(void)
+{
+    clear_battle_sprite_entry(48);
+    clear_battle_sprite_entry(90);
+    gUnk_030057E0.unkC76 = 0;
+    gUnk_030057E0.unkC5D = gUnk_030057E0.unkC5E;
+}
+
+void sub_0804DB68(u8 i)
+{
+    gUnk_030057E0.unkCA4[i] = 0;
+}
+
+void sub_0804DB84(u8 i, u8 v)
+{
+    gUnk_030057E0.unkCA4[i] = v + 1;
+}
+
+u32 sub_0804DBA4(u8 i)
+{
+    return gUnk_030057E0.unkCA4[i] - 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", call_battle_handler_by_state_0804DBC0);
 
 void nullsub_0804DBE8(void)
@@ -322,7 +477,20 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", init_battle_medapart_sprite);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050508);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", populate_battle_entity_tile_positions);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", init_battle_medapart_sprites_all);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", find_next_available_battle_sprite_slot);
+
+u32 find_next_available_battle_sprite_slot(void)
+{
+    s32 i;
+    for (i = 0; i < 6; i++)
+    {
+        if (!(gUnk_03002C30[i + 79].unk0 & 0x4000) && !gUnk_03002C30[i + 79].unk2E)
+            break;
+    }
+    if (i == 6)
+        return 5;
+    return i;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", set_battle_sprite_animation);
 
 void sub_08050770(u32 idx, u8 val)

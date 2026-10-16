@@ -112,7 +112,8 @@ struct SoundMixChannel
 
 struct Unk_03006D20
 {
-    u8 filler0[0xB];
+    u8 filler0[0xA];
+    u8 unkA;
     u8 unkB;
 };
 
@@ -219,13 +220,22 @@ struct MapObject
     u8 filler6[0x2];
 };
 
+struct Unk_030064A0
+{
+    u8 filler0[0x2];
+    u8 unk2[8];
+    u8 unkA[8];
+    u8 unk12[8][8];
+    u8 unk52;
+};
+
 struct Unk_030057E0
 {
     u8 filler0[0x5DC];
     struct MapObject unk5DC[64];
     u8 filler7DC[0x22];
     u8 unk7FE; // area id
-    u8 filler7FF[0x1];
+    u8 unk7FF;
     u16 unk800; // map width * 2 (tiles are bytes, unk810 rows are unk800 / 2 long)
     u16 unk802; // map height * 2
     u8 filler804[0xC];
@@ -233,7 +243,9 @@ struct Unk_030057E0
     u8 unkC10[0x8]; // tile value -> result of check_tile_and_trigger_battle_action
     u8 fillerC18[0x10];
     u8 unkC28;
-    u8 fillerC29[0xE];
+    u8 fillerC29[0x9];
+    u8 unkC32;
+    u8 fillerC33[0x4];
     u8 unkC37; // random seed
     u8 fillerC38[0x10];
     u16 unkC48;
@@ -248,7 +260,9 @@ struct Unk_030057E0
     u8 fillerC5A[0x1];
     u8 unkC5B;
     u8 unkC5C;
-    u8 fillerC5D[0xA];
+    u8 unkC5D;
+    u8 unkC5E;
+    u8 fillerC5F[0x8];
     u8 unkC67;
     u8 fillerC68[0x1];
     u8 unkC69;
@@ -266,12 +280,14 @@ struct Unk_030057E0
     u8 fillerC85[0x3];
     u8 unkC88;
     u8 unkC89;
-    u16 unkC8A;
-    u8 fillerC8C[0x2];
+    u16 unkC8A; // map script read offset
+    u16 unkC8C;
     u16 unkC8E;
     u16 unkC90;
     u8 unkC92;
-    u8 fillerC93[0x21];
+    u8 fillerC93[0x1];
+    u8 unkC94[0x10]; // map script command arguments (read_map_script_bytes)
+    u8 unkCA4[0x10];
     u8 unkCB4;
 };
 
@@ -285,7 +301,8 @@ struct Unk_03005310
 
 struct Unk_03006D38
 {
-    u8 filler0[0x2];
+    u8 filler0[0x1];
+    u8 unk1;
     u8 unk2;
     u8 unk3;
 };
