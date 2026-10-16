@@ -16,7 +16,7 @@ sound and data are copied out of it at build time.
 ## Status
 
 Every function has been disassembled into `asm/nonmatching/`. The C files in `src/` include them
-with `INCLUDE_ASM(...)`; decompiling a function replaces its `INCLUDE_ASM` line with C that agbcc
+with `INCLUDE_ASM(...)`; decompiling a function replaces its `INCLUDE_ASM` line with C that old_agbcc
 compiles to the original bytes. Run `make progress` to see the current numbers.
 
 | | |

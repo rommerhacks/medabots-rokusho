@@ -37,7 +37,7 @@ compare: $(ROM)
 	@$(SHA1) rom.sha1
 
 progress:
-	@python3 tools/scripts/progress.py
+	@python3 tools/scripts/progress.py --json
 
 clean:
 	rm -rf $(BUILD_DIR) $(ROM) $(ELF) $(MAP)
