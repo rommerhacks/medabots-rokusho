@@ -195,8 +195,12 @@ void sound_play_with_lock(struct SoundTrack *track, u32 target, u32 frames);
 void sound_update_master_volume(void);
 void sound_channel_advance_sequence(struct SoundTrack *track);
 
+// code_0804D10C
+u8 sub_080502B4(u8 idx, u8 dir);
+
 // code_0805137C (field)
 void sub_08051E8C(void);
+s32 sub_080518F4(u8 idx);
 void update_battle_direction_indicator(u8 arg);
 void load_battle_palette_via_dma(u32 toBuffer);
 void set_sprite_animation_state(u8 idx, u8 state);
@@ -208,11 +212,24 @@ u8 get_adjacent_tile_value(u8 dir);
 void field_set_player_facing(u8 dir);
 void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj);
 void load_battle_terrain_data(void);
+u32 sub_08052960(u8 area, u8 which);
+void sub_080529C4(u16 x);
+void sub_080529E4(u16 y);
+u32 sub_08052A04(void);
+u32 sub_08052A18(void);
+void load_npc_sprite_and_calc_camera_offset(u8 area);
+void calculate_camera_scroll_from_npc(void);
+void update_cursor_tile_position(void);
+void LZ77UnCompVram(const void *src, void *dst);
 
 // code_08044F54
+u16 resolve_tile_from_battle_state(u32 arg);
+void sub_0804877C(u8 idx);
+void init_battle_sprite_entry_08048818(u8 idx, u16 attr, u32 frame, u8 a3, u8 a4);
 void decompress_battle_tile_graphics(void);
 
 // code_080490C4
+void sub_080493D4(u8 idx, u8 val);
 void advance_sprite_animation_frame(u8 idx);
 u8 field_random(u8 n); // returns 0..n-1
 void memcpy_u8(const void *src, void *dst, u32 n);

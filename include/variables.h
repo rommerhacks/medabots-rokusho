@@ -42,7 +42,8 @@ extern const u8 gUnk_083D2B8D[];
 extern const u8 gUnk_083D28C3[][16];
 extern const u8 gUnk_083F8B74[][2];
 extern const u8 gUnk_0847E948[];
-extern const u8 *const gUnk_08413114[];
+extern const struct AreaWarp *const gUnk_08413114[];
+extern const struct AreaGfx gUnk_083F92F4[];
 extern const struct MapExit *const gUnk_0840FAF4[]; // per area: 8-byte map exit records, 0xFF-terminated
 extern const u16 gUnk_083AB9D0[];
 extern const u16 gUnk_083ABA88[];

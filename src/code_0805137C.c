@@ -3,7 +3,7 @@
 INCLUDE_ASM("asm/nonmatching/code_0805137C", load_map_npc_sprites);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", init_battle_field_setup);
 
-u32 sub_080518F4(u8 idx)
+s32 sub_080518F4(u8 idx)
 {
     return gUnk_083D28C0[gUnk_03002C30[idx].unk2A] * gUnk_083D28C0[gUnk_03006D38.unk2];
 }
@@ -44,7 +44,48 @@ void sub_08051E8C(void)
         gUnk_030057E0.unkC75 = 0xFF;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", update_battle_direction_indicator);
+void update_battle_direction_indicator(u8 flags)
+{
+    u8 prev = gUnk_030057E0.unkC75;
+
+    if (gUnk_030057E0.unkC73 == gUnk_030057E0.unkC57)
+    {
+        if (gUnk_030057E0.unkC72 == gUnk_030057E0.unkC56)
+        {
+            gUnk_030057E0.unkC74 = 0;
+        }
+        else
+        {
+            if (flags & 2)
+                gUnk_030057E0.unkC74 = 16 / sub_080518F4(48);
+            if (gUnk_030057E0.unkC72 < gUnk_030057E0.unkC56)
+                gUnk_030057E0.unkC75 = 3;
+            else
+                gUnk_030057E0.unkC75 = 2;
+            if (gUnk_030057E0.unkC75 != prev)
+            {
+                set_battle_state_byte_c83(gUnk_030057E0.unkC75);
+                sub_080493D4(48, sub_080502B4(48, gUnk_030057E0.unkC75));
+            }
+        }
+    }
+    else
+    {
+        if (flags & 2)
+            gUnk_030057E0.unkC74 = 16 / sub_080518F4(48);
+        if (gUnk_030057E0.unkC73 < gUnk_030057E0.unkC57)
+            gUnk_030057E0.unkC75 = 1;
+        else
+            gUnk_030057E0.unkC75 = 0;
+        if (gUnk_030057E0.unkC75 != prev)
+        {
+            set_battle_state_byte_c83(gUnk_030057E0.unkC75);
+            sub_080493D4(48, sub_080502B4(48, gUnk_030057E0.unkC75));
+        }
+    }
+    gUnk_03002C30[48].unk2A = gUnk_03002C30[47].unk2A;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805137C", battle_camera_scroll_update);
 
 void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj)
@@ -230,7 +271,20 @@ u8 sub_08052714(u16 y)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", update_entity_sprites_on_screen);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", load_npc_sprite_and_calc_camera_offset);
+
+void load_npc_sprite_and_calc_camera_offset(u8 area)
+{
+    LZ77UnCompVram(gUnk_083F92F4[area].unk0, gUnk_03006D14);
+    if (sub_08052960(gUnk_030057E0.unk7FE, 0) >> 1 <= 14)
+        gUnk_030057E0.unkC48 = (15 - (sub_08052960(area, 0) >> 1)) * 8;
+    else
+        gUnk_030057E0.unkC48 = 0;
+    if (sub_08052960(gUnk_030057E0.unk7FE, 1) >> 1 <= 9)
+        gUnk_030057E0.unkC4A = (10 - (sub_08052960(area, 1) >> 1)) * 8;
+    else
+        gUnk_030057E0.unkC4A = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08052960);
 
 u32 sub_08052990(u32 unused, u8 which)
@@ -263,18 +317,46 @@ void sub_080529E4(u16 y)
     gUnk_03001C04.y = y;
 }
 
-u16 sub_08052A04(void)
+u32 sub_08052A04(void)
 {
     return gUnk_030057E0.unkC48;
 }
 
-u16 sub_08052A18(void)
+u32 sub_08052A18(void)
 {
     return gUnk_030057E0.unkC4A;
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08052A2C);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", calculate_camera_scroll_from_npc);
+
+void calculate_camera_scroll_from_npc(void)
+{
+    s32 x, y;
+
+    x = gUnk_030057E0.unkC56 - 7;
+    if (x < 0)
+        x = 0;
+    if (x + 15 > sub_08052960(gUnk_030057E0.unk7FE, 0) >> 1)
+    {
+        x = sub_08052960(gUnk_030057E0.unk7FE, 0) >> 1;
+        x -= 15;
+        if (sub_08052A04())
+            x = 0;
+    }
+    y = gUnk_030057E0.unkC57 - 4;
+    if (y <= 0)
+        y = 0;
+    if (y + 10 > sub_08052960(gUnk_030057E0.unk7FE, 1) >> 1)
+    {
+        y = sub_08052960(gUnk_030057E0.unk7FE, 1) >> 1;
+        y -= 10;
+        if (sub_08052A18())
+            y = 0;
+    }
+    sub_080529C4(x * 16);
+    sub_080529E4(y * 16);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08052AF8);
 
 void update_bg_scroll_offsets_a(void)
@@ -385,8 +467,56 @@ void set_tile_data(u8 x, u8 y, u8 val)
     gUnk_030057E0.unk810[y * (gUnk_030057E0.unk800 >> 1) + x] = val;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08052E3C);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", init_battle_medaforce_sprite);
+void sub_08052E3C(void)
+{
+    u32 found = 0;
+    u32 area = gUnk_030057E0.unk7FE;
+    const struct AreaWarp *w = gUnk_08413114[area];
+    s32 i;
+
+    for (i = 0; w[i].x != 0xFF; )
+    {
+        u8 x = w[i].x;
+        u8 y = w[i].y;
+        if (x == gUnk_030057E0.unkC56 && y == gUnk_030057E0.unkC57)
+        {
+            gUnk_030057E0.unk7FE = w[i].area;
+            load_npc_sprite_and_calc_camera_offset(gUnk_030057E0.unk7FE);
+            field_set_player_facing(w[i].dir & 7);
+            gUnk_030057E0.unkC52 = (w[i].destX << 4) + gUnk_030057E0.unkC48;
+            gUnk_030057E0.unkC54 = (w[i].destY << 4) + gUnk_030057E0.unkC4A;
+            gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
+            gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
+            calculate_camera_scroll_from_npc();
+            found = 1;
+        }
+        i++;
+        if (found)
+            break;
+    }
+    update_cursor_tile_position();
+}
+
+void init_battle_medaforce_sprite(void)
+{
+    if (gUnk_030057E0.unkC76)
+    {
+        init_battle_sprite_entry_08048818(48, 0xC804, gUnk_030057E0.unkC84 * 12 + gUnk_030057E0.unkC83, gUnk_030057E0.unkC84, 1);
+        gUnk_03002C30[48].unkB = 0x40;
+        gUnk_03002C30[48].unk2B = gUnk_030057E0.unkC84;
+        set_battle_state_byte_c83(gUnk_030057E0.unkC83);
+        sub_080493D4(48, sub_080502B4(48, gUnk_030057E0.unkC83));
+        gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
+        gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
+        gUnk_03002C30[48].unk30 = resolve_tile_from_battle_state(gUnk_03002C30[48].unk2B);
+        sub_0804877C(48);
+        init_battle_sprite_entry_08048818(90, 0xCC0C, 0x90, 14, 1);
+        gUnk_03002C30[90].unkC_8 = gUnk_030057E0.unkC6E;
+        gUnk_03002C30[90].unk10_8 = gUnk_030057E0.unkC70 - 5;
+        gUnk_03002C30[90].unk2 = gUnk_03002C30[48].unk2;
+        gUnk_03002C30[90].unk4 = gUnk_03002C30[48].unk4 - 5;
+    }
+}
 
 void update_cursor_tile_position(void)
 {

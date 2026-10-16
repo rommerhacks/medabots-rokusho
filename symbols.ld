@@ -50,6 +50,7 @@ gUnk_083F8B74       = 0x083F8B74;
 gUnk_0847E948       = 0x0847E948;
 gUnk_08413114       = 0x08413114;
 gUnk_0840FAF4       = 0x0840FAF4;
+gUnk_083F92F4       = 0x083F92F4;
 gGameStateHandlers_083AC148 = 0x083AC148;
 gUnk_083B6410       = 0x083B6410;
 gUnk_083BA4D8       = 0x083BA4D8;

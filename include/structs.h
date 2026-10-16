@@ -130,11 +130,16 @@ struct Unk_03002C30
     s16 unk2;
     s16 unk4;
     u16 unk6; // animation frame
-    u8 filler8[0x3];
+    u8 filler8[0x2];
+    u8 unkA;
     u8 unkB;
-    s32 unkC; // x, 24.8 fixed point
-    s32 unk10; // y, 24.8 fixed point
-    u8 filler14[0xC];
+    u32 unkC_0:8; // x, 24.8 fixed point: fraction
+    u32 unkC_8:24; // integer part
+    u32 unk10_0:8; // y, 24.8 fixed point
+    u32 unk10_8:24;
+    u8 filler14[0x8];
+    u8 unk1C;
+    u8 filler1D[0x3];
     u8 unk20; // animation state (0-3)
     u8 unk21;
     u8 filler22[0x2];
@@ -251,12 +256,13 @@ struct Unk_030057E0
     u16 unkC70;
     u8 unkC72;
     u8 unkC73;
-    u8 fillerC74[0x1];
+    u8 unkC74;
     u8 unkC75;
     u8 unkC76;
     u8 fillerC77[0xC];
     u8 unkC83;
-    u8 fillerC84[0x4];
+    u8 unkC84;
+    u8 fillerC85[0x3];
     u8 unkC88;
     u8 unkC89;
     u16 unkC8A;
@@ -347,6 +353,28 @@ struct Unk_03007014
     u8 unk72F;
     u16 unk730;
     u8 filler732[0x2];
+};
+
+// Area warp record (gUnk_08413114, one 0xFF-terminated list per area): stepping onto (x, y)
+// moves the player to (destX, destY) of area.
+struct AreaWarp
+{
+    u8 x;
+    u8 y;
+    u8 area;
+    u8 dir; // low 3 bits: facing after the warp
+    u8 unk4;
+    u8 unk5;
+    u8 destX;
+    u8 destY;
+};
+
+// Per-area graphics record (gUnk_083F92F4, indexed by area id).
+struct AreaGfx
+{
+    const void *unk0; // LZ77 data, decompressed to gUnk_03006D14
+    u32 unk4;
+    u32 unk8;
 };
 
 struct Unk_08047414
