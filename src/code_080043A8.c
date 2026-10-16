@@ -762,10 +762,52 @@ void update_battle_sprite_orbit_counterclockwise(u32 i)
     gUnk_03002C30[i].unk23 = (gUnk_03002C30[i].unk23 - 1) & 0x3F;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080043A8", update_battle_icon_blink_and_orbit);
+void update_battle_icon_blink_and_orbit(void)
+{
+    if (gUnk_03000440.unk52 & 0x80)
+    {
+        if (gFrameCounter & 1)
+        {
+            gUnk_03002C30[4].unk0 |= 0x4000;
+            gUnk_03002C30[5].unk0 |= 0x4000;
+            gUnk_03002C30[6].unk0 |= 0x4000;
+            gUnk_03002C30[7].unk0 |= 0x4000;
+        }
+        else
+        {
+            gUnk_03002C30[4].unk0 &= 0xBFFF;
+            gUnk_03002C30[5].unk0 &= 0xBFFF;
+            gUnk_03002C30[6].unk0 &= 0xBFFF;
+            gUnk_03002C30[7].unk0 &= 0xBFFF;
+        }
+        update_battle_sprite_orbit_counterclockwise(4);
+        update_battle_sprite_orbit_counterclockwise(5);
+        update_battle_sprite_orbit_counterclockwise(6);
+        update_battle_sprite_orbit_counterclockwise(7);
+    }
+    else
+    {
+        gUnk_03002C30[4].unk0 &= 0xBFFF;
+        gUnk_03002C30[5].unk0 &= 0xBFFF;
+        gUnk_03002C30[6].unk0 &= 0xBFFF;
+        gUnk_03002C30[7].unk0 &= 0xBFFF;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080058A4);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08005948);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", check_and_update_battle_sprite_orbit);
+
+void sub_08005948(void)
+{
+    if (validate_medapart_stats(gUnk_030017A0[gUnk_03000440.unk51].unk2, gUnk_030017A0[gUnk_03000440.unk51].unk3, gUnk_030017A0[gUnk_03000440.unk51].unk4, gUnk_030017A0[gUnk_03000440.unk51].unk5, gUnk_030017A0[gUnk_03000440.unk51].unk6))
+        battle_sprite_set_palette_index(gUnk_03000440.unk51 * 4 + 10, 8);
+}
+
+void check_and_update_battle_sprite_orbit(void)
+{
+    if (validate_medapart_stats(gUnk_030017A0[gUnk_03000440.unk51].unk2, gUnk_030017A0[gUnk_03000440.unk51].unk3, gUnk_030017A0[gUnk_03000440.unk51].unk4, gUnk_030017A0[gUnk_03000440.unk51].unk5, gUnk_030017A0[gUnk_03000440.unk51].unk6))
+        update_battle_sprite_orbiting_positions(gUnk_03000440.unk51 * 4 + 10, gUnk_03000440.unk51, 0);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080059D0);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08005AD0);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08005B44);

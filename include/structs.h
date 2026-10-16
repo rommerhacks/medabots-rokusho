@@ -319,10 +319,10 @@ struct Unk_03000BE0
 
 struct Unk_030017A0
 {
-    u8 unk0; // slot in use
+    u8 unk0; // slot in use (> 1: has a Medal)
     u8 unk1;
-    u8 unk2;
-    u8 unk3;
+    u8 unk2; // Medal id
+    u8 unk3; // Medaparts: head, right arm, left arm, legs (validate_medapart_stats)
     u8 unk4;
     u8 unk5;
     u8 unk6;
