@@ -155,7 +155,7 @@ struct Unk_03002C30
     u8 unk26;
     u8 unk27;
     u8 unk28;
-    u8 filler29[0x1];
+    u8 unk29;
     u8 unk2A;
     u8 unk2B; // animation set
     u8 unk2C;
@@ -258,7 +258,12 @@ struct Unk_030057E0
     u8 fillerC18[0x8];
     u8 unkC20[0x8];
     u8 unkC28;
-    u8 fillerC29[0x9];
+    u8 fillerC29[0x1];
+    u8 unkC2A;
+    u8 fillerC2B[0x3];
+    u8 unkC2E;
+    u8 unkC2F;
+    u8 fillerC30[0x2];
     u8 unkC32;
     u8 fillerC33[0x4];
     u8 unkC37; // random seed
@@ -307,6 +312,9 @@ struct Unk_030057E0
     u8 unkCA4[0x10];
     u8 unkCB4; // index of the map object running the script (unk5DC)
     u8 unkCB5;
+    u8 fillerCB6[0x6];
+    s8 unkCBC;
+    s8 unkCBD;
 };
 
 struct Unk_03005310
