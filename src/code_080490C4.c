@@ -223,7 +223,9 @@ void sub_0804B768(void)
     gUnk_030057E0.unkC89 = 1;
 }
 
-void sub_0804B77C(void)
+// Map script command 6: ends the running script (clears the script id and read offset, frees the
+// script sprite slots) and gives control back to the player.
+void map_script_cmd_end(void)
 {
     gUnk_030057E0.unkC88 = 0;
     gUnk_030057E0.unkC89 = 0;
@@ -240,6 +242,7 @@ void sub_0804B77C(void)
     set_battle_state_cancel_flag();
 }
 
+// guess: fade to black over n frames (n = script byte, 1..16)
 void sub_0804B80C(void)
 {
     s32 n;
@@ -253,6 +256,7 @@ void sub_0804B80C(void)
     gUnk_030057E0.unkC89 = 1;
 }
 
+// guess: fade back in from black over n frames
 void sub_0804B860(void)
 {
     s32 n;
@@ -266,6 +270,7 @@ void sub_0804B860(void)
     gUnk_030057E0.unkC89 = 1;
 }
 
+// guess: fade to white over n frames
 void sub_0804B8B4(void)
 {
     s32 n;
@@ -281,19 +286,23 @@ void sub_0804B8B4(void)
 
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B90C);
 
+// guess: warp command (sets unkC5B first)
 void sub_0804B964(void)
 {
     gUnk_030057E0.unkC5B = 1;
-    sub_0804B99C();
+    map_script_read_warp();
 }
 
+// guess: warp command (clears unkC5B first)
 void sub_0804B980(void)
 {
     gUnk_030057E0.unkC5B = 0;
-    sub_0804B99C();
+    map_script_read_warp();
 }
 
-void sub_0804B99C(void)
+// Reads a warp target from the script: area, unk7FC, unk7FD, player tile x/y. The player keeps
+// facing the same way; field_warp_to_area then loads the area.
+void map_script_read_warp(void)
 {
     gUnk_030057E0.unk7FE = read_map_script_byte();
     gUnk_030057E0.unk7FC = read_map_script_byte();

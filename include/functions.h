@@ -59,7 +59,7 @@ void spawn_battle_medapart_sprite(u8 a, u8 b, u8 c, u8 d);
 void set_battle_sprite_animation(u8 id, u8 state);
 void sub_08050508(u8 id);
 s32 sub_0804D8A8(u16 id);
-void sub_0804B99C(void);
+void map_script_read_warp(void);
 void sub_0804D934(struct MapObject *obj);
 struct MapObject *battle_find_entity_by_id(u16 id);
 void set_battle_state_cancel_flag(void);
