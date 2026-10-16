@@ -30,6 +30,9 @@ extern const u16 gUnk_083ABA88[];
 extern const u8 gUnk_083ABA8C[][16];
 extern const u16 gUnk_083ABAB2[][4];
 extern const u16 gUnk_083ABAC2[];
+extern const u16 gSoundSemitoneRatios[12]; // 2^(i/12) * 0x1000
+extern const u16 gSoundFinetuneRatios[128]; // 2^(i/(12*128)) * 0x1000
+extern const u32 gSoundEffectTracks[6]; // track indices of the sound effect tracks (4-7, 10, 11)
 extern const Func gGameStateHandlers_083AC148[];
 extern const u32 gUnk_083B6410[];
 extern const u32 gUnk_083BA4D8[];

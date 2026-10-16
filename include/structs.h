@@ -66,6 +66,15 @@ struct SoundTrack
     u8 filler71[0x3];
 };
 
+// Header of a Direct Sound sample (pointed to by SoundMixChannel.unk0).
+struct SoundSampleHeader
+{
+    u32 unk0;
+    u16 rate; // playback rate at baseNote
+    u8 fineTune; // 1/128 semitones
+    u8 baseNote;
+};
+
 // Direct Sound channel (FIFO A / B) state, 0x48 bytes, two of them in the sound work area.
 struct SoundMixChannel
 {

@@ -49,10 +49,25 @@ INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_channel_output_routing)
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel1_update);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_process_tone);
 INCLUDE_ASM("asm/nonmatching/sound_driver", update_wave_channel);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_channel_3);
+
+void sound_update_channel_3(struct SoundTrack *track)
+{
+    update_sound_channel_frequency_08073244(track, (vu16 *)0x04000078);
+    sound_channel_check_note_change(track, (u16 *)0x0400007C);
+    sound_update_channel_output_routing(track);
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_update_note_08073698);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_6_update_note);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_7_update_note);
+
+void sound_channel_6_update_note(struct SoundTrack *track)
+{
+    sound_channel_update_note_08073698(track, &gUnk_03007014->unk690);
+}
+
+void sound_channel_7_update_note(struct SoundTrack *track)
+{
+    sound_channel_update_note_08073698(track, &gUnk_03007014->unk6D8);
+}
 
 void sound_update_master_volume(void)
 {
@@ -66,7 +81,15 @@ void sound_update_master_volume(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/sound_driver", load_wave_pattern);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_init_wave_channel);
+
+void sound_init_wave_channel(void)
+{
+    *(vu16 *)0x04000084 = 0x80;
+    *(vu16 *)0x04000082 = 0x400E;
+    *(vu16 *)0x04000070 = 0xC0;
+    load_wave_pattern(0);
+    sound_set_volume(7, 7);
+}
 
 // Streams samples from src into FIFO A (n = 1) or B (n = 2) with DMA n, timed by the sound FIFO.
 void sound_start_fifo_dma(s32 n, u32 src)
@@ -87,11 +110,40 @@ void sound_stop_fifo_dma(s32 n)
     *reg = (*reg & 0x499F) | 0x440;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_volume_lookup);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_volume_scale);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08073A84);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_calculate_playback_rate);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_set_pitch_offset);
+INCLUDE_ASM("asm/nonmatching/sound_driver", sound_semitone_ratio);
+
+u32 sound_finetune_ratio(s32 n)
+{
+    s32 q;
+    s32 rem;
+
+    if (n == 0)
+        return 0;
+    q = n / 128;
+    rem = n - q * 128;
+    return (sound_semitone_ratio(q) * gSoundFinetuneRatios[rem]) >> 12;
+}
+
+u32 sound_apply_finetune(u32 rate, u32 fine)
+{
+    return fine ? (sound_finetune_ratio(fine) * rate) >> 12 : rate;
+}
+
+u32 sound_calculate_playback_rate(struct SoundMixChannel *ch, u32 ratio)
+{
+    struct SoundSampleHeader *smp = (struct SoundSampleHeader *)ch->unk0;
+    u32 rate = sound_apply_finetune((smp->rate * ratio) >> 12, smp->fineTune);
+
+    if (rate > 0x78000)
+        rate = 0x78000;
+    ch->unk4 = rate;
+    return rate;
+}
+
+u32 sound_set_pitch_offset(struct SoundMixChannel *ch, s32 note)
+{
+    return sound_calculate_playback_rate(ch, sound_semitone_ratio(note - ((struct SoundSampleHeader *)ch->unk0)->baseNote));
+}
 
 void sub_08073AE4(u32 val)
 {
@@ -138,7 +190,11 @@ void init_sound_channel_struct(struct SoundMixChannel *ch, u32 a1, u32 a2, u8 a3
     ch->unk40 = a7;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_restart_channel);
+void sound_restart_channel(struct SoundMixChannel *ch)
+{
+    sound_channel_stop_08073B0C(ch);
+    init_sound_channel_struct(ch, 0, 0, 0, 0, 0, 0, 0);
+}
 
 void sub_08073CA4(struct SoundMixChannel *ch)
 {
@@ -175,8 +231,34 @@ void sound_channel_setup_alt(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3,
     ch->unk3E = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_trigger_pending);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_request_stop);
+void sound_channel_trigger_pending(struct SoundMixChannel *ch)
+{
+    if (ch->unkC & 1)
+    {
+        ch->unkC &= ~1;
+        sound_channel_play(ch, ch->unk8 - 0x20);
+    }
+}
+
+void sub_08073E18(struct SoundMixChannel *ch)
+{
+    ch->unk3E = 5;
+}
+
+void sound_channel_request_stop(struct SoundMixChannel *ch)
+{
+    if (ch->unk10)
+    {
+        sound_channel_stop_08073B0C(ch);
+        ch->unkC |= 1;
+    }
+}
+
+void sub_08073E40(struct SoundMixChannel *ch)
+{
+    ch->unk3E = 4;
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_state_dispatch);
 
 void sub_08073EAC(void)
@@ -201,7 +283,16 @@ void sound_update_channel_at_6d8(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_update);
-INCLUDE_ASM("asm/nonmatching/sound_driver", clear_sound_channel_wave_data);
+
+void clear_sound_channel_wave_data(struct SoundTrack *track)
+{
+    if (track->unk8 != NULL)
+    {
+        u32 fill = 0xFFFFFFFF;
+        CpuSet(&fill, track->unk8, 0x0500000C);
+        track->unk8[0x30] = 0;
+    }
+}
 
 u8 sub_080740AC(struct SoundTrack *track)
 {
@@ -225,19 +316,74 @@ u32 sub_080743C8(void)
 
 INCLUDE_ASM("asm/nonmatching/sound_driver", init_sound_channel);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_stop_channel_by_index);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074548);
-INCLUDE_ASM("asm/nonmatching/sound_driver", process_tone_channel_if_idle);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_0807458C);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_tick_channel_3a);
+
+void sub_08074548(void)
+{
+    struct Unk_03007014 *work = gUnk_03007014;
+
+    if (work->tracks[4].unk14 == NULL)
+        sound_channel1_update(&work->tracks[0]);
+}
+
+void process_tone_channel_if_idle(void)
+{
+    struct Unk_03007014 *work = gUnk_03007014;
+
+    if (work->tracks[5].unk14 == NULL)
+        sound_channel_process_tone(&work->tracks[1]);
+}
+
+void sub_0807458C(void)
+{
+    struct Unk_03007014 *work = gUnk_03007014;
+
+    if (work->tracks[6].unk14 == NULL)
+        update_wave_channel(&work->tracks[2]);
+}
+
+void sound_tick_channel_3a(void)
+{
+    struct Unk_03007014 *work = gUnk_03007014;
+
+    if (work->tracks[7].unk14 == NULL)
+        sound_update_channel_3(&work->tracks[3]);
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_channel1_with_fallback);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_channel2_with_fallback);
 INCLUDE_ASM("asm/nonmatching/sound_driver", update_wave_channels_pair);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_wave_channels);
-INCLUDE_ASM("asm/nonmatching/sound_driver", reset_sound_channel_if_idle);
+
+void reset_sound_channel_if_idle(void)
+{
+    struct Unk_03007014 *work = gUnk_03007014;
+
+    if (work->tracks[10].unk14 == NULL)
+        sub_08073CA4(&work->unk690);
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_channel_finish);
-INCLUDE_ASM("asm/nonmatching/sound_driver", reset_sound_channel_at_690);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_reset_channel_9_and_stop_12);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_tick_channel_3c);
+
+void reset_sound_channel_at_690(void)
+{
+    sub_08073CA4(&gUnk_03007014->unk690);
+    gUnk_03007014->tracks[10].unk50 = 0;
+}
+
+void sound_reset_channel_9_and_stop_12(void)
+{
+    sub_08073CA4(&gUnk_03007014->unk6D8);
+    gUnk_03007014->tracks[11].unk50 = 0;
+    sound_stop_channel_by_index(12);
+}
+
+void sound_tick_channel_3c(void)
+{
+    struct Unk_03007014 *work = gUnk_03007014;
+
+    if (work->tracks[7].unk14 == NULL)
+        sound_update_channel_3(&work->tracks[12]);
+}
 
 void sound_channel_reset(struct SoundTrack *track)
 {
@@ -254,7 +400,14 @@ void sound_channel_reset(struct SoundTrack *track)
     track->unk44 = 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_finish_and_callback);
+void sound_channel_finish_and_callback(struct SoundTrack *track)
+{
+    if (track->unk14 != NULL)
+    {
+        sound_channel_reset(track);
+        ((void (*)(void))track->unkC)();
+    }
+}
 
 // Inserts the track into the circular list of active tracks (gUnk_03007014->unk5E4) as its new head.
 void sound_track_link(struct SoundTrack *track)
@@ -371,7 +524,18 @@ void sound_reset_callbacks_with_lock(u32 a, u32 b)
     sound_unlock();
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", get_sound_channel_position);
+s32 get_sound_channel_position(u32 idx)
+{
+    struct SoundTrack *track = &sub_080750CC()->tracks[idx];
+    s32 ret;
+
+    if (track->unk14 != NULL)
+        ret = track->unk4E;
+    else
+        ret = -1;
+    return ret;
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", is_sound_playing_at_position);
 
 u32 is_sound_playing_with_lock(u32 a)
@@ -389,12 +553,22 @@ void sub_08074E70(struct SoundNoteTable *val)
     gUnk_03007014->unk728 = val;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074E84);
+void sub_08074E84(struct SoundTrack *track, u32 target, u32 frames)
+{
+    s32 step = (s32)(target - track->unk40) / (s32)frames;
 
-void sound_play_with_lock(u32 a, u32 b, u32 c)
+    if (step != 0)
+    {
+        track->unk42 = target;
+        track->unk44 = step;
+        track->unk3C = frames;
+    }
+}
+
+void sound_play_with_lock(struct SoundTrack *track, u32 target, u32 frames)
 {
     sound_lock();
-    sub_08074E84(a, b, c);
+    sub_08074E84(track, target, frames);
     sound_unlock();
 }
 

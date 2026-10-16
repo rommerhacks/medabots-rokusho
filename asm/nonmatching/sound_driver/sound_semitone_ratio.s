@@ -1,7 +1,7 @@
 	.syntax unified
 
-	thumb_func_start sound_volume_lookup
-sound_volume_lookup: @ 0x080739F0
+	thumb_func_start sound_semitone_ratio
+sound_semitone_ratio: @ 0x080739F0
 	push {r4, r5, r6, lr}
 	adds r5, r0, #0
 	ldr r6, _08073A14 @ =0x083ABAC6
