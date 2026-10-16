@@ -164,5 +164,16 @@ extern const u16 gUnk_0850DEF8[];
 extern const u16 gUnk_0850DD18[];
 extern const u16 gUnk_084E2EB8[];
 extern const u16 gUnk_084E2ED8[];
+extern const u8 gUnk_084E61CC[];
+extern const u8 gUnk_084C3208[];
+extern const u8 gUnk_084C33DC[];
+extern const u8 gUnk_084C4DB0[];
+extern const u8 gUnk_084C7318[];
+extern const u8 gUnk_084EF310[];
+extern const u8 gUnk_084EF9C8[];
+extern const u8 gUnk_084F03EC[];
+extern const u8 gUnk_084F13C0[];
+extern const u16 gUnk_084F2820[];
+extern const u16 gUnk_0850DD58[];
 
 #endif // GUARD_VARIABLES_H
