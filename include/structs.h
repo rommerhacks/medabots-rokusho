@@ -367,6 +367,8 @@ struct Unk_03005350
     u8 filler4C[0x68];
     s32 unkB4;
     s32 unkB8;
+    u8 fillerBC[0x118];
+    u32 unk1D4;
 };
 
 // Table pointed to by the sound work area at 0x728: note -> sample/frequency entry.

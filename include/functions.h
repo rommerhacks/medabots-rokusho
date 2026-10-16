@@ -316,5 +316,9 @@ void sub_08047DD8(u8 id, u8 n);
 void init_battle_medapart_sprites_all(void);
 void load_map_npc_sprites(void);
 void update_entity_sprites_on_screen(void);
+u32 sub_08047BEC(u32 a, u32 b);
+void sub_08047DF0(u8 a, u8 b, u8 n);
+void sub_08047E08(u8 a, u8 b, u8 n);
+u32 battle_scene_state_dispatch(void);
 
 #endif // GUARD_FUNCTIONS_H
