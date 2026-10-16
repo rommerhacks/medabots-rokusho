@@ -6,9 +6,10 @@
 // Sound sequence track (sound_seq.c), 0x74 bytes; unk14 is the read pointer into the sequence data.
 struct SoundTrack
 {
-    u8 filler0[0x4];
+    struct SoundTrack *unk0; // previous in the circular list at gUnk_03007014->unk5E4
     struct SoundTrack *unk4; // next in the circular list at gUnk_03007014->unk5E4
-    u8 filler8[0x8];
+    u8 *unk8; // ring buffer of 0x30 bytes, write index at unk8[0x30]
+    u32 unkC;
     void (*unk10)(struct SoundTrack *track);
     u8 *unk14;
     u8 *unk18;
@@ -28,7 +29,7 @@ struct SoundTrack
     u16 unk48;
     u16 unk4A;
     u16 unk4C;
-    u8 filler4E[0x2];
+    u16 unk4E;
     u8 unk50; // dirty flags
     u8 unk51;
     u8 unk52;
@@ -58,16 +59,42 @@ struct SoundTrack
     u8 unk6A;
     u8 unk6B;
     u8 unk6C;
-    u8 filler6D[0x1];
+    u8 unk6D;
     u8 unk6E;
     u8 unk6F;
-    u8 filler70[0x4];
+    u8 unk70;
+    u8 filler71[0x3];
 };
 
-struct UnkSound_08073CA4
+// Direct Sound channel (FIFO A / B) state, 0x48 bytes, two of them in the sound work area.
+struct SoundMixChannel
 {
-    u8 filler0[0x3E];
-    u8 unk3E;
+    u32 unk0;
+    u32 unk4;
+    u32 unk8;
+    u32 unkC;
+    u32 unk10;
+    u32 unk14;
+    u32 unk18;
+    u32 unk1C;
+    u32 unk20;
+    u32 unk24;
+    u32 unk28;
+    u32 unk2C;
+    u8 unk30;
+    u8 unk31;
+    u8 filler32[0x2];
+    u16 unk34;
+    u16 unk36;
+    u16 unk38;
+    u8 unk3A; // 1 = FIFO A, 2 = FIFO B
+    u8 unk3B;
+    u8 unk3C;
+    u8 filler3D[0x1];
+    u8 unk3E; // state
+    u8 unk3F;
+    u8 unk40;
+    u8 filler41[0x7];
 };
 
 struct Unk_03006D20
@@ -155,17 +182,17 @@ struct Unk_03007014
     u8 filler5E8[0xA0];
     u32 unk688;
     u32 unk68C;
-    u8 unk690[0x3A]; // channel at 0x690
-    u8 unk6CA;
-    u8 filler6CB[0xD];
-    u8 unk6D8[0x3A]; // channel at 0x6D8
-    u8 unk712;
-    u8 filler713[0xD];
+    struct SoundMixChannel unk690;
+    struct SoundMixChannel unk6D8;
     u32 unk720;
     u32 unk724;
     struct SoundNoteTable *unk728;
-    u8 unk72C;
-    u8 filler72D[0x7];
+    u8 unk72C; // flags
+    u8 unk72D;
+    u8 unk72E;
+    u8 unk72F;
+    u16 unk730;
+    u8 filler732[0x2];
 };
 
 struct Unk_08047414

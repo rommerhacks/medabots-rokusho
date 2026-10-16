@@ -11,8 +11,8 @@ void sound_engine_init(struct Unk_03007014 *work)
     zero = 0;
     CpuSet(&zero, work, 0x050001CD);
     init_all_sound_channels();
-    gUnk_03007014->unk6CA = 1;
-    gUnk_03007014->unk712 = 2;
+    gUnk_03007014->unk690.unk3A = 1;
+    gUnk_03007014->unk6D8.unk3A = 2;
     sound_init_wave_channel();
 }
 
@@ -229,12 +229,12 @@ void sub_080725BC(struct SoundTrack *track)
     }
     else
     {
-        void *ch = gUnk_03007014->unk690;
+        void *ch = &gUnk_03007014->unk690;
         s32 diff;
         s32 acc;
 
         if (track->unk64 != 4)
-            ch = gUnk_03007014->unk6D8;
+            ch = &gUnk_03007014->unk6D8;
         {
             u8 v = track->unk56;
             acc = 0;

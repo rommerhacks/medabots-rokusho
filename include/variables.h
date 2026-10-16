@@ -26,10 +26,16 @@ extern struct Unk_03007014 *gUnk_03007014;
 
 // ROM data
 extern const u16 gUnk_083AB9D0[];
+extern const u16 gUnk_083ABA88[];
+extern const u8 gUnk_083ABA8C[][16];
+extern const u16 gUnk_083ABAB2[][4];
+extern const u16 gUnk_083ABAC2[];
 extern const Func gGameStateHandlers_083AC148[];
 extern const u32 gUnk_083B6410[];
 extern const u32 gUnk_083BA4D8[];
 extern const u32 gUnk_083BB9CC[][4];
 extern const u32 gUnk_08484444[];
+extern vu32 *const gSoundFifoAddrs[]; // REG_FIFO_A, REG_FIFO_B
+extern vu16 *const gSoundFifoDmaCnt[]; // REG_DMA1CNT_H, REG_DMA2CNT_H
 
 #endif // GUARD_VARIABLES_H
