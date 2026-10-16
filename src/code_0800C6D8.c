@@ -71,7 +71,17 @@ INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800F218);
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", load_overworld_sprite_by_direction);
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", load_medapart_sprite_by_slot);
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", init_scene_buffers_0800F60C);
-INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800F6CC);
+
+s32 sub_0800F6CC(void)
+{
+    s32 ret;
+    if (gUnk_03000440.unkEF > 99)
+        ret = gUnk_03000440.unkEF - 100;
+    else
+        ret = gUnk_03000440.unkEF;
+    return ret;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", load_npc_sprite_data);
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", load_scene_sprite_data);
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", render_menu_tilemap_section);

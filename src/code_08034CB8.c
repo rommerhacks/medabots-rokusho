@@ -54,7 +54,15 @@ void sub_0803572C(u8 *val, s32 amount)
         *val -= amount;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035740);
+void sub_08035740(u8 *val, u32 amount, u32 max)
+{
+    u32 sum = *val + amount;
+    if (sum > max)
+        *val = max;
+    else
+        *val = sum;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035754);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", calc_bot_matching_part_power);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", calc_battle_action_speed);

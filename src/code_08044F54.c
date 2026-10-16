@@ -71,7 +71,12 @@ u32 sub_08047BDC(u32 idx)
     return gUnk_083BA4D8[idx];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047BEC);
+u32 sub_08047BEC(u32 a, u32 b)
+{
+    const u32 *t = (const u32 *)gUnk_083BB9CC;
+    return t[b * 4 + a];
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", init_cursor_state);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", scene_transition_step_08047C24);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", format_number_to_text_buffer);
