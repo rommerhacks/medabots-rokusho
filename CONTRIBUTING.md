@@ -72,6 +72,15 @@
   write the plain ones as `a - b == 0` too (the original source was symmetric).
 * A bitfield shows as `lsls #27; lsrs #27` (low 5 bits) or `lsls #27; lsrs #3; adds 0x31000000;
   lsrs #24` (a 5-bit field plus a constant, as a `u8`): use a bitfield in the struct, not masks.
+* Two halves of one buffer loaded as two separate literals (`=0x0202F800` and `=0x0202FA00`) with
+  no base register reused: the original names each half (separate symbols), not `buf + 0x100`.
+* `*d++ = ...` row loops: `dst + (i << 5)` and `dst + i * 32` can give different register orders
+  (write_tilemap_to_vram_08000E94 only matched with the shift).
+* Registers read back after a store through a `u16 *` pointer: gcc must reload the globals if the
+  pointer may alias them; registers written through a plain (non-volatile) pointer still reload
+  `u16` globals. Copy the values to locals or a struct pointer to keep them in registers.
+* Hardware I/O addresses (`OAM`, `VRAM`, `INTR_CHECK`, ...) are in `include/gba/io_reg.h`;
+  `CpuCopy16(src, dst, size)` gives the `lsls #10; lsrs #11` count of a 16-bit CpuSet.
 
 ## Naming
 

@@ -149,7 +149,7 @@ void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map);
 void dma_obj_palette_to_hardware(void);
 void update_anim_object_flags(void);
 void copy_oam_affine_params(struct OamData *oam, u16 *affine);
-u32 lz_decompress_custom_08000A0C(const u8 *src, void *dst, u32 size);
+u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size);
 u32 lz_decompress_custom_08000B14(const u8 *src, void *dst);
 u32 check_soft_reset(void);
 void vblank_irq(void);
