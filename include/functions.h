@@ -304,5 +304,17 @@ void sub_080492CC(void);
 void calculate_oam_affine_matrix(u8 i);
 u8 sub_08050264(u8 a);
 u8 sub_0805026C(u8 a);
+u32 sub_08048088(u32 idx);
+u32 sub_08047E30(void);
+void sub_08047E3C(u8 id);
+void sub_08047DC0(u8 id, u8 n);
+void copy_string_to_text_buffer(u32 slot, u32 str);
+void format_number_to_text_buffer(u32 slot, u32 n);
+u32 sub_08047BCC(u32 idx);
+u32 sub_08047E20(u8 id);
+void sub_08047DD8(u8 id, u8 n);
+void init_battle_medapart_sprites_all(void);
+void load_map_npc_sprites(void);
+void update_entity_sprites_on_screen(void);
 
 #endif // GUARD_FUNCTIONS_H

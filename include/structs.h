@@ -323,7 +323,9 @@ struct Unk_030057E0
     u8 unkCA4[0x10];
     u8 unkCB4; // index of the map object running the script (unk5DC)
     u8 unkCB5;
-    u8 fillerCB6[0x6];
+    u8 fillerCB6[0x4];
+    u8 unkCBA;
+    u8 fillerCBB[0x1];
     s8 unkCBC;
     s8 unkCBD;
 };
