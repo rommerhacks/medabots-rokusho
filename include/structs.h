@@ -161,7 +161,7 @@ struct Unk_03000440
     u8 filler5F[0x25];
     u8 unk84; // field menu: animation frame counter
     u8 unk85;
-    u8 filler86[0x2];
+    u16 unk86;
     u8 unk88; // field menu: row animation counter
     u8 filler89[0x5];
     u8 unk8E; // field menu cursor: 0 Medawatch, 1 Item, 2 Vehicle, 3 Save (runtime-checked)
@@ -174,8 +174,10 @@ struct Unk_03000440
     u8 unk9A;
     u8 unk9B;
     u8 filler9C[0x2];
-    u8 unk9E[0x51]; // digit buffer (divide_by_10000)
+    u8 unk9E[0x50]; // digit buffer (divide_by_10000)
+    u8 unkEE; // start of a 16-byte part data record (load_part_data)
     u8 unkEF;
+
     u8 fillerF0[0x3E];
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
     u8 filler12F[2];
@@ -281,10 +283,28 @@ struct Unk_03002414
 
 struct Unk_03001800
 {
-    u8 filler0[0x87];
+    u8 filler0[0x41];
+    u8 unk41[3]; // low nibble: index into gUnk_030017A0
+    u8 filler44[0xD];
+    u8 unk51;
+    u8 unk52;
+    u8 unk53;
+    u8 unk54;
+    u8 filler55[0x32];
     u8 unk87;
-    u8 filler88[0x19];
+    u8 filler88[0x4];
+    u8 unk8C[3];
+    u8 unk8F[3][4]; // per team member: gUnk_030017A0 bytes 3-6
+    u8 filler9B[0x6];
     u8 unkA1;
+    u8 fillerA2[0x104];
+    u16 unk1A6;
+    u16 unk1A8;
+    u16 unk1AA;
+    u16 unk1AC;
+    u8 filler1AE;
+    u8 unk1AF;
+    u8 unk1B0;
 };
 
 struct Unk_03000BE0
@@ -295,7 +315,11 @@ struct Unk_03000BE0
 
 struct Unk_030017A0
 {
-    u8 filler0[0x7];
+    u8 filler0[0x3];
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
     u8 unk7;
 };
 

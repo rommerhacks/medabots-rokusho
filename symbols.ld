@@ -134,6 +134,7 @@ gUnk_083D24AC       = 0x083D24AC;
 gUnk_083AC248       = 0x083AC248;
 gFieldMenuHandlers       = 0x083AC284;
 gUnk_083B53F8       = 0x083B53F8;
+gUnk_083CF3B0       = 0x083CF3B0;
 gUnk_083B4AE0       = 0x083B4AE0;
 gUnk_083B5F80       = 0x083B5F80;
 gUnk_084C1608       = 0x084C1608;

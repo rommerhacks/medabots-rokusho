@@ -278,12 +278,93 @@ void sub_080048B0(void)
         gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080043A8", team_select_exit_race);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080049C8);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080049EC);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004A18);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004A40);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004A78);
+void team_select_exit_race(void)
+{
+    s32 i;
+
+    clear_battle_sprite_slot(0, 0x80);
+    gUnk_03000440.unk96 = 0;
+    gUnk_03000430 = 0;
+    for (i = 0; i <= 2; i++)
+    {
+        load_part_data(gUnk_030017A0[gUnk_03001800.unk41[i] & 0xF].unk6, 3, &gUnk_03000440.unkEE);
+        gUnk_03001800.unk8C[i] = gUnk_03000440.unkEF - 100;
+        gUnk_03001800.unk8F[i][0] = gUnk_030017A0[gUnk_03001800.unk41[i] & 0xF].unk3;
+        gUnk_03001800.unk8F[i][1] = gUnk_030017A0[gUnk_03001800.unk41[i] & 0xF].unk4;
+        gUnk_03001800.unk8F[i][2] = gUnk_030017A0[gUnk_03001800.unk41[i] & 0xF].unk5;
+        gUnk_03001800.unk8F[i][3] = gUnk_030017A0[gUnk_03001800.unk41[i] & 0xF].unk6;
+    }
+    gGameMode = 3;
+    gGameState = 4;
+    gGameSubState = 5;
+}
+
+void sub_080049C8(void)
+{
+    sub_08004E74();
+    setup_overworld_scene_from_position();
+    text_window_init(1, 0, 0);
+    gGameSubState++;
+}
+
+void sub_080049EC(void)
+{
+    sub_08004E74();
+    setup_overworld_scene_from_position();
+    if (run_message(gUnk_083CF3B0[11]))
+        gGameSubState++;
+}
+
+void sub_08004A18(void)
+{
+    sub_08004E74();
+    setup_overworld_scene_from_position();
+    clear_battle_bot_array();
+    count_active_battle_bots();
+    battle_setup_bot_entry();
+    gGameSubState++;
+}
+
+void sub_08004A40(void)
+{
+    sub_08004E74();
+    setup_overworld_scene_from_position();
+    if (sub_0803E79C())
+    {
+        gUnk_03005010.unk6 = 0;
+        gUnk_03000440.unk86 = 0;
+        gGameSubState++;
+    }
+}
+
+void sub_08004A78(void)
+{
+    struct Unk_03000440 *st;
+    u16 *timer;
+
+    sub_08004E74();
+    setup_overworld_scene_from_position();
+    st = &gUnk_03000440;
+    timer = &st->unk86;
+    if (*timer == 24)
+    {
+        gUnk_03001800.unk51 = 0;
+        gUnk_03001800.unk52 = 0;
+        gUnk_03001800.unk53 = 0;
+        gUnk_03001800.unk54 = 0;
+        gUnk_03001800.unk1A6 = 0;
+        gUnk_03001800.unk1A8 = 0;
+        gUnk_03001800.unk1AA = 0;
+        gUnk_03001800.unk1AC = 0;
+        gUnk_03001800.unk1AF = 0;
+        gUnk_03001800.unk1B0 = 1;
+        *timer = 0;
+        gGameSubState++;
+    }
+    else
+        (*timer)++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004AF8);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004C58);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004CA4);
