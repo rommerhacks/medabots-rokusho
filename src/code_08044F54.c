@@ -37,9 +37,22 @@ INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_0804765C);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", dispatch_by_index_0476e8);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047850);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047878);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047BA8);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047BB4);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047BC0);
+
+void sub_08047BA8(u32 id)
+{
+    play_sound_effect(id);
+}
+
+void sub_08047BB4(u32 id)
+{
+    play_song(id);
+}
+
+void sub_08047BC0(u32 a)
+{
+    sound_stop_all_with_fade_guard(a);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047BCC);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047BDC);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047BEC);
@@ -48,7 +61,12 @@ INCLUDE_ASM("asm/nonmatching/code_08044F54", scene_transition_step_08047C24);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", format_number_to_text_buffer);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_string_to_text_buffer);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D24);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D4C);
+
+u32 sub_08047D4C(void)
+{
+    return gUnk_03002B70;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D58);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D74);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D8C);
@@ -61,7 +79,11 @@ INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047E08);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047E20);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047E30);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047E3C);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047E4C);
+
+void sub_08047E4C(void)
+{
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", lookup_position_table_value);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", check_position_table_match);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047F50);

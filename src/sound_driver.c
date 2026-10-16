@@ -36,7 +36,12 @@ INCLUDE_ASM("asm/nonmatching/sound_driver", sound_configure_mixing_channel);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_play);
 INCLUDE_ASM("asm/nonmatching/sound_driver", init_sound_channel_struct);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_restart_channel);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08073CA4);
+
+void sub_08073CA4(struct UnkSound_08073CA4 *ch)
+{
+    ch->unk3E = 3;
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_init_full);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_setup);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_start_channel_full);
@@ -44,7 +49,11 @@ INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_setup_alt);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_trigger_pending);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_request_stop);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_state_dispatch);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08073EAC);
+
+void sub_08073EAC(void)
+{
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_tick);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_tick_both_channels);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_channel_at_690);

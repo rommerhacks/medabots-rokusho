@@ -18,7 +18,12 @@ INCLUDE_ASM("asm/nonmatching/code_080490C4", setup_blend_effect);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", blend_effect_update);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", apply_blend_coefficients);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_08049CB0);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_08049CC0);
+
+void sub_08049CC0(void)
+{
+    copy_obj_palette_to_buffer();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", setup_palette_fade_to_color);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", setup_palette_fade_to_color_with_obj);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", run_blend_fade_transition);
@@ -30,10 +35,24 @@ INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A1D4);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", new_game_init);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A5C0);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A654);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A670);
+
+void sub_0804A670(void)
+{
+    sub_0804A1C4();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A67C);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A694);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A6A0);
+
+void sub_0804A694(void)
+{
+    sub_08050F10();
+}
+
+void sub_0804A6A0(void)
+{
+    sub_0804A1C4();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A6AC);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A6D8);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A6E8);
@@ -47,10 +66,20 @@ INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AAB8);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AACC);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AAF0);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AB14);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AB74);
+
+void sub_0804AB74(void)
+{
+    sub_0804A1C4();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AB80);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804ABC8);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AC7C);
+
+void sub_0804AC7C(void)
+{
+    sub_0804A1C4();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AC88);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AD1C);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AD68);
@@ -90,14 +119,26 @@ INCLUDE_ASM("asm/nonmatching/code_080490C4", load_room_graphics);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", update_blend_effect_from_input);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B694);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B6A8);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B6EC);
+
+u32 sub_0804B6EC(void)
+{
+    return 0;
+}
 
 void nullsub_0804B6F0(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B6F4);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B700);
+void sub_0804B6F4(void)
+{
+    sub_0804B70C();
+}
+
+void sub_0804B700(void)
+{
+    sub_0804B70C();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B70C);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B740);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B77C);
@@ -170,7 +211,12 @@ INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C8E0);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C900);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C914);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C938);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C948);
+
+void sub_0804C948(void)
+{
+    sub_08047BC0(0x78);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C954);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C978);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C988);
@@ -191,10 +237,23 @@ INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CE44);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CEAC);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CEF4);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CF10);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CFC0);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CFCC);
+
+void sub_0804CFC0(void)
+{
+    sub_0804DB34();
+}
+
+void sub_0804CFCC(void)
+{
+    sub_08044B58();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CFD8);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804D038);
+
+void sub_0804D038(void)
+{
+    init_battle_sprites();
+}
 
 void nullsub_0804D044(void)
 {

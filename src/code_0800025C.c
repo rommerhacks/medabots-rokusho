@@ -13,7 +13,34 @@ void nullsub_08000840(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", read_keys);
+void read_keys(void)
+{
+    u16 prev;
+
+    gPrevKeys = prev = gHeldKeys;
+    gHeldKeys = REG_KEYINPUT ^ 0x3FF;
+    gNewKeys = gHeldKeys & ~prev;
+    gReleasedKeys = prev & ~gHeldKeys;
+    gRepeatKeys = 0;
+    if (gNewKeys)
+    {
+        gRepeatKeys = gNewKeys;
+        gKeyRepeatTimer = 16;
+    }
+    if (gHeldKeys)
+    {
+        if (gKeyRepeatTimer == 0)
+        {
+            gRepeatKeys = gNewKeys | gHeldKeys;
+            gKeyRepeatTimer = 3;
+        }
+        else
+        {
+            gKeyRepeatTimer--;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", soft_reset);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", check_soft_reset);
 

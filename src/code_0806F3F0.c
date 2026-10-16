@@ -88,7 +88,12 @@ INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_set_channel_note);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_channel_update_note_08072798);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072948);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072984);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080729A0);
+
+void sub_080729A0(struct SoundTrack *obj, u8 val)
+{
+    obj->unk2C = val;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080729A8);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080729BC);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080729D8);
@@ -102,7 +107,12 @@ INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A6C);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A80);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", stream_read_u32_to_field);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", stream_read_and_shift_u32);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072ABC);
+
+void sub_08072ABC(struct SoundTrack *obj)
+{
+    obj->unk14 = obj->unk20;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072AC4);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072AEC);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072AFC);

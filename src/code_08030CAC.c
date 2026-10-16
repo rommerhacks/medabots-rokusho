@@ -60,7 +60,12 @@ INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08032FFC);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", select_battle_pending_action);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", rng_lookup_table_value);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", select_random_battle_target);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080330E8);
+
+u32 sub_080330E8(u32 idx)
+{
+    return get_random_battle_weight_entry(idx);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", battle_find_next_active_bot);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033154);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", clear_ewram_buffer_02023000_b);

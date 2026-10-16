@@ -11,6 +11,7 @@ asm(".include \"asm/macros.inc\"");
 #define NAKED __attribute__((naked))
 
 #include "gba/io_reg.h"
+#include "structs.h"
 #include "variables.h"
 #include "functions.h"
 #include "keys.h"

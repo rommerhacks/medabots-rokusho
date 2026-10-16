@@ -77,7 +77,12 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043C94);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043CA8);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_scroll_movement_a);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", apply_battle_blend_effect_a);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043E48);
+
+void sub_08043E48(void)
+{
+    update_scroll_movement_a();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", load_battle_script_entry_b);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_scroll_movement_b);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", apply_battle_blend_effect_b);
@@ -97,7 +102,12 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", setup_scene_with_bg_and_sprites);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_scene_with_bg_and_palette);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", setup_sprite_animation_entry);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", advance_text_display);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044B28);
+
+void sub_08044B28(const u8 *src, void *dst)
+{
+    lz_decompress_dispatch(src, dst);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044B34);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044B58);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_battle_scene);

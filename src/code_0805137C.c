@@ -62,7 +62,12 @@ INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053418);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", compute_distance_to_state_position);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", compute_triangle_area_3d);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", get_state_position_xyz);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_0805378C);
+
+void sub_0805378C(void)
+{
+    sub_08053798();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053798);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", affine_set_destination_and_compute_transform);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", affine_set_source_and_compute_transform);
