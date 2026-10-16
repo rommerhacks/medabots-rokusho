@@ -9,7 +9,7 @@
    python3 tools/scripts/match.py <name> scratch.c
    ```
 
-   This compiles with agbcc, links at the function's original address and compares the bytes
+   This compiles with old_agbcc (the compiler the Makefile uses), links at the function's original address and compares the bytes
    (code and literal pool). On a mismatch it prints both disassemblies side by side.
 4. Declare what it uses in `include/`: prototypes in `functions.h`, RAM variables and ROM data in
    `variables.h`, with their addresses in `symbols.ld`.
@@ -31,7 +31,8 @@
   of first use in the C.
 * Register allocation and instruction order are sensitive to statement order, temporaries and
   combined assignments (`a = b = c;`). Small rewrites often fix "almost" matches.
-* `old_agbcc` is also built. Pass `--old` to `match.py` to try it if something won't match.
+* The game was built with what pret ships as `old_agbcc`: with `agbcc`, leaf functions that branch
+  get an extra `push {lr}` that the original doesn't have. `match.py --new` tries `agbcc`.
 
 ## Naming
 

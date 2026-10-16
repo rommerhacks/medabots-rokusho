@@ -14,7 +14,8 @@ OBJCOPY := $(PREFIX)objcopy
 CPP     := $(PREFIX)cpp
 
 AGBCC_DIR := tools/agbcc
-CC1       := $(AGBCC_DIR)/bin/agbcc
+# old_agbcc: leaf functions with branches match it, not agbcc (agbcc adds a push {lr})
+CC1       := $(AGBCC_DIR)/bin/old_agbcc
 
 ASFLAGS  := -mcpu=arm7tdmi -I include -I .
 CPPFLAGS := -nostdinc -I include -I $(AGBCC_DIR)/include -undef

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Check whether a C function compiles to the original bytes, without rebuilding the ROM.
 
-Usage: match.py FUNC FILE.c [--old]
+Usage: match.py FUNC FILE.c [--new]
 
 FILE.c is a standalone C file (it may #include "global.h" and other headers) that defines FUNC.
-It is compiled with agbcc, linked at FUNC's original address against the symbols of the last
-full build (medabots_rokusho.elf, so run `make` once first), and compared byte for byte with
-baserom.gba over the original function's size (code and literal pool).
+It is compiled with old_agbcc like the Makefile (--new: agbcc), linked at FUNC's original address
+against the symbols of the last full build (medabots_rokusho.elf, so run `make` once first), and
+compared byte for byte with baserom.gba over the original function's size (code and literal pool).
 
 Exit status 0 = match. On mismatch, prints a side-by-side disassembly.
 """
@@ -53,7 +53,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("func")
     ap.add_argument("cfile")
-    ap.add_argument("--old", action="store_true", help="use old_agbcc")
+    ap.add_argument("--new", action="store_true", help="use agbcc instead of old_agbcc")
+    ap.add_argument("--old", action="store_true", help="(default) use old_agbcc")
     args = ap.parse_args()
 
     addr, size = func_info(args.func)
@@ -63,7 +64,7 @@ def main():
         i, s, o, elf, binf, syms = (os.path.join(tmp, n) for n in ("f.i", "f.s", "f.o", "f.elf", "f.bin", "syms.elf"))
         run(["arm-none-eabi-cpp", "-nostdinc", "-I", "include", "-I", "tools/agbcc/include", "-undef",
              os.path.abspath(args.cfile), "-o", i])
-        cc1 = "tools/agbcc/bin/old_agbcc" if args.old else "tools/agbcc/bin/agbcc"
+        cc1 = "tools/agbcc/bin/agbcc" if args.new else "tools/agbcc/bin/old_agbcc"
         run([cc1, "-mthumb-interwork", "-Wimplicit", "-Wparentheses", "-O2", "-fhex-asm", i, "-o", s])
         with open(s, "a") as f:
             f.write("\t.text\n\t.align\t2, 0\n")
