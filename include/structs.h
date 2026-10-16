@@ -267,7 +267,7 @@ struct Unk_030057E0
     u8 unkC2F;
     u8 fillerC30[0x2];
     u8 unkC32;
-    u8 unkC33;
+    u8 unkC33; // Medawatch menu enabled (B opens the field menu only if set)
     u8 fillerC34[0x3];
     u8 unkC37; // random seed
     u8 unkC38[0x10];

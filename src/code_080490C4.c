@@ -811,6 +811,7 @@ void sub_0804C988(void)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
 }
 
+// guess: opcode 0x4B, skip ahead by arg2 unless the player has at least arg1 of item arg0
 void sub_0804C9DC(void)
 {
     s32 n;
@@ -833,6 +834,7 @@ void sub_0804CA38(void)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
 }
 
+// guess: opcode 0x4D, skip ahead by arg1 unless medal arg0 is owned (find_medal_slot_by_id)
 void sub_0804CA9C(void)
 {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
@@ -841,6 +843,7 @@ void sub_0804CA9C(void)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
 }
 
+// guess: opcode 0x4E, skip ahead by arg2 if money (gUnk_03002B70) < 16-bit arg * 10
 void sub_0804CAE8(void)
 {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
@@ -945,6 +948,7 @@ void sub_0804CDB8(void)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
 }
 
+// guess: opcode 0x5C, skip ahead by arg1 unless an assembled Medabot (0x030017A0) is all model arg0
 void sub_0804CDF8(void)
 {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
@@ -953,7 +957,9 @@ void sub_0804CDF8(void)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
 }
 
-void sub_0804CE44(void)
+// Opcode 0x5D. Bit 7 set: arg 1 sets / else clears unkC5D bit 5; else unkC33 (Medawatch
+// menu flag) = arg & 0xF. Runtime: sets 0x03006413 to 1 when Dad gives Ikki the Medawatch.
+void map_script_cmd_set_medawatch_flag(void)
 {
     read_map_script_bytes(1);
     if (gUnk_030057E0.unkC94[0] & 0x80)
