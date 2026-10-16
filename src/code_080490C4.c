@@ -200,7 +200,21 @@ void sub_0804B700(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B70C);
+
+// Not called directly (hidden in the tail of sub_0804B70C).
+void sub_0804B72C(void)
+{
+    gUnk_030057E0.unkC89 = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B740);
+
+// Not called directly (hidden in the tail of sub_0804B740).
+void sub_0804B768(void)
+{
+    gUnk_030057E0.unkC89 = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B77C);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B80C);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B860);
@@ -303,6 +317,33 @@ INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CB90);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CC10);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CC60);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CCA8);
+
+// Not called directly (hidden in the tail of sub_0804CCA8).
+void nullsub_0804CD14(void)
+{
+}
+
+// Not called directly (hidden in the tail of sub_0804CCA8).
+void nullsub_0804CD18(void)
+{
+}
+
+// Not called directly (hidden in the tail of sub_0804CCA8).
+void sub_0804CD1C(void)
+{
+    gUnk_030057E0.unkC89 = 1;
+}
+
+// Not called directly (hidden in the tail of sub_0804CCA8).
+void nullsub_0804CD30(void)
+{
+}
+
+// Not called directly (hidden in the tail of sub_0804CCA8).
+void nullsub_0804CD34(void)
+{
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CD38);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CD58);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CDB8);

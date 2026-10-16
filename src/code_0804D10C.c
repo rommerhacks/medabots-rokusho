@@ -36,6 +36,51 @@ void sub_0804D25C(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804D2A8);
 
+// Not called directly (hidden in the tail of sub_0804D2A8).
+void sub_0804D2E0(void)
+{
+    gUnk_030057E0.unkC89 = 1;
+}
+
+// Not called directly (hidden in the tail of sub_0804D2A8).
+void sub_0804D2F4(void)
+{
+    gUnk_030057E0.unkC89 = 1;
+}
+
+// Not called directly (hidden in the tail of sub_0804D2A8).
+void sub_0804D308(void)
+{
+    gUnk_030057E0.unkC89 = 1;
+}
+
+// Not called directly (hidden in the tail of sub_0804D2A8).
+void sub_0804D31C(void)
+{
+    gUnk_030057E0.unkC89 = 1;
+}
+
+// Not called directly (hidden in the tail of sub_0804D2A8).
+void nullsub_0804D330(void)
+{
+}
+
+// Not called directly (hidden in the tail of sub_0804D2A8).
+void nullsub_0804D334(void)
+{
+}
+
+// Not called directly (hidden in the tail of sub_0804D2A8).
+void sub_0804D338(void)
+{
+    gUnk_030057E0.unkC89 = 1;
+}
+
+// Not called directly (hidden in the tail of sub_0804D2A8).
+void nullsub_0804D34C(void)
+{
+}
+
 void sub_0804D350(void)
 {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
