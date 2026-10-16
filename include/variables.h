@@ -45,6 +45,8 @@ extern vu32 *const gSoundTimerRegs[]; // REG_TM0CNT, REG_TM1CNT (sample rate tim
 extern const u8 gSoundFifoResetBits[]; // SOUNDCNT_H high byte: FIFO A / B reset
 extern const u16 gSoundFifoEnableBits[]; // SOUNDCNT_H: FIFO A / B left+right enable
 extern vu16 *const gSoundFifoDmaCnt[];
-extern const struct SoundTrackConfig gSoundTrackConfigs[13]; // REG_DMA1CNT_H, REG_DMA2CNT_H
+extern const struct SoundTrackConfig gSoundTrackConfigs[13];
+extern const u8 gSoundOutputMasks[4]; // SOUNDCNT_L high byte: clears the left/right enables of PSG channel i
+extern const u8 gSoundOutputBits[4][4]; // [channel][output: 0 off, 1, 2, 3 both] SOUNDCNT_L high byte bits // REG_DMA1CNT_H, REG_DMA2CNT_H
 
 #endif // GUARD_VARIABLES_H

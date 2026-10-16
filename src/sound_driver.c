@@ -56,10 +56,74 @@ void sound_channel_check_note_change(struct SoundTrack *track, u16 *out)
 }
 
 INCLUDE_ASM("asm/nonmatching/sound_driver", update_sound_channel_frequency_080733AC);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_channel_output_routing);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel1_update);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_process_tone);
-INCLUDE_ASM("asm/nonmatching/sound_driver", update_wave_channel);
+
+void sound_update_channel_output_routing(struct SoundTrack *track)
+{
+    u8 *flags = &track->unk50;
+
+    if (*flags & 0x40)
+    {
+        struct Unk_03007014 *work = gUnk_03007014;
+        u8 pan;
+        u32 mask, bits;
+
+        if (work->unk72C & 4)
+            pan = 3;
+        else if (track->unk70)
+            pan = track->unk70;
+        else if (track->unk63 == 2)
+            pan = ((u8 *)work->unk728->unk4)[track->unk48];
+        else
+            pan = track->unk6F;
+        mask = gSoundOutputMasks[track->unk64];
+        bits = gSoundOutputBits[track->unk64][pan];
+        *(vu8 *)0x04000081 = (mask & *(vu8 *)0x04000081) | bits;
+        *flags &= ~0x40;
+    }
+}
+
+void sound_channel1_update(struct SoundTrack *track)
+{
+    if (track->unk8 && track->unk6B && !track->envVolume && !(track->unk50 & 0x10))
+    {
+        update_sound_channel_frequency_080733AC(track, (vu16 *)0x04000062, (vu16 *)0x04000064);
+    }
+    else
+    {
+        sound_channel_read_pending_note(track, (u16 *)0x04000060);
+        sound_channel_set_note_attributes(track, (vu16 *)0x04000062, (vu8 *)0x04000065);
+        sound_channel_update_frequency(track, (vu16 *)0x04000064);
+        sound_update_channel_output_routing(track);
+    }
+}
+
+void sound_channel_process_tone(struct SoundTrack *track)
+{
+    if (track->unk8 && track->unk6B && !track->envVolume && !(track->unk50 & 0x10))
+    {
+        update_sound_channel_frequency_080733AC(track, (vu16 *)0x04000068, (vu16 *)0x0400006C);
+    }
+    else
+    {
+        sound_channel_set_note_attributes(track, (vu16 *)0x04000068, (vu8 *)0x0400006D);
+        sound_channel_update_frequency(track, (vu16 *)0x0400006C);
+        sound_update_channel_output_routing(track);
+    }
+}
+
+void update_wave_channel(struct SoundTrack *track)
+{
+    if (track->unk8 && track->unk6B && !track->envVolume && !(track->unk50 & 0x10))
+    {
+        update_sound_channel_frequency_080733AC(track, (vu16 *)0x04000072, (vu16 *)0x04000074);
+    }
+    else
+    {
+        update_wave_channel_params(track, (vu16 *)0x04000072);
+        sound_update_channel3_frequency(track, (vu16 *)0x04000074);
+        sound_update_channel_output_routing(track);
+    }
+}
 
 void sound_update_channel_3(struct SoundTrack *track)
 {
