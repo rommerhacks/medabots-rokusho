@@ -50,6 +50,14 @@
   (`name.N`), so it can't be called from other files.
 * A `.byte` tail after a function's `.align` can hide whole functions that nothing calls (dead code
   kept by the linker). Disassemble it (`objdump -b binary -M force-thumb`) and look for `push`.
+  Pointer tables (e.g. `gMapScriptCommands`) whose entries point inside a function's range show
+  them too. `tools/scripts/carve.py PARENT ADDR:NAME:SIZE ...` cuts the tail off the parent's `.s`
+  and adds the new entries to `config/functions.tsv`; then write them in C after the parent.
+* A `u8` return value copied to a local gets re-truncated (`lsls/lsrs #24`). When the original
+  passes the raw `r0` on, store it into its destination field and read the field back
+  (`a.x = f(); b.y = a.x;`): gcc reuses the register instead of reloading.
+* A callee result added without any truncation (`adds r1, r1, r0` right after the `bl`) means
+  the callee returns `u32`/`int`, even if its value fits a `u16`.
 * A param spilled to the stack and read back with `ldrb` hints at a `u8` param; if the callers
   pass it untruncated, they were compiled against a different prototype.
 * The base address loaded **before** the scaled index (`ldr r1, =gArr; lsrs r0, r0, #18`) comes
