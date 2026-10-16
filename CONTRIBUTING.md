@@ -2,7 +2,8 @@
 
 1. Build once (`make compare`) so `medabots_rokusho.elf` exists. `match.py` links against it.
 2. Pick a function from `src/<module>.c` that is still `INCLUDE_ASM`'d and read its asm in
-   `asm/nonmatching/<module>/<name>.s`.
+   `asm/nonmatching/<module>/<name>.s`. `python3 tools/scripts/candidates.py --leaf` lists the
+   remaining functions, leaf functions (no calls) first, then by size; `--module` narrows it down.
 3. Write it in a scratch file that starts with `#include "global.h"`, then check it:
 
    ```sh

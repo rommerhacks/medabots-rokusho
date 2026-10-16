@@ -37,7 +37,7 @@ compiles to the original bytes. Run `make progress` to see the current numbers.
 | `include/` | headers: `functions.h` (prototypes), `variables.h` (RAM/ROM data), `gba/` |
 | `symbols.ld` | absolute addresses of RAM variables and ROM data used from C |
 | `config/functions.tsv` | every function: address, original size, name, module |
-| `tools/scripts/` | `match.py`, `install_func.py`, `progress.py`, `romdiff.py` (see [CONTRIBUTING.md](CONTRIBUTING.md)) |
+| `tools/scripts/` | `match.py`, `install_func.py`, `candidates.py`, `progress.py`, `romdiff.py` (see [CONTRIBUTING.md](CONTRIBUTING.md)) |
 
 ## See also
 
