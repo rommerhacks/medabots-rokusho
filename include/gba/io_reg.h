@@ -3,6 +3,24 @@
 
 #define REG_BASE 0x04000000
 
+#define EWRAM 0x02000000
+#define IWRAM 0x03000000
+#define VRAM  0x06000000
+#define OAM   0x07000000
+
+// BIOS interrupt check flags and IRQ vector, at the top of IWRAM.
+#define INTR_CHECK  (*(u16 *)0x03007FF8)
+#define INTR_VECTOR (*(void **)0x03007FFC)
+
+#define REG_ADDR_DISPCNT  (REG_BASE + 0x000)
+#define REG_ADDR_DISPSTAT (REG_BASE + 0x004)
+#define REG_ADDR_BG0HOFS  (REG_BASE + 0x010)
+#define REG_ADDR_BG3HOFS  (REG_BASE + 0x01C)
+#define REG_ADDR_BLDCNT   (REG_BASE + 0x050)
+#define REG_ADDR_BLDY     (REG_BASE + 0x054)
+#define REG_ADDR_SOUNDCNT_X (REG_BASE + 0x084)
+#define REG_ADDR_DMA2CNT_H (REG_BASE + 0x0BA)
+
 #define REG_ADDR_IE       (REG_BASE + 0x200)
 #define REG_ADDR_IF       (REG_BASE + 0x202)
 #define REG_ADDR_IME      (REG_BASE + 0x208)
@@ -10,6 +28,12 @@
 #define REG_ADDR_WAITCNT  (REG_BASE + 0x204)
 #define REG_ADDR_DMA3     (REG_BASE + 0x0D4)
 
+#define REG_DISPCNT  (*(vu16 *)REG_ADDR_DISPCNT)
+#define REG_DISPSTAT (*(vu16 *)REG_ADDR_DISPSTAT)
+#define REG_BLDCNT   (*(vu16 *)REG_ADDR_BLDCNT)
+#define REG_BLDY     (*(vu16 *)REG_ADDR_BLDY)
+#define REG_SOUNDCNT_X (*(vu16 *)REG_ADDR_SOUNDCNT_X)
+#define REG_DMA2CNT_H (*(vu16 *)REG_ADDR_DMA2CNT_H)
 #define REG_IE       (*(vu16 *)REG_ADDR_IE)
 #define REG_IF       (*(vu16 *)REG_ADDR_IF)
 #define REG_IME      (*(vu16 *)REG_ADDR_IME)

@@ -1,13 +1,77 @@
 #include "global.h"
 
 INCLUDE_ASM("asm/nonmatching/code_0800025C", main);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", irq_init);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", hw_reset_init);
+
+void irq_init(void)
+{
+    CpuSet(gIntrTableTemplate, gIntrTable, 0x0400000E);
+    CpuSet(irq_dispatch_arm, gIntrMain, 0x04000200);
+    INTR_VECTOR = gIntrMain;
+    gVBlankOnceCallback = nullsub_08000840;
+    gVBlankCallback = nullsub_08000840;
+    gHBlankCallback = nullsub_08000840;
+    REG_IE = 0x2601;
+    REG_DISPSTAT = 8;
+    REG_IME = 1;
+    sub_0807C740(0x40);
+    get_medal_count_or_status();
+}
+
+void hw_reset_init(void)
+{
+    u32 a, b, c;
+
+    REG_IME = 0;
+    a = 0;
+    CpuFastSet(&a, (void *)EWRAM, 0x01010000);
+    b = 0;
+    CpuFastSet(&b, (void *)IWRAM, 0x01001F40);
+    clear_oam();
+    c = 0;
+    CpuFastSet(&c, (void *)PLTT, 0x01000100);
+    *(u16 *)PLTT = 0x7FFF;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", clear_oam);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sound_init);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", vblank_irq);
+
+void sound_init(struct Unk_03007014 *work)
+{
+    sound_engine_init(work);
+    sub_08074900(gUnk_080AFFB8);
+    sub_08074BC4(gUnk_080B06EC);
+    sub_08074E70(&gUnk_080B1788);
+    sub_08073AE4((u32)gUnk_080B1570);
+    sub_08073AF8((u32)gUnk_080B1718);
+    play_song(0);
+}
+
+void vblank_irq(void)
+{
+    if (!(gUnk_03002B90 & 1))
+    {
+        gUnk_03002B90 |= 1;
+        vblank_body();
+        gUnk_03002B90 &= ~1;
+        if (gUnk_03005010.unk0 & 0x80)
+            sub_080023D8();
+        REG_IME = 0;
+        if (++gUnk_03002410 > 5 && gUnk_03005170.unk4)
+        {
+            gUnk_03005010.unk1E = 0xFF;
+            INTR_CHECK |= 0x80;
+        }
+        INTR_CHECK |= 1;
+        REG_IME = 1;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", vblank_body);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", hblank_irq);
+
+void hblank_irq(void)
+{
+    gHBlankCallback();
+    REG_IF = 2;
+}
 
 void nullsub_08000840(void)
 {
@@ -41,8 +105,46 @@ void read_keys(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", soft_reset);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", check_soft_reset);
+void soft_reset(void)
+{
+    u32 i;
+
+    if (gUnk_03005030)
+    {
+        gUnk_03005010.unk4 = 0xFFFF;
+        gUnk_03005010.unk6 = -1;
+        for (i = 0; i < 8; i++)
+        {
+            serial_prepare_send_packet(&gUnk_03005010.unk4);
+            VBlankIntrWait();
+        }
+        gUnk_03005030 = 0;
+        serial_multiplayer_init();
+    }
+    VBlankIntrWait();
+    REG_BLDCNT = 0xFF;
+    REG_BLDY = 0x10;
+    REG_SOUNDCNT_X = 0;
+    REG_IME = 0;
+    hw_reset_init();
+    irq_init();
+    serial_link_init();
+    gGameMode = 3;
+    gGameState = 0;
+    gGameSubState = 0;
+    REG_DMA2CNT_H = 0;
+}
+
+u32 check_soft_reset(void)
+{
+    if ((*(u8 *)&gHeldKeys & 0xF) == 0xF && (*(u8 *)&gNewKeys & 8))
+    {
+        soft_reset();
+        read_keys();
+        return 1;
+    }
+    return 0;
+}
 
 void dma1_irq_sound(void)
 {
@@ -62,7 +164,16 @@ void nullsub_080009B8(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", lz_decompress_dispatch);
+u32 lz_decompress_dispatch(const u8 *src, void *dst)
+{
+    if (src[0] != 'L' || src[1] != 'e')
+        return 0;
+    if ((u32)dst - 0x04000001 <= 0x03FFFFFE)
+        return lz_decompress_custom_08000B14(src, dst);
+    else
+        return lz_decompress_custom_08000A0C(src, dst, src[2] | (src[3] << 8) | (src[4] << 16));
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", lz_decompress_custom_08000A0C);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", lz_decompress_custom_08000B14);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", set_tilemap_and_decompress_bg);

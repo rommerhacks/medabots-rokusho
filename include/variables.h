@@ -35,8 +35,24 @@ extern u8 *gUnk_030057D8; // two 4-bit entries per byte (bit 3 / bit 7: flag, bi
 extern u16 *gUnk_03006D14;
 extern struct Unk_03006D38 gUnk_03006D38;
 extern u8 gUnk_03003810;
+extern struct Unk_03005010 gUnk_03005010;
+extern s8 gUnk_03005030;  // multiplayer link active (soft_reset)
+extern vu16 gUnk_03002B90; // bit 0: vblank handler running
+extern s8 gUnk_03002410;  // frames since the main loop last ran (vblank_irq)
+extern Func gIntrTable[14];           // RAM copy of gIntrTableTemplate, used by irq_dispatch_arm
+extern u32 gIntrMain[0x200];          // RAM copy of irq_dispatch_arm (the IRQ vector)
+extern Func gVBlankCallback;          // called every vblank
+extern Func gVBlankOnceCallback;      // called at the next vblank, then reset to nullsub_08000840
+extern Func gHBlankCallback;          // called by hblank_irq
+extern struct OamData gOamBuffer[128]; // copied to OAM in vblank_body
 
 // ROM data
+extern const Func gIntrTableTemplate[14];
+extern struct SoundSongHeader *gUnk_080AFFB8[]; // song table (sound_init)
+extern struct SoundSongHeader *gUnk_080B06EC[]; // sound effect table (sound_init)
+extern struct SoundNoteTable gUnk_080B1788;
+extern const u8 gUnk_080B1570[];
+extern const u8 gUnk_080B1718[];
 extern const u8 gUnk_083D28C0[];
 extern const u8 gUnk_083D2908[];
 extern const u8 gUnk_083D29A6[];

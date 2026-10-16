@@ -177,8 +177,33 @@ struct Unk_030055A0
 struct Unk_03005170
 {
     u8 unk0;
-    u8 filler1[0x5];
+    u8 filler1;
+    u8 unk2; // per-player bits (main loop)
+    u8 filler3;
+    u8 unk4;
+    u8 filler5;
     u8 unk6;
+};
+
+// Serial (multiplayer link) state at 0x03005010.
+struct Unk_03005010
+{
+    u32 unk0;          // per-player "packet received" bits (serial_link_init_and_status)
+    u16 unk4;          // send packet (serial_prepare_send_packet)
+    s16 unk6;
+    u16 unk8[4][2];    // received packets, one per player
+    u8 filler18;
+    s8 unk19[4];       // per-player timeouts
+    u8 unk1D;
+    u8 unk1E;
+};
+
+struct OamData
+{
+    u16 attr0;
+    u16 attr1;
+    u16 attr2;
+    u16 affineParam;
 };
 
 struct Unk_03001800
