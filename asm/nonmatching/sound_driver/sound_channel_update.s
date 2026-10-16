@@ -42,7 +42,7 @@ _08073FD6:
 	adds r5, r4, #0
 	adds r5, #0x3a
 	ldrb r0, [r5]
-	bl timer_control_set_mode
+	bl sound_stop_fifo_dma
 	ldr r1, [r4]
 	ldr r0, [r1, #0xc]
 	str r0, [r4, #8]
@@ -50,7 +50,7 @@ _08073FD6:
 	ldr r2, [r1, #0xc]
 	adds r2, #0x10
 	adds r1, r1, r2
-	bl sub_08073940
+	bl sound_start_fifo_dma
 _08074004:
 	ldrh r0, [r4, #0x34]
 	ldrh r1, [r4, #0x36]

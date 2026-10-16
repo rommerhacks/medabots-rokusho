@@ -97,7 +97,7 @@ init_sound_channel: @ 0x080743E4
 	ldr r0, _080744B0 @ =0x0000FFFF
 	strh r0, [r1]
 	adds r0, r5, #0
-	bl sub_08074800
+	bl sound_track_link
 	pop {r4, r5}
 	pop {r0}
 	bx r0

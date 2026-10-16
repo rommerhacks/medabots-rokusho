@@ -18,7 +18,7 @@ sound_channel_stop_08073B0C: @ 0x08073B0C
 	cmp r0, #0
 	beq _08073B52
 	adds r0, r2, #0
-	bl timer_control_set_mode
+	bl sound_stop_fifo_dma
 	ldrb r0, [r4]
 	subs r0, #1
 	lsls r0, r0, #2

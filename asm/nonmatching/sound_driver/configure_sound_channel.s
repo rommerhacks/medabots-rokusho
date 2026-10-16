@@ -28,7 +28,7 @@ _0807398E:
 	adds r1, r4, #0
 	adds r1, #0x20
 	adds r0, r5, #0
-	bl sub_08073940
+	bl sound_start_fifo_dma
 	pop {r4, r5}
 	pop {r0}
 	bx r0

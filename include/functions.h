@@ -78,6 +78,17 @@ void sound_update_channel_at_6d8(void);
 void sound_channel_finish_and_callback(struct SoundTrack *track);
 void play_song(u32 id);
 void play_sound_effect(u32 id);
+void sound_channel_update(struct SoundMixChannel *ch);
+void load_song_channels(u32 id, u32 arg);
+void play_sound_from_command(u32 id, u32 arg);
+u32 is_sound_playing_at_position(u32 a);
+void sub_08074E84(u32 a, u32 b, u32 c);
+void sound_reset_channel_callbacks(u32 a, u32 b);
+void set_all_sound_channels_flag_0x40(u32 a);
+void sub_08074F34(u32 a);
+void play_song(u32 id);
+void play_song_alt(u32 id, u32 arg);
+void play_sound_effect_alt(u32 id, u32 arg);
 void sound_stop_all_with_fade_guard(u32 a);
 
 u16 sub_08073140(u32 idx);
