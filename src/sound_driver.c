@@ -484,8 +484,75 @@ u32 sound_is_paused(void)
     return (gUnk_03007014->unk72C >> 1) & 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", init_sound_channel);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_stop_channel_by_index);
+void init_sound_channel(struct SoundTrack *track, u8 *seq)
+{
+    clear_sound_channel_wave_data(track);
+    track->unk14 = seq;
+    track->unk18 = NULL;
+    track->unk1C = NULL;
+    track->unk20 = NULL;
+    track->unk24 = NULL;
+    track->unk28 = 0;
+    track->unk2C = 0;
+    track->unk30 = 0;
+    track->unk50 = 0x5F;
+    track->unk52 = 0;
+    track->unk53 = 0;
+    track->unk54 = 8;
+    track->unk55 = 0;
+    track->unk56 = 0;
+    track->unk57 = 0;
+    track->unk58 = 0;
+    track->unk59 = 0;
+    track->unk5A = 0;
+    track->unk34 = 0;
+    track->unk38 = 0;
+    track->unk63 = 0;
+    track->unk48 = 0xFF;
+    track->volume = 15;
+    track->envVolume = 0;
+    track->unk67 = 0;
+    track->unk68 = 0;
+    track->unk69 = 0;
+    track->unk6A = 0;
+    track->unk6B = 0;
+    track->unk6C = 0xFF;
+    track->envEnabled = 0;
+    track->unk6D = 0;
+    track->unk6E = 0;
+    track->unk40 = 0x1000;
+    track->unk42 = 0x1000;
+    track->unk44 = 0;
+    track->unk3C = 0;
+    track->unk6F = 3;
+    track->unk70 = 0;
+    track->unk4C = 0;
+    track->unk4E = 0xFFFF;
+    sound_track_link(track);
+}
+
+void sound_stop_channel_by_index(u32 idx)
+{
+    if (gUnk_03007014->tracks[idx].unk14 && !sound_is_paused())
+    {
+        if (gUnk_03007014->tracks[7].unk14)
+        {
+            gUnk_03007014->tracks[7].unk50 |= 0x5F;
+            sound_update_channel_3(&gUnk_03007014->tracks[7]);
+        }
+        else if (gUnk_03007014->tracks[3].unk14)
+        {
+            gUnk_03007014->tracks[3].unk50 |= 0x5F;
+            sound_update_channel_3(&gUnk_03007014->tracks[3]);
+        }
+        else
+        {
+            gUnk_03007014->tracks[idx].envVolume = 0;
+            gUnk_03007014->tracks[idx].unk50 |= 2;
+            sound_update_channel_3(&gUnk_03007014->tracks[idx]);
+        }
+    }
+}
 
 void sub_08074548(void)
 {
@@ -672,7 +739,7 @@ void audio_unlink_channel_node(struct SoundTrack *track)
 
 INCLUDE_ASM("asm/nonmatching/sound_driver", init_all_sound_channels);
 
-void sub_08074900(u32 val)
+void sub_08074900(struct SoundSongHeader **val)
 {
     gUnk_03007014->unk688 = val;
 }
@@ -705,7 +772,7 @@ void sound_update_with_lock(u32 a)
 
 INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074B68);
 
-void sub_08074BC4(u32 val)
+void sub_08074BC4(struct SoundSongHeader **val)
 {
     gUnk_03007014->unk68C = val;
 }

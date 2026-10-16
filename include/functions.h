@@ -180,6 +180,9 @@ void sub_080740D4(struct SoundTrack *track);
 u32 sound_is_paused(void);
 void sound_set_paused_nolock(u32 pause);
 void sound_set_paused(u32 pause);
+void init_sound_channel(struct SoundTrack *track, u8 *seq);
+void clear_sound_channel_wave_data(struct SoundTrack *track);
+void sound_track_link(struct SoundTrack *track);
 void sound_update_master_volume(void);
 void sound_channel_advance_sequence(struct SoundTrack *track);
 

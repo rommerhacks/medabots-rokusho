@@ -54,7 +54,7 @@ struct SoundTrack
     u8 volume;
     u8 envVolume; // current envelope volume (0..15)
     u8 unk67;
-    u8 filler68[0x1];
+    u8 unk68;
     u8 unk69;
     u8 unk6A;
     u8 unk6B;
@@ -186,14 +186,23 @@ struct SoundNoteTable
     u8 *entries[1]; // count entries
 };
 
+// Song / sound effect header (tables at gUnk_03007014->unk688 / unk68C).
+struct SoundSongHeader
+{
+    u16 trackMask; // bit 11 - i set: track i is used (0x800 = track 0)
+    u8 priority; // copied to SoundTrack.unk6D
+    u8 unk3;
+    u8 *tracks[1]; // one sequence pointer per set bit, in track order
+};
+
 // Sound driver work area (0x734 bytes, cleared by sound_engine_init).
 struct Unk_03007014
 {
     struct SoundTrack tracks[13];
     struct SoundTrack *unk5E4;
     u8 filler5E8[0xA0];
-    u32 unk688;
-    u32 unk68C;
+    struct SoundSongHeader **unk688; // songs
+    struct SoundSongHeader **unk68C; // sound effects
     struct SoundMixChannel unk690;
     struct SoundMixChannel unk6D8;
     u32 unk720;
