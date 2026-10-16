@@ -80,15 +80,15 @@ _08006CCE:
 _08006CF4: .4byte 0x030017A0
 _08006CF8: .4byte 0x03000440
 _08006CFC:
-	bl render_script_text_window
-	bl render_medal_skill_row_0
-	bl render_medal_name_text
-	bl render_medal_skill_row_1
-	bl render_medal_desc_text
-	bl render_medal_skill_row_2
-	bl render_script_text_line
-	bl render_medal_skill_row_3
-	bl draw_battle_stat_value
+	bl medabot_detail_draw_head_name
+	bl medabot_detail_draw_head_skill_icon
+	bl medabot_detail_draw_rarm_name
+	bl medabot_detail_draw_rarm_skill_icon
+	bl medabot_detail_draw_larm_name
+	bl medabot_detail_draw_larm_skill_icon
+	bl medabot_detail_draw_legs_name
+	bl medabot_detail_draw_legs_skill_icon
+	bl medabot_detail_draw_legs_type_icon
 	bl decompress_sprite_from_game_state
 	bl setup_battle_sprite_from_game_state
 	bl setup_scene_with_link_check

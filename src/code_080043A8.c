@@ -914,20 +914,219 @@ void sub_08005C10(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080043A8", render_script_text_window);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", render_medal_skill_row_0);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", render_medal_name_text);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", render_medal_skill_row_1);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", render_medal_desc_text);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", render_medal_skill_row_2);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", render_script_text_line);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", render_medal_skill_row_3);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006238);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006284);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080062D0);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_0800631C);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006368);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", draw_battle_stat_value);
+// Medapart names (gUnk_083BB9CC[part][kind]: head, right arm, left arm, legs) at rows 11-17 (runtime-checked).
+void medabot_detail_draw_head_name(void)
+{
+    clear_sprite_table_mask(0x1E, 14);
+    if (gUnk_03000440.unk98 < 120)
+    {
+        memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gUnk_03000440.unk98 * 4 + 0], gUnk_03000440.unk9E, 15);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x1E, 0x12, 11, 10, 13, 1, 2);
+    }
+    else
+    {
+        fill_text_blank(gUnk_03000440.unk9E, 13);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x1E, 0x12, 11, 10, 13, 1, 2);
+    }
+}
+
+// Icon after the part name when the Medal's skill (gUnk_083B6158[...][1]) matches the part's (load_part_data byte 0).
+void medabot_detail_draw_head_skill_icon(void)
+{
+    if (gUnk_03000440.unk98 < 120)
+    {
+        if (gUnk_03000440.unk97 < 30)
+        {
+            load_part_data(gUnk_03000440.unk98, 0, &gUnk_03000440.unkEE);
+            memcpy_bytes_08041D04(gUnk_083B6158[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk10E, 16);
+            if (gUnk_03000440.unkEE == gUnk_03000440.unk10E[1])
+                fill_tilemap_rect_08042698(2, 2, 16, 11, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
+            else
+                fill_tilemap_rect_08042698(2, 2, 16, 11, REG_BG1CNT, 0xD340);
+        }
+        else
+        {
+            vram_fill_tilemap_rect(2, 2, 16, 11, REG_BG1CNT, 0);
+        }
+    }
+    else
+    {
+        vram_fill_tilemap_rect(2, 2, 16, 11, REG_BG1CNT, 0);
+    }
+}
+
+void medabot_detail_draw_rarm_name(void)
+{
+    clear_sprite_table_mask(0x2C, 14);
+    if (gUnk_03000440.unk99 < 120)
+    {
+        memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gUnk_03000440.unk99 * 4 + 1], gUnk_03000440.unk9E, 15);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x2C, 0x12, 13, 10, 13, 1, 2);
+    }
+    else
+    {
+        fill_text_blank(gUnk_03000440.unk9E, 13);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x2C, 0x12, 13, 10, 13, 1, 2);
+    }
+}
+
+void medabot_detail_draw_rarm_skill_icon(void)
+{
+    if (gUnk_03000440.unk99 < 120)
+    {
+        if (gUnk_03000440.unk97 < 30)
+        {
+            load_part_data(gUnk_03000440.unk99, 1, &gUnk_03000440.unkEE);
+            memcpy_bytes_08041D04(gUnk_083B6158[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk10E, 16);
+            if (gUnk_03000440.unkEE == gUnk_03000440.unk10E[1])
+                fill_tilemap_rect_08042698(2, 2, 16, 13, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
+            else
+                fill_tilemap_rect_08042698(2, 2, 16, 13, REG_BG1CNT, 0xD340);
+        }
+        else
+        {
+            vram_fill_tilemap_rect(2, 2, 16, 13, REG_BG1CNT, 0);
+        }
+    }
+    else
+    {
+        vram_fill_tilemap_rect(2, 2, 16, 13, REG_BG1CNT, 0);
+    }
+}
+
+void medabot_detail_draw_larm_name(void)
+{
+    clear_sprite_table_mask(0x3A, 14);
+    if (gUnk_03000440.unk9A < 120)
+    {
+        memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gUnk_03000440.unk9A * 4 + 2], gUnk_03000440.unk9E, 15);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x3A, 0x12, 15, 10, 13, 1, 2);
+    }
+    else
+    {
+        fill_text_blank(gUnk_03000440.unk9E, 13);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x3A, 0x12, 15, 10, 13, 1, 2);
+    }
+}
+
+void medabot_detail_draw_larm_skill_icon(void)
+{
+    if (gUnk_03000440.unk9A < 120)
+    {
+        if (gUnk_03000440.unk97 < 30)
+        {
+            load_part_data(gUnk_03000440.unk9A, 2, &gUnk_03000440.unkEE);
+            memcpy_bytes_08041D04(gUnk_083B6158[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk10E, 16);
+            if (gUnk_03000440.unkEE == gUnk_03000440.unk10E[1])
+                fill_tilemap_rect_08042698(2, 2, 16, 15, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
+            else
+                fill_tilemap_rect_08042698(2, 2, 16, 15, REG_BG1CNT, 0xD340);
+        }
+        else
+        {
+            vram_fill_tilemap_rect(2, 2, 16, 15, REG_BG1CNT, 0);
+        }
+    }
+    else
+    {
+        vram_fill_tilemap_rect(2, 2, 16, 15, REG_BG1CNT, 0);
+    }
+}
+
+void medabot_detail_draw_legs_name(void)
+{
+    clear_sprite_table_mask(0x48, 14);
+    if (gUnk_03000440.unk9B < 120)
+    {
+        memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gUnk_03000440.unk9B * 4 + 3], gUnk_03000440.unk9E, 15);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x48, 0x12, 17, 10, 13, 1, 2);
+    }
+    else
+    {
+        fill_text_blank(gUnk_03000440.unk9E, 13);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x48, 0x12, 17, 10, 13, 1, 2);
+    }
+}
+
+void medabot_detail_draw_legs_skill_icon(void)
+{
+    if (gUnk_03000440.unk9B < 120)
+    {
+        if (gUnk_03000440.unk97 < 30)
+        {
+            load_part_data(gUnk_03000440.unk9B, 3, &gUnk_03000440.unkEE);
+            memcpy_bytes_08041D04(gUnk_083B6158[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk10E, 16);
+            if (gUnk_03000440.unkEE == gUnk_03000440.unk10E[1])
+                fill_tilemap_rect_08042698(2, 2, 16, 17, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
+            else
+                fill_tilemap_rect_08042698(2, 2, 16, 17, REG_BG1CNT, 0xD340);
+        }
+        else
+        {
+            vram_fill_tilemap_rect(2, 2, 16, 17, REG_BG1CNT, 0);
+        }
+    }
+    else
+    {
+        vram_fill_tilemap_rect(2, 2, 16, 17, REG_BG1CNT, 0);
+    }
+}
+
+// guess: icon left of detail row 0-4 (Medal, head, arms, legs); a != 0 draws the alternate (highlighted?) tile.
+void sub_08006238(u32 a)
+{
+    if (a == 0)
+        fill_tilemap_rect_08042698(2, 2, 14, 9, REG_BG1CNT, 0xC370);
+    else
+        fill_tilemap_rect_08042698(2, 2, 14, 9, REG_BG1CNT, 0xC384);
+}
+
+void sub_08006284(u32 a)
+{
+    if (a == 0)
+        fill_tilemap_rect_08042698(2, 2, 14, 11, REG_BG1CNT, 0xC374);
+    else
+        fill_tilemap_rect_08042698(2, 2, 14, 11, REG_BG1CNT, 0xC388);
+}
+
+void sub_080062D0(u32 a)
+{
+    if (a == 0)
+        fill_tilemap_rect_08042698(2, 2, 14, 13, REG_BG1CNT, 0xC378);
+    else
+        fill_tilemap_rect_08042698(2, 2, 14, 13, REG_BG1CNT, 0xC388);
+}
+
+void sub_0800631C(u32 a)
+{
+    if (a == 0)
+        fill_tilemap_rect_08042698(2, 2, 14, 15, REG_BG1CNT, 0xC37C);
+    else
+        fill_tilemap_rect_08042698(2, 2, 14, 15, REG_BG1CNT, 0xC388);
+}
+
+void sub_08006368(u32 a)
+{
+    if (a == 0)
+        fill_tilemap_rect_08042698(2, 2, 14, 17, REG_BG1CNT, 0xC380);
+    else
+        fill_tilemap_rect_08042698(2, 2, 14, 17, REG_BG1CNT, 0xC388);
+}
+
+// Legs type icon above the Medal row (part data byte 1 - 100, 0xFF = none).
+void medabot_detail_draw_legs_type_icon(void)
+{
+    if (gUnk_03000440.unk9B < 120)
+    {
+        load_part_data(gUnk_03000440.unk9B, 3, &gUnk_03000440.unkEE);
+        draw_tilemap_with_offset(gUnk_03000440.unkEF - 100, 20, 6, REG_BG1CNT, 0x8300);
+    }
+    else
+    {
+        draw_tilemap_with_offset(0xFF, 20, 6, REG_BG1CNT, 0x8300);
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080043A8", decompress_sprite_from_game_state);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", setup_battle_sprite_from_game_state);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", setup_battle_cursor_sprites);

@@ -177,8 +177,9 @@ struct Unk_03000440
     u8 unk9E[0x50]; // digit buffer (divide_by_10000)
     u8 unkEE; // start of a 16-byte part data record (load_part_data)
     u8 unkEF;
-
-    u8 fillerF0[0x3E];
+    u8 fillerF0[0x1E];
+    u8 unk10E[0x10]; // 16-byte record from gUnk_083B6158 (per Medal graphic index)
+    u8 filler11E[0x10];
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
     u8 filler12F[2];
     u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2

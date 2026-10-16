@@ -1208,15 +1208,15 @@ void medabot_detail_load_gfx(void)
     sub_08005B44();
     sub_08005C10();
     sub_08005BB4();
-    render_script_text_window();
-    render_medal_skill_row_0();
-    render_medal_name_text();
-    render_medal_skill_row_1();
-    render_medal_desc_text();
-    render_medal_skill_row_2();
-    render_script_text_line();
-    render_medal_skill_row_3();
-    draw_battle_stat_value();
+    medabot_detail_draw_head_name();
+    medabot_detail_draw_head_skill_icon();
+    medabot_detail_draw_rarm_name();
+    medabot_detail_draw_rarm_skill_icon();
+    medabot_detail_draw_larm_name();
+    medabot_detail_draw_larm_skill_icon();
+    medabot_detail_draw_legs_name();
+    medabot_detail_draw_legs_skill_icon();
+    medabot_detail_draw_legs_type_icon();
     decompress_sprite_from_game_state();
     init_battle_medabot_sprites(gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
                                 0, 6, 0xA8, 0x20, gUnk_03000440.unk5E, 1, 5);

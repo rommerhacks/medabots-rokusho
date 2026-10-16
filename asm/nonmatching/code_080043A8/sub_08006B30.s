@@ -62,8 +62,8 @@ _08006BA0: .4byte 0x030017A0
 _08006BA4:
 	movs r0, #2
 	bl play_sound_effect
-	bl render_medal_desc_text
-	bl render_medal_skill_row_2
+	bl medabot_detail_draw_larm_name
+	bl medabot_detail_draw_larm_skill_icon
 	bl decompress_sprite_from_game_state
 	bl setup_battle_sprite_from_game_state
 	bl setup_scene_with_link_check

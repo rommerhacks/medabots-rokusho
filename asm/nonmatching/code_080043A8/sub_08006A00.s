@@ -62,8 +62,8 @@ _08006A70: .4byte 0x030017A0
 _08006A74:
 	movs r0, #2
 	bl play_sound_effect
-	bl render_script_text_window
-	bl render_medal_skill_row_0
+	bl medabot_detail_draw_head_name
+	bl medabot_detail_draw_head_skill_icon
 	bl decompress_sprite_from_game_state
 	bl setup_battle_sprite_from_game_state
 	bl setup_scene_with_link_check

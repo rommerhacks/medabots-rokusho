@@ -49,10 +49,10 @@ _080069D0:
 	bl sub_08005B44
 	bl sub_08005C10
 	bl sub_08005BB4
-	bl render_medal_skill_row_0
-	bl render_medal_skill_row_1
-	bl render_medal_skill_row_2
-	bl render_medal_skill_row_3
+	bl medabot_detail_draw_head_skill_icon
+	bl medabot_detail_draw_rarm_skill_icon
+	bl medabot_detail_draw_larm_skill_icon
+	bl medabot_detail_draw_legs_skill_icon
 	movs r0, #1
 _080069F8:
 	pop {r4, r5, r6}

@@ -104,9 +104,10 @@ extern const u16 gSoundFinetuneRatios[128]; // 2^(i/(12*128)) * 0x1000
 extern const u32 gSoundEffectTracks[6]; // track indices of the sound effect tracks (4-7, 10, 11)
 extern const Func gGameStateHandlers_083AC148[];
 extern const u32 gUnk_083B6410[];
+extern const u8 gUnk_083B6158[][16]; // 16-byte records per Medal graphic index (byte 1 compared with a Medapart's skill, byte 7 icon)
 extern const u8 gUnk_083D1BF8[];
 extern const u32 gUnk_083BA4D8[];
-extern const u32 gUnk_083BB9CC[][4];
+extern const u32 gUnk_083BB9CC[][4]; // Medapart name pointers: [part id][kind: head, right arm, left arm, legs]
 extern const u32 gUnk_08484444[];
 extern vu32 *const gSoundFifoAddrs[]; // REG_FIFO_A, REG_FIFO_B
 extern vu32 *const gSoundTimerRegs[]; // REG_TM0CNT, REG_TM1CNT (sample rate timers of FIFO A / B)

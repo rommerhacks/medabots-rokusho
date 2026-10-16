@@ -62,9 +62,9 @@ _08006C38: .4byte 0x030017A0
 _08006C3C:
 	movs r0, #2
 	bl play_sound_effect
-	bl render_script_text_line
-	bl render_medal_skill_row_3
-	bl draw_battle_stat_value
+	bl medabot_detail_draw_legs_name
+	bl medabot_detail_draw_legs_skill_icon
+	bl medabot_detail_draw_legs_type_icon
 	bl decompress_sprite_from_game_state
 	bl setup_battle_sprite_from_game_state
 	bl setup_scene_with_link_check
