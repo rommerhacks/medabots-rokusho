@@ -37,7 +37,13 @@ INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C7E8);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C85C);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", load_rotation_grid_and_advance);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C90C);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C940);
+
+void sub_0805C940(void)
+{
+    if (game_state_execute_handler_a())
+        dispatch_by_index_0476e8(10);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", advance_substate_with_fade);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", fade_step_and_transition_to_mode3);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", dispatch_rotation_menu_substate);

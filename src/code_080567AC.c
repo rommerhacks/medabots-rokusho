@@ -15,7 +15,12 @@ void sub_08057540(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057550);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057574);
+
+void sub_08057574(void)
+{
+    if (run_blend_fade_transition(0))
+        sub_0804A1C4();
+}
 
 void sub_08057588(void)
 {
@@ -54,7 +59,12 @@ INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057EBC);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", update_cursor_sprite_position);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", init_vehicle_menu_sprite);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", render_npc_tilemap_row);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08058110);
+
+void sub_08058110(void)
+{
+    dispatch_by_index(gUnk_030057A0.unk14);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080567AC", dispatch_by_index);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_080581C0);
 INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08058214);

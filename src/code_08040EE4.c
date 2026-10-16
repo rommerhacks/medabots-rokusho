@@ -25,7 +25,14 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08041C5C);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", game_state_execute_handler_a);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", game_state_execute_handler_b);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", memcpy_bytes_08041D04);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08041D28);
+
+void sub_08041D28(void)
+{
+    u32 i;
+    for (i = 0; i < 30; i++)
+        gUnk_03000BE0[i].unk0 = i;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", find_medal_slot_by_id);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", load_palette_entry);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", medal_remove_by_id);
@@ -35,7 +42,14 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080420C4);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08042114);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", medapart_add_quantity);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", reduce_medapart_stat);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080421A0);
+
+void sub_080421A0(void)
+{
+    u32 i;
+    for (i = 0; i < 9; i++)
+        gUnk_030017A0[i].unk7 = i;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080421B4);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08042218);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", add_position_entry);
@@ -73,7 +87,12 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", check_random_encounter);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043AE0);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_tileset_to_vram);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_sprite_to_vram_08043C08);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043C94);
+
+s32 sub_08043C94(void)
+{
+    return rng_next_080424B8() * 100 / 255;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043CA8);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_scroll_movement_a);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", apply_battle_blend_effect_a);

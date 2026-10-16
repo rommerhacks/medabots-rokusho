@@ -85,7 +85,13 @@ INCLUDE_ASM("asm/nonmatching/code_0800025C", compute_scaled_value);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", rotate_vector_2d);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", shell_sort_by_second_byte);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", serial_link_init);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08002190);
+
+void sub_08002190(void)
+{
+    if (gUnk_03005170.unk0)
+        gUnk_03005170.unk6 = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", serial_multiplayer_init);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", serial_link_init_and_status);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", serial_prepare_send_packet);
@@ -129,7 +135,13 @@ INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_080036C8);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_080036F4);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08003784);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_080038CC);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_080038F0);
+
+void sub_080038F0(void)
+{
+    sub_080039BC();
+    gGameSubState = 2;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08003904);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_0800393C);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_080039BC);

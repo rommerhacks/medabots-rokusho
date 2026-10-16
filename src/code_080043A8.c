@@ -4,7 +4,14 @@ INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080043A8);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_0800442C);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080044F8);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_0800454C);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080045C4);
+
+void sub_080045C4(void)
+{
+    sub_08006764();
+    assign_medal_to_team_slot();
+    gGameSubState = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080045DC);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004610);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004644);

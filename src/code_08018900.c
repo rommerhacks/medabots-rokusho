@@ -93,7 +93,13 @@ INCLUDE_ASM("asm/nonmatching/code_08018900", init_game_state_entry);
 INCLUDE_ASM("asm/nonmatching/code_08018900", process_animation_script);
 INCLUDE_ASM("asm/nonmatching/code_08018900", increment_medal_skill_level);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sync_medal_stats_from_battle_bot);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801BF64);
+
+void sub_0801BF64(u16 *counter, u16 max)
+{
+    if (*counter != max)
+        (*counter)++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801BF78);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801BFB4);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C0BC);
@@ -110,7 +116,12 @@ INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C32C);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C360);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C388);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C3B0);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C3F8);
+
+void sub_0801C3F8(void)
+{
+    animate_battle_sprites(gUnk_03001800.unk87);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C40C);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C444);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C470);

@@ -47,7 +47,14 @@ INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EA2C);
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EA98);
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EB34);
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EB60);
-INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EBE4);
+
+void sub_0800EBE4(void)
+{
+    clear_battle_sprite_slot(0, 0x80);
+    sub_08043CA8();
+    sub_08044CDC(2);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EBFC);
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EC20);
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EC44);

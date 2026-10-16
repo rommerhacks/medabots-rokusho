@@ -24,7 +24,15 @@ INCLUDE_ASM("asm/nonmatching/code_08044F54", load_sprite_animation_by_type);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", toggle_bg_layer_visibility);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", setup_scene_bg_layers_and_sprites);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", update_anim_object_flags);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047414);
+
+void sub_08047414(struct Unk_08047414 *obj, u8 *buf, u32 b, u32 c)
+{
+    obj->unk0 = buf;
+    obj->unk4 = b;
+    obj->unk8 = c;
+    buf[0x1094] = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", interpolate_entity_positions);
 
 void nullsub_08047570(void)
@@ -83,7 +91,10 @@ u32 sub_08047D8C(u8 id)
     return get_item_quantity_by_id(id);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D9C);
+u32 sub_08047D9C(u8 a, u8 b)
+{
+    return sub_08042114(a, b);
+}
 
 u32 sub_08047DB0(u8 id)
 {

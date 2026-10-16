@@ -43,7 +43,13 @@ INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0807118C);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080712E8);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", battle_audio_phase_dispatch);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", check_sprite_done_and_advance_battle);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071600);
+
+void sub_08071600(void)
+{
+    play_song(0);
+    sub_08047850(3);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071614);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0807168C);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_channel_set_note);
@@ -116,9 +122,20 @@ void sub_08072A34(struct SoundTrack *track)
     track->unk4C++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A40);
+void sub_08072A40(struct SoundTrack *track)
+{
+    track->unk52 = *track->unk14++;
+    track->unk18 = track->unk14;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A54);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A6C);
+
+void sub_08072A6C(struct SoundTrack *track)
+{
+    track->unk53 = *track->unk14++;
+    track->unk1C = track->unk14;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072A80);
 
 void stream_read_u32_to_field(struct SoundTrack *track)
@@ -126,7 +143,12 @@ void stream_read_u32_to_field(struct SoundTrack *track)
     track->unk14 = (u8 *)sub_08072708(track);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", stream_read_and_shift_u32);
+void stream_read_and_shift_u32(struct SoundTrack *track)
+{
+    u8 *ptr = (u8 *)sub_08072708(track);
+    track->unk20 = track->unk14;
+    track->unk14 = ptr;
+}
 
 void sub_08072ABC(struct SoundTrack *obj)
 {
@@ -165,6 +187,12 @@ INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_channel_process_event);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_channel_process_command_08072E04);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072E7C);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072E98);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072ECC);
+
+void sub_08072ECC(struct SoundTrack *track)
+{
+    sub_08072658(track);
+    sound_channel_update_pitch_sweep(track);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_channel_advance_sequence);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sound_engine_update_all_channels);

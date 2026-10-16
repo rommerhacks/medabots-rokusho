@@ -16,7 +16,12 @@ INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08014CF0);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08014D94);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08014DC8);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08014E20);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", clear_battle_bot_array);
+
+void clear_battle_bot_array(void)
+{
+    sub_0803F624(gUnk_03000590, 0x600, 0);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", count_active_battle_bots);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", battle_setup_bot_entry);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", copy_player_medals_to_battle_bots);
@@ -34,7 +39,20 @@ INCLUDE_ASM("asm/nonmatching/code_080147FC", select_bot_battle_action);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_080154E0);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08015508);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08015528);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_0801554C);
+
+u32 sub_0801554C(u32 a, u32 b)
+{
+    if (b == 0)
+    {
+        if (a <= 2)
+            return 0;
+        return 1;
+    }
+    if (a <= 2)
+        return 1;
+    return 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", battle_bot_select_part);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", check_medaforce_availability);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08015648);
@@ -59,9 +77,23 @@ INCLUDE_ASM("asm/nonmatching/code_080147FC", render_bot_health_bar);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", fixed_point_multiply_divide);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", render_bot_cash_display);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", battle_load_sprite_data);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08015F78);
+
+void sub_08015F78(void)
+{
+    u32 i;
+    for (i = 0; i < 6; i++)
+        sub_08015F90(i);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08015F90);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016068);
+
+void sub_08016068(void)
+{
+    u32 i;
+    for (i = 0; i < 6; i++)
+        sub_08016080(i);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016080);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016138);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016154);

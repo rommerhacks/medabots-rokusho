@@ -52,11 +52,27 @@ void sub_0804DCAC(void)
     sub_08050244();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DCB8);
+void sub_0804DCB8(void)
+{
+    if (game_state_execute_handler_a())
+        sub_08050244();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DCCC);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DCF0);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DD10);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DD24);
+
+void sub_0804DD10(void)
+{
+    if (run_blend_fade_transition(0))
+        sub_08050244();
+}
+
+void sub_0804DD24(void)
+{
+    if (run_blend_fade_transition(0))
+        sub_08050244();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DD38);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DD50);
 
@@ -75,8 +91,19 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DE28);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DEF4);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E0E8);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E324);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E3F0);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E404);
+
+void sub_0804E3F0(void)
+{
+    if (sub_08050868())
+        sub_08050244();
+}
+
+void sub_0804E404(void)
+{
+    if (sub_080508CC())
+        sub_08050244();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E418);
 
 void sub_0804E434(void)
@@ -103,8 +130,18 @@ void sub_0804E4DC(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E4E8);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E540);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E55C);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E570);
+
+void sub_0804E55C(void)
+{
+    if (sub_08050868())
+        sub_08050244();
+}
+
+void sub_0804E570(void)
+{
+    if (sub_080508CC())
+        sub_08050244();
+}
 
 void sub_0804E584(void)
 {
@@ -219,7 +256,12 @@ void nullsub_0804F690(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F694);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F7F0);
+
+void sub_0804F7F0(void)
+{
+    if (sub_080509A0())
+        sub_08050244();
+}
 
 void sub_0804F804(void)
 {

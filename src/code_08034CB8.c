@@ -45,7 +45,15 @@ INCLUDE_ASM("asm/nonmatching/code_08034CB8", check_sprite_in_range);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035694);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_080356B4);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", check_sprite_overlap_and_adjust);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_0803572C);
+
+void sub_0803572C(u8 *val, s32 amount)
+{
+    if (*val < amount)
+        *val = 0;
+    else
+        *val -= amount;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035740);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035754);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", calc_bot_matching_part_power);
@@ -70,7 +78,14 @@ INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035BD4);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035BFC);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035C3C);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035C70);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035DD4);
+
+u32 sub_08035DD4(u32 a)
+{
+    if (a - 0x128 <= 0xA8)
+        return 0;
+    return 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", init_battle_scene_backgrounds);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", setup_battle_medapart_scenes);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", get_active_bot_part_index_and_load_values);

@@ -34,8 +34,17 @@ INCLUDE_ASM("asm/nonmatching/sound_driver", sound_volume_scale);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08073A84);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_calculate_playback_rate);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_set_pitch_offset);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08073AE4);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08073AF8);
+
+void sub_08073AE4(u32 val)
+{
+    gUnk_03007014->unk720 = val;
+}
+
+void sub_08073AF8(u32 val)
+{
+    gUnk_03007014->unk724 = val;
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_stop_08073B0C);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_configure_mixing_channel);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_play);
@@ -88,7 +97,12 @@ INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_finish_and_callback);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074800);
 INCLUDE_ASM("asm/nonmatching/sound_driver", audio_unlink_channel_node);
 INCLUDE_ASM("asm/nonmatching/sound_driver", init_all_sound_channels);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074900);
+
+void sub_08074900(u32 val)
+{
+    gUnk_03007014->unk688 = val;
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", load_song_channels);
 INCLUDE_ASM("asm/nonmatching/sound_driver", play_song);
 INCLUDE_ASM("asm/nonmatching/sound_driver", play_song_alt);
@@ -96,7 +110,12 @@ INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074A94);
 INCLUDE_ASM("asm/nonmatching/sound_driver", set_all_sound_channels_flag_0x40);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_with_lock);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074B68);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074BC4);
+
+void sub_08074BC4(u32 val)
+{
+    gUnk_03007014->unk68C = val;
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", play_sound_from_command);
 INCLUDE_ASM("asm/nonmatching/sound_driver", play_sound_effect);
 INCLUDE_ASM("asm/nonmatching/sound_driver", play_sound_effect_alt);
@@ -106,7 +125,12 @@ INCLUDE_ASM("asm/nonmatching/sound_driver", sound_reset_callbacks_with_lock);
 INCLUDE_ASM("asm/nonmatching/sound_driver", get_sound_channel_position);
 INCLUDE_ASM("asm/nonmatching/sound_driver", is_sound_playing_at_position);
 INCLUDE_ASM("asm/nonmatching/sound_driver", is_sound_playing_with_lock);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074E70);
+
+void sub_08074E70(u32 val)
+{
+    gUnk_03007014->unk728 = val;
+}
+
 INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074E84);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sound_play_with_lock);
 INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074EF4);

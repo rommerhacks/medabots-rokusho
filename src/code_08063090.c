@@ -52,11 +52,23 @@ INCLUDE_ASM("asm/nonmatching/code_08063090", blend_fade_step_08065598);
 INCLUDE_ASM("asm/nonmatching/code_08063090", sub_08065618);
 INCLUDE_ASM("asm/nonmatching/code_08063090", battle_cutscene_dispatch);
 INCLUDE_ASM("asm/nonmatching/code_08063090", sub_08065894);
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_08065908);
+
+void sub_08065908(void)
+{
+    if (game_state_execute_handler_a())
+        dispatch_by_index_0476e8(8);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08063090", fade_transition_and_input_check);
 INCLUDE_ASM("asm/nonmatching/code_08063090", multiplayer_battle_sync_update);
 INCLUDE_ASM("asm/nonmatching/code_08063090", handle_battle_fade_transition);
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_08065B68);
+
+void sub_08065B68(void)
+{
+    if (game_state_execute_handler_a())
+        dispatch_by_index_0476e8(7);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08063090", dispatch_battle_cutscene_substate);
 INCLUDE_ASM("asm/nonmatching/code_08063090", clear_vram_bg);
 INCLUDE_ASM("asm/nonmatching/code_08063090", fade_state_dispatch);

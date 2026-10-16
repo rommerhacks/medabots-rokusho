@@ -9,7 +9,14 @@ INCLUDE_ASM("asm/nonmatching/code_080490C4", clear_entity_state);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", calculate_oam_affine_matrix);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_080493D4);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", advance_sprite_animation_frame);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_080496C8);
+
+void sub_080496C8(u8 *dst, u32 size)
+{
+    u32 i;
+    for (i = 0; i < size; i++)
+        *dst++ = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_080496DC);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", count_byte_differences);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", get_entity_speed_fraction);
@@ -31,8 +38,17 @@ void sub_08049CC0(void)
 INCLUDE_ASM("asm/nonmatching/code_080490C4", setup_palette_fade_to_color);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", setup_palette_fade_to_color_with_obj);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", run_blend_fade_transition);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_08049E74);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_08049E88);
+
+void sub_08049E74(u16 a, u32 b, u16 c)
+{
+    blend_obj_palettes_to_color_0803F684(a, b, c);
+}
+
+void sub_08049E88(u16 a, u32 b, u16 c)
+{
+    blend_obj_palettes_to_color_0803F998(a, b, c);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", quicksort_u8_array);
 
 void sub_0804A1C4(void)
@@ -77,7 +93,13 @@ INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A8F8);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A9B8);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804A9F8);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AA28);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AAB8);
+
+void sub_0804AAB8(void)
+{
+    if (run_blend_fade_transition(0))
+        sub_0804A1C4();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AACC);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AAF0);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AB14);
@@ -123,8 +145,18 @@ void nullsub_0804AF48(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AF4C);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AF6C);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AF80);
+
+void sub_0804AF6C(void)
+{
+    sub_08058214(gUnk_030057A0.unk14);
+}
+
+void sub_0804AF80(void)
+{
+    if (sub_0805937C())
+        handle_battle_end_state_transition();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AF94);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804AFBC);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", update_battle_entity_status_chars);
@@ -132,7 +164,14 @@ INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B1FC);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", clear_vram_bg2_tiles);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", load_room_graphics);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", update_blend_effect_from_input);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B694);
+
+u32 sub_0804B694(void)
+{
+    if (battle_sequence_dispatch() == 4)
+        return 1;
+    return 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B6A8);
 
 u32 sub_0804B6EC(void)
@@ -223,7 +262,12 @@ void nullsub_0804C8DC(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C8E0);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C900);
+
+void sub_0804C900(void)
+{
+    sub_08047BA8(read_map_script_byte());
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C914);
 
 void sub_0804C938(void)
