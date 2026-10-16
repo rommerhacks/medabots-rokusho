@@ -14,12 +14,12 @@ sudo apt install build-essential git python3 binutils-arm-none-eabi gcc-arm-none
 ## 2. Clone this repository and agbcc
 
 ```sh
-git clone https://github.com/rommerhacks/metabots-rokusho.git
+git clone https://github.com/rommerhacks/medabots-rokusho.git
 git clone https://github.com/pret/agbcc.git
 cd agbcc
 ./build.sh
-./install.sh ../metabots-rokusho
-cd ../metabots-rokusho
+./install.sh ../medabots-rokusho
+cd ../medabots-rokusho
 ```
 
 `install.sh` puts the compiler in `tools/agbcc/`.
