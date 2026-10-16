@@ -5,7 +5,7 @@ sub_08004AF8: @ 0x08004AF8
 	push {r4, r5, r6, r7, lr}
 	mov r7, r8
 	push {r7}
-	bl sub_08004E74
+	bl medabots_scroll_bg3
 	bl setup_overworld_scene_from_position
 	ldr r0, _08004C30 @ =0x03001800
 	mov ip, r0

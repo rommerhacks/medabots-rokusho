@@ -40,7 +40,7 @@ struct SoundTrack
     u8 unk57;
     u8 unk58;
     u8 unk59;
-    u8 unk5A;
+    u8 unk5A; // Medabot detail cursor: 0 Medal, 1-4 Medaparts (runtime-checked)
     u8 envAttack; // high nibble: frames per step, low nibble: volume step
     u8 envDecay; // same layout as envAttack
     u8 envReleaseAt; // release starts when this many frames of the note remain
@@ -143,9 +143,9 @@ struct Unk_03000440
     u8 unk28;
     u8 unk29; // choice menu state (poll_choice_menu)
     u8 filler2A[0x12];
-    u8 unk3C;
-    u8 unk3D;
-    u8 unk3E;
+    u8 unk3C; // info screen request (medabot_detail_open_info sets 1)
+    u8 unk3D; // Medal / Medapart id to show
+    u8 unk3E; // Medapart slot 0-3
     u8 filler3F[0x11];
     u8 unk50; // team select: cursor / phase (team_select_confirm_pick)
     u8 filler51;
@@ -156,19 +156,19 @@ struct Unk_03000440
     u8 filler57[0x3];
     u8 unk5A;
     u8 filler5B;
-    u16 unk5C;
-    u8 unk5E;
+    u16 unk5C; // timer
+    u8 unk5E; // Medabot detail: which Medabot is shown, L/R toggle (runtime-checked)
     u8 filler5F[0x25];
     u8 unk84; // field menu: animation frame counter
     u8 unk85;
-    u16 unk86;
+    u16 unk86; // link exchange frame counter
     u8 unk88; // field menu: row animation counter
     u8 filler89[0x5];
     u8 unk8E; // field menu cursor: 0 Medawatch, 1 Item, 2 Vehicle, 3 Save (runtime-checked)
     u8 unk8F; // Medawatch menu cursor (0..2)
     u8 filler90[0x6];
     u8 unk96;
-    u8 unk97;
+    u8 unk97; // shown Medabot: Medal, then unk98-9B its four Medaparts
     u8 unk98;
     u8 unk99;
     u8 unk9A;

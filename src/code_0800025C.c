@@ -997,7 +997,7 @@ void medabots_screen_fade_in(void)
     struct Unk_03000440 *s;
     u8 *flag;
 
-    sub_08004E74();
+    medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
     update_battle_sprite_orbit_clockwise(2);
@@ -1025,7 +1025,7 @@ void medabots_screen_fade_in(void)
 
 void medabots_screen_handle_input(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
     update_battle_sprite_orbit_clockwise(2);
@@ -1047,7 +1047,7 @@ void medabots_screen_handle_input(void)
 
 void medabots_screen_exit_start(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
     update_battle_sprite_orbit_clockwise(2);
@@ -1061,7 +1061,7 @@ void medabots_screen_exit_start(void)
 
 void medabots_screen_exit_fade(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
     update_battle_sprite_orbit_clockwise(2);
@@ -1082,10 +1082,11 @@ void medabots_screen_return_to_medawatch(void)
     gGameSubState = 16;
 }
 
-// guess: sub-states 8/9/16 leave for another screen and reload this one (sub_0800406C).
+// Sub-states 8/9: A on a Medabot in the list fades out, then 16 (medabot_detail_load_gfx) opens its
+// detail ("Build") screen (runtime-checked: A -> sub-state 9 -> 18).
 void sub_08003F28(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
     update_battle_sprite_orbit_clockwise(2);
@@ -1100,7 +1101,7 @@ void sub_08003F28(void)
 
 void sub_08003F74(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
     update_battle_sprite_orbit_clockwise(2);
@@ -1123,7 +1124,7 @@ void sub_08003F74(void)
 // guess: sub-states 11/12 show message 22 in a text window, then return to input.
 void sub_08003FE8(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
     update_battle_sprite_orbit_clockwise(2);
@@ -1136,7 +1137,7 @@ void sub_08003FE8(void)
 
 void sub_08004028(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
     update_battle_sprite_orbit_clockwise(2);
@@ -1147,7 +1148,7 @@ void sub_08004028(void)
         gGameSubState = 2;
 }
 
-void sub_0800406C(void)
+void medabot_detail_load_gfx(void)
 {
     u32 zero;
 

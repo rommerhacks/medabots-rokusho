@@ -1,12 +1,16 @@
 #include "global.h"
 
-void sub_080043A8(void)
+// Game state 3, sub-states 16-26: the Medabot detail ("Build") screen, runtime-checked from the
+// Medabots list (A). 18 = input: B back to the list (19-21), L/R switch Medabot, A on a row opens
+// its Medal (game state 4) or Medapart (game state 5) info screen (24-26).
+// 32-35 / 40-43 leave for a battle / race, 48-60 exchange the team over the link (not checked).
+void medabot_detail_fade_in(void)
 {
     struct Unk_03000440 *st;
     u8 *done;
     u8 *frame;
 
-    sub_08004E74();
+    medabots_scroll_bg3();
     sub_08006764();
     toggle_sprite_pair_visibility();
     dispatch_game_substate_handler_08006824();
@@ -31,11 +35,11 @@ void sub_080043A8(void)
     }
 }
 
-void sub_0800442C(void)
+void medabot_detail_handle_input(void)
 {
     u8 r;
 
-    sub_08004E74();
+    medabots_scroll_bg3();
     sub_08006764();
     toggle_sprite_pair_visibility();
     dispatch_game_substate_handler_08006824();
@@ -69,12 +73,12 @@ void sub_0800442C(void)
     }
 }
 
-void sub_080044F8(void)
+void medabot_detail_exit_start(void)
 {
     struct Unk_03000440 *st;
     u8 v;
 
-    sub_08004E74();
+    medabots_scroll_bg3();
     sub_08006764();
     toggle_sprite_pair_visibility();
     dispatch_game_substate_handler_08006824();
@@ -92,11 +96,11 @@ void sub_080044F8(void)
     gGameSubState++;
 }
 
-void sub_0800454C(void)
+void medabot_detail_exit_fade(void)
 {
     u8 *frame;
 
-    sub_08004E74();
+    medabots_scroll_bg3();
     sub_08006764();
     toggle_sprite_pair_visibility();
     dispatch_game_substate_handler_08006824();
@@ -118,16 +122,16 @@ void sub_0800454C(void)
     }
 }
 
-void sub_080045C4(void)
+void medabot_detail_return_to_list(void)
 {
     sub_08006764();
     assign_medal_to_team_slot();
     gGameSubState = 0;
 }
 
-void sub_080045DC(void)
+void medabot_detail_open_info_start(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     sub_08006764();
     toggle_sprite_pair_visibility();
     dispatch_game_substate_handler_08006824();
@@ -137,9 +141,9 @@ void sub_080045DC(void)
     gGameSubState++;
 }
 
-void sub_08004610(void)
+void medabot_detail_open_info_fade(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     sub_08006764();
     toggle_sprite_pair_visibility();
     dispatch_game_substate_handler_08006824();
@@ -149,7 +153,7 @@ void sub_08004610(void)
         gGameSubState++;
 }
 
-void sub_08004644(void)
+void medabot_detail_open_info(void)
 {
     clear_battle_sprite_slot(0, 0x80);
     gUnk_03000440.unk96 = 0;
@@ -201,7 +205,7 @@ void sub_08004644(void)
 
 void sub_08004764(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     sub_08005000();
     setup_overworld_scene_from_position();
     clear_sprite_table_mask(0, 4);
@@ -211,7 +215,7 @@ void sub_08004764(void)
 
 void sub_08004798(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     sub_08007480();
     if (gUnk_03000440.unk5C > 60)
@@ -232,7 +236,7 @@ void sub_080047EC(void)
     struct Unk_03000440 *st;
     u8 *frame;
 
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     sub_08007480();
     st = &gUnk_03000440;
@@ -258,7 +262,7 @@ void team_select_exit_battle(void)
 
 void sub_08004874(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     sub_08007480();
     if (gUnk_03000440.unk5C > 60)
@@ -271,7 +275,7 @@ void sub_08004874(void)
 
 void sub_080048B0(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     sub_08007480();
     if (update_blend_effect())
@@ -301,7 +305,7 @@ void team_select_exit_race(void)
 
 void sub_080049C8(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     text_window_init(1, 0, 0);
     gGameSubState++;
@@ -309,7 +313,7 @@ void sub_080049C8(void)
 
 void sub_080049EC(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     if (run_message(gUnk_083CF3B0[11]))
         gGameSubState++;
@@ -317,7 +321,7 @@ void sub_080049EC(void)
 
 void sub_08004A18(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     clear_battle_bot_array();
     count_active_battle_bots();
@@ -327,7 +331,7 @@ void sub_08004A18(void)
 
 void sub_08004A40(void)
 {
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     if (sub_0803E79C())
     {
@@ -342,7 +346,7 @@ void sub_08004A78(void)
     struct Unk_03000440 *st;
     u16 *timer;
 
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     st = &gUnk_03000440;
     timer = &st->unk86;
@@ -365,6 +369,9 @@ void sub_08004A78(void)
         (*timer)++;
 }
 
+// guess: sends 3 x 0x48 bytes from gUnk_03000590 and receives into gUnk_03000890 over the link, one
+// byte per packet (bit 15 = valid, bit 8 = toggle), summing the received bytes in unk1A8. Near miss:
+// scratch/sub_08004AF8_nearmiss.c (one literal load order and an orrs/adds for the 0x8000 header).
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004AF8);
 
 void sub_08004C58(void)
@@ -372,7 +379,7 @@ void sub_08004C58(void)
     struct Unk_03000440 *st;
     u16 *timer;
 
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     st = &gUnk_03000440;
     timer = &st->unk86;
@@ -393,7 +400,7 @@ void sub_08004CA4(void)
 {
     u16 v;
 
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     if (gUnk_03001800.unk51 < 2)
     {
@@ -433,7 +440,7 @@ void sub_08004CA4(void)
 void sub_08004DB4(void)
 {
     gUnk_03005010.unk6 = 0;
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     sub_08007540();
     copy_obj_palette_to_buffer();
@@ -446,7 +453,7 @@ void sub_08004DF0(void)
     struct Unk_03000440 *st;
     u8 *frame;
 
-    sub_08004E74();
+    medabots_scroll_bg3();
     setup_overworld_scene_from_position();
     st = &gUnk_03000440;
     frame = &st->unk84;
@@ -469,7 +476,7 @@ void sub_08004E40(void)
     gGameSubState = 0;
 }
 
-void sub_08004E74(void)
+void medabots_scroll_bg3(void)
 {
     if (gFrameCounter & 1)
     {

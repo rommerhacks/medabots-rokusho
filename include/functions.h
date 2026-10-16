@@ -9,7 +9,7 @@ void palette_blend_to_color_080013A8(u16 color, u32 amount);
 void medawatch_menu_load_icon(void);
 void medawatch_menu_init_cursor(void);
 void medawatch_scroll_bg3(void);
-void sub_08004E74(void);
+void medabots_scroll_bg3(void);
 void sub_08004E98(void);
 void update_battle_sprite_orbit_clockwise(u32 i);
 void sub_08004FD0(void);
