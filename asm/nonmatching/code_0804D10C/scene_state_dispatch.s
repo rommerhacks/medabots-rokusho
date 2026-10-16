@@ -147,7 +147,7 @@ _08050DAC:
 _08050DB4:
 	strb r1, [r0]
 	bl update_battle_field_frame
-	bl calculate_camera_scroll_from_npc
+	bl field_center_camera_on_player
 	bl sub_080487E4
 	cmp r4, #0x13
 	bne _08050DE6

@@ -55,7 +55,7 @@ sub_0804A8F8: @ 0x0804A8F8
 	movs r0, #0xe
 	movs r1, #0
 	bl dispatch_jump_table_29
-	bl calculate_camera_scroll_from_npc
+	bl field_center_camera_on_player
 	bl sub_080487E4
 	ldr r1, _0804A9AC @ =0x42000000
 	ldr r2, _0804A9B0 @ =0x00000000

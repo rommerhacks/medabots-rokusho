@@ -25,7 +25,7 @@ load_room_graphics: @ 0x0804B264
 	ldr r5, _0804B3E4 @ =0x000007FE
 	adds r7, r4, r5
 	ldrb r0, [r7]
-	bl load_npc_sprite_and_calc_camera_offset
+	bl field_load_area_tiles
 	ldrb r0, [r7]
 	movs r1, #0
 	bl sub_08052960
@@ -324,7 +324,7 @@ _0804B41C:
 	adds r0, r5, #0
 	bl copy_tiles_to_bg_tilemap
 _0804B52E:
-	bl calculate_camera_scroll_from_npc
+	bl field_center_camera_on_player
 	bl check_and_update_battlefield_palette
 	add sp, #0x14
 	pop {r3, r4, r5}

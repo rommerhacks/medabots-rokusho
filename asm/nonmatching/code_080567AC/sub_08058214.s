@@ -227,7 +227,7 @@ _080583D2:
 	ldr r2, _0805840C @ =0x00000C57
 	adds r1, r4, r2
 	strb r0, [r1]
-	bl calculate_camera_scroll_from_npc
+	bl field_center_camera_on_player
 	b _080586F6
 	.align 2, 0
 _080583F8: .4byte 0x03001798

@@ -30,7 +30,7 @@ _0804AFEC:
 	ldr r0, _0804B0E4 @ =0x000007FE
 	adds r6, r5, r0
 	ldrb r0, [r6]
-	bl load_npc_sprite_and_calc_camera_offset
+	bl field_load_area_tiles
 	ldr r1, _0804B0E8 @ =0x00000C52
 	adds r1, r1, r5
 	mov sl, r1
@@ -101,7 +101,7 @@ _0804B05E:
 	ldrh r0, [r1]
 	bl sub_08052714
 	strb r0, [r5]
-	bl calculate_camera_scroll_from_npc
+	bl field_center_camera_on_player
 	ldr r0, _0804B100 @ =0x00000C5C
 	add r0, r8
 	ldrb r1, [r0]

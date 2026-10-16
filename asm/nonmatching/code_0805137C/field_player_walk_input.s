@@ -1,8 +1,8 @@
 	.syntax unified
 
-	thumb_func_start battle_field_movement_dispatch
-	.global battle_field_movement_dispatch
-battle_field_movement_dispatch: @ 0x08051C6C
+	thumb_func_start field_player_walk_input
+	.global field_player_walk_input
+field_player_walk_input: @ 0x08051C6C
 	push {r4, r5, r6, r7, lr}
 	mov r7, r8
 	push {r7}
@@ -128,7 +128,7 @@ _08051D58:
 	adds r1, r6, r2
 	strb r0, [r1]
 	ldrb r0, [r5]
-	bl update_camera_scroll_and_check_events
+	bl field_player_step
 	movs r0, #3
 	bl update_battle_direction_indicator
 	ldr r1, _08051DBC @ =0x00000C5C
@@ -158,7 +158,7 @@ _08051DC4:
 	ldr r0, _08051DE4 @ =0x00000C59
 	add r0, r8
 	ldrb r0, [r0]
-	bl update_camera_scroll_and_check_events
+	bl field_player_step
 	ldr r0, _08051DE8 @ =0x00000C75
 	add r0, r8
 	ldrb r0, [r0]

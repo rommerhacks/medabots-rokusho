@@ -4068,7 +4068,7 @@ _0805634C:
 	ldr r2, _080563D4 @ =0x000007FE
 	adds r4, r4, r2
 	strb r0, [r4]
-	bl calculate_camera_scroll_from_npc
+	bl field_center_camera_on_player
 	movs r0, #0xc
 	movs r1, #0
 	bl dispatch_jump_table_29
@@ -4123,7 +4123,7 @@ _080563D8:
 	ldr r6, _0805647C @ =0x000007FE
 	adds r4, r4, r6
 	strb r0, [r4]
-	bl calculate_camera_scroll_from_npc
+	bl field_center_camera_on_player
 	movs r0, #0xa
 	movs r1, #0
 	bl dispatch_jump_table_29

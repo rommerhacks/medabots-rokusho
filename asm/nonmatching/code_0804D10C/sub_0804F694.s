@@ -134,7 +134,7 @@ _0804F760:
 	ldr r2, _0804F7EC @ =0x00000C57
 	adds r1, r5, r2
 	strb r0, [r1]
-	bl calculate_camera_scroll_from_npc
+	bl field_center_camera_on_player
 	ldrb r0, [r4]
 	bl sub_08052BA0
 	ldrb r0, [r6]

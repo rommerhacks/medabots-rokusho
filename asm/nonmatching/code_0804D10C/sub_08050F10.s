@@ -128,7 +128,7 @@ _0805102C:
 	lsls r3, r3, #4
 	adds r0, r0, r3
 	ldrb r0, [r0]
-	bl update_camera_scroll_and_check_events
+	bl field_player_step
 	ldr r0, _08051064 @ =0x030057E0
 	ldr r1, _08051068 @ =0x00000C58
 	adds r0, r0, r1
@@ -424,7 +424,7 @@ _080512A0:
 	movs r0, #0x74
 	bl sub_08047BA8
 _080512CE:
-	bl battle_field_movement_dispatch
+	bl field_player_walk_input
 	b _0805133C
 	.align 2, 0
 _080512D4: .4byte 0x030057E0
@@ -458,7 +458,7 @@ _08051300:
 _08051314: .4byte 0x00007FFF
 _08051318: .4byte 0x03005310
 _0805131C:
-	bl sub_08052E3C
+	bl field_warp_to_area
 	ldr r1, _08051354 @ =0x03005310
 	movs r0, #0
 	strb r0, [r1, #1]

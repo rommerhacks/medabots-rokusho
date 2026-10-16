@@ -2,6 +2,7 @@
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", load_map_npc_sprites);
 
+// guess: sets up the player sprite (47) and its shadow (89) on entering the field
 void init_battle_field_setup(void)
 {
     gUnk_030057E0.unkC58 = 0;
@@ -41,7 +42,9 @@ void set_battle_state_cancel_flag(void)
     sub_08051E8C();
 }
 
-void update_camera_scroll_and_check_events(u8 dir)
+// One frame of a tile step (dir 0 up, 1 down, 2 left, 3 right): moves the player, scrolls the camera,
+// and when the step ends (unkC58 counts down) checks NPC events, map events and random encounters.
+void field_player_step(u8 dir)
 {
     switch (dir)
     {
@@ -122,7 +125,7 @@ u8 handle_battle_movement_input(u8 dir)
     return dir;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", battle_field_movement_dispatch);
+INCLUDE_ASM("asm/nonmatching/code_0805137C", field_player_walk_input);
 
 void load_battle_palette_via_dma(u32 toBuffer)
 {
@@ -141,6 +144,8 @@ void sub_08051E8C(void)
         gUnk_030057E0.unkC75 = 0xFF;
 }
 
+// guess: sprite 48 (shadow 90) follows the player while unkC76 is set; turns it toward the player's tile.
+// unkC76 stayed 0 through walkthrough segment 01.
 void update_battle_direction_indicator(u8 flags)
 {
     u8 prev = gUnk_030057E0.unkC75;
@@ -183,6 +188,7 @@ void update_battle_direction_indicator(u8 flags)
     gUnk_03002C30[48].unk2A = gUnk_03002C30[47].unk2A;
 }
 
+// guess: one frame of sprite 48's step toward the player (see update_battle_direction_indicator)
 void battle_camera_scroll_update(u8 dir)
 {
     if (gUnk_030057E0.unkC76 && gUnk_030057E0.unkC74)
@@ -411,7 +417,8 @@ u8 sub_08052714(u16 y)
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", update_entity_sprites_on_screen);
 
-void load_npc_sprite_and_calc_camera_offset(u8 area)
+// Decompresses the area's tiles and centres maps smaller than the screen (15 x 10 tiles).
+void field_load_area_tiles(u8 area)
 {
     LZ77UnCompVram(gUnk_083F92F4[area].unk0, gUnk_03006D14);
     if (sub_08052960(gUnk_030057E0.unk7FE, 0) >> 1 <= 14)
@@ -468,7 +475,7 @@ u32 sub_08052A18(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08052A2C);
 
-void calculate_camera_scroll_from_npc(void)
+void field_center_camera_on_player(void)
 {
     s32 x, y;
 
@@ -606,7 +613,8 @@ void set_tile_data(u8 x, u8 y, u8 val)
     gUnk_030057E0.unk810[y * (gUnk_030057E0.unk800 >> 1) + x] = val;
 }
 
-void sub_08052E3C(void)
+// Runs at the end of a door transition: finds the warp under the player, switches area and places the player.
+void field_warp_to_area(void)
 {
     u32 found = 0;
     u32 area = gUnk_030057E0.unk7FE;
@@ -620,13 +628,13 @@ void sub_08052E3C(void)
         if (x == gUnk_030057E0.unkC56 && y == gUnk_030057E0.unkC57)
         {
             gUnk_030057E0.unk7FE = w[i].area;
-            load_npc_sprite_and_calc_camera_offset(gUnk_030057E0.unk7FE);
+            field_load_area_tiles(gUnk_030057E0.unk7FE);
             field_set_player_facing(w[i].dir & 7);
             gUnk_030057E0.unkC52 = (w[i].destX << 4) + gUnk_030057E0.unkC48;
             gUnk_030057E0.unkC54 = (w[i].destY << 4) + gUnk_030057E0.unkC4A;
             gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
             gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
-            calculate_camera_scroll_from_npc();
+            field_center_camera_on_player();
             found = 1;
         }
         i++;
@@ -636,6 +644,7 @@ void sub_08052E3C(void)
     update_cursor_tile_position();
 }
 
+// guess: sets up sprite 48 and its shadow (90), see update_battle_direction_indicator
 void init_battle_medaforce_sprite(void)
 {
     if (gUnk_030057E0.unkC76)
