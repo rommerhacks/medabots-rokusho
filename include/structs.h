@@ -148,7 +148,7 @@ struct Unk_03000440
     u8 unk3E; // Medapart slot 0-3
     u8 filler3F[0x11];
     u8 unk50; // team select: cursor / phase (team_select_confirm_pick)
-    u8 filler51;
+    u8 unk51;
     u8 unk52;
     u8 unk53;
     u8 filler54[0x2];
@@ -193,14 +193,17 @@ struct Unk_03002C30
     s16 unk2;
     s16 unk4;
     u16 unk6; // animation frame
-    u8 filler8[0x2];
+    u8 unk8;
+    u8 unk9;
     u8 unkA;
     u8 unkB;
     u32 unkC_0:8; // x, 24.8 fixed point: fraction
     s32 unkC_8:24; // integer part
     u32 unk10_0:8; // y, 24.8 fixed point
     s32 unk10_8:24;
-    u8 filler14[0x8];
+    u8 filler14[0x4];
+    u16 unk18;
+    u8 filler1A[0x2];
     u8 unk1C;
     u8 filler1D[0x3];
     u8 unk20; // animation state (0-3)
@@ -316,7 +319,8 @@ struct Unk_03000BE0
 
 struct Unk_030017A0
 {
-    u8 filler0[0x3];
+    u8 unk0; // slot in use
+    u8 filler1[0x2];
     u8 unk3;
     u8 unk4;
     u8 unk5;

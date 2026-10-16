@@ -127,6 +127,10 @@ extern const Func gUnk_083AC248[]; // game state 0 sub-state handlers (guess: de
 extern const Func gFieldMenuHandlers[]; // game state 1 (field pause menu) sub-state handlers
 extern const void *const gUnk_083B53F8[]; // messages used by game state 0 (guess: debug menu)
 extern const void *const gUnk_083CF3B0[]; // message table (run_message)
+extern const u8 gUnk_083AC420[]; // orbit centre x, y per gUnk_03000440.unk51
+extern const u8 gUnk_083AC432[]; // per slot sprite priority base
+extern const u8 gUnk_083AC43B[]; // x, y per team select slot (9)
+extern const u8 gUnk_083AC44D[]; // tile x, y per team select slot (9)
 extern const void *const gUnk_083B4AE0[]; // tilemaps (field menu rows: open/close animation frames)
 extern const void *const gUnk_083B5F80[]; // sprite animation commands (field menu cursor)
 extern const u8 gUnk_084C1608[];
