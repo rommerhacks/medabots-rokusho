@@ -195,4 +195,14 @@ void sound_play_with_lock(struct SoundTrack *track, u32 target, u32 frames);
 void sound_update_master_volume(void);
 void sound_channel_advance_sequence(struct SoundTrack *track);
 
+// code_0805137C (field)
+void sub_08051E8C(void);
+void update_battle_direction_indicator(u8 arg);
+void load_battle_palette_via_dma(u8 arg);
+void set_sprite_animation_state(u8 idx, u8 state);
+u8 sub_080526F0(u16 x);
+u8 sub_08052714(u16 y);
+void set_battle_state_byte_c83(u8 dir);
+u32 sub_0804803C(u8 arg);
+
 #endif // GUARD_FUNCTIONS_H

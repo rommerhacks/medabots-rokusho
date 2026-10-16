@@ -8,7 +8,12 @@ u32 sub_080518F4(u8 idx)
     return gUnk_083D28C0[gUnk_03002C30[idx].unk2A] * gUnk_083D28C0[gUnk_03006D38.unk2];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", set_battle_state_cancel_flag);
+void set_battle_state_cancel_flag(void)
+{
+    gUnk_030057E0.unkC59 = 0xFF;
+    sub_08051E8C();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805137C", update_camera_scroll_and_check_events);
 
 u8 handle_battle_movement_input(u8 dir)
@@ -31,7 +36,13 @@ void sub_08051E8C(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", update_battle_direction_indicator);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", battle_camera_scroll_update);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", set_sprite_anim_and_store);
+
+void set_sprite_anim_and_store(u8 idx, u8 state, u8 *out)
+{
+    set_sprite_animation_state(idx, state);
+    out[5] = state;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805137C", update_npc_random_animation);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", update_npc_sprite_animations);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", map_cursor_move_and_check_event);
@@ -196,7 +207,20 @@ u16 sub_08052A18(void)
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08052A2C);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", calculate_camera_scroll_from_npc);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08052AF8);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", update_bg_scroll_offsets_a);
+
+void update_bg_scroll_offsets_a(void)
+{
+    gUnk_03002C30[47].unk2 = gUnk_030057E0.unkC52 - gUnk_03004C30.x;
+    gUnk_03002C30[47].unk4 = gUnk_030057E0.unkC54 - gUnk_03004C30.y;
+    gUnk_03002C30[89].unk2 = gUnk_03002C30[47].unk2;
+    gUnk_03002C30[89].unk4 = gUnk_03002C30[47].unk4 - 5;
+}
+
+void sub_08052B84(void)
+{
+    gUnk_03002C30[47].unk0 = 0;
+    gUnk_03002C30[89].unk0 = 0;
+}
 
 void sub_08052BA0(u8 on)
 {
@@ -212,7 +236,15 @@ void sub_08052BA0(u8 on)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", check_and_update_battlefield_palette);
+void check_and_update_battlefield_palette(void)
+{
+    if (gUnk_030057E0.unkC5C == 1 && sub_0804803C(0) == 0)
+    {
+        gUnk_030057E0.unkC5C = gUnk_030057E0.unkC69;
+        load_battle_palette_via_dma(1);
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805137C", find_map_event_by_coords);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", check_battle_animation_complete);
 
@@ -237,8 +269,18 @@ void set_sprite_animation_state(u8 idx, u8 state)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", set_battle_entity_animation_attack);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", set_battle_state_byte_c83);
+void set_battle_entity_animation_attack(u8 dir)
+{
+    gUnk_030057E0.unkC67 = dir;
+    set_sprite_animation_state(47, dir);
+    update_battle_direction_indicator(3);
+}
+
+void set_battle_state_byte_c83(u8 dir)
+{
+    gUnk_030057E0.unkC83 = dir;
+    set_sprite_animation_state(48, dir);
+}
 
 void set_tile_data(u8 x, u8 y, u8 val)
 {
@@ -247,8 +289,27 @@ void set_tile_data(u8 x, u8 y, u8 val)
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08052E3C);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", init_battle_medaforce_sprite);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", update_cursor_tile_position);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", update_bg_scroll_offsets_b);
+
+void update_cursor_tile_position(void)
+{
+    if (gUnk_030057E0.unkC76)
+    {
+        gUnk_030057E0.unkC6E = gUnk_030057E0.unkC52;
+        gUnk_030057E0.unkC70 = gUnk_030057E0.unkC54;
+        gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
+        gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
+        set_battle_state_byte_c83(gUnk_03002C30[47].unk20);
+    }
+}
+
+void update_bg_scroll_offsets_b(void)
+{
+    gUnk_03002C30[48].unk2 = gUnk_030057E0.unkC6E - gUnk_03004C30.x;
+    gUnk_03002C30[48].unk4 = gUnk_030057E0.unkC70 - gUnk_03004C30.y;
+    gUnk_03002C30[90].unk2 = gUnk_03002C30[48].unk2;
+    gUnk_03002C30[90].unk4 = gUnk_03002C30[48].unk4 - 5;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_0805311C);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053154);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053194);

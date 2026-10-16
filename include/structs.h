@@ -132,7 +132,9 @@ struct Unk_03002C30
     u16 unk6; // animation frame
     u8 filler8[0x3];
     u8 unkB;
-    u8 fillerC[0x14];
+    s32 unkC; // x, 24.8 fixed point
+    s32 unk10; // y, 24.8 fixed point
+    u8 filler14[0xC];
     u8 unk20; // animation state (0-3)
     u8 unk21;
     u8 filler22[0x3];
@@ -140,7 +142,19 @@ struct Unk_03002C30
     u8 filler26[0x4];
     u8 unk2A;
     u8 unk2B; // animation set
-    u8 filler2C[0x14];
+    u8 unk2C;
+    u8 unk2D;
+    u8 unk2E; // on screen
+    u8 filler2F[0x1];
+    u16 unk30;
+    u16 unk32;
+    u8 filler34[0xC];
+};
+
+struct Unk_030055A0
+{
+    u16 unk0;
+    u16 unk2;
 };
 
 struct Unk_03005170
@@ -213,13 +227,25 @@ struct Unk_030057E0
     u16 unkC54;
     u8 unkC56; // player tile x
     u8 unkC57; // player tile y
-    u8 fillerC58[0x16];
+    u8 fillerC58[0x1];
+    u8 unkC59;
+    u8 fillerC5A[0x2];
+    u8 unkC5C;
+    u8 fillerC5D[0xA];
+    u8 unkC67;
+    u8 fillerC68[0x1];
+    u8 unkC69;
+    u8 fillerC6A[0x4];
     u16 unkC6E;
     u16 unkC70;
-    u8 fillerC72[0x3];
+    u8 unkC72;
+    u8 unkC73;
+    u8 fillerC74[0x1];
     u8 unkC75;
     u8 unkC76;
-    u8 fillerC77[0x11];
+    u8 fillerC77[0xC];
+    u8 unkC83;
+    u8 fillerC84[0x4];
     u8 unkC88;
     u8 unkC89;
     u16 unkC8A;
@@ -240,8 +266,8 @@ struct Unk_03006D38
 // Three copies at gUnk_03004C30, gUnk_0300057C, gUnk_03001C04 (camera / scroll position).
 struct Vec16
 {
-    u16 x;
-    u16 y;
+    s16 x;
+    s16 y;
 };
 
 struct Unk_03005350
