@@ -44,6 +44,16 @@
   typically through a small `static inline` helper that takes the struct pointer.
 * A value that must stay in a callee-saved register across calls (e.g. a zero stored at the end)
   is often a separate variable assigned in the middle of the code, not a constant.
+* `mov sb, sp` before a `bl`, and a callee that saves `sb` (r9) and reads `[sb]`: that is a GCC
+  **nested function** (r9 is the static chain, pointing at the outer function's frame, where it
+  spilled the variables the nested function uses). gcc emits the nested function just before the
+  outer one; decompile the pair together as one C function containing the nested one (see
+  `sound_fade_out_music` in `sound_driver.c`). The nested function becomes a local symbol
+  (`name.N`), so it can't be called from other files.
+* A `.byte` tail after a function's `.align` can hide whole functions that nothing calls (dead code
+  kept by the linker). Disassemble it (`objdump -b binary -M force-thumb`) and look for `push`.
+* A param spilled to the stack and read back with `ldrb` hints at a `u8` param; if the callers
+  pass it untruncated, they were compiled against a different prototype.
 
 ## Naming
 
