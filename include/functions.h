@@ -300,5 +300,9 @@ void sub_08047D58(u32 n);
 void sub_08047D74(u32 n);
 void sub_080500D8(u8 slot, u8 a, u8 b);
 u32 sub_0804F13C(u8 a);
+void sub_080492CC(void);
+void calculate_oam_affine_matrix(u8 i);
+u8 sub_08050264(u8 a);
+u8 sub_0805026C(u8 a);
 
 #endif // GUARD_FUNCTIONS_H

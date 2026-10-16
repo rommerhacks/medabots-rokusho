@@ -938,7 +938,22 @@ void nullsub_0804F62C(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F630);
+void sub_0804F630(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        sub_08050C74();
+        s->unkC93++;
+        break;
+    case 1:
+        if (scene_state_dispatch(3, s->unkC94[0]))
+            map_script_command_done();
+        break;
+    }
+}
 
 void nullsub_0804F678(void)
 {
@@ -1229,11 +1244,28 @@ void sub_0804FC30(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FCC4);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FE20);
+
+void sub_0804FE20(void)
+{
+    if (gUnk_030057E0.unkC36 == 0)
+    {
+        gUnk_030057E0.unkC34 = gUnk_030057E0.unkC94[0];
+        map_script_command_done();
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FE50);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", setup_battle_sprite_terrain);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080500D8);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", advance_sprite_by_terrain_modifier);
+
+void advance_sprite_by_terrain_modifier(u8 slot)
+{
+    s32 i;
+
+    for (i = 0; i < sub_080518F4(slot); i++)
+        advance_sprite_animation_frame(slot);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", update_battle_sprite_movement);
 
 // Ends the current command: the next frame runs the next one (map_script_run_command).
@@ -1253,14 +1285,21 @@ u8 sub_0805026C(u8 a)
     return a & 3;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", calc_medapart_table_index);
+u8 calc_medapart_table_index(u8 a)
+{
+return sub_08050264(a) * 12 + sub_0805026C(a) * 3;
+}
 
 u8 sub_080502B4(u8 slot, u8 v)
 {
     return v + gUnk_03002C30[slot].unk2B * 4;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", compute_battle_sprite_anim_offset);
+u8 compute_battle_sprite_anim_offset(u8 id, u8 a)
+{
+    return gUnk_03002C30[sub_0804DBA4(id) + 79].unk2B * 12 + a * 3;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", spawn_battle_medapart_sprite);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", init_battle_medapart_sprite);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050508);
@@ -1308,9 +1347,25 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080507E0);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050868);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080508CC);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080509A0);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050B50);
+
+void sub_08050B50(void)
+{
+    sub_080496C8((u8 *)&gNewKeys, 4);
+    sub_080496C8((u8 *)&gRepeatKeys, 4);
+    sub_080496C8((u8 *)&gHeldKeys, 4);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", battle_scene_state_dispatch);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", init_battle_sprites);
+
+void init_battle_sprites(void)
+{
+    s32 i;
+
+    sub_080496C8((u8 *)gUnk_03002C30, 0xA00);
+    sub_080492CC();
+    for (i = 0; i < 32; i++)
+        calculate_oam_affine_matrix(i);
+}
 
 void sub_08050C74(void)
 {
