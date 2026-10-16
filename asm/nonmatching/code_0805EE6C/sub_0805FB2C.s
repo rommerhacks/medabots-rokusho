@@ -12,7 +12,7 @@ sub_0805FB2C: @ 0x0805FB2C
 	mov r0, sp
 	bl CpuFastSet
 	bl sub_08059D04
-	bl sub_080415BC
+	bl reset_bg_scroll
 	ldr r1, _0805FB90 @ =0x04000040
 	movs r0, #0xf0
 	strh r0, [r1]

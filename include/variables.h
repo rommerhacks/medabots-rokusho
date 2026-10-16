@@ -25,12 +25,12 @@ extern struct Unk_030057E0 gUnk_030057E0;
 extern struct Unk_030064A0 gUnk_030064A0;
 extern struct Unk_03006D20 gUnk_03006D20;
 extern struct Unk_03007014 *gUnk_03007014;
-extern struct Vec16 gUnk_03004C30;
+extern struct Vec16 gBg1Scroll;     // BG1 scroll (field: map camera)
 extern struct Unk_03005310 gUnk_03005310;
 extern u8 gUnk_03006F40[];
 extern struct Unk_030055A0 gUnk_030055A0[];
-extern struct Vec16 gUnk_0300057C;
-extern struct Vec16 gUnk_03001C04;
+extern struct Vec16 gBg2Scroll;     // BG2 scroll
+extern struct Vec16 gBg3Scroll;     // BG3 scroll
 extern u8 *gUnk_030057D8; // two 4-bit entries per byte (bit 3 / bit 7: flag, bits 0-2 / 4-6: count)
 extern u16 *gUnk_03006D14;
 extern struct Unk_03006D38 gUnk_03006D38;
@@ -49,7 +49,7 @@ extern struct Unk_03002414 *gUnk_03002414;
 extern u32 gUnk_03000430;              // vblank_body OAM mode (0, 2)
 extern u8 gUnk_03000434;               // bit 0: vblank_body skips the BG scroll registers
 extern struct Vec16 gUnk_03002C2C;     // scroll added to every BG layer
-extern struct Vec16 gUnk_03005000;     // BG0 scroll
+extern struct Vec16 gBg0Scroll;     // BG0 scroll
 extern u16 gTilemapBaseEntry;          // added to every tilemap entry by write_tilemap_to_vram_08000E94
 extern u8 gDecompressBuffer[];         // EWRAM buffer the tilemap loaders decompress into
 extern u16 gPaletteBackup[0x200];      // OBJ then BG palette (copy_obj_palette_to_buffer)
@@ -140,7 +140,7 @@ extern const u8 gUnk_084C6A98[];
 extern const u16 gUnk_084E2E38[];
 extern const u8 gUnk_084C7174[];
 extern const u16 gUnk_084E2E58[];
-extern const Func gUnk_083AC2D4[]; // game state 2 (Medawatch menu) sub-state handlers
+extern const Func gMedawatchMenuHandlers[]; // game state 2 (Medawatch menu) sub-state handlers
 extern const u8 gUnk_084E30D8[];
 extern const u8 gUnk_084EF6A0[];
 extern const u8 gUnk_084F023C[];
@@ -150,7 +150,7 @@ extern const u8 gUnk_084C1C24[];
 extern const u8 gUnk_084C1E04[];
 extern const u8 gUnk_084C1FD4[];
 extern u8 gUnk_02020800[]; // BG tile backup (0x800 bytes of VRAM 0x06002800 while a Medawatch submenu runs)
-extern const Func gUnk_083AC320[]; // game state 3 sub-state handlers
+extern const Func gMedabotsScreenHandlers[]; // game state 3 sub-state handlers
 extern const u8 gUnk_084E5650[];
 extern const u8 gUnk_084C48B4[];
 extern const u8 gUnk_084C4A34[];

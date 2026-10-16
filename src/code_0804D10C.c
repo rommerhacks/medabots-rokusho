@@ -356,8 +356,8 @@ void sub_0804D9AC(u8 i)
     memcpy_u8(&gUnk_03002C30[i], &gUnk_03002C30[48], 0x40);
     memcpy_u8(&gUnk_030055A0[i], &gUnk_030055A0[48], 4);
     gUnk_030057E0.unkC76 = 1;
-    gUnk_030057E0.unkC6E = gUnk_03002C30[48].unk2 + gUnk_03004C30.x;
-    gUnk_030057E0.unkC70 = gUnk_03002C30[48].unk4 + gUnk_03004C30.y;
+    gUnk_030057E0.unkC6E = gUnk_03002C30[48].unk2 + gBg1Scroll.x;
+    gUnk_030057E0.unkC70 = gUnk_03002C30[48].unk4 + gBg1Scroll.y;
     gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
     gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
     gUnk_030057E0.unkC84 = gUnk_03002C30[48].unk2B;
@@ -1225,7 +1225,7 @@ u32 sub_0804F13C(u8 dir)
             gUnk_030057E0.unkC54 -= sub_080518F4(47);
             if (!sub_08052A18()
              && gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A < gUnk_030057E0.unk802 * 8 - 0x60
-             && gUnk_03004C30.y != 0)
+             && gBg1Scroll.y != 0)
             {
                 sub_08052AF8(-sub_080518F4(47));
                 gUnk_03002C30[0].unk4 += sub_080518F4(47);
@@ -1238,7 +1238,7 @@ u32 sub_0804F13C(u8 dir)
             gUnk_030057E0.unkC54 += sub_080518F4(47);
             if (!sub_08052A18()
              && gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A + 16 > 0x50
-             && gUnk_03004C30.y + 0xA0 < gUnk_030057E0.unk802 * 8)
+             && gBg1Scroll.y + 0xA0 < gUnk_030057E0.unk802 * 8)
             {
                 sub_08052AF8(sub_080518F4(47));
                 gUnk_03002C30[0].unk4 -= sub_080518F4(47);
@@ -1251,7 +1251,7 @@ u32 sub_0804F13C(u8 dir)
             gUnk_030057E0.unkC52 -= sub_080518F4(47);
             if (!sub_08052A04()
              && gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 < gUnk_030057E0.unk800 * 8 - 0x80
-             && gUnk_03004C30.x != 0)
+             && gBg1Scroll.x != 0)
             {
                 sub_08052A2C(-sub_080518F4(47));
                 gUnk_03002C30[0].unk2 += sub_080518F4(47);
@@ -1264,7 +1264,7 @@ u32 sub_0804F13C(u8 dir)
             gUnk_030057E0.unkC52 += sub_080518F4(47);
             if (!sub_08052A04()
              && gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 + 16 > 0x80
-             && gUnk_03004C30.x + 0xF0 < gUnk_030057E0.unk800 * 8)
+             && gBg1Scroll.x + 0xF0 < gUnk_030057E0.unk800 * 8)
             {
                 sub_08052A2C(sub_080518F4(47));
                 gUnk_03002C30[0].unk2 -= sub_080518F4(47);

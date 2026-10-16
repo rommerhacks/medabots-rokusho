@@ -60,7 +60,7 @@ _08064D10: .4byte 0x03000584
 _08064D14: .4byte 0x03002B8C
 _08064D18: .4byte 0x0300137C
 _08064D1C:
-	bl sub_080415BC
+	bl reset_bg_scroll
 	movs r1, #0x80
 	lsls r1, r1, #0x13
 	movs r0, #0x60

@@ -11,7 +11,7 @@ sub_0805D5E8: @ 0x0805D5E8
 	ldr r2, _0805D620 @ =0x01000100
 	mov r0, sp
 	bl CpuFastSet
-	bl sub_080415BC
+	bl reset_bg_scroll
 	movs r1, #0x80
 	lsls r1, r1, #0x13
 	movs r2, #0xb0

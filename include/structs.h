@@ -176,7 +176,7 @@ struct Unk_03000440
     u8 filler12F[2];
     u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2
     u8 filler132[0x7];
-    u8 unk139; // game state 3 setup step (sub_08003A38)
+    u8 unk139; // game state 3 setup step (medabots_screen_load_gfx)
 };
 
 
@@ -449,7 +449,7 @@ struct Unk_03006D38
     u8 unk6;
 };
 
-// Three copies at gUnk_03004C30, gUnk_0300057C, gUnk_03001C04 (camera / scroll position).
+// BG scroll offsets: gBg0Scroll..gBg3Scroll, added to gUnk_03002C2C and written to BGxHOFS/VOFS by vblank_body.
 struct Vec16
 {
     s16 x;

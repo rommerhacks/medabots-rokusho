@@ -21,7 +21,7 @@ _08062E54:
 	ldr r2, _08063010 @ =0x01006000
 	add r0, sp, #0x10
 	bl CpuFastSet
-	bl sub_080415BC
+	bl reset_bg_scroll
 	movs r0, #0
 	movs r1, #0x80
 	bl clear_battle_sprite_slot

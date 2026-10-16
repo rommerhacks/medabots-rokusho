@@ -17,7 +17,7 @@ clear_vram_bg: @ 0x08065BB0
 	movs r0, #0
 	movs r1, #0x80
 	bl clear_battle_sprite_slot
-	bl sub_080415BC
+	bl reset_bg_scroll
 	movs r5, #0x80
 	lsls r5, r5, #0x13
 	movs r0, #0x60

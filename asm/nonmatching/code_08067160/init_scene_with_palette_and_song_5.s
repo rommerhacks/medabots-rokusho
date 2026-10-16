@@ -33,7 +33,7 @@ init_scene_with_palette_and_song_5: @ 0x08067440
 	movs r0, #0
 	movs r1, #0x80
 	bl clear_battle_sprite_slot
-	bl sub_080415BC
+	bl reset_bg_scroll
 	movs r1, #0x80
 	lsls r1, r1, #0x13
 	ldr r2, _08067658 @ =0x00006060

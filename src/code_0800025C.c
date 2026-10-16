@@ -288,17 +288,17 @@ void dispatch_game_substate_handler_08002554(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08002574);
 
-// guess: debug map viewer input (D-pad scrolls gUnk_03004C30, START/SELECT open text windows)
+// guess: debug map viewer input (D-pad scrolls gBg1Scroll, START/SELECT open text windows)
 void sub_080025B4(void)
 {
     if (KEYS_LO(gHeldKeys) & 0x40)
-        gUnk_03004C30.y++;
+        gBg1Scroll.y++;
     if (KEYS_LO(gHeldKeys) & 0x80)
-        gUnk_03004C30.y--;
+        gBg1Scroll.y--;
     if (KEYS_LO(gHeldKeys) & 0x20)
-        gUnk_03004C30.x++;
+        gBg1Scroll.x++;
     if (KEYS_LO(gHeldKeys) & 0x10)
-        gUnk_03004C30.x--;
+        gBg1Scroll.x--;
     if (KEYS_LO(gNewKeys) & 2)
         gUnk_03000440.unk88 ^= 1;
     if (KEYS_LO(gNewKeys) & 1)
@@ -666,20 +666,21 @@ void field_menu_init_cursor(void)
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0], 0);
 }
 
-void dispatch_game_substate_handler_08003374(void)
+// Game state 2: the Medawatch menu (Medabots / Medals / Medaparts, cursor gUnk_03000440.unk8F).
+void medawatch_menu_update(void)
 {
-    gUnk_083AC2D4[gGameSubState]();
+    gMedawatchMenuHandlers[gGameSubState]();
 }
 
-void setup_bg_layers_and_decompress(void)
+void medawatch_menu_load_gfx(void)
 {
-    sub_080415BC();
+    reset_bg_scroll();
     REG_DISPCNT &= 0xF1FF;
     REG_BG1CNT = 0x1805;
     REG_BG2CNT = 0x1906;
     REG_BG3CNT = 0x1A07;
     lz_decompress_dispatch(gUnk_084E30D8, (void *)0x06004000);
-    sub_08003904();
+    medawatch_menu_load_icon();
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF6A0, REG_BG1CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F023C, REG_BG2CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0F2C, REG_BG3CNT, 0);
@@ -690,9 +691,9 @@ void setup_bg_layers_and_decompress(void)
     gGameSubState++;
 }
 
-void sub_080034A4(void)
+void medawatch_menu_fade_in(void)
 {
-    sub_080039BC();
+    medawatch_scroll_bg3();
     if (gUnk_03000440.unk84 <= 8)
     {
         blend_obj_palettes_to_color_0803F684(0, 32 - gUnk_03000440.unk84 * 4, 0x1FFF);
@@ -701,14 +702,14 @@ void sub_080034A4(void)
     }
     else
     {
-        sub_0800393C();
+        medawatch_menu_init_cursor();
         gGameSubState++;
     }
 }
 
-void sub_08003504(void)
+void medawatch_menu_handle_input(void)
 {
-    sub_080039BC();
+    medawatch_scroll_bg3();
     process_sprite_anim_commands(gUnk_083B5F80[0], 0);
     if (KEYS_LO(gRepeatKeys) & 0x40)
     {
@@ -717,7 +718,7 @@ void sub_08003504(void)
         else
             gUnk_03000440.unk8F--;
         play_sound_effect(2);
-        sub_08003904();
+        medawatch_menu_load_icon();
         gUnk_03002C30[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
         gUnk_03002C30[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
     }
@@ -728,7 +729,7 @@ void sub_08003504(void)
         else
             gUnk_03000440.unk8F++;
         play_sound_effect(2);
-        sub_08003904();
+        medawatch_menu_load_icon();
         gUnk_03002C30[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
         gUnk_03002C30[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
     }
@@ -747,9 +748,9 @@ void sub_08003504(void)
     }
 }
 
-void sub_08003620(void)
+void medawatch_menu_exit_start(void)
 {
-    sub_080039BC();
+    medawatch_scroll_bg3();
     clear_battle_sprite_slot(0, 1);
     copy_obj_palette_to_buffer();
     gUnk_03000440.unk84 = 0;
@@ -757,9 +758,9 @@ void sub_08003620(void)
     gGameSubState++;
 }
 
-void sub_08003654(void)
+void medawatch_menu_exit_fade(void)
 {
-    sub_080039BC();
+    medawatch_scroll_bg3();
     if (gUnk_03000440.unk84 <= 8)
     {
         blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0x1FFF);
@@ -772,22 +773,23 @@ void sub_08003654(void)
     }
 }
 
-void sub_080036A8(void)
+void medawatch_menu_return_to_field_menu(void)
 {
     play_song(6);
     gGameState = 1;
     gGameSubState = 16;
 }
 
-void sub_080036C8(void)
+void medawatch_menu_select_fade(void)
 {
-    sub_080039BC();
+    medawatch_scroll_bg3();
     process_sprite_anim_commands(gUnk_083B5F80[1], 0);
     if (update_blend_effect())
         gGameSubState++;
 }
 
-void sub_080036F4(void)
+// Saves the BG tiles at 0x06002800 and enters game state 3 (Medabots), 4 (Medals) or 5 (Medaparts).
+void medawatch_menu_run_choice(void)
 {
     DmaSet(3, 0x06002800, gUnk_02020800, 0x84000200);
     switch (gUnk_03000440.unk8F)
@@ -810,16 +812,17 @@ void sub_080036F4(void)
     }
 }
 
-void sub_08003784(void)
+// Back from a Medawatch submenu: reloads the menu graphics and restores the saved BG tiles.
+void medawatch_menu_return_init(void)
 {
-    sub_080415BC();
+    reset_bg_scroll();
     REG_DISPCNT &= 0xF0FF;
     REG_BG1CNT = 0x500;
     REG_BG1CNT = 0x1805;
     REG_BG2CNT = 0x1906;
     REG_BG3CNT = 0x1A07;
     lz_decompress_dispatch(gUnk_084E30D8, (void *)0x06004000);
-    sub_08003904();
+    medawatch_menu_load_icon();
     DmaSet(3, gUnk_02020800, 0x06002800, 0x84000200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF6A0, REG_BG1CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F023C, REG_BG2CNT, 0);
@@ -832,23 +835,24 @@ void sub_08003784(void)
     gGameSubState++;
 }
 
-void sub_080038CC(void)
+void medawatch_menu_return_fade(void)
 {
-    sub_080039BC();
+    medawatch_scroll_bg3();
     if (update_blend_effect())
     {
-        sub_0800393C();
+        medawatch_menu_init_cursor();
         gGameSubState++;
     }
 }
 
-void sub_080038F0(void)
+void medawatch_menu_return_done(void)
 {
-    sub_080039BC();
+    medawatch_scroll_bg3();
     gGameSubState = 2;
 }
 
-void sub_08003904(void)
+// Watch face icon for the selected entry.
+void medawatch_menu_load_icon(void)
 {
     const u8 *src;
 
@@ -867,7 +871,7 @@ void sub_08003904(void)
     lz_decompress_dispatch(src, (void *)0x06007E00);
 }
 
-void sub_0800393C(void)
+void medawatch_menu_init_cursor(void)
 {
     lz_decompress_dispatch(gUnk_084C7174, (void *)0x06016C00);
     DmaSet(3, gUnk_084E2E58, 0x050003C0, 0x84000008);
@@ -880,16 +884,18 @@ void sub_0800393C(void)
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0], 0);
 }
 
-void sub_080039BC(void)
+// Scrolls the background pattern diagonally every other frame.
+void medawatch_scroll_bg3(void)
 {
     if (gFrameCounter & 1)
     {
-        gUnk_03001C04.x--;
-        gUnk_03001C04.y++;
+        gBg3Scroll.x--;
+        gBg3Scroll.y++;
     }
 }
 
-void sub_080039E0(void)
+// Game state 3: the Medabots screen (Medawatch > Medabots). Paused while the serial link is busy.
+void medabots_screen_update(void)
 {
     if (sub_0803EED8() == 0)
     {
@@ -898,11 +904,11 @@ void sub_080039E0(void)
             u32 fill = 0x200;
             CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
         }
-        gUnk_083AC320[gGameSubState]();
+        gMedabotsScreenHandlers[gGameSubState]();
     }
 }
 
-void sub_08003A38(void)
+void medabots_screen_load_gfx(void)
 {
     u32 zero;
 
@@ -986,7 +992,7 @@ void sub_08003A38(void)
     }
 }
 
-void sub_08003D4C(void)
+void medabots_screen_fade_in(void)
 {
     struct Unk_03000440 *s;
     u8 *flag;
@@ -1017,7 +1023,7 @@ void sub_08003D4C(void)
     }
 }
 
-void sub_08003DE0(void)
+void medabots_screen_handle_input(void)
 {
     sub_08004E74();
     update_battle_sprite_orbit_clockwise(0);
@@ -1039,7 +1045,7 @@ void sub_08003DE0(void)
     }
 }
 
-void sub_08003E54(void)
+void medabots_screen_exit_start(void)
 {
     sub_08004E74();
     update_battle_sprite_orbit_clockwise(0);
@@ -1053,7 +1059,7 @@ void sub_08003E54(void)
     gGameSubState++;
 }
 
-void sub_08003EA0(void)
+void medabots_screen_exit_fade(void)
 {
     sub_08004E74();
     update_battle_sprite_orbit_clockwise(0);
@@ -1066,7 +1072,7 @@ void sub_08003EA0(void)
         gGameSubState++;
 }
 
-void sub_08003EE0(void)
+void medabots_screen_return_to_medawatch(void)
 {
     CpuFastSet(gUnk_084E2E38, (void *)0x050003E0, 8);
     clear_battle_sprite_slot(0, 0x80);
@@ -1076,6 +1082,7 @@ void sub_08003EE0(void)
     gGameSubState = 16;
 }
 
+// guess: sub-states 8/9/16 leave for another screen and reload this one (sub_0800406C).
 void sub_08003F28(void)
 {
     sub_08004E74();
@@ -1113,6 +1120,7 @@ void sub_08003F74(void)
     }
 }
 
+// guess: sub-states 11/12 show message 22 in a text window, then return to input.
 void sub_08003FE8(void)
 {
     sub_08004E74();

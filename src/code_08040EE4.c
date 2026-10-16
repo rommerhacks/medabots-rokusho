@@ -6,7 +6,19 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", divide_by_10000);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", divide_by_10000_b);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", divide_by_100000_08041370);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", divide_by_100000_b);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080415BC);
+
+void reset_bg_scroll(void)
+{
+    gBg0Scroll.x = 0;
+    gBg0Scroll.y = 0;
+    gBg1Scroll.x = 0;
+    gBg1Scroll.y = 0;
+    gBg2Scroll.x = 0;
+    gBg2Scroll.y = 0;
+    gBg3Scroll.x = 0;
+    gBg3Scroll.y = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", open_choice_menu);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_window_params);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", poll_choice_menu);

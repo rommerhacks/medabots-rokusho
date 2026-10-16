@@ -14,7 +14,7 @@ sub_0805C85C: @ 0x0805C85C
 	movs r0, #0
 	movs r1, #0x80
 	bl clear_battle_sprite_slot
-	bl sub_080415BC
+	bl reset_bg_scroll
 	movs r4, #0x80
 	lsls r4, r4, #0x13
 	movs r0, #0x60

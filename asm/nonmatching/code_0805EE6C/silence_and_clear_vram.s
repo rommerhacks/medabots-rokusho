@@ -13,7 +13,7 @@ silence_and_clear_vram: @ 0x0805EFDC
 	ldr r2, _0805F028 @ =0x01006000
 	mov r0, sp
 	bl CpuFastSet
-	bl sub_080415BC
+	bl reset_bg_scroll
 	movs r0, #0
 	movs r1, #0x80
 	bl clear_battle_sprite_slot

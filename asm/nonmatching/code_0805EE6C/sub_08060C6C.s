@@ -16,7 +16,7 @@ sub_08060C6C: @ 0x08060C6C
 	mov r0, sp
 	mov r1, r8
 	bl CpuFastSet
-	bl sub_080415BC
+	bl reset_bg_scroll
 	movs r0, #0
 	movs r1, #0x80
 	bl clear_battle_sprite_slot

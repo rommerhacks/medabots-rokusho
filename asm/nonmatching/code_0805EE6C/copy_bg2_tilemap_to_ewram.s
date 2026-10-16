@@ -15,7 +15,7 @@ copy_bg2_tilemap_to_ewram: @ 0x08060540
 	mov r0, sp
 	adds r1, r4, #0
 	bl CpuFastSet
-	bl sub_080415BC
+	bl reset_bg_scroll
 	bl sub_08059D04
 	movs r1, #0x80
 	lsls r1, r1, #0x13

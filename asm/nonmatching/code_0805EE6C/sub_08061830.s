@@ -3,7 +3,7 @@
 	thumb_func_start sub_08061830
 sub_08061830: @ 0x08061830
 	push {lr}
-	bl sub_080415BC
+	bl reset_bg_scroll
 	ldr r1, _08061844 @ =0x0300137C
 	ldr r0, [r1]
 	adds r0, #1

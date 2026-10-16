@@ -11,7 +11,7 @@ sub_0805BFDC: @ 0x0805BFDC
 	ldr r2, _0805C024 @ =0x01006000
 	add r0, sp, #4
 	bl CpuFastSet
-	bl sub_080415BC
+	bl reset_bg_scroll
 	bl sub_08059D04
 	movs r1, #0x80
 	lsls r1, r1, #0x13

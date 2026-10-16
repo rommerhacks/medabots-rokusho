@@ -47,7 +47,7 @@ gUnk_03002414       = 0x03002414;
 gUnk_03000430       = 0x03000430;
 gUnk_03000434       = 0x03000434;
 gUnk_03002C2C       = 0x03002C2C;
-gUnk_03005000       = 0x03005000;
+gBg0Scroll       = 0x03005000;
 gDecompressBuffer   = 0x02030000;
 gPaletteBackup      = 0x0202F800;
 gPaletteBuffer      = 0x0202FC00;
@@ -59,12 +59,12 @@ gRngState           = 0x0300503C;
 gUnk_030064A0       = 0x030064A0;
 gUnk_03005350       = 0x03005350;
 gUnk_03000590       = 0x03000590;
-gUnk_03004C30       = 0x03004C30;
+gBg1Scroll       = 0x03004C30;
 gUnk_03005310       = 0x03005310;
 gUnk_03006F40       = 0x03006F40;
 gUnk_030055A0       = 0x030055A0;
-gUnk_0300057C       = 0x0300057C;
-gUnk_03001C04       = 0x03001C04;
+gBg2Scroll       = 0x0300057C;
+gBg3Scroll       = 0x03001C04;
 gUnk_030057D8       = 0x030057D8;
 gUnk_03006D14       = 0x03006D14;
 gUnk_03006D38       = 0x03006D38;
@@ -152,7 +152,7 @@ gUnk_084C7174       = 0x084C7174;
 gUnk_084E2E58       = 0x084E2E58;
 
 /* code_0800025C: Medawatch menu (game state 2) */
-gUnk_083AC2D4       = 0x083AC2D4;
+gMedawatchMenuHandlers       = 0x083AC2D4;
 gUnk_084E30D8       = 0x084E30D8;
 gUnk_084EF6A0       = 0x084EF6A0;
 gUnk_084F023C       = 0x084F023C;
@@ -164,7 +164,7 @@ gUnk_084C1FD4       = 0x084C1FD4;
 gUnk_02020800       = 0x02020800;
 
 /* code_0800025C: game state 3 */
-gUnk_083AC320       = 0x083AC320;
+gMedabotsScreenHandlers       = 0x083AC320;
 gUnk_084E5650       = 0x084E5650;
 gUnk_084C48B4       = 0x084C48B4;
 gUnk_084C4A34       = 0x084C4A34;
