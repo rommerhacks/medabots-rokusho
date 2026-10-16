@@ -8,6 +8,8 @@ typedef void (*Func)(void);
 // RAM
 extern struct Unk_03000440 gUnk_03000440;
 extern u8 gUnk_03000590[];
+extern u8 gUnk_03000890[];
+extern u8 gUnk_03000B90; // guess: link player id (0/1)
 extern struct Unk_03000BE0 gUnk_03000BE0[];
 extern u32 gFrameCounter;
 extern u32 gGameMode;

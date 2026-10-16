@@ -366,13 +366,134 @@ void sub_08004A78(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004AF8);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004C58);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004CA4);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004DB4);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004DF0);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004E40);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004E74);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004E98);
+
+void sub_08004C58(void)
+{
+    struct Unk_03000440 *st;
+    u16 *timer;
+
+    sub_08004E74();
+    setup_overworld_scene_from_position();
+    st = &gUnk_03000440;
+    timer = &st->unk86;
+    if (*timer == 16)
+    {
+        gUnk_03001800.unk51 = 0;
+        gUnk_03001800.unk52 = 0;
+        gUnk_03001800.unk53 = 0;
+        gUnk_03001800.unk54 = 0;
+        *timer = 0;
+        gGameSubState++;
+    }
+    else
+        (*timer)++;
+}
+
+void sub_08004CA4(void)
+{
+    u16 v;
+
+    sub_08004E74();
+    setup_overworld_scene_from_position();
+    if (gUnk_03001800.unk51 < 2)
+    {
+        switch (gUnk_03001800.unk51)
+        {
+        case 0:
+            gUnk_03005010.unk6 = 0x8000 + gUnk_03001800.unk1A6;
+            break;
+        case 1:
+            gUnk_03005010.unk6 = 0x8000 + gUnk_03001800.unk1A8;
+            break;
+        }
+        gUnk_03001800.unk51++;
+    }
+    v = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
+    if (v & 0x8000)
+    {
+        switch (gUnk_03001800.unk52)
+        {
+        case 0:
+            gUnk_03001800.unk1AA = v & 0x7FFF;
+            break;
+        case 1:
+            gUnk_03001800.unk1AC = v & 0x7FFF;
+            break;
+        }
+        if (++gUnk_03001800.unk52 == 2)
+        {
+            if (gUnk_03001800.unk1A6 == gUnk_03001800.unk1AC && gUnk_03001800.unk1A8 == gUnk_03001800.unk1AA)
+                gGameSubState++;
+            else
+                gGameSubState = 50;
+        }
+    }
+}
+
+void sub_08004DB4(void)
+{
+    gUnk_03005010.unk6 = 0;
+    sub_08004E74();
+    setup_overworld_scene_from_position();
+    sub_08007540();
+    copy_obj_palette_to_buffer();
+    gUnk_03000440.unk84 = 0;
+    gGameSubState++;
+}
+
+void sub_08004DF0(void)
+{
+    struct Unk_03000440 *st;
+    u8 *frame;
+
+    sub_08004E74();
+    setup_overworld_scene_from_position();
+    st = &gUnk_03000440;
+    frame = &st->unk84;
+    if (*frame <= 32)
+    {
+        blend_obj_palettes_to_color_0803F684(0, *frame, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, *frame, 0xFFFF);
+        (*frame)++;
+    }
+    else
+        gGameSubState++;
+}
+
+void sub_08004E40(void)
+{
+    clear_battle_sprite_slot(0, 0x80);
+    gUnk_03000440.unk96 = 0;
+    gUnk_03000430 = 0;
+    gGameState = 7;
+    gGameSubState = 0;
+}
+
+void sub_08004E74(void)
+{
+    if (gFrameCounter & 1)
+    {
+        gBg3Scroll.x++;
+        gBg3Scroll.y++;
+    }
+}
+
+void sub_08004E98(void)
+{
+    gUnk_03002C30[0].unk0 = 0xC604;
+    gUnk_03002C30[0].unk23 = 0;
+    update_battle_sprite_orbit_clockwise(0);
+    gUnk_03002C30[1].unk0 = 0xC604;
+    gUnk_03002C30[1].unk23 = 0x10;
+    update_battle_sprite_orbit_clockwise(1);
+    gUnk_03002C30[2].unk0 = 0xC604;
+    gUnk_03002C30[2].unk23 = 0x20;
+    update_battle_sprite_orbit_clockwise(2);
+    gUnk_03002C30[3].unk0 = 0xC604;
+    gUnk_03002C30[3].unk23 = 0x30;
+    update_battle_sprite_orbit_clockwise(3);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080043A8", update_battle_sprite_orbit_clockwise);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004FD0);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08005000);

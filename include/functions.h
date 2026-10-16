@@ -71,6 +71,7 @@ void team_select_confirm_pick(void);
 void battle_play_alert_sound(void);
 void sub_08007480(void);
 void sub_0800750C(void);
+void sub_08007540(void);
 void clear_battle_bot_array(void);
 void count_active_battle_bots(void);
 void battle_setup_bot_entry(void);
