@@ -220,6 +220,15 @@ u32 sub_08052A18(void);
 void load_npc_sprite_and_calc_camera_offset(u8 area);
 void calculate_camera_scroll_from_npc(void);
 void update_cursor_tile_position(void);
+void battle_camera_scroll_update(u8 dir);
+void advance_sprite_by_terrain_modifier(u8 idx);
+void sub_08052A2C(s16 dx);
+void sub_08052AF8(s16 dy);
+u32 find_npc_event_match(void);
+u32 find_map_event_by_coords(u32 x, u32 y);
+u32 check_random_encounter(void);
+void populate_battle_entity_tile_positions(void);
+void setup_palette_fade_to_color_with_obj(u16 color, float a, float b, float c);
 void LZ77UnCompVram(const void *src, void *dst);
 
 // code_08044F54

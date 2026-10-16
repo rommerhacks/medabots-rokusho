@@ -37,6 +37,7 @@ gUnk_03001C04       = 0x03001C04;
 gUnk_030057D8       = 0x030057D8;
 gUnk_03006D14       = 0x03006D14;
 gUnk_03006D38       = 0x03006D38;
+gUnk_03003810       = 0x03003810;
 
 /* ===== ROM data ===== */
 gUnk_083D28C0       = 0x083D28C0;
@@ -51,6 +52,9 @@ gUnk_0847E948       = 0x0847E948;
 gUnk_08413114       = 0x08413114;
 gUnk_0840FAF4       = 0x0840FAF4;
 gUnk_083F92F4       = 0x083F92F4;
+gUnk_085FA104       = 0x085FA104;
+gUnk_083D2903       = 0x083D2903;
+gUnk_083D29E6       = 0x083D29E6;
 gGameStateHandlers_083AC148 = 0x083AC148;
 gUnk_083B6410       = 0x083B6410;
 gUnk_083BA4D8       = 0x083BA4D8;

@@ -243,9 +243,10 @@ struct Unk_030057E0
     u16 unkC54;
     u8 unkC56; // player tile x
     u8 unkC57; // player tile y
-    u8 fillerC58[0x1];
+    u8 unkC58;
     u8 unkC59;
-    u8 fillerC5A[0x2];
+    u8 fillerC5A[0x1];
+    u8 unkC5B;
     u8 unkC5C;
     u8 fillerC5D[0xA];
     u8 unkC67;
@@ -276,7 +277,9 @@ struct Unk_030057E0
 
 struct Unk_03005310
 {
-    u8 filler0[0x4];
+    u8 filler0[0x1];
+    u8 unk1;
+    u8 filler2[0x2];
     u32 unk4; // frame counter
 };
 

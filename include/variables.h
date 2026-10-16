@@ -31,6 +31,7 @@ extern struct Vec16 gUnk_03001C04;
 extern u8 *gUnk_030057D8; // two 4-bit entries per byte (bit 3 / bit 7: flag, bits 0-2 / 4-6: count)
 extern u16 *gUnk_03006D14;
 extern struct Unk_03006D38 gUnk_03006D38;
+extern u8 gUnk_03003810;
 
 // ROM data
 extern const u8 gUnk_083D28C0[];
@@ -44,6 +45,9 @@ extern const u8 gUnk_083F8B74[][2];
 extern const u8 gUnk_0847E948[];
 extern const struct AreaWarp *const gUnk_08413114[];
 extern const struct AreaGfx gUnk_083F92F4[];
+extern const u8 gUnk_083D2903[];
+extern const u8 gUnk_083D29E6[];
+extern const u8 gUnk_085FA104[]; // LZ77 sprite tiles
 extern const struct MapExit *const gUnk_0840FAF4[]; // per area: 8-byte map exit records, 0xFF-terminated
 extern const u16 gUnk_083AB9D0[];
 extern const u16 gUnk_083ABA88[];
