@@ -80,7 +80,14 @@ void sound_update_master_volume(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", load_wave_pattern);
+void load_wave_pattern(u32 n)
+{
+    vu16 cnt;
+
+    CpuSet(gSoundWavePatterns[n], (void *)0x04000090, 0x04000004);
+    cnt = *(vu16 *)0x04000070;
+    *(vu16 *)0x04000070 = (cnt == 0x80) ? 0xC0 : 0x80;
+}
 
 void sound_init_wave_channel(void)
 {
@@ -100,7 +107,19 @@ void sound_start_fifo_dma(s32 n, u32 src)
     dma[2] = 0xF6400004;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", configure_sound_channel);
+void configure_sound_channel(s32 n, u32 *src)
+{
+    vu32 *fifo;
+    u32 *p;
+    s32 i;
+
+    *(vu8 *)0x04000083 |= gSoundFifoResetBits[n - 1];
+    fifo = gSoundFifoAddrs[n - 1];
+    p = src;
+    for (i = 7; i >= 0; i--)
+        *fifo = *p++;
+    sound_start_fifo_dma(n, (u32)(src + 8));
+}
 
 // Stops the FIFO DMA n.
 void sound_stop_fifo_dma(s32 n)
@@ -155,7 +174,15 @@ void sub_08073AF8(u32 val)
     gUnk_03007014->unk724 = val;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_stop_08073B0C);
+void sound_channel_stop_08073B0C(struct SoundMixChannel *ch)
+{
+    if (*gSoundTimerRegs[ch->unk3A - 1] & 0x800000)
+    {
+        sound_stop_fifo_dma(ch->unk3A);
+        *gSoundTimerRegs[ch->unk3A - 1] = 0;
+        *(vu16 *)0x04000082 &= ~gSoundFifoEnableBits[ch->unk3A - 1];
+    }
+}
 
 void sound_configure_mixing_channel(struct SoundMixChannel *ch)
 {
@@ -171,9 +198,21 @@ void sound_configure_mixing_channel(struct SoundMixChannel *ch)
                         | gUnk_083ABAB2[ch->unk3A - 1][route] | gUnk_083ABA8C[ch->unk3A - 1][ch->unk3C];
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_play);
+void sound_channel_play(struct SoundMixChannel *ch, u32 offset)
+{
+    sound_channel_stop_08073B0C(ch);
+    if (ch->unk3C)
+    {
+        u8 *n;
 
-void init_sound_channel_struct(struct SoundMixChannel *ch, u32 a1, u32 a2, u8 a3, u8 a4, u16 a5, u8 a6, u8 a7)
+        sound_configure_mixing_channel(ch);
+        n = &ch->unk3A;
+        configure_sound_channel(*n, (u32 *)&((struct SoundSampleHeader *)ch->unk0)->data[offset]);
+        *gSoundTimerRegs[*n - 1] = ch->unk10;
+    }
+}
+
+void init_sound_channel_struct(struct SoundMixChannel *ch, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7)
 {
     ch->unk0 = a1;
     ch->unk8 = a2;
@@ -201,7 +240,15 @@ void sub_08073CA4(struct SoundMixChannel *ch)
     ch->unk3E = 3;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_init_full);
+void sound_channel_init_full(struct SoundMixChannel *ch)
+{
+    sound_restart_channel(ch);
+    init_sound_channel_struct(ch, ch->unk1C, 0x20, ch->unk24, ch->unk28, ch->unk2C, ch->unk30, ch->unk31);
+    sound_set_pitch_offset(ch, ch->unk24);
+    ch->unk10 = (0x10000 - 0x1000000 / ch->unk4) | 0x800000;
+    sound_channel_play(ch, 0);
+    sub_080725BC((struct SoundTrack *)ch->unk18);
+}
 
 void sound_channel_setup(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7)
 {
@@ -216,7 +263,14 @@ void sound_channel_setup(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32
     ch->unk3E = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_start_channel_full);
+void sound_start_channel_full(struct SoundMixChannel *ch)
+{
+    sound_restart_channel(ch);
+    init_sound_channel_struct(ch, ch->unk1C, 0x20, 0, ch->unk28, ch->unk2C, ch->unk30, ch->unk31);
+    ch->unk10 = (0x10000 - 0x1000000 / sound_calculate_playback_rate(ch, ch->unk20)) | 0x800000;
+    sound_channel_play(ch, 0);
+    sub_080725BC((struct SoundTrack *)ch->unk18);
+}
 
 void sound_channel_setup_alt(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7)
 {
@@ -259,7 +313,32 @@ void sub_08073E40(struct SoundMixChannel *ch)
     ch->unk3E = 4;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_state_dispatch);
+void sound_channel_state_dispatch(struct SoundMixChannel *ch)
+{
+    u8 *state = &ch->unk3E;
+
+    switch (*state)
+    {
+    case 1:
+        sound_channel_init_full(ch);
+        break;
+    case 2:
+        sound_start_channel_full(ch);
+        break;
+    case 3:
+        sound_restart_channel(ch);
+        break;
+    case 4:
+        sound_channel_request_stop(ch);
+        break;
+    case 5:
+        sound_channel_trigger_pending(ch);
+        break;
+    default:
+        return;
+    }
+    *state = 0;
+}
 
 void sub_08073EAC(void)
 {
@@ -349,10 +428,45 @@ void sound_tick_channel_3a(void)
         sound_update_channel_3(&work->tracks[3]);
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_channel1_with_fallback);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_channel2_with_fallback);
-INCLUDE_ASM("asm/nonmatching/sound_driver", update_wave_channels_pair);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_wave_channels);
+void sound_update_channel1_with_fallback(void)
+{
+    sound_channel1_update(&gUnk_03007014->tracks[4]);
+    if (sub_080743C8() == 0)
+    {
+        gUnk_03007014->tracks[0].unk50 |= 0x5F;
+        sound_channel1_update(&gUnk_03007014->tracks[0]);
+    }
+}
+
+void sound_update_channel2_with_fallback(void)
+{
+    sound_channel_process_tone(&gUnk_03007014->tracks[5]);
+    if (sub_080743C8() == 0)
+    {
+        gUnk_03007014->tracks[1].unk50 |= 0x5F;
+        sound_channel_process_tone(&gUnk_03007014->tracks[1]);
+    }
+}
+
+void update_wave_channels_pair(void)
+{
+    update_wave_channel(&gUnk_03007014->tracks[6]);
+    if (sub_080743C8() == 0)
+    {
+        gUnk_03007014->tracks[2].unk50 |= 0x7F;
+        update_wave_channel(&gUnk_03007014->tracks[2]);
+    }
+}
+
+void sound_update_wave_channels(void)
+{
+    sound_update_channel_3(&gUnk_03007014->tracks[7]);
+    if (sub_080743C8() == 0)
+    {
+        gUnk_03007014->tracks[3].unk50 |= 0x5F;
+        sound_update_channel_3(&gUnk_03007014->tracks[3]);
+    }
+}
 
 void reset_sound_channel_if_idle(void)
 {
@@ -362,7 +476,14 @@ void reset_sound_channel_if_idle(void)
         sub_08073CA4(&work->unk690);
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_channel_finish);
+void sound_update_channel_finish(void)
+{
+    struct Unk_03007014 *work = gUnk_03007014;
+
+    if (work->tracks[11].unk14 == NULL)
+        sub_08073CA4(&work->unk6D8);
+    sound_channel_finish_and_callback(&gUnk_03007014->tracks[12]);
+}
 
 void reset_sound_channel_at_690(void)
 {

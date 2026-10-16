@@ -30,6 +30,8 @@ extern const u16 gUnk_083ABA88[];
 extern const u8 gUnk_083ABA8C[][16];
 extern const u16 gUnk_083ABAB2[][4];
 extern const u16 gUnk_083ABAC2[];
+extern const u8 gSoundWavePatterns[][16]; // 4-bit samples for the wave channel (sound 3)
+extern const u8 gUnk_083ABA62[16]; // envelope volume -> SOUND3CNT_H volume bits (>> 8)
 extern const u16 gSoundSemitoneRatios[12]; // 2^(i/12) * 0x1000
 extern const u16 gSoundFinetuneRatios[128]; // 2^(i/(12*128)) * 0x1000
 extern const u32 gSoundEffectTracks[6]; // track indices of the sound effect tracks (4-7, 10, 11)
@@ -39,6 +41,9 @@ extern const u32 gUnk_083BA4D8[];
 extern const u32 gUnk_083BB9CC[][4];
 extern const u32 gUnk_08484444[];
 extern vu32 *const gSoundFifoAddrs[]; // REG_FIFO_A, REG_FIFO_B
+extern vu32 *const gSoundTimerRegs[]; // REG_TM0CNT, REG_TM1CNT (sample rate timers of FIFO A / B)
+extern const u8 gSoundFifoResetBits[]; // SOUNDCNT_H high byte: FIFO A / B reset
+extern const u16 gSoundFifoEnableBits[]; // SOUNDCNT_H: FIFO A / B left+right enable
 extern vu16 *const gSoundFifoDmaCnt[]; // REG_DMA1CNT_H, REG_DMA2CNT_H
 
 #endif // GUARD_VARIABLES_H

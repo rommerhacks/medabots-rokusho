@@ -73,6 +73,9 @@ struct SoundSampleHeader
     u16 rate; // playback rate at baseNote
     u8 fineTune; // 1/128 semitones
     u8 baseNote;
+    u32 unk8;
+    u32 unkC;
+    s8 data[1]; // 8-bit PCM
 };
 
 // Direct Sound channel (FIFO A / B) state, 0x48 bytes, two of them in the sound work area.
