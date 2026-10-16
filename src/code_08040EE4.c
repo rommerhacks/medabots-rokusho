@@ -100,7 +100,18 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", modify_medapart_quantity);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", draw_tilemap_with_offset);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_0804361C);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", find_next_available_medapart_slot);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080437E0);
+
+u32 medabot_detail_is_full_set(void)
+{
+    if (gUnk_03000440.unk98 != gUnk_03000440.unk99)
+        return 0;
+    if (gUnk_03000440.unk98 != gUnk_03000440.unk9A)
+        return 0;
+    if (gUnk_03000440.unk98 != gUnk_03000440.unk9B)
+        return 0;
+    return 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", validate_medapart_stats);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_0804384C);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", load_battlefield_data_to_buffer);

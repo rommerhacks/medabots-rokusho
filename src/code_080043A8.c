@@ -45,8 +45,8 @@ void medabot_detail_handle_input(void)
     medabot_detail_blink_row_icon();
     battle_update_medabot_display();
     sub_08006F14();
-    if (medabot_detail_row_cursor_input() || medabot_detail_cycle_medal_input() || sub_08006A00() || sub_08006A98() || sub_08006B30() || sub_08006BC8()
-        || sub_08006C64())
+    if (medabot_detail_row_cursor_input() || medabot_detail_cycle_medal_input() || medabot_detail_cycle_head_input() || medabot_detail_cycle_rarm_input() || medabot_detail_cycle_larm_input() || medabot_detail_cycle_legs_input()
+        || medabot_detail_equip_full_set_input())
         return;
     if (KEYS_LO(gNewKeys) & 2)
     {
@@ -1337,12 +1337,193 @@ u32 medabot_detail_cycle_medal_input(void)
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006A00);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006A98);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006B30);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006BC8);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006C64);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006E08);
+u32 medabot_detail_cycle_head_input(void)
+{
+    u32 old;
+
+    if (gUnk_03000440.unk5A != 1)
+        goto none;
+    old = gUnk_03000440.unk98;
+    if (KEYS_LO(gRepeatKeys) & 0x20)
+        gUnk_03000440.unk98 = find_next_available_medapart_slot(old, 0, 1, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+    if (KEYS_LO(gRepeatKeys) & 0x10)
+        gUnk_03000440.unk98 = find_next_available_medapart_slot(gUnk_03000440.unk98, 0, 0, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+    if (old == gUnk_03000440.unk98)
+    {
+    none:
+        return 0;
+    }
+    play_sound_effect(2);
+    medabot_detail_draw_head_name();
+    medabot_detail_draw_head_skill_icon();
+    decompress_sprite_from_game_state();
+    setup_battle_sprite_from_game_state();
+    setup_scene_with_link_check();
+    return 1;
+}
+
+u32 medabot_detail_cycle_rarm_input(void)
+{
+    u32 old;
+
+    if (gUnk_03000440.unk5A != 2)
+        goto none;
+    old = gUnk_03000440.unk99;
+    if (KEYS_LO(gRepeatKeys) & 0x20)
+        gUnk_03000440.unk99 = find_next_available_medapart_slot(old, 1, 1, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+    if (KEYS_LO(gRepeatKeys) & 0x10)
+        gUnk_03000440.unk99 = find_next_available_medapart_slot(gUnk_03000440.unk99, 1, 0, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+    if (old == gUnk_03000440.unk99)
+    {
+    none:
+        return 0;
+    }
+    play_sound_effect(2);
+    medabot_detail_draw_rarm_name();
+    medabot_detail_draw_rarm_skill_icon();
+    decompress_sprite_from_game_state();
+    setup_battle_sprite_from_game_state();
+    setup_scene_with_link_check();
+    return 1;
+}
+
+u32 medabot_detail_cycle_larm_input(void)
+{
+    u32 old;
+
+    if (gUnk_03000440.unk5A != 3)
+        goto none;
+    old = gUnk_03000440.unk9A;
+    if (KEYS_LO(gRepeatKeys) & 0x20)
+        gUnk_03000440.unk9A = find_next_available_medapart_slot(old, 2, 1, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+    if (KEYS_LO(gRepeatKeys) & 0x10)
+        gUnk_03000440.unk9A = find_next_available_medapart_slot(gUnk_03000440.unk9A, 2, 0, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+    if (old == gUnk_03000440.unk9A)
+    {
+    none:
+        return 0;
+    }
+    play_sound_effect(2);
+    medabot_detail_draw_larm_name();
+    medabot_detail_draw_larm_skill_icon();
+    decompress_sprite_from_game_state();
+    setup_battle_sprite_from_game_state();
+    setup_scene_with_link_check();
+    return 1;
+}
+
+u32 medabot_detail_cycle_legs_input(void)
+{
+    u32 old;
+
+    if (gUnk_03000440.unk5A != 4)
+        goto none;
+    old = gUnk_03000440.unk9B;
+    if (KEYS_LO(gRepeatKeys) & 0x20)
+        gUnk_03000440.unk9B = find_next_available_medapart_slot(old, 3, 1, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+    if (KEYS_LO(gRepeatKeys) & 0x10)
+        gUnk_03000440.unk9B = find_next_available_medapart_slot(gUnk_03000440.unk9B, 3, 0, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+    if (old == gUnk_03000440.unk9B)
+    {
+    none:
+        return 0;
+    }
+    play_sound_effect(2);
+    medabot_detail_draw_legs_name();
+    medabot_detail_draw_legs_skill_icon();
+    medabot_detail_draw_legs_type_icon();
+    decompress_sprite_from_game_state();
+    setup_battle_sprite_from_game_state();
+    setup_scene_with_link_check();
+    return 1;
+}
+
+u32 medabot_detail_equip_full_set_input(void)
+{
+    volatile u32 kind;
+    volatile u32 part;
+
+    if (KEYS_LO(gNewKeys) & 8)
+    {
+        play_sound_effect(4);
+        kind = 0;
+        if (gUnk_03000440.unk5A)
+            kind = gUnk_03000440.unk5A - 1;
+        switch (kind)
+        {
+    case 0:
+            part = gUnk_03000440.unk98;
+            break;
+    case 1:
+            part = gUnk_03000440.unk99;
+            break;
+    case 2:
+            part = gUnk_03000440.unk9A;
+            break;
+    case 3:
+            part = gUnk_03000440.unk9B;
+            break;
+        }
+        if (medabot_detail_is_full_set())
+            part = find_next_available_medapart_slot(part, kind, 0, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+        goto next;
+done:
+        medabot_detail_draw_head_name();
+        medabot_detail_draw_head_skill_icon();
+        medabot_detail_draw_rarm_name();
+        medabot_detail_draw_rarm_skill_icon();
+        medabot_detail_draw_larm_name();
+        medabot_detail_draw_larm_skill_icon();
+        medabot_detail_draw_legs_name();
+        medabot_detail_draw_legs_skill_icon();
+        medabot_detail_draw_legs_type_icon();
+        decompress_sprite_from_game_state();
+        setup_battle_sprite_from_game_state();
+        setup_scene_with_link_check();
+        return 1;
+next:
+        part = medabot_detail_prev_part_id(part);
+        while (1)
+        {
+            gUnk_03000440.unk98 = find_next_available_medapart_slot(part, 0, 0, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+            gUnk_03000440.unk99 = find_next_available_medapart_slot(part, 1, 0, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+            gUnk_03000440.unk9A = find_next_available_medapart_slot(part, 2, 0, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+            gUnk_03000440.unk9B = find_next_available_medapart_slot(part, 3, 0, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+            if (medabot_detail_is_full_set())
+                goto done;
+            switch (kind)
+            {
+        case 0:
+                part = gUnk_03000440.unk98;
+                break;
+        case 1:
+                part = gUnk_03000440.unk99;
+                break;
+        case 2:
+                part = gUnk_03000440.unk9A;
+                break;
+        case 3:
+                part = gUnk_03000440.unk9B;
+                break;
+            }
+            part = find_next_available_medapart_slot(part, kind, 0, gUnk_030017A0[gUnk_03000440.unk51].unk1);
+            part = medabot_detail_prev_part_id(part);
+        }
+    }
+    return 0;
+}
+
+u32 medabot_detail_prev_part_id(volatile u32 part)
+{
+    if (part == 0)
+        part = gUnk_030017A0[gUnk_03000440.unk51].unk1 + 120;
+    else if (part > 119)
+        part = 119;
+    else
+        part = part - 1;
+    return part;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080043A8", battle_update_medabot_display);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006F14);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08006F34);
