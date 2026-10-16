@@ -150,3 +150,15 @@ gUnk_084C6A98       = 0x084C6A98;
 gUnk_084E2E38       = 0x084E2E38;
 gUnk_084C7174       = 0x084C7174;
 gUnk_084E2E58       = 0x084E2E58;
+
+/* code_0800025C: Medawatch menu (game state 2) */
+gUnk_083AC2D4       = 0x083AC2D4;
+gUnk_084E30D8       = 0x084E30D8;
+gUnk_084EF6A0       = 0x084EF6A0;
+gUnk_084F023C       = 0x084F023C;
+gUnk_084F0F2C       = 0x084F0F2C;
+gUnk_084F24E0       = 0x084F24E0;
+gUnk_084C1C24       = 0x084C1C24;
+gUnk_084C1E04       = 0x084C1E04;
+gUnk_084C1FD4       = 0x084C1FD4;
+gUnk_02020800       = 0x02020800;
