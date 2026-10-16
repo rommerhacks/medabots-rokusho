@@ -133,6 +133,7 @@ extern const void *const gUnk_083CF3B0[]; // message table (run_message)
 extern const u8 gUnk_083AC420[]; // orbit centre x, y per gUnk_03000440.unk51
 extern const u8 gUnk_083AC432[]; // per slot sprite priority base
 extern const u8 gUnk_083AC43B[]; // x, y per team select slot (9)
+extern const u8 gUnk_083AC468[]; // team select: cursor slot to move to after a pick, per slot
 extern const u8 gUnk_083AC44D[]; // tile x, y per team select slot (9)
 extern const u8 *const gMedabotSlotDpadMoves[]; // up, down, left, right: next slot (gUnk_03000440.unk51) per slot
 extern const void *const gUnk_083B4AE0[]; // tilemaps (field menu rows: open/close animation frames)

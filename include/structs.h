@@ -146,8 +146,10 @@ struct Unk_03000440
     u8 unk3C; // info screen request (medabot_detail_open_info sets 1)
     u8 unk3D; // Medal / Medapart id to show
     u8 unk3E; // Medapart slot 0-3
-    u8 filler3F[0x11];
-    u8 unk50; // team select: cursor / phase (team_select_confirm_pick)
+    u8 filler3F[0x2];
+    u8 unk41; // count of owned, unequipped Medals (count_unequipped_medals)
+    u8 filler42[0xE];
+    u8 unk50; // Medabots screen mode: 0 plain (from the Medawatch), 1-3 team select (guess: battle type; 3 needs all three picks)
     u8 unk51; // Medabots screen: cursor slot (0-8)
     u8 unk52; // Medabots screen: reorder pick, slot | 0x80 while holding
     u8 unk53;
@@ -289,7 +291,7 @@ struct Unk_03002414
 struct Unk_03001800
 {
     u8 filler0[0x41];
-    u8 unk41[3]; // low nibble: index into gUnk_030017A0
+    u8 unk41[3]; // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
     u8 filler44[0xD];
     u8 unk51;
     u8 unk52;

@@ -164,7 +164,7 @@ void medabot_detail_open_info(void)
         sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
         gUnk_03000440.unk3C = 1;
         gUnk_03000440.unk3D = gUnk_03000440.unk97;
-        sub_080070F0();
+        count_unequipped_medals();
         gGameState = 4;
         gGameSubState = 8;
         break;
@@ -1588,13 +1588,255 @@ u8 medabot_detail_check_row_select(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080043A8", assign_medal_to_team_slot);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_080070F0);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_0800712C);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_0800725C);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", team_select_confirm_pick);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", battle_play_alert_sound);
-INCLUDE_ASM("asm/nonmatching/code_080043A8", check_target_not_in_battle_list);
+void assign_medal_to_team_slot(void)
+{
+    u8 n = 0;
+
+    if (gUnk_03000440.unk97 == 30)
+    {
+        gUnk_030017A0[gUnk_03000440.unk51].unk0 = 1;
+        gUnk_030017A0[gUnk_03000440.unk51].unk2 = 30;
+    }
+    else
+    {
+        gUnk_030017A0[gUnk_03000440.unk51].unk0 = 2;
+        gUnk_030017A0[gUnk_03000440.unk51].unk2 = gUnk_03000BE0[gUnk_03000440.unk97].unk1;
+        gUnk_03000BE0[gUnk_03000440.unk97].unk0 |= 0x40;
+        n = 1;
+    }
+    gUnk_030017A0[gUnk_03000440.unk51].unk3 = gUnk_03000440.unk98;
+    if (gUnk_03000440.unk98 < 120)
+    {
+        modify_medapart_quantity(gUnk_03000440.unk98, 0, 1, 0, 1);
+        n++;
+    }
+    gUnk_030017A0[gUnk_03000440.unk51].unk4 = gUnk_03000440.unk99;
+    if (gUnk_03000440.unk99 < 120)
+    {
+        modify_medapart_quantity(gUnk_03000440.unk99, 1, 1, 0, 1);
+        n++;
+    }
+    gUnk_030017A0[gUnk_03000440.unk51].unk5 = gUnk_03000440.unk9A;
+    if (gUnk_03000440.unk9A < 120)
+    {
+        modify_medapart_quantity(gUnk_03000440.unk9A, 2, 1, 0, 1);
+        n++;
+    }
+    gUnk_030017A0[gUnk_03000440.unk51].unk6 = gUnk_03000440.unk9B;
+    if (gUnk_03000440.unk9B < 120)
+    {
+        modify_medapart_quantity(gUnk_03000440.unk9B, 3, 1, 0, 1);
+        n++;
+    }
+    if (n == 5)
+        gUnk_030017A0[gUnk_03000440.unk51].unk0 = 3;
+}
+
+void count_unequipped_medals(void)
+{
+    u32 i;
+
+    for (i = 0; i < 30; i++)
+    {
+        if (gUnk_03000BE0[i].unk0 & 0x80)
+        {
+            if (!(gUnk_03000BE0[i].unk0 & 0x40))
+                gUnk_03000440.unk41++;
+        }
+    }
+}
+
+void team_select_draw_pick_markers(void)
+{
+    u32 i;
+
+    switch (gUnk_03000440.unk50)
+    {
+    case 1:
+    case 2:
+        for (i = 0; i < 3; i++)
+        {
+            if (gUnk_03001800.unk41[i])
+            {
+                gUnk_03002C30[i + 4].unk0 = 0xC004;
+                gUnk_03002C30[i + 4].unk2 = gUnk_083AC43B[(gUnk_03001800.unk41[i] & 0xF) * 2];
+                gUnk_03002C30[i + 4].unk4 = gUnk_083AC43B[(gUnk_03001800.unk41[i] & 0xF) * 2 + 1];
+                gUnk_03002C30[i + 4].unk6 = i + 0x401;
+                gUnk_03002C30[i + 4].unkA = 15;
+                gUnk_03002C30[i + 4].unk1C = 0;
+                gUnk_03002C30[i + 4].unkB = 0xC0;
+            }
+            else
+            {
+                clear_sprite_table_mask(i + 4, 1);
+            }
+        }
+        break;
+    case 3:
+        for (i = 0; i < 3; i++)
+        {
+            if (gUnk_03001800.unk41[i])
+            {
+                gUnk_03002C30[i + 4].unk0 = 0xC004;
+                gUnk_03002C30[i + 4].unk2 = gUnk_083AC43B[(gUnk_03001800.unk41[i] & 0xF) * 2];
+                gUnk_03002C30[i + 4].unk4 = gUnk_083AC43B[(gUnk_03001800.unk41[i] & 0xF) * 2 + 1];
+                gUnk_03002C30[i + 4].unk6 = i + 0x404;
+                gUnk_03002C30[i + 4].unkA = 15;
+                gUnk_03002C30[i + 4].unk1C = 0;
+                gUnk_03002C30[i + 4].unkB = 0xC0;
+            }
+            else
+            {
+                clear_sprite_table_mask(i + 4, 1);
+            }
+        }
+        break;
+    }
+}
+
+void medabots_screen_cancel_input(void)
+{
+    s32 i;
+
+    switch (gUnk_03000440.unk50)
+    {
+    case 1:
+    case 2:
+    case 3:
+        for (i = 2; i >= 0; i--)
+        {
+            if (gUnk_03001800.unk41[i])
+            {
+                gUnk_03001800.unk41[i] = 0;
+                team_select_draw_pick_markers();
+                play_sound_effect(5);
+                return;
+            }
+        }
+        break;
+    default:
+        if (gUnk_03000440.unk52 & 0x80)
+        {
+            play_sound_effect(2);
+            gUnk_03000440.unk52 = 0;
+            update_battle_icon_blink_and_orbit();
+        }
+        else if (sub_080440B4())
+        {
+            play_sound_effect(5);
+            gGameSubState++;
+        }
+        else
+        {
+            play_sound_effect(6);
+            gGameSubState = 11;
+        }
+        break;
+    }
+}
+
+void team_select_confirm_pick(void)
+{
+    u32 i;
+
+    switch (gUnk_03000440.unk50)
+    {
+    case 1:
+    case 2:
+    case 3:
+        for (i = 0; i < 3; i++)
+        {
+            if (gUnk_03001800.unk41[i] == 0)
+            {
+                if (team_select_slot_not_picked(i) && gUnk_030017A0[gUnk_03000440.unk51].unk0 == 3)
+                {
+                    play_sound_effect(4);
+                    gUnk_03001800.unk41[i] = gUnk_03000440.unk51 + 0x10;
+                    team_select_draw_pick_markers();
+                    if (i == 2)
+                    {
+                        switch (gUnk_03000440.unk50)
+                        {
+                        case 1:
+                        case 2:
+                            gGameSubState = 0x20;
+                            break;
+                        default:
+                            gGameSubState = 0x28;
+                            break;
+                        }
+                    }
+                    else if (sub_080440B4() == i + 1)
+                    {
+                        gGameSubState = 0x20;
+                    }
+                    else
+                    {
+                        gUnk_03000440.unk51 = gUnk_083AC468[gUnk_03000440.unk51];
+                        update_battle_sprite_orbit_clockwise(0);
+                        update_battle_sprite_orbit_clockwise(1);
+                        update_battle_sprite_orbit_clockwise(2);
+                        update_battle_sprite_orbit_clockwise(3);
+                        sub_08005118();
+                        sub_0800519C();
+                        sub_0800522C();
+                        sub_080053C8();
+                        sub_08005000();
+                        sub_08005948();
+                    }
+                }
+                else
+                {
+                    play_sound_effect(6);
+                }
+                return;
+            }
+            play_sound_effect(6);
+        }
+        break;
+    default:
+        if (gUnk_030017A0[gUnk_03000440.unk51].unk0)
+        {
+            play_sound_effect(4);
+            gGameSubState = 8;
+        }
+        else
+        {
+            play_sound_effect(6);
+        }
+        break;
+    }
+}
+
+void team_select_finish_input(void)
+{
+    switch (gUnk_03000440.unk50)
+    {
+    case 1:
+    case 2:
+        if (gUnk_03001800.unk41[0])
+        {
+            play_sound_effect(4);
+            gGameSubState = 0x20;
+        }
+        break;
+    }
+}
+
+u32 team_select_slot_not_picked(u32 n)
+{
+    u32 i;
+
+    if (n == 0)
+        return 1;
+    for (i = 0; i < n; i++)
+    {
+        if ((gUnk_03001800.unk41[i] & 0xF) == gUnk_03000440.unk51)
+            return 0;
+    }
+    return 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08007480);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_0800750C);
 INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08007540);

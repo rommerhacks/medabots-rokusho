@@ -66,12 +66,13 @@ u32 medabot_detail_prev_part_id(u32 part); // previous Medapart id: 0 wraps to 1
 void battle_update_medabot_display(void);
 void sub_08006F14(void);
 u8 medabot_detail_check_row_select(void);
-void sub_080070F0(void);
+void count_unequipped_medals(void);
 void assign_medal_to_team_slot(void);
-void sub_0800712C(void);
-void sub_0800725C(void);
+void team_select_draw_pick_markers(void);
+void medabots_screen_cancel_input(void);
+u32 team_select_slot_not_picked(u32 n);
 void team_select_confirm_pick(void);
-void battle_play_alert_sound(void);
+void team_select_finish_input(void);
 void sub_08007480(void);
 void sub_0800750C(void);
 void sub_08007540(void);
@@ -114,6 +115,7 @@ void setup_battle_sprite_group(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, 
 u32 sub_0804361C(u32 medal, u32 forward); // guess: previous (forward = 0) / next owned Medal slot (gUnk_03000BE0)
 u32 find_next_available_medapart_slot(u32 part, u32 kind, u32 forward, u32 d);
 u32 medabot_detail_is_full_set(void); // 1 if gUnk_03000440.unk98-9B (the four shown Medaparts) are all the same set
+u32 sub_080440B4(void);
 void sub_08047414(struct Unk_08047414 *obj, u8 *buf, u32 b, u32 c);
 void setup_scene_bg_layers_and_sprites(void *oam, struct Unk_08047414 *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 void battle_sprite_set_palette_index(u32 sprite, u32 pal);

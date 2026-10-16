@@ -1033,15 +1033,15 @@ void medabots_screen_handle_input(void)
     setup_overworld_scene_from_position();
     update_battle_icon_blink_and_orbit();
     check_and_update_battle_sprite_orbit();
-    sub_0800712C();
+    team_select_draw_pick_markers();
     if (medabots_screen_reorder_input() == 0 && medabots_screen_cursor_input() == 0)
     {
         if (KEYS_LO(gNewKeys) & 2)
-            sub_0800725C();
+            medabots_screen_cancel_input();
         else if (KEYS_LO(gNewKeys) & 1)
             team_select_confirm_pick();
         else if (KEYS_LO(gNewKeys) & 8)
-            battle_play_alert_sound();
+            team_select_finish_input();
     }
 }
 
