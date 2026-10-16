@@ -138,7 +138,7 @@ _0804F760:
 	ldrb r0, [r4]
 	bl sub_08052BA0
 	ldrb r0, [r6]
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	bl update_bg_scroll_offsets_a
 	bl init_battle_sprites
 	bl sub_08050244

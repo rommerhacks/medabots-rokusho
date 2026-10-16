@@ -13,7 +13,7 @@ sub_0804CC60: @ 0x0804CC60
 	movs r0, #2
 	bl read_map_script_bytes
 	movs r0, #0xff
-	bl get_entity_speed_fraction
+	bl field_random
 	movs r1, #0xf
 	ands r1, r0
 	cmp r1, #0

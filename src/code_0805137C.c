@@ -59,9 +59,9 @@ void update_npc_random_animation(void)
 
     if ((gUnk_03005310.unk4 & 3) == 0)
     {
-        obj += get_entity_speed_fraction(64);
+        obj += field_random(64);
         if (obj->unk4_7 && (obj->unk2 >> 12) == 0)
-            set_sprite_anim_and_store(obj->unk4_0 + 49, get_entity_speed_fraction(4), obj);
+            set_sprite_anim_and_store(obj->unk4_0 + 49, field_random(4), obj);
     }
 }
 
@@ -143,7 +143,7 @@ u8 check_tile_and_trigger_battle_action(u8 dir)
     tile = get_adjacent_tile_value(dir);
     ret = gUnk_030057E0.unkC10[tile];
     if (ret)
-        set_battle_entity_animation_attack(dir);
+        field_set_player_facing(dir);
     return ret;
 }
 
@@ -316,7 +316,8 @@ void check_and_update_battlefield_palette(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", find_map_event_by_coords);
 
-u8 check_battle_animation_complete(u8 dir)
+// dir: 0 up, 1 down, 2 left, 3 right. At the edge the player only turns to face dir.
+u8 field_player_at_map_edge(u8 dir)
 {
     u8 ret = 0;
 
@@ -340,7 +341,7 @@ u8 check_battle_animation_complete(u8 dir)
         break;
     }
     if (ret)
-        set_battle_entity_animation_attack(dir);
+        field_set_player_facing(dir);
     return ret;
 }
 
@@ -365,7 +366,8 @@ void set_sprite_animation_state(u8 idx, u8 state)
     }
 }
 
-void set_battle_entity_animation_attack(u8 dir)
+// Player facing (0 up, 1 down, 2 left, 3 right); sprite 47 is the player.
+void field_set_player_facing(u8 dir)
 {
     gUnk_030057E0.unkC67 = dir;
     set_sprite_animation_state(47, dir);

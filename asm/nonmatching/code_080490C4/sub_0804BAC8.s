@@ -48,7 +48,7 @@ sub_0804BAC8: @ 0x0804BAC8
 	lsls r0, r0, #4
 	adds r4, r4, r0
 	ldrb r0, [r4]
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	adds r0, r6, #0
 	adds r0, #0x79
 	strb r5, [r0]

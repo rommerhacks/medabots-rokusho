@@ -16,7 +16,7 @@ sub_0804A9B8: @ 0x0804A9B8
 	ldr r1, _0804A9F0 @ =0x00000C67
 	adds r0, r0, r1
 	ldrb r0, [r0]
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	ldr r1, _0804A9F4 @ =0x0300137C
 	movs r0, #5
 	str r0, [r1]

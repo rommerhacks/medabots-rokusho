@@ -19,7 +19,7 @@ void sub_080496C8(u8 *dst, u32 size)
 
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_080496DC);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", count_byte_differences);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", get_entity_speed_fraction);
+INCLUDE_ASM("asm/nonmatching/code_080490C4", field_random);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", memcpy_u8);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", setup_blend_effect);
 INCLUDE_ASM("asm/nonmatching/code_080490C4", blend_effect_update);

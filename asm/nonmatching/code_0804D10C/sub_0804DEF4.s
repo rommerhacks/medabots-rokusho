@@ -34,7 +34,7 @@ _0804DF10:
 	adds r1, #0x81
 	adds r0, r6, r1
 	ldrb r0, [r0]
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	ldr r4, _0804DF90 @ =0x030037F0
 	adds r1, r4, #0
 	subs r1, #0x40

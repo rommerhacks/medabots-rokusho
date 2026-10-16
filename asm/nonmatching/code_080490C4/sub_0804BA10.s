@@ -21,7 +21,7 @@ sub_0804BA10: @ 0x0804BA10
 	adds r5, r5, r1
 	strb r0, [r5]
 	ldrb r0, [r6]
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	pop {r4, r5, r6}
 	pop {r0}
 	bx r0

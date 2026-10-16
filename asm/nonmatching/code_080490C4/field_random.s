@@ -1,8 +1,8 @@
 	.syntax unified
 
-	thumb_func_start get_entity_speed_fraction
-	.global get_entity_speed_fraction
-get_entity_speed_fraction: @ 0x08049734
+	thumb_func_start field_random
+	.global field_random
+field_random: @ 0x08049734
 	push {r4, lr}
 	adds r1, r0, #0
 	lsls r1, r1, #0x18

@@ -50,7 +50,7 @@ _08052E70:
 	ldrb r1, [r4, #3]
 	movs r0, #7
 	ands r0, r1
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	ldrb r0, [r4, #6]
 	ldr r3, _08052F10 @ =0x00000C48
 	adds r1, r5, r3

@@ -52,7 +52,7 @@ _08050F48:
 	lsls r0, r0, #4
 	adds r5, r6, r0
 	ldrb r0, [r5]
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	ldrb r1, [r5]
 	movs r0, #0x2f
 	bl sub_080493D4
@@ -436,7 +436,7 @@ _080512E0:
 	lsls r2, r2, #4
 	adds r0, r4, r2
 	ldrb r0, [r0]
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	movs r3, #0xc2
 	lsls r3, r3, #4
 	adds r4, r4, r3

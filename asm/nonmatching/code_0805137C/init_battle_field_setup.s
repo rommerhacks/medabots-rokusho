@@ -47,7 +47,7 @@ init_battle_field_setup: @ 0x080517A4
 	ldr r1, _080518A4 @ =0x00000C67
 	adds r0, r4, r1
 	ldrb r0, [r0]
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	movs r0, #3
 	bl update_battle_direction_indicator
 	ldr r7, _080518A8 @ =0x03002C30

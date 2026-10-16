@@ -52,6 +52,18 @@
   kept by the linker). Disassemble it (`objdump -b binary -M force-thumb`) and look for `push`.
 * A param spilled to the stack and read back with `ldrb` hints at a `u8` param; if the callers
   pass it untruncated, they were compiled against a different prototype.
+* The base address loaded **before** the scaled index (`ldr r1, =gArr; lsrs r0, r0, #18`) comes
+  from indexing the global directly in every statement (`gArr[i].a = x; gArr[i].b = x;`); a
+  `struct X *p = &gArr[i]` local makes gcc compute the index first.
+* A pointer that walks a table while a separate counter runs (`adds r2, #8` + `adds r4, #1`), and a
+  copy of the table pointer made only after the first loop test, are `for (i = 0; p[i].f; i++)`
+  with indexing: gcc strength-reduces the index into the pointer itself.
+* Two adjacent byte compares merged into one `ldrh` compare in your build but not the original:
+  split the `&&` into nested `if`s.
+* `cmp` of `a - b + 16` in some cases and a plain `a == b` that crossjumps oddly in the others:
+  write the plain ones as `a - b == 0` too (the original source was symmetric).
+* A bitfield shows as `lsls #27; lsrs #27` (low 5 bits) or `lsls #27; lsrs #3; adds 0x31000000;
+  lsrs #24` (a 5-bit field plus a constant, as a `u8`): use a bitfield in the struct, not masks.
 
 ## Naming
 

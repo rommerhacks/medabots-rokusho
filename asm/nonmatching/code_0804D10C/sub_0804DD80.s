@@ -49,7 +49,7 @@ sub_0804DD80: @ 0x0804DD80
 	ldr r2, _0804DE24 @ =0x00000C67
 	adds r4, r4, r2
 	ldrb r0, [r4]
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	bl update_cursor_tile_position
 	bl decompress_battle_tile_graphics
 	bl sub_08050244

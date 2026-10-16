@@ -104,7 +104,7 @@ _08051D36:
 	beq _08051D58
 	strb r4, [r5]
 	adds r0, r4, #0
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	movs r0, #0x2f
 	adds r1, r4, #0
 	bl sub_080493D4
@@ -112,7 +112,7 @@ _08051D36:
 	bl update_battle_direction_indicator
 _08051D58:
 	adds r0, r4, #0
-	bl check_battle_animation_complete
+	bl field_player_at_map_edge
 	cmp r0, #0
 	bne _08051DD8
 	adds r0, r4, #0

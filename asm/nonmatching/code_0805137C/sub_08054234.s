@@ -4500,7 +4500,7 @@ _08056716:
 	bl init_battle_field_setup
 	bl update_bg_scroll_offsets_a
 	ldrb r0, [r5]
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	ldr r0, _080567A0 @ =0x00000C76
 	adds r4, r4, r0
 	ldrb r0, [r4]

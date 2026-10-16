@@ -25,7 +25,7 @@ sub_0804AE7C: @ 0x0804AE7C
 	bl init_battle_field_setup
 	bl update_bg_scroll_offsets_a
 	ldrb r0, [r4]
-	bl set_battle_entity_animation_attack
+	bl field_set_player_facing
 	ldr r1, _0804AF28 @ =0x00000C76
 	adds r0, r6, r1
 	ldrb r0, [r0]
