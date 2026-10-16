@@ -7,12 +7,20 @@ typedef void (*Func)(void);
 
 // RAM
 extern struct Unk_03000440 gUnk_03000440;
+extern u8 gUnk_03000590[];
+extern struct Unk_03000BE0 gUnk_03000BE0[];
 extern u32 gFrameCounter;
 extern u32 gGameMode;
+extern struct Unk_030017A0 gUnk_030017A0[];
+extern struct Unk_03001800 gUnk_03001800;
 extern u32 gUnk_03002B70;
 extern u32 gGameState;
 extern u32 gGameSubState;
 extern struct Unk_03002C30 gUnk_03002C30[];
+extern struct Unk_03005170 gUnk_03005170;
+extern struct Unk_03005350 gUnk_03005350;
+extern struct Unk_030057A0 gUnk_030057A0;
+extern struct Unk_030057E0 gUnk_030057E0;
 extern struct Unk_03006D20 gUnk_03006D20;
 extern struct Unk_03007014 *gUnk_03007014;
 
@@ -21,6 +29,7 @@ extern const u16 gUnk_083AB9D0[];
 extern const Func gGameStateHandlers_083AC148[];
 extern const u32 gUnk_083B6410[];
 extern const u32 gUnk_083BA4D8[];
+extern const u32 gUnk_083BB9CC[][4];
 extern const u32 gUnk_08484444[];
 
 #endif // GUARD_VARIABLES_H

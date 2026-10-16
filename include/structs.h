@@ -8,17 +8,26 @@ struct SoundTrack
 {
     u8 filler0[0x14];
     u8 *unk14;
-    u8 filler18[0x8];
+    u8 *unk18;
+    u8 *unk1C;
     u8 *unk20;
     u8 filler24[0x8];
     u32 unk2C;
     u8 filler30[0x1C];
     u16 unk4C;
-    u8 filler4E[0x7];
+    u8 filler4E[0x2];
+    u8 unk50;
+    u8 filler51[0x1];
+    u8 unk52;
+    u8 unk53;
+    u8 filler54[0x1];
     u8 unk55;
     u8 filler56[0xD];
     u8 unk63;
-    u8 filler64[0x6];
+    u8 filler64[0x3];
+    u8 unk67;
+    u8 filler68[0x1];
+    u8 unk69;
     u8 unk6A;
     u8 filler6B[0x3];
     u8 unk6E;
@@ -40,6 +49,8 @@ struct Unk_03000440
 {
     u8 filler0[0xC];
     u16 unkC;
+    u8 fillerE[0xE1];
+    u8 unkEF;
 };
 
 struct Unk_03002C30
@@ -47,6 +58,71 @@ struct Unk_03002C30
     u8 filler0[0xB];
     u8 unkB;
     u8 fillerC[0x34];
+};
+
+struct Unk_03005170
+{
+    u8 unk0;
+    u8 filler1[0x5];
+    u8 unk6;
+};
+
+struct Unk_03001800
+{
+    u8 filler0[0x87];
+    u8 unk87;
+    u8 filler88[0x19];
+    u8 unkA1;
+};
+
+struct Unk_03000BE0
+{
+    u8 unk0;
+    u8 filler1[0x3F];
+};
+
+struct Unk_030017A0
+{
+    u8 filler0[0x7];
+    u8 unk7;
+};
+
+struct Unk_030057A0
+{
+    u8 filler0[0x14];
+    u8 unk14;
+};
+
+struct Unk_030057E0
+{
+    u8 filler0[0xC48];
+    u16 unkC48;
+    u16 unkC4A;
+};
+
+struct Unk_03005350
+{
+    u8 filler0[0xB4];
+    s32 unkB4;
+    s32 unkB8;
+};
+
+struct Unk_03007014
+{
+    u8 filler0[0x688];
+    u32 unk688;
+    u32 unk68C;
+    u8 filler690[0x90];
+    u32 unk720;
+    u32 unk724;
+    u32 unk728;
+};
+
+struct Unk_08047414
+{
+    u8 *unk0;
+    u32 unk4;
+    u32 unk8;
 };
 
 #endif // GUARD_STRUCTS_H

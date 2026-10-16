@@ -7,6 +7,9 @@
 
 	thumb_func_start sub_0807CBBC
 	.global sub_0807CBBC
+	.global __divsi3
+	.thumb_func
+__divsi3:
 sub_0807CBBC: @ 0x0807CBBC
 	cmp r1, #0
 	beq _0807CC44
@@ -129,6 +132,9 @@ _0807CC84: .4byte 0xCF000000
 
 	thumb_func_start sub_0807CC88
 	.global sub_0807CC88
+	.global __modsi3
+	.thumb_func
+__modsi3:
 sub_0807CC88: @ 0x0807CC88
 	movs r3, #1
 	cmp r1, #0
@@ -252,6 +258,9 @@ _0807CD4C:
 
 	thumb_func_start sub_0807CD58
 	.global sub_0807CD58
+	.global __udivsi3
+	.thumb_func
+__udivsi3:
 sub_0807CD58: @ 0x0807CD58
 	cmp r1, #0
 	beq _0807CDC6
@@ -325,6 +334,9 @@ _0807CDC6:
 
 	thumb_func_start sub_0807CDD0
 	.global sub_0807CDD0
+	.global __umodsi3
+	.thumb_func
+__umodsi3:
 sub_0807CDD0: @ 0x0807CDD0
 	cmp r1, #0
 	beq _0807CE86
