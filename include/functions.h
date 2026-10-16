@@ -360,5 +360,24 @@ void sub_08047DF0(u8 a, u8 b, u8 n);
 void sub_08047E08(u8 a, u8 b, u8 n);
 u32 battle_scene_state_dispatch(void);
 void update_bg_scroll_offsets_b(void);
+void write_tilemap_rect(u32 x, u32 w, u32 y, u32 h, const void *src, u32 bgcnt, u32 base);
+void vram_fill_tilemap_rect(u32 x, u32 w, u32 y, u32 h, u32 bgcnt, u16 value);
+u32 load_overworld_map_column(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
+void text_window_init(u8 a, u8 b, u32 c);
+void sub_0803FB0C(void);
+u32 run_message(const void *msg);
+void open_choice_menu(u8 a, u8 b, u32 c);
+u32 poll_choice_menu(void);
+void divide_by_10000(u8 *digits, u32 n);
+void render_text_sprites_08040DB8(u8 *digits, u8 a, u32 b, u32 c, u8 d, u8 e, u8 f, u16 g);
+void process_sprite_anim_commands(const void *cmds, u8 slot);
+void sub_08044094(void);
+void field_menu_init_cursor(void);
+void sub_0804765C(u32 a);
+void update_battle_field_frame(void);
+void sub_080487E4(void);
+void setup_blend_effect(u8 a, u16 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i);
+void blend_effect_update(void);
+void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot);
 
 #endif // GUARD_FUNCTIONS_H

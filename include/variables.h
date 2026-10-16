@@ -59,6 +59,7 @@ extern u16 gPaletteBufferBg[0x100];    // = gPaletteBuffer + 0x100
 extern u32 gRngCounter;
 extern u32 gRngValue;
 extern u32 gRngState;
+extern u8 gUnk_03000588;
 
 // ROM data
 extern const Func gIntrTableTemplate[14];
@@ -119,5 +120,25 @@ extern const u32 *const gTextTable[]; // text pointers, banks 0-1 (guess)
 extern const u32 *const *const gTextBankTables[]; // text pointer tables, bank 2+ (guess)
 extern const s16 gUnk_083D69A0[][8]; // 16 steps; [n][0] / 16 = player sprite y offset (sub_0804DE28, guess: jump arc)
 extern const u8 gUnk_083D2998[]; // map script terrain/palette id -> unkC5C/unkC69/unkC28 (sub_0804E324)
+extern struct Unk_03002B70 gUnk_03002B70; // = gMoney, with the bytes after it
+extern const Func gUnk_083AC248[]; // game state 0 sub-state handlers (guess: debug map viewer)
+extern const Func gFieldMenuHandlers[]; // game state 1 (field pause menu) sub-state handlers
+extern const void *const gUnk_083B53F8[]; // messages used by game state 0 (guess: debug menu)
+extern const void *const gUnk_083B4AE0[]; // tilemaps (field menu rows: open/close animation frames)
+extern const void *const gUnk_083B5F80[]; // sprite animation commands (field menu cursor)
+extern const u8 gUnk_084C1608[];
+extern const u8 gUnk_084C17F0[];
+extern const u8 gUnk_084C1934[];
+extern const u8 gUnk_084C1ACC[];
+extern const u8 gUnk_084C1C14[];
+extern const u8 gUnk_08487708[];
+extern const u8 gUnk_08487814[];
+extern const u16 gUnk_08488A84[];
+extern const u8 gUnk_08488690[];
+extern const u8 gUnk_08488644[];
+extern const u8 gUnk_084C6A98[];
+extern const u16 gUnk_084E2E38[];
+extern const u8 gUnk_084C7174[];
+extern const u16 gUnk_084E2E58[];
 
 #endif // GUARD_VARIABLES_H

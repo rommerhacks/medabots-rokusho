@@ -124,11 +124,34 @@ struct Unk_03006D20
     u8 fillerD[0x3];
 };
 
+// 0x03002B70: money, then a 10-byte string (init_save_prompt_text writes a default one).
+struct Unk_03002B70
+{
+    u32 money;
+    u8 unk4[10];
+};
+
 struct Unk_03000440
 {
-    u8 filler0[0xC];
+    u8 filler0[0x4];
+    u8 unk4; // message handler state (run_message)
+    u8 filler5[0x3];
+    const u8 *unk8; // current message (run_message)
     u16 unkC;
-    u8 fillerE[0xE1];
+    u8 unkE;
+    u8 fillerF[0x19];
+    u8 unk28;
+    u8 unk29; // choice menu state (poll_choice_menu)
+    u8 filler2A[0x5A];
+    u8 unk84; // field menu: animation frame counter
+    u8 unk85;
+    u8 filler86[0x2];
+    u8 unk88; // field menu: row animation counter
+    u8 filler89[0x5];
+    u8 unk8E; // field menu cursor: 0 Medawatch, 1 Item, 2 Vehicle, 3 Save (runtime-checked)
+    u8 unk8F;
+    u8 filler90[0xE];
+    u8 unk9E[0x51]; // digit buffer (divide_by_10000)
     u8 unkEF;
     u8 fillerF0[0x3E];
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
