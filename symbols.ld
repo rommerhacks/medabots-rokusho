@@ -56,6 +56,7 @@ gUnk_08413114       = 0x08413114;
 gTextTable       = 0x08414968;
 gTextBankTables       = 0x0847E45C;
 gUnk_083D69A0       = 0x083D69A0;
+gUnk_083D2998       = 0x083D2998;
 gMapScriptCommands  = 0x083D20AC;
 gMapScriptUpdates   = 0x083D24B0;
 gUnk_084045A8       = 0x084045A8;

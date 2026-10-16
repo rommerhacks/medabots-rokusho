@@ -83,5 +83,6 @@ extern const u8 gSoundOutputBits[4][4]; // [channel][output: 0 off, 1, 2, 3 both
 extern const u32 *const gTextTable[]; // text pointers, banks 0-1 (guess)
 extern const u32 *const *const gTextBankTables[]; // text pointer tables, bank 2+ (guess)
 extern const s16 gUnk_083D69A0[][8]; // 16 steps; [n][0] / 16 = player sprite y offset (sub_0804DE28, guess: jump arc)
+extern const u8 gUnk_083D2998[]; // map script terrain/palette id -> unkC5C/unkC69/unkC28 (sub_0804E324)
 
 #endif // GUARD_VARIABLES_H

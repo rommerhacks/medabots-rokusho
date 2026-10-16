@@ -543,7 +543,37 @@ void sub_0804DE28(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DEF4);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E0E8);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E324);
+
+void sub_0804E324(void)
+{
+    u8 obj;
+    u32 i;
+
+    gUnk_030057E0.unkC69 = gUnk_030057E0.unkC5C = gUnk_083D2998[gUnk_030057E0.unkC94[0]];
+    gUnk_030057E0.unkC28 = gUnk_083D2998[gUnk_030057E0.unkC94[0]];
+    load_battle_terrain_data();
+    decompress_battle_tile_graphics();
+    switch (gUnk_03006F40[1])
+    {
+    case 1:
+    case 3:
+    case 5:
+    case 6:
+        obj = 1;
+        break;
+    default:
+        obj = 0;
+        break;
+    }
+    i = resolve_tile_from_battle_state(0);
+    if (gUnk_083F8634[i] == NULL)
+        i = 1;
+    if (obj)
+        DmaCopy32(3, gUnk_083F8634[i], OBJ_PLTT, 32)
+    else
+        DmaCopy32(3, gUnk_083F8634[i], 0x0202F800, 32)
+    map_script_command_done();
+}
 
 void sub_0804E3F0(void)
 {
@@ -647,8 +677,41 @@ void sub_0804E594(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E5A4);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E6B4);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804E738);
+
+void sub_0804E6B4(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        spawn_battle_medapart_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
+        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 0);
+        s->unkC93++;
+        break;
+    case 1:
+        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 0))
+            map_script_command_done();
+        break;
+    }
+}
+
+void sub_0804E738(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[1], 0);
+        s->unkC93++;
+        break;
+    case 1:
+        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 0))
+            map_script_command_done();
+        break;
+    }
+}
 
 void nullsub_0804E790(void)
 {

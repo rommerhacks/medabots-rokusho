@@ -278,7 +278,7 @@ void setup_palette_fade_to_color_with_obj(u16 color, float a, float b, float c);
 void LZ77UnCompVram(const void *src, void *dst);
 
 // code_08044F54
-u16 resolve_tile_from_battle_state(u32 arg);
+u32 resolve_tile_from_battle_state(u32 arg);
 void sub_0804877C(u8 idx);
 void init_battle_sprite_entry_08048818(u8 idx, u16 attr, u32 frame, u8 a3, u8 a4);
 void decompress_battle_tile_graphics(void);
