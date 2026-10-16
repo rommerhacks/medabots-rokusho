@@ -83,7 +83,7 @@ _08072FB6:
 _08072FD0: .4byte 0x03007014
 _08072FD4: .4byte 0x000005E4
 _08072FD8:
-	bl sub_080743C8
+	bl sound_is_paused
 	cmp r0, #0
 	bne _08072FE6
 	adds r0, r4, #0
@@ -99,7 +99,7 @@ _08072FE6:
 	bl sound_channel_process_tone
 	b _0807300A
 _08072FFA:
-	bl sub_080743C8
+	bl sound_is_paused
 	cmp r0, #0
 	bne _0807300A
 	adds r0, r4, #0
@@ -116,7 +116,7 @@ _0807300A:
 	bl update_wave_channel
 	b _0807302E
 _0807301E:
-	bl sub_080743C8
+	bl sound_is_paused
 	cmp r0, #0
 	bne _0807302E
 	adds r0, r4, #0
@@ -129,7 +129,7 @@ _0807302E:
 	ldr r0, [r1, #0x14]
 	cmp r0, #0
 	bne _0807306C
-	bl sub_080743C8
+	bl sound_is_paused
 	cmp r0, #0
 	bne _08073082
 	movs r2, #0xae
@@ -175,7 +175,7 @@ _08073082:
 	bl sound_channel_6_update_note
 	b _080730A8
 _08073096:
-	bl sub_080743C8
+	bl sound_is_paused
 	cmp r0, #0
 	bne _080730A8
 	movs r1, #0xe8
@@ -194,14 +194,14 @@ _080730A8:
 	.align 2, 0
 _080730BC: .4byte 0x000004FC
 _080730C0:
-	bl sub_080743C8
+	bl sound_is_paused
 	cmp r0, #0
 	bne _080730D0
 	ldr r1, _080730F8 @ =0x00000414
 	adds r0, r4, r1
 	bl sound_channel_7_update_note
 _080730D0:
-	bl sub_080743C8
+	bl sound_is_paused
 	cmp r0, #0
 	bne _080730EE
 	adds r0, r4, #0

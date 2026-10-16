@@ -177,7 +177,9 @@ void sound_set_volume(u32 left, u32 right);
 s32 get_sound_channel_position(u32 idx);
 void sound_channel_7_update_note(struct SoundTrack *track);
 void sub_080740D4(struct SoundTrack *track);
-u32 sub_080743C8(void);
+u32 sound_is_paused(void);
+void sound_set_paused_nolock(u32 pause);
+void sound_set_paused(u32 pause);
 void sound_update_master_volume(void);
 void sound_channel_advance_sequence(struct SoundTrack *track);
 

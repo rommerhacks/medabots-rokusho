@@ -13,7 +13,7 @@ sound_stop_channel_by_index: @ 0x080744B4
 	ldr r0, [r1]
 	cmp r0, #0
 	beq _08074540
-	bl sub_080743C8
+	bl sound_is_paused
 	cmp r0, #0
 	bne _08074540
 	ldr r1, [r5]

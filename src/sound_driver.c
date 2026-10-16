@@ -386,9 +386,100 @@ u8 sub_080740AC(struct SoundTrack *track)
     return buf[i];
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_080740D4);
+void sub_080740D4(struct SoundTrack *track)
+{
+    u8 *buf = track->unk8;
 
-u32 sub_080743C8(void)
+    if (buf)
+    {
+        u8 vol = track->envVolume;
+        u8 *pos = &buf[0x30];
+
+        if (vol)
+            buf[*pos] = track->unk48;
+        else
+            buf[*pos] = 0xFF;
+        if (++*pos >= 0x30)
+            *pos = 0;
+    }
+}
+
+// Pause (nonzero) or resume the sound: sets bit 1 of the flags at 0x72C (see sound_is_paused),
+// silences the PSG channels and stops the sound effect tracks; resuming re-triggers the music tracks.
+void sound_set_paused_nolock(u32 pause)
+{
+    struct Unk_03007014 **pw = &gUnk_03007014;
+
+    if (pause)
+    {
+        (*pw)->unk72C |= 2;
+        *(vu16 *)0x04000062 &= 0x0FFF;
+        *(vu16 *)0x04000064 |= 0x8000;
+        *(vu16 *)0x04000068 &= 0x0FFF;
+        *(vu16 *)0x0400006C |= 0x8000;
+        *(vu16 *)0x04000072 &= 0x1FFF;
+        *(vu16 *)0x04000078 &= 0x0FFF;
+        *(vu16 *)0x0400007C |= 0x8000;
+        if ((*pw)->tracks[10].unk14)
+            sub_08073CA4(&(*pw)->unk690);
+        else if ((*pw)->tracks[8].unk14)
+            sub_08073E40(&(*pw)->unk690);
+        if (gUnk_03007014->tracks[11].unk14)
+            sub_08073CA4(&gUnk_03007014->unk6D8);
+        else if (gUnk_03007014->tracks[9].unk14)
+            sub_08073E40(&gUnk_03007014->unk6D8);
+        sound_channel_finish_and_callback(&gUnk_03007014->tracks[4]);
+        sound_channel_finish_and_callback(&gUnk_03007014->tracks[5]);
+        sound_channel_finish_and_callback(&gUnk_03007014->tracks[6]);
+        sound_channel_finish_and_callback(&gUnk_03007014->tracks[7]);
+        sound_channel_finish_and_callback(&gUnk_03007014->tracks[10]);
+        sound_channel_finish_and_callback(&gUnk_03007014->tracks[11]);
+    }
+    else
+    {
+        (*pw)->unk72C &= ~2;
+        if (gUnk_03007014->tracks[4].unk14 == NULL && gUnk_03007014->tracks[0].unk14)
+        {
+            gUnk_03007014->tracks[0].unk50 |= 0x5F;
+            sound_channel1_update(&gUnk_03007014->tracks[0]);
+        }
+        if (gUnk_03007014->tracks[5].unk14 == NULL && gUnk_03007014->tracks[1].unk14)
+        {
+            gUnk_03007014->tracks[1].unk50 |= 0x5F;
+            sound_channel_process_tone(&gUnk_03007014->tracks[1]);
+        }
+        if (gUnk_03007014->tracks[6].unk14 == NULL && gUnk_03007014->tracks[2].unk14)
+        {
+            gUnk_03007014->tracks[2].unk50 |= 0x7F;
+            update_wave_channel(&gUnk_03007014->tracks[2]);
+        }
+        if (gUnk_03007014->tracks[7].unk14 == NULL && gUnk_03007014->tracks[3].unk14)
+        {
+            gUnk_03007014->tracks[3].unk50 |= 0x5F;
+            sound_update_channel_3(&gUnk_03007014->tracks[3]);
+        }
+        if (gUnk_03007014->tracks[10].unk14 == NULL && gUnk_03007014->tracks[8].unk14)
+        {
+            sub_08073E18(&gUnk_03007014->unk690);
+            gUnk_03007014->tracks[8].unk50 = 0;
+        }
+        if (gUnk_03007014->tracks[11].unk14 == NULL && gUnk_03007014->tracks[9].unk14)
+        {
+            sub_08073E18(&gUnk_03007014->unk6D8);
+            gUnk_03007014->tracks[9].unk50 = 0;
+        }
+    }
+}
+
+// Not called anywhere in the game.
+void sound_set_paused(u32 pause)
+{
+    sound_lock();
+    sound_set_paused_nolock(pause);
+    sound_unlock();
+}
+
+u32 sound_is_paused(void)
 {
     return (gUnk_03007014->unk72C >> 1) & 1;
 }
@@ -431,7 +522,7 @@ void sound_tick_channel_3a(void)
 void sound_update_channel1_with_fallback(void)
 {
     sound_channel1_update(&gUnk_03007014->tracks[4]);
-    if (sub_080743C8() == 0)
+    if (sound_is_paused() == 0)
     {
         gUnk_03007014->tracks[0].unk50 |= 0x5F;
         sound_channel1_update(&gUnk_03007014->tracks[0]);
@@ -441,7 +532,7 @@ void sound_update_channel1_with_fallback(void)
 void sound_update_channel2_with_fallback(void)
 {
     sound_channel_process_tone(&gUnk_03007014->tracks[5]);
-    if (sub_080743C8() == 0)
+    if (sound_is_paused() == 0)
     {
         gUnk_03007014->tracks[1].unk50 |= 0x5F;
         sound_channel_process_tone(&gUnk_03007014->tracks[1]);
@@ -451,7 +542,7 @@ void sound_update_channel2_with_fallback(void)
 void update_wave_channels_pair(void)
 {
     update_wave_channel(&gUnk_03007014->tracks[6]);
-    if (sub_080743C8() == 0)
+    if (sound_is_paused() == 0)
     {
         gUnk_03007014->tracks[2].unk50 |= 0x7F;
         update_wave_channel(&gUnk_03007014->tracks[2]);
@@ -461,7 +552,7 @@ void update_wave_channels_pair(void)
 void sound_update_wave_channels(void)
 {
     sound_update_channel_3(&gUnk_03007014->tracks[7]);
-    if (sub_080743C8() == 0)
+    if (sound_is_paused() == 0)
     {
         gUnk_03007014->tracks[3].unk50 |= 0x5F;
         sound_update_channel_3(&gUnk_03007014->tracks[3]);
