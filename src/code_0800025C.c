@@ -43,7 +43,6 @@ INCLUDE_ASM("asm/nonmatching/code_0800025C", decompress_to_ewram_buffer);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", decompress_to_bg_scroll_buffer);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", write_tilemap_to_vram_08000E94);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", load_tilemap_rows_to_vram);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08000F20);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", copy_tilemap_with_offset_08000F78);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", set_bg2_affine_transform);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", compute_bg_affine_scanline_params);

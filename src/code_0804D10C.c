@@ -217,7 +217,6 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", calc_medapart_table_index);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080502B4);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", compute_battle_sprite_anim_offset);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", spawn_battle_medapart_sprite);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050310);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", init_battle_medapart_sprite);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050508);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", populate_battle_entity_tile_positions);

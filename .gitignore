@@ -11,3 +11,4 @@ tools/gbadisasm
 tools/gbadisasm-src/
 __pycache__/
 *.pyc
+scratch/

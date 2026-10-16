@@ -65,7 +65,6 @@ INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016068);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016080);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016138);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016154);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_0801615A);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016288);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_0801630C);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016370);
