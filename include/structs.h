@@ -129,11 +129,18 @@ struct Unk_03002C30
     u16 unk0;
     s16 unk2;
     s16 unk4;
-    u8 filler6[0x5];
+    u16 unk6; // animation frame
+    u8 filler8[0x3];
     u8 unkB;
-    u8 fillerC[0x1E];
+    u8 fillerC[0x14];
+    u8 unk20; // animation state (0-3)
+    u8 unk21;
+    u8 filler22[0x3];
+    u8 unk25;
+    u8 filler26[0x4];
     u8 unk2A;
-    u8 filler2B[0x15];
+    u8 unk2B; // animation set
+    u8 filler2C[0x14];
 };
 
 struct Unk_03005170
@@ -169,13 +176,35 @@ struct Unk_030057A0
     u8 unk14;
 };
 
+// Per-area record list (gUnk_0840FAF4), ends at mask 0. A record applies when the player steps
+// from a neighbouring tile onto (x, y) in a direction whose bit is set in mask.
+struct MapExit
+{
+    u8 x;
+    u8 y;
+    u8 mask; // direction 0: 2, 1: 1, 2: 8, 3: 4
+    u8 value; // returned by check_room_exit_at_position (0 = none)
+};
+
+// Map object record (64 at gUnk_030057E0.unk5DC).
+struct MapObject
+{
+    u8 x;
+    u8 y;
+    u16 unk2; // bits 12-15: type (8 = event), bits 0-11: event id
+    u8 filler4[0x4];
+};
+
 struct Unk_030057E0
 {
-    u8 filler0[0x7FE];
+    u8 filler0[0x5DC];
+    struct MapObject unk5DC[64];
+    u8 filler7DC[0x22];
     u8 unk7FE; // area id
     u8 filler7FF[0x1];
     u16 unk800; // map width * 2 (tiles are bytes, unk810 rows are unk800 / 2 long)
-    u8 filler802[0xE];
+    u16 unk802; // map height * 2
+    u8 filler804[0xC];
     u8 unk810[0x438]; // tile map
     u16 unkC48;
     u16 unkC4A;
@@ -190,6 +219,15 @@ struct Unk_030057E0
     u8 fillerC72[0x3];
     u8 unkC75;
     u8 unkC76;
+    u8 fillerC77[0x11];
+    u8 unkC88;
+    u8 unkC89;
+    u16 unkC8A;
+    u8 fillerC8C[0x2];
+    u16 unkC8E;
+    u16 unkC90;
+    u8 fillerC92[0x22];
+    u8 unkCB4;
 };
 
 struct Unk_03006D38
