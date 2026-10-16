@@ -27,6 +27,7 @@ extern struct Unk_03006D20 gUnk_03006D20;
 extern struct Unk_03007014 *gUnk_03007014;
 extern struct Vec16 gUnk_03004C30;
 extern struct Unk_03005310 gUnk_03005310;
+extern u8 gUnk_03006F40[];
 extern struct Unk_030055A0 gUnk_030055A0[];
 extern struct Vec16 gUnk_0300057C;
 extern struct Vec16 gUnk_03001C04;

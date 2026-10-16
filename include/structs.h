@@ -325,6 +325,7 @@ struct Unk_03005310
     u32 unk4; // frame counter
     u8 filler8[0x30];
     u8 unk38;
+    u8 unk39;
 };
 
 struct Unk_03006D38

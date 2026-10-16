@@ -46,7 +46,11 @@ void sub_08047878(u32 a, u32 b);
 void sub_08047BA8(u32 id);
 void sub_08047BC0(u32 a);
 void init_cursor_state(void);
+u32 sub_08047D4C(void); // returns gUnk_03002B70 (money)
+u32 sub_08047D8C(u8 id);
 u32 sub_08047D9C(u8 a, u8 b);
+u32 sub_08047DB0(u8 id);
+u32 lookup_position_table_value(u8 a, u8 b);
 u32 dispatch_jump_table_29(u32 a, u32 b);
 s32 sub_08047F50(void);
 void clear_battle_sprite_entry(u8 slot);
@@ -260,6 +264,8 @@ u16 resolve_tile_from_battle_state(u32 arg);
 void sub_0804877C(u8 idx);
 void init_battle_sprite_entry_08048818(u8 idx, u16 attr, u32 frame, u8 a3, u8 a4);
 void decompress_battle_tile_graphics(void);
+void dma_load_obj_palettes_08048664(void);
+void dma_load_battle_palettes(void);
 
 // code_080490C4
 void sub_080493D4(u8 idx, u8 val);

@@ -765,14 +765,22 @@ void nullsub_0804C8DC(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C8E0);
+void sub_0804C8E0(void)
+{
+    read_map_script_bytes(2);
+    gUnk_030057E0.unkC89 = 1;
+}
 
 void sub_0804C900(void)
 {
     sub_08047BA8(read_map_script_byte());
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C914);
+void sub_0804C914(void)
+{
+    gUnk_030057E0.unkC94[0] = read_map_script_byte();
+    dispatch_jump_table_29(1, gUnk_030057E0.unkC94[0]);
+}
 
 void sub_0804C938(void)
 {
@@ -784,23 +792,109 @@ void sub_0804C948(void)
     sub_08047BC0(0x78);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C954);
+void sub_0804C954(void)
+{
+    gUnk_030057E0.unkC94[0] = read_map_script_byte();
+    dispatch_jump_table_29(3, gUnk_030057E0.unkC94[0]);
+}
 
 void sub_0804C978(void)
 {
     dispatch_jump_table_29(4, 0);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C988);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C9DC);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CA38);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CA9C);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CAE8);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CB48);
+void sub_0804C988(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(2);
+    if (gUnk_030057E0.unkC94[0] != gUnk_03002C30[47].unk21)
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
+}
+
+void sub_0804C9DC(void)
+{
+    s32 n;
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(3);
+    n = sub_08047D8C(gUnk_030057E0.unkC94[0]);
+    if (n == 0 || n < gUnk_030057E0.unkC94[1])
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
+}
+
+void sub_0804CA38(void)
+{
+    u32 r;
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(3);
+    r = lookup_position_table_value(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1]);
+    if (r != -1)
+        gUnk_030057E0.unkC60 = r;
+    else
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
+}
+
+void sub_0804CA9C(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(2);
+    if (sub_08047DB0(gUnk_030057E0.unkC94[0]) == 0)
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
+}
+
+void sub_0804CAE8(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(3);
+    if ((s32)sub_08047D4C() < ((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]) * 10)
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
+}
+
+void sub_0804CB48(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(1);
+    if (gUnk_03005310.unk39 == 2)
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[0];
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CB90);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CC10);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CC60);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CCA8);
+
+void sub_0804CC10(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(2);
+    if (gUnk_030057E0.unkC94[0] - 70 != gUnk_030057E0.unkC60)
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
+}
+
+void sub_0804CC60(void)
+{
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(2);
+    if (field_random(0xFF) & 0xF)
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
+}
+
+void sub_0804CCA8(void)
+{
+    read_map_script_bytes(2);
+    if (gUnk_030057E0.unkC94[0] != 0)
+        gUnk_030057E0.unkC94[0]--;
+    gUnk_030057E0.unkC38[gUnk_030057E0.unkC94[0]] = gUnk_030057E0.unkC94[1];
+    decompress_battle_tile_graphics();
+    switch (gUnk_03006F40[1])
+    {
+    case 1:
+    case 3:
+    case 5:
+    case 6:
+        dma_load_obj_palettes_08048664();
+        break;
+    default:
+        dma_load_battle_palettes();
+        break;
+    }
+}
 
 // Not called directly (hidden in the tail of sub_0804CCA8).
 void nullsub_0804CD14(void)
