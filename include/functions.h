@@ -91,6 +91,8 @@ void sub_08050780(u8 i, u32 val);
 void sub_080507A0(u32 idx, u32 val);
 void sub_080507C0(u8 i, u8 val);
 void sub_08052BA0(u8 on);
+u32 sub_0804B6EC(void);
+u32 scene_transition_step_08047C24(u8 a, u8 b, u8 c, const void *text);
 u32 sub_08050868(void);
 u32 sub_080508CC(void);
 u32 sub_080509A0(void);

@@ -204,6 +204,9 @@ struct Unk_030057A0
 {
     u8 filler0[0x14];
     u8 unk14;
+    u8 filler15[0x19];
+    u16 unk2E; // text bank (map script opcode 0x8x argument - 2)
+    u16 unk30; // text id
 };
 
 // Per-area record list (gUnk_0840FAF4), ends at mask 0. A record applies when the player steps

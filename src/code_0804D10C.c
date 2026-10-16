@@ -380,7 +380,31 @@ void nullsub_0804DBE8(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DBEC);
+void sub_0804DBEC(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+    const u32 *const *tbl;
+
+    switch (s->unkC93)
+    {
+    case 0:
+        init_cursor_state();
+        gUnk_030057A0.unk2E = s->unkC94[0] - 2;
+        gUnk_030057A0.unk30 = (s->unkC94[1] << 8) | s->unkC94[2];
+        if (sub_0804B6EC())
+            sub_08050244();
+        s->unkC93++;
+        break;
+    case 1:
+        if (s->unkC94[0] < 2)
+            tbl = (const u32 *const *)gUnk_08414968;
+        else
+            tbl = gUnk_0847E45C[s->unkC94[0] - 2];
+        if (scene_transition_step_08047C24(0, 0, 0, tbl[(s->unkC94[1] << 8) | s->unkC94[2]]))
+            sub_08050244();
+        break;
+    }
+}
 
 void sub_0804DCAC(void)
 {
@@ -393,8 +417,19 @@ void sub_0804DCB8(void)
         sub_08050244();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DCCC);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DCF0);
+void sub_0804DCCC(void)
+{
+    if (gUnk_030057E0.unkC94[0] != 0)
+        gUnk_030057E0.unkC94[0]--;
+    else
+        sub_08050244();
+}
+
+void sub_0804DCF0(void)
+{
+    if (KEY_BITS(gNewKeys).a | KEY_BITS(gNewKeys).start)
+        sub_08050244();
+}
 
 void sub_0804DD10(void)
 {
@@ -408,8 +443,17 @@ void sub_0804DD24(void)
         sub_08050244();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DD38);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804DD50);
+void sub_0804DD38(void)
+{
+    if (run_blend_fade_transition(0x7FFF))
+        sub_08050244();
+}
+
+void sub_0804DD50(void)
+{
+    if (run_blend_fade_transition(0x7FFF))
+        sub_08050244();
+}
 
 void sub_0804DD68(void)
 {
@@ -637,7 +681,12 @@ INCLUDE_ASM("asm/nonmatching/code_0804D10C", setup_battle_sprite_terrain);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080500D8);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", advance_sprite_by_terrain_modifier);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", update_battle_sprite_movement);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050244);
+
+void sub_08050244(void)
+{
+    gUnk_030057E0.unkC93 = 0;
+    gUnk_030057E0.unkC89 = 0;
+}
 
 u8 sub_08050264(u8 a)
 {
@@ -650,7 +699,12 @@ u8 sub_0805026C(u8 a)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", calc_medapart_table_index);
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_080502B4);
+
+u8 sub_080502B4(u8 slot, u8 v)
+{
+    return v + gUnk_03002C30[slot].unk2B * 4;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", compute_battle_sprite_anim_offset);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", spawn_battle_medapart_sprite);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", init_battle_medapart_sprite);

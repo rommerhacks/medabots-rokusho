@@ -79,5 +79,7 @@ extern vu16 *const gSoundFifoDmaCnt[];
 extern const struct SoundTrackConfig gSoundTrackConfigs[13];
 extern const u8 gSoundOutputMasks[4]; // SOUNDCNT_L high byte: clears the left/right enables of PSG channel i
 extern const u8 gSoundOutputBits[4][4]; // [channel][output: 0 off, 1, 2, 3 both] SOUNDCNT_L high byte bits // REG_DMA1CNT_H, REG_DMA2CNT_H
+extern const u32 *const gUnk_08414968[]; // text pointers, banks 0-1 (guess)
+extern const u32 *const *const gUnk_0847E45C[]; // text pointer tables, bank 2+ (guess)
 
 #endif // GUARD_VARIABLES_H
