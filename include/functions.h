@@ -1173,3 +1173,6 @@ void LZ77UnCompWram(const void *src, void *dst);
 u32 sub_08044D64(u32 *dst, const u32 *src, u32 n);
 u32 sub_08044D78(u16 *dst, const u16 *src, u32 n);
 void sub_08044D90(u8 *dst, const u8 *src, u32 n);
+void transition_draw_tile_strip(void);
+void battle_sprite_setup_cursor(void);
+void set_oam_sprite_shape_size(u8 *oam, s32 h, s32 w); // OAM attr0 shape / attr1 size bits for a w x h sprite (h > w: tall)

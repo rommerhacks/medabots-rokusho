@@ -95,7 +95,44 @@ void clear_and_copy_tilemap_rows(void)
     gUnk_03000440.unk29++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", transition_draw_tile_strip);
+void transition_draw_tile_strip(void)
+{
+    u32 i, j;
+    u16 *d = (u16 *)(VRAM + 0x2800) + gUnk_03000440.unk2D * 32 + gUnk_03000440.unk2C;
+    u16 *row = d;
+    u16 *s;
+    u16 *srow;
+
+    for (i = 0; i < 8; i++)
+        *d++ = 0;
+    row += 32;
+    s = (u16 *)(VRAM + 0x2D40);
+    srow = s;
+    d = row;
+    for (j = 0; j < 2; j++)
+    {
+        for (i = 0; i < 8; i++)
+            *d++ = *s++;
+        row += 32;
+        d = row;
+        srow += 32;
+        s = srow;
+    }
+    s = (u16 *)(VRAM + 0x2E40);
+    srow = s;
+    for (j = 0; j < 2; j++)
+    {
+        for (i = 0; i < 8; i++)
+            *d++ = *s++;
+        row += 32;
+        d = row;
+        srow += 32;
+        s = srow;
+    }
+    for (i = 0; i < 8; i++)
+        *d++ = 0;
+    gUnk_03000440.unk29++;
+}
 
 void copy_transition_tiles_to_bg2(void)
 {
@@ -117,7 +154,20 @@ void copy_transition_tiles_to_bg2(void)
     gUnk_03000440.unk29++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", battle_sprite_setup_cursor);
+void battle_sprite_setup_cursor(void)
+{
+    gUnk_03002C30[gUnk_03000440.unk2B].unk0 = 0xD204;
+    gUnk_03002C30[gUnk_03000440.unk2B].unk2 = gUnk_03000440.unk2C * 8 + 0x14;
+    gUnk_03002C30[gUnk_03000440.unk2B].unk4 = gUnk_03000440.unk2D * 8 + gUnk_03000440.unk2A * 16 + 0x10;
+    gUnk_03002C30[gUnk_03000440.unk2B].unk6 = 0x307;
+    gUnk_03002C30[gUnk_03000440.unk2B].unkA = 0xE;
+    gUnk_03002C30[gUnk_03000440.unk2B].unk1C = 0;
+    gUnk_03002C30[gUnk_03000440.unk2B].unk8 = 1;
+    gUnk_03002C30[gUnk_03000440.unk2B].unk9 = 1;
+    gUnk_03002C30[gUnk_03000440.unk2B].unkB = 0xFF;
+    gUnk_03000440.unk84 = 1;
+    gUnk_03000440.unk29++;
+}
 
 void advance_sprite_scroll_animation(void)
 {
@@ -1001,5 +1051,44 @@ void sub_08044D90(u8 *dst, const u8 *src, u32 n)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", set_oam_sprite_shape_size);
+void set_oam_sprite_shape_size(u8 *oam, s32 h, s32 w)
+{
+    if (h > w)
+    {
+        oam[1] = (oam[1] & 0x3F) | 0x80;
+        if (h == 8)
+            oam[3] = oam[3] & 0x3F;
+        else if (h == 64)
+            oam[3] |= 0xC0;
+        else if (w == 8)
+            oam[3] = (oam[3] & 0x3F) | 0x40;
+        else
+            oam[3] = (oam[3] & 0x3F) | 0x80;
+    }
+    else if (h < w)
+    {
+        oam[1] = (oam[1] & 0x3F) | 0x40;
+        if (w == 8)
+            oam[3] = oam[3] & 0x3F;
+        else if (w == 64)
+            oam[3] |= 0xC0;
+        else if (h == 8)
+            oam[3] = (oam[3] & 0x3F) | 0x40;
+        else
+            oam[3] = (oam[3] & 0x3F) | 0x80;
+    }
+    else
+    {
+        oam[1] = oam[1] & 0x3F;
+        if (h == 8)
+            oam[3] = oam[3] & 0x3F;
+        else if (h == 16)
+            oam[3] = (oam[3] & 0x3F) | 0x40;
+        else if (h == 32)
+            oam[3] = (oam[3] & 0x3F) | 0x80;
+        else
+            oam[3] |= 0xC0;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044E64);
