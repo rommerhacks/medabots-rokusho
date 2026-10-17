@@ -713,6 +713,9 @@ void sub_08016660(void);
 void decompress_two_bg1_layers(void);
 void command_ring_init_icons_hidden(void);
 void read_vram_tilemap_rect(u32 x, u32 w, u32 y, u32 h, u32 bgcnt, void *dst);
+void write_vram_tilemap_rect(u32 x, u32 w, u32 y, u32 h, u32 bgcnt, const void *src);
+void sub_08042A90(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt, u16 tile2); // draws cur/max as two 2-digit numbers
+u32 sub_08016E5C(u32 rec, u32 part); // 1 if the part's skill id (data[1]) is 0x18-0x1A, 0x28 or 0x35
 void draw_partial_bg1_column(void);
 void scroll_tilemap_window(void);
 void sub_08016FB4(void);
