@@ -1052,4 +1052,11 @@ void sub_080378A8(void); // moves sprite 0x21 4 px (right if gUnk_03001800.unkF8
 u32 sub_08037B9C(void); // runs the sprite handlers of slots 0x21-0x3B; 1 when none is active
 void sub_0803836C(void); // clears gUnk_03001800.unkD2[0..2] / unkD6[0..2]
 
+void sub_08035BD4(void);
+void sub_08035BFC(u32 rec, u32 part);
+u32 battle_select_random_target(u32 base, u32 rec);
+void sub_080393BC(void);
+void sub_0801DEE4(void);
+void sub_0801FA40(void);
+void sub_0802645C(void);
 #endif // GUARD_FUNCTIONS_H

@@ -234,7 +234,7 @@ struct Unk_03000440
     u8 filler11E[0x10];
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
     u8 unk12F; // sprite slot (sub_08028E84)
-    u8 filler130;
+    u8 unk130; // Robattle: set to 1 around the action script commands sub_08034048 .. sub_08034240
     u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2
     u8 unk132;
     u8 unk133; // after-battle Medal level-up: Medal slot (find_medal_slot_by_id - 1)
@@ -476,7 +476,8 @@ struct Unk_03001800
     u8 unkBA;
     u8 unkBB;
     u16 unkBC; // Robattle action script: offset of the current command (sub_08034E94 / sub_08034F08)
-    u8 fillerBE[0xA];
+    u8 unkBE; // set with unkB7 / unkB8 by the script commands sub_08033F04 / sub_08033F64 (1, 5)
+    u8 fillerBF[0x9];
     u16 unkC8; // Robattle: effect amount (shown by sub_0801CA60, subtracted by apply_battle_damage_tick)
     u16 unkCA; // damage passed to battle_set_damage_vs_armor (sub_0801ECC0)
     u8 fillerCC[0x4];
@@ -489,7 +490,7 @@ struct Unk_03001800
     u8 unkE0[3]; // per team record: record + 1 waiting for reset_battle_bot_state (sub_0801FE14)
     u8 fillerE3[0x5];
     s16 unkE8; // passed to battle_set_action_params with unkEC (sub_0801F9EC)
-    u8 fillerEA[0x2];
+    s16 unkEA; // unkE8 / 4 (script command sub_08033D10)
     s16 unkEC; // amount for battle_calc_damage_split (battle_resolve_action_target); counted down by sub_0801EC3C
     u8 fillerEE[0x8];
     u8 unkF6; // bit 0 checked by sub_08020078
@@ -530,7 +531,9 @@ struct Unk_03001800
     u8 unk16E[3][8];
     u8 unk186; // after-battle screen: team member being shown (0-2, 3 = done)
     u8 unk187; // gUnk_03000590 record index (battle_loss_take_part)
-    u8 filler188[0x1E];
+    u8 unk188; // two rolls from gUnk_083AF200 (sub_08034AA0); unkEC = (unk188 + unk189) * 10
+    u8 unk189;
+    u8 filler18A[0x1C];
     u16 unk1A6;
     u16 unk1A8;
     u16 unk1AA;
