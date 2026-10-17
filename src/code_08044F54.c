@@ -17,13 +17,13 @@ INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_sprite_tiles_to_vram);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", decompress_and_load_sprite_tiles);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", setup_oam_sprite_entries);
 
-u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const u8 *e, u8 f, u16 g)
+u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const struct SpriteAnchor *e, u8 f, u16 g)
 {
     obj->oams = oams;
     obj->unk4 = e;
     obj->w = desc->w;
     obj->h = desc->h;
-    obj->depth = (s8)e[6];
+    obj->depth = e->unk6;
     return setup_oam_sprite_entries(oams, b, c, desc, e, f, g);
 }
 
@@ -92,7 +92,12 @@ u32 sub_08045A40(s32 y, s32 x)
     return ret;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_sprite_oam_with_vflip);
+u16 copy_sprite_oam_with_vflip(void *a, void *b, u16 c, u32 unused, s8 d, u8 f)
+{
+    return copy_sprite_oam_entries(a, b, c, d, 0x80, f);
+}
+
+INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08045A8C);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", render_sprite_if_visible);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", init_oam_sprite_entry);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", load_sprite_tree_recursive);

@@ -874,11 +874,32 @@ struct SpriteDesc
     u32 unk0_16:16;
 };
 
+// Bitfield view of struct OamData.
+struct OamBits
+{
+    u16 y:8;
+    u16 attr0_8:8;
+    u16 x:9;
+    u16 attr1_9:7;
+    u16 tileNum:10;
+    u16 priority:2;
+    u16 paletteNum:4;
+    u16 affineParam;
+};
+
+struct SpriteAnchor
+{
+    u8 filler0[2];
+    u16 unk2; // y / x offsets (sub_08045A8C)
+    u16 unk4;
+    s8 unk6; // initial depth (init_sprite_object_entry)
+};
+
 // OAM entry list of a sprite object (copy_oam_entries_with_priority, init_sprite_object_entry).
 struct SpriteOamList
 {
     struct OamData *oams;
-    const u8 *unk4; // unk4[6] (s8) is the initial depth
+    const struct SpriteAnchor *unk4;
     u16 depth; // > 300 / 200 / 100: OAM priority 3 / 2 / 1
     u8 w;
     u8 h;

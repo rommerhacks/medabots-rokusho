@@ -1,7 +1,11 @@
 	.syntax unified
 
 	thumb_func_start render_sprite_if_visible
-render_sprite_if_visible: @ 0x08045AF4
+render_sprite_if_visible: @ 0x08045AEC
+	push {r4, r5, r6, r7, lr}
+	mov r7, sl
+	mov r6, sb
+	mov r5, r8
 	push {r5, r6, r7}
 	sub sp, #0xc
 	mov sl, r0
