@@ -1124,4 +1124,15 @@ struct SaveData
     u8 filler1CB9[3];
 };
 
+// Race course backgrounds (init_battle_background_layers), by gUnk_03006FDC
+struct Unk_08486160
+{
+    u8 unk0;
+    u8 filler1[3];
+    u8 unk4; // decompress_indexed_asset set for the BG at 0x06004800
+    u8 filler5[3];
+    u8 unk8; // ... for the BG at 0x06005000
+    u8 filler9[3];
+};
+
 #endif // GUARD_STRUCTS_H

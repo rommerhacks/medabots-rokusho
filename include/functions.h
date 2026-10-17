@@ -845,6 +845,11 @@ void sub_08069078(void);
 void sub_080690C4(void);
 void sub_08069114(void);
 void sub_08069158(void);
+void init_battle_sprite_medium(void);
+void init_battle_sprite_c400(void);
+void init_battle_sprite_entry_1(void);
+void init_battle_sprite_large(void);
+void init_battle_bg_layer(void);
 
 s32 sub_08043C94(void); // random 0-100
 void render_text_sprites_08040EE4(u8 *text, u8 a, u32 x, u32 y, u8 b, u8 c, u8 d, u16 e, s32 f, s32 g);

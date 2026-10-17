@@ -136,6 +136,12 @@ extern const u8 gUnk_08485CC4[3][3]; // sprite slots
 extern const u8 gUnk_08485CE3[][7]; // frame delays
 extern bool32 (*const gUnk_08485D30[])(u8); // race sprite animations, by gUnk_03002C30[].unk20 - 1 (update_sprite_animations_tick_0806AF40)
 extern const s8 gUnk_08485E84[];
+extern u8 gUnk_03006FDC;
+extern const struct Unk_08486160 gUnk_08486160[]; // by gUnk_03006FDC (init_battle_background_layers)
+extern const u16 gUnk_0807C260[]; // OBJ palettes (inside the 0x080750D8 data blob)
+extern const u16 gUnk_0807C280[];
+extern const u16 gUnk_0807C2A0[];
+extern const u16 gUnk_0807C2C0[];
 extern u8 gUnk_03000584; // 0 player name, 1 / 2 Medal name gUnk_03000BE0[gUnk_030017EC] (sub_0805EE94)
 extern u8 gUnk_03003870[];
 extern u8 gUnk_03005664[];
