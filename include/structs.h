@@ -420,11 +420,16 @@ struct Unk_03000590
     // guess), armor bytes at +0x52/+0x6A/+0x82/+0x9A (accumulate_team_armor_stats)
     u8 unk40[0x7A];
     u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
-    u8 fillerBB[0x2];
+    u8 unkBB;
+    u8 fillerBC;
     u8 unkBD; // flags (bit 2 toggled by the Robattle handlers sub_080143A0 / sub_08014404)
-    u8 fillerBE[0xB];
+    u8 fillerBE;
+    u8 unkBF;
+    u8 fillerC0[0x9];
     u8 unkC9; // 0x2C checked by sub_08014404
-    u8 fillerCA[0x36];
+    u8 fillerCA[0x4];
+    u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (sub_080145BC .. sub_08014754)
+    u8 fillerCF[0x31];
 };
 
 struct Unk_030017A0
