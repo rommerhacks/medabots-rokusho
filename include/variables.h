@@ -108,6 +108,7 @@ extern const u8 gUnk_083B6158[][16]; // 16-byte records per Medal graphic index 
 extern const u8 gUnk_083D1BF8[];
 extern const u32 gUnk_083BA4D8[];
 extern const u8 gUnk_083AD200[]; // 8 bytes per Medal attribute: base skill levels (init_enemy_bot_medal)
+extern const u8 gUnk_083AD2F0[][4]; // 32 part orders (0xFF = end) tried by select_bot_battle_action
 extern const u32 gUnk_083BB9CC[][4]; // Medapart name pointers: [part id][kind: head, right arm, left arm, legs]
 extern const u32 gUnk_08484444[];
 extern vu32 *const gSoundFifoAddrs[]; // REG_FIFO_A, REG_FIFO_B

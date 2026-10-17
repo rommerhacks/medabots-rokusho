@@ -800,5 +800,16 @@ void copy_player_medals_to_battle_bots(void);
 void copy_battle_position_to_sprite(void);
 void init_enemy_bot_medal(u8 i);
 void init_enemy_bot_loadouts(void);
+u32 battle_dispatch_action_by_type(u32 rec);
+void select_bot_battle_action(u32 rec);
+u32 sub_080154E0(u32 rec, u32 part);
+u32 sub_08015508(u32 rec, u32 part);
+u32 sub_08015528(u32 rec, u32 part);
+u32 check_medaforce_availability(u32 rec, u32 slot, u32 random);
+u32 sub_08015648(u32 rec);
+void set_random_battle_formation(void);
+u32 can_bot_perform_action(u32 rec, u32 part);
+u32 rng_lookup_table_value(void);
+u32 begin_battle_action_lookup(u32 rec, u32 part);
 
 #endif // GUARD_FUNCTIONS_H

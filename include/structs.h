@@ -356,11 +356,13 @@ struct Unk_03001800
     u8 unk53;
     u8 unk54;
     u8 unk55; // Robattle: result flags (2, 4, 8, 0x10 pick sub-states 0x60-0x78 in sub_0801427C)
-    u8 filler56[0x4];
+    u8 filler56[0x2];
+    u8 unk58; // Robattle: nonzero blocks Medaforce (check_medaforce_availability)
+    u8 filler59;
     u8 unk5A; // Robattle: team Medabot count (3 in battle_start.ss0)
     u8 unk5B;
     u8 filler5C[0x8];
-    u8 unk64[4]; // filled by get_bot_part_effective_values (sub_08013B8C)
+    u8 unk64[4]; // filled by get_bot_part_effective_values (sub_08013B8C); AI part order from gUnk_083AD2F0 (set_random_battle_formation)
     u8 filler68[0x18];
     u8 unk80; // index of a 256-byte record in gUnk_03000590 (sub_0800B498 copies Medal rotation data there)
     u8 unk81;
@@ -412,7 +414,8 @@ struct Unk_03000BE0
     u8 unk18[8]; // indexed by Medals screen unk46 (gUnk_083B825C message ids; guess: rotation entries)
     u8 unk20[8]; // 0-100 (guess: skill levels, drawn by render_medal_skill_stats)
     u8 unk28[8]; // per skill: filled bar tiles, 0-8 (draw_medal_skill_bars)
-    u8 filler30[0x10];
+    u8 filler30[0xF];
+    u8 unk3F; // Robattle: current unk18 entry (sub_08015414 advances it, wraps at 8 to unk9)
 
 };
 
@@ -420,7 +423,9 @@ struct Unk_03000BE0
 struct BattlePart
 {
     u8 data[0xD]; // part data record (load_part_data); data[0xA] summed as armor (accumulate_team_armor_stats)
-    u8 fillerD[3];
+    u8 fillerD;
+    u8 unkE; // copied to the record's unkE0 / unkE1 when this part is chosen (battle_bot_select_part)
+    u8 unkF;
     u8 unk10; // head: copy of data[8]
     u8 unk11; // copy of data[4] (legs: data[4..9] copied to unk11..unk16); 0 = part broken (guess)
     u8 filler12[5];
@@ -442,7 +447,8 @@ struct Unk_03000590
     u8 unk46;
     u8 unk47;
     struct BattlePart parts[4]; // head, right arm, left arm, legs
-    u8 fillerA8[0x10];
+    u8 unkA8[6]; // chosen Medaforce: gUnk_083B7CD4 record (load_bot_palette_data)
+    u8 fillerAE[0xA];
     u8 unkB8; // own record index (setup_bot_render_label)
     u8 unkB9;
     u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
@@ -451,16 +457,22 @@ struct Unk_03000590
     u8 unkBD; // flags (bit 2 toggled by the Robattle handlers sub_080143A0 / sub_08014404)
     u8 fillerBE;
     u8 unkBF;
-    u8 fillerC0[0x8];
+    u8 fillerC0;
+    u8 unkC1; // 0x50: Medaforce ready (check_medaforce_availability)
+    u8 fillerC2[0x6];
     u8 unkC8; // number shown by the Robattle handler 0x70 (sub_080147FC)
-    u8 unkC9; // 0x2C checked by sub_08014404
-    u8 fillerCA[0x3];
+    u8 unkC9; // 0x2C checked by sub_08014404 / process_bot_battle_turn, 0x2B by sub_080154E0
+    u8 unkCA; // part compared by sub_080154E0
+    u8 fillerCB[0x2];
     u8 unkCD; // number shown by the Robattle handler 0x78 (sub_08014920)
     u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (sub_080145BC .. sub_08014754),
               // bit 2 / bit 3 = numbers shown by sub_080147FC / sub_08014920
     u8 fillerCF[0xE];
     u8 unkDD; // link Robattle: part choice exchanged over the serial link (sub_08014B34, sub_08014C30)
-    u8 fillerDE[0x22];
+    u8 fillerDE[0x2];
+    u8 unkE0;
+    u8 unkE1;
+    u8 fillerE2[0x1E];
 };
 
 struct Unk_030017A0
