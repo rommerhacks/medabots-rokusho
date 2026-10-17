@@ -152,6 +152,13 @@ extern const u8 gUnk_084C6A98[];
 extern const u16 gUnk_084E2E38[];
 extern const u8 gUnk_084C7174[];
 extern const u16 gUnk_084E2E58[];
+extern const u16 gUnk_084E2E78[];
+extern const u8 gUnk_084EAC58[];
+extern const u8 gUnk_084EF4E0[];
+extern const u8 gUnk_084EFE28[];
+extern const u8 gUnk_084F0A00[];
+extern const u8 gUnk_084F1BA0[];
+extern const u16 gUnk_084F32A0[];
 extern const Func gMedawatchMenuHandlers[]; // game state 2 (Medawatch menu) sub-state handlers
 extern const u8 gUnk_084E30D8[];
 extern const u8 gUnk_084EF6A0[];
@@ -197,6 +204,7 @@ extern const u8 gUnk_084F08F0[];
 extern const u8 gUnk_084F1A10[];
 extern const u16 gUnk_084F30E0[];
 extern const void *const gUnk_083B7C00[]; // messages (run_message), indexed by sub_0800A960()
+extern const void *const gUnk_083B825C[]; // messages (run_message), indexed by a Medal record byte at +0x18 (guess: rotation entries)
 extern const u8 gUnk_084E5650[];
 extern const u8 gUnk_084C48B4[];
 extern const u8 gUnk_084C4A34[];

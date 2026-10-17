@@ -162,6 +162,13 @@ gUnk_084C6A98       = 0x084C6A98;
 gUnk_084E2E38       = 0x084E2E38;
 gUnk_084C7174       = 0x084C7174;
 gUnk_084E2E58       = 0x084E2E58;
+gUnk_084E2E78       = 0x084E2E78;
+gUnk_084EAC58       = 0x084EAC58;
+gUnk_084EF4E0       = 0x084EF4E0;
+gUnk_084EFE28       = 0x084EFE28;
+gUnk_084F0A00       = 0x084F0A00;
+gUnk_084F1BA0       = 0x084F1BA0;
+gUnk_084F32A0       = 0x084F32A0;
 
 /* code_0800025C: Medawatch menu (game state 2) */
 gMedawatchMenuHandlers       = 0x083AC2D4;
@@ -213,6 +220,7 @@ gUnk_084F08F0       = 0x084F08F0;
 gUnk_084F1A10       = 0x084F1A10;
 gUnk_084F30E0       = 0x084F30E0;
 gUnk_083B7C00       = 0x083B7C00;
+gUnk_083B825C       = 0x083B825C;
 gUnk_084E5650       = 0x084E5650;
 gUnk_084C48B4       = 0x084C48B4;
 gUnk_084C4A34       = 0x084C4A34;

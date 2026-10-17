@@ -151,10 +151,12 @@ struct Unk_03000440
     u8 unk41; // count of owned, unequipped Medals (count_unequipped_medals)
     u8 unk42; // Medal pages: 0 Ability, 1 Medaforce, 2 Rotation, 3 Skill (L/R, runtime-checked)
     u8 unk43; // Medal pages: help opened from 0 Ability, 1 Medaforce
-    u8 unk44;
-    u8 filler45;
+    u8 unk44; // Medals help: page cursor
+    u8 unk45; // Medals help: page count
     u8 unk46;
-    u8 filler47[0x4];
+    u8 filler47;
+    u16 unk48; // Medal record unk20/unk28 index 0-7 (sub_08008A5C)
+    u8 filler4A;
     u8 unk4B; // Medals screen: song 7 started (when opened with unk3C == 4)
     u8 filler4C[0x4];
     u8 unk50; // Medabots screen mode: 0 plain (from the Medawatch), 1-3 team select (guess: battle type; 3 needs all three picks)
@@ -331,7 +333,11 @@ struct Unk_03000BE0
     u8 filler2[0x3];
     u8 unk5; // level (guess: shown as a number by fill_tilemap_pair_or_divide)
     u8 filler6[0x4];
-    u8 unkA[0x36]; // name text
+    u8 unkA[0xE]; // name text
+    u8 unk18[8]; // indexed by Medals screen unk46 (gUnk_083B825C message ids; guess: rotation entries)
+    u8 unk20[8]; // 0-100 (guess: skill levels, drawn by render_medal_skill_stats)
+    u8 unk28[8];
+    u8 filler30[0x10];
 
 };
 
