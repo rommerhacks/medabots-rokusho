@@ -105,7 +105,29 @@ void sub_0806E060(void)
     gGameSubState = 3;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_init_tilemap_and_palette);
+void battle_init_tilemap_and_palette(void)
+{
+    u16 map[20][30];
+    u16 out[20 * 32];
+    s32 i, j;
+
+    LZ77UnCompVram(gUnk_08487328[gUnk_03001800_s.unkC.h], (void *)(VRAM + 0x8000));
+    LZ77UnCompVram(gUnk_08487358[gUnk_03001800_s.unkC.h], map);
+    for (i = 0; i < 20; i++) {
+        for (j = 0; j < 30; j++)
+            out[i * 32 + j] = map[i][j];
+        out[i * 32 + 30] = 0;
+        out[i * 32 + 31] = 0;
+    }
+    DmaSet(3, out, VRAM + 0x7800, 0x84000140);
+    DmaSet(3, gUnk_08487388[gUnk_03001800_s.unkC.h], PLTT, 0x800000E0);
+    REG_BG1CNT = 0xF8B;
+    setup_screen_transition_effect_080682CC(2, 1, 0);
+    text_window_init(1, 2, 0);
+    REG_DISPCNT |= 0x200;
+    gUnk_03001800_s.nextSubState = 4;
+    gGameSubState = 1;
+}
 
 void dispatch_battle_event_script(void)
 {
@@ -351,8 +373,89 @@ void battle_scene_init_clear(void)
     gGameSubState = 8;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806B160", load_battle_scene_graphics);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", init_scene_graphics);
+void load_battle_scene_graphics(void)
+{
+    u16 buf1[0x78];
+    u16 buf2[0x190];
+
+    LZ77UnCompVram(gUnk_087BA86C, (void *)VRAM);
+    LZ77UnCompVram(gUnk_087C8368, (void *)(VRAM + 0x8020));
+    LZ77UnCompVram(gUnk_08485FB8[1], (void *)(VRAM + 0x8C80));
+    DmaSet(3, gUnk_087BDC10, PLTT, 0x84000080);
+    DmaSet(3, gUnk_087C8818, PLTT, 0x84000008);
+    DmaSet(3, gUnk_08485FC8[1], PLTT + 0x20, 0x84000008);
+    LZ77UnCompVram(gUnk_087BDE10, (void *)(VRAM + 0x7000));
+    LZ77UnCompVram(gUnk_087BE18C, (void *)(VRAM + 0x7800));
+    LZ77UnCompVram(gUnk_087C8838, buf1);
+    copy_tilemap_rect_to_vram(buf1, 0x1F, 0xA, 0xC, 0, 0, 1, 0);
+    LZ77UnCompVram(gUnk_08485FC0[1], buf2);
+    copy_tilemap_rect_to_vram(buf2, 0x1E, 0x14, 0x14, 0xA, 0, 0x64, 1);
+    REG_BG1CNT = 0xE01;
+    REG_BG3CNT = 0xF03;
+    REG_BG0CNT = 0x1E08;
+    REG_BG2CNT = 0x1F0A;
+    DmaSet(3, gUnk_08485FD8[1], PLTT + 0x200, 0x80000050);
+    init_battle_sprite_entry_08048818(0, 0xC000, 0x40D, 4, 3);
+    gUnk_03002C30[0].unk2 = 0x98;
+    gUnk_03002C30[0].unk4 = 0x40;
+    setup_screen_transition_effect_080682CC(2, 1, 0);
+    gUnk_03000430 = 0;
+    gUnk_03001800_s.nextSubState = gUnk_03001800_s.unkC.h;
+    gGameSubState = 3;
+}
+
+void init_scene_graphics(void)
+{
+    u8 buf[0x50]; // unused, but the original reserves the stack space
+    u32 tmp;
+    u16 zero;
+    s32 i;
+
+    LZ77UnCompVram(gUnk_087BE494, (void *)VRAM);
+    LZ77UnCompVram(gUnk_087C88F4, (void *)(VRAM + 0x8020));
+    LZ77UnCompVram(gUnk_087C8BD8, (void *)(VRAM + 0x8C80));
+    LZ77UnCompVram(gUnk_087C8C94, (void *)(VRAM + 0x9900));
+    LZ77UnCompVram(gUnk_087C8CE4, (void *)(VRAM + 0x9A40));
+    DmaSet(3, gUnk_087C09C0, PLTT, 0x84000080);
+    DmaSet(3, gUnk_087C8CF4, PLTT + 0x100, 0x84000008);
+    DmaSet(3, gUnk_087C8D14, PLTT + 0x120, 0x84000008);
+    DmaSet(3, gUnk_087C8D34, PLTT, 0x84000008);
+    LZ77UnCompVram(gUnk_087C0BC0, (void *)(VRAM + 0x7000));
+    LZ77UnCompVram(gUnk_087C0E0C, (void *)(VRAM + 0x7800));
+    zero = 0;
+    tmp = zero;
+    DmaSet(3, &tmp, VRAM + 0xF800, 0x85000200);
+    REG_BG1CNT = 0x1F09;
+    REG_BG2CNT = 0xE02;
+    REG_BG3CNT = 0xF03;
+    setup_screen_transition_effect_080682CC(4, 1, 0);
+    init_battle_sprite_entry_08048818(9, 0xC800, 0x404, 1, 3);
+    gUnk_03002C30[9].unk2 = 8;
+    gUnk_03002C30[9].unk4 = 0xA0;
+    init_battle_sprite_entry_08048818(10, 0xC800, 0x405, 1, 3);
+    gUnk_03002C30[10].unk2 = zero;
+    gUnk_03002C30[10].unk4 = 0x90;
+    for (i = 0; i <= 2; i++) {
+        ((void (*)())init_battle_sprite_entry_08048818)(i + 11, 0xC400, i + 0x400, 0, 3);
+        gUnk_03002C30[i + 11].unk2 = 0xC0;
+        gUnk_03002C30[i + 11].unk4 = 0xC8;
+    }
+    for (i = 0; i <= 5; i++) {
+        ((void (*)())init_battle_sprite_entry_08048818)(i + 3, 0xC400, 0x408, 2, 3);
+        gUnk_03002C30[i + 3].unk2 = i * 8 + 0xA0;
+        gUnk_03002C30[i + 3].unk4 = 0xC8;
+        gUnk_03002C30[i + 3].unkB = 0x20;
+    }
+    sub_0806FF50();
+    sub_0806FF90();
+    sub_08070030();
+    sub_0806FFF8();
+    REG_DISPCNT |= 0x1E00;
+    REG_BLDCNT = 0x1844;
+    REG_BLDALPHA = 0x80B;
+    gUnk_03001800_s.nextSubState = gUnk_03001800_s.unkC.h;
+    gGameSubState = 1;
+}
 
 void load_battle_ui_assets(void)
 {

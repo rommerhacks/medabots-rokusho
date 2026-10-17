@@ -177,7 +177,37 @@ extern const void *const gUnk_08486EEC[]; // story intro texts, by page gUnk_030
 extern const void *const gUnk_08487328[]; // story intro compressed tiles (to 0x06008000), by page
 extern const void *const gUnk_08487358[]; // story intro compressed tilemaps (30x20), by page
 extern const void *const gUnk_08487388[]; // story intro palettes (0xE0 halfwords), by page
+extern const u8 gUnk_087F1B4C[]; // boot logo 1: compressed BG tiles (battle_init_bg_screen)
+extern const u8 gUnk_087F1E4C[]; // boot logo 1: compressed 30x20 tilemap
+extern const u16 gUnk_087F1F38[]; // boot logo 1: palette (16 colours)
+extern const u8 gUnk_087F1F58[]; // boot logo 2: compressed BG tiles (init_battle_bg_tilemap)
+extern const u8 gUnk_087F2658[]; // boot logo 2: compressed 30x20 tilemap
+extern const u16 gUnk_087F27D8[]; // boot logo 2: palette
+extern const u8 gUnk_087F27F8[]; // boot overlay: compressed BG tiles (battle_bg_init_overlay)
+extern const u8 gUnk_087F3070[]; // boot overlay: compressed 30x20 tilemap (palette 1)
+extern const u16 gUnk_087F3250[]; // boot overlay: palette 1
+extern const u8 gUnk_087BA86C[]; // state 1 scene (load_battle_scene_graphics): compressed BG tiles
+extern const u16 gUnk_087BDC10[]; // 256-colour BG palette
+extern const u8 gUnk_087BDE10[]; // compressed tilemap (to 0x06007000)
+extern const u8 gUnk_087BE18C[]; // compressed tilemap (to 0x06007800)
+extern const u8 gUnk_087BE494[]; // state 1 scene (init_scene_graphics): compressed BG tiles
+extern const u16 gUnk_087C09C0[]; // 256-colour BG palette
+extern const u8 gUnk_087C0BC0[]; // compressed tilemap (to 0x06007000)
+extern const u8 gUnk_087C0E0C[]; // compressed tilemap (to 0x06007800)
+extern const u8 gUnk_087C8368[]; // compressed tiles (to 0x06008020)
+extern const u16 gUnk_087C8818[]; // 16-colour palette
+extern const u8 gUnk_087C8838[]; // compressed 10x12 tilemap
+extern const u8 gUnk_087C88F4[]; // compressed tiles (init_scene_graphics)
+extern const u8 gUnk_087C8BD8[];
+extern const u8 gUnk_087C8C94[];
+extern const u8 gUnk_087C8CE4[];
+extern const u16 gUnk_087C8CF4[]; // 16-colour palettes (init_scene_graphics)
+extern const u16 gUnk_087C8D14[];
+extern const u16 gUnk_087C8D34[];
 extern const u8 gUnk_087C8D54[]; // compressed, decompressed to gUnk_03001800_s.unk30 (load_battle_ui_assets)
+extern const void *const gUnk_08485FB8[2]; // compressed tiles ([1] to 0x06008C80, load_battle_scene_graphics)
+extern const void *const gUnk_08485FC0[2]; // compressed 20x20 tilemaps ([1] in load_battle_scene_graphics)
+extern const void *const gUnk_08485FC8[2]; // 16-colour palettes ([1] in load_battle_scene_graphics)
 extern const void *const gUnk_08485FD0[2]; // compressed OBJ tiles (load_battle_ui_assets)
 extern const void *const gUnk_08485FD8[2]; // OBJ palettes (0x50 halfwords; [1] in init_battle_result_screen)
 extern u8 gUnk_03000005; // scene step speed: frames per fade level
