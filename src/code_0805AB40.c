@@ -57,9 +57,11 @@ INCLUDE_ASM("asm/nonmatching/code_0805AB40", tilemap_offset_tiles_and_palette);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", init_multiplayer_id);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", dispatch_game_state_handler_0805BA94);
 
-s16 sub_0805BB10(u16 a)
+s16 sub_0805BB10(s16 step)
 {
+    u16 a = step;
     s16 n;
+
     if (a > 0xA0)
         a = 0;
     REG_BLDCNT = 0x844;
@@ -168,7 +170,53 @@ void sub_0805C2C4(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C308);
+void sub_0805C308(void)
+{
+    struct Unk_03006F74 *w;
+
+    gUnk_03006F74->unk3A = sub_0805BB10(gUnk_03006F74->unk3A);
+    sub_0805BEA0(gUnk_03006F74->unk5, gFrameCounter & 0x1F);
+    if (KEYS_LO(gNewKeys) & 0x40)
+    {
+        play_sound_effect(2);
+        w = gUnk_03006F74;
+        if (w->unk5 == w->unk4)
+            w->unk5 = 2;
+        else
+            w->unk5--;
+    }
+    if (KEYS_LO(gNewKeys) & 0x80)
+    {
+        play_sound_effect(2);
+        w = gUnk_03006F74;
+        if (w->unk5 == 2)
+            w->unk5 = w->unk4;
+        else
+            w->unk5++;
+    }
+    if (KEYS_LO(gNewKeys) & 1)
+    {
+        play_sound_effect(4);
+        if (gUnk_03006F74->unk5 == 2)
+        {
+            gUnk_03006F74->unk5 = 0;
+            gUnk_03006F74->unk2 = 20;
+            sub_0805BDC8(gFrameCounter & 0x1F);
+            sub_0805BBF8(gUnk_03006F74->unk5);
+            sub_0805BCC0(gUnk_03006F74->unk5);
+            sub_0805BEA0(3, 0);
+            gUnk_03002C30[14].unk4 = gUnk_03006F74->unk5 * 24 + 0x50;
+            gUnk_03002C30[14].unk0 |= 0x4000;
+            gGameSubState++;
+        }
+        else
+        {
+            gUnk_03006F74->unk48 = 45;
+            gGameSubState = 6;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C428);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C6AC);
 

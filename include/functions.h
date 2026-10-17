@@ -1162,12 +1162,17 @@ void sub_08059D04(void); // clears unk0 of the 128 gUnk_03002C30 sprites
 void decompress_and_write_tilemap(const void *src, u32 bgcnt); // LZ77 tilemap with a w, h header (u32 each, 16-byte header) into the BG screen block of bgcnt
 void sub_0805B3E4(s32 x, s32 y, s32 n); // clears n tilemap entries at (x, y) of the BG map at 0x0600B000
 void sub_0805B470(struct Unk_03002C30 *sprite);
-s16 sub_0805BB10(u16 step);
+s16 sub_0805BB10(s16 step); // title menu blend pulse: sets BLDALPHA from gUnk_080AF6F0[step / 8], returns step + 1 (0 after 0xA0)
+void sub_0805BCC0(u8 a);
+void sub_0805BDC8(u8 a);
+void sub_0805BEA0(u8 a, u8 b);
+void sub_0805BBF8(u8 sel); // title menu: palette 7 on the selected row of three 11-tile BG0 rows, 6 on the others
 void sub_0805BC6C(void); // sets palette 8 on three 16-tile BG0 rows (dead code, carved from sub_0805BBF8)
 void sub_0805C820(void); // fades REG_BLDY up to 16, then game state 9 (carved from sub_0805C7E8)
 void sub_0805CA28(u32 a);
 void sub_0805D57C(u16 a);
 void attempt_save_and_transition(void); // save screen state 7: up to 4 tries of save_dispatch(0), then state 8 (ok) or 12 (failed)
+s32 sub_0805DD60(void); // title: stops the music, clears the name, tries save_dispatch(1) 4 times; nonzero while sound 4 plays
 s32 save_dispatch(s32 mode); // 0: save, 1: load (returns validate_save_data), 2: erase; all through gDecompressBuffer
 void load_save_data(struct SaveData *save);
 void serialize_save_data(struct SaveData *save);

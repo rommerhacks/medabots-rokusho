@@ -1034,8 +1034,8 @@ struct Unk_03006F74
     u8 unk0;
     u8 unk1;
     u16 unk2;
-    u8 unk4;
-    u8 unk5;
+    u8 unk4; // title menu: first selectable entry (1 without a valid save)
+    u8 unk5; // title menu: cursor (0-2)
     u8 unk6;
     u8 unk7;
     u32 unk8;
@@ -1057,8 +1057,10 @@ struct Unk_03006F74
     u8 filler21[0x15];
     u16 unk36; // save screen: last BG tile index loaded (sub_0805D628)
     u16 unk38;
-    u16 unk3A; // title: blend step (sub_0805BB10)
-    u8 filler3C[0x14];
+    s16 unk3A; // title: blend step (sub_0805BB10)
+    u8 filler3C[0xC];
+    u8 unk48;
+    u8 filler49[0x7];
     u8 unk50[8]; // blend effect state (init_blend_effect, blend_fade_step_08065598)
 };
 
