@@ -152,3 +152,11 @@
   (sub_080236E0) or `&...unkD7 + 1` for a u16 at 0xD8 (sub_08022748). `&...unkB9` folds the 1 into the literal.
 * `x.unk84 = 0x45; f(tbl[0x45]);` loads 0x114 as a fresh constant; the original's `movs r1, #0x45; strb;
   lsls r1, #2` comes from indexing with the field just stored: `f(tbl[x.unk84])` (sub_08023B44).
+* `x = K; if (c) x |= M;` (on a struct field) makes gcc keep K in a register and `orrs` it for the second
+  store; `x = K | M` folds the constant and a `u16 v = K` local moves the load (sub_08026184).
+* Loops over sprite slots `gUnk_03002C30[i + 0x21]` that compute `(i + 0x21) << 6` each time come from
+  writing the index out in every statement; a `spr` pointer or `slot` local lets gcc fold `base + 0x840`
+  (sub_08025FC8).
+* A 2D table read as `(a * 4 + b) * 4` is indexed flat, `tbl[0][a * 4 + b]` (gUnk_083BB9CC, sub_08026810).
+* `v = 0; if (x) v = 1;` and `v = !x` order the zero differently: `if (!(f & 2)) v = 1; else v = 0;` gives
+  `ands; movs v, #0; cmp; bne; movs v, #1` (sub_08026A74).
