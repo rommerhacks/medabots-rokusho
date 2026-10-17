@@ -171,6 +171,21 @@
   (`lsls #16; asrs #16` before `& 0x1FF`), while their callers pass sign-extended values (an `s16`
   prototype). `(s16)x` on a `u16` param gets dropped under the mask; see the near misses in NOTES
   (sub_08036784, sub_08036C20, setup_battle_cursor_sprite_08036FF8).
+* A pointer table copied to the stack with `ldm` / `stm` before an indexed call: copy a struct that
+  wraps the array, `struct FuncTable7 t = gUnk_080AFA20; t.f[i]();` (dispatch_substate_handler). The
+  ROM table stays in the data blob; only a symbol is needed.
+* A switch whose `case 0` and `case 1` jump to the same code but whose compare tree is `1 / >1 / 0`
+  (not a `0..1` range): write the two case bodies out in full; gcc's cross-jumping merges them later.
+  The same change made the original's zero constants appear early in callee-saved registers
+  (sub_080611D0).
+* `a = b = v;` stores `b` first. Swap the chain if two byte stores come out in the wrong order
+  (sub_0805FE90).
+* Loop pointer start order (`dst` literal before `src = base + v * 0x200`): explicit pointer locals
+  assigned in the original's order, then `v <<= 9; src = base + v;` (fade_update_tilemap_copy).
+* Unsolved: `CpuCopy16(buf, (void *)0x06004000, size); lz_decompress_dispatch(src, (void *)(0x06004000
+  + size));` keeps 0x06004000 in a callee-saved register; the original loads the literal twice
+  (sub_0805D628, sub_0805FBA8, load_battle_background_graphics). Tried pointer / integer locals,
+  `size + c` order, a `register` size, VRAM + 0x4000.
 
 ## Naming
 
