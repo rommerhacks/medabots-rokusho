@@ -831,6 +831,7 @@ void render_battle_text_sprites(u8 *buf, u32 rec, u32 slot); // battle_number_po
 void battle_setup_text_sprites_0801A418(u8 *buf, u32 rec, u32 slot); // same with tiles 0x5100 + digit, palette 0xC
 void battle_setup_text_sprites_0801A4F4(u8 *buf, u32 rec, u32 slot, u32 x, u32 y); // same at a given x, y
 void update_battle_sprite_animations(u8 *buf, u32 rec, u32 slot); // battle_number_popup_update for up to 5 digit sprites
+void update_sprite_animation_position(u32 slot);
 u32 sub_0801AC24(u32 msg); // run_message(gUnk_083C65C4[msg]) unless gUnk_03001360 is set (then 1)
 void sub_0801AD10(u32 rec); // redraws a Medabot's panel (left_b when the Medaforce gauge is full) and its gauge
 void sub_0801AD48(u32 rec); // guess: Medaforce effect: 8 sprites 0x78-0x7F (tiles 0x616-0x619) lined up at y 0x78, x 0x5C team / 0x94 opponents

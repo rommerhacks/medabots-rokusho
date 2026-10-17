@@ -1947,9 +1947,55 @@ void sub_08024488(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08024538);
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_0802463C);
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_080246C0);
+void sub_08024538(void)
+{
+    u32 i;
+
+    for (i = 0; i < 4; i++)
+        update_sprite_animation_position(0x26 + i);
+    if (gUnk_03000440.unk84 == 0x10)
+    {
+        clear_battle_sprite_slot(0x26, 4);
+        memcpy_bytes_0803F63C(&gUnk_03002C30[0x22], &gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5A], 0x40);
+        memcpy_bytes_0803F63C(&gUnk_03002C30[0x23], &gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5B], 0x40);
+        memcpy_bytes_0803F63C(&gUnk_03002C30[0x24], &gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5C], 0x40);
+        memcpy_bytes_0803F63C(&gUnk_03002C30[0x25], &gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5D], 0x40);
+        gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5A].unk0 |= 0x8000;
+        gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5B].unk0 |= 0x8000;
+        gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5C].unk0 |= 0x8000;
+        gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5D].unk0 |= 0x8000;
+        clear_battle_sprite_slot(0x21, 4);
+        gUnk_03001800.unkAA++;
+    }
+    else
+        gUnk_03000440.unk84++;
+}
+
+void sub_0802463C(void)
+{
+    if (gUnk_03000590[gUnk_03001800.unk88].unkBD & 4)
+        battle_set_damage_vs_armor(gUnk_03001800.unk88, 0, 1);
+    else
+        battle_set_damage_vs_armor(gUnk_03001800.unk88, 0, gUnk_03001800.unkEC);
+    set_display_digit_type(&gUnk_03000440.unkEE, gUnk_03001800.unkC8, 1);
+    render_battle_text_sprites(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
+    play_sound_effect(0x5B);
+    gUnk_03000440.unk84 = 0;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_080246C0(void)
+{
+    update_battle_sprite_animations(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
+    if (++gUnk_03000440.unk84, gUnk_03000440.unk89 == 0 && (KEYS_LO(gRepeatKeys) & 1) && gUnk_03000440.unk84 > 0x32)
+        gUnk_03000440.unk84 = 0x78;
+    if (gUnk_03000440.unk84 == 0x78)
+    {
+        clear_battle_sprite_slot(gUnk_03001800.unk88 * 4 + 0x21, 4);
+        gUnk_03001800.unkAA++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080209B0", battle_process_bot_defeat);
 INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_0802480C);
 INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08024870);
