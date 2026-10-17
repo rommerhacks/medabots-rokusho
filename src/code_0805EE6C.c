@@ -950,7 +950,48 @@ void sub_08061D30(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", shop_purchase_menu_handler);
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", transition_fade_to_battle);
+
+void transition_fade_to_battle(void)
+{
+    struct Unk_03000440 *s = &gUnk_03000440;
+    u8 *n = &s->unk84;
+
+    if (*n <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, *n * 4, 0xFFFE);
+        blend_obj_palettes_to_color_0803F998(0, *n * 4, 0x7FFD);
+        (*n)++;
+    }
+    else if (gUnk_03006F74->unk48 != 0)
+    {
+        struct Unk_03006F74 *p = gUnk_03006F74;
+        u8 mode = p->unk19;
+        struct ShopSellEntry *l = (struct ShopSellEntry *)0x02040000;
+
+        init_battle_scene(mode, l[p->unk1A].id);
+        gGameMode = 0;
+    }
+    else
+    {
+        s8 i;
+
+        REG_DISPCNT &= 0xFDFF;
+        for (i = 0; i < 2; i++)
+            gUnk_03002C30[11 + i].unk0 &= 0xBFFF;
+        for (i = 0; i < 2; i++)
+            gUnk_03002C30[0x68 + i].unk0 &= 0xBFFF;
+        for (i = 0; i < 4; i++)
+            gUnk_03002C30[0x6A + i].unk0 &= 0xBFFF;
+        for (i = 0; i < 4; i++)
+            gUnk_03002C30[0x6E + i].unk0 &= 0xBFFF;
+        gUnk_03002C30[8].unk0 &= 0xBFFF;
+        REG_BLDALPHA = 0x1000;
+        REG_BG1CNT = 0x1E05;
+        REG_BG2CNT = 0x1D06;
+        gGameState = 0xB;
+        gGameSubState = 1;
+    }
+}
 
 void advance_substate_on_handler_complete_1c(void)
 {
