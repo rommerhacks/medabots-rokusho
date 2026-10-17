@@ -675,6 +675,8 @@ u32 sub_08016438(u32 rec);
 void load_battle_bg_layers(void);
 void render_bot_name_sprites(u32 rec);
 void draw_battle_panel_left_a(u32 rec);
+void draw_battle_panel_left_b(u32 rec);
+u32 fixed_point_multiply_divide(u32 a, u32 b, u32 c); // (float)a / b * c, packed: full 8-pixel tiles << 16 | remaining pixels
 void render_bot_health_bar(u32 rec);
 void render_bot_cash_display(u32 rec);
 void battle_load_sprite_data(void);

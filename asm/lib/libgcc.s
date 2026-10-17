@@ -105,6 +105,9 @@ sub_0807CC50: @ 0x0807CC50
 
 	thumb_func_start float_clamp_to_int
 	.global float_clamp_to_int
+	.global __fixunssfsi
+	.thumb_func
+__fixunssfsi:
 float_clamp_to_int: @ 0x0807CC54
 	push {r4, lr}
 	adds r4, r0, #0
@@ -2763,6 +2766,9 @@ _0807DED4:
 
 	thumb_func_start softfloat_add_f32
 	.global softfloat_add_f32
+	.global __addsf3
+	.thumb_func
+__addsf3:
 softfloat_add_f32: @ 0x0807DEDC
 	push {r4, lr}
 	sub sp, #0x38
@@ -2811,6 +2817,9 @@ softfloat_subtract: @ 0x0807DF08
 
 	thumb_func_start softfloat_multiply
 	.global softfloat_multiply
+	.global __mulsf3
+	.thumb_func
+__mulsf3:
 softfloat_multiply: @ 0x0807DF3C
 	push {r4, r5, r6, r7, lr}
 	mov r7, sb
@@ -3014,6 +3023,9 @@ _0807E09C: .4byte 0x3FFFFFFF
 
 	thumb_func_start softfloat_divide
 	.global softfloat_divide
+	.global __divsf3
+	.thumb_func
+__divsf3:
 softfloat_divide: @ 0x0807E0A0
 	push {r4, r5, r6, lr}
 	sub sp, #0x28

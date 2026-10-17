@@ -711,13 +711,120 @@ void decompress_two_bg1_layers(void)
     set_tilemap_and_decompress_bg(20, 21, gUnk_084887F4, REG_BG1CNT, 0x240);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", render_bot_name_sprites);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", draw_battle_panel_left_a);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", draw_battle_panel_left_b);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", render_bot_health_bar);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", fixed_point_multiply_divide);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", render_bot_cash_display);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", battle_load_sprite_data);
+void render_bot_name_sprites(u32 rec)
+{
+    if (rec <= 2)
+    {
+        clear_sprite_table_mask(10, 10);
+        render_text_sprites_08040DB8(gUnk_03000590[rec].medal.unkA, 10, 1, 14, 10, 15, 0, 1);
+    }
+    else
+    {
+        clear_sprite_table_mask(20, 13);
+        render_text_sprites_08040DB8(gUnk_03000590[rec].medal.unkA, 20, 19, 14, 10, 15, 0, 1);
+    }
+}
+
+void draw_battle_panel_left_a(u32 rec)
+{
+    if (rec <= 2)
+        fill_tilemap_rect_08042698(3, 1, 1, 18, REG_BG1CNT, 0xD20A);
+    else
+        fill_tilemap_rect_08042698(3, 1, 21, 18, REG_BG1CNT, 0xD20A);
+}
+
+void draw_battle_panel_left_b(u32 rec)
+{
+    if (rec <= 2)
+        fill_tilemap_rect_08042698(3, 1, 1, 18, REG_BG1CNT, 0xD20D);
+    else
+        fill_tilemap_rect_08042698(3, 1, 21, 18, REG_BG1CNT, 0xD20D);
+}
+
+void render_bot_health_bar(u32 rec)
+{
+    u32 x = 0;
+    u32 i, full, partial;
+
+    if (rec <= 2)
+    {
+        full = fixed_point_multiply_divide(64, 80, gUnk_03000590[rec].unkC1);
+        partial = full & 0xFFFF;
+        full >>= 16;
+        if (gUnk_03000590[rec].unkC1 != 0 && full == 0 && partial == 0)
+            partial = 1;
+        for (i = 0; i < full; i++)
+        {
+            fill_tilemap_rect_08042698(1, 1, x + 1, 17, REG_BG1CNT, 0xD208);
+            x++;
+        }
+        if (partial)
+        {
+            fill_tilemap_rect_08042698(1, 1, x + 1, 17, REG_BG1CNT, 0xD200 + partial);
+            x++;
+        }
+        for (i = x; i <= 7; i++)
+        {
+            fill_tilemap_rect_08042698(1, 1, x + 1, 17, REG_BG1CNT, 0xD200);
+            x++;
+        }
+    }
+    else
+    {
+        full = fixed_point_multiply_divide(64, 80, gUnk_03000590[rec].unkC1);
+        partial = full & 0xFFFF;
+        full >>= 16;
+        if (gUnk_03000590[rec].unkC1 != 0 && full == 0 && partial == 0)
+            partial = 1;
+        for (i = 0; i < full; i++)
+        {
+            fill_tilemap_rect_08042698(1, 1, x + 21, 17, REG_BG1CNT, 0xD208);
+            x++;
+        }
+        if (partial)
+        {
+            fill_tilemap_rect_08042698(1, 1, x + 21, 17, REG_BG1CNT, 0xD200 + partial);
+            x++;
+        }
+        for (i = x; i <= 7; i++)
+        {
+            fill_tilemap_rect_08042698(1, 1, x + 21, 17, REG_BG1CNT, 0xD200);
+            x++;
+        }
+    }
+}
+
+u32 fixed_point_multiply_divide(u32 a, u32 b, u32 c)
+{
+    u32 v = (float)a / (float)b * (float)c;
+    u32 ret = ((v >> 3) << 16) | (v & 7);
+    if (c != 0 && ret == 0)
+        ret = 1;
+    return ret;
+}
+
+void render_bot_cash_display(u32 rec)
+{
+    if (rec <= 2)
+    {
+        divide_by_100000_08042838(gUnk_03000590[rec].unkC1, 4, 18, 2, REG_BG1CNT, 0xD220);
+        fill_tilemap_rect_08042698(1, 1, 6, 18, REG_BG1CNT, 0xD21A);
+        divide_by_100000_08042838(80, 7, 18, 2, REG_BG1CNT, 0xD220);
+    }
+    else
+    {
+        divide_by_100000_08042838(gUnk_03000590[rec].unkC1, 24, 18, 2, REG_BG1CNT, 0xD220);
+        fill_tilemap_rect_08042698(1, 1, 26, 18, REG_BG1CNT, 0xD21A);
+        divide_by_100000_08042838(80, 27, 18, 2, REG_BG1CNT, 0xD220);
+    }
+}
+
+void battle_load_sprite_data(void)
+{
+    clear_sprite_table_mask(30, 11);
+    memcpy_bytes_08041D04(gUnk_083C466C[gUnk_03001800.unk81], gUnk_03000440.unk9E, 12);
+    render_text_sprites_08040DB8(gUnk_03000440.unk9E, 30, 21, 17, 8, 14, 0, 1);
+}
 
 void sub_08015F78(void)
 {

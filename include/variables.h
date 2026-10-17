@@ -361,5 +361,6 @@ extern const u8 gUnk_08488830[];
 extern const u8 gUnk_08488744[];
 extern const u8 gUnk_084887A4[];
 extern const u8 gUnk_084887F4[];
+extern const u8 *const gUnk_083C466C[]; // 12-byte name text, by gUnk_03001800.unk81 (battle_load_sprite_data)
 
 #endif // GUARD_VARIABLES_H
