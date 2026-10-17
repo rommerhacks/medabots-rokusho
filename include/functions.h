@@ -1067,7 +1067,7 @@ u32 sub_080331F8(u32 rec);
 u32 battle_find_next_active_bot(u32 rec); // random part index of rec with armor left (from rng_lookup_table_value, stepping by rng bit 0)
 u32 sub_08036D64(u32 rec, u32 skill); // 1 if unkCF has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8), 0x11/0x12 (2), 0x13/0x14 (4)
 u32 medal_update_exp_progress(u32 slot, u32 n);
-void battle_set_action_params(u32 rec, u8 skill, s32 a, s32 b);
+void battle_set_action_params(u32 rec, u32 skill, s32 a, u32 b);
 void reset_battle_bot_state(u32 rec);
 void sub_080351E8(u32 rec);
 u32 find_random_broken_part(u32 rec); // random part (+ 1) of rec with no armor left (unk11 == 0), 0 = none
