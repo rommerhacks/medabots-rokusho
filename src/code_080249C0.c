@@ -1208,7 +1208,7 @@ void sub_08026ED0(void)
 
 void sub_08026EF8(void)
 {
-    u32 r = clear_ewram_buffer_02023000_b(gUnk_03001800.unk87);
+    u32 r = find_most_damaged_part(gUnk_03001800.unk87);
     if (r)
     {
         gUnk_03001800.unk8B = gUnk_03001800.unkD0 = r - 1;
@@ -1231,7 +1231,7 @@ void sub_08026F6C(void)
 {
     u32 r;
     struct Unk_03001800 *g = &gUnk_03001800;
-    if (g->unkCA && (r = clear_ewram_buffer_02023000_b(g->unk88)))
+    if (g->unkCA && (r = find_most_damaged_part(g->unk88)))
     {
         r--;
         g->unkD0 = r;

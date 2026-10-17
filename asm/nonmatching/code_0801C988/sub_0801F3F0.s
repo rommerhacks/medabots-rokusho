@@ -37,7 +37,7 @@ _0801F424:
 	adds r5, r4, #0
 	adds r5, #0x88
 	ldrb r0, [r5]
-	bl clear_ewram_buffer_02023000_b
+	bl find_most_damaged_part
 	cmp r0, #0
 	beq _0801F464
 	subs r0, #1

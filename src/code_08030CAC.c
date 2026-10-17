@@ -511,8 +511,102 @@ void select_battle_targets_and_actions(void)
     sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", battle_ai_select_target_defend);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", battle_ai_select_target_jump);
+void battle_ai_select_target_defend(void)
+{
+    u32 i;
+
+    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x64
+         && sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+            gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
+        gUnk_03001800.unk60++;
+    }
+    if (sub_08032FFC())
+        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    else
+    {
+        gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+        for (i = 0; i <= 2; i++)
+        {
+            if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x64)
+                gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
+            gUnk_03001800.unk60++;
+        }
+        if (sub_08032FFC())
+            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        else
+        {
+            gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+            for (i = 0; i <= 2; i++)
+            {
+                if (gUnk_03000590[gUnk_03001800.unk60].unk40
+                 && sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
+                gUnk_03001800.unk60++;
+            }
+            if (sub_08032FFC())
+                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            else
+            {
+                gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+                gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
+            }
+        }
+    }
+    gUnk_03001800.unk5F = sub_080330E8(gUnk_03001800.unk5E - 1) + 1;
+    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+}
+
+void battle_ai_select_target_jump(void)
+{
+    u32 i;
+
+    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x6A
+         && sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+            gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
+        gUnk_03001800.unk60++;
+    }
+    if (sub_08032FFC())
+        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    else
+    {
+        gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+        for (i = 0; i <= 2; i++)
+        {
+            if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x6A)
+                gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
+            gUnk_03001800.unk60++;
+        }
+        if (sub_08032FFC())
+            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        else
+        {
+            gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+            for (i = 0; i <= 2; i++)
+            {
+                if (gUnk_03000590[gUnk_03001800.unk60].unk40
+                 && sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
+                gUnk_03001800.unk60++;
+            }
+            if (sub_08032FFC())
+                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            else
+            {
+                gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+                gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
+            }
+        }
+    }
+    gUnk_03001800.unk5F = sub_080330E8(gUnk_03001800.unk5E - 1) + 1;
+    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", ai_select_target_enemy_side_ability22_status);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", ai_select_target_enemy_side_ewram_check);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", battle_ai_select_target_ability22_enemy);
@@ -646,12 +740,79 @@ void sub_08033154(u32 rec, u32 part)
     gUnk_03000590[rec].parts[part].unkF = gUnk_03001800.unk5F;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", clear_ewram_buffer_02023000_b);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080331F8);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033224);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033240);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", find_random_available_part_slot);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080332B4);
+u32 find_most_damaged_part(u32 rec)
+{
+    u32 zero = 0;
+    u32 i;
+
+    CpuFastSet(&zero, (void *)0x02023000, 0x01000080);
+    for (i = 0; i <= 3; i++)
+    {
+        SORT_BUFFER[i].value = i;
+        if (gUnk_03000590[rec].parts[i].unk11 != 0 && gUnk_03000590[rec].parts[i].unk11 != gUnk_03000590[rec].parts[i].data[4])
+            SORT_BUFFER[i].key = gUnk_03000590[rec].parts[i].data[4] - gUnk_03000590[rec].parts[i].unk11;
+    }
+    sub_0804242C(4);
+    if (SORT_BUFFER[0].key != 0)
+        return SORT_BUFFER[0].value + 1;
+    else
+        return 0;
+}
+
+u32 sub_080331F8(u32 rec)
+{
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[rec].parts[i].unk11 && gUnk_03000590[rec].parts[i].data[1] == 0x16)
+            return 0;
+    }
+    return 1;
+}
+
+u32 sub_08033224(u32 rec)
+{
+    if (gUnk_03000590[rec].unkC4 != 0)
+        return 0;
+    else
+        return 1;
+}
+
+u32 sub_08033240(u32 rec)
+{
+    if (gUnk_03000590[rec].unkC9 != 0)
+        return 0;
+    else
+        return 1;
+}
+
+u32 find_random_available_part_slot(u32 rec)
+{
+    u32 i, slot, dir;
+
+    slot = rng_next_080424B8() & 3;
+    dir = rng_next_080424B8() & 1;
+    for (i = 0; i <= 3; i++)
+    {
+        if (gUnk_03000590[rec].parts[slot].unk11 == 0)
+            return slot + 1;
+        if (dir)
+            slot = (slot + 1) & 3;
+        else
+            slot = (slot - 1) & 3;
+    }
+    return 0;
+}
+
+u32 sub_080332B4(u32 rec)
+{
+    if (gUnk_03000590[rec].parts[0].unk10 != 0)
+        return 1;
+    else
+        return 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080332D0);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", begin_battle_action_lookup);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", check_battle_bot_defeated_set_flag);

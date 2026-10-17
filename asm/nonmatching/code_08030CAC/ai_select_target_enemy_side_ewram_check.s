@@ -29,7 +29,7 @@ _08032126:
 	cmp r0, #0
 	beq _0803215E
 	adds r0, r1, #0
-	bl clear_ewram_buffer_02023000_b
+	bl find_most_damaged_part
 	cmp r0, #0
 	beq _0803215E
 	ldrb r0, [r4]
@@ -86,7 +86,7 @@ _0803219E:
 	cmp r0, #0
 	beq _080321BE
 	adds r0, r1, #0
-	bl clear_ewram_buffer_02023000_b
+	bl find_most_damaged_part
 	cmp r0, #0
 	beq _080321BE
 	adds r1, r6, r4
@@ -187,7 +187,7 @@ _08032274:
 	adds r5, #0x5e
 	ldrb r0, [r5]
 	subs r0, #1
-	bl clear_ewram_buffer_02023000_b
+	bl find_most_damaged_part
 	adds r2, r0, #0
 	cmp r2, #0
 	beq _08032298

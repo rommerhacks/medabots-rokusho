@@ -386,6 +386,17 @@ struct BattlePart
     u8 unk17; // part id
 };
 
+// 8-byte entry of the sort buffer at 0x02023000, sorted by key then key2, largest first (sub_0804242C).
+struct SortEntry
+{
+    u16 key;
+    u16 key2;
+    u16 value;
+    u16 unk6;
+};
+// The game indexes it through the constant address (a symbol doesn't match find_most_damaged_part).
+#define SORT_BUFFER ((struct SortEntry *)0x02023000)
+
 // Per-side record at gUnk_03001800.unk28 (0 team, 1 opponents).
 struct Unk_03001800_28
 {

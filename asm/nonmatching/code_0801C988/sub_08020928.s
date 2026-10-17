@@ -29,7 +29,7 @@ sub_08020928: @ 0x08020928
 	adds r5, r4, #0
 	adds r5, #0x88
 	ldrb r0, [r5]
-	bl clear_ewram_buffer_02023000_b
+	bl find_most_damaged_part
 	cmp r0, #0
 	beq _08020990
 	subs r0, #1

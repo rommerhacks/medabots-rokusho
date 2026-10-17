@@ -1300,7 +1300,7 @@ void decompress_sprite_tiles_to_vram_obj_0(void)
 
 void battle_resolve_action_target(void)
 {
-    u32 part = clear_ewram_buffer_02023000_b(gUnk_03001800.unk88);
+    u32 part = find_most_damaged_part(gUnk_03001800.unk88);
 
     if (part)
     {

@@ -971,7 +971,11 @@ void sub_08036C20(u8 slot, u8 part, s16 x, s16 y, u32 n);
 void setup_battle_medapart_scenes(void);
 void calc_bot_evasion_modifier(u8 rec);
 void sub_080355C4(u8 rec);
-u32 clear_ewram_buffer_02023000_b(u32 rec);
+void sub_0804242C(u8 n); // sorts gUnk_02023000[0..n-1] by key, key2, largest first
+u32 sub_08033224(u32 rec); // 1 if rec has no effect A (unkC4)
+u32 sub_08033240(u32 rec); // 1 if rec has no effect B (unkC9)
+u32 sub_080332B4(u32 rec);
+u32 find_most_damaged_part(u32 rec); // part (+ 1) with armor left that lost the most armor, 0 = none
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount); // unkC8 = unkCC = min(amount, part data[4] - armor unk11)
 u32 battle_check_action_counter(u16 *amount, u8 rec, u8 part);
 u32 sub_080331F8(u32 rec);
