@@ -104,6 +104,25 @@
   computation above the load.
 * Hardware I/O addresses (`OAM`, `VRAM`, `INTR_CHECK`, ...) are in `include/gba/io_reg.h`;
   `CpuCopy16(src, dst, size)` gives the `lsls #10; lsrs #11` count of a 16-bit CpuSet.
+* `ldr rB, =gArr` **before** `lsls rI, slot, #6` (and `rB` reused later for other indexes, often
+  copied to `ip`): take a base pointer local, `base = gArr; s = &base[slot];` (sub_080366DC,
+  sub_08038428, spawn_battle_particle_effect).
+* A pair `tbl[n * 2]`, `tbl[n * 2 + 1]` that the original loads as `n << 1` first, then `n << 2`
+  for the first element and `(n * 2 + 1) * 2` unfolded for the second: write the first index as
+  `tbl[n << 1]` and keep `tbl[n * 2 + 1]`. Several tables picked by a switch whose loads share
+  one tail: write the loads in every case with the table named directly (sub_080366DC).
+* A variable set only in some switch cases (`case 0: case 1: case 2: mask = 7;`) gets folded to a
+  constant; separate identical case bodies keep the original's branch tree
+  (spawn_battle_particle_effect).
+* `adds #0xDF` (a byte constant for `- 0x21`) or an unfolded `subs` in an index sum: try the
+  grouping `a + (b + 0xDF)` / `b + (a - 0x21)`; the first operand gcc sees decides the order
+  (sub_08038650, sub_08038700).
+* A loop-invariant table address hoisted after the loop guard (`cmp; bhs; ldr rT, =tbl`): assign a
+  pointer local inside the loop body, `tbl = gTable;` (update_sprite_animations_tick_080370AC).
+* Unsolved: callees that zero-extend `u16` x/y params at entry, then sign-extend them at each use
+  (`lsls #16; asrs #16` before `& 0x1FF`), while their callers pass sign-extended values (an `s16`
+  prototype). `(s16)x` on a `u16` param gets dropped under the mask; see the near misses in NOTES
+  (sub_08036784, sub_08036C20, setup_battle_cursor_sprite_08036FF8).
 
 ## Naming
 
