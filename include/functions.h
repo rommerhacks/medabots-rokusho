@@ -908,6 +908,8 @@ void calc_polar_to_screen_coords(s32 *out, u32 angle, u32 radius, s32 x, s32 y);
 u32 sub_08032FB8(u32 rec); // first record of the side opposite rec (3 or 0)
 u32 sub_08032FC4(u32 rec); // first record of rec's side (0 or 3)
 void sub_08038394(u32 rec, u32 flags); // flags bit 0: clears effect B (unkC9..)
+void sub_080383E8(void);
+void sub_080385D0(u32 rec);
 void set_sprite_hidden_flags(u8 first, u8 count);
 void sub_08035694(u32 slot);
 u32 update_sprite_deceleration(u32 slot, s16 a, s16 b);
