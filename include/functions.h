@@ -277,6 +277,10 @@ void sub_0801D40C(void);
 void sub_0801D580(void);
 s32 sub_08034E94(void); // next byte of the Robattle action script (gUnk_083C6B28[gUnk_03001800.unkA8] + unkBC)
 void sub_08034F08(void);
+void sub_080350E0(u32 rec);
+u32 sub_08035590(u32 rec);
+u32 calc_bot_matching_part_power(u32 rec);
+void accumulate_battle_speed_value(u32 rec);
 void sub_0802A6AC(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
 void sub_0802AAD0(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
 void sub_0802ACCC(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
@@ -299,7 +303,7 @@ void sub_08036270(void);
 void sub_0803713C(void);
 u32 sub_08037230(u32 rec, u32 part); // 1 if the part is broken or at full armor
 void calc_battle_action_speed(u8 rec, u8 part);
-void apply_battle_bot_damage_reduction(u8 rec);
+void apply_battle_bot_damage_reduction(u32 rec);
 u32 decrement_battle_timer_and_check_zero(void);
 void calc_battle_stat_ratio(u8 rec, u8 part);
 void sub_08038BC0(void);
@@ -1024,7 +1028,7 @@ void sub_0803536C(u32 slot, u32 frame, u32 y); // sprite unk2 = y, +1 / -1 on fr
 void reduce_bot_part_stat(u32 rec, u32 part, s32 amount); // part armor (unk11) -= amount, not below 0
 void sub_08035194(u32 rec);
 void set_target_sprite_position(u8 rec, u32 frame, u8 flag);
-void update_target_cursor_position(u8 rec);
+void update_target_cursor_position(u32 rec);
 u32 update_sprite_animations_tick_080370AC(u32 slot, u8 n);
 void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u8 n);
 void sub_080362C4(u32 side);
@@ -1037,7 +1041,7 @@ u32 sub_080366DC(u8 slot, u8 part);
 void sub_08036784(u8 slot, u8 part, s16 x, s16 y);
 u32 sub_0803684C(u8 slot);
 void sub_080368C4(u8 *digits, u8 slot, u8 part, s16 x, s16 y);
-u32 advance_sprite_group_anims(u8 *digits, u8 slot);
+u32 advance_sprite_group_anims(u8 *digits, u32 slot);
 u32 sub_08036BB8(u16 *amount, u32 rec, u32 part); // moves one point from *amount (low byte) out of the part's armor; 1 when done
 void sub_08036BF4(u32 side);
 void sub_08036C20(u8 slot, u8 part, s16 x, s16 y, u32 n);

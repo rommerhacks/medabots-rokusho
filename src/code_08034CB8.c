@@ -176,7 +176,12 @@ void sub_080350E0(u32 rec)
     gUnk_03002C30[rec * 4 + 0x5C].unk4 = gUnk_03002C30[rec * 4 + 0x5D].unk4;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", update_target_cursor_position);
+void update_target_cursor_position(u32 rec)
+{
+    gUnk_03002C30[rec * 4 + 0x5D].unk2 = gUnk_03001800.unk13C[rec].x;
+    gUnk_03002C30[rec * 4 + 0x5D].unk4 = gUnk_03001800.unk13C[rec].y + 4;
+    sub_080350E0(rec);
+}
 
 void reduce_bot_part_stat(u32 rec, u32 part, s32 amount)
 {
@@ -317,7 +322,11 @@ void sub_08035478(u32 rec)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", calc_bot_evasion_modifier);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", get_random_battle_weight_entry);
+
+u32 get_random_battle_weight_entry(u32 rec)
+{
+    return gUnk_083AF330[sub_08035590(rec) * 8 + (rng_next_080424B8() & 7)];
+}
 
 u32 sub_08035590(u32 rec)
 {
@@ -398,8 +407,20 @@ u32 calc_bot_matching_part_power(u32 rec)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", calc_battle_action_speed);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", apply_battle_bot_damage_reduction);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", accumulate_battle_speed_value);
+
+void apply_battle_bot_damage_reduction(u32 rec)
+{
+    if ((u8)(gUnk_03000590[rec].unkC9 - 0xD) <= 1)
+        sub_08035754(&gUnk_03001800.unkE8, gUnk_03000590[rec].unkCC);
+}
+
+void accumulate_battle_speed_value(u32 rec)
+{
+    struct Unk_03001800 *b = &gUnk_03001800;
+    b->unkEE += gUnk_03000590[rec].medal.unk5;
+    b->unkEE += calc_bot_matching_part_power(rec);
+    b->unkEE += rng_next_080424B8() & 7;
+}
 
 u32 check_bot_ability_type_strike(u32 rec, u32 part, u32 target)
 {
@@ -487,7 +508,13 @@ void sub_08035B9C(u32 rec)
             gUnk_03001800.unkEC += gUnk_03000590[rec].parts[i].data[6];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035BD4);
+void sub_08035BD4(void)
+{
+    struct Unk_03001800 *b = &gUnk_03001800;
+    if (b->unkEC <= 2)
+        b->unkEC += rng_next_080424B8() & 3;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08035BFC);
 
 void sub_08035C3C(void)
@@ -541,7 +568,15 @@ void sub_0803628C(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_080362C4);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08036340);
+
+void sub_08036340(u32 side)
+{
+    u32 x = 4;
+    if (side == 0)
+        x = 0x12;
+    set_tilemap_and_decompress_bg(x, 0, gUnk_084889B4, REG_BG1CNT, 0x329);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08036370);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_080363E8);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_080364A8);
@@ -586,7 +621,14 @@ u32 sub_08036BB8(u16 *amount, u32 rec, u32 part)
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08036BF4);
+void sub_08036BF4(u32 side)
+{
+    u32 y = 2;
+    if (side == 0)
+        y = 0x10;
+    vram_fill_tilemap_rect(0xC, 0xD, y, 0, REG_BG1CNT, 0);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08036C20);
 
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount)
@@ -674,7 +716,14 @@ u32 sub_08037230(u32 rec, u32 part)
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", decrement_battle_timer_and_check_zero);
+u32 decrement_battle_timer_and_check_zero(void)
+{
+    sub_08035754(&gUnk_03001800.unkE8, 0x20);
+    if (gUnk_03001800.unkE8 != 0)
+        return 0;
+    return 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", calc_battle_stat_ratio);
 
 void battle_set_damage_display(u32 rec, u32 part, s32 amount)
