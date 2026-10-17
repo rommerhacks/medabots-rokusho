@@ -847,6 +847,11 @@ void sub_0806FF90(void);
 void sub_0806FFF8(void);
 void sub_08070030(void);
 void battle_sprite_set_action(u8 a, u8 b, u8 c);
+void update_bg2_affine_scanline_params(void);
+void update_sprite_special_effects(void);
+void sub_0806D288(void);
+bool32 sub_0806DEAC(u8 i);
+void sub_0806DF80(u8 anim, u8 sprite); // starts animation anim on sprite slot sprite (unk20 = anim, unk22 = 0, unk30 = unk6, unk1A = 0)
 u32 check_battle_timer_expired(u8 a);
 void process_text_tile_and_dma_transfer(u8 a);
 u32 battle_draw_tilemap_row_dma(u8 a);

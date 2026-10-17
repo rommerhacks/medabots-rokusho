@@ -170,6 +170,8 @@ extern s32 gUnk_03000000; // scene step frame counter, reset when a step finishe
 extern u8 gUnk_03000004; // scene step, gUnk_08485C7C index
 extern bool32 (*const gUnk_08485C7C[])(void); // scene steps (execute_scene_step)
 extern bool32 (*const gUnk_08485C68[])(void); // transition steps (scene_transition_step_080686F4)
+extern const u16 gUnk_0807C320[]; // title OBJ palettes (0x60 colours), then 0x1C bytes copied to gUnk_03001800_s + 0xC (load_scene_graphics)
+extern const Func gUnk_08485EC4[]; // game mode 3 state 2 (title screen) sub-states, by gGameSubState (sub_0806D3F4)
 extern const Func gUnk_08485F1C[]; // game mode 3 state 3 (story intro) sub-states, by gGameSubState (dispatch_game_substate_handler_0806DFA4)
 extern const Func gBootLogosSubStates[]; // game mode 3 state 0 (boot logos) sub-states, by gGameSubState (boot_logos_update)
 extern const Func gIntroSubStates[]; // game mode 3 state 1 (the animated intro after the logos) sub-states, by gGameSubState (intro_update)
@@ -186,6 +188,13 @@ extern const u16 gUnk_087F27D8[]; // boot logo 2: palette
 extern const u8 gUnk_087F27F8[]; // boot overlay: compressed BG tiles (boot_logos_load_overlay)
 extern const u8 gUnk_087F3070[]; // boot overlay: compressed 30x20 tilemap (palette 1)
 extern const u16 gUnk_087F3250[]; // boot overlay: palette 1
+extern const u8 gUnk_087ADDDC[]; // title (load_scene_graphics): compressed OBJ tiles
+extern const u8 gUnk_087B55BC[]; // title: compressed BG tiles
+extern const u8 gUnk_087B9B6C[]; // title: BG2 tiles (0x240 bytes, uncompressed)
+extern const u16 gUnk_087B9DAC[]; // title: BG palettes (0x60 colours)
+extern const u8 gUnk_087B9E6C[]; // title: compressed tilemap (to 0x06006800)
+extern const u8 gUnk_087BA0AC[]; // title: compressed tilemap (to 0x06007000)
+extern const u8 gUnk_087BA5EC[]; // title: BG2 affine tilemap (0x280 bytes)
 extern const u8 gUnk_087BA86C[]; // state 1 scene (load_battle_scene_graphics): compressed BG tiles
 extern const u16 gUnk_087BDC10[]; // 256-colour BG palette
 extern const u8 gUnk_087BDE10[]; // compressed tilemap (to 0x06007000)
@@ -217,6 +226,7 @@ extern u16 *gUnk_0300002C; // palette fade source palette (0x200 colors)
 extern u16 gUnk_03000030[160]; // title BG2 per-scanline values: BG2PA (sub_0806D420, HBlank)
 extern u16 gUnk_03000170[160]; // BG2X_L per scanline
 extern u16 gUnk_030002B0[160]; // BG2X_H per scanline
+extern u16 gUnk_030003F0; // title BG2 scroll counter, += 0x80 per frame (update_bg2_affine_scanline_params)
 extern u8 gUnk_030004DE[];
 extern const u8 gUnk_083F7FF4[]; // random bytes, indexed by the low byte of gFrameCounter
 extern const void *const gUnk_084864E8[];
