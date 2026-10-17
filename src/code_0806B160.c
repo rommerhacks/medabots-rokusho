@@ -125,7 +125,25 @@ INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806C994);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806CAEC);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", update_battle_sprite_direction);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806CD48);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806CDE8);
+
+void sub_0806CDE8(void)
+{
+    s32 i;
+
+    for (i = 0; i < 8; i++) {
+        switch (gUnk_03002C30[40 + i].unk20) {
+        case 1:
+        case 2:
+            gUnk_03002C30[40 + i].unk6 = (gUnk_03002C30[40 + i].unk1A & 8) ? 0x10 : 0x11;
+            gUnk_03002C30[40 + i].unk4 -= gUnk_08485E84[gUnk_03002C30[40 + i].unk1A & 0x3F];
+            break;
+        case 3:
+            gUnk_03002C30[40 + i].unk6 = (gUnk_03002C30[40 + i].unk1A - 1) / 4 + 0x13;
+            break;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806CE58);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806CFA4);
 
@@ -352,7 +370,53 @@ void battle_scene_intro_step(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_transition_wipe_effect);
+void battle_transition_wipe_effect(void)
+{
+    s32 i;
+
+    if (gUnk_03001800_s.timer == 0) {
+        play_song(2);
+        REG_BLDCNT = 0x244;
+        REG_BLDALPHA = 0x1000;
+        REG_DISPCNT |= 0x400;
+        REG_IE |= 2;
+        REG_DISPSTAT |= 0x10;
+        gHBlankCallback = sub_0806D420;
+        for (i = 0; i < 160; i++) {
+            s32 x;
+            if (i < 32) {
+                x = i * 4;
+                goto div;
+            }
+            if (i > 0x7F) {
+                x = (0x9F - i) * 4;
+            div:
+                gUnk_03000030[i] = 0x10000u / (0x100 - x);
+            } else {
+                gUnk_03000030[i] = 0x100;
+            }
+        }
+    } else if (gUnk_03001800_s.timer > 0x40) {
+        gUnk_03002C30[2].unk0 &= ~0x200;
+        sub_0806DF80(5, 2);
+        gUnk_03001800_s.timer = 0;
+        gGameSubState = 8;
+        return;
+    } else if ((gUnk_03001800_s.timer & 7) == 0) {
+        REG_BLDALPHA++;
+        if ((gUnk_03001800_s.timer & 0xF) == 0)
+            REG_BLDALPHA -= 0x100;
+    }
+    if (gUnk_03001800_s.timer == 0x39) {
+        init_battle_sprite_entry_08048818(2, 0xC600, 0x212, 2, 3);
+        gUnk_03002C30[2].unk2 = 0x78;
+        gUnk_03002C30[2].unk4 = 0x73;
+        gUnk_03002C30[2].unk8 = 0x40;
+        gUnk_03002C30[2].unk9 = 8;
+        sub_0806DF80(4, 2);
+    }
+    gUnk_03001800_s.timer++;
+}
 
 void battle_intro_countdown_tick(void)
 {
@@ -448,6 +512,30 @@ void update_sprite_special_effects(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806DD10);
+
+bool32 sub_0806DE34(u8 i)
+{
+    if (gUnk_03002C30[i].unk22 > 15)
+        return FALSE;
+    if (gUnk_03002C30[i].unk22 != 0)
+        gUnk_03002C30[i].unk6++;
+    gUnk_03002C30[i].unk22++;
+    return TRUE;
+}
+
+bool32 sub_0806DE64(u8 i)
+{
+    if ((gUnk_03002C30[i].unk2 -= 8) <= 0x78)
+        return FALSE;
+    return TRUE;
+}
+
+bool32 sub_0806DE88(u8 i)
+{
+    if ((gUnk_03002C30[i].unk9 += 8) > 0x3F)
+        return FALSE;
+    return TRUE;
+}
 
 bool32 sub_0806DEAC(u8 i)
 {

@@ -852,6 +852,7 @@ void update_sprite_special_effects(void);
 void sub_0806D288(void);
 bool32 sub_0806DEAC(u8 i);
 bool32 sub_0806DEE8(u8 i);
+void sub_0806D420(void);
 u32 sub_0806BBDC(void);
 void sub_0806C994(void);
 void sub_0806BE58(void);
