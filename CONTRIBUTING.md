@@ -119,6 +119,19 @@
   (sub_08038650, sub_08038700).
 * A loop-invariant table address hoisted after the loop guard (`cmp; bhs; ldr rT, =tbl`): assign a
   pointer local inside the loop body, `tbl = gTable;` (update_sprite_animations_tick_080370AC).
+* `subs r1, #8; subs r0, r0, r1` where C's `a * 9 - (b - 8)` always folds to `(a * 9 + 8) - b`:
+  tree folding happens before inlining, so `static inline` helpers keep the terms apart:
+  `mul9(a) - sub8(b)` (message_portrait_anim_step). One helper alone is evaluated first, like a call.
+* Two `u8` stores to a stack array as `add r0, sp, #N; strb; adds r0, #1; strb` (not
+  `strb [r0, #1]`): `u8 *p = buf; *p++ = a; *p = b;`.
+* A string loop whose pointer copy and table address are set up *after* the first `*p != 0xFE`
+  test: index it, `for (i = 0; str[i] != 0xFE; i++)`, also for the slot (`gArr[slot + i]`)
+  (render_text_sprites_08040DB8).
+* `struct` field addresses above 0xFF on a global that the original materializes as
+  `ldr rA, =gX; ldr rB, =0x12F; adds`: access the field directly every time
+  (`gArr[gUnk_03000440.unk12F]`), not through a `u8 *slot` local.
+* Fields of `gUnk_03001800` past 0x100 (literal `0x030019A4`, the next one as `-10` from it): the
+  struct field, not a separate symbol like `gUnk_0300198A[0x1A]`.
 * Unsolved: callees that zero-extend `u16` x/y params at entry, then sign-extend them at each use
   (`lsls #16; asrs #16` before `& 0x1FF`), while their callers pass sign-extended values (an `s16`
   prototype). `(s16)x` on a `u16` param gets dropped under the mask; see the near misses in NOTES
