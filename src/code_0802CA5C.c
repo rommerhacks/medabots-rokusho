@@ -1065,10 +1065,59 @@ void sub_0802E948(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802EAA4);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802EAD8);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802EBC0);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802EBE8);
+void sub_0802EAA4(void)
+{
+    if (sub_080385F8())
+        gUnk_03001800.unkAA++;
+}
+
+void sub_0802EAC0(void)
+{
+    gUnk_03001800.unkA6 = 0x67;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802EAD8(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] == 0)
+            continue;
+        gUnk_03000590[gUnk_03001800.unk60 + i].unkC1 = 0;
+        gUnk_03001800.unkD2[i] = get_random_battle_weight_entry(gUnk_03001800.unk60 + i);
+        battle_set_damage_vs_armor(gUnk_03001800.unk60 + i, gUnk_03001800.unkD2[i], gUnk_03001800.unkD6[i]);
+        gUnk_03001800.unkD2[i] |= gUnk_03001800.unkD1 << 7;
+        gUnk_03001800.unkD6[i] = gUnk_03001800.unkC8;
+        gUnk_03000590[gUnk_03001800.unk60 + i].parts[gUnk_03001800.unkD2[i] & 0x7F].unk11 -= gUnk_03001800.unkD6[i];
+        sub_08035194(gUnk_03001800.unk60 + i);
+        if ((gUnk_03001800.unkD2[i] & 0x7F) == 0 && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 == 0)
+            add_bot_to_defeated_list(gUnk_03001800.unk60 + i);
+    }
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802EBC0(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AEA08[gUnk_03001800.unkAA]();
+}
+
+void sub_0802EBE8(void)
+{
+    u32 i;
+
+    sub_0803836C();
+    gUnk_03001800.unk60 = sub_08032FC4(gUnk_03001800.unk87);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11)
+            gUnk_03001800.unkD2[i] = 1;
+    }
+    gUnk_03001800.unkAA++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802EC4C);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802ED34);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802ED90);

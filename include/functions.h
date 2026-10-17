@@ -907,6 +907,7 @@ void sub_08037424(u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23
 void calc_polar_to_screen_coords(s32 *out, u32 angle, u32 radius, s32 x, s32 y); // out: x in the low half, y in the high half
 u32 sub_08032FB8(u32 rec); // first record of the side opposite rec (3 or 0)
 u32 sub_08032FC4(u32 rec); // first record of rec's side (0 or 3)
+u32 sub_080385F8(void); // 1 once no sprite 0x21+ has unk29 set (steps their animations)
 void sub_08038394(u32 rec, u32 flags); // flags bit 0: clears effect B (unkC9..)
 void sub_080383E8(void);
 void sub_080385D0(u32 rec);
