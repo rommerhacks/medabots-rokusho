@@ -648,5 +648,6 @@ void battle_check_medal_level_up(void);
 void divide_by_100000_b(u8 *buf, u32 value, u32 tile);
 u32 advance_sprite_anim_frame(u8 sprite, u8 b);
 void sub_0801BF64(u16 *counter, u16 max);
+void sub_08067A48(u8 slot);
 
 #endif // GUARD_FUNCTIONS_H

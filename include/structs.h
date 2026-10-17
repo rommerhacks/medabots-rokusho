@@ -216,7 +216,12 @@ struct Unk_03000440
     u8 filler12F[2];
     u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2
     u8 unk132;
-    u8 filler133[0x6];
+    u8 unk133; // after-battle Medal level-up: Medal slot (find_medal_slot_by_id - 1)
+    u8 unk134;
+    u8 unk135;
+    u8 unk136;
+    u8 unk137;
+    u8 filler138;
     u8 unk139; // game state 3 setup step (medabots_screen_load_gfx)
 };
 
@@ -349,8 +354,11 @@ struct Unk_03001800
     u8 unk16A; // won Medapart: 1 = not owned before
     u8 filler16B;
     u16 unk16C;
-    u8 filler16E[0x18];
-    u8 unk186;
+    // After-battle result per team member (u8 array: a struct would be 4-byte aligned):
+    // [0] Medal id + 1, 0 = none (name from gUnk_083B6410), [1] nonzero: Medal level-up screen,
+    // [2]-[5] copied to gUnk_03000440.unk134-137, [6] nonzero: [7] = Medaforce id (gUnk_083B7338)
+    u8 unk16E[3][8];
+    u8 unk186; // after-battle screen: team member being shown (0-2, 3 = done)
     u8 filler187[0x1F];
     u16 unk1A6;
     u16 unk1A8;
