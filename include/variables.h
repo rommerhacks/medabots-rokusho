@@ -862,3 +862,4 @@ extern const u16 gUnk_08483DD4[][4]; // x offsets [unk18][frame]
 extern const u16 gUnk_08483DE4[][4]; // y offsets [unk18][frame]
 extern const u16 gUnk_08483DF4[][4]; // animation frames [unk18][frame]
 extern const u8 gUnk_08483E04[]; // frame index by gUnk_03006F74->unk3A / 10 (update_animation_timer)
+extern const u8 gUnk_0848552C[]; // message text (sub_08061180)

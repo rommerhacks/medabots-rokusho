@@ -1067,6 +1067,8 @@ struct Unk_03006F74
     u8 unk50[8]; // blend effect state (init_blend_effect, blend_fade_step_08065598)
     u8 filler58[0x20];
     u16 unk78; // link: the other player's keys last frame (sub_0805B9EC)
+    u8 filler7A[0x1F6];
+    u8 unk270[0x30]; // message text buffer (sub_08061180)
 };
 
 // Item list built at 0x02040000 (an EWRAM mirror) by unpack_item_inventory_to_buffer, one per inventory slot

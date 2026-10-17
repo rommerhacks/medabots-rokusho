@@ -1269,3 +1269,11 @@ void update_animation_timer(void); // gUnk_03006F74->unk3A counts 0-109; every 1
 void sub_0805F8B0(void);
 void sub_0806142C(void);
 void sub_080617F0(void); // gUnk_08483E8C[gGameSubState](), BG3 scrolls diagonally
+void battle_menu_highlight_icons(u8 a, u32 b);
+void sub_0805F81C(void);
+void sub_0806035C(void);
+void sub_0806086C(void);
+void sub_080625EC(void);
+void sub_08060154(void);
+void sub_08061180(void);
+void sub_080616F8(void);
