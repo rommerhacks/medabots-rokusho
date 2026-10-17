@@ -774,5 +774,20 @@ u32 animate_battle_field_scroll(void);
 u32 animate_battle_bots_entry(void);
 void setup_scene_from_game_state(void);
 void sub_080189EC(void);
+void select_battle_music(void);
+void sub_08018BD4(void);
+void sub_08018C38(void);
+void sub_08018C78(void);
+void sub_0801902C(void);
+u32 sub_08019EF0(void);
+void sub_08019078(void);
+void sort_active_medal_slots(void);
+void battle_calc_bot_count_minus_one_mod3(void);
+void sub_0801A678(void);
+void iterate_bots_setup_battle_sprites(void);
+void sub_08015414(u32 rec);
+u32 sub_0801A6B0(void);
+void battle_process_all_bot_actions(u32 rec);
+u32 sub_0801A6EC(u32 rec);
 
 #endif // GUARD_FUNCTIONS_H

@@ -345,12 +345,14 @@ struct Unk_03001800
     u8 unk39[8]; // copied from gUnk_083C3B04[unk38] (sub_080121A8)
     u8 unk41[3]; // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
     u8 unk44; // Robattle: bit (1 << team Medabot) set by sub_08013AE4
-    u8 filler45[0xC];
+    u8 unk45; // Robattle: 0 = no Medabot queued (sub_08014314); cleared with the next 11 bytes
+    u8 filler46[0xB];
     u8 unk51;
     u8 unk52;
     u8 unk53;
     u8 unk54;
-    u8 filler55[0x5];
+    u8 unk55; // Robattle: result flags (2, 4, 8, 0x10 pick sub-states 0x60-0x78 in sub_0801427C)
+    u8 filler56[0x4];
     u8 unk5A; // Robattle: team Medabot count (3 in battle_start.ss0)
     u8 unk5B;
     u8 filler5C[0x8];
@@ -361,8 +363,9 @@ struct Unk_03001800
     u8 unk82;
     u8 unk83; // Robattle: nonzero blocks the input in robattle_command_input
     u8 unk84;
-    u8 filler85[0x2];
-    u8 unk87;
+    u8 unk85;
+    u8 unk86;
+    u8 unk87; // Robattle: gUnk_03000590 record of the acting Medabot
     u8 filler88[0x4];
     u8 unk8C[3];
     u8 unk8F[3][4]; // per team member: gUnk_030017A0 bytes 3-6
@@ -417,7 +420,11 @@ struct Unk_03000590
     // guess), armor bytes at +0x52/+0x6A/+0x82/+0x9A (accumulate_team_armor_stats)
     u8 unk40[0x7A];
     u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
-    u8 fillerBB[0x45];
+    u8 fillerBB[0x2];
+    u8 unkBD; // flags (bit 2 toggled by the Robattle handlers sub_080143A0 / sub_08014404)
+    u8 fillerBE[0xB];
+    u8 unkC9; // 0x2C checked by sub_08014404
+    u8 fillerCA[0x36];
 };
 
 struct Unk_030017A0

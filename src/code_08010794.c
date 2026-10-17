@@ -1986,12 +1986,205 @@ void sub_08014050(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080140B0);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_0801425C);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_0801427C);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08014314);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080143A0);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08014404);
+void sub_080140B0(void)
+{
+    switch (gUnk_03000440.unk84)
+    {
+    case 0:
+        gUnk_03002C30[3].unk0 = 0xC005;
+        gUnk_03002C30[3].unk1C = 0;
+        gUnk_03002C30[3].unk2 = 0x78;
+        gUnk_03002C30[3].unk4 = 0x38;
+        gUnk_03002C30[3].unkA = 0xF;
+        gUnk_03002C30[3].unkB = 0xC0;
+        gUnk_03002C30[3].unk6 = 0x900;
+        gUnk_03002C30[3].unk20 = 8;
+        REG_MOSAIC = (gUnk_03002C30[3].unk20 << 12) + (gUnk_03002C30[3].unk20 << 8);
+        gUnk_03000440.unk84++;
+        break;
+    case 1:
+        if (gFrameCounter & 1)
+            break;
+        gUnk_03002C30[3].unk20--;
+        REG_MOSAIC = (gUnk_03002C30[3].unk20 << 12) + (gUnk_03002C30[3].unk20 << 8);
+        if (gUnk_03002C30[3].unk20 == 0)
+        {
+            gUnk_03002C30[4].unk0 = 0xC224;
+            gUnk_03002C30[4].unk1C = 0;
+            gUnk_03002C30[4].unk2 = 0x78;
+            gUnk_03002C30[4].unk4 = 0x48;
+            gUnk_03002C30[4].unkA = 0xF;
+            gUnk_03002C30[4].unkB = 0xC0;
+            gUnk_03002C30[4].unk6 = 0x901;
+            gUnk_03002C30[4].unk9 = 8;
+            gUnk_03002C30[4].unk8 = 0x40;
+            gUnk_03000440.unk84++;
+        }
+        break;
+    case 2:
+        if ((gUnk_03002C30[4].unk9 += 8) == 0x60)
+            gUnk_03000440.unk84++;
+        break;
+    case 3:
+        if ((gUnk_03002C30[4].unk9 -= 8) == 0x40)
+        {
+            gUnk_03000440.unk84++;
+            gUnk_03000440.unk86 = 0;
+        }
+        break;
+    default:
+        if (++gUnk_03000440.unk86 == 0x3C)
+        {
+            clear_battle_sprite_slot(3, 2);
+            CpuFastSet(gUnk_0850DDF8, (void *)0x050003E0, 8);
+            gGameSubState++;
+        }
+        break;
+    }
+}
+
+void sub_0801425C(void)
+{
+    select_battle_music();
+    init_battle_action_select_ui(0);
+    sub_08018BD4();
+    gGameSubState = 0x44;
+}
+
+void sub_0801427C(void)
+{
+    if (gUnk_03001800.unk55 == 0)
+    {
+        sub_08018C38();
+        sub_08018C78();
+    }
+    if (gUnk_03001800.unk55 & 2)
+        gGameSubState = 0x60;
+    else if (gUnk_03001800.unk55 & 4)
+        gGameSubState = 0x68;
+    else if (gUnk_03001800.unk55 & 8)
+        gGameSubState = 0x70;
+    else if (gUnk_03001800.unk55 & 0x10)
+        gGameSubState = 0x78;
+    else
+    {
+        sub_0801902C();
+        update_all_battle_status_sprites();
+        init_battle_bot_sprites();
+        if (sub_08019EF0())
+        {
+            sub_08019078();
+            gGameSubState++;
+        }
+    }
+}
+
+void sub_08014314(void)
+{
+    struct Unk_03000590 *rec;
+    u8 flag;
+
+    update_all_battle_status_sprites();
+    sub_08019078();
+    sort_active_medal_slots();
+    if (gUnk_03001800.unk45 == 0)
+    {
+        gGameSubState = 0x44;
+        return;
+    }
+    battle_calc_bot_count_minus_one_mod3();
+    rec = gUnk_03000590;
+    rec += gUnk_03001800.unk87;
+    if (rec->unk40[0] == 0)
+    {
+        sub_0801A678();
+    }
+    else if ((flag = rec->unkBD & 4))
+    {
+        gGameSubState = 0x47;
+    }
+    else
+    {
+        iterate_bots_setup_battle_sprites();
+        gGameState = 8;
+        gGameSubState = flag;
+    }
+}
+
+void sub_080143A0(void)
+{
+    update_all_battle_status_sprites();
+    gUnk_03000590[gUnk_03001800.unk87].unkBD ^= 4;
+    iterate_bots_setup_battle_sprites();
+    sub_0801A678();
+    sub_08015414(gUnk_03001800.unk87);
+    if (sub_0801A6B0())
+    {
+        sub_0803F624(&gUnk_03001800.unk45, 0xC, 0);
+        gGameSubState = 0x4C;
+    }
+    else
+    {
+        gGameSubState = 0x45;
+    }
+}
+
+void sub_08014404(void)
+{
+    update_all_battle_status_sprites();
+    sub_08019078();
+    gUnk_03000590[gUnk_03001800.unk87].unkBD ^= 4;
+    setup_bot_battle_sprites_08015A00(gUnk_03001800.unk87,
+        gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2,
+        gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4);
+    sub_0801A678();
+    battle_process_all_bot_actions(gUnk_03001800.unk87);
+    if (gUnk_03001800.unk87 > 2)
+    {
+        if (gUnk_03000440.unk89 != 1)
+        {
+            process_bot_battle_turn(gUnk_03001800.unk87);
+            gGameSubState = 0x45;
+        }
+        else
+        {
+            if (gUnk_03000590[gUnk_03001800.unk87].unkC9 == 0x2C)
+                process_bot_battle_turn(gUnk_03001800.unk87);
+            gGameSubState = 0xA0;
+        }
+    }
+    else if (gUnk_03000590[gUnk_03001800.unk87].unkC9 == 0x2C)
+    {
+        process_bot_battle_turn(gUnk_03001800.unk87);
+        sub_08018900(gUnk_03001800.unk87);
+        if (gUnk_03000440.unk89 != 1)
+            gGameSubState = 0x45;
+        else
+            gGameSubState = 0xA0;
+    }
+    else
+    {
+        if (sub_0801A6EC(gUnk_03001800.unk87))
+        {
+            if (!(KEYS_LO(gHeldKeys) & 2))
+            {
+                process_bot_battle_turn(gUnk_03001800.unk87);
+                sub_08018900(gUnk_03001800.unk87);
+                gGameSubState = 0x45;
+                return;
+            }
+            sub_0801A744(gUnk_03001800.unk87);
+        }
+        gUnk_03001800.unk80 = gUnk_03001800.unk87;
+        gUnk_03001800.unk81 = 0;
+        gUnk_03001800.unk82 = 0;
+        gUnk_03001800.unk83 = 0;
+        gUnk_03001800.unk85 = 0;
+        iterate_bots_setup_battle_sprites();
+        gGameSubState = 4;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08014548);
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080145BC);
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08014634);
