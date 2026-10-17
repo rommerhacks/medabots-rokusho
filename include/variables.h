@@ -244,3 +244,4 @@ extern const u8 gUnk_084C30BC[]; // blank Medal icon tile
 extern const u8 *const gUnk_083AC494[][5]; // compressed Medal sprites (load_medal_sprite)
 extern const u32 gUnk_083B656C[]; // text pointers indexed by Medal record unk4 (sub_0800A000)
 extern const u32 gUnk_083B6EC8[]; // text pointers indexed by Medal record unk6 (sub_0800A05C)
+extern const u8 *const gUnk_083B7EBC[]; // Medals help cursor layouts: count, then (x, y) tile pairs (sub_0800AA1C)

@@ -337,7 +337,7 @@ struct Unk_03000BE0
     u8 unk6; // Medals help: gUnk_083B70AC message index
     u8 unk7; // icon (tile 0xD340 + unk7 * 4, sub_0800A0B8)
     u8 unk8; // Medal sprite variant, 0-4 (gUnk_083AC494[unk1][unk8])
-    u8 filler9;
+    u8 unk9; // number of unk18 entries in use (sub_0800AB0C draws the rest greyed out)
     u8 unkA[0xE]; // name text
     u8 unk18[8]; // indexed by Medals screen unk46 (gUnk_083B825C message ids; guess: rotation entries)
     u8 unk20[8]; // 0-100 (guess: skill levels, drawn by render_medal_skill_stats)
