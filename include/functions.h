@@ -306,7 +306,7 @@ u32 sub_08037230(u32 rec, u32 part); // 1 if the part is broken or at full armor
 void calc_battle_action_speed(u8 rec, u8 part);
 void apply_battle_bot_damage_reduction(u32 rec);
 u32 decrement_battle_timer_and_check_zero(void);
-void calc_battle_stat_ratio(u8 rec, u8 part);
+void calc_battle_stat_ratio(u32 rec, u32 part); // unkEC = (unkE8 / 4 + part data[6]) / part data[0xC], at least 1
 void sub_08038BC0(void);
 void sub_08038D30(void);
 void battle_begin_action_phase(void);
@@ -346,7 +346,7 @@ u32 find_next_available_medapart_slot(u32 part, u32 kind, u32 forward, u32 d);
 void init_scene_buffers_080445F4(void);
 void setup_scene_with_bg_and_sprites(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9, u32 a10, u32 a11);
 void init_scene_with_bg_and_palette(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9, u32 a10, u32 a11, u32 a12);
-void advance_text_display(u32 a0, u32 a1, u32 a2);
+u32 advance_text_display(u32 a0, u32 a1, u32 a2);
 u32 medabot_detail_is_full_set(void); // 1 if gUnk_03000440.unk98-9B (the four shown Medaparts) are all the same set
 u32 sub_080440B4(void);
 void sub_08047414(struct Unk_08047414 *obj, u8 *buf, u32 b, u32 c);
@@ -1062,7 +1062,7 @@ u32 battle_find_next_active_bot(u32 rec); // random part index of rec with armor
 u32 sub_08036D64(u32 rec, u32 skill); // 1 if unkCF has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8), 0x11/0x12 (2), 0x13/0x14 (4)
 u32 medal_update_exp_progress(u32 slot, u32 n);
 void battle_set_action_params(u32 rec, u8 skill, s32 a, s32 b);
-void reset_battle_bot_state(u8 rec);
+void reset_battle_bot_state(u32 rec);
 void sub_080351E8(u32 rec);
 u32 find_random_broken_part(u32 rec); // random part (+ 1) of rec with no armor left (unk11 == 0), 0 = none
 void battle_set_damage_display(u32 rec, u32 part, s32 amount);

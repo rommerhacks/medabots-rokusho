@@ -571,8 +571,38 @@ INCLUDE_ASM("asm/nonmatching/code_08034CB8", init_battle_scene_backgrounds);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", setup_battle_medapart_scenes);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", get_active_bot_part_index_and_load_values);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_080361A8);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", battle_advance_dialogue_text);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", battle_advance_action_text);
+
+u32 battle_advance_dialogue_text(void)
+{
+    struct Unk_03001800 *b = &gUnk_03001800;
+    u8 *state = &b->unk112;
+    u32 done;
+    if (!(*state & 0x80) && !(b->unkFF & 1))
+    {
+        get_active_bot_part_index_and_load_values(0);
+        done = advance_text_display(0, *state, b->unk64[3]);
+        if (done)
+            b->unk112 |= 0x80;
+        return done;
+    }
+    return 1;
+}
+
+u32 battle_advance_action_text(void)
+{
+    struct Unk_03001800 *b = &gUnk_03001800;
+    u8 *state = &b->unk113;
+    u32 done;
+    if (!(*state & 0x80) && !(b->unkFF & 2))
+    {
+        get_active_bot_part_index_and_load_values(1);
+        done = advance_text_display(1, *state, b->unk64[3]);
+        if (done)
+            b->unk113 |= 0x80;
+        return done;
+    }
+    return 1;
+}
 
 void sub_08036270(void)
 {
@@ -729,7 +759,20 @@ u32 sub_08036E54(u32 a)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", battle_set_action_params);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", reset_battle_bot_state);
+
+void reset_battle_bot_state(u32 rec)
+{
+    gUnk_03000590[rec].unk40 = 0;
+    gUnk_03000590[rec].parts[0].unk11 = 0;
+    gUnk_03000590[rec].unkB9 = 0;
+    gUnk_03000590[rec].unkBA = 2;
+    gUnk_03000590[rec].unkBC = 0;
+    gUnk_03000590[rec].unkBD &= 0xE4;
+    gUnk_03000590[rec].unkBC = 0;
+    sub_0803F624(&gUnk_03000590[rec].unkC4, 0xC, 0);
+    sub_0803F624(&gUnk_03000590[rec].unkDC, 8, 0);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", setup_battle_cursor_sprite_08036FF8);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", update_sprite_animations_tick_080370AC);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_0803713C);
@@ -750,7 +793,15 @@ u32 decrement_battle_timer_and_check_zero(void)
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", calc_battle_stat_ratio);
+void calc_battle_stat_ratio(u32 rec, u32 part)
+{
+    struct Unk_03001800 *b = &gUnk_03001800;
+    b->unkEC = b->unkE8 >> 2;
+    b->unkEC += gUnk_03000590[rec].parts[part].data[6];
+    b->unkEC = b->unkEC / gUnk_03000590[rec].parts[part].data[0xC];
+    if (b->unkEC == 0)
+        b->unkEC = 1;
+}
 
 void battle_set_damage_display(u32 rec, u32 part, s32 amount)
 {
@@ -872,7 +923,15 @@ void sub_0803752C(u32 a, u32 max, u32 b)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08037578);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_0803769C);
+
+void sub_0803769C(u32 rec)
+{
+    gUnk_03001800.unkE8 = 0;
+    gUnk_03001800.unkE8 = gUnk_03000590[rec].unkA8[3];
+    gUnk_03001800.unkE8 += calc_bot_matching_part_power(rec);
+    gUnk_03001800.unkE8 += rng_next_080424B8() & 7;
+    gUnk_03001800.unkE8 += gUnk_03000590[rec].medal.unk20[gUnk_03000590[rec].unkA8[1]];
+}
 
 void sub_080376F4(u32 rec)
 {

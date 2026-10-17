@@ -632,7 +632,8 @@ struct Unk_03000590
     u8 unkD7; // movement: sub-pixel accumulator, + (0x20 - unkBB) per frame, 1/16 px (battle_bot_move)
     u16 unkD8; // cleared, then raised by gUnk_03001800.unkEC up to 0xFF (sub_08022748)
     u8 unkDA; // movement: whole pixels moved this frame
-    u8 fillerDB[0x2];
+    u8 fillerDB;
+    u8 unkDC; // unkDC..unkE3 cleared by reset_battle_bot_state
     u8 unkDD; // link Robattle: part choice exchanged over the serial link (sub_08014B34, sub_08014C30)
     u8 unkDE; // copy of unkDD (sub_0801B274)
     u8 unkDF; // skill of the part unkDD (1-3), 0 otherwise (sub_0801B274)
