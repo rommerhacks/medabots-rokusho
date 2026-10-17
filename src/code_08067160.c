@@ -271,7 +271,7 @@ bool32 sub_0806878C(void)
     return TRUE;
 }
 
-bool32 check_divisible_by_16(void)
+bool32 scene_step_fade_in_bldy(void)
 {
     s32 *c = &gUnk_03000000;
     u8 *np = &gUnk_03000005;
@@ -284,7 +284,7 @@ bool32 check_divisible_by_16(void)
     return FALSE;
 }
 
-bool32 bg0_dma_sync_check(void)
+bool32 scene_step_wipe_clear_bg0(void)
 {
     u16 zero = 0;
     s32 *c;
@@ -310,9 +310,9 @@ bool32 bg0_dma_sync_check(void)
     return FALSE;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08067160", check_divisible_by_32);
+INCLUDE_ASM("asm/nonmatching/code_08067160", scene_step_palette_fade_in);
 
-bool32 check_divisible_by_16_b(void)
+bool32 scene_step_fade_out_bldy(void)
 {
     s32 *c = &gUnk_03000000;
     u8 *np = &gUnk_03000005;
@@ -325,7 +325,7 @@ bool32 check_divisible_by_16_b(void)
     return FALSE;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08067160", bg_layer_init_check);
+INCLUDE_ASM("asm/nonmatching/code_08067160", scene_step_wipe_fill_bg0);
 INCLUDE_ASM("asm/nonmatching/code_08067160", check_divisible_by_32_b);
 
 void race_dispatch_substate(void)

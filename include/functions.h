@@ -1209,6 +1209,7 @@ void sub_08035754(s16 *amount, s32 sub); // *amount -= sub, not below 0
 void sub_08035B9C(u32 rec);
 u32 sub_08037798(u32 base); // record on side base, or 0xFF
 void *memcpy_optimized(void *dst, const void *src, u32 n); // library
+void *custom_memset(void *dst, int c, u32 n); // library
 u16 ReadEepromDword(u16 address, u16 *data); // EEPROM library: reads 8 bytes
 u16 ProgramEepromDword(u16 address, u16 *data); // EEPROM library: writes 8 bytes
 u32 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 bytes and verifies; u32 so sub_080603A4 tests the result without truncating it

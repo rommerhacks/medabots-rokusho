@@ -135,6 +135,11 @@ extern const u8 gUnk_087B2CCC[]; // race BG tiles (LZ77, load_bg_tilemaps_and_pa
 extern const u8 gUnk_087B3710[]; // race BG2 tilemap (LZ77)
 extern const u8 gUnk_087B384C[]; // race BG3 tilemap (LZ77)
 extern const u16 gUnk_087B3AF0[]; // race BG palette
+extern const u8 gUnk_087A44F8[]; // Medal scene OBJ palettes (init_scene_with_palette_and_song_25)
+extern const u32 gUnk_087A46F8[]; // Medal scene BG tiles (dma3_copy_or_decompress)
+extern const u8 gUnk_087A7F98[]; // Medal scene BG1 tilemap (decompress_and_write_tilemap)
+extern const u8 gUnk_087A80E8[]; // BG2 tilemap
+extern const u8 gUnk_087A8324[]; // BG3 tilemap
 extern const u8 gUnk_087AD4E4[]; // race OBJ tiles (LZ77, load_battle_sprite_graphics)
 extern const u8 gUnk_087C4EBC[]; // race field BG tiles (LZ77, init_battle_field_screen)
 extern const u8 gUnk_087C4F48[];

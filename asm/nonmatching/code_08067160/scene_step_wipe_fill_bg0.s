@@ -1,7 +1,7 @@
 	.syntax unified
 
-	thumb_func_start bg_layer_init_check
-bg_layer_init_check: @ 0x08068A30
+	thumb_func_start scene_step_wipe_fill_bg0
+scene_step_wipe_fill_bg0: @ 0x08068A30
 	push {r4, r5, r6, r7, lr}
 	mov r7, sb
 	mov r6, r8

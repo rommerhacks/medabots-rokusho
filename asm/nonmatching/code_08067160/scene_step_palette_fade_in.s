@@ -1,7 +1,7 @@
 	.syntax unified
 
-	thumb_func_start check_divisible_by_32
-check_divisible_by_32: @ 0x080688F0
+	thumb_func_start scene_step_palette_fade_in
+scene_step_palette_fade_in: @ 0x080688F0
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb

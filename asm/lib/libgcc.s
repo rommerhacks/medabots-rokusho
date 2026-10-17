@@ -3927,7 +3927,9 @@ _0807E68E:
 
 	thumb_func_start custom_memset
 	.global custom_memset
+	.global memset
 custom_memset: @ 0x0807E694
+memset: @ agbcc clears mostly-zero local array initializers with memset
 	push {r4, r5, lr}
 	adds r5, r0, #0
 	adds r4, r1, #0
