@@ -891,6 +891,8 @@ void add_bot_to_defeated_list(u8 rec);
 u32 sub_080353CC(u8 slot);
 u32 move_sprite_toward_target(u8 slot);
 u32 sub_08036E54(u32 a); // clamps to 1..99
+void sub_08037330(u32 rec, u32 frame, u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
+void sub_080373D4(u32 rec); // sets bit 15 of unk0 on the bot's 4 part sprites
 void calc_polar_to_screen_coords(s32 *out, u32 angle, u32 radius, s32 x, s32 y); // out: x in the low half, y in the high half
 u32 sub_08032FC4(u32 rec); // first record of rec's side (0 or 3)
 void set_sprite_hidden_flags(u8 first, u8 count);
