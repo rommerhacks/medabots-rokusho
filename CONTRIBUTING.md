@@ -92,6 +92,16 @@
   `blt; x >> 1 | x & 1; add` sequence (scale_to_bar_fill).
 * A function returning 0/1 whose original tests the "nothing to do" case first: write
   `if (!cond) ret = 0; else { ...; ret = 1; } return ret;` (early `return`s put the body first).
+* A global array base hoisted into a high register (`ldr r0, =gArr; mov r9, r0`) and loaded
+  before the loop counter's other setup: a pointer local assigned after the counter,
+  `i = 0; bots = gArr; for (; i <= 2; i++)` (sub_08026FF8). When the original instead re-adds the
+  base after the scaled index, index the global directly with the full expression in every use
+  and no `rec` local (sub_08027494).
+* A slot counter `adds r5, #4` set up after the other loop invariants: write the call argument as
+  `i * 4 + 0x21` and let gcc strength-reduce it; an explicit `slot += 4` variable is set up first.
+* A `u8` local computed right before a call (`lsls/lsrs #24` after the first argument's load):
+  assign it inside the call, `f(tbl[k], slot = i + 0x21)`; a declaration initializer moves the
+  computation above the load.
 * Hardware I/O addresses (`OAM`, `VRAM`, `INTR_CHECK`, ...) are in `include/gba/io_reg.h`;
   `CpuCopy16(src, dst, size)` gives the `lsls #10; lsrs #11` count of a 16-bit CpuSet.
 
