@@ -233,7 +233,8 @@ struct Unk_03000440
     u8 unk10E[0x10]; // 16-byte record from gUnk_083B6158 (per Medal graphic index)
     u8 filler11E[0x10];
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
-    u8 filler12F[2];
+    u8 unk12F; // sprite slot (sub_08028E84)
+    u8 filler130;
     u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2
     u8 unk132;
     u8 unk133; // after-battle Medal level-up: Medal slot (find_medal_slot_by_id - 1)
@@ -582,7 +583,8 @@ struct Unk_03000590
     u8 unkCD; // number shown by the Robattle handler 0x78 (sub_08014920)
     u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (sub_080145BC .. sub_08014754),
               // bit 2 / bit 3 = numbers shown by sub_080147FC / sub_08014920
-    u8 fillerCF[0x6];
+    u8 unkCF; // flags: bits 0/1/2/3 set by sub_08029354 (by gUnk_03001800.unk51)
+    u8 fillerD0[0x5];
     u8 unkD5; // added to gUnk_03001800.unkEC for unk28[side].unk5 (sub_08021418)
     u8 unkD6; // flags (bit 1: +10 damage, sub_0801ECC0)
     u8 unkD7; // movement: sub-pixel accumulator, + (0x20 - unkBB) per frame, 1/16 px (battle_bot_move)
