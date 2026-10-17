@@ -212,7 +212,7 @@ _08068690:
 	ldr r0, _080686CC @ =0x80000200
 	str r0, [r1, #8]
 	ldr r0, [r1, #8]
-	bl check_divisible_by_32_b
+	bl scene_step_palette_fade_out
 _080686AA:
 	movs r3, #0xb0
 	lsls r3, r3, #3
