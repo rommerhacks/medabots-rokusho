@@ -219,3 +219,20 @@
 * Several `x == A || x == B` checks in a row: if one uses the `goto` pair through a `type` local and
   the registers come out swapped, write that check with the field read at both compares instead
   (sub_08033D30).
+* Array element base: `gUnk_03002C30[slot].x` at every use gives `ldr base; lsls; adds` (literal first);
+  a `struct X *s = &gUnk_03002C30[slot]` local gives `lsls; ldr; adds`. Pick the form by the order of
+  the first two instructions (check_sprite_in_range, sub_080353CC).
+* `ldr r4, =gUnk_03001800; adds r4, #0xEC` (field address not folded into one literal): access the
+  field through `struct Unk_03001800 *b = &gUnk_03001800;` (sub_08035BD4, calc_battle_action_speed);
+  plain `gUnk_03001800.unkEC` gives `ldr r4, =0x030018EC`.
+* `movs r2, #0` before `ldr r1, =base` in a loop prologue: put the pointer init in the `for`,
+  `for (i = 0, b = &gUnk_03001800; ...)` (sub_080385D0).
+* `x |= 0x80` with the constant's register as the result (`movs r0, #0x80; orrs r0, r1`): write it on the
+  struct field (`b->unk112 |= 0x80`), not through a `u8 *` alias (battle_advance_dialogue_text).
+* An `else if` chain where the later cases jump back into the first case's `ands/cmp/bne` tail:
+  `if (A) { if (f & 1) return 1; } else if (B) { if (f & 8) return 1; } ... return 0;` (sub_08036D64).
+* A table index `tbl[f(x) * 8 + (g() & 7)]` with the shift before the `ands`: write it as one
+  expression on the global; with a `tbl` or `row` local gcc does the `ands` first
+  (get_random_battle_weight_entry).
+* Callers can depend on a narrow prototype: sub_08036C20's callers only match with `s16 x, s16 y`, even
+  though the callee zero-extends them; check `make compare` after every prototype change.
