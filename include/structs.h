@@ -151,7 +151,8 @@ struct GfxListEntry
 
 struct Unk_03000440
 {
-    u8 filler0[0x4];
+    u8 unk0;
+    u8 filler1[0x3];
     u8 unk4; // message handler state (run_message)
     u8 filler5[0x3];
     const u8 *unk8; // current message (run_message)
@@ -166,7 +167,8 @@ struct Unk_03000440
     u8 unk19;
     u8 unk1A;
     u8 unk1B;
-    u8 filler1C[0x8];
+    u8 unk1C;
+    u8 filler1D[0x7];
     u8 unk24;
     u8 unk25;
     u8 filler26;
