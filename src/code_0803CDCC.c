@@ -1269,7 +1269,42 @@ void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c)
     write_tilemap_rect(8, 8, x, y, gUnk_083B4AE0[c * 9 + 8], REG_BG0CNT, 0);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", load_overworld_map_column);
+// The helpers keep gcc from folding mul9(anim) - (frame - 8) into (anim * 9 + 8) - frame.
+static inline s32 mul9(s32 v)
+{
+    return v * 9;
+}
+
+static inline s32 sub8(u32 v)
+{
+    return v - 8;
+}
+
+// One frame of an 8x8 BG0 picture animation: frame gUnk_03000440.unkE of tilemap set anim (9 frames,
+// gUnk_083B4AE0[anim * 9 ..]), played backwards when reverse is set; loads the tiles and palette first.
+// Returns 1 after the last frame.
+u32 load_overworld_map_column(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 reverse)
+{
+    u8 ids[2];
+    u8 *p = ids;
+
+    *p++ = set;
+    *p = idx;
+    if (gUnk_03000440.unkE == 0)
+    {
+        REG_DISPCNT |= 0x100;
+        REG_BG0CNT = 0x500;
+        lz_decompress_dispatch(gUnk_083AFD08[set][idx], (void *)0x06000F80);
+        CpuFastSet(gUnk_083B15C8[set], (void *)0x050001A0, 8);
+    }
+    if (reverse == 0)
+        write_tilemap_rect(8, 8, x, y, gUnk_083B4AE0[anim * 9 + gUnk_03000440.unkE], REG_BG0CNT, 0);
+    else
+        write_tilemap_rect(8, 8, x, y, gUnk_083B4AE0[mul9(anim) - sub8(gUnk_03000440.unkE)], REG_BG0CNT, 0);
+    if (++gUnk_03000440.unkE == 9)
+        return 1;
+    return 0;
+}
 
 void sub_0803F624(u8 *dst, u32 size, u8 val)
 {
@@ -1630,7 +1665,51 @@ loop:
     gUnk_03002C30[slot].unk6 = (p[1] << 8) + p[2];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", process_sprite_anim_commands);
+void process_sprite_anim_commands(const u8 *cmds, u8 slot)
+{
+    u32 run;
+    u8 op;
+
+    if (gUnk_03002C30[slot].unk22 == 0xFF)
+        return;
+    run = 1;
+    do
+    {
+        if (gUnk_03002C30[slot].unk20 != 0)
+        {
+            gUnk_03002C30[slot].unk20--;
+            return;
+        }
+        op = cmds[gUnk_03002C30[slot].unk21];
+        switch (op)
+        {
+        case 0xFB:
+            gUnk_03002C30[0].unk0 &= 0xBFFF;
+            gUnk_03002C30[slot].unk20 = cmds[gUnk_03002C30[slot].unk21 + 1];
+            gUnk_03002C30[slot].unk21 += 3;
+            return;
+        case 0xFC:
+            gUnk_03002C30[0].unk0 |= 0x4000;
+            gUnk_03002C30[slot].unk21 += 3;
+            break;
+        case 0xFD:
+            play_sound_effect(cmds[gUnk_03002C30[slot].unk21 + 1]);
+            gUnk_03002C30[slot].unk21 += 3;
+            break;
+        case 0xFE:
+            gUnk_03002C30[slot].unk21 = cmds[gUnk_03002C30[slot].unk21 + 1] * 3;
+            break;
+        case 0xFF:
+            gUnk_03002C30[slot].unk22 = 0xFF;
+            return;
+        default:
+            gUnk_03002C30[slot].unk20 = op;
+            gUnk_03002C30[slot].unk6 = (cmds[gUnk_03002C30[slot].unk21 + 1] << 8) + cmds[gUnk_03002C30[slot].unk21 + 2];
+            gUnk_03002C30[slot].unk21 += 3;
+            break;
+        }
+    } while (run);
+}
 
 void clear_battle_sprite_slot(u8 a, u8 b)
 {

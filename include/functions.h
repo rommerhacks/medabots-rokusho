@@ -724,7 +724,7 @@ void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, 
 void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base);
 void process_animation_script(const u16 *pos, u32 slot); // steps the gUnk_03000440.unk64[slot] record
 void vram_fill_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 value);
-u32 load_overworld_map_column(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
+u32 load_overworld_map_column(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 reverse);
 void text_window_init(u8 a, u8 b, u32 c);
 void sub_0803FB0C(void);
 u32 run_message(const void *msg);
@@ -771,7 +771,7 @@ void sub_08041C5C(u8 sprite, u8 frame, u16 x); // guess: horizontal counterpart 
 void memcpy_bytes_08041D04(const void *src, void *dst, u8 n);
 void memswap(void *a, void *b, u32 n);
 void render_text_sprites_08040DB8(u8 *digits, u8 a, u32 b, u32 c, u8 d, u8 e, u8 f, u16 g);
-void process_sprite_anim_commands(const void *cmds, u8 slot);
+void process_sprite_anim_commands(const u8 *cmds, u8 slot);
 void sub_08044094(void);
 void field_menu_init_cursor(void);
 void sub_0804765C(u32 a);
