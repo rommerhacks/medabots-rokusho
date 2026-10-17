@@ -1378,8 +1378,20 @@ void sub_0801F390(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801F3F0);
+
+void sub_0801F474(void)
+{
+    gUnk_03001800.unkAA = 0x3E;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801F484);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801F4AC);
+
+void sub_0801F5AC(void)
+{
+    gUnk_03001800.unkB5 = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801F5BC);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801F780);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801F800);
