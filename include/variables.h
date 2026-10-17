@@ -183,6 +183,7 @@ extern const Func gMedapartsScreenHandlers[]; // game state 5 (Medaparts screen)
 extern const Func gUnk_083ACC94[]; // sprite 4 sub-state handlers, by gUnk_03002C30[4].unk29 (sub_0801013C)
 extern const Func gPrebattleScreenHandlers[]; // game state 6 ("Get ready to Robattle") sub-state handlers
 extern const u8 gUnk_084C696C[];
+extern const void *const gUnk_083C2BBC[]; // pre-battle opponent lines, by gUnk_03001800.unk0
 extern const u16 gUnk_084C6A78[];
 extern const u8 gUnk_084E6C9C[];
 extern const u8 gUnk_084C7D10[];

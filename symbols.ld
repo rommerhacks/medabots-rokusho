@@ -244,6 +244,7 @@ gMedapartsScreenHandlers      = 0x083ACB54;
 gUnk_083ACC94       = 0x083ACC94;
 gPrebattleScreenHandlers      = 0x083ACCA4;
 gUnk_084C696C       = 0x084C696C;
+gUnk_083C2BBC       = 0x083C2BBC;
 gUnk_084C6A78       = 0x084C6A78;
 gUnk_084E6C9C       = 0x084E6C9C;
 gUnk_084C7D10       = 0x084C7D10;

@@ -281,6 +281,7 @@ void sub_080120C8(void);
 void sub_0801214C(void);
 void sub_080121A8(void);
 void update_scroll_movement_a(void);
+void update_all_battle_sprite_orbits(void);
 void sub_08044B58(void);
 void sub_08044CDC(u32 a);
 void dispatch_by_index_0476e8(u32 idx);

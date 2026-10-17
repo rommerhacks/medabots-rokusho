@@ -1,14 +1,120 @@
 #include "global.h"
 
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08010794);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080107F0);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08010814);
-INCLUDE_ASM("asm/nonmatching/code_08010794", prebattle_wait_for_start_input);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080108D0);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080108FC);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08010930);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08010968);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080109A0);
+// guess: fades the sprites in from white (state 6 sub 10)
+void sub_08010794(void)
+{
+    update_all_battle_sprite_orbits();
+    update_scroll_movement_a();
+    if (gUnk_03000440.unk84 <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        gUnk_03000440.unk84++;
+    }
+    else
+        gGameSubState++;
+}
+
+void prebattle_open_text_window(void)
+{
+    update_all_battle_sprite_orbits();
+    update_scroll_movement_a();
+    text_window_init(1, 0, 0);
+    gGameSubState++;
+}
+
+void prebattle_show_opponent_line(void)
+{
+    update_scroll_movement_a();
+    if (run_message(gUnk_083C2BBC[gUnk_03001800.unk0]))
+    {
+        update_all_battle_sprite_orbits();
+        gUnk_03000440.unk84 = 8;
+        gUnk_03000440.unk85 = 8;
+        gGameSubState++;
+    }
+    update_all_battle_sprite_orbits();
+}
+
+// START (with a Rubberobo Medal, item 50, outside debug battles) asks to use it; A starts the battle
+void prebattle_wait_for_start_input(void)
+{
+    update_all_battle_sprite_orbits();
+    update_scroll_movement_a();
+    if ((KEYS_LO(gNewKeys) & 8) && get_item_quantity_by_id(50) && gUnk_030057E0.unkC2D == 0)
+    {
+        play_sound_effect(4);
+        gGameSubState++;
+    }
+    else if (KEYS_LO(gNewKeys) & 1)
+    {
+        play_sound_effect(4);
+        gGameSubState = 32;
+    }
+}
+
+void sub_080108D0(void)
+{
+    update_all_battle_sprite_orbits();
+    update_scroll_movement_a();
+    if (game_state_execute_handler_a())
+    {
+        text_window_init(1, 2, 0);
+        gGameSubState++;
+    }
+}
+
+void prebattle_rubberobo_ask(void)
+{
+    update_all_battle_sprite_orbits();
+    update_scroll_movement_a();
+    if (run_message(gUnk_083B53F8[20]))
+    {
+        open_choice_menu(1, 22, 7);
+        gGameSubState++;
+    }
+}
+
+void prebattle_rubberobo_choice(void)
+{
+    u32 r;
+
+    update_all_battle_sprite_orbits();
+    update_scroll_movement_a();
+    r = poll_choice_menu();
+    if (r)
+    {
+        if ((r >> 4) == 0)
+        {
+            sub_0803FB0C();
+            gGameSubState++;
+        }
+        else
+            gGameSubState = 32;
+    }
+}
+
+void prebattle_rubberobo_use(void)
+{
+    update_all_battle_sprite_orbits();
+    update_scroll_movement_a();
+    if (run_message(gUnk_083B53F8[21]))
+    {
+        sound_stop_all_with_fade_guard(8);
+        sub_08042318(50, 1);
+        gGameSubState++;
+    }
+}
+
+void sub_080109A0(void)
+{
+    update_all_battle_sprite_orbits();
+    update_scroll_movement_a();
+    copy_obj_palette_to_buffer();
+    gUnk_03000440.unk84 = 0;
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080109CC);
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08010A20);
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08010A7C);
