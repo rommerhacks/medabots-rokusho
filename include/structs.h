@@ -156,7 +156,7 @@ struct Unk_03000440
     u8 unk46;
     u8 filler47;
     u16 unk48; // Medal record unk20/unk28 index 0-7 (sub_08008A5C)
-    u8 filler4A;
+    u8 unk4A; // Medals: choice from sub_080091E0 (0 A, 2 B)
     u8 unk4B; // Medals screen: song 7 started (when opened with unk3C == 4)
     u8 filler4C[0x4];
     u8 unk50; // Medabots screen mode: 0 plain (from the Medawatch), 1-3 team select (guess: battle type; 3 needs all three picks)
@@ -189,7 +189,8 @@ struct Unk_03000440
     u8 unk9E[0x50]; // digit buffer (divide_by_10000)
     u8 unkEE; // start of a 16-byte part data record (load_part_data)
     u8 unkEF;
-    u8 fillerF0[0x1E];
+    u8 unkF0;
+    u8 fillerF1[0x1D];
     u8 unk10E[0x10]; // 16-byte record from gUnk_083B6158 (per Medal graphic index)
     u8 filler11E[0x10];
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
@@ -328,11 +329,13 @@ struct Unk_03001800
 
 struct Unk_03000BE0
 {
-    u8 unk0;
+    u8 unk0; // flags (0x40 tested by sub_080092D4)
     u8 unk1; // Medal graphic index (0x80-byte tiles at 0x084C21BC)
-    u8 filler2[0x3];
-    u8 unk5; // level (guess: shown as a number by fill_tilemap_pair_or_divide)
-    u8 filler6[0x4];
+    u8 filler2[0x2];
+    u8 unk4; // Medals help: gUnk_083B69C8 message index
+    u8 unk5; // level (Medals help: Medaforce slots open at 10 / 30 / 60)
+    u8 unk6; // Medals help: gUnk_083B70AC message index
+    u8 filler7[0x3];
     u8 unkA[0xE]; // name text
     u8 unk18[8]; // indexed by Medals screen unk46 (gUnk_083B825C message ids; guess: rotation entries)
     u8 unk20[8]; // 0-100 (guess: skill levels, drawn by render_medal_skill_stats)

@@ -153,6 +153,14 @@ extern const u16 gUnk_084E2E38[];
 extern const u8 gUnk_084C7174[];
 extern const u16 gUnk_084E2E58[];
 extern const u16 gUnk_084E2E78[];
+extern const u8 gUnk_084889F8[];
+extern const void *const gUnk_083B69C8[]; // messages (run_message), indexed by Medal record byte 4 (Medals help)
+extern const void *const gUnk_083B70AC[]; // messages (run_message), indexed by Medal record byte 6 (Medals help)
+extern const u8 gUnk_083B7E0C[]; // 3 bytes per Medal graphic index (Medals help)
+extern const u8 gUnk_083B7CD4[]; // 6-byte records (Medals help)
+extern const void *const gUnk_083B7F40[]; // messages (run_message), Medals help Medaforce page
+extern const void *const gUnk_083B8170[]; // messages (run_message), Medals help page 5
+extern u32 gUnk_03002B68; // bit per Medal graphic index (sub_080092D4)
 extern const u8 gUnk_084EAC58[];
 extern const u8 gUnk_084EF4E0[];
 extern const u8 gUnk_084EFE28[];
