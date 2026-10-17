@@ -1295,7 +1295,7 @@ void message_show_window(void)
 }
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FC20);
 
-void sub_0803FCC8(void)
+void message_clear_text_area(void)
 {
     u32 i;
     u8 *dst;

@@ -307,3 +307,13 @@
 * A struct word read across byte fields (`ldr r0, [base, #0x1C]` over `unk19[3]`..`unk1E`): cast to a
   local anonymous struct with the word at that offset; a `(u32 *)` cast folds into `=sym+0x1C`
   (sub_0803EED8).
+* A loop that keeps a global array's address in a callee-saved register (`ldr r6, =sym` before the
+  loop, `adds r0, r4, r6` inside): declare the pointer inside the loop body
+  (`for (...) { u8 *p = gSym; f(p[i]); }`); a pointer declared outside swaps the `adds` operands.
+* Two adjacent constant addresses where the second is built from the first (`ldr r4, =A; adds r4, #-0x160`)
+  come from one symbol with two offsets (`gSym + 0xB0`, then `gSym`). Destination literals that are each
+  loaded fresh (`0x0202F980`, `0x0202F9A0`) are plain integer casts, not `gPaletteBackup + n`.
+* One branch that compares the new value of `++x` and another that tests a call first, sharing the
+  compare (`b` to a `cmp r0, #0x3C`): use a local (`n = ++x;` / `n = x;`) and compare it after the if.
+* A shared tail where both branches end with the same stores (`movs r1, #0` hoisted into each branch):
+  write the tail in both branches.
