@@ -781,8 +781,8 @@ void setup_blend_effect(u8 a, u16 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u
 void blend_effect_update(void);
 void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot);
 void reset_bg_scroll(void); // zeroes the four BG scroll positions
-void set_blend_effect_mode(u8 mode, u16 a, u16 b);
-u32 update_blend_effect(void);
+void set_blend_effect_mode(u8 mode, u16 targets, u16 speed);
+u32 update_blend_effect(void); // 1 once the effect set up by set_blend_effect_mode is done
 void load_encounter_into_battle_setup(void);
 u32 sub_0803EED8(void); // nonzero: waiting on the serial link (reads gUnk_03005010)
 u32 game_state_execute_handler_b(void);

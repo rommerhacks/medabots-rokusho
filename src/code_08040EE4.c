@@ -300,8 +300,93 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080422B8);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08042318);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_0804242C);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", rng_next_080424B8);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", set_blend_effect_mode);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_blend_effect);
+
+void set_blend_effect_mode(u8 mode, u16 targets, u16 speed)
+{
+    u16 bld, eva, evb, evy;
+
+    gUnk_03000440.unk90 = mode;
+    gUnk_03000440.unk92 = speed;
+    gUnk_03000440.unk94 = 0;
+    switch (mode)
+    {
+    case 1:
+        bld = 0x40;
+        eva = 16;
+        evb = 16;
+        evy = 16;
+        break;
+    case 2:
+        bld = 0x40;
+        eva = 0;
+        evb = 0;
+        evy = 0;
+        break;
+    case 3:
+        bld = 0x80;
+        eva = 16;
+        evb = 16;
+        evy = 16;
+        break;
+    case 4:
+        bld = 0x80;
+        eva = 0;
+        evb = 0;
+        evy = 0;
+        break;
+    case 5:
+        bld = 0xC0;
+        eva = 16;
+        evb = 16;
+        evy = 16;
+        break;
+    case 6:
+        bld = 0xC0;
+        eva = 0;
+        evb = 0;
+        evy = 0;
+        break;
+    default:
+        bld = 0;
+        eva = 0;
+        evb = 0;
+        evy = 0;
+        break;
+    }
+    REG_BLDALPHA = ((evb & 0x1F) << 8) | (eva & 0x1F);
+    REG_BLDY = evy & 0x1F;
+    REG_BLDCNT = bld | targets;
+}
+
+// Other modes write whatever eva / evb / evy hold (uninitialized), like the original.
+u32 update_blend_effect(void)
+{
+    u16 eva, evb, evy;
+
+    gUnk_03000440.unk94 += gUnk_03000440.unk92;
+    switch (gUnk_03000440.unk90)
+    {
+    case 1:
+    case 3:
+    case 5:
+        eva = 16 - (gUnk_03000440.unk94 >> 4);
+        evb = eva;
+        evy = eva;
+        break;
+    case 2:
+    case 4:
+    case 6:
+        eva = gUnk_03000440.unk94 >> 4;
+        evb = eva;
+        evy = eva;
+        break;
+    }
+    REG_BLDALPHA = ((evb & 0x1F) << 8) | (eva & 0x1F);
+    REG_BLDY = evy & 0x1F;
+    if (gUnk_03000440.unk94 > 0xFF)
+        return 1;
+    return 0;
+}
 
 void fill_text_blank(u8 *buf, u8 n)
 {

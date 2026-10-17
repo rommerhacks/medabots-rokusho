@@ -234,7 +234,10 @@ struct Unk_03000440
     u8 unk8D; // rng table index when unk89 is set
     u8 unk8E; // field menu cursor: 0 Medawatch, 1 Item, 2 Vehicle, 3 Save (runtime-checked)
     u8 unk8F; // Medawatch menu cursor (0..2)
-    u8 filler90[0x6];
+    u8 unk90; // blend effect mode 1-6 (set_blend_effect_mode): odd fades the blend in, even out
+    u8 filler91;
+    u16 unk92; // blend effect speed, added to unk94 every frame
+    u16 unk94; // blend effect progress (done at 0x100)
     u8 unk96;
     u8 unk97; // shown Medabot: Medal, then unk98-9B its four Medaparts
     u8 unk98;
