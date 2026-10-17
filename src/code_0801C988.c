@@ -1105,7 +1105,27 @@ INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801EBF8);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801EC3C);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801ECC0);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801ED50);
+
+void sub_0801EED4(void)
+{
+    gUnk_03001800.unkAA = 10;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801EEE4);
+
+void sub_0801EFC8(void)
+{
+    if (gFrameCounter & 1)
+    {
+        gUnk_03002C30[10].unk4++;
+        if (gUnk_03002C30[10].unk4 == gUnk_03002C30[10].unk30)
+        {
+            gUnk_03000440.unk86 = 0x3C;
+            gUnk_03001800.unkAA++;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801F018);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", decompress_sprite_tiles_to_vram_obj_0);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", battle_resolve_action_target);

@@ -449,13 +449,16 @@ struct Unk_03001800
     u8 unkB9;
     u8 fillerBA[0xE];
     u16 unkC8; // Robattle: effect amount (shown by sub_0801CA60, subtracted by apply_battle_damage_tick)
-    u8 fillerCA[0x6];
+    u16 unkCA; // damage passed to battle_set_damage_vs_armor (sub_0801ECC0)
+    u8 fillerCC[0x4];
     u8 unkD0; // last part (3..0) of the acting Medabot with armor left (sub_0801C660)
     u8 unkD1; // nonzero: battle_check_hit_and_set_timer goes to sub-state 0x1A
     u8 fillerD2[0xC];
     u8 unkDE; // record + 1 of a teammate of unk88 with unkBD bit 3 set (sub_0801D5A8), 0 = none
     u8 unkDF; // that teammate's unkDF (0x1B-0x1D pick the graphics in sub_0801D6A4)
-    u8 fillerE0[0x18];
+    u8 fillerE0[0xC];
+    u16 unkEC; // repeat counter of the part data[1] == 0x30 action (sub_0801EC3C)
+    u8 fillerEE[0xA];
     u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
     u8 fillerF9[0x1F];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part
@@ -557,7 +560,8 @@ struct Unk_03000590
     u8 unkCD; // number shown by the Robattle handler 0x78 (sub_08014920)
     u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (sub_080145BC .. sub_08014754),
               // bit 2 / bit 3 = numbers shown by sub_080147FC / sub_08014920
-    u8 fillerCF[0x8];
+    u8 fillerCF[0x7];
+    u8 unkD6; // flags (bit 1: +10 damage, sub_0801ECC0)
     u8 unkD7; // movement: sub-pixel accumulator, + (0x20 - unkBB) per frame, 1/16 px (battle_bot_move)
     u8 fillerD8[0x2];
     u8 unkDA; // movement: whole pixels moved this frame

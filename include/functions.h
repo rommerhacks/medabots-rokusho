@@ -925,5 +925,7 @@ u32 sub_08036BB8(u16 *amount, u8 rec, u8 part);
 void sub_08036BF4(u32 side);
 void sub_08036C20(u8 slot, u8 part, s16 x, s16 y, u32 n);
 void setup_battle_medapart_scenes(void);
+void calc_bot_evasion_modifier(u8 rec);
+void sub_080355C4(u8 rec);
 
 #endif // GUARD_FUNCTIONS_H
