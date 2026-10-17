@@ -595,8 +595,82 @@ void sub_08021B78(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08021BD8);
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08021C94);
+void sub_08021BD8(void)
+{
+    u32 i;
+
+    lz_decompress_dispatch(gUnk_084CCE48, (void *)0x06014800);
+    CpuFastSet(gUnk_0850E358, (void *)0x050002E0, 8);
+    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x23], 0x21);
+    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x23], 0x22);
+    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x23], 0x23);
+    set_sprite_hidden_flags(0x21, 3);
+    for (i = 0; i < 6; i++)
+    {
+        if (gUnk_03000590[i].unk40)
+        {
+            gUnk_03002C30[0x5A + i * 4].unk23 = 0;
+            gUnk_03002C30[0x5B + i * 4].unk23 = 0;
+            gUnk_03002C30[0x5C + i * 4].unk23 = 0;
+            gUnk_03002C30[0x5D + i * 4].unk23 = 0;
+        }
+    }
+    gUnk_03000440.unk86 = 0;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_08021C94(void)
+{
+    u32 i;
+
+    gUnk_03000440.unk86++;
+    sub_080353AC(gUnk_03000440.unk86);
+    for (i = 0; i < 6; i++)
+    {
+        if (gUnk_03000590[i].unk40)
+        {
+            advance_sprite_anim_frame(0x5A + i * 4, 0);
+            advance_sprite_anim_frame(0x5B + i * 4, 0);
+            advance_sprite_anim_frame(0x5C + i * 4, 0);
+            advance_sprite_anim_frame(0x5D + i * 4, 0);
+        }
+    }
+    process_sprite_anim_commands(gUnk_083B5F80[0x23], 0x21);
+    process_sprite_anim_commands(gUnk_083B5F80[0x23], 0x22);
+    process_sprite_anim_commands(gUnk_083B5F80[0x23], 0x23);
+    if (gUnk_03002C30[0x21].unk22 == 0xFF)
+    {
+        for (i = 0; i < 6; i++)
+        {
+            if (gUnk_03000590[i].unk40)
+            {
+                gUnk_03002C30[0x5A + i * 4].unk23 = 0;
+                gUnk_03002C30[0x5B + i * 4].unk23 = 0;
+                gUnk_03002C30[0x5C + i * 4].unk23 = 0;
+                gUnk_03002C30[0x5D + i * 4].unk23 = 0;
+            }
+        }
+        gBg3Scroll.y = 0;
+        clear_battle_sprite_slot(0x21, 3);
+        gUnk_03001800.unkAA++;
+    }
+}
+
+void sub_08021DAC(void)
+{
+    gUnk_03001800.unk28[gUnk_03001800.unk89].unk2 = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].unk3 = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].unk4 = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].unk5 = 0;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_08021DEC(void)
+{
+    gUnk_03001800.unkA6 = 0x25;
+    gUnk_03001800.unkAA++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08021E04);
 INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08021E2C);
 INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08021EA0);

@@ -663,7 +663,7 @@ void sub_0801275C(void);
 void accumulate_team_armor_stats(void);
 void battle_check_medal_level_up(void);
 void divide_by_100000_b(u8 *buf, u32 value, u32 tile);
-u32 advance_sprite_anim_frame(u8 sprite, u8 b);
+u32 advance_sprite_anim_frame(u32 sprite, u32 b);
 void sub_0801BF64(u16 *counter, u16 max);
 void sub_08067A48(u8 slot);
 
@@ -908,7 +908,7 @@ u32 battle_advance_action_text(void);
 void sub_08035928(u32 rec, u32 target); // guess: record rec targets record target - 1 (unkE0, gUnk_03001800.unk88)
 void sub_08035944(u32 rec, u32 part); // guess: record rec targets part part - 1 (unkE1, gUnk_03001800.unk8B)
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);
-void sub_080353AC(u8 frame);
+void sub_080353AC(u32 frame);
 void sub_0803536C(u8 slot, u8 frame, u16 x);
 void reduce_bot_part_stat(u8 rec, u8 part, u16 amount);
 void sub_08035194(u8 rec);
