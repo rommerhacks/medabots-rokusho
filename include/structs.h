@@ -1127,8 +1127,9 @@ struct SaveData
 // Race course backgrounds (init_battle_background_layers), by gUnk_03006FDC
 struct Unk_08486160
 {
-    u8 unk0;
-    u8 filler1[3];
+    u8 unk0; // nonzero: fixed field gUnk_03006F84 = unk1 (else random, get_entity_speed_value)
+    u8 unk1;
+    u8 filler2[2];
     u8 unk4; // decompress_indexed_asset set for the BG at 0x06004800
     u8 filler5[3];
     u8 unk8; // ... for the BG at 0x06005000

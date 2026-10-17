@@ -127,7 +127,7 @@ extern u8 gUnk_03006F8C[];
 extern s32 gUnk_03006F80; // sub-state to resume after a transition (code_08067160)
 extern u8 gUnk_03006F84;
 extern u8 gUnk_03006F90;
-extern u8 gUnk_03006F94;
+extern u8 gUnk_03006F94[3];
 extern const Func gUnk_08485C90[]; // race sub-states, by gGameSubState (dispatch_game_substate_handler_08068C3C)
 extern u8 gUnk_03006FD0[3][3];
 extern s32 gUnk_03006FE0[3]; // per entry frame counters (battle_update_action_counters)
@@ -136,7 +136,13 @@ extern const u8 gUnk_08485CC4[3][3]; // sprite slots
 extern const u8 gUnk_08485CE3[][7]; // frame delays
 extern bool32 (*const gUnk_08485D30[])(u8); // race sprite animations, by gUnk_03002C30[].unk20 - 1 (update_sprite_animations_tick_0806AF40)
 extern const s8 gUnk_08485E84[];
-extern u8 gUnk_03006FDC;
+extern u8 gUnk_03006FDC; // race course (copied from gUnk_03006D38.unk0, sub_08068C6C)
+extern s32 gUnk_03000000; // scene step frame counter, reset when a step finishes (execute_scene_step)
+extern u8 gUnk_03000004; // scene step, gUnk_08485C7C index
+extern bool32 (*const gUnk_08485C7C[])(void); // scene steps (execute_scene_step)
+extern u8 gUnk_030004DE[];
+extern const u8 gUnk_083F7FF4[]; // random bytes, indexed by the low byte of gFrameCounter
+extern const void *const gUnk_084864E8[];
 extern const struct Unk_08486160 gUnk_08486160[]; // by gUnk_03006FDC (init_battle_background_layers)
 extern const u16 gUnk_0807C260[]; // OBJ palettes (inside the 0x080750D8 data blob)
 extern const u16 gUnk_0807C280[];

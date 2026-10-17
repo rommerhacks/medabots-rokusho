@@ -850,6 +850,8 @@ void init_battle_sprite_c400(void);
 void init_battle_sprite_entry_1(void);
 void init_battle_sprite_large(void);
 void init_battle_bg_layer(void);
+bool32 execute_scene_step(void);
+void get_entity_speed_value(void);
 
 s32 sub_08043C94(void); // random 0-100
 void render_text_sprites_08040EE4(u8 *text, u8 a, u32 x, u32 y, u8 b, u8 c, u8 d, u16 e, s32 f, s32 g);
