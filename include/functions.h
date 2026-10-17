@@ -975,6 +975,7 @@ void sub_0804242C(u8 n); // sorts gUnk_02023000[0..n-1] by key, key2, largest fi
 u32 sub_08033224(u32 rec); // 1 if rec has no effect A (unkC4)
 u32 sub_08033240(u32 rec); // 1 if rec has no effect B (unkC9)
 u32 sub_080332B4(u32 rec);
+u32 sub_080332D0(u32 rec); // 1 if rec has Medaforce gauge (unkC1)
 u32 find_most_damaged_part(u32 rec); // part (+ 1) with armor left that lost the most armor, 0 = none
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount); // unkC8 = unkCC = min(amount, part data[4] - armor unk11)
 u32 battle_check_action_counter(u16 *amount, u8 rec, u8 part);
