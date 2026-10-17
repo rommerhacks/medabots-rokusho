@@ -1726,6 +1726,8 @@ void sub_08013798(void)
     gGameSubState++;
 }
 
+// guess: Robattle sub-state 0x33 opens the Medals screen (game state 4, sub 0x28) on the Rotation page of
+// the current Medabot's Medal; sub_08013798 (0x32) saves VRAM/OAM, battle_phase_dispatch_0801387C (0x3C) restores it.
 void sub_08013824(void)
 {
     sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
@@ -1974,7 +1976,8 @@ void sub_08013FA8(void)
     }
 }
 
-void sub_08014050(void)
+// Robattle sub-state 0x40: loads the "MEDABOTS ROBATTLE" logo sprites, plays sound 0x6E.
+void robattle_start_banner_init(void)
 {
     sub_080189EC();
     gUnk_03001800.unk84 = 1;
@@ -1986,7 +1989,9 @@ void sub_08014050(void)
     gGameSubState++;
 }
 
-void sub_080140B0(void)
+// Robattle sub-state 0x41: "MEDABOTS" (sprite 3) mosaics in, then "ROBATTLE" (sprite 4) stretches in;
+// after 60 frames -> 0x42 (runtime-checked from battle_start.ss0).
+void robattle_start_banner(void)
 {
     switch (gUnk_03000440.unk84)
     {
@@ -2051,6 +2056,7 @@ void sub_0801425C(void)
     gGameSubState = 0x44;
 }
 
+// Robattle sub-state 0x44: turn loop (TIME counter on screen); unk55 flags 2/4/8/0x10 -> 0x60/0x68/0x70/0x78.
 void sub_0801427C(void)
 {
     if (gUnk_03001800.unk55 == 0)
