@@ -1241,3 +1241,31 @@ void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 a, s16 b, s16 
 u32 check_position_table_match(u8 id, u8 which);
 void copy_sprite_tiles_to_vram(u8 *dst, u8 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp); // rearranges tiles from src into dst (rows x cols blocks of the OAM shape / size)
 void decompress_and_load_sprite_tiles(const u32 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp, u16 tile, u32 unused, u8 *buf, u32 useCpu);
+// code_0805EE6C
+void sub_080600E0(void); // gUnk_03002C30[0].unk1A counts 0-63, unk6 = 0x100 + gUnk_080AF980[(count >> 3) & 7]
+void sub_08062A74(u16 id, u8 second); // copies Medapart name pointer id (part * 4 + kind) of gUnk_083BB9CC into gUnk_03000440.unk9E (+0x14 if second), 0xFE-terminated
+void copy_text_with_lookup(); // (u8 *dst, u8 *src, u32 unused, u32 i): copies src[i..] up to 0xFF plus 2 bytes, dst[2] = gUnk_080AFA10[gUnk_03002420]; one caller passes only dst, src
+void sub_0805FD60(void);
+void sub_08060804(void);
+void sub_0805F898(void);
+void sub_08061830(void);
+void dispatch_battle_bg_substate(void); // gUnk_08483DA0[gGameSubState]()
+void advance_substate_on_handler_complete(void);
+void advance_substate_on_handler_complete_1c(void);
+void sub_0805EE6C(void);
+void sub_080612D8(void);
+void sub_0806098C(void);
+void sub_0805F860(void);
+void sub_0805F974(void);
+void sub_0805F9AC(void);
+void sub_08060324(void);
+void sub_080608B4(void);
+void sub_0805FAF0(void); // gUnk_08483CA4[gGameSubState](), BG3 scrolls down every other frame
+void sub_08060118(void); // gUnk_08483CC4[gGameSubState](), BG3 scrolls up every other frame
+void dispatch_options_menu_and_update_counters(void); // gUnk_08483C6C[gGameSubState](), BG3 scrolls diagonally
+void update_fade_effect(void);
+void update_battle_sprite_animation(void);
+void update_animation_timer(void); // gUnk_03006F74->unk3A counts 0-109; every 10th frame copies a 480-byte frame of gDecompressBuffer to VRAM 0x06004020
+void sub_0805F8B0(void);
+void sub_0806142C(void);
+void sub_080617F0(void); // gUnk_08483E8C[gGameSubState](), BG3 scrolls diagonally

@@ -293,7 +293,7 @@ struct Unk_03002C30
     s32 unk10_8:24;
     u8 filler14[0x4];
     u16 unk18;
-    u8 filler1A[0x2];
+    u16 unk1A;
     u8 unk1C;
     u8 filler1D[0x3];
     u8 unk20; // animation state (0-3)
@@ -1060,7 +1060,10 @@ struct Unk_03006F74
     s16 unk3A; // title: blend step (sub_0805BB10)
     u8 filler3C[0xC];
     u8 unk48;
-    u8 filler49[0x7];
+    u8 unk49;
+    u8 unk4A;
+    u8 unk4B;
+    u8 filler4C[0x4];
     u8 unk50[8]; // blend effect state (init_blend_effect, blend_fade_step_08065598)
     u8 filler58[0x20];
     u16 unk78; // link: the other player's keys last frame (sub_0805B9EC)

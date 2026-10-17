@@ -845,3 +845,20 @@ extern const u8 gUnk_0878C750[]; // field menu item list BG3 tilemap (LZ77, item
 extern const u32 gUnk_0878B078[]; // field menu item list BG tiles (dma3_copy_or_decompress, item_menu_load_graphics)
 extern const u16 gUnk_080AF7C0[16]; // OBJ palette 14 of the field menu item list (item_menu_init)
 extern const u16 gUnk_0878AE78[0x100]; // BG palettes of the field menu item list (item_menu_init)
+// code_0805EE6C
+extern const u8 gUnk_080AF980[8]; // sprite 0 frame offsets (sub_080600E0)
+extern const u8 gUnk_080AFA10[]; // indexed by gUnk_03002420 (copy_text_with_lookup)
+extern u8 gUnk_03002420;
+extern const Func gUnk_08483DA0[]; // sub-state handlers (dispatch_battle_bg_substate)
+extern const Func gUnk_08483CA4[]; // sub-state handlers (sub_0805FAF0)
+extern const Func gUnk_08483CC4[]; // sub-state handlers (sub_08060118)
+extern const Func gUnk_08483C6C[]; // sub-state handlers (dispatch_options_menu_and_update_counters)
+extern const Func gUnk_08483E8C[]; // sub-state handlers (sub_080617F0)
+extern const void *const gUnk_08485504[]; // messages by gUnk_03006F74->unk17 (sub_080608B4)
+extern const u8 gUnk_08485580[]; // message text (sub_0806142C, gUnk_03006F74->unk5 set)
+extern const u8 gUnk_08485551[]; // message text (sub_0806142C, gUnk_03006F74->unk5 clear)
+extern const u8 gUnk_08483DC0[][2]; // x, y in tiles by gUnk_03006F74->unk17 (update_battle_sprite_animation)
+extern const u16 gUnk_08483DD4[][4]; // x offsets [unk18][frame]
+extern const u16 gUnk_08483DE4[][4]; // y offsets [unk18][frame]
+extern const u16 gUnk_08483DF4[][4]; // animation frames [unk18][frame]
+extern const u8 gUnk_08483E04[]; // frame index by gUnk_03006F74->unk3A / 10 (update_animation_timer)
