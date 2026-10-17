@@ -2093,7 +2093,7 @@ void sub_08014314(void)
     update_all_battle_status_sprites();
     sub_08019078();
     sort_active_medal_slots();
-    if (gUnk_03001800.unk45 == 0)
+    if (gUnk_03001800.unk45[0][0] == 0)
     {
         gGameSubState = 0x44;
         return;
@@ -2126,7 +2126,7 @@ void sub_080143A0(void)
     battle_bot_advance_rotation(gUnk_03001800.unk87);
     if (sub_0801A6B0())
     {
-        sub_0803F624(&gUnk_03001800.unk45, 0xC, 0);
+        sub_0803F624(gUnk_03001800.unk45[0], 0xC, 0);
         gGameSubState = 0x4C;
     }
     else

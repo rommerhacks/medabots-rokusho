@@ -807,8 +807,8 @@ u32 sub_0801A6EC(u32 rec);
 void sub_08019348(u32 rec);
 void sub_08019544(u32 rec);
 u32 sub_08019440(u32 rec);
-u32 sub_08019FBC(u32 rec, u32 a);
-u32 sub_0801A030(u32 rec, u32 a);
+u32 sub_08019FBC(u32 rec, u32 peek); // 1 when the Medabot has reached its front line (x 0x68 team, 0x88 opponents); queues it unless peek
+u32 sub_0801A030(u32 rec, u32 peek); // 1 when the returning Medabot is back home (x 0x28 / 0xC8); queues it unless peek
 void set_display_digit_type(u8 *buf, u32 value, u32 type);
 void sub_0801A144(u8 *buf, u32 rec);
 void sub_0801A228(u32 rec);
@@ -849,5 +849,9 @@ void sub_0801928C(u32 rec);
 void sub_080192B8(u32 rec);
 void sub_080192E8(u32 rec);
 void sub_0801932C(u32 rec);
+void battle_bot_status_sprite_update(u32 rec);
+void battle_update_status_effect_sprite(u32 rec);
+void update_battle_status_effect_sprite(u32 rec);
+void battle_add_active_medal_slot(u32 rec, u32 prio);
 
 #endif // GUARD_FUNCTIONS_H

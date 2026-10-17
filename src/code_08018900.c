@@ -497,15 +497,130 @@ void sub_08019544(u32 rec)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", update_all_battle_status_sprites);
+void update_all_battle_status_sprites(void)
+{
+    u32 i;
+
+    clear_sprite_table_mask(0x46, 0x12);
+    for (i = 0; i <= 5; i++)
+    {
+        if (gUnk_03000590[i].unk40)
+        {
+            battle_bot_status_sprite_update(i);
+            battle_update_status_effect_sprite(i);
+            update_battle_status_effect_sprite(i);
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", battle_bot_status_sprite_update);
 INCLUDE_ASM("asm/nonmatching/code_08018900", battle_update_status_effect_sprite);
 INCLUDE_ASM("asm/nonmatching/code_08018900", update_battle_status_effect_sprite);
 INCLUDE_ASM("asm/nonmatching/code_08018900", battle_setup_part_sprite);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08019EF0);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08019FBC);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801A030);
-INCLUDE_ASM("asm/nonmatching/code_08018900", battle_add_active_medal_slot);
+
+u32 sub_08019EF0(void)
+{
+    u32 i;
+    u32 a = 0;
+    u32 b = 0;
+
+    if (gUnk_03000440.unk89 != 1 || gUnk_03000B90 == 0)
+    {
+        for (i = 0; i <= 5; i++)
+        {
+            if (gUnk_03000590[i].unk40)
+            {
+                a += sub_08019FBC(i, 0);
+                b += sub_0801A030(i, 0);
+            }
+        }
+    }
+    else
+    {
+        for (i = 3; i <= 5; i++)
+        {
+            if (gUnk_03000590[i].unk40)
+            {
+                a += sub_08019FBC(i, 0);
+                b += sub_0801A030(i, 0);
+            }
+        }
+        for (i = 0; i <= 2; i++)
+        {
+            if (gUnk_03000590[i].unk40)
+            {
+                a += sub_08019FBC(i, 0);
+                b += sub_0801A030(i, 0);
+            }
+        }
+    }
+    if (a != 0 || b != 0)
+        return 1;
+    return 0;
+}
+
+u32 sub_08019FBC(u32 rec, u32 peek)
+{
+    u32 reached = 0;
+
+    if (!(gUnk_03000590[rec].unkBD & 4))
+    {
+        if (rec <= 2)
+        {
+            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 == 0x68)
+                reached = 1;
+        }
+        else
+        {
+            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 == 0x88)
+                reached = 1;
+        }
+        if (peek == 0 && reached)
+            battle_add_active_medal_slot(rec, gUnk_03000590[rec].parts[3].unk12);
+    }
+    return reached;
+}
+
+u32 sub_0801A030(u32 rec, u32 peek)
+{
+    u32 reached = 0;
+
+    if (gUnk_03000590[rec].unkBD & 4)
+    {
+        if (rec <= 2)
+        {
+            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 == 0x28)
+                reached = 1;
+        }
+        else
+        {
+            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 == 0xC8)
+                reached = 1;
+        }
+        if (peek == 0 && reached)
+            battle_add_active_medal_slot(rec, gUnk_03000590[rec].parts[3].unk12);
+    }
+    return reached;
+}
+
+void battle_add_active_medal_slot(u32 rec, u32 prio)
+{
+    u32 i;
+    struct Unk_03001800 *g;
+
+    i = 0;
+    g = &gUnk_03001800;
+    for (; i <= 5; i++)
+    {
+        if (g->unk45[i][0] == 0)
+        {
+            g->unk45[i][0] = rec + 1;
+            g->unk45[i][1] = prio;
+            return;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", iterate_bots_setup_battle_sprites);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801A144);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801A228);
@@ -514,7 +629,29 @@ INCLUDE_ASM("asm/nonmatching/code_08018900", render_battle_text_sprites);
 INCLUDE_ASM("asm/nonmatching/code_08018900", battle_setup_text_sprites_0801A418);
 INCLUDE_ASM("asm/nonmatching/code_08018900", battle_setup_text_sprites_0801A4F4);
 INCLUDE_ASM("asm/nonmatching/code_08018900", update_battle_sprite_animations);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sort_active_medal_slots);
+
+void sort_active_medal_slots(void)
+{
+    u32 n, i;
+    u8 r, p;
+
+    for (n = 5; n != 0; n--)
+    {
+        for (i = 0; i < n; i++)
+        {
+            if (gUnk_03001800.unk45[0][i * 2 + 1] < gUnk_03001800.unk45[0][(i + 1) * 2 + 1])
+            {
+                r = gUnk_03001800.unk45[0][(i + 1) * 2];
+                p = gUnk_03001800.unk45[0][(i + 1) * 2 + 1];
+                gUnk_03001800.unk45[0][(i + 1) * 2] = gUnk_03001800.unk45[0][i * 2];
+                gUnk_03001800.unk45[0][(i + 1) * 2 + 1] = gUnk_03001800.unk45[0][i * 2 + 1];
+                gUnk_03001800.unk45[0][i * 2] = r;
+                gUnk_03001800.unk45[0][i * 2 + 1] = p;
+            }
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", battle_calc_bot_count_minus_one_mod3);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801A678);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801A6B0);

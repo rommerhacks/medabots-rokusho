@@ -349,8 +349,8 @@ struct Unk_03001800
     u8 unk39[8]; // copied from gUnk_083C3B04[unk38] (sub_080121A8)
     u8 unk41[3]; // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
     u8 unk44; // Robattle: bit (1 << team Medabot) set by sub_08013AE4
-    u8 unk45; // Robattle: 0 = no Medabot queued (sub_08014314); cleared with the next 11 bytes
-    u8 filler46[0xB];
+    u8 unk45[6][2]; // Robattle action queue: record + 1 (0 = free), priority = legs Propulsion
+                    // (battle_add_active_medal_slot, sorted by sort_active_medal_slots; sub_08014314 tests [0][0])
     u8 unk51;
     u8 unk52;
     u8 unk53;
