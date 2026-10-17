@@ -128,6 +128,7 @@ extern s32 gUnk_03006F80; // sub-state to resume after a transition (code_080671
 extern u8 gUnk_03006F84;
 extern u8 gUnk_03006F90;
 extern u8 gUnk_03006F94[3];
+extern u8 gUnk_03006FA0[3][4][3]; // per racer: 4 bytes per stage, passed to init_battle_medabot_sprites
 extern const Func gRaceSubStates[]; // race sub-states, by gGameSubState (race_dispatch_substate)
 extern u8 gUnk_03006FD0[3][3];
 extern s32 gUnk_03006FE0[3]; // per entry frame counters (race_update_racer_anim_counters)

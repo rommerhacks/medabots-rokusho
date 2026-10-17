@@ -314,7 +314,9 @@ struct Unk_03002C30
     u8 unk2F;
     u16 unk30;
     u16 unk32;
-    u8 filler34[0xC];
+    u8 filler34[0x6];
+    u16 unk3A; // previous frame's unk1A (update_battle_bot_entry_animations)
+    u8 filler3C[0x4];
 };
 
 struct Unk_030055A0
