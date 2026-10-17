@@ -603,10 +603,48 @@ void sub_0802DCB4(void)
     gUnk_083AE908[gUnk_03001800.unkAA]();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802DCDC);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802DD98);
+void sub_0802DCDC(void)
+{
+    lz_decompress_dispatch(gUnk_084E046C, (void *)0x06014800);
+    CpuFastSet(gUnk_0850EEB8, (void *)0x050002E0, 8);
+    gUnk_03002C30[0x21].unk0 = 0xC404;
+    gUnk_03002C30[0x21].unk1C = 0;
+    gUnk_03002C30[0x21].unk4 = 0xE0;
+    gUnk_03002C30[0x21].unkA = 7;
+    gUnk_03002C30[0x21].unkB = 0xF0;
+    if (!(gUnk_03001800.unkF8 & 1))
+        gUnk_03002C30[0x21].unk2 = 0xB8;
+    else
+        gUnk_03002C30[0x21].unk2 = 0x40;
+    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x69], 0x21);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802DD98(void)
+{
+    process_sprite_anim_commands(gUnk_083B5F80[0x69], 0x21);
+    if (gUnk_03002C30[0x21].unk4 == 0x40)
+    {
+        gUnk_03000440.unk86 = 0;
+        gUnk_03002C30[0x21].unk25 = 0x14;
+        gUnk_03002C30[0x21].unk24 = 0;
+        gUnk_03002C30[0x21].unk28 = 0;
+        gUnk_03002C30[0x21].unk23 = 0;
+        gUnk_03001800.unkAA++;
+    }
+    else
+        gUnk_03002C30[0x21].unk4 = (gUnk_03002C30[0x21].unk4 + 1) & 0xFF;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802DE1C);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802DF18);
+
+void sub_0802DF18(void)
+{
+    gUnk_03002C30[0x21].unk6 = 0x7F02;
+    play_sound_effect(0x38);
+    gUnk_03001800.unkAA++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802DF48);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802DF98);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802DFE8);
