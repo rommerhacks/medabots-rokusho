@@ -1710,10 +1710,78 @@ void sub_0802BD1C(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BD6C);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BD94);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BE44);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BEEC);
+void sub_0802BD6C(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AE790[gUnk_03001800.unkAA]();
+}
+
+void sub_0802BD94(void)
+{
+    gUnk_03002C30[0x21].unk0 = 0xC604;
+    gUnk_03002C30[0x21].unk1C = 0;
+    gUnk_03002C30[0x21].unk2 = 0x78;
+    gUnk_03002C30[0x21].unk4 = 0x40;
+    gUnk_03002C30[0x21].unkA = 6;
+    gUnk_03002C30[0x21].unkB = 0xF0;
+    gUnk_03002C30[0x21].unk6 = 0x4800;
+    gUnk_03002C30[0x21].unk8 = 0x40;
+    gUnk_03002C30[0x21].unk9 = 0x40;
+    gUnk_03002C30[0x21].unk18 = 0;
+    gUnk_03002C30[0x21].unk2D = 0;
+    gUnk_03002C30[0x21].unk2E = 1;
+    gUnk_03000440.unk86 = 0;
+    gUnk_03000440.unk84 = 0;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802BE44(void)
+{
+    u32 v;
+
+    if (gUnk_03000440.unk84 <= 2)
+    {
+        if (gUnk_03000440.unk86 == 0)
+        {
+            gUnk_03000440.unk84++;
+            play_sound_effect(0x4C);
+        }
+        if (++gUnk_03000440.unk86 == gUnk_083AE7D0[gUnk_03000440.unk84 - 1])
+            gUnk_03000440.unk86 = 0;
+    }
+    if (gUnk_03002C30[0x21].unk18 == 0)
+        gUnk_03002C30[0x21].unk2E++;
+    v = (u16)(gUnk_03002C30[0x21].unk2E * 16 + gUnk_03002C30[0x21].unk18) & 0x3FF;
+    gUnk_03002C30[0x21].unk18 = v;
+    if (gUnk_03002C30[0x21].unk2E == 5 && v == 0)
+    {
+        clear_battle_sprite_slot(0x21, 1);
+        gUnk_03001800.unkAA++;
+    }
+}
+
+void sub_0802BEEC(void)
+{
+    u32 i;
+
+    sub_0803836C();
+    gUnk_03001800.unk60 = sub_08032FC4(gUnk_03001800.unk87);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 != 0
+            && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 != 0)
+            gUnk_03001800.unkD2[i] = 1;
+    }
+    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 != 0
+            && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 != 0)
+            gUnk_03001800.unkD6[i] = 1;
+    }
+    gUnk_03001800.unkAA++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BF9C);
 INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802C0DC);
 INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802C1A4);
