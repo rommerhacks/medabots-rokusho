@@ -379,9 +379,10 @@ struct Unk_03001800
     u8 unk8B;
     u8 unk8C[3];
     u8 unk8F[3][4]; // per team member: gUnk_030017A0 bytes 3-6
-    u8 filler9B[0x6];
-    u8 unkA1;
-    u8 fillerA2[0xC6];
+    u8 filler9B;
+    u8 unk9C[5]; // cleared by sub_0801AEB4
+    u8 unkA1[5]; // cleared by sub_0801AED4
+    u8 fillerA6[0xC2];
     u8 unk168; // won Medapart: kind (0 head, 1 right arm, 2 left arm, 3 legs)
     u8 unk169; // won Medapart: id
     u8 unk16A; // won Medapart: 1 = not owned before

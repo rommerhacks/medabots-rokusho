@@ -218,7 +218,9 @@ void command_ring_init_icon_hidden(u32 a);
 u32 command_ring_rotate_step(u32 a);
 u32 sub_08016154(u32 i, u32 dir); // guess: turns command ring icon i one step (dir 0 right, 1 left), returns 1 after the 7th step
 void animate_battle_sprites(u32 idx);
-void sub_0801ABF8(void);
+void sub_0801ABF8(void); // text_window_init(1, 2, 0) unless gUnk_03001360 is set (guess: skipped in link Robattles)
+u32 sub_0801AC6C(void); // game_state_execute_handler_a() unless gUnk_03001360 is set (then 1)
+void sub_0801AC98(u32 rec); // draws the BG1 message frame tilemaps on the team (rec 0-2) or opponent side
 void sub_08034F08(void);
 u32 get_random_battle_weight_entry(u32 idx);
 void sub_08036270(void);
@@ -816,6 +818,13 @@ void render_battle_text_sprites(u8 *buf, u32 rec, u32 slot); // battle_number_po
 void battle_setup_text_sprites_0801A418(u8 *buf, u32 rec, u32 slot); // same with tiles 0x5100 + digit, palette 0xC
 void battle_setup_text_sprites_0801A4F4(u8 *buf, u32 rec, u32 slot, u32 x, u32 y); // same at a given x, y
 void update_battle_sprite_animations(u8 *buf, u32 rec, u32 slot); // battle_number_popup_update for up to 5 digit sprites
+u32 sub_0801AC24(u32 msg); // run_message(gUnk_083C65C4[msg]) unless gUnk_03001360 is set (then 1)
+void sub_0801AD10(u32 rec); // redraws a Medabot's panel (left_b when the Medaforce gauge is full) and its gauge
+void sub_0801AD48(u32 rec); // guess: Medaforce effect: 8 sprites 0x78-0x7F (tiles 0x616-0x619) lined up at y 0x78, x 0x5C team / 0x94 opponents
+u32 sub_0801ADE8(u32 rec); // moves those sprites 4 px per step toward the other side; 1 when all are done
+void sub_0801AE70(void); // animates those sprites (tile 0x616 + frame, every 4 frames)
+void sub_0801AEB4(void);
+void sub_0801AED4(void);
 void copy_player_medals_to_battle_bots(void);
 void copy_team_slots_to_battle_bots(void);
 void init_enemy_bot_medal(u8 i);
