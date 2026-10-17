@@ -131,8 +131,20 @@ extern u8 gUnk_03006F94[3];
 extern const Func gRaceSubStates[]; // race sub-states, by gGameSubState (race_dispatch_substate)
 extern u8 gUnk_03006FD0[3][3];
 extern s32 gUnk_03006FE0[3]; // per entry frame counters (race_update_racer_anim_counters)
+extern const u8 gUnk_087B2CCC[]; // race BG tiles (LZ77, load_bg_tilemaps_and_palette)
+extern const u8 gUnk_087B3710[]; // race BG2 tilemap (LZ77)
+extern const u8 gUnk_087B384C[]; // race BG3 tilemap (LZ77)
+extern const u16 gUnk_087B3AF0[]; // race BG palette
+extern const u8 gUnk_087C52C8[]; // race BG1 tiles (LZ77, init_battle_bg_layer1)
+extern const u8 gUnk_087C5518[]; // race BG1 tiles, second part (LZ77)
+extern const u16 gUnk_087C55D0[]; // race BG1 palettes
+extern const u16 gUnk_087C55F0[];
+extern u8 gUnk_03006FEC[3]; // per racer (set to 0x20 at the start, sub_0806A4C0)
+extern u8 gUnk_03006FF0[3]; // per racer (cleared at the start, sub_0806A4C0)
+extern s32 gUnk_03006FF8[2];
+extern s32 gUnk_03007000[2];
 extern const Func gUnk_08485C48[]; // by gGameState (dispatch_game_mode_handler)
-extern const u8 gUnk_08485CC4[3][3]; // sprite slots
+extern u8 gUnk_08485CC4[3][3]; // sprite slots (ROM; declared without const, the code reloads it after stores)
 extern const u8 gUnk_08485CE3[][7]; // frame delays
 extern bool32 (*const gUnk_08485D30[])(u8); // race sprite animations, by gUnk_03002C30[].unk20 - 1 (update_sprite_animations_tick_0806AF40)
 extern const s8 gUnk_08485E84[];
@@ -929,4 +941,6 @@ extern const u8 gUnk_080AFA08[4][2]; // icon x, y in BG2 tiles (battle_menu_high
 struct FuncTable7 { Func f[7]; };
 extern const struct FuncTable7 gUnk_080AFA20; // sub-state handlers by gGameSubState (dispatch_substate_handler)
 extern const struct FuncTable7 gUnk_080AFEA8; // sub-state handlers by gGameSubState (dispatch_scene_substate_and_scroll)
+struct PtrTable3 { const u8 *const *p[3]; };
+extern const struct PtrTable3 gUnk_080AFE9C; // scene texts by gUnk_03006F74->unk5 (scene_text_scroll_step)
 extern const struct FuncTable7 gUnk_080AFEC4; // sub-state handlers by gGameSubState (dispatch_battle_end_substate)

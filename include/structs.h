@@ -1082,7 +1082,11 @@ struct Unk_03006F74
     u8 unk58[0x20]; // name text buffer (sub_0805EE94 copies it to the player or Medal name)
     u16 unk78; // link: the other player's keys last frame (sub_0805B9EC)
     s8 unk7A;
-    u8 filler7B[0x1F5];
+    u8 filler7B[0x2];
+    u8 unk7D; // length of the text at *unkAC (scene_text_scroll_step)
+    u8 filler7E[0x2E];
+    const u8 *const *unkAC; // scene text (scene_text_scroll_step)
+    u8 fillerB0[0x1C0];
     u8 unk270[0x30]; // message text buffer (sub_08061180)
 };
 
