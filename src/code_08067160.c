@@ -244,6 +244,12 @@ void dispatch_game_mode_handler(void)
 INCLUDE_ASM("asm/nonmatching/code_08067160", setup_screen_transition_effect_080682CC);
 INCLUDE_ASM("asm/nonmatching/code_08067160", setup_screen_transition_effect_080684F0);
 
+// Unused (nothing calls it): copies the saved palette back to PLTT.
+void sub_080686D0(void)
+{
+    DmaSet(3, gUnk_0300002C, PLTT, 0x80000200);
+}
+
 bool32 scene_transition_step_080686F4(void)
 {
     if (gUnk_08485C68[gUnk_03000004]()) {
