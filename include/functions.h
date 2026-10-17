@@ -339,6 +339,7 @@ void load_battle_sequence_commands(void);
 void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile); // fills a rectangle of the BG map at bgcnt's screen base
 void load_battle_entity_palette(u32 list, u32 entry, u32 slot);
 void init_game_state_entry(const u16 *pos, u8 arg, u32 slot); // copies the current command's operands to gUnk_03001800.unk102
+void sub_0801BF78(const u16 *pos, u8 arg, u32 slot); // same as init_game_state_entry
 u32 sub_0803E79C(void);
 void soft_reset_to_title(void);
 void sub_0803F624(u8 *dst, u32 size, u8 val);
