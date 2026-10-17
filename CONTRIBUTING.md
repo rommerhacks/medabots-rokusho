@@ -82,6 +82,12 @@
 * Choosing a table with `if/else` before one call: gcc hoists one of the two loads above the
   compare. Writing the whole call in both branches lets gcc crossjump the tails and keeps the
   original `ldr r4, =A; b common` shape (medapart_detail_show_hint).
+* The same goes for a constant picked by a condition: `v = c ? 0x50 : 0x40` (or if/else into a
+  temp) is if-converted to `movs #0x40; cmp; beq; movs #0x50`; writing the stores in both arms
+  gives the original's branch (command_ring_pulse_selected).
+* Float math links against the ROM's soft-float routines (`__addsf3`, `__mulsf3`, `__divsf3`,
+  `__floatsisf`, `__fixunssfsi` are aliased in `asm/lib/libgcc.s`); `(float)u32` gives the
+  `blt; x >> 1 | x & 1; add` sequence (scale_to_bar_fill).
 * A function returning 0/1 whose original tests the "nothing to do" case first: write
   `if (!cond) ret = 0; else { ...; ret = 1; } return ret;` (early `return`s put the body first).
 * Hardware I/O addresses (`OAM`, `VRAM`, `INTR_CHECK`, ...) are in `include/gba/io_reg.h`;
