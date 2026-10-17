@@ -178,3 +178,12 @@
   needs `if (x == A) goto call; if (x != B) break; call: f();` (sub_08029354).
 * `strh` of a `0xFFFFxxxx` literal / `movs; rsbs` for a byte: the source wrote a negative constant
   (`unk0 = -0x39DC`, `unkB = -0x10`) (sub_0802AAF8).
+* Switch cases that share a tail in the original (`movs r2, #0` hoisted into each case, then a branch to
+  a shared `strb r1, [r0]`): write every case out in full. gcc tail-merges identical case tails itself;
+  a hand-written `goto common` gives different code (sub_0802B5AC).
+* `x = (a + b) & 0x3FF` stored to a u16, where the original loads the mask into a spare register and
+  copies it (`ldr r4, =0x3FF; adds r0, r4, #0; ands`): cast the sum, `(u16)(a + b) & 0x3FF`
+  (sub_0802BE44, sub_0802C960).
+* A loop over `i` with a sprite slot `i + 0x21` where the original recomputes `slot << 6` each time
+  (no pointer strength reduction) and truncates the slot at calls: write `i + 0x21` at every use, not a
+  separate `slot` counter (sub_0802C960).
