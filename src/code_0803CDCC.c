@@ -787,7 +787,8 @@ u32 run_message(const void *msg)
     return 0;
 }
 
-void game_state_advance_substate(void)
+// run_message state 0: back up the palettes, then dim them (state 1); unk0 != 0 skips to state 2.
+void message_open(void)
 {
     u8 v = gUnk_03000440.unk0;
     if (v == 0)
@@ -802,7 +803,8 @@ void game_state_advance_substate(void)
     }
 }
 
-void sub_0803FB94(void)
+// run_message state 1: blend all palettes toward 0x01B2 by unk1C * 2 / 32, 10 frames.
+void message_dim_palettes_step(void)
 {
     blend_obj_palettes_to_color_0803F684(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
     blend_obj_palettes_to_color_0803F998(0x1B2, gUnk_03000440.unk1C * 2, 0x3FFF);
@@ -812,7 +814,8 @@ void sub_0803FB94(void)
         gUnk_03000440.unk1C++;
 }
 
-void sub_0803FBDC(void)
+// run_message state 2: unk2 == 1 jumps to state 4; else show BG0 (the window) at BG0CNT 0x500.
+void message_show_window(void)
 {
     if (gUnk_03000440.unk2 == 1)
     {
@@ -844,7 +847,8 @@ INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0804070C);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_080407A4);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_08040820);
 
-void sub_080408D0(void)
+// run_message state 6: run message command gUnk_083B27C0[unk8[unkC + 1]] (each steps through its own table by unk1B).
+void message_run_command(void)
 {
     gUnk_083B27C0[gUnk_03000440.unk8[gUnk_03000440.unkC + 1]]();
 }
@@ -909,7 +913,8 @@ void sub_08040AF0(void)
         gUnk_03000440.unk1B += 2;
 }
 
-void sub_08040B0C(void)
+// Message close step: undo message_dim_palettes_step one frame at a time (unk1C down to 0).
+void message_undim_palettes_step(void)
 {
     blend_obj_palettes_to_color_0803F684(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
     blend_obj_palettes_to_color_0803F998(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
@@ -919,7 +924,8 @@ void sub_08040B0C(void)
         gUnk_03000440.unk1C--;
 }
 
-void sub_08040B50(void)
+// Last message close step: run_message state 8 (done, run_message returns 1).
+void message_close(void)
 {
     gUnk_03000440.unk4 = 8;
 }
