@@ -1039,7 +1039,7 @@ struct Unk_03006F74
     u8 unk6;
     u8 unk7;
     u32 unk8;
-    u8 unkC;
+    u8 unkC; // Item screen: cursor item index (page = unkC / 5)
     u8 unkD;
     u8 unkE;
     u8 unkF;

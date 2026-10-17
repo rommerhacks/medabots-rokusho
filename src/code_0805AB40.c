@@ -4,7 +4,7 @@ INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805AB40);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", unpack_item_inventory_to_buffer);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", update_battle_medapart_icons);
 
-void calc_fade_sprite_position(struct Unk_03002C30 *sprite)
+void item_menu_set_cursor_pos(struct Unk_03002C30 *sprite)
 {
     sprite->unk2 = 0x54;
     sprite->unk4 = (u8)(gUnk_03006F74->unkC % 5) * 16 + 0x1C;
@@ -21,12 +21,13 @@ void sub_0805B3E4(s32 x, s32 y, s32 n)
         *p++ = 0;
 }
 
-void get_fade_progress_fifth(void)
+void item_menu_draw_page_numbers(void)
 {
     sub_0805A258((u8)(gUnk_03006F74->unkC / 5) + 1, 2, 3);
     sub_0805A258((gUnk_03006F74->unk10 - 1) / 5 + 1, 5, 3);
 }
 
+// guess: SELECT reorder, swaps the marked item (unk13) with the cursor item (unkC)
 void swap_inventory_items(void)
 {
     memswap(gItemInventory[gUnk_03006F74->unk13], gItemInventory[gUnk_03006F74->unkC], 2);
@@ -558,9 +559,9 @@ void fade_step_and_transition_to_mode3(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", dispatch_rotation_menu_substate);
 
-void update_fade_transition_and_counters(void)
+void item_menu_update(void)
 {
-    gUnk_08483BA0[gGameSubState]();
+    gItemMenuStates[gGameSubState]();
     if (gFrameCounter & 1)
     {
         gBg3Scroll.x++;
@@ -594,9 +595,9 @@ void sub_0805CA94(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805CAD4);
+INCLUDE_ASM("asm/nonmatching/code_0805AB40", item_menu_load_graphics);
 
-void sub_0805CC44(void)
+void item_menu_init(void)
 {
     u32 zero;
     struct Unk_03006F74 *w;
@@ -609,7 +610,7 @@ void sub_0805CC44(void)
     if (gUnk_03006F74->unk10)
     {
         gUnk_03002C30[0x53].unk0 |= 0x4000;
-        calc_fade_sprite_position(&gUnk_03002C30[0x53]);
+        item_menu_set_cursor_pos(&gUnk_03002C30[0x53]);
     }
     w = gUnk_03006F74;
     if ((w->unk10 - 1) / 5)
@@ -632,9 +633,26 @@ void sub_0805CC44(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805CD68);
+void item_menu_fade_in(void)
+{
+    struct Unk_03000440 *b = &gUnk_03000440;
+    if (b->unk84 <= 8)
+    {
+        if (gUnk_03006F74->unk6 == 0)
+            blend_obj_palettes_to_color_0803F684(0, 0x20 - b->unk84 * 4, 0x3FFF);
+        else
+            blend_obj_palettes_to_color_0803F684(0, 0x20 - b->unk84 * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        gUnk_03000440.unk84++;
+    }
+    else
+    {
+        text_window_init(1, 2, 0);
+        gGameSubState++;
+    }
+}
 
-void sub_0805CDF0(void)
+void item_menu_show_description(void)
 {
     u8 id;
     struct Unk_03006F74 *w;
@@ -648,16 +666,17 @@ void sub_0805CDF0(void)
     }
     else
         id = 0x3F;
-    if (run_message(gUnk_084851CC[id]))
+    if (run_message(gItemDescriptions[id]))
         gGameSubState++;
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805CE4C);
 
+// guess: starts the SELECT reorder: shows the second cursor (sprite 0x54) on the cursor item
 void init_fade_sprite_and_start_fade(void)
 {
     struct Unk_03006F74 **pw = &gUnk_03006F74;
-    calc_fade_sprite_position(&gUnk_03002C30[0x54]);
+    item_menu_set_cursor_pos(&gUnk_03002C30[0x54]);
     gUnk_03002C30[0x54].unk0 |= 0x4000;
     gUnk_03002C30[0x54].unk2++;
     gUnk_03002C30[0x54].unk4++;

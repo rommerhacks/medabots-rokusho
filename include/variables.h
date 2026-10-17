@@ -829,9 +829,9 @@ extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (dma_load_batt
 extern u32 gUnk_0300534C;
 extern u8 gUnk_03006D40[0x200];
 extern u32 gUnk_03006D30;
-extern const Func gUnk_08483BA0[]; // by gGameSubState (update_fade_transition_and_counters)
+extern const Func gItemMenuStates[]; // field menu Item screen states, by gGameSubState (item_menu_update)
 extern const Func gUnk_08483C44[]; // by gGameSubState (sub_0805E29C)
-extern const u8 *const gUnk_084851CC[]; // messages by item id, 0x3F with an empty list (sub_0805CDF0)
+extern const u8 *const gItemDescriptions[]; // item description messages by item id (runtime: item 1 Skirt -> "Transform Goods No.1 / A frilly mini-skirt."); 0x3F with an empty list (item_menu_show_description)
 extern const u8 gUnk_080AF755[]; // 0x53-byte message copied to the stack (load_rotation_grid_and_advance)
 extern const Func gUnk_08483B00[]; // by gGameState (dispatch_game_state_handler_0805BA94)
 extern const u8 gUnk_080AF6EC[]; // 4 bytes copied to an unused local (init_multiplayer_id)
@@ -839,9 +839,9 @@ extern const u8 gUnk_080AF5FC[]; // per gUnk_030057E0.unkC32: 10 x 4 next-entry 
 extern const u8 gUnk_080AF674[]; // same, used when gUnk_03006F74->unk18 is set (sub_0805B7A0)
 extern const u8 gUnk_083BEA14[]; // per Medabot (gUnk_083B1888 index): sprite palette - 4 (load_battle_sprite_tiles)
 extern const u16 gUnk_080AF740[3][3]; // 3 x 3 tile masks (bit 15 first) of the title option rows (sub_0805BCC0)
-extern const u8 gUnk_0878C484[]; // field menu item list BG1 tilemap (LZ77, sub_0805CAD4)
-extern const u8 gUnk_0878C5B4[]; // field menu item list BG2 tilemap (LZ77, sub_0805CAD4)
-extern const u8 gUnk_0878C750[]; // field menu item list BG3 tilemap (LZ77, sub_0805CAD4)
-extern const u32 gUnk_0878B078[]; // field menu item list BG tiles (dma3_copy_or_decompress, sub_0805CAD4)
-extern const u16 gUnk_080AF7C0[16]; // OBJ palette 14 of the field menu item list (sub_0805CC44)
-extern const u16 gUnk_0878AE78[0x100]; // BG palettes of the field menu item list (sub_0805CC44)
+extern const u8 gUnk_0878C484[]; // field menu item list BG1 tilemap (LZ77, item_menu_load_graphics)
+extern const u8 gUnk_0878C5B4[]; // field menu item list BG2 tilemap (LZ77, item_menu_load_graphics)
+extern const u8 gUnk_0878C750[]; // field menu item list BG3 tilemap (LZ77, item_menu_load_graphics)
+extern const u32 gUnk_0878B078[]; // field menu item list BG tiles (dma3_copy_or_decompress, item_menu_load_graphics)
+extern const u16 gUnk_080AF7C0[16]; // OBJ palette 14 of the field menu item list (item_menu_init)
+extern const u16 gUnk_0878AE78[0x100]; // BG palettes of the field menu item list (item_menu_init)

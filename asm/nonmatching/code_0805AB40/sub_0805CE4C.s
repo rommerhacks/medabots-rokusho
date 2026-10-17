@@ -557,7 +557,7 @@ _0805D304:
 	bl play_sound_effect
 	bl sub_0803FB0C
 	ldr r0, _0805D32C @ =0x030040F0
-	bl calc_fade_sprite_position
+	bl item_menu_set_cursor_pos
 	ldr r1, _0805D330 @ =0x0300137C
 	movs r0, #4
 	str r0, [r1]

@@ -218,7 +218,7 @@ _0805AF2C:
 	bge _0805AF3C
 	b _0805AE34
 _0805AF3C:
-	bl get_fade_progress_fifth
+	bl item_menu_draw_page_numbers
 	ldr r4, [r7, #0x10]
 	mov sp, r4
 	add sp, #0x28

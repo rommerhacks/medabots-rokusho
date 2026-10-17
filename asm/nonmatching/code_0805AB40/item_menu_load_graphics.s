@@ -1,7 +1,7 @@
 	.syntax unified
 
-	thumb_func_start sub_0805CAD4
-sub_0805CAD4: @ 0x0805CAD4
+	thumb_func_start item_menu_load_graphics
+item_menu_load_graphics: @ 0x0805CAD4
 	push {r4, r5, r6, r7, lr}
 	ldr r1, _0805CBF4 @ =0x0400000A
 	ldr r0, _0805CBF8 @ =0x00001E05
