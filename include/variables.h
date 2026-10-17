@@ -170,6 +170,13 @@ extern s32 gUnk_03000000; // scene step frame counter, reset when a step finishe
 extern u8 gUnk_03000004; // scene step, gUnk_08485C7C index
 extern bool32 (*const gUnk_08485C7C[])(void); // scene steps (execute_scene_step)
 extern bool32 (*const gUnk_08485C68[])(void); // transition steps (scene_transition_step_080686F4)
+extern const Func gUnk_08485F1C[]; // game mode 3 state 3 (story intro) sub-states, by gGameSubState (dispatch_game_substate_handler_0806DFA4)
+extern const Func gUnk_08485F38[]; // game mode 3 state 0 (boot logos) sub-states, by gGameSubState (battle_scene_dispatch)
+extern const Func gUnk_08485F68[]; // game mode 3 state 1 sub-states, by gGameSubState (sub_0806E90C)
+extern const void *const gUnk_08486EEC[]; // story intro texts, by page gUnk_03001800_s.unkC.h (dispatch_battle_event_script)
+extern const void *const gUnk_08487328[]; // story intro compressed tiles (to 0x06008000), by page
+extern const void *const gUnk_08487358[]; // story intro compressed tilemaps (30x20), by page
+extern const void *const gUnk_08487388[]; // story intro palettes (0xE0 halfwords), by page
 extern u8 gUnk_03000005; // scene step speed: frames per fade level
 extern u16 gUnk_03000008[]; // BG0 tilemap offsets of the rows the wipe steps clear / fill
 extern u16 gUnk_03000028; // palette fade target color
