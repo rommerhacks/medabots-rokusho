@@ -310,7 +310,27 @@ bool32 scene_step_wipe_clear_bg0(void)
     return FALSE;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08067160", scene_step_palette_fade_in);
+bool32 scene_step_palette_fade_in(void)
+{
+    s32 *c = &gUnk_03000000;
+    s32 n = gUnk_03000005;
+    s32 m = n * 32;
+    s32 t = *c;
+    if (t == m)
+        return TRUE;
+    if (t % n == 0) {
+        int i, k, inv;
+        k = t / n;
+        inv = 0x20 - k;
+        for (i = 0; i < 0x200; i++) {
+            gPaletteBuffer[i] = (((gUnk_0300002C[i] & 0x1F) * k + (gUnk_03000028 & 0x1F) * inv) >> 5)
+                   + ((((gUnk_0300002C[i] & 0x3E0) * k + (gUnk_03000028 & 0x3E0) * inv) >> 5) & 0x3E0)
+                   + ((((gUnk_0300002C[i] & 0x7C00) * k + (gUnk_03000028 & 0x7C00) * inv) >> 5) & 0x7C00);
+        }
+        DmaSet(3, gPaletteBuffer, PLTT, 0x84000100);
+    }
+    return FALSE;
+}
 
 bool32 scene_step_fade_out_bldy(void)
 {
