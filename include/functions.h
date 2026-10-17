@@ -1197,3 +1197,4 @@ u32 setup_oam_sprite_entries(struct OamData *oams, void *b, void *c, const struc
 u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const struct SpriteAnchor *e, u8 f, u16 g);
 u16 copy_sprite_oam_entries(void *a, void *b, u16 c, s32 d, u16 e, u8 f); // d is a u8 in the definition; copy_sprite_oam_with_vflip passes an s8
 void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 a, s16 b, s16 depth); // u16 params in the definition
+u32 check_position_table_match(u8 id, u8 which);

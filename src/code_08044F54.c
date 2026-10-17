@@ -134,7 +134,24 @@ void nullsub_08047570(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047574);
+void sub_08047574(void)
+{
+    sub_080496C8((u8 *)&gUnk_03005310, 0x3C);
+    sub_080496C8((u8 *)&gUnk_030057A0, 0x38);
+    sub_080496C8((u8 *)&gUnk_03006D14, 4);
+    sub_080496C8((u8 *)&gUnk_030057DC, 4);
+    sub_080496C8((u8 *)&gUnk_0300534C, 4);
+    sub_080496C8((u8 *)gUnk_030055A0, 0x200);
+    sub_080496C8(gUnk_03006D40, 0x200);
+    sub_080496C8((u8 *)&gUnk_03006F40, 0x34);
+    sub_080496C8((u8 *)&gUnk_03006D38, 8);
+    sub_080496C8((u8 *)&gUnk_03006D20, 0x10);
+    sub_080496C8((u8 *)&gUnk_030057D8, 4);
+    sub_080496C8((u8 *)&gMapScriptData, 4);
+    sub_080496C8((u8 *)&gUnk_03005350, 0x240);
+    sub_080496C8((u8 *)&gUnk_03006D30, 4);
+    sub_080496C8((u8 *)&gUnk_030064A0, 0x874);
+}
 
 void sub_0804763C(void)
 {
@@ -332,7 +349,54 @@ void sub_08047E4C(void)
 {
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", lookup_position_table_value);
+u32 lookup_position_table_value(u8 id, u8 which)
+{
+    u8 buf[16];
+    s32 v;
+    s32 match = check_position_table_match(id, which);
+
+    if (match)
+    {
+        u32 found = 0;
+        s32 i;
+        struct Unk_030017A0 *p;
+
+        for (i = 0, p = gUnk_030017A0; i <= 8; i++)
+        {
+            if (p->unk0 == 3)
+            {
+                switch (which)
+                {
+                case 0:
+                    if (p->unk3 == id)
+                        found = 1;
+                    break;
+                case 1:
+                    if (p->unk4 == id)
+                        found = 1;
+                    break;
+                case 2:
+                    if (p->unk5 == id)
+                        found = 1;
+                    break;
+                case 3:
+                    if (p->unk6 == id)
+                        found = 1;
+                    break;
+                }
+            }
+            if (found)
+                break;
+            p++;
+        }
+        load_part_data(gUnk_030017A0[i].unk6, 3, buf);
+        v = buf[1] - 100;
+        gUnk_03006D38.unk6 = gUnk_030017A0[i].unk1;
+    }
+    if (match)
+        return v;
+    return -1;
+}
 
 u32 check_position_table_match(u8 id, u8 which)
 {

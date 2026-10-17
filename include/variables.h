@@ -795,3 +795,6 @@ extern const Func gUnk_083D1F84[]; // by gGameState (sub_0804763C)
 extern const u8 *const gUnk_08413514[]; // per area id: tile ids, resolved through sub_080481C4 (resolve_tile_from_battle_state)
 extern const u8 *const gUnk_083F80F4[]; // compressed OBJ tile sets, NULL entries fall back to 1 (decompress_battle_tile_graphics)
 extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (dma_load_battle_palettes)
+extern u32 gUnk_0300534C;
+extern u8 gUnk_03006D40[0x200];
+extern u32 gUnk_03006D30;
