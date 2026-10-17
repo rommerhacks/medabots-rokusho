@@ -398,6 +398,13 @@ extern const void *const gUnk_08485788[]; // save screen messages
 extern const void *const gUnk_08485BD8[]; // messages (sub_0805D9B8 uses 18)
 extern const Func gSaveScreenStates[15]; // save screen states, by gGameSubState (save_screen_update): 6 stops the music, 7 writes the save, 8 / 12 show the result
 
+extern const u8 gUnk_0878DE10[]; // save screen BG1 tilemap (LZ77, decompress_and_write_tilemap)
+extern const u8 gUnk_0878DFE0[]; // save screen BG2 tilemap
+extern const u8 gUnk_0878E104[]; // save screen BG3 tilemap
+extern const u32 gUnk_0878CC64[]; // save screen BG tiles (dma3_copy_or_decompress)
+extern const u8 gUnk_08784CB0[]; // save screen BG tiles, after gUnk_0878CC64 (LZ77)
+extern const u8 gUnk_08784DA4[]; // save screen OBJ tiles (LZ77)
+
 #endif // GUARD_VARIABLES_H
 extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
 extern u8 gUnk_03000B94; // index into gUnk_083AD3B0 (battle music)

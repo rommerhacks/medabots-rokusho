@@ -30,7 +30,29 @@ void sub_0805B470(struct Unk_03002C30 *attr)
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805B4B0);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805B7A0);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", update_battle_sprite_priority_flags);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", decompress_and_write_tilemap);
+
+void decompress_and_write_tilemap(const void *src, u32 bgcnt)
+{
+    s32 w, h, x, y, cols;
+    u16 *data, *dst;
+
+    LZ77UnCompWram(src, gDecompressBuffer);
+    w = *(u32 *)gDecompressBuffer;
+    h = *(u32 *)0x02030004;
+    data = (u16 *)(gDecompressBuffer + 0x10);
+    dst = (u16 *)(((bgcnt >> 8) & 0x1F) * 0x800 + VRAM);
+    cols = (((bgcnt & 0xC000) >> 14) & 1) ? 64 : 32;
+    for (y = 0; y < h; y++)
+    {
+        for (x = 0; x < cols; x++)
+        {
+            if (x < w)
+                *dst = *data++;
+            dst++;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", tilemap_offset_tiles_and_palette);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", init_multiplayer_id);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", dispatch_game_state_handler_0805BA94);
@@ -168,7 +190,27 @@ void sub_0805D5E8(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D628);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D6F8);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D8AC);
+
+void sub_0805D8AC(void)
+{
+    if (gUnk_03000440.unk84 <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, 32 - gUnk_03000440.unk84 * 4, 0x3FFF);
+        blend_obj_palettes_to_color_0803F998(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        if (++gUnk_03000440.unk84 == 1)
+        {
+            REG_DISPCNT |= 0x200;
+            REG_DISPCNT |= 0x400;
+            REG_DISPCNT |= 0x800;
+            REG_DISPCNT |= 0x1000;
+        }
+    }
+    else
+    {
+        text_window_init(1, 2, 0);
+        gGameSubState++;
+    }
+}
 
 void sub_0805D948(void)
 {

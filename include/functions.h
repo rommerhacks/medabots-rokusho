@@ -1156,6 +1156,7 @@ u16 ReadEepromDword(u16 address, u16 *data); // EEPROM library: reads 8 bytes
 u16 ProgramEepromDword(u16 address, u16 *data); // EEPROM library: writes 8 bytes
 u16 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 bytes and verifies
 // code_0805AB40
+void decompress_and_write_tilemap(const void *src, u32 bgcnt); // LZ77 tilemap with a w, h header (u32 each, 16-byte header) into the BG screen block of bgcnt
 void sub_0805B3E4(s32 x, s32 y, s32 n); // clears n tilemap entries at (x, y) of the BG map at 0x0600B000
 void sub_0805B470(struct Unk_03002C30 *sprite);
 s16 sub_0805BB10(u16 step);
