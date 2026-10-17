@@ -601,17 +601,116 @@ u32 battle_part_unusable(u32 rec, u32 part)
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", load_bg3_tilemap_08488764);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", draw_battle_bot_portraits);
+void load_bg3_tilemap_08488764(void)
+{
+    set_tilemap_and_decompress_bg(14, 3, gUnk_08488764, REG_BG3CNT, 0x200);
+}
+
+void draw_battle_bot_portraits(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[i].unk40)
+            fill_tilemap_rect_08042698(2, 2, 2, i * 3 + 4, REG_BG3CNT, (gUnk_03000590[i].parts[3].data[1] << 2) + 0x8084);
+        else
+            fill_tilemap_rect_08042698(2, 2, 2, i * 3 + 4, REG_BG3CNT, 0x8230);
+    }
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[i + 3].unk40)
+            fill_tilemap_rect_08042698(2, 2, 26, i * 3 + 4, REG_BG3CNT, (gUnk_03000590[i + 3].parts[3].data[1] << 2) + 0x8084);
+        else
+            fill_tilemap_rect_08042698(2, 2, 26, i * 3 + 4, REG_BG3CNT, 0x8230);
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", get_bot_part_effective_values);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", load_bot_part_sprite);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", load_all_bot_part_sprites);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08015924);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", setup_battle_bot_sprites_08015960);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", setup_all_battle_bot_sprite_positions);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", setup_bot_battle_sprites_08015A00);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", load_battle_bg_layers);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", decompress_two_bg1_layers);
+
+void load_bot_part_sprite(u32 rec)
+{
+    u8 *p = gUnk_03001800.unk64;
+    get_bot_part_effective_values(rec, p);
+    decompress_sprite_to_vram_08042D94(p[0], p[1], p[2], p[3], rec);
+}
+
+void load_all_bot_part_sprites(void)
+{
+    u32 i;
+    for (i = 0; i <= 5; i++)
+    {
+        if (gUnk_03000590[i].unk40)
+            load_bot_part_sprite(i);
+    }
+}
+
+u32 sub_08015924(u32 rec)
+{
+    if (rec <= 2)
+    {
+        if (gUnk_03000590[rec].unkBD & 4)
+            return 1;
+        return 0;
+    }
+    if (gUnk_03000590[rec].unkBD & 4)
+        return 0;
+    return 1;
+}
+
+void setup_battle_bot_sprites_08015960(u32 rec, u32 x, u32 y)
+{
+    u8 *p = gUnk_03001800.unk64;
+    u32 flip;
+    get_bot_part_effective_values(rec, p);
+    flip = sub_08015924(rec);
+    init_battle_medabot_sprites(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip,
+                                gUnk_03001800.unk39[3] + 2, rec * 4 + 0x5A);
+}
+
+void setup_all_battle_bot_sprite_positions(void)
+{
+    u32 i;
+    for (i = 0; i <= 5; i++)
+    {
+        if (gUnk_03000590[i].unk40)
+        {
+            u32 x = 200;
+            if (i <= 2)
+                x = 40;
+            setup_battle_bot_sprites_08015960(i, x, (i % 3) * 24 + 36);
+        }
+    }
+}
+
+void setup_bot_battle_sprites_08015A00(u32 rec, u32 x, u32 y)
+{
+    u8 *p = gUnk_03001800.unk64;
+    u32 flip;
+    get_bot_part_effective_values(rec, p);
+    flip = sub_08015924(rec);
+    setup_battle_sprite_group(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip,
+                              gUnk_03001800.unk39[3] + 2, rec * 4 + 0x5A);
+    gUnk_03002C30[rec * 4 + 0x5B].unk0 &= 0xFDFF;
+    gUnk_03002C30[rec * 4 + 0x5C].unk0 &= 0xFDFF;
+    gUnk_03002C30[rec * 4 + 0x5B].unk18 = 0;
+    gUnk_03002C30[rec * 4 + 0x5C].unk18 = 0;
+}
+
+void load_battle_bg_layers(void)
+{
+    set_tilemap_and_decompress_bg(0, 13, gUnk_08488830, REG_BG1CNT, 0x258);
+    set_tilemap_and_decompress_bg(0, 17, gUnk_08488744, REG_BG1CNT, 0x210);
+    set_tilemap_and_decompress_bg(12, 15, gUnk_084887A4, REG_BG1CNT, 0x230);
+    set_tilemap_and_decompress_bg(20, 16, gUnk_084887F4, REG_BG1CNT, 0x240);
+}
+
+void decompress_two_bg1_layers(void)
+{
+    set_tilemap_and_decompress_bg(12, 21, gUnk_084887A4, REG_BG1CNT, 0x230);
+    set_tilemap_and_decompress_bg(20, 21, gUnk_084887F4, REG_BG1CNT, 0x240);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", render_bot_name_sprites);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", draw_battle_panel_left_a);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", draw_battle_panel_left_b);

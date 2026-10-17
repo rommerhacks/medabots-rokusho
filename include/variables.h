@@ -356,4 +356,10 @@ extern const u16 gUnk_084E2FD8[];
 
 extern const u16 gUnk_0850DDF8[];
 
+extern const u8 gUnk_08488764[]; // Robattle screen tilemaps (compressed)
+extern const u8 gUnk_08488830[];
+extern const u8 gUnk_08488744[];
+extern const u8 gUnk_084887A4[];
+extern const u8 gUnk_084887F4[];
+
 #endif // GUARD_VARIABLES_H

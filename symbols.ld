@@ -368,3 +368,10 @@ gUnk_084F37E0       = 0x084F37E0;
 gUnk_084C84E4       = 0x084C84E4;
 gUnk_084E2FD8       = 0x084E2FD8;
 gUnk_0850DDF8       = 0x0850DDF8;
+
+/* code_080147FC: Robattle screen tilemaps */
+gUnk_08488764       = 0x08488764;
+gUnk_08488830       = 0x08488830;
+gUnk_08488744       = 0x08488744;
+gUnk_084887A4       = 0x084887A4;
+gUnk_084887F4       = 0x084887F4;
