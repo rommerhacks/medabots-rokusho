@@ -52,7 +52,67 @@ void battle_sprite_rotate_angles(u32 dir, u32 delta)
 
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D538);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D5A0);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D5E0);
+
+void sub_0803D5E0(void)
+{
+    if (sub_0803E79C())
+    {
+        gUnk_03000440.unk86 = 0;
+        gGameSubState++;
+    }
+}
+
+void sub_0803D608(void)
+{
+    if (gUnk_03000440.unk86 == 8)
+    {
+        gUnk_03000440.unk86 = 0;
+        gGameSubState++;
+    }
+    else
+    {
+        gUnk_03000440.unk86++;
+    }
+}
+
+void sub_0803D634(void)
+{
+    if (gUnk_03000B90 == 0)
+    {
+        gUnk_03000440.unk8D = gFrameCounter;
+        gUnk_03005010.unk6 = gUnk_03000440.unk8D + 0x8000;
+    }
+    gGameSubState++;
+}
+
+void sub_0803D674(void)
+{
+    if (gUnk_03000B90 != 0)
+    {
+        u16 v = gUnk_03005010.unk8[0][1];
+        if (!(v & 0x8000))
+            return;
+        gUnk_03000440.unk8D = v;
+    }
+    gGameSubState++;
+}
+
+void sub_0803D6AC(void)
+{
+    gUnk_03000440.unk84 = 0;
+    gUnk_03001800.unk51 = 0;
+    gUnk_03001800.unk52 = 0;
+    gUnk_03001800.unk53 = 0;
+    gUnk_03001800.unk54 = 0;
+    gUnk_03001800.unk1A6 = 0;
+    gUnk_03001800.unk1A8 = 0;
+    gUnk_03001800.unk1AA = 0;
+    gUnk_03001800.unk1AC = 0;
+    gUnk_03001800.unk1AF = 0;
+    gUnk_03001800.unk1B0 = 1;
+    gUnk_03000440.unk86 = 0;
+    gGameSubState = 0x50;
+}
 
 void sub_0803D71C(void)
 {
