@@ -457,6 +457,7 @@ u32 get_item_quantity_by_id(u8 id)
 
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", item_add_quantity);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08042318);
+INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080423A0);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_0804242C);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", rng_next_080424B8);
 
@@ -1091,4 +1092,40 @@ void set_oam_sprite_shape_size(u8 *oam, s32 h, s32 w)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044E64);
+u32 sub_08044E64(s32 shape, s32 size)
+{
+    u32 dims = 0;
+
+    switch (shape)
+    {
+    case 0:
+        switch (size)
+        {
+        case 0: dims = 0x00080008; break;
+        case 0x40000000: dims = 0x00100010; break;
+        case (s32)0x80000000: dims = 0x00200020; break;
+        case (s32)0xC0000000: dims = 0x00400040; break;
+        }
+        break;
+    case 0x4000:
+        switch (size)
+        {
+        case 0: dims = 0x00080010; break;
+        case 0x40000000: dims = 0x00080020; break;
+        case (s32)0x80000000: dims = 0x00100020; break;
+        case (s32)0xC0000000: dims = 0x00200040; break;
+        }
+        break;
+    case 0x8000:
+        switch (size)
+        {
+        case 0: dims = 0x00100008; break;
+        case 0x40000000: dims = 0x00200008; break;
+        case (s32)0x80000000: dims = 0x00200010; break;
+        case (s32)0xC0000000: dims = 0x00400020; break;
+        }
+        break;
+    }
+    return dims;
+}
+
