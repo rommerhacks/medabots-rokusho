@@ -1251,7 +1251,7 @@ void battle_scene_init_state_machine(void)
             init_battle_bot_sprites();
             apply_battle_blend_effect_b();
             decompress_to_ewram_27000((const u8 *)gUnk_083B24A8[gUnk_03001800.unk38 * 5 + 1]);
-            gVBlankCallback = sub_08044100;
+            gVBlankCallback = battle_vblank_update_bg;
             gGameSubState++;
             gUnk_03000440.unk139 = 0;
             break;
@@ -1786,7 +1786,7 @@ void battle_phase_dispatch_0801387C(void)
             break;
         case 5:
             CpuFastSet((void *)0x02028000, gUnk_03002C30, 0x800);
-            gVBlankCallback = sub_08044100;
+            gVBlankCallback = battle_vblank_update_bg;
             gGameSubState++;
             gUnk_03000440.unk139 = 0;
             break;

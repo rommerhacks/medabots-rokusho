@@ -111,7 +111,7 @@ init_battle_field_screen: @ 0x0806939C
 	strh r5, [r0]
 	strh r5, [r0, #2]
 	ldr r1, _0806950C @ =0x030017F0
-	ldr r0, _08069510 @ =sub_08044100
+	ldr r0, _08069510 @ =battle_vblank_update_bg
 	str r0, [r1]
 	pop {r4, r5}
 	pop {r0}
@@ -145,5 +145,5 @@ _08069500: .4byte 0x05000160
 _08069504: .4byte 0x0300057C
 _08069508: .4byte 0x03001C04
 _0806950C: .4byte 0x030017F0
-_08069510: .4byte sub_08044100
+_08069510: .4byte battle_vblank_update_bg
 	.syntax divided

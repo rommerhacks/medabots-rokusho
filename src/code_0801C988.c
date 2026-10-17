@@ -1641,7 +1641,7 @@ void sub_0801FBC4(void)
     case 4:
         load_all_bot_part_sprites();
         iterate_bots_setup_battle_sprites();
-        gVBlankCallback = sub_08044100;
+        gVBlankCallback = battle_vblank_update_bg;
         gUnk_03000440.unk84 = 0;
         gUnk_03001800.unk1AE = 0;
         gUnk_03001800.unkAA++;

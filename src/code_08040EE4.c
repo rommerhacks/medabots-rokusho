@@ -857,7 +857,7 @@ u32 sub_080440D4(void)
     return 1;
 }
 
-void sub_08044100(void)
+void battle_vblank_update_bg(void)
 {
     update_scroll_movement_b();
     advance_battle_animation_frame(gUnk_03001800.unk38);
