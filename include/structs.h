@@ -227,7 +227,6 @@ struct Unk_03000440
     u8 unk13A;
 };
 
-
 struct Unk_03002C30
 {
     u16 unk0;
@@ -337,6 +336,21 @@ struct EncounterBot
     u8 fillerB;
 };
 
+// Battle Medapart record (0x18 bytes, 4 per gUnk_03000590 record from +0x48; battle_bots_load_parts).
+struct BattlePart
+{
+    u8 data[0xD]; // part data record (load_part_data); data[0xA] summed as armor (accumulate_team_armor_stats)
+    u8 fillerD;
+    u8 unkE; // copied to the record's unkE0 / unkE1 when this part is chosen (battle_bot_select_part)
+    u8 unkF;
+    u8 unk10; // head: copy of data[8]
+    u8 unk11; // current armor, starts as data[4] = max armor (Status screen, runtime-checked); 0 = broken
+              // (legs: data[4..9] copied to unk11..unk16)
+    u8 unk12; // legs: data[5] (Propulsion; sub_0801928C)
+    u8 filler13[4];
+    u8 unk17; // part id
+};
+
 struct Unk_03001800
 {
     u8 unk0; // encounter: opponent message index (gUnk_083C2BBC)
@@ -382,7 +396,13 @@ struct Unk_03001800
     u8 filler9B;
     u8 unk9C[5]; // cleared by sub_0801AEB4
     u8 unkA1[5]; // cleared by sub_0801AED4
-    u8 fillerA6[0xC2];
+    u8 fillerA6;
+    u8 unkA7; // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to (sub_0801B3AC)
+    u8 fillerA8[0x70];
+    u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part
+    u8 filler119[0x3];
+    struct BattlePart unk11C; // saved part (data and id), restored by sub_0801B3AC
+    u8 filler134[0x34];
     u8 unk168; // won Medapart: kind (0 head, 1 right arm, 2 left arm, 3 legs)
     u8 unk169; // won Medapart: id
     u8 unk16A; // won Medapart: 1 = not owned before
@@ -424,21 +444,6 @@ struct Unk_03000BE0
 
 };
 
-// Battle Medapart record (0x18 bytes, 4 per gUnk_03000590 record from +0x48; battle_bots_load_parts).
-struct BattlePart
-{
-    u8 data[0xD]; // part data record (load_part_data); data[0xA] summed as armor (accumulate_team_armor_stats)
-    u8 fillerD;
-    u8 unkE; // copied to the record's unkE0 / unkE1 when this part is chosen (battle_bot_select_part)
-    u8 unkF;
-    u8 unk10; // head: copy of data[8]
-    u8 unk11; // current armor, starts as data[4] = max armor (Status screen, runtime-checked); 0 = broken
-              // (legs: data[4..9] copied to unk11..unk16)
-    u8 unk12; // legs: data[5] (Propulsion; sub_0801928C)
-    u8 filler13[4];
-    u8 unk17; // part id
-};
-
 // 256-byte records at gUnk_03000590 (6 of them, cleared together); each starts with a Medal record copy.
 struct Unk_03000590
 {
@@ -461,7 +466,7 @@ struct Unk_03000590
     u8 unkB9;
     u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
     u8 unkBB;
-    u8 fillerBC;
+    u8 unkBC; // high nibble cleared by sub_0801B274
     u8 unkBD; // flags (bit 2 toggled by the Robattle handlers sub_080143A0 / sub_08014404)
     u8 fillerBE;
     u8 unkBF;
@@ -488,7 +493,8 @@ struct Unk_03000590
     u8 unkDA; // movement: whole pixels moved this frame
     u8 fillerDB[0x2];
     u8 unkDD; // link Robattle: part choice exchanged over the serial link (sub_08014B34, sub_08014C30)
-    u8 fillerDE[0x2];
+    u8 unkDE; // copy of unkDD (sub_0801B274)
+    u8 unkDF; // skill of the part unkDD (1-3), 0 otherwise (sub_0801B274)
     u8 unkE0;
     u8 unkE1;
     u8 fillerE2[0x1E];

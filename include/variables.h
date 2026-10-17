@@ -387,3 +387,4 @@ extern const s8 gUnk_083AD3B3[]; // 32 y steps of the number pop-up over a Medab
 extern const u8 gUnk_0848886C[]; // Robattle screen tilemap (compressed), opponent side of gUnk_08488830 (sub_0801AC98)
 extern u8 gUnk_03001360; // Robattle: nonzero skips the message windows unless gUnk_03000440.unk89 == 1 (sub_0801ABF8..sub_0801AC6C)
 extern const u8 gUnk_084E3058[]; // 32-byte OBJ palette, copied to OBJ palette 6 (sub_0801B004)
+extern u32 gUnk_030018A8[16]; // cleared in two 32-byte halves by sub_0801B274
