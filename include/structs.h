@@ -514,7 +514,7 @@ struct Unk_03001800
     u8 unk160; // result of battle_advance_action_text (sub_0801FA68)
     u8 unk161;
     u8 unk162;
-    u8 unk163; // set by a gUnk_083AF000 step to run the next step in the same frame (sub_08033840)
+    u8 unk163; // set by a gUnk_083AF000 step to run the next step in the same frame (battle_run_action_script)
     u8 unk164; // nonzero: Medal skill levels can grow (increment_medal_skill_level)
     u8 unk165; // set to 1 when a Medal skill levels up (sub_08031120 then goes to sub-state 0x60)
     u8 unk166; // skill type that levelled up

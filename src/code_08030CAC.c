@@ -1503,7 +1503,9 @@ void sub_080337CC(void)
     gUnk_03001800.unk51 = 1;
 }
 
-void sub_08033840(void)
+// Runs the acting Medabot's action script (gUnk_083C6B28[gUnk_03001800.unkA8]): commands < 0x80 go to
+// gUnk_083AF000, others are skipped; a command sets unk163 to run the next one in the same frame.
+void battle_run_action_script(void)
 {
     if (sub_0803EED8() == 0)
     {
