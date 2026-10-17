@@ -335,7 +335,7 @@ struct Unk_03000BE0
     u8 unk4; // Medals help: gUnk_083B69C8 message index
     u8 unk5; // level (Medals help: Medaforce slots open at 10 / 30 / 60)
     u8 unk6; // Medals help: gUnk_083B70AC message index
-    u8 filler7;
+    u8 unk7; // icon (tile 0xD340 + unk7 * 4, sub_0800A0B8)
     u8 unk8; // Medal sprite variant, 0-4 (gUnk_083AC494[unk1][unk8])
     u8 filler9;
     u8 unkA[0xE]; // name text
