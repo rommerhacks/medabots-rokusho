@@ -885,7 +885,12 @@ void add_bot_to_defeated_list(u8 rec);
 u32 sub_080353CC(u8 slot);
 u32 move_sprite_toward_target(u8 slot);
 u32 sub_08032FC4(u32 rec); // first record of rec's side (0 or 3)
-u32 sprite_move_toward_target(u8 slot, s16 x, u16 y);
+void set_sprite_hidden_flags(u8 first, u8 count);
+void sub_08035694(u32 slot);
+u32 update_sprite_deceleration(u32 slot, s16 a, s16 b);
+void check_sprite_overlap_and_adjust(u32 slot, u32 b);
+void sub_080356B4(u32 slot);
+u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);
 void sub_080353AC(u8 frame);
 void sub_0803536C(u8 slot, u8 frame, u16 x);
 void reduce_bot_part_stat(u8 rec, u8 part, u16 amount);
