@@ -179,6 +179,30 @@ extern const u8 gUnk_084C1FD4[];
 extern u8 gUnk_02020800[]; // BG tile backup (0x800 bytes of VRAM 0x06002800 while a Medawatch submenu runs)
 extern const Func gMedabotsScreenHandlers[]; // game state 3 sub-state handlers
 extern const Func gMedalsScreenHandlers[]; // game state 4 (Medals screen) sub-state handlers
+extern const Func gMedapartsScreenHandlers[]; // game state 5 (Medaparts screen) sub-state handlers
+extern const u8 gUnk_084EBF50[];
+extern const u8 gUnk_084C4014[];
+extern const u8 gUnk_084C4330[];
+extern const u8 gUnk_084C36F0[];
+extern const u8 gUnk_084EF550[];
+extern const u8 gUnk_084EFF74[];
+extern const u8 gUnk_084F0BF0[];
+extern const u8 gUnk_084F1D34[];
+extern const u8 gUnk_084ECB3C[];
+extern const u8 gUnk_084C43C0[];
+extern const u8 gUnk_084C47A0[];
+extern const u8 gUnk_084C47E0[];
+extern const u8 gUnk_084C4BAC[];
+extern const u8 gUnk_084EF5A4[];
+extern const u8 gUnk_084F0068[];
+extern const u8 gUnk_084F0CA4[];
+extern const u8 gUnk_084F1EC8[];
+extern const u16 gUnk_084F3460[];
+extern const u16 gUnk_084F3620[];
+extern const void *const gUnk_083BE3E4[]; // messages (run_message), Medaparts detail help for head / arms, indexed by sub_0800F6CC()
+extern const void *const gUnk_083BE92C[]; // messages (run_message), Medaparts detail help for legs, indexed by sub_0800F6CC()
+extern const void *const gUnk_083B6E24[]; // messages (run_message), indexed by the part record byte unkEE
+extern const void *const gUnk_083BD884[]; // messages (run_message), Medaparts help pages
 extern const u8 gUnk_084E7264[];
 extern const u8 gUnk_084C32DC[];
 extern const u8 gUnk_0848833C[];
