@@ -1752,4 +1752,63 @@ u32 find_next_free_sprite_slot(u8 first, u8 count)
     return first;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", render_text_sprites_08040DB8);
+void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align, u16 prio)
+{
+    u8 len;
+    u8 w;
+    u32 i;
+
+    x *= 8;
+    y *= 8;
+    len = 0;
+    for (i = 0; str[i] != 0xFE; i++)
+        len += gUnk_083B4C88[str[i]][0];
+    w = width * 8;
+    if (len <= w)
+    {
+        switch (align)
+        {
+        case 0:
+            len = (w - len) / 2;
+            x += len;
+            break;
+        case 1:
+            break;
+        case 2:
+            len = w - len;
+            x += len;
+            break;
+        }
+    }
+    else
+    {
+        switch (align)
+        {
+        case 0:
+            len = (len - w) / 2;
+            x -= len;
+            break;
+        case 1:
+            break;
+        case 2:
+            len = len - w;
+            x -= len;
+            break;
+        }
+    }
+    for (i = 0; str[i] != 0xFE; i++)
+    {
+        if (str[i] != 0)
+        {
+            gUnk_03002C30[slot + i].unk0 = (prio << 10) | 0xC004;
+            gUnk_03002C30[slot + i].unk2 = x;
+            gUnk_03002C30[slot + i].unk4 = y;
+            gUnk_03002C30[slot + i].unkA = pal;
+            gUnk_03002C30[slot + i].unk1C = 0;
+            gUnk_03002C30[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
+            gUnk_03002C30[slot + i].unk6 = str[i] - 1;
+        }
+        x += gUnk_083B4C88[str[i]][0];
+    }
+}
+

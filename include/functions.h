@@ -770,7 +770,7 @@ void sub_08041C14(u8 sprite, u8 frame, u16 y); // sets gUnk_03002C30[sprite].unk
 void sub_08041C5C(u8 sprite, u8 frame, u16 x); // guess: horizontal counterpart of sub_08041C14
 void memcpy_bytes_08041D04(const void *src, void *dst, u8 n);
 void memswap(void *a, void *b, u32 n);
-void render_text_sprites_08040DB8(u8 *digits, u8 a, u32 b, u32 c, u8 d, u8 e, u8 f, u16 g);
+void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align, u16 prio); // 0xFE-terminated, one sprite per character from slot; x / y / width in tiles; align 0 center, 1 left, 2 right
 void process_sprite_anim_commands(const u8 *cmds, u8 slot);
 void sub_08044094(void);
 void field_menu_init_cursor(void);
