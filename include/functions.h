@@ -702,6 +702,7 @@ void init_battle_bot_sprites(void);
 u32 find_next_active_bot(u32 rec);
 u32 sub_080330E8(u32 idx);
 void init_battle_sprite_entry_0801BC04(u32 rec);
+void sync_medal_stats_from_battle_bot(u32 rec);
 void apply_battle_blend_effect_b(void);
 void decompress_to_ewram_27000(const u8 *src);
 void sub_08044100(void);

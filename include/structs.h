@@ -451,7 +451,13 @@ struct Unk_03001800
     struct BattlePart unk11C; // saved part (data and id), restored by sub_0801B3AC
     u8 filler134[0x8];
     struct Vec16 unk13C[6]; // per record: x, y - 4 of its battle sprite (copy_battle_entity_positions)
-    u8 filler154[0x14];
+    u8 filler154[0x8];
+    u8 unk15C[3]; // per Medapart select slot (unk82 - 1): nonzero skips the part sprite (sub_0801B894)
+    u8 filler15F[0x5];
+    u8 unk164; // nonzero: Medal skill levels can grow (increment_medal_skill_level)
+    u8 unk165; // set to 1 when a Medal skill levels up (sub_08031120 then goes to sub-state 0x60)
+    u8 unk166; // skill type that levelled up
+    u8 unk167; // its new level
     u8 unk168; // won Medapart: kind (0 head, 1 right arm, 2 left arm, 3 legs)
     u8 unk169; // won Medapart: id
     u8 unk16A; // won Medapart: 1 = not owned before

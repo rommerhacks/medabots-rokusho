@@ -1327,7 +1327,27 @@ u32 find_next_active_bot(u32 rec)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08018900", determine_battle_part_action_priority);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B894);
+
+void sub_0801B894(void)
+{
+    clear_battle_sprite_slot(9, 1);
+    if (gUnk_03001800.unk82 != 0 && gUnk_03001800.unk15C[gUnk_03001800.unk82 - 1] == 0
+     && gUnk_03000590[gUnk_03001800.unk80].parts[gUnk_03001800.unk82 - 1].unkE)
+    {
+        gUnk_03002C30[9].unk0 = 0xC404;
+        gUnk_03002C30[9].unk1C = 0;
+        gUnk_03002C30[9].unk4 = gUnk_03002C30[gUnk_03000590[gUnk_03001800.unk80].parts[gUnk_03001800.unk82 - 1].unkE * 4 + 0x59].unk4 - 4;
+        gUnk_03002C30[9].unk2 = gUnk_03002C30[gUnk_03000590[gUnk_03001800.unk80].parts[gUnk_03001800.unk82 - 1].unkE * 4 + 0x59].unk2;
+        gUnk_03002C30[9].unkA = 6;
+        gUnk_03002C30[9].unkB = 0xF0;
+        gUnk_03002C30[9].unk24 = gUnk_03000590[gUnk_03001800.unk80].parts[gUnk_03001800.unk82 - 1].unkF;
+        gUnk_03002C30[9].unk25 = gUnk_03000590[gUnk_03001800.unk80].parts[gUnk_03001800.unk82 - 1].unkE;
+        gUnk_03002C30[9].unk26 = 0;
+        gUnk_03002C30[9].unk27 = 0;
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[24], 9);
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B9C4);
 
 void sub_0801BACC(void)
@@ -1429,7 +1449,42 @@ void init_game_state_entry(const u16 *pos, u8 arg, u32 slot)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08018900", process_animation_script);
-INCLUDE_ASM("asm/nonmatching/code_08018900", increment_medal_skill_level);
+
+void increment_medal_skill_level(u32 rec)
+{
+    u32 skill;
+
+    if (rec > 2)
+        return;
+    if (gUnk_03000440.unk89 == 1)
+        return;
+    if (gUnk_03000590[rec].medal.unk5 == 100)
+        return;
+    if (gUnk_03001800.unk164 == 0)
+        return;
+    if (gUnk_03000590[rec].unkDD > 3)
+        skill = gUnk_03000590[rec].unkA8[1];
+    else
+        skill = gUnk_03000590[rec].parts[gUnk_03000590[rec].unkDD - 1].data[2];
+    if (gUnk_03000590[rec].medal.unk20[skill] == 100)
+    {
+        if (gUnk_03000590[rec].medal.unk28[skill] <= 6)
+            gUnk_03000590[rec].medal.unk28[skill]++;
+    }
+    else
+    {
+        gUnk_03000590[rec].medal.unk28[skill]++;
+        if (gUnk_03000590[rec].medal.unk28[skill] > 7)
+        {
+            gUnk_03000590[rec].medal.unk28[skill] = 0;
+            gUnk_03000590[rec].medal.unk20[skill]++;
+            gUnk_03001800.unk165 = 1;
+            gUnk_03001800.unk166 = skill;
+            gUnk_03001800.unk167 = gUnk_03000590[rec].medal.unk20[skill];
+        }
+    }
+    sync_medal_stats_from_battle_bot(rec);
+}
 
 void sync_medal_stats_from_battle_bot(u32 rec)
 {
@@ -1658,5 +1713,28 @@ void sub_0801C660(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C6C4);
+void sub_0801C6C4(void)
+{
+    switch (gUnk_03001800.unk51)
+    {
+    case 0:
+        lz_decompress_dispatch(gUnk_084C907C, (void *)0x06014800);
+        CpuFastSet(gUnk_0850E058, (void *)0x050002C0, 8);
+        break;
+    case 1:
+        lz_decompress_dispatch(gUnk_084C9288, (void *)0x06014800);
+        CpuFastSet(gUnk_0850E078, (void *)0x050002C0, 8);
+        break;
+    case 2:
+        lz_decompress_dispatch(gUnk_084C9624, (void *)0x06014800);
+        CpuFastSet(gUnk_0850E098, (void *)0x050002C0, 8);
+        break;
+    case 3:
+        lz_decompress_dispatch(gUnk_084C978C, (void *)0x06014800);
+        CpuFastSet(gUnk_0850E0B8, (void *)0x050002C0, 8);
+        break;
+    }
+    gUnk_03001800.unkAA++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C774);
