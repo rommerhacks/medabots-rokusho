@@ -241,6 +241,10 @@ gUnk_084F2680       = 0x084F2680;
 
 /* code_0800C6D8: game state 5 (Medaparts screen) */
 gMedapartsScreenHandlers      = 0x083ACB54;
+gUnk_083ACC94       = 0x083ACC94;
+gPrebattleScreenHandlers      = 0x083ACCA4;
+gUnk_084C696C       = 0x084C696C;
+gUnk_084C6A78       = 0x084C6A78;
 gMedapartInventory  = 0x03004C40;
 gUnk_084EBF50       = 0x084EBF50;
 gUnk_084C4014       = 0x084C4014;

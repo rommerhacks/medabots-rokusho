@@ -623,6 +623,7 @@ void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot);
 void reset_bg_scroll(void); // zeroes the four BG scroll positions
 void set_blend_effect_mode(u8 mode, u16 a, u16 b);
 u32 update_blend_effect(void);
+void load_encounter_into_battle_setup(void);
 u32 sub_0803EED8(void); // nonzero: waiting on the serial link (reads gUnk_03005010)
 
 #endif // GUARD_FUNCTIONS_H

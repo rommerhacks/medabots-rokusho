@@ -212,7 +212,8 @@ struct Unk_03000440
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
     u8 filler12F[2];
     u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2
-    u8 filler132[0x7];
+    u8 unk132;
+    u8 filler133[0x6];
     u8 unk139; // game state 3 setup step (medabots_screen_load_gfx)
 };
 
