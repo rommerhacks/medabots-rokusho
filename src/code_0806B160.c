@@ -213,9 +213,74 @@ void init_game_display_and_clear_state(void)
     gGameSubState = 4;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_init_bg_screen);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", init_battle_bg_tilemap);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_bg_init_overlay);
+void battle_init_bg_screen(void)
+{
+    u16 map[20][30];
+    u16 out[20 * 32];
+    s32 i, j;
+
+    LZ77UnCompVram(gUnk_087F1B4C, (void *)VRAM);
+    LZ77UnCompVram(gUnk_087F1E4C, map);
+    for (i = 0; i < 20; i++) {
+        for (j = 0; j < 30; j++)
+            out[i * 32 + j] = *(map[i] + j);
+        out[i * 32 + 30] = 0;
+        out[i * 32 + 31] = 0;
+    }
+    DmaSet(3, out, VRAM + 0x7800, 0x84000140);
+    DmaSet(3, gUnk_087F1F38, PLTT, 0x80000010);
+    REG_BG0CNT = 0xF01;
+    REG_DISPCNT |= 0x100;
+    gUnk_03001800_s.nextSubState = 5;
+    gGameSubState = 1;
+}
+
+void init_battle_bg_tilemap(void)
+{
+    u16 map[20][30];
+    u16 out[20 * 32];
+    s32 i, j;
+
+    LZ77UnCompVram(gUnk_087F1F58, (void *)VRAM);
+    LZ77UnCompVram(gUnk_087F2658, map);
+    for (i = 0; i < 20; i++) {
+        for (j = 0; j < 30; j++)
+            out[i * 32 + j] = *(map[i] + j);
+        out[i * 32 + 30] = 0;
+        out[i * 32 + 31] = 0;
+    }
+    DmaSet(3, out, VRAM + 0x7800, 0x84000140);
+    DmaSet(3, gUnk_087F27D8, PLTT, 0x80000010);
+    gUnk_03001800_s.unk10 = 0x34;
+    REG_BG0CNT = 0xF02;
+    REG_DISPCNT |= 0x100;
+    gUnk_03001800_s.nextSubState = 7;
+    gGameSubState = 1;
+}
+
+void battle_bg_init_overlay(void)
+{
+    u16 map[20][30];
+    u16 out[20 * 32];
+    s32 i, j;
+
+    LZ77UnCompVram(gUnk_087F27F8, (void *)(VRAM + 0x8000));
+    LZ77UnCompVram(gUnk_087F3070, map);
+    for (i = 0; i < 20; i++) {
+        for (j = 0; j < 30; j++)
+            out[i * 32 + j] = *(map[i] + j) + 0x1000;
+        out[i * 32 + 30] = 0;
+        out[i * 32 + 31] = 0;
+    }
+    DmaSet(3, out, VRAM + 0xF800, 0x84000140);
+    DmaSet(3, gUnk_087F3250, PLTT + 0x20, 0x80000010);
+    REG_BG1CNT = 0x1F0B;
+    REG_DISPCNT |= 0x200;
+    REG_BLDCNT = 0x241;
+    REG_BLDALPHA = 0x10;
+    gUnk_03001800_s.nextSubState = 9;
+    gGameSubState = 3;
+}
 
 void sub_0806E780(void)
 {
