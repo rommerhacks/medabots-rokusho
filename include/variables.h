@@ -122,6 +122,7 @@ extern const struct SoundTrackConfig gSoundTrackConfigs[13];
 extern const u8 gSoundOutputMasks[4]; // SOUNDCNT_L high byte: clears the left/right enables of PSG channel i
 extern const u8 gSoundOutputBits[4][4]; // [channel][output: 0 off, 1, 2, 3 both] SOUNDCNT_L high byte bits // REG_DMA1CNT_H, REG_DMA2CNT_H
 extern u8 gUnk_030017EC;
+extern u8 gUnk_03000584; // 0 player name, 1 / 2 Medal name gUnk_03000BE0[gUnk_030017EC] (sub_0805EE94)
 extern u8 gUnk_03003870[];
 extern u8 gUnk_03005664[];
 extern const void *const gUnk_0847E8C4[]; // text pointers (guess)

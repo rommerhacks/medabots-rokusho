@@ -1074,7 +1074,7 @@ struct Unk_03006F74
     u8 unk4B;
     u8 filler4C[0x4];
     u8 unk50[8]; // blend effect state (init_blend_effect, blend_fade_step_08065598)
-    u8 filler58[0x20];
+    u8 unk58[0x20]; // name text buffer (sub_0805EE94 copies it to the player or Medal name)
     u16 unk78; // link: the other player's keys last frame (sub_0805B9EC)
     s8 unk7A;
     u8 filler7B[0x1F5];

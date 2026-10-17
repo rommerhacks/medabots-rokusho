@@ -10,7 +10,42 @@ void sub_0805EE6C(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_0805EE94);
+void sub_0805EE94(void)
+{
+    struct Unk_03000440 *s = &gUnk_03000440;
+    u8 *n = &s->unk84;
+
+    if (*n <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, *n * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, *n * 4, 0xFFFF);
+        (*n)++;
+    }
+    else
+    {
+        u32 zero;
+
+        REG_DISPCNT &= 0xFDFF;
+        zero = 0;
+        CpuFastSet(&zero, (void *)VRAM, 0x01006000);
+        switch (gUnk_03000584)
+        {
+        case 0:
+            CpuSet(gUnk_03006F74->unk58, gUnk_03002B70.unk4, 8);
+            dispatch_by_index_0476e8(0);
+            break;
+        case 1:
+            CpuSet(gUnk_03006F74->unk58, gUnk_03000BE0[gUnk_030017EC].unkA, 7);
+            dispatch_by_index_0476e8(1);
+            break;
+        case 2:
+            CpuSet(gUnk_03006F74->unk58, gUnk_03000BE0[gUnk_030017EC].unkA, 7);
+            gGameState = 0x12;
+            gGameSubState = 10;
+            break;
+        }
+    }
+}
 
 void dispatch_options_menu_and_update_counters(void)
 {
@@ -558,7 +593,54 @@ void sub_08060FD4(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08061080);
+void sub_08061080(void)
+{
+    if (gUnk_03006F74->unk6 == 1)
+    {
+        struct Unk_03000440 *s;
+        u8 *n;
+
+        battle_menu_highlight_icons(gUnk_03006F74->unk19, 8);
+        s = &gUnk_03000440;
+        n = &s->unk84;
+        if (*n <= 8)
+        {
+            blend_obj_palettes_to_color_0803F684(0, 0x20 - *n * 4, 0x7FFE);
+            blend_obj_palettes_to_color_0803F998(0, 0x20 - *n * 4, 0x7FFD);
+            (*n)++;
+        }
+        else
+        {
+            gUnk_03006F74->unk2 = 0;
+            text_window_init(1, 0, 0);
+            gUnk_03006F74->unk2 = 0;
+            gUnk_03006F74->unk0 = 0;
+            gUnk_03006F74->unk6 = 0;
+            gGameSubState = 9;
+        }
+    }
+    else
+    {
+        struct Unk_03000440 *s = &gUnk_03000440;
+        u8 *n = &s->unk84;
+
+        if (*n <= 8)
+        {
+            blend_obj_palettes_to_color_0803F684(0, 0x20 - *n * 4, 0xFFFF);
+            blend_obj_palettes_to_color_0803F998(0, 0x20 - *n * 4, 0xFFFF);
+            (*n)++;
+        }
+        else
+        {
+            gUnk_03006F74->unk2 = 0;
+            gUnk_03002C30[8].unk0 |= 0x4000;
+            text_window_init(1, 0, 0);
+            gUnk_03006F74->unk2 = 0;
+            gUnk_03006F74->unk0 = 0;
+            gGameSubState++;
+        }
+    }
+}
 
 void sub_08061180(void)
 {
@@ -572,7 +654,56 @@ void sub_08061180(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_080611D0);
+void sub_080611D0(void)
+{
+    sub_08041C14(8, gFrameCounter, 8);
+    if (KEYS_LO(gRepeatKeys) & 0x40)
+    {
+        play_sound_effect(2);
+        if (gUnk_03006F74->unk5 != 0)
+            gUnk_03006F74->unk5--;
+        else
+            gUnk_03006F74->unk5 = 2;
+    }
+    if (KEYS_LO(gRepeatKeys) & 0x80)
+    {
+        play_sound_effect(2);
+        if (gUnk_03006F74->unk5 <= 1)
+            gUnk_03006F74->unk5++;
+        else
+            gUnk_03006F74->unk5 = 0;
+    }
+    gUnk_03002C30[8].unk4 = gUnk_03006F74->unk5 * 24 + 0x20;
+    if (KEYS_LO(gNewKeys) & 1)
+    {
+        play_sound_effect(4);
+        switch (gUnk_03006F74->unk5)
+        {
+        case 0:
+            gUnk_03006F74->unk2 = 0;
+            gGameSubState = 8;
+            gUnk_03006F74->unk6 = 0;
+            battle_menu_highlight_icons(0, 0);
+            break;
+        case 1:
+            gUnk_03006F74->unk2 = 0;
+            gGameSubState = 8;
+            gUnk_03006F74->unk6 = 0;
+            battle_menu_highlight_icons(0, 0);
+            break;
+        case 2:
+        cancel:
+            gUnk_03000440.unk84 = 0;
+            gGameSubState = 6;
+            break;
+        }
+    }
+    else if (KEYS_LO(gNewKeys) & 2)
+    {
+        play_sound_effect(5);
+        goto cancel;
+    }
+}
 
 void sub_080612D8(void)
 {
