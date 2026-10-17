@@ -389,14 +389,79 @@ void sub_08031704(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_0803185C);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080318CC);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", battle_start_transition_to_action);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08031978);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08031994);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080319B8);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08031A08);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08031A24);
+void sub_0803185C(void)
+{
+    dispatch_battle_action_substate(0);
+    medaforce_gauge_drain_step(gUnk_03001800.unk87);
+    process_sprite_anim_commands(gUnk_083B5F80[0x4D], 0x21);
+    process_sprite_anim_commands(gUnk_083B5F80[0x4E], 0x22);
+    if (gUnk_03002C30[0x21].unk22 == 0xFF)
+    {
+        clear_battle_ui_tilemaps();
+        sub_0801AEB4();
+        clear_battle_sprite_slot(0x21, 2);
+        gGameSubState++;
+    }
+}
+
+void sub_080318CC(void)
+{
+    memcpy_bytes_0803F63C((void *)gUnk_083B7338[gUnk_03000590[gUnk_03001800.unk87].unkA8[0]], gUnk_03000440.unk9E, 0x11);
+    gUnk_03001800.unkA6 = 0x38;
+    gGameSubState++;
+}
+
+void battle_start_transition_to_action(void)
+{
+    gUnk_03001800.unk164 = 1;
+    gUnk_03001800.unkA8 = gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50;
+    gUnk_03000590[gUnk_03001800.unk87].unkE0 = 0;
+    gUnk_03000590[gUnk_03001800.unk87].unkE1 = 0;
+    gGameState = 9;
+    gGameSubState = 0;
+}
+
+void sub_08031978(void)
+{
+    text_window_init(1, 0, 0);
+    gGameSubState++;
+}
+
+void sub_08031994(void)
+{
+    if (run_message(gUnk_083CF3B0[1]))
+        gGameSubState++;
+}
+
+void sub_080319B8(void)
+{
+    if (sub_0803E79C())
+    {
+        gUnk_03000440.unk86 = 0;
+        gGameSubState++;
+    }
+}
+
+void sub_080319E0(void)
+{
+    if (gUnk_03000440.unk86 == 8)
+        gGameSubState++;
+    else
+        gUnk_03000440.unk86++;
+}
+
+void sub_08031A08(void)
+{
+    if (game_state_execute_handler_a())
+        gGameSubState++;
+}
+
+void sub_08031A24(void)
+{
+    sound_stop_all_with_fade_guard(8);
+    gGameSubState = 0x51;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", battle_process_all_bot_actions);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", battle_execute_action_selection);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", call_bot_action_handler);
