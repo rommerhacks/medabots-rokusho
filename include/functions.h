@@ -871,6 +871,7 @@ u32 sub_08032FFC(void); // 1 if gUnk_03001800.unk61 has a candidate
 u32 select_battle_pending_action(void); // random candidate record from gUnk_03001800.unk61
 u32 select_random_battle_target(u32 base); // random present record base + 0..2
 void sub_08033154(u32 rec, u32 part); // stores the chosen target (unk5E / unk5F) in the part's unkE / unkF
+u32 sub_0801554C(u32 rec, u32 other); // side of rec (0 team, 1 opponents), or the other side when other is 1
 u32 begin_battle_action_lookup(u32 rec, u32 part);
 void sub_08018CBC(void);
 void sub_08018D0C(u32 rec); // timed effect A tick (type 0x1F restores armor to damaged parts)
