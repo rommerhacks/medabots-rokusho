@@ -393,6 +393,7 @@ extern const Func gUnk_083AD400[]; // message steps by gUnk_03001800.unkA1[0] (s
 extern const Func gUnk_083AD410[]; // steps by gUnk_03001800.unk9C[0] (sub_0801C154)
 extern const Func gUnk_083AD424[]; // steps by gUnk_03001800.unk9C[0] (dispatch_battle_action_substate)
 extern const Func gUnk_083AD44C[]; // by gUnk_03001800.unkAA (sub_0801C4FC)
+extern const Func gUnk_083AD50C[]; // by gUnk_03001800.unkAA (battle_dispatch_phase_handler_0801D2F0)
 extern const u8 gUnk_084C8AC4[]; // compressed OBJ tiles (sub_0801C188)
 extern const u16 gUnk_084E3078[]; // OBJ palette (sub_0801C188)
 extern const u16 gUnk_084E2EF8[]; // OBJ palette 8 (sub_0801C32C)

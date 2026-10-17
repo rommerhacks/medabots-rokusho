@@ -438,8 +438,9 @@ struct Unk_03001800
     u8 unkA6; // Medaforce effect id 0xE-0x11 (sub_0801C524)
     u8 unkA7; // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to (sub_0801B3AC)
     u8 fillerA8[0x2];
-    u8 unkAA; // sub-state of the gUnk_083AD44C handlers (sub_0801C4FC)
-    u8 fillerAB[0xA];
+    u8 unkAA; // sub-state of the gUnk_083AD44C handlers (sub_0801C4FC) and gUnk_083AD50C handlers (battle_dispatch_phase_handler_0801D2F0)
+    u8 unkAB; // 0-2, set with unkB5 = 1 by the gUnk_083AD50C handlers (sub_0801D2AC..)
+    u8 fillerAC[0x9];
     u8 unkB5;
     u8 fillerB6[0x12];
     u16 unkC8; // Robattle: effect amount (shown by sub_0801CA60, subtracted by apply_battle_damage_tick)

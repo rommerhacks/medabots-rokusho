@@ -179,7 +179,63 @@ void sub_0801CDD4(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801CE94);
+void sub_0801CE94(void)
+{
+    process_sprite_anim_commands(gUnk_083B5F80[0x22], 0x21);
+    if (gUnk_03002C30[0x21].unk22 == 0xFF)
+    {
+        clear_battle_sprite_slot(0x21, 1);
+        load_all_bot_part_sprites();
+        iterate_bots_setup_battle_sprites();
+        switch (gUnk_03001800.unk51)
+        {
+        case 0:
+            lz_decompress_dispatch(gUnk_084C907C, (void *)0x06014800);
+            CpuFastSet(gUnk_0850E058, (void *)0x050002C0, 8);
+            break;
+        case 1:
+            lz_decompress_dispatch(gUnk_084C9288, (void *)0x06014800);
+            CpuFastSet(gUnk_0850E078, (void *)0x050002C0, 8);
+            break;
+        case 2:
+            lz_decompress_dispatch(gUnk_084C9624, (void *)0x06014800);
+            CpuFastSet(gUnk_0850E098, (void *)0x050002C0, 8);
+            break;
+        case 3:
+            lz_decompress_dispatch(gUnk_084C978C, (void *)0x06014800);
+            CpuFastSet(gUnk_0850E0B8, (void *)0x050002C0, 8);
+            break;
+        }
+        gUnk_03001800.unkAA = 0xE;
+    }
+}
+
+void sub_0801CF78(void)
+{
+    u8 v;
+
+    if (gUnk_03001800.unk51 != 2)
+    {
+        v = gUnk_03000590[gUnk_03001800.unk87].parts[3].unk12 >> 1;
+        if (v >= gUnk_03001800.unk28[gUnk_03001800.unk89].unk4)
+        {
+            gUnk_03001800.unkAA++;
+        }
+        else
+        {
+            gUnk_03001800.unk28[gUnk_03001800.unk89].unk4 -= v;
+            gUnk_03001800.unkAA = 0x2D;
+        }
+    }
+    else
+    {
+        gUnk_03001800.unk28[gUnk_03001800.unk89].unk4--;
+        if (gUnk_03001800.unk28[gUnk_03001800.unk89].unk4 == 0)
+            gUnk_03001800.unkAA++;
+        else
+            gUnk_03001800.unkAA = 0x2E;
+    }
+}
 
 void sub_0801CFFC(void)
 {
@@ -211,8 +267,92 @@ void sub_0801D174(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D1AC);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", battle_dispatch_phase_handler_0801D2F0);
+void sub_0801D1AC(void)
+{
+    if (sub_080353CC(0x21) == 0)
+    {
+        if (!(gUnk_03000440.unk84 & 1))
+        {
+            if (gUnk_03001800.unk89 == 0)
+                gUnk_03002C30[0x21].unk2++;
+            else
+                gUnk_03002C30[0x21].unk2--;
+        }
+        gUnk_03000440.unk84++;
+    }
+    else if (gUnk_03002C30[0x21].unk8 == 8)
+    {
+        clear_battle_sprite_slot(0x21, 1);
+        gUnk_03001800.unkAA++;
+    }
+    else
+    {
+        gUnk_03002C30[0x21].unk8 -= 8;
+    }
+}
+
+void sub_0801D244(void)
+{
+    if (gUnk_03001800.unk51 == 2)
+        gUnk_03001800.unkAA = 0x2E;
+    else
+        gUnk_03001800.unkAA = 0x2D;
+}
+
+void sub_0801D264(void)
+{
+    gUnk_03001800.unk28[gUnk_03001800.unk89].unk2 = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].unk3 = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].unk4 = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].unk5 = 0;
+    gUnk_03001800.unkA6 = 0x25;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0801D2AC(void)
+{
+    gUnk_03001800.unkB5 = 1;
+    gUnk_03001800.unkAB = 0;
+}
+
+void sub_0801D2C4(void)
+{
+    gUnk_03001800.unkB5 = 1;
+    gUnk_03001800.unkAB = 1;
+}
+
+void sub_0801D2D8(void)
+{
+    gUnk_03001800.unkB5 = 1;
+    gUnk_03001800.unkAB = 2;
+}
+
+void battle_dispatch_phase_handler_0801D2F0(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AD50C[gUnk_03001800.unkAA]();
+}
+
+void sub_0801D318(void)
+{
+    if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].unkDD - 1].unk11)
+    {
+        gUnk_03001800.unkB5 = 1;
+        gUnk_03001800.unkAB = 0;
+    }
+    else
+    {
+        gUnk_03001800.unkA6 = 5;
+        gUnk_03001800.unkAA++;
+    }
+}
+
+void sub_0801D36C(void)
+{
+    gUnk_03001800.unkB5 = 1;
+    gUnk_03001800.unkAB = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D380);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D40C);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D434);
