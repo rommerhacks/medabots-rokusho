@@ -401,7 +401,40 @@ void sub_080608B4(void)
     update_animation_timer();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_080608EC);
+void sub_080608EC(void)
+{
+    u8 keys;
+
+    update_battle_sprite_animation();
+    update_animation_timer();
+    if (sub_0805B7A0() == 0)
+    {
+        if (!((keys = KEYS_LO(gNewKeys)) & 3))
+            return;
+        if (gGameState == 10)
+        {
+            play_sound_effect(5);
+            gUnk_03006F74->unk48 = 1;
+        }
+        else if (keys & 1)
+        {
+            play_sound_effect(4);
+            gUnk_03006F74->unk48 = 1;
+        }
+        else
+        {
+            play_sound_effect(5);
+            gUnk_03006F74->unk48 = 0;
+        }
+        gUnk_03006F74->unk0 = 0;
+        gGameSubState++;
+    }
+    else
+    {
+        sub_0803FB0C();
+        gGameSubState = 4;
+    }
+}
 
 void sub_0806098C(void)
 {
@@ -459,7 +492,22 @@ void sub_08060C60(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08060C6C);
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", clear_vram_da80_region);
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08060FD4);
+
+void sub_08060FD4(void)
+{
+    REG_DISPCNT |= 0x200;
+    REG_DISPCNT |= 0x400;
+    REG_DISPCNT |= 0x800;
+    REG_DISPCNT |= 0x1000;
+    CpuFastSet(gUnk_084E2E58, (void *)0x0202F800, 8);
+    CpuFastSet(gUnk_084E2E38, (void *)0x0202F9E0, 8);
+    CpuFastSet(gUnk_084E2E58, (void *)0x0202F9C0, 8);
+    CpuFastSet(gUnk_08488AA4, (void *)0x0202F820, 8);
+    CpuFastSet(gUnk_0879671C, (void *)0x0202FA00, 0x80);
+    gUnk_03000440.unk84 = 0;
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08061080);
 
 void sub_08061180(void)
@@ -506,7 +554,33 @@ void sub_08061300(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08061374);
+void sub_08061374(void)
+{
+    u8 t = gUnk_03006F74->unk2++;
+
+    if (gUnk_03002C30[8].unk8 > 4)
+    {
+        gUnk_03002C30[8].unk8 -= 4;
+        gUnk_03002C30[8].unk9 -= 4;
+    }
+    else
+    {
+        gUnk_03002C30[8].unk0 &= 0xBFFF;
+    }
+    if (t <= 16)
+    {
+        REG_BLDALPHA = (t << 8) | (16 - t);
+    }
+    else
+    {
+        REG_BLDALPHA = 0x1000;
+        REG_DISPCNT &= 0xFDFF;
+        gUnk_03002C30[8].unk0 &= 0xBFFF;
+        sub_0803FB0C();
+        gGameSubState++;
+    }
+    gUnk_03006F74->unk19 = 0;
+}
 
 void sub_0806142C(void)
 {

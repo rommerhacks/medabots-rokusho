@@ -1296,3 +1296,8 @@ void sub_08061678(void);
 void sub_0805F8F0(void); // up to 4 tries of save_dispatch(2) (erase), then the next sub-state (ok) or 12 (failed)
 void sub_080603A4(void); // zeroes EEPROM block 0 (up to 4 tries), then game mode 3 state 2
 void load_medapart_sprite_animation(u8 id, u8 kind, u32 which);
+u32 sub_0805B7A0(void);
+void sub_080608EC(void);
+void sub_0806174C(void);
+void sub_08060FD4(void);
+void sub_08061374(void);
