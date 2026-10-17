@@ -347,3 +347,9 @@ gUnk_083ACEE4      = 0x083ACEE4;
 gUnk_083ACEEA      = 0x083ACEEA;
 gUnk_083ACEF0      = 0x083ACEF0;
 gUnk_083C3B04      = 0x083C3B04;
+
+/* code_08010794: game state 7 (Robattle) */
+gRobattleHandlers  = 0x083ACF00;
+gUnk_083B24A8      = 0x083B24A8;
+gUnk_084E2F58      = 0x084E2F58;
+gUnk_084E3038      = 0x084E3038;

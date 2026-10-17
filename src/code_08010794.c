@@ -1014,32 +1014,518 @@ void setup_battle_result_sprite_animation(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08010794", calculate_battle_score_summary);
-INCLUDE_ASM("asm/nonmatching/code_08010794", calc_average_bot_stat_080125B4);
-INCLUDE_ASM("asm/nonmatching/code_08010794", accumulate_alive_bot_score);
-INCLUDE_ASM("asm/nonmatching/code_08010794", calc_average_bot_stat_0801264C);
-INCLUDE_ASM("asm/nonmatching/code_08010794", calc_medaforce_gauge_from_damage);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_0801275C);
-INCLUDE_ASM("asm/nonmatching/code_08010794", accumulate_team_armor_stats);
-INCLUDE_ASM("asm/nonmatching/code_08010794", battle_check_medal_level_up);
-INCLUDE_ASM("asm/nonmatching/code_08010794", dispatch_battle_phase_with_fade_check);
-INCLUDE_ASM("asm/nonmatching/code_08010794", battle_init_phase);
-INCLUDE_ASM("asm/nonmatching/code_08010794", battle_scene_init_state_machine);
-INCLUDE_ASM("asm/nonmatching/code_08010794", fade_obj_palettes_to_white_step);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012B94);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012BC0);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012BE4);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012C0C);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012C64);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012D98);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012DF4);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012E40);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012EA8);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012F00);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012FF8);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_0801303C);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080130D8);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08013164);
+// Experience points for the won Robattle (gUnk_03001800.unk16C), from the opponents' Medal levels,
+// their count, the level gap to the team, their parts (guess: broken ones), unk16B and armor.
+void calculate_battle_score_summary(void)
+{
+    gUnk_03001800.unk16C = 0;
+    calc_average_bot_stat_080125B4();
+    accumulate_alive_bot_score();
+    calc_average_bot_stat_0801264C();
+    calc_medaforce_gauge_from_damage();
+    sub_0801275C();
+    accumulate_team_armor_stats();
+}
+
+void calc_average_bot_stat_080125B4(void)
+{
+    u32 sum = 0;
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[i + 3].unkBA)
+            sum += gUnk_03000590[i + 3].medal.unk5;
+    }
+    gUnk_03001800.unk16C += sum / 3;
+}
+
+void accumulate_alive_bot_score(void)
+{
+    u32 n = 0;
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[i + 3].unkBA)
+            n++;
+    }
+    gUnk_03001800.unk16C += n * 8;
+}
+
+void calc_average_bot_stat_0801264C(void)
+{
+    u32 opp = 0;
+    u32 team = 0;
+    u32 i;
+    u32 nopp;
+    u32 nteam;
+
+    for (i = 0, nopp = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[i + 3].unkBA)
+        {
+            opp += gUnk_03000590[i + 3].medal.unk5;
+            nopp++;
+        }
+    }
+    opp = opp / nopp;
+    for (i = 0, nteam = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[i].unkBA)
+        {
+            team += gUnk_03000590[i].medal.unk5;
+            nteam++;
+        }
+    }
+    team = team / nteam;
+    if (team < opp)
+        gUnk_03001800.unk16C += (opp - team) * (nopp << 4);
+}
+
+void calc_medaforce_gauge_from_damage(void)
+{
+    u32 i;
+    u32 score;
+
+    for (i = 0, score = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[i + 3].unkBA)
+        {
+            if (!gUnk_03000590[i + 3].unk40[0x19])
+                score += 8;
+            if (!gUnk_03000590[i + 3].unk40[0x31])
+                score += 16;
+            if (!gUnk_03000590[i + 3].unk40[0x49])
+                score += 16;
+            if (!gUnk_03000590[i + 3].unk40[0x61])
+                score += 16;
+        }
+    }
+    gUnk_03001800.unk16C += score * 2;
+}
+
+void sub_0801275C(void)
+{
+    gUnk_03001800.unk16C += gUnk_03001800.unk16B * 5;
+}
+
+void accumulate_team_armor_stats(void)
+{
+    u32 i;
+    u32 sum;
+
+    for (i = 0, sum = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[i + 3].unkBA)
+        {
+            sum += gUnk_03000590[i + 3].unk40[0x12];
+            sum += gUnk_03000590[i + 3].unk40[0x2A];
+            sum += gUnk_03000590[i + 3].unk40[0x42];
+            sum += gUnk_03000590[i + 3].unk40[0x5A];
+        }
+    }
+    gUnk_03001800.unk16C += sum;
+}
+
+void battle_check_medal_level_up(void)
+{
+    u32 i;
+    struct Unk_03000BE0 *medal;
+    u32 variant;
+    u32 slot;
+
+    sub_0803F624(&gUnk_03001800.unk16E[0][0], 0x18, 0);
+    for (i = 0; i <= 2; i++)
+    {
+        if (!gUnk_03000590[i].unkBA)
+            continue;
+        slot = find_medal_slot_by_id(gUnk_03000590[i].medal.unk1) - 1;
+        {
+            struct Unk_03000BE0 *medals = gUnk_03000BE0;
+            medal = &medals[slot];
+        }
+        if (medal->unk5 == 100)
+            continue;
+        if (medal->unk2 > gUnk_03001800.unk16C)
+        {
+            medal->unk2 -= gUnk_03001800.unk16C;
+            continue;
+        }
+        medal->unk5++;
+        medal->unk2 = (medal->unk5 + 1) * 100;
+        gUnk_03001800.unk16E[i][0] = medal->unk1 + 1;
+        memcpy_bytes_08041D04(gUnk_083B6158[medal->unk1], &gUnk_03000440.unkEE, 16);
+        variant = sub_080420C4(medal->unk5, (&gUnk_03000440.unkEE)[3], (&gUnk_03000440.unkEE)[4],
+                               (&gUnk_03000440.unkEE)[5], (&gUnk_03000440.unkEE)[6]);
+        if (variant != medal->unk8)
+        {
+            gUnk_03001800.unk16E[i][1] = 1;
+            gUnk_03001800.unk16E[i][2] = medal->unk1;
+            gUnk_03001800.unk16E[i][3] = medal->unk8;
+            gUnk_03001800.unk16E[i][4] = medal->unk1;
+            gUnk_03001800.unk16E[i][5] = variant;
+            medal->unk8 = variant;
+        }
+        memcpy_bytes_08041D04(&gUnk_083B7E0C[medal->unk1 * 3], &gUnk_03000440.unkEE, 3);
+        if (medal->unk5 == 10)
+        {
+            gUnk_03001800.unk16E[i][6] = 1;
+            gUnk_03001800.unk16E[i][7] = (&gUnk_03000440.unkEE)[0];
+        }
+        if (medal->unk5 == 30)
+        {
+            gUnk_03001800.unk16E[i][6] = 1;
+            gUnk_03001800.unk16E[i][7] = (&gUnk_03000440.unkEE)[1];
+        }
+        if (medal->unk5 == 60)
+        {
+            gUnk_03001800.unk16E[i][6] = 1;
+            gUnk_03001800.unk16E[i][7] = (&gUnk_03000440.unkEE)[2];
+        }
+    }
+}
+
+// Game state 7 = Robattle (gGameStateHandlers_083AC148[7]); sub-states in gRobattleHandlers.
+void robattle_update(void)
+{
+    u32 fill;
+
+    if (sub_0803EED8())
+        return;
+    if (gUnk_03000430 == 2)
+    {
+        fill = 0x200;
+        CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+    }
+    gRobattleHandlers[gGameSubState]();
+}
+
+void battle_init_phase(void)
+{
+    gUnk_03000440.unk139 = 0;
+    gUnk_03000440.unk13A = 0;
+    if (gUnk_03000440.unk89 != 1)
+    {
+        clear_battle_bot_array();
+        count_active_battle_bots();
+        battle_setup_bot_entry();
+        init_battle_entities_and_labels();
+    }
+    battle_process_all_bots_actions();
+    if (gUnk_03000440.unk89 != 1)
+        sub_08018A18();
+    gGameSubState++;
+}
+
+void battle_scene_init_state_machine(void)
+{
+    u32 fill;
+
+    switch (gUnk_03000440.unk139)
+    {
+        case 0:
+            sub_08043CA8();
+            load_battle_script_entry_b();
+            REG_DISPCNT &= 0xF0FF;
+            REG_BG0CNT = 0x500;
+            REG_BG1CNT = 0x1901;
+            REG_BG2CNT = 0x1A0A;
+            REG_BG3CNT = 0x1B0B;
+            if (battle_phase_dispatch_0801A788(0))
+                gUnk_03000440.unk139++;
+            break;
+        case 1:
+            gUnk_03000440.unk84 = 0;
+            fill = 0;
+            CpuFastSet(&fill, gUnk_03002C30, 0x01000800);
+            REG_DISPCNT |= 0x1F40;
+            REG_DISPCNT &= 0xFFDF;
+            gUnk_03000440.unk139++;
+            break;
+        case 2:
+            load_bg3_tilemap_08488764();
+            draw_battle_bot_portraits();
+            load_all_bot_part_sprites();
+            setup_all_battle_bot_sprite_positions();
+            init_battle_bot_sprites();
+            apply_battle_blend_effect_b();
+            decompress_to_ewram_27000((const u8 *)gUnk_083B24A8[gUnk_03001800.unk38 * 5 + 1]);
+            gVBlankCallback = sub_08044100;
+            gGameSubState++;
+            gUnk_03000440.unk139 = 0;
+            break;
+    }
+}
+
+void robattle_fade_in_from_white(void)
+{
+    if (gUnk_03000440.unk84 <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        gUnk_03000440.unk84++;
+    }
+    else
+        gGameSubState++;
+}
+
+void sub_08012B94(void)
+{
+    update_all_battle_status_sprites();
+    if (gUnk_03000440.unk89 != 1)
+        battle_process_bot_actions_for_side(3);
+    gGameSubState++;
+}
+
+void sub_08012BC0(void)
+{
+    update_all_battle_status_sprites();
+    sub_08016370(gUnk_03001800.unk80);
+    gGameSubState++;
+}
+
+void sub_08012BE4(void)
+{
+    update_all_battle_status_sprites();
+    if (sub_08016438(gUnk_03001800.unk80))
+        gGameSubState++;
+}
+
+void sub_08012C0C(void)
+{
+    update_all_battle_status_sprites();
+    animate_battle_sprites(gUnk_03001800.unk80);
+    load_battle_bg_layers();
+    render_bot_name_sprites(gUnk_03001800.unk80);
+    draw_battle_panel_left_a(gUnk_03001800.unk80);
+    render_bot_health_bar(gUnk_03001800.unk80);
+    render_bot_cash_display(gUnk_03001800.unk80);
+    battle_load_sprite_data();
+    sub_08015F78();
+    battle_sprite_set_palette_index(gUnk_03001800.unk80 * 4 + 0x5A, 8);
+    gGameSubState++;
+}
+
+// Sub-state 7: command ring of team Medabot gUnk_03001800.unk80 (runtime-checked). A -> sub-state 8,
+// B -> back to the previous Medabot (sub-state 4).
+void robattle_command_input(void)
+{
+    update_all_battle_status_sprites();
+    animate_battle_sprites(gUnk_03001800.unk80);
+    update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
+    sub_08016288();
+    sub_080178CC();
+    if (gUnk_03001800.unk83)
+        return;
+    sub_0801630C();
+    if (KEYS_LO(gNewKeys) & 1)
+    {
+        if (gUnk_03000440.unk89 == 1 && gUnk_03001800.unk81 == 5)
+        {
+            play_sound_effect(6);
+            return;
+        }
+        play_sound_effect(4);
+        sub_08017914();
+        gUnk_03000440.unk84 = 0;
+        gGameSubState++;
+    }
+    else if (KEYS_LO(gNewKeys) & 2)
+    {
+        if (gUnk_03001800.unk84 == 0 && gUnk_03001800.unk80 != 0)
+        {
+            play_sound_effect(5);
+            setup_bot_battle_sprites_08015A00(gUnk_03001800.unk80, 0x28, (u8)(gUnk_03001800.unk80 % 3) * 24 + 0x24);
+            gUnk_03001800.unk80--;
+            draw_battle_panel_left_a(0);
+            sub_0801A744(gUnk_03001800.unk80);
+            gUnk_03001800.unk81 = 0;
+            gUnk_03001800.unk82 = 0;
+            clear_battle_sprite_slot(0, 0x46);
+            vram_fill_tilemap_rect(0x1E, 8, 0, 0xC, REG_BG0CNT, 0);
+            vram_fill_tilemap_rect(0x1E, 8, 0, 0xC, REG_BG1CNT, 0);
+            gGameSubState = 4;
+        }
+    }
+}
+
+void sub_08012D98(void)
+{
+    update_all_battle_status_sprites();
+    animate_battle_sprites(gUnk_03001800.unk80);
+    update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
+    sub_08016554();
+    if (++gUnk_03000440.unk84 == 20)
+    {
+        clear_battle_sprite_slot(0x1E, 0xB);
+        gUnk_03000440.unk84 = 0;
+        gGameSubState++;
+    }
+}
+
+void sub_08012DF4(void)
+{
+    update_all_battle_status_sprites();
+    animate_battle_sprites(gUnk_03001800.unk80);
+    update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
+    sub_080165D0();
+    sub_08016614();
+    sub_08016660();
+    if (++gUnk_03000440.unk84 == 16)
+        sub_080165B0();
+}
+
+void sub_08012E40(void)
+{
+    update_all_battle_status_sprites();
+    animate_battle_sprites(gUnk_03001800.unk80);
+    update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
+    decompress_two_bg1_layers();
+    sub_08016068();
+    read_vram_tilemap_rect(6, 5, 0xC, 0x15, REG_BG1CNT, gUnk_02020800);
+    gUnk_03000440.unk84 = 0;
+    gGameSubState++;
+}
+
+void sub_08012EA8(void)
+{
+    update_all_battle_status_sprites();
+    animate_battle_sprites(gUnk_03001800.unk80);
+    update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
+    draw_partial_bg1_column();
+    scroll_tilemap_window();
+    sub_08016FB4();
+    if (++gUnk_03000440.unk84 == 10)
+    {
+        battle_load_sprite_data();
+        gGameSubState = 7;
+    }
+}
+
+// Stores the chosen command of Medabot unk80 and moves on to the next one (sub-state 4), or to
+// sub-state 0x40 (0x90 when unk89 is 1) after the last one.
+void robattle_command_commit(void)
+{
+    update_all_battle_status_sprites();
+    animate_battle_sprites(gUnk_03001800.unk80);
+    update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
+    switch (gUnk_03001800.unk81)
+    {
+        case 0:
+            battle_bot_select_part(gUnk_03001800.unk80, gUnk_03001800.unk82);
+            break;
+        case 1:
+            if (gUnk_03001800.unk82)
+                load_bot_palette_data(gUnk_03001800.unk80, gUnk_03001800.unk82 - 1);
+            else
+                battle_bot_select_part(gUnk_03001800.unk80, 0);
+            break;
+        default:
+            process_bot_battle_turn(gUnk_03001800.unk80);
+            break;
+    }
+    setup_bot_battle_sprites_08015A00(gUnk_03001800.unk80, 0x28, (u8)(gUnk_03001800.unk80 % 3) * 24 + 0x24);
+    gUnk_03001800.unk81 = 0;
+    gUnk_03001800.unk82 = 0;
+    gUnk_03001800.unk80++;
+    if (gUnk_03001800.unk84 == 0)
+    {
+        if (gUnk_03001800.unk80 != 3 && gUnk_03001800.unk80 < gUnk_03001800.unk5A)
+            gGameSubState = 4;
+        else if (gUnk_03000440.unk89 != 1)
+            gGameSubState = 0x40;
+        else
+            gGameSubState = 0x90;
+    }
+    else
+        gGameSubState++;
+}
+
+void sub_08012FF8(void)
+{
+    update_all_battle_status_sprites();
+    sub_08018900(gUnk_03001800.unk87);
+    init_battle_action_select_ui(0);
+    if (gUnk_03000440.unk89 != 1)
+        gGameSubState = 0x45;
+    else
+        gGameSubState = 0xA0;
+}
+
+void sub_0801303C(void)
+{
+    update_all_battle_status_sprites();
+    animate_battle_sprites(gUnk_03001800.unk80);
+    update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
+    CpuFastSet(gUnk_084E2F58, (void *)0x05000340, 8);
+    CpuFastSet(gUnk_084E3038, (void *)0x050002C0, 8);
+    clear_battle_sprite_slot(0, 6);
+    clear_battle_sprite_slot(0x1E, 0xB);
+    sub_080166AC();
+    determine_battle_part_action_priority();
+    read_vram_tilemap_rect(0xC, 4, 9, 0x15, REG_BG0CNT, gUnk_02020800);
+    gUnk_03000440.unk84 = 0;
+    gGameSubState++;
+}
+
+void sub_080130D8(void)
+{
+    update_all_battle_status_sprites();
+    animate_battle_sprites(gUnk_03001800.unk80);
+    update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
+    sub_080166F0();
+    sub_0801672C();
+    if (++gUnk_03000440.unk84 == 16)
+    {
+        sub_08016DA4();
+        sub_0801677C();
+        sub_080167BC(1);
+        sub_08016804(1);
+        sub_0801684C(1);
+        sub_08016894(1);
+        sub_08016A3C();
+        sub_08016AD8();
+        sub_08016D18();
+        sub_08016DCC();
+        sub_0801B894();
+        gUnk_03000440.unk84 = 0;
+        gGameSubState++;
+    }
+}
+
+// guess: Medaforce panel input (shows "Charge MF"; sub-state 18, B -> 19, A -> 21)
+void sub_08013164(void)
+{
+    u8 b;
+
+    update_all_battle_status_sprites();
+    animate_battle_sprites(gUnk_03001800.unk80);
+    update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
+    sub_0801B9C4();
+    gUnk_03000440.unk84++;
+    sub_080168F4();
+    sub_080169AC();
+    sub_08016C0C();
+    if ((b = KEYS_LO(gNewKeys) & 2))
+    {
+        play_sound_effect(5);
+        clear_battle_sprite_slot(0, 6);
+        sub_0801BACC();
+        clear_battle_sprite_slot(0x14, 0x26);
+        vram_fill_tilemap_rect(7, 1, 0xE, 0xC, REG_BG0CNT, 0);
+        gUnk_03000440.unk84 = 0;
+        gGameSubState++;
+    }
+    else if (KEYS_LO(gNewKeys) & 1)
+    {
+        play_sound_effect(4);
+        sub_0801BACC();
+        gUnk_03000440.unk86 = 0;
+        gGameSubState = 0x15;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08013228);
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08013288);
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08013330);

@@ -333,5 +333,9 @@ extern const u8 gUnk_083ACEE4[][2]; // per opponent Medabot: sprite position (in
 extern const u8 gUnk_083ACEEA[][2]; // per opponent Medabot: leg type icon position (draw_opponent_leg_type_icons)
 extern const u8 gUnk_083ACEF0[16]; // random starting opponent slot 0-2 (sub_08012234, sub_080122F4)
 extern const u8 gUnk_083C3B04[][8]; // per battlefield (sub_080121A8)
+extern const Func gRobattleHandlers[]; // game state 7 (Robattle) sub-state handlers
+extern const void *const gUnk_083B24A8[]; // 5 compressed graphics pointers per battlefield (gUnk_03001800.unk38)
+extern const u16 gUnk_084E2F58[]; // Robattle palette (OBJ palette 10, sub_0801303C)
+extern const u16 gUnk_084E3038[]; // Robattle palette (OBJ palette 6, sub_0801303C)
 
 #endif // GUARD_VARIABLES_H

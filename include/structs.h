@@ -186,7 +186,8 @@ struct Unk_03000440
     u8 unk85;
     u16 unk86; // link exchange frame counter
     u8 unk88; // field menu: row animation counter
-    u8 filler89[0x5];
+    u8 unk89; // Robattle: 1 skips the bot setup in battle_init_phase
+    u8 filler8A[0x4];
     u8 unk8E; // field menu cursor: 0 Medawatch, 1 Item, 2 Vehicle, 3 Save (runtime-checked)
     u8 unk8F; // Medawatch menu cursor (0..2)
     u8 filler90[0x6];
@@ -222,7 +223,8 @@ struct Unk_03000440
     u8 unk136;
     u8 unk137;
     u8 filler138;
-    u8 unk139; // game state 3 setup step (medabots_screen_load_gfx)
+    u8 unk139; // game state 3 setup step (medabots_screen_load_gfx); Robattle setup step
+    u8 unk13A;
 };
 
 
@@ -347,11 +349,16 @@ struct Unk_03001800
     u8 unk52;
     u8 unk53;
     u8 unk54;
-    u8 filler55[0x6];
+    u8 filler55[0x5];
+    u8 unk5A; // Robattle: team Medabot count (3 in battle_start.ss0)
     u8 unk5B;
     u8 filler5C[0x24];
     u8 unk80; // index of a 256-byte record in gUnk_03000590 (sub_0800B498 copies Medal rotation data there)
-    u8 filler81[0x6];
+    u8 unk81;
+    u8 unk82;
+    u8 unk83; // Robattle: nonzero blocks the input in robattle_command_input
+    u8 unk84;
+    u8 filler85[0x2];
     u8 unk87;
     u8 filler88[0x4];
     u8 unk8C[3];
@@ -362,8 +369,8 @@ struct Unk_03001800
     u8 unk168; // won Medapart: kind (0 head, 1 right arm, 2 left arm, 3 legs)
     u8 unk169; // won Medapart: id
     u8 unk16A; // won Medapart: 1 = not owned before
-    u8 filler16B;
-    u16 unk16C;
+    u8 unk16B;
+    u16 unk16C; // battle score (calculate_battle_score_summary), then experience points
     // After-battle result per team member (u8 array: a struct would be 4-byte aligned):
     // [0] Medal id + 1, 0 = none (name from gUnk_083B6410), [1] nonzero: Medal level-up screen,
     // [2]-[5] copied to gUnk_03000440.unk134-137, [6] nonzero: [7] = Medaforce id (gUnk_083B7338)
@@ -403,7 +410,11 @@ struct Unk_03000BE0
 struct Unk_03000590
 {
     struct Unk_03000BE0 medal;
-    u8 unk40[0xC0];
+    // Battle Medabot: part records of 0x18 bytes from +0x58 (+1 nonzero = part still working,
+    // guess), armor bytes at +0x52/+0x6A/+0x82/+0x9A (accumulate_team_armor_stats)
+    u8 unk40[0x7A];
+    u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
+    u8 fillerBB[0x45];
 };
 
 struct Unk_030017A0
