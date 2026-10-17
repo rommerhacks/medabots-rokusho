@@ -1244,7 +1244,59 @@ void sub_080378A8(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_080378F0);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", spawn_battle_particle_effect);
+
+void spawn_battle_particle_effect(u32 src)
+{
+    u32 mask;
+    u32 n;
+    struct Unk_03002C30 *p, *s;
+    struct Unk_03002C30 *base;
+
+    switch (gUnk_03001800.unk51)
+    {
+    case 0:
+        mask = 7;
+        break;
+    case 1:
+        mask = 7;
+        break;
+    case 2:
+        mask = 7;
+        break;
+    }
+    base = gUnk_03002C30;
+    p = &base[src];
+    if (!(p->unk2D & mask))
+    {
+        n = find_next_free_sprite_slot(src + 1, 0x14);
+        clear_battle_sprite_slot(n, 1);
+        s = &base[n];
+        s->unk0 = 0xC604;
+        s->unk1C = 0;
+        s->unk2 = (p->unk2 + gUnk_083AF520[(rng_next_080424B8() & 3) * 2]) & 0x1FF;
+        s->unk4 = (p->unk4 + gUnk_083AF520[(rng_next_080424B8() & 3) * 2 + 1]) & 0xFF;
+        s->unk8 = 0x40;
+        s->unk9 = 0x40;
+        s->unkA = 6;
+        s->unkB = 0xE0;
+        switch (gUnk_03001800.unk51)
+        {
+        case 0:
+            s->unk6 = 0x7201;
+            s->unk29 = 0x30;
+            break;
+        case 1:
+            s->unk6 = 0x7302;
+            s->unk29 = 0x34;
+            break;
+        case 2:
+            s->unk6 = 0x7402;
+            s->unk29 = 0x34;
+            break;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08037B9C);
 
 void sub_08037BF4(void)
