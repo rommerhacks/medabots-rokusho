@@ -204,6 +204,7 @@ extern u8 gMedapartInventory[4 * 120 * 2]; // 2 bytes per Medapart, 120 per kind
 extern u8 gUnk_03002BA0[64][2]; // item inventory: [0] 0x80 | item id, [1] count (get_item_quantity_by_id)
 extern const u8 gUnk_083B2970[]; // indexed by gUnk_030057E0.unkC5C (sub_08044B34)
 extern const u8 gUnk_083B827C[]; // 16 bytes per Medapart (part id * 64 + kind * 16), copied by load_part_data
+extern const u8 gUnk_083B286C[]; // random bytes, indexed by gUnk_03000440.unk8D when unk89 is set (rng_next_080424B8)
 extern const u8 gUnk_084EBF50[];
 extern const u8 gUnk_084C4014[];
 extern const u8 gUnk_084C4330[];

@@ -43,7 +43,24 @@ void advance_sprite_scroll_animation(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", handle_battle_sprite_scroll_input);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_sprite_hflip_by_animation_phase);
+
+void update_sprite_hflip_by_animation_phase(void)
+{
+    if (gUnk_03000440.unk84 != 0x1E)
+    {
+        if (gUnk_03000440.unk84 & 4)
+            gUnk_03002C30[gUnk_03000440.unk2B].unk0 &= 0xBFFF;
+        else
+            gUnk_03002C30[gUnk_03000440.unk2B].unk0 |= 0x4000;
+        gUnk_03000440.unk84++;
+    }
+    else
+    {
+        gUnk_03002C30[gUnk_03000440.unk2B].unk0 |= 0x4000;
+        gUnk_03000440.unk29++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", animate_battle_sprite_shrink);
 
 void sub_08041C14(u8 sprite, u8 frame, u16 y)
@@ -164,7 +181,25 @@ void sub_080421A0(void)
         gUnk_030017A0[i].unk7 = i;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080421B4);
+void sub_080421B4(u8 medal, u8 kind)
+{
+    u32 i;
+
+    for (i = 0; i < 9; i++)
+    {
+        if (gUnk_030017A0[i].unk7 == medal)
+        {
+            u8 *p = &gUnk_030017A0[i].unk3;
+            u8 old = p[kind];
+
+            p[kind] = gUnk_030017A0[i].unk1 + 0x78;
+            gUnk_030017A0[i].unk0 = 2;
+            gMedapartInventory[kind * 240 + old * 2]--;
+            gMedapartInventory[kind * 240 + old * 2 + 1]--;
+            return;
+        }
+    }
+}
 
 u32 sub_08042218(void)
 {
@@ -273,7 +308,21 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", compute_polar_to_screen_position);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_sprite_to_vram_08042D94);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_battle_medabot_sprites);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", setup_battle_sprite_group);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", battle_sprite_set_palette_index);
+
+void battle_sprite_set_palette_index(u32 sprite, u32 pal)
+{
+    u32 i;
+
+    gUnk_03002C30[sprite + 1].unk0 |= 0x200;
+    gUnk_03002C30[sprite + 2].unk0 |= 0x200;
+    for (i = 0; i < 16; i++)
+        ;
+    gUnk_03002C30[sprite].unk24 = pal;
+    gUnk_03002C30[sprite + 1].unk24 = pal;
+    gUnk_03002C30[sprite + 2].unk24 = pal;
+    gUnk_03002C30[sprite + 3].unk24 = pal;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_battle_sprite_orbiting_positions);
 
 void modify_medapart_quantity(u32 id, u32 kind, u32 byte, u32 subtract, u32 n)
