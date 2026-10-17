@@ -157,9 +157,20 @@ struct Unk_03000440
     const u8 *unk8; // current message (run_message)
     u16 unkC;
     u8 unkE;
-    u8 fillerF[0xC];
+    u8 fillerF[0x5];
+    u8 unk14;
+    u8 unk15;
+    u8 unk16;
+    u8 unk17;
+    u8 unk18;
+    u8 unk19;
+    u8 unk1A;
     u8 unk1B;
-    u8 filler1C[0xC];
+    u8 filler1C[0x8];
+    u8 unk24;
+    u8 unk25;
+    u8 filler26;
+    u8 unk27;
     u8 unk28;
     u8 unk29; // choice menu state (poll_choice_menu)
     u8 filler2A[0x6];
@@ -568,7 +579,10 @@ struct Unk_03001800
     u8 unk187; // gUnk_03000590 record index (battle_loss_take_part)
     u8 unk188; // two rolls from gUnk_083AF200 (sub_08034AA0); unkEC = (unk188 + unk189) * 10
     u8 unk189;
-    u8 filler18A[0x1C];
+    u8 filler18A[0x16];
+    u8 unk1A0;
+    u8 unk1A1;
+    u8 filler1A2[0x4];
     u16 unk1A6;
     u16 unk1A8;
     u16 unk1AA;
