@@ -178,6 +178,7 @@ extern const u16 gUnk_084F24E0[];
 extern const u8 gUnk_084C1C24[];
 extern const u8 gUnk_084C1E04[];
 extern const u8 gUnk_084C1FD4[];
+extern u8 gUnk_02020000[]; // tilemap rect buffer for the Robattle team-side scroll (status_side_change_scroll_out)
 extern u8 gUnk_02020800[]; // BG tile backup (0x800 bytes of VRAM 0x06002800 while a Medawatch submenu runs)
 extern const Func gMedabotsScreenHandlers[]; // game state 3 sub-state handlers
 extern const Func gMedalsScreenHandlers[]; // game state 4 (Medals screen) sub-state handlers

@@ -1,8 +1,8 @@
 	.syntax unified
 
-	thumb_func_start animate_battle_field_scroll
-	.global animate_battle_field_scroll
-animate_battle_field_scroll: @ 0x080185E8
+	thumb_func_start status_side_change_scroll_out
+	.global status_side_change_scroll_out
+status_side_change_scroll_out: @ 0x080185E8
 	push {r4, r5, r6, r7, lr}
 	mov r7, sb
 	mov r6, r8
@@ -203,7 +203,7 @@ _08018788: .4byte 0x03000440
 _0801878C: .4byte 0x04000008
 _08018790: .4byte 0x02020000
 _08018794:
-	bl toggle_battle_team_side
+	bl status_switch_side
 	movs r0, #1
 _0801879A:
 	add sp, #8

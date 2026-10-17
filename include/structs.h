@@ -427,7 +427,8 @@ struct BattlePart
     u8 unkE; // copied to the record's unkE0 / unkE1 when this part is chosen (battle_bot_select_part)
     u8 unkF;
     u8 unk10; // head: copy of data[8]
-    u8 unk11; // copy of data[4] (legs: data[4..9] copied to unk11..unk16); 0 = part broken (guess)
+    u8 unk11; // current armor, starts as data[4] = max armor (Status screen, runtime-checked); 0 = broken
+              // (legs: data[4..9] copied to unk11..unk16)
     u8 filler12[5];
     u8 unk17; // part id
 };

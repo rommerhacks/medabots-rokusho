@@ -1866,18 +1866,18 @@ void sub_08013B8C(void)
     sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
     gUnk_03000440.unk46 = 1;
     position_battle_team_cursors(0, 0);
-    init_battle_cursor_sprite_08017B24();
-    render_battle_bot_label();
+    status_init_cursor();
+    status_draw_bot_name();
     sub_08017D14();
-    load_bot_sprite_tiles_to_vram();
-    copy_battle_bot_data_to_state();
-    battle_load_script_to_buffer();
-    battle_setup_bot_font_tile();
-    render_battle_bot_status_row();
+    status_load_medal_icon();
+    status_draw_medal_name();
+    status_draw_part_names();
+    status_draw_part_ability_icons();
+    status_draw_part_armor();
     get_bot_part_effective_values(gUnk_03000440.unk3C * 3 + gUnk_03000440.unk3D, gUnk_03001800.unk64);
-    set_game_state_params(gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2], gUnk_03001800.unk64[3]);
-    init_ewram_buffers_and_state();
-    setup_battle_bot_display();
+    set_portrait_parts(gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2], gUnk_03001800.unk64[3]);
+    status_init_portrait();
+    status_draw_team_sprites();
     battle_sprite_set_palette_index(0, 8);
     fill_tilemap_rect_08042698(2, 2, 0xB, 2, REG_BG1CNT, 0x63C0);
     set_blend_effect_mode(5, 0x3F, 0x20);
@@ -1887,11 +1887,11 @@ void sub_08013B8C(void)
 void sub_08013DE4(void)
 {
     sub_080182D0();
-    animate_bg_window_blink();
-    setup_scene_bg_from_game_state();
-    setup_battle_bot_display();
-    sub_08041C14(8, gFrameCounter, sub_0801827C());
-    sub_080182AC();
+    status_blink_lr_button();
+    status_update_portrait();
+    status_draw_team_sprites();
+    sub_08041C14(8, gFrameCounter, status_cursor_x());
+    scroll_bg3_diagonal();
     if (update_blend_effect())
         gGameSubState++;
 }
@@ -1899,26 +1899,26 @@ void sub_08013DE4(void)
 void sub_08013E30(void)
 {
     sub_080182D0();
-    setup_scene_bg_from_game_state();
-    sub_080182AC();
+    status_update_portrait();
+    scroll_bg3_diagonal();
     switch (gUnk_03000440.unk3F)
     {
     case 0:
-        animate_bg_window_blink();
-        setup_battle_bot_display();
-        sub_08041C14(8, gFrameCounter, sub_0801827C());
-        handle_battle_bot_selection();
+        status_blink_lr_button();
+        status_draw_team_sprites();
+        sub_08041C14(8, gFrameCounter, status_cursor_x());
+        status_select_input();
         if ((KEYS_HI(gNewKeys) & 1) && gUnk_03000440.unk3C == 0)
         {
             play_sound_effect(2);
-            display_battle_cursor_on_bot();
+            status_begin_side_change();
             gUnk_03000440.unk40 = 0;
             gUnk_03000440.unk3F++;
         }
         else if ((KEYS_HI(gNewKeys) & 2) && gUnk_03000440.unk3C == 1)
         {
             play_sound_effect(2);
-            display_battle_cursor_on_bot();
+            status_begin_side_change();
             gUnk_03000440.unk40 = 0;
             gUnk_03000440.unk3F++;
         }
@@ -1930,23 +1930,23 @@ void sub_08013E30(void)
         }
         break;
     case 1:
-        if (animate_battle_field_scroll())
+        if (status_side_change_scroll_out())
         {
             gUnk_03000440.unk40 = 0;
             gUnk_03000440.unk3F++;
         }
         break;
     case 2:
-        if (animate_battle_bots_entry())
+        if (status_side_change_scroll_in())
             gUnk_03000440.unk3F++;
         break;
     case 3:
         get_bot_part_effective_values(gUnk_03000440.unk3D + gUnk_03000440.unk3C * 3, gUnk_03001800.unk64);
-        set_game_state_params(gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2], gUnk_03001800.unk64[3]);
-        init_ewram_buffers_and_state();
+        set_portrait_parts(gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2], gUnk_03001800.unk64[3]);
+        status_init_portrait();
         battle_sprite_set_palette_index(0, 8);
         fill_tilemap_rect_08042698(2, 2, 0xB, 2, REG_BG1CNT, 0x63C0);
-        setup_scene_from_game_state();
+        status_reset_portrait();
         gUnk_03000440.unk3F = 0;
         break;
     }
@@ -1957,11 +1957,11 @@ void sub_08013FA8(void)
     u32 fill1, fill2, fill3;
 
     sub_080182D0();
-    animate_bg_window_blink();
-    setup_scene_bg_from_game_state();
-    setup_battle_bot_display();
-    sub_08041C14(8, gFrameCounter, sub_0801827C());
-    sub_080182AC();
+    status_blink_lr_button();
+    status_update_portrait();
+    status_draw_team_sprites();
+    sub_08041C14(8, gFrameCounter, status_cursor_x());
+    scroll_bg3_diagonal();
     if (update_blend_effect())
     {
         gUnk_03000440.unk96 = 0;
