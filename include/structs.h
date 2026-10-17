@@ -124,6 +124,21 @@ struct Unk_03006D20
     u8 fillerD[0x3];
 };
 
+// 0x03001800 while game mode 3 (boot logos / story intro, code_0806B160) runs; the same RAM as gUnk_03001800.
+struct Unk_03001800_s
+{
+    u16 nextMode; // gGameMode / gGameState / gGameSubState to go to when the scene ends
+    u16 nextState;
+    u16 nextSubState;
+    u16 unk6;
+    s32 timer; // frame counter of the current step
+    union {
+        u16 h; // story intro: page (graphics gUnk_08487328 / text gUnk_08486EEC)
+        u8 b;  // boot logos: nonzero once START may skip them (scene_transition_countdown_tick)
+    } unkC;
+    s32 unk10; // countdown: play_song(3) when it reaches 0
+};
+
 // 0x03002B70: money, then a 10-byte string (init_save_prompt_text writes a default one).
 struct Unk_03002B70
 {

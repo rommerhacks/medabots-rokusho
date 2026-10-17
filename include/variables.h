@@ -15,6 +15,7 @@ extern u32 gFrameCounter;
 extern u32 gGameMode;
 extern struct Unk_030017A0 gUnk_030017A0[];
 extern struct Unk_03001800 gUnk_03001800;
+extern struct Unk_03001800_s gUnk_03001800_s; // same address as gUnk_03001800 (game mode 3 scenes)
 extern u32 gMoney; // money, capped at 99999 (add_money)
 extern u32 gGameState;
 extern u32 gGameSubState;

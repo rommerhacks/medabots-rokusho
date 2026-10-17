@@ -56,6 +56,32 @@ INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806DF80);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", dispatch_game_substate_handler_0806DFA4);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806DFC4);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", scene_complete_dma_and_restore_state);
+
+void sub_0806E060(void)
+{
+    u32 zero = 0;
+    DmaSet(3, &zero, VRAM, 0x85006000);
+    zero = 0;
+    DmaSet(3, &zero, PLTT, 0x85000100);
+    zero = 0;
+    DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+    zero = 0;
+    DmaSet(3, &zero, &gUnk_03001800_s, 0x85000004);
+    REG_DISPCNT = 0x60;
+    gUnk_03001800_s.nextMode = 3;
+    gUnk_03001800_s.nextState = 3;
+    gUnk_03001800_s.unkC.h = gUnk_03006D38.unk1;
+    gBg0Scroll.x = 0;
+    gBg0Scroll.y = 0;
+    gBg1Scroll.x = 0;
+    gBg1Scroll.y = 0;
+    gBg2Scroll.x = 0;
+    gBg2Scroll.y = 0;
+    gBg3Scroll.x = 0;
+    gBg3Scroll.y = 0;
+    gGameSubState = 3;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_init_tilemap_and_palette);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", dispatch_battle_event_script);
 
@@ -72,7 +98,40 @@ INCLUDE_ASM("asm/nonmatching/code_0806B160", init_game_display_and_clear_state);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_init_bg_screen);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", init_battle_bg_tilemap);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_bg_init_overlay);
+
+void sub_0806E780(void)
+{
+    if (gUnk_03001800_s.timer == 0) {
+    } else if (gUnk_03001800_s.timer > 60) {
+        gUnk_03001800_s.timer = 0;
+        gUnk_03001800_s.nextSubState = 6;
+        gGameSubState = 2;
+        return;
+    }
+    gUnk_03001800_s.timer++;
+}
+
+void sub_0806E7B0(void)
+{
+    if (gUnk_03001800_s.timer == 0) {
+        gUnk_03001800_s.unkC.b = 1;
+    } else if (gUnk_03001800_s.timer > 60) {
+        gUnk_03001800_s.timer = 0;
+        gGameSubState = 8;
+        return;
+    }
+    gUnk_03001800_s.timer++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806E7E0);
+
+void sub_0806E834(void)
+{
+    gGameMode = 3;
+    gGameState = 1;
+    gGameSubState = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806E854);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806E8C8);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806E90C);
