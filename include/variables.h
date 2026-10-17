@@ -413,6 +413,13 @@ extern const u8 gUnk_0878FD84[]; // title menu BG1 tilemap
 extern const u8 gUnk_0878FFC8[]; // title menu BG2 tilemap
 extern const u8 gUnk_08790128[]; // title menu BG3 tilemap
 extern const u32 gUnk_0878E5F4[]; // title menu BG tiles (dma3_copy_or_decompress)
+extern const u8 gUnk_08792CD0[]; // BG0 tilemap (LZ77, sub_080601A4)
+extern const u8 gUnk_08792E6C[]; // BG1 tilemap (LZ77, sub_080601A4)
+extern const u8 gUnk_08792FC4[]; // BG3 tilemap (LZ77, sub_080601A4)
+extern const u32 gUnk_08791D88[]; // BG tiles (dma3_copy_or_decompress, sub_080601A4)
+extern const u16 gUnk_08791CA8[]; // BG palette (sub_080601A4)
+extern const u16 gUnk_080AF988[]; // OBJ palette 0 (sub_080601A4)
+extern const u8 gUnk_08785F34[]; // OBJ tiles (LZ77, sub_080601A4)
 extern const u16 gUnk_0878E3F4[]; // title menu BG palette (0x100 colors)
 
 #endif // GUARD_VARIABLES_H
