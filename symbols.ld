@@ -315,3 +315,4 @@ gDebugSoundLabels       = 0x083ACB40;
 gDebugMotionLabels       = 0x083ACB50;
 gUnk_084C3B14       = 0x084C3B14;
 gUnk_083B7338       = 0x083B7338;
+gUnk_083BE97C       = 0x083BE97C;

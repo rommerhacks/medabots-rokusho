@@ -203,7 +203,10 @@ struct Unk_03000440
     u8 unkF2;
     u8 unkF3;
     u8 unkF4;
-    u8 fillerF5[0x19];
+    u8 unkF5;
+    u8 unkF6;
+    u8 unkF7;
+    u8 fillerF8[0x16];
     u8 unk10E[0x10]; // 16-byte record from gUnk_083B6158 (per Medal graphic index)
     u8 filler11E[0x10];
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank

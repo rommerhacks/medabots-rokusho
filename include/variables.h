@@ -265,7 +265,6 @@ extern const u8 gUnk_084F13C0[];
 extern const u16 gUnk_084F2820[];
 extern const u16 gUnk_0850DD58[];
 
-#endif // GUARD_VARIABLES_H
 extern const u8 gUnk_084C21BC[]; // Medal icon tiles, 0x80 bytes per graphic index
 extern const u8 gUnk_084C30BC[]; // blank Medal icon tile
 extern const u8 *const gUnk_083AC494[][5]; // compressed Medal sprites (load_medal_sprite)
@@ -301,3 +300,6 @@ extern const u8 *const gDebugSoundLabels[]; // "Se", "Bgm"
 extern const u8 *const gDebugMotionLabels[]; // "No"
 extern const u8 gUnk_084C3B14[]; // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (sub_0800B0F8)
 extern const u32 gUnk_083B7338[]; // Medaforce names, indexed by Medaforce id
+extern const u32 gUnk_083BE97C[]; // Medapart skill names for ids >= 100 (load_npc_sprite_data)
+
+#endif // GUARD_VARIABLES_H
