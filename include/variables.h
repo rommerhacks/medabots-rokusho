@@ -156,8 +156,8 @@ extern const u16 gUnk_084E2E78[];
 extern const u8 gUnk_084889F8[];
 extern const void *const gUnk_083B69C8[]; // messages (run_message), indexed by Medal record byte 4 (Medals help)
 extern const void *const gUnk_083B70AC[]; // messages (run_message), indexed by Medal record byte 6 (Medals help)
-extern const u8 gUnk_083B7E0C[]; // 3 bytes per Medal graphic index (Medals help)
-extern const u8 gUnk_083B7CD4[]; // 6-byte records (Medals help)
+extern const u8 gUnk_083B7E0C[]; // 3 Medaforce ids per Medal graphic index (slots open at level 10/30/60)
+extern const u8 gUnk_083B7CD4[]; // 6-byte Medaforce records: +1 skill type, +2 MF consumption, +5 icon
 extern const void *const gUnk_083B7F40[]; // messages (run_message), Medals help Medaforce page
 extern const void *const gUnk_083B8170[]; // messages (run_message), Medals help page 5
 extern u32 gUnk_03002B68; // bit per Medal graphic index (sub_080092D4)
@@ -211,7 +211,7 @@ extern const u8 gUnk_084EFD74[];
 extern const u8 gUnk_084F08F0[];
 extern const u8 gUnk_084F1A10[];
 extern const u16 gUnk_084F30E0[];
-extern const void *const gUnk_083B7C00[]; // messages (run_message), indexed by sub_0800A960()
+extern const void *const gUnk_083B7C00[]; // messages (run_message), indexed by medal_medaforce_get_selected()
 extern const void *const gUnk_083B825C[]; // messages (run_message), indexed by a Medal record byte at +0x18 (guess: rotation entries)
 extern const u8 gUnk_084E5650[];
 extern const u8 gUnk_084C48B4[];
@@ -242,8 +242,8 @@ extern const u16 gUnk_0850DD58[];
 extern const u8 gUnk_084C21BC[]; // Medal icon tiles, 0x80 bytes per graphic index
 extern const u8 gUnk_084C30BC[]; // blank Medal icon tile
 extern const u8 *const gUnk_083AC494[][5]; // compressed Medal sprites (load_medal_sprite)
-extern const u32 gUnk_083B656C[]; // text pointers indexed by Medal record unk4 (sub_0800A000)
-extern const u32 gUnk_083B6EC8[]; // text pointers indexed by Medal record unk6 (sub_0800A05C)
+extern const u32 gUnk_083B656C[]; // Medal Attribute names, indexed by Medal record unk4 (Ability page)
+extern const u32 gUnk_083B6EC8[]; // skill type names (Shoot, Strike, ...): Medal Aim, Medaforce skill
 extern const u8 *const gUnk_083B7EBC[]; // Medals help cursor layouts: count, then (x, y) tile pairs (sub_0800AA1C)
 extern const u8 gUnk_084C3B14[]; // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (sub_0800B0F8)
-extern const u32 gUnk_083B7338[]; // text pointers indexed by Medaforce id (sub_0800A2E8)
+extern const u32 gUnk_083B7338[]; // Medaforce names, indexed by Medaforce id

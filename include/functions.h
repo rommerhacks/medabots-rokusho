@@ -78,65 +78,65 @@ void sub_08007480(void);
 void sub_0800750C(void);
 void sub_08007540(void);
 // code_08008430: Medals screen (game state 4) drawing helpers
-void sub_080093F8(void);
-void sub_0800941C(void);
-void sub_0800944C(void);
+void medals_scroll_bg(void);
+void medals_list_set_cursor_from_medal(void);
+void count_owned_medals(void);
 void render_medal_sprite_tile(void);
 void render_medal_list_entries(void);
 void render_medal_slots_in_menu(void);
 void render_medal_name_display(void);
 void load_medal_sprite(void);
 void render_medal_level_display(void);
-void sub_0800988C(void);
-void sub_08009900(void);
-void sub_0800994C(void);
-void sub_080099A4(void);
-void sub_08009A38(void);
+void medals_list_init_tab_arrows(void);
+void medals_list_init_cursor(void);
+void medals_list_blink_tab_arrows(void);
+void medals_list_row_input(void);
+void medals_list_tab_input(void);
 void update_battle_sprite_visibility(void);
-void sub_08009BC8(void);
+void medals_list_swap_input(void);
 void decompress_active_medal_sprite(void);
 void init_active_medal_battle_sprites(void);
 void draw_medal_position_tile(void);
 u32 get_medal_active_slot(u8 medal);
-void sub_08009E4C(void);
-void sub_08009EF4(void);
-void sub_08009F50(void);
-void sub_08009EA0(void);
-void sub_08009F90(void);
-void sub_08009FC8(void);
-void sub_0800A000(void);
-void sub_0800A05C(void);
-void sub_0800A0B8(void);
-void sub_0800A0FC(void);
-void sub_0800A180(void);
-void sub_0800A1E4(void);
-void sub_0800A2B4(void);
-void sub_0800A2E8(void);
-void sub_0800A594(void);
-void sub_0800A854(void);
-u32 sub_0800A8A0(void);
-u32 sub_0800A928(void);
-u32 sub_0800A960(void);
-void sub_0800AA1C(void);
-void sub_0800AAC0(void);
-void sub_0800AB0C(void);
-void sub_0800ABA4(void);
-void sub_0800ABF0(void);
-void sub_0800AC2C(void);
-void sub_0800ACA8(void);
-void sub_0800AD00(void);
-u32 sub_0800AD58(void);
-u32 sub_0800ADE8(void);
-u32 sub_0800AE54(void);
-void sub_0800AED0(void);
-void sub_0800AF0C(void);
-void sub_0800AF64(void);
+void medal_page_draw_icon(void);
+void medal_page_draw_kind_name(void);
+void medal_page_draw_name(void);
+void medal_skill_draw_icon(void);
+void medal_page_draw_level(void);
+void medal_skill_draw_level(void);
+void medal_ability_draw_attribute(void);
+void medal_ability_draw_aim(void);
+void medal_ability_draw_compatibility(void);
+void medal_page_init_medal_arrows(void);
+void medal_page_blink_medal_arrows(void);
+void medal_page_cycle_medal_input(void);
+void medal_ability_redraw(void);
+void medal_medaforce_draw_list(void);
+void medal_medaforce_draw_selected(void);
+void medal_medaforce_init_cursor(void);
+u32 medal_medaforce_cursor_input(void);
+u32 medal_medaforce_redraw(void);
+u32 medal_medaforce_get_selected(void);
+void sub_0800AA1C(void); // guess: Medals help cursor sprite (layout gUnk_083B7EBC[unk43], entry unk44)
+void sub_0800AAC0(void); // guess: moves the Medals help cursor sprite to entry unk44
+void sub_0800AB0C(void); // guess: draws the 8 Rotation entries (greyed past Medal unk9)
+void sub_0800ABA4(void); // guess: Rotation page frame tilemap for unk9 entries
+void medal_rotation_redraw(void);
+void sub_0800AC2C(void); // guess: Rotation edit arrows above/below slot unk46
+void sub_0800ACA8(void); // guess: Rotation page end marker sprite at entry unk9
+void sub_0800AD00(void); // guess: blinks the Rotation edit arrows
+u32 sub_0800AD58(void); // guess: UP/DOWN cycles Rotation entry unk46 (0-7), returns 1 on change
+u32 sub_0800ADE8(void); // guess: LEFT/RIGHT moves the Rotation slot cursor unk46 (0-7)
+u32 sub_0800AE54(void); // guess: LEFT/RIGHT changes the Rotation entry count (Medal unk9, 0-7)
+void sub_0800AED0(void); // guess: loads the parts graphics of the Medabot holding the Medal
+void sub_0800AF0C(void); // guess: shows the Medabot holding the Medal (sprites 0x64..)
+void sub_0800AF64(void); // guess: draws the legs type of the Medabot holding the Medal
 void render_medal_skill_stats(void);
-void sub_0800B0F8(void);
+void sub_0800B0F8(void); // guess: copies animation frame unk3F of a 5-tile strip (gUnk_084C3B14)
 void draw_medal_skill_bars(void);
-void sub_0800B130(void);
-void sub_0800B468(void);
-void sub_0800B498(void);
+void sub_0800B130(void); // guess: animates that strip, a frame every 2 ticks after 180 ticks
+void medal_skill_redraw(void);
+void sub_0800B498(void); // guess: copies the Medal's Rotation (unk9, unk18) into gUnk_03000590[gUnk_03001800.unk80]
 void setup_battle_cursor_sprite_0800B5E8(void);
 void init_battle_cursor_sprite_0800B668(void);
 u32 update_battle_sprite_and_check_done(void);

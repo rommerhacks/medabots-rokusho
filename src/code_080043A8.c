@@ -1921,7 +1921,7 @@ void medals_list_load_gfx(void)
     zero = 0;
     CpuFastSet(&zero, gUnk_03002C30, 0x01000800);
     REG_DISPCNT |= 0x1F60;
-    sub_0800941C();
+    medals_list_set_cursor_from_medal();
     write_tilemap_rect(10, 2, 5, 2, gUnk_083B4AE0[gUnk_03000440.unk3F + 0x4B], REG_BG1CNT, 0x200);
     render_medal_sprite_tile();
     render_medal_list_entries();
@@ -1929,9 +1929,9 @@ void medals_list_load_gfx(void)
     render_medal_name_display();
     load_medal_sprite();
     render_medal_level_display();
-    sub_0800988C();
-    sub_08009900();
-    sub_0800944C();
+    medals_list_init_tab_arrows();
+    medals_list_init_cursor();
+    count_owned_medals();
     decompress_active_medal_sprite();
     init_active_medal_battle_sprites();
     draw_medal_position_tile();
@@ -1947,8 +1947,8 @@ void medals_list_load_gfx(void)
 
 void medals_list_fade_in(void)
 {
-    sub_080093F8();
-    sub_0800994C();
+    medals_scroll_bg();
+    medals_list_blink_tab_arrows();
     sub_08041C14(3, gFrameCounter, 0x18);
     if (update_blend_effect())
         gGameSubState++;
@@ -1958,13 +1958,13 @@ void medals_list_handle_input(void)
 {
     u8 b;
 
-    sub_080093F8();
-    sub_0800994C();
+    medals_scroll_bg();
+    medals_list_blink_tab_arrows();
     sub_08041C14(3, gFrameCounter, 0x18);
     update_battle_sprite_visibility();
-    sub_080099A4();
-    sub_08009A38();
-    sub_08009BC8();
+    medals_list_row_input();
+    medals_list_tab_input();
+    medals_list_swap_input();
     if ((b = KEYS_LO(gNewKeys) & 2))
     {
         if (gUnk_03000440.unk3E & 0x80)
@@ -2004,16 +2004,16 @@ void medals_list_handle_input(void)
 void medals_list_start_fade_out(void)
 {
     set_blend_effect_mode(6, 0x3F, 0x20);
-    sub_080093F8();
-    sub_0800994C();
+    medals_scroll_bg();
+    medals_list_blink_tab_arrows();
     sub_08041C14(3, gFrameCounter, 0x18);
     gGameSubState++;
 }
 
 void medals_list_wait_fade(void)
 {
-    sub_080093F8();
-    sub_0800994C();
+    medals_scroll_bg();
+    medals_list_blink_tab_arrows();
     sub_08041C14(3, gFrameCounter, 0x18);
     if (update_blend_effect())
         gGameSubState++;
@@ -2058,14 +2058,14 @@ void medal_ability_load_gfx(void)
     CpuFastSet(&zero, gUnk_03002C30, 0x01000800);
     REG_DISPCNT |= 0x1F60;
     gUnk_03000440.unk44 = 0;
-    sub_08009E4C();
-    sub_08009EF4();
-    sub_08009F50();
-    sub_08009F90();
-    sub_0800A000();
-    sub_0800A05C();
-    sub_0800A0B8();
-    sub_0800A0FC();
+    medal_page_draw_icon();
+    medal_page_draw_kind_name();
+    medal_page_draw_name();
+    medal_page_draw_level();
+    medal_ability_draw_attribute();
+    medal_ability_draw_aim();
+    medal_ability_draw_compatibility();
+    medal_page_init_medal_arrows();
     set_blend_effect_mode(5, 0x3F, 0x20);
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
@@ -2073,34 +2073,34 @@ void medal_ability_load_gfx(void)
 
 void medal_page_wait_fade(void)
 {
-    sub_080093F8();
-    sub_0800A180();
+    medals_scroll_bg();
+    medal_page_blink_medal_arrows();
     if (update_blend_effect())
         gGameSubState++;
 }
 
 void medal_page_open_text_window(void)
 {
-    sub_080093F8();
-    sub_0800A180();
+    medals_scroll_bg();
+    medal_page_blink_medal_arrows();
     text_window_init(1, 2, 0);
     gGameSubState++;
 }
 
 void medal_ability_show_hint(void)
 {
-    sub_080093F8();
-    sub_0800A180();
+    medals_scroll_bg();
+    medal_page_blink_medal_arrows();
     if (run_message(gUnk_083B53F8[4]))
         gGameSubState++;
 }
 
 void medal_ability_handle_input(void)
 {
-    sub_080093F8();
-    sub_0800A180();
-    sub_0800A1E4();
-    sub_0800A2B4();
+    medals_scroll_bg();
+    medal_page_blink_medal_arrows();
+    medal_page_cycle_medal_input();
+    medal_ability_redraw();
     if (KEYS_LO(gNewKeys) & 2)
     {
         play_sound_effect(5);
@@ -2129,8 +2129,8 @@ void medal_ability_handle_input(void)
 void medal_page_start_fade_out(void)
 {
     set_blend_effect_mode(6, 0x3F, 0x20);
-    sub_080093F8();
-    sub_0800A180();
+    medals_scroll_bg();
+    medal_page_blink_medal_arrows();
     gGameSubState++;
 }
 
@@ -2213,14 +2213,14 @@ void medal_medaforce_load_gfx(void)
     REG_DISPCNT |= 0x1F60;
     gUnk_03000440.unk44 = 0;
     gUnk_03000440.unk46 = 0;
-    sub_08009E4C();
-    sub_08009EF4();
-    sub_08009F50();
-    sub_08009F90();
-    sub_0800A0FC();
-    sub_0800A2E8();
-    sub_0800A594();
-    sub_0800A854();
+    medal_page_draw_icon();
+    medal_page_draw_kind_name();
+    medal_page_draw_name();
+    medal_page_draw_level();
+    medal_page_init_medal_arrows();
+    medal_medaforce_draw_list();
+    medal_medaforce_draw_selected();
+    medal_medaforce_init_cursor();
     set_blend_effect_mode(5, 0x3F, 0x20);
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
@@ -2228,8 +2228,8 @@ void medal_medaforce_load_gfx(void)
 
 void medal_medaforce_wait_fade(void)
 {
-    sub_080093F8();
-    sub_0800A180();
+    medals_scroll_bg();
+    medal_page_blink_medal_arrows();
     sub_08041C14(3, gFrameCounter, 8);
     if (update_blend_effect())
         gGameSubState++;
@@ -2237,8 +2237,8 @@ void medal_medaforce_wait_fade(void)
 
 void medal_medaforce_open_text_window(void)
 {
-    sub_080093F8();
-    sub_0800A180();
+    medals_scroll_bg();
+    medal_page_blink_medal_arrows();
     sub_08041C14(3, gFrameCounter, 8);
     text_window_init(1, 2, 0);
     gGameSubState++;
@@ -2246,26 +2246,26 @@ void medal_medaforce_open_text_window(void)
 
 void medal_medaforce_show_message(void)
 {
-    sub_080093F8();
-    sub_0800A180();
+    medals_scroll_bg();
+    medal_page_blink_medal_arrows();
     sub_08041C14(3, gFrameCounter, 8);
-    if (run_message(gUnk_083B7C00[sub_0800A960()]))
+    if (run_message(gUnk_083B7C00[medal_medaforce_get_selected()]))
         gGameSubState++;
 }
 
 void medal_medaforce_handle_input(void)
 {
-    sub_080093F8();
-    sub_0800A180();
+    medals_scroll_bg();
+    medal_page_blink_medal_arrows();
     sub_08041C14(3, gFrameCounter, 8);
-    if (sub_0800A8A0())
+    if (medal_medaforce_cursor_input())
     {
         sub_0803FB0C();
         gGameSubState++;
         return;
     }
-    sub_0800A1E4();
-    if (sub_0800A928())
+    medal_page_cycle_medal_input();
+    if (medal_medaforce_redraw())
     {
         sub_0803FB0C();
         gGameSubState++;
@@ -2297,18 +2297,18 @@ void medal_medaforce_handle_input(void)
 
 void medal_medaforce_show_message_back(void)
 {
-    sub_080093F8();
-    sub_0800A180();
+    medals_scroll_bg();
+    medal_page_blink_medal_arrows();
     sub_08041C14(3, gFrameCounter, 8);
-    if (run_message(gUnk_083B7C00[sub_0800A960()]))
+    if (run_message(gUnk_083B7C00[medal_medaforce_get_selected()]))
         gGameSubState--;
 }
 
 void medal_medaforce_start_fade_out(void)
 {
     set_blend_effect_mode(6, 0x3F, 0x20);
-    sub_080093F8();
-    sub_0800A180();
+    medals_scroll_bg();
+    medal_page_blink_medal_arrows();
     sub_08041C14(3, gFrameCounter, 8);
     gGameSubState++;
 }
@@ -2343,11 +2343,11 @@ void medal_rotation_load_gfx(void)
     REG_DISPCNT |= 0x1F60;
     gUnk_03000440.unk44 = 0;
     gUnk_03000440.unk46 = 0;
-    sub_08009E4C();
-    sub_08009EF4();
-    sub_08009F50();
-    sub_08009F90();
-    sub_0800A0FC();
+    medal_page_draw_icon();
+    medal_page_draw_kind_name();
+    medal_page_draw_name();
+    medal_page_draw_level();
+    medal_page_init_medal_arrows();
     sub_0800AB0C();
     sub_0800ABA4();
     sub_0800AED0();

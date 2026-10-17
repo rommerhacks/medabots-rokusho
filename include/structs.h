@@ -333,11 +333,11 @@ struct Unk_03000BE0
 {
     u8 unk0; // flags (0x40 tested by sub_080092D4)
     u8 unk1; // Medal graphic index (0x80-byte tiles at 0x084C21BC)
-    u16 unk2; // drawn by render_medal_level_display (guess: experience)
-    u8 unk4; // Medals help: gUnk_083B69C8 message index
+    u16 unk2; // shown as "NEXT Lv" on the Medals list (render_medal_level_display; blank at level 100)
+    u8 unk4; // Attribute (gUnk_083B656C name, Ability page); Medals help: gUnk_083B69C8 message index
     u8 unk5; // level (Medals help: Medaforce slots open at 10 / 30 / 60)
-    u8 unk6; // Medals help: gUnk_083B70AC message index
-    u8 unk7; // icon (tile 0xD340 + unk7 * 4, sub_0800A0B8)
+    u8 unk6; // Aim skill type (gUnk_083B6EC8 name, Ability page); Medals help: gUnk_083B70AC message index
+    u8 unk7; // Compatibility icon (tile 0xD340 + unk7 * 4, Ability page)
     u8 unk8; // Medal sprite variant, 0-4 (gUnk_083AC494[unk1][unk8])
     u8 unk9; // number of unk18 entries in use (sub_0800AB0C draws the rest greyed out)
     u8 unkA[0xE]; // name text
