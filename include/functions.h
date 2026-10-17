@@ -888,7 +888,7 @@ void update_battle_status_effect_sprite(u32 rec);
 void battle_queue_add(u32 rec, u32 prio);
 
 void add_bot_to_defeated_list(u8 rec);
-u32 sub_080353CC(u8 slot);
+u32 sub_080353CC(u32 slot);
 u32 move_sprite_toward_target(u8 slot);
 u32 sub_08036E54(u32 a); // clamps to 1..99
 void sub_08037330(u32 rec, u32 frame, u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
