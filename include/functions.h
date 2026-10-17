@@ -346,6 +346,8 @@ void soft_reset_to_title(void);
 void sub_0803F624(u8 *dst, u32 size, u8 val);
 void blend_obj_palettes_to_color_0803F684(u16 a, u32 b, u16 c);
 void blend_obj_palettes_to_color_0803F998(u16 a, u32 b, u16 c);
+void blend_obj_palettes_to_color_0803F788(u16 color, u32 amount, u16 mask); // gPaletteBufferBg = gPaletteBackupBg blended toward color by amount/32, for the 16-colour palettes in mask
+void palette_blend_to_color_0803F890(u16 color, u32 amount, u16 mask); // same for gPaletteBuffer / gPaletteBackup
 void clear_battle_sprite_slot(u8 a, u8 b);
 void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c);
 u32 game_state_execute_handler_a(void);
