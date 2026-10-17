@@ -152,6 +152,21 @@
   a `= 1` store (team_add_tinpet).
 * Params read and written through `[sp]` in a leaf (`sub sp, #8; str r0, [sp]`): `vu32` params
   (sub_0804361C, not matched yet).
+* **File context**: register choices (and sometimes block order) change with the C functions
+  compiled before it in the same file, so a function can match in a scratch file and not in its
+  module. `python3 tools/scripts/tryin.py <name> variants.c [N]` tries each `----`-separated
+  variant in place of the module's `INCLUDE_ASM` line and restores the module afterwards
+  (sub_0805B7A0, sub_0805BDC8, sub_0805C190 only matched this way).
+* A non-constant array initializer `u8 cur[3] = {gA, gB, gC};` builds a temporary on the stack and
+  copies it with a `bl memcpy` (sub_0805BCC0). `memcpy` is a second label on `memcpy_optimized` in
+  `asm/lib/libgcc.s`.
+* A constant that the original builds at run time (`movs r0, #0x1f; lsls r4, r0, #10; lsls r1,
+  r0, #5; orrs ...`) comes from a local variable: `s32 w = 31; c = (w << 10) | (w << 5) | w;`
+  (sub_0805C6AC).
+* Repeated key tests that `ands` into a fresh register each time: write `*(u8 *)&gNewKeys & 0x20`
+  at every test instead of a `keys` local (sub_0805B7A0).
+* A `u16` loaded once and split into fields in two places: `u16 c = buf[i];` locals (not `u32`, not
+  re-reading the array) (sub_0805BDC8).
 * Unsolved: callees that zero-extend `u16` x/y params at entry, then sign-extend them at each use
   (`lsls #16; asrs #16` before `& 0x1FF`), while their callers pass sign-extended values (an `s16`
   prototype). `(s16)x` on a `u16` param gets dropped under the mask; see the near misses in NOTES
