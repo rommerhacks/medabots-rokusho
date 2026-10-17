@@ -226,7 +226,49 @@ void sub_0805F9AC(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", clear_or_fill_bg2_tilemap);
+void clear_or_fill_bg2_tilemap(s32 a)
+{
+    u16 buf[0x20];
+    u16 *d;
+    u16 *s;
+    s32 i;
+
+    if (a < 8)
+    {
+        u32 zero = 0;
+
+        CpuFastSet(&zero, buf, 0x01000010);
+        CpuSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800 + (7 - a) * 2, buf, (a + 1) & 0x1FFFFF);
+        CpuSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x2C, &buf[0x1D - a], (a + 1) & 0x1FFFFF);
+    }
+    else
+    {
+        a -= 8;
+        CpuFastSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800, buf, 0x10);
+        d = &buf[14];
+        s = &buf[13 - a];
+        for (i = 13; i >= 0; i--)
+        {
+            if (i <= a)
+                *d = buf[0];
+            else
+                *d = *s--;
+            d--;
+        }
+        d = &buf[15];
+        s = &buf[16 + a];
+        for (i = 13; i >= 0; i--)
+        {
+            if (i <= a)
+                *d = buf[29];
+            else
+                *d = *s++;
+            d++;
+        }
+    }
+    for (i = 0; i < 20; i++)
+        CpuFastSet(buf, (u8 *)VRAM + ((REG_BG1CNT >> 8) & 0x1F) * 0x800 + i * 0x40, 0x10);
+}
 
 void sub_0805FAF0(void)
 {
@@ -904,7 +946,36 @@ void sub_08062638(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_080626A4);
+void sub_080626A4(void)
+{
+    s32 i;
+
+    battle_menu_highlight_icons(gUnk_03006F74->unk19, 8);
+    clear_battle_sprite_slot(0, 0x80);
+    for (i = 0; i < 4; i++)
+        gUnk_03002C30[12 + i].unk0 &= 0xBFFF;
+    CpuFastSet(gUnk_084E2E58, (void *)0x0202F800, 8);
+    CpuFastSet(gUnk_084E2E38, (void *)0x0202F9E0, 8);
+    CpuFastSet(gUnk_084E2E58, (void *)0x0202F9C0, 8);
+    CpuFastSet(gUnk_08488AA4, (void *)0x0202F820, 8);
+    CpuFastSet(gUnk_0879671C, (void *)0x0202FA00, 0x80);
+    gUnk_03000440.unk84 = 0;
+    gUnk_03006F74->unk6 = 1;
+    gGameSubState++;
+    REG_DISPCNT |= 0x100;
+    REG_DISPCNT |= 0x200;
+    REG_DISPCNT |= 0x400;
+    REG_DISPCNT |= 0x800;
+    REG_DISPCNT |= 0x1000;
+    gUnk_03002C30[7].unk0 = 0xC000;
+    gUnk_03002C30[7].unk1C = 2;
+    gUnk_03002C30[7].unkA = 1;
+    gUnk_03002C30[7].unk6 = 0x1A;
+    gUnk_03002C30[7].unk2 = 0x98;
+    gUnk_03002C30[7].unk4 = 0;
+    divide_by_10000(gUnk_03000440.unk9E, gUnk_03002B70.money);
+    render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0, 0x15, 1, 7, 0xF, 1, 0);
+}
 
 void fade_out_transition_step(void)
 {
@@ -932,7 +1003,41 @@ void dispatch_substate_handler(void)
     t.f[gGameSubState]();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", init_scene_rendering_context);
+void init_scene_rendering_context(u32 a)
+{
+    if (a == 0)
+    {
+        struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+        u8 *b;
+        u8 *c;
+        u32 fill;
+
+        sub_0803F624((u8 *)obj, 0xD0, 0);
+        b = (u8 *)0x020260D0;
+        sub_0803F624(b, 0x820, 0);
+        sub_0803F624((u8 *)0x020264E0, 0x820, 0);
+        c = (u8 *)0x020268F0;
+        sub_0803F624(c, 0x60, 0);
+        gUnk_03000430 = 2;
+        gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+        fill = a;
+        CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+        gUnk_03005308 = c;
+        sub_08047414(obj, (u8 *)gUnk_03002414, (u32)gUnk_083D1BF8, (u32)b);
+        obj->unk8 = (u32)b;
+        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03006F74->unk31, gUnk_03006F74->unk33,
+            0x3C, 0x28, 0xC7, a, 1);
+    }
+    else
+    {
+        struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+
+        sub_08047414(obj, (u8 *)gUnk_03002414, (u32)gUnk_083D1BF8, 0x020264E0);
+        obj->unk8 = 0x020264E0;
+        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03006F74->unk32, gUnk_03006F74->unk34,
+            0x3C, 0x28, 0xC7, 4, 2);
+    }
+}
 
 void load_medapart_sprite_animation(u8 id, u8 kind, u32 which)
 {
