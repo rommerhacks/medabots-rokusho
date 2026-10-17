@@ -900,7 +900,18 @@ INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08037B9C);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08037BF4);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08037C50);
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08037E2C);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_0803809C);
+void sub_0803809C(void)
+{
+    clear_battle_sprite_slot(gUnk_03000440.unk12F, 1);
+}
+
+void sub_080380B8(void)
+{
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2D == 0x23)
+        gUnk_03002C30[gUnk_03000440.unk12F].unk29++;
+    else
+        gUnk_03002C30[gUnk_03000440.unk12F].unk2D++;
+}
 
 void sub_080380F0(void)
 {
