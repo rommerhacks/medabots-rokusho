@@ -825,6 +825,26 @@ void update_sprite_animations_tick_0806AF40(void);
 void update_sprite_animations_0806B334(void);
 void sprite_animation_dispatch(u8 sprite, u8 a, u8 b, u8 c);
 void sub_0806B584(u8 sprite);
+void sub_0806B310(void);
+void init_battle_field_screen(void);
+void init_battle_icon_positions(void);
+void init_battle_bg_layer1(void);
+void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c);
+void load_battle_sprite_graphics(void);
+void init_battle_background_layers(void);
+void load_bg_tilemaps_and_palette(void);
+void update_battle_icon_rotation(void);
+void update_battle_bot_entry_animations(void);
+void update_battle_bot_death_animations(void);
+void update_battle_bot_damage_animations(void);
+void update_battle_bot_turn_order_tiles(void);
+bool32 sub_0806A230(void);
+void dispatch_game_substate_handler_08068C3C(void);
+void sub_08069000(void);
+void sub_08069078(void);
+void sub_080690C4(void);
+void sub_08069114(void);
+void sub_08069158(void);
 
 s32 sub_08043C94(void); // random 0-100
 void render_text_sprites_08040EE4(u8 *text, u8 a, u32 x, u32 y, u8 b, u8 c, u8 d, u16 e, s32 f, s32 g);

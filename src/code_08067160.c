@@ -59,7 +59,14 @@ INCLUDE_ASM("asm/nonmatching/code_08067160", check_divisible_by_32);
 INCLUDE_ASM("asm/nonmatching/code_08067160", check_divisible_by_16_b);
 INCLUDE_ASM("asm/nonmatching/code_08067160", bg_layer_init_check);
 INCLUDE_ASM("asm/nonmatching/code_08067160", check_divisible_by_32_b);
-INCLUDE_ASM("asm/nonmatching/code_08067160", dispatch_game_substate_handler_08068C3C);
+
+void dispatch_game_substate_handler_08068C3C(void)
+{
+    if (gUnk_03006F90 == 0)
+        sub_0806B310();
+    gUnk_08485C90[gGameSubState]();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08068C6C);
 
 void sub_08068CF4(void)
@@ -97,7 +104,18 @@ void sub_08068FD4(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069000);
+void sub_08069000(void)
+{
+    init_battle_field_screen();
+    init_battle_icon_positions();
+    init_battle_bg_layer1();
+    play_song(0);
+    setup_screen_transition_effect_080682CC(4, 1, 0);
+    play_song(0x17);
+    REG_DISPCNT |= 0x1E00;
+    gUnk_03006F80 = 8;
+    gGameSubState = 1;
+}
 
 void sub_0806904C(void)
 {
@@ -109,10 +127,58 @@ void sub_0806904C(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069078);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_080690C4);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069114);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069158);
+void sub_08069078(void)
+{
+    update_battle_icon_rotation();
+    battle_update_action_counters();
+    update_battle_bot_entry_animations();
+    update_battle_bot_death_animations();
+    update_battle_bot_damage_animations();
+    update_battle_bot_turn_order_tiles();
+    update_sprite_animations_tick_0806AF40();
+    update_sprite_animations_0806B334();
+    if (sub_0806A584()) {
+        gUnk_03006F88 = 0;
+        gUnk_03006F80 = 10;
+        gGameSubState = 2;
+    }
+}
+
+void sub_080690C4(void)
+{
+    sub_0806918C();
+    load_battle_sprite_graphics();
+    init_battle_background_layers();
+    load_bg_tilemaps_and_palette();
+    play_song(0);
+    setup_screen_transition_effect_080682CC(2, 2, 0);
+    play_song(0x13);
+    REG_DISPCNT |= 0x1A00;
+    gUnk_03006F80 = 11;
+    gGameSubState = 1;
+}
+
+void sub_08069114(void)
+{
+    if (sub_0806A230()) {
+        REG_BLDY = 0;
+        REG_BLDCNT = 0xFF;
+        gUnk_03006F88 = 0;
+        sound_stop_all_with_fade_guard(0x20);
+        gUnk_03006F80 = 12;
+        gGameSubState = 2;
+    }
+}
+
+void sub_08069158(void)
+{
+    struct Unk_03005310 *p;
+    sub_0806918C();
+    play_song(0);
+    p = &gUnk_03005310;
+    p->unk39 = gUnk_03006F94 == 1 ? 1 : 2;
+    sub_08047850(0);
+}
 
 void sub_0806918C(void)
 {
