@@ -457,7 +457,7 @@ struct Unk_03001800
     u8 fillerB6[0x1];
     u8 unkB7; // effect result flags (bit 0, bit 1 checked by sub_0801E3C0)
     u8 unkB8; // effect result flags (bit 1, bit 2 checked by sub_0801E3C0)
-    u8 unkB9;
+    u8 unkB9; // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other (sub_0802C588, written as &unkB8 + 1 to match)
     u8 fillerBA[0xE];
     u16 unkC8; // Robattle: effect amount (shown by sub_0801CA60, subtracted by apply_battle_damage_tick)
     u16 unkCA; // damage passed to battle_set_damage_vs_armor (sub_0801ECC0)
@@ -559,7 +559,7 @@ struct Unk_03000590
     u8 fillerAE[0x2];
     u8 unkB0[8]; // per skill type: times used this battle (sub_08018900)
     u8 unkB8; // own record index (battle_bots_load_parts)
-    u8 unkB9;
+    u8 unkB9; // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other (sub_0802C588, written as &unkB8 + 1 to match)
     u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
     u8 unkBB;
     u8 unkBC; // high nibble cleared by sub_0801B274
