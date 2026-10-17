@@ -153,8 +153,62 @@ u16 eeprom_setup_timer_irq(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DD60);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", load_save_data);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", serialize_save_data);
+
+void load_save_data(struct SaveData *save)
+{
+    s32 i;
+    struct Unk_03000BE0 *medal;
+
+    gUnk_03002B70 = save->unk10;
+    medal = save->medals;
+    for (i = 0; i < 30; i++)
+    {
+        memcpy_optimized(&gUnk_03000BE0[i], medal, sizeof(struct Unk_03000BE0));
+        medal++;
+    }
+    for (i = 0; i < 0x3C0; i++)
+        gMedapartInventory[i] = save->medaparts[i];
+    for (i = 0; i < 9; i++)
+        gUnk_030017A0[i] = save->team[i];
+    CpuSet(save->items, gItemInventory, 0x40);
+    CpuSet(save->field, &gUnk_030057E0, 0x660);
+    gUnk_03001788 = save->flags & 3;
+    gUnk_03001360 = (save->flags >> 2) & 1;
+    gUnk_03000B94 = (save->flags >> 3) & 3;
+    gUnk_03001784.unk0_1 = (save->flags >> 5) & 1;
+}
+
+void serialize_save_data(struct SaveData *save)
+{
+    s32 i;
+    u16 sum;
+    u8 *p;
+    struct Unk_03000BE0 *medal;
+
+    for (i = 0; i < 16; i++)
+        save->magic[i] = gSaveMagic[i];
+    save->unk10 = gUnk_03002B70;
+    medal = save->medals;
+    for (i = 0; i < 30; i++)
+    {
+        memcpy_optimized(medal, &gUnk_03000BE0[i], sizeof(struct Unk_03000BE0));
+        medal++;
+    }
+    for (i = 0; i < 0x3C0; i++)
+        save->medaparts[i] = gMedapartInventory[i];
+    for (i = 0; i < 9; i++)
+        save->team[i] = gUnk_030017A0[i];
+    CpuSet(gItemInventory, save->items, 0x40);
+    CpuSet(&gUnk_030057E0, save->field, 0x660);
+    save->flags = gUnk_03001788 | (gUnk_03001360 << 2) | (gUnk_03000B94 << 3) | (gUnk_03001784.unk0_1 << 5);
+    save->checksum = 0;
+    sum = 0;
+    p = (u8 *)save;
+    for (i = 0; i < sizeof(struct SaveData); i++)
+        sum += *p++;
+    save->checksum = sum;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", validate_save_data);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sync_save_or_link_data);
 

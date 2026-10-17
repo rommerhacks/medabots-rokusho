@@ -390,6 +390,9 @@ extern const u16 gUnk_080AF808[]; // animation frames by (arg & 3) (sub_0805E170
 
 extern u8 gUnk_02023078; // first visible list entry (update_battle_sprite_priority_flags)
 
+extern struct Unk_03001784 gUnk_03001784;
+extern const u8 gSaveMagic[16]; // save file signature (serialize_save_data)
+
 #endif // GUARD_VARIABLES_H
 extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
 extern u8 gUnk_03000B94; // index into gUnk_083AD3B0 (battle music)

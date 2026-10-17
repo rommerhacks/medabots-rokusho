@@ -128,7 +128,9 @@ struct Unk_03006D20
 struct Unk_03002B70
 {
     u32 money;
-    u8 unk4[10];
+    u8 unk4[16]; // player name, 0xFE-terminated (validate_save_data rejects an empty one)
+    u16 unk14[2]; // gUnk_03002B84: [0] counted on every Robattle, [1] only on some (guess: fought / won); both <= 9999, [0] >= [1]
+    u32 unk18; // at most 0x014996FF (validate_save_data; guess: play time in frames, below 100 hours)
 };
 
 // 8-byte records at gUnk_03000440.unk64 (init_game_state_entry).
@@ -1054,6 +1056,30 @@ struct Unk_03006F74
     u8 unk20; // number of save / link slots shown (update_battle_sprite_priority_flags)
     u8 filler21[0x15];
     u16 unk36;
+};
+
+// Game flags byte at 0x03001784
+struct Unk_03001784
+{
+    u32 unk0_0:1; // sub_0805D96C: next game state 13 instead of 6
+    u32 unk0_1:1; // saved in SaveData.flags bit 5
+    u32 unk0_2:30;
+};
+
+// Battery save image (0x1CBC bytes), built by serialize_save_data and read back by load_save_data
+struct SaveData
+{
+    u8 magic[16]; // copied from gSaveMagic
+    struct Unk_03002B70 unk10; // gUnk_03002B70 (money, name, ...)
+    struct Unk_03000BE0 medals[30]; // gUnk_03000BE0
+    u16 medaparts[4 * 120 * 2]; // gMedapartInventory, one byte per halfword
+    struct Unk_030017A0 team[9]; // gUnk_030017A0
+    u8 items[64][2]; // gItemInventory
+    u16 checksum; // byte sum of the whole image, computed with this field 0
+    u8 fillerFF6[2];
+    u8 field[0xCC0]; // gUnk_030057E0
+    u8 flags; // bits 0-1 gUnk_03001788, bit 2 gUnk_03001360, bits 3-4 gUnk_03000B94, bit 5 gUnk_03001784.unk0_1
+    u8 filler1CB9[3];
 };
 
 #endif // GUARD_STRUCTS_H

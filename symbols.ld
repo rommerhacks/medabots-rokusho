@@ -816,3 +816,5 @@ gUnk_080AF6F0       = 0x080AF6F0;
 gUnk_080AF7E0       = 0x080AF7E0;
 gUnk_080AF808       = 0x080AF808;
 gUnk_02023078       = 0x02023078;
+gUnk_03001784       = 0x03001784;
+gSaveMagic          = 0x08483C20;
