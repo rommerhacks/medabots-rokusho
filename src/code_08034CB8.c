@@ -615,7 +615,33 @@ u32 sub_08035DD4(u32 a)
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", init_battle_scene_backgrounds);
+void init_battle_scene_backgrounds(void)
+{
+    if (gUnk_03001800.unkFF & 1)
+        gUnk_03000440.unk96 = 1;
+    else
+        gUnk_03000440.unk96 = 0;
+    if (sub_08035DD4((s16)gUnk_03001800.unk154))
+    {
+        get_active_bot_part_index_and_load_values(0);
+        init_scene_with_bg_and_palette(0, gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2],
+            gUnk_03001800.unk64[3], (s16)gUnk_03001800.unk154, (s16)gUnk_03001800.unk156,
+            gUnk_03001800.unk39[3] + 2, 4, 0, 1, 0, gUnk_03001800.unk114[0]);
+    }
+    if (gUnk_03001800.unkFF & 2)
+        gUnk_03000440.unk96 = 1;
+    else
+        gUnk_03000440.unk96 = 0;
+    if (sub_08035DD4((s16)gUnk_03001800.unk158))
+    {
+        get_active_bot_part_index_and_load_values(1);
+        init_scene_with_bg_and_palette(1, gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2],
+            gUnk_03001800.unk64[3], (s16)gUnk_03001800.unk158, (s16)gUnk_03001800.unk15A,
+            gUnk_03001800.unk39[3] + 2, 8, 1, 1, 1, gUnk_03001800.unk114[1]);
+    }
+    gUnk_03000440.unk96 = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08034CB8", setup_battle_medapart_scenes);
 
 void get_active_bot_part_index_and_load_values(u32 side)
