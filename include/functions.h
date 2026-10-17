@@ -809,6 +809,20 @@ void sub_0806918C(void); // clears VRAM, the sprite table and the four BG scroll
 void dma_copy_tilemap_strip(u8 n);
 void sub_08069EE4(u8 *dst, u8 *src); // copies bytes up to and including the first one > 0xF8
 bool32 sub_0806A584(void);
+void sub_08068DA0(void);
+void dispatch_game_mode_handler(void);
+void sub_08068CF4(void);
+void sub_08068D74(void);
+void sub_08068FD4(void);
+void sub_0806904C(void);
+void init_battle_sprite_small(void);
+void battle_update_action_counters(void);
+bool32 scene_transition_step_080686F4(void);
+bool32 sub_08069EF8(void);
+bool32 sub_08069F80(void);
+bool32 sub_0806A4C0(void);
+void update_sprite_animations_tick_0806AF40(void);
+void update_sprite_animations_0806B334(void);
 
 s32 sub_08043C94(void); // random 0-100
 void render_text_sprites_08040EE4(u8 *text, u8 a, u32 x, u32 y, u8 b, u8 c, u8 d, u16 e, s32 f, s32 g);

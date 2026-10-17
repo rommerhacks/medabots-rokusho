@@ -124,6 +124,13 @@ extern const u8 gSoundOutputBits[4][4]; // [channel][output: 0 off, 1, 2, 3 both
 extern u8 gUnk_030017EC;
 extern s32 gUnk_03006F88;
 extern u8 gUnk_03006F8C[];
+extern s32 gUnk_03006F80; // sub-state to resume after a transition (code_08067160)
+extern u8 gUnk_03006F84;
+extern u8 gUnk_03006FD0[3][3];
+extern s32 gUnk_03006FE0[3]; // per entry frame counters (battle_update_action_counters)
+extern const Func gUnk_08485C48[]; // by gGameState (dispatch_game_mode_handler)
+extern const u8 gUnk_08485CC4[3][3]; // sprite slots
+extern const u8 gUnk_08485CE3[][7]; // frame delays
 extern u8 gUnk_03000584; // 0 player name, 1 / 2 Medal name gUnk_03000BE0[gUnk_030017EC] (sub_0805EE94)
 extern u8 gUnk_03003870[];
 extern u8 gUnk_03005664[];

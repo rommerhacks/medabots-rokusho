@@ -43,7 +43,12 @@ INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08068194);
 INCLUDE_ASM("asm/nonmatching/code_08067160", battle_end_wait_for_confirm);
 INCLUDE_ASM("asm/nonmatching/code_08067160", advance_fade_and_transition_state);
 INCLUDE_ASM("asm/nonmatching/code_08067160", dispatch_battle_end_substate);
-INCLUDE_ASM("asm/nonmatching/code_08067160", dispatch_game_mode_handler);
+
+void dispatch_game_mode_handler(void)
+{
+    gUnk_08485C48[gGameState]();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", setup_screen_transition_effect_080682CC);
 INCLUDE_ASM("asm/nonmatching/code_08067160", setup_screen_transition_effect_080684F0);
 INCLUDE_ASM("asm/nonmatching/code_08067160", scene_transition_step_080686F4);
@@ -56,14 +61,54 @@ INCLUDE_ASM("asm/nonmatching/code_08067160", bg_layer_init_check);
 INCLUDE_ASM("asm/nonmatching/code_08067160", check_divisible_by_32_b);
 INCLUDE_ASM("asm/nonmatching/code_08067160", dispatch_game_substate_handler_08068C3C);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08068C6C);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08068CF4);
+
+void sub_08068CF4(void)
+{
+    if (scene_transition_step_080686F4())
+        gGameSubState = gUnk_03006F80;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08068D14);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08068D74);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08068DA0);
+
+void sub_08068D74(void)
+{
+    if (sub_08069EF8()) {
+        gUnk_03006F88 = 0;
+        gUnk_03006F80 = 4;
+        gGameSubState = 2;
+    }
+}
+
+void sub_08068DA0(void)
+{
+    REG_BLDCNT = 0xFF;
+    REG_BLDY = 0xF;
+    race_enter_team_select();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08068DBC);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08068FD4);
+
+void sub_08068FD4(void)
+{
+    if (sub_08069F80()) {
+        gUnk_03006F88 = 0;
+        gUnk_03006F80 = 7;
+        gGameSubState = 2;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069000);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_0806904C);
+
+void sub_0806904C(void)
+{
+    update_sprite_animations_tick_0806AF40();
+    update_sprite_animations_0806B334();
+    if (sub_0806A4C0()) {
+        gUnk_03006F88 = 0;
+        gGameSubState = 9;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069078);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_080690C4);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069114);
@@ -110,7 +155,13 @@ INCLUDE_ASM("asm/nonmatching/code_08067160", load_battle_sprite_graphics);
 INCLUDE_ASM("asm/nonmatching/code_08067160", divide_by_3);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069A68);
 INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_icon_positions);
-INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_sprite_small);
+
+void init_battle_sprite_small(void)
+{
+    init_battle_sprite_entry_08048818(0, 0xC004, 0x33, 0, 1);
+    gUnk_03002C30[0].unk2 = -16;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_sprite_medium);
 INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_sprite_c400);
 INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_sprite_entry_1);
@@ -141,7 +192,20 @@ bool32 sub_0806A584(void)
 
 INCLUDE_ASM("asm/nonmatching/code_08067160", update_battle_bot_turn_order_tiles);
 INCLUDE_ASM("asm/nonmatching/code_08067160", update_battle_icon_rotation);
-INCLUDE_ASM("asm/nonmatching/code_08067160", battle_update_action_counters);
+
+void battle_update_action_counters(void)
+{
+    int i;
+    for (i = 0; i <= 2; i++) {
+        if (gUnk_03006F8C[i] <= 2) {
+            if (gUnk_08485CE3[gUnk_03006F84][gUnk_03006FD0[i][gUnk_03006F8C[i]]] <= ++gUnk_03006FE0[i]) {
+                gUnk_03002C30[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A++;
+                gUnk_03006FE0[i] = 0;
+            }
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", update_battle_bot_entry_animations);
 INCLUDE_ASM("asm/nonmatching/code_08067160", update_battle_bot_death_animations);
 INCLUDE_ASM("asm/nonmatching/code_08067160", update_battle_bot_damage_animations);
