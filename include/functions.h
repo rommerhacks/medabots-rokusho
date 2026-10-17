@@ -905,6 +905,7 @@ void sub_08037330(u32 rec, u32 frame, u32 mask); // frame & mask != 0: sets bit 
 void sub_080373D4(u32 rec); // sets bit 15 of unk0 on the bot's 4 part sprites
 void sub_08037424(u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
 void calc_polar_to_screen_coords(s32 *out, u32 angle, u32 radius, s32 x, s32 y); // out: x in the low half, y in the high half
+u32 sub_08032FB8(u32 rec); // first record of the side opposite rec (3 or 0)
 u32 sub_08032FC4(u32 rec); // first record of rec's side (0 or 3)
 void set_sprite_hidden_flags(u8 first, u8 count);
 void sub_08035694(u32 slot);

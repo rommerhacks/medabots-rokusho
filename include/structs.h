@@ -423,7 +423,9 @@ struct Unk_03001800
     u8 unk59; // Robattle: effect amount left to apply (sub_08018D0C / sub_08018DF4)
     u8 unk5A; // Robattle: team Medabot count (3 in battle_start.ss0)
     u8 unk5B;
-    u8 filler5C[0x8];
+    u8 filler5C[0x4];
+    u8 unk60; // first record of the target side (sub_08032FB8, sub_08026FF8)
+    u8 filler61[0x3];
     u8 unk64[4]; // filled by get_bot_part_effective_values (sub_08013B8C); AI part order from gUnk_083AD2F0 (battle_ai_roll_part_order)
     u8 filler68[0x18];
     u8 unk80; // index of a 256-byte record in gUnk_03000590 (sub_0800B498 copies Medal rotation data there)

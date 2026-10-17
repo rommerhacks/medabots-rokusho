@@ -1200,12 +1200,88 @@ void sub_08026EC0(void)
     gUnk_03001800.unkAA = 2;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08026ED0);
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08026EF8);
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08026F34);
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08026F6C);
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08026FD0);
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08026FF8);
+void sub_08026ED0(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AE300[gUnk_03001800.unkAA]();
+}
+
+void sub_08026EF8(void)
+{
+    u32 r = clear_ewram_buffer_02023000_b(gUnk_03001800.unk87);
+    if (r)
+    {
+        gUnk_03001800.unk8B = gUnk_03001800.unkD0 = r - 1;
+        gUnk_03001800.unkAA = 2;
+    }
+    else
+    {
+        gUnk_03001800.unkAA++;
+    }
+}
+
+void sub_08026F34(void)
+{
+    clear_battle_sprite_slot(0, 0x80);
+    battle_calc_damage_split(gUnk_03001800.unk87, gUnk_03001800.unkD0, gUnk_03001800.unkEC);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_08026F6C(void)
+{
+    u32 r;
+    struct Unk_03001800 *g = &gUnk_03001800;
+    if (g->unkCA && (r = clear_ewram_buffer_02023000_b(g->unk88)))
+    {
+        r--;
+        g->unkD0 = r;
+        g->unk8B = r;
+        battle_calc_damage_split(g->unk87, g->unkD0, g->unkCA);
+        g->unkAA = 0x10;
+    }
+    else
+    {
+        g->unkAA++;
+    }
+}
+
+void sub_08026FC0(void)
+{
+    gUnk_03001800.unkAA = 4;
+}
+
+void sub_08026FD0(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AE380[gUnk_03001800.unkAA]();
+}
+
+void sub_08026FF8(void)
+{
+    u32 i;
+    struct Unk_03000590 *bots;
+    for (i = 0; i <= 2; i++)
+    {
+        gUnk_03001800.unkD2[i] = 0;
+        gUnk_03001800.unkD6[i] = 0;
+    }
+    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    i = 0;
+    bots = gUnk_03000590;
+    for (; i <= 2; i++)
+    {
+        u32 rec = gUnk_03001800.unk60 + i;
+        if (bots[rec].unk40 && bots[rec].parts[0].unk11)
+        {
+            gUnk_03001800.unkD2[i] = get_random_battle_weight_entry(rec);
+            battle_set_damage_vs_armor(gUnk_03001800.unk60 + i, gUnk_03001800.unkD2[i], gUnk_03001800.unkEC);
+            gUnk_03001800.unkD2[i] |= gUnk_03001800.unkD1 << 7;
+            gUnk_03001800.unkD6[i] = gUnk_03001800.unkC8;
+        }
+    }
+    gUnk_03001800.unkAA++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_080270BC);
 INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_080271C4);
 INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_0802724C);
