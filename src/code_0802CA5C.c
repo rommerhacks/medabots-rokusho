@@ -2011,9 +2011,78 @@ void sub_0803080C(void)
     gUnk_03001800.unkB5 = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0803081C);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_08030860);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_08030890);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_08030910);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_08030990);
+void sub_0803081C(void)
+{
+    process_sprite_anim_commands(gUnk_083B5F80[gUnk_03000440.unk84], 0x21);
+    if (gUnk_03002C30[0x21].unk22 == 0xFF)
+        gUnk_03001800.unkAA++;
+}
+
+void sub_08030860(void)
+{
+    if (sub_0803EED8() == 0)
+    {
+        sub_0803E780();
+        update_all_battle_status_sprites();
+        gUnk_083AEB58[gGameSubState]();
+    }
+}
+
+void sub_08030890(void)
+{
+    switch (gUnk_03000440.unk139)
+    {
+    case 0:
+        reset_bot_status_and_init_palette_transfers(gUnk_03001800.unk87);
+        copy_battle_entity_positions();
+        gUnk_03000440.unk139++;
+        break;
+    case 1:
+        lz_decompress_dispatch(gUnk_084C8AC4, (void *)0x06014E00);
+        gUnk_03000440.unk139++;
+        break;
+    case 2:
+        CpuFastSet(gUnk_084E2FF8, (void *)0x050002C0, 8);
+        gGameSubState++;
+        gUnk_03000440.unk139 = 0;
+        break;
+    }
+}
+
+void sub_08030910(void)
+{
+    gUnk_03002C30[3].unk0 = 0xC004;
+    gUnk_03002C30[3].unk1C = 0;
+    gUnk_03002C30[3].unk2 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
+    gUnk_03002C30[3].unk4 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4;
+    gUnk_03002C30[3].unkA = 6;
+    gUnk_03002C30[3].unkB = 0x81;
+    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x15], 3);
+    play_sound_effect(7);
+    gGameSubState++;
+}
+
+void sub_08030990(void)
+{
+    process_sprite_anim_commands(gUnk_083B5F80[0x15], 3);
+    if (gUnk_03002C30[3].unk22 == 0xFF)
+    {
+        clear_battle_sprite_slot(3, 1);
+        gGameSubState++;
+    }
+}
+
+void sub_080309C8(void)
+{
+    if (gUnk_03000590[gUnk_03001800.unk87].unkBD & 1)
+    {
+        gUnk_03001800.unkA6 = 4;
+        gGameSubState = 0x20;
+    }
+    else if (gUnk_03000590[gUnk_03001800.unk87].unkDD == 0)
+        gGameSubState = 0x10;
+    else
+        gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", resolve_battle_action_phase);
