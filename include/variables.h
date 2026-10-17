@@ -633,6 +633,7 @@ extern const s16 *const gUnk_083CDFE4[]; // battle sequence scripts, by gUnk_030
 extern const u8 gUnk_083CE1F4[]; // operand count per battle sequence command (battle_advance_sequence_counter)
 extern const u16 *const gUnk_083CEC74[]; // x, y passed to init_game_state_entry, by sprite 4 unk2B (sub_080398AC)
 extern const u8 *const gUnk_083AF888[]; // by sequence operand: 4 animation sets, by legs data[1] - 0x64 (3 when gUnk_03001800.unk64[3] > 0x77; sub_08039AC8)
+extern const u8 *const gUnk_083AF88C[]; // pairs: compressed OBJ tiles, OBJ palette 14 (sub_0803A0E0)
 extern const Func gUnk_083AF740[]; // battle sequence commands, by sub_0803D424() (sub_080393EC)
 extern const Func gUnk_083AF6E0[]; // sprite handlers by sprite unk29 (sub_080385F8, sprites 0x21-0x3B)
 extern const u16 gUnk_083AF480[]; // x, y offset pairs by part (sub_08036C20)
