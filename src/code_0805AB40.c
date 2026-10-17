@@ -69,7 +69,23 @@ void decompress_and_write_tilemap(const void *src, u32 bgcnt)
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", tilemap_offset_tiles_and_palette);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", init_multiplayer_id);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", dispatch_game_state_handler_0805BA94);
+
+void dispatch_game_state_handler_0805BA94(void)
+{
+    gUnk_03005010.unk4 = gHeldKeys;
+    gUnk_03005010.unk6 = 0;
+    gUnk_03006F74 = (struct Unk_03006F74 *)&gUnk_03001800;
+    if (gUnk_03005030 != 0 && (*(u32 *)&gUnk_03005010.unk19[3] & 0x00FFFF00))
+    {
+        gGameMode = 0;
+        gGameState = 10;
+        gGameSubState = 0x10;
+    }
+    else
+    {
+        gUnk_08483B00[gGameState]();
+    }
+}
 
 s16 sub_0805BB10(s16 step)
 {
@@ -413,7 +429,25 @@ void sub_0805D378(void)
         gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D394);
+void sub_0805D394(void)
+{
+    struct Unk_03000440 *b = &gUnk_03000440;
+    if (b->unk84 <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, b->unk84 * 4, 0x3FFF);
+        blend_obj_palettes_to_color_0803F998(0, b->unk84 * 4, 0xFFFF);
+        b->unk84++;
+    }
+    else
+    {
+        REG_DISPCNT &= 0xFDFF;
+        REG_DISPCNT &= 0xFBFF;
+        clear_battle_sprite_slot(0, 0x80);
+        gGameMode = 0;
+        gGameState = 1;
+        gGameSubState = 0x10;
+    }
+}
 
 void sub_0805D418(void)
 {
@@ -437,7 +471,23 @@ void sub_0805D468(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D488);
+void sub_0805D488(void)
+{
+    struct Unk_03006F74 *w = gUnk_03006F74;
+    if (w->unk0 != 8)
+    {
+        REG_BLDY = ++w->unk0 * 2;
+    }
+    else
+    {
+        REG_DISPCNT &= 0xFDFF;
+        REG_DISPCNT &= 0xFBFF;
+        clear_battle_sprite_slot(0, 0x80);
+        gUnk_03006F74->unk6 = 1;
+        gGameState = 10;
+        gGameSubState = 0;
+    }
+}
 
 void sub_0805D4F0(void)
 {
@@ -445,7 +495,24 @@ void sub_0805D4F0(void)
         gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D50C);
+void sub_0805D50C(void)
+{
+    struct Unk_03000440 *b = &gUnk_03000440;
+    if (b->unk84 <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, b->unk84 * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, b->unk84 * 4, 0xFFFF);
+        b->unk84++;
+    }
+    else
+    {
+        u32 zero;
+        REG_DISPCNT &= 0xFDFF;
+        zero = 0;
+        CpuFastSet(&zero, (void *)VRAM, 0x01006000);
+        dispatch_by_index_0476e8(4);
+    }
+}
 
 void sub_0805D57C(u16 a)
 {
@@ -835,5 +902,22 @@ void sub_0805E2E8(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805E310);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805E5B0);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805E878);
+
+void sub_0805E878(void)
+{
+    struct Unk_03000440 *b = &gUnk_03000440;
+    if (b->unk84 <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, 0x20 - b->unk84 * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, 0x20 - b->unk84 * 4, 0xFFFF);
+        b->unk84++;
+    }
+    else
+    {
+        gUnk_03006F74->unk2 = 0;
+        gUnk_03006F74->unk6 = 0;
+        gGameSubState++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805E8DC);
