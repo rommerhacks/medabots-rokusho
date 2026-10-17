@@ -370,7 +370,7 @@ u32 sub_0804384C(u8 medal); // team slot (gUnk_030017A0) holding Medal id `medal
 void decompress_sprite_to_vram_08042D94(u32 a, u32 b, u32 c, u32 d, u32 slot);
 void init_battle_medabot_sprites(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j, u32 k);
 void setup_battle_sprite_group(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j, u32 k);
-u32 sub_0804361C(u32 medal, u32 forward); // guess: previous (forward = 0) / next owned Medal slot (gUnk_03000BE0)
+u32 sub_0804361C(vu32 medal, vu32 prev); // previous (prev != 0) or next owned Medal slot (gUnk_03000BE0 bit 7 set, bit 6 clear), 30 if none
 u32 find_next_available_medapart_slot(u32 part, u32 kind, u32 forward, u32 d);
 void init_scene_buffers_080445F4(void);
 void setup_scene_with_bg_and_sprites(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9, u32 a10, u32 a11);

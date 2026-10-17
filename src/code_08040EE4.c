@@ -24,9 +24,63 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_window_params);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", poll_choice_menu);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_bg_tilemap_to_vram);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", clear_tilemap_and_advance_state);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", clear_and_copy_tilemap_rows);
+
+void clear_and_copy_tilemap_rows(void)
+{
+    u32 i, j;
+    u16 *d = (u16 *)(VRAM + 0x2800) + gUnk_03000440.unk2D * 32 + gUnk_03000440.unk2C;
+    u16 *row = d;
+    u16 *s;
+
+    for (j = 0; j < 2; j++)
+    {
+        for (i = 0; i < 8; i++)
+            *d++ = 0;
+        row += 32;
+        d = row;
+    }
+    s = (u16 *)(VRAM + 0x2D40);
+    for (i = 0; i < 8; i++)
+        *d++ = *s++;
+    row += 32;
+    d = row;
+    s = (u16 *)(VRAM + 0x2E80);
+    for (i = 0; i < 8; i++)
+        *d++ = *s++;
+    row += 32;
+    d = row;
+    for (j = 0; j < 2; j++)
+    {
+        for (i = 0; i < 8; i++)
+            *d++ = 0;
+        row += 32;
+        d = row;
+    }
+    gUnk_03000440.unk29++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", transition_draw_tile_strip);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", copy_transition_tiles_to_bg2);
+
+void copy_transition_tiles_to_bg2(void)
+{
+    u32 i, j;
+    u16 *d = (u16 *)(VRAM + 0x2800) + gUnk_03000440.unk2D * 32 + gUnk_03000440.unk2C;
+    u16 *s = (u16 *)(VRAM + 0x2D40);
+    u16 *srow = s;
+    u16 *row = d;
+
+    for (j = 0; j < 6; j++)
+    {
+        for (i = 0; i < 8; i++)
+            *d++ = *s++;
+        row += 32;
+        d = row;
+        srow += 32;
+        s = srow;
+    }
+    gUnk_03000440.unk29++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", battle_sprite_setup_cursor);
 
 void advance_sprite_scroll_animation(void)
