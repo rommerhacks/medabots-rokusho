@@ -929,7 +929,7 @@ void sub_08035944(u32 rec, u32 part); // guess: record rec targets part part - 1
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);
 void sub_080353AC(u32 frame);
 void sub_0803536C(u8 slot, u8 frame, u16 x);
-void reduce_bot_part_stat(u8 rec, u8 part, u16 amount);
+void reduce_bot_part_stat(u32 rec, u32 part, u16 amount);
 void sub_08035194(u32 rec);
 void set_target_sprite_position(u8 rec, u32 frame, u8 flag);
 void update_target_cursor_position(u8 rec);
