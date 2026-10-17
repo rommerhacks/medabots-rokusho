@@ -525,6 +525,7 @@ void open_choice_menu(u8 a, u8 b, u32 c);
 u32 poll_choice_menu(void);
 void divide_by_10000(u8 *digits, u32 n);
 void divide_by_100000_08041370(u8 *digits, u32 n);
+void divide_by_100000_08042838(u32 n, u32 x, u32 y, u32 digits, u32 bgcnt, u32 tile); // guess: draws n as tile digits
 void clear_sprite_table_mask(u8 first, u8 count);
 void fill_text_blank(u8 *buf, u8 n);
 void fill_tilemap_rect_08042698(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 entry);

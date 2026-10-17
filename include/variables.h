@@ -246,3 +246,4 @@ extern const u32 gUnk_083B656C[]; // text pointers indexed by Medal record unk4 
 extern const u32 gUnk_083B6EC8[]; // text pointers indexed by Medal record unk6 (sub_0800A05C)
 extern const u8 *const gUnk_083B7EBC[]; // Medals help cursor layouts: count, then (x, y) tile pairs (sub_0800AA1C)
 extern const u8 gUnk_084C3B14[]; // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (sub_0800B0F8)
+extern const u32 gUnk_083B7338[]; // text pointers indexed by Medaforce id (sub_0800A2E8)
