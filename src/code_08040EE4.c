@@ -28,7 +28,20 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", clear_and_copy_tilemap_rows);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", transition_draw_tile_strip);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", copy_transition_tiles_to_bg2);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", battle_sprite_setup_cursor);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", advance_sprite_scroll_animation);
+
+void advance_sprite_scroll_animation(void)
+{
+    gUnk_03002C30[gUnk_03000440.unk2B].unk8 += 8;
+    gUnk_03002C30[gUnk_03000440.unk2B].unk9 += 8;
+    if (gUnk_03002C30[gUnk_03000440.unk2B].unk8 >= 0x40)
+    {
+        gUnk_03002C30[gUnk_03000440.unk2B].unk8 = 0x40;
+        gUnk_03002C30[gUnk_03000440.unk2B].unk9 = 0x40;
+        gUnk_03000440.unk29++;
+    }
+    gUnk_03000440.unk84 = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", handle_battle_sprite_scroll_input);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_sprite_hflip_by_animation_phase);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", animate_battle_sprite_shrink);
@@ -101,7 +114,19 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", load_palette_entry);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", medal_remove_by_id);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", export_medals_to_buffer);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", clear_ewram_buffer_02023000);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080420C4);
+
+u32 sub_080420C4(u8 level, u8 a, u8 b, u8 c, u8 d)
+{
+    if (d != 0 && level >= d)
+        return 4;
+    if (c != 0 && level >= c)
+        return 3;
+    if (b != 0 && level >= b)
+        return 2;
+    if (a != 0 && level >= a)
+        return 1;
+    return 0;
+}
 
 u32 sub_08042114(u8 a, u8 b)
 {
@@ -198,7 +223,19 @@ void fill_text_blank(u8 *buf, u8 n)
     *buf = 0xFE;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", fill_tilemap_rect_08042698);
+void fill_tilemap_rect_08042698(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 entry)
+{
+    u32 i, j;
+    u16 *base = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
+
+    for (j = 0; j < h; j++)
+    {
+        u16 *p = base + j * 32;
+        for (i = 0; i < w; i++)
+            *p++ = entry++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", fill_tilemap_pair_or_divide);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", divide_by_100000_08042838);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08042950);
@@ -238,7 +275,25 @@ INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_battle_medabot_sprites);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", setup_battle_sprite_group);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", battle_sprite_set_palette_index);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_battle_sprite_orbiting_positions);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", modify_medapart_quantity);
+
+void modify_medapart_quantity(u32 id, u32 kind, u32 byte, u32 subtract, u32 n)
+{
+    if (subtract)
+    {
+        gMedapartInventory[kind * 240 + id * 2 + byte] -= n;
+    }
+    else
+    {
+        u8 *inv = gMedapartInventory;
+        u8 *p = &inv[kind * 240 + id * 2 + byte];
+        u32 v = *p + n;
+
+        if (v > 99)
+            v = 99;
+        *p = v;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", draw_tilemap_with_offset);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_0804361C);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", find_next_available_medapart_slot);
@@ -392,7 +447,21 @@ u32 sub_08044B34(u8 a)
     return a;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044B58);
+void sub_08044B58(void)
+{
+    gUnk_03000BE0[0].unk0 |= 0xC0;
+    gUnk_030017A0[0].unk0 = 3;
+    gUnk_030017A0[0].unk2 = 0;
+    gUnk_030017A0[0].unk3 = 0x2A;
+    gUnk_030017A0[0].unk4 = 0x2A;
+    gUnk_030017A0[0].unk5 = 0x2A;
+    gUnk_030017A0[0].unk6 = 0x2A;
+    gMedapartInventory[0 * 240 + 0x2A * 2 + 1] = 1;
+    gMedapartInventory[1 * 240 + 0x2A * 2 + 1] = 1;
+    gMedapartInventory[2 * 240 + 0x2A * 2 + 1] = 1;
+    gMedapartInventory[3 * 240 + 0x2A * 2 + 1] = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_battle_scene);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_game_mode);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044CDC);

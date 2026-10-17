@@ -181,7 +181,11 @@ struct Unk_03000440
     u8 unk27;
     u8 unk28;
     u8 unk29; // choice menu state (poll_choice_menu)
-    u8 filler2A[0x6];
+    u8 unk2A;
+    u8 unk2B; // sprite slot (advance_sprite_scroll_animation)
+    u8 unk2C; // tilemap x (copy_transition_tiles_to_bg2)
+    u8 unk2D; // tilemap y
+    u8 filler2E[0x2];
     u8 unk30; // game state to return to from game state 63 (debug_menu_exit)
     u8 unk31; // its sub-state
     u8 unk32; // game state 63 menu cursor, 0-10 (debug_menu_select_input)
