@@ -412,7 +412,49 @@ void sub_0805C308(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C428);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C6AC);
+
+void sub_0805C6AC(void)
+{
+    u8 *t = &gUnk_03006F74->unk48;
+    if (*t)
+    {
+        u8 n = --*t;
+        if (n)
+            sub_0805BEA0(gUnk_03006F74->unk5, ((gUnk_03006F74->unk48 * 4) & 0x1F) <= 15 ? 0x20 : 0);
+        else
+        {
+            copy_obj_palette_to_buffer();
+            gUnk_03000440.unk84 = n;
+        }
+    }
+    else if (!is_sound_playing_with_lock(4))
+    {
+        struct Unk_03000440 *b = &gUnk_03000440;
+        if (b->unk84 <= 8)
+        {
+            s32 w = 31;
+            s32 c = (w << 10) | (w << 5) | w;
+            blend_obj_palettes_to_color_0803F684(c, b->unk84 * 4, 0xFFFF);
+            blend_obj_palettes_to_color_0803F998(c, b->unk84 * 4, 0xFFFF);
+            b->unk84++;
+        }
+        else
+        {
+            REG_DISPCNT &= 0xFDFF;
+            switch (gUnk_03006F74->unk5)
+            {
+            case 0:
+                gUnk_03001784.unk0_0 = 1;
+                gGameSubState = 8;
+                break;
+            case 1:
+                gUnk_03001784.unk0_1 = 0;
+                gGameSubState = 7;
+                break;
+            }
+        }
+    }
+}
 
 void sub_0805C7A0(void)
 {
