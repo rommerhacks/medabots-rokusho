@@ -283,3 +283,15 @@
   `if / else if / else` chain puts the first case inline instead (battle_seq_cmd_wait_text).
 * `(0x1E - t - (x + t)) - 1` stored to an s16 field: gcc reassociates the `- 1` into the subtraction
   unless the inner part is cast, `(s16)(0x1E - t - (x + t)) - 1` (sub_0803A474).
+* A loop whose table pointer is loaded *after* the hoisted struct base and `&field` (`movs r7, #0; ldr r5,
+  =base; adds r0, r5, #0xF8; mov r8, r0; ldr r6, =tbl`): write the base and field pointers as locals
+  before the table pointer (`i = 0; b = &gUnk_03001800; f = &b->unkF8; tbl = gUnk_...; do {...}`)
+  (sub_0803B0C0).
+* `x - s->unk30` where the original loads `unk30` first: `x + (s->unk30 * -1)` (sub_0803CC8C); for `+`,
+  swap the operands (`x + s->unk30` loads `unk30` first).
+* A slot byte loaded into a scratch register and copied to a callee-saved one only at `cmp #1`: don't
+  keep it in a local, test `if (gUnk_0300056F == 1)` again and let cse reuse the load (sub_0803B9A4).
+* `if (A) { X; Y++; Y++; } else Y++;` where both `else if` arms of the caller do the same: write the
+  body in full in each arm; the original's tail-merged copies only come out that way (sub_0803B900).
+* A sprite slot found by a search loop and then used for many stores: index `gUnk_03002C30[slot].f`
+  every time instead of a `struct *s = &...[slot]` (the pointer swaps the `lsls/ldr` order).
