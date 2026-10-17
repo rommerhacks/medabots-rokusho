@@ -910,5 +910,20 @@ void set_target_sprite_position(u8 rec, u32 frame, u8 flag);
 void update_target_cursor_position(u8 rec);
 u32 update_sprite_animations_tick_080370AC(u8 slot, u8 n);
 void setup_battle_cursor_sprite_08036FF8(u8 slot, s16 x, s16 y, u8 n);
+void sub_080362C4(u32 side);
+void sub_08036340(u32 side);
+void sub_08036370(u32 side, u8 rec);
+void sub_080364A8(u32 side, u8 rec);
+void sub_0803628C(void);
+void sub_08036B84(u8 rec, u8 part);
+u32 sub_080366DC(u8 slot, u8 part);
+void sub_08036784(u8 slot, u8 part, s16 x, s16 y);
+u32 sub_0803684C(u8 slot);
+void sub_080368C4(u8 *digits, u8 slot, u8 part, s16 x, s16 y);
+u32 advance_sprite_group_anims(u8 *digits, u8 slot);
+u32 sub_08036BB8(u16 *amount, u8 rec, u8 part);
+void sub_08036BF4(u32 side);
+void sub_08036C20(u8 slot, u8 part, s16 x, s16 y, u32 n);
+void setup_battle_medapart_scenes(void);
 
 #endif // GUARD_FUNCTIONS_H

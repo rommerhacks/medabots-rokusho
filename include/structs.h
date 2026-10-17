@@ -443,7 +443,11 @@ struct Unk_03001800
     u8 fillerAC[0x9];
     u8 unkB5; // action effect step script done: cleared by each step dispatcher (sub_0801C4FC, battle_dispatch_phase_handler_0801D2F0..),
               // set by the last step; the callers (sub_080339F4, sub_08033A10) then call sub_08034F08
-    u8 fillerB6[0x12];
+    u8 fillerB6[0x1];
+    u8 unkB7; // effect result flags (bit 0, bit 1 checked by sub_0801E3C0)
+    u8 unkB8; // effect result flags (bit 1, bit 2 checked by sub_0801E3C0)
+    u8 unkB9;
+    u8 fillerBA[0xE];
     u16 unkC8; // Robattle: effect amount (shown by sub_0801CA60, subtracted by apply_battle_damage_tick)
     u8 fillerCA[0x6];
     u8 unkD0; // last part (3..0) of the acting Medabot with armor left (sub_0801C660)
@@ -459,7 +463,10 @@ struct Unk_03001800
     struct BattlePart unk11C; // saved part (data and id), restored by sub_0801B3AC
     u8 filler134[0x8];
     struct Vec16 unk13C[6]; // per record: x, y - 4 of its battle sprite (copy_battle_entity_positions)
-    u8 filler154[0x8];
+    u16 unk154; // effect sprite x, y when unkF8 bit 1 is set (sub_0801E474)
+    u16 unk156;
+    u16 unk158; // effect sprite x, y when unkF8 bit 1 is clear (sub_0801E474)
+    u16 unk15A;
     u8 unk15C[3]; // per Medapart select slot (unk82 - 1): nonzero skips the part sprite (sub_0801B894)
     u8 filler15F[0x5];
     u8 unk164; // nonzero: Medal skill levels can grow (increment_medal_skill_level)
