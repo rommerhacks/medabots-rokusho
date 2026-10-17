@@ -365,9 +365,9 @@ struct Unk_03001800
     u8 unk64[4]; // filled by get_bot_part_effective_values (sub_08013B8C); AI part order from gUnk_083AD2F0 (battle_ai_roll_part_order)
     u8 filler68[0x18];
     u8 unk80; // index of a 256-byte record in gUnk_03000590 (sub_0800B498 copies Medal rotation data there)
-    u8 unk81;
+    u8 unk81; // Robattle: selected command ring slot 0-5 (name gUnk_083C466C[unk81], runtime-checked)
     u8 unk82;
-    u8 unk83; // Robattle: nonzero blocks the input in robattle_command_input
+    u8 unk83; // Robattle: command ring turning, 1 right / 2 left (command_ring_input); nonzero blocks robattle_command_input
     u8 unk84;
     u8 unk85;
     u8 unk86;

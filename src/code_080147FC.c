@@ -819,21 +819,21 @@ void draw_medaforce_gauge_value(u32 rec)
     }
 }
 
-void battle_load_sprite_data(void)
+void command_ring_draw_name(void)
 {
     clear_sprite_table_mask(30, 11);
     memcpy_bytes_08041D04(gUnk_083C466C[gUnk_03001800.unk81], gUnk_03000440.unk9E, 12);
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 30, 21, 17, 8, 14, 0, 1);
 }
 
-void sub_08015F78(void)
+void command_ring_init_icons(void)
 {
     u32 i;
     for (i = 0; i < 6; i++)
-        sub_08015F90(i);
+        command_ring_init_icon(i);
 }
 
-void sub_08015F90(u32 i)
+void command_ring_init_icon(u32 i)
 {
     u32 k;
     struct Vec16 p;
@@ -862,14 +862,14 @@ void sub_08015F90(u32 i)
     gUnk_03002C30[i].unk22 = 0;
 }
 
-void sub_08016068(void)
+void command_ring_init_icons_hidden(void)
 {
     u32 i;
     for (i = 0; i < 6; i++)
-        sub_08016080(i);
+        command_ring_init_icon_hidden(i);
 }
 
-void sub_08016080(u32 i)
+void command_ring_init_icon_hidden(u32 i)
 {
     u32 k;
     struct Vec16 p;
@@ -898,17 +898,64 @@ void sub_08016080(u32 i)
     gUnk_03002C30[i].unk22 = 0;
 }
 
-// Declared non-void in the original (it pops into r1) but returns nothing.
-u32 sub_08016138(u32 a)
+u32 command_ring_rotate_step(u32 dir)
 {
-    u32 i;
+    u32 i, done;
     for (i = 0; i <= 5; i++)
-        sub_08016154(i, a);
+        done = sub_08016154(i, dir);
+    return done;
 }
 
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016154);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016288);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_0801630C);
+
+void command_ring_input(void)
+{
+    if (gUnk_03001800.unk83)
+    {
+        if (command_ring_rotate_step(gUnk_03001800.unk83 - 1))
+        {
+            if (gUnk_03001800.unk83 == 1)
+                gUnk_03001800.unk81 = gUnk_083AD376[gUnk_03001800.unk81];
+            else
+                gUnk_03001800.unk81 = gUnk_083AD37C[gUnk_03001800.unk81];
+            gUnk_03001800.unk83 = 0;
+            command_ring_draw_name();
+        }
+    }
+    else
+    {
+        if (KEYS_LO(gRepeatKeys) & 0x10)
+        {
+            play_sound_effect(2);
+            gUnk_03001800.unk83 = 1;
+        }
+        if (KEYS_LO(gRepeatKeys) & 0x20)
+        {
+            play_sound_effect(2);
+            gUnk_03001800.unk83 = 2;
+        }
+    }
+}
+
+void command_ring_pulse_selected(void)
+{
+    if (gUnk_03001800.unk83 == 0)
+    {
+        gUnk_03002C30[gUnk_03001800.unk81].unk0 |= 0x20;
+        gUnk_03002C30[gUnk_03001800.unk81].unk22++;
+        if (gUnk_03002C30[gUnk_03001800.unk81].unk22 & 8)
+        {
+            gUnk_03002C30[gUnk_03001800.unk81].unk9 = 0x50;
+            gUnk_03002C30[gUnk_03001800.unk81].unk8 = 0x50;
+        }
+        else
+        {
+            gUnk_03002C30[gUnk_03001800.unk81].unk9 = 0x40;
+            gUnk_03002C30[gUnk_03001800.unk81].unk8 = 0x40;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016370);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016438);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", animate_battle_sprites);

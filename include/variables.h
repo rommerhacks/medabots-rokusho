@@ -361,7 +361,9 @@ extern const u8 gUnk_08488830[];
 extern const u8 gUnk_08488744[];
 extern const u8 gUnk_084887A4[];
 extern const u8 gUnk_084887F4[];
-extern const u8 *const gUnk_083C466C[]; // 12-byte name text, by gUnk_03001800.unk81 (battle_load_sprite_data)
-extern const u8 gUnk_083AD370[]; // angles for compute_polar_to_screen_position, by sprite slot - gUnk_03001800.unk81 (sub_08015F90)
+extern const u8 *const gUnk_083C466C[]; // 12-byte name text, by gUnk_03001800.unk81 (command_ring_draw_name)
+extern const u8 gUnk_083AD370[]; // angles for compute_polar_to_screen_position, by sprite slot - gUnk_03001800.unk81 (command_ring_init_icon)
+extern const u8 gUnk_083AD376[]; // next slot after a right turn of the ring, by gUnk_03001800.unk81 (command_ring_input)
+extern const u8 gUnk_083AD37C[]; // next slot after a left turn
 
 #endif // GUARD_VARIABLES_H

@@ -1301,8 +1301,8 @@ void sub_08012C0C(void)
     draw_battle_panel_left_a(gUnk_03001800.unk80);
     draw_medaforce_gauge_bar(gUnk_03001800.unk80);
     draw_medaforce_gauge_value(gUnk_03001800.unk80);
-    battle_load_sprite_data();
-    sub_08015F78();
+    command_ring_draw_name();
+    command_ring_init_icons();
     battle_sprite_set_palette_index(gUnk_03001800.unk80 * 4 + 0x5A, 8);
     gGameSubState++;
 }
@@ -1314,11 +1314,11 @@ void robattle_command_input(void)
     update_all_battle_status_sprites();
     animate_battle_sprites(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
-    sub_08016288();
+    command_ring_input();
     sub_080178CC();
     if (gUnk_03001800.unk83)
         return;
-    sub_0801630C();
+    command_ring_pulse_selected();
     if (KEYS_LO(gNewKeys) & 1)
     {
         if (gUnk_03000440.unk89 == 1 && gUnk_03001800.unk81 == 5)
@@ -1382,7 +1382,7 @@ void sub_08012E40(void)
     animate_battle_sprites(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     decompress_two_bg1_layers();
-    sub_08016068();
+    command_ring_init_icons_hidden();
     read_vram_tilemap_rect(6, 5, 0xC, 0x15, REG_BG1CNT, gUnk_02020800);
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
@@ -1398,7 +1398,7 @@ void sub_08012EA8(void)
     sub_08016FB4();
     if (++gUnk_03000440.unk84 == 10)
     {
-        battle_load_sprite_data();
+        command_ring_draw_name();
         gGameSubState = 7;
     }
 }
