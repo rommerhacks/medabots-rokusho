@@ -1064,6 +1064,13 @@ struct Unk_03006F74
     u8 unk50[8]; // blend effect state (init_blend_effect, blend_fade_step_08065598)
 };
 
+// Item list built at 0x02040000 (an EWRAM mirror) by unpack_item_inventory_to_buffer, one per inventory slot
+struct ItemListEntry
+{
+    u16 id;
+    u16 count; // 0: empty slot
+};
+
 // Game flags byte at 0x03001784
 struct Unk_03001784
 {

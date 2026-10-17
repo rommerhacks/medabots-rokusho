@@ -829,3 +829,8 @@ extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (dma_load_batt
 extern u32 gUnk_0300534C;
 extern u8 gUnk_03006D40[0x200];
 extern u32 gUnk_03006D30;
+extern const Func gUnk_08483BA0[]; // by gGameSubState (update_fade_transition_and_counters)
+extern const Func gUnk_08483C44[]; // by gGameSubState (sub_0805E29C)
+extern const u8 *const gUnk_084851CC[]; // messages by item id, 0x3F with an empty list (sub_0805CDF0)
+extern const u8 gUnk_080AF755[]; // 0x53-byte message copied to the stack (load_rotation_grid_and_advance)
+extern u16 gUnk_03004130[]; // OAM entry (attr0..2) of the list cursor sprite (init_fade_sprite_and_start_fade)
