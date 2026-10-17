@@ -8,7 +8,7 @@ void sub_080147FC(void)
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++)
     {
-        if (gUnk_03000590[i].unk40[0] && (gUnk_03000590[i].unkCE & 4))
+        if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 4))
         {
             set_display_digit_type(&gUnk_03000440.unkEE, gUnk_03000590[i].unkC8, 0);
             sub_0801A144(&gUnk_03000440.unkEE, i);
@@ -26,14 +26,14 @@ void sub_08014870(void)
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++)
     {
-        if (gUnk_03000590[i].unk40[0] && (gUnk_03000590[i].unkCE & 4))
+        if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 4))
             sub_0801A228(i);
     }
     if (++gUnk_03000440.unk84 == 90)
     {
         for (i = 0; i <= 5; i++)
         {
-            if (gUnk_03000590[i].unk40[0] && (gUnk_03000590[i].unkCE & 4))
+            if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 4))
             {
                 gUnk_03000590[i].unkCE &= ~4;
                 clear_battle_sprite_slot(10 + i * 4, 3);
@@ -52,7 +52,7 @@ void sub_08014920(void)
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++)
     {
-        if (gUnk_03000590[i].unk40[0] && (gUnk_03000590[i].unkCE & 8))
+        if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 8))
         {
             set_display_digit_type(&gUnk_03000440.unkEE, gUnk_03000590[i].unkCD, 1);
             sub_0801A144(&gUnk_03000440.unkEE, i);
@@ -70,14 +70,14 @@ void sub_08014994(void)
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++)
     {
-        if (gUnk_03000590[i].unk40[0] && (gUnk_03000590[i].unkCE & 8))
+        if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 8))
             sub_0801A228(i);
     }
     if (++gUnk_03000440.unk84 == 90)
     {
         for (i = 0; i <= 5; i++)
         {
-            if (gUnk_03000590[i].unk40[0] && (gUnk_03000590[i].unkCE & 8))
+            if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 8))
             {
                 gUnk_03000590[i].unkCE &= ~8;
                 clear_battle_sprite_slot(10 + i * 4, 3);
@@ -236,14 +236,132 @@ void clear_battle_bot_array(void)
     sub_0803F624((u8 *)gUnk_03000590, 0x600, 0);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", count_active_battle_bots);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", battle_setup_bot_entry);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", copy_player_medals_to_battle_bots);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", copy_battle_position_to_sprite);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", setup_bot_render_label);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", init_battle_entities_and_labels);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", init_enemy_bot_medal);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", init_enemy_bot_loadouts);
+void count_active_battle_bots(void)
+{
+    u32 i;
+    u32 n;
+
+    for (i = 0, n = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unk41[i])
+            n++;
+    }
+    gUnk_03001800.unk5A = n;
+    gUnk_03001800.unk5B = gUnk_03001800.unk2;
+}
+
+void battle_setup_bot_entry(void)
+{
+    copy_player_medals_to_battle_bots();
+    copy_battle_position_to_sprite();
+    setup_bot_render_label(0, gUnk_03001800.unk5A);
+}
+
+void copy_player_medals_to_battle_bots(void)
+{
+    u32 i;
+
+    for (i = 0; i < gUnk_03001800.unk5A; i++)
+        memcpy_bytes_0803F63C(&gUnk_03000BE0[find_medal_slot_by_id(gUnk_030017A0[gUnk_03001800.unk41[i] & 0xF].unk2) - 1], &gUnk_03000590[i], 0x40);
+}
+
+void copy_battle_position_to_sprite(void)
+{
+    u32 i;
+
+    for (i = 0; i < gUnk_03001800.unk5A; i++)
+        memcpy_bytes_0803F63C(&gUnk_030017A0[gUnk_03001800.unk41[i] & 0xF], &gUnk_03000590[i].unk40, 8);
+}
+
+void setup_bot_render_label(u32 rec, u32 n)
+{
+    u32 i;
+
+    for (i = 0; i < n; rec++, i++)
+    {
+        gUnk_03000590[rec].unkB8 = rec;
+        gUnk_03000590[rec].unkBA = 1;
+        load_part_data(gUnk_03000590[rec].unk43, 0, &gUnk_03000440.unkEE);
+        memcpy_bytes_0803F63C(&gUnk_03000440.unkEE, gUnk_03000590[rec].parts[0].data, 0xD);
+        gUnk_03000590[rec].parts[0].unk10 = gUnk_03000590[rec].parts[0].data[8];
+        gUnk_03000590[rec].parts[0].unk11 = gUnk_03000590[rec].parts[0].data[4];
+        gUnk_03000590[rec].parts[0].unk17 = gUnk_03000590[rec].unk43;
+        load_part_data(gUnk_03000590[rec].unk44, 1, &gUnk_03000440.unkEE);
+        memcpy_bytes_0803F63C(&gUnk_03000440.unkEE, gUnk_03000590[rec].parts[1].data, 0xD);
+        gUnk_03000590[rec].parts[1].unk11 = gUnk_03000590[rec].parts[1].data[4];
+        gUnk_03000590[rec].parts[1].unk17 = gUnk_03000590[rec].unk44;
+        load_part_data(gUnk_03000590[rec].unk45, 2, &gUnk_03000440.unkEE);
+        memcpy_bytes_0803F63C(&gUnk_03000440.unkEE, gUnk_03000590[rec].parts[2].data, 0xD);
+        gUnk_03000590[rec].parts[2].unk11 = gUnk_03000590[rec].parts[2].data[4];
+        gUnk_03000590[rec].parts[2].unk17 = gUnk_03000590[rec].unk45;
+        load_part_data(gUnk_03000590[rec].unk46, 3, &gUnk_03000440.unkEE);
+        memcpy_bytes_0803F63C(&gUnk_03000440.unkEE, gUnk_03000590[rec].parts[3].data, 0xD);
+        memcpy_bytes_0803F63C(&gUnk_03000590[rec].parts[3].data[4], &gUnk_03000590[rec].parts[3].unk11, 6);
+        gUnk_03000590[rec].parts[3].unk17 = gUnk_03000590[rec].unk46;
+    }
+}
+
+void init_battle_entities_and_labels(void)
+{
+    u32 i;
+
+    for (i = 0; i < gUnk_03001800.unk5B; i++)
+        init_enemy_bot_medal(i);
+    init_enemy_bot_loadouts();
+    setup_bot_render_label(3, gUnk_03001800.unk5B);
+}
+
+void init_enemy_bot_medal(u8 i)
+{
+    u32 k;
+    u32 v;
+    u32 lvl;
+
+    memcpy_bytes_08041D04(gUnk_083B6158[gUnk_03001800.unk4[i].unk4], &gUnk_03000440.unkEE, 16);
+    gUnk_03000590[i + 3].medal.unk0 = 0x80;
+    gUnk_03000590[i + 3].medal.unk1 = (&gUnk_03000440.unkEE)[0];
+    gUnk_03000590[i + 3].medal.unk4 = (&gUnk_03000440.unkEE)[1];
+    gUnk_03000590[i + 3].medal.unk5 = gUnk_03001800.unk4[i].unk5;
+    gUnk_03000590[i + 3].medal.unk6 = (&gUnk_03000440.unkEE)[2];
+    gUnk_03000590[i + 3].medal.unk7 = (&gUnk_03000440.unkEE)[7];
+    gUnk_03000590[i + 3].medal.unk9 = gUnk_03001800.unk4[i].unkA;
+    memcpy_bytes_08041D04((const void *)gUnk_083BA4D8[gUnk_03001800.unk4[i].parts[0]], gUnk_03000590[i + 3].medal.unkA, 0xE);
+    for (k = 0; k <= 3; k++)
+    {
+        gUnk_03000590[i + 3].medal.unk18[k * 2] = gUnk_03001800.unk4[i].unk6[k] >> 4;
+        gUnk_03000590[i + 3].medal.unk18[k * 2 + 1] = gUnk_03001800.unk4[i].unk6[k] & 0xF;
+    }
+    for (k = 0; k <= 7; k++)
+    {
+        v = gUnk_083AD200[gUnk_03000590[i + 3].medal.unk4 * 8 + k];
+        lvl = gUnk_03000590[i + 3].medal.unk5 >> 1;
+        if (lvl)
+            v *= lvl;
+        if (v == 0)
+            v = 1;
+        else if (v > 100)
+            v = 100;
+        gUnk_03000590[i + 3].medal.unk20[k] = v;
+    }
+}
+
+void init_enemy_bot_loadouts(void)
+{
+    u32 i;
+
+    for (i = 0; i < gUnk_03001800.unk5B; i++)
+    {
+        gUnk_03000590[i + 3].unk40 = 3;
+        load_part_data(gUnk_03001800.unk4[i].parts[0], 0, &gUnk_03000440.unkEE);
+        gUnk_03000590[i + 3].unk41 = (&gUnk_03000440.unkEE)[3];
+        gUnk_03000590[i + 3].unk42 = gUnk_03000590[i + 3].medal.unk1;
+        gUnk_03000590[i + 3].unk43 = gUnk_03001800.unk4[i].parts[0];
+        gUnk_03000590[i + 3].unk44 = gUnk_03001800.unk4[i].parts[1];
+        gUnk_03000590[i + 3].unk45 = gUnk_03001800.unk4[i].parts[2];
+        gUnk_03000590[i + 3].unk46 = gUnk_03001800.unk4[i].parts[3];
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", battle_process_all_bots_actions);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", battle_process_bot_actions_for_side);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", process_bot_battle_turn);

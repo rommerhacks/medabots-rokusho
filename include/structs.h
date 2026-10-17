@@ -330,7 +330,11 @@ struct Unk_03002414
 struct EncounterBot
 {
     u8 parts[4]; // head, right arm, left arm, legs part ids
-    u8 filler4[8];
+    u8 unk4; // Medal (gUnk_083B6158 record; init_enemy_bot_medal)
+    u8 unk5; // Medal level
+    u8 unk6[4]; // two 4-bit Medal record unk18 entries per byte
+    u8 unkA; // Medal record unk9
+    u8 fillerB;
 };
 
 struct Unk_03001800
@@ -412,13 +416,35 @@ struct Unk_03000BE0
 
 };
 
+// Battle Medapart record (0x18 bytes, 4 per gUnk_03000590 record from +0x48; setup_bot_render_label).
+struct BattlePart
+{
+    u8 data[0xD]; // part data record (load_part_data); data[0xA] summed as armor (accumulate_team_armor_stats)
+    u8 fillerD[3];
+    u8 unk10; // head: copy of data[8]
+    u8 unk11; // copy of data[4] (legs: data[4..9] copied to unk11..unk16); 0 = part broken (guess)
+    u8 filler12[5];
+    u8 unk17; // part id
+};
+
 // 256-byte records at gUnk_03000590 (6 of them, cleared together); each starts with a Medal record copy.
 struct Unk_03000590
 {
     struct Unk_03000BE0 medal;
-    // Battle Medabot: part records of 0x18 bytes from +0x58 (+1 nonzero = part still working,
-    // guess), armor bytes at +0x52/+0x6A/+0x82/+0x9A (accumulate_team_armor_stats)
-    u8 unk40[0x7A];
+    // 0x40-0x47: copy of the team slot (struct Unk_030017A0, copy_battle_position_to_sprite);
+    // opponents: unk40 = 3, unk41 = head part byte 3, unk42 = Medal graphic (init_enemy_bot_loadouts)
+    u8 unk40; // nonzero: record in use
+    u8 unk41;
+    u8 unk42;
+    u8 unk43; // part ids: head, right arm, left arm, legs (setup_bot_render_label)
+    u8 unk44;
+    u8 unk45;
+    u8 unk46;
+    u8 unk47;
+    struct BattlePart parts[4]; // head, right arm, left arm, legs
+    u8 fillerA8[0x10];
+    u8 unkB8; // own record index (setup_bot_render_label)
+    u8 unkB9;
     u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
     u8 unkBB;
     u8 fillerBC;

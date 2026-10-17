@@ -796,5 +796,9 @@ u32 sub_0801A030(u32 rec, u32 a);
 void set_display_digit_type(u8 *buf, u32 value, u32 type);
 void sub_0801A144(u8 *buf, u32 rec);
 void sub_0801A228(u32 rec);
+void copy_player_medals_to_battle_bots(void);
+void copy_battle_position_to_sprite(void);
+void init_enemy_bot_medal(u8 i);
+void init_enemy_bot_loadouts(void);
 
 #endif // GUARD_FUNCTIONS_H

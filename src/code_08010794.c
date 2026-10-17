@@ -754,7 +754,7 @@ void battle_loss_take_part(void)
     else
     {
         sub_080122F4(0);
-        sub_080421B4(gUnk_03000590[gUnk_03001800.unk187].unk40[7], gUnk_03001800.unk168);
+        sub_080421B4(gUnk_03000590[gUnk_03001800.unk187].unk47, gUnk_03001800.unk168);
         sub_0803FB0C();
         gGameSubState++;
     }
@@ -1092,13 +1092,13 @@ void calc_medaforce_gauge_from_damage(void)
     {
         if (gUnk_03000590[i + 3].unkBA)
         {
-            if (!gUnk_03000590[i + 3].unk40[0x19])
+            if (!gUnk_03000590[i + 3].parts[0].unk11)
                 score += 8;
-            if (!gUnk_03000590[i + 3].unk40[0x31])
+            if (!gUnk_03000590[i + 3].parts[1].unk11)
                 score += 16;
-            if (!gUnk_03000590[i + 3].unk40[0x49])
+            if (!gUnk_03000590[i + 3].parts[2].unk11)
                 score += 16;
-            if (!gUnk_03000590[i + 3].unk40[0x61])
+            if (!gUnk_03000590[i + 3].parts[3].unk11)
                 score += 16;
         }
     }
@@ -1119,10 +1119,10 @@ void accumulate_team_armor_stats(void)
     {
         if (gUnk_03000590[i + 3].unkBA)
         {
-            sum += gUnk_03000590[i + 3].unk40[0x12];
-            sum += gUnk_03000590[i + 3].unk40[0x2A];
-            sum += gUnk_03000590[i + 3].unk40[0x42];
-            sum += gUnk_03000590[i + 3].unk40[0x5A];
+            sum += gUnk_03000590[i + 3].parts[0].data[0xA];
+            sum += gUnk_03000590[i + 3].parts[1].data[0xA];
+            sum += gUnk_03000590[i + 3].parts[2].data[0xA];
+            sum += gUnk_03000590[i + 3].parts[3].data[0xA];
         }
     }
     gUnk_03001800.unk16C += sum;
@@ -2101,7 +2101,7 @@ void sub_08014314(void)
     battle_calc_bot_count_minus_one_mod3();
     rec = gUnk_03000590;
     rec += gUnk_03001800.unk87;
-    if (rec->unk40[0] == 0)
+    if (rec->unk40 == 0)
     {
         sub_0801A678();
     }
@@ -2202,7 +2202,7 @@ void sub_08014548(void)
         struct Unk_03000590 *rec = gUnk_03000590;
 
         rec += i;
-        if (rec->unk40[0] && rec->unkBF)
+        if (rec->unk40 && rec->unkBF)
         {
             u32 a, b;
 
@@ -2229,7 +2229,7 @@ void sub_080145BC(void)
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++)
     {
-        if (gUnk_03000590[i].unk40[0] && (gUnk_03000590[i].unkCE & 1))
+        if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 1))
         {
             gUnk_03002C30[0x46 + i * 3].unk0 |= 0x8220;
             gUnk_03002C30[0x46 + i * 3].unk9 = 0x40;
@@ -2247,7 +2247,7 @@ void sub_08014634(void)
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++)
     {
-        if (gUnk_03000590[i].unk40[0] && (gUnk_03000590[i].unkCE & 1))
+        if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 1))
         {
             gUnk_03002C30[0x46 + i * 3].unk0 |= 0x8000;
             gUnk_03002C30[0x46 + i * 3].unk9 += 4;
@@ -2271,7 +2271,7 @@ void sub_080146DC(void)
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++)
     {
-        if (gUnk_03000590[i].unk40[0] && (gUnk_03000590[i].unkCE & 2))
+        if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 2))
         {
             gUnk_03002C30[0x47 + i * 3].unk0 |= 0x8220;
             gUnk_03002C30[0x47 + i * 3].unk9 = 0x40;
@@ -2289,7 +2289,7 @@ void sub_08014754(void)
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++)
     {
-        if (gUnk_03000590[i].unk40[0] && (gUnk_03000590[i].unkCE & 2))
+        if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 2))
         {
             gUnk_03002C30[0x47 + i * 3].unk0 |= 0x8000;
             gUnk_03002C30[0x47 + i * 3].unk9 += 4;
