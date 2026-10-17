@@ -1333,8 +1333,52 @@ void sub_0802F13C(void)
     gUnk_03002C30[0x21].unk27++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802F214);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802F2F4);
+void sub_0802F214(void)
+{
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk0 = 0xC604;
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk1C = 0;
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk2 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk4 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4;
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unkA = 7;
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unkB = 0xF0;
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk8 = 0x40;
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk9 = 0x40;
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk18 = 0;
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk6 = 0x4100;
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk23 = 0;
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk27 = 0;
+    play_sound_effect(0x29);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802F2F4(void)
+{
+    sub_080353CC(gUnk_03000440.unk84 + 0x21);
+    if (gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk27 == 0x20)
+    {
+        clear_battle_sprite_slot(gUnk_03000440.unk84 + 0x21, 1);
+        gUnk_03002C30[0x21].unk8 += gUnk_03000440.unk84 << 4;
+        gUnk_03002C30[0x21].unk9 += gUnk_03000440.unk84 << 4;
+        if (++gUnk_03000440.unk84 == 4)
+            gUnk_03001800.unkAA++;
+        else
+            gUnk_03001800.unkAA = 2;
+        return;
+    }
+    if (!(gUnk_03001800.unkF8 & 1))
+        gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk18 = (gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk18 + 0x20) & 0x3FF;
+    else
+        gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk18 = (gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk18 - 0x20) & 0x3FF;
+    if (!(gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk27 & 1))
+    {
+        if (!(gUnk_03001800.unkF8 & 1))
+            gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk2++;
+        else
+            gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk2--;
+    }
+    gUnk_03002C30[gUnk_03000440.unk84 + 0x21].unk27++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802F3FC);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802F468);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802F48C);
