@@ -303,7 +303,7 @@ u32 get_random_battle_weight_entry(u32 idx);
 void sub_08036270(void);
 void sub_0803713C(void);
 u32 sub_08037230(u32 rec, u32 part); // 1 if the part is broken or at full armor
-void calc_battle_action_speed(u8 rec, u8 part);
+void calc_battle_action_speed(u32 rec, u32 part);
 void apply_battle_bot_damage_reduction(u32 rec);
 u32 decrement_battle_timer_and_check_zero(void);
 void calc_battle_stat_ratio(u32 rec, u32 part); // unkEC = (unkE8 / 4 + part data[6]) / part data[0xC], at least 1
@@ -1034,7 +1034,8 @@ u32 update_sprite_animations_tick_080370AC(u32 slot, u8 n);
 void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u8 n);
 void sub_080362C4(u32 side);
 void sub_08036340(u32 side);
-void sub_08036370(u32 side, u8 rec);
+void sub_08036370(u32 side, u32 rec); // draws the 4 parts' armor (data[4] max, unk11 left) via sub_080363E8
+void sub_080363E8(u32 x, u32 y, u32 w, u32 max, u32 cur);
 void sub_080364A8(u32 side, u8 rec);
 void sub_0803628C(void);
 void sub_08036B84(u32 rec, u32 part);
@@ -1045,7 +1046,7 @@ void sub_080368C4(u8 *digits, u8 slot, u8 part, s16 x, s16 y);
 u32 advance_sprite_group_anims(u8 *digits, u32 slot);
 u32 sub_08036BB8(u16 *amount, u32 rec, u32 part); // moves one point from *amount (low byte) out of the part's armor; 1 when done
 void sub_08036BF4(u32 side);
-void sub_08036C20(u8 slot, u8 part, s16 x, s16 y, u32 n);
+void sub_08036C20(u32 slot, u32 part, s16 x, s16 y, u32 n); // inits battle sprite slot at (x, y) + gUnk_083AF480[part] with animation gUnk_083B5F80[n]
 void setup_battle_medapart_scenes(void);
 void calc_bot_evasion_modifier(u32 rec);
 void sub_080355C4(u32 rec);
