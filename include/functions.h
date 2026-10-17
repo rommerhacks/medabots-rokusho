@@ -790,13 +790,13 @@ u32 status_side_change_scroll_in(void);
 void status_reset_portrait(void);
 void sub_080189EC(void);
 void select_battle_music(void);
-void sub_08018BD4(void);
-void sub_08018C38(void);
-void sub_08018C78(void);
+void robattle_time_init(void);
+void robattle_time_tick(void);
+void robattle_time_draw(void);
 void sub_0801902C(void);
 u32 sub_08019EF0(void);
 void sub_08019078(void);
-void sort_active_medal_slots(void);
+void battle_queue_sort(void);
 void battle_calc_bot_count_minus_one_mod3(void);
 void sub_0801A678(void);
 void iterate_bots_setup_battle_sprites(void);
@@ -804,11 +804,11 @@ void battle_bot_advance_rotation(u32 rec);
 u32 sub_0801A6B0(void);
 void battle_process_all_bot_actions(u32 rec);
 u32 sub_0801A6EC(u32 rec);
-void sub_08019348(u32 rec);
+void battle_bot_move(u32 rec);
 void sub_08019544(u32 rec);
-u32 sub_08019440(u32 rec);
-u32 sub_08019FBC(u32 rec, u32 peek); // 1 when the Medabot has reached its front line (x 0x68 team, 0x88 opponents); queues it unless peek
-u32 sub_0801A030(u32 rec, u32 peek); // 1 when the returning Medabot is back home (x 0x28 / 0xC8); queues it unless peek
+u32 sub_08019440(u32 rec); // battle_bot_move with the other direction; 1 when the line is reached
+u32 battle_bot_at_front_line(u32 rec, u32 peek); // 1 when the Medabot has reached its front line (x 0x68 team, 0x88 opponents); queues it unless peek
+u32 battle_bot_at_home_line(u32 rec, u32 peek); // 1 when the returning Medabot is back home (x 0x28 / 0xC8); queues it unless peek
 void set_display_digit_type(u8 *buf, u32 value, u32 type);
 void sub_0801A144(u8 *buf, u32 rec);
 void sub_0801A228(u32 rec);
@@ -828,19 +828,19 @@ u32 battle_part_unusable(u32 rec, u32 part); // any of sub_080154E0 / sub_080155
 u32 rng_lookup_table_value(void);
 u32 begin_battle_action_lookup(u32 rec, u32 part);
 void sub_08018CBC(void);
-void sub_08018D0C(u32 rec);
-void sub_08018DF4(u32 rec);
+void sub_08018D0C(u32 rec); // timed effect A tick (type 0x1F restores armor to damaged parts)
+void sub_08018DF4(u32 rec); // timed effect B tick (types 0x13/0x14 lower a part's armor, not below 1)
 
 u32 add_part_stat_clamped(u32 rec, u32 part, s32 amount); // adds to a part's armor up to its max; returns added | leftover << 8
-u32 sub_08018EE0(u32 rec);
-u32 sub_08018F48(u32 rec);
-u32 sub_08018F6C(u32 rec);
-u32 sub_08018FB8(u32 rec, u32 part, s32 amount);
-u32 sub_08018FF0(u32 rec, u32 part, s32 amount);
-void sub_080190B8(u32 rec);
+u32 sub_08018EE0(u32 rec); // first part (1-4) that is damaged but not broken, 0 = none
+u32 sub_08018F48(u32 rec); // first unbroken part counting from the legs (1 = legs .. 4 = head), 0 = none
+u32 sub_08018F6C(u32 rec); // part (1-4) with armor > 1, starting at unkCA and going down, 0 = none
+u32 sub_08018FB8(u32 rec, u32 part, s32 amount); // lowers a part's armor (min 0); returns applied | leftover << 8
+u32 sub_08018FF0(u32 rec, u32 part, s32 amount); // lowers a part's armor (min 1); returns applied | leftover << 8
+void sub_080190B8(u32 rec); // guess: computes the record's movement delay unkBB (action, broken legs, terrain, effects, Medal level, Propulsion)
 void sub_08019108(u32 rec);
-void sub_08019184(u32 rec, u32 n);
-void sub_080191A4(u32 rec, u32 n);
+void sub_08019184(u32 rec, u32 n); // unkBB += n, max 0xFF
+void sub_080191A4(u32 rec, u32 n); // unkBB -= n, min 0
 void sub_080191C0(u32 rec);
 void sub_080191E4(u32 rec);
 void sub_0801922C(u32 rec);
@@ -852,6 +852,6 @@ void sub_0801932C(u32 rec);
 void battle_bot_status_sprite_update(u32 rec);
 void battle_update_status_effect_sprite(u32 rec);
 void update_battle_status_effect_sprite(u32 rec);
-void battle_add_active_medal_slot(u32 rec, u32 prio);
+void battle_queue_add(u32 rec, u32 prio);
 
 #endif // GUARD_FUNCTIONS_H

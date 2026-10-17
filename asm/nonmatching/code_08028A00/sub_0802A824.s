@@ -163,7 +163,7 @@ _0802A928:
 	adds r3, #2
 	adds r1, r1, r3
 	strh r0, [r1]
-	bl sort_active_medal_slots
+	bl battle_queue_sort
 	ldr r1, _0802A98C @ =0x03001800
 	adds r1, #0xaa
 	ldrb r0, [r1]

@@ -350,14 +350,14 @@ struct Unk_03001800
     u8 unk41[3]; // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
     u8 unk44; // Robattle: bit (1 << team Medabot) set by sub_08013AE4
     u8 unk45[6][2]; // Robattle action queue: record + 1 (0 = free), priority = legs Propulsion
-                    // (battle_add_active_medal_slot, sorted by sort_active_medal_slots; sub_08014314 tests [0][0])
+                    // (battle_queue_add, sorted by battle_queue_sort; sub_08014314 tests [0][0])
     u8 unk51;
     u8 unk52;
     u8 unk53;
     u8 unk54;
     u8 unk55; // Robattle: result flags (2, 4, 8, 0x10 pick sub-states 0x60-0x78 in sub_0801427C)
-    u8 unk56; // Robattle: frame counter, mod 32 (sub_08018C38)
-    u8 unk57; // Robattle: TIME left, 40/30/20 by gUnk_03001788 (sub_08018BD4), -1 every 32 frames (sub_08018C38)
+    u8 unk56; // Robattle: frame counter, mod 32 (robattle_time_tick)
+    u8 unk57; // Robattle: TIME left, 40/30/20 by gUnk_03001788 (robattle_time_init), -1 every 32 frames (robattle_time_tick)
     u8 unk58; // Robattle: nonzero blocks Medaforce (check_medaforce_availability)
     u8 unk59; // Robattle: effect amount left to apply (sub_08018D0C / sub_08018DF4)
     u8 unk5A; // Robattle: team Medabot count (3 in battle_start.ss0)
@@ -382,7 +382,7 @@ struct Unk_03001800
     u8 unk168; // won Medapart: kind (0 head, 1 right arm, 2 left arm, 3 legs)
     u8 unk169; // won Medapart: id
     u8 unk16A; // won Medapart: 1 = not owned before
-    u8 unk16B; // Robattle: TIME ticks elapsed (sub_08018C38)
+    u8 unk16B; // Robattle: TIME ticks elapsed (robattle_time_tick)
     u16 unk16C; // battle score (calculate_battle_score_summary), then experience points
     // After-battle result per team member (u8 array: a struct would be 4-byte aligned):
     // [0] Medal id + 1, 0 = none (name from gUnk_083B6410), [1] nonzero: Medal level-up screen,
@@ -479,7 +479,7 @@ struct Unk_03000590
     u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (sub_080145BC .. sub_08014754),
               // bit 2 / bit 3 = numbers shown by sub_080147FC / sub_08014920
     u8 fillerCF[0x8];
-    u8 unkD7; // movement: sub-pixel accumulator, + (0x20 - unkBB) per frame, 1/16 px (sub_08019348)
+    u8 unkD7; // movement: sub-pixel accumulator, + (0x20 - unkBB) per frame, 1/16 px (battle_bot_move)
     u8 fillerD8[0x2];
     u8 unkDA; // movement: whole pixels moved this frame
     u8 fillerDB[0x2];

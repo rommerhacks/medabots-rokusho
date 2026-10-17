@@ -2052,7 +2052,7 @@ void sub_0801425C(void)
 {
     select_battle_music();
     init_battle_action_select_ui(0);
-    sub_08018BD4();
+    robattle_time_init();
     gGameSubState = 0x44;
 }
 
@@ -2061,8 +2061,8 @@ void sub_0801427C(void)
 {
     if (gUnk_03001800.unk55 == 0)
     {
-        sub_08018C38();
-        sub_08018C78();
+        robattle_time_tick();
+        robattle_time_draw();
     }
     if (gUnk_03001800.unk55 & 2)
         gGameSubState = 0x60;
@@ -2092,7 +2092,7 @@ void sub_08014314(void)
 
     update_all_battle_status_sprites();
     sub_08019078();
-    sort_active_medal_slots();
+    battle_queue_sort();
     if (gUnk_03001800.unk45[0][0] == 0)
     {
         gGameSubState = 0x44;
@@ -2207,10 +2207,10 @@ void sub_08014548(void)
             u32 a, b;
 
             rec->unkBB = 8;
-            sub_08019348(i);
+            battle_bot_move(i);
             sub_08019544(i);
-            a = sub_08019FBC(i, 1);
-            b = sub_0801A030(i, 1);
+            a = battle_bot_at_front_line(i, 1);
+            b = battle_bot_at_home_line(i, 1);
             if (a || b)
             {
                 rec->unkBF = 0;

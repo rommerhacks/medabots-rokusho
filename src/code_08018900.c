@@ -41,7 +41,7 @@ void select_battle_music(void)
 
 INCLUDE_ASM("asm/nonmatching/code_08018900", init_battle_action_select_ui);
 
-void sub_08018BD4(void)
+void robattle_time_init(void)
 {
     if (gUnk_03000440.unk89 == 1)
     {
@@ -62,7 +62,7 @@ void sub_08018BD4(void)
     }
 }
 
-void sub_08018C38(void)
+void robattle_time_tick(void)
 {
     if ((gUnk_03001800.unk56 = (gUnk_03001800.unk56 + 1) & 0x1F) == 0 && gUnk_03001800.unk57 != 0)
     {
@@ -72,7 +72,7 @@ void sub_08018C38(void)
     }
 }
 
-void sub_08018C78(void)
+void robattle_time_draw(void)
 {
     gUnk_03002C30[1].unk6 = (u8)(gUnk_03001800.unk57 / 10) + 0x624;
     gUnk_03002C30[2].unk6 = (u8)(gUnk_03001800.unk57 % 10) + 0x624;
@@ -266,7 +266,7 @@ void sub_0801902C(void)
         if (gUnk_03000590[i].unk40 && (u8)(gUnk_03000590[i].unkC9 - 0xF) > 1)
         {
             sub_080190B8(i);
-            sub_08019348(i);
+            battle_bot_move(i);
             sub_08019544(i);
         }
     }
@@ -386,7 +386,7 @@ void sub_0801932C(u32 rec)
         gUnk_03000590[rec].unkBB = 0x1F;
 }
 
-void sub_08019348(u32 rec)
+void battle_bot_move(u32 rec)
 {
 
     gUnk_03000590[rec].unkD7 += 0x20 - gUnk_03000590[rec].unkBB;
@@ -530,8 +530,8 @@ u32 sub_08019EF0(void)
         {
             if (gUnk_03000590[i].unk40)
             {
-                a += sub_08019FBC(i, 0);
-                b += sub_0801A030(i, 0);
+                a += battle_bot_at_front_line(i, 0);
+                b += battle_bot_at_home_line(i, 0);
             }
         }
     }
@@ -541,16 +541,16 @@ u32 sub_08019EF0(void)
         {
             if (gUnk_03000590[i].unk40)
             {
-                a += sub_08019FBC(i, 0);
-                b += sub_0801A030(i, 0);
+                a += battle_bot_at_front_line(i, 0);
+                b += battle_bot_at_home_line(i, 0);
             }
         }
         for (i = 0; i <= 2; i++)
         {
             if (gUnk_03000590[i].unk40)
             {
-                a += sub_08019FBC(i, 0);
-                b += sub_0801A030(i, 0);
+                a += battle_bot_at_front_line(i, 0);
+                b += battle_bot_at_home_line(i, 0);
             }
         }
     }
@@ -559,7 +559,7 @@ u32 sub_08019EF0(void)
     return 0;
 }
 
-u32 sub_08019FBC(u32 rec, u32 peek)
+u32 battle_bot_at_front_line(u32 rec, u32 peek)
 {
     u32 reached = 0;
 
@@ -576,12 +576,12 @@ u32 sub_08019FBC(u32 rec, u32 peek)
                 reached = 1;
         }
         if (peek == 0 && reached)
-            battle_add_active_medal_slot(rec, gUnk_03000590[rec].parts[3].unk12);
+            battle_queue_add(rec, gUnk_03000590[rec].parts[3].unk12);
     }
     return reached;
 }
 
-u32 sub_0801A030(u32 rec, u32 peek)
+u32 battle_bot_at_home_line(u32 rec, u32 peek)
 {
     u32 reached = 0;
 
@@ -598,12 +598,12 @@ u32 sub_0801A030(u32 rec, u32 peek)
                 reached = 1;
         }
         if (peek == 0 && reached)
-            battle_add_active_medal_slot(rec, gUnk_03000590[rec].parts[3].unk12);
+            battle_queue_add(rec, gUnk_03000590[rec].parts[3].unk12);
     }
     return reached;
 }
 
-void battle_add_active_medal_slot(u32 rec, u32 prio)
+void battle_queue_add(u32 rec, u32 prio)
 {
     u32 i;
     struct Unk_03001800 *g;
@@ -630,7 +630,7 @@ INCLUDE_ASM("asm/nonmatching/code_08018900", battle_setup_text_sprites_0801A418)
 INCLUDE_ASM("asm/nonmatching/code_08018900", battle_setup_text_sprites_0801A4F4);
 INCLUDE_ASM("asm/nonmatching/code_08018900", update_battle_sprite_animations);
 
-void sort_active_medal_slots(void)
+void battle_queue_sort(void)
 {
     u32 n, i;
     u8 r, p;

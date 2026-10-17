@@ -379,7 +379,7 @@ extern const u8 gUnk_083AD39A[]; // Robattle sub-state per command ring slot (co
 extern const u8 gUnk_083AD3A4[]; // battle bot screen positions (x, y) per record 0-5 (position_battle_team_cursors)
 
 #endif // GUARD_VARIABLES_H
-extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (sub_08018BD4)
+extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
 extern u8 gUnk_03000B94; // index into gUnk_083AD3B0 (battle music)
 extern const u8 gUnk_083AD3B0[]; // battle song ids (select_battle_music)
 extern const u8 gUnk_083C4C10[]; // per leg type (skill id - 100), 11 bytes: one per battlefield (gUnk_03001800.unk38); added to unkBB (sub_080191E4)
