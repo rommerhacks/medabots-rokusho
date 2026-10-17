@@ -594,6 +594,8 @@ extern const u8 gUnk_084DC7D0[]; // compressed tiles (code_080249C0)
 extern const u8 gUnk_0850EC38[]; // 64-byte OBJ palettes (code_080249C0)
 extern const u8 gUnk_084DD188[]; // compressed tiles (code_080249C0)
 extern const u8 gUnk_0850EC78[]; // 64-byte OBJ palettes (code_080249C0)
+extern u8 gUnk_03003470[]; // IWRAM buffer; sub_08033ACC copies 4 x 0x40 bytes from +0xE40 + (rec * 0x100) to its start
+extern const u8 *const gUnk_083C6B28[]; // Robattle action scripts by skill id gUnk_03001800.unkA8 (sub_08034E94)
 extern const Func gUnk_083AF000[]; // Robattle action script commands by script byte < 0x80 (sub_08033840; script from gUnk_083C6B28[gUnk_03001800.unkA8] at offset unkBC, sub_08034E94)
 extern const Func gUnk_083AEF10[]; // Robattle AI: action validity checks by part skill id data[1]; set gUnk_03001800.unk51 = 1 to reject (begin_battle_action_lookup)
 extern const u8 gUnk_083AEF00[]; // 16 slot numbers 0-2 picked by rng & 15 (rng_lookup_table_value)

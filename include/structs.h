@@ -466,14 +466,17 @@ struct Unk_03001800
     u8 fillerA9;
     u8 unkAA; // sub-state of the gUnk_083AD44C handlers (sub_0801C4FC) and gUnk_083AD50C handlers (battle_dispatch_phase_handler_0801D2F0)
     u8 unkAB; // 0-2, set with unkB5 = 1 by the gUnk_083AD50C handlers (sub_0801D2AC..)
-    u8 fillerAC[0x9];
+    u8 unkAC[0x9]; // Robattle action script: operands of the current command (sub_08034EB8)
     u8 unkB5; // action effect step script done: cleared by each step dispatcher (sub_0801C4FC, battle_dispatch_phase_handler_0801D2F0..),
               // set by the last step; the callers (sub_080339F4, sub_08033A10) then call sub_08034F08
     u8 fillerB6[0x1];
     u8 unkB7; // effect result flags (bit 0, bit 1 checked by sub_0801E3C0)
     u8 unkB8; // effect result flags (bit 1, bit 2 checked by sub_0801E3C0)
     u8 unkB9; // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other (sub_0802C588, written as &unkB8 + 1 to match)
-    u8 fillerBA[0xE];
+    u8 unkBA;
+    u8 unkBB;
+    u16 unkBC; // Robattle action script: offset of the current command (sub_08034E94 / sub_08034F08)
+    u8 fillerBE[0xA];
     u16 unkC8; // Robattle: effect amount (shown by sub_0801CA60, subtracted by apply_battle_damage_tick)
     u16 unkCA; // damage passed to battle_set_damage_vs_armor (sub_0801ECC0)
     u8 fillerCC[0x4];

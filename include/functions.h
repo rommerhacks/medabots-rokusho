@@ -222,6 +222,13 @@ void animate_battle_sprites(u32 idx);
 void sub_0801ABF8(void); // text_window_init(1, 2, 0) unless gUnk_03001360 is set (guess: skipped in link Robattles)
 u32 sub_0801AC6C(void); // game_state_execute_handler_a() unless gUnk_03001360 is set (then 1)
 void sub_0801AC98(u32 rec); // draws the BG1 message frame tilemaps on the team (rec 0-2) or opponent side
+void sub_08034EB8(void); // copies the current action script command's operands to gUnk_03001800.unkAC
+void sub_08035478(u32 rec);
+void sub_0801C4FC(void);
+void battle_dispatch_phase_handler_0801D2F0(void);
+void sub_0801D380(void);
+void sub_0801D40C(void);
+void sub_0801D580(void);
 s32 sub_08034E94(void); // next byte of the Robattle action script (gUnk_083C6B28[gUnk_03001800.unkA8] + unkBC)
 void sub_08034F08(void);
 u32 get_random_battle_weight_entry(u32 idx);
