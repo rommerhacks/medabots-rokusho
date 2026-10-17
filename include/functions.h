@@ -959,7 +959,7 @@ u32 battle_check_action_counter(u16 *amount, u8 rec, u8 part);
 u32 sub_080331F8(u32 rec);
 u32 battle_find_next_active_bot(u32 rec); // random part index of rec with armor left (from rng_lookup_table_value, stepping by rng bit 0)
 u32 sub_08036D64(u32 rec, u8 skill);
-u32 medal_update_exp_progress(u8 slot, u32 n);
+u32 medal_update_exp_progress(u32 slot, u32 n);
 void battle_set_action_params(u32 rec, u8 skill, s32 a, s32 b);
 void reset_battle_bot_state(u8 rec);
 void sub_080351E8(u32 rec);
