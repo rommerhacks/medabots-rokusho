@@ -324,4 +324,11 @@ extern const u8 gUnk_084D7DB0[]; // LZ tiles (after-battle screen sprite 2)
 extern const u16 gUnk_0850E9D8[]; // OBJ palette (sprite 1)
 extern const u16 gUnk_084E2F98[]; // OBJ palette (sprite 2)
 
+extern const u8 *const gUnk_083C3F38[]; // opponent names, by gUnk_03001800.unk0
+extern const u8 *const gUnk_083BE9E8[]; // battlefield names, by gUnk_03001800.unk38
+extern const u8 gUnk_083BEA90[][8]; // per area: [1] = battlefield (sub_08011DE4)
+extern const u8 gUnk_083BF090[][4]; // per area: random encounter ids, picked 40/30/20/10% (setup_random_encounter_enemies)
+extern const u8 *const gUnk_083C1A00[]; // encounter setups (0x28 bytes copied to gUnk_03001800), by gUnk_030057E0.unkC2A
+extern const u8 gUnk_083ACEE4[][2]; // per opponent Medabot: sprite position (sub_08012024)
+
 #endif // GUARD_VARIABLES_H

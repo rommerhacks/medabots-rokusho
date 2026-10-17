@@ -324,11 +324,21 @@ struct Unk_03002414
     u8 unk1095;
 };
 
+// Opponent Medabot in an encounter setup (gUnk_03001800.unk4).
+struct EncounterBot
+{
+    u8 parts[4]; // head, right arm, left arm, legs part ids
+    u8 filler4[8];
+};
+
 struct Unk_03001800
 {
     u8 unk0; // encounter: opponent message index (gUnk_083C2BBC)
     u8 unk1;
-    u8 filler2[0x36];
+    u8 unk2; // opponent Medabot count
+    u8 unk3; // nonzero: fixed opponent parts (else each part is re-rolled by sub_08011F20)
+    struct EncounterBot unk4[3];
+    u8 filler28[0x10];
     u8 unk38;
     u8 filler39[0x8];
     u8 unk41[3]; // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
@@ -359,7 +369,8 @@ struct Unk_03001800
     // [2]-[5] copied to gUnk_03000440.unk134-137, [6] nonzero: [7] = Medaforce id (gUnk_083B7338)
     u8 unk16E[3][8];
     u8 unk186; // after-battle screen: team member being shown (0-2, 3 = done)
-    u8 filler187[0x1F];
+    u8 unk187; // gUnk_03000590 record index (battle_loss_take_part)
+    u8 filler188[0x1E];
     u16 unk1A6;
     u16 unk1A8;
     u16 unk1AA;

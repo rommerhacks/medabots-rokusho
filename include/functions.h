@@ -650,4 +650,12 @@ u32 advance_sprite_anim_frame(u8 sprite, u8 b);
 void sub_0801BF64(u16 *counter, u16 max);
 void sub_08067A48(u8 slot);
 
+s32 sub_08043C94(void); // random 0-100
+void render_text_sprites_08040EE4(u8 *text, u8 a, u32 x, u32 y, u8 b, u8 c, u8 d, u16 e, s32 f, s32 g);
+void sub_080122F4(u32 a);
+void sub_080421B4(u8 a, u8 b);
+u32 sub_08011F20(u32 a, u32 b, u32 c, u32 d);
+void sub_08011DE4(void);
+void setup_random_encounter_enemies(void);
+
 #endif // GUARD_FUNCTIONS_H
