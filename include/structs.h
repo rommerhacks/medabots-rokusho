@@ -488,7 +488,9 @@ struct Unk_03001800
     u8 unk60; // first record of the target side (sub_08032FB8, sub_08026FF8)
     u8 unk61[3]; // Robattle AI: candidate targets (record + 1, 0 = none; select_battle_targets_and_actions)
     u8 unk64[4]; // filled by get_bot_part_effective_values (sub_08013B8C); AI part order from gUnk_083AD2F0 (battle_ai_roll_part_order)
-    u8 filler68[0x18];
+    u8 filler68[0xC];
+    u8 unk74[8]; // copied from gUnk_083C3B5C[unk38] (load_battle_script_entry_b); [3] nonzero: [4] << 8 | [5] -> REG_BLDALPHA
+    u8 filler7C[0x4];
     u8 unk80; // index of a 256-byte record in gUnk_03000590 (sub_0800B498 copies Medal rotation data there)
     u8 unk81; // Robattle: selected command ring slot 0-5 (name gUnk_083C466C[unk81], runtime-checked)
     u8 unk82;
@@ -769,7 +771,7 @@ struct Unk_030057E0
     u8 unkC18[0x8]; // saved copy of unkC10
     u8 unkC20[0x8];
     u8 unkC28;
-    u8 fillerC29[0x1];
+    u8 unkC29; // area byte 0 of gUnk_083BEA90 (load_battlefield_data_to_buffer)
     u8 unkC2A; // battle id (set by the debug menu "Battle" entry before game state 6; guess)
     u8 unkC2B;
     u8 unkC2C; // toggled by the debug menu "Rnd.tk" entry (guess: random encounters on)

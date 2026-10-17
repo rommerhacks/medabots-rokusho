@@ -19,11 +19,38 @@ void reset_bg_scroll(void)
     gBg3Scroll.y = 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", open_choice_menu);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_window_params);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", poll_choice_menu);
+void open_choice_menu(u8 a, u8 b, u8 c)
+{
+    sub_0803F624(&gUnk_03000440.unk28, 8, 0);
+    gUnk_03000440.unk2A = a;
+    gUnk_03000440.unk2B = 0x7F;
+    gUnk_03000440.unk2C = b;
+    gUnk_03000440.unk2D = c;
+}
+
+void init_window_params(u8 a, u8 b, u8 c, u8 d)
+{
+    sub_0803F624(&gUnk_03000440.unk28, 8, 0);
+    gUnk_03000440.unk2A = a;
+    gUnk_03000440.unk2B = d;
+    gUnk_03000440.unk2C = b;
+    gUnk_03000440.unk2D = c;
+}
+
+u32 poll_choice_menu(void)
+{
+    gUnk_083B2814[gUnk_03000440.unk29]();
+    return gUnk_03000440.unk28;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_bg_tilemap_to_vram);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", clear_tilemap_and_advance_state);
+
+void clear_tilemap_and_advance_state(void)
+{
+    vram_fill_tilemap_rect(8, 6, gUnk_03000440.unk2C, gUnk_03000440.unk2D, REG_BG0CNT, 0);
+    vram_fill_tilemap_rect(8, 6, 0, 0x15, REG_BG0CNT, 0);
+    gUnk_03000440.unk29++;
+}
 
 void clear_and_copy_tilemap_rows(void)
 {
@@ -149,8 +176,23 @@ void sub_08041C5C(u8 sprite, u8 frame, u16 x)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", game_state_execute_handler_a);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", game_state_execute_handler_b);
+u32 game_state_execute_handler_a(void)
+{
+    gUnk_03000440.unk4 = 0;
+    gUnk_083B284C[gUnk_03000440.unk1B]();
+    if (gUnk_03000440.unk4 > 7)
+        return 1;
+    return 0;
+}
+
+u32 game_state_execute_handler_b(void)
+{
+    gUnk_03000440.unk4 = 0;
+    gUnk_083B2864[gUnk_03000440.unk1B]();
+    if (gUnk_03000440.unk4 > 7)
+        return 1;
+    return 0;
+}
 
 void memcpy_bytes_08041D04(const void *src, void *dst, u8 n)
 {
@@ -182,9 +224,52 @@ u32 find_medal_slot_by_id(u8 id)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", load_palette_entry);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", medal_remove_by_id);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", export_medals_to_buffer);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", clear_ewram_buffer_02023000);
+
+void medal_remove_by_id(u8 id)
+{
+    u32 i;
+
+    for (i = 0; i < 30; i++)
+    {
+        if ((gUnk_03000BE0[i].unk0 & 0x80) && gUnk_03000BE0[i].unk1 == id)
+        {
+            u8 f = gUnk_03000BE0[i].unk0 & 0x1F;
+            sub_0803F624((u8 *)&gUnk_03000BE0[i], 0x40, 0);
+            gUnk_03000BE0[i].unk0 = f;
+            return;
+        }
+    }
+}
+
+void export_medals_to_buffer(const void *src)
+{
+    u32 i;
+
+    for (i = 0; i < 30; i++)
+    {
+        if (!(gUnk_03000BE0[i].unk0 & 0x80))
+        {
+            u32 f = gUnk_03000BE0[i].unk0 & 0x1F;
+            memcpy_bytes_0803F63C(src, &gUnk_03000BE0[i], 0x40);
+            gUnk_03000BE0[i].unk0 = (gUnk_03000BE0[i].unk0 & 0x80) | f;
+            return;
+        }
+    }
+}
+
+u32 clear_ewram_buffer_02023000(void)
+{
+    u32 zero = 0;
+    struct SortEntry *e = SORT_BUFFER;
+    struct Unk_03000BE0 *m;
+    u32 i;
+
+    CpuFastSet(&zero, e, 0x01000080);
+    for (i = 0, m = gUnk_03000BE0; i < 30; m++, e++, i++)
+        e->key = m->unk5;
+    sub_0804242C(30);
+    return (SORT_BUFFER[0].key - SORT_BUFFER[3].key) / 2 + SORT_BUFFER[3].key;
+}
 
 u32 sub_080420C4(u8 level, u8 a, u8 b, u8 c, u8 d)
 {
@@ -515,7 +600,13 @@ u32 sub_0804384C(u8 medal)
     return 0xFF;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", load_battlefield_data_to_buffer);
+void load_battlefield_data_to_buffer(void)
+{
+    memcpy_bytes_08041D04(gUnk_083BEA90[gUnk_030057E0.unk7FE], &gUnk_03000440.unkEE, 1);
+    gUnk_030057E0.unkC29 = gUnk_03000440.unkEE;
+    gUnk_030057E0.unkC2B = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", check_random_encounter);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043AE0);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_tileset_to_vram);
@@ -539,16 +630,43 @@ void sub_08043CA8(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_scroll_movement_a);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", apply_battle_blend_effect_a);
+
+void apply_battle_blend_effect_a(void)
+{
+    if (gUnk_03001800.unk39[3])
+    {
+        REG_BLDALPHA = (gUnk_03001800.unk39[4] << 8) | gUnk_03001800.unk39[5];
+        REG_BLDY = 0;
+        REG_BLDCNT = 0x1844;
+    }
+    else
+        set_blend_effect_mode(0, 0, 0);
+}
 
 void sub_08043E48(void)
 {
     update_scroll_movement_a();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", load_battle_script_entry_b);
+void load_battle_script_entry_b(void)
+{
+    memcpy_bytes_0803F63C(gUnk_083C3B5C[gUnk_03001800.unk38], gUnk_03001800.unk74, 8);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_scroll_movement_b);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", apply_battle_blend_effect_b);
+
+void apply_battle_blend_effect_b(void)
+{
+    if (gUnk_03001800.unk74[3])
+    {
+        REG_BLDALPHA = (gUnk_03001800.unk74[4] << 8) | gUnk_03001800.unk74[5];
+        REG_BLDY = 0;
+        REG_BLDCNT = 0x1844;
+    }
+    else
+        set_blend_effect_mode(0, 0, 0);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", advance_battle_animation_frame);
 
 void sub_08044094(void)
@@ -579,7 +697,11 @@ u32 sub_080440D4(void)
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044100);
+void sub_08044100(void)
+{
+    update_scroll_movement_b();
+    advance_battle_animation_frame(gUnk_03001800.unk38);
+}
 
 void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, void *dst)
 {
@@ -652,7 +774,18 @@ void sub_08044B58(void)
 
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_battle_scene);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_game_mode);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044CDC);
+
+void sub_08044CDC(u32 a)
+{
+    switch (a)
+    {
+    case 0: sub_08064A74(); break;
+    case 1: sub_08064A94(); break;
+    case 2: sub_08064AB4(); break;
+    case 3: sub_08064AD4(); break;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", dma3_copy_or_decompress);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", set_oam_sprite_shape_size);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044E64);

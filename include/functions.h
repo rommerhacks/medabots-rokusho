@@ -756,7 +756,7 @@ void decompress_bg_tiles_to_vram_bg(void);
 void setup_bg0_display_layer(void);
 void fill_bg1_tilemap_column(void);
 u32 sub_0803ED28(void);
-void open_choice_menu(u8 a, u8 b, u32 c);
+void open_choice_menu(u8 a, u8 b, u8 c);
 u32 poll_choice_menu(void);
 void divide_by_10000(u8 *digits, u32 n);
 void divide_by_100000_08041370(u8 *digits, u32 n);
@@ -1151,3 +1151,13 @@ void sub_08035754(s16 *amount, s32 sub); // *amount -= sub, not below 0
 void sub_08035B9C(u32 rec);
 u32 sub_08037798(u32 base); // record on side base, or 0xFF
 #endif // GUARD_FUNCTIONS_H
+void sub_08064A74(void);
+void sub_08064A94(void);
+void sub_08064AB4(void);
+void sub_08064AD4(void);
+void update_scroll_movement_b(void);
+void advance_battle_animation_frame(u8 a);
+void init_window_params(u8 a, u8 b, u8 c, u8 d);
+void clear_tilemap_and_advance_state(void);
+void export_medals_to_buffer(const void *src);
+u32 clear_ewram_buffer_02023000(void);

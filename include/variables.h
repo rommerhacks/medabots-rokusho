@@ -762,3 +762,7 @@ extern const u8 gUnk_08487524[]; // compressed tiles, message window frame style
 extern const u8 gUnk_084885A8[]; // compressed tilemap, message window frame style 3 (sub_08040A40)
 extern const u8 gUnk_08487630[]; // compressed tiles, message window frame style 2 (sub_08040A40)
 extern const u8 gUnk_08488600[]; // compressed tilemap, message window frame style 2 (sub_08040A40)
+extern const u8 gUnk_083C3B5C[][8]; // per battlefield, copied to gUnk_03001800.unk74 (load_battle_script_entry_b)
+extern const Func gUnk_083B2814[]; // choice menu states by gUnk_03000440.unk29 (poll_choice_menu)
+extern const Func gUnk_083B284C[]; // by gUnk_03000440.unk1B (game_state_execute_handler_a)
+extern const Func gUnk_083B2864[]; // by gUnk_03000440.unk1B (game_state_execute_handler_b)
