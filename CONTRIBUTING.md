@@ -266,3 +266,20 @@
   every case and let gcc cross-jump them (set_target_sprite_position).
 * A constant not folded (`movs r6, #2; adds r6, #3`): it came from a local (`y = 2; ... y + 3`)
   (sub_080364A8).
+* `tools/scripts/split_scratch.py FILE.c OUTDIR` splits a scratch file with several functions into one
+  file per function (with prototypes of the others), so each can be checked with `match.py` at its own
+  address; calls between functions in one file otherwise link locally and the `bl` offsets differ.
+* Two identical branches that each end in `b` to one shared call (`v = x; b call` twice), where gcc
+  merges yours into one: write the call in every branch (`if (A) { if (f(x)) return 1; return 0; }`)
+  and let gcc cross-jump the call tails instead (battle_calculate_damage_modifier).
+* `x != 6 && x != 7` comes out as a range check (`subs #6; cmp #1; bls`); the original's two
+  `cmp/beq` need `if (x == 6) return 0; if (x == 7) return 0;` (battle_calculate_turn_speed).
+* A loop on a store-and-test of a call result (`strb r0, [r1]; lsls r0, #24; cmp; bge` before the loop,
+  the same inside): `if ((s8)(f.x = g()) < 0) { p = &f.x; do { ...; *p = g(); } while (*p < 0); }`
+  (battle_sequence_run_command).
+* `a + 1 + tbl[...]` where the original does `adds r1, #1` between the table address and the `ldrb`:
+  read the u16 field into an `s32` local first (battle_advance_sequence_counter).
+* A `switch` with two cases and a default comes out as `cmp #0; beq; cmp #1; beq; <default inline>`; an
+  `if / else if / else` chain puts the first case inline instead (battle_seq_cmd_wait_text).
+* `(0x1E - t - (x + t)) - 1` stored to an s16 field: gcc reassociates the `- 1` into the subtraction
+  unless the inner part is cast, `(s16)(0x1E - t - (x + t)) - 1` (sub_0803A474).
