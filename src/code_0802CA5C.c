@@ -1118,9 +1118,78 @@ void sub_0802EBE8(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802EC4C);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802ED34);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802ED90);
+void sub_0802EC4C(void)
+{
+    u32 i;
+
+    lz_decompress_dispatch(gUnk_084D6F88, (void *)0x06014800);
+    CpuFastSet(gUnk_0850E938, (void *)0x050002E0, 0x10);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] == 0)
+            continue;
+        gUnk_03002C30[0x21 + i].unk0 = 0xC624;
+        gUnk_03002C30[0x21 + i].unk1C = 0;
+        gUnk_03002C30[0x21 + i].unk2 = gUnk_03002C30[(gUnk_03001800.unk60 + i) * 4 + 0x5D].unk2;
+        gUnk_03002C30[0x21 + i].unk4 = gUnk_03002C30[(gUnk_03001800.unk60 + i) * 4 + 0x5D].unk4 - 4;
+        gUnk_03002C30[0x21 + i].unk8 = 0x80;
+        gUnk_03002C30[0x21 + i].unk9 = 0x80;
+        gUnk_03002C30[0x21 + i].unk18 = 0;
+        gUnk_03002C30[0x21 + i].unkA = 7;
+        gUnk_03002C30[0x21 + i].unkB = 0xE0;
+        gUnk_03000440.unk84 = 0x48;
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[gUnk_03000440.unk84], i + 0x21);
+    }
+    play_sound_effect(0x6A);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802ED34(void)
+{
+    u32 done = 0;
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i])
+        {
+            if (gUnk_03002C30[0x21 + i].unk8 == 0x40)
+                done = 1;
+            else
+            {
+                gUnk_03002C30[0x21 + i].unk8 -= 4;
+                gUnk_03002C30[0x21 + i].unk9 -= 4;
+            }
+        }
+    }
+    if (done)
+    {
+        play_sound_effect(0x51);
+        gUnk_03001800.unkAA++;
+    }
+}
+
+void sub_0802ED90(void)
+{
+    u32 done = 0;
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i])
+        {
+            process_sprite_anim_commands(gUnk_083B5F80[gUnk_03000440.unk84], 0x21 + i);
+            if (gUnk_03002C30[0x21 + i].unk22 == 0xFF)
+                done = 1;
+        }
+    }
+    if (done)
+    {
+        gUnk_03000440.unk86 = 0x20;
+        gUnk_03001800.unkAA++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", decrement_timer_and_decompress_sprite);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802EF0C);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802EF5C);
