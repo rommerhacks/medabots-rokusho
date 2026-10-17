@@ -160,7 +160,7 @@ extern const u8 gUnk_083B7E0C[]; // 3 Medaforce ids per Medal graphic index (slo
 extern const u8 gUnk_083B7CD4[]; // 6-byte Medaforce records: +1 skill type, +2 MF consumption, +5 icon
 extern const void *const gUnk_083B7F40[]; // messages (run_message), Medals help Medaforce page
 extern const void *const gUnk_083B8170[]; // messages (run_message), Medals help page 5
-extern u32 gUnk_03002B68; // bit per Medal graphic index (sub_080092D4)
+extern u32 gUnk_03002B68; // bit per Medal graphic index (sub_080092D4); also (part kind << 16) + part id (sub_0800EBB8)
 extern const u8 gUnk_084EAC58[];
 extern const u8 gUnk_084EF4E0[];
 extern const u8 gUnk_084EFE28[];
@@ -184,6 +184,15 @@ extern const Func gUnk_083ACC94[]; // sprite 4 sub-state handlers, by gUnk_03002
 extern const Func gPrebattleScreenHandlers[]; // game state 6 ("Get ready to Robattle") sub-state handlers
 extern const u8 gUnk_084C696C[];
 extern const u16 gUnk_084C6A78[];
+extern const u8 gUnk_084E6C9C[];
+extern const u8 gUnk_084C7D10[];
+extern const u8 gUnk_084EFA34[];
+extern const u16 gUnk_084F29E0[];
+extern const u16 gUnk_084C69D8[];
+extern const u16 gUnk_084C69F8[];
+extern const u16 gUnk_0850DCF8[];
+extern const u16 gUnk_084E2FB8[];
+extern const u16 gUnk_084E2F98[];
 extern u8 gMedapartInventory[4 * 120 * 2]; // 2 bytes per Medapart, 120 per kind (head, right arm, left arm, legs): [0] count owned (runtime-checked), [1] second count shown on the Medaparts list
 // The Medaparts list shows 4 parts per page (part id = page * 4 + row); the game indexes it flat like this.
 #define MEDAPART_INV(kind, page, row, byte) gMedapartInventory[(kind) * 240 + (page) * 8 + (row) * 2 + (byte)]

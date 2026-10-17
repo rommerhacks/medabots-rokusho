@@ -1196,10 +1196,58 @@ void medaparts_help_exit(void)
     gGameSubState = 0x13;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EA2C);
+// guess: sub-states 12-16 of the Medaparts screen: a 3-choice window (cursor sprite 4, choice in
+// gUnk_03000440.unk4A): 0 -> detail page, 1 -> stores the part in gUnk_03002B68, 2 -> back to the list.
+// Not reached by a scenario yet.
+void sub_0800EA2C(void)
+{
+    medaparts_scroll_bg();
+    load_medapart_sprite_by_slot();
+    gUnk_03002C30[1].unk0 &= 0xBFFF;
+    gUnk_03002C30[2].unk0 &= 0xBFFF;
+    set_tilemap_and_decompress_bg(18, 5, gUnk_084889F8, REG_BG0CNT, 0x380);
+    gUnk_03000440.unk4A = 0;
+    sub_08010040();
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EA98);
-INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EB34);
-INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EB60);
+
+void sub_0800EB34(void)
+{
+    medaparts_scroll_bg();
+    load_medapart_sprite_by_slot();
+    if (sub_0801013C())
+    {
+        clear_sprite_table_mask(4, 1);
+        gGameSubState++;
+    }
+}
+
+void sub_0800EB60(void)
+{
+    medaparts_scroll_bg();
+    load_medapart_sprite_by_slot();
+    switch (gUnk_03000440.unk4A)
+    {
+    case 0:
+        gGameSubState = 10;
+        break;
+    case 1:
+        sound_stop_all_with_fade_guard(8);
+        gGameSubState++;
+        break;
+    case 2:
+        gGameSubState = 4;
+        break;
+    }
+}
+
+void sub_0800EBB8(void)
+{
+    gUnk_03002B68 = (gUnk_03000440.unk3E << 16) + gUnk_03000440.unk3D;
+    gGameSubState++;
+}
 
 void sub_0800EBE4(void)
 {
@@ -1904,7 +1952,10 @@ void sub_0801022C(void)
     gUnk_03002C30[4].unk29++;
 }
 
-void prebattle_intro_state_handler(void)
+// Game state 6, "Get ready to Robattle" (runtime-checked from the debug Battle entry): sub-states 0-5
+// flash a mosaic over the field three times, 6-7 wipe the screen in stripes, 8 loads the encounter,
+// 9 loads the pre-battle screen graphics.
+void prebattle_screen_update(void)
 {
     u32 fill;
 
@@ -1916,7 +1967,7 @@ void prebattle_intro_state_handler(void)
     gPrebattleScreenHandlers[gGameSubState]();
 }
 
-void sub_080102C0(void)
+void prebattle_mosaic_start(void)
 {
     REG_BG0CNT |= 0x40;
     REG_BG1CNT |= 0x40;
@@ -1927,13 +1978,13 @@ void sub_080102C0(void)
     gGameSubState++;
 }
 
-void sub_0801030C(void)
+void prebattle_mosaic_grow_init(void)
 {
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
 
-void sub_08010328(void)
+void prebattle_mosaic_grow(void)
 {
     REG_MOSAIC = gUnk_03000440.unk84 + (gUnk_03000440.unk84 << 4);
     gUnk_03000440.unk84 += 2;
@@ -1941,13 +1992,13 @@ void sub_08010328(void)
         gGameSubState = 5;
 }
 
-void sub_08010358(void)
+void prebattle_mosaic_shrink_init(void)
 {
     gUnk_03000440.unk84 = 16;
     gGameSubState++;
 }
 
-void sub_08010374(void)
+void prebattle_mosaic_shrink(void)
 {
     u32 v = gUnk_03000440.unk84 - 2;
 
@@ -1957,7 +2008,7 @@ void sub_08010374(void)
         gGameSubState = 5;
 }
 
-void sub_080103A4(void)
+void prebattle_mosaic_repeat(void)
 {
     if (gUnk_03000440.unk85 <= 2)
     {
@@ -1971,7 +2022,7 @@ void sub_080103A4(void)
         gGameSubState++;
 }
 
-void sub_080103F4(void)
+void prebattle_wipe_init(void)
 {
     REG_DISPCNT |= 0x100;
     REG_BG0CNT = 0x500;
@@ -1985,7 +2036,7 @@ void sub_080103F4(void)
     gGameSubState++;
 }
 
-void sub_08010478(void)
+void prebattle_wipe(void)
 {
     s32 start, i;
 
@@ -2007,7 +2058,7 @@ void sub_08010478(void)
         gGameSubState++;
 }
 
-void sub_0801053C(void)
+void prebattle_load_encounter(void)
 {
     u32 zero0, zero1;
 
@@ -2019,4 +2070,46 @@ void sub_0801053C(void)
     CpuFastSet(&zero1, (void *)0x05000000, 0x01000080);
     gGameSubState++;
 }
-INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0801058C);
+
+void prebattle_load_gfx(void)
+{
+    u32 zero;
+
+    sub_08043CA8();
+    REG_DISPCNT &= 0xE0FF;
+    REG_BG0CNT = 0x500;
+    REG_BG1CNT = 0x1801;
+    REG_BG2CNT = 0x590A;
+    REG_BG3CNT = 0x5B0B;
+    lz_decompress_dispatch(gUnk_084E6C9C, (void *)0x06004000);
+    lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06006000);
+    lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06006200);
+    lz_decompress_dispatch(gUnk_084C7D10, (void *)0x06012800);
+    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG0CNT, 0);
+    vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
+    set_tilemap_and_decompress_bg(0, 0, gUnk_084EFA34, REG_BG1CNT, 0x200);
+    DmaSet(3, gUnk_084F29E0, 0x0202FA00, 0x84000070);
+    DmaSet(3, gUnk_084C69D8, 0x0202FB00, 0x84000008);
+    DmaSet(3, gUnk_084C69F8, 0x0202FB20, 0x84000008);
+    DmaSet(3, gUnk_0850DEF8, 0x0202F800, 0x84000040);
+    DmaSet(3, gUnk_0850DCF8 + 0xB0, 0x0202F980, 0x84000008);
+    DmaSet(3, gUnk_0850DCF8, 0x0202F9A0, 0x84000008);
+    DmaSet(3, gUnk_084E2FB8, 0x0202F940, 0x84000008);
+    DmaSet(3, gUnk_084E2F98, 0x0202F960, 0x84000008);
+    decompress_tileset_to_vram(gUnk_03001800.unk38, 1);
+    zero = 0;
+    DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+    REG_DISPCNT |= 0x1F60;
+    sub_08011F50();
+    sub_08011FA0();
+    sub_08011FEC();
+    sub_08012024();
+    sub_080120C8();
+    sub_0801214C();
+    sub_080121A8();
+    apply_battle_blend_effect_a();
+    gUnk_03000440.unk84 = 0;
+    gGameSubState++;
+}
+

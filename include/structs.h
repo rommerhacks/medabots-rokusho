@@ -318,7 +318,9 @@ struct Unk_03002414
 
 struct Unk_03001800
 {
-    u8 filler0[0x41];
+    u8 filler0[0x38];
+    u8 unk38;
+    u8 filler39[0x8];
     u8 unk41[3]; // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
     u8 filler44[0xD];
     u8 unk51;

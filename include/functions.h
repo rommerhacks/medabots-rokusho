@@ -174,6 +174,9 @@ void debug_motion_load(void);
 void debug_motion_input(void); // START / SELECT change the Medabot model (unk39), A plays animation unk35[0]
 void debug_motion_play(void);
 void medaparts_scroll_bg(void);
+void sub_08010040(void); // guess: inits the 3-choice cursor sprite 4 (row gUnk_03000440.unk4A)
+void sub_080100BC(void); // guess: UP/DOWN moves the 3-choice cursor
+u32 sub_0801013C(void); // runs sprite 4's sub-state handler, 1 when done
 void medaparts_list_set_cursor_from_part(void);
 void medaparts_list_draw_names(void);
 void medaparts_list_draw_counts(void);
@@ -268,6 +271,15 @@ void modify_medapart_quantity(u32 part, u32 kind, u32 amount, u32 add, u32 e);
 void fill_tilemap_pair_or_divide(u8 value, u32 x, u32 y, u32 bgcnt, u16 entry);
 void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags);
 void sub_08043CA8(void);
+void decompress_tileset_to_vram(u32 id, u32 arg);
+void apply_battle_blend_effect_a(void);
+void sub_08011F50(void);
+void sub_08011FA0(void);
+void sub_08011FEC(void);
+void sub_08012024(void);
+void sub_080120C8(void);
+void sub_0801214C(void);
+void sub_080121A8(void);
 void update_scroll_movement_a(void);
 void sub_08044B58(void);
 void sub_08044CDC(u32 a);
