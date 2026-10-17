@@ -25,7 +25,7 @@ _080488BA:
 	adds r6, #1
 _080488C2:
 	adds r0, r7, #0
-	bl safe_divide_one
+	bl count_decimal_digits
 	subs r0, r0, r4
 	cmp r6, r0
 	blt _080488BA
@@ -40,13 +40,13 @@ _080488C2:
 	mov r8, r1
 _080488E2:
 	adds r0, r7, #0
-	bl safe_divide_one
+	bl count_decimal_digits
 	mov r1, sb
 	subs r0, r0, r1
 	cmp r4, r0
 	bge _080488FC
 	adds r0, r7, #0
-	bl safe_divide_one
+	bl count_decimal_digits
 	subs r0, #1
 	cmp r4, r0
 	bne _080488B2

@@ -747,7 +747,8 @@ struct MapObject
 
 struct Unk_030064A0
 {
-    u8 filler0[0x2];
+    u8 unk0;
+    u8 unk1;
     u8 unk2[8];
     u8 unkA[8];
     u8 unk12[8][8];
@@ -755,6 +756,7 @@ struct Unk_030064A0
     u8 unk53;
     u8 unk54[8];
     u8 unk5C[8];
+    u8 unk64; // choice menu step (sub_08047FEC: 0 setup, 1 wait handler, 2 poll)
 };
 
 struct Unk_030057E0

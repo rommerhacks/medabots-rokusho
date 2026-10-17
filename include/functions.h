@@ -1184,3 +1184,9 @@ u32 sub_08045A40(s32 y, s32 x);
 u8 sub_080483AC(void);
 void sub_080487AC(void);
 void toggle_bg_layer_visibility(s32 a, s32 b, s32 c, s32 d);
+void sub_08047E4C(void);
+void clear_entity_state(u8 slot);
+s32 sub_080481C4(s32 t);
+s32 count_decimal_digits(s32 n); // number of decimal digits of n (1 for 0); was safe_divide_one
+void decompress_terrain_tiles_to_vram(s32 arg);
+void dma_load_obj_palettes_08048730(s32 arg);

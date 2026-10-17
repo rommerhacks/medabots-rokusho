@@ -17,7 +17,7 @@ format_number_to_text_buffer: @ 0x08047C84
 	adds r3, r3, r0
 	ldr r7, [r3]
 	adds r0, r6, #0
-	bl safe_divide_one
+	bl count_decimal_digits
 	adds r4, r0, #0
 	movs r5, #0
 	cmp r5, r4
