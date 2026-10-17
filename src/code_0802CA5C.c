@@ -1829,9 +1829,60 @@ void sub_08030238(void)
     gUnk_03002C30[0x24].unk4 += 2;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0803029C);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_08030354);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_080303A4);
+void sub_0803029C(void)
+{
+    gUnk_03002C30[0x25].unk0 = 0xC404;
+    gUnk_03002C30[0x25].unk1C = 0;
+    gUnk_03002C30[0x25].unk2 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
+    gUnk_03002C30[0x25].unk4 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4;
+    gUnk_03002C30[0x25].unkA = 7;
+    gUnk_03002C30[0x25].unkB = 0xF2;
+    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x6F], 0x25);
+    if (gUnk_03001800.unkF8 & 1)
+        gUnk_03002C30[0x25].unk0 |= 0x1000;
+    play_sound_effect(0x30);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_08030354(void)
+{
+    process_sprite_anim_commands(gUnk_083B5F80[0x6F], 0x25);
+    if (gUnk_03002C30[0x25].unk22 == 0xFF)
+    {
+        gUnk_03000440.unk86 = 0;
+        clear_battle_sprite_slot(0x25, 1);
+        gUnk_03001800.unkAA++;
+    }
+}
+
+void sub_080303A4(void)
+{
+    if (gUnk_03000440.unk86 == 0x20)
+    {
+        gUnk_03000440.unk86 = 0;
+        gUnk_03001800.unkAA++;
+        return;
+    }
+    if (gUnk_03000440.unk86 & 1)
+    {
+        if (!(gUnk_03001800.unkF8 & 1))
+        {
+            gUnk_03002C30[0x21].unk2 = (gUnk_03002C30[0x21].unk2 - 1) & 0x1FF;
+            gUnk_03002C30[0x22].unk2 = (gUnk_03002C30[0x22].unk2 + 1) & 0x1FF;
+            gUnk_03002C30[0x23].unk2 = (gUnk_03002C30[0x23].unk2 - 1) & 0x1FF;
+            gUnk_03002C30[0x24].unk2 = (gUnk_03002C30[0x24].unk2 + 1) & 0x1FF;
+        }
+        else
+        {
+            gUnk_03002C30[0x21].unk2 = (gUnk_03002C30[0x21].unk2 + 1) & 0x1FF;
+            gUnk_03002C30[0x22].unk2 = (gUnk_03002C30[0x22].unk2 - 1) & 0x1FF;
+            gUnk_03002C30[0x23].unk2 = (gUnk_03002C30[0x23].unk2 + 1) & 0x1FF;
+            gUnk_03002C30[0x24].unk2 = (gUnk_03002C30[0x24].unk2 - 1) & 0x1FF;
+        }
+    }
+    gUnk_03000440.unk86++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_08030494);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_080305E0);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_08030608);
