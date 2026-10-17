@@ -300,6 +300,6 @@ extern const u8 *const gDebugSoundLabels[]; // "Se", "Bgm"
 extern const u8 *const gDebugMotionLabels[]; // "No"
 extern const u8 gUnk_084C3B14[]; // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (sub_0800B0F8)
 extern const u32 gUnk_083B7338[]; // Medaforce names, indexed by Medaforce id
-extern const u32 gUnk_083BE97C[]; // Medapart skill names for ids >= 100 (load_npc_sprite_data)
+extern const u32 gUnk_083BE97C[]; // Medapart skill names for ids >= 100 (medapart_detail_draw_skill)
 
 #endif // GUARD_VARIABLES_H

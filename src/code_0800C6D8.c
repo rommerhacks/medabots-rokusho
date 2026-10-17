@@ -824,23 +824,23 @@ void medapart_detail_load_gfx(void)
         CpuFastSet(gUnk_0850DD58 + 0x40, (void *)0x05000380, 8);
         CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x050003A0, 8);
         CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
-        init_scene_buffers_0800F60C();
-        load_overworld_sprite_by_direction();
+        medapart_detail_init_sprite();
+        medapart_draw_sprite();
         set_blend_effect_mode(5, 0x3F, 0x20);
     }
     zero = 0;
     CpuFastSet(&zero, gUnk_03002C30, 0x01000800);
     REG_DISPCNT |= 0x1F60;
     load_part_data(gUnk_03000440.unk3D, gUnk_03000440.unk3E, &gUnk_03000440.unkEE);
-    load_npc_sprite_data();
-    load_scene_sprite_data();
-    render_menu_tilemap_section();
-    load_script_data_to_buffer();
-    fill_bg1_tilemap_from_state();
-    setup_menu_tilemap_by_state();
-    render_shop_price_display();
+    medapart_detail_draw_skill();
+    medapart_detail_draw_ability();
+    medapart_detail_draw_skill_icon();
+    medapart_detail_draw_name();
+    medapart_detail_draw_gender_icon();
+    medapart_detail_draw_stat_labels();
+    medapart_detail_draw_stats();
     count_compatible_medaparts();
-    setup_battle_bot_count_sprites();
+    medapart_detail_init_arrows();
     gUnk_03000440.unk42 = 1;
     gGameSubState++;
 }
@@ -849,7 +849,7 @@ void medapart_detail_fade_in(void)
 {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    toggle_sprite_hflip_by_frame();
+    medapart_detail_blink_arrows();
     if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4)
     {
         if (gUnk_03000440.unk84 <= 8)
@@ -873,7 +873,7 @@ void medapart_detail_open_text_window(void)
 {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    toggle_sprite_hflip_by_frame();
+    medapart_detail_blink_arrows();
     text_window_init(1, 2, 0);
     gGameSubState++;
 }
@@ -882,7 +882,7 @@ void medapart_detail_show_hint(void)
 {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    toggle_sprite_hflip_by_frame();
+    medapart_detail_blink_arrows();
     if (gUnk_03000440.unk3E <= 2)
     {
         if (run_message(gUnk_083BE3E4[sub_0800F6CC()]))
@@ -899,8 +899,8 @@ void medapart_detail_handle_input(void)
 {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    toggle_sprite_hflip_by_frame();
-    if (handle_medapart_selection_scroll())
+    medapart_detail_blink_arrows();
+    if (medapart_detail_cycle_part_input())
     {
         sub_0803FB0C();
         gGameSubState--;
@@ -934,7 +934,7 @@ void medapart_detail_start_fade_out(void)
 {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    toggle_sprite_hflip_by_frame();
+    medapart_detail_blink_arrows();
     if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4)
     {
         copy_obj_palette_to_buffer();
@@ -951,7 +951,7 @@ void medapart_detail_wait_fade(void)
 {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    toggle_sprite_hflip_by_frame();
+    medapart_detail_blink_arrows();
     if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4)
     {
         if (gUnk_03000440.unk84 <= 8)
@@ -1031,7 +1031,7 @@ void medaparts_help_load(void)
     load_medapart_sprite_by_slot();
     clear_sprite_table_mask(1, 5);
     CpuFastSet(gUnk_084E2E78, (void *)0x050003C0, 8);
-    setup_battle_cursor_sprite_0800FF50();
+    medaparts_help_init_cursor();
     sub_0803FB0C();
     gGameSubState++;
 }
@@ -1073,7 +1073,7 @@ void medaparts_help_cursor_input(void)
     else if (KEYS_LO(gNewKeys) & 1)
     {
         play_sound_effect(4);
-        setup_battle_cursor_sprite_0800FF50();
+        medaparts_help_init_cursor();
         sub_0803FB0C();
         gGameSubState++;
     }
@@ -1192,7 +1192,7 @@ void medaparts_help_exit(void)
     clear_sprite_table_mask(6, 1);
     CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
     sub_0803FB0C();
-    setup_battle_bot_count_sprites();
+    medapart_detail_init_arrows();
     gGameSubState = 0x13;
 }
 
@@ -1343,7 +1343,7 @@ u32 medaparts_list_row_input(void)
         play_sound_effect(2);
         gUnk_03000440.unk3D = gUnk_03000440.unk3F * 4 + gUnk_03000440.unk40;
         medaparts_list_init_cursor();
-        load_overworld_sprite_by_direction();
+        medapart_draw_sprite();
         ret = 1;
     }
     return ret;
@@ -1380,7 +1380,7 @@ u32 medaparts_list_page_input(void)
         medaparts_list_draw_counts();
         sub_0800EDA0();
         medaparts_list_draw_part_icons();
-        load_overworld_sprite_by_direction();
+        medapart_draw_sprite();
         ret = 1;
     }
     return ret;
@@ -1417,7 +1417,7 @@ u32 medaparts_list_kind_input(void)
         medaparts_list_draw_counts();
         sub_0800EDA0();
         medaparts_list_draw_part_icons();
-        load_overworld_sprite_by_direction();
+        medapart_draw_sprite();
         ret = 1;
     }
     return ret;
@@ -1447,7 +1447,7 @@ void medaparts_list_load_part_sprite(void)
     load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, gUnk_03000440.unk3E, 0x3C, 0x28, 0x1C2, 8, 1);
 }
 
-void load_overworld_sprite_by_direction(void)
+void medapart_draw_sprite(void)
 {
     struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
     u32 fill;
@@ -1520,7 +1520,7 @@ void load_medapart_sprite_by_slot(void)
     }
 }
 
-void init_scene_buffers_0800F60C(void)
+void medapart_detail_init_sprite(void)
 {
     struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
     u8 *b;
@@ -1552,7 +1552,7 @@ s32 sub_0800F6CC(void)
     return ret;
 }
 
-void load_npc_sprite_data(void)
+void medapart_detail_draw_skill(void)
 {
     clear_sprite_table_mask(10, 15);
     if (gUnk_03000440.unkEF < 100)
@@ -1567,14 +1567,14 @@ void load_npc_sprite_data(void)
     }
 }
 
-void load_scene_sprite_data(void)
+void medapart_detail_draw_ability(void)
 {
     clear_sprite_table_mask(25, 15);
     memcpy_bytes_0803F63C((void *)gUnk_083B656C[gUnk_03000440.unkEE], gUnk_03000440.unk9E, 14);
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 25, 2, 11, 8, 12, 0, 1);
 }
 
-void render_menu_tilemap_section(void)
+void medapart_detail_draw_skill_icon(void)
 {
     if (gUnk_03000440.unk3E <= 2)
         fill_tilemap_rect_08042698(2, 2, 11, 9, REG_BG1CNT, 0x8390 + sub_08042B80(gUnk_03000440.unkF0) * 4);
@@ -1582,19 +1582,19 @@ void render_menu_tilemap_section(void)
         fill_tilemap_rect_08042698(2, 2, 11, 9, REG_BG1CNT, 0xA208 + gUnk_03000440.unkEF * 4);
 }
 
-void load_script_data_to_buffer(void)
+void medapart_detail_draw_name(void)
 {
     clear_sprite_table_mask(40, 15);
     memcpy_bytes_08041D04((void *)gUnk_083BB9CC[0][gUnk_03000440.unk3D * 4 + gUnk_03000440.unk3E], gUnk_03000440.unk9E, 15);
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 40, 11, 3, 10, 13, 0, 1);
 }
 
-void fill_bg1_tilemap_from_state(void)
+void medapart_detail_draw_gender_icon(void)
 {
     fill_tilemap_rect_08042698(2, 2, 21, 3, REG_BG1CNT, 0x7388 + gUnk_03000440.unkF1 * 4);
 }
 
-void setup_menu_tilemap_by_state(void)
+void medapart_detail_draw_stat_labels(void)
 {
     switch (gUnk_03000440.unk3E)
     {
@@ -1623,7 +1623,7 @@ void setup_menu_tilemap_by_state(void)
     }
 }
 
-void render_shop_price_display(void)
+void medapart_detail_draw_stats(void)
 {
     switch (gUnk_03000440.unk3E)
     {
@@ -1690,7 +1690,7 @@ void count_compatible_medaparts(void)
     }
 }
 
-void setup_battle_bot_count_sprites(void)
+void medapart_detail_init_arrows(void)
 {
     if (gUnk_03000440.unk41 > 1)
     {
@@ -1711,7 +1711,7 @@ void setup_battle_bot_count_sprites(void)
     }
 }
 
-void toggle_sprite_hflip_by_frame(void)
+void medapart_detail_blink_arrows(void)
 {
     if (gUnk_03000440.unk41 > 1)
     {
@@ -1728,7 +1728,7 @@ void toggle_sprite_hflip_by_frame(void)
     }
 }
 
-u32 handle_medapart_selection_scroll(void)
+u32 medapart_detail_cycle_part_input(void)
 {
     u16 r;
 
@@ -1788,20 +1788,20 @@ u32 handle_medapart_selection_scroll(void)
     {
         play_sound_effect(2);
         load_part_data(gUnk_03000440.unk3D, gUnk_03000440.unk3E, &gUnk_03000440.unkEE);
-        load_npc_sprite_data();
-        load_scene_sprite_data();
-        render_menu_tilemap_section();
-        load_script_data_to_buffer();
-        fill_bg1_tilemap_from_state();
-        render_shop_price_display();
-        load_overworld_sprite_by_direction();
+        medapart_detail_draw_skill();
+        medapart_detail_draw_ability();
+        medapart_detail_draw_skill_icon();
+        medapart_detail_draw_name();
+        medapart_detail_draw_gender_icon();
+        medapart_detail_draw_stats();
+        medapart_draw_sprite();
         return 1;
     }
 none:
     return 0;
 }
 
-void setup_battle_cursor_sprite_0800FF50(void)
+void medaparts_help_init_cursor(void)
 {
     const u8 *rec = gUnk_083B7EBC[gUnk_03000440.unk43];
 

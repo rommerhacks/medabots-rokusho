@@ -196,12 +196,12 @@ struct Unk_03000440
     u8 unk9B;
     u8 filler9C[0x2];
     u8 unk9E[0x50]; // digit buffer (divide_by_10000)
-    u8 unkEE; // start of a 16-byte part data record (load_part_data)
-    u8 unkEF;
-    u8 unkF0;
-    u8 unkF1;
-    u8 unkF2;
-    u8 unkF3;
+    u8 unkEE; // start of a 16-byte part data record (load_part_data): ability (gUnk_083B656C name)
+    u8 unkEF; // skill id; >= 100: leg type (gUnk_083BE97C[unkEF - 100])
+    u8 unkF0; // skill type (gUnk_083B6EC8 name)
+    u8 unkF1; // gender: 0 male, 1 female (matched against gUnk_030017A0[].unk1)
+    u8 unkF2; // stats: head Armor, Success, Power, (F5 power icon flag), Uses; legs Armor, Propulsion,
+    u8 unkF3; // Evasion, Defense, Proximity, Remoteness (runtime-checked on the detail page)
     u8 unkF4;
     u8 unkF5;
     u8 unkF6;
@@ -374,7 +374,7 @@ struct Unk_03000590
 struct Unk_030017A0
 {
     u8 unk0; // slot in use (> 1: has a Medal)
-    u8 unk1;
+    u8 unk1; // guess: Medabot gender (compared with the Medapart gender unkF1 in count_compatible_medaparts)
     u8 unk2; // Medal id
     u8 unk3; // Medaparts: head, right arm, left arm, legs (validate_medapart_stats)
     u8 unk4;

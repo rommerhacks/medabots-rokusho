@@ -186,22 +186,22 @@ u32 medaparts_list_row_input(void);
 u32 medaparts_list_page_input(void);
 u32 medaparts_list_kind_input(void);
 void medaparts_list_load_part_sprite(void); // sets unk3D from the cursor, loads the selected Medapart's sprite (load_sprite_animation_by_type)
-void load_overworld_sprite_by_direction(void);
-void load_medapart_sprite_by_slot(void);
-void init_scene_buffers_0800F60C(void);
+void medapart_draw_sprite(void); // Medapart sprite (unk3D, kind unk3E) at the per-kind position, clears the OAM copy
+void load_medapart_sprite_by_slot(void); // guess: per-frame Medapart sprite redraw (animation 5/6) when opened from elsewhere (unk3C 2/3) or the part is owned
+void medapart_detail_init_sprite(void);
 s32 sub_0800F6CC(void);
-void load_npc_sprite_data(void);
-void load_scene_sprite_data(void);
-void render_menu_tilemap_section(void);
-void load_script_data_to_buffer(void);
-void fill_bg1_tilemap_from_state(void);
-void setup_menu_tilemap_by_state(void);
-void render_shop_price_display(void);
-void count_compatible_medaparts(void);
-void setup_battle_bot_count_sprites(void);
-void toggle_sprite_hflip_by_frame(void);
-u32 handle_medapart_selection_scroll(void);
-void setup_battle_cursor_sprite_0800FF50(void);
+void medapart_detail_draw_skill(void); // skill type name (gUnk_083B6EC8[unkF0]) or, for ids >= 100 in unkEF, gUnk_083BE97C[unkEF - 100] (leg type)
+void medapart_detail_draw_ability(void); // ability name gUnk_083B656C[unkEE] (e.g. Anti-Air, Regenerate)
+void medapart_detail_draw_skill_icon(void);
+void medapart_detail_draw_name(void);
+void medapart_detail_draw_gender_icon(void); // icon after the name: unkF1 = 0 male, 1 female
+void medapart_detail_draw_stat_labels(void);
+void medapart_detail_draw_stats(void); // stat values unkF2.. per kind (head: Armor, Success, Power, Uses; unkF5 = power icon flag)
+void count_compatible_medaparts(void); // unk41 = owned parts of kind unk3E; from a Medabot (unk3C 1) only spare ones of its gender
+void medapart_detail_init_arrows(void);
+void medapart_detail_blink_arrows(void);
+u32 medapart_detail_cycle_part_input(void); // LEFT/RIGHT: previous/next part counted by count_compatible_medaparts, redraws; 1 if moved
+void medaparts_help_init_cursor(void); // same code as sub_0800AA1C (Medals help cursor)
 void sub_0800FFF4(void);
 void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile, u32 pal, u32 e);
 void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base);
