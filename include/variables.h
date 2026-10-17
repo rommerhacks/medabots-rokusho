@@ -31,6 +31,7 @@ extern struct Unk_03007014 gUnk_03002430; // sound work area (soft_reset_to_titl
 extern struct Vec16 gBg1Scroll;     // BG1 scroll (field: map camera)
 extern struct Unk_03005310 gUnk_03005310;
 extern struct Unk_03006F40 gUnk_03006F40;
+extern struct Unk_03006F74 *gUnk_03006F74;
 extern struct Unk_030055A0 gUnk_030055A0[];
 extern struct Vec16 gBg2Scroll;     // BG2 scroll
 extern struct Vec16 gBg3Scroll;     // BG3 scroll
@@ -382,6 +383,12 @@ extern const u8 gUnk_08488920[];
 extern u8 gUnk_02021000[]; // BG tile backup, second half (see gUnk_02020800)
 extern const u8 gUnk_083AD39A[]; // Robattle sub-state per command ring slot (command_ring_goto_selected)
 extern const u8 gUnk_083AD3A4[]; // battle bot screen positions (x, y) per record 0-5 (position_battle_team_cursors)
+
+extern const u32 gUnk_080AF6F0[]; // BLDALPHA values by fade step / 8 (sub_0805BB10)
+extern const u16 gUnk_080AF7E0[]; // animation frames by (arg & 3) (sub_0805D57C)
+extern const u16 gUnk_080AF808[]; // animation frames by (arg & 3) (sub_0805E170)
+
+extern u8 gUnk_02023078; // first visible list entry (update_battle_sprite_priority_flags)
 
 #endif // GUARD_VARIABLES_H
 extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)

@@ -1026,4 +1026,34 @@ struct Unk_08047414
     u32 unk8;
 };
 
+// Menu / save screen work area, reached through the pointer gUnk_03006F74 (layout as used by code_0805AB40)
+struct Unk_03006F74
+{
+    u8 unk0;
+    u8 unk1;
+    u16 unk2;
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 unk7;
+    u32 unk8;
+    u8 unkC;
+    u8 unkD;
+    u8 unkE;
+    u8 unkF;
+    u8 unk10; // number of items unpacked by unpack_item_inventory_to_buffer
+    u8 unk11; // first visible list row
+    u8 unk12;
+    u8 unk13; // cursor row
+    u8 filler14[0x3];
+    u8 unk17;
+    u8 unk18;
+    u8 unk19;
+    u8 filler1A[0x2];
+    u32 unk1C;
+    u8 unk20; // number of save / link slots shown (update_battle_sprite_priority_flags)
+    u8 filler21[0x15];
+    u16 unk36;
+};
+
 #endif // GUARD_STRUCTS_H
