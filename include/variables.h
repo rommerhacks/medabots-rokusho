@@ -729,3 +729,8 @@ extern const Func gUnk_083B2804[]; // by gUnk_03000440.unk1B (sub_08040934)
 extern const Func gUnk_083B2808[]; // by gUnk_03000440.unk1B (sub_08040954)
 extern const Func gUnk_083B2810[]; // by gUnk_03000440.unk1B (sub_08040974)
 extern const u8 gUnk_083AFC78[32]; // battlefields, picked at random into gUnk_03001800.unk38 (sub_0803D71C)
+extern const Func gUnk_083B279C[]; // message handler states, by gUnk_03000440.unk4 (run_message)
+extern const Func gUnk_083B27C0[]; // message commands, by the byte after gUnk_03000440.unk8[unkC] (sub_080408D0)
+extern const u8 gUnk_083AFC98[16][6]; // 6 bytes picked at random into gUnk_03001800.unk18A[0x10] (sub_0803E8B8)
+extern const u8 gUnk_084C01C8[]; // 64 bytes of tiles copied 52 times to VRAM 0x280 (sub_08040B5C)
+extern u8 gUnk_0300199A[6]; // 6 bytes from gUnk_083AFC98 (sub_0803E8B8); = gUnk_03001800.unk18A + 0x10

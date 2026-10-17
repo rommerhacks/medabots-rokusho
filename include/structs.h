@@ -257,7 +257,7 @@ struct Unk_03000440
     u8 unk135;
     u8 unk136;
     u8 unk137;
-    u8 filler138;
+    u8 unk138; // nonzero: sub_0803DC58 jumps to sub-state 0x30
     u8 unk139; // game state 3 setup step (medabots_screen_load_gfx); Robattle setup step
     u8 unk13A;
 };
