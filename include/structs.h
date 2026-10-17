@@ -441,7 +441,8 @@ struct Unk_03001800
     u8 unkAA; // sub-state of the gUnk_083AD44C handlers (sub_0801C4FC) and gUnk_083AD50C handlers (battle_dispatch_phase_handler_0801D2F0)
     u8 unkAB; // 0-2, set with unkB5 = 1 by the gUnk_083AD50C handlers (sub_0801D2AC..)
     u8 fillerAC[0x9];
-    u8 unkB5;
+    u8 unkB5; // action effect step script done: cleared by each step dispatcher (sub_0801C4FC, battle_dispatch_phase_handler_0801D2F0..),
+              // set by the last step; the callers (sub_080339F4, sub_08033A10) then call sub_08034F08
     u8 fillerB6[0x12];
     u16 unkC8; // Robattle: effect amount (shown by sub_0801CA60, subtracted by apply_battle_damage_tick)
     u8 fillerCA[0x6];

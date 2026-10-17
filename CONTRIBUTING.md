@@ -111,3 +111,7 @@
   different register allocation.
 * `x == 0 || x == 1` (and `case 0: case 1:`) become one `x <= 1` compare. For the original's
   two compares write `if (x == 0) goto ok; if (x != 1) goto fail; ok:`.
+* An index computed as `(a << 2) + (b + 0x5A)` comes from `arr[0x5A + a * 4 + b]` (constant
+  first). `a * 4 + b + 0x5A` and `a * 4 + (b + 0x5A)` get reassociated into `(a * 4 + 0x5A) + b`.
+* A caller passing `ldrsh` / `ldrh` / `lsls; asrs` arguments tells you the prototype's parameter type
+  (s16, u16, s16 after arithmetic). The callee may truncate differently; follow the caller.
