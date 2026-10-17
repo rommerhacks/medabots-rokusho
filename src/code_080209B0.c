@@ -816,17 +816,16 @@ void sub_080221C8(void)
 void sub_080222A8(void)
 {
     u32 i;
-    s32 pos, v;
+    struct Coords16 v;
 
     for (i = 0; i < 4; i++)
     {
         process_sprite_anim_commands(gUnk_083B5F80[0x3D], 0x21 + i);
-        calc_polar_to_screen_coords(&pos, gUnk_03002C30[0x21 + i].unk2C, gUnk_03002C30[0x21 + i].unk2B,
+        v = calc_polar_to_screen_coords(gUnk_03002C30[0x21 + i].unk2C, gUnk_03002C30[0x21 + i].unk2B,
                                     gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2,
                                     gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4);
-        v = pos;
-        gUnk_03002C30[0x21 + i].unk2 = v;
-        gUnk_03002C30[0x21 + i].unk4 = v >> 16;
+        gUnk_03002C30[0x21 + i].unk2 = v.x;
+        gUnk_03002C30[0x21 + i].unk4 = v.y;
         gUnk_03002C30[0x21 + i].unk2C += 4;
         gUnk_03002C30[0x21 + i].unk2D++;
         if (!(gUnk_03002C30[0x21 + i].unk2D & 3))
@@ -945,16 +944,15 @@ void sub_08022480(void)
 void sub_08022648(void)
 {
     u32 i;
-    s32 pos, v;
+    struct Coords16 v;
 
     for (i = 0; i < 2; i++)
     {
-        calc_polar_to_screen_coords(&pos, gUnk_03002C30[0x21 + i].unk2C, gUnk_03002C30[0x21 + i].unk2B,
+        v = calc_polar_to_screen_coords(gUnk_03002C30[0x21 + i].unk2C, gUnk_03002C30[0x21 + i].unk2B,
                                     gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2,
                                     gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4);
-        v = pos;
-        gUnk_03002C30[0x21 + i].unk2 = v;
-        gUnk_03002C30[0x21 + i].unk4 = v >> 16;
+        gUnk_03002C30[0x21 + i].unk2 = v.x;
+        gUnk_03002C30[0x21 + i].unk4 = v.y;
         gUnk_03002C30[0x21 + i].unk2C += 8;
         gUnk_03002C30[0x21 + i].unk2D++;
         if (!(gUnk_03002C30[0x21 + i].unk2D & 3))
@@ -1075,7 +1073,7 @@ void sub_080229C0(void)
 void sub_08022A04(void)
 {
     u32 i;
-    s32 pos, v;
+    struct Coords16 v;
 
     gUnk_03002C30[0x25].unk0 = 0xC604;
     gUnk_03002C30[0x25].unk1C = 0;
@@ -1089,12 +1087,11 @@ void sub_08022A04(void)
     for (i = 0; i < 4; i++)
     {
         gUnk_03002C30[0x21 + i].unk0 = 0xC604;
-        calc_polar_to_screen_coords(&pos, i << 6, 0x10,
+        v = calc_polar_to_screen_coords(i << 6, 0x10,
                                     gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5D].unk2,
                                     gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5D].unk4 - 4);
-        v = pos;
-        gUnk_03002C30[0x21 + i].unk2 = v;
-        gUnk_03002C30[0x21 + i].unk4 = v >> 16;
+        gUnk_03002C30[0x21 + i].unk2 = v.x;
+        gUnk_03002C30[0x21 + i].unk4 = v.y;
         gUnk_03002C30[0x21 + i].unk1C = 0;
         gUnk_03002C30[0x21 + i].unkA = 7;
         gUnk_03002C30[0x21 + i].unkB = 0xF0;
@@ -1112,7 +1109,7 @@ void sub_08022A04(void)
 void sub_08022B40(void)
 {
     u32 i;
-    s32 pos, v;
+    struct Coords16 v;
     u32 n;
 
     process_sprite_anim_commands(gUnk_083B5F80[0x3F], 0x25);
@@ -1120,12 +1117,11 @@ void sub_08022B40(void)
     {
         if (i < 4)
         {
-            calc_polar_to_screen_coords(&pos, gUnk_03002C30[0x21 + i].unk2C, gUnk_03002C30[0x21 + i].unk2B,
+            v = calc_polar_to_screen_coords(gUnk_03002C30[0x21 + i].unk2C, gUnk_03002C30[0x21 + i].unk2B,
                                         gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5D].unk2,
                                         gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5D].unk4 - 4);
-            v = pos;
-            gUnk_03002C30[0x21 + i].unk2 = v;
-            gUnk_03002C30[0x21 + i].unk4 = v >> 16;
+            gUnk_03002C30[0x21 + i].unk2 = v.x;
+            gUnk_03002C30[0x21 + i].unk4 = v.y;
             gUnk_03002C30[0x21 + i].unk2C += 4;
         }
         n = gUnk_03002C30[0x21 + i].unk2D + 1;
@@ -1207,7 +1203,7 @@ void sub_08022D4C(void)
 void sub_08022E14(void)
 {
     u32 i;
-    s32 pos, v;
+    struct Coords16 v;
 
     gUnk_03002C30[0x25].unk0 = 0xC604;
     gUnk_03002C30[0x25].unk1C = 0;
@@ -1221,12 +1217,11 @@ void sub_08022E14(void)
     for (i = 0; i < 4; i++)
     {
         gUnk_03002C30[0x21 + i].unk0 = 0xC604;
-        calc_polar_to_screen_coords(&pos, i << 6, 0x10,
+        v = calc_polar_to_screen_coords(i << 6, 0x10,
                                     gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5D].unk2,
                                     gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5D].unk4 - 4);
-        v = pos;
-        gUnk_03002C30[0x21 + i].unk2 = v;
-        gUnk_03002C30[0x21 + i].unk4 = v >> 16;
+        gUnk_03002C30[0x21 + i].unk2 = v.x;
+        gUnk_03002C30[0x21 + i].unk4 = v.y;
         gUnk_03002C30[0x21 + i].unk1C = 0;
         gUnk_03002C30[0x21 + i].unkA = 7;
         gUnk_03002C30[0x21 + i].unkB = 0xF0;

@@ -991,13 +991,13 @@ void sub_0803769C(u32 rec);
 void sub_080376F4(u32 rec);
 void sub_08037728(u32 rec, u32 part, u32 amount); // unkD6[part] = min(amount, part armor), unkD2[part] = 1 when the armor is all used
 u32 sub_08036B50(u8 *buf, u32 slot);
-void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 b, s32 x, s32 y);
+void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 b, s16 x, s16 y);
 void sub_080374E0(u32 a, u32 b); // unkC8 = min(a, b) taken out of a (guess: drain clamp)
 void sub_0803752C(u32 a, u32 max, u32 b); // unkC8 = min(b, max - a) (add clamp)
 void sub_08037330(u32 rec, u32 frame, u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
 void sub_080373D4(u32 rec); // sets bit 15 of unk0 on the bot's 4 part sprites
 void sub_08037424(u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
-void calc_polar_to_screen_coords(s32 *out, u32 angle, u32 radius, s32 x, s32 y); // out: x in the low half, y in the high half
+struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x, s32 y); // returned in memory (hidden pointer in r0)
 u32 sub_08032FB8(u32 rec); // first record of the side opposite rec (3 or 0)
 u32 sub_08032FC4(u32 rec); // first record of rec's side (0 or 3)
 u32 sub_080385F8(void); // 1 once no sprite 0x21+ has unk29 set (steps their animations)
@@ -1033,7 +1033,7 @@ void sub_080353AC(u32 frame);
 void sub_0803536C(u32 slot, u32 frame, u32 y); // sprite unk2 = y, +1 / -1 on frames 2-3 / 6-7 of 8
 void reduce_bot_part_stat(u32 rec, u32 part, s32 amount); // part armor (unk11) -= amount, not below 0
 void sub_08035194(u32 rec);
-void set_target_sprite_position(u8 rec, u32 frame, u8 flag);
+void set_target_sprite_position(u32 rec, u32 frame, u32 flag);
 void update_target_cursor_position(u32 rec);
 u32 update_sprite_animations_tick_080370AC(u32 slot, u32 n);
 void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u8 n);
@@ -1041,7 +1041,7 @@ void sub_080362C4(u32 side);
 void sub_08036340(u32 side);
 void sub_08036370(u32 side, u32 rec); // draws the 4 parts' armor (data[4] max, unk11 left) via sub_080363E8
 void sub_080363E8(u32 x, u32 y, u32 w, u32 max, u32 cur);
-void sub_080364A8(u32 side, u8 rec);
+void sub_080364A8(u32 side, u32 rec);
 void sub_0803628C(void);
 void sub_08036B84(u32 rec, u32 part);
 u32 sub_080366DC(u32 slot, u32 part);
@@ -1068,6 +1068,8 @@ u32 battle_find_next_active_bot(u32 rec); // random part index of rec with armor
 u32 sub_08036D64(u32 rec, u32 skill); // 1 if unkCF has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8), 0x11/0x12 (2), 0x13/0x14 (4)
 u32 medal_update_exp_progress(u32 slot, u32 n);
 void battle_set_action_params(u32 rec, u32 skill, s32 a, u32 b);
+void sub_080378F0(u32 src); // spawns a particle sprite next to sprite src every 16 / 8 frames
+void spawn_battle_particle_effect(u32 src);
 void reset_battle_bot_state(u32 rec);
 void sub_080351E8(u32 rec);
 u32 find_random_broken_part(u32 rec); // random part (+ 1) of rec with no armor left (unk11 == 0), 0 = none

@@ -206,7 +206,9 @@ struct Unk_03000440
     u16 unk86; // link exchange frame counter
     u8 unk88; // field menu: row animation counter
     u8 unk89; // Robattle: 1 skips the bot setup in battle_init_phase
-    u8 filler8A[0x4];
+    u16 unk8A; // rng seed (rng_next_080424B8)
+    u8 unk8C; // last rng_next_080424B8 value
+    u8 unk8D; // rng table index when unk89 is set
     u8 unk8E; // field menu cursor: 0 Medawatch, 1 Item, 2 Vehicle, 3 Save (runtime-checked)
     u8 unk8F; // Medawatch menu cursor (0..2)
     u8 filler90[0x6];
@@ -372,6 +374,13 @@ struct Vec16
 };
 
 // Battle Medapart record (0x18 bytes, 4 per gUnk_03000590 record from +0x48; battle_bots_load_parts).
+// Screen position returned by value (a 4-byte struct, so in memory via a hidden pointer: calc_polar_to_screen_coords).
+struct Coords16
+{
+    s16 x;
+    s16 y;
+};
+
 struct BattlePart
 {
     u8 data[0xD]; // part data record (load_part_data); data[0xA] summed as armor (accumulate_team_armor_stats)
