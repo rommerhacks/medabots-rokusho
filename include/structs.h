@@ -334,6 +334,14 @@ struct OamData
     u16 affineParam;
 };
 
+// Struct view of the gUnk_083B4AE0 tilemap pointer table: the Robattle screen wipes read entry 0x69 as a
+// field (base + 0x1A4, reloaded after each call: sub_0801DF60, sub_0801FADC).
+struct Unk_083B4AE0
+{
+    const void *unk0[0x69];
+    const void *unk1A4; // blank tilemap row
+};
+
 // Pointed to by gUnk_03002414; holds its own copy of OAM slots and affine parameters.
 struct Unk_03002414
 {
@@ -473,7 +481,9 @@ struct Unk_03001800
     u16 unk158; // effect sprite x, y when unkF8 bit 1 is clear (sub_0801E474)
     u16 unk15A;
     u8 unk15C[3]; // per Medapart select slot (unk82 - 1): nonzero skips the part sprite (sub_0801B894)
-    u8 filler15F[0x5];
+    u8 unk15F; // result of battle_advance_dialogue_text (sub_0801FA68)
+    u8 unk160; // result of battle_advance_action_text (sub_0801FA68)
+    u8 filler161[0x3];
     u8 unk164; // nonzero: Medal skill levels can grow (increment_medal_skill_level)
     u8 unk165; // set to 1 when a Medal skill levels up (sub_08031120 then goes to sub-state 0x60)
     u8 unk166; // skill type that levelled up

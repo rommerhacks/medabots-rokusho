@@ -897,8 +897,8 @@ void sub_08043E48(void);
 void sub_08035C70(void);
 void init_battle_scene_backgrounds(void);
 void sub_080361A8(void);
-void battle_advance_dialogue_text(void);
-void battle_advance_action_text(void);
+u32 battle_advance_dialogue_text(void);
+u32 battle_advance_action_text(void);
 void sub_08035928(u32 rec, u32 target); // guess: record rec targets record target - 1 (unkE0, gUnk_03001800.unk88)
 void sub_08035944(u32 rec, u32 part); // guess: record rec targets part part - 1 (unkE1, gUnk_03001800.unk8B)
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);

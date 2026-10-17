@@ -678,7 +678,20 @@ void sub_0801DF0C(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801DF60);
+void sub_0801DF60(void)
+{
+    write_tilemap_rect(0x1E, 1, 0, gUnk_03000440.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
+    write_tilemap_rect(0x1E, 1, 0, 0x13 - gUnk_03000440.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
+    if (gUnk_03000440.unk84 == 9)
+    {
+        gUnk_03001800.unk1AE = 1;
+        gUnk_03001800.unkAA++;
+    }
+    else
+    {
+        gUnk_03000440.unk84++;
+    }
+}
 
 void sub_0801DFE0(void)
 {
@@ -1542,9 +1555,96 @@ void sub_0801FA40(void)
     gUnk_083AD794[gUnk_03001800.unkAA]();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801FA68);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801FADC);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801FBC4);
+void sub_0801FA68(void)
+{
+    u32 zero;
+    u32 fill;
+
+    init_battle_scene_backgrounds();
+    gUnk_03001800.unk15F = battle_advance_dialogue_text();
+    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03000440.unk84 = 0;
+    zero = 0;
+    CpuFastSet(&zero, (void *)0x05000120, 0x01000008);
+    fill = 0x11111111;
+    CpuFastSet(&fill, (void *)0x06004120, 0x01000008);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0801FADC(void)
+{
+    u32 v;
+
+    init_battle_scene_backgrounds();
+    gUnk_03001800.unk15F = battle_advance_dialogue_text();
+    gUnk_03001800.unk160 = battle_advance_action_text();
+    write_tilemap_rect(0x1E, 1, 0, gUnk_03000440.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
+    write_tilemap_rect(0x1E, 1, 0, 0x13 - gUnk_03000440.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
+    if (gUnk_03000440.unk84 == 9)
+    {
+        v = 0x200;
+        CpuFastSet(&v, gUnk_03002414->unkB84, 0x01000100);
+        gUnk_03002414->unk1094 = 0;
+        gUnk_03002414->unk1095 = 0;
+        gVBlankCallback = nullsub_08000840;
+        gUnk_03001800.unkAA++;
+    }
+    else
+    {
+        gUnk_03000440.unk84++;
+    }
+}
+
+void sub_0801FBC4(void)
+{
+    switch (gUnk_03000440.unk139)
+    {
+    case 0:
+        gUnk_03000440.unk96 = 0;
+        gUnk_03000430 = 0;
+        sub_08043CA8();
+        load_battle_script_entry_b();
+        REG_DISPCNT &= 0xF0FF;
+        REG_BG0CNT = 0x500;
+        REG_BG1CNT = 0x1901;
+        REG_BG2CNT = 0x1A0A;
+        REG_BG3CNT = 0x1B0B;
+        if (battle_phase_dispatch_0801A788(1))
+        {
+            gUnk_03000440.unk84 = 0;
+            gUnk_03000440.unk139++;
+        }
+        break;
+    case 1:
+        REG_DISPCNT |= 0x1F40;
+        load_all_bot_part_sprites();
+        iterate_bots_setup_battle_sprites();
+        apply_battle_blend_effect_b();
+        decompress_to_ewram_27000(gUnk_083B24A8[gUnk_03001800.unk38 * 5 + 1]);
+        gUnk_03000440.unk139++;
+        break;
+    case 2:
+        CpuFastSet((void *)0x02021000, (void *)0x0600C800, 0x200);
+        CpuFastSet((void *)0x02021800, (void *)0x0600D000, 0x200);
+        CpuFastSet((void *)0x02022000, (void *)0x0600D800, 0x200);
+        gUnk_03000440.unk139++;
+        break;
+    case 3:
+        CpuFastSet((void *)0x02028000, gUnk_03002C30, 0x800);
+        gUnk_03000440.unk139++;
+        break;
+    case 4:
+        load_all_bot_part_sprites();
+        iterate_bots_setup_battle_sprites();
+        gVBlankCallback = sub_08044100;
+        gUnk_03000440.unk84 = 0;
+        gUnk_03001800.unk1AE = 0;
+        gUnk_03001800.unkAA++;
+        gUnk_03000440.unk139 = 0;
+        break;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801FD88);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801FDEC);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801FE14);
