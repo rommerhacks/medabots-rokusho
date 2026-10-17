@@ -897,6 +897,7 @@ u8 sub_08037578(u32 a, u32 kind); // random part id (by a and the part kind)
 void sub_0803769C(u32 rec);
 void sub_080376F4(u32 rec);
 void sub_08037728(u32 rec, u32 part, s32 amount);
+u32 sub_08036B50(u8 *buf, u32 slot);
 void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 b, s32 x, s32 y);
 void sub_080374E0(u32 a, u32 b); // unkC8 = min(a, b) taken out of a (guess: drain clamp)
 void sub_0803752C(u32 a, u32 max, u32 b); // unkC8 = min(b, max - a) (add clamp)
