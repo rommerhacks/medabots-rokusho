@@ -286,13 +286,114 @@ void sub_0806E968(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806B160", scene_fade_out_and_restore_state);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", scene_animate_and_complete);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_scene_init_clear);
+void scene_fade_out_and_restore_state(void)
+{
+    if (gUnk_03001800_s.timer > 0x4C && gUnk_03001800_s.unkEE >= 0) {
+        u8 a = gUnk_03001800_s.unkEE;
+        u8 b = 16 - gUnk_03001800_s.unkEE;
+        REG_BLDALPHA = a | (b << 8);
+        gUnk_03001800_s.unkEE--;
+    }
+    if (scene_transition_step_080686F4()) {
+        REG_DISPCNT &= 0xFBFF;
+        gGameMode = gUnk_03001800_s.nextMode;
+        gGameState = gUnk_03001800_s.nextState;
+        gGameSubState = gUnk_03001800_s.nextSubState;
+    }
+    gUnk_03001800_s.timer++;
+}
+
+void scene_animate_and_complete(void)
+{
+    gUnk_03001800_s.unkF0++;
+    gUnk_03001800_s.unkF2 += 0x6F;
+    battle_timer_digit_extract();
+    update_sprite_animations_080703D8();
+    if (execute_scene_step()) {
+        u32 zero = 0;
+        DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+        gUnk_03000430 = 0;
+        REG_DISPCNT &= 0x80FF;
+        gGameMode = gUnk_03001800_s.nextMode;
+        gGameState = gUnk_03001800_s.nextState;
+        gGameSubState = gUnk_03001800_s.nextSubState;
+    }
+}
+
+void battle_scene_init_clear(void)
+{
+    u32 zero = 0;
+    DmaSet(3, &zero, VRAM, 0x85006000);
+    zero = 0;
+    DmaSet(3, &zero, PLTT, 0x85000100);
+    zero = 0;
+    DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+    zero = 0;
+    DmaSet(3, &zero, &gUnk_03001800_s, 0x8500003E);
+    REG_DISPCNT = 0x60;
+    gUnk_03001800_s.nextMode = 3;
+    gUnk_03001800_s.nextState = 1;
+    gUnk_03001800_s.timer = 0;
+    gBg0Scroll.x = 0;
+    gBg0Scroll.y = 0;
+    gBg1Scroll.x = 0;
+    gBg1Scroll.y = 0;
+    gBg2Scroll.x = 0;
+    gBg2Scroll.y = 0;
+    gBg3Scroll.x = 0;
+    gBg3Scroll.y = 0;
+    gUnk_03001800_s.unkC.h = 11;
+    gUnk_03001800_s.nextSubState = 11;
+    gUnk_03001800_s.unk6 = 1;
+    gUnk_03001800_s.unkF4 = 0x7C0;
+    gUnk_03001800_s.unkF6 = 0x100;
+    gUnk_03007008 = 0;
+    gGameSubState = 8;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806B160", load_battle_scene_graphics);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", init_scene_graphics);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", load_battle_ui_assets);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", init_battle_result_screen);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806F038);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806F094);
+
+void load_battle_ui_assets(void)
+{
+    LZ77UnCompVram(gUnk_08485FD0[1], (void *)0x06010000);
+    LZ77UnCompVram(gUnk_087C8D54, gUnk_03001800_s.unk30);
+    gGameSubState = 6;
+}
+
+void init_battle_result_screen(void)
+{
+    u32 v;
+    s32 legs = 0x2A;
+    init_scene_buffers_080445F4();
+    v = 0x200;
+    DmaSet(3, &v, gUnk_03002414->unkB84, 0x85000100);
+    setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, legs, 0x78, 0x50, 2, 0xC, 0, 0, 0);
+    DmaSet(3, gUnk_08485FD8[1], PLTT + 0x200, 0x80000050);
+    setup_screen_transition_effect_080682CC(2, 4, 0);
+    REG_DISPCNT |= 0x1000;
+    gUnk_03001800_s.nextSubState = 15;
+    gGameSubState = 1;
+}
+
+void sub_0806F038(void)
+{
+    load_bg_screen_b();
+    REG_MOSAIC = 0xFF;
+    gUnk_03001800_s.unk6 = 6;
+    gBg0Scroll.y = 0xFFE4;
+    DmaSet(3, gUnk_08485FD8[1], PLTT + 0x200, 0x80000050);
+    gUnk_03001800_s.nextSubState = gUnk_03001800_s.unkC.h;
+    gGameSubState = 4;
+}
+
+void sub_0806F094(void)
+{
+    if (battle_transition_fade_step()) {
+        gUnk_03001800_s.timer = 0;
+        gUnk_03001800_s.nextSubState = 7;
+        gUnk_03001800_s.unkC.h = 12;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806F0B4);

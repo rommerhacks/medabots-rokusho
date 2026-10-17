@@ -177,6 +177,9 @@ extern const void *const gUnk_08486EEC[]; // story intro texts, by page gUnk_030
 extern const void *const gUnk_08487328[]; // story intro compressed tiles (to 0x06008000), by page
 extern const void *const gUnk_08487358[]; // story intro compressed tilemaps (30x20), by page
 extern const void *const gUnk_08487388[]; // story intro palettes (0xE0 halfwords), by page
+extern const u8 gUnk_087C8D54[]; // compressed, decompressed to gUnk_03001800_s.unk30 (load_battle_ui_assets)
+extern const void *const gUnk_08485FD0[2]; // compressed OBJ tiles (load_battle_ui_assets)
+extern const void *const gUnk_08485FD8[2]; // OBJ palettes (0x50 halfwords; [1] in init_battle_result_screen)
 extern u8 gUnk_03000005; // scene step speed: frames per fade level
 extern u16 gUnk_03000008[]; // BG0 tilemap offsets of the rows the wipe steps clear / fill
 extern u16 gUnk_03000028; // palette fade target color

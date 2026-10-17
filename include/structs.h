@@ -137,6 +137,14 @@ struct Unk_03001800_s
         u8 b;  // boot logos: nonzero once START may skip them (scene_transition_countdown_tick)
     } unkC;
     s32 unk10; // countdown: play_song(3) when it reaches 0
+    u8 filler14[0x1C];
+    u8 unk30[0xBE]; // decompression buffer (load_battle_ui_assets)
+    s8 unkEE; // blend counter (scene_fade_out_and_restore_state)
+    u8 unkEF;
+    u16 unkF0;
+    u16 unkF2;
+    u16 unkF4;
+    u16 unkF6;
 };
 
 // 0x03002B70: money, then a 10-byte string (init_save_prompt_text writes a default one).
