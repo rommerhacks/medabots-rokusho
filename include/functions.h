@@ -1154,7 +1154,7 @@ u32 sub_08037798(u32 base); // record on side base, or 0xFF
 void *memcpy_optimized(void *dst, const void *src, u32 n); // library
 u16 ReadEepromDword(u16 address, u16 *data); // EEPROM library: reads 8 bytes
 u16 ProgramEepromDword(u16 address, u16 *data); // EEPROM library: writes 8 bytes
-u16 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 bytes and verifies
+u32 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 bytes and verifies; u32 so sub_080603A4 tests the result without truncating it
 void init_blend_effect(void *state, u8 a, u8 b, s8 c, u16 mode);
 u32 blend_fade_step_08065598(void *state);
 void sub_08059D04(void); // clears unk0 of the 128 gUnk_03002C30 sprites
@@ -1292,3 +1292,7 @@ void sub_0806006C(void);
 void sub_08061300(void);
 void sub_0805FB2C(void);
 void update_fade_transition_state_0805F778(void);
+void sub_08061678(void);
+void sub_0805F8F0(void); // up to 4 tries of save_dispatch(2) (erase), then the next sub-state (ok) or 12 (failed)
+void sub_080603A4(void); // zeroes EEPROM block 0 (up to 4 tries), then game mode 3 state 2
+void load_medapart_sprite_animation(u8 id, u8 kind, u32 which);
