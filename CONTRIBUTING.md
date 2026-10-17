@@ -350,3 +350,17 @@
   compare (`b` to a `cmp r0, #0x3C`): use a local (`n = ++x;` / `n = x;`) and compare it after the if.
 * A shared tail where both branches end with the same stores (`movs r1, #0` hoisted into each branch):
   write the tail in both branches.
+* A callee that narrows its parameters (`lsls/lsrs` at entry) while its matched callers pass plain
+  ints: the callers were compiled without a prototype. Declare it `void f();` in the header and write
+  the definition K&R-style (`void f(a, b) u32 a; u8 b; { ... }`); a prototype with `u8` params changes
+  the callers (setup_scene_with_bg_and_sprites, init_scene_with_bg_and_palette).
+* `x | f` where the original materializes the constant first (`movs r0, #0x80; lsls; orrs r0, r4`) and
+  your build ORs into the variable: check whether the value is really `size / 2` of a wider value.
+  `dma3_copy_or_decompress` matched only as CpuCopy16 of the first half + a DMA3 copy of the second
+  half (`size = hdr >> 8`, `size / 2 / 2` for the count).
+* Same pattern with a byte flag: `u32 f = x & 0x1F; ... = (y & 0x80) | f` (a `u8 f` swaps the `orrs`)
+  (export_medals_to_buffer).
+* A struct-returning function whose epilogue is `pop {r1}; bx r1` with `mov r0, <hidden ptr>` before the
+  final `str`: that is the normal struct return. A table declared `[][8]` read as a flat `s16` array
+  needs `tbl[0][i]`; a `(const s16 *)` cast reorders the base load (calc_polar_to_screen_coords).
+* A u8 key byte read with `ldrb` from `gNewKeys` (u16): `KEYS_LO(gNewKeys) & mask`.
