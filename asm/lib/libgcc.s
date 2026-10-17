@@ -3867,7 +3867,9 @@ _0807E62A:
 
 	thumb_func_start memcpy_optimized
 	.global memcpy_optimized
+	.global memcpy
 memcpy_optimized: @ 0x0807E634
+memcpy: @ struct copies compiled by agbcc call memcpy
 	push {r4, r5, lr}
 	adds r5, r0, #0
 	adds r4, r5, #0

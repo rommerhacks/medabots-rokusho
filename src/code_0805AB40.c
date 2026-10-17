@@ -164,7 +164,33 @@ void sub_0805BC6C(void)
         }
     }
 }
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BCC0);
+
+void sub_0805BCC0(u8 sel)
+{
+    u8 cur[3] = {gUnk_03001788, gUnk_03001360, gUnk_03000B94};
+    s32 i, j, k;
+    for (i = 0; i <= 2; i++)
+    {
+        for (j = 0; j <= 2; j++)
+        {
+            u16 *p = (u16 *)(VRAM + 0xE + (((REG_BG0CNT >> 8) & 0x1F) << 11) + (i * 3 + 11) * 64);
+            u16 mask = gUnk_080AF740[i][j];
+            for (k = 0; k < 16; k++)
+            {
+                if (mask & 0x8000)
+                {
+                    u16 v = *p & 0xFFF;
+                    if (sel == i)
+                        *p = v | (cur[i] == j ? 0xA000 : 0x8000);
+                    else
+                        *p = v | (cur[i] == j ? 0x9000 : 0x8000);
+                }
+                mask <<= 1;
+                p++;
+            }
+        }
+    }
+}
 
 void sub_0805BDC8(u8 a)
 {

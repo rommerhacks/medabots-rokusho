@@ -1163,7 +1163,7 @@ void decompress_and_write_tilemap(const void *src, u32 bgcnt); // LZ77 tilemap w
 void sub_0805B3E4(s32 x, s32 y, s32 n); // clears n tilemap entries at (x, y) of the BG map at 0x0600B000
 void sub_0805B470(struct Unk_03002C30 *sprite);
 s16 sub_0805BB10(s16 step); // title menu blend pulse: sets BLDALPHA from gUnk_080AF6F0[step / 8], returns step + 1 (0 after 0xA0)
-void sub_0805BCC0(u8 a);
+void sub_0805BCC0(u8 sel); // title option rows: palette 0xA (selected row, current value), 9 (current value) or 8 on the BG0 tiles masked by gUnk_080AF740
 void sub_0805BDC8(u8 a); // BG palette 10 = blend of the two 16-color halves at 0x0202FB00 by (a - 16) / 32 (0 below 16)
 void sub_0805BEA0(u8 sel, u8 f); // BG palettes 0-2 from 0x0202FA00; palette sel blended between its two halves by f / 32 (title cursor pulse)
 void sub_0805BBF8(u8 sel); // title menu: palette 7 on the selected row of three 11-tile BG0 rows, 6 on the others
