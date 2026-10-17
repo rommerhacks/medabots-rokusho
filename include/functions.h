@@ -1021,7 +1021,7 @@ void decompress_indexed_graphics_to_ewram(u32 list);
 void decompress_fixed_graphics_to_ewram(void);
 void sub_08035C3C(void);
 void sub_08043E48(void);
-void sub_08035C70(void);
+void init_battle_closeup_scene(void); // places and draws both Medabots of the attack close-up (runtime-checked)
 void init_battle_scene_backgrounds(void);
 void sub_080361A8(void);
 u32 battle_advance_dialogue_text(void);

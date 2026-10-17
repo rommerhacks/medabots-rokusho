@@ -760,7 +760,7 @@ void sub_0801E200(void)
     u32 zero = 0;
 
     CpuFastSet(&zero, gUnk_03002C30, 0x01000800);
-    sub_08035C70();
+    init_battle_closeup_scene();
     init_battle_scene_backgrounds();
     sub_080361A8();
     gUnk_03000440.unk84 = 0;

@@ -606,7 +606,7 @@ void sub_08035C3C(void)
     }
 }
 
-void sub_08035C70(void)
+void init_battle_closeup_scene(void)
 {
     init_scene_buffers_080445F4();
     if (!(gUnk_03001800.unkF8 & 1))
