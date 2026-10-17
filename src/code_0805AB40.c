@@ -4,10 +4,10 @@ INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805AB40);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", unpack_item_inventory_to_buffer);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", update_battle_medapart_icons);
 
-void calc_fade_sprite_position(u16 *p)
+void calc_fade_sprite_position(struct Unk_03002C30 *sprite)
 {
-    p[1] = 0x54;
-    p[2] = (u8)(gUnk_03006F74->unkC % 5) * 16 + 0x1C;
+    sprite->unk2 = 0x54;
+    sprite->unk4 = (u8)(gUnk_03006F74->unkC % 5) * 16 + 0x1C;
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", shop_build_sell_list);
@@ -621,10 +621,10 @@ INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805CE4C);
 void init_fade_sprite_and_start_fade(void)
 {
     struct Unk_03006F74 **pw = &gUnk_03006F74;
-    calc_fade_sprite_position(gUnk_03004130);
-    gUnk_03004130[0] |= 0x4000;
-    gUnk_03004130[1]++;
-    gUnk_03004130[2]++;
+    calc_fade_sprite_position(&gUnk_03002C30[0x54]);
+    gUnk_03002C30[0x54].unk0 |= 0x4000;
+    gUnk_03002C30[0x54].unk2++;
+    gUnk_03002C30[0x54].unk4++;
     (*pw)->unk12 = 1;
     (*pw)->unk13 = (*pw)->unkC;
 }
