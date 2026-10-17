@@ -1332,7 +1332,24 @@ void sub_0803B9A4(void)
 
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803BBE0);
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803BE44);
-INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803C044);
+
+void sub_0803C044(void)
+{
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2D != 0) {
+        gUnk_03002C30[gUnk_03000440.unk12F].unk2D--;
+        update_sprite_animation_position(gUnk_03000440.unk12F);
+        if (gUnk_03002C30[3].unk2C == 0) {
+            gUnk_03001800.unk154 = gUnk_03002C30[gUnk_03000440.unk12F].unk2;
+            gUnk_03001800.unk156 = gUnk_03002C30[gUnk_03000440.unk12F].unk4;
+        } else {
+            gUnk_03001800.unk158 = gUnk_03002C30[gUnk_03000440.unk12F].unk2;
+            gUnk_03001800.unk15A = gUnk_03002C30[gUnk_03000440.unk12F].unk4;
+        }
+    } else {
+        clear_battle_sprite_slot(gUnk_03000440.unk12F, 1);
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803C0CC);
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803C33C);
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803C5F8);
