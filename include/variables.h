@@ -315,7 +315,7 @@ extern const u8 *const gDebugMotionLabels[]; // "No"
 extern const u8 gUnk_084C3B14[]; // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (sub_0800B0F8)
 extern const u32 gUnk_083B7338[]; // Medaforce names, indexed by Medaforce id
 extern const u32 gUnk_083BE97C[]; // Medapart skill names for ids >= 100 (medapart_detail_draw_skill)
-extern u16 gUnk_03002B84[2]; // capped at 9999; [0] counted after every game state 6 battle, [1] when gUnk_03000440.unk9C == 1 (guess: battles fought / won)
+extern u16 gUnk_03002B84[2]; // capped at 9999: [0] every game state 6 battle, [1] when gUnk_03000440.unk9C == 1 (runtime-checked; guess: Robattles fought / won)
 extern const void *const gUnk_083C3984[]; // after-battle opponent lines, by gUnk_03001800.unk0
 extern const void *const gUnk_083C65C4[]; // messages (after-battle screen uses 107, 109, 118)
 extern const u8 *const gUnk_083C6DE8[]; // Medapart kind names, by kind

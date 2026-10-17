@@ -147,6 +147,7 @@ void sub_08010A7C(void)
     gGameSubState++;
 }
 
+// guess: Rubberobo Medal used: fade to white, then skip the battle
 void sub_08010AC8(void)
 {
     if (gUnk_03000440.unk84 <= 16)
@@ -163,7 +164,8 @@ void sub_08010AC8(void)
     }
 }
 
-void sub_08010B24(void)
+// A on the pre-battle screen: Medabots screen in team select mode (game state 3, unk50 = 2)
+void prebattle_open_team_select(void)
 {
     sub_0803F624(&gUnk_03000440.unk50, 0x14, 0);
     gUnk_03000440.unk50 = 2;
@@ -171,7 +173,10 @@ void sub_08010B24(void)
     gGameSubState = 0;
 }
 
-void sub_08010B54(void)
+// Game state 6 sub-states 48+ = after the Robattle (runtime-checked from a debug battle,
+// re/scratch/afterbattle_probe.txt): 53 opponent line, 55-61 Medapart won (START = details),
+// 64-65 experience, 66+ Medal level-ups and Medaforces per team member (unk186)
+void afterbattle_count_battle(void)
 {
     sub_0801BF64(&gUnk_03002B84[0], 9999);
     if (gUnk_03000440.unk9C == 1)
@@ -184,7 +189,7 @@ void sub_08010B54(void)
     gGameSubState++;
 }
 
-void sub_08010BA0(void)
+void afterbattle_check_won(void)
 {
     update_scroll_movement_a();
     if (gUnk_03000440.unk9C == 1)
@@ -193,7 +198,7 @@ void sub_08010BA0(void)
         gGameSubState = 0x70;
 }
 
-void sub_08010BD0(void)
+void afterbattle_show_opponent_line(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -216,7 +221,7 @@ void sub_08010C28(void)
     }
 }
 
-void sub_08010C50(void)
+void afterbattle_give_part(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -237,7 +242,7 @@ void sub_08010C50(void)
     }
 }
 
-void sub_08010CE8(void)
+void afterbattle_load_part_name(void)
 {
     const u32 *tbl;
 
@@ -250,7 +255,7 @@ void sub_08010CE8(void)
     gGameSubState++;
 }
 
-void sub_08010D58(void)
+void afterbattle_show_part_acquired(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -264,6 +269,7 @@ void sub_08010D58(void)
     }
 }
 
+// guess: new Medapart: "NEW" sprite (sprite 1, sound 0x2A)
 void sub_08010DAC(void)
 {
     update_all_battle_sprite_orbits();
@@ -313,7 +319,7 @@ void sub_08010E7C(void)
     gGameSubState++;
 }
 
-void sub_08010F08(void)
+void afterbattle_part_details_input(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -357,7 +363,7 @@ void sub_08010FA4(void)
     }
 }
 
-void sub_08010FDC(void)
+void afterbattle_load_experience(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -367,7 +373,7 @@ void sub_08010FDC(void)
     gGameSubState++;
 }
 
-void sub_08011018(void)
+void afterbattle_show_experience(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -375,7 +381,7 @@ void sub_08011018(void)
         gGameSubState++;
 }
 
-void sub_08011048(void)
+void afterbattle_start_medal_level_up(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
