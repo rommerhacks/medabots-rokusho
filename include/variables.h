@@ -386,6 +386,7 @@ extern const u8 gUnk_083C4C10[]; // per leg type (skill id - 100), 11 bytes: one
 extern const s8 gUnk_083AD3B3[]; // 32 y steps of the number pop-up over a Medabot (battle_number_popup_update)
 extern const u8 gUnk_083AD3D3[]; // 32 random record orders (find_next_active_bot)
 extern const u8 gUnk_083AD3F3[]; // record remap when gUnk_03000B90 is set in a link Robattle (find_next_active_bot)
+extern const u8 gUnk_083AD3F9[]; // record remap for unkE0 (sub_0801C0A0)
 extern const struct GfxListEntry *const gUnk_083CE480[]; // graphics lists (decompress_indexed_graphics_to_ewram)
 extern const void *const gUnk_083B2584[]; // pairs: compressed tiles [i * 2], palette [i * 2 + 1]
 extern const Func gUnk_083AD400[]; // message steps by gUnk_03001800.unkA1[0] (sub_0801C0BC)

@@ -435,7 +435,7 @@ struct Unk_03001800
     u8 filler9B;
     u8 unk9C[5]; // cleared by sub_0801AEB4
     u8 unkA1[5]; // cleared by sub_0801AED4
-    u8 fillerA6;
+    u8 unkA6; // Medaforce effect id 0xE-0x11 (sub_0801C524)
     u8 unkA7; // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to (sub_0801B3AC)
     u8 fillerA8[0x2];
     u8 unkAA; // sub-state of the gUnk_083AD44C handlers (sub_0801C4FC)
@@ -525,7 +525,7 @@ struct Unk_03000590
     u8 unkBD; // flags (bit 2 toggled by the Robattle handlers sub_080143A0 / sub_08014404)
     u8 fillerBE;
     u8 unkBF;
-    u8 fillerC0;
+    u8 unkC0; // flags (bit 1 skips the Medaforce effect, sub_0801C524)
     u8 unkC1; // Medaforce gauge, 0-80 (0x50: Medaforce ready, check_medaforce_availability; drawn as "MF nn/80", runtime-checked)
     u8 fillerC2[0x2];
     // Two timed effects, ticked every 32 frames by sub_08018CBC (sub_08018D0C / sub_08018DF4):

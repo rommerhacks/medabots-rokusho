@@ -712,6 +712,7 @@ void command_ring_pulse_selected(void);
 void sub_08017914(void);
 void setup_bot_battle_sprites_08015A00(u32 rec, u32 x, u32 y);
 void battle_set_damage_vs_armor(u32 rec, u32 part, u32 amount);
+u32 sub_08034F44(u32 rec);
 void sub_08016554(void);
 void command_ring_goto_selected(void);
 void sub_080165D0(void);

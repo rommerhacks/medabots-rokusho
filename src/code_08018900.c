@@ -1348,7 +1348,33 @@ void sub_0801B894(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B9C4);
+void sub_0801B9C4(void)
+{
+    if (gUnk_03002C30[9].unk0 & 0x8000)
+    {
+        process_sprite_anim_commands(gUnk_083B5F80[24], 9);
+        if (gUnk_03002C30[9].unk24)
+        {
+            gUnk_03002C30[9].unk27++;
+            gUnk_03002C30[(gUnk_03002C30[9].unk25 - 1) * 4 + gUnk_03002C30[9].unk24 + 0x59].unk0 |= 0x220;
+            if (gUnk_03002C30[9].unk26 == 0)
+            {
+                gUnk_03002C30[(gUnk_03002C30[9].unk25 - 1) * 4 + gUnk_03002C30[9].unk24 + 0x59].unk8 = gUnk_03002C30[9].unk27 * 2 + 0x40;
+                gUnk_03002C30[(gUnk_03002C30[9].unk25 - 1) * 4 + gUnk_03002C30[9].unk24 + 0x59].unk9 = gUnk_03002C30[9].unk27 * 2 + 0x40;
+            }
+            else
+            {
+                gUnk_03002C30[(gUnk_03002C30[9].unk25 - 1) * 4 + gUnk_03002C30[9].unk24 + 0x59].unk8 = 0x60 - gUnk_03002C30[9].unk27 * 2;
+                gUnk_03002C30[(gUnk_03002C30[9].unk25 - 1) * 4 + gUnk_03002C30[9].unk24 + 0x59].unk9 = 0x60 - gUnk_03002C30[9].unk27 * 2;
+            }
+            if (gUnk_03002C30[9].unk27 > 0x10)
+            {
+                gUnk_03002C30[9].unk26 ^= 1;
+                gUnk_03002C30[9].unk27 = 0;
+            }
+        }
+    }
+}
 
 void sub_0801BACC(void)
 {
@@ -1515,6 +1541,12 @@ void sub_0801BF78(const u16 *pos, u8 arg, u32 slot)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801BFB4);
+
+// Hidden function (no callers): remaps the record's unkE0 through gUnk_083AD3F9.
+void sub_0801C0A0(u32 rec)
+{
+    gUnk_03000590[rec].unkE0 = gUnk_083AD3F9[gUnk_03000590[rec].unkE0];
+}
 
 u32 sub_0801C0BC(u32 msg)
 {
