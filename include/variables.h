@@ -140,6 +140,11 @@ extern u8 gUnk_03006FDC; // race course (copied from gUnk_03006D38.unk0, sub_080
 extern s32 gUnk_03000000; // scene step frame counter, reset when a step finishes (execute_scene_step)
 extern u8 gUnk_03000004; // scene step, gUnk_08485C7C index
 extern bool32 (*const gUnk_08485C7C[])(void); // scene steps (execute_scene_step)
+extern bool32 (*const gUnk_08485C68[])(void); // transition steps (scene_transition_step_080686F4)
+extern u8 gUnk_03000005; // scene step speed: frames per fade level
+extern u16 gUnk_03000008[]; // BG0 tilemap offsets of the rows the wipe steps clear / fill
+extern u16 gUnk_03000028; // palette fade target color
+extern u16 *gUnk_0300002C; // palette fade source palette (0x200 colors)
 extern u8 gUnk_030004DE[];
 extern const u8 gUnk_083F7FF4[]; // random bytes, indexed by the low byte of gFrameCounter
 extern const void *const gUnk_084864E8[];
@@ -923,3 +928,5 @@ extern const u8 gUnk_080AFA08[4][2]; // icon x, y in BG2 tiles (battle_menu_high
 // the struct copy), like a local initialized array whose initializer lives in ROM.
 struct FuncTable7 { Func f[7]; };
 extern const struct FuncTable7 gUnk_080AFA20; // sub-state handlers by gGameSubState (dispatch_substate_handler)
+extern const struct FuncTable7 gUnk_080AFEA8; // sub-state handlers by gGameSubState (dispatch_scene_substate_and_scroll)
+extern const struct FuncTable7 gUnk_080AFEC4; // sub-state handlers by gGameSubState (dispatch_battle_end_substate)

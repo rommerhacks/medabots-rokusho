@@ -1070,7 +1070,9 @@ struct Unk_03006F74
     u16 unk36; // save screen: last BG tile index loaded (sub_0805D628)
     u16 unk38;
     s16 unk3A; // title: blend step (sub_0805BB10)
-    u8 filler3C[0xC];
+    u8 filler3C[0x2];
+    s16 unk3E;
+    u8 filler40[0x8];
     u8 unk48;
     u8 unk49;
     u8 unk4A;
