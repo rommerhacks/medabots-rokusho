@@ -256,5 +256,21 @@ extern const u8 *const gDebugMenuLabels[]; // game state 63 menu labels, 11 x 8 
 extern const u8 *const gDebugProcessLabels[]; // game state 63 "Process" field labels "User", "Func.no", "S.func" (gGameMode / gGameState / gGameSubState; debug_process_input)
 extern const u8 *const gDebugMedalLabels[]; // game state 63 "Medal" field labels (3 x 8 bytes; debug_medal_input)
 extern const u8 *const gDebugPartsLabels[]; // game state 63 "Parts" field labels (3 x 8 bytes; debug_parts_input)
+extern const Func gDebugTinpetHandlers[]; // game state 63 entry 3 sub-state handlers (debug_tinpet_update)
+extern const Func gDebugItemHandlers[]; // entry 4 (debug_item_update)
+extern const Func gDebugFaceHandlers[]; // entry 5 (debug_face_update)
+extern const Func gDebugMdlpicHandlers[]; // entry 6 (debug_mdlpic_update)
+extern const Func gDebugRndTkHandlers[]; // entry 7 (debug_rndtk_update)
+extern const Func gDebugBattleHandlers[]; // entry 8 (debug_battle_update)
+extern const Func gDebugSoundHandlers[]; // entry 9 (debug_sound_update)
+extern const Func gDebugMotionHandlers[]; // entry 10 (debug_motion_update; 4 sub-states)
+extern const u8 *const gDebugTinpetLabels[]; // "Get"
+extern const u8 *const gDebugItemLabels[]; // "Get", "Lost", "All"
+extern const u8 *const gDebugFaceLabels[]; // "No", "Look" (also used by the Mdlpic entry)
+extern const u8 *const gDebugMdlpicLabels[]; // "No", "Lv" (unused: debug_mdlpic_input reads gDebugFaceLabels)
+extern const u8 *const gDebugRndTkLabels[]; // "Switch"
+extern const u8 *const gDebugBattleLabels[]; // "No"
+extern const u8 *const gDebugSoundLabels[]; // "Se", "Bgm"
+extern const u8 *const gDebugMotionLabels[]; // "No"
 extern const u8 gUnk_084C3B14[]; // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (sub_0800B0F8)
 extern const u32 gUnk_083B7338[]; // Medaforce names, indexed by Medaforce id

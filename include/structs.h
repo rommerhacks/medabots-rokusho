@@ -149,7 +149,9 @@ struct Unk_03000440
     u8 unk33; // game state 63 submenu sub-state
     u8 unk34; // game state 63 submenu row
     u8 unk35[3]; // game state 63 submenu values, one per row
-    u8 filler38[0x4];
+    u8 filler38;
+    u8 unk39; // game state 63 "Motion" entry: scene / animation id 0-0x79 (START / SELECT)
+    u8 filler3A[0x2];
     u8 unk3C; // where the Medals / Medaparts screen was opened from: 0 Medawatch, 1 Medabot detail (medabot_detail_open_info), 2/4 others
     u8 unk3D; // Medal / Medapart id to show
     u8 unk3E; // Medapart slot 0-3
@@ -441,10 +443,10 @@ struct Unk_030057E0
     u8 unkC20[0x8];
     u8 unkC28;
     u8 fillerC29[0x1];
-    u8 unkC2A;
-    u8 fillerC2B[0x1];
-    u8 unkC2C;
-    u8 fillerC2D[0x1];
+    u8 unkC2A; // battle id (set by the debug menu "Battle" entry before game state 6; guess)
+    u8 unkC2B;
+    u8 unkC2C; // toggled by the debug menu "Rnd.tk" entry (guess: random encounters on)
+    u8 unkC2D;
     u8 unkC2E;
     u8 unkC2F;
     u8 fillerC30[0x2];

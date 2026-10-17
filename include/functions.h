@@ -154,6 +154,25 @@ void debug_medal_update(void);
 void debug_medal_input(void); // rows: give Medal id, remove Medal id, give all 30
 void debug_parts_update(void);
 void debug_parts_input(void); // rows: give Medapart id (all 4 kinds), take one, give all 120
+void debug_tinpet_update(void);
+void debug_tinpet_input(void); // one row toggled 0/1, A: add_position_entry(value) unless sub_08042218()
+void debug_item_update(void);
+void debug_item_input(void); // rows: give item id, take one, give all 63
+void debug_face_update(void);
+void debug_face_input(void); // rows: portrait 0-0xAF, expression 0-8; A draws it twice with load_bg0_tilemap
+void debug_mdlpic_update(void);
+void debug_mdlpic_input(void); // rows: Medal graphic 0-29, sprite variant 0-4; A shows the Medal sprite
+void debug_rndtk_update(void);
+void debug_rndtk_input(void); // toggles gUnk_030057E0.unkC2C
+void debug_battle_update(void);
+void debug_battle_input(void); // A: unkC2A = id, starts game state 6 (Robattle intro)
+void debug_sound_update(void);
+void debug_sound_input(void); // rows: sound effect 0-0x7F, song 0-0x35; B stops the music
+void debug_motion_update(void);
+void debug_motion_init(void);
+void debug_motion_load(void);
+void debug_motion_input(void); // START / SELECT change the Medabot model (unk39), A plays animation unk35[0]
+void debug_motion_play(void);
 void setup_bot_render_label(u32 a, u32 n);
 void clear_battle_bot_array(void);
 void count_active_battle_bots(void);
@@ -178,6 +197,7 @@ void sub_0803F624(u8 *dst, u32 size, u8 val);
 void blend_obj_palettes_to_color_0803F684(u16 a, u32 b, u16 c);
 void blend_obj_palettes_to_color_0803F998(u16 a, u32 b, u16 c);
 void clear_battle_sprite_slot(u8 a, u8 b);
+void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c);
 u32 game_state_execute_handler_a(void);
 u32 find_medal_slot_by_id(u8 id);
 u32 load_palette_entry(u8 id);
@@ -188,6 +208,8 @@ u8 sub_080420C4(u8 level, u8 a, u8 b, u8 c, u8 d); // guess: Medal sprite varian
 u32 sub_08042114(u8 a, u8 b);
 u32 sub_08042218(void);
 void add_position_entry(u8 id);
+void sub_080422B8(u8 id, u8 n); // guess: add n of item id (inventory 0x03002BA0: 0x80 | id, count; max 99)
+void sub_08042318(u8 id, u8 n); // guess: take n of item id
 u32 get_item_quantity_by_id(u8 id);
 s32 rng_next_080424B8(void);
 void load_part_data(u32 part, u32 kind, u8 *dst);
@@ -198,6 +220,10 @@ void init_battle_medabot_sprites(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g
 void setup_battle_sprite_group(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j, u32 k);
 u32 sub_0804361C(u32 medal, u32 forward); // guess: previous (forward = 0) / next owned Medal slot (gUnk_03000BE0)
 u32 find_next_available_medapart_slot(u32 part, u32 kind, u32 forward, u32 d);
+void init_scene_buffers_080445F4(void);
+void setup_scene_with_bg_and_sprites(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9, u32 a10, u32 a11);
+void init_scene_with_bg_and_palette(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9, u32 a10, u32 a11, u32 a12);
+void advance_text_display(u32 a0, u32 a1, u32 a2);
 u32 medabot_detail_is_full_set(void); // 1 if gUnk_03000440.unk98-9B (the four shown Medaparts) are all the same set
 u32 sub_080440B4(void);
 void sub_08047414(struct Unk_08047414 *obj, u8 *buf, u32 b, u32 c);
