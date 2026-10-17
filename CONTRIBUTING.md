@@ -187,3 +187,18 @@
 * A loop over `i` with a sprite slot `i + 0x21` where the original recomputes `slot << 6` each time
   (no pointer strength reduction) and truncates the slot at calls: write `i + 0x21` at every use, not a
   separate `slot` counter (sub_0802C960).
+* Operand order of a sum decides how gcc splits it. For a sprite index the original computes as
+  `base + (i << 8) + 0xC00 + j * 0x40`, write `gUnk_03002C30[0x30 + j + i * 4]` (sub_0802D198,
+  sub_0802D270); `i * 4 + 0x30 + j` and friends regroup it. For an argument computed as `(i + 0x72)`
+  then `+ unk60`, write `unk60 + 0x72 + i` (sub_0802CE4C).
+* An `i * 4` computed once (`lsls r4, r6, #2`) right after the first call's source address and reused
+  by later index expressions and a u8 argument: assign it inside the first use,
+  `&gUnk_03002C30[(j = i * 4) + 0x24]`, then use `j` (sub_0802CE4C).
+* `subs r0, #0x80` before a `strb` (`adds r0, #0x80` is what `- 0x80` gives): cast the call result
+  to `s8` first, `(s8)f(x) - 0x80` (sub_0802D758).
+* A chain of early-out failures that each store a different message and then share
+  `gGameSubState = 0x20`: write each one in full (`unkA6 = N; gGameSubState = 0x20; return;`) so gcc
+  cross-jumps the tails like the original; a `goto fail` with the store before it adds a branch per
+  case (resolve_battle_action_phase).
+* Callee prototypes: if the asm callee uses an argument without truncating it, declare it `u32`, or the
+  caller emits `lsls/lsrs` the original doesn't have (reduce_bot_part_stat, medal_update_exp_progress).
