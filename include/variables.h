@@ -734,3 +734,8 @@ extern const Func gUnk_083B27C0[]; // message commands, by the byte after gUnk_0
 extern const u8 gUnk_083AFC98[16][6]; // 6 bytes picked at random into gUnk_03001800.unk18A[0x10] (sub_0803E8B8)
 extern const u8 gUnk_084C01C8[]; // 64 bytes of tiles copied 52 times to VRAM 0x280 (sub_08040B5C)
 extern u8 gUnk_0300199A[6]; // 6 bytes from gUnk_083AFC98 (sub_0803E8B8); = gUnk_03001800.unk18A + 0x10
+extern const Func gUnk_083AFAF8[]; // link Robattle game state: sub-state handlers by gGameSubState (sub_0803D538)
+extern const u8 gUnk_08487524[]; // compressed tiles, message window frame style 3 (sub_08040A40)
+extern const u8 gUnk_084885A8[]; // compressed tilemap, message window frame style 3 (sub_08040A40)
+extern const u8 gUnk_08487630[]; // compressed tiles, message window frame style 2 (sub_08040A40)
+extern const u8 gUnk_08488600[]; // compressed tilemap, message window frame style 2 (sub_08040A40)
