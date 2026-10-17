@@ -115,3 +115,13 @@
   first). `a * 4 + b + 0x5A` and `a * 4 + (b + 0x5A)` get reassociated into `(a * 4 + 0x5A) + b`.
 * A caller passing `ldrsh` / `ldrh` / `lsls; asrs` arguments tells you the prototype's parameter type
   (s16, u16, s16 after arithmetic). The callee may truncate differently; follow the caller.
+* A table entry read as `ldr rX, =sym; adds rX, #off` and reloaded after every call is a struct
+  field, not an array element: `arr[0x69]` gives `ldr =sym+0x1A4`. Declare a struct view of the
+  table (see `struct Unk_083B4AE0` / `gUnk_083B4AE0_s`) and read the field.
+* `side = 0; if (!(f & 2)) side = 1;` loads the zero before the test; the original's
+  `ands; movs r1, #0; cmp; bne; movs r1, #1` order comes from `if (!(f & 2)) side = 1; else side = 0;`.
+* A u16 value stored with `lsls; lsrs` and sign-extended (`lsls; asrs`) only where it is used, once,
+  for several sums: copy it into an `s16` local first (`sx = x; a = sx - 16; b = sx + 16;`).
+  Casting at each use (`(s16)x - 16`) lets gcc drop the extension.
+* Two branches that store the same fields from different sources (`a = p->x; b = p->y - 16; c = p->y`)
+  match when written out in each branch; a shared local after the if gives a different tail.
