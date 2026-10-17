@@ -844,6 +844,7 @@ u32 medaforce_gauge_fill_step(u32 rec); // moves one point from gUnk_03001800.un
 u32 medaforce_gauge_drain_step(u32 rec); // the same, taking one point out of the gauge
 u32 dispatch_battle_action_substate(u32 arg);
 u32 sub_0801B0E8(u32 rec); // guess: spins the sprites of sub_0801B004 around the Medabot while they sink; 1 when all 8 are gone
+void increment_medal_skill_level(u32 rec);
 void sub_0801B274(u32 rec); // guess: end of a Medabot's action: unkDE / unkDF = chosen part and its skill, clears the per-turn part flags
 void sub_0801B3AC(u32 rec); // writes gUnk_03001800.unk11C back into the acting Medabot's part unkA7 when unk118 is set, then clears unk118..
 void sub_0801B004(u32 rec); // guess: 8 sprites 0x21-0x28 in a circle (radius 16) around the Medabot's sprite, OBJ palette 6 from gUnk_084E3058
