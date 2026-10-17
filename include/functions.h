@@ -706,7 +706,7 @@ void sub_08017914(void);
 void setup_bot_battle_sprites_08015A00(u32 rec, u32 x, u32 y);
 void sub_0801A744(u32 rec);
 void sub_08016554(void);
-void sub_080165B0(void);
+void command_ring_goto_selected(void);
 void sub_080165D0(void);
 void sub_08016614(void);
 void sub_08016660(void);

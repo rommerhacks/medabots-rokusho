@@ -1373,7 +1373,7 @@ void sub_08012DF4(void)
     sub_08016614();
     sub_08016660();
     if (++gUnk_03000440.unk84 == 16)
-        sub_080165B0();
+        command_ring_goto_selected();
 }
 
 void sub_08012E40(void)

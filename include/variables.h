@@ -365,5 +365,7 @@ extern const u8 *const gUnk_083C466C[]; // 12-byte name text, by gUnk_03001800.u
 extern const u8 gUnk_083AD370[]; // angles for compute_polar_to_screen_position, by sprite slot - gUnk_03001800.unk81 (command_ring_init_icon)
 extern const u8 gUnk_083AD376[]; // next slot after a right turn of the ring, by gUnk_03001800.unk81 (command_ring_input)
 extern const u8 gUnk_083AD37C[]; // next slot after a left turn
+extern const u8 gUnk_083AD382[]; // 4-byte records: sprite count, start value, x, y (sub_08016370, animate_battle_sprites)
+extern const u8 gUnk_083AD39A[]; // Robattle sub-state per command ring slot (command_ring_goto_selected)
 
 #endif // GUARD_VARIABLES_H
