@@ -425,11 +425,16 @@ struct Unk_03000590
     u8 unkBD; // flags (bit 2 toggled by the Robattle handlers sub_080143A0 / sub_08014404)
     u8 fillerBE;
     u8 unkBF;
-    u8 fillerC0[0x9];
+    u8 fillerC0[0x8];
+    u8 unkC8; // number shown by the Robattle handler 0x70 (sub_080147FC)
     u8 unkC9; // 0x2C checked by sub_08014404
-    u8 fillerCA[0x4];
-    u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (sub_080145BC .. sub_08014754)
-    u8 fillerCF[0x31];
+    u8 fillerCA[0x3];
+    u8 unkCD; // number shown by the Robattle handler 0x78 (sub_08014920)
+    u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (sub_080145BC .. sub_08014754),
+              // bit 2 / bit 3 = numbers shown by sub_080147FC / sub_08014920
+    u8 fillerCF[0xE];
+    u8 unkDD; // link Robattle: part choice exchanged over the serial link (sub_08014B34, sub_08014C30)
+    u8 fillerDE[0x22];
 };
 
 struct Unk_030017A0

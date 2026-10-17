@@ -793,5 +793,8 @@ void sub_08019348(u32 rec);
 void sub_08019544(u32 rec);
 u32 sub_08019FBC(u32 rec, u32 a);
 u32 sub_0801A030(u32 rec, u32 a);
+void set_display_digit_type(u8 *buf, u32 value, u32 type);
+void sub_0801A144(u8 *buf, u32 rec);
+void sub_0801A228(u32 rec);
 
 #endif // GUARD_FUNCTIONS_H
