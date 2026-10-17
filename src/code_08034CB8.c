@@ -1,22 +1,123 @@
 #include "global.h"
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034CB8);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034CD4);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034CF0);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034D0C);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034D28);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034D44);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034D60);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034D7C);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034D98);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034DB4);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034DD0);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034DEC);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034E08);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034E24);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034E40);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034E5C);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08034E78);
+void sub_08034CB8(void)
+{
+    sub_0802A6AC();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034CD4(void)
+{
+    sub_0802AAD0();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034CF0(void)
+{
+    sub_0802ACCC();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034D0C(void)
+{
+    sub_0802B000();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034D28(void)
+{
+    sub_0802B7E8();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034D44(void)
+{
+    sub_0802BD6C();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034D60(void)
+{
+    sub_0802C2AC();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034D7C(void)
+{
+    sub_0802C644();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034D98(void)
+{
+    sub_0802CBE8();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034DB4(void)
+{
+    sub_0802D688();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034DD0(void)
+{
+    sub_0802DCB4();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034DEC(void)
+{
+    battle_dispatch_phase_handler_0802E424();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034E08(void)
+{
+    sub_0802EBC0();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034E24(void)
+{
+    sub_0802F030();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034E40(void)
+{
+    sub_0802F628();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034E5C(void)
+{
+    sub_0802F990();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034E78(void)
+{
+    sub_0802FE50();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
 
 s32 sub_08034E94(void)
 {

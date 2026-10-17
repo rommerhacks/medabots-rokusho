@@ -277,6 +277,23 @@ void sub_0801D40C(void);
 void sub_0801D580(void);
 s32 sub_08034E94(void); // next byte of the Robattle action script (gUnk_083C6B28[gUnk_03001800.unkA8] + unkBC)
 void sub_08034F08(void);
+void sub_0802A6AC(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802AAD0(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802ACCC(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802B000(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802B7E8(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802BD6C(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802C2AC(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802C644(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802CBE8(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802D688(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802DCB4(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void battle_dispatch_phase_handler_0802E424(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802EBC0(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802F030(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802F628(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802F990(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802FE50(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
 u32 get_random_battle_weight_entry(u32 idx);
 void sub_08036270(void);
 void sub_0803713C(void);
