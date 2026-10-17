@@ -99,3 +99,7 @@
   research (`read_keys`, `main`, ...) are snake_case.
 * Globals are `gCamelCase`. ROM data that isn't understood yet is named `gUnk_XXXXXXXX` or by what
   it holds plus its address (`gGameStateHandlers_083AC148`).
+* A `switch` whose code starts with a range check (`cmp r0, #2; bhi default`) before the case
+  tests was wrapped in an `if (x <= 2)` in the original.
+* `a == 0 || a > 3` is folded into one `(a - 1) <= 2` compare; when the original tests both,
+  write the two arms separately (`if (a == 0) v = 0; else if (a > 3) v = 0; else ...`).
