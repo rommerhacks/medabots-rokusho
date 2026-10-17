@@ -375,5 +375,6 @@ extern const u8 gUnk_084888E4[];
 extern const u8 gUnk_08488920[];
 extern u8 gUnk_02021000[]; // BG tile backup, second half (see gUnk_02020800)
 extern const u8 gUnk_083AD39A[]; // Robattle sub-state per command ring slot (command_ring_goto_selected)
+extern const u8 gUnk_083AD3A4[]; // battle bot screen positions (x, y) per record 0-5 (position_battle_team_cursors)
 
 #endif // GUARD_VARIABLES_H
