@@ -344,7 +344,8 @@ struct Unk_03001800
     u8 unk38; // battlefield
     u8 unk39[8]; // copied from gUnk_083C3B04[unk38] (sub_080121A8)
     u8 unk41[3]; // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
-    u8 filler44[0xD];
+    u8 unk44; // Robattle: bit (1 << team Medabot) set by sub_08013AE4
+    u8 filler45[0xC];
     u8 unk51;
     u8 unk52;
     u8 unk53;
