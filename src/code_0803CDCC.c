@@ -50,6 +50,8 @@ void battle_sprite_rotate_angles(u32 dir, u32 delta)
     }
 }
 
+// Game state 10 handler: runs gUnk_083AFAF8[gGameSubState]; outside sub-states 0x10-0x1F a link error
+// (sub_0803EED8) restarts it at 0x10. guess: link Robattle (entered when gUnk_03000440.unk89 == 1).
 void sub_0803D538(void)
 {
     if (gGameSubState - 0x10 > 0xF && sub_0803EED8())

@@ -295,3 +295,15 @@
   body in full in each arm; the original's tail-merged copies only come out that way (sub_0803B900).
 * A sprite slot found by a search loop and then used for many stores: index `gUnk_03002C30[slot].f`
   every time instead of a `struct *s = &...[slot]` (the pointer swaps the `lsls/ldr` order).
+* An unrotated loop (`top: test; bls out; i += 3; b top`) where gcc rotates your `while`/`for`: write it
+  with a label and `goto` (init_battle_sprite_entry_08040B90).
+* `VRAM + ((bgcnt >> 8) & 0x1F) << 11` screen-base addressing: `(u16 *)(VRAM + (screen << 11)) + x + y * 32`
+  matches; byte sums in other orders put `VRAM` in the wrong add (vram_fill_tilemap_rect, tilemap_fill_rect).
+* A value loaded once (`ldrh r2`) and used non-destructively three times where your `u16 c` local gets
+  copied before each `ands`: read it through a pointer, `u16 *src = &tbl[k]; ... *src & 0x1F ... *src &
+  0x3E0` (the palette blends at 0x0803F684..0x0803F998).
+* `ldrb; adds #1; strb; ands #3` with no `& 0xFF`: write `x++; if (!(x & 3))`, not `++x & 3`
+  (sub_0803EC98).
+* A struct word read across byte fields (`ldr r0, [base, #0x1C]` over `unk19[3]`..`unk1E`): cast to a
+  local anonymous struct with the word at that offset; a `(u32 *)` cast folds into `=sym+0x1C`
+  (sub_0803EED8).
