@@ -643,22 +643,294 @@ void sub_080093E0(void)
     sub_08044CDC(1);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_080093F8);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_0800941C);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_0800944C);
-INCLUDE_ASM("asm/nonmatching/code_08008430", render_medal_sprite_tile);
-INCLUDE_ASM("asm/nonmatching/code_08008430", render_medal_list_entries);
-INCLUDE_ASM("asm/nonmatching/code_08008430", render_medal_slots_in_menu);
-INCLUDE_ASM("asm/nonmatching/code_08008430", render_medal_name_display);
-INCLUDE_ASM("asm/nonmatching/code_08008430", load_medal_sprite);
-INCLUDE_ASM("asm/nonmatching/code_08008430", render_medal_level_display);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_0800988C);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_08009900);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_0800994C);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_080099A4);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_08009A38);
+void sub_080093F8(void)
+{
+    if (gFrameCounter & 1)
+    {
+        gBg3Scroll.x++;
+        gBg3Scroll.y++;
+    }
+}
+
+void sub_0800941C(void)
+{
+    gUnk_03000440.unk3F = gUnk_03000440.unk3D / 6;
+    gUnk_03000440.unk40 = gUnk_03000440.unk3D % 6;
+}
+
+void sub_0800944C(void)
+{
+    u32 i;
+
+    gUnk_03000440.unk41 = 0;
+    for (i = 0; i < 30; i++)
+    {
+        if (gUnk_03000BE0[i].unk0 & 0x80)
+            gUnk_03000440.unk41++;
+    }
+}
+
+void render_medal_sprite_tile(void)
+{
+    u8 n = 0;
+    u8 i;
+
+    for (i = gUnk_03000440.unk3F * 6; i < gUnk_03000440.unk3F * 6 + 6; n++, i++)
+    {
+        if (gUnk_03000BE0[i].unk0 & 0x80)
+            CpuFastSet(gUnk_084C21BC + gUnk_03000BE0[i].unk1 * 0x80, (void *)0x06006600 + n * 0x80, 0x20);
+        else
+            CpuFastSet(gUnk_084C30BC, (void *)0x06006600 + n * 0x80, 0x20);
+    }
+    write_tilemap_rect(2, 12, 4, 4, gUnk_083B4AE0[0x50], REG_BG1CNT, 0x200);
+}
+
+void render_medal_list_entries(void)
+{
+    u8 n = 0;
+    u8 i;
+
+    clear_sprite_table_mask(10, 0x3C);
+    for (i = gUnk_03000440.unk3F * 6; i < gUnk_03000440.unk3F * 6 + 6; n++, i++)
+    {
+        if (gUnk_03000BE0[i].unk0 & 0x80)
+        {
+            memcpy_bytes_0803F63C((void *)gUnk_083B6410[gUnk_03000BE0[i].unk1], gUnk_03000440.unk9E, 11);
+            render_text_sprites_08040DB8(gUnk_03000440.unk9E, n * 10 + 10, 6, n * 2 + 4, 7, 8, 1, 2);
+        }
+        else
+        {
+            fill_text_blank(gUnk_03000440.unk9E, 9);
+            render_text_sprites_08040DB8(gUnk_03000440.unk9E, n * 10 + 10, 6, n * 2 + 4, 7, 8, 1, 2);
+        }
+    }
+}
+
+void render_medal_slots_in_menu(void)
+{
+    u32 i;
+    u32 n;
+
+    for (n = 0, i = gUnk_03000440.unk3F * 6; i < gUnk_03000440.unk3F * 6 + 6; n++, i++)
+    {
+        if (gUnk_03000BE0[i].unk0 & 0x80)
+        {
+            fill_tilemap_pair_or_divide(gUnk_03000BE0[i].unk5, 14, (u8)(n * 2 + 4), REG_BG1CNT, 0xD314);
+        }
+        else
+        {
+            fill_tilemap_rect_08042698(1, 2, 14, n * 2 + 4, REG_BG1CNT, 0xD32C);
+            fill_tilemap_rect_08042698(1, 2, 15, n * 2 + 4, REG_BG1CNT, 0xD32C);
+        }
+    }
+}
+
+void render_medal_name_display(void)
+{
+    u8 has;
+
+    gUnk_03000440.unk3D = gUnk_03000440.unk3F * 6 + gUnk_03000440.unk40;
+    clear_sprite_table_mask(0x46, 10);
+    if ((has = gUnk_03000BE0[gUnk_03000440.unk3D].unk0 & 0x80))
+    {
+        render_text_sprites_08040DB8(gUnk_03000BE0[gUnk_03000440.unk3D].unkA, 0x46, 0x13, 3, 10, 9, 0, 2);
+    }
+    else
+    {
+        fill_text_blank(gUnk_03000440.unk9E, 10);
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x46, 0x13, 3, 10, 9, has, 2);
+    }
+}
+
+void load_medal_sprite(void)
+{
+    gUnk_03000440.unk3D = gUnk_03000440.unk3F * 6 + gUnk_03000440.unk40;
+    if (gUnk_03000BE0[gUnk_03000440.unk3D].unk0 & 0x80)
+    {
+        lz_decompress_dispatch(gUnk_083AC494[gUnk_03000BE0[gUnk_03000440.unk3D].unk1][gUnk_03000BE0[gUnk_03000440.unk3D].unk8], (void *)0x06010000);
+        gUnk_03002C30[0].unk0 = 0xC804;
+        gUnk_03002C30[0].unk2 = 0xC0;
+        gUnk_03002C30[0].unk4 = 0x50;
+        gUnk_03002C30[0].unk6 = 0x200;
+        gUnk_03002C30[0].unkA = 13;
+        gUnk_03002C30[0].unk1C = 0;
+        gUnk_03002C30[0].unkB = 0x40;
+    }
+    else
+    {
+        clear_sprite_table_mask(0, 1);
+    }
+}
+
+void render_medal_level_display(void)
+{
+    u8 *buf;
+
+    gUnk_03000440.unk3D = gUnk_03000440.unk3F * 6 + gUnk_03000440.unk40;
+    clear_sprite_table_mask(0x50, 6);
+    if (gUnk_03000BE0[gUnk_03000440.unk3D].unk0 & 0x80)
+    {
+        if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 != 100)
+        {
+            buf = gUnk_03000440.unk9E;
+            divide_by_100000_08041370(buf, gUnk_03000BE0[gUnk_03000440.unk3D].unk2);
+        }
+        else
+        {
+            buf = gUnk_03000440.unk9E;
+            fill_text_blank(buf, 5);
+        }
+        render_text_sprites_08040DB8(buf, 0x50, 0x13, 0x11, 6, 10, 2, 2);
+    }
+    else
+    {
+        buf = gUnk_03000440.unk9E;
+        fill_text_blank(buf, 5);
+        render_text_sprites_08040DB8(buf, 0x50, 0x13, 0x11, 6, 10, 2, 2);
+    }
+}
+
+void sub_0800988C(void)
+{
+    gUnk_03002C30[1].unk0 = 0xC804;
+    gUnk_03002C30[1].unk2 = 0x24;
+    gUnk_03002C30[1].unk4 = 0x18;
+    gUnk_03002C30[1].unk6 = 0x302;
+    gUnk_03002C30[1].unkA = 14;
+    gUnk_03002C30[1].unk1C = 0;
+    gUnk_03002C30[1].unkB = 0x40;
+    gUnk_03002C30[2].unk0 = 0xC804;
+    gUnk_03002C30[2].unk2 = 0x7C;
+    gUnk_03002C30[2].unk4 = 0x18;
+    gUnk_03002C30[2].unk6 = 0x303;
+    gUnk_03002C30[2].unkA = 14;
+    gUnk_03002C30[2].unk1C = 0;
+    gUnk_03002C30[2].unkB = 0x40;
+}
+
+void sub_08009900(void)
+{
+    gUnk_03002C30[3].unk0 = 0xC804;
+    gUnk_03002C30[3].unk2 = 0x18;
+    gUnk_03002C30[3].unk4 = gUnk_03000440.unk40 * 16 + 0x28;
+    gUnk_03002C30[3].unk6 = 0x307;
+    gUnk_03002C30[3].unkA = 14;
+    gUnk_03002C30[3].unk1C = 0;
+    gUnk_03002C30[3].unkB = 0x41;
+}
+
+void sub_0800994C(void)
+{
+    if (gFrameCounter & 8)
+    {
+        gUnk_03002C30[1].unk0 &= 0xBFFF;
+        gUnk_03002C30[2].unk0 &= 0xBFFF;
+    }
+    else
+    {
+        gUnk_03002C30[1].unk0 |= 0x4000;
+        gUnk_03002C30[2].unk0 |= 0x4000;
+    }
+}
+
+void sub_080099A4(void)
+{
+    if (KEYS_LO(gRepeatKeys) & 0x40)
+    {
+        if (gUnk_03000440.unk40 == 0)
+            gUnk_03000440.unk40 = 5;
+        else
+            gUnk_03000440.unk40--;
+    }
+    if (KEYS_LO(gRepeatKeys) & 0x80)
+    {
+        if (gUnk_03000440.unk40 == 5)
+            gUnk_03000440.unk40 = 0;
+        else
+            gUnk_03000440.unk40++;
+    }
+    if (KEYS_LO(gRepeatKeys) & 0xC0)
+    {
+        play_sound_effect(2);
+        gUnk_03002C30[3].unk4 = gUnk_03000440.unk40 * 16 + 0x28;
+        render_medal_name_display();
+        load_medal_sprite();
+        render_medal_level_display();
+        decompress_active_medal_sprite();
+        init_active_medal_battle_sprites();
+        draw_medal_position_tile();
+    }
+}
+
+void sub_08009A38(void)
+{
+    if (KEYS_LO(gRepeatKeys) & 0x20)
+    {
+        if (gUnk_03000440.unk3F == 0)
+            gUnk_03000440.unk3F = 4;
+        else
+            gUnk_03000440.unk3F--;
+    }
+    if (KEYS_LO(gRepeatKeys) & 0x10)
+    {
+        if (gUnk_03000440.unk3F == 4)
+            gUnk_03000440.unk3F = 0;
+        else
+            gUnk_03000440.unk3F++;
+    }
+    if (KEYS_LO(gRepeatKeys) & 0x30)
+    {
+        play_sound_effect(2);
+        write_tilemap_rect(10, 2, 5, 2, gUnk_083B4AE0[gUnk_03000440.unk3F + 0x4B], REG_BG1CNT, 0x200);
+        render_medal_sprite_tile();
+        render_medal_list_entries();
+        render_medal_slots_in_menu();
+        render_medal_name_display();
+        load_medal_sprite();
+        render_medal_level_display();
+        decompress_active_medal_sprite();
+        init_active_medal_battle_sprites();
+        draw_medal_position_tile();
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08008430", update_battle_sprite_visibility);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_08009BC8);
+
+void sub_08009BC8(void)
+{
+    u32 cur;
+
+    if (KEYS_LO(gNewKeys) & 4)
+    {
+        play_sound_effect(2);
+        if (gUnk_03000440.unk3E & 0x80)
+        {
+            gUnk_03000440.unk3E &= 0x7F;
+            if (gUnk_03000440.unk3E != (cur = gUnk_03000440.unk3F * 6 + gUnk_03000440.unk40))
+            {
+                memswap(&gUnk_03000BE0[gUnk_03000440.unk3E], &gUnk_03000BE0[cur], 0x40);
+                write_tilemap_rect(10, 2, 5, 2, gUnk_083B4AE0[gUnk_03000440.unk3F + 0x4B], REG_BG1CNT, 0x200);
+                render_medal_sprite_tile();
+                render_medal_list_entries();
+                render_medal_slots_in_menu();
+                render_medal_name_display();
+                load_medal_sprite();
+                render_medal_level_display();
+                decompress_active_medal_sprite();
+                init_active_medal_battle_sprites();
+                draw_medal_position_tile();
+            }
+            gUnk_03000440.unk3E = 0;
+            update_battle_sprite_visibility();
+        }
+        else
+        {
+            gUnk_03000440.unk3E = gUnk_03000440.unk3F * 6 + gUnk_03000440.unk40 + 0x80;
+            update_battle_sprite_visibility();
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08008430", get_medal_active_slot);
 INCLUDE_ASM("asm/nonmatching/code_08008430", decompress_active_medal_sprite);
 INCLUDE_ASM("asm/nonmatching/code_08008430", init_active_medal_battle_sprites);

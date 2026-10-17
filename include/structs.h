@@ -331,11 +331,13 @@ struct Unk_03000BE0
 {
     u8 unk0; // flags (0x40 tested by sub_080092D4)
     u8 unk1; // Medal graphic index (0x80-byte tiles at 0x084C21BC)
-    u8 filler2[0x2];
+    u16 unk2; // drawn by render_medal_level_display (guess: experience)
     u8 unk4; // Medals help: gUnk_083B69C8 message index
     u8 unk5; // level (Medals help: Medaforce slots open at 10 / 30 / 60)
     u8 unk6; // Medals help: gUnk_083B70AC message index
-    u8 filler7[0x3];
+    u8 filler7;
+    u8 unk8; // Medal sprite variant, 0-4 (gUnk_083AC494[unk1][unk8])
+    u8 filler9;
     u8 unkA[0xE]; // name text
     u8 unk18[8]; // indexed by Medals screen unk46 (gUnk_083B825C message ids; guess: rotation entries)
     u8 unk20[8]; // 0-100 (guess: skill levels, drawn by render_medal_skill_stats)
