@@ -1646,10 +1646,94 @@ void sub_0802FBF4(void)
     gUnk_03002C30[0x22].unk4 += 2;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802FC3C);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802FD08);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802FDC8);
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802FE50);
+void sub_0802FC3C(void)
+{
+    clear_battle_sprite_slot(0x21, 2);
+    CpuFastSet(gUnk_0850EF18, (void *)0x050002C0, 0x10);
+    gUnk_03002C30[0x21].unk0 = 0xC624;
+    gUnk_03002C30[0x21].unk1C = 0;
+    gUnk_03002C30[0x21].unk2 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
+    gUnk_03002C30[0x21].unk4 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4;
+    gUnk_03002C30[0x21].unkA = 7;
+    gUnk_03002C30[0x21].unk8 = 0x80;
+    gUnk_03002C30[0x21].unk9 = 0x80;
+    gUnk_03002C30[0x21].unk18 = 0;
+    gUnk_03002C30[0x21].unkB = 0xF0;
+    gUnk_03002C30[0x21].unk6 = 0x8302;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802FD08(void)
+{
+    if (gUnk_03002C30[0x21].unk8 == 0x40)
+    {
+        play_sound_effect(0x54);
+        gUnk_03001800.unkAA++;
+    }
+    else
+    {
+        gUnk_03002C30[0x21].unk8 -= 8;
+        gUnk_03002C30[0x21].unk9 -= 8;
+    }
+}
+
+void sub_0802FD4C(void)
+{
+    if (gUnk_03002C30[0x21].unk8 == 0x60)
+        gUnk_03001800.unkAA++;
+    else
+    {
+        gUnk_03002C30[0x21].unk8 += 4;
+        gUnk_03002C30[0x21].unk9 += 4;
+    }
+}
+
+void sub_0802FD84(void)
+{
+    if (gUnk_03002C30[0x21].unk8 == 0x40)
+    {
+        gUnk_03000440.unk86 = 0x3C;
+        gUnk_03001800.unkAA++;
+    }
+    else
+    {
+        gUnk_03002C30[0x21].unk8 -= 4;
+        gUnk_03002C30[0x21].unk9 -= 4;
+    }
+}
+
+void sub_0802FDC8(void)
+{
+    if (gUnk_03002C30[0x21].unk8 == 4)
+    {
+        clear_battle_sprite_slot(0x21, 1);
+        gUnk_03001800.unkAA++;
+    }
+    else
+    {
+        gUnk_03002C30[0x21].unk8 -= 4;
+        gUnk_03002C30[0x21].unk9 -= 4;
+    }
+}
+
+void sub_0802FE0C(void)
+{
+    gUnk_03000590[gUnk_03001800.unk87].unkC0 |= 1;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802FE38(void)
+{
+    gUnk_03001800.unkA6 = 0x4F;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802FE50(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AEB18[gUnk_03001800.unkAA]();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802FE78);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0803029C);
 INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_08030354);
