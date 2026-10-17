@@ -141,6 +141,19 @@ void setup_battle_cursor_sprite_0800B5E8(void);
 void init_battle_cursor_sprite_0800B668(void);
 u32 update_battle_sprite_and_check_done(void);
 void handle_menu_cursor_updown(void);
+// Debug menu (game mode 0, game state 63; labels in gDebugMenuLabels). Runtime-checked: "Process" sets
+// gGameMode / gGameState / gGameSubState and jumps there.
+void debug_menu_update(void);
+void debug_menu_init(void);
+void debug_menu_select_input(void);
+void debug_menu_exit(void);
+void debug_menu_run_entry(void);
+void debug_process_update(void);
+void debug_process_input(void);
+void debug_medal_update(void);
+void debug_medal_input(void); // rows: give Medal id, remove Medal id, give all 30
+void debug_parts_update(void);
+void debug_parts_input(void); // rows: give Medapart id (all 4 kinds), take one, give all 120
 void setup_bot_render_label(u32 a, u32 n);
 void clear_battle_bot_array(void);
 void count_active_battle_bots(void);
@@ -168,6 +181,9 @@ void clear_battle_sprite_slot(u8 a, u8 b);
 u32 game_state_execute_handler_a(void);
 u32 find_medal_slot_by_id(u8 id);
 u32 load_palette_entry(u8 id);
+void medal_remove_by_id(u8 id);
+void medapart_add_quantity(u8 id, u8 kind, u8 n);
+void reduce_medapart_stat(u8 id, u8 kind, u8 n); // takes n of Medapart (id, kind), floor 0
 u8 sub_080420C4(u8 level, u8 a, u8 b, u8 c, u8 d); // guess: Medal sprite variant (0-4) from its level and four gUnk_083B6158 record bytes
 u32 sub_08042114(u8 a, u8 b);
 u32 sub_08042218(void);

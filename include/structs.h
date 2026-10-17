@@ -142,7 +142,14 @@ struct Unk_03000440
     u8 fillerF[0x19];
     u8 unk28;
     u8 unk29; // choice menu state (poll_choice_menu)
-    u8 filler2A[0x12];
+    u8 filler2A[0x6];
+    u8 unk30; // game state to return to from game state 63 (debug_menu_exit)
+    u8 unk31; // its sub-state
+    u8 unk32; // game state 63 menu cursor, 0-10 (debug_menu_select_input)
+    u8 unk33; // game state 63 submenu sub-state
+    u8 unk34; // game state 63 submenu row
+    u8 unk35[3]; // game state 63 submenu values, one per row
+    u8 filler38[0x4];
     u8 unk3C; // where the Medals / Medaparts screen was opened from: 0 Medawatch, 1 Medabot detail (medabot_detail_open_info), 2/4 others
     u8 unk3D; // Medal / Medapart id to show
     u8 unk3E; // Medapart slot 0-3
@@ -347,7 +354,7 @@ struct Unk_03000BE0
     u8 unkA[0xE]; // name text
     u8 unk18[8]; // indexed by Medals screen unk46 (gUnk_083B825C message ids; guess: rotation entries)
     u8 unk20[8]; // 0-100 (guess: skill levels, drawn by render_medal_skill_stats)
-    u8 unk28[8];
+    u8 unk28[8]; // per skill: filled bar tiles, 0-8 (draw_medal_skill_bars)
     u8 filler30[0x10];
 
 };

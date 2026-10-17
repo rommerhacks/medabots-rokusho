@@ -247,6 +247,14 @@ extern const u32 gUnk_083B6EC8[]; // skill type names (Shoot, Strike, ...): Meda
 extern const u8 *const gUnk_083B7EBC[]; // Medals help cursor layouts: count, then (x, y) tile pairs (sub_0800AA1C)
 extern const u16 gUnk_083AC8AC[]; // (y, x) pairs per Medal skill row 0-7 (setup_battle_cursor_sprite_0800B5E8)
 extern const Func gUnk_083AC8CC[]; // sprite 7 sub-state handlers, by gUnk_03002C30[7].unk29 (update_battle_sprite_and_check_done)
-extern const Func gUnk_083AC8DC[]; // sub-state handlers run by dispatch_menu_substate_handler
+extern const Func gDebugMenuHandlers[]; // game state 63 sub-state handlers (debug_menu_update)
+extern const Func gDebugMenuEntryHandlers[]; // game state 63: one handler per menu entry (debug_menu_run_entry)
+extern const Func gDebugProcessHandlers[]; // game state 63 entry 0 sub-state handlers (debug_process_update)
+extern const Func gDebugMedalHandlers[]; // entry 1 (debug_medal_update)
+extern const Func gDebugPartsHandlers[]; // entry 2 (debug_parts_update)
+extern const u8 *const gDebugMenuLabels[]; // game state 63 menu labels, 11 x 8 bytes: Process, Medal, Parts, Tinpet, Item, Face, Mdlpic, Rnd.tk, Battle, Sound, Motion
+extern const u8 *const gDebugProcessLabels[]; // game state 63 "Process" field labels "User", "Func.no", "S.func" (gGameMode / gGameState / gGameSubState; debug_process_input)
+extern const u8 *const gDebugMedalLabels[]; // game state 63 "Medal" field labels (3 x 8 bytes; debug_medal_input)
+extern const u8 *const gDebugPartsLabels[]; // game state 63 "Parts" field labels (3 x 8 bytes; debug_parts_input)
 extern const u8 gUnk_084C3B14[]; // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (sub_0800B0F8)
 extern const u32 gUnk_083B7338[]; // Medaforce names, indexed by Medaforce id
