@@ -353,15 +353,134 @@ void sub_0801D36C(void)
     gUnk_03001800.unkAB = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D380);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D40C);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D434);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D45C);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D524);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D544);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D580);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D5A8);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D6A4);
+void sub_0801D380(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AD530[gUnk_03001800.unkAA]();
+}
+
+void sub_0801D3A8(void)
+{
+    if (gUnk_03000590[gUnk_03001800.unk88].parts[gUnk_03001800.unk8B].unk11)
+    {
+        gUnk_03001800.unkB5 = 1;
+        gUnk_03001800.unkAB = 0;
+    }
+    else
+    {
+        gUnk_03001800.unkA6 = 0xC;
+        gUnk_03001800.unkAA++;
+    }
+}
+
+void sub_0801D3F8(void)
+{
+    gUnk_03001800.unkB5 = 1;
+    gUnk_03001800.unkAB = 1;
+}
+
+void sub_0801D40C(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AD550[gUnk_03001800.unkAA]();
+}
+
+void sub_0801D434(void)
+{
+    CpuFastSet(gUnk_084E3038, (void *)0x050002C0, 8);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0801D45C(void)
+{
+    clear_battle_sprite_slot(9, 1);
+    gUnk_03002C30[9].unk0 = 0xC404;
+    gUnk_03002C30[9].unk1C = 0;
+    gUnk_03002C30[9].unk4 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4;
+    gUnk_03002C30[9].unk2 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
+    gUnk_03002C30[9].unkA = 6;
+    gUnk_03002C30[9].unkB = 0xF0;
+    gUnk_03002C30[9].unk30 = gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5D].unk2;
+    gUnk_03002C30[9].unk32 = gUnk_03002C30[gUnk_03001800.unk88 * 4 + 0x5D].unk4 - 4;
+    gUnk_03002C30[9].unk24 = 6;
+    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x1B], 9);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0801D524(void)
+{
+    if (move_sprite_toward_target(9))
+        gUnk_03001800.unkAA++;
+}
+
+void sub_0801D544(void)
+{
+    process_sprite_anim_commands(gUnk_083B5F80[0x1B], 9);
+    if (gUnk_03002C30[9].unk22 == 0xFF)
+    {
+        clear_battle_sprite_slot(9, 1);
+        gUnk_03001800.unkB5 = 1;
+    }
+}
+
+void sub_0801D580(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AD570[gUnk_03001800.unkAA]();
+}
+
+void sub_0801D5A8(void)
+{
+    u32 base;
+    u32 i;
+
+    if (gUnk_03000590[gUnk_03001800.unk87].unkC0 & 4)
+    {
+        gUnk_03001800.unkB5 = 1;
+        return;
+    }
+    base = sub_08032FC4(gUnk_03001800.unk88);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[base + i].unk40 == 0)
+            continue;
+        if (!(gUnk_03000590[base + i].unkBD & 8))
+            continue;
+        if (gUnk_03001800.unk88 == base + i)
+            continue;
+        if (gUnk_03000590[base + i].unkC9 == 0x2F)
+            continue;
+        if (gUnk_03000590[base + i].parts[gUnk_03000590[base + i].unkDE - 1].unk11 == 0)
+            continue;
+        gUnk_03001800.unkDE = base + i + 1;
+        gUnk_03001800.unkDF = gUnk_03000590[base + i].unkDF;
+    }
+    if (gUnk_03001800.unkDE)
+        gUnk_03001800.unkAA++;
+    else
+        gUnk_03001800.unkB5 = 1;
+}
+
+void sub_0801D6A4(void)
+{
+    switch (gUnk_03001800.unkDF)
+    {
+    case 0x1B:
+        lz_decompress_dispatch(gUnk_084C9880, (void *)0x06014800);
+        CpuFastSet(gUnk_0850E0F8, (void *)0x050002C0, 8);
+        break;
+    case 0x1C:
+        lz_decompress_dispatch(gUnk_084C9B88, (void *)0x06014800);
+        CpuFastSet(gUnk_0850E118, (void *)0x050002C0, 8);
+        break;
+    case 0x1D:
+        lz_decompress_dispatch(gUnk_084C9E9C, (void *)0x06014800);
+        CpuFastSet(gUnk_0850E138, (void *)0x050002C0, 8);
+        break;
+    }
+    gUnk_03001800.unkAA++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D738);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D878);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D95C);

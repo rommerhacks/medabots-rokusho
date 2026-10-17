@@ -447,7 +447,10 @@ struct Unk_03001800
     u8 fillerCA[0x6];
     u8 unkD0; // last part (3..0) of the acting Medabot with armor left (sub_0801C660)
     u8 unkD1; // nonzero: battle_check_hit_and_set_timer goes to sub-state 0x1A
-    u8 fillerD2[0x26];
+    u8 fillerD2[0xC];
+    u8 unkDE; // record + 1 of a teammate of unk88 with unkBD bit 3 set (sub_0801D5A8), 0 = none
+    u8 unkDF; // that teammate's unkDF (0x1B-0x1D pick the graphics in sub_0801D6A4)
+    u8 fillerE0[0x18];
     u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
     u8 fillerF9[0x1F];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part

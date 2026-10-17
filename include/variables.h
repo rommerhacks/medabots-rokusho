@@ -394,6 +394,9 @@ extern const Func gUnk_083AD410[]; // steps by gUnk_03001800.unk9C[0] (sub_0801C
 extern const Func gUnk_083AD424[]; // steps by gUnk_03001800.unk9C[0] (dispatch_battle_action_substate)
 extern const Func gUnk_083AD44C[]; // by gUnk_03001800.unkAA (sub_0801C4FC)
 extern const Func gUnk_083AD50C[]; // by gUnk_03001800.unkAA (battle_dispatch_phase_handler_0801D2F0)
+extern const Func gUnk_083AD530[]; // by gUnk_03001800.unkAA (sub_0801D380)
+extern const Func gUnk_083AD550[]; // by gUnk_03001800.unkAA (sub_0801D40C)
+extern const Func gUnk_083AD570[]; // by gUnk_03001800.unkAA (sub_0801D580)
 extern const u8 gUnk_084C8AC4[]; // compressed OBJ tiles (sub_0801C188)
 extern const u16 gUnk_084E3078[]; // OBJ palette (sub_0801C188)
 extern const u16 gUnk_084E2EF8[]; // OBJ palette 8 (sub_0801C32C)
@@ -410,6 +413,13 @@ extern const u8 gUnk_084CDBD8[]; // compressed OBJ tiles (sub_0801CD50)
 extern const u16 gUnk_0850E378[]; // its OBJ palette (palette 7)
 extern const u8 gUnk_084CC9A8[]; // compressed OBJ tiles (sub_0801CDD4)
 extern const u16 gUnk_0850E338[]; // its OBJ palette (palette 7)
+extern const u16 gUnk_084E3038[]; // OBJ palette 6 (sub_0801D434)
+extern const u8 gUnk_084C9880[]; // compressed OBJ tiles, sub_0801D6A4 for unkDF 0x1B
+extern const u8 gUnk_084C9B88[]; // 0x1C
+extern const u8 gUnk_084C9E9C[]; // 0x1D
+extern const u16 gUnk_0850E0F8[]; // their OBJ palettes
+extern const u16 gUnk_0850E118[];
+extern const u16 gUnk_0850E138[];
 extern const u8 gUnk_0848886C[]; // Robattle screen tilemap (compressed), opponent side of gUnk_08488830 (sub_0801AC98)
 extern u8 gUnk_03001360; // Robattle: nonzero skips the message windows unless gUnk_03000440.unk89 == 1 (sub_0801ABF8..sub_0801AC6C)
 extern const u8 gUnk_084E3058[]; // 32-byte OBJ palette, copied to OBJ palette 6 (sub_0801B004)
