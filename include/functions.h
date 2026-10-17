@@ -638,5 +638,15 @@ void set_blend_effect_mode(u8 mode, u16 a, u16 b);
 u32 update_blend_effect(void);
 void load_encounter_into_battle_setup(void);
 u32 sub_0803EED8(void); // nonzero: waiting on the serial link (reads gUnk_03005010)
+u32 game_state_execute_handler_b(void);
+void sub_080121CC(void);
+void setup_battle_result_sprite(void);
+void sub_08012468(void);
+void setup_battle_result_sprite_animation(void);
+void calculate_battle_score_summary(void);
+void battle_check_medal_level_up(void);
+void divide_by_100000_b(u8 *buf, u32 value, u32 tile);
+u32 advance_sprite_anim_frame(u8 sprite, u8 b);
+void sub_0801BF64(u16 *counter, u16 max);
 
 #endif // GUARD_FUNCTIONS_H

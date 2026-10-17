@@ -139,7 +139,9 @@ struct Unk_03000440
     const u8 *unk8; // current message (run_message)
     u16 unkC;
     u8 unkE;
-    u8 fillerF[0x19];
+    u8 fillerF[0xC];
+    u8 unk1B;
+    u8 filler1C[0xC];
     u8 unk28;
     u8 unk29; // choice menu state (poll_choice_menu)
     u8 filler2A[0x6];
@@ -194,7 +196,8 @@ struct Unk_03000440
     u8 unk99;
     u8 unk9A;
     u8 unk9B;
-    u8 filler9C[0x2];
+    u8 unk9C; // game state 6: 1 picks song 14 and counts gUnk_03002B84[1] (guess: battle won)
+    u8 filler9D;
     u8 unk9E[0x50]; // digit buffer (divide_by_10000)
     u8 unkEE; // start of a 16-byte part data record (load_part_data): ability (gUnk_083B656C name)
     u8 unkEF; // skill id; >= 100: leg type (gUnk_083BE97C[unkEF - 100])
@@ -319,7 +322,8 @@ struct Unk_03002414
 struct Unk_03001800
 {
     u8 unk0; // encounter: opponent message index (gUnk_083C2BBC)
-    u8 filler1[0x37];
+    u8 unk1;
+    u8 filler2[0x36];
     u8 unk38;
     u8 filler39[0x8];
     u8 unk41[3]; // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
@@ -339,7 +343,15 @@ struct Unk_03001800
     u8 unk8F[3][4]; // per team member: gUnk_030017A0 bytes 3-6
     u8 filler9B[0x6];
     u8 unkA1;
-    u8 fillerA2[0x104];
+    u8 fillerA2[0xC6];
+    u8 unk168; // won Medapart: kind (0 head, 1 right arm, 2 left arm, 3 legs)
+    u8 unk169; // won Medapart: id
+    u8 unk16A; // won Medapart: 1 = not owned before
+    u8 filler16B;
+    u16 unk16C;
+    u8 filler16E[0x18];
+    u8 unk186;
+    u8 filler187[0x1F];
     u16 unk1A6;
     u16 unk1A8;
     u16 unk1AA;
