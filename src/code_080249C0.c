@@ -2012,4 +2012,56 @@ void sub_080287C0(void)
         gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_080287DC);
+void sub_080287DC(void)
+{
+    u32 i;
+
+    sub_0803836C();
+    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 == 0)
+            continue;
+        if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 == 0)
+            continue;
+        if (sub_080331F8(gUnk_03001800.unk60 + i) == 0)
+            continue;
+        switch (gUnk_03000590[gUnk_03001800.unk87].unkA8[0])
+        {
+        case 0xC:
+            if (sub_08036D64(gUnk_03001800.unk60 + i, 0xD) == 0)
+            {
+                gUnk_03001800.unkD2[i] = 1;
+                battle_set_action_params(gUnk_03001800.unk60 + i, 0xD, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+            }
+            break;
+        case 0xE:
+            if (sub_08036D64(gUnk_03001800.unk60 + i, 0x10) == 0)
+            {
+                gUnk_03001800.unkD2[i] = 1;
+                battle_set_action_params(gUnk_03001800.unk60 + i, 0x10, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+            }
+            break;
+        case 0x10:
+            if (sub_08036D64(gUnk_03001800.unk60 + i, 0x12) == 0)
+            {
+                gUnk_03001800.unkD2[i] = 1;
+                battle_set_action_params(gUnk_03001800.unk60 + i, 0x12, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+            }
+            break;
+        case 0x12:
+            if (sub_08036D64(gUnk_03001800.unk60 + i, 0x13) == 0)
+            {
+                gUnk_03001800.unkD2[i] = 1;
+                battle_set_action_params(gUnk_03001800.unk60 + i, 0x13, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+            }
+            break;
+        case 0x28:
+            gUnk_03001800.unkD2[i] = 1;
+            battle_set_action_params(gUnk_03001800.unk60 + i, 0x2C, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+            break;
+        }
+    }
+    gUnk_03001800.unkAA++;
+}
+

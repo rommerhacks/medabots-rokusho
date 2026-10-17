@@ -952,10 +952,10 @@ void sub_080355C4(u8 rec);
 u32 clear_ewram_buffer_02023000_b(u8 rec);
 void battle_calc_damage_split(u8 rec, u8 part, s32 amount); // unkC8 = unkCC = min(amount, part data[4] - armor unk11)
 u32 battle_check_action_counter(u16 *amount, u8 rec, u8 part);
-u32 sub_080331F8(u8 rec);
-u32 sub_08036D64(u8 rec, u8 skill);
+u32 sub_080331F8(u32 rec);
+u32 sub_08036D64(u32 rec, u8 skill);
 u32 medal_update_exp_progress(u8 slot, u32 n);
-void battle_set_action_params(u8 rec, u8 skill, s32 a, s32 b);
+void battle_set_action_params(u32 rec, u8 skill, s32 a, s32 b);
 void reset_battle_bot_state(u8 rec);
 void sub_080351E8(u32 rec);
 u32 find_random_available_part_slot(u32 rec); // part + 1, 0 = none
@@ -967,5 +967,6 @@ void sub_08037458(u32 rec, s32 amount); // gUnk_03001800.unkC8 / unkCC = min(amo
 void sub_08037498(u32 rec, s32 amount); // same, clamped to head data[8] - unk10
 void sub_080378A8(void); // moves sprite 0x21 4 px (right if gUnk_03001800.unkF8 bit 1 clear, else left)
 u32 sub_08037B9C(void); // runs the sprite handlers of slots 0x21-0x3B; 1 when none is active
+void sub_0803836C(void); // clears gUnk_03001800.unkD2[0..2] / unkD6[0..2]
 
 #endif // GUARD_FUNCTIONS_H
