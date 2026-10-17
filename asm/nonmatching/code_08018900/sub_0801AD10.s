@@ -21,9 +21,9 @@ _0801AD30:
 	bl draw_battle_panel_left_a
 _0801AD36:
 	adds r0, r4, #0
-	bl render_bot_health_bar
+	bl draw_medaforce_gauge_bar
 	adds r0, r4, #0
-	bl render_bot_cash_display
+	bl draw_medaforce_gauge_value
 	pop {r4}
 	pop {r0}
 	bx r0

@@ -25,9 +25,9 @@ sub_0801AFB8: @ 0x0801AFB8
 	subs r0, #1
 	strb r0, [r2]
 	adds r0, r4, #0
-	bl render_bot_health_bar
+	bl draw_medaforce_gauge_bar
 	adds r0, r4, #0
-	bl render_bot_cash_display
+	bl draw_medaforce_gauge_value
 	movs r0, #0
 	b _0801AFFE
 	.align 2, 0

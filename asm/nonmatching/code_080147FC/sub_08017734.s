@@ -167,7 +167,7 @@ _08017880:
 	ldr r4, _080178C4 @ =0x03001800
 	adds r4, #0x80
 	ldrb r0, [r4]
-	bl render_bot_cash_display
+	bl draw_medaforce_gauge_value
 	ldr r1, _080178C8 @ =0x03000590
 	ldrb r2, [r4]
 	lsls r0, r2, #8

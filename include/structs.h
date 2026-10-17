@@ -458,7 +458,7 @@ struct Unk_03000590
     u8 fillerBE;
     u8 unkBF;
     u8 fillerC0;
-    u8 unkC1; // 0x50: Medaforce ready (check_medaforce_availability)
+    u8 unkC1; // Medaforce gauge, 0-80 (0x50: Medaforce ready, check_medaforce_availability; drawn as "MF nn/80", runtime-checked)
     u8 fillerC2[0x6];
     u8 unkC8; // number shown by the Robattle handler 0x70 (sub_080147FC)
     u8 unkC9; // 0x2C checked by sub_08014404 / process_bot_battle_turn, 0x2B by sub_080154E0

@@ -1299,8 +1299,8 @@ void sub_08012C0C(void)
     load_battle_bg_layers();
     render_bot_name_sprites(gUnk_03001800.unk80);
     draw_battle_panel_left_a(gUnk_03001800.unk80);
-    render_bot_health_bar(gUnk_03001800.unk80);
-    render_bot_cash_display(gUnk_03001800.unk80);
+    draw_medaforce_gauge_bar(gUnk_03001800.unk80);
+    draw_medaforce_gauge_value(gUnk_03001800.unk80);
     battle_load_sprite_data();
     sub_08015F78();
     battle_sprite_set_palette_index(gUnk_03001800.unk80 * 4 + 0x5A, 8);
@@ -1610,7 +1610,7 @@ void sub_08013438(void)
     {
         play_sound_effect(5);
         vram_fill_tilemap_rect(8, 1, 1, 0x11, REG_BG0CNT, 0);
-        render_bot_cash_display(gUnk_03001800.unk80);
+        draw_medaforce_gauge_value(gUnk_03001800.unk80);
         clear_battle_sprite_slot(0, 5);
         clear_battle_sprite_slot(0x14, 0x24);
         gUnk_03000440.unk84 = 0;

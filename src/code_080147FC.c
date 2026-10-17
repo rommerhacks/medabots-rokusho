@@ -741,14 +741,14 @@ void draw_battle_panel_left_b(u32 rec)
         fill_tilemap_rect_08042698(3, 1, 21, 18, REG_BG1CNT, 0xD20D);
 }
 
-void render_bot_health_bar(u32 rec)
+void draw_medaforce_gauge_bar(u32 rec)
 {
     u32 x = 0;
     u32 i, full, partial;
 
     if (rec <= 2)
     {
-        full = fixed_point_multiply_divide(64, 80, gUnk_03000590[rec].unkC1);
+        full = scale_to_bar_fill(64, 80, gUnk_03000590[rec].unkC1);
         partial = full & 0xFFFF;
         full >>= 16;
         if (gUnk_03000590[rec].unkC1 != 0 && full == 0 && partial == 0)
@@ -771,7 +771,7 @@ void render_bot_health_bar(u32 rec)
     }
     else
     {
-        full = fixed_point_multiply_divide(64, 80, gUnk_03000590[rec].unkC1);
+        full = scale_to_bar_fill(64, 80, gUnk_03000590[rec].unkC1);
         partial = full & 0xFFFF;
         full >>= 16;
         if (gUnk_03000590[rec].unkC1 != 0 && full == 0 && partial == 0)
@@ -794,7 +794,7 @@ void render_bot_health_bar(u32 rec)
     }
 }
 
-u32 fixed_point_multiply_divide(u32 a, u32 b, u32 c)
+u32 scale_to_bar_fill(u32 a, u32 b, u32 c)
 {
     u32 v = (float)a / (float)b * (float)c;
     u32 ret = ((v >> 3) << 16) | (v & 7);
@@ -803,7 +803,7 @@ u32 fixed_point_multiply_divide(u32 a, u32 b, u32 c)
     return ret;
 }
 
-void render_bot_cash_display(u32 rec)
+void draw_medaforce_gauge_value(u32 rec)
 {
     if (rec <= 2)
     {

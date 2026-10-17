@@ -13,7 +13,7 @@ sub_080363E8: @ 0x080363E8
 	adds r1, r3, #0
 	ldr r4, [sp, #0x24]
 	adds r2, r4, #0
-	bl fixed_point_multiply_divide
+	bl scale_to_bar_fill
 	adds r5, r0, #0
 	ldr r7, _08036498 @ =0x0000FFFF
 	ands r7, r5

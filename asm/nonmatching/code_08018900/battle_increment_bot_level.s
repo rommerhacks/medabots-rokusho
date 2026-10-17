@@ -25,9 +25,9 @@ battle_increment_bot_level: @ 0x0801AF6C
 	subs r0, #1
 	strb r0, [r2]
 	adds r0, r4, #0
-	bl render_bot_health_bar
+	bl draw_medaforce_gauge_bar
 	adds r0, r4, #0
-	bl render_bot_cash_display
+	bl draw_medaforce_gauge_value
 	movs r0, #0
 	b _0801AFB2
 	.align 2, 0
