@@ -1184,6 +1184,8 @@ void sub_0805B9EC(u16 keys); // link: gNewKeys / gReleasedKeys from the other pl
 void sub_0805BA20(void); // link: exchanges keys through gUnk_03005010 (player 0 sends gHeldKeys)
 u16 sub_0805BA68(s16 x1, s16 y1, s16 x2, s16 y2); // distance: Sqrt(dx * dx + dy * dy)
 u32 Sqrt(u32 n);
+s32 calc_text_pixel_width(const u8 *s); // sum of gUnk_083B4C88 widths, up to 10 characters or the 0xFE terminator
+void sub_0805E1CC(const u8 *s); // draws 10 characters as 2-row BG0 tiles copied from a 26-per-row font map on the same screen (guess: name entry)
 void sub_0805A258(s32 n, s32 x, s32 y); // guess: draws n (n / 100, ...) as digits at tilemap 0x0600F000 tile (x, y)
 void calc_fade_sprite_position(u16 *oam); // y 0x54, x 0x1C + 16 * (gUnk_03006F74->unkC % 5)
 

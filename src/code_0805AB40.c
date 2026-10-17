@@ -1085,7 +1085,16 @@ void sub_0805E170(u16 a)
     gUnk_03002C30[20].unk6 = gUnk_080AF808[a & 3];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", calc_text_pixel_width);
+s32 calc_text_pixel_width(const u8 *s)
+{
+    s32 w = 0;
+    s32 i;
+    for (i = 0; i < 10 && *s != 0xFE; i++)
+        w += gUnk_083B4C88[*s++][0];
+    return w;
+}
+
+INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805E1CC);
 
 void sub_0805E29C(void)
 {
