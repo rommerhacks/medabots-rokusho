@@ -156,7 +156,7 @@ void debug_medal_input(void); // rows: give Medal id, remove Medal id, give all 
 void debug_parts_update(void);
 void debug_parts_input(void); // rows: give Medapart id (all 4 kinds), take one, give all 120
 void debug_tinpet_update(void);
-void debug_tinpet_input(void); // one row toggled 0/1, A: add_position_entry(value) unless sub_08042218()
+void debug_tinpet_input(void); // one row toggled 0/1, A: team_add_tinpet(value) unless team_is_full()
 void debug_item_update(void);
 void debug_item_input(void); // rows: give item id, take one, give all 63
 void debug_face_update(void);
@@ -358,9 +358,9 @@ void medapart_add_quantity(u8 id, u8 kind, u8 n);
 void reduce_medapart_stat(u8 id, u8 kind, u8 n); // takes n of Medapart (id, kind), floor 0
 u32 sub_080420C4(u8 level, u8 a, u8 b, u8 c, u8 d); // guess: Medal sprite variant (0-4) from its level and four gUnk_083B6158 record bytes
 u32 sub_08042114(u8 a, u8 b);
-u32 sub_08042218(void);
-void add_position_entry(u8 id);
-void sub_080422B8(u8 id, u8 n); // guess: add n of item id (inventory 0x03002BA0: 0x80 | id, count; max 99)
+u32 team_is_full(void); // 1 when all 9 gUnk_030017A0 slots are in use (runtime-checked)
+void team_add_tinpet(u8 gender); // first free team slot: in use, gender, no Medal (0x1E), default parts 0x78 + gender (runtime-checked)
+void item_add_quantity(u8 id, u8 n); // adds n of item id (gItemInventory: new entry 0x80 | id, or count capped at 99; runtime-checked)
 void sub_08042318(u8 id, u8 n); // guess: take n of item id
 u32 get_item_quantity_by_id(u8 id);
 s32 rng_next_080424B8(void);

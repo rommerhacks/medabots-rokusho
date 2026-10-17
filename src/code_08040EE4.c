@@ -255,7 +255,7 @@ void sub_080421B4(u8 medal, u8 kind)
     }
 }
 
-u32 sub_08042218(void)
+u32 team_is_full(void)
 {
     u32 i;
 
@@ -265,7 +265,7 @@ u32 sub_08042218(void)
     return 1;
 }
 
-void add_position_entry(u8 id)
+void team_add_tinpet(u8 gender)
 {
     u32 i;
 
@@ -274,12 +274,12 @@ void add_position_entry(u8 id)
         if (gUnk_030017A0[i].unk0 == 0)
         {
             gUnk_030017A0[i].unk0 = 1;
-            gUnk_030017A0[i].unk1 = id & 1;
+            gUnk_030017A0[i].unk1 = gender & 1;
             gUnk_030017A0[i].unk2 = 0x1E;
-            gUnk_030017A0[i].unk3 = (id & 1) + 0x78;
-            gUnk_030017A0[i].unk4 = (id & 1) + 0x78;
-            gUnk_030017A0[i].unk5 = (id & 1) + 0x78;
-            gUnk_030017A0[i].unk6 = (id & 1) + 0x78;
+            gUnk_030017A0[i].unk3 = (gender & 1) + 0x78;
+            gUnk_030017A0[i].unk4 = (gender & 1) + 0x78;
+            gUnk_030017A0[i].unk5 = (gender & 1) + 0x78;
+            gUnk_030017A0[i].unk6 = (gender & 1) + 0x78;
             return;
         }
     }
@@ -291,12 +291,12 @@ u32 get_item_quantity_by_id(u8 id)
     u8 key = id & 0x3F;
 
     for (i = 0; i < 64; i++)
-        if ((gUnk_03002BA0[i][0] & 0x80) && (gUnk_03002BA0[i][0] & 0x7F) == key)
-            return gUnk_03002BA0[i][1];
+        if ((gItemInventory[i][0] & 0x80) && (gItemInventory[i][0] & 0x7F) == key)
+            return gItemInventory[i][1];
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080422B8);
+INCLUDE_ASM("asm/nonmatching/code_08040EE4", item_add_quantity);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08042318);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_0804242C);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", rng_next_080424B8);

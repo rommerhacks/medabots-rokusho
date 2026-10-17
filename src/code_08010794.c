@@ -358,7 +358,7 @@ void sub_08010FA4(void)
     update_scroll_movement_a();
     if (run_message(gUnk_083C65C4[118]))
     {
-        sub_080422B8(50, 1);
+        item_add_quantity(50, 1);
         gGameSubState++;
     }
 }

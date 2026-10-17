@@ -1,8 +1,8 @@
 	.syntax unified
 
-	thumb_func_start sub_080422B8
-	.global sub_080422B8
-sub_080422B8: @ 0x080422B8
+	thumb_func_start item_add_quantity
+	.global item_add_quantity
+item_add_quantity: @ 0x080422B8
 	push {r4, r5, r6, r7, lr}
 	lsls r0, r0, #0x18
 	lsls r1, r1, #0x18

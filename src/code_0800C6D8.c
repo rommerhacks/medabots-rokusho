@@ -26,8 +26,8 @@ void debug_tinpet_input(void)
     }
     else if (KEYS_LO(gNewKeys) & 1)
     {
-        if (!sub_08042218())
-            add_position_entry(gUnk_03000440.unk35[0]);
+        if (!team_is_full())
+            team_add_tinpet(gUnk_03000440.unk35[0]);
     }
 }
 
@@ -130,7 +130,7 @@ void debug_item_input(void)
         {
         case 0:
             if (gUnk_03000440.unk35[0] < 0x40)
-                sub_080422B8(gUnk_03000440.unk35[0], 1);
+                item_add_quantity(gUnk_03000440.unk35[0], 1);
             break;
         case 1:
             if (gUnk_03000440.unk35[1] < 0x40)
@@ -138,7 +138,7 @@ void debug_item_input(void)
             break;
         default:
             for (gUnk_03000440.unk35[2] = b; gUnk_03000440.unk35[2] < 0x3F; gUnk_03000440.unk35[2]++)
-                sub_080422B8(gUnk_03000440.unk35[2], 1);
+                item_add_quantity(gUnk_03000440.unk35[2], 1);
             break;
         }
     }

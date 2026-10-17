@@ -12,7 +12,7 @@ sub_08047DC0: @ 0x08047DC0
 	bne _08047DD0
 	movs r1, #1
 _08047DD0:
-	bl sub_080422B8
+	bl item_add_quantity
 	pop {r0}
 	bx r0
 	.syntax divided

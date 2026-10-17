@@ -153,12 +153,12 @@ u32 sub_08047E20(u8 id)
 
 u32 sub_08047E30(void)
 {
-    return sub_08042218();
+    return team_is_full();
 }
 
 void sub_08047E3C(u8 id)
 {
-    add_position_entry(id);
+    team_add_tinpet(id);
 }
 
 void sub_08047E4C(void)
