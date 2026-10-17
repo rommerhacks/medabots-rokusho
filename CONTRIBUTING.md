@@ -103,3 +103,11 @@
   tests was wrapped in an `if (x <= 2)` in the original.
 * `a == 0 || a > 3` is folded into one `(a - 1) <= 2` compare; when the original tests both,
   write the two arms separately (`if (a == 0) v = 0; else if (a > 3) v = 0; else ...`).
+* Two pointer increments where you expect one (`base + i*4` and a separate `base + i*4 + 0x13E`): the
+  fields are members of a struct array element (`a[i].x`, `a[i].y`), not a 2-D array (`a[i][0]`,
+  `a[i][1]`, which gcc folds into one pointer).
+* A loop ending in `movs r0, #1; cmp r0, #0; bne top` comes from a flag that never changes:
+  `u32 run = 1; while (run) { ... }`. `while (1)` / `do ... while (1)` give a plain `b` and a
+  different register allocation.
+* `x == 0 || x == 1` (and `case 0: case 1:`) become one `x <= 1` compare. For the original's
+  two compares write `if (x == 0) goto ok; if (x != 1) goto fail; ok:`.
