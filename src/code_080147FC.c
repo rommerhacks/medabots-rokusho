@@ -1942,15 +1942,124 @@ void set_game_state_params(u8 a, u8 b, u8 c, u8 d)
     gUnk_03000440.unk9B = d;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", init_ewram_buffers_and_state);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", setup_scene_from_game_state);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", setup_scene_bg_from_game_state);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_0801827C);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_080182AC);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_080182D0);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", setup_battle_bot_display);
+void init_ewram_buffers_and_state(void)
+{
+    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    u8 *b;
+    u8 *c;
+    u32 fill;
+
+    sub_0803F624((u8 *)obj, 0xD0, 0);
+    b = (u8 *)0x020260D0;
+    sub_0803F624(b, 0x800, 0);
+    c = (u8 *)0x020268D0;
+    sub_0803F624(c, 0x60, 0);
+    gUnk_03000440.unk96 = 1;
+    gUnk_03000430 = 2;
+    gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+    fill = 0;
+    CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+    gUnk_03005308 = c;
+    sub_08047414(obj, (u8 *)gUnk_03002414, (u32)gUnk_083D1BF8, (u32)b);
+    obj->unk8 = (u32)b;
+    setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
+        gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
+        0x28, 0x28, 0x1C2, 8, 1, 0);
+}
+
+void setup_scene_from_game_state(void)
+{
+    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    u32 fill;
+
+    obj->unk8 = 0x020260D0;
+    setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
+        gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
+        0x28, 0x28, 0x1C2, 8, 1, 0);
+    fill = 0x200;
+    CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+    gUnk_03002414->unk1094 = 0;
+    gUnk_03002414->unk1095 = 0;
+}
+
+void setup_scene_bg_from_game_state(void)
+{
+    setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000,
+        gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
+        0x44, 0x2A, 0x1C2, 8, 5, 0);
+}
+
+u32 sub_0801827C(void)
+{
+    u8 x = gUnk_083AD3A4[(gUnk_03000440.unk3D + gUnk_03000440.unk3C * 3) * 2];
+
+    if (gUnk_03000440.unk3C == 0)
+        return x + 16;
+    else
+        return x - 16;
+}
+
+void sub_080182AC(void)
+{
+    if (gFrameCounter & 1)
+    {
+        gBg3Scroll.x++;
+        gBg3Scroll.y++;
+    }
+}
+
+void sub_080182D0(void)
+{
+    if (gUnk_03000440.unk46 == 2)
+        gUnk_03000440.unk46 = 0;
+    else
+        gUnk_03000440.unk46++;
+    if (gUnk_03000440.unk3D == gUnk_03000440.unk46)
+    {
+        if (gUnk_03000440.unk3D == 2)
+            gUnk_03000440.unk46 = 0;
+        else
+            gUnk_03000440.unk46++;
+    }
+}
+
+void setup_battle_bot_display(void)
+{
+    u32 i, rec;
+    struct Unk_03000590 *recs;
+
+    clear_sprite_table_mask(4, 1);
+    clear_sprite_table_mask(5, 1);
+    clear_sprite_table_mask(6, 1);
+    clear_sprite_table_mask(7, 1);
+    for (i = 0, recs = gUnk_03000590; i <= 2; i++)
+    {
+        rec = gUnk_03000440.unk3C * 3 + i;
+        if (recs[rec].unk40 && i != gUnk_03000440.unk3D)
+            setup_battle_bot_sprites_08017994(rec, gUnk_083AD3A4[rec * 2], gUnk_083AD3A4[rec * 2 + 1]);
+    }
+    update_battle_sprite_orbiting_positions(0, gUnk_03000440.unk3D + gUnk_03000440.unk3C * 3, gUnk_03000440.unk3C);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", handle_battle_bot_selection);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", display_battle_cursor_on_bot);
+
+void display_battle_cursor_on_bot(void)
+{
+    u32 x = gUnk_083AD3A4[(gUnk_03000440.unk3D + gUnk_03000440.unk3C * 3) * 2];
+    u32 y = gUnk_083AD3A4[(gUnk_03000440.unk3D + gUnk_03000440.unk3C * 3) * 2 + 1];
+
+    setup_bot_battle_sprites_08017A7C(gUnk_03000440.unk3D + gUnk_03000440.unk3C * 3, x, y);
+    clear_battle_sprite_slot(8, 1);
+    draw_bg_window_rect(1);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", animate_battle_field_scroll);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", toggle_battle_team_side);
+
+void toggle_battle_team_side(void)
+{
+    gUnk_03000440.unk3D = 0;
+    gUnk_03000440.unk3C ^= 1;
+    position_battle_team_cursors(gUnk_03000440.unk3C * 3, 1);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", animate_battle_bots_entry);
