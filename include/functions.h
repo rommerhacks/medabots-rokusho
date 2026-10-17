@@ -302,6 +302,8 @@ void sub_0802FE50(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 w
 u32 get_random_battle_weight_entry(u32 idx);
 void sub_08036270(void);
 void sub_0803713C(void);
+void select_ai_action_type(void);
+void determine_battle_target_mode(void);
 u32 sub_08037230(u32 rec, u32 part); // 1 if the part is broken or at full armor
 void calc_battle_action_speed(u32 rec, u32 part);
 void apply_battle_bot_damage_reduction(u32 rec);
