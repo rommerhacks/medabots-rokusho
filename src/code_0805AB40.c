@@ -115,12 +115,30 @@ INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805CD68);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805CDF0);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805CE4C);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", init_fade_sprite_and_start_fade);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D378);
+
+void sub_0805D378(void)
+{
+    if (game_state_execute_handler_a())
+        gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D394);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D418);
+
+void sub_0805D418(void)
+{
+    if (run_message(gUnk_08485788[8]))
+        gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", check_ab_press_play_confirm_sound);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D488);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D4F0);
+
+void sub_0805D4F0(void)
+{
+    if (game_state_execute_handler_a())
+        gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D50C);
 
 void sub_0805D57C(u16 a)
@@ -128,22 +146,103 @@ void sub_0805D57C(u16 a)
     gUnk_03002C30[0].unk6 = gUnk_080AF7E0[a & 3];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D59C);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D5E8);
+void sub_0805D59C(void)
+{
+    gUnk_08483BDC[gGameSubState]();
+    if (gFrameCounter & 1)
+    {
+        gBg3Scroll.x++;
+        gBg3Scroll.y++;
+    }
+    sub_0805D57C(gFrameCounter >> 3);
+}
+
+void sub_0805D5E8(void)
+{
+    u32 zero = 0;
+    CpuFastSet(&zero, gUnk_03006F74, 0x01000100);
+    reset_bg_scroll();
+    REG_DISPCNT = 0x160;
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D628);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D6F8);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D8AC);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D948);
+
+void sub_0805D948(void)
+{
+    if (run_message(gUnk_08485788[9]))
+        gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D96C);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D9B8);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D9E4);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DA1C);
+
+void sub_0805D9B8(void)
+{
+    if (run_message(gUnk_08485BD8[18]))
+    {
+        open_choice_menu(1, 0x16, 7);
+        gGameSubState++;
+    }
+}
+
+void sub_0805D9E4(void)
+{
+    if (poll_choice_menu())
+    {
+        sub_0803FB0C();
+        if (gUnk_03000440.unk2A == 0)
+            gGameSubState = 6;
+        else
+            gGameSubState = 9;
+    }
+}
+
+void sub_0805DA1C(void)
+{
+    if (run_message(gUnk_08485788[10]))
+    {
+        play_song(0);
+        play_sound_effect(0);
+        eeprom_setup_timer_irq();
+        gUnk_03006F74->unk2 = 0;
+        gGameSubState++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DA5C);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DAE4);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DB20);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DB48);
+
+void sub_0805DAE4(void)
+{
+    u8 t = gUnk_03006F74->unk2++;
+    if (run_message(gUnk_08485788[11]) && t > 60)
+        gGameSubState++;
+}
+
+void sub_0805DB20(void)
+{
+    sub_0803FB0C();
+    copy_obj_palette_to_buffer();
+    gUnk_03000440.unk84 = 0;
+    gGameSubState++;
+}
+
+void sub_0805DB48(void)
+{
+    if (game_state_execute_handler_a())
+        gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DB64);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DBE8);
+
+void sub_0805DBE8(void)
+{
+    u8 t = gUnk_03006F74->unk2++;
+    if (run_message(gUnk_08485788[12]) && t > 60)
+        gGameSubState = 9;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", init_linking_mode);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", save_dispatch);
 
@@ -318,7 +417,15 @@ void sub_0805E170(u16 a)
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", calc_text_pixel_width);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805E29C);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805E2E8);
+
+void sub_0805E2E8(void)
+{
+    clear_battle_sprite_slot(0, 0x80);
+    reset_bg_scroll();
+    REG_DISPCNT = 0x60;
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805E310);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805E5B0);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805E878);

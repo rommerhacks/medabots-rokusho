@@ -394,6 +394,10 @@ extern struct Unk_03001784 gUnk_03001784;
 extern const u8 gSaveMagic[17]; // save file signature (serialize_save_data, validate_save_data)
 extern const u8 gSaveMagicErased[17]; // written by save_dispatch(2) instead of gSaveMagic, so validate_save_data rejects the save
 
+extern const void *const gUnk_08485788[]; // save screen messages
+extern const void *const gUnk_08485BD8[]; // messages (sub_0805D9B8 uses 18)
+extern const Func gUnk_08483BDC[]; // save screen state handlers, by gGameSubState (sub_0805D59C)
+
 #endif // GUARD_VARIABLES_H
 extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
 extern u8 gUnk_03000B94; // index into gUnk_083AD3B0 (battle music)
