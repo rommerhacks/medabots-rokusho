@@ -202,3 +202,15 @@
   case (resolve_battle_action_phase).
 * Callee prototypes: if the asm callee uses an argument without truncating it, declare it `u32`, or the
   caller emits `lsls/lsrs` the original doesn't have (reduce_bot_part_stat, medal_update_exp_progress).
+* A fixed EWRAM buffer whose literal is reloaded inside the loop (`ldr r1, =0x02023000` per iteration,
+  index not strength-reduced): index a cast constant (`SORT_BUFFER[i]`, `((struct X *)0x02023000)`),
+  not a linker symbol; with a symbol gcc keeps the pointer in a register (find_most_damaged_part).
+* `if (x) return A; else return B;` puts the `then` value at the branch target: if the original's
+  fall-through is `movs r0, #1` after a `bne`, write `if (x != 0) return 0; else return 1;`
+  (sub_08033224).
+* `cmp #0; beq; cmp #1; beq` (no `cmp #1; bls`): two separate `if (x == 0) return; if (x == 1) return;`
+  (sub_080336DC). For `x == 0 || x == 1` in an if/else chain use `if (x == 0) goto both; if (x == 1)
+  { both: ... }` (sub_08033B7C).
+* An index computed before the record (`part * 0x18` first, then `rec << 8`) with the field offset
+  added separately (`adds #0x59`): index the global in full at each use, no `struct *` local
+  (sub_08033434, sub_08033550).
