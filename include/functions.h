@@ -1002,7 +1002,7 @@ void sub_08035928(u32 rec, u32 target); // guess: record rec targets record targ
 void sub_08035944(u32 rec, u32 part); // guess: record rec targets part part - 1 (unkE1, gUnk_03001800.unk8B)
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);
 void sub_080353AC(u32 frame);
-void sub_0803536C(u8 slot, u8 frame, u16 x);
+void sub_0803536C(u32 slot, u32 frame, u32 y); // sprite unk2 = y, +1 / -1 on frames 2-3 / 6-7 of 8
 void reduce_bot_part_stat(u32 rec, u32 part, s32 amount); // part armor (unk11) -= amount, not below 0
 void sub_08035194(u32 rec);
 void set_target_sprite_position(u8 rec, u32 frame, u8 flag);
@@ -1020,7 +1020,7 @@ void sub_08036784(u8 slot, u8 part, s16 x, s16 y);
 u32 sub_0803684C(u8 slot);
 void sub_080368C4(u8 *digits, u8 slot, u8 part, s16 x, s16 y);
 u32 advance_sprite_group_anims(u8 *digits, u8 slot);
-u32 sub_08036BB8(u16 *amount, u8 rec, u8 part);
+u32 sub_08036BB8(u16 *amount, u32 rec, u32 part); // moves one point from *amount (low byte) out of the part's armor; 1 when done
 void sub_08036BF4(u32 side);
 void sub_08036C20(u8 slot, u8 part, s16 x, s16 y, u32 n);
 void setup_battle_medapart_scenes(void);
@@ -1033,7 +1033,7 @@ u32 sub_080332B4(u32 rec);
 u32 sub_080332D0(u32 rec); // 1 if rec has Medaforce gauge (unkC1)
 u32 find_most_damaged_part(u32 rec); // part (+ 1) with armor left that lost the most armor, 0 = none
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount); // unkC8 = unkCC = min(amount, part data[4] - armor unk11)
-u32 battle_check_action_counter(u16 *amount, u8 rec, u8 part);
+u32 battle_check_action_counter(u16 *amount, u32 rec, u32 part); // moves one point from *amount (low byte) into the part's armor (max data[4]); 1 when done
 u32 sub_080331F8(u32 rec);
 u32 battle_find_next_active_bot(u32 rec); // random part index of rec with armor left (from rng_lookup_table_value, stepping by rng bit 0)
 u32 sub_08036D64(u32 rec, u8 skill);
