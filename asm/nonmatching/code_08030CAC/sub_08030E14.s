@@ -8,7 +8,7 @@ sub_08030E14: @ 0x08030E14
 	ldr r4, _08030E4C @ =0x03001800
 	adds r4, #0x87
 	ldrb r0, [r4]
-	bl battle_increment_bot_level
+	bl medaforce_gauge_fill_step
 	adds r5, r0, #0
 	ldrb r0, [r4]
 	bl sub_0801B0E8

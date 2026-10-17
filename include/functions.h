@@ -825,6 +825,10 @@ u32 sub_0801ADE8(u32 rec); // moves those sprites 4 px per step toward the other
 void sub_0801AE70(void); // animates those sprites (tile 0x616 + frame, every 4 frames)
 void sub_0801AEB4(void);
 void sub_0801AED4(void);
+void clear_battle_ui_tilemaps(void);
+u32 medaforce_gauge_fill_step(u32 rec); // moves one point from gUnk_03001800.unk51 into the Medaforce gauge (max 80) and redraws it; 1 when done
+u32 medaforce_gauge_drain_step(u32 rec); // the same, taking one point out of the gauge
+void sub_0801B004(u32 rec); // guess: 8 sprites 0x21-0x28 in a circle (radius 16) around the Medabot's sprite, OBJ palette 6 from gUnk_084E3058
 void copy_player_medals_to_battle_bots(void);
 void copy_team_slots_to_battle_bots(void);
 void init_enemy_bot_medal(u8 i);

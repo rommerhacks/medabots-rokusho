@@ -8,7 +8,7 @@ sub_0803185C: @ 0x0803185C
 	ldr r0, _080318B8 @ =0x03001800
 	adds r0, #0x87
 	ldrb r0, [r0]
-	bl sub_0801AFB8
+	bl medaforce_gauge_drain_step
 	ldr r4, _080318BC @ =0x083B5F80
 	movs r1, #0x9a
 	lsls r1, r1, #1

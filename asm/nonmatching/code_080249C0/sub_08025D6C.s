@@ -9,7 +9,7 @@ sub_08025D6C: @ 0x08025D6C
 	adds r0, r5, #0
 	adds r0, #0x87
 	ldrb r0, [r0]
-	bl sub_0801AFB8
+	bl medaforce_gauge_drain_step
 	adds r4, r0, #0
 	ldr r1, _08025DC4 @ =0x083B5F80
 	ldr r0, _08025DC8 @ =0x03000440

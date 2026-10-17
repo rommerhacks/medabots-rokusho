@@ -8,7 +8,7 @@ sub_08025E88: @ 0x08025E88
 	ldr r0, _08025ED0 @ =0x03001800
 	adds r0, #0x87
 	ldrb r0, [r0]
-	bl battle_increment_bot_level
+	bl medaforce_gauge_fill_step
 	adds r4, r0, #0
 	ldr r1, _08025ED4 @ =0x03002C30
 	movs r0, #0x84

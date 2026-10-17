@@ -351,7 +351,7 @@ struct Unk_03001800
     u8 unk44; // Robattle: bit (1 << team Medabot) set by sub_08013AE4
     u8 unk45[6][2]; // Robattle action queue: record + 1 (0 = free), priority = legs Propulsion
                     // (battle_queue_add, sorted by battle_queue_sort; sub_08014314 tests [0][0])
-    u8 unk51;
+    u8 unk51; // Robattle: Medaforce gauge points left to add / remove one per frame (medaforce_gauge_fill_step / _drain_step)
     u8 unk52;
     u8 unk53;
     u8 unk54;
