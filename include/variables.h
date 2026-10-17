@@ -337,5 +337,7 @@ extern const Func gRobattleHandlers[]; // game state 7 (Robattle) sub-state hand
 extern const void *const gUnk_083B24A8[]; // 5 compressed graphics pointers per battlefield (gUnk_03001800.unk38)
 extern const u16 gUnk_084E2F58[]; // Robattle palette (OBJ palette 10, sub_0801303C)
 extern const u16 gUnk_084E3038[]; // Robattle palette (OBJ palette 6, sub_0801303C)
+extern const u16 gUnk_084E2F38[]; // Robattle palette (OBJ palette 10)
+extern const u16 gUnk_084E2F78[]; // Robattle palette (OBJ palette 10)
 
 #endif // GUARD_VARIABLES_H

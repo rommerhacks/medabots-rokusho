@@ -353,3 +353,5 @@ gRobattleHandlers  = 0x083ACF00;
 gUnk_083B24A8      = 0x083B24A8;
 gUnk_084E2F58      = 0x084E2F58;
 gUnk_084E3038      = 0x084E3038;
+gUnk_084E2F38      = 0x084E2F38;
+gUnk_084E2F78      = 0x084E2F78;
