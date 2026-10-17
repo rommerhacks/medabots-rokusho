@@ -1459,9 +1459,82 @@ void sub_080336DC(void)
     gUnk_03001800.unk51 = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033754);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080337CC);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033840);
+void sub_08033754(void)
+{
+    u32 i, j;
+
+    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40)
+        {
+            for (j = 0; j <= 2; j++)
+            {
+                if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].unk11)
+                {
+                    if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[2] == 2)
+                        return;
+                    if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[2] == 3)
+                        return;
+                }
+            }
+        }
+    }
+    gUnk_03001800.unk51 = 1;
+}
+
+void sub_080337CC(void)
+{
+    u32 i, j;
+
+    gUnk_03001800.unk60 = sub_08032FC4(gUnk_03001800.unk5C);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40)
+        {
+            for (j = 0; j <= 2; j++)
+            {
+                if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].unk11
+                 && gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[1] == 0x34)
+                    return;
+            }
+        }
+    }
+    gUnk_03001800.unk51 = 1;
+}
+
+void sub_08033840(void)
+{
+    if (sub_0803EED8() == 0)
+    {
+        if (gUnk_03000430 == 2)
+        {
+            u32 fill = 0x200;
+
+            CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+        }
+        if (gUnk_03001800.unk1AE == 0)
+            update_all_battle_status_sprites();
+        do
+        {
+            gUnk_03001800.unk163 = 0;
+            gGameSubState = sub_08034E94();
+            while ((s32)gGameSubState > 0x7F)
+            {
+                sub_08034F08();
+                gGameSubState = sub_08034E94();
+            }
+            gUnk_083AF000[gGameSubState]();
+        } while (gUnk_03001800.unk163);
+    }
+}
+
+void sub_080338DC(void)
+{
+    gGameState = 8;
+    gGameSubState = 0x40;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080338F4);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033974);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080339F4);
