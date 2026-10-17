@@ -9,8 +9,8 @@ sub_080338F4: @ 0x080338F4
 	mov r1, sp
 	movs r0, #0
 	strb r0, [r1]
-	bl sub_08034EB8
-	bl sub_08034F08
+	bl battle_script_load_operands
+	bl battle_script_advance
 	mov r0, sp
 	ldrb r0, [r0]
 	cmp r0, #0
@@ -36,7 +36,7 @@ _08033922:
 	ldrb r1, [r1]
 	cmp r0, r1
 	bne _0803394C
-	bl sub_08034F08
+	bl battle_script_advance
 	movs r0, #1
 	strb r0, [r4]
 	b _08033950
@@ -44,7 +44,7 @@ _08033922:
 _08033944: .4byte 0x083C6B28
 _08033948: .4byte 0x03001800
 _0803394C:
-	bl sub_08034F08
+	bl battle_script_advance
 _08033950:
 	ldrb r0, [r4]
 	cmp r0, #0

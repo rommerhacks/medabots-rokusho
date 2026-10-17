@@ -268,15 +268,15 @@ void sub_080294B4(void);
 void sub_08029840(void);
 void sub_08029E0C(void);
 void sub_0802A0E8(void);
-void sub_08034EB8(void); // copies the current action script command's operands to gUnk_03001800.unkAC
+void battle_script_load_operands(void); // copies the current action script command's operands to gUnk_03001800.unkAC
 void sub_08035478(u32 rec);
 void sub_0801C4FC(void);
 void battle_dispatch_phase_handler_0801D2F0(void);
 void sub_0801D380(void);
 void sub_0801D40C(void);
 void sub_0801D580(void);
-s32 sub_08034E94(void); // next byte of the Robattle action script (gUnk_083C6B28[gUnk_03001800.unkA8] + unkBC)
-void sub_08034F08(void);
+s32 battle_script_read_byte(void); // next byte of the Robattle action script (gUnk_083C6B28[gUnk_03001800.unkA8] + unkBC)
+void battle_script_advance(void);
 u32 sub_08035960(u32 rec, u32 skill); // 1 if a part with armor left has skill id data[1] == skill
 void sub_080350E0(u32 rec);
 u32 sub_08035590(u32 rec);

@@ -1,8 +1,8 @@
 	.syntax unified
 
-	thumb_func_start sub_08034F08
-	.global sub_08034F08
-sub_08034F08: @ 0x08034F08
+	thumb_func_start battle_script_advance
+	.global battle_script_advance
+battle_script_advance: @ 0x08034F08
 	ldr r2, _08034F38 @ =0x03001800
 	adds r1, r2, #0
 	adds r1, #0xaa
