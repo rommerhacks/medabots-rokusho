@@ -163,7 +163,8 @@ struct Unk_03000440
     u8 unkF;
     s8 unk10;
     s8 unk11;
-    u8 filler12[0x2];
+    u8 unk12;
+    u8 filler13;
     u8 unk14;
     u8 unk15;
     u8 unk16;

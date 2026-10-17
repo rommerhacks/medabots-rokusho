@@ -7,8 +7,47 @@ void sub_0803CDCC(void)
         clear_battle_sprite_slot(gUnk_03000440.unk12F, 1);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803CE18);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803CECC);
+void sub_0803CE18(void)
+{
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B != 0)
+    {
+        gUnk_03002C30[gUnk_03000440.unk12F].unk2B--;
+        return;
+    }
+    blend_obj_palettes_to_color_0803F684((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10)
+                                         | (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5)
+                                         | gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
+                                         gUnk_03002C30[gUnk_03000440.unk12F].unk2F, 0xFDFF);
+    blend_obj_palettes_to_color_0803F998((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10)
+                                         | (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5)
+                                         | gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
+                                         gUnk_03002C30[gUnk_03000440.unk12F].unk2F, 0xB00F);
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2F == 0x10)
+        gUnk_03002C30[gUnk_03000440.unk12F].unk29 = 0;
+    else
+        gUnk_03002C30[gUnk_03000440.unk12F].unk2F++;
+}
+
+void sub_0803CECC(void)
+{
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B != 0)
+    {
+        gUnk_03002C30[gUnk_03000440.unk12F].unk2B--;
+        return;
+    }
+    blend_obj_palettes_to_color_0803F684((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10)
+                                         | (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5)
+                                         | gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
+                                         gUnk_03002C30[gUnk_03000440.unk12F].unk2F, 0xFDFF);
+    blend_obj_palettes_to_color_0803F998((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10)
+                                         | (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5)
+                                         | gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
+                                         gUnk_03002C30[gUnk_03000440.unk12F].unk2F, 0xB00F);
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2F == 0)
+        gUnk_03002C30[gUnk_03000440.unk12F].unk29 = 0;
+    else
+        gUnk_03002C30[gUnk_03000440.unk12F].unk2F--;
+}
 
 void sub_0803CF7C(void)
 {
@@ -21,7 +60,34 @@ void sub_0803CF7C(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803CFC8);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D0BC);
+
+void sub_0803D0BC(void)
+{
+    struct Unk_03002C30 *s;
+    u8 i;
+
+    process_sprite_anim_commands(gUnk_083B5F80[gUnk_03002C30[gUnk_03000440.unk12F].unk2D], gUnk_03000440.unk12F);
+    i = gUnk_03000440.unk12F;
+    s = &gUnk_03002C30[i];
+    if (s->unk23 == 0)
+    {
+        if (s->unk8 <= s->unk26)
+        {
+            clear_sprite_table_mask(i, 1);
+            return;
+        }
+        s->unk8 -= s->unk26;
+        gUnk_03002C30[gUnk_03000440.unk12F].unk9 -= gUnk_03002C30[gUnk_03000440.unk12F].unk26;
+    }
+    else if (s->unk8 == 0x40)
+        s->unk29 = 0;
+    else
+    {
+        s->unk8 += s->unk26;
+        gUnk_03002C30[gUnk_03000440.unk12F].unk9 += gUnk_03002C30[gUnk_03000440.unk12F].unk26;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D15C);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D2A8);
 
@@ -825,7 +891,16 @@ void sub_0803E978(void)
     gUnk_03002C30[3].unkB = 0x81;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803E9BC);
+void sub_0803E9BC(void)
+{
+    clear_battle_sprite_slot(4, 1);
+    gUnk_03002C30[4].unk0 = 0xC400;
+    gUnk_03002C30[4].unk2 = 0x9A;
+    gUnk_03002C30[4].unk4 = 0x58;
+    gUnk_03002C30[4].unk1C = 0;
+    gUnk_03002C30[4].unkB = 0x80;
+    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x70], 4);
+}
 
 void sub_0803EA18(void)
 {
@@ -835,7 +910,30 @@ void sub_0803EA18(void)
         gUnk_03001800.unk1A0 += 4;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", draw_battle_gauge_bar);
+void draw_battle_gauge_bar(void)
+{
+    u32 x = 0;
+    u32 i, n;
+
+    n = gUnk_03001800.unk1A0 >> 3;
+    for (i = 0; i < n; i++)
+    {
+        fill_tilemap_rect_08042698(1, 1, x + 7, 0x12, REG_BG1CNT, 0x53D8);
+        x++;
+    }
+    n = gUnk_03001800.unk1A0;
+    n &= 7;
+    if (n != 0)
+    {
+        fill_tilemap_rect_08042698(1, 1, x + 7, 0x12, REG_BG1CNT, n | 0x53D0);
+        x++;
+    }
+    for (i = x; i < 12; i++)
+    {
+        fill_tilemap_rect_08042698(1, 1, x + 7, 0x12, REG_BG1CNT, 0x53D0);
+        x++;
+    }
+}
 
 void fill_bg1_tilemap_column(void)
 {
@@ -951,7 +1049,16 @@ u32 sub_0803ED28(void)
     return r;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", draw_battle_bg1_tilemap_row);
+void draw_battle_bg1_tilemap_row(void)
+{
+    if (gUnk_03000440.unk86 & 4)
+        fill_tilemap_rect_08042698(7, 2, 4, gUnk_03001800.unk1A2 * 2 + 2, REG_BG1CNT,
+                                   gUnk_03001800.unk19A[gUnk_03001800.unk1A2] * 14 + 0x3380);
+    else
+        fill_tilemap_rect_08042698(7, 2, 4, gUnk_03001800.unk1A2 * 2 + 2, REG_BG1CNT,
+                                   gUnk_03001800.unk19A[gUnk_03001800.unk1A2] * 14 + 0x4380);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803EE10);
 
 u32 sub_0803EED8(void)
@@ -1107,7 +1214,15 @@ void decompress_indexed_asset(u32 set, u32 idx, void *dst, u32 pal, u32 toBuffer
         CpuFastSet(gUnk_083B15C8[set], (void *)(PLTT + pal * 32), 8);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", load_bg0_tilemap);
+void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c)
+{
+    REG_DISPCNT |= 0x100;
+    REG_BG0CNT = 0x500;
+    lz_decompress_dispatch(gUnk_083AFD08[a][b], (void *)0x06000F80);
+    CpuFastSet(gUnk_083B15C8[a], (void *)0x050001A0, 8);
+    write_tilemap_rect(8, 8, x, y, gUnk_083B4AE0[c * 9 + 8], REG_BG0CNT, 0);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", load_overworld_map_column);
 
 void sub_0803F624(u8 *dst, u32 size, u8 val)
@@ -1293,7 +1408,31 @@ void message_show_window(void)
         REG_BG0CNT = 0x500;
     }
 }
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FC20);
+
+void sub_0803FC20(void)
+{
+    switch (gUnk_03000440.unk26)
+    {
+    case 0:
+        lz_decompress_dispatch(gUnk_08487630, (void *)(VRAM + 0x20));
+        set_tilemap_and_decompress_bg(0, 0xD, gUnk_08488600, REG_BG0CNT, 1);
+        gUnk_03000440.unk26++;
+        break;
+    case 1:
+        lz_decompress_dispatch(gUnk_08487524, (void *)(VRAM + 0x20));
+        set_tilemap_and_decompress_bg(0, 0xD, gUnk_084885A8, REG_BG0CNT, 1);
+        gUnk_03000440.unk26++;
+        break;
+    case 2:
+        lz_decompress_dispatch(gUnk_084873D0, (void *)(VRAM + 0x20));
+        set_tilemap_and_decompress_bg(0, 0xD, gUnk_08488540, REG_BG0CNT, 1);
+        gUnk_03000440.unk26++;
+        break;
+    default:
+        gUnk_03000440.unk4++;
+        break;
+    }
+}
 
 void message_clear_text_area(void)
 {

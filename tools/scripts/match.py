@@ -71,6 +71,7 @@ def main():
              os.path.abspath(args.cfile), "-o", i])
         cc1 = "tools/agbcc/bin/agbcc" if args.new or args.bugfix else "tools/agbcc/bin/old_agbcc"
         extra = ["-fprologue-bugfix"] if args.bugfix else []
+        extra += os.environ.get("MATCH_CFLAGS", "").split()  # experiments, e.g. -fno-gcse
         run([cc1, "-mthumb-interwork", "-Wimplicit", "-Wparentheses", "-O2", "-fhex-asm"] + extra + [i, "-o", s])
         with open(s, "a") as f:
             f.write("\t.text\n\t.align\t2, 0\n")
