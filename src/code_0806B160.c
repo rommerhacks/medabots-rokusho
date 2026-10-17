@@ -40,6 +40,17 @@ INCLUDE_ASM("asm/nonmatching/code_0806B160", set_bot_y_positions_by_count);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806D288);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", update_bg2_affine_scanline_params);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806D3F4);
+
+// HBlank: sets the next scanline's BG2 PA and X from the tables built by update_bg2_affine_scanline_params.
+// VCOUNT is read through a non-volatile pointer: the compare's load is reused for the first index.
+void sub_0806D420(void)
+{
+    if (*(u8 *)REG_ADDR_VCOUNT < 159) {
+        REG_BG2PA = gUnk_03000030[*(u8 *)REG_ADDR_VCOUNT + 1];
+        REG_BG2X_L = gUnk_03000170[*(u8 *)REG_ADDR_VCOUNT + 1];
+        REG_BG2X_H = gUnk_030002B0[*(u8 *)REG_ADDR_VCOUNT + 1];
+    }
+}
 INCLUDE_ASM("asm/nonmatching/code_0806B160", teardown_scene_and_restore_state);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", load_scene_graphics);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_transition_animate_step);
@@ -564,4 +575,124 @@ void sub_0806F094(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806F0B4);
+void sub_0806F0B4(void)
+{
+    s32 n = 0xC4;
+    s32 i;
+
+    gUnk_03001800_s.unkF0++;
+    gUnk_03001800_s.unkF2 += 0x6F;
+    if (gUnk_03001800_s.timer < n) {
+        switch (gUnk_03001800_s.timer) {
+        case 0:
+            init_battle_sprite_entry_08048818(1, 0xCA00, 0x409, 3, 3);
+            gUnk_03002C30[1].unk2 = 0x50;
+            gUnk_03002C30[1].unk4 = 0x38;
+            gUnk_03002C30[1].unk8 = 2;
+            gUnk_03002C30[1].unk9 = 2;
+            battle_sprite_set_action(1, 1, 0);
+            battle_sprite_set_action(4, 9, 0);
+            battle_sprite_set_action(5, 10, 0);
+            gUnk_03001800_s.timer++;
+            break;
+        case 1:
+            if (gUnk_03002C30[1].unk20 == 0)
+                gUnk_03001800_s.timer++;
+            break;
+        case 2:
+            init_battle_sprite_entry_08048818(2, 0xC600, 0x406, 2, 3);
+            gUnk_03002C30[2].unk2 = 0xB8;
+            gUnk_03002C30[2].unk4 = 0x70;
+            gUnk_03002C30[2].unk8 = 2;
+            gUnk_03002C30[2].unk9 = 2;
+            battle_sprite_set_action(2, 2, 0);
+            gUnk_03001800_s.timer++;
+            break;
+        case 3:
+            if (gUnk_03002C30[2].unk20 == 0) {
+                battle_sprite_set_action(3, 3, 0x70);
+                battle_sprite_set_action(3, 4, 0x68);
+                battle_sprite_set_action(3, 5, 0x68);
+                battle_sprite_set_action(3, 6, 0x70);
+                battle_sprite_set_action(3, 7, 0x78);
+                battle_sprite_set_action(3, 8, 0x78);
+                gUnk_03001800_s.timer++;
+            }
+            break;
+        case 4:
+            if (battle_draw_tilemap_row_dma(0))
+                gUnk_03001800_s.timer++;
+            break;
+        default:
+            if (check_battle_timer_expired(0))
+                process_text_tile_and_dma_transfer(0);
+            gUnk_03001800_s.timer++;
+            break;
+        }
+    } else if (gUnk_03001800_s.timer == n) {
+        sub_0806FF50();
+        sub_0806FF90();
+        sub_08070030();
+        gUnk_03002C30[1].unk4 = 0xC8;
+        gUnk_03002C30[2].unk4 = 0xC8;
+        for (i = 0; i < 3; i++)
+            gUnk_03002C30[i + 11].unk4 = 0xC8;
+        for (i = 0; i < 6; i++) {
+            battle_sprite_set_action(0, i + 3, 0);
+            gUnk_03002C30[i + 3].unk4 = 0xC8;
+        }
+        gUnk_03001800_s.timer++;
+    } else {
+        switch (gUnk_03001800_s.timer) {
+        case 0xC5:
+            gUnk_03002C30[1].unk6 = 0x40A;
+            gUnk_03002C30[1].unk4 = 0x38;
+            gUnk_03002C30[1].unk8 = 2;
+            gUnk_03002C30[1].unk9 = 2;
+            battle_sprite_set_action(1, 1, 0);
+            gUnk_03001800_s.timer++;
+            break;
+        case 0xC6:
+            if (gUnk_03002C30[1].unk20 == 0)
+                gUnk_03001800_s.timer++;
+            break;
+        case 0xC7:
+            gUnk_03002C30[2].unk6 = 0x407;
+            gUnk_03002C30[2].unk4 = 0x70;
+            gUnk_03002C30[2].unk8 = 2;
+            gUnk_03002C30[2].unk9 = 2;
+            battle_sprite_set_action(2, 2, 0);
+            gUnk_03001800_s.timer++;
+            break;
+        case 0xC8:
+            if (gUnk_03002C30[2].unk20 == 0) {
+                battle_sprite_set_action(3, 3, 0x78);
+                battle_sprite_set_action(3, 4, 0x70);
+                battle_sprite_set_action(3, 5, 0x78);
+                battle_sprite_set_action(3, 6, 0x70);
+                battle_sprite_set_action(3, 7, 0x68);
+                battle_sprite_set_action(3, 8, 0x70);
+                gUnk_03001800_s.timer++;
+            }
+            break;
+        case 0xC9:
+            if (battle_draw_tilemap_row_dma(1))
+                gUnk_03001800_s.timer++;
+            break;
+        default:
+            if (check_battle_timer_expired(0x28))
+                process_text_tile_and_dma_transfer(1);
+            gUnk_03001800_s.timer++;
+            break;
+        }
+    }
+    battle_timer_digit_extract();
+    update_sprite_animations_080703D8();
+    if (n * 2 <= gUnk_03001800_s.timer) {
+        gUnk_03001800_s.timer = 0;
+        gUnk_03001800_s.nextSubState = 6;
+        gUnk_03001800_s.unkC.h = 13;
+        gGameSubState = 2;
+    }
+}
+

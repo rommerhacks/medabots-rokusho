@@ -214,6 +214,9 @@ extern u8 gUnk_03000005; // scene step speed: frames per fade level
 extern u16 gUnk_03000008[]; // BG0 tilemap offsets of the rows the wipe steps clear / fill
 extern u16 gUnk_03000028; // palette fade target color
 extern u16 *gUnk_0300002C; // palette fade source palette (0x200 colors)
+extern u16 gUnk_03000030[160]; // title BG2 per-scanline values: BG2PA (sub_0806D420, HBlank)
+extern u16 gUnk_03000170[160]; // BG2X_L per scanline
+extern u16 gUnk_030002B0[160]; // BG2X_H per scanline
 extern u8 gUnk_030004DE[];
 extern const u8 gUnk_083F7FF4[]; // random bytes, indexed by the low byte of gFrameCounter
 extern const void *const gUnk_084864E8[];
