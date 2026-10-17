@@ -132,6 +132,26 @@
   (`gArr[gUnk_03000440.unk12F]`), not through a `u8 *slot` local.
 * Fields of `gUnk_03001800` past 0x100 (literal `0x030019A4`, the next one as `-10` from it): the
   struct field, not a separate symbol like `gUnk_0300198A[0x1A]`.
+* Tilemap rect copies whose address is `x * 2 + VRAM` then `+ bg_base`, `+ y * 64`: write
+  `(u16 *)(VRAM + bg_base) + x + y * 32`; `bg_base + (VRAM + x * 2)` gets reassociated
+  (read_vram_tilemap_rect, fill_tilemap_rect_08042698). Row loops that keep a row pointer and a
+  write pointer (`adds r4, #0x40; adds r2, r4, #0`) are `d = base; row = d; ... row += 32; d = row;`,
+  with the source rows the same way (`srow = s; ... srow += 32; s = srow;`; declare `srow` before
+  `row`): copy_transition_tiles_to_bg2, clear_and_copy_tilemap_rows.
+* A leaf that loads the array base first into a callee-saved register (`push {r4}; ldr r4, =gArr`)
+  before computing the index: `u8 *inv = gArr; p = &inv[i];` (reduce_medapart_stat; the same for
+  one branch of modify_medapart_quantity).
+* `(&s->unk3)[k]` for a run of byte fields: take `u8 *p = &gArr[i].unk3;` then `p[k]`
+  (sub_080421B4). A 4-D table index `(a - 1) * 256 + b * 8 + c * 2` is a flat 1-D index in the
+  original (gUnk_083C6DF8), and a 3-D `[part][kind][i]` table was `[part * 64 + kind * 16 + i]`
+  with a `u8 *d = dst` copy (load_part_data).
+* Block order: when the original's fall-through is the second arm of your `if`, swap the arms
+  (`if (x == 0) {...} else {...}`, `if (n != 0x1E)`), also for `return a > b ? 1 : 0` written as
+  `if (a > 0xFF) return 1; return 0;` (update_blend_effect, update_sprite_hflip_by_animation_phase).
+* `(id & 1)` written at each use instead of a `b = id & 1` local lets gcc share the constant 1 with
+  a `= 1` store (team_add_tinpet).
+* Params read and written through `[sp]` in a leaf (`sub sp, #8; str r0, [sp]`): `vu32` params
+  (sub_0804361C, not matched yet).
 * Unsolved: callees that zero-extend `u16` x/y params at entry, then sign-extend them at each use
   (`lsls #16; asrs #16` before `& 0x1FF`), while their callers pass sign-extended values (an `s16`
   prototype). `(s16)x` on a `u16` param gets dropped under the mask; see the near misses in NOTES
