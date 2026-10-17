@@ -159,11 +159,133 @@ void sub_08020DF8(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08020EDC);
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08020FB8);
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08021000);
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08021038);
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_0802121C);
+void sub_08020EDC(void)
+{
+    sub_080353CC(0x21);
+    if (gUnk_03002C30[0x21].unk27 == 0x20)
+    {
+        gUnk_03002C30[0x21].unk0 &= ~0x200;
+        gUnk_03002C30[0x21].unk18 = 0;
+        gUnk_03001800.unkAA++;
+        return;
+    }
+    if (!(gUnk_03001800.unkF8 & 1))
+        gUnk_03002C30[0x21].unk18 = (gUnk_03002C30[0x21].unk18 + 0x20) & 0x3FF;
+    else
+        gUnk_03002C30[0x21].unk18 = (gUnk_03002C30[0x21].unk18 - 0x20) & 0x3FF;
+    if (!(gUnk_03002C30[0x21].unk27 & 1))
+    {
+        if (!(gUnk_03001800.unkF8 & 1))
+            gUnk_03002C30[0x21].unk2++;
+        else
+            gUnk_03002C30[0x21].unk2--;
+    }
+    gUnk_03002C30[0x21].unk27++;
+}
+
+void sub_08020FB8(void)
+{
+    lz_decompress_dispatch(gUnk_084CCE48, (void *)0x06014800);
+    CpuFastSet(gUnk_0850E358, (void *)0x050002E0, 8);
+    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x23], 0x21);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_08021000(void)
+{
+    process_sprite_anim_commands(gUnk_083B5F80[0x23], 0x21);
+    if (gUnk_03002C30[0x21].unk22 == 0xFF)
+        gUnk_03001800.unkAA++;
+}
+
+void sub_08021038(void)
+{
+    switch (gUnk_03001800.unk51)
+    {
+    case 0:
+        lz_decompress_dispatch(gUnk_084C907C, (void *)0x06014800);
+        CpuFastSet(gUnk_0850E058, (void *)0x050002E0, 8);
+        gUnk_03002C30[0x21].unk4 = 0x3C;
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x19], 0x21);
+        break;
+    case 1:
+        lz_decompress_dispatch(gUnk_084C9288, (void *)0x06014800);
+        CpuFastSet(gUnk_0850E078, (void *)0x050002E0, 8);
+        gUnk_03002C30[0x21].unk4 = 0x3C;
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x1A], 0x21);
+        break;
+    case 2:
+        lz_decompress_dispatch(gUnk_084C9624, (void *)0x06014800);
+        CpuFastSet(gUnk_0850E098, (void *)0x050002E0, 8);
+        gUnk_03002C30[0x21].unk4 = 0x3C;
+        gUnk_03002C30[0x21].unk6 = 0xD00;
+        break;
+    case 3:
+        lz_decompress_dispatch(gUnk_084D513C, (void *)0x06014800);
+        CpuFastSet(gUnk_0850E678, (void *)0x050002E0, 8);
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x38], 0x21);
+        break;
+    }
+    gUnk_03002C30[0x21].unk0 |= 0x220;
+    gUnk_03002C30[0x21].unk9 = 0x40;
+    gUnk_03002C30[0x21].unk8 = 8;
+    if (gUnk_03001800.unkF8 & 1)
+    {
+        gUnk_03002C30[0x21].unk0 |= 0x1000;
+        gUnk_03002C30[0x21].unk2--;
+    }
+    gUnk_03001800.unkAA++;
+}
+
+void sub_080211C8(void)
+{
+    if ((gUnk_03002C30[0x21].unk8 += 8) == 0x40)
+    {
+        if (gUnk_03001800.unk51 == 3)
+            gUnk_03000440.unk86 = 1;
+        else
+            gUnk_03000440.unk86 = 0x3C;
+        gUnk_03001800.unkAA++;
+    }
+}
+
+void sub_0802121C(void)
+{
+    gUnk_03000440.unk86--;
+    if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
+        gUnk_03000440.unk86 = 0;
+    if (gUnk_03000440.unk86 == 0)
+    {
+        switch (gUnk_03001800.unk51)
+        {
+        case 0:
+        case 1:
+        case 2:
+            gUnk_03002C30[0x21].unk27 = 0;
+            gUnk_03001800.unkAA++;
+            break;
+        case 3:
+            play_sound_effect(0x52);
+            gUnk_03001800.unkAA = 0x20;
+            break;
+        }
+    }
+}
+
+void sub_080212A0(void)
+{
+    if (gUnk_03002C30[0x21].unk27 == 0x10)
+    {
+        gUnk_03001800.unkAA++;
+        return;
+    }
+    if (!(gUnk_03001800.unkF8 & 1))
+        gUnk_03002C30[0x21].unk2++;
+    else
+        gUnk_03002C30[0x21].unk2--;
+    gUnk_03002C30[0x21].unk27++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08021300);
 INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08021370);
 INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_080213E4);
