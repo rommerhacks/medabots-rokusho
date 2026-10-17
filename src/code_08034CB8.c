@@ -1387,7 +1387,48 @@ void sub_080383E8(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08038428);
+void sub_08038428(void)
+{
+    u32 r, slot;
+    struct Unk_03002C30 *s;
+    struct Unk_03002C30 *base;
+
+    if ((r = gUnk_03000440.unk86 & 7) == 0)
+    {
+        slot = find_next_free_sprite_slot(gUnk_03000440.unk12F + 1, 10);
+        clear_battle_sprite_slot(slot, 1);
+        base = gUnk_03002C30;
+        s = &base[slot];
+        s->unk0 = 0xC604;
+        s->unk1C = 0;
+        s->unk2 = 0x78;
+        s->unk4 = 0x78;
+        s->unk8 = 0x40;
+        s->unk9 = 0x40;
+        s->unk18 = r;
+        s->unkA = 6;
+        s->unkB = 0xF0;
+        s->unk6 = 0x7706;
+        s->unk29 = 2;
+        s->unk24 = 3;
+        s->unk23 = 0;
+        r = rng_next_080424B8() & 3;
+        if (!(gUnk_03001800.unkF8 & 1))
+        {
+            s->unk2 = (base[gUnk_03000440.unk12F].unk2 + gUnk_083AF6D0[r << 1]) & 0x1FF;
+            s->unk4 = (base[gUnk_03000440.unk12F].unk4 + gUnk_083AF6D0[r * 2 + 1]) & 0xFF;
+            s->unk30 = base[gUnk_03000440.unk12F].unk2 + 0x10;
+            s->unk32 = base[gUnk_03000440.unk12F].unk4 + 4;
+        }
+        else
+        {
+            s->unk2 = (0xF0 - (base[gUnk_03000440.unk12F].unk2 + gUnk_083AF6D0[r << 1])) & 0x1FF;
+            s->unk4 = (base[gUnk_03000440.unk12F].unk4 + gUnk_083AF6D0[r * 2 + 1]) & 0xFF;
+            s->unk30 = base[gUnk_03000440.unk12F].unk2 - 0x10;
+            s->unk32 = base[gUnk_03000440.unk12F].unk4 + 6;
+        }
+    }
+}
 
 void sub_0803858C(void)
 {
