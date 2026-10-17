@@ -1,6 +1,17 @@
 #include "global.h"
 
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08067160);
+int sub_08067160(u8 *s)
+{
+    int n = 0;
+    int r;
+    while (s[n] != 0)
+        n++;
+    r = 0;
+    if (n != 1)
+        r = n;
+    return r;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", clear_stack_buffer_64);
 INCLUDE_ASM("asm/nonmatching/code_08067160", scroll_tilemap_column);
 INCLUDE_ASM("asm/nonmatching/code_08067160", render_text_right_aligned);
@@ -14,7 +25,15 @@ INCLUDE_ASM("asm/nonmatching/code_08067160", sub_080678DC);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08067938);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08067994);
 INCLUDE_ASM("asm/nonmatching/code_08067160", dispatch_scene_substate_and_scroll);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08067A48);
+
+void sub_08067A48(u8 slot)
+{
+    gUnk_030017EC = slot;
+    gGameMode = 2;
+    gGameState = 0x18;
+    gGameSubState = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", update_battle_sprite_explosions);
 INCLUDE_ASM("asm/nonmatching/code_08067160", init_scene_with_palette_and_song_25);
 INCLUDE_ASM("asm/nonmatching/code_08067160", decompress_medal_sprite_to_vram);
@@ -49,9 +68,39 @@ INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069078);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_080690C4);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069114);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069158);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_0806918C);
+
+void sub_0806918C(void)
+{
+    u32 zero = 0;
+    DmaSet(3, &zero, 0x06000000, 0x85006000);
+    REG_DISPCNT = 0x60;
+    zero = 0;
+    DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+    gBg0Scroll.x = 0;
+    gBg0Scroll.y = 0;
+    gBg1Scroll.x = 0;
+    gBg1Scroll.y = 0;
+    gBg2Scroll.x = 0;
+    gBg2Scroll.y = 0;
+    gBg3Scroll.x = 0;
+    gBg3Scroll.y = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_background_layers);
-INCLUDE_ASM("asm/nonmatching/code_08067160", dma_copy_tilemap_strip);
+
+void dma_copy_tilemap_strip(u8 n)
+{
+    u16 buf[24];
+    int i;
+    for (i = 0; i <= 7; i++) {
+        buf[i] = n * 8 - 0x6E00 + i;
+        buf[i + 8] = n * 8 - 0x5DC0 + i;
+        buf[i + 16] = n * 8 - 0x4D80 + i;
+    }
+    DmaSet(3, buf, n * 64 + 0x0600F000, 0x80000018);
+    gBg2Scroll.y = -((12 - n) * 8);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_bg_layer);
 INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_field_screen);
 INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_bg_layer1);
@@ -67,12 +116,29 @@ INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_sprite_c400);
 INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_sprite_entry_1);
 INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_sprite_large);
 INCLUDE_ASM("asm/nonmatching/code_08067160", get_entity_speed_value);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069EE4);
+
+void sub_08069EE4(u8 *dst, u8 *src)
+{
+    do {
+        *dst = *src;
+        dst++;
+    } while (*src++ <= 0xF8);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069EF8);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069F80);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_0806A230);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_0806A4C0);
-INCLUDE_ASM("asm/nonmatching/code_08067160", sub_0806A584);
+
+bool32 sub_0806A584(void)
+{
+    if (gUnk_03006F8C[0] > 2 && gUnk_03006F8C[1] > 2 && gUnk_03006F8C[2] > 2) {
+        if (++gUnk_03006F88 > 0xF0)
+            return TRUE;
+    }
+    return FALSE;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08067160", update_battle_bot_turn_order_tiles);
 INCLUDE_ASM("asm/nonmatching/code_08067160", update_battle_icon_rotation);
 INCLUDE_ASM("asm/nonmatching/code_08067160", battle_update_action_counters);

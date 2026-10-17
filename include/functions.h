@@ -804,6 +804,11 @@ u32 advance_sprite_anim_frame(u32 sprite, u32 b);
 void battle_sprite_blink_update(u32 slot, u8 *counter, u8 *n);
 void sub_0801BF64(u16 *counter, u16 max);
 void sub_08067A48(u8 slot);
+int sub_08067160(u8 *s); // string length, 0 when it is 1
+void sub_0806918C(void); // clears VRAM, the sprite table and the four BG scrolls
+void dma_copy_tilemap_strip(u8 n);
+void sub_08069EE4(u8 *dst, u8 *src); // copies bytes up to and including the first one > 0xF8
+bool32 sub_0806A584(void);
 
 s32 sub_08043C94(void); // random 0-100
 void render_text_sprites_08040EE4(u8 *text, u8 a, u32 x, u32 y, u8 b, u8 c, u8 d, u16 e, s32 f, s32 g);
