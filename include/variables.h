@@ -869,3 +869,4 @@ extern u8 gUnk_03007008;
 extern const u8 gUnk_080AFA3C[][4][2]; // x, y by [which][kind] (load_medapart_sprite_animation)
 extern const u16 gUnk_08488AA4[]; // OBJ palette 1 (sub_08060FD4)
 extern const u16 gUnk_0879671C[]; // BG palettes (sub_08060FD4)
+extern const u8 gUnk_080AFA08[4][2]; // icon x, y in BG2 tiles (battle_menu_highlight_icons)

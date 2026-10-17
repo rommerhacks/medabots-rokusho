@@ -1269,7 +1269,7 @@ void update_animation_timer(void); // gUnk_03006F74->unk3A counts 0-109; every 1
 void sub_0805F8B0(void);
 void sub_0806142C(void);
 void sub_080617F0(void); // gUnk_08483E8C[gGameSubState](), BG3 scrolls diagonally
-void battle_menu_highlight_icons(u8 a, u32 b);
+void battle_menu_highlight_icons(u32 sel, u32 frame); // BG2 tiles of 4 icons: palette 6 for icon sel when frame & 8, else palette 5
 void sub_0805F81C(void);
 void sub_0806035C(void);
 void sub_0806086C(void);
@@ -1301,3 +1301,5 @@ void sub_080608EC(void);
 void sub_0806174C(void);
 void sub_08060FD4(void);
 void sub_08061374(void);
+void draw_tilemap_line(u16 a, s32 b, u8 c, u8 d, u8 e, u8 f);
+void init_fade_screen_setup(void);
