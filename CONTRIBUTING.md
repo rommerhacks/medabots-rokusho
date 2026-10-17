@@ -125,3 +125,17 @@
   Casting at each use (`(s16)x - 16`) lets gcc drop the extension.
 * Two branches that store the same fields from different sources (`a = p->x; b = p->y - 16; c = p->y`)
   match when written out in each branch; a shared local after the if gives a different tail.
+* `if (a && b && (r = f())) {...} else x++;` where the original's else path reuses the
+  `gUnk_03001800` base kept in a callee-saved register (no new literal): write the function with a
+  struct pointer local (`struct Unk_03001800 *s = &gUnk_03001800;`). With the global, gcc reloads the
+  base at the join (sub_08020AD0).
+* `n = (r | -r) >> 31;` gives the original's `rsbs; orrs; lsrs #31` for "count 1 if nonzero";
+  `n = f() != 0` gets a branch (sub_08021734).
+* A table whose entries the original reloads after every call (`ldr r0, [r4]` before each `bl`) must
+  not be declared with `const` elements (`const void *gUnk_083B5F80[]`, not `const void *const`):
+  gcc keeps a const element in a register across calls.
+* Two stores of the same value after a select (`if (c) x = 0x88; else x = 0x68; a = b = c = x;`) come
+  out as one join when written as chained stores in each arm: `if (c) p[2].f = p[1].f = p[0].f = 0x88;
+  else ... = 0x68;` (sub_0802167C).
+* A caller passing an un-truncated register (`ldrh` value, a loop counter + 0x5A) to an asm callee that
+  doesn't truncate its parameter either means the parameter is u32, not u8.
