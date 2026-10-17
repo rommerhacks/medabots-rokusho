@@ -480,7 +480,8 @@ struct Unk_03001800
     u8 fillerBF[0x9];
     u16 unkC8; // Robattle: effect amount (shown by sub_0801CA60, subtracted by apply_battle_damage_tick)
     u16 unkCA; // damage passed to battle_set_damage_vs_armor (sub_0801ECC0)
-    u8 fillerCC[0x4];
+    u16 unkCC; // copy of unkC8 (sub_08036B84)
+    u8 fillerCE[0x2];
     u8 unkD0; // last part (3..0) of the acting Medabot with armor left (sub_0801C660)
     u8 unkD1; // nonzero: battle_check_hit_and_set_timer goes to sub-state 0x1A
     u8 unkD2[4]; // per part: nonzero shows an effect sprite (sub_08026AF4)
@@ -504,7 +505,9 @@ struct Unk_03001800
     u8 unkFE;
     u8 unkFF; // bits 0 / 1 set by sub_080347F8 with unk114[0] / unk114[1] = 0x28
     u16 unk100; // cleared by sub_08034074
-    u8 filler102[0x12];
+    u8 filler102[0x10];
+    u8 unk112; // set to 0x29 with unk113 (sub_080361A8)
+    u8 unk113;
     u8 unk114[2]; // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (sub_08020B4C)
     u8 filler116[0x2];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part

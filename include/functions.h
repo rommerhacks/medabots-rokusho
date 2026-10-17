@@ -280,7 +280,7 @@ void sub_08034F08(void);
 u32 get_random_battle_weight_entry(u32 idx);
 void sub_08036270(void);
 void sub_0803713C(void);
-u32 sub_08037230(u8 rec, u8 part);
+u32 sub_08037230(u32 rec, u32 part); // 1 if the part is broken or at full armor
 void calc_battle_action_speed(u8 rec, u8 part);
 void apply_battle_bot_damage_reduction(u8 rec);
 u32 decrement_battle_timer_and_check_zero(void);
@@ -1003,7 +1003,7 @@ void sub_08035944(u32 rec, u32 part); // guess: record rec targets part part - 1
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);
 void sub_080353AC(u32 frame);
 void sub_0803536C(u8 slot, u8 frame, u16 x);
-void reduce_bot_part_stat(u32 rec, u32 part, u16 amount);
+void reduce_bot_part_stat(u32 rec, u32 part, s32 amount); // part armor (unk11) -= amount, not below 0
 void sub_08035194(u32 rec);
 void set_target_sprite_position(u8 rec, u32 frame, u8 flag);
 void update_target_cursor_position(u8 rec);
@@ -1014,7 +1014,7 @@ void sub_08036340(u32 side);
 void sub_08036370(u32 side, u8 rec);
 void sub_080364A8(u32 side, u8 rec);
 void sub_0803628C(void);
-void sub_08036B84(u8 rec, u8 part);
+void sub_08036B84(u32 rec, u32 part);
 u32 sub_080366DC(u8 slot, u8 part);
 void sub_08036784(u8 slot, u8 part, s16 x, s16 y);
 u32 sub_0803684C(u8 slot);
@@ -1025,7 +1025,7 @@ void sub_08036BF4(u32 side);
 void sub_08036C20(u8 slot, u8 part, s16 x, s16 y, u32 n);
 void setup_battle_medapart_scenes(void);
 void calc_bot_evasion_modifier(u8 rec);
-void sub_080355C4(u8 rec);
+void sub_080355C4(u32 rec);
 void sub_0804242C(u8 n); // sorts gUnk_02023000[0..n-1] by key, key2, largest first
 u32 sub_08033224(u32 rec); // 1 if rec has no effect A (unkC4)
 u32 sub_08033240(u32 rec); // 1 if rec has no effect B (unkC9)

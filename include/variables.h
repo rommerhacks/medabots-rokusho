@@ -594,6 +594,7 @@ extern const u8 gUnk_084DC7D0[]; // compressed tiles (code_080249C0)
 extern const u8 gUnk_0850EC38[]; // 64-byte OBJ palettes (code_080249C0)
 extern const u8 gUnk_084DD188[]; // compressed tiles (code_080249C0)
 extern const u8 gUnk_0850EC78[]; // 64-byte OBJ palettes (code_080249C0)
+extern const u16 gUnk_083AF4E0[]; // 32 y offsets added to a sprite's unk4 by sub_08037424
 extern const u8 gUnk_083AF200[]; // 16 values, two random picks summed into gUnk_03001800.unk188 / unk189 (sub_08034AA0)
 extern u8 gUnk_03003470[]; // IWRAM buffer; sub_08033ACC copies 4 x 0x40 bytes from +0xE40 + (rec * 0x100) to its start
 extern const u8 *const gUnk_083C6B28[]; // Robattle action scripts by skill id gUnk_03001800.unkA8 (sub_08034E94)
