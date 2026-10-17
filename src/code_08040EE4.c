@@ -639,7 +639,21 @@ struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x, s32 y)
     return r;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", compute_polar_to_screen_position);
+struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32 cy, u32 a, u32 b)
+{
+    struct Vec16 r;
+
+    if (radius < a)
+        a = radius;
+    if (radius < b)
+        b = radius;
+    cx += (u32)(gUnk_083D6BA0[angle] * ((radius - b) / 256.0f));
+    cy += (u32)(gUnk_083D69A0[0][angle] * ((radius - a) / 256.0f));
+    r.x = cx & 0x1FF;
+    r.y = cy & 0xFF;
+    return r;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_sprite_to_vram_08042D94);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_battle_medabot_sprites);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", setup_battle_sprite_group);
@@ -930,7 +944,45 @@ void init_scene_buffers_080445F4(void)
 
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", setup_scene_with_bg_and_sprites);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_scene_with_bg_and_palette);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", setup_sprite_animation_entry);
+
+void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i)
+{
+    u32 flags;
+    u32 fill;
+
+    switch (f)
+    {
+    case 0:
+        f = 100;
+        break;
+    case 1:
+        f = 200;
+        break;
+    case 2:
+        f = 300;
+        break;
+    case 3:
+        f = 400;
+        break;
+    }
+    if (h == 0)
+        h = 1;
+    else
+        h = 2;
+    flags = 0;
+    if (i == 1)
+        flags = 4;
+    ((struct Unk_08047414 *)0x02026000)->unk8 = 0x020260D0 + a * 0x410;
+    load_sprite_animation_by_type(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000, id, kind, (s16)x, (s16)y, f, g, h | flags);
+    if (i == 2)
+    {
+        fill = 0x200;
+        CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+        gUnk_03002414->unk1094 = 0;
+        gUnk_03002414->unk1095 = 0;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", advance_text_display);
 
 void sub_08044B28(const u8 *src, void *dst)

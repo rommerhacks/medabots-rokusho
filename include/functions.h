@@ -811,7 +811,7 @@ void sub_080421B4(u8 a, u8 b);
 u32 random_pick_weighted4(u32 a, u32 b, u32 c, u32 d);
 void load_area_battlefield(void);
 void setup_random_encounter_enemies(void);
-void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 x, u16 y, u32 f, u8 g, u8 h, u8 i);
+void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i);
 s32 sub_080121F0(void);
 u32 sub_08012234(void);
 
