@@ -660,7 +660,7 @@ void ai_select_target_enemy_side_ability22_status(void)
     sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void ai_select_target_enemy_side_ewram_check(void)
+void ai_pick_ally_most_damaged(void)
 {
     u32 i;
     u32 part;
@@ -766,7 +766,7 @@ void battle_ai_select_target_ability22_enemy(void)
     sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void ai_select_target_enemy_side_available_part(void)
+void ai_pick_ally_with_broken_part(void)
 {
     u32 i;
     u32 part;
@@ -775,7 +775,7 @@ void ai_select_target_enemy_side_available_part(void)
     for (i = 0; i <= 2; i++)
     {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40
-         && find_random_available_part_slot(gUnk_03001800.unk60)
+         && find_random_broken_part(gUnk_03001800.unk60)
          && sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
@@ -788,7 +788,7 @@ void ai_select_target_enemy_side_available_part(void)
         for (i = 0; i <= 2; i++)
         {
             if (gUnk_03000590[gUnk_03001800.unk60].unk40
-             && find_random_available_part_slot(gUnk_03001800.unk60))
+             && find_random_broken_part(gUnk_03001800.unk60))
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
@@ -813,7 +813,7 @@ void ai_select_target_enemy_side_available_part(void)
             }
         }
     }
-    part = find_random_available_part_slot(gUnk_03001800.unk5E - 1);
+    part = find_random_broken_part(gUnk_03001800.unk5E - 1);
     if (part)
         gUnk_03001800.unk5F = part;
     else
@@ -1274,7 +1274,7 @@ u32 sub_08033240(u32 rec)
         return 1;
 }
 
-u32 find_random_available_part_slot(u32 rec)
+u32 find_random_broken_part(u32 rec)
 {
     u32 i, slot, dir;
 

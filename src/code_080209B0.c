@@ -58,7 +58,7 @@ void sub_08020AD0(void)
 
     sub_080351E8(s->unk88);
     if (gUnk_03000590[s->unk87].parts[s->unkA7].data[7] && s->unkCA
-        && (part = find_random_available_part_slot(s->unk88)))
+        && (part = find_random_broken_part(s->unk88)))
     {
         part--;
         s->unkD0 = part;

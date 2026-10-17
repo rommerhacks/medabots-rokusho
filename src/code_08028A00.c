@@ -750,7 +750,7 @@ void sub_08029F50(void)
             continue;
         if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 == 0)
             continue;
-        if (find_random_available_part_slot(gUnk_03001800.unk60 + i) == 0)
+        if (find_random_broken_part(gUnk_03001800.unk60 + i) == 0)
             continue;
         found = 1;
         gUnk_03001800.unkD2[i] = found;
@@ -772,7 +772,7 @@ void sub_08029FE0(void)
             continue;
         for (j = 0; j <= 3; j++)
         {
-            r = find_random_available_part_slot(gUnk_03001800.unk60 + i);
+            r = find_random_broken_part(gUnk_03001800.unk60 + i);
             if (r == 0)
                 goto next;
             gUnk_03001800.unkD0 = r - 1;

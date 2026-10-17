@@ -986,7 +986,7 @@ u32 medal_update_exp_progress(u32 slot, u32 n);
 void battle_set_action_params(u32 rec, u8 skill, s32 a, s32 b);
 void reset_battle_bot_state(u8 rec);
 void sub_080351E8(u32 rec);
-u32 find_random_available_part_slot(u32 rec); // part + 1, 0 = none
+u32 find_random_broken_part(u32 rec); // random part (+ 1) of rec with no armor left (unk11 == 0), 0 = none
 void battle_set_damage_display(u32 rec, u32 part, s32 amount);
 void get_active_bot_part_index_and_load_values(u32 side);
 void sub_08035740(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, max)
