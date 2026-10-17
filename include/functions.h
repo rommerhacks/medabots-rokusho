@@ -333,7 +333,7 @@ void sub_080392D8(void);
 void battle_sequence_run_command(void); // runs the battle sequence command gUnk_083AF740[sub_0803D424()], skipping negative ones
 void sub_08039430(void);
 s16 sub_0803D424(void); // current battle sequence entry (gUnk_083CDFE4[unkF9][unk100])
-void sub_0803B8C8(void);
+void battle_sequence_update_sprites(void);
 void battle_advance_sequence_counter(void); // skips the current battle sequence command and its operands
 void load_battle_sequence_commands(void);
 void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile); // fills a rectangle of the BG map at bgcnt's screen base

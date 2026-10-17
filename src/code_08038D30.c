@@ -229,7 +229,7 @@ void battle_sequence_update(void)
 {
     while (gUnk_03002C30[0].unk2A == 0)
         battle_sequence_run_command();
-    sub_0803B8C8();
+    battle_sequence_update_sprites();
     gUnk_03002C30[0].unk2A = 0;
 }
 
@@ -1261,7 +1261,7 @@ void sub_0803B884(void)
     battle_advance_sequence_counter();
 }
 
-void sub_0803B8C8(void)
+void battle_sequence_update_sprites(void)
 {
     u32 i;
 
