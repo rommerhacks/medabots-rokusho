@@ -595,6 +595,9 @@ extern const u8 gUnk_0850EC38[]; // 64-byte OBJ palettes (code_080249C0)
 extern const u8 gUnk_084DD188[]; // compressed tiles (code_080249C0)
 extern const u8 gUnk_0850EC78[]; // 64-byte OBJ palettes (code_080249C0)
 extern const u16 gUnk_083AF4E0[]; // 32 y offsets added to a sprite's unk4 by sub_08037424
+extern const u8 gUnk_083AF4A0[]; // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
+extern const u8 gUnk_083AF4B0[]; // 16 x offsets added to / subtracted from a sprite's unk2 by medal_update_exp_progress
+extern const u8 gUnk_083AF210[]; // 256 speed steps (quarter pixels) by a sprite's unk30 (sprite_move_toward_target, update_sprite_deceleration)
 extern const u8 gUnk_083AF200[]; // 16 values, two random picks summed into gUnk_03001800.unk188 / unk189 (sub_08034AA0)
 extern u8 gUnk_03003470[]; // IWRAM buffer; sub_08033ACC copies 4 x 0x40 bytes from +0xE40 + (rec * 0x100) to its start
 extern const u8 gUnk_083C6D38[]; // Robattle action script: operand count per command byte (sub_08034F08)

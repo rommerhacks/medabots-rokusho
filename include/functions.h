@@ -718,6 +718,7 @@ void accumulate_team_armor_stats(void);
 void battle_check_medal_level_up(void);
 void divide_by_100000_b(u8 *buf, u32 value, u32 tile);
 u32 advance_sprite_anim_frame(u32 sprite, u32 b);
+void battle_sprite_blink_update(u32 slot, u8 *counter, u8 *n);
 void sub_0801BF64(u16 *counter, u16 max);
 void sub_08067A48(u8 slot);
 
@@ -771,7 +772,7 @@ void sub_080178CC(void);
 void command_ring_pulse_selected(void);
 void sub_08017914(void);
 void setup_bot_battle_sprites_08015A00(u32 rec, u32 x, u32 y);
-void battle_set_damage_vs_armor(u32 rec, u32 part, u32 amount);
+void battle_set_damage_vs_armor(u32 rec, u32 part, s32 amount);
 u32 sub_08034F44(u32 rec);
 void sub_08016554(void);
 void command_ring_goto_selected(void);
@@ -961,7 +962,7 @@ u32 sub_08036E54(u32 a); // clamps to 1..99
 u8 sub_08037578(u32 a, u32 kind); // random part id (by a and the part kind)
 void sub_0803769C(u32 rec);
 void sub_080376F4(u32 rec);
-void sub_08037728(u32 rec, u32 part, s32 amount);
+void sub_08037728(u32 rec, u32 part, u32 amount); // unkD6[part] = min(amount, part armor), unkD2[part] = 1 when the armor is all used
 u32 sub_08036B50(u8 *buf, u32 slot);
 void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 b, s32 x, s32 y);
 void sub_080374E0(u32 a, u32 b); // unkC8 = min(a, b) taken out of a (guess: drain clamp)
@@ -1036,7 +1037,7 @@ void battle_calc_damage_split(u32 rec, u32 part, s32 amount); // unkC8 = unkCC =
 u32 battle_check_action_counter(u16 *amount, u32 rec, u32 part); // moves one point from *amount (low byte) into the part's armor (max data[4]); 1 when done
 u32 sub_080331F8(u32 rec);
 u32 battle_find_next_active_bot(u32 rec); // random part index of rec with armor left (from rng_lookup_table_value, stepping by rng bit 0)
-u32 sub_08036D64(u32 rec, u8 skill);
+u32 sub_08036D64(u32 rec, u32 skill); // 1 if unkCF has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8), 0x11/0x12 (2), 0x13/0x14 (4)
 u32 medal_update_exp_progress(u32 slot, u32 n);
 void battle_set_action_params(u32 rec, u8 skill, s32 a, s32 b);
 void reset_battle_bot_state(u8 rec);
