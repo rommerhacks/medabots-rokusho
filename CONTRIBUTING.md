@@ -139,3 +139,9 @@
   else ... = 0x68;` (sub_0802167C).
 * A caller passing an un-truncated register (`ldrh` value, a loop counter + 0x5A) to an asm callee that
   doesn't truncate its parameter either means the parameter is u32, not u8.
+* An out-parameter read back as one word and split (`ldr r0, [sp, #4]; strh r0, [..]; asrs r0, r0, #16;
+  strh r0, [..]`) is an `s32` written by the callee as x | y << 16: copy it to a local first
+  (`v = pos; a = v; b = v >> 16;`); a `struct { s16 x, y; }` gives two `ldrh` (calc_polar_to_screen_coords).
+* The global base loaded again for the second test of `if (a == 0 && b) next; else if (c) c--; else next;`
+  comes from writing the two `next` arms out separately; `if ((a || !b) && c) c--; else next;` CSEs the
+  base into one register (sub_08022938).
