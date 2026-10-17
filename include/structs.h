@@ -457,7 +457,7 @@ struct Unk_03001800
     u8 unkDE; // record + 1 of a teammate of unk88 with unkBD bit 3 set (sub_0801D5A8), 0 = none
     u8 unkDF; // that teammate's unkDF (0x1B-0x1D pick the graphics in sub_0801D6A4)
     u8 fillerE0[0xC];
-    u16 unkEC; // repeat counter of the part data[1] == 0x30 action (sub_0801EC3C)
+    u16 unkEC; // amount for battle_calc_damage_split (battle_resolve_action_target); counted down by sub_0801EC3C
     u8 fillerEE[0xA];
     u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
     u8 fillerF9[0x1F];

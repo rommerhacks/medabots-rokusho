@@ -927,5 +927,8 @@ void sub_08036C20(u8 slot, u8 part, s16 x, s16 y, u32 n);
 void setup_battle_medapart_scenes(void);
 void calc_bot_evasion_modifier(u8 rec);
 void sub_080355C4(u8 rec);
+u32 clear_ewram_buffer_02023000_b(u8 rec);
+void battle_calc_damage_split(u8 rec, u8 part, s16 amount);
+u32 battle_check_action_counter(u16 *amount, u8 rec, u8 part);
 
 #endif // GUARD_FUNCTIONS_H
