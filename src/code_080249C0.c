@@ -1857,10 +1857,65 @@ void sub_08028230(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08028248);
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08028270);
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_080282E0);
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08028350);
+void sub_08028248(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AE480[gUnk_03001800.unkAA]();
+}
+
+void sub_08028270(void)
+{
+    lz_decompress_dispatch(gUnk_084DBDC8, (void *)0x06014800);
+    CpuFastSet(gUnk_0850EBB8, (void *)0x050002E0, 8);
+    gUnk_03002C30[0x21].unk6 = 0x6A00;
+    gUnk_03002C30[0x21].unk4 += 4;
+    gUnk_03002C30[0x21].unk27 = 0;
+    gUnk_03000440.unk86 = 0x3C;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_080282E0(void)
+{
+    if (gUnk_03002C30[0x21].unk27 == 0x10)
+    {
+        play_sound_effect(0x28);
+        gUnk_03002C30[0x21].unk27 = 0;
+        gUnk_03001800.unkAA++;
+        return;
+    }
+    if (!(gUnk_03001800.unkF8 & 1))
+        gUnk_03002C30[0x21].unk2--;
+    else
+        gUnk_03002C30[0x21].unk2++;
+    gUnk_03002C30[0x21].unk27++;
+}
+
+void sub_08028350(void)
+{
+    gUnk_03002C30[0x21].unk27++;
+    if (gUnk_03002C30[0x21].unk27 & 2)
+        gUnk_03002C30[0x21].unk0 |= 0x8000;
+    else
+        gUnk_03002C30[0x21].unk0 &= 0x7FFF;
+    if (gUnk_03002C30[0x21].unk27 == 0x3C)
+    {
+        clear_battle_sprite_slot(0x21, 1);
+        gUnk_03001800.unkAA++;
+    }
+}
+
+void sub_080283C0(void)
+{
+    gUnk_03000590[gUnk_03001800.unk87].unkC0 |= 2;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_080283EC(void)
+{
+    gUnk_03001800.unkA6 = 0x64;
+    gUnk_03001800.unkAA++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08028404);
 INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08028504);
 INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_080287C0);
