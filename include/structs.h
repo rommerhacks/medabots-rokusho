@@ -581,7 +581,7 @@ struct Unk_03000590
     u8 unkD5; // added to gUnk_03001800.unkEC for unk28[side].unk5 (sub_08021418)
     u8 unkD6; // flags (bit 1: +10 damage, sub_0801ECC0)
     u8 unkD7; // movement: sub-pixel accumulator, + (0x20 - unkBB) per frame, 1/16 px (battle_bot_move)
-    u8 fillerD8[0x2];
+    u16 unkD8; // cleared, then raised by gUnk_03001800.unkEC up to 0xFF (sub_08022748)
     u8 unkDA; // movement: whole pixels moved this frame
     u8 fillerDB[0x2];
     u8 unkDD; // link Robattle: part choice exchanged over the serial link (sub_08014B34, sub_08014C30)
