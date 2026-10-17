@@ -486,6 +486,7 @@ void sound_channel_update(struct SoundMixChannel *ch);
 void load_song_channels(u32 id, u32 arg);
 void play_sound_from_command(u32 id, u32 arg);
 u32 is_sound_playing_at_position(s32 a);
+u32 is_sound_playing_with_lock(u32 a);
 void sound_track_start_fade(struct SoundTrack *track, u32 target, u32 frames);
 void sound_reset_channel_callbacks(u32 a, u32 b);
 void set_all_sound_channels_flag_0x40(u32 a);
@@ -1161,6 +1162,7 @@ s16 sub_0805BB10(u16 step);
 void sub_0805BC6C(void); // sets palette 8 on three 16-tile BG0 rows (dead code, carved from sub_0805BBF8)
 void sub_0805CA28(u32 a);
 void sub_0805D57C(u16 a);
+void attempt_save_and_transition(void); // save screen state 7: up to 4 tries of save_dispatch(0), then state 8 (ok) or 12 (failed)
 s32 save_dispatch(s32 mode); // 0: save, 1: load (returns validate_save_data), 2: erase; all through gDecompressBuffer
 void load_save_data(struct SaveData *save);
 void serialize_save_data(struct SaveData *save);

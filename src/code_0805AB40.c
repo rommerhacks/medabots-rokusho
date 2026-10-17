@@ -176,7 +176,17 @@ void sub_0805D948(void)
         gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805D96C);
+void sub_0805D96C(void)
+{
+    if (poll_choice_menu())
+    {
+        sub_0803FB0C();
+        if (gUnk_03000440.unk2A == 0)
+            gGameSubState = (*(u8 *)&gUnk_03001784 & 1) ? 13 : 6;
+        else
+            gGameSubState = 9;
+    }
+}
 
 void sub_0805D9B8(void)
 {
@@ -211,7 +221,35 @@ void sub_0805DA1C(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DA5C);
+void attempt_save_and_transition(void)
+{
+    u8 t = gUnk_03006F74->unk2++;
+    u16 err = 0;
+    s8 i;
+
+    if (t > 29 && !is_sound_playing_with_lock(4))
+    {
+        for (i = 0; i <= 3; i++)
+        {
+            err = save_dispatch(0);
+            if (err == 0)
+                break;
+        }
+        play_song(6);
+        if (err == 0)
+        {
+            sub_0803FB0C();
+            gUnk_03006F74->unk2 = err;
+            gGameSubState++;
+        }
+        else
+        {
+            sub_0803FB0C();
+            gUnk_03006F74->unk2 = 0;
+            gGameSubState = 12;
+        }
+    }
+}
 
 void sub_0805DAE4(void)
 {
@@ -234,7 +272,24 @@ void sub_0805DB48(void)
         gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DB64);
+void sub_0805DB64(void)
+{
+    if (gUnk_03000440.unk84 <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0x3FFF);
+        blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        gUnk_03000440.unk84++;
+    }
+    else
+    {
+        REG_DISPCNT &= 0xFDFF;
+        REG_DISPCNT &= 0xFBFF;
+        clear_battle_sprite_slot(0, 0x80);
+        gGameMode = 0;
+        gGameState = 1;
+        gGameSubState = 16;
+    }
+}
 
 void sub_0805DBE8(void)
 {
