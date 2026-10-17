@@ -1,23 +1,304 @@
 #include "global.h"
 
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018900);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_080189EC);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018A18);
-INCLUDE_ASM("asm/nonmatching/code_08018900", select_battle_music);
+
+void sub_080189EC(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[i].unk40)
+            sub_08018900(i);
+    }
+}
+
+void sub_08018A18(void)
+{
+    u32 i;
+
+    if ((gUnk_030057E0.unkC2E & 0xF0) == 0x20)
+    {
+        for (i = 0; i <= 2; i++)
+            gUnk_03000590[i + 3].unkC1 = 0x50;
+    }
+}
+
+void select_battle_music(void)
+{
+    if (gUnk_03000440.unk89 == 1)
+        play_song(9);
+    else if ((gUnk_030057E0.unkC2E & 0xF0) != 0)
+    {
+        if ((gUnk_030057E0.unkC2E & 0xF0) == 0x10)
+            play_song(0xC);
+        else
+            play_song(0xD);
+    }
+    else
+        play_song(gUnk_083AD3B0[gUnk_03000B94]);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", init_battle_action_select_ui);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018BD4);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018C38);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018C78);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018CBC);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018D0C);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018DF4);
+
+void sub_08018BD4(void)
+{
+    if (gUnk_03000440.unk89 == 1)
+    {
+        gUnk_03001800.unk57 = 40;
+        return;
+    }
+    switch (gUnk_03001788)
+    {
+    case 0:
+        gUnk_03001800.unk57 = 40;
+        break;
+    case 1:
+        gUnk_03001800.unk57 = 30;
+        break;
+    case 2:
+        gUnk_03001800.unk57 = 20;
+        break;
+    }
+}
+
+void sub_08018C38(void)
+{
+    if ((gUnk_03001800.unk56 = (gUnk_03001800.unk56 + 1) & 0x1F) == 0 && gUnk_03001800.unk57 != 0)
+    {
+        gUnk_03001800.unk57--;
+        gUnk_03001800.unk16B++;
+        sub_08018CBC();
+    }
+}
+
+void sub_08018C78(void)
+{
+    gUnk_03002C30[1].unk6 = (u8)(gUnk_03001800.unk57 / 10) + 0x624;
+    gUnk_03002C30[2].unk6 = (u8)(gUnk_03001800.unk57 % 10) + 0x624;
+}
+
+void sub_08018CBC(void)
+{
+    u32 i;
+
+    gUnk_03001800.unk55 = 0;
+    for (i = 0; i <= 5; i++)
+    {
+        if (gUnk_03000590[i].unk40)
+        {
+            if (gUnk_03000590[i].unkC4)
+                sub_08018D0C(i);
+            if (gUnk_03000590[i].unkC9)
+                sub_08018DF4(i);
+        }
+    }
+}
+
+void sub_08018D0C(u32 rec)
+{
+    s32 t;
+    u32 i, k, v, done;
+
+    t = gUnk_03000590[rec].unkC6 - 4;
+    if (t <= 0)
+    {
+        gUnk_03000590[rec].unkC4 = 0;
+        gUnk_03000590[rec].unkC5 = 0;
+        gUnk_03000590[rec].unkC6 = 0;
+        gUnk_03000590[rec].unkC7 = 0;
+        gUnk_03000590[rec].unkCE |= 1;
+        gUnk_03001800.unk55 |= 2;
+        return;
+    }
+    gUnk_03000590[rec].unkC6 = t;
+    if (gUnk_03000590[rec].unkC4 != 0x1F)
+        return;
+    gUnk_03001800.unk59 = gUnk_03000590[rec].unkC7;
+    gUnk_03001800.unk86 = 0;
+    done = 0;
+    for (i = 0; i <= 3; i++)
+    {
+        k = sub_08018EE0(rec);
+        if (k != 0)
+        {
+            v = add_part_stat_clamped(rec, k - 1, gUnk_03001800.unk59);
+            gUnk_03001800.unk86 += v;
+            gUnk_03001800.unk59 = (v & 0xFF00) >> 8;
+            done = 1;
+            if (gUnk_03001800.unk59 == 0)
+                break;
+        }
+        else
+            break;
+    }
+    if (done)
+    {
+        gUnk_03000590[rec].unkC8 = gUnk_03001800.unk86;
+        gUnk_03000590[rec].unkCE |= 4;
+        gUnk_03001800.unk55 |= 8;
+    }
+}
+
+void sub_08018DF4(u32 rec)
+{
+    s32 t;
+    u32 i, k, v, done;
+
+    t = gUnk_03000590[rec].unkCB - 4;
+    if (t <= 0)
+    {
+        gUnk_03000590[rec].unkC9 = 0;
+        gUnk_03000590[rec].unkCA = 0;
+        gUnk_03000590[rec].unkCB = 0;
+        gUnk_03000590[rec].unkCC = 0;
+        gUnk_03000590[rec].unkCE |= 2;
+        gUnk_03001800.unk55 |= 4;
+        return;
+    }
+    gUnk_03000590[rec].unkCB = t;
+    if ((u8)(gUnk_03000590[rec].unkC9 - 0x13) > 1)
+        return;
+    gUnk_03001800.unk59 = gUnk_03000590[rec].unkCC;
+    gUnk_03001800.unk86 = 0;
+    done = 0;
+    for (i = 0; i <= 3; i++)
+    {
+        k = sub_08018F6C(rec);
+        if (k != 0)
+        {
+            v = sub_08018FF0(rec, k - 1, gUnk_03001800.unk59);
+            gUnk_03001800.unk86 += v;
+            gUnk_03001800.unk59 = (v & 0xFF00) >> 8;
+            done = 1;
+            if (gUnk_03001800.unk59 == 0)
+                break;
+        }
+        else
+            break;
+    }
+    if (done)
+    {
+        gUnk_03000590[rec].unkCD = gUnk_03001800.unk86;
+        gUnk_03000590[rec].unkCE |= 8;
+        gUnk_03001800.unk55 |= 0x10;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018EE0);
 INCLUDE_ASM("asm/nonmatching/code_08018900", add_part_stat_clamped);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018F6C);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018FF0);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801902C);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08019078);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_080190B8);
+
+u32 sub_08018F48(u32 rec)
+{
+    u32 i;
+
+    for (i = 0; i <= 3; i++)
+    {
+        if (gUnk_03000590[rec].parts[3 - i].unk11)
+            return i + 1;
+    }
+    return 0;
+}
+
+u32 sub_08018F6C(u32 rec)
+{
+    u32 k, i;
+
+    if (gUnk_03000590[rec].unkCA == 0)
+        k = 4;
+    else
+        k = gUnk_03000590[rec].unkCA;
+    for (i = 0; i <= 3; i++)
+    {
+        if (gUnk_03000590[rec].parts[k - 1].unk11 > 1)
+            return k;
+        k--;
+        if (k == 0)
+            k = 4;
+    }
+    return 0;
+}
+
+u32 sub_08018FB8(u32 rec, u32 part, s32 amount)
+{
+    u32 cur = gUnk_03000590[rec].parts[part].unk11;
+    s32 v = cur - amount;
+    u32 ret;
+
+    if (v >= 0)
+    {
+        gUnk_03000590[rec].parts[part].unk11 = v;
+        ret = amount;
+    }
+    else
+    {
+        gUnk_03000590[rec].parts[part].unk11 = 0;
+        ret = ((amount - cur) << 8) + cur;
+    }
+    return ret;
+}
+
+u32 sub_08018FF0(u32 rec, u32 part, s32 amount)
+{
+    u32 cur = gUnk_03000590[rec].parts[part].unk11;
+    u32 m = cur - 1;
+    u32 ret;
+
+    if ((s32)(m - amount) >= 0)
+    {
+        gUnk_03000590[rec].parts[part].unk11 = cur - amount;
+        ret = amount;
+    }
+    else
+    {
+        gUnk_03000590[rec].parts[part].unk11 = 1;
+        ret = ((amount - m) << 8) + m;
+    }
+    return ret;
+}
+
+void sub_0801902C(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 5; i++)
+    {
+        if (gUnk_03000590[i].unk40 && (u8)(gUnk_03000590[i].unkC9 - 0xF) > 1)
+        {
+            sub_080190B8(i);
+            sub_08019348(i);
+            sub_08019544(i);
+        }
+    }
+}
+
+void sub_08019078(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 5; i++)
+    {
+        if (gUnk_03000590[i].unk40 && (u8)(gUnk_03000590[i].unkC9 - 0xF) > 1)
+        {
+            sub_08019544(i);
+        }
+    }
+}
+
+void sub_080190B8(u32 rec)
+{
+    gUnk_03000590[rec].unkBB = 0;
+    sub_08019108(rec);
+    sub_080191C0(rec);
+    sub_080191E4(rec);
+    sub_0801922C(rec);
+    sub_08019264(rec);
+    sub_0801928C(rec);
+    sub_080192B8(rec);
+    sub_080192E8(rec);
+    sub_0801932C(rec);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08019108);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08019184);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_080191A4);

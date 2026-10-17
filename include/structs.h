@@ -356,9 +356,10 @@ struct Unk_03001800
     u8 unk53;
     u8 unk54;
     u8 unk55; // Robattle: result flags (2, 4, 8, 0x10 pick sub-states 0x60-0x78 in sub_0801427C)
-    u8 filler56[0x2];
+    u8 unk56; // Robattle: frame counter, mod 32 (sub_08018C38)
+    u8 unk57; // Robattle: TIME left, 40/30/20 by gUnk_03001788 (sub_08018BD4), -1 every 32 frames (sub_08018C38)
     u8 unk58; // Robattle: nonzero blocks Medaforce (check_medaforce_availability)
-    u8 filler59;
+    u8 unk59; // Robattle: effect amount left to apply (sub_08018D0C / sub_08018DF4)
     u8 unk5A; // Robattle: team Medabot count (3 in battle_start.ss0)
     u8 unk5B;
     u8 filler5C[0x8];
@@ -381,7 +382,7 @@ struct Unk_03001800
     u8 unk168; // won Medapart: kind (0 head, 1 right arm, 2 left arm, 3 legs)
     u8 unk169; // won Medapart: id
     u8 unk16A; // won Medapart: 1 = not owned before
-    u8 unk16B;
+    u8 unk16B; // Robattle: TIME ticks elapsed (sub_08018C38)
     u16 unk16C; // battle score (calculate_battle_score_summary), then experience points
     // After-battle result per team member (u8 array: a struct would be 4-byte aligned):
     // [0] Medal id + 1, 0 = none (name from gUnk_083B6410), [1] nonzero: Medal level-up screen,
@@ -449,7 +450,8 @@ struct Unk_03000590
     u8 unk47;
     struct BattlePart parts[4]; // head, right arm, left arm, legs
     u8 unkA8[6]; // chosen Medaforce: gUnk_083B7CD4 record (battle_bot_select_medaforce)
-    u8 fillerAE[0xA];
+    u8 fillerAE[0x2];
+    u8 unkB0[8]; // per skill type: times used this battle (sub_08018900)
     u8 unkB8; // own record index (battle_bots_load_parts)
     u8 unkB9;
     u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
@@ -460,11 +462,18 @@ struct Unk_03000590
     u8 unkBF;
     u8 fillerC0;
     u8 unkC1; // Medaforce gauge, 0-80 (0x50: Medaforce ready, check_medaforce_availability; drawn as "MF nn/80", runtime-checked)
-    u8 fillerC2[0x6];
+    u8 fillerC2[0x2];
+    // Two timed effects, ticked every 32 frames by sub_08018CBC (sub_08018D0C / sub_08018DF4):
+    // type, part, frames left (-4 per tick; at 0 the effect ends and unkCE bit 0 / 1 is set), amount.
+    u8 unkC4; // effect A type (0x1F: restores armor to damaged parts, sub_08018D0C)
+    u8 unkC5;
+    u8 unkC6;
+    u8 unkC7;
     u8 unkC8; // number shown by the Robattle handler 0x70 (sub_080147FC)
-    u8 unkC9; // 0x2C checked by sub_08014404 / process_bot_battle_turn, 0x2B by sub_080154E0
-    u8 unkCA; // part compared by sub_080154E0
-    u8 fillerCB[0x2];
+    u8 unkC9; // effect B type (0x13/0x14: armor changes each tick, sub_08018DF4; 0x2C checked by sub_08014404 / process_bot_battle_turn, 0x2B by sub_080154E0)
+    u8 unkCA; // effect B part (compared by sub_080154E0; sub_08018F6C starts there)
+    u8 unkCB;
+    u8 unkCC;
     u8 unkCD; // number shown by the Robattle handler 0x78 (sub_08014920)
     u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (sub_080145BC .. sub_08014754),
               // bit 2 / bit 3 = numbers shown by sub_080147FC / sub_08014920

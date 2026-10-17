@@ -722,7 +722,7 @@ void sub_08016FB4(void);
 void process_bot_battle_turn(u32 rec);
 void battle_bot_select_medaforce(u32 rec, u32 part);
 void battle_bot_select_part(u32 rec, u32 part);
-void sub_08018900(u32 a);
+void sub_08018900(u32 rec); // guess: counts the chosen action's skill type in the record's unkB0
 void init_battle_action_select_ui(u32 a);
 void sub_080166AC(void);
 void determine_battle_part_action_priority(void);
@@ -826,5 +826,25 @@ void battle_ai_roll_part_order(void);
 u32 battle_part_unusable(u32 rec, u32 part); // any of sub_080154E0 / sub_08015508 / sub_08015528 / begin_battle_action_lookup
 u32 rng_lookup_table_value(void);
 u32 begin_battle_action_lookup(u32 rec, u32 part);
+void sub_08018CBC(void);
+void sub_08018D0C(u32 rec);
+void sub_08018DF4(u32 rec);
+
+u32 add_part_stat_clamped(u32 rec, u32 part, s32 amount); // adds to a part's armor up to its max; returns added | leftover << 8
+u32 sub_08018EE0(u32 rec);
+u32 sub_08018F48(u32 rec);
+u32 sub_08018F6C(u32 rec);
+u32 sub_08018FB8(u32 rec, u32 part, s32 amount);
+u32 sub_08018FF0(u32 rec, u32 part, s32 amount);
+void sub_080190B8(u32 rec);
+void sub_08019108(u32 rec);
+void sub_080191C0(u32 rec);
+void sub_080191E4(u32 rec);
+void sub_0801922C(u32 rec);
+void sub_08019264(u32 rec);
+void sub_0801928C(u32 rec);
+void sub_080192B8(u32 rec);
+void sub_080192E8(u32 rec);
+void sub_0801932C(u32 rec);
 
 #endif // GUARD_FUNCTIONS_H
