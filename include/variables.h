@@ -326,9 +326,12 @@ extern const u16 gUnk_084E2F98[]; // OBJ palette (sprite 2)
 
 extern const u8 *const gUnk_083C3F38[]; // opponent names, by gUnk_03001800.unk0
 extern const u8 *const gUnk_083BE9E8[]; // battlefield names, by gUnk_03001800.unk38
-extern const u8 gUnk_083BEA90[][8]; // per area: [1] = battlefield (sub_08011DE4)
+extern const u8 gUnk_083BEA90[][8]; // per area: [1] = battlefield (load_area_battlefield)
 extern const u8 gUnk_083BF090[][4]; // per area: random encounter ids, picked 40/30/20/10% (setup_random_encounter_enemies)
 extern const u8 *const gUnk_083C1A00[]; // encounter setups (0x28 bytes copied to gUnk_03001800), by gUnk_030057E0.unkC2A
-extern const u8 gUnk_083ACEE4[][2]; // per opponent Medabot: sprite position (sub_08012024)
+extern const u8 gUnk_083ACEE4[][2]; // per opponent Medabot: sprite position (init_opponent_medabot_sprites)
+extern const u8 gUnk_083ACEEA[][2]; // per opponent Medabot: leg type icon position (draw_opponent_leg_type_icons)
+extern const u8 gUnk_083ACEF0[16]; // random starting opponent slot 0-2 (sub_08012234, sub_080122F4)
+extern const u8 gUnk_083C3B04[][8]; // per battlefield (sub_080121A8)
 
 #endif // GUARD_VARIABLES_H

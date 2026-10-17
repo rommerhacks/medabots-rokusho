@@ -2101,12 +2101,12 @@ void prebattle_load_gfx(void)
     zero = 0;
     DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
     REG_DISPCNT |= 0x1F60;
-    sub_08011F50();
-    sub_08011FA0();
-    sub_08011FEC();
-    sub_08012024();
-    sub_080120C8();
-    sub_0801214C();
+    prebattle_draw_opponent_name();
+    prebattle_draw_battlefield_name();
+    load_opponent_medabot_sprites();
+    init_opponent_medabot_sprites();
+    draw_opponent_leg_type_icons();
+    prebattle_init_rubberobo_sprite();
     sub_080121A8();
     apply_battle_blend_effect_a();
     gUnk_03000440.unk84 = 0;

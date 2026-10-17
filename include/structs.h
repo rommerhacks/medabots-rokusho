@@ -336,11 +336,11 @@ struct Unk_03001800
     u8 unk0; // encounter: opponent message index (gUnk_083C2BBC)
     u8 unk1;
     u8 unk2; // opponent Medabot count
-    u8 unk3; // nonzero: fixed opponent parts (else each part is re-rolled by sub_08011F20)
+    u8 unk3; // nonzero: fixed opponent parts (else each part is re-rolled by random_pick_weighted4)
     struct EncounterBot unk4[3];
     u8 filler28[0x10];
-    u8 unk38;
-    u8 filler39[0x8];
+    u8 unk38; // battlefield
+    u8 unk39[8]; // copied from gUnk_083C3B04[unk38] (sub_080121A8)
     u8 unk41[3]; // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
     u8 filler44[0xD];
     u8 unk51;

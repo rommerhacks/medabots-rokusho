@@ -273,12 +273,12 @@ void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags);
 void sub_08043CA8(void);
 void decompress_tileset_to_vram(u32 id, u32 arg);
 void apply_battle_blend_effect_a(void);
-void sub_08011F50(void);
-void sub_08011FA0(void);
-void sub_08011FEC(void);
-void sub_08012024(void);
-void sub_080120C8(void);
-void sub_0801214C(void);
+void prebattle_draw_opponent_name(void);
+void prebattle_draw_battlefield_name(void);
+void load_opponent_medabot_sprites(void);
+void init_opponent_medabot_sprites(void);
+void draw_opponent_leg_type_icons(void);
+void prebattle_init_rubberobo_sprite(void);
 void sub_080121A8(void);
 void update_scroll_movement_a(void);
 void update_all_battle_sprite_orbits(void);
@@ -654,8 +654,11 @@ s32 sub_08043C94(void); // random 0-100
 void render_text_sprites_08040EE4(u8 *text, u8 a, u32 x, u32 y, u8 b, u8 c, u8 d, u16 e, s32 f, s32 g);
 void sub_080122F4(u32 a);
 void sub_080421B4(u8 a, u8 b);
-u32 sub_08011F20(u32 a, u32 b, u32 c, u32 d);
-void sub_08011DE4(void);
+u32 random_pick_weighted4(u32 a, u32 b, u32 c, u32 d);
+void load_area_battlefield(void);
 void setup_random_encounter_enemies(void);
+void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 x, u16 y, u32 f, u8 g, u8 h, u8 i);
+s32 sub_080121F0(void);
+u32 sub_08012234(void);
 
 #endif // GUARD_FUNCTIONS_H

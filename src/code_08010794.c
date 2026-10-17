@@ -563,7 +563,9 @@ void sub_08011500(void)
     sub_0804765C(0);
 }
 
-void sub_080115B4(void)
+// Sub-states 0x60-0x67: START on "Medapart was acquired" opens the won part's Medaparts detail page
+// (0x62 saves BG tiles and sprites, 0x63 enters game state 5, 0x65 restores the screen on return).
+void afterbattle_part_detail_init_fade(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -574,7 +576,7 @@ void sub_080115B4(void)
     gGameSubState++;
 }
 
-void sub_080115E8(void)
+void afterbattle_part_detail_fade_out(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -590,7 +592,7 @@ void sub_080115E8(void)
         gGameSubState++;
 }
 
-void sub_08011644(void)
+void afterbattle_part_detail_save_screen(void)
 {
     DmaSet(3, 0x06002800, gUnk_02020800, 0x84000200);
     DmaSet(3, 0x06000280, 0x02021000, 0x84000380);
@@ -602,7 +604,7 @@ void sub_08011644(void)
 
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080116C4);
 
-void sub_08011764(void)
+void afterbattle_part_detail_restore_screen(void)
 {
     const u32 *tbl;
     u32 zero;
@@ -640,12 +642,12 @@ void sub_08011764(void)
     DmaSet(3, 0x02021000, 0x06000280, 0x84000380);
     DmaSet(3, 0x02028000, gUnk_03002C30, 0x84000800);
     REG_DISPCNT |= 0x1F60;
-    sub_08011F50();
-    sub_08011FA0();
-    sub_08011FEC();
-    sub_08012024();
-    sub_080120C8();
-    sub_0801214C();
+    prebattle_draw_opponent_name();
+    prebattle_draw_battlefield_name();
+    load_opponent_medabot_sprites();
+    init_opponent_medabot_sprites();
+    draw_opponent_leg_type_icons();
+    prebattle_init_rubberobo_sprite();
     sub_080121A8();
     apply_battle_blend_effect_a();
     setup_battle_result_sprite_animation();
@@ -656,7 +658,7 @@ void sub_08011764(void)
     gGameSubState++;
 }
 
-void sub_08011A58(void)
+void afterbattle_part_detail_fade_in(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -672,7 +674,7 @@ void sub_08011A58(void)
         gGameSubState++;
 }
 
-void sub_08011ABC(void)
+void afterbattle_part_detail_return(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -681,7 +683,8 @@ void sub_08011ABC(void)
     gGameSubState = 0x3D;
 }
 
-void sub_08011ADC(void)
+// Sub-states 0x70+: lost Robattle ("You lost the Robattle").
+void afterbattle_show_lost_message(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -692,6 +695,7 @@ void sub_08011ADC(void)
     }
 }
 
+// guess: 0x71, waits for a handler, then 0x72 (fade out) if unkC2F else 0x77 (a Medapart is taken)
 void sub_08011B18(void)
 {
     update_all_battle_sprite_orbits();
@@ -705,7 +709,7 @@ void sub_08011B18(void)
     }
 }
 
-void sub_08011B5C(void)
+void afterbattle_fade_to_white(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -719,7 +723,7 @@ void sub_08011B5C(void)
         gGameSubState++;
 }
 
-void sub_08011BB8(void)
+void afterbattle_exit_to_field(void)
 {
     clear_battle_sprite_slot(0, 0x80);
     sub_08043CA8();
@@ -737,6 +741,7 @@ void sub_08011BB8(void)
     gGameSubState = 0;
 }
 
+// 0x77: picks one of the player's parts (sub_080122F4(0): slots 0-2) and removes it (sub_080421B4).
 void battle_loss_take_part(void)
 {
     update_all_battle_sprite_orbits();
@@ -755,7 +760,7 @@ void battle_loss_take_part(void)
     }
 }
 
-void sub_08011CFC(void)
+void battle_loss_show_part_taken(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -768,7 +773,8 @@ void sub_08011CFC(void)
     }
 }
 
-void sub_08011D50(void)
+// guess: sub_080440B4() nonzero = a Medabot is still assembled
+void battle_loss_check_team(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -781,7 +787,7 @@ void sub_08011D50(void)
     }
 }
 
-void sub_08011D80(void)
+void battle_loss_show_no_medabots(void)
 {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -794,16 +800,18 @@ void load_encounter_into_battle_setup(void)
     u32 zero = 0;
 
     DmaSet(3, &zero, &gUnk_03001800, 0x85000100);
-    sub_08011DE4();
+    load_area_battlefield();
     setup_random_encounter_enemies();
 }
 
-void sub_08011DE4(void)
+void load_area_battlefield(void)
 {
     memcpy_bytes_08041D04(gUnk_083BEA90[gUnk_030057E0.unk7FE], &gUnk_03000440.unkEE, 2);
     gUnk_03001800.unk38 = (&gUnk_03000440.unkEE)[1];
 }
 
+// Picks the encounter (area table unless a debug battle set unkC2A), copies its setup and re-rolls
+// each opponent part with random_pick_weighted4 unless the setup has fixed parts (unk3).
 void setup_random_encounter_enemies(void)
 {
     struct Unk_030057E0 *st;
@@ -834,10 +842,10 @@ void setup_random_encounter_enemies(void)
     {
         for (i = 0; i < 3; i++)
         {
-            a = sub_08011F20(gUnk_03001800.unk4[i].parts[0], gUnk_03001800.unk4[i].parts[1], gUnk_03001800.unk4[i].parts[2], gUnk_03001800.unk4[i].parts[3]);
-            b = sub_08011F20(gUnk_03001800.unk4[i].parts[0], gUnk_03001800.unk4[i].parts[1], gUnk_03001800.unk4[i].parts[2], gUnk_03001800.unk4[i].parts[3]);
-            c = sub_08011F20(gUnk_03001800.unk4[i].parts[0], gUnk_03001800.unk4[i].parts[1], gUnk_03001800.unk4[i].parts[2], gUnk_03001800.unk4[i].parts[3]);
-            d = sub_08011F20(gUnk_03001800.unk4[i].parts[0], gUnk_03001800.unk4[i].parts[1], gUnk_03001800.unk4[i].parts[2], gUnk_03001800.unk4[i].parts[3]);
+            a = random_pick_weighted4(gUnk_03001800.unk4[i].parts[0], gUnk_03001800.unk4[i].parts[1], gUnk_03001800.unk4[i].parts[2], gUnk_03001800.unk4[i].parts[3]);
+            b = random_pick_weighted4(gUnk_03001800.unk4[i].parts[0], gUnk_03001800.unk4[i].parts[1], gUnk_03001800.unk4[i].parts[2], gUnk_03001800.unk4[i].parts[3]);
+            c = random_pick_weighted4(gUnk_03001800.unk4[i].parts[0], gUnk_03001800.unk4[i].parts[1], gUnk_03001800.unk4[i].parts[2], gUnk_03001800.unk4[i].parts[3]);
+            d = random_pick_weighted4(gUnk_03001800.unk4[i].parts[0], gUnk_03001800.unk4[i].parts[1], gUnk_03001800.unk4[i].parts[2], gUnk_03001800.unk4[i].parts[3]);
             gUnk_03001800.unk4[i].parts[0] = a;
             gUnk_03001800.unk4[i].parts[1] = b;
             gUnk_03001800.unk4[i].parts[2] = c;
@@ -846,7 +854,8 @@ void setup_random_encounter_enemies(void)
     }
 }
 
-u32 sub_08011F20(u32 a, u32 b, u32 c, u32 d)
+// Returns a, b, c or d with 40/30/20/10% probability.
+u32 random_pick_weighted4(u32 a, u32 b, u32 c, u32 d)
 {
     u32 r = sub_08043C94();
 
@@ -859,19 +868,19 @@ u32 sub_08011F20(u32 a, u32 b, u32 c, u32 d)
     return d;
 }
 
-void sub_08011F50(void)
+void prebattle_draw_opponent_name(void)
 {
     memcpy_bytes_0803F63C(gUnk_083C3F38[gUnk_03001800.unk0], gUnk_03000440.unk9E, 18);
     render_text_sprites_08040EE4(gUnk_03000440.unk9E, 10, 18, 3, 10, 13, 0, 1, 0, -4);
 }
 
-void sub_08011FA0(void)
+void prebattle_draw_battlefield_name(void)
 {
     memcpy_bytes_0803F63C(gUnk_083BE9E8[gUnk_03001800.unk38], gUnk_03000440.unk9E, 11);
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 30, 1, 3, 8, 12, 0, 1);
 }
 
-void sub_08011FEC(void)
+void load_opponent_medabot_sprites(void)
 {
     u32 i;
 
@@ -879,7 +888,7 @@ void sub_08011FEC(void)
         decompress_sprite_to_vram_08042D94(gUnk_03001800.unk4[i].parts[0], gUnk_03001800.unk4[i].parts[1], gUnk_03001800.unk4[i].parts[2], gUnk_03001800.unk4[i].parts[3], i);
 }
 
-void sub_08012024(void)
+void init_opponent_medabot_sprites(void)
 {
     u32 i;
 
@@ -891,17 +900,120 @@ void sub_08012024(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08010794", update_all_battle_sprite_orbits);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080120C8);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_0801214C);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080121A8);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080121CC);
+void update_all_battle_sprite_orbits(void)
+{
+    u32 i;
+
+    for (i = 0; i < gUnk_03001800.unk2; i++)
+        update_battle_sprite_orbiting_positions(40 + i * 4, i, 1);
+}
+
+void draw_opponent_leg_type_icons(void)
+{
+    u32 i;
+
+    for (i = 0; i < 3; i++)
+    {
+        if (gUnk_03001800.unk2 > i)
+        {
+            load_part_data(gUnk_03001800.unk4[i].parts[3], 3, &gUnk_03000440.unkEE);
+            draw_tilemap_with_offset((&gUnk_03000440.unkEE)[1] - 100, gUnk_083ACEEA[i][0], gUnk_083ACEEA[i][1], REG_BG0CNT, 0x8300);
+        }
+        else
+            draw_tilemap_with_offset(0xFF, gUnk_083ACEEA[i][0], gUnk_083ACEEA[i][1], REG_BG0CNT, 0x8300);
+    }
+}
+
+// Shows sprite 0 when the player owns a Rubberobo Medal (item 50) outside debug battles.
+void prebattle_init_rubberobo_sprite(void)
+{
+    if (!gUnk_03000440.unk132 && get_item_quantity_by_id(50) && !gUnk_030057E0.unkC2D)
+    {
+        gUnk_03002C30[0].unk0 = 0xC404;
+        gUnk_03002C30[0].unk2 = 8;
+        gUnk_03002C30[0].unk4 = 0x50;
+        gUnk_03002C30[0].unkA = 11;
+        gUnk_03002C30[0].unkB = 0xC0;
+        gUnk_03002C30[0].unk6 = 0x700;
+    }
+}
+
+// guess: battlefield parameters
+void sub_080121A8(void)
+{
+    memcpy_bytes_0803F63C(gUnk_083C3B04[gUnk_03001800.unk38], gUnk_03001800.unk39, 8);
+}
+
+// guess: chooses the won Medapart: sub_080121F0 (10 per destroyed opponent part) against a 0-100 roll,
+// then sub_08012234 (a part the player doesn't own yet), else any opponent part (sub_080122F4(3)).
+void sub_080121CC(void)
+{
+    s32 n = sub_080121F0();
+
+    if (n < sub_08043C94() || !sub_08012234())
+        sub_080122F4(3);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080121F0);
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012234);
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080122F4);
-INCLUDE_ASM("asm/nonmatching/code_08010794", setup_battle_result_sprite);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012468);
-INCLUDE_ASM("asm/nonmatching/code_08010794", setup_battle_result_sprite_animation);
+
+void setup_battle_result_sprite(void)
+{
+    switch (gUnk_03001800.unk168)
+    {
+    case 0:
+        setup_sprite_animation_entry(0, gUnk_03001800.unk169, 0, 0xC2, 0x50, 1, 8, 0, 1);
+        break;
+    case 1:
+        setup_sprite_animation_entry(0, gUnk_03001800.unk169, 1, 0xCC, 0x38, 1, 7, 0, 1);
+        break;
+    case 2:
+        setup_sprite_animation_entry(0, gUnk_03001800.unk169, 2, 0xB8, 0x38, 1, 6, 1, 1);
+        break;
+    case 3:
+        setup_sprite_animation_entry(0, gUnk_03001800.unk169, 3, 0xC2, 0x2E, 1, 5, 0, 1);
+        break;
+    }
+}
+
+void sub_08012468(void)
+{
+    if (gUnk_03001800.unk16A)
+    {
+        if (!gUnk_03002C30[1].unk28)
+        {
+            if ((u8)(gUnk_03002C30[1].unk9 += 2) == 0x80)
+                gUnk_03002C30[1].unk28 = 1;
+        }
+        else
+        {
+            if ((u8)(gUnk_03002C30[1].unk9 -= 2) == 0x40)
+                gUnk_03002C30[1].unk28 = 0;
+        }
+    }
+}
+
+void setup_battle_result_sprite_animation(void)
+{
+    init_scene_buffers_080445F4();
+    switch (gUnk_03001800.unk168)
+    {
+    case 0:
+        setup_sprite_animation_entry(0, gUnk_03001800.unk169, 0, 0xC2, 0x3C, 1, 8, 0, 0);
+        break;
+    case 1:
+        setup_sprite_animation_entry(0, gUnk_03001800.unk169, 1, 0xCC, 0x28, 1, 7, 0, 0);
+        break;
+    case 2:
+        setup_sprite_animation_entry(0, gUnk_03001800.unk169, 2, 0xB8, 0x28, 1, 6, 1, 0);
+        break;
+    case 3:
+        setup_sprite_animation_entry(0, gUnk_03001800.unk169, 3, 0xC2, 0x1E, 1, 5, 0, 0);
+        break;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08010794", calculate_battle_score_summary);
 INCLUDE_ASM("asm/nonmatching/code_08010794", calc_average_bot_stat_080125B4);
 INCLUDE_ASM("asm/nonmatching/code_08010794", accumulate_alive_bot_score);
