@@ -27,6 +27,7 @@ extern struct Unk_030057E0 gUnk_030057E0;
 extern struct Unk_030064A0 gUnk_030064A0;
 extern struct Unk_03006D20 gUnk_03006D20;
 extern struct Unk_03007014 *gUnk_03007014;
+extern struct Unk_03007014 gUnk_03002430; // sound work area (soft_reset_to_title passes it to sound_init)
 extern struct Vec16 gBg1Scroll;     // BG1 scroll (field: map camera)
 extern struct Unk_03005310 gUnk_03005310;
 extern u8 gUnk_03006F40[];
@@ -594,6 +595,12 @@ extern const u8 gUnk_084DC7D0[]; // compressed tiles (code_080249C0)
 extern const u8 gUnk_0850EC38[]; // 64-byte OBJ palettes (code_080249C0)
 extern const u8 gUnk_084DD188[]; // compressed tiles (code_080249C0)
 extern const u8 gUnk_0850EC78[]; // 64-byte OBJ palettes (code_080249C0)
+extern const u8 *const gUnk_083AFD08[][9]; // LZ assets by set and index (decompress_indexed_asset)
+extern const u16 *const gUnk_083B15C8[]; // palettes by asset set (decompress_indexed_asset)
+extern const u16 gUnk_084C6998[]; // text window OBJ palette (text_window_init)
+extern const u8 gUnk_08488540[]; // LZ text window graphics (code_0803CDCC)
+extern const u8 gUnk_084C31BC[]; // LZ text window graphics (code_0803CDCC)
+extern const u8 gUnk_084873D0[]; // LZ text window graphics (code_0803CDCC)
 extern const u16 gUnk_0850EF58[]; // OBJ palettes (link Robattle screen, sub_0803DCDC)
 extern const u16 gUnk_084F39A0[]; // BG palettes (link Robattle screen, sub_0803DCDC)
 extern const u8 gUnk_084F21E8[]; // LZ graphics (link Robattle screen, sub_0803DCDC)

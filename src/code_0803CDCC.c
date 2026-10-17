@@ -24,7 +24,16 @@ INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803CFC8);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D0BC);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D15C);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D2A8);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D3C0);
+
+void sub_0803D3C0(void)
+{
+    process_sprite_anim_commands(gUnk_083B5F80[gUnk_03002C30[gUnk_03000440.unk12F].unk26], gUnk_03000440.unk12F);
+    if (sub_080353CC(gUnk_03000440.unk12F))
+    {
+        gUnk_03002C30[gUnk_03000440.unk12F].unk6 = 0x6307 + gUnk_03002C30[gUnk_03000440.unk12F].unk28;
+        gUnk_03002C30[gUnk_03000440.unk12F].unk29 = 0;
+    }
+}
 
 s16 sub_0803D424(void)
 {
@@ -958,7 +967,24 @@ u32 sub_0803EED8(void)
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", soft_reset_to_title);
+void soft_reset_to_title(void)
+{
+    gUnk_03005030 = 0;
+    serial_multiplayer_init();
+    VBlankIntrWait();
+    REG_SOUNDCNT_X = 0;
+    REG_IME = 0;
+    hw_reset_init();
+    irq_init();
+    serial_link_init();
+    gGameMode = 3;
+    gGameState = 0;
+    gGameSubState = 0;
+    REG_DMA0CNT_H = 0;
+    VBlankIntrWait();
+    sound_init(&gUnk_03002430);
+    VBlankIntrWait();
+}
 
 void vram_fill_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 value)
 {
@@ -1062,9 +1088,25 @@ void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, 
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", write_tilemap_to_vram_0803F1C8);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", decompress_bg_tiles_to_vram_bg);
+
+void decompress_bg_tiles_to_vram_bg(void)
+{
+    lz_decompress_dispatch(gUnk_084873D0, (void *)0x06000020);
+    lz_decompress_dispatch(gUnk_084C31BC, (void *)0x06001780);
+    CpuFastSet(gUnk_08488A84, (void *)(PLTT + 0x1E0), 8);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", setup_bg0_display_layer);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", decompress_indexed_asset);
+
+void decompress_indexed_asset(u32 set, u32 idx, void *dst, u32 pal, u32 toBuffer)
+{
+    lz_decompress_dispatch(gUnk_083AFD08[set][idx], dst);
+    if (toBuffer)
+        CpuFastSet(gUnk_083B15C8[set], (void *)(0x0202FA00 + pal * 32), 8);
+    else
+        CpuFastSet(gUnk_083B15C8[set], (void *)(PLTT + pal * 32), 8);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", load_bg0_tilemap);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", load_overworld_map_column);
 
@@ -1165,7 +1207,23 @@ void palette_blend_to_color_0803F890(u16 color, u32 amount, u16 mask)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", blend_obj_palettes_to_color_0803F998);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", text_window_init);
+
+void text_window_init(u8 a, u8 b, u32 c)
+{
+    u8 c8 = c;
+
+    sub_0803F624((u8 *)&gUnk_03000440, 0x28, 0);
+    gUnk_03000440.unk0 = a;
+    gUnk_03000440.unk1 = b;
+    gUnk_03000440.unk2 = c8;
+    gUnk_03000440.unkF = 0xFF;
+    gUnk_03000440.unk10 = -1;
+    gUnk_03000440.unk11 = -1;
+    decompress_bg_tiles_to_vram_bg();
+    CpuFastSet(gUnk_084C6998, (void *)(OBJ_PLTT - 0x40), 8);
+    if (c8 == 1)
+        setup_bg0_display_layer();
+}
 
 void sub_0803FB0C(void)
 {
@@ -1236,7 +1294,22 @@ void message_show_window(void)
     }
 }
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FC20);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FCC8);
+
+void sub_0803FCC8(void)
+{
+    u32 i;
+    u8 *dst;
+
+    for (i = 0, dst = (u8 *)0x06000280; i <= 0x33; i++)
+    {
+        CpuFastSet(gUnk_084C01C8, dst, 0x10);
+        dst += 0x40;
+    }
+    write_tilemap_rect(0x1A, 4, 2, 0xE, gUnk_083B4AE0[18], REG_BG0CNT, 0);
+    gUnk_03000440.unk4++;
+    sub_0803FD28();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FD28);
 
 void sub_0803FEA8(void)
@@ -1373,7 +1446,18 @@ loop:
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", process_sprite_anim_commands);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", clear_battle_sprite_slot);
+
+void clear_battle_sprite_slot(u8 a, u8 b)
+{
+    u32 i;
+    u32 zero;
+
+    for (i = 0; i < b; i++)
+    {
+        zero = 0;
+        CpuFastSet(&zero, &gUnk_03002C30[a + i], 0x01000010);
+    }
+}
 
 void clear_sprite_table_mask(u8 first, u8 count)
 {

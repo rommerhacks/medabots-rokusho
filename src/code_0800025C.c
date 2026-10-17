@@ -132,7 +132,7 @@ void soft_reset(void)
     gGameMode = 3;
     gGameState = 0;
     gGameSubState = 0;
-    REG_DMA2CNT_H = 0;
+    REG_DMA0CNT_H = 0;
 }
 
 u32 check_soft_reset(void)

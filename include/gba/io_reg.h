@@ -24,7 +24,7 @@
 #define REG_ADDR_BLDCNT   (REG_BASE + 0x050)
 #define REG_ADDR_BLDY     (REG_BASE + 0x054)
 #define REG_ADDR_SOUNDCNT_X (REG_BASE + 0x084)
-#define REG_ADDR_DMA2CNT_H (REG_BASE + 0x0BA)
+#define REG_ADDR_DMA0CNT_H (REG_BASE + 0x0BA)
 
 #define REG_ADDR_IE       (REG_BASE + 0x200)
 #define REG_ADDR_IF       (REG_BASE + 0x202)
@@ -43,7 +43,7 @@
 #define REG_BLDCNT   (*(vu16 *)REG_ADDR_BLDCNT)
 #define REG_BLDY     (*(vu16 *)REG_ADDR_BLDY)
 #define REG_SOUNDCNT_X (*(vu16 *)REG_ADDR_SOUNDCNT_X)
-#define REG_DMA2CNT_H (*(vu16 *)REG_ADDR_DMA2CNT_H)
+#define REG_DMA0CNT_H (*(vu16 *)REG_ADDR_DMA0CNT_H)
 #define REG_IE       (*(vu16 *)REG_ADDR_IE)
 #define REG_IF       (*(vu16 *)REG_ADDR_IF)
 #define REG_IME      (*(vu16 *)REG_ADDR_IME)
