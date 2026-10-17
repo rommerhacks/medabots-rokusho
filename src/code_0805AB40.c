@@ -112,7 +112,49 @@ void sub_0805BFDC(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C030);
+void sub_0805C030(void)
+{
+    u32 size;
+    u16 v;
+    vu16 *bg0, *bg1, *bg2, *bg3;
+    u8 one;
+
+    bg0 = &REG_BG0CNT;
+    one = 1;
+    v = 0x1F04;
+    *bg0 = v;
+    bg1 = &REG_BG1CNT;
+    v -= 0xFF;
+    *bg1 = v;
+    bg2 = &REG_BG2CNT;
+    v = 0x3D06;
+    *bg2 = v;
+    bg3 = &REG_BG3CNT;
+    v -= 0xFF;
+    *bg3 = v;
+    decompress_and_write_tilemap(gUnk_0878FBB4, *bg0);
+    decompress_and_write_tilemap(gUnk_0878FD84, *bg1);
+    decompress_and_write_tilemap(gUnk_0878FFC8, *bg2);
+    decompress_and_write_tilemap(gUnk_08790128, *bg3);
+    size = dma3_copy_or_decompress(gUnk_0878E5F4, gDecompressBuffer);
+    CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
+    gUnk_03006F74->unk36 = (size >> 5) - 1;
+    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    CpuFastSet(gUnk_0878E3F4, gPaletteBackupBg, 0x80);
+    CpuFastSet(gUnk_0878E3F4, (void *)PLTT, 0x80);
+    CpuFastSet(gUnk_084E2E58, gPaletteBackup, 0x80);
+    CpuFastSet(gUnk_084E2E58, (void *)(PLTT + 0x200), 0x80);
+    gUnk_03002C30[14].unk0 = 0x8000;
+    gUnk_03002C30[14].unkB = one;
+    gUnk_03002C30[14].unk1C = 2;
+    gUnk_03002C30[14].unkA = 0;
+    gUnk_03002C30[14].unk6 = 6;
+    gUnk_03002C30[14].unk2 = 0x20;
+    gUnk_03002C30[14].unk4 = 0x50;
+    gUnk_03006F74->unk5 = 0;
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C190);
 
 void sub_0805C2C4(void)

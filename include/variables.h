@@ -407,6 +407,13 @@ extern const u8 gUnk_08784DA4[]; // save screen OBJ tiles (LZ77)
 
 extern const Func gUnk_08483B78[]; // state handlers by gGameSubState (sub_0805BF88)
 
+extern const u8 gUnk_0878FBB4[]; // title menu BG0 tilemap (LZ77, decompress_and_write_tilemap)
+extern const u8 gUnk_0878FD84[]; // title menu BG1 tilemap
+extern const u8 gUnk_0878FFC8[]; // title menu BG2 tilemap
+extern const u8 gUnk_08790128[]; // title menu BG3 tilemap
+extern const u32 gUnk_0878E5F4[]; // title menu BG tiles (dma3_copy_or_decompress)
+extern const u16 gUnk_0878E3F4[]; // title menu BG palette (0x100 colors)
+
 #endif // GUARD_VARIABLES_H
 extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
 extern u8 gUnk_03000B94; // index into gUnk_083AD3B0 (battle music)
