@@ -1501,16 +1501,215 @@ void sub_0802B7AC(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802B7E8);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802B810);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802B8BC);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802B980);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BA2C);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BAAC);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BB24);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BBA8);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BC1C);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BC60);
+void sub_0802B7E8(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AE750[gUnk_03001800.unkAA]();
+}
+
+void sub_0802B810(void)
+{
+    u32 i;
+
+    sub_0803836C();
+    gUnk_03001800.unk60 = sub_08032FC4(gUnk_03001800.unk87);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 != 0
+            && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 != 0)
+            gUnk_03001800.unkD2[i] = 1;
+    }
+    switch (gUnk_03000590[gUnk_03001800.unk87].unkA8[0])
+    {
+    case 0x1F:
+        gUnk_03001800.unk51 = 0;
+        break;
+    case 0x21:
+        gUnk_03001800.unk51 = 1;
+        break;
+    case 0x23:
+        gUnk_03001800.unk51 = 2;
+        break;
+    case 0x25:
+        gUnk_03001800.unk51 = 3;
+        break;
+    }
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802B8BC(void)
+{
+    u32 i;
+
+    lz_decompress_dispatch(gUnk_084DFC18, (void *)0x06014800);
+    CpuFastSet(gUnk_0850EE38, (void *)0x050002C0, 0x10);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] == 0)
+            continue;
+        gUnk_03002C30[i + 0x21].unk0 = 0xC404;
+        gUnk_03002C30[i + 0x21].unk1C = 0;
+        gUnk_03002C30[i + 0x21].unk2 = gUnk_03002C30[(gUnk_03001800.unk60 + i) * 4 + 0x5D].unk2;
+        gUnk_03002C30[i + 0x21].unk4 = 0xF0;
+        gUnk_03002C30[i + 0x21].unkA = 6;
+        gUnk_03002C30[i + 0x21].unkB = 0xF0;
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x67], i + 0x21);
+    }
+    play_sound_effect(0x2C);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802B980(void)
+{
+    u32 done = 0;
+    u32 count = 0;
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] == 0)
+            continue;
+        count++;
+        process_sprite_anim_commands(gUnk_083B5F80[0x67], i + 0x21);
+        if (gUnk_03002C30[i + 0x21].unk4 == gUnk_03002C30[(gUnk_03001800.unk60 + i) * 4 + 0x5D].unk4 - 4)
+            done++;
+        else
+            gUnk_03002C30[i + 0x21].unk4 = (gUnk_03002C30[i + 0x21].unk4 + 1) & 0xFF;
+    }
+    if (done == count)
+        gUnk_03001800.unkAA++;
+}
+
+void sub_0802BA2C(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] == 0)
+            continue;
+        gUnk_03002C30[i + 0x21].unk0 = 0xCC04;
+        gUnk_03002C30[i + 0x21].unkB = 0;
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x68], i + 0x21);
+    }
+    play_sound_effect(0x30);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802BAAC(void)
+{
+    u32 done = 0;
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] == 0)
+            continue;
+        process_sprite_anim_commands(gUnk_083B5F80[0x68], i + 0x21);
+        if (gUnk_03002C30[i + 0x21].unk22 == 0xFF)
+            done = 1;
+    }
+    if (done)
+        gUnk_03001800.unkAA++;
+}
+
+void sub_0802BB24(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] == 0)
+            continue;
+        gUnk_03002C30[i + 0x21].unk0 = 0xC404;
+        gUnk_03002C30[i + 0x21].unkB = 0xE0;
+        gUnk_03002C30[i + 0x21].unk4 += 8;
+        gUnk_03002C30[i + 0x21].unkA = 7;
+        gUnk_03002C30[i + 0x21].unk6 = 0x7C04 + gUnk_03001800.unk51;
+    }
+    gUnk_03000440.unk86 = 0;
+    play_sound_effect(0x2E);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802BBA8(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] != 0 && !(gUnk_03000440.unk86 & 1))
+            gUnk_03002C30[i + 0x21].unk4--;
+    }
+    if (++gUnk_03000440.unk86 == 0x20)
+    {
+        gUnk_03000440.unk86 = 0x3C;
+        gUnk_03001800.unkAA++;
+    }
+}
+
+void sub_0802BC1C(void)
+{
+    u32 i;
+
+    clear_battle_sprite_slot(0x21, 3);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] != 0)
+            gUnk_03001800.unkD6[i] = gUnk_03001800.unkEC;
+    }
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802BC60(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] == 0)
+            continue;
+        switch (gUnk_03001800.unk51)
+        {
+        case 0:
+            sub_08035740(&gUnk_03000590[gUnk_03001800.unk60 + i].parts[3].data[5], gUnk_03001800.unkEC, 0xFF);
+            break;
+        case 1:
+            sub_08035740(&gUnk_03000590[gUnk_03001800.unk60 + i].parts[3].data[6], gUnk_03001800.unkEC, 0xFF);
+            break;
+        case 2:
+            sub_08035740(&gUnk_03000590[gUnk_03001800.unk60 + i].parts[3].data[8], gUnk_03001800.unkEC, 0xFF);
+            break;
+        case 3:
+            sub_08035740(&gUnk_03000590[gUnk_03001800.unk60 + i].parts[3].data[9], gUnk_03001800.unkEC, 0xFF);
+            break;
+        }
+        sub_08035194(gUnk_03001800.unk60 + i);
+        sub_080351E8(gUnk_03001800.unk60 + i);
+    }
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802BD1C(void)
+{
+    switch (gUnk_03001800.unk51)
+    {
+    case 0:
+        gUnk_03001800.unkA6 = 0x3D;
+        break;
+    case 1:
+        gUnk_03001800.unkA6 = 0x3E;
+        break;
+    case 2:
+        gUnk_03001800.unkA6 = 0x40;
+        break;
+    case 3:
+        gUnk_03001800.unkA6 = 0x41;
+        break;
+    }
+    gUnk_03001800.unkAA++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BD6C);
 INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BD94);
 INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802BE44);
