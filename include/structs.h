@@ -496,7 +496,15 @@ struct Unk_03001800
     u8 unkF6; // bit 0 checked by sub_08020078
     u8 fillerF7[0x1];
     u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
-    u8 fillerF9[0x1B];
+    u8 unkF9; // skill shown by the action script command sub_08034074: chosen part's data[1], or Medaforce unkA8[0] + 0x50
+    u8 fillerFA;
+    u8 unkFB; // cleared by sub_08034074
+    u8 unkFC;
+    u8 unkFD;
+    u8 unkFE;
+    u8 unkFF; // bits 0 / 1 set by sub_080347F8 with unk114[0] / unk114[1] = 0x28
+    u16 unk100; // cleared by sub_08034074
+    u8 filler102[0x12];
     u8 unk114[2]; // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (sub_08020B4C)
     u8 filler116[0x2];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part
@@ -609,7 +617,9 @@ struct Unk_03000590
     u8 unkCF; // flags: bits 0/1/2/3 set by sub_08029354 (by gUnk_03001800.unk51)
     u8 unkD0;
     u8 unkD1; // raised by gUnk_03001800.unkEC up to 0xFF (sub_0802AC7C, written as &unkD0 + 1 to match)
-    u8 fillerD2[0x3];
+    u8 unkD2;
+    u8 unkD3; // added to gUnk_03001800.unkEC for parts with data[2] 0 / 1 (sub_08033D30)
+    u8 unkD4; // added for data[2] 2 / 3 (sub_08033D30)
     u8 unkD5; // added to gUnk_03001800.unkEC for unk28[side].unk5 (sub_08021418)
     u8 unkD6; // flags (bit 1: +10 damage, sub_0801ECC0)
     u8 unkD7; // movement: sub-pixel accumulator, + (0x20 - unkBB) per frame, 1/16 px (battle_bot_move)

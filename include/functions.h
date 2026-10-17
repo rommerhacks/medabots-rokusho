@@ -1059,4 +1059,7 @@ void sub_080393BC(void);
 void sub_0801DEE4(void);
 void sub_0801FA40(void);
 void sub_0802645C(void);
+void sub_08035754(s16 *amount, s32 sub); // *amount -= sub, not below 0
+void sub_08035B9C(u32 rec);
+u32 sub_08037798(u32 base); // record on side base, or 0xFF
 #endif // GUARD_FUNCTIONS_H
