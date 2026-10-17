@@ -932,5 +932,7 @@ void battle_calc_damage_split(u8 rec, u8 part, s32 amount); // unkC8 = unkCC = m
 u32 battle_check_action_counter(u16 *amount, u8 rec, u8 part);
 u32 sub_080331F8(u8 rec);
 u32 sub_08036D64(u8 rec, u8 skill);
+u32 medal_update_exp_progress(u8 slot, u32 n);
+void battle_set_action_params(u8 rec, u8 skill, s32 a, s32 b);
 
 #endif // GUARD_FUNCTIONS_H
