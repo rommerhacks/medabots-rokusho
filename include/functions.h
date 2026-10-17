@@ -890,6 +890,15 @@ void sub_08035694(u32 slot);
 u32 update_sprite_deceleration(u32 slot, s16 a, s16 b);
 void check_sprite_overlap_and_adjust(u32 slot, u32 b);
 void sub_080356B4(u32 slot);
+void decompress_indexed_graphics_to_ewram(u32 list);
+void decompress_fixed_graphics_to_ewram(void);
+void sub_08035C3C(void);
+void sub_08043E48(void);
+void sub_08035C70(void);
+void init_battle_scene_backgrounds(void);
+void sub_080361A8(void);
+void battle_advance_dialogue_text(void);
+void battle_advance_action_text(void);
 void sub_08035928(u32 rec, u32 target); // guess: record rec targets record target - 1 (unkE0, gUnk_03001800.unk88)
 void sub_08035944(u32 rec, u32 part); // guess: record rec targets part part - 1 (unkE1, gUnk_03001800.unk8B)
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);

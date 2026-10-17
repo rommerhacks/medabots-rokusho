@@ -704,11 +704,83 @@ void sub_0801DFE0(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801E09C);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801E200);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801E248);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801E2B8);
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801E2D8);
+void sub_0801E09C(void)
+{
+    u32 zero;
+
+    switch (gUnk_03000440.unk139)
+    {
+    case 0:
+        sub_08043CA8();
+        REG_DISPCNT &= 0xE0FF;
+        REG_BG0CNT = 0x500;
+        REG_BG1CNT = 0x1801;
+        REG_BG2CNT = 0x590A;
+        REG_BG3CNT = 0x5B0B;
+        lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+        vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG1CNT, 0);
+        decompress_tileset_to_vram(gUnk_03001800.unk38, 0);
+        zero = 0;
+        CpuFastSet(&zero, gUnk_03002C30, 0x01000800);
+        gUnk_03000440.unk139++;
+        break;
+    case 1:
+        REG_DISPCNT |= 0x1F40;
+        REG_DISPCNT &= 0xFFDF;
+        apply_battle_blend_effect_a();
+        if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3)
+            decompress_indexed_graphics_to_ewram(gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1]);
+        else
+            decompress_indexed_graphics_to_ewram(gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50);
+        decompress_fixed_graphics_to_ewram();
+        sub_08035C3C();
+        gVBlankCallback = sub_08043E48;
+        gUnk_03000440.unk84 = 0;
+        gUnk_03000440.unk139 = 0;
+        gUnk_03001800.unkAA++;
+        break;
+    }
+}
+
+void sub_0801E200(void)
+{
+    u32 zero = 0;
+
+    CpuFastSet(&zero, gUnk_03002C30, 0x01000800);
+    sub_08035C70();
+    init_battle_scene_backgrounds();
+    sub_080361A8();
+    gUnk_03000440.unk84 = 0;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0801E248(void)
+{
+    init_battle_scene_backgrounds();
+    battle_advance_dialogue_text();
+    battle_advance_action_text();
+    vram_fill_tilemap_rect(0x1E, 1, 0, 9 - gUnk_03000440.unk84, REG_BG0CNT, 0);
+    vram_fill_tilemap_rect(0x1E, 1, 0, gUnk_03000440.unk84 + 10, REG_BG0CNT, 0);
+    if (gUnk_03000440.unk84 == 9)
+        gUnk_03001800.unkAA++;
+    else
+        gUnk_03000440.unk84++;
+}
+
+void sub_0801E2B8(void)
+{
+    init_battle_scene_backgrounds();
+    battle_advance_dialogue_text();
+    battle_advance_action_text();
+    gUnk_03001800.unkB5 = 1;
+}
+
+void sub_0801E2D8(void)
+{
+    gUnk_03001800.unkB5 = 0;
+    gUnk_083AD610[gUnk_03001800.unkAA]();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801E300);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801E3C0);
 INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801E474);
