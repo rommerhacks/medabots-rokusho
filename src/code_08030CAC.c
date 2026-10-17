@@ -1663,50 +1663,280 @@ INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033F04);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033F64);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033F9C);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034008);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_0803402C);
+
+void sub_0803402C(void)
+{
+    sub_0801DE1C();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034048);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034074);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034120);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034170);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080341C0);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034200);
+
+void sub_080341C0(void)
+{
+    init_battle_scene_backgrounds();
+    gUnk_03001800.unk15F = battle_advance_dialogue_text();
+    gUnk_03001800.unk160 = battle_advance_action_text();
+    sub_0801E2D8();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034200(void)
+{
+    init_battle_scene_backgrounds();
+    gUnk_03001800.unk15F = battle_advance_dialogue_text();
+    gUnk_03001800.unk160 = battle_advance_action_text();
+    sub_0801F484();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034240);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_0803426C);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034288);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080342C8);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080342E4);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034300);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_0803431C);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_0803435C);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034378);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080343B8);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080343D4);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080343F0);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_0803440C);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034428);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034444);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034460);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_0803447C);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034498);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080344B4);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080344D0);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080344EC);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034508);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034524);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034540);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_0803455C);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034578);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034594);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080345B0);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080345CC);
+
+void sub_0803426C(void)
+{
+    sub_0801FDEC();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034288(void)
+{
+    init_battle_scene_backgrounds();
+    gUnk_03001800.unk15F = battle_advance_dialogue_text();
+    gUnk_03001800.unk160 = battle_advance_action_text();
+    sub_08020050();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_080342C8(void)
+{
+    sub_0802057C();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_080342E4(void)
+{
+    sub_080207A4();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034300(void)
+{
+    sub_0802081C();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_0803431C(void)
+{
+    init_battle_scene_backgrounds();
+    gUnk_03001800.unk15F = battle_advance_dialogue_text();
+    gUnk_03001800.unk160 = battle_advance_action_text();
+    sub_080208C0();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_0803435C(void)
+{
+    sub_080209B0();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034378(void)
+{
+    init_battle_scene_backgrounds();
+    gUnk_03001800.unk15F = battle_advance_dialogue_text();
+    gUnk_03001800.unk160 = battle_advance_action_text();
+    sub_08020A68();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_080343B8(void)
+{
+    sub_08020CFC();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_080343D4(void)
+{
+    sub_080218BC();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_080343F0(void)
+{
+    sub_08021E04();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_0803440C(void)
+{
+    sub_08022154();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034428(void)
+{
+    sub_080223BC();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034444(void)
+{
+    sub_080227D8();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034460(void)
+{
+    sub_08022CA8();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_0803447C(void)
+{
+    sub_08022FF0();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034498(void)
+{
+    sub_0802342C();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_080344B4(void)
+{
+    sub_08023730();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_080344D0(void)
+{
+    sub_08023AC8();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_080344EC(void)
+{
+    sub_08023C90();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034508(void)
+{
+    sub_08024090();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034524(void)
+{
+    sub_08024998();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034540(void)
+{
+    sub_08024E04();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_0803455C(void)
+{
+    sub_0802518C();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034578(void)
+{
+    dispatch_battle_action_step();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034594(void)
+{
+    sub_08025AF8();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_080345B0(void)
+{
+    sub_08025F2C();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_080345CC(void)
+{
+    sub_08025FA0();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080345E8);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034628);
+
+void sub_08034628(void)
+{
+    sub_08026108();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034644);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034684);
+
+void sub_08034684(void)
+{
+    init_battle_scene_backgrounds();
+    gUnk_03001800.unk15F = battle_advance_dialogue_text();
+    gUnk_03001800.unk160 = battle_advance_action_text();
+    sub_08026884();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080346C4);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034708);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034728);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_0803476C);
+
+void sub_0803476C(void)
+{
+    init_battle_scene_backgrounds();
+    gUnk_03001800.unk15F = battle_advance_dialogue_text();
+    gUnk_03001800.unk160 = battle_advance_action_text();
+    sub_08026CF4();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
 
 void sub_080347AC(void)
 {
@@ -1716,7 +1946,17 @@ void sub_080347AC(void)
 
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080347BC);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080347F8);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080348D0);
+
+void sub_080348D0(void)
+{
+    init_battle_scene_backgrounds();
+    gUnk_03001800.unk15F = battle_advance_dialogue_text();
+    gUnk_03001800.unk160 = battle_advance_action_text();
+    sub_08026ED0();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034910);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_0803496C);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080349D8);
@@ -1724,13 +1964,74 @@ INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034A68);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034AA0);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034AF4);
 INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034B68);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034BA0);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034BBC);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034BD8);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034BF4);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034C10);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034C2C);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034C48);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034C64);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034C80);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08034C9C);
+
+void sub_08034BA0(void)
+{
+    sub_08026FD0();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034BBC(void)
+{
+    sub_0802793C();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034BD8(void)
+{
+    sub_08027F5C();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034BF4(void)
+{
+    sub_08028248();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034C10(void)
+{
+    sub_08028404();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034C2C(void)
+{
+    sub_08028C40();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034C48(void)
+{
+    sub_080294B4();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034C64(void)
+{
+    sub_08029840();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034C80(void)
+{
+    sub_08029E0C();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
+void sub_08034C9C(void)
+{
+    sub_0802A0E8();
+    if (gUnk_03001800.unkB5)
+        sub_08034F08();
+}
+
