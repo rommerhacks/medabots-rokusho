@@ -795,7 +795,12 @@ void fade_out_transition_step(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", dispatch_substate_handler);
+void dispatch_substate_handler(void)
+{
+    struct FuncTable7 t = gUnk_080AFA20;
+    t.f[gGameSubState]();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", init_scene_rendering_context);
 
 void load_medapart_sprite_animation(u8 id, u8 kind, u32 which)
@@ -853,7 +858,92 @@ void sub_08062AB0(u32 medal, u32 frame)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", update_animated_tilemap);
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", animate_battle_scroll_tiles);
+
+void animate_battle_scroll_tiles(void)
+{
+    s32 v;
+    s32 i;
+    u8 *src;
+    u8 *dst;
+
+    switch (gUnk_03006F74->unk3A / 128)
+    {
+    case 0:
+        v = gUnk_03006F74->unk3A >> 1;
+        break;
+    case 1:
+        v = gUnk_03006F74->unk3A >> 2;
+        break;
+    case 2:
+        v = gUnk_03006F74->unk3A >> 3;
+        break;
+    case 3:
+        v = gUnk_03006F74->unk3A >> 4;
+        break;
+    default:
+        v = gUnk_03006F74->unk3A >> 5;
+        break;
+    }
+    v &= 3;
+    if (--gUnk_03006F74->unk3A < 0)
+        gUnk_03006F74->unk3A = 0x3F;
+    dst = (u8 *)0x0600E9E2;
+    v <<= 9;
+    src = (u8 *)0x0600D800 + v;
+    for (i = 0; i < 8; i++)
+    {
+        CpuSet(src, dst, 0xC);
+        dst += 0x40;
+        src += 0x40;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", update_scroll_animation_tiles);
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", fade_update_tilemap_copy);
+
+void fade_update_tilemap_copy(void)
+{
+    s32 v;
+    s32 i;
+    u8 *src;
+    u8 *dst;
+
+    switch (gUnk_03006F74->unk3A / 128)
+    {
+    case 0:
+    case 1:
+        v = gUnk_03006F74->unk3A >> 5;
+        break;
+    case 2:
+        v = gUnk_03006F74->unk3A >> 4;
+        break;
+    case 3:
+        v = gUnk_03006F74->unk3A >> 3;
+        break;
+    case 4:
+        v = gUnk_03006F74->unk3A >> 2;
+        break;
+    default:
+        v = gUnk_03006F74->unk3A >> 1;
+        break;
+    }
+    v &= 3;
+    if (--gUnk_03006F74->unk3A < 0)
+        gUnk_03006F74->unk3A = 0x3F;
+    dst = (u8 *)0x0600E9E2;
+    v <<= 9;
+    src = (u8 *)0x0600D800 + v;
+    for (i = 0; i < 8; i++)
+    {
+        CpuSet(src, dst, 0xC);
+        dst += 0x40;
+        src += 0x40;
+    }
+}
+
+void sub_08062E10(void)
+{
+    gUnk_03006F74->unk31 = gUnk_03002B68;
+    gUnk_03006F74->unk33 = ((u16 *)&gUnk_03002B68)[1];
+    gGameSubState++;
+}
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08062E3C);

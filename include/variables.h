@@ -870,3 +870,7 @@ extern const u8 gUnk_080AFA3C[][4][2]; // x, y by [which][kind] (load_medapart_s
 extern const u16 gUnk_08488AA4[]; // OBJ palette 1 (sub_08060FD4)
 extern const u16 gUnk_0879671C[]; // BG palettes (sub_08060FD4)
 extern const u8 gUnk_080AFA08[4][2]; // icon x, y in BG2 tiles (battle_menu_highlight_icons)
+// A function table that the code copies to the stack before indexing it (agbcc emits ldm / stm for
+// the struct copy), like a local initialized array whose initializer lives in ROM.
+struct FuncTable7 { Func f[7]; };
+extern const struct FuncTable7 gUnk_080AFA20; // sub-state handlers by gGameSubState (dispatch_substate_handler)
