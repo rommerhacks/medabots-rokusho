@@ -43,7 +43,16 @@ u32 poll_choice_menu(void)
     return gUnk_03000440.unk28;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_bg_tilemap_to_vram);
+void decompress_bg_tilemap_to_vram(void)
+{
+    lz_decompress_dispatch(gUnk_084878EC, (void *)(VRAM + 0x2600));
+    lz_decompress_dispatch(gUnk_0848796C, (void *)(VRAM + 0x26E0));
+    lz_decompress_dispatch(gUnk_084C7318, (void *)(VRAM + 0x17E00));
+    set_tilemap_and_decompress_bg(0, 0x15, gUnk_084886D0, REG_BG0CNT, 0x130);
+    set_tilemap_and_decompress_bg(2, 0x16, gUnk_08488718, REG_BG0CNT, 0x137);
+    CpuFastSet(gUnk_084E2E58, (void *)(PLTT + 0x3C0), 8);
+    gUnk_03000440.unk29++;
+}
 
 void clear_tilemap_and_advance_state(void)
 {
@@ -142,7 +151,22 @@ void update_sprite_hflip_by_animation_phase(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", animate_battle_sprite_shrink);
+void animate_battle_sprite_shrink(void)
+{
+    gUnk_03002C30[gUnk_03000440.unk2B].unk8 -= 8;
+    gUnk_03002C30[gUnk_03000440.unk2B].unk9 -= 8;
+    if (gUnk_03002C30[gUnk_03000440.unk2B].unk8 == 0)
+    {
+        clear_battle_sprite_slot(gUnk_03000440.unk2B, 1);
+        gUnk_03000440.unk29++;
+    }
+}
+
+void sub_08041BF4(void)
+{
+    gUnk_03000440.unk28 = (gUnk_03000440.unk2A << 4) + 1;
+    gUnk_03000440.unk29++;
+}
 
 void sub_08041C14(u8 sprite, u8 frame, u16 y)
 {
@@ -567,7 +591,16 @@ void modify_medapart_quantity(u32 id, u32 kind, u32 byte, u32 subtract, u32 n)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", draw_tilemap_with_offset);
+void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags)
+{
+    if (id == 0xFF)
+        fill_tilemap_rect_08042698(2, 2, x, y, bgcnt, flags + 0x101C);
+    else if (id >> 2)
+        fill_tilemap_rect_08042698(2, 2, x, y, bgcnt, flags + id * 4 + 0x1000);
+    else
+        fill_tilemap_rect_08042698(2, 2, x, y, bgcnt, flags + id * 4);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_0804361C);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", find_next_available_medapart_slot);
 
@@ -610,7 +643,17 @@ void load_battlefield_data_to_buffer(void)
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", check_random_encounter);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043AE0);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_tileset_to_vram);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_sprite_to_vram_08043C08);
+
+void decompress_sprite_to_vram_08043C08(u32 idx, u32 backup)
+{
+    lz_decompress_dispatch(gUnk_083B24A8[idx * 5], (void *)(VRAM + 0x8000));
+    set_tilemap_and_decompress_bg(0, 0, gUnk_083B24A8[idx * 5 + 3], REG_BG2CNT, 0);
+    set_tilemap_and_decompress_bg(0, 0, gUnk_083B24A8[idx * 5 + 4], REG_BG3CNT, 0);
+    if (backup)
+        CpuFastSet(gUnk_083B24A8[idx * 5 + 2], gPaletteBackupBg, 0x40);
+    else
+        CpuFastSet(gUnk_083B24A8[idx * 5 + 2], (void *)PLTT, 0x40);
+}
 
 s32 sub_08043C94(void)
 {
@@ -736,7 +779,24 @@ void decompress_to_ewram_27000(const u8 *src)
     lz_decompress_dispatch(src, (void *)0x02027000);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", race_enter_team_select);
+void race_enter_team_select(void)
+{
+    u32 a = 0;
+    u32 b;
+
+    CpuFastSet(&a, (void *)OBJ_PLTT, 0x01000080);
+    b = 0;
+    CpuFastSet(&b, (void *)PLTT, 0x01000080);
+    sub_0803F624(&gUnk_03000440.unk50, 0x14, 0);
+    gUnk_03000440.unk50 = 3;
+    gUnk_03001800.unk41[0] = 0;
+    gUnk_03001800.unk41[1] = 0;
+    gUnk_03001800.unk41[2] = 0;
+    gGameMode = 0;
+    gGameState = 3;
+    gGameSubState = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_sprite_animation_position);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", calculate_direction_index);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_scene_buffers_080445F4);

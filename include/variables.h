@@ -766,3 +766,8 @@ extern const u8 gUnk_083C3B5C[][8]; // per battlefield, copied to gUnk_03001800.
 extern const Func gUnk_083B2814[]; // choice menu states by gUnk_03000440.unk29 (poll_choice_menu)
 extern const Func gUnk_083B284C[]; // by gUnk_03000440.unk1B (game_state_execute_handler_a)
 extern const Func gUnk_083B2864[]; // by gUnk_03000440.unk1B (game_state_execute_handler_b)
+extern const u8 *const gUnk_083B23F8[]; // 4 compressed graphics pointers per entry: tiles, BG palette, BG2 / BG3 tilemaps (decompress_tileset_to_vram)
+extern const u8 gUnk_084878EC[]; // compressed tiles (decompress_bg_tilemap_to_vram)
+extern const u8 gUnk_0848796C[]; // compressed tiles
+extern const u8 gUnk_084886D0[]; // compressed tilemap
+extern const u8 gUnk_08488718[]; // compressed tilemap

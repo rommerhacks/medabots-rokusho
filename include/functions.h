@@ -1161,3 +1161,8 @@ void init_window_params(u8 a, u8 b, u8 c, u8 d);
 void clear_tilemap_and_advance_state(void);
 void export_medals_to_buffer(const void *src);
 u32 clear_ewram_buffer_02023000(void);
+void animate_battle_sprite_shrink(void);
+void sub_08041BF4(void);
+void race_enter_team_select(void);
+void decompress_sprite_to_vram_08043C08(u32 idx, u32 backup);
+void decompress_bg_tilemap_to_vram(void);
