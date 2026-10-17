@@ -430,3 +430,12 @@
   both living in the same callee-saved register (validate_save_data).
 * A u8 parameter tested as `lsls r1, r1, #24; cmp r1, #0` with the truncation *after* other setup:
   the parameter is `u32`/`int` and the test is `if ((u8)force)` (write_save_to_eeprom).
+* `bool32` sprite / state handlers whose original falls through to `movs r0, #1` and branches to
+  `movs r0, #0`: write the FALSE case first (`if (a < b) return FALSE; return TRUE;`, or
+  `if (x > 0x8F) { ...; return FALSE; } return TRUE;`). The mirrored `if (a >= b) return TRUE;`
+  flips the branch (race sprite handlers sub_0806B014 .. sub_0806B124).
+* `ldr rB, =gUnk_03002C30` **before** `lsls rI, sprite, #6`: index the global in every statement
+  (`gUnk_03002C30[sprite].unk2 += 2;`); a `struct Unk_03002C30 *s = &gUnk_03002C30[sprite]` local
+  computes the shift first (sub_0806AFA0, update_sprite_animations_tick_0806AF40).
+* `x = c ? 1 : 2;` into a struct field reached through a pointer local loads the pointer before the
+  test; an `if` with a temporary loads it after (sub_08069158).
