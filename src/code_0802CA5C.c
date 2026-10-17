@@ -2018,7 +2018,10 @@ void sub_0803081C(void)
         gUnk_03001800.unkAA++;
 }
 
-void sub_08030860(void)
+// Battle action phase, every frame: unless waiting on the serial link, runs the gUnk_083AEB58 step for
+// gGameSubState (load sprites 0x08030890, turn cursor 0x08030910 / 0x08030990, choice check sub_080309C8,
+// resolve_battle_action_phase; runtime-checked in the battle scenario).
+void battle_action_state_update(void)
 {
     if (sub_0803EED8() == 0)
     {
@@ -2072,6 +2075,8 @@ void sub_08030990(void)
     }
 }
 
+// Fails with message 4 when the acting Medabot has unkBD bit 0 set; no part chosen (unkDD == 0) goes to
+// sub-state 0x10, otherwise on to resolve_battle_action_phase.
 void sub_080309C8(void)
 {
     if (gUnk_03000590[gUnk_03001800.unk87].unkBD & 1)
