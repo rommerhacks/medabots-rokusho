@@ -1209,8 +1209,8 @@ void battle_init_phase(void)
     {
         clear_battle_bot_array();
         count_active_battle_bots();
-        battle_setup_bot_entry();
-        init_battle_entities_and_labels();
+        battle_setup_team_bots();
+        init_opponent_bots();
     }
     battle_process_all_bots_actions();
     if (gUnk_03000440.unk89 != 1)
@@ -1417,7 +1417,7 @@ void robattle_command_commit(void)
             break;
         case 1:
             if (gUnk_03001800.unk82)
-                load_bot_palette_data(gUnk_03001800.unk80, gUnk_03001800.unk82 - 1);
+                battle_bot_select_medaforce(gUnk_03001800.unk80, gUnk_03001800.unk82 - 1);
             else
                 battle_bot_select_part(gUnk_03001800.unk80, 0);
             break;
@@ -2123,7 +2123,7 @@ void sub_080143A0(void)
     gUnk_03000590[gUnk_03001800.unk87].unkBD ^= 4;
     iterate_bots_setup_battle_sprites();
     sub_0801A678();
-    sub_08015414(gUnk_03001800.unk87);
+    battle_bot_advance_rotation(gUnk_03001800.unk87);
     if (sub_0801A6B0())
     {
         sub_0803F624(&gUnk_03001800.unk45, 0xC, 0);

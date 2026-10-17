@@ -1,5 +1,7 @@
 #include "global.h"
 
+// Robattle (game state 7) handlers 0x70/0x71 and 0x78/0x79: show a number over each Medabot with
+// unkCE bit 2 (unkC8) / bit 3 (unkCD) for 90 frames (guess: damage / repair numbers).
 void sub_080147FC(void)
 {
     u32 i;
@@ -88,6 +90,8 @@ void sub_08014994(void)
     }
 }
 
+// Robattle handlers 0x90-0x99 and 0xA0-0xAF: exchange each side's chosen parts (unkDD) over the
+// serial link (gUnk_03005010), guess: link Robattle (only when gUnk_03000440.unk89 = 1).
 void sub_08014A44(void)
 {
     text_window_init(1, 0, 0);
@@ -149,7 +153,7 @@ void sub_08014C84(void)
     for (i = 0; i <= 2; i++)
     {
         if (gUnk_03000590[i + 3].unkDD > 3)
-            load_bot_palette_data(i + 3, gUnk_03000590[i + 3].unkDD - 4);
+            battle_bot_select_medaforce(i + 3, gUnk_03000590[i + 3].unkDD - 4);
     }
     gGameSubState++;
 }
@@ -203,7 +207,7 @@ void sub_08014D94(void)
 void sub_08014DC8(void)
 {
     if (gUnk_03001800.unk87 > 2 && gUnk_03000590[gUnk_03001800.unk87].unkDD > 3)
-        load_bot_palette_data(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].unkDD - 4);
+        battle_bot_select_medaforce(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].unkDD - 4);
     gGameSubState++;
 }
 
@@ -250,11 +254,11 @@ void count_active_battle_bots(void)
     gUnk_03001800.unk5B = gUnk_03001800.unk2;
 }
 
-void battle_setup_bot_entry(void)
+void battle_setup_team_bots(void)
 {
     copy_player_medals_to_battle_bots();
-    copy_battle_position_to_sprite();
-    setup_bot_render_label(0, gUnk_03001800.unk5A);
+    copy_team_slots_to_battle_bots();
+    battle_bots_load_parts(0, gUnk_03001800.unk5A);
 }
 
 void copy_player_medals_to_battle_bots(void)
@@ -265,7 +269,7 @@ void copy_player_medals_to_battle_bots(void)
         memcpy_bytes_0803F63C(&gUnk_03000BE0[find_medal_slot_by_id(gUnk_030017A0[gUnk_03001800.unk41[i] & 0xF].unk2) - 1], &gUnk_03000590[i], 0x40);
 }
 
-void copy_battle_position_to_sprite(void)
+void copy_team_slots_to_battle_bots(void)
 {
     u32 i;
 
@@ -273,7 +277,7 @@ void copy_battle_position_to_sprite(void)
         memcpy_bytes_0803F63C(&gUnk_030017A0[gUnk_03001800.unk41[i] & 0xF], &gUnk_03000590[i].unk40, 8);
 }
 
-void setup_bot_render_label(u32 rec, u32 n)
+void battle_bots_load_parts(u32 rec, u32 n)
 {
     u32 i;
 
@@ -301,14 +305,14 @@ void setup_bot_render_label(u32 rec, u32 n)
     }
 }
 
-void init_battle_entities_and_labels(void)
+void init_opponent_bots(void)
 {
     u32 i;
 
     for (i = 0; i < gUnk_03001800.unk5B; i++)
         init_enemy_bot_medal(i);
-    init_enemy_bot_loadouts();
-    setup_bot_render_label(3, gUnk_03001800.unk5B);
+    init_opponent_bot_slots();
+    battle_bots_load_parts(3, gUnk_03001800.unk5B);
 }
 
 void init_enemy_bot_medal(u8 i)
@@ -345,7 +349,7 @@ void init_enemy_bot_medal(u8 i)
     }
 }
 
-void init_enemy_bot_loadouts(void)
+void init_opponent_bot_slots(void)
 {
     u32 i;
 
@@ -421,7 +425,7 @@ u32 battle_dispatch_action_by_type(u32 rec)
     case 1:
     case 2:
     case 3:
-        if (can_bot_perform_action(rec, type))
+        if (battle_part_unusable(rec, type))
             return 1;
         battle_bot_select_part(rec, type);
         return 0;
@@ -437,20 +441,20 @@ u32 battle_dispatch_action_by_type(u32 rec)
     }
 }
 
-void sub_08015414(u32 rec)
+void battle_bot_advance_rotation(u32 rec)
 {
     if (++gUnk_03000590[rec].medal.unk3F == 8)
         gUnk_03000590[rec].medal.unk3F = gUnk_03000590[rec].medal.unk9;
 }
 
-void sub_08015438(void)
+void battle_advance_all_rotations(void)
 {
     u32 i;
 
     for (i = 0; i <= 5; i++)
     {
         if (gUnk_03000590[i].unk40)
-            sub_08015414(i);
+            battle_bot_advance_rotation(i);
     }
 }
 
@@ -461,7 +465,7 @@ void select_bot_battle_action(u32 rec)
     if (gUnk_03000590[rec].unkC1 == 0x50 && (rng_next_080424B8() & 1)
         && !check_medaforce_availability(rec, 0, 1))
         return;
-    set_random_battle_formation();
+    battle_ai_roll_part_order();
     for (i = 0; i <= 3; i++)
     {
         if (gUnk_03001800.unk64[i] == 0xFF)
@@ -469,7 +473,7 @@ void select_bot_battle_action(u32 rec)
             battle_bot_select_part(rec, 0);
             return;
         }
-        if (!can_bot_perform_action(rec, gUnk_03001800.unk64[i]))
+        if (!battle_part_unusable(rec, gUnk_03001800.unk64[i]))
         {
             battle_bot_select_part(rec, gUnk_03001800.unk64[i]);
             return;
@@ -538,7 +542,7 @@ u32 check_medaforce_availability(u32 rec, u32 slot, u32 random)
         {
             if (gUnk_03000590[rec].medal.unk5 > 9)
             {
-                load_bot_palette_data(rec, 0);
+                battle_bot_select_medaforce(rec, 0);
                 return 0;
             }
             if (!random)
@@ -548,7 +552,7 @@ u32 check_medaforce_availability(u32 rec, u32 slot, u32 random)
         {
             if (gUnk_03000590[rec].medal.unk5 > 29)
             {
-                load_bot_palette_data(rec, 1);
+                battle_bot_select_medaforce(rec, 1);
                 return 0;
             }
             if (!random)
@@ -558,7 +562,7 @@ u32 check_medaforce_availability(u32 rec, u32 slot, u32 random)
         {
             if (gUnk_03000590[rec].medal.unk5 > 59)
             {
-                load_bot_palette_data(rec, 2);
+                battle_bot_select_medaforce(rec, 2);
                 return 0;
             }
             if (!random)
@@ -577,19 +581,19 @@ u32 sub_08015648(u32 rec)
     return 1;
 }
 
-void load_bot_palette_data(u32 rec, u32 part)
+void battle_bot_select_medaforce(u32 rec, u32 part)
 {
     memcpy_bytes_08041D04(&gUnk_083B7E0C[gUnk_03000590[rec].medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
     memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gUnk_03000440.unkEE)[part] * 6], gUnk_03000590[rec].unkA8, 6);
     battle_bot_select_part(rec, part + 4);
 }
 
-void set_random_battle_formation(void)
+void battle_ai_roll_part_order(void)
 {
     memcpy_bytes_08041D04(gUnk_083AD2F0[rng_next_080424B8() & 0x1F], gUnk_03001800.unk64, 4);
 }
 
-u32 can_bot_perform_action(u32 rec, u32 part)
+u32 battle_part_unusable(u32 rec, u32 part)
 {
     if (!sub_080154E0(rec, part) && !sub_08015508(rec, part) && !sub_08015528(rec, part)
         && !begin_battle_action_lookup(rec, part))

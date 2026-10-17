@@ -325,7 +325,7 @@ void sub_08004A18(void)
     setup_overworld_scene_from_position();
     clear_battle_bot_array();
     count_active_battle_bots();
-    battle_setup_bot_entry();
+    battle_setup_team_bots();
     gGameSubState++;
 }
 
@@ -1877,7 +1877,7 @@ void sub_08007540(void)
         if (gUnk_03000590[i + 3].unk40)
             gUnk_03001800.unk5B++;
     }
-    setup_bot_render_label(3, gUnk_03001800.unk5B);
+    battle_bots_load_parts(3, gUnk_03001800.unk5B);
 }
 
 // Game state 4: the Medals screen (runtime-checked from Medawatch > Medals). Sub-states 0-5 = Medal

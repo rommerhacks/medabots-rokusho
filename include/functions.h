@@ -209,10 +209,10 @@ void sub_0800FFF4(void);
 void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile, u32 pal, u32 e);
 void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base);
 u32 sub_08042B80(u8 a);
-void setup_bot_render_label(u32 a, u32 n);
+void battle_bots_load_parts(u32 a, u32 n);
 void clear_battle_bot_array(void);
 void count_active_battle_bots(void);
-void battle_setup_bot_entry(void);
+void battle_setup_team_bots(void);
 void sub_08015F90(u32 a);
 void sub_08016080(u32 a);
 void animate_battle_sprites(u32 idx);
@@ -679,7 +679,7 @@ void render_bot_health_bar(u32 rec);
 void render_bot_cash_display(u32 rec);
 void battle_load_sprite_data(void);
 void sub_08015F78(void);
-void init_battle_entities_and_labels(void);
+void init_opponent_bots(void);
 void battle_process_all_bots_actions(void);
 void sub_08018A18(void);
 void load_battle_script_entry_b(void);
@@ -710,7 +710,7 @@ void draw_partial_bg1_column(void);
 void scroll_tilemap_window(void);
 void sub_08016FB4(void);
 void process_bot_battle_turn(u32 rec);
-void load_bot_palette_data(u32 rec, u32 part);
+void battle_bot_select_medaforce(u32 rec, u32 part);
 void battle_bot_select_part(u32 rec, u32 part);
 void sub_08018900(u32 a);
 void init_battle_action_select_ui(u32 a);
@@ -785,7 +785,7 @@ void sort_active_medal_slots(void);
 void battle_calc_bot_count_minus_one_mod3(void);
 void sub_0801A678(void);
 void iterate_bots_setup_battle_sprites(void);
-void sub_08015414(u32 rec);
+void battle_bot_advance_rotation(u32 rec);
 u32 sub_0801A6B0(void);
 void battle_process_all_bot_actions(u32 rec);
 u32 sub_0801A6EC(u32 rec);
@@ -797,18 +797,18 @@ void set_display_digit_type(u8 *buf, u32 value, u32 type);
 void sub_0801A144(u8 *buf, u32 rec);
 void sub_0801A228(u32 rec);
 void copy_player_medals_to_battle_bots(void);
-void copy_battle_position_to_sprite(void);
+void copy_team_slots_to_battle_bots(void);
 void init_enemy_bot_medal(u8 i);
-void init_enemy_bot_loadouts(void);
+void init_opponent_bot_slots(void);
 u32 battle_dispatch_action_by_type(u32 rec);
 void select_bot_battle_action(u32 rec);
-u32 sub_080154E0(u32 rec, u32 part);
-u32 sub_08015508(u32 rec, u32 part);
-u32 sub_08015528(u32 rec, u32 part);
-u32 check_medaforce_availability(u32 rec, u32 slot, u32 random);
-u32 sub_08015648(u32 rec);
-void set_random_battle_formation(void);
-u32 can_bot_perform_action(u32 rec, u32 part);
+u32 sub_080154E0(u32 rec, u32 part); // 1 if unkC9 == 0x2B and unkCA == part (guess: part sealed by a status effect)
+u32 sub_08015508(u32 rec, u32 part); // 1 if part is the head and its unk10 (data[8]) is 0 (guess: no uses left)
+u32 sub_08015528(u32 rec, u32 part); // 1 if the part's unk11 is 0 (guess: part broken)
+u32 check_medaforce_availability(u32 rec, u32 slot, u32 random); // 0 = Medaforce slot chosen (battle_bot_select_medaforce), 1 = not available
+u32 sub_08015648(u32 rec); // 1 for opponents (rec 3-5) while gUnk_030057E0.unk7FF <= 2 (guess: early-game opponents can't use Medaforce)
+void battle_ai_roll_part_order(void);
+u32 battle_part_unusable(u32 rec, u32 part); // any of sub_080154E0 / sub_08015508 / sub_08015528 / begin_battle_action_lookup
 u32 rng_lookup_table_value(void);
 u32 begin_battle_action_lookup(u32 rec, u32 part);
 

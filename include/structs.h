@@ -362,7 +362,7 @@ struct Unk_03001800
     u8 unk5A; // Robattle: team Medabot count (3 in battle_start.ss0)
     u8 unk5B;
     u8 filler5C[0x8];
-    u8 unk64[4]; // filled by get_bot_part_effective_values (sub_08013B8C); AI part order from gUnk_083AD2F0 (set_random_battle_formation)
+    u8 unk64[4]; // filled by get_bot_part_effective_values (sub_08013B8C); AI part order from gUnk_083AD2F0 (battle_ai_roll_part_order)
     u8 filler68[0x18];
     u8 unk80; // index of a 256-byte record in gUnk_03000590 (sub_0800B498 copies Medal rotation data there)
     u8 unk81;
@@ -415,11 +415,11 @@ struct Unk_03000BE0
     u8 unk20[8]; // 0-100 (guess: skill levels, drawn by render_medal_skill_stats)
     u8 unk28[8]; // per skill: filled bar tiles, 0-8 (draw_medal_skill_bars)
     u8 filler30[0xF];
-    u8 unk3F; // Robattle: current unk18 entry (sub_08015414 advances it, wraps at 8 to unk9)
+    u8 unk3F; // Robattle: current unk18 entry (battle_bot_advance_rotation advances it, wraps at 8 to unk9)
 
 };
 
-// Battle Medapart record (0x18 bytes, 4 per gUnk_03000590 record from +0x48; setup_bot_render_label).
+// Battle Medapart record (0x18 bytes, 4 per gUnk_03000590 record from +0x48; battle_bots_load_parts).
 struct BattlePart
 {
     u8 data[0xD]; // part data record (load_part_data); data[0xA] summed as armor (accumulate_team_armor_stats)
@@ -436,20 +436,20 @@ struct BattlePart
 struct Unk_03000590
 {
     struct Unk_03000BE0 medal;
-    // 0x40-0x47: copy of the team slot (struct Unk_030017A0, copy_battle_position_to_sprite);
-    // opponents: unk40 = 3, unk41 = head part byte 3, unk42 = Medal graphic (init_enemy_bot_loadouts)
+    // 0x40-0x47: copy of the team slot (struct Unk_030017A0, copy_team_slots_to_battle_bots);
+    // opponents: unk40 = 3, unk41 = head part byte 3, unk42 = Medal graphic (init_opponent_bot_slots)
     u8 unk40; // nonzero: record in use
     u8 unk41;
     u8 unk42;
-    u8 unk43; // part ids: head, right arm, left arm, legs (setup_bot_render_label)
+    u8 unk43; // part ids: head, right arm, left arm, legs (battle_bots_load_parts)
     u8 unk44;
     u8 unk45;
     u8 unk46;
     u8 unk47;
     struct BattlePart parts[4]; // head, right arm, left arm, legs
-    u8 unkA8[6]; // chosen Medaforce: gUnk_083B7CD4 record (load_bot_palette_data)
+    u8 unkA8[6]; // chosen Medaforce: gUnk_083B7CD4 record (battle_bot_select_medaforce)
     u8 fillerAE[0xA];
-    u8 unkB8; // own record index (setup_bot_render_label)
+    u8 unkB8; // own record index (battle_bots_load_parts)
     u8 unkB9;
     u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
     u8 unkBB;
