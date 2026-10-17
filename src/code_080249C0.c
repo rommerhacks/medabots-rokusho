@@ -1820,9 +1820,43 @@ void sub_08028034(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08028078);
-INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_080280D4);
+void sub_08028078(void)
+{
+    if (gUnk_03001800.unk28[gUnk_03001800.unk8A].unk2 && gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 == 0x5A)
+    {
+        gUnk_03002C30[0x21].unk27 = 0;
+        gUnk_03001800.unkAA++;
+    }
+    else
+    {
+        play_sound_effect(0x3E);
+        gUnk_03001800.unkAA += 2;
+    }
+}
+
+void sub_080280D4(void)
+{
+    if (gUnk_03002C30[0x21].unk27 == 0x10)
+    {
+        play_sound_effect(0x3E);
+        gUnk_03001800.unkAA++;
+        return;
+    }
+    if (gUnk_03002C30[0x21].unk27 < 8)
+        gUnk_03002C30[0x21].unk8 += 8;
+    else
+        gUnk_03002C30[0x21].unk8 -= 8;
+    gUnk_03002C30[0x21].unk27++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08028130);
+
+void sub_08028230(void)
+{
+    gUnk_03001800.unkA6 = 0x50;
+    gUnk_03001800.unkAA++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08028248);
 INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_08028270);
 INCLUDE_ASM("asm/nonmatching/code_080249C0", sub_080282E0);
