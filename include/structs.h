@@ -1072,7 +1072,7 @@ struct Unk_03006F74
     u16 unk36; // save screen: last BG tile index loaded (sub_0805D628)
     u16 unk38;
     s16 unk3A; // title: blend step (sub_0805BB10)
-    u8 filler3C[0x2];
+    u16 unk3C;
     s16 unk3E;
     u8 filler40[0x8];
     u8 unk48;
@@ -1086,7 +1086,12 @@ struct Unk_03006F74
     s8 unk7A;
     u8 filler7B[0x2];
     s8 unk7D; // length of the text at *unkAC (scene_text_scroll_step)
-    u8 filler7E[0x2E];
+    u8 filler7E[0xC];
+    u16 unk8A[4]; // race: per-sprite values set by init_scene_with_palette_and_song_5
+    u16 unk92[4];
+    u16 unk9A[4];
+    u8 unkA2[5];
+    u8 unkA7[5];
     const u8 *const *unkAC; // scene text (scene_text_scroll_step)
     u8 fillerB0[0x1C0];
     u8 unk270[0x30]; // message text buffer (sub_08061180)

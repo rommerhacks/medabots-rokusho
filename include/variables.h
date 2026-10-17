@@ -958,6 +958,19 @@ extern const u8 gUnk_080AFA08[4][2]; // icon x, y in BG2 tiles (battle_menu_high
 struct FuncTable7 { Func f[7]; };
 extern const struct FuncTable7 gUnk_080AFA20; // sub-state handlers by gGameSubState (dispatch_substate_handler)
 extern const struct FuncTable7 gUnk_080AFEA8; // sub-state handlers by gGameSubState (dispatch_scene_substate_and_scroll)
+extern const u8 gUnk_080AFE96[]; // first tilemap column by gUnk_03006F74->unk5 (scroll_tilemap_column)
+struct U16PtrArray8 { const u16 *v[8]; };
+extern const u8 gUnk_080AFEE0[8];               // guess: tile block widths by type (write_tilemap_tiles_dma)
+extern const u8 gUnk_080AFEE8[8];               // guess: tile block heights by type (write_tilemap_tiles_dma)
+extern const u16 gUnk_080AFEF0[8];              // first tile by type (write_tilemap_tiles_dma)
+extern const struct U16PtrArray8 gUnk_080AFF00; // tile index lists by type (write_tilemap_tiles_dma)
+extern const u16 gUnk_080AFF20[8];              // palette bits by type (write_tilemap_tiles_dma)
+extern const u8 gUnk_087A3CFC[];  // race scene BG0 tilemap (decompress_and_write_tilemap)
+extern const u8 gUnk_087A3E64[];  // race scene BG2 tilemap (decompress_and_write_tilemap)
+extern const u8 gUnk_087A40A0[];  // race scene BG3 tilemap (decompress_and_write_tilemap)
+extern const u32 gUnk_087A1410[]; // race scene BG tiles (dma3_copy_or_decompress)
+extern const u8 gUnk_087A13B0[];  // race scene BG palettes (0x60 bytes to 0x0202FA00)
+extern const u8 gUnk_0850DEB8[];  // OBJ palette (0x20 bytes to 0x05000200)
 struct PtrTable3 { const u8 *const *p[3]; };
 extern const struct PtrTable3 gUnk_080AFE9C; // scene texts by gUnk_03006F74->unk5 (scene_text_scroll_step)
 extern const struct FuncTable7 gUnk_080AFEC4; // sub-state handlers by gGameSubState (dispatch_battle_end_substate)

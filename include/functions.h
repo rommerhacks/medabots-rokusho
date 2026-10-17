@@ -681,6 +681,8 @@ void LZ77UnCompVram(const void *src, void *dst);
 u32 resolve_tile_from_battle_state(u32 arg);
 void sub_0804877C(u8 idx);
 void divide_by_3(u8 a, u8 b);
+void init_fade_color_blend_params(void);
+void battle_ui_setup_partial(u32 a);
 void init_battle_sprite_entry_08048818(u8 idx, u16 attr, u32 frame, u8 a3, u8 a4);
 void decompress_battle_tile_graphics(void);
 void dma_load_obj_palettes_08048664(void);
