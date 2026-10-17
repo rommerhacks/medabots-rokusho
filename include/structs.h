@@ -473,7 +473,9 @@ struct Unk_03001800
     u8 unkF6; // bit 0 checked by sub_08020078
     u8 fillerF7[0x1];
     u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
-    u8 fillerF9[0x1F];
+    u8 fillerF9[0x1B];
+    u8 unk114[2]; // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (sub_08020B4C)
+    u8 filler116[0x2];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part
     u8 filler119[0x3];
     struct BattlePart unk11C; // saved part (data and id), restored by sub_0801B3AC

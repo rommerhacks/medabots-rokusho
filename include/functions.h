@@ -941,5 +941,9 @@ u32 sub_08036D64(u8 rec, u8 skill);
 u32 medal_update_exp_progress(u8 slot, u32 n);
 void battle_set_action_params(u8 rec, u8 skill, s32 a, s32 b);
 void reset_battle_bot_state(u8 rec);
+void sub_080351E8(u32 rec);
+u32 find_random_available_part_slot(u32 rec); // part + 1, 0 = none
+void battle_set_damage_display(u32 rec, u32 part, s32 amount);
+void get_active_bot_part_index_and_load_values(u32 side);
 
 #endif // GUARD_FUNCTIONS_H
