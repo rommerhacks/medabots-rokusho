@@ -30,7 +30,7 @@ extern struct Unk_03007014 *gUnk_03007014;
 extern struct Unk_03007014 gUnk_03002430; // sound work area (soft_reset_to_title passes it to sound_init)
 extern struct Vec16 gBg1Scroll;     // BG1 scroll (field: map camera)
 extern struct Unk_03005310 gUnk_03005310;
-extern u8 gUnk_03006F40[];
+extern struct Unk_03006F40 gUnk_03006F40;
 extern struct Unk_030055A0 gUnk_030055A0[];
 extern struct Vec16 gBg2Scroll;     // BG2 scroll
 extern struct Vec16 gBg3Scroll;     // BG3 scroll
@@ -775,3 +775,9 @@ extern const u8 gUnk_083C40B8[]; // per battlefield: animation tile count / 8 (a
 extern const u8 gUnk_083C40C3[]; // [battlefield][0x80]: animation tile block per frame, 0xFF = loop
 extern const u8 *const gUnk_083B1888[]; // 6 compressed sprite tile pointers per Medabot (decompress_sprite_to_vram_08042D94)
 extern const s16 gUnk_083D6BA0[]; // per angle 0-0xFF: cosine-like factor x256 (calc_polar_to_screen_coords x; gUnk_083D69A0 is the y factor)
+extern const u8 gUnk_0847EB80[]; // per area id (gUnk_030057E0.unk7FE), used unless unkC30 == 0xFF (sub_080483AC)
+extern struct Unk_03005290 gUnk_03005290;
+extern struct Unk_03005290 gUnk_030052B0;
+extern struct Unk_03005290 gUnk_030052D0;
+extern struct Unk_03005290 gUnk_030052F0;
+extern const u8 gUnk_083D2ADD[]; // per animation id (gUnk_03002C30[].unk30): 2 -> unkB = 0xFF, 1 -> 0, else 0x40 (sub_0804877C)

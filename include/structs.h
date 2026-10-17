@@ -781,7 +781,8 @@ struct Unk_030057E0
     u8 unkC2D;
     u8 unkC2E;
     u8 unkC2F;
-    u8 fillerC30[0x2];
+    u8 unkC30;
+    u8 unkC31;
     u8 unkC32;
     u8 unkC33; // Medawatch menu enabled (B opens the field menu only if set)
     u8 unkC34;
@@ -840,6 +841,23 @@ struct Unk_030057E0
     u8 fillerCBB[0x1];
     s8 unkCBC;
     s8 unkCBD;
+};
+
+// Four 0x20-byte records at 0x03005290 / 0x030052B0 / 0x030052D0 / 0x030052F0 (guess: BG layer state)
+struct Unk_03005290
+{
+    u8 filler0[0xD];
+    u8 unkD; // toggled between x and -2 - x (toggle_bg_layer_visibility)
+    u8 fillerE[0x12];
+};
+
+struct Unk_03006F40
+{
+    u8 unk0;
+    u8 unk1;
+    u8 filler2[0xA];
+    float unkC; // blend weights (sub_080487E4: 12.0, 10.0)
+    float unk10;
 };
 
 struct Unk_03005310

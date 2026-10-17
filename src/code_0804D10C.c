@@ -553,7 +553,7 @@ void sub_0804E324(void)
     gUnk_030057E0.unkC28 = gUnk_083D2998[gUnk_030057E0.unkC94[0]];
     load_battle_terrain_data();
     decompress_battle_tile_graphics();
-    switch (gUnk_03006F40[1])
+    switch (gUnk_03006F40.unk1)
     {
     case 1:
     case 3:

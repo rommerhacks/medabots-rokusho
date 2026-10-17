@@ -652,7 +652,7 @@ void set_sprite_animation_state(u8 idx, u8 state);
 u8 sub_080526F0(u16 x);
 u8 sub_08052714(u16 y);
 void set_battle_state_byte_c83(u8 dir);
-u32 sub_0804803C(u8 arg);
+u32 sub_0804803C(u32 arg);
 u8 get_adjacent_tile_value(u8 dir);
 void field_set_player_facing(u8 dir);
 void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj);
@@ -1178,3 +1178,9 @@ void battle_sprite_setup_cursor(void);
 void set_oam_sprite_shape_size(u8 *oam, s32 h, s32 w); // OAM attr0 shape / attr1 size bits for a w x h sprite (h > w: tall)
 u32 sub_08044E64(s32 shape, s32 size); // OAM attr0 shape / attr1 size bits -> height << 16 | width
 void handle_battle_sprite_scroll_input(void);
+s16 fixed_point_divide(s16 a, s16 b);
+s16 divide_by_65536(s16 a);
+u32 sub_08045A40(s32 y, s32 x);
+u8 sub_080483AC(void);
+void sub_080487AC(void);
+void toggle_bg_layer_visibility(s32 a, s32 b, s32 c, s32 d);

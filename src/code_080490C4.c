@@ -885,7 +885,7 @@ void sub_0804CCA8(void)
         gUnk_030057E0.unkC94[0]--;
     gUnk_030057E0.unkC38[gUnk_030057E0.unkC94[0]] = gUnk_030057E0.unkC94[1];
     decompress_battle_tile_graphics();
-    switch (gUnk_03006F40[1])
+    switch (gUnk_03006F40.unk1)
     {
     case 1:
     case 3:
