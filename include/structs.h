@@ -283,7 +283,7 @@ struct Unk_03002C30
     u8 unk2C;
     u8 unk2D;
     u8 unk2E; // on screen
-    u8 filler2F[0x1];
+    u8 unk2F;
     u16 unk30;
     u16 unk32;
     u8 filler34[0xC];

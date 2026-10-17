@@ -335,7 +335,9 @@ void sub_08039430(void);
 s16 sub_0803D424(void); // current battle sequence entry (gUnk_083CDFE4[unkF9][unk100])
 void sub_0803B8C8(void);
 void battle_advance_sequence_counter(void); // skips the current battle sequence command and its operands
-void load_battle_sequence_commands(void); // copies the current command's operands to gUnk_03001800.unk102
+void load_battle_sequence_commands(void);
+void load_battle_entity_palette(u32 list, u32 entry, u32 slot);
+void init_game_state_entry(const u16 *pos, u8 arg, u32 slot); // copies the current command's operands to gUnk_03001800.unk102
 u32 sub_0803E79C(void);
 void soft_reset_to_title(void);
 void sub_0803F624(u8 *dst, u32 size, u8 val);
