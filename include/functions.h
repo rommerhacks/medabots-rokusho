@@ -1198,3 +1198,5 @@ u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, vo
 u16 copy_sprite_oam_entries(void *a, void *b, u16 c, s32 d, u16 e, u8 f); // d is a u8 in the definition; copy_sprite_oam_with_vflip passes an s8
 void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 a, s16 b, s16 depth); // u16 params in the definition
 u32 check_position_table_match(u8 id, u8 which);
+void copy_sprite_tiles_to_vram(u8 *dst, u8 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp); // rearranges tiles from src into dst (rows x cols blocks of the OAM shape / size)
+void decompress_and_load_sprite_tiles(const u32 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp, u16 tile, u32 unused, u8 *buf, u32 useCpu);

@@ -14,7 +14,22 @@ void dma_load_sprite_tiles(const u32 *src, u16 tile, void *buf, u32 useCpu)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_sprite_tiles_to_vram);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", decompress_and_load_sprite_tiles);
+
+void decompress_and_load_sprite_tiles(const u32 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp, u16 tile, u32 unused, u8 *buf, u32 useCpu)
+{
+    if (src != NULL)
+    {
+        u32 n = dma3_copy_or_decompress(src, buf);
+        u8 *out = buf + n;
+
+        copy_sprite_tiles_to_vram(out, buf, shape, size, rows, cols, bpp);
+        if (useCpu)
+            CpuSet(out, (void *)(0x06010000 + tile * 32), ((n / 4) & 0x1FFFFF) | 0x04000000);
+        else
+            DmaSet(0, out, 0x06010000 + tile * 32, (n >> 2) | 0x94000000);
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", setup_oam_sprite_entries);
 
 u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const struct SpriteAnchor *e, u8 f, u16 g)
