@@ -255,3 +255,14 @@
   (get_random_battle_weight_entry).
 * Callers can depend on a narrow prototype: sub_08036C20's callers only match with `s16 x, s16 y`, even
   though the callee zero-extends them; check `make compare` after every prototype change.
+* `s16` parameters are zero-extended at entry (`lsls/lsrs`) and sign-extended at each use: that is just
+  how agbcc promotes `s16` params. If the original keeps the `lsls/asrs` before an `& 0x1FF` / `& 0xFF`,
+  the sum went through an `s32` temp (`t = x + tbl[i]; s->unk2 = t & 0x1FF;`); written in one
+  expression on the `s16` field, gcc narrows it and drops the extension.
+* A callee called with `add r0, sp, #N` as the *last* argument set up (after the stack arguments) returns
+  a struct in memory: declare it as returning the struct (`struct Coords16
+  calc_polar_to_screen_coords(...)`), not as taking an out pointer; `v = f(...)` then `v.x` / `v.y`.
+* A switch whose cases each write two fields, with one shared tail in the original: write both stores in
+  every case and let gcc cross-jump them (set_target_sprite_position).
+* A constant not folded (`movs r6, #2; adds r6, #3`): it came from a local (`y = 2; ... y + 3`)
+  (sub_080364A8).
