@@ -914,6 +914,8 @@ u32 sub_0801C154(void); // steps gUnk_083AD410, 1 when done
 void sub_0803E780(void);
 void reset_bot_status_and_init_palette_transfers(u32 rec);
 void copy_battle_entity_positions(void);
+void sub_0801B67C(u32 rec);
+void select_next_bot_and_action(u32 rec);
 void sub_08038394(u32 rec, u32 flags); // flags bit 0: clears effect B (unkC9..)
 void sub_080383E8(void);
 void sub_080385D0(u32 rec);

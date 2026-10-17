@@ -2085,4 +2085,102 @@ void sub_080309C8(void)
         gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", resolve_battle_action_phase);
+void resolve_battle_action_phase(void)
+{
+    sub_0801B67C(gUnk_03001800.unk87);
+    if (gUnk_03000590[gUnk_03001800.unk87].unkBD & 1)
+    {
+        gUnk_03001800.unkA6 = 4;
+        gGameSubState = 0x20;
+        return;
+    }
+    if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3
+        && gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].unkDD - 1].unk11 == 0)
+    {
+        gUnk_03001800.unkA6 = 5;
+        gGameSubState = 0x20;
+        return;
+    }
+    if (gUnk_03000590[gUnk_03001800.unk87].unkC9 == 0x2B
+        && gUnk_03000590[gUnk_03001800.unk87].unkCA == gUnk_03000590[gUnk_03001800.unk87].unkDD)
+    {
+        gUnk_03001800.unkA6 = 6;
+        gGameSubState = 0x20;
+        return;
+    }
+    if (gUnk_03000590[gUnk_03001800.unk87].unkDD > 3)
+    {
+        gUnk_03001800.unkA7 = gUnk_03000590[gUnk_03001800.unk87].unkDD - 4;
+        gGameSubState = 0x30;
+        return;
+    }
+    gUnk_03001800.unk164 = 1;
+    select_next_bot_and_action(gUnk_03001800.unk87);
+    if (sub_08016E5C(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].unkDD - 1))
+    {
+        gUnk_03001800.unkA6 = 7;
+        gGameSubState = 0x20;
+        return;
+    }
+    if (gUnk_03000590[gUnk_03001800.unk87].unkDD == 1 && gUnk_03001800.unk118 != 1)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk87].parts[0].unk10 == 0)
+        {
+            gUnk_03001800.unkA6 = 8;
+            gGameSubState = 0x20;
+            return;
+        }
+        gUnk_03000590[gUnk_03001800.unk87].parts[0].unk10--;
+    }
+    if (gUnk_03000590[gUnk_03001800.unk87].unkE0)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].unkDD - 1].data[1] == 0x21)
+        {
+            if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk87].unkE0 - 1].unk40)
+            {
+                gUnk_03001800.unkA6 = 9;
+                gGameSubState = 0x20;
+                return;
+            }
+        }
+        else if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk87].unkE0 - 1].unk40 == 0)
+        {
+            gUnk_03001800.unkA6 = 0xA;
+            gGameSubState = 0x20;
+            return;
+        }
+    }
+    if (gUnk_03000590[gUnk_03001800.unk87].unkE1)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].unkDD - 1].data[1] == 0x20)
+        {
+            if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk87].unkE0 - 1].parts[gUnk_03000590[gUnk_03001800.unk87].unkE1 - 1].unk11)
+            {
+                gUnk_03001800.unkA6 = 0xB;
+                gGameSubState = 0x20;
+                return;
+            }
+        }
+        else if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk87].unkE0 - 1].parts[gUnk_03000590[gUnk_03001800.unk87].unkE1 - 1].unk11 == 0)
+        {
+            gUnk_03001800.unkA6 = 0xC;
+            gGameSubState = 0x20;
+            return;
+        }
+    }
+    gUnk_03001800.unkA8 = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].unkDD - 1].data[1];
+    gUnk_03001800.unkA7 = gUnk_03000590[gUnk_03001800.unk87].unkDD - 1;
+    gGameState = 9;
+    gGameSubState = 0;
+}
+
+void sub_08030C94(void)
+{
+    gGameSubState = 0x40;
+}
+
+void sub_08030CA0(void)
+{
+    gGameSubState = 0x50;
+}
+
