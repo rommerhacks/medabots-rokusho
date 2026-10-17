@@ -891,7 +891,7 @@ void battle_queue_add(u32 rec, u32 prio);
 
 void add_bot_to_defeated_list(u32 rec);
 u32 sub_080353CC(u32 slot);
-u32 move_sprite_toward_target(u8 slot);
+u32 move_sprite_toward_target(u32 slot);
 u32 sub_08036E54(u32 a); // clamps to 1..99
 u8 sub_08037578(u32 a, u32 kind); // random part id (by a and the part kind)
 void sub_0803769C(u32 rec);
