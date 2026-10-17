@@ -182,7 +182,33 @@ void advance_sprite_scroll_animation(void)
     gUnk_03000440.unk84 = 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", handle_battle_sprite_scroll_input);
+void handle_battle_sprite_scroll_input(void)
+{
+    if (KEYS_LO(gNewKeys) & 0xC0)
+    {
+        play_sound_effect(2);
+        gUnk_03000440.unk2A ^= 1;
+        gUnk_03002C30[gUnk_03000440.unk2B].unk4 = gUnk_03000440.unk2A * 16 + 0x48;
+    }
+    sub_08041C14(gUnk_03000440.unk2B, gUnk_03000440.unk84, gUnk_03000440.unk2C * 8 + 0x14);
+    gUnk_03000440.unk84++;
+    if (KEYS_LO(gNewKeys) & 2)
+    {
+        play_sound_effect(5);
+        gUnk_03000440.unk2A = 1;
+        gUnk_03002C30[gUnk_03000440.unk2B].unk2 = gUnk_03000440.unk2C * 8 + 0x14;
+        gUnk_03002C30[gUnk_03000440.unk2B].unk4 = gUnk_03000440.unk2A * 16 + 0x48;
+        gUnk_03000440.unk84 = 0;
+        gUnk_03000440.unk29++;
+    }
+    if (KEYS_LO(gNewKeys) & 1)
+    {
+        play_sound_effect(4);
+        gUnk_03002C30[gUnk_03000440.unk2B].unk2 = gUnk_03000440.unk2C * 8 + 0x14;
+        gUnk_03000440.unk84 = 0;
+        gUnk_03000440.unk29++;
+    }
+}
 
 void update_sprite_hflip_by_animation_phase(void)
 {
@@ -602,7 +628,17 @@ u32 sub_08042B80(u32 a)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", calc_polar_to_screen_coords);
+struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x, s32 y)
+{
+    struct Coords16 r;
+
+    x += (u32)(gUnk_083D6BA0[angle] * (radius / 256.0f));
+    y += (u32)(gUnk_083D69A0[0][angle] * (radius / 256.0f));
+    r.x = x & 0x1FF;
+    r.y = y & 0xFF;
+    return r;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", compute_polar_to_screen_position);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_sprite_to_vram_08042D94);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_battle_medabot_sprites);

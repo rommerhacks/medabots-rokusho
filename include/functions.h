@@ -1177,3 +1177,4 @@ void transition_draw_tile_strip(void);
 void battle_sprite_setup_cursor(void);
 void set_oam_sprite_shape_size(u8 *oam, s32 h, s32 w); // OAM attr0 shape / attr1 size bits for a w x h sprite (h > w: tall)
 u32 sub_08044E64(s32 shape, s32 size); // OAM attr0 shape / attr1 size bits -> height << 16 | width
+void handle_battle_sprite_scroll_input(void);

@@ -774,3 +774,4 @@ extern const u8 gUnk_08488718[]; // compressed tilemap
 extern const u8 gUnk_083C40B8[]; // per battlefield: animation tile count / 8 (advance_battle_animation_frame)
 extern const u8 gUnk_083C40C3[]; // [battlefield][0x80]: animation tile block per frame, 0xFF = loop
 extern const u8 *const gUnk_083B1888[]; // 6 compressed sprite tile pointers per Medabot (decompress_sprite_to_vram_08042D94)
+extern const s16 gUnk_083D6BA0[]; // per angle 0-0xFF: cosine-like factor x256 (calc_polar_to_screen_coords x; gUnk_083D69A0 is the y factor)
