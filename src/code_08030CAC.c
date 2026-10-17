@@ -1810,7 +1810,7 @@ void sub_08034120(void)
     gUnk_03001800.unk15F = battle_advance_dialogue_text();
     gUnk_03001800.unk160 = battle_advance_action_text();
     gUnk_03001800.unkB5 = 0;
-    sub_080393BC();
+    battle_sequence_update();
     if (gUnk_03001800.unkB5)
     {
         gUnk_03000440.unk130 = 0;

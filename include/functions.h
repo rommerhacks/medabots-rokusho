@@ -330,7 +330,7 @@ u32 battle_find_strongest_part(u32 rec); // part 1-3 (+ 1) with the most armor l
 void sub_08039188(void);
 void sub_080391C4(void);
 void sub_080392D8(void);
-void sub_080393EC(void); // runs the battle sequence command gUnk_083AF740[sub_0803D424()], skipping negative ones
+void battle_sequence_run_command(void); // runs the battle sequence command gUnk_083AF740[sub_0803D424()], skipping negative ones
 void sub_08039430(void);
 s16 sub_0803D424(void); // current battle sequence entry (gUnk_083CDFE4[unkF9][unk100])
 void sub_0803B8C8(void);
@@ -1109,7 +1109,7 @@ void sub_0803836C(void); // clears gUnk_03001800.unkD2[0..2] / unkD6[0..2]
 void sub_08035BD4(void);
 void sub_08035BFC(u32 rec, u32 part);
 u32 battle_select_random_target(u32 base, u32 rec);
-void sub_080393BC(void);
+void battle_sequence_update(void); // per frame during an attack animation: runs sequence commands until one yields (gUnk_03002C30[0].unk2A)
 void sub_0801DEE4(void);
 void sub_0801FA40(void);
 void sub_0802645C(void);

@@ -225,15 +225,15 @@ void determine_battle_target_mode(void)
     }
 }
 
-void sub_080393BC(void)
+void battle_sequence_update(void)
 {
     while (gUnk_03002C30[0].unk2A == 0)
-        sub_080393EC();
+        battle_sequence_run_command();
     sub_0803B8C8();
     gUnk_03002C30[0].unk2A = 0;
 }
 
-void sub_080393EC(void)
+void battle_sequence_run_command(void)
 {
     s8 *p;
     if ((s8)(gUnk_03002C30[0].unk29 = sub_0803D424()) < 0) {
@@ -246,6 +246,7 @@ void sub_080393EC(void)
     gUnk_083AF740[gUnk_03002C30[0].unk29]();
 }
 
+// guess: ends the battle sequence (yields and sets the step-done flag unkB5)
 void sub_08039430(void)
 {
     gUnk_03002C30[0].unk2A = 1;
@@ -347,6 +348,7 @@ void sub_080395E8(void)
     battle_advance_sequence_counter();
 }
 
+// guess: yields until the next frame without advancing
 void sub_080396C4(void)
 {
     gUnk_03002C30[0].unk2A = 1;
@@ -393,7 +395,7 @@ void sub_080397B0(void)
     battle_advance_sequence_counter();
 }
 
-void sub_0803981C(void)
+void battle_seq_cmd_wait_text(void)
 {
     load_battle_sequence_commands();
     switch (gUnk_03001800.unk102[0]) {
@@ -453,7 +455,7 @@ void sub_080398AC(void)
     battle_advance_sequence_counter();
 }
 
-void sub_080399EC(void)
+void battle_seq_cmd_wait_frames(void)
 {
     load_battle_sequence_commands();
     if (gUnk_03002C30[0].unk30 != gUnk_03001800.unk102[0]) {
