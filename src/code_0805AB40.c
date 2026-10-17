@@ -285,7 +285,47 @@ void sub_0805C030(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C190);
+void sub_0805C190(void)
+{
+    s32 ret, i, j;
+    u16 *p;
+
+    REG_DISPCNT |= 0x100;
+    REG_DISPCNT |= 0x200;
+    REG_DISPCNT |= 0x800;
+    REG_DISPCNT |= 0x1000;
+    gUnk_03001784.unk0_0 = 0;
+    ret = load_save_with_retries();
+    if (ret != 0)
+    {
+        if (ret < 0)
+        {
+            gGameState = 9;
+            gGameSubState = 0;
+            return;
+        }
+        for (i = 0; i <= 1; i++)
+        {
+            p = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + 9 + (i + 1) * 32;
+            for (j = 0; j < 12; j++)
+                *p++ = 0;
+        }
+        gUnk_03006F74->unk5 = 1;
+        gUnk_03006F74->unk4 = 1;
+        gUnk_03001788 = 0;
+        gUnk_03001360 = 0;
+        gUnk_03000B94 = 0;
+    }
+    else
+    {
+        gUnk_03006F74->unk5 = ret;
+        gUnk_03006F74->unk4 = ret;
+        gUnk_03001784.unk0_0 = 1;
+    }
+    sub_0805BEA0(gUnk_03006F74->unk5, gFrameCounter & 0x1F);
+    sub_0805BCC0(3);
+    gGameSubState++;
+}
 
 void sub_0805C2C4(void)
 {
