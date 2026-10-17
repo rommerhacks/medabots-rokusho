@@ -79,6 +79,11 @@
 * Registers read back after a store through a `u16 *` pointer: gcc must reload the globals if the
   pointer may alias them; registers written through a plain (non-volatile) pointer still reload
   `u16` globals. Copy the values to locals or a struct pointer to keep them in registers.
+* Choosing a table with `if/else` before one call: gcc hoists one of the two loads above the
+  compare. Writing the whole call in both branches lets gcc crossjump the tails and keeps the
+  original `ldr r4, =A; b common` shape (medapart_detail_show_hint).
+* A function returning 0/1 whose original tests the "nothing to do" case first: write
+  `if (!cond) ret = 0; else { ...; ret = 1; } return ret;` (early `return`s put the body first).
 * Hardware I/O addresses (`OAM`, `VRAM`, `INTR_CHECK`, ...) are in `include/gba/io_reg.h`;
   `CpuCopy16(src, dst, size)` gives the `lsls #10; lsrs #11` count of a 16-bit CpuSet.
 
