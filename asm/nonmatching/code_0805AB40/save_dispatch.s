@@ -79,7 +79,7 @@ _0805DD0E:
 _0805DD1C:
 	ldr r0, _0805DD40 @ =0x02030000
 	movs r1, #0
-	bl sync_save_or_link_data
+	bl write_save_to_eeprom
 	adds r5, r0, #0
 _0805DD26:
 	ldr r1, _0805DD44 @ =0x04000200

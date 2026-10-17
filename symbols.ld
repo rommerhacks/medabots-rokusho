@@ -821,4 +821,4 @@ gSaveMagic          = 0x08483C20;
 gSaveMagicErased    = 0x08483C31;
 gUnk_08485788       = 0x08485788;
 gUnk_08485BD8       = 0x08485BD8;
-gUnk_08483BDC       = 0x08483BDC;
+gSaveScreenStates   = 0x08483BDC;

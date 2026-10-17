@@ -1165,7 +1165,7 @@ s32 save_dispatch(s32 mode); // 0: save, 1: load (returns validate_save_data), 2
 void load_save_data(struct SaveData *save);
 void serialize_save_data(struct SaveData *save);
 s32 validate_save_data(struct SaveData *save); // reads the EEPROM into save: 0 ok, 1 wrong signature, -1 corrupt
-s32 sync_save_or_link_data(u16 *src, u32 force); // writes 0x1CC0 bytes to EEPROM: every block if (u8)force, else only blocks that differ
+s32 write_save_to_eeprom(u16 *src, u32 force); // writes 0x1CC0 bytes to EEPROM: every block if (u8)force, else only blocks that differ
 void sub_0805E170(u16 a);
 
 #endif // GUARD_FUNCTIONS_H

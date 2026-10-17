@@ -396,7 +396,7 @@ extern const u8 gSaveMagicErased[17]; // written by save_dispatch(2) instead of 
 
 extern const void *const gUnk_08485788[]; // save screen messages
 extern const void *const gUnk_08485BD8[]; // messages (sub_0805D9B8 uses 18)
-extern const Func gUnk_08483BDC[]; // save screen state handlers, by gGameSubState (sub_0805D59C)
+extern const Func gSaveScreenStates[15]; // save screen states, by gGameSubState (save_screen_update): 6 stops the music, 7 writes the save, 8 / 12 show the result
 
 #endif // GUARD_VARIABLES_H
 extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)

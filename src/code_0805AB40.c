@@ -146,9 +146,9 @@ void sub_0805D57C(u16 a)
     gUnk_03002C30[0].unk6 = gUnk_080AF7E0[a & 3];
 }
 
-void sub_0805D59C(void)
+void save_screen_update(void)
 {
-    gUnk_08483BDC[gGameSubState]();
+    gSaveScreenStates[gGameSubState]();
     if (gFrameCounter & 1)
     {
         gBg3Scroll.x++;
@@ -369,7 +369,7 @@ s32 validate_save_data(struct SaveData *save)
     return 0;
 }
 
-s32 sync_save_or_link_data(u16 *src, u32 force)
+s32 write_save_to_eeprom(u16 *src, u32 force)
 {
     u16 buf[4];
     s32 i;
