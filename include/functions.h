@@ -823,6 +823,8 @@ bool32 sub_08069F80(void);
 bool32 sub_0806A4C0(void);
 void update_sprite_animations_tick_0806AF40(void);
 void update_sprite_animations_0806B334(void);
+void sprite_animation_dispatch(u8 sprite, u8 a, u8 b, u8 c);
+void sub_0806B584(u8 sprite);
 
 s32 sub_08043C94(void); // random 0-100
 void render_text_sprites_08040EE4(u8 *text, u8 a, u32 x, u32 y, u8 b, u8 c, u8 d, u16 e, s32 f, s32 g);

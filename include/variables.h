@@ -131,6 +131,8 @@ extern s32 gUnk_03006FE0[3]; // per entry frame counters (battle_update_action_c
 extern const Func gUnk_08485C48[]; // by gGameState (dispatch_game_mode_handler)
 extern const u8 gUnk_08485CC4[3][3]; // sprite slots
 extern const u8 gUnk_08485CE3[][7]; // frame delays
+extern bool32 (*const gUnk_08485D30[])(u8); // race sprite animations, by gUnk_03002C30[].unk20 - 1 (update_sprite_animations_tick_0806AF40)
+extern const s8 gUnk_08485E84[];
 extern u8 gUnk_03000584; // 0 player name, 1 / 2 Medal name gUnk_03000BE0[gUnk_030017EC] (sub_0805EE94)
 extern u8 gUnk_03003870[];
 extern u8 gUnk_03005664[];
