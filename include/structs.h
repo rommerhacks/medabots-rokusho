@@ -520,8 +520,8 @@ struct Unk_03001800
     u8 unkFD;
     u8 unkFE;
     u8 unkFF; // bits 0 / 1 set by sub_080347F8 with unk114[0] / unk114[1] = 0x28
-    u16 unk100; // cleared by sub_08034074
-    u8 filler102[0x10];
+    u16 unk100; // battle sequence: offset of the current command in gUnk_083CDFE4[unkF9] (cleared by sub_08034074)
+    s16 unk102[8]; // battle sequence: operands of the current command (load_battle_sequence_commands)
     u8 unk112; // set to 0x29 with unk113 (sub_080361A8)
     u8 unk113;
     u8 unk114[2]; // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (sub_08020B4C)

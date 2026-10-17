@@ -9,9 +9,32 @@ INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D0BC);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D15C);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D2A8);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D3C0);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D424);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", load_battle_sequence_commands);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", battle_advance_sequence_counter);
+
+s16 sub_0803D424(void)
+{
+    const s16 *seq = gUnk_083CDFE4[gUnk_03001800.unkF9];
+    return seq[gUnk_03001800.unk100];
+}
+
+void load_battle_sequence_commands(void)
+{
+    const s16 *seq = gUnk_083CDFE4[gUnk_03001800.unkF9];
+    u32 n = gUnk_083CE1F4[seq[gUnk_03001800.unk100]];
+    u32 i;
+
+    for (i = 0; i < n; i++)
+        gUnk_03001800.unk102[i] = seq[gUnk_03001800.unk100 + i + 1];
+}
+
+void battle_advance_sequence_counter(void)
+{
+    const s16 *seq = gUnk_083CDFE4[gUnk_03001800.unkF9];
+    const u8 *ops = gUnk_083CE1F4;
+    s32 p = gUnk_03001800.unk100;
+
+    gUnk_03001800.unk100 = p + 1 + ops[seq[p]];
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", battle_sprite_rotate_angles);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D538);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D5A0);
