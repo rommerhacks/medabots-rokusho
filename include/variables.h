@@ -601,6 +601,8 @@ extern const u8 gUnk_083AF210[]; // 256 speed steps (quarter pixels) by a sprite
 extern const u16 gUnk_083AF670[]; // 16 x offsets by a sprite's unk2D & 15 (sub_080380F0)
 extern const u8 gUnk_083AF330[]; // 8 entries per sub_08035590 result, one picked at random (get_random_battle_weight_entry)
 extern const u8 gUnk_084889B4[]; // compressed tilemap (sub_08036340)
+extern u8 gUnk_0300056F; // sprite slot whose handler is running (sub_080383E8)
+extern const Func gUnk_083AF690[]; // battle effect sprite handlers by sprite unk29 (sub_080383E8, sprites 0x2B-0x3B)
 extern const u8 gUnk_083AF200[]; // 16 values, two random picks summed into gUnk_03001800.unk188 / unk189 (sub_08034AA0)
 extern u8 gUnk_03003470[]; // IWRAM buffer; sub_08033ACC copies 4 x 0x40 bytes from +0xE40 + (rec * 0x100) to its start
 extern const u8 gUnk_083C6D38[]; // Robattle action script: operand count per command byte (sub_08034F08)

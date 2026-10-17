@@ -277,6 +277,7 @@ void sub_0801D40C(void);
 void sub_0801D580(void);
 s32 sub_08034E94(void); // next byte of the Robattle action script (gUnk_083C6B28[gUnk_03001800.unkA8] + unkBC)
 void sub_08034F08(void);
+u32 sub_08035960(u32 rec, u32 skill); // 1 if a part with armor left has skill id data[1] == skill
 void sub_080350E0(u32 rec);
 u32 sub_08035590(u32 rec);
 u32 calc_bot_matching_part_power(u32 rec);
@@ -1046,7 +1047,7 @@ u32 sub_08036BB8(u16 *amount, u32 rec, u32 part); // moves one point from *amoun
 void sub_08036BF4(u32 side);
 void sub_08036C20(u8 slot, u8 part, s16 x, s16 y, u32 n);
 void setup_battle_medapart_scenes(void);
-void calc_bot_evasion_modifier(u8 rec);
+void calc_bot_evasion_modifier(u32 rec);
 void sub_080355C4(u32 rec);
 void sub_0804242C(u8 n); // sorts gUnk_02023000[0..n-1] by key, key2, largest first
 u32 sub_08033224(u32 rec); // 1 if rec has no effect A (unkC4)
