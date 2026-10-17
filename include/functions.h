@@ -315,6 +315,13 @@ void battle_begin_action_phase(void);
 u32 battle_calculate_damage_modifier(void);
 u32 check_bot_ability_type_strike(u32 rec, u32 part, u32 target);
 u32 check_bot_ability_type_shoot(u32 rec, u32 part, u32 target);
+u32 check_bot_can_shoot(u32 rec, u32 part, u32 target);
+u32 check_bot_can_support(u32 rec, u32 part, u32 target);
+u32 check_bot_can_use_shoot_part(u32 rec, u32 part, u32 target);
+u32 check_bot_status_effect_4(u32 rec, u32 part, u32 target);
+u32 check_can_target_bot(u32 rec, u32 part, u32 target);
+u32 check_battle_can_support_target(u32 rec, u32 part, u32 target);
+u32 check_battle_can_special_target(u32 rec, u32 part, u32 target);
 u32 battle_check_damage_threshold(s16 v);
 u32 battle_calculate_turn_speed(void);
 void battle_process_speed_and_action(void);
@@ -323,6 +330,10 @@ u32 battle_find_strongest_part(u32 rec); // part 1-3 (+ 1) with the most armor l
 void sub_08039188(void);
 void sub_080391C4(void);
 void sub_080392D8(void);
+void sub_080393EC(void); // runs the battle sequence command gUnk_083AF740[sub_0803D424()], skipping negative ones
+void sub_08039430(void);
+s8 sub_0803D424(void);
+void sub_0803B8C8(void);
 void battle_advance_sequence_counter(void);
 u32 sub_0803E79C(void);
 void soft_reset_to_title(void);

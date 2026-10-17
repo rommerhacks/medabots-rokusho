@@ -489,7 +489,8 @@ struct Unk_03001800
     u8 unkBB;
     u16 unkBC; // Robattle action script: offset of the current command (battle_script_read_byte / battle_script_advance)
     u8 unkBE; // set with unkB7 / unkB8 by the script commands sub_08033F04 / sub_08033F64 (1, 5)
-    u8 fillerBF[0x9];
+    u8 unkBF; // set with unkB8 = 4 by sub_080392D8 / determine_battle_target_mode (2-4)
+    u8 fillerC0[0x8];
     u16 unkC8; // Robattle: effect amount (shown by sub_0801CA60, subtracted by apply_battle_damage_tick)
     u16 unkCA; // damage passed to battle_set_damage_vs_armor (sub_0801ECC0)
     u16 unkCC; // copy of unkC8 (sub_08036B84)

@@ -163,12 +163,84 @@ void sub_08039188(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_080391C4);
-INCLUDE_ASM("asm/nonmatching/code_08038D30", select_ai_action_type);
-INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_080392D8);
-INCLUDE_ASM("asm/nonmatching/code_08038D30", determine_battle_target_mode);
-INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_080393BC);
+void sub_080391C4(void)
+{
+    if (check_bot_can_shoot(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk88)) {
+        gUnk_03001800.unkB8 = 2;
+        gUnk_03001800.unkBE = 2;
+    } else if (check_bot_can_support(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk88)) {
+        gUnk_03001800.unkB8 = 2;
+        gUnk_03001800.unkBE = 3;
+    } else if (check_bot_can_use_shoot_part(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk88)) {
+        gUnk_03001800.unkB8 = 2;
+        gUnk_03001800.unkBE = 4;
+    } else if (check_bot_status_effect_4(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk88)) {
+        gUnk_03001800.unkB8 = 2;
+        gUnk_03001800.unkBE = 6;
+    }
+}
+
+void select_ai_action_type(void)
+{
+    if (check_bot_can_shoot(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk87)) {
+        gUnk_03001800.unkB8 = 2;
+        gUnk_03001800.unkBE = 2;
+    } else if (check_bot_can_support(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk87)) {
+        gUnk_03001800.unkB8 = 2;
+        gUnk_03001800.unkBE = 3;
+    } else if (check_bot_can_use_shoot_part(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk87)) {
+        gUnk_03001800.unkB8 = 2;
+        gUnk_03001800.unkBE = 4;
+    } else if (check_bot_status_effect_4(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk87)) {
+        gUnk_03001800.unkB8 = 2;
+        gUnk_03001800.unkBE = 6;
+    }
+}
+
+void sub_080392D8(void)
+{
+    if (check_can_target_bot(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk88)) {
+        gUnk_03001800.unkB8 = 4;
+        gUnk_03001800.unkBF = 2;
+    } else if (check_battle_can_support_target(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk88)) {
+        gUnk_03001800.unkB8 = 4;
+        gUnk_03001800.unkBF = 3;
+    } else if (check_battle_can_special_target(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk88)) {
+        gUnk_03001800.unkB8 = 4;
+        gUnk_03001800.unkBF = 4;
+    }
+}
+
+void determine_battle_target_mode(void)
+{
+    if (check_can_target_bot(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk87)) {
+        gUnk_03001800.unkB8 = 4;
+        gUnk_03001800.unkBF = 2;
+    } else if (check_battle_can_support_target(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk87)) {
+        gUnk_03001800.unkB8 = 4;
+        gUnk_03001800.unkBF = 3;
+    } else if (check_battle_can_special_target(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk87)) {
+        gUnk_03001800.unkB8 = 4;
+        gUnk_03001800.unkBF = 4;
+    }
+}
+
+void sub_080393BC(void)
+{
+    while (gUnk_03002C30[0].unk2A == 0)
+        sub_080393EC();
+    sub_0803B8C8();
+    gUnk_03002C30[0].unk2A = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_080393EC);
+
+void sub_08039430(void)
+{
+    gUnk_03002C30[0].unk2A = 1;
+    gUnk_03001800.unkB5 = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_08039448);
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_080394C4);
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_08039540);
