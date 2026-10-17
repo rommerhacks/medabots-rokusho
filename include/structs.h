@@ -381,7 +381,7 @@ struct BattlePart
 struct Unk_03001800_28
 {
     u8 unk0;
-    u8 unk1; // compared between the sides when TIME runs out with a tie (sub_0801B53C)
+    u8 unk1; // compared between the sides when TIME runs out with a tie (robattle_judge_time_up)
     u8 unk2;
     u8 unk3;
     u8 unk4;

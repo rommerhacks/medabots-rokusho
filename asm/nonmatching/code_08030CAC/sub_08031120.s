@@ -28,7 +28,7 @@ _0803114C:
 	.align 2, 0
 _08031154: .4byte 0x0300137C
 _08031158:
-	bl sub_0801B53C
+	bl robattle_judge_time_up
 	movs r0, #0x11
 	bl play_song
 	ldr r1, _08031170 @ =0x0300137C

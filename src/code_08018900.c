@@ -1202,7 +1202,7 @@ u32 sub_0801B4C8(u32 first)
     return n;
 }
 
-u32 sub_0801B4F8(u32 first)
+u32 battle_count_broken_parts(u32 first)
 {
     u32 n = 0;
     u32 i, j;
@@ -1223,8 +1223,8 @@ u32 sub_0801B4F8(u32 first)
 
 // Decides the Robattle winner from the team / opponent records: fewer Medabots with unkBA == 2, then fewer
 // broken parts, then the larger gUnk_03001800.unk28[side].unk1, then a coin flip (mirrored on link player 1).
-// gUnk_03000440.unk9C = 1 team wins, 2 opponents win. guess: TIME ran out.
-void sub_0801B53C(void)
+// gUnk_03000440.unk9C = 1 team wins, 2 opponents win. Called by sub_08031120 when TIME (unk57) is 0.
+void robattle_judge_time_up(void)
 {
     u32 team = sub_0801B4C8(0);
     u32 opp = sub_0801B4C8(3);
@@ -1235,8 +1235,8 @@ void sub_0801B53C(void)
         gUnk_03000440.unk9C = 2;
     else
     {
-        team = sub_0801B4F8(0);
-        opp = sub_0801B4F8(3);
+        team = battle_count_broken_parts(0);
+        opp = battle_count_broken_parts(3);
         if (team < opp)
             gUnk_03000440.unk9C = 1;
         else if (opp < team)
