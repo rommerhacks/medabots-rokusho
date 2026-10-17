@@ -469,7 +469,9 @@ struct Unk_03001800
     s16 unkE8; // passed to battle_set_action_params with unkEC (sub_0801F9EC)
     u8 fillerEA[0x2];
     s16 unkEC; // amount for battle_calc_damage_split (battle_resolve_action_target); counted down by sub_0801EC3C
-    u8 fillerEE[0xA];
+    u8 fillerEE[0x8];
+    u8 unkF6; // bit 0 checked by sub_08020078
+    u8 fillerF7[0x1];
     u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
     u8 fillerF9[0x1F];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part

@@ -225,6 +225,12 @@ void sub_0801AC98(u32 rec); // draws the BG1 message frame tilemaps on the team 
 void sub_08034F08(void);
 u32 get_random_battle_weight_entry(u32 idx);
 void sub_08036270(void);
+void sub_0803713C(void);
+u32 sub_08037230(u8 rec, u8 part);
+void calc_battle_action_speed(u8 rec, u8 part);
+void apply_battle_bot_damage_reduction(u8 rec);
+u32 decrement_battle_timer_and_check_zero(void);
+void calc_battle_stat_ratio(u8 rec, u8 part);
 void sub_08038BC0(void);
 void sub_08038D30(void);
 void battle_begin_action_phase(void);
