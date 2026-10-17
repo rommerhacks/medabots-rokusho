@@ -1303,3 +1303,4 @@ void sub_08060FD4(void);
 void sub_08061374(void);
 void draw_tilemap_line(u16 a, s32 b, u8 c, u8 d, u8 e, u8 f);
 void init_fade_screen_setup(void);
+void sub_080609C0(void);

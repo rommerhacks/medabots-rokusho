@@ -462,7 +462,43 @@ void sub_0806098C(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_080609C0);
+void sub_080609C0(void)
+{
+    struct Unk_03000440 *s;
+    u8 *n;
+
+    update_battle_sprite_animation();
+    update_animation_timer();
+    s = &gUnk_03000440;
+    n = &s->unk84;
+    if (*n <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, *n * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, *n * 4, 0xFFFF);
+        (*n)++;
+    }
+    else
+    {
+        REG_DISPCNT &= 0xFDFF;
+        REG_DISPCNT &= 0xFEFF;
+        CpuFastSet((void *)0x02020800, (void *)0x06002800, 0x28);
+        if (gGameState == 10)
+        {
+            gGameState = 4;
+            gGameSubState = 0;
+        }
+        else if (gUnk_03006F74->unk48)
+        {
+            gUnk_03006D38.unk5 = gUnk_03006F74->unk17;
+            dispatch_by_index_0476e8(5);
+        }
+        else
+        {
+            dispatch_by_index_0476e8(6);
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", battle_menu_highlight_icons);
 
 void copy_text_with_lookup(dst, src, unused, i)
