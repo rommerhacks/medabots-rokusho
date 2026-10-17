@@ -441,9 +441,12 @@ struct Unk_03001800
     u8 unkAA; // sub-state of the gUnk_083AD44C handlers (sub_0801C4FC)
     u8 fillerAB[0xA];
     u8 unkB5;
-    u8 fillerB6[0x1A];
+    u8 fillerB6[0x12];
+    u16 unkC8; // Robattle: effect amount (shown by sub_0801CA60, subtracted by apply_battle_damage_tick)
+    u8 fillerCA[0x6];
     u8 unkD0; // last part (3..0) of the acting Medabot with armor left (sub_0801C660)
-    u8 fillerD1[0x27];
+    u8 unkD1; // nonzero: battle_check_hit_and_set_timer goes to sub-state 0x1A
+    u8 fillerD2[0x26];
     u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
     u8 fillerF9[0x1F];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part

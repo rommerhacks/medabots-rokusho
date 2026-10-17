@@ -881,4 +881,15 @@ void battle_update_status_effect_sprite(u32 rec);
 void update_battle_status_effect_sprite(u32 rec);
 void battle_queue_add(u32 rec, u32 prio);
 
+void add_bot_to_defeated_list(u8 rec);
+u32 sprite_move_toward_target(u8 slot, s16 x, u16 y);
+void sub_080353AC(u8 frame);
+void sub_0803536C(u8 slot, u8 frame, u16 x);
+void reduce_bot_part_stat(u8 rec, u8 part, u16 amount);
+void sub_08035194(u8 rec);
+void set_target_sprite_position(u8 rec, u32 frame, u8 flag);
+void update_target_cursor_position(u8 rec);
+u32 update_sprite_animations_tick_080370AC(u8 slot, u8 n);
+void setup_battle_cursor_sprite_08036FF8(u8 slot, s16 x, s16 y, u8 n);
+
 #endif // GUARD_FUNCTIONS_H

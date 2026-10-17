@@ -405,6 +405,10 @@ extern const u16 gUnk_0850E058[]; // OBJ palettes for the same cases
 extern const u16 gUnk_0850E078[];
 extern const u16 gUnk_0850E098[];
 extern const u16 gUnk_0850E0B8[];
+extern const u8 gUnk_084CDBD8[]; // compressed OBJ tiles (sub_0801CD50)
+extern const u16 gUnk_0850E378[]; // its OBJ palette (palette 7)
+extern const u8 gUnk_084CC9A8[]; // compressed OBJ tiles (sub_0801CDD4)
+extern const u16 gUnk_0850E338[]; // its OBJ palette (palette 7)
 extern const u8 gUnk_0848886C[]; // Robattle screen tilemap (compressed), opponent side of gUnk_08488830 (sub_0801AC98)
 extern u8 gUnk_03001360; // Robattle: nonzero skips the message windows unless gUnk_03000440.unk89 == 1 (sub_0801ABF8..sub_0801AC6C)
 extern const u8 gUnk_084E3058[]; // 32-byte OBJ palette, copied to OBJ palette 6 (sub_0801B004)
