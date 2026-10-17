@@ -209,8 +209,107 @@ void serialize_save_data(struct SaveData *save)
     save->checksum = sum;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", validate_save_data);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sync_save_or_link_data);
+s32 validate_save_data(struct SaveData *save)
+{
+    u16 buf[4];
+    u16 *p;
+    s32 i;
+    s32 n;
+    u8 *b;
+    u16 sum;
+    u32 tmp; // the empty-name flag, then the stored checksum (one variable in the original)
+
+    n = 920;
+    p = (u16 *)save;
+    for (i = 0; i < n; i++)
+    {
+        ReadEepromDword(i, buf);
+        *p++ = buf[0];
+        *p++ = buf[1];
+        *p++ = buf[2];
+        *p++ = buf[3];
+    }
+    for (i = 0; i < 16; i++)
+    {
+        if (gSaveMagic[i] != save->magic[i])
+            return 1;
+    }
+    tmp = TRUE;
+    for (i = 0; i < 16; i++)
+    {
+        if (save->unk10.unk4[i] == 0xFE)
+            break;
+        if (save->unk10.unk4[i] != 0)
+        {
+            tmp = FALSE;
+            break;
+        }
+    }
+    if (tmp)
+        return -1;
+    if (save->unk10.money > 99999)
+        return -1;
+    if (save->unk10.unk14[0] > 9999)
+        return -1;
+    if (save->unk10.unk14[0] < save->unk10.unk14[1])
+        return -1;
+    if (save->unk10.unk18 > 0x014996FF)
+        return -1;
+    if ((save->flags & 3) > 2)
+        return -1;
+    if (((save->flags >> 3) & 3) > 2)
+        return -1;
+    tmp = save->checksum;
+    save->checksum = 0;
+    sum = 0;
+    b = (u8 *)save;
+    for (i = 0; i < sizeof(struct SaveData); i++)
+        sum += *b++;
+    if (sum != tmp)
+        return -1;
+    return 0;
+}
+
+s32 sync_save_or_link_data(u16 *src, u32 force)
+{
+    u16 buf[4];
+    s32 i;
+    s32 n;
+    u16 changed;
+    u32 j;
+
+    n = 920;
+    if ((u8)force)
+    {
+        for (i = 0; i < n; i++)
+        {
+            buf[0] = *src++;
+            buf[1] = *src++;
+            buf[2] = *src++;
+            buf[3] = *src++;
+            ProgramEepromDwordEx(i, buf);
+        }
+    }
+    else
+    {
+        for (i = 0; i < n; i++)
+        {
+            changed = ReadEepromDword(i, buf);
+            for (j = 0; j < 4; j++)
+            {
+                if (buf[j] != *src)
+                {
+                    buf[j] = *src;
+                    changed = 1;
+                }
+                src++;
+            }
+            if (changed)
+                ProgramEepromDwordEx(i, buf);
+        }
+    }
+    return 0;
+}
 
 void sub_0805E170(u16 a)
 {

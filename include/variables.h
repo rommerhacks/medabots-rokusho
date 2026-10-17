@@ -391,7 +391,8 @@ extern const u16 gUnk_080AF808[]; // animation frames by (arg & 3) (sub_0805E170
 extern u8 gUnk_02023078; // first visible list entry (update_battle_sprite_priority_flags)
 
 extern struct Unk_03001784 gUnk_03001784;
-extern const u8 gSaveMagic[16]; // save file signature (serialize_save_data)
+extern const u8 gSaveMagic[17]; // save file signature (serialize_save_data, validate_save_data)
+extern const u8 gSaveMagicErased[17]; // written by save_dispatch(2) instead of gSaveMagic, so validate_save_data rejects the save
 
 #endif // GUARD_VARIABLES_H
 extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)

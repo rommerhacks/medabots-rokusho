@@ -818,3 +818,4 @@ gUnk_080AF808       = 0x080AF808;
 gUnk_02023078       = 0x02023078;
 gUnk_03001784       = 0x03001784;
 gSaveMagic          = 0x08483C20;
+gSaveMagicErased    = 0x08483C31;

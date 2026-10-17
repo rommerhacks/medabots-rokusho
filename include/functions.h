@@ -1151,6 +1151,9 @@ void sub_08035754(s16 *amount, s32 sub); // *amount -= sub, not below 0
 void sub_08035B9C(u32 rec);
 u32 sub_08037798(u32 base); // record on side base, or 0xFF
 void *memcpy_optimized(void *dst, const void *src, u32 n); // library
+u16 ReadEepromDword(u16 address, u16 *data); // EEPROM library: reads 8 bytes
+u16 ProgramEepromDword(u16 address, u16 *data); // EEPROM library: writes 8 bytes
+u16 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 bytes and verifies
 // code_0805AB40
 void sub_0805B3E4(s32 x, s32 y, s32 n); // clears n tilemap entries at (x, y) of the BG map at 0x0600B000
 void sub_0805B470(struct Unk_03002C30 *sprite);
@@ -1158,6 +1161,11 @@ s16 sub_0805BB10(u16 step);
 void sub_0805BC6C(void); // sets palette 8 on three 16-tile BG0 rows (dead code, carved from sub_0805BBF8)
 void sub_0805CA28(u32 a);
 void sub_0805D57C(u16 a);
+s32 save_dispatch(s32 mode); // 0: save, 1: load (returns validate_save_data), 2: erase; all through gDecompressBuffer
+void load_save_data(struct SaveData *save);
+void serialize_save_data(struct SaveData *save);
+s32 validate_save_data(struct SaveData *save); // reads the EEPROM into save: 0 ok, 1 wrong signature, -1 corrupt
+s32 sync_save_or_link_data(u16 *src, u32 force); // writes 0x1CC0 bytes to EEPROM: every block if (u8)force, else only blocks that differ
 void sub_0805E170(u16 a);
 
 #endif // GUARD_FUNCTIONS_H
