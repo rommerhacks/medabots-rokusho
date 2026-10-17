@@ -863,6 +863,14 @@ u32 sub_08015648(u32 rec); // 1 for opponents (rec 3-5) while gUnk_030057E0.unk7
 void battle_ai_roll_part_order(void);
 u32 battle_part_unusable(u32 rec, u32 part); // any of sub_080154E0 / sub_08015508 / sub_08015528 / begin_battle_action_lookup
 u32 rng_lookup_table_value(void);
+void battle_execute_action_selection(void);
+void call_bot_action_handler(void);
+void clear_battle_action_selection(void);
+u32 sub_08032FD0(u32 rec, u32 val); // 1 if rec's head or an arm has armor left and skill type data[2] == val
+u32 sub_08032FFC(void); // 1 if gUnk_03001800.unk61 has a candidate
+u32 select_battle_pending_action(void); // random candidate record from gUnk_03001800.unk61
+u32 select_random_battle_target(u32 base); // random present record base + 0..2
+void sub_08033154(u32 rec, u32 part); // stores the chosen target (unk5E / unk5F) in the part's unkE / unkF
 u32 begin_battle_action_lookup(u32 rec, u32 part);
 void sub_08018CBC(void);
 void sub_08018D0C(u32 rec); // timed effect A tick (type 0x1F restores armor to damaged parts)
