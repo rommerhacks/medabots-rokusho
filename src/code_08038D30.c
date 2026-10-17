@@ -690,10 +690,92 @@ void sub_0803A310(void)
     battle_advance_sequence_counter();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803A370);
-INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803A444);
-INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803A474);
-INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803A5CC);
+void sub_0803A370(void)
+{
+    load_battle_sequence_commands();
+    clear_battle_sprite_slot(0x1E, 1);
+    gUnk_03002C30[0x1E].unk2B = gUnk_03001800.unk102[0];
+    gUnk_03002C30[0x1E].unk4 = gUnk_03001800.unk102[2];
+    gUnk_03002C30[0x1E].unk24 = gUnk_03001800.unk102[4];
+    gUnk_03002C30[0x1E].unk29 = 12;
+    if (!(gUnk_03001800.unkF8 & 2)) {
+        gUnk_03002C30[0x1E].unk2 = gUnk_03001800.unk102[1];
+        gUnk_03002C30[0x1E].unk25 = gUnk_03001800.unk102[3];
+    } else {
+        gUnk_03002C30[0x1E].unk2 = 0xF0 - gUnk_03001800.unk102[1];
+        gUnk_03002C30[0x1E].unk25 = (0x20 - (u8)gUnk_03001800.unk102[3]) & 0x1F;
+    }
+    gUnk_03002C30[0x1E].unk30 = gUnk_03002C30[0x1E].unk2;
+    battle_advance_sequence_counter();
+}
+
+void sub_0803A444(void)
+{
+    REG_BG0CNT = 0x4500;
+    tilemap_fill_rect(0x40, 0x20, 0, 0, REG_BG0CNT, 0);
+    battle_advance_sequence_counter();
+}
+
+void sub_0803A474(void)
+{
+    u32 skill;
+    u32 t;
+
+    load_battle_sequence_commands();
+    clear_battle_sprite_slot(0x23, 1);
+    if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3)
+        skill = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
+    else
+        skill = gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50;
+    load_battle_entity_palette(skill, gUnk_03001800.unk102[4], 9);
+    gUnk_03002C30[0x23].unk2E = gUnk_03001800.unk102[0];
+    gUnk_03002C30[0x23].unk2F = gUnk_03001800.unk102[1];
+    gUnk_03002C30[0x23].unk2B = gUnk_03001800.unk102[6];
+    gUnk_03002C30[0x23].unk30 = gUnk_03001800.unk102[5];
+    gUnk_03002C30[0x23].unk29 = 0x11;
+    init_game_state_entry(gUnk_083CEC74[gUnk_03002C30[0x23].unk2B], 1, 1);
+    gUnk_03002C30[0x23].unk4 = gUnk_03001800.unk102[3];
+    if (!(gUnk_03001800.unkF8 & 2)) {
+        gUnk_03002C30[0x23].unk2 = gUnk_03001800.unk102[2];
+        gUnk_03002C30[0x23].unk2C = gUnk_03001800.unk102[7];
+    } else {
+        t = gUnk_03002C30[0x23].unk2E >> 1;
+        gUnk_03002C30[0x23].unk2 = (s16)(0x1E - t - (gUnk_03001800.unk102[2] + t)) - 1;
+        gUnk_03002C30[0x23].unk2C = gUnk_03001800.unk102[7] + 2;
+    }
+    gUnk_03002C30[0x23].unk2D = 0;
+    gUnk_03002C30[0x23].unk28 = 0;
+    battle_advance_sequence_counter();
+}
+
+void sub_0803A5CC(void)
+{
+    u32 skill;
+
+    load_battle_sequence_commands();
+    if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3)
+        skill = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
+    else
+        skill = gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50;
+    load_battle_entity_palette(skill, gUnk_03001800.unk102[4], 9);
+    gUnk_03002C30[4].unk2E = gUnk_03001800.unk102[0];
+    gUnk_03002C30[4].unk2F = gUnk_03001800.unk102[1];
+    gUnk_03002C30[4].unk2B = gUnk_03001800.unk102[6];
+    gUnk_03002C30[4].unk30 = gUnk_03001800.unk102[5];
+    gUnk_03002C30[4].unk29 = 0x12;
+    init_game_state_entry(gUnk_083CEC74[gUnk_03002C30[4].unk2B], 0, 0);
+    gUnk_03002C30[4].unk4 = 4;
+    if (!(gUnk_03001800.unkF8 & 2)) {
+        gUnk_03002C30[4].unk2 = gUnk_03001800.unk102[2];
+        gUnk_03002C30[4].unk2C = gUnk_03001800.unk102[7];
+    } else {
+        gUnk_03002C30[4].unk2 = gUnk_03001800.unk102[3];
+        gUnk_03002C30[4].unk2C = gUnk_03001800.unk102[7] + 2;
+    }
+    gUnk_03002C30[4].unk2D = 0;
+    battle_advance_sequence_counter();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803A6FC);
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803A760);
 INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803A840);

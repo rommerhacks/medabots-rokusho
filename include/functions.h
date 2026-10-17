@@ -336,6 +336,7 @@ s16 sub_0803D424(void); // current battle sequence entry (gUnk_083CDFE4[unkF9][u
 void sub_0803B8C8(void);
 void battle_advance_sequence_counter(void); // skips the current battle sequence command and its operands
 void load_battle_sequence_commands(void);
+void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile); // fills a rectangle of the BG map at bgcnt's screen base
 void load_battle_entity_palette(u32 list, u32 entry, u32 slot);
 void init_game_state_entry(const u16 *pos, u8 arg, u32 slot); // copies the current command's operands to gUnk_03001800.unk102
 u32 sub_0803E79C(void);
