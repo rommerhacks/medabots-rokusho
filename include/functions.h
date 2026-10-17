@@ -966,5 +966,6 @@ void sub_0803572C(u8 *val, s32 amount); // *val = max(*val - amount, 0)
 void sub_08037458(u32 rec, s32 amount); // gUnk_03001800.unkC8 / unkCC = min(amount, head unk10), unkCA = the rest
 void sub_08037498(u32 rec, s32 amount); // same, clamped to head data[8] - unk10
 void sub_080378A8(void); // moves sprite 0x21 4 px (right if gUnk_03001800.unkF8 bit 1 clear, else left)
+u32 sub_08037B9C(void); // runs the sprite handlers of slots 0x21-0x3B; 1 when none is active
 
 #endif // GUARD_FUNCTIONS_H
