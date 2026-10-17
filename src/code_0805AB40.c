@@ -539,7 +539,7 @@ u16 eeprom_setup_timer_irq(void)
     return sub_0807C7A8(2, &gIntrTable[11]);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805DD60);
+INCLUDE_ASM("asm/nonmatching/code_0805AB40", load_save_with_retries);
 
 void load_save_data(struct SaveData *save)
 {

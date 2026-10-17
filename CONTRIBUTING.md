@@ -382,3 +382,21 @@
 * A function table entry whose first instructions sit in the previous function's `.byte` tail
   (render_sprite_if_visible started 8 bytes before its listed address): move the start in
   `config/functions.tsv` and prepend the instructions to its `.s`.
+* **The file context changes the high-register choice.** Which of `ip` / `sl` / `r8` holds a value
+  (and so which `mov` encodings appear) depends on the functions compiled *before* it in the same
+  `.c` file; `INCLUDE_ASM` functions don't count, C functions do. A function can match in
+  `match.py` (compiled alone) and still fail in `install_func.py` (sub_0805C190: same code, the three
+  hi registers rotated). Nothing about the function's own source fixes it; it should match once the
+  `INCLUDE_ASM` functions before it in the file are C. Keep such functions in `scratch/` and retry
+  later. A mismatch that is only an `ip`/`r8` swap in scratch may be the same effect.
+* `p = (u16 *)(bgbase + x * 2) + y * 32`-style tilemap addresses: gcc reassociates
+  `bg * 0x800 + (x * 2 + VRAM)` so the constant ends up last. Writing
+  `(u16 *)(VRAM + (bg << 11)) + col + row * 32` gives the original's `row * 64 + 0x060000xx` then
+  `+ bg` order (sub_0805BC6C, sub_0805C190).
+* Inner loops `for (j = 0; j <= 15; j++)` and `for (j = 15; j >= 0; j--)` both become count-down
+  loops, but only the up-counting source gives the original's `i + 1` kept in another register
+  (sub_0805BC6C).
+* One local reused for two unrelated values (an "empty name" flag, then a stored checksum) shows as
+  both living in the same callee-saved register (validate_save_data).
+* A u8 parameter tested as `lsls r1, r1, #24; cmp r1, #0` with the truncation *after* other setup:
+  the parameter is `u32`/`int` and the test is `if ((u8)force)` (write_save_to_eeprom).

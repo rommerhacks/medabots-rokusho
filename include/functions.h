@@ -1172,7 +1172,7 @@ void sub_0805C820(void); // fades REG_BLDY up to 16, then game state 9 (carved f
 void sub_0805CA28(u32 a);
 void sub_0805D57C(u16 a);
 void attempt_save_and_transition(void); // save screen state 7: up to 4 tries of save_dispatch(0), then state 8 (ok) or 12 (failed)
-s32 sub_0805DD60(void); // title: stops the music, clears the name, tries save_dispatch(1) 4 times; nonzero while sound 4 plays
+s32 load_save_with_retries(void); // title: stops the music, clears the name, tries save_dispatch(1) 4 times; nonzero while sound 4 plays
 s32 save_dispatch(s32 mode); // 0: save, 1: load (returns validate_save_data), 2: erase; all through gDecompressBuffer
 void load_save_data(struct SaveData *save);
 void serialize_save_data(struct SaveData *save);

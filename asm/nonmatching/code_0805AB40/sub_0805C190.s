@@ -39,7 +39,7 @@ sub_0805C190: @ 0x0805C190
 	rsbs r0, r0, #0
 	ands r0, r1
 	strb r0, [r4]
-	bl sub_0805DD60
+	bl load_save_with_retries
 	adds r1, r0, #0
 	cmp r1, #0
 	beq _0805C274

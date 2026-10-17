@@ -1,7 +1,7 @@
 	.syntax unified
 
-	thumb_func_start sub_0805DD60
-sub_0805DD60: @ 0x0805DD60
+	thumb_func_start load_save_with_retries
+load_save_with_retries: @ 0x0805DD60
 	push {r4, r5, lr}
 	movs r0, #4
 	bl is_sound_playing_with_lock
