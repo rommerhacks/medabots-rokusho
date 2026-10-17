@@ -1275,11 +1275,61 @@ void sub_08023018(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_0802306C);
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_080230A4);
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_080230C8);
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08023118);
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_080231D4);
+void sub_0802306C(void)
+{
+    lz_decompress_dispatch(gUnk_084D5D78, (void *)0x06014800);
+    CpuFastSet(gUnk_0850E778, (void *)0x050002C0, 0x10);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_080230A4(void)
+{
+    copy_obj_palette_to_buffer();
+    gUnk_03000440.unk84 = 0;
+    gUnk_03001800.unkAA++;
+}
+
+void sub_080230C8(void)
+{
+    blend_obj_palettes_to_color_0803F684(0x1084, gUnk_03000440.unk84, 0xFFFF);
+    blend_obj_palettes_to_color_0803F998(0x1084, gUnk_03000440.unk84, 0xFF00);
+    if (gUnk_03000440.unk84 == 0x10)
+        gUnk_03001800.unkAA++;
+    else
+        gUnk_03000440.unk84++;
+}
+
+void sub_08023118(void)
+{
+    gUnk_03002C30[0x21].unk0 = 0xC604;
+    gUnk_03002C30[0x21].unk1C = 0;
+    gUnk_03002C30[0x21].unk2 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
+    gUnk_03002C30[0x21].unk4 = gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4;
+    gUnk_03002C30[0x21].unkA = 6;
+    gUnk_03002C30[0x21].unkB = 0xF0;
+    gUnk_03002C30[0x21].unk6 = 0x4800;
+    gUnk_03002C30[0x21].unk8 = 0x40;
+    gUnk_03002C30[0x21].unk9 = 0x40;
+    gUnk_03002C30[0x21].unk18 = 0;
+    gUnk_03002C30[0x21].unk2D = 0;
+    play_sound_effect(0x4C);
+    gUnk_03001800.unkAA++;
+}
+
+void sub_080231D4(void)
+{
+    if (gUnk_03002C30[0x21].unk2D == 0x40)
+    {
+        clear_battle_sprite_slot(0x21, 2);
+        gUnk_03001800.unkAA++;
+    }
+    else
+    {
+        gUnk_03002C30[0x21].unk2D++;
+        gUnk_03002C30[0x21].unk18 = (gUnk_03002C30[0x21].unk18 + 0x10) & 0x3FF;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08023224);
 INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08023274);
 INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08023328);
