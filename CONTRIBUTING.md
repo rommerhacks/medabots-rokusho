@@ -214,3 +214,8 @@
 * An index computed before the record (`part * 0x18` first, then `rec << 8`) with the field offset
   added separately (`adds #0x59`): index the global in full at each use, no `struct *` local
   (sub_08033434, sub_08033550).
+* Toggle then test a flag: `f ^= 2; if (!(f & 2))` reloads the constant like the original;
+  `if (!((f ^= 2) & 2))` reuses the register (sub_080347F8).
+* Several `x == A || x == B` checks in a row: if one uses the `goto` pair through a `type` local and
+  the registers come out swapped, write that check with the field read at both compares instead
+  (sub_08033D30).
