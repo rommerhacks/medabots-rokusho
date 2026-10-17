@@ -22,7 +22,21 @@ void dispatch_options_menu_and_update_counters(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", silence_and_clear_vram);
+void silence_and_clear_vram(void)
+{
+    u32 zero;
+
+    play_song(0);
+    zero = 0;
+    CpuFastSet(&zero, (void *)VRAM, 0x01006000);
+    reset_bg_scroll();
+    clear_battle_sprite_slot(0, 0x80);
+    REG_DISPCNT = 0x60;
+    REG_BLDCNT = 0x2FF;
+    REG_BLDY = 0x10;
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", load_battle_background_graphics);
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", init_fade_screen_setup);
 
@@ -225,7 +239,21 @@ void dispatch_battle_bg_substate(void)
     gUnk_08483DA0[gGameSubState]();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", copy_bg2_tilemap_to_ewram);
+void copy_bg2_tilemap_to_ewram(void)
+{
+    u32 zero;
+
+    CpuFastSet((void *)0x06002800, (void *)0x02020800, 0x28);
+    zero = 0;
+    CpuFastSet(&zero, (void *)0x06002800, 0x01000200);
+    reset_bg_scroll();
+    sub_08059D04();
+    REG_DISPCNT = 0x60;
+    REG_BLDCNT = 0x2FF;
+    REG_BLDY = 0x10;
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", setup_battle_bg_layers);
 
 void sub_08060804(void)
@@ -301,7 +329,28 @@ void copy_text_with_lookup(dst, src, unused, i)
     dst[2] = gUnk_080AFA10[gUnk_03002420];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", execute_substate_and_tick_counters);
+void execute_substate_and_tick_counters(void)
+{
+    gUnk_08483E10[gGameSubState]();
+    if (gFrameCounter & 1)
+    {
+        gBg3Scroll.x++;
+        gBg3Scroll.y++;
+    }
+}
+
+void sub_08060C44(void)
+{
+    gUnk_03006F74->unk5 = 0;
+    gUnk_03006F74->unk6 = 0;
+    gGameSubState = 14;
+}
+
+void sub_08060C60(void)
+{
+    gGameSubState = 1;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08060C6C);
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", clear_vram_da80_region);
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08060FD4);
@@ -380,7 +429,26 @@ void sub_08061830(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", setup_bg1_and_decompress_tiles);
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", enable_obj_layer_and_load_palette);
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08061D30);
+
+void sub_08061D30(void)
+{
+    struct Unk_03000440 *s = &gUnk_03000440;
+    u8 *n = &s->unk84;
+
+    if (*n <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, 32 - *n * 4, 0xFFFE);
+        blend_obj_palettes_to_color_0803F998(0, 32 - *n * 4, 0x7FFD);
+        (*n)++;
+    }
+    else
+    {
+        update_battle_sprite_priority_flags();
+        gUnk_03006F74->unk2 = 0;
+        gGameSubState++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", shop_purchase_menu_handler);
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", transition_fade_to_battle);
 
@@ -410,9 +478,49 @@ void sub_080625EC(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08062638);
+void sub_08062638(void)
+{
+    struct Unk_03000440 *s = &gUnk_03000440;
+    u8 *n = &s->unk84;
+
+    if (*n <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, *n * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, *n * 4, 0xFFFF);
+        (*n)++;
+    }
+    else
+    {
+        struct Unk_03006F74 *p = gUnk_03006F74;
+        u8 mode = p->unk19;
+        struct ShopSellEntry *l = (struct ShopSellEntry *)0x02040000;
+        init_battle_scene(mode, l[p->unk1A + gUnk_02023078].id);
+        gGameMode = 0;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_080626A4);
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", fade_out_transition_step);
+
+void fade_out_transition_step(void)
+{
+    struct Unk_03000440 *s = &gUnk_03000440;
+    u8 *n = &s->unk84;
+
+    if (*n <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, 32 - *n * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, 32 - *n * 4, 0xFFFF);
+        (*n)++;
+    }
+    else
+    {
+        update_battle_sprite_priority_flags();
+        gUnk_03006F74->unk2 = 0;
+        gGameState = 12;
+        gGameSubState = 4;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", dispatch_substate_handler);
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", init_scene_rendering_context);
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", load_medapart_sprite_animation);

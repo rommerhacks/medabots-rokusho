@@ -1277,3 +1277,12 @@ void sub_080625EC(void);
 void sub_08060154(void);
 void sub_08061180(void);
 void sub_080616F8(void);
+void sub_08060C44(void);
+void sub_08060C60(void);
+void update_battle_sprite_priority_flags(void);
+void silence_and_clear_vram(void);
+void copy_bg2_tilemap_to_ewram(void);
+void execute_substate_and_tick_counters(void); // gUnk_08483E10[gGameSubState](), BG3 scrolls diagonally
+void sub_08061D30(void);
+void sub_08062638(void); // fades OBJ palettes in, then init_battle_scene(unk19, id of shop list entry unk1A + gUnk_02023078)
+void fade_out_transition_step(void);

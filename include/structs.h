@@ -1051,7 +1051,8 @@ struct Unk_03006F74
     u8 unk17;
     u8 unk18;
     u8 unk19;
-    u8 filler1A[0x2];
+    u8 unk1A;
+    u8 filler1B;
     u32 unk1C;
     u8 unk20; // number of save / link slots shown (update_battle_sprite_priority_flags)
     u8 filler21[0x15];
