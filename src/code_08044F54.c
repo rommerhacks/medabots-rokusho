@@ -545,7 +545,7 @@ void update_battle_field_frame(void)
     dma_load_battle_palettes();
     load_room_graphics();
     gUnk_030057E0.unkC36 = 0;
-    update_sprite_animation_dma();
+    animate_area_bg_tiles();
     load_map_npc_sprites(gUnk_030057E0.unkCBA);
     update_entity_sprites_on_screen();
     init_battle_field_setup();
@@ -557,7 +557,7 @@ void update_battle_field_frame(void)
     update_battle_entity_status_chars();
 }
 
-void update_sprite_animation_dma(void)
+void animate_area_bg_tiles(void)
 {
     const u8 *anim = gUnk_084096F4[gUnk_030057E0.unk7FE];
     u8 n = anim[0];

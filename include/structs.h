@@ -787,9 +787,9 @@ struct Unk_030057E0
     u8 unkC31;
     u8 unkC32;
     u8 unkC33; // Medawatch menu enabled (B opens the field menu only if set)
-    u8 unkC34;
-    u8 unkC35;
-    u8 unkC36;
+    u8 unkC34; // area BG tile animation enabled (animate_area_bg_tiles)
+    u8 unkC35; // its frame index
+    u8 unkC36; // frames until the next one (2: every 3rd frame; runtime-checked)
     u8 unkC37; // random seed
     u8 unkC38[0x10];
     u16 unkC48;

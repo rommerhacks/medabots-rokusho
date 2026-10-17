@@ -57,7 +57,7 @@ _0804A23C:
 _0804A24C:
 	bl update_entity_sprites_on_screen
 	bl update_npc_sprite_animations
-	bl update_sprite_animation_dma
+	bl animate_area_bg_tiles
 	movs r4, #0
 _0804A25A:
 	lsls r0, r4, #0x18

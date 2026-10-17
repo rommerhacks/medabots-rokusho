@@ -457,7 +457,7 @@ u32 update_battle_sprite_movement(u8 slot, u8 a);
 void sub_080482C0(void);
 void load_room_graphics(void);
 void load_battlefield_data_to_buffer(void);
-void update_sprite_animation_dma(void);
+void animate_area_bg_tiles(void);
 void init_battle_field_setup(void);
 void update_bg_scroll_offsets_a(void);
 u32 scene_transition_step_08047C24(u8 a, u8 b, u8 c, const void *text);

@@ -364,3 +364,21 @@
   final `str`: that is the normal struct return. A table declared `[][8]` read as a flat `s16` array
   needs `tbl[0][i]`; a `(const s16 *)` cast reorders the base load (calc_polar_to_screen_coords).
 * A u8 key byte read with `ldrb` from `gNewKeys` (u16): `KEYS_LO(gNewKeys) & mask`.
+* A constant stored to an I/O register that goes **straight into `r0`** after the address
+  (`ldr r1, =REG; ldr r0, =0xA0C; strh r0, [r1]`), while plain `REG = 0xA0C;` gives
+  `ldr r2, =0xA0C; adds r0, r2, #0`: take the register's address and the value into locals,
+  `vu16 *r = &REG_BLDALPHA; u16 v = 0xA0C; *r = v;` (sub_080487E4, sub_080487AC). Worth trying on
+  the older `REG_X = const` near misses.
+* `adds r0, r0, #imm` folded into one constant where the original kept `(t - 0xC0) * 2` and
+  `(x + 0x28)` apart: combine reassociates even through a `static inline` helper (sub_080481C4,
+  unsolved).
+* A loop whose index is only used in an address (`0x05000200 + i * 0x20`) keeps its up-counter
+  and the strength-reduced address is set up *after* the hoisted invariants; an explicit
+  `dst += 0x20` pointer is set up first (dma_load_obj_palettes_08048664).
+* A loop condition that calls a function and a body that calls it again with the same argument
+  (`for (i = 0; (t = f(i)) != 0xFF; i++) { t = f(i); ... }`): the original really calls it twice.
+* A bitfield tested with `ldrb; movs #0xF; ands` but read elsewhere with `lsls/lsrs`: the test was
+  written on the raw byte (`(*(u8 *)desc & 0xF) == 0`), gcc narrows the mask test to a byte load.
+* A function table entry whose first instructions sit in the previous function's `.byte` tail
+  (render_sprite_if_visible started 8 bytes before its listed address): move the start in
+  `config/functions.tsv` and prepend the instructions to its `.s`.

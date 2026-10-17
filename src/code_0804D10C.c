@@ -500,7 +500,7 @@ void sub_0804DD80(void)
     load_battlefield_data_to_buffer();
     gUnk_030057E0.unkC35 = 0;
     gUnk_030057E0.unkC36 = 0;
-    update_sprite_animation_dma();
+    animate_area_bg_tiles();
     load_battle_terrain_data();
     gUnk_030057E0.unkC52 = gUnk_030057E0.unkC56 * 16 + gUnk_030057E0.unkC48;
     gUnk_030057E0.unkC54 = gUnk_030057E0.unkC57 * 16 + gUnk_030057E0.unkC4A;
