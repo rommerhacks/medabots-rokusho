@@ -340,4 +340,16 @@ extern const u16 gUnk_084E3038[]; // Robattle palette (OBJ palette 6, sub_080130
 extern const u16 gUnk_084E2F38[]; // Robattle palette (OBJ palette 10)
 extern const u16 gUnk_084E2F78[]; // Robattle palette (OBJ palette 10)
 
+extern const u8 gUnk_084ED4C4[];
+extern const u8 gUnk_084C50D8[];
+extern const u8 gUnk_084C50BC[];
+extern const u8 gUnk_084EF5DC[];
+extern const u8 gUnk_084F0128[];
+extern const u8 gUnk_084F0D24[];
+extern const u8 gUnk_084F205C[];
+extern const u16 gUnk_084F37E0[];
+
+extern const u8 gUnk_084C84E4[];
+extern const u16 gUnk_084E2FD8[];
+
 #endif // GUARD_VARIABLES_H

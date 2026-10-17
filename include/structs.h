@@ -353,7 +353,9 @@ struct Unk_03001800
     u8 filler55[0x5];
     u8 unk5A; // Robattle: team Medabot count (3 in battle_start.ss0)
     u8 unk5B;
-    u8 filler5C[0x24];
+    u8 filler5C[0x8];
+    u8 unk64[4]; // filled by get_bot_part_effective_values (sub_08013B8C)
+    u8 filler68[0x18];
     u8 unk80; // index of a 256-byte record in gUnk_03000590 (sub_0800B498 copies Medal rotation data there)
     u8 unk81;
     u8 unk82;
