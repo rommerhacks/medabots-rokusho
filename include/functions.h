@@ -951,7 +951,7 @@ void setup_battle_medapart_scenes(void);
 void calc_bot_evasion_modifier(u8 rec);
 void sub_080355C4(u8 rec);
 u32 clear_ewram_buffer_02023000_b(u32 rec);
-void battle_calc_damage_split(u8 rec, u8 part, s32 amount); // unkC8 = unkCC = min(amount, part data[4] - armor unk11)
+void battle_calc_damage_split(u32 rec, u32 part, s32 amount); // unkC8 = unkCC = min(amount, part data[4] - armor unk11)
 u32 battle_check_action_counter(u16 *amount, u8 rec, u8 part);
 u32 sub_080331F8(u32 rec);
 u32 sub_08036D64(u32 rec, u8 skill);
