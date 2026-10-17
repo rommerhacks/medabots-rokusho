@@ -1478,16 +1478,16 @@ void sub_080130D8(void)
     sub_0801672C();
     if (++gUnk_03000440.unk84 == 16)
     {
-        sub_08016DA4();
-        sub_0801677C();
-        sub_080167BC(1);
-        sub_08016804(1);
-        sub_0801684C(1);
-        sub_08016894(1);
-        sub_08016A3C();
-        sub_08016AD8();
-        sub_08016D18();
-        sub_08016DCC();
+        part_select_init_cursor();
+        part_select_init_center_icon();
+        part_select_init_head_icon(1);
+        part_select_init_right_arm_icon(1);
+        part_select_init_left_arm_icon(1);
+        part_select_init_bottom_icon(1);
+        part_select_draw_part_name();
+        part_select_draw_skill_type();
+        part_select_draw_skill_name();
+        part_select_draw_head_uses();
         sub_0801B894();
         gUnk_03000440.unk84 = 0;
         gGameSubState++;
@@ -1504,9 +1504,9 @@ void sub_08013164(void)
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     sub_0801B9C4();
     gUnk_03000440.unk84++;
-    sub_080168F4();
-    sub_080169AC();
-    sub_08016C0C();
+    part_select_blink_selected_icon();
+    part_select_input();
+    part_select_blink_status();
     if ((b = KEYS_LO(gNewKeys) & 2))
     {
         play_sound_effect(5);
@@ -1547,8 +1547,8 @@ void sub_08013288(void)
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     gUnk_03000440.unk84++;
     gUnk_03000440.unk84++;
-    sub_080168F4();
-    sub_08016C0C();
+    part_select_blink_selected_icon();
+    part_select_blink_status();
     if (++gUnk_03000440.unk86 == 16)
     {
         clear_battle_sprite_slot(0, 0x46);

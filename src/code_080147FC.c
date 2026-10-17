@@ -1092,7 +1092,7 @@ void sub_0801672C(void)
     }
 }
 
-void sub_0801677C(void)
+void part_select_init_center_icon(void)
 {
     gUnk_03002C30[0].unk0 = 0xC404;
     gUnk_03002C30[0].unk1C = 0;
@@ -1103,7 +1103,7 @@ void sub_0801677C(void)
     gUnk_03002C30[0].unk6 = gUnk_083AD3A0[gUnk_03001800.unk82] + 0x600;
 }
 
-void sub_080167BC(u32 a)
+void part_select_init_head_icon(u32 a)
 {
     gUnk_03002C30[1].unk0 = 0xC404;
     gUnk_03002C30[1].unk1C = 0;
@@ -1114,7 +1114,7 @@ void sub_080167BC(u32 a)
     gUnk_03002C30[1].unk6 = a * 4 + 0x604;
 }
 
-void sub_08016804(u32 a)
+void part_select_init_right_arm_icon(u32 a)
 {
     gUnk_03002C30[2].unk0 = 0xC404;
     gUnk_03002C30[2].unk1C = 0;
@@ -1125,7 +1125,7 @@ void sub_08016804(u32 a)
     gUnk_03002C30[2].unk6 = a * 4 + 0x605;
 }
 
-void sub_0801684C(u32 a)
+void part_select_init_left_arm_icon(u32 a)
 {
     gUnk_03002C30[3].unk0 = 0xC404;
     gUnk_03002C30[3].unk1C = 0;
@@ -1136,7 +1136,7 @@ void sub_0801684C(u32 a)
     gUnk_03002C30[3].unk6 = a * 4 + 0x606;
 }
 
-void sub_08016894(u32 a)
+void part_select_init_bottom_icon(u32 a)
 {
     gUnk_03002C30[4].unk0 = 0xC404;
     gUnk_03002C30[4].unk1C = 0;
@@ -1147,38 +1147,40 @@ void sub_08016894(u32 a)
     gUnk_03002C30[4].unk6 = a * 4 + 0x607;
 }
 
-void sub_080168F4(void)
+void part_select_blink_selected_icon(void)
 {
     switch (gUnk_03001800.unk82)
     {
     case 0:
         if (gUnk_03000440.unk84 & 8)
-            sub_08016894(1);
+            part_select_init_bottom_icon(1);
         else
-            sub_08016894(0);
+            part_select_init_bottom_icon(0);
         break;
     case 1:
         if (gUnk_03000440.unk84 & 8)
-            sub_080167BC(1);
+            part_select_init_head_icon(1);
         else
-            sub_080167BC(0);
+            part_select_init_head_icon(0);
         break;
     case 2:
         if (gUnk_03000440.unk84 & 8)
-            sub_08016804(1);
+            part_select_init_right_arm_icon(1);
         else
-            sub_08016804(0);
+            part_select_init_right_arm_icon(0);
         break;
     case 3:
         if (gUnk_03000440.unk84 & 8)
-            sub_0801684C(1);
+            part_select_init_left_arm_icon(1);
         else
-            sub_0801684C(0);
+            part_select_init_left_arm_icon(0);
         break;
     }
 }
 
-void sub_080169AC(void)
+// Robattle sub-state 0x12, Medapart select (runtime-checked from battle_start.ss0): UP head (1),
+// LEFT right arm (2), RIGHT left arm (3), DOWN none (0) in gUnk_03001800.unk82.
+void part_select_input(void)
 {
     u8 old = gUnk_03001800.unk82;
 
@@ -1193,21 +1195,21 @@ void sub_080169AC(void)
     if (gUnk_03001800.unk82 != old)
     {
         play_sound_effect(2);
-        sub_0801677C();
-        sub_080167BC(1);
-        sub_08016804(1);
-        sub_0801684C(1);
-        sub_08016894(1);
-        sub_08016A3C();
-        sub_08016AD8();
-        sub_08016D18();
-        sub_08016DCC();
+        part_select_init_center_icon();
+        part_select_init_head_icon(1);
+        part_select_init_right_arm_icon(1);
+        part_select_init_left_arm_icon(1);
+        part_select_init_bottom_icon(1);
+        part_select_draw_part_name();
+        part_select_draw_skill_type();
+        part_select_draw_skill_name();
+        part_select_draw_head_uses();
         sub_0801BACC();
         sub_0801B894();
     }
 }
 
-void sub_08016A3C(void)
+void part_select_draw_part_name(void)
 {
     s32 k;
 
@@ -1223,7 +1225,7 @@ void sub_08016A3C(void)
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x1F, 10, 0x11, 10, 13, 0, 0);
 }
 
-void sub_08016AD8(void)
+void part_select_draw_skill_type(void)
 {
     s32 k;
 
@@ -1250,7 +1252,7 @@ void sub_08016AD8(void)
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x2D, 0x13, 0xE, 10, 14, 0, 0);
 }
 
-void sub_08016C0C(void)
+void part_select_blink_status(void)
 {
     u32 show = 0;
     s32 k = gUnk_03001800.unk82;
@@ -1292,7 +1294,7 @@ void sub_08016C0C(void)
     }
 }
 
-void sub_08016D18(void)
+void part_select_draw_skill_name(void)
 {
     s32 k;
 
@@ -1308,7 +1310,7 @@ void sub_08016D18(void)
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x14, 0x15, 0x11, 8, 14, 0, 0);
 }
 
-void sub_08016DA4(void)
+void part_select_init_cursor(void)
 {
     u8 v = gUnk_03000590[gUnk_03001800.unk80].unkDD;
     if (v > 3)
@@ -1316,7 +1318,7 @@ void sub_08016DA4(void)
     gUnk_03001800.unk82 = v;
 }
 
-void sub_08016DCC(void)
+void part_select_draw_head_uses(void)
 {
     if (gUnk_03001800.unk82 == 1)
     {
@@ -1448,6 +1450,7 @@ void sub_08017208(u32 a)
     gUnk_03002C30[4].unk6 = a * 4 + 0x61D;
 }
 
+// guess: Medaforce select names (cases 1-3 open at Medal level 10/30/60), same layout as the part select
 void sub_08017268(void)
 {
     clear_sprite_table_mask(0x14, 16);

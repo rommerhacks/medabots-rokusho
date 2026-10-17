@@ -366,9 +366,9 @@ extern const u8 gUnk_083AD370[]; // angles for compute_polar_to_screen_position,
 extern const u8 gUnk_083AD376[]; // next slot after a right turn of the ring, by gUnk_03001800.unk81 (command_ring_input)
 extern const u8 gUnk_083AD37C[]; // next slot after a left turn
 extern const u8 gUnk_083AD382[]; // 4-byte records: sprite count, start value, x, y (sub_08016370, animate_battle_sprites)
-extern const u8 gUnk_083AD3A0[]; // part select: centre sprite frame by gUnk_03001800.unk82 (sub_0801677C)
+extern const u8 gUnk_083AD3A0[]; // part select: centre sprite frame by gUnk_03001800.unk82 (part_select_init_center_icon)
 extern const u8 *const gUnk_083C4A10[]; // part select status texts: [0] part broken (unk11 == 0), [1] sealed, [2] head out of uses, [3] unk82 == 0
-extern const u32 gUnk_083BE6E8[]; // names by part skill id (part data[1]; sub_08016D18)
+extern const u32 gUnk_083BE6E8[]; // names by part skill id (part data[1]; part_select_draw_skill_name)
 extern const u8 gUnk_084888A8[];
 extern const u8 gUnk_0848895C[];
 extern const u8 gUnk_084888E4[];
