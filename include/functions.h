@@ -173,19 +173,19 @@ void debug_motion_init(void);
 void debug_motion_load(void);
 void debug_motion_input(void); // START / SELECT change the Medabot model (unk39), A plays animation unk35[0]
 void debug_motion_play(void);
-void sub_0800EBFC(void);
-void sub_0800EC20(void);
-void sub_0800EC44(void);
-void sub_0800ED10(void);
-void sub_0800EDA0(void);
-void sub_0800EE34(void);
-void sub_0800EEE4(void);
-void sub_0800EF58(void);
-void sub_0800EFB0(void);
-u32 sub_0800EFFC(void);
-u32 sub_0800F08C(void);
-u32 sub_0800F148(void);
-void sub_0800F218(void);
+void medaparts_scroll_bg(void);
+void medaparts_list_set_cursor_from_part(void);
+void medaparts_list_draw_names(void);
+void medaparts_list_draw_counts(void);
+void sub_0800EDA0(void); // draws gMedapartInventory byte 1 of each row (1 digit, column 0x19); guess: count equipped
+void medaparts_list_draw_part_icons(void); // 2x2 icon per owned row, tile by part data unkF1 (guess: the SEX column)
+void medaparts_list_init_page_arrows(void);
+void medaparts_list_blink_page_arrows(void);
+void medaparts_list_init_cursor(void);
+u32 medaparts_list_row_input(void);
+u32 medaparts_list_page_input(void);
+u32 medaparts_list_kind_input(void);
+void medaparts_list_load_part_sprite(void); // sets unk3D from the cursor, loads the selected Medapart's sprite (load_sprite_animation_by_type)
 void load_overworld_sprite_by_direction(void);
 void load_medapart_sprite_by_slot(void);
 void init_scene_buffers_0800F60C(void);
@@ -203,6 +203,7 @@ void toggle_sprite_hflip_by_frame(void);
 u32 handle_medapart_selection_scroll(void);
 void setup_battle_cursor_sprite_0800FF50(void);
 void sub_0800FFF4(void);
+void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile, u32 pal, u32 e);
 void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base);
 u32 sub_08042B80(u8 a);
 void setup_bot_render_label(u32 a, u32 n);

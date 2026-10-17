@@ -1,7 +1,7 @@
 	.syntax unified
 
-	thumb_func_start sub_0800EC44
-sub_0800EC44: @ 0x0800EC44
+	thumb_func_start medaparts_list_draw_names
+medaparts_list_draw_names: @ 0x0800EC44
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb

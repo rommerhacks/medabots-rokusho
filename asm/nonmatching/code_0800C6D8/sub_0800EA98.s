@@ -3,7 +3,7 @@
 	thumb_func_start sub_0800EA98
 sub_0800EA98: @ 0x0800EA98
 	push {r4, lr}
-	bl sub_0800EBFC
+	bl medaparts_scroll_bg
 	bl load_medapart_sprite_by_slot
 	ldr r0, _0800EAF0 @ =0x03001780
 	ldrb r1, [r0]

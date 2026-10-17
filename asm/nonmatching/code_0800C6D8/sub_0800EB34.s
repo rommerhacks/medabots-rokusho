@@ -3,7 +3,7 @@
 	thumb_func_start sub_0800EB34
 sub_0800EB34: @ 0x0800EB34
 	push {lr}
-	bl sub_0800EBFC
+	bl medaparts_scroll_bg
 	bl load_medapart_sprite_by_slot
 	bl sub_0801013C
 	cmp r0, #0

@@ -4,7 +4,7 @@
 sub_0800EA2C: @ 0x0800EA2C
 	push {r4, r5, lr}
 	sub sp, #4
-	bl sub_0800EBFC
+	bl medaparts_scroll_bg
 	bl load_medapart_sprite_by_slot
 	ldr r2, _0800EA80 @ =0x03002C30
 	adds r4, r2, #0

@@ -180,6 +180,9 @@ extern u8 gUnk_02020800[]; // BG tile backup (0x800 bytes of VRAM 0x06002800 whi
 extern const Func gMedabotsScreenHandlers[]; // game state 3 sub-state handlers
 extern const Func gMedalsScreenHandlers[]; // game state 4 (Medals screen) sub-state handlers
 extern const Func gMedapartsScreenHandlers[]; // game state 5 (Medaparts screen) sub-state handlers
+extern u8 gMedapartInventory[4 * 120 * 2]; // 2 bytes per Medapart, 120 per kind (head, right arm, left arm, legs): [0] count owned (runtime-checked), [1] second count shown on the Medaparts list
+// The Medaparts list shows 4 parts per page (part id = page * 4 + row); the game indexes it flat like this.
+#define MEDAPART_INV(kind, page, row, byte) gMedapartInventory[(kind) * 240 + (page) * 8 + (row) * 2 + (byte)]
 extern const u8 gUnk_084EBF50[];
 extern const u8 gUnk_084C4014[];
 extern const u8 gUnk_084C4330[];
