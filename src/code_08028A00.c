@@ -2088,5 +2088,63 @@ void sub_0802C820(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802C864);
-INCLUDE_ASM("asm/nonmatching/code_08028A00", sub_0802C960);
+void sub_0802C864(void)
+{
+    u32 i;
+
+    clear_battle_sprite_slot(0x21, 1);
+    lz_decompress_dispatch(gUnk_084D6098, (void *)0x06014800);
+    CpuFastSet(gUnk_0850E7D8, (void *)0x050002E0, 8);
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] == 0)
+            continue;
+        gUnk_03002C30[i + 0x21].unk0 = 0xC624;
+        gUnk_03002C30[i + 0x21].unk1C = 0;
+        gUnk_03002C30[i + 0x21].unk2 = 0x78;
+        gUnk_03002C30[i + 0x21].unk4 = 0x40;
+        gUnk_03002C30[i + 0x21].unkA = 7;
+        gUnk_03002C30[i + 0x21].unkB = 0xF0;
+        gUnk_03002C30[i + 0x21].unk8 = 0x40;
+        gUnk_03002C30[i + 0x21].unk9 = 0x40;
+        gUnk_03002C30[i + 0x21].unk18 = 0;
+        gUnk_03002C30[i + 0x21].unk30 = gUnk_03002C30[(gUnk_03001800.unk60 + i) * 4 + 0x5D].unk2;
+        gUnk_03002C30[i + 0x21].unk32 = gUnk_03002C30[(gUnk_03001800.unk60 + i) * 4 + 0x5D].unk4 - 4;
+        gUnk_03002C30[i + 0x21].unk24 = 6;
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x42], i + 0x21);
+    }
+    gUnk_03001800.unkAA++;
+}
+
+void sub_0802C960(void)
+{
+    u32 done = 0;
+    u32 count = 0;
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03001800.unkD2[i] == 0)
+            continue;
+        count++;
+        process_sprite_anim_commands(gUnk_083B5F80[0x42], i + 0x21);
+        if (!(gUnk_03001800.unkF8 & 1))
+            gUnk_03002C30[i + 0x21].unk18 = (u16)(gUnk_03002C30[i + 0x21].unk18 - 0x40) & 0x3FF;
+        else
+            gUnk_03002C30[i + 0x21].unk18 = (u16)(gUnk_03002C30[i + 0x21].unk18 + 0x40) & 0x3FF;
+        if (move_sprite_toward_target(i + 0x21))
+            done++;
+    }
+    if (done == count)
+    {
+        gUnk_03002C30[0x21].unk18 = 0;
+        gUnk_03002C30[0x22].unk18 = 0;
+        gUnk_03002C30[0x23].unk18 = 0;
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x43], 0x21);
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x43], 0x22);
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x43], 0x23);
+        play_sound_effect(0x4E);
+        gUnk_03001800.unkAA++;
+    }
+}
+
