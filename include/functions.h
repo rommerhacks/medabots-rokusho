@@ -894,6 +894,7 @@ u32 move_sprite_toward_target(u8 slot);
 u32 sub_08036E54(u32 a); // clamps to 1..99
 void sub_08037330(u32 rec, u32 frame, u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
 void sub_080373D4(u32 rec); // sets bit 15 of unk0 on the bot's 4 part sprites
+void sub_08037424(u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
 void calc_polar_to_screen_coords(s32 *out, u32 angle, u32 radius, s32 x, s32 y); // out: x in the low half, y in the high half
 u32 sub_08032FC4(u32 rec); // first record of rec's side (0 or 3)
 void set_sprite_hidden_flags(u8 first, u8 count);
@@ -951,5 +952,8 @@ u32 find_random_available_part_slot(u32 rec); // part + 1, 0 = none
 void battle_set_damage_display(u32 rec, u32 part, s32 amount);
 void get_active_bot_part_index_and_load_values(u32 side);
 void sub_08035740(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, max)
+void sub_0803572C(u8 *val, s32 amount); // *val = max(*val - amount, 0)
+void sub_08037458(u32 rec, s32 amount); // gUnk_03001800.unkC8 / unkCC = min(amount, head unk10), unkCA = the rest
+void sub_08037498(u32 rec, s32 amount); // same, clamped to head data[8] - unk10
 
 #endif // GUARD_FUNCTIONS_H
