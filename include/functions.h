@@ -718,10 +718,10 @@ void sub_08047DF0(u8 a, u8 b, u8 n);
 void sub_08047E08(u8 a, u8 b, u8 n);
 u32 battle_scene_state_dispatch(void);
 void update_bg_scroll_offsets_b(void);
-void write_tilemap_rect(u32 x, u32 w, u32 y, u32 h, const void *src, u32 bgcnt, u32 base);
+void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base);
 void write_tilemap_to_vram_0803F1C8(u32 x, u32 w, u32 y, u32 h, const void *src, u32 bgcnt, u32 base);
 void process_animation_script(const u16 *pos, u32 slot); // steps the gUnk_03000440.unk64[slot] record
-void vram_fill_tilemap_rect(u32 x, u32 w, u32 y, u32 h, u32 bgcnt, u16 value);
+void vram_fill_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 value);
 u32 load_overworld_map_column(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void text_window_init(u8 a, u8 b, u32 c);
 void sub_0803FB0C(void);

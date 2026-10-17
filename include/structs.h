@@ -582,7 +582,9 @@ struct Unk_03001800
     u8 filler18A[0x16];
     u8 unk1A0;
     u8 unk1A1;
-    u8 filler1A2[0x4];
+    u8 unk1A2;
+    u8 unk1A3;
+    u8 filler1A4[0x2];
     u16 unk1A6;
     u16 unk1A8;
     u16 unk1AA;

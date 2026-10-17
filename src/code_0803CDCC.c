@@ -35,7 +35,21 @@ void battle_advance_sequence_counter(void)
     gUnk_03001800.unk100 = p + 1 + ops[seq[p]];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", battle_sprite_rotate_angles);
+void battle_sprite_rotate_angles(u32 dir, u32 delta)
+{
+    u32 i;
+    for (i = 0; i <= 0x13; i++)
+    {
+        if (gUnk_03002C30[i + 10].unk29 != 0)
+        {
+            if (dir)
+                gUnk_03002C30[i + 10].unk2 = (gUnk_03002C30[i + 10].unk2 - delta) & 0x1FF;
+            else
+                gUnk_03002C30[i + 10].unk2 = (gUnk_03002C30[i + 10].unk2 + delta) & 0x1FF;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D538);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D5A0);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803D5E0);
@@ -147,7 +161,36 @@ void sub_0803EB30(void)
         gUnk_03001800.unk1A1 = 12;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803EB5C);
+void sub_0803EB5C(void)
+{
+    gUnk_03001800.unk1A2 = gUnk_03001800.unk1A0 >> 4;
+    switch (gUnk_03001800.unk1A2)
+    {
+    case 0:
+        gUnk_03001800.unk1A2 = 5;
+        break;
+    case 1:
+        gUnk_03001800.unk1A2 = 4;
+        break;
+    case 2:
+        gUnk_03001800.unk1A2 = 3;
+        break;
+    case 3:
+        gUnk_03001800.unk1A2 = 2;
+        break;
+    case 4:
+        gUnk_03001800.unk1A2 = 1;
+        break;
+    case 5:
+        gUnk_03001800.unk1A2 = 0;
+        break;
+    case 6:
+        gUnk_03001800.unk1A2 = 0;
+        break;
+    }
+    gUnk_03001800.unk1A3 = gUnk_03001800.unk1A2 * 16 + 0x18;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803EC04);
 
 void sub_0803EC50(void)
@@ -188,9 +231,37 @@ u32 sub_0803EED8(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", soft_reset_to_title);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", vram_fill_tilemap_rect);
+
+void vram_fill_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 value)
+{
+    u16 *base = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32;
+    u32 i, j;
+    for (i = 0; i < h; i++)
+    {
+        u16 *d = base + i * 32;
+        for (j = 0; j < w; j++)
+            *d++ = value;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", tilemap_fill_rect);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", write_tilemap_rect);
+
+void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base)
+{
+    u16 *dst;
+    const u16 *s;
+    u32 i, j;
+    gTilemapBaseEntry = base;
+    dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32;
+    s = src;
+    for (i = 0; i < h; i++)
+    {
+        u16 *d = dst + i * 32;
+        for (j = 0; j < w; j++)
+            *d++ = *s++ + gTilemapBaseEntry;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", write_tilemap_to_vram_0803F1C8);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", decompress_bg_tiles_to_vram_bg);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", setup_bg0_display_layer);
@@ -284,7 +355,25 @@ INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_08040A00);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_08040A40);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_08040B0C);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_08040B5C);
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", init_battle_sprite_entry_08040B90);
+
+void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot)
+{
+    const u8 *p;
+    u8 i;
+    gUnk_03002C30[slot].unk20 = 0;
+    gUnk_03002C30[slot].unk21 = 0;
+    gUnk_03002C30[slot].unk22 = 0;
+    i = 0;
+loop:
+    p = (const u8 *)cmds + i;
+    if (*p > 0xFA)
+    {
+        i += 3;
+        goto loop;
+    }
+    gUnk_03002C30[slot].unk6 = (p[1] << 8) + p[2];
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", process_sprite_anim_commands);
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", clear_battle_sprite_slot);
 
