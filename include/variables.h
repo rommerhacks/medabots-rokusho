@@ -201,6 +201,9 @@ extern const u16 gUnk_084E2F98[];
 extern u8 gMedapartInventory[4 * 120 * 2]; // 2 bytes per Medapart, 120 per kind (head, right arm, left arm, legs): [0] count owned (runtime-checked), [1] second count shown on the Medaparts list
 // The Medaparts list shows 4 parts per page (part id = page * 4 + row); the game indexes it flat like this.
 #define MEDAPART_INV(kind, page, row, byte) gMedapartInventory[(kind) * 240 + (page) * 8 + (row) * 2 + (byte)]
+extern u8 gUnk_03002BA0[64][2]; // item inventory: [0] 0x80 | item id, [1] count (get_item_quantity_by_id)
+extern const u8 gUnk_083B2970[]; // indexed by gUnk_030057E0.unkC5C (sub_08044B34)
+extern const u8 gUnk_083B827C[]; // 16 bytes per Medapart (part id * 64 + kind * 16), copied by load_part_data
 extern const u8 gUnk_084EBF50[];
 extern const u8 gUnk_084C4014[];
 extern const u8 gUnk_084C4330[];

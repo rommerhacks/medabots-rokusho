@@ -209,7 +209,7 @@ void medaparts_help_init_cursor(void); // same code as sub_0800AA1C (Medals help
 void sub_0800FFF4(void);
 void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile, u32 pal, u32 e);
 void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base);
-u32 sub_08042B80(u8 a);
+u32 sub_08042B80(u32 a); // 1 for part types 2, 3, 6, 7; 0 for 0, 1, 4, 5
 void battle_bots_load_parts(u32 a, u32 n);
 void clear_battle_bot_array(void);
 void count_active_battle_bots(void);
@@ -863,8 +863,8 @@ void sub_08016614(void);
 void sub_08016660(void);
 void decompress_two_bg1_layers(void);
 void command_ring_init_icons_hidden(void);
-void read_vram_tilemap_rect(u32 x, u32 w, u32 y, u32 h, u32 bgcnt, void *dst);
-void write_vram_tilemap_rect(u32 x, u32 w, u32 y, u32 h, u32 bgcnt, const void *src);
+void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, void *dst); // w x h tiles at (x, y) of the BG map selected by bgcnt
+void write_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, const void *src);
 void sub_08042A90(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt, u16 tile2); // draws cur/max as two 2-digit numbers
 u32 sub_08016E5C(u32 rec, u32 part); // 1 if the part's skill id (data[1]) is 0x18-0x1A, 0x28 or 0x35
 void draw_partial_bg1_column(void);
