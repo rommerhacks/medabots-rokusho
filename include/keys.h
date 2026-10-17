@@ -20,6 +20,14 @@ struct KeyBits
 
 // Low byte of a key word (A, B, SELECT, START, D-pad). Some code reads keys with `ldrb`.
 #define KEYS_LO(keys) (*(u8 *)&(keys))
+// High byte (R = 1, L = 2), read with `ldrb [rN, #1]`.
+struct KeyBytes
+{
+    u8 lo;
+    u8 hi;
+};
+
+#define KEYS_HI(keys) (((struct KeyBytes *)&(keys))->hi)
 
 extern u16 gPrevKeys;
 extern u16 gHeldKeys;

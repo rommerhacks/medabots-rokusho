@@ -190,7 +190,11 @@ struct Unk_03000440
     u8 unkEE; // start of a 16-byte part data record (load_part_data)
     u8 unkEF;
     u8 unkF0;
-    u8 fillerF1[0x1D];
+    u8 unkF1;
+    u8 unkF2;
+    u8 unkF3;
+    u8 unkF4;
+    u8 fillerF5[0x19];
     u8 unk10E[0x10]; // 16-byte record from gUnk_083B6158 (per Medal graphic index)
     u8 filler11E[0x10];
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank

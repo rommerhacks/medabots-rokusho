@@ -245,5 +245,8 @@ extern const u8 *const gUnk_083AC494[][5]; // compressed Medal sprites (load_med
 extern const u32 gUnk_083B656C[]; // Medal Attribute names, indexed by Medal record unk4 (Ability page)
 extern const u32 gUnk_083B6EC8[]; // skill type names (Shoot, Strike, ...): Medal Aim, Medaforce skill
 extern const u8 *const gUnk_083B7EBC[]; // Medals help cursor layouts: count, then (x, y) tile pairs (sub_0800AA1C)
+extern const u16 gUnk_083AC8AC[]; // (y, x) pairs per Medal skill row 0-7 (setup_battle_cursor_sprite_0800B5E8)
+extern const Func gUnk_083AC8CC[]; // sprite 7 sub-state handlers, by gUnk_03002C30[7].unk29 (update_battle_sprite_and_check_done)
+extern const Func gUnk_083AC8DC[]; // sub-state handlers run by dispatch_menu_substate_handler
 extern const u8 gUnk_084C3B14[]; // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (sub_0800B0F8)
 extern const u32 gUnk_083B7338[]; // Medaforce names, indexed by Medaforce id

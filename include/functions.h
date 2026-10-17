@@ -168,6 +168,7 @@ void clear_battle_sprite_slot(u8 a, u8 b);
 u32 game_state_execute_handler_a(void);
 u32 find_medal_slot_by_id(u8 id);
 u32 load_palette_entry(u8 id);
+u8 sub_080420C4(u8 level, u8 a, u8 b, u8 c, u8 d); // guess: Medal sprite variant (0-4) from its level and four gUnk_083B6158 record bytes
 u32 sub_08042114(u8 a, u8 b);
 u32 sub_08042218(void);
 void add_position_entry(u8 id);
