@@ -462,3 +462,13 @@
 * Unsolved: `x - (y - k)` computed as `subs r1, #k; subs r1, rX, r1` in the original; agbcc folds
   every spelling tried into `(x + k) - y` (`-((y - k) - x)`, casts to `u32`, `+ -k`)
   (divide_by_3, sub_08069A68, update_battle_bot_damage_animations).
+  Possible fix (session 69): update_battle_bot_death_animations gets `i * 3 - (stage - 1)` right with a
+  `static inline int sub1(int x) { return x - 1; }` helper (`i * 3 - sub1(stage)`), or an assignment
+  inside the argument (`i * 3 - (t = stage - 1)`). Try it on the three above.
+* A `static inline` helper also stops gcc hoisting a loop-invariant address out of a loop
+  (`base += col * 2; return row * 64 + base;`, write_tilemap_tiles_dma).
+* An argument passed without truncation (`i + 20` with no `lsls/lsrs #24`) to a function whose
+  prototype takes `u8`: the original saw an `int` / unprototyped declaration; call through a
+  `((void (*)())f)(...)` cast (update_battle_bot_entry_animations).
+* `for (i = 0; i < 5u; i++)` / `i < sizeof(arr)` (unsigned bound) gives `bls` instead of `ble`
+  (init_scene_with_palette_and_song_5).
