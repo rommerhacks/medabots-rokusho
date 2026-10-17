@@ -1,10 +1,32 @@
 #include "global.h"
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", dma_load_sprite_tiles);
+void dma_load_sprite_tiles(const u32 *src, u16 tile, void *buf, u32 useCpu)
+{
+    if (src != NULL)
+    {
+        u32 size = dma3_copy_or_decompress(src, buf);
+
+        if (useCpu)
+            CpuSet(buf, (void *)(0x06010000 + tile * 32), ((size / 4) & 0x1FFFFF) | 0x04000000);
+        else
+            DmaSet(0, buf, 0x06010000 + tile * 32, (size >> 2) | 0x94000000);
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_sprite_tiles_to_vram);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", decompress_and_load_sprite_tiles);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", setup_oam_sprite_entries);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", init_sprite_object_entry);
+
+u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const u8 *e, u8 f, u16 g)
+{
+    obj->oams = oams;
+    obj->unk4 = e;
+    obj->w = desc->w;
+    obj->h = desc->h;
+    obj->depth = (s8)e[6];
+    return setup_oam_sprite_entries(oams, b, c, desc, e, f, g);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", set_oam_sprite_tile_positions);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", setup_sprite_from_oam_descriptor);
 
@@ -196,7 +218,31 @@ void init_cursor_state(void)
     gUnk_030064A0.unk1 = 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", scene_transition_step_08047C24);
+u32 scene_transition_step_08047C24(u8 a, u8 b, u8 c, const void *text)
+{
+    u32 ret = 0;
+
+    switch (gUnk_030064A0.unk0)
+    {
+    case 0:
+        if (gUnk_030064A0.unk1 == 0)
+            text_window_init(a, b, c);
+        else
+            sub_0803FB0C();
+        gUnk_030064A0.unk0++;
+        break;
+    case 1:
+        if (run_message(text))
+        {
+            gUnk_030064A0.unk0 = ret;
+            gUnk_030064A0.unk1++;
+            ret = 1;
+        }
+        break;
+    }
+    return ret;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", format_number_to_text_buffer);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_string_to_text_buffer);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D24);
@@ -403,7 +449,29 @@ u32 sub_08048088(u32 idx)
     return gUnk_08484444[idx];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", update_battle_field_frame);
+void update_battle_field_frame(void)
+{
+    gBg1Scroll.x = gUnk_03005310.unk1E;
+    gBg1Scroll.y = gUnk_03005310.unk26;
+    gBg2Scroll.x = gUnk_03005310.unk20;
+    gBg2Scroll.y = gUnk_03005310.unk28;
+    gBg3Scroll.x = gUnk_03005310.unk22;
+    gBg3Scroll.y = gUnk_03005310.unk2A;
+    sub_080482C0();
+    dma_load_battle_palettes();
+    load_room_graphics();
+    gUnk_030057E0.unkC36 = 0;
+    update_sprite_animation_dma();
+    load_map_npc_sprites(gUnk_030057E0.unkCBA);
+    update_entity_sprites_on_screen();
+    init_battle_field_setup();
+    update_bg_scroll_offsets_a();
+    init_battle_medaforce_sprite();
+    update_bg_scroll_offsets_b();
+    decompress_battle_tile_graphics();
+    gUnk_030057E0.unkC4C = 1;
+    update_battle_entity_status_chars();
+}
 
 void update_sprite_animation_dma(void)
 {
@@ -501,8 +569,34 @@ u32 resolve_tile_from_battle_state(u32 arg)
     return sub_080481C4(gUnk_08413514[gUnk_030057E0.unk7FE][arg]);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", dma_load_obj_palettes_08048664);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", dma_load_battle_palettes);
+void dma_load_obj_palettes_08048664(void)
+{
+    s32 i;
+    u32 t;
+
+    for (i = 0; (t = resolve_tile_from_battle_state(i)) != 0xFF; i++)
+    {
+        t = resolve_tile_from_battle_state(i);
+        if (gUnk_083F8634[t] == NULL)
+            t = 1;
+        DmaSet(3, gUnk_083F8634[t], 0x05000200 + i * 0x20, 0x84000008);
+    }
+}
+
+void dma_load_battle_palettes(void)
+{
+    s32 i;
+    u32 t;
+
+    for (i = 0; (t = resolve_tile_from_battle_state(i)) != 0xFF; i++)
+    {
+        t = resolve_tile_from_battle_state(i);
+        if (gUnk_083F8634[t] == NULL)
+            t = 1;
+        DmaSet(3, gUnk_083F8634[t], 0x0202F800 + i * 0x20, 0x84000008);
+    }
+    DmaSet(3, gUnk_085FA0E4, 0x0202F9C0, 0x84000008);
+}
 
 void dma_load_obj_palettes_08048730(s32 arg)
 {

@@ -713,7 +713,7 @@ u32 sub_08047BCC(u32 idx);
 u32 sub_08047E20(u8 id);
 void sub_08047DD8(u8 id, u8 n);
 void init_battle_medapart_sprites_all(void);
-void load_map_npc_sprites(void);
+void load_map_npc_sprites(); // takes one argument (update_battle_field_frame passes gUnk_030057E0.unkCBA)
 void update_entity_sprites_on_screen(void);
 u32 sub_08047BEC(u32 a, u32 b);
 void sub_08047DF0(u8 a, u8 b, u8 n);
@@ -1190,3 +1190,8 @@ s32 sub_080481C4(s32 t);
 s32 count_decimal_digits(s32 n); // number of decimal digits of n (1 for 0); was safe_divide_one
 void decompress_terrain_tiles_to_vram(s32 arg);
 void dma_load_obj_palettes_08048730(s32 arg);
+void init_battle_medaforce_sprite(void);
+void update_battle_entity_status_chars(void);
+void dma_load_sprite_tiles(const u32 *src, u16 tile, void *buf, u32 useCpu);
+u32 setup_oam_sprite_entries(struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const u8 *e, u8 f, u16 g);
+u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const u8 *e, u8 f, u16 g);

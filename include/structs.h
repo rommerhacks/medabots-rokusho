@@ -794,7 +794,8 @@ struct Unk_030057E0
     u8 unkC38[0x10];
     u16 unkC48;
     u16 unkC4A;
-    u8 fillerC4C[0x3];
+    u8 unkC4C;
+    u8 fillerC4D[0x2];
     u8 unkC4F;
     u8 fillerC50[0x2];
     u16 unkC52;
@@ -862,6 +863,27 @@ struct Unk_03006F40
     float unk10;
 };
 
+// Sprite descriptor word (setup_oam_sprite_entries, init_sprite_object_entry).
+struct SpriteDesc
+{
+    u32 unk0_0:4;
+    u32 shape:2; // OAM shape / size bits (sub_08044E64)
+    u32 size:2;
+    u32 w:4; // OAM entries per row / column (guess)
+    u32 h:4;
+    u32 unk0_16:16;
+};
+
+// OAM entry list of a sprite object (copy_oam_entries_with_priority, init_sprite_object_entry).
+struct SpriteOamList
+{
+    struct OamData *oams;
+    const u8 *unk4; // unk4[6] (s8) is the initial depth
+    u16 depth; // > 300 / 200 / 100: OAM priority 3 / 2 / 1
+    u8 w;
+    u8 h;
+};
+
 struct Unk_03005310
 {
     u8 filler0[0x1];
@@ -869,10 +891,14 @@ struct Unk_03005310
     u8 filler2[0x2];
     u32 unk4; // frame counter
     u8 filler8[0x16];
-    u16 unk1E;
-    u8 filler20[0x6];
-    u16 unk26;
-    u8 filler28[0x10];
+    u16 unk1E; // BG1-3 x scroll (update_battle_field_frame)
+    u16 unk20;
+    u16 unk22;
+    u8 filler24[0x2];
+    u16 unk26; // BG1-3 y scroll
+    u16 unk28;
+    u16 unk2A;
+    u8 filler2C[0xC];
     u8 unk38;
     u8 unk39;
 };

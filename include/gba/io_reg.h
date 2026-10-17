@@ -32,6 +32,7 @@
 #define REG_ADDR_IME      (REG_BASE + 0x208)
 #define REG_ADDR_KEYINPUT (REG_BASE + 0x130)
 #define REG_ADDR_WAITCNT  (REG_BASE + 0x204)
+#define REG_ADDR_DMA0     (REG_BASE + 0x0B0)
 #define REG_ADDR_DMA3     (REG_BASE + 0x0D4)
 
 #define REG_DISPCNT  (*(vu16 *)REG_ADDR_DISPCNT)
