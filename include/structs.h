@@ -481,7 +481,7 @@ struct Unk_03001800
     u16 unk1A8;
     u16 unk1AA;
     u16 unk1AC;
-    u8 filler1AE;
+    u8 unk1AE; // set to 1 when the screen wipe of sub_0801DF60 is done
     u8 unk1AF;
     u8 unk1B0;
 };

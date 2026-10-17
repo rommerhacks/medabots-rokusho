@@ -890,6 +890,8 @@ void sub_08035694(u32 slot);
 u32 update_sprite_deceleration(u32 slot, s16 a, s16 b);
 void check_sprite_overlap_and_adjust(u32 slot, u32 b);
 void sub_080356B4(u32 slot);
+void sub_08035928(u32 rec, u32 target); // guess: record rec targets record target - 1 (unkE0, gUnk_03001800.unk88)
+void sub_08035944(u32 rec, u32 part); // guess: record rec targets part part - 1 (unkE1, gUnk_03001800.unk8B)
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);
 void sub_080353AC(u8 frame);
 void sub_0803536C(u8 slot, u8 frame, u16 x);
