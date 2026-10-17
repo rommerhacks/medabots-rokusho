@@ -42,7 +42,30 @@ void sub_0805B470(struct Unk_03002C30 *attr)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805B4B0);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805B7A0);
+
+u32 sub_0805B7A0(void)
+{
+    struct Unk_03006F74 **pw = &gUnk_03006F74;
+    struct Unk_03006F74 *w = *pw;
+    u8 old = w->unk17;
+    u32 off = old * 4 + gUnk_030057E0.unkC32 * 40;
+    const u8 *tbl = w->unk18 ? gUnk_080AF674 : gUnk_080AF5FC;
+    if (*(u8 *)&gNewKeys & 0x20)
+        w->unk17 = tbl[off];
+    else if (*(u8 *)&gNewKeys & 0x10)
+        w->unk17 = tbl[off + 1];
+    else if (*(u8 *)&gNewKeys & 0x40)
+        w->unk17 = tbl[off + 2];
+    else if (*(u8 *)&gNewKeys & 0x80)
+        w->unk17 = tbl[off + 3];
+    else
+        goto none;
+    play_sound_effect(old != (*pw)->unk17 ? 2 : 6);
+    return 1;
+none:
+    return 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", update_battle_sprite_priority_flags);
 
 void decompress_and_write_tilemap(const void *src, u32 bgcnt)
