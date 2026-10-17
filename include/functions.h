@@ -842,6 +842,7 @@ void sub_0801AED4(void);
 void clear_battle_ui_tilemaps(void);
 u32 medaforce_gauge_fill_step(u32 rec); // moves one point from gUnk_03001800.unk51 into the Medaforce gauge (max 80) and redraws it; 1 when done
 u32 medaforce_gauge_drain_step(u32 rec); // the same, taking one point out of the gauge
+u32 dispatch_battle_action_substate(u32 arg);
 u32 sub_0801B0E8(u32 rec); // guess: spins the sprites of sub_0801B004 around the Medabot while they sink; 1 when all 8 are gone
 void sub_0801B274(u32 rec); // guess: end of a Medabot's action: unkDE / unkDF = chosen part and its skill, clears the per-turn part flags
 void sub_0801B3AC(u32 rec); // writes gUnk_03001800.unk11C back into the acting Medabot's part unkA7 when unk118 is set, then clears unk118..
@@ -892,6 +893,8 @@ void add_bot_to_defeated_list(u8 rec);
 u32 sub_080353CC(u32 slot);
 u32 move_sprite_toward_target(u8 slot);
 u32 sub_08036E54(u32 a); // clamps to 1..99
+void sub_080374E0(u32 a, u32 b); // unkC8 = min(a, b) taken out of a (guess: drain clamp)
+void sub_0803752C(u32 a, u32 max, u32 b); // unkC8 = min(b, max - a) (add clamp)
 void sub_08037330(u32 rec, u32 frame, u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
 void sub_080373D4(u32 rec); // sets bit 15 of unk0 on the bot's 4 part sprites
 void sub_08037424(u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
