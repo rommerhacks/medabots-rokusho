@@ -254,7 +254,78 @@ void vram_fill_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 value)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", tilemap_fill_rect);
+void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile)
+{
+    u16 *dst;
+    u16 *d;
+    u32 i, j;
+    u32 cols, rows;
+
+    if (x < 32)
+    {
+        if (y < 32)
+        {
+            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32;
+            rows = 32 - y;
+            for (i = 0; i < h; i++)
+            {
+                cols = 32 - x;
+                d = dst + i * 32;
+                for (j = 0; j < w; j++)
+                {
+                    *d++ = tile;
+                    if (--cols == 0)
+                        d += 0x3E0;
+                }
+                if (--rows == 0)
+                    dst += 0x400;
+            }
+        }
+        else
+        {
+            y -= 32;
+            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32 + 0x800;
+            for (i = 0; i < h; i++)
+            {
+                cols = 32 - x;
+                d = dst + i * 32;
+                for (j = 0; j < w; j++)
+                {
+                    *d++ = tile;
+                    if (--cols == 0)
+                        d += 0x3E0;
+                }
+            }
+        }
+    }
+    else
+    {
+        if (y < 32)
+        {
+            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + (x - 32) + y * 32 + 0x400;
+            rows = 32 - y;
+            for (i = 0; i < h; i++)
+            {
+                d = dst + i * 32;
+                for (j = 0; j < w; j++)
+                    *d++ = tile;
+                if (--rows == 0)
+                    dst += 0x400;
+            }
+        }
+        else
+        {
+            y -= 32;
+            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + (x - 32) + y * 32 + 0xC00;
+            for (i = 0; i < h; i++)
+            {
+                d = dst + i * 32;
+                for (j = 0; j < w; j++)
+                    *d++ = tile;
+            }
+        }
+    }
+}
 
 void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base)
 {
