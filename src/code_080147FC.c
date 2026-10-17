@@ -833,7 +833,34 @@ void sub_08015F78(void)
         sub_08015F90(i);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08015F90);
+void sub_08015F90(u32 i)
+{
+    u32 k;
+    struct Vec16 p;
+
+    clear_battle_sprite_slot(i, 1);
+    gUnk_03002C30[i].unk0 = 0xC604;
+    k = i - gUnk_03001800.unk81;
+    if (k > 5)
+        k += 6;
+    p = compute_polar_to_screen_position(gUnk_083AD370[k], 24, 120, 128, 8, 0);
+    gUnk_03002C30[i].unk2 = p.x;
+    gUnk_03002C30[i].unk4 = p.y;
+    gUnk_03002C30[i].unk6 = i + 0x60C;
+    if (p.y > 0x87)
+        gUnk_03002C30[i].unkA = 8;
+    else if (p.y > 0x77)
+        gUnk_03002C30[i].unkA = 9;
+    else
+        gUnk_03002C30[i].unkA = 10;
+    gUnk_03002C30[i].unk1C = 0;
+    gUnk_03002C30[i].unk9 = 0x40 - (0x90 - gUnk_03002C30[i].unk4) / 2;
+    gUnk_03002C30[i].unk8 = 0x40 - (0x90 - gUnk_03002C30[i].unk4) / 2;
+    gUnk_03002C30[i].unkB = gUnk_03002C30[i].unk4 - 0x70;
+    gUnk_03002C30[i].unk20 = gUnk_083AD370[k];
+    gUnk_03002C30[i].unk21 = 0;
+    gUnk_03002C30[i].unk22 = 0;
+}
 
 void sub_08016068(void)
 {
@@ -842,8 +869,43 @@ void sub_08016068(void)
         sub_08016080(i);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016080);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016138);
+void sub_08016080(u32 i)
+{
+    u32 k;
+    struct Vec16 p;
+
+    clear_battle_sprite_slot(i, 1);
+    gUnk_03002C30[i].unk0 = 0xC604;
+    k = i - gUnk_03001800.unk81;
+    if (k > 5)
+        k += 6;
+    p = compute_polar_to_screen_position(gUnk_083AD370[k], 24, 120, 128, 8, 0);
+    gUnk_03002C30[i].unk2 = p.x;
+    gUnk_03002C30[i].unk4 = p.y;
+    gUnk_03002C30[i].unk6 = i + 0x60C;
+    if (p.y > 0x87)
+        gUnk_03002C30[i].unkA = 8;
+    else if (p.y > 0x77)
+        gUnk_03002C30[i].unkA = 9;
+    else
+        gUnk_03002C30[i].unkA = 10;
+    gUnk_03002C30[i].unk1C = 0;
+    gUnk_03002C30[i].unk9 = 1;
+    gUnk_03002C30[i].unk8 = 1;
+    gUnk_03002C30[i].unkB = gUnk_03002C30[i].unk4 - 0x70;
+    gUnk_03002C30[i].unk20 = gUnk_083AD370[k];
+    gUnk_03002C30[i].unk21 = 0;
+    gUnk_03002C30[i].unk22 = 0;
+}
+
+// Declared non-void in the original (it pops into r1) but returns nothing.
+u32 sub_08016138(u32 a)
+{
+    u32 i;
+    for (i = 0; i <= 5; i++)
+        sub_08016154(i, a);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016154);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016288);
 INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_0801630C);

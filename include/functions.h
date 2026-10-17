@@ -215,6 +215,8 @@ void count_active_battle_bots(void);
 void battle_setup_team_bots(void);
 void sub_08015F90(u32 a);
 void sub_08016080(u32 a);
+u32 sub_08016138(u32 a);
+u32 sub_08016154(u32 i, u32 dir); // guess: rotates sprite i one step around the ring (dir 0 / 1), returns 1 after 7 steps
 void animate_battle_sprites(u32 idx);
 void sub_0801ABF8(void);
 void sub_08034F08(void);

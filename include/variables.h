@@ -362,5 +362,6 @@ extern const u8 gUnk_08488744[];
 extern const u8 gUnk_084887A4[];
 extern const u8 gUnk_084887F4[];
 extern const u8 *const gUnk_083C466C[]; // 12-byte name text, by gUnk_03001800.unk81 (battle_load_sprite_data)
+extern const u8 gUnk_083AD370[]; // angles for compute_polar_to_screen_position, by sprite slot - gUnk_03001800.unk81 (sub_08015F90)
 
 #endif // GUARD_VARIABLES_H

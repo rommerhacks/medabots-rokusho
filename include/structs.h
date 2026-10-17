@@ -249,7 +249,7 @@ struct Unk_03002C30
     u8 filler1D[0x3];
     u8 unk20; // animation state (0-3)
     u8 unk21;
-    u8 filler22;
+    u8 unk22;
     u8 unk23;
     u8 unk24;
     u8 unk25;
