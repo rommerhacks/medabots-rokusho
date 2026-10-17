@@ -1,6 +1,6 @@
 #include "global.h"
 
-void sub_08008430(void)
+void medal_rotation_wait_fade(void)
 {
     sub_080093F8();
     sub_0800A180();
@@ -8,7 +8,7 @@ void sub_08008430(void)
         gGameSubState++;
 }
 
-void sub_08008454(void)
+void medal_rotation_open_text_window(void)
 {
     sub_080093F8();
     sub_0800A180();
@@ -16,7 +16,7 @@ void sub_08008454(void)
     gGameSubState++;
 }
 
-void sub_08008478(void)
+void medal_rotation_show_hint(void)
 {
     sub_080093F8();
     sub_0800A180();
@@ -24,7 +24,7 @@ void sub_08008478(void)
         gGameSubState++;
 }
 
-void sub_080084A4(void)
+void medal_rotation_handle_input(void)
 {
     sub_080093F8();
     sub_0800A180();
@@ -63,7 +63,7 @@ void sub_080084A4(void)
     }
 }
 
-void sub_08008590(void)
+void medal_rotation_start_fade_out(void)
 {
     set_blend_effect_mode(6, 0x3F, 0x20);
     sub_080093F8();
@@ -71,7 +71,7 @@ void sub_08008590(void)
     gGameSubState++;
 }
 
-void sub_080085B4(void)
+void medal_rotation_edit_init(void)
 {
     sub_080093F8();
     if (gUnk_03000440.unk3F == 0)
@@ -82,7 +82,7 @@ void sub_080085B4(void)
     gGameSubState++;
 }
 
-void sub_080085E8(void)
+void medal_rotation_edit_show_message(void)
 {
     const void *msg;
 
@@ -100,7 +100,7 @@ void sub_080085E8(void)
         gGameSubState++;
 }
 
-void sub_08008650(void)
+void medal_rotation_edit_input(void)
 {
     sub_080093F8();
     if (gUnk_03000440.unk3F == 0)
@@ -180,7 +180,7 @@ void sub_08008650(void)
     }
 }
 
-void sub_080087CC(void)
+void medal_skill_load_gfx(void)
 {
     u32 zero;
 
@@ -219,7 +219,7 @@ void sub_080087CC(void)
     gGameSubState++;
 }
 
-void sub_08008980(void)
+void medal_skill_wait_fade(void)
 {
     sub_080093F8();
     sub_0800A180();
@@ -228,7 +228,7 @@ void sub_08008980(void)
         gGameSubState++;
 }
 
-void sub_080089A8(void)
+void medal_skill_handle_input(void)
 {
     sub_080093F8();
     sub_0800A180();
@@ -254,7 +254,7 @@ void sub_080089A8(void)
     }
 }
 
-void sub_08008A34(void)
+void medal_skill_start_fade_out(void)
 {
     set_blend_effect_mode(6, 0x3F, 0x20);
     sub_080093F8();
@@ -263,6 +263,7 @@ void sub_08008A34(void)
     gGameSubState++;
 }
 
+// guess: debug skill level editor (sub-state 64; UP/DOWN pick a skill, RIGHT/LEFT change its level, SELECT, B -> 58)
 void sub_08008A5C(void)
 {
     u8 b;
@@ -304,7 +305,7 @@ void sub_08008A5C(void)
     }
 }
 
-void sub_08008B80(void)
+void medals_help_load(void)
 {
     sub_080093F8();
     clear_sprite_table_mask(1, 5);
@@ -314,14 +315,14 @@ void sub_08008B80(void)
     gGameSubState++;
 }
 
-void sub_08008BB8(void)
+void medals_help_show_intro(void)
 {
     sub_080093F8();
     if (run_message(gUnk_083B53F8[5]))
         gGameSubState++;
 }
 
-void sub_08008BE0(void)
+void medals_help_cursor_input(void)
 {
     u8 b;
 
@@ -359,7 +360,7 @@ void sub_08008BE0(void)
     }
 }
 
-void sub_08008CA0(void)
+void medals_help_show_text(void)
 {
     u8 done;
 
@@ -493,7 +494,7 @@ void sub_08008CA0(void)
     }
 }
 
-void sub_080090D0(void)
+void medals_help_exit(void)
 {
     sub_080093F8();
     clear_sprite_table_mask(6, 1);
@@ -527,6 +528,7 @@ void sub_080090D0(void)
     }
 }
 
+// Medals screen sub-states 96-107 (not reached at runtime yet; guess: Medal confirm / transfer dialog)
 void sub_08009174(void)
 {
     sub_080093F8();
