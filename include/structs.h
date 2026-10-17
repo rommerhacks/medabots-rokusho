@@ -424,7 +424,11 @@ struct Unk_03001800
     u8 unkA1[5]; // cleared by sub_0801AED4
     u8 fillerA6;
     u8 unkA7; // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to (sub_0801B3AC)
-    u8 fillerA8[0x50];
+    u8 fillerA8[0x2];
+    u8 unkAA; // sub-state of the gUnk_083AD44C handlers (sub_0801C4FC)
+    u8 fillerAB[0xA];
+    u8 unkB5;
+    u8 fillerB6[0x42];
     u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
     u8 fillerF9[0x1F];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part

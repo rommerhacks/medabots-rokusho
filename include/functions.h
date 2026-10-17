@@ -826,7 +826,7 @@ u32 sub_0801AC24(u32 msg); // run_message(gUnk_083C65C4[msg]) unless gUnk_030013
 void sub_0801AD10(u32 rec); // redraws a Medabot's panel (left_b when the Medaforce gauge is full) and its gauge
 void sub_0801AD48(u32 rec); // guess: Medaforce effect: 8 sprites 0x78-0x7F (tiles 0x616-0x619) lined up at y 0x78, x 0x5C team / 0x94 opponents
 u32 sub_0801ADE8(u32 rec); // moves those sprites 4 px per step toward the other side; 1 when all are done
-void sub_0801AE70(void); // animates those sprites (tile 0x616 + frame, every 4 frames)
+void sub_0801AE70(u32 rec); // animates those sprites (tile 0x616 + frame, every 4 frames)
 void sub_0801AEB4(void);
 void sub_0801AED4(void);
 void clear_battle_ui_tilemaps(void);
