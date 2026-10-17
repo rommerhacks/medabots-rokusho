@@ -980,6 +980,8 @@ void battle_queue_add(u32 rec, u32 prio);
 void add_bot_to_defeated_list(u32 rec);
 u32 sub_080353CC(u32 slot);
 u32 move_sprite_toward_target(u32 slot);
+u32 check_sprite_in_range(u32 slot);
+u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty); // direction from (x, y) to (tx, ty), stored in sprite unk25 (move_sprite_toward_target)
 u32 sub_08036E54(u32 a); // clamps to 1..99
 u8 sub_08037578(u32 a, u32 kind); // random part id (by a and the part kind)
 void sub_0803769C(u32 rec);
@@ -1030,7 +1032,7 @@ void reduce_bot_part_stat(u32 rec, u32 part, s32 amount); // part armor (unk11) 
 void sub_08035194(u32 rec);
 void set_target_sprite_position(u8 rec, u32 frame, u8 flag);
 void update_target_cursor_position(u32 rec);
-u32 update_sprite_animations_tick_080370AC(u32 slot, u8 n);
+u32 update_sprite_animations_tick_080370AC(u32 slot, u32 n);
 void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u8 n);
 void sub_080362C4(u32 side);
 void sub_08036340(u32 side);
@@ -1039,9 +1041,9 @@ void sub_080363E8(u32 x, u32 y, u32 w, u32 max, u32 cur);
 void sub_080364A8(u32 side, u8 rec);
 void sub_0803628C(void);
 void sub_08036B84(u32 rec, u32 part);
-u32 sub_080366DC(u8 slot, u8 part);
-void sub_08036784(u8 slot, u8 part, s16 x, s16 y);
-u32 sub_0803684C(u8 slot);
+u32 sub_080366DC(u32 slot, u32 part);
+u32 sub_0803684C(u32 slot);
+void sub_08036784(u32 slot, u32 part, s16 x, s16 y);
 void sub_080368C4(u8 *digits, u8 slot, u8 part, s16 x, s16 y);
 u32 advance_sprite_group_anims(u8 *digits, u32 slot);
 u32 sub_08036BB8(u16 *amount, u32 rec, u32 part); // moves one point from *amount (low byte) out of the part's armor; 1 when done

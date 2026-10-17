@@ -594,6 +594,12 @@ extern const u8 gUnk_084DC7D0[]; // compressed tiles (code_080249C0)
 extern const u8 gUnk_0850EC38[]; // 64-byte OBJ palettes (code_080249C0)
 extern const u8 gUnk_084DD188[]; // compressed tiles (code_080249C0)
 extern const u8 gUnk_0850EC78[]; // 64-byte OBJ palettes (code_080249C0)
+extern const void *gUnk_083B6010[]; // sprite animation commands (update_sprite_animations_tick_080370AC)
+extern const u16 gUnk_083AF490[]; // x, y offset pairs per sprite of a 4-sprite group (sub_08036784)
+extern const u16 gUnk_083AF440[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (sub_080366DC)
+extern const u16 gUnk_083AF400[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (sub_080366DC)
+extern const u16 gUnk_083AF3C0[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (sub_080366DC)
+extern const u16 gUnk_083AF380[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (sub_080366DC)
 extern const u16 gUnk_083AF4E0[]; // 32 y offsets added to a sprite's unk4 by sub_08037424
 extern const u8 gUnk_083AF4A0[]; // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
 extern const u8 gUnk_083AF4B0[]; // 16 x offsets added to / subtracted from a sprite's unk2 by medal_update_exp_progress
