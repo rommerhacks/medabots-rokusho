@@ -1048,7 +1048,9 @@ struct Unk_03006F74
     u8 unk11; // first visible list row
     u8 unk12;
     u8 unk13; // cursor row
-    u8 filler14[0x3];
+    u8 filler14;
+    u8 unk15;
+    u8 unk16;
     u8 unk17;
     u8 unk18;
     u8 unk19;

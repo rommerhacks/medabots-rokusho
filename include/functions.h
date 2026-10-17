@@ -1210,6 +1210,7 @@ void decompress_bg_tilemap_to_vram(void);
 void init_battle_scene(u32 mode, u32 id);
 void init_game_mode(u32 mode);
 u32 dma3_copy_or_decompress(const u32 *src, void *dst);
+void tilemap_offset_tiles_and_palette(u32 tiles, u32 pal, u32 block); // (u16, u8, u8): callers pass full ints; adds tiles to the tile numbers of a 32x32 screen block, sets palette pal
 void LZ77UnCompWram(const void *src, void *dst);
 u32 sub_08044D64(u32 *dst, const u32 *src, u32 n);
 u32 sub_08044D78(u16 *dst, const u16 *src, u32 n);
