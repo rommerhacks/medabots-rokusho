@@ -171,19 +171,19 @@ extern u8 gUnk_03000004; // scene step, gUnk_08485C7C index
 extern bool32 (*const gUnk_08485C7C[])(void); // scene steps (execute_scene_step)
 extern bool32 (*const gUnk_08485C68[])(void); // transition steps (scene_transition_step_080686F4)
 extern const Func gUnk_08485F1C[]; // game mode 3 state 3 (story intro) sub-states, by gGameSubState (dispatch_game_substate_handler_0806DFA4)
-extern const Func gUnk_08485F38[]; // game mode 3 state 0 (boot logos) sub-states, by gGameSubState (battle_scene_dispatch)
-extern const Func gUnk_08485F68[]; // game mode 3 state 1 sub-states, by gGameSubState (sub_0806E90C)
+extern const Func gBootLogosSubStates[]; // game mode 3 state 0 (boot logos) sub-states, by gGameSubState (boot_logos_update)
+extern const Func gIntroSubStates[]; // game mode 3 state 1 (the animated intro after the logos) sub-states, by gGameSubState (intro_update)
 extern const void *const gUnk_08486EEC[]; // story intro texts, by page gUnk_03001800_s.unkC.h (dispatch_battle_event_script)
 extern const void *const gUnk_08487328[]; // story intro compressed tiles (to 0x06008000), by page
 extern const void *const gUnk_08487358[]; // story intro compressed tilemaps (30x20), by page
 extern const void *const gUnk_08487388[]; // story intro palettes (0xE0 halfwords), by page
-extern const u8 gUnk_087F1B4C[]; // boot logo 1: compressed BG tiles (battle_init_bg_screen)
+extern const u8 gUnk_087F1B4C[]; // boot logo 1: compressed BG tiles (boot_logos_load_licensed_by)
 extern const u8 gUnk_087F1E4C[]; // boot logo 1: compressed 30x20 tilemap
 extern const u16 gUnk_087F1F38[]; // boot logo 1: palette (16 colours)
-extern const u8 gUnk_087F1F58[]; // boot logo 2: compressed BG tiles (init_battle_bg_tilemap)
+extern const u8 gUnk_087F1F58[]; // boot logo 2: compressed BG tiles (boot_logos_load_natsume)
 extern const u8 gUnk_087F2658[]; // boot logo 2: compressed 30x20 tilemap
 extern const u16 gUnk_087F27D8[]; // boot logo 2: palette
-extern const u8 gUnk_087F27F8[]; // boot overlay: compressed BG tiles (battle_bg_init_overlay)
+extern const u8 gUnk_087F27F8[]; // boot overlay: compressed BG tiles (boot_logos_load_overlay)
 extern const u8 gUnk_087F3070[]; // boot overlay: compressed 30x20 tilemap (palette 1)
 extern const u16 gUnk_087F3250[]; // boot overlay: palette 1
 extern const u8 gUnk_087BA86C[]; // state 1 scene (load_battle_scene_graphics): compressed BG tiles

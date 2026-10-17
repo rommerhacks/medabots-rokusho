@@ -134,7 +134,7 @@ struct Unk_03001800_s
     s32 timer; // frame counter of the current step
     union {
         u16 h; // story intro: page (graphics gUnk_08487328 / text gUnk_08486EEC)
-        u8 b;  // boot logos: nonzero once START may skip them (scene_transition_countdown_tick)
+        u8 b;  // boot logos: nonzero once START may skip them (boot_logos_check_skip)
     } unkC;
     s32 unk10; // countdown: play_song(3) when it reaches 0
     u8 filler14[0x1C];

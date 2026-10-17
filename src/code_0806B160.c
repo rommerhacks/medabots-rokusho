@@ -142,7 +142,7 @@ void sub_0806E26C(void)
     sub_08047850(2);
 }
 
-void scene_transition_countdown_tick(void)
+void boot_logos_check_skip(void)
 {
     if (--gUnk_03001800_s.unk10 == 0)
         play_song(3);
@@ -154,10 +154,10 @@ void scene_transition_countdown_tick(void)
     }
 }
 
-void battle_scene_dispatch(void)
+void boot_logos_update(void)
 {
-    gUnk_08485F38[gGameSubState]();
-    scene_transition_countdown_tick();
+    gBootLogosSubStates[gGameSubState]();
+    boot_logos_check_skip();
 }
 
 bool32 blend_fade_step_0806E2F8(void)
@@ -183,7 +183,7 @@ void sub_0806E340(void)
     }
 }
 
-void init_game_display_and_clear_state(void)
+void boot_logos_init(void)
 {
     u32 zero = 0;
     DmaSet(3, &zero, VRAM, 0x85006000);
@@ -213,7 +213,7 @@ void init_game_display_and_clear_state(void)
     gGameSubState = 4;
 }
 
-void battle_init_bg_screen(void)
+void boot_logos_load_licensed_by(void)
 {
     u16 map[20][30];
     u16 out[20 * 32];
@@ -235,7 +235,7 @@ void battle_init_bg_screen(void)
     gGameSubState = 1;
 }
 
-void init_battle_bg_tilemap(void)
+void boot_logos_load_natsume(void)
 {
     u16 map[20][30];
     u16 out[20 * 32];
@@ -258,7 +258,7 @@ void init_battle_bg_tilemap(void)
     gGameSubState = 1;
 }
 
-void battle_bg_init_overlay(void)
+void boot_logos_load_overlay(void)
 {
     u16 map[20][30];
     u16 out[20 * 32];
@@ -320,7 +320,7 @@ void sub_0806E7E0(void)
     gUnk_03001800_s.timer++;
 }
 
-void sub_0806E834(void)
+void boot_logos_end(void)
 {
     gGameMode = 3;
     gGameState = 1;
@@ -337,7 +337,7 @@ void sub_0806E854(void)
     }
 }
 
-void sub_0806E8C8(void)
+void intro_check_skip(void)
 {
     if (KEYS_LO(gHeldKeys) & 8) {
         gUnk_03007008 = 1;
@@ -348,11 +348,11 @@ void sub_0806E8C8(void)
     }
 }
 
-void sub_0806E90C(void)
+void intro_update(void)
 {
     sub_0806E854();
-    gUnk_08485F68[gGameSubState]();
-    sub_0806E8C8();
+    gIntroSubStates[gGameSubState]();
+    intro_check_skip();
 }
 
 void sub_0806E934(void)
