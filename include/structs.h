@@ -1073,6 +1073,15 @@ struct ItemListEntry
     u16 count; // 0: empty slot
 };
 
+// Shop sell list built at 0x02040000 by shop_build_sell_list, one per sellable Medapart
+struct ShopSellEntry
+{
+    u16 id; // Medapart id
+    u8 count; // owned - equipped (MEDAPART_INV bytes 0 - 1)
+    u8 unk3; // part data byte 3 (gender)
+    u32 price; // part data byte 0xB * 100
+};
+
 // Game flags byte at 0x03001784
 struct Unk_03001784
 {

@@ -165,8 +165,59 @@ void sub_0805BC6C(void)
     }
 }
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BCC0);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BDC8);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BEA0);
+
+void sub_0805BDC8(u8 a)
+{
+    u16 buf[32];
+    s32 i;
+    a = a > 15 ? a - 16 : 0;
+    CpuSet((void *)0x0202FB00, buf, 0x04000010);
+    for (i = 0; i < 16; i++)
+    {
+        u16 c = buf[i];
+        u16 t = buf[i + 16];
+        s32 r = c & 0x1F;
+        s32 g = (c >> 5) & 0x1F;
+        s32 b = (c >> 10) & 0x1F;
+        s32 r2 = t & 0x1F;
+        s32 g2 = (t >> 5) & 0x1F;
+        s32 b2 = (t >> 10) & 0x1F;
+        r = (r - r2) * a / 32 + r2;
+        g = (g - g2) * a / 32 + g2;
+        b = (b - b2) * a / 32 + b2;
+        buf[i] = (b << 10) | (g << 5) | r;
+    }
+    CpuSet(buf, (void *)0x05000140, 0x04000008);
+}
+
+void sub_0805BEA0(u8 sel, u8 f)
+{
+    u16 buf[32];
+    s32 i, j;
+    for (j = 0; j <= 2; j++)
+    {
+        CpuSet((void *)(j * 0x40 + 0x0202FA00), buf, 0x04000010);
+        if (j == sel)
+        {
+            for (i = 0; i < 16; i++)
+            {
+                u16 c = buf[i];
+                u16 t = buf[i + 16];
+                s32 r = c & 0x1F;
+                s32 g = (c >> 5) & 0x1F;
+                s32 b = (c >> 10) & 0x1F;
+                s32 r2 = t & 0x1F;
+                s32 g2 = (t >> 5) & 0x1F;
+                s32 b2 = (t >> 10) & 0x1F;
+                r = (r - r2) * f / 32 + r2;
+                g = (g - g2) * f / 32 + g2;
+                b = (b - b2) * f / 32 + b2;
+                buf[i] = (b << 10) | (g << 5) | r;
+            }
+        }
+        CpuSet(buf, (void *)(j * 0x40 + PLTT), 0x04000008);
+    }
+}
 
 void sub_0805BF88(void)
 {

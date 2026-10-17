@@ -838,3 +838,4 @@ extern const Func gUnk_08483B00[]; // by gGameState (dispatch_game_state_handler
 extern const u8 gUnk_080AF6EC[]; // 4 bytes copied to an unused local (init_multiplayer_id)
 extern const u8 gUnk_080AF5FC[]; // per gUnk_030057E0.unkC32: 10 x 4 next-entry bytes (right, left, up, down) by gUnk_03006F74->unk17 (sub_0805B7A0)
 extern const u8 gUnk_080AF674[]; // same, used when gUnk_03006F74->unk18 is set (sub_0805B7A0)
+extern const u8 gUnk_083BEA14[]; // per Medabot (gUnk_083B1888 index): sprite palette - 4 (load_battle_sprite_tiles)
