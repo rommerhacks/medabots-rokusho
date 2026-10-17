@@ -139,7 +139,7 @@ extern const u8 gUnk_083AC468[]; // team select: cursor slot to move to after a 
 extern const u8 gUnk_083AC44D[]; // tile x, y per team select slot (9)
 extern const u8 *const gMedabotSlotDpadMoves[]; // up, down, left, right: next slot (gUnk_03000440.unk51) per slot
 extern const void *const gUnk_083B4AE0[]; // tilemaps (field menu rows: open/close animation frames)
-extern const void *const gUnk_083B5F80[]; // sprite animation commands (field menu cursor)
+extern const void *gUnk_083B5F80[]; // sprite animation commands (field menu cursor)
 extern const u8 gUnk_084C1608[];
 extern const u8 gUnk_084C17F0[];
 extern const u8 gUnk_084C1934[];
@@ -504,3 +504,5 @@ extern const u8 gUnk_084D50DC[]; // compressed tiles (code_080209B0)
 extern const u8 gUnk_0850E658[]; // 32-byte OBJ palette (code_080209B0)
 extern const u8 gUnk_084D513C[]; // compressed tiles (code_080209B0)
 extern const u8 gUnk_0850E678[]; // 32-byte OBJ palette (code_080209B0)
+extern const u8 gUnk_084D54BC[]; // compressed tiles (code_080209B0)
+extern const u8 gUnk_0850E698[]; // 32-byte OBJ palette (code_080209B0)
