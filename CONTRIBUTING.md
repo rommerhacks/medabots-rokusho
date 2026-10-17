@@ -56,6 +56,8 @@
 * A `u8` return value copied to a local gets re-truncated (`lsls/lsrs #24`). When the original
   passes the raw `r0` on, store it into its destination field and read the field back
   (`a.x = f(); b.y = a.x;`): gcc reuses the register instead of reloading.
+  The same works for a constant stored and then used as an index (`movs r1, #0x47`, `strb`, then
+  `lsls r1, r1, #2`): write `x.f = 0x47; g(tbl[x.f]);`, not `tbl[0x47]` or a local.
 * A callee result added without any truncation (`adds r1, r1, r0` right after the `bl`) means
   the callee returns `u32`/`int`, even if its value fits a `u16`.
 * A param spilled to the stack and read back with `ldrb` hints at a `u8` param; if the callers
