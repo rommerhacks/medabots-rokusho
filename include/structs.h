@@ -583,12 +583,14 @@ struct Unk_03001800
     u8 unk187; // gUnk_03000590 record index (battle_loss_take_part)
     u8 unk188; // two rolls from gUnk_083AF200 (sub_08034AA0); unkEC = (unk188 + unk189) * 10
     u8 unk189;
-    u8 unk18A[0x16]; // link exchange: received bytes (sub_0803E680)
+    u8 unk18A[0x10]; // link exchange: received bytes (sub_0803E680)
+    u8 unk19A[6]; // = gUnk_0300199A (sub_0803E8B8); indexed by unk1A2
     u8 unk1A0;
     u8 unk1A1;
     u8 unk1A2;
     u8 unk1A3;
-    u8 filler1A4[0x2];
+    u8 unk1A4;
+    u8 unk1A5;
     u16 unk1A6;
     u16 unk1A8;
     u16 unk1AA;
