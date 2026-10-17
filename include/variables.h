@@ -835,3 +835,4 @@ extern const u8 *const gUnk_084851CC[]; // messages by item id, 0x3F with an emp
 extern const u8 gUnk_080AF755[]; // 0x53-byte message copied to the stack (load_rotation_grid_and_advance)
 extern u16 gUnk_03004130[]; // OAM entry (attr0..2) of the list cursor sprite (init_fade_sprite_and_start_fade)
 extern const Func gUnk_08483B00[]; // by gGameState (dispatch_game_state_handler_0805BA94)
+extern const u8 gUnk_080AF6EC[]; // 4 bytes copied to an unused local (init_multiplayer_id)

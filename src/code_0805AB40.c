@@ -68,7 +68,31 @@ void decompress_and_write_tilemap(const void *src, u32 bgcnt)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", tilemap_offset_tiles_and_palette);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", init_multiplayer_id);
+
+void init_multiplayer_id(void)
+{
+    u8 buf[4];
+    memcpy_optimized(buf, gUnk_080AF6EC, 4);
+    gUnk_03000B90 = (*(vu32 *)0x04000128 << 26) >> 30;
+}
+
+void sub_0805B9EC(u16 keys)
+{
+    u16 *newKeys = &gNewKeys;
+    u16 *prev = &gUnk_03006F74->unk78;
+    *newKeys = keys & ~*prev;
+    gReleasedKeys = *prev & ~keys;
+    *prev = keys;
+}
+
+INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BA20);
+
+u16 sub_0805BA68(s16 x1, s16 y1, s16 x2, s16 y2)
+{
+    s32 dx = x2 - x1;
+    s32 dy = y2 - y1;
+    return Sqrt(dx * dx + dy * dy);
+}
 
 void dispatch_game_state_handler_0805BA94(void)
 {
