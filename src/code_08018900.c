@@ -622,7 +622,27 @@ void battle_queue_add(u32 rec, u32 prio)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", iterate_bots_setup_battle_sprites);
+void iterate_bots_setup_battle_sprites(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 5; i++)
+    {
+        if (gUnk_03000590[i].unk40)
+            setup_bot_battle_sprites_08015A00(i, gUnk_03002C30[0x5D + i * 4].unk2, gUnk_03002C30[0x5D + i * 4].unk4 - 4);
+    }
+}
+
+// Hidden function (no callers): 2-digit number buffer, [0] = 0xB when neg else 0xA (sign tile), [1] tens, [2] ones.
+void sub_0801A118(u8 *buf, u32 n, u32 neg)
+{
+    if (neg)
+        buf[0] = 0xB;
+    else
+        buf[0] = 0xA;
+    buf[1] = n / 10;
+    buf[2] = n % 10;
+}
 
 void battle_number_popup_init(u8 *buf, u32 rec)
 {
@@ -1201,8 +1221,71 @@ u32 sub_0801B4F8(u32 first)
     return n;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B53C);
-INCLUDE_ASM("asm/nonmatching/code_08018900", reset_bot_status_and_init_palette_transfers);
+// Decides the Robattle winner from the team / opponent records: fewer Medabots with unkBA == 2, then fewer
+// broken parts, then the larger gUnk_03001800.unk28[side].unk1, then a coin flip (mirrored on link player 1).
+// gUnk_03000440.unk9C = 1 team wins, 2 opponents win. guess: TIME ran out.
+void sub_0801B53C(void)
+{
+    u32 team = sub_0801B4C8(0);
+    u32 opp = sub_0801B4C8(3);
+
+    if (team < opp)
+        gUnk_03000440.unk9C = 1;
+    else if (opp < team)
+        gUnk_03000440.unk9C = 2;
+    else
+    {
+        team = sub_0801B4F8(0);
+        opp = sub_0801B4F8(3);
+        if (team < opp)
+            gUnk_03000440.unk9C = 1;
+        else if (opp < team)
+            gUnk_03000440.unk9C = 2;
+        else if (gUnk_03001800.unk28[0].unk1 > gUnk_03001800.unk28[1].unk1)
+            gUnk_03000440.unk9C = 1;
+        else if (gUnk_03001800.unk28[0].unk1 < gUnk_03001800.unk28[1].unk1)
+            gUnk_03000440.unk9C = 2;
+        else if (gUnk_03000440.unk89 != 1)
+        {
+            if (rng_next_080424B8() & 1)
+                gUnk_03000440.unk9C = 1;
+            else
+                gUnk_03000440.unk9C = 2;
+        }
+        else if (gUnk_03000B90 == 0)
+        {
+            if (rng_next_080424B8() & 1)
+                gUnk_03000440.unk9C = 1;
+            else
+                gUnk_03000440.unk9C = 2;
+        }
+        else
+        {
+            if (rng_next_080424B8() & 1)
+                gUnk_03000440.unk9C = 2;
+            else
+                gUnk_03000440.unk9C = 1;
+        }
+    }
+}
+
+void reset_bot_status_and_init_palette_transfers(u32 rec)
+{
+    u32 z0, z1, z2, z3, z4;
+
+    gUnk_03000590[rec].unkBC = 0;
+    gUnk_03000590[rec].unkBD &= 0xE5;
+    z0 = 0;
+    CpuSet(&z0, gUnk_030018A8, 0x05000008);
+    z1 = 0;
+    CpuSet(&z1, gUnk_030018A8 + 8, 0x05000008);
+    z2 = 0;
+    CpuSet(&z2, gUnk_030018A8 + 16, 0x05000004);
+    z3 = 0;
+    CpuSet(&z3, gUnk_030018A8 + 20, 0x05000008);
+    z4 = 0;
+    CpuSet(&z4, gUnk_030018A8 + 47, 0x05000001);
+}
 
 void sub_0801B67C(u32 rec)
 {
@@ -1246,7 +1329,26 @@ u32 find_next_active_bot(u32 rec)
 INCLUDE_ASM("asm/nonmatching/code_08018900", determine_battle_part_action_priority);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B894);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B9C4);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801BACC);
+
+void sub_0801BACC(void)
+{
+    if (gUnk_03002C30[9].unk0 & 0x8000)
+    {
+        if (gUnk_03002C30[9].unk24)
+        {
+            gUnk_03002C30[(gUnk_03002C30[9].unk25 - 1) * 4 + gUnk_03002C30[9].unk24 + 0x59].unk8 = 0x40;
+            gUnk_03002C30[(gUnk_03002C30[9].unk25 - 1) * 4 + gUnk_03002C30[9].unk24 + 0x59].unk9 = 0x40;
+            if (gUnk_03001800.unk80 == gUnk_03002C30[9].unk25 - 1)
+            {
+                if ((u8)(gUnk_03002C30[9].unk24 - 2) <= 1)
+                    gUnk_03002C30[gUnk_03001800.unk80 * 4 + gUnk_03002C30[9].unk24 + 0x59].unk0 &= 0xFFDF;
+                else
+                    gUnk_03002C30[gUnk_03001800.unk80 * 4 + gUnk_03002C30[9].unk24 + 0x59].unk0 &= 0xFDDF;
+            }
+        }
+        clear_battle_sprite_slot(9, 1);
+    }
+}
 
 void copy_battle_entity_positions(void)
 {
@@ -1539,6 +1641,22 @@ void sub_0801C4FC(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C524);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C660);
+
+void sub_0801C660(void)
+{
+    s32 i;
+
+    for (i = 3; i >= 0; i--)
+    {
+        if (gUnk_03000590[gUnk_03001800.unk87].parts[i].unk11)
+        {
+            gUnk_03001800.unkD0 = i;
+            break;
+        }
+    }
+    battle_set_damage_vs_armor(gUnk_03001800.unk87, gUnk_03001800.unkD0, gUnk_03001800.unk28[gUnk_03001800.unk89].unk5);
+    gUnk_03001800.unkAA++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C6C4);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C774);

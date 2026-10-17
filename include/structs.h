@@ -377,6 +377,19 @@ struct BattlePart
     u8 unk17; // part id
 };
 
+// Per-side record at gUnk_03001800.unk28 (0 team, 1 opponents).
+struct Unk_03001800_28
+{
+    u8 unk0;
+    u8 unk1; // compared between the sides when TIME runs out with a tie (sub_0801B53C)
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+    u8 unk5; // damage amount (sub_0801C660)
+    u8 unk6;
+    u8 unk7;
+};
+
 struct Unk_03001800
 {
     u8 unk0; // encounter: opponent message index (gUnk_083C2BBC)
@@ -384,7 +397,7 @@ struct Unk_03001800
     u8 unk2; // opponent Medabot count
     u8 unk3; // nonzero: fixed opponent parts (else each part is re-rolled by random_pick_weighted4)
     struct EncounterBot unk4[3];
-    u8 filler28[0x10];
+    struct Unk_03001800_28 unk28[2]; // per side (0 team, 1 opponents)
     u8 unk38; // battlefield
     u8 unk39[8]; // copied from gUnk_083C3B04[unk38] (sub_080121A8)
     u8 unk41[3]; // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
@@ -428,7 +441,9 @@ struct Unk_03001800
     u8 unkAA; // sub-state of the gUnk_083AD44C handlers (sub_0801C4FC)
     u8 fillerAB[0xA];
     u8 unkB5;
-    u8 fillerB6[0x42];
+    u8 fillerB6[0x1A];
+    u8 unkD0; // last part (3..0) of the acting Medabot with armor left (sub_0801C660)
+    u8 fillerD1[0x27];
     u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
     u8 fillerF9[0x1F];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part
