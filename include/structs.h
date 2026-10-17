@@ -284,7 +284,7 @@ struct Unk_03002C30
     s16 unk4;
     u16 unk6; // animation frame
     u8 unk8;
-    u8 unk9;
+    u8 unk9; // race intro message index: gUnk_084864E8[unk9], [unk9 + 1] (sub_08069F80)
     u8 unkA;
     u8 unkB;
     u32 unkC_0:8; // x, 24.8 fixed point: fraction
@@ -1140,7 +1140,8 @@ struct Unk_08486160
     u8 filler5[1];
     s16 unk6; // encounter setup of the third racer
     u8 unk8; // ... for the BG at 0x06005000
-    u8 filler9[3];
+    u8 unk9; // race intro message index: gUnk_084864E8[unk9], [unk9 + 1] (sub_08069F80)
+    u8 fillerA[2];
 };
 
 #endif // GUARD_STRUCTS_H
