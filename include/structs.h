@@ -430,7 +430,8 @@ struct BattlePart
     u8 unk10; // head: copy of data[8]
     u8 unk11; // current armor, starts as data[4] = max armor (Status screen, runtime-checked); 0 = broken
               // (legs: data[4..9] copied to unk11..unk16)
-    u8 filler12[5];
+    u8 unk12; // legs: data[5] (Propulsion; sub_0801928C)
+    u8 filler13[4];
     u8 unk17; // part id
 };
 
@@ -477,7 +478,11 @@ struct Unk_03000590
     u8 unkCD; // number shown by the Robattle handler 0x78 (sub_08014920)
     u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (sub_080145BC .. sub_08014754),
               // bit 2 / bit 3 = numbers shown by sub_080147FC / sub_08014920
-    u8 fillerCF[0xE];
+    u8 fillerCF[0x8];
+    u8 unkD7; // movement: sub-pixel accumulator, + (0x20 - unkBB) per frame, 1/16 px (sub_08019348)
+    u8 fillerD8[0x2];
+    u8 unkDA; // movement: whole pixels moved this frame
+    u8 fillerDB[0x2];
     u8 unkDD; // link Robattle: part choice exchanged over the serial link (sub_08014B34, sub_08014C30)
     u8 fillerDE[0x2];
     u8 unkE0;
