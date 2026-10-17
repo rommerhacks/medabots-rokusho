@@ -945,5 +945,6 @@ void sub_080351E8(u32 rec);
 u32 find_random_available_part_slot(u32 rec); // part + 1, 0 = none
 void battle_set_damage_display(u32 rec, u32 part, s32 amount);
 void get_active_bot_part_index_and_load_values(u32 side);
+void sub_08035740(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, max)
 
 #endif // GUARD_FUNCTIONS_H
