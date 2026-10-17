@@ -464,7 +464,8 @@ struct Unk_03001800
     u8 fillerD2[0xC];
     u8 unkDE; // record + 1 of a teammate of unk88 with unkBD bit 3 set (sub_0801D5A8), 0 = none
     u8 unkDF; // that teammate's unkDF (0x1B-0x1D pick the graphics in sub_0801D6A4)
-    u8 fillerE0[0x8];
+    u8 unkE0[3]; // per team record: record + 1 waiting for reset_battle_bot_state (sub_0801FE14)
+    u8 fillerE3[0x5];
     s16 unkE8; // passed to battle_set_action_params with unkEC (sub_0801F9EC)
     u8 fillerEA[0x2];
     s16 unkEC; // amount for battle_calc_damage_split (battle_resolve_action_target); counted down by sub_0801EC3C

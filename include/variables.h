@@ -482,3 +482,4 @@ extern const u8 gUnk_084CB684[]; // compressed tiles (code_0801C988)
 extern const u8 gUnk_0850E238[]; // 32-byte OBJ palette (code_0801C988)
 extern const Func gUnk_083AD794[]; // by gUnk_03001800.unkAA (sub_0801FA40)
 extern struct Unk_083B4AE0 gUnk_083B4AE0_s; // same address as gUnk_083B4AE0
+extern const Func gUnk_083AD7D4[]; // by gUnk_03001800.unkAA (sub_0801FDEC)

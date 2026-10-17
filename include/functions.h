@@ -934,5 +934,6 @@ u32 sub_080331F8(u8 rec);
 u32 sub_08036D64(u8 rec, u8 skill);
 u32 medal_update_exp_progress(u8 slot, u32 n);
 void battle_set_action_params(u8 rec, u8 skill, s32 a, s32 b);
+void reset_battle_bot_state(u8 rec);
 
 #endif // GUARD_FUNCTIONS_H
