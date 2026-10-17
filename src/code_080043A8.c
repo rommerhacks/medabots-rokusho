@@ -1874,7 +1874,7 @@ void sub_08007540(void)
 
     for (i = 0; i <= 2; i++)
     {
-        if (gUnk_03000590[0x340 + i * 0x100])
+        if (gUnk_03000590[i + 3].unk40[0])
             gUnk_03001800.unk5B++;
     }
     setup_bot_render_label(3, gUnk_03001800.unk5B);

@@ -97,6 +97,7 @@ void sub_08009BC8(void);
 void decompress_active_medal_sprite(void);
 void init_active_medal_battle_sprites(void);
 void draw_medal_position_tile(void);
+u32 get_medal_active_slot(u8 medal);
 void sub_08009E4C(void);
 void sub_08009EF4(void);
 void sub_08009F50(void);
@@ -174,6 +175,7 @@ u32 get_item_quantity_by_id(u8 id);
 s32 rng_next_080424B8(void);
 void load_part_data(u32 part, u32 kind, u8 *dst);
 struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32 cy, u32 a, u32 b);
+u32 sub_0804384C(u8 medal); // team slot (gUnk_030017A0) holding Medal id `medal`, or 0xFF
 void decompress_sprite_to_vram_08042D94(u32 a, u32 b, u32 c, u32 d, u32 slot);
 void init_battle_medabot_sprites(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j, u32 k);
 void setup_battle_sprite_group(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j, u32 k);

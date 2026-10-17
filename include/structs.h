@@ -310,7 +310,9 @@ struct Unk_03001800
     u8 unk54;
     u8 filler55[0x6];
     u8 unk5B;
-    u8 filler5C[0x2B];
+    u8 filler5C[0x24];
+    u8 unk80; // index of a 256-byte record in gUnk_03000590 (sub_0800B498 copies Medal rotation data there)
+    u8 filler81[0x6];
     u8 unk87;
     u8 filler88[0x4];
     u8 unk8C[3];
@@ -344,6 +346,13 @@ struct Unk_03000BE0
     u8 unk28[8];
     u8 filler30[0x10];
 
+};
+
+// 256-byte records at gUnk_03000590 (6 of them, cleared together); each starts with a Medal record copy.
+struct Unk_03000590
+{
+    struct Unk_03000BE0 medal;
+    u8 unk40[0xC0];
 };
 
 struct Unk_030017A0

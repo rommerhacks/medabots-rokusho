@@ -931,7 +931,13 @@ void sub_08009BC8(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08008430", get_medal_active_slot);
+u32 get_medal_active_slot(u8 medal)
+{
+    if (gUnk_03000BE0[medal].unk0 & 0x80 && gUnk_03000BE0[medal].unk0 & 0x40)
+        return sub_0804384C(gUnk_03000BE0[medal].unk1);
+    return 0xFF;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08008430", decompress_active_medal_sprite);
 INCLUDE_ASM("asm/nonmatching/code_08008430", init_active_medal_battle_sprites);
 INCLUDE_ASM("asm/nonmatching/code_08008430", draw_medal_position_tile);
@@ -1346,15 +1352,60 @@ u32 sub_0800AE54(void)
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_0800AED0);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_0800AF0C);
+void sub_0800AED0(void)
+{
+    u32 slot = get_medal_active_slot(gUnk_03000440.unk3D);
+
+    if (slot != 0xFF)
+        decompress_sprite_to_vram_08042D94(gUnk_030017A0[slot].unk3, gUnk_030017A0[slot].unk4, gUnk_030017A0[slot].unk5, gUnk_030017A0[slot].unk6, 2);
+}
+
+void sub_0800AF0C(void)
+{
+    u32 slot = get_medal_active_slot(gUnk_03000440.unk3D);
+
+    if (slot != 0xFF)
+        init_battle_medabot_sprites(gUnk_030017A0[slot].unk3, gUnk_030017A0[slot].unk4, gUnk_030017A0[slot].unk5, gUnk_030017A0[slot].unk6, 2, 0x64, 0x18, 0x40, 0, 2, 0);
+    else
+        clear_sprite_table_mask(0x64, 4);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08008430", sub_0800AF64);
 INCLUDE_ASM("asm/nonmatching/code_08008430", render_medal_skill_stats);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_0800B0F8);
+
+void sub_0800B0F8(void)
+{
+    u32 i;
+
+    for (i = 0; i < 5; i++)
+        CpuFastSet(gUnk_084C3B14 + (i * 0x100 + gUnk_03000440.unk3F * 0x20), (void *)0x06007A00 + i * 0x20, 8);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08008430", sub_0800B130);
 INCLUDE_ASM("asm/nonmatching/code_08008430", draw_medal_skill_bars);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_0800B468);
-INCLUDE_ASM("asm/nonmatching/code_08008430", sub_0800B498);
+
+void sub_0800B468(void)
+{
+    if (KEYS_LO(gRepeatKeys) & 0x30)
+    {
+        sub_08009EA0();
+        sub_08009EF4();
+        sub_08009F50();
+        sub_08009FC8();
+        render_medal_skill_stats();
+        draw_medal_skill_bars();
+    }
+}
+
+void sub_0800B498(void)
+{
+    u32 i;
+
+    gUnk_03000590[gUnk_03001800.unk80].medal.unk9 = gUnk_03000BE0[gUnk_03000440.unk3D].unk9;
+    for (i = 0; i < 8; i++)
+        gUnk_03000590[gUnk_03001800.unk80].medal.unk18[i] = gUnk_03000BE0[gUnk_03000440.unk3D].unk18[i];
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08008430", increment_medal_level_on_input);
 INCLUDE_ASM("asm/nonmatching/code_08008430", handle_medal_level_down_input);
 INCLUDE_ASM("asm/nonmatching/code_08008430", setup_battle_cursor_sprite_0800B5E8);

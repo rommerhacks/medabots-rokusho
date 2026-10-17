@@ -19,7 +19,7 @@ INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08014E20);
 
 void clear_battle_bot_array(void)
 {
-    sub_0803F624(gUnk_03000590, 0x600, 0);
+    sub_0803F624((u8 *)gUnk_03000590, 0x600, 0);
 }
 
 INCLUDE_ASM("asm/nonmatching/code_080147FC", count_active_battle_bots);
