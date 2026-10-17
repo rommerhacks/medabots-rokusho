@@ -893,6 +893,11 @@ void add_bot_to_defeated_list(u8 rec);
 u32 sub_080353CC(u32 slot);
 u32 move_sprite_toward_target(u8 slot);
 u32 sub_08036E54(u32 a); // clamps to 1..99
+u8 sub_08037578(u32 a, u32 kind); // random part id (by a and the part kind)
+void sub_0803769C(u32 rec);
+void sub_080376F4(u32 rec);
+void sub_08037728(u32 rec, u32 part, s32 amount);
+void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 b, s32 x, s32 y);
 void sub_080374E0(u32 a, u32 b); // unkC8 = min(a, b) taken out of a (guess: drain clamp)
 void sub_0803752C(u32 a, u32 max, u32 b); // unkC8 = min(b, max - a) (add clamp)
 void sub_08037330(u32 rec, u32 frame, u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)

@@ -461,7 +461,8 @@ struct Unk_03001800
     u8 fillerCC[0x4];
     u8 unkD0; // last part (3..0) of the acting Medabot with armor left (sub_0801C660)
     u8 unkD1; // nonzero: battle_check_hit_and_set_timer goes to sub-state 0x1A
-    u8 fillerD2[0xC];
+    u8 fillerD2[0x4];
+    u16 unkD6[4]; // per part: amounts shown by sub_08026924
     u8 unkDE; // record + 1 of a teammate of unk88 with unkBD bit 3 set (sub_0801D5A8), 0 = none
     u8 unkDF; // that teammate's unkDF (0x1B-0x1D pick the graphics in sub_0801D6A4)
     u8 unkE0[3]; // per team record: record + 1 waiting for reset_battle_bot_state (sub_0801FE14)
@@ -477,7 +478,9 @@ struct Unk_03001800
     u8 unk114[2]; // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (sub_08020B4C)
     u8 filler116[0x2];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part
-    u8 filler119[0x3];
+    u8 unk119; // part data[1] - 0x37 of the swapped part (sub_08026678)
+    u8 unk11A; // id of the part swapped in (sub_08026678)
+    u8 filler11B[0x1];
     struct BattlePart unk11C; // saved part (data and id), restored by sub_0801B3AC
     u8 filler134[0x8];
     struct Vec16 unk13C[6]; // per record: x, y - 4 of its battle sprite (copy_battle_entity_positions)
