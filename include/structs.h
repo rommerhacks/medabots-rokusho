@@ -381,6 +381,14 @@ struct Coords16
     s16 y;
 };
 
+// 4-byte sprite positions (gUnk_083AF94C, sub_0803B0C0).
+struct Unk_083AF94C
+{
+    u16 x;
+    u8 y;
+    u8 filler3;
+};
+
 struct BattlePart
 {
     u8 data[0xD]; // part data record (load_part_data); data[0xA] summed as armor (accumulate_team_armor_stats)
