@@ -108,6 +108,16 @@ void sub_0803E674(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803E680);
 
+void sub_0803E768(void)
+{
+    gGameSubState = 6;
+}
+
+void sub_0803E774(void)
+{
+    gGameSubState = 5;
+}
+
 void sub_0803E780(void)
 {
     if (gUnk_03000440.unk89 == 1)
