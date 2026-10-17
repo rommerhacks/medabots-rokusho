@@ -44,7 +44,7 @@ _08071CD2:
 	cmp r0, #0x40
 	bgt _08071D00
 	movs r0, #6
-	bl sub_0806B584
+	bl clear_sprite_entry
 	movs r0, #0x54
 	bl play_sound_effect
 	movs r0, #0

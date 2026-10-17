@@ -179,7 +179,7 @@ _0806BD32:
 	cmp r0, #0x1e
 	bls _0806BD78
 	movs r0, #0
-	bl sub_0806B584
+	bl clear_sprite_entry
 	ldr r2, _0806BD70 @ =0x03001800
 	movs r0, #0
 	str r0, [r2, #8]

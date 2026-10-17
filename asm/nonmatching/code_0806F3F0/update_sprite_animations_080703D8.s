@@ -62,7 +62,7 @@ _0807043E:
 	b _08070452
 _0807044C:
 	adds r0, r7, #0
-	bl sub_0806B584
+	bl clear_sprite_entry
 _08070452:
 	adds r0, r7, #1
 	lsls r0, r0, #0x18

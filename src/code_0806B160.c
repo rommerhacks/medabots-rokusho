@@ -2,16 +2,44 @@
 
 INCLUDE_ASM("asm/nonmatching/code_0806B160", update_sprite_position_sincos);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806B244);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806B310);
+
+void sub_0806B310(void)
+{
+    if (gFrameCounter & 1) {
+        gBg3Scroll.x--;
+        gBg3Scroll.y++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806B160", update_sprite_animations_0806B334);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sprite_animation_dispatch);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806B420);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806B584);
+
+void clear_sprite_entry(u8 sprite)
+{
+    u32 zero = 0;
+    DmaSet(3, &zero, &gUnk_03002C30[sprite], 0x85000010);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806B160", battle_screen_dispatch);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", init_battle_screen);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", load_battle_screen_graphics);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806B990);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806B9B0);
+
+void sub_0806B990(void)
+{
+    if (scene_transition_step_080686F4()) {
+        play_song(0x14);
+        gGameSubState++;
+    }
+}
+
+void sub_0806B9B0(void)
+{
+    if (sub_0806BBDC())
+        gGameSubState++;
+    sub_0806C994();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806B9D0);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806BAB4);
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806BB00);
@@ -220,7 +248,7 @@ void battle_transition_animate_step(void)
         gUnk_03001800_s.nextSubState = 6;
         gUnk_03001800_s.timer = 0;
         setup_screen_transition_effect_080682CC(4, 4, 0x7FFF);
-        sub_0806B584(1);
+        clear_sprite_entry(1);
         init_battle_sprite_entry_08048818(0, 0xC400, 0x21B, 4, 3);
         REG_DISPCNT |= 0x300;
         gGameSubState = 1;
@@ -271,7 +299,7 @@ void battle_intro_countdown_tick(void)
         gGameSubState++;
     } else if (gUnk_03001800_s.timer > 0x547) {
         gUnk_03001800_s.timer = start;
-        sub_0806B584(2);
+        clear_sprite_entry(2);
         setup_screen_transition_effect_080684F0(4, 1, 0);
         gUnk_03001800_s.nextMode = 3;
         gUnk_03001800_s.nextState = start;
@@ -286,7 +314,7 @@ void sub_0806DAEC(void)
 {
     if (gUnk_03001800_s.timer > 0x28) {
         gUnk_03001800_s.timer = 0;
-        sub_0806B584(2);
+        clear_sprite_entry(2);
         setup_screen_transition_effect_080684F0(4, 1, 0);
         gUnk_03001800_s.nextMode = 2;
         gUnk_03001800_s.nextState = 3;
@@ -346,7 +374,7 @@ void update_sprite_special_effects(void)
                 case 1:
                     break;
                 case 0xFF:
-                    sub_0806B584(i);
+                    clear_sprite_entry(i);
                     break;
                 }
             }

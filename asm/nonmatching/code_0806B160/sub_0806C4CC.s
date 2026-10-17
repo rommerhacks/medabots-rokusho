@@ -20,7 +20,7 @@ sub_0806C4CC: @ 0x0806C4CC
 	cmp r0, #2
 	bls _0806C4F4
 	movs r0, #0x38
-	bl sub_0806B584
+	bl clear_sprite_entry
 _0806C4F4:
 	pop {r0}
 	bx r0

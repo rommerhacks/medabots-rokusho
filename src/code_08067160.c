@@ -1433,7 +1433,7 @@ bool32 sub_0806B068(u8 sprite)
     if ((u16)(gUnk_03002C30[sprite].unk1A - 0xD2) < 0x10)
         gUnk_03002C30[sprite].unk4 -= 2;
     if (gUnk_03002C30[sprite].unk1A > 0xE1) {
-        sub_0806B584(sprite);
+        clear_sprite_entry(sprite);
         return FALSE;
     }
     return TRUE;

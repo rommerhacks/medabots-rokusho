@@ -86,7 +86,7 @@ _0806C792:
 	beq _0806C7B8
 _0806C7A4:
 	movs r0, #0
-	bl sub_0806B584
+	bl clear_sprite_entry
 	movs r0, #1
 	b _0806C7BA
 	.align 2, 0

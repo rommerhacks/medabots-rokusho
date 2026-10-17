@@ -827,7 +827,7 @@ bool32 sub_0806A4C0(void);
 void update_sprite_animations_tick_0806AF40(void);
 void update_sprite_animations_0806B334(void);
 void sprite_animation_dispatch(u8 sprite, u8 a, u8 b, u8 c);
-void sub_0806B584(u8 sprite);
+void clear_sprite_entry(u8 sprite); // zeroes gUnk_03002C30[sprite] (0x40 bytes)
 void sub_0806B310(void);
 void init_battle_field_screen(void);
 void init_battle_icon_positions(void);
@@ -852,6 +852,8 @@ void update_sprite_special_effects(void);
 void sub_0806D288(void);
 bool32 sub_0806DEAC(u8 i);
 bool32 sub_0806DEE8(u8 i);
+u32 sub_0806BBDC(void);
+void sub_0806C994(void);
 void sub_0806DF80(u8 anim, u8 sprite); // starts animation anim on sprite slot sprite (unk20 = anim, unk22 = 0, unk30 = unk6, unk1A = 0)
 u32 check_battle_timer_expired(u8 a);
 void process_text_tile_and_dma_transfer(u8 a);

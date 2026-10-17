@@ -472,3 +472,16 @@
   `((void (*)())f)(...)` cast (update_battle_bot_entry_animations).
 * `for (i = 0; i < 5u; i++)` / `i < sizeof(arr)` (unsigned bound) gives `bls` instead of `ble`
   (init_scene_with_palette_and_song_5).
+* **agbcc pads every union (and struct) to a multiple of 4 bytes.** A `union { u16 h; u8 b; }` at
+  0xC takes 0xC..0xF, so a field declared after it lands at 0x10, not 0xE. Put such neighbours inside
+  the union (`s8 s[4]`, struct Unk_03001800_s.unkC).
+* Two copies of one stack-array base (`movs r7, #0` before `mov ip, r5` in the original, the other
+  order in yours) in a "widen a 30x20 tilemap to 32x20" loop: read the source as `*(map[i] + j)`
+  instead of `map[i][j]` (boot_logos_load_licensed_by and its two siblings).
+* An I/O register read once for a compare and the value reused for the first use, then re-read
+  after each store (`ldrb r0, [r3]; cmp r0, #0x9E; ... adds r0, #1` with no second load): the original
+  read it through a non-volatile pointer (`*(u8 *)REG_ADDR_VCOUNT`, sub_0806D420).
+* A callee result compared with `bgt` for `> 1` (signed) where yours gives `bcc`: the function-table
+  type returns `s32`, not `bool32` (update_sprite_special_effects).
+* A loop that waits until `timer == n * 2` with `n` kept in a register: a local `s32 n = 0xC4;`, and
+  the test written `n * 2 <= timer` to keep the original `cmp` operand order (sub_0806F0B4).

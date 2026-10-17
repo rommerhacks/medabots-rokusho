@@ -50,7 +50,7 @@ _08071666:
 	b _08071676
 _08071670:
 	adds r0, r6, #0
-	bl sub_0806B584
+	bl clear_sprite_entry
 _08071676:
 	adds r0, r6, #1
 	lsls r0, r0, #0x18

@@ -313,7 +313,7 @@ _0806C482:
 	ldr r2, [sp, #0xc]
 	lsls r0, r2, #0x18
 	lsrs r0, r0, #0x18
-	bl sub_0806B584
+	bl clear_sprite_entry
 _0806C490:
 	ldrh r0, [r4, #0x18]
 	adds r0, #1

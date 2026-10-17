@@ -37,7 +37,7 @@ _08071F3E:
 	cmp r0, #0x20
 	bne _08071F4E
 	movs r0, #0
-	bl sub_0806B584
+	bl clear_sprite_entry
 _08071F4E:
 	ldrb r0, [r5, #0x11]
 	cmp r0, #0x14
