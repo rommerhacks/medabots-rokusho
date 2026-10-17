@@ -7,7 +7,34 @@ INCLUDE_ASM("asm/nonmatching/code_08044F54", setup_oam_sprite_entries);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", init_sprite_object_entry);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", set_oam_sprite_tile_positions);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", setup_sprite_from_oam_descriptor);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", binary_search_sorted_table);
+
+u16 binary_search_sorted_table(struct SortEntry *arr, u16 n, u16 key)
+{
+    u16 lo, hi, mid = 0;
+    s16 v;
+
+    if (n != 0)
+    {
+        lo = 0;
+        hi = n - 1;
+        mid = (lo + hi) >> 1;
+        while (mid != lo && mid != hi)
+        {
+            v = arr[mid].unk6;
+            if (v == (s16)key)
+                break;
+            if (v < (s16)key)
+                lo = mid;
+            if (v > (s16)key)
+                hi = mid;
+            mid = (lo + hi) >> 1;
+        }
+        while (mid < n && (s16)arr[mid].unk6 <= (s16)key)
+            mid++;
+    }
+    return mid;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sorted_array_insert_shift);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_oam_entries_with_priority);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_sprite_oam_entries);
@@ -82,7 +109,34 @@ void nullsub_08047570(void)
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047574);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_0804763C);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_0804765C);
+
+void sub_0804765C(u32 a)
+{
+    switch (a)
+    {
+    case 0:
+        gUnk_03005310.unk39 = gUnk_03000440.unk9C;
+        if (gUnk_030057E0.unkC88 != 0)
+        {
+            gGameMode = 1;
+            gGameState = 1;
+            gGameSubState = 5;
+        }
+        else
+        {
+            gGameMode = 1;
+            gGameState = 1;
+            gGameSubState = 13;
+        }
+        break;
+    case 1:
+        gGameMode = 1;
+        gGameState = 2;
+        gGameSubState = 0;
+        break;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", dispatch_by_index_0476e8);
 
 void sub_08047850(s32 mode)
@@ -197,7 +251,43 @@ void sub_08047E4C(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", lookup_position_table_value);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", check_position_table_match);
+
+u32 check_position_table_match(u8 id, u8 which)
+{
+    u32 found = 0;
+    s32 i;
+    struct Unk_030017A0 *p;
+
+    for (i = 0, p = gUnk_030017A0; i <= 8; i++)
+    {
+        if (p->unk0 == 3)
+        {
+            switch (which)
+            {
+            case 0:
+                if (p->unk3 == id)
+                    found = 1;
+                break;
+            case 1:
+                if (p->unk4 == id)
+                    found = 1;
+                break;
+            case 2:
+                if (p->unk5 == id)
+                    found = 1;
+                break;
+            case 3:
+                if (p->unk6 == id)
+                    found = 1;
+                break;
+            }
+        }
+        if (found)
+            break;
+        p++;
+    }
+    return found;
+}
 
 s32 sub_08047F50(void)
 {
@@ -256,11 +346,56 @@ u32 sub_08048088(u32 idx)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", update_battle_field_frame);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", update_sprite_animation_dma);
+
+void update_sprite_animation_dma(void)
+{
+    const u8 *anim = gUnk_084096F4[gUnk_030057E0.unk7FE];
+    u8 n = anim[0];
+    u8 *src;
+
+    if (gUnk_030057E0.unkC34 != 0 && anim[2] != 0)
+    {
+        if (gUnk_030057E0.unkC36 != 0)
+        {
+            gUnk_030057E0.unkC36--;
+        }
+        else
+        {
+            if (anim[gUnk_030057E0.unkC35 + 3] == 0xFF)
+                gUnk_030057E0.unkC35 = 0;
+            src = gUnk_030057DC + anim[gUnk_030057E0.unkC35 + 3] * n * 32;
+            DmaSet(3, src, 0x06009020, 0x80000000 | (n << 4));
+            gUnk_030057E0.unkC35++;
+            gUnk_030057E0.unkC36 = 2;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_080481C4);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", decompress_battle_tile_graphics);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", decompress_terrain_tiles_to_vram);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_080482C0);
+
+void sub_080482C0(void)
+{
+    const u16 *pal = gUnk_083F9BF4[gUnk_030057E0.unk7FE];
+
+    if (pal != NULL)
+    {
+        DmaSet(3, pal, 0x0202FA00, 0x84000068);
+    }
+    else
+    {
+        DmaSet(3, gUnk_080AC5B4, 0x0202FA00, 0x84000008);
+        DmaSet(3, gUnk_080AC654, 0x0202FA20, 0x84000008);
+        DmaSet(3, gUnk_080AC6F4, 0x0202FA40, 0x84000008);
+        DmaSet(3, gUnk_080AC794, 0x0202FA60, 0x84000008);
+        DmaSet(3, gUnk_080AC5B4, 0x0202FA80, 0x84000008);
+        DmaSet(3, gUnk_080AC5B4, 0x0202FAA0, 0x84000008);
+        DmaSet(3, gUnk_080AC5B4, 0x0202FAC0, 0x84000008);
+        DmaSet(3, gUnk_080AC834, 0x0202FAE0, 0x84000008);
+        DmaSet(3, gUnk_080AC8D4, 0x0202FB00, 0x84000008);
+    }
+}
 
 u8 sub_080483AC(void)
 {

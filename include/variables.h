@@ -781,3 +781,13 @@ extern struct Unk_03005290 gUnk_030052B0;
 extern struct Unk_03005290 gUnk_030052D0;
 extern struct Unk_03005290 gUnk_030052F0;
 extern const u8 gUnk_083D2ADD[]; // per animation id (gUnk_03002C30[].unk30): 2 -> unkB = 0xFF, 1 -> 0, else 0x40 (sub_0804877C)
+extern const u8 *const gUnk_08414394[]; // tile tables by id - 0xD0, indexed by gUnk_030057E0.unkC38[id - 0xD0] (sub_080481C4)
+extern u8 *gUnk_030057DC; // animated tile source for the area (update_sprite_animation_dma)
+extern const u8 *const gUnk_084096F4[]; // per area id: tile animation [0] tiles per frame, [2] enabled, [3..] frame list ending 0xFF (update_sprite_animation_dma)
+extern const u16 *const gUnk_083F9BF4[]; // per area id: 0xD0-color palette for 0x0202FA00, NULL = default set from gUnk_080AC5B4 (sub_080482C0)
+extern const u16 gUnk_080AC5B4[]; // default palette (sub_080482C0)
+extern const u16 gUnk_080AC654[]; // default palette (sub_080482C0)
+extern const u16 gUnk_080AC6F4[]; // default palette (sub_080482C0)
+extern const u16 gUnk_080AC794[]; // default palette (sub_080482C0)
+extern const u16 gUnk_080AC834[]; // default palette (sub_080482C0)
+extern const u16 gUnk_080AC8D4[]; // default palette (sub_080482C0)
