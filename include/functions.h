@@ -1286,3 +1286,9 @@ void execute_substate_and_tick_counters(void); // gUnk_08483E10[gGameSubState]()
 void sub_08061D30(void);
 void sub_08062638(void); // fades OBJ palettes in, then init_battle_scene(unk19, id of shop list entry unk1A + gUnk_02023078)
 void fade_out_transition_step(void);
+void clear_or_fill_bg2_tilemap(s32 n);
+void sub_08062AB0(u32 medal, u32 frame); // decompresses Medal sprite gUnk_083AC494[medal][frame] to OBJ VRAM and sets up sprite 0 at (0xB8, 0x38)
+void sub_0806006C(void);
+void sub_08061300(void);
+void sub_0805FB2C(void);
+void update_fade_transition_state_0805F778(void);

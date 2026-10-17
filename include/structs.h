@@ -1068,7 +1068,8 @@ struct Unk_03006F74
     u8 unk50[8]; // blend effect state (init_blend_effect, blend_fade_step_08065598)
     u8 filler58[0x20];
     u16 unk78; // link: the other player's keys last frame (sub_0805B9EC)
-    u8 filler7A[0x1F6];
+    s8 unk7A;
+    u8 filler7B[0x1F5];
     u8 unk270[0x30]; // message text buffer (sub_08061180)
 };
 

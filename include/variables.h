@@ -864,3 +864,5 @@ extern const u16 gUnk_08483DF4[][4]; // animation frames [unk18][frame]
 extern const u8 gUnk_08483E04[]; // frame index by gUnk_03006F74->unk3A / 10 (update_animation_timer)
 extern const u8 gUnk_0848552C[]; // message text (sub_08061180)
 extern const Func gUnk_08483E10[]; // sub-state handlers (execute_substate_and_tick_counters)
+extern const u16 gUnk_080AF968[]; // sprite 1 animation frames by unk1A / 6 (sub_0806006C)
+extern u8 gUnk_03007008;

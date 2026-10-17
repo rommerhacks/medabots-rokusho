@@ -64,7 +64,25 @@ void update_fade_effect(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", options_menu_handler);
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", update_fade_transition_state_0805F778);
+
+void update_fade_transition_state_0805F778(void)
+{
+    if (gUnk_03006F74->unk0 == 1)
+        play_sound_effect(gUnk_03006F74->unk49 ? 5 : 4);
+    if (gUnk_03006F74->unk0 != 32)
+    {
+        gUnk_03006F74->unk0++;
+        REG_BLDY = gUnk_03006F74->unk0 >> 1;
+    }
+    else
+    {
+        REG_DISPCNT &= 0xFDFF;
+        gGameMode = 3;
+        gGameState = 2;
+        gGameSubState = 0;
+        gUnk_03007008 = 1;
+    }
+}
 
 void advance_substate_on_handler_complete(void)
 {
@@ -141,7 +159,24 @@ void sub_0805FAF0(void)
         gBg3Scroll.y++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_0805FB2C);
+void sub_0805FB2C(void)
+{
+    u32 zero = 0;
+
+    CpuFastSet(&zero, (void *)VRAM, 0x01006000);
+    sub_08059D04();
+    reset_bg_scroll();
+    REG_WIN0H = 0xF0;
+    REG_WIN0V = 0x80;
+    REG_WININ = 0x3F3F;
+    REG_WINOUT = 0x2F;
+    REG_DISPCNT = 0x2060;
+    REG_BLDCNT = 0x2BF;
+    play_song(0x12);
+    REG_BLDY = 0x10;
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_0805FBA8);
 
 void sub_0805FD60(void)
@@ -163,7 +198,23 @@ void sub_0805FD60(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_0805FDB4);
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_0805FE90);
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_0806006C);
+
+void sub_0806006C(void)
+{
+    struct Unk_03006F74 *p = gUnk_03006F74;
+
+    p->unk3A++;
+    clear_or_fill_bg2_tilemap(p->unk3A + 8);
+    if (++gUnk_03002C30[1].unk1A > 0x47)
+        gUnk_03002C30[1].unk1A = 0;
+    gUnk_03002C30[1].unk6 = gUnk_080AF968[(u16)(gUnk_03002C30[1].unk1A / 6)];
+    p = gUnk_03006F74;
+    if (p->unk3A > 13)
+    {
+        p->unk0 = 0;
+        gGameSubState--;
+    }
+}
 
 void sub_080600E0(void)
 {
@@ -379,7 +430,27 @@ void sub_080612D8(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08061300);
+void sub_08061300(void)
+{
+    struct Unk_03000440 *s = &gUnk_03000440;
+    u8 *n = &s->unk84;
+
+    if (*n <= 8)
+    {
+        blend_obj_palettes_to_color_0803F684(0, *n * 4, 0xFFFF);
+        blend_obj_palettes_to_color_0803F998(0, *n * 4, 0xFFFF);
+        (*n)++;
+    }
+    else
+    {
+        REG_DISPCNT &= 0xFDFF;
+        REG_DISPCNT &= 0xFBFF;
+        REG_DISPCNT &= 0xF7FF;
+        clear_battle_sprite_slot(0, 0x80);
+        dispatch_by_index_0476e8(3);
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08061374);
 
 void sub_0806142C(void)
@@ -544,7 +615,27 @@ void sub_08062A74(u16 id, u8 second)
     *dst = 0xFE;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_08062AB0);
+void sub_08062AB0(u32 medal, u32 frame)
+{
+    struct Unk_03002C30 *s;
+    u8 zero;
+
+    lz_decompress_dispatch(gUnk_083AC494[medal][frame], (void *)0x06010000);
+    s = gUnk_03002C30;
+    zero = 0;
+    s->unk0 = 0x8A24;
+    if (gUnk_03006F74->unk7A == 0)
+        s->unk0 |= 0x4000;
+    s->unk2 = 0xB8;
+    s->unk4 = 0x38;
+    s->unk6 = 0x200;
+    s->unkA = zero;
+    s->unk1C = zero;
+    s->unkB = 0x40;
+    s->unk8 = 0x40;
+    s->unk9 = 0x40;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", update_animated_tilemap);
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", animate_battle_scroll_tiles);
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", update_scroll_animation_tiles);
