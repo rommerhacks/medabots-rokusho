@@ -75,11 +75,11 @@ INCLUDE_ASM("asm/nonmatching/code_08067160", check_divisible_by_16_b);
 INCLUDE_ASM("asm/nonmatching/code_08067160", bg_layer_init_check);
 INCLUDE_ASM("asm/nonmatching/code_08067160", check_divisible_by_32_b);
 
-void dispatch_game_substate_handler_08068C3C(void)
+void race_dispatch_substate(void)
 {
     if (gUnk_03006F90 == 0)
         sub_0806B310();
-    gUnk_08485C90[gGameSubState]();
+    gRaceSubStates[gGameSubState]();
 }
 
 void sub_08068C6C(void)
@@ -172,17 +172,17 @@ void sub_0806904C(void)
     }
 }
 
-void sub_08069078(void)
+void race_update(void)
 {
     update_battle_icon_rotation();
-    battle_update_action_counters();
+    race_update_racer_anim_counters();
     update_battle_bot_entry_animations();
     update_battle_bot_death_animations();
     update_battle_bot_damage_animations();
     update_battle_bot_turn_order_tiles();
     update_sprite_animations_tick_0806AF40();
     update_sprite_animations_0806B334();
-    if (sub_0806A584()) {
+    if (race_check_all_finished()) {
         gUnk_03006F88 = 0;
         gUnk_03006F80 = 10;
         gGameSubState = 2;
@@ -390,7 +390,7 @@ INCLUDE_ASM("asm/nonmatching/code_08067160", sub_08069F80);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_0806A230);
 INCLUDE_ASM("asm/nonmatching/code_08067160", sub_0806A4C0);
 
-bool32 sub_0806A584(void)
+bool32 race_check_all_finished(void)
 {
     if (gUnk_03006F8C[0] > 2 && gUnk_03006F8C[1] > 2 && gUnk_03006F8C[2] > 2) {
         if (++gUnk_03006F88 > 0xF0)
@@ -402,7 +402,7 @@ bool32 sub_0806A584(void)
 INCLUDE_ASM("asm/nonmatching/code_08067160", update_battle_bot_turn_order_tiles);
 INCLUDE_ASM("asm/nonmatching/code_08067160", update_battle_icon_rotation);
 
-void battle_update_action_counters(void)
+void race_update_racer_anim_counters(void)
 {
     int i;
     for (i = 0; i <= 2; i++) {

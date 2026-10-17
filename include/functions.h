@@ -808,7 +808,7 @@ int sub_08067160(u8 *s); // string length, 0 when it is 1
 void sub_0806918C(void); // clears VRAM, the sprite table and the four BG scrolls
 void dma_copy_tilemap_strip(u8 n);
 void sub_08069EE4(u8 *dst, u8 *src); // copies bytes up to and including the first one > 0xF8
-bool32 sub_0806A584(void);
+bool32 race_check_all_finished(void); // TRUE 240 frames after all three gUnk_03006F8C racer states are > 2
 void sub_08068DA0(void);
 void dispatch_game_mode_handler(void);
 void sub_08068CF4(void);
@@ -816,7 +816,7 @@ void sub_08068D74(void);
 void sub_08068FD4(void);
 void sub_0806904C(void);
 void init_battle_sprite_small(void);
-void battle_update_action_counters(void);
+void race_update_racer_anim_counters(void); // per racer: gUnk_03006FE0[i] counts frames, steps the racer sprite's unk1A at the gUnk_08485CE3 delay
 bool32 scene_transition_step_080686F4(void);
 bool32 sub_08069EF8(void);
 bool32 sub_08069F80(void);
@@ -839,9 +839,9 @@ void update_battle_bot_death_animations(void);
 void update_battle_bot_damage_animations(void);
 void update_battle_bot_turn_order_tiles(void);
 bool32 sub_0806A230(void);
-void dispatch_game_substate_handler_08068C3C(void);
+void race_dispatch_substate(void); // gRaceSubStates[gGameSubState]()
 void sub_08069000(void);
-void sub_08069078(void);
+void race_update(void); // race sub-state 9: the race itself, every frame (runtime-checked)
 void sub_080690C4(void);
 void sub_08069114(void);
 void sub_08069158(void);

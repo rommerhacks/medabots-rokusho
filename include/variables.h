@@ -128,9 +128,9 @@ extern s32 gUnk_03006F80; // sub-state to resume after a transition (code_080671
 extern u8 gUnk_03006F84;
 extern u8 gUnk_03006F90;
 extern u8 gUnk_03006F94[3];
-extern const Func gUnk_08485C90[]; // race sub-states, by gGameSubState (dispatch_game_substate_handler_08068C3C)
+extern const Func gRaceSubStates[]; // race sub-states, by gGameSubState (race_dispatch_substate)
 extern u8 gUnk_03006FD0[3][3];
-extern s32 gUnk_03006FE0[3]; // per entry frame counters (battle_update_action_counters)
+extern s32 gUnk_03006FE0[3]; // per entry frame counters (race_update_racer_anim_counters)
 extern const Func gUnk_08485C48[]; // by gGameState (dispatch_game_mode_handler)
 extern const u8 gUnk_08485CC4[3][3]; // sprite slots
 extern const u8 gUnk_08485CE3[][7]; // frame delays
