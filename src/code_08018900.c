@@ -1168,27 +1168,177 @@ void sub_0801B3AC(u32 rec)
     CpuSet(&zero, &gUnk_03001800.unk118, 0x05000009);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B4C8);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B4F8);
+u32 sub_0801B4C8(u32 first)
+{
+    u32 n = 0;
+    u32 i;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[first + i].unkBA == 2)
+            n++;
+    }
+    return n;
+}
+
+u32 sub_0801B4F8(u32 first)
+{
+    u32 n = 0;
+    u32 i, j;
+
+    for (i = 0; i <= 2; i++)
+    {
+        if (gUnk_03000590[first + i].unkBA)
+        {
+            for (j = 0; j <= 3; j++)
+            {
+                if (gUnk_03000590[first + i].parts[j].unk11 == 0)
+                    n++;
+            }
+        }
+    }
+    return n;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B53C);
 INCLUDE_ASM("asm/nonmatching/code_08018900", reset_bot_status_and_init_palette_transfers);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B67C);
-INCLUDE_ASM("asm/nonmatching/code_08018900", select_next_bot_and_action);
-INCLUDE_ASM("asm/nonmatching/code_08018900", find_next_active_bot);
+
+void sub_0801B67C(u32 rec)
+{
+    if (rec <= 2)
+        gUnk_03001800.unkF8 = 0;
+    else
+        gUnk_03001800.unkF8 = 3;
+}
+
+void select_next_bot_and_action(u32 rec)
+{
+    if (gUnk_03000590[rec].unkC9 == 0x2C)
+    {
+        if (gUnk_03000590[rec].parts[gUnk_03000590[rec].unkDD - 1].data[2] <= 3
+         || gUnk_03000590[rec].parts[gUnk_03000590[rec].unkDD - 1].data[1] == 0x34)
+        {
+            gUnk_03000590[rec].unkE0 = find_next_active_bot(rec) + 1;
+            gUnk_03000590[rec].unkE1 = sub_080330E8(gUnk_03000590[rec].unkE0 - 1) + 1;
+        }
+    }
+}
+
+u32 find_next_active_bot(u32 rec)
+{
+    u32 k = rng_next_080424B8() & 0x1F;
+    u32 i;
+    u32 r;
+
+    for (i = 0; i <= 5; i++)
+    {
+        r = gUnk_083AD3D3[k];
+        if (gUnk_03000440.unk89 == 1 && gUnk_03000B90)
+            r = gUnk_083AD3F3[r];
+        if (gUnk_03000590[r].unk40 && rec != r)
+            return r;
+        k = (k + 1) & 0x1F;
+    }
+    return 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", determine_battle_part_action_priority);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B894);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801B9C4);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801BACC);
-INCLUDE_ASM("asm/nonmatching/code_08018900", copy_battle_entity_positions);
-INCLUDE_ASM("asm/nonmatching/code_08018900", init_battle_bot_sprites);
-INCLUDE_ASM("asm/nonmatching/code_08018900", init_battle_sprite_entry_0801BC04);
-INCLUDE_ASM("asm/nonmatching/code_08018900", decompress_indexed_graphics_to_ewram);
-INCLUDE_ASM("asm/nonmatching/code_08018900", decompress_fixed_graphics_to_ewram);
-INCLUDE_ASM("asm/nonmatching/code_08018900", load_battle_entity_palette);
-INCLUDE_ASM("asm/nonmatching/code_08018900", init_game_state_entry);
+
+void copy_battle_entity_positions(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 5; i++)
+    {
+        gUnk_03001800.unk13C[i].x = gUnk_03002C30[0x5D + i * 4].unk2;
+        gUnk_03001800.unk13C[i].y = gUnk_03002C30[0x5D + i * 4].unk4 - 4;
+    }
+}
+
+void init_battle_bot_sprites(void)
+{
+    u32 i;
+
+    for (i = 0; i <= 5; i++)
+    {
+        if (gUnk_03000590[i].unk40)
+            init_battle_sprite_entry_0801BC04(i);
+        else
+            clear_sprite_table_mask(0x72 + i, 1);
+    }
+}
+
+void init_battle_sprite_entry_0801BC04(u32 rec)
+{
+    gUnk_03002C30[rec + 0x72].unk0 = ((gUnk_03001800.unk39[3] + 2) << 10) | 0xC004;
+    gUnk_03002C30[rec + 0x72].unk1C = 0;
+    gUnk_03002C30[rec + 0x72].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2;
+    gUnk_03002C30[rec + 0x72].unk4 = gUnk_03002C30[rec * 4 + 0x5D].unk4 + 8;
+    gUnk_03002C30[rec + 0x72].unkA = 5;
+    gUnk_03002C30[rec + 0x72].unkB = 1;
+    gUnk_03002C30[rec + 0x72].unk6 = 0xF00;
+}
+
+void decompress_indexed_graphics_to_ewram(u32 list)
+{
+    const struct GfxListEntry *e = gUnk_083CE480[list];
+    u8 *dst = (u8 *)0x02000000;
+    u32 i;
+
+    for (i = 0; e[i].size != 0; i++)
+    {
+        sub_08044B28(gUnk_083B2584[e[i].index * 2], dst);
+        dst += e[i].size * 32;
+    }
+}
+
+void decompress_fixed_graphics_to_ewram(void)
+{
+    const struct GfxListEntry *e = gUnk_083CE480[0x3C];
+    u8 *dst = (u8 *)0x02016000;
+    u32 i;
+
+    for (i = 0; e[i].size != 0; i++)
+    {
+        sub_08044B28(gUnk_083B2584[e[i].index * 2], dst);
+        dst += e[i].size * 32;
+    }
+}
+
+void load_battle_entity_palette(u32 list, u32 entry, u32 slot)
+{
+    const struct GfxListEntry *l = gUnk_083CE480[list];
+
+    CpuFastSet(gUnk_083B2584[l[entry].index * 2 + 1], (void *)(0x05000000 + slot * 32), 8);
+}
+
+void init_game_state_entry(const u16 *pos, u8 arg, u32 slot)
+{
+    gUnk_03000440.unk64[slot].unk0 = 0;
+    gUnk_03000440.unk64[slot].unk1 = 2;
+    gUnk_03000440.unk64[slot].unk2 = 0;
+    gUnk_03000440.unk64[slot].unk4 = pos[0];
+    gUnk_03000440.unk64[slot].unk6 = pos[1];
+    gUnk_03000440.unk64[slot].unk3 = arg;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", process_animation_script);
 INCLUDE_ASM("asm/nonmatching/code_08018900", increment_medal_skill_level);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sync_medal_stats_from_battle_bot);
+
+void sync_medal_stats_from_battle_bot(u32 rec)
+{
+    u32 slot = find_medal_slot_by_id(gUnk_03000590[rec].medal.unk1) - 1;
+    u32 i;
+
+    for (i = 0; i <= 7; i++)
+    {
+        gUnk_03000BE0[slot].unk20[i] = gUnk_03000590[rec].medal.unk20[i];
+        gUnk_03000BE0[slot].unk28[i] = gUnk_03000590[rec].medal.unk28[i];
+    }
+}
 
 void sub_0801BF64(u16 *counter, u16 max)
 {
@@ -1196,7 +1346,16 @@ void sub_0801BF64(u16 *counter, u16 max)
         (*counter)++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801BF78);
+void sub_0801BF78(const u16 *pos, u8 arg, u32 slot)
+{
+    gUnk_03000440.unk64[slot].unk0 = 0;
+    gUnk_03000440.unk64[slot].unk1 = 2;
+    gUnk_03000440.unk64[slot].unk2 = 0;
+    gUnk_03000440.unk64[slot].unk4 = pos[0];
+    gUnk_03000440.unk64[slot].unk6 = pos[1];
+    gUnk_03000440.unk64[slot].unk3 = arg;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801BFB4);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C0BC);
 INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801C0F8);

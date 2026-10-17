@@ -131,6 +131,24 @@ struct Unk_03002B70
     u8 unk4[10];
 };
 
+// 8-byte records at gUnk_03000440.unk64 (init_game_state_entry).
+struct Unk_03000440_64
+{
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u16 unk4;
+    u16 unk6;
+};
+
+// Graphics list entry (gUnk_083CE480 lists, end at size 0): size in 32-byte tiles, gUnk_083B2584 index.
+struct GfxListEntry
+{
+    u16 size;
+    u16 index;
+};
+
 struct Unk_03000440
 {
     u8 filler0[0x4];
@@ -181,7 +199,8 @@ struct Unk_03000440
     u8 filler5B;
     u16 unk5C; // timer
     u8 unk5E; // Medabot detail: which Medabot is shown, L/R toggle (runtime-checked)
-    u8 filler5F[0x25];
+    u8 filler5F[0x5];
+    struct Unk_03000440_64 unk64[4]; // set up by init_game_state_entry / sub_0801BF78
     u8 unk84; // field menu: animation frame counter
     u8 unk85;
     u16 unk86; // link exchange frame counter
@@ -336,6 +355,13 @@ struct EncounterBot
     u8 fillerB;
 };
 
+// BG scroll offsets: gBg0Scroll..gBg3Scroll, added to gUnk_03002C2C and written to BGxHOFS/VOFS by vblank_body.
+struct Vec16
+{
+    s16 x;
+    s16 y;
+};
+
 // Battle Medapart record (0x18 bytes, 4 per gUnk_03000590 record from +0x48; battle_bots_load_parts).
 struct BattlePart
 {
@@ -398,11 +424,15 @@ struct Unk_03001800
     u8 unkA1[5]; // cleared by sub_0801AED4
     u8 fillerA6;
     u8 unkA7; // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to (sub_0801B3AC)
-    u8 fillerA8[0x70];
+    u8 fillerA8[0x50];
+    u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
+    u8 fillerF9[0x1F];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part
     u8 filler119[0x3];
     struct BattlePart unk11C; // saved part (data and id), restored by sub_0801B3AC
-    u8 filler134[0x34];
+    u8 filler134[0x8];
+    struct Vec16 unk13C[6]; // per record: x, y - 4 of its battle sprite (copy_battle_entity_positions)
+    u8 filler154[0x14];
     u8 unk168; // won Medapart: kind (0 head, 1 right arm, 2 left arm, 3 legs)
     u8 unk169; // won Medapart: id
     u8 unk16A; // won Medapart: 1 = not owned before
@@ -665,13 +695,6 @@ struct Unk_03006D38
     u8 unk3;
     u8 filler4[0x2];
     u8 unk6;
-};
-
-// BG scroll offsets: gBg0Scroll..gBg3Scroll, added to gUnk_03002C2C and written to BGxHOFS/VOFS by vblank_body.
-struct Vec16
-{
-    s16 x;
-    s16 y;
 };
 
 struct Unk_03005350

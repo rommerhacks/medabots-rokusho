@@ -4,6 +4,7 @@
 // Prototypes for game functions (decompiled or still in asm), in ROM order.
 
 u32 lz_decompress_dispatch(const u8 *src, void *dst);
+void sub_08044B28(const u8 *src, void *dst);
 void set_tilemap_and_decompress_bg(u32 x, u32 y, const u8 *src, u32 bgcnt, u16 base);
 void copy_obj_palette_to_buffer(void);
 void palette_blend_to_color_080013A8(u16 color, u32 amount);
@@ -698,6 +699,9 @@ void load_bot_part_sprite(u32 rec);
 u32 sub_08015924(u32 rec);
 void setup_battle_bot_sprites_08015960(u32 rec, u32 x, u32 y);
 void init_battle_bot_sprites(void);
+u32 find_next_active_bot(u32 rec);
+u32 sub_080330E8(u32 idx);
+void init_battle_sprite_entry_0801BC04(u32 rec);
 void apply_battle_blend_effect_b(void);
 void decompress_to_ewram_27000(const u8 *src);
 void sub_08044100(void);
