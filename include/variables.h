@@ -172,6 +172,8 @@ extern bool32 (*const gUnk_08485C7C[])(void); // scene steps (execute_scene_step
 extern bool32 (*const gUnk_08485C68[])(void); // transition steps (scene_transition_step_080686F4)
 extern const u16 gUnk_0807C320[]; // title OBJ palettes (0x60 colours), then 0x1C bytes copied to gUnk_03001800_s + 0xC (load_scene_graphics)
 extern const Func gUnk_08485EC4[]; // game mode 3 state 2 (title screen) sub-states, by gGameSubState (sub_0806D3F4)
+extern s32 (*const gUnk_08485EF4[])(u8); // title sprite effects, by gUnk_03002C30[].unk20 - 1: 0 = done, 0xFF = hide (update_sprite_special_effects)
+extern const u8 gUnk_08485F14[]; // title sprite effects: frame period, by unk20 - 1
 extern const Func gUnk_08485F1C[]; // game mode 3 state 3 (story intro) sub-states, by gGameSubState (dispatch_game_substate_handler_0806DFA4)
 extern const Func gBootLogosSubStates[]; // game mode 3 state 0 (boot logos) sub-states, by gGameSubState (boot_logos_update)
 extern const Func gIntroSubStates[]; // game mode 3 state 1 (the animated intro after the logos) sub-states, by gGameSubState (intro_update)
