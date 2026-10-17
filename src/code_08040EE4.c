@@ -710,7 +710,23 @@ void apply_battle_blend_effect_b(void)
         set_blend_effect_mode(0, 0, 0);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", advance_battle_animation_frame);
+void advance_battle_animation_frame(u32 field)
+{
+    if (++gUnk_03001800.unk7D > 2)
+    {
+        gUnk_03001800.unk7D = 0;
+        gUnk_03001800.unk7C = (gUnk_03001800.unk7C + 1) & 0x7F;
+        memcpy_bytes_08041D04(&gUnk_083C40B8[field], &gUnk_03001800.unk7E, 1);
+        memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128 + gUnk_03001800.unk7C], &gUnk_03001800.unk7F, 1);
+        if (gUnk_03001800.unk7F == 0xFF)
+        {
+            gUnk_03001800.unk7C = 0;
+            memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128], &gUnk_03001800.unk7F, 1);
+        }
+        CpuSet((void *)(0x02027000 + gUnk_03001800.unk7E * gUnk_03001800.unk7F * 32), (void *)(VRAM + 0x8020),
+            (gUnk_03001800.unk7E * 8) | 0x04000000);
+    }
+}
 
 void sub_08044094(void)
 {
@@ -799,7 +815,32 @@ void race_enter_team_select(void)
 
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_sprite_animation_position);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", calculate_direction_index);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_scene_buffers_080445F4);
+
+void init_scene_buffers_080445F4(void)
+{
+    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    u8 *b;
+    u8 *c;
+    u32 fill;
+    u32 fill2;
+
+    sub_0803F624((u8 *)obj, 0xD0, 0);
+    b = (u8 *)0x020260D0;
+    sub_0803F624(b, 0x820, 0);
+    c = (u8 *)0x020268F0;
+    sub_0803F624(c, 0x60, 0);
+    gUnk_03000430 = 2;
+    gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+    fill = 0;
+    CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+    gUnk_03005308 = c;
+    fill2 = 0x200;
+    CpuFastSet(&fill2, gUnk_03002414->unkB84, 0x01000100);
+    gUnk_03002414->unk1094 = 0;
+    gUnk_03002414->unk1095 = 0;
+    sub_08047414(obj, (u8 *)gUnk_03002414, (u32)gUnk_083D1BF8, (u32)b);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", setup_scene_with_bg_and_sprites);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_scene_with_bg_and_palette);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", setup_sprite_animation_entry);
@@ -832,8 +873,70 @@ void sub_08044B58(void)
     gMedapartInventory[3 * 240 + 0x2A * 2 + 1] = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_battle_scene);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_game_mode);
+void init_battle_scene(u32 mode, u32 id)
+{
+    sub_08043CA8();
+    clear_battle_sprite_slot(0, 0x80);
+    gUnk_03000440.unk96 = 0;
+    gUnk_03000430 = 0;
+    sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
+    gUnk_03000440.unk3C = 3;
+    gUnk_03000440.unk3D = id;
+    switch (mode)
+    {
+    case 0:
+        gUnk_03000440.unk3E = 0;
+        break;
+    case 1:
+        gUnk_03000440.unk3E = mode;
+        break;
+    case 2:
+        gUnk_03000440.unk3E = mode;
+        break;
+    case 3:
+        gUnk_03000440.unk3E = mode;
+        break;
+    }
+    gGameMode = 0;
+    gGameState = 5;
+    gGameSubState = 0x10;
+}
+
+void init_game_mode(u32 mode)
+{
+    sub_08043CA8();
+    sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
+    sub_0803F624(&gUnk_03000440.unk3C + 0x14, 0x14, 0);
+    gUnk_03000440.unk89 = 1;
+    gUnk_03000440.unk8D = 0;
+    switch (mode)
+    {
+    case 0:
+        gUnk_03000440.unk3C = 4;
+        gGameMode = 0;
+        gGameState = 4;
+        gGameSubState = 0;
+        break;
+    case 1:
+        gUnk_03000440.unk3C = 4;
+        gGameMode = 0;
+        gGameState = 5;
+        gGameSubState = 0;
+        break;
+    case 2:
+        gUnk_03000440.unk138 = 0;
+        gGameMode = 0;
+        gGameState = 10;
+        gGameSubState = 0;
+        break;
+    case 3:
+        gUnk_03000440.unk138 = 1;
+        gGameMode = 0;
+        gGameState = 10;
+        gGameSubState = 0;
+        break;
+    }
+}
 
 void sub_08044CDC(u32 a)
 {
@@ -846,6 +949,57 @@ void sub_08044CDC(u32 a)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", dma3_copy_or_decompress);
+u32 dma3_copy_or_decompress(const u32 *src, void *dst)
+{
+    u32 hdr = *src;
+    u32 size = hdr >> 8;
+
+    if (((hdr << 24) >> 28) == 1)
+    {
+        LZ77UnCompWram(src, dst);
+    }
+    else
+    {
+        vu32 *dma;
+
+        CpuCopy16(src, dst, size / 2);
+        dma = (vu32 *)REG_ADDR_DMA3;
+        dma[0] = (u32)src + size / 2;
+        dma[1] = (u32)dst + size / 2;
+        dma[2] = 0x80000000 | (size / 2 / 2);
+        dma[2];
+    }
+    return size;
+}
+
+u32 sub_08044D64(u32 *dst, const u32 *src, u32 n)
+{
+    while (n > 3)
+    {
+        *dst++ = *src++;
+        n -= 4;
+    }
+    return n;
+}
+
+u32 sub_08044D78(u16 *dst, const u16 *src, u32 n)
+{
+    while (n > 1)
+    {
+        *dst++ = *src++;
+        n -= 2;
+    }
+    return n;
+}
+
+void sub_08044D90(u8 *dst, const u8 *src, u32 n)
+{
+    while (n != 0)
+    {
+        *dst++ = *src++;
+        n--;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", set_oam_sprite_shape_size);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08044E64);

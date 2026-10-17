@@ -771,3 +771,5 @@ extern const u8 gUnk_084878EC[]; // compressed tiles (decompress_bg_tilemap_to_v
 extern const u8 gUnk_0848796C[]; // compressed tiles
 extern const u8 gUnk_084886D0[]; // compressed tilemap
 extern const u8 gUnk_08488718[]; // compressed tilemap
+extern const u8 gUnk_083C40B8[]; // per battlefield: animation tile count / 8 (advance_battle_animation_frame)
+extern const u8 gUnk_083C40C3[]; // [battlefield][0x80]: animation tile block per frame, 0xFF = loop

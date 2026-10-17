@@ -490,7 +490,10 @@ struct Unk_03001800
     u8 unk64[4]; // filled by get_bot_part_effective_values (sub_08013B8C); AI part order from gUnk_083AD2F0 (battle_ai_roll_part_order)
     u8 filler68[0xC];
     u8 unk74[8]; // copied from gUnk_083C3B5C[unk38] (load_battle_script_entry_b); [3] nonzero: [4] << 8 | [5] -> REG_BLDALPHA
-    u8 filler7C[0x4];
+    u8 unk7C; // battlefield animation frame, 0-0x7F (advance_battle_animation_frame)
+    u8 unk7D; // battlefield animation tick, 0-2
+    u8 unk7E; // battlefield animation tile count / 8 (gUnk_083C40B8)
+    u8 unk7F; // battlefield animation tile block (gUnk_083C40C3), 0xFF ends the loop
     u8 unk80; // index of a 256-byte record in gUnk_03000590 (sub_0800B498 copies Medal rotation data there)
     u8 unk81; // Robattle: selected command ring slot 0-5 (name gUnk_083C466C[unk81], runtime-checked)
     u8 unk82;
