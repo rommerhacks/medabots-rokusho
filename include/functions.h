@@ -312,6 +312,14 @@ void calc_battle_stat_ratio(u32 rec, u32 part); // unkEC = (unkE8 / 4 + part dat
 void sub_08038BC0(void);
 void sub_08038D30(void);
 void battle_begin_action_phase(void);
+u32 battle_calculate_damage_modifier(void);
+u32 check_bot_ability_type_strike(u32 rec, u32 part, u32 target);
+u32 check_bot_ability_type_shoot(u32 rec, u32 part, u32 target);
+u32 battle_check_damage_threshold(s16 v);
+u32 battle_calculate_turn_speed(void);
+void battle_process_speed_and_action(void);
+u32 sub_08039134(u32 rec); // number of parts with armor left
+u32 battle_find_strongest_part(u32 rec); // part 1-3 (+ 1) with the most armor left
 void sub_08039188(void);
 void sub_080391C4(void);
 void sub_080392D8(void);

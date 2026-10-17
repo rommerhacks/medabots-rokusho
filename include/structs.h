@@ -506,7 +506,9 @@ struct Unk_03001800
     s16 unkEA; // unkE8 / 4 (script command sub_08033D10)
     s16 unkEC; // amount for battle_calc_damage_split (battle_resolve_action_target); counted down by sub_0801EC3C
     u16 unkEE; // + Medal level + matching parts power + rng & 7 (accumulate_battle_speed_value)
-    u8 fillerF0[0x6];
+    u8 fillerF0[0x2];
+    s16 unkF2; // copy of unkE8 when the action phase starts (sub_08038D30, battle_check_damage_threshold)
+    u8 fillerF4[0x2];
     u8 unkF6; // bit 0 checked by sub_08020078
     u8 fillerF7[0x1];
     u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
