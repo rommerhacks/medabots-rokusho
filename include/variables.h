@@ -433,6 +433,8 @@ extern const u8 gUnk_08796598[]; // BG3 tilemap (LZ77, sub_0805FBA8)
 extern const u32 gUnk_0879579C[]; // BG tiles (dma3_copy_or_decompress, sub_0805FBA8)
 extern const u16 gUnk_0879559C[]; // BG palette (sub_0805FBA8)
 extern const u16 gUnk_080AF900[]; // OBJ palettes 0-1 (sub_0805FBA8)
+extern const u16 gUnk_080AF942[]; // sprite 1 animation frames, by unk1A / 6 (sub_0805FE90)
+extern const s8 gUnk_080AF95A[]; // sprite 0 y offsets, 13 steps (sub_0805FE90)
 extern const u16 gUnk_0878E3F4[]; // title menu BG palette (0x100 colors)
 
 #endif // GUARD_VARIABLES_H

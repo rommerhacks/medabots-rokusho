@@ -315,7 +315,89 @@ void sub_0805FD60(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_0805FDB4);
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_0805FE90);
+
+void sub_0805FE90(void)
+{
+    u32 done = 0;
+    struct Unk_03006F74 *p = gUnk_03006F74;
+    u16 t;
+    u16 y;
+
+    if (p->unk3A <= 7)
+    {
+        if (++p->unk3A == 4)
+        {
+            REG_DISPCNT &= 0xFEFF;
+            REG_DISPCNT |= 0x200;
+            play_sound_effect(0x17);
+        }
+        if (gUnk_03006F74->unk3A <= 3)
+            gUnk_03002C30[1].unk4--;
+        else
+            gUnk_03002C30[1].unk4++;
+    }
+    else
+    {
+        if ((u16)p->unk3A <= 0x31)
+            p->unk3A++;
+        t = gUnk_03006F74->unk3A - 9;
+        if (t == 0)
+            gUnk_03002C30[0].unk0 |= 0x4000;
+        if (t <= 0x13)
+        {
+            s32 q = (t << 6) / 20;
+
+            y = q - 0x20;
+            gUnk_03002C30[0].unk9 = gUnk_03002C30[0].unk8 = -0x80 - q;
+        }
+        else
+        {
+            t -= 0x14;
+            if (t == 0)
+            {
+                gUnk_03002C30[0].unk8 = 0x40;
+                gUnk_03002C30[0].unk9 = 0x40;
+            }
+            if (t <= 0xC)
+                y = gUnk_080AF95A[t] + 0x20;
+            else
+            {
+                y = 0x20;
+                t -= 0xD;
+                if (t <= 7)
+                    clear_or_fill_bg2_tilemap(t);
+                else
+                    done = 1;
+            }
+        }
+        gUnk_03002C30[0].unk4 = y;
+    }
+    if (++gUnk_03002C30[1].unk1A > 0x47)
+        gUnk_03002C30[1].unk1A = 0;
+    gUnk_03002C30[1].unk6 = gUnk_080AF942[gUnk_03002C30[1].unk1A / 6];
+    if ((KEYS_LO(gNewKeys) & 1) && done)
+    {
+        gUnk_03002C30[1].unk0 = 0xCA20;
+        gUnk_03006F74->unk3A = 0;
+        gGameSubState += 2;
+    }
+}
+
+void sub_08060018(void)
+{
+    if (gUnk_03006F74->unk0 != 32)
+    {
+        gUnk_03006F74->unk0++;
+        REG_BLDY = gUnk_03006F74->unk0 >> 1;
+    }
+    else
+    {
+        REG_DISPCNT &= 0xFDFF;
+        gGameMode = 3;
+        gGameState = 0;
+        gGameSubState = 0;
+    }
+}
 
 void sub_0806006C(void)
 {
