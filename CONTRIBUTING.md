@@ -439,3 +439,26 @@
   computes the shift first (sub_0806AFA0, update_sprite_animations_tick_0806AF40).
 * `x = c ? 1 : 2;` into a struct field reached through a pointer local loads the pointer before the
   test; an `if` with a temporary loads it after (sub_08069158).
+* A local array initializer that the original clears with `bl memset` (`custom_memset`) and then
+  fills element by element: write **every** element, zeros included
+  (`u16 pal[16] = {0, 0x6FFF, ..., 0, 0, 0}`). agbcc only takes the clear-then-store path when 3/4
+  of the *written* elements are zero; with the zeros left implicit it copies the whole array from
+  .rodata with memcpy instead. `memset` is a second label on `custom_memset` in `asm/lib/libgcc.s`
+  (init_scene_with_palette_and_song_25).
+* `ldrh; ands rX, #0x1f` done in place (no second register for the masked value) and a later
+  `strb rX` of the known-zero result: `(u16)s->unk3A % 32 == 0` instead of `(s->unk3A & 0x1F) == 0`
+  (sub_080677E0).
+* A ROM table that the original reloads after unrelated stores (outgoing stack arguments, struct
+  fields) is declared without `const`: agbcc keeps loads from `const` arrays live across stores and
+  CSEs them (gUnk_08485CC4, divide_by_3 / update_battle_bot_damage_animations).
+* A `u16`/`u32` zero on the stack whose address is taken *before* the zero is materialized
+  (`add r1, sp, #4; movs r0, #0; strh r0, [r1]`): declare it `vu16` / `vu32`
+  (init_battle_bg_layer1, load_bg_tilemaps_and_palette).
+* `s->unk84++` through a struct pointer vs `(*n)++` through a `u8 *` local change where a following
+  zero constant is materialized (sub_080676DC).
+* Two values read from the same struct in one function where the original loads the struct base
+  first, then the index (`ldr r2, =base; ldr r0, =&idx; ldrb r1, [r0]`): `struct T *b = gBase;
+  struct T *m = &b[gIdx];` (sub_08068104).
+* Unsolved: `x - (y - k)` computed as `subs r1, #k; subs r1, rX, r1` in the original; agbcc folds
+  every spelling tried into `(x + k) - y` (`-((y - k) - x)`, casts to `u32`, `+ -k`)
+  (divide_by_3, sub_08069A68, update_battle_bot_damage_animations).
