@@ -2098,12 +2098,12 @@ void sub_08014314(void)
         gGameSubState = 0x44;
         return;
     }
-    battle_calc_bot_count_minus_one_mod3();
+    battle_queue_take_head();
     rec = gUnk_03000590;
     rec += gUnk_03001800.unk87;
     if (rec->unk40 == 0)
     {
-        sub_0801A678();
+        battle_queue_pop();
     }
     else if ((flag = rec->unkBD & 4))
     {
@@ -2122,7 +2122,7 @@ void sub_080143A0(void)
     update_all_battle_status_sprites();
     gUnk_03000590[gUnk_03001800.unk87].unkBD ^= 4;
     iterate_bots_setup_battle_sprites();
-    sub_0801A678();
+    battle_queue_pop();
     battle_bot_advance_rotation(gUnk_03001800.unk87);
     if (sub_0801A6B0())
     {
@@ -2143,7 +2143,7 @@ void sub_08014404(void)
     setup_bot_battle_sprites_08015A00(gUnk_03001800.unk87,
         gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2,
         gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4);
-    sub_0801A678();
+    battle_queue_pop();
     battle_process_all_bot_actions(gUnk_03001800.unk87);
     if (gUnk_03001800.unk87 > 2)
     {

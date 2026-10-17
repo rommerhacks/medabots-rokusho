@@ -373,7 +373,10 @@ struct Unk_03001800
     u8 unk85;
     u8 unk86;
     u8 unk87; // Robattle: gUnk_03000590 record of the acting Medabot
-    u8 filler88[0x4];
+    u8 unk88;
+    u8 unk89; // Robattle: side of the acting Medabot (unk87 / 3: 0 team, 1 opponents)
+    u8 unk8A; // Robattle: the other side (unk89 ^ 1)
+    u8 unk8B;
     u8 unk8C[3];
     u8 unk8F[3][4]; // per team member: gUnk_030017A0 bytes 3-6
     u8 filler9B[0x6];

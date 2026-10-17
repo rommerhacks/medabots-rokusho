@@ -383,3 +383,4 @@ extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 2
 extern u8 gUnk_03000B94; // index into gUnk_083AD3B0 (battle music)
 extern const u8 gUnk_083AD3B0[]; // battle song ids (select_battle_music)
 extern const u8 gUnk_083C4C10[]; // per leg type (skill id - 100), 11 bytes: one per battlefield (gUnk_03001800.unk38); added to unkBB (sub_080191E4)
+extern const s8 gUnk_083AD3B3[]; // 32 y steps of the number pop-up over a Medabot (battle_number_popup_update)
