@@ -373,8 +373,8 @@ void setup_battle_sprite_group(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, 
 u32 sub_0804361C(vu32 medal, vu32 prev); // previous (prev != 0) or next owned Medal slot (gUnk_03000BE0 bit 7 set, bit 6 clear), 30 if none
 u32 find_next_available_medapart_slot(u32 part, u32 kind, u32 forward, u32 d);
 void init_scene_buffers_080445F4(void);
-void setup_scene_with_bg_and_sprites(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9, u32 a10, u32 a11);
-void init_scene_with_bg_and_palette(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9, u32 a10, u32 a11, u32 a12);
+void setup_scene_with_bg_and_sprites(); // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i, u8 j): callers were compiled without a prototype
+void init_scene_with_bg_and_palette(); // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i, u8 j, u8 base): callers were compiled without a prototype
 u32 advance_text_display(u32 a0, u32 a1, u32 a2);
 u32 medabot_detail_is_full_set(void); // 1 if gUnk_03000440.unk98-9B (the four shown Medaparts) are all the same set
 u32 sub_080440B4(void);

@@ -942,8 +942,95 @@ void init_scene_buffers_080445F4(void)
     sub_08047414(obj, (u8 *)gUnk_03002414, (u32)gUnk_083D1BF8, (u32)b);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", setup_scene_with_bg_and_sprites);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", init_scene_with_bg_and_palette);
+// K&R definitions: the callers were compiled without a prototype (promoted int arguments), and the
+// callee narrows its parameters itself. A prototype with u8 / u16 parameters changes the callers.
+void setup_scene_with_bg_and_sprites(slot, head, rarm, larm, legs, y, x, f, g, h, i, j)
+    u32 slot;
+    u8 head, rarm, larm, legs;
+    u16 y, x;
+    u32 f;
+    u8 g, h, i, j;
+{
+    u32 flags;
+    u32 fill;
+
+    switch (f)
+    {
+    case 0:
+        f = 100;
+        break;
+    case 1:
+        f = 200;
+        break;
+    case 2:
+        f = 300;
+        break;
+    case 3:
+        f = 400;
+        break;
+    }
+    if (h == 0)
+        h = 1;
+    else
+        h = 2;
+    flags = 0;
+    if (i == 1)
+        flags = 4;
+    ((struct Unk_08047414 *)0x02026000)->unk8 = 0x020260D0 + slot * 0x410;
+    setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000, head, rarm, larm, legs,
+        (s16)x, (s16)y, f, g, h | flags, j);
+    if (i == 2)
+    {
+        fill = 0x200;
+        CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+        gUnk_03002414->unk1094 = 0;
+        gUnk_03002414->unk1095 = 0;
+    }
+}
+
+void init_scene_with_bg_and_palette(slot, head, rarm, larm, legs, y, x, f, g, h, i, j, base)
+    u32 slot;
+    u8 head, rarm, larm, legs;
+    u16 y, x;
+    u32 f;
+    u8 g, h, i, j, base;
+{
+    u32 flags;
+    u32 fill;
+
+    switch (f)
+    {
+    case 0:
+        f = base + 100;
+        break;
+    case 1:
+        f = base + 200;
+        break;
+    case 2:
+        f = base + 300;
+        break;
+    case 3:
+        f = base + 400;
+        break;
+    }
+    if (h == 0)
+        h = 1;
+    else
+        h = 2;
+    flags = 0;
+    if (i == 1)
+        flags = 4;
+    ((struct Unk_08047414 *)0x02026000)->unk8 = 0x020260D0 + slot * 0x410;
+    setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000, head, rarm, larm, legs,
+        (s16)x, (s16)y, f, g, h | flags, j);
+    if (i == 2)
+    {
+        fill = 0x200;
+        CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+        gUnk_03002414->unk1094 = 0;
+        gUnk_03002414->unk1095 = 0;
+    }
+}
 
 void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i)
 {
