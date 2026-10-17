@@ -1083,7 +1083,7 @@ struct Unk_03006F74
     u16 unk78; // link: the other player's keys last frame (sub_0805B9EC)
     s8 unk7A;
     u8 filler7B[0x2];
-    u8 unk7D; // length of the text at *unkAC (scene_text_scroll_step)
+    s8 unk7D; // length of the text at *unkAC (scene_text_scroll_step)
     u8 filler7E[0x2E];
     const u8 *const *unkAC; // scene text (scene_text_scroll_step)
     u8 fillerB0[0x1C0];
@@ -1135,9 +1135,10 @@ struct Unk_08486160
 {
     u8 unk0; // nonzero: fixed field gUnk_03006F84 = unk1 (else random, get_entity_speed_value)
     u8 unk1;
-    u8 filler2[2];
+    s16 unk2; // encounter setup (gUnk_083C1A00) of the second racer (load_battle_sprite_graphics)
     u8 unk4; // decompress_indexed_asset set for the BG at 0x06004800
-    u8 filler5[3];
+    u8 filler5[1];
+    s16 unk6; // encounter setup of the third racer
     u8 unk8; // ... for the BG at 0x06005000
     u8 filler9[3];
 };

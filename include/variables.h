@@ -135,10 +135,20 @@ extern const u8 gUnk_087B2CCC[]; // race BG tiles (LZ77, load_bg_tilemaps_and_pa
 extern const u8 gUnk_087B3710[]; // race BG2 tilemap (LZ77)
 extern const u8 gUnk_087B384C[]; // race BG3 tilemap (LZ77)
 extern const u16 gUnk_087B3AF0[]; // race BG palette
+extern const u8 gUnk_087AD4E4[]; // race OBJ tiles (LZ77, load_battle_sprite_graphics)
+extern const u8 gUnk_087C4EBC[]; // race field BG tiles (LZ77, init_battle_field_screen)
+extern const u8 gUnk_087C4F48[];
+extern const u8 gUnk_087C4FDC[];
+extern const u8 gUnk_087C51C0[];
+extern const u16 gUnk_087C5248[]; // race field BG palettes
+extern const u16 gUnk_087C5268[];
+extern const u16 gUnk_087C5288[];
+extern const u16 gUnk_087C52A8[];
 extern const u8 gUnk_087C52C8[]; // race BG1 tiles (LZ77, init_battle_bg_layer1)
 extern const u8 gUnk_087C5518[]; // race BG1 tiles, second part (LZ77)
 extern const u16 gUnk_087C55D0[]; // race BG1 palettes
 extern const u16 gUnk_087C55F0[];
+extern const u8 gUnk_0848417C[]; // scene text line counts by gUnk_03006F74->unk5 (sub_080677E0)
 extern u8 gUnk_03006FEC[3]; // per racer (set to 0x20 at the start, sub_0806A4C0)
 extern u8 gUnk_03006FF0[3]; // per racer (cleared at the start, sub_0806A4C0)
 extern s32 gUnk_03006FF8[2];
@@ -165,6 +175,7 @@ extern const u16 gUnk_0807C260[]; // OBJ palettes (inside the 0x080750D8 data bl
 extern const u16 gUnk_0807C280[];
 extern const u16 gUnk_0807C2A0[];
 extern const u16 gUnk_0807C2C0[];
+extern const u16 gUnk_0807C300[];
 extern u8 gUnk_03000584; // 0 player name, 1 / 2 Medal name gUnk_03000BE0[gUnk_030017EC] (sub_0805EE94)
 extern u8 gUnk_03003870[];
 extern u8 gUnk_03005664[];
