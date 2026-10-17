@@ -1155,12 +1155,16 @@ void *memcpy_optimized(void *dst, const void *src, u32 n); // library
 u16 ReadEepromDword(u16 address, u16 *data); // EEPROM library: reads 8 bytes
 u16 ProgramEepromDword(u16 address, u16 *data); // EEPROM library: writes 8 bytes
 u16 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 bytes and verifies
+void init_blend_effect(void *state, u8 a, u8 b, s8 c, u16 mode);
+u32 blend_fade_step_08065598(void *state);
+void sub_08059D04(void); // clears unk0 of the 128 gUnk_03002C30 sprites
 // code_0805AB40
 void decompress_and_write_tilemap(const void *src, u32 bgcnt); // LZ77 tilemap with a w, h header (u32 each, 16-byte header) into the BG screen block of bgcnt
 void sub_0805B3E4(s32 x, s32 y, s32 n); // clears n tilemap entries at (x, y) of the BG map at 0x0600B000
 void sub_0805B470(struct Unk_03002C30 *sprite);
 s16 sub_0805BB10(u16 step);
 void sub_0805BC6C(void); // sets palette 8 on three 16-tile BG0 rows (dead code, carved from sub_0805BBF8)
+void sub_0805C820(void); // fades REG_BLDY up to 16, then game state 9 (carved from sub_0805C7E8)
 void sub_0805CA28(u32 a);
 void sub_0805D57C(u16 a);
 void attempt_save_and_transition(void); // save screen state 7: up to 4 tries of save_dispatch(0), then state 8 (ok) or 12 (failed)

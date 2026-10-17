@@ -88,17 +88,102 @@ void sub_0805BC6C(void)
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BCC0);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BDC8);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BEA0);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BF88);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BFDC);
+
+void sub_0805BF88(void)
+{
+    gUnk_08483B78[gGameSubState]();
+    gBg2Scroll.x++;
+    gBg2Scroll.y++;
+    if (gFrameCounter & 1)
+    {
+        gBg3Scroll.x++;
+        gBg3Scroll.y++;
+    }
+}
+
+void sub_0805BFDC(void)
+{
+    u32 zero = 0;
+    CpuFastSet(&zero, (void *)VRAM, 0x01006000);
+    reset_bg_scroll();
+    sub_08059D04();
+    REG_DISPCNT = 0x60;
+    init_blend_effect(gUnk_03006F74->unk50, 0x10, 0, -1, 0xC0);
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C030);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C190);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C2C4);
+
+void sub_0805C2C4(void)
+{
+    if (blend_fade_step_08065598(gUnk_03006F74->unk50))
+    {
+        gGameSubState++;
+        gUnk_03006F74->unk3A = 0;
+        gUnk_03006F74->unk3A = sub_0805BB10(0);
+        REG_DISPCNT |= 0x400;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C308);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C428);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C6AC);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C7A0);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C7E8);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C85C);
+
+void sub_0805C7A0(void)
+{
+    s8 i;
+
+    play_song(0);
+    play_sound_effect(0);
+    eeprom_setup_timer_irq();
+    for (i = 0; i <= 15; i++)
+        gUnk_03002B74[i] = 0xFE;
+    gGameState = 28;
+    gGameSubState = 0;
+}
+
+void sub_0805C7E8(void)
+{
+    u32 zero = 0;
+
+    play_song(0);
+    play_sound_effect(0);
+    gGameMode = 1;
+    gGameState = 1;
+    gGameSubState = zero;
+    dispatch_by_index_0476e8(11);
+}
+
+void sub_0805C820(void)
+{
+    if (gUnk_03006F74->unk0 != 32)
+    {
+        gUnk_03006F74->unk0++;
+        REG_BLDY = gUnk_03006F74->unk0 >> 1;
+    }
+    else
+    {
+        gGameState = 9;
+        gGameSubState = 0;
+    }
+}
+
+void sub_0805C85C(void)
+{
+    u32 zero = 0;
+
+    CpuFastSet(&zero, (void *)VRAM, 0x01006000);
+    clear_battle_sprite_slot(0, 0x80);
+    reset_bg_scroll();
+    REG_DISPCNT = 0x60;
+    CpuFastSet(gUnk_084E2E38, &gPaletteBackup[0xF0], 8);
+    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    text_window_init(1, 2, 0);
+    REG_DISPCNT |= 0x1000;
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", load_rotation_grid_and_advance);
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805C90C);
 
@@ -340,7 +425,23 @@ void sub_0805DBE8(void)
         gGameSubState = 9;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", init_linking_mode);
+void init_linking_mode(void)
+{
+    gUnk_03005030 = 0;
+    serial_multiplayer_init();
+    VBlankIntrWait();
+    REG_BLDCNT = 0xFF;
+    REG_BLDY = 0x10;
+    REG_SOUNDCNT_X = 0;
+    gGameMode = 3;
+    gGameState = 0;
+    gGameSubState = 0;
+    REG_DMA0CNT_H = 0;
+    VBlankIntrWait();
+    sound_init(&gUnk_03002430);
+    VBlankIntrWait();
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", save_dispatch);
 
 u16 eeprom_setup_timer_irq(void)

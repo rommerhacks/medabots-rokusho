@@ -1055,7 +1055,11 @@ struct Unk_03006F74
     u32 unk1C;
     u8 unk20; // number of save / link slots shown (update_battle_sprite_priority_flags)
     u8 filler21[0x15];
-    u16 unk36;
+    u16 unk36; // save screen: last BG tile index loaded (sub_0805D628)
+    u16 unk38;
+    u16 unk3A; // title: blend step (sub_0805BB10)
+    u8 filler3C[0x14];
+    u8 unk50[8]; // blend effect state (init_blend_effect, blend_fade_step_08065598)
 };
 
 // Game flags byte at 0x03001784

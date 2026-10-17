@@ -405,6 +405,8 @@ extern const u32 gUnk_0878CC64[]; // save screen BG tiles (dma3_copy_or_decompre
 extern const u8 gUnk_08784CB0[]; // save screen BG tiles, after gUnk_0878CC64 (LZ77)
 extern const u8 gUnk_08784DA4[]; // save screen OBJ tiles (LZ77)
 
+extern const Func gUnk_08483B78[]; // state handlers by gGameSubState (sub_0805BF88)
+
 #endif // GUARD_VARIABLES_H
 extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
 extern u8 gUnk_03000B94; // index into gUnk_083AD3B0 (battle music)
