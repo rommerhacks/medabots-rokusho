@@ -170,3 +170,11 @@
 * A 2D table read as `(a * 4 + b) * 4` is indexed flat, `tbl[0][a * 4 + b]` (gUnk_083BB9CC, sub_08026810).
 * `v = 0; if (x) v = 1;` and `v = !x` order the zero differently: `if (!(f & 2)) v = 1; else v = 0;` gives
   `ands; movs v, #0; cmp; bne; movs v, #1` (sub_08026A74).
+* Nested loops where the original reloads loop invariants inside the outer loop (and keeps `i + 1` in a
+  saved register): leave the inner loop with `goto next;` (label just before the outer loop's closing
+  brace) instead of `break`. With `break`, gcc hoists everything to the top of the function
+  (sub_08029B84, sub_08029FE0).
+* `x == A || x == B` per switch case can come out as `x - A <= 1`; the original's `cmp A; beq; cmp B; bne`
+  needs `if (x == A) goto call; if (x != B) break; call: f();` (sub_08029354).
+* `strh` of a `0xFFFFxxxx` literal / `movs; rsbs` for a byte: the source wrote a negative constant
+  (`unk0 = -0x39DC`, `unkB = -0x10`) (sub_0802AAF8).
