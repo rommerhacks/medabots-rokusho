@@ -595,7 +595,43 @@ void sub_0805CA94(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805CAD4);
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805CC44);
+
+void sub_0805CC44(void)
+{
+    u32 zero;
+    struct Unk_03006F74 *w;
+
+    gUnk_03006F74->unk6 = 0;
+    gUnk_03006F74->unkC = 0;
+    gUnk_03006F74->unk11 = 0;
+    unpack_item_inventory_to_buffer();
+    update_battle_medapart_icons();
+    if (gUnk_03006F74->unk10)
+    {
+        gUnk_03002C30[0x53].unk0 |= 0x4000;
+        calc_fade_sprite_position(&gUnk_03002C30[0x53]);
+    }
+    w = gUnk_03006F74;
+    if ((w->unk10 - 1) / 5)
+    {
+        gUnk_03002C30[0x51].unk0 |= 0x4000;
+        gUnk_03002C30[0x52].unk0 |= 0x4000;
+    }
+    w->unk12 = 0;
+    CpuFastSet(gUnk_0850DCF8, gPaletteBackup, 0x80);
+    CpuFastSet(gUnk_084E2E58, gPaletteBackup, 8);
+    CpuFastSet(gUnk_080AF7C0, (void *)0x0202F9C0, 8);
+    CpuFastSet(gUnk_0878AE78, gPaletteBackupBg, 0x80);
+    zero = 0;
+    CpuFastSet(&zero, (void *)(PLTT + 0x1A0), 0x01000008);
+    gUnk_03000440.unk84 = 0;
+    REG_DISPCNT |= 0x200;
+    REG_DISPCNT |= 0x400;
+    REG_DISPCNT |= 0x800;
+    REG_DISPCNT |= 0x1000;
+    gGameSubState++;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805CD68);
 
 void sub_0805CDF0(void)
