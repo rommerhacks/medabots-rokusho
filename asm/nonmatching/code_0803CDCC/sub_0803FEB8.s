@@ -116,7 +116,7 @@ _0803FF88:
 	str r2, [sp, #4]
 	adds r2, r3, #0
 	movs r3, #5
-	bl load_overworld_map_column
+	bl message_portrait_anim_step
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #1
@@ -172,7 +172,7 @@ _08040002:
 	mov r1, r8
 	adds r2, r3, #0
 	movs r3, #5
-	bl load_overworld_map_column
+	bl message_portrait_anim_step
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #1

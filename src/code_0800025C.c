@@ -326,7 +326,7 @@ void sub_080025B4(void)
 
 void load_overworld_column_and_advance(void)
 {
-    u8 r = load_overworld_map_column(0, 1, 8, 4, gUnk_03000440.unk88, gUnk_03000440.unk85);
+    u8 r = message_portrait_anim_step(0, 1, 8, 4, gUnk_03000440.unk88, gUnk_03000440.unk85);
     if (r == 1)
         gGameSubState = r;
 }

@@ -1347,10 +1347,11 @@ static inline s32 sub8(u32 v)
     return v - 8;
 }
 
-// One frame of an 8x8 BG0 picture animation: frame gUnk_03000440.unkE of tilemap set anim (9 frames,
-// gUnk_083B4AE0[anim * 9 ..]), played backwards when reverse is set; loads the tiles and palette first.
-// Returns 1 after the last frame.
-u32 load_overworld_map_column(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 reverse)
+// One frame of the message window portrait animation (8x8 tiles on BG0): frame gUnk_03000440.unkE of
+// tilemap set anim (9 frames, gUnk_083B4AE0[anim * 9 ..]), played backwards when reverse is set; loads
+// portrait set/idx (gUnk_083AFD08, as load_bg0_tilemap) first. Returns 1 after the last frame.
+// Runtime: message_clear_text_area calls it 9 frames in a row with (0, 4, 3, 5, ...) on the new game prompt.
+u32 message_portrait_anim_step(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 reverse)
 {
     u8 ids[2];
     u8 *p = ids;
@@ -1557,7 +1558,8 @@ void message_show_window(void)
     }
 }
 
-void sub_0803FC20(void)
+// run_message state 3: draws the window frame in three frames (unk26 0-2, reverse of sub_08040A40), then state 4.
+void message_open_window_frame(void)
 {
     switch (gUnk_03000440.unk26)
     {

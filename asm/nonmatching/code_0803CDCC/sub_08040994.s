@@ -26,7 +26,7 @@ _080409B0:
 	str r3, [sp, #4]
 	adds r2, r6, #0
 	movs r3, #5
-	bl load_overworld_map_column
+	bl message_portrait_anim_step
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #1
