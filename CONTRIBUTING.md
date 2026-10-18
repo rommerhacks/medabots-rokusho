@@ -485,3 +485,12 @@
   type returns `s32`, not `bool32` (update_sprite_special_effects).
 * A loop that waits until `timer == n * 2` with `n` kept in a register: a local `s32 n = 0xC4;`, and
   the test written `n * 2 <= timer` to keep the original `cmp` operand order (sub_0806F0B4).
+* `ands` with the constant loaded first (`movs r1, #3; ands r1, r0`) where `& 3` gives `ands r0, r1`
+  the other way round: the original wrote `x % 4` on an unsigned value (sub_0806C7C4, bomb_game_drop_bombs).
+* A switch whose compare tree pivots on 1 instead of the middle case: add an empty `case 0: break;`
+  (sub_0806BEF0, sub_0806C20C). Case body order in the source also changes the block order.
+* `x = cond ? a : b - 1;` stored with a single `strb` after both paths: write the store as one ternary;
+  an if/else gives two stores (sub_0806B9D0).
+* A table copied to the stack with `ldm`/`stm` is a struct copy (`struct S32Array3 t = gUnk_080AFF34;`);
+  a byte-wise `memcpy` call is `memcpy(buf, table, n)` (sub_0806C500, sub_0806C994). Both tables live
+  in the data blob, so they need symbols, not local initializers.
