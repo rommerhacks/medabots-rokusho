@@ -94,12 +94,12 @@ void clear_sprite_entry(u8 sprite)
     DmaSet(3, &zero, &gUnk_03002C30[sprite], 0x85000010);
 }
 
-void battle_screen_dispatch(void)
+void bomb_game_dispatch(void)
 {
     gUnk_08485E5C[gGameSubState]();
 }
 
-void init_battle_screen(void)
+void bomb_game_init(void)
 {
     u32 zero = 0;
     DmaSet(3, &zero, VRAM, 0x85006000);
@@ -127,7 +127,7 @@ void init_battle_screen(void)
     gGameSubState++;
 }
 
-void load_battle_screen_graphics(void)
+void bomb_game_load_graphics(void)
 {
     s32 i;
 
@@ -148,7 +148,7 @@ void load_battle_screen_graphics(void)
     gUnk_03002C30[30].unk8 = 0x40;
     gUnk_03002C30[30].unk9 = 0x40;
     gUnk_03002C30[30].unk18 = 0;
-    gUnk_03001800_arcade.unk41 = 0;
+    gUnk_03001800_bomb.unk41 = 0;
     gUnk_03002C30[30].unk20 = 3;
     gUnk_03002C30[30].unk21 = 0;
 
@@ -208,21 +208,21 @@ void sub_0806B9D0(void)
 {
     s32 i;
 
-    gUnk_03001800_arcade.unkF[0] = gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] % 3;
-    for (i = 1; i < gUnk_03001800_arcade.unkC; i++) {
+    gUnk_03001800_bomb.unkF[0] = gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] % 3;
+    for (i = 1; i < gUnk_03001800_bomb.unkC; i++) {
         switch ((u8)(gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] % 7)) {
         case 0:
-            gUnk_03001800_arcade.unkF[i] = gUnk_03001800_arcade.unkF[i - 1];
+            gUnk_03001800_bomb.unkF[i] = gUnk_03001800_bomb.unkF[i - 1];
             break;
         case 1:
         case 2:
         case 3:
-            gUnk_03001800_arcade.unkF[i] = gUnk_03001800_arcade.unkF[i - 1] == 0 ? 1 : gUnk_03001800_arcade.unkF[i - 1] - 1;
+            gUnk_03001800_bomb.unkF[i] = gUnk_03001800_bomb.unkF[i - 1] == 0 ? 1 : gUnk_03001800_bomb.unkF[i - 1] - 1;
             break;
         case 4:
         case 5:
         case 6:
-            gUnk_03001800_arcade.unkF[i] = gUnk_03001800_arcade.unkF[i - 1] == 2 ? 1 : gUnk_03001800_arcade.unkF[i - 1] + 1;
+            gUnk_03001800_bomb.unkF[i] = gUnk_03001800_bomb.unkF[i - 1] == 2 ? 1 : gUnk_03001800_bomb.unkF[i - 1] + 1;
             break;
         }
     }
@@ -318,7 +318,7 @@ u32 sub_0806BBDC(void)
         }
         break;
     case 3:
-        if (gUnk_03001800_arcade.unkC == gUnk_03001800_arcade.unkE) {
+        if (gUnk_03001800_bomb.unkC == gUnk_03001800_bomb.unkE) {
             init_battle_sprite_entry_08048818(0, 0xCA08, 0x2F, 11, 3);
             gUnk_03002C30[0].unk2 = 0x78;
             gUnk_03002C30[0].unk4 = 0x50;
@@ -329,7 +329,7 @@ u32 sub_0806BBDC(void)
             REG_BLDCNT = 0x840;
             REG_BLDALPHA = 0x10;
         } else {
-            gUnk_03001800_arcade.unkE++;
+            gUnk_03001800_bomb.unkE++;
         }
         break;
     case 4:
@@ -348,8 +348,8 @@ u32 sub_0806BBDC(void)
             play_sound_effect(7);
         if (++gUnk_03002C30[0].unk1A > 0x1E) {
             clear_sprite_entry(0);
-            gUnk_03001800_arcade.timer = 0;
-            gUnk_03001800_arcade.unk44 = gUnk_03001800_arcade.unkC + gUnk_03001800_arcade.unkD;
+            gUnk_03001800_bomb.timer = 0;
+            gUnk_03001800_bomb.unk44 = gUnk_03001800_bomb.unkC + gUnk_03001800_bomb.unkD;
             REG_BLDCNT = 0x840;
             REG_BLDALPHA = 0x808;
             return 1;
@@ -396,18 +396,18 @@ void sub_0806BE58(void)
     u32 k = KEYS_HI(gHeldKeys) & 3;
 
     if (k == 1) {
-        if (++gUnk_03001800_arcade.unk41 > 8)
-            gUnk_03001800_arcade.unk41 = 8;
+        if (++gUnk_03001800_bomb.unk41 > 8)
+            gUnk_03001800_bomb.unk41 = 8;
     } else if (k == 2) {
-        if (--gUnk_03001800_arcade.unk41 < -8)
-            gUnk_03001800_arcade.unk41 = -8;
+        if (--gUnk_03001800_bomb.unk41 < -8)
+            gUnk_03001800_bomb.unk41 = -8;
     } else {
-        if (gUnk_03001800_arcade.unk41 > 0)
-            gUnk_03001800_arcade.unk41--;
-        if (gUnk_03001800_arcade.unk41 < 0)
-            gUnk_03001800_arcade.unk41++;
+        if (gUnk_03001800_bomb.unk41 > 0)
+            gUnk_03001800_bomb.unk41--;
+        if (gUnk_03001800_bomb.unk41 < 0)
+            gUnk_03001800_bomb.unk41++;
     }
-    gUnk_03002C30[30].unk2 = gUnk_03001800_arcade.unk41 * 3 + 0x78;
+    gUnk_03002C30[30].unk2 = gUnk_03001800_bomb.unk41 * 3 + 0x78;
 }
 
 void sub_0806BEF0(void)

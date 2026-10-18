@@ -16,7 +16,7 @@ extern u32 gGameMode;
 extern struct Unk_030017A0 gUnk_030017A0[];
 extern struct Unk_03001800 gUnk_03001800;
 extern struct Unk_03001800_s gUnk_03001800_s; // same address as gUnk_03001800 (game mode 3 scenes)
-extern struct Unk_03001800_arcade gUnk_03001800_arcade; // same address as gUnk_03001800 (game mode 3 state 5)
+extern struct Unk_03001800_bomb gUnk_03001800_bomb; // same address as gUnk_03001800 (game mode 3 state 5)
 extern u32 gMoney; // money, capped at 99999 (add_money)
 extern u32 gGameState;
 extern u32 gGameSubState;
@@ -172,9 +172,9 @@ extern u8 gUnk_03000004; // scene step, gUnk_08485C7C index
 extern bool32 (*const gUnk_08485C7C[])(void); // scene steps (execute_scene_step)
 extern bool32 (*const gUnk_08485C68[])(void); // transition steps (scene_transition_step_080686F4)
 extern const u16 gUnk_0807C320[]; // title OBJ palettes (0x60 colours), then 0x1C bytes copied to gUnk_03001800_s + 0xC (load_scene_graphics)
-extern const Func gUnk_08485E5C[]; // game mode 3 state 5 sub-states, by gGameSubState (battle_screen_dispatch)
+extern const Func gUnk_08485E5C[]; // game mode 3 state 5 sub-states, by gGameSubState (bomb_game_dispatch)
 extern const struct SpriteAnimFrame gUnk_08485D5C[]; // sprite animation steps (update_sprite_animations_0806B334)
-extern const u8 gUnk_087B3B30[]; // game mode 3 state 5 (load_battle_screen_graphics): compressed BG tiles
+extern const u8 gUnk_087B3B30[]; // game mode 3 state 5 (bomb_game_load_graphics): compressed BG tiles
 extern const u8 gUnk_087B50AC[]; // compressed BG map (VRAM + 0x800)
 extern const u8 gUnk_087B5214[]; // compressed BG map (VRAM + 0x1000)
 extern const u8 gUnk_087B52E4[]; // compressed BG map (VRAM + 0x1800)
