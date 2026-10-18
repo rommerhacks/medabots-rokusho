@@ -233,7 +233,7 @@ void sub_0806BAB4(void)
 {
     if (gUnk_03002C30[30].unk21 == 0) {
         sub_0806BE58();
-        sub_0806C084();
+        bomb_game_drop_bombs();
         sub_0806BD84();
     } else {
         sub_0806C500();
@@ -465,7 +465,7 @@ void sub_0806BEF0(void)
     }
 }
 
-void sub_0806C084(void)
+void bomb_game_drop_bombs(void)
 {
     s32 i;
     s32 k;

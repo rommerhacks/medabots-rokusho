@@ -154,13 +154,13 @@ struct Unk_03001800_bomb
 {
     u8 filler0[8];
     s32 timer; // frame counter of the current step (sub_0806BBDC)
-    s8 unkC; // bombs: 50 at the start (BOMB counter on screen), the number of entries in unkF
+    s8 unkC; // bombs per round (50), the number of entries in unkF
     s8 unkD;
-    s8 unkE; // counts up toward unkC
+    s8 unkE; // bombs left this round, shown as BOMB (runtime: 50 -> 48, back to 50 in round 2)
     s8 unkF[0x32]; // 0..2 each (guess: lane per bomb), a random walk (sub_0806B9D0)
     s8 unk41; // -8..8, pushed by R / L, eases back to 0 (sub_0806BE58)
     u8 filler42[2];
-    s32 unk44; // unkC + unkD once the intro ends (sub_0806BBDC)
+    s32 unk44; // timer value of the next bomb drop (bomb_game_drop_bombs); unkC + unkD once the intro ends
 };
 
 // One step of a sprite animation (gUnk_08485D5C).

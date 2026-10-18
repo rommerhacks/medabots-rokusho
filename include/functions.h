@@ -856,7 +856,7 @@ void sub_0806D420(void);
 u32 sub_0806BBDC(void);
 void sub_0806C994(void);
 void sub_0806BE58(void);
-void sub_0806C084(void);
+void bomb_game_drop_bombs(void);
 void sub_0806BD84(void);
 void sub_0806C500(void);
 void sub_0806BEF0(void);
