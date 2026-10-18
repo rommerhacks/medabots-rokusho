@@ -245,6 +245,7 @@ void scene_fade_or_transition(void)
     }
 }
 
+// guess: link Medapart trade scene, sub-states gUnk_080AFA6C by gGameSubState
 void sub_080637D0(void)
 {
     struct FuncTable13 t = gUnk_080AFA6C;
@@ -444,6 +445,7 @@ void sub_08064498(void)
     }
 }
 
+// guess: link Medal exchange scene, sub-states gUnk_080AFAA0 by gGameSubState
 void sub_080644C4(void)
 {
     struct FuncTable12 t = gUnk_080AFAA0;
@@ -750,6 +752,7 @@ void sub_08064C7C(void)
     gGameSubState++;
 }
 
+// guess: Medal list screen (pay 100 for a Medal, sub_08065484): builds the owned Medal list in unkB0
 void sub_08064CA0(void)
 {
     u32 zero;
@@ -1868,6 +1871,7 @@ static inline void rings_set_radius(u8 *p, u8 *q)
         ring_points_place_on_hexagon(half(d) - quarter20(c));
 }
 
+// Four rings of 18 sprites rotated in 3-D (matrix_rotate_xyz) around drifting centres
 void update_scene_animation_frame(void)
 {
     s32 i, n;
