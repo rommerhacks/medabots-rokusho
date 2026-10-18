@@ -1434,3 +1434,4 @@ void sub_0807168C(void);
 void sub_0807068C(void);
 void sub_080706AC(void);
 void load_bg_screen_c(void);
+u32 call_battle_handler_by_state_08071C64(void);
