@@ -8,6 +8,9 @@ It is compiled like the Makefile does: agbcc -fprologue-bugfix (--old: old_agbcc
 against the symbols of the last full build (medabots_rokusho.elf, so run `make` once first), and
 compared byte for byte with baserom.gba over the original function's size (code and literal pool).
 
+Undefined symbols named like gUnk_03000BE0 / sub_08012345 that the build doesn't define yet get the
+address from their name (add them to symbols.ld when installing).
+
 Exit status 0 = match. On mismatch, prints a side-by-side disassembly.
 """
 import argparse
@@ -90,7 +93,15 @@ def main():
             raise SystemExit(f"{args.func} is not defined in {args.cfile}")
         if addr - off < 0x08000000:
             raise SystemExit(f"{args.func} sits too far into {args.cfile}; put it first")
-        run(["arm-none-eabi-ld", "-Ttext", hex(addr - off), "-R", syms, "-e", args.func, "-o", elf, o])
+        # undefined gUnk_XXXXXXXX / sub_XXXXXXXX not yet in the build: take the address from the name
+        known = {l.split()[-1] for l in run(["arm-none-eabi-nm", syms]).splitlines()}
+        defsyms = []
+        for l in run(["arm-none-eabi-nm", "-u", o]).splitlines():
+            n = l.split()[-1]
+            m = re.search(r"_([0-9A-F]{8})$", n)
+            if m and n not in known:
+                defsyms += ["--defsym", f"{n}=0x{m.group(1)}"]
+        run(["arm-none-eabi-ld", "-Ttext", hex(addr - off), "-R", syms, "-e", args.func, "-o", elf, o] + defsyms)
         run(["arm-none-eabi-objcopy", "-O", "binary", "-j", ".text", elf, binf])
         built = open(binf, "rb").read()[off:]
         # only the target function: the object may contain other functions after it
