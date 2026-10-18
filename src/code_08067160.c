@@ -108,8 +108,8 @@ void init_scene_with_palette_and_song_5(void)
         gUnk_03002C30[i + 1].unkA = i / 18;
         gUnk_03002C30[i + 1].unk6 = 0x116;
     }
-    init_fade_color_blend_params();
-    battle_ui_setup_partial(0x32);
+    matrix_set_identity();
+    ring_points_place_on_hexagon(0x32);
     REG_WIN1H = 0xF0;
     REG_WIN1V = 0x1888;
     REG_WIN0H = 0xF0;

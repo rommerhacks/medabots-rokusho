@@ -54,14 +54,14 @@ _08066C44:
 	bhs _08066C66
 	lsrs r0, r3, #0x1a
 	adds r0, #0x14
-	bl battle_ui_setup_partial
+	bl ring_points_place_on_hexagon
 	b _08066C72
 _08066C66:
 	lsrs r0, r2, #0x19
 	lsrs r1, r3, #0x1a
 	subs r1, #0x14
 	subs r0, r0, r1
-	bl battle_ui_setup_partial
+	bl ring_points_place_on_hexagon
 _08066C72:
 	ldr r7, _08066F30 @ =0x03006F74
 	ldr r3, [r7]
@@ -346,7 +346,7 @@ _08066DD8:
 	ldr r1, [r7]
 	adds r1, #0xa8
 	strb r0, [r1]
-	bl init_fade_color_blend_params
+	bl matrix_set_identity
 	ldr r1, [r7]
 	ldrh r0, [r1, #0x3c]
 	adds r0, #1
@@ -578,7 +578,7 @@ _0806704E:
 	adds r5, r0, #0
 	cmp r5, #0
 	bne _0806709E
-	bl init_fade_color_blend_params
+	bl matrix_set_identity
 	ldr r0, _08067158 @ =0x03006F74
 	ldr r4, [r0]
 	mov r0, r8
@@ -607,7 +607,7 @@ _0806704E:
 	lsls r2, r2, #0x10
 	asrs r2, r2, #0x14
 	ands r2, r3
-	bl sub_080669B8
+	bl matrix_rotate_xyz
 _0806709E:
 	ldr r0, _08067158 @ =0x03006F74
 	ldr r7, [r0]

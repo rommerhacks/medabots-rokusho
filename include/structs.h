@@ -1080,6 +1080,18 @@ struct Unk_08047414
 };
 
 // Menu / save screen work area, reached through the pointer gUnk_03006F74 (layout as used by code_0805AB40)
+// One of 18 points placed on a hexagon (ring_points_place_on_hexagon) or a circle (ring_points_place_on_circle)
+struct RingPoint
+{
+    s16 unk0; // radius
+    s16 unk2; // x
+    s16 unk4; // y
+    s16 unk6;
+    s16 unk8; // radius * sin
+    s16 unkA; // radius * cos
+    u8 fillerC[4];
+};
+
 struct Unk_03006F74
 {
     u8 unk0;
@@ -1111,7 +1123,9 @@ struct Unk_03006F74
     u8 filler21[0xA];
     u8 unk2B;
     u16 unk2C;
-    u8 filler2E[0x3];
+    u8 unk2E; // Medal list: first visible row (render_battle_medal_names)
+    u8 unk2F; // Medal list: cursor row
+    u8 unk30; // Medal list: number of entries in unkB0
     u8 unk31;
     u8 unk32;
     u8 unk33;
@@ -1127,21 +1141,27 @@ struct Unk_03006F74
     u8 unk49;
     u8 unk4A;
     u8 unk4B;
-    u8 filler4C[0x4];
+    u8 unk4C; // message pending (sub_08065418)
+    u8 filler4D[0x3];
     u8 unk50[8]; // blend effect state (init_blend_effect, blend_fade_step_08065598)
     u8 unk58[0x20]; // name text buffer (sub_0805EE94 copies it to the player or Medal name)
     u16 unk78; // link: the other player's keys last frame (sub_0805B9EC)
     s8 unk7A;
     u8 filler7B[0x2];
     s8 unk7D; // length of the text at *unkAC (scene_text_scroll_step)
-    u8 filler7E[0xC];
+    u8 filler7E;
+    u8 unk7F; // sub_08074B68 result (sub_08065618)
+    u8 filler80[0xA];
     u16 unk8A[4]; // race: per-sprite values set by init_scene_with_palette_and_song_5
     u16 unk92[4];
     u16 unk9A[4];
     u8 unkA2[5];
     u8 unkA7[5];
     const u8 *const *unkAC; // scene text (scene_text_scroll_step)
-    u8 fillerB0[0x1C0];
+    u8 unkB0[0x20]; // Medal list: Medal indices (sub_08064CA0)
+    struct RingPoint unkD0[18]; // points on a hexagon / circle (ring_points_place_on_hexagon, ring_points_place_on_circle)
+    s32 unk1F0[4][4]; // 8.8 fixed-point 4x4 transform matrix (matrix_set_identity, matrix_rotate_xyz)
+    u8 filler230[0x40];
     u8 unk270[0x30]; // message text buffer (sub_08061180)
 };
 
