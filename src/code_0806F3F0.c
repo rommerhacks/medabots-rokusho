@@ -30,14 +30,200 @@ INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0807068C);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080706AC);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08070760);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0807079C);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", load_battle_bg_tilemaps);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", load_battle_field_graphics);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", init_battle_bg_palettes_and_layers);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08070EB8);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08070EE4);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08070F34);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08070F7C);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08070FC0);
+
+void load_battle_bg_tilemaps(void)
+{
+    s32 i;
+
+    LZ77UnCompVram(gUnk_087C11C4, (void *)0x06004000);
+    LZ77UnCompVram(gUnk_087C2598, (void *)0x06008000);
+    LZ77UnCompVram(gUnk_087C3928, (void *)0x06006800);
+    LZ77UnCompVram(gUnk_087C3AF4, (void *)0x06007000);
+    LZ77UnCompVram(gUnk_087C3D40, (void *)0x06007800);
+    LZ77UnCompVram(gUnk_087C40B0, (void *)0x0600A800);
+    LZ77UnCompVram(gUnk_087C4210, (void *)0x0600B000);
+    LZ77UnCompVram(gUnk_087C4498, (void *)0x0600B800);
+    LZ77UnCompVram(gUnk_087B1CEC, (void *)0x06010000);
+
+    for (i = 0; i <= 10; i++)
+    {
+        init_battle_sprite_entry_08048818(i, 0xC800, 0x50E, 4, 3);
+        gUnk_03002C30[i].unk2 = i * 8 + 0x78;
+        gUnk_03002C30[i].unk4 = 0;
+        gUnk_03002C30[i].unkB = i + 0x40;
+        gUnk_03002C30[i].unk22 = i + 1;
+        init_battle_sprite_entry_08048818(i + 11, 0xC800, 0x50E, 4, 3);
+        gUnk_03002C30[i + 11].unk2 = 0x70 - i * 8;
+        gUnk_03002C30[i + 11].unk4 = 0;
+        gUnk_03002C30[i + 11].unkB = i + 0x40;
+        gUnk_03002C30[i + 11].unk22 = i + 12;
+    }
+    gUnk_03002C30[10].unk22 = 0xFF;
+    gUnk_03002C30[21].unk22 = 0xFF;
+
+    for (i = 0; i <= 3; i++)
+    {
+        init_battle_sprite_entry_08048818(i + 22, 0xCC00, 0, i, 1);
+        gUnk_03002C30[i + 22].unk4 = 0x40;
+    }
+    gUnk_03002C30[22].unk2 = 0x10;
+    gUnk_03002C30[22].unkB = 8;
+    gUnk_03002C30[23].unk2 = 0xD0;
+    gUnk_03002C30[23].unkB = 8;
+    gUnk_03002C30[24].unk2 = 0x10;
+    gUnk_03002C30[24].unkB = 4;
+    gUnk_03002C30[24].unk4 = 0x30;
+    gUnk_03002C30[25].unk2 = 0xD0;
+    gUnk_03002C30[25].unkB = 6;
+
+    for (i = 0; i <= 3; i++)
+    {
+        init_battle_sprite_entry_08048818(i + 26, 0xCC08, 0x513, 0xE, 3);
+        gUnk_03002C30[i + 26].unk2 = gUnk_03002C30[i + 22].unk2;
+        gUnk_03002C30[i + 26].unk4 = 0x40;
+    }
+    gUnk_03002C30[28].unk4 = 0x38;
+    gUnk_03001800_s.nextSubState = 6;
+    gGameSubState = 4;
+}
+
+void load_battle_field_graphics(void)
+{
+    LZ77UnCompVram(gUnk_087C481C, (void *)0x02031000);
+    DmaSet(3, gUnk_087C4C5C, PLTT, 0x84000068);
+    LZ77UnCompVram(gUnk_085E3AC8, (void *)0x06011B00);
+    LZ77UnCompVram(gUnk_085E32C0, (void *)0x06012400);
+    LZ77UnCompVram(gUnk_085E1A0C, (void *)0x06012D00);
+    LZ77UnCompVram(gUnk_085E0A58, (void *)0x06013600);
+    DmaSet(3, gUnk_085E3AA8, PLTT + 0x200, 0x80000010);
+    DmaSet(3, gUnk_085E32A0, PLTT + 0x220, 0x80000010);
+    DmaSet(3, gUnk_085E19EC, PLTT + 0x240, 0x80000010);
+    DmaSet(3, gUnk_085E0A38, PLTT + 0x260, 0x80000010);
+    DmaSet(3, &gUnk_0807C540[0xF0], PLTT + 0x3C0, 0x80000010);
+    DmaSet(3, &gUnk_0807C540[0xD0], PLTT + 0x280, 0x80000010);
+    REG_BG1CNT = 0xD05;
+    REG_BG2CNT = 0xE06;
+    REG_BG3CNT = 0xF07;
+    REG_BLDCNT = 0xC40;
+    REG_BLDALPHA = 0xA0C;
+    gUnk_03001800_bomb.unkC = 0;
+    gBg3Scroll.x = 0;
+    gBg3Scroll.y = 0;
+    gUnk_03001800_bomb.unkD = 1;
+    setup_screen_transition_effect_080682CC(4, 2, 0);
+    REG_DISPCNT |= 0x1E00;
+    gGameSubState = 1;
+}
+
+void init_battle_bg_palettes_and_layers(void)
+{
+    DmaSet(3, gUnk_087C4DFC, PLTT, 0x84000030);
+    DmaSet(3, &gUnk_0807C540[0xE0], PLTT + 0x200, 0x80000010);
+    DmaSet(3, &gUnk_0807C540[0xC0], PLTT + 0x220, 0x80000010);
+    DmaSet(3, &gUnk_0807C540[0x80], PLTT + 0x300, 0x80000040);
+    DmaSet(3, &gUnk_0807C540[0], PLTT + 0x380, 0x80000040);
+    REG_BG1CNT = 0x1509;
+    REG_BG2CNT = 0x160A;
+    REG_BG3CNT = 0x170B;
+    REG_BLDCNT = 0x1C42;
+    REG_BLDALPHA = 0x80A;
+
+    init_battle_sprite_entry_08048818(6, 0xC800, 0x508, 8, 3);
+    gUnk_03002C30[6].unk2 = 0x40;
+    gUnk_03002C30[6].unk4 = 0x42;
+    gUnk_03002C30[6].unkB = 0x24;
+    init_battle_sprite_entry_08048818(7, 0xC800, 0x509, 8, 3);
+    gUnk_03002C30[7].unk2 = 0x38;
+    gUnk_03002C30[7].unk4 = 0x3A;
+    gUnk_03002C30[7].unkB = 0x28;
+    init_battle_sprite_entry_08048818(8, 0xC800, 0x50A, 8, 3);
+    gUnk_03002C30[8].unk2 = 0x44;
+    gUnk_03002C30[8].unk4 = 0x3A;
+    gUnk_03002C30[8].unkB = 0x1C;
+    init_battle_sprite_entry_08048818(9, 0xC800, 0x50B, 8, 3);
+    gUnk_03002C30[9].unk2 = 0x40;
+    gUnk_03002C30[9].unk4 = 0x42;
+    gUnk_03002C30[9].unkB = 0x20;
+    init_battle_sprite_entry_08048818(2, 0xC800, 0x500, 8, 3);
+    gUnk_03002C30[2].unk2 = 0x50;
+    gUnk_03002C30[2].unk4 = -0x30;
+    gUnk_03002C30[2].unkB = 0x25;
+    init_battle_sprite_entry_08048818(1, 0xC800, 0x50C, 1, 3);
+    gUnk_03002C30[1].unk2 = 0x50;
+    gUnk_03002C30[1].unk4 = -0x30;
+    gUnk_03002C30[1].unkB = 0x30;
+    init_battle_sprite_entry_08048818(3, 0xC800, 0x501, 8, 3);
+    gUnk_03002C30[3].unk2 = 0x28;
+    gUnk_03002C30[3].unk4 = -0x30;
+    gUnk_03002C30[3].unkB = 0x29;
+    init_battle_sprite_entry_08048818(4, 0xC800, 0x502, 8, 3);
+    gUnk_03002C30[4].unk2 = 0x54;
+    gUnk_03002C30[4].unk4 = -0x30;
+    gUnk_03002C30[4].unkB = 0x1D;
+    init_battle_sprite_entry_08048818(5, 0xC800, 0x503, 8, 3);
+    gUnk_03002C30[5].unk2 = 0x50;
+    gUnk_03002C30[5].unk4 = -0x30;
+    gUnk_03002C30[5].unkB = 0x29;
+
+    gUnk_03001800_bomb.unkC = 1;
+    gUnk_03001800_bomb.unkD = 0;
+    setup_screen_transition_effect_080682CC(4, 2, 0);
+    REG_DISPCNT |= 0x1E00;
+    gGameSubState = 1;
+}
+
+void sub_08070EB8(void)
+{
+    play_song(4);
+    sub_08071C40(1, 0, 0);
+    sub_08071C40(2, 11, 0);
+    gGameSubState++;
+}
+
+void sub_08070EE4(void)
+{
+    if (gUnk_03002C30[10].unk22 == 0)
+    {
+        sound_channel_set_note(0x16, 0x2D, 8);
+        sound_channel_set_note(0x17, 0x36, 8);
+        sub_08071C40(5, 0x16, 0x48);
+        sub_08071C40(6, 0x17, 0x48);
+        gGameSubState++;
+    }
+}
+
+void sub_08070F34(void)
+{
+    if (gUnk_03002C30[22].unk20 == 0)
+    {
+        sound_channel_stop_0807175C(0x16, 0x27);
+        sound_channel_stop_0807175C(0x17, 0x33);
+        sound_channel_set_note(0x18, 0x45, 8);
+        sub_08071C40(7, 0x18, 0x60);
+        gGameSubState++;
+    }
+}
+
+void sub_08070F7C(void)
+{
+    if (gUnk_03002C30[24].unk20 == 0)
+    {
+        sound_channel_set_note(0x18, 0x3F, 0xC);
+        sound_channel_set_note(0x19, 0x4E, 8);
+        sub_08071C40(6, 0x19, 0x60);
+        gGameSubState++;
+    }
+}
+
+void sub_08070FC0(void)
+{
+    if (gUnk_03002C30[25].unk20 == 0)
+    {
+        sound_channel_stop_0807175C(0x19, 0x4B);
+        gGameSubState++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08070FEC);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0807118C);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080712E8);

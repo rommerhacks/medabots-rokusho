@@ -1078,3 +1078,24 @@ struct S32Array3 { s32 v[3]; };
 extern const struct S32Array3 gUnk_080AFF34; // {0x50, 0x40, 0x20}: bomb minigame debris intervals (sub_0806C500)
 extern const u8 gUnk_080AFF40[8]; // bomb minigame BLDALPHA EVA steps (sub_0806C994)
 extern const u8 gUnk_080AFF48[8]; // bomb minigame BLDALPHA EVB steps (sub_0806C994)
+extern const u8 gUnk_087C11C4[];
+extern const u8 gUnk_087C2598[];
+extern const u8 gUnk_087C3928[];
+extern const u8 gUnk_087C3AF4[];
+extern const u8 gUnk_087C3D40[];
+extern const u8 gUnk_087C40B0[];
+extern const u8 gUnk_087C4210[];
+extern const u8 gUnk_087C4498[];
+extern const u8 gUnk_087B1CEC[];
+extern const u8 gUnk_087C481C[];
+extern const u8 gUnk_087C4C5C[];
+extern const u8 gUnk_085E3AC8[];
+extern const u8 gUnk_085E32C0[];
+extern const u8 gUnk_085E1A0C[];
+extern const u8 gUnk_085E0A58[];
+extern const u16 gUnk_085E3AA8[];
+extern const u16 gUnk_085E32A0[];
+extern const u16 gUnk_085E19EC[];
+extern const u16 gUnk_085E0A38[];
+extern const u16 gUnk_0807C540[]; // 16-colour palettes (same table as init_battle_bg_palettes_and_layers)
+extern const u16 gUnk_087C4DFC[];
