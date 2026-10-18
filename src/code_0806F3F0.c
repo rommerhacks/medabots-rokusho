@@ -1,11 +1,91 @@
 #include "global.h"
 
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0806F3F0);
+void sub_0806F3F0(void)
+{
+    if (battle_transition_fade_step()) {
+        sub_0806FF50();
+        sub_0806FF90();
+        gUnk_03001800_s.timer = 0;
+        gUnk_03001800_s.nextSubState = 7;
+        gUnk_03001800_s.unkC.h = 0xE;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0806F418);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0806F78C);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0806F7AC);
+
+// Not called (dead code after sub_0806F418).
+void sub_0806F750(void)
+{
+    gUnk_03001800_s.unkF4 += 0x10;
+    gUnk_03001800_s.unkF6 -= 0x10;
+    if (gUnk_03001800_s.timer++ > 0x3A) {
+        gUnk_03001800_s.timer = 0;
+        gUnk_03001800_s.nextSubState = 6;
+        gUnk_03001800_s.unkC.h = 0x10;
+        gGameSubState = 2;
+    }
+}
+
+void sub_0806F78C(void)
+{
+    if (battle_transition_fade_step()) {
+        gUnk_03001800_s.timer = 0;
+        gUnk_03001800_s.nextSubState = 0xA;
+        gUnk_03001800_s.unkC.h = 0x11;
+    }
+}
+
+void sub_0806F7AC(void)
+{
+    s32 n = 0x3C;
+
+    if (n == gUnk_03001800_s.timer) {
+        REG_BLDCNT = 0xBF;
+        REG_BLDY = 0x10;
+        load_bg_screen_c();
+        setup_screen_transition_effect_080682CC(4, 4, 0x7FFF);
+        REG_BLDY = 0;
+        gUnk_03001800_s.nextSubState = gGameSubState;
+        gGameSubState = 1;
+    } else if (n < gUnk_03001800_s.timer) {
+        gUnk_03001800_s.timer = 0;
+        gUnk_03001800_s.nextSubState = 0x12;
+        setup_screen_transition_effect_080684F0(4, 4, 0);
+        gGameSubState = 2;
+        return;
+    }
+    gUnk_03001800_s.timer++;
+}
+
+// Not called (dead code after sub_0806F7AC).
+void sub_0806F830(void)
+{
+    gGameMode = 3;
+    gGameState = 2;
+    gGameSubState = 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0806F850);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0806F9D4);
+
+bool32 sub_0806F9D4(void)
+{
+    u16 div = gUnk_03001800_s.unk6;
+    s32 t = gUnk_03001800_s.timer;
+    u8 v;
+
+    if (t % div == 0) {
+        v = 16 - t / div;
+        REG_BLDY = v;
+        REG_MOSAIC = (v & 0xF) | ((v & 0xF) << 4);
+        if (v == 0) {
+            gUnk_03001800_s.timer = v;
+            return TRUE;
+        }
+    }
+    gUnk_03001800_s.timer++;
+    return FALSE;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", copy_tilemap_rect_to_vram);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", process_text_tile_and_dma_transfer);
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", check_battle_timer_expired);
