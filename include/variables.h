@@ -1041,3 +1041,7 @@ extern const u8 gUnk_0850DEB8[];  // OBJ palette (0x20 bytes to 0x05000200)
 struct PtrTable3 { const u8 *const *p[3]; };
 extern const struct PtrTable3 gUnk_080AFE9C; // scene texts by gUnk_03006F74->unk5 (scene_text_scroll_step)
 extern const struct FuncTable7 gUnk_080AFEC4; // sub-state handlers by gGameSubState (dispatch_battle_end_substate)
+struct S32Array3 { s32 v[3]; };
+extern const struct S32Array3 gUnk_080AFF34; // {0x50, 0x40, 0x20}: bomb minigame debris intervals (sub_0806C500)
+extern const u8 gUnk_080AFF40[8]; // bomb minigame BLDALPHA EVA steps (sub_0806C994)
+extern const u8 gUnk_080AFF48[8]; // bomb minigame BLDALPHA EVB steps (sub_0806C994)
