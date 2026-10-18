@@ -1116,7 +1116,7 @@ extern const s8 gUnk_080AFF50[]; // 64-entry wave offsets, by gUnk_03002C30[].un
 extern u8 gUnk_02031000[]; // animated BG tiles: 6 frames of 0x280 bytes, 0x100 copied (sub_080706AC)
 extern u8 gUnk_02031100[]; // animated BG tiles: 6 frames of 0x280 bytes, 0x180 copied (sub_080706AC)
 extern u8 gUnk_03007010;
-extern const Func gUnk_084860C8[]; // sub-states by gGameSubState (sub_08070760); [0] = sub_0807079C
+extern const Func gMedabotsWeeklySubStates[]; // sub-states by gGameSubState (medabots_weekly_update); [0] = medabots_weekly_init
 extern s32 (*const gUnk_08486118[])(u8);
 extern const s8 gUnk_080AFF94[8];
 extern const void *const gUnk_084872DC[];

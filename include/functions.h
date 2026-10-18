@@ -1426,8 +1426,8 @@ void animate_battle_scroll_tiles(void);
 void fade_update_tilemap_copy(void);
 void render_battle_medal_names(u8 first);
 u32 sub_080440D4(void);
-void sound_channel_set_note(u8 sprite, u16 frame, u8 arg2); // sprite (0x16+): unk23 = arg2, unk30 = unk6 = frame; sets bit (sprite - 0x16) in byte 0x03007010
-void sound_channel_stop_0807175C(u8 sprite, u16 frame); // clears that bit, unk23 = 0, unk6 = frame
+void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 arg2); // sprite (0x16+): unk23 = arg2, unk30 = unk6 = frame; sets bit (sprite - 0x16) in byte 0x03007010
+void sprite_cycle_anim_stop(u8 sprite, u16 frame); // clears that bit, unk23 = 0, unk6 = frame
 void sub_08071C40(u8 state, u8 sprite, u16 arg2); // gUnk_03002C30[sprite]: unk20 = state, unk21 = 0, unk34 = arg2, unk1A = 0
 void sub_08071614(void);
 void sub_0807168C(void);

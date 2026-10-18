@@ -13,7 +13,7 @@ void sub_0806F3F0(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0806F418);
 
-// Not called (dead code after sub_0806F418).
+// Story intro sub-state (gUnk_08485F1C entry 34); only reached through that table.
 void sub_0806F750(void)
 {
     gUnk_03001800_s.unkF4 += 0x10;
@@ -57,7 +57,7 @@ void sub_0806F7AC(void)
     gUnk_03001800_s.timer++;
 }
 
-// Not called (dead code after sub_0806F7AC).
+// Story intro sub-state (gUnk_08485F1C entry 37); only reached through that table.
 void sub_0806F830(void)
 {
     gGameMode = 3;
@@ -461,16 +461,16 @@ void sub_080706AC(void)
         sub_0807168C();
 }
 
-void sub_08070760(void)
+void medabots_weekly_update(void)
 {
     if (gUnk_03001800_bganim.unkC != 0)
         sub_0807068C();
     if (gUnk_03001800_bganim.unkD != 0)
         sub_080706AC();
-    gUnk_084860C8[gGameSubState]();
+    gMedabotsWeeklySubStates[gGameSubState]();
 }
 
-void sub_0807079C(void)
+void medabots_weekly_init(void)
 {
     vu32 zero;
 
@@ -651,8 +651,8 @@ void sub_08070EE4(void)
 {
     if (gUnk_03002C30[10].unk22 == 0)
     {
-        sound_channel_set_note(0x16, 0x2D, 8);
-        sound_channel_set_note(0x17, 0x36, 8);
+        sprite_cycle_anim_start(0x16, 0x2D, 8);
+        sprite_cycle_anim_start(0x17, 0x36, 8);
         sub_08071C40(5, 0x16, 0x48);
         sub_08071C40(6, 0x17, 0x48);
         gGameSubState++;
@@ -663,9 +663,9 @@ void sub_08070F34(void)
 {
     if (gUnk_03002C30[22].unk20 == 0)
     {
-        sound_channel_stop_0807175C(0x16, 0x27);
-        sound_channel_stop_0807175C(0x17, 0x33);
-        sound_channel_set_note(0x18, 0x45, 8);
+        sprite_cycle_anim_stop(0x16, 0x27);
+        sprite_cycle_anim_stop(0x17, 0x33);
+        sprite_cycle_anim_start(0x18, 0x45, 8);
         sub_08071C40(7, 0x18, 0x60);
         gGameSubState++;
     }
@@ -675,8 +675,8 @@ void sub_08070F7C(void)
 {
     if (gUnk_03002C30[24].unk20 == 0)
     {
-        sound_channel_set_note(0x18, 0x3F, 0xC);
-        sound_channel_set_note(0x19, 0x4E, 8);
+        sprite_cycle_anim_start(0x18, 0x3F, 0xC);
+        sprite_cycle_anim_start(0x19, 0x4E, 8);
         sub_08071C40(6, 0x19, 0x60);
         gGameSubState++;
     }
@@ -686,7 +686,7 @@ void sub_08070FC0(void)
 {
     if (gUnk_03002C30[25].unk20 == 0)
     {
-        sound_channel_stop_0807175C(0x19, 0x4B);
+        sprite_cycle_anim_stop(0x19, 0x4B);
         gGameSubState++;
     }
 }
@@ -696,51 +696,51 @@ void sub_08070FEC(void)
     switch (gUnk_03001800_s.timer) {
     case 0:
         text_window_init(1, 0, 0);
-        sound_channel_set_note(0x19, 0x4B, 8);
+        sprite_cycle_anim_start(0x19, 0x4B, 8);
         gUnk_03001800_s.timer++;
         break;
     case 2:
         sub_0803FB0C();
-        sound_channel_stop_0807175C(0x19, 0x4B);
-        sound_channel_set_note(0x16, 0x2D, 8);
+        sprite_cycle_anim_stop(0x19, 0x4B);
+        sprite_cycle_anim_start(0x16, 0x2D, 8);
         gUnk_03001800_s.timer++;
         break;
     case 4:
         sub_0803FB0C();
-        sound_channel_stop_0807175C(0x16, 0x2D);
-        sound_channel_set_note(0x19, 0x4E, 8);
+        sprite_cycle_anim_stop(0x16, 0x2D);
+        sprite_cycle_anim_start(0x19, 0x4E, 8);
         gUnk_03001800_s.timer++;
         break;
     case 6:
         sub_0803FB0C();
-        sound_channel_stop_0807175C(0x19, 0x4B);
-        sound_channel_set_note(0x17, 0x36, 8);
+        sprite_cycle_anim_stop(0x19, 0x4B);
+        sprite_cycle_anim_start(0x17, 0x36, 8);
         gUnk_03001800_s.timer++;
         break;
     case 8:
         sub_0803FB0C();
-        sound_channel_stop_0807175C(0x17, 0x36);
-        sound_channel_set_note(0x19, 0x51, 8);
+        sprite_cycle_anim_stop(0x17, 0x36);
+        sprite_cycle_anim_start(0x19, 0x51, 8);
         gUnk_03001800_s.timer++;
         break;
     case 10:
         sub_0803FB0C();
-        sound_channel_stop_0807175C(0x19, 0x4B);
-        sound_channel_set_note(0x16, 0x2D, 8);
+        sprite_cycle_anim_stop(0x19, 0x4B);
+        sprite_cycle_anim_start(0x16, 0x2D, 8);
         gUnk_03001800_s.timer++;
         break;
     case 12:
         sub_0803FB0C();
-        sound_channel_stop_0807175C(0x16, 0x2D);
-        sound_channel_set_note(0x19, 0x4B, 8);
+        sprite_cycle_anim_stop(0x16, 0x2D);
+        sprite_cycle_anim_start(0x19, 0x4B, 8);
         gUnk_03001800_s.timer++;
         break;
     case 14:
         sub_0803FB0C();
-        sound_channel_stop_0807175C(0x16, 0x27);
-        sound_channel_stop_0807175C(0x17, 0x33);
-        sound_channel_stop_0807175C(0x19, 0x4B);
-        sound_channel_set_note(0x18, 0x3F, 6);
+        sprite_cycle_anim_stop(0x16, 0x27);
+        sprite_cycle_anim_stop(0x17, 0x33);
+        sprite_cycle_anim_stop(0x19, 0x4B);
+        sprite_cycle_anim_start(0x18, 0x3F, 6);
         gUnk_03001800_s.timer++;
         break;
     case 1:
@@ -755,7 +755,7 @@ void sub_08070FEC(void)
             gUnk_03001800_s.timer++;
         break;
     default:
-        sound_channel_set_note(0x18, 0x3F, 0xC);
+        sprite_cycle_anim_start(0x18, 0x3F, 0xC);
         gUnk_03001800_s.timer = 0;
         gUnk_03001800_s.nextSubState = 0xC;
         gGameSubState = 2;
@@ -763,7 +763,7 @@ void sub_08070FEC(void)
     }
 }
 
-// Not called (dead code after sub_08070FEC).
+// Medabots Weekly sub-state 12 (gMedabotsWeeklySubStates); only reached through that table.
 void sub_08071150(void)
 {
     u32 zero = 0;
@@ -876,7 +876,7 @@ void sub_080712E8(void)
     z = 0;
     gUnk_03002C30[0x1C].unk4 = 0x38;
     gUnk_03007010 = 0;
-    sound_channel_set_note(0x18, 0x3F, 0xC);
+    sprite_cycle_anim_start(0x18, 0x3F, 0xC);
     gUnk_03000430 = z;
     gUnk_03001800_s.nextSubState = 0xF;
     gGameSubState = 4;
@@ -887,26 +887,26 @@ void battle_audio_phase_dispatch(void)
     switch (gUnk_03001800_s.timer) {
     case 0:
         text_window_init(1, 0, 0);
-        sound_channel_set_note(0x19, 0x4B, 8);
+        sprite_cycle_anim_start(0x19, 0x4B, 8);
         gUnk_03001800_s.timer++;
         break;
     case 2:
         sub_0803FB0C();
-        sound_channel_stop_0807175C(0x19, 0x4B);
-        sound_channel_set_note(0x17, 0x36, 8);
+        sprite_cycle_anim_stop(0x19, 0x4B);
+        sprite_cycle_anim_start(0x17, 0x36, 8);
         gUnk_03001800_s.timer++;
         break;
     case 4:
         sub_0803FB0C();
-        sound_channel_stop_0807175C(0x17, 0x36);
-        sound_channel_set_note(0x19, 0x4B, 8);
+        sprite_cycle_anim_stop(0x17, 0x36);
+        sprite_cycle_anim_start(0x19, 0x4B, 8);
         gUnk_03001800_s.timer++;
         break;
     case 6:
         sub_0803FB0C();
-        sound_channel_stop_0807175C(0x17, 0x33);
-        sound_channel_stop_0807175C(0x19, 0x4B);
-        sound_channel_set_note(0x18, 0x3F, 6);
+        sprite_cycle_anim_stop(0x17, 0x33);
+        sprite_cycle_anim_stop(0x19, 0x4B);
+        sprite_cycle_anim_start(0x18, 0x3F, 6);
         gUnk_03001800_s.timer++;
         break;
     case 1:
@@ -918,9 +918,9 @@ void battle_audio_phase_dispatch(void)
         break;
     default:
         gUnk_03001800_s.timer = 0;
-        sound_channel_set_note(0x16, 0x27, 8);
-        sound_channel_set_note(0x17, 0x33, 8);
-        sound_channel_set_note(0x19, 0x4B, 8);
+        sprite_cycle_anim_start(0x16, 0x27, 8);
+        sprite_cycle_anim_start(0x17, 0x33, 8);
+        sprite_cycle_anim_start(0x19, 0x4B, 8);
         sub_08071C40(3, 0, 0);
         sub_08071C40(4, 0xB, 0);
         gGameSubState++;
@@ -967,7 +967,7 @@ void sub_08071614(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0807168C);
 
-void sound_channel_set_note(u8 sprite, u16 frame, u8 arg2)
+void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 arg2)
 {
     u8 mask = 1 << (sprite - 0x16);
 
@@ -977,7 +977,7 @@ void sound_channel_set_note(u8 sprite, u16 frame, u8 arg2)
     gUnk_03002C30[sprite].unk6 = frame;
 }
 
-void sound_channel_stop_0807175C(u8 sprite, u16 frame)
+void sprite_cycle_anim_stop(u8 sprite, u16 frame)
 {
     u8 mask = 1 << (sprite - 0x16);
 
@@ -1174,7 +1174,7 @@ u32 sub_08071B44(u8 sprite)
     return 1;
 }
 
-// Dead code in sub_08071B44's .byte tail (needs carve.py 08071B98:sub_08071B98:0x78 08071C10:sub_08071C10:0x30)
+// Sprite effects 7 and 8 (gUnk_08486118); only reached through that table.
 u32 sub_08071B98(u8 sprite)
 {
     struct Unk_03002C30 *base = gUnk_03002C30;
@@ -1221,7 +1221,7 @@ u32 call_battle_handler_by_state_08071C64(void)
     return gUnk_08486138[gUnk_03001800_s.unk10.end.state]();
 }
 
-// dead code in the .byte tail at 0x08071C84 (needs carve.py: 08071C84:sub_08071C84:0xC)
+// Battle-end state 4 (gUnk_08486138): just moves on.
 u32 sub_08071C84(void)
 {
     gUnk_03001800_s.unk10.end.state++;

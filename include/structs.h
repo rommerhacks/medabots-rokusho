@@ -178,7 +178,7 @@ struct Unk_03001800_bomb
     s32 unk44; // timer value of the next bomb drop (bomb_game_drop_bombs); unkC + unkD once the intro ends
 };
 
-// 0x03001800 during the code_0806F3F0 animated-background scene (sub_08070760, gUnk_084860C8); the same RAM
+// 0x03001800 during game mode 3 state 6, the "Medabots Weekly" TV show (medabots_weekly_update); the same RAM
 // as gUnk_03001800.
 struct Unk_03001800_bganim
 {
