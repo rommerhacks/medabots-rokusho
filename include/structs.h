@@ -1147,11 +1147,14 @@ struct Unk_03006F74
     u8 unk58[0x20]; // name text buffer (sub_0805EE94 copies it to the player or Medal name)
     u16 unk78; // link: the other player's keys last frame (sub_0805B9EC)
     s8 unk7A;
-    u8 filler7B[0x2];
+    s8 unk7B; // link: both sides OK flag, 0 / -1 (fade_state_dispatch)
+    s8 unk7C; // link: both sides OK flag, 0 / -1 (fade_state_dispatch)
     s8 unk7D; // length of the text at *unkAC (scene_text_scroll_step)
-    u8 filler7E;
-    u8 unk7F; // sub_08074B68 result (sub_08065618)
-    u8 filler80[0xA];
+    u8 unk7E; // rings: random rotation mode (update_scene_animation_frame)
+    u8 unk7F; // sub_08074B68 result (sub_08065618); song played by battle_cutscene_dispatch
+    s16 unk80[3]; // rings: rotation angles x / y / z
+    s8 unk86[3]; // rings: rotation speeds, clamped to +-16
+    u8 filler89;
     u16 unk8A[4]; // race: per-sprite values set by init_scene_with_palette_and_song_5
     u16 unk92[4];
     u16 unk9A[4];

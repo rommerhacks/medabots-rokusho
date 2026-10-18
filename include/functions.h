@@ -1425,3 +1425,4 @@ void ring_points_place_on_circle_b(u16 phase);
 void animate_battle_scroll_tiles(void);
 void fade_update_tilemap_copy(void);
 void render_battle_medal_names(u8 first);
+u32 sub_080440D4(void);

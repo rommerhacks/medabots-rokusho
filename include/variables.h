@@ -1055,6 +1055,15 @@ extern const u16 gUnk_0879AA40[];
 extern const u16 gUnk_08483AA0[]; // sub_08064EFC
 extern const u16 gUnk_08799B98[];
 extern const u16 gUnk_080AFAE8[];
+extern const u8 gUnk_080AFB08[]; // message indices (battle_cutscene_dispatch)
+extern const u8 gUnk_080AFB0B[];
+extern const u8 gUnk_080AFB30[]; // message (handle_battle_menu_selection)
+extern const u8 gUnk_080AFB3F[]; // message index per cursor position (handle_battle_menu_selection)
+extern const u32 gUnk_087A88CC[]; // graphics (sub_0806454C)
+extern const u8 gUnk_087A1084[];
+extern const u32 gUnk_087A92D4[];
+extern const u32 gUnk_087A046C[];
+extern const u16 gUnk_087A034C[];
 struct FuncTable2 { Func f[2]; };
 struct FuncTable4 { Func f[4]; };
 struct FuncTable12 { Func f[12]; };
