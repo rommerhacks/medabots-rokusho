@@ -87,7 +87,6 @@ void update_sprite_animations_0806B334(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0806B160", sprite_animation_dispatch);
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806B420);
 
 void clear_sprite_entry(u8 sprite)
 {
