@@ -1,17 +1,267 @@
 #include "global.h"
 
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_08063090);
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_080630DC);
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_080631DC);
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_08063284);
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_080632FC);
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_080633E4);
-INCLUDE_ASM("asm/nonmatching/code_08063090", update_fade_in_blend_effect);
-INCLUDE_ASM("asm/nonmatching/code_08063090", fade_screen_and_update_sprites);
-INCLUDE_ASM("asm/nonmatching/code_08063090", init_medapart_detail_view);
-INCLUDE_ASM("asm/nonmatching/code_08063090", menu_confirm_selection_with_fade);
-INCLUDE_ASM("asm/nonmatching/code_08063090", scene_fade_or_transition);
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_080637D0);
+void sub_08063090(void)
+{
+    if (blend_fade_step_08065598(gUnk_03006F74->unk50))
+    {
+        gGameSubState++;
+        gUnk_03006F74->unk3C = 0x258;
+        text_window_init(1, 0, 1);
+    }
+    load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
+}
+
+void sub_080630DC(void)
+{
+    struct Unk_03005010 *s;
+    struct Unk_03006F74 *w;
+    u16 a, b;
+
+    run_message(gUnk_08485BD8[15]);
+    s = &gUnk_03005010;
+    w = gUnk_03006F74;
+    s->unk6 = w->unk31 | (w->unk33 << 8) | 0x4000;
+    a = s->unk8[0][1];
+    b = s->unk8[1][1];
+    if ((a & 0xC000) == 0x4000 && (b & 0xC000) == (a & 0xC000))
+    {
+        if (gUnk_03000B90)
+        {
+            w->unk32 = a & 0x7F;
+            gUnk_03006F74->unk34 = (a >> 8) & 3;
+        }
+        else
+        {
+            w->unk32 = b & 0x7F;
+            gUnk_03006F74->unk34 = (b >> 8) & 3;
+        }
+        init_scene_rendering_context(1);
+        sub_08062A74(gUnk_03006F74->unk32 * 4 + gUnk_03006F74->unk34, 1);
+        render_text_string_to_sprites(gUnk_03000440.unk9E + 0x14, 0x10, 0xE, 0xA, 0x10, 0xD, 0, 1);
+        text_window_init(1, 0, 1);
+        gGameSubState++;
+    }
+    load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
+}
+
+void sub_080631DC(void)
+{
+    run_message(gUnk_08485BD8[19]);
+    update_animated_tilemap();
+    load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
+    load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
+    if ((s16)--gUnk_03006F74->unk3C < 0)
+    {
+        gUnk_03000440.unk84 = 0;
+        gGameSubState++;
+        reduce_medapart_stat(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 1);
+        medapart_add_quantity(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
+        CpuFastSet((void *)0x05000200, gPaletteBackup, 0x100);
+        play_sound_effect(0x4B);
+    }
+}
+
+void sub_08063284(void)
+{
+    struct Unk_03000440 *g = &gUnk_03000440;
+    u8 *t = &g->unk84;
+
+    if (*t <= 0x40)
+    {
+        blend_obj_palettes_to_color_0803F998(0x7FFF, *t >> 1, 0xFF);
+        (*t)++;
+    }
+    else
+    {
+        gUnk_03006F74->unk3C = 0;
+        *t = 0;
+        gGameSubState++;
+    }
+    load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
+    load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
+    update_animated_tilemap();
+}
+
+void sub_080632FC(void)
+{
+    struct Unk_03006F74 *w = gUnk_03006F74;
+    s32 n;
+    u16 zero;
+    vu16 v;
+
+    n = 16 - (s16)w->unk3C++;
+    if (n != 0)
+    {
+        REG_BLDCNT = 0xE50;
+        REG_BLDALPHA = ((16 - n) << 8) | n;
+        REG_BLDY = 8;
+        load_medapart_sprite_animation(w->unk31, w->unk33, 0);
+        load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
+        if (n == 1)
+            clear_battle_sprite_slot(0, 0x80);
+    }
+    else
+    {
+        n = w->unk31;
+        w->unk31 = w->unk32;
+        zero = 0;
+        gUnk_03006F74->unk32 = n;
+        n = gUnk_03006F74->unk33;
+        gUnk_03006F74->unk33 = gUnk_03006F74->unk34;
+        gUnk_03006F74->unk34 = n;
+        init_scene_rendering_context(0);
+        init_scene_rendering_context(1);
+        gUnk_03006F74->unk3C = zero;
+        gGameSubState++;
+        v = 0x200;
+        CpuSet((void *)&v, gUnk_03002414->unkB84, 0x01000200);
+    }
+    update_animated_tilemap();
+}
+
+void sub_080633E4(void)
+{
+    u8 buf[0x20];
+    s32 i;
+    u16 *a, *b;
+    u32 zero, one;
+
+    a = (u16 *)0x0202F880;
+    b = gPaletteBackup;
+    for (i = 3; i >= 0; i--)
+    {
+        CpuFastSet(b, buf, 8);
+        CpuFastSet(a, b, 8);
+        CpuFastSet(buf, a, 8);
+        a += 16;
+        b += 16;
+    }
+    gGameSubState++;
+    gUnk_03006F74->unk3C = (zero = 0, one = 1);
+    clear_battle_sprite_slot(0, 0x80);
+    sub_08062A74(gUnk_03006F74->unk31 * 4 + gUnk_03006F74->unk33, 0);
+    sub_08062A74(gUnk_03006F74->unk32 * 4 + gUnk_03006F74->unk34, 1);
+    render_text_string_to_sprites(gUnk_03000440.unk9E, 0, 0, 10, 16, 13, zero, one);
+    render_text_string_to_sprites(gUnk_03000440.unk9E + 0x14, 16, 14, 10, 16, 13, zero, one);
+    play_sound_effect(0x2A);
+    update_animated_tilemap();
+}
+
+void update_fade_in_blend_effect(void)
+{
+    struct Unk_03006F74 *w = gUnk_03006F74;
+    s32 n = (s16)w->unk3C++;
+
+    if (n <= 16)
+    {
+        blend_obj_palettes_to_color_0803F998(0x7FFF, 0x20, 0xFF);
+        REG_BLDCNT = 0xE50;
+        REG_BLDALPHA = ((16 - n) << 8) | n;
+        REG_BLDY = 8;
+    }
+    else
+    {
+        REG_BLDCNT = 0xE10;
+        REG_BLDALPHA = ((16 - n) << 8) | n;
+        REG_BLDY = 8;
+        w->unk3C = 0;
+        gUnk_03000440.unk84 = 0;
+        gGameSubState++;
+    }
+    load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
+    load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
+    update_animated_tilemap();
+}
+
+void fade_screen_and_update_sprites(void)
+{
+    struct Unk_03000440 *g = &gUnk_03000440;
+    u8 *t = &g->unk84;
+
+    if (*t <= 0x40)
+    {
+        blend_obj_palettes_to_color_0803F998(0x7FFF, 0x20 - (*t >> 1), 0xFF);
+        (*t)++;
+    }
+    else
+    {
+        CpuFastSet(gUnk_080AFA4C, (void *)0x05000300, 8);
+        CpuFastSet(gUnk_080AFA4C, gPaletteBackup + 0x80, 8);
+        *t = 0;
+        gGameSubState++;
+        gUnk_03006F74->unk3A = 0x280;
+    }
+    load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
+    load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
+    update_animated_tilemap();
+}
+
+void init_medapart_detail_view(void)
+{
+    load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
+    load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
+    update_scroll_animation_tiles();
+    if (gUnk_03006F74->unk3A == 0)
+    {
+        gUnk_03002C30[0x21].unk0 = 0xC000;
+        gUnk_03002C30[0x21].unk1C = 2;
+        gUnk_03002C30[0x21].unk2 = 0x28;
+        gUnk_03002C30[0x21].unk4 = 0x40;
+        gUnk_03002C30[0x21].unkA = 8;
+        gUnk_03002C30[0x21].unk6 = 0x2A;
+        text_window_init(1, 0, 1);
+        gGameSubState++;
+    }
+}
+
+void menu_confirm_selection_with_fade(void)
+{
+    load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
+    load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
+    if (run_message(gUnk_08485BD8[gUnk_03006F74->unk33 + 0x14]) && (KEYS_LO(gNewKeys) & 1))
+    {
+        gUnk_03005010.unk6 = 0xFF07;
+        play_sound_effect(0xD);
+    }
+    if (gUnk_03005010.unk8[0][1] == 0xFF07 || gUnk_03005010.unk8[1][1] == 0xFF07)
+    {
+        init_blend_effect(gUnk_03006F74->unk50, 0, 0, 1, 0xC0);
+        gGameSubState++;
+    }
+}
+
+void scene_fade_or_transition(void)
+{
+    if (blend_fade_step_08065598(gUnk_03006F74->unk50))
+    {
+        clear_battle_sprite_slot(0, 0x80);
+        gGameState = 0x14;
+        gGameSubState = 0;
+    }
+    else
+    {
+        load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
+        load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
+    }
+}
+
+void sub_080637D0(void)
+{
+    struct FuncTable13 t = gUnk_080AFA6C;
+
+    if (gUnk_03000430 == 2)
+    {
+        u32 v = 0x200;
+        CpuFastSet(&v, gUnk_03002414->unkB84, 0x01000100);
+    }
+    t.f[gGameSubState]();
+    if (gFrameCounter & 1)
+    {
+        gBg3Scroll.x++;
+        gBg3Scroll.y++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08063090", sub_0806384C);
 INCLUDE_ASM("asm/nonmatching/code_08063090", sub_08063D44);
 INCLUDE_ASM("asm/nonmatching/code_08063090", sub_08063D90);

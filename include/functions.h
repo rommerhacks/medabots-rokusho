@@ -1408,3 +1408,7 @@ void sub_08061374(void);
 void draw_tilemap_line(u16 a, s32 b, u8 c, u8 d, u8 e, u8 f);
 void init_fade_screen_setup(void);
 void sub_080609C0(void);
+void update_animated_tilemap(void);
+void render_text_string_to_sprites(u8 *str, u8 slot, u32 x, u32 y, u8 a4, u8 a5, u8 a6, u16 a7);
+void update_scroll_animation_tiles(void);
+void init_scene_rendering_context(u32 a);

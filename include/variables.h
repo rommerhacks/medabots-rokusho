@@ -1040,6 +1040,9 @@ extern const u8 gUnk_087A13B0[];  // race scene BG palettes (0x60 bytes to 0x020
 extern const u8 gUnk_0850DEB8[];  // OBJ palette (0x20 bytes to 0x05000200)
 struct PtrTable3 { const u8 *const *p[3]; };
 extern const struct PtrTable3 gUnk_080AFE9C; // scene texts by gUnk_03006F74->unk5 (scene_text_scroll_step)
+extern const u16 gUnk_080AFA4C[16]; // OBJ palette for the link Medapart trade scene (sub_08063090)
+struct FuncTable13 { Func f[13]; };
+extern const struct FuncTable13 gUnk_080AFA6C; // link Medapart trade sub-states by gGameSubState (sub_080637D0)
 extern const struct FuncTable7 gUnk_080AFEC4; // sub-state handlers by gGameSubState (dispatch_battle_end_substate)
 struct S32Array3 { s32 v[3]; };
 extern const struct S32Array3 gUnk_080AFF34; // {0x50, 0x40, 0x20}: bomb minigame debris intervals (sub_0806C500)
