@@ -16,6 +16,7 @@ extern u32 gGameMode;
 extern struct Unk_030017A0 gUnk_030017A0[];
 extern struct Unk_03001800 gUnk_03001800;
 extern struct Unk_03001800_s gUnk_03001800_s; // same address as gUnk_03001800 (game mode 3 scenes)
+extern struct Unk_03001800_arcade gUnk_03001800_arcade; // same address as gUnk_03001800 (game mode 3 state 5)
 extern u32 gMoney; // money, capped at 99999 (add_money)
 extern u32 gGameState;
 extern u32 gGameSubState;
@@ -172,6 +173,14 @@ extern bool32 (*const gUnk_08485C7C[])(void); // scene steps (execute_scene_step
 extern bool32 (*const gUnk_08485C68[])(void); // transition steps (scene_transition_step_080686F4)
 extern const u16 gUnk_0807C320[]; // title OBJ palettes (0x60 colours), then 0x1C bytes copied to gUnk_03001800_s + 0xC (load_scene_graphics)
 extern const Func gUnk_08485E5C[]; // game mode 3 state 5 sub-states, by gGameSubState (battle_screen_dispatch)
+extern const struct SpriteAnimFrame gUnk_08485D5C[]; // sprite animation steps (update_sprite_animations_0806B334)
+extern const u8 gUnk_087B3B30[]; // game mode 3 state 5 (load_battle_screen_graphics): compressed BG tiles
+extern const u8 gUnk_087B50AC[]; // compressed BG map (VRAM + 0x800)
+extern const u8 gUnk_087B5214[]; // compressed BG map (VRAM + 0x1000)
+extern const u8 gUnk_087B52E4[]; // compressed BG map (VRAM + 0x1800)
+extern const u16 gUnk_087B551C[]; // BG palettes (0x50 colours)
+extern const u8 gUnk_087AA19C[]; // compressed OBJ tiles
+extern const u16 gUnk_0807C0A0[]; // OBJ palettes (0xF0 colours)
 extern const s8 gUnk_08485E84[]; // per-frame y steps, by unk1A & 0x3F (sub_0806CDE8)
 extern const Func gUnk_08485EC4[]; // game mode 3 state 2 (title screen) sub-states, by gGameSubState (sub_0806D3F4)
 extern s32 (*const gUnk_08485EF4[])(u8); // title sprite effects, by gUnk_03002C30[].unk20 - 1: 0 = done, 0xFF = hide (update_sprite_special_effects)

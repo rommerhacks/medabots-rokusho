@@ -148,6 +148,30 @@ struct Unk_03001800_s
     u16 unkF6;
 };
 
+// 0x03001800 while game mode 3 state 5 (gUnk_08485E5C, runs in the arcade scenario) is active; the same RAM as
+// gUnk_03001800.
+struct Unk_03001800_arcade
+{
+    u8 filler0[8];
+    s32 timer; // frame counter of the current step (sub_0806BBDC)
+    s8 unkC; // number of entries in unkF
+    s8 unkD;
+    s8 unkE; // counts up toward unkC
+    s8 unkF[0x32]; // 0..2 each, a random walk (sub_0806B9D0)
+    s8 unk41; // -8..8, pushed by R / L, eases back to 0 (sub_0806BE58)
+    u8 filler42[2];
+    s32 unk44; // unkC + unkD once the intro ends (sub_0806BBDC)
+};
+
+// One step of a sprite animation (gUnk_08485D5C).
+struct SpriteAnimFrame
+{
+    u16 frame; // copied to the sprite's unk6
+    s16 duration; // frames
+    u8 next; // index of the next step
+    u8 filler5[3];
+};
+
 // 0x03002B70: money, then a 10-byte string (init_save_prompt_text writes a default one).
 struct Unk_03002B70
 {
