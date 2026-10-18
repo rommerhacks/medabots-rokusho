@@ -1136,7 +1136,7 @@ struct Unk_03006F74
     s16 unk3A; // title: blend step (sub_0805BB10)
     u16 unk3C;
     s16 unk3E;
-    u8 filler40[0x8];
+    u16 unk40[4];
     u8 unk48;
     u8 unk49;
     u8 unk4A;
@@ -1161,7 +1161,7 @@ struct Unk_03006F74
     u8 unkB0[0x20]; // Medal list: Medal indices (sub_08064CA0)
     struct RingPoint unkD0[18]; // points on a hexagon / circle (ring_points_place_on_hexagon, ring_points_place_on_circle)
     s32 unk1F0[4][4]; // 8.8 fixed-point 4x4 transform matrix (matrix_set_identity, matrix_rotate_xyz)
-    u8 filler230[0x40];
+    struct Unk_03000BE0 unk230; // link: Medal record received from the other player (sub_08063E38)
     u8 unk270[0x30]; // message text buffer (sub_08061180)
 };
 

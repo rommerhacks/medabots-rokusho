@@ -1047,6 +1047,20 @@ extern const s16 gSineTable[0x140]; // sin(i * 2pi / 256) * 0x100, 256 + 64 entr
 extern const s8 gUnk_080AFB45[]; // game mode by gUnk_03006F74->unk5 (sub_0806641C)
 extern const struct FuncTable13 gUnk_080AFB48; // link menu sub-states by gGameSubState (dispatch_battle_menu_and_update_counters)
 extern const u8 gUnk_0848564F[]; // 0xFF-terminated message (setup_dialogue_script_from_rom)
+extern const u8 gUnk_0879C06C[]; // graphics (clear_vram_bg)
+extern const u8 gUnk_0879C260[];
+extern const u8 gUnk_0879C3A0[];
+extern const u32 gUnk_0879AC40[];
+extern const u16 gUnk_0879AA40[];
+extern const u16 gUnk_08483AA0[]; // sub_08064EFC
+extern const u16 gUnk_08799B98[];
+extern const u16 gUnk_080AFAE8[];
+struct FuncTable2 { Func f[2]; };
+struct FuncTable4 { Func f[4]; };
+struct FuncTable12 { Func f[12]; };
+extern const struct FuncTable12 gUnk_080AFAA0; // link Medal exchange sub-states by gGameSubState (sub_080644C4)
+extern const struct FuncTable4 gUnk_080AFAD0; // sub-states by gGameSubState (scene_dispatch_and_tick)
+extern const struct FuncTable2 gUnk_080AFAE0; // sub-states by gGameSubState (dispatch_fade_substate)
 struct FuncTable8 { Func f[8]; };
 extern const struct FuncTable8 gUnk_080AFB10; // sub-state handlers by gGameSubState (dispatch_battle_cutscene_substate)
 extern const Func gUnk_08483EB4[]; // Medal list screen sub-states (sub_08064C3C)
