@@ -1426,7 +1426,7 @@ void sub_0806E26C(void)
 
 void boot_logos_check_skip(void)
 {
-    if (--gUnk_03001800_s.unk10 == 0)
+    if (--gUnk_03001800_s.unk10.w == 0)
         play_song(3);
     if (gUnk_03001800_s.unkC.b != 0 && (KEYS_LO(gNewKeys) & 8)) {
         gGameMode = 3;
@@ -1533,7 +1533,7 @@ void boot_logos_load_natsume(void)
     }
     DmaSet(3, out, VRAM + 0x7800, 0x84000140);
     DmaSet(3, gUnk_087F27D8, PLTT, 0x80000010);
-    gUnk_03001800_s.unk10 = 0x34;
+    gUnk_03001800_s.unk10.w = 0x34;
     REG_BG0CNT = 0xF02;
     REG_DISPCNT |= 0x100;
     gUnk_03001800_s.nextSubState = 7;

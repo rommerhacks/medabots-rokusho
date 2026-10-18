@@ -137,7 +137,15 @@ struct Unk_03001800_s
         u8 b;  // boot logos: nonzero once START may skip them (boot_logos_check_skip)
         s8 s[4]; // title: s[2] is a two-digit number shown with sprites 11 / 12 (get_battle_state_value_div10)
     } unkC;
-    s32 unk10; // countdown: play_song(3) when it reaches 0
+    union {
+        s32 w; // countdown: play_song(3) when it reaches 0
+        struct {
+            u8 state; // battle-end state machine: index into gUnk_08486138
+            u8 step; // step counter of the current state
+            u8 pos; // script position (sub_08072138)
+            u8 pad;
+        } end;
+    } unk10;
     u8 filler14[0x1A];
     u8 unk2E; // cells drawn in the 40-cell grid (check_battle_timer_expired)
     u8 unk2F;
@@ -383,7 +391,8 @@ struct Unk_03002C30
     u8 unk2F;
     u16 unk30;
     u16 unk32;
-    u8 filler34[0x6];
+    u16 unk34; // frame target unk1A counts up to (sub_08071C40)
+    u8 filler36[0x4];
     u16 unk3A; // previous frame's unk1A (update_battle_bot_entry_animations)
     u8 filler3C[0x4];
 };

@@ -1038,18 +1038,400 @@ u32 sub_08071840(u8 sprite)
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080718EC);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080719EC);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071AF0);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071B44);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071C40);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", call_battle_handler_by_state_08071C64);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071C94);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071D14);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071D84);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071DFC);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071E80);
+u32 sub_080718EC(u8 sprite)
+{
+    s8 tbl[12];
+    struct Unk_03002C30 *base;
+    struct Unk_03002C30 *s;
+    struct Unk_03002C30 *p;
+    u32 n;
+
+    memcpy_optimized(tbl, gUnk_080AFF9C, 12);
+    base = gUnk_03002C30;
+    s = &base[sprite];
+    if (s->unk21 <= 11)
+    {
+        if (s->unk1A == tbl[s->unk21])
+        {
+            s->unk2--;
+            if (++s->unk21 == 8 && s->unk22 != 0xFF)
+            {
+                if (sprite == 0)
+                {
+                    init_battle_sprite_entry_08048818(1, 0xCC00, 0x50E, 4, 3);
+                    n = 1;
+                }
+                else
+                {
+                    n = sprite + 1;
+                    ((void (*)())init_battle_sprite_entry_08048818)(n, 0xC800, 0x50E, 4, 3);
+                }
+                p = gUnk_03002C30;
+                p[n].unk2 = p[sprite].unk2;
+                p[n].unk4 = 0;
+                p[n].unkB = p[sprite].unkB - 1;
+                sub_08071C40(3, n, 0);
+            }
+        }
+    }
+    else
+    {
+        if (sprite == 0)
+        {
+            base[0].unk0 = (base[0].unk0 & 0xF3FF) | 0x800;
+            base[1].unk0 = (base[1].unk0 & 0xF3FF) | 0x800;
+        }
+        if (s->unk22 == 0xFF)
+            s->unk22 = 0;
+        return 0;
+    }
+    return 1;
+}
+
+u32 sub_080719EC(u8 sprite)
+{
+    s8 tbl[12];
+    struct Unk_03002C30 *base;
+    struct Unk_03002C30 *s;
+    struct Unk_03002C30 *p;
+    u32 n;
+
+    memcpy_optimized(tbl, gUnk_080AFF9C, 12);
+    base = gUnk_03002C30;
+    s = &base[sprite];
+    if (s->unk21 <= 11)
+    {
+        if (s->unk1A == tbl[s->unk21])
+        {
+            s->unk2++;
+            if (++s->unk21 == 8 && s->unk22 != 0xFF)
+            {
+                if (sprite == 11)
+                {
+                    init_battle_sprite_entry_08048818(12, 0xCC00, 0x50E, 4, 3);
+                    n = 12;
+                }
+                else
+                {
+                    n = sprite + 1;
+                    ((void (*)())init_battle_sprite_entry_08048818)(n, 0xC800, 0x50E, 4, 3);
+                }
+                p = gUnk_03002C30;
+                p[n].unk2 = p[sprite].unk2;
+                p[n].unk4 = 0;
+                p[n].unkB = p[sprite].unkB - 1;
+                sub_08071C40(4, n, 0);
+            }
+        }
+    }
+    else
+    {
+        if (sprite == 11)
+        {
+            s->unk0 = (s->unk0 & 0xF3FF) | 0x800;
+            base[12].unk0 = (base[12].unk0 & 0xF3FF) | 0x800;
+        }
+        if (s->unk22 != 0xFF)
+            s->unk22 = 0;
+        return 0;
+    }
+    return 1;
+}
+
+u32 sub_08071AF0(u8 sprite)
+{
+    struct Unk_03002C30 *base = gUnk_03002C30;
+    struct Unk_03002C30 *s = &base[sprite];
+    u16 f;
+
+    s->unk2++;
+    base[(u16)(sprite + 4)].unk2 = s->unk2;
+    if (s->unk34 <= s->unk1A)
+    {
+        f = s->unk6 / 12;
+        f = f * 12;
+        s->unk6 = s->unk30 = f + 3;
+        sub_08071C40(8, sprite, 0);
+    }
+    return 1;
+}
+
+u32 sub_08071B44(u8 sprite)
+{
+    struct Unk_03002C30 *base = gUnk_03002C30;
+    struct Unk_03002C30 *s = &base[sprite];
+    u16 f;
+
+    s->unk2--;
+    base[(u16)(sprite + 4)].unk2 = s->unk2;
+    if (s->unk34 <= s->unk1A)
+    {
+        f = s->unk6 / 12;
+        f = f * 12;
+        s->unk6 = s->unk30 = f + 3;
+        sub_08071C40(8, sprite, 0);
+    }
+    return 1;
+}
+
+// Dead code in sub_08071B44's .byte tail (needs carve.py 08071B98:sub_08071B98:0x78 08071C10:sub_08071C10:0x30)
+u32 sub_08071B98(u8 sprite)
+{
+    struct Unk_03002C30 *base = gUnk_03002C30;
+    struct Unk_03002C30 *s = &base[sprite];
+
+    s->unk2++;
+    base[(u16)(sprite + 4)].unk2 = s->unk2;
+    s->unk4 = 0x32 - (gSineTable[s->unk1A >> 1] >> 4);
+    if (s->unk2 == 0x20)
+        s->unk0 = (s->unk0 & 0xF3FF) | 0x800;
+    if (s->unk34 <= s->unk1A)
+    {
+        s->unk0 = (s->unk0 & 0xF7FF) | 0xC00;
+        return 0;
+    }
+    return 1;
+}
+
+u32 sub_08071C10(u8 sprite)
+{
+    struct Unk_03002C30 *base = gUnk_03002C30;
+    struct Unk_03002C30 *s = &base[sprite];
+
+    s->unk4++;
+    base[(u16)(sprite + 4)].unk4++;
+    if (s->unk1A > 7)
+        return 0;
+    return 1;
+}
+
+void sub_08071C40(u8 state, u8 sprite, u16 arg2)
+{
+    struct Unk_03002C30 *base = gUnk_03002C30;
+    struct Unk_03002C30 *s = &base[sprite];
+
+    s->unk20 = state;
+    s->unk21 = 0;
+    s->unk34 = arg2;
+    s->unk1A = 0;
+}
+
+u32 call_battle_handler_by_state_08071C64(void)
+{
+    return gUnk_08486138[gUnk_03001800_s.unk10.end.state]();
+}
+
+// dead code in the .byte tail at 0x08071C84 (needs carve.py: 08071C84:sub_08071C84:0xC)
+u32 sub_08071C84(void)
+{
+    gUnk_03001800_s.unk10.end.state++;
+    return 1;
+}
+
+u32 sub_08071C94(void)
+{
+    struct Unk_03002C30 *base = gUnk_03002C30;
+
+    if (base[2].unk4 <= 0x3D)
+        base[1].unk4 = base[2].unk4 += 2;
+    else if (base[2].unk4 <= 0x41)
+        base[1].unk4 = base[2].unk4 += 1;
+    else if (base[2].unk1A <= 0x1F)
+        base[2].unk1A++;
+    else if (base[2].unk2 <= 0x40)
+    {
+        clear_sprite_entry(6);
+        play_sound_effect(0x54);
+        base[2].unk1A = 0;
+        gUnk_03001800_s.unk10.end.state++;
+        return 1;
+    }
+    else
+        base[1].unk2 = base[2].unk2 -= 4;
+    return 0;
+}
+
+u32 sub_08071D14(void)
+{
+    struct Unk_03002C30 *base = gUnk_03002C30;
+    s16 *y = &base[3].unk4;
+    u16 *t;
+    s16 *x;
+
+    if (*y <= 0x35)
+        *y += 2;
+    else if (*y <= 0x39)
+        *y += 1;
+    else if (*(t = &base[3].unk1A) <= 0x1F)
+        (*t)++;
+    else if (*(x = &base[3].unk2) > 0x37)
+    {
+        clear_sprite_entry(7);
+        play_sound_effect(0x54);
+        *t = 0;
+        gUnk_03001800_s.unk10.end.state++;
+        return 1;
+    }
+    else
+        *x += 4;
+    return 0;
+}
+
+u32 sub_08071D84(void)
+{
+    struct Unk_03002C30 *base = gUnk_03002C30;
+    s16 *y = &base[4].unk4;
+    u16 *t;
+    s16 *x;
+
+    if (*y <= 0x35)
+        *y += 2;
+    else if (*y <= 0x39)
+        *y += 1;
+    else if (*(t = &base[4].unk1A) <= 0x1F)
+        (*t)++;
+    else if (*(x = &base[4].unk2) <= 0x44)
+    {
+        clear_sprite_entry(8);
+        play_sound_effect(0x54);
+        *t = 0;
+        gUnk_03001800_s.unk10.end.state++;
+        return 1;
+    }
+    else
+        *x -= 4;
+    return 0;
+}
+
+u32 sub_08071DFC(void)
+{
+    struct Unk_03002C30 *base = gUnk_03002C30;
+    s16 *y = &base[5].unk4;
+    u16 *t;
+    s16 *x;
+
+    if (*y <= 0x3D)
+        *y += 2;
+    else if (*y <= 0x41)
+        *y += 1;
+    else if (*(t = &base[5].unk1A) <= 0x1F)
+        (*t)++;
+    else if (*(x = &base[5].unk2) <= 0x40)
+    {
+        clear_sprite_entry(9);
+        play_sound_effect(0x54);
+        {
+            u8 *b = &base[5].unkB;
+            u16 zero = 0;
+
+            *b = 0x21;
+            *t = zero;
+        }
+        gUnk_03001800_s.unk10.end.state++;
+        return 1;
+    }
+    else
+        *x -= 4;
+    return 0;
+}
+
+u32 sub_08071E80(void)
+{
+    if (gUnk_03002C30[0].unk1A++ & 1)
+    {
+        if (++gUnk_03002C30[0].unk4 == 0)
+            play_sound_effect(0x59);
+    }
+    gUnk_03002C30[0].unk6 = ((gUnk_03002C30[0].unk1A >> 2) & 3) + 0x50F;
+    if (gUnk_03002C30[0].unk4 > 0x3F)
+    {
+        play_sound_effect(7);
+        gUnk_0300700C = gPaletteBackupBg;
+        gUnk_03001800_s.unk10.end.step = 0;
+        DmaSet(3, OBJ_PLTT, gPaletteBackupBg, 0x84000080);
+        gUnk_03001800_s.unk10.end.state++;
+    }
+    return 0;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071F08);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072010);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_080720BC);
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08072138);
+
+u32 sub_08072010(void)
+{
+    struct Unk_03002C30 *base = gUnk_03002C30;
+    vu32 fill;
+
+    if (base[1].unk1A & 4)
+        base[1].unk4 = 0xC8;
+    else
+        base[1].unk4 = 0x42;
+    if (base[1].unk1A++ > 0x1F)
+    {
+        clear_sprite_entry(1);
+        init_scene_buffers_080445F4();
+        fill = 0x200;
+        DmaSet(3, &fill, gUnk_03002414->unkB84, 0x85000100);
+        setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, 0, 0, 0);
+        gUnk_03001800_s.unk10.end.state++;
+    }
+    return 0;
+}
+
+u32 sub_080720BC(void)
+{
+    vu32 fill;
+
+    fill = 0x200;
+    DmaSet(3, &fill, gUnk_03002414->unkB84, 0x85000100);
+    setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, 0, 1, 0);
+    advance_text_display(0, 0x2D, 0);
+    gUnk_03001800_s.unk10.end.state++;
+    gUnk_03001800_s.unk10.end.step = 0;
+    return 0;
+}
+
+u32 sub_08072138(void)
+{
+    struct Unk_03002C30 *base;
+    u8 script[13];
+    vu32 fill;
+    register u32 zero asm("r5"); // pinned: the original keeps a second zero (r2) for the arguments
+    u32 h;
+    s16 *p;
+
+    memcpy_optimized(script, gUnk_080AFFA8, 13);
+    base = gUnk_03002C30;
+    p = &base[2].unk4;
+    zero = 0;
+    h = 0;
+    *p = 0xC8;
+    *&base[3].unk4 = 0xC8;
+    *&base[4].unk4 = 0xC8;
+    *&base[5].unk4 = 0xC8;
+    fill = 0x200;
+    DmaSet(3, &fill, gUnk_03002414->unkB84, 0x85000100);
+    setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, h, 1, h);
+    switch (script[gUnk_03001800_s.unk10.end.pos])
+    {
+    case 0:
+        if (script[gUnk_03001800_s.unk10.end.pos + 1] >= gUnk_03001800_s.unk10.end.step++)
+            break;
+        gUnk_03001800_s.unk10.end.pos += 2;
+        gUnk_03001800_s.unk10.end.step = zero;
+        break;
+    case 1:
+        play_sound_effect(script[gUnk_03001800_s.unk10.end.pos + 1]);
+        gUnk_03001800_s.unk10.end.pos += 2;
+        gUnk_03001800_s.unk10.end.step = zero;
+        break;
+    case 2:
+        break;
+    }
+    if (advance_text_display(0, 0x2D, 0) != 0)
+    {
+        gUnk_03001800_s.unk10.end.state = 0;
+        return 1;
+    }
+    return 0;
+}
+
