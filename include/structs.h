@@ -1145,6 +1145,16 @@ struct Unk_03006F74
     u8 unk270[0x30]; // message text buffer (sub_08061180)
 };
 
+// BLDY fade state (init_blend_effect / blend_fade_step_08065598; Unk_03006F74.unk50)
+struct BlendEffect
+{
+    u16 mode; // BLDCNT effect bits (| 0x3F)
+    u8 unk2; // BLDY level
+    u8 unk3; // frames per step
+    u8 unk4; // frame counter
+    s8 unk5; // level change per step
+};
+
 // Item list built at 0x02040000 (an EWRAM mirror) by unpack_item_inventory_to_buffer, one per inventory slot
 struct ItemListEntry
 {

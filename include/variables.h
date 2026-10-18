@@ -1043,6 +1043,9 @@ extern const struct PtrTable3 gUnk_080AFE9C; // scene texts by gUnk_03006F74->un
 extern const u16 gUnk_080AFA4C[16]; // OBJ palette for the link Medapart trade scene (sub_08063090)
 struct FuncTable13 { Func f[13]; };
 extern const struct FuncTable13 gUnk_080AFA6C; // link Medapart trade sub-states by gGameSubState (sub_080637D0)
+struct FuncTable8 { Func f[8]; };
+extern const struct FuncTable8 gUnk_080AFB10; // sub-state handlers by gGameSubState (dispatch_battle_cutscene_substate)
+extern const Func gUnk_08483EB4[]; // Medal list screen sub-states (sub_08064C3C)
 extern const struct FuncTable7 gUnk_080AFEC4; // sub-state handlers by gGameSubState (dispatch_battle_end_substate)
 struct S32Array3 { s32 v[3]; };
 extern const struct S32Array3 gUnk_080AFF34; // {0x50, 0x40, 0x20}: bomb minigame debris intervals (sub_0806C500)

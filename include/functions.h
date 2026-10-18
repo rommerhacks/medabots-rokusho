@@ -1412,3 +1412,5 @@ void update_animated_tilemap(void);
 void render_text_string_to_sprites(u8 *str, u8 slot, u32 x, u32 y, u8 a4, u8 a5, u8 a6, u16 a7);
 void update_scroll_animation_tiles(void);
 void init_scene_rendering_context(u32 a);
+u8 sub_08074B68(void);
+void sub_08002190(void);
