@@ -163,6 +163,20 @@ struct Unk_03001800_bomb
     s32 unk44; // timer value of the next bomb drop (bomb_game_drop_bombs); unkC + unkD once the intro ends
 };
 
+// 0x03001800 during the code_0806F3F0 animated-background scene (sub_08070760, gUnk_084860C8); the same RAM
+// as gUnk_03001800.
+struct Unk_03001800_bganim
+{
+    u16 unk0; // next mode? (cf. Unk_03001800_s.nextMode)
+    u16 unk2; // next state?
+    u8 filler4[8];
+    u8 unkC; // nonzero: scroll BG3 every other frame (sub_0807068C)
+    u8 unkD; // nonzero: animate BG tiles (sub_080706AC)
+    u8 unkE; // tile animation frame 0..5 (every 4 frames)
+    u8 unkF; // tile animation frame 0..5 (every 16 frames)
+    u8 filler10[4];
+};
+
 // One step of a sprite animation (gUnk_08485D5C).
 struct SpriteAnimFrame
 {

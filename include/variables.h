@@ -17,6 +17,8 @@ extern struct Unk_030017A0 gUnk_030017A0[];
 extern struct Unk_03001800 gUnk_03001800;
 extern struct Unk_03001800_s gUnk_03001800_s; // same address as gUnk_03001800 (game mode 3 scenes)
 extern struct Unk_03001800_bomb gUnk_03001800_bomb; // same address as gUnk_03001800 (game mode 3 state 5)
+// A view through gUnk_03001800 itself: the scene init also clears that block, and the literal pool shares one address.
+#define gUnk_03001800_bganim (*(struct Unk_03001800_bganim *)&gUnk_03001800)
 extern u32 gMoney; // money, capped at 99999 (add_money)
 extern u32 gGameState;
 extern u32 gGameSubState;
@@ -1099,3 +1101,19 @@ extern const u16 gUnk_085E19EC[];
 extern const u16 gUnk_085E0A38[];
 extern const u16 gUnk_0807C540[]; // 16-colour palettes (same table as init_battle_bg_palettes_and_layers)
 extern const u16 gUnk_087C4DFC[];
+extern const u8 gUnk_087C8E00[]; // LZ77 BG tiles (load_bg_screen_a)
+extern const u8 gUnk_087CC7BC[]; // LZ77 30x20 tilemap (load_bg_screen_a)
+extern const u16 gUnk_087CCAEC[]; // BG palette, 256 colours (load_bg_screen_a)
+extern const u8 gUnk_087CCCEC[]; // LZ77 BG tiles (load_bg_screen_b)
+extern const u8 gUnk_087D0954[]; // LZ77 30x20 tilemap (load_bg_screen_b)
+extern const u16 gUnk_087D0C80[]; // BG palette, 256 colours (load_bg_screen_b)
+extern const u8 gUnk_087D0E80[]; // LZ77 BG tiles (load_bg_screen_c)
+extern const u8 gUnk_087D424C[]; // LZ77 30x20 tilemap (load_bg_screen_c)
+extern const u16 gUnk_087D4564[]; // BG palette, 256 colours (load_bg_screen_c)
+extern s32 (*const gUnk_084860AC[])(u8); // sprite actions, by gUnk_03002C30[].unk20 - 1: 0 = done, 0xFF = clear (update_sprite_animations_080703D8)
+extern const u8 gUnk_084860C0[]; // sprite actions: frame period, by unk20 - 1
+extern const s8 gUnk_080AFF50[]; // 64-entry wave offsets, by gUnk_03002C30[].unk21 & 0x3F (sub_0807052C)
+extern u8 gUnk_02031000[]; // animated BG tiles: 6 frames of 0x280 bytes, 0x100 copied (sub_080706AC)
+extern u8 gUnk_02031100[]; // animated BG tiles: 6 frames of 0x280 bytes, 0x180 copied (sub_080706AC)
+extern u8 gUnk_03007010;
+extern const Func gUnk_084860C8[]; // sub-states by gGameSubState (sub_08070760); [0] = sub_0807079C
