@@ -138,8 +138,15 @@ struct Unk_03001800_s
         s8 s[4]; // title: s[2] is a two-digit number shown with sprites 11 / 12 (get_battle_state_value_div10)
     } unkC;
     s32 unk10; // countdown: play_song(3) when it reaches 0
-    u8 filler14[0x1C];
-    u8 unk30[0xBE]; // decompression buffer (load_battle_ui_assets)
+    u8 filler14[0x1A];
+    u8 unk2E; // cells drawn in the 40-cell grid (check_battle_timer_expired)
+    u8 unk2F;
+    u16 unk30[0x50]; // decompression buffer (load_battle_ui_assets); tile source of that grid
+    u8 unkD0; // text cursor (process_text_tile_and_dma_transfer)
+    u8 unkD1;
+    u16 unkD2[13]; // text tile row, DMA'd to 0x0600FC44
+    u8 unkEC; // column / row counters of battle_draw_tilemap_row_dma
+    u8 unkED;
     s8 unkEE; // blend counter (scene_fade_out_and_restore_state)
     u8 unkEF;
     u16 unkF0;

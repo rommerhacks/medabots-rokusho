@@ -1121,3 +1121,5 @@ extern s32 (*const gUnk_08486118[])(u8);
 extern const s8 gUnk_080AFF94[8];
 extern const void *const gUnk_084872DC[];
 extern const u8 gUnk_08486114[];
+extern const u8 gUnk_0848604C[]; // 12 bytes per a, from +0x30: 3 rows (gUnk_03001800.unkED) of x, y, end x, end row
+extern const u8 *const gUnk_0848602C[]; // text strings for the battle intro; [a + 4] read by process_text_tile_and_dma_transfer
