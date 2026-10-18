@@ -871,6 +871,7 @@ void sub_0806CE58(void);
 void sub_0806CFA4(void);
 u32 sub_0806C6F8(void);
 u32 sub_0806C7C4(void);
+void set_bot_y_positions_by_count(void);
 void sub_0806DF80(u8 anim, u8 sprite); // starts animation anim on sprite slot sprite (unk20 = anim, unk22 = 0, unk30 = unk6, unk1A = 0)
 u32 check_battle_timer_expired(u8 a);
 void process_text_tile_and_dma_transfer(u8 a);

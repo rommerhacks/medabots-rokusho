@@ -598,7 +598,68 @@ void sub_0806C4CC(void)
         clear_sprite_entry(56);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806C500);
+void sub_0806C500(void)
+{
+    struct S32Array3 tbl;
+    s32 i;
+
+    tbl = gUnk_080AFF34;
+    if (gUnk_03002C30[30].unk1A < 0x50) {
+        if (gUnk_03002C30[30].unk1A <= tbl.v[gUnk_03002C30[30].unk20 - 1] && (gUnk_03002C30[30].unk1A & 7) == 0) {
+            for (i = 0; i < 8; i++) {
+                if (gUnk_03002C30[40 + i].unk20 == 0) {
+                    gUnk_03002C30[40 + i].unk20 = 3;
+                    gUnk_03002C30[40 + i].unk2 = (gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] & 0x3F) + 0x58;
+                    gUnk_03002C30[40 + i].unk4 = 0x90;
+                    gUnk_03002C30[40 + i].unk1A = 0;
+                    if (gUnk_03002C30[30].unk1A % 16 == 0)
+                        play_sound_effect(0x3B);
+                    break;
+                }
+            }
+        }
+        if (gUnk_03002C30[30].unk22)
+            gUnk_03002C30[30].unk2 += 2;
+        else
+            gUnk_03002C30[30].unk2 -= 2;
+        gUnk_03002C30[30].unk4 -= 2;
+        gUnk_03002C30[30].unk1A++;
+    } else {
+        gUnk_03002C30[30].unk20--;
+        set_bot_y_positions_by_count();
+        if (gUnk_03002C30[30].unk20 != 0) {
+            u16 zero;
+
+            gGameSubState = 3;
+            gUnk_03002C30[0].unk20 = 3;
+            gUnk_03002C30[30].unk21 = 0;
+            gUnk_03002C30[30].unk6 = 0;
+            gUnk_03002C30[30].unk18 = 0;
+            gUnk_03002C30[30].unk2 = 0x78;
+            gUnk_03002C30[30].unk4 = 0x80;
+            gUnk_03002C30[30].unk8 = 0x40;
+            gUnk_03002C30[30].unk9 = 0x40;
+            gUnk_03002C30[30].unk22 = 0;
+            gUnk_03001800_bomb.unk41 = 0;
+            gUnk_03002C30[32].unk6 = 7;
+            gUnk_03002C30[32].unk2 = 0x78;
+            gUnk_03002C30[32].unk4 = 0x10;
+            gUnk_03002C30[32].unk1A = 0;
+            zero = 0;
+            DmaSet(3, &zero, &gUnk_03002C30[32].unk20, 0x81000008);
+            gUnk_03001800_bomb.unkC = gUnk_03001800_bomb.unkE + 10;
+            if (gUnk_03001800_bomb.unkC > 0x32)
+                gUnk_03001800_bomb.unkC = 0x32;
+            gUnk_03001800_bomb.unkD += 4;
+            gUnk_03001800_bomb.timer = 0;
+        } else {
+            play_song(0);
+            play_song(0xF);
+            gGameSubState = 7;
+            gUnk_03001800_bomb.timer = 0;
+        }
+    }
+}
 
 bool32 sub_0806C6F8(void)
 {
