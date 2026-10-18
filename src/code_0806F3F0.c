@@ -573,10 +573,10 @@ void load_battle_field_graphics(void)
     REG_BG3CNT = 0xF07;
     REG_BLDCNT = 0xC40;
     REG_BLDALPHA = 0xA0C;
-    gUnk_03001800_bomb.unkC = 0;
+    gUnk_03001800_bganim.unkC = 0;
     gBg3Scroll.x = 0;
     gBg3Scroll.y = 0;
-    gUnk_03001800_bomb.unkD = 1;
+    gUnk_03001800_bganim.unkD = 1;
     setup_screen_transition_effect_080682CC(4, 2, 0);
     REG_DISPCNT |= 0x1E00;
     gGameSubState = 1;
@@ -632,8 +632,8 @@ void init_battle_bg_palettes_and_layers(void)
     gUnk_03002C30[5].unk4 = -0x30;
     gUnk_03002C30[5].unkB = 0x29;
 
-    gUnk_03001800_bomb.unkC = 1;
-    gUnk_03001800_bomb.unkD = 0;
+    gUnk_03001800_bganim.unkC = 1;
+    gUnk_03001800_bganim.unkD = 0;
     setup_screen_transition_effect_080682CC(4, 2, 0);
     REG_DISPCNT |= 0x1E00;
     gGameSubState = 1;
