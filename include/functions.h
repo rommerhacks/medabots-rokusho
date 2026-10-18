@@ -501,6 +501,8 @@ void init_all_sound_channels(void);
 void sound_init_wave_channel(void);
 u32 sound_set_pitch_offset(struct SoundMixChannel *ch, s32 note);
 void CpuSet(const void *src, void *dest, u32 control);
+s32 Div(s32 num, s32 denom); // BIOS SWI 6
+s32 Mod(s32 num, s32 denom); // BIOS SWI 6, returns the remainder
 void CpuFastSet(const void *src, void *dest, u32 control);
 u32 rng_next(u16 range);
 #define CpuCopy16(src, dest, size) CpuSet(src, dest, ((size) / 2) & 0x1FFFFF)

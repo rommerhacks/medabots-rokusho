@@ -993,7 +993,10 @@ struct Unk_03005310
     u8 unk1;
     u8 filler2[0x2];
     u32 unk4; // frame counter
-    u8 filler8[0x16];
+    u8 filler8[0x10];
+    u16 unk18; // cleared with the gUnk_03006D40 affine params (sub_080492CC)
+    u16 unk1A;
+    u8 filler1C[0x2];
     u16 unk1E; // BG1-3 x scroll (update_battle_field_frame)
     u16 unk20;
     u16 unk22;
