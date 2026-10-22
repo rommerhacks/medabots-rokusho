@@ -431,7 +431,21 @@ void field_load_area_tiles(u8 area)
         gUnk_030057E0.unkC4A = 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08052960);
+u32 sub_08052960(u8 area, u8 which)
+{
+    u32 ret = 0;
+
+    switch (which)
+    {
+    case 0:
+        ret = gUnk_083F8B74[area][which];
+        break;
+    case 1:
+        ret = gUnk_083F8B74[area][which];
+        break;
+    }
+    return ret;
+}
 
 u32 sub_08052990(u32 unused, u8 which)
 {
@@ -473,7 +487,12 @@ u32 sub_08052A18(void)
     return gUnk_030057E0.unkC4A;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08052A2C);
+void sub_08052A2C(s16 dx)
+{
+    gBg1Scroll.x += dx;
+    gBg2Scroll.x += dx;
+    gBg3Scroll.x += dx;
+}
 
 void field_center_camera_on_player(void)
 {
@@ -503,7 +522,12 @@ void field_center_camera_on_player(void)
     sub_080529E4(y * 16);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08052AF8);
+void sub_08052AF8(s16 dy)
+{
+    gBg1Scroll.y += dy;
+    gBg2Scroll.y += dy;
+    gBg3Scroll.y += dy;
+}
 
 void update_bg_scroll_offsets_a(void)
 {
@@ -542,7 +566,27 @@ void check_and_update_battlefield_palette(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", find_map_event_by_coords);
+// Returns 1 if a warp of the current area sits at (x, y); stores its high dir nibble in gUnk_03006D38.unk3.
+u32 find_map_event_by_coords(u32 x, u32 y)
+{
+    u32 found = 0;
+    const struct AreaWarp *w = gUnk_08413114[gUnk_030057E0.unk7FE];
+    s32 dir;
+    s32 i;
+
+    for (i = 0; w[i].x != 0xFF; i++)
+    {
+        u8 wx = w[i].x;
+        u8 wy = w[i].y;
+        if (wx == x && wy == y)
+        {
+            found = 1;
+            dir = w[i].dir;
+            gUnk_03006D38.unk3 = (dir & 0xF0) >> 4;
+        }
+    }
+    return found;
+}
 
 // dir: 0 up, 1 down, 2 left, 3 right. At the edge the player only turns to face dir.
 u8 field_player_at_map_edge(u8 dir)
@@ -686,13 +730,103 @@ void update_bg_scroll_offsets_b(void)
     gUnk_03002C30[90].unk4 = gUnk_03002C30[48].unk4 - 5;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_0805311C);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053154);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053194);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_080531D0);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_080531EC);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053234);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053288);
+void sub_0805311C(u16 id)
+{
+    if (!(id & 1))
+    {
+        u8 *flags = gUnk_030057D8;
+        flags[id >> 1] &= 0x7F;
+    }
+    else
+    {
+        u8 *flags = gUnk_030057D8;
+        flags[id >> 1] &= 0xF7;
+    }
+}
+
+void sub_08053154(u16 id)
+{
+    if (!(id & 1))
+    {
+        u8 *flags = gUnk_030057D8;
+        flags[id >> 1] = (flags[id >> 1] & 0x7F) | 0x80;
+    }
+    else
+    {
+        u8 *flags = gUnk_030057D8;
+        flags[id >> 1] = (flags[id >> 1] & 0xF7) | 0x08;
+    }
+}
+
+u32 sub_08053194(u16 id)
+{
+    if (!(id & 1))
+    {
+        u8 *flags = gUnk_030057D8;
+        return (u8)(flags[id >> 1] & 0x80) >> 7;
+    }
+    else
+    {
+        u8 *flags = gUnk_030057D8;
+        return (u8)(flags[id >> 1] & 0x08) >> 3;
+    }
+}
+
+void sub_080531D0(u16 id, u8 val)
+{
+    if (val == 0)
+        sub_0805311C(id);
+    else
+        sub_08053154(id);
+}
+
+void sub_080531EC(u16 id, u8 val)
+{
+    if (!(id & 1))
+    {
+        u8 *flags = gUnk_030057D8;
+        flags[id >> 1] = (flags[id >> 1] & 0x8F) | (val << 4);
+    }
+    else
+    {
+        u8 *flags = gUnk_030057D8;
+        flags[id >> 1] = (flags[id >> 1] & 0xF8) | val;
+    }
+}
+
+void sub_08053234(u16 id)
+{
+    u8 n;
+
+    if (!(id & 1))
+    {
+        u8 *flags = gUnk_030057D8;
+        n = (flags[id >> 1] & 0x70) >> 4;
+        n++;
+        flags[id >> 1] = (flags[id >> 1] & 0x8F) | (n << 4);
+    }
+    else
+    {
+        u8 *flags = gUnk_030057D8;
+        n = flags[id >> 1] & 7;
+        n++;
+        flags[id >> 1] = (flags[id >> 1] & 0xF8) | n;
+    }
+}
+
+u32 sub_08053288(u16 id)
+{
+    if (!(id & 1))
+    {
+        u8 *flags = gUnk_030057D8;
+        return (flags[id >> 1] & 0x70) >> 4;
+    }
+    else
+    {
+        u8 *flags = gUnk_030057D8;
+        return flags[id >> 1] & 7;
+    }
+}
 
 void load_battle_terrain_data(void)
 {

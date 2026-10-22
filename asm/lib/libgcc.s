@@ -2146,6 +2146,9 @@ _0807DAA2:
 
 	thumb_func_start softfloat_int_to_double
 	.global softfloat_int_to_double
+	.global __floatsidf
+	.thumb_func
+__floatsidf:
 softfloat_int_to_double: @ 0x0807DAA8
 	push {r4, r5, lr}
 	sub sp, #0x14
@@ -2216,6 +2219,9 @@ _0807DB20: .4byte 0x0FFFFFFF
 
 	thumb_func_start double_to_int
 	.global double_to_int
+	.global __fixdfsi
+	.thumb_func
+__fixdfsi:
 double_to_int: @ 0x0807DB24
 	push {lr}
 	sub sp, #0x1c
@@ -2328,6 +2334,9 @@ sub_0807DBC0: @ 0x0807DBC0
 
 	thumb_func_start softfloat_double_round
 	.global softfloat_double_round
+	.global __truncdfsf2
+	.thumb_func
+__truncdfsf2:
 softfloat_double_round: @ 0x0807DBE8
 	push {r4, r5, lr}
 	sub sp, #0x1c
@@ -3724,6 +3733,9 @@ _0807E50C:
 
 	thumb_func_start float_is_zero
 	.global float_is_zero
+	.global __negsf2
+	.thumb_func
+__negsf2:
 float_is_zero: @ 0x0807E510
 	push {lr}
 	sub sp, #0x14
