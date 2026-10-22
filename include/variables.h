@@ -23,7 +23,10 @@ extern u32 gMoney; // money, capped at 99999 (add_money)
 extern u32 gGameState;
 extern u32 gGameSubState;
 extern struct Unk_03002C30 gUnk_03002C30[];
-extern struct Unk_03005170 gUnk_03005170;
+extern struct SioLink gSioLink;
+extern u32 gUnk_03005250[0x10]; // IWRAM copy of link_buffer_swap_arm
+extern u32 gUnk_03005050[0x48]; // IWRAM copy of serial_multiplayer_transfer_handler
+extern const Func gUnk_083ABE18[]; // game mode handlers (AgbMain)
 extern struct Unk_03005350 gUnk_03005350;
 extern struct Unk_030057A0 gUnk_030057A0;
 extern u8 *gMapScriptData; // current map script data (banked, see read_map_script_byte)

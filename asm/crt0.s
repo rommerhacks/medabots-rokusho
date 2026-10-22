@@ -22,7 +22,7 @@ crt0_start: @ 0x080000C0
 	ldr r1, _080000FC @ =0x03007FFC
 	add r0, pc, #0x20 @ =irq_dispatch_arm
 	str r0, [r1]
-	ldr r1, _08000100 @ =main
+	ldr r1, _08000100 @ =AgbMain
 	mov lr, pc
 	bx r1
 	b crt0_start
@@ -30,7 +30,7 @@ crt0_start: @ 0x080000C0
 _080000F4: .4byte 0x03007F00
 _080000F8: .4byte 0x03007FA0
 _080000FC: .4byte 0x03007FFC
-_08000100: .4byte main
+_08000100: .4byte AgbMain
 
 	arm_func_start irq_dispatch_arm
 	.global irq_dispatch_arm

@@ -404,15 +404,72 @@ struct Unk_030055A0
     u16 unk2;
 };
 
-struct Unk_03005170
+// One link packet as sent / checked (12 bytes): 4 halfwords sum to 0xFFFF when intact.
+struct SioPacket
 {
-    u8 unk0;
-    u8 filler1;
-    u8 unk2; // per-player bits (main loop)
-    u8 filler3;
-    u8 unk4;
-    u8 filler5;
-    u8 unk6;
+    u8 frame;      // sender's frame counter
+    u8 errFlags;   // players that were connected but not received
+    u16 checksum;  // ~sum of the first 4 halfwords
+    u16 data[2];   // payload (gSioPlayers.send / .recv)
+    u16 pad[2];
+};
+
+// Multiplayer serial link work area at 0x03005170 (serial_link_*; the IWRAM interrupt handler
+// serial_multiplayer_transfer_handler and link_buffer_swap_arm in crt0.s use it too).
+struct SioLink
+{
+    u8 isParent;     // 8 once this unit drives the transfers with timer 3
+    u8 running;      // 0 = waiting for the link, 1 = running
+    u8 connected;    // per-player bits (main loop)
+    u8 recvOk;       // per-player bits, packets received intact this frame
+    u8 sendPending;  // serial_prepare_send_packet filled nextSend
+    u8 recvDone;     // all 4 words received (cleared by link_buffer_swap_arm)
+    u8 started;      // set by sub_08002190
+    u8 error;        // SIOCNT error bit
+    u8 filler8[3];
+    u8 frame;        // frame counter, sent in each packet
+    u8 fillerC[8];
+    s32 sendIdx;     // halfword being sent (6 = idle)
+    s32 recvIdx;     // halfword being received
+    struct SioPacket *nextSend;
+    struct SioPacket *curSend;
+    u16 (*curRecv)[6];  // [player][halfword]
+    u16 (*lastRecv)[6];
+    struct SioPacket *recvCheck;
+    struct SioPacket sendBuf[2];
+    struct SioPacket recvBuf[3][4];
+};
+
+// SIOCNT (multiplayer mode) + SIOMLT_SEND as one 32-bit word.
+struct SioMultiCnt
+{
+    u32 baudRate:2;
+    u32 si:1;
+    u32 sd:1;
+    u32 id:2;
+    u32 error:1;
+    u32 enable:1;
+    u32 unk8:4;
+    u32 mode:2;
+    u32 irq:1;
+    u32 unk15:1;
+    u32 data:16;
+};
+
+// The same two registers as u16 bitfields (serial_link_init_and_status reads them this way).
+struct SioCnt
+{
+    u16 baudRate:2;
+    u16 si:1;
+    u16 sd:1;
+    u16 id:2;
+    u16 error:1;
+    u16 enable:1;
+    u16 unk8:4;
+    u16 mode:2;
+    u16 irq:1;
+    u16 unk15:1;
+    u16 data;
 };
 
 // Serial (multiplayer link) state at 0x03005010.

@@ -1,6 +1,83 @@
 #include "global.h"
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", main);
+void AgbMain(void)
+{
+    s32 i;
+    u8 prevConnected;
+
+    REG_WAITCNT = 0x4014;
+    hw_reset_init();
+    irq_init();
+    REG_DISPCNT = 0x60;
+    gGameMode = 3;
+    gGameState = 0;
+    gGameSubState = 0;
+    serial_link_init();
+    sound_init(&gUnk_03002430);
+    *(u16 *)&gUnk_03001784 = 0;
+    gUnk_03005030 = 0;
+    gUnk_03002410 = 0;
+    gUnk_03005010.unk1E = 0;
+    gUnk_03005010.unk1D = 0;
+    for (;;)
+    {
+        VBlankIntrWait();
+        gUnk_03002410 = 0;
+        read_keys();
+        gFrameCounter++;
+        if (gUnk_03000588 && gUnk_03002B70.unk18 < 0x014996FF)
+            gUnk_03002B70.unk18++;
+        prevConnected = gSioLink.connected;
+        gUnk_03005010.unk1D = 0;
+        gUnk_03005010.unk1E = 0;
+        gUnk_03005010.unk0 = serial_link_init_and_status((u32 *)gUnk_03005010.unk8);
+        for (i = 0; i < 4; i++)
+        {
+            if (gUnk_03005010.unk0 & (1 << i))
+            {
+                gUnk_03005010.unk19[i] = 0;
+                if (!((prevConnected >> i) & 1))
+                {
+                    gSioLink.connected |= 1 << i;
+                    gUnk_03005010.unk1D |= 0xFF;
+                }
+            }
+            else if (gUnk_03005010.unk19[i] > 10)
+            {
+                if ((gSioLink.connected >> i) & 1)
+                    gUnk_03005010.unk1E |= 0xFF;
+                gSioLink.connected &= ~(1 << i);
+                gUnk_03005010.unk19[i] = 0;
+            }
+            else
+            {
+                gUnk_03005010.unk19[i]++;
+            }
+        }
+        if (check_soft_reset())
+        {
+            VBlankIntrWait();
+            sound_init(&gUnk_03002430);
+            VBlankIntrWait();
+        }
+        else if (gUnk_03005030)
+        {
+            u32 other = 0;
+
+            if (gUnk_03000B90 == 0)
+                other = 1;
+            if (gUnk_03005010.unk8[other][0] == 0xFFFF && gUnk_03005010.unk8[other][1] == gUnk_03005010.unk8[other][0])
+            {
+                gGameMode = 0;
+                gGameState = 10;
+                gGameSubState = 16;
+            }
+        }
+        gUnk_083ABE18[gGameMode]();
+        check_flag_and_fast_copy();
+        serial_prepare_send_packet(&gUnk_03005010.unk4);
+    }
+}
 
 void irq_init(void)
 {
@@ -55,7 +132,7 @@ void vblank_irq(void)
         if (gUnk_03005010.unk0 & 0x80)
             sub_080023D8();
         REG_IME = 0;
-        if (++gUnk_03002410 > 5 && gUnk_03005170.unk4)
+        if (++gUnk_03002410 > 5 && gSioLink.sendPending)
         {
             gUnk_03005010.unk1E = 0xFF;
             INTR_CHECK |= 0x80;
@@ -261,20 +338,211 @@ INCLUDE_ASM("asm/nonmatching/code_0800025C", set_oam_affine_params);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", compute_scaled_value);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", rotate_vector_2d);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", shell_sort_by_second_byte);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", serial_link_init);
+
+void serial_link_init(void)
+{
+    u32 zero;
+
+    REG_IME = 0;
+    REG_IE &= ~0xC0;
+    REG_IME = 1;
+    REG_RCNT = 0;
+    REG_SIOCNT = 0x2000;
+    REG_SIOCNT |= 0x4003;
+    zero = 0;
+    CpuSet(&zero, &gSioLink, 0x05000036);
+    CpuSet(link_buffer_swap_arm, gUnk_03005250, 0x04000010);
+    CpuSet(serial_multiplayer_transfer_handler, gUnk_03005050, 0x04000048);
+    gSioLink.sendIdx = 6;
+    gSioLink.recvIdx = 6;
+    gSioLink.nextSend = &gSioLink.sendBuf[0];
+    gSioLink.curSend = &gSioLink.sendBuf[1];
+    gSioLink.curRecv = (void *)gSioLink.recvBuf[0];
+    gSioLink.lastRecv = (void *)gSioLink.recvBuf[1];
+    gSioLink.recvCheck = gSioLink.recvBuf[2];
+    REG_IME = 0;
+    REG_IE |= 0x80;
+    REG_IME = 1;
+}
 
 void sub_08002190(void)
 {
-    if (gUnk_03005170.unk0)
-        gUnk_03005170.unk6 = 1;
+    if (gSioLink.isParent)
+        gSioLink.started = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", serial_multiplayer_init);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", serial_link_init_and_status);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", serial_prepare_send_packet);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", serial_link_receive_packets);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_080023D8);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", serial_multiplayer_transfer_handler);
+void serial_multiplayer_init(void)
+{
+    REG_IME = 0;
+    REG_IE &= ~0xC0;
+    REG_IME = 1;
+    REG_SIOCNT = 0x2003;
+    REG_TM3CNT = 0x63F7;
+    REG_IF = 0xC0;
+    gSioLink.started = 0;
+}
+
+u32 serial_link_init_and_status(u32 *recv)
+{
+    struct SioCnt *cnt = (struct SioCnt *)REG_ADDR_SIOCNT;
+    struct SioCnt cur = *cnt;
+
+    switch (gSioLink.running)
+    {
+    case 0:
+        if (!cur.id)
+        {
+            if (!cur.sd || cur.enable)
+                break;
+            if (!cur.si && gSioLink.sendIdx == 6)
+            {
+                REG_IME = 0;
+                REG_IE &= ~0x80;
+                REG_IE |= 0x40;
+                REG_IME = 1;
+                cnt->irq = 0;
+                REG_TM3CNT = 0x63F7;
+                REG_IF = 0xC0;
+                gSioLink.isParent = 8;
+            }
+            gSioLink.running = 1;
+        }
+    case 1:
+        serial_link_receive_packets(recv);
+        break;
+    }
+
+    gSioLink.frame++;
+    return gSioLink.recvOk
+         | (gSioLink.isParent == 8 ? 0x80 : 0)
+         | (gSioLink.connected << 8)
+         | (gSioLink.error ? 0x1000 : 0)
+         | (cur.id > 3 ? 0x2000 : 0);
+}
+
+void serial_prepare_send_packet(u16 *packet)
+{
+    s32 sum = 0;
+    u32 i;
+
+    gSioLink.nextSend->frame = gSioLink.frame;
+    gSioLink.nextSend->errFlags = gSioLink.connected ^ gSioLink.recvOk;
+    gSioLink.nextSend->checksum = 0;
+    CpuSet(packet, gSioLink.nextSend->data, 0x04000001);
+    for (i = 0; i < 4; i++)
+        sum += ((u16 *)gSioLink.nextSend)[i];
+    gSioLink.nextSend->checksum = ~sum;
+    gSioLink.sendPending = 1;
+}
+
+u8 serial_link_receive_packets(u32 *dst)
+{
+    u8 (*swapBuffers)(void) = (u8 (*)(void))0x03005250; // IWRAM copy of link_buffer_swap_arm
+    vu32 unused = 0;
+    u8 synced;
+    s32 i;
+    u32 j;
+
+    synced = swapBuffers();
+    gSioLink.recvOk = 0;
+    if (synced)
+    {
+        for (i = 0; i < 4; i++)
+        {
+            struct SioPacket *pkt = &gSioLink.recvCheck[i];
+            s32 sum = 0;
+            vu32 zero;
+
+            for (j = 0; j < 4; j++)
+                sum += ((u16 *)pkt)[j];
+            if ((s16)sum == -1)
+            {
+                CpuSet(pkt->data, &dst[i], 0x04000001);
+                gSioLink.recvOk |= 1 << i;
+            }
+            zero = 0;
+            CpuSet((void *)&zero, pkt->data, 0x05000001);
+        }
+    }
+    gSioLink.connected |= gSioLink.recvOk;
+    return gSioLink.recvOk;
+}
+
+void sub_080023D8(void)
+{
+    if (gSioLink.running && gSioLink.started)
+    {
+        void *p;
+
+        gSioLink.recvIdx = -1;
+        p = gSioLink.lastRecv;
+        gSioLink.lastRecv = gSioLink.curRecv;
+        gSioLink.curRecv = p;
+        if (gSioLink.sendPending)
+        {
+            p = gSioLink.curSend;
+            gSioLink.curSend = gSioLink.nextSend;
+            gSioLink.nextSend = p;
+            gSioLink.sendPending = 0;
+            gSioLink.sendIdx = 0;
+        }
+        gSioLink.error = ((struct SioMultiCnt *)REG_ADDR_SIOCNT)->error;
+        ((struct SioMultiCnt *)REG_ADDR_SIOCNT)->data = 0xFEFE;
+        REG_SIOCNT |= 0x80;
+        REG_TM3CNT_H = 0xC0;
+    }
+}
+
+// SIO interrupt handler, run from its IWRAM copy at 0x03005050.
+void serial_multiplayer_transfer_handler(void)
+{
+    u16 recv[4];
+    s32 i;
+
+    *(unsigned long long *)recv = *(unsigned long long *)REG_ADDR_SIOMULTI0;
+    gSioLink.error = ((struct SioMultiCnt *)REG_ADDR_SIOCNT)->error;
+    if (recv[0] == 0xFEFE && gSioLink.recvIdx > 3)
+    {
+        u16 (*p)[6];
+        struct SioPacket *q;
+
+        gSioLink.recvIdx = -1;
+        p = gSioLink.lastRecv;
+        gSioLink.lastRecv = gSioLink.curRecv;
+        gSioLink.curRecv = p;
+        if (gSioLink.sendPending)
+        {
+            q = gSioLink.curSend;
+            gSioLink.curSend = gSioLink.nextSend;
+            gSioLink.nextSend = q;
+            gSioLink.sendPending = 0;
+            gSioLink.sendIdx = 0;
+        }
+        REG_IME = 0;
+        INTR_CHECK |= 0x80;
+        REG_IME = 1;
+    }
+    if (gSioLink.sendIdx < 4)
+        ((struct SioMultiCnt *)REG_ADDR_SIOCNT)->data = ((u16 *)gSioLink.curSend)[gSioLink.sendIdx];
+    if (gSioLink.sendIdx < 5)
+        gSioLink.sendIdx++;
+    if (gSioLink.recvIdx >= 0)
+    {
+        for (i = 0; i < 4; i++)
+            gSioLink.curRecv[i][gSioLink.recvIdx] = recv[i];
+        if (gSioLink.recvIdx == 3)
+            gSioLink.recvDone = 1;
+    }
+    if (gSioLink.recvIdx < 5)
+        gSioLink.recvIdx++;
+    if (gSioLink.isParent)
+        REG_TM3CNT_H = 0;
+    if (gSioLink.sendIdx < 5 && gSioLink.isParent)
+    {
+        REG_SIOCNT |= 0x80;
+        REG_TM3CNT_H = 0xC0;
+    }
+}
 
 void dispatch_game_state_handler_08002534(void)
 {

@@ -535,6 +535,11 @@ void sub_080023D8(void);
 void serial_link_init(void);
 void serial_multiplayer_init(void);
 void serial_prepare_send_packet(u16 *packet);
+u32 serial_link_init_and_status(u32 *recv);
+u8 serial_link_receive_packets(u32 *dst);
+void serial_multiplayer_transfer_handler(void);
+void link_buffer_swap_arm(void); // ARM, crt0.s; copied to IWRAM 0x03005250
+void check_flag_and_fast_copy(void);
 void sound_engine_init(struct Unk_03007014 *work);
 void sound_tick_both_channels(void);
 void sound_engine_tick(void);
