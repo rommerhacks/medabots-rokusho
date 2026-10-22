@@ -3731,12 +3731,12 @@ _0807E50C:
 	add sp, #0x14
 	pop {pc}
 
-	thumb_func_start float_is_zero
-	.global float_is_zero
+	thumb_func_start softfloat_neg_f32
+	.global softfloat_neg_f32
 	.global __negsf2
 	.thumb_func
 __negsf2:
-float_is_zero: @ 0x0807E510
+softfloat_neg_f32: @ 0x0807E510
 	push {lr}
 	sub sp, #0x14
 	str r0, [sp, #0x10]

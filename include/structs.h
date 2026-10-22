@@ -368,7 +368,8 @@ struct Unk_03002C30
     s32 unkC_8:24; // integer part
     u32 unk10_0:8; // y, 24.8 fixed point
     s32 unk10_8:24;
-    u8 filler14[0x4];
+    u32 unk14_0:8; // z / depth, 24.8 fixed point
+    s32 unk14_8:24;
     u16 unk18;
     u16 unk1A;
     u8 unk1C;
@@ -1136,18 +1137,80 @@ struct Unk_03006D38
 
 struct Unk_03005350
 {
-    u8 filler0[0x40];
-    s32 unk40; // position x, y, z
-    s32 unk44;
-    s32 unk48;
-    u8 filler4C[0x68];
-    s32 unkB4;
+    s32 unk0; // viewport width (240)
+    s32 unk4; // viewport height (160)
+    s32 unk8; // viewport centre x
+    s32 unkC; // viewport centre y
+    float unk10; // destination range x0, x1, y0, y1
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20; // source range x0, x1, y0, y1
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30; // x / y scale of the destination -> source map
+    float unk34;
+    float unk38; // x / y offset
+    float unk3C;
+    float unk40; // camera position x, y, z (set_state_float_field)
+    float unk44;
+    float unk48;
+    float unk4C; // camera distance
+    float unk50; // sin / cos of the yaw angle
+    float unk54;
+    float unk58; // sin / cos of the pitch angle
+    float unk5C;
+    u8 filler60[0x40];
+    s32 unkA0; // projection scale
+    double unkA4[2]; // camera origin x, y (sub_08053418)
+    s32 unkB4; // projected screen x, y
     s32 unkB8;
-    u8 fillerBC[0x118];
-    u32 unk1D4;
-    u8 filler1D8[0x32];
+    u8 fillerBC[0x110];
+    s32 unk1CC; // current entity (index into gUnk_03006D30)
+    s32 unk1D0; // part count of the current entity
+    u32 unk1D4; // flags
+    s32 unk1D8; // x, y, d (init_sprite_affine_matrices_and_state)
+    s32 unk1DC;
+    u32 unk1E0;
+    u8 filler1E4[0x26];
     u16 unk20A; // palette colour masks (run_blend_fade_transition)
     u16 unk20C;
+};
+
+// 3-D entity, 0x300 bytes; gUnk_03006D30 points to an array of them (0x02039000, 16 entries).
+struct BattleEntity3D
+{
+    s32 unk0; // state (2 = left its range)
+    u8 filler4[0x18];
+    s32 unk1C;
+    u8 filler20[0x44];
+    s32 unk64;
+    u8 filler68[0x38];
+    float unkA0; // depth
+    u8 fillerA4[0x8];
+    s32 unkAC;
+    u8 fillerB0[0x130];
+    s32 unk1E0; // x range check enabled
+    u16 unk1E4; // x min
+    u8 filler1E6[2];
+    u16 unk1E8; // x max
+    u8 filler1EA[2];
+    s32 unk1EC; // y range check enabled
+    u8 unk1F0; // y min
+    u8 filler1F1[3];
+    u8 unk1F4; // y max
+    u8 filler1F5[3];
+    s32 unk1F8; // depth range check enabled
+    s32 unk1FC; // depth min
+    s32 unk200; // depth max
+    u8 filler204[8];
+    s32 unk20C; // current part
+    u8 filler210[0xCC];
+    u8 unk2DC[4]; // sprite slot per part
+    u16 unk2E0[4]; // x offset per part
+    u8 unk2E8[4]; // y offset per part
+    u8 filler2EC[0x14];
 };
 
 // Table pointed to by the sound work area at 0x728: note -> sample/frequency entry.

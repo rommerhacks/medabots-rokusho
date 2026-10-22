@@ -980,7 +980,9 @@ extern const u8 *const gUnk_083F80F4[]; // compressed OBJ tile sets, NULL entrie
 extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (dma_load_battle_palettes)
 extern u32 gUnk_0300534C;
 extern struct AffineParam gUnk_03006D40[32];
-extern u32 gUnk_03006D30;
+extern struct BattleEntity3D *gUnk_03006D30;
+extern const float gUnk_083D6EA0[256]; // guess: sine, angle 0-255 (set_state_float_field)
+extern const float gUnk_083D72A0[256]; // guess: cosine
 extern const Func gItemMenuStates[]; // field menu Item screen states, by gGameSubState (item_menu_update)
 extern const Func gUnk_08483C44[]; // by gGameSubState (sub_0805E29C)
 extern const u8 *const gItemDescriptions[]; // item description messages by item id (runtime: item 1 Skirt -> "Transform Goods No.1 / A frilly mini-skirt."); 0x3F with an empty list (item_menu_show_description)

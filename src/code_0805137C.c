@@ -834,16 +834,109 @@ void load_battle_terrain_data(void)
     gUnk_03002C30[47].unk2A = gUnk_083D2908[gUnk_030057E0.unkC5C];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", float_default_to_one_if_zero);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", float_sign);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", float_abs_if_negative);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", compute_sqrt_scaled);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", init_sprite_affine_matrices_and_state);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053418);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", compute_distance_to_state_position);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", compute_triangle_area_3d);
+float float_default_to_one_if_zero(float x)
+{
+    if (x == 0.0f)
+        x = 1.0f;
+    return x;
+}
 
-void get_state_position_xyz(s32 *x, s32 *y, s32 *z)
+float float_sign(float x)
+{
+    if (x < 0.0f)
+        return -1.0f;
+    return 1.0f;
+}
+
+float float_abs_if_negative(float x)
+{
+    if (x < 0.0f)
+        x *= -1.0f;
+    return x;
+}
+
+double compute_sqrt_scaled(double x)
+{
+    return (u16)Sqrt((s32)x << 3) >> 3;
+}
+
+void init_sprite_affine_matrices_and_state(u32 flags, u32 x, u32 y, u32 d)
+{
+    s32 i;
+
+    sub_080492CC();
+    for (i = 0; i < 32; i++)
+        calculate_oam_affine_matrix(i);
+    sub_080496C8((u8 *)&gUnk_03005350, 0x240);
+    gUnk_03005350.unk1D4 = flags;
+    if (flags & 0x40)
+    {
+        x = gUnk_030057E0.unkC52;
+        y = gUnk_030057E0.unkC54;
+    }
+    gUnk_03005350.unk1D8 = x;
+    gUnk_03005350.unk1DC = y;
+    gUnk_03005350.unk1E0 = d;
+}
+
+void sub_08053418(void)
+{
+    sub_0805378C();
+    gUnk_03005350.unkA4[0] = gUnk_03005350.unk1D8 - gBg1Scroll.x - 0x70;
+    gUnk_03005350.unkA4[1] = gUnk_03005350.unk1DC - gBg1Scroll.y - 0x50;
+    sub_080496C8((u8 *)gUnk_03006D30, 0x3000);
+}
+
+void compute_distance_to_state_position(float *xs, float *ys, float *zs)
+{
+    float a, b, c, d;
+    float px, py, pz;
+    float x, y, z;
+    float dx, dy, dz;
+    float dist;
+
+    compute_triangle_area_3d(xs, ys, zs, &a, &b, &c, &d);
+    x = *xs;
+    y = *ys;
+    z = *zs;
+    get_state_position_xyz(&px, &py, &pz);
+    dx = x - px;
+    dy = y - py;
+    dz = z - pz;
+    dist = dx * dx + dy * dy + dz * dz;
+    dist = compute_sqrt_scaled(dist);
+    if (dist == 0.0f)
+        dist = 1.0f;
+    Div((s32)dx, (s32)dist);
+    Div((s32)dy, (s32)dist);
+    Div((s32)dz, (s32)dist);
+    if (dist < 10000.0f)
+        sub_08053AB8(xs, ys, zs);
+}
+
+// x, y, z: the three points' coordinates (x[i], y[i], z[i] = point i).
+// Outputs the plane through them: normal (a, b, c) scaled to integers, and d.
+void compute_triangle_area_3d(float *x, float *y, float *z, float *a, float *b, float *c, float *d)
+{
+    float nx, ny, nz, len;
+
+    nx = y[0] * (z[1] - z[2]) + y[1] * (z[2] - z[0]) + y[2] * (z[0] - z[1]);
+    ny = z[0] * (x[1] - x[2]) + z[1] * (x[2] - x[0]) + z[2] * (x[0] - x[1]);
+    nz = x[0] * (y[1] - y[2]) + x[1] * (y[2] - y[0]) + x[2] * (y[0] - y[1]);
+    len = nx * nx + ny * ny + nz * nz;
+    len = compute_sqrt_scaled(len);
+    if (len == 0.0f)
+        len = 1.0f;
+    nx = Div(nx, len);
+    ny = Div(ny, len);
+    nz = Div(nz, len);
+    *a = nx;
+    *b = ny;
+    *c = nz;
+    *d = -(nx * x[0] + ny * y[0] + nz * z[0]);
+}
+
+void get_state_position_xyz(float *x, float *y, float *z)
 {
     *x = gUnk_03005350.unk40;
     *y = gUnk_03005350.unk44;
@@ -855,23 +948,182 @@ void sub_0805378C(void)
     sub_08053798();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053798);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", affine_set_destination_and_compute_transform);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", affine_set_source_and_compute_transform);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", set_state_float_field);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053AB8);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08053B94);
+void sub_08053798(void)
+{
+    s32 zero;
 
-void sub_08053BB4(u32 a, u32 b)
+    gUnk_03005350.unk0 = 240;
+    gUnk_03005350.unk4 = 160;
+    zero = 0;
+    gUnk_03005350.unk8 = 120;
+    gUnk_03005350.unkC = 80;
+    affine_set_destination_and_compute_transform(-120.5f, 120.5f, -80.5f, 80.5f);
+    affine_set_source_and_compute_transform(-120.5f, 120.5f, -80.5f, 80.5f);
+    gUnk_03005350.unkB4 = zero;
+    gUnk_03005350.unkB8 = zero;
+}
+
+void affine_set_destination_and_compute_transform(float x0, float x1, float y0, float y1)
+{
+    gUnk_03005350.unk10 = x0;
+    gUnk_03005350.unk14 = x1;
+    gUnk_03005350.unk18 = y0;
+    gUnk_03005350.unk1C = y1;
+    gUnk_03005350.unk30 = (gUnk_03005350.unk24 - gUnk_03005350.unk20) / (x1 - x0);
+    gUnk_03005350.unk34 = (gUnk_03005350.unk2C - gUnk_03005350.unk28) / (y1 - y0);
+    gUnk_03005350.unk38 = (x1 * gUnk_03005350.unk20 - x0 * gUnk_03005350.unk24) / (x1 - x0);
+    gUnk_03005350.unk3C = (y1 * gUnk_03005350.unk28 - y0 * gUnk_03005350.unk2C) / (y1 - y0);
+}
+
+void affine_set_source_and_compute_transform(float x0, float x1, float y0, float y1)
+{
+    gUnk_03005350.unk20 = x0;
+    gUnk_03005350.unk24 = x1;
+    gUnk_03005350.unk28 = y0;
+    gUnk_03005350.unk2C = y1;
+    gUnk_03005350.unk30 = (x1 - x0) / (gUnk_03005350.unk14 - gUnk_03005350.unk10);
+    gUnk_03005350.unk34 = (y1 - y0) / (gUnk_03005350.unk1C - gUnk_03005350.unk18);
+    gUnk_03005350.unk38 = (gUnk_03005350.unk14 * x0 - gUnk_03005350.unk10 * x1) / (gUnk_03005350.unk14 - gUnk_03005350.unk10);
+    gUnk_03005350.unk3C = (gUnk_03005350.unk1C * y0 - gUnk_03005350.unk18 * y1) / (gUnk_03005350.unk1C - gUnk_03005350.unk18);
+}
+
+void set_state_float_field(float a, float b, float c, float d)
+{
+    float x, y, z, len;
+
+    gUnk_03005350.unk4C = c;
+    gUnk_03005350.unkA0 = d;
+    gUnk_03005350.unk50 = gUnk_083D6EA0[(s32)a & 0xFF];
+    gUnk_03005350.unk54 = gUnk_083D72A0[(s32)a & 0xFF];
+    gUnk_03005350.unk58 = gUnk_083D6EA0[(s32)b & 0xFF];
+    gUnk_03005350.unk5C = gUnk_083D72A0[(s32)b & 0xFF];
+    x = gUnk_03005350.unk58 * gUnk_03005350.unk50;
+    y = gUnk_03005350.unk58 * gUnk_03005350.unk54;
+    z = gUnk_03005350.unk5C;
+    len = compute_sqrt_scaled(x * x + y * y + z * z);
+    if (len == 0.0f)
+        len = 1.0f;
+    x = Div(x, len);
+    y = Div(y, len);
+    z = Div(z, len);
+    gUnk_03005350.unk40 = c * x;
+    gUnk_03005350.unk44 = c * y;
+    gUnk_03005350.unk48 = c * z;
+}
+
+void sub_08053AB8(float *x, float *y, float *z)
+{
+    float a, b, c;
+    s32 i;
+
+    a = x[0];
+    b = y[0];
+    c = z[0];
+    sub_08053B94(a, b, c);
+    for (i = 1; i < gUnk_03005350.unk1D0; i++)
+    {
+        a = x[i];
+        b = y[i];
+        c = z[i];
+        gUnk_03006D30[gUnk_03005350.unk1CC].unk20C = i;
+        update_battle_entity_screen_position(a, b, c);
+    }
+    a = x[0];
+    b = y[0];
+    c = z[0];
+    gUnk_03006D30[gUnk_03005350.unk1CC].unk20C = 0;
+    update_battle_entity_screen_position(a, b, c);
+}
+
+void sub_08053B94(float a, float b, float c)
+{
+    float x, y, z;
+
+    compute_3d_transform_vectors(a, b, c, &x, &y, &z);
+    sub_08053BB4(x, y);
+}
+
+void sub_08053BB4(float a, float b)
 {
     get_state_float_as_int(a, b, &gUnk_03005350.unkB4, &gUnk_03005350.unkB8);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", update_battle_entity_screen_position);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", compute_3d_transform_vectors);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", get_state_float_as_int);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", update_entity_position_and_triggers);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", init_affine_transform_viewport);
+void update_battle_entity_screen_position(float x, float y, float z)
+{
+    float sx, sy, depth;
+    struct Unk_03002C30 *sprites;
+
+    compute_3d_transform_vectors(x, y, z, &sx, &sy, &depth);
+    update_entity_position_and_triggers(sx, sy);
+    sprites = gUnk_03002C30;
+    sprites[gUnk_03006D30[gUnk_03005350.unk1CC].unk2DC[gUnk_03006D30[gUnk_03005350.unk1CC].unk20C]].unk14_8 = depth;
+}
+
+void compute_3d_transform_vectors(float x, float y, float z, float *outX, float *outY, float *outZ)
+{
+    float rx, ry, rz, d;
+
+    rx = x * gUnk_03005350.unk50 + y * gUnk_03005350.unk54;
+    ry = -x * gUnk_03005350.unk54 + y * gUnk_03005350.unk50;
+    rz = z * gUnk_03005350.unk58 - rx * gUnk_03005350.unk5C;
+    d = gUnk_03005350.unk4C - (rx * gUnk_03005350.unk58 + z * gUnk_03005350.unk5C);
+    if (d == 0.0f)
+        d = 1.0f;
+    rx = gUnk_03005350.unkA0 / d;
+    *outX = ry * rx;
+    *outY = rz * rx;
+    *outZ = d;
+}
+
+void get_state_float_as_int(float a, float b, s32 *x, s32 *y)
+{
+    *x = (s32)gUnk_03005350.unk30 * (s32)a + (s32)gUnk_03005350.unk38 + gUnk_03005350.unk8;
+    *y = gUnk_03005350.unkC - ((s32)gUnk_03005350.unk34 * (s32)b + (s32)gUnk_03005350.unk3C);
+}
+
+#define CUR_ENTITY gUnk_03006D30[gUnk_03005350.unk1CC]
+
+void update_entity_position_and_triggers(float a, float b)
+{
+    get_state_float_as_int(a, b, &gUnk_03005350.unkB4, &gUnk_03005350.unkB8);
+    gUnk_03002C30[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].unk2 = gUnk_03005350.unkB4 + CUR_ENTITY.unk2E0[CUR_ENTITY.unk20C];
+    gUnk_03002C30[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].unk4 = gUnk_03005350.unkB8 + CUR_ENTITY.unk2E8[CUR_ENTITY.unk20C];
+    if (CUR_ENTITY.unk1EC && (u8)gUnk_03005350.unkB8 >= CUR_ENTITY.unk1F0 && (u8)gUnk_03005350.unkB8 <= CUR_ENTITY.unk1F4)
+    {
+        CUR_ENTITY.unk0 = 2;
+        CUR_ENTITY.unkAC = 0;
+    }
+    if (CUR_ENTITY.unk1E0 && (s32)(gUnk_03005350.unkB4 & 0x1FF) >= CUR_ENTITY.unk1E4 && (s32)(gUnk_03005350.unkB4 & 0x1FF) <= CUR_ENTITY.unk1E8)
+    {
+        CUR_ENTITY.unk0 = 2;
+        CUR_ENTITY.unk64 = 0;
+        CUR_ENTITY.unk1C = 0;
+    }
+    if (CUR_ENTITY.unk1F8)
+    {
+        if (CUR_ENTITY.unkA0 <= CUR_ENTITY.unk1FC)
+        {
+            CUR_ENTITY.unk0 = 2;
+            CUR_ENTITY.unkAC = 0;
+        }
+        if (CUR_ENTITY.unkA0 >= CUR_ENTITY.unk200)
+        {
+            CUR_ENTITY.unk0 = 2;
+            CUR_ENTITY.unkAC = 0;
+        }
+    }
+}
+
+void init_affine_transform_viewport(s32 x, s32 y)
+{
+    gUnk_03005350.unk0 = 240;
+    gUnk_03005350.unk4 = 160;
+    gUnk_03005350.unk8 = x + 120;
+    gUnk_03005350.unkC = y + 80;
+    affine_set_destination_and_compute_transform(-120.5f, 120.5f, -80.5f, 80.5f);
+    affine_set_source_and_compute_transform(-120.5f, 120.5f, -80.5f, 80.5f);
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805137C", update_3d_entity_projections);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", battle_sequence_dispatch);
 INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08054234);

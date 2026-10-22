@@ -804,7 +804,7 @@ void new_game_init(void)
     REG_DISPCNT = 0x1E40;
     gMapScriptData = (u8 *)gUnk_08764CB0;
     gUnk_030057D8 = (u8 *)&gUnk_030057E0;
-    gUnk_03006D30 = 0x02039000;
+    gUnk_03006D30 = (struct BattleEntity3D *)0x02039000;
     gUnk_03006D14 = (u16 *)0x02030000;
     gUnk_030057DC = (u8 *)0x02038000;
     sub_080496C8((u8 *)gUnk_03002C30, 0x2000);
@@ -949,7 +949,7 @@ void sub_0804A718(void)
     init_battle_medapart_sprites_all();
     gUnk_03005590 = gUnk_08764CB0;
     gUnk_030057D8 = (u8 *)&gUnk_030057E0;
-    gUnk_03006D30 = 0x02039000;
+    gUnk_03006D30 = (struct BattleEntity3D *)0x02039000;
     gUnk_03006D14 = (u16 *)0x02030000;
     gUnk_030057DC = (u8 *)0x02038000;
     sub_080496C8((u8 *)gUnk_03002C30, 0x2000);
