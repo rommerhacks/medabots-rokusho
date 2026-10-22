@@ -299,9 +299,63 @@ void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0800025C", copy_tilemap_with_offset_08000F78);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", set_bg2_affine_transform);
+
+// Note: writes the BG3 affine registers (0x04000030-0x0400003E), not BG2.
+// pa/pd = cos * 0x400 / scale, pb/pc = +-sin * 0x400 / scale (scale 0x100 = 1:1), angle 1024 steps/turn;
+// reference point X = -(pa * a4 + pb * a5) - a2, Y = -(pc * a4 + pd * a5) - a3.
+void set_bg2_affine_transform(s32 scale, u32 angle, s32 cx, s32 cy, s32 sx, s32 sy)
+{
+    s32 pa, pb, pc, pd, x, y;
+
+    pa = Div(gUnk_080750E0[(angle & 0x3FF) + 0x100] * 4, scale);
+    pb = Div(gUnk_080750E0[(angle & 0x3FF)] * 4, scale);
+    pc = Div(-gUnk_080750E0[(angle & 0x3FF)] * 4, scale);
+    pd = Div(gUnk_080750E0[(angle & 0x3FF) + 0x100] * 4, scale);
+    *(vu16 *)0x04000030 = pa;
+    *(vu16 *)0x04000032 = pb;
+    *(vu16 *)0x04000034 = pc;
+    *(vu16 *)0x04000036 = pd;
+    x = -(pa * sx) - pb * sy - cx;
+    y = -(pc * sx) - pd * sy - cy;
+    *(vu16 *)0x04000038 = x;
+    *(vu16 *)0x0400003A = (x & 0x0FFF0000) >> 16;
+    *(vu16 *)0x0400003C = y;
+    *(vu16 *)0x0400003E = (y & 0x0FFF0000) >> 16;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", compute_bg_affine_scanline_params);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", hblank_dma0_bg2affine);
+
+// Run once at vblank (gVBlankOnceCallback, set by compute_bg_affine_scanline_params): copies line 0 of the current (double-buffered) BG2 affine table to BG2PA..BG2Y,
+// then starts DMA0 (hblank-triggered, repeat, 8 halfwords) to feed the rest of the lines.
+void hblank_dma0_bg2affine(void)
+{
+    vu32 *dma = (vu32 *)REG_ADDR_DMA0;
+    vu16 *dst = (vu16 *)0x04000020;
+    u16 *src;
+
+    if (gFrameCounter & 1)
+        src = (u16 *)gDecompressBuffer;
+    else
+        src = (u16 *)gUnk_02030A00;
+    dst[0] = src[0];
+    dst[1] = src[1];
+    dst[2] = src[2];
+    dst[3] = src[3];
+    dst[4] = src[4];
+    dst[5] = src[5];
+    dst[6] = src[6];
+    dst[7] = src[7];
+    REG_DMA0CNT_H = 0;
+    dma[0] = (u32)(src + 8);
+    dma[1] = (u32)dst;
+    dma[2] = 0xA2600008;
+}
+
+// Stops the per-scanline affine DMA (unreferenced).
+void sub_080012E4(void)
+{
+    REG_DMA0CNT_H = 0;
+}
 
 u32 rng_next(u16 range)
 {
@@ -334,9 +388,138 @@ void dma_obj_palette_to_hardware(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0800025C", palette_blend_16_colors);
 INCLUDE_ASM("asm/nonmatching/code_0800025C", check_flag_and_fast_copy);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", set_oam_affine_params);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", compute_scaled_value);
-INCLUDE_ASM("asm/nonmatching/code_0800025C", rotate_vector_2d);
+
+void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags)
+{
+    u32 n = idx * 4;
+    s32 cos, sin;
+
+    if (gUnk_03005048 == -1)
+    {
+        cos = gUnk_080750E0[(angle & 0x3FF) + 0x100];
+        sin = gUnk_080750E0[angle & 0x3FF];
+        if (sx == 0)
+            sx = 1;
+        if (sy == 0)
+            sy = 1;
+        if (flags & 0x1000)
+        {
+            gOamBuffer[n].affineParam = DivArm(sx, -cos);
+            gOamBuffer[n + 1].affineParam = DivArm(sy, -sin);
+        }
+        else
+        {
+            gOamBuffer[n].affineParam = DivArm(sx, cos);
+            gOamBuffer[n + 1].affineParam = DivArm(sy, sin);
+        }
+        if (flags & 0x2000)
+        {
+            gOamBuffer[n + 2].affineParam = DivArm(sx, sin);
+            gOamBuffer[n + 3].affineParam = DivArm(sy, -cos);
+        }
+        else
+        {
+            gOamBuffer[n + 3].affineParam = DivArm(sy, cos);
+            gOamBuffer[n + 2].affineParam = DivArm(sx, -sin);
+        }
+    }
+    else
+    {
+        cos = gUnk_080750E0[(angle & 0x3FF) + 0x100] << 8;
+        sin = gUnk_080750E0[angle & 0x3FF] << 8;
+        if (flags & 0x1000)
+        {
+            gOamBuffer[n].affineParam = DivArm(gUnk_03005048, -cos);
+            gOamBuffer[n + 1].affineParam = DivArm(gUnk_03005048, -sin);
+        }
+        else
+        {
+            gOamBuffer[n].affineParam = DivArm(gUnk_03005048, cos);
+            gOamBuffer[n + 1].affineParam = DivArm(gUnk_03005048, sin);
+        }
+        if (flags & 0x2000)
+        {
+            gOamBuffer[n + 2].affineParam = DivArm(gUnk_03005048, sin);
+            gOamBuffer[n + 3].affineParam = DivArm(gUnk_03005048, -cos);
+        }
+        else
+        {
+            gOamBuffer[n + 3].affineParam = DivArm(gUnk_03005048, cos);
+            gOamBuffer[n + 2].affineParam = DivArm(gUnk_03005048, -sin);
+        }
+    }
+}
+
+void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags)
+{
+    u32 n = idx * 4;
+
+    if (gUnk_03005048 == -1)
+    {
+        if (flags & 0x1000)
+        {
+            gOamBuffer[n].affineParam = -0x4000 / sx;
+            gOamBuffer[n + 1].affineParam = 0;
+        }
+        else
+        {
+            gOamBuffer[n].affineParam = 0x4000 / sx;
+            gOamBuffer[n + 1].affineParam = 0;
+        }
+        if (flags & 0x2000)
+        {
+            gOamBuffer[n + 2].affineParam = 0;
+            gOamBuffer[n + 3].affineParam = -0x4000 / sy;
+        }
+        else
+        {
+            gOamBuffer[n + 3].affineParam = 0x4000 / sy;
+            gOamBuffer[n + 2].affineParam = 0;
+        }
+    }
+    else
+    {
+        if (flags & 0x1000)
+        {
+            gOamBuffer[n].affineParam = -0x400000 / gUnk_03005048;
+            gOamBuffer[n + 1].affineParam = 0;
+        }
+        else
+        {
+            gOamBuffer[n].affineParam = 0x400000 / gUnk_03005048;
+            gOamBuffer[n + 1].affineParam = 0;
+        }
+        if (flags & 0x2000)
+        {
+            gOamBuffer[n + 2].affineParam = 0;
+            gOamBuffer[n + 3].affineParam = -0x400000 / gUnk_03005048;
+        }
+        else
+        {
+            gOamBuffer[n + 3].affineParam = 0x400000 / gUnk_03005048;
+            gOamBuffer[n + 2].affineParam = 0;
+        }
+    }
+}
+
+struct RotateSrc
+{
+    u8 filler0[0x18];
+    u16 angle;
+};
+
+// Rotates (*x, *y) by p->angle (1024 steps per turn); the table is Q14 sin, cos at +0x100.
+void rotate_vector_2d(s32 *x, s32 *y, struct RotateSrc *p)
+{
+    s32 c = gUnk_080750E0[(p->angle & 0x3FF) + 0x100];
+    s32 s = gUnk_080750E0[p->angle & 0x3FF];
+    s32 x0 = *x;
+    s32 y0 = *y;
+
+    *x = (x0 * c - y0 * s) / 0x4000;
+    *y = (x0 * s + y0 * c) / 0x4000;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", shell_sort_by_second_byte);
 
 void serial_link_init(void)

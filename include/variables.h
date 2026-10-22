@@ -24,6 +24,9 @@ extern u32 gGameState;
 extern u32 gGameSubState;
 extern struct Unk_03002C30 gUnk_03002C30[];
 extern struct SioLink gSioLink;
+extern s32 gUnk_03005048; // OAM affine zoom override (-1 = off)
+extern s16 gUnk_080750E0[]; // Q14 sine table, 1024 steps per turn (cos at +0x100); not const: callers reload it
+extern u8 gUnk_02030A00[]; // second half of the BG2 per-scanline affine double buffer (first: gDecompressBuffer)
 extern u32 gUnk_03005250[0x10]; // IWRAM copy of link_buffer_swap_arm
 extern u32 gUnk_03005050[0x48]; // IWRAM copy of serial_multiplayer_transfer_handler
 extern const Func gUnk_083ABE18[]; // game mode handlers (AgbMain)
