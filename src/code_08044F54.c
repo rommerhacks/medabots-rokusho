@@ -168,6 +168,7 @@ u16 init_oam_sprite_entry(struct OamFull *oam, struct SpriteNodeDesc *desc, u8 p
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", load_sprite_tree_recursive);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", load_sprite_tiles_by_table);
+INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_080460B0);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", render_sprite_node_recursive);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", load_sprite_animation_by_type);
 
