@@ -510,3 +510,10 @@
   reload memory, so read struct fields inline at each use instead of copying them into temporaries.
 * Accessors into a byte table (`u8 *p = gTable; p[i >> 1] ...`) may need the pointer local declared inside
   each branch, so the base is loaded before the index shift.
+* A switch whose compare tree doesn't match and whose inner switch gets merged into the outer one: add a
+  case value outside -1..127 (e.g. `case 0xFF:` sharing the default's body). That turns off agbcc's switch
+  cost table and gave the original order in sub_0804FCC4.
+* `(a & 0xF0) >> 4` and `a >> 4` compile differently for a u8 `a`; use the masked form when the original
+  has `movs rX, #0xF0; ands`.
+* A `[][8]` s16 table indexed with a flat computed index: write `tbl[0][idx]`, not a pointer cast
+  (`((const s16 *)tbl)[idx]` swapped two registers in sub_0804F3AC).
