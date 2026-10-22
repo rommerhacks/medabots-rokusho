@@ -1458,3 +1458,8 @@ void sub_0804B1FC(void);
 void sub_08058110(); // defined as (void); sub_0804AF4C passes an argument
 s32 check_room_exit_at_position(void);
 u32 sub_0804B694(void);
+void clear_vram_bg2_tiles(void);
+void check_and_update_battlefield_palette(void);
+void copy_tilemap_with_offset_08048CA4(const void *src, void *dst, s32 a, s32 b, s32 c, s32 d, s32 e);
+void copy_tiles_to_bg_tilemap(const void *src, void *dst, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+u32 sub_08052990(u32 unused, u8 which);

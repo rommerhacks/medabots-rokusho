@@ -1364,8 +1364,88 @@ void clear_vram_bg2_tiles(void)
     sub_080496DC((u8 *)(VRAM + 0x3000), 0x6000, 0x80);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", load_room_graphics);
-INCLUDE_ASM("asm/nonmatching/code_080490C4", update_blend_effect_from_input);
+// gUnk_083F92F4 indexed as a flat pointer array (three LZ77 tilemaps per area: unk0, unk4, unk8);
+// the index has to reach the load unfolded ((area * 3 + 1) << 2), hence the helper.
+static inline const void *area_gfx(const void *const *t, u32 i)
+{
+    return t[i];
+}
+
+// Sets BG1-3 control, loads the area's tile map and its three BG layers (or blank tiles and a fill
+// when the area has no layer graphics), then centres the camera.
+void load_room_graphics(void)
+{
+    const void *const *tbl;
+    REG_BG1CNT = 0xC609;
+    REG_BG2CNT = 0xEA0A;
+    REG_BG3CNT = 0xEE0B;
+    field_load_area_tiles(gUnk_030057E0.unk7FE);
+    gUnk_030057E0.unk800 = sub_08052960(gUnk_030057E0.unk7FE, 0);
+    gUnk_030057E0.unk802 = sub_08052960(gUnk_030057E0.unk7FE, 1);
+    gUnk_030057E0.unk804 = sub_08052990(gUnk_030057E0.unk7FE, 0);
+    gUnk_030057E0.unk806 = sub_08052990(gUnk_030057E0.unk7FE, 1);
+    clear_vram_bg2_tiles();
+    sub_080496C8(gUnk_030057E0.unk810, 0x400);
+    memcpy_u8(gUnk_084045A8[gUnk_030057E0.unk7FE], gUnk_030057E0.unk810,
+              (gUnk_030057E0.unk802 >> 1) * (gUnk_030057E0.unk800 >> 1));
+    tbl = (const void *const *)gUnk_083F92F4;
+    if (area_gfx(tbl, gUnk_030057E0.unk7FE * 3) != NULL && gUnk_083F8CF4[gUnk_030057E0.unk7FE] != NULL)
+    {
+        LZ77UnCompVram(gUnk_083F8CF4[gUnk_030057E0.unk7FE], (void *)0x06009000);
+        LZ77UnCompVram(area_gfx(tbl, gUnk_030057E0.unk7FE * 3), gUnk_03006D14);
+        copy_tilemap_with_offset_08048CA4(gUnk_03006D14 + 8, (void *)0x06003000, gUnk_030057E0.unk806, gUnk_030057E0.unk804, 0x40, 0x40, 0x80);
+        LZ77UnCompVram(area_gfx(tbl, gUnk_030057E0.unk7FE * 3 + 1), gUnk_03006D14);
+        copy_tilemap_with_offset_08048CA4(gUnk_03006D14 + 8, (void *)0x06005000, gUnk_030057E0.unk806, gUnk_030057E0.unk804, 0x40, 0x40, 0x80);
+        LZ77UnCompVram(area_gfx(tbl, gUnk_030057E0.unk7FE * 3 + 2), gUnk_03006D14);
+        copy_tilemap_with_offset_08048CA4(gUnk_03006D14 + 8, (void *)0x06007000, gUnk_030057E0.unk806, gUnk_030057E0.unk804, 0x40, 0x40, 0x80);
+        if (gUnk_083F8FF4[gUnk_030057E0.unk7FE] != NULL)
+            LZ77UnCompVram(gUnk_083F8FF4[gUnk_030057E0.unk7FE], gUnk_030057DC);
+    }
+    else
+    {
+        sub_080496C8((u8 *)0x06009000, 0x80);
+        DmaSet(3, gUnk_080AC5D4, 0x06009080, 0x80000040);
+        DmaSet(3, gUnk_080AC674, 0x06009100, 0x80000040);
+        DmaSet(3, gUnk_080AC714, 0x06009180, 0x80000040);
+        DmaSet(3, gUnk_080AC7B4, 0x06009200, 0x80000040);
+        DmaSet(3, gUnk_080AC5D4, 0x06009280, 0x80000040);
+        DmaSet(3, gUnk_080AC5D4, 0x06009300, 0x80000040);
+        DmaSet(3, gUnk_080AC5D4, 0x06009380, 0x80000040);
+        DmaSet(3, gUnk_080AC854, 0x06009400, 0x80000040);
+        DmaSet(3, gUnk_080AC8F4, 0x06009480, 0x80000040);
+        sub_080496DC((u8 *)gUnk_03006D14, gUnk_030057E0.unk802 * gUnk_030057E0.unk800, 8);
+        copy_tiles_to_bg_tilemap(gUnk_03006D14, (void *)0x06003000, gUnk_030057E0.unk802, gUnk_030057E0.unk800, 0x40, 0x40,
+                                 gUnk_030057E0.unkC4A / 8, gUnk_030057E0.unkC48 / 8, 0x80);
+        copy_tiles_to_bg_tilemap(gUnk_03006D14, (void *)0x06005000, gUnk_030057E0.unk802, gUnk_030057E0.unk800, 0x40, 0x40,
+                                 gUnk_030057E0.unkC4A / 8, gUnk_030057E0.unkC48 / 8, 0x80);
+        copy_tiles_to_bg_tilemap(gUnk_030057E0.unk810, (void *)0x06007000, gUnk_030057E0.unk802, gUnk_030057E0.unk800, 0x40, 0x40,
+                                 gUnk_030057E0.unkC4A / 8, gUnk_030057E0.unkC48 / 8, 0x80);
+    }
+    field_center_camera_on_player();
+    check_and_update_battlefield_palette();
+}
+
+void update_blend_effect_from_input(void)
+{
+    if (KEYS_LO(gNewKeys) & 0x40)
+    {
+        gUnk_03006F40.unk14 += 1.0f;
+        gUnk_03006F40.unk14 = (s32)((u32)gUnk_03006F40.unk14 & 0xF);
+        REG_BLDY = (u32)gUnk_03006F40.unk14 % 64;
+    }
+    if (KEYS_HI(gNewKeys) & 1)
+    {
+        gUnk_03006F40.unkC += 1.0f;
+        gUnk_03006F40.unkC = (s32)((u32)gUnk_03006F40.unkC & 0xF);
+        REG_BLDALPHA = (((u32)gUnk_03006F40.unk10 & 0x3F) << 8) | ((u32)gUnk_03006F40.unkC & 0x3F);
+    }
+    if (KEYS_HI(gNewKeys) & 2)
+    {
+        gUnk_03006F40.unk10 += 1.0f;
+        gUnk_03006F40.unk10 = (s32)((u32)gUnk_03006F40.unk10 & 0xF);
+        REG_BLDALPHA = (((u32)gUnk_03006F40.unk10 & 0x3F) << 8) | ((u32)gUnk_03006F40.unkC & 0x3F);
+    }
+}
 
 u32 sub_0804B694(void)
 {
@@ -1486,7 +1566,18 @@ void sub_0804B8B4(void)
     gUnk_030057E0.unkC89 = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804B90C);
+void sub_0804B90C(void)
+{
+    s32 n;
+    gUnk_030057E0.unkC94[0] = read_map_script_byte();
+    n = gUnk_030057E0.unkC94[0];
+    if (n < 2)
+        n = 1;
+    if (n > 15)
+        n = 16;
+    setup_palette_fade_to_color(0x7FFF, 32.0f, 0.0f, n);
+    gUnk_030057E0.unkC89 = 1;
+}
 
 // guess: warp command (sets unkC5B first)
 void sub_0804B964(void)
@@ -1791,7 +1882,17 @@ void sub_0804C360(void)
     gUnk_030057E0.unkC89 = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804C398);
+void sub_0804C398(void)
+{
+    u16 r;
+    s16 d;
+    gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
+    read_map_script_bytes(3);
+    r = sub_08047D9C(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1]);
+    d = ((r & 0xFF00) >> 8) - (r & 0xFF);
+    if (d == 0)
+        gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
+}
 
 // guess: jump by a byte offset, selected by the flag nibble sub_08053288(script id)
 void sub_0804C3F8(void)

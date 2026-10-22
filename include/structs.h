@@ -857,7 +857,9 @@ struct Unk_030057E0
     u8 unk7FF;
     u16 unk800; // map width * 2 (tiles are bytes, unk810 rows are unk800 / 2 long)
     u16 unk802; // map height * 2
-    u8 filler804[0xC];
+    u16 unk804; // area tilemap header words (sub_08052990(area, 0 / 1))
+    u16 unk806;
+    u8 filler808[0x8];
     u8 unk810[0x400]; // tile map
     u8 unkC10[0x8]; // tile value -> result of check_tile_and_trigger_battle_action
     u8 unkC18[0x8]; // saved copy of unkC10
@@ -1154,9 +1156,9 @@ struct AreaWarp
 // Per-area graphics record (gUnk_083F92F4, indexed by area id).
 struct AreaGfx
 {
-    const void *unk0; // LZ77 data, decompressed to gUnk_03006D14
-    u32 unk4;
-    u32 unk8;
+    const void *unk0; // LZ77 BG tilemaps, decompressed to gUnk_03006D14 (layers to 0x06003000 / 5000 / 7000)
+    const void *unk4;
+    const void *unk8;
 };
 
 struct Unk_08047414
