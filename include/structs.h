@@ -889,7 +889,7 @@ struct Unk_030057E0
 {
     u8 filler0[0x5DC];
     struct MapObject unk5DC[64];
-    struct BattleEntityTile unk7DC[8]; // sprite snapshot (populate_battle_entity_tile_positions)
+    struct BattleEntityTile unk7DC[8]; // sprite snapshot (save_script_sprites)
     u8 unk7FC;
     u8 unk7FD;
     u8 unk7FE; // area id

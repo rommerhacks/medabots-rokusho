@@ -907,7 +907,7 @@ void sub_0804A6A0(void)
 void sub_0804A6AC(void)
 {
     sub_0804B1FC();
-    init_battle_medapart_sprites_all();
+    restore_script_sprites();
     dispatch_jump_table_29(5, 0);
     gUnk_03005310.unk1 = 0;
     gGameSubState = 5;
@@ -947,7 +947,7 @@ void sub_0804A718(void)
     sub_080496C8((u8 *)&gUnk_03006D20, 16);
     sub_0804B1FC();
     gUnk_03005310.unk1 = 0;
-    init_battle_medapart_sprites_all();
+    restore_script_sprites();
     gUnk_03005590 = gUnk_08764CB0;
     gUnk_030057D8 = (u8 *)&gUnk_030057E0;
     gUnk_03006D30 = (struct BattleEntity3D *)0x02039000;
@@ -994,7 +994,7 @@ void sub_0804A8F8(void)
     REG_BLDCNT = 0;
     REG_BLDY = 0;
     gUnk_03005310.unk1 = 0;
-    init_battle_medapart_sprites_all();
+    restore_script_sprites();
     REG_DISPCNT = 0x1E40;
     gUnk_030057E0.unkCBA = 2;
     update_battle_field_frame();
@@ -1788,7 +1788,7 @@ void sub_0804C02C(void)
 void sub_0804C078(void)
 {
     read_map_script_bytes(4);
-    spawn_battle_medapart_sprite(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1], gUnk_030057E0.unkC94[2], gUnk_030057E0.unkC94[3]);
+    spawn_script_sprite(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1], gUnk_030057E0.unkC94[2], gUnk_030057E0.unkC94[3]);
 }
 
 void sub_0804C0B4(void)

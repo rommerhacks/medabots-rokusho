@@ -3968,7 +3968,7 @@ _080562C4:
 	ldr r0, [r1]
 	adds r0, #1
 	str r0, [r1]
-	bl populate_battle_entity_tile_positions
+	bl save_script_sprites
 	ldr r0, _0805632C @ =0x03002C30
 	movs r1, #0x80
 	lsls r1, r1, #6
@@ -3988,7 +3988,7 @@ _080562C4:
 	ldr r0, _08056338 @ =0x85000100
 	str r0, [r1, #8]
 	ldr r0, [r1, #8]
-	bl init_battle_medapart_sprites_all
+	bl restore_script_sprites
 	adds r0, r4, #0
 	adds r0, #0xf8
 	ldr r0, [r0]

@@ -748,7 +748,7 @@ void sub_0804E44C(void)
     switch (s->unkC93)
     {
     case 0:
-        spawn_battle_medapart_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
+        spawn_script_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
         setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 0);
         s->unkC93++;
         break;
@@ -865,7 +865,7 @@ void sub_0804E6B4(void)
     switch (s->unkC93)
     {
     case 0:
-        spawn_battle_medapart_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
+        spawn_script_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
         setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 0);
         s->unkC93++;
         break;
@@ -1446,12 +1446,12 @@ void nullsub_0804F58C(void)
 // guess: opcode 0x56, reload the map (clears tile buffers, recopies the collision map, reloads NPC sprites).
 void sub_0804F590(void)
 {
-    populate_battle_entity_tile_positions();
+    save_script_sprites();
     sub_080496C8(gUnk_03003870, 0x900);
     sub_080496C8(gUnk_03003870 + 0xA80, 0x900);
     sub_080496C8(gUnk_03005664, 0x90);
     sub_080496C8(gUnk_03005664 + 0xA8, 0x90);
-    init_battle_medapart_sprites_all();
+    restore_script_sprites();
     sub_080496C8(gUnk_030057E0.unk810, 0x400);
     memcpy_u8(gUnk_084045A8[gUnk_030057E0.unk7FE], gUnk_030057E0.unk810,
               (gUnk_030057E0.unk802 >> 1) * (gUnk_030057E0.unk800 >> 1));
@@ -1583,7 +1583,7 @@ void sub_0804F818(void)
     switch (s->unkC93)
     {
     case 0:
-        spawn_battle_medapart_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
+        spawn_script_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
         setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 1);
         s->unkC93++;
         break;
@@ -1618,7 +1618,7 @@ void sub_0804F8F4(void)
     switch (s->unkC93)
     {
     case 0:
-        spawn_battle_medapart_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
+        spawn_script_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
         setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 1);
         s->unkC93++;
         break;
@@ -1939,19 +1939,21 @@ u8 compute_battle_sprite_anim_offset(u8 id, u8 a)
     return gUnk_03002C30[sub_0804DBA4(id) + 79].unk2B * 12 + a * 3;
 }
 
-void spawn_battle_medapart_sprite(u8 flags, u8 part, u8 x, u8 y)
+// Map script opcodes: sprite slot flags & 0xF (+0x4F), graphics id, tile x / y; bit 0x40 = 5 px lower.
+void spawn_script_sprite(u8 flags, u8 part, u8 x, u8 y)
 {
     u32 idx = flags & 0xF;
 
     if ((flags & 0xF0) && find_map_event_by_coords(x, y) && gUnk_03006D38.unk3)
         sub_08047BA8(gUnk_083D29E6[gUnk_03006D38.unk3]);
     sub_0804DB84(idx, find_next_available_battle_sprite_slot());
-    init_battle_medapart_sprite(sub_0804DBA4(idx), part, x, y);
+    init_script_sprite(sub_0804DBA4(idx), part, x, y);
     if (flags & 0x40)
         gUnk_03002C30[sub_0804DBA4(idx) + 0x4F].unk10_8 += 5;
 }
 
-void init_battle_medapart_sprite(u8 idx, u8 part, u8 x, u8 y)
+// Sets up script sprite idx + 0x4F at tile (x, y), plus an overlay sprite at idx + 0x79 on some tiles.
+void init_script_sprite(u8 idx, u8 part, u8 x, u8 y)
 {
     u32 slot = idx + 0x4F;
     struct Unk_03002C30 *spr;
@@ -1997,7 +1999,8 @@ void sub_08050508(u8 arg)
     sub_0804DB68(id);
 }
 
-void populate_battle_entity_tile_positions(void)
+// Snapshot of the 6 script sprites into gUnk_030057E0.unk7DC (runtime: opening the field menu).
+void save_script_sprites(void)
 {
     s32 i;
 
@@ -2016,14 +2019,15 @@ void populate_battle_entity_tile_positions(void)
     }
 }
 
-void init_battle_medapart_sprites_all(void)
+// Re-creates the script sprites from that snapshot (runtime: returning from the field menu).
+void restore_script_sprites(void)
 {
     s32 i;
 
     for (i = 0; i <= 5; i++)
     {
         if (gUnk_030057E0.unk7DC[i].active && !gUnk_030057E0.unk7DC[i].unk2_6)
-            init_battle_medapart_sprite(i, gUnk_030057E0.unk7DC[i].anim, gUnk_030057E0.unk7DC[i].x, gUnk_030057E0.unk7DC[i].y);
+            init_script_sprite(i, gUnk_030057E0.unk7DC[i].anim, gUnk_030057E0.unk7DC[i].x, gUnk_030057E0.unk7DC[i].y);
     }
 }
 
@@ -2282,7 +2286,7 @@ u32 scene_state_dispatch(u32 a, u32 b)
     case 1:
         if (a == 0x20)
         {
-            populate_battle_entity_tile_positions();
+            save_script_sprites();
             switch_game_mode(0x20, b);
             gUnk_03006D20.unkB++;
         }
@@ -2290,7 +2294,7 @@ u32 scene_state_dispatch(u32 a, u32 b)
         {
             if (a == 0x12)
                 dispatch_jump_table_29(0x18, 0);
-            populate_battle_entity_tile_positions();
+            save_script_sprites();
             switch_game_mode(a, b);
             gUnk_03006D20.unkB++;
         }
@@ -2305,7 +2309,7 @@ u32 scene_state_dispatch(u32 a, u32 b)
         REG_BLDCNT = 0;
         REG_BLDY = 0;
         sub_0804B1FC();
-        init_battle_medapart_sprites_all();
+        restore_script_sprites();
         REG_DISPCNT = 0x1E40;
         if (a == 0x10 || a == 0x20)
             gUnk_030057E0.unkCBA = 2;
@@ -2454,7 +2458,7 @@ void sub_08050F10(void)
                             gUnk_030057E0.unkC67 = gUnk_03002C30[47].unk20;
                             gUnk_030057E0.unkC83 = gUnk_03002C30[48].unk20;
                             gUnk_030057E0.unkC84 = gUnk_03002C30[48].unk2B;
-                            populate_battle_entity_tile_positions();
+                            save_script_sprites();
                             gUnk_030057E0.unkCBA = 2;
                             done = 1;
                         }

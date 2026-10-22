@@ -422,7 +422,7 @@ void sub_0804B70C(void);
 void map_script_read_warp(void);
 s32 sub_0804D8A8(u16 id);
 void sub_0804D934(struct MapObject *obj);
-void spawn_battle_medapart_sprite(u8 a, u8 b, u8 c, u8 d);
+void spawn_script_sprite(u8 a, u8 b, u8 c, u8 d);
 void sub_08050508(u8 id);
 void set_battle_sprite_animation(u8 id, u8 state);
 void sub_08053234(u16 id);
@@ -678,7 +678,7 @@ u32 find_map_event_by_coords(u32 x, u32 y);
 u32 check_random_encounter(void);
 void sub_08043960(u32 phase, s32 amplitude, u32 lines); // guess: per-scanline BG scroll wave table (heat haze / water)
 void sub_08043AE0(void);
-void populate_battle_entity_tile_positions(void);
+void save_script_sprites(void);
 void setup_palette_fade_to_color_with_obj(u16 color, float a, float b, float c);
 void LZ77UnCompVram(const void *src, void *dst);
 
@@ -721,7 +721,7 @@ void format_number_to_text_buffer(u32 slot, u32 n);
 u32 sub_08047BCC(u32 idx);
 u32 sub_08047E20(u8 id);
 void sub_08047DD8(u8 id, u8 n);
-void init_battle_medapart_sprites_all(void);
+void restore_script_sprites(void);
 void load_map_npc_sprites(); // takes one argument (update_battle_field_frame passes gUnk_030057E0.unkCBA)
 void update_entity_sprites_on_screen(void);
 u32 sub_08047BEC(u32 a, u32 b);
@@ -729,7 +729,7 @@ void sub_08047DF0(u8 a, u8 b, u8 n);
 void sub_08047E08(u8 a, u8 b, u8 n);
 u32 battle_scene_state_dispatch(void);
 void sub_08050B50(void);
-void init_battle_medapart_sprite(u8 idx, u8 part, u8 x, u8 y);
+void init_script_sprite(u8 idx, u8 part, u8 x, u8 y);
 u8 calc_medapart_table_index(u8 a);
 u8 compute_battle_sprite_anim_offset(u8 id, u8 a);
 void field_player_step(u8 dir);
