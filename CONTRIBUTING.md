@@ -494,3 +494,6 @@
 * A table copied to the stack with `ldm`/`stm` is a struct copy (`struct S32Array3 t = gUnk_080AFF34;`);
   a byte-wise `memcpy` call is `memcpy(buf, table, n)` (sub_0806C500, sub_0806C994). Both tables live
   in the data blob, so they need symbols, not local initializers.
+* A VRAM store followed by a read-back of the same halfword (`strh r0, [r1]; ldrh r0, [r1]`) is a
+  `vu16 *p` with a bare `*p++;` statement after the store (the number drawers `draw_number*`).
+* `(s32)some_float` needs `__fixsfsi`; libgcc.s exports it as an alias of `float_to_int`.
