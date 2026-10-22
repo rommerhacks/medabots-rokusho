@@ -529,6 +529,8 @@ extern const u16 gUnk_080AF7E0[]; // animation frames by (arg & 3) (sub_0805D57C
 extern const u16 gUnk_080AF808[]; // animation frames by (arg & 3) (sub_0805E170)
 
 extern u8 gUnk_02023078; // first visible list entry (update_battle_sprite_priority_flags)
+extern struct Vec16 gUnk_02023200[160][4]; // per-scanline BG0-3 scroll, even frames (sub_08043960)
+extern struct Vec16 gUnk_02023C00[160][4]; // per-scanline BG0-3 scroll, odd frames (sub_08043960)
 
 extern struct Unk_03001784 gUnk_03001784;
 extern const u8 gSaveMagic[17]; // save file signature (serialize_save_data, validate_save_data)

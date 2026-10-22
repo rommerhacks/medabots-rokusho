@@ -1605,7 +1605,45 @@ u32 check_random_encounter(void)
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043960);
+void sub_08043960(u32 phase, s32 amplitude, u32 lines)
+{
+    s32 i;
+    u32 idx;
+    struct Vec16 (*buf)[4];
+
+    buf = !(gFrameCounter & 1) ? gUnk_02023200 : gUnk_02023C00;
+    for (i = 0; i < 160; i++)
+    {
+        if (i < lines)
+        {
+            if ((i & 3) == 0)
+            {
+                idx = (i + phase) & 0xFF;
+                gUnk_03000440.unk86 = (u32)(gUnk_083D69A0[0][idx] * (amplitude / 512.0f));
+            }
+            buf[i][0].x = gUnk_03000440.unk86 + (gBg0Scroll.x + gUnk_03002C2C.x);
+            buf[i][0].y = gBg0Scroll.y + gUnk_03002C2C.y;
+            buf[i][1].x = gUnk_03000440.unk86 + (gBg1Scroll.x + gUnk_03002C2C.x);
+            buf[i][1].y = gBg1Scroll.y + gUnk_03002C2C.y;
+            buf[i][2].x = gUnk_03000440.unk86 + (gBg2Scroll.x + gUnk_03002C2C.x);
+            buf[i][2].y = gBg2Scroll.y + gUnk_03002C2C.y;
+            buf[i][3].x = gUnk_03000440.unk86 + (gBg3Scroll.x + gUnk_03002C2C.x);
+            buf[i][3].y = gBg3Scroll.y + gUnk_03002C2C.y;
+        }
+        else
+        {
+            buf[i][0].x = gBg0Scroll.x + gUnk_03002C2C.x;
+            buf[i][0].y = gBg0Scroll.y + gUnk_03002C2C.y;
+            buf[i][1].x = gBg1Scroll.x + gUnk_03002C2C.x;
+            buf[i][1].y = gBg1Scroll.y + gUnk_03002C2C.y;
+            buf[i][2].x = gBg2Scroll.x + gUnk_03002C2C.x;
+            buf[i][2].y = gBg2Scroll.y + gUnk_03002C2C.y;
+            buf[i][3].x = gBg3Scroll.x + gUnk_03002C2C.x;
+            buf[i][3].y = gBg3Scroll.y + gUnk_03002C2C.y;
+        }
+    }
+    gVBlankOnceCallback = sub_08043AE0;
+}
 
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043AE0);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_tileset_to_vram);

@@ -676,6 +676,8 @@ void sub_08052AF8(s16 dy);
 u32 find_npc_event_match(void);
 u32 find_map_event_by_coords(u32 x, u32 y);
 u32 check_random_encounter(void);
+void sub_08043960(u32 phase, s32 amplitude, u32 lines); // guess: per-scanline BG scroll wave table (heat haze / water)
+void sub_08043AE0(void);
 void populate_battle_entity_tile_positions(void);
 void setup_palette_fade_to_color_with_obj(u16 color, float a, float b, float c);
 void LZ77UnCompVram(const void *src, void *dst);
