@@ -979,7 +979,7 @@ extern const u8 *const gUnk_08413514[]; // per area id: tile ids, resolved throu
 extern const u8 *const gUnk_083F80F4[]; // compressed OBJ tile sets, NULL entries fall back to 1 (decompress_battle_tile_graphics)
 extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (dma_load_battle_palettes)
 extern u32 gUnk_0300534C;
-extern u8 gUnk_03006D40[0x200];
+extern struct AffineParam gUnk_03006D40[32];
 extern u32 gUnk_03006D30;
 extern const Func gItemMenuStates[]; // field menu Item screen states, by gGameSubState (item_menu_update)
 extern const Func gUnk_08483C44[]; // by gGameSubState (sub_0805E29C)

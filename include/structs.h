@@ -796,9 +796,14 @@ struct Unk_030017A0
 
 struct Unk_030057A0
 {
-    u8 filler0[0x14];
+    u8 filler0[0x10];
+    u8 unk10;
+    u8 unk11;
+    u8 filler12[0x2];
     u8 unk14;
-    u8 filler15[0x19];
+    u8 filler15[0x11];
+    u16 unk26;
+    u8 filler28[0x6];
     u16 unk2E; // text bank (map script opcode 0x8x argument - 2)
     u16 unk30; // text id
 };
@@ -936,13 +941,59 @@ struct Unk_03005290
     u8 fillerE[0x12];
 };
 
+// Blend effect state (setup_blend_effect / blend_effect_update)
 struct Unk_03006F40
 {
-    u8 unk0;
-    u8 unk1;
-    u8 filler2[0xA];
+    u8 unk0; // BLDCNT target/mode bits
+    u8 unk1; // effect type 0..6
+    u8 unk2; // 1 = running, 2 = done
+    u8 unk3; // EVA
+    u8 unk4; // EVB
+    u8 unk5; // EVY
+    u8 unk6;
+    u8 unk7;
+    u8 unk8;
+    u8 unk9;
+    u8 unkA;
+    u8 fillerB;
     float unkC; // blend weights (sub_080487E4: 12.0, 10.0)
     float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24; // palette fade amount (setup_palette_fade_to_color)
+    float unk28;
+    float unk2C;
+    float unk30;
+};
+
+// Affine parameters, gUnk_03006D40[32] (calculate_oam_affine_matrix)
+struct AffineParam
+{
+    s16 scaleX;
+    s16 scaleY;
+    s16 angle;
+    s16 pa, pb, pc, pd;
+    u16 pad;
+};
+
+// Sprite animation script entry (advance_sprite_animation_frame)
+struct SpriteAnimCmd
+{
+    u16 cmd; // 0xFFFA..0xFFFF: commands, else a frame
+    u16 arg;
+    u16 duration;
+    u16 frame;
+};
+
+struct SpriteAnimGfx
+{
+    u8 unk0;
+    u8 filler1[3];
+    const void *src;
+    void *dst;
+    u8 fillerC[4];
 };
 
 // Sprite descriptor word (setup_oam_sprite_entries, init_sprite_object_entry).
@@ -996,11 +1047,11 @@ struct Unk_03005310
     u8 filler8[0x10];
     u16 unk18; // cleared with the gUnk_03006D40 affine params (sub_080492CC)
     u16 unk1A;
-    u8 filler1C[0x2];
+    u16 unk1C; // BG0 x scroll (new_game_init)
     u16 unk1E; // BG1-3 x scroll (update_battle_field_frame)
     u16 unk20;
     u16 unk22;
-    u8 filler24[0x2];
+    u16 unk24; // BG0 y scroll
     u16 unk26; // BG1-3 y scroll
     u16 unk28;
     u16 unk2A;
@@ -1031,6 +1082,9 @@ struct Unk_03005350
     s32 unkB8;
     u8 fillerBC[0x118];
     u32 unk1D4;
+    u8 filler1D8[0x32];
+    u16 unk20A; // palette colour masks (run_blend_fade_transition)
+    u16 unk20C;
 };
 
 // Table pointed to by the sound work area at 0x728: note -> sample/frequency entry.

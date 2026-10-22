@@ -783,8 +783,8 @@ void field_menu_init_cursor(void);
 void sub_0804765C(u32 a);
 void update_battle_field_frame(void);
 void sub_080487E4(void);
-void setup_blend_effect(u8 a, u16 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i);
-void blend_effect_update(void);
+void setup_blend_effect(u8 mode, u16 bldcnt, u8 type, u8 sa, u8 sb, u8 sy, u8 a, u8 b, u8 y);
+u32 blend_effect_update(void);
 void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot);
 void reset_bg_scroll(void); // zeroes the four BG scroll positions
 void set_blend_effect_mode(u8 mode, u16 targets, u16 speed);
