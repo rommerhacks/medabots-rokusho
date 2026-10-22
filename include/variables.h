@@ -1127,3 +1127,9 @@ extern const s8 gUnk_080AFF9C[12]; // 12 frame counts (unk1A values) at which su
 extern u16 *gUnk_0300700C; // palette the fade in sub_08071F08 reads from (set to gPaletteBackupBg = 0x0202FA00)
 extern const u8 gUnk_080AFFA8[13]; // sub_08072138 script: pairs (0, n) = wait n frames, (1, id) = play_sound_effect(id)
 extern u32 (*const gUnk_08486138[])(void); // battle-end steps by gUnk_03001800_s.unk10.end.state (call_battle_handler_by_state_08071C64); 1 = done
+extern const struct SpriteAnimCmd *const gUnk_083F7BF4[];
+extern const struct SpriteAnimGfx gUnk_080AE9FC[];
+extern const u8 gUnk_08764CB0[];
+extern const Func gUnk_083D1FAC[];
+extern const void *const gUnk_08411D54[];
+extern const u8 *gUnk_03005590;
