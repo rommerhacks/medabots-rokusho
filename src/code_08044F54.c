@@ -201,7 +201,64 @@ void sub_0804765C(u32 a)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", dispatch_by_index_0476e8);
+void dispatch_by_index_0476e8(u32 idx)
+{
+    switch (idx)
+    {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 12:
+        break;
+    case 4:
+        gGameMode = 1;
+        gGameState = 1;
+        gGameSubState = 0x10;
+        return;
+    case 5:
+        gGameMode = 1;
+        gGameState = 1;
+        gGameSubState = 0x20;
+        return;
+    case 6:
+        gGameMode = 1;
+        gGameState = 2;
+        gGameSubState = 8;
+        return;
+    case 7:
+        gUnk_03006D20.unkC = 7;
+        break;
+    case 8:
+        gUnk_03006D20.unkC = 8;
+        break;
+    case 10:
+        sub_08047574();
+        sub_080496C8((u8 *)&gUnk_030057E0, 0xCC0);
+        gUnk_03000588 = 1;
+        gGameMode = 1;
+        gGameState = 1;
+        gGameSubState = 0;
+        return;
+    case 11:
+        sub_08047574();
+        gUnk_030057E0.unkC88 = 0;
+        gUnk_030057E0.unkC89 = 0;
+        gUnk_03000588 = 1;
+        gGameMode = 1;
+        gGameState = 1;
+        gGameSubState = 10;
+        return;
+    case 9:
+        gUnk_03000588 = 1;
+        break;
+    default:
+        return;
+    }
+    gGameMode = 1;
+    gGameState = 1;
+    gGameSubState = 5;
+}
 
 void sub_08047850(s32 mode)
 {
@@ -383,9 +440,38 @@ u32 scene_transition_step_08047C24(u8 a, u8 b, u8 c, const void *text)
     return ret;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", format_number_to_text_buffer);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_string_to_text_buffer);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047D24);
+void format_number_to_text_buffer(u32 slot, u32 n)
+{
+    u8 buf[12];
+    struct TextBufTable4 t = gUnk_080ABBFC;
+    u8 *d = t.p[slot];
+    s32 len = count_decimal_digits(n);
+    s32 i;
+
+    for (i = 0; i < len; i++)
+        buf[i] = truncate_to_digit_count(n, len - 1 - i) + 0x35;
+    memcpy_u8(buf, d, len);
+    d[len] = 0xFE;
+}
+
+void copy_string_to_text_buffer(u32 slot, u32 str)
+{
+    u8 *s = (u8 *)str;
+    struct TextBufTable4 t = gUnk_080ABBFC;
+    u8 *d = t.p[slot];
+    s32 i;
+
+    for (i = 0; i < 16 && *s != 0xFE; i++)
+        *d++ = *s++;
+    *d = 0xFE;
+}
+
+void sub_08047D24(u32 slot, u32 n)
+{
+    u8 buf[12];
+    struct TextBufTable4 t = gUnk_080ABBFC;
+    divide_by_10000_b(t.p[slot], n);
+}
 
 u32 get_money(void)
 {

@@ -765,6 +765,8 @@ u32 sub_0803ED28(void);
 void open_choice_menu(u8 a, u8 b, u8 c);
 u32 poll_choice_menu(void);
 void divide_by_10000(u8 *digits, u32 n);
+void divide_by_10000_b(u8 *dst, u32 n);
+s32 truncate_to_digit_count(s32 n, u8 k);
 void divide_by_100000_08041370(u8 *digits, u32 n);
 void divide_by_100000_08042838(u32 n, u32 x, u32 y, u32 digits, u32 bgcnt, u32 tile); // guess: draws n as tile digits
 void clear_sprite_table_mask(u8 first, u8 count);
