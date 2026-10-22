@@ -1,4 +1,5 @@
 #include "global.h"
+#include "keys.h"
 
 void dma_load_sprite_tiles(const u32 *src, u16 tile, void *buf, u32 useCpu)
 {
@@ -781,6 +782,164 @@ s16 divide_by_65536(s16 a)
     return n / a;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08048B6C);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_tilemap_with_offset_08048CA4);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_tiles_to_bg_tilemap);
+void sub_08048B6C(void)
+{
+    struct Unk_03005310 *p = &gUnk_03005310;
+
+    p->unk10 = 0;
+    p->unk14 = 0;
+    p->unk8 = 0x100;
+    p->unkA = 0;
+    p->unkC = 0;
+    p->unkE = 0x100;
+    p->unk30 = 0;
+    p->unk32 = 0x100;
+    p->unk34 = 0x100;
+    p->unk36 = 0;
+    p->unk2C = 0;
+    p->unk2E = 0;
+}
+
+// Not called directly (hidden in the tail of sub_08048B6C). Guess: debug, B + D-pad scrolls BG1-3,
+// RIGHT/LEFT step unk36 (0-255).
+void sub_08048B94(void)
+{
+    if (KEYS_LO(gHeldKeys) & 2)
+    {
+        if (KEYS_LO(gHeldKeys) & 0x40)
+        {
+            gUnk_03005310.unk26 -= 4;
+            gUnk_03005310.unk28 -= 4;
+            gUnk_03005310.unk2A -= 4;
+        }
+        if (KEYS_LO(gHeldKeys) & 0x80)
+        {
+            gUnk_03005310.unk26 += 4;
+            gUnk_03005310.unk28 += 4;
+            gUnk_03005310.unk2A += 4;
+        }
+        if (KEYS_LO(gHeldKeys) & 0x20)
+        {
+            gUnk_03005310.unk1E -= 4;
+            gUnk_03005310.unk20 -= 4;
+            gUnk_03005310.unk22 -= 4;
+        }
+        if (KEYS_LO(gHeldKeys) & 0x10)
+        {
+            gUnk_03005310.unk1E += 4;
+            gUnk_03005310.unk20 += 4;
+            gUnk_03005310.unk22 += 4;
+        }
+    }
+    if (KEYS_LO(gHeldKeys) & 0x10)
+        gUnk_03005310.unk36 = ++gUnk_03005310.unk36 & 0xFF;
+    if (KEYS_LO(gHeldKeys) & 0x20)
+        gUnk_03005310.unk36 = (gUnk_03005310.unk36 + 0xFF) & 0xFF;
+}
+
+// Not called directly (hidden in the tail of sub_08048B6C).
+void sub_08048C5C(u16 *src, u16 *dst, s32 h, s32 w, s32 maxh, s32 pitch, s32 add)
+{
+    s32 i, j;
+    if (h > maxh)
+        h = maxh;
+    for (i = 0; i < h; i++)
+    {
+        for (j = 0; j < w; j++)
+            *dst++ = *src++ + add;
+        dst += pitch - w;
+    }
+}
+
+// Copies a w x h tilemap (u16 entries, row pitch w) into a 64x64 BG screen (four 32x32 blocks), adding add.
+void copy_tilemap_with_offset_08048CA4(const void *src, void *dst, s32 h, s32 w, s32 c, s32 d, s32 add)
+{
+    s32 i, j, n;
+    s32 rows;
+
+    rows = 32;
+    if (h < 32)
+        rows = h;
+    for (i = 0; i < rows; i++)
+    {
+        n = 32;
+        if (w < 32)
+            n = w;
+        for (j = 0; j < n; j++)
+            ((u16 *)dst)[i * 32 + j] = ((const u16 *)src)[w * i + j] + add;
+        if (w > 31)
+        {
+            for (j = 0; j < w - 32; j++)
+                ((u16 *)dst)[0x400 + i * 32 + j] = ((const u16 *)src)[w * i + 32 + j] + add;
+        }
+    }
+    if (h > 31)
+    {
+        for (i = 0; i < h - 32; i++)
+        {
+            n = 32;
+            if (w < 32)
+                n = w;
+            for (j = 0; j < n; j++)
+                ((u16 *)dst)[0x800 + i * 32 + j] = ((const u16 *)src)[(i + 32) * w + j] + add;
+            if (w > 31)
+            {
+                for (j = 0; j < w - 32; j++)
+                    ((u16 *)dst)[0xC00 + i * 32 + j] = ((const u16 *)src)[(i + 32) * w + 32 + j] + add;
+            }
+        }
+    }
+}
+
+// Expands a (h/2) x (w/2) map of 2x2 metatile ids (src) into a 64x64 BG screen at tile (x, y) (four 32x32 blocks).
+#define MAP ((u16 (*)[32])dst)
+#define SRC(r, c) (((const u8 *)src) + (w / 2) * (r))[c]
+void copy_tiles_to_bg_tilemap(const void *src, void *dst, s32 h, s32 w, s32 c, s32 d, s32 y, s32 x, s32 tile)
+{
+    s32 i, j;
+    s32 rows, cols;
+
+    rows = h + y > 31 ? 32 : h;
+    for (i = 0; i < rows; i++)
+    {
+        cols = w + x > 31 ? 32 : w;
+        for (j = 0; j < cols; j++)
+            build_bg_tile_entry(&MAP[i + y][j + x], SRC(i / 2, j / 2), tile, i % 2, j % 2, y % 2, x % 2);
+        if (w > 31)
+        {
+            for (j = 0; j < w - 32; j++)
+                build_bg_tile_entry(&MAP[i + y + 32][j + x], SRC(i / 2, j / 2 + 16), tile, i % 2, j % 2, y % 2, x % 2);
+        }
+    }
+    if (h > 31)
+    {
+        for (i = 0; i < h - 32; i++)
+        {
+            cols = 32;
+            if (w < 32)
+                cols = w;
+            for (j = 0; j < cols; j++)
+                build_bg_tile_entry(&MAP[i + y + 64][j + x], SRC(i / 2 + 16, j / 2), tile, i % 2, j % 2, y % 2, x % 2);
+            if (w > 31)
+            {
+                for (j = 0; j < w - 32; j++)
+                    build_bg_tile_entry(&MAP[i + y + 96][j + x], SRC(i / 2 + 16, j / 2 + 16), tile, i % 2, j % 2, y % 2, x % 2);
+            }
+        }
+    }
+}
+#undef SRC
+#undef MAP
+
+// Not called directly (hidden in the tail of copy_tiles_to_bg_tilemap). Writes one 2x2 metatile.
+void sub_0804908C(u16 *dst, s32 pal, s32 tile)
+{
+    s32 t = (pal + 1) * 4;
+    s32 attr = (pal << 12) + tile;
+
+    dst[0] = t | attr;
+    dst[1] = (t + 1) | attr;
+    dst[32] = (t + 2) | attr;
+    dst[33] = (t + 3) | attr;
+}
+

@@ -1108,7 +1108,12 @@ struct Unk_03005310
     u8 unk1;
     u8 filler2[0x2];
     u32 unk4; // frame counter
-    u8 filler8[0x10];
+    s16 unk8; // affine pa (identity 0x100, sub_08048B6C)
+    s16 unkA; // pb
+    s16 unkC; // pc
+    s16 unkE; // pd
+    s32 unk10; // affine x
+    s32 unk14; // affine y
     u16 unk18; // cleared with the gUnk_03006D40 affine params (sub_080492CC)
     u16 unk1A;
     u16 unk1C; // BG0 x scroll (new_game_init)
@@ -1119,7 +1124,12 @@ struct Unk_03005310
     u16 unk26; // BG1-3 y scroll
     u16 unk28;
     u16 unk2A;
-    u8 filler2C[0xC];
+    s16 unk2C;
+    s16 unk2E;
+    s16 unk30;
+    s16 unk32; // 0x100 (sub_08048B6C)
+    s16 unk34; // 0x100
+    u16 unk36; // 0-255, stepped by RIGHT / LEFT in sub_08048B94
     u8 unk38;
     u8 unk39;
 };

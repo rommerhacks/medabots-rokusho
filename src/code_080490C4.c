@@ -1,9 +1,10 @@
 #include "global.h"
 
-void build_bg_tile_entry(u16 *dst, u16 pal, u16 tile, u16 y, u16 x)
+// One tile of 2x2 metatile `id` (copy_tiles_to_bg_tilemap); yoff / xoff are passed but unused.
+void build_bg_tile_entry(u16 *dst, u16 id, u16 base, u16 y, u16 x, u16 yoff, u16 xoff)
 {
     u16 t = x + y * 2;
-    *dst = (t + (pal + 1) * 4) | (tile + (pal << 12));
+    *dst = (t + (id + 1) * 4) | (base + (id << 12));
 }
 
 // Not called directly (hidden in the tail of build_bg_tile_entry).
