@@ -699,7 +699,7 @@ void advance_sprite_animation_frame(u8 idx);
 u8 field_random(u8 n); // returns 0..n-1
 void memcpy_u8(const void *src, void *dst, u32 n);
 
-u32 scene_state_dispatch(u8 a, u8 b);
+u32 scene_state_dispatch(u32 a, u32 b);
 void init_bg0_for_cursor(u32 mode);
 u32 sub_08047FEC(void);
 void sub_08050C74(void);
@@ -728,6 +728,15 @@ u32 sub_08047BEC(u32 a, u32 b);
 void sub_08047DF0(u8 a, u8 b, u8 n);
 void sub_08047E08(u8 a, u8 b, u8 n);
 u32 battle_scene_state_dispatch(void);
+void sub_08050B50(void);
+void init_battle_medapart_sprite(u8 idx, u8 part, u8 x, u8 y);
+u8 calc_medapart_table_index(u8 a);
+u8 compute_battle_sprite_anim_offset(u8 id, u8 a);
+void field_player_step(u8 dir);
+void update_npc_random_animation(void);
+u32 map_cursor_move_and_check_event(void);
+void field_player_walk_input(void);
+void field_warp_to_area(void);
 void update_bg_scroll_offsets_b(void);
 void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base);
 void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base);

@@ -117,7 +117,7 @@ struct Unk_03006D20
     u8 unk2;
     u8 unk3;
     u8 filler4[0x4];
-    s16 unk8;
+    u16 unk8; // base y of a sprite hop (sub_080508CC)
     u8 unkA; // sprite slot (gUnk_03002C30 index)
     u8 unkB;
     u8 unkC;
@@ -873,11 +873,23 @@ struct Unk_030064A0
     u16 unk72[30 * 20]; // saved BG tilemap
 };
 
+// One sprite of the snapshot at gUnk_030057E0.unk7DC (4 bytes)
+struct BattleEntityTile
+{
+    u8 x; // tile
+    u8 y;
+    u8 id:5;
+    u8 unk2_5:1;
+    u8 unk2_6:1;
+    u8 active:1;
+    u8 anim; // (unk2B & 0xF) << 4 | facing
+};
+
 struct Unk_030057E0
 {
     u8 filler0[0x5DC];
     struct MapObject unk5DC[64];
-    u8 filler7DC[0x20];
+    struct BattleEntityTile unk7DC[8]; // sprite snapshot (populate_battle_entity_tile_positions)
     u8 unk7FC;
     u8 unk7FD;
     u8 unk7FE; // area id
