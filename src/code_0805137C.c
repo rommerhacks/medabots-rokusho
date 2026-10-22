@@ -895,7 +895,7 @@ void compute_distance_to_state_position(float *xs, float *ys, float *zs)
     float dx, dy, dz;
     float dist;
 
-    compute_triangle_area_3d(xs, ys, zs, &a, &b, &c, &d);
+    compute_plane_from_points(xs, ys, zs, &a, &b, &c, &d);
     x = *xs;
     y = *ys;
     z = *zs;
@@ -916,7 +916,7 @@ void compute_distance_to_state_position(float *xs, float *ys, float *zs)
 
 // x, y, z: the three points' coordinates (x[i], y[i], z[i] = point i).
 // Outputs the plane through them: normal (a, b, c) scaled to integers, and d.
-void compute_triangle_area_3d(float *x, float *y, float *z, float *a, float *b, float *c, float *d)
+void compute_plane_from_points(float *x, float *y, float *z, float *a, float *b, float *c, float *d)
 {
     float nx, ny, nz, len;
 

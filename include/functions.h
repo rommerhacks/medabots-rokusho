@@ -1495,7 +1495,7 @@ float float_sign(float x);
 double compute_sqrt_scaled(double x);
 void sub_08053418(void);
 void compute_distance_to_state_position(float *xs, float *ys, float *zs);
-void compute_triangle_area_3d(float *x, float *y, float *z, float *a, float *b, float *c, float *d);
+void compute_plane_from_points(float *x, float *y, float *z, float *a, float *b, float *c, float *d);
 void get_state_position_xyz(float *x, float *y, float *z);
 void sub_0805378C(void);
 void affine_set_destination_and_compute_transform(float x0, float x1, float y0, float y1);
