@@ -43,6 +43,7 @@ void sub_0805B470(struct Unk_03002C30 *attr)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805B4B0);
+INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805B4C8);
 
 u32 sub_0805B7A0(void)
 {
