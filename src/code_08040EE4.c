@@ -742,6 +742,9 @@ void load_battlefield_data_to_buffer(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", check_random_encounter);
+
+INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043960);
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043AE0);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_tileset_to_vram);
 
