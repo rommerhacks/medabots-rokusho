@@ -1122,6 +1122,22 @@ struct OamFull
     u16 affineParam;
 };
 
+// BIOS ObjAffineSet source / destination (pret syscall.h layout).
+struct ObjAffineSrcData
+{
+    s16 xScale;
+    s16 yScale;
+    u16 rotation;
+};
+
+struct ObjAffineDstData
+{
+    s16 pa;
+    s16 pb;
+    s16 pc;
+    s16 pd;
+};
+
 // Sprite node descriptor: OAM attributes (init_oam_sprite_entry).
 struct SpriteNodeDesc
 {

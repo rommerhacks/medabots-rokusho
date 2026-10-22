@@ -75,7 +75,80 @@ u16 binary_search_sorted_table(struct SortEntry *arr, u16 n, u16 key)
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sorted_array_insert_shift);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_oam_entries_with_priority);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_sprite_oam_entries);
+
+// K&R: pal is a u8 here, but callers pass it sign-extended (see the prototype).
+u16 copy_sprite_oam_entries(list, dst, slot, pal, end, flip)
+    struct SpriteOamList *list;
+    struct OamFull *dst;
+    u16 slot;
+    u8 pal;
+    u16 end;
+    u8 flip;
+{
+    u16 i;
+    u32 n = list->w * list->h;
+
+    dst = sorted_array_insert_shift(dst, slot, n, list->depth);
+    for (i = 0; i < n && slot < end; dst++, slot++, i++)
+    {
+        *(struct OamData *)dst = list->oams[i];
+        dst->paletteNum += (s8)pal;
+        dst->hFlip = flip & 1;
+        dst->vFlip = (flip >> 1) % 2;
+        dst->affineParam = list->depth;
+        if (list->depth > 300)
+            dst->priority = 3;
+        else if (list->depth > 200)
+            dst->priority = 2;
+        else if (list->depth > 100)
+            dst->priority = 1;
+    }
+    return slot;
+}
+
+// The same with the affine matrix number (flags & 7) and the flips (flags bits 3, 4).
+u16 sub_08045794(list, dst, slot, pal, end, flags)
+    struct SpriteOamList *list;
+    struct OamFull *dst;
+    u16 slot;
+    u8 pal;
+    u16 end;
+    u32 flags;
+{
+    u16 i;
+    u32 n = list->w * list->h;
+
+    dst = sorted_array_insert_shift(dst, slot, n, list->depth);
+    for (i = 0; i < n && slot < end; dst++, slot++, i++)
+    {
+        *(struct OamData *)dst = list->oams[i];
+        dst->paletteNum += (s8)pal;
+        dst->affineParam = list->depth;
+        dst->matrixNum = flags;
+        dst->hFlip = (flags >> 3) & 1;
+        dst->vFlip = (flags >> 4) & 1;
+        if (list->depth > 300)
+            dst->priority = 3;
+        else if (list->depth > 200)
+            dst->priority = 2;
+        else if (list->depth > 100)
+            dst->priority = 1;
+    }
+    return slot;
+}
+
+void sub_0804589C(struct SpriteOamBatch *batch, struct SpriteOamList **buf)
+{
+    batch->lists = buf;
+    batch->count = 0;
+}
+
+void sub_080458A4(struct SpriteOamBatch *batch, struct SpriteOamList *list, u16 depth)
+{
+    list->depth = depth;
+    batch->lists[batch->count] = list;
+    batch->count++;
+}
 
 u16 batch_copy_oam_entries(struct SpriteOamBatch *batch, struct OamData *dst, u16 end)
 {
@@ -131,7 +204,80 @@ u16 copy_sprite_oam_with_vflip(void *a, void *b, u16 c, u32 unused, s8 d, u8 f)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08045A8C);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", render_sprite_if_visible);
+
+u16 render_sprite_if_visible(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 flip)
+{
+    u16 n = slot;
+
+    if (sub_08045A40(y, x))
+    {
+        set_oam_sprite_tile_positions(list, y, x, depth);
+        n = copy_sprite_oam_entries(list, dst, slot, (s8)pal, 0x80, flip);
+    }
+    return n;
+}
+
+// The same plus a scale / flip affine matrix (pa = +-scale, pb = pc = 0, pd = scale) at affine[k * 4].
+u16 sub_08045B68(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 neg, u16 scale, u16 *affine, u32 k)
+{
+    u16 n = slot;
+
+    if (sub_08045A40(y, x))
+    {
+        set_oam_sprite_tile_positions(list, y, x, depth);
+        n = sub_08045794(list, dst, slot, (s8)pal, 0x80, k);
+        if (affine != NULL)
+        {
+            k *= 4;
+            if (neg)
+                affine[k] = -scale;
+            else
+                affine[k] = scale;
+            k++;
+            affine[k] = 0;
+            k++;
+            affine[k] = 0;
+            k++;
+            affine[k] = scale;
+        }
+    }
+    return n;
+}
+
+// The same plus a rotation matrix (ObjAffineSet, scale 0x100, rotation -angle).
+u16 sub_08045C30(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u16 angle, u16 *affine, u32 k)
+{
+    struct ObjAffineDstData d;
+    u16 n = slot;
+
+    if (sub_08045A40(y, x))
+    {
+        set_oam_sprite_tile_positions(list, y, x, depth);
+        n = sub_08045794(list, dst, slot, (s8)pal, 0x80, k);
+        if (affine != NULL)
+        {
+            struct ObjAffineSrcData src = {0x100, 0x100, 0x10000 - angle};
+
+            d = gUnk_080ABBEC;
+            ObjAffineSet(&src, &d, 1, 2);
+            k *= 4;
+            affine[k] = d.pa;
+            k++;
+            affine[k] = d.pb;
+            k++;
+            affine[k] = d.pc;
+            k++;
+            affine[k] = d.pd;
+        }
+    }
+    return n;
+}
+
+void sub_08045D1C(u8 *buf)
+{
+    buf[0x1096] = 0;
+    buf[0x1097] = 0;
+}
 
 u16 init_oam_sprite_entry(struct OamFull *oam, struct SpriteNodeDesc *desc, u8 pal, u16 tile)
 {

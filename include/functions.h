@@ -1291,6 +1291,7 @@ void sub_0805B9EC(u16 keys); // link: gNewKeys / gReleasedKeys from the other pl
 void sub_0805BA20(void); // link: exchanges keys through gUnk_03005010 (player 0 sends gHeldKeys)
 u16 sub_0805BA68(s16 x1, s16 y1, s16 x2, s16 y2); // distance: Sqrt(dx * dx + dy * dy)
 u32 Sqrt(u32 n);
+void ObjAffineSet(struct ObjAffineSrcData *src, void *dest, s32 count, s32 offset);
 void unpack_item_inventory_to_buffer(void); // gItemInventory -> struct ItemListEntry list at 0x02040000, count in gUnk_03006F74->unk10
 void update_battle_medapart_icons(void);
 s32 calc_text_pixel_width(const u8 *s); // sum of gUnk_083B4C88 widths, up to 10 characters or the 0xFE terminator
@@ -1344,7 +1345,15 @@ void update_battle_entity_status_chars(void);
 void dma_load_sprite_tiles(const u32 *src, u16 tile, void *buf, u32 useCpu);
 u32 setup_oam_sprite_entries(struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const struct SpriteAnchor *e, u8 f, u16 g);
 u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const struct SpriteAnchor *e, u8 f, u16 g);
-u16 copy_sprite_oam_entries(void *a, void *b, u16 c, s32 d, u16 e, u8 f); // d is a u8 in the definition; copy_sprite_oam_with_vflip passes an s8
+u16 copy_sprite_oam_entries(struct SpriteOamList *list, struct OamFull *dst, u16 slot, s32 pal, u16 end, u8 flip); // K&R definition: pal is a u8; callers pass it sign-extended
+u16 sub_08045794(struct SpriteOamList *list, struct OamFull *dst, u16 slot, s32 pal, u16 end, u32 flags); // same with an affine matrix number (flags & 7) and flips (bits 3, 4); K&R, pal is a u8
+void sub_0804589C(struct SpriteOamBatch *batch, struct SpriteOamList **buf);
+void sub_080458A4(struct SpriteOamBatch *batch, struct SpriteOamList *list, u16 depth);
+struct OamFull *sorted_array_insert_shift(struct OamFull *arr, u16 n, s32 shift, s16 key);
+u16 render_sprite_if_visible(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 flip);
+u16 sub_08045B68(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 neg, u16 scale, u16 *affine, u32 k); // + scale / flip affine matrix k
+u16 sub_08045C30(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u16 angle, u16 *affine, u32 k); // + rotation affine matrix k
+void sub_08045D1C(u8 *buf);
 void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 a, s16 b, s16 depth); // u16 params in the definition
 u32 check_position_table_match(u8 id, u8 which);
 void copy_sprite_tiles_to_vram(u8 *dst, u8 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp); // rearranges tiles from src into dst (rows x cols blocks of the OAM shape / size)
