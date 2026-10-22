@@ -182,10 +182,17 @@
   (sub_0805FE90).
 * Loop pointer start order (`dst` literal before `src = base + v * 0x200`): explicit pointer locals
   assigned in the original's order, then `v <<= 9; src = base + v;` (fade_update_tilemap_copy).
-* Unsolved: `CpuCopy16(buf, (void *)0x06004000, size); lz_decompress_dispatch(src, (void *)(0x06004000
-  + size));` keeps 0x06004000 in a callee-saved register; the original loads the literal twice
-  (sub_0805D628, sub_0805FBA8, load_battle_background_graphics). Tried pointer / integer locals,
-  `size + c` order, a `register` size, VRAM + 0x4000.
+* `CpuCopy16(buf, (void *)0x06004000, size); lz_decompress_dispatch(src, (void *)(0x06004000 + size));`
+  keeps 0x06004000 in a callee-saved register; the original loads the literal twice. Solved by a helper
+  `static inline void *vram_at(u32 off) { return (void *)(0x06004000 + off); }` used for both destinations
+  (sub_0805D628, item_menu_load_graphics; retry sub_0805FBA8, load_battle_background_graphics this way).
+* `id * 6` where the original computes `(id << 2) + (id << 1)`: write the shifts out
+  (load_battle_sprite_tiles; retry decompress_sprite_to_vram_08042D94).
+* Variable-length arrays (`s32 n = 5; u8 ids[n];`) reproduced a stack frame where the constant only
+  appears through reload (update_battle_medapart_icons, render_battle_medapart_list).
+* A function that matches standalone can break when an unrelated function earlier in the file becomes C
+  (session 91: sub_0805C190 rotates r8 / sl / ip). Bisect by reverting single functions to INCLUDE_ASM
+  and keep the cheapest one as asm until the next neighbour is installed.
 
 ## Naming
 
