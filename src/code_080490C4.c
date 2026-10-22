@@ -748,7 +748,9 @@ static inline void copy_affine(u8 *base)
     }
 }
 
-void sub_0804A1D4(void)
+// Per-frame update of the field game mode (game mode table 0x083D1F84 entry 1): frame counter,
+// map script, the gGameSubState handler from gFieldSubStates, sprites, BG tile animation, OAM affine matrices
+void field_update(void)
 {
     s32 i;
 
@@ -760,11 +762,11 @@ void sub_0804A1D4(void)
         else
             map_script_run_command();
         if (gUnk_030057E0.unkC5F)
-            gUnk_083D1FAC[gGameSubState]();
+            gFieldSubStates[gGameSubState]();
     }
     else
     {
-        gUnk_083D1FAC[gGameSubState]();
+        gFieldSubStates[gGameSubState]();
     }
     update_entity_sprites_on_screen();
     update_npc_sprite_animations();

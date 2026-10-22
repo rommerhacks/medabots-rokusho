@@ -1130,7 +1130,7 @@ extern u32 (*const gUnk_08486138[])(void); // battle-end steps by gUnk_03001800_
 extern const struct SpriteAnimCmd *const gUnk_083F7BF4[];
 extern const struct SpriteAnimGfx gUnk_080AE9FC[];
 extern const u8 gUnk_08764CB0[];
-extern const Func gUnk_083D1FAC[];
+extern const Func gFieldSubStates[];
 extern const void *const gUnk_08411D54[];
 extern const u8 *gUnk_03005590;
 extern const void *const gUnk_083F8CF4[];
