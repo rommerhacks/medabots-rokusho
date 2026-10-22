@@ -497,3 +497,9 @@
 * A VRAM store followed by a read-back of the same halfword (`strh r0, [r1]; ldrh r0, [r1]`) is a
   `vu16 *p` with a bare `*p++;` statement after the store (the number drawers `draw_number*`).
 * `(s32)some_float` needs `__fixsfsi`; libgcc.s exports it as an alias of `float_to_int`.
+* Float and double code: write plain C (`a * b`, `(s32)f`, `(double)i`, `-f`). `asm/lib/libgcc.s` gives the
+  ROM's soft-float routines their standard names (`__addsf3`, `__fixsfsi`, `__floatsidf`, `__truncdfsf2`,
+  `__negsf2`, ...). Calling the routines by their own names changes register use. Libcalls don't make gcc
+  reload memory, so read struct fields inline at each use instead of copying them into temporaries.
+* Accessors into a byte table (`u8 *p = gTable; p[i >> 1] ...`) may need the pointer local declared inside
+  each branch, so the base is loaded before the index shift.
