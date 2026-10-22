@@ -2791,6 +2791,9 @@ softfloat_add_f32: @ 0x0807DEDC
 
 	thumb_func_start softfloat_subtract
 	.global softfloat_subtract
+	.global __subsf3
+	.thumb_func
+__subsf3:
 softfloat_subtract: @ 0x0807DF08
 	push {r4, lr}
 	sub sp, #0x38
@@ -3325,6 +3328,9 @@ softfloat_compare_wrapper: @ 0x0807E270
 
 	thumb_func_start soft_float_eq
 	.global soft_float_eq
+	.global __eqsf2
+	.thumb_func
+__eqsf2:
 soft_float_eq: @ 0x0807E298
 	push {r4, lr}
 	sub sp, #0x28
@@ -3366,6 +3372,9 @@ _0807E2DA:
 	.align 2, 0
 
 	thumb_func_start soft_float_le
+	.global __nesf2
+	.thumb_func
+__nesf2:
 soft_float_le: @ 0x0807E2E0
 	push {r4, lr}
 	sub sp, #0x28
@@ -3408,6 +3417,9 @@ _0807E322:
 
 	thumb_func_start softfloat_compare_eq
 	.global softfloat_compare_eq
+	.global __gtsf2
+	.thumb_func
+__gtsf2:
 softfloat_compare_eq: @ 0x0807E328
 	push {r4, lr}
 	sub sp, #0x28
@@ -3450,6 +3462,9 @@ _0807E36C:
 
 	thumb_func_start softfloat_compare_ge
 	.global softfloat_compare_ge
+	.global __gesf2
+	.thumb_func
+__gesf2:
 softfloat_compare_ge: @ 0x0807E370
 	push {r4, lr}
 	sub sp, #0x28
@@ -3492,6 +3507,9 @@ _0807E3B4:
 
 	thumb_func_start soft_float_ge
 	.global soft_float_ge
+	.global __ltsf2
+	.thumb_func
+__ltsf2:
 soft_float_ge: @ 0x0807E3B8
 	push {r4, lr}
 	sub sp, #0x28
@@ -3534,6 +3552,9 @@ _0807E3FA:
 
 	thumb_func_start soft_float_gt
 	.global soft_float_gt
+	.global __lesf2
+	.thumb_func
+__lesf2:
 soft_float_gt: @ 0x0807E400
 	push {r4, lr}
 	sub sp, #0x28
@@ -3735,6 +3756,9 @@ softfloat_pack_from_params: @ 0x0807E534
 
 	thumb_func_start float_to_double
 	.global float_to_double
+	.global __extendsfdf2
+	.thumb_func
+__extendsfdf2:
 float_to_double: @ 0x0807E54C
 	push {r4, r5, r6, lr}
 	sub sp, #0x18
