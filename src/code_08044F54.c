@@ -214,7 +214,109 @@ void sub_08047850(s32 mode)
     gGameSubState = 5;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08047878);
+void sub_08047878(u32 a, u32 b)
+{
+    switch (a)
+    {
+    case 0x20:
+        gUnk_030057E0.unkC2D = 1;
+        gGameMode = 0;
+        gGameState = 6;
+        gGameSubState = 0;
+        break;
+    case 0x21:
+        gUnk_030057E0.unkC2D = 0;
+        gGameMode = 0;
+        gGameState = 6;
+        gGameSubState = 0;
+        break;
+    case 0x40:
+        gGameMode = 0;
+        gGameState = 1;
+        gGameSubState = 0x10;
+        break;
+    case 0x41:
+        gGameMode = 1;
+        gGameState = 1;
+        gGameSubState = 0x18;
+        break;
+    case 0x42:
+        gGameMode = 1;
+        gGameState = 1;
+        gGameSubState = 0x1C;
+        break;
+    case 0x43:
+        gGameMode = 1;
+        gGameState = 1;
+        gGameSubState = 0x28;
+        break;
+    case 0:
+        gUnk_03000584 = 0;
+        gGameMode = 2;
+        gGameState = 0x12;
+        gGameSubState = 0;
+        break;
+    case 1:
+        gUnk_03000584 = 1;
+        gGameMode = 2;
+        gGameState = 0x12;
+        gGameSubState = 0;
+        break;
+    case 2:
+        gUnk_03000584 = 2;
+        gGameMode = 2;
+        gGameState = 0x12;
+        gGameSubState = 0;
+        break;
+    case 3:
+        gUnk_03002420 = b;
+        gGameMode = 2;
+        gGameState = 0xB;
+        gGameSubState = 0;
+        break;
+    case 4:
+        gGameMode = 2;
+        gGameState = 0x15;
+        gGameSubState = 0;
+        break;
+    case 5:
+        gUnk_03000588 = 0;
+        gGameMode = 2;
+        gGameState = 0x14;
+        gGameSubState = 0;
+        break;
+    case 6:
+        gGameMode = 2;
+        gGameState = 0x17;
+        gGameSubState = 0;
+        break;
+    case 8:
+        gGameMode = 2;
+        gGameState = 0x16;
+        gGameSubState = 0;
+        break;
+    case 0x10:
+        gGameMode = 3;
+        gGameState = 4;
+        gGameSubState = 0;
+        break;
+    case 0x11:
+        gGameMode = 3;
+        gGameState = 5;
+        gGameSubState = 0;
+        break;
+    case 0x12:
+        gGameMode = 3;
+        gGameState = 3;
+        gGameSubState = 0;
+        break;
+    case 0x13:
+        gGameMode = 3;
+        gGameState = 6;
+        gGameSubState = 0;
+        break;
+    }
+}
 
 void sub_08047BA8(u32 id)
 {
@@ -767,7 +869,58 @@ s32 count_decimal_digits(s32 n)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", truncate_to_digit_count);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08048914);
+
+u32 sub_08048914(u32 a)
+{
+    u32 r;
+
+    switch (a)
+    {
+    case 0:
+        if (gUnk_083D29EB[gUnk_030057E0.unk7FE] == 0xA)
+        {
+            r = 2;
+            break;
+        }
+        r = 1;
+        if (gUnk_030057E0.unkC5D & 0x20)
+            r = 3;
+        break;
+    case 1:
+    case 5:
+    case 12:
+    case 13:
+    case 19:
+    case 39:
+    case 40:
+        r = 1;
+        if (gUnk_030057E0.unkC5D & 1)
+            r = 3;
+        else if ((u8)(gUnk_030057E0.unkC5C - 1) <= 1)
+            r = 4;
+        break;
+    default:
+        r = 0;
+        break;
+    }
+    return r;
+}
+
+// Dead code (nothing calls it): BG2 affine matrix for gUnk_03005310 (guess).
+void sub_08048A40(void)
+{
+    const s16 *sine = gSineTable;
+    struct Unk_03005310 *p = &gUnk_03005310;
+    s32 a;
+
+    p->unk8 = sub_08048B24(sine[a = p->unk36 + 0x40], divide_by_65536(p->unk32));
+    p->unkA = sub_08048B24(sine[p->unk36], divide_by_65536(p->unk32));
+    p->unkC = sub_08048B24(-sine[p->unk36], divide_by_65536(p->unk34));
+    p->unkE = sub_08048B24(sine[a = p->unk36 + 0x40], divide_by_65536(p->unk34));
+    p->unk10 = (120 - p->unk2C) * 256 - p->unk8 * 120 - p->unkA * 80;
+    p->unk14 = (120 - p->unk2E) * 256 - p->unkC * 120 - p->unkE * 80;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08048B24);
 
 s16 fixed_point_divide(s16 a, s16 b)

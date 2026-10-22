@@ -1439,6 +1439,8 @@ void load_bg_screen_c(void);
 u32 call_battle_handler_by_state_08071C64(void);
 void apply_blend_coefficients(void);
 s16 sub_08048B24(s16 a, s16 b);
+u32 sub_08048914(u32 a);
+void sub_08048A40(void);
 void sub_080496DC(u8 *dst, u32 n, u8 val);
 s32 count_byte_differences(const u8 *a, const u8 *b, s32 n);
 s32 sum_bytes_0804971C(const u8 *p, s32 n);
