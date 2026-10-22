@@ -1145,6 +1145,23 @@ struct SpriteOamBatch
     u16 count;
 };
 
+// 16-byte record stepped by interpolate_entity_positions (unkC: angle-like, wraps at 0x10000).
+struct InterpEnt
+{
+    u8 filler0[8];
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    u8 fillerE[2];
+};
+
+// Candidate difference and its absolute value (interpolate_entity_positions).
+struct InterpCand
+{
+    s32 val;
+    s32 abs;
+};
+
 struct Unk_03005310
 {
     u8 filler0[0x1];

@@ -1469,6 +1469,7 @@ void copy_tiles_to_bg_tilemap(const void *src, void *dst, s32 a, s32 b, s32 c, s
 u16 init_oam_sprite_entry(struct OamFull *oam, struct SpriteNodeDesc *desc, u8 pal, u16 tile);
 u16 copy_oam_entries_with_priority(struct SpriteOamList *list, struct OamData *dst, u16 slot, u16 end);
 u16 batch_copy_oam_entries(struct SpriteOamBatch *batch, struct OamData *dst, u16 end);
+s32 interpolate_entity_positions(struct InterpEnt *e, s16 *pos, s8 *off, u8 *tbl, u8 unused, u8 frame, u8 idx, s32 count, s32 stride);
 void build_bg_tile_entry(u16 *dst, u16 id, u16 base, u16 y, u16 x, u16 yoff, u16 xoff);
 void sub_0804908C(u16 *dst, s32 pal, s32 tile);
 void sub_08048B94(void);
