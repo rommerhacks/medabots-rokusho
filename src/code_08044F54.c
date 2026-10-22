@@ -811,7 +811,8 @@ void sub_08047850(s32 mode)
     gGameSubState = 5;
 }
 
-void sub_08047878(u32 a, u32 b)
+// Runtime: id 4 when leaving the shop (07_shop, from dispatch_and_increment_state).
+void switch_game_mode(u32 a, u32 b)
 {
     switch (a)
     {

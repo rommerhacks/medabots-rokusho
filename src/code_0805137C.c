@@ -110,7 +110,7 @@ void field_player_step(u8 dir)
             else if (gUnk_030057E0.unkC5C != 1 && check_random_encounter())
             {
                 populate_battle_entity_tile_positions();
-                sub_08047878(0x21, 0);
+                switch_game_mode(0x21, 0);
             }
         }
     }

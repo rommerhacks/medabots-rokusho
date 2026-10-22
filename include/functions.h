@@ -402,7 +402,7 @@ void sub_08044B58(void);
 void sub_08044CDC(u32 a);
 void dispatch_by_index_0476e8(u32 idx);
 void sub_08047850(s32 a);
-void sub_08047878(u32 a, u32 b);
+void switch_game_mode(u32 a, u32 b);
 void sub_08047BA8(u32 id);
 void sub_08047BC0(u32 a);
 void init_cursor_state(void);

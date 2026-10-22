@@ -385,7 +385,7 @@ void sub_08057494(void)
 
 void sub_08057540(void)
 {
-    sub_08047878(0x40, 0);
+    switch_game_mode(0x40, 0);
 }
 
 void sub_08057550(void)
@@ -402,7 +402,7 @@ void sub_08057574(void)
 
 void sub_08057588(void)
 {
-    sub_08047878(6, 0);
+    switch_game_mode(6, 0);
 }
 
 void sub_08057598(void)
@@ -523,13 +523,13 @@ void sub_080579C4(void)
     }
     clear_battle_sprite_entry(0x7F);
     if (s->unk65 == 0)
-        sub_08047878(0x41, 0);
+        switch_game_mode(0x41, 0);
     else if (s->unk65 == 1)
-        sub_08047878(0x43, 0);
+        switch_game_mode(0x43, 0);
     else if (s->unk65 == 2)
         gGameSubState = 5;
     else if (s->unk65 == 3)
-        sub_08047878(0x42, 0);
+        switch_game_mode(0x42, 0);
 }
 
 void sub_08057A24(void)

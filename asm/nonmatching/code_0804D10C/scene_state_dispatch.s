@@ -63,7 +63,7 @@ _08050CF4:
 	movs r0, #0x20
 _08050CFE:
 	adds r1, r5, #0
-	bl sub_08047878
+	bl switch_game_mode
 	b _08050EDE
 _08050D06:
 	movs r0, #0

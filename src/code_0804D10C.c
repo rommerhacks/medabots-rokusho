@@ -1584,7 +1584,7 @@ void sub_0804FAD0(void)
     switch (s->unkC93)
     {
     case 0:
-        sub_08047878(4, 0);
+        switch_game_mode(4, 0);
         s->unkC93++;
         break;
     case 1:
