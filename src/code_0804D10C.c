@@ -1829,3 +1829,10 @@ void sub_08050C74(void)
 
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", scene_state_dispatch);
 INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_08050F10);
+
+// guess: resets the field frame handler (sub_08050F10 runs a state machine on unk1)
+void sub_0805136C(void)
+{
+    gUnk_03005310.unk0 = 1;
+    gUnk_03005310.unk1 = 0;
+}

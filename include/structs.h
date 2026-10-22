@@ -1213,7 +1213,7 @@ struct InterpCand
 
 struct Unk_03005310
 {
-    u8 filler0[0x1];
+    u8 unk0;
     u8 unk1;
     u8 filler2[0x2];
     u32 unk4; // frame counter
