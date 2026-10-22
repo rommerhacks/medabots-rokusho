@@ -1102,6 +1102,49 @@ struct SpriteOamList
     u8 h;
 };
 
+// Full bitfield view of struct OamData (pret layout).
+struct OamFull
+{
+    u32 y:8;
+    u32 affineMode:2;
+    u32 objMode:2;
+    u32 mosaic:1;
+    u32 bpp:1;
+    u32 shape:2;
+    u32 x:9;
+    u32 matrixNum:3;
+    u32 hFlip:1;
+    u32 vFlip:1;
+    u32 size:2;
+    u16 tileNum:10;
+    u16 priority:2;
+    u16 paletteNum:4;
+    u16 affineParam;
+};
+
+// Sprite node descriptor: OAM attributes (init_oam_sprite_entry).
+struct SpriteNodeDesc
+{
+    u8 filler0[0x11];
+    u8 paletteNum; // added to the palette argument
+    u8 width;
+    u8 height;
+    u8 wDiv:4; // width / height dividers (> 1: divide)
+    u8 hDiv:4;
+    u8 bpp:1;
+    u8 affineMode:2;
+    u8 objMode:2;
+    u8 hFlip:1;
+    u8 vFlip:1;
+};
+
+// A list of OAM entry lists (batch_copy_oam_entries).
+struct SpriteOamBatch
+{
+    struct SpriteOamList **lists;
+    u16 count;
+};
+
 struct Unk_03005310
 {
     u8 filler0[0x1];

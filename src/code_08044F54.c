@@ -76,7 +76,24 @@ u16 binary_search_sorted_table(struct SortEntry *arr, u16 n, u16 key)
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sorted_array_insert_shift);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_oam_entries_with_priority);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_sprite_oam_entries);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", batch_copy_oam_entries);
+
+u16 batch_copy_oam_entries(struct SpriteOamBatch *batch, struct OamData *dst, u16 end)
+{
+    u16 n = 0;
+    u16 count = batch->count;
+    u16 i;
+
+    for (i = 0; i < count; i++)
+    {
+        n += copy_oam_entries_with_priority(batch->lists[i], dst, n, end);
+        if (n >= end)
+            break;
+    }
+    return n;
+}
+
+INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08045908);
+INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_080459A4);
 
 void copy_oam_affine_params(struct OamData *oam, u16 *affine)
 {
@@ -115,7 +132,40 @@ u16 copy_sprite_oam_with_vflip(void *a, void *b, u16 c, u32 unused, s8 d, u8 f)
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08045A8C);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", render_sprite_if_visible);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", init_oam_sprite_entry);
+
+u16 init_oam_sprite_entry(struct OamFull *oam, struct SpriteNodeDesc *desc, u8 pal, u16 tile)
+{
+    u16 dims[2];
+    u16 n;
+
+    oam->y = 0;
+    oam->affineMode = desc->affineMode;
+    oam->objMode = desc->objMode;
+    oam->mosaic = 0;
+    oam->bpp = desc->bpp;
+    oam->shape = 0;
+    oam->x = 0;
+    oam->matrixNum = 0;
+    oam->hFlip = desc->hFlip;
+    oam->vFlip = desc->vFlip;
+    oam->size = 0;
+    oam->tileNum = tile;
+    oam->priority = 2;
+    oam->paletteNum = pal + desc->paletteNum;
+    oam->affineParam = 0;
+    dims[0] = desc->width;
+    if (desc->wDiv > 1)
+        dims[0] = Div(dims[0], desc->wDiv);
+    dims[1] = desc->height;
+    if (desc->hDiv > 1)
+        dims[1] = Div(dims[1], desc->hDiv);
+    set_oam_sprite_shape_size((u8 *)oam, dims[0], dims[1]);
+    n = (dims[0] >> 3) * (dims[1] >> 3);
+    if (desc->bpp)
+        n *= 2;
+    return n;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", load_sprite_tree_recursive);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", load_sprite_tiles_by_table);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", render_sprite_node_recursive);
