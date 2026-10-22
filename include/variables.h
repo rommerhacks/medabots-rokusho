@@ -1226,3 +1226,4 @@ extern const u8 gUnk_080AC598[];
 extern const u8 gUnk_080AC59C[];
 extern const u8 gUnk_080AC5A0[];
 extern u8 *gUnk_083D6088[];
+extern const Func gUnk_083D5E08[];

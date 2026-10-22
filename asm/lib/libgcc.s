@@ -3657,6 +3657,9 @@ _0807E4A4: .4byte 0x3FFFFFFF
 
 	thumb_func_start float_to_int
 	.global float_to_int
+	.global __fixsfsi
+	.thumb_func
+__fixsfsi:
 float_to_int: @ 0x0807E4A8
 	push {lr}
 	sub sp, #0x14

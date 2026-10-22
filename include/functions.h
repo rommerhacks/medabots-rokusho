@@ -1489,3 +1489,6 @@ void sub_080581C0(u32 a, s32 b);
 void init_battle_field_sprites(void);
 void load_or_clear_battle_sprites(s8 key, s32 value, u8 width, u8 x, u8 y);
 void load_battle_sprite_tile(const u8 *tiles, s32 count, u8 x, u8 y);
+float float_abs_if_negative(float x);
+float float_default_to_one_if_zero(float x);
+float float_sign(float x);

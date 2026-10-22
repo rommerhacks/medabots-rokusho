@@ -2,9 +2,215 @@
 #include "keys.h"
 
 INCLUDE_ASM("asm/nonmatching/code_080567AC", update_battle_sprite_status_effects);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_0805689C);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", animation_interpolation_step);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08057024);
+
+void sub_0805689C(struct AnimInterp *p, s32 *a)
+{
+    s32 mode;
+    float x, phase;
+
+    p->unkC = mode = a[0];
+    p->unk10 = a[1] / 256;
+    p->unk14 = a[2];
+    p->unk18 = a[3] * (1.0f / 256);
+    p->unk1C = a[4];
+    p->unk20 = a[5];
+    p->unk24 = a[6];
+    p->unk28 = a[7];
+    p->unk2C = a[8];
+    p->unk30 = a[9];
+    p->unk34 = a[10];
+    p->unk38 = a[11];
+    p->unk3C = a[12] * (1.0f / 256);
+    p->unk40 = a[13] * (1.0f / 256);
+    p->unk44 = a[14];
+    if (mode > 1)
+        p->unk4 = p->unk0;
+
+    switch (p->unkC)
+    {
+    case 0x10:
+        p->unk2C = x = p->unk34 / float_default_to_one_if_zero(float_abs_if_negative(p->unk3C));
+        p->unk24 = p->unk20 + x;
+        if (p->unk44 != 0)
+            p->unk0 = p->unk0 - float_sign(p->unk3C) * float_abs_if_negative(p->unk34);
+        break;
+    case 0x11:
+        p->unk24 = p->unk20 + p->unk28;
+        p->unk34 = p->unk3C * p->unk2C;
+        if (p->unk44 != 0)
+            p->unk0 = p->unk0 - float_sign(p->unk3C) * float_abs_if_negative(p->unk34);
+        break;
+    case 0x12:
+    {
+        float sum;
+        s32 n;
+
+        p->unk3C = p->unk34 * (1.0f / 64);
+        phase = p->unk14;
+        sum = 0.0f;
+        n = 0;
+        for (;;)
+        {
+            if (p->unk3C == 0.0f)
+                break;
+            phase = phase + p->unk3C;
+            if (phase >= 64.0f)
+                phase = 64.0f;
+            sum = sum + p->unk40 * (gSineTable[(s32)(phase + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256);
+            if (float_abs_if_negative(sum) >= p->unk34)
+                break;
+            n++;
+        }
+        p->unk2C = n;
+        p->unk30 = x = p->unk38 / float_default_to_one_if_zero(float_abs_if_negative(p->unk40));
+        p->unk24 = p->unk20 + p->unk2C + x;
+        p->unk38 = p->unk38 + (p->unk34 - float_abs_if_negative(sum));
+        if (p->unk44 != 0)
+            p->unk0 = p->unk0 - float_sign(p->unk40) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+        break;
+    }
+    case 0x13:
+    {
+        float step;
+
+        p->unk24 = p->unk20 + p->unk28;
+        p->unk30 = p->unk28 - p->unk2C;
+        p->unk3C = step = 64.0f / float_default_to_one_if_zero(p->unk2C);
+        p->unk38 = p->unk40 * p->unk30;
+        phase = p->unk14;
+        p->unk34 = 0.0f;
+        for (;;)
+        {
+            if (step == 0.0f)
+                break;
+            phase = phase + step;
+            p->unk34 = p->unk34 + p->unk40 * (gSineTable[(s32)(phase + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256);
+            if (phase >= 64.0f)
+                break;
+        }
+        if (p->unk44 != 0)
+            p->unk0 = p->unk0 - float_sign(p->unk40) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+        break;
+    }
+    case 0x14:
+    {
+        float sum;
+        s32 n;
+
+        p->unk40 = 64.0f / p->unk38;
+        phase = p->unk14;
+        sum = 0.0f;
+        n = 0;
+        for (;;)
+        {
+            phase = phase + p->unk40;
+            if (phase >= 64.0f)
+                phase = 64.0f;
+            sum = sum + p->unk3C * gSineTable[((s32)phase & 0xFF) + 0x40] * (1.0f / 256);
+            if (phase == 64.0f)
+                break;
+            n++;
+        }
+        p->unk30 = n;
+        p->unk34 = p->unk34 + (p->unk38 - float_abs_if_negative(sum));
+        p->unk38 = float_abs_if_negative(sum);
+        p->unk2C = x = p->unk34 / float_default_to_one_if_zero(float_abs_if_negative(p->unk3C));
+        p->unk24 = p->unk20 + x + p->unk30;
+        if (p->unk44 != 0)
+            p->unk0 = p->unk0 - float_sign(p->unk3C) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+        break;
+    }
+    case 0x15:
+    {
+
+        p->unk24 = p->unk20 + p->unk28;
+        p->unk34 = p->unk3C * (p->unk2C = p->unk28 - p->unk30);
+        p->unk40 = 64.0f / float_default_to_one_if_zero(p->unk30);
+        phase = p->unk14;
+        p->unk38 = 0.0f;
+        for (;;)
+        {
+            phase = phase + p->unk40;
+            p->unk38 = p->unk38 + p->unk3C * gSineTable[((s32)phase & 0xFF) + 0x40] * (1.0f / 256);
+            if (phase >= 64.0f)
+                break;
+        }
+        if (p->unk44 != 0)
+            p->unk0 = p->unk0 - float_sign(p->unk3C) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+        break;
+    }
+    case 0x17:
+        p->unk24 = p->unk20 + p->unk28;
+        p->unk0 = p->unk4 + p->unk40 * gSineTable[(s32)p->unk2C & 0xFF];
+        p->unk14 = p->unk2C;
+        break;
+    }
+}
+
+u32 animation_interpolation_step(struct AnimInterp *p)
+{
+    u32 ret = 0;
+    s32 one = 1;
+    float s;
+
+    if (p->unkC != 0)
+    {
+        if (p->unk20 <= p->unk1C)
+        {
+            switch (p->unkC)
+            {
+            case 0x10:
+            case 0x11:
+                if (p->unk1C < p->unk20 + p->unk2C)
+                    p->unk0 = p->unk0 + p->unk3C;
+                break;
+            case 0x12:
+            case 0x13:
+                if (p->unk1C < p->unk20 + p->unk2C)
+                {
+                    s = one;
+                    p->unk14 = p->unk14 + p->unk3C * s;
+                    if (p->unk14 >= 64.0f)
+                        p->unk14 = 64.0f;
+                    p->unk0 = p->unk0 + p->unk40 * (gSineTable[(s32)(p->unk14 + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256) * s;
+                }
+                else
+                    p->unk0 = p->unk0 + p->unk40;
+                break;
+            case 0x14:
+            case 0x15:
+                if (p->unk1C < p->unk20 + p->unk2C)
+                    p->unk0 = p->unk0 + p->unk3C;
+                else
+                {
+                    p->unk14 = p->unk14 + p->unk40;
+                    if (p->unk14 >= 64.0f)
+                        p->unk14 = 64.0f;
+                    p->unk0 = p->unk0 + p->unk3C * gSineTable[((s32)p->unk14 & 0xFF) + 0x40] * (1.0f / 256) * one;
+                }
+                break;
+            case 0x17:
+                p->unk14 = p->unk14 + p->unk3C;
+                p->unk0 = p->unk4 + p->unk40 * gSineTable[(s32)p->unk14 & 0xFF] * one;
+                break;
+            }
+            p->unk1C = p->unk1C + 1.0f;
+            if (p->unk24 != 0xFFFF && p->unk1C >= p->unk24)
+            {
+                p->unkC = 0;
+                ret = 1;
+            }
+        }
+        else
+            p->unk1C = p->unk1C + 1.0f;
+    }
+    return ret;
+}
+
+void sub_08057024(void)
+{
+    gUnk_083D5E08[gGameSubState]();
+}
 
 void sub_08057044(void)
 {

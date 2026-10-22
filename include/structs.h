@@ -1050,6 +1050,30 @@ struct OamBits
     u16 affineParam;
 };
 
+// Interpolated value stepped once per frame (sub_0805689C sets it up, animation_interpolation_step
+// runs it; modes 0x10-0x17).
+struct AnimInterp
+{
+    float unk0; // current value
+    float unk4; // base value
+    u8 filler8[4];
+    s32 unkC; // mode, 0 = idle
+    float unk10;
+    float unk14; // phase (sine table index)
+    float unk18;
+    float unk1C; // frame counter
+    s32 unk20; // start frame
+    s32 unk24; // end frame, 0xFFFF = none
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    u32 unk44;
+};
+
 // BG text-mode tilemap entry.
 struct BgTileEntry
 {
