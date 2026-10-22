@@ -1161,12 +1161,24 @@ struct Unk_03005350
     float unk54;
     float unk58; // sin / cos of the pitch angle
     float unk5C;
-    u8 filler60[0x40];
+    float unk60[4]; // projected points x, y, z (update_3d_entity_projections)
+    float unk70[4];
+    float unk80[4];
+    float unk90; // yaw / pitch base angles
+    float unk94;
+    float unk98;
+    s32 unk9C; // camera distance
     s32 unkA0; // projection scale
     double unkA4[2]; // camera origin x, y (sub_08053418)
     s32 unkB4; // projected screen x, y
     s32 unkB8;
-    u8 fillerBC[0x110];
+    u8 fillerBC[0x4];
+    s32 unkC0[4]; // model points x, y, z (from gUnk_083D2DB0)
+    s32 unkD0[4];
+    s32 unkE0[4];
+    u8 fillerF0[0x8];
+    s32 unkF8; // model set index into gUnk_083D2DB0
+    u8 fillerFC[0xD0];
     s32 unk1CC; // current entity (index into gUnk_03006D30)
     s32 unk1D0; // part count of the current entity
     u32 unk1D4; // flags
@@ -1182,15 +1194,35 @@ struct Unk_03005350
 struct BattleEntity3D
 {
     s32 unk0; // state (2 = left its range)
-    u8 filler4[0x18];
+    s32 unk4;
+    s32 unk8;
+    u8 fillerC[0x4];
+    float unk10; // x
+    u8 filler14[0x8];
     s32 unk1C;
-    u8 filler20[0x44];
+    u8 filler20[0x38];
+    float unk58; // y
+    u8 filler5C[0x8];
     s32 unk64;
     u8 filler68[0x38];
-    float unkA0; // depth
+    float unkA0; // depth (z)
     u8 fillerA4[0x8];
     s32 unkAC;
-    u8 fillerB0[0x130];
+    u8 fillerB0[0x48];
+    float unkF8; // yaw / pitch offsets
+    u8 fillerFC[0x14];
+    float unk110;
+    u8 filler114[0x50];
+    float unk164; // x / y / z scale
+    u8 filler168[0x14];
+    float unk17C;
+    u8 filler180[0x14];
+    float unk194;
+    u8 filler198[0x28];
+    s32 unk1C0;
+    s32 unk1C4;
+    s32 unk1C8;
+    u8 filler1CC[0x14];
     s32 unk1E0; // x range check enabled
     u16 unk1E4; // x min
     u8 filler1E6[2];

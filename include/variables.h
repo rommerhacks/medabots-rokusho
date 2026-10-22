@@ -981,6 +981,7 @@ extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (dma_load_batt
 extern u32 gUnk_0300534C;
 extern struct AffineParam gUnk_03006D40[32];
 extern struct BattleEntity3D *gUnk_03006D30;
+extern const s32 *const *const gUnk_083D2DB0[]; // per model set, per entity: s32 count, x[4], y[4], z[4] (update_3d_entity_projections)
 extern const float gUnk_083D6EA0[256]; // guess: sine, angle 0-255 (set_state_float_field)
 extern const float gUnk_083D72A0[256]; // guess: cosine
 extern const Func gItemMenuStates[]; // field menu Item screen states, by gGameSubState (item_menu_update)
