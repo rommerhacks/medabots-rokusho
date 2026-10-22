@@ -1460,14 +1460,177 @@ void clear_all_battle_sprites(void)
         clear_battle_sprite_entry(i);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080567AC", handle_battle_end_state_transition);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", load_battle_sprite_from_index);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", load_battle_sprite_tile);
+void handle_battle_end_state_transition(void)
+{
+    if (gUnk_030057A0.unk11 == 0)
+    {
+        gUnk_030057A0.unk10 = 0;
+        clear_all_battle_sprites();
+    }
+    gUnk_030057A0.unk15 = 0;
+    switch (gUnk_030057A0.unk14)
+    {
+    case 0:
+    case 2:
+        gUnk_03005310.unk1 = 0;
+        gGameSubState = 0x33;
+        break;
+    case 1:
+        gUnk_03005310.unk1 = 0;
+        gGameSubState = 0x33;
+        break;
+    default:
+        gGameSubState = 5;
+        break;
+    }
+}
+
+// Dead code (nothing calls it): draws *value as three decimal digit sprites at (x, y), like
+// load_battle_sprite_tile with the ASCII digits '0' + d.
+void sub_08059490(u8 *value, s32 x, s32 y)
+{
+    u8 hundreds, tens, ones;
+
+    hundreds = *value / 100;
+    tens = (*value - hundreds * 100) / 10;
+    ones = *value - hundreds * 100 - tens * 10;
+
+    DmaSet(3, &gUnk_080ACB7C[(hundreds + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
+    init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+    gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x;
+    gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+    gUnk_030057A0.unk13++;
+
+    DmaSet(3, &gUnk_080ACB7C[(tens + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
+    init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+    gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + 8;
+    gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+    gUnk_030057A0.unk13++;
+
+    DmaSet(3, &gUnk_080ACB7C[(ones + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
+    init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+    gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + 16;
+    gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+    gUnk_030057A0.unk13++;
+}
+
+void load_battle_sprite_from_index(u32 value, s32 bits, s32 x, s32 y)
+{
+    u8 hex[16];
+    s32 i;
+    u8 b;
+    u8 hi, lo;
+
+    memcpy_optimized(hex, gUnk_080AC5A4, 16);
+    for (i = 0; i < bits / 8; i++)
+    {
+        if (bits / 8 == 4)
+        {
+            if (i == 0)
+                b = value >> 24;
+            if (i == 1)
+                b = (value & 0xFF0000) >> 16;
+            if (i == 2)
+                b = (value & 0xFF00) >> 8;
+            if (i == 3)
+                b = value;
+        }
+        else if (bits / 8 == 2)
+        {
+            if (i == 0)
+                b = (value & 0xFF00) >> 8;
+            if (i == 1)
+                b = value;
+        }
+        else if (bits / 8 == 1)
+        {
+            if (i == 0)
+                b = value;
+        }
+        hi = b >> 4;
+        lo = b - hi * 16;
+
+        DmaSet(3, &gUnk_080ACB7C[hex[hi] * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
+        init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+        gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + i * 16;
+        gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+        gUnk_030057A0.unk13++;
+
+        DmaSet(3, &gUnk_080ACB7C[hex[lo] * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
+        init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+        gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + i * 16 + 8;
+        gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+        gUnk_030057A0.unk13++;
+    }
+}
+
+void load_battle_sprite_tile(const u8 *digits, s32 count, s32 x, s32 y)
+{
+    s32 i;
+
+    for (i = 0; i < count; i++)
+    {
+        DmaSet(3, &gUnk_080ACB7C[*digits * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
+        init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+        gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x;
+        gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+        x += 8;
+        gUnk_030057A0.unk13++;
+        digits++;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_080567AC", init_battle_field_sprites);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08059D04);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", clear_vram_bg2_tilemap);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", clear_vram_bg1_tilemap);
-INCLUDE_ASM("asm/nonmatching/code_080567AC", clear_vram_bg2_screenblock);
+
+void sub_08059D04(void)
+{
+    s32 i;
+
+    for (i = 0; i < 128; i++)
+        gUnk_03002C30[i].unk0 = 0;
+}
+
+void clear_vram_bg2_tilemap(void)
+{
+    u32 zero = 0;
+    vu16 *bg2;
+    u16 v;
+
+    CpuFastSet(&zero, (void *)0x06008000, 0x01001000);
+    lz_decompress_dispatch(gUnk_08784CB0, (void *)0x06008020);
+    CpuFastSet(gUnk_08483AA0, (void *)0x05000020, 8);
+    bg2 = &REG_BG2CNT;
+    v = 0x1608;
+    *bg2 = v;
+    REG_DISPCNT |= 0x400;
+}
+
+void clear_vram_bg1_tilemap(void)
+{
+    u32 zero = 0;
+    vu16 *bg1;
+    u16 v;
+
+    CpuFastSet(&zero, (void *)0x06004000, 0x01001000);
+    lz_decompress_dispatch(gUnk_08784CB0, (void *)0x06004020);
+    bg1 = &REG_BG1CNT;
+    v = 0x1E04;
+    *bg1 = v;
+    REG_DISPCNT |= 0x200;
+}
+
+void clear_vram_bg2_screenblock(void)
+{
+    u32 zero = 0;
+    vu16 *bg2;
+    u16 v;
+
+    CpuFastSet(&zero, (void *)0x06008400, 0x01000F00);
+    bg2 = &REG_BG2CNT;
+    v = 0x1608;
+    *bg2 = v;
+    REG_DISPCNT |= 0x400;
+}
 
 void draw_tilemap_line(u16 value, s32 width, u8 x, u8 y, u8 pal, u8 bg)
 {
