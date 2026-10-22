@@ -573,7 +573,7 @@ u32 find_medal_slot_by_id(u8 id)
     return 0;
 }
 
-u32 load_palette_entry(u8 id)
+u32 medal_add_by_id(u8 id)
 {
     u32 i;
 

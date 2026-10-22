@@ -1077,7 +1077,7 @@ void sub_08047E08(u8 a, u8 b, u8 n)
 
 u32 sub_08047E20(u8 id)
 {
-    return load_palette_entry(id);
+    return medal_add_by_id(id);
 }
 
 u32 sub_08047E30(void)

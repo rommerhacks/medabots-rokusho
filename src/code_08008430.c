@@ -2055,7 +2055,7 @@ void debug_medal_input(void)
         case 0:
             if (gUnk_03000440.unk35[0] < 30 && !find_medal_slot_by_id(gUnk_03000440.unk35[0]))
             {
-                slot = load_palette_entry(gUnk_03000440.unk35[gUnk_03000440.unk34]);
+                slot = medal_add_by_id(gUnk_03000440.unk35[gUnk_03000440.unk34]);
                 memcpy_bytes_0803F63C((void *)gUnk_083B6410[gUnk_03000440.unk35[gUnk_03000440.unk34]], gUnk_03000BE0[slot].unkA, 11);
             }
             break;
@@ -2068,7 +2068,7 @@ void debug_medal_input(void)
             {
                 if (!find_medal_slot_by_id(gUnk_03000440.unk35[2]))
                 {
-                    slot = load_palette_entry(gUnk_03000440.unk35[2]);
+                    slot = medal_add_by_id(gUnk_03000440.unk35[2]);
                     memcpy_bytes_0803F63C((void *)gUnk_083B6410[gUnk_03000440.unk35[2]], gUnk_03000BE0[slot].unkA, 11);
                 }
             }

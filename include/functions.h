@@ -208,7 +208,7 @@ u32 medapart_detail_cycle_part_input(void); // LEFT/RIGHT: previous/next part co
 void medaparts_help_init_cursor(void); // same code as sub_0800AA1C (Medals help cursor)
 void sub_0800FFF4(void);
 void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile, u32 pal, u32 e);
-void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base);
+void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base); // guess: draws the last `digits` of value as 2-row tile digits (base + d * 2 / + 1)
 u32 sub_08042B80(u32 a); // 1 for part types 2, 3, 6, 7; 0 for 0, 1, 4, 5
 void battle_bots_load_parts(u32 a, u32 n);
 void clear_battle_bot_array(void);
@@ -352,7 +352,7 @@ void clear_battle_sprite_slot(u8 a, u8 b);
 void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c);
 u32 game_state_execute_handler_a(void);
 u32 find_medal_slot_by_id(u8 id);
-u32 load_palette_entry(u8 id);
+u32 medal_add_by_id(u8 id);
 void medal_remove_by_id(u8 id);
 void medapart_add_quantity(u8 id, u8 kind, u8 n);
 void reduce_medapart_stat(u8 id, u8 kind, u8 n); // takes n of Medapart (id, kind), floor 0
@@ -368,10 +368,10 @@ void load_part_data(u32 part, u32 kind, u8 *dst);
 struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32 cy, u32 a, u32 b);
 u32 sub_0804384C(u8 medal); // team slot (gUnk_030017A0) holding Medal id `medal`, or 0xFF
 void decompress_sprite_to_vram_08042D94(u32 a, u32 b, u32 c, u32 d, u32 slot);
-void init_battle_medabot_sprites(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j, u32 k);
-void setup_battle_sprite_group(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j, u32 k);
+void init_battle_medabot_sprites(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j, u32 k); // creates the 4 part sprites of a Medabot (head, arms, legs) at sprite..sprite+3
+void setup_battle_sprite_group(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j, u32 k); // refreshes the 4 part sprites set up by init_battle_medabot_sprites
 u32 sub_0804361C(vu32 medal, vu32 prev); // previous (prev != 0) or next owned Medal slot (gUnk_03000BE0 bit 7 set, bit 6 clear), 30 if none
-u32 find_next_available_medapart_slot(u32 part, u32 kind, u32 forward, u32 d);
+u32 find_next_available_medapart_slot(u32 part, u32 kind, u32 backward, u32 d); // next / previous owned Medapart id of gender d; d + 0x78 if none
 void init_scene_buffers_080445F4(void);
 void setup_scene_with_bg_and_sprites(); // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i, u8 j): callers were compiled without a prototype
 void init_scene_with_bg_and_palette(); // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i, u8 j, u8 base): callers were compiled without a prototype
@@ -381,10 +381,10 @@ u32 sub_080440B4(void);
 void sub_08047414(struct Unk_08047414 *obj, u8 *buf, struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams);
 void setup_scene_bg_layers_and_sprites(void *oam, struct Unk_08047414 *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 void battle_sprite_set_palette_index(u32 sprite, u32 pal);
-void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c);
+void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c); // guess: idle animation of a part-sprite Medabot (legs anchor, arms swing on a circle, head bobs)
 u32 validate_medapart_stats(u8 medal, u8 head, u8 rarm, u8 larm, u8 legs);
 void modify_medapart_quantity(u32 id, u32 kind, u32 byte, u32 subtract, u32 n); // byte 0 or 1 of the Medapart (id, kind): -= n, or += n capped at 99
-void fill_tilemap_pair_or_divide(u8 value, u8 x, u8 y, u32 bgcnt, u16 entry);
+void fill_tilemap_pair_or_divide(u8 value, u8 x, u8 y, u32 bgcnt, u16 entry); // guess: draws a 2-digit number with 1x2 tiles (0xFF: blank, >= 100: fixed tiles)
 void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags);
 void sub_08043CA8(void);
 void decompress_tileset_to_vram(u32 id, u32 arg);
@@ -765,10 +765,10 @@ void fill_bg1_tilemap_column(void);
 u32 sub_0803ED28(void);
 void open_choice_menu(u8 a, u8 b, u8 c);
 u32 poll_choice_menu(void);
-void divide_by_10000(u8 *digits, u32 n);
-void divide_by_10000_b(u8 *dst, u32 n);
+void divide_by_10000(u8 *digits, u32 n); // guess: n as text "0x4C ddd 0x40 dd" (5 digits, leading zeros dropped)
+void divide_by_10000_b(u8 *dst, u32 n); // guess: like divide_by_10000 without the 0x4C prefix
 s32 truncate_to_digit_count(s32 n, u8 k);
-void divide_by_100000_08041370(u8 *digits, u32 n);
+void divide_by_100000_08041370(u8 *digits, u32 n); // guess: n as text, up to 5 digits; >= 100000 writes a fixed overflow string
 void divide_by_100000_08042838(u32 n, u32 x, u32 y, u32 digits, u32 bgcnt, u32 tile); // guess: draws n as tile digits
 void clear_sprite_table_mask(u8 first, u8 count);
 u32 find_next_free_sprite_slot(u8 first, u8 count); // first unused gUnk_03002C30 slot in [first, first + count)
@@ -807,7 +807,7 @@ void calc_medaforce_gauge_from_damage(void);
 void sub_0801275C(void);
 void accumulate_team_armor_stats(void);
 void battle_check_medal_level_up(void);
-void divide_by_100000_b(u8 *buf, u32 value, u32 tile);
+void divide_by_100000_b(u8 *buf, u32 value, u32 tile); // guess: value as text, digits + tile; >= 100000 writes a fixed overflow string
 u32 advance_sprite_anim_frame(u32 sprite, u32 b);
 void battle_sprite_blink_update(u32 slot, u8 *counter, u8 *n);
 void sub_0801BF64(u16 *counter, u16 max);
