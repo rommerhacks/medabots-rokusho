@@ -384,7 +384,7 @@ void battle_sprite_set_palette_index(u32 sprite, u32 pal);
 void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c);
 u32 validate_medapart_stats(u8 medal, u8 head, u8 rarm, u8 larm, u8 legs);
 void modify_medapart_quantity(u32 id, u32 kind, u32 byte, u32 subtract, u32 n); // byte 0 or 1 of the Medapart (id, kind): -= n, or += n capped at 99
-void fill_tilemap_pair_or_divide(u8 value, u32 x, u32 y, u32 bgcnt, u16 entry);
+void fill_tilemap_pair_or_divide(u8 value, u8 x, u8 y, u32 bgcnt, u16 entry);
 void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags);
 void sub_08043CA8(void);
 void decompress_tileset_to_vram(u32 id, u32 arg);
