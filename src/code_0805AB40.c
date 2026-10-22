@@ -23,8 +23,8 @@ void sub_0805B3E4(s32 x, s32 y, s32 n)
 
 void item_menu_draw_page_numbers(void)
 {
-    sub_0805A258((u8)(gUnk_03006F74->unkC / 5) + 1, 2, 3);
-    sub_0805A258((gUnk_03006F74->unk10 - 1) / 5 + 1, 5, 3);
+    draw_number_3digits((u8)(gUnk_03006F74->unkC / 5) + 1, 2, 3);
+    draw_number_3digits((gUnk_03006F74->unk10 - 1) / 5 + 1, 5, 3);
 }
 
 // guess: SELECT reorder, swaps the marked item (unk13) with the cursor item (unkC)

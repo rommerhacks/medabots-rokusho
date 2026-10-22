@@ -34,7 +34,7 @@ _0805D714:
 	movs r1, #2
 	movs r2, #0xa
 	movs r3, #4
-	bl draw_tilemap_line
+	bl draw_number
 	movs r7, #0
 	ldr r1, _0805D87C @ =0x03004C40
 	movs r2, #0xf0
@@ -61,7 +61,7 @@ _0805D748:
 	movs r1, #3
 	movs r2, #9
 	movs r3, #6
-	bl draw_tilemap_line
+	bl draw_number
 	ldr r4, _0805D880 @ =0x03002B70
 	ldr r0, [r4, #0x18]
 	movs r1, #0xe1
@@ -80,7 +80,7 @@ _0805D748:
 	movs r1, #2
 	movs r2, #7
 	movs r3, #8
-	bl draw_tilemap_line
+	bl draw_number
 	adds r0, r7, #0
 	movs r1, #0x3c
 	bl sub_0807CC88
@@ -94,7 +94,7 @@ _0805D748:
 	str r2, [sp, #4]
 	movs r2, #0xa
 	movs r3, #8
-	bl draw_tilemap_line
+	bl draw_number
 	ldrh r0, [r4, #0x16]
 	movs r1, #0xd
 	mov r8, r1
@@ -106,7 +106,7 @@ _0805D748:
 	movs r1, #4
 	movs r2, #3
 	movs r3, #0xb
-	bl draw_tilemap_line
+	bl draw_number
 	ldrh r0, [r4, #0x14]
 	mov r2, r8
 	str r2, [sp]
@@ -117,7 +117,7 @@ _0805D748:
 	movs r1, #0
 	movs r2, #8
 	movs r3, #0xb
-	bl draw_tilemap_line
+	bl draw_number
 	ldr r6, _0805D884 @ =0x030004DE
 	ldm r4!, {r1}
 	adds r0, r6, #0

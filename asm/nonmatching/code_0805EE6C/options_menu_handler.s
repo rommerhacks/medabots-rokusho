@@ -269,7 +269,7 @@ _0805F50E:
 	str r2, [sp, #4]
 	movs r2, #0x10
 	movs r3, #4
-	bl draw_tilemap_line
+	bl draw_number
 _0805F534:
 	ldr r0, _0805F55C @ =0x03001798
 	ldrb r1, [r0]
@@ -310,7 +310,7 @@ _0805F562:
 	str r2, [sp, #4]
 	movs r2, #0x10
 	movs r3, #4
-	bl draw_tilemap_line
+	bl draw_number
 	b _0805F622
 	.align 2, 0
 _0805F58C: .4byte 0x03006F74
@@ -348,7 +348,7 @@ _0805F5B2:
 	str r2, [sp, #4]
 	movs r2, #0xf
 	movs r3, #6
-	bl draw_tilemap_line
+	bl draw_number
 _0805F5D6:
 	ldr r0, _0805F5F8 @ =0x03001798
 	ldrb r1, [r0]
@@ -386,7 +386,7 @@ _0805F5FE:
 	str r2, [sp, #4]
 	movs r2, #0xf
 	movs r3, #6
-	bl draw_tilemap_line
+	bl draw_number
 _0805F622:
 	ldr r5, _0805F678 @ =0x03006F74
 	ldr r0, [r5]

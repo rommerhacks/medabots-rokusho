@@ -1632,7 +1632,9 @@ void clear_vram_bg2_screenblock(void)
     REG_DISPCNT |= 0x400;
 }
 
-void draw_tilemap_line(u16 value, s32 width, u8 x, u8 y, u8 pal, u8 bg)
+// Decimal number on BG screen block bg: width > 0 right-aligned blank-padded, < 0 zero-padded in -width
+// places, 0 left-aligned.
+void draw_number(u16 value, s32 width, u8 x, u8 y, u8 pal, u8 bg)
 {
     u16 buf[6];
     u16 base = gUnk_03006F74->unk36 + 0x16;
@@ -1687,7 +1689,8 @@ void draw_tilemap_line(u16 value, s32 width, u8 x, u8 y, u8 pal, u8 bg)
     }
 }
 
-void draw_tilemap_bar(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg)
+// draw_number with 2-tile-tall digits (rows y and y + 1).
+void draw_number_tall(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg)
 {
     u16 buf[6];
     u16 saved = value;
@@ -1777,7 +1780,8 @@ void draw_tilemap_bar(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg)
     }
 }
 
-void sub_0805A258(s32 n, s32 x, s32 y)
+// Runtime: item list page numbers (item_menu_draw_page_numbers).
+void draw_number_3digits(s32 n, s32 x, s32 y)
 {
     s32 pal = 13;
     u16 base = gUnk_03006F74->unk36 + 0x16;
@@ -1797,7 +1801,8 @@ void sub_0805A258(s32 n, s32 x, s32 y)
     *p = (base + n % 10) | (pal << 12);
 }
 
-void percent_rescale(s32 n, s32 x, s32 y)
+// n % 100 as 2-tile-tall digits. Runtime: item quantities (update_battle_medapart_icons).
+void draw_number_2digits_tall(s32 n, s32 x, s32 y)
 {
     s16 base;
     s32 pal = 12;
@@ -1822,7 +1827,8 @@ void percent_rescale(s32 n, s32 x, s32 y)
     *p = (n % 10 + (base + 0xB)) | (pal << 12);
 }
 
-void scale_value_by_10000(u16 value, u8 x, u8 y)
+// 5 digits on BG screen block 22, leading zeros blanked.
+void draw_number_5digits(u16 value, u8 x, u8 y)
 {
     vu16 *p;
     u32 sbb = 22;
@@ -1862,7 +1868,8 @@ void scale_value_by_10000(u16 value, u8 x, u8 y)
     *p = (value % 10 + base) | (pal << 12);
 }
 
-void sub_0805A57C(u16 value, u8 x, u8 y)
+// Unused.
+void draw_number_5digits_tall(u16 value, u8 x, u8 y)
 {
     vu16 *p;
     u32 pal = 1;
@@ -1926,7 +1933,8 @@ void sub_0805A57C(u16 value, u8 x, u8 y)
     *p = (value % 10 + base) | (pal << 12);
 }
 
-void sub_0805A83C(u32 value, u32 x, u32 y)
+// Unused; the tens-of-thousands digit misses its % 10 in the original.
+void draw_number_7digits(u32 value, u32 x, u32 y)
 {
     vu16 *p;
     u32 sbb = 22;
@@ -1991,7 +1999,7 @@ void sub_0805AA80(u8 *src, u16 row, u16 x, u16 y, u8 len)
     }
 }
 
-void sub_0805AB18(void)
+void copy_palettes_to_backup(void)
 {
     CpuFastSet((void *)(PLTT + 0x200), gPaletteBackup, 0x80);
     CpuFastSet((void *)PLTT, gPaletteBackupBg, 0x80);

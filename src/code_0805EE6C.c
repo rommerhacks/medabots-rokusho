@@ -82,8 +82,8 @@ void init_fade_screen_setup(void)
     REG_DISPCNT |= 0x1000;
     gUnk_03006F74->unk2B = 0;
     gUnk_03006F74->unk2C = 0;
-    draw_tilemap_line(gUnk_03006F74->unk2B, -2, 0x10, 4, 2, (REG_BG1CNT >> 8) & 0x1F);
-    draw_tilemap_line(gUnk_03006F74->unk2C, -3, 0xF, 6, 2, (REG_BG1CNT >> 8) & 0x1F);
+    draw_number(gUnk_03006F74->unk2B, -2, 0x10, 4, 2, (REG_BG1CNT >> 8) & 0x1F);
+    draw_number(gUnk_03006F74->unk2C, -3, 0xF, 6, 2, (REG_BG1CNT >> 8) & 0x1F);
     gUnk_03006F74->unk0 = 0x20;
     REG_BLDY = gUnk_03006F74->unk0 >> 1;
     gGameSubState++;

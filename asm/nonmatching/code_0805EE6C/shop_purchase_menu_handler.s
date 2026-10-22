@@ -525,7 +525,7 @@ _08062194:
 	movs r1, #2
 	movs r2, #0x1b
 	movs r3, #0xa
-	bl draw_tilemap_bar
+	bl draw_number_tall
 _080621CC:
 	ldr r0, [r4]
 	adds r0, #0x20
@@ -548,7 +548,7 @@ _080621CC:
 	movs r1, #2
 	movs r2, #0x1b
 	movs r3, #0xc
-	bl draw_tilemap_bar
+	bl draw_number_tall
 _080621FA:
 	ldr r0, [r4]
 	adds r0, #0x20
@@ -571,7 +571,7 @@ _080621FA:
 	movs r1, #2
 	movs r2, #0x1b
 	movs r3, #0xe
-	bl draw_tilemap_bar
+	bl draw_number_tall
 _08062228:
 	ldr r0, [r4]
 	adds r0, #0x20
@@ -594,7 +594,7 @@ _08062228:
 	movs r1, #2
 	movs r2, #0x1b
 	movs r3, #0x10
-	bl draw_tilemap_bar
+	bl draw_number_tall
 _08062256:
 	ldr r1, [r4]
 	movs r0, #0

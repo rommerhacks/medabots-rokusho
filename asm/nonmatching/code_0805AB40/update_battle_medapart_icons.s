@@ -134,7 +134,7 @@ _0805AE34:
 	ldrb r0, [r6]
 	movs r1, #0x18
 	adds r2, r4, #0
-	bl percent_rescale
+	bl draw_number_2digits_tall
 	lsls r4, r4, #6
 	add r4, sb
 	ldr r1, [r7]

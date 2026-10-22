@@ -78,7 +78,7 @@ enable_obj_layer_and_load_palette: @ 0x08061B78
 	movs r1, #2
 	movs r2, #0x1b
 	movs r3, #0xa
-	bl draw_tilemap_bar
+	bl draw_number_tall
 	ldr r1, _08061D18 @ =0x03002C30
 	movs r3, #0x80
 	lsls r3, r3, #2
@@ -111,7 +111,7 @@ _08061C3A:
 	movs r1, #2
 	movs r2, #0x1b
 	movs r3, #0xc
-	bl draw_tilemap_bar
+	bl draw_number_tall
 _08061C68:
 	ldr r0, [r4]
 	adds r0, #0x20
@@ -134,7 +134,7 @@ _08061C68:
 	movs r1, #2
 	movs r2, #0x1b
 	movs r3, #0xe
-	bl draw_tilemap_bar
+	bl draw_number_tall
 _08061C96:
 	ldr r0, [r4]
 	adds r0, #0x20
@@ -157,7 +157,7 @@ _08061C96:
 	movs r1, #2
 	movs r2, #0x1b
 	movs r3, #0x10
-	bl draw_tilemap_bar
+	bl draw_number_tall
 _08061CC4:
 	ldr r1, _08061D2C @ =0x0300137C
 	ldr r0, [r1]

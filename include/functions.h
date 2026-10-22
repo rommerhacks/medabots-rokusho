@@ -1293,7 +1293,7 @@ void unpack_item_inventory_to_buffer(void); // gItemInventory -> struct ItemList
 void update_battle_medapart_icons(void);
 s32 calc_text_pixel_width(const u8 *s); // sum of gUnk_083B4C88 widths, up to 10 characters or the 0xFE terminator
 void sub_0805E1CC(const u8 *s); // draws 10 characters as 2-row BG0 tiles copied from a 26-per-row font map on the same screen (guess: name entry)
-void sub_0805A258(s32 n, s32 x, s32 y); // guess: draws n (n / 100, ...) as digits at tilemap 0x0600F000 tile (x, y)
+void draw_number_3digits(s32 n, s32 x, s32 y); // 3 digits, blank-padded, BG tilemap 0x0600F000 (item list page numbers)
 void item_menu_set_cursor_pos(struct Unk_03002C30 *sprite); // list cursor sprite: unk2 = 0x54, unk4 = 0x1C + 16 * (gUnk_03006F74->unkC % 5)
 
 #endif // GUARD_FUNCTIONS_H
@@ -1407,7 +1407,7 @@ void sub_080608EC(void);
 void sub_0806174C(void);
 void sub_08060FD4(void);
 void sub_08061374(void);
-void draw_tilemap_line(u16 a, s32 b, u8 c, u8 d, u8 e, u8 f);
+void draw_number(u16 a, s32 b, u8 c, u8 d, u8 e, u8 f);
 void init_fade_screen_setup(void);
 void sub_080609C0(void);
 void update_animated_tilemap(void);
@@ -1464,7 +1464,7 @@ void copy_tilemap_with_offset_08048CA4(const void *src, void *dst, s32 a, s32 b,
 void copy_tiles_to_bg_tilemap(const void *src, void *dst, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 u32 sub_08052990(u32 unused, u8 which);
 u32 sub_08053194(u16 id);
-void draw_tilemap_bar(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg);
+void draw_number_tall(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg);
 void update_cursor_sprite_position(void);
 u32 check_vehicle_usability(s32 idx);
 void load_battle_sprite_from_index(u32 value, s32 bits, s32 x, s32 y);

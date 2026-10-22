@@ -182,7 +182,7 @@ _0805B1FC:
 	str r1, [sp, #4]
 	movs r1, #2
 	movs r2, #0xd
-	bl draw_tilemap_bar
+	bl draw_number_tall
 	ldrh r0, [r6]
 	movs r1, #0x80
 	lsls r1, r1, #7
@@ -267,7 +267,7 @@ _0805B2B0:
 	str r1, [sp, #4]
 	movs r1, #2
 	movs r2, #0xd
-	bl draw_tilemap_bar
+	bl draw_number_tall
 	ldrh r0, [r6]
 	movs r1, #0x80
 	lsls r1, r1, #7
