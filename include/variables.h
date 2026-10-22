@@ -1086,6 +1086,7 @@ extern const u32 gUnk_087A046C[];
 extern const u16 gUnk_087A034C[];
 struct FuncTable2 { Func f[2]; };
 struct FuncTable4 { Func f[4]; };
+struct FuncTable6 { Func f[6]; };
 struct FuncTable12 { Func f[12]; };
 extern const struct FuncTable12 gUnk_080AFAA0; // link Medal exchange sub-states by gGameSubState (sub_080644C4)
 extern const struct FuncTable4 gUnk_080AFAD0; // sub-states by gGameSubState (scene_dispatch_and_tick)
@@ -1247,3 +1248,10 @@ extern u8 *gUnk_083D6088[];
 extern const Func gUnk_083D5E08[];
 extern const u8 gUnk_080ACB7C[];
 extern const u8 gUnk_080AC5A4[];
+
+// code_0805AB40 (session 91)
+extern const struct FuncTable6 gUnk_080AF7A8; // sub-states by gGameSubState (dispatch_rotation_menu_substate; guess: title options screen)
+extern const u8 gUnk_08483AC0[]; // per item id: 1 for some kind (sub_0805B4B0)
+extern const u8 gUnk_080AF752[]; // song per battle music option (sub_0805C428 preview)
+extern const u16 gUnk_0878CA64[];
+extern const u16 gUnk_080AF7E8[];

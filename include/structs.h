@@ -1249,7 +1249,7 @@ struct Unk_03006D38
     u8 unk1;
     u8 unk2;
     u8 unk3;
-    u8 filler4;
+    u8 unk4; // selected item id (item menu, sub_0805CE4C)
     u8 unk5;
     u8 unk6;
 };

@@ -1270,6 +1270,15 @@ u32 blend_fade_step_08065598(void *state);
 void sub_08059D04(void); // clears unk0 of the 128 gUnk_03002C30 sprites
 // code_0805AB40
 void decompress_and_write_tilemap(const void *src, u32 bgcnt); // LZ77 tilemap with a w, h header (u32 each, 16-byte header) into the BG screen block of bgcnt
+void sub_0805AB40(void); // VBlank-once callback: copies gPaletteBuffer / gPaletteBufferBg to OBJ / BG palette RAM
+void sub_0805AB68(u16 color, s32 t, u32 pal); // guess: blends OBJ palette pal from gPaletteBackup toward color by t / 32, then uploads in VBlank
+void sub_0805AC4C(u16 color, s32 t); // guess: same blend for all BG palettes
+void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot);
+u32 sub_0805B4B0(u32 id); // gUnk_08483AC0[id] == 1
+void sub_0805BB64(u8 sel, u8 count);
+void swap_inventory_items(void);
+void item_menu_draw_page_numbers(void); // "page / pages" on the item screen
+void init_fade_sprite_and_start_fade(void);
 void sub_0805B3E4(s32 x, s32 y, s32 n); // clears n tilemap entries at (x, y) of the BG map at 0x0600B000
 void sub_0805B470(struct Unk_03002C30 *sprite);
 s16 sub_0805BB10(s16 step); // title menu blend pulse: sets BLDALPHA from gUnk_080AF6F0[step / 8], returns step + 1 (0 after 0xA0)
@@ -1421,6 +1430,7 @@ void sub_080608EC(void);
 void sub_0806174C(void);
 void sub_08060FD4(void);
 void sub_08061374(void);
+void draw_number_2digits_tall(s32 n, s32 x, s32 y);
 void draw_number(u16 a, s32 b, u8 c, u8 d, u8 e, u8 f);
 void init_fade_screen_setup(void);
 void sub_080609C0(void);
