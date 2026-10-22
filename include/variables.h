@@ -54,7 +54,7 @@ extern Func gVBlankOnceCallback;      // called at the next vblank, then reset t
 extern Func gHBlankCallback;          // called by hblank_irq
 extern struct OamData gOamBuffer[128]; // copied to OAM in vblank_body
 extern struct Unk_03002414 *gUnk_03002414;
-extern u8 *gUnk_03005308;
+extern struct SceneSlot *gUnk_03005308;
 extern u32 gUnk_03000430;              // vblank_body OAM mode (0, 2)
 extern u8 gUnk_03000434;               // bit 0: vblank_body skips the BG scroll registers
 extern struct Vec16 gUnk_03002C2C;     // scroll added to every BG layer
@@ -73,6 +73,15 @@ extern u8 gUnk_03000588;
 // ROM data
 extern const Func gIntrTableTemplate[14];
 extern const u32 gRngTable[16];
+extern const struct Unk_03005290 gUnk_0807ECA0; // part layer templates: head, left arm, right arm, legs
+extern const struct Unk_03005290 gUnk_0807ECB8; // (setup_scene_bg_layers_and_sprites)
+extern const struct Unk_03005290 gUnk_0807ECD0;
+extern const struct Unk_03005290 gUnk_0807ECE8;
+// Sprite tree node lists by part id: head, right arm, left arm, legs (non-const: needed to match)
+extern struct SpriteTileRef gUnk_0807ED00[][4];
+extern struct SpriteTileRef gUnk_0807F4A0[][4];
+extern struct SpriteTileRef gUnk_0807FC40[][4];
+extern struct SpriteTileRef gUnk_080803E0[][8];
 extern struct SoundSongHeader *gUnk_080AFFB8[]; // song table (sound_init)
 extern struct SoundSongHeader *gUnk_080B06EC[]; // sound effect table (sound_init)
 extern struct SoundNoteTable gUnk_080B1788;

@@ -378,7 +378,7 @@ void init_scene_with_bg_and_palette(); // (u32 slot, u8 head, u8 rarm, u8 larm, 
 u32 advance_text_display(u32 a0, u32 a1, u32 a2);
 u32 medabot_detail_is_full_set(void); // 1 if gUnk_03000440.unk98-9B (the four shown Medaparts) are all the same set
 u32 sub_080440B4(void);
-void sub_08047414(struct Unk_08047414 *obj, u8 *buf, u32 b, u32 c);
+void sub_08047414(struct Unk_08047414 *obj, u8 *buf, struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams);
 void setup_scene_bg_layers_and_sprites(void *oam, struct Unk_08047414 *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 void battle_sprite_set_palette_index(u32 sprite, u32 pal);
 void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c);
@@ -511,6 +511,7 @@ void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt);
 void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map);
 void dma_obj_palette_to_hardware(void);
 void update_anim_object_flags(void);
+void sub_0804725C(u32 unused0, struct Unk_08047414 *obj, s32 kind, s32 idx, u32 unused4, u32 pal, u32 side, u32 alt); // unused
 void copy_oam_affine_params(struct OamData *oam, u16 *affine);
 u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size);
 u32 lz_decompress_custom_08000B14(const u8 *src, void *dst);
@@ -1353,7 +1354,7 @@ struct OamFull *sorted_array_insert_shift(struct OamFull *arr, u16 n, s32 shift,
 u16 render_sprite_if_visible(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 flip);
 u16 sub_08045B68(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 neg, u16 scale, u16 *affine, u32 k); // + scale / flip affine matrix k
 u16 sub_08045C30(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u16 angle, u16 *affine, u32 k); // + rotation affine matrix k
-void sub_08045D1C(u8 *buf);
+void sub_08045D1C(struct Unk_03002414 *work);
 void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 a, s16 b, s16 depth); // u16 params in the definition
 u32 check_position_table_match(u8 id, u8 which);
 void copy_sprite_tiles_to_vram(u8 *dst, u8 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp); // rearranges tiles from src into dst (rows x cols blocks of the OAM shape / size)
@@ -1476,6 +1477,9 @@ void check_and_update_battlefield_palette(void);
 void copy_tilemap_with_offset_08048CA4(const void *src, void *dst, s32 a, s32 b, s32 c, s32 d, s32 e);
 void copy_tiles_to_bg_tilemap(const void *src, void *dst, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 u16 init_oam_sprite_entry(struct OamFull *oam, struct SpriteNodeDesc *desc, u8 pal, u16 tile);
+u32 load_sprite_tree_recursive(struct SpriteNodeDesc **nodes, struct SpriteTileRef *list, u8 node, u8 pal, struct SpriteNodeOam *oams, u16 *tile, u32 alt); // returns the bytes of tiles loaded
+void load_sprite_tiles_by_table(struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams, struct SpriteTileRef *list, u8 node, u8 k);
+void render_sprite_node_recursive(struct Unk_08047414 *obj, struct SpriteTileRef *list, u8 node, s32 y, s32 x, s16 depth, s16 angle, u8 flip);
 u16 copy_oam_entries_with_priority(struct SpriteOamList *list, struct OamData *dst, u16 slot, u16 end);
 u16 batch_copy_oam_entries(struct SpriteOamBatch *batch, struct OamData *dst, u16 end);
 s32 interpolate_entity_positions(struct InterpEnt *e, s16 *pos, s8 *off, u8 *tbl, u8 unused, u8 frame, u8 idx, s32 count, s32 stride);

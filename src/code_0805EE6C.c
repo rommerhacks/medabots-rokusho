@@ -1262,9 +1262,9 @@ void init_scene_rendering_context(u32 a)
         gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
         fill = a;
         CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-        gUnk_03005308 = c;
-        sub_08047414(obj, (u8 *)gUnk_03002414, (u32)gUnk_083D1BF8, (u32)b);
-        obj->unk8 = (u32)b;
+        gUnk_03005308 = (struct SceneSlot *)c;
+        sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+        obj->oams = (struct SpriteNodeOam *)b;
         load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03006F74->unk31, gUnk_03006F74->unk33,
             0x3C, 0x28, 0xC7, a, 1);
     }
@@ -1272,8 +1272,8 @@ void init_scene_rendering_context(u32 a)
     {
         struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
 
-        sub_08047414(obj, (u8 *)gUnk_03002414, (u32)gUnk_083D1BF8, 0x020264E0);
-        obj->unk8 = 0x020264E0;
+        sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)0x020264E0);
+        obj->oams = (struct SpriteNodeOam *)0x020264E0;
         load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03006F74->unk32, gUnk_03006F74->unk34,
             0x3C, 0x28, 0xC7, 4, 2);
     }
@@ -1284,7 +1284,7 @@ void load_medapart_sprite_animation(u8 id, u8 kind, u32 which)
     struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
     u8 x, y;
 
-    obj->unk8 = 0x020260D0 + which * 0x410;
+    obj->oams = (struct SpriteNodeOam *)(0x020260D0 + which * 0x410);
     x = gUnk_080AFA3C[which][kind][0];
     y = gUnk_080AFA3C[which][kind][1];
     if (which)

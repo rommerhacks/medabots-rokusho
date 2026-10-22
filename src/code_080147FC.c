@@ -1968,9 +1968,9 @@ void status_init_portrait(void)
     gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gUnk_03005308 = c;
-    sub_08047414(obj, (u8 *)gUnk_03002414, (u32)gUnk_083D1BF8, (u32)b);
-    obj->unk8 = (u32)b;
+    gUnk_03005308 = (struct SceneSlot *)c;
+    sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    obj->oams = (struct SpriteNodeOam *)b;
     setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
         gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
         0x28, 0x28, 0x1C2, 8, 1, 0);
@@ -1981,7 +1981,7 @@ void status_reset_portrait(void)
     struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
     u32 fill;
 
-    obj->unk8 = 0x020260D0;
+    obj->oams = (struct SpriteNodeOam *)0x020260D0;
     setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
         gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
         0x28, 0x28, 0x1C2, 8, 1, 0);

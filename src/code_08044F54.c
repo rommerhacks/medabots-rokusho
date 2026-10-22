@@ -273,10 +273,10 @@ u16 sub_08045C30(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, 
     return n;
 }
 
-void sub_08045D1C(u8 *buf)
+void sub_08045D1C(struct Unk_03002414 *work)
 {
-    buf[0x1096] = 0;
-    buf[0x1097] = 0;
+    work->unk1096 = 0;
+    work->unk1097 = 0;
 }
 
 u16 init_oam_sprite_entry(struct OamFull *oam, struct SpriteNodeDesc *desc, u8 pal, u16 tile)
@@ -312,8 +312,86 @@ u16 init_oam_sprite_entry(struct OamFull *oam, struct SpriteNodeDesc *desc, u8 p
     return n;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", load_sprite_tree_recursive);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", load_sprite_tiles_by_table);
+// Loads the OBJ tiles of a sprite tree (and the palette of the list's first node) into VRAM via gDecompressBuffer + 0x800.
+u32 load_sprite_tree_recursive(struct SpriteNodeDesc **nodes, struct SpriteTileRef *list, u8 node, u8 pal, struct SpriteNodeOam *oams, u16 *tile, u32 alt)
+{
+    u32 total = 0;
+    s32 key = node; // compared as (u8)key
+    struct SpriteNodeDesc *desc = nodes[node];
+    u8 frame = 0;
+    u32 affine = 0;
+    u32 size = 0;
+    struct SpriteNodeOam *obj;
+    s32 i;
+
+    if (list != NULL)
+    {
+        for (i = 0; list[i].node != 0; i++)
+        {
+            struct SpriteTileRef v = list[i];
+
+            if ((u8)key == v.node)
+            {
+                frame = (v.frame + (alt & v.alt)) << 1;
+                if (gUnk_03000440.unk96)
+                    affine = 0;
+                else
+                    affine = v.affine;
+                size = 1;
+                if (i == 0 && desc->frames[frame + 1] != NULL)
+                {
+                    size = 0x20;
+                    CpuSet(desc->frames[frame + 1], (void *)(OBJ_PLTT + (desc->paletteNum + pal) * 32), 0x10);
+                    CpuSet(desc->frames[frame + 1], (u8 *)0x02030400 + (desc->paletteNum + pal) * 32, 0x10);
+                }
+                break;
+            }
+        }
+    }
+    else
+    {
+        size = 1;
+    }
+    if (size != 0 && desc->frames[frame] != NULL)
+    {
+        size = dma3_copy_or_decompress(desc->frames[frame], (void *)0x02030800);
+        if (size != 0)
+            CpuCopy16((void *)0x02030800, (void *)(0x06010000 + *tile * 32), size);
+        obj = &oams[node];
+        *tile += init_oam_sprite_entry(&obj->oam, desc, pal, *tile);
+        if (gUnk_03000440.unk96)
+            obj->oam.affineMode = 0;
+        else
+            obj->oam.affineMode = affine;
+        total += size;
+    }
+    if (nodes[node]->child != 0)
+        total += load_sprite_tree_recursive(nodes, list, nodes[node]->child, pal, oams, tile, alt);
+    if (nodes[node]->sibling != 0)
+        total += load_sprite_tree_recursive(nodes, list, nodes[node]->sibling, pal, oams, tile, alt);
+    return total;
+}
+
+void load_sprite_tiles_by_table(struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams, struct SpriteTileRef *list, u8 node, u8 k)
+{
+    struct SpriteNodeDesc *desc = nodes[node];
+
+    if (list != NULL)
+    {
+        while (list->node)
+        {
+            if (node == list->node)
+            {
+                s32 size = dma3_copy_or_decompress(desc->frames[list->frame * 2], (void *)0x02030800);
+                if (size != 0)
+                    CpuCopy16((void *)0x02030800, (void *)(0x06010000 + oams[k].oam.tileNum * 32), size);
+                return;
+            }
+            list++;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_080460B0);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", render_sprite_node_recursive);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", load_sprite_animation_by_type);
@@ -330,14 +408,209 @@ void toggle_bg_layer_visibility(s32 a, s32 b, s32 c, s32 d)
         gUnk_030052F0.unkD = -gUnk_030052F0.unkD - 2;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", setup_scene_bg_layers_and_sprites);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", update_anim_object_flags);
+void setup_scene_bg_layers_and_sprites(void *oam, struct Unk_08047414 *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j)
+{
+    u32 slot = j;
+    u16 tile;
+    u16 base;
+    s32 k;
+    struct SpriteTileRef *dst;
+    struct SpriteTileRef *src;
+    struct SpriteTileRef *pa, *pb, *pc, *pd;
 
-void sub_08047414(struct Unk_08047414 *obj, u8 *buf, u32 b, u32 c)
+    if (!(i & 4))
+    {
+        if (gUnk_03000440.unk130)
+            gUnk_03000440.unk131 = 1;
+        gUnk_03005308[slot].unk2C = (gUnk_03005308[slot].unk2C | 1) & ~8;
+        gUnk_03005308[slot].unk4 = a;
+        gUnk_03005308[slot].unk8 = b;
+        gUnk_03005308[slot].unkC = c;
+        gUnk_03005308[slot].unk10 = d;
+        gUnk_03005308[slot].unk28 = slot;
+    }
+    else if (gUnk_03005308[slot].unk2C & 2)
+    {
+        base = 0;
+        if (i & 2)
+            base = 0x160;
+        gUnk_030052D0 = gUnk_0807ECA0;
+        gUnk_030052B0 = gUnk_0807ECB8;
+        gUnk_03005290 = gUnk_0807ECD0;
+        gUnk_030052F0 = gUnk_0807ECE8;
+        a = gUnk_03005308[slot].unk4;
+        b = gUnk_03005308[slot].unk8;
+        c = gUnk_03005308[slot].unkC;
+        d = gUnk_03005308[slot].unk10;
+        j = gUnk_03005308[slot].unk28;
+        if ((s32)a < 0)
+        {
+            gUnk_030052D0.unk10 = 0;
+            gUnk_03005290.unk10 = 0;
+            gUnk_030052B0.unk10 = 0;
+        }
+        else
+        {
+            pa = gUnk_0807ED00[a];
+            gUnk_030052D0.unk10 = pa->node;
+            pb = gUnk_0807F4A0[b];
+            gUnk_03005290.unk10 = pb->node;
+            pc = gUnk_0807FC40[c];
+            gUnk_030052B0.unk10 = pc->node;
+            pd = gUnk_080803E0[d];
+            gUnk_030052F0.unk10 = pd->node;
+            tile = base + 0x140;
+            load_sprite_tree_recursive(obj->nodes, pa, pa->node, h, obj->oams, &tile, j);
+            tile = base + 0x1A0;
+            load_sprite_tree_recursive(obj->nodes, pb, pb->node, h, obj->oams, &tile, j);
+            tile = base + 0x1E0;
+            load_sprite_tree_recursive(obj->nodes, pc, pc->node, h, obj->oams, &tile, j);
+            tile = base + 0x220;
+            load_sprite_tree_recursive(obj->nodes, pd, pd->node, h, obj->oams, &tile, j);
+            if (slot != 0)
+            {
+                for (k = 0; gUnk_0807F4A0[b][k].node; k++)
+                {
+                    if (!gUnk_0807F4A0[b][k].alt)
+                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807FC40[b], gUnk_0807FC40[b][k].node, gUnk_0807F4A0[b][k].node);
+                }
+                for (k = 0; gUnk_0807FC40[c][k].node; k++)
+                {
+                    if (!gUnk_0807FC40[c][k].alt)
+                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807F4A0[c], gUnk_0807F4A0[c][k].node, gUnk_0807FC40[c][k].node);
+                }
+                toggle_bg_layer_visibility(a, b, c, d);
+            }
+        }
+        obj->layers[slot][0] = gUnk_030052D0;
+        obj->layers[slot][1] = gUnk_03005290;
+        obj->layers[slot][2] = gUnk_030052B0;
+        obj->layers[slot][3] = gUnk_030052F0;
+        gUnk_03005308[slot].unk2C = (gUnk_03005308[slot].unk2C & ~2) | 4;
+        gUnk_03005308[slot].unk2C |= 8;
+    }
+    else if (gUnk_03005308[slot].unk2C & 8)
+    {
+        struct SpriteTileRef buf[32];
+
+        custom_memset(buf, 0, sizeof(buf));
+        gUnk_03000440.unk131 = 0;
+        a = gUnk_03005308[slot].unk4;
+        b = gUnk_03005308[slot].unk8;
+        c = gUnk_03005308[slot].unkC;
+        d = gUnk_03005308[slot].unk10;
+        gUnk_030052D0 = obj->layers[slot][0];
+        gUnk_03005290 = obj->layers[slot][1];
+        gUnk_030052B0 = obj->layers[slot][2];
+        gUnk_030052F0 = obj->layers[slot][3];
+        dst = buf;
+        if (gUnk_030052D0.unk10)
+            for (src = gUnk_0807ED00[a]; src->node;)
+                *dst++ = *src++;
+        if (gUnk_03005290.unk10)
+            for (src = gUnk_0807F4A0[b]; src->node;)
+                *dst++ = *src++;
+        if (gUnk_030052B0.unk10)
+            for (src = gUnk_0807FC40[c]; src->node;)
+                *dst++ = *src++;
+        if (gUnk_030052F0.unk10)
+            for (src = gUnk_080803E0[d]; src->node;)
+                *dst++ = *src++;
+        render_sprite_node_recursive(obj, buf, 1, e << 8, f << 8, g, 0, j);
+    }
+}
+
+void update_anim_object_flags(void)
+{
+    s32 i;
+
+    for (i = 0; i < 2; i++)
+    {
+        u32 v = gUnk_03005308[i].unk2C;
+        if (v & 1)
+        {
+            v &= ~1;
+            v |= 2;
+            gUnk_03005308[i].unk2C = v;
+        }
+        else if (!(v & 2))
+        {
+            if (v & 8)
+            {
+                if (v & 4)
+                {
+                    v &= ~4;
+                    gUnk_03005308[i].unk2C = v;
+                }
+            }
+        }
+    }
+}
+
+// Unused: loads the sprite tree of one part (kind: 0 head, 1 right arm, 2 left arm, 3 legs) and, for the
+// arms, the tiles of the other arm's nodes.
+void sub_0804725C(u32 unused0, struct Unk_08047414 *obj, s32 kind, s32 idx, u32 unused4, u32 pal, u32 side, u32 alt)
+{
+    u16 tile;
+    u16 base;
+    struct SpriteTileRef *e;
+    s32 i;
+
+    base = 0;
+    if (side == 2)
+        base = 0x160;
+    switch (kind)
+    {
+    case 0:
+    {
+        struct SpriteTileRef *t;
+
+        tile = base + 0x140;
+        load_sprite_tree_recursive(obj->nodes, t = gUnk_0807ED00[idx], t->node, pal, obj->oams, &tile, alt);
+        break;
+    }
+    case 1:
+        tile = base + 0x1A0;
+        load_sprite_tree_recursive(obj->nodes, e = gUnk_0807F4A0[idx], e->node, pal, obj->oams, &tile, alt);
+        if (alt)
+        {
+            for (i = 0; gUnk_0807F4A0[idx][i].node; i++)
+            {
+                if (!gUnk_0807F4A0[idx][i].alt)
+                    load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807FC40[idx],
+                                               gUnk_0807FC40[idx][i].node, gUnk_0807F4A0[idx][i].node);
+            }
+        }
+        break;
+    case 2:
+        tile = base + 0x1E0;
+        load_sprite_tree_recursive(obj->nodes, e = gUnk_0807FC40[idx], e->node, pal, obj->oams, &tile, alt);
+        if (alt)
+        {
+            for (i = 0; gUnk_0807FC40[idx][i].node; i++)
+            {
+                if (!gUnk_0807FC40[idx][i].alt)
+                    load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807F4A0[idx],
+                                               gUnk_0807F4A0[idx][i].node, gUnk_0807FC40[idx][i].node);
+            }
+        }
+        break;
+    case 3:
+    {
+        struct SpriteTileRef *t;
+
+        tile = base + 0x220;
+        load_sprite_tree_recursive(obj->nodes, t = gUnk_080803E0[idx], t->node, pal, obj->oams, &tile, alt);
+        break;
+    }
+    }
+}
+
+void sub_08047414(struct Unk_08047414 *obj, u8 *buf, struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams)
 {
     obj->unk0 = buf;
-    obj->unk4 = b;
-    obj->unk8 = c;
+    obj->nodes = nodes;
+    obj->oams = oams;
     buf[0x1094] = 0;
 }
 

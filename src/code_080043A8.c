@@ -629,9 +629,9 @@ void sub_0800529C(void)
     gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gUnk_03005308 = c;
-    sub_08047414(obj, (u8 *)gUnk_03002414, (u32)gUnk_083D1BF8, (u32)b);
-    obj->unk8 = (u32)b;
+    gUnk_03005308 = (struct SceneSlot *)c;
+    sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    obj->oams = (struct SpriteNodeOam *)b;
     if (gUnk_03000440.unk5E)
         setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
             gUnk_030017A0[gUnk_03000440.unk51].unk3, gUnk_030017A0[gUnk_03000440.unk51].unk4,
@@ -649,7 +649,7 @@ void sub_080053C8(void)
     struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
     u32 fill;
 
-    obj->unk8 = 0x020260D0;
+    obj->oams = (struct SpriteNodeOam *)0x020260D0;
     if (gUnk_03000440.unk5E)
         setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
             gUnk_030017A0[gUnk_03000440.unk51].unk3, gUnk_030017A0[gUnk_03000440.unk51].unk4,
@@ -1187,9 +1187,9 @@ void init_scene_state(void)
     gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gUnk_03005308 = c;
-    sub_08047414(obj, (u8 *)gUnk_03002414, (u32)gUnk_083D1BF8, (u32)b);
-    obj->unk8 = (u32)b;
+    gUnk_03005308 = (struct SceneSlot *)c;
+    sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    obj->oams = (struct SpriteNodeOam *)b;
     if (gUnk_03000440.unk5E)
         setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
             gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
@@ -1205,7 +1205,7 @@ void setup_scene_with_link_check(void)
     struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
     u32 fill;
 
-    obj->unk8 = 0x020260D0;
+    obj->oams = (struct SpriteNodeOam *)0x020260D0;
     if (gUnk_03000440.unk5E)
         setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj,
             gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,

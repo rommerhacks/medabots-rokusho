@@ -462,6 +462,8 @@ struct Unk_03002414
     u16 unkF8C[0x84];   // affine parameters (copy_oam_affine_params)
     u8 unk1094;
     u8 unk1095;
+    u8 unk1096;
+    u8 unk1097;
 };
 
 // Opponent Medabot in an encounter setup (gUnk_03001800.unk4).
@@ -965,11 +967,15 @@ struct Unk_030057E0
 };
 
 // Four 0x20-byte records at 0x03005290 / 0x030052B0 / 0x030052D0 / 0x030052F0 (guess: BG layer state)
+// Sprite part layer (24 bytes): gUnk_030052D0 / 03005290 / 030052B0 / 030052F0 (head, right arm, left arm,
+// legs) are loaded from the ROM templates gUnk_0807ECA0.. and saved per side in struct Unk_08047414.
 struct Unk_03005290
 {
     u8 filler0[0xD];
     u8 unkD; // toggled between x and -2 - x (toggle_bg_layer_visibility)
-    u8 fillerE[0x12];
+    u8 fillerE[2];
+    u8 unk10; // root node of the part's sprite tree (0 = hidden)
+    u8 filler11[7];
 };
 
 // Blend effect state (setup_blend_effect / blend_effect_update)
@@ -1138,10 +1144,17 @@ struct ObjAffineDstData
     s16 pd;
 };
 
-// Sprite node descriptor: OAM attributes (init_oam_sprite_entry).
+// Sprite node descriptor: one node (body part piece) of a sprite tree; OAM attributes (init_oam_sprite_entry).
 struct SpriteNodeDesc
 {
-    u8 filler0[0x11];
+    const u32 **frames; // per frame two entries: OBJ tiles (dma3_copy_or_decompress), palette (or NULL)
+    s32 unk4;
+    s32 unk8;
+    s8 unkC;
+    s8 unkD;
+    s8 unkE;
+    u8 sibling; // next sibling node (0 = none)
+    u8 child; // first child node (0 = none)
     u8 paletteNum; // added to the palette argument
     u8 width;
     u8 height;
@@ -1152,6 +1165,26 @@ struct SpriteNodeDesc
     u8 objMode:2;
     u8 hFlip:1;
     u8 vFlip:1;
+};
+
+// Sprite tree node reference (load_sprite_tree_recursive); lists end with node == 0.
+struct SpriteTileRef
+{
+    u8 node:6; // read with ldrb
+    u32 frame:8;
+    u32 affine:1; // draw with an affine matrix
+    u32 alt:1; // frame + 1 on the alternate side; skipped by the tile copy loops
+    u32 unk0_16:16;
+};
+
+// Per-node OAM entry and transform of a sprite tree (16 bytes).
+struct SpriteNodeOam
+{
+    struct OamFull oam;
+    s16 unk8;
+    s16 unkA;
+    u16 unkC;
+    u16 unkE;
 };
 
 // A list of OAM entry lists (batch_copy_oam_entries).
@@ -1403,11 +1436,26 @@ struct AreaGfx
     const void *unk8;
 };
 
+// Sprite tree object (at 0x02026000).
 struct Unk_08047414
 {
-    u8 *unk0;
-    u32 unk4;
-    u32 unk8;
+    u8 *unk0; // gUnk_03002414 record
+    struct SpriteNodeDesc **nodes;
+    struct SpriteNodeOam *oams;
+    struct Unk_03005290 layers[2][4]; // part layers saved per side (setup_scene_bg_layers_and_sprites)
+};
+
+// 48-byte records at gUnk_03005308, one per side (setup_scene_bg_layers_and_sprites).
+struct SceneSlot
+{
+    u8 filler0[4];
+    u32 unk4; // head part
+    u32 unk8; // right arm part
+    u32 unkC; // left arm part
+    u32 unk10; // legs part
+    u8 filler14[0x14];
+    u32 unk28; // side
+    u32 unk2C; // flags: 1 pending, 2 load, 4 loaded, 8 visible
 };
 
 // Menu / save screen work area, reached through the pointer gUnk_03006F74 (layout as used by code_0805AB40)
