@@ -1421,7 +1421,67 @@ u32 sub_0804F13C(u8 dir)
     return ret;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804F3AC);
+void sub_0804F3AC(void)
+{
+    s32 idx;
+    u8 phase;
+    u16 off;
+    u8 div;
+    u8 n;
+
+    switch (gUnk_030057E0.unkC93)
+    {
+    case 0:
+        if (gUnk_030057E0.unkC94[0] == 0)
+            gUnk_03005310.unk1E = gBg1Scroll.x;
+        else
+            gUnk_03005310.unk26 = gBg1Scroll.y;
+        gUnk_030057E0.unkC94[2] = 0;
+        gUnk_030057E0.unkC94[4] = gUnk_030057E0.unkC94[1];
+        gUnk_030057E0.unkC93++;
+        break;
+    case 1:
+        if (gUnk_030057E0.unkC94[1] != 0)
+        {
+            gUnk_030057E0.unkC94[1]--;
+            div = gUnk_030057E0.unkC94[4];
+            n = gUnk_030057E0.unkC94[2];
+            idx = 256 / div * n / 2;
+            if (gUnk_030057E0.unkC94[0] == 0)
+            {
+                off = gUnk_083D69A0[0][idx] / (128 - ((phase = n & 3) + 1) * 16);
+                if (phase <= 1)
+                    sub_080529C4(gUnk_03005310.unk1E - off);
+                else
+                    sub_080529C4(off + gUnk_03005310.unk1E);
+            }
+            else
+            {
+                off = gUnk_083D69A0[0][idx] / (128 - ((phase = n & 3) + 1) * 16);
+                if (phase <= 1)
+                    sub_080529E4(gUnk_03005310.unk26 - off);
+                else
+                    sub_080529E4(off + gUnk_03005310.unk26);
+            }
+            update_bg_scroll_offsets_a();
+            if (gUnk_030057E0.unkC76)
+                update_bg_scroll_offsets_b();
+            gUnk_030057E0.unkC94[2]++;
+        }
+        else
+        {
+            if (gUnk_030057E0.unkC94[0] == 0)
+                sub_080529C4(gUnk_03005310.unk1E);
+            else
+                sub_080529E4(gUnk_03005310.unk26);
+            update_bg_scroll_offsets_a();
+            if (gUnk_030057E0.unkC76)
+                update_bg_scroll_offsets_b();
+            map_script_command_done();
+        }
+        break;
+    }
+}
 
 void nullsub_0804F57C(void)
 {
@@ -1817,7 +1877,78 @@ void sub_0804FC30(void)
     map_script_command_done();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FCC4);
+void sub_0804FCC4(void)
+{
+    s32 done = 0;
+    s32 i;
+    u8 b;
+
+    for (i = 0; i < gUnk_030064A0.unk52; i++)
+    {
+        if (gUnk_030064A0.unkA[i] > 1)
+            done++;
+        else
+        {
+            switch (gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4])
+            {
+            case 1:
+                set_battle_sprite_animation(gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 1],
+                                            gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 2]);
+                gUnk_030064A0.unkA[i]++;
+                break;
+            case 2:
+                gUnk_030064A0.unk54[i] = gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 1];
+                sub_08050508(gUnk_030064A0.unk54[i]);
+                gUnk_030064A0.unkA[i]++;
+                break;
+            case 3:
+            case 4:
+                switch (gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4])
+                {
+                case 3:
+                default:
+                    b = 0;
+                    break;
+                case 4:
+                    b = 1;
+                    break;
+                }
+                switch (gUnk_030064A0.unk5C[i])
+                {
+                case 0:
+                    gUnk_030064A0.unk54[i] = sub_0804DBA4(gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 1]) + 79;
+                    setup_battle_sprite_terrain(gUnk_030064A0.unk54[i],
+                                                gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 2], b);
+                    gUnk_030064A0.unk5C[i]++;
+                    break;
+                case 1:
+                    if (update_battle_sprite_movement(gUnk_030064A0.unk54[i], 1))
+                        gUnk_030064A0.unk5C[i]++;
+                    break;
+                case 2:
+                    gUnk_030064A0.unk5C[i] = 0;
+                    gUnk_030064A0.unkA[i]++;
+                    break;
+                }
+                break;
+            case 0xFF:
+                done++;
+                break;
+            default:
+                done++;
+                break;
+            }
+            if (gUnk_030064A0.unkA[i] > 1)
+                done++;
+        }
+    }
+    if (done == gUnk_030064A0.unk52)
+    {
+        gUnk_030064A0.unk52 = 0;
+        sub_080496C8(gUnk_030064A0.unk12[0], 64);
+        map_script_command_done();
+    }
+}
 
 void sub_0804FE20(void)
 {
