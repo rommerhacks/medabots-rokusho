@@ -796,16 +796,28 @@ struct Unk_030017A0
 
 struct Unk_030057A0
 {
-    u8 filler0[0x10];
+    u8 unk0;
+    u8 filler1[0xF];
     u8 unk10;
     u8 unk11;
-    u8 filler12[0x2];
-    u8 unk14;
-    u8 filler15[0x11];
+    u8 unk12;
+    u8 unk13; // next free battle sprite slot (load_battle_sprite_tile)
+    u8 unk14; // debug battle-field screen page (sub_08058214)
+    u8 unk15; // bit 0x10: clear instead of load (load_or_clear_battle_sprites)
+    s8 unk16[8]; // per-page row values (sub_0805889C)
+    u16 unk1E;
+    u16 unk20; // battle field id (init_battle_field_sprites)
+    u8 filler22[0x2];
+    u16 unk24;
     u16 unk26;
-    u8 filler28[0x6];
+    u16 unk28;
+    u16 unk2A;
+    u16 unk2C;
     u16 unk2E; // text bank (map script opcode 0x8x argument - 2)
     u16 unk30; // text id
+    u8 unk32;
+    s8 unk33;
+    s8 unk34;
 };
 
 // Per-area record list (gUnk_0840FAF4), ends at mask 0. A record applies when the player steps
@@ -844,6 +856,18 @@ struct Unk_030064A0
     u8 unk54[8];
     u8 unk5C[8];
     u8 unk64; // choice menu step (sub_08047FEC: 0 setup, 1 wait handler, 2 poll)
+    // Vehicle menu (sub_08057044 .. sub_08057598) reuses the area after the choice menu.
+    u8 unk65; // cursor: selected vehicle
+    u8 unk66;
+    u8 unk67; // frame counter (cursor wobble)
+    u8 filler68[0x4];
+    u8 unk6C; // cursor tile x
+    u8 unk6D; // cursor tile y
+    u8 unk6E;
+    u8 unk6F; // slide step (0..16)
+    u8 unk70; // text page
+    u8 filler71;
+    u16 unk72[30 * 20]; // saved BG tilemap
 };
 
 struct Unk_030057E0
@@ -884,7 +908,8 @@ struct Unk_030057E0
     u16 unkC48;
     u16 unkC4A;
     u8 unkC4C;
-    u8 fillerC4D[0x2];
+    u8 unkC4D;
+    u8 unkC4E;
     u8 unkC4F;
     u8 fillerC50[0x2];
     u16 unkC52;
@@ -928,7 +953,10 @@ struct Unk_030057E0
     u8 unkCA4[0x10];
     u8 unkCB4; // index of the map object running the script (unk5DC)
     u8 unkCB5;
-    u8 fillerCB6[0x4];
+    u8 fillerCB6;
+    u8 unkCB7;
+    u8 unkCB8;
+    u8 unkCB9;
     u8 unkCBA;
     u8 fillerCBB[0x1];
     s8 unkCBC;
@@ -1020,6 +1048,15 @@ struct OamBits
     u16 priority:2;
     u16 paletteNum:4;
     u16 affineParam;
+};
+
+// BG text-mode tilemap entry.
+struct BgTileEntry
+{
+    u16 tile:10;
+    u16 hflip:1;
+    u16 vflip:1;
+    u16 pal:4;
 };
 
 struct SpriteAnchor
