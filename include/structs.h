@@ -874,7 +874,7 @@ struct Unk_030064A0
 };
 
 // One sprite of the snapshot at gUnk_030057E0.unk7DC (4 bytes)
-struct BattleEntityTile
+struct ScriptSpriteSave
 {
     u8 x; // tile
     u8 y;
@@ -889,7 +889,7 @@ struct Unk_030057E0
 {
     u8 filler0[0x5DC];
     struct MapObject unk5DC[64];
-    struct BattleEntityTile unk7DC[8]; // sprite snapshot (save_script_sprites)
+    struct ScriptSpriteSave unk7DC[8]; // sprite snapshot (save_script_sprites)
     u8 unk7FC;
     u8 unk7FD;
     u8 unk7FE; // area id
