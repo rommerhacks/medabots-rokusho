@@ -1181,7 +1181,7 @@ void sub_0801A744(u32 rec)
     }
 }
 
-u32 battle_phase_dispatch_0801A788(u32 direct)
+u32 battle_load_graphics_step(u32 direct)
 {
     switch (gUnk_03000440.unk13A)
     {

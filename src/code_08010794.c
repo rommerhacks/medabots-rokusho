@@ -1232,7 +1232,7 @@ void battle_scene_init_state_machine(void)
             REG_BG1CNT = 0x1901;
             REG_BG2CNT = 0x1A0A;
             REG_BG3CNT = 0x1B0B;
-            if (battle_phase_dispatch_0801A788(0))
+            if (battle_load_graphics_step(0))
                 gUnk_03000440.unk139++;
             break;
         case 1:
@@ -1756,7 +1756,7 @@ void battle_phase_dispatch_0801387C(void)
             REG_BG1CNT = 0x1901;
             REG_BG2CNT = 0x1A0A;
             REG_BG3CNT = 0x1B0B;
-            if (battle_phase_dispatch_0801A788(0))
+            if (battle_load_graphics_step(0))
             {
                 gUnk_03000440.unk84 = 0;
                 gUnk_03000440.unk139++;

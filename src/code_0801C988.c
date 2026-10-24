@@ -1614,7 +1614,7 @@ void sub_0801FBC4(void)
         REG_BG1CNT = 0x1901;
         REG_BG2CNT = 0x1A0A;
         REG_BG3CNT = 0x1B0B;
-        if (battle_phase_dispatch_0801A788(1))
+        if (battle_load_graphics_step(1))
         {
             gUnk_03000440.unk84 = 0;
             gUnk_03000440.unk139++;

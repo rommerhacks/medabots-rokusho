@@ -968,7 +968,7 @@ void init_opponent_bots(void);
 void battle_process_all_bots_actions(void);
 void sub_08018A18(void);
 void load_battle_script_entry_b(void);
-u32 battle_phase_dispatch_0801A788(u32 a);
+u32 battle_load_graphics_step(u32 direct); // one LZ graphics load per call (step 0x0300057A 0-8); returns 1 when done, direct = palettes straight to PLTT
 void load_bg3_tilemap_08488764(void);
 void draw_battle_bot_portraits(void);
 void load_all_bot_part_sprites(void);
