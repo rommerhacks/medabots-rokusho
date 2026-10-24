@@ -517,3 +517,17 @@
   has `movs rX, #0xF0; ands`.
 * A `[][8]` s16 table indexed with a flat computed index: write `tbl[0][idx]`, not a pointer cast
   (`((const s16 *)tbl)[idx]` swapped two registers in sub_0804F3AC).
+* Text tile flush (`if (unk14 & 7) CpuSet(buf, VRAM + 0x280 + unk17 * 0x680 + col * 0x40, n)`): test the low
+  bits through a bitfield view (`((struct TextColBits *)&gUnk_03000440)->col`, which makes gcc reload unk14),
+  compute the column into a `u8` local with `/ 8` (not `>> 3`) and write the address as
+  `col * 0x40 + VRAM + 0x280 + unk17 * 0x680` (reset_text_tile_state, sub_0804070C ... in code_0803CDCC).
+* Where the original reads a field twice in a row or re-reads a byte just stored, only a volatile read
+  reproduces it: `*(vu16 *)&gUnk_03000440.unkC`.
+* A constant like 0xFFFF8000 built from `x + 0x8000` with an `s16` intermediate: put the sum in an
+  assignment inside the expression, `a + (flag = (b & 0x100) + 0x8000)` with `s16 flag` (sub_08014B34).
+* An address strength-reduced across a loop that the original recomputes: assign the row inside the index,
+  `[((a = i + 4) - step) * 32]` (bg_tilemap_scroll_up_row).
+* A `cond ? tblA[c] : tblB[c]` that computes `c * 2` too early: write if / else with the whole statement in
+  both arms.
+* Do not run `tools/scripts/tryin.py` for two functions of the same module at the same time (or while
+  installing into it): it rewrites `src/<module>.c` and restores its saved copy afterwards.
