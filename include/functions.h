@@ -8,6 +8,7 @@ void sub_08044B28(const u8 *src, void *dst);
 void set_tilemap_and_decompress_bg(u32 x, u32 y, const u8 *src, u32 bgcnt, u16 base);
 void copy_obj_palette_to_buffer(void);
 void palette_blend_to_color_080013A8(u16 color, u32 amount);
+void hblank_dma0_bg2affine(void);
 void medawatch_menu_load_icon(void);
 void medawatch_menu_init_cursor(void);
 void medawatch_scroll_bg3(void);

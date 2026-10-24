@@ -323,7 +323,48 @@ void set_bg2_affine_transform(s32 scale, u32 angle, s32 cx, s32 cy, s32 sx, s32 
     *(vu16 *)0x0400003E = (y & 0x0FFF0000) >> 16;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", compute_bg_affine_scanline_params);
+// New local struct: one scanline of BG2 affine registers (BG2PA..BG2PD, BG2X, BG2Y), 16 bytes.
+struct BgAffineLine
+{
+    s16 pa, pb, pc, pd;
+    u16 xl, xh, yl, yh;
+};
+
+// MATCH: the line pointer uses its own counter j (for i, j; i++, j++) so its increment lands after i++.
+// Fills the back buffer (gUnk_02030A00 on odd frames, gDecompressBuffer on even) with 160
+// per-scanline BG2 affine sets whose zoom shrinks as 1 / (1 + line * step) (a perspective
+// "floor" effect, Mode-7 like), then arms hblank_dma0_bg2affine for the next vblank.
+
+void compute_bg_affine_scanline_params(s32 step, u32 angle, s32 unused, s32 cx, s32 cy, s32 sx, s32 sy)
+{
+    struct BgAffineLine *buf;
+    s32 i, j;
+    s32 pa, pb, pc, pd, x, y, t;
+
+    if (!(gFrameCounter & 1))
+        buf = (struct BgAffineLine *)gDecompressBuffer;
+    else
+        buf = (struct BgAffineLine *)gUnk_02030A00;
+    for (i = 0, j = 0; i < 160; i++, j++)
+    {
+        pa = DivArm(i * step + 1, gUnk_080750E0[(angle & 0x3FF) + 0x100] << 7);
+        t = DivArm(i * step + 1, gUnk_080750E0[angle & 0x3FF] << 7);
+        pc = -t;
+        pb = t * 3;
+        pd = pa * 3;
+        buf[j].pa = pa;
+        buf[j].pb = pb;
+        buf[j].pc = pc;
+        buf[j].pd = pd;
+        x = -(pa * sx) - pb * sy - cx + pb * i;
+        y = -(pc * sx) - pd * sy - cy + pd * i;
+        buf[j].xl = x;
+        buf[j].xh = x >> 16;
+        buf[j].yl = y;
+        buf[j].yh = y >> 16;
+    }
+    gVBlankOnceCallback = hblank_dma0_bg2affine;
+}
 
 // Run once at vblank (gVBlankOnceCallback, set by compute_bg_affine_scanline_params): copies line 0 of the current (double-buffered) BG2 affine table to BG2PA..BG2Y,
 // then starts DMA0 (hblank-triggered, repeat, 8 halfwords) to feed the rest of the lines.
@@ -378,7 +419,23 @@ void copy_obj_palette_to_buffer(void)
     CpuFastSet((void *)PLTT, gPaletteBackupBg, 0x80);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", palette_blend_to_color_080013A8);
+void palette_blend_to_color_080013A8(u16 color, u32 amount)
+{
+    u32 i;
+    u32 inv;
+    if (amount > 32)
+        amount = 32;
+    inv = 32 - amount;
+    for (i = 0; i < 0x200; i++)
+    {
+        u16 *dst = &gPaletteBuffer[i];
+        u16 *src = &gPaletteBackup[i];
+        *dst = (((*src & 0x1F) * inv + (color & 0x1F) * amount) >> 5)
+            | ((((*src & 0x3E0) * inv + (color & 0x3E0) * amount) >> 5) & 0x3E0)
+            | ((((*src & 0x7C00) * inv + (color & 0x7C00) * amount) >> 5) & 0x7C00);
+    }
+    gVBlankOnceCallback = dma_obj_palette_to_hardware;
+}
 
 void dma_obj_palette_to_hardware(void)
 {
@@ -386,7 +443,21 @@ void dma_obj_palette_to_hardware(void)
     CpuFastSet(gPaletteBufferBg, (void *)PLTT, 0x80);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", palette_blend_16_colors);
+void palette_blend_16_colors(u16 *src, u16 *dst, u16 color, u32 amount)
+{
+    u32 i;
+    u32 inv;
+    if (amount > 32)
+        amount = 32;
+    inv = 32 - amount;
+    for (i = 0; i < 16; i++)
+    {
+        dst[i] = (((color & 0x1F) * amount + (src[i] & 0x1F) * inv) >> 5)
+            | ((((src[i] & 0x3E0) * inv + (color & 0x3E0) * amount) >> 5) & 0x3E0)
+            | ((((color & 0x7C00) * amount + (src[i] & 0x7C00) * inv) >> 5) & 0x7C00);
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", check_flag_and_fast_copy);
 
 void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags)
@@ -737,7 +808,17 @@ void dispatch_game_substate_handler_08002554(void)
     gUnk_083AC248[gGameSubState]();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", sub_08002574);
+void sub_08002574(void)
+{
+    u16 priority;
+    REG_BLDCNT = 0;
+    REG_BLDY = 0;
+    REG_DISPCNT = 0x1260;
+    priority = 9; // the low bits have to go through a variable to load 0x5E09 straight into r0
+    REG_BG1CNT = priority | 0x5E00;
+    gUnk_03000440.unk85 = 1;
+    gGameSubState++;
+}
 
 // guess: debug map viewer input (D-pad scrolls gBg1Scroll, START/SELECT open text windows)
 void sub_080025B4(void)
