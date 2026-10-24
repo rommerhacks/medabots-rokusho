@@ -1,5 +1,10 @@
 #include "global.h"
 
+static inline void *vram_at(u32 off)
+{
+    return (void *)(0x06004000 + off);
+}
+
 void sub_08063090(void)
 {
     if (blend_fade_step_08065598(gUnk_03006F74->unk50))
@@ -977,7 +982,60 @@ void sub_08064CA0(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_08064D3C);
+void sub_08064D3C(void)
+{
+    u32 size;
+    u16 v;
+    vu16 *bg1, *bg2, *bg3;
+    u32 zero;
+    u8 i;
+    u32 z2;
+
+    bg1 = &REG_BG1CNT;
+    v = 0x1F05;
+    *bg1 = v;
+    bg2 = &REG_BG2CNT;
+    v -= 0xFF;
+    *bg2 = v;
+    bg3 = &REG_BG3CNT;
+    v -= 0xFF;
+    *bg3 = v;
+    decompress_and_write_tilemap(gUnk_0879A634, *bg1);
+    decompress_and_write_tilemap(gUnk_0879A78C, *bg2);
+    decompress_and_write_tilemap(gUnk_0879A8BC, *bg3);
+    size = dma3_copy_or_decompress(gUnk_08799D98, gDecompressBuffer);
+    CpuCopy16(gDecompressBuffer, vram_at(0), size);
+    gUnk_03006F74->unk36 = (size >> 5) - 1;
+    zero = 0;
+    CpuFastSet(gUnk_084C21BC, vram_at(size), 0x400);
+    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    gUnk_03002C30[8].unk0 = 0x8000;
+    gUnk_03002C30[8].unk1C = 2;
+    gUnk_03002C30[8].unkA = zero;
+    gUnk_03002C30[8].unk6 = 6;
+    gUnk_03002C30[8].unk2 = 0xC;
+    gUnk_03002C30[8].unk4 = gUnk_03006F74->unk2E * 16 + 0x1C;
+    for (i = 0; i <= 1; i++) {
+        gUnk_03002C30[i + 10].unk0 = 0x8000;
+        gUnk_03002C30[i + 10].unk1C = 2;
+        gUnk_03002C30[i + 10].unkA = 0;
+        gUnk_03002C30[i + 10].unk6 = 8;
+        gUnk_03002C30[i + 10].unk2 = 0x20;
+        gUnk_03002C30[i + 10].unk4 = i * 72 + 0x14;
+    }
+    gUnk_03002C30[11].unk0 |= 0x2000;
+    z2 = 0;
+    gUnk_03002C30[7].unk0 = 0xC000;
+    gUnk_03002C30[7].unk1C = 2;
+    gUnk_03002C30[7].unkA = 10;
+    gUnk_03002C30[7].unk6 = 0x1A;
+    gUnk_03002C30[7].unk2 = 0x98;
+    gUnk_03002C30[7].unk4 = z2;
+    divide_by_10000(gUnk_030004DE, gMoney);
+    render_text_sprites_08040DB8(gUnk_030004DE, 0, 0x15, 1, 7, 0xF, 1, z2);
+    gGameSubState++;
+}
 
 void sub_08064EFC(void)
 {
