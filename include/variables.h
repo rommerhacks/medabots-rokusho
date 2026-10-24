@@ -1105,6 +1105,12 @@ extern const s8 gUnk_080AFB45[]; // game mode by gUnk_03006F74->unk5 (sub_080664
 extern const struct FuncTable13 gUnk_080AFB48; // link menu sub-states by gGameSubState (dispatch_battle_menu_and_update_counters)
 extern const u8 gUnk_0848564F[]; // 0xFF-terminated message (setup_dialogue_script_from_rom)
 extern const u8 gUnk_0879C06C[]; // graphics (clear_vram_bg)
+extern const u8 gUnk_0879FDC0[]; // BG1 tilemap (sub_0806384C)
+extern const u8 gUnk_0879FB10[]; // BG2 tilemap (sub_0806384C)
+extern const u8 gUnk_087A0050[]; // BG3 tilemap (sub_0806384C)
+extern const u8 gUnk_0879FEFC[]; // BG2 tilemap, second (sub_0806384C)
+extern const u32 gUnk_0879E618[]; // BG tiles, compressed (sub_0806384C)
+extern const u16 gUnk_0879E4D8[]; // BG palettes (sub_0806384C)
 extern const u8 gUnk_0879C260[];
 extern const u8 gUnk_0879C3A0[];
 extern const u32 gUnk_0879AC40[];

@@ -263,7 +263,127 @@ void sub_080637D0(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_0806384C);
+#define TM(cnt, i) (*(u16 *)(((((cnt) >> 8) & 0x1F) << 11) + (0x06000000 + (i) * 2)))
+
+void sub_0806384C(void)
+{
+    u8 *src;
+    u8 *dst;
+    u32 i;
+    u32 zero;
+    u32 size;
+    struct Unk_03006F74 *w;
+    struct Unk_03006F74 *w2;
+    s32 f;
+    s32 j;
+    vu16 *bg2, *bg3;
+
+    src = (u8 *)0x02023000;
+    dst = (u8 *)&gUnk_03006F74->unk230;
+    for (i = 0; i < 0x40; i++)
+        *dst++ = *src++;
+    if (sub_08074B68() != 0x18)
+        play_song(0x18);
+    zero = 0;
+    CpuFastSet(&zero, (void *)VRAM, 0x01006000);
+    reset_bg_scroll();
+    clear_battle_sprite_slot(0, 0x80);
+    REG_DISPCNT = 0x60;
+    REG_BLDCNT = 0x2FF;
+    REG_BLDY = 0x10;
+    REG_BG1CNT = 0x1E05;
+    bg2 = &REG_BG2CNT;
+    *bg2 = 0x1B06;
+    bg3 = &REG_BG3CNT;
+    *bg3 = 0x3C07;
+    decompress_and_write_tilemap(gUnk_0879FDC0, REG_BG1CNT);
+    decompress_and_write_tilemap(gUnk_0879FB10, *bg2);
+    decompress_and_write_tilemap(gUnk_087A0050, *bg3);
+    *bg2 = 0x1D06;
+    decompress_and_write_tilemap(gUnk_0879FEFC, *bg2);
+    size = dma3_copy_or_decompress(gUnk_0879E618, (void *)0x02030000);
+    CpuCopy16((void *)0x02030000, (void *)0x06004000, size);
+    lz_decompress_dispatch(gUnk_08784CB0, (void *)(size + 0x06004000));
+    gUnk_03006F74->unk36 = (size >> 5) + 4;
+    lz_decompress_dispatch(gUnk_084C3208, (void *)(size + 0x06004080));
+    CpuFastSet(gUnk_0879E4D8, (void *)PLTT, 0x50);
+    CpuFastSet(gUnk_0850DD18 + 0x30, (void *)0x050003A0, 8);
+    CpuFastSet(gUnk_0850DD18 + 0x30, (void *)0x0202F9A0, 8);
+    CpuFastSet(gUnk_084E2E98, (void *)0x05000200, 8);
+    CpuFastSet(gUnk_0850DD18 + 0x20, (void *)0x05000220, 8);
+    CpuFastSet(gUnk_0850DD18, (void *)0x05000240, 8);
+    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    w = gUnk_03006F74;
+    w->unk3A = 0x280;
+    f = w->unk7A;
+    if (f == 0)
+    {
+        u32 medal;
+        u32 t;
+        u32 buf;
+        const u8 *const *names;
+        s32 lvl;
+        u16 e;
+        u16 tt;
+        u16 *p;
+
+        medal = w->unk230.unk1;
+        sub_08062AB0(medal, w->unk230.unk8);
+        render_text_sprites_08040DB8(gUnk_03006F74->unk230.unkA, 0x20, 4, 4, 0xA, 2, f, 1);
+        j = 0;
+        t = size >> 5;
+        buf = (u32)gUnk_03000440.unk9E;
+        names = (const u8 *const *)gUnk_083B6410;
+        for (; j <= 9; j++)
+            *(u8 *)(j + buf) = names[medal][j];
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x10, 5, 8, 0xA, 1, 1, 1);
+        w2 = gUnk_03006F74;
+        lvl = w2->unk230.unk5;
+        if (lvl == 100)
+        {
+            TM(REG_BG1CNT, 0x10D) = (w2->unk36 + 0x14) | 0x7000;
+            TM(REG_BG1CNT, 0x12D) = (gUnk_03006F74->unk36 + 0x15) | 0x7000;
+            TM(REG_BG1CNT, 0x10E) = (gUnk_03006F74->unk36 + 0x16) | 0x7000;
+            TM(REG_BG1CNT, 0x12E) = (gUnk_03006F74->unk36 + 0x17) | 0x7000;
+        }
+        else
+        {
+            TM(REG_BG1CNT, 0x10D) = (w2->unk36 + lvl / 10 * 2) | 0x7000;
+            TM(REG_BG1CNT, 0x12D) = (gUnk_03006F74->unk36 + lvl / 10 * 2 + 1) | 0x7000;
+            TM(REG_BG1CNT, 0x10E) = (gUnk_03006F74->unk36 + lvl % 10 * 2) | 0x7000;
+            TM(REG_BG1CNT, 0x12E) = (gUnk_03006F74->unk36 + lvl % 10 * 2 + 1) | 0x7000;
+        }
+        CpuSet(gUnk_084C21BC + medal * 0x80, (void *)(size + 0x06004000), 0x40);
+        tt = t;
+        e = tt | 0x6000;
+        p = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + 8 * 32;
+        *p = e;
+        p++;
+        *p = e + 1;
+        p += 31;
+        *p = e + 2;
+        p++;
+        *p = e + 3;
+    }
+    else
+    {
+        w->unk40[0] = TM(*bg2, 0x10C);
+        w->unk40[1] = TM(*bg2, 0x10D);
+        w->unk40[2] = TM(*bg2, 0x12C);
+        w->unk40[3] = TM(*bg2, 0x12D);
+        TM(*bg2, 0x10C) = TM(*bg2, 0x10B);
+        TM(*bg2, 0x10D) = TM(*bg2, 0x10B);
+        TM(*bg2, 0x12C) = TM(*bg2, 0x12B);
+        TM(*bg2, 0x12D) = TM(*bg2, 0x12B);
+    }
+    animate_battle_scroll_tiles();
+    init_blend_effect(gUnk_03006F74->unk50, 0x10, 0, -1, 0xC0);
+    REG_DISPCNT |= 0x200;
+    REG_DISPCNT |= 0x400;
+    REG_DISPCNT |= 0x800;
+    REG_DISPCNT |= 0x1000;
+    gGameSubState++;
+}
 
 void sub_08063D44(void)
 {
@@ -370,7 +490,78 @@ void sub_08063F74(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08063090", sub_08063FB4);
+#define BG1(o) (*(u16 *)(VRAM + (o) + (((REG_BG1CNT >> 8) & 0x1F) << 11)))
+#define BG2(o) (*(u16 *)(VRAM + (o) + (((REG_BG2CNT >> 8) & 0x1F) << 11)))
+
+void sub_08063FB4(void)
+{
+    struct Unk_03006F74 *s;
+    s16 t;
+    u8 lvl;
+    s32 i;
+
+    animate_battle_scroll_tiles();
+    s = gUnk_03006F74;
+    t = ++s->unk3C;
+    if (t > 0xF)
+    {
+        gGameSubState++;
+        if (s->unk7A == 0)
+        {
+            gUnk_03002C30[0].unk0 &= 0xBFFF;
+            return;
+        }
+        gUnk_03002C30[0].unk0 |= 0x4000;
+        lvl = s->unk230.unk5;
+        render_text_sprites_08040DB8(s->unk230.unkA, 0x20, 4, 4, 10, 2, 0, 1);
+        for (i = 0; i <= 9; i++)
+            gUnk_03000440.unk9E[i] = ((const u8 *)gUnk_083B6410[gUnk_03006F74->unk230.unk1])[i];
+        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x10, 5, 8, 10, 1, 1, 1);
+        BG2(0x218) = gUnk_03006F74->unk40[0];
+        BG2(0x21A) = gUnk_03006F74->unk40[1];
+        BG2(0x258) = gUnk_03006F74->unk40[2];
+        BG2(0x25A) = gUnk_03006F74->unk40[3];
+        if (lvl == 100)
+        {
+            BG1(0x21A) = (gUnk_03006F74->unk36 + 0x14) | 0x7000;
+            BG1(0x25A) = (gUnk_03006F74->unk36 + 0x15) | 0x7000;
+            BG1(0x21C) = (gUnk_03006F74->unk36 + 0x16) | 0x7000;
+            BG1(0x25C) = (gUnk_03006F74->unk36 + 0x17) | 0x7000;
+        }
+        else
+        {
+            BG1(0x21A) = (gUnk_03006F74->unk36 + (u8)(lvl / 10) * 2) | 0x7000;
+            BG1(0x25A) = (gUnk_03006F74->unk36 + (u8)(lvl / 10) * 2 + 1) | 0x7000;
+            BG1(0x21C) = (gUnk_03006F74->unk36 + (u8)(lvl % 10) * 2) | 0x7000;
+            BG1(0x25C) = (gUnk_03006F74->unk36 + (u8)(lvl % 10) * 2 + 1) | 0x7000;
+        }
+        CpuFastSet(gUnk_084C21BC + gUnk_03006F74->unk230.unk1 * 0x80, (void *)(VRAM + 0x3F80 + gUnk_03006F74->unk36 * 32), 0x20);
+        {
+            u16 v;
+            u16 *dst;
+            v = gUnk_03006F74->unk36 - 4;
+            v |= 0x6000;
+            dst = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + 8 * 32;
+            *dst = v;
+            dst++;
+            *dst = v + 1;
+            dst += 31;
+            *dst = v + 2;
+            dst++;
+            *dst = v + 3;
+        }
+        return;
+    }
+    if (t <= 7)
+        gUnk_03002C30[0].unk8 = 0x40 - (s16)s->unk3C * 8;
+    else
+        gUnk_03002C30[0].unk8 = 1;
+    if ((s16)gUnk_03006F74->unk3C > 1)
+    {
+        gUnk_03002C30[0].unk9 = (s16)gUnk_03006F74->unk3C * 4 + 0x38;
+        gUnk_03002C30[0].unk4 = 0x38 - ((s16)gUnk_03006F74->unk3C - 2) * 8;
+    }
+}
 
 void sub_080642E4(void)
 {
