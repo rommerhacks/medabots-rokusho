@@ -52,7 +52,24 @@ void sub_0805AC4C(u16 color, s32 t)
     gVBlankOnceCallback = sub_0805AB40;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", unpack_item_inventory_to_buffer);
+void unpack_item_inventory_to_buffer(void)
+{
+    u16 n = 0;
+    s16 i;
+    for (i = 0; i < 64; i++)
+    {
+        u8 f = gItemInventory[i][0] & 0x80;
+        if (f)
+        {
+            ((struct ItemListEntry *)0x02040000)[i].id = gItemInventory[i][0] & 0x7F;
+            ((struct ItemListEntry *)0x02040000)[i].count = gItemInventory[0][i * 2 + 1];
+            n++;
+        }
+        else
+            ((struct ItemListEntry *)0x02040000)[i].count = f;
+    }
+    gUnk_03006F74->unk10 = n;
+}
 
 void update_battle_medapart_icons(void)
 {
@@ -116,7 +133,38 @@ void item_menu_set_cursor_pos(struct Unk_03002C30 *sprite)
     sprite->unk4 = (u8)(gUnk_03006F74->unkC % 5) * 16 + 0x1C;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", shop_build_sell_list);
+void shop_build_sell_list(void)
+{
+    u8 kind = gUnk_03006F74->unk19;
+    s32 i, row;
+    u8 n;
+    u32 *price;
+    u8 *pd;
+    {
+        u8 zero = 0;
+        for (i = 0x77; i >= 0; i--)
+            ((struct ShopSellEntry *)0x02040000)[i].count = zero;
+    }
+    row = kind * 240;
+    i = 0;
+    n = 0;
+    pd = (u8 *)0x0300052E; // &gUnk_03000440.unkEE (the symbol form does not match)
+    price = (u32 *)0x02040004; // &((struct ShopSellEntry *)0x02040000)->price
+    for (; i <= 0x77; i++)
+    {
+        if (gMedapartInventory[row + i * 2] > gMedapartInventory[row + i * 2 + 1])
+        {
+            struct ShopSellEntry *e = &((struct ShopSellEntry *)0x02040000)[n];
+            e->id = i;
+            e->count = gMedapartInventory[row + i * 2] - gMedapartInventory[row + i * 2 + 1];
+            load_part_data(i, kind, pd);
+            e->unk3 = pd[3];
+            price[n * 2] = pd[0xB] * 100;
+            n++;
+        }
+    }
+    gUnk_03006F74->unk20 = n;
+}
 
 void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot)
 {
@@ -326,7 +374,20 @@ void sub_0805B9EC(u16 keys)
     *prev = keys;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BA20);
+void sub_0805BA20(void)
+{
+    if (gUnk_03005030 != 0)
+    {
+        if (gUnk_03000B90)
+            sub_0805B9EC(gUnk_03005010.unk8[0][0]);
+        else
+        {
+            register struct Unk_03005010 *p asm("r0") = &gUnk_03005010;
+            p->unk4 = gHeldKeys;
+            sub_0805B9EC(p->unk8[0][0]);
+        }
+    }
+}
 
 u16 sub_0805BA68(s16 x1, s16 y1, s16 x2, s16 y2)
 {
@@ -366,7 +427,32 @@ s16 sub_0805BB10(s16 step)
     return n + 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BB64);
+void sub_0805BB64(u8 sel, u8 count)
+{
+    s32 i, j, x, y;
+    s32 mask, lo;
+    for (i = 0, mask = 0xFFF, lo = 0x6000; i <= 2; i++)
+    {
+        x = 6;
+        y = i * 3 + 10;
+        for (j = 0; j <= 19; j++)
+        {
+            u16 *p = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + x + y * 32;
+            u16 v = *p & mask;
+            u16 c;
+            if (sel == i && j < count)
+                c = 0x7000;
+            else
+                c = lo;
+            *p = v | c;
+            if (j <= 1)
+                y++;
+            else
+                x++;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BBF8);
 
 void sub_0805BC6C(void)
