@@ -1236,4 +1236,911 @@ void update_3d_entity_projections(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", battle_sequence_dispatch);
+#define S (*(struct SeqState *)&gUnk_03005350)
+#define E ((struct SeqEntity *)gUnk_03006D30)
+
+// Battle 3-D sequence script interpreter (guess). Runs the script picked by unk1D4 & 0x3F until an opcode
+// returns control: 0 (script end), 1, 2 (wait a frame) or 4 (finished).
+u32 battle_sequence_dispatch(void)
+{
+    s32 *script;
+    s32 buf[16];
+    u32 zero;
+    s32 x, y, attr;
+    s32 i;
+    s32 done;
+    s32 cnt;
+    s32 tmp;
+    struct AnimInterp *anim;
+    struct SeqTrack *trk;
+    struct SeqOsc *osc;
+    struct SeqRamp *ramp;
+    s32 j, k;
+    s32 n;
+    s32 flag;
+    s32 part;
+    s32 v, a, b;
+    s32 d;
+    const s32 *model;
+    u16 color;
+    s32 r, g, bl;
+
+    S.unkF0 = 1;
+    S.unkF8 = S.unk1D4 & 0x3F;
+    script = gUnk_083D5D84[S.unkF8];
+    while (1)
+    {
+        switch (S.unkF4 = script[S.unkFC])
+        {
+        case 0:  // guess: end of script (return 0); 4 = finish (reset, rebuild the field), 37 = nop
+        case 4:
+        case 37:
+            break;
+        case 1:  // guess: init: camera distance/scale, yaw/pitch, reset entity scales
+            S.unkFC++;
+            S.unk9C = script[S.unkFC++];
+            S.unkA0 = script[S.unkFC++];
+            S.unk90 = script[S.unkFC++];
+            S.unk94 = script[S.unkFC++];
+            S.unk214 = 0x80;
+            S.unk218 = 0;
+            S.unk21C = 0x400;
+            S.unk220 = 0x800;
+            sub_08053418();
+            for (i = 0; i < 16; i++)
+            {
+                E[i].unk160.value = 1.0f;
+                E[i].unk178.value = 1.0f;
+                E[i].unk190.value = 1.0f;
+            }
+            break;
+        case 2:  // guess: run one frame: fire entity triggers, step all tracks, fade; advance when an entity finished
+            done = 0;
+            flag = 0;
+            cnt = 0;
+            for (i = 0; i < 16; i++)
+            {
+                if (E[i].unk0 != 0 && E[i].unk218 != 0)
+                {
+                    for (k = 0; k < 16; k++)
+                    {
+                        if (E[i].unk29C[k] != 0)
+                        {
+                            cnt++;
+                            if (E[i].unk4 >= E[i].unk21C[k])
+                            {
+                                S.unk184 = E[i].unk25C[k];
+                                E[S.unk184].unk10.unk0 = E[i].unk10.unk0;
+                                E[S.unk184].unk58.unk0 = E[i].unk58.unk0;
+                                E[S.unk184].unkA0.unk0 = E[i].unkA0.unk0;
+                                S.unk144[S.unk140] = script;
+                                script = E[i].unk29C[k];
+                                S.unk100[S.unk140] = S.unkFC;
+                                S.unk140++;
+                                S.unkFC = 0;
+                                S.unkF4 = script[0];
+                                E[i].unk29C[k] = 0;
+                                flag = 1;
+                            }
+                            if (flag)
+                                break;
+                        }
+                        if (flag)
+                            break;
+                    }
+                    if (cnt == 0)
+                        E[i].unk218 = 0;
+                }
+            }
+            if (flag)
+                break;
+            for (i = 0; i < 16; i++)
+            {
+                if (E[i].unk0 == 0)
+                    continue;
+                if (E[i].unk8 <= E[i].unk4)
+                {
+                    for (k = 0; k < 3; k++)
+                    {
+                        if (k == 0)
+                            anim = &E[i].unk10;
+                        else if (k == 1)
+                            anim = &E[i].unk58;
+                        else if (k == 2)
+                            anim = &E[i].unkA0;
+                        animation_interpolation_step(anim);
+                    }
+                    for (k = 0; k < 2; k++)
+                    {
+                        if (k == 0)
+                            trk = &E[i].unkE8;
+                        else if (k == 1)
+                            trk = &E[i].unk100;
+                        if (trk->active)
+                        {
+                            if (trk->start <= trk->timer)
+                            {
+                                trk->value = trk->value + trk->step;
+                                trk->timer++;
+                                if (trk->end != 0xFFFF && trk->timer >= trk->end)
+                                    trk->active = 0;
+                            }
+                            else
+                                trk->timer++;
+                        }
+                    }
+                    for (j = 0; j < 2; j++)
+                    {
+                        if (j == 0)
+                            osc = &E[i].unk118;
+                        else if (j == 1)
+                            osc = &E[i].unk13C;
+                        if (osc->type != 0)
+                        {
+                            if (osc->start <= osc->timer)
+                            {
+                                if (osc->type == 1)
+                                {
+                                    osc->value = osc->value + osc->amp;
+                                    for (k = 0; k < 4; k++)
+                                    {
+                                        if (j == 0)
+                                            gUnk_03006D40[i * 4 + k].scaleX = osc->value;
+                                        else if (j == 1)
+                                            gUnk_03006D40[i * 4 + k].scaleY = osc->value;
+                                    }
+                                }
+                                else if (osc->type == 2)
+                                {
+                                    osc->value = osc->amp * gSineTable[(s32)osc->angle & 0xFF];
+                                    for (k = 0; k < 4; k++)
+                                    {
+                                        if (j == 0)
+                                            gUnk_03006D40[i * 4 + k].scaleX = osc->value;
+                                        else if (j == 1)
+                                            gUnk_03006D40[i * 4 + k].scaleY = osc->value;
+                                    }
+                                    osc->angle = osc->angle + osc->angleStep;
+                                }
+                                else if (osc->type == 3)
+                                {
+                                    osc->value = osc->amp * gSineTable[((s32)osc->angle & 0xFF) + 0x40];
+                                    for (k = 0; k < 4; k++)
+                                    {
+                                        if (j == 0)
+                                            gUnk_03006D40[i * 4 + k].scaleX = osc->value;
+                                        else if (j == 1)
+                                            gUnk_03006D40[i * 4 + k].scaleY = osc->value;
+                                    }
+                                    osc->angle = osc->angle + osc->angleStep;
+                                }
+                                osc->timer++;
+                                if (osc->end != 0xFFFF && osc->timer >= osc->end)
+                                    osc->type = 4;
+                            }
+                            else
+                                osc->timer++;
+                        }
+                    }
+                    for (k = 0; k < 3; k++)
+                    {
+                        if (k == 0)
+                            ramp = &E[i].unk160;
+                        else if (k == 1)
+                            ramp = &E[i].unk178;
+                        else if (k == 2)
+                            ramp = &E[i].unk190;
+                        if (ramp->active)
+                        {
+                            if (ramp->start <= ramp->timer)
+                            {
+                                ramp->value = ramp->value + ramp->step;
+                                ramp->timer++;
+                                if (ramp->end != 0xFFFF && ramp->timer >= ramp->end)
+                                    ramp->active = 0;
+                            }
+                            else
+                                ramp->timer++;
+                        }
+                    }
+                    if (E[i].unk1A8.active)
+                    {
+                        if (E[i].unk1A8.start <= E[i].unk1A8.timer)
+                        {
+                            E[i].unk1A8.value = E[i].unk1A8.value + E[i].unk1A8.step;
+                            for (k = 0; k < 4; k++)
+                                gUnk_03006D40[i * 4 + k].angle = (s32)E[i].unk1A8.value & 0xFF;
+                            E[i].unk1A8.timer++;
+                            if (E[i].unk1A8.end != 0xFFFF && E[i].unk1A8.timer >= E[i].unk1A8.end)
+                                E[i].unk1A8.active = 0;
+                        }
+                        else
+                            E[i].unk1A8.timer++;
+                    }
+                    if (E[i].unk208)
+                    {
+                        for (k = 0; k < E[i].unk210; k++)
+                            advance_sprite_animation_frame(E[i].unk2DC[k]);
+                    }
+                    if (E[i].unk1C0.active)
+                    {
+                        if (E[i].unk1C0.start <= E[i].unk1C0.timer)
+                        {
+                            for (k = 0; k < E[i].unk210; k++)
+                                gUnk_03002C30[E[i].unk2DC[k]].unk0 |= 0x4000;
+                            E[i].unk1C0.timer++;
+                            if (E[i].unk1C0.end != 0xFFFF && E[i].unk1C0.timer >= E[i].unk1C0.end)
+                            {
+                                for (k = 0; k < E[i].unk210; k++)
+                                    clear_battle_sprite_entry(E[i].unk2DC[k]);
+                                E[i].unk1C0.active = 0;
+                                E[i].unk208 = 0;
+                            }
+                        }
+                        else
+                            E[i].unk1C0.timer++;
+                    }
+                    if (E[i].unk1D0.active)
+                    {
+                        if (E[i].unk1D0.start <= E[i].unk1D0.timer)
+                        {
+                            if (!(E[i].unk1D0.timer & 1))
+                            {
+                                for (k = 0; k < E[i].unk210; k++)
+                                    gUnk_03002C30[E[i].unk2DC[k]].unk0 &= ~0x4000;
+                            }
+                            else
+                            {
+                                for (k = 0; k < E[i].unk210; k++)
+                                    gUnk_03002C30[E[i].unk2DC[k]].unk0 |= 0x4000;
+                            }
+                            E[i].unk1D0.timer++;
+                            if (E[i].unk1D0.end != 0xFFFF && E[i].unk1D0.timer >= E[i].unk1D0.end)
+                                E[i].unk1D0.active = 0;
+                        }
+                        else
+                            E[i].unk1D0.timer++;
+                    }
+                    if (E[i].unk2EC.active)
+                    {
+                        if (E[i].unk2EC.start <= E[i].unk2EC.timer)
+                        {
+                            sub_08047BA8(E[i].unk2FC);
+                            E[i].unk2EC.timer++;
+                            if (E[i].unk2EC.end != 0xFFFF && E[i].unk2EC.timer >= E[i].unk2EC.end)
+                                E[i].unk2EC.active = 0;
+                        }
+                        else
+                            E[i].unk2EC.timer++;
+                    }
+                    E[i].unk4++;
+                    if (E[i].unkC != 0xFFFF && E[i].unk4 >= E[i].unkC)
+                        done++;
+                }
+                else
+                    E[i].unk4++;
+            }
+            update_3d_entity_projections();
+            for (i = 0; i < 16; i++)
+            {
+                if (E[i].unk0 == 2)
+                    done++;
+            }
+            for (i = 0; i < 16; i++)
+            {
+                if (E[i].unk0 != 0 && (E[i].unk118.type | E[i].unk13C.type) == 0)
+                {
+                    for (k = 0; k < 4; k++)
+                    {
+                        d = gUnk_03002C30[E[i].unk2DC[k]].unk14_8;
+                        if (d > S.unk9C)
+                        {
+                            gUnk_03006D40[i * 4 + k].scaleX = 0x101 - d / S.unk9C;
+                            gUnk_03006D40[i * 4 + k].scaleY = 0x101 - gUnk_03002C30[E[i].unk2DC[k]].unk14_8 / S.unk9C;
+                        }
+                        else
+                        {
+                            gUnk_03006D40[i * 4 + k].scaleX = S.unk9C / d + 0xFF;
+                            gUnk_03006D40[i * 4 + k].scaleY = S.unk9C / gUnk_03002C30[E[i].unk2DC[k]].unk14_8 + 0xFF;
+                        }
+                    }
+                }
+            }
+            update_battle_sprite_status_effects();
+            if (S.unk1F4 != 0)
+            {
+                if (S.unk200 <= S.unk1FC)
+                {
+                    S.unk1FC++;
+                    switch (S.unk1F4)
+                    {
+                    case 1:
+                        if (run_blend_fade_transition(0x7FFF))
+                        {
+                            S.unk1F4 = 0;
+                            done++;
+                        }
+                        break;
+                    case 2:
+                        if (run_blend_fade_transition(0x7FFF))
+                        {
+                            S.unk1F4 = 0;
+                            done++;
+                        }
+                        break;
+                    case 3:
+                        blend_effect_update();
+                        sub_08049E74(S.unk210 << 10 | S.unk20F << 5 | S.unk20E, S.unk208 * S.unk1F8, S.unk20A);
+                        sub_08049E88(S.unk210 << 10 | S.unk20F << 5 | S.unk20E, S.unk208 * S.unk1F8, S.unk20C);
+                        if (S.unk208 < 0x20 / S.unk1F8)
+                            S.unk208++;
+                        else
+                        {
+                            gVBlankCallback = nullsub_08000840;
+                            S.unk1F4 = 0;
+                            done++;
+                        }
+                        break;
+                    case 4:
+                        blend_effect_update();
+                        r = S.unk208 * S.unk1F8 - 1;
+                        g = r;
+                        bl = r;
+                        if (r < S.unk20E)
+                            r = S.unk20E;
+                        if (g < S.unk20F)
+                            g = S.unk20F;
+                        if (bl < S.unk210)
+                            bl = S.unk210;
+                        color = bl << 10 | g << 5 | r;
+                        sub_08049E74(color, S.unk208 * S.unk1F8, S.unk20A);
+                        sub_08049E88(color, S.unk208 * S.unk1F8, S.unk20C);
+                        if (S.unk208 != 0)
+                            S.unk208--;
+                        else
+                        {
+                            gVBlankCallback = nullsub_08000840;
+                            S.unk1F4 = 0;
+                            done++;
+                        }
+                        break;
+                    }
+                    if (S.unk204 != 0xFFFF && S.unk1FC >= S.unk204)
+                    {
+                        gVBlankCallback = nullsub_08000840;
+                        S.unk1F4 = 0;
+                        done++;
+                    }
+                }
+                else
+                    S.unk1FC++;
+            }
+            if (done == 0)
+                break;
+            if (S.unk1F4 != 0)
+                break;
+            S.unkFC++;
+            S.unkF4 = script[S.unkFC];
+            break;
+        case 3:  // guess: set current entity state/timer/start/end
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk0 = script[S.unkFC++];
+            E[n].unk4 = script[S.unkFC++];
+            E[n].unk8 = script[S.unkFC++];
+            E[n].unkC = script[S.unkFC++];
+            break;
+        case 5:  // guess: skip one argument
+            S.unkFC++;
+            S.unkFC++;
+            break;
+        case 6:  // guess: set x (absolute or relative to the parent entity)
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            if (script[S.unkFC++] == 0)
+                E[n].unk10.unk0 = script[S.unkFC++];
+            else
+                E[n].unk10.unk0 = script[S.unkFC++] + E[E[n].unk214].unk10.unk0;
+            break;
+        case 7:  // guess: set y (absolute or relative to the parent entity)
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            if (script[S.unkFC++] == 0)
+                E[n].unk58.unk0 = script[S.unkFC++];
+            else
+                E[n].unk58.unk0 = script[S.unkFC++] + E[E[n].unk214].unk58.unk0;
+            break;
+        case 8:  // guess: set z (absolute or relative to the parent entity)
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            if (script[S.unkFC++] == 0)
+                E[n].unkA0.unk0 = script[S.unkFC++];
+            else
+                E[n].unkA0.unk0 = script[S.unkFC++] + E[E[n].unk214].unkA0.unk0;
+            break;
+        case 9:  // guess: set yaw
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unkE8.value = script[S.unkFC++];
+            break;
+        case 10:  // guess: set pitch
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk100.value = script[S.unkFC++];
+            break;
+        case 11:  // guess: set affine x-scale oscillator type/value
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk118.type = script[S.unkFC++];
+            E[n].unk118.value = script[S.unkFC++];
+            if (E[n].unk118.type == 0)
+                break;
+            for (k = 0; k < 4; k++)
+                gUnk_03006D40[n * 4 + k].scaleX = E[n].unk118.value;
+            break;
+        case 12:  // guess: set affine y-scale oscillator type/value
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk13C.type = script[S.unkFC++];
+            E[n].unk13C.value = script[S.unkFC++];
+            if (E[n].unk13C.type == 0)
+                break;
+            for (k = 0; k < 4; k++)
+                gUnk_03006D40[n * 4 + k].scaleY = E[n].unk13C.value;
+            break;
+        case 13:  // guess: set 3-D scale x
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk160.value = script[S.unkFC++];
+            break;
+        case 14:  // guess: set 3-D scale y
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk178.value = script[S.unkFC++];
+            break;
+        case 15:  // guess: set 3-D scale z
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk190.value = script[S.unkFC++];
+            break;
+        case 16:  // guess: set up x/y/z interpolation (16 words)
+        case 17:
+        case 18:
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            if (S.unkF4 == 0x10)
+                anim = &E[n].unk10;
+            else if (S.unkF4 == 0x11)
+                anim = &E[n].unk58;
+            else if (S.unkF4 == 0x12)
+                anim = &E[n].unkA0;
+            memcpy_u8(&script[S.unkFC], buf, 0x40);
+            S.unkFC += 0x10;
+            sub_0805689C(anim, buf);
+            break;
+        case 23:  // guess: 3-D scale x ramp
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk160.active = script[S.unkFC++];
+            E[n].unk160.step = script[S.unkFC++] / 10.0f;
+            E[n].unk160.timer = script[S.unkFC++];
+            E[n].unk160.start = script[S.unkFC++];
+            E[n].unk160.end = script[S.unkFC++];
+            break;
+        case 24:  // guess: 3-D scale y ramp
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk178.active = script[S.unkFC++];
+            E[n].unk178.step = script[S.unkFC++] / 10.0f;
+            E[n].unk178.timer = script[S.unkFC++];
+            E[n].unk178.start = script[S.unkFC++];
+            E[n].unk178.end = script[S.unkFC++];
+            break;
+        case 25:  // guess: 3-D scale z ramp
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk190.active = script[S.unkFC++];
+            E[n].unk190.step = script[S.unkFC++] / 10.0f;
+            E[n].unk190.timer = script[S.unkFC++];
+            E[n].unk190.start = script[S.unkFC++];
+            E[n].unk190.end = script[S.unkFC++];
+            break;
+        case 19:  // guess: yaw track
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unkE8.active = script[S.unkFC++];
+            E[n].unkE8.step = script[S.unkFC++] * 0.125f;
+            E[n].unkE8.timer = script[S.unkFC++];
+            E[n].unkE8.start = script[S.unkFC++];
+            E[n].unkE8.end = script[S.unkFC++];
+            break;
+        case 20:  // guess: pitch track
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk100.active = script[S.unkFC++];
+            E[n].unk100.step = script[S.unkFC++] * 0.125f;
+            E[n].unk100.timer = script[S.unkFC++];
+            E[n].unk100.start = script[S.unkFC++];
+            E[n].unk100.end = script[S.unkFC++];
+            break;
+        case 21:  // guess: affine x-scale oscillator
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk118.type = script[S.unkFC++];
+            E[n].unk118.amp = script[S.unkFC++] * 0.125f;
+            E[n].unk118.angle = script[S.unkFC++];
+            E[n].unk118.angleStep = script[S.unkFC++];
+            E[n].unk118.timer = script[S.unkFC++];
+            E[n].unk118.start = script[S.unkFC++];
+            E[n].unk118.end = script[S.unkFC++];
+            break;
+        case 22:  // guess: affine y-scale oscillator
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk13C.type = script[S.unkFC++];
+            E[n].unk13C.amp = script[S.unkFC++] * 0.125f;
+            E[n].unk13C.angle = script[S.unkFC++];
+            E[n].unk13C.angleStep = script[S.unkFC++];
+            E[n].unk13C.timer = script[S.unkFC++];
+            E[n].unk13C.start = script[S.unkFC++];
+            E[n].unk13C.end = script[S.unkFC++];
+            break;
+        case 26:  // guess: affine angle ramp
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk1A8.active = script[S.unkFC++];
+            E[n].unk1A8.step = script[S.unkFC++] * 0.125f;
+            E[n].unk1A8.timer = script[S.unkFC++];
+            E[n].unk1A8.start = script[S.unkFC++];
+            E[n].unk1A8.end = script[S.unkFC++];
+            break;
+        case 27:  // guess: create a sprite part (gfx + palette from the script set)
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            part = script[S.unkFC++];
+            x = script[S.unkFC++];
+            y = script[S.unkFC++];
+            attr = script[S.unkFC++];
+            model = gUnk_083D2DB0[S.unkF8][n];
+            E[n].unk210 = *model;
+            if (part >= *model)
+                break;
+            E[n].unk2DC[part] = n * 4 + part;
+            E[n].unk2E0[part] = 0;
+            E[n].unk2E8[part] = 0;
+            LZ77UnCompVram(gUnk_0847ECC0[S.unkF8], (void *)0x06016C00);
+            if (!(S.unk1D4 & 0x80))
+                DmaSet(3, gUnk_0847EC40[S.unkF8], 0x050003A0, 0x84000008)
+            else
+                DmaSet(3, gUnk_0847EC40[S.unkF8], 0x0202F9A0, 0x84000008)
+            init_battle_sprite_entry_08048818(E[n].unk2DC[part], x, (u16)y, 0xD, 1);
+            gUnk_03002C30[E[n].unk2DC[part]].unk0 |= attr;
+            gUnk_03002C30[E[n].unk2DC[part]].filler1D[0] = n * 4 + part;
+            break;
+        case 134:  // guess: set a sprite part (slot, offsets, attributes)
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            part = script[S.unkFC++];
+            E[n].unk2DC[part] = script[S.unkFC++];
+            E[n].unk2E0[part] = script[S.unkFC++];
+            E[n].unk2E8[part] = script[S.unkFC++];
+            gUnk_03002C30[E[n].unk2DC[part]].unk0 = script[S.unkFC++];
+            gUnk_03002C30[E[n].unk2DC[part]].filler1D[0] = n * 4 + part;
+            break;
+        case 28:  // guess: hide timer, then free the sprites
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk1C0.active = script[S.unkFC++];
+            E[n].unk1C0.timer = script[S.unkFC++];
+            E[n].unk1C0.start = script[S.unkFC++];
+            E[n].unk1C0.end = script[S.unkFC++];
+            break;
+        case 29:  // guess: animate sprites flag + palette
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk208 = script[S.unkFC++];
+            E[n].unk204 = script[S.unkFC++];
+            for (k = 0; k < 4; k++)
+                sub_080493D4(E[n].unk2DC[k], E[n].unk204);
+            break;
+        case 30:  // guess: blink timer
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk1D0.active = script[S.unkFC++];
+            E[n].unk1D0.timer = script[S.unkFC++];
+            E[n].unk1D0.start = script[S.unkFC++];
+            E[n].unk1D0.end = script[S.unkFC++];
+            break;
+        case 31:  // guess: x range check
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk1E0 = script[S.unkFC++];
+            E[n].unk1E4 = script[S.unkFC++];
+            E[n].unk1E8 = script[S.unkFC++];
+            break;
+        case 32:  // guess: y range check
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk1EC = script[S.unkFC++];
+            E[n].unk1F0 = script[S.unkFC++];
+            E[n].unk1F4 = script[S.unkFC++];
+            break;
+        case 33:  // guess: depth range check
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk1F8 = script[S.unkFC++];
+            E[n].unk1FC = script[S.unkFC++];
+            E[n].unk200 = script[S.unkFC++];
+            break;
+        case 34:  // guess: call: select entity, run a sub-script
+            S.unkFC++;
+            S.unk188[S.unk140] = script[S.unkFC++];
+            S.unk184 = S.unk188[S.unk140];
+            S.unk144[S.unk140] = script;
+            script = (s32 *)script[S.unkFC++];
+            S.unk100[S.unk140] = S.unkFC;
+            S.unk140++;
+            S.unkFC = 0;
+            break;
+        case 35:  // guess: return from a sub-script
+            S.unkFC++;
+            S.unk140--;
+            S.unkFC = S.unk100[S.unk140];
+            script = S.unk144[S.unk140];
+            S.unk184 = S.unk188[S.unk140];
+            break;
+        case 36:  // guess: add a trigger: run a sub-script on another entity at a given time
+        {
+            s32 old;
+
+            S.unkFC++;
+            S.unk188[S.unk140] = script[S.unkFC++];
+            k = S.unk188[S.unk140];
+            E[S.unk184].unk25C[k] = k;
+            v = script[S.unkFC++];
+            E[S.unk184].unk218 = v & 0xFF;
+            E[S.unk184].unk21C[k] = script[S.unkFC++];
+            E[S.unk184].unk29C[k] = (s32 *)script[S.unkFC++];
+            E[k].unk214 = S.unk184;
+            if ((v & 0xFF00) != 0x100)
+                break;
+            a = script[S.unkFC++];
+            b = script[S.unkFC++];
+            if (a != 1)
+                break;
+            old = E[S.unk184].unk21C[k];
+            if (b == 0)
+                tmp = E[S.unk184].unkA0.unk24;
+            E[S.unk184].unk21C[k] = tmp - old;
+            break;
+        }
+        case 128:  // guess: fade from white (with OBJ)
+            S.unkFC++;
+            S.unk1FC = script[S.unkFC++];
+            S.unk200 = script[S.unkFC++];
+            S.unk204 = script[S.unkFC++];
+            setup_palette_fade_to_color_with_obj(0x7FFF, 0.0f, 32.0f, 8.0f);
+            S.unk1F4 = 1;
+            break;
+        case 129:  // guess: fade to white
+            S.unkFC++;
+            S.unk1FC = script[S.unkFC++];
+            S.unk200 = script[S.unkFC++];
+            S.unk204 = script[S.unkFC++];
+            setup_palette_fade_to_color(0x7FFF, 32.0f, 0.0f, 8.0f);
+            S.unk1F4 = 2;
+            break;
+        case 130:  // guess: palette blend in
+            S.unkFC++;
+            S.unk208 = script[S.unkFC++];
+            S.unk20A = script[S.unkFC++];
+            S.unk20C = script[S.unkFC++];
+            S.unk20E = script[S.unkFC++];
+            S.unk20F = script[S.unkFC++];
+            S.unk210 = script[S.unkFC++];
+            S.unk1F8 = script[S.unkFC++];
+            S.unk1FC = script[S.unkFC++];
+            S.unk200 = script[S.unkFC++];
+            S.unk204 = script[S.unkFC++];
+            S.unk1F4 = 3;
+            sub_08049CC0();
+            setup_blend_effect(0x40, 0x2F00, 6, 8, 8, 8, 0xD, 0xB, 0);
+            break;
+        case 131:  // guess: palette blend out
+            S.unkFC++;
+            S.unk208 = script[S.unkFC++];
+            S.unk20A = script[S.unkFC++];
+            S.unk20C = script[S.unkFC++];
+            S.unk20E = script[S.unkFC++];
+            S.unk20F = script[S.unkFC++];
+            S.unk210 = script[S.unkFC++];
+            S.unk1F8 = script[S.unkFC++];
+            S.unk1FC = script[S.unkFC++];
+            S.unk200 = script[S.unkFC++];
+            S.unk204 = script[S.unkFC++];
+            S.unk1F4 = 4;
+            if (S.unk208 != 0)
+            {
+                if (S.unk208 == 0x10)
+                {
+                    sub_08049CB0(0x7FFF, 0x20);
+                    gUnk_03006F40.unk24 = 32.0f;
+                    gUnk_03006F40.unk2C = 0.0f;
+                    setup_blend_effect(0x40, 0x2F00, 5, 8, 8, 8, 0xE, 0xC, 0);
+                }
+                else if (S.unk208 == 8)
+                    setup_blend_effect(0x40, 0x2F00, 6, 8, 8, 8, 0xC, 0xA, 0);
+            }
+            else
+                setup_blend_effect(0x40, 0x2F00, 4, 8, 8, 8, 0x10, 0x10, 0);
+            break;
+        case 132:  // guess: clear the sprites and reload the field
+            S.unkFC++;
+            save_script_sprites();
+            sub_080496C8((u8 *)gUnk_03002C30, 0x2000);
+            sub_080496C8((u8 *)gUnk_030055A0, 0x200);
+            zero = 0;
+            DmaSet(3, &zero, OAM, 0x85000100);
+            restore_script_sprites();
+            if (S.unkF8 == 0x12)
+            {
+                if (gUnk_03006D38.unk5 <= 8)
+                    S.unk1E0 = gUnk_083D2AAB[gUnk_03006D38.unk5];
+                else
+                    S.unk1E0 = 0;
+                S.unk1D8 = gUnk_083D2AB4[gUnk_03006D38.unk5 * 4 + 2] << 4;
+                S.unk1DC = gUnk_083D2AB4[gUnk_03006D38.unk5 * 4 + 3] << 4;
+                gUnk_030057E0.unkC52 = S.unk1D8;
+                gUnk_030057E0.unkC54 = S.unk1DC;
+                gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
+                gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
+                gUnk_030057E0.unk7FE = S.unk1E0;
+                field_center_camera_on_player();
+                dispatch_jump_table_29(0xC, 0);
+            }
+            else if (S.unkF8 == 0xE)
+            {
+                S.unk1E0 = gUnk_083D2AD8;
+                S.unk1D8 = gUnk_083D2AD9[2] << 4;
+                S.unk1DC = gUnk_083D2AD9[3] << 4;
+                gUnk_030057E0.unkC52 = S.unk1D8;
+                gUnk_030057E0.unkC54 = S.unk1DC;
+                gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
+                gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
+                gUnk_030057E0.unk7FE = S.unk1E0;
+                field_center_camera_on_player();
+                dispatch_jump_table_29(0xA, 0);
+            }
+            gUnk_030057E0.unkCBA = 1;
+            update_battle_field_frame();
+            load_battlefield_data_to_buffer();
+            gUnk_03002C30[89].unk0 &= ~0x4000;
+            break;
+        case 133:  // guess: set unk214..unk220
+            S.unkFC++;
+            S.unk214 = script[S.unkFC++];
+            S.unk218 = script[S.unkFC++];
+            S.unk21C = script[S.unkFC++];
+            S.unk220 = script[S.unkFC++];
+            break;
+        case 135:  // guess: set unk224..unk23C
+            S.unkFC++;
+            S.unk224 = script[S.unkFC++];
+            S.unk228 = script[S.unkFC++];
+            S.unk22C = script[S.unkFC++];
+            S.unk230 = script[S.unkFC++];
+            S.unk234 = script[S.unkFC++];
+            S.unk238 = script[S.unkFC++];
+            S.unk23C = script[S.unkFC++];
+            break;
+        case 137:  // guess: copy z / end frames between entities
+        {
+            s32 src, dst;
+
+            S.unkFC++;
+            src = script[S.unkFC++];
+            dst = script[S.unkFC++];
+            switch (script[S.unkFC++])
+            {
+            case 0:
+                E[dst].unkA0.unk0 = E[src].unkA0.unk0;
+                break;
+            case 1:
+                E[dst].unkC = E[src].unkA0.unk24;
+                break;
+            case 2:
+                E[dst].unkC = E[src].unk58.unk24;
+                break;
+            case 3:
+                E[dst].unkC = E[src].unk10.unk24;
+                break;
+            }
+            break;
+        }
+        case 138:  // guess: callback timer (sub_08047BA8)
+            S.unkFC++;
+            S.unkFC++;
+            n = S.unk184;
+            E[n].unk2EC.active = script[S.unkFC++];
+            E[n].unk2EC.timer = script[S.unkFC++];
+            E[n].unk2EC.start = script[S.unkFC++];
+            E[n].unk2EC.end = script[S.unkFC++];
+            E[n].unk2FC = script[S.unkFC++];
+            break;
+        case 136:  // guess: set gUnk_030057E0.unkC4C and refresh the status chars
+            S.unkFC++;
+            gUnk_030057E0.unkC4C = script[S.unkFC++];
+            update_battle_entity_status_chars();
+            break;
+        default:
+            S.unkF4 = 0;
+            S.unkFC = 0;
+            break;
+        }
+        if (S.unkF4 == 0)
+            break;
+        if (S.unkF4 == 1)
+            break;
+        if (S.unkF4 == 2)
+            break;
+        if (S.unkF4 == 4)
+        {
+            S.unkFC = 0;
+            S.unkF0 = 0;
+            if ((S.unk1D4 & 0x3F) != 0xD && (S.unk1D4 & 0x3F) != 0x16)
+            {
+                s32 q;
+
+                sub_080492CC();
+                for (q = 0; q < 32; q++)
+                    calculate_oam_affine_matrix(q);
+            }
+            if (S.unkF8 == 0xE || S.unkF8 == 0x12)
+            {
+                gUnk_030057E0.unkC67 = 1;
+                set_battle_state_cancel_flag();
+                init_battle_field_setup();
+                update_bg_scroll_offsets_a();
+                field_set_player_facing(gUnk_030057E0.unkC67);
+                if (gUnk_030057E0.unkC76)
+                {
+                    set_battle_state_byte_c83(gUnk_03002C30[47].unk20);
+                    sub_080493D4(0x30, gUnk_03002C30[48].unk2B * 4 + gUnk_03002C30[48].unk20);
+                }
+                update_battle_entity_status_chars();
+            }
+            if (S.unkF4 == 4)
+                break;
+        }
+    }
+    return S.unkF4;
+}
+

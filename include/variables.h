@@ -1311,4 +1311,12 @@ extern const u32 gUnk_0879C89C[];
 extern const u8 gUnk_0879C69C[];
 extern const u8 gUnk_0850DD78[];
 
+extern s32 *gUnk_083D5D84[]; // battle sequence scripts, picked by gUnk_03005350.unk1D4 & 0x3F (battle_sequence_dispatch)
+extern const void *gUnk_0847ECC0[]; // battle sequence sprite graphics (opcode 27)
+extern const void *gUnk_0847EC40[]; // battle sequence sprite palettes (opcode 27)
+extern const u8 gUnk_083D2AAB[];
+extern const u8 gUnk_083D2AB4[];
+extern const u8 gUnk_083D2AD8;
+extern const u8 gUnk_083D2AD9[];
+
 #endif // GUARD_VARIABLES_H

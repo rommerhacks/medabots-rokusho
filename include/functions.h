@@ -1573,3 +1573,8 @@ void update_battle_entity_screen_position(float x, float y, float z);
 void compute_3d_transform_vectors(float x, float y, float z, float *outX, float *outY, float *outZ);
 void update_entity_position_and_triggers(float a, float b);
 void init_affine_transform_viewport(s32 x, s32 y);
+u32 animation_interpolation_step(struct AnimInterp *p);
+void update_3d_entity_projections(void);
+void sub_0805689C(struct AnimInterp *p, s32 *a);
+void update_battle_sprite_status_effects(void);
+void sub_08049CB0(u16 color, u32 amount);

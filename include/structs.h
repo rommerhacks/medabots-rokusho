@@ -1699,4 +1699,143 @@ struct Unk_08486160
     u8 fillerA[2];
 };
 
+// Battle 3-D sequence interpreter views (battle_sequence_dispatch)
+// Rotation track (entity +0xE8 yaw, +0x100 pitch).
+struct SeqTrack
+{
+    s32 active;
+    s32 timer;
+    s32 start;
+    s32 end; // 0xFFFF = none
+    float value;
+    float step;
+};
+
+// Oscillator (entity +0x118 affine scale x, +0x13C scale y).
+struct SeqOsc
+{
+    s32 type; // 1 linear, 2 sine, 3 cosine, 4 done
+    float value;
+    float amp;
+    float angle;
+    s32 timer;
+    s32 start;
+    s32 end;
+    float angleStep;
+    u32 unk20;
+};
+
+// Linear ramp (entity +0x160 / +0x178 / +0x190 3-D scale x/y/z, +0x1A8 affine angle).
+struct SeqRamp
+{
+    s32 active;
+    float value;
+    float step;
+    s32 timer;
+    s32 start;
+    s32 end;
+};
+
+struct SeqTimer
+{
+    s32 active;
+    s32 timer;
+    s32 start;
+    s32 end;
+};
+
+struct SeqEntity
+{
+    s32 unk0; // state
+    s32 unk4; // timer
+    s32 unk8; // start
+    s32 unkC; // end
+    struct AnimInterp unk10; // x
+    struct AnimInterp unk58; // y
+    struct AnimInterp unkA0; // z
+    struct SeqTrack unkE8;
+    struct SeqTrack unk100;
+    struct SeqOsc unk118;
+    struct SeqOsc unk13C;
+    struct SeqRamp unk160;
+    struct SeqRamp unk178;
+    struct SeqRamp unk190;
+    struct SeqRamp unk1A8;
+    struct SeqTimer unk1C0; // hide, then free the sprites
+    struct SeqTimer unk1D0; // blink
+    s32 unk1E0;
+    s32 unk1E4;
+    s32 unk1E8;
+    s32 unk1EC;
+    s32 unk1F0;
+    s32 unk1F4;
+    s32 unk1F8;
+    s32 unk1FC;
+    s32 unk200;
+    s32 unk204; // palette
+    s32 unk208; // animate sprites
+    s32 unk20C;
+    s32 unk210; // part count
+    s32 unk214; // parent entity
+    s32 unk218; // has triggers
+    s32 unk21C[16]; // trigger time
+    s32 unk25C[16]; // trigger entity
+    s32 *unk29C[16]; // trigger script
+    u8 unk2DC[4];
+    u16 unk2E0[4];
+    u8 unk2E8[4];
+    struct SeqTimer unk2EC;
+    u32 unk2FC;
+};
+
+struct SeqState
+{
+    u8 filler0[0x90];
+    float unk90;
+    float unk94;
+    float unk98;
+    s32 unk9C;
+    s32 unkA0;
+    u8 fillerA4[0x4C];
+    s32 unkF0; // running
+    s32 unkF4; // opcode
+    s32 unkF8; // script index
+    s32 unkFC; // pc
+    s32 unk100[16]; // saved pc
+    s32 unk140; // call depth
+    s32 *unk144[16]; // saved script
+    s32 unk184; // current entity
+    s32 unk188[16]; // saved entity
+    u8 filler1C8[0xC];
+    u32 unk1D4;
+    s32 unk1D8;
+    s32 unk1DC;
+    s32 unk1E0;
+    u8 filler1E4[0x10];
+    s32 unk1F4; // fade mode
+    s32 unk1F8;
+    s32 unk1FC; // fade timer
+    s32 unk200;
+    s32 unk204;
+    u8 unk208;
+    u8 filler209;
+    u16 unk20A;
+    u16 unk20C;
+    u8 unk20E;
+    u8 unk20F;
+    u8 unk210;
+    u8 filler211[3];
+    s32 unk214;
+    s32 unk218;
+    s32 unk21C;
+    s32 unk220;
+    s32 unk224;
+    s32 unk228;
+    s32 unk22C;
+    s32 unk230;
+    s32 unk234;
+    s32 unk238;
+    s32 unk23C;
+};
+
 #endif // GUARD_STRUCTS_H
