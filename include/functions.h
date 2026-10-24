@@ -1394,7 +1394,7 @@ void sub_0805FD60(void);
 void sub_08060804(void);
 void sub_0805F898(void);
 void sub_08061830(void);
-void dispatch_battle_bg_substate(void); // gUnk_08483DA0[gGameSubState]()
+void town_map_dispatch(void); // gUnk_08483DA0[gGameSubState]()
 void advance_substate_on_handler_complete(void);
 void advance_substate_on_handler_complete_1c(void);
 void sub_0805EE6C(void);
@@ -1406,14 +1406,14 @@ void sub_0805F9AC(void);
 void sub_08060324(void);
 void sub_080608B4(void);
 void sub_0805FAF0(void); // gUnk_08483CA4[gGameSubState](), BG3 scrolls down every other frame
-void sub_08060118(void); // gUnk_08483CC4[gGameSubState](), BG3 scrolls up every other frame
-void dispatch_options_menu_and_update_counters(void); // gUnk_08483C6C[gGameSubState](), BG3 scrolls diagonally
+void save_lost_dispatch(void); // gUnk_08483CC4[gGameSubState](), BG3 scrolls up every other frame
+void test_mode_dispatch(void); // gUnk_08483C6C[gGameSubState](), BG3 scrolls diagonally
 void update_fade_effect(void);
-void update_battle_sprite_animation(void);
+void town_map_update_cursor(void);
 void update_animation_timer(void); // gUnk_03006F74->unk3A counts 0-109; every 10th frame copies a 480-byte frame of gDecompressBuffer to VRAM 0x06004020
 void sub_0805F8B0(void);
 void sub_0806142C(void);
-void sub_080617F0(void); // gUnk_08483E8C[gGameSubState](), BG3 scrolls diagonally
+void shop_list_dispatch(void); // gUnk_08483E8C[gGameSubState](), BG3 scrolls diagonally
 void battle_menu_highlight_icons(u32 sel, u32 frame); // BG2 tiles of 4 icons: palette 6 for icon sel when frame & 8, else palette 5
 void sub_0805F81C(void);
 void sub_0806035C(void);
@@ -1427,7 +1427,7 @@ void sub_08060C60(void);
 void update_battle_sprite_priority_flags(void);
 void silence_and_clear_vram(void);
 void copy_bg2_tilemap_to_ewram(void);
-void execute_substate_and_tick_counters(void); // gUnk_08483E10[gGameSubState](), BG3 scrolls diagonally
+void shop_menu_dispatch(void); // gUnk_08483E10[gGameSubState](), BG3 scrolls diagonally
 void sub_08061D30(void);
 void sub_08062638(void); // fades OBJ palettes in, then init_battle_scene(unk19, id of shop list entry unk1A + gUnk_02023078)
 void fade_out_transition_step(void);

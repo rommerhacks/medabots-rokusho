@@ -52,7 +52,7 @@ void sub_0805EE94(void)
     }
 }
 
-void dispatch_options_menu_and_update_counters(void)
+void test_mode_dispatch(void)
 {
     gUnk_08483C6C[gGameSubState]();
     if (gFrameCounter & 1)
@@ -77,7 +77,7 @@ void silence_and_clear_vram(void)
     gGameSubState++;
 }
 
-void load_battle_background_graphics(void)
+void test_mode_load_graphics(void)
 {
     vu16 *bg1, *bg2, *bg3;
     u16 v;
@@ -178,7 +178,7 @@ void update_fade_effect(void)
     }
 }
 
-void options_menu_handler(void)
+void test_mode_update(void)
 {
     sub_08041C14(0, gFrameCounter, 0x14);
     if (gUnk_03006F74->unk48 != 0)
@@ -706,7 +706,7 @@ void sub_080600E0(void)
     gUnk_03002C30[0].unk6 = gUnk_080AF980[(gUnk_03002C30[0].unk1A >> 3) & 7] + 0x100;
 }
 
-void sub_08060118(void)
+void save_lost_dispatch(void)
 {
     gUnk_08483CC4[gGameSubState]();
     if (gFrameCounter & 1)
@@ -836,7 +836,7 @@ void sub_080603A4(void)
     }
 }
 
-void update_battle_sprite_animation(void)
+void town_map_update_cursor(void)
 {
     u8 row = gUnk_03006F74->unk18;
     const u8 *t;
@@ -860,7 +860,7 @@ void update_animation_timer(void)
         CpuSet(gDecompressBuffer + (gUnk_08483E04[(s16)(t / 10)] + 1) * 480, (void *)0x06004020, 0xF0);
 }
 
-void dispatch_battle_bg_substate(void)
+void town_map_dispatch(void)
 {
     gUnk_08483DA0[gGameSubState]();
 }
@@ -880,7 +880,7 @@ void copy_bg2_tilemap_to_ewram(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", setup_battle_bg_layers);
+INCLUDE_ASM("asm/nonmatching/code_0805EE6C", town_map_load_graphics);
 
 void sub_08060804(void)
 {
@@ -908,7 +908,7 @@ void sub_0806086C(void)
         text_window_init(1, 2, 0);
         gGameSubState++;
     }
-    update_battle_sprite_animation();
+    town_map_update_cursor();
     update_animation_timer();
 }
 
@@ -917,7 +917,7 @@ void sub_080608B4(void)
     u8 i = gUnk_03006F74->unk17;
     if (run_message(gUnk_08485504[i]))
         gGameSubState++;
-    update_battle_sprite_animation();
+    town_map_update_cursor();
     update_animation_timer();
 }
 
@@ -925,7 +925,7 @@ void sub_080608EC(void)
 {
     u8 keys;
 
-    update_battle_sprite_animation();
+    town_map_update_cursor();
     update_animation_timer();
     if (sub_0805B7A0() == 0)
     {
@@ -958,7 +958,7 @@ void sub_080608EC(void)
 
 void sub_0806098C(void)
 {
-    update_battle_sprite_animation();
+    town_map_update_cursor();
     update_animation_timer();
     if (game_state_execute_handler_a())
     {
@@ -973,7 +973,7 @@ void sub_080609C0(void)
     struct Unk_03000440 *s;
     u8 *n;
 
-    update_battle_sprite_animation();
+    town_map_update_cursor();
     update_animation_timer();
     s = &gUnk_03000440;
     n = &s->unk84;
@@ -1051,7 +1051,7 @@ void copy_text_with_lookup(dst, src, unused, i)
     dst[2] = gUnk_080AFA10[gUnk_03002420];
 }
 
-void execute_substate_and_tick_counters(void)
+void shop_menu_dispatch(void)
 {
     gUnk_08483E10[gGameSubState]();
     if (gFrameCounter & 1)
@@ -1129,7 +1129,7 @@ void sub_08060C6C(void)
     gGameSubState++;
 }
 
-void clear_vram_da80_region(void)
+void shop_menu_init(void)
 {
     u32 zero;
     u8 i;
@@ -1509,7 +1509,7 @@ void sub_0806174C(void)
     }
 }
 
-void sub_080617F0(void)
+void shop_list_dispatch(void)
 {
     gUnk_08483E8C[gGameSubState]();
     if (gFrameCounter & 1)
@@ -1525,7 +1525,7 @@ void sub_08061830(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", setup_bg1_and_decompress_tiles);
+INCLUDE_ASM("asm/nonmatching/code_0805EE6C", shop_list_init);
 
 void enable_obj_layer_and_load_palette(void)
 {

@@ -1,7 +1,7 @@
 	.syntax unified
 
-	thumb_func_start setup_battle_bg_layers
-setup_battle_bg_layers: @ 0x080605A0
+	thumb_func_start town_map_load_graphics
+town_map_load_graphics: @ 0x080605A0
 	push {r4, r5, r6, r7, lr}
 	sub sp, #4
 	movs r5, #1

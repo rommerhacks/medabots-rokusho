@@ -1,7 +1,7 @@
 	.syntax unified
 
-	thumb_func_start setup_bg1_and_decompress_tiles
-setup_bg1_and_decompress_tiles: @ 0x08061848
+	thumb_func_start shop_list_init
+shop_list_init: @ 0x08061848
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb

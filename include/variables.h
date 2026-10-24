@@ -1020,21 +1020,21 @@ extern const u16 gUnk_0878AE78[0x100]; // BG palettes of the field menu item lis
 extern const u8 gUnk_080AF980[8]; // sprite 0 frame offsets (sub_080600E0)
 extern const u8 gUnk_080AFA10[]; // indexed by gUnk_03002420 (copy_text_with_lookup)
 extern u8 gUnk_03002420;
-extern const Func gUnk_08483DA0[]; // sub-state handlers (dispatch_battle_bg_substate)
+extern const Func gUnk_08483DA0[]; // sub-state handlers (town_map_dispatch)
 extern const Func gUnk_08483CA4[]; // sub-state handlers (sub_0805FAF0)
-extern const Func gUnk_08483CC4[]; // sub-state handlers (sub_08060118)
-extern const Func gUnk_08483C6C[]; // sub-state handlers (dispatch_options_menu_and_update_counters)
-extern const Func gUnk_08483E8C[]; // sub-state handlers (sub_080617F0)
+extern const Func gUnk_08483CC4[]; // sub-state handlers (save_lost_dispatch)
+extern const Func gUnk_08483C6C[]; // sub-state handlers (test_mode_dispatch)
+extern const Func gUnk_08483E8C[]; // sub-state handlers (shop_list_dispatch)
 extern const void *const gUnk_08485504[]; // messages by gUnk_03006F74->unk17 (sub_080608B4)
 extern const u8 gUnk_08485580[]; // message text (sub_0806142C, gUnk_03006F74->unk5 set)
 extern const u8 gUnk_08485551[]; // message text (sub_0806142C, gUnk_03006F74->unk5 clear)
-extern const u8 gUnk_08483DC0[][2]; // x, y in tiles by gUnk_03006F74->unk17 (update_battle_sprite_animation)
+extern const u8 gUnk_08483DC0[][2]; // x, y in tiles by gUnk_03006F74->unk17 (town_map_update_cursor)
 extern const u16 gUnk_08483DD4[][4]; // x offsets [unk18][frame]
 extern const u16 gUnk_08483DE4[][4]; // y offsets [unk18][frame]
 extern const u16 gUnk_08483DF4[][4]; // animation frames [unk18][frame]
 extern const u8 gUnk_08483E04[]; // frame index by gUnk_03006F74->unk3A / 10 (update_animation_timer)
 extern const u8 gUnk_0848552C[]; // message text (sub_08061180)
-extern const Func gUnk_08483E10[]; // sub-state handlers (execute_substate_and_tick_counters)
+extern const Func gUnk_08483E10[]; // sub-state handlers (shop_menu_dispatch)
 extern const u16 gUnk_080AF968[]; // sprite 1 animation frames by unk1A / 6 (sub_0806006C)
 extern u8 gUnk_03007008;
 extern const u8 gUnk_080AFA3C[][4][2]; // x, y by [which][kind] (load_medapart_sprite_animation)
