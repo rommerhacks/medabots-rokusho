@@ -504,6 +504,12 @@ struct OamData
     u16 affineParam;
 };
 
+// A 3-byte ROM table copied to the stack as a whole (divide_by_3).
+struct ByteTable3
+{
+    u8 b[3];
+};
+
 // Bitfield view of gUnk_03000440.unk14 (text pen x): the text tile flush code tests the pixel offset in
 // the current 8-pixel tile through it, which reloads unk14 (reset_text_tile_state and friends).
 struct TextColBits

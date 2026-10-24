@@ -179,6 +179,8 @@ extern u8 gUnk_03006FF0[3]; // per racer (cleared at the start, sub_0806A4C0)
 extern s32 gUnk_03006FF8[2];
 extern s32 gUnk_03007000[2];
 extern const Func gUnk_08485C48[]; // by gGameState (dispatch_game_mode_handler)
+extern const u8 gUnk_08485CCD[]; // racer table read by update_battle_icon_rotation (just after gUnk_08485CC4)
+extern const struct ByteTable3 gUnk_080AFF30; // 3 bytes copied to the stack, indexed by racer (divide_by_3)
 extern u8 gUnk_08485CC4[3][3]; // sprite slots (ROM; declared without const, the code reloads it after stores)
 extern const u8 gUnk_08485CE3[][7]; // frame delays
 extern bool32 (*const gUnk_08485D30[])(u8); // race sprite animations, by gUnk_03002C30[].unk20 - 1 (update_sprite_animations_tick_0806AF40)

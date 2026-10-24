@@ -691,7 +691,8 @@ void LZ77UnCompVram(const void *src, void *dst);
 // code_08044F54
 u32 resolve_tile_from_battle_state(u32 arg);
 void sub_0804877C(u8 idx);
-void divide_by_3(u8 a, u8 b);
+void divide_by_3(u8 a, u8 b); // guess: refreshes racer a's 4-part sprite group at its current position (not a divide)
+void sub_08069A68(u8 idx, s16 x, s16 y, u8 h, u8 pal); // guess: places racer idx's 4-part sprite group at x, y and sets its palette
 void matrix_set_identity(void);
 void ring_points_place_on_hexagon(u32 a);
 void init_battle_sprite_entry_08048818(u8 idx, u16 attr, u32 frame, u8 a3, u8 a4);
