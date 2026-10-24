@@ -212,6 +212,7 @@ gUnk_084C1C24       = 0x084C1C24;
 gUnk_084C1E04       = 0x084C1E04;
 gUnk_084C1FD4       = 0x084C1FD4;
 gUnk_02020000       = 0x02020000;
+gUnk_02020040       = 0x02020040;
 gUnk_02020800       = 0x02020800;
 
 /* code_0800025C: game state 3 */
@@ -780,6 +781,7 @@ gUnk_083B279C       = 0x083B279C;
 gUnk_083B27C0       = 0x083B27C0;
 gUnk_083AFC98       = 0x083AFC98;
 gUnk_084C01C8       = 0x084C01C8;
+gUnk_084C5188       = 0x084C5188;
 gUnk_0300199A       = 0x0300199A;
 gUnk_083AFAF8       = 0x083AFAF8;
 gUnk_08487524       = 0x08487524;
@@ -788,6 +790,7 @@ gUnk_08487630       = 0x08487630;
 gUnk_08488600       = 0x08488600;
 gUnk_083AFCF8       = 0x083AFCF8;
 gUnk_083B4C88       = 0x083B4C88;
+gUnk_083B4E88       = 0x083B4E88;
 gUnk_083B2970       = 0x083B2970;
 gUnk_083B827C       = 0x083B827C;
 gUnk_083B286C       = 0x083B286C;

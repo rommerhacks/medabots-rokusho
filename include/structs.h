@@ -253,7 +253,8 @@ struct Unk_03000440
     u8 unk1A;
     u8 unk1B;
     u8 unk1C;
-    u8 filler1D[0x7];
+    u8 filler1D[0x3];
+    u8 *unk20; // string being drawn (message name / number buffers, sub_080402B4)
     u8 unk24;
     u8 unk25;
     u8 unk26;
@@ -325,7 +326,7 @@ struct Unk_03000440
     u8 unk9B;
     u8 unk9C; // game state 6: 1 picks song 14 and counts gUnk_03002B84[1] (guess: battle won)
     u8 filler9D;
-    u8 unk9E[0x50]; // digit buffer (divide_by_10000)
+    u8 unk9E[0x50]; // digit buffer (divide_by_10000); also four 0x14-byte name buffers for messages (sub_080402B4)
     u8 unkEE; // start of a 16-byte part data record (load_part_data): ability (gUnk_083B656C name)
     u8 unkEF; // skill id; >= 100: leg type (gUnk_083BE97C[unkEF - 100])
     u8 unkF0; // skill type (gUnk_083B6EC8 name)
@@ -503,11 +504,23 @@ struct OamData
     u16 affineParam;
 };
 
+// Bitfield view of gUnk_03000440.unk14 (text pen x): the text tile flush code tests the pixel offset in
+// the current 8-pixel tile through it, which reloads unk14 (reset_text_tile_state and friends).
+struct TextColBits
+{
+    u8 filler0[0x14];
+    u8 col:3;
+    u8 hi:5;
+};
+
 // Struct view of the gUnk_083B4AE0 tilemap pointer table: the Robattle screen wipes read entry 0x69 as a
 // field (base + 0x1A4, reloaded after each call: sub_0801DF60, sub_0801FADC).
 struct Unk_083B4AE0
 {
-    const void *unk0[0x69];
+    const void *unk0[0x49];
+    const void *unk124; // message "more text" cursor, blink off (update_text_compose_and_input)
+    const void *unk128; // message cursor, blink on
+    const void *unk12C[0x1E];
     const void *unk1A4; // blank tilemap row
 };
 

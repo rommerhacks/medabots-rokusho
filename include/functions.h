@@ -774,7 +774,16 @@ void sub_0803E978(void);
 void sub_0803E9BC(void);
 void sub_0803EA18(void);
 void sub_0803EE10(void);
-void sub_0803FD28(void);
+void sub_0803FD28(void); // guess: message_print_step (run_message state 5: control bytes 0xF7-0xFF, else one glyph)
+void sub_0803FEA8(void);
+void sub_0803FEB8(void); // guess: message_cmd_portrait (0xFB anim set idx)
+void text_render_glyph_step(void);
+void sub_080402B4(void); // guess: draws a name / number buffer word (0xF9 command)
+void reset_text_tile_state(void);
+u8 update_text_compose_and_input(void);
+void sub_0804070C(void); // guess: text wait, skippable with A/B
+void sub_080407A4(void); // guess: text wait
+void sub_08040820(void);
 void decompress_indexed_asset(u32 set, u32 idx, void *dst, u32 pal, u32 toBuffer);
 void decompress_bg_tiles_to_vram_bg(void);
 void setup_bg0_display_layer(void);

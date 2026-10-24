@@ -325,6 +325,7 @@ extern const u16 gUnk_084F24E0[];
 extern const u8 gUnk_084C1C24[];
 extern const u8 gUnk_084C1E04[];
 extern const u8 gUnk_084C1FD4[];
+extern u8 gUnk_02020040[]; // second 64-byte text tile buffer: glyph shifted then ORed into gUnk_02020000 (text_render_glyph_step)
 extern u8 gUnk_02020000[]; // tilemap rect buffer for the Robattle team-side scroll (status_side_change_scroll_out)
 extern u8 gUnk_02020800[]; // BG tile backup (0x800 bytes of VRAM 0x06002800 while a Medawatch submenu runs)
 extern const Func gMedabotsScreenHandlers[]; // game state 3 sub-state handlers
@@ -955,6 +956,8 @@ extern const u8 gUnk_083AFC98[16][6]; // 6 bytes picked at random into gUnk_0300
 extern const u8 gUnk_084C01C8[]; // 64 bytes of tiles copied 52 times to VRAM 0x280 (sub_08040B5C)
 extern u8 gUnk_0300199A[6]; // 6 bytes from gUnk_083AFC98 (sub_0803E8B8); = gUnk_03001800.unk18A + 0x10
 extern const u8 gUnk_083AFCF8[16]; // record index 0-2 picked at random (sub_0803EE10)
+extern const u8 gUnk_083B4E88[][2]; // alternate font widths, used when gUnk_03000440.unk27 is set (text_render_glyph_step)
+extern const u8 gUnk_084C5188[]; // alternate font glyphs, 64 bytes per character
 extern const u8 gUnk_083B4C88[][2]; // per character code: [0] width in pixels (render_text_sprites_08040DB8)
 extern const Func gUnk_083AFAF8[]; // link Robattle game state: sub-state handlers by gGameSubState (sub_0803D538)
 extern const u8 gUnk_08487524[]; // compressed tiles, message window frame style 3 (sub_08040A40)
