@@ -1237,4 +1237,3 @@ void update_3d_entity_projections(void)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_0805137C", battle_sequence_dispatch);
-INCLUDE_ASM("asm/nonmatching/code_0805137C", sub_08054234);
