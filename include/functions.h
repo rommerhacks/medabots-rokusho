@@ -1321,6 +1321,7 @@ u32 Sqrt(u32 n);
 void ObjAffineSet(struct ObjAffineSrcData *src, void *dest, s32 count, s32 offset);
 void unpack_item_inventory_to_buffer(void); // gItemInventory -> struct ItemListEntry list at 0x02040000, count in gUnk_03006F74->unk10
 void update_battle_medapart_icons(void);
+void render_battle_medapart_list(u32 mode);
 s32 calc_text_pixel_width(const u8 *s); // sum of gUnk_083B4C88 widths, up to 10 characters or the 0xFE terminator
 void sub_0805E1CC(const u8 *s); // draws 10 characters as 2-row BG0 tiles copied from a 26-per-row font map on the same screen (guess: name entry)
 void draw_number_3digits(s32 n, s32 x, s32 y); // 3 digits, blank-padded, BG tilemap 0x0600F000 (item list page numbers)

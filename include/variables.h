@@ -583,8 +583,6 @@ extern const u16 gUnk_080AF900[]; // OBJ palettes 0-1 (sub_0805FBA8)
 extern const u16 gUnk_080AF942[]; // sprite 1 animation frames, by unk1A / 6 (sub_0805FE90)
 extern const s8 gUnk_080AF95A[]; // sprite 0 y offsets, 13 steps (sub_0805FE90)
 extern const u16 gUnk_0878E3F4[]; // title menu BG palette (0x100 colors)
-
-#endif // GUARD_VARIABLES_H
 extern u8 gUnk_03001788; // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
 extern u8 gUnk_03000B94; // index into gUnk_083AD3B0 (battle music)
 extern const u8 gUnk_083AD3B0[]; // battle song ids (select_battle_music)
@@ -1261,3 +1259,22 @@ extern const u8 gUnk_08483AC0[]; // per item id: 1 for some kind (sub_0805B4B0)
 extern const u8 gUnk_080AF752[]; // song per battle music option (sub_0805C428 preview)
 extern const u16 gUnk_0878CA64[];
 extern const u16 gUnk_080AF7E8[];
+
+// code_0805EE6C (session 94)
+extern const u8 gUnk_080AF854[];
+extern const u8 gUnk_080AF888[];
+extern const u16 gUnk_084C69B8[];
+extern const u16 gUnk_08798D2C[];
+extern const u8 gUnk_08791694[];
+extern const u8 gUnk_087917F4[];
+extern const u8 gUnk_087919C4[];
+extern const u32 gUnk_08790600[];
+extern const u16 gUnk_08790400[];
+extern const u8 gUnk_0879DDCC[];
+extern const u8 gUnk_0879DF44[];
+extern const u8 gUnk_0879E1DC[];
+extern const u32 gUnk_0879C89C[];
+extern const u8 gUnk_0879C69C[];
+extern const u8 gUnk_0850DD78[];
+
+#endif // GUARD_VARIABLES_H
