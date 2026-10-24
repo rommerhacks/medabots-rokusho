@@ -219,8 +219,37 @@ void sub_08018DF4(u32 rec)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018EE0);
-INCLUDE_ASM("asm/nonmatching/code_08018900", add_part_stat_clamped);
+static inline u32 part_armor(u32 rec, u32 i)
+{
+    return gUnk_03000590[rec].parts[i].unk11;
+}
+
+u32 sub_08018EE0(u32 rec)
+{
+    u32 i;
+    for (i = 0; i <= 3; i++)
+    {
+        if (gUnk_03000590[rec].parts[i].unk11 != 0)
+            if (gUnk_03000590[rec].parts[i].data[4] != part_armor(rec, i))
+                return i + 1;
+    }
+    return 0;
+}
+
+u32 add_part_stat_clamped(u32 rec, u32 part, s32 amount)
+{
+    u32 v = gUnk_03000590[rec].parts[part].unk11;
+
+    v += amount;
+    if (v > gUnk_03000590[rec].parts[part].data[4])
+    {
+        v -= gUnk_03000590[rec].parts[part].data[4];
+        gUnk_03000590[rec].parts[part].unk11 = gUnk_03000590[rec].parts[part].data[4];
+        return (v << 8) + (amount - v);
+    }
+    gUnk_03000590[rec].parts[part].unk11 = v;
+    return amount;
+}
 
 u32 sub_08018F48(u32 rec)
 {
@@ -968,7 +997,63 @@ void battle_number_popup_update(u32 rec)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", set_display_digit_type);
+void set_display_digit_type(u8 *buf, u32 value, u32 type)
+{
+    u8 n;
+    u8 i;
+    u8 started;
+    u8 d[3];
+    vu32 rem;
+
+    if (type != 0)
+    {
+        if (type == 1)
+        {
+            buf[0] = 0xB;
+            n = 1;
+        }
+        else
+            n = 0;
+    }
+    else
+    {
+        buf[0] = 0xA;
+        n = 1;
+    }
+    d[0] = value / 100;
+    rem = value - (value / 100) * 100;
+    d[1] = rem / 10;
+    rem = rem - rem / 10 * 10;
+    d[2] = rem;
+    started = 0;
+    for (i = 0; i <= 2; i++)
+    {
+        if (i <= 1)
+        {
+            if (d[i] == 0)
+            {
+                if (started)
+                {
+                    buf[n] = d[i];
+                    n++;
+                }
+            }
+            else
+            {
+                buf[n] = d[i];
+                started = 1;
+                n++;
+            }
+        }
+        else
+        {
+            buf[n] = d[i];
+            n++;
+        }
+    }
+    buf[n] = 0xFE;
+    buf[6] = n;
+}
 
 void render_battle_text_sprites(u8 *buf, u32 rec, u32 slot)
 {
@@ -1358,8 +1443,49 @@ void sub_0801AD48(u32 rec)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801ADE8);
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801AE70);
+#define S gUnk_03002C30[0x78 + i]
+u32 sub_0801ADE8(u32 rec)
+{
+    u32 done = 1;
+    u32 i;
+
+    for (i = 0; i <= 7; i++)
+    {
+        S.unk21++;
+        if ((S.unk21 & 3) == 0)
+            S.unk6 = (S.unk22 = (S.unk22 + 1) & 3) + 0x616;
+        if (S.unk26 != S.unk24)
+        {
+            done = 0;
+            if (S.unk27 != 0)
+                S.unk27--;
+            else
+            {
+                if (rec <= 2)
+                    S.unk2 += 4;
+                else
+                    S.unk2 -= 4;
+                S.unk28++;
+                if ((S.unk28 & 1) == 0)
+                    S.unk24++;
+            }
+        }
+    }
+    return done;
+}
+#undef S
+
+void sub_0801AE70(u32 rec)
+{
+    u32 i;
+
+    for (i = 0; i <= 7; i++)
+    {
+        gUnk_03002C30[0x78 + i].unk21++;
+        if ((gUnk_03002C30[0x78 + i].unk21 & 3) == 0)
+            gUnk_03002C30[0x78 + i].unk6 = (gUnk_03002C30[0x78 + i].unk22 = (gUnk_03002C30[0x78 + i].unk22 + 1) & 3) + 0x616;
+    }
+}
 
 void sub_0801AEB4(void)
 {
@@ -1855,7 +1981,47 @@ void init_game_state_entry(const u16 *pos, u8 arg, u32 slot)
     gUnk_03000440.unk64[slot].unk3 = arg;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", process_animation_script);
+// tree folding happens before inlining: these keep the EWRAM base added after the multiply
+static inline u32 tile_offset(u32 n) { return n * 32; }
+static inline u32 ewram_offset(u32 n, u32 m) { return n * m + 0x02000000; }
+
+void process_animation_script(const u16 *script, u32 slot)
+{
+    u32 run = 1;
+
+    if (gUnk_03000440.unk64[slot].unk2 == 0xFF)
+        return;
+
+    while (run)
+    {
+        if (gUnk_03000440.unk64[slot].unk0)
+        {
+            gUnk_03000440.unk64[slot].unk0--;
+            return;
+        }
+        switch (*(u8 *)&script[gUnk_03000440.unk64[slot].unk1])
+        {
+        case 0xFD:
+            play_sound_effect(script[gUnk_03000440.unk64[slot].unk1 + 1]);
+            gUnk_03000440.unk64[slot].unk1 += 2;
+            break;
+        case 0xFE:
+            gUnk_03000440.unk64[slot].unk1 = script[gUnk_03000440.unk64[slot].unk1 + 1] * 2;
+            break;
+        case 0xFF:
+            gUnk_03000440.unk64[slot].unk2 = 0xFF;
+            return;
+        default:
+            gUnk_03000440.unk64[slot].unk0 = script[gUnk_03000440.unk64[slot].unk1];
+            CpuSet((void *)(tile_offset(gUnk_03000440.unk64[slot].unk4)
+                            + ewram_offset(gUnk_03000440.unk64[slot].unk6, script[gUnk_03000440.unk64[slot].unk1 + 1] * 32)),
+                   (void *)(gUnk_03000440.unk64[slot].unk3 * 0x1200 + 0x06004000),
+                   (gUnk_03000440.unk64[slot].unk6 * 8) | 0x04000000);
+            gUnk_03000440.unk64[slot].unk1 += 2;
+            break;
+        }
+    }
+}
 
 void increment_medal_skill_level(u32 rec)
 {
@@ -1921,7 +2087,45 @@ void sub_0801BF78(const u16 *pos, u8 arg, u32 slot)
     gUnk_03000440.unk64[slot].unk3 = arg;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_0801BFB4);
+// tree folding happens before inlining: these keep the EWRAM base added after the multiply
+
+void sub_0801BFB4(const u16 *script, u32 slot)
+{
+    u32 run = 1;
+
+    if (gUnk_03000440.unk64[slot].unk2 == 0xFF)
+        return;
+
+    while (run)
+    {
+        if (gUnk_03000440.unk64[slot].unk0)
+        {
+            gUnk_03000440.unk64[slot].unk0--;
+            return;
+        }
+        switch (*(u8 *)&script[gUnk_03000440.unk64[slot].unk1])
+        {
+        case 0xFD:
+            play_sound_effect(script[gUnk_03000440.unk64[slot].unk1 + 1]);
+            gUnk_03000440.unk64[slot].unk1 += 2;
+            break;
+        case 0xFE:
+            gUnk_03000440.unk64[slot].unk1 = script[gUnk_03000440.unk64[slot].unk1 + 1] * 2;
+            break;
+        case 0xFF:
+            gUnk_03000440.unk64[slot].unk2 = 0xFF;
+            return;
+        default:
+            gUnk_03000440.unk64[slot].unk0 = script[gUnk_03000440.unk64[slot].unk1];
+            CpuSet((void *)(tile_offset(gUnk_03000440.unk64[slot].unk4)
+                            + ewram_offset(gUnk_03000440.unk64[slot].unk6, script[gUnk_03000440.unk64[slot].unk1 + 1] * 32)),
+                   (void *)(gUnk_03000440.unk64[slot].unk3 * 32 + 0x06010000),
+                   (gUnk_03000440.unk64[slot].unk6 * 8) | 0x04000000);
+            gUnk_03000440.unk64[slot].unk1 += 2;
+            break;
+        }
+    }
+}
 
 // Hidden function (no callers): remaps the record's unkE0 through gUnk_083AD3F9.
 void sub_0801C0A0(u32 rec)
