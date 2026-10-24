@@ -135,7 +135,41 @@ void sub_08014ADC(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08014B34);
+void sub_08014B34(void)
+{
+    u16 r;
+    s16 flag;
+
+    if (gUnk_03001800.unk51 != 3)
+    {
+        gUnk_03005010.unk6 = gUnk_03000590[gUnk_03001800.unk51].unkDD
+                           + (flag = ((gUnk_03001800.unk1AF << 8) & 0x100) + 0x8000);
+        gUnk_03000440.unk86++;
+        if (!(gUnk_03000440.unk86 & 1))
+        {
+            gUnk_03001800.unk1AF ^= 1;
+            gUnk_03001800.unk51++;
+        }
+    }
+    if (gUnk_03001800.unk53 != 3)
+    {
+        r = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
+        if ((r & 0x8000) && ((u16)(r & 0x100) >> 8) != gUnk_03001800.unk1B0)
+        {
+            gUnk_03001800.unk1B0 ^= 1;
+            gUnk_03000590[gUnk_03001800.unk53 + 3].unkDD = r;
+            gUnk_03001800.unk53++;
+        }
+    }
+    if (gUnk_03001800.unk51 == 3)
+    {
+        if (gUnk_03001800.unk53 == 3)
+        {
+            gGameSubState++;
+            gUnk_03000440.unk86 = 0;
+        }
+    }
+}
 
 void sub_08014C30(void)
 {
@@ -626,7 +660,13 @@ void draw_battle_bot_portraits(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", get_bot_part_effective_values);
+void get_bot_part_effective_values(u32 bot, u8 *out)
+{
+    if (gUnk_03000590[bot].parts[0].unk11) *out++ = gUnk_03000590[bot].parts[0].unk17; else *out++ = gUnk_03000590[bot].unk41 + 0x78;
+    if (gUnk_03000590[bot].parts[1].unk11) *out++ = gUnk_03000590[bot].parts[1].unk17; else *out++ = gUnk_03000590[bot].unk41 + 0x78;
+    if (gUnk_03000590[bot].parts[2].unk11) *out++ = gUnk_03000590[bot].parts[2].unk17; else *out++ = gUnk_03000590[bot].unk41 + 0x78;
+    if (gUnk_03000590[bot].parts[3].unk11) *out = gUnk_03000590[bot].parts[3].unk17; else *out = gUnk_03000590[bot].unk41 + 0x78;
+}
 
 void load_bot_part_sprite(u32 rec)
 {
@@ -906,7 +946,49 @@ u32 command_ring_rotate_step(u32 dir)
     return done;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016154);
+u32 sub_08016154(u32 i, u32 dir)
+{
+    u32 done = 0;
+    u32 k;
+    u32 n;
+    struct Vec16 p;
+
+    gUnk_03002C30[i].unk0 &= ~0x20;
+    if (dir == 0)
+        n = gUnk_083AD376[gUnk_03001800.unk81];
+    else
+        n = gUnk_083AD37C[gUnk_03001800.unk81];
+    k = i - n;
+    if (k > 5)
+        k += 6;
+    if (dir == 0)
+        gUnk_03002C30[i].unk20 += 6;
+    else
+        gUnk_03002C30[i].unk20 -= 6;
+    gUnk_03002C30[i].unk21++;
+    if (gUnk_03002C30[i].unk21 == 7)
+    {
+        done = 1;
+        gUnk_03002C30[i].unk20 = gUnk_083AD370[k];
+        gUnk_03002C30[i].unk21 = 0;
+        gUnk_03002C30[i].unk22 = 0;
+    }
+    p = compute_polar_to_screen_position(gUnk_03002C30[i].unk20, 24, 120, 128, 8, 0);
+    gUnk_03002C30[i].unk2 = p.x;
+    gUnk_03002C30[i].unk4 = p.y;
+    gUnk_03002C30[i].unk6 = i + 0x60C;
+    if (p.y > 0x87)
+        gUnk_03002C30[i].unkA = 8;
+    else if (p.y > 0x7B)
+        gUnk_03002C30[i].unkA = 9;
+    else
+        gUnk_03002C30[i].unkA = 10;
+    gUnk_03002C30[i].unk1C = 0;
+    gUnk_03002C30[i].unk9 = 0x40 - (0x90 - gUnk_03002C30[i].unk4) / 2;
+    gUnk_03002C30[i].unk8 = 0x40 - (0x90 - gUnk_03002C30[i].unk4) / 2;
+    gUnk_03002C30[i].unkB = gUnk_03002C30[i].unk4 - 0x70;
+    return done;
+}
 
 void command_ring_input(void)
 {
@@ -986,7 +1068,48 @@ void sub_08016370(u32 kind)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", sub_08016438);
+u32 sub_08016438(u32 kind)
+{
+    u32 done = 1;
+    u32 count = gUnk_083AD382[kind * 4];
+    u32 i;
+
+    for (i = 0; i < count; i++)
+    {
+        u32 base;
+        if (gUnk_03002C30[60 + i].unk24)
+            base = 0x12;
+        else
+            base = 0x16;
+        gUnk_03002C30[60 + i].unk21++;
+        if ((gUnk_03002C30[60 + i].unk21 & 3) == 0)
+        {
+            gUnk_03002C30[60 + i].unk6 = base + ((gUnk_03002C30[60 + i].unk22 = (gUnk_03002C30[60 + i].unk22 + 1) & 3) | 0x600);
+        }
+        if (gUnk_03002C30[60 + i].unk26 != gUnk_03002C30[60 + i].unk24)
+        {
+            done = 0;
+            if (gUnk_03002C30[60 + i].unk27)
+                gUnk_03002C30[60 + i].unk27--;
+            else
+            {
+                if (gUnk_03002C30[60 + i].unk24 == 0)
+                {
+                    if (gUnk_03002C30[60 + i].unk25)
+                        gUnk_03002C30[60 + i].unk2 += 4;
+                    else
+                        gUnk_03002C30[60 + i].unk2 -= 4;
+                }
+                else
+                    gUnk_03002C30[60 + i].unk4 += 4;
+                gUnk_03002C30[60 + i].unk28++;
+                if ((gUnk_03002C30[60 + i].unk28 & 1) == 0)
+                    gUnk_03002C30[60 + i].unk24++;
+            }
+        }
+    }
+    return done;
+}
 
 void animate_battle_sprites(u32 kind)
 {
@@ -1344,10 +1467,38 @@ u32 sub_08016E5C(u32 rec, u32 part)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", save_restore_bg1_tilemap_region);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", save_restore_bg0_tilemap_region);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", draw_partial_bg1_column);
-INCLUDE_ASM("asm/nonmatching/code_080147FC", scroll_tilemap_window);
+void save_restore_bg1_tilemap_region(void)
+{
+    if (gUnk_03000440.unk84 < 12)
+    {
+        read_vram_tilemap_rect(0xD, 7, 0x11, 0xD, REG_BG1CNT, gUnk_02021000);
+        write_vram_tilemap_rect(0xD, 7, 0x12, 0xD, REG_BG1CNT, gUnk_02021000);
+    }
+}
+
+void save_restore_bg0_tilemap_region(void)
+{
+    if (gUnk_03000440.unk84 < 4)
+    {
+        read_vram_tilemap_rect(0xC, 5, 9, 0xF, REG_BG0CNT, gUnk_02020800);
+        write_vram_tilemap_rect(0xC, 5, 9, 0x10, REG_BG0CNT, gUnk_02020800);
+    }
+}
+
+void draw_partial_bg1_column(void)
+{
+    if (gUnk_03000440.unk84 <= 4)
+        write_vram_tilemap_rect(6, 5, 0xC, 0x13 - gUnk_03000440.unk84, REG_BG1CNT, gUnk_02020800);
+}
+
+void scroll_tilemap_window(void)
+{
+    if (gUnk_03000440.unk84 <= 9)
+    {
+        read_vram_tilemap_rect(gUnk_03000440.unk84 + 1, 4, 0x14, 0x15, REG_BG1CNT, gUnk_02021000);
+        write_vram_tilemap_rect(gUnk_03000440.unk84 + 1, 4, 0x1D - gUnk_03000440.unk84, 0x10, REG_BG1CNT, gUnk_02021000);
+    }
+}
 
 void sub_08016FB4(void)
 {
