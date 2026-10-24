@@ -1170,6 +1170,7 @@ void sub_0801932C(u32 rec);
 void battle_bot_status_sprite_update(u32 rec);
 void battle_update_status_effect_sprite(u32 rec);
 void update_battle_status_effect_sprite(u32 rec);
+void battle_setup_part_sprite(u32 rec, u32 slot, u32 kind, u32 attr); // sprite 0x46 + rec*3 + slot beside the bot sprite
 void battle_queue_add(u32 rec, u32 prio);
 
 void add_bot_to_defeated_list(u32 rec);
