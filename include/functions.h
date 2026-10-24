@@ -1181,7 +1181,7 @@ u32 sub_08036E54(u32 a); // clamps to 1..99
 u8 sub_08037578(u32 a, u32 kind); // random part id (by a and the part kind)
 void sub_0803769C(u32 rec);
 void sub_080376F4(u32 rec);
-void sub_08037728(u32 rec, u32 part, u32 amount); // unkD6[part] = min(amount, part armor), unkD2[part] = 1 when the armor is all used
+u32 sub_08037728(u32 rec, u32 part, u32 amount); // unkD6[part] = min(amount, part armor), unkD2[part] = 1 when the armor is all used
 u32 sub_08036B50(u8 *buf, u32 slot);
 void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 b, s16 x, s16 y);
 void sub_080374E0(u32 a, u32 b); // unkC8 = min(a, b) taken out of a (guess: drain clamp)
@@ -1215,7 +1215,7 @@ void sub_08035C3C(void);
 void sub_08043E48(void);
 void init_battle_closeup_scene(void); // places and draws both Medabots of the attack close-up (runtime-checked)
 void init_battle_scene_backgrounds(void);
-void sub_080361A8(void);
+u32 sub_080361A8(); // old-style: passes its unused r0 argument through
 u32 battle_advance_dialogue_text(void);
 u32 battle_advance_action_text(void);
 void sub_08035928(u32 rec, u32 target); // guess: record rec targets record target - 1 (unkE0, gUnk_03001800.unk88)
@@ -1228,7 +1228,7 @@ void sub_08035194(u32 rec);
 void set_target_sprite_position(u32 rec, u32 frame, u32 flag);
 void update_target_cursor_position(u32 rec);
 u32 update_sprite_animations_tick_080370AC(u32 slot, u32 n);
-void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u8 n);
+void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u32 n);
 void sub_080362C4(u32 side);
 void sub_08036340(u32 side);
 void sub_08036370(u32 side, u32 rec); // draws the 4 parts' armor (data[4] max, unk11 left) via sub_080363E8
