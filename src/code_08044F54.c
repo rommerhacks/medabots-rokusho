@@ -44,7 +44,34 @@ u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, vo
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", set_oam_sprite_tile_positions);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", setup_sprite_from_oam_descriptor);
+
+// Local struct (new): byte-wise view of struct SpriteDesc; the u8 bitfields are needed to match
+// (the header's u32 bitfields change the code). Same view as in setup_oam_sprite_entries.
+struct SpriteDesc8
+{
+    u8 bpp:4;
+    u8 shape:2;
+    u8 size:2;
+    u8 w:4;
+    u8 h:4;
+    u16 unk2;
+};
+
+void setup_sprite_from_oam_descriptor(const u32 *src, const struct SpriteDesc *desc, u16 tile, u32 useCpu)
+{
+    u16 dims[2];
+    u32 n;
+    const struct SpriteDesc8 *d = (const struct SpriteDesc8 *)desc;
+
+    n = sub_08044E64(d->shape << 14, d->size << 30);
+    dims[0] = n >> 16;
+    dims[1] = n;
+    n = dims[0] * dims[1];
+    if (d->bpp == 0)
+        n >>= 1;
+    n = n * d->w * d->h;
+    decompress_and_load_sprite_tiles(src, d->shape << 14, d->size << 30, d->w, d->h, d->bpp, tile, n, (u8 *)0x02030000, useCpu);
+}
 
 u16 binary_search_sorted_table(struct SortEntry *arr, u16 n, u16 key)
 {
@@ -74,7 +101,24 @@ u16 binary_search_sorted_table(struct SortEntry *arr, u16 n, u16 key)
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sorted_array_insert_shift);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_oam_entries_with_priority);
+
+u16 copy_oam_entries_with_priority(struct SpriteOamList *list, struct OamData *dst, u16 slot, u16 end)
+{
+    u16 i;
+
+    for (i = 0; i < list->w * list->h && slot < end; i++, slot++)
+    {
+        *(struct OamData *)&((struct OamBits *)dst)[slot] = list->oams[i];
+        ((struct OamBits *)dst)[slot].affineParam = list->depth;
+        if (list->depth > 300)
+            ((struct OamBits *)dst)[slot].priority = 3;
+        else if (list->depth > 200)
+            ((struct OamBits *)dst)[slot].priority = 2;
+        else if (list->depth > 100)
+            ((struct OamBits *)dst)[slot].priority = 1;
+    }
+    return slot;
+}
 
 // K&R: pal is a u8 here, but callers pass it sign-extended (see the prototype).
 u16 copy_sprite_oam_entries(list, dst, slot, pal, end, flip)
@@ -165,8 +209,61 @@ u16 batch_copy_oam_entries(struct SpriteOamBatch *batch, struct OamData *dst, u1
     return n;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08045908);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_080459A4);
+u16 sub_08045908(struct SpriteOamBatch *batch, struct OamData *dst, u16 end)
+{
+    u16 count = batch->count;
+    u16 n = 0;
+    u16 i, j;
+
+    for (i = 0; i < count; i++)
+    {
+        for (j = i + 1; j < count; j++)
+        {
+            struct SpriteOamList *a = batch->lists[i];
+            struct SpriteOamList *b = batch->lists[j];
+            if (a->depth > b->depth)
+            {
+                batch->lists[i] = b;
+                batch->lists[j] = a;
+            }
+        }
+        n += copy_oam_entries_with_priority(batch->lists[i], dst, n, end);
+        if (n >= end)
+            break;
+    }
+    return n;
+}
+
+struct DepthEntry
+{
+    u32 unk0;
+    s16 unk4;
+    s16 depth;
+};
+
+void sub_080459A4(struct DepthEntry *arr, u16 lo, u16 n)
+{
+    s32 i, j;
+    struct DepthEntry *p, *q;
+
+    if (n > lo)
+    {
+        p = &arr[lo];
+        for (i = lo; i < n - 1; p++, i++)
+        {
+            q = p;
+            for (j = i; j < n; q++, j++)
+            {
+                if (p->depth > q->depth)
+                {
+                    struct DepthEntry t = *p;
+                    *p = *q;
+                    *q = t;
+                }
+            }
+        }
+    }
+}
 
 void copy_oam_affine_params(struct OamData *oam, u16 *affine)
 {
@@ -410,7 +507,75 @@ void load_sprite_tiles_by_table(struct SpriteNodeDesc **nodes, struct SpriteNode
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_080460B0);
 INCLUDE_ASM("asm/nonmatching/code_08044F54", render_sprite_node_recursive);
-INCLUDE_ASM("asm/nonmatching/code_08044F54", load_sprite_animation_by_type);
+
+void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile, u32 pal, u32 e)
+{
+    struct SpriteTileRef *list = NULL;
+    u16 t;
+    u32 slot = -(e & 2) >> 31;
+    u32 j;
+
+    switch ((s32)kind)
+    {
+    case 0:
+        list = gUnk_0807ED00[id];
+        t = 0x140;
+        break;
+    case 1:
+        list = gUnk_0807F4A0[id];
+        t = 0x1A0;
+        break;
+    case 2:
+        list = gUnk_0807FC40[id];
+        t = 0x1E0;
+        break;
+    case 3:
+        list = gUnk_080803E0[id];
+        t = 0x220;
+        break;
+    }
+
+    if (!(e & 4))
+    {
+        gUnk_03005308[slot].unk2C = (gUnk_03005308[slot].unk2C | 1) & ~8;
+        gUnk_03005308[slot].unk28 = slot;
+    }
+    else if (gUnk_03005308[slot].unk2C & 2)
+    {
+        if (e & 2)
+            t += 0x160;
+        load_sprite_tree_recursive(obj->nodes, list, list->node, pal, obj->oams, &t, slot);
+        if (slot)
+        {
+            switch (kind)
+            {
+            case 1:
+                for (j = 0; gUnk_0807F4A0[id][j].node; j++)
+                {
+                    if (!gUnk_0807F4A0[id][j].alt)
+                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807FC40[id], gUnk_0807FC40[id][j].node, gUnk_0807F4A0[id][j].node);
+                }
+                break;
+            case 2:
+                for (j = 0; gUnk_0807FC40[id][j].node; j++)
+                {
+                    if (!gUnk_0807FC40[id][j].alt)
+                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807F4A0[id], gUnk_0807F4A0[id][j].node, gUnk_0807FC40[id][j].node);
+                }
+                break;
+            }
+        }
+        gUnk_03005308[slot].unk2C &= ~2;
+        gUnk_03005308[slot].unk2C |= 4;
+        gUnk_03005308[slot].unk2C |= 8;
+    }
+    else if (gUnk_03005308[slot].unk2C & 8)
+    {
+        x -= obj->nodes[list->node]->unkC;
+        y -= obj->nodes[list->node]->unkD;
+        render_sprite_node_recursive(obj, list, list->node, x << 8, y << 8, tile, 0, slot);
+    }
+}
 
 void toggle_bg_layer_visibility(s32 a, s32 b, s32 c, s32 d)
 {
