@@ -531,3 +531,10 @@
   both arms.
 * Do not run `tools/scripts/tryin.py` for two functions of the same module at the same time (or while
   installing into it): it rewrites `src/<module>.c` and restores its saved copy afterwards.
+* Several early exits that share one failure store: make the store the final `else { fail: ... }` arm of the
+  if / else-if chain and `goto fail` from the checks above it (sub_0801C524).
+* A function that leaves its incoming r0 untouched and returns it (no `movs r0`, but callers ignore the
+  value): an old-style definition `u32 f(a) u32 a; { ...; return a; }` with an unprototyped `u32 f();` in
+  functions.h, so callers may still pass nothing (sub_080361A8).
+* A non-void function with no return statement (`pop {r1}` epilogue, r0 never set) is written as `u32 f(...)`
+  without `return`; agbcc accepts it (sub_08037728).
