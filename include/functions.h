@@ -774,7 +774,7 @@ void sub_0803E978(void);
 void sub_0803E9BC(void);
 void sub_0803EA18(void);
 void sub_0803EE10(void);
-void sub_0803FD28(void); // guess: message_print_step (run_message state 5: control bytes 0xF7-0xFF, else one glyph)
+void message_print_step(void); // run_message state 5, every frame: text control bytes 0xF7-0xFF, else one glyph
 void sub_0803FEA8(void);
 void sub_0803FEB8(void); // guess: message_cmd_portrait (0xFB anim set idx)
 void text_render_glyph_step(void);

@@ -1751,10 +1751,10 @@ void message_clear_text_area(void)
     }
     write_tilemap_rect(0x1A, 4, 2, 0xE, gUnk_083B4AE0[18], REG_BG0CNT, 0);
     gUnk_03000440.unk4++;
-    sub_0803FD28();
+    message_print_step();
 }
 
-void sub_0803FD28(void)
+void message_print_step(void)
 {
     gUnk_03000440.unk13 = 0;
     do
