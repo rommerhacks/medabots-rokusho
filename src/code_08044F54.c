@@ -203,7 +203,23 @@ u16 copy_sprite_oam_with_vflip(void *a, void *b, u16 c, u32 unused, s8 d, u8 f)
     return copy_sprite_oam_entries(a, b, c, d, 0x80, f);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08045A8C);
+void sub_08045A8C(struct SpriteOamList *obj, s16 a, s16 b, s32 mode)
+{
+    if (mode != 0)
+    {
+        if (mode == 1)
+        {
+            a += ((struct OamBits *)obj->oams)->y;
+            b += ((struct OamBits *)obj->oams)->x;
+        }
+        else
+        {
+            a += (s16)obj->unk4->unk4;
+            b += (s16)obj->unk4->unk2;
+        }
+    }
+    set_oam_sprite_tile_positions(obj, a, b, obj->depth);
+}
 
 u16 render_sprite_if_visible(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 flip)
 {
@@ -1311,7 +1327,28 @@ void animate_area_bg_tiles(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_080481C4);
+s32 sub_080481C4(s32 t)
+{
+    s32 u;
+    if (t == 0)
+        t = gUnk_083D29A6[gUnk_030057E0.unkC5C];
+    else if (t <= 0xAF)
+        ;
+    else if (t <= 0xBF)
+        ;
+    else if (t <= 0xCF)
+        ;
+    else if (t <= 0xFE)
+    {
+        const u8 *tbl = gUnk_08414394[t - 0xD0];
+        t = tbl[gUnk_030057E0.unkC38[t - 0xD0]];
+    }
+    else
+        t = 0xFF;
+    if (t != 0xFF && t > 0xBF)
+        t = (t - 0xC0) * 2 + (u = gUnk_03006D38.unk6 + 0x28);
+    return t;
+}
 
 void decompress_battle_tile_graphics(void)
 {
@@ -1548,7 +1585,12 @@ void sub_08048A40(void)
     p->unk14 = (120 - p->unk2E) * 256 - p->unkC * 120 - p->unkE * 80;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_08048B24);
+s16 sub_08048B24(s16 a, s16 b)
+{
+    s32 r = a * b;
+    r /= 256;
+    return r;
+}
 
 s16 fixed_point_divide(s16 a, s16 b)
 {
