@@ -1303,6 +1303,7 @@ extern const u8 gUnk_087917F4[];
 extern const u8 gUnk_087919C4[];
 extern const u32 gUnk_08790600[];
 extern const u16 gUnk_08790400[];
+extern const u16 gUnk_083C6DF8[]; // per-step (x, y) offsets for update_sprite_animation_position
 extern const u8 gUnk_0879DDCC[];
 extern const u8 gUnk_0879DF44[];
 extern const u8 gUnk_0879E1DC[];

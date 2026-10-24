@@ -904,8 +904,107 @@ u32 get_item_quantity_by_id(u8 id)
 
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", item_add_quantity);
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08042318);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_080423A0);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_0804242C);
+
+// Bubble sort of the n SORT_BUFFER entries (struct SortEntry), ascending by key then key2.
+
+void sub_080423A0(u8 n)
+{
+    u16 t0, t1, t2, t3;
+    u32 j;
+    struct SortEntry *a, *b;
+
+    if (n <= 1)
+        return;
+    for (n--; n != 0; n--)
+    {
+        for (j = 0; j < n; j++)
+        {
+            a = &SORT_BUFFER[j];
+            b = &SORT_BUFFER[j + 1];
+            if (a->key > b->key)
+            {
+                t0 = a->key;
+                t1 = a->key2;
+                t2 = a->value;
+                t3 = a->unk6;
+                a->key = b->key;
+                a->key2 = b->key2;
+                a->value = b->value;
+                a->unk6 = b->unk6;
+                b->key = t0;
+                b->key2 = t1;
+                b->value = t2;
+                b->unk6 = t3;
+            }
+            else if (a->key == b->key && a->key2 > b->key2)
+            {
+                t0 = a->key;
+                t1 = a->key2;
+                t2 = a->value;
+                t3 = a->unk6;
+                a->key = b->key;
+                a->key2 = b->key2;
+                a->value = b->value;
+                a->unk6 = b->unk6;
+                b->key = t0;
+                b->key2 = t1;
+                b->value = t2;
+                b->unk6 = t3;
+            }
+        }
+    }
+}
+
+// Bubble sort of the n SORT_BUFFER entries (struct SortEntry), descending by key then key2.
+
+void sub_0804242C(u8 n)
+{
+    u16 t0, t1, t2, t3;
+    u32 j;
+    struct SortEntry *a, *b;
+
+    if (n <= 1)
+        return;
+    for (n--; n != 0; n--)
+    {
+        for (j = 0; j < n; j++)
+        {
+            a = &SORT_BUFFER[j];
+            b = &SORT_BUFFER[j + 1];
+            if (a->key < b->key)
+            {
+                t0 = a->key;
+                t1 = a->key2;
+                t2 = a->value;
+                t3 = a->unk6;
+                a->key = b->key;
+                a->key2 = b->key2;
+                a->value = b->value;
+                a->unk6 = b->unk6;
+                b->key = t0;
+                b->key2 = t1;
+                b->value = t2;
+                b->unk6 = t3;
+            }
+            else if (a->key == b->key && a->key2 < b->key2)
+            {
+                t0 = a->key;
+                t1 = a->key2;
+                t2 = a->value;
+                t3 = a->unk6;
+                a->key = b->key;
+                a->key2 = b->key2;
+                a->value = b->value;
+                a->unk6 = b->unk6;
+                b->key = t0;
+                b->key2 = t1;
+                b->value = t2;
+                b->unk6 = t3;
+            }
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", rng_next_080424B8);
 
 void set_blend_effect_mode(u8 mode, u16 targets, u16 speed)
@@ -1220,7 +1319,18 @@ struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32
     return r;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_sprite_to_vram_08042D94);
+// Decompresses 6 sprite tile chunks (0x80 bytes each in VRAM) into OBJ tile slot `slot` (0x400 bytes):
+// chunk 0 from Medabot a, 1-2 from b, 3-4 from c, 5 from d (gUnk_083B1888 has 6 pointers per Medabot).
+// The index is written as (n << 2) + (n << 1): `n * 6` compiles to (n * 3) << 1.
+void decompress_sprite_to_vram_08042D94(u32 a, u32 b, u32 c, u32 d, u32 slot)
+{
+    lz_decompress_dispatch(gUnk_083B1888[(a << 2) + (a << 1)], (void *)(VRAM + 0x10000 + slot * 0x400));
+    lz_decompress_dispatch(gUnk_083B1888[(b << 2) + (b << 1) + 1], (void *)(VRAM + 0x10000 + 0x80 + slot * 0x400));
+    lz_decompress_dispatch(gUnk_083B1888[(b << 2) + (b << 1) + 2], (void *)(VRAM + 0x10000 + 0x100 + slot * 0x400));
+    lz_decompress_dispatch(gUnk_083B1888[(c << 2) + (c << 1) + 3], (void *)(VRAM + 0x10000 + 0x180 + slot * 0x400));
+    lz_decompress_dispatch(gUnk_083B1888[(c << 2) + (c << 1) + 4], (void *)(VRAM + 0x10000 + 0x200 + slot * 0x400));
+    lz_decompress_dispatch(gUnk_083B1888[(d << 2) + (d << 1) + 5], (void *)(VRAM + 0x10000 + 0x280 + slot * 0x400));
+}
 
 void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile, u32 sprite, u32 x, u32 y, u32 flip, u32 prio, u32 pal)
 {
@@ -1645,8 +1755,54 @@ void sub_08043960(u32 phase, s32 amplitude, u32 lines)
     gVBlankOnceCallback = sub_08043AE0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08043AE0);
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", decompress_tileset_to_vram);
+// Own code (0x78) matches; the .s has a hidden function at 0x08043B58 (0x24 bytes) after the pool.
+// Vblank-once callback: line 0 of the double-buffered per-scanline BG0-3 scroll table to BG0HOFS..BG3VOFS,
+// then DMA0 (hblank, repeat, 4 words) for the remaining lines.
+void sub_08043AE0(void)
+{
+    vu32 *dma = (vu32 *)REG_ADDR_DMA0;
+    u16 *src;
+
+    if (!(gFrameCounter & 1))
+        src = (u16 *)gUnk_02023200;
+    else
+        src = (u16 *)gUnk_02023C00;
+    *(vu16 *)0x04000010 = src[0];
+    *(vu16 *)0x04000012 = src[1];
+    *(vu16 *)0x04000014 = src[2];
+    *(vu16 *)0x04000016 = src[3];
+    *(vu16 *)0x04000018 = src[4];
+    *(vu16 *)0x0400001A = src[5];
+    *(vu16 *)0x0400001C = src[6];
+    *(vu16 *)0x0400001E = src[7];
+    REG_DMA0CNT_H = 0;
+    dma[0] = (u32)(src + 8);
+    dma[1] = 0x04000010;
+    dma[2] = 0xA6600004;
+}
+
+// guess: stops the scanline scroll wave started by sub_08043960
+void sub_08043B58(void)
+{
+    VBlankIntrWait();
+    REG_DMA0CNT_H = 0;
+    gVBlankOnceCallback = nullsub_08000840;
+}
+
+// Tileset idx (4 pointers per entry in gUnk_083B23F8): tiles -> VRAM 0x06008000, BG2 / BG3 tilemaps,
+// BG palette -> gPaletteBackupBg (backup != 0) or straight to PLTT.
+void decompress_tileset_to_vram(u32 idx, u32 backup)
+{
+    u32 i;
+
+    lz_decompress_dispatch(gUnk_083B23F8[i = idx * 4], (void *)(VRAM + 0x8000));
+    set_tilemap_and_decompress_bg(0, 0, gUnk_083B23F8[i + 2], REG_BG2CNT, 0);
+    set_tilemap_and_decompress_bg(0, 0, gUnk_083B23F8[i + 3], REG_BG3CNT, 0);
+    if (backup)
+        CpuFastSet(gUnk_083B23F8[i + 1], gPaletteBackupBg, 0x40);
+    else
+        CpuFastSet(gUnk_083B23F8[i + 1], (void *)PLTT, 0x40);
+}
 
 void decompress_sprite_to_vram_08043C08(u32 idx, u32 backup)
 {
@@ -1817,7 +1973,19 @@ void race_enter_team_select(void)
     gGameSubState = 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_sprite_animation_position);
+// Sprite slot: while unk24 (table, 1-based) is set, add the (x, y) step for frame unk27 & 3 of row unk25
+// from gUnk_083C6DF8 to unk4 (wrapped to 0xFF) and unk2 (wrapped to 0x1FF), then advance unk27.
+void update_sprite_animation_position(u32 slot)
+{
+    s32 mask = 0x1FF;
+
+    if (gUnk_03002C30[slot].unk24 != 0)
+    {
+        gUnk_03002C30[slot].unk4 = (gUnk_03002C30[slot].unk4 + gUnk_083C6DF8[(gUnk_03002C30[slot].unk24 - 1) * 256 + gUnk_03002C30[slot].unk25 * 8 + (gUnk_03002C30[slot].unk27 & 3) * 2]) & 0xFF;
+        gUnk_03002C30[slot].unk2 = (gUnk_03002C30[slot].unk2 + gUnk_083C6DF8[(gUnk_03002C30[slot].unk24 - 1) * 256 + gUnk_03002C30[slot].unk25 * 8 + (gUnk_03002C30[slot].unk27 & 3) * 2 + 1]) & mask;
+        gUnk_03002C30[slot].unk27++;
+    }
+}
 
 u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty)
 {
