@@ -28,7 +28,7 @@ ASM_SRCS := $(shell find asm data sound graphics -name '*.s' -not -path 'asm/mac
 C_SRCS   := $(shell find src -name '*.c' 2>/dev/null)
 OBJS     := $(patsubst %.s,$(BUILD_DIR)/%.o,$(ASM_SRCS)) $(patsubst %.c,$(BUILD_DIR)/%.o,$(C_SRCS))
 
-.PHONY: all compare clean progress
+.PHONY: all compare clean progress shifted
 .SECONDARY:
 .SECONDEXPANSION:
 
@@ -78,3 +78,20 @@ $(ELF): ld_script.ld symbols.ld $(OBJS)
 
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
+
+# Shifted build: SHIFT bytes of padding after crt0 move all game code and data. A ROM address
+# hardcoded anywhere breaks it; the walkthrough tests run on it. build/shifted.sym lists the symbols.
+SHIFT ?= 0x1000
+
+shifted: $(BUILD_DIR)/shifted.gba
+
+$(BUILD_DIR)/ld_script_shifted.ld: ld_script.ld
+	@mkdir -p $(@D)
+	sed 's|^\([[:space:]]*\)build/asm/crt0.o(.text);|&\n\1. = . + $(SHIFT);|' $< > $@
+
+$(BUILD_DIR)/shifted.elf: $(BUILD_DIR)/ld_script_shifted.ld symbols.ld $(OBJS)
+	$(LD) -T $< -Map $(BUILD_DIR)/shifted.map -o $@ --no-check-sections
+
+$(BUILD_DIR)/shifted.gba: $(BUILD_DIR)/shifted.elf
+	$(OBJCOPY) -O binary $< $@
+	$(PREFIX)nm -n $< | awk '$$1 ~ /^0[0-9a-f]+$$/ && $$3 !~ /^\$$/ {print toupper($$1), $$3}' > $(BUILD_DIR)/shifted.sym

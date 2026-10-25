@@ -41,3 +41,16 @@ make compare
 
 This builds `medabots_rokusho.gba` and checks it against the original. A successful build ends with
 `medabots_rokusho.gba: OK`. Use `make -j$(nproc) compare` to build faster.
+
+## 5. Shifted build (for modding)
+
+```sh
+make shifted
+```
+
+This links the same objects with `SHIFT` bytes of padding (default `0x1000`) after the startup code, so
+every function and table moves. It writes `build/shifted.gba` and `build/shifted.sym` (`ADDRESS name`
+per line). If the shifted ROM still plays like the original, nothing in the build depends on a fixed
+ROM address and code or data can grow. `python3 tools/scripts/find_hardcoded.py` lists the words that
+point into the ROM in the original but did not move in the shifted build (mostly data that only looks
+like a pointer).
