@@ -193,6 +193,14 @@
 * A function that matches standalone can break when an unrelated function earlier in the file becomes C
   (session 91: sub_0805C190 rotates r8 / sl / ip). Bisect by reverting single functions to INCLUDE_ASM
   and keep the cheapest one as asm until the next neighbour is installed.
+* **Last resort for a few-line register swap:** a GNU local register variable,
+  `register u8 *p asm("r0") = (u8 *)&gX;`. Keep it in the smallest block that needs it; a function-wide
+  pin often reshuffles everything else. It solved: load_save_with_retries (call result kept in r1),
+  save_dispatch (bit-set address in r0), status_side_change_scroll_out (`rec * 2` in r0),
+  update_sound_channel_frequency_080733AC (pin the two pointer params, `cnt` declared first),
+  town_map_load_graphics, and sub_0805E5B0 (table pointer pinned to r4 *and* assigned inside the loop
+  body, so it is loaded after the loop guard). It does not help when the swapped register only holds a
+  constant (no variable to pin) or a spill slot.
 
 ## Naming
 
