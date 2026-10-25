@@ -86,7 +86,85 @@ void update_sprite_animations_0806B334(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sprite_animation_dispatch);
+void sprite_animation_dispatch(u8 sprite, u8 type, u8 a, u8 b)
+{
+    if (type == 0) {
+        gUnk_03002C30[sprite].unk20 = 0;
+        gUnk_03002C30[sprite].unk21 = 0;
+        gUnk_03002C30[sprite].unk22 = 0;
+        gUnk_03002C30[sprite].unk6 = gUnk_03002C30[sprite].unk30;
+        gUnk_03002C30[sprite].unk1A = 0;
+        return;
+    }
+    if (gUnk_03002C30[sprite].unk20 != 0)
+        return;
+    switch (type) {
+    case 1:
+        gUnk_03002C30[sprite].unk20 = 1;
+        gUnk_03002C30[sprite].unk21 = 1;
+        gUnk_03002C30[sprite].unk22 = a;
+        gUnk_03002C30[sprite].unk23 = b;
+        gUnk_03002C30[sprite].unk30 = 0x33;
+        gUnk_03002C30[sprite].unk6 = gUnk_08485D5C[1].frame;
+        break;
+    case 2:
+        gUnk_03002C30[sprite].unk20 = 2;
+        gUnk_03002C30[sprite].unk21 = 3;
+        gUnk_03002C30[sprite].unk22 = a >> 1;
+        gUnk_03002C30[sprite].unk30 = 0x33;
+        gUnk_03002C30[sprite].unk6 = gUnk_08485D5C[3].frame;
+        break;
+    case 3:
+        gUnk_03002C30[sprite].unk20 = 3;
+        gUnk_03002C30[sprite].unk21 = 7;
+        gUnk_03002C30[sprite].unk22 = a >> 1;
+        gUnk_03002C30[sprite].unk30 = 0x33;
+        gUnk_03002C30[sprite].unk6 = gUnk_08485D5C[7].frame;
+        break;
+    case 4:
+        gUnk_03002C30[sprite].unk20 = 4;
+        gUnk_03002C30[sprite].unk21 = 0xB;
+        gUnk_03002C30[sprite].unk22 = a;
+        gUnk_03002C30[sprite].unk30 = 0x100;
+        gUnk_03002C30[sprite].unk6 = gUnk_08485D5C[0xB].frame;
+        break;
+    case 5:
+        gUnk_03002C30[sprite].unk20 = 5;
+        gUnk_03002C30[sprite].unk21 = 0xF;
+        gUnk_03002C30[sprite].unk22 = a;
+        gUnk_03002C30[sprite].unk30 = 0x107;
+        gUnk_03002C30[sprite].unk6 = gUnk_08485D5C[0xF].frame;
+        break;
+    case 6:
+        gUnk_03002C30[sprite].unk20 = 6;
+        gUnk_03002C30[sprite].unk21 = 0;
+        gUnk_03002C30[sprite].unk22 = a;
+        gUnk_03002C30[sprite].unk30 = 0x10B;
+        gUnk_03002C30[sprite].unk6 = gUnk_03002C30[sprite].unk30;
+        break;
+    case 7:
+        gUnk_03002C30[sprite].unk20 = 7;
+        gUnk_03002C30[sprite].unk21 = 0;
+        gUnk_03002C30[sprite].unk30 = a + 0x108;
+        gUnk_03002C30[sprite].unk6 = gUnk_03002C30[sprite].unk30;
+        break;
+    case 8:
+        gUnk_03002C30[sprite].unk20 = 8;
+        gUnk_03002C30[sprite].unk21 = 0;
+        gUnk_03002C30[sprite].unk23 = b;
+        gUnk_03002C30[sprite].unk30 = a + 0x10C;
+        gUnk_03002C30[sprite].unk6 = gUnk_03002C30[sprite].unk30;
+        break;
+    case 10:
+        gUnk_03002C30[sprite].unk20 = 10;
+        gUnk_03002C30[sprite].unk21 = a * 4 + 0x14;
+        gUnk_03002C30[sprite].unk27 = 0;
+        gUnk_03002C30[sprite].unk30 = a * 12 + 0x6F;
+        gUnk_03002C30[sprite].unk6 = gUnk_03002C30[sprite].unk30;
+        break;
+    }
+    gUnk_03002C30[sprite].unk1A = 0;
+}
 
 void clear_sprite_entry(u8 sprite)
 {
@@ -1271,7 +1349,40 @@ void update_sprite_special_effects(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806B160", sub_0806DD10);
+// Title sprite palette fade-in: copies the title palette (gUnk_03001800_s.unkC, u16[14]) into
+// OBJ palette 6 step by step (unk22 = step 0..0x1E).
+bool32 sub_0806DD10(u8 idx)
+{
+    u8 n;
+    struct Unk_03002C30 *base = gUnk_03002C30;
+    struct Unk_03002C30 *p = &base[idx];
+    u8 c = p->unk22;
+
+    if (p->unk22 > 0x1E)
+        return FALSE;
+    if (p->unk22 == 0 || p->unk22 == 0x1E) {
+        vu32 zero = 0;
+        DmaSet(3, &zero, PLTT + 0x2C0, 0x85000000 | (0x20 / 4));
+    } else if (p->unk22 <= 0xE) {
+        n = c * 2;
+        {
+            vu32 zero = 0;
+            DmaSet(3, &zero, PLTT + 0x2C0, 0x85000000 | ((0x20 - n) / 4));
+        }
+        DmaSet(3, (u16 *)&gUnk_03001800_s.unkC, PLTT + 0x2E0 - n, 0x80000000 | (n / 2));
+    } else if (p->unk22 == 0xF) {
+        DmaSet(3, (u16 *)&gUnk_03001800_s.unkC, PLTT + 0x2C0, 0x80000000 | (0x1C / 2));
+    } else {
+        n = (0x1E - c) * 2;
+        {
+            vu32 zero = 0;
+            DmaSet(3, &zero, PLTT + 0x2C0 + n, 0x85000000 | ((0x20 - n) / 4));
+        }
+        DmaSet(3, &((u16 *)&gUnk_03001800_s.unkC)[p->unk22 - 15], PLTT + 0x2C0, 0x80000000 | (n / 2));
+    }
+    gUnk_03002C30[idx].unk22++;
+    return TRUE;
+}
 
 bool32 sub_0806DE34(u8 i)
 {
