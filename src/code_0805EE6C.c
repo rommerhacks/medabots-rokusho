@@ -909,7 +909,87 @@ void copy_bg2_tilemap_to_ewram(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", town_map_load_graphics);
+void town_map_load_graphics(void)
+{
+    u32 size;
+    u32 off;
+    register u32 cb asm("r5");
+    u8 i;
+    vu16 tmp;
+    vu16 *bg1, *bg2, *bg3;
+    u16 v;
+    struct Unk_03006F74 *p;
+
+    cb = 1;
+    bg1 = &REG_BG1CNT;
+    v = 0x1E05;
+    *bg1 = v;
+    bg2 = &REG_BG2CNT;
+    v -= 0xFF;
+    *bg2 = v;
+    bg3 = &REG_BG3CNT;
+    v -= 0xFF;
+    *bg3 = v;
+    decompress_and_write_tilemap(gUnk_0878A844, *bg1);
+    decompress_and_write_tilemap(gUnk_0878A918, *bg2);
+    decompress_and_write_tilemap(gUnk_0878AA0C, *bg3);
+    {
+        struct Unk_03006F74 *q;
+        if (gGameState == 0x17)
+        {
+            q = gUnk_03006F74;
+            q->unk18 = 1;
+        }
+        else
+        {
+            *(u16 *)(((*bg3 >> 8) & 0x1F) * 0x800 + (VRAM + 0x248)) = *(u16 *)(((*bg3 >> 8) & 0x1F) * 0x800 + (VRAM + 0x21E));
+            q = gUnk_03006F74;
+            q->unk18 = 0;
+        }
+    }
+    switch (gUnk_030057E0.unkC32)
+    {
+    case 0:
+        for (i = 0; i <= 2; i++)
+        {
+            tmp = 0;
+            CpuSet((void *)&tmp, (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + 13 + (i + 10) * 32, 0x01000005);
+        }
+    case 1:
+        for (i = 0; i <= 2; i++)
+        {
+            tmp = 0;
+            CpuSet((void *)&tmp, (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + 8 + (i + 4) * 32, 0x01000005);
+        }
+        break;
+    }
+    off = cb << 14;
+    size = dma3_copy_or_decompress(gUnk_087877C4, gDecompressBuffer);
+    CpuFastSet(gDecompressBuffer, (void *)(VRAM + off), (size / 4) & 0x1FFFFF);
+    lz_decompress_dispatch(gUnk_08784CB0, (void *)(VRAM + off + size));
+    gUnk_03006F74->unk36 = size / 32 - 1;
+    CpuFastSet(gUnk_087871E4, (void *)PLTT, 0x70);
+    lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
+    CpuFastSet(gUnk_080AF9A8, (void *)(PLTT + 0x200), 0x18);
+    gUnk_03006F74->unk17 = gUnk_08483CE0[gUnk_030057E0.unk7FE];
+    gUnk_03002C30[0].unk0 = 0xC000;
+    gUnk_03002C30[0].unk1C = 2;
+    gUnk_03002C30[0].unk4 = 0x3C;
+    p = gUnk_03006F74;
+    gUnk_03002C30[0].unkA = p->unk18;
+    gUnk_03002C30[0].unk6 = 0x10D;
+    gUnk_03002C30[0].unk1A = 0;
+    gUnk_03002C30[1].unk0 = 0xC000;
+    gUnk_03002C30[1].unk1C = 2;
+    gUnk_03002C30[1].unk2 = gUnk_08483DC0[0][p->unk17 * 2] * 8;
+    gUnk_03002C30[1].unk4 = gUnk_08483DC0[0][p->unk17 * 2 + 1] * 8;
+    gUnk_03002C30[1].unkA = 2;
+    gUnk_03002C30[1].unk6 = 0x10E;
+    gUnk_03002C30[0].unk2 = gUnk_08483DC0[0][p->unk17 * 2] * 8;
+    gUnk_03002C30[0].unk4 = gUnk_08483DC0[0][p->unk17 * 2 + 1] * 8;
+    dma3_copy_or_decompress(gUnk_087873A4, (void *)0x020301E0);
+    gGameSubState++;
+}
 
 void sub_08060804(void)
 {

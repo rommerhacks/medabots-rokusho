@@ -553,6 +553,14 @@ extern const u8 gUnk_0878DE10[]; // save screen BG1 tilemap (LZ77, decompress_an
 extern const u8 gUnk_0878DFE0[]; // save screen BG2 tilemap
 extern const u8 gUnk_0878E104[]; // save screen BG3 tilemap
 extern const u32 gUnk_0878CC64[]; // save screen BG tiles (dma3_copy_or_decompress)
+extern const u8 gUnk_0878A844[]; // town map graphics (town_map_load_graphics)
+extern const u8 gUnk_0878A918[]; // town map graphics (town_map_load_graphics)
+extern const u8 gUnk_0878AA0C[]; // town map graphics (town_map_load_graphics)
+extern const u32 gUnk_087877C4[]; // town map graphics (town_map_load_graphics)
+extern const u8 gUnk_087871E4[]; // town map graphics (town_map_load_graphics)
+extern const u8 gUnk_080AF9A8[]; // town map graphics (town_map_load_graphics)
+extern const u8 gUnk_08483CE0[]; // town map graphics (town_map_load_graphics)
+extern const u32 gUnk_087873A4[]; // town map graphics (town_map_load_graphics)
 extern const u8 gUnk_08784CB0[]; // save screen BG tiles, after gUnk_0878CC64 (LZ77)
 extern const u8 gUnk_08784DA4[]; // save screen OBJ tiles (LZ77)
 
