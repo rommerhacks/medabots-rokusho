@@ -61,7 +61,79 @@ void decompress_and_load_sprite_tiles(const u32 *src, s32 shape, s32 size, s32 r
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", setup_oam_sprite_entries);
+// Local struct (new): byte-wise view of struct SpriteDesc; the u8 bitfields are needed to match
+// (the header's u32 bitfields change the code).
+struct SpriteDesc8
+{
+    u8 bpp:4;
+    u8 shape:2;
+    u8 size:2;
+    u8 w:4;
+    u8 h:4;
+    u16 unk2;
+};
+
+// Local view of struct SpriteAnchor with the x / y / attribute bitfields.
+struct SpriteAnchorFull
+{
+    u8 filler0[2];
+    s16 x;
+    u16 y;
+    s8 unk6;
+    u8 affineMode:2;
+    u8 objMode:2;
+};
+
+u32 setup_oam_sprite_entries(struct OamData *oams, void *tiles, void *pal, const struct SpriteDesc *desc, const struct SpriteAnchor *anchor, u8 palNum, u16 tile)
+{
+    const struct SpriteDesc8 *d;
+    u16 dims[2];
+    u32 n;
+    u8 i, j;
+
+#define DESC ((const struct SpriteDesc8 *)desc)
+#define oam ((struct OamFull *)oams)
+#define a ((const struct SpriteAnchorFull *)anchor)
+    n = sub_08044E64(DESC->shape << 14, DESC->size << 30);
+    dims[0] = n >> 16;
+    dims[1] = n;
+    n = dims[0] * dims[1];
+    if (DESC->bpp == 0)
+        n >>= 1;
+    n = n * DESC->w * DESC->h;
+    // the copy (assigned here, not at the top) puts the hoisted desc word in the matching spill slot
+    d = DESC;
+    decompress_and_load_sprite_tiles(tiles, d->shape << 14, DESC->size << 30, d->w, DESC->h, DESC->bpp, tile, n, (u8 *)0x02030000, 1);
+#undef DESC
+    if (pal != NULL)
+        CpuSet(pal, (void *)(0x05000200 + palNum * 32), 0x10);
+    n = (dims[0] >> 3) * (dims[1] >> 3);
+    for (i = 0; i < d->w; i++)
+    {
+        for (j = 0; j < d->h; j++)
+        {
+            oam->y = a->y + dims[0] * i;
+            oam->affineMode = a->affineMode;
+            oam->objMode = a->objMode;
+            oam->mosaic = 0;
+            oam->bpp = d->bpp;
+            oam->shape = d->shape;
+            oam->x = a->x + dims[1] * j;
+            oam->matrixNum = 0;
+            oam->hFlip = 0;
+            oam->vFlip = 0;
+            oam->size = d->size;
+            oam->tileNum = tile;
+            oam->priority = 0;
+            oam->paletteNum = palNum;
+            tile += n;
+            oams++;
+        }
+    }
+    return tile;
+#undef oam
+#undef a
+}
 
 u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const struct SpriteAnchor *e, u8 f, u16 g)
 {
@@ -74,18 +146,6 @@ u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, vo
 }
 
 INCLUDE_ASM("asm/nonmatching/code_08044F54", set_oam_sprite_tile_positions);
-
-// Local struct (new): byte-wise view of struct SpriteDesc; the u8 bitfields are needed to match
-// (the header's u32 bitfields change the code). Same view as in setup_oam_sprite_entries.
-struct SpriteDesc8
-{
-    u8 bpp:4;
-    u8 shape:2;
-    u8 size:2;
-    u8 w:4;
-    u8 h:4;
-    u16 unk2;
-};
 
 void setup_sprite_from_oam_descriptor(const u32 *src, const struct SpriteDesc *desc, u16 tile, u32 useCpu)
 {
