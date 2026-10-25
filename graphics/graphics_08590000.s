@@ -250,7 +250,23 @@ gUnk_08792FC4:
 
 	.global gUnk_08793428
 gUnk_08793428:
-	.incbin "baserom.gba", 0x793428, 0x2174
+	.incbin "baserom.gba", 0x793428, 0x200
+
+	.global gUnk_08793628
+gUnk_08793628:
+	.incbin "baserom.gba", 0x793628, 0x1844
+
+	.global gUnk_08794E6C
+gUnk_08794E6C:
+	.incbin "baserom.gba", 0x794E6C, 0x2E0
+
+	.global gUnk_0879514C
+gUnk_0879514C:
+	.incbin "baserom.gba", 0x79514C, 0x2CC
+
+	.global gUnk_08795418
+gUnk_08795418:
+	.incbin "baserom.gba", 0x795418, 0x184
 
 	.global gUnk_0879559C
 gUnk_0879559C:

@@ -6,7 +6,11 @@ gData_080AB000:
 
 	.global gUnk_080ABBEC
 gUnk_080ABBEC:
-	.incbin "baserom.gba", 0xABBEC, 0x10
+	.incbin "baserom.gba", 0xABBEC, 0x8
+
+	.global gUnk_080ABBF4
+gUnk_080ABBF4:
+	.incbin "baserom.gba", 0xABBF4, 0x8
 
 	.global gUnk_080ABBFC
 gUnk_080ABBFC:
@@ -374,7 +378,11 @@ gUnk_080AF808:
 
 	.global gUnk_080AF810
 gUnk_080AF810:
-	.incbin "baserom.gba", 0xAF810, 0x44
+	.incbin "baserom.gba", 0xAF810, 0x40
+
+	.global gUnk_080AF850
+gUnk_080AF850:
+	.incbin "baserom.gba", 0xAF850, 0x4
 
 	.global gUnk_080AF854
 gUnk_080AF854:

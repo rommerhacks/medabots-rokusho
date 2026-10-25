@@ -57,11 +57,39 @@ gSoundTrackConfigs:
 
 	.global gSoundEffectTracks
 gSoundEffectTracks:
-	.incbin "baserom.gba", 0x3ABC7C, 0x19C
+	.incbin "baserom.gba", 0x3ABC7C, 0x24
+
+	.global gUnk_083ABCA0
+gUnk_083ABCA0:
+	.incbin "baserom.gba", 0x3ABCA0, 0xC
+
+	.global gUnk_083ABCAC
+gUnk_083ABCAC:
+	.incbin "baserom.gba", 0x3ABCAC, 0xC
+
+	.global gUnk_083ABCB8
+gUnk_083ABCB8:
+	.incbin "baserom.gba", 0x3ABCB8, 0x160
 
 	.global gUnk_083ABE18
 gUnk_083ABE18:
-	.incbin "baserom.gba", 0x3ABE18, 0x330
+	.incbin "baserom.gba", 0x3ABE18, 0x18
+
+	.global gUnk_083ABE30
+gUnk_083ABE30:
+	.incbin "baserom.gba", 0x3ABE30, 0x258
+
+	.global gUnk_083AC088
+gUnk_083AC088:
+	.incbin "baserom.gba", 0x3AC088, 0x40
+
+	.global gUnk_083AC0C8
+gUnk_083AC0C8:
+	.incbin "baserom.gba", 0x3AC0C8, 0x40
+
+	.global gUnk_083AC108
+gUnk_083AC108:
+	.incbin "baserom.gba", 0x3AC108, 0x40
 
 	.global gGameStateHandlers_083AC148
 gGameStateHandlers_083AC148:
@@ -1208,7 +1236,11 @@ gUnk_083D2998:
 
 	.global gUnk_083D29A6
 gUnk_083D29A6:
-	.incbin "baserom.gba", 0x3D29A6, 0x40
+	.incbin "baserom.gba", 0x3D29A6, 0x10
+
+	.global gUnk_083D29B6
+gUnk_083D29B6:
+	.incbin "baserom.gba", 0x3D29B6, 0x30
 
 	.global gUnk_083D29E6
 gUnk_083D29E6:

@@ -57,7 +57,7 @@ _08018948:
 	ldrb r1, [r4]
 	b _080189B4
 	.align 2, 0
-_08018968: .4byte 0x083B7E0C
+_08018968: .4byte gUnk_083B7E0C
 _0801896C: .4byte 0x0300052E
 _08018970:
 	ldrb r0, [r2, #5]
@@ -75,7 +75,7 @@ _08018970:
 	ldrb r1, [r4, #1]
 	b _080189B4
 	.align 2, 0
-_08018990: .4byte 0x083B7E0C
+_08018990: .4byte gUnk_083B7E0C
 _08018994: .4byte 0x0300052E
 _08018998:
 	ldrb r0, [r2, #5]
@@ -116,7 +116,7 @@ _080189DA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080189E0: .4byte 0x083B7E0C
+_080189E0: .4byte gUnk_083B7E0C
 _080189E4: .4byte 0x0300052E
-_080189E8: .4byte 0x083B7CD4
+_080189E8: .4byte gUnk_083B7CD4
 	.syntax divided

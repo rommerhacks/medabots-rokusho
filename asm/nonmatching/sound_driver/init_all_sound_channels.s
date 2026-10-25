@@ -56,6 +56,6 @@ _080748D8:
 	bx r0
 	.align 2, 0
 _080748F4: .4byte 0x03007014
-_080748F8: .4byte 0x083ABBE0
+_080748F8: .4byte gSoundTrackConfigs
 _080748FC: .4byte 0x000005EC
 	.syntax divided

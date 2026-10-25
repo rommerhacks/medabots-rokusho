@@ -654,9 +654,9 @@ void sub_0800519C(void)
 void sub_0800522C(void)
 {
     if (gUnk_030017A0[gUnk_03000440.unk51].unk0 > 1)
-        CpuFastSet((const u8 *)0x084C21BC + gUnk_030017A0[gUnk_03000440.unk51].unk2 * 0x80, (void *)0x06006600, 0x20);
+        CpuFastSet(gUnk_084C21BC + gUnk_030017A0[gUnk_03000440.unk51].unk2 * 0x80, (void *)0x06006600, 0x20);
     else
-        CpuFastSet((const void *)0x084C30BC, (void *)0x06006600, 0x20);
+        CpuFastSet(gUnk_084C30BC, (void *)0x06006600, 0x20);
     fill_tilemap_rect_08042698(2, 2, 1, 16, REG_BG1CNT, 0x6330);
 }
 
@@ -932,9 +932,9 @@ void sub_08005AD0(void)
 void sub_08005B44(void)
 {
     if (gUnk_03000440.unk97 < 30)
-        CpuFastSet((const u8 *)0x084C21BC + gUnk_03000BE0[gUnk_03000440.unk97].unk1 * 0x80, (void *)0x06007800, 0x20);
+        CpuFastSet(gUnk_084C21BC + gUnk_03000BE0[gUnk_03000440.unk97].unk1 * 0x80, (void *)0x06007800, 0x20);
     else
-        CpuFastSet((const void *)0x084C30BC, (void *)0x06007800, 0x20);
+        CpuFastSet(gUnk_084C30BC, (void *)0x06007800, 0x20);
     fill_tilemap_rect_08042698(2, 2, 16, 9, REG_BG1CNT, 0x63C0);
 }
 

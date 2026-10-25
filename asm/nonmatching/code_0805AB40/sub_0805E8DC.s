@@ -193,7 +193,7 @@ _0805EA1E:
 	strb r0, [r2, #0xd]
 	b _0805EA78
 	.align 2, 0
-_0805EA4C: .4byte 0x080AF850
+_0805EA4C: .4byte gUnk_080AF850
 _0805EA50: .4byte 0x03006F74
 _0805EA54:
 	adds r0, #1
@@ -710,5 +710,5 @@ _0805EE56:
 	.align 2, 0
 _0805EE60: .4byte 0x03006F74
 _0805EE64: .4byte 0x03002C30
-_0805EE68: .4byte 0x083B4C88
+_0805EE68: .4byte gUnk_083B4C88
 	.syntax divided

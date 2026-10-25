@@ -3479,6 +3479,7 @@
 0807506C	60	sound_set_volume	sound_driver
 080750CC	C	sub_080750CC	sound_driver
 0807C740	68	sub_0807C740	-
+0807C784	24	sub_0807C784	-
 0807C7A8	38	sub_0807C7A8	-
 0807C7E0	88	serial_init_transfer	-
 0807C868	44	sub_0807C868	-

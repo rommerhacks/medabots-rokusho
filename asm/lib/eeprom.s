@@ -19,7 +19,7 @@ sub_0807C740: @ 0x0807C740
 	b _0807C778
 	.align 2, 0
 _0807C754: .4byte 0x03007018
-_0807C758: .4byte 0x083ABCA0
+_0807C758: .4byte gUnk_083ABCA0
 _0807C75C:
 	cmp r0, #0x40
 	bne _0807C770
@@ -29,7 +29,7 @@ _0807C75C:
 	b _0807C778
 	.align 2, 0
 _0807C768: .4byte 0x03007018
-_0807C76C: .4byte 0x083ABCAC
+_0807C76C: .4byte gUnk_083ABCAC
 _0807C770:
 	ldr r1, _0807C77C @ =0x03007018
 	ldr r0, _0807C780 @ =0x083ABCA0
@@ -40,11 +40,29 @@ _0807C778:
 	bx lr
 	.align 2, 0
 _0807C77C: .4byte 0x03007018
-_0807C780: .4byte 0x083ABCA0
-_0807C784:
-	.byte 0x06, 0x49, 0x08, 0x88, 0x00, 0x28, 0x08, 0xD0, 0x08, 0x88, 0x01, 0x38
-	.byte 0x08, 0x80, 0x00, 0x04, 0x00, 0x28, 0x02, 0xD1, 0x02, 0x49, 0x01, 0x20, 0x08, 0x70, 0x70, 0x47
-	.byte 0xF6, 0x03, 0x00, 0x03, 0xF8, 0x03, 0x00, 0x03
+_0807C780: .4byte gUnk_083ABCA0
+
+	@ guess: EEPROM timeout timer IRQ (counts the halfword at 0x030003F6 down, sets the byte at 0x030003F8 at 0)
+	non_word_aligned_thumb_func_start sub_0807C784
+sub_0807C784: @ 0x0807C784
+	ldr r1, _0807C7A0 @ =0x030003F6
+	ldrh r0, [r1]
+	cmp r0, #0
+	beq _0807C79E
+	ldrh r0, [r1]
+	subs r0, #1
+	strh r0, [r1]
+	lsls r0, r0, #0x10
+	cmp r0, #0
+	bne _0807C79E
+	ldr r1, _0807C7A4 @ =0x030003F8
+	movs r0, #1
+	strb r0, [r1]
+_0807C79E:
+	bx lr
+_0807C7A0: .4byte 0x030003F6
+_0807C7A4: .4byte 0x030003F8
+	thumb_func_end sub_0807C784
 
 	thumb_func_start sub_0807C7A8
 	.global sub_0807C7A8
@@ -70,7 +88,7 @@ sub_0807C7A8: @ 0x0807C7A8
 _0807C7CC: .4byte 0x030003F4
 _0807C7D0: .4byte 0x030003FC
 _0807C7D4: .4byte 0x04000100
-_0807C7D8: .4byte 0x0807C785
+_0807C7D8: .4byte sub_0807C784
 _0807C7DC:
 	movs r0, #1
 _0807C7DE:
@@ -437,7 +455,7 @@ _0807CAA0:
 	bx r1
 	.align 2, 0
 _0807CAA8: .4byte 0x03007018
-_0807CAAC: .4byte 0x083ABCB8
+_0807CAAC: .4byte gUnk_083ABCB8
 _0807CAB0: .4byte 0x030003F8
 _0807CAB4: .4byte 0x0000C001
 

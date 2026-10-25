@@ -74,10 +74,10 @@ render_sprite_node_recursive: @ 0x080465B8
 	ldrsh r4, [r1, r0]
 	b _08046668
 	.align 2, 0
-_08046648: .4byte 0x080ABBF4
+_08046648: .4byte gUnk_080ABBF4
 _0804664C: .4byte 0x01000100
 _08046650: .4byte 0xFFFF0000
-_08046654: .4byte 0x08081320
+_08046654: .4byte gUnk_08081320
 _08046658:
 	ldr r1, [sp, #0x40]
 	ldrh r1, [r1, #0xc]
