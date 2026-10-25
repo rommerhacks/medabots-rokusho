@@ -201,6 +201,20 @@
   town_map_load_graphics, and sub_0805E5B0 (table pointer pinned to r4 *and* assigned inside the loop
   body, so it is loaded after the loop guard). It does not help when the swapped register only holds a
   constant (no variable to pin) or a spill slot.
+* **An invariant the original recomputes inside a loop** (`lsls r1, r6, #12` each pass where gcc hoists
+  it): pin the source value to a hard register outside the loop (`register u32 pal asm("r6") =
+  (u8)palette;`), then copy it into a variable that is already set earlier in the loop body (`x = pal;
+  h = ... + (x << 12);`). A variable set twice in the loop is not movable. Loop invariants are hoisted
+  in two passes (`-frerun-loop-opt`); if a hoisted constant lands on the wrong side of the loop counter
+  init, give it a named local (`s32 mask = 0xF000;`) in the body (tilemap_offset_tiles_and_palette).
+* **Spill-slot swaps:** the slot order follows pseudo creation order. A pointer copy assigned late
+  (`d = DESC;` just before the call, then `d->w` in the loop conditions) made the hoisted desc word the
+  older pseudo (setup_oam_sprite_entries).
+* **decomp-permuter** (github.com/simonlindholm/decomp-permuter): `tools/scripts/perm_setup.py FUNC FILE.c`
+  writes scratch/perm/FUNC/ (target bytes, compile.sh linking against the last build's symbols), then run
+  `permuter.py scratch/perm/FUNC -j2 --stop-on-zero` from a permuter checkout for ~10 minutes.
+  It found both fixes above from a 4-line diff. Further off than ~10 lines it rarely gets anywhere.
+  Its scores do not match match.py's line counts; check its output-*/source.c in module context.
 
 ## Naming
 
