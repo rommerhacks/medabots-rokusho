@@ -602,7 +602,57 @@ void afterbattle_part_detail_save_screen(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080116C4);
+// Guess: START on "Medapart was acquired": open the Medaparts detail page (game state 5 sub 0x10) of the
+// won part (gUnk_03001800.unk168 = part kind, unk169 = part id).
+void sub_080116C4(void)
+{
+    struct Unk_03000440 *g;
+    struct Unk_03001800 *b;
+    u8 kind;
+
+    sub_08043CA8();
+    clear_battle_sprite_slot(0, 0x80);
+    g = &gUnk_03000440;
+    g->unk96 = 0;
+    gUnk_03000430 = 0;
+    b = &gUnk_03001800;
+    kind = b->unk168;
+    switch (kind)
+    {
+    case 0:
+        sub_0803F624(&g->unk3C, 0x14, 0);
+        g->unk3C = 2;
+        g->unk3D = b->unk169;
+        g->unk3E = kind;
+        gGameState = 5;
+        gGameSubState = 0x10;
+        break;
+    case 1:
+        sub_0803F624(&g->unk3C, 0x14, 0);
+        g->unk3C = 2;
+        g->unk3D = b->unk169;
+        g->unk3E = kind;
+        gGameState = 5;
+        gGameSubState = 0x10;
+        break;
+    case 2:
+        sub_0803F624(&g->unk3C, 0x14, 0);
+        g->unk3C = 2;
+        g->unk3D = b->unk169;
+        g->unk3E = kind;
+        gGameState = 5;
+        gGameSubState = 0x10;
+        break;
+    case 3:
+        sub_0803F624(&g->unk3C, 0x14, 0);
+        g->unk3C = 2;
+        g->unk3D = b->unk169;
+        g->unk3E = kind;
+        gGameState = 5;
+        gGameSubState = 0x10;
+        break;
+    }
+}
 
 void afterbattle_part_detail_restore_screen(void)
 {
@@ -954,7 +1004,35 @@ void sub_080121CC(void)
         sub_080122F4(3);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080121F0);
+// Guess: 10 points per broken (armor 0) arm / legs part of the present opponents (records 3-5).
+s32 sub_080121F0(void)
+{
+    s32 sum = 0;
+    u32 i = 0, j, k;
+    struct Unk_03000590 *base = gUnk_03000590;
+    u8 *armor = &base->parts[0].unk11;
+    u8 *p;
+
+loop:
+    k = (i + 3) << 8;
+    if (!*((u8 *)base + 0xBA + k))
+        goto end;
+    j = 1;
+    i++;
+    p = (u8 *)(k + (u32)armor) + 0x18;
+inner:
+    if (!*p)
+        sum += 10;
+    p += 0x18;
+    j++;
+    if (j <= 3)
+        goto inner;
+    if (i <= 2)
+        goto loop;
+end:
+    return sum;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012234);
 INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080122F4);
 
