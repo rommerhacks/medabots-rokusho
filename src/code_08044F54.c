@@ -14,7 +14,37 @@ void dma_load_sprite_tiles(const u32 *src, u16 tile, void *buf, u32 useCpu)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", copy_sprite_tiles_to_vram);
+void copy_sprite_tiles_to_vram(u8 *dst, u8 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp)
+{
+    u16 dim[2];
+    u32 hw;
+    s32 i, j, k;
+    u8 *rowStart;
+    register u8 *colStart asm("r8"); // pinned: the original swaps dst / colStart (r9 / r8)
+
+    hw = sub_08044E64(shape, size);
+    dim[0] = hw >> 16;
+    dim[1] = hw;
+    dim[0] >>= 3;
+    dim[1] >>= 3;
+    dim[1] = Div(0x40, 2 - bpp) * dim[1];
+    for (i = 0; i < rows; i++)
+    {
+        rowStart = src;
+        for (j = 0; j < cols; j++)
+        {
+            colStart = src;
+            for (k = 0; k < dim[0]; k++)
+            {
+                CpuSet(src, dst, (dim[1] >> 2) | 0x04000000);
+                src += dim[1] * cols;
+                dst += dim[1];
+            }
+            src = colStart + dim[1];
+        }
+        src = rowStart + dim[0] * dim[1] * cols;
+    }
+}
 
 void decompress_and_load_sprite_tiles(const u32 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp, u16 tile, u32 unused, u8 *buf, u32 useCpu)
 {
@@ -1730,7 +1760,31 @@ s32 count_decimal_digits(s32 n)
     return i;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", truncate_to_digit_count);
+s32 truncate_to_digit_count(s32 n, u8 k)
+{
+    s32 rem = n;
+    register s32 i asm("r4") = 0; // pinned: the original allocates i before p / j
+    s32 p, j;
+
+    do {
+        while (i < count_decimal_digits(n) - k && i != count_decimal_digits(n) - 1)
+        {
+            p = 1;
+            j = 0;
+            i++;
+            while (j < count_decimal_digits(n) - i)
+            {
+                p *= 10;
+                j++;
+            }
+            j = rem / p;
+            rem -= p * j;
+        }
+    } while (0);
+    if (k != 0)
+        return j;
+    return rem;
+}
 
 u32 sub_08048914(u32 a)
 {
