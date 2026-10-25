@@ -1329,5 +1329,10 @@ extern const u8 gUnk_083D2AAB[];
 extern const u8 gUnk_083D2AB4[];
 extern const u8 gUnk_083D2AD8;
 extern const u8 gUnk_083D2AD9[];
+extern u32 gUnk_0807E77C[][7];
+extern u8 gUnk_083CABF8[];
+extern u8 *gUnk_083D1E98[];
+extern s16 *gUnk_083D1CC0[];
+extern s8 *gUnk_083D1DAC[];
 
 #endif // GUARD_VARIABLES_H

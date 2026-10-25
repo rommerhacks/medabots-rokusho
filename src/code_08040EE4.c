@@ -928,7 +928,37 @@ void item_add_quantity(u8 id, u8 n)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08042318);
+// Removes n of item id (guess: item_remove_quantity); when the count drops to 0 the entry is cleared
+// and bubbled to the end of the list.
+void sub_08042318(u8 id, u8 n)
+{
+    u32 i;
+    s32 left;
+
+    id &= 0x3F;
+    for (i = 0; i < 64; i++)
+    {
+        if ((gItemInventory[i][0] & 0x80) && (gItemInventory[i][0] & 0x7F) == id)
+        {
+            left = gItemInventory[0][i * 2 + 1] - n;
+            if (left <= 0)
+            {
+                gItemInventory[i][0] = 0;
+                gItemInventory[0][i * 2 + 1] = 0;
+                while (gItemInventory[i + 1][0] != 0)
+                {
+                    memswap(&gItemInventory[0][i * 2], &gItemInventory[0][(i + 1) * 2], 2);
+                    i++;
+                }
+            }
+            else
+            {
+                gItemInventory[0][i * 2 + 1] = left;
+                return;
+            }
+        }
+    }
+}
 
 // Bubble sort of the n SORT_BUFFER entries (struct SortEntry), ascending by key then key2.
 
@@ -1652,7 +1682,43 @@ void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags)
         fill_tilemap_rect_08042698(2, 2, x, y, bgcnt, flags + id * 4);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_0804361C);
+// Previous/next owned Medal slot (guess). The backward search is a goto loop (no loop hoisting of 0x80)
+// with two pointer locals for the two base copies (r2/r3) the original keeps.
+
+u32 sub_0804361C(volatile u32 medal, volatile u32 backward)
+{
+    if (backward)
+    {
+        if (medal != 0)
+        {
+            struct Unk_03000BE0 *p = gUnk_03000BE0;
+            struct Unk_03000BE0 *q = gUnk_03000BE0;
+        loop:
+            medal--;
+            if (q[medal].unk0 & 0x80)
+            {
+                if (!(p[medal].unk0 & 0x40))
+                    return medal;
+            }
+            if (medal != 0)
+                goto loop;
+        }
+    }
+    else
+    {
+        do
+        {
+            medal++;
+            if (medal == 31)
+                medal = 0;
+            if (medal == 30)
+                goto none;
+        } while (!(gUnk_03000BE0[medal].unk0 & 0x80) || (gUnk_03000BE0[medal].unk0 & 0x40));
+        return medal;
+    }
+none:
+    return 30;
+}
 
 u32 find_next_available_medapart_slot(vu32 part, vu32 kind, vu32 backward, vu32 gender)
 {
@@ -1874,7 +1940,72 @@ void sub_08043CA8(void)
     gBg3Scroll.y = 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_scroll_movement_a);
+void update_scroll_movement_a(void)
+{
+    vu8 *acc;
+    u32 t;
+
+    if (gUnk_03001800.unk39[0] == 0)
+        return;
+    acc = &gUnk_03001800.unk39[6];
+    *acc = *(vu8 *)&gUnk_03001800.unk39[2] + *acc;
+    if ((t = *acc >> 2) == 0)
+        return;
+    gUnk_03001800.unk39[7] = t;
+    {
+        u32 v = *acc;
+        register u32 mask asm("r1") = 3; // pinned: the original loads the byte into r0, the mask into r1
+        *acc = v & mask;
+    }
+    if (gUnk_03001800.unk39[1] & 1)
+    {
+        switch (gUnk_03001800.unk39[0])
+        {
+        case 1:
+            gBg2Scroll.y += gUnk_03001800.unk39[7];
+            break;
+        case 2:
+            gBg3Scroll.y += gUnk_03001800.unk39[7];
+            break;
+        }
+    }
+    if (gUnk_03001800.unk39[1] & 2)
+    {
+        switch (gUnk_03001800.unk39[0])
+        {
+        case 1:
+            gBg2Scroll.y -= gUnk_03001800.unk39[7];
+            break;
+        case 2:
+            gBg3Scroll.y -= gUnk_03001800.unk39[7];
+            break;
+        }
+    }
+    if (gUnk_03001800.unk39[1] & 4)
+    {
+        switch (gUnk_03001800.unk39[0])
+        {
+        case 1:
+            gBg2Scroll.x += gUnk_03001800.unk39[7];
+            break;
+        case 2:
+            gBg3Scroll.x += gUnk_03001800.unk39[7];
+            break;
+        }
+    }
+    if (gUnk_03001800.unk39[1] & 8)
+    {
+        switch (gUnk_03001800.unk39[0])
+        {
+        case 1:
+            gBg2Scroll.x -= gUnk_03001800.unk39[7];
+            break;
+        case 2:
+            gBg3Scroll.x -= gUnk_03001800.unk39[7];
+            break;
+        }
+    }
+}
 
 void apply_battle_blend_effect_a(void)
 {
@@ -1898,7 +2029,72 @@ void load_battle_script_entry_b(void)
     memcpy_bytes_0803F63C(gUnk_083C3B5C[gUnk_03001800.unk38], gUnk_03001800.unk74, 8);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", update_scroll_movement_b);
+void update_scroll_movement_b(void)
+{
+    vu8 *acc;
+    u32 t;
+
+    if (gUnk_03001800.unk74[0] == 0)
+        return;
+    acc = &gUnk_03001800.unk74[6];
+    *acc = *(vu8 *)&gUnk_03001800.unk74[2] + *acc;
+    if ((t = *acc >> 2) == 0)
+        return;
+    gUnk_03001800.unk74[7] = t;
+    {
+        u32 v = *acc;
+        register u32 mask asm("r1") = 3; // pinned: the original loads the byte into r0, the mask into r1
+        *acc = v & mask;
+    }
+    if (gUnk_03001800.unk74[1] & 1)
+    {
+        switch (gUnk_03001800.unk74[0])
+        {
+        case 1:
+            gBg2Scroll.y += gUnk_03001800.unk74[7];
+            break;
+        case 2:
+            gBg3Scroll.y += gUnk_03001800.unk74[7];
+            break;
+        }
+    }
+    if (gUnk_03001800.unk74[1] & 2)
+    {
+        switch (gUnk_03001800.unk74[0])
+        {
+        case 1:
+            gBg2Scroll.y -= gUnk_03001800.unk74[7];
+            break;
+        case 2:
+            gBg3Scroll.y -= gUnk_03001800.unk74[7];
+            break;
+        }
+    }
+    if (gUnk_03001800.unk74[1] & 4)
+    {
+        switch (gUnk_03001800.unk74[0])
+        {
+        case 1:
+            gBg2Scroll.x += gUnk_03001800.unk74[7];
+            break;
+        case 2:
+            gBg3Scroll.x += gUnk_03001800.unk74[7];
+            break;
+        }
+    }
+    if (gUnk_03001800.unk74[1] & 8)
+    {
+        switch (gUnk_03001800.unk74[0])
+        {
+        case 1:
+            gBg2Scroll.x -= gUnk_03001800.unk74[7];
+            break;
+        case 2:
+            gBg3Scroll.x -= gUnk_03001800.unk74[7];
+            break;
+        }
+    }
+}
 
 void apply_battle_blend_effect_b(void)
 {
@@ -2325,7 +2521,54 @@ void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", advance_text_display);
+u32 advance_text_display(u32 a0, u32 a1, u32 a2)
+{
+    u32 n;
+    u8 *cnt;
+    u8 *pos;
+    u32 zero;
+    s32 done;
+    register struct Unk_08047414 *obj asm("r1"); // pinned: the original loads 0x02026000 before 0x020260CE
+    // `done` is deliberately uninitialized: the original reads ip when *pos >= n
+
+    a1 = gUnk_0807E77C[a1][gUnk_083CABF8[a2]];
+    n = 0;
+    if (gUnk_083D1E98[a1][0] != 0)
+    {
+        do
+        {
+            n++;
+            if (n > 0xFE)
+                break;
+        } while (gUnk_083D1E98[a1][n] != 0);
+    }
+    cnt = (u8 *)0x020260CC + a0;
+    {
+        // (*cnt)++ with the zero set between the add and the store
+        u8 c = *cnt + 1;
+        zero = 0;
+        *cnt = c;
+    }
+    obj = (struct Unk_08047414 *)0x02026000;
+    pos = (u8 *)0x020260CE + a0;
+    if (*pos < n)
+    {
+        obj->oams = (struct SpriteNodeOam *)(0x020260D0 + a0 * 0x410);
+        done = interpolate_entity_positions((struct InterpEnt *)obj->oams,
+                                            gUnk_083D1CC0[a1], gUnk_083D1DAC[a1], gUnk_083D1E98[a1], a1, *cnt, *pos, 0x40, n);
+    }
+    if (done)
+    {
+        if (++(*pos) >= n)
+        {
+            *pos = zero;
+            *cnt = zero;
+            return 1;
+        }
+        *cnt = zero;
+    }
+    return 0;
+}
 
 void sub_08044B28(const u8 *src, void *dst)
 {
