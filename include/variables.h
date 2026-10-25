@@ -892,7 +892,7 @@ extern const u8 *const gUnk_083AF888[]; // by sequence operand: 4 animation sets
 extern const u8 *const gUnk_083AF88C[]; // pairs: compressed OBJ tiles, OBJ palette 14 (sub_0803A0E0)
 extern const Func gUnk_083AF740[]; // battle sequence commands, by sub_0803D424() (battle_sequence_run_command)
 extern const Func gUnk_083AF6E0[]; // sprite handlers by sprite unk29 (sub_080385F8, sprites 0x21-0x3B)
-extern const u16 gUnk_083AF480[]; // x, y offset pairs by part (sub_08036C20)
+extern u16 gUnk_083AF480[]; // x, y offset pairs by part (sub_08036C20); not const: sub_08036784 reloads it per iteration
 extern const u8 gUnk_083AF200[]; // 16 values, two random picks summed into gUnk_03001800.unk188 / unk189 (sub_08034AA0)
 extern u8 gUnk_03003470[]; // IWRAM buffer; sub_08033ACC copies 4 x 0x40 bytes from +0xE40 + (rec * 0x100) to its start
 extern const u8 gUnk_083C6D38[]; // Robattle action script: operand count per command byte (battle_script_advance)
@@ -1190,6 +1190,7 @@ extern const u8 gUnk_08486114[];
 extern const u8 gUnk_0848604C[]; // 12 bytes per a, from +0x30: 3 rows (gUnk_03001800.unkED) of x, y, end x, end row
 extern const u8 *const gUnk_0848602C[]; // text strings for the battle intro; [a + 4] read by process_text_tile_and_dma_transfer
 extern const s8 gUnk_080AFF9C[12]; // 12 frame counts (unk1A values) at which sub_080718EC / sub_080719EC step
+extern const u8 gUnk_080AFF90[]; // sub_0807168C table
 extern u16 *gUnk_0300700C; // palette the fade in sub_08071F08 reads from (set to gPaletteBackupBg = 0x0202FA00)
 extern const u8 gUnk_080AFFA8[13]; // sub_08072138 script: pairs (0, n) = wait n frames, (1, id) = play_sound_effect(id)
 extern u32 (*const gUnk_08486138[])(void); // battle-end steps by gUnk_03001800_s.unk10.end.state (call_battle_handler_by_state_08071C64); 1 = done

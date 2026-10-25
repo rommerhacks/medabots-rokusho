@@ -40,11 +40,90 @@ void sound_channel_read_pending_note(struct SoundTrack *track, u16 *out)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_set_note_attributes);
-INCLUDE_ASM("asm/nonmatching/sound_driver", update_wave_channel_params);
-INCLUDE_ASM("asm/nonmatching/sound_driver", update_sound_channel_frequency_08073244);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_update_frequency);
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_update_channel3_frequency);
+void sound_channel_set_note_attributes(struct SoundTrack *track, vu16 *cnt, vu8 *freqHi)
+{
+    if (track->unk50 & 6)
+    {
+        track->unk4A = (track->envVolume * track->unk40) & (s16)0xF000;
+        *cnt = track->unk67 | track->unk4A | 0x800;
+        *freqHi |= 0x80;
+        track->unk50 = (track->unk50 & ~6) | 0x10;
+    }
+}
+
+void update_wave_channel_params(struct SoundTrack *track, vu16 *cnt)
+{
+    u8 *flags = &track->unk50;
+
+    if (*flags & 0x20)
+    {
+        load_wave_pattern(track->unk67);
+        *flags &= ~0x20;
+    }
+    if (*flags & 2)
+    {
+        track->unk4A = (track->envVolume * track->unk40) & (s16)0xF000;
+        *cnt = gUnk_083ABA62[track->unk4A >> 12] << 8;
+        *flags &= ~2;
+    }
+}
+
+void update_sound_channel_frequency_08073244(struct SoundTrack *track, vu16 *reg)
+{
+    if (track->unk50 & 2)
+    {
+        track->unk4A = (track->envVolume * track->unk40) & (s16)0xF000;
+        *reg = track->unk4A;
+        track->unk50 = (track->unk50 & ~2) | 1;
+    }
+}
+
+void sound_channel_update_frequency(struct SoundTrack *track, vu16 *out)
+{
+    u16 trigger = 0;
+    u8 *flags = &track->unk50;
+    u16 freq;
+
+    if (*flags & 0x10)
+    {
+        trigger = 0x8000;
+        *flags &= ~0x10;
+    }
+    if (*(vu8 *)flags & 1)
+    {
+        freq = track->unk46 + track->unk55 + (track->unk38 >> 4);
+        if ((s16)freq < 0)
+            freq = 0;
+        else if ((s16)freq > 0x7FF)
+            freq = 0x7FF;
+        *out = trigger | freq;
+        *flags &= ~1;
+    }
+    else if (trigger)
+    {
+        *out = trigger | track->unk46;
+    }
+}
+
+void sound_update_channel3_frequency(struct SoundTrack *track, vu16 *out)
+{
+    u8 *flags = &track->unk50;
+    u16 trigger;
+    u16 freq;
+
+    *flags &= ~0x10;
+    if (*flags & 1)
+    {
+        trigger = (*(vu16 *)0x04000084 & 4) ? 0 : 0x8000;
+        freq = track->unk46 + track->unk55 + (track->unk38 >> 4);
+        if ((s16)freq < 0)
+            freq = 0;
+        else if ((s16)freq > 0x7FF)
+            freq = 0x7FF;
+        *out = trigger | freq;
+        *flags &= ~1;
+    }
+}
 
 void sound_channel_check_note_change(struct SoundTrack *track, u16 *out)
 {
@@ -132,7 +211,69 @@ void sound_update_channel_3(struct SoundTrack *track)
     sound_update_channel_output_routing(track);
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_channel_update_note_08073698);
+void sound_channel_update_note_08073698(struct SoundTrack *track, struct SoundMixChannel *ch)
+{
+    u16 *vol;
+    u8 *flags;
+
+    {
+        u16 v = (track->envVolume * track->unk40) & (s16)0xF000;
+        vol = &track->unk4A;
+        *vol = v;
+    }
+    flags = &track->unk50;
+    if (*flags & 0x10)
+    {
+        if (track->envVolume != 0)
+        {
+            struct Unk_03007014 *work = gUnk_03007014;
+            u32 len = track->unk28;
+
+            if (track->envEnabled)
+            {
+                if (len > track->envRelease)
+                    len -= track->envRelease;
+                else
+                    len = 1;
+            }
+            switch (track->unk63)
+            {
+            case 0:
+                sound_channel_setup((u32)track, ch, ((u32 *)work->unk720)[track->unk67],
+                                    track->unk48 + (s8)track->unk6A, *vol >> 12, len,
+                                    track->unk6F, track->unk70);
+                break;
+            case 1:
+                sound_channel_setup_alt((u32)track, ch, ((u32 *)work->unk720)[track->unk67],
+                                        track->unk48, *vol >> 12, len,
+                                        track->unk6F, track->unk70);
+                break;
+            case 2:
+                sound_channel_setup((u32)track, ch, ((u32 *)work->unk724)[track->unk48],
+                                    work->unk728->base + track->unk48, *vol >> 12, len,
+                                    ((u8 *)work->unk728->unk4)[track->unk48], track->unk70);
+                break;
+            }
+        }
+        else
+        {
+            sub_08073CA4(ch);
+        }
+        *flags &= ~0x10;
+    }
+    if (track->unk58)
+    {
+        ch->unk14 = track->unk38 >> 4;
+        ch->unkC |= 2;
+    }
+    if (track->unk50 & 0x40)
+    {
+        ch->unk3F = track->unk6F;
+        ch->unk40 = track->unk70;
+        ch->unkC |= 4;
+        track->unk50 &= ~0x40;
+    }
+}
 
 void sound_channel_6_update_note(struct SoundTrack *track)
 {
@@ -204,7 +345,34 @@ void sound_stop_fifo_dma(s32 n)
     *reg = (*reg & 0x499F) | 0x440;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sound_semitone_ratio);
+u32 sound_semitone_ratio(s32 n)
+{
+    const u16 *tbl = gSoundSemitoneRatios;
+    u32 ret;
+
+    if (n > 0)
+    {
+        s32 rem = n % 12;
+        s32 oct = n / 12;
+        ret = tbl[rem] << oct;
+    }
+    else if (n < 0)
+    {
+        s32 oct, rem;
+        n = -n;
+        oct = n / 12;
+        rem = n % 12;
+        if (rem != 0)
+        {
+            rem = 12 - rem;
+            oct++;
+        }
+        ret = tbl[rem] >> oct;
+    }
+    else
+        ret = tbl[0];
+    return ret;
+}
 
 u32 sound_finetune_ratio(s32 n)
 {
@@ -874,7 +1042,48 @@ void sub_08074900(struct SoundSongHeader **val)
     gUnk_03007014->unk688 = val;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", load_song_channels);
+void load_song_channels(u32 id, u32 arg)
+{
+    struct Unk_03007014 *work = sub_080750CC();
+    struct SoundSongHeader *song = work->unk688[id];
+    u32 i;
+    u32 bit;
+    u8 **seq;
+
+    sound_channel_finish_and_callback(&work->tracks[0]);
+    sound_channel_finish_and_callback(&work->tracks[1]);
+    sound_channel_finish_and_callback(&work->tracks[2]);
+    sound_channel_finish_and_callback(&work->tracks[3]);
+    sound_channel_finish_and_callback(&work->tracks[8]);
+    sound_channel_finish_and_callback(&work->tracks[9]);
+    sound_channel_finish_and_callback(&work->tracks[12]);
+
+    i = 0;
+    bit = 0x800;
+    seq = (u8 **)song;
+loop:
+    if (song->trackMask & bit)
+    {
+        struct SoundTrack *track = &work->tracks[i];
+
+        init_sound_channel(track, seq[1]);
+        track->unk6D = song->priority;
+        track->unk70 = arg;
+        seq++;
+    }
+    bit >>= 1;
+    i++;
+    if (bit)
+        goto loop;
+
+    if (song->trackMask & 4)
+    {
+        init_sound_channel(&work->tracks[12], work->tracks[9].unk14);
+        work->tracks[12].unk6D = song->priority;
+        work->tracks[12].unk70 = arg;
+    }
+    work->unk72F = id;
+}
 
 void play_song(u32 id)
 {
@@ -916,14 +1125,51 @@ void sound_update_with_lock(u32 a)
     sound_unlock();
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", sub_08074B68);
+u32 sub_08074B68(void)
+{
+    struct Unk_03007014 **pw = &gUnk_03007014;
+
+    if ((*pw)->tracks[0].unk14 || (*pw)->tracks[1].unk14 || (&(*pw)->tracks[2])->unk14
+     || (&(*pw)->tracks[3])->unk14 || (&(*pw)->tracks[8])->unk14 || (&(*pw)->tracks[9])->unk14)
+        return (*pw)->unk72F;
+    return -1;
+}
 
 void sub_08074BC4(struct SoundSongHeader **val)
 {
     gUnk_03007014->unk68C = val;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", play_sound_from_command);
+void play_sound_from_command(u32 id, u32 arg)
+{
+    struct Unk_03007014 *work = sub_080750CC();
+    struct SoundSongHeader *song = work->unk68C[id];
+    u32 i;
+    u32 bit;
+    u8 **seq;
+
+    i = 0;
+    bit = 0x800;
+    seq = (u8 **)song;
+loop:
+    if (song->trackMask & bit)
+    {
+        struct SoundTrack *track = &work->tracks[i];
+
+        if (track->unk6D <= song->priority)
+        {
+            init_sound_channel(track, seq[1]);
+            track->unk6D = song->priority;
+            track->unk4E = id;
+            track->unk70 = arg;
+        }
+        seq++;
+    }
+    bit >>= 1;
+    i++;
+    if (bit)
+        goto loop;
+}
 
 void play_sound_effect(u32 id)
 {

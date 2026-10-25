@@ -606,6 +606,8 @@ u32 sound_semitone_ratio(s32 n);
 u32 sound_finetune_ratio(s32 n);
 u32 sound_apply_finetune(u32 rate, u32 fine);
 u32 sound_calculate_playback_rate(struct SoundMixChannel *ch, u32 ratio);
+void sound_channel_setup(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7);
+void sound_channel_setup_alt(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7);
 void update_sound_channel_frequency_08073244(struct SoundTrack *track, vu16 *reg);
 void sound_channel_check_note_change(struct SoundTrack *track, u16 *out);
 void sound_update_channel_output_routing(struct SoundTrack *track);
@@ -1245,6 +1247,7 @@ void sub_080368C4(u8 *digits, u8 slot, u8 part, s16 x, s16 y);
 u32 advance_sprite_group_anims(u8 *digits, u32 slot);
 u32 sub_08036BB8(u16 *amount, u32 rec, u32 part); // moves one point from *amount (low byte) out of the part's armor; 1 when done
 void sub_08036BF4(u32 side);
+void battle_sprite_rotate_angles(u32 dir, u32 delta);
 void sub_08036C20(u32 slot, u32 part, s16 x, s16 y, u32 n); // inits battle sprite slot at (x, y) + gUnk_083AF480[part] with animation gUnk_083B5F80[n]
 void setup_battle_medapart_scenes(void);
 void calc_bot_evasion_modifier(u32 rec);
