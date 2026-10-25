@@ -743,6 +743,8 @@ void init_script_sprite(u8 idx, u8 part, u8 x, u8 y);
 u8 calc_medapart_table_index(u8 a);
 u8 compute_battle_sprite_anim_offset(u8 id, u8 a);
 void field_player_step(u8 dir);
+bool32 check_tile_and_trigger_battle_action(u8 dir);
+bool32 field_player_at_map_edge(u8 dir);
 void update_npc_random_animation(void);
 u32 map_cursor_move_and_check_event(void);
 void field_player_walk_input(void);

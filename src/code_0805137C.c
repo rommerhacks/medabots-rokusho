@@ -125,7 +125,79 @@ u8 handle_battle_movement_input(u8 dir)
     return dir;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", field_player_walk_input);
+struct HeldKeyBits
+{
+    u32 a:1;
+    u32 b:1;
+    u32 select:1;
+    u32 start:1;
+    u32 right:1;
+    u32 left:1;
+    u32 up:1;
+    u32 down:1;
+    u32 rest:24;
+};
+
+#define gHeldKeyBits (*(struct HeldKeyBits *)&gHeldKeys)
+
+void field_player_walk_input(void)
+{
+    u8 dir = 0;
+    u8 input;
+    int zero = 0;
+    u16 any;
+
+    if (gUnk_030057E0.unkC58 == 0)
+    {
+        any = gHeldKeyBits.down | gHeldKeyBits.up | gHeldKeyBits.left | gHeldKeyBits.right;
+        if (any)
+        {
+            input = (gHeldKeyBits.down << 3) | (gHeldKeyBits.up << 2) | (gHeldKeyBits.left << 1) | gHeldKeyBits.right;
+            if (gUnk_030057E0.unkC88 == 0 && gUnk_030057E0.unk7FE == 0x53)
+                input = handle_battle_movement_input(input);
+            switch (input)
+            {
+            case 4:
+                dir = zero;
+                break;
+            case 8:
+                dir = 1;
+                break;
+            case 1:
+            case 5:
+            case 9:
+                dir = 3;
+                break;
+            case 2:
+            case 6:
+            case 10:
+                dir = 2;
+                break;
+            }
+            if (gUnk_030057E0.unkC59 != dir)
+            {
+                gUnk_030057E0.unkC59 = dir;
+                field_set_player_facing(dir);
+                sub_080493D4(0x2F, dir);
+                update_battle_direction_indicator(3);
+            }
+            if (!field_player_at_map_edge(dir) && !check_tile_and_trigger_battle_action(dir))
+            {
+                gUnk_030057E0.unkC58 = 16 / sub_080518F4(0x2F);
+                field_player_step(gUnk_030057E0.unkC59);
+                update_battle_direction_indicator(3);
+                if (gUnk_030057E0.unkC5C == 2 || gUnk_030057E0.unkC5C == 9)
+                    sub_08047BA8(0x57);
+                battle_camera_scroll_update(gUnk_030057E0.unkC75);
+            }
+        }
+    }
+    else
+    {
+        field_player_step(gUnk_030057E0.unkC59);
+        battle_camera_scroll_update(gUnk_030057E0.unkC75);
+    }
+}
 
 void load_battle_palette_via_dma(u32 toBuffer)
 {
@@ -331,7 +403,7 @@ u32 get_adjacent_tile_value(u8 dir)
     return tile;
 }
 
-u8 check_tile_and_trigger_battle_action(u8 dir)
+bool32 check_tile_and_trigger_battle_action(u8 dir)
 {
     u8 tile;
     u32 ret;
@@ -657,7 +729,7 @@ u32 find_map_event_by_coords(u32 x, u32 y)
 }
 
 // dir: 0 up, 1 down, 2 left, 3 right. At the edge the player only turns to face dir.
-u8 field_player_at_map_edge(u8 dir)
+bool32 field_player_at_map_edge(u8 dir)
 {
     u8 ret = 0;
 
