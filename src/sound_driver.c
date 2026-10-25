@@ -1225,7 +1225,22 @@ s32 get_sound_channel_position(u32 idx)
     return ret;
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", is_sound_playing_at_position);
+u32 is_sound_playing_at_position(s32 a)
+{
+    u32 i;
+    const u32 *t;
+
+    for (i = 0; i < 6; i++)
+    {
+        const u32 **pt = &t;
+
+        t = gSoundEffectTracks;
+        t += i;
+        if (a == get_sound_channel_position(**pt))
+            return TRUE;
+    }
+    return FALSE;
+}
 
 u32 is_sound_playing_with_lock(u32 a)
 {

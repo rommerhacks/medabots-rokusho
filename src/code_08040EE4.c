@@ -1030,7 +1030,24 @@ void sub_0804242C(u8 n)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", rng_next_080424B8);
+s32 rng_next_080424B8(void)
+{
+    if (gUnk_03000440.unk89 == 0)
+    {
+        u16 s = gUnk_03000440.unk8A + gUnk_03000440.unk8C;
+
+        s += 0x87 + (((gFrameCounter << 4) + (gFrameCounter >> 4) + 1) >> 1);
+        gUnk_03000440.unk8A = ((s & 0xFF) << 8) | (((s & 0xFF00) >> 8) ^ (s & 0xFF));
+        gUnk_03000440.unk8C = ((s & 0xFF00) >> 8) ^ s;
+        return gUnk_03000440.unk8C;
+    }
+    else
+    {
+        gUnk_03000440.unk8D++;
+        gUnk_03000440.unk8C = gUnk_083B286C[gUnk_03000440.unk8D];
+        return gUnk_03000440.unk8C;
+    }
+}
 
 void set_blend_effect_mode(u8 mode, u16 targets, u16 speed)
 {
