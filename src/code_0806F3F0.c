@@ -1098,7 +1098,25 @@ void sub_08071614(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0807168C);
+void sub_0807168C(void)
+{
+    u8 buf[4];
+    s32 j;
+    u8 mask;
+
+    memcpy_optimized(buf, gUnk_080AFF90, 4);
+    for (j = 0, mask = 1; j <= 3; j++, mask <<= 1) {
+        if (gUnk_03007010 & mask) {
+            s32 r = gUnk_03002C30[j + 0x16].unk32 % gUnk_03002C30[j + 0x16].unk23;
+            if (r == 0) {
+                if (++gUnk_03002C30[j + 0x16].unk21 > 3)
+                    gUnk_03002C30[j + 0x16].unk21 = r;
+                gUnk_03002C30[j + 0x16].unk6 = gUnk_03002C30[j + 0x16].unk30 + buf[gUnk_03002C30[j + 0x16].unk21];
+            }
+            gUnk_03002C30[j + 0x16].unk32++;
+        }
+    }
+}
 
 void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 arg2)
 {
@@ -1487,7 +1505,41 @@ u32 sub_08071E80(void)
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_08071F08);
+u32 sub_08071F08(void)
+{
+    u8 t;
+    u8 w;
+    s32 i;
+    u16 *dst = gPaletteBufferBg;
+
+    if (gUnk_03001800_s.unk10.end.step > 0x40)
+    {
+        play_sound_effect(10);
+        gUnk_03001800_s.unk10.end.state++;
+    }
+    else
+    {
+        if (gUnk_03001800_s.unk10.end.step < 0x20)
+            t = 0x20 - gUnk_03001800_s.unk10.end.step;
+        else
+            t = gUnk_03001800_s.unk10.end.step - 0x20;
+        if (gUnk_03001800_s.unk10.end.step == 0x20)
+            clear_sprite_entry(0);
+        if (gUnk_03001800_s.unk10.end.step == 0x14)
+            play_sound_effect(0x51);
+        w = 0x20 - t;
+        for (i = 0; i <= 0xFF; i++)
+        {
+            dst[i] = (((gUnk_0300700C[i] & 0x1F) * t + w * 31) >> 5)
+                + ((((gUnk_0300700C[i] & 0x3E0) * t + (w * 31 << 5)) >> 5) & 0x3E0)
+                + ((((gUnk_0300700C[i] & 0x7C00) * t + (w * 31 << 10)) >> 5) & 0x7C00);
+        }
+        DmaSet(3, dst, OBJ_PLTT, 0x84000080);
+    }
+    if (gFrameCounter & 1)
+        gUnk_03001800_s.unk10.end.step++;
+    return 0;
+}
 
 u32 sub_08072010(void)
 {
