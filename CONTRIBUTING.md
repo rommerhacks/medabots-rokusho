@@ -210,6 +210,18 @@
 * **Spill-slot swaps:** the slot order follows pseudo creation order. A pointer copy assigned late
   (`d = DESC;` just before the call, then `d->w` in the loop conditions) made the hoisted desc word the
   older pseudo (setup_oam_sprite_entries).
+* **A constant gcc folds into a sum** that the original adds separately: load it into a pinned local in
+  its own statement, `t = k + off; register u32 q asm("r0") = (u32)base->unkB0; t += q;` (sub_08018900).
+* **A clamp whose two results land in ip / r8 swapped:** `if (h > 32) do { h = 32; } while (0);` (likely a
+  clamp macro in the original; copy_tilemap_with_offset_08000F78).
+* **Old near misses that copy the asm's control flow** (duplicated increments, gotos) often match once
+  written the obvious way (a plain `for` with `break`s): gcc duplicates the increments by itself
+  (lz_decompress_custom_08000A0C).
+* **One block of I/O writes that throws off the registers of the whole function:** write each register
+  directly (`REG_BG0HOFS = gBg0Scroll.x + off.x;`), not through a pointer or a loop (vblank_body).
+* **Several pointers walking one struct array from different field offsets:** write some fields through the
+  global (`gArr[0x24 + i].unk0`) and the others through a pointer local set in the loop init (`for (i = 0,
+  spr = gArr; ...) spr[0x24 + i].unk4`); which fields go which way decides the grouping (sub_0802D8D0).
 * **decomp-permuter** (github.com/simonlindholm/decomp-permuter): `tools/scripts/perm_setup.py FUNC FILE.c`
   writes scratch/perm/FUNC/ (target bytes, compile.sh linking against the last build's symbols), then run
   `permuter.py scratch/perm/FUNC -j2 --stop-on-zero` from a permuter checkout for ~10 minutes.
