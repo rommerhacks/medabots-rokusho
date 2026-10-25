@@ -109,7 +109,18 @@ void hw_reset_init(void)
     *(u16 *)PLTT = 0x7FFF;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", clear_oam);
+void clear_oam(void)
+{
+    vu32 a, b;
+    s32 i;
+
+    a = 0xA0;
+    CpuFastSet((void *)&a, (void *)OAM, 0x01000100);
+    for (i = 0; i < 128; i++)
+        gOamBuffer[i].attr0 = 0xA0;
+    b = 0;
+    CpuFastSet((void *)&b, (void *)VRAM, 0x01006000);
+}
 
 void sound_init(struct Unk_03007014 *work)
 {
