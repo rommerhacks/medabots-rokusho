@@ -1696,14 +1696,73 @@ void init_linking_mode(void)
     VBlankIntrWait();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", save_dispatch);
+s32 save_dispatch(s32 mode)
+{
+    s32 ret = 0;
+    u32 zero = ret;
+    u8 *buf = gDecompressBuffer;
+    u16 ie;
+    s32 i;
+
+    CpuSet(&zero, buf, 0x0500072E);
+    REG_IME = ret;
+    ie = REG_IE;
+    REG_IE = 0x2020;
+    REG_IME = 1;
+    switch (mode)
+    {
+    case 0:
+        {
+            register u8 *p asm("r0") = (u8 *)&gUnk_03001784;
+            *p |= 1;
+        }
+        serialize_save_data((struct SaveData *)buf);
+        ret = write_save_to_eeprom((u16 *)0x02030000, 0);
+        break;
+    case 1:
+        ret = validate_save_data((struct SaveData *)buf);
+        load_save_data((struct SaveData *)buf);
+        break;
+    case 2:
+        gUnk_03001784.unk0_0 = 0;
+        for (i = 0; i < 16; i++)
+            gDecompressBuffer[i] = gSaveMagicErased[i];
+        ret = write_save_to_eeprom((u16 *)0x02030000, 0);
+        break;
+    }
+    REG_IE |= ie;
+    return ret;
+}
 
 u16 eeprom_setup_timer_irq(void)
 {
     return sub_0807C7A8(2, &gIntrTable[11]);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", load_save_with_retries);
+s32 load_save_with_retries(void)
+{
+    s32 i, ret;
+    u8 *p;
+    u8 fe;
+    register s32 r asm("r1");
+    if ((r = is_sound_playing_with_lock(4)) != 0)
+        return r;
+    play_song(0);
+    play_sound_effect(0);
+    p = (u8 *)&gUnk_03002B70;
+    fe = 0xFE;
+    i = 15;
+    p += 19;
+    for (; i >= 0; i--)
+        *p-- = fe;
+    for (i = 0; i <= 3; i++)
+    {
+        ret = save_dispatch(1);
+        if (ret == 0)
+            break;
+    }
+    return ret;
+}
 
 void load_save_data(struct SaveData *save)
 {
