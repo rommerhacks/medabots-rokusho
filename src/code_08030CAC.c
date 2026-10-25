@@ -1537,8 +1537,55 @@ void sub_080338DC(void)
     gGameSubState = 0x40;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_080338F4);
-INCLUDE_ASM("asm/nonmatching/code_08030CAC", sub_08033974);
+void sub_080338F4(void)
+{
+    vu8 found = 0;
+    struct Unk_03001800 *s;
+    const u8 *const *tbl;
+    const u8 *script;
+
+    battle_script_load_operands();
+    battle_script_advance();
+    while (!found)
+    {
+        tbl = gUnk_083C6B28;
+        s = &gUnk_03001800;
+        script = tbl[s->unkA8];
+        if (s->unkAC[0] == script[s->unkBC])
+        {
+            battle_script_advance();
+            found = 1;
+        }
+        else
+            battle_script_advance();
+    }
+    gUnk_03001800.unk163 = 1;
+}
+
+void sub_08033974(void)
+{
+    vu8 found = 0;
+    struct Unk_03001800 *s;
+    const u8 *const *tbl;
+    const u8 *script;
+
+    battle_script_load_operands();
+    battle_script_advance();
+    while (!found)
+    {
+        tbl = gUnk_083C6B28;
+        s = &gUnk_03001800;
+        script = tbl[s->unkA8];
+        if (s->unkAC[s->unkAB] == script[s->unkBC])
+        {
+            battle_script_advance();
+            found = 1;
+        }
+        else
+            battle_script_advance();
+    }
+    gUnk_03001800.unk163 = 1;
+}
 
 void sub_080339F4(void)
 {
