@@ -1383,7 +1383,8 @@ struct Unk_03005350
     s32 unkC0[4]; // model points x, y, z (from gUnk_083D2DB0)
     s32 unkD0[4];
     s32 unkE0[4];
-    u8 fillerF0[0x8];
+    s32 unkF0;
+    u8 fillerF4[0x4];
     s32 unkF8; // model set index into gUnk_083D2DB0
     u8 fillerFC[0xD0];
     s32 unk1CC; // current entity (index into gUnk_03006D30)
@@ -1395,6 +1396,11 @@ struct Unk_03005350
     u8 filler1E4[0x26];
     u16 unk20A; // palette colour masks (run_blend_fade_transition)
     u16 unk20C;
+    u8 filler20E[0x6];
+    s32 unk214;
+    s32 unk218;
+    s32 unk21C;
+    s32 unk220;
 };
 
 // 3-D entity, 0x300 bytes; gUnk_03006D30 points to an array of them (0x02039000, 16 entries).

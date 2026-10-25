@@ -1,7 +1,39 @@
 #include "global.h"
 #include "keys.h"
 
-INCLUDE_ASM("asm/nonmatching/code_080567AC", update_battle_sprite_status_effects);
+void update_battle_sprite_status_effects(void)
+{
+    struct Unk_03005350 *b = &gUnk_03005350;
+    s32 i, j;
+    s32 d;
+    struct Unk_03002C30 *s;
+
+    if (b->unkF0 != 0)
+    {
+        for (i = 0; i <= 15; i++)
+        {
+            for (j = 0; j <= 3; j++)
+            {
+                struct Unk_03002C30 *spr = gUnk_03002C30;
+
+                s = &spr[gUnk_03006D30[i].unk2DC[j]];
+                d = s->unk14_8;
+                if (d > gUnk_03005350.unk9C)
+                {
+                    s->unkB = gUnk_03005350.unk218;
+                    gUnk_03002C30[gUnk_03006D30[i].unk2DC[j]].unk0 &= 0xF3FF;
+                    gUnk_03002C30[gUnk_03006D30[i].unk2DC[j]].unk0 |= gUnk_03005350.unk220;
+                }
+                else
+                {
+                    s->unkB = gUnk_03005350.unk214 + (gUnk_03005350.unk9C - d);
+                    gUnk_03002C30[gUnk_03006D30[i].unk2DC[j]].unk0 &= 0xF3FF;
+                    gUnk_03002C30[gUnk_03006D30[i].unk2DC[j]].unk0 |= gUnk_03005350.unk21C;
+                }
+            }
+        }
+    }
+}
 
 void sub_0805689C(struct AnimInterp *p, s32 *a)
 {
