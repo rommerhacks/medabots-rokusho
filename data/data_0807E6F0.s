@@ -5,7 +5,20 @@ gData_0807E6F0:
 
 	.global gIntrTableTemplate
 gIntrTableTemplate:
-	.incbin "baserom.gba", 0x7E6F0, 0x38
+	.4byte serial_multiplayer_transfer_handler
+	.4byte vblank_irq
+	.4byte nullsub_08000840
+	.4byte hblank_irq
+	.4byte nullsub_08000840
+	.4byte dma1_irq_sound
+	.4byte dma2_irq_sound
+	.4byte nullsub_08000840
+	.4byte nullsub_08000840
+	.4byte nullsub_08000840
+	.4byte nullsub_08000840
+	.4byte nullsub_08000840
+	.4byte nullsub_08000840
+	.4byte nullsub_08000840
 
 	.global gRngTable
 gRngTable:

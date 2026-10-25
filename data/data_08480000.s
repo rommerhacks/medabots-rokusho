@@ -18,19 +18,86 @@ gUnk_08483AC0:
 
 	.global gUnk_08483B00
 gUnk_08483B00:
-	.incbin "baserom.gba", 0x483B00, 0x78
+	.4byte nullsub_08000840
+	.4byte nullsub_08000840
+	.4byte nullsub_08000840
+	.4byte sub_0805BF88
+	.4byte item_menu_update
+	.4byte save_screen_update
+	.4byte sub_0805E29C
+	.4byte test_mode_dispatch
+	.4byte sub_0805FAF0
+	.4byte save_lost_dispatch
+	.4byte town_map_dispatch
+	.4byte shop_menu_dispatch
+	.4byte shop_list_dispatch
+	.4byte nullsub_08000840
+	.4byte nullsub_08000840
+	.4byte nullsub_08000840
+	.4byte sub_080637D0
+	.4byte sub_080644C4
+	.4byte sub_08064C3C
+	.4byte scene_dispatch_and_tick
+	.4byte dispatch_battle_menu_and_update_counters
+	.4byte dispatch_battle_cutscene_substate
+	.4byte dispatch_scene_substate_and_scroll
+	.4byte town_map_dispatch
+	.4byte dispatch_battle_end_substate
+	.4byte dispatch_substate_handler
+	.4byte sub_08064A44
+	.4byte dispatch_fade_substate
+	.4byte dispatch_rotation_menu_substate
+	.4byte nullsub_08000840
 
 	.global gUnk_08483B78
 gUnk_08483B78:
-	.incbin "baserom.gba", 0x483B78, 0x28
+	.4byte sub_0805BFDC
+	.4byte sub_0805C030
+	.4byte sub_0805C190
+	.4byte sub_0805C2C4
+	.4byte sub_0805C308
+	.4byte sub_0805C428
+	.4byte sub_0805C6AC
+	.4byte sub_0805C7A0
+	.4byte sub_0805C7E8
+	.4byte sub_0805C820
 
 	.global gItemMenuStates
 gItemMenuStates:
-	.incbin "baserom.gba", 0x483BA0, 0x3C
+	.4byte sub_0805CA94
+	.4byte item_menu_load_graphics
+	.4byte item_menu_init
+	.4byte item_menu_fade_in
+	.4byte item_menu_show_description
+	.4byte sub_0805CE4C
+	.4byte init_fade_sprite_and_start_fade
+	.4byte sub_0805D378
+	.4byte sub_0805D394
+	.4byte sub_0805D418
+	.4byte check_ab_press_play_confirm_sound
+	.4byte sub_0805D468
+	.4byte sub_0805D488
+	.4byte sub_0805D4F0
+	.4byte sub_0805D50C
 
 	.global gSaveScreenStates
 gSaveScreenStates:
-	.incbin "baserom.gba", 0x483BDC, 0x44
+	.4byte sub_0805D5E8
+	.4byte sub_0805D628
+	.4byte sub_0805D6F8
+	.4byte sub_0805D8AC
+	.4byte sub_0805D948
+	.4byte sub_0805D96C
+	.4byte sub_0805DA1C
+	.4byte attempt_save_and_transition
+	.4byte sub_0805DAE4
+	.4byte sub_0805DB20
+	.4byte sub_0805DB48
+	.4byte sub_0805DB64
+	.4byte sub_0805DBE8
+	.4byte sub_0805D9B8
+	.4byte sub_0805D9E4
+	.incbin "baserom.gba", 0x483C18, 0x8
 
 	.global gSaveMagic
 gSaveMagic:
@@ -42,7 +109,14 @@ gSaveMagicErased:
 
 	.global gUnk_08483C44
 gUnk_08483C44:
-	.incbin "baserom.gba", 0x483C44, 0x24
+	.4byte sub_0805E2E8
+	.4byte sub_0805E310
+	.4byte sub_0805E5B0
+	.4byte sub_0805E878
+	.4byte sub_0805E8DC
+	.4byte sub_0805EE6C
+	.4byte sub_0805EE94
+	.incbin "baserom.gba", 0x483C60, 0x8
 
 	.global gUnk_08483C68
 gUnk_08483C68:
@@ -50,15 +124,41 @@ gUnk_08483C68:
 
 	.global gUnk_08483C6C
 gUnk_08483C6C:
-	.incbin "baserom.gba", 0x483C6C, 0x38
+	.4byte silence_and_clear_vram
+	.4byte test_mode_load_graphics
+	.4byte init_fade_screen_setup
+	.4byte update_fade_effect
+	.4byte test_mode_update
+	.4byte update_fade_transition_state_0805F778
+	.4byte advance_substate_on_handler_complete
+	.4byte sub_0805F81C
+	.4byte sub_0805F860
+	.4byte sub_0805F8B0
+	.4byte sub_0805F8F0
+	.4byte sub_0805F974
+	.4byte sub_0805F9AC
+	.4byte sub_0805F898
 
 	.global gUnk_08483CA4
 gUnk_08483CA4:
-	.incbin "baserom.gba", 0x483CA4, 0x20
+	.4byte sub_0805FB2C
+	.4byte sub_0805FBA8
+	.4byte sub_0805FD1C
+	.4byte sub_0805FD60
+	.4byte sub_0805FDB4
+	.4byte sub_0805FE90
+	.4byte sub_08060018
+	.4byte sub_0806006C
 
 	.global gUnk_08483CC4
 gUnk_08483CC4:
-	.incbin "baserom.gba", 0x483CC4, 0x1C
+	.4byte sub_08060154
+	.4byte sub_080601A4
+	.4byte sub_08060298
+	.4byte sub_080602F4
+	.4byte sub_08060324
+	.4byte sub_0806035C
+	.4byte sub_080603A4
 
 	.global gUnk_08483CE0
 gUnk_08483CE0:
@@ -66,7 +166,14 @@ gUnk_08483CE0:
 
 	.global gUnk_08483DA0
 gUnk_08483DA0:
-	.incbin "baserom.gba", 0x483DA0, 0x20
+	.4byte copy_bg2_tilemap_to_ewram
+	.4byte town_map_load_graphics
+	.4byte sub_08060804
+	.4byte sub_0806086C
+	.4byte sub_080608B4
+	.4byte sub_080608EC
+	.4byte sub_0806098C
+	.4byte sub_080609C0
 
 	.global gUnk_08483DC0
 gUnk_08483DC0:
@@ -90,7 +197,22 @@ gUnk_08483E04:
 
 	.global gUnk_08483E10
 gUnk_08483E10:
-	.incbin "baserom.gba", 0x483E10, 0x40
+	.4byte sub_08060C44
+	.4byte shop_menu_init
+	.4byte sub_08060FD4
+	.4byte sub_08061080
+	.4byte sub_08061180
+	.4byte sub_080611D0
+	.4byte sub_080612D8
+	.4byte sub_08061300
+	.4byte sub_08061374
+	.4byte sub_0806142C
+	.4byte sub_0806146C
+	.4byte sub_08061678
+	.4byte sub_080616F8
+	.4byte sub_0806174C
+	.4byte sub_08060C6C
+	.4byte sub_08060C60
 
 	.global gUnk_08483E50
 gUnk_08483E50:
@@ -98,11 +220,31 @@ gUnk_08483E50:
 
 	.global gUnk_08483E8C
 gUnk_08483E8C:
-	.incbin "baserom.gba", 0x483E8C, 0x28
+	.4byte sub_08061830
+	.4byte shop_list_init
+	.4byte enable_obj_layer_and_load_palette
+	.4byte sub_08061D30
+	.4byte shop_purchase_menu_handler
+	.4byte transition_fade_to_battle
+	.4byte advance_substate_on_handler_complete_1c
+	.4byte shop_complete_transaction
+	.4byte sub_080625EC
+	.4byte sub_08062638
 
 	.global gUnk_08483EB4
 gUnk_08483EB4:
-	.incbin "baserom.gba", 0x483EB4, 0x2C8
+	.4byte sub_08064C7C
+	.4byte sub_08064CA0
+	.4byte sub_08064D3C
+	.4byte sub_08064EFC
+	.4byte sub_08065020
+	.4byte sub_08065090
+	.4byte sub_08065348
+	.4byte sub_080653B4
+	.4byte sub_08065418
+	.4byte sub_08065484
+	.4byte sub_08064C30
+	.incbin "baserom.gba", 0x483EE0, 0x29C
 
 	.global gUnk_0848417C
 gUnk_0848417C:
@@ -146,19 +288,46 @@ gUnk_08485BD8:
 
 	.global gUnk_08485C48
 gUnk_08485C48:
-	.incbin "baserom.gba", 0x485C48, 0x20
+	.4byte boot_logos_update
+	.4byte intro_update
+	.4byte sub_0806D3F4
+	.4byte dispatch_game_substate_handler_0806DFA4
+	.4byte race_dispatch_substate
+	.4byte bomb_game_dispatch
+	.4byte medabots_weekly_update
+	.4byte nullsub_08000840
 
 	.global gUnk_08485C68
 gUnk_08485C68:
-	.incbin "baserom.gba", 0x485C68, 0x14
+	.4byte sub_0806878C
+	.4byte scene_step_fade_in_bldy
+	.4byte scene_step_fade_in_bldy
+	.4byte scene_step_wipe_clear_bg0
+	.4byte scene_step_palette_fade_in
 
 	.global gUnk_08485C7C
 gUnk_08485C7C:
-	.incbin "baserom.gba", 0x485C7C, 0x14
+	.4byte sub_0806878C
+	.4byte scene_step_fade_out_bldy
+	.4byte scene_step_fade_out_bldy
+	.4byte scene_step_wipe_fill_bg0
+	.4byte scene_step_palette_fade_out
 
 	.global gRaceSubStates
 gRaceSubStates:
-	.incbin "baserom.gba", 0x485C90, 0x34
+	.4byte sub_08068C6C
+	.4byte sub_08068CF4
+	.4byte sub_08068D14
+	.4byte sub_08068D74
+	.4byte sub_08068DA0
+	.4byte sub_08068DBC
+	.4byte sub_08068FD4
+	.4byte sub_08069000
+	.4byte sub_0806904C
+	.4byte race_update
+	.4byte sub_080690C4
+	.4byte sub_08069114
+	.4byte sub_08069158
 
 	.global gUnk_08485CC4
 gUnk_08485CC4:
@@ -174,7 +343,17 @@ gUnk_08485CE3:
 
 	.global gUnk_08485D30
 gUnk_08485D30:
-	.incbin "baserom.gba", 0x485D30, 0x2C
+	.4byte sub_0806AFA0
+	.4byte sub_0806B014
+	.4byte sub_0806B03C
+	.4byte sub_0806B064
+	.4byte sub_0806B068
+	.4byte sub_0806B0B4
+	.4byte sub_0806B124
+	.4byte update_sprite_position_sincos
+	.4byte sub_0806B244
+	.4byte sub_0806B2F0
+	.4byte sub_0806AF9C
 
 	.global gUnk_08485D5C
 gUnk_08485D5C:
@@ -182,7 +361,16 @@ gUnk_08485D5C:
 
 	.global gUnk_08485E5C
 gUnk_08485E5C:
-	.incbin "baserom.gba", 0x485E5C, 0x28
+	.4byte bomb_game_init
+	.4byte bomb_game_load_graphics
+	.4byte sub_0806B990
+	.4byte sub_0806B9B0
+	.4byte sub_0806B9D0
+	.4byte sub_0806BAB4
+	.4byte sub_0806BB00
+	.4byte sub_0806BB30
+	.4byte sub_0806BB68
+	.4byte sub_0806BBA8
 
 	.global gUnk_08485E84
 gUnk_08485E84:
@@ -190,11 +378,29 @@ gUnk_08485E84:
 
 	.global gUnk_08485EC4
 gUnk_08485EC4:
-	.incbin "baserom.gba", 0x485EC4, 0x30
+	.4byte sub_0806D550
+	.4byte sub_0806DFC4
+	.4byte teardown_scene_and_restore_state
+	.4byte sub_0806D518
+	.4byte load_scene_graphics
+	.4byte battle_transition_animate_step
+	.4byte battle_scene_intro_step
+	.4byte battle_transition_wipe_effect
+	.4byte battle_intro_countdown_tick
+	.4byte sub_0806DAEC
+	.4byte sub_0806DB30
+	.4byte nullsub_08000840
 
 	.global gUnk_08485EF4
 gUnk_08485EF4:
-	.incbin "baserom.gba", 0x485EF4, 0x20
+	.4byte sub_0806DD10
+	.4byte sub_0806DE34
+	.4byte sub_0806DE64
+	.4byte sub_0806DE88
+	.4byte sub_0806DEAC
+	.4byte sub_0806DEAC
+	.4byte sub_0806DEE8
+	.4byte sub_0806DEE8
 
 	.global gUnk_08485F14
 gUnk_08485F14:
@@ -202,15 +408,51 @@ gUnk_08485F14:
 
 	.global gUnk_08485F1C
 gUnk_08485F1C:
-	.incbin "baserom.gba", 0x485F1C, 0x1C
+	.4byte sub_0806E060
+	.4byte sub_0806DFC4
+	.4byte scene_complete_dma_and_restore_state
+	.4byte battle_init_tilemap_and_palette
+	.4byte dispatch_battle_event_script
+	.4byte sub_0806E26C
+	.4byte nullsub_08000840
 
 	.global gBootLogosSubStates
 gBootLogosSubStates:
-	.incbin "baserom.gba", 0x485F38, 0x30
+	.4byte boot_logos_init
+	.4byte sub_0806DFC4
+	.4byte scene_complete_dma_and_restore_state
+	.4byte sub_0806E340
+	.4byte boot_logos_load_licensed_by
+	.4byte sub_0806E780
+	.4byte boot_logos_load_natsume
+	.4byte sub_0806E7B0
+	.4byte boot_logos_load_overlay
+	.4byte sub_0806E7E0
+	.4byte boot_logos_end
+	.4byte nullsub_08000840
 
 	.global gIntroSubStates
 gIntroSubStates:
-	.incbin "baserom.gba", 0x485F68, 0x50
+	.4byte battle_scene_init_clear
+	.4byte sub_0806DFC4
+	.4byte scene_animate_and_complete
+	.4byte sub_0806E934
+	.4byte sub_0806E968
+	.4byte scene_fade_out_and_restore_state
+	.4byte load_battle_scene_graphics
+	.4byte init_scene_graphics
+	.4byte load_battle_ui_assets
+	.4byte init_battle_result_screen
+	.4byte sub_0806F038
+	.4byte sub_0806F094
+	.4byte sub_0806F0B4
+	.4byte sub_0806F3F0
+	.4byte sub_0806F418
+	.4byte sub_0806F750
+	.4byte sub_0806F78C
+	.4byte sub_0806F7AC
+	.4byte sub_0806F830
+	.4byte nullsub_08000840
 
 	.global gUnk_08485FB8
 gUnk_08485FB8:
@@ -242,7 +484,11 @@ gUnk_0848604C:
 
 	.global gUnk_084860AC
 gUnk_084860AC:
-	.incbin "baserom.gba", 0x4860AC, 0x14
+	.4byte sub_08070468
+	.4byte sub_080704D0
+	.4byte sub_0807052C
+	.4byte sub_080705BC
+	.4byte sub_08070600
 
 	.global gUnk_084860C0
 gUnk_084860C0:
@@ -250,7 +496,25 @@ gUnk_084860C0:
 
 	.global gMedabotsWeeklySubStates
 gMedabotsWeeklySubStates:
-	.incbin "baserom.gba", 0x4860C8, 0x4C
+	.4byte medabots_weekly_init
+	.4byte sub_0806DFC4
+	.4byte scene_complete_dma_and_restore_state
+	.4byte load_battle_bg_tilemaps
+	.4byte load_battle_field_graphics
+	.4byte init_battle_bg_palettes_and_layers
+	.4byte sub_08070EB8
+	.4byte sub_08070EE4
+	.4byte sub_08070F34
+	.4byte sub_08070F7C
+	.4byte sub_08070FC0
+	.4byte sub_08070FEC
+	.4byte sub_08071150
+	.4byte sub_0807118C
+	.4byte sub_080712E8
+	.4byte battle_audio_phase_dispatch
+	.4byte check_sprite_done_and_advance_battle
+	.4byte sub_08071600
+	.4byte nullsub_08000840
 
 	.global gUnk_08486114
 gUnk_08486114:
@@ -258,11 +522,27 @@ gUnk_08486114:
 
 	.global gUnk_08486118
 gUnk_08486118:
-	.incbin "baserom.gba", 0x486118, 0x20
+	.4byte sub_08071794
+	.4byte sub_08071840
+	.4byte sub_080718EC
+	.4byte sub_080719EC
+	.4byte sub_08071AF0
+	.4byte sub_08071B44
+	.4byte sub_08071B98
+	.4byte sub_08071C10
 
 	.global gUnk_08486138
 gUnk_08486138:
-	.incbin "baserom.gba", 0x486138, 0x28
+	.4byte sub_08071C94
+	.4byte sub_08071D14
+	.4byte sub_08071D84
+	.4byte sub_08071DFC
+	.4byte sub_08071C84
+	.4byte sub_08071E80
+	.4byte sub_08071F08
+	.4byte sub_08072010
+	.4byte sub_080720BC
+	.4byte sub_08072138
 
 	.global gUnk_08486160
 gUnk_08486160:

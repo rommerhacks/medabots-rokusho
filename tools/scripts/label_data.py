@@ -21,65 +21,93 @@ LABEL_RE = re.compile(r'^(\w+):\s*$')
 SYM_RE = re.compile(r'^\s*(\w+)\s*=\s*(0x[0-9A-Fa-f]+)\s*;')
 
 
+PTR_RE = re.compile(r'^\s*\.4byte\s+(\w+)\s*$')
+
+
 def parse_stub(path):
-    """Return (header lines, [(offset, size)], {offset: [labels]}) for a stub that is labels + incbins."""
-    header, chunks, labels = [], [], {}
+    """Return (header lines, start, end, {offset: [labels]}, {offset: symbol}) for a stub made of
+    labels, .incbin chunks and `.4byte symbol` pointers."""
+    header, labels, ptrs = [], {}, {}
+    start = pos = None
     pending = []
     for line in path.read_text().splitlines():
         m = INCBIN_RE.match(line)
-        if m:
-            off, size = int(m[1], 16), int(m[2], 16)
-            if chunks and chunks[-1][0] + chunks[-1][1] != off:
-                raise SystemExit(f"{path}: .incbin chunks are not contiguous at {off:#x}")
-            chunks.append((off, size))
+        p = None if m else PTR_RE.match(line)
+        if m or p:
+            if m:
+                off, size = int(m[1], 16), int(m[2], 16)
+                if pos is not None and pos != off:
+                    raise SystemExit(f"{path}: .incbin chunks are not contiguous at {off:#x}")
+            else:
+                if pos is None:
+                    raise SystemExit(f"{path}: .4byte before the first .incbin")
+                off, size = pos, 4
+                ptrs[off] = p[1]
+            if start is None:
+                start = off
             if pending:
                 labels.setdefault(off, []).extend(pending)
                 pending = []
+            pos = off + size
             continue
         m = LABEL_RE.match(line)
         if m:
             pending.append(m[1])
             continue
-        if line.strip().startswith(".global") or (not line.strip() and (chunks or pending)):
+        if line.strip().startswith(".global") or (not line.strip() and (start is not None or pending)):
             continue
-        if chunks or pending:
+        if start is not None or pending:
             raise SystemExit(f"{path}: unexpected line {line!r}")
         header.append(line)
     if pending:  # labels at the very end
-        end = chunks[-1][0] + chunks[-1][1]
-        labels.setdefault(end, []).extend(pending)
-    return header, chunks, labels
+        labels.setdefault(pos, []).extend(pending)
+    return header, start, pos, labels, ptrs
 
 
-def write_stub(path, header, start, end, labels):
+def write_stub(path, header, start, end, labels, ptrs):
     out = list(header)
     while out and not out[-1].strip():
         out.pop()
     out.append("")
-    cuts = sorted(o for o in labels if start <= o <= end)
+    cuts = sorted(set(o for o in labels if start <= o <= end) | set(ptrs) | set(o + 4 for o in ptrs))
     pos = start
     for cut in cuts + [None]:
         stop = end if cut is None else cut
         if stop > pos:
             out.append(f'\t.incbin "baserom.gba", {pos:#X}, {stop - pos:#X}'.replace("0X", "0x"))
             pos = stop
-        if cut is not None:
-            for name in labels[cut]:
-                if out[-1]:
-                    out.append("")
-                out.append(f"\t.global {name}")
-                out.append(f"{name}:")
+        if cut is None:
+            break
+        for name in labels.get(cut, []):
+            if out[-1]:
+                out.append("")
+            out.append(f"\t.global {name}")
+            out.append(f"{name}:")
+        if cut in ptrs:
+            out.append(f"\t.4byte {ptrs[cut]}")
+            pos = cut + 4
     path.write_text("\n".join(out) + "\n")
+
+
+def load_stubs():
+    """{path: [header, start, end, labels, ptrs]} for every data stub."""
+    stubs = {}
+    for d in STUB_DIRS:
+        for p in sorted((ROOT / d).glob("*.s")):
+            stub = list(parse_stub(p))
+            if stub[1] is not None:
+                stubs[p] = stub
+    return stubs
+
+
+def save_stubs(stubs):
+    for p, stub in stubs.items():
+        write_stub(p, *stub)
 
 
 def main():
     dry = "--dry-run" in sys.argv
-    stubs = {}
-    for d in STUB_DIRS:
-        for p in sorted((ROOT / d).glob("*.s")):
-            header, chunks, labels = parse_stub(p)
-            if chunks:
-                stubs[p] = (header, chunks[0][0], chunks[-1][0] + chunks[-1][1], labels)
+    stubs = load_stubs()
 
     sym_path = ROOT / "symbols.ld"
     kept, moved = [], 0
@@ -87,7 +115,7 @@ def main():
         m = SYM_RE.match(line)
         if m and int(m[2], 16) >= ROM_BASE:
             off = int(m[2], 16) - ROM_BASE
-            for p, (header, start, end, labels) in stubs.items():
+            for p, (header, start, end, labels, ptrs) in stubs.items():
                 if start <= off < end:
                     names = labels.setdefault(off, [])
                     if m[1] not in names:
@@ -102,8 +130,7 @@ def main():
     print(f"moved {moved} ROM symbols into data stubs")
     if dry:
         return
-    for p, (header, start, end, labels) in stubs.items():
-        write_stub(p, header, start, end, labels)
+    save_stubs(stubs)
     sym_path.write_text("\n".join(kept) + "\n")
 
 
