@@ -560,3 +560,13 @@
   functions.h, so callers may still pass nothing (sub_080361A8).
 * A non-void function with no return statement (`pop {r1}` epilogue, r0 never set) is written as `u32 f(...)`
   without `return`; agbcc accepts it (sub_08037728).
+
+## ROM pointers and the shifted build
+
+Nothing may depend on a fixed ROM address: `make shifted` moves every function and table by `SHIFT`
+bytes, and the game must still play the same. In C, refer to data through its label (declared in
+`include/variables.h`), never as `(void *)0x08xxxxxx`. In the data stubs, pointer words are listed in
+`config/data_ptrs/<dir>_<stub>.tsv` (`ROM address<TAB>symbol`), not written as `.4byte` lines; the
+build renders them. `tools/scripts/data_ptrs.py` and `data_func_ptrs.py` find new ones,
+`tools/scripts/find_hardcoded.py` lists words that still did not move. If a pointer in the list is
+really data (a false positive), the shifted build changes that data by `SHIFT`: delete its line.
