@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Turn the ROM data pointers inside the data stubs into `.4byte label` / `.4byte label+0xN`.
+"""Find the ROM data pointers inside the data stubs and list them in config/data_ptrs/ (rendered as
+`.4byte label` / `.4byte label+0xN` by the build).
 
 data_func_ptrs.py already handles pointers to functions; this one handles pointers to data, so the
 tables move with the data in the shifted build. A raw .incbin word cannot be told apart from a pointer

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Turn the Thumb function pointers inside the data stubs into `.4byte function_name`.
+"""Find the Thumb function pointers inside the data stubs and list them in config/data_ptrs/ (rendered
+as `.4byte function_name` by the build).
 
 A word is taken as a function pointer when it is 4-byte aligned, equals the start of a Thumb function
 from config/functions.tsv plus 1, and sits next to another pointer (a ROM or RAM address), as in the

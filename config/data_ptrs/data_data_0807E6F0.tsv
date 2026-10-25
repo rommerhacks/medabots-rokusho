@@ -1,0 +1,15 @@
+# ROM address of a pointer word in the stub, and the symbol it points to
+0807E6F0	serial_multiplayer_transfer_handler
+0807E6F4	vblank_irq
+0807E6F8	nullsub_08000840
+0807E6FC	hblank_irq
+0807E700	nullsub_08000840
+0807E704	dma1_irq_sound
+0807E708	dma2_irq_sound
+0807E70C	nullsub_08000840
+0807E710	nullsub_08000840
+0807E714	nullsub_08000840
+0807E718	nullsub_08000840
+0807E71C	nullsub_08000840
+0807E720	nullsub_08000840
+0807E724	nullsub_08000840

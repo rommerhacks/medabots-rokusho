@@ -53,16 +53,16 @@ $(BUILD_DIR)/%.o: %.s asm/macros.inc asm/macros/function.inc baserom.gba
 	@mkdir -p $(@D)
 	$(AS) $(ASFLAGS) -o $@ $<
 
-$(BUILD_DIR)/data/%.o: data/%.s baserom.gba
-	@mkdir -p $(@D)
-	$(AS) $(ASFLAGS) -o $@ $<
+# Data stubs: labels and .incbin from baserom.gba. The pointer words inside them are listed in
+# config/data_ptrs/<dir>_<stub>.tsv and rendered as `.4byte symbol` so they move with the code and data.
+STUB_SRCS := $(filter data/% sound/% graphics/%,$(ASM_SRCS))
+STUB_OBJS := $(patsubst %.s,$(BUILD_DIR)/%.o,$(STUB_SRCS))
 
-$(BUILD_DIR)/sound/%.o: sound/%.s baserom.gba
+$(patsubst %.s,$(BUILD_DIR)/%.s,$(STUB_SRCS)): $(BUILD_DIR)/%.s: %.s $$(wildcard config/data_ptrs/$$(subst /,_,$$*).tsv) tools/scripts/label_data.py
 	@mkdir -p $(@D)
-	$(AS) $(ASFLAGS) -o $@ $<
+	python3 tools/scripts/label_data.py --render $< $@
 
-$(BUILD_DIR)/graphics/%.o: graphics/%.s baserom.gba
-	@mkdir -p $(@D)
+$(STUB_OBJS): $(BUILD_DIR)/%.o: $(BUILD_DIR)/%.s baserom.gba
 	$(AS) $(ASFLAGS) -o $@ $<
 
 # C: cpp -> agbcc -> as (the trailing .align keeps each object's size a multiple of 4, like the original link)

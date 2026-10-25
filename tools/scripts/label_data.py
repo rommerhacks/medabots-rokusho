@@ -7,6 +7,12 @@ lines at every such address, emits `.global gFoo` / `gFoo:` there and removes th
 It is idempotent: labels already in the stubs are kept, so it can be re-run after adding new symbols.
 
     python3 tools/scripts/label_data.py [--dry-run]
+
+The pointers inside the stubs (`.4byte symbol` / `.4byte symbol+0xN`, from data_func_ptrs.py and
+data_ptrs.py) are not written into the committed stubs: they live in config/data_ptrs/<dir>_<stub>.tsv
+(`ROM address<TAB>symbol`), and the build renders each stub with them:
+
+    python3 tools/scripts/label_data.py --render data/foo.s build/data/foo.s
 """
 import re
 import sys
@@ -23,6 +29,23 @@ SYM_RE = re.compile(r'^\s*(\w+)\s*=\s*(0x[0-9A-Fa-f]+)\s*;')
 
 START_RE = re.compile(r'^@ data at (0x[0-9A-Fa-f]+)\s*$')
 PTR_RE = re.compile(r'^\s*\.4byte\s+(\w+(?:\s*\+\s*0x[0-9A-Fa-f]+)?)\s*$')
+
+
+def ptr_table(path):
+    """config/data_ptrs/<dir>_<stub>.tsv for a stub path."""
+    path = Path(path).resolve()
+    return ROOT / "config" / "data_ptrs" / f"{path.parent.name}_{path.stem}.tsv"
+
+
+def read_ptr_table(path):
+    ptrs = {}
+    table = ptr_table(path)
+    if table.exists():
+        for line in table.read_text().splitlines():
+            if line and not line.startswith("#"):
+                addr, sym = line.split("\t")
+                ptrs[int(addr, 16) - ROM_BASE] = sym
+    return ptrs
 
 
 def parse_stub(path):
@@ -66,10 +89,24 @@ def parse_stub(path):
         header.append(line)
     if pending:  # labels at the very end
         labels.setdefault(pos, []).extend(pending)
+    ptrs.update(read_ptr_table(path))
     return header, start, pos, labels, ptrs
 
 
 def write_stub(path, header, start, end, labels, ptrs):
+    """Write the stub (labels and .incbin only) and its pointer table."""
+    path.write_text(stub_text(header, start, end, labels, {}))
+    table = ptr_table(path)
+    if ptrs:
+        table.parent.mkdir(parents=True, exist_ok=True)
+        lines = [f"{ROM_BASE + o:08X}\t{ptrs[o]}" for o in sorted(ptrs)]
+        table.write_text("# ROM address of a pointer word in the stub, and the symbol it points to\n"
+                         + "\n".join(lines) + "\n")
+    elif table.exists():
+        table.unlink()
+
+
+def stub_text(header, start, end, labels, ptrs):
     out = list(header)
     while out and not out[-1].strip():
         out.pop()
@@ -94,7 +131,7 @@ def write_stub(path, header, start, end, labels, ptrs):
         if cut in ptrs:
             out.append(f"\t.4byte {ptrs[cut]}")
             pos = cut + 4
-    path.write_text("\n".join(out) + "\n")
+    return "\n".join(out) + "\n"
 
 
 def load_stubs():
@@ -114,6 +151,10 @@ def save_stubs(stubs):
 
 
 def main():
+    if sys.argv[1:2] == ["--render"]:
+        stub = parse_stub(Path(sys.argv[2]))
+        Path(sys.argv[3]).write_text(stub_text(*stub))
+        return
     dry = "--dry-run" in sys.argv
     stubs = load_stubs()
 
