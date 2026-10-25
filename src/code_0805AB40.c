@@ -356,7 +356,28 @@ void decompress_and_write_tilemap(const void *src, u32 bgcnt)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", tilemap_offset_tiles_and_palette);
+void tilemap_offset_tiles_and_palette(u32 tiles, u32 palette, u32 blk)
+{
+    u16 add = tiles;
+    // pinned so pal << 12 stays inside the loop (the original recomputes it every tile)
+    register u32 pal asm("r6") = (u8)palette;
+    u8 block = blk;
+    u16 *p = (u16 *)(VRAM + block * 0x800);
+    s32 i;
+
+    for (i = 0; i < 0x400; i++)
+    {
+        u32 h;
+        u32 x = *p;
+        u32 t = (((x & 0x3FF) + add) & 0x3FF) | (x & 0xFC00);
+        s32 mask = 0xF000;
+
+        x = pal;
+        h = (t & mask) + (x << 12);
+        *p = (t & 0xFFF) | h;
+        p++;
+    }
+}
 
 void init_multiplayer_id(void)
 {
