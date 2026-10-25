@@ -1,7 +1,62 @@
 #include "global.h"
 #include "keys.h"
 
-INCLUDE_ASM("asm/nonmatching/code_08018900", sub_08018900);
+static inline u32 sub1(u32 x) { return x - 1; }
+
+void sub_08018900(u32 rec)
+{
+    u8 k;
+    struct Unk_03000590 *base;
+    struct Unk_03000590 *r;
+    u32 off;
+
+    if (rec > 2)
+        return;
+    base = gUnk_03000590;
+    off = rec << 8;
+    r = (struct Unk_03000590 *)((u8 *)base + off);
+    if (r->unkDD == 0)
+        return;
+    if (r->unkDD <= 3)
+    {
+        k = *(u8 *)(sub1(r->unkDD) * 24 + off + (u32)base + 0x4A);
+    }
+    else
+    {
+        switch (r->unkDD - 4)
+        {
+        case 0:
+            if (r->medal.unk5 <= 9)
+                return;
+            memcpy_bytes_08041D04(&gUnk_083B7E0C[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
+            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gUnk_03000440.unkEE)[0] * 6], gUnk_03000440.unk10E, 6);
+            k = gUnk_03000440.unk10E[1];
+            break;
+        case 1:
+            if (r->medal.unk5 <= 29)
+                return;
+            memcpy_bytes_08041D04(&gUnk_083B7E0C[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
+            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gUnk_03000440.unkEE)[1] * 6], gUnk_03000440.unk10E, 6);
+            k = gUnk_03000440.unk10E[1];
+            break;
+        case 2:
+            if (r->medal.unk5 <= 59)
+                return;
+            memcpy_bytes_08041D04(&gUnk_083B7E0C[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
+            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gUnk_03000440.unkEE)[2] * 6], gUnk_03000440.unk10E, 6);
+            k = gUnk_03000440.unk10E[1];
+            break;
+        default:
+            return;
+        }
+    }
+    {
+        u32 t = k + off;
+        register u32 q asm("r0") = (u32)base->unkB0;
+        t += q;
+        (*(u8 *)t)++;
+    }
+}
 
 void sub_080189EC(void)
 {
