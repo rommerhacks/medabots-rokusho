@@ -902,7 +902,32 @@ u32 get_item_quantity_by_id(u8 id)
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", item_add_quantity);
+void item_add_quantity(u8 id, u8 n)
+{
+    u32 i;
+
+    id &= 0x3F;
+    for (i = 0; i < 64; i++)
+    {
+        if (gItemInventory[i][0] & 0x80)
+        {
+            if ((gItemInventory[i][0] & 0x7F) == id)
+            {
+                gItemInventory[i][1] += n;
+                if (gItemInventory[i][1] > 99)
+                    gItemInventory[i][1] = 99;
+                return;
+            }
+        }
+        else
+        {
+            gItemInventory[i][0] = id | 0x80;
+            gItemInventory[0][i * 2 + 1] = n; // flat index: matches the original's address math
+            return;
+        }
+    }
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08042318);
 
 // Bubble sort of the n SORT_BUFFER entries (struct SortEntry), ascending by key then key2.
