@@ -894,7 +894,33 @@ void sub_0803E674(void)
     soft_reset_to_title();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803E680);
+void sub_0803E680(void)
+{
+    struct Unk_03005010 *link = &gUnk_03005010;
+    u16 v;
+    s16 flag;
+    link->unk6 = gUnk_03002B70.unk4[gUnk_03001800.unk51] + (flag = ((gUnk_03001800.unk1AF << 8) & 0x100) + 0x8000);
+    gUnk_03000440.unk86++;
+    if (!(gUnk_03000440.unk86 & 1))
+    {
+        gUnk_03001800.unk1AF ^= 1;
+        gUnk_03001800.unk51++;
+    }
+    v = link->unk8[gUnk_03000B90 ^ 1][1];
+    if (v & 0x8000)
+    {
+        if ((u16)(v & 0x100) >> 8 != gUnk_03001800.unk1B0)
+        {
+            gUnk_03001800.unk1B0 ^= 1;
+            gUnk_03001800.unk18A[gUnk_03001800.unk52] = v;
+            if (++gUnk_03001800.unk52 > 10)
+            {
+                gUnk_03000440.unk86 = 0;
+                gGameSubState++;
+            }
+        }
+    }
+}
 
 void sub_0803E768(void)
 {
