@@ -1047,7 +1047,30 @@ u32 sub_080366DC(u32 slot, u32 part)
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08036784);
+void sub_08036784(u32 slot, u32 part, s16 x, s16 y)
+{
+    u32 i;
+    s32 t, u;
+
+    clear_battle_sprite_slot(slot, 4);
+    for (i = 0; i <= 3; i++)
+    {
+        gUnk_03002C30[slot + i].unk0 = 0x4404;
+        gUnk_03002C30[slot + i].unk1C = 0;
+        gUnk_03002C30[slot + i].unkA = 0xE;
+        gUnk_03002C30[slot + i].unkB = 0x80;
+        gUnk_03002C30[slot + i].unk2C = i * 8;
+        u = gUnk_083AF480[part << 1] + x;
+        t = gUnk_083AF490[i * 2];
+        t += u;
+        gUnk_03002C30[slot + i].unk2 = t & 0x1FF;
+        u = gUnk_083AF480[part * 2 + 1] + y;
+        t = gUnk_083AF490[i * 2 + 1];
+        t += u;
+        gUnk_03002C30[slot + i].unk4 = t & 0xFF;
+        init_battle_sprite_entry_08040B90(gUnk_083B5F80[29], slot + i);
+    }
+}
 
 u32 sub_0803684C(u32 slot)
 {
@@ -1160,7 +1183,25 @@ void sub_08036BF4(u32 side)
     vram_fill_tilemap_rect(0xC, 0xD, y, 0, REG_BG1CNT, 0);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_08036C20);
+void sub_08036C20(u32 slot, u32 part, s16 x, s16 y, u32 n)
+{
+    struct Unk_03002C30 *s;
+    struct Unk_03002C30 *base;
+    s32 t1, t2;
+
+    clear_battle_sprite_slot(slot, 1);
+    base = gUnk_03002C30;
+    s = &base[slot];
+    s->unk0 = 0xC404;
+    s->unk1C = 0;
+    s->unkA = 0xE;
+    s->unkB = 0x80;
+    t1 = gUnk_083AF480[part << 1] + x;
+    s->unk2 = t1 & 0x1FF;
+    t2 = gUnk_083AF480[part * 2 + 1] + y;
+    s->unk4 = t2 & 0xFF;
+    init_battle_sprite_entry_08040B90(gUnk_083B5F80[n], slot);
+}
 
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount)
 {
