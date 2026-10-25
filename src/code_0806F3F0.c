@@ -183,7 +183,57 @@ void sub_0806F830(void)
     gGameSubState = 0;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0806F3F0", sub_0806F850);
+// View of 0x03001800 (gUnk_03001800_s) for the battle-intro palette fades of code_0806F3F0:
+// unkE holds a saved copy of OBJ palette 4 (0x05000280, 16 colours).
+struct Unk_03001800_fade
+{
+    u16 nextMode;
+    u16 nextState;
+    u16 nextSubState;
+    u16 unk6; // fade step length (frames)
+    s32 timer;
+    u16 unkC;
+    u16 unkE[16]; // saved palette (PLTT + 0x280)
+};
+#define gUnk_03001800_fade (*(struct Unk_03001800_fade *)&gUnk_03001800_s)
+
+// guess: fade OBJ palette 4 in from black (blend towards `zero` colour, which folds away), BLDY fading out.
+bool32 sub_0806F850(void)
+{
+    u16 buf[16];
+    vs32 inv;
+    s32 zero;
+    s32 i;
+    s32 k;
+    u16 d;
+
+    zero = 0;
+    if (gUnk_03001800_fade.timer == 0) {
+        DmaSet(3, PLTT + 0x280, gUnk_03001800_fade.unkE, 0x80000010);
+        for (i = 0; i < 16; i++)
+            buf[i] = zero;
+        DmaSet(3, buf, PLTT + 0x280, 0x84000008);
+        REG_BLDCNT &= 0xFFEF;
+        REG_DISPCNT |= 0x1B00;
+        if (gUnk_03001800_fade.unk6 == 0)
+            gUnk_03001800_fade.unk6 = 1;
+    } else if (gUnk_03001800_fade.timer == gUnk_03001800_fade.unk6 * 32) {
+        gUnk_03001800_fade.timer = zero;
+        DmaSet(3, gUnk_03001800_fade.unkE, PLTT + 0x280, 0x80000010);
+        return TRUE;
+    } else if (gUnk_03001800_fade.timer % gUnk_03001800_fade.unk6 == 0) {
+        k = gUnk_03001800_fade.timer / gUnk_03001800_fade.unk6;
+        inv = 0x20 - k;
+        for (i = 0; i < 16; i++)
+            buf[i] = (((gUnk_03001800_fade.unkE[i] & 0x1F) * k + (zero & 0x1F) * (0x20 - k)) >> 5) + ((((gUnk_03001800_fade.unkE[i] & 0x3E0) * k + (zero & 0x3E0) * (0x20 - k)) >> 5) & 0x3E0) + ((((gUnk_03001800_fade.unkE[i] & 0x7C00) * k + (zero & 0x7C00) * (0x20 - k)) >> 5) & 0x7C00);
+        DmaSet(3, buf, PLTT + 0x280, 0x84000008);
+        d = gUnk_03001800_fade.unk6;
+        if (gUnk_03001800_fade.timer % (d * 2) == (zero & 0x1F))
+            REG_BLDY = 16 - gUnk_03001800_fade.timer / (d * 4);
+    }
+    gUnk_03001800_fade.timer++;
+    return FALSE;
+}
 
 bool32 sub_0806F9D4(void)
 {
