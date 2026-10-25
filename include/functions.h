@@ -498,6 +498,7 @@ void play_sound_effect_alt(u32 id, u32 arg);
 void sound_stop_all_with_fade_guard(u32 a);
 
 u16 sub_08073140(u32 idx);
+u8 sub_080740AC(struct SoundTrack *track);
 void init_all_sound_channels(void);
 void sound_init_wave_channel(void);
 u32 sound_set_pitch_offset(struct SoundMixChannel *ch, s32 note);

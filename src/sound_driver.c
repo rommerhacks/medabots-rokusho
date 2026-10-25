@@ -134,7 +134,56 @@ void sound_channel_check_note_change(struct SoundTrack *track, u16 *out)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", update_sound_channel_frequency_080733AC);
+void update_sound_channel_frequency_080733AC(struct SoundTrack *track, vu16 *cnt_, vu16 *freq_)
+{
+    register vu16 *cnt asm("r6") = cnt_;
+    register vu16 *freq asm("r5") = freq_;
+    u8 note = sub_080740AC(track);
+
+    if (track->unk6C != note)
+    {
+        u8 *mode;
+
+        track->unk6C = note;
+        mode = &track->unk64;
+        if (note != 0xFF)
+        {
+            u16 f = sub_08073140(note) + track->unk55;
+            u16 *vol;
+            u8 m;
+
+            if ((s16)f < 0)
+                f = 0;
+            else if ((s16)f > 0x7FF)
+                f = 0x7FF;
+            m = *mode;
+            vol = &track->unk40;
+            if (m == 2)
+            {
+                vu16 tmp;
+
+                *cnt = gUnk_083ABA62[(*vol * 3) >> 12] << 8;
+                tmp = (*(vu16 *)0x04000084 & 4) ? 0 : 0x8000;
+                *freq = f | tmp;
+            }
+            else
+            {
+                *cnt = ((*vol * 3) & (s16)0xF000) | track->unk67;
+                *freq = f | 0x8000;
+            }
+        }
+        else
+        {
+            u16 v;
+            if (*mode == 2)
+                v = 0;
+            else
+                v = track->unk67;
+            *cnt = v;
+            *freq |= 0x8000;
+        }
+    }
+}
 
 void sound_update_channel_output_routing(struct SoundTrack *track)
 {
