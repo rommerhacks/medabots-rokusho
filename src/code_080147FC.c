@@ -2320,7 +2320,48 @@ void status_begin_side_change(void)
     status_draw_lr_button(1);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080147FC", status_side_change_scroll_out);
+u32 status_side_change_scroll_out(void)
+{
+    u32 i, rec, x;
+    struct Unk_03000590 *recs;
+
+    clear_sprite_table_mask(4, 1);
+    clear_sprite_table_mask(5, 1);
+    clear_sprite_table_mask(6, 1);
+    clear_sprite_table_mask(7, 1);
+    if (gUnk_03000440.unk3C == 0)
+    {
+        for (i = 0, recs = gUnk_03000590; i <= 2; i++)
+        {
+            rec = gUnk_03000440.unk3C * 3 + i;
+            if (recs[rec].unk40)
+                { x = gUnk_083AD3A4[rec * 2] - gUnk_03000440.unk40 * 8; setup_battle_bot_sprites_08017994(rec, x, gUnk_083AD3A4[rec * 2 + 1]); }
+        }
+        for (i = 0; i <= 12; i++)
+            gUnk_03002C30[9 + i].unk2 -= 8;
+        read_vram_tilemap_rect(13, 6, 16 - gUnk_03000440.unk40, 13, REG_BG0CNT, (void *)0x02020000);
+        write_vram_tilemap_rect(13, 6, 15 - gUnk_03000440.unk40, 13, REG_BG0CNT, (void *)0x02020000);
+    }
+    else
+    {
+        for (i = 0, recs = gUnk_03000590; i <= 2; i++)
+        {
+            rec = gUnk_03000440.unk3C * 3 + i;
+            if (recs[rec].unk40)
+                { register u32 k asm("r0") = rec * 2; x = gUnk_083AD3A4[k] + gUnk_03000440.unk40 * 8; setup_battle_bot_sprites_08017994(rec, x, gUnk_083AD3A4[k + 1]); }
+        }
+        for (i = 0; i <= 12; i++)
+            gUnk_03002C30[9 + i].unk2 += 8;
+        read_vram_tilemap_rect(13, 6, gUnk_03000440.unk40 + 1, 13, REG_BG0CNT, (void *)0x02020000);
+        write_vram_tilemap_rect(13, 6, gUnk_03000440.unk40 + 2, 13, REG_BG0CNT, (void *)0x02020000);
+    }
+    if (++gUnk_03000440.unk40 == 14)
+    {
+        status_switch_side();
+        return 1;
+    }
+    return 0;
+}
 
 void status_switch_side(void)
 {
