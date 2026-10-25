@@ -1341,7 +1341,7 @@ void unpack_item_inventory_to_buffer(void); // gItemInventory -> struct ItemList
 void update_battle_medapart_icons(void);
 void render_battle_medapart_list(u32 mode);
 s32 calc_text_pixel_width(const u8 *s); // sum of gUnk_083B4C88 widths, up to 10 characters or the 0xFE terminator
-void sub_0805E1CC(const u8 *s); // draws 10 characters as 2-row BG0 tiles copied from a 26-per-row font map on the same screen (guess: name entry)
+void sub_0805E1CC(const u8 *s); // draws 10 characters as 2-row BG1 tiles copied from a 26-per-row font map on the same screen (guess: name entry)
 void draw_number_3digits(s32 n, s32 x, s32 y); // 3 digits, blank-padded, BG tilemap 0x0600F000 (item list page numbers)
 void item_menu_set_cursor_pos(struct Unk_03002C30 *sprite); // list cursor sprite: unk2 = 0x54, unk4 = 0x1C + 16 * (gUnk_03006F74->unkC % 5)
 

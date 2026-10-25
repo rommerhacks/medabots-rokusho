@@ -1956,7 +1956,37 @@ s32 calc_text_pixel_width(const u8 *s)
     return w;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805E1CC);
+static inline u32 ato(u32 s, u32 c) { return (s << 11) + c * 2; }
+
+void sub_0805E1CC(const u8 *s)
+{
+    u16 *top;
+    u16 *bot;
+    s32 i;
+    u8 c, col, row;
+    u32 scr;
+
+    top = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 0x65;
+    bot = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 0x85;
+    for (i = 0; i < 10; i++)
+    {
+        if (*s != 0)
+        {
+            c = *s - 1;
+            scr = (REG_BG1CNT >> 8) & 0x1F;
+            col = c % 26;
+            row = c / 26;
+            *top++ = *((u16 *)(VRAM + 0x204) + ((ato(scr, col) + row * 192) >> 1));
+            *bot++ = *((u16 *)(VRAM + 0x244) + ((ato((REG_BG1CNT >> 8) & 0x1F, col) + row * 192) >> 1));
+        }
+        else
+        {
+            *top++ = 0;
+            *bot++ = 0;
+        }
+        s++;
+    }
+}
 
 void sub_0805E29C(void)
 {
