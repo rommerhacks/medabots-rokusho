@@ -6,7 +6,198 @@ gData_08480000:
 
 	.global gUnk_084837A0
 gUnk_084837A0:
-	.incbin "baserom.gba", 0x4837A0, 0x300
+	.4byte gUnk_0847ECC0+0x80
+	.4byte gUnk_0847ECC0+0x1A0
+	.4byte gUnk_0847ECC0+0x270
+	.4byte gUnk_0847ECC0+0x298
+	.4byte gUnk_0847ECC0+0x2B0
+	.4byte gUnk_0847ECC0+0x2C0
+	.4byte gUnk_0847ECC0+0x2D8
+	.4byte gUnk_0847ECC0+0x2F0
+	.4byte gUnk_0847ECC0+0x348
+	.4byte gUnk_0847ECC0+0x370
+	.4byte gUnk_0847ECC0+0x3D0
+	.4byte gUnk_0847ECC0+0x3E0
+	.4byte gUnk_0847ECC0+0x408
+	.4byte gUnk_0847ECC0+0x418
+	.4byte gUnk_0847ECC0+0x448
+	.4byte gUnk_0847ECC0+0x498
+	.4byte gUnk_0847ECC0+0x4E8
+	.4byte gUnk_0847ECC0+0x598
+	.4byte gUnk_0847ECC0+0x658
+	.4byte gUnk_0847ECC0+0x6B0
+	.4byte gUnk_0847ECC0+0x6C8
+	.4byte gUnk_0847ECC0+0x6E0
+	.4byte gUnk_0847ECC0+0x6F8
+	.4byte gUnk_0847ECC0+0x710
+	.4byte gUnk_0847ECC0+0x770
+	.4byte gUnk_0847ECC0+0x7C8
+	.4byte gUnk_0847ECC0+0x828
+	.4byte gUnk_0847ECC0+0x8D0
+	.4byte gUnk_0847ECC0+0x908
+	.4byte gUnk_0847ECC0+0x9C0
+	.4byte gUnk_0847ECC0+0x9F0
+	.4byte gUnk_0847ECC0+0xA40
+	.4byte gUnk_0847ECC0+0xA88
+	.4byte gUnk_0847ECC0+0xAD0
+	.4byte gUnk_0847ECC0+0xBD8
+	.4byte gUnk_0847ECC0+0xC88
+	.4byte gUnk_0847ECC0+0xCB0
+	.4byte gUnk_0847ECC0+0xD18
+	.4byte gUnk_0847ECC0+0xD60
+	.4byte gUnk_0847ECC0+0xDA0
+	.4byte gUnk_0847ECC0+0xE30
+	.4byte gUnk_0847ECC0+0xE88
+	.4byte gUnk_0847ECC0+0xED0
+	.4byte gUnk_0847ECC0+0xF18
+	.4byte gUnk_0847ECC0+0xF58
+	.4byte gUnk_0847ECC0+0xF80
+	.4byte gUnk_0847ECC0+0xFC0
+	.4byte gUnk_0847ECC0+0x1040
+	.4byte gUnk_0847ECC0+0x1070
+	.4byte gUnk_0847ECC0+0x10A0
+	.4byte gUnk_0847ECC0+0x10C8
+	.4byte gUnk_0847ECC0+0x10E0
+	.4byte gUnk_0847ECC0+0x1108
+	.4byte gUnk_0847ECC0+0x1148
+	.4byte gUnk_0847ECC0+0x1178
+	.4byte gUnk_0847ECC0+0x1188
+	.4byte gUnk_0847ECC0+0x11B8
+	.4byte gUnk_0847ECC0+0x1230
+	.4byte gData_08480000
+	.4byte gData_08480000+0x38
+	.4byte gData_08480000+0xA0
+	.4byte gData_08480000+0xC0
+	.4byte gData_08480000+0xE8
+	.4byte gData_08480000+0x180
+	.4byte gData_08480000+0x1C8
+	.4byte gData_08480000+0x250
+	.4byte gData_08480000+0x2A8
+	.4byte gData_08480000+0x2D0
+	.4byte gData_08480000+0x318
+	.4byte gData_08480000+0x390
+	.4byte gData_08480000+0x410
+	.4byte gData_08480000+0x4D0
+	.4byte gData_08480000+0x530
+	.4byte gData_08480000+0x590
+	.4byte gData_08480000+0x608
+	.4byte gData_08480000+0x670
+	.4byte gData_08480000+0x6B8
+	.4byte gData_08480000+0x750
+	.4byte gData_08480000+0x7A8
+	.4byte gData_08480000+0x7E8
+	.4byte gData_08480000+0x830
+	.4byte gData_08480000+0x960
+	.4byte gData_08480000+0xAE8
+	.4byte gData_08480000+0xB08
+	.4byte gData_08480000+0xD20
+	.4byte gData_08480000+0xE28
+	.4byte gData_08480000+0xF58
+	.4byte gData_08480000+0xFB0
+	.4byte gData_08480000+0x1040
+	.4byte gData_08480000+0x1130
+	.4byte gData_08480000+0x11B0
+	.4byte gData_08480000+0x12A0
+	.4byte gData_08480000+0x12D8
+	.4byte gData_08480000+0x1308
+	.4byte gData_08480000+0x1328
+	.4byte gData_08480000+0x1348
+	.4byte gData_08480000+0x14E8
+	.4byte gData_08480000+0x1588
+	.4byte gData_08480000+0x15E8
+	.4byte gData_08480000+0x1608
+	.4byte gData_08480000+0x1628
+	.4byte gData_08480000+0x1648
+	.4byte gData_08480000+0x1790
+	.4byte gData_08480000+0x18E8
+	.4byte gData_08480000+0x1910
+	.4byte gData_08480000+0x1930
+	.4byte gData_08480000+0x1958
+	.4byte gData_08480000+0x1980
+	.4byte gData_08480000+0x19A0
+	.4byte gData_08480000+0x19D0
+	.4byte gData_08480000+0x1A10
+	.4byte gData_08480000+0x1A58
+	.4byte gData_08480000+0x1A80
+	.4byte gData_08480000+0x1B10
+	.4byte gData_08480000+0x1B88
+	.4byte gData_08480000+0x1BC8
+	.4byte gData_08480000+0x1BF8
+	.4byte gData_08480000+0x1C50
+	.4byte gData_08480000+0x1C98
+	.4byte gData_08480000+0x1CD8
+	.4byte gData_08480000+0x1D18
+	.4byte gData_08480000+0x1D38
+	.4byte gData_08480000+0x1DA0
+	.4byte gData_08480000+0x1E48
+	.4byte gData_08480000+0x1E98
+	.4byte gData_08480000+0x1EC0
+	.4byte gData_08480000+0x1ED0
+	.4byte gData_08480000+0x1EE8
+	.4byte gData_08480000+0x1F00
+	.4byte gData_08480000+0x1FA8
+	.4byte gData_08480000+0x1FC0
+	.4byte gData_08480000+0x1FD8
+	.4byte gData_08480000+0x1FE8
+	.4byte gData_08480000+0x2000
+	.4byte gData_08480000+0x2020
+	.4byte gData_08480000+0x2030
+	.4byte gData_08480000+0x2080
+	.4byte gData_08480000+0x20F0
+	.4byte gData_08480000+0x2168
+	.4byte gData_08480000+0x21F8
+	.4byte gData_08480000+0x2218
+	.4byte gData_08480000+0x2238
+	.4byte gData_08480000+0x2260
+	.4byte gData_08480000+0x2358
+	.4byte gData_08480000+0x23B0
+	.4byte gData_08480000+0x2428
+	.4byte gData_08480000+0x2470
+	.4byte gData_08480000+0x2538
+	.4byte gData_08480000+0x25B8
+	.4byte gData_08480000+0x2640
+	.4byte gData_08480000+0x26D8
+	.4byte gData_08480000+0x2758
+	.4byte gData_08480000+0x2810
+	.4byte gData_08480000+0x2900
+	.4byte gData_08480000+0x2970
+	.4byte gData_08480000+0x29A8
+	.4byte gData_08480000+0x29C8
+	.4byte gData_08480000+0x29E8
+	.4byte gData_08480000+0x2A08
+	.4byte gData_08480000+0x2A30
+	.4byte gData_08480000+0x2A48
+	.4byte gData_08480000+0x2A60
+	.4byte gData_08480000+0x2AE0
+	.4byte gData_08480000+0x2BD0
+	.4byte gData_08480000+0x2C00
+	.4byte gData_08480000+0x2C58
+	.4byte gData_08480000+0x2CB8
+	.4byte gData_08480000+0x2D70
+	.4byte gData_08480000+0x2DE8
+	.4byte gData_08480000+0x2E80
+	.4byte gData_08480000+0x2F08
+	.4byte gData_08480000+0x2FB8
+	.4byte gData_08480000+0x30E8
+	.4byte gData_08480000+0x3158
+	.4byte gData_08480000+0x3210
+	.4byte gData_08480000+0x3268
+	.4byte gData_08480000+0x3378
+	.4byte gData_08480000+0x33C8
+	.4byte gData_08480000+0x33E8
+	.4byte gData_08480000+0x33F8
+	.4byte gData_08480000+0x3410
+	.4byte gData_08480000+0x3430
+	.4byte gData_08480000+0x34F0
+	.4byte gData_08480000+0x3520
+	.4byte gData_08480000+0x3548
+	.4byte gData_08480000+0x3568
+	.4byte gData_08480000+0x35B8
+	.4byte gData_08480000+0x3608
+	.4byte gData_08480000+0x3678
+	.4byte gData_08480000+0x36D8
+	.4byte gData_08480000+0x3738
+	.4byte gData_08480000+0x3760
 
 	.global gUnk_08483AA0
 gUnk_08483AA0:
@@ -120,7 +311,7 @@ gUnk_08483C44:
 
 	.global gUnk_08483C68
 gUnk_08483C68:
-	.incbin "baserom.gba", 0x483C68, 0x4
+	.4byte gUnk_08483C44+0x1C
 
 	.global gUnk_08483C6C
 gUnk_08483C6C:
@@ -244,7 +435,173 @@ gUnk_08483EB4:
 	.4byte sub_08065418
 	.4byte sub_08065484
 	.4byte sub_08064C30
-	.incbin "baserom.gba", 0x483EE0, 0x29C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x98
+	.4byte gUnk_080AFB48+0x8C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x7C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x70
+	.4byte gUnk_080AFB48+0x68
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x58
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x48
+	.4byte gUnk_080AFB48+0x68
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x34
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x130
+	.4byte gUnk_080AFB48+0x120
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x110
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x100
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xF0
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xE0
+	.4byte gUnk_080AFB48+0xD8
+	.4byte gUnk_080AFB48+0xCC
+	.4byte gUnk_080AFB48+0xBC
+	.4byte gUnk_080AFB48+0xA8
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x98
+	.4byte gUnk_080AFB48+0x8C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x33C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x330
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x320
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x314
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x308
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x2FC
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x2EC
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x2E0
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x2D0
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x2BC
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x2AC
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x29C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x28C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x2EC
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x280
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x26C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x25C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x24C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x23C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x22C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x21C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x20C
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x1FC
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x1F0
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x1DC
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x1C8
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x1B4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x1A4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x198
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x188
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x174
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x164
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x158
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x154
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0x140
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
+	.4byte gUnk_080AFB48+0xA4
 
 	.global gUnk_0848417C
 gUnk_0848417C:
@@ -252,15 +609,152 @@ gUnk_0848417C:
 
 	.global gUnk_08484444
 gUnk_08484444:
-	.incbin "baserom.gba", 0x484444, 0xD88
+	.4byte gUnk_0848417C+0x4
+	.4byte gUnk_0848417C+0xD
+	.4byte gUnk_0848417C+0x13
+	.4byte gUnk_0848417C+0x1C
+	.4byte gUnk_0848417C+0x23
+	.4byte gUnk_0848417C+0x30
+	.4byte gUnk_0848417C+0x37
+	.4byte gUnk_0848417C+0x46
+	.4byte gUnk_0848417C+0x52
+	.4byte gUnk_0848417C+0x5F
+	.4byte gUnk_0848417C+0x6C
+	.4byte gUnk_0848417C+0x77
+	.4byte gUnk_0848417C+0x82
+	.4byte gUnk_0848417C+0x8F
+	.4byte gUnk_0848417C+0x95
+	.4byte gUnk_0848417C+0xA4
+	.4byte gUnk_0848417C+0xAC
+	.4byte gUnk_0848417C+0xBB
+	.4byte gUnk_0848417C+0xC3
+	.4byte gUnk_0848417C+0xD0
+	.4byte gUnk_0848417C+0xDF
+	.4byte gUnk_0848417C+0xEC
+	.4byte gUnk_0848417C+0xF9
+	.4byte gUnk_0848417C+0x101
+	.4byte gUnk_0848417C+0x10D
+	.4byte gUnk_0848417C+0x11B
+	.4byte gUnk_0848417C+0x129
+	.4byte gUnk_0848417C+0x12F
+	.4byte gUnk_0848417C+0x13E
+	.4byte gUnk_0848417C+0x147
+	.4byte gUnk_0848417C+0x153
+	.4byte gUnk_0848417C+0x15E
+	.4byte gUnk_0848417C+0x16C
+	.4byte gUnk_0848417C+0x176
+	.4byte gUnk_0848417C+0x180
+	.4byte gUnk_0848417C+0x18A
+	.4byte gUnk_0848417C+0x194
+	.4byte gUnk_0848417C+0x1A1
+	.4byte gUnk_0848417C+0x1A8
+	.4byte gUnk_0848417C+0x1B2
+	.4byte gUnk_0848417C+0x1C3
+	.4byte gUnk_0848417C+0x1CE
+	.4byte gUnk_0848417C+0x1D7
+	.4byte gUnk_0848417C+0x1E5
+	.4byte gUnk_0848417C+0x1F3
+	.4byte gUnk_0848417C+0x201
+	.4byte gUnk_0848417C+0x211
+	.4byte gUnk_0848417C+0x21E
+	.4byte gUnk_0848417C+0x22A
+	.4byte gUnk_0848417C+0x237
+	.4byte gUnk_0848417C+0x246
+	.4byte gUnk_0848417C+0x256
+	.4byte gUnk_0848417C+0x25F
+	.4byte gUnk_0848417C+0x267
+	.4byte gUnk_0848417C+0x26F
+	.4byte gUnk_0848417C+0x27D
+	.4byte gUnk_0848417C+0x285
+	.4byte gUnk_0848417C+0x28D
+	.4byte gUnk_0848417C+0x295
+	.4byte gUnk_0848417C+0x29D
+	.4byte gUnk_0848417C+0x2A5
+	.4byte gUnk_0848417C+0x2AD
+	.4byte gUnk_0848417C+0x2B5
+	.4byte gUnk_0848417C+0x2BD
+	.incbin "baserom.gba", 0x484544, 0xC88
 
 	.global gItemDescriptions
 gItemDescriptions:
-	.incbin "baserom.gba", 0x4851CC, 0x338
+	.4byte gUnk_08484444+0x100
+	.4byte gUnk_08484444+0x132
+	.4byte gUnk_08484444+0x15F
+	.4byte gUnk_08484444+0x195
+	.4byte gUnk_08484444+0x1BA
+	.4byte gUnk_08484444+0x1F3
+	.4byte gUnk_08484444+0x21B
+	.4byte gUnk_08484444+0x25D
+	.4byte gUnk_08484444+0x290
+	.4byte gUnk_08484444+0x2CE
+	.4byte gUnk_08484444+0x2EB
+	.4byte gUnk_08484444+0x32A
+	.4byte gUnk_08484444+0x35E
+	.4byte gUnk_08484444+0x39B
+	.4byte gUnk_08484444+0x3DC
+	.4byte gUnk_08484444+0x421
+	.4byte gUnk_08484444+0x452
+	.4byte gUnk_08484444+0x482
+	.4byte gUnk_08484444+0x4D1
+	.4byte gUnk_08484444+0x506
+	.4byte gUnk_08484444+0x546
+	.4byte gUnk_08484444+0x598
+	.4byte gUnk_08484444+0x5E8
+	.4byte gUnk_08484444+0x62E
+	.4byte gUnk_08484444+0x673
+	.4byte gUnk_08484444+0x6B4
+	.4byte gUnk_08484444+0x6F3
+	.4byte gUnk_08484444+0x724
+	.4byte gUnk_08484444+0x75D
+	.4byte gUnk_08484444+0x79A
+	.4byte gUnk_08484444+0x7CE
+	.4byte gUnk_08484444+0x811
+	.4byte gUnk_08484444+0x85B
+	.4byte gUnk_08484444+0x88D
+	.4byte gUnk_08484444+0x8BF
+	.4byte gUnk_08484444+0x8F1
+	.4byte gUnk_08484444+0x923
+	.4byte gUnk_08484444+0x966
+	.4byte gUnk_08484444+0x98C
+	.4byte gUnk_08484444+0x9CC
+	.4byte gUnk_08484444+0x9F6
+	.4byte gUnk_08484444+0xA37
+	.4byte gUnk_08484444+0xA82
+	.4byte gUnk_08484444+0xAC3
+	.4byte gUnk_08484444+0xB02
+	.4byte gUnk_08484444+0xB51
+	.4byte gUnk_08484444+0xB7C
+	.4byte gUnk_08484444+0xBA7
+	.4byte gUnk_08484444+0xBD2
+	.4byte gUnk_08484444+0xBF7
+	.4byte gUnk_08484444+0xC41
+	.4byte gUnk_08484444+0xC87
+	.4byte gUnk_08484444+0xCC0
+	.4byte gUnk_08484444+0xCCC
+	.4byte gUnk_08484444+0xCD8
+	.4byte gUnk_08484444+0xD1A
+	.4byte gUnk_08484444+0xD26
+	.4byte gUnk_08484444+0xD32
+	.4byte gUnk_08484444+0xD3E
+	.4byte gUnk_08484444+0xD4A
+	.4byte gUnk_08484444+0xD56
+	.4byte gUnk_08484444+0xD62
+	.4byte gUnk_08484444+0xD6E
+	.4byte gUnk_08484444+0xD7A
+	.incbin "baserom.gba", 0x4852CC, 0x238
 
 	.global gUnk_08485504
 gUnk_08485504:
-	.incbin "baserom.gba", 0x485504, 0x28
+	.4byte gItemDescriptions+0x100
+	.4byte gItemDescriptions+0x137
+	.4byte gItemDescriptions+0x16E
+	.4byte gItemDescriptions+0x1A5
+	.4byte gItemDescriptions+0x1E2
+	.4byte gItemDescriptions+0x223
+	.4byte gItemDescriptions+0x266
+	.4byte gItemDescriptions+0x2A0
+	.4byte gItemDescriptions+0x2C2
+	.4byte gItemDescriptions+0x2F4
 
 	.global gUnk_0848552C
 gUnk_0848552C:
@@ -280,11 +774,57 @@ gUnk_0848564F:
 
 	.global gUnk_08485788
 gUnk_08485788:
-	.incbin "baserom.gba", 0x485788, 0x450
+	.4byte gUnk_0848552C
+	.4byte gUnk_08485551
+	.4byte gUnk_08485580
+	.4byte gUnk_08485580+0x2F
+	.4byte gUnk_08485580+0x53
+	.4byte gUnk_08485580+0x6B
+	.4byte gUnk_08485580+0x92
+	.4byte gUnk_08485580+0xA4
+	.4byte gUnk_08485580+0xB6
+	.4byte gUnk_0848564F
+	.4byte gUnk_0848564F+0x20
+	.4byte gUnk_0848564F+0x37
+	.4byte gUnk_0848564F+0x49
+	.4byte gUnk_0848564F+0x5A
+	.4byte gUnk_0848564F+0x83
+	.4byte gUnk_0848564F+0xAB
+	.4byte gUnk_0848564F+0xD4
+	.4byte gUnk_0848564F+0xFB
+	.4byte gUnk_0848564F+0x113
+	.incbin "baserom.gba", 0x4857D4, 0x404
 
 	.global gUnk_08485BD8
 gUnk_08485BD8:
-	.incbin "baserom.gba", 0x485BD8, 0x70
+	.4byte gUnk_08485788+0x4C
+	.4byte gUnk_08485788+0x73
+	.4byte gUnk_08485788+0x99
+	.4byte gUnk_08485788+0xCB
+	.4byte gUnk_08485788+0xE2
+	.4byte gUnk_08485788+0x108
+	.4byte gUnk_08485788+0x135
+	.4byte gUnk_08485788+0x151
+	.4byte gUnk_08485788+0x174
+	.4byte gUnk_08485788+0x19C
+	.4byte gUnk_08485788+0x1BD
+	.4byte gUnk_08485788+0x1E0
+	.4byte gUnk_08485788+0x1FE
+	.4byte gUnk_08485788+0x23A
+	.4byte gUnk_08485788+0x26B
+	.4byte gUnk_08485788+0x282
+	.4byte gUnk_08485788+0x298
+	.4byte gUnk_08485788+0x2DF
+	.4byte gUnk_08485788+0x30E
+	.4byte gUnk_08485788+0x329
+	.4byte gUnk_08485788+0x341
+	.4byte gUnk_08485788+0x362
+	.4byte gUnk_08485788+0x388
+	.4byte gUnk_08485788+0x3AD
+	.4byte gUnk_08485788+0x3CD
+	.4byte gUnk_08485788+0x409
+	.4byte gUnk_08485788+0x418
+	.4byte gUnk_08485788+0x436
 
 	.global gUnk_08485C48
 gUnk_08485C48:
@@ -456,27 +996,40 @@ gIntroSubStates:
 
 	.global gUnk_08485FB8
 gUnk_08485FB8:
-	.incbin "baserom.gba", 0x485FB8, 0x8
+	.4byte gUnk_087C55F0+0xD4
+	.4byte gUnk_087C55F0+0x163C
 
 	.global gUnk_08485FC0
 gUnk_08485FC0:
-	.incbin "baserom.gba", 0x485FC0, 0x8
+	.4byte gUnk_087C55F0+0x2838
+	.4byte gUnk_087C55F0+0x2AD4
 
 	.global gUnk_08485FC8
 gUnk_08485FC8:
-	.incbin "baserom.gba", 0x485FC8, 0x8
+	.4byte gUnk_087C55F0+0x2D38
+	.4byte gUnk_087C55F0+0x2D58
 
 	.global gUnk_08485FD0
 gUnk_08485FD0:
-	.incbin "baserom.gba", 0x485FD0, 0x8
+	.4byte gUnk_087ADDDC+0x1B20
+	.4byte gUnk_087ADDDC+0x2D0C
 
 	.global gUnk_08485FD8
 gUnk_08485FD8:
-	.incbin "baserom.gba", 0x485FD8, 0x54
+	.4byte gUnk_0807C320+0xE0
+	.4byte gUnk_0807C320+0x180
+	.incbin "baserom.gba", 0x485FE0, 0x4C
 
 	.global gUnk_0848602C
 gUnk_0848602C:
-	.incbin "baserom.gba", 0x48602C, 0x20
+	.4byte gUnk_08485FD8+0x10
+	.4byte gUnk_08485FD8+0x19
+	.4byte gUnk_08485FD8+0x26
+	.4byte gUnk_08485FD8+0x8
+	.4byte gUnk_08485FD8+0x38
+	.4byte gUnk_08485FD8+0x3E
+	.4byte gUnk_08485FD8+0x4A
+	.4byte gUnk_08485FD8+0x30
 
 	.global gUnk_0848604C
 gUnk_0848604C:
@@ -550,27 +1103,121 @@ gUnk_08486160:
 
 	.global gUnk_084864E8
 gUnk_084864E8:
-	.incbin "baserom.gba", 0x4864E8, 0xA04
+	.4byte gUnk_08486160+0x78
+	.4byte gUnk_08486160+0x9B
+	.4byte gUnk_08486160+0xBE
+	.4byte gUnk_08486160+0xD4
+	.4byte gUnk_08486160+0xEA
+	.4byte gUnk_08486160+0x1E3
+	.4byte gUnk_08486160+0x104
+	.4byte gUnk_08486160+0x187
+	.4byte gUnk_08486160+0x384
+	.4byte gUnk_08486160+0x1C1
+	.4byte gUnk_08486160+0x1F7
+	.4byte gUnk_08486160+0x21E
+	.4byte gUnk_08486160+0x1F7
+	.4byte gUnk_08486160+0x21E
+	.4byte gUnk_08486160+0x1F7
+	.4byte gUnk_08486160+0x235
+	.4byte gUnk_08486160+0x248
+	.4byte gUnk_08486160+0x25B
+	.4byte gUnk_08486160+0x27C
+	.4byte gUnk_08486160+0x248
+	.4byte gUnk_08486160+0x29E
+	.4byte gUnk_08486160+0x2C9
+	.4byte gUnk_08486160+0x1F7
+	.4byte gUnk_08486160+0x2F5
+	.4byte gUnk_08486160+0x1F7
+	.4byte gUnk_08486160+0x318
+	.4byte gUnk_08486160+0x32C
+	.4byte gUnk_08486160+0x34A
+	.4byte gUnk_08486160+0x21E
+	.4byte gUnk_08486160+0x36F
+	.4byte gUnk_08486160+0x384
+	.incbin "baserom.gba", 0x486564, 0x988
 
 	.global gUnk_08486EEC
 gUnk_08486EEC:
-	.incbin "baserom.gba", 0x486EEC, 0x3F0
+	.4byte gUnk_084864E8+0x7C
+	.4byte gUnk_084864E8+0x121
+	.4byte gUnk_084864E8+0x1EE
+	.4byte gUnk_084864E8+0x25E
+	.4byte gUnk_084864E8+0x372
+	.4byte gUnk_084864E8+0x44E
+	.4byte gUnk_084864E8+0x53D
+	.4byte gUnk_084864E8+0x5F2
+	.4byte gUnk_084864E8+0x66E
+	.4byte gUnk_084864E8+0x743
+	.4byte gUnk_084864E8+0x7E4
+	.4byte gUnk_084864E8+0x8C1
+	.incbin "baserom.gba", 0x486F1C, 0x3C0
 
 	.global gUnk_084872DC
 gUnk_084872DC:
-	.incbin "baserom.gba", 0x4872DC, 0x4C
+	.4byte gUnk_08486EEC+0x30
+	.4byte gUnk_08486EEC+0x45
+	.4byte gUnk_08486EEC+0x5B
+	.4byte gUnk_08486EEC+0x7C
+	.4byte gUnk_08486EEC+0xA1
+	.4byte gUnk_08486EEC+0xE5
+	.4byte gUnk_08486EEC+0x10B
+	.4byte gUnk_08486EEC+0x14C
+	.4byte gUnk_08486EEC+0x163
+	.4byte gUnk_08486EEC+0x1CE
+	.4byte gUnk_08486EEC+0x222
+	.4byte gUnk_08486EEC+0x267
+	.4byte gUnk_08486EEC+0x2AF
+	.4byte gUnk_08486EEC+0x2FB
+	.4byte gUnk_08486EEC+0x317
+	.4byte gUnk_08486EEC+0x366
+	.4byte gUnk_08486EEC+0x39A
+	.4byte gUnk_08486EEC+0x3B9
+	.4byte gUnk_08486EEC+0x3D5
 
 	.global gUnk_08487328
 gUnk_08487328:
-	.incbin "baserom.gba", 0x487328, 0x30
+	.4byte gUnk_087C8E00
+	.4byte gUnk_087CCCEC
+	.4byte gUnk_087D4564+0x200
+	.4byte gUnk_087D4564+0x2C8C
+	.4byte gUnk_087D4564+0x5954
+	.4byte gUnk_087D4564+0x885C
+	.4byte gUnk_087D4564+0xC4AC
+	.4byte gUnk_087D0E80
+	.4byte gUnk_087D4564+0xFB00
+	.4byte gUnk_087D4564+0x12470
+	.4byte gUnk_087D4564+0x15060
+	.4byte gUnk_087D4564+0x17FF8
 
 	.global gUnk_08487358
 gUnk_08487358:
-	.incbin "baserom.gba", 0x487358, 0x30
+	.4byte gUnk_087CC7BC
+	.4byte gUnk_087D0954
+	.4byte gUnk_087D4564+0x1A9E4
+	.4byte gUnk_087D4564+0x1AD08
+	.4byte gUnk_087D4564+0x1B030
+	.4byte gUnk_087D4564+0x1B348
+	.4byte gUnk_087D4564+0x1B678
+	.4byte gUnk_087D424C
+	.4byte gUnk_087D4564+0x1B9A8
+	.4byte gUnk_087D4564+0x1BCA4
+	.4byte gUnk_087D4564+0x1BFA4
+	.4byte gUnk_087D4564+0x1C2C4
 
 	.global gUnk_08487388
 gUnk_08487388:
-	.incbin "baserom.gba", 0x487388, 0x30
+	.4byte gUnk_087CCAEC
+	.4byte gUnk_087D0C80
+	.4byte gUnk_087D4564+0x1C5E8
+	.4byte gUnk_087D4564+0x1C7A8
+	.4byte gUnk_087D4564+0x1C968
+	.4byte gUnk_087D4564+0x1CB28
+	.4byte gUnk_087D4564+0x1CCE8
+	.4byte gUnk_087D4564
+	.4byte gUnk_087D4564+0x1CEA8
+	.4byte gUnk_087D4564+0x1D0A8
+	.4byte gUnk_087D4564+0x1D268
+	.4byte gUnk_087D4564+0x1D428
 
 	.global gSoundFifoAddrs
 gSoundFifoAddrs:

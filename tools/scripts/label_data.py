@@ -21,7 +21,8 @@ LABEL_RE = re.compile(r'^(\w+):\s*$')
 SYM_RE = re.compile(r'^\s*(\w+)\s*=\s*(0x[0-9A-Fa-f]+)\s*;')
 
 
-PTR_RE = re.compile(r'^\s*\.4byte\s+(\w+)\s*$')
+START_RE = re.compile(r'^@ data at (0x[0-9A-Fa-f]+)\s*$')
+PTR_RE = re.compile(r'^\s*\.4byte\s+(\w+(?:\s*\+\s*0x[0-9A-Fa-f]+)?)\s*$')
 
 
 def parse_stub(path):
@@ -50,6 +51,10 @@ def parse_stub(path):
                 pending = []
             pos = off + size
             continue
+        m = START_RE.match(line)
+        if m and start is None:
+            start = pos = int(m[1], 16)
+            continue
         m = LABEL_RE.match(line)
         if m:
             pending.append(m[1])
@@ -71,6 +76,9 @@ def write_stub(path, header, start, end, labels, ptrs):
     out.append("")
     cuts = sorted(set(o for o in labels if start <= o <= end) | set(ptrs) | set(o + 4 for o in ptrs))
     pos = start
+    if cuts and cuts[0] == start and start in ptrs:
+        # a zero-length .incbin records the start offset when the stub begins with a pointer
+        out.append(f"@ data at {start:#X}".replace("0X", "0x"))
     for cut in cuts + [None]:
         stop = end if cut is None else cut
         if stop > pos:
