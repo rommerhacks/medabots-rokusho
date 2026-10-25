@@ -636,7 +636,38 @@ void sub_0802DD98(void)
         gUnk_03002C30[0x21].unk4 = (gUnk_03002C30[0x21].unk4 + 1) & 0xFF;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0802CA5C", sub_0802DE1C);
+void sub_0802DE1C(void)
+{
+    const u8 *tbl;
+
+    if ((gUnk_03000440.unk86 & 0x1F) == 0 && gUnk_03002C30[0x21].unk23 <= 7)
+    {
+        gUnk_03001800.unkAA++;
+        gUnk_03000440.unk86++;
+        return;
+    }
+    gUnk_03000440.unk86++;
+    process_sprite_anim_commands(gUnk_083B5F80[0x69], 0x21);
+    update_sprite_animation_position(0x21);
+    gUnk_03002C30[0x21].unk24 = 4;
+    if (gUnk_03002C30[0x21].unk28)
+    {
+        gUnk_03002C30[0x21].unk28--;
+        return;
+    }
+    tbl = gUnk_083AE988;
+    gUnk_03002C30[0x21].unk25 = tbl[gUnk_03002C30[0x21].unk23 * 2];
+    if (gUnk_03002C30[0x21].unk25 == 0xFF)
+    {
+        clear_battle_sprite_slot(0x21, 1);
+        gUnk_03001800.unkAA = 0xA;
+        return;
+    }
+    if (gUnk_03001800.unkF8 & 1)
+        gUnk_03002C30[0x21].unk25 = (0x20 - gUnk_03002C30[0x21].unk25) & 0x1F;
+    gUnk_03002C30[0x21].unk28 = gUnk_083AE988[gUnk_03002C30[0x21].unk23 * 2 + 1];
+    gUnk_03002C30[0x21].unk23++;
+}
 
 void sub_0802DF18(void)
 {

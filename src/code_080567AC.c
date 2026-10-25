@@ -1196,7 +1196,39 @@ void update_anim_counter(u32 idx, s32 max)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080567AC", sub_08058A88);
+void sub_08058A88(u32 idx, u32 sub, s32 max)
+{
+    u8 changed = 0;
+    s32 v;
+    u8 **row;
+
+    if (KEYS_LO(gRepeatKeys) & 0x20)
+    {
+        u8 *p;
+        row = gUnk_083D60DC[idx];
+        p = row[sub];
+        v = *p;
+        v -= 1;
+        if (v == -1)
+            v = max - 1;
+        *p = v;
+        changed = 1;
+    }
+    else if (KEYS_LO(gRepeatKeys) & 0x10)
+    {
+        u8 *p;
+        row = gUnk_083D60DC[idx];
+        p = row[sub];
+        v = *p;
+        v += 1;
+        if (v >= max)
+            v = 0;
+        *p = v;
+        changed = 1;
+    }
+    if (changed && idx == 5)
+        init_battle_field_sprites();
+}
 
 void sub_08058B04(u32 mode)
 {

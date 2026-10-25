@@ -1211,7 +1211,37 @@ void sub_0800EA2C(void)
     gGameSubState++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800C6D8", sub_0800EA98);
+void sub_0800EA98(void)
+{
+    s32 r;
+
+    medaparts_scroll_bg();
+    load_medapart_sprite_by_slot();
+    sub_08041C14(4, gFrameCounter, 0xA8);
+    sub_080100BC();
+    if (KEYS_LO(gNewKeys) & 1)
+    {
+        if (gUnk_03000440.unk4A == 1)
+        {
+            r = (u16)sub_08042114(gUnk_03000440.unk3D, gUnk_03000440.unk3E);
+            if ((r >> 8 & 0xFF) != (r & 0xFF))
+                goto ok;
+            play_sound_effect(6);
+            return;
+        }
+    ok:
+        play_sound_effect(4);
+    }
+    else if (KEYS_LO(gNewKeys) & 2)
+    {
+        play_sound_effect(5);
+        gUnk_03000440.unk4A = 2;
+    }
+    else
+        return;
+    sub_08010040();
+    gGameSubState++;
+}
 
 void sub_0800EB34(void)
 {
