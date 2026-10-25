@@ -257,7 +257,39 @@ void sub_0801CFFC(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801D06C);
+void sub_0801D06C(void)
+{
+    gUnk_03002C30[0x21].unk0 = ((gUnk_03001800.unk39[3] + 2) << 10) | -0x3DFC;
+    gUnk_03002C30[0x21].unk1C = 0;
+    gUnk_03002C30[0x21].unkA = 6;
+    gUnk_03002C30[0x21].unk9 = 0x40;
+    gUnk_03002C30[0x21].unk8 = 8;
+    gUnk_03002C30[0x21].unkB = 0xF0;
+    gUnk_03002C30[0x21].unk4 = 0x3C;
+    if (gUnk_03001800.unk89 == 0)
+    {
+        gUnk_03002C30[0x21].unk0 |= 0x1000;
+        gUnk_03002C30[0x21].unk2 = 0x68;
+    }
+    else
+        gUnk_03002C30[0x21].unk2 = 0x88;
+    switch (gUnk_03001800.unk51)
+    {
+    case 0:
+        gUnk_03002C30[0x21].unk6 = 0xB00;
+        break;
+    case 1:
+        gUnk_03002C30[0x21].unk6 = 0xC00;
+        break;
+    case 2:
+        gUnk_03002C30[0x21].unk6 = 0xD00;
+        break;
+    case 3:
+        gUnk_03002C30[0x21].unk6 = 0xE00;
+        break;
+    }
+    gUnk_03001800.unkAA++;
+}
 
 void sub_0801D174(void)
 {
@@ -1390,7 +1422,24 @@ void sub_0801F390(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801F3F0);
+void sub_0801F3F0(void)
+{
+    u32 part;
+    struct Unk_03001800 *s;
+
+    if ((gUnk_03000590[(s = &gUnk_03001800)->unk87].unkD6 & 2 || gUnk_03000590[s->unk87].parts[s->unkA7].data[7]) && s->unkCA && (part = find_most_damaged_part(s->unk88)))
+    {
+        part--;
+        s->unkD0 = part;
+        s->unk8B = part;
+        battle_calc_damage_split(s->unk88, s->unkD0, s->unkCA);
+        s->unkAA = 0x4A;
+    }
+    else
+    {
+        s->unkAA++;
+    }
+}
 
 void sub_0801F474(void)
 {
@@ -2077,7 +2126,24 @@ void sub_080208E8(void)
     gUnk_03001800.unkAA++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_08020928);
+void sub_08020928(void)
+{
+    u32 part;
+    struct Unk_03001800 *s;
+
+    if (gUnk_03000590[gUnk_03001800.unk87].parts[(s = &gUnk_03001800)->unkA7].data[7] && s->unkCA && (part = find_most_damaged_part(s->unk88)))
+    {
+        part--;
+        s->unkD0 = part;
+        s->unk8B = part;
+        battle_calc_damage_split(s->unk88, s->unkD0, s->unkCA);
+        s->unkAA = 0xE;
+    }
+    else
+    {
+        s->unkAA++;
+    }
+}
 
 void sub_080209A0(void)
 {
