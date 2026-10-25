@@ -1838,4 +1838,9 @@ struct SeqState
     s32 unk23C;
 };
 
+/* One 256-byte row of the link exchange buffers (0x03000590 / 0x03000890). */
+struct LinkRow256 {
+    u8 b[256];
+};
+
 #endif // GUARD_STRUCTS_H

@@ -339,7 +339,44 @@ void sub_080213E4(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080209B0", sub_08021418);
+void sub_08021418(void)
+{
+    if (gUnk_03001800.unk28[gUnk_03001800.unk8A].unk2 && gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 == gUnk_03001800.unk52)
+    {
+        gUnk_03001800.unk53 = 1;
+        if (gUnk_03001800.unk51 != 2)
+        {
+            sub_08035740(&gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4, gUnk_03001800.unkE8 >> 1, 0xFF);
+            sub_08035740(&gUnk_03001800.unk28[gUnk_03001800.unk8A].unk5,
+                (gUnk_03001800.unkEC + gUnk_03000590[gUnk_03001800.unk87].unkD5) >> 1, 0xFF);
+            gUnk_03001800.unkAA++;
+        }
+        else
+        {
+            gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4++;
+            gUnk_03001800.unkAA++;
+        }
+    }
+    else
+    {
+        gUnk_03001800.unk53 = 0;
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk2 = 1;
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 = gUnk_03001800.unk52;
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4 = 0;
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk5 = 0;
+        if (gUnk_03001800.unk51 != 2)
+        {
+            sub_08035740(&gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4, gUnk_03001800.unkE8, 0xFF);
+            sub_08035740(&gUnk_03001800.unk28[gUnk_03001800.unk8A].unk5,
+                gUnk_03001800.unkEC + gUnk_03000590[gUnk_03001800.unk87].unkD5, 0xFF);
+        }
+        else
+        {
+            gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4++;
+        }
+        gUnk_03001800.unkAA++;
+    }
+}
 
 void sub_08021564(void)
 {

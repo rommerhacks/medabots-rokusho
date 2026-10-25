@@ -372,7 +372,54 @@ void sub_08004A78(void)
 // guess: sends 3 x 0x48 bytes from gUnk_03000590 and receives into gUnk_03000890 over the link, one
 // byte per packet (bit 15 = valid, bit 8 = toggle), summing the received bytes in unk1A8. Near miss:
 // scratch/sub_08004AF8_nearmiss.c (one literal load order and an orrs/adds for the 0x8000 header).
-INCLUDE_ASM("asm/nonmatching/code_080043A8", sub_08004AF8);
+
+void sub_08004AF8(void)
+{
+    struct Unk_03001800 *s;
+    s16 flag;
+    u8 *src;
+
+    medabots_scroll_bg3();
+    setup_overworld_scene_from_position();
+    s = &gUnk_03001800;
+    if (s->unk51 != 3)
+    {
+        src = (u8 *)&gUnk_03000590[s->unk51];
+        gUnk_03005010.unk6 = src[s->unk52] + (flag = ((s->unk1AF << 8) & 0x100) + 0x8000);
+        if (++gUnk_03000440.unk86 == 4)
+        {
+            gUnk_03000440.unk86 = 0;
+            s->unk1AF ^= 1;
+            if (++s->unk52 == 0x48)
+            {
+                s->unk51++;
+                s->unk52 = 0;
+            }
+        }
+    }
+    if (gUnk_03001800.unk53 != 3)
+    {
+        u16 v = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
+
+        if ((v & 0x8000) && (u16)(v & 0x100) >> 8 != gUnk_03001800.unk1B0)
+        {
+            gUnk_03001800.unk1B0 ^= 1;
+            ((struct LinkRow256 *)gUnk_03000890)[gUnk_03001800.unk53].b[gUnk_03001800.unk54] = v;
+            gUnk_03001800.unk1A8 = (gUnk_03001800.unk1A8 + (v & 0xFF)) & 0x7FFF;
+            if (++gUnk_03001800.unk54 == 0x48)
+            {
+                gUnk_03001800.unk53++;
+                gUnk_03001800.unk54 = 0;
+            }
+        }
+    }
+    if (gUnk_03001800.unk51 == 3)
+        if (gUnk_03001800.unk53 == 3)
+        {
+            gGameSubState = 58;
+            gUnk_03000440.unk86 = 0;
+        }
+}
 
 void sub_08004C58(void)
 {
