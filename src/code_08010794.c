@@ -1033,8 +1033,69 @@ end:
     return sum;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_08012234);
-INCLUDE_ASM("asm/nonmatching/code_08010794", sub_080122F4);
+u32 sub_08012234(void)
+{
+    u32 slot, n, j, part, k;
+    u8 *p;
+    struct Unk_03000590 *bb;
+
+    slot = gUnk_083ACEF0[rng_next_080424B8() & 0xF];
+    for (n = 0; n < 3; n++)
+    {
+        register struct Unk_03000590 *base asm("r5") = gUnk_03000590;
+        if (base[k = slot + 3].unkBA)
+        {
+            part = rng_next_080424B8() & 3;
+            for (j = 0, bb = base; j < 4; j++)
+            {
+                p = (u8 *)(part * 24 + ((slot + 3) << 8) + (u32)bb) + 0x5F;
+                if (!sub_08042114(*p, part))
+                {
+                    gUnk_03001800.unk168 = part;
+                    gUnk_03001800.unk169 = *p;
+                    return 1;
+                }
+                part = (part + 1) & 3;
+            }
+        }
+        if (slot == 2)
+            slot = 0;
+        else
+            slot++;
+    }
+    return 0;
+}
+
+void sub_080122F4(u32 a)
+{
+    u32 slot, dir, i, k;
+
+    slot = gUnk_083ACEF0[rng_next_080424B8() & 0xF];
+    dir = rng_next_080424B8() & 1;
+    for (i = 0; i < 3; i++)
+    {
+        k = a + slot;
+        if (gUnk_03000590[k].unkBA)
+        {
+            gUnk_03001800.unk168 = rng_next_080424B8() & 3;
+            gUnk_03001800.unk169 = gUnk_03000590[k].parts[gUnk_03001800.unk168].unk17;
+            gUnk_03001800.unk187 = k;
+            return;
+        }
+        if (dir)
+        {
+            if (++slot > 2)
+                slot = 0;
+        }
+        else
+        {
+            if (slot == 0)
+                slot = 2;
+            else
+                slot--;
+        }
+    }
+}
 
 void setup_battle_result_sprite(void)
 {
