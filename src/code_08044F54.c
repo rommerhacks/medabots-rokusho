@@ -100,7 +100,40 @@ u16 binary_search_sorted_table(struct SortEntry *arr, u16 n, u16 key)
     return mid;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sorted_array_insert_shift);
+struct OamFull *sorted_array_insert_shift(struct OamFull *arr, u16 n, u16 shift, s16 key)
+{
+    struct OamFull *dst;
+    s32 k;
+    u16 m;
+
+    m = n;
+    n = m - 1;
+    if (m != 0)
+    {
+        dst = &arr[n + shift];
+        arr = &arr[n];
+        k = key;
+    loop:
+        if ((s16)arr->affineParam > k)
+        {
+            do
+            {
+                *dst = *arr;
+                if (n == 0)
+                    arr--;
+                else
+                {
+                    n--;
+                    arr--;
+                    dst--;
+                    goto loop;
+                }
+            } while (0);
+        }
+        arr++;
+    }
+    return arr;
+}
 
 u16 copy_oam_entries_with_priority(struct SpriteOamList *list, struct OamData *dst, u16 slot, u16 end)
 {

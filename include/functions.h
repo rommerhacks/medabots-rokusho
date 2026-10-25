@@ -1392,7 +1392,7 @@ u16 copy_sprite_oam_entries(struct SpriteOamList *list, struct OamFull *dst, u16
 u16 sub_08045794(struct SpriteOamList *list, struct OamFull *dst, u16 slot, s32 pal, u16 end, u32 flags); // same with an affine matrix number (flags & 7) and flips (bits 3, 4); K&R, pal is a u8
 void sub_0804589C(struct SpriteOamBatch *batch, struct SpriteOamList **buf);
 void sub_080458A4(struct SpriteOamBatch *batch, struct SpriteOamList *list, u16 depth);
-struct OamFull *sorted_array_insert_shift(struct OamFull *arr, u16 n, s32 shift, s16 key);
+struct OamFull *sorted_array_insert_shift(struct OamFull *arr, u16 n, u16 shift, s16 key);
 u16 render_sprite_if_visible(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 flip);
 u16 sub_08045B68(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 neg, u16 scale, u16 *affine, u32 k); // + scale / flip affine matrix k
 u16 sub_08045C30(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u16 angle, u16 *affine, u32 k); // + rotation affine matrix k
