@@ -153,7 +153,56 @@ void vblank_irq(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", vblank_body);
+void vblank_body(void)
+{
+    s32 i;
+
+    if (!(gUnk_03000434 & 1))
+    {
+        REG_BG0HOFS = gBg0Scroll.x + gUnk_03002C2C.x;
+        REG_BG0VOFS = gBg0Scroll.y + gUnk_03002C2C.y;
+        REG_BG1HOFS = gBg1Scroll.x + gUnk_03002C2C.x;
+        REG_BG1VOFS = gBg1Scroll.y + gUnk_03002C2C.y;
+        REG_BG2HOFS = gBg2Scroll.x + gUnk_03002C2C.x;
+        REG_BG2VOFS = gBg2Scroll.y + gUnk_03002C2C.y;
+        REG_BG3HOFS = gBg3Scroll.x + gUnk_03002C2C.x;
+        REG_BG3VOFS = gBg3Scroll.y + gUnk_03002C2C.y;
+    }
+    if (gUnk_03000430 != 0)
+    {
+        if (gUnk_03000430 == 2)
+        {
+            update_anim_object_flags();
+            copy_oam_affine_params(gUnk_03002414->unkB84, gUnk_03002414->unkF8C);
+            for (i = 0; i < 88; i++)
+                gOamBuffer[i].affineParam = gUnk_03002414->unkB84[i].affineParam;
+            for (i = 0; i < 40; i++)
+                gUnk_03002414->unkB84[i].affineParam = gOamBuffer[88 + i].affineParam;
+            if (gUnk_03000440.unk131 == 0)
+                CpuFastSet(gUnk_03002414->unkB84, (void *)(OAM + 88 * 8), 0x50);
+            gUnk_03002414->unk1094 = 0;
+            gUnk_03002414->unk1095 = 0;
+            if (gUnk_03000440.unk12E)
+                CpuFastSet(gOamBuffer, (void *)OAM, 0xB0);
+        }
+        else
+        {
+            gUnk_03000430 = 0;
+        }
+    }
+    else if (gUnk_03000440.unk12E)
+    {
+        CpuFastSet(gOamBuffer, (void *)OAM, 0x100);
+    }
+    gUnk_03000440.unk12E = 0;
+    gVBlankOnceCallback();
+    gVBlankCallback();
+    gVBlankOnceCallback = nullsub_08000840;
+    INTR_CHECK = 1;
+    REG_IF = 1;
+    sound_tick_both_channels();
+    sound_engine_tick();
+}
 
 void hblank_irq(void)
 {
@@ -262,7 +311,56 @@ u32 lz_decompress_dispatch(const u8 *src, void *dst)
         return lz_decompress_custom_08000A0C(src, dst, src[2] | (src[3] << 8) | (src[4] << 16));
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", lz_decompress_custom_08000A0C);
+u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size)
+{
+    u32 left = size;
+    u8 *d = dst;
+    const u8 *s = src + 6;
+    u8 flags;
+    u32 n;
+    u32 v;
+    u8 *p;
+
+    while (left != 0)
+    {
+        flags = *s++;
+        for (n = 0; n < 4 && left != 0; n++, flags >>= 2)
+        {
+            switch (flags & 3)
+            {
+            case 0:
+                v = s[0] + (s[1] << 8);
+                s += 2;
+                p = d - ((v & 0xFFF) + 5);
+                v = (v >> 12) + 3;
+                left -= v;
+                while (v--)
+                    *d++ = *p++;
+                break;
+            case 1:
+                v = *s++;
+                p = d - ((v & 3) + 1);
+                v = (v >> 2) + 2;
+                left -= v;
+                while (v--)
+                    *d++ = *p++;
+                break;
+            case 3:
+                *d++ = *s++;
+                *d++ = *s++;
+                *d++ = *s++;
+                left -= 3;
+                break;
+            case 2:
+                *d++ = *s++;
+                left--;
+                break;
+            }
+        }
+    }
+    return size;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_0800025C", lz_decompress_custom_08000B14);
 
 void set_tilemap_and_decompress_bg(u32 x, u32 y, const u8 *src, u32 bgcnt, u16 base)
@@ -309,7 +407,52 @@ void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt)
     for (i = 0; i < map->height; i++) { CpuCopy16(src, (u16 *)dst + (i << shift), map->width); src += map->width; }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", copy_tilemap_with_offset_08000F78);
+void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map)
+{
+    s32 w, hh;
+    s32 i, j;
+    u16 *s, *d;
+
+    w = map->width;
+    if (w > 32)
+        w = 32;
+    hh = map->height;
+    if (hh > 32)
+        do { hh = 32; } while (0);
+
+    i = 0;
+    do
+    {
+        if (i >= hh)
+            break;
+        s = &map->data[map->width * i];
+        d = dst + i * 32;
+        i++;
+        for (j = 0; j < w; j++)
+            *d++ = *s++ + gTilemapBaseEntry;
+    } while (1);
+    for (i = 0; i < hh; i++)
+    {
+        s = &map->data[i * map->width + 32];
+        d = dst + 0x400 + i * 32;
+        for (j = 32; j < map->width; j++)
+            d[j - 32] = s[j - 32] + gTilemapBaseEntry;
+    }
+    for (i = 32; i < map->height; i++)
+    {
+        s = &map->data[map->width * i];
+        d = dst + 0x400 + i * 32;
+        for (j = 0; j < w; j++)
+            *d++ = *s++ + gTilemapBaseEntry;
+    }
+    for (i = 32; i < map->height; i++)
+    {
+        s = &map->data[i * map->width + 32];
+        d = dst + 0x800 + i * 32;
+        for (j = 32; j < map->width; j++)
+            d[j - 32] = s[j - 32] + gTilemapBaseEntry;
+    }
+}
 
 // Note: writes the BG3 affine registers (0x04000030-0x0400003E), not BG2.
 // pa/pd = cos * 0x400 / scale, pb/pc = +-sin * 0x400 / scale (scale 0x100 = 1:1), angle 1024 steps/turn;
