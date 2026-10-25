@@ -597,7 +597,36 @@ void sub_0805FD60(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805EE6C", sub_0805FDB4);
+void sub_0805FDB4(void)
+{
+    struct Unk_03002C30 *s = gUnk_03002C30;
+    u32 c = s[1].unk1A;
+    u16 zero;
+
+    s[1].unk6 = (c & 4) ? 0x109 : 0x10A;
+    zero = 0;
+    c = (u16)c;
+    if ((u16)c < 0x78)
+    {
+        s[1].unk4 = (s32)(s[1].unk1A * 0xA8) / 0x78 - 0x40;
+        s[1].unk8 = -0x80 - (s32)(s[1].unk1A * 64) / 0x78;
+        s[1].unk9 = -0x80 - (s32)(s[1].unk1A * 64) / 0x78;
+        s[1].unk18 = (c & 0x3F) * 16 + 0x340;
+        s[1].unk1A = c + 1;
+    }
+    else
+    {
+        REG_DISPCNT |= 0x100;
+        s[1].unk6 = 0x10B;
+        s[1].unk8 = 0x40;
+        s[1].unk9 = 0x40;
+        s[1].unk4 = 0x68;
+        s[1].unk18 = zero;
+        s[1].unk1A = zero;
+        gUnk_03006F74->unk3A = zero;
+        gGameSubState++;
+    }
+}
 
 void sub_0805FE90(void)
 {

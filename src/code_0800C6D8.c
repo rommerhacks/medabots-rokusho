@@ -1301,7 +1301,26 @@ void medaparts_list_set_cursor_from_part(void)
     gUnk_03000440.unk40 = gUnk_03000440.unk3D % 4;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800C6D8", medaparts_list_draw_names);
+void medaparts_list_draw_names(void)
+{
+    u32 i;
+    u32 page;
+
+    clear_sprite_table_mask(10, 60);
+    for (i = 0; i < 4; i++)
+    {
+        if (gMedapartInventory[gUnk_03000440.unk3E * 240 + (page = gUnk_03000440.unk3F * 4) * 2 + i * 2])
+        {
+            memcpy_bytes_08041D04((void *)gUnk_083BB9CC[0][(page + i) * 4 + gUnk_03000440.unk3E], gUnk_03000440.unk9E, 15);
+            render_text_sprites_08040DB8(gUnk_03000440.unk9E, i * 15 + 10, 11, i * 2 + 5, 10, 13, 1, 1);
+        }
+        else
+        {
+            fill_text_blank(gUnk_03000440.unk9E, 13);
+            render_text_sprites_08040DB8(gUnk_03000440.unk9E, i * 15 + 10, 11, i * 2 + 5, 10, 13, 1, 1);
+        }
+    }
+}
 
 void medaparts_list_draw_counts(void)
 {
