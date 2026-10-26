@@ -31,21 +31,6 @@ void LZ77UnCompVram(const void *src, void *dst);
 // code_080490C4
 
 // tiles; align 0 center, 1 left, 2 right
-bool32 sub_0806F850(void);
-bool32 sub_0806F9D4(void);
-void battle_timer_digit_extract(void);
-void update_sprite_animations_080703D8(void);
-void load_bg_screen_b(void);
-bool32 battle_transition_fade_step(void);
-void copy_tilemap_rect_to_vram(const u16 *src, u8 bg, u8 w, u8 h, u8 x, u8 y, u16 tile, u8 pal);
-void sub_0806FF50(void);
-void sub_0806FF90(void);
-void sub_0806FFF8(void);
-void sub_08070030(void);
-void battle_sprite_set_action(u8 a, u8 b, u8 c);
-u32 check_battle_timer_expired(u8 a);
-u32 process_text_tile_and_dma_transfer(u8 a);
-u32 battle_draw_tilemap_row_dma(u8 a);
 
 // Robattle (game state 7) helpers
 // direct = palettes straight to PLTT
@@ -92,7 +77,6 @@ void sub_08071614(void);
 void sub_0807168C(void);
 void sub_0807068C(void);
 void sub_080706AC(void);
-void load_bg_screen_c(void);
 u32 call_battle_handler_by_state_08071C64(void);
 
 #include "audio/sound_seq.h"
@@ -249,33 +233,12 @@ u32 call_battle_handler_by_state_08071C64(void);
 #include "engine/scene_transition.h"
 
 #include "minigame/race.h"
-void update_bg2_affine_scanline_params(void);
-void update_sprite_special_effects(void);
-void sub_0806D288(void);
-bool32 sub_0806DEAC(u8 i);
-bool32 sub_0806DEE8(u8 i);
-void sub_0806D420(void);
-u32 sub_0806BBDC(void);
-void sub_0806C994(void);
-void sub_0806BE58(void);
-void bomb_game_drop_bombs(void);
-void sub_0806BD84(void);
-void sub_0806C500(void);
-void sub_0806BEF0(void);
-void sub_0806C20C(void);
-void sub_0806C4CC(void);
-void get_battle_state_value_div10(void);
-void sub_0806CDE8(void);
-void update_battle_sprite_direction(void);
-void sub_0806CD48(void);
-void sub_0806CAEC(void);
-void sub_0806CE58(void);
-void sub_0806CFA4(void);
-u32 sub_0806C6F8(void);
-u32 sub_0806C7C4(void);
-void set_bot_y_positions_by_count(void);
-void sub_0806DF80(
-    u8 anim,
-    u8 sprite); // starts animation anim on sprite slot sprite (unk20 = anim, unk22 = 0, unk30 = unk6, unk1A = 0)
+#include "minigame/bomb_game.h"
+
+#include "title/title_screen.h"
+#include "cutscene/event_picture.h"
+
+#include "title/boot_logos.h"
+#include "title/intro.h"
 
 #endif // GUARD_FUNCTIONS_H
