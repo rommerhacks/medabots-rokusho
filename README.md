@@ -42,6 +42,9 @@ Run `make progress` to see the numbers.
 | `config/functions.tsv` | every function: address, original size, name, module |
 | `tools/scripts/` | `match.py`, `install_func.py`, `candidates.py`, `progress.py`, `romdiff.py` (see [CONTRIBUTING.md](CONTRIBUTING.md)) |
 
+
+How the systems call each other, the main loop and the game-mode state machine are described in
+[docs/systems.md](docs/systems.md).
 ### Systems
 
 | System | Folder | What's in it |
