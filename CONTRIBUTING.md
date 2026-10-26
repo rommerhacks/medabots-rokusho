@@ -572,6 +572,16 @@
   functions.h, so callers may still pass nothing (sub_080361A8).
 * A non-void function with no return statement (`pop {r1}` epilogue, r0 never set) is written as `u32 f(...)`
   without `return`; agbcc accepts it (sub_08037728).
+* `x - (y / 2 - k)` refolded into `(x + k) - y / 2`: put the inner difference in an assignment,
+  `x - (t = y / 2 - k)`. A `static inline` helper also stops the fold, but moves the array-base load after
+  the arithmetic (name_entry_update).
+* A pair of sprites set to the same position: `[1].unk2 = [0].unk2;` reuses the value just stored, the way
+  the original does; storing the expression twice recomputes it (name_entry_update).
+* A pinned table pointer (`register ... asm("r4")`) whose loop still hoists a constant into a callee-saved
+  register: assign the pin at both the start and the end of the loop body (name_entry_update).
+* A store through `map[0x62]` whose address constant lands in the wrong register while the next stores
+  (`d = &map[0x63]; *d = ...`) are right: write the first one from the raw base,
+  `d = (u16 *)(base + 0x060000C4); *d = t;` (sub_0805E310).
 
 ## ROM pointers and the shifted build
 
