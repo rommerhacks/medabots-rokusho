@@ -617,3 +617,16 @@ really data (a false positive), the shifted build changes that data by `SHIFT`: 
   hoisted QImode zero agbcc emits for `(mem & 0) | v` byte stores (init_all_sound_channels).
 * An extra reload in the original can come from a duplicated tail that a later pass merges away: write the
   early-exit path with its own copy of the tail stores (sub_0803FEB8).
+  The same works when the reload registers (r0/r1/r3 round-robin) are off by one: add a duplicate of an
+  arm or comparison that cross-jumping merges after reload (sub_08065090: the `&= 0xBFFF` arm written
+  twice in an if / else-if chain; sub_0804CB90: the `>= unkC94[1]` test repeated in both arms;
+  dispatch_jump_table_29, sub_0804FE50: an extra `case 0: done = 1; break;` before the default).
+* Loop registers wrong in a simple nested loop: gcc weights register uses inside loops, and goto loops
+  are not seen as loops. Writing the loops with `goto` gave shell_sort_by_second_byte its registers.
+* `y += h` hoisted above the inner loop (GCSE, not the loop optimiser): keep the size pair in an array
+  `u32 dims[2]` (as setup_oam_sprite_entries); `do { ... } while (0);` around one store can tip a close
+  register priority (set_oam_sprite_tile_positions).
+* `&f87` computed as `&f88 - 1` is `reload_cse_move2add`; extra labels (an if / else-if chain with a
+  separate `s->unkAA++` per arm) stop it (sub_0801F4AC).
+* `v = *p; v &= 0xFFF;` and `r = v << 16; r >>= 16;` instead of the one-expression forms change
+  hoisted-constant priorities (sub_0805BBF8).
