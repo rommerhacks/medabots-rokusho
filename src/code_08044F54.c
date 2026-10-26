@@ -145,7 +145,32 @@ u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, vo
     return setup_oam_sprite_entries(oams, b, c, desc, e, f, g);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", set_oam_sprite_tile_positions);
+void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 y, s16 x, s16 depth)
+{
+    u32 dims[2];
+    u32 n;
+    u16 i, j;
+    struct OamBits *oam = (struct OamBits *)obj->oams;
+
+    dims[0] = ((u8 *)oam)[1] >> 6;
+    dims[1] = ((u8 *)oam)[3] >> 6;
+    n = sub_08044E64(dims[0] << 14, dims[1] << 30);
+    dims[0] = n >> 16;
+    dims[1] = n & 0xFFFF;
+    do { obj->depth = depth; } while (0);
+    for (i = 0; i < obj->w; i++)
+    {
+        for (j = 0; j < obj->h; j++)
+        {
+            oam->y = y;
+            { s32 t = x; oam->x = t; }
+            x += dims[1];
+            oam++;
+        }
+        x -= obj->h * dims[1];
+        y += dims[0];
+    }
+}
 
 void setup_sprite_from_oam_descriptor(const u32 *src, const struct SpriteDesc *desc, u16 tile, u32 useCpu)
 {
@@ -1930,7 +1955,127 @@ u8 sub_080483AC(void)
     return gUnk_0847EB80[gUnk_030057E0.unk7FE];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", dispatch_jump_table_29);
+// sub_080483AC returns its u8 widened: the original uses r0 untruncated here.
+#define sub_080483AC() ((u32 (*)(void))sub_080483AC)()
+
+
+u32 dispatch_jump_table_29(u32 a, u32 b)
+{
+    u32 t; u32 v; u32 w;
+
+    switch (a)
+    {
+    case 0:
+    case 10:
+    case 12:
+        if (gUnk_030057E0.unkC30 != 0xFF)
+        {
+            v = sub_080483AC();
+            if (gUnk_030057E0.unkC30 != v)
+            {
+                gUnk_030057E0.unkC30 = v;
+                sub_08047BB4(v);
+            }
+        }
+        break;
+    case 1:
+        gUnk_030057E0.unkC30 = b;
+        sub_08047BB4(b);
+        break;
+    case 2:
+        gUnk_030057E0.unkC30 = 0;
+        sub_08047BB4(0);
+        break;
+    case 3:
+        if (gUnk_030057E0.unkC30 == 0xFF)
+        {
+            if (b & 0x80)
+            {
+                gUnk_030057E0.unkC31 = b & 0x7F;
+                gUnk_030057E0.unkC30 |= 0xFF;
+            }
+            break;
+        }
+        if (!(b & 0x80))
+        {
+            gUnk_030057E0.unkC31 = b & 0x7F;
+            sub_08047BB4(b);
+            gUnk_030057E0.unkC30 = 0xFF;
+            break;
+        }
+        gUnk_030057E0.unkC31 = b & 0x7F;
+        gUnk_030057E0.unkC30 |= 0xFF;
+        break;
+    case 4:
+        t = gUnk_030057E0.unkC30;
+        gUnk_030057E0.unkC30 = 0;
+        v = sub_080483AC();
+        if (t != v)
+        {
+            gUnk_030057E0.unkC30 = v;
+            sub_08047BB4(v);
+        }
+        else
+            gUnk_030057E0.unkC30 = v;
+        break;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 19:
+    case 28:
+        v = sub_080483AC();
+        gUnk_030057E0.unkC30 = v;
+        sub_08047BB4(v);
+        break;
+    case 11:
+    case 13:
+    case 14:
+    case 15:
+    case 21:
+    case 22:
+    case 26:
+        if (gUnk_030057E0.unkC30 != 0xFF)
+        {
+            v = sub_080483AC();
+            gUnk_030057E0.unkC30 = v;
+            sub_08047BB4(v);
+        }
+        else
+            sub_08047BB4(gUnk_030057E0.unkC31);
+        break;
+    case 23:
+        if (gUnk_083D29B6[gUnk_03006D38.unk1 * 4])
+            sub_08047BC0(0x1E);
+        break;
+    case 24:
+        if (gUnk_083D29B6[gUnk_03006D38.unk1 * 4])
+        {
+            w = gUnk_083D29B6[gUnk_03006D38.unk1 * 4 + 1];
+            gUnk_030057E0.unkC30 = w;
+            sub_08047BB4(w);
+        }
+        break;
+    case 25:
+        switch (gUnk_083D29B6[gUnk_03006D38.unk1 * 4 + 2])
+        {
+        case 1:
+            w = gUnk_083D29B6[gUnk_03006D38.unk1 * 4 + 3];
+            gUnk_030057E0.unkC30 = w;
+            sub_08047BB4(w);
+            break;
+        case 2:
+            w = sub_080483AC();
+            gUnk_030057E0.unkC30 = w;
+            sub_08047BB4(w);
+            break;
+        }
+        break;
+    }
+}
+
+#undef sub_080483AC
 
 u32 resolve_tile_from_battle_state(u32 arg)
 {

@@ -1959,7 +1959,70 @@ void sub_0804FE20(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0804D10C", sub_0804FE50);
+void sub_0804FE50(void)
+{
+    s32 done = 0;
+    s32 i;
+    struct MapObject *obj;
+    u32 id;
+
+    for (i = 0; i < gUnk_030064A0.unk52; i++)
+    {
+        switch (gUnk_030064A0.unk12[i][0])
+        {
+        case 0:
+            done = 1;
+            break;
+        case 1:
+            if (++gUnk_030064A0.unk2[i] > 5)
+            {
+                id = (gUnk_030064A0.unk12[i][1] << 8) | gUnk_030064A0.unk12[i][2]; obj = battle_find_entity_by_id(id);
+                if (obj != NULL && obj->unk4_6)
+                {
+                    set_sprite_anim_and_store(obj->unk4_0 + 49, gUnk_030064A0.unkA[i], obj);
+                    if (gUnk_030064A0.unkA[i] == 0 && gUnk_030064A0.unk12[i][3] == 1
+                        && find_map_event_by_coords(obj->x, obj->y) && gUnk_03006D38.unk3)
+                        sub_08047BA8(gUnk_083D29E6[gUnk_03006D38.unk3]);
+                }
+                gUnk_030064A0.unkA[i]++;
+                gUnk_030064A0.unk2[i] = 0;
+                if (gUnk_030064A0.unkA[i] > 3)
+                {
+                    gUnk_03002C30[obj->unk4_0 + 49].unk24 = 0xFF;
+                    done = 1;
+                }
+            }
+            break;
+        case 2:
+            if (++gUnk_030064A0.unk2[i] > 5)
+            {
+                id = (gUnk_030064A0.unk12[i][1] << 8) | gUnk_030064A0.unk12[i][2]; obj = battle_find_entity_by_id(id);
+                if (obj != NULL && obj->unk4_6)
+                    set_sprite_anim_and_store(obj->unk4_0 + 49, 3 - gUnk_030064A0.unkA[i], obj);
+                gUnk_030064A0.unkA[i]++;
+                gUnk_030064A0.unk2[i] = 0;
+                if (gUnk_030064A0.unkA[i] > 3)
+                {
+                    gUnk_03002C30[obj->unk4_0 + 49].unk24 = 0xFF;
+                    gUnk_03002C30[obj->unk4_0 + 49].unk20 = 0;
+                    sub_080493D4(obj->unk4_0 + 49,
+                                 sub_080502B4(obj->unk4_0 + 49, gUnk_03002C30[obj->unk4_0 + 49].unk20));
+                    done = 1;
+                }
+            }
+            break;
+        default:
+            done = 1;
+            break;
+        }
+    }
+    if (done)
+    {
+        gUnk_030064A0.unk52 = 0;
+        sub_080496C8(gUnk_030064A0.unk12[0], 64);
+        map_script_command_done();
+    }
+}
 
 void setup_battle_sprite_terrain(u8 slot, u8 a, u8 b)
 {

@@ -96,6 +96,7 @@ extern const u8 gUnk_080B1718[];
 extern const u8 gUnk_083D28C0[];
 extern const u8 gUnk_083D2908[];
 extern const u8 gUnk_083D29A6[];
+extern const u8 gUnk_083D29B6[];
 extern const u16 *const gUnk_083F8634[]; // 16-colour palettes
 extern const u8 gUnk_083D2918[][8];
 extern const u8 gUnk_083D2B8D[];
