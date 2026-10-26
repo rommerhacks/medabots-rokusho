@@ -1202,7 +1202,35 @@ void sub_08069A68(u8 idx, s16 x, s16 y, u8 h, u8 pal)
     battle_sprite_set_palette_index(gUnk_08485CC4[q][r] - 3, pal);
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08067160", init_battle_icon_positions);
+void init_battle_icon_positions(void)
+{
+    int i;
+
+    sub_08069A68(0, 0x2C, 0x22, 0, 4);
+    sub_08069A68(1, -32, 0x22, 0, 4);
+    sub_08069A68(2, -32, 0x22, 0, 4);
+    i = 4;
+    sub_08069A68(3, 0x2C, 0x3A, 0, i);
+    i = 6;
+    sub_08069A68(4, -32, 0x3A, 0, 4);
+    sub_08069A68(5, -32, 0x3A, 0, 4);
+    sub_08069A68(i, 0x2C, 0x52, 0, 4);
+    sub_08069A68(7, -32, 0x52, 0, 4);
+    sub_08069A68(8, -32, 0x52, 0, 4);
+    // original passes i + 20 untruncated: compiled against an int prototype
+    for (i = 0; i <= 8; i++)
+        ((void (*)(int, int, int, int, int))init_battle_sprite_entry_08048818)(i + 20, 0xCC00, 0x110, 0xD, 3);
+    for (i = 0; i <= 2; i++)
+    {
+        gUnk_03002C30[20 + i * 3].unk2 = 0x2C;
+        gUnk_03002C30[21 + i * 3].unk2 = -32;
+        gUnk_03002C30[22 + i * 3].unk2 = -32;
+        gUnk_03002C30[20 + i].unk4 = 0x2D;
+        gUnk_03002C30[23 + i].unk4 = 0x45;
+        gUnk_03002C30[26 + i].unk4 = 0x5D;
+    }
+    DmaSet(3, gUnk_0850DEF8, 0x05000200, 0x84000040);
+}
 
 void init_battle_sprite_small(void)
 {
