@@ -5,6 +5,7 @@
 
 u32 lz_decompress_dispatch(const u8 *src, void *dst);
 void sub_08044B28(const u8 *src, void *dst);
+u32 sub_08044B34(u8 a);
 void set_tilemap_and_decompress_bg(u32 x, u32 y, const u8 *src, u32 bgcnt, u16 base);
 void copy_obj_palette_to_buffer(void);
 void palette_blend_to_color_080013A8(u16 color, u32 amount);

@@ -1882,7 +1882,90 @@ void sub_0803FEA8(void)
     gUnk_03000440.unkC++;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0803CDCC", sub_0803FEB8);
+void sub_0803FEB8(void)
+{
+    u32 anim, set, idx;
+    u32 x;
+    u8 zero;
+    u8 m;
+    u8 r;
+    struct Unk_03000440 *s;
+    u8 n;
+    if (((struct TextColBits *)&gUnk_03000440)->col)
+    {
+        u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
+        CpuFastSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
+    }
+    s = &gUnk_03000440;
+    zero = 0;
+    s->unk14 = zero;
+    if (s->unk1 != 2)
+    {
+        anim = s->unk8[s->unkC + 1];
+        set = (u8)sub_08044B34(s->unk8[s->unkC + 2]);
+        idx = s->unk8[s->unkC + 3];
+        if (s->unk12 == 1)
+        {
+            if (s->unkF == 0)
+                x = 0x13;
+            else
+                x = 3;
+            if ((u8)s->unkF == (u8)anim && (u8)s->unk10 == set)
+            {
+                if (set == 0xFF)
+                    vram_fill_tilemap_rect(8, 8, x, 5, REG_BG0CNT, zero);
+                else
+                    load_bg0_tilemap(set, idx, x, 5, anim);
+                gUnk_03000440.unkF = anim;
+                gUnk_03000440.unk10 = set;
+                gUnk_03000440.unk11 = idx;
+                gUnk_03000440.unkC += 4;
+            }
+            else
+            {
+                struct Unk_03000440 *p = &gUnk_03000440;
+                if ((n = p->unk1) == 0)
+                {
+                    if ((u8)message_portrait_anim_step((u8)p->unk10, (u8)p->unk11, x, 5, p->unkF, 1) != 1)
+                        return;
+                }
+                else
+                    vram_fill_tilemap_rect(8, 8, x, 5, REG_BG0CNT, n = 0);
+                p->unkE = n;
+                p->unk12 = n;
+            }
+            return;
+        }
+        x = 3;
+        if (anim == 0)
+            x = 0x13;
+        if (set == 0xFF)
+        {
+            s->unkF = anim;
+            s->unk10 = set;
+            s->unk11 = idx;
+            goto inc;
+        }
+        if ((m = s->unk1) != 0)
+        {
+            load_bg0_tilemap(set, idx, x, 5, anim);
+            s->unk12 = 1;
+            s->unkF = anim;
+            s->unk10 = set;
+            s->unk11 = idx;
+            goto inc;
+        }
+        if ((r = message_portrait_anim_step(set, idx, x, 5, anim, m)) != 1)
+            return;
+        s->unkE = m;
+        s->unk12 = r;
+        s->unkF = anim;
+        s->unk10 = set;
+        s->unk11 = idx;
+    }
+inc:
+    s->unkC += 4;
+}
 
 void text_render_glyph_step(void)
 {
