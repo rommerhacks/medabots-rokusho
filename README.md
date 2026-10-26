@@ -48,7 +48,8 @@ Run `make progress` to see the numbers.
 |---|---|---|
 | Engine | `src/engine/` | boot and main loop, interrupts, LZ decompression, BG / palette / OAM helpers, random numbers, the game-mode-0 state dispatcher |
 | Link | `src/link/` | serial link cable transfer |
-| Menus | `src/menu/` | field pause menu, Medawatch, Medabots screen (team / detail / team select), Medals screen |
+| Menus | `src/menu/` | field pause menu, Medawatch, Medabots screen (team / detail / team select), Medals screen, Medaparts screen |
+| Battle | `src/battle/` | Robattle intro and results (game state 6), the Robattle state machine (state 7), battle Medabots and AI, battle screen drawing, command ring, part select, Medaforce select, status screen |
 | Debug | `src/debug/` | the developer debug menu and its entries |
 | Audio | `src/audio/` | the game's own sound engine (sequencer and driver) |
 

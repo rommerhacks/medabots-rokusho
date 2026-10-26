@@ -5,63 +5,15 @@
 
 void sub_08044B28(const u8 *src, void *dst);
 u32 sub_08044B34(u8 a);
-void medaparts_scroll_bg(void);
-void sub_08010040(void); // guess: inits the 3-choice cursor sprite 4 (row gUnk_03000440.unk4A)
-void sub_080100BC(void); // guess: UP/DOWN moves the 3-choice cursor
-u32 sub_0801013C(void);  // runs sprite 4's sub-state handler, 1 when done
-void medaparts_list_set_cursor_from_part(void);
-void medaparts_list_draw_names(void);
-void medaparts_list_draw_counts(void);
-void sub_0800EDA0(void); // draws gMedapartInventory byte 1 of each row (1 digit, column 0x19); guess: count equipped
-void medaparts_list_draw_part_icons(void); // 2x2 icon per owned row, tile by part data unkF1 (guess: the SEX column)
-void medaparts_list_init_page_arrows(void);
-void medaparts_list_blink_page_arrows(void);
-void medaparts_list_init_cursor(void);
-u32 medaparts_list_row_input(void);
-u32 medaparts_list_page_input(void);
-u32 medaparts_list_kind_input(void);
-void medaparts_list_load_part_sprite(
-    void); // sets unk3D from the cursor, loads the selected Medapart's sprite (load_sprite_animation_by_type)
-void medapart_draw_sprite(void); // Medapart sprite (unk3D, kind unk3E) at the per-kind position, clears the OAM copy
-void load_medapart_sprite_by_slot(void); // guess: per-frame Medapart sprite redraw (animation 5/6) when opened from
-                                         // elsewhere (unk3C 2/3) or the part is owned
-void medapart_detail_init_sprite(void);
-s32 sub_0800F6CC(void);
-void medapart_detail_draw_skill(
-    void); // skill type name (gUnk_083B6EC8[unkF0]) or, for ids >= 100 in unkEF, gUnk_083BE97C[unkEF - 100] (leg type)
-void medapart_detail_draw_ability(void); // ability name gUnk_083B656C[unkEE] (e.g. Anti-Air, Regenerate)
-void medapart_detail_draw_skill_icon(void);
-void medapart_detail_draw_name(void);
-void medapart_detail_draw_gender_icon(void); // icon after the name: unkF1 = 0 male, 1 female
-void medapart_detail_draw_stat_labels(void);
-void medapart_detail_draw_stats(
-    void); // stat values unkF2.. per kind (head: Armor, Success, Power, Uses; unkF5 = power icon flag)
-void count_compatible_medaparts(
-    void); // unk41 = owned parts of kind unk3E; from a Medabot (unk3C 1) only spare ones of its gender
-void medapart_detail_init_arrows(void);
-void medapart_detail_blink_arrows(void);
-u32 medapart_detail_cycle_part_input(
-    void); // LEFT/RIGHT: previous/next part counted by count_compatible_medaparts, redraws; 1 if moved
-void medaparts_help_init_cursor(void); // same code as sub_0800AA1C (Medals help cursor)
-void sub_0800FFF4(void);
+// elsewhere (unk3C 2/3) or the part is owned
 void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y,
                                    u32 tile, u32 pal, u32 e);
 void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt,
                   u16 base); // guess: draws the last `digits` of value as 2-row tile digits (base + d * 2 / + 1)
 u32 sub_08042B80(u32 a);     // 1 for part types 2, 3, 6, 7; 0 for 0, 1, 4, 5
-void battle_bots_load_parts(u32 a, u32 n);
-void clear_battle_bot_array(void);
-void count_active_battle_bots(void);
-void battle_setup_team_bots(void);
-void command_ring_init_icon(u32 a);
-void command_ring_init_icon_hidden(u32 a);
-u32 command_ring_rotate_step(u32 a);
-u32 sub_08016154(
-    u32 i, u32 dir); // guess: turns command ring icon i one step (dir 0 right, 1 left), returns 1 after the 7th step
-void animate_battle_sprites(u32 idx);
-void sub_0801ABF8(void);    // text_window_init(1, 2, 0) unless gUnk_03001360 is set (guess: skipped in link Robattles)
-u32 sub_0801AC6C(void);     // game_state_execute_handler_a() unless gUnk_03001360 is set (then 1)
-void sub_0801AC98(u32 rec); // draws the BG1 message frame tilemaps on the team (rec 0-2) or opponent side
+void sub_0801ABF8(void);     // text_window_init(1, 2, 0) unless gUnk_03001360 is set (guess: skipped in link Robattles)
+u32 sub_0801AC6C(void);      // game_state_execute_handler_a() unless gUnk_03001360 is set (then 1)
+void sub_0801AC98(u32 rec);  // draws the BG1 message frame tilemaps on the team (rec 0-2) or opponent side
 // Robattle action step dispatchers run by the action script (code_08030CAC wrappers)
 void dispatch_battle_action_step(void);
 void sub_0801DE1C(void);
@@ -254,15 +206,7 @@ void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags);
 void sub_08043CA8(void);
 void decompress_tileset_to_vram(u32 id, u32 arg);
 void apply_battle_blend_effect_a(void);
-void prebattle_draw_opponent_name(void);
-void prebattle_draw_battlefield_name(void);
-void load_opponent_medabot_sprites(void);
-void init_opponent_medabot_sprites(void);
-void draw_opponent_leg_type_icons(void);
-void prebattle_init_rubberobo_sprite(void);
-void sub_080121A8(void);
 void update_scroll_movement_a(void);
-void update_all_battle_sprite_orbits(void);
 void sub_08044B58(void);
 void sub_08044CDC(u32 a);
 void dispatch_by_index_0476e8(u32 idx);
@@ -532,21 +476,8 @@ void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot);
 void reset_bg_scroll(void); // zeroes the four BG scroll positions
 void set_blend_effect_mode(u8 mode, u16 targets, u16 speed);
 u32 update_blend_effect(void); // 1 once the effect set up by set_blend_effect_mode is done
-void load_encounter_into_battle_setup(void);
-u32 sub_0803EED8(void); // nonzero: waiting on the serial link (reads gUnk_03005010)
+u32 sub_0803EED8(void);        // nonzero: waiting on the serial link (reads gUnk_03005010)
 u32 game_state_execute_handler_b(void);
-void sub_080121CC(void);
-void setup_battle_result_sprite(void);
-void sub_08012468(void);
-void setup_battle_result_sprite_animation(void);
-void calculate_battle_score_summary(void);
-void calc_average_bot_stat_080125B4(void);
-void accumulate_alive_bot_score(void);
-void calc_average_bot_stat_0801264C(void);
-void calc_medaforce_gauge_from_damage(void);
-void sub_0801275C(void);
-void accumulate_team_armor_stats(void);
-void battle_check_medal_level_up(void);
 void divide_by_100000_b(u8 *buf, u32 value,
                         u32 tile); // guess: value as text, digits + tile; >= 100000 writes a fixed overflow string
 u32 advance_sprite_anim_frame(u32 sprite, u32 b);
@@ -658,42 +589,15 @@ void get_entity_speed_value(void);
 
 s32 sub_08043C94(void); // random 0-100
 void render_text_sprites_08040EE4(u8 *text, u8 a, u32 x, u32 y, u8 b, u8 c, u8 d, u16 e, s32 f, s32 g);
-void sub_080122F4(u32 a);
 void sub_080421B4(u8 a, u8 b);
-u32 random_pick_weighted4(u32 a, u32 b, u32 c, u32 d);
-void load_area_battlefield(void);
-void setup_random_encounter_enemies(void);
 void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i);
-s32 sub_080121F0(void);
-u32 sub_08012234(void);
 
 // Robattle (game state 7) helpers
 void update_all_battle_status_sprites(void);
-void battle_process_bot_actions_for_side(u32 side);
-void sub_08016370(u32 rec);
-u32 sub_08016438(u32 rec);
-void load_battle_bg_layers(void);
-void render_bot_name_sprites(u32 rec);
-void draw_battle_panel_left_a(u32 rec);
-void draw_battle_panel_left_b(u32 rec);
-u32 scale_to_bar_fill(u32 a, u32 b, u32 c); // (float)a / b * c, packed: full 8-pixel tiles << 16 | remaining pixels
-void draw_medaforce_gauge_bar(u32 rec);
-void draw_medaforce_gauge_value(u32 rec);
-void command_ring_draw_name(void);
-void command_ring_init_icons(void);
-void init_opponent_bots(void);
-void battle_process_all_bots_actions(void);
 void sub_08018A18(void);
 void load_battle_script_entry_b(void);
 u32 battle_load_graphics_step(u32 direct); // one LZ graphics load per call (step 0x0300057A 0-8); returns 1 when done,
                                            // direct = palettes straight to PLTT
-void load_bg3_tilemap_08488764(void);
-void draw_battle_bot_portraits(void);
-void load_all_bot_part_sprites(void);
-void setup_all_battle_bot_sprite_positions(void);
-void load_bot_part_sprite(u32 rec);
-u32 sub_08015924(u32 rec);
-void setup_battle_bot_sprites_08015960(u32 rec, u32 x, u32 y);
 void init_battle_bot_sprites(void);
 u32 find_next_active_bot(u32 rec);
 u32 sub_080330E8(u32 idx);
@@ -703,98 +607,19 @@ void apply_battle_blend_effect_b(void);
 void decompress_to_ewram_27000(const u8 *src);
 void battle_vblank_update_bg(
     void); // battle gVBlankCallback: BG scroll movement (unk74) + battlefield tile animation (runtime-checked)
-void command_ring_input(void);
-void sub_080178CC(void);
-void command_ring_pulse_selected(void);
-void sub_08017914(void);
-void setup_bot_battle_sprites_08015A00(u32 rec, u32 x, u32 y);
 void battle_set_damage_vs_armor(u32 rec, u32 part, s32 amount);
 u32 sub_08034F44(u32 rec);
-void sub_08016554(void);
-void command_ring_goto_selected(void);
-void sub_080165D0(void);
-void sub_08016614(void);
-void sub_08016660(void);
-void decompress_two_bg1_layers(void);
-void command_ring_init_icons_hidden(void);
 void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt,
                             void *dst); // w x h tiles at (x, y) of the BG map selected by bgcnt
 void write_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, const void *src);
 void sub_08042A90(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt,
-                  u16 tile2);        // draws cur/max as two 2-digit numbers
-u32 sub_08016E5C(u32 rec, u32 part); // 1 if the part's skill id (data[1]) is 0x18-0x1A, 0x28 or 0x35
-void draw_partial_bg1_column(void);
-void scroll_tilemap_window(void);
-void sub_08016FB4(void);
-void process_bot_battle_turn(u32 rec);
-void battle_bot_select_medaforce(u32 rec, u32 part);
-void battle_bot_select_part(u32 rec, u32 part);
-void sub_08018900(u32 rec); // guess: counts the chosen action's skill type in the record's unkB0
+                  u16 tile2); // draws cur/max as two 2-digit numbers
+void sub_08018900(u32 rec);   // guess: counts the chosen action's skill type in the record's unkB0
 void init_battle_action_select_ui(u32 a);
-void sub_080166AC(void);
 void determine_battle_part_action_priority(void);
-void sub_080166F0(void);
-void sub_0801672C(void);
-void part_select_init_cursor(void);
-void part_select_init_center_icon(void);
-void part_select_draw_part_name(void);
-void part_select_draw_skill_type(void);
-void part_select_draw_skill_name(void);
-void part_select_draw_head_uses(void);
 void sub_0801B894(void);
 void sub_0801B9C4(void);
-void part_select_blink_selected_icon(void);
-void part_select_input(void);
-void part_select_blink_status(void);
 void sub_0801BACC(void);
-void sub_0801767C(void);
-void sub_080175FC(void);
-void sub_08017948(void);
-void save_restore_bg0_tilemap_region(void);
-void save_restore_bg1_tilemap_region(void);
-void sub_08017004(void);
-void sub_08017048(void);
-void sub_08017084(void);
-void sub_080170D4(void);
-void sub_08017104(void);
-void sub_08017268(void);
-void sub_08017178(u32 a);
-void sub_080171C0(u32 a);
-void sub_08017208(u32 a);
-void sub_08017130(u32 a);
-void sub_080173B4(u32 a);
-void sub_08017734(u32 a);
-void setup_battle_bot_sprites_08017994(u32 rec, u32 x, u32 y);
-void setup_bot_battle_sprites_08017A7C(u32 rec, u32 x, u32 y);
-void status_draw_lr_button(u32 a);
-void part_select_init_head_icon(u32 a);
-void part_select_init_right_arm_icon(u32 a);
-void part_select_init_left_arm_icon(u32 a);
-void part_select_init_bottom_icon(u32 a);
-void position_battle_team_cursors(u32 a, u32 b);
-void status_switch_side(void);
-void status_init_cursor(void);
-void status_draw_bot_name(void);
-void sub_08017D14(void);
-void status_load_medal_icon(void);
-void status_draw_medal_name(void);
-void status_draw_part_names(void);
-void status_draw_part_ability_icons(void);
-void status_draw_part_armor(void);
-void get_bot_part_effective_values(u32 bot, u8 *out);
-void set_portrait_parts(u8 a, u8 b, u8 c, u8 d);
-void status_init_portrait(void);
-void status_draw_team_sprites(void);
-void sub_080182D0(void);
-void status_blink_lr_button(void);
-void status_update_portrait(void);
-u32 status_cursor_x(void);
-void scroll_bg3_diagonal(void);
-void status_select_input(void);
-void status_begin_side_change(void);
-u32 status_side_change_scroll_out(void);
-u32 status_side_change_scroll_in(void);
-void status_reset_portrait(void);
 void sub_080189EC(void);
 void select_battle_music(void);
 void robattle_time_init(void);
@@ -808,7 +633,6 @@ void battle_queue_take_head(
     void); // acting Medabot = queue head: gUnk_03001800.unk87 = record, unk89 = side, unk8A = other side
 void battle_queue_pop(void); // drops the queue head, shifting the rest up
 void iterate_bots_setup_battle_sprites(void);
-void battle_bot_advance_rotation(u32 rec);
 u32 sub_0801A6B0(void);
 void battle_process_all_bot_actions(u32 rec);
 u32 sub_0801A6EC(u32 rec);  // tests gUnk_03001800.unk44 bit rec (rec 0-2)
@@ -858,22 +682,7 @@ void sub_0801B3AC(u32 rec); // writes gUnk_03001800.unk11C back into the acting 
                             // then clears unk118..
 void sub_0801B004(u32 rec); // guess: 8 sprites 0x21-0x28 in a circle (radius 16) around the Medabot's sprite, OBJ
                             // palette 6 from gUnk_084E3058
-void copy_player_medals_to_battle_bots(void);
-void copy_team_slots_to_battle_bots(void);
-void init_enemy_bot_medal(u8 i);
-void init_opponent_bot_slots(void);
-u32 battle_dispatch_action_by_type(u32 rec);
-void select_bot_battle_action(u32 rec);
-u32 sub_080154E0(u32 rec, u32 part); // 1 if unkC9 == 0x2B and unkCA == part (guess: part sealed by a status effect)
-u32 sub_08015508(u32 rec, u32 part); // 1 if part is the head and its unk10 (data[8]) is 0 (guess: no uses left)
-u32 sub_08015528(u32 rec, u32 part); // 1 if the part's unk11 is 0 (guess: part broken)
-u32 check_medaforce_availability(
-    u32 rec, u32 slot, u32 random); // 0 = Medaforce slot chosen (battle_bot_select_medaforce), 1 = not available
-u32 sub_08015648(u32 rec); // 1 for opponents (rec 3-5) while gUnk_030057E0.unk7FF <= 2 (guess: early-game opponents
-                           // can't use Medaforce)
-void battle_ai_roll_part_order(void);
-u32 battle_part_unusable(u32 rec,
-                         u32 part); // any of sub_080154E0 / sub_08015508 / sub_08015528 / begin_battle_action_lookup
+                            // can't use Medaforce)
 u32 rng_lookup_table_value(void);
 void battle_execute_action_selection(void);
 void call_bot_action_handler(void);
@@ -883,7 +692,6 @@ u32 sub_08032FFC(void);                    // 1 if gUnk_03001800.unk61 has a can
 u32 select_battle_pending_action(void);    // random candidate record from gUnk_03001800.unk61
 u32 select_random_battle_target(u32 base); // random present record base + 0..2
 void sub_08033154(u32 rec, u32 part);      // stores the chosen target (unk5E / unk5F) in the part's unkE / unkF
-u32 sub_0801554C(u32 rec, u32 other);      // side of rec (0 team, 1 opponents), or the other side when other is 1
 u32 begin_battle_action_lookup(u32 rec, u32 part);
 void sub_08018CBC(void);
 void sub_08018D0C(u32 rec); // timed effect A tick (type 0x1F restores armor to damaged parts)
@@ -1401,5 +1209,18 @@ void sub_08049CB0(u16 color, u32 amount);
 #include "menu/medals_screen.h"
 
 #include "debug/debug_menu.h"
+#include "menu/medaparts_screen.h"
+
+#include "battle/prebattle.h"
+#include "battle/robattle.h"
+
+#include "battle/battle_bots.h"
+#include "battle/battle_hud.h"
+
+#include "battle/command_ring.h"
+#include "battle/part_select.h"
+
+#include "battle/medaforce_select.h"
+#include "battle/status_screen.h"
 
 #endif // GUARD_FUNCTIONS_H

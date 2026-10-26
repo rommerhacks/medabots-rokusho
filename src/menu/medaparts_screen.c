@@ -1,4 +1,39 @@
+// Game state 5: the Medaparts screen (Medawatch > Medaparts): the part list by kind with counts and icons,
+// a part's detail page (skill, ability, stats, compatible count), the START help pages, and the part sprite
+// loaders. Entry point medaparts_screen_update; returns to the field menu. Uses the engine OAM/BG helpers
+// and the text renderer.
+
 #include "global.h"
+
+static void medaparts_scroll_bg(void);
+static void medaparts_list_set_cursor_from_part(void);
+static void medaparts_list_draw_names(void);
+static void medaparts_list_draw_counts(void);
+static void sub_0800EDA0(void);
+static void medaparts_list_draw_part_icons(void);
+static void medaparts_list_init_page_arrows(void);
+static void medaparts_list_blink_page_arrows(void);
+static void medaparts_list_init_cursor(void);
+static u32 medaparts_list_row_input(void);
+static u32 medaparts_list_page_input(void);
+static u32 medaparts_list_kind_input(void);
+static void medaparts_list_load_part_sprite(void);
+static void medapart_draw_sprite(void);
+static void load_medapart_sprite_by_slot(void);
+static void medapart_detail_init_sprite(void);
+static void medapart_detail_draw_ability(void);
+static void medapart_detail_draw_skill_icon(void);
+static void medapart_detail_draw_name(void);
+static void medapart_detail_draw_gender_icon(void);
+static void medapart_detail_draw_stat_labels(void);
+static void medapart_detail_draw_stats(void);
+static void medapart_detail_init_arrows(void);
+static void medapart_detail_blink_arrows(void);
+static u32 medapart_detail_cycle_part_input(void);
+static void medaparts_help_init_cursor(void);
+static void sub_0800FFF4(void);
+static void sub_08010040(void);
+static void sub_080100BC(void);
 
 void medaparts_screen_update(void) {
     u32 fill;
@@ -620,19 +655,19 @@ void sub_0800EBE4(void) {
     sub_08044CDC(2);
 }
 
-void medaparts_scroll_bg(void) {
+static void medaparts_scroll_bg(void) {
     if (gFrameCounter & 1) {
         gBg3Scroll.x++;
         gBg3Scroll.y++;
     }
 }
 
-void medaparts_list_set_cursor_from_part(void) {
+static void medaparts_list_set_cursor_from_part(void) {
     gUnk_03000440.unk3F = gUnk_03000440.unk3D / 4;
     gUnk_03000440.unk40 = gUnk_03000440.unk3D % 4;
 }
 
-void medaparts_list_draw_names(void) {
+static void medaparts_list_draw_names(void) {
     u32 i;
     u32 page;
 
@@ -649,7 +684,7 @@ void medaparts_list_draw_names(void) {
     }
 }
 
-void medaparts_list_draw_counts(void) {
+static void medaparts_list_draw_counts(void) {
     u32 i;
 
     for (i = 0; i < 4; i++) {
@@ -661,7 +696,7 @@ void medaparts_list_draw_counts(void) {
     }
 }
 
-void sub_0800EDA0(void) {
+static void sub_0800EDA0(void) {
     u32 i;
 
     for (i = 0; i < 4; i++) {
@@ -673,7 +708,7 @@ void sub_0800EDA0(void) {
     }
 }
 
-void medaparts_list_draw_part_icons(void) {
+static void medaparts_list_draw_part_icons(void) {
     u32 i;
     u32 page;
 
@@ -690,7 +725,7 @@ void medaparts_list_draw_part_icons(void) {
     }
 }
 
-void medaparts_list_init_page_arrows(void) {
+static void medaparts_list_init_page_arrows(void) {
     gUnk_03002C30[1].unk0 = 0xC804;
     gUnk_03002C30[1].unk2 = 0x4C;
     gUnk_03002C30[1].unk4 = 0x18;
@@ -707,7 +742,7 @@ void medaparts_list_init_page_arrows(void) {
     gUnk_03002C30[2].unkB = 0x80;
 }
 
-void medaparts_list_blink_page_arrows(void) {
+static void medaparts_list_blink_page_arrows(void) {
     if (gFrameCounter & 8) {
         gUnk_03002C30[1].unk0 &= 0xBFFF;
         gUnk_03002C30[2].unk0 &= 0xBFFF;
@@ -717,7 +752,7 @@ void medaparts_list_blink_page_arrows(void) {
     }
 }
 
-void medaparts_list_init_cursor(void) {
+static void medaparts_list_init_cursor(void) {
     gUnk_03002C30[3].unk0 = 0xC804;
     gUnk_03002C30[3].unk2 = 0x50;
     gUnk_03002C30[3].unk4 = gUnk_03000440.unk40 * 16 + 0x30;
@@ -727,7 +762,7 @@ void medaparts_list_init_cursor(void) {
     gUnk_03002C30[3].unkB = 0x81;
 }
 
-u32 medaparts_list_row_input(void) {
+static u32 medaparts_list_row_input(void) {
     u32 ret;
 
     if (KEYS_LO(gRepeatKeys) & 0x40) {
@@ -754,7 +789,7 @@ u32 medaparts_list_row_input(void) {
     return ret;
 }
 
-u32 medaparts_list_page_input(void) {
+static u32 medaparts_list_page_input(void) {
     u32 ret;
 
     if (KEYS_LO(gRepeatKeys) & 0x20) {
@@ -785,7 +820,7 @@ u32 medaparts_list_page_input(void) {
     return ret;
 }
 
-u32 medaparts_list_kind_input(void) {
+static u32 medaparts_list_kind_input(void) {
     u32 ret;
 
     if (KEYS_HI(gNewKeys) & 2) {
@@ -816,7 +851,7 @@ u32 medaparts_list_kind_input(void) {
     return ret;
 }
 
-void medaparts_list_load_part_sprite(void) {
+static void medaparts_list_load_part_sprite(void) {
     struct Unk_08047414 *obj;
     u8 *b;
     u8 *c;
@@ -840,7 +875,7 @@ void medaparts_list_load_part_sprite(void) {
                                   0x1C2, 8, 1);
 }
 
-void medapart_draw_sprite(void) {
+static void medapart_draw_sprite(void) {
     struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
     u32 fill;
 
@@ -865,7 +900,7 @@ void medapart_draw_sprite(void) {
     gUnk_03002414->unk1095 = 0;
 }
 
-void load_medapart_sprite_by_slot(void) {
+static void load_medapart_sprite_by_slot(void) {
     struct Unk_08047414 *obj;
 
     if ((u8)(gUnk_03000440.unk3C - 2) <= 1) {
@@ -905,7 +940,7 @@ void load_medapart_sprite_by_slot(void) {
     }
 }
 
-void medapart_detail_init_sprite(void) {
+static void medapart_detail_init_sprite(void) {
     struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
     u8 *b;
     u8 *c;
@@ -947,31 +982,31 @@ void medapart_detail_draw_skill(void) {
     }
 }
 
-void medapart_detail_draw_ability(void) {
+static void medapart_detail_draw_ability(void) {
     clear_sprite_table_mask(25, 15);
     memcpy_bytes_0803F63C((void *)gUnk_083B656C[gUnk_03000440.unkEE], gUnk_03000440.unk9E, 14);
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 25, 2, 11, 8, 12, 0, 1);
 }
 
-void medapart_detail_draw_skill_icon(void) {
+static void medapart_detail_draw_skill_icon(void) {
     if (gUnk_03000440.unk3E <= 2)
         fill_tilemap_rect_08042698(2, 2, 11, 9, REG_BG1CNT, 0x8390 + sub_08042B80(gUnk_03000440.unkF0) * 4);
     else
         fill_tilemap_rect_08042698(2, 2, 11, 9, REG_BG1CNT, 0xA208 + gUnk_03000440.unkEF * 4);
 }
 
-void medapart_detail_draw_name(void) {
+static void medapart_detail_draw_name(void) {
     clear_sprite_table_mask(40, 15);
     memcpy_bytes_08041D04((void *)gUnk_083BB9CC[0][gUnk_03000440.unk3D * 4 + gUnk_03000440.unk3E], gUnk_03000440.unk9E,
                           15);
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 40, 11, 3, 10, 13, 0, 1);
 }
 
-void medapart_detail_draw_gender_icon(void) {
+static void medapart_detail_draw_gender_icon(void) {
     fill_tilemap_rect_08042698(2, 2, 21, 3, REG_BG1CNT, 0x7388 + gUnk_03000440.unkF1 * 4);
 }
 
-void medapart_detail_draw_stat_labels(void) {
+static void medapart_detail_draw_stat_labels(void) {
     switch (gUnk_03000440.unk3E) {
     case 0:
         fill_tilemap_rect_08042698(12, 1, 14, 6, REG_BG1CNT, 0x5300);
@@ -998,7 +1033,7 @@ void medapart_detail_draw_stat_labels(void) {
     }
 }
 
-void medapart_detail_draw_stats(void) {
+static void medapart_detail_draw_stats(void) {
     switch (gUnk_03000440.unk3E) {
     case 0:
         divide_by_100000_08042838(gUnk_03000440.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
@@ -1056,7 +1091,7 @@ void count_compatible_medaparts(void) {
     }
 }
 
-void medapart_detail_init_arrows(void) {
+static void medapart_detail_init_arrows(void) {
     if (gUnk_03000440.unk41 > 1) {
         gUnk_03002C30[1].unk0 = 0xC804;
         gUnk_03002C30[1].unk2 = 0x0C;
@@ -1075,7 +1110,7 @@ void medapart_detail_init_arrows(void) {
     }
 }
 
-void medapart_detail_blink_arrows(void) {
+static void medapart_detail_blink_arrows(void) {
     if (gUnk_03000440.unk41 > 1) {
         if (gFrameCounter & 8) {
             gUnk_03002C30[1].unk0 &= 0xBFFF;
@@ -1087,7 +1122,7 @@ void medapart_detail_blink_arrows(void) {
     }
 }
 
-u32 medapart_detail_cycle_part_input(void) {
+static u32 medapart_detail_cycle_part_input(void) {
     u16 r;
 
     if (gUnk_03000440.unk41 <= 1)
@@ -1150,7 +1185,7 @@ none:
     return 0;
 }
 
-void medaparts_help_init_cursor(void) {
+static void medaparts_help_init_cursor(void) {
     const u8 *rec = gUnk_083B7EBC[gUnk_03000440.unk43];
 
     gUnk_03000440.unk45 = rec[0];
@@ -1164,14 +1199,14 @@ void medaparts_help_init_cursor(void) {
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[3], 6);
 }
 
-void sub_0800FFF4(void) {
+static void sub_0800FFF4(void) {
     const u8 *rec = gUnk_083B7EBC[gUnk_03000440.unk43];
 
     gUnk_03002C30[6].unk2 = rec[(gUnk_03000440.unk44 + 1) << 1] * 8;
     gUnk_03002C30[6].unk4 = rec[((gUnk_03000440.unk44 + 1) << 1) + 1] * 8;
 }
 
-void sub_08010040(void) {
+static void sub_08010040(void) {
     gUnk_03002C30[4].unk0 = 0xD204;
     gUnk_03002C30[4].unk2 = 0xA8;
     gUnk_03002C30[4].unk4 = gUnk_03000440.unk4A * 16 + 0x38;
@@ -1185,7 +1220,7 @@ void sub_08010040(void) {
     gUnk_03002C30[4].unkB = 0xC1;
 }
 
-void sub_080100BC(void) {
+static void sub_080100BC(void) {
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         if (gUnk_03000440.unk4A == 0)
             gUnk_03000440.unk4A = 2;
@@ -1236,149 +1271,4 @@ void sub_080101E8(void) {
 void sub_0801022C(void) {
     vram_fill_tilemap_rect(12, 8, 18, 5, REG_BG0CNT, 0);
     gUnk_03002C30[4].unk29++;
-}
-
-// Game state 6, "Get ready to Robattle" (runtime-checked from the debug Battle entry): sub-states 0-5
-// flash a mosaic over the field three times, 6-7 wipe the screen in stripes, 8 loads the encounter,
-// 9 loads the pre-battle screen graphics.
-void prebattle_screen_update(void) {
-    u32 fill;
-
-    if (gUnk_03000430 == 2) {
-        fill = 0x200;
-        DmaSet(3, &fill, gUnk_03002414->unkB84, 0x85000100);
-    }
-    gPrebattleScreenHandlers[gGameSubState]();
-}
-
-void prebattle_mosaic_start(void) {
-    REG_BG0CNT |= 0x40;
-    REG_BG1CNT |= 0x40;
-    REG_BG2CNT |= 0x40;
-    REG_BG3CNT |= 0x40;
-    play_song(8);
-    gUnk_03000440.unk85 = 0;
-    gGameSubState++;
-}
-
-void prebattle_mosaic_grow_init(void) {
-    gUnk_03000440.unk84 = 0;
-    gGameSubState++;
-}
-
-void prebattle_mosaic_grow(void) {
-    REG_MOSAIC = gUnk_03000440.unk84 + (gUnk_03000440.unk84 << 4);
-    gUnk_03000440.unk84 += 2;
-    if (gUnk_03000440.unk84 == 16)
-        gGameSubState = 5;
-}
-
-void prebattle_mosaic_shrink_init(void) {
-    gUnk_03000440.unk84 = 16;
-    gGameSubState++;
-}
-
-void prebattle_mosaic_shrink(void) {
-    u32 v = gUnk_03000440.unk84 - 2;
-
-    gUnk_03000440.unk84 = v;
-    REG_MOSAIC = gUnk_03000440.unk84 + (gUnk_03000440.unk84 << 4);
-    if ((u8)v == 0)
-        gGameSubState = 5;
-}
-
-void prebattle_mosaic_repeat(void) {
-    if (gUnk_03000440.unk85 <= 2) {
-        if (gUnk_03000440.unk85 & 1)
-            gGameSubState = 1;
-        else
-            gGameSubState = 3;
-        gUnk_03000440.unk85++;
-    } else
-        gGameSubState++;
-}
-
-void prebattle_wipe_init(void) {
-    REG_DISPCNT |= 0x100;
-    REG_BG0CNT = 0x500;
-    gBg0Scroll.x = 0;
-    gBg0Scroll.y = 0;
-    lz_decompress_dispatch(gUnk_084C696C, (void *)0x06002600);
-    DmaSet(3, gUnk_084C6A78, 0x050001A0, 0x84000008);
-    gUnk_03000440.unk3F = 0;
-    gUnk_03000440.unk48 = 0;
-    gUnk_03000440.unk84 = 0;
-    gGameSubState++;
-}
-
-void prebattle_wipe(void) {
-    s32 start, i;
-
-    if (gUnk_03000440.unk48 <= 4)
-        start = 0;
-    else
-        start = gUnk_03000440.unk48 - 4;
-    for (i = start; i <= gUnk_03000440.unk48; i++) {
-        if (i <= 14)
-            vram_fill_tilemap_rect(1, 20, i, 0, REG_BG0CNT, gUnk_03000440.unk48 - i - 0x2ED0);
-    }
-    for (i = start; i <= gUnk_03000440.unk48; i++) {
-        if (i <= 14)
-            vram_fill_tilemap_rect(1, 20, 29 - i, 0, REG_BG0CNT, gUnk_03000440.unk48 - i - 0x2ED0);
-    }
-    if (++gUnk_03000440.unk48 > 19)
-        gGameSubState++;
-}
-
-void prebattle_load_encounter(void) {
-    u32 zero0, zero1;
-
-    load_encounter_into_battle_setup();
-    gUnk_03000440.unk132 = 0;
-    zero0 = 0;
-    CpuFastSet(&zero0, (void *)0x05000200, 0x01000080);
-    zero1 = 0;
-    CpuFastSet(&zero1, (void *)0x05000000, 0x01000080);
-    gGameSubState++;
-}
-
-void prebattle_load_gfx(void) {
-    u32 zero;
-
-    sub_08043CA8();
-    REG_DISPCNT &= 0xE0FF;
-    REG_BG0CNT = 0x500;
-    REG_BG1CNT = 0x1801;
-    REG_BG2CNT = 0x590A;
-    REG_BG3CNT = 0x5B0B;
-    lz_decompress_dispatch(gUnk_084E6C9C, (void *)0x06004000);
-    lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06006000);
-    lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06006200);
-    lz_decompress_dispatch(gUnk_084C7D10, (void *)0x06012800);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
-    vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG0CNT, 0);
-    vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EFA34, REG_BG1CNT, 0x200);
-    DmaSet(3, gUnk_084F29E0, 0x0202FA00, 0x84000070);
-    DmaSet(3, gUnk_084C69D8, 0x0202FB00, 0x84000008);
-    DmaSet(3, gUnk_084C69F8, 0x0202FB20, 0x84000008);
-    DmaSet(3, gUnk_0850DEF8, 0x0202F800, 0x84000040);
-    DmaSet(3, gUnk_0850DCF8 + 0xB0, 0x0202F980, 0x84000008);
-    DmaSet(3, gUnk_0850DCF8, 0x0202F9A0, 0x84000008);
-    DmaSet(3, gUnk_084E2FB8, 0x0202F940, 0x84000008);
-    DmaSet(3, gUnk_084E2F98, 0x0202F960, 0x84000008);
-    decompress_tileset_to_vram(gUnk_03001800.unk38, 1);
-    zero = 0;
-    DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
-    REG_DISPCNT |= 0x1F60;
-    prebattle_draw_opponent_name();
-    prebattle_draw_battlefield_name();
-    load_opponent_medabot_sprites();
-    init_opponent_medabot_sprites();
-    draw_opponent_leg_type_icons();
-    prebattle_init_rubberobo_sprite();
-    sub_080121A8();
-    apply_battle_blend_effect_a();
-    gUnk_03000440.unk84 = 0;
-    gGameSubState++;
 }
