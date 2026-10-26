@@ -1,0 +1,19 @@
+#ifndef GUARD_MENU_ITEM_LIST_H
+#define GUARD_MENU_ITEM_LIST_H
+
+// Item / Medapart list drawing shared by the item menu and the shop
+
+void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot);
+u32 sub_0805B4B0(u32 id); // gUnk_08483AC0[id] == 1
+void swap_inventory_items(void);
+void item_menu_draw_page_numbers(void); // "page / pages" on the item screen
+void sub_0805B470(struct Unk_03002C30 *sprite);
+void unpack_item_inventory_to_buffer(
+    void); // gItemInventory -> struct ItemListEntry list at 0x02040000, count in gUnk_03006F74->unk10
+void update_battle_medapart_icons(void);
+void render_battle_medapart_list(u32 mode);
+void item_menu_set_cursor_pos(
+    struct Unk_03002C30 *sprite); // list cursor sprite: unk2 = 0x54, unk4 = 0x1C + 16 * (gUnk_03006F74->unkC % 5)
+void shop_build_sell_list(void);
+
+#endif // GUARD_MENU_ITEM_LIST_H

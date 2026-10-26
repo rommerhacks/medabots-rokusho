@@ -18,7 +18,6 @@ void CpuFastSet(const void *src, void *dest, u32 control);
 void VBlankIntrWait(void);
 u16 sub_0807C740(u16 kbitSize); // EEPROM library: picks the EEPROM type (4 or 64 kbit)
 void irq_dispatch_arm(void);
-u16 eeprom_setup_timer_irq(void);
 u16 sub_0807C7A8(u8 timer, Func *slot); // EEPROM library: sets the timer and its IRQ handler slot
 void link_buffer_swap_arm(void);        // ARM, crt0.s; copied to IWRAM 0x03005250
 
@@ -163,74 +162,19 @@ u32 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 by
 void init_blend_effect(void *state, u8 a, u8 b, s8 c, u16 mode);
 u32 blend_fade_step_08065598(void *state);
 // code_0805AB40
-void decompress_and_write_tilemap(
-    const void *src,
-    u32 bgcnt);          // LZ77 tilemap with a w, h header (u32 each, 16-byte header) into the BG screen block of bgcnt
-void sub_0805AB40(void); // VBlank-once callback: copies gPaletteBuffer / gPaletteBufferBg to OBJ / BG palette RAM
-void sub_0805AB68(
-    u16 color, s32 t,
-    u32 pal); // guess: blends OBJ palette pal from gPaletteBackup toward color by t / 32, then uploads in VBlank
-void sub_0805AC4C(u16 color, s32 t); // guess: same blend for all BG palettes
-void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot);
-u32 sub_0805B4B0(u32 id);                   // gUnk_08483AC0[id] == 1
-u32 sub_0805B4C8(struct Unk_03002C30 *spr); // guess: sine-wave bobbing of 8 sprites, 1 when done
-void sub_0805BB64(u8 sel, u8 count);
-void swap_inventory_items(void);
-void item_menu_draw_page_numbers(void); // "page / pages" on the item screen
-void init_fade_sprite_and_start_fade(void);
-void sub_0805B3E4(s32 x, s32 y, s32 n); // clears n tilemap entries at (x, y) of the BG map at 0x0600B000
-void sub_0805B470(struct Unk_03002C30 *sprite);
-s16 sub_0805BB10(
-    s16 step); // title menu blend pulse: sets BLDALPHA from gUnk_080AF6F0[step / 8], returns step + 1 (0 after 0xA0)
-void sub_0805BCC0(u8 sel); // title option rows: palette 0xA (selected row, current value), 9 (current value) or 8 on
-                           // the BG0 tiles masked by gUnk_080AF740
-void sub_0805BDC8(u8 a); // BG palette 10 = blend of the two 16-color halves at 0x0202FB00 by (a - 16) / 32 (0 below 16)
-void sub_0805BEA0(
-    u8 sel,
-    u8 f); // BG palettes 0-2 from 0x0202FA00; palette sel blended between its two halves by f / 32 (title cursor pulse)
-void sub_0805BBF8(u8 sel); // title menu: palette 7 on the selected row of three 11-tile BG0 rows, 6 on the others
-void sub_0805BC6C(void);   // sets palette 8 on three 16-tile BG0 rows (dead code, carved from sub_0805BBF8)
-void sub_0805C820(void);   // fades REG_BLDY up to 16, then game state 9 (carved from sub_0805C7E8)
-void sub_0805CA28(u32 a);
-void sub_0805D57C(u16 a);
-void attempt_save_and_transition(
-    void); // save screen state 7: up to 4 tries of save_dispatch(0), then state 8 (ok) or 12 (failed)
-s32 load_save_with_retries(
-    void); // title: stops the music, clears the name, tries save_dispatch(1) 4 times; nonzero while sound 4 plays
-s32 save_dispatch(s32 mode); // 0: save, 1: load (returns validate_save_data), 2: erase; all through gDecompressBuffer
-void load_save_data(struct SaveData *save);
-void serialize_save_data(struct SaveData *save);
-s32 validate_save_data(struct SaveData *save); // reads the EEPROM into save: 0 ok, 1 wrong signature, -1 corrupt
-s32 write_save_to_eeprom(
-    u16 *src, u32 force); // writes 0x1CC0 bytes to EEPROM: every block if (u8)force, else only blocks that differ
-void sub_0805E170(u16 a);
-void init_multiplayer_id(void);
-void sub_0805B9EC(u16 keys); // link: gNewKeys / gReleasedKeys from the other player's keys
-void sub_0805BA20(void);     // link: exchanges keys through gUnk_03005010 (player 0 sends gHeldKeys)
-u16 sub_0805BA68(s16 x1, s16 y1, s16 x2, s16 y2); // distance: Sqrt(dx * dx + dy * dy)
+// the BG0 tiles masked by gUnk_080AF740
 u32 Sqrt(u32 n);
 void ObjAffineSet(struct ObjAffineSrcData *src, void *dest, s32 count, s32 offset);
-void unpack_item_inventory_to_buffer(
-    void); // gItemInventory -> struct ItemListEntry list at 0x02040000, count in gUnk_03006F74->unk10
-void update_battle_medapart_icons(void);
-void render_battle_medapart_list(u32 mode);
-s32 calc_text_pixel_width(const u8 *s); // sum of gUnk_083B4C88 widths, up to 10 characters or the 0xFE terminator
-void sub_0805E1CC(const u8 *s); // draws 10 characters as 2-row BG1 tiles copied from a 26-per-row font map on the same
-                                // screen (guess: name entry)
-void item_menu_set_cursor_pos(
-    struct Unk_03002C30 *sprite); // list cursor sprite: unk2 = 0x54, unk4 = 0x1C + 16 * (gUnk_03006F74->unkC % 5)
+// screen (guess: name entry)
 
 struct ObjSortEntry;
 struct RotateSrc;
 
-void shop_build_sell_list(void);
 void sub_08064A74(void);
 void sub_08064A94(void);
 void sub_08064AB4(void);
 void sub_08064AD4(void);
-void tilemap_offset_tiles_and_palette(u32 tiles, u32 pal,
-                                      u32 block); // (u16, u8, u8): callers pass full ints; adds tiles to the tile
-                                                  // numbers of a 32x32 screen block, sets palette pal
+// numbers of a 32x32 screen block, sets palette pal
 void LZ77UnCompWram(const void *src, void *dst);
 // code_0805EE6C
 void sub_080600E0(void); // gUnk_03002C30[0].unk1A counts 0-63, unk6 = 0x100 + gUnk_080AF980[(count >> 3) & 7]
@@ -245,7 +189,6 @@ void sub_08061830(void);
 void town_map_dispatch(void); // gUnk_08483DA0[gGameSubState]()
 void advance_substate_on_handler_complete(void);
 void advance_substate_on_handler_complete_1c(void);
-void sub_0805EE6C(void);
 void sub_080612D8(void);
 void sub_0806098C(void);
 void sub_0805F860(void);
@@ -274,7 +217,6 @@ void sub_08061180(void);
 void sub_080616F8(void);
 void sub_08060C44(void);
 void sub_08060C60(void);
-void update_battle_sprite_priority_flags(void);
 void silence_and_clear_vram(void);
 void copy_bg2_tilemap_to_ewram(void);
 void shop_menu_dispatch(void); // gUnk_08483E10[gGameSubState](), BG3 scrolls diagonally
@@ -293,7 +235,6 @@ void sub_08061678(void);
 void sub_0805F8F0(void); // up to 4 tries of save_dispatch(2) (erase), then the next sub-state (ok) or 12 (failed)
 void sub_080603A4(void); // zeroes EEPROM block 0 (up to 4 tries), then game mode 3 state 2
 void load_medapart_sprite_animation(u8 id, u8 kind, u32 which);
-u32 sub_0805B7A0(void);
 void sub_080608EC(void);
 void sub_0806174C(void);
 void sub_08060FD4(void);
@@ -303,7 +244,6 @@ void sub_080609C0(void);
 void update_animated_tilemap(void);
 void update_scroll_animation_tiles(void);
 void init_scene_rendering_context(u32 a);
-void init_linking_mode(void);
 void compute_difference_div3(s32 *a, s32 *b, s32 *c, s32 *d);
 u8 u8_difference_divide(u8 a, u8 b, u8 n);
 void copy_block_64bytes(s32 dst[4][4], s32 src[4][4]);
@@ -440,5 +380,17 @@ u32 call_battle_handler_by_state_08071C64(void);
 
 #include "field/field_debug.h"
 #include "engine/bg_draw.h"
+
+#include "menu/item_list.h"
+#include "title/screen_helpers.h"
+
+#include "title/title_menu.h"
+#include "title/new_game_prompt.h"
+
+#include "menu/item_menu.h"
+#include "save/save_screen.h"
+
+#include "save/save_data.h"
+#include "menu/name_entry.h"
 
 #endif // GUARD_FUNCTIONS_H

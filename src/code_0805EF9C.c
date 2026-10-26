@@ -4,46 +4,6 @@ static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
 }
 
-void sub_0805EE6C(void) {
-    u32 r = is_sound_playing_with_lock(7);
-    if (r == 0) {
-        gUnk_03000440.unk84 = r;
-        gGameSubState++;
-    }
-}
-
-void sub_0805EE94(void) {
-    struct Unk_03000440 *s = &gUnk_03000440;
-    u8 *n = &s->unk84;
-
-    if (*n <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, *n * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, *n * 4, 0xFFFF);
-        (*n)++;
-    } else {
-        u32 zero;
-
-        REG_DISPCNT &= 0xFDFF;
-        zero = 0;
-        CpuFastSet(&zero, (void *)VRAM, 0x01006000);
-        switch (gUnk_03000584) {
-        case 0:
-            CpuSet(gUnk_03006F74->unk58, gUnk_03002B70.unk4, 8);
-            dispatch_by_index_0476e8(0);
-            break;
-        case 1:
-            CpuSet(gUnk_03006F74->unk58, gUnk_03000BE0[gUnk_030017EC].unkA, 7);
-            dispatch_by_index_0476e8(1);
-            break;
-        case 2:
-            CpuSet(gUnk_03006F74->unk58, gUnk_03000BE0[gUnk_030017EC].unkA, 7);
-            gGameState = 0x12;
-            gGameSubState = 10;
-            break;
-        }
-    }
-}
-
 void test_mode_dispatch(void) {
     gUnk_08483C6C[gGameSubState]();
     if (gFrameCounter & 1) {
