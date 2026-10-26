@@ -12,22 +12,7 @@ void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt,
                   u16 base); // guess: draws the last `digits` of value as 2-row tile digits (base + d * 2 / + 1)
 u32 sub_08042B80(u32 a);     // 1 for part types 2, 3, 6, 7; 0 for 0, 1, 4, 5
 // Robattle action step dispatchers run by the action script (code_08030CAC wrappers)
-s16 sub_0803D424(void);                     // current battle sequence entry (gUnk_083CDFE4[unkF9][unk100])
-void battle_advance_sequence_counter(void); // skips the current battle sequence command and its operands
-void load_battle_sequence_commands(void);
-void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt,
-                       u16 tile); // fills a rectangle of the BG map at bgcnt's screen base
-u32 sub_0803E79C(void);
-void soft_reset_to_title(void);
-void sub_0803F624(u8 *dst, u32 size, u8 val);
-void blend_obj_palettes_to_color_0803F684(u16 a, u32 b, u16 c);
-void blend_obj_palettes_to_color_0803F998(u16 a, u32 b, u16 c);
-void blend_obj_palettes_to_color_0803F788(u16 color, u32 amount,
-                                          u16 mask); // gPaletteBufferBg = gPaletteBackupBg blended toward color by
-                                                     // amount/32, for the 16-colour palettes in mask
-void palette_blend_to_color_0803F890(u16 color, u32 amount, u16 mask); // same for gPaletteBuffer / gPaletteBackup
-void clear_battle_sprite_slot(u8 a, u8 b);
-void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c);
+// amount/32, for the 16-colour palettes in mask
 u32 game_state_execute_handler_a(void);
 u32 find_medal_slot_by_id(u8 id);
 u32 medal_add_by_id(u8 id);
@@ -280,85 +265,26 @@ u32 map_cursor_move_and_check_event(void);
 void field_player_walk_input(void);
 void field_warp_to_area(void);
 void update_bg_scroll_offsets_b(void);
-void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base);
-void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base);
-void vram_fill_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 value);
-u32 message_portrait_anim_step(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 reverse);
-void text_window_init(u8 a, u8 b, u32 c);
-void sub_0803FB0C(void);
-u32 run_message(const void *msg);
-void sub_0803E894(void);
-void sub_0803EB30(void);
-void sub_0803EB5C(void);
-void sub_0803EC04(void);
-void sub_0803EC50(void);
-u32 sub_0803EC98(void);
-void sub_0803ECF0(void);
-void sub_0803ED10(void);
-void draw_battle_bg1_tilemap_row(void);
-void draw_battle_gauge_bar(void);
-void update_battle_gauge_display(void);
-void render_battle_text_label(void);
-void load_battle_anim_data_38(void);
-void draw_battle_ui_tiles_from_rom(void);
-void load_battle_script_entry_a(void);
-void sub_0803E8B8(void);
-void sub_0803E8EC(void);
-void sub_0803E934(void);
-void sub_0803E978(void);
-void sub_0803E9BC(void);
-void sub_0803EA18(void);
-void sub_0803EE10(void);
-void message_print_step(void); // run_message state 5, every frame: text control bytes 0xF7-0xFF, else one glyph
-void sub_0803FEA8(void);
-void sub_0803FEB8(void); // guess: message_cmd_portrait (0xFB anim set idx)
-void text_render_glyph_step(void);
-void sub_080402B4(void); // guess: draws a name / number buffer word (0xF9 command)
-void reset_text_tile_state(void);
-u8 update_text_compose_and_input(void);
-void sub_0804070C(void); // guess: text wait, skippable with A/B
-void sub_080407A4(void); // guess: text wait
-void sub_08040820(void);
-void decompress_indexed_asset(u32 set, u32 idx, void *dst, u32 pal, u32 toBuffer);
-void decompress_bg_tiles_to_vram_bg(void);
-void setup_bg0_display_layer(void);
-void fill_bg1_tilemap_column(void);
-u32 sub_0803ED28(void);
 void open_choice_menu(u8 a, u8 b, u8 c);
 u32 poll_choice_menu(void);
-void divide_by_10000(u8 *digits, u32 n); // guess: n as text "0x4C ddd 0x40 dd" (5 digits, leading zeros dropped)
-void divide_by_10000_b(u8 *dst, u32 n);  // guess: like divide_by_10000 without the 0x4C prefix
 s32 truncate_to_digit_count(s32 n, u8 k);
-void divide_by_100000_08041370(u8 *digits,
-                               u32 n); // guess: n as text, up to 5 digits; >= 100000 writes a fixed overflow string
 void divide_by_100000_08042838(u32 n, u32 x, u32 y, u32 digits, u32 bgcnt, u32 tile); // guess: draws n as tile digits
-void clear_sprite_table_mask(u8 first, u8 count);
-u32 find_next_free_sprite_slot(u8 first, u8 count); // first unused gUnk_03002C30 slot in [first, first + count)
 void fill_text_blank(u8 *buf, u8 n);
 void fill_tilemap_rect_08042698(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 entry);
-void memcpy_bytes_0803F63C(const void *src, void *dst, u32 n);
 void sub_08041C14(u8 sprite, u8 frame, u16 y); // sets gUnk_03002C30[sprite].unk2 from y and frame (guess: cursor bob)
 void sub_08041C5C(u8 sprite, u8 frame, u16 x); // guess: horizontal counterpart of sub_08041C14
 void memcpy_bytes_08041D04(const void *src, void *dst, u8 n);
-void memswap(void *a, void *b, u32 n);
-void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align,
-                                  u16 prio); // 0xFE-terminated, one sprite per character from slot; x / y / width in
-                                             // tiles; align 0 center, 1 left, 2 right
-void process_sprite_anim_commands(const u8 *cmds, u8 slot);
+// tiles; align 0 center, 1 left, 2 right
 void sub_08044094(void);
 void sub_0804765C(u32 a);
 void update_battle_field_frame(void);
 void sub_080487E4(void);
 void setup_blend_effect(u8 mode, u16 bldcnt, u8 type, u8 sa, u8 sb, u8 sy, u8 a, u8 b, u8 y);
 u32 blend_effect_update(void);
-void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot);
 void reset_bg_scroll(void); // zeroes the four BG scroll positions
 void set_blend_effect_mode(u8 mode, u16 targets, u16 speed);
 u32 update_blend_effect(void); // 1 once the effect set up by set_blend_effect_mode is done
-u32 sub_0803EED8(void);        // nonzero: waiting on the serial link (reads gUnk_03005010)
 u32 game_state_execute_handler_b(void);
-void divide_by_100000_b(u8 *buf, u32 value,
-                        u32 tile); // guess: value as text, digits + tile; >= 100000 writes a fixed overflow string
 void sub_08067A48(u8 slot);
 int sub_08067160(u8 *s); // string length, 0 when it is 1
 void sub_0806918C(void); // clears VRAM, the sprite table and the four BG scrolls
@@ -464,7 +390,6 @@ bool32 execute_scene_step(void);
 void get_entity_speed_value(void);
 
 s32 sub_08043C94(void); // random 0-100
-void render_text_sprites_08040EE4(u8 *text, u8 a, u32 x, u32 y, u8 b, u8 c, u8 d, u16 e, s32 f, s32 g);
 void sub_080421B4(u8 a, u8 b);
 void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i);
 
@@ -494,10 +419,7 @@ u32 calculate_direction_index(
     s32 ty); // direction from (x, y) to (tx, ty), stored in sprite unk25 (move_sprite_toward_target)
 struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x,
                                             s32 y); // returned in memory (hidden pointer in r0)
-void sub_0803E780(void);
-void set_sprite_hidden_flags(u8 first, u8 count);
 void sub_08043E48(void);
-void battle_sprite_rotate_angles(u32 dir, u32 delta);
 void sub_0804242C(u8 n); // sorts gUnk_02023000[0..n-1] by key, key2, largest first
                          // 0x11/0x12 (2), 0x13/0x14 (4)
 
@@ -715,7 +637,6 @@ void draw_number(u16 a, s32 b, u8 c, u8 d, u8 e, u8 f);
 void init_fade_screen_setup(void);
 void sub_080609C0(void);
 void update_animated_tilemap(void);
-void render_text_string_to_sprites(u8 *str, u8 slot, u32 x, u32 y, u8 a4, u8 a5, u8 a6, u16 a7);
 void update_scroll_animation_tiles(void);
 void init_scene_rendering_context(u32 a);
 void init_linking_mode(void);
@@ -910,5 +831,14 @@ void sub_08049CB0(u16 color, u32 amount);
 #include "battle/action_calc.h"
 
 #include "battle/battle_sequence.h"
+#include "link/link_robattle.h"
+
+#include "engine/tilemap.h"
+#include "engine/memory.h"
+
+#include "engine/palette_blend.h"
+#include "text/message.h"
+
+#include "engine/sprites.h"
 
 #endif // GUARD_FUNCTIONS_H

@@ -586,7 +586,7 @@
 * Text tile flush (`if (unk14 & 7) CpuSet(buf, VRAM + 0x280 + unk17 * 0x680 + col * 0x40, n)`): test the low
   bits through a bitfield view (`((struct TextColBits *)&gUnk_03000440)->col`, which makes gcc reload unk14),
   compute the column into a `u8` local with `/ 8` (not `>> 3`) and write the address as
-  `col * 0x40 + VRAM + 0x280 + unk17 * 0x680` (reset_text_tile_state, sub_0804070C ... in code_0803CDCC).
+  `col * 0x40 + VRAM + 0x280 + unk17 * 0x680` (reset_text_tile_state, sub_0804070C ... in text/message).
 * Where the original reads a field twice in a row or re-reads a byte just stored, only a volatile read
   reproduces it: `*(vu16 *)&gUnk_03000440.unkC`.
 * A constant like 0xFFFF8000 built from `x + 0x8000` with an `s16` intermediate: put the sum in an
