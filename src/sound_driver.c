@@ -1084,7 +1084,31 @@ void audio_unlink_channel_node(struct SoundTrack *track)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_driver", init_all_sound_channels);
+void init_all_sound_channels(void)
+{
+    s32 i;
+    struct SoundTrack *track;
+    for (i = 0, track = gUnk_03007014->tracks; i < 13; i++, track++)
+    {
+        const struct SoundTrackConfig *cfg = &gSoundTrackConfigs[i];
+        register void *zero asm("r2") = NULL;
+        u8 *p = &track->unk50;
+        p[1] = i;
+        track->unkC = cfg->unk0;
+        track->unk10 = cfg->unk4;
+        p[0x14] = cfg->unk8;
+        track->unk50 |= 0x5F;
+        track->unk4 = zero;
+        track->unk0 = zero;
+        if (cfg->unk9 != 0xFF)
+        {
+            register struct Unk_03007014 **wp asm("r2") = &gUnk_03007014;
+            track->unk8 = (*wp)->unk5EC[cfg->unk9];
+            clear_sound_channel_wave_data(track);
+        }
+        init_sound_channel(track, NULL);
+    }
+}
 
 void sub_08074900(struct SoundSongHeader **val)
 {

@@ -794,4 +794,102 @@ void sound_channel_advance_sequence(struct SoundTrack *track)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/sound_seq", sound_engine_update_all_channels);
+static inline u8 *track_ptr(struct SoundTrack *track)
+{
+    return track->unk14;
+}
+
+static inline u8 track_unk63(struct SoundTrack *track)
+{
+    return track->unk63;
+}
+
+void sound_engine_update_all_channels(void)
+{
+    struct SoundTrack *track = gUnk_03007014->unk5E4;
+    struct SoundTrack *next;
+    struct SoundTrack *t;
+
+    if (track != NULL)
+    {
+        do
+        {
+            next = track->unk4;
+            if (gUnk_03007014->unk72C & 2)
+            {
+                switch (track->unk51)
+                {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 8:
+                case 9:
+                case 12:
+                    break;
+                default:
+                    sound_channel_advance_sequence(track);
+                    break;
+                }
+            }
+            else
+            {
+                sound_channel_advance_sequence(track);
+            }
+            track = next;
+        } while (track != gUnk_03007014->unk5E4);
+    }
+
+    { register struct Unk_03007014 **wp asm("r0") = &gUnk_03007014; track = (*wp)->tracks; }
+    t = &track[4];
+    if (t->unk14 != NULL)
+        sound_channel1_update(t);
+    else if (sound_is_paused() == 0)
+        sound_channel1_update(&track[0]);
+
+    t = &track[5];
+    if (t->unk14 != NULL)
+        sound_channel_process_tone(t);
+    else if (sound_is_paused() == 0)
+        sound_channel_process_tone(&track[1]);
+
+    t = &track[6];
+    if (t->unk14 != NULL)
+        update_wave_channel(t);
+    else if (sound_is_paused() == 0)
+        update_wave_channel(&track[2]);
+
+    t = &track[7];
+    if (t->unk14 != NULL)
+        sound_update_channel_3(t);
+    else if (sound_is_paused() == 0)
+    {
+        t = &track[12];
+        if (t->unk14 != NULL && track_ptr(&track[9]) != NULL && track_unk63(&track[9]) == 2
+            && track_ptr(&track[11]) != NULL)
+            sound_update_channel_3(t);
+        else
+            sound_update_channel_3(&track[3]);
+    }
+
+    t = &track[10];
+    if (t->unk14 != NULL)
+        sound_channel_6_update_note(t);
+    else if (sound_is_paused() == 0)
+        sound_channel_6_update_note(&track[8]);
+
+    t = &track[11];
+    if (t->unk14 != NULL)
+        sound_channel_7_update_note(t);
+    else if (sound_is_paused() == 0)
+        sound_channel_7_update_note(&track[9]);
+
+    if (sound_is_paused() == 0)
+    {
+        sub_080740D4(&track[0]);
+        sub_080740D4(&track[1]);
+        sub_080740D4(&track[2]);
+    }
+    sound_update_master_volume();
+}
+
