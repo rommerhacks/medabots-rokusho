@@ -8,11 +8,6 @@
 // amount/32, for the 16-colour palettes in mask
 // h, u8 i, u8 j): callers were compiled without a prototype
 // h, u8 i, u8 j, u8 base): callers were compiled without a prototype
-void sub_080496C8(u8 *dst, u32 size);
-u32 run_blend_fade_transition(u16 a);
-void sub_0804A1C4(void);
-void sub_0804B70C(void);
-void map_script_read_warp(void);
 s32 sub_0804D8A8(u16 id);
 void sub_0804D934(struct MapObject *obj);
 void spawn_script_sprite(u8 a, u8 b, u8 c, u8 d);
@@ -22,13 +17,10 @@ void sub_08053234(u16 id);
 u32 sub_08053288(u16 id);
 struct MapObject *battle_find_entity_by_id(u16 id);
 void set_battle_state_cancel_flag(void);
-void setup_palette_fade_to_color(u16 color, float a, float b, float c);
 void setup_battle_sprite_terrain(u8 slot, u8 a, u8 b);
 void sub_0805311C(u16 id);
 void sub_08053154(u16 id);
 void sub_080531EC(u16 id, u8 val);
-u8 read_map_script_byte(void);
-void read_map_script_bytes(u8 n);
 void sub_0804DB34(void);
 void sub_0804DB84(u8 i, u8 v);
 u32 sub_0804DBA4(u8 i);
@@ -44,10 +36,8 @@ void sub_08050780(u8 i, u32 val);
 void sub_080507A0(u32 idx, u32 val);
 void sub_080507C0(u8 i, u8 val);
 void sub_08052BA0(u8 on);
-u32 sub_0804B6EC(void);
 u32 sub_080507E0(u8 slot);
 u32 update_battle_sprite_movement(u8 slot, u8 a);
-void load_room_graphics(void);
 void init_battle_field_setup(void);
 void update_bg_scroll_offsets_a(void);
 u32 sub_08050868(void);
@@ -109,7 +99,6 @@ void sub_08052AF8(s16 dy);
 u32 find_npc_event_match(void);
 u32 find_map_event_by_coords(u32 x, u32 y);
 void save_script_sprites(void);
-void setup_palette_fade_to_color_with_obj(u16 color, float a, float b, float c);
 void LZ77UnCompVram(const void *src, void *dst);
 
 // code_08044CDC
@@ -120,17 +109,11 @@ void matrix_set_identity(void);
 void ring_points_place_on_hexagon(u32 a);
 
 // code_080490C4
-void sub_080493D4(u8 idx, u8 val);
-void advance_sprite_animation_frame(u8 idx);
-u8 field_random(u8 n); // returns 0..n-1
-void memcpy_u8(const void *src, void *dst, u32 n);
 
 u32 scene_state_dispatch(u32 a, u32 b);
 void sub_08050C74(void);
 void sub_080500D8(u8 slot, u8 a, u8 b);
 u32 sub_0804F13C(u8 a);
-void sub_080492CC(void);
-void calculate_oam_affine_matrix(u8 i);
 u8 sub_08050264(u8 a);
 u8 sub_0805026C(u8 a);
 void restore_script_sprites(void);
@@ -150,8 +133,6 @@ void field_player_walk_input(void);
 void field_warp_to_area(void);
 void update_bg_scroll_offsets_b(void);
 // tiles; align 0 center, 1 left, 2 right
-void setup_blend_effect(u8 mode, u16 bldcnt, u8 type, u8 sa, u8 sb, u8 sy, u8 a, u8 b, u8 y);
-u32 blend_effect_update(void);
 void sub_08067A48(u8 slot);
 int sub_08067160(u8 *s); // string length, 0 when it is 1
 void sub_0806918C(void); // clears VRAM, the sprite table and the four BG scrolls
@@ -349,9 +330,7 @@ void tilemap_offset_tiles_and_palette(u32 tiles, u32 pal,
                                       u32 block); // (u16, u8, u8): callers pass full ints; adds tiles to the tile
                                                   // numbers of a 32x32 screen block, sets palette pal
 void LZ77UnCompWram(const void *src, void *dst);
-void clear_entity_state(u8 slot);
 void init_battle_medaforce_sprite(void);
-void update_battle_entity_status_chars(void);
 // code_0805EE6C
 void sub_080600E0(void); // gUnk_03002C30[0].unk1A counts 0-63, unk6 = 0x100 + gUnk_080AF980[(count >> 3) & 7]
 void sub_08062A74(u16 id, u8 second); // copies Medapart name pointer id (part * 4 + kind) of gUnk_083BB9CC into
@@ -448,37 +427,18 @@ void sub_0807068C(void);
 void sub_080706AC(void);
 void load_bg_screen_c(void);
 u32 call_battle_handler_by_state_08071C64(void);
-void apply_blend_coefficients(void);
-void sub_080496DC(u8 *dst, u32 n, u8 val);
-s32 count_byte_differences(const u8 *a, const u8 *b, s32 n);
-s32 sum_bytes_0804971C(const u8 *p, s32 n);
-void quicksort_u8_array(u8 *arr, s16 left, s16 right);
-void sub_08049F84(u16 *arr, s16 left, s16 right);
-void sub_0804A0A4(u16 *arr, s16 left, s16 right);
-void sub_08049E74(u16 a, u32 b, u16 c);
-void sub_08049E88(u16 a, u32 b, u16 c);
-void sub_08049CC0(void);
 void map_script_update_command(void);
-void map_script_run_command(void);
 void update_npc_sprite_animations(void);
-void sub_0804B1FC(void);
 void sub_08058110(); // defined as (void); sub_0804AF4C passes an argument
 s32 check_room_exit_at_position(void);
-u32 sub_0804B694(void);
-void clear_vram_bg2_tiles(void);
 void check_and_update_battlefield_palette(void);
-void build_bg_tile_entry(u16 *dst, u16 id, u16 base, u16 y, u16 x, u16 yoff, u16 xoff);
 u32 sub_08052990(u32 unused, u8 which);
 u32 sub_08053194(u16 id);
 void draw_number_tall(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg);
 void update_cursor_sprite_position(void);
 u32 check_vehicle_usability(s32 idx);
 void load_battle_sprite_from_index(u32 value, s32 bits, s32 x, s32 y);
-void copy_tilemap_rect_with_offset(u16 *src, u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 unused6, s32 unused7, s32 add,
-                                   s32 mode);
 void init_vehicle_menu_sprite(s32 slide);
-void copy_tilemap_region(u16 *src, u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 add, s32 pal, s32 mode);
-void fill_tilemap_rect_0804916C(u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 tile, s32 pal, s32 mode);
 void render_npc_tilemap_row(s32 row);
 void handle_cursor_up_down_input(s32 count);
 void sub_08057EBC(void);
@@ -517,7 +477,6 @@ u32 animation_interpolation_step(struct AnimInterp *p);
 void update_3d_entity_projections(void);
 void sub_0805689C(struct AnimInterp *p, s32 *a);
 void update_battle_sprite_status_effects(void);
-void sub_08049CB0(u16 color, u32 amount);
 
 #include "audio/sound_seq.h"
 #include "audio/sound_driver.h"
@@ -614,5 +573,10 @@ void sub_08049CB0(u16 color, u32 amount);
 
 #include "field/area_graphics.h"
 #include "field/field_utils.h"
+
+#include "field/field_effects.h"
+#include "field/field_update.h"
+
+#include "field/map_script.h"
 
 #endif // GUARD_FUNCTIONS_H
