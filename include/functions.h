@@ -12,42 +12,6 @@ void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt,
                   u16 base); // guess: draws the last `digits` of value as 2-row tile digits (base + d * 2 / + 1)
 u32 sub_08042B80(u32 a);     // 1 for part types 2, 3, 6, 7; 0 for 0, 1, 4, 5
 // Robattle action step dispatchers run by the action script (code_08030CAC wrappers)
-void dispatch_battle_action_step(void);
-void sub_080209B0(void);
-void sub_08020A68(void);
-void sub_08020CFC(void);
-void sub_080218BC(void);
-void sub_08021E04(void);
-void sub_08022154(void);
-void sub_080223BC(void);
-void sub_080227D8(void);
-void sub_08022CA8(void);
-void sub_08022FF0(void);
-void sub_0802342C(void);
-void sub_08023730(void);
-void sub_08023AC8(void);
-void sub_08023C90(void);
-void sub_08024090(void);
-void sub_08024998(void);
-void sub_08024E04(void);
-void sub_0802518C(void);
-void sub_08025AF8(void);
-void sub_08025F2C(void);
-void sub_08025FA0(void);
-void sub_08026108(void);
-void sub_08026884(void);
-void sub_08026CF4(void);
-void sub_08026ED0(void);
-void sub_08026FD0(void);
-void sub_0802793C(void);
-void sub_08027F5C(void);
-void sub_08028248(void);
-void sub_08028404(void);
-void sub_08028C40(void);
-void sub_080294B4(void);
-void sub_08029840(void);
-void sub_08029E0C(void);
-void sub_0802A0E8(void);
 void battle_script_load_operands(void); // copies the current action script command's operands to gUnk_03001800.unkAC
 void sub_08035478(u32 rec);
 s32 battle_script_read_byte(
@@ -58,23 +22,6 @@ void sub_080350E0(u32 rec);
 u32 sub_08035590(u32 rec);
 u32 calc_bot_matching_part_power(u32 rec);
 void accumulate_battle_speed_value(u32 rec);
-void sub_0802A6AC(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802AAD0(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802ACCC(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802B000(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802B7E8(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802BD6C(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802C2AC(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802C644(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802CBE8(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802D688(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802DCB4(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void battle_dispatch_phase_handler_0802E424(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802EBC0(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802F030(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802F628(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802F990(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802FE50(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
 u32 get_random_battle_weight_entry(u32 idx);
 void sub_08036270(void);
 void sub_0803713C(void);
@@ -716,7 +663,6 @@ void sub_08035BFC(u32 rec, u32 part);
 u32 battle_select_random_target(u32 base, u32 rec);
 void battle_sequence_update(
     void); // per frame during an attack animation: runs sequence commands until one yields (gUnk_03002C30[0].unk2A)
-void sub_0802645C(void);
 void sub_08035754(s16 *amount, s32 sub); // *amount -= sub, not below 0
 void sub_08035B9C(u32 rec);
 u32 sub_08037798(u32 base);                                // record on side base, or 0xFF
@@ -1106,5 +1052,13 @@ void sub_08049CB0(u16 color, u32 amount);
 
 #include "battle/battle_sprites.h"
 #include "battle/action_steps.h"
+
+#include "battle/defend_heal_skills.h"
+#include "battle/support_skills.h"
+
+#include "battle/interrupt_skills.h"
+#include "battle/medaforce_effects.h"
+
+#include "battle/effect_steps.h"
 
 #endif // GUARD_FUNCTIONS_H

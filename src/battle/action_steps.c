@@ -1,7 +1,9 @@
 // Battle action step handlers. gUnk_083AD400 is one long table of step lists; each runner (sub_0801C0BC for
 // messages, dispatch_battle_action_substate, sub_0801C154 ...) calls entry [step] of its own sub-table and
-// the handlers advance the step counter. The lists continue into the next modules (up to 0x0803080C).
-// Called from the battle action state code (state 8).
+// the handlers advance the step counter. From sub_0801E2D8 on, the runners are the effect sequences of the
+// action script commands (gUnk_083AF000) in opcode order: 0x1E-0x22 are the normal attack (every Strike /
+// Shoot ability), 0x23 / 0x24 the variants of abilities 49 / 48. The list continues in defend_heal_skills.c.
+// Called from the battle action state code (state 8) and the action script commands (state 9).
 
 #include "global.h"
 
@@ -2120,65 +2122,4 @@ void sub_080207CC(void) {
         gUnk_03001800.unkAA = 2;
         gUnk_03001800.unkAB = 1;
     }
-}
-
-void sub_0802081C(void) {
-    gUnk_03001800.unkB5 = 0;
-    gUnk_083AD8B8[gUnk_03001800.unkAA]();
-}
-
-void sub_08020844(void) {
-    u32 r;
-
-    if (!sub_08037230(gUnk_03001800.unk88, gUnk_03001800.unk8B)) {
-        calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
-        apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
-        r = decrement_battle_timer_and_check_zero();
-        if (r) {
-            gUnk_03001800.unkA6 = 0x1A;
-            gUnk_03001800.unkAA = 2;
-            gUnk_03001800.unkAB = 1;
-        } else {
-            calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
-            sub_08036270();
-            gUnk_03001800.unkAA++;
-            gUnk_03001800.unkAB = r;
-        }
-    } else {
-        gUnk_03001800.unkA6 = 0x26;
-        gUnk_03001800.unkAA = 2;
-        gUnk_03001800.unkAB = 1;
-    }
-}
-
-void sub_080208C0(void) {
-    gUnk_03001800.unkB5 = 0;
-    gUnk_083AD8D8[gUnk_03001800.unkAA]();
-}
-
-void sub_080208E8(void) {
-    clear_battle_sprite_slot(0, 0x80);
-    gUnk_03001800.unkD0 = gUnk_03001800.unk8B;
-    battle_calc_damage_split(gUnk_03001800.unk88, gUnk_03001800.unkD0, gUnk_03001800.unkEC);
-    gUnk_03001800.unkAA++;
-}
-
-void sub_08020928(void) {
-    u32 part;
-    struct Unk_03001800 *s;
-
-    if (gUnk_03000590[gUnk_03001800.unk87].parts[(s = &gUnk_03001800)->unkA7].data[7] && s->unkCA &&
-        (part = find_most_damaged_part(s->unk88))) {
-        part--;
-        s->unkD0 = part;
-        s->unk8B = part;
-        battle_calc_damage_split(s->unk88, s->unkD0, s->unkCA);
-        s->unkAA = 0xE;
-    } else {
-        s->unkAA++;
-    }
-}
-
-void sub_080209A0(void) {
-    gUnk_03001800.unkAA = 2;
 }

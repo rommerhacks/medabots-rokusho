@@ -10,8 +10,6 @@ void sub_0801FDEC(void);
 void sub_08020050(void);
 void sub_0802057C(void);
 void sub_080207A4(void);
-void sub_0802081C(void);
-void sub_080208C0(void);
 void sub_0801C4FC(void);
 void battle_dispatch_phase_handler_0801D2F0(void);
 void sub_0801D380(void);
