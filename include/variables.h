@@ -1364,5 +1364,7 @@ extern struct SpriteFrame *const *const gUnk_083AC108[];
 extern const struct MapNpcRecord *const gUnk_084837A0[];
 extern u8 gUnk_02023000[]; // shop cart: quantity per sell-list entry; [0x78] = first visible entry
 extern const u8 gUnk_08483E50[]; // 4 Medapart ids per shop (gUnk_03002420 * 4 + i); 0xFF ends
+extern u16 gUnk_03006432; // guess: battle field grid origin x (init_battle_field_sprites)
+extern u16 gUnk_03006434; // guess: battle field grid origin y
 
 #endif // GUARD_VARIABLES_H

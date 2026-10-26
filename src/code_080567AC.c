@@ -1644,7 +1644,66 @@ void load_battle_sprite_tile(const u8 *digits, s32 count, s32 x, s32 y)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080567AC", init_battle_field_sprites);
+// battle field 4x2 grid: sprites 49-56 with shadows 91-98, then sprite 57 / shadow 99
+static inline void init_field_sprite(u8 row, u8 col)
+{
+    u8 slot = 49 + row * 4 + col;
+    u8 j = slot + 42;
+
+    gUnk_03002C30[slot].unk30 = gUnk_030057A0.unk20;
+    gUnk_03002C30[slot].unkC_8 = gUnk_03006432 + (col * 32 - 48);
+    gUnk_03002C30[slot].unk10_8 = gUnk_03006434 + (16 - row * 32);
+    gUnk_03002C30[slot].unk0 = 0xC804;
+    gUnk_03002C30[slot].unk2E = 1;
+    gUnk_03002C30[j].unk0 = 0xCC0C;
+    gUnk_03002C30[slot].unk2 = gUnk_03002C30[slot].unkC_8 - (u16)gBg1Scroll.x;
+    gUnk_03002C30[slot].unk4 = gUnk_03002C30[slot].unk10_8 - (u16)gBg1Scroll.y;
+    gUnk_03002C30[j].unk2 = gUnk_03002C30[slot].unk2;
+    gUnk_03002C30[j].unk4 = gUnk_03002C30[slot].unk4 + (s16)(gUnk_03002C30[slot].unk2C - 5);
+    gUnk_03002C30[slot].unk6 = row * 48 + col * 15;
+    sub_080493D4(slot, 4 + row * 16 + col * 5);
+}
+
+void init_battle_field_sprites(void)
+{
+    s16 zero; // FAKEMATCH: only set inside the first if, read after it (uninitialised on the other path)
+
+    decompress_terrain_tiles_to_vram(gUnk_030057A0.unk20);
+    dma_load_obj_palettes_08048730(gUnk_030057A0.unk20);
+    init_field_sprite(0, 0);
+    init_field_sprite(0, 1);
+    init_field_sprite(0, 2);
+    init_field_sprite(0, 3);
+    init_field_sprite(1, 0);
+    init_field_sprite(1, 1);
+    init_field_sprite(1, 2);
+    init_field_sprite(1, 3);
+    {
+        u8 slot = 57;
+        u8 j = slot + 42;
+
+        clear_battle_sprite_entry(slot);
+        clear_battle_sprite_entry(j);
+        gUnk_03002C30[slot].unk30 = gUnk_030057A0.unk20;
+        if (gUnk_083D2C3D[gUnk_030057A0.unk20] == 3)
+        {
+            init_battle_sprite_entry_08048818(slot, 0xC804, calc_medapart_table_index(0), sub_08050264(0), 1);
+            gUnk_03002C30[slot].unk2B = sub_08050264(0);
+            gUnk_03002C30[slot].unkC_8 = gUnk_03006432 - 0x30;
+            gUnk_03002C30[slot].unk10_8 = gUnk_03006434 + 0x30;
+            gUnk_030055A0[slot].unk0 = 0xFFFF;
+            gUnk_03002C30[slot].unk2C = zero = 0;
+            sub_080493D4(slot, 0x60);
+        }
+        gUnk_03002C30[j].unk0 = zero;
+        if (gUnk_083D2B8D[gUnk_030057A0.unk20] != 0)
+        {
+            gUnk_03002C30[j].unk0 = 0xCC0C;
+            gUnk_03002C30[j].unk2 = gUnk_03002C30[slot].unk2;
+            gUnk_03002C30[j].unk4 = gUnk_03002C30[slot].unk4 + (s16)(gUnk_03002C30[slot].unk2C - 5);
+        }
+    }
+}
 
 void sub_08059D04(void)
 {
