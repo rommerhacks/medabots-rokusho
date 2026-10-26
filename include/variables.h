@@ -1092,6 +1092,8 @@ extern const struct FuncTable7 gUnk_080AFA20; // sub-state handlers by gGameSubS
 extern const struct FuncTable7 gUnk_080AFEA8; // sub-state handlers by gGameSubState (dispatch_scene_substate_and_scroll)
 struct TextBufTable4 { u8 *p[4]; };
 extern const struct ObjAffineDstData gUnk_080ABBEC; // identity affine matrix (sub_08045C30)
+extern const struct ObjAffineDstData gUnk_080ABBF4; // affine matrix template (render_sprite_node_recursive)
+extern const u8 gUnk_08081320[]; // mirrored sprite node index per node (render_sprite_node_recursive)
 extern const struct TextBufTable4 gUnk_080ABBFC; // the 4 text buffers 0x030004DE + 0x14 * n (copy_string_to_text_buffer)
 extern const u8 gUnk_080AFE96[]; // first tilemap column by gUnk_03006F74->unk5 (scroll_tilemap_column)
 struct U16PtrArray8 { const u16 *v[8]; };

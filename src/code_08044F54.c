@@ -715,7 +715,150 @@ u8 sub_080460B0(struct Unk_03002414 *work, u16 *affine, u32 side, struct OamData
     return gUnk_03002414->unk1094;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", render_sprite_node_recursive);
+void render_sprite_node_recursive(struct Unk_08047414 *obj, struct SpriteTileRef *list, u8 node, s32 y, s32 x, s16 depth, s16 angle, u8 flip)
+{
+    s32 oy = y;
+    s32 ox = x;
+    s16 rot;
+    s16 z;
+    struct SpriteNodeDesc *desc = obj->nodes[node];
+    struct SpriteNodeOam *oam = &obj->oams[node];
+    struct ObjAffineDstData d = gUnk_080ABBF4;
+    struct ObjAffineSrcData src = {0x100, 0x100, -angle};
+    s32 offx, offy;
+    s32 dx, dy;
+    u32 vis;
+    u32 found;
+    s32 i;
+    struct OamFull *e;
+
+    if (flip)
+    {
+        u8 m = gUnk_08081320[node];
+        desc = obj->nodes[m];
+        rot = obj->oams[m].unkC;
+        offx = obj->oams[m].unk8;
+        offy = obj->oams[m].unkA;
+    }
+    else
+    {
+        rot = oam->unkC;
+        offx = oam->unk8;
+        offy = oam->unkA;
+    }
+    z = depth + desc->unkE;
+    if (z < 0)
+        z = 0;
+    dx = desc->unkC + (offx >> 8);
+    dy = desc->unkD + (offy >> 8);
+    ObjAffineSet(&src, &d, 1, 2);
+    if (flip)
+        src.rotation = -src.rotation;
+    y += d.pb * dy + d.pd * dx;
+    if (flip)
+        x -= d.pa * dy + d.pc * dx;
+    else
+        x += d.pa * dy + d.pc * dx;
+
+    if (gUnk_03000440.unk96)
+        vis = 0;
+    else
+        vis = 1;
+    if (list != NULL)
+    {
+        s32 key = node;
+        found = 0;
+        for (i = 0; list[i].node != 0; i++)
+        {
+            struct SpriteTileRef v = list[i];
+
+            if ((u8)key == v.node)
+            {
+                if (gUnk_03000440.unk96)
+                    vis = 0;
+                else
+                    vis = v.affine;
+                found = 1;
+                break;
+            }
+        }
+    }
+    else
+        found = 1;
+    if (found)
+    {
+        if (vis)
+        {
+            if (flip)
+                src.rotation += rot;
+            else
+                src.rotation -= rot;
+            ObjAffineSet(&src, &d, 1, 2);
+            oam->oam.matrixNum = ((struct Unk_03002414 *)obj->unk0)->unk1095 & 7;
+            oam->oam.hFlip = (u8)(((struct Unk_03002414 *)obj->unk0)->unk1095 & 8) >> 3;
+            oam->oam.vFlip = (u8)(((struct Unk_03002414 *)obj->unk0)->unk1095 & 0x10) >> 4;
+            dx = ((struct Unk_03002414 *)obj->unk0)->unk1095 * 4;
+            if (flip)
+            {
+                d.pa = -d.pa;
+                d.pb = -d.pb;
+            }
+            ((struct Unk_03002414 *)obj->unk0)->unkF8C[dx] = d.pa;
+            dx++;
+            ((struct Unk_03002414 *)obj->unk0)->unkF8C[dx] = d.pb;
+            dx++;
+            ((struct Unk_03002414 *)obj->unk0)->unkF8C[dx] = d.pc;
+            dx++;
+            ((struct Unk_03002414 *)obj->unk0)->unkF8C[dx] = d.pd;
+            if (++((struct Unk_03002414 *)obj->unk0)->unk1095 > 0x1F)
+                ((struct Unk_03002414 *)obj->unk0)->unk1095 = 0;
+        }
+        if (vis)
+        {
+            offx = desc->width >> 1;
+            offy = desc->height >> 1;
+            dx = desc->unk4 - offx;
+            dy = desc->unk8 - offy;
+
+            offx = y - (d.pb * dy + d.pd * dx + (offx << 8));
+            offy = x - (d.pa * dy + d.pc * dx + (offy << 8));
+        }
+        else
+        {
+            offx = y - (desc->unk4 << 8);
+            if (flip)
+                offy = x - ((desc->height - desc->unk8) << 8);
+            else
+                offy = x - (desc->unk8 << 8);
+        }
+        while ((s8)gUnk_03002414->unk1094 < 0)
+            ;
+        e = sorted_array_insert_shift((struct OamFull *)gUnk_03002414->unkB84, gUnk_03002414->unk1094++, 1, z);
+        *e = oam->oam;
+        e->affineParam = z;
+        if (!vis && flip)
+            e->hFlip = 1;
+        e->y = offx >> 8;
+        e->x = (offy >> 8) & 0x3FF;
+        if (depth > 0x17B)
+            e->priority = 3;
+        else if (depth > 0x117)
+            e->priority = 2;
+        else if (depth > 0xB3)
+            e->priority = 1;
+        else
+            e->priority = 0;
+    }
+    if (obj->nodes[node]->child)
+    {
+        if (!vis)
+            render_sprite_node_recursive(obj, list, obj->nodes[node]->child, y, x, z, 0, flip);
+        else
+            render_sprite_node_recursive(obj, list, obj->nodes[node]->child, y, x, z, (s16)rot + angle, flip);
+    }
+    if (obj->nodes[node]->sibling)
+        render_sprite_node_recursive(obj, list, obj->nodes[node]->sibling, oy, ox, depth, angle, flip);
+}
 
 void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile, u32 pal, u32 e)
 {
