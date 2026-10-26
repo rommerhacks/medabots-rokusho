@@ -67,17 +67,6 @@ void LZ77UnCompWram(const void *src, void *dst);
 // = gUnk_080AFA10[gUnk_03002420]; one caller passes only dst, src
 // gDecompressBuffer to VRAM 0x06004020
 // up sprite 0 at (0xB8, 0x38)
-void sprite_cycle_anim_start(
-    u8 sprite, u16 frame,
-    u8 arg2); // sprite (0x16+): unk23 = arg2, unk30 = unk6 = frame; sets bit (sprite - 0x16) in byte 0x03007010
-void sprite_cycle_anim_stop(u8 sprite, u16 frame); // clears that bit, unk23 = 0, unk6 = frame
-void sub_08071C40(u8 state, u8 sprite,
-                  u16 arg2); // gUnk_03002C30[sprite]: unk20 = state, unk21 = 0, unk34 = arg2, unk1A = 0
-void sub_08071614(void);
-void sub_0807168C(void);
-void sub_0807068C(void);
-void sub_080706AC(void);
-u32 call_battle_handler_by_state_08071C64(void);
 
 #include "audio/sound_seq.h"
 #include "audio/sound_driver.h"
@@ -240,5 +229,6 @@ u32 call_battle_handler_by_state_08071C64(void);
 
 #include "title/boot_logos.h"
 #include "title/intro.h"
+#include "cutscene/medabots_weekly.h"
 
 #endif // GUARD_FUNCTIONS_H

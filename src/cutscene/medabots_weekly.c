@@ -1,3 +1,9 @@
+// Mode-3 state 6: Medabots Weekly, the in-game TV show. medabots_weekly_update runs the scrolling / animated BG
+// helpers at the top of the file, then gMedabotsWeeklySubStates[gGameSubState] (19 entries, init first). The
+// sub-states load the show's graphics, run scripted sprite moves (gUnk_08486118 sprite effects, driven by
+// sub_08071614) and messages, and end with the gUnk_08486138 closing sequence. Everything here is reached only from
+// these tables; it talks to the mode-3 scene transitions (engine/scene_transition.c), the message window and the
+// sound engine. The "battle" names on some sub-states are older guesses and predate this module.
 #include "global.h"
 
 void sub_0807068C(void) {

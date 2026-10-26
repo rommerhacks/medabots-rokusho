@@ -58,11 +58,8 @@ Run `make progress` to see the numbers.
 | Shop | `src/shop/` | the Medaparts shop: Buy / Sell menu, the buy / sell list and cart, the return from the Medaparts screen, the Medal shop (guess) |
 | Debug | `src/debug/` | the developer debug menu and its entries |
 | Minigames | `src/minigame/` | the race and bomb minigames (mode 3 states 4-5) |
-| Cutscenes | `src/cutscene/` | the scrolling-text scene (mode-2 state 22), the event picture with a message (mode-3 state 3) |
+| Cutscenes | `src/cutscene/` | the scrolling-text scene (mode-2 state 22), the event picture with a message (mode-3 state 3), Medabots Weekly (mode-3 state 6) |
 | Audio | `src/audio/` | the game's own sound engine (sequencer and driver) |
-
-The bomb game, the intro and Medabots Weekly follow as the remaining `code_*` regions are
-split.
 
 ## See also
 

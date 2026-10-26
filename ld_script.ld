@@ -229,8 +229,8 @@ SECTIONS {
         build/src/title/boot_logos.o(.rodata);
         build/src/title/intro.o(.text);
         build/src/title/intro.o(.rodata);
-        build/src/code_0807068C.o(.text);
-        build/src/code_0807068C.o(.rodata);
+        build/src/cutscene/medabots_weekly.o(.text);
+        build/src/cutscene/medabots_weekly.o(.rodata);
         build/src/audio/sound_seq.o(.text);
         build/src/audio/sound_seq.o(.rodata);
         build/src/audio/sound_driver.o(.text);
