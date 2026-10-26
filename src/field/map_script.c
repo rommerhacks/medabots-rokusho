@@ -1,9 +1,15 @@
 // The map script interpreter: map_script_run_command reads one opcode and calls its handler from
 // gMapScriptCommands (0x083D20AC, 137 entries, all in this file, ROM order = opcode order), then the
-// script byte readers read_map_script_byte / read_map_script_bytes. Commands drive the field (warps,
+// script byte readers read_map_script_byte / read_map_script_bytes and the map object / script variable
+// helpers (unkCA4) the commands use. Commands drive the field (warps,
 // NPCs, flags, messages, sounds, battles) through field/script_helpers, text/message and the engine.
 
 #include "global.h"
+
+static s32 sub_0804D8A8(u16 id);
+static void sub_0804D934(struct MapObject *obj);
+static void sub_0804D9AC(u8 slot);
+static void sub_0804DB34(void);
 
 static void sub_0804B70C(void);
 static void map_script_read_warp(void);
@@ -1053,4 +1059,75 @@ void read_map_script_bytes(u8 n) {
     s32 i;
     for (i = 0; i < n; i++)
         gUnk_030057E0.unkC94[i] = read_map_script_byte();
+}
+
+static s32 sub_0804D8A8(u16 id) {
+    s32 i;
+    for (i = 0; i < 64; i++)
+        if ((gUnk_030057E0.unk5DC[i].unk2 & 0xFFF) == id)
+            return i;
+    if (i == 64)
+        return -1;
+}
+
+struct MapObject *battle_find_entity_by_id(u16 id) {
+    s32 i;
+    for (i = 0; i < 64; i++)
+        if ((gUnk_030057E0.unk5DC[i].unk2 & 0xFFF) == id)
+            return &gUnk_030057E0.unk5DC[i];
+    if (i == 64)
+        return NULL;
+}
+
+static void sub_0804D934(struct MapObject *obj) {
+    u8 *raw = (u8 *)obj;
+    const u8 *tiles = gUnk_084045A8[gUnk_030057E0.unk7FE];
+    set_tile_data(obj->x, obj->y, tiles[obj->y * (gUnk_030057E0.unk800 >> 1) + obj->x]);
+    if (obj->unk4_6) {
+        clear_battle_sprite_entry(obj->unk4_0 + 49);
+        clear_battle_sprite_entry(obj->unk4_0 + 91);
+    }
+    sub_080496C8(raw, 8);
+}
+
+static void sub_0804D9AC(u8 i) {
+    clear_battle_sprite_entry(48);
+    clear_battle_sprite_entry(90);
+    memcpy_u8(&gUnk_03002C30[i], &gUnk_03002C30[48], 0x40);
+    memcpy_u8(&gUnk_030055A0[i], &gUnk_030055A0[48], 4);
+    gUnk_030057E0.unkC76 = 1;
+    gUnk_030057E0.unkC6E = gUnk_03002C30[48].unk2 + gBg1Scroll.x;
+    gUnk_030057E0.unkC70 = gUnk_03002C30[48].unk4 + gBg1Scroll.y;
+    gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
+    gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
+    gUnk_030057E0.unkC84 = gUnk_03002C30[48].unk2B;
+    sub_08051E8C();
+    sub_080493D4(48, sub_080502B4(48, gUnk_03002C30[48].unk2B * 4 + gUnk_03002C30[48].unk21));
+    init_battle_sprite_entry_08048818(90, 0xCC0C, 0x90, 0xE, 1);
+    gUnk_03002C30[90].unk2 = gUnk_03002C30[48].unk2;
+    gUnk_03002C30[90].unk4 = gUnk_03002C30[48].unk4 - 5;
+    gUnk_03002C30[90].unkC_8 = gUnk_03002C30[48].unkC_8;
+    gUnk_03002C30[90].unk10_8 = gUnk_03002C30[48].unk10_8 - 5;
+    update_battle_direction_indicator(1);
+    gUnk_030057E0.unkC5E = gUnk_030057E0.unkC5D;
+    gUnk_030057E0.unkC5D = 0xDF;
+}
+
+static void sub_0804DB34(void) {
+    clear_battle_sprite_entry(48);
+    clear_battle_sprite_entry(90);
+    gUnk_030057E0.unkC76 = 0;
+    gUnk_030057E0.unkC5D = gUnk_030057E0.unkC5E;
+}
+
+void sub_0804DB68(u8 i) {
+    gUnk_030057E0.unkCA4[i] = 0;
+}
+
+void sub_0804DB84(u8 i, u8 v) {
+    gUnk_030057E0.unkCA4[i] = v + 1;
+}
+
+u32 sub_0804DBA4(u8 i) {
+    return gUnk_030057E0.unkCA4[i] - 1;
 }

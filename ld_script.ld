@@ -147,8 +147,12 @@ SECTIONS {
         build/src/field/field_update.o(.rodata);
         build/src/field/map_script.o(.text);
         build/src/field/map_script.o(.rodata);
-        build/src/code_0804D8A8.o(.text);
-        build/src/code_0804D8A8.o(.rodata);
+        build/src/field/map_script_update.o(.text);
+        build/src/field/map_script_update.o(.rodata);
+        build/src/field/script_sprites.o(.text);
+        build/src/field/script_sprites.o(.rodata);
+        build/src/field/field_walk.o(.text);
+        build/src/field/field_walk.o(.rodata);
         build/src/code_0805137C.o(.text);
         build/src/code_0805137C.o(.rodata);
         build/src/code_080567AC.o(.text);

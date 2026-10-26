@@ -8,43 +8,15 @@
 // amount/32, for the 16-colour palettes in mask
 // h, u8 i, u8 j): callers were compiled without a prototype
 // h, u8 i, u8 j, u8 base): callers were compiled without a prototype
-s32 sub_0804D8A8(u16 id);
-void sub_0804D934(struct MapObject *obj);
-void spawn_script_sprite(u8 a, u8 b, u8 c, u8 d);
-void sub_08050508(u8 id);
-void set_battle_sprite_animation(u8 id, u8 state);
 void sub_08053234(u16 id);
 u32 sub_08053288(u16 id);
-struct MapObject *battle_find_entity_by_id(u16 id);
 void set_battle_state_cancel_flag(void);
-void setup_battle_sprite_terrain(u8 slot, u8 a, u8 b);
 void sub_0805311C(u16 id);
 void sub_08053154(u16 id);
 void sub_080531EC(u16 id, u8 val);
-void sub_0804DB34(void);
-void sub_0804DB84(u8 i, u8 v);
-u32 sub_0804DBA4(u8 i);
-void sub_0804D9AC(u8 slot);
-void sub_0804DD80(void);
-void sub_0804E44C(void);
-void sub_0804E4E8(void);
-void sub_0804E5A4(u8 a, u8 b);
-void map_script_command_done(void);
-u32 find_next_available_battle_sprite_slot(void);
-void sub_08050770(u32 idx, u8 val);
-void sub_08050780(u8 i, u32 val);
-void sub_080507A0(u32 idx, u32 val);
-void sub_080507C0(u8 i, u8 val);
 void sub_08052BA0(u8 on);
-u32 sub_080507E0(u8 slot);
-u32 update_battle_sprite_movement(u8 slot, u8 a);
 void init_battle_field_setup(void);
 void update_bg_scroll_offsets_a(void);
-u32 sub_08050868(void);
-u32 sub_080508CC(void);
-u32 sub_080509A0(void);
-void init_battle_sprites(void);
-void sub_08050F10(void);
 void sub_08053798(void);
 void get_state_float_as_int(float a, float b, s32 *x, s32 *y);
 u32 battle_sequence_dispatch(void);
@@ -67,7 +39,6 @@ u16 sub_0807C7A8(u8 timer, Func *slot); // EEPROM library: sets the timer and it
 void link_buffer_swap_arm(void);        // ARM, crt0.s; copied to IWRAM 0x03005250
 
 // code_0804D10C
-u8 sub_080502B4(u8 idx, u8 dir);
 
 // code_0805137C (field)
 void sub_08051E8C(void);
@@ -93,12 +64,10 @@ void field_load_area_tiles(u8 area);
 void field_center_camera_on_player(void);
 void update_cursor_tile_position(void);
 void battle_camera_scroll_update(u8 dir);
-void advance_sprite_by_terrain_modifier(u8 idx);
 void sub_08052A2C(s16 dx);
 void sub_08052AF8(s16 dy);
 u32 find_npc_event_match(void);
 u32 find_map_event_by_coords(u32 x, u32 y);
-void save_script_sprites(void);
 void LZ77UnCompVram(const void *src, void *dst);
 
 // code_08044CDC
@@ -110,20 +79,8 @@ void ring_points_place_on_hexagon(u32 a);
 
 // code_080490C4
 
-u32 scene_state_dispatch(u32 a, u32 b);
-void sub_08050C74(void);
-void sub_080500D8(u8 slot, u8 a, u8 b);
-u32 sub_0804F13C(u8 a);
-u8 sub_08050264(u8 a);
-u8 sub_0805026C(u8 a);
-void restore_script_sprites(void);
 void load_map_npc_sprites(); // takes one argument (update_battle_field_frame passes gUnk_030057E0.unkCBA)
 void update_entity_sprites_on_screen(void);
-u32 battle_scene_state_dispatch(void);
-void sub_08050B50(void);
-void init_script_sprite(u8 idx, u8 part, u8 x, u8 y);
-u8 calc_medapart_table_index(u8 a);
-u8 compute_battle_sprite_anim_offset(u8 id, u8 a);
 void field_player_step(u8 dir);
 bool32 check_tile_and_trigger_battle_action(u8 dir);
 bool32 field_player_at_map_edge(u8 dir);
@@ -427,7 +384,6 @@ void sub_0807068C(void);
 void sub_080706AC(void);
 void load_bg_screen_c(void);
 u32 call_battle_handler_by_state_08071C64(void);
-void map_script_update_command(void);
 void update_npc_sprite_animations(void);
 void sub_08058110(); // defined as (void); sub_0804AF4C passes an argument
 s32 check_room_exit_at_position(void);
@@ -578,5 +534,9 @@ void update_battle_sprite_status_effects(void);
 #include "field/field_update.h"
 
 #include "field/map_script.h"
+#include "field/map_script_update.h"
+
+#include "field/script_sprites.h"
+#include "field/field_walk.h"
 
 #endif // GUARD_FUNCTIONS_H
