@@ -579,6 +579,10 @@
   the original does; storing the expression twice recomputes it (name_entry_update).
 * A pinned table pointer (`register ... asm("r4")`) whose loop still hoists a constant into a callee-saved
   register: assign the pin at both the start and the end of the loop body (name_entry_update).
+* A `bl __divsi3` by a power of two (divisor kept in a register): divide by a local `s32 d = 0x400;`.
+  Division is expanded before constant propagation, so the call stays (sub_0805B4C8).
+* `if (s < 0) y = x + mid; else y = mid - x;` where one arm in the original is `negs` and both arms
+  share an `adds r0, #80`: write that arm as `-x + mid` (sub_0805B4C8).
 * A store through `map[0x62]` whose address constant lands in the wrong register while the next stores
   (`d = &map[0x63]; *d = ...`) are right: write the first one from the raw base,
   `d = (u16 *)(base + 0x060000C4); *d = t;` (name_entry_init_graphics).
