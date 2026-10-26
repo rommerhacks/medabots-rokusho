@@ -27,44 +27,10 @@ void link_buffer_swap_arm(void);        // ARM, crt0.s; copied to IWRAM 0x030052
 void LZ77UnCompVram(const void *src, void *dst);
 
 // code_08044CDC
-void divide_by_3(u8 a, u8 b); // guess: refreshes racer a's 4-part sprite group at its current position (not a divide)
-void sub_08069A68(u8 idx, s16 x, s16 y, u8 h,
-                  u8 pal); // guess: places racer idx's 4-part sprite group at x, y and sets its palette
 
 // code_080490C4
 
 // tiles; align 0 center, 1 left, 2 right
-void sub_08067A48(u8 slot);
-int sub_08067160(u8 *s); // string length, 0 when it is 1
-void sub_0806918C(void); // clears VRAM, the sprite table and the four BG scrolls
-void dma_copy_tilemap_strip(u8 n);
-void sub_08069EE4(u8 *dst, u8 *src);  // copies bytes up to and including the first one > 0xF8
-bool32 race_check_all_finished(void); // TRUE 240 frames after all three gUnk_03006F8C racer states are > 2
-void sub_08068DA0(void);
-void dispatch_game_mode_handler(void);
-void sub_08068CF4(void);
-void sub_08068D74(void);
-void sub_08068FD4(void);
-void sub_0806904C(void);
-void init_battle_sprite_small(void);
-void race_update_racer_anim_counters(
-    void); // per racer: gUnk_03006FE0[i] counts frames, steps the racer sprite's unk1A at the gUnk_08485CE3 delay
-bool32 scene_transition_step_080686F4(void);
-bool32 sub_08069EF8(void);
-bool32 sub_08069F80(void);
-bool32 sub_0806A4C0(void);
-void update_sprite_animations_tick_0806AF40(void);
-void update_sprite_animations_0806B334(void);
-void sprite_animation_dispatch(u8 sprite, u8 a, u8 b, u8 c);
-void clear_sprite_entry(u8 sprite); // zeroes gUnk_03002C30[sprite] (0x40 bytes)
-void sub_0806B310(void);
-void init_battle_field_screen(void);
-void init_battle_icon_positions(void);
-void init_battle_bg_layer1(void);
-void write_tilemap_tiles_dma(u8 a, u8 b, u8 c);
-void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c);
-void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c);
-bool32 scene_step_palette_fade_out(void);
 bool32 sub_0806F850(void);
 bool32 sub_0806F9D4(void);
 void battle_timer_digit_extract(void);
@@ -77,65 +43,9 @@ void sub_0806FF90(void);
 void sub_0806FFF8(void);
 void sub_08070030(void);
 void battle_sprite_set_action(u8 a, u8 b, u8 c);
-void update_bg2_affine_scanline_params(void);
-void update_sprite_special_effects(void);
-void sub_0806D288(void);
-bool32 sub_0806DEAC(u8 i);
-bool32 sub_0806DEE8(u8 i);
-void sub_0806D420(void);
-u32 sub_0806BBDC(void);
-void sub_0806C994(void);
-void sub_0806BE58(void);
-void bomb_game_drop_bombs(void);
-void sub_0806BD84(void);
-void sub_0806C500(void);
-void sub_0806BEF0(void);
-void sub_0806C20C(void);
-void sub_0806C4CC(void);
-void get_battle_state_value_div10(void);
-void sub_0806CDE8(void);
-void update_battle_sprite_direction(void);
-void sub_0806CD48(void);
-void sub_0806CAEC(void);
-void sub_0806CE58(void);
-void sub_0806CFA4(void);
-u32 sub_0806C6F8(void);
-u32 sub_0806C7C4(void);
-void set_bot_y_positions_by_count(void);
-void sub_0806DF80(
-    u8 anim,
-    u8 sprite); // starts animation anim on sprite slot sprite (unk20 = anim, unk22 = 0, unk30 = unk6, unk1A = 0)
 u32 check_battle_timer_expired(u8 a);
 u32 process_text_tile_and_dma_transfer(u8 a);
 u32 battle_draw_tilemap_row_dma(u8 a);
-void update_battle_sprite_explosions(void);
-bool32 bg_tilemap_scroll_up_row(s32 step);
-bool32 copy_bg_tile_column(s32 col, s32 step);
-void clear_stack_buffer_64(s32 len, s32 step);
-void render_text_right_aligned(const u8 *s, u8 row);
-void scroll_tilemap_column(s32 a, s32 b);
-void load_battle_sprite_graphics(void);
-void init_battle_background_layers(void);
-void load_bg_tilemaps_and_palette(void);
-void update_battle_icon_rotation(void);
-void update_battle_bot_entry_animations(void);
-void update_battle_bot_death_animations(void);
-void update_battle_bot_damage_animations(void);
-void update_battle_bot_turn_order_tiles(void);
-bool32 sub_0806A230(void);
-void race_dispatch_substate(void); // gRaceSubStates[gGameSubState]()
-void sub_08069000(void);
-void race_update(void); // race sub-state 9: the race itself, every frame (runtime-checked)
-void sub_080690C4(void);
-void sub_08069114(void);
-void sub_08069158(void);
-void init_battle_sprite_medium(void);
-void init_battle_sprite_c400(void);
-void init_battle_sprite_entry_1(void);
-void init_battle_sprite_large(void);
-void init_battle_bg_layer(void);
-bool32 execute_scene_step(void);
-void get_entity_speed_value(void);
 
 // Robattle (game state 7) helpers
 // direct = palettes straight to PLTT
@@ -333,5 +243,39 @@ u32 call_battle_handler_by_state_08071C64(void);
 #include "link/link_menu.h"
 
 #include "engine/rings_3d.h"
+#include "cutscene/text_scroll.h"
+
+#include "battle/medal_level_up.h"
+#include "engine/scene_transition.h"
+
+#include "minigame/race.h"
+void update_bg2_affine_scanline_params(void);
+void update_sprite_special_effects(void);
+void sub_0806D288(void);
+bool32 sub_0806DEAC(u8 i);
+bool32 sub_0806DEE8(u8 i);
+void sub_0806D420(void);
+u32 sub_0806BBDC(void);
+void sub_0806C994(void);
+void sub_0806BE58(void);
+void bomb_game_drop_bombs(void);
+void sub_0806BD84(void);
+void sub_0806C500(void);
+void sub_0806BEF0(void);
+void sub_0806C20C(void);
+void sub_0806C4CC(void);
+void get_battle_state_value_div10(void);
+void sub_0806CDE8(void);
+void update_battle_sprite_direction(void);
+void sub_0806CD48(void);
+void sub_0806CAEC(void);
+void sub_0806CE58(void);
+void sub_0806CFA4(void);
+u32 sub_0806C6F8(void);
+u32 sub_0806C7C4(void);
+void set_bot_y_positions_by_count(void);
+void sub_0806DF80(
+    u8 anim,
+    u8 sprite); // starts animation anim on sprite slot sprite (unk20 = anim, unk22 = 0, unk30 = unk6, unk1A = 0)
 
 #endif // GUARD_FUNCTIONS_H
