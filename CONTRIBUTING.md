@@ -583,6 +583,8 @@
   Division is expanded before constant propagation, so the call stays (sub_0805B4C8).
 * `if (s < 0) y = x + mid; else y = mid - x;` where one arm in the original is `negs` and both arms
   share an `adds r0, #80`: write that arm as `-x + mid` (sub_0805B4C8).
+* A table value reduced to 0-3 where `& 3` gives the wrong registers for the whole block: write `% 4`
+  (setup_screen_transition_effect_080684F0).
 * A store through `map[0x62]` whose address constant lands in the wrong register while the next stores
   (`d = &map[0x63]; *d = ...`) are right: write the first one from the raw base,
   `d = (u16 *)(base + 0x060000C4); *d = t;` (name_entry_init_graphics).
