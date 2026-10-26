@@ -4,33 +4,10 @@
 // Prototypes for game functions (decompiled or still in asm), in ROM order.
 
 // elsewhere (unk3C 2/3) or the part is owned
-void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y,
-                                   u32 tile, u32 pal, u32 e);
 // Robattle action step dispatchers run by the action script (code_08030CAC wrappers)
 // amount/32, for the 16-colour palettes in mask
 // h, u8 i, u8 j): callers were compiled without a prototype
 // h, u8 i, u8 j, u8 base): callers were compiled without a prototype
-void sub_08047414(struct Unk_08047414 *obj, u8 *buf, struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams);
-u8 sub_080460B0(struct Unk_03002414 *work, u16 *affine, u32 side, struct OamData *oam, u16 tile, u8 *parts, u8 pal,
-                u8 x, u8 y, u32 alt);
-void setup_scene_bg_layers_and_sprites(void *oam, struct Unk_08047414 *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f,
-                                       u32 g, u32 h, u32 i, u32 j);
-void sub_08044CDC(u32 a);
-void dispatch_by_index_0476e8(u32 idx);
-void sub_08047850(s32 a);
-void switch_game_mode(u32 a, u32 b);
-void sub_08047BA8(u32 id);
-void sub_08047BC0(u32 a);
-void init_cursor_state(void);
-u32 get_money(void);
-u32 sub_08047D8C(u8 id);
-u32 sub_08047D9C(u8 a, u8 b);
-u32 sub_08047DB0(u8 id);
-u32 lookup_position_table_value(u8 a, u8 b);
-s32 sub_08047F50(void);
-u32 sub_08047F70(u8 id);
-u32 dispatch_jump_table_29(u32 a, u32 b);
-void clear_battle_sprite_entry(u8 slot);
 void sub_080496C8(u8 *dst, u32 size);
 u32 run_blend_fade_transition(u16 a);
 void sub_0804A1C4(void);
@@ -70,12 +47,9 @@ void sub_08052BA0(u8 on);
 u32 sub_0804B6EC(void);
 u32 sub_080507E0(u8 slot);
 u32 update_battle_sprite_movement(u8 slot, u8 a);
-void sub_080482C0(void);
 void load_room_graphics(void);
-void animate_area_bg_tiles(void);
 void init_battle_field_setup(void);
 void update_bg_scroll_offsets_a(void);
-u32 scene_transition_step_08047C24(u8 a, u8 b, u8 c, const void *text);
 u32 sub_08050868(void);
 u32 sub_080508CC(void);
 u32 sub_080509A0(void);
@@ -95,10 +69,6 @@ s32 DivArm(s32 denom, s32 num); // BIOS SWI 7
 s32 Mod(s32 num, s32 denom);    // BIOS SWI 6, returns the remainder
 void CpuFastSet(const void *src, void *dest, u32 control);
 #define CpuCopy16(src, dest, size) CpuSet(src, dest, ((size) / 2) & 0x1FFFFF)
-void update_anim_object_flags(void);
-void sub_0804725C(u32 unused0, struct Unk_08047414 *obj, s32 kind, s32 idx, u32 unused4, u32 pal, u32 side,
-                  u32 alt); // unused
-void copy_oam_affine_params(struct OamData *oam, u16 *affine);
 void VBlankIntrWait(void);
 u16 sub_0807C740(u16 kbitSize); // EEPROM library: picks the EEPROM type (4 or 64 kbit)
 void irq_dispatch_arm(void);
@@ -120,7 +90,6 @@ void set_sprite_animation_state(u8 idx, u8 state);
 u8 sub_080526F0(u16 x);
 u8 sub_08052714(u16 y);
 void set_battle_state_byte_c83(u8 dir);
-u32 sub_0804803C(u32 arg);
 u32 get_adjacent_tile_value(u8 dir);
 void field_set_player_facing(u8 dir);
 void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj);
@@ -144,17 +113,11 @@ void setup_palette_fade_to_color_with_obj(u16 color, float a, float b, float c);
 void LZ77UnCompVram(const void *src, void *dst);
 
 // code_08044CDC
-u32 resolve_tile_from_battle_state(u32 arg);
-void sub_0804877C(u8 idx);
 void divide_by_3(u8 a, u8 b); // guess: refreshes racer a's 4-part sprite group at its current position (not a divide)
 void sub_08069A68(u8 idx, s16 x, s16 y, u8 h,
                   u8 pal); // guess: places racer idx's 4-part sprite group at x, y and sets its palette
 void matrix_set_identity(void);
 void ring_points_place_on_hexagon(u32 a);
-void init_battle_sprite_entry_08048818(u8 idx, u16 attr, u32 frame, u8 a3, u8 a4);
-void decompress_battle_tile_graphics(void);
-void dma_load_obj_palettes_08048664(void);
-void dma_load_battle_palettes(void);
 
 // code_080490C4
 void sub_080493D4(u8 idx, u8 val);
@@ -163,33 +126,16 @@ u8 field_random(u8 n); // returns 0..n-1
 void memcpy_u8(const void *src, void *dst, u32 n);
 
 u32 scene_state_dispatch(u32 a, u32 b);
-void init_bg0_for_cursor(u32 mode);
-u32 sub_08047FEC(void);
 void sub_08050C74(void);
-void sub_08047D24(u32 a, u32 n);
-void add_money(u32 n);
-void sub_money(u32 n);
 void sub_080500D8(u8 slot, u8 a, u8 b);
 u32 sub_0804F13C(u8 a);
 void sub_080492CC(void);
 void calculate_oam_affine_matrix(u8 i);
 u8 sub_08050264(u8 a);
 u8 sub_0805026C(u8 a);
-u32 sub_08048088(u32 idx);
-u32 sub_08047E30(void);
-void sub_08047E3C(u8 id);
-void sub_08047DC0(u8 id, u8 n);
-void copy_string_to_text_buffer(u32 slot, u32 str);
-void format_number_to_text_buffer(u32 slot, u32 n);
-u32 sub_08047BCC(u32 idx);
-u32 sub_08047E20(u8 id);
-void sub_08047DD8(u8 id, u8 n);
 void restore_script_sprites(void);
 void load_map_npc_sprites(); // takes one argument (update_battle_field_frame passes gUnk_030057E0.unkCBA)
 void update_entity_sprites_on_screen(void);
-u32 sub_08047BEC(u32 a, u32 b);
-void sub_08047DF0(u8 a, u8 b, u8 n);
-void sub_08047E08(u8 a, u8 b, u8 n);
 u32 battle_scene_state_dispatch(void);
 void sub_08050B50(void);
 void init_script_sprite(u8 idx, u8 part, u8 x, u8 y);
@@ -203,11 +149,7 @@ u32 map_cursor_move_and_check_event(void);
 void field_player_walk_input(void);
 void field_warp_to_area(void);
 void update_bg_scroll_offsets_b(void);
-s32 truncate_to_digit_count(s32 n, u8 k);
 // tiles; align 0 center, 1 left, 2 right
-void sub_0804765C(u32 a);
-void update_battle_field_frame(void);
-void sub_080487E4(void);
 void setup_blend_effect(u8 mode, u16 bldcnt, u8 type, u8 sa, u8 sb, u8 sy, u8 a, u8 b, u8 y);
 u32 blend_effect_update(void);
 void sub_08067A48(u8 slot);
@@ -403,56 +345,13 @@ void sub_08064A74(void);
 void sub_08064A94(void);
 void sub_08064AB4(void);
 void sub_08064AD4(void);
-u32 dma3_copy_or_decompress(const u32 *src, void *dst);
 void tilemap_offset_tiles_and_palette(u32 tiles, u32 pal,
                                       u32 block); // (u16, u8, u8): callers pass full ints; adds tiles to the tile
                                                   // numbers of a 32x32 screen block, sets palette pal
 void LZ77UnCompWram(const void *src, void *dst);
-u32 sub_08044D64(u32 *dst, const u32 *src, u32 n);
-u32 sub_08044D78(u16 *dst, const u16 *src, u32 n);
-void sub_08044D90(u8 *dst, const u8 *src, u32 n);
-void set_oam_sprite_shape_size(u8 *oam, s32 h,
-                               s32 w); // OAM attr0 shape / attr1 size bits for a w x h sprite (h > w: tall)
-u32 sub_08044E64(s32 shape, s32 size); // OAM attr0 shape / attr1 size bits -> height << 16 | width
-s16 fixed_point_divide(s16 a, s16 b);
-s16 divide_by_65536(s16 a);
-u32 sub_08045A40(s32 y, s32 x);
-u8 sub_080483AC(void);
-void sub_080487AC(void);
-void toggle_bg_layer_visibility(s32 a, s32 b, s32 c, s32 d);
-void sub_08047E4C(void);
 void clear_entity_state(u8 slot);
-s32 sub_080481C4(s32 t);
-s32 count_decimal_digits(s32 n); // number of decimal digits of n (1 for 0); was safe_divide_one
-void decompress_terrain_tiles_to_vram(s32 arg);
-void dma_load_obj_palettes_08048730(s32 arg);
 void init_battle_medaforce_sprite(void);
 void update_battle_entity_status_chars(void);
-void dma_load_sprite_tiles(const u32 *src, u16 tile, void *buf, u32 useCpu);
-u32 setup_oam_sprite_entries(struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc,
-                             const struct SpriteAnchor *e, u8 f, u16 g);
-u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c,
-                             const struct SpriteDesc *desc, const struct SpriteAnchor *e, u8 f, u16 g);
-u16 copy_sprite_oam_entries(struct SpriteOamList *list, struct OamFull *dst, u16 slot, s32 pal, u16 end,
-                            u8 flip); // K&R definition: pal is a u8; callers pass it sign-extended
-u16 sub_08045794(struct SpriteOamList *list, struct OamFull *dst, u16 slot, s32 pal, u16 end,
-                 u32 flags); // same with an affine matrix number (flags & 7) and flips (bits 3, 4); K&R, pal is a u8
-void sub_0804589C(struct SpriteOamBatch *batch, struct SpriteOamList **buf);
-void sub_080458A4(struct SpriteOamBatch *batch, struct SpriteOamList *list, u16 depth);
-struct OamFull *sorted_array_insert_shift(struct OamFull *arr, u16 n, u16 shift, s16 key);
-u16 render_sprite_if_visible(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 flip);
-u16 sub_08045B68(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 neg, u16 scale,
-                 u16 *affine, u32 k); // + scale / flip affine matrix k
-u16 sub_08045C30(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u16 angle,
-                 u16 *affine, u32 k); // + rotation affine matrix k
-void sub_08045D1C(struct Unk_03002414 *work);
-void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 a, s16 b, s16 depth); // u16 params in the definition
-u32 check_position_table_match(u8 id, u8 which);
-void copy_sprite_tiles_to_vram(
-    u8 *dst, u8 *src, s32 shape, s32 size, s32 rows, s32 cols,
-    s32 bpp); // rearranges tiles from src into dst (rows x cols blocks of the OAM shape / size)
-void decompress_and_load_sprite_tiles(const u32 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp, u16 tile,
-                                      u32 unused, u8 *buf, u32 useCpu);
 // code_0805EE6C
 void sub_080600E0(void); // gUnk_03002C30[0].unk1A counts 0-63, unk6 = 0x100 + gUnk_080AF980[(count >> 3) & 7]
 void sub_08062A74(u16 id, u8 second); // copies Medapart name pointer id (part * 4 + kind) of gUnk_083BB9CC into
@@ -550,13 +449,9 @@ void sub_080706AC(void);
 void load_bg_screen_c(void);
 u32 call_battle_handler_by_state_08071C64(void);
 void apply_blend_coefficients(void);
-s16 sub_08048B24(s16 a, s16 b);
-u32 sub_08048914(u32 a);
-void sub_08048A40(void);
 void sub_080496DC(u8 *dst, u32 n, u8 val);
 s32 count_byte_differences(const u8 *a, const u8 *b, s32 n);
 s32 sum_bytes_0804971C(const u8 *p, s32 n);
-void sub_08048B6C(void);
 void quicksort_u8_array(u8 *arr, s16 left, s16 right);
 void sub_08049F84(u16 *arr, s16 left, s16 right);
 void sub_0804A0A4(u16 *arr, s16 left, s16 right);
@@ -572,23 +467,7 @@ s32 check_room_exit_at_position(void);
 u32 sub_0804B694(void);
 void clear_vram_bg2_tiles(void);
 void check_and_update_battlefield_palette(void);
-void copy_tilemap_with_offset_08048CA4(const void *src, void *dst, s32 a, s32 b, s32 c, s32 d, s32 e);
-void copy_tiles_to_bg_tilemap(const void *src, void *dst, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-u16 init_oam_sprite_entry(struct OamFull *oam, struct SpriteNodeDesc *desc, u8 pal, u16 tile);
-u32 load_sprite_tree_recursive(struct SpriteNodeDesc **nodes, struct SpriteTileRef *list, u8 node, u8 pal,
-                               struct SpriteNodeOam *oams, u16 *tile, u32 alt); // returns the bytes of tiles loaded
-void load_sprite_tiles_by_table(struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams, struct SpriteTileRef *list,
-                                u8 node, u8 k);
-void render_sprite_node_recursive(struct Unk_08047414 *obj, struct SpriteTileRef *list, u8 node, s32 y, s32 x,
-                                  s16 depth, s16 angle, u8 flip);
-u16 copy_oam_entries_with_priority(struct SpriteOamList *list, struct OamData *dst, u16 slot, u16 end);
-u16 batch_copy_oam_entries(struct SpriteOamBatch *batch, struct OamData *dst, u16 end);
-s32 interpolate_entity_positions(struct InterpEnt *e, s16 *pos, s8 *off, u8 *tbl, u8 unused, u8 frame, u8 idx,
-                                 s32 count, s32 stride);
 void build_bg_tile_entry(u16 *dst, u16 id, u16 base, u16 y, u16 x, u16 yoff, u16 xoff);
-void sub_0804908C(u16 *dst, s32 pal, s32 tile);
-void sub_08048B94(void);
-void sub_08048C5C(u16 *src, u16 *dst, s32 h, s32 w, s32 maxh, s32 pitch, s32 add);
 u32 sub_08052990(u32 unused, u8 which);
 u32 sub_08053194(u16 id);
 void draw_number_tall(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg);
@@ -603,14 +482,12 @@ void fill_tilemap_rect_0804916C(u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 tile, 
 void render_npc_tilemap_row(s32 row);
 void handle_cursor_up_down_input(s32 count);
 void sub_08057EBC(void);
-u32 sub_08047BDC(u32 idx);
 void sub_080531D0(u16 id, u8 val);
 void sub_0805889C(s32 max);
 void sub_08058908(u32 idx, s32 max);
 void sub_080589B0(u32 idx, s32 max);
 void update_anim_counter(u32 idx, s32 max);
 void sub_08058A88(u32 idx, u32 sub, s32 max);
-void sub_08047BB4(u32 id);
 void clear_all_battle_sprites(void);
 void sub_08058B04(u32 idx);
 void sub_080581C0(u32 a, s32 b);
@@ -728,5 +605,14 @@ void sub_08049CB0(u16 color, u32 amount);
 
 #include "inventory/inventory.h"
 #include "engine/common.h"
+
+#include "engine/sprite_engine.h"
+#include "engine/interpolate.h"
+
+#include "field/field_mode.h"
+#include "field/script_helpers.h"
+
+#include "field/area_graphics.h"
+#include "field/field_utils.h"
 
 #endif // GUARD_FUNCTIONS_H
