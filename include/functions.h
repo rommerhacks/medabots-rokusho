@@ -12,48 +12,7 @@ void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt,
                   u16 base); // guess: draws the last `digits` of value as 2-row tile digits (base + d * 2 / + 1)
 u32 sub_08042B80(u32 a);     // 1 for part types 2, 3, 6, 7; 0 for 0, 1, 4, 5
 // Robattle action step dispatchers run by the action script (code_08030CAC wrappers)
-void sub_08035478(u32 rec);
-u32 sub_08035960(u32 rec, u32 skill); // 1 if a part with armor left has skill id data[1] == skill
-void sub_080350E0(u32 rec);
-u32 sub_08035590(u32 rec);
-u32 calc_bot_matching_part_power(u32 rec);
-void accumulate_battle_speed_value(u32 rec);
-u32 get_random_battle_weight_entry(u32 idx);
-void sub_08036270(void);
-void sub_0803713C(void);
-void select_ai_action_type(void);
-void determine_battle_target_mode(void);
-u32 sub_08037230(u32 rec, u32 part); // 1 if the part is broken or at full armor
-void calc_battle_action_speed(u32 rec, u32 part);
-void apply_battle_bot_damage_reduction(u32 rec);
-u32 decrement_battle_timer_and_check_zero(void);
-void calc_battle_stat_ratio(u32 rec, u32 part); // unkEC = (unkE8 / 4 + part data[6]) / part data[0xC], at least 1
-void sub_08038BC0(void);
-void sub_08038D30(void);
-void battle_begin_action_phase(void);
-u32 battle_calculate_damage_modifier(void);
-u32 check_bot_ability_type_strike(u32 rec, u32 part, u32 target);
-u32 check_bot_ability_type_shoot(u32 rec, u32 part, u32 target);
-u32 check_bot_can_shoot(u32 rec, u32 part, u32 target);
-u32 check_bot_can_support(u32 rec, u32 part, u32 target);
-u32 check_bot_can_use_shoot_part(u32 rec, u32 part, u32 target);
-u32 check_bot_status_effect_4(u32 rec, u32 part, u32 target);
-u32 check_can_target_bot(u32 rec, u32 part, u32 target);
-u32 check_battle_can_support_target(u32 rec, u32 part, u32 target);
-u32 check_battle_can_special_target(u32 rec, u32 part, u32 target);
-u32 battle_check_damage_threshold(s16 v);
-u32 battle_calculate_turn_speed(void);
-void battle_process_speed_and_action(void);
-u32 sub_08039134(u32 rec);               // number of parts with armor left
-u32 battle_find_strongest_part(u32 rec); // part 1-3 (+ 1) with the most armor left
-void sub_08039188(void);
-void sub_080391C4(void);
-void sub_080392D8(void);
-void battle_sequence_run_command(
-    void); // runs the battle sequence command gUnk_083AF740[sub_0803D424()], skipping negative ones
-void sub_08039430(void);
-s16 sub_0803D424(void); // current battle sequence entry (gUnk_083CDFE4[unkF9][unk100])
-void battle_sequence_update_sprites(void);
+s16 sub_0803D424(void);                     // current battle sequence entry (gUnk_083CDFE4[unkF9][unk100])
 void battle_advance_sequence_counter(void); // skips the current battle sequence command and its operands
 void load_battle_sequence_commands(void);
 void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt,
@@ -400,8 +359,6 @@ u32 sub_0803EED8(void);        // nonzero: waiting on the serial link (reads gUn
 u32 game_state_execute_handler_b(void);
 void divide_by_100000_b(u8 *buf, u32 value,
                         u32 tile); // guess: value as text, digits + tile; >= 100000 writes a fixed overflow string
-u32 advance_sprite_anim_frame(u32 sprite, u32 b);
-void battle_sprite_blink_update(u32 slot, u8 *counter, u8 *n);
 void sub_08067A48(u8 slot);
 int sub_08067160(u8 *s); // string length, 0 when it is 1
 void sub_0806918C(void); // clears VRAM, the sprite table and the four BG scrolls
@@ -518,8 +475,6 @@ void apply_battle_blend_effect_b(void);
 void decompress_to_ewram_27000(const u8 *src);
 void battle_vblank_update_bg(
     void); // battle gVBlankCallback: BG scroll movement (unk74) + battlefield tile animation (runtime-checked)
-void battle_set_damage_vs_armor(u32 rec, u32 part, s32 amount);
-u32 sub_08034F44(u32 rec);
 void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt,
                             void *dst); // w x h tiles at (x, y) of the BG map selected by bgcnt
 void write_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, const void *src);
@@ -534,111 +489,18 @@ void update_sprite_animation_position(u32 slot);
 
 // Medal level, Propulsion)
 
-void add_bot_to_defeated_list(u32 rec);
-u32 sub_080353CC(u32 slot);
-u32 move_sprite_toward_target(u32 slot);
-u32 check_sprite_in_range(u32 slot);
 u32 calculate_direction_index(
     s32 x, s32 y, s32 tx,
-    s32 ty);             // direction from (x, y) to (tx, ty), stored in sprite unk25 (move_sprite_toward_target)
-u32 sub_08036E54(u32 a); // clamps to 1..99
-u8 sub_08037578(u32 a, u32 kind); // random part id (by a and the part kind)
-void sub_0803769C(u32 rec);
-void sub_080376F4(u32 rec);
-u32 sub_08037728(u32 rec, u32 part,
-                 u32 amount); // unkD6[part] = min(amount, part armor), unkD2[part] = 1 when the armor is all used
-u32 sub_08036B50(u8 *buf, u32 slot);
-void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 b, s16 x, s16 y);
-void sub_080374E0(u32 a, u32 b);          // unkC8 = min(a, b) taken out of a (guess: drain clamp)
-void sub_0803752C(u32 a, u32 max, u32 b); // unkC8 = min(b, max - a) (add clamp)
-void sub_08037330(u32 rec, u32 frame,
-                  u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
-void sub_080373D4(u32 rec);  // sets bit 15 of unk0 on the bot's 4 part sprites
-void sub_08037424(
-    u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
+    s32 ty); // direction from (x, y) to (tx, ty), stored in sprite unk25 (move_sprite_toward_target)
 struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x,
                                             s32 y); // returned in memory (hidden pointer in r0)
-u32 sub_080385F8(void);                             // 1 once no sprite 0x21+ has unk29 set (steps their animations)
-u32 sub_0803884C(void);                             // like sub_080385F8 with the gUnk_083AF720 table
 void sub_0803E780(void);
-void sub_08038394(u32 rec, u32 flags); // flags bit 0: clears effect B (unkC9..)
-void sub_080383E8(void);
-void sub_080385D0(u32 rec);
 void set_sprite_hidden_flags(u8 first, u8 count);
-void sub_08035694(u32 slot);
-u32 update_sprite_deceleration(u32 slot, s16 a, s16 b);
-void check_sprite_overlap_and_adjust(u32 slot, u32 b);
-void sub_080356B4(u32 slot);
-void sub_08035C3C(void);
 void sub_08043E48(void);
-void init_battle_closeup_scene(void); // places and draws both Medabots of the attack close-up (runtime-checked)
-void init_battle_scene_backgrounds(void);
-u32 sub_080361A8(); // old-style: passes its unused r0 argument through
-u32 battle_advance_dialogue_text(void);
-u32 battle_advance_action_text(void);
-void sub_08035928(u32 rec, u32 target); // guess: record rec targets record target - 1 (unkE0, gUnk_03001800.unk88)
-void sub_08035944(u32 rec, u32 part);   // guess: record rec targets part part - 1 (unkE1, gUnk_03001800.unk8B)
-u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);
-void sub_080353AC(u32 frame);
-void sub_0803536C(u32 slot, u32 frame, u32 y);            // sprite unk2 = y, +1 / -1 on frames 2-3 / 6-7 of 8
-void reduce_bot_part_stat(u32 rec, u32 part, s32 amount); // part armor (unk11) -= amount, not below 0
-void sub_08035194(u32 rec);
-void set_target_sprite_position(u32 rec, u32 frame, u32 flag);
-void update_target_cursor_position(u32 rec);
-u32 update_sprite_animations_tick_080370AC(u32 slot, u32 n);
-void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u32 n);
-void sub_080362C4(u32 side);
-void sub_08036340(u32 side);
-void sub_08036370(u32 side, u32 rec); // draws the 4 parts' armor (data[4] max, unk11 left) via sub_080363E8
-void sub_080363E8(u32 x, u32 y, u32 w, u32 max, u32 cur);
-void sub_080364A8(u32 side, u32 rec);
-void sub_0803628C(void);
-void sub_08036B84(u32 rec, u32 part);
-u32 sub_080366DC(u32 slot, u32 part);
-u32 sub_0803684C(u32 slot);
-void sub_08036784(u32 slot, u32 part, s16 x, s16 y);
-void sub_080368C4(u8 *digits, u32 slot, u32 part, s16 x, s16 y);
-u32 advance_sprite_group_anims(u8 *digits, u32 slot);
-u32 sub_08036BB8(u16 *amount, u32 rec,
-                 u32 part); // moves one point from *amount (low byte) out of the part's armor; 1 when done
-void sub_08036BF4(u32 side);
 void battle_sprite_rotate_angles(u32 dir, u32 delta);
-void sub_08036C20(u32 slot, u32 part, s16 x, s16 y,
-                  u32 n); // inits battle sprite slot at (x, y) + gUnk_083AF480[part] with animation gUnk_083B5F80[n]
-void setup_battle_medapart_scenes(void);
-void calc_bot_evasion_modifier(u32 rec);
-void sub_080355C4(u32 rec);
-void sub_0804242C(u8 n);                                      // sorts gUnk_02023000[0..n-1] by key, key2, largest first
-void battle_calc_damage_split(u32 rec, u32 part, s32 amount); // unkC8 = unkCC = min(amount, part data[4] - armor unk11)
-u32 battle_check_action_counter(
-    u16 *amount, u32 rec,
-    u32 part); // moves one point from *amount (low byte) into the part's armor (max data[4]); 1 when done
-u32 sub_08036D64(u32 rec, u32 skill); // 1 if unkCF has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8),
-                                      // 0x11/0x12 (2), 0x13/0x14 (4)
-u32 medal_update_exp_progress(u32 slot, u32 n);
-void battle_set_action_params(u32 rec, u32 skill, s32 a, u32 b);
-void sub_080378F0(u32 src); // spawns a particle sprite next to sprite src every 16 / 8 frames
-void spawn_battle_particle_effect(u32 src);
-void reset_battle_bot_state(u32 rec);
-void sub_080351E8(u32 rec);
-void battle_set_damage_display(u32 rec, u32 part, s32 amount);
-void get_active_bot_part_index_and_load_values(u32 side);
-void sub_08035740(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, max)
-void sub_0803572C(u8 *val, s32 amount);          // *val = max(*val - amount, 0)
-void sub_08037458(u32 rec, s32 amount); // gUnk_03001800.unkC8 / unkCC = min(amount, head unk10), unkCA = the rest
-void sub_08037498(u32 rec, s32 amount); // same, clamped to head data[8] - unk10
-void sub_080378A8(void);                // moves sprite 0x21 4 px (right if gUnk_03001800.unkF8 bit 1 clear, else left)
-u32 sub_08037B9C(void);                 // runs the sprite handlers of slots 0x21-0x3B; 1 when none is active
-void sub_0803836C(void);                // clears gUnk_03001800.unkD2[0..2] / unkD6[0..2]
+void sub_0804242C(u8 n); // sorts gUnk_02023000[0..n-1] by key, key2, largest first
+                         // 0x11/0x12 (2), 0x13/0x14 (4)
 
-void sub_08035BD4(void);
-void sub_08035BFC(u32 rec, u32 part);
-u32 battle_select_random_target(u32 base, u32 rec);
-void battle_sequence_update(
-    void); // per frame during an attack animation: runs sequence commands until one yields (gUnk_03002C30[0].unk2A)
-void sub_08035754(s16 *amount, s32 sub); // *amount -= sub, not below 0
-void sub_08035B9C(u32 rec);
-u32 sub_08037798(u32 base);                                // record on side base, or 0xFF
 void *memcpy_optimized(void *dst, const void *src, u32 n); // library
 void *memcpy(void *dst, const void *src, unsigned long n); // libc (the compiler's builtin)
 void *custom_memset(void *dst, int c, u32 n);              // library
@@ -1037,5 +899,16 @@ void sub_08049CB0(u16 color, u32 amount);
 
 #include "battle/battle_ai.h"
 #include "battle/action_script.h"
+
+#include "battle/combat_helpers.h"
+#include "battle/closeup_scene.h"
+
+#include "battle/effect_sprites.h"
+#include "battle/skill_helpers.h"
+
+#include "battle/particles.h"
+#include "battle/action_calc.h"
+
+#include "battle/battle_sequence.h"
 
 #endif // GUARD_FUNCTIONS_H
