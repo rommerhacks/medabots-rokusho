@@ -1452,7 +1452,65 @@ void sub_0801F484(void)
     gUnk_083AD750[gUnk_03001800.unkAA]();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0801C988", sub_0801F4AC);
+void sub_0801F4AC(void)
+{
+    struct Unk_03001800 *s = &gUnk_03001800;
+    u8 skill;
+
+    if (s->unkB7 & 1)
+        s->unkAA++;
+    else if (s->unkB8 & 2)
+        s->unkAA++;
+    else if (s->unkB8 & 4)
+        s->unkAA++;
+    else if (!gUnk_03000590[s->unk88].parts[0].unk11)
+        s->unkAA++;
+    else if (!sub_080331F8(s->unk88))
+        s->unkAA++;
+    else if (sub_08036D64(s->unk88, gUnk_03000590[s->unk87].parts[s->unkA7].data[1]))
+        s->unkAA++;
+    else
+    {
+        skill = gUnk_03000590[s->unk87].parts[s->unkA7].data[1];
+        if (skill == 0xD)
+            goto s0;
+        if (skill != 0xE)
+            goto c1;
+    s0:
+        s->unk51 = 0;
+        s->unkAA = 2;
+        return;
+    c1:
+        if (skill == 0xF)
+            goto s1;
+        if (skill != 0x10)
+            goto c2;
+    s1:
+        s->unk51 = 1;
+        s->unkAA = 2;
+        return;
+    c2:
+        if (skill == 0x11)
+            goto s2;
+        if (skill != 0x12)
+            goto c3;
+    s2:
+        s->unk51 = 2;
+        s->unkAA = 2;
+        return;
+    c3:
+        if (skill == 0x13)
+            goto s3;
+        if (skill != 0x14)
+            goto nx;
+    s3:
+        s->unk51 = 3;
+        s->unkAA = 2;
+        return;
+    nx:
+        s->unkAA++;
+    }
+}
 
 void sub_0801F5AC(void)
 {

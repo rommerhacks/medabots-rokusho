@@ -1102,8 +1102,79 @@ u32 sub_0803684C(u32 slot)
     return done;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", sub_080368C4);
-INCLUDE_ASM("asm/nonmatching/code_08034CB8", setup_battle_sprite_oam_entries);
+void sub_080368C4(u8 *digits, u32 slot, u32 part, s16 x, s16 y)
+{
+    u32 i = 0;
+    s32 t;
+    s32 u;
+    for (; i <= 4; i++)
+    {
+        if (digits[i] == 0xFE)
+            return;
+        gUnk_03002C30[slot + i].unk0 = 0xC624;
+        gUnk_03002C30[slot + i].unk1C = 0;
+        t = x;
+        t += gUnk_083AF480[part << 1];
+        gUnk_03002C30[slot + i].unk2 = t & 0x1FF;
+        u = y;
+        u += gUnk_083AF480[part * 2 + 1];
+        gUnk_03002C30[slot + i].unk4 = u & 0xFF;
+        gUnk_03002C30[slot + i].unkB = 0x80;
+        gUnk_03002C30[slot + i].unk6 = digits[i] + 0x2D00;
+        gUnk_03002C30[slot + i].unk23 = 0;
+        gUnk_03002C30[slot + i].unk9 = 0x40;
+        gUnk_03002C30[slot + i].unk8 = 0x40;
+        gUnk_03002C30[slot + i].unkA = 0xE;
+        switch (digits[6])
+        {
+        case 2:
+            gUnk_03002C30[slot + i].unk2 = 0xFFFC + gUnk_03002C30[slot + i].unk2 + i * 8;
+            break;
+        case 3:
+            gUnk_03002C30[slot + i].unk2 = 0xFFF8 + gUnk_03002C30[slot + i].unk2 + i * 8;
+            break;
+        case 4:
+            gUnk_03002C30[slot + i].unk2 = 0xFFF4 + gUnk_03002C30[slot + i].unk2 + i * 8;
+            break;
+        }
+    }
+}
+
+void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 part, s16 x, s16 y)
+{
+    u32 i = 0;
+    s32 t;
+    s32 u;
+    for (; i <= 4; i++)
+    {
+        if (buf[i] == 0xFE)
+            return;
+        gUnk_03002C30[slot + i].unk0 = 0xC404;
+        gUnk_03002C30[slot + i].unk1C = 0;
+        t = x;
+        t += gUnk_083AF480[part << 1];
+        gUnk_03002C30[slot + i].unk2 = t & 0x1FF;
+        u = y;
+        u += gUnk_083AF480[part * 2 + 1];
+        gUnk_03002C30[slot + i].unk4 = u & 0xFF;
+        gUnk_03002C30[slot + i].unkB = 0x80;
+        gUnk_03002C30[slot + i].unk6 = buf[i] + 0x2D00;
+        gUnk_03002C30[slot + i].unk23 = 0;
+        gUnk_03002C30[slot + i].unkA = 0xE;
+        switch (buf[6])
+        {
+        case 2:
+            gUnk_03002C30[slot + i].unk2 = 0xFFFC + gUnk_03002C30[slot + i].unk2 + i * 8;
+            break;
+        case 3:
+            gUnk_03002C30[slot + i].unk2 = 0xFFF8 + gUnk_03002C30[slot + i].unk2 + i * 8;
+            break;
+        case 4:
+            gUnk_03002C30[slot + i].unk2 = 0xFFF4 + gUnk_03002C30[slot + i].unk2 + i * 8;
+            break;
+        }
+    }
+}
 
 u32 advance_sprite_anim_frame(u32 sprite, u32 b)
 {

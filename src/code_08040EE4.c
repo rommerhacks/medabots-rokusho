@@ -1336,7 +1336,49 @@ void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08040EE4", sub_08042A90);
+void sub_08042A90(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt, u16 tile2)
+{
+    u8 a[2];
+    u8 b[2];
+    u16 *dst;
+    u32 i;
+    u32 q;
+    u8 *p;
+    u8 *pa;
+
+    pa = a;
+    q = cur / 10;
+    pa[0] = q;
+    q = cur - q * 10;
+    a[1] = q;
+    p = b;
+    q = max / 10;
+    p[0] = q;
+    q = max - q * 10;
+    p[1] = q;
+    dst = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800 + x * 2) + y * 32;
+    for (i = 0; i < 2; i++)
+    {
+        if (a[i] == 0)
+        {
+            if (i == 1)
+                *dst++ = tile2 + a[i];
+        }
+        else
+            *dst++ = tile2 + a[i];
+    }
+    *dst++ = tile;
+    for (i = 0; i < 2; i++)
+    {
+        if (b[i] == 0)
+        {
+            if (i == 1)
+                *dst++ = tile2 + b[i];
+        }
+        else
+            *dst++ = tile2 + b[i];
+    }
+}
 
 void load_part_data(u32 part, u32 kind, u8 *dst)
 {

@@ -1249,7 +1249,7 @@ void sub_08036B84(u32 rec, u32 part);
 u32 sub_080366DC(u32 slot, u32 part);
 u32 sub_0803684C(u32 slot);
 void sub_08036784(u32 slot, u32 part, s16 x, s16 y);
-void sub_080368C4(u8 *digits, u8 slot, u8 part, s16 x, s16 y);
+void sub_080368C4(u8 *digits, u32 slot, u32 part, s16 x, s16 y);
 u32 advance_sprite_group_anims(u8 *digits, u32 slot);
 u32 sub_08036BB8(u16 *amount, u32 rec, u32 part); // moves one point from *amount (low byte) out of the part's armor; 1 when done
 void sub_08036BF4(u32 side);

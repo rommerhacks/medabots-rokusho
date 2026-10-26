@@ -1145,7 +1145,43 @@ void rotate_vector_2d(s32 *x, s32 *y, struct RotateSrc *p)
     *y = (x0 * s + y0 * c) / 0x4000;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0800025C", shell_sort_by_second_byte);
+void shell_sort_by_second_byte(struct ObjSortEntry *arr, u16 n)
+{
+    u16 gap;
+    u16 i;
+    u16 j;
+    u32 swapped;
+    u16 t;
+    struct ObjSortEntry *b, *a;
+    gap = n;
+    if (gap <= 1)
+        return;
+outer:
+    gap = (u16)(gap * 5 / 8);
+    if (gap == 0)
+        gap = 1;
+    swapped = 0;
+    i = 0;
+loop:
+    j = (u16)(i + gap);
+    a = (struct ObjSortEntry *)(i * 4 + (u32)arr);
+    b = (struct ObjSortEntry *)(j * 4 + (u32)arr);
+    if (a->key < b->key)
+    {
+        t = *(u16 *)a;
+        *(u16 *)a = *(u16 *)b;
+        swapped = t;
+        *(u16 *)b = swapped;
+        swapped = 1;
+    }
+    if (j + 1 < n)
+    {
+        i = (u16)(i + 1);
+        goto loop;
+    }
+    if (swapped == 1 || gap > 1)
+        goto outer;
+}
 
 void serial_link_init(void)
 {
