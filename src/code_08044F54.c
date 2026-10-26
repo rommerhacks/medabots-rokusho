@@ -628,6 +628,8 @@ void load_sprite_tiles_by_table(struct SpriteNodeDesc **nodes, struct SpriteNode
     }
 }
 
+// guess: builds a Medabot part sprite (4 part trees, tile base 0x160) into work and copies its OAM / affine out;
+// like setup_scene_bg_layers_and_sprites without the per-side layer state
 u8 sub_080460B0(struct Unk_03002414 *work, u16 *affine, u32 side, struct OamData *oam, u16 tile, u8 *parts, u8 pal, u8 x, u8 y, u32 alt)
 {
     struct SpriteTileRef buf[32];
