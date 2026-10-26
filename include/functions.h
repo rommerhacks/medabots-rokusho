@@ -873,6 +873,7 @@ void init_battle_bg_layer1(void);
 void write_tilemap_tiles_dma(u8 a, u8 b, u8 c);
 void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c);
 void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c);
+bool32 scene_step_palette_fade_out(void);
 bool32 sub_0806F850(void);
 bool32 sub_0806F9D4(void);
 void battle_timer_digit_extract(void);

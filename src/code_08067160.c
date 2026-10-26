@@ -532,8 +532,111 @@ void dispatch_game_mode_handler(void)
     gUnk_08485C48[gGameState]();
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08067160", setup_screen_transition_effect_080682CC);
-INCLUDE_ASM("asm/nonmatching/code_08067160", setup_screen_transition_effect_080684F0);
+void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c)
+{
+    u8 tiles[0x80];
+    u16 map[0x280];
+    u16 pal[0x200];
+    int i;
+
+    gUnk_03000000 = 0;
+    gUnk_03000028 = c;
+    gUnk_03000004 = a;
+    gUnk_03000005 = b;
+    if (b == 0)
+        gUnk_03000005 = 1;
+    switch (a) {
+    case 1:
+        REG_BLDCNT = 0xBF;
+        REG_BLDY = 0x10;
+        break;
+    case 2:
+        REG_BLDCNT = 0xFF;
+        REG_BLDY = 0x10;
+        break;
+    case 3:
+        for (i = 0; i < 0x80; i++)
+            tiles[i] = 0x11;
+        DmaSet(3, tiles, 0x0600FF80, 0x80000040);
+        for (i = 0; i < 0x280; i++)
+            map[i] = (gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] % 4) + 0xF1FC;
+        DmaSet(3, map, 0x0600F800, 0x84000140);
+        DmaSet(3, &gUnk_03000028, 0x050001E2, 0x80000001);
+        REG_BG0CNT = 0x1F0C;
+        REG_DISPCNT |= 0x100;
+        REG_BLDY = 0;
+        for (i = 0; i < 4; i++) {
+            gUnk_03000008[i * 4 + 0] = (i + 0x1FC) * 0x20;
+            gUnk_03000008[i * 4 + 1] = (i + 0x1FC) * 0x20 + 2;
+            gUnk_03000008[i * 4 + 2] = (i + 0x1FC) * 0x20 + 0x10;
+            gUnk_03000008[i * 4 + 3] = (i + 0x1FC) * 0x20 + 0x12;
+        }
+        for (i = 0; i < 15; i++) {
+            int j = gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] % (16 - i) + i;
+            u16 tmp = gUnk_03000008[i];
+            gUnk_03000008[i] = gUnk_03000008[j];
+            gUnk_03000008[j] = tmp;
+        }
+        break;
+    case 4:
+        gUnk_0300002C = gPaletteBackup;
+        DmaSet(3, PLTT, gPaletteBackup, 0x80000200);
+        for (i = 0; i < 0x200; i++)
+            pal[i] = c;
+        DmaSet(3, pal, PLTT, 0x84000100);
+        break;
+    }
+}
+
+void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c)
+{
+    u8 tiles[0x80];
+    u16 map[0x280];
+    int i;
+
+    gUnk_03000000 = b;
+    gUnk_03000028 = c;
+    gUnk_03000004 = a;
+    gUnk_03000005 = b;
+    if (b == 0)
+        gUnk_03000005 = 1;
+    switch (a) {
+    case 1:
+        REG_BLDCNT = 0xBF;
+        break;
+    case 2:
+        REG_BLDCNT = 0xFF;
+        break;
+    case 3:
+        for (i = 0; i < 0x80; i++)
+            tiles[i] = 0x11;
+        DmaSet(3, tiles, 0x0600FF80, 0x80000040);
+        for (i = 0; i < 0x280; i++)
+            map[i] = (gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] % 4) + 0xF1FC;
+        DmaSet(3, map, 0x0600F800, 0x84000140);
+        DmaSet(3, &gUnk_03000028, 0x050001E2, 0x80000001);
+        REG_BG0CNT = 0x1F0C;
+        REG_DISPCNT |= 0x100;
+        for (i = 0; i < 4; i++) {
+            gUnk_03000008[i * 4 + 0] = (i + 0x1FC) * 0x20;
+            gUnk_03000008[i * 4 + 1] = (i + 0x1FC) * 0x20 + 2;
+            gUnk_03000008[i * 4 + 2] = (i + 0x1FC) * 0x20 + 0x10;
+            gUnk_03000008[i * 4 + 3] = (i + 0x1FC) * 0x20 + 0x12;
+        }
+        for (i = 0; i < 15; i++) {
+            int j = gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] % (16 - i) + i;
+            u16 tmp = gUnk_03000008[i];
+            gUnk_03000008[i] = gUnk_03000008[j];
+            gUnk_03000008[j] = tmp;
+        }
+        break;
+    case 4:
+        gUnk_0300002C = gPaletteBackup;
+        DmaSet(3, PLTT, gPaletteBackup, 0x80000200);
+        scene_step_palette_fade_out();
+        break;
+    }
+}
 
 // Unused (nothing calls it): copies the saved palette back to PLTT.
 void sub_080686D0(void)
