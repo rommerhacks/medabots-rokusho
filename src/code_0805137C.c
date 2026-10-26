@@ -1,6 +1,147 @@
 #include "global.h"
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", load_map_npc_sprites);
+void load_map_npc_sprites(s32 mode)
+{
+    struct MapObject saved[64];
+    s32 n;
+    s32 j;
+    s32 k;
+    s32 count;
+    s32 found;
+    struct MapObject *obj;
+    u32 anim;
+    s32 skip;
+    s32 i;
+    const struct MapNpcRecord *e;
+
+    obj = gUnk_030057E0.unk5DC;
+    sub_080496C8((u8 *)saved, sizeof(saved));
+    memcpy_u8(obj, saved, sizeof(saved));
+    sub_080496C8((u8 *)obj, sizeof(saved));
+    count = 0;
+    n = 0;
+    j = 0;
+    for (k = 0; k < 32; k++)
+    {
+        for (e = gUnk_084837A0[gUnk_030057E0.unk7FE]; e->x != 0xFF; e++)
+        {
+            if (!((e->unk6 >> gUnk_030057E0.unk7FF) & 1))
+                continue;
+            if (e->unk5 != k)
+                continue;
+            if (sub_08053194(e->unk2 & 0xFFF))
+                continue;
+            skip = 0;
+            found = 0;
+            if (mode == 0)
+            {
+                skip = 0;
+                goto place;
+            }
+            if (mode >= 0)
+            if (mode <= 2)
+            {
+                for (j = 0; j < 64; j++)
+                {
+                    if ((e->unk2 & 0xFFF) == (saved[j].unk2 & 0xFFF))
+                        found = 1;
+                    if (found)
+                        break;
+                }
+                if (j != 64)
+                {
+                    if (mode == 1)
+                    {
+                        skip = 0;
+                        goto place;
+                    }
+                    if (mode == 2)
+                    {
+                        if (saved[j].unk4_7 == 1)
+                            goto chk;
+                        goto next;
+                    }
+                }
+                else if (mode == 2)
+                    skip = 1;
+            }
+            chk:
+            if (skip)
+                goto next;
+        place:
+            anim = e->unk4 >> 4;
+            gUnk_030057E0.unk5DC[n].x = e->x;
+            gUnk_030057E0.unk5DC[n].y = e->y;
+            gUnk_030057E0.unk5DC[n].unk2 = e->unk2;
+            switch (e->unk2 >> 12)
+            {
+            case 0:
+            case 4:
+            case 6:
+                gUnk_030057E0.unk810[e->y * (gUnk_030057E0.unk800 >> 1) + e->x] = 7;
+                break;
+            }
+            gUnk_030057E0.unk5DC[n].unk4_7 = 1;
+            if (e->unk4 == 0xFF)
+                goto next;
+            if (count < 30)
+            {
+                switch (e->unk2 >> 12)
+                {
+                case 0:
+                case 2:
+                case 4:
+                case 6:
+                {
+                    u8 slot = count + 49;
+                    u32 f = anim * 12;
+                    u8 a = anim;
+                    init_battle_sprite_entry_08048818(slot, 0xC804, f, a, 1);
+                    gUnk_030057E0.unk5DC[n].unk4_6 = 1;
+                    gUnk_03002C30[count + 49].unk30 = resolve_tile_from_battle_state(a);
+                    sub_0804877C(count + 49);
+                    if (gUnk_083D2B8D[gUnk_03002C30[count + 49].unk30])
+                        init_battle_sprite_entry_08048818(count + 91, 0xCC0C, 0x90, 14, 1);
+                }
+                    break;
+                }
+                gUnk_030057E0.unk5DC[n].unk4_0 = count;
+                anim = e->unk4 >> 4;
+                gUnk_030055A0[count + 49].unk0 = e->unk2 & 0xFFF;
+                gUnk_03002C30[count + 49].unk2B = anim;
+                gUnk_03002C30[count + 49].unkC_8 = e->x * 16 + gUnk_030057E0.unkC48;
+                gUnk_03002C30[count + 49].unk10_8 = e->y * 16 + gUnk_030057E0.unkC4A;
+                set_sprite_anim_and_store(count + 49, e->unk4 & 0xF, &gUnk_030057E0.unk5DC[n]);
+                sub_080493D4(count + 49, anim * 4 + (e->unk4 & 0xF));
+                if (mode != 0 && found)
+                {
+                    set_sprite_anim_and_store(count + 49, saved[j].unk5, &gUnk_030057E0.unk5DC[n]);
+                    sub_080493D4(count + 49, saved[j].unk5 + anim * 4);
+                }
+                gUnk_03002C30[count + 49].unk2C = 0;
+                gUnk_03002C30[count + 91].unkC_8 = gUnk_03002C30[count + 49].unkC_8;
+                gUnk_03002C30[count + 91].unk10_8 = gUnk_03002C30[count + 49].unk10_8 - 5;
+                gUnk_03002C30[count + 91].unk2 = gUnk_03002C30[count + 49].unk2;
+                gUnk_03002C30[count + 91].unk4 = gUnk_03002C30[count + 49].unk4 - 5;
+            }
+            count++;
+        next:
+            n++;
+        }
+    }
+    if (gUnk_030057E0.unkC8E != 0)
+    {
+        for (i = 0; i < 64; obj++, i++)
+        {
+            if ((obj->unk2 & 0xFFF) == gUnk_030057E0.unkC8E)
+            {
+                gUnk_030057E0.unkCB4 = i;
+                break;
+            }
+        }
+    }
+    gUnk_030057E0.unkCBA = 2;
+}
 
 // guess: sets up the player sprite (47) and its shadow (89) on entering the field
 void init_battle_field_setup(void)
@@ -352,7 +493,78 @@ void update_npc_sprite_animations(void)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805137C", map_cursor_move_and_check_event);
+u32 map_cursor_move_and_check_event(void)
+{
+    struct MapObject *obj = gUnk_030057E0.unk5DC;
+    s32 blocked = 0;
+    s32 x = gUnk_030057E0.unkC56;
+    s32 y = gUnk_030057E0.unkC57;
+    u8 found;
+    s32 i;
+
+    switch (gUnk_03002C30[47].unk20)
+    {
+    case 0:
+        if ((u8)y == 0)
+            blocked = 1;
+        else
+            y--;
+        break;
+    case 1:
+        if (y == (gUnk_030057E0.unk802 >> 1) - 1)
+            blocked = 1;
+        else
+            y++;
+        break;
+    case 2:
+        if ((u8)x == 0)
+            blocked = 1;
+        else
+            x--;
+        break;
+    case 3:
+        if (x == (gUnk_030057E0.unk800 >> 1) - 1)
+            blocked = 1;
+        else
+            x++;
+        break;
+    }
+    if (blocked == 1)
+        return 0;
+
+    found = 0;
+    for (i = 0; i < 64; i++)
+    {
+        if (obj->x == x && obj->y == y)
+        {
+            switch ((obj->unk2 & 0xF000) >> 12)
+            {
+            case 0:
+            case 4:
+            case 6:
+                gUnk_030057E0.unkC88 = 1;
+                gUnk_030057E0.unkC90 = gUnk_030057E0.unkC8E = obj->unk2 & 0xFFF;
+                gUnk_030057E0.unkC89 = 0;
+                gUnk_030057E0.unkC8A = 0;
+                gUnk_030057E0.unkCB4 = i;
+                gUnk_03002C30[47].unk25 = 1;
+                found = 1;
+                break;
+            }
+            if ((obj->unk2 & 0xF000) == 0)
+            {
+                u8 *d = &gUnk_03003810;
+                u8 slot = obj->unk4_0 + 49;
+                const u8 *t = gUnk_083D2903;
+                set_sprite_anim_and_store(slot, t[*d], obj);
+            }
+        }
+        obj++;
+        if (found == 1)
+            break;
+    }
+    return found;
+}
 
 u32 find_npc_event_match(void)
 {

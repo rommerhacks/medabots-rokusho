@@ -1351,4 +1351,16 @@ extern const u8 gUnk_08795418[];
 extern const u32 gUnk_08793628[]; // name entry screen tiles
 extern const u8 gUnk_080AF850[]; // name entry: bottom-row button column -> letter-row column
 
+extern u8 gUnk_03000438; // bit 0: skip one OAM rebuild, bit 1: don't sort sprites
+extern s32 gUnk_03005040;
+extern s32 gUnk_03005044;
+extern s32 gUnk_0300504C;
+extern struct Vec16 gUnk_03002C24; // sprite camera position
+extern struct Vec16 gUnk_03001794;
+extern struct SpriteFrame *const *const gUnk_083ABE30[];
+extern struct SpriteFrame *const *const gUnk_083AC088[];
+extern struct SpriteFrame *const *const gUnk_083AC0C8[];
+extern struct SpriteFrame *const *const gUnk_083AC108[];
+extern const struct MapNpcRecord *const gUnk_084837A0[];
+
 #endif // GUARD_VARIABLES_H

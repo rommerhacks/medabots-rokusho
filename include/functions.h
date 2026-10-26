@@ -1347,6 +1347,13 @@ void sub_0805E1CC(const u8 *s); // draws 10 characters as 2-row BG1 tiles copied
 void draw_number_3digits(s32 n, s32 x, s32 y); // 3 digits, blank-padded, BG tilemap 0x0600F000 (item list page numbers)
 void item_menu_set_cursor_pos(struct Unk_03002C30 *sprite); // list cursor sprite: unk2 = 0x54, unk4 = 0x1C + 16 * (gUnk_03006F74->unkC % 5)
 
+struct ObjSortEntry;
+struct RotateSrc;
+void shell_sort_by_second_byte(struct ObjSortEntry *a, u16 n);
+void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags);
+void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags);
+void rotate_vector_2d(s32 *x, s32 *y, struct RotateSrc *p);
+
 #endif // GUARD_FUNCTIONS_H
 void sub_08064A74(void);
 void sub_08064A94(void);

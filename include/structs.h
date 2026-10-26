@@ -1849,4 +1849,40 @@ struct LinkRow256 {
     u8 b[256];
 };
 
+// One OAM part of a sprite frame (frame tables gUnk_083ABE30 etc., read by check_flag_and_fast_copy).
+struct SpritePart
+{
+    u8 shape;
+    u8 size;
+    u16 tile;
+    s16 x;
+    s16 y;
+};
+
+struct SpriteFrame
+{
+    u16 count;
+    u16 pad;
+    struct SpritePart parts[0];
+};
+
+// (object index, sort key) pair sorted by shell_sort_by_second_byte.
+struct ObjSortEntry
+{
+    u8 idx;
+    u8 key;
+    u16 pad;
+};
+
+// Per-area NPC records (gUnk_084837A0[area]), end at x == 0xFF.
+struct MapNpcRecord
+{
+    u8 x;
+    u8 y;
+    u16 unk2; // copied to MapObject.unk2 (type << 12 | event id)
+    u8 unk4; // bits 4-7: animation set, bits 0-3: animation state; 0xFF = no sprite
+    u8 unk5; // load order
+    u16 unk6; // bit n: present when the story phase gUnk_030057E0.unk7FF == n
+};
+
 #endif // GUARD_STRUCTS_H
