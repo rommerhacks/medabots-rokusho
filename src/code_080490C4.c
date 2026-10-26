@@ -308,7 +308,9 @@ u8 field_random(u8 n) {
 void memcpy_u8(const void *src, void *dst, u32 n) {
     u32 i;
     for (i = 0; i < n; i++) {
-        *((u8 *)dst)++ = *((const u8 *)src)++;
+        *(u8 *)dst = *(const u8 *)src;
+        src = (const u8 *)src + 1;
+        dst = (u8 *)dst + 1;
     }
 }
 
