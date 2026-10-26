@@ -15,9 +15,10 @@ sound and data are copied out of it at build time.
 
 ## Status
 
-Every function has been disassembled into `asm/nonmatching/`. The C files in `src/` include them
-with `INCLUDE_ASM(...)`; decompiling a function replaces its `INCLUDE_ASM` line with C that agbcc
-compiles to the original bytes. Run `make progress` to see the current numbers.
+Every function is decompiled: the C in `src/` compiles back to the original ROM byte for byte
+(`make compare`), and `make shifted` builds a copy with all code and data moved, which still plays.
+The code is now being reorganised into the game's original modules, grouped by system (see Layout).
+Run `make progress` to see the numbers.
 
 | | |
 |---|---|
@@ -31,13 +32,28 @@ compiles to the original bytes. Run `make progress` to see the current numbers.
 
 | Path | Contents |
 |---|---|
-| `src/*.c` | C modules (one per code region for now; they get renamed as their purpose is understood) |
-| `asm/nonmatching/<module>/` | one `.s` file per function not decompiled yet |
+| `src/<system>/<module>.c` | C modules in ROM (link) order, each a contiguous run of functions; see the systems below |
+| `src/code_XXXXXXXX.c` | regions not split into modules yet (named after their start address) |
+| `asm/nonmatching/<module>/` | `.s` files of functions not decompiled yet (none left) |
 | `asm/crt0.s`, `asm/lib/` | startup code and SDK libraries |
-| `include/` | headers: `functions.h` (prototypes), `variables.h` (RAM/ROM data), `gba/` |
+| `include/` | `include/<system>/<module>.h` (one per module), `functions.h` (prototypes of the regions not split yet; includes the module headers), `variables.h` (RAM/ROM data), `structs.h`, `gba/` |
+| `config/clang-format.yml` | the code style (`make format`, `make format-check`) |
 | `symbols.ld` | absolute addresses of RAM variables and ROM data used from C |
 | `config/functions.tsv` | every function: address, original size, name, module |
 | `tools/scripts/` | `match.py`, `install_func.py`, `candidates.py`, `progress.py`, `romdiff.py` (see [CONTRIBUTING.md](CONTRIBUTING.md)) |
+
+### Systems
+
+| System | Folder | What's in it |
+|---|---|---|
+| Engine | `src/engine/` | boot and main loop, interrupts, LZ decompression, BG / palette / OAM helpers, random numbers, the game-mode-0 state dispatcher |
+| Link | `src/link/` | serial link cable transfer |
+| Menus | `src/menu/` | field pause menu, Medawatch, Medabots screen (team / detail / team select), Medals screen |
+| Debug | `src/debug/` | the developer debug menu and its entries |
+| Audio | `src/audio/` | the game's own sound engine (sequencer and driver) |
+
+Folders for the field, Robattle, title and minigame code follow as the remaining `code_*` regions are
+split.
 
 ## See also
 

@@ -1,3 +1,27 @@
+# Code layout and style
+
+* **Modules are contiguous.** Link order is ROM order, so a C file is always a run of adjacent functions.
+  Folders are free: `ld_script.ld` lists the objects one by one. `config/functions.tsv`'s module column
+  is the file's path under `src/` without `.c` (e.g. `menu/medals_screen`).
+* **Finding module boundaries:** `python3 tools/scripts/module_cuts.py MODULE` (or `--from ADDR --to ADDR`)
+  prints the functions in ROM order with the number of direct calls crossing the gap before each one
+  (low = a likely boundary) and the coverage scene tags. The other strong hints are the handler tables:
+  each screen starts with its `*_update` dispatcher, followed by its state handlers and drawing helpers.
+* **Moving code:** `tools/scripts/split_module.py split SRC FUNC NEW` moves everything from `FUNC` to the end
+  of `src/SRC.c` into `src/NEW.c`; `split_module.py join A B` appends the next file `B` to `A`.
+  `tools/scripts/move_module.py OLD NEW "description"` renames a module and moves its prototypes from
+  `include/functions.h` to `include/NEW.h`. `tools/scripts/make_static.py MODULE...` makes the functions
+  nothing outside the module names `static` (it keeps the ones a data table points to). Run
+  `make compare` after each step.
+* **Every file starts with a comment:** what the module does, its entry points, which systems it talks to.
+* **Format and lint:** `make format` (clang-format with `config/clang-format.yml`; copy it to `.clang-format`
+  for your editor, that name is git-ignored), `make format-check`, and `make lint` (modern
+  `arm-none-eabi-gcc -fsyntax-only -Wall` with implicit declarations, implicit int, missing returns and
+  incompatible pointers as errors). agbcc accepts things the lint check doesn't (casts as lvalues, calls
+  without prototypes); rewrite them in a form both accept and check that `make compare` still matches.
+* Mark every matching hack (register pins, odd casts, dummy variables, codegen-only `goto`s) with
+  `// FAKEMATCH: <why>`.
+
 # Decompiling a function
 
 1. Build once (`make compare`) so `medabots_rokusho.elf` exists. `match.py` links against it.

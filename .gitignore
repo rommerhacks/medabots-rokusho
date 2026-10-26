@@ -12,3 +12,4 @@ tools/gbadisasm-src/
 __pycache__/
 *.pyc
 scratch/
+/.clang-format

@@ -96,17 +96,17 @@ $(BUILD_DIR)/shifted.gba: $(BUILD_DIR)/shifted.elf
 	$(OBJCOPY) -O binary $< $@
 	$(PREFIX)nm -n $< | awk '$$1 ~ /^0[0-9a-f]+$$/ && $$3 !~ /^\$$/ {print toupper($$1), $$3}' > $(BUILD_DIR)/shifted.sym
 
-# Code standard: clang-format (.clang-format) and a syntax check with a modern compiler, so every call
+# Code standard: clang-format (config/clang-format.yml) and a syntax check with a modern compiler, so every call
 # goes through a real prototype.
 FORMAT_SRCS := $(shell find src include -name '*.c' -o -name '*.h')
 LINT_FLAGS  := -fsyntax-only -I include -Wall -Werror=implicit-function-declaration -Werror=implicit-int \
                -Werror=return-type -Werror=incompatible-pointer-types
 
 format:
-	clang-format -i $(FORMAT_SRCS)
+	clang-format --style=file:config/clang-format.yml -i $(FORMAT_SRCS)
 
 format-check:
-	clang-format --dry-run --Werror $(FORMAT_SRCS)
+	clang-format --style=file:config/clang-format.yml --dry-run --Werror $(FORMAT_SRCS)
 
 lint:
 	@status=0; for f in $(C_SRCS); do $(PREFIX)gcc $(LINT_FLAGS) $$f || status=1; done; exit $$status
