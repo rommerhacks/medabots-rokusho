@@ -159,8 +159,12 @@ SECTIONS {
         build/src/field/map_objects.o(.rodata);
         build/src/field/scene_3d.o(.text);
         build/src/field/scene_3d.o(.rodata);
-        build/src/code_08057024.o(.text);
-        build/src/code_08057024.o(.rodata);
+        build/src/field/vehicle_menu.o(.text);
+        build/src/field/vehicle_menu.o(.rodata);
+        build/src/field/field_debug.o(.text);
+        build/src/field/field_debug.o(.rodata);
+        build/src/engine/bg_draw.o(.text);
+        build/src/engine/bg_draw.o(.rodata);
         build/src/code_0805AB40.o(.text);
         build/src/code_0805AB40.o(.rodata);
         build/src/code_0805EE6C.o(.text);

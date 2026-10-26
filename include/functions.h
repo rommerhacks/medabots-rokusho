@@ -8,10 +8,6 @@
 // amount/32, for the 16-colour palettes in mask
 // h, u8 i, u8 j): callers were compiled without a prototype
 // h, u8 i, u8 j, u8 base): callers were compiled without a prototype
-void dispatch_by_index(u32 idx);
-void sub_08058214(u32 a);
-u32 sub_0805937C(void);
-void handle_battle_end_state_transition(void);
 
 void CpuSet(const void *src, void *dest, u32 control);
 s32 Div(s32 num, s32 denom);    // BIOS SWI 6
@@ -166,7 +162,6 @@ u32 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 by
                                                   // tests the result without truncating it
 void init_blend_effect(void *state, u8 a, u8 b, s8 c, u16 mode);
 u32 blend_fade_step_08065598(void *state);
-void sub_08059D04(void); // clears unk0 of the 128 gUnk_03002C30 sprites
 // code_0805AB40
 void decompress_and_write_tilemap(
     const void *src,
@@ -222,7 +217,6 @@ void render_battle_medapart_list(u32 mode);
 s32 calc_text_pixel_width(const u8 *s); // sum of gUnk_083B4C88 widths, up to 10 characters or the 0xFE terminator
 void sub_0805E1CC(const u8 *s); // draws 10 characters as 2-row BG1 tiles copied from a 26-per-row font map on the same
                                 // screen (guess: name entry)
-void draw_number_3digits(s32 n, s32 x, s32 y); // 3 digits, blank-padded, BG tilemap 0x0600F000 (item list page numbers)
 void item_menu_set_cursor_pos(
     struct Unk_03002C30 *sprite); // list cursor sprite: unk2 = 0x54, unk4 = 0x1C + 16 * (gUnk_03006F74->unkC % 5)
 
@@ -304,8 +298,6 @@ void sub_080608EC(void);
 void sub_0806174C(void);
 void sub_08060FD4(void);
 void sub_08061374(void);
-void draw_number_2digits_tall(s32 n, s32 x, s32 y);
-void draw_number(u16 a, s32 b, u8 c, u8 d, u8 e, u8 f);
 void init_fade_screen_setup(void);
 void sub_080609C0(void);
 void update_animated_tilemap(void);
@@ -334,26 +326,6 @@ void sub_0807068C(void);
 void sub_080706AC(void);
 void load_bg_screen_c(void);
 u32 call_battle_handler_by_state_08071C64(void);
-void sub_08058110(); // defined as (void); sub_0804AF4C passes an argument
-void draw_number_tall(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg);
-void update_cursor_sprite_position(void);
-u32 check_vehicle_usability(s32 idx);
-void load_battle_sprite_from_index(u32 value, s32 bits, s32 x, s32 y);
-void init_vehicle_menu_sprite(s32 slide);
-void render_npc_tilemap_row(s32 row);
-void handle_cursor_up_down_input(s32 count);
-void sub_08057EBC(void);
-void sub_0805889C(s32 max);
-void sub_08058908(u32 idx, s32 max);
-void sub_080589B0(u32 idx, s32 max);
-void update_anim_counter(u32 idx, s32 max);
-void sub_08058A88(u32 idx, u32 sub, s32 max);
-void clear_all_battle_sprites(void);
-void sub_08058B04(u32 idx);
-void sub_080581C0(u32 a, s32 b);
-void init_battle_field_sprites(void);
-void load_or_clear_battle_sprites(s8 key, s32 value, u8 width, u8 x, u8 y);
-void load_battle_sprite_tile(const u8 *tiles, s32 count, s32 x, s32 y);
 
 #include "audio/sound_seq.h"
 #include "audio/sound_driver.h"
@@ -464,5 +436,9 @@ void load_battle_sprite_tile(const u8 *tiles, s32 count, s32 x, s32 y);
 #include "field/map_objects.h"
 
 #include "field/scene_3d.h"
+#include "field/vehicle_menu.h"
+
+#include "field/field_debug.h"
+#include "engine/bg_draw.h"
 
 #endif // GUARD_FUNCTIONS_H
