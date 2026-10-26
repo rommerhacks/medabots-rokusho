@@ -1,7 +1,6 @@
 #include "global.h"
 
-void sub_0806F3F0(void)
-{
+void sub_0806F3F0(void) {
     if (battle_transition_fade_step()) {
         sub_0806FF50();
         sub_0806FF90();
@@ -11,8 +10,7 @@ void sub_0806F3F0(void)
     }
 }
 
-void sub_0806F418(void)
-{
+void sub_0806F418(void) {
     s32 n = 0xC4;
     s32 i;
 
@@ -132,8 +130,7 @@ void sub_0806F418(void)
 }
 
 // Story intro sub-state (gUnk_08485F1C entry 34); only reached through that table.
-void sub_0806F750(void)
-{
+void sub_0806F750(void) {
     gUnk_03001800_s.unkF4 += 0x10;
     gUnk_03001800_s.unkF6 -= 0x10;
     if (gUnk_03001800_s.timer++ > 0x3A) {
@@ -144,8 +141,7 @@ void sub_0806F750(void)
     }
 }
 
-void sub_0806F78C(void)
-{
+void sub_0806F78C(void) {
     if (battle_transition_fade_step()) {
         gUnk_03001800_s.timer = 0;
         gUnk_03001800_s.nextSubState = 0xA;
@@ -153,8 +149,7 @@ void sub_0806F78C(void)
     }
 }
 
-void sub_0806F7AC(void)
-{
+void sub_0806F7AC(void) {
     s32 n = 0x3C;
 
     if (n == gUnk_03001800_s.timer) {
@@ -176,8 +171,7 @@ void sub_0806F7AC(void)
 }
 
 // Story intro sub-state (gUnk_08485F1C entry 37); only reached through that table.
-void sub_0806F830(void)
-{
+void sub_0806F830(void) {
     gGameMode = 3;
     gGameState = 2;
     gGameSubState = 0;
@@ -185,8 +179,7 @@ void sub_0806F830(void)
 
 // View of 0x03001800 (gUnk_03001800_s) for the battle-intro palette fades of code_0806F3F0:
 // unkE holds a saved copy of OBJ palette 4 (0x05000280, 16 colours).
-struct Unk_03001800_fade
-{
+struct Unk_03001800_fade {
     u16 nextMode;
     u16 nextState;
     u16 nextSubState;
@@ -198,8 +191,7 @@ struct Unk_03001800_fade
 #define gUnk_03001800_fade (*(struct Unk_03001800_fade *)&gUnk_03001800_s)
 
 // guess: fade OBJ palette 4 in from black (blend towards `zero` colour, which folds away), BLDY fading out.
-bool32 sub_0806F850(void)
-{
+bool32 sub_0806F850(void) {
     u16 buf[16];
     vs32 inv;
     s32 zero;
@@ -225,7 +217,9 @@ bool32 sub_0806F850(void)
         k = gUnk_03001800_fade.timer / gUnk_03001800_fade.unk6;
         inv = 0x20 - k;
         for (i = 0; i < 16; i++)
-            buf[i] = (((gUnk_03001800_fade.unkE[i] & 0x1F) * k + (zero & 0x1F) * (0x20 - k)) >> 5) + ((((gUnk_03001800_fade.unkE[i] & 0x3E0) * k + (zero & 0x3E0) * (0x20 - k)) >> 5) & 0x3E0) + ((((gUnk_03001800_fade.unkE[i] & 0x7C00) * k + (zero & 0x7C00) * (0x20 - k)) >> 5) & 0x7C00);
+            buf[i] = (((gUnk_03001800_fade.unkE[i] & 0x1F) * k + (zero & 0x1F) * (0x20 - k)) >> 5) +
+                     ((((gUnk_03001800_fade.unkE[i] & 0x3E0) * k + (zero & 0x3E0) * (0x20 - k)) >> 5) & 0x3E0) +
+                     ((((gUnk_03001800_fade.unkE[i] & 0x7C00) * k + (zero & 0x7C00) * (0x20 - k)) >> 5) & 0x7C00);
         DmaSet(3, buf, PLTT + 0x280, 0x84000008);
         d = gUnk_03001800_fade.unk6;
         if (gUnk_03001800_fade.timer % (d * 2) == (zero & 0x1F))
@@ -235,8 +229,7 @@ bool32 sub_0806F850(void)
     return FALSE;
 }
 
-bool32 sub_0806F9D4(void)
-{
+bool32 sub_0806F9D4(void) {
     u16 div = gUnk_03001800_s.unk6;
     s32 t = gUnk_03001800_s.timer;
     u8 v;
@@ -254,8 +247,7 @@ bool32 sub_0806F9D4(void)
     return FALSE;
 }
 
-void copy_tilemap_rect_to_vram(const u16 *src, u8 bg, u8 w, u8 h, u8 x, u8 y, u16 tile, u8 pal)
-{
+void copy_tilemap_rect_to_vram(const u16 *src, u8 bg, u8 w, u8 h, u8 x, u8 y, u16 tile, u8 pal) {
     u16 buf[0x280];
     vu32 zero;
     s32 i;
@@ -270,8 +262,7 @@ void copy_tilemap_rect_to_vram(const u16 *src, u8 bg, u8 w, u8 h, u8 x, u8 y, u1
     DmaSet(3, buf, (bg << 11) + VRAM, 0x80000280);
 }
 
-u32 process_text_tile_and_dma_transfer(u8 a)
-{
+u32 process_text_tile_and_dma_transfer(u8 a) {
     const u8 *s = gUnk_0848602C[a + 4];
     u8 c;
 
@@ -299,8 +290,7 @@ u32 process_text_tile_and_dma_transfer(u8 a)
     return 0;
 }
 
-u32 check_battle_timer_expired(u8 a)
-{
+u32 check_battle_timer_expired(u8 a) {
     u16 v;
     register u8 n asm("r8") = gUnk_03001800_s.unk2E;
 
@@ -316,8 +306,7 @@ u32 check_battle_timer_expired(u8 a)
     return 0;
 }
 
-void battle_timer_digit_extract(void)
-{
+void battle_timer_digit_extract(void) {
     u16 buf[8];
     u16 a = gUnk_03001800_s.unkF0;
     u16 b = gUnk_03001800_s.unkF2 % 1000;
@@ -339,8 +328,7 @@ void battle_timer_digit_extract(void)
 
 #define ROW_ENT(k) gUnk_0848604C[gUnk_03001800_s.unkED * 4 + a * 12 + 0x30 + (k)]
 
-u32 battle_draw_tilemap_row_dma(u8 a)
-{
+u32 battle_draw_tilemap_row_dma(u8 a) {
     u16 tile = 0xD2;
     s32 slot;
     s32 pos;
@@ -379,8 +367,7 @@ u32 battle_draw_tilemap_row_dma(u8 a)
 
 #undef ROW_ENT
 
-void sub_0806FF50(void)
-{
+void sub_0806FF50(void) {
     s32 i;
 
     for (i = 0; i < 13; i++)
@@ -389,8 +376,7 @@ void sub_0806FF50(void)
     DmaSet(3, gUnk_03001800_s.unkD2, 0x0600FC44, 0x8000000D);
 }
 
-void sub_0806FF90(void)
-{
+void sub_0806FF90(void) {
     vu16 v;
 
     v = 0;
@@ -404,8 +390,7 @@ void sub_0806FF90(void)
     gUnk_03001800_s.unk2E = 0;
 }
 
-void sub_0806FFF8(void)
-{
+void sub_0806FFF8(void) {
     u16 v;
 
     gUnk_03001800_s.unkF2 = 0;
@@ -414,8 +399,7 @@ void sub_0806FFF8(void)
     DmaSet(3, &v, 0x0600F86C, 0x81000007);
 }
 
-void sub_08070030(void)
-{
+void sub_08070030(void) {
     u32 v;
     s32 i;
 
@@ -427,8 +411,7 @@ void sub_08070030(void)
         gUnk_03002C30[i + 0xE].unk4 = 0xC8;
 }
 
-bool32 battle_transition_fade_step(void)
-{
+bool32 battle_transition_fade_step(void) {
     if (gUnk_03001800_s.timer == 0x3C) {
         setup_screen_transition_effect_080682CC(4, 1, 0x7FFF);
         REG_BLDCNT = 0x844;
@@ -447,8 +430,7 @@ bool32 battle_transition_fade_step(void)
     return FALSE;
 }
 
-void load_bg_screen_a(void)
-{
+void load_bg_screen_a(void) {
     u16 dst[0x280];
     u16 src[0x258];
     vu32 zero;
@@ -469,8 +451,7 @@ void load_bg_screen_a(void)
     REG_DISPCNT |= 0x100;
 }
 
-void load_bg_screen_b(void)
-{
+void load_bg_screen_b(void) {
     u16 dst[0x280];
     u16 src[0x258];
     vu32 zero;
@@ -491,8 +472,7 @@ void load_bg_screen_b(void)
     REG_DISPCNT |= 0x100;
 }
 
-void load_bg_screen_c(void)
-{
+void load_bg_screen_c(void) {
     u16 dst[0x280];
     u16 src[0x258];
     vu32 zero;
@@ -513,8 +493,7 @@ void load_bg_screen_c(void)
     REG_DISPCNT |= 0x100;
 }
 
-void update_sprite_animations_080703D8(void)
-{
+void update_sprite_animations_080703D8(void) {
     u8 i;
 
     for (i = 0; i <= 10; i++) {
@@ -539,8 +518,7 @@ void update_sprite_animations_080703D8(void)
     }
 }
 
-s32 sub_08070468(u8 i)
-{
+s32 sub_08070468(u8 i) {
     if (gUnk_03002C30[i].unk8 > 0x3F && gUnk_03002C30[i].unk9 > 0x3F)
         return 0;
     if (gUnk_03002C30[i].unk9 <= 0x3F) {
@@ -554,8 +532,7 @@ s32 sub_08070468(u8 i)
     return 1;
 }
 
-s32 sub_080704D0(u8 i)
-{
+s32 sub_080704D0(u8 i) {
     if (gUnk_03002C30[i].unk8 > 0x3F && gUnk_03002C30[i].unk9 > 0x3F)
         return 0;
     if (gUnk_03002C30[i].unk8 <= 0x3F) {
@@ -569,8 +546,7 @@ s32 sub_080704D0(u8 i)
     return 1;
 }
 
-s32 sub_0807052C(u8 i)
-{
+s32 sub_0807052C(u8 i) {
     if (i & 1)
         gUnk_03002C30[i].unk4 = gUnk_03002C30[i].unk23 - gUnk_080AFF50[gUnk_03002C30[i].unk21 & 0x3F];
     else
@@ -579,8 +555,7 @@ s32 sub_0807052C(u8 i)
     return 1;
 }
 
-s32 sub_080705BC(u8 i)
-{
+s32 sub_080705BC(u8 i) {
     if (gUnk_03002C30[i].unk21 < 0x48) {
         gUnk_03002C30[i].unk21++;
     } else if (gUnk_03002C30[i].unk4 < -0x50) {
@@ -592,8 +567,7 @@ s32 sub_080705BC(u8 i)
     return 1;
 }
 
-s32 sub_08070600(u8 i)
-{
+s32 sub_08070600(u8 i) {
     if (gUnk_03002C30[i].unk21 < 0x48) {
         gUnk_03002C30[i].unk21++;
     } else if (gUnk_03002C30[i].unk2 > 0x168) {
@@ -605,8 +579,7 @@ s32 sub_08070600(u8 i)
     return 1;
 }
 
-void battle_sprite_set_action(u8 action, u8 i, u8 y)
-{
+void battle_sprite_set_action(u8 action, u8 i, u8 y) {
     struct Unk_03002C30 *base = gUnk_03002C30;
     struct Unk_03002C30 *s = &base[i];
 
@@ -620,14 +593,12 @@ void battle_sprite_set_action(u8 action, u8 i, u8 y)
     s->unk1A = 0;
 }
 
-void sub_0807068C(void)
-{
+void sub_0807068C(void) {
     if (gFrameCounter & 1)
         gBg3Scroll.y++;
 }
 
-void sub_080706AC(void)
-{
+void sub_080706AC(void) {
     if ((gFrameCounter & 3) == 0) {
         if (++gUnk_03001800_bganim.unkE > 5)
             gUnk_03001800_bganim.unkE = 0;
@@ -644,8 +615,7 @@ void sub_080706AC(void)
         sub_0807168C();
 }
 
-void medabots_weekly_update(void)
-{
+void medabots_weekly_update(void) {
     if (gUnk_03001800_bganim.unkC != 0)
         sub_0807068C();
     if (gUnk_03001800_bganim.unkD != 0)
@@ -653,8 +623,7 @@ void medabots_weekly_update(void)
     gMedabotsWeeklySubStates[gGameSubState]();
 }
 
-void medabots_weekly_init(void)
-{
+void medabots_weekly_init(void) {
     vu32 zero;
 
     zero = 0;
@@ -681,8 +650,7 @@ void medabots_weekly_init(void)
     gGameSubState = 3;
 }
 
-void load_battle_bg_tilemaps(void)
-{
+void load_battle_bg_tilemaps(void) {
     s32 i;
 
     LZ77UnCompVram(gUnk_087C11C4, (void *)0x06004000);
@@ -695,8 +663,7 @@ void load_battle_bg_tilemaps(void)
     LZ77UnCompVram(gUnk_087C4498, (void *)0x0600B800);
     LZ77UnCompVram(gUnk_087B1CEC, (void *)0x06010000);
 
-    for (i = 0; i <= 10; i++)
-    {
+    for (i = 0; i <= 10; i++) {
         init_battle_sprite_entry_08048818(i, 0xC800, 0x50E, 4, 3);
         gUnk_03002C30[i].unk2 = i * 8 + 0x78;
         gUnk_03002C30[i].unk4 = 0;
@@ -711,8 +678,7 @@ void load_battle_bg_tilemaps(void)
     gUnk_03002C30[10].unk22 = 0xFF;
     gUnk_03002C30[21].unk22 = 0xFF;
 
-    for (i = 0; i <= 3; i++)
-    {
+    for (i = 0; i <= 3; i++) {
         init_battle_sprite_entry_08048818(i + 22, 0xCC00, 0, i, 1);
         gUnk_03002C30[i + 22].unk4 = 0x40;
     }
@@ -726,8 +692,7 @@ void load_battle_bg_tilemaps(void)
     gUnk_03002C30[25].unk2 = 0xD0;
     gUnk_03002C30[25].unkB = 6;
 
-    for (i = 0; i <= 3; i++)
-    {
+    for (i = 0; i <= 3; i++) {
         init_battle_sprite_entry_08048818(i + 26, 0xCC08, 0x513, 0xE, 3);
         gUnk_03002C30[i + 26].unk2 = gUnk_03002C30[i + 22].unk2;
         gUnk_03002C30[i + 26].unk4 = 0x40;
@@ -737,8 +702,7 @@ void load_battle_bg_tilemaps(void)
     gGameSubState = 4;
 }
 
-void load_battle_field_graphics(void)
-{
+void load_battle_field_graphics(void) {
     LZ77UnCompVram(gUnk_087C481C, (void *)0x02031000);
     DmaSet(3, gUnk_087C4C5C, PLTT, 0x84000068);
     LZ77UnCompVram(gUnk_085E3AC8, (void *)0x06011B00);
@@ -765,8 +729,7 @@ void load_battle_field_graphics(void)
     gGameSubState = 1;
 }
 
-void init_battle_bg_palettes_and_layers(void)
-{
+void init_battle_bg_palettes_and_layers(void) {
     DmaSet(3, gUnk_087C4DFC, PLTT, 0x84000030);
     DmaSet(3, &gUnk_0807C540[0xE0], PLTT + 0x200, 0x80000010);
     DmaSet(3, &gUnk_0807C540[0xC0], PLTT + 0x220, 0x80000010);
@@ -822,18 +785,15 @@ void init_battle_bg_palettes_and_layers(void)
     gGameSubState = 1;
 }
 
-void sub_08070EB8(void)
-{
+void sub_08070EB8(void) {
     play_song(4);
     sub_08071C40(1, 0, 0);
     sub_08071C40(2, 11, 0);
     gGameSubState++;
 }
 
-void sub_08070EE4(void)
-{
-    if (gUnk_03002C30[10].unk22 == 0)
-    {
+void sub_08070EE4(void) {
+    if (gUnk_03002C30[10].unk22 == 0) {
         sprite_cycle_anim_start(0x16, 0x2D, 8);
         sprite_cycle_anim_start(0x17, 0x36, 8);
         sub_08071C40(5, 0x16, 0x48);
@@ -842,10 +802,8 @@ void sub_08070EE4(void)
     }
 }
 
-void sub_08070F34(void)
-{
-    if (gUnk_03002C30[22].unk20 == 0)
-    {
+void sub_08070F34(void) {
+    if (gUnk_03002C30[22].unk20 == 0) {
         sprite_cycle_anim_stop(0x16, 0x27);
         sprite_cycle_anim_stop(0x17, 0x33);
         sprite_cycle_anim_start(0x18, 0x45, 8);
@@ -854,10 +812,8 @@ void sub_08070F34(void)
     }
 }
 
-void sub_08070F7C(void)
-{
-    if (gUnk_03002C30[24].unk20 == 0)
-    {
+void sub_08070F7C(void) {
+    if (gUnk_03002C30[24].unk20 == 0) {
         sprite_cycle_anim_start(0x18, 0x3F, 0xC);
         sprite_cycle_anim_start(0x19, 0x4E, 8);
         sub_08071C40(6, 0x19, 0x60);
@@ -865,17 +821,14 @@ void sub_08070F7C(void)
     }
 }
 
-void sub_08070FC0(void)
-{
-    if (gUnk_03002C30[25].unk20 == 0)
-    {
+void sub_08070FC0(void) {
+    if (gUnk_03002C30[25].unk20 == 0) {
         sprite_cycle_anim_stop(0x19, 0x4B);
         gGameSubState++;
     }
 }
 
-void sub_08070FEC(void)
-{
+void sub_08070FEC(void) {
     switch (gUnk_03001800_s.timer) {
     case 0:
         text_window_init(1, 0, 0);
@@ -947,8 +900,7 @@ void sub_08070FEC(void)
 }
 
 // Medabots Weekly sub-state 12 (gMedabotsWeeklySubStates); only reached through that table.
-void sub_08071150(void)
-{
+void sub_08071150(void) {
     u32 zero = 0;
 
     DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
@@ -956,8 +908,7 @@ void sub_08071150(void)
     gGameSubState = 5;
 }
 
-void sub_0807118C(void)
-{
+void sub_0807118C(void) {
     switch (gUnk_03001800_s.timer) {
     case 0:
         text_window_init(1, 0, 0);
@@ -1021,8 +972,7 @@ void sub_0807118C(void)
     }
 }
 
-void sub_080712E8(void)
-{
+void sub_080712E8(void) {
     u32 zero = 0;
     s32 i;
     u32 z;
@@ -1065,8 +1015,7 @@ void sub_080712E8(void)
     gGameSubState = 4;
 }
 
-void battle_audio_phase_dispatch(void)
-{
+void battle_audio_phase_dispatch(void) {
     switch (gUnk_03001800_s.timer) {
     case 0:
         text_window_init(1, 0, 0);
@@ -1111,8 +1060,7 @@ void battle_audio_phase_dispatch(void)
     }
 }
 
-void check_sprite_done_and_advance_battle(void)
-{
+void check_sprite_done_and_advance_battle(void) {
     if (gUnk_03002C30[10].unk22 == 0) {
         sound_stop_all_with_fade_guard(0x20);
         gUnk_03001800_s.nextSubState = 0x11;
@@ -1120,14 +1068,12 @@ void check_sprite_done_and_advance_battle(void)
     }
 }
 
-void sub_08071600(void)
-{
+void sub_08071600(void) {
     play_song(0);
     sub_08047850(3);
 }
 
-void sub_08071614(void)
-{
+void sub_08071614(void) {
     u8 i;
 
     for (i = 0; i < 0x1A; i++) {
@@ -1148,8 +1094,7 @@ void sub_08071614(void)
     }
 }
 
-void sub_0807168C(void)
-{
+void sub_0807168C(void) {
     u8 buf[4];
     s32 j;
     u8 mask;
@@ -1168,8 +1113,7 @@ void sub_0807168C(void)
     }
 }
 
-void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 arg2)
-{
+void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 arg2) {
     u8 mask = 1 << (sprite - 0x16);
 
     gUnk_03007010 |= mask;
@@ -1178,8 +1122,7 @@ void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 arg2)
     gUnk_03002C30[sprite].unk6 = frame;
 }
 
-void sprite_cycle_anim_stop(u8 sprite, u16 frame)
-{
+void sprite_cycle_anim_stop(u8 sprite, u16 frame) {
     u8 mask = 1 << (sprite - 0x16);
 
     gUnk_03007010 &= ~mask;
@@ -1187,8 +1130,7 @@ void sprite_cycle_anim_stop(u8 sprite, u16 frame)
     gUnk_03002C30[sprite].unk6 = frame;
 }
 
-u32 sub_08071794(u8 sprite)
-{
+u32 sub_08071794(u8 sprite) {
     s8 tbl[8];
     struct Unk_03002C30 *p;
     struct Unk_03002C30 *base;
@@ -1213,8 +1155,7 @@ u32 sub_08071794(u8 sprite)
     return 1;
 }
 
-u32 sub_08071840(u8 sprite)
-{
+u32 sub_08071840(u8 sprite) {
     s8 tbl[8];
     struct Unk_03002C30 *p;
     struct Unk_03002C30 *base;
@@ -1239,8 +1180,7 @@ u32 sub_08071840(u8 sprite)
     return 1;
 }
 
-u32 sub_080718EC(u8 sprite)
-{
+u32 sub_080718EC(u8 sprite) {
     s8 tbl[12];
     struct Unk_03002C30 *base;
     struct Unk_03002C30 *s;
@@ -1250,20 +1190,14 @@ u32 sub_080718EC(u8 sprite)
     memcpy_optimized(tbl, gUnk_080AFF9C, 12);
     base = gUnk_03002C30;
     s = &base[sprite];
-    if (s->unk21 <= 11)
-    {
-        if (s->unk1A == tbl[s->unk21])
-        {
+    if (s->unk21 <= 11) {
+        if (s->unk1A == tbl[s->unk21]) {
             s->unk2--;
-            if (++s->unk21 == 8 && s->unk22 != 0xFF)
-            {
-                if (sprite == 0)
-                {
+            if (++s->unk21 == 8 && s->unk22 != 0xFF) {
+                if (sprite == 0) {
                     init_battle_sprite_entry_08048818(1, 0xCC00, 0x50E, 4, 3);
                     n = 1;
-                }
-                else
-                {
+                } else {
                     n = sprite + 1;
                     ((void (*)())init_battle_sprite_entry_08048818)(n, 0xC800, 0x50E, 4, 3);
                 }
@@ -1274,11 +1208,8 @@ u32 sub_080718EC(u8 sprite)
                 sub_08071C40(3, n, 0);
             }
         }
-    }
-    else
-    {
-        if (sprite == 0)
-        {
+    } else {
+        if (sprite == 0) {
             base[0].unk0 = (base[0].unk0 & 0xF3FF) | 0x800;
             base[1].unk0 = (base[1].unk0 & 0xF3FF) | 0x800;
         }
@@ -1289,8 +1220,7 @@ u32 sub_080718EC(u8 sprite)
     return 1;
 }
 
-u32 sub_080719EC(u8 sprite)
-{
+u32 sub_080719EC(u8 sprite) {
     s8 tbl[12];
     struct Unk_03002C30 *base;
     struct Unk_03002C30 *s;
@@ -1300,20 +1230,14 @@ u32 sub_080719EC(u8 sprite)
     memcpy_optimized(tbl, gUnk_080AFF9C, 12);
     base = gUnk_03002C30;
     s = &base[sprite];
-    if (s->unk21 <= 11)
-    {
-        if (s->unk1A == tbl[s->unk21])
-        {
+    if (s->unk21 <= 11) {
+        if (s->unk1A == tbl[s->unk21]) {
             s->unk2++;
-            if (++s->unk21 == 8 && s->unk22 != 0xFF)
-            {
-                if (sprite == 11)
-                {
+            if (++s->unk21 == 8 && s->unk22 != 0xFF) {
+                if (sprite == 11) {
                     init_battle_sprite_entry_08048818(12, 0xCC00, 0x50E, 4, 3);
                     n = 12;
-                }
-                else
-                {
+                } else {
                     n = sprite + 1;
                     ((void (*)())init_battle_sprite_entry_08048818)(n, 0xC800, 0x50E, 4, 3);
                 }
@@ -1324,11 +1248,8 @@ u32 sub_080719EC(u8 sprite)
                 sub_08071C40(4, n, 0);
             }
         }
-    }
-    else
-    {
-        if (sprite == 11)
-        {
+    } else {
+        if (sprite == 11) {
             s->unk0 = (s->unk0 & 0xF3FF) | 0x800;
             base[12].unk0 = (base[12].unk0 & 0xF3FF) | 0x800;
         }
@@ -1339,16 +1260,14 @@ u32 sub_080719EC(u8 sprite)
     return 1;
 }
 
-u32 sub_08071AF0(u8 sprite)
-{
+u32 sub_08071AF0(u8 sprite) {
     struct Unk_03002C30 *base = gUnk_03002C30;
     struct Unk_03002C30 *s = &base[sprite];
     u16 f;
 
     s->unk2++;
     base[(u16)(sprite + 4)].unk2 = s->unk2;
-    if (s->unk34 <= s->unk1A)
-    {
+    if (s->unk34 <= s->unk1A) {
         f = s->unk6 / 12;
         f = f * 12;
         s->unk6 = s->unk30 = f + 3;
@@ -1357,16 +1276,14 @@ u32 sub_08071AF0(u8 sprite)
     return 1;
 }
 
-u32 sub_08071B44(u8 sprite)
-{
+u32 sub_08071B44(u8 sprite) {
     struct Unk_03002C30 *base = gUnk_03002C30;
     struct Unk_03002C30 *s = &base[sprite];
     u16 f;
 
     s->unk2--;
     base[(u16)(sprite + 4)].unk2 = s->unk2;
-    if (s->unk34 <= s->unk1A)
-    {
+    if (s->unk34 <= s->unk1A) {
         f = s->unk6 / 12;
         f = f * 12;
         s->unk6 = s->unk30 = f + 3;
@@ -1376,8 +1293,7 @@ u32 sub_08071B44(u8 sprite)
 }
 
 // Sprite effects 7 and 8 (gUnk_08486118); only reached through that table.
-u32 sub_08071B98(u8 sprite)
-{
+u32 sub_08071B98(u8 sprite) {
     struct Unk_03002C30 *base = gUnk_03002C30;
     struct Unk_03002C30 *s = &base[sprite];
 
@@ -1386,16 +1302,14 @@ u32 sub_08071B98(u8 sprite)
     s->unk4 = 0x32 - (gSineTable[s->unk1A >> 1] >> 4);
     if (s->unk2 == 0x20)
         s->unk0 = (s->unk0 & 0xF3FF) | 0x800;
-    if (s->unk34 <= s->unk1A)
-    {
+    if (s->unk34 <= s->unk1A) {
         s->unk0 = (s->unk0 & 0xF7FF) | 0xC00;
         return 0;
     }
     return 1;
 }
 
-u32 sub_08071C10(u8 sprite)
-{
+u32 sub_08071C10(u8 sprite) {
     struct Unk_03002C30 *base = gUnk_03002C30;
     struct Unk_03002C30 *s = &base[sprite];
 
@@ -1406,8 +1320,7 @@ u32 sub_08071C10(u8 sprite)
     return 1;
 }
 
-void sub_08071C40(u8 state, u8 sprite, u16 arg2)
-{
+void sub_08071C40(u8 state, u8 sprite, u16 arg2) {
     struct Unk_03002C30 *base = gUnk_03002C30;
     struct Unk_03002C30 *s = &base[sprite];
 
@@ -1417,20 +1330,17 @@ void sub_08071C40(u8 state, u8 sprite, u16 arg2)
     s->unk1A = 0;
 }
 
-u32 call_battle_handler_by_state_08071C64(void)
-{
+u32 call_battle_handler_by_state_08071C64(void) {
     return gUnk_08486138[gUnk_03001800_s.unk10.end.state]();
 }
 
 // Battle-end state 4 (gUnk_08486138): just moves on.
-u32 sub_08071C84(void)
-{
+u32 sub_08071C84(void) {
     gUnk_03001800_s.unk10.end.state++;
     return 1;
 }
 
-u32 sub_08071C94(void)
-{
+u32 sub_08071C94(void) {
     struct Unk_03002C30 *base = gUnk_03002C30;
 
     if (base[2].unk4 <= 0x3D)
@@ -1439,21 +1349,18 @@ u32 sub_08071C94(void)
         base[1].unk4 = base[2].unk4 += 1;
     else if (base[2].unk1A <= 0x1F)
         base[2].unk1A++;
-    else if (base[2].unk2 <= 0x40)
-    {
+    else if (base[2].unk2 <= 0x40) {
         clear_sprite_entry(6);
         play_sound_effect(0x54);
         base[2].unk1A = 0;
         gUnk_03001800_s.unk10.end.state++;
         return 1;
-    }
-    else
+    } else
         base[1].unk2 = base[2].unk2 -= 4;
     return 0;
 }
 
-u32 sub_08071D14(void)
-{
+u32 sub_08071D14(void) {
     struct Unk_03002C30 *base = gUnk_03002C30;
     s16 *y = &base[3].unk4;
     u16 *t;
@@ -1465,21 +1372,18 @@ u32 sub_08071D14(void)
         *y += 1;
     else if (*(t = &base[3].unk1A) <= 0x1F)
         (*t)++;
-    else if (*(x = &base[3].unk2) > 0x37)
-    {
+    else if (*(x = &base[3].unk2) > 0x37) {
         clear_sprite_entry(7);
         play_sound_effect(0x54);
         *t = 0;
         gUnk_03001800_s.unk10.end.state++;
         return 1;
-    }
-    else
+    } else
         *x += 4;
     return 0;
 }
 
-u32 sub_08071D84(void)
-{
+u32 sub_08071D84(void) {
     struct Unk_03002C30 *base = gUnk_03002C30;
     s16 *y = &base[4].unk4;
     u16 *t;
@@ -1491,21 +1395,18 @@ u32 sub_08071D84(void)
         *y += 1;
     else if (*(t = &base[4].unk1A) <= 0x1F)
         (*t)++;
-    else if (*(x = &base[4].unk2) <= 0x44)
-    {
+    else if (*(x = &base[4].unk2) <= 0x44) {
         clear_sprite_entry(8);
         play_sound_effect(0x54);
         *t = 0;
         gUnk_03001800_s.unk10.end.state++;
         return 1;
-    }
-    else
+    } else
         *x -= 4;
     return 0;
 }
 
-u32 sub_08071DFC(void)
-{
+u32 sub_08071DFC(void) {
     struct Unk_03002C30 *base = gUnk_03002C30;
     s16 *y = &base[5].unk4;
     u16 *t;
@@ -1517,8 +1418,7 @@ u32 sub_08071DFC(void)
         *y += 1;
     else if (*(t = &base[5].unk1A) <= 0x1F)
         (*t)++;
-    else if (*(x = &base[5].unk2) <= 0x40)
-    {
+    else if (*(x = &base[5].unk2) <= 0x40) {
         clear_sprite_entry(9);
         play_sound_effect(0x54);
         {
@@ -1530,22 +1430,18 @@ u32 sub_08071DFC(void)
         }
         gUnk_03001800_s.unk10.end.state++;
         return 1;
-    }
-    else
+    } else
         *x -= 4;
     return 0;
 }
 
-u32 sub_08071E80(void)
-{
-    if (gUnk_03002C30[0].unk1A++ & 1)
-    {
+u32 sub_08071E80(void) {
+    if (gUnk_03002C30[0].unk1A++ & 1) {
         if (++gUnk_03002C30[0].unk4 == 0)
             play_sound_effect(0x59);
     }
     gUnk_03002C30[0].unk6 = ((gUnk_03002C30[0].unk1A >> 2) & 3) + 0x50F;
-    if (gUnk_03002C30[0].unk4 > 0x3F)
-    {
+    if (gUnk_03002C30[0].unk4 > 0x3F) {
         play_sound_effect(7);
         gUnk_0300700C = gPaletteBackupBg;
         gUnk_03001800_s.unk10.end.step = 0;
@@ -1555,20 +1451,16 @@ u32 sub_08071E80(void)
     return 0;
 }
 
-u32 sub_08071F08(void)
-{
+u32 sub_08071F08(void) {
     u8 t;
     u8 w;
     s32 i;
     u16 *dst = gPaletteBufferBg;
 
-    if (gUnk_03001800_s.unk10.end.step > 0x40)
-    {
+    if (gUnk_03001800_s.unk10.end.step > 0x40) {
         play_sound_effect(10);
         gUnk_03001800_s.unk10.end.state++;
-    }
-    else
-    {
+    } else {
         if (gUnk_03001800_s.unk10.end.step < 0x20)
             t = 0x20 - gUnk_03001800_s.unk10.end.step;
         else
@@ -1578,11 +1470,10 @@ u32 sub_08071F08(void)
         if (gUnk_03001800_s.unk10.end.step == 0x14)
             play_sound_effect(0x51);
         w = 0x20 - t;
-        for (i = 0; i <= 0xFF; i++)
-        {
-            dst[i] = (((gUnk_0300700C[i] & 0x1F) * t + w * 31) >> 5)
-                + ((((gUnk_0300700C[i] & 0x3E0) * t + (w * 31 << 5)) >> 5) & 0x3E0)
-                + ((((gUnk_0300700C[i] & 0x7C00) * t + (w * 31 << 10)) >> 5) & 0x7C00);
+        for (i = 0; i <= 0xFF; i++) {
+            dst[i] = (((gUnk_0300700C[i] & 0x1F) * t + w * 31) >> 5) +
+                     ((((gUnk_0300700C[i] & 0x3E0) * t + (w * 31 << 5)) >> 5) & 0x3E0) +
+                     ((((gUnk_0300700C[i] & 0x7C00) * t + (w * 31 << 10)) >> 5) & 0x7C00);
         }
         DmaSet(3, dst, OBJ_PLTT, 0x84000080);
     }
@@ -1591,8 +1482,7 @@ u32 sub_08071F08(void)
     return 0;
 }
 
-u32 sub_08072010(void)
-{
+u32 sub_08072010(void) {
     struct Unk_03002C30 *base = gUnk_03002C30;
     vu32 fill;
 
@@ -1600,8 +1490,7 @@ u32 sub_08072010(void)
         base[1].unk4 = 0xC8;
     else
         base[1].unk4 = 0x42;
-    if (base[1].unk1A++ > 0x1F)
-    {
+    if (base[1].unk1A++ > 0x1F) {
         clear_sprite_entry(1);
         init_scene_buffers_080445F4();
         fill = 0x200;
@@ -1612,8 +1501,7 @@ u32 sub_08072010(void)
     return 0;
 }
 
-u32 sub_080720BC(void)
-{
+u32 sub_080720BC(void) {
     vu32 fill;
 
     fill = 0x200;
@@ -1625,8 +1513,7 @@ u32 sub_080720BC(void)
     return 0;
 }
 
-u32 sub_08072138(void)
-{
+u32 sub_08072138(void) {
     struct Unk_03002C30 *base;
     u8 script[13];
     vu32 fill;
@@ -1646,8 +1533,7 @@ u32 sub_08072138(void)
     fill = 0x200;
     DmaSet(3, &fill, gUnk_03002414->unkB84, 0x85000100);
     setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, h, 1, h);
-    switch (script[gUnk_03001800_s.unk10.end.pos])
-    {
+    switch (script[gUnk_03001800_s.unk10.end.pos]) {
     case 0:
         if (script[gUnk_03001800_s.unk10.end.pos + 1] >= gUnk_03001800_s.unk10.end.step++)
             break;
@@ -1662,11 +1548,9 @@ u32 sub_08072138(void)
     case 2:
         break;
     }
-    if (advance_text_display(0, 0x2D, 0) != 0)
-    {
+    if (advance_text_display(0, 0x2D, 0) != 0) {
         gUnk_03001800_s.unk10.end.state = 0;
         return 1;
     }
     return 0;
 }
-

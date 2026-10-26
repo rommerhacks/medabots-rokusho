@@ -128,9 +128,9 @@ void medal_rotation_redraw(void);
 void sub_0800AC2C(void); // guess: Rotation edit arrows above/below slot unk46
 void sub_0800ACA8(void); // guess: Rotation page end marker sprite at entry unk9
 void sub_0800AD00(void); // guess: blinks the Rotation edit arrows
-u32 sub_0800AD58(void); // guess: UP/DOWN cycles Rotation entry unk46 (0-7), returns 1 on change
-u32 sub_0800ADE8(void); // guess: LEFT/RIGHT moves the Rotation slot cursor unk46 (0-7)
-u32 sub_0800AE54(void); // guess: LEFT/RIGHT changes the Rotation entry count (Medal unk9, 0-7)
+u32 sub_0800AD58(void);  // guess: UP/DOWN cycles Rotation entry unk46 (0-7), returns 1 on change
+u32 sub_0800ADE8(void);  // guess: LEFT/RIGHT moves the Rotation slot cursor unk46 (0-7)
+u32 sub_0800AE54(void);  // guess: LEFT/RIGHT changes the Rotation entry count (Medal unk9, 0-7)
 void sub_0800AED0(void); // guess: loads the parts graphics of the Medabot holding the Medal
 void sub_0800AF0C(void); // guess: shows the Medabot holding the Medal (sprites 0x64..)
 void sub_0800AF64(void); // guess: draws the legs type of the Medabot holding the Medal
@@ -179,7 +179,7 @@ void debug_motion_play(void);
 void medaparts_scroll_bg(void);
 void sub_08010040(void); // guess: inits the 3-choice cursor sprite 4 (row gUnk_03000440.unk4A)
 void sub_080100BC(void); // guess: UP/DOWN moves the 3-choice cursor
-u32 sub_0801013C(void); // runs sprite 4's sub-state handler, 1 when done
+u32 sub_0801013C(void);  // runs sprite 4's sub-state handler, 1 when done
 void medaparts_list_set_cursor_from_part(void);
 void medaparts_list_draw_names(void);
 void medaparts_list_draw_counts(void);
@@ -191,27 +191,35 @@ void medaparts_list_init_cursor(void);
 u32 medaparts_list_row_input(void);
 u32 medaparts_list_page_input(void);
 u32 medaparts_list_kind_input(void);
-void medaparts_list_load_part_sprite(void); // sets unk3D from the cursor, loads the selected Medapart's sprite (load_sprite_animation_by_type)
+void medaparts_list_load_part_sprite(
+    void); // sets unk3D from the cursor, loads the selected Medapart's sprite (load_sprite_animation_by_type)
 void medapart_draw_sprite(void); // Medapart sprite (unk3D, kind unk3E) at the per-kind position, clears the OAM copy
-void load_medapart_sprite_by_slot(void); // guess: per-frame Medapart sprite redraw (animation 5/6) when opened from elsewhere (unk3C 2/3) or the part is owned
+void load_medapart_sprite_by_slot(void); // guess: per-frame Medapart sprite redraw (animation 5/6) when opened from
+                                         // elsewhere (unk3C 2/3) or the part is owned
 void medapart_detail_init_sprite(void);
 s32 sub_0800F6CC(void);
-void medapart_detail_draw_skill(void); // skill type name (gUnk_083B6EC8[unkF0]) or, for ids >= 100 in unkEF, gUnk_083BE97C[unkEF - 100] (leg type)
+void medapart_detail_draw_skill(
+    void); // skill type name (gUnk_083B6EC8[unkF0]) or, for ids >= 100 in unkEF, gUnk_083BE97C[unkEF - 100] (leg type)
 void medapart_detail_draw_ability(void); // ability name gUnk_083B656C[unkEE] (e.g. Anti-Air, Regenerate)
 void medapart_detail_draw_skill_icon(void);
 void medapart_detail_draw_name(void);
 void medapart_detail_draw_gender_icon(void); // icon after the name: unkF1 = 0 male, 1 female
 void medapart_detail_draw_stat_labels(void);
-void medapart_detail_draw_stats(void); // stat values unkF2.. per kind (head: Armor, Success, Power, Uses; unkF5 = power icon flag)
-void count_compatible_medaparts(void); // unk41 = owned parts of kind unk3E; from a Medabot (unk3C 1) only spare ones of its gender
+void medapart_detail_draw_stats(
+    void); // stat values unkF2.. per kind (head: Armor, Success, Power, Uses; unkF5 = power icon flag)
+void count_compatible_medaparts(
+    void); // unk41 = owned parts of kind unk3E; from a Medabot (unk3C 1) only spare ones of its gender
 void medapart_detail_init_arrows(void);
 void medapart_detail_blink_arrows(void);
-u32 medapart_detail_cycle_part_input(void); // LEFT/RIGHT: previous/next part counted by count_compatible_medaparts, redraws; 1 if moved
+u32 medapart_detail_cycle_part_input(
+    void); // LEFT/RIGHT: previous/next part counted by count_compatible_medaparts, redraws; 1 if moved
 void medaparts_help_init_cursor(void); // same code as sub_0800AA1C (Medals help cursor)
 void sub_0800FFF4(void);
-void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile, u32 pal, u32 e);
-void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base); // guess: draws the last `digits` of value as 2-row tile digits (base + d * 2 / + 1)
-u32 sub_08042B80(u32 a); // 1 for part types 2, 3, 6, 7; 0 for 0, 1, 4, 5
+void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y,
+                                   u32 tile, u32 pal, u32 e);
+void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt,
+                  u16 base); // guess: draws the last `digits` of value as 2-row tile digits (base + d * 2 / + 1)
+u32 sub_08042B80(u32 a);     // 1 for part types 2, 3, 6, 7; 0 for 0, 1, 4, 5
 void battle_bots_load_parts(u32 a, u32 n);
 void clear_battle_bot_array(void);
 void count_active_battle_bots(void);
@@ -219,10 +227,11 @@ void battle_setup_team_bots(void);
 void command_ring_init_icon(u32 a);
 void command_ring_init_icon_hidden(u32 a);
 u32 command_ring_rotate_step(u32 a);
-u32 sub_08016154(u32 i, u32 dir); // guess: turns command ring icon i one step (dir 0 right, 1 left), returns 1 after the 7th step
+u32 sub_08016154(
+    u32 i, u32 dir); // guess: turns command ring icon i one step (dir 0 right, 1 left), returns 1 after the 7th step
 void animate_battle_sprites(u32 idx);
-void sub_0801ABF8(void); // text_window_init(1, 2, 0) unless gUnk_03001360 is set (guess: skipped in link Robattles)
-u32 sub_0801AC6C(void); // game_state_execute_handler_a() unless gUnk_03001360 is set (then 1)
+void sub_0801ABF8(void);    // text_window_init(1, 2, 0) unless gUnk_03001360 is set (guess: skipped in link Robattles)
+u32 sub_0801AC6C(void);     // game_state_execute_handler_a() unless gUnk_03001360 is set (then 1)
 void sub_0801AC98(u32 rec); // draws the BG1 message frame tilemaps on the team (rec 0-2) or opponent side
 // Robattle action step dispatchers run by the action script (code_08030CAC wrappers)
 void dispatch_battle_action_step(void);
@@ -277,30 +286,31 @@ void battle_dispatch_phase_handler_0801D2F0(void);
 void sub_0801D380(void);
 void sub_0801D40C(void);
 void sub_0801D580(void);
-s32 battle_script_read_byte(void); // next byte of the Robattle action script (gUnk_083C6B28[gUnk_03001800.unkA8] + unkBC)
+s32 battle_script_read_byte(
+    void); // next byte of the Robattle action script (gUnk_083C6B28[gUnk_03001800.unkA8] + unkBC)
 void battle_script_advance(void);
 u32 sub_08035960(u32 rec, u32 skill); // 1 if a part with armor left has skill id data[1] == skill
 void sub_080350E0(u32 rec);
 u32 sub_08035590(u32 rec);
 u32 calc_bot_matching_part_power(u32 rec);
 void accumulate_battle_speed_value(u32 rec);
-void sub_0802A6AC(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802AAD0(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802ACCC(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802B000(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802B7E8(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802BD6C(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802C2AC(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802C644(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802CBE8(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802D688(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802DCB4(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802A6AC(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802AAD0(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802ACCC(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802B000(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802B7E8(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802BD6C(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802C2AC(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802C644(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802CBE8(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802D688(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802DCB4(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
 void battle_dispatch_phase_handler_0802E424(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802EBC0(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802F030(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802F628(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802F990(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
-void sub_0802FE50(void); // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802EBC0(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802F030(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802F628(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802F990(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
+void sub_0802FE50(void);                           // step dispatcher by gUnk_03001800.unkAA, sets unkB5 when done
 u32 get_random_battle_weight_entry(u32 idx);
 void sub_08036270(void);
 void sub_0803713C(void);
@@ -327,28 +337,33 @@ u32 check_battle_can_special_target(u32 rec, u32 part, u32 target);
 u32 battle_check_damage_threshold(s16 v);
 u32 battle_calculate_turn_speed(void);
 void battle_process_speed_and_action(void);
-u32 sub_08039134(u32 rec); // number of parts with armor left
+u32 sub_08039134(u32 rec);               // number of parts with armor left
 u32 battle_find_strongest_part(u32 rec); // part 1-3 (+ 1) with the most armor left
 void sub_08039188(void);
 void sub_080391C4(void);
 void sub_080392D8(void);
-void battle_sequence_run_command(void); // runs the battle sequence command gUnk_083AF740[sub_0803D424()], skipping negative ones
+void battle_sequence_run_command(
+    void); // runs the battle sequence command gUnk_083AF740[sub_0803D424()], skipping negative ones
 void sub_08039430(void);
 s16 sub_0803D424(void); // current battle sequence entry (gUnk_083CDFE4[unkF9][unk100])
 void battle_sequence_update_sprites(void);
 void battle_advance_sequence_counter(void); // skips the current battle sequence command and its operands
 void load_battle_sequence_commands(void);
-void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile); // fills a rectangle of the BG map at bgcnt's screen base
+void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt,
+                       u16 tile); // fills a rectangle of the BG map at bgcnt's screen base
 void load_battle_entity_palette(u32 list, u32 entry, u32 slot);
-void init_game_state_entry(const u16 *pos, u8 arg, u32 slot); // copies the current command's operands to gUnk_03001800.unk102
+void init_game_state_entry(const u16 *pos, u8 arg,
+                           u32 slot);                // copies the current command's operands to gUnk_03001800.unk102
 void sub_0801BF78(const u16 *pos, u8 arg, u32 slot); // same as init_game_state_entry
-void sub_0801BFB4(const u16 *pos, u32 slot); // steps the gUnk_03000440.unk64[slot] record
+void sub_0801BFB4(const u16 *pos, u32 slot);         // steps the gUnk_03000440.unk64[slot] record
 u32 sub_0803E79C(void);
 void soft_reset_to_title(void);
 void sub_0803F624(u8 *dst, u32 size, u8 val);
 void blend_obj_palettes_to_color_0803F684(u16 a, u32 b, u16 c);
 void blend_obj_palettes_to_color_0803F998(u16 a, u32 b, u16 c);
-void blend_obj_palettes_to_color_0803F788(u16 color, u32 amount, u16 mask); // gPaletteBufferBg = gPaletteBackupBg blended toward color by amount/32, for the 16-colour palettes in mask
+void blend_obj_palettes_to_color_0803F788(u16 color, u32 amount,
+                                          u16 mask); // gPaletteBufferBg = gPaletteBackupBg blended toward color by
+                                                     // amount/32, for the 16-colour palettes in mask
 void palette_blend_to_color_0803F890(u16 color, u32 amount, u16 mask); // same for gPaletteBuffer / gPaletteBackup
 void clear_battle_sprite_slot(u8 a, u8 b);
 void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c);
@@ -358,11 +373,14 @@ u32 medal_add_by_id(u8 id);
 void medal_remove_by_id(u8 id);
 void medapart_add_quantity(u8 id, u8 kind, u8 n);
 void reduce_medapart_stat(u8 id, u8 kind, u8 n); // takes n of Medapart (id, kind), floor 0
-u32 sub_080420C4(u8 level, u8 a, u8 b, u8 c, u8 d); // guess: Medal sprite variant (0-4) from its level and four gUnk_083B6158 record bytes
+u32 sub_080420C4(u8 level, u8 a, u8 b, u8 c,
+                 u8 d); // guess: Medal sprite variant (0-4) from its level and four gUnk_083B6158 record bytes
 u32 sub_08042114(u8 a, u8 b);
 u32 team_is_full(void); // 1 when all 9 gUnk_030017A0 slots are in use (runtime-checked)
-void team_add_tinpet(u8 gender); // first free team slot: in use, gender, no Medal (0x1E), default parts 0x78 + gender (runtime-checked)
-void item_add_quantity(u8 id, u8 n); // adds n of item id (gItemInventory: new entry 0x80 | id, or count capped at 99; runtime-checked)
+void team_add_tinpet(
+    u8 gender); // first free team slot: in use, gender, no Medal (0x1E), default parts 0x78 + gender (runtime-checked)
+void item_add_quantity(
+    u8 id, u8 n); // adds n of item id (gItemInventory: new entry 0x80 | id, or count capped at 99; runtime-checked)
 void sub_08042318(u8 id, u8 n); // guess: take n of item id
 u32 get_item_quantity_by_id(u8 id);
 s32 rng_next_080424B8(void);
@@ -370,24 +388,39 @@ void load_part_data(u32 part, u32 kind, u8 *dst);
 struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32 cy, u32 a, u32 b);
 u32 sub_0804384C(u8 medal); // team slot (gUnk_030017A0) holding Medal id `medal`, or 0xFF
 void decompress_sprite_to_vram_08042D94(u32 a, u32 b, u32 c, u32 d, u32 slot);
-void init_battle_medabot_sprites(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j, u32 k); // creates the 4 part sprites of a Medabot (head, arms, legs) at sprite..sprite+3
-void setup_battle_sprite_group(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j, u32 k); // refreshes the 4 part sprites set up by init_battle_medabot_sprites
-u32 sub_0804361C(vu32 medal, vu32 prev); // previous (prev != 0) or next owned Medal slot (gUnk_03000BE0 bit 7 set, bit 6 clear), 30 if none
-u32 find_next_available_medapart_slot(u32 part, u32 kind, u32 backward, u32 d); // next / previous owned Medapart id of gender d; d + 0x78 if none
+void init_battle_medabot_sprites(
+    u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j,
+    u32 k); // creates the 4 part sprites of a Medabot (head, arms, legs) at sprite..sprite+3
+void setup_battle_sprite_group(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j,
+                               u32 k); // refreshes the 4 part sprites set up by init_battle_medabot_sprites
+u32 sub_0804361C(
+    vu32 medal,
+    vu32 prev); // previous (prev != 0) or next owned Medal slot (gUnk_03000BE0 bit 7 set, bit 6 clear), 30 if none
+u32 find_next_available_medapart_slot(u32 part, u32 kind, u32 backward,
+                                      u32 d); // next / previous owned Medapart id of gender d; d + 0x78 if none
 void init_scene_buffers_080445F4(void);
-void setup_scene_with_bg_and_sprites(); // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i, u8 j): callers were compiled without a prototype
-void init_scene_with_bg_and_palette(); // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i, u8 j, u8 base): callers were compiled without a prototype
+void setup_scene_with_bg_and_sprites(); // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8
+                                        // h, u8 i, u8 j): callers were compiled without a prototype
+void init_scene_with_bg_and_palette();  // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8
+                                        // h, u8 i, u8 j, u8 base): callers were compiled without a prototype
 u32 advance_text_display(u32 a0, u32 a1, u32 a2);
 u32 medabot_detail_is_full_set(void); // 1 if gUnk_03000440.unk98-9B (the four shown Medaparts) are all the same set
 u32 sub_080440B4(void);
 void sub_08047414(struct Unk_08047414 *obj, u8 *buf, struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams);
-u8 sub_080460B0(struct Unk_03002414 *work, u16 *affine, u32 side, struct OamData *oam, u16 tile, u8 *parts, u8 pal, u8 x, u8 y, u32 alt);
-void setup_scene_bg_layers_and_sprites(void *oam, struct Unk_08047414 *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
+u8 sub_080460B0(struct Unk_03002414 *work, u16 *affine, u32 side, struct OamData *oam, u16 tile, u8 *parts, u8 pal,
+                u8 x, u8 y, u32 alt);
+void setup_scene_bg_layers_and_sprites(void *oam, struct Unk_08047414 *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f,
+                                       u32 g, u32 h, u32 i, u32 j);
 void battle_sprite_set_palette_index(u32 sprite, u32 pal);
-void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c); // guess: idle animation of a part-sprite Medabot (legs anchor, arms swing on a circle, head bobs)
+void update_battle_sprite_orbiting_positions(
+    u32 sprite, u32 idx,
+    u32 c); // guess: idle animation of a part-sprite Medabot (legs anchor, arms swing on a circle, head bobs)
 u32 validate_medapart_stats(u8 medal, u8 head, u8 rarm, u8 larm, u8 legs);
-void modify_medapart_quantity(u32 id, u32 kind, u32 byte, u32 subtract, u32 n); // byte 0 or 1 of the Medapart (id, kind): -= n, or += n capped at 99
-void fill_tilemap_pair_or_divide(u8 value, u8 x, u8 y, u32 bgcnt, u16 entry); // guess: draws a 2-digit number with 1x2 tiles (0xFF: blank, >= 100: fixed tiles)
+void modify_medapart_quantity(u32 id, u32 kind, u32 byte, u32 subtract,
+                              u32 n); // byte 0 or 1 of the Medapart (id, kind): -= n, or += n capped at 99
+void fill_tilemap_pair_or_divide(
+    u8 value, u8 x, u8 y, u32 bgcnt,
+    u16 entry); // guess: draws a 2-digit number with 1x2 tiles (0xFF: blank, >= 100: fixed tiles)
 void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags);
 void sub_08043CA8(void);
 void decompress_tileset_to_vram(u32 id, u32 arg);
@@ -505,9 +538,9 @@ void init_all_sound_channels(void);
 void sound_init_wave_channel(void);
 u32 sound_set_pitch_offset(struct SoundMixChannel *ch, s32 note);
 void CpuSet(const void *src, void *dest, u32 control);
-s32 Div(s32 num, s32 denom); // BIOS SWI 6
+s32 Div(s32 num, s32 denom);    // BIOS SWI 6
 s32 DivArm(s32 denom, s32 num); // BIOS SWI 7
-s32 Mod(s32 num, s32 denom); // BIOS SWI 6, returns the remainder
+s32 Mod(s32 num, s32 denom);    // BIOS SWI 6, returns the remainder
 void CpuFastSet(const void *src, void *dest, u32 control);
 u32 rng_next(u16 range);
 #define CpuCopy16(src, dest, size) CpuSet(src, dest, ((size) / 2) & 0x1FFFFF)
@@ -516,7 +549,8 @@ void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt);
 void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map);
 void dma_obj_palette_to_hardware(void);
 void update_anim_object_flags(void);
-void sub_0804725C(u32 unused0, struct Unk_08047414 *obj, s32 kind, s32 idx, u32 unused4, u32 pal, u32 side, u32 alt); // unused
+void sub_0804725C(u32 unused0, struct Unk_08047414 *obj, s32 kind, s32 idx, u32 unused4, u32 pal, u32 side,
+                  u32 alt); // unused
 void copy_oam_affine_params(struct OamData *oam, u16 *affine);
 u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size);
 u32 lz_decompress_custom_08000B14(const u8 *src, void *dst);
@@ -698,7 +732,8 @@ void LZ77UnCompVram(const void *src, void *dst);
 u32 resolve_tile_from_battle_state(u32 arg);
 void sub_0804877C(u8 idx);
 void divide_by_3(u8 a, u8 b); // guess: refreshes racer a's 4-part sprite group at its current position (not a divide)
-void sub_08069A68(u8 idx, s16 x, s16 y, u8 h, u8 pal); // guess: places racer idx's 4-part sprite group at x, y and sets its palette
+void sub_08069A68(u8 idx, s16 x, s16 y, u8 h,
+                  u8 pal); // guess: places racer idx's 4-part sprite group at x, y and sets its palette
 void matrix_set_identity(void);
 void ring_points_place_on_hexagon(u32 a);
 void init_battle_sprite_entry_08048818(u8 idx, u16 attr, u32 frame, u8 a3, u8 a4);
@@ -801,9 +836,10 @@ u32 sub_0803ED28(void);
 void open_choice_menu(u8 a, u8 b, u8 c);
 u32 poll_choice_menu(void);
 void divide_by_10000(u8 *digits, u32 n); // guess: n as text "0x4C ddd 0x40 dd" (5 digits, leading zeros dropped)
-void divide_by_10000_b(u8 *dst, u32 n); // guess: like divide_by_10000 without the 0x4C prefix
+void divide_by_10000_b(u8 *dst, u32 n);  // guess: like divide_by_10000 without the 0x4C prefix
 s32 truncate_to_digit_count(s32 n, u8 k);
-void divide_by_100000_08041370(u8 *digits, u32 n); // guess: n as text, up to 5 digits; >= 100000 writes a fixed overflow string
+void divide_by_100000_08041370(u8 *digits,
+                               u32 n); // guess: n as text, up to 5 digits; >= 100000 writes a fixed overflow string
 void divide_by_100000_08042838(u32 n, u32 x, u32 y, u32 digits, u32 bgcnt, u32 tile); // guess: draws n as tile digits
 void clear_sprite_table_mask(u8 first, u8 count);
 u32 find_next_free_sprite_slot(u8 first, u8 count); // first unused gUnk_03002C30 slot in [first, first + count)
@@ -814,7 +850,9 @@ void sub_08041C14(u8 sprite, u8 frame, u16 y); // sets gUnk_03002C30[sprite].unk
 void sub_08041C5C(u8 sprite, u8 frame, u16 x); // guess: horizontal counterpart of sub_08041C14
 void memcpy_bytes_08041D04(const void *src, void *dst, u8 n);
 void memswap(void *a, void *b, u32 n);
-void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align, u16 prio); // 0xFE-terminated, one sprite per character from slot; x / y / width in tiles; align 0 center, 1 left, 2 right
+void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align,
+                                  u16 prio); // 0xFE-terminated, one sprite per character from slot; x / y / width in
+                                             // tiles; align 0 center, 1 left, 2 right
 void process_sprite_anim_commands(const u8 *cmds, u8 slot);
 void sub_08044094(void);
 void field_menu_init_cursor(void);
@@ -842,7 +880,8 @@ void calc_medaforce_gauge_from_damage(void);
 void sub_0801275C(void);
 void accumulate_team_armor_stats(void);
 void battle_check_medal_level_up(void);
-void divide_by_100000_b(u8 *buf, u32 value, u32 tile); // guess: value as text, digits + tile; >= 100000 writes a fixed overflow string
+void divide_by_100000_b(u8 *buf, u32 value,
+                        u32 tile); // guess: value as text, digits + tile; >= 100000 writes a fixed overflow string
 u32 advance_sprite_anim_frame(u32 sprite, u32 b);
 void battle_sprite_blink_update(u32 slot, u8 *counter, u8 *n);
 void sub_0801BF64(u16 *counter, u16 max);
@@ -850,7 +889,7 @@ void sub_08067A48(u8 slot);
 int sub_08067160(u8 *s); // string length, 0 when it is 1
 void sub_0806918C(void); // clears VRAM, the sprite table and the four BG scrolls
 void dma_copy_tilemap_strip(u8 n);
-void sub_08069EE4(u8 *dst, u8 *src); // copies bytes up to and including the first one > 0xF8
+void sub_08069EE4(u8 *dst, u8 *src);  // copies bytes up to and including the first one > 0xF8
 bool32 race_check_all_finished(void); // TRUE 240 frames after all three gUnk_03006F8C racer states are > 2
 void sub_08068DA0(void);
 void dispatch_game_mode_handler(void);
@@ -859,7 +898,8 @@ void sub_08068D74(void);
 void sub_08068FD4(void);
 void sub_0806904C(void);
 void init_battle_sprite_small(void);
-void race_update_racer_anim_counters(void); // per racer: gUnk_03006FE0[i] counts frames, steps the racer sprite's unk1A at the gUnk_08485CE3 delay
+void race_update_racer_anim_counters(
+    void); // per racer: gUnk_03006FE0[i] counts frames, steps the racer sprite's unk1A at the gUnk_08485CE3 delay
 bool32 scene_transition_step_080686F4(void);
 bool32 sub_08069EF8(void);
 bool32 sub_08069F80(void);
@@ -913,7 +953,9 @@ void sub_0806CFA4(void);
 u32 sub_0806C6F8(void);
 u32 sub_0806C7C4(void);
 void set_bot_y_positions_by_count(void);
-void sub_0806DF80(u8 anim, u8 sprite); // starts animation anim on sprite slot sprite (unk20 = anim, unk22 = 0, unk30 = unk6, unk1A = 0)
+void sub_0806DF80(
+    u8 anim,
+    u8 sprite); // starts animation anim on sprite slot sprite (unk20 = anim, unk22 = 0, unk30 = unk6, unk1A = 0)
 u32 check_battle_timer_expired(u8 a);
 u32 process_text_tile_and_dma_transfer(u8 a);
 u32 battle_draw_tilemap_row_dma(u8 a);
@@ -977,7 +1019,8 @@ void init_opponent_bots(void);
 void battle_process_all_bots_actions(void);
 void sub_08018A18(void);
 void load_battle_script_entry_b(void);
-u32 battle_load_graphics_step(u32 direct); // one LZ graphics load per call (step 0x0300057A 0-8); returns 1 when done, direct = palettes straight to PLTT
+u32 battle_load_graphics_step(u32 direct); // one LZ graphics load per call (step 0x0300057A 0-8); returns 1 when done,
+                                           // direct = palettes straight to PLTT
 void load_bg3_tilemap_08488764(void);
 void draw_battle_bot_portraits(void);
 void load_all_bot_part_sprites(void);
@@ -992,7 +1035,8 @@ void init_battle_sprite_entry_0801BC04(u32 rec);
 void sync_medal_stats_from_battle_bot(u32 rec);
 void apply_battle_blend_effect_b(void);
 void decompress_to_ewram_27000(const u8 *src);
-void battle_vblank_update_bg(void); // battle gVBlankCallback: BG scroll movement (unk74) + battlefield tile animation (runtime-checked)
+void battle_vblank_update_bg(
+    void); // battle gVBlankCallback: BG scroll movement (unk74) + battlefield tile animation (runtime-checked)
 void command_ring_input(void);
 void sub_080178CC(void);
 void command_ring_pulse_selected(void);
@@ -1007,9 +1051,11 @@ void sub_08016614(void);
 void sub_08016660(void);
 void decompress_two_bg1_layers(void);
 void command_ring_init_icons_hidden(void);
-void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, void *dst); // w x h tiles at (x, y) of the BG map selected by bgcnt
+void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt,
+                            void *dst); // w x h tiles at (x, y) of the BG map selected by bgcnt
 void write_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, const void *src);
-void sub_08042A90(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt, u16 tile2); // draws cur/max as two 2-digit numbers
+void sub_08042A90(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt,
+                  u16 tile2);        // draws cur/max as two 2-digit numbers
 u32 sub_08016E5C(u32 rec, u32 part); // 1 if the part's skill id (data[1]) is 0x18-0x1A, 0x28 or 0x35
 void draw_partial_bg1_column(void);
 void scroll_tilemap_window(void);
@@ -1092,44 +1138,60 @@ void sub_0801902C(void);
 u32 sub_08019EF0(void);
 void sub_08019078(void);
 void battle_queue_sort(void);
-void battle_queue_take_head(void); // acting Medabot = queue head: gUnk_03001800.unk87 = record, unk89 = side, unk8A = other side
+void battle_queue_take_head(
+    void); // acting Medabot = queue head: gUnk_03001800.unk87 = record, unk89 = side, unk8A = other side
 void battle_queue_pop(void); // drops the queue head, shifting the rest up
 void iterate_bots_setup_battle_sprites(void);
 void battle_bot_advance_rotation(u32 rec);
 u32 sub_0801A6B0(void);
 void battle_process_all_bot_actions(u32 rec);
-u32 sub_0801A6EC(u32 rec); // tests gUnk_03001800.unk44 bit rec (rec 0-2)
+u32 sub_0801A6EC(u32 rec);  // tests gUnk_03001800.unk44 bit rec (rec 0-2)
 void sub_0801A744(u32 rec); // clears gUnk_03001800.unk44 bit rec (rec 0-2)
 void battle_bot_move(u32 rec);
 void sub_08019544(u32 rec);
 u32 sub_08019440(u32 rec); // battle_bot_move with the other direction; 1 when the line is reached
-u32 battle_bot_at_front_line(u32 rec, u32 peek); // 1 when the Medabot has reached its front line (x 0x68 team, 0x88 opponents); queues it unless peek
-u32 battle_bot_at_home_line(u32 rec, u32 peek); // 1 when the returning Medabot is back home (x 0x28 / 0xC8); queues it unless peek
-void set_display_digit_type(u8 *buf, u32 value, u32 type); // buf = [sign 0xA (type 0) / 0xB (type 1)] digits without leading zeros, 0xFE; buf[6] = length
-void battle_number_popup_init(u8 *buf, u32 rec); // digit sprites 10 + rec * 4 .. from set_display_digit_type's buffer, centred over the Medabot's sprite
+u32 battle_bot_at_front_line(
+    u32 rec,
+    u32 peek); // 1 when the Medabot has reached its front line (x 0x68 team, 0x88 opponents); queues it unless peek
+u32 battle_bot_at_home_line(
+    u32 rec, u32 peek); // 1 when the returning Medabot is back home (x 0x28 / 0xC8); queues it unless peek
+void set_display_digit_type(
+    u8 *buf, u32 value,
+    u32 type); // buf = [sign 0xA (type 0) / 0xB (type 1)] digits without leading zeros, 0xFE; buf[6] = length
+void battle_number_popup_init(
+    u8 *buf,
+    u32 rec); // digit sprites 10 + rec * 4 .. from set_display_digit_type's buffer, centred over the Medabot's sprite
 void battle_number_popup_update(u32 rec); // bounces the 3 digit sprites up (gUnk_083AD3B3), one step per frame
-void render_battle_text_sprites(u8 *buf, u32 rec, u32 slot); // battle_number_popup_init for up to 5 digit sprites from slot + rec * 4
+void render_battle_text_sprites(u8 *buf, u32 rec,
+                                u32 slot); // battle_number_popup_init for up to 5 digit sprites from slot + rec * 4
 void battle_setup_text_sprites_0801A418(u8 *buf, u32 rec, u32 slot); // same with tiles 0x5100 + digit, palette 0xC
 void battle_setup_text_sprites_0801A4F4(u8 *buf, u32 rec, u32 slot, u32 x, u32 y); // same at a given x, y
-void update_battle_sprite_animations(u8 *buf, u32 rec, u32 slot); // battle_number_popup_update for up to 5 digit sprites
+void update_battle_sprite_animations(u8 *buf, u32 rec,
+                                     u32 slot); // battle_number_popup_update for up to 5 digit sprites
 void update_sprite_animation_position(u32 slot);
-u32 sub_0801AC24(u32 msg); // run_message(gUnk_083C65C4[msg]) unless gUnk_03001360 is set (then 1)
+u32 sub_0801AC24(u32 msg);  // run_message(gUnk_083C65C4[msg]) unless gUnk_03001360 is set (then 1)
 void sub_0801AD10(u32 rec); // redraws a Medabot's panel (left_b when the Medaforce gauge is full) and its gauge
-void sub_0801AD48(u32 rec); // guess: Medaforce effect: 8 sprites 0x78-0x7F (tiles 0x616-0x619) lined up at y 0x78, x 0x5C team / 0x94 opponents
-u32 sub_0801ADE8(u32 rec); // moves those sprites 4 px per step toward the other side; 1 when all are done
+void sub_0801AD48(u32 rec); // guess: Medaforce effect: 8 sprites 0x78-0x7F (tiles 0x616-0x619) lined up at y 0x78, x
+                            // 0x5C team / 0x94 opponents
+u32 sub_0801ADE8(u32 rec);  // moves those sprites 4 px per step toward the other side; 1 when all are done
 void sub_0801AE70(u32 rec); // animates those sprites (tile 0x616 + frame, every 4 frames)
 void sub_0801AEB4(void);
 void sub_0801AED4(void);
 void clear_battle_ui_tilemaps(void);
-u32 medaforce_gauge_fill_step(u32 rec); // moves one point from gUnk_03001800.unk51 into the Medaforce gauge (max 80) and redraws it; 1 when done
+u32 medaforce_gauge_fill_step(
+    u32 rec); // moves one point from gUnk_03001800.unk51 into the Medaforce gauge (max 80) and redraws it; 1 when done
 u32 medaforce_gauge_drain_step(u32 rec); // the same, taking one point out of the gauge
 u32 dispatch_battle_action_substate(u32 arg);
-u32 sub_0801B0E8(u32 rec); // guess: spins the sprites of sub_0801B004 around the Medabot while they sink; 1 when all 8 are gone
+u32 sub_0801B0E8(
+    u32 rec); // guess: spins the sprites of sub_0801B004 around the Medabot while they sink; 1 when all 8 are gone
 void increment_medal_skill_level(u32 rec);
 void robattle_judge_time_up(void);
-void sub_0801B274(u32 rec); // guess: end of a Medabot's action: unkDE / unkDF = chosen part and its skill, clears the per-turn part flags
-void sub_0801B3AC(u32 rec); // writes gUnk_03001800.unk11C back into the acting Medabot's part unkA7 when unk118 is set, then clears unk118..
-void sub_0801B004(u32 rec); // guess: 8 sprites 0x21-0x28 in a circle (radius 16) around the Medabot's sprite, OBJ palette 6 from gUnk_084E3058
+void sub_0801B274(u32 rec); // guess: end of a Medabot's action: unkDE / unkDF = chosen part and its skill, clears the
+                            // per-turn part flags
+void sub_0801B3AC(u32 rec); // writes gUnk_03001800.unk11C back into the acting Medabot's part unkA7 when unk118 is set,
+                            // then clears unk118..
+void sub_0801B004(u32 rec); // guess: 8 sprites 0x21-0x28 in a circle (radius 16) around the Medabot's sprite, OBJ
+                            // palette 6 from gUnk_084E3058
 void copy_player_medals_to_battle_bots(void);
 void copy_team_slots_to_battle_bots(void);
 void init_enemy_bot_medal(u8 i);
@@ -1139,32 +1201,37 @@ void select_bot_battle_action(u32 rec);
 u32 sub_080154E0(u32 rec, u32 part); // 1 if unkC9 == 0x2B and unkCA == part (guess: part sealed by a status effect)
 u32 sub_08015508(u32 rec, u32 part); // 1 if part is the head and its unk10 (data[8]) is 0 (guess: no uses left)
 u32 sub_08015528(u32 rec, u32 part); // 1 if the part's unk11 is 0 (guess: part broken)
-u32 check_medaforce_availability(u32 rec, u32 slot, u32 random); // 0 = Medaforce slot chosen (battle_bot_select_medaforce), 1 = not available
-u32 sub_08015648(u32 rec); // 1 for opponents (rec 3-5) while gUnk_030057E0.unk7FF <= 2 (guess: early-game opponents can't use Medaforce)
+u32 check_medaforce_availability(
+    u32 rec, u32 slot, u32 random); // 0 = Medaforce slot chosen (battle_bot_select_medaforce), 1 = not available
+u32 sub_08015648(u32 rec); // 1 for opponents (rec 3-5) while gUnk_030057E0.unk7FF <= 2 (guess: early-game opponents
+                           // can't use Medaforce)
 void battle_ai_roll_part_order(void);
-u32 battle_part_unusable(u32 rec, u32 part); // any of sub_080154E0 / sub_08015508 / sub_08015528 / begin_battle_action_lookup
+u32 battle_part_unusable(u32 rec,
+                         u32 part); // any of sub_080154E0 / sub_08015508 / sub_08015528 / begin_battle_action_lookup
 u32 rng_lookup_table_value(void);
 void battle_execute_action_selection(void);
 void call_bot_action_handler(void);
 void clear_battle_action_selection(void);
-u32 sub_08032FD0(u32 rec, u32 val); // 1 if rec's head or an arm has armor left and skill type data[2] == val
-u32 sub_08032FFC(void); // 1 if gUnk_03001800.unk61 has a candidate
-u32 select_battle_pending_action(void); // random candidate record from gUnk_03001800.unk61
+u32 sub_08032FD0(u32 rec, u32 val);        // 1 if rec's head or an arm has armor left and skill type data[2] == val
+u32 sub_08032FFC(void);                    // 1 if gUnk_03001800.unk61 has a candidate
+u32 select_battle_pending_action(void);    // random candidate record from gUnk_03001800.unk61
 u32 select_random_battle_target(u32 base); // random present record base + 0..2
-void sub_08033154(u32 rec, u32 part); // stores the chosen target (unk5E / unk5F) in the part's unkE / unkF
-u32 sub_0801554C(u32 rec, u32 other); // side of rec (0 team, 1 opponents), or the other side when other is 1
+void sub_08033154(u32 rec, u32 part);      // stores the chosen target (unk5E / unk5F) in the part's unkE / unkF
+u32 sub_0801554C(u32 rec, u32 other);      // side of rec (0 team, 1 opponents), or the other side when other is 1
 u32 begin_battle_action_lookup(u32 rec, u32 part);
 void sub_08018CBC(void);
 void sub_08018D0C(u32 rec); // timed effect A tick (type 0x1F restores armor to damaged parts)
 void sub_08018DF4(u32 rec); // timed effect B tick (types 0x13/0x14 lower a part's armor, not below 1)
 
-u32 add_part_stat_clamped(u32 rec, u32 part, s32 amount); // adds to a part's armor up to its max; returns added | leftover << 8
-u32 sub_08018EE0(u32 rec); // first part (1-4) that is damaged but not broken, 0 = none
-u32 sub_08018F48(u32 rec); // first unbroken part counting from the legs (1 = legs .. 4 = head), 0 = none
-u32 sub_08018F6C(u32 rec); // part (1-4) with armor > 1, starting at unkCA and going down, 0 = none
+u32 add_part_stat_clamped(u32 rec, u32 part,
+                          s32 amount); // adds to a part's armor up to its max; returns added | leftover << 8
+u32 sub_08018EE0(u32 rec);             // first part (1-4) that is damaged but not broken, 0 = none
+u32 sub_08018F48(u32 rec);             // first unbroken part counting from the legs (1 = legs .. 4 = head), 0 = none
+u32 sub_08018F6C(u32 rec);             // part (1-4) with armor > 1, starting at unkCA and going down, 0 = none
 u32 sub_08018FB8(u32 rec, u32 part, s32 amount); // lowers a part's armor (min 0); returns applied | leftover << 8
 u32 sub_08018FF0(u32 rec, u32 part, s32 amount); // lowers a part's armor (min 1); returns applied | leftover << 8
-void sub_080190B8(u32 rec); // guess: computes the record's movement delay unkBB (action, broken legs, terrain, effects, Medal level, Propulsion)
+void sub_080190B8(u32 rec); // guess: computes the record's movement delay unkBB (action, broken legs, terrain, effects,
+                            // Medal level, Propulsion)
 void sub_08019108(u32 rec);
 void sub_08019184(u32 rec, u32 n); // unkBB += n, max 0xFF
 void sub_080191A4(u32 rec, u32 n); // unkBB -= n, min 0
@@ -1179,33 +1246,40 @@ void sub_0801932C(u32 rec);
 void battle_bot_status_sprite_update(u32 rec);
 void battle_update_status_effect_sprite(u32 rec);
 void update_battle_status_effect_sprite(u32 rec);
-void battle_setup_part_sprite(u32 rec, u32 slot, u32 kind, u32 attr); // sprite 0x46 + rec*3 + slot beside the bot sprite
+void battle_setup_part_sprite(u32 rec, u32 slot, u32 kind,
+                              u32 attr); // sprite 0x46 + rec*3 + slot beside the bot sprite
 void battle_queue_add(u32 rec, u32 prio);
 
 void add_bot_to_defeated_list(u32 rec);
 u32 sub_080353CC(u32 slot);
 u32 move_sprite_toward_target(u32 slot);
 u32 check_sprite_in_range(u32 slot);
-u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty); // direction from (x, y) to (tx, ty), stored in sprite unk25 (move_sprite_toward_target)
+u32 calculate_direction_index(
+    s32 x, s32 y, s32 tx,
+    s32 ty);             // direction from (x, y) to (tx, ty), stored in sprite unk25 (move_sprite_toward_target)
 u32 sub_08036E54(u32 a); // clamps to 1..99
 u8 sub_08037578(u32 a, u32 kind); // random part id (by a and the part kind)
 void sub_0803769C(u32 rec);
 void sub_080376F4(u32 rec);
-u32 sub_08037728(u32 rec, u32 part, u32 amount); // unkD6[part] = min(amount, part armor), unkD2[part] = 1 when the armor is all used
+u32 sub_08037728(u32 rec, u32 part,
+                 u32 amount); // unkD6[part] = min(amount, part armor), unkD2[part] = 1 when the armor is all used
 u32 sub_08036B50(u8 *buf, u32 slot);
 void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 b, s16 x, s16 y);
-void sub_080374E0(u32 a, u32 b); // unkC8 = min(a, b) taken out of a (guess: drain clamp)
+void sub_080374E0(u32 a, u32 b);          // unkC8 = min(a, b) taken out of a (guess: drain clamp)
 void sub_0803752C(u32 a, u32 max, u32 b); // unkC8 = min(b, max - a) (add clamp)
-void sub_08037330(u32 rec, u32 frame, u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
-void sub_080373D4(u32 rec); // sets bit 15 of unk0 on the bot's 4 part sprites
-void sub_08037424(u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
-struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x, s32 y); // returned in memory (hidden pointer in r0)
-u32 sub_08032FB8(u32 rec); // first record of the side opposite rec (3 or 0)
-u32 sub_08032FC4(u32 rec); // first record of rec's side (0 or 3)
-u32 sub_080385F8(void); // 1 once no sprite 0x21+ has unk29 set (steps their animations)
-u32 sub_0803884C(void); // like sub_080385F8 with the gUnk_083AF720 table
-u32 sub_0801C0BC(u32 msg); // steps the battle message msg (gUnk_083AD400), 1 when done
-u32 sub_0801C154(void); // steps gUnk_083AD410, 1 when done
+void sub_08037330(u32 rec, u32 frame,
+                  u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
+void sub_080373D4(u32 rec);  // sets bit 15 of unk0 on the bot's 4 part sprites
+void sub_08037424(
+    u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
+struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x,
+                                            s32 y); // returned in memory (hidden pointer in r0)
+u32 sub_08032FB8(u32 rec);                          // first record of the side opposite rec (3 or 0)
+u32 sub_08032FC4(u32 rec);                          // first record of rec's side (0 or 3)
+u32 sub_080385F8(void);                             // 1 once no sprite 0x21+ has unk29 set (steps their animations)
+u32 sub_0803884C(void);                             // like sub_080385F8 with the gUnk_083AF720 table
+u32 sub_0801C0BC(u32 msg);                          // steps the battle message msg (gUnk_083AD400), 1 when done
+u32 sub_0801C154(void);                             // steps gUnk_083AD410, 1 when done
 void sub_0803E780(void);
 void reset_bot_status_and_init_palette_transfers(u32 rec);
 void copy_battle_entity_positions(void);
@@ -1229,10 +1303,10 @@ u32 sub_080361A8(); // old-style: passes its unused r0 argument through
 u32 battle_advance_dialogue_text(void);
 u32 battle_advance_action_text(void);
 void sub_08035928(u32 rec, u32 target); // guess: record rec targets record target - 1 (unkE0, gUnk_03001800.unk88)
-void sub_08035944(u32 rec, u32 part); // guess: record rec targets part part - 1 (unkE1, gUnk_03001800.unk8B)
+void sub_08035944(u32 rec, u32 part);   // guess: record rec targets part part - 1 (unkE1, gUnk_03001800.unk8B)
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);
 void sub_080353AC(u32 frame);
-void sub_0803536C(u32 slot, u32 frame, u32 y); // sprite unk2 = y, +1 / -1 on frames 2-3 / 6-7 of 8
+void sub_0803536C(u32 slot, u32 frame, u32 y);            // sprite unk2 = y, +1 / -1 on frames 2-3 / 6-7 of 8
 void reduce_bot_part_stat(u32 rec, u32 part, s32 amount); // part armor (unk11) -= amount, not below 0
 void sub_08035194(u32 rec);
 void set_target_sprite_position(u32 rec, u32 frame, u32 flag);
@@ -1251,24 +1325,30 @@ u32 sub_0803684C(u32 slot);
 void sub_08036784(u32 slot, u32 part, s16 x, s16 y);
 void sub_080368C4(u8 *digits, u32 slot, u32 part, s16 x, s16 y);
 u32 advance_sprite_group_anims(u8 *digits, u32 slot);
-u32 sub_08036BB8(u16 *amount, u32 rec, u32 part); // moves one point from *amount (low byte) out of the part's armor; 1 when done
+u32 sub_08036BB8(u16 *amount, u32 rec,
+                 u32 part); // moves one point from *amount (low byte) out of the part's armor; 1 when done
 void sub_08036BF4(u32 side);
 void battle_sprite_rotate_angles(u32 dir, u32 delta);
-void sub_08036C20(u32 slot, u32 part, s16 x, s16 y, u32 n); // inits battle sprite slot at (x, y) + gUnk_083AF480[part] with animation gUnk_083B5F80[n]
+void sub_08036C20(u32 slot, u32 part, s16 x, s16 y,
+                  u32 n); // inits battle sprite slot at (x, y) + gUnk_083AF480[part] with animation gUnk_083B5F80[n]
 void setup_battle_medapart_scenes(void);
 void calc_bot_evasion_modifier(u32 rec);
 void sub_080355C4(u32 rec);
-void sub_0804242C(u8 n); // sorts gUnk_02023000[0..n-1] by key, key2, largest first
+void sub_0804242C(u8 n);   // sorts gUnk_02023000[0..n-1] by key, key2, largest first
 u32 sub_08033224(u32 rec); // 1 if rec has no effect A (unkC4)
 u32 sub_08033240(u32 rec); // 1 if rec has no effect B (unkC9)
 u32 sub_080332B4(u32 rec);
-u32 sub_080332D0(u32 rec); // 1 if rec has Medaforce gauge (unkC1)
+u32 sub_080332D0(u32 rec);           // 1 if rec has Medaforce gauge (unkC1)
 u32 find_most_damaged_part(u32 rec); // part (+ 1) with armor left that lost the most armor, 0 = none
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount); // unkC8 = unkCC = min(amount, part data[4] - armor unk11)
-u32 battle_check_action_counter(u16 *amount, u32 rec, u32 part); // moves one point from *amount (low byte) into the part's armor (max data[4]); 1 when done
+u32 battle_check_action_counter(
+    u16 *amount, u32 rec,
+    u32 part); // moves one point from *amount (low byte) into the part's armor (max data[4]); 1 when done
 u32 sub_080331F8(u32 rec);
-u32 battle_find_next_active_bot(u32 rec); // random part index of rec with armor left (from rng_lookup_table_value, stepping by rng bit 0)
-u32 sub_08036D64(u32 rec, u32 skill); // 1 if unkCF has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8), 0x11/0x12 (2), 0x13/0x14 (4)
+u32 battle_find_next_active_bot(
+    u32 rec); // random part index of rec with armor left (from rng_lookup_table_value, stepping by rng bit 0)
+u32 sub_08036D64(u32 rec, u32 skill); // 1 if unkCF has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8),
+                                      // 0x11/0x12 (2), 0x13/0x14 (4)
 u32 medal_update_exp_progress(u32 slot, u32 n);
 void battle_set_action_params(u32 rec, u32 skill, s32 a, u32 b);
 void sub_080378F0(u32 src); // spawns a particle sprite next to sprite src every 16 / 8 frames
@@ -1279,38 +1359,44 @@ u32 find_random_broken_part(u32 rec); // random part (+ 1) of rec with no armor 
 void battle_set_damage_display(u32 rec, u32 part, s32 amount);
 void get_active_bot_part_index_and_load_values(u32 side);
 void sub_08035740(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, max)
-void sub_0803572C(u8 *val, s32 amount); // *val = max(*val - amount, 0)
+void sub_0803572C(u8 *val, s32 amount);          // *val = max(*val - amount, 0)
 void sub_08037458(u32 rec, s32 amount); // gUnk_03001800.unkC8 / unkCC = min(amount, head unk10), unkCA = the rest
 void sub_08037498(u32 rec, s32 amount); // same, clamped to head data[8] - unk10
-void sub_080378A8(void); // moves sprite 0x21 4 px (right if gUnk_03001800.unkF8 bit 1 clear, else left)
-u32 sub_08037B9C(void); // runs the sprite handlers of slots 0x21-0x3B; 1 when none is active
-void sub_0803836C(void); // clears gUnk_03001800.unkD2[0..2] / unkD6[0..2]
+void sub_080378A8(void);                // moves sprite 0x21 4 px (right if gUnk_03001800.unkF8 bit 1 clear, else left)
+u32 sub_08037B9C(void);                 // runs the sprite handlers of slots 0x21-0x3B; 1 when none is active
+void sub_0803836C(void);                // clears gUnk_03001800.unkD2[0..2] / unkD6[0..2]
 
 void sub_08035BD4(void);
 void sub_08035BFC(u32 rec, u32 part);
 u32 battle_select_random_target(u32 base, u32 rec);
-void battle_sequence_update(void); // per frame during an attack animation: runs sequence commands until one yields (gUnk_03002C30[0].unk2A)
+void battle_sequence_update(
+    void); // per frame during an attack animation: runs sequence commands until one yields (gUnk_03002C30[0].unk2A)
 void sub_0801DEE4(void);
 void sub_0801FA40(void);
 void sub_0802645C(void);
 void sub_08035754(s16 *amount, s32 sub); // *amount -= sub, not below 0
 void sub_08035B9C(u32 rec);
-u32 sub_08037798(u32 base); // record on side base, or 0xFF
+u32 sub_08037798(u32 base);                                // record on side base, or 0xFF
 void *memcpy_optimized(void *dst, const void *src, u32 n); // library
-void *custom_memset(void *dst, int c, u32 n); // library
-u16 ReadEepromDword(u16 address, u16 *data); // EEPROM library: reads 8 bytes
-u16 ProgramEepromDword(u16 address, u16 *data); // EEPROM library: writes 8 bytes
-u32 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 bytes and verifies; u32 so sub_080603A4 tests the result without truncating it
+void *custom_memset(void *dst, int c, u32 n);              // library
+u16 ReadEepromDword(u16 address, u16 *data);               // EEPROM library: reads 8 bytes
+u16 ProgramEepromDword(u16 address, u16 *data);            // EEPROM library: writes 8 bytes
+u32 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 bytes and verifies; u32 so sub_080603A4
+                                                  // tests the result without truncating it
 void init_blend_effect(void *state, u8 a, u8 b, s8 c, u16 mode);
 u32 blend_fade_step_08065598(void *state);
 void sub_08059D04(void); // clears unk0 of the 128 gUnk_03002C30 sprites
 // code_0805AB40
-void decompress_and_write_tilemap(const void *src, u32 bgcnt); // LZ77 tilemap with a w, h header (u32 each, 16-byte header) into the BG screen block of bgcnt
+void decompress_and_write_tilemap(
+    const void *src,
+    u32 bgcnt);          // LZ77 tilemap with a w, h header (u32 each, 16-byte header) into the BG screen block of bgcnt
 void sub_0805AB40(void); // VBlank-once callback: copies gPaletteBuffer / gPaletteBufferBg to OBJ / BG palette RAM
-void sub_0805AB68(u16 color, s32 t, u32 pal); // guess: blends OBJ palette pal from gPaletteBackup toward color by t / 32, then uploads in VBlank
+void sub_0805AB68(
+    u16 color, s32 t,
+    u32 pal); // guess: blends OBJ palette pal from gPaletteBackup toward color by t / 32, then uploads in VBlank
 void sub_0805AC4C(u16 color, s32 t); // guess: same blend for all BG palettes
 void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot);
-u32 sub_0805B4B0(u32 id); // gUnk_08483AC0[id] == 1
+u32 sub_0805B4B0(u32 id);                   // gUnk_08483AC0[id] == 1
 u32 sub_0805B4C8(struct Unk_03002C30 *spr); // guess: sine-wave bobbing of 8 sprites, 1 when done
 void sub_0805BB64(u8 sel, u8 count);
 void swap_inventory_items(void);
@@ -1318,36 +1404,46 @@ void item_menu_draw_page_numbers(void); // "page / pages" on the item screen
 void init_fade_sprite_and_start_fade(void);
 void sub_0805B3E4(s32 x, s32 y, s32 n); // clears n tilemap entries at (x, y) of the BG map at 0x0600B000
 void sub_0805B470(struct Unk_03002C30 *sprite);
-s16 sub_0805BB10(s16 step); // title menu blend pulse: sets BLDALPHA from gUnk_080AF6F0[step / 8], returns step + 1 (0 after 0xA0)
-void sub_0805BCC0(u8 sel); // title option rows: palette 0xA (selected row, current value), 9 (current value) or 8 on the BG0 tiles masked by gUnk_080AF740
+s16 sub_0805BB10(
+    s16 step); // title menu blend pulse: sets BLDALPHA from gUnk_080AF6F0[step / 8], returns step + 1 (0 after 0xA0)
+void sub_0805BCC0(u8 sel); // title option rows: palette 0xA (selected row, current value), 9 (current value) or 8 on
+                           // the BG0 tiles masked by gUnk_080AF740
 void sub_0805BDC8(u8 a); // BG palette 10 = blend of the two 16-color halves at 0x0202FB00 by (a - 16) / 32 (0 below 16)
-void sub_0805BEA0(u8 sel, u8 f); // BG palettes 0-2 from 0x0202FA00; palette sel blended between its two halves by f / 32 (title cursor pulse)
+void sub_0805BEA0(
+    u8 sel,
+    u8 f); // BG palettes 0-2 from 0x0202FA00; palette sel blended between its two halves by f / 32 (title cursor pulse)
 void sub_0805BBF8(u8 sel); // title menu: palette 7 on the selected row of three 11-tile BG0 rows, 6 on the others
-void sub_0805BC6C(void); // sets palette 8 on three 16-tile BG0 rows (dead code, carved from sub_0805BBF8)
-void sub_0805C820(void); // fades REG_BLDY up to 16, then game state 9 (carved from sub_0805C7E8)
+void sub_0805BC6C(void);   // sets palette 8 on three 16-tile BG0 rows (dead code, carved from sub_0805BBF8)
+void sub_0805C820(void);   // fades REG_BLDY up to 16, then game state 9 (carved from sub_0805C7E8)
 void sub_0805CA28(u32 a);
 void sub_0805D57C(u16 a);
-void attempt_save_and_transition(void); // save screen state 7: up to 4 tries of save_dispatch(0), then state 8 (ok) or 12 (failed)
-s32 load_save_with_retries(void); // title: stops the music, clears the name, tries save_dispatch(1) 4 times; nonzero while sound 4 plays
+void attempt_save_and_transition(
+    void); // save screen state 7: up to 4 tries of save_dispatch(0), then state 8 (ok) or 12 (failed)
+s32 load_save_with_retries(
+    void); // title: stops the music, clears the name, tries save_dispatch(1) 4 times; nonzero while sound 4 plays
 s32 save_dispatch(s32 mode); // 0: save, 1: load (returns validate_save_data), 2: erase; all through gDecompressBuffer
 void load_save_data(struct SaveData *save);
 void serialize_save_data(struct SaveData *save);
 s32 validate_save_data(struct SaveData *save); // reads the EEPROM into save: 0 ok, 1 wrong signature, -1 corrupt
-s32 write_save_to_eeprom(u16 *src, u32 force); // writes 0x1CC0 bytes to EEPROM: every block if (u8)force, else only blocks that differ
+s32 write_save_to_eeprom(
+    u16 *src, u32 force); // writes 0x1CC0 bytes to EEPROM: every block if (u8)force, else only blocks that differ
 void sub_0805E170(u16 a);
 void init_multiplayer_id(void);
 void sub_0805B9EC(u16 keys); // link: gNewKeys / gReleasedKeys from the other player's keys
-void sub_0805BA20(void); // link: exchanges keys through gUnk_03005010 (player 0 sends gHeldKeys)
+void sub_0805BA20(void);     // link: exchanges keys through gUnk_03005010 (player 0 sends gHeldKeys)
 u16 sub_0805BA68(s16 x1, s16 y1, s16 x2, s16 y2); // distance: Sqrt(dx * dx + dy * dy)
 u32 Sqrt(u32 n);
 void ObjAffineSet(struct ObjAffineSrcData *src, void *dest, s32 count, s32 offset);
-void unpack_item_inventory_to_buffer(void); // gItemInventory -> struct ItemListEntry list at 0x02040000, count in gUnk_03006F74->unk10
+void unpack_item_inventory_to_buffer(
+    void); // gItemInventory -> struct ItemListEntry list at 0x02040000, count in gUnk_03006F74->unk10
 void update_battle_medapart_icons(void);
 void render_battle_medapart_list(u32 mode);
 s32 calc_text_pixel_width(const u8 *s); // sum of gUnk_083B4C88 widths, up to 10 characters or the 0xFE terminator
-void sub_0805E1CC(const u8 *s); // draws 10 characters as 2-row BG1 tiles copied from a 26-per-row font map on the same screen (guess: name entry)
+void sub_0805E1CC(const u8 *s); // draws 10 characters as 2-row BG1 tiles copied from a 26-per-row font map on the same
+                                // screen (guess: name entry)
 void draw_number_3digits(s32 n, s32 x, s32 y); // 3 digits, blank-padded, BG tilemap 0x0600F000 (item list page numbers)
-void item_menu_set_cursor_pos(struct Unk_03002C30 *sprite); // list cursor sprite: unk2 = 0x54, unk4 = 0x1C + 16 * (gUnk_03006F74->unkC % 5)
+void item_menu_set_cursor_pos(
+    struct Unk_03002C30 *sprite); // list cursor sprite: unk2 = 0x54, unk4 = 0x1C + 16 * (gUnk_03006F74->unkC % 5)
 
 struct ObjSortEntry;
 struct RotateSrc;
@@ -1376,14 +1472,17 @@ void decompress_bg_tilemap_to_vram(void);
 void init_battle_scene(u32 mode, u32 id);
 void init_game_mode(u32 mode);
 u32 dma3_copy_or_decompress(const u32 *src, void *dst);
-void tilemap_offset_tiles_and_palette(u32 tiles, u32 pal, u32 block); // (u16, u8, u8): callers pass full ints; adds tiles to the tile numbers of a 32x32 screen block, sets palette pal
+void tilemap_offset_tiles_and_palette(u32 tiles, u32 pal,
+                                      u32 block); // (u16, u8, u8): callers pass full ints; adds tiles to the tile
+                                                  // numbers of a 32x32 screen block, sets palette pal
 void LZ77UnCompWram(const void *src, void *dst);
 u32 sub_08044D64(u32 *dst, const u32 *src, u32 n);
 u32 sub_08044D78(u16 *dst, const u16 *src, u32 n);
 void sub_08044D90(u8 *dst, const u8 *src, u32 n);
 void transition_draw_tile_strip(void);
 void battle_sprite_setup_cursor(void);
-void set_oam_sprite_shape_size(u8 *oam, s32 h, s32 w); // OAM attr0 shape / attr1 size bits for a w x h sprite (h > w: tall)
+void set_oam_sprite_shape_size(u8 *oam, s32 h,
+                               s32 w); // OAM attr0 shape / attr1 size bits for a w x h sprite (h > w: tall)
 u32 sub_08044E64(s32 shape, s32 size); // OAM attr0 shape / attr1 size bits -> height << 16 | width
 void handle_battle_sprite_scroll_input(void);
 s16 fixed_point_divide(s16 a, s16 b);
@@ -1401,25 +1500,36 @@ void dma_load_obj_palettes_08048730(s32 arg);
 void init_battle_medaforce_sprite(void);
 void update_battle_entity_status_chars(void);
 void dma_load_sprite_tiles(const u32 *src, u16 tile, void *buf, u32 useCpu);
-u32 setup_oam_sprite_entries(struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const struct SpriteAnchor *e, u8 f, u16 g);
-u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc, const struct SpriteAnchor *e, u8 f, u16 g);
-u16 copy_sprite_oam_entries(struct SpriteOamList *list, struct OamFull *dst, u16 slot, s32 pal, u16 end, u8 flip); // K&R definition: pal is a u8; callers pass it sign-extended
-u16 sub_08045794(struct SpriteOamList *list, struct OamFull *dst, u16 slot, s32 pal, u16 end, u32 flags); // same with an affine matrix number (flags & 7) and flips (bits 3, 4); K&R, pal is a u8
+u32 setup_oam_sprite_entries(struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc,
+                             const struct SpriteAnchor *e, u8 f, u16 g);
+u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c,
+                             const struct SpriteDesc *desc, const struct SpriteAnchor *e, u8 f, u16 g);
+u16 copy_sprite_oam_entries(struct SpriteOamList *list, struct OamFull *dst, u16 slot, s32 pal, u16 end,
+                            u8 flip); // K&R definition: pal is a u8; callers pass it sign-extended
+u16 sub_08045794(struct SpriteOamList *list, struct OamFull *dst, u16 slot, s32 pal, u16 end,
+                 u32 flags); // same with an affine matrix number (flags & 7) and flips (bits 3, 4); K&R, pal is a u8
 void sub_0804589C(struct SpriteOamBatch *batch, struct SpriteOamList **buf);
 void sub_080458A4(struct SpriteOamBatch *batch, struct SpriteOamList *list, u16 depth);
 struct OamFull *sorted_array_insert_shift(struct OamFull *arr, u16 n, u16 shift, s16 key);
 u16 render_sprite_if_visible(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 flip);
-u16 sub_08045B68(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 neg, u16 scale, u16 *affine, u32 k); // + scale / flip affine matrix k
-u16 sub_08045C30(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u16 angle, u16 *affine, u32 k); // + rotation affine matrix k
+u16 sub_08045B68(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 neg, u16 scale,
+                 u16 *affine, u32 k); // + scale / flip affine matrix k
+u16 sub_08045C30(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u16 angle,
+                 u16 *affine, u32 k); // + rotation affine matrix k
 void sub_08045D1C(struct Unk_03002414 *work);
 void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 a, s16 b, s16 depth); // u16 params in the definition
 u32 check_position_table_match(u8 id, u8 which);
-void copy_sprite_tiles_to_vram(u8 *dst, u8 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp); // rearranges tiles from src into dst (rows x cols blocks of the OAM shape / size)
-void decompress_and_load_sprite_tiles(const u32 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp, u16 tile, u32 unused, u8 *buf, u32 useCpu);
+void copy_sprite_tiles_to_vram(
+    u8 *dst, u8 *src, s32 shape, s32 size, s32 rows, s32 cols,
+    s32 bpp); // rearranges tiles from src into dst (rows x cols blocks of the OAM shape / size)
+void decompress_and_load_sprite_tiles(const u32 *src, s32 shape, s32 size, s32 rows, s32 cols, s32 bpp, u16 tile,
+                                      u32 unused, u8 *buf, u32 useCpu);
 // code_0805EE6C
 void sub_080600E0(void); // gUnk_03002C30[0].unk1A counts 0-63, unk6 = 0x100 + gUnk_080AF980[(count >> 3) & 7]
-void sub_08062A74(u16 id, u8 second); // copies Medapart name pointer id (part * 4 + kind) of gUnk_083BB9CC into gUnk_03000440.unk9E (+0x14 if second), 0xFE-terminated
-void copy_text_with_lookup(); // (u8 *dst, u8 *src, u32 unused, u32 i): copies src[i..] up to 0xFF plus 2 bytes, dst[2] = gUnk_080AFA10[gUnk_03002420]; one caller passes only dst, src
+void sub_08062A74(u16 id, u8 second); // copies Medapart name pointer id (part * 4 + kind) of gUnk_083BB9CC into
+                                      // gUnk_03000440.unk9E (+0x14 if second), 0xFE-terminated
+void copy_text_with_lookup(); // (u8 *dst, u8 *src, u32 unused, u32 i): copies src[i..] up to 0xFF plus 2 bytes, dst[2]
+                              // = gUnk_080AFA10[gUnk_03002420]; one caller passes only dst, src
 void sub_0805FD60(void);
 void sub_08060804(void);
 void sub_0805F898(void);
@@ -1435,16 +1545,18 @@ void sub_0805F974(void);
 void sub_0805F9AC(void);
 void sub_08060324(void);
 void sub_080608B4(void);
-void sub_0805FAF0(void); // gUnk_08483CA4[gGameSubState](), BG3 scrolls down every other frame
+void sub_0805FAF0(void);       // gUnk_08483CA4[gGameSubState](), BG3 scrolls down every other frame
 void save_lost_dispatch(void); // gUnk_08483CC4[gGameSubState](), BG3 scrolls up every other frame
 void test_mode_dispatch(void); // gUnk_08483C6C[gGameSubState](), BG3 scrolls diagonally
 void update_fade_effect(void);
 void town_map_update_cursor(void);
-void update_animation_timer(void); // gUnk_03006F74->unk3A counts 0-109; every 10th frame copies a 480-byte frame of gDecompressBuffer to VRAM 0x06004020
+void update_animation_timer(void); // gUnk_03006F74->unk3A counts 0-109; every 10th frame copies a 480-byte frame of
+                                   // gDecompressBuffer to VRAM 0x06004020
 void sub_0805F8B0(void);
 void sub_0806142C(void);
 void shop_list_dispatch(void); // gUnk_08483E8C[gGameSubState](), BG3 scrolls diagonally
-void battle_menu_highlight_icons(u32 sel, u32 frame); // BG2 tiles of 4 icons: palette 6 for icon sel when frame & 8, else palette 5
+void battle_menu_highlight_icons(
+    u32 sel, u32 frame); // BG2 tiles of 4 icons: palette 6 for icon sel when frame & 8, else palette 5
 void sub_0805F81C(void);
 void sub_0806035C(void);
 void sub_0806086C(void);
@@ -1459,10 +1571,12 @@ void silence_and_clear_vram(void);
 void copy_bg2_tilemap_to_ewram(void);
 void shop_menu_dispatch(void); // gUnk_08483E10[gGameSubState](), BG3 scrolls diagonally
 void sub_08061D30(void);
-void sub_08062638(void); // fades OBJ palettes in, then init_battle_scene(unk19, id of shop list entry unk1A + gUnk_02023078)
+void sub_08062638(
+    void); // fades OBJ palettes in, then init_battle_scene(unk19, id of shop list entry unk1A + gUnk_02023078)
 void fade_out_transition_step(void);
 void clear_or_fill_bg2_tilemap(s32 n);
-void sub_08062AB0(u32 medal, u32 frame); // decompresses Medal sprite gUnk_083AC494[medal][frame] to OBJ VRAM and sets up sprite 0 at (0xB8, 0x38)
+void sub_08062AB0(u32 medal, u32 frame); // decompresses Medal sprite gUnk_083AC494[medal][frame] to OBJ VRAM and sets
+                                         // up sprite 0 at (0xB8, 0x38)
 void sub_0806006C(void);
 void sub_08061300(void);
 void sub_0805FB2C(void);
@@ -1498,9 +1612,12 @@ void animate_battle_scroll_tiles(void);
 void fade_update_tilemap_copy(void);
 void render_battle_medal_names(u8 first);
 u32 sub_080440D4(void);
-void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 arg2); // sprite (0x16+): unk23 = arg2, unk30 = unk6 = frame; sets bit (sprite - 0x16) in byte 0x03007010
+void sprite_cycle_anim_start(
+    u8 sprite, u16 frame,
+    u8 arg2); // sprite (0x16+): unk23 = arg2, unk30 = unk6 = frame; sets bit (sprite - 0x16) in byte 0x03007010
 void sprite_cycle_anim_stop(u8 sprite, u16 frame); // clears that bit, unk23 = 0, unk6 = frame
-void sub_08071C40(u8 state, u8 sprite, u16 arg2); // gUnk_03002C30[sprite]: unk20 = state, unk21 = 0, unk34 = arg2, unk1A = 0
+void sub_08071C40(u8 state, u8 sprite,
+                  u16 arg2); // gUnk_03002C30[sprite]: unk20 = state, unk21 = 0, unk34 = arg2, unk1A = 0
 void sub_08071614(void);
 void sub_0807168C(void);
 void sub_0807068C(void);
@@ -1535,12 +1652,16 @@ void check_and_update_battlefield_palette(void);
 void copy_tilemap_with_offset_08048CA4(const void *src, void *dst, s32 a, s32 b, s32 c, s32 d, s32 e);
 void copy_tiles_to_bg_tilemap(const void *src, void *dst, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 u16 init_oam_sprite_entry(struct OamFull *oam, struct SpriteNodeDesc *desc, u8 pal, u16 tile);
-u32 load_sprite_tree_recursive(struct SpriteNodeDesc **nodes, struct SpriteTileRef *list, u8 node, u8 pal, struct SpriteNodeOam *oams, u16 *tile, u32 alt); // returns the bytes of tiles loaded
-void load_sprite_tiles_by_table(struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams, struct SpriteTileRef *list, u8 node, u8 k);
-void render_sprite_node_recursive(struct Unk_08047414 *obj, struct SpriteTileRef *list, u8 node, s32 y, s32 x, s16 depth, s16 angle, u8 flip);
+u32 load_sprite_tree_recursive(struct SpriteNodeDesc **nodes, struct SpriteTileRef *list, u8 node, u8 pal,
+                               struct SpriteNodeOam *oams, u16 *tile, u32 alt); // returns the bytes of tiles loaded
+void load_sprite_tiles_by_table(struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams, struct SpriteTileRef *list,
+                                u8 node, u8 k);
+void render_sprite_node_recursive(struct Unk_08047414 *obj, struct SpriteTileRef *list, u8 node, s32 y, s32 x,
+                                  s16 depth, s16 angle, u8 flip);
 u16 copy_oam_entries_with_priority(struct SpriteOamList *list, struct OamData *dst, u16 slot, u16 end);
 u16 batch_copy_oam_entries(struct SpriteOamBatch *batch, struct OamData *dst, u16 end);
-s32 interpolate_entity_positions(struct InterpEnt *e, s16 *pos, s8 *off, u8 *tbl, u8 unused, u8 frame, u8 idx, s32 count, s32 stride);
+s32 interpolate_entity_positions(struct InterpEnt *e, s16 *pos, s8 *off, u8 *tbl, u8 unused, u8 frame, u8 idx,
+                                 s32 count, s32 stride);
 void build_bg_tile_entry(u16 *dst, u16 id, u16 base, u16 y, u16 x, u16 yoff, u16 xoff);
 void sub_0804908C(u16 *dst, s32 pal, s32 tile);
 void sub_08048B94(void);
@@ -1551,7 +1672,8 @@ void draw_number_tall(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg);
 void update_cursor_sprite_position(void);
 u32 check_vehicle_usability(s32 idx);
 void load_battle_sprite_from_index(u32 value, s32 bits, s32 x, s32 y);
-void copy_tilemap_rect_with_offset(u16 *src, u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 unused6, s32 unused7, s32 add, s32 mode);
+void copy_tilemap_rect_with_offset(u16 *src, u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 unused6, s32 unused7, s32 add,
+                                   s32 mode);
 void init_vehicle_menu_sprite(s32 slide);
 void copy_tilemap_region(u16 *src, u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 add, s32 pal, s32 mode);
 void fill_tilemap_rect_0804916C(u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 tile, s32 pal, s32 mode);

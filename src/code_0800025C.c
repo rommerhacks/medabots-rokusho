@@ -1,7 +1,6 @@
 #include "global.h"
 
-void AgbMain(void)
-{
+void AgbMain(void) {
     s32 i;
     u8 prevConnected;
 
@@ -19,8 +18,7 @@ void AgbMain(void)
     gUnk_03002410 = 0;
     gUnk_03005010.unk1E = 0;
     gUnk_03005010.unk1D = 0;
-    for (;;)
-    {
+    for (;;) {
         VBlankIntrWait();
         gUnk_03002410 = 0;
         read_keys();
@@ -31,43 +29,33 @@ void AgbMain(void)
         gUnk_03005010.unk1D = 0;
         gUnk_03005010.unk1E = 0;
         gUnk_03005010.unk0 = serial_link_init_and_status((u32 *)gUnk_03005010.unk8);
-        for (i = 0; i < 4; i++)
-        {
-            if (gUnk_03005010.unk0 & (1 << i))
-            {
+        for (i = 0; i < 4; i++) {
+            if (gUnk_03005010.unk0 & (1 << i)) {
                 gUnk_03005010.unk19[i] = 0;
-                if (!((prevConnected >> i) & 1))
-                {
+                if (!((prevConnected >> i) & 1)) {
                     gSioLink.connected |= 1 << i;
                     gUnk_03005010.unk1D |= 0xFF;
                 }
-            }
-            else if (gUnk_03005010.unk19[i] > 10)
-            {
+            } else if (gUnk_03005010.unk19[i] > 10) {
                 if ((gSioLink.connected >> i) & 1)
                     gUnk_03005010.unk1E |= 0xFF;
                 gSioLink.connected &= ~(1 << i);
                 gUnk_03005010.unk19[i] = 0;
-            }
-            else
-            {
+            } else {
                 gUnk_03005010.unk19[i]++;
             }
         }
-        if (check_soft_reset())
-        {
+        if (check_soft_reset()) {
             VBlankIntrWait();
             sound_init(&gUnk_03002430);
             VBlankIntrWait();
-        }
-        else if (gUnk_03005030)
-        {
+        } else if (gUnk_03005030) {
             u32 other = 0;
 
             if (gUnk_03000B90 == 0)
                 other = 1;
-            if (gUnk_03005010.unk8[other][0] == 0xFFFF && gUnk_03005010.unk8[other][1] == gUnk_03005010.unk8[other][0])
-            {
+            if (gUnk_03005010.unk8[other][0] == 0xFFFF &&
+                gUnk_03005010.unk8[other][1] == gUnk_03005010.unk8[other][0]) {
                 gGameMode = 0;
                 gGameState = 10;
                 gGameSubState = 16;
@@ -79,8 +67,7 @@ void AgbMain(void)
     }
 }
 
-void irq_init(void)
-{
+void irq_init(void) {
     CpuSet(gIntrTableTemplate, gIntrTable, 0x0400000E);
     CpuSet(irq_dispatch_arm, gIntrMain, 0x04000200);
     INTR_VECTOR = gIntrMain;
@@ -94,8 +81,7 @@ void irq_init(void)
     eeprom_setup_timer_irq();
 }
 
-void hw_reset_init(void)
-{
+void hw_reset_init(void) {
     u32 a, b, c;
 
     REG_IME = 0;
@@ -109,8 +95,7 @@ void hw_reset_init(void)
     *(u16 *)PLTT = 0x7FFF;
 }
 
-void clear_oam(void)
-{
+void clear_oam(void) {
     vu32 a, b;
     s32 i;
 
@@ -122,8 +107,7 @@ void clear_oam(void)
     CpuFastSet((void *)&b, (void *)VRAM, 0x01006000);
 }
 
-void sound_init(struct Unk_03007014 *work)
-{
+void sound_init(struct Unk_03007014 *work) {
     sound_engine_init(work);
     sub_08074900(gUnk_080AFFB8);
     sub_08074BC4(gUnk_080B06EC);
@@ -133,18 +117,15 @@ void sound_init(struct Unk_03007014 *work)
     play_song(0);
 }
 
-void vblank_irq(void)
-{
-    if (!(gUnk_03002B90 & 1))
-    {
+void vblank_irq(void) {
+    if (!(gUnk_03002B90 & 1)) {
         gUnk_03002B90 |= 1;
         vblank_body();
         gUnk_03002B90 &= ~1;
         if (gUnk_03005010.unk0 & 0x80)
             sub_080023D8();
         REG_IME = 0;
-        if (++gUnk_03002410 > 5 && gSioLink.sendPending)
-        {
+        if (++gUnk_03002410 > 5 && gSioLink.sendPending) {
             gUnk_03005010.unk1E = 0xFF;
             INTR_CHECK |= 0x80;
         }
@@ -153,12 +134,10 @@ void vblank_irq(void)
     }
 }
 
-void vblank_body(void)
-{
+void vblank_body(void) {
     s32 i;
 
-    if (!(gUnk_03000434 & 1))
-    {
+    if (!(gUnk_03000434 & 1)) {
         REG_BG0HOFS = gBg0Scroll.x + gUnk_03002C2C.x;
         REG_BG0VOFS = gBg0Scroll.y + gUnk_03002C2C.y;
         REG_BG1HOFS = gBg1Scroll.x + gUnk_03002C2C.x;
@@ -168,10 +147,8 @@ void vblank_body(void)
         REG_BG3HOFS = gBg3Scroll.x + gUnk_03002C2C.x;
         REG_BG3VOFS = gBg3Scroll.y + gUnk_03002C2C.y;
     }
-    if (gUnk_03000430 != 0)
-    {
-        if (gUnk_03000430 == 2)
-        {
+    if (gUnk_03000430 != 0) {
+        if (gUnk_03000430 == 2) {
             update_anim_object_flags();
             copy_oam_affine_params(gUnk_03002414->unkB84, gUnk_03002414->unkF8C);
             for (i = 0; i < 88; i++)
@@ -184,14 +161,10 @@ void vblank_body(void)
             gUnk_03002414->unk1095 = 0;
             if (gUnk_03000440.unk12E)
                 CpuFastSet(gOamBuffer, (void *)OAM, 0xB0);
-        }
-        else
-        {
+        } else {
             gUnk_03000430 = 0;
         }
-    }
-    else if (gUnk_03000440.unk12E)
-    {
+    } else if (gUnk_03000440.unk12E) {
         CpuFastSet(gOamBuffer, (void *)OAM, 0x100);
     }
     gUnk_03000440.unk12E = 0;
@@ -204,18 +177,14 @@ void vblank_body(void)
     sound_engine_tick();
 }
 
-void hblank_irq(void)
-{
+void hblank_irq(void) {
     gHBlankCallback();
     REG_IF = 2;
 }
 
-void nullsub_08000840(void)
-{
-}
+void nullsub_08000840(void) {}
 
-void read_keys(void)
-{
+void read_keys(void) {
     u16 prev;
 
     gPrevKeys = prev = gHeldKeys;
@@ -223,35 +192,27 @@ void read_keys(void)
     gNewKeys = gHeldKeys & ~prev;
     gReleasedKeys = prev & ~gHeldKeys;
     gRepeatKeys = 0;
-    if (gNewKeys)
-    {
+    if (gNewKeys) {
         gRepeatKeys = gNewKeys;
         gKeyRepeatTimer = 16;
     }
-    if (gHeldKeys)
-    {
-        if (gKeyRepeatTimer == 0)
-        {
+    if (gHeldKeys) {
+        if (gKeyRepeatTimer == 0) {
             gRepeatKeys = gNewKeys | gHeldKeys;
             gKeyRepeatTimer = 3;
-        }
-        else
-        {
+        } else {
             gKeyRepeatTimer--;
         }
     }
 }
 
-void soft_reset(void)
-{
+void soft_reset(void) {
     u32 i;
 
-    if (gUnk_03005030)
-    {
+    if (gUnk_03005030) {
         gUnk_03005010.unk4 = 0xFFFF;
         gUnk_03005010.unk6 = -1;
-        for (i = 0; i < 8; i++)
-        {
+        for (i = 0; i < 8; i++) {
             serial_prepare_send_packet(&gUnk_03005010.unk4);
             VBlankIntrWait();
         }
@@ -272,10 +233,8 @@ void soft_reset(void)
     REG_DMA0CNT_H = 0;
 }
 
-u32 check_soft_reset(void)
-{
-    if ((*(u8 *)&gHeldKeys & 0xF) == 0xF && (*(u8 *)&gNewKeys & 8))
-    {
+u32 check_soft_reset(void) {
+    if ((*(u8 *)&gHeldKeys & 0xF) == 0xF && (*(u8 *)&gNewKeys & 8)) {
         soft_reset();
         read_keys();
         return 1;
@@ -283,26 +242,19 @@ u32 check_soft_reset(void)
     return 0;
 }
 
-void dma1_irq_sound(void)
-{
+void dma1_irq_sound(void) {
     sound_update_channel_at_690();
 }
 
-void dma2_irq_sound(void)
-{
+void dma2_irq_sound(void) {
     sound_update_channel_at_6d8();
 }
 
-void nullsub_080009B4(void)
-{
-}
+void nullsub_080009B4(void) {}
 
-void nullsub_080009B8(void)
-{
-}
+void nullsub_080009B8(void) {}
 
-u32 lz_decompress_dispatch(const u8 *src, void *dst)
-{
+u32 lz_decompress_dispatch(const u8 *src, void *dst) {
     if (src[0] != 'L' || src[1] != 'e')
         return 0;
     if ((u32)dst - 0x04000001 <= 0x03FFFFFE)
@@ -311,8 +263,7 @@ u32 lz_decompress_dispatch(const u8 *src, void *dst)
         return lz_decompress_custom_08000A0C(src, dst, src[2] | (src[3] << 8) | (src[4] << 16));
 }
 
-u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size)
-{
+u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size) {
     u32 left = size;
     u8 *d = dst;
     const u8 *s = src + 6;
@@ -321,13 +272,10 @@ u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size)
     u32 v;
     u8 *p;
 
-    while (left != 0)
-    {
+    while (left != 0) {
         flags = *s++;
-        for (n = 0; n < 4 && left != 0; n++, flags >>= 2)
-        {
-            switch (flags & 3)
-            {
+        for (n = 0; n < 4 && left != 0; n++, flags >>= 2) {
+            switch (flags & 3) {
             case 0:
                 v = s[0] + (s[1] << 8);
                 s += 2;
@@ -361,8 +309,7 @@ u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size)
     return size;
 }
 
-u32 lz_decompress_custom_08000B14(const u8 *src, void *dst)
-{
+u32 lz_decompress_custom_08000B14(const u8 *src, void *dst) {
     u32 size;
     u32 left;
     u8 *d;
@@ -379,33 +326,26 @@ u32 lz_decompress_custom_08000B14(const u8 *src, void *dst)
     d = dst;
     s = src + 6;
 
-    while (left != 0)
-    {
+    while (left != 0) {
         flags = *s++;
-        for (n = 0; n < 4 && left != 0; n++, flags >>= 2)
-        {
-            switch (flags & 3)
-            {
+        for (n = 0; n < 4 && left != 0; n++, flags >>= 2) {
+            switch (flags & 3) {
             case 0:
                 v = s[0] + (s[1] << 8);
                 s += 2;
                 p = d - ((v & 0xFFF) + 5);
                 v = (v >> 12) + 3;
                 left -= v;
-                while (v--)
-                {
+                while (v--) {
                     u16 *dh = (u16 *)((u32)d & ~1);
                     u16 sv = *(u16 *)((u32)p & ~1);
                     u16 dv = *dh;
-                    if ((u32)p & 1)
-                    {
+                    if ((u32)p & 1) {
                         if ((u32)d & 1)
                             *dh = (dv & 0xFF) | (sv & 0xFF00);
                         else
                             *dh = (dv & 0xFF00) | (sv >> 8);
-                    }
-                    else
-                    {
+                    } else {
                         if ((u32)d & 1)
                             *dh = (dv & 0xFF) | (sv << 8);
                         else
@@ -420,20 +360,16 @@ u32 lz_decompress_custom_08000B14(const u8 *src, void *dst)
                 p = d - ((v & 3) + 1);
                 v = (v >> 2) + 2;
                 left -= v;
-                while (v--)
-                {
+                while (v--) {
                     u16 *dh = (u16 *)((u32)d & ~1);
                     u16 sv = *(u16 *)((u32)p & ~1);
                     u16 dv = *dh;
-                    if ((u32)p & 1)
-                    {
+                    if ((u32)p & 1) {
                         if ((u32)d & 1)
                             *dh = (dv & 0xFF) | (sv & 0xFF00);
                         else
                             *dh = (dv & 0xFF00) | (sv >> 8);
-                    }
-                    else
-                    {
+                    } else {
                         if ((u32)d & 1)
                             *dh = (dv & 0xFF) | (sv << 8);
                         else
@@ -443,17 +379,16 @@ u32 lz_decompress_custom_08000B14(const u8 *src, void *dst)
                     p++;
                 }
                 break;
-            case 3:
-                {
-                    u16 *dh = (u16 *)((u32)d & ~1);
-                    u16 dv = *dh;
-                    if ((u32)d & 1)
-                        *dh = (dv & 0xFF) | (*s << 8);
-                    else
-                        *dh = (dv & 0xFF00) | *s;
-                    d++;
-                    s++;
-                }
+            case 3: {
+                u16 *dh = (u16 *)((u32)d & ~1);
+                u16 dv = *dh;
+                if ((u32)d & 1)
+                    *dh = (dv & 0xFF) | (*s << 8);
+                else
+                    *dh = (dv & 0xFF00) | *s;
+                d++;
+                s++;
+            }
                 {
                     u16 *dh = (u16 *)((u32)d & ~1);
                     u16 dv = *dh;
@@ -476,17 +411,16 @@ u32 lz_decompress_custom_08000B14(const u8 *src, void *dst)
                 }
                 left -= 3;
                 break;
-            case 2:
-                {
-                    u16 *dh = (u16 *)((u32)d & ~1);
-                    u16 dv = *dh;
-                    if ((u32)d & 1)
-                        *dh = (dv & 0xFF) | (*s << 8);
-                    else
-                        *dh = (dv & 0xFF00) | *s;
-                    d++;
-                    s++;
-                }
+            case 2: {
+                u16 *dh = (u16 *)((u32)d & ~1);
+                u16 dv = *dh;
+                if ((u32)d & 1)
+                    *dh = (dv & 0xFF) | (*s << 8);
+                else
+                    *dh = (dv & 0xFF00) | *s;
+                d++;
+                s++;
+            }
                 left--;
                 break;
             }
@@ -495,52 +429,51 @@ u32 lz_decompress_custom_08000B14(const u8 *src, void *dst)
     return size;
 }
 
-void set_tilemap_and_decompress_bg(u32 x, u32 y, const u8 *src, u32 bgcnt, u16 base)
-{
+void set_tilemap_and_decompress_bg(u32 x, u32 y, const u8 *src, u32 bgcnt, u16 base) {
     gTilemapBaseEntry = base;
     lz_decompress_dispatch(src, gDecompressBuffer);
     write_tilemap_to_vram_08000E94(x, y, (struct Tilemap *)gDecompressBuffer, bgcnt);
 }
 
-void decompress_to_ewram_buffer(u32 x, u32 y, const u8 *src, u32 bgcnt)
-{
+void decompress_to_ewram_buffer(u32 x, u32 y, const u8 *src, u32 bgcnt) {
     lz_decompress_dispatch(src, gDecompressBuffer);
     load_tilemap_rows_to_vram(x, y, (struct Tilemap *)gDecompressBuffer, bgcnt);
 }
 
-void decompress_to_bg_scroll_buffer(const u8 *src, void *dst)
-{
+void decompress_to_bg_scroll_buffer(const u8 *src, void *dst) {
     u32 size = lz_decompress_dispatch(src, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, dst, size);
 }
 
-void write_tilemap_to_vram_08000E94(u32 x, u32 y, struct Tilemap *map, u32 bgcnt)
-{
+void write_tilemap_to_vram_08000E94(u32 x, u32 y, struct Tilemap *map, u32 bgcnt) {
     u16 *dst = (u16 *)((((bgcnt >> 8) & 0x1F) * 0x800) + VRAM) + x + y * 32;
     u16 *src = map->data;
-    u16 *d; u32 i, j;
+    u16 *d;
+    u32 i, j;
 
-    if (((bgcnt & 0xC000) >> 14) & 1)
-    {
+    if (((bgcnt & 0xC000) >> 14) & 1) {
         copy_tilemap_with_offset_08000F78(dst, map);
-    }
-    else
-    {
-for (i = 0; i < map->height; i++) { d = dst + (i << 5); for (j = 0; j < map->width; j++) *d++ = *src++ + gTilemapBaseEntry; }
+    } else {
+        for (i = 0; i < map->height; i++) {
+            d = dst + (i << 5);
+            for (j = 0; j < map->width; j++)
+                *d++ = *src++ + gTilemapBaseEntry;
+        }
     }
 }
 
-void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt)
-{
+void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt) {
     u32 shift = ((bgcnt & 0xC000) >> 14) + 3;
     u8 *dst = (u8 *)((((bgcnt >> 8) & 0x1F) * 0x800) + VRAM) + x + (y << shift);
     u8 *src = (u8 *)map->data;
     u32 i;
-    for (i = 0; i < map->height; i++) { CpuCopy16(src, (u16 *)dst + (i << shift), map->width); src += map->width; }
+    for (i = 0; i < map->height; i++) {
+        CpuCopy16(src, (u16 *)dst + (i << shift), map->width);
+        src += map->width;
+    }
 }
 
-void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map)
-{
+void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map) {
     s32 w, hh;
     s32 i, j;
     u16 *s, *d;
@@ -550,11 +483,12 @@ void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map)
         w = 32;
     hh = map->height;
     if (hh > 32)
-        do { hh = 32; } while (0);
+        do {
+            hh = 32;
+        } while (0);
 
     i = 0;
-    do
-    {
+    do {
         if (i >= hh)
             break;
         s = &map->data[map->width * i];
@@ -563,22 +497,19 @@ void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map)
         for (j = 0; j < w; j++)
             *d++ = *s++ + gTilemapBaseEntry;
     } while (1);
-    for (i = 0; i < hh; i++)
-    {
+    for (i = 0; i < hh; i++) {
         s = &map->data[i * map->width + 32];
         d = dst + 0x400 + i * 32;
         for (j = 32; j < map->width; j++)
             d[j - 32] = s[j - 32] + gTilemapBaseEntry;
     }
-    for (i = 32; i < map->height; i++)
-    {
+    for (i = 32; i < map->height; i++) {
         s = &map->data[map->width * i];
         d = dst + 0x400 + i * 32;
         for (j = 0; j < w; j++)
             *d++ = *s++ + gTilemapBaseEntry;
     }
-    for (i = 32; i < map->height; i++)
-    {
+    for (i = 32; i < map->height; i++) {
         s = &map->data[i * map->width + 32];
         d = dst + 0x800 + i * 32;
         for (j = 32; j < map->width; j++)
@@ -589,8 +520,7 @@ void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map)
 // Note: writes the BG3 affine registers (0x04000030-0x0400003E), not BG2.
 // pa/pd = cos * 0x400 / scale, pb/pc = +-sin * 0x400 / scale (scale 0x100 = 1:1), angle 1024 steps/turn;
 // reference point X = -(pa * a4 + pb * a5) - a2, Y = -(pc * a4 + pd * a5) - a3.
-void set_bg2_affine_transform(s32 scale, u32 angle, s32 cx, s32 cy, s32 sx, s32 sy)
-{
+void set_bg2_affine_transform(s32 scale, u32 angle, s32 cx, s32 cy, s32 sx, s32 sy) {
     s32 pa, pb, pc, pd, x, y;
 
     pa = Div(gUnk_080750E0[(angle & 0x3FF) + 0x100] * 4, scale);
@@ -610,8 +540,7 @@ void set_bg2_affine_transform(s32 scale, u32 angle, s32 cx, s32 cy, s32 sx, s32 
 }
 
 // New local struct: one scanline of BG2 affine registers (BG2PA..BG2PD, BG2X, BG2Y), 16 bytes.
-struct BgAffineLine
-{
+struct BgAffineLine {
     s16 pa, pb, pc, pd;
     u16 xl, xh, yl, yh;
 };
@@ -621,8 +550,7 @@ struct BgAffineLine
 // per-scanline BG2 affine sets whose zoom shrinks as 1 / (1 + line * step) (a perspective
 // "floor" effect, Mode-7 like), then arms hblank_dma0_bg2affine for the next vblank.
 
-void compute_bg_affine_scanline_params(s32 step, u32 angle, s32 unused, s32 cx, s32 cy, s32 sx, s32 sy)
-{
+void compute_bg_affine_scanline_params(s32 step, u32 angle, s32 unused, s32 cx, s32 cy, s32 sx, s32 sy) {
     struct BgAffineLine *buf;
     s32 i, j;
     s32 pa, pb, pc, pd, x, y, t;
@@ -631,8 +559,7 @@ void compute_bg_affine_scanline_params(s32 step, u32 angle, s32 unused, s32 cx, 
         buf = (struct BgAffineLine *)gDecompressBuffer;
     else
         buf = (struct BgAffineLine *)gUnk_02030A00;
-    for (i = 0, j = 0; i < 160; i++, j++)
-    {
+    for (i = 0, j = 0; i < 160; i++, j++) {
         pa = DivArm(i * step + 1, gUnk_080750E0[(angle & 0x3FF) + 0x100] << 7);
         t = DivArm(i * step + 1, gUnk_080750E0[angle & 0x3FF] << 7);
         pc = -t;
@@ -652,10 +579,10 @@ void compute_bg_affine_scanline_params(s32 step, u32 angle, s32 unused, s32 cx, 
     gVBlankOnceCallback = hblank_dma0_bg2affine;
 }
 
-// Run once at vblank (gVBlankOnceCallback, set by compute_bg_affine_scanline_params): copies line 0 of the current (double-buffered) BG2 affine table to BG2PA..BG2Y,
-// then starts DMA0 (hblank-triggered, repeat, 8 halfwords) to feed the rest of the lines.
-void hblank_dma0_bg2affine(void)
-{
+// Run once at vblank (gVBlankOnceCallback, set by compute_bg_affine_scanline_params): copies line 0 of the current
+// (double-buffered) BG2 affine table to BG2PA..BG2Y, then starts DMA0 (hblank-triggered, repeat, 8 halfwords) to feed
+// the rest of the lines.
+void hblank_dma0_bg2affine(void) {
     vu32 *dma = (vu32 *)REG_ADDR_DMA0;
     vu16 *dst = (vu16 *)0x04000020;
     u16 *src;
@@ -679,73 +606,68 @@ void hblank_dma0_bg2affine(void)
 }
 
 // Stops the per-scanline affine DMA (unreferenced).
-void sub_080012E4(void)
-{
+void sub_080012E4(void) {
     REG_DMA0CNT_H = 0;
 }
 
-u32 rng_next(u16 range)
-{
+u32 rng_next(u16 range) {
     gRngCounter++;
     gRngValue = gRngTable[gRngCounter & 0xF] ^ gRngState;
-    { u32 n = ~gRngValue; u32 t = ((s16 *)&gRngState)[1] + 0x55555555; gRngState = n + t; }
-    if (range == 0) return gRngValue;
+    {
+        u32 n = ~gRngValue;
+        u32 t = ((s16 *)&gRngState)[1] + 0x55555555;
+        gRngState = n + t;
+    }
+    if (range == 0)
+        return gRngValue;
     return (u32)(((s16 *)&gRngValue)[1] * range) >> 16;
 }
 
 // Linear interpolation in 4.12 fixed point: a at t = 0, b at t = 0x1000. Not called.
-s32 sub_0800134C(s32 a, s32 b, s32 t)
-{
+s32 sub_0800134C(s32 a, s32 b, s32 t) {
     return b * t / 4096 + a * (4096 - t) / 4096;
 }
 
-void copy_obj_palette_to_buffer(void)
-{
+void copy_obj_palette_to_buffer(void) {
     CpuFastSet((void *)OBJ_PLTT, gPaletteBackup, 0x80);
     CpuFastSet((void *)PLTT, gPaletteBackupBg, 0x80);
 }
 
-void palette_blend_to_color_080013A8(u16 color, u32 amount)
-{
+void palette_blend_to_color_080013A8(u16 color, u32 amount) {
     u32 i;
     u32 inv;
     if (amount > 32)
         amount = 32;
     inv = 32 - amount;
-    for (i = 0; i < 0x200; i++)
-    {
+    for (i = 0; i < 0x200; i++) {
         u16 *dst = &gPaletteBuffer[i];
         u16 *src = &gPaletteBackup[i];
-        *dst = (((*src & 0x1F) * inv + (color & 0x1F) * amount) >> 5)
-            | ((((*src & 0x3E0) * inv + (color & 0x3E0) * amount) >> 5) & 0x3E0)
-            | ((((*src & 0x7C00) * inv + (color & 0x7C00) * amount) >> 5) & 0x7C00);
+        *dst = (((*src & 0x1F) * inv + (color & 0x1F) * amount) >> 5) |
+               ((((*src & 0x3E0) * inv + (color & 0x3E0) * amount) >> 5) & 0x3E0) |
+               ((((*src & 0x7C00) * inv + (color & 0x7C00) * amount) >> 5) & 0x7C00);
     }
     gVBlankOnceCallback = dma_obj_palette_to_hardware;
 }
 
-void dma_obj_palette_to_hardware(void)
-{
+void dma_obj_palette_to_hardware(void) {
     CpuFastSet(gPaletteBuffer, (void *)OBJ_PLTT, 0x80);
     CpuFastSet(gPaletteBufferBg, (void *)PLTT, 0x80);
 }
 
-void palette_blend_16_colors(u16 *src, u16 *dst, u16 color, u32 amount)
-{
+void palette_blend_16_colors(u16 *src, u16 *dst, u16 color, u32 amount) {
     u32 i;
     u32 inv;
     if (amount > 32)
         amount = 32;
     inv = 32 - amount;
-    for (i = 0; i < 16; i++)
-    {
-        dst[i] = (((color & 0x1F) * amount + (src[i] & 0x1F) * inv) >> 5)
-            | ((((src[i] & 0x3E0) * inv + (color & 0x3E0) * amount) >> 5) & 0x3E0)
-            | ((((color & 0x7C00) * amount + (src[i] & 0x7C00) * inv) >> 5) & 0x7C00);
+    for (i = 0; i < 16; i++) {
+        dst[i] = (((color & 0x1F) * amount + (src[i] & 0x1F) * inv) >> 5) |
+                 ((((src[i] & 0x3E0) * inv + (color & 0x3E0) * amount) >> 5) & 0x3E0) |
+                 ((((color & 0x7C00) * amount + (src[i] & 0x7C00) * inv) >> 5) & 0x7C00);
     }
 }
 
-void check_flag_and_fast_copy(void)
-{
+void check_flag_and_fast_copy(void) {
     struct ObjSortEntry sorted[128];
     s32 zero;
     s32 x, y;
@@ -756,8 +678,7 @@ void check_flag_and_fast_copy(void)
     struct SpritePart *part;
     struct OamData *oam;
 
-    if (gUnk_03000438 & 1)
-    {
+    if (gUnk_03000438 & 1) {
         gUnk_03000438 = 0;
         return;
     }
@@ -765,10 +686,8 @@ void check_flag_and_fast_copy(void)
     CpuFastSet(&zero, sorted, 0x01000040);
     obj = gUnk_03002C30;
     count = 0;
-    for (i = 0; i < 128; i++, obj++)
-    {
-        if (obj->unk0 & 0x8000)
-        {
+    for (i = 0; i < 128; i++, obj++) {
+        if (obj->unk0 & 0x8000) {
             sorted[count].idx = i;
             sorted[count].key = obj->unkB;
             count++;
@@ -784,12 +703,10 @@ void check_flag_and_fast_copy(void)
     else
         affIdx = 0;
     oamIdx = 0;
-    for (i = 0; i < count; i++)
-    {
+    for (i = 0; i < count; i++) {
         obj = &gUnk_03002C30[sorted[i].idx];
         gUnk_03005048 = -1;
-        switch (obj->unk0 & 0xC0)
-        {
+        switch (obj->unk0 & 0xC0) {
         case 0x80:
             px = obj->unkC_8 * 4;
             py = (obj->unk10_8 + gUnk_03005044) * 4;
@@ -808,8 +725,7 @@ void check_flag_and_fast_copy(void)
             obj->unk4 = ((obj->unk10_8 + obj->unk14_8) >> 8) - gUnk_03002C24.y;
             break;
         }
-        switch (obj->unk1C & 0xF)
-        {
+        switch (obj->unk1C & 0xF) {
         case 1:
             frameSet = gUnk_083AC088[obj->unk6 >> 8];
             break;
@@ -827,15 +743,12 @@ void check_flag_and_fast_copy(void)
         part = frameSet[obj->unk6 & 0xFF]->parts;
         px = -gUnk_03002C2C.x + gUnk_03001794.x + obj->unk2;
         py = -gUnk_03002C2C.y + gUnk_03001794.y + obj->unk4;
-        if ((obj->unk0 & 0xC0) == 0x40)
-        {
-            if ((u32)(py + 32) > 256)
-            {
+        if ((obj->unk0 & 0xC0) == 0x40) {
+            if ((u32)(py + 32) > 256) {
                 obj->unk0 |= 2;
                 continue;
             }
-            if ((u32)(px + 32) > 336)
-            {
+            if ((u32)(px + 32) > 336) {
                 obj->unk0 |= 2;
                 continue;
             }
@@ -843,12 +756,9 @@ void check_flag_and_fast_copy(void)
         }
         if (!(obj->unk0 & 0x4000))
             continue;
-        if (obj->unk0 & 0x200)
-        {
-            if ((obj->unk0 & 0xC0) != 0xC0)
-            {
-                if (affIdx < 32)
-                {
+        if (obj->unk0 & 0x200) {
+            if ((obj->unk0 & 0xC0) != 0xC0) {
+                if (affIdx < 32) {
                     if (obj->unk18)
                         set_oam_affine_params(affIdx, obj->unk18, obj->unk8, obj->unk9, obj->unk0);
                     else
@@ -857,25 +767,19 @@ void check_flag_and_fast_copy(void)
                     affBits = affIdx << 9;
                     affIdx++;
                 }
-            }
-            else
-            {
+            } else {
                 dbl = (obj->unk0 & 0x20) ? 0x300 : 0x100;
                 affBits = obj->filler1D[0] << 9; // unk1D: shared affine matrix index
             }
-        }
-        else
-        {
+        } else {
             dbl = 0;
             affBits = 0;
         }
 
-        for (j = 0; j < frameSet[obj->unk6 & 0xFF]->count; j++)
-        {
+        for (j = 0; j < frameSet[obj->unk6 & 0xFF]->count; j++) {
             oam = gOamBuffer;
             h = *(u16 *)part & 0xC0C0;
-            switch (h)
-            {
+            switch (h) {
             case 0x0:
             case 0x80:
             case 0x4080:
@@ -897,8 +801,7 @@ void check_flag_and_fast_copy(void)
                 w = 32;
                 break;
             }
-            switch (h)
-            {
+            switch (h) {
             case 0x0:
             case 0x40:
             case 0x4040:
@@ -920,19 +823,14 @@ void check_flag_and_fast_copy(void)
                 h = 32;
                 break;
             }
-            if (obj->unk0 & 0x200)
-            {
-                if ((obj->unk0 & 0xC0) != 0xC0)
-                {
+            if (obj->unk0 & 0x200) {
+                if ((obj->unk0 & 0xC0) != 0xC0) {
                     x = part->x + w;
                     y = part->y + h;
-                    if (obj->unk0 & 0x20)
-                    {
+                    if (obj->unk0 & 0x20) {
                         w = -w * 2;
                         h = -h * 2;
-                    }
-                    else
-                    {
+                    } else {
                         w = -w;
                         h = -h;
                     }
@@ -948,18 +846,14 @@ void check_flag_and_fast_copy(void)
                         rotate_vector_2d(&x, &y, (struct RotateSrc *)obj);
                     w = w + px + x;
                     h = h + py + y;
-                    oam[oamIdx].attr0 = (h & 0xFF) | (part->shape << 8) | dbl | ((obj->unk0 & 0x18) << 7) | ((obj->unk0 & 1) << 12);
+                    oam[oamIdx].attr0 =
+                        (h & 0xFF) | (part->shape << 8) | dbl | ((obj->unk0 & 0x18) << 7) | ((obj->unk0 & 1) << 12);
                     oam[oamIdx].attr1 = (w & 0x1FF) | ((part->size & 0xC0) << 8) | affBits;
-                }
-                else
-                {
-                    if (obj->unk0 & 0x20)
-                    {
+                } else {
+                    if (obj->unk0 & 0x20) {
                         w = part->x;
                         h = part->y;
-                    }
-                    else
-                    {
+                    } else {
                         w = 0;
                         h = 0;
                     }
@@ -971,12 +865,11 @@ void check_flag_and_fast_copy(void)
                         h = -part->y - h + py - h;
                     else
                         h = h + (part->y + py);
-                    oam[oamIdx].attr0 = (h & 0xFF) | (part->shape << 8) | dbl | ((obj->unk0 & 0x18) << 7) | ((obj->unk0 & 1) << 12);
+                    oam[oamIdx].attr0 =
+                        (h & 0xFF) | (part->shape << 8) | dbl | ((obj->unk0 & 0x18) << 7) | ((obj->unk0 & 1) << 12);
                     oam[oamIdx].attr1 = ((w & 0x1FF) | (part->size << 8) | affBits) ^ (obj->unk0 & 0x3000);
                 }
-            }
-            else
-            {
+            } else {
                 if (obj->unk0 & 0x1000)
                     w = -part->x - w + px - w;
                 else
@@ -985,18 +878,17 @@ void check_flag_and_fast_copy(void)
                     h = -part->y - h + py - h;
                 else
                     h = py + part->y;
-                oam[oamIdx].attr0 = (h & 0xFF) | (part->shape << 8) | dbl | ((obj->unk0 & 0x18) << 7) | ((obj->unk0 & 1) << 12);
+                oam[oamIdx].attr0 =
+                    (h & 0xFF) | (part->shape << 8) | dbl | ((obj->unk0 & 0x18) << 7) | ((obj->unk0 & 1) << 12);
                 oam[oamIdx].attr1 = ((w & 0x1FF) | (part->size << 8)) ^ (obj->unk0 & 0x3000);
             }
-            if (obj->unk0 & 4)
-            {
+            if (obj->unk0 & 4) {
                 if (part->tile & 0xF000)
                     ((u16 *)gOamBuffer)[oamIdx * 4 + 2] = (obj->unk0 & 0xC00) | part->tile;
                 else
-                    ((u16 *)gOamBuffer)[oamIdx * 4 + 2] = (part->tile & 0xFFF) | (obj->unkA << 12) | (obj->unk0 & 0xC00);
-            }
-            else
-            {
+                    ((u16 *)gOamBuffer)[oamIdx * 4 + 2] =
+                        (part->tile & 0xFFF) | (obj->unkA << 12) | (obj->unk0 & 0xC00);
+            } else {
                 ((u16 *)gOamBuffer)[oamIdx * 4 + 2] = ((obj->unkA << 12) + part->tile) | (obj->unk0 & 0xC00);
             }
 
@@ -1014,128 +906,94 @@ end:
     gUnk_03000440.unk12E = 1;
 }
 
-void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags)
-{
+void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags) {
     u32 n = idx * 4;
     s32 cos, sin;
 
-    if (gUnk_03005048 == -1)
-    {
+    if (gUnk_03005048 == -1) {
         cos = gUnk_080750E0[(angle & 0x3FF) + 0x100];
         sin = gUnk_080750E0[angle & 0x3FF];
         if (sx == 0)
             sx = 1;
         if (sy == 0)
             sy = 1;
-        if (flags & 0x1000)
-        {
+        if (flags & 0x1000) {
             gOamBuffer[n].affineParam = DivArm(sx, -cos);
             gOamBuffer[n + 1].affineParam = DivArm(sy, -sin);
-        }
-        else
-        {
+        } else {
             gOamBuffer[n].affineParam = DivArm(sx, cos);
             gOamBuffer[n + 1].affineParam = DivArm(sy, sin);
         }
-        if (flags & 0x2000)
-        {
+        if (flags & 0x2000) {
             gOamBuffer[n + 2].affineParam = DivArm(sx, sin);
             gOamBuffer[n + 3].affineParam = DivArm(sy, -cos);
-        }
-        else
-        {
+        } else {
             gOamBuffer[n + 3].affineParam = DivArm(sy, cos);
             gOamBuffer[n + 2].affineParam = DivArm(sx, -sin);
         }
-    }
-    else
-    {
+    } else {
         cos = gUnk_080750E0[(angle & 0x3FF) + 0x100] << 8;
         sin = gUnk_080750E0[angle & 0x3FF] << 8;
-        if (flags & 0x1000)
-        {
+        if (flags & 0x1000) {
             gOamBuffer[n].affineParam = DivArm(gUnk_03005048, -cos);
             gOamBuffer[n + 1].affineParam = DivArm(gUnk_03005048, -sin);
-        }
-        else
-        {
+        } else {
             gOamBuffer[n].affineParam = DivArm(gUnk_03005048, cos);
             gOamBuffer[n + 1].affineParam = DivArm(gUnk_03005048, sin);
         }
-        if (flags & 0x2000)
-        {
+        if (flags & 0x2000) {
             gOamBuffer[n + 2].affineParam = DivArm(gUnk_03005048, sin);
             gOamBuffer[n + 3].affineParam = DivArm(gUnk_03005048, -cos);
-        }
-        else
-        {
+        } else {
             gOamBuffer[n + 3].affineParam = DivArm(gUnk_03005048, cos);
             gOamBuffer[n + 2].affineParam = DivArm(gUnk_03005048, -sin);
         }
     }
 }
 
-void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags)
-{
+void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags) {
     u32 n = idx * 4;
 
-    if (gUnk_03005048 == -1)
-    {
-        if (flags & 0x1000)
-        {
+    if (gUnk_03005048 == -1) {
+        if (flags & 0x1000) {
             gOamBuffer[n].affineParam = -0x4000 / sx;
             gOamBuffer[n + 1].affineParam = 0;
-        }
-        else
-        {
+        } else {
             gOamBuffer[n].affineParam = 0x4000 / sx;
             gOamBuffer[n + 1].affineParam = 0;
         }
-        if (flags & 0x2000)
-        {
+        if (flags & 0x2000) {
             gOamBuffer[n + 2].affineParam = 0;
             gOamBuffer[n + 3].affineParam = -0x4000 / sy;
-        }
-        else
-        {
+        } else {
             gOamBuffer[n + 3].affineParam = 0x4000 / sy;
             gOamBuffer[n + 2].affineParam = 0;
         }
-    }
-    else
-    {
-        if (flags & 0x1000)
-        {
+    } else {
+        if (flags & 0x1000) {
             gOamBuffer[n].affineParam = -0x400000 / gUnk_03005048;
             gOamBuffer[n + 1].affineParam = 0;
-        }
-        else
-        {
+        } else {
             gOamBuffer[n].affineParam = 0x400000 / gUnk_03005048;
             gOamBuffer[n + 1].affineParam = 0;
         }
-        if (flags & 0x2000)
-        {
+        if (flags & 0x2000) {
             gOamBuffer[n + 2].affineParam = 0;
             gOamBuffer[n + 3].affineParam = -0x400000 / gUnk_03005048;
-        }
-        else
-        {
+        } else {
             gOamBuffer[n + 3].affineParam = 0x400000 / gUnk_03005048;
             gOamBuffer[n + 2].affineParam = 0;
         }
     }
 }
 
-struct RotateSrc
-{
+struct RotateSrc {
     u8 filler0[0x18];
     u16 angle;
 };
 
 // Rotates (*x, *y) by p->angle (1024 steps per turn); the table is Q14 sin, cos at +0x100.
-void rotate_vector_2d(s32 *x, s32 *y, struct RotateSrc *p)
-{
+void rotate_vector_2d(s32 *x, s32 *y, struct RotateSrc *p) {
     s32 c = gUnk_080750E0[(p->angle & 0x3FF) + 0x100];
     s32 s = gUnk_080750E0[p->angle & 0x3FF];
     s32 x0 = *x;
@@ -1145,8 +1003,7 @@ void rotate_vector_2d(s32 *x, s32 *y, struct RotateSrc *p)
     *y = (x0 * s + y0 * c) / 0x4000;
 }
 
-void shell_sort_by_second_byte(struct ObjSortEntry *arr, u16 n)
-{
+void shell_sort_by_second_byte(struct ObjSortEntry *arr, u16 n) {
     u16 gap;
     u16 i;
     u16 j;
@@ -1166,16 +1023,14 @@ loop:
     j = (u16)(i + gap);
     a = (struct ObjSortEntry *)(i * 4 + (u32)arr);
     b = (struct ObjSortEntry *)(j * 4 + (u32)arr);
-    if (a->key < b->key)
-    {
+    if (a->key < b->key) {
         t = *(u16 *)a;
         *(u16 *)a = *(u16 *)b;
         swapped = t;
         *(u16 *)b = swapped;
         swapped = 1;
     }
-    if (j + 1 < n)
-    {
+    if (j + 1 < n) {
         i = (u16)(i + 1);
         goto loop;
     }
@@ -1183,8 +1038,7 @@ loop:
         goto outer;
 }
 
-void serial_link_init(void)
-{
+void serial_link_init(void) {
     u32 zero;
 
     REG_IME = 0;
@@ -1209,14 +1063,12 @@ void serial_link_init(void)
     REG_IME = 1;
 }
 
-void sub_08002190(void)
-{
+void sub_08002190(void) {
     if (gSioLink.isParent)
         gSioLink.started = 1;
 }
 
-void serial_multiplayer_init(void)
-{
+void serial_multiplayer_init(void) {
     REG_IME = 0;
     REG_IE &= ~0xC0;
     REG_IME = 1;
@@ -1226,20 +1078,16 @@ void serial_multiplayer_init(void)
     gSioLink.started = 0;
 }
 
-u32 serial_link_init_and_status(u32 *recv)
-{
+u32 serial_link_init_and_status(u32 *recv) {
     struct SioCnt *cnt = (struct SioCnt *)REG_ADDR_SIOCNT;
     struct SioCnt cur = *cnt;
 
-    switch (gSioLink.running)
-    {
+    switch (gSioLink.running) {
     case 0:
-        if (!cur.id)
-        {
+        if (!cur.id) {
             if (!cur.sd || cur.enable)
                 break;
-            if (!cur.si && gSioLink.sendIdx == 6)
-            {
+            if (!cur.si && gSioLink.sendIdx == 6) {
                 REG_IME = 0;
                 REG_IE &= ~0x80;
                 REG_IE |= 0x40;
@@ -1257,15 +1105,11 @@ u32 serial_link_init_and_status(u32 *recv)
     }
 
     gSioLink.frame++;
-    return gSioLink.recvOk
-         | (gSioLink.isParent == 8 ? 0x80 : 0)
-         | (gSioLink.connected << 8)
-         | (gSioLink.error ? 0x1000 : 0)
-         | (cur.id > 3 ? 0x2000 : 0);
+    return gSioLink.recvOk | (gSioLink.isParent == 8 ? 0x80 : 0) | (gSioLink.connected << 8) |
+           (gSioLink.error ? 0x1000 : 0) | (cur.id > 3 ? 0x2000 : 0);
 }
 
-void serial_prepare_send_packet(u16 *packet)
-{
+void serial_prepare_send_packet(u16 *packet) {
     s32 sum = 0;
     u32 i;
 
@@ -1279,9 +1123,8 @@ void serial_prepare_send_packet(u16 *packet)
     gSioLink.sendPending = 1;
 }
 
-u8 serial_link_receive_packets(u32 *dst)
-{
-    u8 (*swapBuffers)(void) = (u8 (*)(void))0x03005250; // IWRAM copy of link_buffer_swap_arm
+u8 serial_link_receive_packets(u32 *dst) {
+    u8 (*swapBuffers)(void) = (u8(*)(void))0x03005250; // IWRAM copy of link_buffer_swap_arm
     vu32 unused = 0;
     u8 synced;
     s32 i;
@@ -1289,18 +1132,15 @@ u8 serial_link_receive_packets(u32 *dst)
 
     synced = swapBuffers();
     gSioLink.recvOk = 0;
-    if (synced)
-    {
-        for (i = 0; i < 4; i++)
-        {
+    if (synced) {
+        for (i = 0; i < 4; i++) {
             struct SioPacket *pkt = &gSioLink.recvCheck[i];
             s32 sum = 0;
             vu32 zero;
 
             for (j = 0; j < 4; j++)
                 sum += ((u16 *)pkt)[j];
-            if ((s16)sum == -1)
-            {
+            if ((s16)sum == -1) {
                 CpuSet(pkt->data, &dst[i], 0x04000001);
                 gSioLink.recvOk |= 1 << i;
             }
@@ -1312,18 +1152,15 @@ u8 serial_link_receive_packets(u32 *dst)
     return gSioLink.recvOk;
 }
 
-void sub_080023D8(void)
-{
-    if (gSioLink.running && gSioLink.started)
-    {
+void sub_080023D8(void) {
+    if (gSioLink.running && gSioLink.started) {
         void *p;
 
         gSioLink.recvIdx = -1;
         p = gSioLink.lastRecv;
         gSioLink.lastRecv = gSioLink.curRecv;
         gSioLink.curRecv = p;
-        if (gSioLink.sendPending)
-        {
+        if (gSioLink.sendPending) {
             p = gSioLink.curSend;
             gSioLink.curSend = gSioLink.nextSend;
             gSioLink.nextSend = p;
@@ -1338,24 +1175,21 @@ void sub_080023D8(void)
 }
 
 // SIO interrupt handler, run from its IWRAM copy at 0x03005050.
-void serial_multiplayer_transfer_handler(void)
-{
+void serial_multiplayer_transfer_handler(void) {
     u16 recv[4];
     s32 i;
 
     *(unsigned long long *)recv = *(unsigned long long *)REG_ADDR_SIOMULTI0;
     gSioLink.error = ((struct SioMultiCnt *)REG_ADDR_SIOCNT)->error;
-    if (recv[0] == 0xFEFE && gSioLink.recvIdx > 3)
-    {
-        u16 (*p)[6];
+    if (recv[0] == 0xFEFE && gSioLink.recvIdx > 3) {
+        u16(*p)[6];
         struct SioPacket *q;
 
         gSioLink.recvIdx = -1;
         p = gSioLink.lastRecv;
         gSioLink.lastRecv = gSioLink.curRecv;
         gSioLink.curRecv = p;
-        if (gSioLink.sendPending)
-        {
+        if (gSioLink.sendPending) {
             q = gSioLink.curSend;
             gSioLink.curSend = gSioLink.nextSend;
             gSioLink.nextSend = q;
@@ -1370,8 +1204,7 @@ void serial_multiplayer_transfer_handler(void)
         ((struct SioMultiCnt *)REG_ADDR_SIOCNT)->data = ((u16 *)gSioLink.curSend)[gSioLink.sendIdx];
     if (gSioLink.sendIdx < 5)
         gSioLink.sendIdx++;
-    if (gSioLink.recvIdx >= 0)
-    {
+    if (gSioLink.recvIdx >= 0) {
         for (i = 0; i < 4; i++)
             gSioLink.curRecv[i][gSioLink.recvIdx] = recv[i];
         if (gSioLink.recvIdx == 3)
@@ -1381,25 +1214,21 @@ void serial_multiplayer_transfer_handler(void)
         gSioLink.recvIdx++;
     if (gSioLink.isParent)
         REG_TM3CNT_H = 0;
-    if (gSioLink.sendIdx < 5 && gSioLink.isParent)
-    {
+    if (gSioLink.sendIdx < 5 && gSioLink.isParent) {
         REG_SIOCNT |= 0x80;
         REG_TM3CNT_H = 0xC0;
     }
 }
 
-void dispatch_game_state_handler_08002534(void)
-{
+void dispatch_game_state_handler_08002534(void) {
     gGameStateHandlers_083AC148[gGameState]();
 }
 
-void dispatch_game_substate_handler_08002554(void)
-{
+void dispatch_game_substate_handler_08002554(void) {
     gUnk_083AC248[gGameSubState]();
 }
 
-void sub_08002574(void)
-{
+void sub_08002574(void) {
     u16 priority;
     REG_BLDCNT = 0;
     REG_BLDY = 0;
@@ -1411,8 +1240,7 @@ void sub_08002574(void)
 }
 
 // guess: debug map viewer input (D-pad scrolls gBg1Scroll, START/SELECT open text windows)
-void sub_080025B4(void)
-{
+void sub_080025B4(void) {
     if (KEYS_LO(gHeldKeys) & 0x40)
         gBg1Scroll.y++;
     if (KEYS_LO(gHeldKeys) & 0x80)
@@ -1423,38 +1251,32 @@ void sub_080025B4(void)
         gBg1Scroll.x--;
     if (KEYS_LO(gNewKeys) & 2)
         gUnk_03000440.unk88 ^= 1;
-    if (KEYS_LO(gNewKeys) & 1)
-    {
+    if (KEYS_LO(gNewKeys) & 1) {
         gUnk_03000440.unkE = 0;
         gGameSubState++;
         gUnk_03000440.unk85 ^= 1;
     }
-    if (KEYS_LO(gNewKeys) & 2)
-    {
+    if (KEYS_LO(gNewKeys) & 2) {
         gGameState = 1;
         gGameSubState = 0;
     }
-    if (KEYS_LO(gNewKeys) & 8)
-    {
+    if (KEYS_LO(gNewKeys) & 8) {
         text_window_init(0, 0, 0);
         gGameSubState += 2;
     }
-    if (KEYS_LO(gNewKeys) & 4)
-    {
+    if (KEYS_LO(gNewKeys) & 4) {
         text_window_init(0, 0, 0);
         gGameSubState += 3;
     }
 }
 
-void load_overworld_column_and_advance(void)
-{
+void load_overworld_column_and_advance(void) {
     u8 r = message_portrait_anim_step(0, 1, 8, 4, gUnk_03000440.unk88, gUnk_03000440.unk85);
     if (r == 1)
         gGameSubState = r;
 }
 
-void init_save_prompt_text(void)
-{
+void init_save_prompt_text(void) {
     u8 r;
 
     gUnk_03002B70.unk4[0] = 0x17;
@@ -1472,26 +1294,21 @@ void init_save_prompt_text(void)
         gGameSubState = r;
 }
 
-void sub_08002730(void)
-{
-    if (run_message(gUnk_083B53F8[1]))
-    {
+void sub_08002730(void) {
+    if (run_message(gUnk_083B53F8[1])) {
         open_choice_menu(0, 0x16, 7);
         gGameSubState++;
     }
 }
 
-void sub_0800275C(void)
-{
-    if (poll_choice_menu())
-    {
+void sub_0800275C(void) {
+    if (poll_choice_menu()) {
         sub_0803FB0C();
         gGameSubState++;
     }
 }
 
-void sub_0800277C(void)
-{
+void sub_0800277C(void) {
     const void *msg;
 
     if (gUnk_03000440.unk28 & 0xF0)
@@ -1503,13 +1320,11 @@ void sub_0800277C(void)
 }
 
 // Game state 1: the field pause menu (Medawatch / Item / Vehicle / Save, money display).
-void field_menu_update(void)
-{
+void field_menu_update(void) {
     gFieldMenuHandlers[gGameSubState]();
 }
 
-void field_menu_load_gfx(void)
-{
+void field_menu_load_gfx(void) {
     REG_DISPCNT = 0x1F60;
     REG_BG0CNT = 0x500;
     lz_decompress_dispatch(gUnk_084C1608, (void *)0x06001800);
@@ -1525,8 +1340,7 @@ void field_menu_load_gfx(void)
     gGameSubState++;
 }
 
-void field_menu_open_anim(void)
-{
+void field_menu_open_anim(void) {
     if (gUnk_03000440.unk84 <= 12)
         write_tilemap_rect(12, 2, 18, 1, gUnk_083B4AE0[gUnk_03000440.unk84 + 0x13], REG_BG0CNT, 0);
     if ((u8)(gUnk_03000440.unk84 - 2) <= 12)
@@ -1535,18 +1349,15 @@ void field_menu_open_anim(void)
         write_tilemap_rect(12, 2, 18, 5, gUnk_083B4AE0[gUnk_03000440.unk84 + 0x29], REG_BG0CNT, 0);
     if ((u8)(gUnk_03000440.unk84 - 6) <= 12)
         write_tilemap_rect(12, 2, 18, 7, gUnk_083B4AE0[gUnk_03000440.unk84 + 0x34], REG_BG0CNT, 0);
-    if (gUnk_03000440.unk84 == 10)
-    {
+    if (gUnk_03000440.unk84 == 10) {
         lz_decompress_dispatch(gUnk_08487814, (void *)0x06002400);
         set_tilemap_and_decompress_bg(0x15, 9, gUnk_08488690, REG_BG0CNT, 0x120);
     }
-    if (gUnk_03000440.unk84 == 12)
-    {
+    if (gUnk_03000440.unk84 == 12) {
         lz_decompress_dispatch(gUnk_08487708, (void *)0x06002400);
         set_tilemap_and_decompress_bg(0x15, 9, gUnk_08488644, REG_BG0CNT, 0x120);
     }
-    if (++gUnk_03000440.unk84 > 18)
-    {
+    if (++gUnk_03000440.unk84 > 18) {
         divide_by_10000(gUnk_03000440.unk9E, gUnk_03002B70.money);
         render_text_sprites_08040DB8(gUnk_03000440.unk9E, 10, 0x17, 10, 5, 15, 2, 0);
         gUnk_03000440.unk8E = 0;
@@ -1555,39 +1366,32 @@ void field_menu_open_anim(void)
     }
 }
 
-void field_menu_handle_input(void)
-{
+void field_menu_handle_input(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0], 0);
-    if (KEYS_LO(gRepeatKeys) & 0x40)
-    {
+    if (KEYS_LO(gRepeatKeys) & 0x40) {
         play_sound_effect(2);
         gUnk_03000440.unk8E = (gUnk_03000440.unk8E - 1) & 3;
         gUnk_03002C30[0].unk4 = gUnk_03000440.unk8E * 16 + 8;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80)
-    {
+    if (KEYS_LO(gRepeatKeys) & 0x80) {
         play_sound_effect(2);
         gUnk_03000440.unk8E = (gUnk_03000440.unk8E + 1) & 3;
         gUnk_03002C30[0].unk4 = gUnk_03000440.unk8E * 16 + 8;
     }
-    if (KEYS_LO(gNewKeys) & 2)
-    {
+    if (KEYS_LO(gNewKeys) & 2) {
         sound_stop_all_with_fade_guard(0x10);
         play_sound_effect(5);
         clear_battle_sprite_slot(0, 1);
         clear_battle_sprite_slot(10, 7);
         gUnk_03000440.unk84 = 0;
         gGameSubState = 3;
-    }
-    else if (KEYS_LO(gNewKeys) & 1)
-    {
+    } else if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         gGameSubState = 6;
     }
 }
 
-void field_menu_close_anim(void)
-{
+void field_menu_close_anim(void) {
     if (gUnk_03000440.unk84 <= 12)
         write_tilemap_rect(12, 2, 18, 1, gUnk_083B4AE0[0x1F - gUnk_03000440.unk84], REG_BG0CNT, 0);
     if ((u8)(gUnk_03000440.unk84 - 2) <= 12)
@@ -1596,8 +1400,7 @@ void field_menu_close_anim(void)
         write_tilemap_rect(12, 2, 18, 5, gUnk_083B4AE0[0x3D - gUnk_03000440.unk84], REG_BG0CNT, 0);
     if ((u8)(gUnk_03000440.unk84 - 6) <= 12)
         write_tilemap_rect(12, 2, 18, 7, gUnk_083B4AE0[0x4C - gUnk_03000440.unk84], REG_BG0CNT, 0);
-    if (gUnk_03000440.unk84 == 10)
-    {
+    if (gUnk_03000440.unk84 == 10) {
         lz_decompress_dispatch(gUnk_08487814, (void *)0x06002400);
         set_tilemap_and_decompress_bg(0x15, 9, gUnk_08488690, REG_BG0CNT, 0x120);
     }
@@ -1607,10 +1410,8 @@ void field_menu_close_anim(void)
         sub_08044094();
 }
 
-void field_menu_select_start(void)
-{
-    switch (gUnk_03000440.unk8E)
-    {
+void field_menu_select_start(void) {
+    switch (gUnk_03000440.unk8E) {
     case 0:
         vram_fill_tilemap_rect(13, 10, 17, 3, REG_BG0CNT, 0);
         gUnk_03000440.unk88 = 1;
@@ -1636,12 +1437,11 @@ void field_menu_select_start(void)
     gGameSubState++;
 }
 
-void field_menu_select_collapse(void)
-{
-    write_tilemap_rect(12, 2, 18, gUnk_03000440.unk88 - 1, gUnk_083B4AE0[gUnk_03000440.unk8E * 13 + 0x1F], REG_BG0CNT, 0);
+void field_menu_select_collapse(void) {
+    write_tilemap_rect(12, 2, 18, gUnk_03000440.unk88 - 1, gUnk_083B4AE0[gUnk_03000440.unk8E * 13 + 0x1F], REG_BG0CNT,
+                       0);
     vram_fill_tilemap_rect(12, 1, 18, gUnk_03000440.unk88 + 1, REG_BG0CNT, 0);
-    if (--gUnk_03000440.unk88 == 0)
-    {
+    if (--gUnk_03000440.unk88 == 0) {
         lz_decompress_dispatch(gUnk_084C1C14, (void *)0x060017E0);
         copy_obj_palette_to_buffer();
         gUnk_03000440.unk84 = 0;
@@ -1651,25 +1451,22 @@ void field_menu_select_collapse(void)
     }
 }
 
-void field_menu_select_slide(void)
-{
-    if (gUnk_03000440.unk8E != 2 && gUnk_03000440.unk84 <= 16)
-    {
+void field_menu_select_slide(void) {
+    if (gUnk_03000440.unk8E != 2 && gUnk_03000440.unk84 <= 16) {
         blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 2, 0x1FFF);
         blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 2, 0xFFFF);
         gUnk_03000440.unk84++;
     }
-    write_tilemap_rect(12, 2, 18 - gUnk_03000440.unk88, 0, gUnk_083B4AE0[gUnk_03000440.unk8E * 13 + 0x1F], REG_BG0CNT, 0);
+    write_tilemap_rect(12, 2, 18 - gUnk_03000440.unk88, 0, gUnk_083B4AE0[gUnk_03000440.unk8E * 13 + 0x1F], REG_BG0CNT,
+                       0);
     write_tilemap_rect(1, 2, 30 - gUnk_03000440.unk88, 0, gUnk_083B4AE0[0x47], REG_BG0CNT, 0);
     if (++gUnk_03000440.unk88 == 19)
         gGameSubState++;
 }
 
 // Runs the chosen entry: Medawatch (game state 2), Item (mode 2 state 4), Vehicle, Save (mode 2 state 5).
-void field_menu_run_choice(void)
-{
-    switch (gUnk_03000440.unk8E)
-    {
+void field_menu_run_choice(void) {
+    switch (gUnk_03000440.unk8E) {
     case 0:
         play_song(7);
         gUnk_03000440.unk8F = 0;
@@ -1696,11 +1493,9 @@ void field_menu_run_choice(void)
     }
 }
 
-void field_menu_return_init(void)
-{
+void field_menu_return_init(void) {
     gUnk_03000588 = 1;
-    if (gUnk_03000440.unk8E != 2)
-    {
+    if (gUnk_03000440.unk8E != 2) {
         REG_DISPCNT &= 0xF1FF;
         DmaSet(3, gUnk_084E2E38, 0x0202F9E0, 0x84000008);
         update_battle_field_frame();
@@ -1713,20 +1508,18 @@ void field_menu_return_init(void)
     gGameSubState++;
 }
 
-void field_menu_return_slide(void)
-{
-    if (gUnk_03000440.unk8E != 2 && gUnk_03000440.unk84 <= 16)
-    {
+void field_menu_return_slide(void) {
+    if (gUnk_03000440.unk8E != 2 && gUnk_03000440.unk84 <= 16) {
         blend_effect_update();
         blend_obj_palettes_to_color_0803F684(0, 32 - gUnk_03000440.unk84 * 2, 0x1FFF);
         blend_obj_palettes_to_color_0803F998(0, 32 - gUnk_03000440.unk84 * 2, 0xFFFF);
         gUnk_03000440.unk84++;
     }
     gUnk_03000440.unk88--;
-    write_tilemap_rect(12, 2, 18 - gUnk_03000440.unk88, 0, gUnk_083B4AE0[gUnk_03000440.unk8E * 13 + 0x1F], REG_BG0CNT, 0);
+    write_tilemap_rect(12, 2, 18 - gUnk_03000440.unk88, 0, gUnk_083B4AE0[gUnk_03000440.unk8E * 13 + 0x1F], REG_BG0CNT,
+                       0);
     vram_fill_tilemap_rect(1, 2, 17 - gUnk_03000440.unk88, 0, REG_BG0CNT, 0);
-    if (gUnk_03000440.unk88 == 0)
-    {
+    if (gUnk_03000440.unk88 == 0) {
         gVBlankCallback = nullsub_08000840;
         gUnk_03000440.unk88 = gUnk_03000440.unk8E * 2 + 1;
         gUnk_03000440.unk84 = 0;
@@ -1734,14 +1527,12 @@ void field_menu_return_slide(void)
     }
 }
 
-void field_menu_return_expand(void)
-{
-    write_tilemap_rect(12, 2, 18, gUnk_03000440.unk84 + 1, gUnk_083B4AE0[gUnk_03000440.unk8E * 13 + 0x1F], REG_BG0CNT, 0);
+void field_menu_return_expand(void) {
+    write_tilemap_rect(12, 2, 18, gUnk_03000440.unk84 + 1, gUnk_083B4AE0[gUnk_03000440.unk8E * 13 + 0x1F], REG_BG0CNT,
+                       0);
     vram_fill_tilemap_rect(12, 1, 18, gUnk_03000440.unk84, REG_BG0CNT, 0);
-    if (gUnk_03000440.unk84 + 1 == gUnk_03000440.unk88)
-    {
-        switch (gUnk_03000440.unk8E)
-        {
+    if (gUnk_03000440.unk84 + 1 == gUnk_03000440.unk88) {
+        switch (gUnk_03000440.unk8E) {
         case 0:
             write_tilemap_rect(12, 2, 18, 3, gUnk_083B4AE0[0x2C], REG_BG0CNT, 0);
             write_tilemap_rect(12, 2, 18, 5, gUnk_083B4AE0[0x39], REG_BG0CNT, 0);
@@ -1768,15 +1559,12 @@ void field_menu_return_expand(void)
         render_text_sprites_08040DB8(gUnk_03000440.unk9E, 10, 0x17, 10, 5, 15, 2, 0);
         field_menu_init_cursor();
         gGameSubState = 2;
-    }
-    else
-    {
+    } else {
         gUnk_03000440.unk84++;
     }
 }
 
-void field_menu_init_cursor(void)
-{
+void field_menu_init_cursor(void) {
     lz_decompress_dispatch(gUnk_084C7174, (void *)0x06016C00);
     DmaSet(3, gUnk_084E2E58, 0x050003C0, 0x84000008);
     gUnk_03002C30[0].unk0 = 0xC004;
@@ -1789,13 +1577,11 @@ void field_menu_init_cursor(void)
 }
 
 // Game state 2: the Medawatch menu (Medabots / Medals / Medaparts, cursor gUnk_03000440.unk8F).
-void medawatch_menu_update(void)
-{
+void medawatch_menu_update(void) {
     gMedawatchMenuHandlers[gGameSubState]();
 }
 
-void medawatch_menu_load_gfx(void)
-{
+void medawatch_menu_load_gfx(void) {
     reset_bg_scroll();
     REG_DISPCNT &= 0xF1FF;
     REG_BG1CNT = 0x1805;
@@ -1813,28 +1599,22 @@ void medawatch_menu_load_gfx(void)
     gGameSubState++;
 }
 
-void medawatch_menu_fade_in(void)
-{
+void medawatch_menu_fade_in(void) {
     medawatch_scroll_bg3();
-    if (gUnk_03000440.unk84 <= 8)
-    {
+    if (gUnk_03000440.unk84 <= 8) {
         blend_obj_palettes_to_color_0803F684(0, 32 - gUnk_03000440.unk84 * 4, 0x1FFF);
         blend_obj_palettes_to_color_0803F998(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
-    }
-    else
-    {
+    } else {
         medawatch_menu_init_cursor();
         gGameSubState++;
     }
 }
 
-void medawatch_menu_handle_input(void)
-{
+void medawatch_menu_handle_input(void) {
     medawatch_scroll_bg3();
     process_sprite_anim_commands(gUnk_083B5F80[0], 0);
-    if (KEYS_LO(gRepeatKeys) & 0x40)
-    {
+    if (KEYS_LO(gRepeatKeys) & 0x40) {
         if (gUnk_03000440.unk8F == 0)
             gUnk_03000440.unk8F = 2;
         else
@@ -1844,8 +1624,7 @@ void medawatch_menu_handle_input(void)
         gUnk_03002C30[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
         gUnk_03002C30[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80)
-    {
+    if (KEYS_LO(gRepeatKeys) & 0x80) {
         if (gUnk_03000440.unk8F == 2)
             gUnk_03000440.unk8F = 0;
         else
@@ -1855,13 +1634,11 @@ void medawatch_menu_handle_input(void)
         gUnk_03002C30[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
         gUnk_03002C30[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
     }
-    if (KEYS_LO(gNewKeys) & 2)
-    {
+    if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
         gGameSubState++;
     }
-    if (KEYS_LO(gNewKeys) & 1)
-    {
+    if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[1], 0);
         set_blend_effect_mode(6, 0x3F, 0x20);
@@ -1870,8 +1647,7 @@ void medawatch_menu_handle_input(void)
     }
 }
 
-void medawatch_menu_exit_start(void)
-{
+void medawatch_menu_exit_start(void) {
     medawatch_scroll_bg3();
     clear_battle_sprite_slot(0, 1);
     copy_obj_palette_to_buffer();
@@ -1880,30 +1656,24 @@ void medawatch_menu_exit_start(void)
     gGameSubState++;
 }
 
-void medawatch_menu_exit_fade(void)
-{
+void medawatch_menu_exit_fade(void) {
     medawatch_scroll_bg3();
-    if (gUnk_03000440.unk84 <= 8)
-    {
+    if (gUnk_03000440.unk84 <= 8) {
         blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0x1FFF);
         blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
-    }
-    else
-    {
+    } else {
         gGameSubState++;
     }
 }
 
-void medawatch_menu_return_to_field_menu(void)
-{
+void medawatch_menu_return_to_field_menu(void) {
     play_song(6);
     gGameState = 1;
     gGameSubState = 16;
 }
 
-void medawatch_menu_select_fade(void)
-{
+void medawatch_menu_select_fade(void) {
     medawatch_scroll_bg3();
     process_sprite_anim_commands(gUnk_083B5F80[1], 0);
     if (update_blend_effect())
@@ -1911,11 +1681,9 @@ void medawatch_menu_select_fade(void)
 }
 
 // Saves the BG tiles at 0x06002800 and enters game state 3 (Medabots), 4 (Medals) or 5 (Medaparts).
-void medawatch_menu_run_choice(void)
-{
+void medawatch_menu_run_choice(void) {
     DmaSet(3, 0x06002800, gUnk_02020800, 0x84000200);
-    switch (gUnk_03000440.unk8F)
-    {
+    switch (gUnk_03000440.unk8F) {
     case 0:
         sub_0803F624((u8 *)&gUnk_03000440 + 0x50, 0x14, 0);
         gGameState = 3;
@@ -1935,8 +1703,7 @@ void medawatch_menu_run_choice(void)
 }
 
 // Back from a Medawatch submenu: reloads the menu graphics and restores the saved BG tiles.
-void medawatch_menu_return_init(void)
-{
+void medawatch_menu_return_init(void) {
     reset_bg_scroll();
     REG_DISPCNT &= 0xF0FF;
     REG_BG1CNT = 0x500;
@@ -1957,29 +1724,24 @@ void medawatch_menu_return_init(void)
     gGameSubState++;
 }
 
-void medawatch_menu_return_fade(void)
-{
+void medawatch_menu_return_fade(void) {
     medawatch_scroll_bg3();
-    if (update_blend_effect())
-    {
+    if (update_blend_effect()) {
         medawatch_menu_init_cursor();
         gGameSubState++;
     }
 }
 
-void medawatch_menu_return_done(void)
-{
+void medawatch_menu_return_done(void) {
     medawatch_scroll_bg3();
     gGameSubState = 2;
 }
 
 // Watch face icon for the selected entry.
-void medawatch_menu_load_icon(void)
-{
+void medawatch_menu_load_icon(void) {
     const u8 *src;
 
-    switch (gUnk_03000440.unk8F)
-    {
+    switch (gUnk_03000440.unk8F) {
     case 0:
         src = gUnk_084C1C24;
         break;
@@ -1993,8 +1755,7 @@ void medawatch_menu_load_icon(void)
     lz_decompress_dispatch(src, (void *)0x06007E00);
 }
 
-void medawatch_menu_init_cursor(void)
-{
+void medawatch_menu_init_cursor(void) {
     lz_decompress_dispatch(gUnk_084C7174, (void *)0x06016C00);
     DmaSet(3, gUnk_084E2E58, 0x050003C0, 0x84000008);
     gUnk_03002C30[0].unk0 = 0xC004;
@@ -2007,22 +1768,17 @@ void medawatch_menu_init_cursor(void)
 }
 
 // Scrolls the background pattern diagonally every other frame.
-void medawatch_scroll_bg3(void)
-{
-    if (gFrameCounter & 1)
-    {
+void medawatch_scroll_bg3(void) {
+    if (gFrameCounter & 1) {
         gBg3Scroll.x--;
         gBg3Scroll.y++;
     }
 }
 
 // Game state 3: the Medabots screen (Medawatch > Medabots). Paused while the serial link is busy.
-void medabots_screen_update(void)
-{
-    if (sub_0803EED8() == 0)
-    {
-        if (gUnk_03000430 == 2)
-        {
+void medabots_screen_update(void) {
+    if (sub_0803EED8() == 0) {
+        if (gUnk_03000430 == 2) {
             u32 fill = 0x200;
             CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
         }
@@ -2030,12 +1786,10 @@ void medabots_screen_update(void)
     }
 }
 
-void medabots_screen_load_gfx(void)
-{
+void medabots_screen_load_gfx(void) {
     u32 zero;
 
-    switch (gUnk_03000440.unk139)
-    {
+    switch (gUnk_03000440.unk139) {
     case 0:
         sub_08043CA8();
         if (gUnk_03000440.unk56 == 1)
@@ -2059,8 +1813,7 @@ void medabots_screen_load_gfx(void)
         set_tilemap_and_decompress_bg(0, 0, gUnk_084EF95C, REG_BG1CNT, 0x200);
         set_tilemap_and_decompress_bg(0, 0, gUnk_084F02B8, REG_BG2CNT, 0x200);
         set_tilemap_and_decompress_bg(0, 0, gUnk_084F122C, REG_BG3CNT, 0x200);
-        if (gUnk_03000440.unk56 == 1)
-        {
+        if (gUnk_03000440.unk56 == 1) {
             CpuFastSet(gUnk_084F2680, gPaletteBackupBg, 0x60);
             CpuFastSet(gUnk_0850DEF8, gPaletteBackup, 0x40);
             CpuFastSet(gUnk_0850DD18, (void *)0x0202F9A0, 8);
@@ -2068,9 +1821,7 @@ void medabots_screen_load_gfx(void)
             CpuFastSet(gUnk_084E2EB8, (void *)0x0202F980, 8);
             CpuFastSet(gUnk_084E2ED8, (void *)0x0202F9E0, 8);
             gUnk_03000440.unk84 = 0;
-        }
-        else
-        {
+        } else {
             CpuFastSet(gUnk_084F2680, (void *)0x05000000, 0x60);
             CpuFastSet(gUnk_0850DEF8, (void *)0x05000200, 0x40);
             CpuFastSet(gUnk_0850DD18, (void *)0x050003A0, 8);
@@ -2098,14 +1849,11 @@ void medabots_screen_load_gfx(void)
         sub_0800522C();
         sub_08005948();
         sub_0800750C();
-        if (gUnk_03000440.unk56 == 0)
-        {
+        if (gUnk_03000440.unk56 == 0) {
             sub_0800529C();
             if (gUnk_03000440.unk50 == 3)
                 play_song(7);
-        }
-        else if (gUnk_03000440.unk52 & 0x80)
-        {
+        } else if (gUnk_03000440.unk52 & 0x80) {
             medabots_screen_start_reorder_orbit();
         }
         gGameSubState++;
@@ -2114,8 +1862,7 @@ void medabots_screen_load_gfx(void)
     }
 }
 
-void medabots_screen_fade_in(void)
-{
+void medabots_screen_fade_in(void) {
     struct Unk_03000440 *s;
     u8 *flag;
 
@@ -2129,24 +1876,20 @@ void medabots_screen_fade_in(void)
     check_and_update_battle_sprite_orbit();
     s = &gUnk_03000440;
     flag = &s->unk56;
-    if (*flag == 1)
-    {
+    if (*flag == 1) {
         if (s->unk84 > 8)
             goto done;
         blend_obj_palettes_to_color_0803F684(0, 32 - s->unk84 * 4, 0xFFFF);
         blend_obj_palettes_to_color_0803F998(0, 32 - s->unk84 * 4, 0xF0FF);
         s->unk84++;
-    }
-    else if (update_blend_effect())
-    {
+    } else if (update_blend_effect()) {
     done:
         *flag = 0;
         gGameSubState++;
     }
 }
 
-void medabots_screen_handle_input(void)
-{
+void medabots_screen_handle_input(void) {
     medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
@@ -2156,8 +1899,7 @@ void medabots_screen_handle_input(void)
     update_battle_icon_blink_and_orbit();
     check_and_update_battle_sprite_orbit();
     team_select_draw_pick_markers();
-    if (medabots_screen_reorder_input() == 0 && medabots_screen_cursor_input() == 0)
-    {
+    if (medabots_screen_reorder_input() == 0 && medabots_screen_cursor_input() == 0) {
         if (KEYS_LO(gNewKeys) & 2)
             medabots_screen_cancel_input();
         else if (KEYS_LO(gNewKeys) & 1)
@@ -2167,8 +1909,7 @@ void medabots_screen_handle_input(void)
     }
 }
 
-void medabots_screen_exit_start(void)
-{
+void medabots_screen_exit_start(void) {
     medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
@@ -2181,8 +1922,7 @@ void medabots_screen_exit_start(void)
     gGameSubState++;
 }
 
-void medabots_screen_exit_fade(void)
-{
+void medabots_screen_exit_fade(void) {
     medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
@@ -2194,8 +1934,7 @@ void medabots_screen_exit_fade(void)
         gGameSubState++;
 }
 
-void medabots_screen_return_to_medawatch(void)
-{
+void medabots_screen_return_to_medawatch(void) {
     CpuFastSet(gUnk_084E2E38, (void *)0x050003E0, 8);
     clear_battle_sprite_slot(0, 0x80);
     gUnk_03000440.unk96 = 0;
@@ -2206,8 +1945,7 @@ void medabots_screen_return_to_medawatch(void)
 
 // Sub-states 8/9: A on a Medabot in the list fades out, then 16 (medabot_detail_load_gfx) opens its
 // detail ("Build") screen (runtime-checked: A -> sub-state 9 -> 18).
-void sub_08003F28(void)
-{
+void sub_08003F28(void) {
     medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
@@ -2221,8 +1959,7 @@ void sub_08003F28(void)
     gGameSubState++;
 }
 
-void sub_08003F74(void)
-{
+void sub_08003F74(void) {
     medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
@@ -2231,21 +1968,17 @@ void sub_08003F74(void)
     setup_overworld_scene_from_position();
     update_battle_icon_blink_and_orbit();
     check_and_update_battle_sprite_orbit();
-    if (gUnk_03000440.unk84 <= 8)
-    {
+    if (gUnk_03000440.unk84 <= 8) {
         blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xF0FF);
         gUnk_03000440.unk84++;
-    }
-    else
-    {
+    } else {
         gGameSubState = 16;
     }
 }
 
 // guess: sub-states 11/12 show message 22 in a text window, then return to input.
-void sub_08003FE8(void)
-{
+void sub_08003FE8(void) {
     medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
@@ -2257,8 +1990,7 @@ void sub_08003FE8(void)
     gGameSubState++;
 }
 
-void sub_08004028(void)
-{
+void sub_08004028(void) {
     medabots_scroll_bg3();
     update_battle_sprite_orbit_clockwise(0);
     update_battle_sprite_orbit_clockwise(1);
@@ -2270,8 +2002,7 @@ void sub_08004028(void)
         gGameSubState = 2;
 }
 
-void medabot_detail_load_gfx(void)
-{
+void medabot_detail_load_gfx(void) {
     u32 zero;
 
     if (gUnk_03000440.unk56 == 0)
@@ -2293,8 +2024,7 @@ void medabot_detail_load_gfx(void)
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF9C8, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F03EC, REG_BG2CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F13C0, REG_BG3CNT, 0x200);
-    if (gUnk_03000440.unk56 == 0)
-    {
+    if (gUnk_03000440.unk56 == 0) {
         CpuFastSet(gUnk_084F2820, gPaletteBackupBg, 0x70);
         CpuFastSet(gUnk_0850DEF8, gPaletteBackup, 0x40);
         CpuFastSet(gUnk_0850DD58, (void *)0x0202F980, 8);
@@ -2304,9 +2034,7 @@ void medabot_detail_load_gfx(void)
         gUnk_03000440.unk5A = 0;
         sub_080059D0();
         gUnk_03000440.unk84 = 0;
-    }
-    else
-    {
+    } else {
         CpuFastSet(gUnk_084F2820, (void *)0x05000000, 0x70);
         CpuFastSet(gUnk_0850DEF8, (void *)0x05000200, 0x40);
         CpuFastSet(gUnk_0850DD58, (void *)0x05000380, 8);
@@ -2340,12 +2068,11 @@ void medabot_detail_load_gfx(void)
     medabot_detail_draw_legs_skill_icon();
     medabot_detail_draw_legs_type_icon();
     decompress_sprite_from_game_state();
-    init_battle_medabot_sprites(gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B,
-                                0, 6, 0xA8, 0x20, gUnk_03000440.unk5E, 1, 5);
+    init_battle_medabot_sprites(gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0,
+                                6, 0xA8, 0x20, gUnk_03000440.unk5E, 1, 5);
     medabot_detail_place_row_arrows();
     if (gUnk_03000440.unk56)
         init_scene_state();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
-

@@ -28,7 +28,7 @@ ASM_SRCS := $(shell find asm data sound graphics -name '*.s' -not -path 'asm/mac
 C_SRCS   := $(shell find src -name '*.c' 2>/dev/null)
 OBJS     := $(patsubst %.s,$(BUILD_DIR)/%.o,$(ASM_SRCS)) $(patsubst %.c,$(BUILD_DIR)/%.o,$(C_SRCS))
 
-.PHONY: all compare clean progress shifted
+.PHONY: all compare clean progress shifted format format-check lint
 .SECONDARY:
 .SECONDEXPANSION:
 
@@ -95,3 +95,18 @@ $(BUILD_DIR)/shifted.elf: $(BUILD_DIR)/ld_script_shifted.ld symbols.ld $(OBJS)
 $(BUILD_DIR)/shifted.gba: $(BUILD_DIR)/shifted.elf
 	$(OBJCOPY) -O binary $< $@
 	$(PREFIX)nm -n $< | awk '$$1 ~ /^0[0-9a-f]+$$/ && $$3 !~ /^\$$/ {print toupper($$1), $$3}' > $(BUILD_DIR)/shifted.sym
+
+# Code standard: clang-format (.clang-format) and a syntax check with a modern compiler, so every call
+# goes through a real prototype.
+FORMAT_SRCS := $(shell find src include -name '*.c' -o -name '*.h')
+LINT_FLAGS  := -fsyntax-only -I include -Wall -Werror=implicit-function-declaration -Werror=implicit-int \
+               -Werror=return-type -Werror=incompatible-pointer-types
+
+format:
+	clang-format -i $(FORMAT_SRCS)
+
+format-check:
+	clang-format --dry-run --Werror $(FORMAT_SRCS)
+
+lint:
+	@status=0; for f in $(C_SRCS); do $(PREFIX)gcc $(LINT_FLAGS) $$f || status=1; done; exit $$status

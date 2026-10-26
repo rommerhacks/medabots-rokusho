@@ -1,26 +1,23 @@
 #include "global.h"
 
-void sub_0803CDCC(void)
-{
+void sub_0803CDCC(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03002C30[gUnk_03000440.unk12F].unk2D], gUnk_03000440.unk12F);
     if (gUnk_03002C30[gUnk_03000440.unk12F].unk22 == 0xFF)
         clear_battle_sprite_slot(gUnk_03000440.unk12F, 1);
 }
 
-void sub_0803CE18(void)
-{
-    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B != 0)
-    {
+void sub_0803CE18(void) {
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B != 0) {
         gUnk_03002C30[gUnk_03000440.unk12F].unk2B--;
         return;
     }
-    blend_obj_palettes_to_color_0803F684((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10)
-                                         | (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5)
-                                         | gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
+    blend_obj_palettes_to_color_0803F684((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10) |
+                                             (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5) |
+                                             gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
                                          gUnk_03002C30[gUnk_03000440.unk12F].unk2F, 0xFDFF);
-    blend_obj_palettes_to_color_0803F998((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10)
-                                         | (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5)
-                                         | gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
+    blend_obj_palettes_to_color_0803F998((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10) |
+                                             (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5) |
+                                             gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
                                          gUnk_03002C30[gUnk_03000440.unk12F].unk2F, 0xB00F);
     if (gUnk_03002C30[gUnk_03000440.unk12F].unk2F == 0x10)
         gUnk_03002C30[gUnk_03000440.unk12F].unk29 = 0;
@@ -28,20 +25,18 @@ void sub_0803CE18(void)
         gUnk_03002C30[gUnk_03000440.unk12F].unk2F++;
 }
 
-void sub_0803CECC(void)
-{
-    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B != 0)
-    {
+void sub_0803CECC(void) {
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B != 0) {
         gUnk_03002C30[gUnk_03000440.unk12F].unk2B--;
         return;
     }
-    blend_obj_palettes_to_color_0803F684((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10)
-                                         | (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5)
-                                         | gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
+    blend_obj_palettes_to_color_0803F684((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10) |
+                                             (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5) |
+                                             gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
                                          gUnk_03002C30[gUnk_03000440.unk12F].unk2F, 0xFDFF);
-    blend_obj_palettes_to_color_0803F998((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10)
-                                         | (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5)
-                                         | gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
+    blend_obj_palettes_to_color_0803F998((gUnk_03002C30[gUnk_03000440.unk12F].unk2E << 10) |
+                                             (gUnk_03002C30[gUnk_03000440.unk12F].unk2D << 5) |
+                                             gUnk_03002C30[gUnk_03000440.unk12F].unk2C,
                                          gUnk_03002C30[gUnk_03000440.unk12F].unk2F, 0xB00F);
     if (gUnk_03002C30[gUnk_03000440.unk12F].unk2F == 0)
         gUnk_03002C30[gUnk_03000440.unk12F].unk29 = 0;
@@ -49,8 +44,7 @@ void sub_0803CECC(void)
         gUnk_03002C30[gUnk_03000440.unk12F].unk2F--;
 }
 
-void sub_0803CF7C(void)
-{
+void sub_0803CF7C(void) {
     if (gUnk_03002C30[gUnk_03000440.unk12F].unk2C)
         gUnk_03002C30[gUnk_03000440.unk12F].unk2C--;
     if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B)
@@ -59,23 +53,21 @@ void sub_0803CF7C(void)
         update_sprite_animation_position(gUnk_03000440.unk12F);
 }
 
-void sub_0803CFC8(void)
-{
+void sub_0803CFC8(void) {
     struct Coords16 v;
 
     if (gUnk_03002C30[gUnk_03000440.unk12F].unk2C != 0)
         gUnk_03002C30[gUnk_03000440.unk12F].unk2C--;
-    else
-    {
+    else {
         gUnk_03002C30[gUnk_03000440.unk12F].unk0 |= 0x8000;
         process_sprite_anim_commands(gUnk_083B5F80[gUnk_03002C30[gUnk_03000440.unk12F].unk2D], gUnk_03000440.unk12F);
     }
-    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B != 0)
-    {
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B != 0) {
         gUnk_03002C30[gUnk_03000440.unk12F].unk2B--;
         return;
     }
-    v = calc_polar_to_screen_coords(gUnk_03002C30[gUnk_03000440.unk12F].unk26, 0x10, gUnk_03002C30[10].unk2, gUnk_03002C30[10].unk4);
+    v = calc_polar_to_screen_coords(gUnk_03002C30[gUnk_03000440.unk12F].unk26, 0x10, gUnk_03002C30[10].unk2,
+                                    gUnk_03002C30[10].unk4);
     gUnk_03002C30[gUnk_03000440.unk12F].unk2 = v.x;
     gUnk_03002C30[gUnk_03000440.unk12F].unk4 = v.y;
     if (!(gUnk_03001800.unkF8 & 2))
@@ -84,90 +76,75 @@ void sub_0803CFC8(void)
         gUnk_03002C30[gUnk_03000440.unk12F].unk26 -= 0x10;
 }
 
-void sub_0803D0BC(void)
-{
+void sub_0803D0BC(void) {
     struct Unk_03002C30 *s;
     u8 i;
 
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03002C30[gUnk_03000440.unk12F].unk2D], gUnk_03000440.unk12F);
     i = gUnk_03000440.unk12F;
     s = &gUnk_03002C30[i];
-    if (s->unk23 == 0)
-    {
-        if (s->unk8 <= s->unk26)
-        {
+    if (s->unk23 == 0) {
+        if (s->unk8 <= s->unk26) {
             clear_sprite_table_mask(i, 1);
             return;
         }
         s->unk8 -= s->unk26;
         gUnk_03002C30[gUnk_03000440.unk12F].unk9 -= gUnk_03002C30[gUnk_03000440.unk12F].unk26;
-    }
-    else if (s->unk8 == 0x40)
+    } else if (s->unk8 == 0x40)
         s->unk29 = 0;
-    else
-    {
+    else {
         s->unk8 += s->unk26;
         gUnk_03002C30[gUnk_03000440.unk12F].unk9 += gUnk_03002C30[gUnk_03000440.unk12F].unk26;
     }
 }
 
-void sub_0803D15C(void)
-{
+void sub_0803D15C(void) {
     struct Coords16 v;
 
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03002C30[gUnk_03000440.unk12F].unk2D], gUnk_03000440.unk12F);
-    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B <= 6)
-    {
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B <= 6) {
         gUnk_03002C30[gUnk_03000440.unk12F].unk8 += 8;
         gUnk_03002C30[gUnk_03000440.unk12F].unk9 += 8;
     }
-    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B > 0x3C)
-    {
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B > 0x3C) {
         if (gUnk_03002C30[gUnk_03000440.unk12F].unk8 == 8)
             clear_battle_sprite_slot(gUnk_03000440.unk12F, 1);
-        else
-        {
+        else {
             gUnk_03002C30[gUnk_03000440.unk12F].unk8 -= 4;
             gUnk_03002C30[gUnk_03000440.unk12F].unk9 -= 4;
         }
     }
-    if (gUnk_03002C30[gUnk_03000440.unk12F].unk23 == 0)
-    {
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk23 == 0) {
         if (!(gUnk_03002C30[gUnk_03000440.unk12F].unk2B & 1))
             gUnk_03002C30[gUnk_03000440.unk12F].unk27--;
-    }
-    else
-    {
+    } else {
         if (!(gUnk_03002C30[gUnk_03000440.unk12F].unk2B & 1))
             gUnk_03002C30[gUnk_03000440.unk12F].unk27++;
     }
     gUnk_03002C30[gUnk_03000440.unk12F].unk26 += 4;
     gUnk_03002C30[gUnk_03000440.unk12F].unk2B++;
-    v = calc_polar_to_screen_coords(gUnk_03002C30[gUnk_03000440.unk12F].unk26, gUnk_03002C30[gUnk_03000440.unk12F].unk27,
-                                    gUnk_03002C30[10].unk2, gUnk_03002C30[10].unk4);
+    v = calc_polar_to_screen_coords(gUnk_03002C30[gUnk_03000440.unk12F].unk26,
+                                    gUnk_03002C30[gUnk_03000440.unk12F].unk27, gUnk_03002C30[10].unk2,
+                                    gUnk_03002C30[10].unk4);
     gUnk_03002C30[gUnk_03000440.unk12F].unk2 = v.x;
     gUnk_03002C30[gUnk_03000440.unk12F].unk4 = v.y;
 }
 
-void sub_0803D2A8(void)
-{
+void sub_0803D2A8(void) {
     u32 done = 0;
 
-    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B != 0)
-    {
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B != 0) {
         gUnk_03002C30[gUnk_03000440.unk12F].unk2B--;
         return;
     }
-    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2E != 0)
-    {
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2E != 0) {
         sub_080362C4(gUnk_03002C30[gUnk_03000440.unk12F].unk2D);
         sub_08036340(gUnk_03002C30[gUnk_03000440.unk12F].unk2D);
         sub_08036370(gUnk_03002C30[gUnk_03000440.unk12F].unk2D, gUnk_03001800.unk87);
         sub_080364A8(gUnk_03002C30[gUnk_03000440.unk12F].unk2D, gUnk_03001800.unk87);
         gUnk_03002C30[gUnk_03000440.unk12F].unk2E = 0;
     }
-    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2C != 0)
-    {
+    if (gUnk_03002C30[gUnk_03000440.unk12F].unk2C != 0) {
         gUnk_03002C30[gUnk_03000440.unk12F].unk2C--;
         return;
     }
@@ -181,24 +158,20 @@ void sub_0803D2A8(void)
         clear_battle_sprite_slot(gUnk_03000440.unk12F, 1);
 }
 
-void sub_0803D3C0(void)
-{
+void sub_0803D3C0(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03002C30[gUnk_03000440.unk12F].unk26], gUnk_03000440.unk12F);
-    if (sub_080353CC(gUnk_03000440.unk12F))
-    {
+    if (sub_080353CC(gUnk_03000440.unk12F)) {
         gUnk_03002C30[gUnk_03000440.unk12F].unk6 = 0x6307 + gUnk_03002C30[gUnk_03000440.unk12F].unk28;
         gUnk_03002C30[gUnk_03000440.unk12F].unk29 = 0;
     }
 }
 
-s16 sub_0803D424(void)
-{
+s16 sub_0803D424(void) {
     const s16 *seq = gUnk_083CDFE4[gUnk_03001800.unkF9];
     return seq[gUnk_03001800.unk100];
 }
 
-void load_battle_sequence_commands(void)
-{
+void load_battle_sequence_commands(void) {
     const s16 *seq = gUnk_083CDFE4[gUnk_03001800.unkF9];
     u32 n = gUnk_083CE1F4[seq[gUnk_03001800.unk100]];
     u32 i;
@@ -207,8 +180,7 @@ void load_battle_sequence_commands(void)
         gUnk_03001800.unk102[i] = seq[gUnk_03001800.unk100 + i + 1];
 }
 
-void battle_advance_sequence_counter(void)
-{
+void battle_advance_sequence_counter(void) {
     const s16 *seq = gUnk_083CDFE4[gUnk_03001800.unkF9];
     const u8 *ops = gUnk_083CE1F4;
     s32 p = gUnk_03001800.unk100;
@@ -216,13 +188,10 @@ void battle_advance_sequence_counter(void)
     gUnk_03001800.unk100 = p + 1 + ops[seq[p]];
 }
 
-void battle_sprite_rotate_angles(u32 dir, u32 delta)
-{
+void battle_sprite_rotate_angles(u32 dir, u32 delta) {
     u32 i;
-    for (i = 0; i <= 0x13; i++)
-    {
-        if (gUnk_03002C30[i + 10].unk29 != 0)
-        {
+    for (i = 0; i <= 0x13; i++) {
+        if (gUnk_03002C30[i + 10].unk29 != 0) {
             if (dir)
                 gUnk_03002C30[i + 10].unk2 = (gUnk_03002C30[i + 10].unk2 - delta) & 0x1FF;
             else
@@ -233,12 +202,10 @@ void battle_sprite_rotate_angles(u32 dir, u32 delta)
 
 // Game state 10 handler: runs gUnk_083AFAF8[gGameSubState]; outside sub-states 0x10-0x1F a link error
 // (sub_0803EED8) restarts it at 0x10. guess: link Robattle (entered when gUnk_03000440.unk89 == 1).
-void sub_0803D538(void)
-{
+void sub_0803D538(void) {
     if (gGameSubState - 0x10 > 0xF && sub_0803EED8())
         return;
-    if (gUnk_03000430 == 2)
-    {
+    if (gUnk_03000430 == 2) {
         u32 fill = 0x200;
         CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
     }
@@ -246,8 +213,7 @@ void sub_0803D538(void)
     gUnk_083AFAF8[gGameSubState]();
 }
 
-void sub_0803D5A0(void)
-{
+void sub_0803D5A0(void) {
     u32 zero = 0;
 
     CpuFastSet(&zero, &gUnk_03001800, 0x01000100);
@@ -256,42 +222,32 @@ void sub_0803D5A0(void)
     gGameSubState++;
 }
 
-void sub_0803D5E0(void)
-{
-    if (sub_0803E79C())
-    {
+void sub_0803D5E0(void) {
+    if (sub_0803E79C()) {
         gUnk_03000440.unk86 = 0;
         gGameSubState++;
     }
 }
 
-void sub_0803D608(void)
-{
-    if (gUnk_03000440.unk86 == 8)
-    {
+void sub_0803D608(void) {
+    if (gUnk_03000440.unk86 == 8) {
         gUnk_03000440.unk86 = 0;
         gGameSubState++;
-    }
-    else
-    {
+    } else {
         gUnk_03000440.unk86++;
     }
 }
 
-void sub_0803D634(void)
-{
-    if (gUnk_03000B90 == 0)
-    {
+void sub_0803D634(void) {
+    if (gUnk_03000B90 == 0) {
         gUnk_03000440.unk8D = gFrameCounter;
         gUnk_03005010.unk6 = gUnk_03000440.unk8D + 0x8000;
     }
     gGameSubState++;
 }
 
-void sub_0803D674(void)
-{
-    if (gUnk_03000B90 != 0)
-    {
+void sub_0803D674(void) {
+    if (gUnk_03000B90 != 0) {
         u16 v = gUnk_03005010.unk8[0][1];
         if (!(v & 0x8000))
             return;
@@ -300,8 +256,7 @@ void sub_0803D674(void)
     gGameSubState++;
 }
 
-void sub_0803D6AC(void)
-{
+void sub_0803D6AC(void) {
     gUnk_03000440.unk84 = 0;
     gUnk_03001800.unk51 = 0;
     gUnk_03001800.unk52 = 0;
@@ -317,14 +272,12 @@ void sub_0803D6AC(void)
     gGameSubState = 0x50;
 }
 
-void sub_0803D71C(void)
-{
+void sub_0803D71C(void) {
     gUnk_03001800.unk38 = gUnk_083AFC78[rng_next_080424B8() & 0x1F];
     gGameSubState++;
 }
 
-void sub_0803D74C(void)
-{
+void sub_0803D74C(void) {
     u32 a, b, c;
 
     sub_08043CA8();
@@ -364,69 +317,56 @@ void sub_0803D74C(void)
     gGameSubState++;
 }
 
-void sub_0803D928(void)
-{
+void sub_0803D928(void) {
     update_scroll_movement_a();
-    if (gUnk_03000440.unk84 <= 8)
-    {
+    if (gUnk_03000440.unk84 <= 8) {
         blend_obj_palettes_to_color_0803F684(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
         blend_obj_palettes_to_color_0803F998(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
-    }
-    else
+    } else
         gGameSubState++;
 }
 
-void sub_0803D980(void)
-{
+void sub_0803D980(void) {
     update_scroll_movement_a();
     text_window_init(1, 0, 0);
     gGameSubState++;
 }
 
-void sub_0803D9A0(void)
-{
+void sub_0803D9A0(void) {
     update_scroll_movement_a();
     if (run_message(gUnk_083C2BBC[1]))
         gGameSubState++;
 }
 
-void sub_0803D9C8(void)
-{
+void sub_0803D9C8(void) {
     update_scroll_movement_a();
     copy_obj_palette_to_buffer();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
 
-void sub_0803D9F0(void)
-{
+void sub_0803D9F0(void) {
     update_scroll_movement_a();
-    if (gUnk_03000440.unk84 <= 8)
-    {
+    if (gUnk_03000440.unk84 <= 8) {
         blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
-    }
-    else
+    } else
         gGameSubState++;
 }
 
-void sub_0803DA40(void)
-{
+void sub_0803DA40(void) {
     update_scroll_movement_a();
-    if (gUnk_03000440.unk84 <= 8)
-    {
+    if (gUnk_03000440.unk84 <= 8) {
         blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
-    }
-    else
+    } else
         gGameSubState++;
 }
 
-void sub_0803DA90(void)
-{
+void sub_0803DA90(void) {
     set_blend_effect_mode(0, 0, 0);
     vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG1CNT, 0);
@@ -434,16 +374,14 @@ void sub_0803DA90(void)
     gGameSubState++;
 }
 
-void sub_0803DAEC(void)
-{
+void sub_0803DAEC(void) {
     sub_0803F624(&gUnk_03000440.unk50, 0x14, 0);
     gUnk_03000440.unk50 = 1;
     gGameState = 3;
     gGameSubState = 0;
 }
 
-void sub_0803DB1C(void)
-{
+void sub_0803DB1C(void) {
     if (gUnk_03000440.unk9C == 1)
         play_song(14);
     else
@@ -451,67 +389,54 @@ void sub_0803DB1C(void)
     gGameSubState++;
 }
 
-void sub_0803DB4C(void)
-{
+void sub_0803DB4C(void) {
     update_scroll_movement_a();
-    if (run_message(gUnk_083C3984[1]) && (*(u8 *)&gNewKeys & 3))
-    {
+    if (run_message(gUnk_083C3984[1]) && (*(u8 *)&gNewKeys & 3)) {
         gUnk_03000440.unk1B = 0;
         play_sound_effect(0xD);
         gGameSubState++;
     }
 }
 
-void sub_0803DB94(void)
-{
+void sub_0803DB94(void) {
     update_scroll_movement_a();
-    if (game_state_execute_handler_b())
-    {
+    if (game_state_execute_handler_b()) {
         sub_0803FB0C();
         gGameSubState++;
     }
 }
 
-void sub_0803DBB8(void)
-{
+void sub_0803DBB8(void) {
     update_scroll_movement_a();
     if (run_message(gUnk_083CF3B0[1]))
         gGameSubState++;
 }
 
-void sub_0803DBE0(void)
-{
+void sub_0803DBE0(void) {
     update_scroll_movement_a();
-    if (sub_0803E79C())
-    {
+    if (sub_0803E79C()) {
         gUnk_03000440.unk86 = 0;
         gGameSubState++;
     }
 }
 
-void sub_0803DC0C(void)
-{
+void sub_0803DC0C(void) {
     update_scroll_movement_a();
-    if (gUnk_03000440.unk86 == 8)
-    {
+    if (gUnk_03000440.unk86 == 8) {
         gUnk_03000440.unk86 = 0;
         gGameSubState++;
-    }
-    else
-    {
+    } else {
         gUnk_03000440.unk86++;
     }
 }
 
-void sub_0803DC3C(void)
-{
+void sub_0803DC3C(void) {
     update_scroll_movement_a();
     sound_stop_all_with_fade_guard(8);
     gGameSubState++;
 }
 
-void sub_0803DC58(void)
-{
+void sub_0803DC58(void) {
     update_scroll_movement_a();
     if (gUnk_03000440.unk138 == 0)
         gGameSubState++;
@@ -519,8 +444,7 @@ void sub_0803DC58(void)
         gGameSubState = 0x30;
 }
 
-void sub_0803DC8C(void)
-{
+void sub_0803DC8C(void) {
     u32 a, b;
 
     clear_battle_sprite_slot(0, 0x80);
@@ -533,8 +457,7 @@ void sub_0803DC8C(void)
     sub_08044CDC(3);
 }
 
-void sub_0803DCDC(void)
-{
+void sub_0803DCDC(void) {
     u32 zero;
 
     sub_08043CA8();
@@ -568,34 +491,29 @@ void sub_0803DCDC(void)
     gGameSubState++;
 }
 
-void sub_0803DE70(void)
-{
+void sub_0803DE70(void) {
     sub_0803E894();
     if (update_blend_effect())
         gGameSubState++;
 }
 
-void sub_0803DE90(void)
-{
+void sub_0803DE90(void) {
     sub_0803E894();
     text_window_init(1, 0, 0);
     gGameSubState++;
 }
 
-void sub_0803DEB0(void)
-{
+void sub_0803DEB0(void) {
     sub_0803E894();
     if (run_message(gUnk_03000440.unk9C == 1 ? gUnk_083CF3B0[2] : gUnk_083CF3B0[3]))
         gGameSubState++;
 }
 
-void sub_0803DEF0(void)
-{
+void sub_0803DEF0(void) {
     u16 pkt;
 
     sub_0803E894();
-    if (gUnk_03000440.unk9C == 1)
-    {
+    if (gUnk_03000440.unk9C == 1) {
         sub_0803EA18();
         draw_battle_gauge_bar();
         if (!(*(u8 *)&gNewKeys & 1))
@@ -604,9 +522,7 @@ void sub_0803DEF0(void)
         gUnk_03005010.unk6 = gUnk_03001800.unk1A0 + 0x8000;
         gUnk_03000440.unk86 = 0;
         gGameSubState++;
-    }
-    else
-    {
+    } else {
         pkt = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
         if (!(pkt & 0x8000))
             return;
@@ -618,35 +534,29 @@ void sub_0803DEF0(void)
     }
 }
 
-void sub_0803DF98(void)
-{
+void sub_0803DF98(void) {
     u16 n;
 
     sub_0803E894();
-    if (gUnk_03000440.unk9C == 1)
-    {
+    if (gUnk_03000440.unk9C == 1) {
         gUnk_03005010.unk6 = gUnk_03001800.unk1A0 + 0x8000;
         update_battle_gauge_display();
         n = ++gUnk_03000440.unk86;
-    }
-    else
-    {
+    } else {
         update_battle_gauge_display();
         gUnk_03000440.unk86++;
         if (!game_state_execute_handler_a())
             return;
         n = gUnk_03000440.unk86;
     }
-    if (n == 0x3C)
-    {
+    if (n == 0x3C) {
         play_sound_effect(0x39);
         draw_battle_gauge_bar();
         gGameSubState++;
     }
 }
 
-void sub_0803E018(void)
-{
+void sub_0803E018(void) {
     sub_0803E894();
     sub_0803EB30();
     sub_0803EB5C();
@@ -654,42 +564,35 @@ void sub_0803E018(void)
     gGameSubState++;
 }
 
-void sub_0803E03C(void)
-{
+void sub_0803E03C(void) {
     sub_0803E894();
     process_sprite_anim_commands(gUnk_083B5F80[0x75 - gUnk_03001800.unk1A2], 4);
-    if (gUnk_03002C30[4].unk22 == 0xFF)
-    {
+    if (gUnk_03002C30[4].unk22 == 0xFF) {
         gUnk_03002C30[3].unk6 = 0x8505;
         play_sound_effect(0x54);
         gGameSubState++;
     }
 }
 
-void sub_0803E098(void)
-{
+void sub_0803E098(void) {
     sub_0803E894();
-    if (sub_0803EC98())
-    {
+    if (sub_0803EC98()) {
         sub_0803ECF0();
         sub_0803ED10();
         gGameSubState++;
     }
 }
 
-void sub_0803E0C0(void)
-{
+void sub_0803E0C0(void) {
     sub_0803E894();
-    if (sub_0803ED28())
-    {
+    if (sub_0803ED28()) {
         play_sound_effect(0x2A);
         gUnk_03000440.unk86 = 0;
         gGameSubState++;
     }
 }
 
-void sub_0803E0F0(void)
-{
+void sub_0803E0F0(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     if (gUnk_03000440.unk86 == 0x78)
@@ -698,8 +601,7 @@ void sub_0803E0F0(void)
         gUnk_03000440.unk86++;
 }
 
-void sub_0803E120(void)
-{
+void sub_0803E120(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
@@ -709,8 +611,7 @@ void sub_0803E120(void)
         gGameSubState = 0x48;
 }
 
-void sub_0803E170(void)
-{
+void sub_0803E170(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
@@ -718,20 +619,17 @@ void sub_0803E170(void)
     gGameSubState++;
 }
 
-void sub_0803E1A4(void)
-{
+void sub_0803E1A4(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
-    if (run_message(gUnk_03000440.unk9C == 1 ? gUnk_083CF3B0[4] : gUnk_083CF3B0[5]))
-    {
+    if (run_message(gUnk_03000440.unk9C == 1 ? gUnk_083CF3B0[4] : gUnk_083CF3B0[5])) {
         text_window_init(1, 0, 0);
         gGameSubState++;
     }
 }
 
-void sub_0803E1FC(void)
-{
+void sub_0803E1FC(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
@@ -739,34 +637,28 @@ void sub_0803E1FC(void)
         gGameSubState++;
 }
 
-void sub_0803E234(void)
-{
+void sub_0803E234(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
-    if (sub_0803E79C())
-    {
+    if (sub_0803E79C()) {
         gUnk_03000440.unk84 = 0;
         gGameSubState++;
     }
 }
 
-void sub_0803E270(void)
-{
+void sub_0803E270(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
-    if (gUnk_03000440.unk84 == 4)
-    {
+    if (gUnk_03000440.unk84 == 4) {
         gUnk_03000440.unk84 = 0;
         gGameSubState++;
-    }
-    else
+    } else
         gUnk_03000440.unk84++;
 }
 
-void sub_0803E2AC(void)
-{
+void sub_0803E2AC(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
@@ -774,8 +666,7 @@ void sub_0803E2AC(void)
     gGameSubState++;
 }
 
-void sub_0803E2DC(void)
-{
+void sub_0803E2DC(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
@@ -784,23 +675,19 @@ void sub_0803E2DC(void)
     gGameSubState++;
 }
 
-void sub_0803E314(void)
-{
+void sub_0803E314(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
-    if (gUnk_03000440.unk84 <= 8)
-    {
+    if (gUnk_03000440.unk84 <= 8) {
         blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
-    }
-    else
+    } else
         gGameSubState++;
 }
 
-void sub_0803E374(void)
-{
+void sub_0803E374(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
@@ -809,45 +696,41 @@ void sub_0803E374(void)
         medapart_add_quantity(gUnk_03001800.unk1A5, (gUnk_03001800.unk19A + 0)[gUnk_03001800.unk1A2], 1);
     else
         sub_080421B4(gUnk_03001800.unk1A4, (gUnk_03001800.unk19A + 0)[gUnk_03001800.unk1A2]);
-    memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gUnk_03001800.unk1A5 * 4 + gUnk_03001800.unk19A[gUnk_03001800.unk1A2]], gUnk_03000440.unk9E, 0xF);
+    memcpy_bytes_08041D04(
+        (const void *)gUnk_083BB9CC[0][gUnk_03001800.unk1A5 * 4 + gUnk_03001800.unk19A[gUnk_03001800.unk1A2]],
+        gUnk_03000440.unk9E, 0xF);
     gGameSubState++;
 }
 
-void sub_0803E434(void)
-{
+void sub_0803E434(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
-    if (run_message(gUnk_03000440.unk9C == 1 ? gUnk_083CF3B0[6] : gUnk_083CF3B0[7]))
-    {
+    if (run_message(gUnk_03000440.unk9C == 1 ? gUnk_083CF3B0[6] : gUnk_083CF3B0[7])) {
         text_window_init(1, 0, 0);
         gGameSubState++;
     }
 }
 
-void sub_0803E48C(void)
-{
+void sub_0803E48C(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
     gGameSubState = 0x3E;
 }
 
-void sub_0803E4B4(void)
-{
+void sub_0803E4B4(void) {
     sound_stop_all_with_fade_guard(8);
     set_blend_effect_mode(6, 0x3F, 0x20);
     gGameSubState++;
 }
 
-void sub_0803E4D8(void)
-{
+void sub_0803E4D8(void) {
     if (update_blend_effect())
         gGameSubState++;
 }
 
-void sub_0803E4F4(void)
-{
+void sub_0803E4F4(void) {
     u32 a, b, c;
 
     sub_08043CA8();
@@ -871,50 +754,41 @@ void sub_0803E4F4(void)
     gGameSubState++;
 }
 
-void sub_0803E618(void)
-{
+void sub_0803E618(void) {
     text_window_init(1, 0, 0);
     gGameSubState++;
 }
 
-void sub_0803E634(void)
-{
+void sub_0803E634(void) {
     if (run_message(gUnk_083CF3B0[12]))
         gGameSubState++;
 }
 
-void sub_0803E658(void)
-{
+void sub_0803E658(void) {
     set_blend_effect_mode(4, 0x3F, 0x20);
     gGameSubState++;
 }
 
-void sub_0803E674(void)
-{
+void sub_0803E674(void) {
     soft_reset_to_title();
 }
 
-void sub_0803E680(void)
-{
+void sub_0803E680(void) {
     struct Unk_03005010 *link = &gUnk_03005010;
     u16 v;
     s16 flag;
     link->unk6 = gUnk_03002B70.unk4[gUnk_03001800.unk51] + (flag = ((gUnk_03001800.unk1AF << 8) & 0x100) + 0x8000);
     gUnk_03000440.unk86++;
-    if (!(gUnk_03000440.unk86 & 1))
-    {
+    if (!(gUnk_03000440.unk86 & 1)) {
         gUnk_03001800.unk1AF ^= 1;
         gUnk_03001800.unk51++;
     }
     v = link->unk8[gUnk_03000B90 ^ 1][1];
-    if (v & 0x8000)
-    {
-        if ((u16)(v & 0x100) >> 8 != gUnk_03001800.unk1B0)
-        {
+    if (v & 0x8000) {
+        if ((u16)(v & 0x100) >> 8 != gUnk_03001800.unk1B0) {
             gUnk_03001800.unk1B0 ^= 1;
             gUnk_03001800.unk18A[gUnk_03001800.unk52] = v;
-            if (++gUnk_03001800.unk52 > 10)
-            {
+            if (++gUnk_03001800.unk52 > 10) {
                 gUnk_03000440.unk86 = 0;
                 gGameSubState++;
             }
@@ -922,83 +796,69 @@ void sub_0803E680(void)
     }
 }
 
-void sub_0803E768(void)
-{
+void sub_0803E768(void) {
     gGameSubState = 6;
 }
 
-void sub_0803E774(void)
-{
+void sub_0803E774(void) {
     gGameSubState = 5;
 }
 
-void sub_0803E780(void)
-{
+void sub_0803E780(void) {
     if (gUnk_03000440.unk89 == 1)
         gUnk_03005010.unk6 = 0;
 }
 
-u32 sub_0803E79C(void)
-{
+u32 sub_0803E79C(void) {
     gUnk_03005010.unk6 = 0xFFFE;
     if (gUnk_03005010.unk8[0][1] == 0xFFFE && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1])
         return 1;
     return 0;
 }
 
-void render_battle_text_label(void)
-{
+void render_battle_text_label(void) {
     render_text_sprites_08040EE4(gUnk_0300198A, 10, 0x12, 3, 10, 13, 0, 1, 0, -4);
 }
 
-void load_battle_anim_data_38(void)
-{
+void load_battle_anim_data_38(void) {
     memcpy_bytes_0803F63C(gUnk_083BE9E8[gUnk_03001800.unk38], gUnk_03000440.unk9E, 0xB);
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x1E, 1, 3, 8, 0xC, 0, 1);
 }
 
-void draw_battle_ui_tiles_from_rom(void)
-{
+void draw_battle_ui_tiles_from_rom(void) {
     u32 i;
     for (i = 0; i <= 2; i++)
         draw_tilemap_with_offset(0xFF, gUnk_083ACEEA[i][0], gUnk_083ACEEA[i][1], REG_BG0CNT, 0x8300);
 }
 
-void load_battle_script_entry_a(void)
-{
+void load_battle_script_entry_a(void) {
     memcpy_bytes_0803F63C(gUnk_083C3B04[gUnk_03001800.unk38], gUnk_03001800.unk39, 8);
 }
 
-void sub_0803E894(void)
-{
-    if (gFrameCounter & 1)
-    {
+void sub_0803E894(void) {
+    if (gFrameCounter & 1) {
         gBg3Scroll.x++;
         gBg3Scroll.y++;
     }
 }
 
-void sub_0803E8B8(void)
-{
+void sub_0803E8B8(void) {
     u32 r = rng_next_080424B8() & 0xF;
     u32 i;
     for (i = 0; i <= 5; i++)
         gUnk_0300199A[i] = gUnk_083AFC98[r][i];
 }
 
-void sub_0803E8EC(void)
-{
+void sub_0803E8EC(void) {
     u32 i;
 
-    for (i = 0; i <= 5; i++)
-    {
+    for (i = 0; i <= 5; i++) {
         u8 *p = gUnk_0300199A;
         fill_tilemap_rect_08042698(7, 2, 4, i * 2 + 2, REG_BG1CNT, p[i] * 14 + 0x3380);
     }
 }
 
-void sub_0803E934(void)
-{
+void sub_0803E934(void) {
     clear_battle_sprite_slot(2, 1);
     gUnk_03002C30[2].unk0 = 0xC400;
     gUnk_03002C30[2].unk2 = 0x68;
@@ -1008,8 +868,7 @@ void sub_0803E934(void)
     gUnk_03002C30[2].unkB = 0x82;
 }
 
-void sub_0803E978(void)
-{
+void sub_0803E978(void) {
     clear_battle_sprite_slot(3, 1);
     gUnk_03002C30[3].unk0 = 0xC400;
     gUnk_03002C30[3].unk2 = 0x78;
@@ -1019,8 +878,7 @@ void sub_0803E978(void)
     gUnk_03002C30[3].unkB = 0x81;
 }
 
-void sub_0803E9BC(void)
-{
+void sub_0803E9BC(void) {
     clear_battle_sprite_slot(4, 1);
     gUnk_03002C30[4].unk0 = 0xC400;
     gUnk_03002C30[4].unk2 = 0x9A;
@@ -1030,66 +888,56 @@ void sub_0803E9BC(void)
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x70], 4);
 }
 
-void sub_0803EA18(void)
-{
+void sub_0803EA18(void) {
     if (gUnk_03001800.unk1A0 == 0x60)
         gUnk_03001800.unk1A0 = 0;
     else
         gUnk_03001800.unk1A0 += 4;
 }
 
-void draw_battle_gauge_bar(void)
-{
+void draw_battle_gauge_bar(void) {
     u32 x = 0;
     u32 i, n;
 
     n = gUnk_03001800.unk1A0 >> 3;
-    for (i = 0; i < n; i++)
-    {
+    for (i = 0; i < n; i++) {
         fill_tilemap_rect_08042698(1, 1, x + 7, 0x12, REG_BG1CNT, 0x53D8);
         x++;
     }
     n = gUnk_03001800.unk1A0;
     n &= 7;
-    if (n != 0)
-    {
+    if (n != 0) {
         fill_tilemap_rect_08042698(1, 1, x + 7, 0x12, REG_BG1CNT, n | 0x53D0);
         x++;
     }
-    for (i = x; i < 12; i++)
-    {
+    for (i = x; i < 12; i++) {
         fill_tilemap_rect_08042698(1, 1, x + 7, 0x12, REG_BG1CNT, 0x53D0);
         x++;
     }
 }
 
-void fill_bg1_tilemap_column(void)
-{
+void fill_bg1_tilemap_column(void) {
     u32 i;
     for (i = 0; i <= 11; i++)
         fill_tilemap_rect_08042698(1, 1, i + 7, 0x12, REG_BG1CNT, 0x53D0);
 }
 
-void update_battle_gauge_display(void)
-{
+void update_battle_gauge_display(void) {
     if (gUnk_03000440.unk86 & 4)
         draw_battle_gauge_bar();
     else
         fill_bg1_tilemap_column();
 }
 
-void sub_0803EB30(void)
-{
+void sub_0803EB30(void) {
     gUnk_03001800.unk1A1 = 0x68 - gUnk_03001800.unk1A0;
     if (gUnk_03001800.unk1A1 <= 12)
         gUnk_03001800.unk1A1 = 12;
 }
 
-void sub_0803EB5C(void)
-{
+void sub_0803EB5C(void) {
     gUnk_03001800.unk1A2 = gUnk_03001800.unk1A0 >> 4;
-    switch (gUnk_03001800.unk1A2)
-    {
+    switch (gUnk_03001800.unk1A2) {
     case 0:
         gUnk_03001800.unk1A2 = 5;
         break;
@@ -1115,15 +963,13 @@ void sub_0803EB5C(void)
     gUnk_03001800.unk1A3 = gUnk_03001800.unk1A2 * 16 + 0x18;
 }
 
-void sub_0803EC04(void)
-{
+void sub_0803EC04(void) {
     gUnk_03002C30[2].unk24 = (gUnk_03001800.unk1A0 >> 2) + 4;
     gUnk_03002C30[2].unk25 = 0;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x75 - gUnk_03001800.unk1A2], 4);
 }
 
-void sub_0803EC50(void)
-{
+void sub_0803EC50(void) {
     u32 v = gUnk_03002C30[2].unk24 + gUnk_03002C30[2].unk20;
     u32 d = v >> 2;
     gUnk_03002C30[2].unk20 = v & 3;
@@ -1133,11 +979,9 @@ void sub_0803EC50(void)
         gUnk_03002C30[2].unk4 = (gUnk_03002C30[2].unk4 + d) & 0xFF;
 }
 
-u32 sub_0803EC98(void)
-{
+u32 sub_0803EC98(void) {
     sub_0803EC50();
-    if (gUnk_03002C30[2].unk4 <= gUnk_03001800.unk1A1)
-    {
+    if (gUnk_03002C30[2].unk4 <= gUnk_03001800.unk1A1) {
         gUnk_03002C30[2].unk4 = gUnk_03001800.unk1A1;
         return 1;
     }
@@ -1147,38 +991,31 @@ u32 sub_0803EC98(void)
     return 0;
 }
 
-void sub_0803ECF0(void)
-{
+void sub_0803ECF0(void) {
     if (gUnk_03001800.unk1A0 == 0x60)
         play_sound_effect(7);
 }
 
-void sub_0803ED10(void)
-{
+void sub_0803ED10(void) {
     gUnk_03002C30[2].unk24 = 0;
     gUnk_03002C30[2].unk25 = 1;
 }
 
-u32 sub_0803ED28(void)
-{
+u32 sub_0803ED28(void) {
     u32 r;
 
     sub_0803EC50();
-    if (gUnk_03002C30[2].unk4 < gUnk_03001800.unk1A3)
-    {
+    if (gUnk_03002C30[2].unk4 < gUnk_03001800.unk1A3) {
         gUnk_03002C30[2].unk24++;
         r = 0;
-    }
-    else
-    {
+    } else {
         gUnk_03002C30[2].unk4 = gUnk_03001800.unk1A3;
         r = 1;
     }
     return r;
 }
 
-void draw_battle_bg1_tilemap_row(void)
-{
+void draw_battle_bg1_tilemap_row(void) {
     if (gUnk_03000440.unk86 & 4)
         fill_tilemap_rect_08042698(7, 2, 4, gUnk_03001800.unk1A2 * 2 + 2, REG_BG1CNT,
                                    gUnk_03001800.unk19A[gUnk_03001800.unk1A2] * 14 + 0x3380);
@@ -1187,8 +1024,7 @@ void draw_battle_bg1_tilemap_row(void)
                                    gUnk_03001800.unk19A[gUnk_03001800.unk1A2] * 14 + 0x4380);
 }
 
-void sub_0803EE10(void)
-{
+void sub_0803EE10(void) {
     u32 base;
     u32 r, i;
 
@@ -1197,10 +1033,8 @@ void sub_0803EE10(void)
     else
         base = 0;
     r = gUnk_083AFCF8[rng_next_080424B8() & 0xF];
-    for (i = 0; i <= 2; i++)
-    {
-        if (gUnk_03000590[base + r].unkBA != 0)
-        {
+    for (i = 0; i <= 2; i++) {
+        if (gUnk_03000590[base + r].unkBA != 0) {
             gUnk_03001800.unk1A4 = gUnk_03000590[base + r].unk47;
             gUnk_03001800.unk1A5 = gUnk_03000590[base + r].parts[gUnk_03001800.unk19A[gUnk_03001800.unk1A2]].unk17;
             return;
@@ -1212,11 +1046,14 @@ void sub_0803EE10(void)
     }
 }
 
-u32 sub_0803EED8(void)
-{
+u32 sub_0803EED8(void) {
     // unk1C..unk1F read as one word (the struct has no u32 there)
-    if (gUnk_03000440.unk89 == 1 && (((struct { u8 f[0x1C]; u32 x; } *)&gUnk_03005010)->x & 0xFFFF00))
-    {
+    if (gUnk_03000440.unk89 == 1 && (((struct {
+                                         u8 f[0x1C];
+                                         u32 x;
+                                     } *)&gUnk_03005010)
+                                         ->x &
+                                     0xFFFF00)) {
         gGameMode = 0;
         gGameState = 10;
         gGameSubState = 0x10;
@@ -1225,8 +1062,7 @@ u32 sub_0803EED8(void)
     return 0;
 }
 
-void soft_reset_to_title(void)
-{
+void soft_reset_to_title(void) {
     gUnk_03005030 = 0;
     serial_multiplayer_init();
     VBlankIntrWait();
@@ -1244,37 +1080,30 @@ void soft_reset_to_title(void)
     VBlankIntrWait();
 }
 
-void vram_fill_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 value)
-{
+void vram_fill_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 value) {
     u16 *base = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32;
     u32 i, j;
-    for (i = 0; i < h; i++)
-    {
+    for (i = 0; i < h; i++) {
         u16 *d = base + i * 32;
         for (j = 0; j < w; j++)
             *d++ = value;
     }
 }
 
-void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile)
-{
+void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile) {
     u16 *dst;
     u16 *d;
     u32 i, j;
     u32 cols, rows;
 
-    if (x < 32)
-    {
-        if (y < 32)
-        {
+    if (x < 32) {
+        if (y < 32) {
             dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32;
             rows = 32 - y;
-            for (i = 0; i < h; i++)
-            {
+            for (i = 0; i < h; i++) {
                 cols = 32 - x;
                 d = dst + i * 32;
-                for (j = 0; j < w; j++)
-                {
+                for (j = 0; j < w; j++) {
                     *d++ = tile;
                     if (--cols == 0)
                         d += 0x3E0;
@@ -1282,45 +1111,34 @@ void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile)
                 if (--rows == 0)
                     dst += 0x400;
             }
-        }
-        else
-        {
+        } else {
             y -= 32;
             dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32 + 0x800;
-            for (i = 0; i < h; i++)
-            {
+            for (i = 0; i < h; i++) {
                 cols = 32 - x;
                 d = dst + i * 32;
-                for (j = 0; j < w; j++)
-                {
+                for (j = 0; j < w; j++) {
                     *d++ = tile;
                     if (--cols == 0)
                         d += 0x3E0;
                 }
             }
         }
-    }
-    else
-    {
-        if (y < 32)
-        {
+    } else {
+        if (y < 32) {
             dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + (x - 32) + y * 32 + 0x400;
             rows = 32 - y;
-            for (i = 0; i < h; i++)
-            {
+            for (i = 0; i < h; i++) {
                 d = dst + i * 32;
                 for (j = 0; j < w; j++)
                     *d++ = tile;
                 if (--rows == 0)
                     dst += 0x400;
             }
-        }
-        else
-        {
+        } else {
             y -= 32;
             dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + (x - 32) + y * 32 + 0xC00;
-            for (i = 0; i < h; i++)
-            {
+            for (i = 0; i < h; i++) {
                 d = dst + i * 32;
                 for (j = 0; j < w; j++)
                     *d++ = tile;
@@ -1329,24 +1147,21 @@ void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile)
     }
 }
 
-void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base)
-{
+void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base) {
     u16 *dst;
     const u16 *s;
     u32 i, j;
     gTilemapBaseEntry = base;
     dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32;
     s = src;
-    for (i = 0; i < h; i++)
-    {
+    for (i = 0; i < h; i++) {
         u16 *d = dst + i * 32;
         for (j = 0; j < w; j++)
             *d++ = *s++ + gTilemapBaseEntry;
     }
 }
 
-void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base)
-{
+void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base) {
     u16 *dst;
     u16 *d;
     const u16 *s;
@@ -1355,18 +1170,14 @@ void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src,
 
     gTilemapBaseEntry = base;
     s = src;
-    if (x < 32)
-    {
-        if (y < 32)
-        {
+    if (x < 32) {
+        if (y < 32) {
             dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32;
             rows = 32 - y;
-            for (i = 0; i < h; i++)
-            {
+            for (i = 0; i < h; i++) {
                 cols = 32 - x;
                 d = dst + i * 32;
-                for (j = 0; j < w; j++)
-                {
+                for (j = 0; j < w; j++) {
                     *d++ = *s++ + gTilemapBaseEntry;
                     if (--cols == 0)
                         d += 0x3E0;
@@ -1374,45 +1185,34 @@ void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src,
                 if (--rows == 0)
                     dst += 0x400;
             }
-        }
-        else
-        {
+        } else {
             y -= 32;
             dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32 + 0x800;
-            for (i = 0; i < h; i++)
-            {
+            for (i = 0; i < h; i++) {
                 cols = 32 - x;
                 d = dst + (i << 5);
-                for (j = 0; j < w; j++)
-                {
+                for (j = 0; j < w; j++) {
                     *d++ = *s++ + gTilemapBaseEntry;
                     if (--cols == 0)
                         d += 0x3E0;
                 }
             }
         }
-    }
-    else
-    {
-        if (y < 32)
-        {
+    } else {
+        if (y < 32) {
             dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + (x - 32) + y * 32 + 0x400;
             rows = 32 - y;
-            for (i = 0; i < h; i++)
-            {
+            for (i = 0; i < h; i++) {
                 d = dst + i * 32;
                 for (j = 0; j < w; j++)
                     *d++ = *s++ + gTilemapBaseEntry;
                 if (--rows == 0)
                     dst += 0x400;
             }
-        }
-        else
-        {
+        } else {
             y -= 32;
             dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + (x - 32) + y * 32 + 0xC00;
-            for (i = 0; i < h; i++)
-            {
+            for (i = 0; i < h; i++) {
                 d = dst + i * 32;
                 for (j = 0; j < w; j++)
                     *d++ = *s++ + gTilemapBaseEntry;
@@ -1421,15 +1221,13 @@ void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src,
     }
 }
 
-void decompress_bg_tiles_to_vram_bg(void)
-{
+void decompress_bg_tiles_to_vram_bg(void) {
     lz_decompress_dispatch(gUnk_084873D0, (void *)0x06000020);
     lz_decompress_dispatch(gUnk_084C31BC, (void *)0x06001780);
     CpuFastSet(gUnk_08488A84, (void *)(PLTT + 0x1E0), 8);
 }
 
-void setup_bg0_display_layer(void)
-{
+void setup_bg0_display_layer(void) {
     vu16 *r;
     u16 v;
     REG_DISPCNT |= 0x100;
@@ -1439,8 +1237,7 @@ void setup_bg0_display_layer(void)
     set_tilemap_and_decompress_bg(0, 0xD, gUnk_08488540, REG_BG0CNT, 1);
 }
 
-void decompress_indexed_asset(u32 set, u32 idx, void *dst, u32 pal, u32 toBuffer)
-{
+void decompress_indexed_asset(u32 set, u32 idx, void *dst, u32 pal, u32 toBuffer) {
     lz_decompress_dispatch(gUnk_083AFD08[set][idx], dst);
     if (toBuffer)
         CpuFastSet(gUnk_083B15C8[set], (void *)(0x0202FA00 + pal * 32), 8);
@@ -1448,8 +1245,7 @@ void decompress_indexed_asset(u32 set, u32 idx, void *dst, u32 pal, u32 toBuffer
         CpuFastSet(gUnk_083B15C8[set], (void *)(PLTT + pal * 32), 8);
 }
 
-void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c)
-{
+void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c) {
     REG_DISPCNT |= 0x100;
     REG_BG0CNT = 0x500;
     lz_decompress_dispatch(gUnk_083AFD08[a][b], (void *)0x06000F80);
@@ -1458,13 +1254,11 @@ void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c)
 }
 
 // The helpers keep gcc from folding mul9(anim) - (frame - 8) into (anim * 9 + 8) - frame.
-static inline s32 mul9(s32 v)
-{
+static inline s32 mul9(s32 v) {
     return v * 9;
 }
 
-static inline s32 sub8(u32 v)
-{
+static inline s32 sub8(u32 v) {
     return v - 8;
 }
 
@@ -1472,15 +1266,13 @@ static inline s32 sub8(u32 v)
 // tilemap set anim (9 frames, gUnk_083B4AE0[anim * 9 ..]), played backwards when reverse is set; loads
 // portrait set/idx (gUnk_083AFD08, as load_bg0_tilemap) first. Returns 1 after the last frame.
 // Runtime: message_clear_text_area calls it 9 frames in a row with (0, 4, 3, 5, ...) on the new game prompt.
-u32 message_portrait_anim_step(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 reverse)
-{
+u32 message_portrait_anim_step(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 reverse) {
     u8 ids[2];
     u8 *p = ids;
 
     *p++ = set;
     *p = idx;
-    if (gUnk_03000440.unkE == 0)
-    {
+    if (gUnk_03000440.unkE == 0) {
         REG_DISPCNT |= 0x100;
         REG_BG0CNT = 0x500;
         lz_decompress_dispatch(gUnk_083AFD08[set][idx], (void *)0x06000F80);
@@ -1495,30 +1287,25 @@ u32 message_portrait_anim_step(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 rev
     return 0;
 }
 
-void sub_0803F624(u8 *dst, u32 size, u8 val)
-{
+void sub_0803F624(u8 *dst, u32 size, u8 val) {
     u32 i;
     for (i = 0; i < size; i++)
         *dst++ = val;
 }
 
-void memcpy_bytes_0803F63C(const void *src, void *dst, u32 n)
-{
+void memcpy_bytes_0803F63C(const void *src, void *dst, u32 n) {
     u32 i;
-    for (i = 0; i < n; i++)
-    {
+    for (i = 0; i < n; i++) {
         *(u8 *)dst = *(const u8 *)src;
         src = (const u8 *)src + 1;
         dst = (u8 *)dst + 1;
     }
 }
 
-void memswap(void *a, void *b, u32 n)
-{
+void memswap(void *a, void *b, u32 n) {
     u32 i;
     u8 t;
-    for (i = 0; i < n; i++)
-    {
+    for (i = 0; i < n; i++) {
         t = *(u8 *)a;
         *(u8 *)a = *(u8 *)b;
         a = (u8 *)a + 1;
@@ -1527,30 +1314,26 @@ void memswap(void *a, void *b, u32 n)
     }
 }
 
-static inline void flush_pal(const void *s) { CpuFastSet(s, (void *)PLTT, 0x80); }
-void blend_obj_palettes_to_color_0803F684(u16 color, u32 amount, u16 mask)
-{
+static inline void flush_pal(const void *s) {
+    CpuFastSet(s, (void *)PLTT, 0x80);
+}
+void blend_obj_palettes_to_color_0803F684(u16 color, u32 amount, u16 mask) {
     u32 i, j;
     u32 inv;
     u16 bit = 1;
     if (amount > 32)
         amount = 32;
     inv = 32 - amount;
-    for (i = 0; i < 16; i++)
-    {
-        if (mask & bit)
-        {
-            for (j = 0; j < 16; j++)
-            {
+    for (i = 0; i < 16; i++) {
+        if (mask & bit) {
+            for (j = 0; j < 16; j++) {
                 u16 *dst = &gPaletteBufferBg[i * 16 + j];
                 u16 *src = &gPaletteBackupBg[i * 16 + j];
-                *dst = (((*src & 0x1F) * inv + amount * (color & 0x1F)) >> 5)
-                    | ((((*src & 0x3E0) * inv + amount * (color & 0x3E0)) >> 5) & 0x3E0)
-                    | ((((*src & 0x7C00) * inv + amount * (color & 0x7C00)) >> 5) & 0x7C00);
+                *dst = (((*src & 0x1F) * inv + amount * (color & 0x1F)) >> 5) |
+                       ((((*src & 0x3E0) * inv + amount * (color & 0x3E0)) >> 5) & 0x3E0) |
+                       ((((*src & 0x7C00) * inv + amount * (color & 0x7C00)) >> 5) & 0x7C00);
             }
-        }
-        else
-        {
+        } else {
             for (j = 0; j < 16; j++)
                 gPaletteBufferBg[i * 16 + j] = gPaletteBackupBg[i * 16 + j];
         }
@@ -1559,29 +1342,23 @@ void blend_obj_palettes_to_color_0803F684(u16 color, u32 amount, u16 mask)
     flush_pal(gPaletteBufferBg);
 }
 
-void blend_obj_palettes_to_color_0803F788(u16 color, u32 amount, u16 mask)
-{
+void blend_obj_palettes_to_color_0803F788(u16 color, u32 amount, u16 mask) {
     u32 i, j;
     u32 inv;
     u16 bit = 1;
     if (amount > 32)
         amount = 32;
     inv = 32 - amount;
-    for (i = 0; i < 16; i++)
-    {
-        if (mask & bit)
-        {
-            for (j = 0; j < 16; j++)
-            {
+    for (i = 0; i < 16; i++) {
+        if (mask & bit) {
+            for (j = 0; j < 16; j++) {
                 u16 *dst = &gPaletteBufferBg[i * 16 + j];
                 u16 *src = &gPaletteBackupBg[i * 16 + j];
-                *dst = (((*src & 0x1F) * inv + amount * (color & 0x1F)) >> 5)
-                    | ((((*src & 0x3E0) * inv + amount * (color & 0x3E0)) >> 5) & 0x3E0)
-                    | ((((*src & 0x7C00) * inv + amount * (color & 0x7C00)) >> 5) & 0x7C00);
+                *dst = (((*src & 0x1F) * inv + amount * (color & 0x1F)) >> 5) |
+                       ((((*src & 0x3E0) * inv + amount * (color & 0x3E0)) >> 5) & 0x3E0) |
+                       ((((*src & 0x7C00) * inv + amount * (color & 0x7C00)) >> 5) & 0x7C00);
             }
-        }
-        else
-        {
+        } else {
             for (j = 0; j < 16; j++)
                 gPaletteBufferBg[i * 16 + j] = gPaletteBackupBg[i * 16 + j];
         }
@@ -1590,29 +1367,23 @@ void blend_obj_palettes_to_color_0803F788(u16 color, u32 amount, u16 mask)
     gVBlankOnceCallback = dma_obj_palette_to_hardware;
 }
 
-void palette_blend_to_color_0803F890(u16 color, u32 amount, u16 mask)
-{
+void palette_blend_to_color_0803F890(u16 color, u32 amount, u16 mask) {
     u32 i, j;
     u32 inv;
     u16 bit = 1;
     if (amount > 32)
         amount = 32;
     inv = 32 - amount;
-    for (i = 0; i < 16; i++)
-    {
-        if (mask & bit)
-        {
-            for (j = 0; j < 16; j++)
-            {
+    for (i = 0; i < 16; i++) {
+        if (mask & bit) {
+            for (j = 0; j < 16; j++) {
                 u16 *dst = &gPaletteBuffer[i * 16 + j];
                 u16 *src = &gPaletteBackup[i * 16 + j];
-                *dst = (((*src & 0x1F) * inv + amount * (color & 0x1F)) >> 5)
-                    | ((((*src & 0x3E0) * inv + amount * (color & 0x3E0)) >> 5) & 0x3E0)
-                    | ((((*src & 0x7C00) * inv + amount * (color & 0x7C00)) >> 5) & 0x7C00);
+                *dst = (((*src & 0x1F) * inv + amount * (color & 0x1F)) >> 5) |
+                       ((((*src & 0x3E0) * inv + amount * (color & 0x3E0)) >> 5) & 0x3E0) |
+                       ((((*src & 0x7C00) * inv + amount * (color & 0x7C00)) >> 5) & 0x7C00);
             }
-        }
-        else
-        {
+        } else {
             for (j = 0; j < 16; j++)
                 gPaletteBuffer[i * 16 + j] = gPaletteBackup[i * 16 + j];
         }
@@ -1621,30 +1392,26 @@ void palette_blend_to_color_0803F890(u16 color, u32 amount, u16 mask)
     gVBlankOnceCallback = dma_obj_palette_to_hardware;
 }
 
-static inline void flush_obj_pal(const void *s) { CpuFastSet(s, (void *)OBJ_PLTT, 0x80); }
-void blend_obj_palettes_to_color_0803F998(u16 color, u32 amount, u16 mask)
-{
+static inline void flush_obj_pal(const void *s) {
+    CpuFastSet(s, (void *)OBJ_PLTT, 0x80);
+}
+void blend_obj_palettes_to_color_0803F998(u16 color, u32 amount, u16 mask) {
     u32 i, j;
     u32 inv;
     u16 bit = 1;
     if (amount > 32)
         amount = 32;
     inv = 32 - amount;
-    for (i = 0; i < 16; i++)
-    {
-        if (mask & bit)
-        {
-            for (j = 0; j < 16; j++)
-            {
+    for (i = 0; i < 16; i++) {
+        if (mask & bit) {
+            for (j = 0; j < 16; j++) {
                 u16 *dst = &gPaletteBuffer[i * 16 + j];
                 u16 *src = &gPaletteBackup[i * 16 + j];
-                *dst = (((*src & 0x1F) * inv + amount * (color & 0x1F)) >> 5)
-                    | ((((*src & 0x3E0) * inv + amount * (color & 0x3E0)) >> 5) & 0x3E0)
-                    | ((((*src & 0x7C00) * inv + amount * (color & 0x7C00)) >> 5) & 0x7C00);
+                *dst = (((*src & 0x1F) * inv + amount * (color & 0x1F)) >> 5) |
+                       ((((*src & 0x3E0) * inv + amount * (color & 0x3E0)) >> 5) & 0x3E0) |
+                       ((((*src & 0x7C00) * inv + amount * (color & 0x7C00)) >> 5) & 0x7C00);
             }
-        }
-        else
-        {
+        } else {
             for (j = 0; j < 16; j++)
                 gPaletteBuffer[i * 16 + j] = gPaletteBackup[i * 16 + j];
         }
@@ -1653,8 +1420,7 @@ void blend_obj_palettes_to_color_0803F998(u16 color, u32 amount, u16 mask)
     flush_obj_pal(gPaletteBuffer);
 }
 
-void text_window_init(u8 a, u8 b, u32 c)
-{
+void text_window_init(u8 a, u8 b, u32 c) {
     u8 c8 = c;
 
     sub_0803F624((u8 *)&gUnk_03000440, 0x28, 0);
@@ -1670,8 +1436,7 @@ void text_window_init(u8 a, u8 b, u32 c)
         setup_bg0_display_layer();
 }
 
-void sub_0803FB0C(void)
-{
+void sub_0803FB0C(void) {
     gUnk_03000440.unk4 = 4;
     gUnk_03000440.unkC = 0;
     gUnk_03000440.unk14 = 0;
@@ -1687,8 +1452,7 @@ void sub_0803FB0C(void)
     gUnk_03000440.unk27 = 0;
 }
 
-u32 run_message(const void *msg)
-{
+u32 run_message(const void *msg) {
     gUnk_03000440.unk8 = msg;
     gUnk_083B279C[gUnk_03000440.unk4]();
     if (gUnk_03000440.unk4 > 7)
@@ -1697,24 +1461,19 @@ u32 run_message(const void *msg)
 }
 
 // run_message state 0: back up the palettes, then dim them (state 1); unk0 != 0 skips to state 2.
-void message_open(void)
-{
+void message_open(void) {
     u8 v = gUnk_03000440.unk0;
-    if (v == 0)
-    {
+    if (v == 0) {
         copy_obj_palette_to_buffer();
         gUnk_03000440.unk1C = v;
         gUnk_03000440.unk4++;
-    }
-    else
-    {
+    } else {
         gUnk_03000440.unk4 = 2;
     }
 }
 
 // run_message state 1: blend all palettes toward 0x01B2 by unk1C * 2 / 32, 10 frames.
-void message_dim_palettes_step(void)
-{
+void message_dim_palettes_step(void) {
     blend_obj_palettes_to_color_0803F684(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
     blend_obj_palettes_to_color_0803F998(0x1B2, gUnk_03000440.unk1C * 2, 0x3FFF);
     if (gUnk_03000440.unk1C > 8)
@@ -1724,14 +1483,10 @@ void message_dim_palettes_step(void)
 }
 
 // run_message state 2: unk2 == 1 jumps to state 4; else show BG0 (the window) at BG0CNT 0x500.
-void message_show_window(void)
-{
-    if (gUnk_03000440.unk2 == 1)
-    {
+void message_show_window(void) {
+    if (gUnk_03000440.unk2 == 1) {
         gUnk_03000440.unk4 = 4;
-    }
-    else
-    {
+    } else {
         gUnk_03000440.unk4++;
         gUnk_03000440.unk26 = 0;
         REG_DISPCNT |= 0x100;
@@ -1740,10 +1495,8 @@ void message_show_window(void)
 }
 
 // run_message state 3: draws the window frame in three frames (unk26 0-2, reverse of sub_08040A40), then state 4.
-void message_open_window_frame(void)
-{
-    switch (gUnk_03000440.unk26)
-    {
+void message_open_window_frame(void) {
+    switch (gUnk_03000440.unk26) {
     case 0:
         lz_decompress_dispatch(gUnk_08487630, (void *)(VRAM + 0x20));
         set_tilemap_and_decompress_bg(0, 0xD, gUnk_08488600, REG_BG0CNT, 1);
@@ -1765,13 +1518,11 @@ void message_open_window_frame(void)
     }
 }
 
-void message_clear_text_area(void)
-{
+void message_clear_text_area(void) {
     u32 i;
     u8 *dst;
 
-    for (i = 0, dst = (u8 *)0x06000280; i <= 0x33; i++)
-    {
+    for (i = 0, dst = (u8 *)0x06000280; i <= 0x33; i++) {
         CpuFastSet(gUnk_084C01C8, dst, 0x10);
         dst += 0x40;
     }
@@ -1780,26 +1531,18 @@ void message_clear_text_area(void)
     message_print_step();
 }
 
-void message_print_step(void)
-{
+void message_print_step(void) {
     gUnk_03000440.unk13 = 0;
-    do
-    {
-        switch (gUnk_03000440.unk8[gUnk_03000440.unkC])
-        {
+    do {
+        switch (gUnk_03000440.unk8[gUnk_03000440.unkC]) {
         case 0xF9:
-            if (gUnk_03000440.unk19 == 1)
-            {
+            if (gUnk_03000440.unk19 == 1) {
                 gUnk_03000440.unk13 = 0;
                 reset_text_tile_state();
-            }
-            else if (gUnk_03000440.unk19 == 2)
-            {
+            } else if (gUnk_03000440.unk19 == 2) {
                 gUnk_03000440.unk13 = 1;
                 update_text_compose_and_input();
-            }
-            else
-            {
+            } else {
                 gUnk_03000440.unk13 = 0;
                 sub_080402B4();
                 if (gUnk_03000440.unk1A == 0xFF)
@@ -1829,14 +1572,11 @@ void message_print_step(void)
                 gUnk_03000440.unkC++;
             break;
         case 0xFD:
-            if (gUnk_03000440.unk19 == 2)
-            {
+            if (gUnk_03000440.unk19 == 2) {
                 gUnk_03000440.unk13 = 1;
                 if (update_text_compose_and_input() == 1)
                     gUnk_03000440.unkC++;
-            }
-            else
-            {
+            } else {
                 gUnk_03000440.unk13 = 0;
                 reset_text_tile_state();
                 if (gUnk_03000440.unk19 == 0)
@@ -1855,18 +1595,13 @@ void message_print_step(void)
             gUnk_03000440.unk13 = 1;
             break;
         default:
-            if (gUnk_03000440.unk19 == 1)
-            {
+            if (gUnk_03000440.unk19 == 1) {
                 gUnk_03000440.unk13 = 0;
                 reset_text_tile_state();
-            }
-            else if (gUnk_03000440.unk19 == 2)
-            {
+            } else if (gUnk_03000440.unk19 == 2) {
                 gUnk_03000440.unk13 = 1;
                 update_text_compose_and_input();
-            }
-            else
-            {
+            } else {
                 gUnk_03000440.unk13 = 0;
                 text_render_glyph_step();
                 if (gUnk_03000440.unk1A == 0xFF)
@@ -1877,13 +1612,11 @@ void message_print_step(void)
     } while (gUnk_03000440.unk13 == 0);
 }
 
-void sub_0803FEA8(void)
-{
+void sub_0803FEA8(void) {
     gUnk_03000440.unkC++;
 }
 
-void sub_0803FEB8(void)
-{
+void sub_0803FEB8(void) {
     u32 anim, set, idx;
     u32 x;
     u8 zero;
@@ -1891,27 +1624,23 @@ void sub_0803FEB8(void)
     u8 r;
     struct Unk_03000440 *s;
     u8 n;
-    if (((struct TextColBits *)&gUnk_03000440)->col)
-    {
+    if (((struct TextColBits *)&gUnk_03000440)->col) {
         u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
         CpuFastSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
     }
     s = &gUnk_03000440;
     zero = 0;
     s->unk14 = zero;
-    if (s->unk1 != 2)
-    {
+    if (s->unk1 != 2) {
         anim = s->unk8[s->unkC + 1];
         set = (u8)sub_08044B34(s->unk8[s->unkC + 2]);
         idx = s->unk8[s->unkC + 3];
-        if (s->unk12 == 1)
-        {
+        if (s->unk12 == 1) {
             if (s->unkF == 0)
                 x = 0x13;
             else
                 x = 3;
-            if ((u8)s->unkF == (u8)anim && (u8)s->unk10 == set)
-            {
+            if ((u8)s->unkF == (u8)anim && (u8)s->unk10 == set) {
                 if (set == 0xFF)
                     vram_fill_tilemap_rect(8, 8, x, 5, REG_BG0CNT, zero);
                 else
@@ -1920,16 +1649,12 @@ void sub_0803FEB8(void)
                 gUnk_03000440.unk10 = set;
                 gUnk_03000440.unk11 = idx;
                 gUnk_03000440.unkC += 4;
-            }
-            else
-            {
+            } else {
                 struct Unk_03000440 *p = &gUnk_03000440;
-                if ((n = p->unk1) == 0)
-                {
+                if ((n = p->unk1) == 0) {
                     if ((u8)message_portrait_anim_step((u8)p->unk10, (u8)p->unk11, x, 5, p->unkF, 1) != 1)
                         return;
-                }
-                else
+                } else
                     vram_fill_tilemap_rect(8, 8, x, 5, REG_BG0CNT, n = 0);
                 p->unkE = n;
                 p->unk12 = n;
@@ -1939,15 +1664,13 @@ void sub_0803FEB8(void)
         x = 3;
         if (anim == 0)
             x = 0x13;
-        if (set == 0xFF)
-        {
+        if (set == 0xFF) {
             s->unkF = anim;
             s->unk10 = set;
             s->unk11 = idx;
             goto inc;
         }
-        if ((m = s->unk1) != 0)
-        {
+        if ((m = s->unk1) != 0) {
             load_bg0_tilemap(set, idx, x, 5, anim);
             s->unk12 = 1;
             s->unkF = anim;
@@ -1967,22 +1690,19 @@ inc:
     s->unkC += 4;
 }
 
-void text_render_glyph_step(void)
-{
+void text_render_glyph_step(void) {
     u8 width;
     u8 shift;
     u8 i;
     u8 ch;
 
-    if (gUnk_03000440.unk18 == 0)
-    {
+    if (gUnk_03000440.unk18 == 0) {
         u8 done;
 
         width = 0;
         shift = 0;
         done = 0;
-        while (!done)
-        {
+        while (!done) {
             ch = gUnk_03000440.unk8[gUnk_03000440.unkC + shift++];
             if (gUnk_03000440.unk27)
                 width += gUnk_083B4E88[ch][0];
@@ -1991,8 +1711,7 @@ void text_render_glyph_step(void)
             ch = gUnk_03000440.unk8[gUnk_03000440.unkC + shift];
             if (ch > 0xF7)
                 break;
-            if (ch == 0)
-            {
+            if (ch == 0) {
                 done = 1;
                 if (gUnk_03000440.unk27)
                     width += gUnk_083B4E88[0][0];
@@ -2016,21 +1735,15 @@ void text_render_glyph_step(void)
         width = gUnk_083B4C88[ch][0];
     gUnk_03000440.unk14 += width;
     gUnk_03000440.unk15 -= width;
-    if (gUnk_03000440.unk16 == 0)
-    {
-        if (gUnk_03000440.unk27)
-        {
+    if (gUnk_03000440.unk16 == 0) {
+        if (gUnk_03000440.unk27) {
             gUnk_03000440.unk16 = gUnk_083B4E88[ch][0];
             CpuSet(gUnk_084C5188 + ch * 64, gUnk_02020000, 0x20);
-        }
-        else
-        {
+        } else {
             gUnk_03000440.unk16 = gUnk_083B4C88[ch][0];
             CpuSet(gUnk_084C01C8 + ch * 64, gUnk_02020000, 0x20);
         }
-    }
-    else
-    {
+    } else {
         shift = gUnk_03000440.unk16;
         if (gUnk_03000440.unk27)
             CpuSet(gUnk_084C5188 + ch * 64, gUnk_02020040, 0x20);
@@ -2040,15 +1753,13 @@ void text_render_glyph_step(void)
             ((u32 *)gUnk_02020000)[i] |= ((u32 *)gUnk_02020040)[i] << (shift * 4);
         gUnk_03000440.unk16 += width;
     }
-    if (gUnk_03000440.unk16 > 7)
-    {
+    if (gUnk_03000440.unk16 > 7) {
         u8 col = (gUnk_03000440.unk14 >> 3) - 1;
         CpuSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 0x20);
         gUnk_03000440.unk13 = 1;
         if (gUnk_03000440.unk16 == 8)
             gUnk_03000440.unk16 = 0;
-        else
-        {
+        else {
             gUnk_03000440.unk16 -= 8;
             shift = 8 - shift;
             if (gUnk_03000440.unk27)
@@ -2064,24 +1775,20 @@ void text_render_glyph_step(void)
     gUnk_03000440.unkC++;
 }
 
-void sub_080402B4(void)
-{
+void sub_080402B4(void) {
     u8 w;
     u8 n;
     u8 i;
     u8 c;
     u8 done;
 
-    if (gUnk_03000440.unk18 == 0)
-    {
+    if (gUnk_03000440.unk18 == 0) {
         w = 0;
         n = 0;
         done = 0;
         gUnk_03000440.unk24 = n;
-        do
-        {
-            switch (gUnk_03000440.unk8[gUnk_03000440.unkC + 1])
-            {
+        do {
+            switch (gUnk_03000440.unk8[gUnk_03000440.unkC + 1]) {
             case 1:
                 gUnk_03000440.unk20 = gUnk_03000440.unk9E;
                 break;
@@ -2114,8 +1821,7 @@ void sub_080402B4(void)
         else
             gUnk_03000440.unk18 = 1;
     }
-    if (gUnk_03000440.unk19 == 0)
-    {
+    if (gUnk_03000440.unk19 == 0) {
         c = gUnk_03000440.unk20[gUnk_03000440.unk24];
         if (gUnk_03000440.unk27)
             w = gUnk_083B4E88[c][0];
@@ -2123,8 +1829,7 @@ void sub_080402B4(void)
             w = gUnk_083B4C88[c][0];
         gUnk_03000440.unk14 += w;
         gUnk_03000440.unk15 -= w;
-        if (gUnk_03000440.unk16 == 0)
-        {
+        if (gUnk_03000440.unk16 == 0) {
             if (gUnk_03000440.unk27)
                 gUnk_03000440.unk16 = gUnk_083B4E88[c][0];
             else
@@ -2133,9 +1838,7 @@ void sub_080402B4(void)
                 CpuSet(&gUnk_084C5188[c * 64], gUnk_02020000, 0x20);
             else
                 CpuSet(&gUnk_084C01C8[c * 64], gUnk_02020000, 0x20);
-        }
-        else
-        {
+        } else {
             n = gUnk_03000440.unk16;
             if (gUnk_03000440.unk27)
                 CpuSet(gUnk_084C5188 + c * 64, gUnk_02020040, 0x20);
@@ -2145,17 +1848,13 @@ void sub_080402B4(void)
                 ((u32 *)gUnk_02020000)[i] |= ((u32 *)gUnk_02020040)[i] << (n * 4);
             gUnk_03000440.unk16 += w;
         }
-        if (gUnk_03000440.unk16 > 7)
-        {
+        if (gUnk_03000440.unk16 > 7) {
             i = (gUnk_03000440.unk14 >> 3) - 1;
             CpuSet(gUnk_02020000, (void *)(VRAM + 0x280 + i * 0x40 + gUnk_03000440.unk17 * 0x680), 0x20);
             gUnk_03000440.unk13 = 1;
-            if (gUnk_03000440.unk16 == 8)
-            {
+            if (gUnk_03000440.unk16 == 8) {
                 gUnk_03000440.unk16 = 0;
-            }
-            else
-            {
+            } else {
                 gUnk_03000440.unk16 -= 8;
                 n = 8 - n;
                 if (gUnk_03000440.unk27)
@@ -2166,8 +1865,7 @@ void sub_080402B4(void)
                     ((u32 *)gUnk_02020000)[i] |= ((u32 *)gUnk_02020040)[i] >> (n * 4);
             }
         }
-        if (gUnk_03000440.unk15 == 0)
-        {
+        if (gUnk_03000440.unk15 == 0) {
             gUnk_03000440.unk18 = 0;
             gUnk_03000440.unkC += 2;
         }
@@ -2175,10 +1873,8 @@ void sub_080402B4(void)
     }
 }
 
-void reset_text_tile_state(void)
-{
-    if (((struct TextColBits *)&gUnk_03000440)->col)
-    {
+void reset_text_tile_state(void) {
+    if (((struct TextColBits *)&gUnk_03000440)->col) {
         u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
         CpuSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 0x20);
     }
@@ -2192,13 +1888,11 @@ void reset_text_tile_state(void)
         gUnk_03000440.unk17 = 1;
 }
 
-u8 update_text_compose_and_input(void)
-{
+u8 update_text_compose_and_input(void) {
     u8 i;
     u8 blink;
 
-    if (((struct TextColBits *)&gUnk_03000440)->col)
-    {
+    if (((struct TextColBits *)&gUnk_03000440)->col) {
         u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
         CpuSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 0x20);
     }
@@ -2209,8 +1903,7 @@ u8 update_text_compose_and_input(void)
         write_tilemap_rect(2, 1, 0xE, 0x12, gUnk_083B4AE0_s.unk128, REG_BG0CNT, blink);
     gUnk_03000440.unk25++;
     gUnk_03000440.unk13 = 1;
-    if (*(u8 *)&gRepeatKeys & 3)
-    {
+    if (*(u8 *)&gRepeatKeys & 3) {
         play_sound_effect(0xD);
         gUnk_03000440.unk14 = 0;
         gUnk_03000440.unk16 = 0;
@@ -2227,13 +1920,10 @@ u8 update_text_compose_and_input(void)
     return 0;
 }
 
-void sub_0804070C(void)
-{
+void sub_0804070C(void) {
     u16 c;
-    if (gUnk_03000440.unk1A == 0)
-    {
-        if (((struct TextColBits *)&gUnk_03000440)->col)
-        {
+    if (gUnk_03000440.unk1A == 0) {
+        if (((struct TextColBits *)&gUnk_03000440)->col) {
             u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
             CpuFastSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
         }
@@ -2241,23 +1931,18 @@ void sub_0804070C(void)
         gUnk_03000440.unk1A = gUnk_03000440.unk8[*(vu16 *)&gUnk_03000440.unkC + 1];
         if (*(vu8 *)&gUnk_03000440.unk1A == 0xFF)
             gUnk_03000440.unkC = c + 2;
-    }
-    else if (gUnk_03000440.unk1A == 0xFF || --gUnk_03000440.unk1A == 0)
+    } else if (gUnk_03000440.unk1A == 0xFF || --gUnk_03000440.unk1A == 0)
         gUnk_03000440.unkC += 2;
-    else if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 3))
-    {
+    else if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 3)) {
         gUnk_03000440.unk1A = 0;
         gUnk_03000440.unkC += 2;
     }
 }
 
-void sub_080407A4(void)
-{
+void sub_080407A4(void) {
     u16 c;
-    if (gUnk_03000440.unk1A == 0)
-    {
-        if (((struct TextColBits *)&gUnk_03000440)->col)
-        {
+    if (gUnk_03000440.unk1A == 0) {
+        if (((struct TextColBits *)&gUnk_03000440)->col) {
             u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
             CpuFastSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
         }
@@ -2265,26 +1950,21 @@ void sub_080407A4(void)
         gUnk_03000440.unk1A = gUnk_03000440.unk8[*(vu16 *)&gUnk_03000440.unkC + 1];
         if (*(vu8 *)&gUnk_03000440.unk1A == 0xFF)
             gUnk_03000440.unkC = c + 2;
-    }
-    else if (gUnk_03000440.unk1A == 0xFF || --gUnk_03000440.unk1A == 0)
+    } else if (gUnk_03000440.unk1A == 0xFF || --gUnk_03000440.unk1A == 0)
         gUnk_03000440.unkC += 2;
 }
 
-void sub_08040820(void)
-{
-    if (((struct TextColBits *)&gUnk_03000440)->col)
-    {
+void sub_08040820(void) {
+    if (((struct TextColBits *)&gUnk_03000440)->col) {
         u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
         CpuFastSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
     }
     gUnk_03000440.unk14 = 0;
-    switch (gUnk_03000440.unk8[gUnk_03000440.unkC + 1])
-    {
+    switch (gUnk_03000440.unk8[gUnk_03000440.unkC + 1]) {
     case 0:
     case 2:
     case 3:
-        if (*(u8 *)&gRepeatKeys & 3)
-        {
+        if (*(u8 *)&gRepeatKeys & 3) {
             play_sound_effect(0xD);
             gUnk_03000440.unk4++;
         }
@@ -2300,52 +1980,42 @@ void sub_08040820(void)
 }
 
 // run_message state 6: run message command gUnk_083B27C0[unk8[unkC + 1]] (each steps through its own table by unk1B).
-void message_run_command(void)
-{
+void message_run_command(void) {
     gUnk_083B27C0[gUnk_03000440.unk8[gUnk_03000440.unkC + 1]]();
 }
 
-void sub_080408F4(void)
-{
+void sub_080408F4(void) {
     gUnk_083B27D4[gUnk_03000440.unk1B]();
 }
 
-void sub_08040914(void)
-{
+void sub_08040914(void) {
     gUnk_083B27EC[gUnk_03000440.unk1B]();
 }
 
-void sub_08040934(void)
-{
+void sub_08040934(void) {
     gUnk_083B2804[gUnk_03000440.unk1B]();
 }
 
-void sub_08040954(void)
-{
+void sub_08040954(void) {
     gUnk_083B2808[gUnk_03000440.unk1B]();
 }
 
-void sub_08040974(void)
-{
+void sub_08040974(void) {
     gUnk_083B2810[gUnk_03000440.unk1B]();
 }
 
-void sub_08040994(void)
-{
+void sub_08040994(void) {
     struct Unk_03000440 *p = &gUnk_03000440;
     u8 x;
     u8 m;
     u32 r;
 
-    if ((m = p->unk1) != 2 && (r = p->unk12) == 1)
-    {
+    if ((m = p->unk1) != 2 && (r = p->unk12) == 1) {
         x = p->unkF == 0 ? 0x13 : 3;
-        if (m == 0)
-        {
+        if (m == 0) {
             if ((u8)message_portrait_anim_step((u8)p->unk10, (u8)p->unk11, x, 5, p->unkF, r) != 1)
                 return;
-        }
-        else
+        } else
             vram_fill_tilemap_rect(8, 8, x, 5, REG_BG0CNT, m = 0);
         p->unkE = m;
         p->unk12 = m;
@@ -2353,21 +2023,16 @@ void sub_08040994(void)
     p->unk1B++;
 }
 
-void sub_08040A00(void)
-{
-    if (gUnk_03000440.unk2 == 1)
-    {
+void sub_08040A00(void) {
+    if (gUnk_03000440.unk2 == 1) {
         vram_fill_tilemap_rect(0x1E, 6, 0, 0xD, REG_BG0CNT, 0);
         gUnk_03000440.unk1B += 2;
-    }
-    else
+    } else
         gUnk_03000440.unk1B++;
 }
 
-void sub_08040A40(void)
-{
-    switch (gUnk_03000440.unk26)
-    {
+void sub_08040A40(void) {
+    switch (gUnk_03000440.unk26) {
     case 3:
         lz_decompress_dispatch(gUnk_08487524, (void *)(VRAM + 0x20));
         set_tilemap_and_decompress_bg(0, 0xD, gUnk_084885A8, REG_BG0CNT, 1);
@@ -2388,8 +2053,7 @@ void sub_08040A40(void)
     }
 }
 
-void sub_08040AF0(void)
-{
+void sub_08040AF0(void) {
     if (gUnk_03000440.unk0 == 0)
         gUnk_03000440.unk1B += 1;
     else
@@ -2397,8 +2061,7 @@ void sub_08040AF0(void)
 }
 
 // Message close step: undo message_dim_palettes_step one frame at a time (unk1C down to 0).
-void message_undim_palettes_step(void)
-{
+void message_undim_palettes_step(void) {
     blend_obj_palettes_to_color_0803F684(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
     blend_obj_palettes_to_color_0803F998(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
     if (gUnk_03000440.unk1C == 0)
@@ -2408,21 +2071,18 @@ void message_undim_palettes_step(void)
 }
 
 // Last message close step: run_message state 8 (done, run_message returns 1).
-void message_close(void)
-{
+void message_close(void) {
     gUnk_03000440.unk4 = 8;
 }
 
-void sub_08040B5C(void)
-{
+void sub_08040B5C(void) {
     u32 i;
     for (i = 0; i <= 0x33; i++)
         CpuCopy16(gUnk_084C01C8, (void *)(VRAM + 0x280 + i * 0x40), 0x40);
     gUnk_03000440.unk1B++;
 }
 
-void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot)
-{
+void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot) {
     const u8 *p;
     u8 i;
     gUnk_03002C30[slot].unk20 = 0;
@@ -2431,32 +2091,27 @@ void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot)
     i = 0;
 loop:
     p = (const u8 *)cmds + i;
-    if (*p > 0xFA)
-    {
+    if (*p > 0xFA) {
         i += 3;
         goto loop;
     }
     gUnk_03002C30[slot].unk6 = (p[1] << 8) + p[2];
 }
 
-void process_sprite_anim_commands(const u8 *cmds, u8 slot)
-{
+void process_sprite_anim_commands(const u8 *cmds, u8 slot) {
     u32 run;
     u8 op;
 
     if (gUnk_03002C30[slot].unk22 == 0xFF)
         return;
     run = 1;
-    do
-    {
-        if (gUnk_03002C30[slot].unk20 != 0)
-        {
+    do {
+        if (gUnk_03002C30[slot].unk20 != 0) {
             gUnk_03002C30[slot].unk20--;
             return;
         }
         op = cmds[gUnk_03002C30[slot].unk21];
-        switch (op)
-        {
+        switch (op) {
         case 0xFB:
             gUnk_03002C30[0].unk0 &= 0xBFFF;
             gUnk_03002C30[slot].unk20 = cmds[gUnk_03002C30[slot].unk21 + 1];
@@ -2485,38 +2140,32 @@ void process_sprite_anim_commands(const u8 *cmds, u8 slot)
     } while (run);
 }
 
-void clear_battle_sprite_slot(u8 a, u8 b)
-{
+void clear_battle_sprite_slot(u8 a, u8 b) {
     u32 i;
     u32 zero;
 
-    for (i = 0; i < b; i++)
-    {
+    for (i = 0; i < b; i++) {
         zero = 0;
         CpuFastSet(&zero, &gUnk_03002C30[a + i], 0x01000010);
     }
 }
 
-void clear_sprite_table_mask(u8 first, u8 count)
-{
+void clear_sprite_table_mask(u8 first, u8 count) {
     u32 i;
     for (i = 0; i < count; i++)
         gUnk_03002C30[first + i].unk0 &= 0x7FFF;
 }
 
-void set_sprite_hidden_flags(u8 first, u8 count)
-{
+void set_sprite_hidden_flags(u8 first, u8 count) {
     u32 i;
     for (i = 0; i < count; i++)
         gUnk_03002C30[first + i].unk0 |= 0x8000;
 }
 
-u32 find_next_free_sprite_slot(u8 first, u8 count)
-{
+u32 find_next_free_sprite_slot(u8 first, u8 count) {
     u8 i;
     u32 slot;
-    for (i = 0; i < count; i++)
-    {
+    for (i = 0; i < count; i++) {
         slot = first + i;
         if (slot == 0x80)
             return first;
@@ -2526,8 +2175,7 @@ u32 find_next_free_sprite_slot(u8 first, u8 count)
     return first;
 }
 
-void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align, u16 prio)
-{
+void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align, u16 prio) {
     u8 len;
     u8 w;
     u32 i;
@@ -2538,10 +2186,8 @@ void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
     for (i = 0; str[i] != 0xFE; i++)
         len += gUnk_083B4C88[str[i]][0];
     w = width * 8;
-    if (len <= w)
-    {
-        switch (align)
-        {
+    if (len <= w) {
+        switch (align) {
         case 0:
             len = (w - len) / 2;
             x += len;
@@ -2553,11 +2199,8 @@ void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
             x += len;
             break;
         }
-    }
-    else
-    {
-        switch (align)
-        {
+    } else {
+        switch (align) {
         case 0:
             len = (len - w) / 2;
             x -= len;
@@ -2570,10 +2213,8 @@ void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
             break;
         }
     }
-    for (i = 0; str[i] != 0xFE; i++)
-    {
-        if (str[i] != 0)
-        {
+    for (i = 0; str[i] != 0xFE; i++) {
+        if (str[i] != 0) {
             gUnk_03002C30[slot + i].unk0 = (prio << 10) | 0xC004;
             gUnk_03002C30[slot + i].unk2 = x;
             gUnk_03002C30[slot + i].unk4 = y;
@@ -2585,4 +2226,3 @@ void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
         x += gUnk_083B4C88[str[i]][0];
     }
 }
-
