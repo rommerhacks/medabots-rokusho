@@ -8,18 +8,6 @@
 // amount/32, for the 16-colour palettes in mask
 // h, u8 i, u8 j): callers were compiled without a prototype
 // h, u8 i, u8 j, u8 base): callers were compiled without a prototype
-void sub_08053234(u16 id);
-u32 sub_08053288(u16 id);
-void set_battle_state_cancel_flag(void);
-void sub_0805311C(u16 id);
-void sub_08053154(u16 id);
-void sub_080531EC(u16 id, u8 val);
-void sub_08052BA0(u8 on);
-void init_battle_field_setup(void);
-void update_bg_scroll_offsets_a(void);
-void sub_08053798(void);
-void get_state_float_as_int(float a, float b, s32 *x, s32 *y);
-u32 battle_sequence_dispatch(void);
 void dispatch_by_index(u32 idx);
 void sub_08058214(u32 a);
 u32 sub_0805937C(void);
@@ -41,33 +29,6 @@ void link_buffer_swap_arm(void);        // ARM, crt0.s; copied to IWRAM 0x030052
 // code_0804D10C
 
 // code_0805137C (field)
-void sub_08051E8C(void);
-void set_tile_data(u8 x, u8 y, u8 val);
-void init_sprite_affine_matrices_and_state(u32 a, u32 x, u32 y, u32 d);
-s32 sub_080518F4(u8 idx);
-void update_battle_direction_indicator(u8 arg);
-void load_battle_palette_via_dma(u32 toBuffer);
-void set_sprite_animation_state(u8 idx, u8 state);
-u8 sub_080526F0(u16 x);
-u8 sub_08052714(u16 y);
-void set_battle_state_byte_c83(u8 dir);
-u32 get_adjacent_tile_value(u8 dir);
-void field_set_player_facing(u8 dir);
-void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj);
-void load_battle_terrain_data(void);
-u32 sub_08052960(u8 area, u8 which);
-void sub_080529C4(u16 x);
-void sub_080529E4(u16 y);
-u32 sub_08052A04(void);
-u32 sub_08052A18(void);
-void field_load_area_tiles(u8 area);
-void field_center_camera_on_player(void);
-void update_cursor_tile_position(void);
-void battle_camera_scroll_update(u8 dir);
-void sub_08052A2C(s16 dx);
-void sub_08052AF8(s16 dy);
-u32 find_npc_event_match(void);
-u32 find_map_event_by_coords(u32 x, u32 y);
 void LZ77UnCompVram(const void *src, void *dst);
 
 // code_08044CDC
@@ -79,16 +40,6 @@ void ring_points_place_on_hexagon(u32 a);
 
 // code_080490C4
 
-void load_map_npc_sprites(); // takes one argument (update_battle_field_frame passes gUnk_030057E0.unkCBA)
-void update_entity_sprites_on_screen(void);
-void field_player_step(u8 dir);
-bool32 check_tile_and_trigger_battle_action(u8 dir);
-bool32 field_player_at_map_edge(u8 dir);
-void update_npc_random_animation(void);
-u32 map_cursor_move_and_check_event(void);
-void field_player_walk_input(void);
-void field_warp_to_area(void);
-void update_bg_scroll_offsets_b(void);
 // tiles; align 0 center, 1 left, 2 right
 void sub_08067A48(u8 slot);
 int sub_08067160(u8 *s); // string length, 0 when it is 1
@@ -287,7 +238,6 @@ void tilemap_offset_tiles_and_palette(u32 tiles, u32 pal,
                                       u32 block); // (u16, u8, u8): callers pass full ints; adds tiles to the tile
                                                   // numbers of a 32x32 screen block, sets palette pal
 void LZ77UnCompWram(const void *src, void *dst);
-void init_battle_medaforce_sprite(void);
 // code_0805EE6C
 void sub_080600E0(void); // gUnk_03002C30[0].unk1A counts 0-63, unk6 = 0x100 + gUnk_080AF980[(count >> 3) & 7]
 void sub_08062A74(u16 id, u8 second); // copies Medapart name pointer id (part * 4 + kind) of gUnk_083BB9CC into
@@ -384,12 +334,7 @@ void sub_0807068C(void);
 void sub_080706AC(void);
 void load_bg_screen_c(void);
 u32 call_battle_handler_by_state_08071C64(void);
-void update_npc_sprite_animations(void);
 void sub_08058110(); // defined as (void); sub_0804AF4C passes an argument
-s32 check_room_exit_at_position(void);
-void check_and_update_battlefield_palette(void);
-u32 sub_08052990(u32 unused, u8 which);
-u32 sub_08053194(u16 id);
 void draw_number_tall(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg);
 void update_cursor_sprite_position(void);
 u32 check_vehicle_usability(s32 idx);
@@ -398,7 +343,6 @@ void init_vehicle_menu_sprite(s32 slide);
 void render_npc_tilemap_row(s32 row);
 void handle_cursor_up_down_input(s32 count);
 void sub_08057EBC(void);
-void sub_080531D0(u16 id, u8 val);
 void sub_0805889C(s32 max);
 void sub_08058908(u32 idx, s32 max);
 void sub_080589B0(u32 idx, s32 max);
@@ -410,29 +354,6 @@ void sub_080581C0(u32 a, s32 b);
 void init_battle_field_sprites(void);
 void load_or_clear_battle_sprites(s8 key, s32 value, u8 width, u8 x, u8 y);
 void load_battle_sprite_tile(const u8 *tiles, s32 count, s32 x, s32 y);
-float float_abs_if_negative(float x);
-float float_default_to_one_if_zero(float x);
-float float_sign(float x);
-double compute_sqrt_scaled(double x);
-void sub_08053418(void);
-void compute_distance_to_state_position(float *xs, float *ys, float *zs);
-void compute_plane_from_points(float *x, float *y, float *z, float *a, float *b, float *c, float *d);
-void get_state_position_xyz(float *x, float *y, float *z);
-void sub_0805378C(void);
-void affine_set_destination_and_compute_transform(float x0, float x1, float y0, float y1);
-void affine_set_source_and_compute_transform(float x0, float x1, float y0, float y1);
-void set_state_float_field(float a, float b, float dist, float d);
-void sub_08053AB8(float *x, float *y, float *z);
-void sub_08053B94(float x, float y, float z);
-void sub_08053BB4(float a, float b);
-void update_battle_entity_screen_position(float x, float y, float z);
-void compute_3d_transform_vectors(float x, float y, float z, float *outX, float *outY, float *outZ);
-void update_entity_position_and_triggers(float a, float b);
-void init_affine_transform_viewport(s32 x, s32 y);
-u32 animation_interpolation_step(struct AnimInterp *p);
-void update_3d_entity_projections(void);
-void sub_0805689C(struct AnimInterp *p, s32 *a);
-void update_battle_sprite_status_effects(void);
 
 #include "audio/sound_seq.h"
 #include "audio/sound_driver.h"
@@ -538,5 +459,10 @@ void update_battle_sprite_status_effects(void);
 
 #include "field/script_sprites.h"
 #include "field/field_walk.h"
+
+#include "field/player_walk.h"
+#include "field/map_objects.h"
+
+#include "field/scene_3d.h"
 
 #endif // GUARD_FUNCTIONS_H

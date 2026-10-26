@@ -153,10 +153,14 @@ SECTIONS {
         build/src/field/script_sprites.o(.rodata);
         build/src/field/field_walk.o(.text);
         build/src/field/field_walk.o(.rodata);
-        build/src/code_0805137C.o(.text);
-        build/src/code_0805137C.o(.rodata);
-        build/src/code_080567AC.o(.text);
-        build/src/code_080567AC.o(.rodata);
+        build/src/field/player_walk.o(.text);
+        build/src/field/player_walk.o(.rodata);
+        build/src/field/map_objects.o(.text);
+        build/src/field/map_objects.o(.rodata);
+        build/src/field/scene_3d.o(.text);
+        build/src/field/scene_3d.o(.rodata);
+        build/src/code_08057024.o(.text);
+        build/src/code_08057024.o(.rodata);
         build/src/code_0805AB40.o(.text);
         build/src/code_0805AB40.o(.rodata);
         build/src/code_0805EE6C.o(.text);

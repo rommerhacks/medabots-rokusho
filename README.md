@@ -51,7 +51,7 @@ Run `make progress` to see the numbers.
 | Text | `src/text/` | the message window: text printing, glyph rendering, message commands; the yes/no choice menu |
 | Inventory | `src/inventory/` | Medals, Medaparts, items and the Tinpet team the player owns |
 | Menus | `src/menu/` | field pause menu, Medawatch, Medabots screen (team / detail / team select), Medals screen, Medaparts screen |
-| Field | `src/field/` | the field game mode (mode 1): frame update, area graphics and effects, the map script interpreter and its per-frame command updates, script sprites, the player's walk / warp handler and scene changes |
+| Field | `src/field/` | the field game mode (mode 1): frame update, area graphics and effects, the map script interpreter and its per-frame command updates, script sprites, the player's walk / warp handler and scene changes, player movement, map objects / events, the 3-D scene sequences |
 | Battle | `src/battle/` | Robattle intro and results (game state 6), the Robattle state machine (state 7), battle Medabots and AI, battle screen drawing, command ring, part select, Medaforce select, status screen, action scripts and skill effects (states 8 and 9), combat helpers, particles, battle sequences |
 | Debug | `src/debug/` | the developer debug menu and its entries |
 | Audio | `src/audio/` | the game's own sound engine (sequencer and driver) |
