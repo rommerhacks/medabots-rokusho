@@ -222,6 +222,14 @@
 * **Several pointers walking one struct array from different field offsets:** write some fields through the
   global (`gArr[0x24 + i].unk0`) and the others through a pointer local set in the loop init (`for (i = 0,
   spr = gArr; ...) spr[0x24 + i].unk4`); which fields go which way decides the grouping (sub_0802D8D0).
+* **Reload registers that are all off by one in rotation** (`mov r2, sl` where the original has
+  `mov r0, sl`, and so on down the function): reload hands out spare registers round-robin. One extra
+  spilled loop invariant (e.g. `tbl = table;` before the loop, so `ldr r0, =table` is rematerialised inside
+  it) advances the rotation and can fix every later choice (shop_list_init). Write the address as an
+  integer sum `(const u8 *)(idx + (u32)tbl)` when the operand order of the add matters.
+* **The stack frame is a few bytes off:** check the size of each local struct against the original's
+  memset/clear size (sub_080460B0 clears 0xD0 bytes of a 0xCC struct: wrap it with a `u32 pad`), and
+  use a `vu32` for a CpuFastSet fill word so it gets its slot where it is declared.
 * **decomp-permuter** (github.com/simonlindholm/decomp-permuter): `tools/scripts/perm_setup.py FUNC FILE.c`
   writes scratch/perm/FUNC/ (target bytes, compile.sh linking against the last build's symbols), then run
   `permuter.py scratch/perm/FUNC -j2 --stop-on-zero` from a permuter checkout for ~10 minutes.
