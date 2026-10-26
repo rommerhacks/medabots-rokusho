@@ -1376,7 +1376,95 @@ void sub_0803BBE0(void)
         gUnk_03002C30[p->unk12F].unk29 = 1;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08038D30", sub_0803BE44);
+static inline void set_xy(u32 a, u32 b)
+{
+  gUnk_03001800.unk154 = a & 0x1FF;
+  gUnk_03001800.unk158 = b & 0x1FF;
+}
+
+static inline void set_yx(u32 b, u32 a, u32 m)
+{
+  gUnk_03001800.unk154 = a & m;
+  gUnk_03001800.unk158 = b & m;
+}
+
+void sub_0803BE44(void)
+{
+  u32 d;
+  u8 shift;
+  u32 x;
+  shift = gUnk_083AFAAC[gUnk_03001800.unk38];
+  if (gUnk_03002C30[gUnk_03000440.unk12F].unk2C == 0)
+  {
+    struct Unk_03002C30 *q;
+    gUnk_03001800.unk154 += gUnk_03002C30[gUnk_03000440.unk12F].unk2B;
+    gUnk_03001800.unk154 &= 0x1FF;
+    gUnk_03002C30[gUnk_03000440.unk12F].unk30 += gUnk_03002C30[gUnk_03000440.unk12F].unk2B;
+    q = &gUnk_03002C30[gUnk_03000440.unk12F];
+    x = q->unk30;
+    if (x > 0x78)
+    {
+      register u32 lim asm("r5") = 0x188;
+      if (x <= lim)
+      {
+        d = ((s16) gUnk_03001800.unk154) - 0x78;
+        set_xy(gUnk_03001800.unk154 - d, gUnk_03001800.unk158 - d);
+        gBg2Scroll.x += d;
+        gBg3Scroll.x += d >> shift;
+      }
+      else
+      {
+        register u32 y asm("r1") = ((volatile struct Unk_03002C30 *) q)->unk30;
+        if ((s32)(y - 0x188) < q->unk2B)
+        {
+          { register u32 e asm("r0") = q->unk2B + lim; d = e - y; }
+          set_xy(gUnk_03001800.unk154 - d, gUnk_03001800.unk158 - d);
+          gBg2Scroll.x += d;
+          gBg3Scroll.x += d >> shift;
+        }
+        else if (y > 0x18F)
+        {
+          q->unk29 = 0;
+        }
+      }
+    }
+  }
+  else
+  {
+    u32 t;
+    register u32 m asm("r5");
+    struct Unk_03002C30 *q;
+    gUnk_03001800.unk158 -= gUnk_03002C30[gUnk_03000440.unk12F].unk2B;
+    m = 0x1FF;
+    gUnk_03001800.unk158 &= m;
+    gUnk_03002C30[gUnk_03000440.unk12F].unk30 -= gUnk_03002C30[gUnk_03000440.unk12F].unk2B;
+    q = &gUnk_03002C30[gUnk_03000440.unk12F];
+    t = q->unk30 & m;
+    if (((u16) (((volatile struct Unk_03002C30 *) q)->unk30 - 0x78)) > 0x78)
+    {
+      if ((t - 0x78) > 0xEF)
+      {
+        d = 0x78 - ((s16) gUnk_03001800.unk158);
+        set_yx(gUnk_03001800.unk158 - (-d), gUnk_03001800.unk154 + d, m);
+        gBg2Scroll.x -= d;
+        gBg3Scroll.x -= d >> shift;
+      }
+      else
+        if ((t <= 0x167) && ((0x168 - t) < gUnk_03002C30[gUnk_03000440.unk12F].unk2B))
+      {
+        d = gUnk_03002C30[gUnk_03000440.unk12F].unk2B - (0x168 - t);
+        set_yx(gUnk_03001800.unk158 - (-d), gUnk_03001800.unk154 + d, m);
+        gBg2Scroll.x -= d;
+        gBg3Scroll.x -= d >> shift;
+      }
+      else
+        if (t <= 0x160)
+      {
+        gUnk_03002C30[gUnk_03000440.unk12F].unk29 = 0;
+      }
+    }
+  }
+}
 
 void sub_0803C044(void)
 {
