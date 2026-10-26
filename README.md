@@ -46,9 +46,10 @@ Run `make progress` to see the numbers.
 
 | System | Folder | What's in it |
 |---|---|---|
-| Engine | `src/engine/` | boot and main loop, interrupts, LZ decompression, BG / tilemap / palette / OAM helpers, palette blends, byte memory helpers, the sprite slot table, random numbers, the game-mode-0 state dispatcher |
+| Engine | `src/engine/` | boot and main loop, interrupts, LZ decompression, BG / tilemap / palette / OAM helpers, palette blends, byte memory helpers, shared menu/battle helpers (`common.c`), the sprite slot table, random numbers, the game-mode-0 state dispatcher |
 | Link | `src/link/` | serial link cable transfer, link Robattle (game state 10) |
-| Text | `src/text/` | the message window: text printing, glyph rendering, message commands |
+| Text | `src/text/` | the message window: text printing, glyph rendering, message commands; the yes/no choice menu |
+| Inventory | `src/inventory/` | Medals, Medaparts, items and the Tinpet team the player owns |
 | Menus | `src/menu/` | field pause menu, Medawatch, Medabots screen (team / detail / team select), Medals screen, Medaparts screen |
 | Battle | `src/battle/` | Robattle intro and results (game state 6), the Robattle state machine (state 7), battle Medabots and AI, battle screen drawing, command ring, part select, Medaforce select, status screen, action scripts and skill effects (states 8 and 9), combat helpers, particles, battle sequences |
 | Debug | `src/debug/` | the developer debug menu and its entries |

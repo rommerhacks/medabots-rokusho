@@ -123,10 +123,14 @@ SECTIONS {
         build/src/text/message.o(.rodata);
         build/src/engine/sprites.o(.text);
         build/src/engine/sprites.o(.rodata);
-        build/src/code_080415BC.o(.text);
-        build/src/code_080415BC.o(.rodata);
-        build/src/code_08044F54.o(.text);
-        build/src/code_08044F54.o(.rodata);
+        build/src/text/choice_menu.o(.text);
+        build/src/text/choice_menu.o(.rodata);
+        build/src/inventory/inventory.o(.text);
+        build/src/inventory/inventory.o(.rodata);
+        build/src/engine/common.o(.text);
+        build/src/engine/common.o(.rodata);
+        build/src/code_08044CDC.o(.text);
+        build/src/code_08044CDC.o(.rodata);
         build/src/code_080490C4.o(.text);
         build/src/code_080490C4.o(.rodata);
         build/src/code_0804D10C.o(.text);

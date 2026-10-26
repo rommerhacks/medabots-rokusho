@@ -1,4 +1,154 @@
 #include "global.h"
+
+void sub_08044CDC(u32 a) {
+    switch (a) {
+    case 0:
+        sub_08064A74();
+        break;
+    case 1:
+        sub_08064A94();
+        break;
+    case 2:
+        sub_08064AB4();
+        break;
+    case 3:
+        sub_08064AD4();
+        break;
+    }
+}
+
+u32 dma3_copy_or_decompress(const u32 *src, void *dst) {
+    u32 hdr = *src;
+    u32 size = hdr >> 8;
+
+    if (((hdr << 24) >> 28) == 1) {
+        LZ77UnCompWram(src, dst);
+    } else {
+        vu32 *dma;
+
+        CpuCopy16(src, dst, size / 2);
+        dma = (vu32 *)REG_ADDR_DMA3;
+        dma[0] = (u32)src + size / 2;
+        dma[1] = (u32)dst + size / 2;
+        dma[2] = 0x80000000 | (size / 2 / 2);
+        dma[2];
+    }
+    return size;
+}
+
+u32 sub_08044D64(u32 *dst, const u32 *src, u32 n) {
+    while (n > 3) {
+        *dst++ = *src++;
+        n -= 4;
+    }
+    return n;
+}
+
+u32 sub_08044D78(u16 *dst, const u16 *src, u32 n) {
+    while (n > 1) {
+        *dst++ = *src++;
+        n -= 2;
+    }
+    return n;
+}
+
+void sub_08044D90(u8 *dst, const u8 *src, u32 n) {
+    while (n != 0) {
+        *dst++ = *src++;
+        n--;
+    }
+}
+
+void set_oam_sprite_shape_size(u8 *oam, s32 h, s32 w) {
+    if (h > w) {
+        oam[1] = (oam[1] & 0x3F) | 0x80;
+        if (h == 8)
+            oam[3] = oam[3] & 0x3F;
+        else if (h == 64)
+            oam[3] |= 0xC0;
+        else if (w == 8)
+            oam[3] = (oam[3] & 0x3F) | 0x40;
+        else
+            oam[3] = (oam[3] & 0x3F) | 0x80;
+    } else if (h < w) {
+        oam[1] = (oam[1] & 0x3F) | 0x40;
+        if (w == 8)
+            oam[3] = oam[3] & 0x3F;
+        else if (w == 64)
+            oam[3] |= 0xC0;
+        else if (h == 8)
+            oam[3] = (oam[3] & 0x3F) | 0x40;
+        else
+            oam[3] = (oam[3] & 0x3F) | 0x80;
+    } else {
+        oam[1] = oam[1] & 0x3F;
+        if (h == 8)
+            oam[3] = oam[3] & 0x3F;
+        else if (h == 16)
+            oam[3] = (oam[3] & 0x3F) | 0x40;
+        else if (h == 32)
+            oam[3] = (oam[3] & 0x3F) | 0x80;
+        else
+            oam[3] |= 0xC0;
+    }
+}
+
+u32 sub_08044E64(s32 shape, s32 size) {
+    u32 dims = 0;
+
+    switch (shape) {
+    case 0:
+        switch (size) {
+        case 0:
+            dims = 0x00080008;
+            break;
+        case 0x40000000:
+            dims = 0x00100010;
+            break;
+        case (s32)0x80000000:
+            dims = 0x00200020;
+            break;
+        case (s32)0xC0000000:
+            dims = 0x00400040;
+            break;
+        }
+        break;
+    case 0x4000:
+        switch (size) {
+        case 0:
+            dims = 0x00080010;
+            break;
+        case 0x40000000:
+            dims = 0x00080020;
+            break;
+        case (s32)0x80000000:
+            dims = 0x00100020;
+            break;
+        case (s32)0xC0000000:
+            dims = 0x00200040;
+            break;
+        }
+        break;
+    case 0x8000:
+        switch (size) {
+        case 0:
+            dims = 0x00100008;
+            break;
+        case 0x40000000:
+            dims = 0x00200008;
+            break;
+        case (s32)0x80000000:
+            dims = 0x00200010;
+            break;
+        case (s32)0xC0000000:
+            dims = 0x00400020;
+            break;
+        }
+        break;
+    }
+    return dims;
+}
+
 #include "keys.h"
 
 void dma_load_sprite_tiles(const u32 *src, u16 tile, void *buf, u32 useCpu) {
