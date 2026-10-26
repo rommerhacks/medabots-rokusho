@@ -5,6 +5,16 @@
 
 #include "global.h"
 
+static void load_wave_pattern(u32 n);
+static void sub_08073CA4(struct SoundMixChannel *ch);
+static void sound_channel_setup(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7);
+static void sound_channel_setup_alt(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7);
+static void sound_channel_update(struct SoundMixChannel *ch);
+static u8 sub_080740AC(struct SoundTrack *track);
+static void sound_track_link(struct SoundTrack *track);
+static void sound_set_volume(u32 left, u32 right);
+static struct Unk_03007014 *sub_080750CC(void);
+
 // Sample played by a Direct Sound channel.
 #define SAMPLE(ch) ((struct SoundSampleHeader *)(ch)->unk0)
 
@@ -31,14 +41,14 @@ u16 sub_08073140(u32 idx) {
     return gUnk_083AB9D0[idx];
 }
 
-void sound_channel_read_pending_note(struct SoundTrack *track, u16 *out) {
+static void sound_channel_read_pending_note(struct SoundTrack *track, u16 *out) {
     if (track->unk50 & 8) {
         *out = track->unk54;
         track->unk50 &= ~8;
     }
 }
 
-void sound_channel_set_note_attributes(struct SoundTrack *track, vu16 *cnt, vu8 *freqHi) {
+static void sound_channel_set_note_attributes(struct SoundTrack *track, vu16 *cnt, vu8 *freqHi) {
     if (track->unk50 & 6) {
         track->unk4A = (track->envVolume * track->unk40) & (s16)0xF000;
         *cnt = track->unk67 | track->unk4A | 0x800;
@@ -47,7 +57,7 @@ void sound_channel_set_note_attributes(struct SoundTrack *track, vu16 *cnt, vu8 
     }
 }
 
-void update_wave_channel_params(struct SoundTrack *track, vu16 *cnt) {
+static void update_wave_channel_params(struct SoundTrack *track, vu16 *cnt) {
     u8 *flags = &track->unk50;
 
     if (*flags & 0x20) {
@@ -61,7 +71,7 @@ void update_wave_channel_params(struct SoundTrack *track, vu16 *cnt) {
     }
 }
 
-void update_sound_channel_frequency_08073244(struct SoundTrack *track, vu16 *reg) {
+static void update_sound_channel_frequency_08073244(struct SoundTrack *track, vu16 *reg) {
     if (track->unk50 & 2) {
         track->unk4A = (track->envVolume * track->unk40) & (s16)0xF000;
         *reg = track->unk4A;
@@ -69,7 +79,7 @@ void update_sound_channel_frequency_08073244(struct SoundTrack *track, vu16 *reg
     }
 }
 
-void sound_channel_update_frequency(struct SoundTrack *track, vu16 *out) {
+static void sound_channel_update_frequency(struct SoundTrack *track, vu16 *out) {
     u16 trigger = 0;
     u8 *flags = &track->unk50;
     u16 freq;
@@ -91,7 +101,7 @@ void sound_channel_update_frequency(struct SoundTrack *track, vu16 *out) {
     }
 }
 
-void sound_update_channel3_frequency(struct SoundTrack *track, vu16 *out) {
+static void sound_update_channel3_frequency(struct SoundTrack *track, vu16 *out) {
     u8 *flags = &track->unk50;
     u16 trigger;
     u16 freq;
@@ -109,14 +119,14 @@ void sound_update_channel3_frequency(struct SoundTrack *track, vu16 *out) {
     }
 }
 
-void sound_channel_check_note_change(struct SoundTrack *track, u16 *out) {
+static void sound_channel_check_note_change(struct SoundTrack *track, u16 *out) {
     if (track->unk50 & 1) {
         *out = track->unk69 | 0x8000;
         track->unk50 &= ~1;
     }
 }
 
-void update_sound_channel_frequency_080733AC(struct SoundTrack *track, vu16 *cnt_, vu16 *freq_) {
+static void update_sound_channel_frequency_080733AC(struct SoundTrack *track, vu16 *cnt_, vu16 *freq_) {
     register vu16 *cnt asm("r6") = cnt_;
     register vu16 *freq asm("r5") = freq_;
     u8 note = sub_080740AC(track);
@@ -159,7 +169,7 @@ void update_sound_channel_frequency_080733AC(struct SoundTrack *track, vu16 *cnt
     }
 }
 
-void sound_update_channel_output_routing(struct SoundTrack *track) {
+static void sound_update_channel_output_routing(struct SoundTrack *track) {
     u8 *flags = &track->unk50;
 
     if (*flags & 0x40) {
@@ -219,7 +229,7 @@ void sound_update_channel_3(struct SoundTrack *track) {
     sound_update_channel_output_routing(track);
 }
 
-void sound_channel_update_note_08073698(struct SoundTrack *track, struct SoundMixChannel *ch) {
+static void sound_channel_update_note_08073698(struct SoundTrack *track, struct SoundMixChannel *ch) {
     u16 *vol;
     u8 *flags;
 
@@ -289,7 +299,7 @@ void sound_update_master_volume(void) {
     }
 }
 
-void load_wave_pattern(u32 n) {
+static void load_wave_pattern(u32 n) {
     vu16 cnt;
 
     CpuSet(gSoundWavePatterns[n], (void *)0x04000090, 0x04000004);
@@ -313,7 +323,7 @@ static void sound_start_fifo_dma(s32 n, u32 src) {
     dma[2] = 0xF6400004;
 }
 
-void configure_sound_channel(s32 n, u32 *src) {
+static void configure_sound_channel(s32 n, u32 *src) {
     vu32 *fifo;
     u32 *p;
     s32 i;
@@ -333,7 +343,7 @@ static void sound_stop_fifo_dma(s32 n) {
     *reg = (*reg & 0x499F) | 0x440;
 }
 
-u32 sound_semitone_ratio(s32 n) {
+static u32 sound_semitone_ratio(s32 n) {
     const u16 *tbl = gSoundSemitoneRatios;
     u32 ret;
 
@@ -356,7 +366,7 @@ u32 sound_semitone_ratio(s32 n) {
     return ret;
 }
 
-u32 sound_finetune_ratio(s32 n) {
+static u32 sound_finetune_ratio(s32 n) {
     s32 q;
     s32 rem;
 
@@ -367,11 +377,11 @@ u32 sound_finetune_ratio(s32 n) {
     return (sound_semitone_ratio(q) * gSoundFinetuneRatios[rem]) >> 12;
 }
 
-u32 sound_apply_finetune(u32 rate, u32 fine) {
+static u32 sound_apply_finetune(u32 rate, u32 fine) {
     return fine ? (sound_finetune_ratio(fine) * rate) >> 12 : rate;
 }
 
-u32 sound_calculate_playback_rate(struct SoundMixChannel *ch, u32 ratio) {
+static u32 sound_calculate_playback_rate(struct SoundMixChannel *ch, u32 ratio) {
     struct SoundSampleHeader *smp = (struct SoundSampleHeader *)ch->unk0;
     u32 rate = sound_apply_finetune((smp->rate * ratio) >> 12, smp->fineTune);
 
@@ -394,7 +404,7 @@ void sub_08073AF8(u32 val) {
     gUnk_03007014->unk724 = val;
 }
 
-void sound_channel_stop_08073B0C(struct SoundMixChannel *ch) {
+static void sound_channel_stop_08073B0C(struct SoundMixChannel *ch) {
     if (*gSoundTimerRegs[ch->unk3A - 1] & 0x800000) {
         sound_stop_fifo_dma(ch->unk3A);
         *gSoundTimerRegs[ch->unk3A - 1] = 0;
@@ -402,7 +412,7 @@ void sound_channel_stop_08073B0C(struct SoundMixChannel *ch) {
     }
 }
 
-void sound_configure_mixing_channel(struct SoundMixChannel *ch) {
+static void sound_configure_mixing_channel(struct SoundMixChannel *ch) {
     u32 route;
 
     if (gUnk_03007014->unk72C & 4)
@@ -415,7 +425,7 @@ void sound_configure_mixing_channel(struct SoundMixChannel *ch) {
                           gUnk_083ABAB2[ch->unk3A - 1][route] | gUnk_083ABA8C[ch->unk3A - 1][ch->unk3C];
 }
 
-void sound_channel_play(struct SoundMixChannel *ch, u32 offset) {
+static void sound_channel_play(struct SoundMixChannel *ch, u32 offset) {
     sound_channel_stop_08073B0C(ch);
     if (ch->unk3C) {
         u8 *n;
@@ -427,7 +437,8 @@ void sound_channel_play(struct SoundMixChannel *ch, u32 offset) {
     }
 }
 
-void init_sound_channel_struct(struct SoundMixChannel *ch, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7) {
+static void init_sound_channel_struct(struct SoundMixChannel *ch, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6,
+                                      u8 a7) {
     ch->unk0 = a1;
     ch->unk8 = a2;
     ch->unkC = 0;
@@ -443,16 +454,16 @@ void init_sound_channel_struct(struct SoundMixChannel *ch, u32 a1, u32 a2, u32 a
     ch->unk40 = a7;
 }
 
-void sound_restart_channel(struct SoundMixChannel *ch) {
+static void sound_restart_channel(struct SoundMixChannel *ch) {
     sound_channel_stop_08073B0C(ch);
     init_sound_channel_struct(ch, 0, 0, 0, 0, 0, 0, 0);
 }
 
-void sub_08073CA4(struct SoundMixChannel *ch) {
+static void sub_08073CA4(struct SoundMixChannel *ch) {
     ch->unk3E = 3;
 }
 
-void sound_channel_init_full(struct SoundMixChannel *ch) {
+static void sound_channel_init_full(struct SoundMixChannel *ch) {
     sound_restart_channel(ch);
     init_sound_channel_struct(ch, ch->unk1C, 0x20, ch->unk24, ch->unk28, ch->unk2C, ch->unk30, ch->unk31);
     sound_set_pitch_offset(ch, ch->unk24);
@@ -461,7 +472,7 @@ void sound_channel_init_full(struct SoundMixChannel *ch) {
     sub_080725BC((struct SoundTrack *)ch->unk18);
 }
 
-void sound_channel_setup(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7) {
+static void sound_channel_setup(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7) {
     ch->unk3E = 0;
     ch->unk18 = a0;
     ch->unk1C = a2;
@@ -473,7 +484,7 @@ void sound_channel_setup(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32
     ch->unk3E = 1;
 }
 
-void sound_start_channel_full(struct SoundMixChannel *ch) {
+static void sound_start_channel_full(struct SoundMixChannel *ch) {
     sound_restart_channel(ch);
     init_sound_channel_struct(ch, ch->unk1C, 0x20, 0, ch->unk28, ch->unk2C, ch->unk30, ch->unk31);
     ch->unk10 = (0x10000 - 0x1000000 / sound_calculate_playback_rate(ch, ch->unk20)) | 0x800000;
@@ -481,7 +492,7 @@ void sound_start_channel_full(struct SoundMixChannel *ch) {
     sub_080725BC((struct SoundTrack *)ch->unk18);
 }
 
-void sound_channel_setup_alt(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7) {
+static void sound_channel_setup_alt(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7) {
     ch->unk3E = 0;
     ch->unk18 = a0;
     ch->unk1C = a2;
@@ -493,25 +504,25 @@ void sound_channel_setup_alt(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3,
     ch->unk3E = 1;
 }
 
-void sound_channel_trigger_pending(struct SoundMixChannel *ch) {
+static void sound_channel_trigger_pending(struct SoundMixChannel *ch) {
     if (ch->unkC & 1) {
         ch->unkC &= ~1;
         sound_channel_play(ch, ch->unk8 - 0x20);
     }
 }
 
-void sub_08073E18(struct SoundMixChannel *ch) {
+static void sub_08073E18(struct SoundMixChannel *ch) {
     ch->unk3E = 5;
 }
 
-void sound_channel_request_stop(struct SoundMixChannel *ch) {
+static void sound_channel_request_stop(struct SoundMixChannel *ch) {
     if (ch->unk10) {
         sound_channel_stop_08073B0C(ch);
         ch->unkC |= 1;
     }
 }
 
-void sub_08073E40(struct SoundMixChannel *ch) {
+static void sub_08073E40(struct SoundMixChannel *ch) {
     ch->unk3E = 4;
 }
 
@@ -540,7 +551,7 @@ static void sound_channel_state_dispatch(struct SoundMixChannel *ch) {
     *state = 0;
 }
 
-void sub_08073EAC(struct SoundMixChannel *ch) {}
+static void sub_08073EAC(struct SoundMixChannel *ch) {}
 
 void sound_tick_both_channels(void) {
     void sound_channel_tick(u32 i) {
@@ -567,7 +578,7 @@ void sound_update_channel_at_6d8(void) {
     sound_unlock();
 }
 
-void sound_channel_update(struct SoundMixChannel *ch) {
+static void sound_channel_update(struct SoundMixChannel *ch) {
     if (ch->unk0 == 0) {
         ch->unk44++;
         return;
@@ -605,7 +616,7 @@ void sound_channel_update(struct SoundMixChannel *ch) {
     }
 }
 
-void clear_sound_channel_wave_data(struct SoundTrack *track) {
+static void clear_sound_channel_wave_data(struct SoundTrack *track) {
     if (track->unk8 != NULL) {
         u32 fill = 0xFFFFFFFF;
         CpuSet(&fill, track->unk8, 0x0500000C);
@@ -613,7 +624,7 @@ void clear_sound_channel_wave_data(struct SoundTrack *track) {
     }
 }
 
-u8 sub_080740AC(struct SoundTrack *track) {
+static u8 sub_080740AC(struct SoundTrack *track) {
     u8 *buf = track->unk8;
     s32 i;
 
@@ -643,7 +654,7 @@ void sub_080740D4(struct SoundTrack *track) {
 
 // Pause (nonzero) or resume the sound: sets bit 1 of the flags at 0x72C (see sound_is_paused),
 // silences the PSG channels and stops the sound effect tracks; resuming re-triggers the music tracks.
-void sound_set_paused_nolock(u32 pause) {
+static void sound_set_paused_nolock(u32 pause) {
     struct Unk_03007014 **pw = &gUnk_03007014;
 
     if (pause) {
@@ -699,7 +710,7 @@ void sound_set_paused_nolock(u32 pause) {
 }
 
 // Not called anywhere in the game.
-void sound_set_paused(u32 pause) {
+static void sound_set_paused(u32 pause) {
     sound_lock();
     sound_set_paused_nolock(pause);
     sound_unlock();
@@ -709,7 +720,7 @@ u32 sound_is_paused(void) {
     return (gUnk_03007014->unk72C >> 1) & 1;
 }
 
-void init_sound_channel(struct SoundTrack *track, u8 *seq) {
+static void init_sound_channel(struct SoundTrack *track, u8 *seq) {
     clear_sound_channel_wave_data(track);
     track->unk14 = seq;
     track->unk18 = NULL;
@@ -755,7 +766,7 @@ void init_sound_channel(struct SoundTrack *track, u8 *seq) {
     sound_track_link(track);
 }
 
-void sound_stop_channel_by_index(u32 idx) {
+static void sound_stop_channel_by_index(u32 idx) {
     if (gUnk_03007014->tracks[idx].unk14 && !sound_is_paused()) {
         if (gUnk_03007014->tracks[7].unk14) {
             gUnk_03007014->tracks[7].unk50 |= 0x5F;
@@ -864,7 +875,7 @@ void sound_tick_channel_3c(void) {
         sound_update_channel_3(&work->tracks[12]);
 }
 
-void sound_channel_reset(struct SoundTrack *track) {
+static void sound_channel_reset(struct SoundTrack *track) {
     track->unk14 = 0;
     track->unk54 = 0;
     track->unk6B = 0;
@@ -886,7 +897,7 @@ void sound_channel_finish_and_callback(struct SoundTrack *track) {
 }
 
 // Inserts the track into the circular list of active tracks (gUnk_03007014->unk5E4) as its new head.
-void sound_track_link(struct SoundTrack *track) {
+static void sound_track_link(struct SoundTrack *track) {
     struct SoundTrack **head;
 
     if (track->unk4 == NULL && track->unk0 == NULL) {
@@ -951,7 +962,7 @@ void sub_08074900(struct SoundSongHeader **val) {
     gUnk_03007014->unk688 = val;
 }
 
-void load_song_channels(u32 id, u32 arg) {
+static void load_song_channels(u32 id, u32 arg) {
     struct Unk_03007014 *work = sub_080750CC();
     struct SoundSongHeader *song = work->unk688[id];
     u32 i;
@@ -997,13 +1008,13 @@ void play_song(u32 id) {
     sound_unlock();
 }
 
-void play_song_alt(u32 id, u32 arg) {
+static void play_song_alt(u32 id, u32 arg) {
     sound_lock();
     load_song_channels(id, arg);
     sound_unlock();
 }
 
-void set_all_sound_channels_flag_0x40(u32 val) {
+static void set_all_sound_channels_flag_0x40(u32 val) {
     struct Unk_03007014 *work = gUnk_03007014;
 
     void sub_08074A94(struct SoundTrack * track) {
@@ -1039,7 +1050,7 @@ void sub_08074BC4(struct SoundSongHeader **val) {
     gUnk_03007014->unk68C = val;
 }
 
-void play_sound_from_command(u32 id, u32 arg) {
+static void play_sound_from_command(u32 id, u32 arg) {
     struct Unk_03007014 *work = sub_080750CC();
     struct SoundSongHeader *song = work->unk68C[id];
     u32 i;
@@ -1073,13 +1084,13 @@ void play_sound_effect(u32 id) {
     sound_unlock();
 }
 
-void play_sound_effect_alt(u32 id, u32 arg) {
+static void play_sound_effect_alt(u32 id, u32 arg) {
     sound_lock();
     play_sound_from_command(id, arg);
     sound_unlock();
 }
 
-void sound_reset_channel_callbacks(u32 id, u32 val) {
+static void sound_reset_channel_callbacks(u32 id, u32 val) {
     struct Unk_03007014 *work = gUnk_03007014;
 
     void sub_08074CEC(struct SoundTrack * track) {
@@ -1103,7 +1114,7 @@ static void sound_reset_callbacks_with_lock(u32 a, u32 b) {
     sound_unlock();
 }
 
-s32 get_sound_channel_position(u32 idx) {
+static s32 get_sound_channel_position(u32 idx) {
     struct SoundTrack *track = &sub_080750CC()->tracks[idx];
     s32 ret;
 
@@ -1114,7 +1125,7 @@ s32 get_sound_channel_position(u32 idx) {
     return ret;
 }
 
-u32 is_sound_playing_at_position(s32 a) {
+static u32 is_sound_playing_at_position(s32 a) {
     u32 i;
     const u32 *t;
 
@@ -1142,7 +1153,7 @@ void sub_08074E70(struct SoundNoteTable *val) {
     gUnk_03007014->unk728 = val;
 }
 
-void sound_track_start_fade(struct SoundTrack *track, u32 target, u32 frames) {
+static void sound_track_start_fade(struct SoundTrack *track, u32 target, u32 frames) {
     s32 step = (s32)(target - track->unk40) / (s32)frames;
 
     if (step != 0) {
@@ -1152,13 +1163,13 @@ void sound_track_start_fade(struct SoundTrack *track, u32 target, u32 frames) {
     }
 }
 
-void sound_play_with_lock(struct SoundTrack *track, u32 target, u32 frames) {
+static void sound_play_with_lock(struct SoundTrack *track, u32 target, u32 frames) {
     sound_lock();
     sound_track_start_fade(track, target, frames);
     sound_unlock();
 }
 
-void sound_fade_out_music(u32 frames) {
+static void sound_fade_out_music(u32 frames) {
     void sound_fade_out_track(u32 idx) {
         if (gUnk_03007014->tracks[idx].unk14)
             sound_play_with_lock(&gUnk_03007014->tracks[idx], 0, frames);
@@ -1195,7 +1206,7 @@ static void audio_get_volume_and_tick_fade(u32 *a, u32 *b) {
     sound_unlock();
 }
 
-void sound_set_volume(u32 a, u32 b) {
+static void sound_set_volume(u32 a, u32 b) {
     sound_lock();
     gUnk_03007014->unk72D = a;
     gUnk_03007014->unk72E = b;
@@ -1203,6 +1214,6 @@ void sound_set_volume(u32 a, u32 b) {
     sound_unlock();
 }
 
-struct Unk_03007014 *sub_080750CC(void) {
+static struct Unk_03007014 *sub_080750CC(void) {
     return gUnk_03007014;
 }

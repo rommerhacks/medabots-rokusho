@@ -3,179 +3,8 @@
 
 // Prototypes for game functions (decompiled or still in asm), in ROM order.
 
-u32 lz_decompress_dispatch(const u8 *src, void *dst);
 void sub_08044B28(const u8 *src, void *dst);
 u32 sub_08044B34(u8 a);
-void set_tilemap_and_decompress_bg(u32 x, u32 y, const u8 *src, u32 bgcnt, u16 base);
-void copy_obj_palette_to_buffer(void);
-void palette_blend_to_color_080013A8(u16 color, u32 amount);
-void hblank_dma0_bg2affine(void);
-void medawatch_menu_load_icon(void);
-void medawatch_menu_init_cursor(void);
-void medawatch_scroll_bg3(void);
-void medabots_scroll_bg3(void);
-void sub_08004E98(void);
-void update_battle_sprite_orbit_clockwise(u32 i);
-void sub_08004FD0(void);
-void sub_08005000(void);
-void sub_0800508C(void);
-void sub_08005118(void);
-void sub_0800519C(void);
-void sub_0800522C(void);
-void sub_080053C8(void);
-void update_battle_sprite_orbit_counterclockwise(u32 i);
-void sub_0800529C(void);
-void setup_overworld_scene_from_position(void);
-u32 medabots_screen_cursor_input(void);
-void medabots_screen_start_reorder_orbit(void);
-void update_battle_icon_blink_and_orbit(void);
-u32 medabots_screen_reorder_input(void);
-void sub_08005948(void);
-void check_and_update_battle_sprite_orbit(void);
-void sub_080059D0(void);
-void sub_08005AD0(void);
-void sub_08005B44(void);
-void sub_08005BB4(void);
-void sub_08005C10(void);
-void medabot_detail_draw_head_name(void);
-void medabot_detail_draw_head_skill_icon(void);
-void medabot_detail_draw_rarm_name(void);
-void medabot_detail_draw_rarm_skill_icon(void);
-void medabot_detail_draw_larm_name(void);
-void medabot_detail_draw_larm_skill_icon(void);
-void medabot_detail_draw_legs_name(void);
-void medabot_detail_draw_legs_skill_icon(void);
-void medabot_detail_draw_row_icon_0(u32 a);
-void medabot_detail_draw_row_icon_1(u32 a);
-void medabot_detail_draw_row_icon_2(u32 a);
-void medabot_detail_draw_row_icon_3(u32 a);
-void medabot_detail_draw_row_icon_4(u32 a);
-void medabot_detail_draw_legs_type_icon(void);
-void decompress_sprite_from_game_state(void);
-void setup_battle_sprite_from_game_state(void);
-void medabot_detail_place_row_arrows(void);
-void medabot_detail_blink_row_arrows(void);
-void init_scene_state(void);
-void setup_scene_with_link_check(void);
-void sub_08006764(void);
-void medabot_detail_blink_row_icon(void);
-u32 medabot_detail_row_cursor_input(void);
-u32 medabot_detail_cycle_medal_input(void);
-u32 medabot_detail_cycle_head_input(void);
-u32 medabot_detail_cycle_rarm_input(void);
-u32 medabot_detail_cycle_larm_input(void);
-u32 medabot_detail_cycle_legs_input(void);
-u32 medabot_detail_equip_full_set_input(void);
-u32 medabot_detail_prev_part_id(u32 part); // previous Medapart id: 0 wraps to 120 + slot unk1, >= 120 clamps to 119
-void battle_update_medabot_display(void);
-void sub_08006F14(void);
-u8 medabot_detail_check_row_select(void);
-void count_unequipped_medals(void);
-void assign_medal_to_team_slot(void);
-void team_select_draw_pick_markers(void);
-void medabots_screen_cancel_input(void);
-u32 team_select_slot_not_picked(u32 n);
-void team_select_confirm_pick(void);
-void team_select_finish_input(void);
-void sub_08007480(void);
-void sub_0800750C(void);
-void sub_08007540(void);
-// code_08008430: Medals screen (game state 4) drawing helpers
-void medals_scroll_bg(void);
-void medals_list_set_cursor_from_medal(void);
-void count_owned_medals(void);
-void render_medal_sprite_tile(void);
-void render_medal_list_entries(void);
-void render_medal_slots_in_menu(void);
-void render_medal_name_display(void);
-void load_medal_sprite(void);
-void render_medal_level_display(void);
-void medals_list_init_tab_arrows(void);
-void medals_list_init_cursor(void);
-void medals_list_blink_tab_arrows(void);
-void medals_list_row_input(void);
-void medals_list_tab_input(void);
-void update_battle_sprite_visibility(void);
-void medals_list_swap_input(void);
-void decompress_active_medal_sprite(void);
-void init_active_medal_battle_sprites(void);
-void draw_medal_position_tile(void);
-u32 get_medal_active_slot(u8 medal);
-void medal_page_draw_icon(void);
-void medal_page_draw_kind_name(void);
-void medal_page_draw_name(void);
-void medal_skill_draw_icon(void);
-void medal_page_draw_level(void);
-void medal_skill_draw_level(void);
-void medal_ability_draw_attribute(void);
-void medal_ability_draw_aim(void);
-void medal_ability_draw_compatibility(void);
-void medal_page_init_medal_arrows(void);
-void medal_page_blink_medal_arrows(void);
-void medal_page_cycle_medal_input(void);
-void medal_ability_redraw(void);
-void medal_medaforce_draw_list(void);
-void medal_medaforce_draw_selected(void);
-void medal_medaforce_init_cursor(void);
-u32 medal_medaforce_cursor_input(void);
-u32 medal_medaforce_redraw(void);
-u32 medal_medaforce_get_selected(void);
-void sub_0800AA1C(void); // guess: Medals help cursor sprite (layout gUnk_083B7EBC[unk43], entry unk44)
-void sub_0800AAC0(void); // guess: moves the Medals help cursor sprite to entry unk44
-void sub_0800AB0C(void); // guess: draws the 8 Rotation entries (greyed past Medal unk9)
-void sub_0800ABA4(void); // guess: Rotation page frame tilemap for unk9 entries
-void medal_rotation_redraw(void);
-void sub_0800AC2C(void); // guess: Rotation edit arrows above/below slot unk46
-void sub_0800ACA8(void); // guess: Rotation page end marker sprite at entry unk9
-void sub_0800AD00(void); // guess: blinks the Rotation edit arrows
-u32 sub_0800AD58(void);  // guess: UP/DOWN cycles Rotation entry unk46 (0-7), returns 1 on change
-u32 sub_0800ADE8(void);  // guess: LEFT/RIGHT moves the Rotation slot cursor unk46 (0-7)
-u32 sub_0800AE54(void);  // guess: LEFT/RIGHT changes the Rotation entry count (Medal unk9, 0-7)
-void sub_0800AED0(void); // guess: loads the parts graphics of the Medabot holding the Medal
-void sub_0800AF0C(void); // guess: shows the Medabot holding the Medal (sprites 0x64..)
-void sub_0800AF64(void); // guess: draws the legs type of the Medabot holding the Medal
-void render_medal_skill_stats(void);
-void sub_0800B0F8(void); // guess: copies animation frame unk3F of a 5-tile strip (gUnk_084C3B14)
-void draw_medal_skill_bars(void);
-void sub_0800B130(void); // guess: animates that strip, a frame every 2 ticks after 180 ticks
-void medal_skill_redraw(void);
-void sub_0800B498(void); // guess: copies the Medal's Rotation (unk9, unk18) into gUnk_03000590[gUnk_03001800.unk80]
-void setup_battle_cursor_sprite_0800B5E8(void);
-void init_battle_cursor_sprite_0800B668(void);
-u32 update_battle_sprite_and_check_done(void);
-void handle_menu_cursor_updown(void);
-// Debug menu (game mode 0, game state 63; labels in gDebugMenuLabels). Runtime-checked: "Process" sets
-// gGameMode / gGameState / gGameSubState and jumps there.
-void debug_menu_update(void);
-void debug_menu_init(void);
-void debug_menu_select_input(void);
-void debug_menu_exit(void);
-void debug_menu_run_entry(void);
-void debug_process_update(void);
-void debug_process_input(void);
-void debug_medal_update(void);
-void debug_medal_input(void); // rows: give Medal id, remove Medal id, give all 30
-void debug_parts_update(void);
-void debug_parts_input(void); // rows: give Medapart id (all 4 kinds), take one, give all 120
-void debug_tinpet_update(void);
-void debug_tinpet_input(void); // one row toggled 0/1, A: team_add_tinpet(value) unless team_is_full()
-void debug_item_update(void);
-void debug_item_input(void); // rows: give item id, take one, give all 63
-void debug_face_update(void);
-void debug_face_input(void); // rows: portrait 0-0xAF, expression 0-8; A draws it twice with load_bg0_tilemap
-void debug_mdlpic_update(void);
-void debug_mdlpic_input(void); // rows: Medal graphic 0-29, sprite variant 0-4; A shows the Medal sprite
-void debug_rndtk_update(void);
-void debug_rndtk_input(void); // toggles gUnk_030057E0.unkC2C
-void debug_battle_update(void);
-void debug_battle_input(void); // A: unkC2A = id, starts game state 6 (Robattle intro)
-void debug_sound_update(void);
-void debug_sound_input(void); // rows: sound effect 0-0x7F, song 0-0x35; B stops the music
-void debug_motion_update(void);
-void debug_motion_init(void);
-void debug_motion_load(void);
-void debug_motion_input(void); // START / SELECT change the Medabot model (unk39), A plays animation unk35[0]
-void debug_motion_play(void);
 void medaparts_scroll_bg(void);
 void sub_08010040(void); // guess: inits the 3-choice cursor sprite 4 (row gUnk_03000440.unk4A)
 void sub_080100BC(void); // guess: UP/DOWN moves the 3-choice cursor
@@ -515,43 +344,17 @@ s32 Div(s32 num, s32 denom);    // BIOS SWI 6
 s32 DivArm(s32 denom, s32 num); // BIOS SWI 7
 s32 Mod(s32 num, s32 denom);    // BIOS SWI 6, returns the remainder
 void CpuFastSet(const void *src, void *dest, u32 control);
-u32 rng_next(u16 range);
 #define CpuCopy16(src, dest, size) CpuSet(src, dest, ((size) / 2) & 0x1FFFFF)
-void write_tilemap_to_vram_08000E94(u32 x, u32 y, struct Tilemap *map, u32 bgcnt);
-void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt);
-void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map);
-void dma_obj_palette_to_hardware(void);
 void update_anim_object_flags(void);
 void sub_0804725C(u32 unused0, struct Unk_08047414 *obj, s32 kind, s32 idx, u32 unused4, u32 pal, u32 side,
                   u32 alt); // unused
 void copy_oam_affine_params(struct OamData *oam, u16 *affine);
-u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size);
-u32 lz_decompress_custom_08000B14(const u8 *src, void *dst);
-u32 check_soft_reset(void);
-void vblank_irq(void);
-void hblank_irq(void);
 void VBlankIntrWait(void);
 u16 sub_0807C740(u16 kbitSize); // EEPROM library: picks the EEPROM type (4 or 64 kbit)
 void irq_dispatch_arm(void);
-void nullsub_08000840(void);
-void clear_oam(void);
-void hw_reset_init(void);
-void irq_init(void);
-void vblank_body(void);
-void soft_reset(void);
-void read_keys(void);
-void sound_init(struct Unk_03007014 *work);
 u16 eeprom_setup_timer_irq(void);
 u16 sub_0807C7A8(u8 timer, Func *slot); // EEPROM library: sets the timer and its IRQ handler slot
-void sub_080023D8(void);
-void serial_link_init(void);
-void serial_multiplayer_init(void);
-void serial_prepare_send_packet(u16 *packet);
-u32 serial_link_init_and_status(u32 *recv);
-u8 serial_link_receive_packets(u32 *dst);
-void serial_multiplayer_transfer_handler(void);
-void link_buffer_swap_arm(void); // ARM, crt0.s; copied to IWRAM 0x03005250
-void check_flag_and_fast_copy(void);
+void link_buffer_swap_arm(void);        // ARM, crt0.s; copied to IWRAM 0x03005250
 
 // code_0804D10C
 u8 sub_080502B4(u8 idx, u8 dir);
@@ -720,7 +523,6 @@ void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
                                              // tiles; align 0 center, 1 left, 2 right
 void process_sprite_anim_commands(const u8 *cmds, u8 slot);
 void sub_08044094(void);
-void field_menu_init_cursor(void);
 void sub_0804765C(u32 a);
 void update_battle_field_frame(void);
 void sub_080487E4(void);
@@ -1312,10 +1114,6 @@ void item_menu_set_cursor_pos(
 
 struct ObjSortEntry;
 struct RotateSrc;
-void shell_sort_by_second_byte(struct ObjSortEntry *a, u16 n);
-void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags);
-void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags);
-void rotate_vector_2d(s32 *x, s32 *y, struct RotateSrc *p);
 
 void shop_build_sell_list(void);
 void sub_08064A74(void);
@@ -1462,7 +1260,6 @@ void update_animated_tilemap(void);
 void render_text_string_to_sprites(u8 *str, u8 slot, u32 x, u32 y, u8 a4, u8 a5, u8 a6, u16 a7);
 void update_scroll_animation_tiles(void);
 void init_scene_rendering_context(u32 a);
-void sub_08002190(void);
 void init_linking_mode(void);
 void compute_difference_div3(s32 *a, s32 *b, s32 *c, s32 *d);
 u8 u8_difference_divide(u8 a, u8 b, u8 n);
@@ -1584,5 +1381,25 @@ void sub_08049CB0(u16 color, u32 amount);
 
 #include "audio/sound_seq.h"
 #include "audio/sound_driver.h"
+
+#include "engine/main.h"
+#include "engine/decompress.h"
+
+#include "engine/bg.h"
+#include "engine/math.h"
+
+#include "engine/palette.h"
+#include "engine/oam.h"
+
+#include "link/serial.h"
+#include "engine/game_state.h"
+
+#include "menu/field_menu.h"
+#include "menu/medawatch_menu.h"
+
+#include "menu/medabots_screen.h"
+#include "menu/medals_screen.h"
+
+#include "debug/debug_menu.h"
 
 #endif // GUARD_FUNCTIONS_H
