@@ -30,8 +30,6 @@ void LZ77UnCompVram(const void *src, void *dst);
 void divide_by_3(u8 a, u8 b); // guess: refreshes racer a's 4-part sprite group at its current position (not a divide)
 void sub_08069A68(u8 idx, s16 x, s16 y, u8 h,
                   u8 pal); // guess: places racer idx's 4-part sprite group at x, y and sets its palette
-void matrix_set_identity(void);
-void ring_points_place_on_hexagon(u32 a);
 
 // code_080490C4
 
@@ -111,7 +109,6 @@ u32 check_battle_timer_expired(u8 a);
 u32 process_text_tile_and_dma_transfer(u8 a);
 u32 battle_draw_tilemap_row_dma(u8 a);
 void update_battle_sprite_explosions(void);
-void update_scene_animation_frame(void);
 bool32 bg_tilemap_scroll_up_row(s32 step);
 bool32 copy_bg_tile_column(s32 col, s32 step);
 void clear_stack_buffer_64(s32 len, s32 step);
@@ -159,8 +156,6 @@ u16 ReadEepromDword(u16 address, u16 *data);               // EEPROM library: re
 u16 ProgramEepromDword(u16 address, u16 *data);            // EEPROM library: writes 8 bytes
 u32 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 bytes and verifies; u32 so sub_080603A4
                                                   // tests the result without truncating it
-void init_blend_effect(void *state, u8 a, u8 b, s8 c, u16 mode);
-u32 blend_fade_step_08065598(void *state);
 // code_0805AB40
 // the BG0 tiles masked by gUnk_080AF740
 u32 Sqrt(u32 n);
@@ -170,33 +165,13 @@ void ObjAffineSet(struct ObjAffineSrcData *src, void *dest, s32 count, s32 offse
 struct ObjSortEntry;
 struct RotateSrc;
 
-void sub_08064A74(void);
-void sub_08064A94(void);
-void sub_08064AB4(void);
-void sub_08064AD4(void);
 // numbers of a 32x32 screen block, sets palette pal
 void LZ77UnCompWram(const void *src, void *dst);
 // code_0805EE6C
-void sub_08062A74(u16 id, u8 second);    // copies Medapart name pointer id (part * 4 + kind) of gUnk_083BB9CC into
-                                         // gUnk_03000440.unk9E (+0x14 if second), 0xFE-terminated
-                                         // = gUnk_080AFA10[gUnk_03002420]; one caller passes only dst, src
-                                         // gDecompressBuffer to VRAM 0x06004020
-void sub_08062AB0(u32 medal, u32 frame); // decompresses Medal sprite gUnk_083AC494[medal][frame] to OBJ VRAM and sets
-                                         // up sprite 0 at (0xB8, 0x38)
-void load_medapart_sprite_animation(u8 id, u8 kind, u32 which);
-void update_animated_tilemap(void);
-void update_scroll_animation_tiles(void);
-void init_scene_rendering_context(u32 a);
-void compute_difference_div3(s32 *a, s32 *b, s32 *c, s32 *d);
-u8 u8_difference_divide(u8 a, u8 b, u8 n);
-void copy_block_64bytes(s32 dst[4][4], s32 src[4][4]);
-void matrix_multiply_4x4_fixed(s32 dst[4][4], s32 a[4][4], s32 b[4][4]);
-void matrix_rotate_xyz(s32 a, s32 b, s32 c);
-void ring_points_place_on_circle(u16 phase);
-void ring_points_place_on_circle_b(u16 phase);
-void animate_battle_scroll_tiles(void);
-void fade_update_tilemap_copy(void);
-void render_battle_medal_names(u8 first);
+// gUnk_03000440.unk9E (+0x14 if second), 0xFE-terminated
+// = gUnk_080AFA10[gUnk_03002420]; one caller passes only dst, src
+// gDecompressBuffer to VRAM 0x06004020
+// up sprite 0 at (0xB8, 0x38)
 void sprite_cycle_anim_start(
     u8 sprite, u16 frame,
     u8 arg2); // sprite (0x16+): unk23 = arg2, unk30 = unk6 = frame; sets bit (sprite - 0x16) in byte 0x03007010
@@ -346,5 +321,17 @@ u32 call_battle_handler_by_state_08071C64(void);
 #include "shop/shop_list.h"
 
 #include "shop/shop_return.h"
+#include "link/link_trade.h"
+
+#include "title/scroll_banner.h"
+#include "link/link_medal_sync.h"
+
+#include "shop/medal_shop.h"
+#include "engine/blend_fade.h"
+
+#include "link/link_start.h"
+#include "link/link_menu.h"
+
+#include "engine/rings_3d.h"
 
 #endif // GUARD_FUNCTIONS_H

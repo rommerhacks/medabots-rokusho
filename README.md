@@ -46,8 +46,8 @@ Run `make progress` to see the numbers.
 
 | System | Folder | What's in it |
 |---|---|---|
-| Engine | `src/engine/` | boot and main loop, interrupts, LZ decompression, BG / tilemap / palette / OAM helpers, palette blends, byte memory helpers, shared menu/battle helpers (`common.c`), the sprite slot table, random numbers, the game-mode-0 state dispatcher |
-| Link | `src/link/` | serial link cable transfer, link Robattle (game state 10) |
+| Engine | `src/engine/` | boot and main loop, interrupts, LZ decompression, BG / tilemap / palette / OAM helpers, palette blends, byte memory helpers, shared menu/battle helpers (`common.c`), the sprite slot table, random numbers, the game-mode-0 state dispatcher, blend fades, fixed-point 3-D matrices and sprite rings |
+| Link | `src/link/` | serial link cable transfer, link Robattle (game state 10), the link menu / connect prompt / trade scenes and Medal handshakes (mode-2 states 16, 17, 20, 21, 26, 27) |
 | Text | `src/text/` | the message window: text printing, glyph rendering, message commands; the yes/no choice menu |
 | Inventory | `src/inventory/` | Medals, Medaparts, items and the Tinpet team the player owns |
 | Menus | `src/menu/` | field pause menu, Medawatch, Medabots screen (team / detail / team select), Medals screen, Medaparts screen, item screen and item lists, name entry, Town Map |
@@ -55,7 +55,7 @@ Run `make progress` to see the numbers.
 | Battle | `src/battle/` | Robattle intro and results (game state 6), the Robattle state machine (state 7), battle Medabots and AI, battle screen drawing, command ring, part select, Medaforce select, status screen, action scripts and skill effects (states 8 and 9), combat helpers, particles, battle sequences |
 | Title | `src/title/` | the game-mode-2 state dispatcher, the title menu, the new-game prompt, the hidden TEST MODE, the screen after a lost Robattle |
 | Save | `src/save/` | the save screen, EEPROM save data load / write / checks, the "saved data has been lost" screen |
-| Shop | `src/shop/` | the Medaparts shop: Buy / Sell menu, the buy / sell list and cart, the return from the Medaparts screen |
+| Shop | `src/shop/` | the Medaparts shop: Buy / Sell menu, the buy / sell list and cart, the return from the Medaparts screen, the Medal shop (guess) |
 | Debug | `src/debug/` | the developer debug menu and its entries |
 | Audio | `src/audio/` | the game's own sound engine (sequencer and driver) |
 
