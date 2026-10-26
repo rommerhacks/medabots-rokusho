@@ -1355,6 +1355,7 @@ void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags);
 void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags);
 void rotate_vector_2d(s32 *x, s32 *y, struct RotateSrc *p);
 
+void shop_build_sell_list(void);
 #endif // GUARD_FUNCTIONS_H
 void sub_08064A74(void);
 void sub_08064A94(void);

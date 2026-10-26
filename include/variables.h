@@ -1362,5 +1362,7 @@ extern struct SpriteFrame *const *const gUnk_083AC088[];
 extern struct SpriteFrame *const *const gUnk_083AC0C8[];
 extern struct SpriteFrame *const *const gUnk_083AC108[];
 extern const struct MapNpcRecord *const gUnk_084837A0[];
+extern u8 gUnk_02023000[]; // shop cart: quantity per sell-list entry; [0x78] = first visible entry
+extern const u8 gUnk_08483E50[]; // 4 Medapart ids per shop (gUnk_03002420 * 4 + i); 0xFF ends
 
 #endif // GUARD_VARIABLES_H
