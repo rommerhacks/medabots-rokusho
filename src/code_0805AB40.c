@@ -2014,7 +2014,9 @@ static inline s32 half4(s32 v) { return v / 2 + 0x40; }
 static inline s32 mul16(u8 v) { return v * 16; }
 static inline void *vram_at2(u32 off) { return (void *)(0x06004000 + off); }
 
-void sub_0805E310(void)
+// First step of the name-entry screen (runs once as it opens): BG1-3 tilemaps, tiles, palettes, the letter
+// and cursor sprites.
+void name_entry_init_graphics(void)
 {
     u32 size;
     u16 v;

@@ -581,7 +581,7 @@
   register: assign the pin at both the start and the end of the loop body (name_entry_update).
 * A store through `map[0x62]` whose address constant lands in the wrong register while the next stores
   (`d = &map[0x63]; *d = ...`) are right: write the first one from the raw base,
-  `d = (u16 *)(base + 0x060000C4); *d = t;` (sub_0805E310).
+  `d = (u16 *)(base + 0x060000C4); *d = t;` (name_entry_init_graphics).
 
 ## ROM pointers and the shifted build
 

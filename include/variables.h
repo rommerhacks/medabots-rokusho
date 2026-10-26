@@ -1345,7 +1345,7 @@ extern u8 gUnk_083CABF8[];
 extern u8 *gUnk_083D1E98[];
 extern s16 *gUnk_083D1CC0[];
 extern s8 *gUnk_083D1DAC[];
-extern const u8 gUnk_08794E6C[]; // name entry screen tilemaps (sub_0805E310)
+extern const u8 gUnk_08794E6C[]; // name entry screen tilemaps (name_entry_init_graphics)
 extern const u8 gUnk_0879514C[];
 extern const u8 gUnk_08795418[];
 extern const u32 gUnk_08793628[]; // name entry screen tiles
