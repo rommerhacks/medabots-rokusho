@@ -606,3 +606,14 @@ bytes, and the game must still play the same. In C, refer to data through its la
 build renders them. `tools/scripts/data_ptrs.py` and `data_func_ptrs.py` find new ones,
 `tools/scripts/find_hardcoded.py` lists words that still did not move. If a pointer in the list is
 really data (a false positive), the shifted build changes that data by `SHIFT`: delete its line.
+* The original often **reuses a local as a scratch variable** for an unrelated later value (offsets, then
+  half sizes, then the final screen position; a delta, then an array index). Shared variables share
+  registers, so when callee-saved registers are rotated across a whole function, look for values that
+  could live in the same variable (render_sprite_node_recursive, sound_engine_update_all_channels: the loop
+  pointer `track` is later reassigned to the track array base).
+* A global's address kept in a register across a loop exit where the original reloads it is GCSE
+  (`-fno-gcse` makes it match). Pin the reload: `{ register T **p asm("r0") = &gX; v = (*p)->f; }`.
+* One byte field written through `u8 *p = &s->f; p[1] = ...` instead of the struct field avoids the
+  hoisted QImode zero agbcc emits for `(mem & 0) | v` byte stores (init_all_sound_channels).
+* An extra reload in the original can come from a duplicated tail that a later pass merges away: write the
+  early-exit path with its own copy of the tail stores (sub_0803FEB8).
