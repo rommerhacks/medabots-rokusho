@@ -1,7 +1,10 @@
-#include "global.h"
+// Sound sequencer: the first half of the game's own sound engine (not m4a). sound_engine_init sets up the
+// work area at gUnk_03007014; per track it runs the volume envelope (sound_env_*: key-on, attack, decay,
+// sustain, release), vibrato and pitch sweep, and reads the sequence byte stream (sound_channel_process_event,
+// opcodes 0xE0-0xFF). sound_engine_update_all_channels is the per-frame entry, called from the driver
+// (audio/sound_driver.c), which writes the results to the GBA sound registers.
 
-// Sound sequencer: per-track envelope, vibrato and sequence command handlers.
-// Built with agbcc -fprologue-bugfix (see Makefile), unlike the game code before it.
+#include "global.h"
 
 void sound_engine_init(struct Unk_03007014 *work) {
     u32 zero;

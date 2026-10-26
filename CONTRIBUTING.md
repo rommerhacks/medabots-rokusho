@@ -46,7 +46,7 @@
   **nested function** (r9 is the static chain, pointing at the outer function's frame, where it
   spilled the variables the nested function uses). gcc emits the nested function just before the
   outer one; decompile the pair together as one C function containing the nested one (see
-  `sound_fade_out_music` in `sound_driver.c`). The nested function becomes a local symbol
+  `sound_fade_out_music` in `audio/sound_driver.c`). The nested function becomes a local symbol
   (`name.N`), so it can't be called from other files.
 * A `.byte` tail after a function's `.align` can hide whole functions that nothing calls (dead code
   kept by the linker). Disassemble it (`objdump -b binary -M force-thumb`) and look for `push`.

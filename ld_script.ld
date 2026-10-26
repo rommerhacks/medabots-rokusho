@@ -73,10 +73,10 @@ SECTIONS {
         build/src/code_0806B160.o(.rodata);
         build/src/code_0806F3F0.o(.text);
         build/src/code_0806F3F0.o(.rodata);
-        build/src/sound_seq.o(.text);
-        build/src/sound_seq.o(.rodata);
-        build/src/sound_driver.o(.text);
-        build/src/sound_driver.o(.rodata);
+        build/src/audio/sound_seq.o(.text);
+        build/src/audio/sound_seq.o(.rodata);
+        build/src/audio/sound_driver.o(.text);
+        build/src/audio/sound_driver.o(.rodata);
         build/data/rodata_080750D8.o(.rodata);
         build/asm/lib/eeprom.o(.text);
         build/asm/lib/syscall.o(.text);

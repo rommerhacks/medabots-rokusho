@@ -24,7 +24,7 @@ compiles to the original bytes. Run `make progress` to see the current numbers.
 | Compiler | pret's agbcc (gcc 2.95-based), `-O2 -mthumb-interwork -fprologue-bugfix` for every C file |
 | Code | `0x0800025C`-`0x080750D7` game code (Thumb), `0x0807C740`-`0x0807E6EF` SDK libraries |
 | Libraries | EEPROM_V122, libgcc, BIOS syscall stubs (kept as asm in `asm/lib/`) |
-| Sound | custom sequencer and driver (`src/sound_seq.c`, `src/sound_driver.c`), not m4a |
+| Sound | custom sequencer and driver (`src/audio/sound_seq.c`, `src/audio/sound_driver.c`), not m4a |
 | Data | still `.incbin` from `baserom.gba` (`data/`, `sound/`, `graphics/`) |
 
 ## Layout

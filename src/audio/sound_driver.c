@@ -1,3 +1,8 @@
+// Sound driver: the second half of the sound engine. sound_engine_tick runs once a frame (from the VBlank
+// handler): it advances the sequencer (audio/sound_seq.c), turns notes into frequencies for the PSG
+// channels 1-4 and the Direct Sound FIFO channels, and handles music / sound-effect start, stop, fade and
+// master volume for the game code.
+
 #include "global.h"
 
 // Sample played by a Direct Sound channel.
@@ -301,7 +306,7 @@ void sound_init_wave_channel(void) {
 }
 
 // Streams samples from src into FIFO A (n = 1) or B (n = 2) with DMA n, timed by the sound FIFO.
-void sound_start_fifo_dma(s32 n, u32 src) {
+static void sound_start_fifo_dma(s32 n, u32 src) {
     vu32 *dma = (vu32 *)(0x040000B0 + n * 12);
     dma[0] = src;
     dma[1] = (u32)gSoundFifoAddrs[n - 1];
@@ -322,7 +327,7 @@ void configure_sound_channel(s32 n, u32 *src) {
 }
 
 // Stops the FIFO DMA n.
-void sound_stop_fifo_dma(s32 n) {
+static void sound_stop_fifo_dma(s32 n) {
     vu16 *reg = gSoundFifoDmaCnt[n - 1];
     *reg = (*reg & 0x499F) | 0x8440;
     *reg = (*reg & 0x499F) | 0x440;
@@ -510,7 +515,7 @@ void sub_08073E40(struct SoundMixChannel *ch) {
     ch->unk3E = 4;
 }
 
-void sound_channel_state_dispatch(struct SoundMixChannel *ch) {
+static void sound_channel_state_dispatch(struct SoundMixChannel *ch) {
     u8 *state = &ch->unk3E;
 
     switch (*state) {
@@ -901,7 +906,7 @@ void sound_track_link(struct SoundTrack *track) {
     }
 }
 
-void audio_unlink_channel_node(struct SoundTrack *track) {
+static void audio_unlink_channel_node(struct SoundTrack *track) {
     struct SoundTrack **head;
 
     if (track->unk4 != NULL || track->unk0 != NULL) {
@@ -1015,7 +1020,7 @@ void set_all_sound_channels_flag_0x40(u32 val) {
     sub_08074A94(&work->tracks[12]);
 }
 
-void sound_update_with_lock(u32 a) {
+static void sound_update_with_lock(u32 a) {
     sound_lock();
     set_all_sound_channels_flag_0x40(a);
     sound_unlock();
@@ -1092,7 +1097,7 @@ void sound_reset_channel_callbacks(u32 id, u32 val) {
     sub_08074CEC(&work->tracks[11]);
 }
 
-void sound_reset_callbacks_with_lock(u32 a, u32 b) {
+static void sound_reset_callbacks_with_lock(u32 a, u32 b) {
     sound_lock();
     sound_reset_channel_callbacks(a, b);
     sound_unlock();
@@ -1183,7 +1188,7 @@ u32 sub_08074FB8(void) {
     return ret;
 }
 
-void audio_get_volume_and_tick_fade(u32 *a, u32 *b) {
+static void audio_get_volume_and_tick_fade(u32 *a, u32 *b) {
     sound_lock();
     *a = gUnk_03007014->unk72D;
     *b = gUnk_03007014->unk72E;
