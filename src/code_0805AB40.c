@@ -521,7 +521,32 @@ void sub_0805BB64(u8 sel, u8 count)
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805BBF8);
+void sub_0805BBF8(u8 sel)
+{
+    s32 i, j;
+    u16 *p;
+    u32 v, r;
+
+    for (i = 0; i <= 2; i++)
+    {
+        p = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + 7 + (i * 3 + 10) * 32;
+        for (j = 0; j <= 10; j++)
+        {
+            v = *p;
+            v &= 0xFFF;
+            if (i == sel)
+                r = 0x7000 | v;
+            else
+            {
+                v |= 0x6000;
+                r = v << 16;
+                r >>= 16;
+            }
+            *p = r;
+            p++;
+        }
+    }
+}
 
 void sub_0805BC6C(void)
 {

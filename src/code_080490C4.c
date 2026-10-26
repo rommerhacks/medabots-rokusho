@@ -2166,7 +2166,20 @@ void sub_0804CB48(void)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[0];
 }
 
-INCLUDE_ASM("asm/nonmatching/code_080490C4", sub_0804CB90);
+void sub_0804CB90(void)
+{
+    struct Unk_030057E0 *s = &gUnk_030057E0;
+    s->unkC8C = s->unkC8A;
+    read_map_script_bytes(3);
+    if (s->unkC94[0] == 0)
+    {
+        if (s->unkCBC >= s->unkC94[1])
+            return;
+    }
+    else if (s->unkCBD >= s->unkC94[1])
+        return;
+    gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
+}
 
 void sub_0804CC10(void)
 {
