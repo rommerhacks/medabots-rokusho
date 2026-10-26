@@ -628,7 +628,91 @@ void load_sprite_tiles_by_table(struct SpriteNodeDesc **nodes, struct SpriteNode
     }
 }
 
-INCLUDE_ASM("asm/nonmatching/code_08044F54", sub_080460B0);
+u8 sub_080460B0(struct Unk_03002414 *work, u16 *affine, u32 side, struct OamData *oam, u16 tile, u8 *parts, u8 pal, u8 x, u8 y, u32 alt)
+{
+    struct SpriteTileRef buf[32];
+    struct SpriteNodeOam oams[130];
+    struct Unk_08047414Padded obj;
+    vu32 fill;
+    u32 zero;
+    u32 a, b, c, d;
+    u16 base;
+    s32 k;
+    s16 depth;
+    struct SpriteTileRef *dst;
+    struct SpriteTileRef *src;
+    struct SpriteTileRef *pa, *pb, *pc, *pd;
+
+    depth = 0x32;
+    zero = 0;
+    a = parts[0];
+    b = parts[1];
+    c = parts[2];
+    d = parts[3];
+    custom_memset(buf, 0, sizeof(buf));
+    custom_memset(oams, 0, sizeof(oams));
+    custom_memset(&obj, 0, sizeof(obj));
+    fill = zero;
+    CpuFastSet((void *)&fill, work, 0x01000426);
+    gUnk_03002414 = work;
+    sub_08047414(&obj.o, (u8 *)work, (struct SpriteNodeDesc **)gUnk_083D1BF8, oams);
+    gUnk_03002414->unk1094 = zero;
+    gUnk_03002414->unk1095 = side;
+    gUnk_03002414->unk1097 = zero;
+    base = 0x160;
+    gUnk_030052D0 = gUnk_0807ECA0;
+    gUnk_030052B0 = gUnk_0807ECB8;
+    gUnk_03005290 = gUnk_0807ECD0;
+    gUnk_030052F0 = gUnk_0807ECE8;
+    pa = gUnk_0807ED00[a];
+    gUnk_030052D0.unk10 = pa->node;
+    pb = gUnk_0807F4A0[b];
+    gUnk_03005290.unk10 = pb->node;
+    pc = gUnk_0807FC40[c];
+    gUnk_030052B0.unk10 = pc->node;
+    pd = gUnk_080803E0[d];
+    gUnk_030052F0.unk10 = pd->node;
+    tile = base + 0x140;
+    load_sprite_tree_recursive(obj.o.nodes, pa, pa->node, pal, obj.o.oams, &tile, alt);
+    tile = base + 0x1A0;
+    load_sprite_tree_recursive(obj.o.nodes, pb, pb->node, pal, obj.o.oams, &tile, alt);
+    tile = base + 0x1E0;
+    load_sprite_tree_recursive(obj.o.nodes, pc, pc->node, pal, obj.o.oams, &tile, alt);
+    tile = base + 0x220;
+    load_sprite_tree_recursive(obj.o.nodes, pd, pd->node, pal, obj.o.oams, &tile, alt);
+    if (alt != 0)
+    {
+        for (k = 0; gUnk_0807F4A0[b][k].node; k++)
+        {
+            if (!gUnk_0807F4A0[b][k].alt)
+                load_sprite_tiles_by_table(obj.o.nodes, obj.o.oams, gUnk_0807FC40[b], gUnk_0807FC40[b][k].node, gUnk_0807F4A0[b][k].node);
+        }
+        for (k = 0; gUnk_0807FC40[c][k].node; k++)
+        {
+            if (!gUnk_0807FC40[c][k].alt)
+                load_sprite_tiles_by_table(obj.o.nodes, obj.o.oams, gUnk_0807F4A0[c], gUnk_0807F4A0[c][k].node, gUnk_0807FC40[c][k].node);
+        }
+        toggle_bg_layer_visibility(a, b, c, d);
+    }
+    dst = buf;
+    if (gUnk_030052D0.unk10)
+        for (src = gUnk_0807ED00[a]; src->node;)
+            *dst++ = *src++;
+    if (gUnk_03005290.unk10)
+        for (src = gUnk_0807F4A0[b]; src->node;)
+            *dst++ = *src++;
+    if (gUnk_030052B0.unk10)
+        for (src = gUnk_0807FC40[c]; src->node;)
+            *dst++ = *src++;
+    if (gUnk_030052F0.unk10)
+        for (src = gUnk_080803E0[d]; src->node;)
+            *dst++ = *src++;
+    render_sprite_node_recursive(&obj.o, buf, 1, x << 8, y << 8, depth, 0, alt);
+    CpuSet(((struct Unk_03002414 *)obj.o.unk0)->unkB84, oam, gUnk_03002414->unk1094 << 2);
+    CpuSet(((struct Unk_03002414 *)obj.o.unk0)->unkF8C, affine, 0x80);
+    return gUnk_03002414->unk1094;
+}
+
 INCLUDE_ASM("asm/nonmatching/code_08044F54", render_sprite_node_recursive);
 
 void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile, u32 pal, u32 e)

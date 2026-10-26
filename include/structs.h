@@ -1539,6 +1539,13 @@ struct Unk_08047414
     struct Unk_03005290 layers[2][4]; // part layers saved per side (setup_scene_bg_layers_and_sprites)
 };
 
+// struct Unk_08047414 padded to the 0xD0 bytes sub_080460B0 clears
+struct Unk_08047414Padded
+{
+    struct Unk_08047414 o;
+    u32 pad;
+};
+
 // 48-byte records at gUnk_03005308, one per side (setup_scene_bg_layers_and_sprites).
 struct SceneSlot
 {

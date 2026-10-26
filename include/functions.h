@@ -380,6 +380,7 @@ u32 advance_text_display(u32 a0, u32 a1, u32 a2);
 u32 medabot_detail_is_full_set(void); // 1 if gUnk_03000440.unk98-9B (the four shown Medaparts) are all the same set
 u32 sub_080440B4(void);
 void sub_08047414(struct Unk_08047414 *obj, u8 *buf, struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams);
+u8 sub_080460B0(struct Unk_03002414 *work, u16 *affine, u32 side, struct OamData *oam, u16 tile, u8 *parts, u8 pal, u8 x, u8 y, u32 alt);
 void setup_scene_bg_layers_and_sprites(void *oam, struct Unk_08047414 *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 void battle_sprite_set_palette_index(u32 sprite, u32 pal);
 void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c); // guess: idle animation of a part-sprite Medabot (legs anchor, arms swing on a circle, head bobs)
