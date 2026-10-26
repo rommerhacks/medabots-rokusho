@@ -1,5 +1,306 @@
 #include "global.h"
 
+void init_scene_rendering_context(u32 a) {
+    if (a == 0) {
+        struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+        u8 *b;
+        u8 *c;
+        u32 fill;
+
+        sub_0803F624((u8 *)obj, 0xD0, 0);
+        b = (u8 *)0x020260D0;
+        sub_0803F624(b, 0x820, 0);
+        sub_0803F624((u8 *)0x020264E0, 0x820, 0);
+        c = (u8 *)0x020268F0;
+        sub_0803F624(c, 0x60, 0);
+        gUnk_03000430 = 2;
+        gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+        fill = a;
+        CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+        gUnk_03005308 = (struct SceneSlot *)c;
+        sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+        obj->oams = (struct SpriteNodeOam *)b;
+        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0x3C,
+                                      0x28, 0xC7, a, 1);
+    } else {
+        struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+
+        sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8,
+                     (struct SpriteNodeOam *)0x020264E0);
+        obj->oams = (struct SpriteNodeOam *)0x020264E0;
+        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03006F74->unk32, gUnk_03006F74->unk34, 0x3C,
+                                      0x28, 0xC7, 4, 2);
+    }
+}
+
+void load_medapart_sprite_animation(u8 id, u8 kind, u32 which) {
+    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    u8 x, y;
+
+    obj->oams = (struct SpriteNodeOam *)(0x020260D0 + which * 0x410);
+    x = gUnk_080AFA3C[which][kind][0];
+    y = gUnk_080AFA3C[which][kind][1];
+    if (which)
+        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, id, kind, y, x, 0xC7, 4, 6);
+    else
+        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, id, kind, y, x, 0xC7, which, 5);
+}
+
+void sub_08062A74(u16 id, u8 second) {
+    const u8 *src;
+    u8 *dst;
+    u32 i;
+
+    src = (const u8 *)gUnk_083BB9CC[0][id];
+    dst = gUnk_03000440.unk9E;
+    if (second)
+        dst += 0x14;
+    for (i = 0; i < 20; i++) {
+        *dst++ = *src++;
+        if (*src == 0xFE)
+            break;
+    }
+    *dst = 0xFE;
+}
+
+void sub_08062AB0(u32 medal, u32 frame) {
+    struct Unk_03002C30 *s;
+    u8 zero;
+
+    lz_decompress_dispatch(gUnk_083AC494[medal][frame], (void *)0x06010000);
+    s = gUnk_03002C30;
+    zero = 0;
+    s->unk0 = 0x8A24;
+    if (gUnk_03006F74->unk7A == 0)
+        s->unk0 |= 0x4000;
+    s->unk2 = 0xB8;
+    s->unk4 = 0x38;
+    s->unk6 = 0x200;
+    s->unkA = zero;
+    s->unk1C = zero;
+    s->unkB = 0x40;
+    s->unk8 = 0x40;
+    s->unk9 = 0x40;
+}
+
+void update_animated_tilemap(void) {
+    s32 v;
+    s32 i;
+    u32 s;
+    u32 d;
+    s32 t;
+    s32 w;
+    u32 tiles;
+
+    switch (gUnk_03006F74->unk3A / 128) {
+    case 0:
+        v = gUnk_03006F74->unk3A >> 1;
+        break;
+    case 1:
+        v = gUnk_03006F74->unk3A >> 2;
+        break;
+    case 2:
+        v = gUnk_03006F74->unk3A >> 3;
+        break;
+    case 3:
+        v = gUnk_03006F74->unk3A >> 4;
+        break;
+    default:
+        v = gUnk_03006F74->unk3A >> 5;
+        break;
+    }
+    v &= 3;
+    if (--gUnk_03006F74->unk3A < 0)
+        gUnk_03006F74->unk3A = 0x3F;
+    i = 0;
+    w = v + 2;
+    tiles = 0x0600D800;
+    d = 0x1C0;
+    s = v << 9;
+    for (; i < 8; i++) {
+        t = v;
+        CpuSet((void *)(s + tiles), (void *)(0x0600E804 + d), 0xC);
+        t = w & 3;
+        CpuSet((void *)((t * 8 + i) * 0x40 + tiles), (void *)(0x0600E820 + d), 0xC);
+        d += 0x40;
+        s += 0x40;
+    }
+}
+
+void animate_battle_scroll_tiles(void) {
+    s32 v;
+    s32 i;
+    u8 *src;
+    u8 *dst;
+
+    switch (gUnk_03006F74->unk3A / 128) {
+    case 0:
+        v = gUnk_03006F74->unk3A >> 1;
+        break;
+    case 1:
+        v = gUnk_03006F74->unk3A >> 2;
+        break;
+    case 2:
+        v = gUnk_03006F74->unk3A >> 3;
+        break;
+    case 3:
+        v = gUnk_03006F74->unk3A >> 4;
+        break;
+    default:
+        v = gUnk_03006F74->unk3A >> 5;
+        break;
+    }
+    v &= 3;
+    if (--gUnk_03006F74->unk3A < 0)
+        gUnk_03006F74->unk3A = 0x3F;
+    dst = (u8 *)0x0600E9E2;
+    v <<= 9;
+    src = (u8 *)0x0600D800 + v;
+    for (i = 0; i < 8; i++) {
+        CpuSet(src, dst, 0xC);
+        dst += 0x40;
+        src += 0x40;
+    }
+}
+
+void update_scroll_animation_tiles(void) {
+    s32 v;
+    s32 i;
+    u32 s;
+    u32 d;
+    s32 t;
+    s32 w;
+    u32 tiles;
+
+    switch (gUnk_03006F74->unk3A / 128) {
+    case 0:
+    case 1:
+        v = gUnk_03006F74->unk3A >> 5;
+        break;
+    case 2:
+        v = gUnk_03006F74->unk3A >> 4;
+        break;
+    case 3:
+        v = gUnk_03006F74->unk3A >> 3;
+        break;
+    case 4:
+        v = gUnk_03006F74->unk3A >> 2;
+        break;
+    default:
+        v = gUnk_03006F74->unk3A >> 1;
+        break;
+    }
+    v &= 3;
+    if (--gUnk_03006F74->unk3A < 0)
+        gUnk_03006F74->unk3A = 0x3F;
+    i = 0;
+    w = v + 2;
+    tiles = 0x0600D800;
+    d = 0x1C0;
+    s = v << 9;
+    for (; i < 8; i++) {
+        t = v;
+        CpuSet((void *)(s + tiles), (void *)(0x0600E804 + d), 0xC);
+        t = w & 3;
+        CpuSet((void *)((t * 8 + i) * 0x40 + tiles), (void *)(0x0600E820 + d), 0xC);
+        d += 0x40;
+        s += 0x40;
+    }
+}
+
+void fade_update_tilemap_copy(void) {
+    s32 v;
+    s32 i;
+    u8 *src;
+    u8 *dst;
+
+    switch (gUnk_03006F74->unk3A / 128) {
+    case 0:
+    case 1:
+        v = gUnk_03006F74->unk3A >> 5;
+        break;
+    case 2:
+        v = gUnk_03006F74->unk3A >> 4;
+        break;
+    case 3:
+        v = gUnk_03006F74->unk3A >> 3;
+        break;
+    case 4:
+        v = gUnk_03006F74->unk3A >> 2;
+        break;
+    default:
+        v = gUnk_03006F74->unk3A >> 1;
+        break;
+    }
+    v &= 3;
+    if (--gUnk_03006F74->unk3A < 0)
+        gUnk_03006F74->unk3A = 0x3F;
+    dst = (u8 *)0x0600E9E2;
+    v <<= 9;
+    src = (u8 *)0x0600D800 + v;
+    for (i = 0; i < 8; i++) {
+        CpuSet(src, dst, 0xC);
+        dst += 0x40;
+        src += 0x40;
+    }
+}
+
+void sub_08062E10(void) {
+    gUnk_03006F74->unk31 = gUnk_03002B68;
+    gUnk_03006F74->unk33 = ((u16 *)&gUnk_03002B68)[1];
+    gGameSubState++;
+}
+
+void sub_08062E3C(void) {
+    u32 size;
+    u32 zero;
+    u32 z;
+
+    if (sub_08074B68() != 0x18)
+        play_song(0x18);
+    zero = z = 0;
+    CpuFastSet(&zero, (void *)VRAM, 0x01006000);
+    reset_bg_scroll();
+    clear_battle_sprite_slot(0, 0x80);
+    REG_DISPCNT = 0x60;
+    REG_BLDCNT = 0x2FF;
+    REG_BLDY = 0x10;
+    REG_BG1CNT = 0x1E05;
+    REG_BG2CNT = 0x1B06;
+    REG_BG3CNT = 0x3C07;
+    decompress_and_write_tilemap(gUnk_0879DDCC, REG_BG1CNT);
+    decompress_and_write_tilemap(gUnk_0879DF44, REG_BG2CNT);
+    decompress_and_write_tilemap(gUnk_0879E1DC, REG_BG3CNT);
+    REG_BG2CNT = 0x1D06;
+    size = dma3_copy_or_decompress(gUnk_0879C89C, gDecompressBuffer);
+    CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
+    lz_decompress_dispatch(gUnk_08784CB0, (void *)(0x06004000 + size));
+    gUnk_03006F74->unk36 = size / 32 - 1;
+    CpuFastSet(gUnk_0879C69C, (void *)PLTT, 0x80);
+    CpuFastSet(gUnk_0850DD78, (void *)(PLTT + 0x3A0), 8);
+    CpuFastSet(gUnk_0850DD78, &gPaletteBackup[0xD0], 8);
+    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06011E00);
+    gUnk_03006F74->unk3A = 0x280;
+    sub_08062A74(gUnk_03006F74->unk31 * 4 + gUnk_03006F74->unk33, 0);
+    render_text_string_to_sprites(gUnk_03000440.unk9E, 0, 0, 10, 16, 13, z, 1);
+    init_scene_rendering_context(0);
+    load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
+    update_animated_tilemap();
+    init_blend_effect(gUnk_03006F74->unk50, 0x10, 0, -1, 0xC0);
+    gUnk_03002C30[0x21].unk0 = 0x8000;
+    gUnk_03002C30[0x21].unk1C = 2;
+    gUnk_03002C30[0x21].unk2 = 0x28;
+    gUnk_03002C30[0x21].unk4 = 0x40;
+    gUnk_03002C30[0x21].unkA = 8;
+    gUnk_03002C30[0x21].unk6 = 0x2A;
+    REG_DISPCNT |= 0x200;
+    REG_DISPCNT |= 0x400;
+    REG_DISPCNT |= 0x800;
+    REG_DISPCNT |= 0x1000;
+    gGameSubState++;
+}
+
 static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
 }

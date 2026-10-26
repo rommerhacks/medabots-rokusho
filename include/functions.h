@@ -177,70 +177,13 @@ void sub_08064AD4(void);
 // numbers of a 32x32 screen block, sets palette pal
 void LZ77UnCompWram(const void *src, void *dst);
 // code_0805EE6C
-void sub_080600E0(void); // gUnk_03002C30[0].unk1A counts 0-63, unk6 = 0x100 + gUnk_080AF980[(count >> 3) & 7]
-void sub_08062A74(u16 id, u8 second); // copies Medapart name pointer id (part * 4 + kind) of gUnk_083BB9CC into
-                                      // gUnk_03000440.unk9E (+0x14 if second), 0xFE-terminated
-void copy_text_with_lookup(); // (u8 *dst, u8 *src, u32 unused, u32 i): copies src[i..] up to 0xFF plus 2 bytes, dst[2]
-                              // = gUnk_080AFA10[gUnk_03002420]; one caller passes only dst, src
-void sub_0805FD60(void);
-void sub_08060804(void);
-void sub_0805F898(void);
-void sub_08061830(void);
-void town_map_dispatch(void); // gUnk_08483DA0[gGameSubState]()
-void advance_substate_on_handler_complete(void);
-void advance_substate_on_handler_complete_1c(void);
-void sub_080612D8(void);
-void sub_0806098C(void);
-void sub_0805F860(void);
-void sub_0805F974(void);
-void sub_0805F9AC(void);
-void sub_08060324(void);
-void sub_080608B4(void);
-void sub_0805FAF0(void);       // gUnk_08483CA4[gGameSubState](), BG3 scrolls down every other frame
-void save_lost_dispatch(void); // gUnk_08483CC4[gGameSubState](), BG3 scrolls up every other frame
-void test_mode_dispatch(void); // gUnk_08483C6C[gGameSubState](), BG3 scrolls diagonally
-void update_fade_effect(void);
-void town_map_update_cursor(void);
-void update_animation_timer(void); // gUnk_03006F74->unk3A counts 0-109; every 10th frame copies a 480-byte frame of
-                                   // gDecompressBuffer to VRAM 0x06004020
-void sub_0805F8B0(void);
-void sub_0806142C(void);
-void shop_list_dispatch(void); // gUnk_08483E8C[gGameSubState](), BG3 scrolls diagonally
-void battle_menu_highlight_icons(
-    u32 sel, u32 frame); // BG2 tiles of 4 icons: palette 6 for icon sel when frame & 8, else palette 5
-void sub_0805F81C(void);
-void sub_0806035C(void);
-void sub_0806086C(void);
-void sub_080625EC(void);
-void sub_08060154(void);
-void sub_08061180(void);
-void sub_080616F8(void);
-void sub_08060C44(void);
-void sub_08060C60(void);
-void silence_and_clear_vram(void);
-void copy_bg2_tilemap_to_ewram(void);
-void shop_menu_dispatch(void); // gUnk_08483E10[gGameSubState](), BG3 scrolls diagonally
-void sub_08061D30(void);
-void sub_08062638(
-    void); // fades OBJ palettes in, then init_battle_scene(unk19, id of shop list entry unk1A + gUnk_02023078)
-void fade_out_transition_step(void);
-void clear_or_fill_bg2_tilemap(s32 n);
+void sub_08062A74(u16 id, u8 second);    // copies Medapart name pointer id (part * 4 + kind) of gUnk_083BB9CC into
+                                         // gUnk_03000440.unk9E (+0x14 if second), 0xFE-terminated
+                                         // = gUnk_080AFA10[gUnk_03002420]; one caller passes only dst, src
+                                         // gDecompressBuffer to VRAM 0x06004020
 void sub_08062AB0(u32 medal, u32 frame); // decompresses Medal sprite gUnk_083AC494[medal][frame] to OBJ VRAM and sets
                                          // up sprite 0 at (0xB8, 0x38)
-void sub_0806006C(void);
-void sub_08061300(void);
-void sub_0805FB2C(void);
-void update_fade_transition_state_0805F778(void);
-void sub_08061678(void);
-void sub_0805F8F0(void); // up to 4 tries of save_dispatch(2) (erase), then the next sub-state (ok) or 12 (failed)
-void sub_080603A4(void); // zeroes EEPROM block 0 (up to 4 tries), then game mode 3 state 2
 void load_medapart_sprite_animation(u8 id, u8 kind, u32 which);
-void sub_080608EC(void);
-void sub_0806174C(void);
-void sub_08060FD4(void);
-void sub_08061374(void);
-void init_fade_screen_setup(void);
-void sub_080609C0(void);
 void update_animated_tilemap(void);
 void update_scroll_animation_tiles(void);
 void init_scene_rendering_context(u32 a);
@@ -392,5 +335,16 @@ u32 call_battle_handler_by_state_08071C64(void);
 
 #include "save/save_data.h"
 #include "menu/name_entry.h"
+
+#include "title/test_mode.h"
+#include "title/game_over.h"
+
+#include "save/save_lost.h"
+#include "menu/town_map.h"
+
+#include "shop/shop_menu.h"
+#include "shop/shop_list.h"
+
+#include "shop/shop_return.h"
 
 #endif // GUARD_FUNCTIONS_H

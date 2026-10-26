@@ -50,13 +50,16 @@ Run `make progress` to see the numbers.
 | Link | `src/link/` | serial link cable transfer, link Robattle (game state 10) |
 | Text | `src/text/` | the message window: text printing, glyph rendering, message commands; the yes/no choice menu |
 | Inventory | `src/inventory/` | Medals, Medaparts, items and the Tinpet team the player owns |
-| Menus | `src/menu/` | field pause menu, Medawatch, Medabots screen (team / detail / team select), Medals screen, Medaparts screen |
+| Menus | `src/menu/` | field pause menu, Medawatch, Medabots screen (team / detail / team select), Medals screen, Medaparts screen, item screen and item lists, name entry, Town Map |
 | Field | `src/field/` | the field game mode (mode 1): frame update, area graphics and effects, the map script interpreter and its per-frame command updates, script sprites, the player's walk / warp handler and scene changes, player movement, map objects / events, the 3-D scene sequences |
 | Battle | `src/battle/` | Robattle intro and results (game state 6), the Robattle state machine (state 7), battle Medabots and AI, battle screen drawing, command ring, part select, Medaforce select, status screen, action scripts and skill effects (states 8 and 9), combat helpers, particles, battle sequences |
+| Title | `src/title/` | the game-mode-2 state dispatcher, the title menu, the new-game prompt, the hidden TEST MODE, the screen after a lost Robattle |
+| Save | `src/save/` | the save screen, EEPROM save data load / write / checks, the "saved data has been lost" screen |
+| Shop | `src/shop/` | the Medaparts shop: Buy / Sell menu, the buy / sell list and cart, the return from the Medaparts screen |
 | Debug | `src/debug/` | the developer debug menu and its entries |
 | Audio | `src/audio/` | the game's own sound engine (sequencer and driver) |
 
-Folders for the rest of the field, title and minigame code follow as the remaining `code_*` regions are
+Folders for the link scenes, the minigames and the intro code follow as the remaining `code_*` regions are
 split.
 
 ## See also
