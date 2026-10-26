@@ -1308,6 +1308,7 @@ void sub_0805AB68(u16 color, s32 t, u32 pal); // guess: blends OBJ palette pal f
 void sub_0805AC4C(u16 color, s32 t); // guess: same blend for all BG palettes
 void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot);
 u32 sub_0805B4B0(u32 id); // gUnk_08483AC0[id] == 1
+u32 sub_0805B4C8(struct Unk_03002C30 *spr); // guess: sine-wave bobbing of 8 sprites, 1 when done
 void sub_0805BB64(u8 sel, u8 count);
 void swap_inventory_items(void);
 void item_menu_draw_page_numbers(void); // "page / pages" on the item screen

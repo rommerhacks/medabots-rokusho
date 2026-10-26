@@ -290,7 +290,54 @@ bool32 sub_0805B4B0(u32 id)
     return r;
 }
 
-INCLUDE_ASM("asm/nonmatching/code_0805AB40", sub_0805B4C8);
+// Eight sprites (spr[0..7]) bob on a sine wave around y = 80: sprite k uses phase t - (7 - k) * 0x80,
+// amplitude gUnk_03006F74->unk15 (counts down each call), speed unk16 (counts up). Returns 1 once the
+// amplitude is 0. The divide by d (not a constant) keeps the __divsi3 call of the original.
+#define WAVE_X(a) (gUnk_080750E0[(a) & 0x3FF] / d * amp >> 3)
+#define SET_WAVE_Y(k, a)                         \
+    if (gUnk_080750E0[(a) & 0x3FF] < 0)          \
+        spr[k].unk4 = WAVE_X(a) + mid;           \
+    else                                         \
+        spr[k].unk4 = mid - WAVE_X(a)
+
+u32 sub_0805B4C8(struct Unk_03002C30 *spr)
+{
+    u32 done = 0;
+    s32 d = 0x400;
+    s32 mid = 80;
+    u8 amp = gUnk_03006F74->unk15;
+    u8 speed = gUnk_03006F74->unk16;
+    s32 ph[8];
+
+    ph[0] = gUnk_03006F74->unk2++ * speed;
+    ph[1] = ph[0] - 0x80;
+    ph[2] = ph[0] - 0x100;
+    ph[3] = ph[0] - 0x180;
+    ph[4] = ph[0] - 0x200;
+    ph[5] = ph[0] - 0x280;
+    ph[6] = ph[0] - 0x300;
+    ph[7] = ph[0] - 0x380;
+
+    if (gUnk_080750E0[ph[7] & 0x3FF] < 0)
+        spr[0].unk4 = WAVE_X(ph[7]) + mid;
+    else
+        spr[0].unk4 = -WAVE_X(ph[7]) + mid;
+    SET_WAVE_Y(1, ph[6]);
+    SET_WAVE_Y(2, ph[5]);
+    SET_WAVE_Y(3, ph[4]);
+    SET_WAVE_Y(4, ph[3]);
+    SET_WAVE_Y(5, ph[2]);
+    SET_WAVE_Y(6, ph[1]);
+    SET_WAVE_Y(7, ph[0]);
+    if (gUnk_03006F74->unk15 == 0)
+        done = 1;
+    else
+    {
+        gUnk_03006F74->unk15--;
+        gUnk_03006F74->unk16++;
+    }
+    return done;
+}
 
 u32 sub_0805B7A0(void)
 {
