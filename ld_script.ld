@@ -91,10 +91,14 @@ SECTIONS {
         build/src/battle/medaforce_effects.o(.rodata);
         build/src/battle/effect_steps.o(.text);
         build/src/battle/effect_steps.o(.rodata);
-        build/src/code_08030860.o(.text);
-        build/src/code_08030860.o(.rodata);
-        build/src/code_08034CB8.o(.text);
-        build/src/code_08034CB8.o(.rodata);
+        build/src/battle/action_phase.o(.text);
+        build/src/battle/action_phase.o(.rodata);
+        build/src/battle/battle_ai.o(.text);
+        build/src/battle/battle_ai.o(.rodata);
+        build/src/battle/action_script.o(.text);
+        build/src/battle/action_script.o(.rodata);
+        build/src/code_08034F44.o(.text);
+        build/src/code_08034F44.o(.rodata);
         build/src/code_08038D30.o(.text);
         build/src/code_08038D30.o(.rodata);
         build/src/code_0803CDCC.o(.text);

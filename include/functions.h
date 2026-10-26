@@ -12,11 +12,7 @@ void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt,
                   u16 base); // guess: draws the last `digits` of value as 2-row tile digits (base + d * 2 / + 1)
 u32 sub_08042B80(u32 a);     // 1 for part types 2, 3, 6, 7; 0 for 0, 1, 4, 5
 // Robattle action step dispatchers run by the action script (code_08030CAC wrappers)
-void battle_script_load_operands(void); // copies the current action script command's operands to gUnk_03001800.unkAC
 void sub_08035478(u32 rec);
-s32 battle_script_read_byte(
-    void); // next byte of the Robattle action script (gUnk_083C6B28[gUnk_03001800.unkA8] + unkBC)
-void battle_script_advance(void);
 u32 sub_08035960(u32 rec, u32 skill); // 1 if a part with armor left has skill id data[1] == skill
 void sub_080350E0(u32 rec);
 u32 sub_08035590(u32 rec);
@@ -518,7 +514,6 @@ void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8
 // Robattle (game state 7) helpers
 void load_battle_script_entry_b(void);
 // direct = palettes straight to PLTT
-u32 sub_080330E8(u32 idx);
 void apply_battle_blend_effect_b(void);
 void decompress_to_ewram_27000(const u8 *src);
 void battle_vblank_update_bg(
@@ -530,23 +525,12 @@ void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt,
 void write_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, const void *src);
 void sub_08042A90(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt,
                   u16 tile2); // draws cur/max as two 2-digit numbers
-void battle_process_all_bot_actions(u32 rec);
 void update_sprite_animation_position(u32 slot);
 // 0x5C team / 0x94 opponents
 // per-turn part flags
 // then clears unk118..
 // palette 6 from gUnk_084E3058
 // can't use Medaforce)
-u32 rng_lookup_table_value(void);
-void battle_execute_action_selection(void);
-void call_bot_action_handler(void);
-void clear_battle_action_selection(void);
-u32 sub_08032FD0(u32 rec, u32 val);        // 1 if rec's head or an arm has armor left and skill type data[2] == val
-u32 sub_08032FFC(void);                    // 1 if gUnk_03001800.unk61 has a candidate
-u32 select_battle_pending_action(void);    // random candidate record from gUnk_03001800.unk61
-u32 select_random_battle_target(u32 base); // random present record base + 0..2
-void sub_08033154(u32 rec, u32 part);      // stores the chosen target (unk5E / unk5F) in the part's unkE / unkF
-u32 begin_battle_action_lookup(u32 rec, u32 part);
 
 // Medal level, Propulsion)
 
@@ -574,8 +558,6 @@ void sub_08037424(
     u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
 struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x,
                                             s32 y); // returned in memory (hidden pointer in r0)
-u32 sub_08032FB8(u32 rec);                          // first record of the side opposite rec (3 or 0)
-u32 sub_08032FC4(u32 rec);                          // first record of rec's side (0 or 3)
 u32 sub_080385F8(void);                             // 1 once no sprite 0x21+ has unk29 set (steps their animations)
 u32 sub_0803884C(void);                             // like sub_080385F8 with the gUnk_083AF720 table
 void sub_0803E780(void);
@@ -626,19 +608,11 @@ void sub_08036C20(u32 slot, u32 part, s16 x, s16 y,
 void setup_battle_medapart_scenes(void);
 void calc_bot_evasion_modifier(u32 rec);
 void sub_080355C4(u32 rec);
-void sub_0804242C(u8 n);   // sorts gUnk_02023000[0..n-1] by key, key2, largest first
-u32 sub_08033224(u32 rec); // 1 if rec has no effect A (unkC4)
-u32 sub_08033240(u32 rec); // 1 if rec has no effect B (unkC9)
-u32 sub_080332B4(u32 rec);
-u32 sub_080332D0(u32 rec);           // 1 if rec has Medaforce gauge (unkC1)
-u32 find_most_damaged_part(u32 rec); // part (+ 1) with armor left that lost the most armor, 0 = none
+void sub_0804242C(u8 n);                                      // sorts gUnk_02023000[0..n-1] by key, key2, largest first
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount); // unkC8 = unkCC = min(amount, part data[4] - armor unk11)
 u32 battle_check_action_counter(
     u16 *amount, u32 rec,
     u32 part); // moves one point from *amount (low byte) into the part's armor (max data[4]); 1 when done
-u32 sub_080331F8(u32 rec);
-u32 battle_find_next_active_bot(
-    u32 rec); // random part index of rec with armor left (from rng_lookup_table_value, stepping by rng bit 0)
 u32 sub_08036D64(u32 rec, u32 skill); // 1 if unkCF has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8),
                                       // 0x11/0x12 (2), 0x13/0x14 (4)
 u32 medal_update_exp_progress(u32 slot, u32 n);
@@ -647,7 +621,6 @@ void sub_080378F0(u32 src); // spawns a particle sprite next to sprite src every
 void spawn_battle_particle_effect(u32 src);
 void reset_battle_bot_state(u32 rec);
 void sub_080351E8(u32 rec);
-u32 find_random_broken_part(u32 rec); // random part (+ 1) of rec with no armor left (unk11 == 0), 0 = none
 void battle_set_damage_display(u32 rec, u32 part, s32 amount);
 void get_active_bot_part_index_and_load_values(u32 side);
 void sub_08035740(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, max)
@@ -1060,5 +1033,9 @@ void sub_08049CB0(u16 color, u32 amount);
 #include "battle/medaforce_effects.h"
 
 #include "battle/effect_steps.h"
+#include "battle/action_phase.h"
+
+#include "battle/battle_ai.h"
+#include "battle/action_script.h"
 
 #endif // GUARD_FUNCTIONS_H
