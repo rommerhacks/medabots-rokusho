@@ -316,12 +316,12 @@ gUnk_08487524:
 gUnk_08487630:
 	.incbin "baserom.gba", 0x487630, 0xD8
 
-	.global gUnk_08487708
-gUnk_08487708:
+	.global gMoneyWindowTiles
+gMoneyWindowTiles:
 	.incbin "baserom.gba", 0x487708, 0x10C
 
-	.global gUnk_08487814
-gUnk_08487814:
+	.global gMoneyWindowHalfTiles
+gMoneyWindowHalfTiles:
 	.incbin "baserom.gba", 0x487814, 0xD8
 
 	.global gUnk_084878EC
@@ -392,12 +392,12 @@ gUnk_084885A8:
 gUnk_08488600:
 	.incbin "baserom.gba", 0x488600, 0x44
 
-	.global gUnk_08488644
-gUnk_08488644:
+	.global gMoneyWindowTilemap
+gMoneyWindowTilemap:
 	.incbin "baserom.gba", 0x488644, 0x4C
 
-	.global gUnk_08488690
-gUnk_08488690:
+	.global gMoneyWindowHalfTilemap
+gMoneyWindowHalfTilemap:
 	.incbin "baserom.gba", 0x488690, 0x40
 
 	.global gUnk_084886D0
@@ -456,8 +456,8 @@ gUnk_084889B4:
 gUnk_084889F8:
 	.incbin "baserom.gba", 0x4889F8, 0x8C
 
-	.global gUnk_08488A84
-gUnk_08488A84:
+	.global gMenuBgPalette
+gMenuBgPalette:
 	.incbin "baserom.gba", 0x488A84, 0x20
 
 	.global gUnk_08488AA4
@@ -488,24 +488,24 @@ gUnk_08488B44:
 gFontGlyphs:
 	.incbin "baserom.gba", 0x4C01C8, 0x1440
 
-	.global gUnk_084C1608
-gUnk_084C1608:
+	.global gFieldMenuMedawatchLabelTiles
+gFieldMenuMedawatchLabelTiles:
 	.incbin "baserom.gba", 0x4C1608, 0x1E8
 
-	.global gUnk_084C17F0
-gUnk_084C17F0:
+	.global gFieldMenuItemLabelTiles
+gFieldMenuItemLabelTiles:
 	.incbin "baserom.gba", 0x4C17F0, 0x144
 
-	.global gUnk_084C1934
-gUnk_084C1934:
+	.global gFieldMenuVehicleLabelTiles
+gFieldMenuVehicleLabelTiles:
 	.incbin "baserom.gba", 0x4C1934, 0x198
 
-	.global gUnk_084C1ACC
-gUnk_084C1ACC:
+	.global gFieldMenuSaveLabelTiles
+gFieldMenuSaveLabelTiles:
 	.incbin "baserom.gba", 0x4C1ACC, 0x148
 
-	.global gUnk_084C1C14
-gUnk_084C1C14:
+	.global gMenuSlideLineTile
+gMenuSlideLineTile:
 	.incbin "baserom.gba", 0x4C1C14, 0x10
 
 	.global gUnk_084C1C24
@@ -680,12 +680,12 @@ gUnk_084C6A58:
 gUnk_084C6A78:
 	.incbin "baserom.gba", 0x4C6A78, 0x20
 
-	.global gUnk_084C6A98
-gUnk_084C6A98:
+	.global gSpriteFontTiles
+gSpriteFontTiles:
 	.incbin "baserom.gba", 0x4C6A98, 0x6DC
 
-	.global gUnk_084C7174
-gUnk_084C7174:
+	.global gFieldMenuCursorTiles
+gFieldMenuCursorTiles:
 	.incbin "baserom.gba", 0x4C7174, 0x1A4
 
 	.global gCursorArrowTiles
@@ -1100,8 +1100,8 @@ gUnk_084E2950:
 gUnk_084E2C18:
 	.incbin "baserom.gba", 0x4E2C18, 0x220
 
-	.global gUnk_084E2E38
-gUnk_084E2E38:
+	.global gSpriteFontPalette
+gSpriteFontPalette:
 	.incbin "baserom.gba", 0x4E2E38, 0x20
 
 	.global gCursorArrowPalette

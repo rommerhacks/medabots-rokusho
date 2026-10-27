@@ -879,11 +879,11 @@ gUnk_083B296C:
 gUnk_083B2970:
 	.incbin "baserom.gba", 0x3B2970, 0x2170
 
-	.global gUnk_083B4AE0
-gUnk_083B4AE0:
+	.global gUiTilemaps
+gUiTilemaps:
 
-	.global gUnk_083B4AE0_s
-gUnk_083B4AE0_s:
+	.global gUiTilemapsNamed
+gUiTilemapsNamed:
 	.incbin "baserom.gba", 0x3B4AE0, 0x1A8
 
 	.global gFontWidths
@@ -1246,8 +1246,8 @@ gUnk_083D29B6:
 gUnk_083D29E6:
 	.incbin "baserom.gba", 0x3D29E6, 0x5
 
-	.global gUnk_083D29EB
-gUnk_083D29EB:
+	.global gAreaTypes
+gAreaTypes:
 	.incbin "baserom.gba", 0x3D29EB, 0xC0
 
 	.global gUnk_083D2AAB

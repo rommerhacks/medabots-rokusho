@@ -65,7 +65,7 @@ void shop_list_init(void) {
         gSpriteEntries[0x6E + i].unk4 = i * 16 + 0x50;
     }
     REG_BLDALPHA = 0x10;
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     gSpriteEntries[8].unk2 = 8;
     gSpriteEntries[8].unk4 = gMenuWork->list_cursor * 16 + 0x54;
     if (gMenuWork->cursor == 1) {

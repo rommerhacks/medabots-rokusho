@@ -19,7 +19,7 @@ static void field_clear_ram(void) {
     memzero_bytes((u8 *)&gMapScriptData, 4);
     memzero_bytes((u8 *)&gUnk_03005350, 0x240);
     memzero_bytes((u8 *)&gUnk_03006D30, 4);
-    memzero_bytes((u8 *)&gUnk_030064A0, 0x874);
+    memzero_bytes((u8 *)&gFieldScriptWork, 0x874);
 }
 
 void field_mode_dispatch(void) {
@@ -81,7 +81,7 @@ void dispatch_by_index_0476e8(u32 idx) {
     case 10:
         field_clear_ram();
         memzero_bytes((u8 *)&gFieldWork, 0xCC0);
-        gUnk_03000588 = 1;
+        gPlayTimeRunning = 1;
         gGameMode = 1;
         gGameState = 1;
         gGameSubState = 0;
@@ -90,13 +90,13 @@ void dispatch_by_index_0476e8(u32 idx) {
         field_clear_ram();
         gFieldWork.script_running = 0;
         gFieldWork.cmd_busy = 0;
-        gUnk_03000588 = 1;
+        gPlayTimeRunning = 1;
         gGameMode = 1;
         gGameState = 1;
         gGameSubState = 10;
         return;
     case 9:
-        gUnk_03000588 = 1;
+        gPlayTimeRunning = 1;
         break;
     default:
         return;
@@ -181,7 +181,7 @@ void switch_game_mode(u32 a, u32 b) {
         gGameSubState = 0;
         break;
     case 5:
-        gUnk_03000588 = 0;
+        gPlayTimeRunning = 0;
         gGameMode = 2;
         gGameState = 0x14;
         gGameSubState = 0;

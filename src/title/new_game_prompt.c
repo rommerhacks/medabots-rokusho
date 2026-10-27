@@ -10,8 +10,8 @@ void new_game_prompt_init(void) {
     clear_battle_sprite_slot(0, 0x80);
     reset_bg_scroll();
     REG_DISPCNT = 0x60;
-    CpuFastSet(gUnk_084E2E38, &gPaletteBackup[0xF0], 8);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    CpuFastSet(gSpriteFontPalette, &gPaletteBackup[0xF0], 8);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     text_window_init(1, 2, 0);
     REG_DISPCNT |= 0x1000;
     gGameSubState++;

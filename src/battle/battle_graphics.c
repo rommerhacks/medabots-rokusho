@@ -32,7 +32,7 @@ u32 battle_load_graphics_step(u32 direct) {
         lz_decompress_dispatch(gUnk_084C7634, (void *)0x06012000);
         lz_decompress_dispatch(gMissPopupTiles, (void *)0x06014E00);
         lz_decompress_dispatch(gUnk_084C984C, (void *)0x06017F80);
-        lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+        lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
         gGameWork.unk13A++;
         break;
     case 4:

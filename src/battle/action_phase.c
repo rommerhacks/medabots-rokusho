@@ -228,7 +228,7 @@ void action_phase_show_message(void) {
 // After an action: Medal skill levels, then record 0 (our leader) down = lost (unk9C 2), record 3 (their
 // leader) down = won (unk9C 1); otherwise on to the TIME check.
 void action_phase_end_check(void) {
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     increment_medal_skill_level(gBattleWork.actor);
     battle_action_cleanup(gBattleWork.actor);
     gGameWork.unk9C = 0;

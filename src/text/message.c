@@ -122,7 +122,7 @@ void message_clear_text_area(void) {
         CpuFastSet(gFontGlyphs, dst, 0x10);
         dst += 0x40;
     }
-    write_tilemap_rect(0x1A, 4, 2, 0xE, gUnk_083B4AE0[18], REG_BG0CNT, 0);
+    write_tilemap_rect(0x1A, 4, 2, 0xE, gUiTilemaps[18], REG_BG0CNT, 0);
     gGameWork.msgState++;
     message_print_step();
 }
@@ -498,9 +498,9 @@ u8 message_wait_next_page(void) {
     }
     blink = gGameWork.cursorBlink & 8;
     if (blink)
-        write_tilemap_rect(2, 1, 0xE, 0x12, gUnk_083B4AE0_s.unk124, REG_BG0CNT, 0);
+        write_tilemap_rect(2, 1, 0xE, 0x12, gUiTilemapsNamed.more_cursor_off, REG_BG0CNT, 0);
     else
-        write_tilemap_rect(2, 1, 0xE, 0x12, gUnk_083B4AE0_s.unk128, REG_BG0CNT, blink);
+        write_tilemap_rect(2, 1, 0xE, 0x12, gUiTilemapsNamed.more_cursor_on, REG_BG0CNT, blink);
     gGameWork.cursorBlink++;
     gGameWork.msgStopPrint = 1;
     if (*(u8 *)&gRepeatKeys & 3) {
@@ -511,7 +511,7 @@ u8 message_wait_next_page(void) {
         gGameWork.lineFull = 0;
         gGameWork.textLine = 0;
         gGameWork.cursorBlink = 0;
-        write_tilemap_rect(2, 1, 0xE, 0x12, gUnk_083B4AE0_s.unk124, REG_BG0CNT, 0);
+        write_tilemap_rect(2, 1, 0xE, 0x12, gUiTilemapsNamed.more_cursor_off, REG_BG0CNT, 0);
         for (i = 0; i <= 0x33; i++)
             CpuSet(gFontGlyphs, (void *)(0x06000280 + i * 0x40), 0x20);
         gGameWork.msgStopPrint = 0;

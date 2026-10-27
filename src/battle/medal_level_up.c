@@ -88,13 +88,13 @@ void medal_transform_init(void) {
         *d = t + 3;
     }
     CpuFastSet(gUnk_087A44F8, (void *)0x0202FA00, 0x80);
-    CpuFastSet(gUnk_084E2E38, (void *)0x0202F9E0, 8);
+    CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
     CpuFastSet(gUnk_084E2E98, (void *)0x0202F800, 8);
     CpuFastSet(gUnk_0850DD58, (void *)0x0202F820, 8);
     CpuFastSet(gUnk_0850DD58 - 0x20, (void *)0x0202F840, 8);
     CpuFastSet(pal, (void *)0x0202F860, 8);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     for (i = 0; i < 16; i++) {
         gSpriteEntries[i + 1].unk0 = 0xCA00;
         gSpriteEntries[i + 1].unk2 = 0x78;

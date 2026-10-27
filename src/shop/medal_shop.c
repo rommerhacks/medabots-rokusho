@@ -115,7 +115,7 @@ void medal_rename_load_graphics(void) {
     zero = 0;
     CpuFastSet(gMedalIconTiles, vram_at(size), 0x400);
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     gSpriteEntries[8].unk0 = 0x8000;
     gSpriteEntries[8].unk1C = 2;
     gSpriteEntries[8].unkA = zero;
@@ -158,7 +158,7 @@ void medal_rename_load_palettes(void) {
         medal_rename_draw_list(gMenuWork->medal_list_cursor);
     CpuFastSet(gUnk_08483AA0, (void *)0x0202FA20, 8);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 8);
-    CpuFastSet(gUnk_084E2E38, (void *)0x0202F9E0, 8);
+    CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     CpuFastSet(gUnk_0850DD18, (void *)0x0202F9A0, 8);
     CpuFastSet(gUnk_08799B98, gPaletteBackupBg, 0x80);
     CpuFastSet(gUnk_080AFAE8, (void *)0x0202F940, 8);

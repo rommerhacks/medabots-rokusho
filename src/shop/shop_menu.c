@@ -119,7 +119,7 @@ void shop_menu_load_graphics(void) {
     gMenuWork->bg_tile_base = ((size + n) >> 5) - 1;
     lz_decompress_dispatch(gUnk_08784CB0, dst += n);
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     gGameSubState++;
 }
@@ -176,7 +176,7 @@ void shop_menu_show_layers(void) {
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F800, 8);
-    CpuFastSet(gUnk_084E2E38, (void *)0x0202F9E0, 8);
+    CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
     CpuFastSet(gUnk_08488AA4, (void *)0x0202F820, 8);
     CpuFastSet(gUnk_0879671C, (void *)0x0202FA00, 0x80);

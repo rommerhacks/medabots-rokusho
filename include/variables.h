@@ -34,7 +34,7 @@ extern struct Unk_03005350 gUnk_03005350;
 extern struct FieldDebugWork gFieldDebug;
 extern u8 *gMapScriptData; // current map script data (banked, see read_map_script_byte)
 extern struct FieldWork gFieldWork;
-extern struct Unk_030064A0 gUnk_030064A0;
+extern struct FieldScriptWork gFieldScriptWork;
 extern struct Unk_03006D20 gUnk_03006D20;
 extern struct SoundWork *gSoundWork;
 extern struct SoundWork gSoundWorkArea; // sound work area (soft_reset_to_title passes it to sound_init)
@@ -74,7 +74,7 @@ extern u16 gPaletteBufferBg[0x100]; // = gPaletteBuffer + 0x100
 extern u32 gRngCounter;
 extern u32 gRngValue;
 extern u32 gRngState;
-extern u8 gUnk_03000588;
+extern u8 gPlayTimeRunning; // 1 while gPlayerRecord.playTime counts (cleared on the save screen)
 
 // ROM data
 extern const Func gIntrTableTemplate[14];
@@ -301,22 +301,22 @@ extern const u8 gUnk_083AC43B[];                // x, y per team select slot (9)
 extern const u8 gUnk_083AC468[];                // team select: cursor slot to move to after a pick, per slot
 extern const u8 gUnk_083AC44D[];                // tile x, y per team select slot (9)
 extern const u8 *const gMedabotSlotDpadMoves[]; // up, down, left, right: next slot (gGameWork.medabotsCursor) per slot
-extern const void *const gUnk_083B4AE0[];       // tilemaps (field menu rows: open/close animation frames)
+extern const void *const gUiTilemaps[];         // tilemaps (field menu rows: open/close animation frames)
 extern const void *gBattleSpriteAnimScripts[];  // battle sprite animation command lists (battle_sprite_anim_init /
                                                 // process_sprite_anim_commands)
-extern const u8 gUnk_084C1608[];
-extern const u8 gUnk_084C17F0[];
-extern const u8 gUnk_084C1934[];
-extern const u8 gUnk_084C1ACC[];
-extern const u8 gUnk_084C1C14[];
-extern const u8 gUnk_08487708[];
-extern const u8 gUnk_08487814[];
-extern const u16 gUnk_08488A84[];
-extern const u8 gUnk_08488690[];
-extern const u8 gUnk_08488644[];
-extern const u8 gUnk_084C6A98[];
-extern const u16 gUnk_084E2E38[];
-extern const u8 gUnk_084C7174[];
+extern const u8 gFieldMenuMedawatchLabelTiles[];
+extern const u8 gFieldMenuItemLabelTiles[];
+extern const u8 gFieldMenuVehicleLabelTiles[];
+extern const u8 gFieldMenuSaveLabelTiles[];
+extern const u8 gMenuSlideLineTile[]; // guess: the line tile drawn as the chosen field menu row slides
+extern const u8 gMoneyWindowTiles[];
+extern const u8 gMoneyWindowHalfTiles[]; // money window frame halfway open / closed
+extern const u16 gMenuBgPalette[];
+extern const u8 gMoneyWindowHalfTilemap[];
+extern const u8 gMoneyWindowTilemap[];
+extern const u8 gSpriteFontTiles[]; // 8x16 OBJ font (letters, digits, $) at 0x06017400, render_text_sprites
+extern const u16 gSpriteFontPalette[];
+extern const u8 gFieldMenuCursorTiles[];
 extern const u16 gCursorArrowPalette[]; // OBJ palette 14 of the arrow cursor (gCursorArrowTiles)
 extern const u16 gUnk_084E2E78[];
 extern const u8 gUnk_084889F8[];
@@ -678,7 +678,6 @@ extern const u8 gBreakRingTiles[];        // compressed OBJ tiles (trap_hit_brea
 extern const u16 gBreakRingPalette[];     // its OBJ palette (palette 7)
 extern const u8 gHitSparksTiles[];        // compressed OBJ tiles (trap_hit_break_burst_init)
 extern const u16 gHitSparksPalette[];     // its OBJ palette (palette 7)
-extern const u8 gUnk_084C6A98[];          // compressed OBJ tiles at 0x06017400 (closeup_enter_setup_bgs)
 extern const u16 gActionFlashPalette[];   // OBJ palette 6 (action_flash_load_palette)
 extern const u8 gDefenceShieldTiles[];    // compressed OBJ tiles, guard_load_graphics for unkDF 0x1B
 extern const u8 gFullBlockShieldTiles[];  // 0x1C
@@ -745,7 +744,7 @@ extern const u8 gWaveIconPalette[];                 // OBJ palette (battle/actio
 extern const u8 gFireIconTiles[];                   // compressed OBJ tiles (battle/action_steps)
 extern const u8 gFireIconPalette[];                 // OBJ palette (battle/action_steps)
 extern const Func gCloseupExitSteps[];              // by gBattleWork.step (closeup_exit_run)
-extern struct Unk_083B4AE0 gUnk_083B4AE0_s;         // same address as gUnk_083B4AE0
+extern struct UiTilemapTable gUiTilemapsNamed;      // same address as gUiTilemaps
 extern const Func gBotDefeatSteps[];                // by gBattleWork.step (bot_defeat_run)
 extern const u8 gReactionRiseTiles[];               // compressed OBJ tiles (battle/action_steps)
 extern const u8 gReactionRiseFxTiles[];             // compressed OBJ tiles (battle/action_steps)
@@ -1346,24 +1345,24 @@ extern const u8 gUnk_080AC714[];
 extern const u8 gUnk_080AC7B4[];
 extern const u8 gUnk_080AC854[];
 extern const u8 gUnk_080AC8F4[];
-extern const u8 gUnk_083D29EB[];
+extern const u8 gAreaTypes[]; // per area_id; type 0xA forbids the town map and Wings of Wind (guess: indoor/past)
 extern const u8 gVehicleMenuCursorRows[];
-extern const u8 gUnk_085FA144[];
-extern const u8 gUnk_085FA5D8[];
-extern const u16 gUnk_085FA4D8[];
-extern const u16 gUnk_085FA620[];
+extern const u8 gVehicleMenuNameTiles[];
+extern const u8 gVehicleMenuBlankRowTiles[];
+extern const u16 gVehicleMenuNamesTilemap[];
+extern const u16 gVehicleMenuBlankRowTilemap[];
 extern const u16 gVehicleMenuWindowTilemap[];
-extern const u8 gUnk_085FA660[];
-extern const u8 gUnk_085FA87C[];
-extern const u8 gUnk_085FAA98[];
-extern const u8 gUnk_085FA6E8[];
-extern const u8 gUnk_085FA904[];
-extern const u8 gUnk_085FA774[];
-extern const u8 gUnk_085FA990[];
-extern const u8 gUnk_085FA7FC[];
-extern const u8 gUnk_085FAA18[];
-extern const u16 gUnk_085FA640[];
-extern const u16 gUnk_085FA85C[];
+extern const u8 gMiniSWheelIconTiles[];
+extern const u8 gMiniSWheelIconDimTiles[];
+extern const u8 gVehicleIconBlankTiles[];
+extern const u8 gSilverLocketIconTiles[];
+extern const u8 gSilverLocketIconDimTiles[];
+extern const u8 gWingsOfWindIconTiles[];
+extern const u8 gWingsOfWindIconDimTiles[];
+extern const u8 gPeriscopeIconTiles[];
+extern const u8 gPeriscopeIconDimTiles[];
+extern const u16 gVehicleIconPalette[];
+extern const u16 gVehicleIconDimPalette[];
 extern u16 *gFieldDebugEventValues[];
 extern u16 *gFieldDebugMessageValues[];
 extern u8 **gFieldDebugPageValues[];

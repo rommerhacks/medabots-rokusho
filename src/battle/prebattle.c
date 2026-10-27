@@ -142,7 +142,7 @@ void prebattle_load_gfx(void) {
     lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06006000);
     lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06006200);
     lz_decompress_dispatch(gUnk_084C7D10, (void *)0x06012800);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EFA34, REG_BG1CNT, 0x200);
@@ -754,7 +754,7 @@ void afterbattle_part_detail_restore_screen(void) {
     lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06006000);
     lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06006200);
     lz_decompress_dispatch(gUnk_084C7D10, (void *)0x06012800);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EFA34, REG_BG1CNT, 0x200);
     DmaSet(3, gUnk_084F29E0, 0x0202FA00, 0x84000070);
     DmaSet(3, gUnk_084C69D8, 0x0202FB00, 0x84000008);

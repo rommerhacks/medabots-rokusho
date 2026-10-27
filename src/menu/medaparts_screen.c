@@ -65,7 +65,7 @@ void medaparts_list_load_gfx(void) {
     lz_decompress_dispatch(gUnk_084C36F0, (void *)0x06006C00);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     lz_decompress_dispatch(gUnk_0848833C, (void *)0x06007000);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF550, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EFF74, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0BF0, REG_BG2CNT, 0x200);
@@ -87,7 +87,7 @@ void medaparts_list_load_gfx(void) {
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
-    write_tilemap_rect(10, 2, 0x10, 0, gUnk_083B4AE0[gGameWork.partSlot + 0x59], REG_BG0CNT, 0x200);
+    write_tilemap_rect(10, 2, 0x10, 0, gUiTilemaps[gGameWork.partSlot + 0x59], REG_BG0CNT, 0x200);
     medaparts_list_set_cursor_from_part();
     draw_number_tall_bgcnt(gGameWork.unk3F + 1, 0xB, 2, 2, REG_BG1CNT, 0x7360);
     medaparts_list_draw_names();
@@ -173,7 +173,7 @@ void medaparts_list_handle_input(void) {
 
 void medaparts_list_start_fade_out(void) {
     set_blend_effect_mode(6, 0x3F, 0x20);
-    CpuFastSet(gUnk_084E2E38, (void *)0x050003E0, 8);
+    CpuFastSet(gSpriteFontPalette, (void *)0x050003E0, 8);
     medaparts_scroll_bg();
     medaparts_list_blink_page_arrows();
     sprite_bob_y(3, gFrameCounter, 0x50);
@@ -842,7 +842,7 @@ static u32 medaparts_list_kind_input(void) {
     } else {
         play_sound_effect(2);
         gGameWork.shownId = gGameWork.unk3F * 4 + gGameWork.medalRow;
-        write_tilemap_rect(10, 2, 0x10, 0, gUnk_083B4AE0[gGameWork.partSlot + 0x59], REG_BG0CNT, 0x200);
+        write_tilemap_rect(10, 2, 0x10, 0, gUiTilemaps[gGameWork.partSlot + 0x59], REG_BG0CNT, 0x200);
         medaparts_list_draw_names();
         medaparts_list_draw_counts();
         medaparts_list_draw_equipped_counts();

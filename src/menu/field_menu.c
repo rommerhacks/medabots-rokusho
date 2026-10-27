@@ -13,14 +13,14 @@ void field_menu_update(void) {
 void field_menu_load_gfx(void) {
     REG_DISPCNT = 0x1F60;
     REG_BG0CNT = 0x500;
-    lz_decompress_dispatch(gUnk_084C1608, (void *)0x06001800);
-    lz_decompress_dispatch(gUnk_084C17F0, (void *)0x06001B00);
-    lz_decompress_dispatch(gUnk_084C1934, (void *)0x06001E00);
-    lz_decompress_dispatch(gUnk_084C1ACC, (void *)0x06002100);
-    lz_decompress_dispatch(gUnk_08487708, (void *)0x06002400);
-    DmaSet(3, gUnk_08488A84, 0x050001E0, 0x80000010);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
-    DmaSet(3, gUnk_084E2E38, 0x050003E0, 0x80000010);
+    lz_decompress_dispatch(gFieldMenuMedawatchLabelTiles, (void *)0x06001800);
+    lz_decompress_dispatch(gFieldMenuItemLabelTiles, (void *)0x06001B00);
+    lz_decompress_dispatch(gFieldMenuVehicleLabelTiles, (void *)0x06001E00);
+    lz_decompress_dispatch(gFieldMenuSaveLabelTiles, (void *)0x06002100);
+    lz_decompress_dispatch(gMoneyWindowTiles, (void *)0x06002400);
+    DmaSet(3, gMenuBgPalette, 0x050001E0, 0x80000010);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    DmaSet(3, gSpriteFontPalette, 0x050003E0, 0x80000010);
     play_song(6);
     gGameWork.unk84 = 0;
     gGameSubState++;
@@ -28,20 +28,20 @@ void field_menu_load_gfx(void) {
 
 void field_menu_open_anim(void) {
     if (gGameWork.unk84 <= 12)
-        write_tilemap_rect(12, 2, 18, 1, gUnk_083B4AE0[gGameWork.unk84 + 0x13], REG_BG0CNT, 0);
+        write_tilemap_rect(12, 2, 18, 1, gUiTilemaps[gGameWork.unk84 + 0x13], REG_BG0CNT, 0);
     if ((u8)(gGameWork.unk84 - 2) <= 12)
-        write_tilemap_rect(12, 2, 18, 3, gUnk_083B4AE0[gGameWork.unk84 + 0x1E], REG_BG0CNT, 0);
+        write_tilemap_rect(12, 2, 18, 3, gUiTilemaps[gGameWork.unk84 + 0x1E], REG_BG0CNT, 0);
     if ((u8)(gGameWork.unk84 - 4) <= 12)
-        write_tilemap_rect(12, 2, 18, 5, gUnk_083B4AE0[gGameWork.unk84 + 0x29], REG_BG0CNT, 0);
+        write_tilemap_rect(12, 2, 18, 5, gUiTilemaps[gGameWork.unk84 + 0x29], REG_BG0CNT, 0);
     if ((u8)(gGameWork.unk84 - 6) <= 12)
-        write_tilemap_rect(12, 2, 18, 7, gUnk_083B4AE0[gGameWork.unk84 + 0x34], REG_BG0CNT, 0);
+        write_tilemap_rect(12, 2, 18, 7, gUiTilemaps[gGameWork.unk84 + 0x34], REG_BG0CNT, 0);
     if (gGameWork.unk84 == 10) {
-        lz_decompress_dispatch(gUnk_08487814, (void *)0x06002400);
-        set_tilemap_and_decompress_bg(0x15, 9, gUnk_08488690, REG_BG0CNT, 0x120);
+        lz_decompress_dispatch(gMoneyWindowHalfTiles, (void *)0x06002400);
+        set_tilemap_and_decompress_bg(0x15, 9, gMoneyWindowHalfTilemap, REG_BG0CNT, 0x120);
     }
     if (gGameWork.unk84 == 12) {
-        lz_decompress_dispatch(gUnk_08487708, (void *)0x06002400);
-        set_tilemap_and_decompress_bg(0x15, 9, gUnk_08488644, REG_BG0CNT, 0x120);
+        lz_decompress_dispatch(gMoneyWindowTiles, (void *)0x06002400);
+        set_tilemap_and_decompress_bg(0x15, 9, gMoneyWindowTilemap, REG_BG0CNT, 0x120);
     }
     if (++gGameWork.unk84 > 18) {
         divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
@@ -79,16 +79,16 @@ void field_menu_handle_input(void) {
 
 void field_menu_close_anim(void) {
     if (gGameWork.unk84 <= 12)
-        write_tilemap_rect(12, 2, 18, 1, gUnk_083B4AE0[0x1F - gGameWork.unk84], REG_BG0CNT, 0);
+        write_tilemap_rect(12, 2, 18, 1, gUiTilemaps[0x1F - gGameWork.unk84], REG_BG0CNT, 0);
     if ((u8)(gGameWork.unk84 - 2) <= 12)
-        write_tilemap_rect(12, 2, 18, 3, gUnk_083B4AE0[0x2E - gGameWork.unk84], REG_BG0CNT, 0);
+        write_tilemap_rect(12, 2, 18, 3, gUiTilemaps[0x2E - gGameWork.unk84], REG_BG0CNT, 0);
     if ((u8)(gGameWork.unk84 - 4) <= 12)
-        write_tilemap_rect(12, 2, 18, 5, gUnk_083B4AE0[0x3D - gGameWork.unk84], REG_BG0CNT, 0);
+        write_tilemap_rect(12, 2, 18, 5, gUiTilemaps[0x3D - gGameWork.unk84], REG_BG0CNT, 0);
     if ((u8)(gGameWork.unk84 - 6) <= 12)
-        write_tilemap_rect(12, 2, 18, 7, gUnk_083B4AE0[0x4C - gGameWork.unk84], REG_BG0CNT, 0);
+        write_tilemap_rect(12, 2, 18, 7, gUiTilemaps[0x4C - gGameWork.unk84], REG_BG0CNT, 0);
     if (gGameWork.unk84 == 10) {
-        lz_decompress_dispatch(gUnk_08487814, (void *)0x06002400);
-        set_tilemap_and_decompress_bg(0x15, 9, gUnk_08488690, REG_BG0CNT, 0x120);
+        lz_decompress_dispatch(gMoneyWindowHalfTiles, (void *)0x06002400);
+        set_tilemap_and_decompress_bg(0x15, 9, gMoneyWindowHalfTilemap, REG_BG0CNT, 0x120);
     }
     if (gGameWork.unk84 == 12)
         vram_fill_tilemap_rect(9, 4, 0x15, 9, REG_BG0CNT, 0);
@@ -124,11 +124,11 @@ void field_menu_select_start(void) {
 }
 
 void field_menu_select_collapse(void) {
-    write_tilemap_rect(12, 2, 18, gGameWork.menuRowAnim - 1, gUnk_083B4AE0[gGameWork.fieldMenuCursor * 13 + 0x1F],
+    write_tilemap_rect(12, 2, 18, gGameWork.menuRowAnim - 1, gUiTilemaps[gGameWork.fieldMenuCursor * 13 + 0x1F],
                        REG_BG0CNT, 0);
     vram_fill_tilemap_rect(12, 1, 18, gGameWork.menuRowAnim + 1, REG_BG0CNT, 0);
     if (--gGameWork.menuRowAnim == 0) {
-        lz_decompress_dispatch(gUnk_084C1C14, (void *)0x060017E0);
+        lz_decompress_dispatch(gMenuSlideLineTile, (void *)0x060017E0);
         palette_backup_from_hardware();
         gGameWork.unk84 = 0;
         if (gGameWork.fieldMenuCursor == 0)
@@ -143,9 +143,9 @@ void field_menu_select_slide(void) {
         obj_palettes_blend_masked_now(0, gGameWork.unk84 * 2, 0xFFFF);
         gGameWork.unk84++;
     }
-    write_tilemap_rect(12, 2, 18 - gGameWork.menuRowAnim, 0, gUnk_083B4AE0[gGameWork.fieldMenuCursor * 13 + 0x1F],
+    write_tilemap_rect(12, 2, 18 - gGameWork.menuRowAnim, 0, gUiTilemaps[gGameWork.fieldMenuCursor * 13 + 0x1F],
                        REG_BG0CNT, 0);
-    write_tilemap_rect(1, 2, 30 - gGameWork.menuRowAnim, 0, gUnk_083B4AE0[0x47], REG_BG0CNT, 0);
+    write_tilemap_rect(1, 2, 30 - gGameWork.menuRowAnim, 0, gUiTilemaps[0x47], REG_BG0CNT, 0);
     if (++gGameWork.menuRowAnim == 19)
         gGameSubState++;
 }
@@ -170,7 +170,7 @@ void field_menu_run_choice(void) {
         field_resume(1);
         break;
     default:
-        gUnk_03000588 = 0;
+        gPlayTimeRunning = 0;
         gGameMode = 2;
         gGameState = 5;
         gGameSubState = 0;
@@ -180,10 +180,10 @@ void field_menu_run_choice(void) {
 }
 
 void field_menu_return_init(void) {
-    gUnk_03000588 = 1;
+    gPlayTimeRunning = 1;
     if (gGameWork.fieldMenuCursor != 2) {
         REG_DISPCNT &= 0xF1FF;
-        DmaSet(3, gUnk_084E2E38, 0x0202F9E0, 0x84000008);
+        DmaSet(3, gSpriteFontPalette, 0x0202F9E0, 0x84000008);
         area_load_graphics();
         blend_set_alpha_12_10();
         setup_blend_effect(0x40, 0x2F00, 5, 16, 16, 16, 12, 10, 0);
@@ -202,7 +202,7 @@ void field_menu_return_slide(void) {
         gGameWork.unk84++;
     }
     gGameWork.menuRowAnim--;
-    write_tilemap_rect(12, 2, 18 - gGameWork.menuRowAnim, 0, gUnk_083B4AE0[gGameWork.fieldMenuCursor * 13 + 0x1F],
+    write_tilemap_rect(12, 2, 18 - gGameWork.menuRowAnim, 0, gUiTilemaps[gGameWork.fieldMenuCursor * 13 + 0x1F],
                        REG_BG0CNT, 0);
     vram_fill_tilemap_rect(1, 2, 17 - gGameWork.menuRowAnim, 0, REG_BG0CNT, 0);
     if (gGameWork.menuRowAnim == 0) {
@@ -214,33 +214,33 @@ void field_menu_return_slide(void) {
 }
 
 void field_menu_return_expand(void) {
-    write_tilemap_rect(12, 2, 18, gGameWork.unk84 + 1, gUnk_083B4AE0[gGameWork.fieldMenuCursor * 13 + 0x1F], REG_BG0CNT,
+    write_tilemap_rect(12, 2, 18, gGameWork.unk84 + 1, gUiTilemaps[gGameWork.fieldMenuCursor * 13 + 0x1F], REG_BG0CNT,
                        0);
     vram_fill_tilemap_rect(12, 1, 18, gGameWork.unk84, REG_BG0CNT, 0);
     if (gGameWork.unk84 + 1 == gGameWork.menuRowAnim) {
         switch (gGameWork.fieldMenuCursor) {
         case 0:
-            write_tilemap_rect(12, 2, 18, 3, gUnk_083B4AE0[0x2C], REG_BG0CNT, 0);
-            write_tilemap_rect(12, 2, 18, 5, gUnk_083B4AE0[0x39], REG_BG0CNT, 0);
-            write_tilemap_rect(12, 2, 18, 7, gUnk_083B4AE0[0x46], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 3, gUiTilemaps[0x2C], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 5, gUiTilemaps[0x39], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 7, gUiTilemaps[0x46], REG_BG0CNT, 0);
             break;
         case 1:
-            write_tilemap_rect(12, 2, 18, 1, gUnk_083B4AE0[0x1F], REG_BG0CNT, 0);
-            write_tilemap_rect(12, 2, 18, 5, gUnk_083B4AE0[0x39], REG_BG0CNT, 0);
-            write_tilemap_rect(12, 2, 18, 7, gUnk_083B4AE0[0x46], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 1, gUiTilemaps[0x1F], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 5, gUiTilemaps[0x39], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 7, gUiTilemaps[0x46], REG_BG0CNT, 0);
             break;
         case 2:
-            write_tilemap_rect(12, 2, 18, 1, gUnk_083B4AE0[0x1F], REG_BG0CNT, 0);
-            write_tilemap_rect(12, 2, 18, 3, gUnk_083B4AE0[0x2C], REG_BG0CNT, 0);
-            write_tilemap_rect(12, 2, 18, 7, gUnk_083B4AE0[0x46], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 1, gUiTilemaps[0x1F], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 3, gUiTilemaps[0x2C], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 7, gUiTilemaps[0x46], REG_BG0CNT, 0);
             break;
         default:
-            write_tilemap_rect(12, 2, 18, 1, gUnk_083B4AE0[0x1F], REG_BG0CNT, 0);
-            write_tilemap_rect(12, 2, 18, 3, gUnk_083B4AE0[0x2C], REG_BG0CNT, 0);
-            write_tilemap_rect(12, 2, 18, 5, gUnk_083B4AE0[0x39], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 1, gUiTilemaps[0x1F], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 3, gUiTilemaps[0x2C], REG_BG0CNT, 0);
+            write_tilemap_rect(12, 2, 18, 5, gUiTilemaps[0x39], REG_BG0CNT, 0);
             break;
         }
-        set_tilemap_and_decompress_bg(0x15, 9, gUnk_08488644, REG_BG0CNT, 0x120);
+        set_tilemap_and_decompress_bg(0x15, 9, gMoneyWindowTilemap, REG_BG0CNT, 0x120);
         divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
         render_text_sprites_08040DB8(gGameWork.textBuf, 10, 0x17, 10, 5, 15, 2, 0);
         field_menu_init_cursor();
@@ -251,7 +251,7 @@ void field_menu_return_expand(void) {
 }
 
 static void field_menu_init_cursor(void) {
-    lz_decompress_dispatch(gUnk_084C7174, (void *)0x06016C00);
+    lz_decompress_dispatch(gFieldMenuCursorTiles, (void *)0x06016C00);
     DmaSet(3, gCursorArrowPalette, 0x050003C0, 0x84000008);
     gSpriteEntries[0].unk0 = 0xC004;
     gSpriteEntries[0].unk2 = 0x88;

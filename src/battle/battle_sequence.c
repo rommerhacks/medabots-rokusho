@@ -1486,7 +1486,7 @@ void battle_seq_spr_bg_effect(void) {
         write_tilemap_rect(
             gSpriteEntries[gGameWork.runningSpriteSlot].unk2E, gSpriteEntries[gGameWork.runningSpriteSlot].unk2F,
             gSpriteEntries[gGameWork.runningSpriteSlot].unk2, gSpriteEntries[gGameWork.runningSpriteSlot].unk4,
-            gUnk_083B4AE0[gSpriteEntries[gGameWork.runningSpriteSlot].unk2C], REG_BG0CNT, 0);
+            gUiTilemaps[gSpriteEntries[gGameWork.runningSpriteSlot].unk2C], REG_BG0CNT, 0);
     }
 }
 
@@ -1506,14 +1506,14 @@ void battle_seq_spr_bg_sweep(void) {
                 (gSpriteEntries[gGameWork.runningSpriteSlot].unk2 + gSpriteEntries[gGameWork.runningSpriteSlot].unk2D) &
                     0x3F,
                 gSpriteEntries[gGameWork.runningSpriteSlot].unk4,
-                gUnk_083B4AE0[gSpriteEntries[gGameWork.runningSpriteSlot].unk2C], REG_BG0CNT, 0);
+                gUiTilemaps[gSpriteEntries[gGameWork.runningSpriteSlot].unk2C], REG_BG0CNT, 0);
         else
             write_tilemap_to_vram_0803F1C8(
                 gSpriteEntries[gGameWork.runningSpriteSlot].unk2E, gSpriteEntries[gGameWork.runningSpriteSlot].unk2F,
                 (gSpriteEntries[gGameWork.runningSpriteSlot].unk2 - gSpriteEntries[gGameWork.runningSpriteSlot].unk2D) &
                     0x3F,
                 gSpriteEntries[gGameWork.runningSpriteSlot].unk4,
-                gUnk_083B4AE0[gSpriteEntries[gGameWork.runningSpriteSlot].unk2C], REG_BG0CNT, 0);
+                gUiTilemaps[gSpriteEntries[gGameWork.runningSpriteSlot].unk2C], REG_BG0CNT, 0);
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2D++;
     }
 }
@@ -1535,7 +1535,7 @@ void battle_seq_spr_bg_effect_at(void) {
         write_tilemap_to_vram_0803F1C8(
             gSpriteEntries[gGameWork.runningSpriteSlot].unk2E, gSpriteEntries[gGameWork.runningSpriteSlot].unk2F,
             gSpriteEntries[gGameWork.runningSpriteSlot].unk2, gSpriteEntries[gGameWork.runningSpriteSlot].unk4,
-            gUnk_083B4AE0[gSpriteEntries[gGameWork.runningSpriteSlot].unk2C], REG_BG0CNT, 0);
+            gUiTilemaps[gSpriteEntries[gGameWork.runningSpriteSlot].unk2C], REG_BG0CNT, 0);
     }
 }
 
@@ -1552,7 +1552,7 @@ void battle_seq_spr_bg_effect_keep(void) {
         write_tilemap_to_vram_0803F1C8(
             gSpriteEntries[gGameWork.runningSpriteSlot].unk2E, gSpriteEntries[gGameWork.runningSpriteSlot].unk2F,
             gSpriteEntries[gGameWork.runningSpriteSlot].unk2, gSpriteEntries[gGameWork.runningSpriteSlot].unk4,
-            gUnk_083B4AE0[gSpriteEntries[gGameWork.runningSpriteSlot].unk2C], REG_BG0CNT, 0);
+            gUiTilemaps[gSpriteEntries[gGameWork.runningSpriteSlot].unk2C], REG_BG0CNT, 0);
     }
 }
 

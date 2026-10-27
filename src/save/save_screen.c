@@ -109,7 +109,7 @@ void save_screen_draw_info(void) {
     open_choice_menu(1, 0x16, 7);
     CpuFastSet(gUnk_0878CA64, gPaletteBackupBg, 0x80);
     CpuFastSet(gUnk_0850DCF8, (void *)0x0202F9A0, 8);
-    CpuFastSet(gUnk_084E2E38, (void *)0x0202F9E0, 8);
+    CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     CpuFastSet(gUnk_080AF7E8, gPaletteBackup, 8);
     gGameWork.unk84 = 0;
     gGameSubState++;

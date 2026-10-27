@@ -24,7 +24,7 @@ void medawatch_menu_load_gfx(void) {
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F023C, REG_BG2CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0F2C, REG_BG3CNT, 0);
     DmaSet(3, gUnk_084F24E0, 0x0202FA00, 0x84000060);
-    write_tilemap_rect(4, 4, 5, 9, gUnk_083B4AE0[0x48], REG_BG1CNT, 0);
+    write_tilemap_rect(4, 4, 5, 9, gUiTilemaps[0x48], REG_BG1CNT, 0);
     REG_DISPCNT |= 0x1F60;
     gGameWork.unk84 = 0;
     gGameSubState++;
@@ -148,7 +148,7 @@ void medawatch_menu_return_init(void) {
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F023C, REG_BG2CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0F2C, REG_BG3CNT, 0);
     DmaSet(3, gUnk_084F24E0, 0x05000000, 0x84000060);
-    write_tilemap_rect(4, 4, 5, 9, gUnk_083B4AE0[0x48], REG_BG1CNT, 0);
+    write_tilemap_rect(4, 4, 5, 9, gUiTilemaps[0x48], REG_BG1CNT, 0);
     REG_DISPCNT |= 0x1F60;
     set_blend_effect_mode(5, 0x3F, 0x20);
     gGameWork.unk84 = 0;
@@ -187,7 +187,7 @@ static void medawatch_menu_load_icon(void) {
 }
 
 static void medawatch_menu_init_cursor(void) {
-    lz_decompress_dispatch(gUnk_084C7174, (void *)0x06016C00);
+    lz_decompress_dispatch(gFieldMenuCursorTiles, (void *)0x06016C00);
     DmaSet(3, gCursorArrowPalette, 0x050003C0, 0x84000008);
     gSpriteEntries[0].unk0 = 0xC004;
     gSpriteEntries[0].unk2 = 0x88 - gGameWork.medawatchCursor * 8;

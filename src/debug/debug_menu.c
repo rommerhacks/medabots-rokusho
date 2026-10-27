@@ -15,8 +15,8 @@ void debug_menu_init(void) {
     DmaSet(3, gSpriteEntries, gUnk_02020800, 0x84000400);
     zero = 0;
     DmaSet(3, &zero, gSpriteEntries, 0x85000400);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
-    DmaSet(3, gUnk_084E2E38, 0x050003E0, 0x84000008);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    DmaSet(3, gSpriteFontPalette, 0x050003E0, 0x84000008);
     gGameSubState++;
 }
 

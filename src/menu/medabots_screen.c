@@ -99,7 +99,7 @@ void medabots_screen_load_gfx(void) {
         lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06006000);
         lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06006200);
         lz_decompress_dispatch(gUnk_084C7428, (void *)0x06016C00);
-        lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+        lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
         gGameWork.setupStep++;
         break;
     case 1:
@@ -231,7 +231,7 @@ void medabots_screen_exit_fade(void) {
 }
 
 void medabots_screen_return_to_medawatch(void) {
-    CpuFastSet(gUnk_084E2E38, (void *)0x050003E0, 8);
+    CpuFastSet(gSpriteFontPalette, (void *)0x050003E0, 8);
     clear_battle_sprite_slot(0, 0x80);
     gGameWork.unk96 = 0;
     gVBlankOamMode = 0;
@@ -316,7 +316,7 @@ void medabot_detail_load_gfx(void) {
     lz_decompress_dispatch(gCompatibilityIconTiles, (void *)0x06006800);
     lz_decompress_dispatch(gUnk_084C4DB0, (void *)0x06006E00);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF310, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF9C8, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F03EC, REG_BG2CNT, 0x200);

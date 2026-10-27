@@ -129,7 +129,7 @@ void link_robattle_screen_load(void) {
     lz_decompress_dispatch(gUnk_084E6C9C, (void *)0x06004000);
     lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06006000);
     lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06006200);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG1CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EFA34, REG_BG1CNT, 0x200);
@@ -306,7 +306,7 @@ void prize_game_load(void) {
     lz_decompress_dispatch(gUnk_084EDEF0, (void *)0x06004000);
     lz_decompress_dispatch(gUnk_084C66B8, (void *)0x06007000);
     lz_decompress_dispatch(gUnk_084C68E0, (void *)0x06007A00);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     lz_decompress_dispatch(gUnk_084E20F8, (void *)0x06010000);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF668, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0194, REG_BG1CNT, 0x200);

@@ -85,7 +85,7 @@ void item_menu_load_graphics(void) {
         gSpriteEntries[i + 0x55].unk2 = 0xE0;
         gSpriteEntries[i + 0x55].unk4 = i * 16 + 0x20;
     }
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     gGameSubState++;
 }
 

@@ -49,7 +49,7 @@ u32 item_get_use_result(u32 a) {
 
     switch (a) {
     case 0:
-        if (gUnk_083D29EB[gFieldWork.area_id] == 0xA) {
+        if (gAreaTypes[gFieldWork.area_id] == 0xA) {
             r = 2;
             break;
         }

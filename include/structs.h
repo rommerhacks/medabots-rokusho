@@ -507,14 +507,14 @@ struct TextColBits {
     u8 hi : 5;
 };
 
-// Struct view of the gUnk_083B4AE0 tilemap pointer table: the Robattle screen wipes read entry 0x69 as a
+// Struct view of the gUiTilemaps tilemap pointer table: the Robattle screen wipes read entry 0x69 as a
 // field (base + 0x1A4, reloaded after each call: closeup_enter_wipe, closeup_exit_wipe).
-struct Unk_083B4AE0 {
+struct UiTilemapTable {
     const void *unk0[0x49];
-    const void *unk124; // message "more text" cursor, blink off (message_wait_next_page)
-    const void *unk128; // message cursor, blink on
+    const void *more_cursor_off; // message "more text" cursor, blink off (message_wait_next_page)
+    const void *more_cursor_on;  // message cursor, blink on
     const void *unk12C[0x1E];
-    const void *unk1A4; // blank tilemap row
+    const void *blank_row; // blank tilemap row
 };
 
 // Sprite tree render buffer (gSpriteWork, usually at 0x02024000): render_sprite_node_recursive appends depth-sorted
@@ -936,17 +936,19 @@ struct MapObject {
     u8 filler6[0x2];
 };
 
-struct Unk_030064A0 {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2[8];
-    u8 unkA[8];
-    u8 unk12[8][8];
-    u8 unk52;
-    u8 unk53;
-    u8 unk54[8];
-    u8 unk5C[8];
-    u8 unk64; // choice menu step (yes_no_menu_poll: 0 setup, 1 wait handler, 2 poll)
+// Field work at 0x030064A0 shared by the map script helpers, the choice menu and the vehicle menu.
+struct FieldScriptWork {
+    u8 message_step;  // message_step_run: 0 open / continue the window, 1 run the message
+    u8 message_count; // messages shown since message_steps_reset
+    // Map script move / anim queues (opcodes 0x80-0x82): one 8-byte list per actor, run together.
+    u8 queue_timer[8];     // frames since the last anim frame (anim queue)
+    u8 queue_pos[8];       // current step in each list (anim frame for the anim queue)
+    u8 queue[8][8];        // the queued lists
+    u8 queue_len;          // number of lists queued
+    u8 unk53;              // only cleared
+    u8 queue_sprite[8];    // sprite slot of each list's actor
+    u8 queue_walk_step[8]; // walk sub-step (0 start, 1 walking, 2 done)
+    u8 choice_step;        // choice menu step (yes_no_menu_poll: 0 setup, 1 wait handler, 2 poll)
     // Vehicle menu (vehicle_menu_load_gfx .. vehicle_menu_reload) reuses the area after the choice menu.
     u8 cursor; // selected entry (enum VehicleId)
     u8 unk66;

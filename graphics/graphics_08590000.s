@@ -44,64 +44,64 @@ gUnk_085FA0E4:
 gUnk_085FA104:
 	.incbin "baserom.gba", 0x5FA104, 0x40
 
-	.global gUnk_085FA144
-gUnk_085FA144:
+	.global gVehicleMenuNameTiles
+gVehicleMenuNameTiles:
 	.incbin "baserom.gba", 0x5FA144, 0x394
 
-	.global gUnk_085FA4D8
-gUnk_085FA4D8:
+	.global gVehicleMenuNamesTilemap
+gVehicleMenuNamesTilemap:
 	.incbin "baserom.gba", 0x5FA4D8, 0x100
 
-	.global gUnk_085FA5D8
-gUnk_085FA5D8:
+	.global gVehicleMenuBlankRowTiles
+gVehicleMenuBlankRowTiles:
 	.incbin "baserom.gba", 0x5FA5D8, 0x48
 
-	.global gUnk_085FA620
-gUnk_085FA620:
+	.global gVehicleMenuBlankRowTilemap
+gVehicleMenuBlankRowTilemap:
 	.incbin "baserom.gba", 0x5FA620, 0x20
 
-	.global gUnk_085FA640
-gUnk_085FA640:
+	.global gVehicleIconPalette
+gVehicleIconPalette:
 	.incbin "baserom.gba", 0x5FA640, 0x20
 
-	.global gUnk_085FA660
-gUnk_085FA660:
+	.global gMiniSWheelIconTiles
+gMiniSWheelIconTiles:
 	.incbin "baserom.gba", 0x5FA660, 0x88
 
-	.global gUnk_085FA6E8
-gUnk_085FA6E8:
+	.global gSilverLocketIconTiles
+gSilverLocketIconTiles:
 	.incbin "baserom.gba", 0x5FA6E8, 0x8C
 
-	.global gUnk_085FA774
-gUnk_085FA774:
+	.global gWingsOfWindIconTiles
+gWingsOfWindIconTiles:
 	.incbin "baserom.gba", 0x5FA774, 0x88
 
-	.global gUnk_085FA7FC
-gUnk_085FA7FC:
+	.global gPeriscopeIconTiles
+gPeriscopeIconTiles:
 	.incbin "baserom.gba", 0x5FA7FC, 0x60
 
-	.global gUnk_085FA85C
-gUnk_085FA85C:
+	.global gVehicleIconDimPalette
+gVehicleIconDimPalette:
 	.incbin "baserom.gba", 0x5FA85C, 0x20
 
-	.global gUnk_085FA87C
-gUnk_085FA87C:
+	.global gMiniSWheelIconDimTiles
+gMiniSWheelIconDimTiles:
 	.incbin "baserom.gba", 0x5FA87C, 0x88
 
-	.global gUnk_085FA904
-gUnk_085FA904:
+	.global gSilverLocketIconDimTiles
+gSilverLocketIconDimTiles:
 	.incbin "baserom.gba", 0x5FA904, 0x8C
 
-	.global gUnk_085FA990
-gUnk_085FA990:
+	.global gWingsOfWindIconDimTiles
+gWingsOfWindIconDimTiles:
 	.incbin "baserom.gba", 0x5FA990, 0x88
 
-	.global gUnk_085FAA18
-gUnk_085FAA18:
+	.global gPeriscopeIconDimTiles
+gPeriscopeIconDimTiles:
 	.incbin "baserom.gba", 0x5FAA18, 0x80
 
-	.global gUnk_085FAA98
-gUnk_085FAA98:
+	.global gVehicleIconBlankTiles
+gVehicleIconBlankTiles:
 	.incbin "baserom.gba", 0x5FAA98, 0x16A218
 
 	.global gUnk_08764CB0

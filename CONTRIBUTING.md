@@ -288,7 +288,7 @@
   (s16, u16, s16 after arithmetic). The callee may truncate differently; follow the caller.
 * A table entry read as `ldr rX, =sym; adds rX, #off` and reloaded after every call is a struct
   field, not an array element: `arr[0x69]` gives `ldr =sym+0x1A4`. Declare a struct view of the
-  table (see `struct Unk_083B4AE0` / `gUnk_083B4AE0_s`) and read the field.
+  table (see `struct UiTilemapTable` / `gUiTilemapsNamed`) and read the field.
 * `side = 0; if (!(f & 2)) side = 1;` loads the zero before the test; the original's
   `ands; movs r1, #0; cmp; bne; movs r1, #1` order comes from `if (!(f & 2)) side = 1; else side = 0;`.
 * A u16 value stored with `lsls; lsrs` and sign-extended (`lsls; asrs`) only where it is used, once,

@@ -942,13 +942,13 @@ void map_script_cmd_follower_to_actor(void) {
 
 // Opcodes 0x80-0x82: queue 8-byte move lists for several actors, then run them together.
 void map_script_cmd_move_queue_begin(void) {
-    gUnk_030064A0.unk52 = 0;
-    memzero_bytes(gUnk_030064A0.unk2, 8);
-    memzero_bytes(gUnk_030064A0.unkA, 8);
-    memzero_bytes(gUnk_030064A0.unk12[0], 64);
-    memzero_bytes(&gUnk_030064A0.unk52, 1);
-    memzero_bytes(&gUnk_030064A0.unk53, 1);
-    memzero_bytes(gUnk_030064A0.unk54, 8);
+    gFieldScriptWork.queue_len = 0;
+    memzero_bytes(gFieldScriptWork.queue_timer, 8);
+    memzero_bytes(gFieldScriptWork.queue_pos, 8);
+    memzero_bytes(gFieldScriptWork.queue[0], 64);
+    memzero_bytes(&gFieldScriptWork.queue_len, 1);
+    memzero_bytes(&gFieldScriptWork.unk53, 1);
+    memzero_bytes(gFieldScriptWork.queue_sprite, 8);
     gFieldWork.cmd = read_map_script_byte();
     gFieldWork.cmd_busy = 0;
     gFieldWork.cmd_step = 0;
@@ -957,7 +957,7 @@ void map_script_cmd_move_queue_begin(void) {
 
 void map_script_cmd_move_queue_add(void) {
     read_map_script_bytes(8);
-    memcpy_u8(gFieldWork.cmd_args, gUnk_030064A0.unk12[gUnk_030064A0.unk52++], 8);
+    memcpy_u8(gFieldWork.cmd_args, gFieldScriptWork.queue[gFieldScriptWork.queue_len++], 8);
     gFieldWork.cmd = read_map_script_byte();
     gFieldWork.cmd_busy = 0;
     gFieldWork.cmd_step = 0;
@@ -1014,16 +1014,16 @@ void map_script_cmd_set_bg_tile_anim(void) {
 
 // Opcodes 0x85-0x87: queue map object 4-frame open (1) / close (2) animations (guess: doors), then run them.
 void map_script_cmd_anim_queue_begin(void) {
-    struct Unk_030064A0 *v = &gUnk_030064A0;
-    v->unk52 = 0;
-    memzero_bytes(v->unk2, 8);
-    memzero_bytes(v->unkA, 8);
-    memzero_bytes(v->unk12[0], 64);
+    struct FieldScriptWork *v = &gFieldScriptWork;
+    v->queue_len = 0;
+    memzero_bytes(v->queue_timer, 8);
+    memzero_bytes(v->queue_pos, 8);
+    memzero_bytes(v->queue[0], 64);
 }
 
 void map_script_cmd_anim_queue_add(void) {
     read_map_script_bytes(8);
-    memcpy_u8(gFieldWork.cmd_args, gUnk_030064A0.unk12[gUnk_030064A0.unk52++], 8);
+    memcpy_u8(gFieldWork.cmd_args, gFieldScriptWork.queue[gFieldScriptWork.queue_len++], 8);
 }
 
 // Not called directly (hidden in the tail of map_script_cmd_anim_queue_add).

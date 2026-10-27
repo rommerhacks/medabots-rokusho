@@ -115,7 +115,7 @@ void name_entry_init_graphics(void) {
     zero2 = 0;
     CpuFastSet(&zero2, (void *)0x05000200, 0x01000080);
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     for (i = 0; i < 2; i++) {
         gSpriteEntries[i].unk0 = 0xC000;
         gSpriteEntries[i].unk1C = 2;
@@ -237,7 +237,7 @@ void name_entry_load_name(void) {
     }
     CpuFastSet(gUnk_08483AA0, (void *)0x0202FA20, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
-    CpuFastSet(gUnk_084E2E38, (void *)0x0202F9A0, 8);
+    CpuFastSet(gSpriteFontPalette, (void *)0x0202F9A0, 8);
     CpuFastSet(gUnk_080AF810, gPaletteBackup, 8);
     CpuFastSet(gUnk_08793428, gPaletteBackupBg, 0x80);
     gGameWork.unk84 = 0;

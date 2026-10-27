@@ -36,8 +36,8 @@ void message_steps_reset(void) {
     message_reset_hook();
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
-    gUnk_030064A0.unk0 = 0;
-    gUnk_030064A0.unk1 = 0;
+    gFieldScriptWork.message_step = 0;
+    gFieldScriptWork.message_count = 0;
 }
 
 // One step of a script message: opens the window for the first message, continues it for later ones;
@@ -45,18 +45,18 @@ void message_steps_reset(void) {
 u32 message_step_run(u8 a, u8 b, u8 c, const void *text) {
     u32 ret = 0;
 
-    switch (gUnk_030064A0.unk0) {
+    switch (gFieldScriptWork.message_step) {
     case 0:
-        if (gUnk_030064A0.unk1 == 0)
+        if (gFieldScriptWork.message_count == 0)
             text_window_init(a, b, c);
         else
             message_next();
-        gUnk_030064A0.unk0++;
+        gFieldScriptWork.message_step++;
         break;
     case 1:
         if (run_message(text)) {
-            gUnk_030064A0.unk0 = ret;
-            gUnk_030064A0.unk1++;
+            gFieldScriptWork.message_step = ret;
+            gFieldScriptWork.message_count++;
             ret = 1;
         }
         break;
@@ -273,13 +273,13 @@ void yes_no_menu_open(u32 mode) {
     REG_BG0CNT = 0x500;
     REG_DISPCNT = 0x1F60;
     open_choice_menu(mode, 0x16, 7);
-    gUnk_030064A0.unk64 = 0;
+    gFieldScriptWork.choice_step = 0;
 }
 
 u32 yes_no_menu_poll(void) {
     u32 ret = 0;
-    struct Unk_030064A0 *m = &gUnk_030064A0;
-    u8 *step = &m->unk64;
+    struct FieldScriptWork *m = &gFieldScriptWork;
+    u8 *step = &m->choice_step;
 
     switch (*step) {
     case 1:

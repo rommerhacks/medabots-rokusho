@@ -294,7 +294,7 @@ void medapart_trade_init_screen(void) {
     CpuFastSet(gUnk_0850DD78, (void *)(PLTT + 0x3A0), 8);
     CpuFastSet(gUnk_0850DD78, &gPaletteBackup[0xD0], 8);
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06011E00);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06011E00);
     gMenuWork->frame = 0x280;
     medapart_copy_name(gMenuWork->own_part_id * 4 + gMenuWork->own_part_kind, 0);
     render_text_string_to_sprites(gGameWork.textBuf, 0, 0, 10, 16, 13, z, 1);
@@ -592,7 +592,7 @@ void medal_trade_init_screen(void) {
     CpuFastSet(gUnk_084E2E98, (void *)0x05000200, 8);
     CpuFastSet(gUnk_0850DD18 + 0x20, (void *)0x05000220, 8);
     CpuFastSet(gUnk_0850DD18, (void *)0x05000240, 8);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     w = gMenuWork;
     w->frame = 0x280;
     f = w->partner_chose;

@@ -86,7 +86,7 @@ void medals_list_load_gfx(void) {
     lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06006280);
     lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06007400);
     lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06007600);
-    lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     lz_decompress_dispatch(gUnk_0848833C, (void *)0x06006A00);
     set_tilemap_and_decompress_bg(0, 0, gMedalsListBg0Tilemap, REG_BG0CNT, 0x200);
@@ -105,7 +105,7 @@ void medals_list_load_gfx(void) {
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
     medals_list_set_cursor_from_medal();
-    write_tilemap_rect(10, 2, 5, 2, gUnk_083B4AE0[gGameWork.unk3F + 0x4B], REG_BG1CNT, 0x200);
+    write_tilemap_rect(10, 2, 5, 2, gUiTilemaps[gGameWork.unk3F + 0x4B], REG_BG1CNT, 0x200);
     render_medal_sprite_tile();
     render_medal_list_entries();
     render_medal_slots_in_menu();
@@ -1065,7 +1065,7 @@ static void render_medal_sprite_tile(void) {
         else
             CpuFastSet(gMedalIconBlankTiles, (void *)0x06006600 + n * 0x80, 0x20);
     }
-    write_tilemap_rect(2, 12, 4, 4, gUnk_083B4AE0[0x50], REG_BG1CNT, 0x200);
+    write_tilemap_rect(2, 12, 4, 4, gUiTilemaps[0x50], REG_BG1CNT, 0x200);
 }
 
 static void render_medal_list_entries(void) {
@@ -1227,7 +1227,7 @@ static void medals_list_tab_input(void) {
     }
     if (KEYS_LO(gRepeatKeys) & 0x30) {
         play_sound_effect(2);
-        write_tilemap_rect(10, 2, 5, 2, gUnk_083B4AE0[gGameWork.unk3F + 0x4B], REG_BG1CNT, 0x200);
+        write_tilemap_rect(10, 2, 5, 2, gUiTilemaps[gGameWork.unk3F + 0x4B], REG_BG1CNT, 0x200);
         render_medal_sprite_tile();
         render_medal_list_entries();
         render_medal_slots_in_menu();
@@ -1271,7 +1271,7 @@ static void medals_list_swap_input(void) {
             gGameWork.partSlot &= 0x7F;
             if (gGameWork.partSlot != (cur = gGameWork.unk3F * 6 + gGameWork.medalRow)) {
                 memswap(&gMedals[gGameWork.partSlot], &gMedals[cur], 0x40);
-                write_tilemap_rect(10, 2, 5, 2, gUnk_083B4AE0[gGameWork.unk3F + 0x4B], REG_BG1CNT, 0x200);
+                write_tilemap_rect(10, 2, 5, 2, gUiTilemaps[gGameWork.unk3F + 0x4B], REG_BG1CNT, 0x200);
                 render_medal_sprite_tile();
                 render_medal_list_entries();
                 render_medal_slots_in_menu();
@@ -1645,7 +1645,7 @@ void medal_rotation_draw_actions(void) {
 }
 
 static void medal_rotation_draw_repeat_path(void) {
-    write_tilemap_rect(16, 2, 6, 10, gUnk_083B4AE0[gMedals[gGameWork.shownId].rotationLen + 0x51], REG_BG1CNT, 0x200);
+    write_tilemap_rect(16, 2, 6, 10, gUiTilemaps[gMedals[gGameWork.shownId].rotationLen + 0x51], REG_BG1CNT, 0x200);
 }
 
 static void medal_rotation_redraw(void) {

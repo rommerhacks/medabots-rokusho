@@ -944,8 +944,8 @@ void closeup_enter_init(void) {
 }
 
 void closeup_enter_wipe(void) {
-    write_tilemap_rect(0x1E, 1, 0, gGameWork.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
-    write_tilemap_rect(0x1E, 1, 0, 0x13 - gGameWork.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
+    write_tilemap_rect(0x1E, 1, 0, gGameWork.unk84, gUiTilemapsNamed.blank_row, REG_BG0CNT, 0);
+    write_tilemap_rect(0x1E, 1, 0, 0x13 - gGameWork.unk84, gUiTilemapsNamed.blank_row, REG_BG0CNT, 0);
     if (gGameWork.unk84 == 9) {
         gBattleWork.unk1AE = 1;
         gBattleWork.step++;
@@ -987,7 +987,7 @@ void closeup_enter_setup_bgs(void) {
         REG_BG1CNT = 0x1801;
         REG_BG2CNT = 0x590A;
         REG_BG3CNT = 0x5B0B;
-        lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
+        lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
         vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG1CNT, 0);
         decompress_tileset_to_vram(gBattleWork.battlefield, 0);
         zero = 0;
@@ -1801,8 +1801,8 @@ void closeup_exit_wipe(void) {
     init_battle_scene_backgrounds();
     gBattleWork.unk15F = closeup_left_pose_step();
     gBattleWork.unk160 = closeup_right_pose_step();
-    write_tilemap_rect(0x1E, 1, 0, gGameWork.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
-    write_tilemap_rect(0x1E, 1, 0, 0x13 - gGameWork.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
+    write_tilemap_rect(0x1E, 1, 0, gGameWork.unk84, gUiTilemapsNamed.blank_row, REG_BG0CNT, 0);
+    write_tilemap_rect(0x1E, 1, 0, 0x13 - gGameWork.unk84, gUiTilemapsNamed.blank_row, REG_BG0CNT, 0);
     if (gGameWork.unk84 == 9) {
         v = 0x200;
         CpuFastSet(&v, gSpriteWork->oamBuf, 0x01000100);
