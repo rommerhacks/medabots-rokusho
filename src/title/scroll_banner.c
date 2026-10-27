@@ -54,8 +54,8 @@ void scroll_banner_init(void) {
     REG_WININ = 0x3F3F;
     REG_WINOUT = 0x3B3B;
     gBg2Scroll.y = 0x58;
-    gMenuWork->unk3A = 0;
-    init_blend_effect(gMenuWork->unk50, 0x10, 0, -1, 0xC0);
+    gMenuWork->frame = 0;
+    init_blend_effect(gMenuWork->blend, 0x10, 0, -1, 0xC0);
     gGameSubState++;
 }
 
@@ -63,13 +63,13 @@ void scene_scroll_with_fade(void) {
     struct MenuWork *s;
     struct Vec16 *b;
 
-    if (blend_fade_step_08065598(gMenuWork->unk50))
+    if (blend_fade_step_08065598(gMenuWork->blend))
         gGameSubState++;
     b = &gBg2Scroll;
     s = gMenuWork;
-    b->y = (u32)(s->unk3A * 16 + 0x1B8) % 512;
-    b->x = (s16)(s->unk3A & 0x20) ? 0x100 : 0;
-    s->unk3A++;
+    b->y = (u32)(s->frame * 16 + 0x1B8) % 512;
+    b->x = (s16)(s->frame & 0x20) ? 0x100 : 0;
+    s->frame++;
 }
 
 void update_scroll_animation_step(void) {
@@ -78,11 +78,11 @@ void update_scroll_animation_step(void) {
 
     b = &gBg2Scroll;
     s = gMenuWork;
-    b->y = (u32)(s->unk3A * 16 + 0x1B8) % 512;
-    b->x = (s16)(s->unk3A & 0x20) ? 0x100 : 0;
-    s->unk3A++;
+    b->y = (u32)(s->frame * 16 + 0x1B8) % 512;
+    b->x = (s16)(s->frame & 0x20) ? 0x100 : 0;
+    s->frame++;
     if (KEYS_LO(gRepeatKeys) & 1) {
-        init_blend_effect(s->unk50, 0, 0, 1, 0xC0);
+        init_blend_effect(s->blend, 0, 0, 1, 0xC0);
         gGameSubState++;
     }
 }
@@ -91,13 +91,13 @@ void scene_fade_and_scroll_camera(void) {
     struct MenuWork *s;
     struct Vec16 *b;
 
-    if (blend_fade_step_08065598(gMenuWork->unk50))
+    if (blend_fade_step_08065598(gMenuWork->blend))
         gGameSubState = 0;
     b = &gBg2Scroll;
     s = gMenuWork;
-    b->y = (u32)(s->unk3A * 16 + 0x1B8) % 512;
-    b->x = (s16)(s->unk3A & 0x20) ? 0x100 : 0;
-    s->unk3A++;
+    b->y = (u32)(s->frame * 16 + 0x1B8) % 512;
+    b->x = (s16)(s->frame & 0x20) ? 0x100 : 0;
+    s->frame++;
 }
 
 void scene_dispatch_and_tick(void) {

@@ -12,7 +12,7 @@ static inline void *vram_at(u32 off) {
 void medal_rename_draw_list(u8 start) {
     s32 i, j;
     s32 n;
-    u8 *p = &gMenuWork->unk30;
+    u8 *p = &gMenuWork->medal_list_count;
     if (*p > 3)
         n = 4;
     else
@@ -24,12 +24,12 @@ void medal_rename_draw_list(u8 start) {
         for (j = 0; j <= 10; j++)
             gSpriteEntries[i * 10 + 12 + j].unk0 &= 0xBFFF;
         for (j = 0; j <= 10; j++) {
-            gMenuWork->unk58[j] = gMedals[gMenuWork->unkB0[i + start]].name[j];
-            if (gMenuWork->unk58[j] == 0xFE)
+            gMenuWork->name_buf[j] = gMedals[gMenuWork->medal_list[i + start]].name[j];
+            if (gMenuWork->name_buf[j] == 0xFE)
                 break;
         }
-        render_text_sprites_08040DB8(gMenuWork->unk58, i * 10 + 12, 6, i * 2 + 3, 10, 13, 1, 1);
-        v = gMenuWork->unk36 + (gMedals[gMenuWork->unkB0[i + start]].graphicId * 4 + 1);
+        render_text_sprites_08040DB8(gMenuWork->name_buf, i * 10 + 12, 6, i * 2 + 3, 10, 13, 1, 1);
+        v = gMenuWork->bg_tile_base + (gMedals[gMenuWork->medal_list[i + start]].graphicId * 4 + 1);
         v |= 0x6000;
         dst = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + (i * 2 + 3) * 32;
         *dst = v;
@@ -56,8 +56,8 @@ void medal_rename_main(void) {
 }
 
 void medal_rename_reset_cursor(void) {
-    gMenuWork->unk2E = 0;
-    gMenuWork->unk2F = 0;
+    gMenuWork->medal_list_top = 0;
+    gMenuWork->medal_list_cursor = 0;
     gGameSubState++;
 }
 
@@ -74,11 +74,11 @@ void medal_rename_build_list(void) {
     n = 0;
     for (i = 0; i < 30; i++) {
         if (gMedals[i].flags & 0x80) {
-            gMenuWork->unkB0[n] = i;
+            gMenuWork->medal_list[n] = i;
             n++;
         }
     }
-    gMenuWork->unk30 = n;
+    gMenuWork->medal_list_count = n;
     if (gNameEntryMode != 2) {
         gGameState = 6;
         gGameSubState = 0;
@@ -111,7 +111,7 @@ void medal_rename_load_graphics(void) {
     decompress_and_write_tilemap(gUnk_0879A8BC, *bg3);
     size = dma3_copy_or_decompress(gUnk_08799D98, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
-    gMenuWork->unk36 = (size >> 5) - 1;
+    gMenuWork->bg_tile_base = (size >> 5) - 1;
     zero = 0;
     CpuFastSet(gMedalIconTiles, vram_at(size), 0x400);
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
@@ -121,7 +121,7 @@ void medal_rename_load_graphics(void) {
     gSpriteEntries[8].unkA = zero;
     gSpriteEntries[8].unk6 = 6;
     gSpriteEntries[8].unk2 = 0xC;
-    gSpriteEntries[8].unk4 = gMenuWork->unk2E * 16 + 0x1C;
+    gSpriteEntries[8].unk4 = gMenuWork->medal_list_top * 16 + 0x1C;
     for (i = 0; i <= 1; i++) {
         gSpriteEntries[i + 10].unk0 = 0x8000;
         gSpriteEntries[i + 10].unk1C = 2;
@@ -150,12 +150,12 @@ void medal_rename_load_palettes(void) {
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
     for (i = 0; i <= 15; i++)
-        gMenuWork->unk58[i] = 0xFE;
+        gMenuWork->name_buf[i] = 0xFE;
     if (gNameEntryMode == 0) {
-        for (i = 0; i <= 15 && gMenuWork->unk58[i] != 0xFE; i++)
+        for (i = 0; i <= 15 && gMenuWork->name_buf[i] != 0xFE; i++)
             ;
     } else
-        medal_rename_draw_list(gMenuWork->unk2F);
+        medal_rename_draw_list(gMenuWork->medal_list_cursor);
     CpuFastSet(gUnk_08483AA0, (void *)0x0202FA20, 8);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 8);
     CpuFastSet(gUnk_084E2E38, (void *)0x0202F9E0, 8);
@@ -173,9 +173,9 @@ void medal_rename_fade_in(void) {
         obj_palettes_blend_masked_now(0, 32 - s->unk84 * 4, 0xFFFF);
         s->unk84++;
     } else {
-        gMenuWork->unk4C = 0;
+        gMenuWork->message_pending = 0;
         text_window_init(1, 0, 0);
-        gMenuWork->unk6 = 0;
+        gMenuWork->returning = 0;
         gGameSubState++;
     }
 }
@@ -184,9 +184,9 @@ void medal_rename_select_medal(void) {
     u32 r = 1;
     u8 keys;
     u32 se;
-    if (gMenuWork->unk4C) {
+    if (gMenuWork->message_pending) {
         if (game_state_execute_handler_a()) {
-            gMenuWork->unk4C = 0;
+            gMenuWork->message_pending = 0;
             text_window_init(1, 0, 0);
         }
     } else if (run_message(gUnk_08485788[13]))
@@ -195,15 +195,15 @@ void medal_rename_select_medal(void) {
         return;
     sprite_bob_y(8, gFrameCounter, 12);
     gSpriteEntries[8].unk0 |= 0x4000;
-    if (gMenuWork->unk30 > 4) {
-        if (gMenuWork->unk2F != 0) {
+    if (gMenuWork->medal_list_count > 4) {
+        if (gMenuWork->medal_list_cursor != 0) {
             if ((gFrameCounter & 0xF) <= 9)
                 gSpriteEntries[10].unk0 |= 0x4000;
             else
                 gSpriteEntries[10].unk0 &= 0xBFFF;
         } else
             gSpriteEntries[10].unk0 &= 0xBFFF;
-        if (gMenuWork->unk2F + 4 >= gMenuWork->unk30)
+        if (gMenuWork->medal_list_cursor + 4 >= gMenuWork->medal_list_count)
             gSpriteEntries[11].unk0 &= 0xBFFF;
         else if ((gFrameCounter & 0xF) <= 9)
             gSpriteEntries[11].unk0 |= 0x4000;
@@ -212,41 +212,41 @@ void medal_rename_select_medal(void) {
     }
     if ((keys = KEYS_LO(gRepeatKeys) & 0x40)) {
         se = 2;
-        if (gMenuWork->unk2E != 0)
-            gMenuWork->unk2E--;
-        else if (gMenuWork->unk2F != 0)
-            gMenuWork->unk2F--;
-        else if (gMenuWork->unk30 <= 3)
-            gMenuWork->unk2E = gMenuWork->unk30 - 1;
+        if (gMenuWork->medal_list_top != 0)
+            gMenuWork->medal_list_top--;
+        else if (gMenuWork->medal_list_cursor != 0)
+            gMenuWork->medal_list_cursor--;
+        else if (gMenuWork->medal_list_count <= 3)
+            gMenuWork->medal_list_top = gMenuWork->medal_list_count - 1;
         else
             goto skip;
         if (se != 0)
             play_sound_effect(se);
     skip:
-        medal_rename_draw_list(gMenuWork->unk2F);
+        medal_rename_draw_list(gMenuWork->medal_list_cursor);
     } else if (KEYS_LO(gRepeatKeys) & 0x80) {
         se = 2;
-        if (gMenuWork->unk30 <= 3) {
-            if (gMenuWork->unk2E == gMenuWork->unk30 - 1)
-                gMenuWork->unk2E = keys;
+        if (gMenuWork->medal_list_count <= 3) {
+            if (gMenuWork->medal_list_top == gMenuWork->medal_list_count - 1)
+                gMenuWork->medal_list_top = keys;
             else
-                gMenuWork->unk2E++;
-        } else if (gMenuWork->unk2E == 3) {
-            if (gMenuWork->unk2F == gMenuWork->unk30 - 4)
+                gMenuWork->medal_list_top++;
+        } else if (gMenuWork->medal_list_top == 3) {
+            if (gMenuWork->medal_list_cursor == gMenuWork->medal_list_count - 4)
                 se = 0;
             else
-                gMenuWork->unk2F++;
+                gMenuWork->medal_list_cursor++;
         } else
-            gMenuWork->unk2E++;
+            gMenuWork->medal_list_top++;
         if (se != 0)
             play_sound_effect(se);
-        medal_rename_draw_list(gMenuWork->unk2F);
+        medal_rename_draw_list(gMenuWork->medal_list_cursor);
     } else if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         gSpriteEntries[10].unk0 &= 0xBFFF;
         gSpriteEntries[11].unk0 &= 0xBFFF;
         gSpriteEntries[8].unk2 = 12;
-        gMenuWork->unk4C = 1;
+        gMenuWork->message_pending = 1;
         gGameWork.endModeStep = 0;
         gGameSubState = 9;
         open_choice_menu(1, 0x16, 7);
@@ -262,7 +262,7 @@ void medal_rename_select_medal(void) {
         return;
     }
     gSpriteEntries[8].unk2 = 12;
-    gSpriteEntries[8].unk4 = gMenuWork->unk2E * 16 + 0x1C;
+    gSpriteEntries[8].unk4 = gMenuWork->medal_list_top * 16 + 0x1C;
 }
 
 void medal_rename_fade_to_name_entry(void) {
@@ -297,9 +297,9 @@ void medal_rename_fade_to_field(void) {
 
 void medal_rename_no_money(void) {
     u32 r = 1;
-    if (gMenuWork->unk4C) {
+    if (gMenuWork->message_pending) {
         if (game_state_execute_handler_a()) {
-            gMenuWork->unk4C = 0;
+            gMenuWork->message_pending = 0;
             text_window_init(1, 0, 0);
         }
     } else if (run_message(gUnk_08485788[15]))
@@ -314,9 +314,9 @@ void medal_rename_no_money(void) {
 void medal_rename_confirm_payment(void) {
     u32 r = 1;
     u32 sel;
-    if (gMenuWork->unk4C) {
+    if (gMenuWork->message_pending) {
         if (game_state_execute_handler_a()) {
-            gMenuWork->unk4C = 0;
+            gMenuWork->message_pending = 0;
             text_window_init(1, 0, 0);
         }
     } else if (run_message(gUnk_08485788[14]))
@@ -324,15 +324,15 @@ void medal_rename_confirm_payment(void) {
     if (r == 0 && (r = poll_choice_menu()) != 0) {
         u32 c = r & 0xF0;
         if (c) {
-            gMenuWork->unk4C = 1;
+            gMenuWork->message_pending = 1;
             gGameSubState = 5;
         } else if (gMoney <= 99) {
             gGameSubState = 8;
-            gMenuWork->unk3A = 0xB4;
-            gMenuWork->unk4C = 1;
+            gMenuWork->frame = 0xB4;
+            gMenuWork->message_pending = 1;
         } else {
             gMoney -= 100;
-            gCurrentMedalSlot = gMenuWork->unkB0[gMenuWork->unk2E + gMenuWork->unk2F];
+            gCurrentMedalSlot = gMenuWork->medal_list[gMenuWork->medal_list_top + gMenuWork->medal_list_cursor];
             gGameWork.unk84 = c;
             gGameSubState = 6;
         }

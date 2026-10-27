@@ -47,7 +47,7 @@ void save_lost_load_graphics(void) {
     decompress_and_write_tilemap(gSaveLostBg3Tilemap, *bg3);
     size = dma3_copy_or_decompress(gSaveLostBgTiles, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
-    gMenuWork->unk36 = size / 32 - 1;
+    gMenuWork->bg_tile_base = size / 32 - 1;
     CpuFastSet(gSaveLostBgPalette, (void *)PLTT, 0x38);
     CpuFastSet(gSaveLostSpritePalette, (void *)(PLTT + 0x200), 8);
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
@@ -66,16 +66,16 @@ void save_lost_start_fade_in(void) {
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
-    gMenuWork->unk0 = 0x20;
-    REG_BLDY = gMenuWork->unk0 >> 1;
+    gMenuWork->fade_level = 0x20;
+    REG_BLDY = gMenuWork->fade_level >> 1;
     gGameSubState++;
 }
 
 void save_lost_fade_in(void) {
     struct MenuWork *state = gMenuWork;
 
-    if (state->unk0 != 0)
-        REG_BLDY = state->unk0-- >> 1;
+    if (state->fade_level != 0)
+        REG_BLDY = state->fade_level-- >> 1;
     else
         gGameSubState++;
 }
@@ -84,16 +84,16 @@ void save_lost_wait_for_a(void) {
     save_lost_animate_sprite();
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
-        gMenuWork->unk0 = 0;
+        gMenuWork->fade_level = 0;
         gGameSubState++;
     }
 }
 
 void save_lost_fade_out(void) {
     save_lost_animate_sprite();
-    if (gMenuWork->unk0 != 32) {
-        gMenuWork->unk0++;
-        REG_BLDY = gMenuWork->unk0 >> 1;
+    if (gMenuWork->fade_level != 32) {
+        gMenuWork->fade_level++;
+        REG_BLDY = gMenuWork->fade_level >> 1;
     } else {
         REG_DISPCNT &= 0xFDFF;
         gGameSubState++;

@@ -67,7 +67,7 @@ void save_screen_load_graphics(void) {
     size = dma3_copy_or_decompress(gUnk_0878CC64, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     lz_decompress_dispatch(gUnk_08784CB0, vram_at(size));
-    gMenuWork->unk36 = (size >> 5) - 1;
+    gMenuWork->bg_tile_base = (size >> 5) - 1;
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     gSpriteEntries[0].unk0 = 0xC000;
     gSpriteEntries[0].unk1C = 2;
@@ -168,13 +168,13 @@ void save_screen_show_saving(void) {
         play_song(0);
         play_sound_effect(0);
         eeprom_setup_timer_irq();
-        gMenuWork->unk2 = 0;
+        gMenuWork->timer = 0;
         gGameSubState++;
     }
 }
 
 void save_screen_write_save(void) {
-    u8 t = gMenuWork->unk2++;
+    u8 t = gMenuWork->timer++;
     u16 err = 0;
     s8 i;
 
@@ -187,18 +187,18 @@ void save_screen_write_save(void) {
         play_song(6);
         if (err == 0) {
             message_next();
-            gMenuWork->unk2 = err;
+            gMenuWork->timer = err;
             gGameSubState++;
         } else {
             message_next();
-            gMenuWork->unk2 = 0;
+            gMenuWork->timer = 0;
             gGameSubState = 12;
         }
     }
 }
 
 void save_screen_show_saved(void) {
-    u8 t = gMenuWork->unk2++;
+    u8 t = gMenuWork->timer++;
     if (run_message(gUnk_08485788[11]) && t > 60)
         gGameSubState++;
 }
@@ -231,7 +231,7 @@ void save_screen_fade_out(void) {
 }
 
 void save_screen_show_failed(void) {
-    u8 t = gMenuWork->unk2++;
+    u8 t = gMenuWork->timer++;
     if (run_message(gUnk_08485788[12]) && t > 60)
         gGameSubState = 9;
 }

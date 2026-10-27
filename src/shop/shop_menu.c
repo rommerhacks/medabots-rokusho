@@ -8,7 +8,7 @@ static inline void *vram_at(u32 off) {
 }
 
 void shop_highlight_part_type_icon(u32 sel, u32 frame) {
-    u16 t = (s16)(sel * 4 + gMenuWork->unk38 + 5) | (s16)0xC000;
+    u16 t = (s16)(sel * 4 + gMenuWork->obj_tile_base + 5) | (s16)0xC000;
     s32 i, j;
     u16 *a, *b;
     u16 pal;
@@ -59,8 +59,8 @@ void shop_menu_dispatch(void) {
 }
 
 void shop_menu_start(void) {
-    gMenuWork->unk5 = 0;
-    gMenuWork->unk6 = 0;
+    gMenuWork->cursor = 0;
+    gMenuWork->returning = 0;
     gGameSubState = 14;
 }
 
@@ -109,14 +109,14 @@ void shop_menu_load_graphics(void) {
     off = 0x4000;
     CpuCopy16(gDecompressBuffer, (void *)(off + vram), size);
     n = lz_decompress_dispatch(gUnk_084C4DB0, vram_at(size));
-    gMenuWork->unk38 = (size >> 5) - 1;
+    gMenuWork->obj_tile_base = (size >> 5) - 1;
     size += n;
     tilemap_offset_tiles_and_palette(size >> 5, 0, 0x1B);
     tilemap_offset_tiles_and_palette(size >> 5, 0, 0x1A);
     n = dma3_copy_or_decompress(gUnk_08798F2C, gDecompressBuffer);
     dst = vram_at(size);
     CpuCopy16(gDecompressBuffer, dst, n);
-    gMenuWork->unk36 = ((size + n) >> 5) - 1;
+    gMenuWork->bg_tile_base = ((size + n) >> 5) - 1;
     lz_decompress_dispatch(gUnk_08784CB0, dst += n);
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
@@ -136,7 +136,7 @@ void shop_menu_init(void) {
     gSpriteEntries[8].unkA = 0xE;
     gSpriteEntries[8].unk6 = 0x307;
     gSpriteEntries[8].unk2 = 8;
-    gSpriteEntries[8].unk4 = gMenuWork->unk5 * 24 + 0x20;
+    gSpriteEntries[8].unk4 = gMenuWork->cursor * 24 + 0x20;
     gSpriteEntries[8].unk0 |= 0x1200;
     gSpriteEntries[8].unk8 = 0x40;
     gSpriteEntries[8].unk9 = 0x40;
@@ -186,11 +186,11 @@ void shop_menu_show_layers(void) {
 
 // State 3: fade in from white; back from the list (unk6 == 1) it goes straight to the part types (state 9).
 void shop_menu_fade_in(void) {
-    if (gMenuWork->unk6 == 1) {
+    if (gMenuWork->returning == 1) {
         struct GameWork *s;
         u8 *n;
 
-        shop_highlight_part_type_icon(gMenuWork->unk19, 8);
+        shop_highlight_part_type_icon(gMenuWork->part_kind, 8);
         s = &gGameWork;
         n = &s->unk84;
         if (*n <= 8) {
@@ -198,11 +198,11 @@ void shop_menu_fade_in(void) {
             obj_palettes_blend_masked_now(0, 0x20 - *n * 4, 0x7FFD);
             (*n)++;
         } else {
-            gMenuWork->unk2 = 0;
+            gMenuWork->timer = 0;
             text_window_init(1, 0, 0);
-            gMenuWork->unk2 = 0;
-            gMenuWork->unk0 = 0;
-            gMenuWork->unk6 = 0;
+            gMenuWork->timer = 0;
+            gMenuWork->fade_level = 0;
+            gMenuWork->returning = 0;
             gGameSubState = 9;
         }
     } else {
@@ -214,18 +214,18 @@ void shop_menu_fade_in(void) {
             obj_palettes_blend_masked_now(0, 0x20 - *n * 4, 0xFFFF);
             (*n)++;
         } else {
-            gMenuWork->unk2 = 0;
+            gMenuWork->timer = 0;
             gSpriteEntries[8].unk0 |= 0x4000;
             text_window_init(1, 0, 0);
-            gMenuWork->unk2 = 0;
-            gMenuWork->unk0 = 0;
+            gMenuWork->timer = 0;
+            gMenuWork->fade_level = 0;
             gGameSubState++;
         }
     }
 }
 
 void shop_menu_greeting(void) {
-    u8 *buf = gMenuWork->unk270;
+    u8 *buf = gMenuWork->message_buf;
 
     shop_copy_text_with_portrait(buf, gShopGreetingText);
     if (run_message(buf)) {
@@ -239,32 +239,32 @@ void shop_menu_choose_action(void) {
     sprite_bob_y(8, gFrameCounter, 8);
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         play_sound_effect(2);
-        if (gMenuWork->unk5 != 0)
-            gMenuWork->unk5--;
+        if (gMenuWork->cursor != 0)
+            gMenuWork->cursor--;
         else
-            gMenuWork->unk5 = 2;
+            gMenuWork->cursor = 2;
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
         play_sound_effect(2);
-        if (gMenuWork->unk5 <= 1)
-            gMenuWork->unk5++;
+        if (gMenuWork->cursor <= 1)
+            gMenuWork->cursor++;
         else
-            gMenuWork->unk5 = 0;
+            gMenuWork->cursor = 0;
     }
-    gSpriteEntries[8].unk4 = gMenuWork->unk5 * 24 + 0x20;
+    gSpriteEntries[8].unk4 = gMenuWork->cursor * 24 + 0x20;
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
-        switch (gMenuWork->unk5) {
+        switch (gMenuWork->cursor) {
         case 0:
-            gMenuWork->unk2 = 0;
+            gMenuWork->timer = 0;
             gGameSubState = 8;
-            gMenuWork->unk6 = 0;
+            gMenuWork->returning = 0;
             shop_highlight_part_type_icon(0, 0);
             break;
         case 1:
-            gMenuWork->unk2 = 0;
+            gMenuWork->timer = 0;
             gGameSubState = 8;
-            gMenuWork->unk6 = 0;
+            gMenuWork->returning = 0;
             shop_highlight_part_type_icon(0, 0);
             break;
         case 2:
@@ -304,7 +304,7 @@ void shop_menu_fade_out_exit(void) {
 }
 
 void shop_menu_open_part_types(void) {
-    u8 t = gMenuWork->unk2++;
+    u8 t = gMenuWork->timer++;
 
     if (gSpriteEntries[8].unk8 > 4) {
         gSpriteEntries[8].unk8 -= 4;
@@ -321,13 +321,13 @@ void shop_menu_open_part_types(void) {
         message_next();
         gGameSubState++;
     }
-    gMenuWork->unk19 = 0;
+    gMenuWork->part_kind = 0;
 }
 
 void shop_menu_part_type_prompt(void) {
     u8 buf[0x30];
 
-    shop_copy_text_with_portrait(buf, gMenuWork->unk5 == 0 ? gShopBuyPartTypeText : gShopSellPartTypeText);
+    shop_copy_text_with_portrait(buf, gMenuWork->cursor == 0 ? gShopBuyPartTypeText : gShopSellPartTypeText);
     if (run_message(buf))
         gGameSubState++;
 }
@@ -339,41 +339,41 @@ void shop_menu_choose_part_type(void) {
     for (i = 0; i < 4; i++) {
         if ((gFrameCounter >> 3) & 1)
             gSpriteEntries[12 + i].unk0 |= 0x4000;
-        else if (gMenuWork->unk19 == i)
-            gSpriteEntries[12 + gMenuWork->unk19].unk0 &= 0xBFFF;
+        else if (gMenuWork->part_kind == i)
+            gSpriteEntries[12 + gMenuWork->part_kind].unk0 &= 0xBFFF;
     }
     if (KEYS_LO(gNewKeys) & 0x40) {
         play_sound_effect(2);
-        gMenuWork->unk19 = 0;
+        gMenuWork->part_kind = 0;
         shop_highlight_part_type_icon(0, gFrameCounter);
     }
     if (KEYS_LO(gNewKeys) & 0x80) {
         play_sound_effect(2);
-        gMenuWork->unk19 = 3;
+        gMenuWork->part_kind = 3;
         shop_highlight_part_type_icon(3, gFrameCounter);
     }
     if (KEYS_LO(gNewKeys) & 0x20) {
         play_sound_effect(2);
-        gMenuWork->unk19 = 1;
+        gMenuWork->part_kind = 1;
         shop_highlight_part_type_icon(1, gFrameCounter);
     }
     if (KEYS_LO(gNewKeys) & 0x10) {
         play_sound_effect(2);
-        gMenuWork->unk19 = 2;
+        gMenuWork->part_kind = 2;
         shop_highlight_part_type_icon(2, gFrameCounter);
     }
     if (!(gFrameCounter & 7))
-        shop_highlight_part_type_icon(gMenuWork->unk19, gFrameCounter);
+        shop_highlight_part_type_icon(gMenuWork->part_kind, gFrameCounter);
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         for (i = 0; i < 4; i++)
             gSpriteEntries[12 + i].unk0 |= 0x4000;
-        if (gMenuWork->unk19 == 4) {
+        if (gMenuWork->part_kind == 4) {
         back:
             gGameSubState = 0xB;
         } else {
             gGameWork.unk84 = 0;
-            gMenuWork->unk48 = 0x2D;
+            gMenuWork->counter = 0x2D;
             gGameSubState = 0xC;
         }
     } else if (KEYS_LO(gNewKeys) & 2) {
@@ -382,13 +382,13 @@ void shop_menu_choose_part_type(void) {
             gSpriteEntries[12 + i].unk0 &= 0xBFFF;
         REG_DISPCNT |= 0x200;
         gSpriteEntries[8].unk0 |= 0x4000;
-        gMenuWork->unk2 = 0x10;
+        gMenuWork->timer = 0x10;
         goto back;
     }
 }
 
 void shop_menu_close_part_types(void) {
-    u8 t = gMenuWork->unk2--;
+    u8 t = gMenuWork->timer--;
 
     if (gSpriteEntries[8].unk8 < 0x40) {
         gSpriteEntries[8].unk8 += 4;
@@ -408,8 +408,8 @@ void shop_menu_close_part_types(void) {
 void shop_menu_part_type_chosen(void) {
     u8 *t;
 
-    shop_highlight_part_type_icon(gMenuWork->unk19, gFrameCounter * 2);
-    t = &gMenuWork->unk48;
+    shop_highlight_part_type_icon(gMenuWork->part_kind, gFrameCounter * 2);
+    t = &gMenuWork->counter;
     if (*t != 0)
         (*t)--;
     else if (game_state_execute_handler_a()) {
@@ -430,8 +430,8 @@ void shop_menu_fade_out_to_list(void) {
     } else {
         for (i = 0; i < 4; i++)
             gSpriteEntries[12 + i].unk0 &= 0xBFFF;
-        gMenuWork->unk6 = 1;
-        gMenuWork->unk1A = 0;
+        gMenuWork->returning = 1;
+        gMenuWork->list_cursor = 0;
         *(u8 *)0x02023078 = 0;
         {
             u8 *b;

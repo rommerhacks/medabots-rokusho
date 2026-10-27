@@ -14,11 +14,11 @@ void link_medal_sync_init(void) {
         if (gMedals[i].flags & 0x80)
             mask |= 1 << gMedals[i].graphicId;
     }
-    gMenuWork->unk48 = 0;
+    gMenuWork->counter = 0;
     gMenuWork->unk49 = 0;
-    gMenuWork->unk4A = 0;
-    gMenuWork->unk4B = 0;
-    gMenuWork->unk1C = gMenuWork->unk7A ? mask : 0;
+    gMenuWork->pending_sound = 0;
+    gMenuWork->sound_delay = 0;
+    gMenuWork->total = gMenuWork->partner_chose ? mask : 0;
     gGameSubState++;
 }
 
@@ -30,18 +30,18 @@ void link_medal_sync_exchange(void) {
 
     pkt = gUnk_03005010.unk8[gUnk_03000B90 == 0][1];
     s = gMenuWork;
-    if (!s->unk7A) {
+    if (!s->partner_chose) {
         if ((pkt & 0xFC00) == 0xF400) {
             m = ((u32)pkt >> 8) & 3;
-            s->unk1C |= (pkt & 0xFF) << (m * 8);
-            s->unk48 |= 1 << m;
+            s->total |= (pkt & 0xFF) << (m * 8);
+            s->counter |= 1 << m;
         }
-        gUnk_03005010.unk6 = gMenuWork->unk48 | 0xFC00;
+        gUnk_03005010.unk6 = gMenuWork->counter | 0xFC00;
     } else if ((pkt & 0xFF00) == 0xFC00) {
         if (pkt == 0xFC0F)
             gUnk_03005010.unk6 = pkt;
         else {
-            m = s->unk1C;
+            m = s->total;
             for (i = 0; i <= 3; i++) {
                 if (!((pkt >> i) & 1)) {
                     gUnk_03005010.unk6 = (m & 0xFF) | (i << 8 | 0xF400);
@@ -52,11 +52,11 @@ void link_medal_sync_exchange(void) {
         }
     }
     if (gUnk_03005010.unk8[0][1] == 0xFC0F && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1]) {
-        if (gMenuWork->unk7A) {
+        if (gMenuWork->partner_chose) {
             gGameState = 0x11;
             gGameSubState = 0;
         } else {
-            gUnk_03002B68 = gMenuWork->unk1C;
+            gUnk_03002B68 = gMenuWork->total;
             init_game_mode(0);
         }
     }

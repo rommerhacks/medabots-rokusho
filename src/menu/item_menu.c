@@ -16,8 +16,8 @@ void item_menu_update(void) {
 // While a SELECT swap is active, blinks the swap marker (sprite 84) if the marked item is on this page.
 static void item_menu_blink_swap_marker(u32 a) {
     struct MenuWork *w = gMenuWork;
-    if (w->unk12) {
-        if (w->unk13 >= w->unk11 && w->unk13 < w->unk11 + 5) {
+    if (w->swap_pending) {
+        if (w->swap_from >= w->list_top && w->swap_from < w->list_top + 5) {
             if (a & 1)
                 gSpriteEntries[84].unk0 &= 0xBFFF;
             else
@@ -60,7 +60,7 @@ void item_menu_load_graphics(void) {
     size = dma3_copy_or_decompress(gUnk_0878B078, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     lz_decompress_dispatch(gUnk_08784CB0, vram_at(size));
-    gMenuWork->unk36 = (size >> 5) - 1;
+    gMenuWork->bg_tile_base = (size >> 5) - 1;
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     for (i = 0; i <= 1; i++) {
         gSpriteEntries[i + 0x51].unk0 = 0x8000;
@@ -93,21 +93,21 @@ void item_menu_init(void) {
     u32 zero;
     struct MenuWork *w;
 
-    gMenuWork->unk6 = 0;
-    gMenuWork->unkC = 0;
-    gMenuWork->unk11 = 0;
+    gMenuWork->returning = 0;
+    gMenuWork->item_cursor = 0;
+    gMenuWork->list_top = 0;
     unpack_item_inventory_to_buffer();
     update_battle_medapart_icons();
-    if (gMenuWork->unk10) {
+    if (gMenuWork->item_count) {
         gSpriteEntries[0x53].unk0 |= 0x4000;
         item_menu_set_cursor_pos(&gSpriteEntries[0x53]);
     }
     w = gMenuWork;
-    if ((w->unk10 - 1) / 5) {
+    if ((w->item_count - 1) / 5) {
         gSpriteEntries[0x51].unk0 |= 0x4000;
         gSpriteEntries[0x52].unk0 |= 0x4000;
     }
-    w->unk12 = 0;
+    w->swap_pending = 0;
     CpuFastSet(gUnk_0850DCF8, gPaletteBackup, 0x80);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 8);
     CpuFastSet(gUnk_080AF7C0, (void *)0x0202F9C0, 8);
@@ -125,7 +125,7 @@ void item_menu_init(void) {
 void item_menu_fade_in(void) {
     struct GameWork *b = &gGameWork;
     if (b->unk84 <= 8) {
-        if (gMenuWork->unk6 == 0)
+        if (gMenuWork->returning == 0)
             bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0x3FFF);
         else
             bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0xFFFF);
@@ -143,9 +143,9 @@ void item_menu_show_description(void) {
     item_menu_blink_swap_marker(gFrameCounter);
     sprite_bob_y(0x53, gFrameCounter, 0x54);
     w = gMenuWork;
-    if (w->unk10) {
+    if (w->item_count) {
         struct ItemListEntry *l = (struct ItemListEntry *)0x02040000;
-        id = l[w->unkC].id;
+        id = l[w->item_cursor].id;
     } else
         id = 0x3F;
     if (run_message(gItemDescriptions[id]))
@@ -165,7 +165,7 @@ void item_menu_handle_input(void) {
     u8 cnt;
 
     sprite_bob_y(0x53, gFrameCounter, 0x54);
-    if ((gMenuWork->unk10 - 1) / 5) {
+    if ((gMenuWork->item_count - 1) / 5) {
         if ((gFrameCounter >> 4) & 1) {
             gSpriteEntries[0x51].unk0 |= 0x4000;
             gSpriteEntries[0x52].unk0 |= 0x4000;
@@ -176,45 +176,45 @@ void item_menu_handle_input(void) {
     }
 
     w = gMenuWork;
-    if (w->unk10 > 1) {
+    if (w->item_count > 1) {
         if (KEYS_LO(gRepeatKeys) & 0x40) {
-            if (w->unkC == w->unk11) {
-                if ((u8)(w->unk11 / n) == (u8)(w->unk10 / n))
-                    w->unkC = w->unk11 + w->unk10 % n - 1;
+            if (w->item_cursor == w->list_top) {
+                if ((u8)(w->list_top / n) == (u8)(w->item_count / n))
+                    w->item_cursor = w->list_top + w->item_count % n - 1;
                 else
-                    w->unkC = n + w->unk11 - 1;
+                    w->item_cursor = n + w->list_top - 1;
             } else
-                w->unkC--;
+                w->item_cursor--;
             goto moved;
         } else if (KEYS_LO(gRepeatKeys) & 0x80) {
-            if ((u8)(w->unk11 / n) == (u8)(w->unk10 / n)) {
-                if (w->unkC == w->unk11 + (u8)(w->unk10 % n) - 1)
-                    w->unkC = w->unk11;
+            if ((u8)(w->list_top / n) == (u8)(w->item_count / n)) {
+                if (w->item_cursor == w->list_top + (u8)(w->item_count % n) - 1)
+                    w->item_cursor = w->list_top;
                 else
-                    w->unkC++;
+                    w->item_cursor++;
             } else {
-                if (w->unkC == w->unk11 + n - 1)
-                    w->unkC = w->unk11;
+                if (w->item_cursor == w->list_top + n - 1)
+                    w->item_cursor = w->list_top;
                 else
-                    w->unkC++;
+                    w->item_cursor++;
             }
             goto moved;
-        } else if ((cnt = w->unk10) >= n + 1) {
+        } else if ((cnt = w->item_count) >= n + 1) {
             if (KEYS_LO(gRepeatKeys) & 0x10) {
-                if (w->unk11 + n >= cnt)
-                    w->unk11 = 0;
+                if (w->list_top + n >= cnt)
+                    w->list_top = 0;
                 else
-                    w->unk11 += n;
+                    w->list_top += n;
             } else if (KEYS_LO(gRepeatKeys) & 0x20) {
-                if (w->unk11 >= n)
-                    w->unk11 -= n;
+                if (w->list_top >= n)
+                    w->list_top -= n;
                 else if ((u8)(cnt % n) == 0)
-                    w->unk11 = cnt - n;
+                    w->list_top = cnt - n;
                 else
-                    w->unk11 = cnt / n * n;
+                    w->list_top = cnt / n * n;
             } else
                 goto other;
-            gMenuWork->unkC = gMenuWork->unk11;
+            gMenuWork->item_cursor = gMenuWork->list_top;
             update_battle_medapart_icons();
             item_menu_update_swap_marker(&gSpriteEntries[0x54]);
             goto moved;
@@ -223,37 +223,37 @@ void item_menu_handle_input(void) {
 
 other:
     w2 = gMenuWork;
-    if (w2->unk12) {
+    if (w2->swap_pending) {
         item_menu_blink_swap_marker(gFrameCounter);
         if (KEYS_LO(gNewKeys) & 2) {
             gSpriteEntries[0x54].unk0 &= 0xBFFF;
-            gMenuWork->unk12 = 0;
+            gMenuWork->swap_pending = 0;
             goto moved;
         }
         if (!(KEYS_LO(gNewKeys) & 5))
             return;
         gSpriteEntries[0x54].unk0 &= 0xBFFF;
-        gMenuWork->unk12 = 0;
+        gMenuWork->swap_pending = 0;
         swap_inventory_items();
         unpack_item_inventory_to_buffer();
         update_battle_medapart_icons();
         goto moved;
     }
-    if (w2->unk10 > 1 && (KEYS_LO(gNewKeys) & 4)) {
-        w2->unk2 = 0;
+    if (w2->item_count > 1 && (KEYS_LO(gNewKeys) & 4)) {
+        w2->timer = 0;
         play_sound_effect(2);
         item_menu_start_swap();
     }
     w3 = gMenuWork;
-    if (w3->unk12)
+    if (w3->swap_pending)
         return;
     if (KEYS_LO(gNewKeys) & 1) {
-        if (w3->unk10 == 0)
+        if (w3->item_count == 0)
             goto cancel;
         sel = &gUnk_03006D38;
         list = ITEM_LIST;
-        sel->unk4 = list[w3->unkC].id;
-        switch ((s32)item_get_use_result(list[w3->unkC].id)) {
+        sel->unk4 = list[w3->item_cursor].id;
+        switch ((s32)item_get_use_result(list[w3->item_cursor].id)) {
         case 2:
         case 3:
         case 4:
@@ -265,9 +265,9 @@ other:
             return;
         case 1:
             play_sound_effect(4);
-            switch (ITEM_LIST[gMenuWork->unkC].id) {
+            switch (ITEM_LIST[gMenuWork->item_cursor].id) {
             case 0:
-                gMenuWork->unk0 = 0;
+                gMenuWork->fade_level = 0;
                 gGameSubState = 0xB;
                 return;
             case 1:
@@ -327,8 +327,8 @@ void item_menu_start_swap(void) {
     gSpriteEntries[0x54].unk0 |= 0x4000;
     gSpriteEntries[0x54].unk2++;
     gSpriteEntries[0x54].unk4++;
-    (*pw)->unk12 = 1;
-    (*pw)->unk13 = (*pw)->unkC;
+    (*pw)->swap_pending = 1;
+    (*pw)->swap_from = (*pw)->item_cursor;
 }
 
 void item_menu_close_message(void) {
@@ -373,13 +373,13 @@ void item_menu_start_town_map_fade(void) {
 
 void item_menu_fade_to_town_map(void) {
     struct MenuWork *w = gMenuWork;
-    if (w->unk0 != 8) {
-        REG_BLDY = ++w->unk0 * 2;
+    if (w->fade_level != 8) {
+        REG_BLDY = ++w->fade_level * 2;
     } else {
         REG_DISPCNT &= 0xFDFF;
         REG_DISPCNT &= 0xFBFF;
         clear_battle_sprite_slot(0, 0x80);
-        gMenuWork->unk6 = 1;
+        gMenuWork->returning = 1;
         gGameState = 10;
         gGameSubState = 0;
     }

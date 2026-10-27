@@ -1555,84 +1555,85 @@ struct RingPoint {
     u8 fillerC[4];
 };
 
-// Menu / save screen work area, reached through the pointer gMenuWork (layout as used by code_0805AB40)
+// Work area shared by the menus and screens, reached through the pointer gMenuWork. Each screen clears it
+// and uses the fields it needs, so several fields have one meaning per screen (noted where it differs).
 struct MenuWork {
-    u8 unk0;
+    u8 fade_level; // BLDY fade 0-32 (title / test mode / game over / Save Lost), 0-8 (item menu, town map)
     u8 unk1;
-    u16 unk2;
-    u8 unk4; // title menu: first selectable entry (1 without a valid save)
-    u8 unk5; // title menu: cursor (0-2)
-    u8 unk6;
+    u16 timer;      // frame counter of the current sub-state; name entry: cursor blink frames
+    u8 first_entry; // title menu: first selectable entry (1 without a valid save)
+    u8 cursor;      // menu cursor (title menu 0-2, shop, link menu, test mode); text scroll: page
+    u8 returning;   // 1: back from a sub-screen (item / shop menus); name entry: cursor blink direction
     u8 unk7;
-    u32 unk8;
-    u8 unkC; // Item screen: cursor item index (page = unkC / 5)
-    u8 unkD;
-    u8 unkE;
-    u8 unkF;
-    u8 unk10; // number of items unpacked by unpack_item_inventory_to_buffer
-    u8 unk11; // first visible list row
-    u8 unk12;
-    u8 unk13; // cursor row
+    u32 step;        // link start: message step; name entry: cursor bounce offset
+    u8 item_cursor;  // Item screen: cursor item index (page = item_cursor / 5)
+    u8 grid_col;     // name entry: letter column (row 3: Space / Back / End)
+    u8 grid_row;     // name entry: letter row 0-2, 3 = Space / Back / End
+    u8 name_len;     // name entry: letters typed (max 10)
+    u8 item_count;   // number of items unpacked by unpack_item_inventory_to_buffer
+    u8 list_top;     // first visible list row
+    u8 swap_pending; // Item screen: an item is picked up for swapping
+    u8 swap_from;    // Item screen: index of the picked-up item
     u8 filler14;
-    u8 unk15;
-    u8 unk16;
-    u8 unk17;
-    u8 unk18;
-    u8 unk19;
-    u8 unk1A;
+    u8 shake_amplitude; // screen shake amplitude, counts down (game over)
+    u8 shake_speed;     // screen shake speed, counts up
+    u8 town_map_place;  // Town Map: place under the cursor
+    u8 cursor_style;    // Town Map: cursor animation set / palette
+    u8 part_kind;       // shop: Medapart kind (head / right arm / left arm / legs; 4 = exit)
+    u8 list_cursor;     // shop list: cursor row
     u8 filler1B;
-    u32 unk1C;
-    u8 unk20; // number of save / link slots shown (update_battle_sprite_priority_flags)
+    u32 total;     // shop list: cart total price; link Medal sync: Medal mask
+    u8 list_count; // entries in the shop / item / save list
     u8 filler21[0xA];
-    u8 unk2B;
-    u16 unk2C;
-    u8 unk2E; // Medal list: first visible row (medal_rename_draw_list)
-    u8 unk2F; // Medal list: cursor row
-    u8 unk30; // Medal list: number of entries in unkB0
-    u8 unk31;
-    u8 unk32;
-    u8 unk33;
-    u8 unk34;
+    u8 sound_test_song;    // test mode: song number (0-51)
+    u16 sound_test_effect; // test mode: sound effect number (0-117)
+    u8 medal_list_top;     // Medal list: first visible row (medal_rename_draw_list)
+    u8 medal_list_cursor;  // Medal list: cursor row
+    u8 medal_list_count;   // Medal list: number of entries in medal_list
+    u8 own_part_id;        // link trade: Medapart offered by this side
+    u8 partner_part_id;    // link trade: Medapart offered by the other side
+    u8 own_part_kind;      // link trade: kind of own_part_id
+    u8 partner_part_kind;  // link trade: kind of partner_part_id
     u8 filler35;
-    u16 unk36; // save screen: last BG tile index loaded (save_screen_load_graphics)
-    u16 unk38;
-    s16 unk3A; // title: blend step (title_menu_blend_step)
-    u16 unk3C;
-    s16 unk3E;
-    u16 unk40[4];
-    u8 unk48;
-    u8 unk49;
-    u8 unk4A;
-    u8 unk4B;
-    u8 unk4C; // message pending (medal_rename_no_money)
+    u16 bg_tile_base;   // first BG tile of the screen's extra graphics (digits, icons)
+    u16 obj_tile_base;  // shop menu: last tile of the part type icons
+    s16 frame;          // frame / animation counter (title blend step, link trade tile animation, text scroll)
+    u16 ticks;          // rings: frame counter; link trade: timeout countdown
+    s16 fade_step;      // text scroll: fade-out step (0-192)
+    u16 saved_tiles[4]; // link trade: BG2 tilemap entries restored under the Medal icon
+    u8 counter;         // per-screen counter (blink timer, ring radius, link Medal mask, key repeat delay)
+    u8 unk49;           // rings: second radius; test mode: cancel sound flag
+    u8 pending_sound;   // test mode: sound effect to play once sound_delay runs out
+    u8 sound_delay;
+    u8 message_pending; // message pending (medal_rename_no_money)
     u8 filler4D[0x3];
-    u8 unk50[8];    // blend effect state (init_blend_effect, blend_fade_step_08065598)
-    u8 unk58[0x20]; // name text buffer (name_entry_fade_out_store_name copies it to the player or Medal name)
-    u16 unk78;      // link: the other player's keys last frame (keys_update_from)
-    s8 unk7A;
-    s8 unk7B;     // link: both sides OK flag, 0 / -1 (fade_state_dispatch)
-    s8 unk7C;     // link: both sides OK flag, 0 / -1 (fade_state_dispatch)
-    s8 unk7D;     // length of the text at *unkAC (text_scroll_page_start)
-    u8 unk7E;     // rings: random rotation mode (update_scene_animation_frame)
-    u8 unk7F;     // sound_current_song result (link_start_init); song played by battle_cutscene_dispatch
-    s16 unk80[3]; // rings: rotation angles x / y / z
-    s8 unk86[3];  // rings: rotation speeds, clamped to +-16
+    u8 blend[8];         // struct BlendEffect (init_blend_effect, blend_fade_step_08065598)
+    u8 name_buf[0x20];   // name text buffer (name_entry_fade_out_store_name copies it to the player or Medal name)
+    u16 prev_keys;       // link: the other player's keys last frame (keys_update_from)
+    s8 partner_chose;    // link menu: 1 the choice came from the other GBA, 0 this side chose (-1 at start)
+    s8 link_battle_ok;   // link menu: Robattle selectable on both sides (0 / -1 or 1)
+    s8 link_trade_ok;    // link menu: Medapart trade selectable on both sides
+    s8 text_len;         // length of the text at *scene_text (text_scroll_page_start)
+    u8 ring_random_mode; // rings: random rotation mode (update_scene_animation_frame)
+    u8 saved_song;       // sound_current_song result (link_start_init); song played by battle_cutscene_dispatch
+    s16 ring_angles[3];  // rings: rotation angles x / y / z
+    s8 ring_speeds[3];   // rings: rotation speeds, clamped to +-16
     u8 filler89;
-    u16 unk8A[4]; // race: per-sprite values set by text_scroll_init
-    u16 unk92[4];
-    u16 unk9A[4];
-    u8 unkA2[5];
-    u8 unkA7[5];
-    const u8 *const *unkAC; // scene text (text_scroll_page_start)
-    u8 unkB0[0x20];         // Medal list: Medal indices (medal_rename_build_list)
+    u16 ring_rot_x[4]; // rings: per-ring x angle, each trailing the previous one by 1/16 per frame
+    u16 ring_rot_y[4];
+    u16 ring_rot_z[4];
+    u8 ring_center_x[5]; // rings: per-ring screen centre, trailing like ring_rot_*
+    u8 ring_center_y[5];
+    const u8 *const *scene_text; // scene text (text_scroll_page_start)
+    u8 medal_list[0x20];         // Medal list: Medal indices (medal_rename_build_list)
     struct RingPoint
-        unkD0[18];           // points on a hexagon / circle (ring_points_place_on_hexagon, ring_points_place_on_circle)
-    s32 unk1F0[4][4];        // 8.8 fixed-point 4x4 transform matrix (matrix_set_identity, matrix_rotate_xyz)
-    struct MedalData unk230; // link: Medal record received from the other player (medal_trade_transfer)
-    u8 unk270[0x30];         // message text buffer (shop_menu_greeting)
+        ring_points[18]; // points on a hexagon / circle (ring_points_place_on_hexagon, ring_points_place_on_circle)
+    s32 matrix[4][4];    // 8.8 fixed-point 4x4 transform matrix (matrix_set_identity, matrix_rotate_xyz)
+    struct MedalData trade_medal; // link: Medal record received from the other player (medal_trade_transfer)
+    u8 message_buf[0x30];         // message text buffer (shop_menu_greeting)
 };
 
-// BLDY fade state (init_blend_effect / blend_fade_step_08065598; MenuWork.unk50)
+// BLDY fade state (init_blend_effect / blend_fade_step_08065598; MenuWork.blend)
 struct BlendEffect {
     u16 mode; // BLDCNT effect bits (| 0x3F)
     u8 unk2;  // BLDY level

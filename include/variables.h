@@ -176,7 +176,7 @@ extern const u8 gUnk_087C52C8[];  // race BG1 tiles (LZ77, race_load_track_statu
 extern const u8 gUnk_087C5518[];  // race BG1 tiles, second part (LZ77)
 extern const u16 gUnk_087C55D0[]; // race BG1 palettes
 extern const u16 gUnk_087C55F0[];
-extern const u8 gUnk_0848417C[];   // scene text line counts by gMenuWork->unk5 (text_scroll_lines)
+extern const u8 gUnk_0848417C[];   // scene text line counts by gMenuWork->cursor (text_scroll_lines)
 extern u8 gRaceAnimDelay[3];       // per team: run animation frame delay (0x20 slowest, A presses lower it)
 extern u8 gRaceAnimTimers[3];      // per team: frames since the run animation last stepped
 extern s32 gRaceRivalTapTimers[2]; // rival teams: frames since their last simulated A press
@@ -1138,8 +1138,8 @@ extern const u8 gUnk_080AF755[]; // 0x53-byte message copied to the stack (load_
 extern const Func gMenuModeStates[]; // by gGameState (menu_mode_update)
 extern const u8 gUnk_080AF6EC[];     // 4 bytes copied to an unused local (init_multiplayer_id)
 extern const u8 gUnk_080AF5FC[];     // per gFieldWork.unkC32: 10 x 4 next-entry bytes (right, left, up, down) by
-                                     // gMenuWork->unk17 (town_map_move_cursor)
-extern const u8 gUnk_080AF674[];     // same, used when gMenuWork->unk18 is set (town_map_move_cursor)
+                                     // gMenuWork->town_map_place (town_map_move_cursor)
+extern const u8 gUnk_080AF674[];     // same, used when gMenuWork->cursor_style is set (town_map_move_cursor)
 extern const u8 gUnk_083BEA14[];     // per Medabot (gUnk_083B1888 index): sprite palette - 4 (load_battle_sprite_tiles)
 extern const u16 gTitleOptionValueMasks[3][3]; // 3 x 3 tile masks (bit 15 first) of the title option rows
                                                // (title_options_draw_values)
@@ -1158,14 +1158,14 @@ extern const Func gGameOverStates[];           // sub-state handlers (game_over_
 extern const Func gSaveLostStates[];           // sub-state handlers (save_lost_dispatch)
 extern const Func gTestModeStates[];           // sub-state handlers (test_mode_dispatch)
 extern const Func gUnk_08483E8C[];             // sub-state handlers (shop_list_dispatch)
-extern const void *const gTownMapPlaceNames[]; // messages by gMenuWork->unk17 (town_map_show_place_name)
-extern const u8 gShopSellPartTypeText[];       // message text (shop_menu_part_type_prompt, gMenuWork->unk5 set)
-extern const u8 gShopBuyPartTypeText[];        // message text (shop_menu_part_type_prompt, gMenuWork->unk5 clear)
-extern const u8 gTownMapPlacePositions[][2];   // x, y in tiles by gMenuWork->unk17 (town_map_update_cursor)
+extern const void *const gTownMapPlaceNames[]; // messages by gMenuWork->town_map_place (town_map_show_place_name)
+extern const u8 gShopSellPartTypeText[];       // message text (shop_menu_part_type_prompt, gMenuWork->cursor set)
+extern const u8 gShopBuyPartTypeText[];        // message text (shop_menu_part_type_prompt, gMenuWork->cursor clear)
+extern const u8 gTownMapPlacePositions[][2];   // x, y in tiles by gMenuWork->town_map_place (town_map_update_cursor)
 extern const u16 gUnk_08483DD4[][4];           // x offsets [unk18][frame]
 extern const u16 gUnk_08483DE4[][4];           // y offsets [unk18][frame]
 extern const u16 gUnk_08483DF4[][4];           // animation frames [unk18][frame]
-extern const u8 gUnk_08483E04[];               // frame index by gMenuWork->unk3A / 10 (town_map_animate_tiles)
+extern const u8 gUnk_08483E04[];               // frame index by gMenuWork->frame / 10 (town_map_animate_tiles)
 extern const u8 gShopGreetingText[];           // message text (shop_menu_greeting)
 extern const Func gShopMenuStates[];           // sub-state handlers (shop_menu_dispatch)
 extern const u16 gGameOverIkkiFramesExit[];    // sprite 1 animation frames by unk1A / 6 (game_over_wipe_out)
@@ -1189,7 +1189,7 @@ extern const struct ObjAffineDstData gUnk_080ABBF4; // affine matrix template (r
 extern const u8 gUnk_08081320[]; // mirrored sprite node index per node (render_sprite_node_recursive)
 extern const struct TextBufTable4
     gUnk_080ABBFC;               // the 4 text buffers 0x030004DE + 0x14 * n (copy_string_to_text_buffer)
-extern const u8 gUnk_080AFE96[]; // first tilemap column by gMenuWork->unk5 (text_scroll_shift_row)
+extern const u8 gUnk_080AFE96[]; // first tilemap column by gMenuWork->cursor (text_scroll_shift_row)
 struct U16PtrArray8 {
     const u16 *v[8];
 };
@@ -1207,7 +1207,7 @@ extern const u8 gUnk_0850DEB8[];                // OBJ palette (0x20 bytes to 0x
 struct PtrTable3 {
     const u8 *const *p[3];
 };
-extern const struct PtrTable3 gUnk_080AFE9C; // scene texts by gMenuWork->unk5 (text_scroll_page_start)
+extern const struct PtrTable3 gUnk_080AFE9C; // scene texts by gMenuWork->cursor (text_scroll_page_start)
 extern const u16 gUnk_080AFA4C[16];          // OBJ palette for the link Medapart trade scene (medapart_trade_fade_in)
 struct FuncTable13 {
     Func f[13];
@@ -1215,7 +1215,7 @@ struct FuncTable13 {
 extern const struct FuncTable13
     gUnk_080AFA6C;                  // link Medapart trade sub-states by gGameSubState (medapart_trade_update)
 extern const s16 gSineTable[0x140]; // sin(i * 2pi / 256) * 0x100, 256 + 64 entries (cos(x) = [x + 0x40])
-extern const s8 gUnk_080AFB45[];    // game mode by gMenuWork->unk5 (link_menu_fade_out_exit)
+extern const s8 gUnk_080AFB45[];    // game mode by gMenuWork->cursor (link_menu_fade_out_exit)
 extern const struct FuncTable13
     gUnk_080AFB48;                // link menu sub-states by gGameSubState (dispatch_battle_menu_and_update_counters)
 extern const u8 gUnk_0848564F[];  // 0xFF-terminated message (setup_dialogue_script_from_rom)

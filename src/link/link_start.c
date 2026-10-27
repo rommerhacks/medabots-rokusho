@@ -4,9 +4,9 @@
 #include "global.h"
 
 void link_start_init(void) {
-    gMenuWork->unk7F = sound_current_song();
+    gMenuWork->saved_song = sound_current_song();
     text_window_init(1, 0, 0);
-    gMenuWork->unk8 = 0;
+    gMenuWork->step = 0;
     gGameSubState++;
 }
 
@@ -15,12 +15,12 @@ void battle_cutscene_dispatch(void) {
     u16 r;
     s8 i;
 
-    t = gMenuWork->unk2++;
+    t = gMenuWork->timer++;
     r = 0;
     if (!(*(u8 *)&gUnk_03001784 & 2)) {
-        if (run_message(gUnk_08485BD8[gUnk_080AFB08[gMenuWork->unk8]]) && KEYS_LO(gNewKeys) & 1) {
+        if (run_message(gUnk_08485BD8[gUnk_080AFB08[gMenuWork->step]]) && KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
-            if (++gMenuWork->unk8 > 2) {
+            if (++gMenuWork->step > 2) {
                 gGameWork.unk84 = r;
                 gGameWork.endModeStep = r;
                 gGameSubState++;
@@ -30,11 +30,11 @@ void battle_cutscene_dispatch(void) {
         }
         return;
     }
-    switch (gMenuWork->unk8) {
+    switch (gMenuWork->step) {
     case 0:
-        if (run_message(gUnk_08485BD8[gUnk_080AFB0B[gMenuWork->unk8]]) && KEYS_LO(gNewKeys) & 1) {
+        if (run_message(gUnk_08485BD8[gUnk_080AFB0B[gMenuWork->step]]) && KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
-            gMenuWork->unk8++;
+            gMenuWork->step++;
             message_next();
             open_choice_menu(1, 0, 7);
         }
@@ -42,31 +42,31 @@ void battle_cutscene_dispatch(void) {
     case 1:
     case 2:
     case 3:
-        if (run_message(gUnk_08485BD8[gUnk_080AFB0B[gMenuWork->unk8]]) && poll_choice_menu()) {
+        if (run_message(gUnk_08485BD8[gUnk_080AFB0B[gMenuWork->step]]) && poll_choice_menu()) {
             if (gGameWork.unk2A == 0) {
                 if (*(u8 *)&gUnk_03001784 & 1) {
-                    if (++gMenuWork->unk8 <= 3)
+                    if (++gMenuWork->step <= 3)
                         open_choice_menu(1, 0, 7);
                 } else {
-                    if (++gMenuWork->unk8 <= 2)
+                    if (++gMenuWork->step <= 2)
                         open_choice_menu(1, 0, 7);
                     else
-                        gMenuWork->unk8++;
+                        gMenuWork->step++;
                 }
             } else {
-                gMenuWork->unk8 = 0;
+                gMenuWork->step = 0;
                 gGameSubState += 2;
             }
             message_next();
         }
         break;
     case 4:
-        if (run_message(gUnk_08485BD8[gUnk_080AFB0B[gMenuWork->unk8]])) {
+        if (run_message(gUnk_08485BD8[gUnk_080AFB0B[gMenuWork->step]])) {
             play_song(0);
             play_sound_effect(0);
             eeprom_setup_timer_irq();
-            gMenuWork->unk2 = 0;
-            gMenuWork->unk8++;
+            gMenuWork->timer = 0;
+            gMenuWork->step++;
         }
         break;
     case 5:
@@ -76,8 +76,8 @@ void battle_cutscene_dispatch(void) {
                 if (r == 0)
                     break;
             }
-            play_song(gMenuWork->unk7F);
-            gMenuWork->unk8 = r;
+            play_song(gMenuWork->saved_song);
+            gMenuWork->step = r;
             gGameSubState += 3;
             message_next();
             serial_link_init();
@@ -87,9 +87,9 @@ void battle_cutscene_dispatch(void) {
 }
 
 void link_start_show_messages(void) {
-    if (run_message(gUnk_08485BD8[gMenuWork->unk8 ? 7 : 6]) && KEYS_LO(gNewKeys) & 1) {
+    if (run_message(gUnk_08485BD8[gMenuWork->step ? 7 : 6]) && KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(0xD);
-        if ((s32)++gMenuWork->unk8 > 1) {
+        if ((s32)++gMenuWork->step > 1) {
             gGameWork.unk84 = 0;
             gGameWork.endModeStep = 0;
             gGameSubState--;
@@ -105,11 +105,11 @@ void link_start_exit_declined(void) {
 }
 
 void fade_transition_and_input_check(void) {
-    if (run_message(gUnk_08485BD8[gMenuWork->unk8 ? 5 : 4])) {
+    if (run_message(gUnk_08485BD8[gMenuWork->step ? 5 : 4])) {
         struct MenuWork *w = gMenuWork;
-        if (w->unk8 == 0) {
+        if (w->step == 0) {
             gGameSubState++;
-            w->unk3A = w->unk8;
+            w->frame = w->step;
         } else if (KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
             gGameWork.unk84 = 0;
@@ -138,12 +138,12 @@ void multiplayer_battle_sync_update(void) {
         if (link->unk8[gUnk_03000B90 == 0][1] == 0xFF01) {
             if (gUnk_03000B90 <= 1) {
                 gGameSubState++;
-                w->unk3A = zero;
+                w->frame = zero;
                 gUnk_03005030 = -1;
                 return;
             }
             message_next();
-            gMenuWork->unk8 = 1;
+            gMenuWork->step = 1;
             gGameSubState--;
             link->unk6 = zero;
         }
@@ -152,14 +152,14 @@ void multiplayer_battle_sync_update(void) {
         *ready = 1;
         return;
     }
-    if (++gMenuWork->unk3A > 300) {
+    if (++gMenuWork->frame > 300) {
         message_next();
-        gMenuWork->unk8 = 1;
+        gMenuWork->step = 1;
         gGameSubState--;
         gUnk_03005010.unk6 = 0;
-    } else if (gMenuWork->unk3A > 0x10C) {
+    } else if (gMenuWork->frame > 0x10C) {
         if (gUnk_03005010.unk8[gUnk_03000B90 == 0][1] == 0xFF00)
-            gMenuWork->unk3A = 0;
+            gMenuWork->frame = 0;
         else
             gUnk_03005010.unk6 = 0;
     }
@@ -168,13 +168,13 @@ void multiplayer_battle_sync_update(void) {
 void handle_battle_fade_transition(void) {
     if (gUnk_03000B90 > 1) {
         message_next();
-        gMenuWork->unk8 = 1;
+        gMenuWork->step = 1;
         gGameSubState -= 2;
     } else if (gUnk_03005010.unk0 & (1 << gUnk_03000B90)) {
         gGameSubState++;
     } else {
         message_next();
-        gMenuWork->unk8 = 1;
+        gMenuWork->step = 1;
         gGameSubState -= 2;
     }
 }

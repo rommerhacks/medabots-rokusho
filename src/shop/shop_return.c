@@ -6,7 +6,7 @@
 void shop_return_init(void) {
     s32 i;
 
-    shop_highlight_part_type_icon(gMenuWork->unk19, 8);
+    shop_highlight_part_type_icon(gMenuWork->part_kind, 8);
     clear_battle_sprite_slot(0, 0x80);
     for (i = 0; i < 4; i++)
         gSpriteEntries[12 + i].unk0 &= 0xBFFF;
@@ -16,7 +16,7 @@ void shop_return_init(void) {
     CpuFastSet(gUnk_08488AA4, (void *)0x0202F820, 8);
     CpuFastSet(gUnk_0879671C, (void *)0x0202FA00, 0x80);
     gGameWork.unk84 = 0;
-    gMenuWork->unk6 = 1;
+    gMenuWork->returning = 1;
     gGameSubState++;
     REG_DISPCNT |= 0x100;
     REG_DISPCNT |= 0x200;
@@ -43,7 +43,7 @@ void fade_out_transition_step(void) {
         (*n)++;
     } else {
         update_battle_sprite_priority_flags();
-        gMenuWork->unk2 = 0;
+        gMenuWork->timer = 0;
         gGameState = 12;
         gGameSubState = 4;
     }

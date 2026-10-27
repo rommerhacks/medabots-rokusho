@@ -43,12 +43,12 @@ void new_game_prompt_start_intro(void) {
 void advance_substate_with_fade(void) {
     if (game_state_execute_handler_a()) {
         gGameSubState++;
-        init_blend_effect(gMenuWork->unk50, 0, 0, 1, 0xC0);
+        init_blend_effect(gMenuWork->blend, 0, 0, 1, 0xC0);
     }
 }
 
 void fade_step_and_transition_to_mode3(void) {
-    if (blend_fade_step_08065598(gMenuWork->unk50)) {
+    if (blend_fade_step_08065598(gMenuWork->blend)) {
         gGameState = 3;
         gGameSubState = 0;
     }

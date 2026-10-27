@@ -174,7 +174,7 @@ void title_menu_reset(void) {
     reset_bg_scroll();
     free_all_sprites();
     REG_DISPCNT = 0x60;
-    init_blend_effect(gMenuWork->unk50, 0x10, 0, -1, 0xC0);
+    init_blend_effect(gMenuWork->blend, 0x10, 0, -1, 0xC0);
     gGameSubState++;
 }
 
@@ -203,7 +203,7 @@ void title_menu_load_graphics(void) {
     decompress_and_write_tilemap(gUnk_08790128, *bg3);
     size = dma3_copy_or_decompress(gUnk_0878E5F4, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
-    gMenuWork->unk36 = (size >> 5) - 1;
+    gMenuWork->bg_tile_base = (size >> 5) - 1;
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     CpuFastSet(gUnk_0878E3F4, gPaletteBackupBg, 0x80);
     CpuFastSet(gUnk_0878E3F4, (void *)PLTT, 0x80);
@@ -216,7 +216,7 @@ void title_menu_load_graphics(void) {
     gSpriteEntries[14].unk6 = 6;
     gSpriteEntries[14].unk2 = 0x20;
     gSpriteEntries[14].unk4 = 0x50;
-    gMenuWork->unk5 = 0;
+    gMenuWork->cursor = 0;
     gGameSubState++;
 }
 
@@ -241,26 +241,26 @@ void title_menu_load_save(void) {
             for (j = 0; j < 12; j++)
                 *p++ = 0;
         }
-        gMenuWork->unk5 = 1;
-        gMenuWork->unk4 = 1;
+        gMenuWork->cursor = 1;
+        gMenuWork->first_entry = 1;
         gOptionTimeLimit = 0;
         gOptionSkipMessages = 0;
         gOptionBattleMusic = 0;
     } else {
-        gMenuWork->unk5 = ret;
-        gMenuWork->unk4 = ret;
+        gMenuWork->cursor = ret;
+        gMenuWork->first_entry = ret;
         gUnk_03001784.unk0_0 = 1;
     }
-    title_menu_pulse_selected(gMenuWork->unk5, gFrameCounter & 0x1F);
+    title_menu_pulse_selected(gMenuWork->cursor, gFrameCounter & 0x1F);
     title_options_draw_values(3);
     gGameSubState++;
 }
 
 void title_menu_fade_in(void) {
-    if (blend_fade_step_08065598(gMenuWork->unk50)) {
+    if (blend_fade_step_08065598(gMenuWork->blend)) {
         gGameSubState++;
-        gMenuWork->unk3A = 0;
-        gMenuWork->unk3A = title_menu_blend_step(0);
+        gMenuWork->frame = 0;
+        gMenuWork->frame = title_menu_blend_step(0);
         REG_DISPCNT |= 0x400;
     }
 }
@@ -268,38 +268,38 @@ void title_menu_fade_in(void) {
 void title_menu_input(void) {
     struct MenuWork *w;
 
-    gMenuWork->unk3A = title_menu_blend_step(gMenuWork->unk3A);
-    title_menu_pulse_selected(gMenuWork->unk5, gFrameCounter & 0x1F);
+    gMenuWork->frame = title_menu_blend_step(gMenuWork->frame);
+    title_menu_pulse_selected(gMenuWork->cursor, gFrameCounter & 0x1F);
     if (KEYS_LO(gNewKeys) & 0x40) {
         play_sound_effect(2);
         w = gMenuWork;
-        if (w->unk5 == w->unk4)
-            w->unk5 = 2;
+        if (w->cursor == w->first_entry)
+            w->cursor = 2;
         else
-            w->unk5--;
+            w->cursor--;
     }
     if (KEYS_LO(gNewKeys) & 0x80) {
         play_sound_effect(2);
         w = gMenuWork;
-        if (w->unk5 == 2)
-            w->unk5 = w->unk4;
+        if (w->cursor == 2)
+            w->cursor = w->first_entry;
         else
-            w->unk5++;
+            w->cursor++;
     }
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
-        if (gMenuWork->unk5 == 2) {
-            gMenuWork->unk5 = 0;
-            gMenuWork->unk2 = 20;
+        if (gMenuWork->cursor == 2) {
+            gMenuWork->cursor = 0;
+            gMenuWork->timer = 20;
             title_options_pulse_palette(gFrameCounter & 0x1F);
-            title_options_highlight_row(gMenuWork->unk5);
-            title_options_draw_values(gMenuWork->unk5);
+            title_options_highlight_row(gMenuWork->cursor);
+            title_options_draw_values(gMenuWork->cursor);
             title_menu_pulse_selected(3, 0);
-            gSpriteEntries[14].unk4 = gMenuWork->unk5 * 24 + 0x50;
+            gSpriteEntries[14].unk4 = gMenuWork->cursor * 24 + 0x50;
             gSpriteEntries[14].unk0 |= 0x4000;
             gGameSubState++;
         } else {
-            gMenuWork->unk48 = 45;
+            gMenuWork->counter = 45;
             gGameSubState = 6;
         }
     }
@@ -308,35 +308,35 @@ void title_menu_input(void) {
 // guess: title options menu input (rows: Robattle time limit gOptionTimeLimit, message skip gOptionSkipMessages,
 // battle music gOptionBattleMusic with a preview); A / B leave the menu
 void title_options_input(void) {
-    gMenuWork->unk3A = title_menu_blend_step(gMenuWork->unk3A);
+    gMenuWork->frame = title_menu_blend_step(gMenuWork->frame);
     sprite_bob_y(14, gFrameCounter, 32);
     title_options_pulse_palette(gFrameCounter & 0x1F);
-    title_options_draw_row_sweep(gMenuWork->unk5, 20 - gMenuWork->unk2);
-    if (gMenuWork->unk2)
-        gMenuWork->unk2--;
+    title_options_draw_row_sweep(gMenuWork->cursor, 20 - gMenuWork->timer);
+    if (gMenuWork->timer)
+        gMenuWork->timer--;
 
     if (KEYS_LO(gNewKeys) & 0x40) {
         play_song(1);
         play_sound_effect(2);
-        if (gMenuWork->unk5 == 0)
-            gMenuWork->unk5 = 2;
+        if (gMenuWork->cursor == 0)
+            gMenuWork->cursor = 2;
         else
-            gMenuWork->unk5--;
-        if (gMenuWork->unk5 == 2)
+            gMenuWork->cursor--;
+        if (gMenuWork->cursor == 2)
             play_song(gBattleMusicOptionSongs[gOptionBattleMusic]);
-        gMenuWork->unk2 = 20;
+        gMenuWork->timer = 20;
     } else if (KEYS_LO(gNewKeys) & 0x80) {
         play_song(1);
         play_sound_effect(2);
-        if (gMenuWork->unk5 == 2)
-            gMenuWork->unk5 = 0;
+        if (gMenuWork->cursor == 2)
+            gMenuWork->cursor = 0;
         else
-            gMenuWork->unk5++;
-        if (gMenuWork->unk5 == 2)
+            gMenuWork->cursor++;
+        if (gMenuWork->cursor == 2)
             play_song(gBattleMusicOptionSongs[gOptionBattleMusic]);
-        gMenuWork->unk2 = 20;
+        gMenuWork->timer = 20;
     } else {
-        switch (gMenuWork->unk5) {
+        switch (gMenuWork->cursor) {
         case 0:
             if (KEYS_LO(gNewKeys) & 0x20) {
                 play_sound_effect(2);
@@ -377,11 +377,11 @@ void title_options_input(void) {
             break;
         }
         if (KEYS_LO(gNewKeys) & 0x30)
-            title_options_draw_values(gMenuWork->unk5);
+            title_options_draw_values(gMenuWork->cursor);
         if (KEY_BITS(gNewKeys).a | KEY_BITS(gNewKeys).b) {
             play_song(1);
             play_sound_effect(4);
-            gMenuWork->unk5 = 2;
+            gMenuWork->cursor = 2;
             gSpriteEntries[14].unk0 &= 0xBFFF;
             gGameSubState--;
             title_options_highlight_row(3);
@@ -390,18 +390,18 @@ void title_options_input(void) {
         }
         return;
     }
-    title_options_highlight_row(gMenuWork->unk5);
-    title_options_draw_values(gMenuWork->unk5);
+    title_options_highlight_row(gMenuWork->cursor);
+    title_options_draw_values(gMenuWork->cursor);
     gSpriteEntries[14].unk2 = 32;
-    gSpriteEntries[14].unk4 = gMenuWork->unk5 * 24 + 0x50;
+    gSpriteEntries[14].unk4 = gMenuWork->cursor * 24 + 0x50;
 }
 
 void title_menu_confirm_flash(void) {
-    u8 *t = &gMenuWork->unk48;
+    u8 *t = &gMenuWork->counter;
     if (*t) {
         u8 n = --*t;
         if (n)
-            title_menu_pulse_selected(gMenuWork->unk5, ((gMenuWork->unk48 * 4) & 0x1F) <= 15 ? 0x20 : 0);
+            title_menu_pulse_selected(gMenuWork->cursor, ((gMenuWork->counter * 4) & 0x1F) <= 15 ? 0x20 : 0);
         else {
             palette_backup_from_hardware();
             gGameWork.unk84 = n;
@@ -416,7 +416,7 @@ void title_menu_confirm_flash(void) {
             b->unk84++;
         } else {
             REG_DISPCNT &= 0xFDFF;
-            switch (gMenuWork->unk5) {
+            switch (gMenuWork->cursor) {
             case 0:
                 gUnk_03001784.unk0_0 = 1;
                 gGameSubState = 8;
@@ -454,9 +454,9 @@ void title_menu_continue_game(void) {
 }
 
 void title_menu_fade_to_save_lost(void) {
-    if (gMenuWork->unk0 != 32) {
-        gMenuWork->unk0++;
-        REG_BLDY = gMenuWork->unk0 >> 1;
+    if (gMenuWork->fade_level != 32) {
+        gMenuWork->fade_level++;
+        REG_BLDY = gMenuWork->fade_level >> 1;
     } else {
         gGameState = 9;
         gGameSubState = 0;
