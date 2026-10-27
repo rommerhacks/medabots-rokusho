@@ -1,6 +1,6 @@
 // Sprite engine: DMA copies and LZ decompression of sprite tiles into VRAM, OAM shape/size setup, OAM entry
 // copies (priority, flips, affine params), and the sprite trees (load_sprite_tree_recursive,
-// render_sprite_node_recursive) used for scene layers and animations (setup_scene_bg_layers_and_sprites).
+// render_sprite_node_recursive) used for scene layers and animations (setup_medabot_part_sprites).
 // Used by the menus, battle and field scenes; talks to engine/oam and engine/decompress.
 
 #include "global.h"
@@ -761,7 +761,7 @@ static void load_sprite_tiles_by_table(struct SpriteNodeDesc **nodes, struct Spr
 }
 
 // guess: builds a Medabot sprite (4 part trees, tile base 0x160) into work and copies its OAM / affine out;
-// like setup_scene_bg_layers_and_sprites without the per-side layer state
+// like setup_medabot_part_sprites without the per-side layer state
 u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct OamData *oam, u16 tile, u8 *parts,
                         u8 pal, u8 x, u8 y, u32 alt) {
     struct SpriteTileRef buf[32];
@@ -1049,8 +1049,8 @@ void toggle_bg_layer_visibility(s32 a, s32 b, s32 c, s32 d) {
         gUnk_030052F0.unkD = -gUnk_030052F0.unkD - 2;
 }
 
-void setup_scene_bg_layers_and_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f,
-                                       u32 g, u32 h, u32 i, u32 j) {
+void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g,
+                                u32 h, u32 i, u32 j) {
     u32 slot = j;
     u16 tile;
     u16 base;

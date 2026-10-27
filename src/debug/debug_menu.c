@@ -791,10 +791,10 @@ void debug_motion_input(void) {
 
     fill = 0x200;
     DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
-    init_scene_with_bg_and_palette(0, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39,
-                                   gUnk_03000440.unk39, 0x38, 0x68, 0, 4, 0, 1, 0, 0);
-    init_scene_with_bg_and_palette(1, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39,
-                                   gUnk_03000440.unk39, 0xB8, 0x30, 0, 8, 1, 1, 1, 0x28);
+    draw_medabot_sprite(0, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39, 0x38,
+                        0x68, 0, 4, 0, 1, 0, 0);
+    draw_medabot_sprite(1, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39, 0xB8,
+                        0x30, 0, 8, 1, 1, 1, 0x28);
     if (gFrameCounter & 4)
         clear_battle_sprite_slot(8, 8);
     else {
@@ -833,10 +833,10 @@ void debug_motion_play(void) {
 
     fill = 0x200;
     DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
-    init_scene_with_bg_and_palette(0, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39,
-                                   gUnk_03000440.unk39, 0x38, 0x68, 0, 4, 0, 1, 0, 0);
-    init_scene_with_bg_and_palette(1, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39,
-                                   gUnk_03000440.unk39, 0xB8, 0x30, 0, 8, 1, 1, 1, 0x28);
+    draw_medabot_sprite(0, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39, 0x38,
+                        0x68, 0, 4, 0, 1, 0, 0);
+    draw_medabot_sprite(1, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39, 0xB8,
+                        0x30, 0, 8, 1, 1, 1, 0x28);
     medabot_pose_anim_step(0, gUnk_03000440.unk35[gUnk_03000440.unk34], gUnk_03000440.unk39);
     medabot_pose_anim_step(1, gUnk_03000440.unk35[gUnk_03000440.unk34], gUnk_03000440.unk39);
     if (KEYS_LO(gNewKeys) & 2)

@@ -460,7 +460,7 @@
 * A callee that narrows its parameters (`lsls/lsrs` at entry) while its matched callers pass plain
   ints: the callers were compiled without a prototype. Declare it `void f();` in the header and write
   the definition K&R-style (`void f(a, b) u32 a; u8 b; { ... }`); a prototype with `u8` params changes
-  the callers (setup_scene_with_bg_and_sprites, init_scene_with_bg_and_palette).
+  the callers (setup_scene_with_bg_and_sprites, draw_medabot_sprite).
 * `x | f` where the original materializes the constant first (`movs r0, #0x80; lsls; orrs r0, r4`) and
   your build ORs into the variable: check whether the value is really `size / 2` of a wider value.
   `dma3_copy_or_decompress` matched only as CpuCopy16 of the first half + a DMA3 copy of the second

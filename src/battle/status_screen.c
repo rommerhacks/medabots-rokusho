@@ -215,8 +215,8 @@ void status_init_portrait(void) {
     gUnk_03005308 = (struct SceneSlot *)c;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
-    setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
-                                      gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 0);
+    setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A,
+                               gUnk_03000440.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 0);
 }
 
 void status_reset_portrait(void) {
@@ -224,8 +224,8 @@ void status_reset_portrait(void) {
     u32 fill;
 
     obj->oams = (struct SpriteNodeOam *)0x020260D0;
-    setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
-                                      gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 0);
+    setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A,
+                               gUnk_03000440.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 0);
     fill = 0x200;
     CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
     gSpriteWork->oamCount = 0;
@@ -233,9 +233,9 @@ void status_reset_portrait(void) {
 }
 
 void status_update_portrait(void) {
-    setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gUnk_03000440.unk98,
-                                      gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x44, 0x2A, 0x1C2,
-                                      8, 5, 0);
+    setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gUnk_03000440.unk98,
+                               gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x44, 0x2A, 0x1C2, 8, 5,
+                               0);
 }
 
 u32 status_cursor_x(void) {

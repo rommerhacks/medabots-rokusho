@@ -25,7 +25,7 @@ u32 find_next_available_medapart_slot(u32 part, u32 kind, u32 backward,
                                       u32 d); // next / previous owned Medapart id of gender d; d + 0x78 if none
 void init_scene_buffers_080445F4(void);
 void setup_scene_with_bg_and_sprites(); // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8
-void init_scene_with_bg_and_palette();  // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8
+void draw_medabot_sprite();             // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8
 u32 medabot_pose_anim_step(u32 a0, u32 a1, u32 a2);
 u32 medabot_detail_is_full_set(void); // 1 if gUnk_03000440.unk98-9B (the four shown Medaparts) are all the same set
 u32 count_assembled_medabots(void);   // team slots (gUnk_030017A0) with state 3

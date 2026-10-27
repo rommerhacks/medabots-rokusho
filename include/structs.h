@@ -713,7 +713,7 @@ struct Unk_03001800 {
     s16 unk102[8]; // battle sequence: operands of the current command (battle_seq_load_operands)
     u8 unk112;     // set to 0x29 with unk113 (closeup_reset_text_states)
     u8 unk113;     // right close-up Medabot pose (unk112: left; bit 7 = finished, medabot_pose_anim_step)
-    u8 unk114[2];  // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (repair_redraw_bot)
+    u8 unk114[2];  // per side (0 team, 1 opponents): passed to draw_medabot_sprite (repair_redraw_bot)
     u8 filler116[0x2];
     u8 unk118; // nonzero: restore_changed_part writes unk11C back into the acting Medabot's part
     u8 unk119; // part data[1] - 0x37 of the swapped part (change_transform_part)
@@ -1492,7 +1492,7 @@ struct SpriteTree {
     u8 *unk0; // gSpriteWork record
     struct SpriteNodeDesc **nodes;
     struct SpriteNodeOam *oams;
-    struct Unk_03005290 layers[2][4]; // part layers saved per side (setup_scene_bg_layers_and_sprites)
+    struct Unk_03005290 layers[2][4]; // part layers saved per side (setup_medabot_part_sprites)
 };
 
 // struct SpriteTree padded to the 0xD0 bytes build_medabot_sprite clears
@@ -1501,7 +1501,7 @@ struct SpriteTreePadded {
     u32 pad;
 };
 
-// 48-byte records at gUnk_03005308, one per side (setup_scene_bg_layers_and_sprites).
+// 48-byte records at gUnk_03005308, one per side (setup_medabot_part_sprites).
 struct SceneSlot {
     u8 filler0[4];
     u32 unk4;  // head part

@@ -1249,8 +1249,8 @@ u8 g, h, i, j;
     if (i == 1)
         flags = 4;
     ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
-    setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, head, rarm, larm, legs,
-                                      (s16)x, (s16)y, f, g, h | flags, j);
+    setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, head, rarm, larm, legs, (s16)x,
+                               (s16)y, f, g, h | flags, j);
     if (i == 2) {
         fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
@@ -1259,7 +1259,9 @@ u8 g, h, i, j;
     }
 }
 
-void init_scene_with_bg_and_palette(slot, head, rarm, larm, legs, y, x, f, g, h, i, j, base) u32 slot;
+// Draws a Medabot sprite (sprite tree slot `slot`) from its four part ids at (x, y); used by the battle close-ups,
+// the status screen and the Medabots screen.
+void draw_medabot_sprite(slot, head, rarm, larm, legs, y, x, f, g, h, i, j, base) u32 slot;
 u8 head, rarm, larm, legs;
 u16 y, x;
 u32 f;
@@ -1290,8 +1292,8 @@ u8 g, h, i, j, base;
     if (i == 1)
         flags = 4;
     ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
-    setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, head, rarm, larm, legs,
-                                      (s16)x, (s16)y, f, g, h | flags, j);
+    setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, head, rarm, larm, legs, (s16)x,
+                               (s16)y, f, g, h | flags, j);
     if (i == 2) {
         fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);

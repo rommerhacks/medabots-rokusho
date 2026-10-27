@@ -8,8 +8,8 @@ void load_sprite_animation_by_type(struct OamData *oam, struct SpriteTree *obj, 
 void init_sprite_tree(struct SpriteTree *obj, u8 *buf, struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams);
 u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct OamData *oam, u16 tile, u8 *parts,
                         u8 pal, u8 x, u8 y, u32 alt);
-void setup_scene_bg_layers_and_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f,
-                                       u32 g, u32 h, u32 i, u32 j);
+void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g,
+                                u32 h, u32 i, u32 j);
 void goto_link_scene(u32 a);
 void update_anim_object_flags(void);
 void copy_oam_affine_params(struct OamData *oam, u16 *affine);

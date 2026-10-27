@@ -80,7 +80,7 @@ extern u8 gUnk_03000588;
 extern const Func gIntrTableTemplate[14];
 extern const u32 gRngTable[16];
 extern const struct Unk_03005290 gUnk_0807ECA0; // part layer templates: head, left arm, right arm, legs
-extern const struct Unk_03005290 gUnk_0807ECB8; // (setup_scene_bg_layers_and_sprites)
+extern const struct Unk_03005290 gUnk_0807ECB8; // (setup_medabot_part_sprites)
 extern const struct Unk_03005290 gUnk_0807ECD0;
 extern const struct Unk_03005290 gUnk_0807ECE8;
 // Sprite tree node lists by part id: head, right arm, left arm, legs (non-const: needed to match)
