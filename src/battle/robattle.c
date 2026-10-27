@@ -447,7 +447,7 @@ void robattle_aim_message_show(void) {
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
-    if (run_message(gUnk_083B70AC[gBattleBots[gBattleWork.unk80].medal.unk6])) {
+    if (run_message(gUnk_083B70AC[gBattleBots[gBattleWork.unk80].medal.aimSkillType])) {
         gGameWork.unk1B = 0;
         gGameSubState++;
     }
@@ -501,7 +501,7 @@ void robattle_backup_screen(void) {
 void robattle_rotation_open_medals_screen(void) {
     mem_fill8(&gGameWork.unk3C, 0x14, 0);
     gGameWork.unk3C = 2;
-    gGameWork.unk3D = find_medal_slot_by_id(gBattleBots[gBattleWork.unk80].medal.unk1) - 1;
+    gGameWork.unk3D = find_medal_slot_by_id(gBattleBots[gBattleWork.unk80].medal.graphicId) - 1;
     gGameWork.unk41 = 1;
     gGameWork.unk42 = 2;
     clear_bg_scroll();

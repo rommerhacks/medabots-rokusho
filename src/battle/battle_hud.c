@@ -118,10 +118,10 @@ void decompress_two_bg1_layers(void) {
 void render_bot_name_sprites(u32 rec) {
     if (rec <= 2) {
         clear_sprite_table_mask(10, 10);
-        render_text_sprites_08040DB8(gBattleBots[rec].medal.unkA, 10, 1, 14, 10, 15, 0, 1);
+        render_text_sprites_08040DB8(gBattleBots[rec].medal.name, 10, 1, 14, 10, 15, 0, 1);
     } else {
         clear_sprite_table_mask(20, 13);
-        render_text_sprites_08040DB8(gBattleBots[rec].medal.unkA, 20, 19, 14, 10, 15, 0, 1);
+        render_text_sprites_08040DB8(gBattleBots[rec].medal.name, 20, 19, 14, 10, 15, 0, 1);
     }
 }
 

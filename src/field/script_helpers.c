@@ -173,22 +173,22 @@ u32 team_equipped_part_legs_value(u8 id, u8 which) {
         struct TeamSlot *p;
 
         for (i = 0, p = gTeamSlots; i <= 8; i++) {
-            if (p->unk0 == 3) {
+            if (p->state == 3) {
                 switch (which) {
                 case 0:
-                    if (p->unk3 == id)
+                    if (p->head == id)
                         found = 1;
                     break;
                 case 1:
-                    if (p->unk4 == id)
+                    if (p->rightArm == id)
                         found = 1;
                     break;
                 case 2:
-                    if (p->unk5 == id)
+                    if (p->leftArm == id)
                         found = 1;
                     break;
                 case 3:
-                    if (p->unk6 == id)
+                    if (p->legs == id)
                         found = 1;
                     break;
                 }
@@ -197,9 +197,9 @@ u32 team_equipped_part_legs_value(u8 id, u8 which) {
                 break;
             p++;
         }
-        load_part_data(gTeamSlots[i].unk6, 3, buf);
+        load_part_data(gTeamSlots[i].legs, 3, buf);
         v = buf[1] - 100;
-        gUnk_03006D38.unk6 = gTeamSlots[i].unk1;
+        gUnk_03006D38.unk6 = gTeamSlots[i].gender;
     }
     if (match)
         return v;
@@ -212,22 +212,22 @@ u32 team_has_part_equipped(u8 id, u8 which) {
     struct TeamSlot *p;
 
     for (i = 0, p = gTeamSlots; i <= 8; i++) {
-        if (p->unk0 == 3) {
+        if (p->state == 3) {
             switch (which) {
             case 0:
-                if (p->unk3 == id)
+                if (p->head == id)
                     found = 1;
                 break;
             case 1:
-                if (p->unk4 == id)
+                if (p->rightArm == id)
                     found = 1;
                 break;
             case 2:
-                if (p->unk5 == id)
+                if (p->leftArm == id)
                     found = 1;
                 break;
             case 3:
-                if (p->unk6 == id)
+                if (p->legs == id)
                     found = 1;
                 break;
             }
@@ -245,7 +245,7 @@ s32 team_count_complete_bots(void) {
     s32 i;
 
     for (i = 8; i >= 0; i--) {
-        if (p->unk0 == 3)
+        if (p->state == 3)
             n++;
         p++;
     }
@@ -259,7 +259,7 @@ u32 team_has_full_part_set(u8 id) {
     struct TeamSlot *p;
 
     for (i = 0, p = gTeamSlots; i <= 8; i++) {
-        if (p->unk0 == 3 && p->unk3 == id && p->unk4 == id && p->unk5 == id && p->unk6 == id)
+        if (p->state == 3 && p->head == id && p->rightArm == id && p->leftArm == id && p->legs == id)
             found = 1;
         if (found)
             break;

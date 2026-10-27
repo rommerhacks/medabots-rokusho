@@ -605,9 +605,9 @@ void medal_trade_init_screen(void) {
         u16 tt;
         u16 *p;
 
-        medal = w->unk230.unk1;
-        medal_trade_show_medal_sprite(medal, w->unk230.unk8);
-        render_text_sprites_08040DB8(gUnk_03006F74->unk230.unkA, 0x20, 4, 4, 0xA, 2, f, 1);
+        medal = w->unk230.graphicId;
+        medal_trade_show_medal_sprite(medal, w->unk230.spriteVariant);
+        render_text_sprites_08040DB8(gUnk_03006F74->unk230.name, 0x20, 4, 4, 0xA, 2, f, 1);
         j = 0;
         t = size >> 5;
         buf = (u32)gGameWork.unk9E;
@@ -616,7 +616,7 @@ void medal_trade_init_screen(void) {
             *(u8 *)(j + buf) = names[medal][j];
         render_text_sprites_08040DB8(gGameWork.unk9E, 0x10, 5, 8, 0xA, 1, 1, 1);
         w2 = gUnk_03006F74;
-        lvl = w2->unk230.unk5;
+        lvl = w2->unk230.level;
         if (lvl == 100) {
             TM(REG_BG1CNT, 0x10D) = (w2->unk36 + 0x14) | 0x7000;
             TM(REG_BG1CNT, 0x12D) = (gUnk_03006F74->unk36 + 0x15) | 0x7000;
@@ -766,10 +766,10 @@ void medal_trade_flip_close(void) {
             return;
         }
         gSpriteEntries[0].unk0 |= 0x4000;
-        lvl = s->unk230.unk5;
-        render_text_sprites_08040DB8(s->unk230.unkA, 0x20, 4, 4, 10, 2, 0, 1);
+        lvl = s->unk230.level;
+        render_text_sprites_08040DB8(s->unk230.name, 0x20, 4, 4, 10, 2, 0, 1);
         for (i = 0; i <= 9; i++)
-            gGameWork.unk9E[i] = ((const u8 *)gMedalNames[gUnk_03006F74->unk230.unk1])[i];
+            gGameWork.unk9E[i] = ((const u8 *)gMedalNames[gUnk_03006F74->unk230.graphicId])[i];
         render_text_sprites_08040DB8(gGameWork.unk9E, 0x10, 5, 8, 10, 1, 1, 1);
         BG2(0x218) = gUnk_03006F74->unk40[0];
         BG2(0x21A) = gUnk_03006F74->unk40[1];
@@ -786,7 +786,7 @@ void medal_trade_flip_close(void) {
             BG1(0x21C) = (gUnk_03006F74->unk36 + (u8)(lvl % 10) * 2) | 0x7000;
             BG1(0x25C) = (gUnk_03006F74->unk36 + (u8)(lvl % 10) * 2 + 1) | 0x7000;
         }
-        CpuFastSet(gUnk_084C21BC + gUnk_03006F74->unk230.unk1 * 0x80,
+        CpuFastSet(gUnk_084C21BC + gUnk_03006F74->unk230.graphicId * 0x80,
                    (void *)(VRAM + 0x3F80 + gUnk_03006F74->unk36 * 32), 0x20);
         {
             u16 v;

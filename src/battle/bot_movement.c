@@ -107,7 +107,7 @@ static void bot_move_delay_add_slow_status(u32 rec) {
 
 // - Medal level / 10.
 static void bot_move_delay_sub_medal_level(u32 rec) {
-    bot_move_delay_sub(rec, (u8)(gBattleBots[rec].medal.unk5 / 10));
+    bot_move_delay_sub(rec, (u8)(gBattleBots[rec].medal.level / 10));
 }
 
 // - legs Propulsion / 20.

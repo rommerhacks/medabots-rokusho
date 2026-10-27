@@ -24,12 +24,12 @@ void medal_rename_draw_list(u8 start) {
         for (j = 0; j <= 10; j++)
             gSpriteEntries[i * 10 + 12 + j].unk0 &= 0xBFFF;
         for (j = 0; j <= 10; j++) {
-            gUnk_03006F74->unk58[j] = gMedals[gUnk_03006F74->unkB0[i + start]].unkA[j];
+            gUnk_03006F74->unk58[j] = gMedals[gUnk_03006F74->unkB0[i + start]].name[j];
             if (gUnk_03006F74->unk58[j] == 0xFE)
                 break;
         }
         render_text_sprites_08040DB8(gUnk_03006F74->unk58, i * 10 + 12, 6, i * 2 + 3, 10, 13, 1, 1);
-        v = gUnk_03006F74->unk36 + (gMedals[gUnk_03006F74->unkB0[i + start]].unk1 * 4 + 1);
+        v = gUnk_03006F74->unk36 + (gMedals[gUnk_03006F74->unkB0[i + start]].graphicId * 4 + 1);
         v |= 0x6000;
         dst = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + (i * 2 + 3) * 32;
         *dst = v;
@@ -73,7 +73,7 @@ void medal_rename_build_list(void) {
     *(u16 *)PLTT = z;
     n = 0;
     for (i = 0; i < 30; i++) {
-        if (gMedals[i].unk0 & 0x80) {
+        if (gMedals[i].flags & 0x80) {
             gUnk_03006F74->unkB0[n] = i;
             n++;
         }

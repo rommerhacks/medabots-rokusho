@@ -9,14 +9,14 @@ static u32 medal_new_level(void);
 void medal_list_init_order(void) {
     u32 i;
     for (i = 0; i < 30; i++)
-        gMedals[i].unk0 = i;
+        gMedals[i].flags = i;
 }
 
 u32 find_medal_slot_by_id(u8 id) {
     u32 i;
 
     for (i = 0; i < 30; i++)
-        if ((gMedals[i].unk0 & 0x80) && gMedals[i].unk1 == id)
+        if ((gMedals[i].flags & 0x80) && gMedals[i].graphicId == id)
             return i + 1;
     return 0;
 }
@@ -26,48 +26,48 @@ u32 medal_add_by_id(u8 id) {
 
     memcpy_bytes_08041D04(gUnk_083B6158[id], &gGameWork.unkEE, 16);
     for (i = 0; i < 30; i++) {
-        if (!(gMedals[i].unk0 & 0x80)) {
-            gMedals[i].unk0 |= 0x80;
-            gMedals[i].unk1 = id;
-            gMedals[i].unk4 = gGameWork.unkEF;
-            gMedals[i].unk6 = gGameWork.unkF0;
-            gMedals[i].unk7 = gGameWork.unkF5;
-            gMedals[i].unk5 = medal_new_level();
-            gMedals[i].unk8 = medal_tier_for_level(gMedals[i].unk5, gGameWork.unkF1, gGameWork.unkF2, gGameWork.unkF3,
-                                                   gGameWork.unkF4);
-            gMedals[i].unk2 = (gMedals[i].unk5 + 1) * 100;
-            if ((u8)(gMedals[i].unk5 / 10) * gGameWork.unkF6 + gGameWork.unkF6 > 100)
-                gMedals[i].unk20[0] = 100;
+        if (!(gMedals[i].flags & 0x80)) {
+            gMedals[i].flags |= 0x80;
+            gMedals[i].graphicId = id;
+            gMedals[i].attribute = gGameWork.unkEF;
+            gMedals[i].aimSkillType = gGameWork.unkF0;
+            gMedals[i].compatibility = gGameWork.unkF5;
+            gMedals[i].level = medal_new_level();
+            gMedals[i].spriteVariant = medal_tier_for_level(gMedals[i].level, gGameWork.unkF1, gGameWork.unkF2,
+                                                            gGameWork.unkF3, gGameWork.unkF4);
+            gMedals[i].nextLevelExp = (gMedals[i].level + 1) * 100;
+            if ((u8)(gMedals[i].level / 10) * gGameWork.unkF6 + gGameWork.unkF6 > 100)
+                gMedals[i].skillLevel[0] = 100;
             else
-                gMedals[i].unk20[0] = gGameWork.unkF6 + gGameWork.unkF6 * (gMedals[i].unk5 / 10);
-            if ((u8)(gMedals[i].unk5 / 10) * gGameWork.unkF7 + gGameWork.unkF7 > 100)
-                gMedals[i].unk20[1] = 100;
+                gMedals[i].skillLevel[0] = gGameWork.unkF6 + gGameWork.unkF6 * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.unkF7 + gGameWork.unkF7 > 100)
+                gMedals[i].skillLevel[1] = 100;
             else
-                gMedals[i].unk20[1] = gGameWork.unkF7 + gGameWork.unkF7 * (gMedals[i].unk5 / 10);
-            if ((u8)(gMedals[i].unk5 / 10) * gGameWork.fillerF8[0] + gGameWork.fillerF8[0] > 100)
-                gMedals[i].unk20[2] = 100;
+                gMedals[i].skillLevel[1] = gGameWork.unkF7 + gGameWork.unkF7 * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[0] + gGameWork.fillerF8[0] > 100)
+                gMedals[i].skillLevel[2] = 100;
             else
-                gMedals[i].unk20[2] = gGameWork.fillerF8[0] + gGameWork.fillerF8[0] * (gMedals[i].unk5 / 10);
-            if ((u8)(gMedals[i].unk5 / 10) * gGameWork.fillerF8[1] + gGameWork.fillerF8[1] > 100)
-                gMedals[i].unk20[3] = 100;
+                gMedals[i].skillLevel[2] = gGameWork.fillerF8[0] + gGameWork.fillerF8[0] * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[1] + gGameWork.fillerF8[1] > 100)
+                gMedals[i].skillLevel[3] = 100;
             else
-                gMedals[i].unk20[3] = gGameWork.fillerF8[1] + gGameWork.fillerF8[1] * (gMedals[i].unk5 / 10);
-            if ((u8)(gMedals[i].unk5 / 10) * gGameWork.fillerF8[2] + gGameWork.fillerF8[2] > 100)
-                gMedals[i].unk20[4] = 100;
+                gMedals[i].skillLevel[3] = gGameWork.fillerF8[1] + gGameWork.fillerF8[1] * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[2] + gGameWork.fillerF8[2] > 100)
+                gMedals[i].skillLevel[4] = 100;
             else
-                gMedals[i].unk20[4] = gGameWork.fillerF8[2] + gGameWork.fillerF8[2] * (gMedals[i].unk5 / 10);
-            if ((u8)(gMedals[i].unk5 / 10) * gGameWork.fillerF8[3] + gGameWork.fillerF8[3] > 100)
-                gMedals[i].unk20[5] = 100;
+                gMedals[i].skillLevel[4] = gGameWork.fillerF8[2] + gGameWork.fillerF8[2] * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[3] + gGameWork.fillerF8[3] > 100)
+                gMedals[i].skillLevel[5] = 100;
             else
-                gMedals[i].unk20[5] = gGameWork.fillerF8[3] + gGameWork.fillerF8[3] * (gMedals[i].unk5 / 10);
-            if ((u8)(gMedals[i].unk5 / 10) * gGameWork.fillerF8[4] + gGameWork.fillerF8[4] > 100)
-                gMedals[i].unk20[6] = 100;
+                gMedals[i].skillLevel[5] = gGameWork.fillerF8[3] + gGameWork.fillerF8[3] * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[4] + gGameWork.fillerF8[4] > 100)
+                gMedals[i].skillLevel[6] = 100;
             else
-                gMedals[i].unk20[6] = gGameWork.fillerF8[4] + gGameWork.fillerF8[4] * (gMedals[i].unk5 / 10);
-            if ((u8)(gMedals[i].unk5 / 10) * gGameWork.fillerF8[5] + gGameWork.fillerF8[5] > 100)
-                gMedals[i].unk20[7] = 100;
+                gMedals[i].skillLevel[6] = gGameWork.fillerF8[4] + gGameWork.fillerF8[4] * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[5] + gGameWork.fillerF8[5] > 100)
+                gMedals[i].skillLevel[7] = 100;
             else
-                gMedals[i].unk20[7] = gGameWork.fillerF8[5] + gGameWork.fillerF8[5] * (gMedals[i].unk5 / 10);
+                gMedals[i].skillLevel[7] = gGameWork.fillerF8[5] + gGameWork.fillerF8[5] * (gMedals[i].level / 10);
             return i;
         }
     }
@@ -78,10 +78,10 @@ void medal_remove_by_id(u8 id) {
     u32 i;
 
     for (i = 0; i < 30; i++) {
-        if ((gMedals[i].unk0 & 0x80) && gMedals[i].unk1 == id) {
-            u8 f = gMedals[i].unk0 & 0x1F;
+        if ((gMedals[i].flags & 0x80) && gMedals[i].graphicId == id) {
+            u8 f = gMedals[i].flags & 0x1F;
             mem_fill8((u8 *)&gMedals[i], 0x40, 0);
-            gMedals[i].unk0 = f;
+            gMedals[i].flags = f;
             return;
         }
     }
@@ -91,10 +91,10 @@ void medal_add_from_buffer(const void *src) {
     u32 i;
 
     for (i = 0; i < 30; i++) {
-        if (!(gMedals[i].unk0 & 0x80)) {
-            u32 f = gMedals[i].unk0 & 0x1F;
+        if (!(gMedals[i].flags & 0x80)) {
+            u32 f = gMedals[i].flags & 0x1F;
             memcpy_bytes_0803F63C(src, &gMedals[i], 0x40);
-            gMedals[i].unk0 = (gMedals[i].unk0 & 0x80) | f;
+            gMedals[i].flags = (gMedals[i].flags & 0x80) | f;
             return;
         }
     }
@@ -109,7 +109,7 @@ static u32 medal_new_level(void) {
 
     CpuFastSet(&zero, e, 0x01000080);
     for (i = 0, m = gMedals; i < 30; m++, e++, i++)
-        e->key = m->unk5;
+        e->key = m->level;
     sort_buffer_descending(30);
     return (SORT_BUFFER[0].key - SORT_BUFFER[3].key) / 2 + SORT_BUFFER[3].key;
 }
@@ -156,20 +156,20 @@ void reduce_medapart_stat(u8 id, u8 kind, u8 n) {
 void team_init_order(void) {
     u32 i;
     for (i = 0; i < 9; i++)
-        gTeamSlots[i].unk7 = i;
+        gTeamSlots[i].slotId = i;
 }
 
-// The Medabot with Medal medal loses its part of kind kind: back to the bare Tinpet part, one less owned.
-void team_lose_equipped_part(u8 medal, u8 kind) {
+// The Medabot in team slot slot_id loses its part of kind kind: back to the bare Tinpet part, one less owned.
+void team_lose_equipped_part(u8 slot_id, u8 kind) {
     u32 i;
 
     for (i = 0; i < 9; i++) {
-        if (gTeamSlots[i].unk7 == medal) {
-            u8 *p = &gTeamSlots[i].unk3;
+        if (gTeamSlots[i].slotId == slot_id) {
+            u8 *p = &gTeamSlots[i].head;
             u8 old = p[kind];
 
-            p[kind] = gTeamSlots[i].unk1 + 0x78;
-            gTeamSlots[i].unk0 = 2;
+            p[kind] = gTeamSlots[i].gender + 0x78;
+            gTeamSlots[i].state = 2;
             gMedapartInventory[kind * 240 + old * 2]--;
             gMedapartInventory[kind * 240 + old * 2 + 1]--;
             return;
@@ -181,7 +181,7 @@ u32 team_is_full(void) {
     u32 i;
 
     for (i = 0; i < 9; i++)
-        if (gTeamSlots[i].unk0 == 0)
+        if (gTeamSlots[i].state == 0)
             return 0;
     return 1;
 }
@@ -190,14 +190,14 @@ void team_add_tinpet(u8 gender) {
     u32 i;
 
     for (i = 0; i < 9; i++) {
-        if (gTeamSlots[i].unk0 == 0) {
-            gTeamSlots[i].unk0 = 1;
-            gTeamSlots[i].unk1 = gender & 1;
-            gTeamSlots[i].unk2 = 0x1E;
-            gTeamSlots[i].unk3 = (gender & 1) + 0x78;
-            gTeamSlots[i].unk4 = (gender & 1) + 0x78;
-            gTeamSlots[i].unk5 = (gender & 1) + 0x78;
-            gTeamSlots[i].unk6 = (gender & 1) + 0x78;
+        if (gTeamSlots[i].state == 0) {
+            gTeamSlots[i].state = 1;
+            gTeamSlots[i].gender = gender & 1;
+            gTeamSlots[i].medal = 0x1E;
+            gTeamSlots[i].head = (gender & 1) + 0x78;
+            gTeamSlots[i].rightArm = (gender & 1) + 0x78;
+            gTeamSlots[i].leftArm = (gender & 1) + 0x78;
+            gTeamSlots[i].legs = (gender & 1) + 0x78;
             return;
         }
     }

@@ -374,7 +374,7 @@ void medaforce_calc_success(u32 rec) {
     gBattleWork.unkE8 = gBattleBots[rec].unkA8[3];
     gBattleWork.unkE8 += calc_bot_matching_part_power(rec);
     gBattleWork.unkE8 += rng_next_byte() & 7;
-    gBattleWork.unkE8 += gBattleBots[rec].medal.unk20[gBattleBots[rec].unkA8[1]];
+    gBattleWork.unkE8 += gBattleBots[rec].medal.skillLevel[gBattleBots[rec].unkA8[1]];
 }
 
 void medaforce_calc_damage(u32 rec) {

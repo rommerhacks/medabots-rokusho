@@ -890,7 +890,7 @@ void guard_shield_shrink(void) {
 void guard_shield_animate(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x1C], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
-        memcpy_bytes_0803F63C(gBattleBots[gBattleWork.unkDE - 1].medal.unkA, gGameWork.unk9E, 0xE);
+        memcpy_bytes_0803F63C(gBattleBots[gBattleWork.unkDE - 1].medal.name, gGameWork.unk9E, 0xE);
         gBattleWork.unkA6 = 0x16;
         clear_battle_sprite_slot(0x21, 1);
         gBattleWork.unkAA++;
@@ -1930,7 +1930,7 @@ void bot_defeat_burst_wait(void) {
 }
 
 void bot_defeat_message(void) {
-    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.unk51].medal.unkA, gGameWork.unk9E, 0xE);
+    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.unk51].medal.name, gGameWork.unk9E, 0xE);
     gBattleWork.unkA6 = 0x14;
     gBattleWork.unkAA++;
 }

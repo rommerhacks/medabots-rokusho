@@ -96,10 +96,10 @@ void status_init_cursor(void) {
 void status_draw_bot_name(void) {
     clear_sprite_table_mask(9, 13);
     if (gGameWork.unk3C == 0)
-        render_text_sprites_08040DB8(gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.unkA, 9, 0x11, 0xE, 10,
+        render_text_sprites_08040DB8(gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.name, 9, 0x11, 0xE, 10,
                                      15, 0, 0);
     else
-        render_text_sprites_08040DB8(gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.unkA, 9, 3, 0xE, 10, 15,
+        render_text_sprites_08040DB8(gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.name, 9, 3, 0xE, 10, 15,
                                      0, 0);
 }
 
@@ -134,13 +134,13 @@ void status_draw_row_icons(void) {
 }
 
 void status_load_medal_icon(void) {
-    CpuFastSet(gUnk_084C21BC + gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.unk1 * 0x80, (void *)0x06007800,
-               0x20);
+    CpuFastSet(gUnk_084C21BC + gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.graphicId * 0x80,
+               (void *)0x06007800, 0x20);
 }
 
 void status_draw_medal_name(void) {
     clear_sprite_table_mask(0x16, 10);
-    memcpy_bytes_0803F63C((const void *)gMedalNames[gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.unk1],
+    memcpy_bytes_0803F63C((const void *)gMedalNames[gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.graphicId],
                           gGameWork.unk9E, 11);
     render_text_sprites_08040DB8(gGameWork.unk9E, 0x16, 0xD, 2, 7, 12, 1, 2);
 }
@@ -162,7 +162,7 @@ void status_draw_part_ability_icons(void) {
 
     for (i = 0; i <= 3; i++) {
         load_part_data(gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].parts[i].unk17, i, &gGameWork.unkEE);
-        memcpy_bytes_08041D04(gUnk_083B6158[gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.unk1],
+        memcpy_bytes_08041D04(gUnk_083B6158[gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.graphicId],
                               gGameWork.unk10E, 16);
         if (gGameWork.unkEE == gGameWork.unk10E[1])
             draw_tile_block(2, 2, 0xB, i * 2 + 4, REG_BG1CNT, gGameWork.unk10E[7] * 4 + 0xD340);

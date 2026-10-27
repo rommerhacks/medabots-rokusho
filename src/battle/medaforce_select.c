@@ -131,25 +131,25 @@ void mf_menu_draw_medaforce_name(void) {
         memcpy_bytes_08041D04(gBattleMenuTexts[3], gGameWork.unk9E, 14);
         break;
     case 1:
-        if (gBattleBots[gBattleWork.unk80].medal.unk5 > 9) {
-            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.unk1 * 3, &gGameWork.unkEE,
-                                  3);
+        if (gBattleBots[gBattleWork.unk80].medal.level > 9) {
+            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
+                                  &gGameWork.unkEE, 3);
             memcpy_bytes_0803F63C((const void *)gMedaforceNames[gGameWork.unkEE], gGameWork.unk9E, 17);
         } else
             fill_text_blank(gGameWork.unk9E, 13);
         break;
     case 2:
-        if (gBattleBots[gBattleWork.unk80].medal.unk5 > 29) {
-            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.unk1 * 3, &gGameWork.unkEE,
-                                  3);
+        if (gBattleBots[gBattleWork.unk80].medal.level > 29) {
+            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
+                                  &gGameWork.unkEE, 3);
             memcpy_bytes_0803F63C((const void *)gMedaforceNames[gGameWork.unkEF], gGameWork.unk9E, 17);
         } else
             fill_text_blank(gGameWork.unk9E, 13);
         break;
     case 3:
-        if (gBattleBots[gBattleWork.unk80].medal.unk5 > 59) {
-            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.unk1 * 3, &gGameWork.unkEE,
-                                  3);
+        if (gBattleBots[gBattleWork.unk80].medal.level > 59) {
+            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
+                                  &gGameWork.unkEE, 3);
             memcpy_bytes_0803F63C((const void *)gMedaforceNames[gGameWork.unkF0], gGameWork.unk9E, 17);
         } else
             fill_text_blank(gGameWork.unk9E, 13);
@@ -172,10 +172,10 @@ void mf_menu_draw_status(u32 a) {
         break;
     case 1:
 
-        if (gBattleBots[gBattleWork.unk80].medal.unk5 > 9) {
+        if (gBattleBots[gBattleWork.unk80].medal.level > 9) {
             if (gBattleWork.unk58 == 0) {
                 if (gBattleBots[gBattleWork.unk80].unkC1 == 0x50) {
-                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.unk1 * 3,
+                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
                                           &gGameWork.unkEE, 3);
                     memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.unkEE * 6, gGameWork.unk10E, 6);
                     memcpy_bytes_0803F63C((const void *)gUnk_083B6EC8[gGameWork.unk10E[1]], gGameWork.unk9E, 14);
@@ -195,10 +195,10 @@ void mf_menu_draw_status(u32 a) {
         break;
     case 2:
 
-        if (gBattleBots[gBattleWork.unk80].medal.unk5 > 29) {
+        if (gBattleBots[gBattleWork.unk80].medal.level > 29) {
             if (gBattleWork.unk58 == 0) {
                 if (gBattleBots[gBattleWork.unk80].unkC1 == 0x50) {
-                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.unk1 * 3,
+                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
                                           &gGameWork.unkEE, 3);
                     memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.unkEF * 6, gGameWork.unk10E, 6);
                     memcpy_bytes_0803F63C((const void *)gUnk_083B6EC8[gGameWork.unk10E[1]], gGameWork.unk9E, 14);
@@ -218,10 +218,10 @@ void mf_menu_draw_status(u32 a) {
         break;
     case 3:
 
-        if (gBattleBots[gBattleWork.unk80].medal.unk5 > 59) {
+        if (gBattleBots[gBattleWork.unk80].medal.level > 59) {
             if (gBattleWork.unk58 == 0) {
                 if (gBattleBots[gBattleWork.unk80].unkC1 == 0x50) {
-                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.unk1 * 3,
+                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
                                           &gGameWork.unkEE, 3);
                     memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.unkF0 * 6, gGameWork.unk10E, 6);
                     memcpy_bytes_0803F63C((const void *)gUnk_083B6EC8[gGameWork.unk10E[1]], gGameWork.unk9E, 14);
@@ -313,7 +313,8 @@ static void mf_menu_draw_cost_bar(u32 a) {
     int k;
 
     if (a == 0) {
-        memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.unk1 * 3, &gGameWork.unkEE, 3);
+        memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3, &gGameWork.unkEE,
+                              3);
         k = gBattleWork.unk82 - 1;
         memcpy_bytes_08041D04(gUnk_083B7CD4 + (&gGameWork.unkEE)[k] * 6, gGameWork.unk10E, 6);
         n = gGameWork.unk10E[2] / 10;

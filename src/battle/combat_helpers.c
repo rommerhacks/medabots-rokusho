@@ -346,8 +346,8 @@ u32 calc_bot_matching_part_power(u32 rec) {
     u32 sum = 0;
     u32 i;
     for (i = 0; i <= 3; i++)
-        if (gBattleBots[rec].medal.unk4 == gBattleBots[rec].parts[i].data[0])
-            sum += gBattleBots[rec].medal.unk7;
+        if (gBattleBots[rec].medal.attribute == gBattleBots[rec].parts[i].data[0])
+            sum += gBattleBots[rec].medal.compatibility;
     return sum;
 }
 
@@ -356,7 +356,7 @@ void calc_battle_action_speed(u32 rec, u32 part) {
     b->unkE8 += gBattleBots[rec].parts[part].data[5];
     b->unkE8 += calc_bot_matching_part_power(rec);
     b->unkE8 += rng_next_byte() & 7;
-    b->unkE8 += gBattleBots[rec].medal.unk20[gBattleBots[rec].parts[part].data[2]];
+    b->unkE8 += gBattleBots[rec].medal.skillLevel[gBattleBots[rec].parts[part].data[2]];
     if (skill_type_is_remote(gBattleBots[rec].parts[part].data[2]))
         b->unkE8 += gBattleBots[rec].parts[3].unk16;
     else
@@ -370,7 +370,7 @@ void apply_battle_bot_damage_reduction(u32 rec) {
 
 void accumulate_battle_speed_value(u32 rec) {
     struct BattleWork *b = &gBattleWork;
-    b->unkEE += gBattleBots[rec].medal.unk5;
+    b->unkEE += gBattleBots[rec].medal.level;
     b->unkEE += calc_bot_matching_part_power(rec);
     b->unkEE += rng_next_byte() & 7;
 }

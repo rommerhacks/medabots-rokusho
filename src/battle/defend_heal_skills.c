@@ -1174,7 +1174,7 @@ void reactivate_apply(void) {
 }
 
 void reactivate_finish(void) {
-    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.unk88].medal.unkA, gGameWork.unk9E, 0xE);
+    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.unk88].medal.name, gGameWork.unk9E, 0xE);
     gBattleWork.unkA6 = 0x28;
     gBattleWork.unkAA++;
 }

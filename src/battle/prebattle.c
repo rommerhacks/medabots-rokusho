@@ -1206,7 +1206,7 @@ static void calc_average_bot_stat_080125B4(void) {
 
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[i + 3].unkBA)
-            sum += gBattleBots[i + 3].medal.unk5;
+            sum += gBattleBots[i + 3].medal.level;
     }
     gBattleWork.unk16C += sum / 3;
 }
@@ -1231,14 +1231,14 @@ static void calc_average_bot_stat_0801264C(void) {
 
     for (i = 0, nopp = 0; i <= 2; i++) {
         if (gBattleBots[i + 3].unkBA) {
-            opp += gBattleBots[i + 3].medal.unk5;
+            opp += gBattleBots[i + 3].medal.level;
             nopp++;
         }
     }
     opp = opp / nopp;
     for (i = 0, nteam = 0; i <= 2; i++) {
         if (gBattleBots[i].unkBA) {
-            team += gBattleBots[i].medal.unk5;
+            team += gBattleBots[i].medal.level;
             nteam++;
         }
     }
@@ -1296,41 +1296,41 @@ static void battle_check_medal_level_up(void) {
     for (i = 0; i <= 2; i++) {
         if (!gBattleBots[i].unkBA)
             continue;
-        slot = find_medal_slot_by_id(gBattleBots[i].medal.unk1) - 1;
+        slot = find_medal_slot_by_id(gBattleBots[i].medal.graphicId) - 1;
         {
             struct MedalData *medals = gMedals;
             medal = &medals[slot];
         }
-        if (medal->unk5 == 100)
+        if (medal->level == 100)
             continue;
-        if (medal->unk2 > gBattleWork.unk16C) {
-            medal->unk2 -= gBattleWork.unk16C;
+        if (medal->nextLevelExp > gBattleWork.unk16C) {
+            medal->nextLevelExp -= gBattleWork.unk16C;
             continue;
         }
-        medal->unk5++;
-        medal->unk2 = (medal->unk5 + 1) * 100;
-        gBattleWork.unk16E[i][0] = medal->unk1 + 1;
-        memcpy_bytes_08041D04(gUnk_083B6158[medal->unk1], &gGameWork.unkEE, 16);
-        variant = medal_tier_for_level(medal->unk5, (&gGameWork.unkEE)[3], (&gGameWork.unkEE)[4], (&gGameWork.unkEE)[5],
-                                       (&gGameWork.unkEE)[6]);
-        if (variant != medal->unk8) {
+        medal->level++;
+        medal->nextLevelExp = (medal->level + 1) * 100;
+        gBattleWork.unk16E[i][0] = medal->graphicId + 1;
+        memcpy_bytes_08041D04(gUnk_083B6158[medal->graphicId], &gGameWork.unkEE, 16);
+        variant = medal_tier_for_level(medal->level, (&gGameWork.unkEE)[3], (&gGameWork.unkEE)[4],
+                                       (&gGameWork.unkEE)[5], (&gGameWork.unkEE)[6]);
+        if (variant != medal->spriteVariant) {
             gBattleWork.unk16E[i][1] = 1;
-            gBattleWork.unk16E[i][2] = medal->unk1;
-            gBattleWork.unk16E[i][3] = medal->unk8;
-            gBattleWork.unk16E[i][4] = medal->unk1;
+            gBattleWork.unk16E[i][2] = medal->graphicId;
+            gBattleWork.unk16E[i][3] = medal->spriteVariant;
+            gBattleWork.unk16E[i][4] = medal->graphicId;
             gBattleWork.unk16E[i][5] = variant;
-            medal->unk8 = variant;
+            medal->spriteVariant = variant;
         }
-        memcpy_bytes_08041D04(&gMedalMedaforceIds[medal->unk1 * 3], &gGameWork.unkEE, 3);
-        if (medal->unk5 == 10) {
+        memcpy_bytes_08041D04(&gMedalMedaforceIds[medal->graphicId * 3], &gGameWork.unkEE, 3);
+        if (medal->level == 10) {
             gBattleWork.unk16E[i][6] = 1;
             gBattleWork.unk16E[i][7] = (&gGameWork.unkEE)[0];
         }
-        if (medal->unk5 == 30) {
+        if (medal->level == 30) {
             gBattleWork.unk16E[i][6] = 1;
             gBattleWork.unk16E[i][7] = (&gGameWork.unkEE)[1];
         }
-        if (medal->unk5 == 60) {
+        if (medal->level == 60) {
             gBattleWork.unk16E[i][6] = 1;
             gBattleWork.unk16E[i][7] = (&gGameWork.unkEE)[2];
         }

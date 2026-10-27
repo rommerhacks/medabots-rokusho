@@ -777,21 +777,22 @@ struct BattleWork {
 };
 
 struct MedalData {
-    u8 unk0;      // flags (0x40 tested by medal_trade_check_medal)
-    u8 unk1;      // Medal graphic index (0x80-byte tiles at 0x084C21BC)
-    u16 unk2;     // shown as "NEXT Lv" on the Medals list (render_medal_level_display; blank at level 100)
-    u8 unk4;      // Attribute (gUnk_083B656C name, Ability page); Medals help: gUnk_083B69C8 message index
-    u8 unk5;      // level (Medals help: Medaforce slots open at 10 / 30 / 60)
-    u8 unk6;      // Aim skill type (gUnk_083B6EC8 name, Ability page); Medals help: gUnk_083B70AC message index
-    u8 unk7;      // Compatibility icon (tile 0xD340 + unk7 * 4, Ability page)
-    u8 unk8;      // Medal sprite variant, 0-4 (gUnk_083AC494[unk1][unk8])
-    u8 unk9;      // number of unk18 entries in use (medal_rotation_draw_actions draws the rest greyed out)
-    u8 unkA[0xE]; // name text
-    u8 unk18[8];  // indexed by Medals screen unk46 (gUnk_083B825C message ids; guess: rotation entries)
-    u8 unk20[8];  // 0-100 (guess: skill levels, drawn by render_medal_skill_stats)
-    u8 unk28[8];  // per skill: filled bar tiles, 0-8 (draw_medal_skill_bars)
+    u8 flags;         // bit 7: owned, bit 6: in a Medabot (0x40 tested by medal_trade_check_medal)
+    u8 graphicId;     // Medal graphic index (0x80-byte tiles at 0x084C21BC)
+    u16 nextLevelExp; // shown as "NEXT Lv" on the Medals list (render_medal_level_display; blank at level 100)
+    u8 attribute;     // Attribute (gUnk_083B656C name, Ability page); Medals help: gUnk_083B69C8 message index
+    u8 level;         // level (Medals help: Medaforce slots open at 10 / 30 / 60)
+    u8 aimSkillType;  // Aim skill type (gUnk_083B6EC8 name, Ability page); Medals help: gUnk_083B70AC message index
+    u8 compatibility; // Compatibility icon (tile 0xD340 + compatibility * 4, Ability page)
+    u8 spriteVariant; // Medal sprite variant, 0-4 (gUnk_083AC494[graphicId][spriteVariant])
+    u8 rotationLen;   // rotation entries in use (medal_rotation_draw_actions draws the rest greyed out)
+    u8 name[0xE];     // name text
+    u8 rotation[8];   // Rotation page actions (gUnk_083B825C message ids)
+    u8 skillLevel[8]; // per skill type: level 0-100 (render_medal_skill_stats)
+    u8 skillExp[8];   // per skill type: progress to the next level, 0-7, drawn as bar tiles (draw_medal_skill_bars)
     u8 filler30[0xF];
-    u8 unk3F; // Robattle: current unk18 entry (battle_bot_advance_rotation advances it, wraps at 8 to unk9)
+    u8 rotationPos; // Robattle: current rotation entry (battle_bot_advance_rotation advances it, wraps at 8 to
+                    // rotationLen)
 };
 
 // 256-byte records at gBattleBots (6 of them, cleared together); each starts with a Medal record copy.
@@ -867,14 +868,14 @@ struct BattleBot {
 };
 
 struct TeamSlot {
-    u8 unk0; // slot in use (> 1: has a Medal)
-    u8 unk1; // guess: Medabot gender (compared with the Medapart gender unkF1 in count_compatible_medaparts)
-    u8 unk2; // Medal id
-    u8 unk3; // Medaparts: head, right arm, left arm, legs (validate_medapart_stats)
-    u8 unk4;
-    u8 unk5;
-    u8 unk6;
-    u8 unk7;
+    u8 state;  // 0 empty, 1 bare Tinpet (team_add_tinpet), 2 has a Medal, 3 assembled (count_assembled_medabots)
+    u8 gender; // Tinpet gender, 0 male / 1 female (team_add_tinpet; Medapart gender unkF1 must match)
+    u8 medal;  // Medal id (0x1E none)
+    u8 head;   // Medapart ids (validate_medapart_stats); a bare Tinpet part is 0x78 + gender
+    u8 rightArm;
+    u8 leftArm;
+    u8 legs;
+    u8 slotId; // own slot index (team_init_order); battle bots keep it at BattleBot.unk47
 };
 
 // Field scratch state; mostly the debug screen (field/field_debug), which draws its pages as hex

@@ -231,7 +231,7 @@ void debug_medal_input(void) {
         case 0:
             if (gGameWork.unk35[0] < 30 && !find_medal_slot_by_id(gGameWork.unk35[0])) {
                 slot = medal_add_by_id(gGameWork.unk35[gGameWork.unk34]);
-                memcpy_bytes_0803F63C((void *)gMedalNames[gGameWork.unk35[gGameWork.unk34]], gMedals[slot].unkA, 11);
+                memcpy_bytes_0803F63C((void *)gMedalNames[gGameWork.unk35[gGameWork.unk34]], gMedals[slot].name, 11);
             }
             break;
         case 1:
@@ -242,7 +242,7 @@ void debug_medal_input(void) {
             for (gGameWork.unk35[2] = b; gGameWork.unk35[2] < 30; gGameWork.unk35[2]++) {
                 if (!find_medal_slot_by_id(gGameWork.unk35[2])) {
                     slot = medal_add_by_id(gGameWork.unk35[2]);
-                    memcpy_bytes_0803F63C((void *)gMedalNames[gGameWork.unk35[2]], gMedals[slot].unkA, 11);
+                    memcpy_bytes_0803F63C((void *)gMedalNames[gGameWork.unk35[2]], gMedals[slot].name, 11);
                 }
             }
             break;

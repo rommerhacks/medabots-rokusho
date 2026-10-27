@@ -51,7 +51,7 @@ void ai_target_attack(void) {
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -72,7 +72,7 @@ void ai_target_anti_air(void) {
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 && gBattleBots[gBattleWork.unk60].parts[3].data[1] == SKILL_LEGS_AIR &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -92,7 +92,7 @@ void ai_target_anti_air(void) {
             gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gBattleBots[gBattleWork.unk60].unk40 &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
                     gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
                 gBattleWork.unk60++;
             }
@@ -115,7 +115,7 @@ void ai_target_anti_sea(void) {
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 && gBattleBots[gBattleWork.unk60].parts[3].data[1] == SKILL_LEGS_SEA &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -135,7 +135,7 @@ void ai_target_anti_sea(void) {
             gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gBattleBots[gBattleWork.unk60].unk40 &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
                     gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
                 gBattleWork.unk60++;
             }
@@ -159,7 +159,7 @@ void ai_target_stability(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 && battle_bot_lacks_stability(gBattleWork.unk60) &&
             gBattleBots[gBattleWork.unk60].unkC9 &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -179,7 +179,7 @@ void ai_target_stability(void) {
             gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gBattleBots[gBattleWork.unk60].unk40 && battle_bot_lacks_stability(gBattleWork.unk60) &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
                     gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
                 gBattleWork.unk60++;
             }
@@ -203,7 +203,7 @@ void ai_target_recovery(void) {
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 && find_most_damaged_part(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -222,7 +222,7 @@ void ai_target_recovery(void) {
             gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gBattleBots[gBattleWork.unk60].unk40 &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
                     gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
                 gBattleWork.unk60++;
             }
@@ -250,7 +250,7 @@ void ai_target_buff(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 && battle_bot_lacks_stability(gBattleWork.unk60) &&
             bot_has_no_buff(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -270,7 +270,7 @@ void ai_target_buff(void) {
             gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gBattleBots[gBattleWork.unk60].unk40 &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
                     gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
                 gBattleWork.unk60++;
             }
@@ -293,7 +293,7 @@ void ai_target_repair(void) {
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 && find_random_broken_part(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -312,7 +312,7 @@ void ai_target_repair(void) {
             gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gBattleBots[gBattleWork.unk60].unk40 &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
                     gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
                 gBattleWork.unk60++;
             }
@@ -339,7 +339,7 @@ void ai_target_reactivate(void) {
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unkBA == 2 &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -357,7 +357,7 @@ void ai_target_reactivate(void) {
         else {
             gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
             for (i = 0; i <= 2; i++) {
-                if (bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+                if (bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
                     gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
                 gBattleWork.unk60++;
             }
@@ -379,7 +379,7 @@ void ai_target_rapid_chrg(void) {
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 && gBattleWork.unk60 != gBattleWork.unk5C &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -410,7 +410,7 @@ void ai_target_status(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 && battle_bot_lacks_stability(gBattleWork.unk60) &&
             bot_has_no_status(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -430,7 +430,7 @@ void ai_target_status(void) {
             gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gBattleBots[gBattleWork.unk60].unk40 &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
                     gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
                 gBattleWork.unk60++;
             }
@@ -452,7 +452,7 @@ void ai_target_use_drain(void) {
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 && bot_head_has_uses(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -471,7 +471,7 @@ void ai_target_use_drain(void) {
             gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gBattleBots[gBattleWork.unk60].unk40 &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
                     gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
                 gBattleWork.unk60++;
             }
@@ -494,7 +494,7 @@ void ai_target_forcedrain(void) {
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 && bot_has_medaforce_charge(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -513,7 +513,7 @@ void ai_target_forcedrain(void) {
             gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gBattleBots[gBattleWork.unk60].unk40 &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
                     gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
                 gBattleWork.unk60++;
             }
@@ -536,7 +536,7 @@ void ai_target_impair(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.unk60].unk40 && battle_bot_lacks_stability(gBattleWork.unk60) &&
             bot_has_no_status(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
             gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
         gBattleWork.unk60++;
     }
@@ -556,7 +556,7 @@ void ai_target_impair(void) {
             gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gBattleBots[gBattleWork.unk60].unk40 &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
                     gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
                 gBattleWork.unk60++;
             }

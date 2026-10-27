@@ -86,7 +86,7 @@ void save_screen_draw_info(void) {
 
     n = 0;
     for (i = 0; i < 30; i++) {
-        if (gMedals[i].unk0 & 0x80)
+        if (gMedals[i].flags & 0x80)
             n++;
     }
     ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n, 2, 10, 4, 10, (REG_BG1CNT >> 8) & 0x1F);

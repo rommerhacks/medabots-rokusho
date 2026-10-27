@@ -606,8 +606,8 @@ u32 find_next_free_medal(volatile u32 medal, volatile u32 backward) {
             struct MedalData *medals2 = gMedals; // FAKEMATCH: second base copy
         loop:
             medal--;
-            if (medals2[medal].unk0 & 0x80) {
-                if (!(medals[medal].unk0 & 0x40))
+            if (medals2[medal].flags & 0x80) {
+                if (!(medals[medal].flags & 0x40))
                     return medal;
             }
             if (medal != 0)
@@ -620,7 +620,7 @@ u32 find_next_free_medal(volatile u32 medal, volatile u32 backward) {
                 medal = 0;
             if (medal == 30)
                 goto none;
-        } while (!(gMedals[medal].unk0 & 0x80) || (gMedals[medal].unk0 & 0x40));
+        } while (!(gMedals[medal].flags & 0x80) || (gMedals[medal].flags & 0x40));
         return medal;
     }
 none:
@@ -682,7 +682,7 @@ u32 find_medabot_slot_by_medal(u8 medal) {
     if (medal >= 0x1E)
         return 0xFF;
     for (i = 0; i < 9; i++)
-        if (gTeamSlots[i].unk0 > 1 && gTeamSlots[i].unk2 == medal)
+        if (gTeamSlots[i].state > 1 && gTeamSlots[i].medal == medal)
             return i;
     return 0xFF;
 }
@@ -999,7 +999,7 @@ u32 count_assembled_medabots(void) {
     u32 i;
 
     for (i = 0; i < 9; i++)
-        if (gTeamSlots[i].unk0 == 3)
+        if (gTeamSlots[i].state == 3)
             n++;
     return n;
 }
@@ -1394,13 +1394,13 @@ u32 resolve_area_sprite_set(u8 set) {
 
 // Map script: puts the first Medabot in team slot 0 (Medal 0 owned and set, parts 0x2A in use).
 void give_starter_medabot(void) {
-    gMedals[0].unk0 |= 0xC0;
-    gTeamSlots[0].unk0 = 3;
-    gTeamSlots[0].unk2 = 0;
-    gTeamSlots[0].unk3 = 0x2A;
-    gTeamSlots[0].unk4 = 0x2A;
-    gTeamSlots[0].unk5 = 0x2A;
-    gTeamSlots[0].unk6 = 0x2A;
+    gMedals[0].flags |= 0xC0;
+    gTeamSlots[0].state = 3;
+    gTeamSlots[0].medal = 0;
+    gTeamSlots[0].head = 0x2A;
+    gTeamSlots[0].rightArm = 0x2A;
+    gTeamSlots[0].leftArm = 0x2A;
+    gTeamSlots[0].legs = 0x2A;
     gMedapartInventory[0 * 240 + 0x2A * 2 + 1] = 1;
     gMedapartInventory[1 * 240 + 0x2A * 2 + 1] = 1;
     gMedapartInventory[2 * 240 + 0x2A * 2 + 1] = 1;

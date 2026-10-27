@@ -125,7 +125,7 @@ void increment_medal_skill_level(u32 rec) {
         return;
     if (gGameWork.unk89 == 1)
         return;
-    if (gBattleBots[rec].medal.unk5 == 100)
+    if (gBattleBots[rec].medal.level == 100)
         return;
     if (gBattleWork.unk164 == 0)
         return;
@@ -133,29 +133,29 @@ void increment_medal_skill_level(u32 rec) {
         skill = gBattleBots[rec].unkA8[1];
     else
         skill = gBattleBots[rec].parts[gBattleBots[rec].chosenAction - 1].data[2];
-    if (gBattleBots[rec].medal.unk20[skill] == 100) {
-        if (gBattleBots[rec].medal.unk28[skill] <= 6)
-            gBattleBots[rec].medal.unk28[skill]++;
+    if (gBattleBots[rec].medal.skillLevel[skill] == 100) {
+        if (gBattleBots[rec].medal.skillExp[skill] <= 6)
+            gBattleBots[rec].medal.skillExp[skill]++;
     } else {
-        gBattleBots[rec].medal.unk28[skill]++;
-        if (gBattleBots[rec].medal.unk28[skill] > 7) {
-            gBattleBots[rec].medal.unk28[skill] = 0;
-            gBattleBots[rec].medal.unk20[skill]++;
+        gBattleBots[rec].medal.skillExp[skill]++;
+        if (gBattleBots[rec].medal.skillExp[skill] > 7) {
+            gBattleBots[rec].medal.skillExp[skill] = 0;
+            gBattleBots[rec].medal.skillLevel[skill]++;
             gBattleWork.unk165 = 1;
             gBattleWork.unk166 = skill;
-            gBattleWork.unk167 = gBattleBots[rec].medal.unk20[skill];
+            gBattleWork.unk167 = gBattleBots[rec].medal.skillLevel[skill];
         }
     }
     sync_medal_stats_from_battle_bot(rec);
 }
 
 static void sync_medal_stats_from_battle_bot(u32 rec) {
-    u32 slot = find_medal_slot_by_id(gBattleBots[rec].medal.unk1) - 1;
+    u32 slot = find_medal_slot_by_id(gBattleBots[rec].medal.graphicId) - 1;
     u32 i;
 
     for (i = 0; i <= 7; i++) {
-        gMedals[slot].unk20[i] = gBattleBots[rec].medal.unk20[i];
-        gMedals[slot].unk28[i] = gBattleBots[rec].medal.unk28[i];
+        gMedals[slot].skillLevel[i] = gBattleBots[rec].medal.skillLevel[i];
+        gMedals[slot].skillExp[i] = gBattleBots[rec].medal.skillExp[i];
     }
 }
 

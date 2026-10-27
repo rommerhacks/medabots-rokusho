@@ -450,13 +450,13 @@ void action_phase_medaforce_check(void) {
     if (gBattleWork.unk58) {
         gBattleWork.unkA6 = 0x79;
         gGameSubState++;
-    } else if (gBattleWork.unkA7 == 0 && gBattleBots[gBattleWork.unk87].medal.unk5 <= 9) {
+    } else if (gBattleWork.unkA7 == 0 && gBattleBots[gBattleWork.unk87].medal.level <= 9) {
         gBattleWork.unkA6 = 0x36;
         gGameSubState++;
-    } else if (gBattleWork.unkA7 == 1 && gBattleBots[gBattleWork.unk87].medal.unk5 <= 0x1D) {
+    } else if (gBattleWork.unkA7 == 1 && gBattleBots[gBattleWork.unk87].medal.level <= 0x1D) {
         gBattleWork.unkA6 = 0x36;
         gGameSubState++;
-    } else if (gBattleWork.unkA7 == 2 && gBattleBots[gBattleWork.unk87].medal.unk5 <= 0x3B) {
+    } else if (gBattleWork.unkA7 == 2 && gBattleBots[gBattleWork.unk87].medal.level <= 0x3B) {
         gBattleWork.unkA6 = 0x36;
         gGameSubState++;
     } else if (gBattleBots[gBattleWork.unk87].unkC1 != 0x50) {

@@ -11,8 +11,8 @@ void link_medal_sync_init(void) {
     s32 i;
 
     for (i = 0; i < 30; i++) {
-        if (gMedals[i].unk0 & 0x80)
-            mask |= 1 << gMedals[i].unk1;
+        if (gMedals[i].flags & 0x80)
+            mask |= 1 << gMedals[i].graphicId;
     }
     gUnk_03006F74->unk48 = 0;
     gUnk_03006F74->unk49 = 0;

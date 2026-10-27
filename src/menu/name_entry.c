@@ -133,7 +133,7 @@ void name_entry_init_graphics(void) {
     if (gNameEntryMode == 0) {
         gSpriteEntries[20].unk0 |= 0x4000;
     } else {
-        t = gUnk_03006F74->unk36 + ((gMedals[gUnk_030017EC].unk1 * 4) + 1);
+        t = gUnk_03006F74->unk36 + ((gMedals[gUnk_030017EC].graphicId * 4) + 1);
         t |= 0x6000;
         base = ((REG_BG1CNT >> 8) & 0x1F) << 11;
         map = (u16 *)(0x06000000 + base);
@@ -191,7 +191,7 @@ void name_entry_load_name(void) {
         gUnk_03006F74->unkF = i;
         break;
     case 1:
-        k = gMedals[gUnk_030017EC].unk1;
+        k = gMedals[gUnk_030017EC].graphicId;
         if (k <= 1) {
             for (i = 0; i < 16; i++) {
                 gUnk_03006F74->unk58[i] = ((const u8 *)gMedalNames[k + 0x20])[i];
@@ -209,7 +209,7 @@ void name_entry_load_name(void) {
         break;
     case 2:
         for (i = 0; i < 16; i++) {
-            gUnk_03006F74->unk58[i] = gMedals[gUnk_030017EC].unkA[i];
+            gUnk_03006F74->unk58[i] = gMedals[gUnk_030017EC].name[i];
             if (gUnk_03006F74->unk58[i] == 0xFE)
                 break;
         }
@@ -476,11 +476,11 @@ void name_entry_fade_out_store_name(void) {
             dispatch_by_index_0476e8(0);
             break;
         case 1:
-            CpuSet(gUnk_03006F74->unk58, gMedals[gUnk_030017EC].unkA, 7);
+            CpuSet(gUnk_03006F74->unk58, gMedals[gUnk_030017EC].name, 7);
             dispatch_by_index_0476e8(1);
             break;
         case 2:
-            CpuSet(gUnk_03006F74->unk58, gMedals[gUnk_030017EC].unkA, 7);
+            CpuSet(gUnk_03006F74->unk58, gMedals[gUnk_030017EC].name, 7);
             gGameState = 0x12;
             gGameSubState = 10;
             break;

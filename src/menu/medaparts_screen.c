@@ -1081,7 +1081,7 @@ void count_compatible_medaparts(void) {
                     u32 hi = r >> 8;
                     if (hi != (r & 0xFF)) {
                         load_part_data(i, gGameWork.unk3E, gGameWork.unk10E);
-                        if (gTeamSlots[gGameWork.unk51].unk1 == gGameWork.unk10E[3])
+                        if (gTeamSlots[gGameWork.unk51].gender == gGameWork.unk10E[3])
                             gGameWork.unk41++;
                     }
                 } else
@@ -1141,7 +1141,7 @@ static u32 medapart_detail_cycle_part_input(void) {
                     u32 hi = r >> 8;
                     if (hi != (r & 0xFF)) {
                         load_part_data(gGameWork.unk3D, gGameWork.unk3E, gGameWork.unk10E);
-                        if (gTeamSlots[gGameWork.unk51].unk1 == gGameWork.unk10E[3])
+                        if (gTeamSlots[gGameWork.unk51].gender == gGameWork.unk10E[3])
                             break;
                     }
                 }
@@ -1162,7 +1162,7 @@ static u32 medapart_detail_cycle_part_input(void) {
                     u32 hi = r >> 8;
                     if (hi != (r & 0xFF)) {
                         load_part_data(gGameWork.unk3D, gGameWork.unk3E, gGameWork.unk10E);
-                        if (gTeamSlots[gGameWork.unk51].unk1 == gGameWork.unk10E[3])
+                        if (gTeamSlots[gGameWork.unk51].gender == gGameWork.unk10E[3])
                             break;
                     }
                 }
