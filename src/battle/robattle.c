@@ -13,7 +13,7 @@ void robattle_update(void) {
         return;
     if (gUnk_03000430 == 2) {
         fill = 0x200;
-        CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+        CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
     }
     gRobattleHandlers[gGameSubState]();
 }
@@ -703,7 +703,7 @@ void sub_08013FA8(void) {
         gUnk_03000440.unk96 = 0;
         gUnk_03000430 = 0;
         fill1 = 0x200;
-        CpuFastSet(&fill1, gUnk_03002414->unkB84, 0x01000100);
+        CpuFastSet(&fill1, gSpriteWork->oamBuf, 0x01000100);
         fill2 = 0;
         CpuFastSet(&fill2, (void *)0x05000200, 0x01000080);
         fill3 = 0;

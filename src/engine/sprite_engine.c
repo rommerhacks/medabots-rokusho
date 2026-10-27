@@ -5,7 +5,8 @@
 
 #include "global.h"
 
-void sub_08044CDC(u32 a) {
+// guess: enters one of the link scenes (game mode 2, states 26 / 17 / 16 / 20) from the menus
+void goto_link_scene(u32 a) {
     switch (a) {
     case 0:
         sub_08064A74();
@@ -41,7 +42,8 @@ u32 dma3_copy_or_decompress(const u32 *src, void *dst) {
     return size;
 }
 
-static u32 sub_08044D64(u32 *dst, const u32 *src, u32 n) {
+// Word copy; returns the 0-3 bytes left over.
+static u32 mem_copy32_partial(u32 *dst, const u32 *src, u32 n) {
     while (n > 3) {
         *dst++ = *src++;
         n -= 4;
@@ -49,7 +51,8 @@ static u32 sub_08044D64(u32 *dst, const u32 *src, u32 n) {
     return n;
 }
 
-static u32 sub_08044D78(u16 *dst, const u16 *src, u32 n) {
+// Halfword copy; returns the 0-1 byte left over.
+static u32 mem_copy16_partial(u16 *dst, const u16 *src, u32 n) {
     while (n > 1) {
         *dst++ = *src++;
         n -= 2;
@@ -57,7 +60,7 @@ static u32 sub_08044D78(u16 *dst, const u16 *src, u32 n) {
     return n;
 }
 
-static void sub_08044D90(u8 *dst, const u8 *src, u32 n) {
+static void mem_copy8(u8 *dst, const u8 *src, u32 n) {
     while (n != 0) {
         *dst++ = *src++;
         n--;
@@ -98,7 +101,8 @@ static void set_oam_sprite_shape_size(u8 *oam, s32 h, s32 w) {
     }
 }
 
-u32 sub_08044E64(s32 shape, s32 size) {
+// OAM attr0 shape / attr1 size bits -> height << 16 | width in pixels.
+u32 oam_shape_size_dims(s32 shape, s32 size) {
     u32 dims = 0;
 
     switch (shape) {
@@ -174,7 +178,7 @@ static void copy_sprite_tiles_to_vram(u8 *dst, u8 *src, s32 shape, s32 size, s32
     u8 *rowStart;
     register u8 *colStart asm("r8"); // pinned: the original swaps dst / colStart (r9 / r8)
 
-    hw = sub_08044E64(shape, size);
+    hw = oam_shape_size_dims(shape, size);
     dim[0] = hw >> 16;
     dim[1] = hw;
     dim[0] >>= 3;
@@ -240,7 +244,7 @@ u32 setup_oam_sprite_entries(struct OamData *oams, void *tiles, void *pal, const
 #define DESC ((const struct SpriteDesc8 *)desc)
 #define oam ((struct OamFull *)oams)
 #define a ((const struct SpriteAnchorFull *)anchor)
-    n = sub_08044E64(DESC->shape << 14, DESC->size << 30);
+    n = oam_shape_size_dims(DESC->shape << 14, DESC->size << 30);
     dims[0] = n >> 16;
     dims[1] = n;
     n = dims[0] * dims[1];
@@ -298,7 +302,7 @@ static void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 y, s16 
 
     dims[0] = ((u8 *)oam)[1] >> 6;
     dims[1] = ((u8 *)oam)[3] >> 6;
-    n = sub_08044E64(dims[0] << 14, dims[1] << 30);
+    n = oam_shape_size_dims(dims[0] << 14, dims[1] << 30);
     dims[0] = n >> 16;
     dims[1] = n & 0xFFFF;
     do {
@@ -324,7 +328,7 @@ static void setup_sprite_from_oam_descriptor(const u32 *src, const struct Sprite
     u32 n;
     const struct SpriteDesc8 *d = (const struct SpriteDesc8 *)desc;
 
-    n = sub_08044E64(d->shape << 14, d->size << 30);
+    n = oam_shape_size_dims(d->shape << 14, d->size << 30);
     dims[0] = n >> 16;
     dims[1] = n;
     n = dims[0] * dims[1];
@@ -435,7 +439,7 @@ u8 flip;
 }
 
 // The same with the affine matrix number (flags & 7) and the flips (flags bits 3, 4).
-static u16 sub_08045794(list, dst, slot, pal, end, flags)
+static u16 copy_sprite_oam_entries_affine(list, dst, slot, pal, end, flags)
 struct SpriteOamList *list;
 struct OamFull *dst;
 u16 slot;
@@ -464,12 +468,13 @@ u32 flags;
     return slot;
 }
 
-static void sub_0804589C(struct SpriteOamBatch *batch, struct SpriteOamList **buf) {
+// A batch is a list of sprite objects copied to OAM together.
+static void oam_batch_init(struct SpriteOamBatch *batch, struct SpriteOamList **buf) {
     batch->lists = buf;
     batch->count = 0;
 }
 
-static void sub_080458A4(struct SpriteOamBatch *batch, struct SpriteOamList *list, u16 depth) {
+static void oam_batch_add(struct SpriteOamBatch *batch, struct SpriteOamList *list, u16 depth) {
     list->depth = depth;
     batch->lists[batch->count] = list;
     batch->count++;
@@ -488,7 +493,8 @@ u16 batch_copy_oam_entries(struct SpriteOamBatch *batch, struct OamData *dst, u1
     return n;
 }
 
-static u16 sub_08045908(struct SpriteOamBatch *batch, struct OamData *dst, u16 end) {
+// Like batch_copy_oam_entries, sorting the lists by depth first.
+static u16 batch_copy_oam_entries_sorted(struct SpriteOamBatch *batch, struct OamData *dst, u16 end) {
     u16 count = batch->count;
     u16 n = 0;
     u16 i, j;
@@ -515,7 +521,8 @@ struct DepthEntry {
     s16 depth;
 };
 
-static void sub_080459A4(struct DepthEntry *arr, u16 lo, u16 n) {
+// Sorts arr[lo..n) by depth (exchange sort).
+static void sort_depth_entries(struct DepthEntry *arr, u16 lo, u16 n) {
     s32 i, j;
     struct DepthEntry *p, *q;
 
@@ -553,7 +560,8 @@ void copy_oam_affine_params(struct OamData *oam, u16 *affine) {
     }
 }
 
-static u32 sub_08045A40(s32 y, s32 x) {
+// True if a sprite at (x, y) can be visible (y in -63..159, x in -31..239).
+static u32 sprite_pos_on_screen(s32 y, s32 x) {
     u32 ret = 0;
 
     if (y > -0x40 && x > -0x20 && y <= 0x9F && x <= 0xEF)
@@ -565,7 +573,9 @@ static u16 copy_sprite_oam_with_vflip(void *a, void *b, u16 c, u32 unused, s8 d,
     return copy_sprite_oam_entries(a, b, c, d, 0x80, f);
 }
 
-void sub_08045A8C(struct SpriteOamList *obj, s16 a, s16 b, s32 mode) {
+// Repositions a sprite object's OAM tiles: mode 0 absolute, 1 relative to its current position, 2 relative to
+// its anchor.
+void move_sprite_object(struct SpriteOamList *obj, s16 a, s16 b, s32 mode) {
     if (mode != 0) {
         if (mode == 1) {
             a += ((struct OamBits *)obj->oams)->y;
@@ -582,7 +592,7 @@ static u16 render_sprite_if_visible(struct SpriteOamList *list, void *dst, u16 s
                                     u8 flip) {
     u16 n = slot;
 
-    if (sub_08045A40(y, x)) {
+    if (sprite_pos_on_screen(y, x)) {
         set_oam_sprite_tile_positions(list, y, x, depth);
         n = copy_sprite_oam_entries(list, dst, slot, (s8)pal, 0x80, flip);
     }
@@ -590,13 +600,13 @@ static u16 render_sprite_if_visible(struct SpriteOamList *list, void *dst, u16 s
 }
 
 // The same plus a scale / flip affine matrix (pa = +-scale, pb = pc = 0, pd = scale) at affine[k * 4].
-static u16 sub_08045B68(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u8 neg,
-                        u16 scale, u16 *affine, u32 k) {
+static u16 render_sprite_if_visible_scaled(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth,
+                                           u8 pal, u8 neg, u16 scale, u16 *affine, u32 k) {
     u16 n = slot;
 
-    if (sub_08045A40(y, x)) {
+    if (sprite_pos_on_screen(y, x)) {
         set_oam_sprite_tile_positions(list, y, x, depth);
-        n = sub_08045794(list, dst, slot, (s8)pal, 0x80, k);
+        n = copy_sprite_oam_entries_affine(list, dst, slot, (s8)pal, 0x80, k);
         if (affine != NULL) {
             k *= 4;
             if (neg)
@@ -615,14 +625,14 @@ static u16 sub_08045B68(struct SpriteOamList *list, void *dst, u16 slot, s16 y, 
 }
 
 // The same plus a rotation matrix (ObjAffineSet, scale 0x100, rotation -angle).
-u16 sub_08045C30(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal, u16 angle,
-                 u16 *affine, u32 k) {
+u16 render_sprite_if_visible_rotated(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal,
+                                     u16 angle, u16 *affine, u32 k) {
     struct ObjAffineDstData d;
     u16 n = slot;
 
-    if (sub_08045A40(y, x)) {
+    if (sprite_pos_on_screen(y, x)) {
         set_oam_sprite_tile_positions(list, y, x, depth);
-        n = sub_08045794(list, dst, slot, (s8)pal, 0x80, k);
+        n = copy_sprite_oam_entries_affine(list, dst, slot, (s8)pal, 0x80, k);
         if (affine != NULL) {
             struct ObjAffineSrcData src = {0x100, 0x100, 0x10000 - angle};
 
@@ -641,7 +651,8 @@ u16 sub_08045C30(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, 
     return n;
 }
 
-static void sub_08045D1C(struct Unk_03002414 *work) {
+// guess: unused; clears the two bytes after affineIdx, whose use is unknown
+static void sprite_work_clear_spare(struct SpriteWork *work) {
     work->unk1096 = 0;
     work->unk1097 = 0;
 }
@@ -749,13 +760,13 @@ static void load_sprite_tiles_by_table(struct SpriteNodeDesc **nodes, struct Spr
     }
 }
 
-// guess: builds a Medabot part sprite (4 part trees, tile base 0x160) into work and copies its OAM / affine out;
+// guess: builds a Medabot sprite (4 part trees, tile base 0x160) into work and copies its OAM / affine out;
 // like setup_scene_bg_layers_and_sprites without the per-side layer state
-u8 sub_080460B0(struct Unk_03002414 *work, u16 *affine, u32 side, struct OamData *oam, u16 tile, u8 *parts, u8 pal,
-                u8 x, u8 y, u32 alt) {
+u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct OamData *oam, u16 tile, u8 *parts,
+                        u8 pal, u8 x, u8 y, u32 alt) {
     struct SpriteTileRef buf[32];
     struct SpriteNodeOam oams[130];
-    struct Unk_08047414Padded obj;
+    struct SpriteTreePadded obj;
     vu32 fill;
     u32 zero;
     u32 a, b, c, d;
@@ -777,11 +788,11 @@ u8 sub_080460B0(struct Unk_03002414 *work, u16 *affine, u32 side, struct OamData
     custom_memset(&obj, 0, sizeof(obj));
     fill = zero;
     CpuFastSet((void *)&fill, work, 0x01000426);
-    gUnk_03002414 = work;
-    sub_08047414(&obj.o, (u8 *)work, (struct SpriteNodeDesc **)gUnk_083D1BF8, oams);
-    gUnk_03002414->unk1094 = zero;
-    gUnk_03002414->unk1095 = side;
-    gUnk_03002414->unk1097 = zero;
+    gSpriteWork = work;
+    init_sprite_tree(&obj.o, (u8 *)work, (struct SpriteNodeDesc **)gUnk_083D1BF8, oams);
+    gSpriteWork->oamCount = zero;
+    gSpriteWork->affineIdx = side;
+    gSpriteWork->unk1097 = zero;
     base = 0x160;
     gUnk_030052D0 = gUnk_0807ECA0;
     gUnk_030052B0 = gUnk_0807ECB8;
@@ -830,13 +841,13 @@ u8 sub_080460B0(struct Unk_03002414 *work, u16 *affine, u32 side, struct OamData
         for (src = gUnk_080803E0[d]; src->node;)
             *dst++ = *src++;
     render_sprite_node_recursive(&obj.o, buf, 1, x << 8, y << 8, depth, 0, alt);
-    CpuSet(((struct Unk_03002414 *)obj.o.unk0)->unkB84, oam, gUnk_03002414->unk1094 << 2);
-    CpuSet(((struct Unk_03002414 *)obj.o.unk0)->unkF8C, affine, 0x80);
-    return gUnk_03002414->unk1094;
+    CpuSet(((struct SpriteWork *)obj.o.unk0)->oamBuf, oam, gSpriteWork->oamCount << 2);
+    CpuSet(((struct SpriteWork *)obj.o.unk0)->affineBuf, affine, 0x80);
+    return gSpriteWork->oamCount;
 }
 
-void render_sprite_node_recursive(struct Unk_08047414 *obj, struct SpriteTileRef *list, u8 node, s32 y, s32 x,
-                                  s16 depth, s16 angle, u8 flip) {
+void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *list, u8 node, s32 y, s32 x, s16 depth,
+                                  s16 angle, u8 flip) {
     s32 oy = y;
     s32 ox = x;
     s16 rot;
@@ -905,23 +916,23 @@ void render_sprite_node_recursive(struct Unk_08047414 *obj, struct SpriteTileRef
             else
                 src.rotation -= rot;
             ObjAffineSet(&src, &d, 1, 2);
-            oam->oam.matrixNum = ((struct Unk_03002414 *)obj->unk0)->unk1095 & 7;
-            oam->oam.hFlip = (u8)(((struct Unk_03002414 *)obj->unk0)->unk1095 & 8) >> 3;
-            oam->oam.vFlip = (u8)(((struct Unk_03002414 *)obj->unk0)->unk1095 & 0x10) >> 4;
-            dx = ((struct Unk_03002414 *)obj->unk0)->unk1095 * 4;
+            oam->oam.matrixNum = ((struct SpriteWork *)obj->unk0)->affineIdx & 7;
+            oam->oam.hFlip = (u8)(((struct SpriteWork *)obj->unk0)->affineIdx & 8) >> 3;
+            oam->oam.vFlip = (u8)(((struct SpriteWork *)obj->unk0)->affineIdx & 0x10) >> 4;
+            dx = ((struct SpriteWork *)obj->unk0)->affineIdx * 4;
             if (flip) {
                 d.pa = -d.pa;
                 d.pb = -d.pb;
             }
-            ((struct Unk_03002414 *)obj->unk0)->unkF8C[dx] = d.pa;
+            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = d.pa;
             dx++;
-            ((struct Unk_03002414 *)obj->unk0)->unkF8C[dx] = d.pb;
+            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = d.pb;
             dx++;
-            ((struct Unk_03002414 *)obj->unk0)->unkF8C[dx] = d.pc;
+            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = d.pc;
             dx++;
-            ((struct Unk_03002414 *)obj->unk0)->unkF8C[dx] = d.pd;
-            if (++((struct Unk_03002414 *)obj->unk0)->unk1095 > 0x1F)
-                ((struct Unk_03002414 *)obj->unk0)->unk1095 = 0;
+            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = d.pd;
+            if (++((struct SpriteWork *)obj->unk0)->affineIdx > 0x1F)
+                ((struct SpriteWork *)obj->unk0)->affineIdx = 0;
         }
         if (vis) {
             offx = desc->width >> 1;
@@ -938,9 +949,9 @@ void render_sprite_node_recursive(struct Unk_08047414 *obj, struct SpriteTileRef
             else
                 offy = x - (desc->unk8 << 8);
         }
-        while ((s8)gUnk_03002414->unk1094 < 0)
+        while ((s8)gSpriteWork->oamCount < 0)
             ;
-        e = sorted_array_insert_shift((struct OamFull *)gUnk_03002414->unkB84, gUnk_03002414->unk1094++, 1, z);
+        e = sorted_array_insert_shift((struct OamFull *)gSpriteWork->oamBuf, gSpriteWork->oamCount++, 1, z);
         *e = oam->oam;
         e->affineParam = z;
         if (!vis && flip)
@@ -966,7 +977,7 @@ void render_sprite_node_recursive(struct Unk_08047414 *obj, struct SpriteTileRef
         render_sprite_node_recursive(obj, list, obj->nodes[node]->sibling, oy, ox, depth, angle, flip);
 }
 
-void load_sprite_animation_by_type(struct OamData *oam, struct Unk_08047414 *obj, u32 id, u32 kind, u32 x, u32 y,
+void load_sprite_animation_by_type(struct OamData *oam, struct SpriteTree *obj, u32 id, u32 kind, u32 x, u32 y,
                                    u32 tile, u32 pal, u32 e) {
     struct SpriteTileRef *list = NULL;
     u16 t;
@@ -1038,7 +1049,7 @@ void toggle_bg_layer_visibility(s32 a, s32 b, s32 c, s32 d) {
         gUnk_030052F0.unkD = -gUnk_030052F0.unkD - 2;
 }
 
-void setup_scene_bg_layers_and_sprites(void *oam, struct Unk_08047414 *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f,
+void setup_scene_bg_layers_and_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f,
                                        u32 g, u32 h, u32 i, u32 j) {
     u32 slot = j;
     u16 tile;
@@ -1163,8 +1174,8 @@ void update_anim_object_flags(void) {
 
 // Unused: loads the sprite tree of one part (kind: 0 head, 1 right arm, 2 left arm, 3 legs) and, for the
 // arms, the tiles of the other arm's nodes.
-static void sub_0804725C(u32 unused0, struct Unk_08047414 *obj, s32 kind, s32 idx, u32 unused4, u32 pal, u32 side,
-                         u32 alt) {
+static void load_medabot_part_sprite_tree(u32 unused0, struct SpriteTree *obj, s32 kind, s32 idx, u32 unused4, u32 pal,
+                                          u32 side, u32 alt) {
     u16 tile;
     u16 base;
     struct SpriteTileRef *e;
@@ -1213,7 +1224,8 @@ static void sub_0804725C(u32 unused0, struct Unk_08047414 *obj, s32 kind, s32 id
     }
 }
 
-void sub_08047414(struct Unk_08047414 *obj, u8 *buf, struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams) {
+// Binds a sprite tree to its work buffer, node descriptors and per-node OAM, with no OAM entries yet.
+void init_sprite_tree(struct SpriteTree *obj, u8 *buf, struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams) {
     obj->unk0 = buf;
     obj->nodes = nodes;
     obj->oams = oams;

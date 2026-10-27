@@ -1,7 +1,7 @@
 // Link handshakes: state 27 (dispatch_fade_substate) exchanges owned-Medal masks over the serial packets
 // (0xF4xx / 0xFCxx) and then goes to state 17 or back to mode 0; state 26 (sub_08064A44) syncs on 0xFEDF and
 // enters link_menu. sub_08064A74..sub_08064AD4 are the mode-2 entry points (states 26/17/16/20) that
-// sub_08044CDC in engine/sprite_engine.c picks from.
+// goto_link_scene in engine/sprite_engine.c picks from.
 #include "global.h"
 
 void sub_08064890(void) {

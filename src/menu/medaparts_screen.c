@@ -41,7 +41,7 @@ void medaparts_screen_update(void) {
     if (sub_0803EED8() == 0) {
         if (gUnk_03000430 == 2) {
             fill = 0x200;
-            CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+            CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
         }
         gMedapartsScreenHandlers[gGameSubState]();
     }
@@ -652,7 +652,7 @@ void sub_0800EBB8(void) {
 void sub_0800EBE4(void) {
     clear_battle_sprite_slot(0, 0x80);
     clear_bg_scroll();
-    sub_08044CDC(2);
+    goto_link_scene(2);
 }
 
 static void medaparts_scroll_bg(void) {
@@ -852,96 +852,96 @@ static u32 medaparts_list_kind_input(void) {
 }
 
 static void medaparts_list_load_part_sprite(void) {
-    struct Unk_08047414 *obj;
+    struct SpriteTree *obj;
     u8 *b;
     u8 *c;
     u32 fill;
 
     gUnk_03000440.unk3D = gUnk_03000440.unk3F * 4 + gUnk_03000440.unk40;
-    obj = (struct Unk_08047414 *)0x02026000;
+    obj = (struct SpriteTree *)0x02026000;
     mem_fill8((u8 *)obj, 0xD0, 0);
     b = (u8 *)0x020260D0;
     mem_fill8(b, 0x800, 0);
     c = (u8 *)0x020268D0;
     mem_fill8(c, 0x60, 0);
     gUnk_03000430 = 2;
-    gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
     gUnk_03005308 = (struct SceneSlot *)c;
-    sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
-    load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, gUnk_03000440.unk3E, 0x3C, 0x28,
-                                  0x1C2, 8, 1);
+    load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, gUnk_03000440.unk3E, 0x3C, 0x28, 0x1C2,
+                                  8, 1);
 }
 
 static void medapart_draw_sprite(void) {
-    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u32 fill;
 
     obj->oams = (struct SpriteNodeOam *)0x020260D0;
     switch (gUnk_03000440.unk3E) {
     case 0:
-        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 1);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 1);
         break;
     case 1:
-        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 1);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 1);
         break;
     case 2:
-        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 2);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 2);
         break;
     case 3:
-        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 1);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 1);
         break;
     }
     fill = 0x200;
-    CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
-    gUnk_03002414->unk1094 = 0;
-    gUnk_03002414->unk1095 = 0;
+    CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
+    gSpriteWork->oamCount = 0;
+    gSpriteWork->affineIdx = 0;
 }
 
 static void load_medapart_sprite_by_slot(void) {
-    struct Unk_08047414 *obj;
+    struct SpriteTree *obj;
 
     if ((u8)(gUnk_03000440.unk3C - 2) <= 1) {
-        obj = (struct Unk_08047414 *)0x02026000;
+        obj = (struct SpriteTree *)0x02026000;
         obj->oams = (struct SpriteNodeOam *)0x020260D0;
         switch (gUnk_03000440.unk3E) {
         case 0:
-            load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 5);
             break;
         case 1:
-            load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 5);
             break;
         case 2:
-            load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 6);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 6);
             break;
         case 3:
-            load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 5);
             break;
         }
     } else if (sub_08042114(gUnk_03000440.unk3D, gUnk_03000440.unk3E)) {
-        obj = (struct Unk_08047414 *)0x02026000;
+        obj = (struct SpriteTree *)0x02026000;
         obj->oams = (struct SpriteNodeOam *)0x020260D0;
         switch (gUnk_03000440.unk3E) {
         case 0:
-            load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 5);
             break;
         case 1:
-            load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 5);
             break;
         case 2:
-            load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 6);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 6);
             break;
         case 3:
-            load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 5);
             break;
         }
     }
 }
 
 static void medapart_detail_init_sprite(void) {
-    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u8 *b;
     u8 *c;
     u32 fill;
@@ -952,14 +952,14 @@ static void medapart_detail_init_sprite(void) {
     c = (u8 *)0x020268D0;
     mem_fill8(c, 0x60, 0);
     gUnk_03000430 = 2;
-    gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
     gUnk_03005308 = (struct SceneSlot *)c;
-    sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
-    load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03000440.unk3D, gUnk_03000440.unk3E, 0x3C, 0x28,
-                                  0x1C2, 8, 1);
+    load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, gUnk_03000440.unk3E, 0x3C, 0x28, 0x1C2,
+                                  8, 1);
 }
 
 s32 sub_0800F6CC(void) {

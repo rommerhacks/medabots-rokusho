@@ -1193,7 +1193,7 @@ u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty) {
 }
 
 void init_scene_buffers_080445F4(void) {
-    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u8 *b;
     u8 *c;
     u32 fill;
@@ -1205,15 +1205,15 @@ void init_scene_buffers_080445F4(void) {
     c = (u8 *)0x020268F0;
     mem_fill8(c, 0x60, 0);
     gUnk_03000430 = 2;
-    gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
     gUnk_03005308 = (struct SceneSlot *)c;
     fill2 = 0x200;
-    CpuFastSet(&fill2, gUnk_03002414->unkB84, 0x01000100);
-    gUnk_03002414->unk1094 = 0;
-    gUnk_03002414->unk1095 = 0;
-    sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    CpuFastSet(&fill2, gSpriteWork->oamBuf, 0x01000100);
+    gSpriteWork->oamCount = 0;
+    gSpriteWork->affineIdx = 0;
+    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
 }
 
 // K&R definitions: the callers were compiled without a prototype (promoted int arguments), and the
@@ -1248,14 +1248,14 @@ u8 g, h, i, j;
     flags = 0;
     if (i == 1)
         flags = 4;
-    ((struct Unk_08047414 *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
-    setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000, head, rarm, larm, legs,
+    ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
+    setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, head, rarm, larm, legs,
                                       (s16)x, (s16)y, f, g, h | flags, j);
     if (i == 2) {
         fill = 0x200;
-        CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
-        gUnk_03002414->unk1094 = 0;
-        gUnk_03002414->unk1095 = 0;
+        CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
+        gSpriteWork->oamCount = 0;
+        gSpriteWork->affineIdx = 0;
     }
 }
 
@@ -1289,14 +1289,14 @@ u8 g, h, i, j, base;
     flags = 0;
     if (i == 1)
         flags = 4;
-    ((struct Unk_08047414 *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
-    setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000, head, rarm, larm, legs,
+    ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
+    setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, head, rarm, larm, legs,
                                       (s16)x, (s16)y, f, g, h | flags, j);
     if (i == 2) {
         fill = 0x200;
-        CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
-        gUnk_03002414->unk1094 = 0;
-        gUnk_03002414->unk1095 = 0;
+        CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
+        gSpriteWork->oamCount = 0;
+        gSpriteWork->affineIdx = 0;
     }
 }
 
@@ -1325,14 +1325,14 @@ void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8
     flags = 0;
     if (i == 1)
         flags = 4;
-    ((struct Unk_08047414 *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + a * 0x410);
-    load_sprite_animation_by_type(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000, id, kind, (s16)x, (s16)y, f,
-                                  g, h | flags);
+    ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + a * 0x410);
+    load_sprite_animation_by_type(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, id, kind, (s16)x, (s16)y, f, g,
+                                  h | flags);
     if (i == 2) {
         fill = 0x200;
-        CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
-        gUnk_03002414->unk1094 = 0;
-        gUnk_03002414->unk1095 = 0;
+        CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
+        gSpriteWork->oamCount = 0;
+        gSpriteWork->affineIdx = 0;
     }
 }
 
@@ -1342,7 +1342,7 @@ u32 advance_text_display(u32 a0, u32 a1, u32 a2) {
     u8 *pos;
     u32 zero;
     s32 done;
-    register struct Unk_08047414 *obj asm("r1"); // pinned: the original loads 0x02026000 before 0x020260CE
+    register struct SpriteTree *obj asm("r1"); // pinned: the original loads 0x02026000 before 0x020260CE
     // `done` is deliberately uninitialized: the original reads ip when *pos >= n
 
     a1 = gUnk_0807E77C[a1][gUnk_083CABF8[a2]];
@@ -1361,7 +1361,7 @@ u32 advance_text_display(u32 a0, u32 a1, u32 a2) {
         zero = 0;
         *cnt = c;
     }
-    obj = (struct Unk_08047414 *)0x02026000;
+    obj = (struct SpriteTree *)0x02026000;
     pos = (u8 *)0x020260CE + a0;
     if (*pos < n) {
         obj->oams = (struct SpriteNodeOam *)(0x020260D0 + a0 * 0x410);

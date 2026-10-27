@@ -17,7 +17,7 @@ static void battle_sprite_set_action(u8 a, u8 b, u8 c);
 static void sub_0806E854(void) {
     if (gUnk_03000430 == 2) {
         u32 v = 0x200;
-        DmaSet(3, &v, gUnk_03002414->unkB84, 0x85000100);
+        DmaSet(3, &v, gSpriteWork->oamBuf, 0x85000100);
         setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x70, 0x50, gUnk_03000430, 0xC, 0, 1, 0);
         advance_text_display(0, 0x2D, 0x2A);
     }
@@ -210,7 +210,7 @@ void init_battle_result_screen(void) {
     s32 legs = 0x2A;
     init_scene_buffers_080445F4();
     v = 0x200;
-    DmaSet(3, &v, gUnk_03002414->unkB84, 0x85000100);
+    DmaSet(3, &v, gSpriteWork->oamBuf, 0x85000100);
     setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, legs, 0x78, 0x50, 2, 0xC, 0, 0, 0);
     DmaSet(3, gUnk_08485FD8[1], PLTT + 0x200, 0x80000050);
     setup_screen_transition_effect_080682CC(2, 4, 0);

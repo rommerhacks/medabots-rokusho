@@ -35,7 +35,7 @@ void sub_0803D538(void) {
         return;
     if (gUnk_03000430 == 2) {
         u32 fill = 0x200;
-        CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+        CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
     }
     sub_0803E780();
     gUnk_083AFAF8[gGameSubState]();
@@ -282,7 +282,7 @@ void sub_0803DC8C(void) {
     b = 0;
     CpuFastSet(&b, (void *)PLTT, 0x01000080);
     set_blend_effect_mode(5, 0x3F, 0x20);
-    sub_08044CDC(3);
+    goto_link_scene(3);
 }
 
 void sub_0803DCDC(void) {

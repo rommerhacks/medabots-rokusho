@@ -197,7 +197,7 @@ void set_portrait_parts(u8 a, u8 b, u8 c, u8 d) {
 }
 
 void status_init_portrait(void) {
-    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u8 *b;
     u8 *c;
     u32 fill;
@@ -209,31 +209,31 @@ void status_init_portrait(void) {
     mem_fill8(c, 0x60, 0);
     gUnk_03000440.unk96 = 1;
     gUnk_03000430 = 2;
-    gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
     gUnk_03005308 = (struct SceneSlot *)c;
-    sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
-    setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
+    setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
                                       gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 0);
 }
 
 void status_reset_portrait(void) {
-    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u32 fill;
 
     obj->oams = (struct SpriteNodeOam *)0x020260D0;
-    setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
+    setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
                                       gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 0);
     fill = 0x200;
-    CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
-    gUnk_03002414->unk1094 = 0;
-    gUnk_03002414->unk1095 = 0;
+    CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
+    gSpriteWork->oamCount = 0;
+    gSpriteWork->affineIdx = 0;
 }
 
 void status_update_portrait(void) {
-    setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000, gUnk_03000440.unk98,
+    setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gUnk_03000440.unk98,
                                       gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x44, 0x2A, 0x1C2,
                                       8, 5, 0);
 }

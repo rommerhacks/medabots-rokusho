@@ -1752,9 +1752,9 @@ void sub_0801FADC(void) {
     write_tilemap_rect(0x1E, 1, 0, 0x13 - gUnk_03000440.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
     if (gUnk_03000440.unk84 == 9) {
         v = 0x200;
-        CpuFastSet(&v, gUnk_03002414->unkB84, 0x01000100);
-        gUnk_03002414->unk1094 = 0;
-        gUnk_03002414->unk1095 = 0;
+        CpuFastSet(&v, gSpriteWork->oamBuf, 0x01000100);
+        gSpriteWork->oamCount = 0;
+        gSpriteWork->affineIdx = 0;
         gVBlankCallback = nullsub_08000840;
         gUnk_03001800.unkAA++;
     } else {

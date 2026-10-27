@@ -192,7 +192,7 @@ void medals_list_wait_fade(void) {
 void medals_list_exit(void) {
     clear_battle_sprite_slot(0, 0x80);
     if (gUnk_03000440.unk3C == 4)
-        sub_08044CDC(0);
+        goto_link_scene(0);
     else {
         gGameState = 2;
         gGameSubState = 0x10;
@@ -1028,7 +1028,7 @@ void sub_080093AC(void) {
 void sub_080093E0(void) {
     clear_battle_sprite_slot(0, 0x80);
     clear_bg_scroll();
-    sub_08044CDC(1);
+    goto_link_scene(1);
 }
 
 static void medals_scroll_bg(void) {

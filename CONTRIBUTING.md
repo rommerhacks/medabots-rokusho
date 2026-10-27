@@ -256,7 +256,7 @@
   it) advances the rotation and can fix every later choice (shop_list_init). Write the address as an
   integer sum `(const u8 *)(idx + (u32)tbl)` when the operand order of the add matters.
 * **The stack frame is a few bytes off:** check the size of each local struct against the original's
-  memset/clear size (sub_080460B0 clears 0xD0 bytes of a 0xCC struct: wrap it with a `u32 pad`), and
+  memset/clear size (build_medabot_sprite clears 0xD0 bytes of a 0xCC struct: wrap it with a `u32 pad`), and
   use a `vu32` for a CpuFastSet fill word so it gets its slot where it is declared.
 * **decomp-permuter** (github.com/simonlindholm/decomp-permuter): `tools/scripts/perm_setup.py FUNC FILE.c`
   writes scratch/perm/FUNC/ (target bytes, compile.sh linking against the last build's symbols), then run

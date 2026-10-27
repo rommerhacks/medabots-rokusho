@@ -509,13 +509,14 @@ struct Unk_083B4AE0 {
     const void *unk1A4; // blank tilemap row
 };
 
-// Pointed to by gUnk_03002414; holds its own copy of OAM slots and affine parameters.
-struct Unk_03002414 {
+// Sprite tree render buffer (gSpriteWork, usually at 0x02024000): render_sprite_node_recursive appends depth-sorted
+// OAM entries and affine matrices here; the vblank code (engine/main) copies them to OAM.
+struct SpriteWork {
     u8 filler0[0xB84];
-    struct OamData unkB84[129];
-    u16 unkF8C[0x84]; // affine parameters (copy_oam_affine_params)
-    u8 unk1094;
-    u8 unk1095;
+    struct OamData oamBuf[129];
+    u16 affineBuf[0x84]; // affine parameters, 4 per matrix (copy_oam_affine_params)
+    u8 oamCount;         // OAM entries used in oamBuf
+    u8 affineIdx;        // next affine matrix (wraps after 31); low bits also give the matrix / flip bits
     u8 unk1096;
     u8 unk1097;
 };
@@ -1030,7 +1031,7 @@ struct Unk_030057E0 {
 
 // Four 0x20-byte records at 0x03005290 / 0x030052B0 / 0x030052D0 / 0x030052F0 (guess: BG layer state)
 // Sprite part layer (24 bytes): gUnk_030052D0 / 03005290 / 030052B0 / 030052F0 (head, right arm, left arm,
-// legs) are loaded from the ROM templates gUnk_0807ECA0.. and saved per side in struct Unk_08047414.
+// legs) are loaded from the ROM templates gUnk_0807ECA0.. and saved per side in struct SpriteTree.
 struct Unk_03005290 {
     u8 filler0[0xD];
     u8 unkD; // toggled between x and -2 - x (toggle_bg_layer_visibility)
@@ -1093,7 +1094,7 @@ struct SpriteAnimGfx {
 // Sprite descriptor word (setup_oam_sprite_entries, init_sprite_object_entry).
 struct SpriteDesc {
     u32 unk0_0 : 4;
-    u32 shape : 2; // OAM shape / size bits (sub_08044E64)
+    u32 shape : 2; // OAM shape / size bits (oam_shape_size_dims)
     u32 size : 2;
     u32 w : 4; // OAM entries per row / column (guess)
     u32 h : 4;
@@ -1145,7 +1146,7 @@ struct BgTileEntry {
 
 struct SpriteAnchor {
     u8 filler0[2];
-    u16 unk2; // y / x offsets (sub_08045A8C)
+    u16 unk2; // y / x offsets (move_sprite_object)
     u16 unk4;
     s8 unk6; // initial depth (init_sprite_object_entry)
 };
@@ -1474,17 +1475,17 @@ struct AreaGfx {
     const void *unk8;
 };
 
-// Sprite tree object (at 0x02026000).
-struct Unk_08047414 {
-    u8 *unk0; // gUnk_03002414 record
+// Sprite tree object (at 0x02026000): node descriptors, per-node OAM and the per-side part layers.
+struct SpriteTree {
+    u8 *unk0; // gSpriteWork record
     struct SpriteNodeDesc **nodes;
     struct SpriteNodeOam *oams;
     struct Unk_03005290 layers[2][4]; // part layers saved per side (setup_scene_bg_layers_and_sprites)
 };
 
-// struct Unk_08047414 padded to the 0xD0 bytes sub_080460B0 clears
-struct Unk_08047414Padded {
-    struct Unk_08047414 o;
+// struct SpriteTree padded to the 0xD0 bytes build_medabot_sprite clears
+struct SpriteTreePadded {
+    struct SpriteTree o;
     u32 pad;
 };
 

@@ -76,7 +76,7 @@ void medabots_screen_update(void) {
     if (sub_0803EED8() == 0) {
         if (gUnk_03000430 == 2) {
             u32 fill = 0x200;
-            CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+            CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
         }
         gMedabotsScreenHandlers[gGameSubState]();
     }
@@ -951,7 +951,7 @@ static void sub_0800522C(void) {
 }
 
 static void sub_0800529C(void) {
-    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u8 *b;
     u8 *c;
     u32 fill;
@@ -962,55 +962,55 @@ static void sub_0800529C(void) {
     c = (u8 *)0x020268D0;
     mem_fill8(c, 0x60, 0);
     gUnk_03000430 = 2;
-    gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
     gUnk_03005308 = (struct SceneSlot *)c;
-    sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
     if (gUnk_03000440.unk5E)
-        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj, gUnk_030017A0[gUnk_03000440.unk51].unk3,
+        setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_030017A0[gUnk_03000440.unk51].unk3,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk4,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk5,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk6, 0x28, 0x28, 0x1C2, 8, 1, 1);
     else
-        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj, gUnk_030017A0[gUnk_03000440.unk51].unk3,
+        setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_030017A0[gUnk_03000440.unk51].unk3,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk4,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk5,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk6, 0x28, 0x28, 0x1C2, 8, 1, 0);
 }
 
 static void sub_080053C8(void) {
-    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u32 fill;
 
     obj->oams = (struct SpriteNodeOam *)0x020260D0;
     if (gUnk_03000440.unk5E)
-        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj, gUnk_030017A0[gUnk_03000440.unk51].unk3,
+        setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_030017A0[gUnk_03000440.unk51].unk3,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk4,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk5,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk6, 0x28, 0x28, 0x1C2, 8, 1, 1);
     else
-        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj, gUnk_030017A0[gUnk_03000440.unk51].unk3,
+        setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_030017A0[gUnk_03000440.unk51].unk3,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk4,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk5,
                                           gUnk_030017A0[gUnk_03000440.unk51].unk6, 0x28, 0x28, 0x1C2, 8, 1, 0);
     fill = 0x200;
-    CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
-    gUnk_03002414->unk1094 = 0;
-    gUnk_03002414->unk1095 = 0;
+    CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
+    gSpriteWork->oamCount = 0;
+    gSpriteWork->affineIdx = 0;
 }
 
 static void setup_overworld_scene_from_position(void) {
     if (gUnk_030017A0[gUnk_03000440.unk51].unk0) {
         if (gUnk_03000440.unk5E)
             setup_scene_bg_layers_and_sprites(
-                gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000, gUnk_030017A0[gUnk_03000440.unk51].unk3,
+                gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gUnk_030017A0[gUnk_03000440.unk51].unk3,
                 gUnk_030017A0[gUnk_03000440.unk51].unk4, gUnk_030017A0[gUnk_03000440.unk51].unk5,
                 gUnk_030017A0[gUnk_03000440.unk51].unk6, 0x3C, 0x32, 0x1C2, 8, 5, 1);
         else
             setup_scene_bg_layers_and_sprites(
-                gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000, gUnk_030017A0[gUnk_03000440.unk51].unk3,
+                gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gUnk_030017A0[gUnk_03000440.unk51].unk3,
                 gUnk_030017A0[gUnk_03000440.unk51].unk4, gUnk_030017A0[gUnk_03000440.unk51].unk5,
                 gUnk_030017A0[gUnk_03000440.unk51].unk6, 0x3C, 0x32, 0x1C2, 8, 5, 0);
     }
@@ -1419,7 +1419,7 @@ static void medabot_detail_blink_row_arrows(void) {
 }
 
 static void init_scene_state(void) {
-    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u8 *b;
     u8 *c;
     u32 fill;
@@ -1430,44 +1430,44 @@ static void init_scene_state(void) {
     c = (u8 *)0x020268D0;
     mem_fill8(c, 0x60, 0);
     gUnk_03000430 = 2;
-    gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
     gUnk_03005308 = (struct SceneSlot *)c;
-    sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
     if (gUnk_03000440.unk5E)
-        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
+        setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
                                           gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 1);
     else
-        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
+        setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
                                           gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 0);
 }
 
 static void setup_scene_with_link_check(void) {
-    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u32 fill;
 
     obj->oams = (struct SpriteNodeOam *)0x020260D0;
     if (gUnk_03000440.unk5E)
-        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
+        setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
                                           gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 1);
     else
-        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
+        setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, obj, gUnk_03000440.unk98, gUnk_03000440.unk99,
                                           gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 0);
     fill = 0x200;
-    CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
-    gUnk_03002414->unk1094 = 0;
-    gUnk_03002414->unk1095 = 0;
+    CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
+    gSpriteWork->oamCount = 0;
+    gSpriteWork->affineIdx = 0;
 }
 
 static void sub_08006764(void) {
     if (gUnk_03000440.unk5E)
-        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000, gUnk_03000440.unk98,
+        setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gUnk_03000440.unk98,
                                           gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x3C, 0x32,
                                           0x1C2, 8, 5, 1);
     else
-        setup_scene_bg_layers_and_sprites(gUnk_03002414->unkB84, (struct Unk_08047414 *)0x02026000, gUnk_03000440.unk98,
+        setup_scene_bg_layers_and_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gUnk_03000440.unk98,
                                           gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x3C, 0x32,
                                           0x1C2, 8, 5, 0);
 }

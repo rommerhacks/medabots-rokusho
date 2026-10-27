@@ -157,15 +157,15 @@ void vblank_body(void) {
     if (gUnk_03000430 != 0) {
         if (gUnk_03000430 == 2) {
             update_anim_object_flags();
-            copy_oam_affine_params(gUnk_03002414->unkB84, gUnk_03002414->unkF8C);
+            copy_oam_affine_params(gSpriteWork->oamBuf, gSpriteWork->affineBuf);
             for (i = 0; i < 88; i++)
-                gOamBuffer[i].affineParam = gUnk_03002414->unkB84[i].affineParam;
+                gOamBuffer[i].affineParam = gSpriteWork->oamBuf[i].affineParam;
             for (i = 0; i < 40; i++)
-                gUnk_03002414->unkB84[i].affineParam = gOamBuffer[88 + i].affineParam;
+                gSpriteWork->oamBuf[i].affineParam = gOamBuffer[88 + i].affineParam;
             if (gUnk_03000440.unk131 == 0)
-                CpuFastSet(gUnk_03002414->unkB84, (void *)(OAM + 88 * 8), 0x50);
-            gUnk_03002414->unk1094 = 0;
-            gUnk_03002414->unk1095 = 0;
+                CpuFastSet(gSpriteWork->oamBuf, (void *)(OAM + 88 * 8), 0x50);
+            gSpriteWork->oamCount = 0;
+            gSpriteWork->affineIdx = 0;
             if (gUnk_03000440.unk12E)
                 CpuFastSet(gOamBuffer, (void *)OAM, 0xB0);
         } else {

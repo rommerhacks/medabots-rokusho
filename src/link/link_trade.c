@@ -7,7 +7,7 @@
 
 static void init_scene_rendering_context(u32 a) {
     if (a == 0) {
-        struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+        struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
         u8 *b;
         u8 *c;
         u32 fill;
@@ -19,36 +19,36 @@ static void init_scene_rendering_context(u32 a) {
         c = (u8 *)0x020268F0;
         mem_fill8(c, 0x60, 0);
         gUnk_03000430 = 2;
-        gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
+        gSpriteWork = (struct SpriteWork *)0x02024000;
         fill = a;
         CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
         gUnk_03005308 = (struct SceneSlot *)c;
-        sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+        init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
         obj->oams = (struct SpriteNodeOam *)b;
-        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0x3C,
-                                      0x28, 0xC7, a, 1);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0x3C, 0x28,
+                                      0xC7, a, 1);
     } else {
-        struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+        struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
 
-        sub_08047414(obj, (u8 *)gUnk_03002414, (struct SpriteNodeDesc **)gUnk_083D1BF8,
-                     (struct SpriteNodeOam *)0x020264E0);
+        init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8,
+                         (struct SpriteNodeOam *)0x020264E0);
         obj->oams = (struct SpriteNodeOam *)0x020264E0;
-        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, gUnk_03006F74->unk32, gUnk_03006F74->unk34, 0x3C,
-                                      0x28, 0xC7, 4, 2);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03006F74->unk32, gUnk_03006F74->unk34, 0x3C, 0x28,
+                                      0xC7, 4, 2);
     }
 }
 
 void load_medapart_sprite_animation(u8 id, u8 kind, u32 which) {
-    struct Unk_08047414 *obj = (struct Unk_08047414 *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u8 x, y;
 
     obj->oams = (struct SpriteNodeOam *)(0x020260D0 + which * 0x410);
     x = gUnk_080AFA3C[which][kind][0];
     y = gUnk_080AFA3C[which][kind][1];
     if (which)
-        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, id, kind, y, x, 0xC7, 4, 6);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, id, kind, y, x, 0xC7, 4, 6);
     else
-        load_sprite_animation_by_type(gUnk_03002414->unkB84, obj, id, kind, y, x, 0xC7, which, 5);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, id, kind, y, x, 0xC7, which, 5);
 }
 
 static void sub_08062A74(u16 id, u8 second) {
@@ -407,7 +407,7 @@ void sub_080632FC(void) {
         gUnk_03006F74->unk3C = zero;
         gGameSubState++;
         v = 0x200;
-        CpuSet((void *)&v, gUnk_03002414->unkB84, 0x01000200);
+        CpuSet((void *)&v, gSpriteWork->oamBuf, 0x01000200);
     }
     update_animated_tilemap();
 }
@@ -525,7 +525,7 @@ void sub_080637D0(void) {
 
     if (gUnk_03000430 == 2) {
         u32 v = 0x200;
-        CpuFastSet(&v, gUnk_03002414->unkB84, 0x01000100);
+        CpuFastSet(&v, gSpriteWork->oamBuf, 0x01000100);
     }
     t.f[gGameSubState]();
     if (gFrameCounter & 1) {
@@ -867,7 +867,7 @@ void sub_080644C4(void) {
 
     if (gUnk_03000430 == 2) {
         u32 fill = 0x200;
-        CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+        CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
     }
     t.f[gGameSubState]();
     if (gFrameCounter & 1) {

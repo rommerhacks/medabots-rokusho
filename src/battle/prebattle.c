@@ -33,7 +33,7 @@ void prebattle_screen_update(void) {
 
     if (gUnk_03000430 == 2) {
         fill = 0x200;
-        DmaSet(3, &fill, gUnk_03002414->unkB84, 0x85000100);
+        DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
     }
     gPrebattleScreenHandlers[gGameSubState]();
 }

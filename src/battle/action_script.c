@@ -12,7 +12,7 @@ void battle_run_action_script(void) {
         if (gUnk_03000430 == 2) {
             u32 fill = 0x200;
 
-            CpuFastSet(&fill, gUnk_03002414->unkB84, 0x01000100);
+            CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
         }
         if (gUnk_03001800.unk1AE == 0)
             update_all_battle_status_sprites();

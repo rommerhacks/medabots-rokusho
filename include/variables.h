@@ -59,7 +59,7 @@ extern Func gVBlankCallback;           // called every vblank
 extern Func gVBlankOnceCallback;       // called at the next vblank, then reset to nullsub_08000840
 extern Func gHBlankCallback;           // called by hblank_irq
 extern struct OamData gOamBuffer[128]; // copied to OAM in vblank_body
-extern struct Unk_03002414 *gUnk_03002414;
+extern struct SpriteWork *gSpriteWork;
 extern struct SceneSlot *gUnk_03005308;
 extern u32 gUnk_03000430;           // vblank_body OAM mode (0, 2)
 extern u8 gUnk_03000434;            // bit 0: vblank_body skips the BG scroll registers
@@ -1159,7 +1159,7 @@ extern const struct FuncTable7
 struct TextBufTable4 {
     u8 *p[4];
 };
-extern const struct ObjAffineDstData gUnk_080ABBEC; // identity affine matrix (sub_08045C30)
+extern const struct ObjAffineDstData gUnk_080ABBEC; // identity affine matrix (render_sprite_if_visible_rotated)
 extern const struct ObjAffineDstData gUnk_080ABBF4; // affine matrix template (render_sprite_node_recursive)
 extern const u8 gUnk_08081320[]; // mirrored sprite node index per node (render_sprite_node_recursive)
 extern const struct TextBufTable4

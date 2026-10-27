@@ -790,7 +790,7 @@ void debug_motion_input(void) {
     u8 b;
 
     fill = 0x200;
-    DmaSet(3, &fill, gUnk_03002414->unkB84, 0x85000100);
+    DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
     init_scene_with_bg_and_palette(0, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39,
                                    gUnk_03000440.unk39, 0x38, 0x68, 0, 4, 0, 1, 0, 0);
     init_scene_with_bg_and_palette(1, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39,
@@ -832,7 +832,7 @@ void debug_motion_play(void) {
     vu32 fill;
 
     fill = 0x200;
-    DmaSet(3, &fill, gUnk_03002414->unkB84, 0x85000100);
+    DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
     init_scene_with_bg_and_palette(0, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39,
                                    gUnk_03000440.unk39, 0x38, 0x68, 0, 4, 0, 1, 0, 0);
     init_scene_with_bg_and_palette(1, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39,
