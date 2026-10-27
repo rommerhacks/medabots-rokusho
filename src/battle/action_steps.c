@@ -348,7 +348,7 @@ void sub_0801CAA8(void) {
 }
 
 void load_battle_script_data_d0(void) {
-    memcpy_bytes_0803F63C(gUnk_083C6DE8[gUnk_03001800.unkD0], gUnk_03000440.unk9E, 0xE);
+    memcpy_bytes_0803F63C(gPartKindNames[gUnk_03001800.unkD0], gUnk_03000440.unk9E, 0xE);
     divide_by_100000_b(gUnk_03000440.unk9E + 0x14, gUnk_03001800.unkC8, 0x35);
     gUnk_03001800.unkA6 = 0x12;
     gUnk_03001800.unkAA++;
@@ -2104,7 +2104,7 @@ void sub_08020728(void) {
 }
 
 void sub_08020768(void) {
-    memcpy_bytes_0803F63C(gUnk_083C6DE8[gUnk_03001800.unkA7], gUnk_03000440.unk9E, 0xE);
+    memcpy_bytes_0803F63C(gPartKindNames[gUnk_03001800.unkA7], gUnk_03000440.unk9E, 0xE);
     gUnk_03001800.unkA6 = 0x18;
     gUnk_03001800.unkAA++;
 }

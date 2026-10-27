@@ -322,11 +322,11 @@
 * `x.unk84 = 0x45; f(tbl[0x45]);` loads 0x114 as a fresh constant; the original's `movs r1, #0x45; strb;
   lsls r1, #2` comes from indexing with the field just stored: `f(tbl[x.unk84])` (rapid_charge_hourglass_spawn).
 * `x = K; if (c) x |= M;` (on a struct field) makes gcc keep K in a register and `orrs` it for the second
-  store; `x = K | M` folds the constant and a `u16 v = K` local moves the load (sub_08026184).
+  store; `x = K | M` folds the constant and a `u16 v = K` local moves the load (counter_attack_ball_spawn).
 * Loops over sprite slots `gSpriteEntries[i + 0x21]` that compute `(i + 0x21) << 6` each time come from
   writing the index out in every statement; a `spr` pointer or `slot` local lets gcc fold `base + 0x840`
-  (sub_08025FC8).
-* A 2D table read as `(a * 4 + b) * 4` is indexed flat, `tbl[0][a * 4 + b]` (gUnk_083BB9CC, sub_08026810).
+  (team_attack_turrets_spawn).
+* A 2D table read as `(a * 4 + b) * 4` is indexed flat, `tbl[0][a * 4 + b]` (gUnk_083BB9CC, change_finish).
 * `v = 0; if (x) v = 1;` and `v = !x` order the zero differently: `if (!(f & 2)) v = 1; else v = 0;` gives
   `ands; movs v, #0; cmp; bne; movs v, #1` (sub_08026A74).
 * Nested loops where the original reloads loop invariants inside the outer loop (and keeps `i + 1` in a

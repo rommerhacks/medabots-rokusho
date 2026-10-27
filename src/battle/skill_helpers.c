@@ -186,7 +186,7 @@ u32 sub_08037230(u32 rec, u32 part) {
 }
 
 u32 decrement_battle_timer_and_check_zero(void) {
-    sub_08035754(&gUnk_03001800.unkE8, 0x20);
+    subtract_s16_floored(&gUnk_03001800.unkE8, 0x20);
     if (gUnk_03001800.unkE8 != 0)
         return 0;
     return 1;
@@ -234,12 +234,12 @@ void battle_bot_sprites_show(u32 rec) {
     gSpriteEntries[rec * 4 + 0x5D].unk0 |= 0x8000;
 }
 
-void sub_08037424(u32 slot) {
+void sprite_bob_step(u32 slot) {
     gSpriteEntries[slot].unk4 = (gSpriteEntries[slot].unk4 + gUnk_083AF4E0[gSpriteEntries[slot].unk23]) & 0xFF;
     gSpriteEntries[slot].unk23 = (gSpriteEntries[slot].unk23 + 1) & 31;
 }
 
-void sub_08037458(u32 rec, s32 amount) {
+void calc_head_uses_taken(u32 rec, s32 amount) {
     s32 head = gUnk_03000590[rec].parts[0].unk10;
     if (head > amount) {
         gUnk_03001800.unkC8 = amount;
@@ -252,7 +252,7 @@ void sub_08037458(u32 rec, s32 amount) {
     }
 }
 
-void sub_08037498(u32 rec, s32 amount) {
+void calc_head_uses_given(u32 rec, s32 amount) {
     s32 room = gUnk_03000590[rec].parts[0].data[8] - gUnk_03000590[rec].parts[0].unk10;
     if (room > amount) {
         gUnk_03001800.unkC8 = amount;
@@ -265,7 +265,7 @@ void sub_08037498(u32 rec, s32 amount) {
     }
 }
 
-void sub_080374E0(u32 a, u32 b) {
+void calc_drain_amount(u32 a, u32 b) {
     if (a > b) {
         gUnk_03001800.unkC8 = b;
         gUnk_03001800.unkCC = b;
@@ -279,7 +279,7 @@ void sub_080374E0(u32 a, u32 b) {
     }
 }
 
-void sub_0803752C(u32 a, u32 max, u32 b) {
+void calc_fill_amount(u32 a, u32 max, u32 b) {
     u32 room = max - a;
     if (room > b) {
         gUnk_03001800.unkC8 = b;
@@ -294,7 +294,7 @@ void sub_0803752C(u32 a, u32 max, u32 b) {
     }
 }
 
-u8 sub_08037578(u32 a, u32 kind) {
+u8 pick_random_change_part(u32 a, u32 kind) {
     u8 ret = 0;
 
     rng_next_byte();

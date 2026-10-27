@@ -1804,7 +1804,7 @@ void sub_0802A534(void) {
 
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD2[i]) {
-            sub_08037498(gUnk_03001800.unk60 + i, gUnk_03001800.unkEC);
+            calc_head_uses_given(gUnk_03001800.unk60 + i, gUnk_03001800.unkEC);
             gUnk_03001800.unkD6[i] = gUnk_03001800.unkC8;
             add_u8_capped(&gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk10, gUnk_03001800.unkD6[i],
                           gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].data[8]);
@@ -2627,7 +2627,7 @@ void sub_0802C1A4(void) {
 
 void sub_0802C24C(void) {
     add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk89].unk0, gUnk_03001800.unkEC, 0xA0);
-    sub_0803572C(&gUnk_03001800.unk28[gUnk_03001800.unk8A].unk0, gUnk_03001800.unkEC);
+    subtract_u8_floored(&gUnk_03001800.unk28[gUnk_03001800.unk8A].unk0, gUnk_03001800.unkEC);
     gUnk_03001800.unkAA++;
 }
 
@@ -2723,7 +2723,7 @@ void sub_0802C588(void) {
     gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD6[i] != 0)
-            sub_0803572C(&gUnk_03000590[gUnk_03001800.unk60 + i].unkB8 + 1, gUnk_03001800.unkEC);
+            subtract_u8_floored(&gUnk_03000590[gUnk_03001800.unk60 + i].unkB8 + 1, gUnk_03001800.unkEC);
     }
     gUnk_03001800.unkAA++;
 }

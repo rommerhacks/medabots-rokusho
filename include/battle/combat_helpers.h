@@ -44,10 +44,10 @@ void calc_bot_evasion_modifier(u32 rec);
 void sub_080355C4(u32 rec);
 void sub_080351E8(u32 rec);
 void add_u8_capped(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, max)
-void sub_0803572C(u8 *val, s32 amount);           // *val = max(*val - amount, 0)
+void subtract_u8_floored(u8 *val, s32 amount);    // *val = max(*val - amount, 0)
 void sub_08035BD4(void);
 void sub_08035BFC(u32 rec, u32 part);
-void sub_08035754(s16 *amount, s32 sub); // *amount -= sub, not below 0
+void subtract_s16_floored(s16 *amount, s32 sub); // *amount -= sub, not below 0
 void sub_08035B9C(u32 rec);
 
 #endif // GUARD_BATTLE_COMBAT_HELPERS_H

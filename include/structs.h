@@ -710,8 +710,8 @@ struct Unk_03001800 {
     u8 unk114[2]; // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (sub_08020B4C)
     u8 filler116[0x2];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part
-    u8 unk119; // part data[1] - 0x37 of the swapped part (sub_08026678)
-    u8 unk11A; // id of the part swapped in (sub_08026678)
+    u8 unk119; // part data[1] - 0x37 of the swapped part (change_transform_part)
+    u8 unk11A; // id of the part swapped in (change_transform_part)
     u8 filler11B[0x1];
     struct BattlePart unk11C; // saved part (data and id), restored by sub_0801B3AC
     u8 filler134[0x8];

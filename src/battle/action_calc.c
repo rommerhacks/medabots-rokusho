@@ -31,7 +31,7 @@ void sub_08038BC0(void) {
         gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 == 0x33)
         gUnk_03001800.unkE8 += gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4;
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
-    sub_08035754(&gUnk_03001800.unkE8, gUnk_03000590[gUnk_03001800.unk88].unkB9);
+    subtract_s16_floored(&gUnk_03001800.unkE8, gUnk_03000590[gUnk_03001800.unk88].unkB9);
 }
 
 void sub_08038D30(void) {
@@ -110,10 +110,10 @@ static u32 battle_calculate_turn_speed(void) {
         accumulate_battle_speed_value(gUnk_03001800.unk88);
         gUnk_03001800.unkEE += gUnk_03000590[gUnk_03001800.unk88].parts[3].unk13;
         if (!(gUnk_03000590[gUnk_03001800.unk88].unkBC & 8))
-            sub_08035754((s16 *)&gUnk_03001800.unkEE, 8);
+            subtract_s16_floored((s16 *)&gUnk_03001800.unkEE, 8);
         if (battle_calculate_damage_modifier())
             return 1;
-        sub_08035754(&gUnk_03001800.unkE8, (s16)gUnk_03001800.unkEE);
+        subtract_s16_floored(&gUnk_03001800.unkE8, (s16)gUnk_03001800.unkEE);
         if ((gUnk_03001800.unkF2 = gUnk_03001800.unkE8) == 0) {
             u8 type = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
             if (type == 6)
@@ -138,9 +138,9 @@ static void battle_process_speed_and_action(void) {
         accumulate_battle_speed_value(gUnk_03001800.unk88);
         gUnk_03001800.unkEE += gUnk_03000590[gUnk_03001800.unk88].parts[3].unk14;
         if (!(gUnk_03000590[gUnk_03001800.unk88].unkBC & 4))
-            sub_08035754((s16 *)&gUnk_03001800.unkEE, 8);
+            subtract_s16_floored((s16 *)&gUnk_03001800.unkEE, 8);
         if (!battle_calculate_damage_modifier() && (s16)gUnk_03001800.unkEE > 0x1F) {
-            sub_08035754(&gUnk_03001800.unkE8, (s16)gUnk_03001800.unkEE);
+            subtract_s16_floored(&gUnk_03001800.unkE8, (s16)gUnk_03001800.unkEE);
             gUnk_03001800.unkF2 = gUnk_03001800.unkE8;
             gUnk_03000590[gUnk_03001800.unk88].unkBC |= 0x20;
             if (sub_08039134(gUnk_03001800.unk88) == 1)

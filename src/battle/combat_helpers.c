@@ -313,7 +313,7 @@ void check_sprite_overlap_and_adjust(u32 a, u32 b) {
     }
 }
 
-void sub_0803572C(u8 *val, s32 amount) {
+void subtract_u8_floored(u8 *val, s32 amount) {
     if (*val < amount)
         *val = 0;
     else
@@ -328,7 +328,7 @@ void add_u8_capped(u8 *val, u32 amount, u32 max) {
         *val = sum;
 }
 
-void sub_08035754(s16 *val, s32 amount) {
+void subtract_s16_floored(s16 *val, s32 amount) {
     if (*val < amount)
         *val = 0;
     else
@@ -358,7 +358,7 @@ void calc_battle_action_speed(u32 rec, u32 part) {
 
 void apply_battle_bot_damage_reduction(u32 rec) {
     if ((u8)(gUnk_03000590[rec].unkC9 - 0xD) <= 1)
-        sub_08035754(&gUnk_03001800.unkE8, gUnk_03000590[rec].unkCC);
+        subtract_s16_floored(&gUnk_03001800.unkE8, gUnk_03000590[rec].unkCC);
 }
 
 void accumulate_battle_speed_value(u32 rec) {

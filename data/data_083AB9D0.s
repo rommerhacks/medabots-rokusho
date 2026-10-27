@@ -475,40 +475,40 @@ gPushoverSteps:
 gBurstSpriteDirections:
 	.incbin "baserom.gba", 0x3ADEE0, 0x4
 
-	.global gUnk_083ADEE4
-gUnk_083ADEE4:
+	.global gImpairSteps
+gImpairSteps:
 	.incbin "baserom.gba", 0x3ADEE4, 0x60
 
-	.global gUnk_083ADF44
-gUnk_083ADF44:
+	.global gConfusionSteps
+gConfusionSteps:
 	.incbin "baserom.gba", 0x3ADF44, 0x60
 
-	.global gUnk_083ADFA4
-gUnk_083ADFA4:
+	.global gUseDrainSteps
+gUseDrainSteps:
 	.incbin "baserom.gba", 0x3ADFA4, 0x60
 
-	.global gUnk_083AE004
-gUnk_083AE004:
+	.global gNoEscapeDefenseSteps
+gNoEscapeDefenseSteps:
 	.incbin "baserom.gba", 0x3AE004, 0x60
 
-	.global gUnk_083AE064
-gUnk_083AE064:
+	.global gForcedrainSteps
+gForcedrainSteps:
 	.incbin "baserom.gba", 0x3AE064, 0x80
 
-	.global gUnk_083AE0E4
-gUnk_083AE0E4:
+	.global gTeamAttackCheckSteps
+gTeamAttackCheckSteps:
 	.incbin "baserom.gba", 0x3AE0E4, 0x1C
 
-	.global gUnk_083AE100
-gUnk_083AE100:
+	.global gTeamAttackTurretSteps
+gTeamAttackTurretSteps:
 	.incbin "baserom.gba", 0x3AE100, 0x18
 
-	.global gUnk_083AE118
-gUnk_083AE118:
+	.global gCounterAttackSteps
+gCounterAttackSteps:
 	.incbin "baserom.gba", 0x3AE118, 0x54
 
-	.global gUnk_083AE16C
-gUnk_083AE16C:
+	.global gChangeSteps
+gChangeSteps:
 	.incbin "baserom.gba", 0x3AE16C, 0x54
 
 	.global gUnk_083AE1C0
@@ -1078,8 +1078,8 @@ gUnk_083C6B28:
 gUnk_083C6D38:
 	.incbin "baserom.gba", 0x3C6D38, 0xB0
 
-	.global gUnk_083C6DE8
-gUnk_083C6DE8:
+	.global gPartKindNames
+gPartKindNames:
 	.incbin "baserom.gba", 0x3C6DE8, 0x10
 
 	.global gUnk_083C6DF8

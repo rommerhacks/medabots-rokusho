@@ -1,17 +1,25 @@
-// Effect sequences of the Interrupt abilities: action script opcodes 0x36-0x3F, used by abilities 43-47,
-// 50, 54 and 55-59 (0x3B / 0x3C are used by no script).
-// Each runner (sub_XXXXXXXX that clears unkB5 and calls entry [unkAA] of its gUnk_083AD400 sub-table) is
-// one action script command (gUnk_083AF000, opcode order = ROM order); its step handlers follow it and
-// the last step sets unkB5. Abilities are part data[1], and the script of ability n is gUnk_083C6B28[n].
+// Effect sequences of the Interrupt abilities (and two Defend ones): action script opcodes 0x36-0x3F.
+// Each runner (*_run: clears unkB5 and calls entry [unkAA] of its step table) is one action script command
+// (gUnk_083AF000, opcode order = ROM order); its step handlers follow it and the last step sets unkA6.
+// Abilities are part data[1], and the script of ability n is gUnk_083C6B28[n]:
+//   0x36 Impair (43), 0x37 Confusion (44), 0x38 Use Drain (45), 0x39 No Escape (46) / No Defense (47),
+//   0x3A Forcedrain (50), 0x3B / 0x3C TeamAttack (52: a Shoot script with the Team Form check and the turret
+//   animation inserted), 0x3D clears the queued action (script_op_clear_queued_action, in action_script.c),
+//   0x3E CntrAttk (54), 0x3F Change, ItrpChange, AttkChange, DEF Change, HealChange (55-59).
+// Skill names from the in-game skill list and help texts (text after gUnk_083BE4D4); effects match a
+// public FAQ's skill table. Steps 1-3 of each table are the shared time-out steps and 4-7 the shared
+// "small Medabot tosses something" steps of battle/action_steps.
+// Statuses set on the target: unkC9 = skill id (0x2B Impair, 0x2C Confusion, 0x2E / 0x2F No Escape /
+// No Defense), unkCA = Impair's part kind + 1, unkCB / unkCC = durations (clamp_1_99).
 
 #include "global.h"
 
-void sub_08024998(void) {
+void impair_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083ADEE4[gUnk_03001800.unkAA]();
+    gImpairSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_080249C0(void) {
+void impair_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
@@ -27,7 +35,7 @@ void sub_080249C0(void) {
     }
 }
 
-void sub_08024A30(void) {
+void impair_portrait_spawn(void) {
     lz_decompress_dispatch(gUnk_084D651C, (void *)0x06014800);
     CpuFastSet(gUnk_0850E858, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x220;
@@ -42,7 +50,8 @@ void sub_08024A30(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08024AF4(void) {
+// Shows the portrait icon with the targeted part (unk8B: 0 head, 1 right arm, 2 left arm) highlighted.
+void impair_part_icon_spawn(void) {
     clear_sprite_table_mask(0x21, 1);
     gSpriteEntries[0x22].unk0 = 0xC404;
     gSpriteEntries[0x22].unk1C = 0;
@@ -66,14 +75,15 @@ void sub_08024AF4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08024BCC(void) {
+void interrupt_icon_anim_wait(void) {
     if (advance_sprite_anim_frame(0x22, 0)) {
         gUnk_03000440.unk86 = 0x3C;
         gUnk_03001800.unkAA++;
     }
 }
 
-void sub_08024BF8(void) {
+// Steps shared with No Escape / No Defense: the X drawn over the icon, shrinking in, then shaking.
+void interrupt_cross_spawn(void) {
     set_sprite_hidden_flags(0x21, 1);
     gSpriteEntries[0x21].unk0 |= 0x220;
     gSpriteEntries[0x21].unk8 = 0x80;
@@ -81,7 +91,7 @@ void sub_08024BF8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08024C44(void) {
+void interrupt_cross_shrink(void) {
     if (gSpriteEntries[0x21].unk8 == 0x40) {
         play_sound_effect(0x3C);
         gUnk_03000440.unk86 = 0;
@@ -92,7 +102,7 @@ void sub_08024C44(void) {
     }
 }
 
-void sub_08024C94(void) {
+void interrupt_cross_shake(void) {
     if (gUnk_03000440.unk86 == 0x3C) {
         clear_battle_sprite_slot(0x21, 2);
         gUnk_03001800.unkAA++;
@@ -105,7 +115,7 @@ void sub_08024C94(void) {
     }
 }
 
-void sub_08024D18(void) {
+void impair_apply(void) {
     gUnk_03000590[gUnk_03001800.unk88].unkC9 = 0x2B;
     gUnk_03000590[gUnk_03001800.unk88].unkCB = clamp_1_99(gUnk_03001800.unkE8);
     gUnk_03000590[gUnk_03001800.unk88].unkCC = clamp_1_99(gUnk_03001800.unkEC);
@@ -123,31 +133,31 @@ void sub_08024D18(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08024DA8(void) {
-    const u8 *s;
+void impair_finish(void) {
+    const u8 *kind_name;
 
     switch (gUnk_03001800.unk8B) {
     case 1:
-        s = gUnk_083C6DE8[1];
+        kind_name = gPartKindNames[1];
         break;
     case 2:
-        s = gUnk_083C6DE8[2];
+        kind_name = gPartKindNames[2];
         break;
     default:
-        s = gUnk_083C6DE8[0];
+        kind_name = gPartKindNames[0];
         break;
     }
-    memcpy_bytes_0803F63C(s, gUnk_03000440.unk9E, 0xE);
+    memcpy_bytes_0803F63C(kind_name, gUnk_03000440.unk9E, 0xE);
     gUnk_03001800.unkA6 = 0x30;
     gUnk_03001800.unkAA++;
 }
 
-void sub_08024E04(void) {
+void confusion_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083ADF44[gUnk_03001800.unkAA]();
+    gConfusionSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08024E2C(void) {
+void confusion_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
@@ -163,7 +173,7 @@ void sub_08024E2C(void) {
     }
 }
 
-void sub_08024E9C(void) {
+void confusion_ball_spawn(void) {
     lz_decompress_dispatch(gUnk_084D6780, (void *)0x06014800);
     CpuFastSet(gUnk_0850E878, (void *)0x050002C0, 0x10);
     if (gUnk_03001800.unkF8 & 1)
@@ -181,13 +191,13 @@ void sub_08024E9C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08024F90(void) {
+void confusion_wave_init(void) {
     play_sound_effect(0x33);
     gSpriteEntries[0x21].unk0 |= 0x220;
     gUnk_03001800.unkAA++;
 }
 
-void sub_08024FC4(void) {
+void confusion_wave_spin(void) {
     if (!(gUnk_03001800.unkF8 & 1))
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 - 0x80) & 0x3FF;
     else
@@ -200,7 +210,7 @@ void sub_08024FC4(void) {
     }
 }
 
-void sub_0802503C(void) {
+void confusion_marks_spawn(void) {
     if (gUnk_03001800.unkF8 & 1)
         gSpriteEntries[0x21].unk0 &= ~0x1000;
     gSpriteEntries[0x21].unk8 = 0x40;
@@ -215,7 +225,7 @@ void sub_0802503C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025104(void) {
+void confusion_apply(void) {
     clear_battle_sprite_slot(0x21, 1);
     gUnk_03000590[gUnk_03001800.unk88].unkC9 = 0x2C;
     gUnk_03000590[gUnk_03001800.unk88].unkCA = 0;
@@ -224,17 +234,18 @@ void sub_08025104(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025174(void) {
+void confusion_finish(void) {
     gUnk_03001800.unkA6 = 0x33;
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802518C(void) {
+void use_drain_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083ADFA4[gUnk_03001800.unkAA]();
+    gUseDrainSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_080251B4(void) {
+// Fails (unkA6 0x34) when the target's head has no uses left.
+void use_drain_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
@@ -250,7 +261,7 @@ void sub_080251B4(void) {
     }
 }
 
-void sub_08025230(void) {
+void use_drain_bubble_spawn(void) {
     lz_decompress_dispatch(gUnk_084D6AAC, (void *)0x06014800);
     CpuFastSet(gUnk_0850E8B8, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].unk0 |= 0x220;
@@ -267,8 +278,8 @@ void sub_08025230(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025308(void) {
-    sub_08037424(0x21);
+void use_drain_bubble_hold(void) {
+    sprite_bob_step(0x21);
     if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
         gUnk_03001800.unkAA++;
     else if (gUnk_03000440.unk86)
@@ -277,14 +288,14 @@ void sub_08025308(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_08025354(void) {
+void use_drain_bubble_fly(void) {
     if (move_sprite_toward_target(0x21))
         gUnk_03001800.unkAA++;
-    sub_08037424(0x21);
+    sprite_bob_step(0x21);
 }
 
-void sub_08025378(void) {
-    sub_08037424(0x21);
+void use_drain_drop_spawn(void) {
+    sprite_bob_step(0x21);
     gSpriteEntries[0x22].unk0 = 0xC604;
     gSpriteEntries[0x22].unk1C = 0;
     gSpriteEntries[0x22].unk2 = gSpriteEntries[0x5D + gUnk_03001800.unk88 * 4].unk2;
@@ -304,8 +315,8 @@ void sub_08025378(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802549C(void) {
-    sub_08037424(0x21);
+void use_drain_drop_grow(void) {
+    sprite_bob_step(0x21);
     if (gSpriteEntries[0x22].unk8 == 0x40) {
         gSpriteEntries[0x22].unk2 = gSpriteEntries[0x21].unk2;
         gSpriteEntries[0x22].unk4 = gSpriteEntries[0x21].unk4;
@@ -316,20 +327,20 @@ void sub_0802549C(void) {
     }
 }
 
-void sub_08025500(void) {
+void use_drain_bubble_return(void) {
     if (move_sprite_toward_target(0x21)) {
         gSpriteEntries[0x22].unk2 = gSpriteEntries[0x21].unk2;
         gSpriteEntries[0x22].unk4 = gSpriteEntries[0x21].unk4;
         play_sound_effect(0x2B);
         gUnk_03001800.unkAA++;
     }
-    sub_08037424(0x21);
+    sprite_bob_step(0x21);
     gSpriteEntries[0x22].unk2 = gSpriteEntries[0x21].unk2;
     gSpriteEntries[0x22].unk4 = gSpriteEntries[0x21].unk4;
 }
 
-void sub_08025570(void) {
-    sub_08037424(0x21);
+void use_drain_bubble_shrink(void) {
+    sprite_bob_step(0x21);
     gSpriteEntries[0x22].unk2 = gSpriteEntries[0x21].unk2;
     gSpriteEntries[0x22].unk4 = gSpriteEntries[0x21].unk4;
     if (gSpriteEntries[0x21].unk8 == 1) {
@@ -343,18 +354,19 @@ void sub_08025570(void) {
     }
 }
 
-void sub_080255F8(void) {
-    sub_08037458(gUnk_03001800.unk88, gUnk_03001800.unkEC);
+// Moves head uses (parts[0].unk10) from the target to the user, capped by the user's maximum (data[8]).
+void use_drain_apply(void) {
+    calc_head_uses_taken(gUnk_03001800.unk88, gUnk_03001800.unkEC);
     gUnk_03001800.unk51 = gUnk_03001800.unkC8;
-    sub_0803572C(&gUnk_03000590[gUnk_03001800.unk88].parts[0].unk10, gUnk_03001800.unk51);
-    sub_08037498(gUnk_03001800.unk87, gUnk_03001800.unk51);
+    subtract_u8_floored(&gUnk_03000590[gUnk_03001800.unk88].parts[0].unk10, gUnk_03001800.unk51);
+    calc_head_uses_given(gUnk_03001800.unk87, gUnk_03001800.unk51);
     gUnk_03001800.unk52 = gUnk_03001800.unkC8;
     add_u8_capped(&gUnk_03000590[gUnk_03001800.unk87].parts[0].unk10, gUnk_03001800.unk52,
                   gUnk_03000590[gUnk_03001800.unk87].parts[0].data[8]);
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025674(void) {
+void use_drain_popup_init(void) {
     lz_decompress_dispatch(gUnk_084D6BFC, (void *)0x06017E00);
     set_display_digit_type(&gUnk_03000440.unkEE, gUnk_03001800.unk51, 1);
     battle_text_popup_init_slot(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
@@ -365,7 +377,7 @@ void sub_08025674(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080256EC(void) {
+void use_drain_popup_wait(void) {
     battle_popup_update_slot(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
     battle_popup_update_slot(&gUnk_03000440.unkEE + 0x20, gUnk_03001800.unk87, 0x21);
     if (++gUnk_03000440.unk84, gUnk_03000440.unk89 == 0 && (KEYS_LO(gRepeatKeys) & 1) && gUnk_03000440.unk84 > 0x32)
@@ -377,18 +389,18 @@ void sub_080256EC(void) {
     }
 }
 
-void battle_set_action_0x35(void) {
+void use_drain_finish(void) {
     divide_by_100000_b(gUnk_03000440.unk9E, gUnk_03001800.unk51, 0x35);
     gUnk_03001800.unkA6 = 0x35;
     gUnk_03001800.unkAA++;
 }
 
-void dispatch_battle_action_step(void) {
+void no_escape_defense_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE004[gUnk_03001800.unkAA]();
+    gNoEscapeDefenseSteps[gUnk_03001800.unkAA]();
 }
 
-void process_battle_action_phase(void) {
+void no_escape_defense_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
@@ -404,7 +416,8 @@ void process_battle_action_phase(void) {
     }
 }
 
-void battle_render_bot_status_icon(void) {
+// Ability 46 (0x2E) shows the running-person icon, 47 the shield icon.
+void no_escape_defense_icon_load(void) {
     if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1] == 0x2E) {
         lz_decompress_dispatch(gUnk_084D6CC4, (void *)0x06014800);
         CpuFastSet(gUnk_0850E8F8, (void *)0x050002E0, 0x10);
@@ -425,7 +438,7 @@ void battle_render_bot_status_icon(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025974(void) {
+void no_escape_defense_icon_spawn(void) {
     clear_sprite_table_mask(0x21, 1);
     gSpriteEntries[0x22].unk0 = 0xC404;
     gSpriteEntries[0x22].unk1C = 0;
@@ -439,7 +452,7 @@ void sub_08025974(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025A18(void) {
+void no_escape_defense_apply(void) {
     gUnk_03000590[gUnk_03001800.unk88].unkCA = 0;
     gUnk_03000590[gUnk_03001800.unk88].unkCB = clamp_1_99(gUnk_03001800.unkE8);
     gUnk_03000590[gUnk_03001800.unk88].unkCC = clamp_1_99(gUnk_03001800.unkEC);
@@ -450,7 +463,7 @@ void sub_08025A18(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025AAC(void) {
+void no_escape_defense_finish(void) {
     if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1] == 0x2E)
         gUnk_03001800.unkA6 = 0x31;
     else
@@ -458,12 +471,13 @@ void sub_08025AAC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025AF8(void) {
+void forcedrain_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE064[gUnk_03001800.unkAA]();
+    gForcedrainSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08025B20(void) {
+// Fails (unkA6 0x74) when the target has no Medaforce (unkC1).
+void forcedrain_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
@@ -479,7 +493,7 @@ void sub_08025B20(void) {
     }
 }
 
-void sub_08025B9C(void) {
+void forcedrain_glass_spawn(void) {
     lz_decompress_dispatch(gUnk_084D6F88, (void *)0x06014800);
     CpuFastSet(gUnk_0850E938, (void *)0x050002E0, 0x10);
     gSpriteEntries[0x21].unk0 |= 0x220;
@@ -497,13 +511,15 @@ void sub_08025B9C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025C84(void) {
-    sub_080374E0(gUnk_03000590[gUnk_03001800.unk88].unkC1, gUnk_03001800.unkEC);
+// Drains up to unkEC Medaforce from the target and gives it to the user (doubled when unkC0 bit 3 is set);
+// the gauge steps run on the target first (unk87 swapped, restored by forcedrain_glass_return).
+void forcedrain_calc(void) {
+    calc_drain_amount(gUnk_03000590[gUnk_03001800.unk88].unkC1, gUnk_03001800.unkEC);
     gUnk_03001800.unk51 = gUnk_03001800.unkC8;
     if (gUnk_03000590[gUnk_03001800.unk87].unkC0 & 8)
-        sub_0803752C(gUnk_03000590[gUnk_03001800.unk87].unkC1, 0x50, gUnk_03001800.unk51 * 2);
+        calc_fill_amount(gUnk_03000590[gUnk_03001800.unk87].unkC1, 0x50, gUnk_03001800.unk51 * 2);
     else
-        sub_0803752C(gUnk_03000590[gUnk_03001800.unk87].unkC1, 0x50, gUnk_03001800.unk51);
+        calc_fill_amount(gUnk_03000590[gUnk_03001800.unk87].unkC1, 0x50, gUnk_03001800.unk51);
     gUnk_03001800.unk52 = gUnk_03001800.unkC8;
     gUnk_03001800.unk64[0] = gUnk_03001800.unk87;
     gUnk_03001800.unk87 = gUnk_03001800.unk88;
@@ -511,33 +527,33 @@ void sub_08025C84(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025D2C(void) {
+void forcedrain_substate_wait(void) {
     if (dispatch_battle_action_substate(0))
         gUnk_03001800.unkAA++;
 }
 
-void sub_08025D4C(void) {
+void forcedrain_gauge_sound(void) {
     dispatch_battle_action_substate(0);
     play_sound_effect(0x51);
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025D6C(void) {
-    s32 n;
+void forcedrain_gauge_drain(void) {
+    s32 done;
 
     dispatch_battle_action_substate(0);
-    n = medaforce_gauge_drain_step(gUnk_03001800.unk87);
+    done = medaforce_gauge_drain_step(gUnk_03001800.unk87);
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03000440.unk84], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF)
-        n++;
-    if (n == 2) {
+        done++;
+    if (done == 2) {
         clear_battle_ui_tilemaps();
         sub_0801AEB4();
         gUnk_03001800.unkAA++;
     }
 }
 
-void sub_08025DD4(void) {
+void forcedrain_glass_return(void) {
     gUnk_03001800.unk87 = gUnk_03001800.unk64[0];
     gUnk_03001800.unk51 = gUnk_03001800.unk52;
     gSpriteEntries[0x21].unk0 |= 0x220;
@@ -552,11 +568,11 @@ void sub_08025DD4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025E88(void) {
-    s32 n;
+void forcedrain_gauge_fill(void) {
+    s32 done;
 
     dispatch_battle_action_substate(0);
-    n = medaforce_gauge_fill_step(gUnk_03001800.unk87);
+    done = medaforce_gauge_fill_step(gUnk_03001800.unk87);
     if (gSpriteEntries[0x21].unk0 & 0x8000) {
         gSpriteEntries[0x21].unk0 |= 0x220;
         if (gSpriteEntries[0x21].unk8 == 1) {
@@ -566,26 +582,28 @@ void sub_08025E88(void) {
             gSpriteEntries[0x21].unk9--;
         }
     } else {
-        n++;
+        done++;
     }
-    if (n == 2) {
+    if (done == 2) {
         clear_battle_ui_tilemaps();
         sub_0801AEB4();
         gUnk_03001800.unkAA++;
     }
 }
 
-void sub_08025F14(void) {
+void forcedrain_finish(void) {
     gUnk_03001800.unkA6 = 0x75;
     gUnk_03001800.unkAA++;
 }
 
-void sub_08025F2C(void) {
+void team_attack_check_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE0E4[gUnk_03001800.unkAA]();
+    gTeamAttackCheckSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08025F54(void) {
+// guess: TeamAttack needs the queued action of slot unk8A to be Team Form (skill 0x33); else it fails
+// with unkA6 0x22.
+void team_attack_check_form(void) {
     if (gUnk_03001800.unk28[gUnk_03001800.unk8A].unk2 && gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 == 0x33) {
         gUnk_03001800.unkAB = 0;
         gUnk_03001800.unkAA++;
@@ -596,12 +614,12 @@ void sub_08025F54(void) {
     }
 }
 
-void sub_08025FA0(void) {
+void team_attack_turrets_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE100[gUnk_03001800.unkAA]();
+    gTeamAttackTurretSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08025FC8(void) {
+void team_attack_turrets_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084D513C, (void *)0x06014800);
@@ -624,7 +642,7 @@ void sub_08025FC8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08026080(void) {
+void team_attack_turrets_anim(void) {
     u32 i;
     s32 done = 0;
 
@@ -639,17 +657,17 @@ void sub_08026080(void) {
     }
 }
 
-void sub_080260EC(void) {
+void team_attack_turrets_clear(void) {
     clear_battle_sprite_slot(0x21, 3);
     gUnk_03001800.unkAA++;
 }
 
-void sub_08026108(void) {
+void counter_attack_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE118[gUnk_03001800.unkAA]();
+    gCounterAttackSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08026130(void) {
+void counter_attack_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
@@ -662,7 +680,7 @@ void sub_08026130(void) {
     }
 }
 
-void sub_08026184(void) {
+void counter_attack_ball_spawn(void) {
     lz_decompress_dispatch(gUnk_084D71D8, (void *)0x06014800);
     CpuFastSet(gUnk_0850E978, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC624;
@@ -682,7 +700,7 @@ void sub_08026184(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08026284(void) {
+void counter_attack_glove_show(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x4A], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         gSpriteEntries[0x21].unk8 = 0x80;
@@ -693,7 +711,7 @@ void sub_08026284(void) {
     }
 }
 
-void sub_080262FC(void) {
+void counter_attack_glove_shrink(void) {
     if (gSpriteEntries[0x21].unk8 == 0x40) {
         play_sound_effect(0x53);
         gUnk_03001800.unkAA++;
@@ -703,7 +721,7 @@ void sub_080262FC(void) {
     }
 }
 
-void sub_08026340(void) {
+void counter_attack_glove_pulse_grow(void) {
     if (gSpriteEntries[0x21].unk8 == 0x50) {
         gUnk_03001800.unkAA++;
     } else {
@@ -712,7 +730,7 @@ void sub_08026340(void) {
     }
 }
 
-void sub_08026378(void) {
+void counter_attack_glove_pulse_shrink(void) {
     if (gSpriteEntries[0x21].unk8 == 0x40) {
         gUnk_03000440.unk86 = 0x3C;
         gUnk_03001800.unkAA++;
@@ -722,7 +740,8 @@ void sub_08026378(void) {
     }
 }
 
-void sub_080263BC(void) {
+// Arms the counter on the user: unkBD bit 4, unkDF = the skill id, unkD8 = the part's data[6].
+void counter_attack_apply(void) {
     clear_battle_sprite_slot(0x21, 1);
     gUnk_03000590[gUnk_03001800.unk87].unkBD |= 0x10;
     gUnk_03000590[gUnk_03001800.unk87].unkDF = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
@@ -732,35 +751,36 @@ void sub_080263BC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08026444(void) {
+void counter_attack_finish(void) {
     gUnk_03001800.unkA6 = 0x2A;
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802645C(void) {
+void change_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE16C[gUnk_03001800.unkAA]();
+    gChangeSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08026484(void) {
-    u32 r;
+// unkAB = 0 lets script_op_change restart the action (battle state 8) with the part swapped in.
+void change_begin(void) {
+    u32 timed_out;
 
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
-    r = decrement_battle_timer_and_check_zero();
-    if (r) {
+    timed_out = decrement_battle_timer_and_check_zero();
+    if (timed_out) {
         gUnk_03001800.unkAB = 1;
         gUnk_03001800.unkA6 = 0x1A;
         gUnk_03001800.unkAA++;
     } else {
         side_add_action_point();
         calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
-        gUnk_03001800.unkAB = r;
+        gUnk_03001800.unkAB = timed_out;
         gUnk_03001800.unkAA = 4;
     }
 }
 
-void sub_080264E4(void) {
+void change_effect_spawn(void) {
     lz_decompress_dispatch(gUnk_084D7528, (void *)0x06014800);
     CpuFastSet(gUnk_0850E998, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].unk0 = 0xC404;
@@ -782,7 +802,7 @@ void sub_080264E4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08026628(void) {
+void change_effect_anim(void) {
     if (gUnk_03000440.unk86 == 0x5A) {
         gUnk_03001800.unkAA++;
     } else {
@@ -792,12 +812,15 @@ void sub_08026628(void) {
     }
 }
 
-void sub_08026678(void) {
+// Swaps the acting part for a random one of the ability's family (unk119: 0 Change, 1 ItrpChange,
+// 2 AttkChange, 3 DEF Change, 4 HealChange); the original part is kept in unk11C (unk118 = 1) and restored
+// after the action.
+void change_transform_part(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x4B], 0x21);
     process_sprite_anim_commands(gUnk_083B5F80[0x4C], 0x22);
     gUnk_03001800.unk118 = 1;
     gUnk_03001800.unk119 = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1] - 0x37;
-    gUnk_03001800.unk11A = sub_08037578(gUnk_03001800.unk119, gUnk_03001800.unkA7);
+    gUnk_03001800.unk11A = pick_random_change_part(gUnk_03001800.unk119, gUnk_03001800.unkA7);
     memcpy_bytes_0803F63C(&gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7], &gUnk_03001800.unk11C, 0x18);
     load_part_data(gUnk_03001800.unk11A, gUnk_03001800.unkA7, &gUnk_03000440.unkEE);
     gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[0] = (&gUnk_03000440.unkEE)[0];
@@ -815,7 +838,8 @@ void sub_08026678(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08026810(void) {
+// Copies the old and the new part names into the message buffer for the change message (unkA6 0x2F).
+void change_finish(void) {
     clear_battle_sprite_slot(0x21, 2);
     memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gUnk_03001800.unk11C.unk17 * 4 + gUnk_03001800.unkA7],
                           gUnk_03000440.unk9E, 0xF);

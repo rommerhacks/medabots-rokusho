@@ -375,7 +375,7 @@ void afterbattle_load_part_name(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite_animation();
-    memcpy_bytes_0803F63C(gUnk_083C6DE8[gUnk_03001800.unk168], gUnk_03000440.unk9E, 14);
+    memcpy_bytes_0803F63C(gPartKindNames[gUnk_03001800.unk168], gUnk_03000440.unk9E, 14);
     tbl = gUnk_083BB9CC[0];
     memcpy_bytes_0803F63C((const void *)tbl[gUnk_03001800.unk169 * 4 + gUnk_03001800.unk168], gUnk_03000440.unk9E + 20,
                           15);
@@ -779,7 +779,7 @@ void afterbattle_part_detail_restore_screen(void) {
     sub_080121A8();
     apply_battle_blend_effect_a();
     setup_battle_result_sprite_animation();
-    memcpy_bytes_0803F63C(gUnk_083C6DE8[gUnk_03001800.unk168], gUnk_03000440.unk9E, 14);
+    memcpy_bytes_0803F63C(gPartKindNames[gUnk_03001800.unk168], gUnk_03000440.unk9E, 14);
     tbl = gUnk_083BB9CC[0];
     memcpy_bytes_0803F63C((const void *)tbl[gUnk_03001800.unk169 * 4 + gUnk_03001800.unk168], gUnk_03000440.unk9E + 20,
                           15);
