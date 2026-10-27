@@ -608,7 +608,7 @@ u32 field_effect_run(void) {
                         if (S.unk208 < 0x20 / S.unk1F8)
                             S.unk208++;
                         else {
-                            gVBlankCallback = nullsub_08000840;
+                            gVBlankCallback = empty_callback;
                             S.unk1F4 = 0;
                             done++;
                         }
@@ -630,14 +630,14 @@ u32 field_effect_run(void) {
                         if (S.unk208 != 0)
                             S.unk208--;
                         else {
-                            gVBlankCallback = nullsub_08000840;
+                            gVBlankCallback = empty_callback;
                             S.unk1F4 = 0;
                             done++;
                         }
                         break;
                     }
                     if (S.unk204 != 0xFFFF && S.unk1FC >= S.unk204) {
-                        gVBlankCallback = nullsub_08000840;
+                        gVBlankCallback = empty_callback;
                         S.unk1F4 = 0;
                         done++;
                     }

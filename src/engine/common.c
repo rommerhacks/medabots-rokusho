@@ -785,7 +785,7 @@ static void scanline_scroll_vblank(void) {
 static void stop_scanline_wave_scroll(void) {
     VBlankIntrWait();
     REG_DMA0CNT_H = 0;
-    gVBlankOnceCallback = nullsub_08000840;
+    gVBlankOnceCallback = empty_callback;
 }
 
 // Tileset idx (4 pointers per entry in gUnk_083B23F8): tiles -> VRAM 0x06008000, BG2 / BG3 tilemaps,

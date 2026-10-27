@@ -372,7 +372,7 @@ void action_phase_exit_fade_step(void) {
 
 // Leaves the battle: after-battle state 6, or link state 10 for a link battle (unk89 == 1).
 void action_phase_exit(void) {
-    gVBlankCallback = nullsub_08000840;
+    gVBlankCallback = empty_callback;
     gGameWork.unk132 = 1;
     if (gGameWork.skipBotSetup != 1) {
         gGameState = 6;

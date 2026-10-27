@@ -491,7 +491,7 @@ void robattle_backup_screen(void) {
     CpuFastSet((void *)0x0600D800, (void *)0x02022000, 0x200);
     CpuFastSet(gSpriteEntries, (void *)0x02028000, 0x800);
     set_blend_effect_mode(5, 0x3F, 0x20);
-    gVBlankCallback = nullsub_08000840;
+    gVBlankCallback = empty_callback;
     gGameSubState++;
 }
 

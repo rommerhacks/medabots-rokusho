@@ -191,9 +191,9 @@
 08483A94	gData_08480000+0x36D8
 08483A98	gData_08480000+0x3738
 08483A9C	gData_08480000+0x3760
-08483B00	nullsub_08000840
-08483B04	nullsub_08000840
-08483B08	nullsub_08000840
+08483B00	empty_callback
+08483B04	empty_callback
+08483B08	empty_callback
 08483B0C	title_menu_update
 08483B10	item_menu_update
 08483B14	save_screen_update
@@ -204,9 +204,9 @@
 08483B28	town_map_dispatch
 08483B2C	shop_menu_dispatch
 08483B30	shop_list_dispatch
-08483B34	nullsub_08000840
-08483B38	nullsub_08000840
-08483B3C	nullsub_08000840
+08483B34	empty_callback
+08483B38	empty_callback
+08483B3C	empty_callback
 08483B40	medapart_trade_update
 08483B44	medal_trade_update
 08483B48	medal_rename_main
@@ -220,7 +220,7 @@
 08483B68	link_handshake_update
 08483B6C	link_medal_sync_update
 08483B70	dispatch_rotation_menu_substate
-08483B74	nullsub_08000840
+08483B74	empty_callback
 08483B78	title_menu_reset
 08483B7C	title_menu_load_graphics
 08483B80	title_menu_load_save
@@ -702,7 +702,7 @@
 08485C58	race_dispatch_substate
 08485C5C	bomb_game_dispatch
 08485C60	medabots_weekly_update
-08485C64	nullsub_08000840
+08485C64	empty_callback
 08485C68	scene_step_none
 08485C6C	scene_step_fade_in_bldy
 08485C70	scene_step_fade_in_bldy
@@ -758,7 +758,7 @@
 08485EE4	title_screen_wait_start
 08485EE8	title_screen_start_pressed
 08485EEC	title_screen_skip_intro
-08485EF0	nullsub_08000840
+08485EF0	empty_callback
 08485EF4	title_effect_palette_fade_in
 08485EF8	title_effect_animate_frames
 08485EFC	title_effect_slide_left
@@ -773,7 +773,7 @@
 08485F28	battle_init_tilemap_and_palette
 08485F2C	dispatch_battle_event_script
 08485F30	event_picture_return_to_field
-08485F34	nullsub_08000840
+08485F34	empty_callback
 08485F38	boot_logos_init
 08485F3C	scene_switch_after_transition
 08485F40	scene_complete_dma_and_restore_state
@@ -785,7 +785,7 @@
 08485F58	boot_logos_load_overlay
 08485F5C	boot_logos_hold_overlay
 08485F60	boot_logos_end
-08485F64	nullsub_08000840
+08485F64	empty_callback
 08485F68	intro_init
 08485F6C	scene_switch_after_transition
 08485F70	intro_transition_out_state
@@ -805,7 +805,7 @@
 08485FA8	intro_silhouette_third_state
 08485FAC	intro_closeup_art_state
 08485FB0	intro_go_to_title
-08485FB4	nullsub_08000840
+08485FB4	empty_callback
 08485FB8	gUnk_087C55F0+0xD4
 08485FBC	gUnk_087C55F0+0x163C
 08485FC0	gUnk_087C55F0+0x2838
@@ -847,7 +847,7 @@
 08486104	weekly_closing_talk
 08486108	weekly_wait_curtains_closed
 0848610C	weekly_exit
-08486110	nullsub_08000840
+08486110	empty_callback
 08486118	weekly_fx_right_curtain_open
 0848611C	weekly_fx_left_curtain_open
 08486120	weekly_fx_right_curtain_close

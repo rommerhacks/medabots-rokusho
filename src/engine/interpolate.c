@@ -64,4 +64,5 @@ s32 interpolate_entity_positions(struct InterpEnt *e, s16 *pos, s8 *off, u8 *tbl
     return done;
 }
 
-static void nullsub_08047570(void) {}
+// Empty and never referenced (dead code kept in the ROM).
+static void interpolate_unused_stub(void) {}

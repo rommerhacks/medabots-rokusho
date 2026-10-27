@@ -58,7 +58,7 @@ void race_wait_fade_out(void) {
     if (execute_scene_step()) {
         u32 zero = 0;
         DmaSet(3, &zero, gSpriteEntries, 0x85000800);
-        gVBlankCallback = nullsub_08000840;
+        gVBlankCallback = empty_callback;
         REG_DISPCNT &= 0x80FF;
         gGameSubState = gRaceNextSubState;
     }

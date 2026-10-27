@@ -206,7 +206,7 @@ void field_menu_return_slide(void) {
                        REG_BG0CNT, 0);
     vram_fill_tilemap_rect(1, 2, 17 - gGameWork.menuRowAnim, 0, REG_BG0CNT, 0);
     if (gGameWork.menuRowAnim == 0) {
-        gVBlankCallback = nullsub_08000840;
+        gVBlankCallback = empty_callback;
         gGameWork.menuRowAnim = gGameWork.fieldMenuCursor * 2 + 1;
         gGameWork.unk84 = 0;
         gGameSubState++;

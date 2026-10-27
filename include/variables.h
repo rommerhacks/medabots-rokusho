@@ -56,7 +56,7 @@ extern s8 gUnk_03002410;               // frames since the main loop last ran (v
 extern Func gIntrTable[14];            // RAM copy of gIntrTableTemplate, used by irq_dispatch_arm
 extern u32 gIntrMain[0x200];           // RAM copy of irq_dispatch_arm (the IRQ vector)
 extern Func gVBlankCallback;           // called every vblank
-extern Func gVBlankOnceCallback;       // called at the next vblank, then reset to nullsub_08000840
+extern Func gVBlankOnceCallback;       // called at the next vblank, then reset to empty_callback
 extern Func gHBlankCallback;           // called by hblank_irq
 extern struct OamData gOamBuffer[128]; // copied to OAM in vblank_body
 extern struct SpriteWork *gSpriteWork;

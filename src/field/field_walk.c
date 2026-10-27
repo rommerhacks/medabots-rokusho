@@ -214,7 +214,7 @@ void field_walk_update(void) {
                         }
                     } else if (KEYS_LO(gNewKeys) & 2) {
                         if (gUnk_030057E0.unkC33) {
-                            nullsub_08047E4C();
+                            message_reset_hook();
                             gGameMode = 0;
                             gGameState = 1;
                             gGameSubState = 0;

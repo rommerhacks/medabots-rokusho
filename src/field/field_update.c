@@ -449,9 +449,10 @@ void field_map_warp_run_effect(void) {
     }
 }
 
-static void nullsub_0804AE2C(void) {}
+// Empty and never referenced (dead code kept in the ROM).
+static void field_update_unused_stub_1(void) {}
 
-static void nullsub_0804AE30(void) {}
+static void field_update_unused_stub_2(void) {}
 
 // Sub-states 40-41 (vehicle menu entry 1, switch_game_mode 0x43): effect sequence 0xE (form 0xC).
 // guess: a teleport, from the effect only.
@@ -483,11 +484,12 @@ void field_teleport_run_effect(void) {
     }
 }
 
-static void nullsub_0804AF40(void) {}
+// Empty and never referenced (dead code kept in the ROM).
+static void field_update_unused_stub_3(void) {}
 
-static void nullsub_0804AF44(void) {}
+static void field_update_unused_stub_4(void) {}
 
-static void nullsub_0804AF48(void) {}
+static void field_update_unused_stub_5(void) {}
 
 // Sub-states 48-52: the field debug screen (pages in field/field_debug); the map page warps.
 void field_debug_open(void) {

@@ -3,7 +3,7 @@
 
 void vblank_irq(void);
 void hblank_irq(void);
-void nullsub_08000840(void);
+void empty_callback(void);
 void clear_oam(void);
 void hw_reset_init(void);
 void irq_init(void);

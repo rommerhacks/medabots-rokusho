@@ -32,7 +32,7 @@ void field_take_item(u8 id, u8 n);
 u32 medapart_name(u32 a, u32 b);
 void field_give_medapart(u8 a, u8 b, u8 n);
 void field_take_medapart(u8 a, u8 b, u8 n);
-void nullsub_08047E4C(void);
+void message_reset_hook(void);
 u32 team_has_part_equipped(u8 id, u8 which);
 u32 medabot_name(u32 idx);
 void field_play_song(u32 id);

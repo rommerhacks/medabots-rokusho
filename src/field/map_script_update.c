@@ -444,11 +444,11 @@ void map_script_update_actor_glide(void) {
     }
 }
 
-void nullsub_0804E790(void) {}
+void map_script_update_jump_if_no_spare_medapart(void) {}
 
-void nullsub_0804E794(void) {}
+void map_script_update_switch_event_counter(void) {}
 
-void nullsub_0804E798(void) {}
+void map_script_update_jump(void) {}
 
 void map_script_update_yes_no(void) {
     struct Unk_030057E0 *s = &gUnk_030057E0;
@@ -516,9 +516,10 @@ void map_script_update_robattle(void) {
     }
 }
 
-static void nullsub_0804E8D4(void) {}
+// Empty and never referenced (dead code kept in the ROM).
+static void map_script_update_unused_stub_1(void) {}
 
-static void nullsub_0804E8D8(void) {}
+static void map_script_update_unused_stub_2(void) {}
 
 // Opcode 0x36: give arg1 of item arg0 (capped at 99) and show the text.
 void map_script_update_give_item(void) {
@@ -965,15 +966,15 @@ void map_script_update_shake_screen(void) {
     }
 }
 
-void nullsub_0804F57C(void) {}
+void map_script_update_jump_unless_part_value(void) {}
 
-void nullsub_0804F580(void) {}
+void map_script_update_jump_random(void) {}
 
-void nullsub_0804F584(void) {}
+void map_script_update_set_area_sprite_sheet(void) {}
 
-void nullsub_0804F588(void) {}
+void map_script_update_unused_54(void) {}
 
-void nullsub_0804F58C(void) {}
+void map_script_update_unused_55(void) {}
 
 // Opcode 0x56: reload the map (clears tile buffers, recopies the collision map, reloads NPC sprites).
 void map_script_update_reload_map(void) {
@@ -992,9 +993,9 @@ void map_script_update_reload_map(void) {
     map_script_command_done();
 }
 
-void nullsub_0804F628(void) {}
+void map_script_update_unused_57(void) {}
 
-void nullsub_0804F62C(void) {}
+void map_script_update_unused_58(void) {}
 
 void map_script_update_open_shop(void) {
     struct Unk_030057E0 *s = &gUnk_030057E0;
@@ -1011,19 +1012,19 @@ void map_script_update_open_shop(void) {
     }
 }
 
-void nullsub_0804F678(void) {}
+void map_script_update_set_follower_facing(void) {}
 
-void nullsub_0804F67C(void) {}
+void map_script_update_jump_if_team_under_3(void) {}
 
-void nullsub_0804F680(void) {}
+void map_script_update_jump_unless_full_part_set(void) {}
 
-void nullsub_0804F684(void) {}
+void map_script_update_set_medawatch_flag(void) {}
 
-void nullsub_0804F688(void) {}
+void map_script_update_set_disguise_block(void) {}
 
-void nullsub_0804F68C(void) {}
+void map_script_update_set_encounters_off(void) {}
 
-void nullsub_0804F690(void) {}
+void map_script_update_give_starter_medabot(void) {}
 
 void map_script_update_field_effect(void) {
     u32 kind;
@@ -1072,9 +1073,10 @@ void map_script_update_skip_2(void) {
     map_script_command_done();
 }
 
-static void nullsub_0804F810(void) {}
+// Empty and never referenced (dead code kept in the ROM).
+static void map_script_update_unused_stub_3(void) {}
 
-void nullsub_0804F814(void) {}
+void map_script_update_unused_6a(void) {}
 
 void map_script_update_actor_spawn_walk_fast(void) {
     struct Unk_030057E0 *s = &gUnk_030057E0;

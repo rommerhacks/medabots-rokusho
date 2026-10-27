@@ -33,7 +33,7 @@ u32 medapart_name(u32 a, u32 b) {
 
 // Resets the message_step_run state before a multi-message script step.
 void message_steps_reset(void) {
-    nullsub_08047E4C();
+    message_reset_hook();
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gUnk_030064A0.unk0 = 0;
@@ -158,7 +158,8 @@ void field_team_add_tinpet(u8 id) {
     team_add_tinpet(id);
 }
 
-void nullsub_08047E4C(void) {}
+// guess: a hook whose body was compiled out; called by message_steps_reset and when the town map closes.
+void message_reset_hook(void) {}
 
 // guess: if a team Medabot has part id equipped in slot which, returns that bot's legs part byte 1 - 100
 // (load_part_data) and stores the bot's unk1 in gUnk_03006D38.unk6; else -1.

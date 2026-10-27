@@ -300,7 +300,7 @@ void prebattle_rubberobo_return_to_field(void) {
         obj_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 2, 0xFFFF);
         gGameWork.unk84++;
     } else {
-        gVBlankCallback = nullsub_08000840;
+        gVBlankCallback = empty_callback;
         return_to_field();
     }
 }
@@ -608,7 +608,7 @@ void afterbattle_start_medal_transform(void) {
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG2CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG3CNT, 0);
     set_blend_effect_mode(5, 0x3F, 0x20);
-    gVBlankCallback = nullsub_08000840;
+    gVBlankCallback = empty_callback;
     zero = 0;
     DmaSet(3, &zero, 0x05000200, 0x85000080);
     zero = 0;
@@ -650,7 +650,7 @@ void afterbattle_resume_field(void) {
     gUnk_030057E0.unkC2D = 0;
     gUnk_030057E0.unkC2E = 0;
     gUnk_030057E0.unkC2F = 0;
-    gVBlankCallback = nullsub_08000840;
+    gVBlankCallback = empty_callback;
     field_resume(0);
 }
 
@@ -684,7 +684,7 @@ void afterbattle_part_detail_save_screen(void) {
     DmaSet(3, 0x06000280, 0x02021000, 0x84000380);
     DmaSet(3, gSpriteEntries, 0x02028000, 0x84000800);
     set_blend_effect_mode(5, 0x3F, 0x20);
-    gVBlankCallback = nullsub_08000840;
+    gVBlankCallback = empty_callback;
     gGameSubState++;
 }
 
@@ -857,7 +857,7 @@ void afterbattle_exit_to_field(void) {
     gUnk_030057E0.unkC2D = 0;
     gUnk_030057E0.unkC2E = 0;
     gUnk_030057E0.unkC2F = 0;
-    gVBlankCallback = nullsub_08000840;
+    gVBlankCallback = empty_callback;
     set_blend_effect_mode(3, 0x3F, 0x20);
     gGameMode = 2;
     gGameState = 8;

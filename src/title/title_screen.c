@@ -86,7 +86,7 @@ void title_screen_fade_out_exit(void) {
         REG_DISPCNT &= ~0x0400;
         REG_IE &= ~2;
         REG_DISPSTAT &= ~0x10;
-        gHBlankCallback = nullsub_08000840;
+        gHBlankCallback = empty_callback;
         play_song(0);
     }
 }

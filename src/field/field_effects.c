@@ -263,7 +263,7 @@ static u32 affine_debug_input(void) {
 }
 
 // Not called directly (hidden in the tail of advance_sprite_animation_frame).
-static void nullsub_080496A0(void) {}
+static void field_effects_unused_stub(void) {}
 
 // Not called directly (hidden in the tail of advance_sprite_animation_frame).
 static void obj_palette_load_slot(u8 slot, const void *src) {
@@ -394,7 +394,7 @@ u32 blend_effect_update(void) {
 
     if (gBlendEffect.status == 2) {
         done = 1;
-        gVBlankCallback = nullsub_08000840;
+        gVBlankCallback = empty_callback;
     } else if (gBlendEffect.status == 1) {
         switch (gBlendEffect.mode) {
         case 0x00:
@@ -529,11 +529,11 @@ u32 run_blend_fade_transition(u16 color) {
     gBlendEffect.fade_amount -= gBlendEffect.fade_step;
     if (gBlendEffect.fade_step > 0.0f) {
         if (gBlendEffect.fade_amount < gBlendEffect.fade_end) {
-            gVBlankCallback = nullsub_08000840;
+            gVBlankCallback = empty_callback;
             done = 1;
         }
     } else if (gBlendEffect.fade_amount > gBlendEffect.fade_end) {
-        gVBlankCallback = nullsub_08000840;
+        gVBlankCallback = empty_callback;
         done = 1;
     }
     return done;

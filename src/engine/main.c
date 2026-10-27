@@ -78,9 +78,9 @@ void irq_init(void) {
     CpuSet(gIntrTableTemplate, gIntrTable, 0x0400000E);
     CpuSet(irq_dispatch_arm, gIntrMain, 0x04000200);
     INTR_VECTOR = gIntrMain;
-    gVBlankOnceCallback = nullsub_08000840;
-    gVBlankCallback = nullsub_08000840;
-    gHBlankCallback = nullsub_08000840;
+    gVBlankOnceCallback = empty_callback;
+    gVBlankCallback = empty_callback;
+    gHBlankCallback = empty_callback;
     REG_IE = 0x2601;
     REG_DISPSTAT = 8;
     REG_IME = 1;
@@ -177,7 +177,7 @@ void vblank_body(void) {
     gGameWork.oamUploadPending = 0;
     gVBlankOnceCallback();
     gVBlankCallback();
-    gVBlankOnceCallback = nullsub_08000840;
+    gVBlankOnceCallback = empty_callback;
     INTR_CHECK = 1;
     REG_IF = 1;
     sound_mix_tick();
@@ -189,7 +189,8 @@ void hblank_irq(void) {
     REG_IF = 2;
 }
 
-void nullsub_08000840(void) {}
+// The default for every IRQ table slot and the VBlank callbacks: does nothing.
+void empty_callback(void) {}
 
 void read_keys(void) {
     u16 prev;
@@ -257,6 +258,7 @@ void dma2_irq_sound(void) {
     sound_mix_refill_fifo_b();
 }
 
-static void nullsub_080009B4(void) {}
+// Empty and never referenced (dead code kept in the ROM).
+static void main_unused_stub_1(void) {}
 
-static void nullsub_080009B8(void) {}
+static void main_unused_stub_2(void) {}

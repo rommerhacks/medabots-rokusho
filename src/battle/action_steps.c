@@ -968,7 +968,7 @@ void closeup_enter_save_vram(void) {
         gGameWork.setupStep++;
         break;
     case 2:
-        gVBlankCallback = nullsub_08000840;
+        gVBlankCallback = empty_callback;
         clear_battle_sprite_slot(0, 0x80);
         gGameWork.setupStep = 0;
         gBattleWork.step++;
@@ -1808,7 +1808,7 @@ void closeup_exit_wipe(void) {
         CpuFastSet(&v, gSpriteWork->oamBuf, 0x01000100);
         gSpriteWork->oamCount = 0;
         gSpriteWork->affineIdx = 0;
-        gVBlankCallback = nullsub_08000840;
+        gVBlankCallback = empty_callback;
         gBattleWork.step++;
     } else {
         gGameWork.unk84++;

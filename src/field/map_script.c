@@ -546,7 +546,7 @@ void map_script_cmd_all_actors_blink(void) {
     gUnk_030057E0.cmd_busy = 1;
 }
 
-void nullsub_0804C8DC(void) {}
+void map_script_cmd_player_slide(void) {}
 
 void map_script_cmd_shake_screen(void) {
     read_map_script_bytes(2);
@@ -676,10 +676,10 @@ void map_script_cmd_set_area_sprite_sheet(void) {
 }
 
 // Not called directly (hidden in the tail of map_script_cmd_set_area_sprite_sheet).
-void nullsub_0804CD14(void) {}
+void map_script_cmd_unused_54(void) {}
 
 // Not called directly (hidden in the tail of map_script_cmd_set_area_sprite_sheet).
-void nullsub_0804CD18(void) {}
+void map_script_cmd_unused_55(void) {}
 
 // Not called directly (hidden in the tail of map_script_cmd_set_area_sprite_sheet).
 void map_script_cmd_reload_map(void) {
@@ -687,10 +687,10 @@ void map_script_cmd_reload_map(void) {
 }
 
 // Not called directly (hidden in the tail of map_script_cmd_set_area_sprite_sheet).
-void nullsub_0804CD30(void) {}
+void map_script_cmd_unused_57(void) {}
 
 // Not called directly (hidden in the tail of map_script_cmd_set_area_sprite_sheet).
-void nullsub_0804CD34(void) {}
+void map_script_cmd_unused_58(void) {}
 
 void map_script_cmd_open_shop(void) {
     read_map_script_bytes(1);
@@ -786,7 +786,7 @@ void map_script_cmd_clear_sprites(void) {
     init_battle_sprites();
 }
 
-void nullsub_0804D044(void) {}
+void map_script_cmd_unused_65(void) {}
 
 void map_script_cmd_actor_jump(void) {
     read_map_script_bytes(2);
@@ -831,7 +831,7 @@ void map_script_cmd_toggle_player_visible(void) {
     }
 }
 
-void nullsub_0804D1B8(void) {}
+void map_script_cmd_unused_6a(void) {}
 
 void map_script_cmd_set_story_phase(void) {
     gUnk_030057E0.story_phase = read_map_script_byte();
@@ -884,10 +884,10 @@ void map_script_cmd_text_scroll(void) {
 }
 
 // Not called directly (hidden in the tail of map_script_cmd_actor_glide_fast).
-void nullsub_0804D330(void) {}
+void map_script_cmd_unused_74(void) {}
 
 // Not called directly (hidden in the tail of map_script_cmd_actor_glide_fast).
-void nullsub_0804D334(void) {}
+void map_script_cmd_unused_75(void) {}
 
 // Not called directly (hidden in the tail of map_script_cmd_actor_glide_fast).
 // guess: opcode 0x76, the link cable screen (switch_game_mode 4), then the link menu if it asked for it.
@@ -896,7 +896,7 @@ void map_script_cmd_link_start(void) {
 }
 
 // Not called directly (hidden in the tail of map_script_cmd_actor_glide_fast).
-void nullsub_0804D34C(void) {}
+void map_script_cmd_unused_77(void) {}
 
 void map_script_cmd_race(void) {
     gUnk_030057E0.branch_base = gUnk_030057E0.unkC8A;
@@ -925,7 +925,7 @@ void map_script_cmd_jump_unless_has_medapart(void) {
         gUnk_030057E0.unkC8A = gUnk_030057E0.branch_base + gUnk_030057E0.cmd_args[2];
 }
 
-void nullsub_0804D440(void) {}
+void map_script_cmd_unused_7c(void) {}
 
 // guess: opcode 0x7D, which Town Map variant to draw (unkC32, read by town_map.c).
 void map_script_cmd_set_town_map_phase(void) {
