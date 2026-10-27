@@ -723,36 +723,36 @@ gUnk_083AF4C0:
 gUnk_083AF4E0:
 	.incbin "baserom.gba", 0x3AF4E0, 0x40
 
-	.global gUnk_083AF520
-gUnk_083AF520:
+	.global gParticleTrailOffsets
+gParticleTrailOffsets:
 	.incbin "baserom.gba", 0x3AF520, 0x10
 
-	.global gUnk_083AF530
-gUnk_083AF530:
+	.global gParticleOrbitHandlers
+gParticleOrbitHandlers:
 	.incbin "baserom.gba", 0x3AF530, 0x100
 
-	.global gUnk_083AF630
-gUnk_083AF630:
+	.global gParticleOrbitRadiusSteps
+gParticleOrbitRadiusSteps:
 	.incbin "baserom.gba", 0x3AF630, 0x40
 
-	.global gUnk_083AF670
-gUnk_083AF670:
+	.global gParticleSwayOffsets
+gParticleSwayOffsets:
 	.incbin "baserom.gba", 0x3AF670, 0x20
 
-	.global gUnk_083AF690
-gUnk_083AF690:
+	.global gParticleSparkHandlers
+gParticleSparkHandlers:
 	.incbin "baserom.gba", 0x3AF690, 0x40
 
-	.global gUnk_083AF6D0
-gUnk_083AF6D0:
+	.global gParticleSparkOffsets
+gParticleSparkOffsets:
 	.incbin "baserom.gba", 0x3AF6D0, 0x10
 
-	.global gUnk_083AF6E0
-gUnk_083AF6E0:
+	.global gParticleShotHandlers
+gParticleShotHandlers:
 	.incbin "baserom.gba", 0x3AF6E0, 0x40
 
-	.global gUnk_083AF720
-gUnk_083AF720:
+	.global gParticleSweepHandlers
+gParticleSweepHandlers:
 	.incbin "baserom.gba", 0x3AF720, 0x20
 
 	.global gBattleSeqCommands

@@ -904,27 +904,26 @@ extern const Func gBattleSeqSpriteHandlers[]; // sprite handlers by unk29, slots
 extern const u8 *const gBattleSeqEwramGfx[];  // pairs: compressed OBJ tiles (lz_decompress to 0x02000000), OBJ palette
                                               // 14 (battle_seq_cmd_load_effect_gfx_ewram)
 extern const struct Unk_083AF94C gBattleSeqEffectSetPos[]; // 4 sprite positions (battle_seq_cmd_spawn_effect_set)
-extern const Func gUnk_083AF720[];  // sprite handlers by unk29 for slots 0x21-0x3B (sub_0803884C)
-extern const u16 gUnk_083AF520[];   // 4 (x, y) particle offsets, x and y picked by separate rng & 3 rolls
-                                    // (spawn_battle_particle_effect)
-extern const u16 gUnk_083AF6D0[];   // 4 (x, y) offsets from the source sprite, picked by rng & 3 (sub_08038428)
-extern const u8 gUnk_083CED08[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CED88[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEE08[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEE88[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEEC8[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEF08[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEF48[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEF88[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEFC8[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF008[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF048[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF088[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF0C8[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF108[];    // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF148[];    // random part ids (pick_random_change_part)
-extern const void *gUnk_083B6010[]; // sprite animation commands (staggered_sprites_update)
-extern const u16 gUnk_083AF490[];   // x, y offset pairs per sprite of a 4-sprite group (hit_sparks_spawn)
+extern const Func gParticleSweepHandlers[]; // sweep particle states by sprite unk29 (particle_run_sweep_handlers)
+extern const u16 gParticleTrailOffsets[];   // 4 (x, y) trail offsets, x and y picked by separate rng & 3 rolls
+extern const u16 gParticleSparkOffsets[];   // 4 (x, y) spark offsets from the emitter, picked by rng & 3
+extern const u8 gUnk_083CED08[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CED88[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CEE08[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CEE88[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CEEC8[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CEF08[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CEF48[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CEF88[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CEFC8[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CF008[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CF048[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CF088[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CF0C8[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CF108[];            // random part ids (pick_random_change_part)
+extern const u8 gUnk_083CF148[];            // random part ids (pick_random_change_part)
+extern const void *gUnk_083B6010[];         // sprite animation commands (staggered_sprites_update)
+extern const u16 gUnk_083AF490[];           // x, y offset pairs per sprite of a 4-sprite group (hit_sparks_spawn)
 extern const u16
     gUnk_083AF440[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
 extern const u16
@@ -933,19 +932,20 @@ extern const u16
     gUnk_083AF3C0[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
 extern const u16
     gUnk_083AF380[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
-extern const u16 gUnk_083AF4E0[];  // 32 y offsets added to a sprite's unk4 by sprite_bob_step
-extern const u8 gUnk_083AF4A0[];   // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
-extern const u8 gUnk_083AF4B0[];   // 16 x offsets added to / subtracted from a sprite's unk2 by sprite_slide_x_step
-extern const u8 gUnk_083AF210[];   // 256 speed steps (quarter pixels) by a sprite's unk30 (sprite_move_toward_target,
-                                   // update_sprite_deceleration)
-extern const u16 gUnk_083AF670[];  // 16 x offsets by a sprite's unk2D & 15 (sub_080380F0)
-extern const u8 gUnk_083AF630[];   // radius steps (byte pairs) by a sprite's unk2D & 31 (sub_08037C50)
-extern const u8 gUnk_083AF330[];   // 8 entries per bot_intact_parts_class result, one picked at random
-                                   // (get_random_battle_weight_entry)
-extern const u8 gUnk_084889B4[];   // compressed tilemap (armor_panel_draw_frame)
-extern u8 gUnk_0300056F;           // sprite slot whose handler is running (sub_080383E8)
-extern const Func gUnk_083AF690[]; // battle effect sprite handlers by sprite unk29 (sub_080383E8, sprites 0x2B-0x3B)
-extern const Func gUnk_083AF530[]; // sprite handlers by sprite unk29 (sub_08037B9C, sprites 0x21-0x3B)
+extern const u16 gUnk_083AF4E0[]; // 32 y offsets added to a sprite's unk4 by sprite_bob_step
+extern const u8 gUnk_083AF4A0[];  // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
+extern const u8 gUnk_083AF4B0[];  // 16 x offsets added to / subtracted from a sprite's unk2 by sprite_slide_x_step
+extern const u8 gUnk_083AF210[];  // 256 speed steps (quarter pixels) by a sprite's unk30 (sprite_move_toward_target,
+                                  // update_sprite_deceleration)
+extern const u16 gParticleSwayOffsets[];     // 16 x steps by a sprite's unk2D & 15 (particle_sway_down)
+extern const u8 gParticleOrbitRadiusSteps[]; // orbit radius steps (+1 / -1, byte pairs) by a sprite's unk2D & 31
+extern const u8 gUnk_083AF330[];             // 8 entries per bot_intact_parts_class result, one picked at random
+                                             // (get_random_battle_weight_entry)
+extern const u8 gUnk_084889B4[];             // compressed tilemap (armor_panel_draw_frame)
+extern u8 gEffectSpriteSlot;                 // sprite slot whose handler is running (= gUnk_03000440.unk12F)
+extern const Func
+    gParticleSparkHandlers[]; // spark states by sprite unk29 (particle_run_spark_handlers, slots 0x2B-0x3B)
+extern const Func gParticleOrbitHandlers[]; // orbit / trail states by sprite unk29 (particle_run_orbit_handlers)
 extern const s16
     *const gBattleSeqScripts[];            // battle sequence scripts, by gUnk_03001800.unkF9 (battle_seq_load_operands)
 extern const u8 gBattleSeqOperandCounts[]; // operand count per battle sequence command (battle_seq_advance)
@@ -956,7 +956,7 @@ extern const u8 *const gBattleSeqLegSoundSets[]; // by sequence operand: 4 anima
 extern const u8
     *const gBattleSeqEffectGfx[];       // pairs: compressed OBJ tiles, OBJ palette 14 (battle_seq_cmd_load_effect_gfx)
 extern const Func gBattleSeqCommands[]; // battle sequence commands, by battle_seq_peek() (battle_sequence_run_command)
-extern const Func gUnk_083AF6E0[];      // sprite handlers by sprite unk29 (sub_080385F8, sprites 0x21-0x3B)
+extern const Func gParticleShotHandlers[]; // shot states by sprite unk29 (particle_run_shot_handlers)
 extern u16 gUnk_083AF480[];      // x, y offset pairs by part (effect_sprite_spawn_at_part); not const: hit_sparks_spawn
                                  // reloads it per iteration
 extern const u8 gUnk_083AF200[]; // 16 values, two random picks summed into gUnk_03001800.unk188 / unk189

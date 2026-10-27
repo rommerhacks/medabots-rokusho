@@ -1061,7 +1061,7 @@ void battle_sequence_update_sprites(void) {
     u32 i;
 
     for (i = 0; i <= 0x26; i++) {
-        gUnk_0300056F = i + 1;
+        gEffectSpriteSlot = i + 1;
         gBattleSeqSpriteHandlers[gSpriteEntries[i + 1].unk29]();
     }
 }
@@ -1093,11 +1093,11 @@ void battle_seq_spr_pose_wait(void) {
 
 // Sprite 1 / 2 state 2: after the delay, starts the queued pose (redrawing the Medabot if needed).
 void battle_seq_spr_pose_set(void) {
-    if (gSpriteEntries[gUnk_0300056F].unk30 != 0) {
-        gSpriteEntries[gUnk_0300056F].unk30--;
+    if (gSpriteEntries[gEffectSpriteSlot].unk30 != 0) {
+        gSpriteEntries[gEffectSpriteSlot].unk30--;
         return;
     }
-    if (gUnk_0300056F == 1) {
+    if (gEffectSpriteSlot == 1) {
         if (gUnk_03001800.unkFF & 1) {
             get_active_bot_part_index_and_load_values(0);
             draw_medabot_sprite(0, gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2],
@@ -1108,7 +1108,7 @@ void battle_seq_spr_pose_set(void) {
                                 gUnk_03001800.unk39[3] + 2, 4, 0, 1, 0, gUnk_03001800.unk114[0]);
         }
         gUnk_03001800.unkFF &= ~1;
-        gUnk_03001800.unk112 = gSpriteEntries[gUnk_0300056F].unk2C;
+        gUnk_03001800.unk112 = gSpriteEntries[gEffectSpriteSlot].unk2C;
     } else {
         if (gUnk_03001800.unkFF & 2) {
             get_active_bot_part_index_and_load_values(1);
@@ -1120,7 +1120,7 @@ void battle_seq_spr_pose_set(void) {
                                 gUnk_03001800.unk39[3] + 2, 8, 1, 1, 1, gUnk_03001800.unk114[1]);
         }
         gUnk_03001800.unkFF &= ~2;
-        gUnk_03001800.unk113 = gSpriteEntries[gUnk_0300056F].unk2C;
+        gUnk_03001800.unk113 = gSpriteEntries[gEffectSpriteSlot].unk2C;
     }
     gSpriteEntries[gUnk_03000440.unk12F].unk29 = 1;
 }
@@ -1128,7 +1128,7 @@ void battle_seq_spr_pose_set(void) {
 // Sprite 1 / 2 state 3: restarts the queued pose each time it finishes.
 void battle_seq_spr_pose_repeat(void) {
     struct SpriteEntry *base = gSpriteEntries;
-    register u32 i asm("r4") = gUnk_0300056F;
+    register u32 i asm("r4") = gEffectSpriteSlot;
     u8 slot;
     struct Unk_03000440 *p;
     register struct SpriteEntry *q asm("r1") = &base[i];
@@ -1152,7 +1152,7 @@ void battle_seq_spr_pose_repeat(void) {
                                     gUnk_03001800.unk39[3] + 2, 4, 0, 1, 0, gUnk_03001800.unk114[0]);
             }
             gUnk_03001800.unkFF &= ~1;
-            gUnk_03001800.unk112 = gSpriteEntries[gUnk_0300056F].unk2C;
+            gUnk_03001800.unk112 = gSpriteEntries[gEffectSpriteSlot].unk2C;
         }
     } else if (gUnk_03001800.unk160 != 0) {
         if (gUnk_03001800.unkFF & 2) {
@@ -1165,7 +1165,7 @@ void battle_seq_spr_pose_repeat(void) {
                                 gUnk_03001800.unk39[3] + 2, 8, 1, 1, 1, gUnk_03001800.unk114[1]);
         }
         gUnk_03001800.unkFF &= ~2;
-        gUnk_03001800.unk113 = gSpriteEntries[gUnk_0300056F].unk2C;
+        gUnk_03001800.unk113 = gSpriteEntries[gEffectSpriteSlot].unk2C;
     }
     if (gSpriteEntries[p->unk12F].unk2D == 0)
         gSpriteEntries[p->unk12F].unk29 = 1;

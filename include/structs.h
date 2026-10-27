@@ -338,7 +338,7 @@ struct Unk_03000440 {
     u8 unk10E[0x10]; // 16-byte record from gUnk_083B6158 (per Medal graphic index)
     u8 filler11E[0x10];
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
-    u8 unk12F; // sprite slot (sub_08028E84)
+    u8 unk12F; // sprite slot whose handler is running (also gEffectSpriteSlot; sub_08028E84)
     u8 unk130; // Robattle: set to 1 around the action script commands script_op_closeup_enter .. script_op_closeup_exit
     u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2
     u8 unk132;

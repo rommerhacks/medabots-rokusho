@@ -134,17 +134,17 @@
   `CpuCopy16(src, dst, size)` gives the `lsls #10; lsrs #11` count of a 16-bit CpuSet.
 * `ldr rB, =gArr` **before** `lsls rI, slot, #6` (and `rB` reused later for other indexes, often
   copied to `ip`): take a base pointer local, `base = gArr; s = &base[slot];` (effect_sprite_fly_to_part,
-  sub_08038428, spawn_battle_particle_effect).
+  particle_spark_emitter, particle_spawn_trail_b).
 * A pair `tbl[n * 2]`, `tbl[n * 2 + 1]` that the original loads as `n << 1` first, then `n << 2`
   for the first element and `(n * 2 + 1) * 2` unfolded for the second: write the first index as
   `tbl[n << 1]` and keep `tbl[n * 2 + 1]`. Several tables picked by a switch whose loads share
   one tail: write the loads in every case with the table named directly (effect_sprite_fly_to_part).
 * A variable set only in some switch cases (`case 0: case 1: case 2: mask = 7;`) gets folded to a
   constant; separate identical case bodies keep the original's branch tree
-  (spawn_battle_particle_effect).
+  (particle_spawn_trail_b).
 * `adds #0xDF` (a byte constant for `- 0x21`) or an unfolded `subs` in an index sum: try the
   grouping `a + (b + 0xDF)` / `b + (a - 0x21)`; the first operand gcc sees decides the order
-  (sub_08038650, sub_08038700).
+  (particle_shot_fly, particle_shot_shake_target).
 * A loop-invariant table address hoisted after the loop guard (`cmp; bhs; ldr rT, =tbl`): assign a
   pointer local inside the loop body, `tbl = gTable;` (staggered_sprites_update).
 * `subs r1, #8; subs r0, r0, r1` where C's `a * 9 - (b - 8)` always folds to `(a * 9 + 8) - b`:
@@ -385,7 +385,7 @@
   field through `struct Unk_03001800 *b = &gUnk_03001800;` (damage_add_small_random, calc_battle_action_speed);
   plain `gUnk_03001800.unkEC` gives `ldr r4, =0x030018EC`.
 * `movs r2, #0` before `ldr r1, =base` in a loop prologue: put the pointer init in the `for`,
-  `for (i = 0, b = &gUnk_03001800; ...)` (sub_080385D0).
+  `for (i = 0, b = &gUnk_03001800; ...)` (battle_queue_remove_bot).
 * `x |= 0x80` with the constant's register as the result (`movs r0, #0x80; orrs r0, r1`): write it on the
   struct field (`b->unk112 |= 0x80`), not through a `u8 *` alias (closeup_left_pose_step).
 * An `else if` chain where the later cases jump back into the first case's `ands/cmp/bne` tail:
@@ -430,7 +430,7 @@
 * `x - s->unk30` where the original loads `unk30` first: `x + (s->unk30 * -1)` (battle_seq_spr_trail); for `+`,
   swap the operands (`x + s->unk30` loads `unk30` first).
 * A slot byte loaded into a scratch register and copied to a callee-saved one only at `cmp #1`: don't
-  keep it in a local, test `if (gUnk_0300056F == 1)` again and let cse reuse the load (battle_seq_spr_pose_set).
+  keep it in a local, test `if (gEffectSpriteSlot == 1)` again and let cse reuse the load (battle_seq_spr_pose_set).
 * `if (A) { X; Y++; Y++; } else Y++;` where both `else if` arms of the caller do the same: write the
   body in full in each arm; the original's tail-merged copies only come out that way (battle_seq_spr_pose_wait).
 * A sprite slot found by a search loop and then used for many stores: index `gSpriteEntries[slot].f`
