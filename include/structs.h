@@ -562,8 +562,8 @@ struct BattlePart {
     u8 unk11; // current armor, starts as data[4] = max armor (Status screen, runtime-checked); 0 = broken
               // (legs: data[4..9] copied to unk11..unk16)
     u8 unk12; // legs: data[5] (Propulsion; sub_0801928C)
-    u8 unk13; // legs: data[6..9] (unk12..unk16 restored by sub_080351E8, halved by bot_halve_broken_leg_stats when
-              // broken)
+    u8 unk13; // legs: data[6..9] (unk12..unk16 restored by bot_restore_leg_stats, halved by bot_halve_broken_leg_stats
+              // when broken)
     u8 unk14;
     u8 unk15;
     u8 unk16;

@@ -4,7 +4,7 @@
 // Combat helpers: armor damage, target cursor, sprite movement, evasion, part/ability checks.
 
 void battle_target_nearest_enemy(u32 rec);
-void sub_080350E0(u32 rec);
+void target_cursor_place_markers(u32 rec);
 u32 bot_intact_parts_class(u32 rec);
 u32 calc_bot_matching_part_power(u32 rec);
 void accumulate_battle_speed_value(u32 rec);
@@ -22,15 +22,15 @@ u32 check_can_target_bot(u32 rec, u32 part, u32 target);
 u32 check_battle_can_support_target(u32 rec, u32 part, u32 target);
 u32 check_battle_can_special_target(u32 rec, u32 part, u32 target);
 void battle_set_damage_vs_armor(u32 rec, u32 part, s32 amount);
-u32 sub_08034F44(u32 rec);
+u32 bot_has_break_form_part(u32 rec);
 void add_bot_to_defeated_list(u32 rec);
 u32 sprite_hop_step(u32 slot);
 u32 move_sprite_toward_target(u32 slot);
-void sub_08035694(u32 slot);
+void sprite_enable_affine_unit_scale(u32 slot);
 u32 update_sprite_deceleration(u32 slot, s16 a, s16 b);
 void check_sprite_overlap_and_adjust(u32 slot, u32 b);
-void sub_080356B4(u32 slot);
-void sub_08035C3C(void);
+void sprite_disable_affine(u32 slot);
+void action_bg_set_side_scroll(void);
 void battle_set_action_target(u32 rec,
                               u32 target); // guess: record rec targets record target - 1 (unkE0, gUnk_03001800.unk88)
 void battle_set_action_target_part(u32 rec,
@@ -44,7 +44,7 @@ void set_target_sprite_position(u32 rec, u32 frame, u32 flag);
 void update_target_cursor_position(u32 rec);
 void battle_pick_random_target_part(u32 rec);
 void battle_load_action_target(u32 rec);
-void sub_080351E8(u32 rec);
+void bot_restore_leg_stats(u32 rec);
 void add_u8_capped(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, max)
 void subtract_u8_floored(u8 *val, s32 amount);    // *val = max(*val - amount, 0)
 void damage_add_small_random(void);

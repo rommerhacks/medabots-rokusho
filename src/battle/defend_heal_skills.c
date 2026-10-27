@@ -114,7 +114,7 @@ void repair_spread(void) {
     u32 part;
     struct Unk_03001800 *s = &gUnk_03001800;
 
-    sub_080351E8(s->unk88);
+    bot_restore_leg_stats(s->unk88);
     if (gUnk_03000590[s->unk87].parts[s->unkA7].data[7] && s->unkCA && (part = find_random_broken_part(s->unk88))) {
         part--;
         s->unkD0 = part;

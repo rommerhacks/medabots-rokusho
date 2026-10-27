@@ -6,7 +6,8 @@
 
 static u32 check_sprite_in_range(u32 slot);
 
-u32 sub_08034F44(u32 rec) {
+// Whether the head or an arm has skill 0x15 Break Form (ROM skill list); trap_hit_check lets it break traps.
+u32 bot_has_break_form_part(u32 rec) {
     u32 i;
     for (i = 0; i <= 2; i++)
         if (gUnk_03000590[rec].parts[i].data[1] == 0x15)
@@ -58,10 +59,11 @@ void set_target_sprite_position(u32 rec, u32 dir, u32 axis) {
             break;
         }
     }
-    sub_080350E0(rec);
+    target_cursor_place_markers(rec);
 }
 
-void sub_080350E0(u32 rec) {
+// Places the three marker sprites above, left of and right of the target cursor sprite (rec * 4 + 0x5D).
+void target_cursor_place_markers(u32 rec) {
     gSpriteEntries[rec * 4 + 0x5A].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2;
     gSpriteEntries[rec * 4 + 0x5A].unk4 = gSpriteEntries[rec * 4 + 0x5D].unk4 - 8;
     gSpriteEntries[rec * 4 + 0x5B].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 - 8;
@@ -73,7 +75,7 @@ void sub_080350E0(u32 rec) {
 void update_target_cursor_position(u32 rec) {
     gSpriteEntries[rec * 4 + 0x5D].unk2 = gUnk_03001800.unk13C[rec].x;
     gSpriteEntries[rec * 4 + 0x5D].unk4 = gUnk_03001800.unk13C[rec].y + 4;
-    sub_080350E0(rec);
+    target_cursor_place_markers(rec);
 }
 
 void reduce_bot_part_stat(u32 rec, u32 part, s32 amount) {
@@ -93,7 +95,8 @@ void bot_halve_broken_leg_stats(u32 rec) {
     }
 }
 
-void sub_080351E8(u32 rec) {
+// Undoes bot_halve_broken_leg_stats: reloads the leg stats from the part data while the legs have armor.
+void bot_restore_leg_stats(u32 rec) {
     if (gUnk_03000590[rec].parts[3].unk11 != 0) {
         gUnk_03000590[rec].parts[3].unk12 = gUnk_03000590[rec].parts[3].data[5];
         gUnk_03000590[rec].parts[3].unk13 = gUnk_03000590[rec].parts[3].data[6];
@@ -289,13 +292,14 @@ static u32 check_sprite_in_range(u32 slot) {
     return 0;
 }
 
-void sub_08035694(u32 slot) {
+// Turns on the affine flag (0x200, see build_oam) at scale 0x40 (1.0) on both axes.
+void sprite_enable_affine_unit_scale(u32 slot) {
     gSpriteEntries[slot].unk0 |= 0x200;
     gSpriteEntries[slot].unk8 = 0x40;
     gSpriteEntries[slot].unk9 = 0x40;
 }
 
-void sub_080356B4(u32 slot) {
+void sprite_disable_affine(u32 slot) {
     gSpriteEntries[slot].unk0 &= ~0x200;
 }
 
@@ -400,7 +404,8 @@ void battle_set_action_target_part(u32 rec, u32 part) {
     gUnk_03001800.unk8B = part - 1;
 }
 
-static u32 sub_08035960(u32 rec, u32 skill) {
+// Whether any part with armor left has the given skill id (0x18 CancelOptic for check_bot_can_shoot).
+static u32 bot_has_intact_part_with_skill(u32 rec, u32 skill) {
     u32 i;
     for (i = 0; i <= 3; i++)
         if (gUnk_03000590[rec].parts[i].unk11 != 0 && gUnk_03000590[rec].parts[i].data[1] == skill)
@@ -410,21 +415,21 @@ static u32 sub_08035960(u32 rec, u32 skill) {
 
 u32 check_bot_can_shoot(u32 rec, u32 part, u32 target) {
     if (((u8)(gUnk_03000590[rec].parts[part].data[1] - 4) <= 1 || (gUnk_03000590[rec].unkD6 & 1)) &&
-        sub_08035960(target, 0x18))
+        bot_has_intact_part_with_skill(target, 0x18))
         return 1;
     return 0;
 }
 
 u32 check_bot_can_support(u32 rec, u32 part, u32 target) {
     if (((u8)(gUnk_03000590[rec].parts[part].data[1] - 6) <= 1 || (gUnk_03000590[rec].unkD6 & 2)) &&
-        sub_08035960(target, 0x19))
+        bot_has_intact_part_with_skill(target, 0x19))
         return 1;
     return 0;
 }
 
 u32 check_bot_can_use_shoot_part(u32 rec, u32 part, u32 target) {
     if (((u8)(gUnk_03000590[rec].parts[part].data[1] - 8) <= 1 || (gUnk_03000590[rec].unkD6 & 4)) &&
-        sub_08035960(target, 0x1A))
+        bot_has_intact_part_with_skill(target, 0x1A))
         return 1;
     return 0;
 }
@@ -477,7 +482,9 @@ void damage_divide_by_part_divisor(u32 rec, u32 part) {
         b->unkEC = 1;
 }
 
-void sub_08035C3C(void) {
+// Scrolls BG2/BG3 to x 0x110 when the actor is an opponent (unkF8 bit 0), else to 0: the action close-up
+// background faces the acting side.
+void action_bg_set_side_scroll(void) {
     u32 t = gUnk_03001800.unkF8 & 1;
     if (t) {
         gBg2Scroll.x = 0x110;

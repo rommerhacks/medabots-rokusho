@@ -186,7 +186,7 @@ void trap_hit_check(void) {
 
     if (gUnk_03000590[(b = &gUnk_03001800)->unk87].unkC0 & 2)
         goto fail;
-    r = sub_08034F44(b->unk87);
+    r = bot_has_break_form_part(b->unk87);
     if (r != 0)
         goto fail;
     type = b->unk28[b->unk89].skill;
@@ -791,7 +791,7 @@ void guard_blink(void) {
         gSpriteEntries[gUnk_03001800.unkDE * 4 + 0x59].unk24 = 4;
         gSpriteEntries[gUnk_03001800.unkDE * 4 + 0x59].unk25 = 0;
         gSpriteEntries[gUnk_03001800.unkDE * 4 + 0x59].unk30 = 0;
-        sub_08035694(gUnk_03001800.unkDE + 0x71);
+        sprite_enable_affine_unit_scale(gUnk_03001800.unkDE + 0x71);
         gUnk_03001800.unkAA++;
     }
 }
@@ -850,7 +850,7 @@ void guard_move_in(void) {
                                   gUnk_03001800.unkDE * 4 + 0x56);
         gSpriteEntries[gUnk_03001800.unkDE * 4 + 0x57].unk18 = 0;
         gSpriteEntries[gUnk_03001800.unkDE * 4 + 0x58].unk18 = 0;
-        sub_080356B4(gUnk_03001800.unkDE + 0x71);
+        sprite_disable_affine(gUnk_03001800.unkDE + 0x71);
         gUnk_03000440.unk84 = 0;
         gUnk_03001800.unkAA++;
     } else {
@@ -1002,7 +1002,7 @@ void closeup_enter_setup_bgs(void) {
         else
             decompress_indexed_graphics_to_ewram(gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50);
         decompress_fixed_graphics_to_ewram();
-        sub_08035C3C();
+        action_bg_set_side_scroll();
         gVBlankCallback = battle_bg_scroll_vblank;
         gUnk_03000440.unk84 = 0;
         gUnk_03000440.unk139 = 0;

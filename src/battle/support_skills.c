@@ -537,7 +537,7 @@ void pushover_target_hop_init(void) {
     gSpriteEntries[gUnk_03001800.unk88 * 4 + 0x5B].unk23 = 0;
     gSpriteEntries[gUnk_03001800.unk88 * 4 + 0x5C].unk23 = 0;
     gSpriteEntries[gUnk_03001800.unk88 * 4 + 0x5D].unk23 = 0;
-    sub_08035694(gUnk_03001800.unk88 + 0x72);
+    sprite_enable_affine_unit_scale(gUnk_03001800.unk88 + 0x72);
     play_sound_effect(0x34);
     gUnk_03001800.unkAA++;
 }
@@ -572,7 +572,7 @@ void pushover_target_hop(void) {
     }
     check_sprite_overlap_and_adjust(gUnk_03001800.unk88 * 4 + 0x5D, gUnk_03001800.unk88 + 0x72);
     if (r) {
-        sub_080356B4(gUnk_03001800.unk88 + 0x72);
+        sprite_disable_affine(gUnk_03001800.unk88 + 0x72);
         play_sound_effect(0x41);
         gUnk_03001800.unkAA++;
     }
