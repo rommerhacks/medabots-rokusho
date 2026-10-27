@@ -740,7 +740,7 @@ struct Unk_03001800 {
     u8 unk160;    // right Medabot pose finished (closeup_right_pose_step)
     u8 unk161;
     u8 unk162;
-    u8 unk163;  // set by a gUnk_083AF000 step to run the next step in the same frame (battle_run_action_script)
+    u8 unk163;  // set by a gActionScriptCommands step to run the next step in the same frame (battle_run_action_script)
     u8 unk164;  // nonzero: Medal skill levels can grow (increment_medal_skill_level)
     u8 unk165;  // set to 1 when a Medal skill levels up (action_phase_time_check then goes to sub-state 0x60)
     u8 unk166;  // skill type that levelled up
@@ -752,7 +752,7 @@ struct Unk_03001800 {
     u16 unk16C; // battle score (calculate_battle_score_summary), then experience points
     // After-battle result per team member (u8 array: a struct would be 4-byte aligned):
     // [0] Medal id + 1, 0 = none (name from gMedalNames), [1] nonzero: Medal level-up screen,
-    // [2]-[5] copied to gUnk_03000440.unk134-137, [6] nonzero: [7] = Medaforce id (gUnk_083B7338)
+    // [2]-[5] copied to gUnk_03000440.unk134-137, [6] nonzero: [7] = Medaforce id (gMedaforceNames)
     u8 unk16E[3][8];
     u8 unk186; // after-battle screen: team member being shown (0-2, 3 = done)
     u8 unk187; // gUnk_03000590 record index (battle_loss_take_part)

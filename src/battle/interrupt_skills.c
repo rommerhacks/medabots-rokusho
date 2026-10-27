@@ -1,7 +1,7 @@
 // Effect sequences of the Interrupt abilities (and two Defend ones): action script opcodes 0x36-0x3F.
 // Each runner (*_run: clears unkB5 and calls entry [unkAA] of its step table) is one action script command
-// (gUnk_083AF000, opcode order = ROM order); its step handlers follow it and the last step sets unkA6.
-// Abilities are part data[1], and the script of ability n is gUnk_083C6B28[n]:
+// (gActionScriptCommands, opcode order = ROM order); its step handlers follow it and the last step sets unkA6.
+// Abilities are part data[1], and the script of ability n is gActionScripts[n]:
 //   0x36 Impair (43), 0x37 Confusion (44), 0x38 Use Drain (45), 0x39 No Escape (46) / No Defense (47),
 //   0x3A Forcedrain (50), 0x3B / 0x3C TeamAttack (52: a Shoot script with the Team Form check and the turret
 //   animation inserted), 0x3D clears the queued action (script_op_clear_queued_action, in action_script.c),

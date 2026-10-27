@@ -1,7 +1,7 @@
 // Battle action step handlers. gBattleMessageSteps is one long table of step lists; each runner (battle_message_show
 // for messages, target_panels_show, miss_popup_run ...) calls entry [step] of its own sub-table and the handlers
 // advance the step counter. Then come the runners of script opcodes 0x04-0x09 and 0x19-0x1A (trap_hit_run ...
-// closeup_enter_run; their order in an attack was seen at runtime) and of opcodes 0x1E-0x24 (gUnk_083AF000):
+// closeup_enter_run; their order in an attack was seen at runtime) and of opcodes 0x1E-0x24 (gActionScriptCommands):
 // attack_hit_run (0x1E: the hit itself, with its miss / nullified / absorbed branches), status_attack_run (0x1F:
 // Bug, Thunder, Wave, Fire... status skills), closeup_exit_run (0x20), bot_defeat_run (0x21: "A's function ceased"),
 // reaction_run (0x22), sacrifice_run (0x23: Sacrifice breaks the attacker's part) and destroy_check_run (0x24:

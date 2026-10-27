@@ -511,132 +511,132 @@ gCounterAttackSteps:
 gChangeSteps:
 	.incbin "baserom.gba", 0x3AE16C, 0x54
 
-	.global gUnk_083AE1C0
-gUnk_083AE1C0:
+	.global gMedaforceSpiralBoltSteps
+gMedaforceSpiralBoltSteps:
 	.incbin "baserom.gba", 0x3AE1C0, 0x80
 
-	.global gUnk_083AE240
-gUnk_083AE240:
+	.global gMedaforceHitSteps
+gMedaforceHitSteps:
 	.incbin "baserom.gba", 0x3AE240, 0xC0
 
-	.global gUnk_083AE300
-gUnk_083AE300:
+	.global gMedaforceLifeDrainHealSteps
+gMedaforceLifeDrainHealSteps:
 	.incbin "baserom.gba", 0x3AE300, 0x80
 
-	.global gUnk_083AE380
-gUnk_083AE380:
+	.global gMedaforceSideBoltSteps
+gMedaforceSideBoltSteps:
 	.incbin "baserom.gba", 0x3AE380, 0x80
 
-	.global gUnk_083AE400
-gUnk_083AE400:
+	.global gMedaforceFormSteps
+gMedaforceFormSteps:
 	.incbin "baserom.gba", 0x3AE400, 0x40
 
-	.global gUnk_083AE440
-gUnk_083AE440:
+	.global gMedaforceAntiAttackTrapSteps
+gMedaforceAntiAttackTrapSteps:
 	.incbin "baserom.gba", 0x3AE440, 0x40
 
-	.global gUnk_083AE480
-gUnk_083AE480:
+	.global gMedaforceCancelFormationSteps
+gMedaforceCancelFormationSteps:
 	.incbin "baserom.gba", 0x3AE480, 0x40
 
-	.global gUnk_083AE4C0
-gUnk_083AE4C0:
+	.global gMedaforceInflictStatusSteps
+gMedaforceInflictStatusSteps:
 	.incbin "baserom.gba", 0x3AE4C0, 0x40
 
-	.global gUnk_083AE500
-gUnk_083AE500:
+	.global gMedaforceCancelStatusSteps
+gMedaforceCancelStatusSteps:
 	.incbin "baserom.gba", 0x3AE500, 0x40
 
-	.global gUnk_083AE540
-gUnk_083AE540:
+	.global gMedaforceStatusRestoreSteps
+gMedaforceStatusRestoreSteps:
 	.incbin "baserom.gba", 0x3AE540, 0x40
 
-	.global gUnk_083AE580
-gUnk_083AE580:
+	.global gMedaforceTotalRecoverySteps
+gMedaforceTotalRecoverySteps:
 	.incbin "baserom.gba", 0x3AE580, 0x40
 
-	.global gUnk_083AE5C0
-gUnk_083AE5C0:
+	.global gMedaforceFullBodyRepairSteps
+gMedaforceFullBodyRepairSteps:
 	.incbin "baserom.gba", 0x3AE5C0, 0x40
 
-	.global gUnk_083AE600
-gUnk_083AE600:
+	.global gMedaforceFullBodyUpSteps
+gMedaforceFullBodyUpSteps:
 	.incbin "baserom.gba", 0x3AE600, 0x40
 
-	.global gUnk_083AE640
-gUnk_083AE640:
+	.global gMedaforceFullBodyRadSteps
+gMedaforceFullBodyRadSteps:
 	.incbin "baserom.gba", 0x3AE640, 0x40
 
-	.global gUnk_083AE680
-gUnk_083AE680:
+	.global gMedaforceIronWallSteps
+gMedaforceIronWallSteps:
 	.incbin "baserom.gba", 0x3AE680, 0x40
 
-	.global gUnk_083AE6C0
-gUnk_083AE6C0:
+	.global gMedaforcePowerUpSteps
+gMedaforcePowerUpSteps:
 	.incbin "baserom.gba", 0x3AE6C0, 0x40
 
-	.global gUnk_083AE700
-gUnk_083AE700:
+	.global gMedaforceAntiTerrainSteps
+gMedaforceAntiTerrainSteps:
 	.incbin "baserom.gba", 0x3AE700, 0x50
 
-	.global gUnk_083AE750
-gUnk_083AE750:
+	.global gMedaforceLegsStatUpSteps
+gMedaforceLegsStatUpSteps:
 	.incbin "baserom.gba", 0x3AE750, 0x40
 
-	.global gUnk_083AE790
-gUnk_083AE790:
+	.global gMedaforceSpyGameSteps
+gMedaforceSpyGameSteps:
 	.incbin "baserom.gba", 0x3AE790, 0x40
 
 	.global gUnk_083AE7D0
 gUnk_083AE7D0:
 	.incbin "baserom.gba", 0x3AE7D0, 0x4
 
-	.global gUnk_083AE7D4
-gUnk_083AE7D4:
+	.global gMedaforceHideNSeekSteps
+gMedaforceHideNSeekSteps:
 	.incbin "baserom.gba", 0x3AE7D4, 0x40
 
-	.global gUnk_083AE814
-gUnk_083AE814:
+	.global gMedaforceChargeSteps
+gMedaforceChargeSteps:
 	.incbin "baserom.gba", 0x3AE814, 0x40
 
-	.global gUnk_083AE854
-gUnk_083AE854:
+	.global gMedaforcePushoverAttackSteps
+gMedaforcePushoverAttackSteps:
 	.incbin "baserom.gba", 0x3AE854, 0x5C
 
-	.global gUnk_083AE8B0
-gUnk_083AE8B0:
+	.global gMedaforceUselessSteps
+gMedaforceUselessSteps:
 	.incbin "baserom.gba", 0x3AE8B0, 0x58
 
-	.global gUnk_083AE908
-gUnk_083AE908:
+	.global gMedaforceDestroyerSteps
+gMedaforceDestroyerSteps:
 	.incbin "baserom.gba", 0x3AE908, 0x80
 
 	.global gUnk_083AE988
 gUnk_083AE988:
 	.incbin "baserom.gba", 0x3AE988, 0x14
 
-	.global gUnk_083AE99C
-gUnk_083AE99C:
+	.global gMedaforceCrazySteps
+gMedaforceCrazySteps:
 	.incbin "baserom.gba", 0x3AE99C, 0x6C
 
-	.global gUnk_083AEA08
-gUnk_083AEA08:
+	.global gMedaforceUpSteps
+gMedaforceUpSteps:
 	.incbin "baserom.gba", 0x3AEA08, 0x3C
 
-	.global gUnk_083AEA44
-gUnk_083AEA44:
+	.global gMedaforceFormationOrdersSteps
+gMedaforceFormationOrdersSteps:
 	.incbin "baserom.gba", 0x3AEA44, 0x40
 
-	.global gUnk_083AEA84
-gUnk_083AEA84:
+	.global gMedaforceLegCrashSteps
+gMedaforceLegCrashSteps:
 	.incbin "baserom.gba", 0x3AEA84, 0x54
 
-	.global gUnk_083AEAD8
-gUnk_083AEAD8:
+	.global gMedaforceProtectorSteps
+gMedaforceProtectorSteps:
 	.incbin "baserom.gba", 0x3AEAD8, 0x40
 
-	.global gUnk_083AEB18
-gUnk_083AEB18:
+	.global gMedaforceAntiProtectionSteps
+gMedaforceAntiProtectionSteps:
 	.incbin "baserom.gba", 0x3AEB18, 0x40
 
 	.global gActionPhaseSteps
@@ -663,8 +663,8 @@ gRandomSlots:
 gAiActionChecks:
 	.incbin "baserom.gba", 0x3AEF10, 0xF0
 
-	.global gUnk_083AF000
-gUnk_083AF000:
+	.global gActionScriptCommands
+gActionScriptCommands:
 	.incbin "baserom.gba", 0x3AF000, 0x200
 
 	.global gUnk_083AF200
@@ -934,8 +934,8 @@ gUnk_083B6EC8:
 gUnk_083B70AC:
 	.incbin "baserom.gba", 0x3B70AC, 0x28C
 
-	.global gUnk_083B7338
-gUnk_083B7338:
+	.global gMedaforceNames
+gMedaforceNames:
 	.incbin "baserom.gba", 0x3B7338, 0x8C8
 
 	.global gUnk_083B7C00
@@ -946,8 +946,8 @@ gUnk_083B7C00:
 gUnk_083B7CD4:
 	.incbin "baserom.gba", 0x3B7CD4, 0x138
 
-	.global gUnk_083B7E0C
-gUnk_083B7E0C:
+	.global gMedalMedaforceIds
+gMedalMedaforceIds:
 	.incbin "baserom.gba", 0x3B7E0C, 0xB0
 
 	.global gHelpCursorLayouts
@@ -1070,12 +1070,12 @@ gUnk_083C4C88:
 gUnk_083C65C4:
 	.incbin "baserom.gba", 0x3C65C4, 0x564
 
-	.global gUnk_083C6B28
-gUnk_083C6B28:
+	.global gActionScripts
+gActionScripts:
 	.incbin "baserom.gba", 0x3C6B28, 0x210
 
-	.global gUnk_083C6D38
-gUnk_083C6D38:
+	.global gActionScriptOperandCounts
+gActionScriptOperandCounts:
 	.incbin "baserom.gba", 0x3C6D38, 0xB0
 
 	.global gPartKindNames

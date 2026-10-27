@@ -504,7 +504,7 @@ void action_phase_medaforce_anim(void) {
 }
 
 void action_phase_medaforce_name(void) {
-    memcpy_bytes_0803F63C((void *)gUnk_083B7338[gUnk_03000590[gUnk_03001800.unk87].unkA8[0]], gUnk_03000440.unk9E,
+    memcpy_bytes_0803F63C((void *)gMedaforceNames[gUnk_03000590[gUnk_03001800.unk87].unkA8[0]], gUnk_03000440.unk9E,
                           0x11);
     gUnk_03001800.unkA6 = 0x38;
     gGameSubState++;

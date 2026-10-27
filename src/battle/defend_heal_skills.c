@@ -3,7 +3,7 @@
 // Attack Clr / Team Form (10-12, 51), 0x2A Break Form (21), 0x2B Stability (22), 0x2C Force Bind (23),
 // 0x2D Defence / Full Block / Half Block (27-29), 0x2E AutoRecover (31), 0x2F Reactivate (33).
 // Each *_run clears unkB5 and calls entry [unkAA] of its *Steps table; it is one action script command
-// (gUnk_083AF000 -> script_op_*). Step 0 (*_begin) checks the time-out and whether the skill can work,
+// (gActionScriptCommands -> script_op_*). Step 0 (*_begin) checks the time-out and whether the skill can work,
 // the last step sets unkA6 (the result message) and unkB5. The skill id is part data[1].
 
 #include "global.h"

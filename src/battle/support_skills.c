@@ -1,7 +1,7 @@
 // Effect sequences of the Support abilities: action script opcodes 0x30-0x35.
 // Each runner (*_run: clears unkB5 and calls entry [unkAA] of its step table) is one action script command
-// (gUnk_083AF000, opcode order = ROM order); its step handlers follow it and the last step sets unkB5.
-// Abilities are part data[1], and the script of ability n is gUnk_083C6B28[n]:
+// (gActionScriptCommands, opcode order = ROM order); its step handlers follow it and the last step sets unkB5.
+// Abilities are part data[1], and the script of ability n is gActionScripts[n]:
 //   0x30 Scout (36), 0x31 Conceal (37), 0x32 Boost Chrg (38), 0x33 Rapid Chrg (39), 0x34 Drain Chrg (41),
 //   0x35 Pushover (42; guess, see pushover_run). Ability 40 (Accel Chrg) has an empty script: it works
 //   while equipped. Skill names from the parts that carry them (re/tables/parts.json) and a public FAQ.

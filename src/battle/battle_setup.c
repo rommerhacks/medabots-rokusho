@@ -31,21 +31,21 @@ void count_bot_skill_use(u32 rec) {
         case 0:
             if (r->medal.unk5 <= 9)
                 return;
-            memcpy_bytes_08041D04(&gUnk_083B7E0C[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
+            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
             memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gUnk_03000440.unkEE)[0] * 6], gUnk_03000440.unk10E, 6);
             k = gUnk_03000440.unk10E[1];
             break;
         case 1:
             if (r->medal.unk5 <= 29)
                 return;
-            memcpy_bytes_08041D04(&gUnk_083B7E0C[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
+            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
             memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gUnk_03000440.unkEE)[1] * 6], gUnk_03000440.unk10E, 6);
             k = gUnk_03000440.unk10E[1];
             break;
         case 2:
             if (r->medal.unk5 <= 59)
                 return;
-            memcpy_bytes_08041D04(&gUnk_083B7E0C[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
+            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
             memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gUnk_03000440.unkEE)[2] * 6], gUnk_03000440.unk10E, 6);
             k = gUnk_03000440.unk10E[1];
             break;

@@ -545,7 +545,7 @@ void afterbattle_medaforce_next_bot(void) {
         message_next();
         memcpy_bytes_0803F63C((const void *)gMedalNames[gUnk_03001800.unk16E[gUnk_03001800.unk186][0] - 1],
                               gUnk_03000440.unk9E, 11);
-        memcpy_bytes_0803F63C((const void *)gUnk_083B7338[gUnk_03001800.unk16E[gUnk_03001800.unk186][7]],
+        memcpy_bytes_0803F63C((const void *)gMedaforceNames[gUnk_03001800.unk16E[gUnk_03001800.unk186][7]],
                               gUnk_03000440.unk9E + 20, 17);
         play_song(16);
         gGameSubState++;
@@ -1323,7 +1323,7 @@ static void battle_check_medal_level_up(void) {
             gUnk_03001800.unk16E[i][5] = variant;
             medal->unk8 = variant;
         }
-        memcpy_bytes_08041D04(&gUnk_083B7E0C[medal->unk1 * 3], &gUnk_03000440.unkEE, 3);
+        memcpy_bytes_08041D04(&gMedalMedaforceIds[medal->unk1 * 3], &gUnk_03000440.unkEE, 3);
         if (medal->unk5 == 10) {
             gUnk_03001800.unk16E[i][6] = 1;
             gUnk_03001800.unk16E[i][7] = (&gUnk_03000440.unkEE)[0];

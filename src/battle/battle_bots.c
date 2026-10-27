@@ -312,7 +312,7 @@ static u32 opponent_medaforce_locked(u32 rec) {
 }
 
 void battle_bot_select_medaforce(u32 rec, u32 part) {
-    memcpy_bytes_08041D04(&gUnk_083B7E0C[gUnk_03000590[rec].medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
+    memcpy_bytes_08041D04(&gMedalMedaforceIds[gUnk_03000590[rec].medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
     memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gUnk_03000440.unkEE)[part] * 6], gUnk_03000590[rec].unkA8, 6);
     battle_bot_select_part(rec, part + 4);
 }

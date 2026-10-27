@@ -816,8 +816,8 @@ void medals_help_show_text(void) {
         switch (gUnk_03000440.unk44) {
         case 0:
             if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 > 9) {
-                memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE,
-                                      3);
+                memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
+                                      &gUnk_03000440.unkEE, 3);
                 memcpy_bytes_08041D04(gUnk_083B7CD4 + gUnk_03000440.unkEE * 6, gUnk_03000440.unk10E, 6);
                 done = run_message(gUnk_083B7F40[gUnk_03000440.unk10E[5]]);
             } else {
@@ -826,8 +826,8 @@ void medals_help_show_text(void) {
             break;
         case 1:
             if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 > 29) {
-                memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE,
-                                      3);
+                memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
+                                      &gUnk_03000440.unkEE, 3);
                 memcpy_bytes_08041D04(gUnk_083B7CD4 + gUnk_03000440.unkEF * 6, gUnk_03000440.unk10E, 6);
                 done = run_message(gUnk_083B7F40[gUnk_03000440.unk10E[5]]);
             } else {
@@ -836,8 +836,8 @@ void medals_help_show_text(void) {
             break;
         case 2:
             if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 > 59) {
-                memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE,
-                                      3);
+                memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
+                                      &gUnk_03000440.unkEE, 3);
                 memcpy_bytes_08041D04(gUnk_083B7CD4 + gUnk_03000440.unkF0 * 6, gUnk_03000440.unk10E, 6);
                 done = run_message(gUnk_083B7F40[gUnk_03000440.unk10E[5]]);
             } else {
@@ -854,7 +854,7 @@ void medals_help_show_text(void) {
             switch (gUnk_03000440.unk46) {
             case 0:
                 if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 > 9) {
-                    memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
+                    memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
                                           &gUnk_03000440.unkEE, 3);
                     memcpy_bytes_08041D04(gUnk_083B7CD4 + (&gUnk_03000440.unkEE)[gUnk_03000440.unk46] * 6,
                                           gUnk_03000440.unk10E, 6);
@@ -865,7 +865,7 @@ void medals_help_show_text(void) {
                 break;
             case 1:
                 if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 > 29) {
-                    memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
+                    memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
                                           &gUnk_03000440.unkEE, 3);
                     memcpy_bytes_08041D04(gUnk_083B7CD4 + (&gUnk_03000440.unkEE)[gUnk_03000440.unk46] * 6,
                                           gUnk_03000440.unk10E, 6);
@@ -876,7 +876,7 @@ void medals_help_show_text(void) {
                 break;
             case 2:
                 if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 > 59) {
-                    memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
+                    memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
                                           &gUnk_03000440.unkEE, 3);
                     memcpy_bytes_08041D04(gUnk_083B7CD4 + (&gUnk_03000440.unkEE)[gUnk_03000440.unk46] * 6,
                                           gUnk_03000440.unk10E, 6);
@@ -1464,9 +1464,10 @@ static void medal_ability_redraw(void) {
 static void medal_medaforce_draw_list(void) {
     clear_sprite_table_mask(0x1E, 0x3C);
     if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 >= 10) {
-        memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE, 3);
+        memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE,
+                              3);
         memcpy_bytes_08041D04(gUnk_083B7CD4 + gUnk_03000440.unkEE * 6, gUnk_03000440.unk10E, 6);
-        memcpy_bytes_0803F63C((void *)gUnk_083B7338[gUnk_03000440.unkEE], gUnk_03000440.unk9E, 17);
+        memcpy_bytes_0803F63C((void *)gMedaforceNames[gUnk_03000440.unkEE], gUnk_03000440.unk9E, 17);
         render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x1E, 2, 6, 10, 10, 1, 1);
         draw_tile_block(2, 2, 12, 6, REG_BG1CNT, gUnk_03000440.unk10E[5] * 4 + 0x5300);
     } else {
@@ -1476,7 +1477,7 @@ static void medal_medaforce_draw_list(void) {
     }
     if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 >= 30) {
         memcpy_bytes_08041D04(gUnk_083B7CD4 + gUnk_03000440.unkEF * 6, gUnk_03000440.unk10E, 6);
-        memcpy_bytes_0803F63C((void *)gUnk_083B7338[gUnk_03000440.unkEF], gUnk_03000440.unk9E, 17);
+        memcpy_bytes_0803F63C((void *)gMedaforceNames[gUnk_03000440.unkEF], gUnk_03000440.unk9E, 17);
         render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x32, 2, 8, 10, 10, 1, 1);
         draw_tile_block(2, 2, 12, 8, REG_BG1CNT, gUnk_03000440.unk10E[5] * 4 + 0x5300);
     } else {
@@ -1486,7 +1487,7 @@ static void medal_medaforce_draw_list(void) {
     }
     if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 >= 60) {
         memcpy_bytes_08041D04(gUnk_083B7CD4 + gUnk_03000440.unkF0 * 6, gUnk_03000440.unk10E, 6);
-        memcpy_bytes_0803F63C((void *)gUnk_083B7338[gUnk_03000440.unkF0], gUnk_03000440.unk9E, 17);
+        memcpy_bytes_0803F63C((void *)gMedaforceNames[gUnk_03000440.unkF0], gUnk_03000440.unk9E, 17);
         render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x46, 2, 10, 10, 10, 1, 1);
         draw_tile_block(2, 2, 12, 10, REG_BG1CNT, gUnk_03000440.unk10E[5] * 4 + 0x5300);
     } else {
@@ -1501,7 +1502,8 @@ static void medal_medaforce_draw_selected(void) {
     switch (gUnk_03000440.unk46) {
     case 0:
         if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 >= 10) {
-            memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE, 3);
+            memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
+                                  &gUnk_03000440.unkEE, 3);
             memcpy_bytes_08041D04(gUnk_083B7CD4 + gUnk_03000440.unkEE * 6, gUnk_03000440.unk10E, 6);
             memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gUnk_03000440.unk10E[1]], gUnk_03000440.unk9E, 14);
             render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x5A, 0x13, 7, 10, 11, 1, 1);
@@ -1514,7 +1516,8 @@ static void medal_medaforce_draw_selected(void) {
         break;
     case 1:
         if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 >= 30) {
-            memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE, 3);
+            memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
+                                  &gUnk_03000440.unkEE, 3);
             memcpy_bytes_08041D04(gUnk_083B7CD4 + gUnk_03000440.unkEF * 6, gUnk_03000440.unk10E, 6);
             memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gUnk_03000440.unk10E[1]], gUnk_03000440.unk9E, 14);
             render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x5A, 0x13, 7, 10, 11, 1, 1);
@@ -1527,7 +1530,8 @@ static void medal_medaforce_draw_selected(void) {
         break;
     default:
         if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 >= 60) {
-            memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE, 3);
+            memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3,
+                                  &gUnk_03000440.unkEE, 3);
             memcpy_bytes_08041D04(gUnk_083B7CD4 + gUnk_03000440.unkF0 * 6, gUnk_03000440.unk10E, 6);
             memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gUnk_03000440.unk10E[1]], gUnk_03000440.unk9E, 14);
             render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x5A, 0x13, 7, 10, 11, 1, 1);
@@ -1596,16 +1600,18 @@ u32 medal_medaforce_get_selected(void) {
     case 0:
         if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 < 10)
             goto none;
-        memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE, 3);
+        memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE,
+                              3);
         return gUnk_03000440.unkEE;
     case 1:
         if (gUnk_03000BE0[gUnk_03000440.unk3D].unk5 < 30)
             goto none;
-        memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE, 3);
+        memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE,
+                              3);
         return gUnk_03000440.unkEF;
     }
 slot2:
-    memcpy_bytes_08041D04(gUnk_083B7E0C + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE, 3);
+    memcpy_bytes_08041D04(gMedalMedaforceIds + gUnk_03000BE0[gUnk_03000440.unk3D].unk1 * 3, &gUnk_03000440.unkEE, 3);
     return gUnk_03000440.unkF0;
 }
 

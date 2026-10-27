@@ -1,15 +1,16 @@
 // Medaforce effect sequences: action script opcodes 0x40-0x6A. A Medaforce runs script 0x50 + its id
 // (unkF9 = unkA8[0] + 0x50, script_op_skill_anim_start), so scripts 80-131 use these; 0x45 (side_add_action_point) and
-// a few script-side commands sit elsewhere. Each runner (sub_XXXXXXXX that clears unkB5 and calls entry [unkAA] of its
-// gBattleMessageSteps sub-table) is one action script command (gUnk_083AF000, opcode order = ROM order); its step
-// handlers follow it and the last step sets unkB5. Abilities are part data[1], and the script of ability n is
-// gUnk_083C6B28[n].
+// a few script-side commands sit elsewhere. Each runner (medaforce_*_run, clears unkB5 and calls entry [unkAA] of its
+// gMedaforce*Steps table) is one action script command (gActionScriptCommands, opcode order = ROM order); its step
+// handlers follow it and the last step sets unkB5. Runner names come from the Medaforce names (gMedaforceNames) of
+// the scripts that use each opcode. Abilities are part data[1], and the script of ability n is gActionScripts[n].
 
 #include "global.h"
 
-void sub_08026884(void) {
+// Opcode 0x40: Spiral Bolt (Medaforce 0), damage to all four parts of the target.
+void medaforce_spiral_bolt_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE1C0[gUnk_03001800.unkAA]();
+    gMedaforceSpiralBoltSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_080268AC(void) {
@@ -152,9 +153,11 @@ void sub_08026CBC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08026CF4(void) {
+// Opcode 0x44: the shared Medaforce hit on one part (Ultra Shot, Damage Ball, Life Drain, Shrapnel Attack,
+// Unbreakable Will, Structureless, Dice Attack, Type Crash).
+void medaforce_hit_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE240[gUnk_03001800.unkAA]();
+    gMedaforceHitSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_08026D1C(void) {
@@ -206,9 +209,10 @@ void sub_08026EC0(void) {
     gUnk_03001800.unkAA = 2;
 }
 
-void sub_08026ED0(void) {
+// Opcode 0x48: Life Drain (Medaforce 0x14) heals the actor's most damaged part.
+void medaforce_life_drain_heal_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE300[gUnk_03001800.unkAA]();
+    gMedaforceLifeDrainHealSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_08026EF8(void) {
@@ -245,9 +249,10 @@ void sub_08026FC0(void) {
     gUnk_03001800.unkAA = 4;
 }
 
-void sub_08026FD0(void) {
+// Opcode 0x50: Side Bolt (Medaforce 1), damage to all three opponents.
+void medaforce_side_bolt_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE380[gUnk_03001800.unkAA]();
+    gMedaforceSideBoltSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_08026FF8(void) {
@@ -525,9 +530,10 @@ void sub_080278B8(void) {
     }
 }
 
-void sub_0802793C(void) {
+// Opcode 0x51: Optic / Bomb / Gravity Form and Absorb Optic / Bomb / Gravity (Medaforces 4-9).
+void medaforce_form_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE400[gUnk_03001800.unkAA]();
+    gMedaforceFormSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_08027964(void) {
@@ -705,9 +711,10 @@ void sub_08027EDC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08027F5C(void) {
+// Opcode 0x52: Anti Attk Trap (Medaforce 0xA).
+void medaforce_anti_attack_trap_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE440[gUnk_03001800.unkAA]();
+    gMedaforceAntiAttackTrapSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_08027F84(void) {
@@ -782,9 +789,10 @@ void sub_08028230(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08028248(void) {
+// Opcode 0x53: Cancel Formation (Medaforce 0xB).
+void medaforce_cancel_formation_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE480[gUnk_03001800.unkAA]();
+    gMedaforceCancelFormationSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_08028270(void) {
@@ -833,9 +841,10 @@ void sub_080283EC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08028404(void) {
+// Opcode 0x54: Movement / Stop / Bind / Flow (Medaforces 0xC, 0xE, 0x10, 0x12) and Chaos (0x28).
+void medaforce_inflict_status_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE4C0[gUnk_03001800.unkAA]();
+    gMedaforceInflictStatusSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802842C(void) {
@@ -1057,9 +1066,10 @@ void sub_08028BA8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08028C40(void) {
+// Opcode 0x55: Cancel Movement / Stop / Bind / Flow (Medaforces 0xD, 0xF, 0x11, 0x13).
+void medaforce_cancel_status_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE500[gUnk_03001800.unkAA]();
+    gMedaforceCancelStatusSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_08028C68(void) {
@@ -1309,9 +1319,10 @@ void sub_08029464(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080294B4(void) {
+// Opcode 0x56: Status Restore (Medaforce 0x15).
+void medaforce_status_restore_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE540[gUnk_03001800.unkAA]();
+    gMedaforceStatusRestoreSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_080294DC(void) {
@@ -1417,9 +1428,10 @@ void sub_08029828(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08029840(void) {
+// Opcode 0x57: Total Recovery (Medaforce 0x1A).
+void medaforce_total_recovery_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE580[gUnk_03001800.unkAA]();
+    gMedaforceTotalRecoverySteps[gUnk_03001800.unkAA]();
 }
 
 void sub_08029868(void) {
@@ -1591,9 +1603,10 @@ void sub_08029DF4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08029E0C(void) {
+// Opcode 0x58: Full Body Repair (Medaforce 0x1C).
+void medaforce_full_body_repair_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE5C0[gUnk_03001800.unkAA]();
+    gMedaforceFullBodyRepairSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_08029E34(void) {
@@ -1677,9 +1690,10 @@ void sub_0802A0D0(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802A0E8(void) {
+// Opcode 0x59: Full Body Up (Medaforce 0x16).
+void medaforce_full_body_up_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE600[gUnk_03001800.unkAA]();
+    gMedaforceFullBodyUpSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802A110(void) {
@@ -1845,9 +1859,10 @@ void sub_0802A694(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802A6AC(void) {
+// Opcode 0x5A: Full Body RAD (Medaforce 0x17).
+void medaforce_full_body_rad_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE640[gUnk_03001800.unkAA]();
+    gMedaforceFullBodyRadSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802A6D4(void) {
@@ -1953,9 +1968,10 @@ void sub_0802AAB8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802AAD0(void) {
+// Opcode 0x5B: Iron Wall (Medaforce 0x18).
+void medaforce_iron_wall_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE680[gUnk_03001800.unkAA]();
+    gMedaforceIronWallSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802AAF8(void) {
@@ -1999,9 +2015,10 @@ void sub_0802ACB4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802ACCC(void) {
+// Opcode 0x5C: Power Up (Medaforce 0x19).
+void medaforce_power_up_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE6C0[gUnk_03001800.unkAA]();
+    gMedaforcePowerUpSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802ACF4(void) {
@@ -2073,9 +2090,10 @@ void sub_0802AFE8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802B000(void) {
+// Opcode 0x5D: Anti Air / Anti Sea (Medaforces 0x1E, 0x20).
+void medaforce_anti_terrain_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE700[gUnk_03001800.unkAA]();
+    gMedaforceAntiTerrainSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802B028(void) {
@@ -2298,9 +2316,10 @@ void sub_0802B7AC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802B7E8(void) {
+// Opcode 0x5E: Propulsion / Mobility / PROX / Remoteness Up (Medaforces 0x1F, 0x21, 0x23, 0x25).
+void medaforce_legs_stat_up_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE750[gUnk_03001800.unkAA]();
+    gMedaforceLegsStatUpSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802B810(void) {
@@ -2483,9 +2502,10 @@ void sub_0802BD1C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802BD6C(void) {
+// Opcode 0x5F: Spy Game (Medaforce 0x22).
+void medaforce_spy_game_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE790[gUnk_03001800.unkAA]();
+    gMedaforceSpyGameSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802BD94(void) {
@@ -2636,9 +2656,10 @@ void sub_0802C294(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802C2AC(void) {
+// Opcode 0x60: Hide n Seek (Medaforce 0x24).
+void medaforce_hide_n_seek_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE7D4[gUnk_03001800.unkAA]();
+    gMedaforceHideNSeekSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802C2D4(void) {
@@ -2733,9 +2754,10 @@ void sub_0802C62C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802C644(void) {
+// Opcode 0x61: Charge (Medaforce 0x26).
+void medaforce_charge_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE814[gUnk_03001800.unkAA]();
+    gMedaforceChargeSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802C66C(void) {
@@ -2910,9 +2932,10 @@ void sub_0802CBD0(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802CBE8(void) {
+// Opcode 0x62: Pushover Attk (Medaforce 0x27).
+void medaforce_pushover_attack_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE854[gUnk_03001800.unkAA]();
+    gMedaforcePushoverAttackSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802CC10(void) {
@@ -3204,9 +3227,10 @@ void sub_0802D670(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802D688(void) {
+// Opcode 0x63: Useless (Medaforce 0x29).
+void medaforce_useless_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE8B0[gUnk_03001800.unkAA]();
+    gMedaforceUselessSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802D6B0(void) {
@@ -3423,9 +3447,10 @@ void sub_0802DC9C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802DCB4(void) {
+// Opcode 0x64: Destroyer (Medaforce 0x2A).
+void medaforce_destroyer_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE908[gUnk_03001800.unkAA]();
+    gMedaforceDestroyerSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802DCDC(void) {
@@ -3651,9 +3676,10 @@ void sub_0802E358(void) {
     }
 }
 
-void battle_dispatch_phase_handler_0802E424(void) {
+// Opcode 0x65: Crazy Medaforce (Medaforce 0x2C).
+void medaforce_crazy_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AE99C[gUnk_03001800.unkAA]();
+    gMedaforceCrazySteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802E44C(void) {
@@ -3879,9 +3905,10 @@ void sub_0802EAD8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802EBC0(void) {
+// Opcode 0x66: Medaforce Up (Medaforce 0x2D).
+void medaforce_up_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AEA08[gUnk_03001800.unkAA]();
+    gMedaforceUpSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802EBE8(void) {
@@ -4036,9 +4063,10 @@ void sub_0802F018(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F030(void) {
+// Opcode 0x67: Formation Orders (Medaforce 0x2E).
+void medaforce_formation_orders_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AEA44[gUnk_03001800.unkAA]();
+    gMedaforceFormationOrdersSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802F058(void) {
@@ -4182,9 +4210,10 @@ void sub_0802F610(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F628(void) {
+// Opcode 0x68: Leg Crash (Medaforce 0x2F).
+void medaforce_leg_crash_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AEA84[gUnk_03001800.unkAA]();
+    gMedaforceLegCrashSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802F650(void) {
@@ -4290,9 +4319,10 @@ void sub_0802F8E4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F990(void) {
+// Opcode 0x69: Protector (Medaforce 0x30).
+void medaforce_protector_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AEAD8[gUnk_03001800.unkAA]();
+    gMedaforceProtectorSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802F9B8(void) {
@@ -4417,9 +4447,10 @@ void sub_0802FE38(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802FE50(void) {
+// Opcode 0x6A: Anti-Protection (Medaforce 0x31).
+void medaforce_anti_protection_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AEB18[gUnk_03001800.unkAA]();
+    gMedaforceAntiProtectionSteps[gUnk_03001800.unkAA]();
 }
 
 void sub_0802FE78(void) {
