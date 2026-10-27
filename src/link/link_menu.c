@@ -30,14 +30,14 @@ void clear_vram_bg(void) {
     gSpriteEntries[0].unk6 = 6;
     gSpriteEntries[0].unk2 = 0xC;
     gSpriteEntries[0].unk4 = 0x1C;
-    init_blend_effect(gUnk_03006F74->unk50, 0x10, 0, -1, 0xC0);
+    init_blend_effect(gMenuWork->unk50, 0x10, 0, -1, 0xC0);
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
-    gUnk_03006F74->unk3A = 0;
-    gUnk_03006F74->unk5 = 0;
-    gUnk_03006F74->unk7A = -1;
+    gMenuWork->unk3A = 0;
+    gMenuWork->unk5 = 0;
+    gMenuWork->unk7A = -1;
     if (sound_current_song() != 0x18)
         play_song(0x18);
     gGameSubState++;
@@ -46,51 +46,51 @@ void clear_vram_bg(void) {
 void fade_state_dispatch(void) {
 
     if (gUnk_03000B90 != 0) {
-        switch (gUnk_03006F74->unk3A) {
+        switch (gMenuWork->unk3A) {
         case 0:
             if ((s32)count_assembled_medabots() <= 1) {
-                gUnk_03006F74->unk7B = 0;
+                gMenuWork->unk7B = 0;
                 gUnk_03005010.unk6 = 0xFF02;
             } else {
-                gUnk_03006F74->unk7B = -1;
+                gMenuWork->unk7B = -1;
                 gUnk_03005010.unk6 = 0xFF03;
             }
             if (gUnk_03005010.unk8[0][1] == 0xFF04)
-                gUnk_03006F74->unk3A++;
+                gMenuWork->unk3A++;
             break;
         case 1:
             gUnk_03005010.unk6 = 0xFF05;
             if (gUnk_03005010.unk8[0][1] == 0xFF02 || gUnk_03005010.unk8[0][1] == 0xFF03) {
-                gUnk_03006F74->unk7B = gUnk_03005010.unk8[0][1] != 0xFF02;
+                gMenuWork->unk7B = gUnk_03005010.unk8[0][1] != 0xFF02;
                 gUnk_03005010.unk6 = 0xFF04;
             }
             if (gUnk_03005010.unk8[0][1] == 0xFF05)
-                gUnk_03006F74->unk3A++;
+                gMenuWork->unk3A++;
             break;
         case 2:
             gUnk_03005010.unk6 = 0xFF06;
             if (gUnk_03005010.unk8[0][1] == 0xFF06)
-                gUnk_03006F74->unk3A++;
+                gMenuWork->unk3A++;
             break;
         case 3:
             if (medaparts_all_equipped()) {
-                gUnk_03006F74->unk7C = 0;
+                gMenuWork->unk7C = 0;
                 gUnk_03005010.unk6 = 0xFF02;
             } else {
-                gUnk_03006F74->unk7C = -1;
+                gMenuWork->unk7C = -1;
                 gUnk_03005010.unk6 = 0xFF03;
             }
             if (gUnk_03005010.unk8[0][1] == 0xFF04)
-                gUnk_03006F74->unk3A++;
+                gMenuWork->unk3A++;
             break;
         case 4:
             gUnk_03005010.unk6 = 0xFF05;
             if (gUnk_03005010.unk8[0][1] == 0xFF02 || gUnk_03005010.unk8[0][1] == 0xFF03) {
-                gUnk_03006F74->unk7C = gUnk_03005010.unk8[0][1] != 0xFF02;
+                gMenuWork->unk7C = gUnk_03005010.unk8[0][1] != 0xFF02;
                 gUnk_03005010.unk6 = 0xFF04;
             }
             if (gUnk_03005010.unk8[0][1] == 0xFF05)
-                gUnk_03006F74->unk3A++;
+                gMenuWork->unk3A++;
             break;
         case 5:
             gUnk_03005010.unk6 = 0xFF06;
@@ -99,49 +99,49 @@ void fade_state_dispatch(void) {
             break;
         }
     } else {
-        switch (gUnk_03006F74->unk3A) {
+        switch (gMenuWork->unk3A) {
         case 0:
             if (gUnk_03005010.unk8[1][1] == 0xFF02 || gUnk_03005010.unk8[1][1] == 0xFF03) {
-                gUnk_03006F74->unk7B = gUnk_03005010.unk8[1][1] != 0xFF02;
+                gMenuWork->unk7B = gUnk_03005010.unk8[1][1] != 0xFF02;
                 gUnk_03005010.unk6 = 0xFF04;
             }
             if (gUnk_03005010.unk8[1][1] == 0xFF05)
-                gUnk_03006F74->unk3A++;
+                gMenuWork->unk3A++;
             break;
         case 1:
-            if (gUnk_03006F74->unk7B == 0 || (s32)count_assembled_medabots() <= 1) {
+            if (gMenuWork->unk7B == 0 || (s32)count_assembled_medabots() <= 1) {
                 gUnk_03005010.unk6 = 0xFF02;
-                gUnk_03006F74->unk7B = 0;
+                gMenuWork->unk7B = 0;
             } else {
                 gUnk_03005010.unk6 = 0xFF03;
             }
             if (gUnk_03005010.unk8[1][1] == 0xFF04)
-                gUnk_03006F74->unk3A++;
+                gMenuWork->unk3A++;
             break;
         case 2:
             gUnk_03005010.unk6 = 0xFF05;
             if (gUnk_03005010.unk8[0][1] == 0xFF05 && gUnk_03005010.unk8[1][1] == 0xFF06)
                 gUnk_03005010.unk6 = gUnk_03005010.unk8[1][1];
             if (gUnk_03005010.unk8[0][1] == 0xFF06)
-                gUnk_03006F74->unk3A++;
+                gMenuWork->unk3A++;
             break;
         case 3:
             if (gUnk_03005010.unk8[1][1] == 0xFF02 || gUnk_03005010.unk8[1][1] == 0xFF03) {
-                gUnk_03006F74->unk7C = gUnk_03005010.unk8[1][1] != 0xFF02;
+                gMenuWork->unk7C = gUnk_03005010.unk8[1][1] != 0xFF02;
                 gUnk_03005010.unk6 = 0xFF04;
             }
             if (gUnk_03005010.unk8[1][1] == 0xFF05)
-                gUnk_03006F74->unk3A++;
+                gMenuWork->unk3A++;
             break;
         case 4:
-            if (gUnk_03006F74->unk7C == 0 || medaparts_all_equipped()) {
+            if (gMenuWork->unk7C == 0 || medaparts_all_equipped()) {
                 gUnk_03005010.unk6 = 0xFF02;
-                gUnk_03006F74->unk7C = 0;
+                gMenuWork->unk7C = 0;
             } else {
                 gUnk_03005010.unk6 = 0xFF03;
             }
             if (gUnk_03005010.unk8[1][1] == 0xFF04)
-                gUnk_03006F74->unk3A++;
+                gMenuWork->unk3A++;
             break;
         case 5:
             gUnk_03005010.unk6 = 0xFF05;
@@ -155,7 +155,7 @@ void fade_state_dispatch(void) {
 }
 
 void link_menu_fade_in(void) {
-    if (blend_fade_step_08065598(gUnk_03006F74->unk50)) {
+    if (blend_fade_step_08065598(gMenuWork->unk50)) {
         gGameSubState++;
         text_window_init(1, 0, 1);
         gSpriteEntries[0].unk0 |= 0x4000;
@@ -164,49 +164,49 @@ void link_menu_fade_in(void) {
 
 void handle_battle_menu_selection(void) {
     if ((gUnk_03005010.unk8[gUnk_03000B90 == 0][1] & 0xFF00) == 0xEF00) {
-        gUnk_03006F74->unk5 = gUnk_03005010.unk8[gUnk_03000B90 == 0][1];
-        gUnk_03006F74->unk7A = 1;
+        gMenuWork->unk5 = gUnk_03005010.unk8[gUnk_03000B90 == 0][1];
+        gMenuWork->unk7A = 1;
         gGameSubState++;
         play_sound_effect(4);
-        gSpriteEntries[0].unk4 = gUnk_03006F74->unk5 * 16 + 0x1C;
+        gSpriteEntries[0].unk4 = gMenuWork->unk5 * 16 + 0x1C;
         return;
     }
 
     sprite_bob_y(0, gFrameCounter, 0xC);
-    if (gUnk_03006F74->unk5 == 6)
+    if (gMenuWork->unk5 == 6)
         run_message(gUnk_080AFB30);
     else
-        run_message(gUnk_08485BD8[gUnk_080AFB3F[gUnk_03006F74->unk5]]);
+        run_message(gUnk_08485BD8[gUnk_080AFB3F[gMenuWork->unk5]]);
 
-    if (gUnk_03006F74->unk5 > 4) {
+    if (gMenuWork->unk5 > 4) {
         if (KEYS_LO(gRepeatKeys) & 0xC1) {
-            gUnk_03006F74->unk5 = gUnk_03006F74->unk5 == 5 ? 1 : 4;
+            gMenuWork->unk5 = gMenuWork->unk5 == 5 ? 1 : 4;
             message_next();
         }
         return;
     }
 
     if (KEYS_LO(gRepeatKeys) & 0x40) {
-        gUnk_03006F74->unk5 = gUnk_03006F74->unk5 != 0 ? gUnk_03006F74->unk5 - 1 : 4;
+        gMenuWork->unk5 = gMenuWork->unk5 != 0 ? gMenuWork->unk5 - 1 : 4;
         message_next();
         play_sound_effect(2);
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
-        gUnk_03006F74->unk5 = gUnk_03006F74->unk5 <= 3 ? gUnk_03006F74->unk5 + 1 : 0;
+        gMenuWork->unk5 = gMenuWork->unk5 <= 3 ? gMenuWork->unk5 + 1 : 0;
         message_next();
         play_sound_effect(2);
     }
-    gSpriteEntries[0].unk4 = gUnk_03006F74->unk5 * 16 + 0x1C;
+    gSpriteEntries[0].unk4 = gMenuWork->unk5 * 16 + 0x1C;
     if (KEYS_LO(gRepeatKeys) & 1) {
-        if (gUnk_03006F74->unk5 == 1 && gUnk_03006F74->unk7B == 0) {
-            gUnk_03006F74->unk5 = 5;
+        if (gMenuWork->unk5 == 1 && gMenuWork->unk7B == 0) {
+            gMenuWork->unk5 = 5;
             message_next();
             play_sound_effect(6);
-        } else if (gUnk_03006F74->unk5 == 2 && gUnk_03006F74->unk7C == 0) {
+        } else if (gMenuWork->unk5 == 2 && gMenuWork->unk7C == 0) {
             play_sound_effect(6);
         } else {
-            gUnk_03006F74->unk7A = 0;
-            gUnk_03005010.unk6 = gUnk_03006F74->unk5 | 0xEF00;
+            gMenuWork->unk7A = 0;
+            gUnk_03005010.unk6 = gMenuWork->unk5 | 0xEF00;
             gGameSubState++;
             play_sound_effect(4);
         }
@@ -214,34 +214,34 @@ void handle_battle_menu_selection(void) {
 }
 
 void update_fade_transition_state_080662CC(void) {
-    struct Unk_03006F74 *p = gUnk_03006F74;
+    struct MenuWork *p = gMenuWork;
 
     if (p->unk7A != 0) {
         gUnk_03005010.unk6 = 0xFE0F;
     } else if (gUnk_03000B90 != 0) {
         if ((gUnk_03005010.unk8[0][1] & 0xFF00) == 0xEF00) {
             p->unk5 = gUnk_03005010.unk8[0][1];
-            gUnk_03006F74->unk7A = 1;
+            gMenuWork->unk7A = 1;
         } else if (gUnk_03005010.unk8[0][1] == 0xFE0F) {
             gUnk_03005010.unk6 = 0xFE0F;
         }
     } else {
         p->unk7A = 0;
-        gUnk_03005010.unk6 = gUnk_03006F74->unk5 | 0xEF00;
+        gUnk_03005010.unk6 = gMenuWork->unk5 | 0xEF00;
     }
     if (gUnk_03005010.unk8[1][1] == 0xFE0F) {
-        if (gUnk_03006F74->unk5 == 4) {
+        if (gMenuWork->unk5 == 4) {
             gGameSubState = 8;
             message_next();
         } else {
-            init_blend_effect(gUnk_03006F74->unk50, 0, 0, 1, 0xC0);
+            init_blend_effect(gMenuWork->unk50, 0, 0, 1, 0xC0);
             gGameSubState += 2;
         }
     }
 }
 
 void advance_fade_and_play_music(void) {
-    if (blend_fade_step_08065598(gUnk_03006F74->unk50) && !is_sound_effect_playing(4)) {
+    if (blend_fade_step_08065598(gMenuWork->unk50) && !is_sound_effect_playing(4)) {
         play_song(0);
         play_sound_effect(0);
         eeprom_setup_timer_irq();
@@ -253,7 +253,7 @@ void init_link_save_and_connect(void) {
     s32 i;
 
     gGameSubState = 0;
-    if (gUnk_03006F74->unk4A == 0) {
+    if (gMenuWork->unk4A == 0) {
         for (i = 0; i <= 3; i++) {
             if (save_dispatch(0) == 0)
                 break;
@@ -263,9 +263,9 @@ void init_link_save_and_connect(void) {
 }
 
 void link_menu_fade_out_exit(void) {
-    if (blend_fade_step_08065598(gUnk_03006F74->unk50)) {
-        if (gUnk_03006F74->unk5 <= 2)
-            init_game_mode(gUnk_080AFB45[gUnk_03006F74->unk5]);
+    if (blend_fade_step_08065598(gMenuWork->unk50)) {
+        if (gMenuWork->unk5 <= 2)
+            init_game_mode(gUnk_080AFB45[gMenuWork->unk5]);
         else {
             gGameState = 0x1B;
             gGameSubState = 0;
@@ -274,7 +274,7 @@ void link_menu_fade_out_exit(void) {
 }
 
 void setup_dialogue_script_from_rom(void) {
-    struct Unk_03006F74 *p = gUnk_03006F74;
+    struct MenuWork *p = gMenuWork;
     u8 *d;
     const u8 *s;
 
@@ -294,7 +294,7 @@ void setup_dialogue_script_from_rom(void) {
     }
     *d = 0xFF;
     d[1] = 4;
-    d = gUnk_03006F74->unk270;
+    d = gMenuWork->unk270;
     if (run_message(d)) {
         message_next();
         open_choice_menu(1, 0x16, 7);
@@ -328,7 +328,7 @@ void link_menu_wait_choice(void) {
 
 void menu_yes_no_confirmation_handler(void) {
     const u8 *s = gUnk_08485BD8[15];
-    struct Unk_03006F74 *p = gUnk_03006F74;
+    struct MenuWork *p = gMenuWork;
     u8 *d;
     s32 i;
     u16 a, b;
@@ -350,7 +350,7 @@ void menu_yes_no_confirmation_handler(void) {
     d[i] = s[i];
     i++;
     d[i] = s[i];
-    if (run_message(gUnk_03006F74->unk270)) {
+    if (run_message(gMenuWork->unk270)) {
         if (gGameWork.unk2A == 0)
             gUnk_03005010.unk6 = 0xFF00;
         else
@@ -360,12 +360,12 @@ void menu_yes_no_confirmation_handler(void) {
         if ((a & 0xFF00) == 0xFF00 && (b & 0xFF00) == 0xFF00) {
             message_next();
             if (a == b) {
-                init_blend_effect(gUnk_03006F74->unk50, 0, 0, 1, 0xC0);
+                init_blend_effect(gMenuWork->unk50, 0, 0, 1, 0xC0);
                 gGameSubState = 5;
-                gUnk_03006F74->unk4A = a != 0xFF00;
+                gMenuWork->unk4A = a != 0xFF00;
             } else {
                 gGameSubState = 3;
-                gUnk_03006F74->unk5 = 6;
+                gMenuWork->unk5 = 6;
             }
         }
     }

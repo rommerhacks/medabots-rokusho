@@ -62,7 +62,7 @@ void unpack_item_inventory_to_buffer(void) {
         } else
             ((struct ItemListEntry *)0x02040000)[i].count = f;
     }
-    gUnk_03006F74->unk10 = n;
+    gMenuWork->unk10 = n;
 }
 
 void update_battle_medapart_icons(void) {
@@ -74,8 +74,8 @@ void update_battle_medapart_icons(void) {
 
     for (i = 0; i < n; i++) {
         struct ItemListEntry *l = (struct ItemListEntry *)0x02040000;
-        ids[i] = l[gUnk_03006F74->unk11 + i].id;
-        counts[i] = l[gUnk_03006F74->unk11 + i].count;
+        ids[i] = l[gMenuWork->unk11 + i].id;
+        counts[i] = l[gMenuWork->unk11 + i].count;
     }
     for (i = 0; i < n; i++) {
         clear_sprite_table_mask(i * 16, 0x10);
@@ -116,11 +116,11 @@ void update_battle_medapart_icons(void) {
 
 void item_menu_set_cursor_pos(struct SpriteEntry *sprite) {
     sprite->unk2 = 0x54;
-    sprite->unk4 = (u8)(gUnk_03006F74->unkC % 5) * 16 + 0x1C;
+    sprite->unk4 = (u8)(gMenuWork->unkC % 5) * 16 + 0x1C;
 }
 
 void shop_build_sell_list(void) {
-    u8 kind = gUnk_03006F74->unk19;
+    u8 kind = gMenuWork->unk19;
     s32 i, row;
     u8 n;
     u32 *price;
@@ -146,7 +146,7 @@ void shop_build_sell_list(void) {
             n++;
         }
     }
-    gUnk_03006F74->unk20 = n;
+    gMenuWork->unk20 = n;
 }
 
 void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot) {
@@ -173,7 +173,7 @@ void render_battle_medapart_list(u32 mode) {
     u8 counts[n];
     u8 genders[n];
     u32 prices[n];
-    u8 kind = gUnk_03006F74->unk19;
+    u8 kind = gMenuWork->unk19;
     s32 i;
     s32 first;
 
@@ -195,7 +195,7 @@ void render_battle_medapart_list(u32 mode) {
     }
     for (i = 0; i < n; i++) {
         if (mode == 0) {
-            if (gUnk_03006F74->unk20 > i) {
+            if (gMenuWork->unk20 > i) {
                 render_text_sprites_08040DB8((u8 *)gUnk_083BB9CC[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
                                              13, 1, 1);
                 draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, (REG_BG1CNT >> 8) & 0x1F);
@@ -222,7 +222,7 @@ void render_battle_medapart_list(u32 mode) {
                 break;
         }
     }
-    divide_by_10000(gUnk_030004DE, gUnk_03006F74->unk1C);
+    divide_by_10000(gUnk_030004DE, gMenuWork->unk1C);
     render_text_sprites_08040DB8(gUnk_030004DE, 0x61, 0x13, 5, 7, 12, 2, 0);
 }
 
@@ -235,17 +235,17 @@ static void clear_item_list_map_run(s32 x, s32 y, s32 n) {
 }
 
 void item_menu_draw_page_numbers(void) {
-    draw_number_3digits((u8)(gUnk_03006F74->unkC / 5) + 1, 2, 3);
-    draw_number_3digits((gUnk_03006F74->unk10 - 1) / 5 + 1, 5, 3);
+    draw_number_3digits((u8)(gMenuWork->unkC / 5) + 1, 2, 3);
+    draw_number_3digits((gMenuWork->unk10 - 1) / 5 + 1, 5, 3);
 }
 
 // guess: SELECT reorder, swaps the marked item (unk13) with the cursor item (unkC)
 void swap_inventory_items(void) {
-    memswap(gItemInventory[gUnk_03006F74->unk13], gItemInventory[gUnk_03006F74->unkC], 2);
+    memswap(gItemInventory[gMenuWork->unk13], gItemInventory[gMenuWork->unkC], 2);
 }
 
 void item_menu_update_swap_marker(struct SpriteEntry *attr) {
-    struct Unk_03006F74 *w = gUnk_03006F74;
+    struct MenuWork *w = gMenuWork;
     if (w->unk12) {
         if (w->unk13 >= w->unk11 && w->unk13 < w->unk11 + 5)
             attr->unk0 |= 0x4000;

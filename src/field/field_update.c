@@ -61,7 +61,7 @@ void field_update(void) {
 void new_game_init(void) {
     u32 zero;
 
-    memzero_bytes((u8 *)&gUnk_03002B70, 0x1C);
+    memzero_bytes((u8 *)&gPlayerRecord, 0x1C);
     memzero_bytes((u8 *)gMedals, 0x780);
     memzero_bytes(gMedapartInventory, 0x3C0);
     memzero_bytes((u8 *)gTeamSlots, 0x48);

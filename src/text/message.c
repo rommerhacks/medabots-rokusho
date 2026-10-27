@@ -374,7 +374,7 @@ void text_render_glyph_step(void) {
     gGameWork.msgPos++;
 }
 
-// 0xF9 n: print string variable n (0 = gUnk_03002B74, 1-4 = 20-byte buffers from unk9E), one glyph a call.
+// 0xF9 n: print string variable n (0 = gPlayerName, 1-4 = 20-byte buffers from unk9E), one glyph a call.
 void message_print_var_step(void) {
     u8 w;
     u8 n;
@@ -403,7 +403,7 @@ void message_print_var_step(void) {
                 break;
             case 0:
             default:
-                gGameWork.varText = gUnk_03002B74;
+                gGameWork.varText = gPlayerName;
                 break;
             }
             c = gGameWork.varText[gGameWork.varPos + n++];

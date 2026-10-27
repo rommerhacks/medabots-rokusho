@@ -613,7 +613,7 @@ void link_robattle_exchange_names(void) {
     struct Unk_03005010 *link = &gUnk_03005010;
     u16 packet;
     s16 flag;
-    link->unk6 = gUnk_03002B70.unk4[gBattleWork.unk51] + (flag = ((gBattleWork.unk1AF << 8) & 0x100) + 0x8000);
+    link->unk6 = gPlayerRecord.name[gBattleWork.unk51] + (flag = ((gBattleWork.unk1AF << 8) & 0x100) + 0x8000);
     gGameWork.unk86++;
     if (!(gGameWork.unk86 & 1)) {
         gBattleWork.unk1AF ^= 1;

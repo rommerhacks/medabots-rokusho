@@ -53,7 +53,7 @@ s32 load_save_with_retries(void) {
         return r;
     play_song(0);
     play_sound_effect(0);
-    p = (u8 *)&gUnk_03002B70;
+    p = (u8 *)&gPlayerRecord;
     fe = 0xFE;
     i = 15;
     p += 19;
@@ -71,7 +71,7 @@ void load_save_data(struct SaveData *save) {
     s32 i;
     struct MedalData *medal;
 
-    gUnk_03002B70 = save->unk10;
+    gPlayerRecord = save->unk10;
     medal = save->medals;
     for (i = 0; i < 30; i++) {
         memcpy_optimized(&gMedals[i], medal, sizeof(struct MedalData));
@@ -97,7 +97,7 @@ void serialize_save_data(struct SaveData *save) {
 
     for (i = 0; i < 16; i++)
         save->magic[i] = gSaveMagic[i];
-    save->unk10 = gUnk_03002B70;
+    save->unk10 = gPlayerRecord;
     medal = save->medals;
     for (i = 0; i < 30; i++) {
         memcpy_optimized(medal, &gMedals[i], sizeof(struct MedalData));
@@ -143,9 +143,9 @@ s32 validate_save_data(struct SaveData *save) {
     }
     tmp = TRUE;
     for (i = 0; i < 16; i++) {
-        if (save->unk10.unk4[i] == 0xFE)
+        if (save->unk10.name[i] == 0xFE)
             break;
-        if (save->unk10.unk4[i] != 0) {
+        if (save->unk10.name[i] != 0) {
             tmp = FALSE;
             break;
         }
@@ -154,11 +154,11 @@ s32 validate_save_data(struct SaveData *save) {
         return -1;
     if (save->unk10.money > 99999)
         return -1;
-    if (save->unk10.unk14[0] > 9999)
+    if (save->unk10.robattleCounts[0] > 9999)
         return -1;
-    if (save->unk10.unk14[0] < save->unk10.unk14[1])
+    if (save->unk10.robattleCounts[0] < save->unk10.robattleCounts[1])
         return -1;
-    if (save->unk10.unk18 > 0x014996FF)
+    if (save->unk10.playTime > 0x014996FF)
         return -1;
     if ((save->flags & 3) > 2)
         return -1;

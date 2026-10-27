@@ -44,7 +44,7 @@ void field_menu_open_anim(void) {
         set_tilemap_and_decompress_bg(0x15, 9, gUnk_08488644, REG_BG0CNT, 0x120);
     }
     if (++gGameWork.unk84 > 18) {
-        divide_by_10000(gGameWork.textBuf, gUnk_03002B70.money);
+        divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
         render_text_sprites_08040DB8(gGameWork.textBuf, 10, 0x17, 10, 5, 15, 2, 0);
         gGameWork.fieldMenuCursor = 0;
         field_menu_init_cursor();
@@ -241,7 +241,7 @@ void field_menu_return_expand(void) {
             break;
         }
         set_tilemap_and_decompress_bg(0x15, 9, gUnk_08488644, REG_BG0CNT, 0x120);
-        divide_by_10000(gGameWork.textBuf, gUnk_03002B70.money);
+        divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
         render_text_sprites_08040DB8(gGameWork.textBuf, 10, 0x17, 10, 5, 15, 2, 0);
         field_menu_init_cursor();
         gGameSubState = 2;

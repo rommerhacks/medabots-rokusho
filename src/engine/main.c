@@ -30,8 +30,8 @@ void AgbMain(void) {
         gUnk_03002410 = 0;
         read_keys();
         gFrameCounter++;
-        if (gUnk_03000588 && gUnk_03002B70.unk18 < 0x014996FF)
-            gUnk_03002B70.unk18++;
+        if (gUnk_03000588 && gPlayerRecord.playTime < 0x014996FF)
+            gPlayerRecord.playTime++;
         prevConnected = gSioLink.connected;
         gUnk_03005010.unk1D = 0;
         gUnk_03005010.unk1E = 0;

@@ -15,7 +15,7 @@ void item_menu_update(void) {
 
 // While a SELECT swap is active, blinks the swap marker (sprite 84) if the marked item is on this page.
 static void item_menu_blink_swap_marker(u32 a) {
-    struct Unk_03006F74 *w = gUnk_03006F74;
+    struct MenuWork *w = gMenuWork;
     if (w->unk12) {
         if (w->unk13 >= w->unk11 && w->unk13 < w->unk11 + 5) {
             if (a & 1)
@@ -29,7 +29,7 @@ static void item_menu_blink_swap_marker(u32 a) {
 
 void item_menu_reset(void) {
     u32 zero = 0;
-    CpuFastSet(&zero, gUnk_03006F74, 0x01000100);
+    CpuFastSet(&zero, gMenuWork, 0x01000100);
     reset_bg_scroll();
     REG_DISPCNT = 0x160;
     gGameSubState++;
@@ -60,7 +60,7 @@ void item_menu_load_graphics(void) {
     size = dma3_copy_or_decompress(gUnk_0878B078, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     lz_decompress_dispatch(gUnk_08784CB0, vram_at(size));
-    gUnk_03006F74->unk36 = (size >> 5) - 1;
+    gMenuWork->unk36 = (size >> 5) - 1;
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     for (i = 0; i <= 1; i++) {
         gSpriteEntries[i + 0x51].unk0 = 0x8000;
@@ -91,18 +91,18 @@ void item_menu_load_graphics(void) {
 
 void item_menu_init(void) {
     u32 zero;
-    struct Unk_03006F74 *w;
+    struct MenuWork *w;
 
-    gUnk_03006F74->unk6 = 0;
-    gUnk_03006F74->unkC = 0;
-    gUnk_03006F74->unk11 = 0;
+    gMenuWork->unk6 = 0;
+    gMenuWork->unkC = 0;
+    gMenuWork->unk11 = 0;
     unpack_item_inventory_to_buffer();
     update_battle_medapart_icons();
-    if (gUnk_03006F74->unk10) {
+    if (gMenuWork->unk10) {
         gSpriteEntries[0x53].unk0 |= 0x4000;
         item_menu_set_cursor_pos(&gSpriteEntries[0x53]);
     }
-    w = gUnk_03006F74;
+    w = gMenuWork;
     if ((w->unk10 - 1) / 5) {
         gSpriteEntries[0x51].unk0 |= 0x4000;
         gSpriteEntries[0x52].unk0 |= 0x4000;
@@ -125,7 +125,7 @@ void item_menu_init(void) {
 void item_menu_fade_in(void) {
     struct GameWork *b = &gGameWork;
     if (b->unk84 <= 8) {
-        if (gUnk_03006F74->unk6 == 0)
+        if (gMenuWork->unk6 == 0)
             bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0x3FFF);
         else
             bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0xFFFF);
@@ -139,10 +139,10 @@ void item_menu_fade_in(void) {
 
 void item_menu_show_description(void) {
     u8 id;
-    struct Unk_03006F74 *w;
+    struct MenuWork *w;
     item_menu_blink_swap_marker(gFrameCounter);
     sprite_bob_y(0x53, gFrameCounter, 0x54);
-    w = gUnk_03006F74;
+    w = gMenuWork;
     if (w->unk10) {
         struct ItemListEntry *l = (struct ItemListEntry *)0x02040000;
         id = l[w->unkC].id;
@@ -156,16 +156,16 @@ void item_menu_show_description(void) {
 
 // Item list input: 5 items per page; UP/DOWN move, LEFT/RIGHT page, SELECT starts a swap, A uses, B closes.
 void item_menu_handle_input(void) {
-    struct Unk_03006F74 *w;
-    struct Unk_03006F74 *w2;
-    struct Unk_03006F74 *w3;
+    struct MenuWork *w;
+    struct MenuWork *w2;
+    struct MenuWork *w3;
     struct ItemListEntry *list;
     struct Unk_03006D38 *sel;
     u8 n = 5;
     u8 cnt;
 
     sprite_bob_y(0x53, gFrameCounter, 0x54);
-    if ((gUnk_03006F74->unk10 - 1) / 5) {
+    if ((gMenuWork->unk10 - 1) / 5) {
         if ((gFrameCounter >> 4) & 1) {
             gSpriteEntries[0x51].unk0 |= 0x4000;
             gSpriteEntries[0x52].unk0 |= 0x4000;
@@ -175,7 +175,7 @@ void item_menu_handle_input(void) {
         }
     }
 
-    w = gUnk_03006F74;
+    w = gMenuWork;
     if (w->unk10 > 1) {
         if (KEYS_LO(gRepeatKeys) & 0x40) {
             if (w->unkC == w->unk11) {
@@ -214,7 +214,7 @@ void item_menu_handle_input(void) {
                     w->unk11 = cnt / n * n;
             } else
                 goto other;
-            gUnk_03006F74->unkC = gUnk_03006F74->unk11;
+            gMenuWork->unkC = gMenuWork->unk11;
             update_battle_medapart_icons();
             item_menu_update_swap_marker(&gSpriteEntries[0x54]);
             goto moved;
@@ -222,18 +222,18 @@ void item_menu_handle_input(void) {
     }
 
 other:
-    w2 = gUnk_03006F74;
+    w2 = gMenuWork;
     if (w2->unk12) {
         item_menu_blink_swap_marker(gFrameCounter);
         if (KEYS_LO(gNewKeys) & 2) {
             gSpriteEntries[0x54].unk0 &= 0xBFFF;
-            gUnk_03006F74->unk12 = 0;
+            gMenuWork->unk12 = 0;
             goto moved;
         }
         if (!(KEYS_LO(gNewKeys) & 5))
             return;
         gSpriteEntries[0x54].unk0 &= 0xBFFF;
-        gUnk_03006F74->unk12 = 0;
+        gMenuWork->unk12 = 0;
         swap_inventory_items();
         unpack_item_inventory_to_buffer();
         update_battle_medapart_icons();
@@ -244,7 +244,7 @@ other:
         play_sound_effect(2);
         item_menu_start_swap();
     }
-    w3 = gUnk_03006F74;
+    w3 = gMenuWork;
     if (w3->unk12)
         return;
     if (KEYS_LO(gNewKeys) & 1) {
@@ -265,9 +265,9 @@ other:
             return;
         case 1:
             play_sound_effect(4);
-            switch (ITEM_LIST[gUnk_03006F74->unkC].id) {
+            switch (ITEM_LIST[gMenuWork->unkC].id) {
             case 0:
-                gUnk_03006F74->unk0 = 0;
+                gMenuWork->unk0 = 0;
                 gGameSubState = 0xB;
                 return;
             case 1:
@@ -322,7 +322,7 @@ moved:
 
 // Starts the SELECT reorder: shows the swap marker (sprite 0x54) on the cursor item and remembers it in unk13.
 void item_menu_start_swap(void) {
-    struct Unk_03006F74 **pw = &gUnk_03006F74;
+    struct MenuWork **pw = &gMenuWork;
     item_menu_set_cursor_pos(&gSpriteEntries[0x54]);
     gSpriteEntries[0x54].unk0 |= 0x4000;
     gSpriteEntries[0x54].unk2++;
@@ -372,14 +372,14 @@ void item_menu_start_town_map_fade(void) {
 }
 
 void item_menu_fade_to_town_map(void) {
-    struct Unk_03006F74 *w = gUnk_03006F74;
+    struct MenuWork *w = gMenuWork;
     if (w->unk0 != 8) {
         REG_BLDY = ++w->unk0 * 2;
     } else {
         REG_DISPCNT &= 0xFDFF;
         REG_DISPCNT &= 0xFBFF;
         clear_battle_sprite_slot(0, 0x80);
-        gUnk_03006F74->unk6 = 1;
+        gMenuWork->unk6 = 1;
         gGameState = 10;
         gGameSubState = 0;
     }

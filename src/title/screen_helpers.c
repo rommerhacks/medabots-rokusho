@@ -4,7 +4,7 @@
 #include "global.h"
 
 // Eight sprites (spr[0..7]) bob on a sine wave around y = 80: sprite k uses phase t - (7 - k) * 0x80,
-// amplitude gUnk_03006F74->unk15 (counts down each call), speed unk16 (counts up). Returns 1 once the
+// amplitude gMenuWork->unk15 (counts down each call), speed unk16 (counts up). Returns 1 once the
 // amplitude is 0. The divide by d (not a constant) keeps the __divsi3 call of the original.
 #define WAVE_X(a) (gUnk_080750E0[(a) & 0x3FF] / d * amp >> 3)
 #define SET_WAVE_Y(k, a)                                                                                               \
@@ -17,11 +17,11 @@ static u32 sprite_wave_bob8(struct SpriteEntry *spr) {
     u32 done = 0;
     s32 d = 0x400;
     s32 mid = 80;
-    u8 amp = gUnk_03006F74->unk15;
-    u8 speed = gUnk_03006F74->unk16;
+    u8 amp = gMenuWork->unk15;
+    u8 speed = gMenuWork->unk16;
     s32 ph[8];
 
-    ph[0] = gUnk_03006F74->unk2++ * speed;
+    ph[0] = gMenuWork->unk2++ * speed;
     ph[1] = ph[0] - 0x80;
     ph[2] = ph[0] - 0x100;
     ph[3] = ph[0] - 0x180;
@@ -41,19 +41,19 @@ static u32 sprite_wave_bob8(struct SpriteEntry *spr) {
     SET_WAVE_Y(5, ph[2]);
     SET_WAVE_Y(6, ph[1]);
     SET_WAVE_Y(7, ph[0]);
-    if (gUnk_03006F74->unk15 == 0)
+    if (gMenuWork->unk15 == 0)
         done = 1;
     else {
-        gUnk_03006F74->unk15--;
-        gUnk_03006F74->unk16++;
+        gMenuWork->unk15--;
+        gMenuWork->unk16++;
     }
     return done;
 }
 
 // D-pad moves the town map cursor (unk17) through the neighbour table of the current map; returns 1 on a press.
 u32 town_map_move_cursor(void) {
-    struct Unk_03006F74 **pw = &gUnk_03006F74;
-    struct Unk_03006F74 *w = *pw;
+    struct MenuWork **pw = &gMenuWork;
+    struct MenuWork *w = *pw;
     u8 old = w->unk17;
     u32 off = old * 4 + gFieldWork.unkC32 * 40;
     const u8 *tbl = w->unk18 ? gUnk_080AF674 : gUnk_080AF5FC;
@@ -74,14 +74,14 @@ none:
 }
 
 void update_battle_sprite_priority_flags(void) {
-    if (gUnk_03006F74->unk20 > 4) {
+    if (gMenuWork->unk20 > 4) {
         if ((*(u8 *)0x02023078) == 0)
             gSpriteEntries[104].unk0 &= 0xBFFF;
         else if (gFrameCounter & 8)
             gSpriteEntries[104].unk0 |= 0x4000;
         else
             gSpriteEntries[104].unk0 &= 0xBFFF;
-        if ((*(u8 *)0x02023078) + 3 == gUnk_03006F74->unk20 - 1)
+        if ((*(u8 *)0x02023078) + 3 == gMenuWork->unk20 - 1)
             gSpriteEntries[105].unk0 &= 0xBFFF;
         else if (gFrameCounter & 8)
             gSpriteEntries[105].unk0 |= 0x4000;
@@ -139,7 +139,7 @@ void init_multiplayer_id(void) {
 // guess: link play uses a key word received over the link; new / released keys from it (no callers).
 void keys_update_from(u16 keys) {
     u16 *newKeys = &gNewKeys;
-    u16 *prev = &gUnk_03006F74->unk78;
+    u16 *prev = &gMenuWork->unk78;
     *newKeys = keys & ~*prev;
     gReleasedKeys = *prev & ~keys;
     *prev = keys;

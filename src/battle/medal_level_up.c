@@ -5,7 +5,7 @@
 #include "global.h"
 
 void start_medal_transform(u8 slot) {
-    gUnk_030017EC = slot;
+    gCurrentMedalSlot = slot;
     gGameMode = 2;
     gGameState = 0x18;
     gGameSubState = 0;
@@ -44,13 +44,13 @@ static void medal_transform_update_sparkles(void) {
         }
     }
     REG_BLDCNT = 0xC40;
-    REG_BLDALPHA = (gUnk_03006F74->unk48-- & 0xF) | 0x1000;
+    REG_BLDALPHA = (gMenuWork->unk48-- & 0xF) | 0x1000;
     REG_BLDY = 8;
 }
 
 void medal_transform_init(void) {
     u16 pal[16] = {0, 0x6FFF, 0x6B7A, 0x66D5, 0x622F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    u8 slot = gUnk_030017EC;
+    u8 slot = gCurrentMedalSlot;
     u32 zero;
     int i;
     u32 size;
@@ -70,7 +70,7 @@ void medal_transform_init(void) {
     size = dma3_copy_or_decompress(gUnk_087A46F8, (void *)0x02030000);
     CpuFastSet((void *)0x02030000, (void *)0x06004000, (size << 9) >> 11);
     size = 0x1800;
-    gUnk_03006F74->unk36 = 0xC4;
+    gMenuWork->unk36 = 0xC4;
     CpuFastSet(gMedalIconTiles + gMedals[slot].graphicId * 0x80, vram + size, 0x20);
     lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + 0x06000080));
     {
@@ -118,8 +118,8 @@ void medal_transform_draw_medal(void) {
     int i;
     int id, fr;
 
-    id = gMedals[gUnk_030017EC].graphicId;
-    fr = gMedals[gUnk_030017EC].spriteVariant - 1;
+    id = gMedals[gCurrentMedalSlot].graphicId;
+    fr = gMedals[gCurrentMedalSlot].spriteVariant - 1;
     lz_decompress_dispatch(gMedalSpriteGfx[id][fr], (void *)0x06010000);
     s = gSpriteEntries;
     zero = 0;
@@ -133,37 +133,37 @@ void medal_transform_draw_medal(void) {
     s->unk8 = 0x40;
     s->unk9 = 0x40;
     for (i = 0; i < 16; i++) {
-        gUnk_030004DE[i] = ((const u8 *)gMedalNames[gMedals[gUnk_030017EC].graphicId])[i];
+        gUnk_030004DE[i] = ((const u8 *)gMedalNames[gMedals[gCurrentMedalSlot].graphicId])[i];
         if (gUnk_030004DE[i] == 0xFE)
             break;
     }
     render_text_sprites_08040DB8(gUnk_030004DE, 0x14, 5, 10, 10, 1, 1, 0);
-    if (gMedals[gUnk_030017EC].level == 100) {
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029A) = (gUnk_03006F74->unk36 + 0x14) | 0x7000;
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DA) = (gUnk_03006F74->unk36 + 0x15) | 0x7000;
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029C) = (gUnk_03006F74->unk36 + 0x16) | 0x7000;
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DC) = (gUnk_03006F74->unk36 + 0x17) | 0x7000;
+    if (gMedals[gCurrentMedalSlot].level == 100) {
+        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029A) = (gMenuWork->unk36 + 0x14) | 0x7000;
+        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DA) = (gMenuWork->unk36 + 0x15) | 0x7000;
+        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029C) = (gMenuWork->unk36 + 0x16) | 0x7000;
+        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DC) = (gMenuWork->unk36 + 0x17) | 0x7000;
     } else {
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029A) =
-            (gUnk_03006F74->unk36 + (u8)(gMedals[gUnk_030017EC].level / 10u) * 2) | 0x7000;
+            (gMenuWork->unk36 + (u8)(gMedals[gCurrentMedalSlot].level / 10u) * 2) | 0x7000;
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DA) =
-            (gUnk_03006F74->unk36 + (u8)(gMedals[gUnk_030017EC].level / 10u) * 2 + 1) | 0x7000;
+            (gMenuWork->unk36 + (u8)(gMedals[gCurrentMedalSlot].level / 10u) * 2 + 1) | 0x7000;
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029C) =
-            (gUnk_03006F74->unk36 + (u8)(gMedals[gUnk_030017EC].level % 10u) * 2) | 0x7000;
+            (gMenuWork->unk36 + (u8)(gMedals[gCurrentMedalSlot].level % 10u) * 2) | 0x7000;
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DC) =
-            (gUnk_03006F74->unk36 + (u8)(gMedals[gUnk_030017EC].level % 10u) * 2 + 1) | 0x7000;
+            (gMenuWork->unk36 + (u8)(gMedals[gCurrentMedalSlot].level % 10u) * 2 + 1) | 0x7000;
     }
-    render_text_sprites_08040DB8(gMedals[gUnk_030017EC].name, 0x1E, 0x11, 10, 10, 2, 0, 0);
+    render_text_sprites_08040DB8(gMedals[gCurrentMedalSlot].name, 0x1E, 0x11, 10, 10, 2, 0, 0);
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
-    gUnk_03006F74->unk3A = 0;
-    gUnk_03006F74->unk48 = 0;
-    gUnk_03006F74->unk49 = 0;
-    gUnk_03006F74->unk4A = 0;
-    gUnk_03006F74->unk4B = 0;
-    gUnk_03006F74->unk5 = 0;
+    gMenuWork->unk3A = 0;
+    gMenuWork->unk48 = 0;
+    gMenuWork->unk49 = 0;
+    gMenuWork->unk4A = 0;
+    gMenuWork->unk4B = 0;
+    gMenuWork->unk5 = 0;
     gGameSubState++;
     gGameWork.unk84 = 0;
 }
@@ -187,17 +187,17 @@ void medal_transform_fade_in(void) {
 void medal_transform_flash_in(void) {
     medal_transform_update_sparkles();
     if (run_message(gUnk_08485788[0x11])) {
-        int t = (s16)gUnk_03006F74->unk3A++;
+        int t = (s16)gMenuWork->unk3A++;
         if (t > 0x77) {
             t -= 0x78;
             if (t <= 0x80)
                 obj_palettes_blend_masked_now(0x7FFF, t >> 2, 1);
             else {
                 struct MedalData *b = gMedals;
-                struct MedalData *m = &b[gUnk_030017EC];
+                struct MedalData *m = &b[gCurrentMedalSlot];
                 u8 id = m->graphicId;
                 lz_decompress_dispatch(gMedalSpriteGfx[id][m->spriteVariant], (void *)0x06010000);
-                gUnk_03006F74->unk3A = 0;
+                gMenuWork->unk3A = 0;
                 gGameSubState++;
             }
         }
@@ -207,7 +207,7 @@ void medal_transform_flash_in(void) {
 void medal_transform_flash_out(void) {
     int t;
     medal_transform_update_sparkles();
-    t = (s16)gUnk_03006F74->unk3A++;
+    t = (s16)gMenuWork->unk3A++;
     if (t > 0x3B) {
         t -= 0x3C;
         if (t <= 0x80)
@@ -222,13 +222,13 @@ void medal_transform_flash_out(void) {
 void medal_transform_wait_confirm(void) {
     medal_transform_update_sparkles();
     if (run_message(gUnk_08485788[0x12]) && (*(u8 *)&gNewKeys & 1)) {
-        init_blend_effect(gUnk_03006F74->unk50, 0, 0, 1, 0xC0);
+        init_blend_effect(gMenuWork->unk50, 0, 0, 1, 0xC0);
         gGameSubState++;
     }
 }
 
 void medal_transform_exit(void) {
-    if (blend_fade_step_08065598(gUnk_03006F74->unk50)) {
+    if (blend_fade_step_08065598(gMenuWork->unk50)) {
         gGameMode = 0;
         gGameState = 6;
         gGameSubState = 0x50;

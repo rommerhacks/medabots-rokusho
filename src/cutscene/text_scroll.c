@@ -38,7 +38,7 @@ static void text_scroll_draw_bar(s32 len, s32 step) {
 
 void text_scroll_shift_row(s32 row, s32 step) {
     u16 buf[32];
-    u8 x = gUnk_080AFE96[gUnk_03006F74->unk5];
+    u8 x = gUnk_080AFE96[gMenuWork->unk5];
     if (step <= 14) {
         CpuSet((u8 *)VRAM + ((REG_BG0CNT >> 8) & 0x1F) * 0x800 + x * 2 + 0x100, buf, (30 - x) & 0x1FFFFF);
         CpuSet(buf, (u8 *)VRAM + ((REG_BG0CNT >> 8) & 0x1F) * 0x800 + (x + 1) * 2 + 0x100, (29 - x) & 0x1FFFFF);
@@ -132,17 +132,17 @@ void text_scroll_init(void) {
     CpuFastSet(pal, (void *)0x0202F800, 0x20);
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
     CpuFastSet(gUnk_0850DEB8, (void *)0x05000200, 8);
-    for (i = 0; i < sizeof(gUnk_03006F74->unkA2); i++) {
-        gUnk_03006F74->unkA2[i] = 0x78;
-        gUnk_03006F74->unkA7[i] = 0x50;
+    for (i = 0; i < sizeof(gMenuWork->unkA2); i++) {
+        gMenuWork->unkA2[i] = 0x78;
+        gMenuWork->unkA7[i] = 0x50;
     }
-    for (i = 0; i < sizeof(gUnk_03006F74->unk8A) / sizeof(gUnk_03006F74->unk8A[0]); i++) {
-        struct Unk_03006F74 *p = gUnk_03006F74;
+    for (i = 0; i < sizeof(gMenuWork->unk8A) / sizeof(gMenuWork->unk8A[0]); i++) {
+        struct MenuWork *p = gMenuWork;
         p->unk8A[i] = 0;
         p->unk92[i] = 0;
         p->unk9A[i] = 0;
     }
-    gUnk_03006F74->unk3C = 0;
+    gMenuWork->unk3C = 0;
     for (i = 0; i < 0x48; i++) {
         gSpriteEntries[i + 1].unk0 = 0xC800;
         gSpriteEntries[i + 1].unk1C = 2;
@@ -165,11 +165,11 @@ void text_scroll_init(void) {
     REG_BLDCNT = 0x844;
     REG_BLDALPHA = 0x1004;
     REG_BLDY = 8;
-    gUnk_03006F74->unk3A = 0;
-    gUnk_03006F74->unk48 = 0;
-    gUnk_03006F74->unk49 = 0;
-    gUnk_03006F74->unk4A = 0;
-    gUnk_03006F74->unk4B = 0;
+    gMenuWork->unk3A = 0;
+    gMenuWork->unk48 = 0;
+    gMenuWork->unk49 = 0;
+    gMenuWork->unk4A = 0;
+    gMenuWork->unk4B = 0;
     gGameWork.unk84 = 0;
     gGameSubState++;
 }
@@ -184,23 +184,23 @@ void text_scroll_fade_in(void) {
         bg_palettes_blend_masked_now(0, 0x20 - (*n / 2), 0xFFFF);
         obj_palettes_blend_masked_now(0, 0x20 - (*n / 2), 0xFFFF);
         s->unk84++;
-        gUnk_03006F74->unk5 = 0;
+        gMenuWork->unk5 = 0;
     } else
         gGameSubState++;
 }
 
 void text_scroll_page_start(void) {
     struct PtrTable3 t = gUnk_080AFE9C;
-    struct Unk_03006F74 *s;
+    struct MenuWork *s;
     update_scene_animation_frame();
-    s = gUnk_03006F74;
+    s = gMenuWork;
     if (++s->unk3A > 0xD) {
         if (text_scroll_slide_in_heading(s->unk5, s->unk3A - 0xE)) {
-            struct Unk_03006F74 *u = gUnk_03006F74;
+            struct MenuWork *u = gMenuWork;
             u->unkAC = t.p[u->unk5];
             u->unk3A = 0;
             gGameSubState++;
-            gUnk_03006F74->unk7D = text_line_glyph_count((u8 *)*u->unkAC);
+            gMenuWork->unk7D = text_line_glyph_count((u8 *)*u->unkAC);
         }
     } else
         ((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[(s->unk3A + 2) * 32] = *(u16 *)0x0600D8C0;
@@ -209,32 +209,32 @@ void text_scroll_page_start(void) {
 void text_scroll_lines(void) {
     int lines;
     update_scene_animation_frame();
-    lines = gUnk_0848417C[gUnk_03006F74->unk5];
-    if ((u16)gUnk_03006F74->unk3A % 32 == 0) {
-        if (lines > gUnk_03006F74->unk3A / 32) {
-            text_scroll_draw_line(*gUnk_03006F74->unkAC, (gUnk_03006F74->unk3A / 32 + 0x10) & 0x1F);
-            if (lines == gUnk_03006F74->unk3A / 32)
-                gUnk_03006F74->unk7D = 0;
+    lines = gUnk_0848417C[gMenuWork->unk5];
+    if ((u16)gMenuWork->unk3A % 32 == 0) {
+        if (lines > gMenuWork->unk3A / 32) {
+            text_scroll_draw_line(*gMenuWork->unkAC, (gMenuWork->unk3A / 32 + 0x10) & 0x1F);
+            if (lines == gMenuWork->unk3A / 32)
+                gMenuWork->unk7D = 0;
             else
-                gUnk_03006F74->unk7D = text_line_glyph_count((u8 *)*gUnk_03006F74->unkAC);
-            gUnk_03006F74->unkAC++;
+                gMenuWork->unk7D = text_line_glyph_count((u8 *)*gMenuWork->unkAC);
+            gMenuWork->unkAC++;
         } else {
             gGameSubState++;
-            gUnk_03006F74->unk3A = -1;
+            gMenuWork->unk3A = -1;
         }
     }
-    text_scroll_draw_bar(gUnk_03006F74->unk7D, gUnk_03006F74->unk3A & 0x1F);
-    text_scroll_shift_row((gUnk_03006F74->unk3A / 32 + 5) & 0x1F, (gUnk_03006F74->unk3A + 2) & 0x1F);
-    if ((gUnk_03006F74->unk3A & 3) == 0)
+    text_scroll_draw_bar(gMenuWork->unk7D, gMenuWork->unk3A & 0x1F);
+    text_scroll_shift_row((gMenuWork->unk3A / 32 + 5) & 0x1F, (gMenuWork->unk3A + 2) & 0x1F);
+    if ((gMenuWork->unk3A & 3) == 0)
         gBg1Scroll.y++;
-    gUnk_03006F74->unk3A++;
+    gMenuWork->unk3A++;
 }
 
 void text_scroll_page_end(void) {
     update_scene_animation_frame();
-    if (text_scroll_slide_out_heading(gUnk_03006F74->unk3A++)) {
-        gUnk_03006F74->unk3A = 0;
-        if (++gUnk_03006F74->unk5 > 2)
+    if (text_scroll_slide_out_heading(gMenuWork->unk3A++)) {
+        gMenuWork->unk3A = 0;
+        if (++gMenuWork->unk5 > 2)
             gGameSubState++;
         else {
             gBg1Scroll.y = 0;
@@ -244,9 +244,9 @@ void text_scroll_page_end(void) {
 }
 
 void text_scroll_clear_bar(void) {
-    struct Unk_03006F74 *s;
+    struct MenuWork *s;
     update_scene_animation_frame();
-    s = gUnk_03006F74;
+    s = gMenuWork;
     if (++s->unk3A > 0xE) {
         gGameSubState++;
         s->unk3E = 0;
@@ -257,10 +257,10 @@ void text_scroll_clear_bar(void) {
 
 void text_scroll_fade_out(void) {
     update_scene_animation_frame();
-    if (gUnk_03006F74->unk3E <= 0xC0) {
-        bg_palettes_blend_masked_now(0, (s16)(gUnk_03006F74->unk3E / 6), 0xFFFF);
-        obj_palettes_blend_masked_now(0, (s16)(gUnk_03006F74->unk3E / 6), 0xFFFF);
-        gUnk_03006F74->unk3E++;
+    if (gMenuWork->unk3E <= 0xC0) {
+        bg_palettes_blend_masked_now(0, (s16)(gMenuWork->unk3E / 6), 0xFFFF);
+        obj_palettes_blend_masked_now(0, (s16)(gMenuWork->unk3E / 6), 0xFFFF);
+        gMenuWork->unk3E++;
     } else if (is_music_fading() == 0) {
         gGameSubState = 0;
         dispatch_by_index_0476e8(0xC);

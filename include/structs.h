@@ -196,13 +196,12 @@ struct SpriteAnimFrame {
     u8 filler5[3];
 };
 
-// 0x03002B70: money, then a 10-byte string (init_save_prompt_text writes a default one).
-struct Unk_03002B70 {
-    u32 money;
-    u8 unk4[16];  // player name, 0xFE-terminated (validate_save_data rejects an empty one)
-    u16 unk14[2]; // gUnk_03002B84: [0] counted on every Robattle, [1] only on some (guess: fought / won); both <= 9999,
-                  // [0] >= [1]
-    u32 unk18;    // at most 0x014996FF (validate_save_data; guess: play time in frames, below 100 hours)
+// 0x03002B70 (gPlayerRecord): what the save screen shows and the save file keeps in its header.
+struct PlayerRecord {
+    u32 money;             // in cents ($0.20 = 20), capped at 99999 (add_money)
+    u8 name[16];           // player name, 0xFE-terminated (validate_save_data rejects an empty one)
+    u16 robattleCounts[2]; // gRobattleCounts: [0] Robattles fought, [1] won (save screen WINS / TOTAL); <= 9999
+    u32 playTime;          // play time in frames (save screen GAME TIME = / 3600 min); < 0x014996FF (100 hours)
 };
 
 // Tile animation slot at gGameWork.tileAnims (tile_anim_init / tile_anim_run): each script step copies
@@ -321,7 +320,7 @@ struct GameWork {
     u8 shownRightArm;
     u8 shownLeftArm;
     u8 shownLegs;
-    u8 unk9C; // game state 6: 1 picks song 14 and counts gUnk_03002B84[1] (guess: battle won)
+    u8 unk9C; // game state 6: 1 picks song 14 and counts gRobattleCounts[1] (guess: battle won)
     u8 filler9D;
     u8 textBuf[0x50]; // digit buffer (divide_by_10000); also four 0x14-byte name buffers for messages
                       // (message_print_var_step)
@@ -1545,7 +1544,6 @@ struct SceneSlot {
     u32 unk2C; // flags: 1 pending, 2 load, 4 loaded, 8 visible
 };
 
-// Menu / save screen work area, reached through the pointer gUnk_03006F74 (layout as used by code_0805AB40)
 // One of 18 points placed on a hexagon (ring_points_place_on_hexagon) or a circle (ring_points_place_on_circle)
 struct RingPoint {
     s16 unk0; // radius
@@ -1557,7 +1555,8 @@ struct RingPoint {
     u8 fillerC[4];
 };
 
-struct Unk_03006F74 {
+// Menu / save screen work area, reached through the pointer gMenuWork (layout as used by code_0805AB40)
+struct MenuWork {
     u8 unk0;
     u8 unk1;
     u16 unk2;
@@ -1633,7 +1632,7 @@ struct Unk_03006F74 {
     u8 unk270[0x30];         // message text buffer (shop_menu_greeting)
 };
 
-// BLDY fade state (init_blend_effect / blend_fade_step_08065598; Unk_03006F74.unk50)
+// BLDY fade state (init_blend_effect / blend_fade_step_08065598; MenuWork.unk50)
 struct BlendEffect {
     u16 mode; // BLDCNT effect bits (| 0x3F)
     u8 unk2;  // BLDY level
@@ -1666,7 +1665,7 @@ struct Unk_03001784 {
 // Battery save image (0x1CBC bytes), built by serialize_save_data and read back by load_save_data
 struct SaveData {
     u8 magic[16];                // copied from gSaveMagic
-    struct Unk_03002B70 unk10;   // gUnk_03002B70 (money, name, ...)
+    struct PlayerRecord unk10;   // gPlayerRecord (money, name, ...)
     struct MedalData medals[30]; // gMedals
     u16 medaparts[4 * 120 * 2];  // gMedapartInventory, one byte per halfword
     struct TeamSlot team[9];     // gTeamSlots

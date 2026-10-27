@@ -65,16 +65,16 @@ void load_overworld_column_and_advance(void) {
 void init_save_prompt_text(void) {
     u8 r;
 
-    gUnk_03002B70.unk4[0] = 0x17;
-    gUnk_03002B70.unk4[1] = 0x29;
-    gUnk_03002B70.unk4[2] = 0x2C;
-    gUnk_03002B70.unk4[3] = 0x25;
-    gUnk_03002B70.unk4[4] = 0;
-    gUnk_03002B70.unk4[5] = 0x2E;
-    gUnk_03002B70.unk4[6] = 0x1F;
-    gUnk_03002B70.unk4[7] = 0x2D;
-    gUnk_03002B70.unk4[8] = 0x2E;
-    gUnk_03002B70.unk4[9] = 0xFE;
+    gPlayerRecord.name[0] = 0x17;
+    gPlayerRecord.name[1] = 0x29;
+    gPlayerRecord.name[2] = 0x2C;
+    gPlayerRecord.name[3] = 0x25;
+    gPlayerRecord.name[4] = 0;
+    gPlayerRecord.name[5] = 0x2E;
+    gPlayerRecord.name[6] = 0x1F;
+    gPlayerRecord.name[7] = 0x2D;
+    gPlayerRecord.name[8] = 0x2E;
+    gPlayerRecord.name[9] = 0xFE;
     r = run_message(gMenuMessages[0]);
     if (r == 1)
         gGameSubState = r;

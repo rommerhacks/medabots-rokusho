@@ -51,7 +51,7 @@ void test_mode_load_graphics(void) {
     size = dma3_copy_or_decompress(gUnk_08790600, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     lz_decompress_dispatch(gUnk_08784CB0, vram_at(size));
-    gUnk_03006F74->unk36 = (size >> 5) - 1;
+    gMenuWork->unk36 = (size >> 5) - 1;
     zero = 0;
     CpuFastSet(gUnk_08790400, (void *)PLTT, 0x80);
     CpuFastSet(gUnk_08483AA0, (void *)(PLTT + 0x1C0), 8);
@@ -61,9 +61,9 @@ void test_mode_load_graphics(void) {
     gSpriteEntries[0].unk1C = 2;
     gSpriteEntries[0].unkA = 0xE;
     gSpriteEntries[0].unk6 = 6;
-    gUnk_03006F74->unk5 = zero;
+    gMenuWork->unk5 = zero;
     gSpriteEntries[0].unk2 = 0x14;
-    gSpriteEntries[0].unk4 = gUnk_03006F74->unk5 * 16 + 0x20;
+    gSpriteEntries[0].unk4 = gMenuWork->unk5 * 16 + 0x20;
     for (i = 0; i <= 1; i++) {
         gSpriteEntries[i + 1].unk0 = 0x8000;
         gSpriteEntries[i + 1].unk1C = 2;
@@ -94,28 +94,28 @@ void test_mode_show_screen(void) {
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
-    gUnk_03006F74->unk2B = 0;
-    gUnk_03006F74->unk2C = 0;
-    draw_number(gUnk_03006F74->unk2B, -2, 0x10, 4, 2, (REG_BG1CNT >> 8) & 0x1F);
-    draw_number(gUnk_03006F74->unk2C, -3, 0xF, 6, 2, (REG_BG1CNT >> 8) & 0x1F);
-    gUnk_03006F74->unk0 = 0x20;
-    REG_BLDY = gUnk_03006F74->unk0 >> 1;
+    gMenuWork->unk2B = 0;
+    gMenuWork->unk2C = 0;
+    draw_number(gMenuWork->unk2B, -2, 0x10, 4, 2, (REG_BG1CNT >> 8) & 0x1F);
+    draw_number(gMenuWork->unk2C, -3, 0xF, 6, 2, (REG_BG1CNT >> 8) & 0x1F);
+    gMenuWork->unk0 = 0x20;
+    REG_BLDY = gMenuWork->unk0 >> 1;
     gGameSubState++;
 }
 
 void test_mode_fade_in(void) {
-    struct Unk_03006F74 *p = gUnk_03006F74;
+    struct MenuWork *p = gMenuWork;
 
     if (p->unk0 != 0) {
         REG_BLDY = p->unk0-- >> 1;
     } else {
         p->unk2 = 0;
         p->unk0 = 0;
-        gUnk_03006F74->unk6 = 0;
-        gUnk_03006F74->unk48 = 0;
-        gUnk_03006F74->unk49 = 0;
-        gUnk_03006F74->unk4A = 0;
-        gUnk_03006F74->unk4B = 0;
+        gMenuWork->unk6 = 0;
+        gMenuWork->unk48 = 0;
+        gMenuWork->unk49 = 0;
+        gMenuWork->unk4A = 0;
+        gMenuWork->unk4B = 0;
         gSpriteEntries[0].unk0 |= 0x4000;
         gSpriteEntries[1].unk0 |= 0x4000;
         gGameSubState++;
@@ -124,28 +124,28 @@ void test_mode_fade_in(void) {
 
 void test_mode_update(void) {
     sprite_bob_y(0, gFrameCounter, 0x14);
-    if (gUnk_03006F74->unk48 != 0) {
-        if (--gUnk_03006F74->unk48 == 0)
+    if (gMenuWork->unk48 != 0) {
+        if (--gMenuWork->unk48 == 0)
             play_sound_effect(2);
     }
     if (KEYS_LO(gRepeatKeys) & 0x40) {
-        if (gUnk_03006F74->unk5 != 0)
-            gUnk_03006F74->unk5--;
+        if (gMenuWork->unk5 != 0)
+            gMenuWork->unk5--;
         else
-            gUnk_03006F74->unk5 = 3;
+            gMenuWork->unk5 = 3;
         play_song(0);
-        gUnk_03006F74->unk48 = 2;
+        gMenuWork->unk48 = 2;
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
-        if (gUnk_03006F74->unk5 <= 2)
-            gUnk_03006F74->unk5++;
+        if (gMenuWork->unk5 <= 2)
+            gMenuWork->unk5++;
         else
-            gUnk_03006F74->unk5 = 0;
+            gMenuWork->unk5 = 0;
         play_song(0);
-        gUnk_03006F74->unk48 = 2;
+        gMenuWork->unk48 = 2;
     }
-    gSpriteEntries[0].unk4 = gUnk_03006F74->unk5 * 16 + 0x20;
-    switch (gUnk_03006F74->unk5) {
+    gSpriteEntries[0].unk4 = gMenuWork->unk5 * 16 + 0x20;
+    switch (gMenuWork->unk5) {
     case 0:
         if (gFrameCounter & 8) {
             gSpriteEntries[1].unk0 |= 0x4000;
@@ -175,54 +175,54 @@ void test_mode_update(void) {
         gSpriteEntries[4].unk0 &= 0xBFFF;
         break;
     }
-    switch (gUnk_03006F74->unk5) {
+    switch (gMenuWork->unk5) {
     case 0:
         if (KEYS_LO(gRepeatKeys) & 0x20) {
-            if (gUnk_03006F74->unk2B != 0)
-                gUnk_03006F74->unk2B--;
+            if (gMenuWork->unk2B != 0)
+                gMenuWork->unk2B--;
             else
-                gUnk_03006F74->unk2B = 0x33;
-            draw_number(gUnk_03006F74->unk2B, -2, 0x10, 4, 2, (REG_BG1CNT >> 8) & 0x1F);
+                gMenuWork->unk2B = 0x33;
+            draw_number(gMenuWork->unk2B, -2, 0x10, 4, 2, (REG_BG1CNT >> 8) & 0x1F);
         }
         if (KEYS_LO(gRepeatKeys) & 0x10) {
-            if (gUnk_03006F74->unk2B <= 0x32)
-                gUnk_03006F74->unk2B++;
+            if (gMenuWork->unk2B <= 0x32)
+                gMenuWork->unk2B++;
             else
-                gUnk_03006F74->unk2B = 0;
-            draw_number(gUnk_03006F74->unk2B, -2, 0x10, 4, 2, (REG_BG1CNT >> 8) & 0x1F);
+                gMenuWork->unk2B = 0;
+            draw_number(gMenuWork->unk2B, -2, 0x10, 4, 2, (REG_BG1CNT >> 8) & 0x1F);
         }
         break;
     case 1:
         if (KEYS_LO(gRepeatKeys) & 0x20) {
-            if (gUnk_03006F74->unk2C != 0)
-                gUnk_03006F74->unk2C--;
+            if (gMenuWork->unk2C != 0)
+                gMenuWork->unk2C--;
             else
-                gUnk_03006F74->unk2C = 0x75;
-            draw_number(gUnk_03006F74->unk2C, -3, 0xF, 6, 2, (REG_BG1CNT >> 8) & 0x1F);
+                gMenuWork->unk2C = 0x75;
+            draw_number(gMenuWork->unk2C, -3, 0xF, 6, 2, (REG_BG1CNT >> 8) & 0x1F);
         }
         if (KEYS_LO(gRepeatKeys) & 0x10) {
-            if (gUnk_03006F74->unk2C <= 0x74)
-                gUnk_03006F74->unk2C++;
+            if (gMenuWork->unk2C <= 0x74)
+                gMenuWork->unk2C++;
             else
-                gUnk_03006F74->unk2C = 0;
-            draw_number(gUnk_03006F74->unk2C, -3, 0xF, 6, 2, (REG_BG1CNT >> 8) & 0x1F);
+                gMenuWork->unk2C = 0;
+            draw_number(gMenuWork->unk2C, -3, 0xF, 6, 2, (REG_BG1CNT >> 8) & 0x1F);
         }
         break;
     }
-    if (gUnk_03006F74->unk4B != 0)
-        gUnk_03006F74->unk4B--;
-    if (gUnk_03006F74->unk4A != 0 && gUnk_03006F74->unk4B == 0) {
-        play_sound_effect(gUnk_03006F74->unk4A);
-        gUnk_03006F74->unk4A = 0;
+    if (gMenuWork->unk4B != 0)
+        gMenuWork->unk4B--;
+    if (gMenuWork->unk4A != 0 && gMenuWork->unk4B == 0) {
+        play_sound_effect(gMenuWork->unk4A);
+        gMenuWork->unk4A = 0;
     }
     if (KEYS_LO(gNewKeys) & 1) {
-        switch (gUnk_03006F74->unk5) {
+        switch (gMenuWork->unk5) {
         case 0:
-            play_song(gSoundTestSongs[gUnk_03006F74->unk2B]);
+            play_song(gSoundTestSongs[gMenuWork->unk2B]);
             return;
         case 1:
-            gUnk_03006F74->unk4B = 2;
-            gUnk_03006F74->unk4A = gSoundTestEffects[gUnk_03006F74->unk2C];
+            gMenuWork->unk4B = 2;
+            gMenuWork->unk4A = gSoundTestEffects[gMenuWork->unk2C];
             play_song(0);
             play_sound_effect(0);
             return;
@@ -233,18 +233,18 @@ void test_mode_update(void) {
             gGameSubState = 6;
             return;
         case 3:
-            gUnk_03006F74->unk49 = 0;
+            gMenuWork->unk49 = 0;
             break;
         default:
             return;
         }
     } else if (KEYS_LO(gNewKeys) & 2) {
-        gUnk_03006F74->unk49 = 1;
+        gMenuWork->unk49 = 1;
     } else {
         return;
     }
     play_song(0);
-    gUnk_03006F74->unk0 = 0;
+    gMenuWork->unk0 = 0;
     gGameSubState = 5;
     gSpriteEntries[0].unk0 &= 0xBFFF;
     gSpriteEntries[1].unk0 &= 0xBFFF;
@@ -254,11 +254,11 @@ void test_mode_update(void) {
 }
 
 void test_mode_fade_out_exit(void) {
-    if (gUnk_03006F74->unk0 == 1)
-        play_sound_effect(gUnk_03006F74->unk49 ? 5 : 4);
-    if (gUnk_03006F74->unk0 != 32) {
-        gUnk_03006F74->unk0++;
-        REG_BLDY = gUnk_03006F74->unk0 >> 1;
+    if (gMenuWork->unk0 == 1)
+        play_sound_effect(gMenuWork->unk49 ? 5 : 4);
+    if (gMenuWork->unk0 != 32) {
+        gMenuWork->unk0++;
+        REG_BLDY = gMenuWork->unk0 >> 1;
     } else {
         REG_DISPCNT &= 0xFDFF;
         gGameMode = 3;
@@ -275,7 +275,7 @@ void test_mode_erase_prompt(void) {
 
 void test_mode_erase_choice(void) {
     if (poll_choice_menu()) {
-        gUnk_03006F74->unk2 = 0;
+        gMenuWork->unk2 = 0;
         message_next();
         if (gGameWork.unk2A == 0)
             gGameSubState = 9;
@@ -286,7 +286,7 @@ void test_mode_erase_choice(void) {
 
 void test_mode_erase_caution(void) {
     if (run_message(gUnk_08485788[16])) {
-        if (gUnk_03006F74->unk2++ > 60)
+        if (gMenuWork->unk2++ > 60)
             gGameSubState = 13;
     }
 }
@@ -301,13 +301,13 @@ void test_mode_erase_start(void) {
         play_song(0);
         play_sound_effect(0);
         eeprom_setup_timer_irq();
-        gUnk_03006F74->unk2 = 0;
+        gMenuWork->unk2 = 0;
         gGameSubState++;
     }
 }
 
 void test_mode_erase_save(void) {
-    u8 t = gUnk_03006F74->unk2++;
+    u8 t = gMenuWork->unk2++;
     u16 err = 0;
     s8 i;
 
@@ -319,11 +319,11 @@ void test_mode_erase_save(void) {
         }
         if (err == 0) {
             message_next();
-            gUnk_03006F74->unk2 = err;
+            gMenuWork->unk2 = err;
             gGameSubState++;
         } else {
             message_next();
-            gUnk_03006F74->unk2 = 0;
+            gMenuWork->unk2 = 0;
             gGameSubState = 12;
         }
     }
@@ -331,14 +331,14 @@ void test_mode_erase_save(void) {
 
 void test_mode_erase_done(void) {
     if (run_message(gUnk_08485788[5])) {
-        if (gUnk_03006F74->unk2++ > 60)
+        if (gMenuWork->unk2++ > 60)
             gGameSubState = 8;
     }
 }
 
 void test_mode_erase_failed(void) {
     if (run_message(gUnk_08485788[6])) {
-        if (gUnk_03006F74->unk2++ > 60)
+        if (gMenuWork->unk2++ > 60)
             gGameSubState = 8;
     }
 }

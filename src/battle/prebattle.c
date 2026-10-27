@@ -317,9 +317,9 @@ void prebattle_open_team_select(void) {
 // re/scratch/afterbattle_probe.txt): 53 opponent line, 55-61 Medapart won (START = details),
 // 64-65 experience, 66+ Medal level-ups and Medaforces per team member (unk186)
 void afterbattle_count_battle(void) {
-    inc_u16_saturating(&gUnk_03002B84[0], 9999);
+    inc_u16_saturating(&gRobattleCounts[0], 9999);
     if (gGameWork.unk9C == 1) {
-        inc_u16_saturating(&gUnk_03002B84[1], 9999);
+        inc_u16_saturating(&gRobattleCounts[1], 9999);
         play_song(14);
     } else
         play_song(15);

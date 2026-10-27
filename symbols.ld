@@ -17,7 +17,7 @@ gReleasedKeys       = 0x03001C00;
 gHeldKeys           = 0x03002B64;
 gKeyRepeatTimer     = 0x03002418;
 gMoney       = 0x03002B70;
-gUnk_03002B70       = 0x03002B70;
+gPlayerRecord       = 0x03002B70;
 gUnk_03006D20       = 0x03006D20;
 gGameWork       = 0x03000440;
 gUnk_03000588       = 0x03000588;
@@ -77,7 +77,7 @@ gOptionTimeLimit       = 0x03001788;
 gBg1Scroll       = 0x03004C30;
 gUnk_03005310       = 0x03005310;
 gBlendEffect       = 0x03006F40;
-gUnk_03006F74       = 0x03006F74;
+gMenuWork       = 0x03006F74;
 gUnk_030055A0       = 0x030055A0;
 gBg2Scroll       = 0x0300057C;
 gBg3Scroll       = 0x03001C04;
@@ -87,7 +87,7 @@ gUnk_03006D38       = 0x03006D38;
 gUnk_03003810       = 0x03003810;
 
 /* ===== ROM data ===== */
-gUnk_030017EC    = 0x030017EC;
+gCurrentMedalSlot    = 0x030017EC;
 gUnk_03003870    = 0x03003870;
 gUnk_03005664    = 0x03005664;
 
@@ -106,7 +106,7 @@ gUnk_02020800       = 0x02020800;
 /* code_0800C6D8: game state 5 (Medaparts screen) */
 gMedapartInventory  = 0x03004C40;
 gItemInventory       = 0x03002BA0;
-gUnk_03002B84      = 0x03002B84;
+gRobattleCounts      = 0x03002B84;
 
 /* code_08010794: game state 7 (Robattle) */
 
@@ -116,7 +116,7 @@ gOptionSkipMessages       = 0x03001360;
 gUnk_030018A8       = 0x030018A8;
 gUnk_03003470       = 0x03003470;
 gLinkPartnerName       = 0x0300198A;
-gUnk_03002B74       = 0x03002B74;
+gPlayerName       = 0x03002B74;
 gPrizeGameSlots       = 0x0300199A;
 gUnk_03005290       = 0x03005290;
 gUnk_030052B0       = 0x030052B0;

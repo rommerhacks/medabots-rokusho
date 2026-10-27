@@ -636,7 +636,7 @@ static bool32 race_results_step(void) {
         play_sound_effect(0x15);
         if (gRaceFinishOrder[0] == 1) {
             race_set_sprite_motion(0, 1, 0x18, 0x58);
-            race_set_message_name(gUnk_030004DE, gUnk_03002B74);
+            race_set_message_name(gUnk_030004DE, gPlayerName);
         } else if (gRaceFinishOrder[0] == 2) {
             race_set_sprite_motion(0, 1, 0x58, 0x58);
             e = gUnk_083C1A00[gRaces[gRaceId].rival1Setup];

@@ -51,9 +51,9 @@ void ring_points_place_on_hexagon(u32 r) {
 
     o = out[0];
     for (i = 0; i <= 17; i++) {
-        gUnk_03006F74->unkD0[i].unk2 = *o++ >> 8;
-        gUnk_03006F74->unkD0[i].unk4 = *o++ >> 8;
-        gUnk_03006F74->unkD0[i].unk6 = 0x1E;
+        gMenuWork->unkD0[i].unk2 = *o++ >> 8;
+        gMenuWork->unkD0[i].unk4 = *o++ >> 8;
+        gMenuWork->unkD0[i].unk6 = 0x1E;
     }
 }
 
@@ -85,7 +85,7 @@ void matrix_set_identity(void) {
     m[1][1] = 0x100;
     m[2][2] = 0x100;
     m[3][3] = 0x100;
-    copy_block_64bytes(gUnk_03006F74->unk1F0, m);
+    copy_block_64bytes(gMenuWork->unk1F0, m);
 }
 
 static void matrix_multiply_4x4_fixed(s32 dst[4][4], s32 a[4][4], s32 b[4][4]) {
@@ -108,8 +108,8 @@ static void matrix_scale(s32 s) {
     m[1][1] = s;
     m[2][2] = s;
     m[3][3] = 0x100;
-    matrix_multiply_4x4_fixed(t, m, gUnk_03006F74->unk1F0);
-    copy_block_64bytes(gUnk_03006F74->unk1F0, t);
+    matrix_multiply_4x4_fixed(t, m, gMenuWork->unk1F0);
+    copy_block_64bytes(gMenuWork->unk1F0, t);
 }
 
 static void matrix_translate(s32 x, s32 y, s32 z) {
@@ -124,8 +124,8 @@ static void matrix_translate(s32 x, s32 y, s32 z) {
     m[3][1] = y;
     m[3][2] = z;
     m[3][3] = 0x100;
-    matrix_multiply_4x4_fixed(t, gUnk_03006F74->unk1F0, m);
-    copy_block_64bytes(gUnk_03006F74->unk1F0, t);
+    matrix_multiply_4x4_fixed(t, gMenuWork->unk1F0, m);
+    copy_block_64bytes(gMenuWork->unk1F0, t);
 }
 
 void matrix_rotate_xyz(s32 a, s32 b, s32 c) {
@@ -150,20 +150,20 @@ void matrix_rotate_xyz(s32 a, s32 b, s32 c) {
     s32 t1[4][4];
     s32 t2[4][4];
 
-    matrix_multiply_4x4_fixed(t1, rx, gUnk_03006F74->unk1F0);
+    matrix_multiply_4x4_fixed(t1, rx, gMenuWork->unk1F0);
     matrix_multiply_4x4_fixed(t2, ry, t1);
-    matrix_multiply_4x4_fixed(gUnk_03006F74->unk1F0, rz, t2);
+    matrix_multiply_4x4_fixed(gMenuWork->unk1F0, rz, t2);
 }
 
 void ring_points_place_on_circle(u16 phase) {
     s32 i;
 
     for (i = 0; i <= 17; i++) {
-        s32 r = gUnk_03006F74->unkD0[i].unk0;
+        s32 r = gMenuWork->unkD0[i].unk0;
         u32 idx = ((i << 8) / 18 + phase) & 0xFF;
 
-        gUnk_03006F74->unkD0[i].unk8 = (r * gSineTable[idx]) >> 8;
-        gUnk_03006F74->unkD0[i].unkA = (gUnk_03006F74->unkD0[i].unk0 * gSineTable[idx + 0x40]) >> 8;
+        gMenuWork->unkD0[i].unk8 = (r * gSineTable[idx]) >> 8;
+        gMenuWork->unkD0[i].unkA = (gMenuWork->unkD0[i].unk0 * gSineTable[idx + 0x40]) >> 8;
     }
 }
 
@@ -171,11 +171,11 @@ static void ring_points_place_on_circle_b(u16 phase) {
     s32 i;
 
     for (i = 0; i <= 17; i++) {
-        s32 r = gUnk_03006F74->unkD0[i].unk0;
+        s32 r = gMenuWork->unkD0[i].unk0;
         u32 idx = ((i << 8) / 18 + phase) & 0xFF;
 
-        gUnk_03006F74->unkD0[i].unk8 = (r * gSineTable[idx]) >> 8;
-        gUnk_03006F74->unkD0[i].unkA = (gUnk_03006F74->unkD0[i].unk0 * gSineTable[idx + 0x40]) >> 8;
+        gMenuWork->unkD0[i].unk8 = (r * gSineTable[idx]) >> 8;
+        gMenuWork->unkD0[i].unkA = (gMenuWork->unkD0[i].unk0 * gSineTable[idx + 0x40]) >> 8;
     }
 }
 
@@ -200,95 +200,86 @@ void update_scene_animation_frame(void) {
     s32 i, n;
 
     rng_next_byte();
-    if (gUnk_03006F74->unk48 == 0) {
-        gUnk_03006F74->unk48 = rng_next_byte();
-        if (gUnk_03006F74->unk48 == 0)
-            gUnk_03006F74->unk48++;
-        gUnk_03006F74->unk49 = gUnk_03006F74->unk48 >> 1;
+    if (gMenuWork->unk48 == 0) {
+        gMenuWork->unk48 = rng_next_byte();
+        if (gMenuWork->unk48 == 0)
+            gMenuWork->unk48++;
+        gMenuWork->unk49 = gMenuWork->unk48 >> 1;
     } else {
-        gUnk_03006F74->unk48--;
-        rings_set_radius(&gUnk_03006F74->unk48, &gUnk_03006F74->unk49);
+        gMenuWork->unk48--;
+        rings_set_radius(&gMenuWork->unk48, &gMenuWork->unk49);
     }
 
-    gUnk_03006F74->unk8A[0] = (gUnk_03006F74->unk80[0] - (s16)gUnk_03006F74->unk8A[0]) / 16 + gUnk_03006F74->unk8A[0];
-    gUnk_03006F74->unk92[0] = (gUnk_03006F74->unk80[1] - (s16)gUnk_03006F74->unk92[0]) / 16 + gUnk_03006F74->unk92[0];
-    gUnk_03006F74->unk9A[0] = (gUnk_03006F74->unk80[2] - (s16)gUnk_03006F74->unk9A[0]) / 16 + gUnk_03006F74->unk9A[0];
-    gUnk_03006F74->unk8A[1] =
-        ((s16)gUnk_03006F74->unk8A[0] - (s16)gUnk_03006F74->unk8A[1]) / 16 + gUnk_03006F74->unk8A[1];
-    gUnk_03006F74->unk92[1] =
-        ((s16)gUnk_03006F74->unk92[0] - (s16)gUnk_03006F74->unk92[1]) / 16 + gUnk_03006F74->unk92[1];
-    gUnk_03006F74->unk9A[1] =
-        ((s16)gUnk_03006F74->unk9A[0] - (s16)gUnk_03006F74->unk9A[1]) / 16 + gUnk_03006F74->unk9A[1];
-    gUnk_03006F74->unk8A[2] =
-        ((s16)gUnk_03006F74->unk8A[1] - (s16)gUnk_03006F74->unk8A[2]) / 16 + gUnk_03006F74->unk8A[2];
-    gUnk_03006F74->unk92[2] =
-        ((s16)gUnk_03006F74->unk92[1] - (s16)gUnk_03006F74->unk92[2]) / 16 + gUnk_03006F74->unk92[2];
-    gUnk_03006F74->unk9A[2] =
-        ((s16)gUnk_03006F74->unk9A[1] - (s16)gUnk_03006F74->unk9A[2]) / 16 + gUnk_03006F74->unk9A[2];
-    gUnk_03006F74->unk8A[3] =
-        ((s16)gUnk_03006F74->unk8A[2] - (s16)gUnk_03006F74->unk8A[3]) / 16 + gUnk_03006F74->unk8A[3];
-    gUnk_03006F74->unk92[3] =
-        ((s16)gUnk_03006F74->unk92[2] - (s16)gUnk_03006F74->unk92[3]) / 16 + gUnk_03006F74->unk92[3];
-    gUnk_03006F74->unk9A[3] =
-        ((s16)gUnk_03006F74->unk9A[2] - (s16)gUnk_03006F74->unk9A[3]) / 16 + gUnk_03006F74->unk9A[3];
+    gMenuWork->unk8A[0] = (gMenuWork->unk80[0] - (s16)gMenuWork->unk8A[0]) / 16 + gMenuWork->unk8A[0];
+    gMenuWork->unk92[0] = (gMenuWork->unk80[1] - (s16)gMenuWork->unk92[0]) / 16 + gMenuWork->unk92[0];
+    gMenuWork->unk9A[0] = (gMenuWork->unk80[2] - (s16)gMenuWork->unk9A[0]) / 16 + gMenuWork->unk9A[0];
+    gMenuWork->unk8A[1] = ((s16)gMenuWork->unk8A[0] - (s16)gMenuWork->unk8A[1]) / 16 + gMenuWork->unk8A[1];
+    gMenuWork->unk92[1] = ((s16)gMenuWork->unk92[0] - (s16)gMenuWork->unk92[1]) / 16 + gMenuWork->unk92[1];
+    gMenuWork->unk9A[1] = ((s16)gMenuWork->unk9A[0] - (s16)gMenuWork->unk9A[1]) / 16 + gMenuWork->unk9A[1];
+    gMenuWork->unk8A[2] = ((s16)gMenuWork->unk8A[1] - (s16)gMenuWork->unk8A[2]) / 16 + gMenuWork->unk8A[2];
+    gMenuWork->unk92[2] = ((s16)gMenuWork->unk92[1] - (s16)gMenuWork->unk92[2]) / 16 + gMenuWork->unk92[2];
+    gMenuWork->unk9A[2] = ((s16)gMenuWork->unk9A[1] - (s16)gMenuWork->unk9A[2]) / 16 + gMenuWork->unk9A[2];
+    gMenuWork->unk8A[3] = ((s16)gMenuWork->unk8A[2] - (s16)gMenuWork->unk8A[3]) / 16 + gMenuWork->unk8A[3];
+    gMenuWork->unk92[3] = ((s16)gMenuWork->unk92[2] - (s16)gMenuWork->unk92[3]) / 16 + gMenuWork->unk92[3];
+    gMenuWork->unk9A[3] = ((s16)gMenuWork->unk9A[2] - (s16)gMenuWork->unk9A[3]) / 16 + gMenuWork->unk9A[3];
 
-    gUnk_03006F74->unkA2[4] = u8_difference_divide(gUnk_03006F74->unkA2[3], gUnk_03006F74->unkA2[4], 0x7F);
-    gUnk_03006F74->unkA2[3] = u8_difference_divide(gUnk_03006F74->unkA2[2], gUnk_03006F74->unkA2[3], 0x7F);
-    gUnk_03006F74->unkA2[2] = u8_difference_divide(gUnk_03006F74->unkA2[1], gUnk_03006F74->unkA2[2], 0x7F);
-    gUnk_03006F74->unkA2[1] = u8_difference_divide(gUnk_03006F74->unkA2[0], gUnk_03006F74->unkA2[1], 0x7F);
-    gUnk_03006F74->unkA7[4] = u8_difference_divide(gUnk_03006F74->unkA7[3], gUnk_03006F74->unkA7[4], 0x7F);
-    gUnk_03006F74->unkA7[3] = u8_difference_divide(gUnk_03006F74->unkA7[2], gUnk_03006F74->unkA7[3], 0x7F);
-    gUnk_03006F74->unkA7[2] = u8_difference_divide(gUnk_03006F74->unkA7[1], gUnk_03006F74->unkA7[2], 0x7F);
-    gUnk_03006F74->unkA7[1] = u8_difference_divide(gUnk_03006F74->unkA7[0], gUnk_03006F74->unkA7[1], 0x7F);
+    gMenuWork->unkA2[4] = u8_difference_divide(gMenuWork->unkA2[3], gMenuWork->unkA2[4], 0x7F);
+    gMenuWork->unkA2[3] = u8_difference_divide(gMenuWork->unkA2[2], gMenuWork->unkA2[3], 0x7F);
+    gMenuWork->unkA2[2] = u8_difference_divide(gMenuWork->unkA2[1], gMenuWork->unkA2[2], 0x7F);
+    gMenuWork->unkA2[1] = u8_difference_divide(gMenuWork->unkA2[0], gMenuWork->unkA2[1], 0x7F);
+    gMenuWork->unkA7[4] = u8_difference_divide(gMenuWork->unkA7[3], gMenuWork->unkA7[4], 0x7F);
+    gMenuWork->unkA7[3] = u8_difference_divide(gMenuWork->unkA7[2], gMenuWork->unkA7[3], 0x7F);
+    gMenuWork->unkA7[2] = u8_difference_divide(gMenuWork->unkA7[1], gMenuWork->unkA7[2], 0x7F);
+    gMenuWork->unkA7[1] = u8_difference_divide(gMenuWork->unkA7[0], gMenuWork->unkA7[1], 0x7F);
 
     matrix_set_identity();
-    gUnk_03006F74->unk3C++;
-    if ((gUnk_03006F74->unk3C & 0xFF) == 0) {
+    gMenuWork->unk3C++;
+    if ((gMenuWork->unk3C & 0xFF) == 0) {
         s32 r = rng_next_byte() & 0xFF;
-        gUnk_03006F74->unkA2[0] = gSineTable[r] * 5 >> 5;
-        gUnk_03006F74->unkA7[0] = gSineTable[r + 0x40] * 5 >> 5;
-        gUnk_03006F74->unkA2[0] += 0x78;
-        gUnk_03006F74->unkA7[0] += 0x50;
+        gMenuWork->unkA2[0] = gSineTable[r] * 5 >> 5;
+        gMenuWork->unkA7[0] = gSineTable[r + 0x40] * 5 >> 5;
+        gMenuWork->unkA2[0] += 0x78;
+        gMenuWork->unkA7[0] += 0x50;
     }
-    if ((gUnk_03006F74->unk3C & 0x3F) == 0)
-        gUnk_03006F74->unk7E = rng_next_byte() & 3;
+    if ((gMenuWork->unk3C & 0x3F) == 0)
+        gMenuWork->unk7E = rng_next_byte() & 3;
 
-    switch (gUnk_03006F74->unk7E & 3) {
+    switch (gMenuWork->unk7E & 3) {
     case 0:
-        gUnk_03006F74->unk86[0] += 2;
-        gUnk_03006F74->unk86[1] += 1;
+        gMenuWork->unk86[0] += 2;
+        gMenuWork->unk86[1] += 1;
         break;
     case 1:
-        gUnk_03006F74->unk86[0] -= 2;
-        gUnk_03006F74->unk86[1] += 2;
-        gUnk_03006F74->unk86[2] += 3;
+        gMenuWork->unk86[0] -= 2;
+        gMenuWork->unk86[1] += 2;
+        gMenuWork->unk86[2] += 3;
         break;
     case 2:
-        gUnk_03006F74->unk86[0] += 1;
-        gUnk_03006F74->unk86[2] += 2;
+        gMenuWork->unk86[0] += 1;
+        gMenuWork->unk86[2] += 2;
         break;
     case 3:
-        gUnk_03006F74->unk86[0] += 5;
-        gUnk_03006F74->unk86[1] += 1;
-        gUnk_03006F74->unk86[2] -= 2;
+        gMenuWork->unk86[0] += 5;
+        gMenuWork->unk86[1] += 1;
+        gMenuWork->unk86[2] -= 2;
         break;
     }
 
-    if (gUnk_03006F74->unk86[0] < -16)
-        gUnk_03006F74->unk86[0] = -16;
-    if (gUnk_03006F74->unk86[1] < -16)
-        gUnk_03006F74->unk86[1] = -16;
-    if (gUnk_03006F74->unk86[2] < -16)
-        gUnk_03006F74->unk86[2] = -16;
-    if (gUnk_03006F74->unk86[0] > 16)
-        gUnk_03006F74->unk86[0] = 16;
-    if (gUnk_03006F74->unk86[1] > 16)
-        gUnk_03006F74->unk86[1] = 16;
-    if (gUnk_03006F74->unk86[2] > 16)
-        gUnk_03006F74->unk86[2] = 16;
+    if (gMenuWork->unk86[0] < -16)
+        gMenuWork->unk86[0] = -16;
+    if (gMenuWork->unk86[1] < -16)
+        gMenuWork->unk86[1] = -16;
+    if (gMenuWork->unk86[2] < -16)
+        gMenuWork->unk86[2] = -16;
+    if (gMenuWork->unk86[0] > 16)
+        gMenuWork->unk86[0] = 16;
+    if (gMenuWork->unk86[1] > 16)
+        gMenuWork->unk86[1] = 16;
+    if (gMenuWork->unk86[2] > 16)
+        gMenuWork->unk86[2] = 16;
 
     {
-        struct Unk_03006F74 *v = gUnk_03006F74;
+        struct MenuWork *v = gMenuWork;
         v->unk80[0] += v->unk86[0];
         v->unk80[1] += v->unk86[1];
         v->unk80[2] += v->unk86[2];
@@ -296,7 +287,7 @@ void update_scene_animation_frame(void) {
 
     for (i = 0; i <= 0x47; i = n) {
         s32 j = i % 18;
-        struct Unk_03006F74 *w;
+        struct MenuWork *w;
         s32 x, y;
         s32 px, py, pz;
         struct SpriteEntry *spr;
@@ -304,11 +295,10 @@ void update_scene_animation_frame(void) {
 
         if (j == 0) {
             matrix_set_identity();
-            matrix_rotate_xyz(((s16)gUnk_03006F74->unk8A[i / 18] >> 4) & 0xFF,
-                              ((s16)gUnk_03006F74->unk92[i / 18] >> 4) & 0xFF,
-                              ((s16)gUnk_03006F74->unk9A[i / 18] >> 4) & 0xFF);
+            matrix_rotate_xyz(((s16)gMenuWork->unk8A[i / 18] >> 4) & 0xFF, ((s16)gMenuWork->unk92[i / 18] >> 4) & 0xFF,
+                              ((s16)gMenuWork->unk9A[i / 18] >> 4) & 0xFF);
         }
-        w = gUnk_03006F74;
+        w = gMenuWork;
         px = w->unkD0[j].unk2;
         py = w->unkD0[j].unk4;
         pz = w->unkD0[j].unk6;

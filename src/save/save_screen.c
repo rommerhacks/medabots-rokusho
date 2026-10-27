@@ -41,7 +41,7 @@ void save_screen_update(void) {
 
 void save_screen_clear(void) {
     u32 zero = 0;
-    CpuFastSet(&zero, gUnk_03006F74, 0x01000100);
+    CpuFastSet(&zero, gMenuWork, 0x01000100);
     reset_bg_scroll();
     REG_DISPCNT = 0x160;
     gGameSubState++;
@@ -67,7 +67,7 @@ void save_screen_load_graphics(void) {
     size = dma3_copy_or_decompress(gUnk_0878CC64, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     lz_decompress_dispatch(gUnk_08784CB0, vram_at(size));
-    gUnk_03006F74->unk36 = (size >> 5) - 1;
+    gMenuWork->unk36 = (size >> 5) - 1;
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     gSpriteEntries[0].unk0 = 0xC000;
     gSpriteEntries[0].unk1C = 2;
@@ -96,16 +96,16 @@ void save_screen_draw_info(void) {
             n++;
     }
     ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n, 3, 9, 6, 11, (REG_BG1CNT >> 8) & 0x1F);
-    n = gUnk_03002B70.unk18 / 3600;
+    n = gPlayerRecord.playTime / 3600;
     ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n / 60, 2, 7, 8, 12, (REG_BG1CNT >> 8) & 0x1F);
     ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n % 60, -2, 10, 8, 12, (REG_BG1CNT >> 8) & 0x1F);
-    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(gUnk_03002B70.unk14[1], 4, 3, 11, 13,
+    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(gPlayerRecord.robattleCounts[1], 4, 3, 11, 13,
                                                           (REG_BG1CNT >> 8) & 0x1F);
-    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(gUnk_03002B70.unk14[0], 0, 8, 11, 13,
+    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(gPlayerRecord.robattleCounts[0], 0, 8, 11, 13,
                                                           (REG_BG1CNT >> 8) & 0x1F);
-    divide_by_10000(gGameWork.textBuf, gUnk_03002B70.money);
+    divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
     render_text_sprites_08040DB8(gGameWork.textBuf, 1, 15, 9, 7, 15, 1, 0);
-    render_text_sprites_08040DB8(gUnk_03002B70.unk4, 13, 14, 4, 10, 13, 0, 0);
+    render_text_sprites_08040DB8(gPlayerRecord.name, 13, 14, 4, 10, 13, 0, 0);
     open_choice_menu(1, 0x16, 7);
     CpuFastSet(gUnk_0878CA64, gPaletteBackupBg, 0x80);
     CpuFastSet(gUnk_0850DCF8, (void *)0x0202F9A0, 8);
@@ -168,13 +168,13 @@ void save_screen_show_saving(void) {
         play_song(0);
         play_sound_effect(0);
         eeprom_setup_timer_irq();
-        gUnk_03006F74->unk2 = 0;
+        gMenuWork->unk2 = 0;
         gGameSubState++;
     }
 }
 
 void save_screen_write_save(void) {
-    u8 t = gUnk_03006F74->unk2++;
+    u8 t = gMenuWork->unk2++;
     u16 err = 0;
     s8 i;
 
@@ -187,18 +187,18 @@ void save_screen_write_save(void) {
         play_song(6);
         if (err == 0) {
             message_next();
-            gUnk_03006F74->unk2 = err;
+            gMenuWork->unk2 = err;
             gGameSubState++;
         } else {
             message_next();
-            gUnk_03006F74->unk2 = 0;
+            gMenuWork->unk2 = 0;
             gGameSubState = 12;
         }
     }
 }
 
 void save_screen_show_saved(void) {
-    u8 t = gUnk_03006F74->unk2++;
+    u8 t = gMenuWork->unk2++;
     if (run_message(gUnk_08485788[11]) && t > 60)
         gGameSubState++;
 }
@@ -231,7 +231,7 @@ void save_screen_fade_out(void) {
 }
 
 void save_screen_show_failed(void) {
-    u8 t = gUnk_03006F74->unk2++;
+    u8 t = gMenuWork->unk2++;
     if (run_message(gUnk_08485788[12]) && t > 60)
         gGameSubState = 9;
 }

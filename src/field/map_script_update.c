@@ -745,7 +745,7 @@ void map_script_update_give_medal(void) {
             s->cmd_step = 1;
             break;
         }
-        gUnk_030017EC = field_give_medal(s->cmd_args[0]);
+        gCurrentMedalSlot = field_give_medal(s->cmd_args[0]);
         s->cmd_step = 2;
         break;
     case 1:

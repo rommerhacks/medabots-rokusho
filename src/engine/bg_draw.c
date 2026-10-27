@@ -53,7 +53,7 @@ static void clear_vram_bg2_screenblock(void) {
 // places, 0 left-aligned.
 void draw_number(u16 value, s32 width, u8 x, u8 y, u8 pal, u8 bg) {
     u16 buf[6];
-    u16 base = gUnk_03006F74->unk36 + 0x16;
+    u16 base = gMenuWork->unk36 + 0x16;
     s8 w = width;
     vu16 *p;
     s32 i;
@@ -98,7 +98,7 @@ void draw_number(u16 value, s32 width, u8 x, u8 y, u8 pal, u8 bg) {
 void draw_number_tall(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg) {
     u16 buf[6];
     u16 saved = value;
-    u16 base = gUnk_03006F74->unk36 + 1;
+    u16 base = gMenuWork->unk36 + 1;
     vu16 *p;
     s32 i;
 
@@ -171,7 +171,7 @@ void draw_number_tall(u16 value, s8 w, u8 x, u8 y, u8 pal, u8 bg) {
 // Runtime: item list page numbers (item_menu_draw_page_numbers).
 void draw_number_3digits(s32 n, s32 x, s32 y) {
     s32 pal = 13;
-    u16 base = gUnk_03006F74->unk36 + 0x16;
+    u16 base = gMenuWork->unk36 + 0x16;
     vu16 *p = (vu16 *)(VRAM + 0xF000);
 
     p = p + x + y * 32;
@@ -196,7 +196,7 @@ void draw_number_2digits_tall(s32 n, s32 x, s32 y) {
     s32 sbb = 30;
 
     n %= 100;
-    base = gUnk_03006F74->unk36;
+    base = gMenuWork->unk36;
     p = (vu16 *)(VRAM + (sbb << 11)) + x + y * 32;
     if (n / 100 % 10 || n / 10 % 10)
         *p = (n / 10 % 10 + (base + 1)) | (pal << 12);

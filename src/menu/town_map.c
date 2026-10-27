@@ -3,24 +3,24 @@
 #include "global.h"
 
 void town_map_update_cursor(void) {
-    u8 row = gUnk_03006F74->unk18;
+    u8 row = gMenuWork->unk18;
     const u8 *t;
 
     if (++gSpriteEntries[0].unk1A > 0x60)
         gSpriteEntries[0].unk1A = 0;
     t = (const u8 *)gTownMapPlacePositions;
-    gSpriteEntries[0].unk2 = t[gUnk_03006F74->unk17 * 2] * 8 + gUnk_08483DD4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
+    gSpriteEntries[0].unk2 = t[gMenuWork->unk17 * 2] * 8 + gUnk_08483DD4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
     gSpriteEntries[0].unk4 =
-        t[(u16)(gUnk_03006F74->unk17 * 2 + 1)] * 8 + gUnk_08483DE4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
+        t[(u16)(gMenuWork->unk17 * 2 + 1)] * 8 + gUnk_08483DE4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
     gSpriteEntries[0].unk6 = gUnk_08483DF4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
 }
 
 void town_map_animate_tiles(void) {
     s32 t;
 
-    if ((u16)++gUnk_03006F74->unk3A > 0x6D)
-        gUnk_03006F74->unk3A = 0;
-    t = gUnk_03006F74->unk3A;
+    if ((u16)++gMenuWork->unk3A > 0x6D)
+        gMenuWork->unk3A = 0;
+    t = gMenuWork->unk3A;
     if ((s16)(t % 10) == 0)
         CpuSet(gDecompressBuffer + (gUnk_08483E04[(s16)(t / 10)] + 1) * 480, (void *)0x06004020, 0xF0);
 }
@@ -51,7 +51,7 @@ void town_map_load_graphics(void) {
     vu16 tmp;
     vu16 *bg1, *bg2, *bg3;
     u16 v;
-    struct Unk_03006F74 *p;
+    struct MenuWork *p;
 
     cb = 1;
     bg1 = &REG_BG1CNT;
@@ -67,14 +67,14 @@ void town_map_load_graphics(void) {
     decompress_and_write_tilemap(gUnk_0878A918, *bg2);
     decompress_and_write_tilemap(gUnk_0878AA0C, *bg3);
     {
-        struct Unk_03006F74 *q;
+        struct MenuWork *q;
         if (gGameState == 0x17) {
-            q = gUnk_03006F74;
+            q = gMenuWork;
             q->unk18 = 1;
         } else {
             *(u16 *)(((*bg3 >> 8) & 0x1F) * 0x800 + (VRAM + 0x248)) =
                 *(u16 *)(((*bg3 >> 8) & 0x1F) * 0x800 + (VRAM + 0x21E));
-            q = gUnk_03006F74;
+            q = gMenuWork;
             q->unk18 = 0;
         }
     }
@@ -95,15 +95,15 @@ void town_map_load_graphics(void) {
     size = dma3_copy_or_decompress(gUnk_087877C4, gDecompressBuffer);
     CpuFastSet(gDecompressBuffer, (void *)(VRAM + off), (size / 4) & 0x1FFFFF);
     lz_decompress_dispatch(gUnk_08784CB0, (void *)(VRAM + off + size));
-    gUnk_03006F74->unk36 = size / 32 - 1;
+    gMenuWork->unk36 = size / 32 - 1;
     CpuFastSet(gUnk_087871E4, (void *)PLTT, 0x70);
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
     CpuFastSet(gUnk_080AF9A8, (void *)(PLTT + 0x200), 0x18);
-    gUnk_03006F74->unk17 = gAreaTownMapPlace[gFieldWork.area_id];
+    gMenuWork->unk17 = gAreaTownMapPlace[gFieldWork.area_id];
     gSpriteEntries[0].unk0 = 0xC000;
     gSpriteEntries[0].unk1C = 2;
     gSpriteEntries[0].unk4 = 0x3C;
-    p = gUnk_03006F74;
+    p = gMenuWork;
     gSpriteEntries[0].unkA = p->unk18;
     gSpriteEntries[0].unk6 = 0x10D;
     gSpriteEntries[0].unk1A = 0;
@@ -124,14 +124,14 @@ void town_map_enable_layers(void) {
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
-    gUnk_03006F74->unk0 = 8;
-    REG_BLDY = gUnk_03006F74->unk0 * 2;
-    gUnk_03006F74->unk3A = 0;
+    gMenuWork->unk0 = 8;
+    REG_BLDY = gMenuWork->unk0 * 2;
+    gMenuWork->unk3A = 0;
     gGameSubState++;
 }
 
 void town_map_fade_in(void) {
-    struct Unk_03006F74 *p = gUnk_03006F74;
+    struct MenuWork *p = gMenuWork;
 
     if (p->unk0 != 0) {
         REG_BLDY = --p->unk0 * 2;
@@ -145,7 +145,7 @@ void town_map_fade_in(void) {
 }
 
 void town_map_show_place_name(void) {
-    u8 i = gUnk_03006F74->unk17;
+    u8 i = gMenuWork->unk17;
     if (run_message(gTownMapPlaceNames[i]))
         gGameSubState++;
     town_map_update_cursor();
@@ -162,15 +162,15 @@ void town_map_handle_input(void) {
             return;
         if (gGameState == 10) {
             play_sound_effect(5);
-            gUnk_03006F74->unk48 = 1;
+            gMenuWork->unk48 = 1;
         } else if (keys & 1) {
             play_sound_effect(4);
-            gUnk_03006F74->unk48 = 1;
+            gMenuWork->unk48 = 1;
         } else {
             play_sound_effect(5);
-            gUnk_03006F74->unk48 = 0;
+            gMenuWork->unk48 = 0;
         }
-        gUnk_03006F74->unk0 = 0;
+        gMenuWork->unk0 = 0;
         gGameSubState++;
     } else {
         message_next();
@@ -207,8 +207,8 @@ void town_map_fade_out_exit(void) {
         if (gGameState == 10) {
             gGameState = 4;
             gGameSubState = 0;
-        } else if (gUnk_03006F74->unk48) {
-            gUnk_03006D38.unk5 = gUnk_03006F74->unk17;
+        } else if (gMenuWork->unk48) {
+            gUnk_03006D38.unk5 = gMenuWork->unk17;
             dispatch_by_index_0476e8(5);
         } else {
             dispatch_by_index_0476e8(6);

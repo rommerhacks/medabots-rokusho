@@ -298,7 +298,7 @@ void action_phase_time_up_banner_hold(void) {
 // Puts the winner's name (player, opponent or link partner) in the message buffer.
 void action_phase_show_winner_message(void) {
     if (gGameWork.unk9C == 1)
-        memcpy_bytes_0803F63C(gUnk_03002B74, gGameWork.textBuf, 0xE);
+        memcpy_bytes_0803F63C(gPlayerName, gGameWork.textBuf, 0xE);
     else if (gGameWork.skipBotSetup != 1)
         memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
     else
@@ -338,7 +338,7 @@ void action_phase_time_up_banner_init(void) {
 
 void action_phase_show_time_up_message(void) {
     if (gGameWork.unk9C == 1)
-        memcpy_bytes_0803F63C(gUnk_03002B74, gGameWork.textBuf, 0xE);
+        memcpy_bytes_0803F63C(gPlayerName, gGameWork.textBuf, 0xE);
     else if (gGameWork.skipBotSetup != 1)
         memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
     else
