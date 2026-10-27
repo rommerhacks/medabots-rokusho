@@ -874,8 +874,7 @@ static void medaparts_list_load_part_sprite(void) {
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                      (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
-    load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, gGameWork.partSlot, 0x3C, 0x28, 0x1C2, 8,
-                                  1);
+    draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, gGameWork.partSlot, 0x3C, 0x28, 0x1C2, 8, 1);
 }
 
 static void medapart_draw_sprite(void) {
@@ -885,16 +884,16 @@ static void medapart_draw_sprite(void) {
     obj->oams = (struct SpriteNodeOam *)0x020260D0;
     switch (gGameWork.partSlot) {
     case 0:
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 0, 0x3C, 0x32, 0x1C2, 8, 1);
+        draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 0, 0x3C, 0x32, 0x1C2, 8, 1);
         break;
     case 1:
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 1, 0x28, 0x3C, 0x1C2, 8, 1);
+        draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 1, 0x28, 0x3C, 0x1C2, 8, 1);
         break;
     case 2:
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 2, 0x28, 0x28, 0x1C2, 8, 2);
+        draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 2, 0x28, 0x28, 0x1C2, 8, 2);
         break;
     case 3:
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 3, 0x1E, 0x32, 0x1C2, 8, 1);
+        draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 3, 0x1E, 0x32, 0x1C2, 8, 1);
         break;
     }
     fill = 0x200;
@@ -911,16 +910,16 @@ static void load_medapart_sprite_by_slot(void) {
         obj->oams = (struct SpriteNodeOam *)0x020260D0;
         switch (gGameWork.partSlot) {
         case 0:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 0, 0x3C, 0x32, 0x1C2, 8, 5);
+            draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 0, 0x3C, 0x32, 0x1C2, 8, 5);
             break;
         case 1:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 1, 0x28, 0x3C, 0x1C2, 8, 5);
+            draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 1, 0x28, 0x3C, 0x1C2, 8, 5);
             break;
         case 2:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 2, 0x28, 0x28, 0x1C2, 8, 6);
+            draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 2, 0x28, 0x28, 0x1C2, 8, 6);
             break;
         case 3:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 3, 0x1E, 0x32, 0x1C2, 8, 5);
+            draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 3, 0x1E, 0x32, 0x1C2, 8, 5);
             break;
         }
     } else if (medapart_get_counts(gGameWork.shownId, gGameWork.partSlot)) {
@@ -928,16 +927,16 @@ static void load_medapart_sprite_by_slot(void) {
         obj->oams = (struct SpriteNodeOam *)0x020260D0;
         switch (gGameWork.partSlot) {
         case 0:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 0, 0x3C, 0x32, 0x1C2, 8, 5);
+            draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 0, 0x3C, 0x32, 0x1C2, 8, 5);
             break;
         case 1:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 1, 0x28, 0x3C, 0x1C2, 8, 5);
+            draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 1, 0x28, 0x3C, 0x1C2, 8, 5);
             break;
         case 2:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 2, 0x28, 0x28, 0x1C2, 8, 6);
+            draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 2, 0x28, 0x28, 0x1C2, 8, 6);
             break;
         case 3:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, 3, 0x1E, 0x32, 0x1C2, 8, 5);
+            draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 3, 0x1E, 0x32, 0x1C2, 8, 5);
             break;
         }
     }
@@ -962,8 +961,7 @@ static void medapart_detail_init_sprite(void) {
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                      (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
-    load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, gGameWork.partSlot, 0x3C, 0x28, 0x1C2, 8,
-                                  1);
+    draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, gGameWork.partSlot, 0x3C, 0x28, 0x1C2, 8, 1);
 }
 
 // The skill's index into the detail help messages: special skills (100 and up) restart at 0.

@@ -3,19 +3,21 @@
 
 // Sprite engine: DMA/LZ tile loads, OAM shapes, sprite trees and scene layers
 
-void load_sprite_animation_by_type(struct OamData *oam, struct SpriteTree *obj, u32 id, u32 kind, u32 x, u32 y,
-                                   u32 tile, u32 pal, u32 e);
+// kind: 0 head, 1 right arm, 2 left arm, 3 legs; mode bit 2 = second side (mirrored), bit 4 clear = first call (queue
+// the load)
+void draw_medapart_sprite(struct OamData *oam, struct SpriteTree *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile,
+                          u32 pal, u32 mode);
 void init_sprite_tree(struct SpriteTree *obj, u8 *buf, struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams);
 u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct OamData *oam, u16 tile, u8 *parts,
                         u8 pal, u8 x, u8 y, u32 alt);
-void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g,
-                                u32 h, u32 i, u32 j);
+void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 head, u32 right_arm, u32 left_arm, u32 legs,
+                                u32 x, u32 y, u32 depth, u32 pal, u32 mode, u32 side);
 void goto_link_scene(u32 a);
-void update_anim_object_flags(void);
+void medabot_sprite_slots_update(void);
 void copy_oam_affine_params(struct OamData *oam, u16 *affine);
 u32 dma3_copy_or_decompress(const u32 *src, void *dst);
 u32 oam_shape_size_dims(s32 shape, s32 size); // OAM attr0 shape / attr1 size bits -> height << 16 | width
-void toggle_bg_layer_visibility(s32 a, s32 b, s32 c, s32 d);
+void part_layers_toggle_mirror(s32 head, s32 right_arm, s32 left_arm, s32 legs);
 u32 setup_oam_sprite_entries(struct OamData *oams, void *b, void *c, const struct SpriteDesc *desc,
                              const struct SpriteAnchor *e, u8 f, u16 g);
 u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c,

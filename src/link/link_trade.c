@@ -30,16 +30,16 @@ static void medapart_trade_init_sprite_tree(u32 a) {
         init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                          (struct SpriteNodeOam *)b);
         obj->oams = (struct SpriteNodeOam *)b;
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gMenuWork->own_part_id, gMenuWork->own_part_kind, 0x3C,
-                                      0x28, 0xC7, a, 1);
+        draw_medapart_sprite(gSpriteWork->oamBuf, obj, gMenuWork->own_part_id, gMenuWork->own_part_kind, 0x3C, 0x28,
+                             0xC7, a, 1);
     } else {
         struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
 
         init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                          (struct SpriteNodeOam *)0x020264E0);
         obj->oams = (struct SpriteNodeOam *)0x020264E0;
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gMenuWork->partner_part_id,
-                                      gMenuWork->partner_part_kind, 0x3C, 0x28, 0xC7, 4, 2);
+        draw_medapart_sprite(gSpriteWork->oamBuf, obj, gMenuWork->partner_part_id, gMenuWork->partner_part_kind, 0x3C,
+                             0x28, 0xC7, 4, 2);
     }
 }
 
@@ -51,9 +51,9 @@ void load_medapart_sprite_animation(u8 id, u8 kind, u32 which) {
     x = gUnk_080AFA3C[which][kind][0];
     y = gUnk_080AFA3C[which][kind][1];
     if (which)
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, id, kind, y, x, 0xC7, 4, 6);
+        draw_medapart_sprite(gSpriteWork->oamBuf, obj, id, kind, y, x, 0xC7, 4, 6);
     else
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, id, kind, y, x, 0xC7, which, 5);
+        draw_medapart_sprite(gSpriteWork->oamBuf, obj, id, kind, y, x, 0xC7, which, 5);
 }
 
 // Copies Medapart name id (part * 4 + kind) into the text buffer, slot 0 or 1 (0x14 bytes each).

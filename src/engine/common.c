@@ -1329,8 +1329,8 @@ void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8
     if (i == 1)
         flags = 4;
     ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + a * 0x410);
-    load_sprite_animation_by_type(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, id, kind, (s16)x, (s16)y, f, g,
-                                  h | flags);
+    draw_medapart_sprite(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, id, kind, (s16)x, (s16)y, f, g,
+                         h | flags);
     if (i == 2) {
         fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);

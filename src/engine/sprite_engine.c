@@ -769,7 +769,7 @@ u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct O
     struct SpriteTreePadded obj;
     vu32 fill;
     u32 zero;
-    u32 a, b, c, d;
+    u32 head, right_arm, left_arm, legs;
     u16 base;
     s32 k;
     s16 depth;
@@ -779,10 +779,10 @@ u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct O
 
     depth = 0x32;
     zero = 0;
-    a = parts[0];
-    b = parts[1];
-    c = parts[2];
-    d = parts[3];
+    head = parts[0];
+    right_arm = parts[1];
+    left_arm = parts[2];
+    legs = parts[3];
     custom_memset(buf, 0, sizeof(buf));
     custom_memset(oams, 0, sizeof(oams));
     custom_memset(&obj, 0, sizeof(obj));
@@ -798,13 +798,13 @@ u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct O
     gLeftArmPartLayer = gLeftArmPartLayerTemplate;
     gRightArmPartLayer = gRightArmPartLayerTemplate;
     gLegPartLayer = gLegPartLayerTemplate;
-    pa = gHeadPartSpriteNodes[a];
+    pa = gHeadPartSpriteNodes[head];
     gHeadPartLayer.root_node = pa->node;
-    pb = gRightArmPartSpriteNodes[b];
+    pb = gRightArmPartSpriteNodes[right_arm];
     gRightArmPartLayer.root_node = pb->node;
-    pc = gLeftArmPartSpriteNodes[c];
+    pc = gLeftArmPartSpriteNodes[left_arm];
     gLeftArmPartLayer.root_node = pc->node;
-    pd = gLegPartSpriteNodes[d];
+    pd = gLegPartSpriteNodes[legs];
     gLegPartLayer.root_node = pd->node;
     tile = base + 0x140;
     load_sprite_tree_recursive(obj.o.nodes, pa, pa->node, pal, obj.o.oams, &tile, alt);
@@ -815,30 +815,32 @@ u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct O
     tile = base + 0x220;
     load_sprite_tree_recursive(obj.o.nodes, pd, pd->node, pal, obj.o.oams, &tile, alt);
     if (alt != 0) {
-        for (k = 0; gRightArmPartSpriteNodes[b][k].node; k++) {
-            if (!gRightArmPartSpriteNodes[b][k].alt)
-                load_sprite_tiles_by_table(obj.o.nodes, obj.o.oams, gLeftArmPartSpriteNodes[b],
-                                           gLeftArmPartSpriteNodes[b][k].node, gRightArmPartSpriteNodes[b][k].node);
+        for (k = 0; gRightArmPartSpriteNodes[right_arm][k].node; k++) {
+            if (!gRightArmPartSpriteNodes[right_arm][k].alt)
+                load_sprite_tiles_by_table(obj.o.nodes, obj.o.oams, gLeftArmPartSpriteNodes[right_arm],
+                                           gLeftArmPartSpriteNodes[right_arm][k].node,
+                                           gRightArmPartSpriteNodes[right_arm][k].node);
         }
-        for (k = 0; gLeftArmPartSpriteNodes[c][k].node; k++) {
-            if (!gLeftArmPartSpriteNodes[c][k].alt)
-                load_sprite_tiles_by_table(obj.o.nodes, obj.o.oams, gRightArmPartSpriteNodes[c],
-                                           gRightArmPartSpriteNodes[c][k].node, gLeftArmPartSpriteNodes[c][k].node);
+        for (k = 0; gLeftArmPartSpriteNodes[left_arm][k].node; k++) {
+            if (!gLeftArmPartSpriteNodes[left_arm][k].alt)
+                load_sprite_tiles_by_table(obj.o.nodes, obj.o.oams, gRightArmPartSpriteNodes[left_arm],
+                                           gRightArmPartSpriteNodes[left_arm][k].node,
+                                           gLeftArmPartSpriteNodes[left_arm][k].node);
         }
-        toggle_bg_layer_visibility(a, b, c, d);
+        part_layers_toggle_mirror(head, right_arm, left_arm, legs);
     }
     dst = buf;
     if (gHeadPartLayer.root_node)
-        for (src = gHeadPartSpriteNodes[a]; src->node;)
+        for (src = gHeadPartSpriteNodes[head]; src->node;)
             *dst++ = *src++;
     if (gRightArmPartLayer.root_node)
-        for (src = gRightArmPartSpriteNodes[b]; src->node;)
+        for (src = gRightArmPartSpriteNodes[right_arm]; src->node;)
             *dst++ = *src++;
     if (gLeftArmPartLayer.root_node)
-        for (src = gLeftArmPartSpriteNodes[c]; src->node;)
+        for (src = gLeftArmPartSpriteNodes[left_arm]; src->node;)
             *dst++ = *src++;
     if (gLegPartLayer.root_node)
-        for (src = gLegPartSpriteNodes[d]; src->node;)
+        for (src = gLegPartSpriteNodes[legs]; src->node;)
             *dst++ = *src++;
     render_sprite_node_recursive(&obj.o, buf, 1, x << 8, y << 8, depth, 0, alt);
     CpuSet(((struct SpriteWork *)obj.o.unk0)->oamBuf, oam, gSpriteWork->oamCount << 2);
@@ -977,12 +979,14 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
         render_sprite_node_recursive(obj, list, obj->nodes[node]->sibling, oy, ox, depth, angle, flip);
 }
 
-void load_sprite_animation_by_type(struct OamData *oam, struct SpriteTree *obj, u32 id, u32 kind, u32 x, u32 y,
-                                   u32 tile, u32 pal, u32 e) {
+// Draws one Medapart (Medaparts screen, link trade) through the slot state of gMedabotSpriteSlots: the first
+// call queues the load, the frame after loads the part's tiles, later calls render it.
+void draw_medapart_sprite(struct OamData *oam, struct SpriteTree *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile,
+                          u32 pal, u32 mode) {
     struct SpriteTileRef *list = NULL;
     u16 t;
-    u32 slot = -(e & 2) >> 31;
-    u32 j;
+    u32 slot = -(mode & 2) >> 31;
+    u32 i;
 
     switch ((s32)kind) {
     case 0:
@@ -1003,29 +1007,29 @@ void load_sprite_animation_by_type(struct OamData *oam, struct SpriteTree *obj, 
         break;
     }
 
-    if (!(e & 4)) {
+    if (!(mode & 4)) {
         gMedabotSpriteSlots[slot].flags = (gMedabotSpriteSlots[slot].flags | 1) & ~8;
         gMedabotSpriteSlots[slot].side = slot;
     } else if (gMedabotSpriteSlots[slot].flags & 2) {
-        if (e & 2)
+        if (mode & 2)
             t += 0x160;
         load_sprite_tree_recursive(obj->nodes, list, list->node, pal, obj->oams, &t, slot);
         if (slot) {
             switch (kind) {
             case 1:
-                for (j = 0; gRightArmPartSpriteNodes[id][j].node; j++) {
-                    if (!gRightArmPartSpriteNodes[id][j].alt)
+                for (i = 0; gRightArmPartSpriteNodes[id][i].node; i++) {
+                    if (!gRightArmPartSpriteNodes[id][i].alt)
                         load_sprite_tiles_by_table(obj->nodes, obj->oams, gLeftArmPartSpriteNodes[id],
-                                                   gLeftArmPartSpriteNodes[id][j].node,
-                                                   gRightArmPartSpriteNodes[id][j].node);
+                                                   gLeftArmPartSpriteNodes[id][i].node,
+                                                   gRightArmPartSpriteNodes[id][i].node);
                 }
                 break;
             case 2:
-                for (j = 0; gLeftArmPartSpriteNodes[id][j].node; j++) {
-                    if (!gLeftArmPartSpriteNodes[id][j].alt)
+                for (i = 0; gLeftArmPartSpriteNodes[id][i].node; i++) {
+                    if (!gLeftArmPartSpriteNodes[id][i].alt)
                         load_sprite_tiles_by_table(obj->nodes, obj->oams, gRightArmPartSpriteNodes[id],
-                                                   gRightArmPartSpriteNodes[id][j].node,
-                                                   gLeftArmPartSpriteNodes[id][j].node);
+                                                   gRightArmPartSpriteNodes[id][i].node,
+                                                   gLeftArmPartSpriteNodes[id][i].node);
                 }
                 break;
             }
@@ -1040,20 +1044,23 @@ void load_sprite_animation_by_type(struct OamData *oam, struct SpriteTree *obj, 
     }
 }
 
-void toggle_bg_layer_visibility(s32 a, s32 b, s32 c, s32 d) {
-    if (a >= 0)
+// Mirrors the layer offset of each part that is present (id >= 0), for the side drawn flipped.
+void part_layers_toggle_mirror(s32 head, s32 right_arm, s32 left_arm, s32 legs) {
+    if (head >= 0)
         gHeadPartLayer.mirror_pos = -gHeadPartLayer.mirror_pos - 2;
-    if (b >= 0)
+    if (right_arm >= 0)
         gRightArmPartLayer.mirror_pos = -gRightArmPartLayer.mirror_pos - 2;
-    if (c >= 0)
+    if (left_arm >= 0)
         gLeftArmPartLayer.mirror_pos = -gLeftArmPartLayer.mirror_pos - 2;
-    if (d >= 0)
+    if (legs >= 0)
         gLegPartLayer.mirror_pos = -gLegPartLayer.mirror_pos - 2;
 }
 
-void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g,
-                                u32 h, u32 i, u32 j) {
-    u32 slot = j;
+// Draws a whole Medabot (4 parts) for one side, with the same queue / load / render steps as
+// draw_medapart_sprite; the part layers are saved per side in the sprite tree.
+void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 head, u32 right_arm, u32 left_arm, u32 legs,
+                                u32 x, u32 y, u32 depth, u32 pal, u32 mode, u32 side) {
+    u32 slot = side;
     u16 tile;
     u16 base;
     s32 k;
@@ -1061,63 +1068,63 @@ void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b,
     struct SpriteTileRef *src;
     struct SpriteTileRef *pa, *pb, *pc, *pd;
 
-    if (!(i & 4)) {
+    if (!(mode & 4)) {
         if (gGameWork.inCloseup)
             gGameWork.skipOamHigh = 1;
         gMedabotSpriteSlots[slot].flags = (gMedabotSpriteSlots[slot].flags | 1) & ~8;
-        gMedabotSpriteSlots[slot].head = a;
-        gMedabotSpriteSlots[slot].right_arm = b;
-        gMedabotSpriteSlots[slot].left_arm = c;
-        gMedabotSpriteSlots[slot].legs = d;
+        gMedabotSpriteSlots[slot].head = head;
+        gMedabotSpriteSlots[slot].right_arm = right_arm;
+        gMedabotSpriteSlots[slot].left_arm = left_arm;
+        gMedabotSpriteSlots[slot].legs = legs;
         gMedabotSpriteSlots[slot].side = slot;
     } else if (gMedabotSpriteSlots[slot].flags & 2) {
         base = 0;
-        if (i & 2)
+        if (mode & 2)
             base = 0x160;
         gHeadPartLayer = gHeadPartLayerTemplate;
         gLeftArmPartLayer = gLeftArmPartLayerTemplate;
         gRightArmPartLayer = gRightArmPartLayerTemplate;
         gLegPartLayer = gLegPartLayerTemplate;
-        a = gMedabotSpriteSlots[slot].head;
-        b = gMedabotSpriteSlots[slot].right_arm;
-        c = gMedabotSpriteSlots[slot].left_arm;
-        d = gMedabotSpriteSlots[slot].legs;
-        j = gMedabotSpriteSlots[slot].side;
-        if ((s32)a < 0) {
+        head = gMedabotSpriteSlots[slot].head;
+        right_arm = gMedabotSpriteSlots[slot].right_arm;
+        left_arm = gMedabotSpriteSlots[slot].left_arm;
+        legs = gMedabotSpriteSlots[slot].legs;
+        side = gMedabotSpriteSlots[slot].side;
+        if ((s32)head < 0) {
             gHeadPartLayer.root_node = 0;
             gRightArmPartLayer.root_node = 0;
             gLeftArmPartLayer.root_node = 0;
         } else {
-            pa = gHeadPartSpriteNodes[a];
+            pa = gHeadPartSpriteNodes[head];
             gHeadPartLayer.root_node = pa->node;
-            pb = gRightArmPartSpriteNodes[b];
+            pb = gRightArmPartSpriteNodes[right_arm];
             gRightArmPartLayer.root_node = pb->node;
-            pc = gLeftArmPartSpriteNodes[c];
+            pc = gLeftArmPartSpriteNodes[left_arm];
             gLeftArmPartLayer.root_node = pc->node;
-            pd = gLegPartSpriteNodes[d];
+            pd = gLegPartSpriteNodes[legs];
             gLegPartLayer.root_node = pd->node;
             tile = base + 0x140;
-            load_sprite_tree_recursive(obj->nodes, pa, pa->node, h, obj->oams, &tile, j);
+            load_sprite_tree_recursive(obj->nodes, pa, pa->node, pal, obj->oams, &tile, side);
             tile = base + 0x1A0;
-            load_sprite_tree_recursive(obj->nodes, pb, pb->node, h, obj->oams, &tile, j);
+            load_sprite_tree_recursive(obj->nodes, pb, pb->node, pal, obj->oams, &tile, side);
             tile = base + 0x1E0;
-            load_sprite_tree_recursive(obj->nodes, pc, pc->node, h, obj->oams, &tile, j);
+            load_sprite_tree_recursive(obj->nodes, pc, pc->node, pal, obj->oams, &tile, side);
             tile = base + 0x220;
-            load_sprite_tree_recursive(obj->nodes, pd, pd->node, h, obj->oams, &tile, j);
+            load_sprite_tree_recursive(obj->nodes, pd, pd->node, pal, obj->oams, &tile, side);
             if (slot != 0) {
-                for (k = 0; gRightArmPartSpriteNodes[b][k].node; k++) {
-                    if (!gRightArmPartSpriteNodes[b][k].alt)
-                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gLeftArmPartSpriteNodes[b],
-                                                   gLeftArmPartSpriteNodes[b][k].node,
-                                                   gRightArmPartSpriteNodes[b][k].node);
+                for (k = 0; gRightArmPartSpriteNodes[right_arm][k].node; k++) {
+                    if (!gRightArmPartSpriteNodes[right_arm][k].alt)
+                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gLeftArmPartSpriteNodes[right_arm],
+                                                   gLeftArmPartSpriteNodes[right_arm][k].node,
+                                                   gRightArmPartSpriteNodes[right_arm][k].node);
                 }
-                for (k = 0; gLeftArmPartSpriteNodes[c][k].node; k++) {
-                    if (!gLeftArmPartSpriteNodes[c][k].alt)
-                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gRightArmPartSpriteNodes[c],
-                                                   gRightArmPartSpriteNodes[c][k].node,
-                                                   gLeftArmPartSpriteNodes[c][k].node);
+                for (k = 0; gLeftArmPartSpriteNodes[left_arm][k].node; k++) {
+                    if (!gLeftArmPartSpriteNodes[left_arm][k].alt)
+                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gRightArmPartSpriteNodes[left_arm],
+                                                   gRightArmPartSpriteNodes[left_arm][k].node,
+                                                   gLeftArmPartSpriteNodes[left_arm][k].node);
                 }
-                toggle_bg_layer_visibility(a, b, c, d);
+                part_layers_toggle_mirror(head, right_arm, left_arm, legs);
             }
         }
         obj->layers[slot][0] = gHeadPartLayer;
@@ -1131,32 +1138,33 @@ void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b,
 
         custom_memset(buf, 0, sizeof(buf));
         gGameWork.skipOamHigh = 0;
-        a = gMedabotSpriteSlots[slot].head;
-        b = gMedabotSpriteSlots[slot].right_arm;
-        c = gMedabotSpriteSlots[slot].left_arm;
-        d = gMedabotSpriteSlots[slot].legs;
+        head = gMedabotSpriteSlots[slot].head;
+        right_arm = gMedabotSpriteSlots[slot].right_arm;
+        left_arm = gMedabotSpriteSlots[slot].left_arm;
+        legs = gMedabotSpriteSlots[slot].legs;
         gHeadPartLayer = obj->layers[slot][0];
         gRightArmPartLayer = obj->layers[slot][1];
         gLeftArmPartLayer = obj->layers[slot][2];
         gLegPartLayer = obj->layers[slot][3];
         dst = buf;
         if (gHeadPartLayer.root_node)
-            for (src = gHeadPartSpriteNodes[a]; src->node;)
+            for (src = gHeadPartSpriteNodes[head]; src->node;)
                 *dst++ = *src++;
         if (gRightArmPartLayer.root_node)
-            for (src = gRightArmPartSpriteNodes[b]; src->node;)
+            for (src = gRightArmPartSpriteNodes[right_arm]; src->node;)
                 *dst++ = *src++;
         if (gLeftArmPartLayer.root_node)
-            for (src = gLeftArmPartSpriteNodes[c]; src->node;)
+            for (src = gLeftArmPartSpriteNodes[left_arm]; src->node;)
                 *dst++ = *src++;
         if (gLegPartLayer.root_node)
-            for (src = gLegPartSpriteNodes[d]; src->node;)
+            for (src = gLegPartSpriteNodes[legs]; src->node;)
                 *dst++ = *src++;
-        render_sprite_node_recursive(obj, buf, 1, e << 8, f << 8, g, 0, j);
+        render_sprite_node_recursive(obj, buf, 1, x << 8, y << 8, depth, 0, side);
     }
 }
 
-void update_anim_object_flags(void) {
+// Once per frame (main loop): moves queued slots to the load step and clears the just-loaded bit.
+void medabot_sprite_slots_update(void) {
     s32 i;
 
     for (i = 0; i < 2; i++) {

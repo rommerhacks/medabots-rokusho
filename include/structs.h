@@ -1074,7 +1074,7 @@ struct FieldWork {
 // gLegPartLayer are loaded from the ROM templates g*PartLayerTemplate and saved per side in struct SpriteTree.
 struct PartSpriteLayer {
     u8 filler0[0xD];
-    u8 mirror_pos; // guess: x offset; toggled between x and -2 - x (toggle_bg_layer_visibility)
+    u8 mirror_pos; // guess: x offset; toggled between x and -2 - x (part_layers_toggle_mirror)
     u8 fillerE[2];
     u8 root_node; // root node of the part's sprite tree (0 = hidden)
     u8 filler11[7];

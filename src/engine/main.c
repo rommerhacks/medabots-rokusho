@@ -156,7 +156,7 @@ void vblank_body(void) {
     }
     if (gVBlankOamMode != 0) {
         if (gVBlankOamMode == 2) {
-            update_anim_object_flags();
+            medabot_sprite_slots_update();
             copy_oam_affine_params(gSpriteWork->oamBuf, gSpriteWork->affineBuf);
             for (i = 0; i < 88; i++)
                 gOamBuffer[i].affineParam = gSpriteWork->oamBuf[i].affineParam;
