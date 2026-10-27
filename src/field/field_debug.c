@@ -205,7 +205,7 @@ void sub_08058214(u32 mode) {
             break;
         case 3:
             if (KEYS_LO(gRepeatKeys) & 1)
-                sub_08047BA8(gUnk_030057A0.unk34);
+                field_play_sound_effect(gUnk_030057A0.unk34);
             break;
         case 1:
             break;
@@ -260,7 +260,7 @@ void sub_08058214(u32 mode) {
                 }
                 gUnk_030057A0.unk15 = 0;
                 sub_08058B04(gUnk_030057A0.unk14);
-                init_cursor_state();
+                message_steps_reset();
                 gUnk_030057A0.unk32++;
             }
             break;
@@ -545,7 +545,7 @@ static void sub_08058B04(u32 mode) {
             break;
         case 1: {
             const u32 *const *bank = gTextBankTables[gUnk_030057A0.unk2E];
-            if (scene_transition_step_08047C24(0, 0, 0, bank[gUnk_030057A0.unk30]))
+            if (message_step_run(0, 0, 0, bank[gUnk_030057A0.unk30]))
                 gUnk_030057A0.unk32 = 0;
         } break;
         }

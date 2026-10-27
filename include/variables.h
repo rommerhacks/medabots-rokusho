@@ -1182,13 +1182,14 @@ struct PtrTable3 {
     const u8 *const *p[3];
 };
 extern const struct PtrTable3 gUnk_080AFE9C; // scene texts by gUnk_03006F74->unk5 (text_scroll_page_start)
-extern const u16 gUnk_080AFA4C[16];          // OBJ palette for the link Medapart trade scene (sub_08063090)
+extern const u16 gUnk_080AFA4C[16];          // OBJ palette for the link Medapart trade scene (medapart_trade_fade_in)
 struct FuncTable13 {
     Func f[13];
 };
-extern const struct FuncTable13 gUnk_080AFA6C; // link Medapart trade sub-states by gGameSubState (sub_080637D0)
-extern const s16 gSineTable[0x140];            // sin(i * 2pi / 256) * 0x100, 256 + 64 entries (cos(x) = [x + 0x40])
-extern const s8 gUnk_080AFB45[];               // game mode by gUnk_03006F74->unk5 (link_menu_fade_out_exit)
+extern const struct FuncTable13
+    gUnk_080AFA6C;                  // link Medapart trade sub-states by gGameSubState (medapart_trade_update)
+extern const s16 gSineTable[0x140]; // sin(i * 2pi / 256) * 0x100, 256 + 64 entries (cos(x) = [x + 0x40])
+extern const s8 gUnk_080AFB45[];    // game mode by gUnk_03006F74->unk5 (link_menu_fade_out_exit)
 extern const struct FuncTable13
     gUnk_080AFB48;                // link menu sub-states by gGameSubState (dispatch_battle_menu_and_update_counters)
 extern const u8 gUnk_0848564F[];  // 0xFF-terminated message (setup_dialogue_script_from_rom)
@@ -1197,12 +1198,12 @@ extern const u8 gUnk_0879A634[];  // Medal list BG1 tilemap (sub_08064D3C)
 extern const u8 gUnk_0879A78C[];  // Medal list BG2 tilemap (sub_08064D3C)
 extern const u8 gUnk_0879A8BC[];  // Medal list BG3 tilemap (sub_08064D3C)
 extern const u32 gUnk_08799D98[]; // Medal list BG tiles, compressed (sub_08064D3C)
-extern const u8 gUnk_0879FDC0[];  // BG1 tilemap (sub_0806384C)
-extern const u8 gUnk_0879FB10[];  // BG2 tilemap (sub_0806384C)
-extern const u8 gUnk_087A0050[];  // BG3 tilemap (sub_0806384C)
-extern const u8 gUnk_0879FEFC[];  // BG2 tilemap, second (sub_0806384C)
-extern const u32 gUnk_0879E618[]; // BG tiles, compressed (sub_0806384C)
-extern const u16 gUnk_0879E4D8[]; // BG palettes (sub_0806384C)
+extern const u8 gUnk_0879FDC0[];  // BG1 tilemap (medal_trade_init_screen)
+extern const u8 gUnk_0879FB10[];  // BG2 tilemap (medal_trade_init_screen)
+extern const u8 gUnk_087A0050[];  // BG3 tilemap (medal_trade_init_screen)
+extern const u8 gUnk_0879FEFC[];  // BG2 tilemap, second (medal_trade_init_screen)
+extern const u32 gUnk_0879E618[]; // BG tiles, compressed (medal_trade_init_screen)
+extern const u16 gUnk_0879E4D8[]; // BG palettes (medal_trade_init_screen)
 extern const u8 gUnk_0879C260[];
 extern const u8 gUnk_0879C3A0[];
 extern const u32 gUnk_0879AC40[];
@@ -1231,7 +1232,7 @@ struct FuncTable6 {
 struct FuncTable12 {
     Func f[12];
 };
-extern const struct FuncTable12 gUnk_080AFAA0; // link Medal exchange sub-states by gGameSubState (sub_080644C4)
+extern const struct FuncTable12 gUnk_080AFAA0; // link Medal exchange sub-states by gGameSubState (medal_trade_update)
 extern const struct FuncTable4 gUnk_080AFAD0;  // sub-states by gGameSubState (scene_dispatch_and_tick)
 extern const struct FuncTable2 gUnk_080AFAE0;  // sub-states by gGameSubState (link_medal_sync_update)
 struct FuncTable8 {

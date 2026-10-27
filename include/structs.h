@@ -912,7 +912,7 @@ struct Unk_030064A0 {
     u8 unk53;
     u8 unk54[8];
     u8 unk5C[8];
-    u8 unk64; // choice menu step (sub_08047FEC: 0 setup, 1 wait handler, 2 poll)
+    u8 unk64; // choice menu step (yes_no_menu_poll: 0 setup, 1 wait handler, 2 poll)
     // Vehicle menu (sub_08057044 .. sub_08057598) reuses the area after the choice menu.
     u8 unk65; // cursor: selected vehicle
     u8 unk66;
@@ -1586,7 +1586,7 @@ struct Unk_03006F74 {
     struct RingPoint
         unkD0[18];    // points on a hexagon / circle (ring_points_place_on_hexagon, ring_points_place_on_circle)
     s32 unk1F0[4][4]; // 8.8 fixed-point 4x4 transform matrix (matrix_set_identity, matrix_rotate_xyz)
-    struct Unk_03000BE0 unk230; // link: Medal record received from the other player (sub_08063E38)
+    struct Unk_03000BE0 unk230; // link: Medal record received from the other player (medal_trade_transfer)
     u8 unk270[0x30];            // message text buffer (sub_08061180)
 };
 

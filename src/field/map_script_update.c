@@ -25,7 +25,7 @@ void map_script_update_message(void) {
 
     switch (s->unkC93) {
     case 0:
-        init_cursor_state();
+        message_steps_reset();
         gUnk_030057A0.unk2E = s->unkC94[0] - 2;
         gUnk_030057A0.unk30 = (s->unkC94[1] << 8) | s->unkC94[2];
         if (sub_0804B6EC())
@@ -37,7 +37,7 @@ void map_script_update_message(void) {
             tbl = (const u32 *const *)gTextTable;
         else
             tbl = gTextBankTables[s->unkC94[0] - 2];
-        if (scene_transition_step_08047C24(0, 0, 0, tbl[(s->unkC94[1] << 8) | s->unkC94[2]]))
+        if (message_step_run(0, 0, 0, tbl[(s->unkC94[1] << 8) | s->unkC94[2]]))
             map_script_command_done();
         break;
     }
@@ -151,7 +151,7 @@ void sub_0804DEF4(void) {
         gUnk_03002C30[47].unk28 = 0;
         gUnk_030057E0.unkC5F = 1;
         sub_08050B50();
-        sub_08047BA8(0x70);
+        field_play_sound_effect(0x70);
         gUnk_030057E0.unkC93++;
         break;
     case 1:
@@ -455,11 +455,11 @@ void sub_0804E79C(void) {
 
     switch (s->unkC93) {
     case 0:
-        init_bg0_for_cursor(0);
+        yes_no_menu_open(0);
         s->unkC93++;
         break;
     case 1:
-        r = sub_08047FEC();
+        r = yes_no_menu_poll();
         if (r) {
             if (r & 0xF0)
                 s->unkC8A = s->unkC8C + s->unkC94[0];
@@ -479,11 +479,11 @@ void sub_0804E814(void) {
 
     switch (s->unkC93) {
     case 0:
-        init_bg0_for_cursor(1);
+        yes_no_menu_open(1);
         s->unkC93++;
         break;
     case 1:
-        r = sub_08047FEC();
+        r = yes_no_menu_poll();
         if (r) {
             if (r & 0xF0)
                 s->unkC8A = s->unkC8C + s->unkC94[0];
@@ -526,30 +526,30 @@ void sub_0804E8DC(void) {
 
     switch (s->unkC93) {
     case 0:
-        init_cursor_state();
-        have = sub_08047D8C(s->unkC94[0]);
+        message_steps_reset();
+        have = field_item_quantity(s->unkC94[0]);
         if (have == 99) {
-            sub_08047BA8(6);
-            copy_string_to_text_buffer(0, sub_08048088(s->unkC94[0]));
+            field_play_sound_effect(6);
+            copy_string_to_text_buffer(0, item_name(s->unkC94[0]));
             s->unkC93 = 1;
             break;
         }
-        sub_08047BA8(14);
+        field_play_sound_effect(14);
         if (s->unkC94[1] + have > 99)
             n = 99 - have;
         else
             n = s->unkC94[1];
-        sub_08047DC0(gUnk_030057E0.unkC94[0], n);
-        copy_string_to_text_buffer(0, sub_08048088(gUnk_030057E0.unkC94[0]));
+        field_give_item(gUnk_030057E0.unkC94[0], n);
+        copy_string_to_text_buffer(0, item_name(gUnk_030057E0.unkC94[0]));
         format_number_to_text_buffer(1, n);
         gUnk_030057E0.unkC93 = 2;
         break;
     case 1:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[0]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[0]))
             map_script_command_done();
         break;
     case 2:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[1]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[1]))
             map_script_command_done();
         break;
     }
@@ -563,38 +563,38 @@ void sub_0804E9CC(void) {
 
     switch (s->unkC93) {
     case 0:
-        init_cursor_state();
-        have = sub_08047D8C(s->unkC94[0]);
+        message_steps_reset();
+        have = field_item_quantity(s->unkC94[0]);
         if (have == 0) {
-            sub_08047BA8(6);
-            copy_string_to_text_buffer(0, sub_08048088(s->unkC94[0]));
+            field_play_sound_effect(6);
+            copy_string_to_text_buffer(0, item_name(s->unkC94[0]));
             s->unkC93 = 1;
             break;
         }
-        sub_08047BA8(5);
+        field_play_sound_effect(5);
         if (have - s->unkC94[1] < 0)
             n = have;
         else
             n = s->unkC94[1];
-        sub_08047DD8(s->unkC94[0], n);
-        copy_string_to_text_buffer(0, sub_08048088(s->unkC94[0]));
+        field_take_item(s->unkC94[0], n);
+        copy_string_to_text_buffer(0, item_name(s->unkC94[0]));
         format_number_to_text_buffer(1, n);
-        have = sub_08047D8C(s->unkC94[0]);
+        have = field_item_quantity(s->unkC94[0]);
         if (have == 0)
             s->unkC93 = 3;
         else
             s->unkC93 = 2;
         break;
     case 1:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[2]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[2]))
             map_script_command_done();
         break;
     case 2:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[3]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[3]))
             map_script_command_done();
         break;
     case 3:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[4]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[4]))
             map_script_command_done();
         break;
     }
@@ -608,30 +608,30 @@ void map_script_update_give_medapart(void) {
 
     switch (s->unkC93) {
     case 0:
-        init_cursor_state();
-        have = (s32)(sub_08047D9C(s->unkC94[0], s->unkC94[1]) & 0xFF00) >> 8;
+        message_steps_reset();
+        have = (s32)(field_medapart_counts(s->unkC94[0], s->unkC94[1]) & 0xFF00) >> 8;
         if (have == 99) {
-            sub_08047BA8(6);
-            copy_string_to_text_buffer(0, sub_08047BEC(s->unkC94[1], s->unkC94[0]));
+            field_play_sound_effect(6);
+            copy_string_to_text_buffer(0, medapart_name(s->unkC94[1], s->unkC94[0]));
             s->unkC93 = 1;
             break;
         }
-        sub_08047BA8(14);
+        field_play_sound_effect(14);
         if (s->unkC94[2] + have > 99)
             n = 99 - have;
         else
             n = s->unkC94[2];
-        sub_08047DF0(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1], n);
-        copy_string_to_text_buffer(0, sub_08047BEC(gUnk_030057E0.unkC94[1], gUnk_030057E0.unkC94[0]));
+        field_give_medapart(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1], n);
+        copy_string_to_text_buffer(0, medapart_name(gUnk_030057E0.unkC94[1], gUnk_030057E0.unkC94[0]));
         format_number_to_text_buffer(1, n);
         gUnk_030057E0.unkC93 = 2;
         break;
     case 1:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[5]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[5]))
             map_script_command_done();
         break;
     case 2:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[s->unkC94[1] + 6]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[s->unkC94[1] + 6]))
             map_script_command_done();
         break;
     }
@@ -645,38 +645,38 @@ void sub_0804EBEC(void) {
 
     switch (s->unkC93) {
     case 0:
-        init_cursor_state();
-        have = (s32)(sub_08047D9C(s->unkC94[0], s->unkC94[1]) & 0xFF00) >> 8;
+        message_steps_reset();
+        have = (s32)(field_medapart_counts(s->unkC94[0], s->unkC94[1]) & 0xFF00) >> 8;
         if (have == 0) {
-            sub_08047BA8(6);
-            copy_string_to_text_buffer(0, sub_08047BEC(s->unkC94[1], s->unkC94[0]));
+            field_play_sound_effect(6);
+            copy_string_to_text_buffer(0, medapart_name(s->unkC94[1], s->unkC94[0]));
             s->unkC93 = 1;
             break;
         }
-        sub_08047BA8(5);
+        field_play_sound_effect(5);
         if (have - s->unkC94[2] < 0)
             n = have;
         else
             n = s->unkC94[2];
-        sub_08047E08(s->unkC94[0], s->unkC94[1], n);
-        copy_string_to_text_buffer(0, sub_08047BEC(s->unkC94[1], s->unkC94[0]));
+        field_take_medapart(s->unkC94[0], s->unkC94[1], n);
+        copy_string_to_text_buffer(0, medapart_name(s->unkC94[1], s->unkC94[0]));
         format_number_to_text_buffer(1, n);
-        have = sub_08047D9C(s->unkC94[0], s->unkC94[1]) & 0xFF00;
+        have = field_medapart_counts(s->unkC94[0], s->unkC94[1]) & 0xFF00;
         if (have == 0)
             s->unkC93 = 3;
         else
             s->unkC93 = 2;
         break;
     case 1:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[s->unkC94[1] + 14]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[s->unkC94[1] + 14]))
             map_script_command_done();
         break;
     case 2:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[s->unkC94[1] + 18]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[s->unkC94[1] + 18]))
             map_script_command_done();
         break;
     case 3:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[s->unkC94[1] + 18]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[s->unkC94[1] + 18]))
             map_script_command_done();
         break;
     }
@@ -689,15 +689,15 @@ void map_script_update_give_money(void) {
 
     switch (s->unkC93) {
     case 0:
-        init_cursor_state();
+        message_steps_reset();
         n = ((s->unkC94[0] << 8) | s->unkC94[1]) * 10;
-        sub_08047BA8(7);
+        field_play_sound_effect(7);
         add_money(n);
-        sub_08047D24(0, n);
+        format_money_to_text_buffer(0, n);
         s->unkC93 = 1;
         break;
     case 1:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[26]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[26]))
             map_script_command_done();
         break;
     }
@@ -711,19 +711,19 @@ void map_script_update_take_money(void) {
 
     switch (s->unkC93) {
     case 0:
-        init_cursor_state();
+        message_steps_reset();
         n = ((s->unkC94[0] << 8) | s->unkC94[1]) * 10;
-        sub_08047BA8(5);
+        field_play_sound_effect(5);
         money = get_money();
         if (money - n <= 0)
             n = money;
-        sub_08047BA8(5);
+        field_play_sound_effect(5);
         sub_money(n);
-        sub_08047D24(0, n);
+        format_money_to_text_buffer(0, n);
         s->unkC93 = 1;
         break;
     case 1:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[27]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[27]))
             map_script_command_done();
         break;
     }
@@ -735,22 +735,22 @@ void map_script_update_give_medal(void) {
 
     switch (s->unkC93) {
     case 0:
-        init_cursor_state();
-        sub_08047BA8(14);
-        copy_string_to_text_buffer(0, sub_08047BCC(s->unkC94[0]));
-        if (sub_08047DB0(s->unkC94[0])) {
+        message_steps_reset();
+        field_play_sound_effect(14);
+        copy_string_to_text_buffer(0, medal_name(s->unkC94[0]));
+        if (field_find_medal_slot(s->unkC94[0])) {
             s->unkC93 = 1;
             break;
         }
-        gUnk_030017EC = sub_08047E20(s->unkC94[0]);
+        gUnk_030017EC = field_give_medal(s->unkC94[0]);
         s->unkC93 = 2;
         break;
     case 1:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[28]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[28]))
             map_script_command_done();
         break;
     case 2:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[29])) {
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[29])) {
             scene_state_reset();
             s->unkC93++;
         }
@@ -768,21 +768,21 @@ void sub_0804EF10(void) {
 
     switch (s->unkC93) {
     case 0:
-        init_cursor_state();
-        sub_08047BA8(14);
-        if (sub_08047E30()) {
+        message_steps_reset();
+        field_play_sound_effect(14);
+        if (field_team_is_full()) {
             s->unkC93 = 1;
             break;
         }
-        sub_08047E3C(s->unkC94[0]);
+        field_team_add_tinpet(s->unkC94[0]);
         s->unkC93 = 2;
         break;
     case 1:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[30]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[30]))
             map_script_command_done();
         break;
     case 2:
-        if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[s->unkC94[0] + 31]))
+        if (message_step_run(0, 0, 0, gUnk_0847E8C4[s->unkC94[0] + 31]))
             map_script_command_done();
         break;
     }
@@ -1375,7 +1375,7 @@ void sub_0804FE50(void) {
                     set_sprite_anim_and_store(obj->unk4_0 + 49, gUnk_030064A0.unkA[i], obj);
                     if (gUnk_030064A0.unkA[i] == 0 && gUnk_030064A0.unk12[i][3] == 1 &&
                         find_map_event_by_coords(obj->x, obj->y) && gUnk_03006D38.unk3)
-                        sub_08047BA8(gUnk_083D29E6[gUnk_03006D38.unk3]);
+                        field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
                 }
                 gUnk_030064A0.unkA[i]++;
                 gUnk_030064A0.unk2[i] = 0;

@@ -1,11 +1,15 @@
-// Link trade scenes (mode 2): state 16 (sub_080637D0, guess: Medapart trade) and state 17 (sub_080644C4,
-// guess: Medal exchange, swaps serial packets through gUnk_03005010). Their sub-state tables gUnk_080AFA6C (13)
-// and gUnk_080AFAA0 (12) are adjacent in ROM. The head holds the scene setup (init_scene_rendering_context),
-// Medapart sprite loads and the animated tile / scroll helpers both states use. Both end in link_menu (state 20).
-// Not runnable in the single-GBA harness, so the state names are guesses.
+// Link trade scenes (mode 2). State 16 (medapart_trade_update): both players swap one Medapart; each side sends
+// its part as a 0x4000-tagged packet through gUnk_03005010, then reduce_medapart_stat / medapart_add_quantity apply
+// the swap. State 17 (medal_trade_update): the player who chose the link menu entry (unk7A == 0) gives a Medal; its
+// 0x40-byte record is sent one byte per packet (0xC000 | index << 8 | byte) and the receiver adds it with
+// medal_add_from_buffer while the giver removes it. Their sub-state tables gUnk_080AFA6C (13) and gUnk_080AFAA0 (12)
+// are adjacent in ROM. Entered from link_enter_medapart_trade / link_enter_medal_trade; both end in link_menu
+// (state 20). Not runnable in the single-GBA harness: names come from the code.
+// gUnk_03006F74 here: unk31/unk33 own part id/kind, unk32/unk34 the partner's, unk3A tile animation counter,
+// unk3C frame timer, unk230 the traded Medal record.
 #include "global.h"
 
-static void init_scene_rendering_context(u32 a) {
+static void medapart_trade_init_sprite_tree(u32 a) {
     if (a == 0) {
         struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
         u8 *b;
@@ -51,7 +55,8 @@ void load_medapart_sprite_animation(u8 id, u8 kind, u32 which) {
         load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, id, kind, y, x, 0xC7, which, 5);
 }
 
-static void sub_08062A74(u16 id, u8 second) {
+// Copies Medapart name id (part * 4 + kind) into the text buffer, slot 0 or 1 (0x14 bytes each).
+static void medapart_copy_name(u16 id, u8 second) {
     const u8 *src;
     u8 *dst;
     u32 i;
@@ -68,7 +73,8 @@ static void sub_08062A74(u16 id, u8 second) {
     *dst = 0xFE;
 }
 
-static void sub_08062AB0(u32 medal, u32 frame) {
+// Loads the Medal picture into OBJ VRAM and sets up the affine Medal sprite (hidden for the receiver).
+static void medal_trade_show_medal_sprite(u32 medal, u32 frame) {
     struct Unk_03002C30 *s;
     u8 zero;
 
@@ -88,7 +94,8 @@ static void sub_08062AB0(u32 medal, u32 frame) {
     s->unk9 = 0x40;
 }
 
-static void update_animated_tilemap(void) {
+// The trade screen's BG tile animation (two tile rows): frame from unk3A, which counts down, so the frames speed up.
+static void trade_tiles_speed_up_two_rows(void) {
     s32 v;
     s32 i;
     u32 s;
@@ -132,7 +139,7 @@ static void update_animated_tilemap(void) {
     }
 }
 
-static void animate_battle_scroll_tiles(void) {
+static void trade_tiles_speed_up(void) {
     s32 v;
     s32 i;
     u8 *src;
@@ -168,7 +175,8 @@ static void animate_battle_scroll_tiles(void) {
     }
 }
 
-static void update_scroll_animation_tiles(void) {
+// As trade_tiles_speed_up_two_rows, with the speed table reversed (slows down as unk3A counts down).
+static void trade_tiles_slow_down_two_rows(void) {
     s32 v;
     s32 i;
     u32 s;
@@ -213,7 +221,7 @@ static void update_scroll_animation_tiles(void) {
     }
 }
 
-static void fade_update_tilemap_copy(void) {
+static void trade_tiles_slow_down(void) {
     s32 v;
     s32 i;
     u8 *src;
@@ -250,13 +258,13 @@ static void fade_update_tilemap_copy(void) {
     }
 }
 
-void sub_08062E10(void) {
+void medapart_trade_take_selection(void) {
     gUnk_03006F74->unk31 = gUnk_03002B68;
     gUnk_03006F74->unk33 = ((u16 *)&gUnk_03002B68)[1];
     gGameSubState++;
 }
 
-void sub_08062E3C(void) {
+void medapart_trade_init_screen(void) {
     u32 size;
     u32 zero;
     u32 z;
@@ -287,11 +295,11 @@ void sub_08062E3C(void) {
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06011E00);
     gUnk_03006F74->unk3A = 0x280;
-    sub_08062A74(gUnk_03006F74->unk31 * 4 + gUnk_03006F74->unk33, 0);
+    medapart_copy_name(gUnk_03006F74->unk31 * 4 + gUnk_03006F74->unk33, 0);
     render_text_string_to_sprites(gUnk_03000440.unk9E, 0, 0, 10, 16, 13, z, 1);
-    init_scene_rendering_context(0);
+    medapart_trade_init_sprite_tree(0);
     load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
-    update_animated_tilemap();
+    trade_tiles_speed_up_two_rows();
     init_blend_effect(gUnk_03006F74->unk50, 0x10, 0, -1, 0xC0);
     gUnk_03002C30[0x21].unk0 = 0x8000;
     gUnk_03002C30[0x21].unk1C = 2;
@@ -310,7 +318,7 @@ static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
 }
 
-void sub_08063090(void) {
+void medapart_trade_fade_in(void) {
     if (blend_fade_step_08065598(gUnk_03006F74->unk50)) {
         gGameSubState++;
         gUnk_03006F74->unk3C = 0x258;
@@ -319,7 +327,8 @@ void sub_08063090(void) {
     load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
 }
 
-void sub_080630DC(void) {
+// Sends the own part and waits for both partners' part packets, then keeps the partner's.
+void medapart_trade_exchange_parts(void) {
     struct Unk_03005010 *s;
     struct Unk_03006F74 *w;
     u16 a, b;
@@ -338,8 +347,8 @@ void sub_080630DC(void) {
             w->unk32 = b & 0x7F;
             gUnk_03006F74->unk34 = (b >> 8) & 3;
         }
-        init_scene_rendering_context(1);
-        sub_08062A74(gUnk_03006F74->unk32 * 4 + gUnk_03006F74->unk34, 1);
+        medapart_trade_init_sprite_tree(1);
+        medapart_copy_name(gUnk_03006F74->unk32 * 4 + gUnk_03006F74->unk34, 1);
         render_text_string_to_sprites(gUnk_03000440.unk9E + 0x14, 0x10, 0xE, 0xA, 0x10, 0xD, 0, 1);
         text_window_init(1, 0, 1);
         gGameSubState++;
@@ -347,9 +356,9 @@ void sub_080630DC(void) {
     load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
 }
 
-void sub_080631DC(void) {
+void medapart_trade_apply(void) {
     run_message(gUnk_08485BD8[19]);
-    update_animated_tilemap();
+    trade_tiles_speed_up_two_rows();
     load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
     load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
     if ((s16)--gUnk_03006F74->unk3C < 0) {
@@ -362,7 +371,7 @@ void sub_080631DC(void) {
     }
 }
 
-void sub_08063284(void) {
+void medapart_trade_flash_white(void) {
     struct Unk_03000440 *g = &gUnk_03000440;
     u8 *t = &g->unk84;
 
@@ -376,10 +385,10 @@ void sub_08063284(void) {
     }
     load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
     load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
-    update_animated_tilemap();
+    trade_tiles_speed_up_two_rows();
 }
 
-void sub_080632FC(void) {
+void medapart_trade_crossfade_swap(void) {
     struct Unk_03006F74 *w = gUnk_03006F74;
     s32 n;
     u16 zero;
@@ -402,17 +411,17 @@ void sub_080632FC(void) {
         n = gUnk_03006F74->unk33;
         gUnk_03006F74->unk33 = gUnk_03006F74->unk34;
         gUnk_03006F74->unk34 = n;
-        init_scene_rendering_context(0);
-        init_scene_rendering_context(1);
+        medapart_trade_init_sprite_tree(0);
+        medapart_trade_init_sprite_tree(1);
         gUnk_03006F74->unk3C = zero;
         gGameSubState++;
         v = 0x200;
         CpuSet((void *)&v, gSpriteWork->oamBuf, 0x01000200);
     }
-    update_animated_tilemap();
+    trade_tiles_speed_up_two_rows();
 }
 
-void sub_080633E4(void) {
+void medapart_trade_swap_palettes(void) {
     u8 buf[0x20];
     s32 i;
     u16 *a, *b;
@@ -430,15 +439,15 @@ void sub_080633E4(void) {
     gGameSubState++;
     gUnk_03006F74->unk3C = (zero = 0, one = 1);
     clear_battle_sprite_slot(0, 0x80);
-    sub_08062A74(gUnk_03006F74->unk31 * 4 + gUnk_03006F74->unk33, 0);
-    sub_08062A74(gUnk_03006F74->unk32 * 4 + gUnk_03006F74->unk34, 1);
+    medapart_copy_name(gUnk_03006F74->unk31 * 4 + gUnk_03006F74->unk33, 0);
+    medapart_copy_name(gUnk_03006F74->unk32 * 4 + gUnk_03006F74->unk34, 1);
     render_text_string_to_sprites(gUnk_03000440.unk9E, 0, 0, 10, 16, 13, zero, one);
     render_text_string_to_sprites(gUnk_03000440.unk9E + 0x14, 16, 14, 10, 16, 13, zero, one);
     play_sound_effect(0x2A);
-    update_animated_tilemap();
+    trade_tiles_speed_up_two_rows();
 }
 
-void update_fade_in_blend_effect(void) {
+void medapart_trade_blend_in(void) {
     struct Unk_03006F74 *w = gUnk_03006F74;
     s32 n = (s16)w->unk3C++;
 
@@ -457,10 +466,10 @@ void update_fade_in_blend_effect(void) {
     }
     load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
     load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
-    update_animated_tilemap();
+    trade_tiles_speed_up_two_rows();
 }
 
-void fade_screen_and_update_sprites(void) {
+void medapart_trade_unflash(void) {
     struct Unk_03000440 *g = &gUnk_03000440;
     u8 *t = &g->unk84;
 
@@ -476,13 +485,13 @@ void fade_screen_and_update_sprites(void) {
     }
     load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
     load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
-    update_animated_tilemap();
+    trade_tiles_speed_up_two_rows();
 }
 
-void init_medapart_detail_view(void) {
+void medapart_trade_scroll_in(void) {
     load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
     load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
-    update_scroll_animation_tiles();
+    trade_tiles_slow_down_two_rows();
     if (gUnk_03006F74->unk3A == 0) {
         gUnk_03002C30[0x21].unk0 = 0xC000;
         gUnk_03002C30[0x21].unk1C = 2;
@@ -495,7 +504,7 @@ void init_medapart_detail_view(void) {
     }
 }
 
-void menu_confirm_selection_with_fade(void) {
+void medapart_trade_wait_confirm(void) {
     load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
     load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
     if (run_message(gUnk_08485BD8[gUnk_03006F74->unk33 + 0x14]) && (KEYS_LO(gNewKeys) & 1)) {
@@ -508,7 +517,7 @@ void menu_confirm_selection_with_fade(void) {
     }
 }
 
-void scene_fade_or_transition(void) {
+void medapart_trade_fade_out(void) {
     if (blend_fade_step_08065598(gUnk_03006F74->unk50)) {
         clear_battle_sprite_slot(0, 0x80);
         gGameState = 0x14;
@@ -519,8 +528,8 @@ void scene_fade_or_transition(void) {
     }
 }
 
-// guess: link Medapart trade scene, sub-states gUnk_080AFA6C by gGameSubState
-void sub_080637D0(void) {
+// Link Medapart trade (state 16): runs sub-state gUnk_080AFA6C[gGameSubState], scrolls BG3.
+void medapart_trade_update(void) {
     struct FuncTable13 t = gUnk_080AFA6C;
 
     if (gUnk_03000430 == 2) {
@@ -536,7 +545,7 @@ void sub_080637D0(void) {
 
 #define TM(cnt, i) (*(u16 *)(((((cnt) >> 8) & 0x1F) << 11) + (0x06000000 + (i) * 2)))
 
-void sub_0806384C(void) {
+void medal_trade_init_screen(void) {
     u8 *src;
     u8 *dst;
     u32 i;
@@ -597,7 +606,7 @@ void sub_0806384C(void) {
         u16 *p;
 
         medal = w->unk230.unk1;
-        sub_08062AB0(medal, w->unk230.unk8);
+        medal_trade_show_medal_sprite(medal, w->unk230.unk8);
         render_text_sprites_08040DB8(gUnk_03006F74->unk230.unkA, 0x20, 4, 4, 0xA, 2, f, 1);
         j = 0;
         t = size >> 5;
@@ -640,7 +649,7 @@ void sub_0806384C(void) {
         TM(*bg2, 0x12C) = TM(*bg2, 0x12B);
         TM(*bg2, 0x12D) = TM(*bg2, 0x12B);
     }
-    animate_battle_scroll_tiles();
+    trade_tiles_speed_up();
     init_blend_effect(gUnk_03006F74->unk50, 0x10, 0, -1, 0xC0);
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
@@ -649,7 +658,7 @@ void sub_0806384C(void) {
     gGameSubState++;
 }
 
-void sub_08063D44(void) {
+void medal_trade_fade_in(void) {
     if (blend_fade_step_08065598(gUnk_03006F74->unk50)) {
         CpuFastSet((void *)0x05000200, gPaletteBackup, 0x40);
         gGameSubState++;
@@ -658,7 +667,8 @@ void sub_08063D44(void) {
     }
 }
 
-void sub_08063D90(void) {
+// Both sides send 0xFDEF until they see each other; 0xFEDF from the partner aborts to state 26.
+void medal_trade_handshake(void) {
     if (gUnk_03006F74->unk7A)
         run_message(gUnk_08485BD8[24]);
     if (gUnk_03005010.unk8[gUnk_03000B90 == 0][1] == 0xFEDF)
@@ -676,7 +686,8 @@ static inline s16 link_packet_hi(u16 pkt) {
     return (pkt & 0xF) << 8 | 0xC000;
 }
 
-void sub_08063E38(void) {
+// Receiver requests the Medal record byte by byte (0xFE00 | index); giver answers; 0xFF00 when all 0x40 arrived.
+void medal_trade_transfer(void) {
     u8 *buf;
     u8 *p;
     u16 pkt;
@@ -711,22 +722,22 @@ void sub_08063E38(void) {
     }
     if (gUnk_03005010.unk8[0][1] == 0xFF00 && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1]) {
         if (gUnk_03006F74->unk7A) {
-            export_medals_to_buffer(buf);
-            sub_08062AB0(buf[1], buf[8]);
+            medal_add_from_buffer(buf);
+            medal_trade_show_medal_sprite(buf[1], buf[8]);
         } else
             medal_remove_by_id(buf[1]);
         gGameSubState++;
     }
 }
 
-void sub_08063F64(void) {
+void medal_trade_skip_step(void) {
     gGameSubState++;
 }
 
-void sub_08063F74(void) {
+void medal_trade_wait_message(void) {
     if (run_message(gUnk_08485BD8[25])) {
         struct Unk_03006F74 *s;
-        animate_battle_scroll_tiles();
+        trade_tiles_speed_up();
         s = gUnk_03006F74;
         if ((s16)--s->unk3C < 0) {
             gGameSubState++;
@@ -738,13 +749,14 @@ void sub_08063F74(void) {
 #define BG1(o) (*(u16 *)(VRAM + (o) + (((REG_BG1CNT >> 8) & 0x1F) << 11)))
 #define BG2(o) (*(u16 *)(VRAM + (o) + (((REG_BG2CNT >> 8) & 0x1F) << 11)))
 
-void sub_08063FB4(void) {
+// Shrinks the Medal sprite to a sliver, then swaps in the received Medal (receiver) or hides it (giver).
+void medal_trade_flip_close(void) {
     struct Unk_03006F74 *s;
     s16 t;
     u8 lvl;
     s32 i;
 
-    animate_battle_scroll_tiles();
+    trade_tiles_speed_up();
     s = gUnk_03006F74;
     t = ++s->unk3C;
     if (t > 0xF) {
@@ -802,11 +814,11 @@ void sub_08063FB4(void) {
     }
 }
 
-void sub_080642E4(void) {
+void medal_trade_flip_open(void) {
     struct Unk_03006F74 *s;
     s16 t;
 
-    animate_battle_scroll_tiles();
+    trade_tiles_speed_up();
     s = gUnk_03006F74;
     t = --s->unk3C;
     if (t < 0) {
@@ -825,8 +837,8 @@ void sub_080642E4(void) {
     }
 }
 
-void sub_08064360(void) {
-    fade_update_tilemap_copy();
+void medal_trade_scroll_in(void) {
+    trade_tiles_slow_down();
     if (gUnk_03006F74->unk3A == 0) {
         text_window_init(1, 0, 1);
         gGameSubState++;
@@ -834,7 +846,7 @@ void sub_08064360(void) {
     }
 }
 
-void sub_080643AC(void) {
+void medal_trade_wait_confirm(void) {
     if (run_message(gUnk_08485BD8[gUnk_03006F74->unk7A ? 26 : 27])) {
         if (KEYS_LO(gRepeatKeys) & 1) {
             play_sound_effect(0xD);
@@ -844,7 +856,7 @@ void sub_080643AC(void) {
     }
 }
 
-void sub_08064428(void) {
+void medal_trade_sync_done(void) {
     if (run_message(gUnk_08485BD8[gUnk_03006F74->unk7A ? 26 : 27])) {
         gUnk_03005010.unk6 = 0xFEFF;
         if (gUnk_03005010.unk8[0][1] == 0xFEFF && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1]) {
@@ -854,15 +866,15 @@ void sub_08064428(void) {
     }
 }
 
-void sub_08064498(void) {
+void medal_trade_fade_out(void) {
     if (blend_fade_step_08065598(gUnk_03006F74->unk50)) {
         gGameState = 0x14;
         gGameSubState = 0;
     }
 }
 
-// guess: link Medal exchange scene, sub-states gUnk_080AFAA0 by gGameSubState
-void sub_080644C4(void) {
+// Link Medal trade (state 17): runs sub-state gUnk_080AFAA0[gGameSubState], scrolls BG3.
+void medal_trade_update(void) {
     struct FuncTable12 t = gUnk_080AFAA0;
 
     if (gUnk_03000430 == 2) {

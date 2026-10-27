@@ -214,7 +214,7 @@ void field_player_step(u8 dir) {
             if (find_map_event_by_coords(gUnk_030057E0.unkC56, gUnk_030057E0.unkC57)) {
                 gUnk_03005310.unk1 = 3;
                 if (gUnk_03006D38.unk3)
-                    sub_08047BA8(gUnk_083D29E6[gUnk_03006D38.unk3]);
+                    field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
                 setup_palette_fade_to_color_with_obj(0x7FFF, 0.0f, 32.0f, 8.0f);
             } else if (gUnk_030057E0.unkC5C != 1 && check_random_encounter()) {
                 save_script_sprites();
@@ -287,7 +287,7 @@ void field_player_walk_input(void) {
                 field_player_step(gUnk_030057E0.unkC59);
                 update_battle_direction_indicator(3);
                 if (gUnk_030057E0.unkC5C == 2 || gUnk_030057E0.unkC5C == 9)
-                    sub_08047BA8(0x57);
+                    field_play_sound_effect(0x57);
                 battle_camera_scroll_update(gUnk_030057E0.unkC75);
             }
         }

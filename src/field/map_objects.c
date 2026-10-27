@@ -406,7 +406,7 @@ void sub_08052BA0(u8 on) {
 }
 
 void check_and_update_battlefield_palette(void) {
-    if (gUnk_030057E0.unkC5C == 1 && sub_0804803C(0) == 0) {
+    if (gUnk_030057E0.unkC5C == 1 && current_area_flag(0) == 0) {
         gUnk_030057E0.unkC5C = gUnk_030057E0.unkC69;
         load_battle_palette_via_dma(1);
     }

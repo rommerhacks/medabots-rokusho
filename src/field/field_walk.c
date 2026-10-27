@@ -170,7 +170,7 @@ void field_walk_update(void) {
             gUnk_03005310.unk1 = 1;
         } else {
             if (gUnk_03006D38.unk3 == 4)
-                sub_08047BA8(0);
+                field_play_sound_effect(0);
             gUnk_03005310.unk1 = 2;
         }
         break;
@@ -178,7 +178,7 @@ void field_walk_update(void) {
         field_player_step(gUnk_03002C30[47].unk20);
         if (gUnk_030057E0.unkC58 == 0) {
             if (gUnk_03006D38.unk3 == 4)
-                sub_08047BA8(0);
+                field_play_sound_effect(0);
             gUnk_03005310.unk1++;
         }
         break;
@@ -194,7 +194,7 @@ void field_walk_update(void) {
                 if (find_map_event_by_coords(gUnk_030057E0.unkC56, gUnk_030057E0.unkC57)) {
                     gUnk_03005310.unk1 = 3;
                     if (gUnk_03006D38.unk3)
-                        sub_08047BA8(gUnk_083D29E6[gUnk_03006D38.unk3]);
+                        field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
                     setup_palette_fade_to_color_with_obj(0x7FFF, 0.0f, 32.0f, 8.0f);
                     warp = 1;
                 }
@@ -214,7 +214,7 @@ void field_walk_update(void) {
                         }
                     } else if (KEYS_LO(gNewKeys) & 2) {
                         if (gUnk_030057E0.unkC33) {
-                            sub_08047E4C();
+                            nullsub_08047E4C();
                             gGameMode = 0;
                             gGameState = 1;
                             gGameSubState = 0;
@@ -236,14 +236,14 @@ void field_walk_update(void) {
                             done = 1;
                         }
                     } else if (KEYS_HI(gNewKeys) & 1 && gUnk_030057E0.unkC5C == 1) {
-                        sub_08047BA8(0x74);
+                        field_play_sound_effect(0x74);
                     }
                 }
             }
         }
         if (!done && !npc && !warp) {
             if (KEYS_HI(gNewKeys) & 1 && gUnk_030057E0.unkC5C == 1)
-                sub_08047BA8(0x74);
+                field_play_sound_effect(0x74);
             field_player_walk_input();
         } else {
             field_set_player_facing(gUnk_03002C30[47].unk20);

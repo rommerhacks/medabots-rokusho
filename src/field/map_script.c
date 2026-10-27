@@ -160,7 +160,7 @@ void sub_0804BA50(void) {
     gUnk_030057E0.unkC94[0] = gUnk_03002C30[47].unk4;
     gUnk_03002C30[47].unk26 = 0;
     gUnk_03002C30[47].unk28 = 0;
-    sub_08047BA8(0x70);
+    field_play_sound_effect(0x70);
     gUnk_030057E0.unkC89 = 1;
 }
 
@@ -265,7 +265,7 @@ void sub_0804BEE8(void) {
         gUnk_03006D20.unkA = gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4].unk4_0 + 49;
         gUnk_03006D20.unk8 = gUnk_03002C30[gUnk_03006D20.unkA].unk10_8;
         gUnk_03002C30[gUnk_03006D20.unkA].unk28 = 0;
-        sub_08047BA8(0x70);
+        field_play_sound_effect(0x70);
         gUnk_030057E0.unkC89 = 1;
     }
 }
@@ -352,7 +352,7 @@ void sub_0804C220(void) {
     gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
     gUnk_03006D20.unk8 = gUnk_03002C30[gUnk_03006D20.unkA].unk10_8;
     gUnk_03002C30[gUnk_03006D20.unkA].unk28 = 0;
-    sub_08047BA8(0x70);
+    field_play_sound_effect(0x70);
     gUnk_030057E0.unkC89 = 1;
 }
 
@@ -393,7 +393,7 @@ void sub_0804C398(void) {
     s16 d;
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
     read_map_script_bytes(3);
-    r = sub_08047D9C(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1]);
+    r = field_medapart_counts(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1]);
     d = ((r & 0xFF00) >> 8) - (r & 0xFF);
     if (d == 0)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
@@ -549,7 +549,7 @@ void sub_0804C8E0(void) {
 }
 
 void sub_0804C900(void) {
-    sub_08047BA8(read_map_script_byte());
+    field_play_sound_effect(read_map_script_byte());
 }
 
 void sub_0804C914(void) {
@@ -586,7 +586,7 @@ void sub_0804C9DC(void) {
     s32 n;
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
     read_map_script_bytes(3);
-    n = sub_08047D8C(gUnk_030057E0.unkC94[0]);
+    n = field_item_quantity(gUnk_030057E0.unkC94[0]);
     if (n == 0 || n < gUnk_030057E0.unkC94[1])
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
 }
@@ -595,7 +595,7 @@ void sub_0804CA38(void) {
     u32 r;
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
     read_map_script_bytes(3);
-    r = lookup_position_table_value(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1]);
+    r = team_equipped_part_legs_value(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1]);
     if (r != -1)
         gUnk_030057E0.unkC60 = r;
     else
@@ -606,7 +606,7 @@ void sub_0804CA38(void) {
 void sub_0804CA9C(void) {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
     read_map_script_bytes(2);
-    if (sub_08047DB0(gUnk_030057E0.unkC94[0]) == 0)
+    if (field_find_medal_slot(gUnk_030057E0.unkC94[0]) == 0)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
 }
 
@@ -703,7 +703,7 @@ void sub_0804CD58(void) {
 void sub_0804CDB8(void) {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
     read_map_script_bytes(1);
-    if (sub_08047F50() <= 2)
+    if (team_count_complete_bots() <= 2)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
 }
 
@@ -711,7 +711,7 @@ void sub_0804CDB8(void) {
 void sub_0804CDF8(void) {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
     read_map_script_bytes(2);
-    if (sub_08047F70(gUnk_030057E0.unkC94[0]) == 0)
+    if (team_has_full_part_set(gUnk_030057E0.unkC94[0]) == 0)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
 }
 
@@ -897,7 +897,7 @@ void sub_0804D350(void) {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
     read_map_script_bytes(2);
     gUnk_03006D38.unk0 = gUnk_030057E0.unkC94[0];
-    if (sub_08047F50() > 2)
+    if (team_count_complete_bots() > 2)
         gUnk_030057E0.unkC89 = 1;
     else
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
@@ -916,7 +916,7 @@ void sub_0804D3D8(void) {
 void sub_0804D3EC(void) {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
     read_map_script_bytes(3);
-    if ((u8)((u16)sub_08047D9C(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1]) >> 8) == 0)
+    if ((u8)((u16)field_medapart_counts(gUnk_030057E0.unkC94[0], gUnk_030057E0.unkC94[1]) >> 8) == 0)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
 }
 

@@ -251,7 +251,7 @@ void prebattle_rubberobo_use(void) {
     update_scroll_movement_a();
     if (run_message(gUnk_083B53F8[21])) {
         sound_stop_all_with_fade_guard(8);
-        sub_08042318(50, 1);
+        item_remove_quantity(50, 1);
         gGameSubState++;
     }
 }
@@ -360,7 +360,7 @@ void afterbattle_give_part(void) {
         gGameSubState = 62;
     } else {
         sub_080121CC();
-        if (sub_08042114(gUnk_03001800.unk169, gUnk_03001800.unk168))
+        if (medapart_get_counts(gUnk_03001800.unk169, gUnk_03001800.unk168))
             gUnk_03001800.unk16A = 0;
         else
             gUnk_03001800.unk16A = 1;
@@ -1088,7 +1088,7 @@ u32 sub_08012234(void) {
             part = rng_next_byte() & 3;
             for (j = 0, bb = base; j < 4; j++) {
                 p = (u8 *)(part * 24 + ((slot + 3) << 8) + (u32)bb) + 0x5F;
-                if (!sub_08042114(*p, part)) {
+                if (!medapart_get_counts(*p, part)) {
                     gUnk_03001800.unk168 = part;
                     gUnk_03001800.unk169 = *p;
                     return 1;

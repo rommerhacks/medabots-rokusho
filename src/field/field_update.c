@@ -177,13 +177,13 @@ void sub_0804A6AC(void) {
 }
 
 void sub_0804A6D8(void) {
-    init_cursor_state();
+    message_steps_reset();
     sub_0804A1C4();
 }
 
 void sub_0804A6E8(void) {
     s32 exit = check_room_exit_at_position();
-    if (scene_transition_step_08047C24(0, 0, 0, gUnk_08411D54[exit]))
+    if (message_step_run(0, 0, 0, gUnk_08411D54[exit]))
         gGameSubState = 5;
 }
 
@@ -373,7 +373,7 @@ void sub_0804ABC8(void) {
         sub_080493D4(48, gUnk_03002C30[48].unk2B * 4 + gUnk_03002C30[48].unk20);
     }
     update_battle_direction_indicator(1);
-    sub_08047BA8(0x57);
+    field_play_sound_effect(0x57);
     gUnk_03005310.unk1 = 1;
     gGameSubState = 5;
 }

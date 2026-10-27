@@ -209,7 +209,7 @@
 * `a = b = v;` stores `b` first. Swap the chain if two byte stores come out in the wrong order
   (sub_0805FE90).
 * Loop pointer start order (`dst` literal before `src = base + v * 0x200`): explicit pointer locals
-  assigned in the original's order, then `v <<= 9; src = base + v;` (fade_update_tilemap_copy).
+  assigned in the original's order, then `v <<= 9; src = base + v;` (trade_tiles_slow_down).
 * `CpuCopy16(buf, (void *)0x06004000, size); lz_decompress_dispatch(src, (void *)(0x06004000 + size));`
   keeps 0x06004000 in a callee-saved register; the original loads the literal twice. Solved by a helper
   `static inline void *vram_at(u32 off) { return (void *)(0x06004000 + off); }` used for both destinations
@@ -466,7 +466,7 @@
   `dma3_copy_or_decompress` matched only as CpuCopy16 of the first half + a DMA3 copy of the second
   half (`size = hdr >> 8`, `size / 2 / 2` for the count).
 * Same pattern with a byte flag: `u32 f = x & 0x1F; ... = (y & 0x80) | f` (a `u8 f` swaps the `orrs`)
-  (export_medals_to_buffer).
+  (medal_add_from_buffer).
 * A struct-returning function whose epilogue is `pop {r1}; bx r1` with `mov r0, <hidden ptr>` before the
   final `str`: that is the normal struct return. A table declared `[][8]` read as a flat `s16` array
   needs `tbl[0][i]`; a `(const s16 *)` cast reorders the base load (calc_polar_to_screen_coords).

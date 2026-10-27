@@ -93,7 +93,7 @@ void medal_remove_by_id(u8 id) {
     }
 }
 
-void export_medals_to_buffer(const void *src) {
+void medal_add_from_buffer(const void *src) {
     u32 i;
 
     for (i = 0; i < 30; i++) {
@@ -131,7 +131,7 @@ u32 sub_080420C4(u8 level, u8 a, u8 b, u8 c, u8 d) {
     return 0;
 }
 
-u32 sub_08042114(u8 a, u8 b) {
+u32 medapart_get_counts(u8 a, u8 b) {
     u32 hi = gMedapartInventory[b * 240 + a * 2] << 8;
     return gMedapartInventory[b * 240 + a * 2 + 1] | hi;
 }
@@ -236,9 +236,9 @@ void item_add_quantity(u8 id, u8 n) {
     }
 }
 
-// Removes n of item id (guess: item_remove_quantity); when the count drops to 0 the entry is cleared
+// Removes n of item id; when the count drops to 0 the entry is cleared
 // and bubbled to the end of the list.
-void sub_08042318(u8 id, u8 n) {
+void item_remove_quantity(u8 id, u8 n) {
     u32 i;
     s32 left;
 

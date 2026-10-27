@@ -160,7 +160,7 @@ void advance_sprite_animation_frame(u8 idx) {
     switch (cmd) {
     case 0xFFFD:
         gUnk_03002C30[idx].unk22++;
-        sub_08047BA8(arg);
+        field_play_sound_effect(arg);
         advance_sprite_animation_frame(idx);
         break;
     case 0xFFFE:

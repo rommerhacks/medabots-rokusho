@@ -549,7 +549,7 @@ u32 battle_sequence_dispatch(void) {
                     }
                     if (E[i].unk2EC.active) {
                         if (E[i].unk2EC.start <= E[i].unk2EC.timer) {
-                            sub_08047BA8(E[i].unk2FC);
+                            field_play_sound_effect(E[i].unk2FC);
                             E[i].unk2EC.timer++;
                             if (E[i].unk2EC.end != 0xFFFF && E[i].unk2EC.timer >= E[i].unk2EC.end)
                                 E[i].unk2EC.active = 0;
@@ -1102,7 +1102,7 @@ u32 battle_sequence_dispatch(void) {
             }
             break;
         }
-        case 138: // guess: callback timer (sub_08047BA8)
+        case 138: // guess: callback timer (field_play_sound_effect)
             S.unkFC++;
             S.unkFC++;
             n = S.unk184;

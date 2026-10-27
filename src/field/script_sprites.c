@@ -64,7 +64,7 @@ u32 update_battle_sprite_movement(u8 slot, u8 mode) {
             case 0x82:
             case 0x83:
             case 0x84:
-                sub_08047BA8(0x57);
+                field_play_sound_effect(0x57);
                 break;
             }
             gUnk_03002C30[slot].unk28 = 16 / sprite_walk_speed(slot);
@@ -106,7 +106,7 @@ void spawn_script_sprite(u8 flags, u8 part, u8 x, u8 y) {
     u32 idx = flags & 0xF;
 
     if ((flags & 0xF0) && find_map_event_by_coords(x, y) && gUnk_03006D38.unk3)
-        sub_08047BA8(gUnk_083D29E6[gUnk_03006D38.unk3]);
+        field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
     sub_0804DB84(idx, find_next_available_battle_sprite_slot());
     init_script_sprite(sub_0804DBA4(idx), part, x, y);
     if (flags & 0x40)
@@ -149,7 +149,7 @@ void sub_08050508(u8 arg) {
         u8 y = sub_08052714(gUnk_03002C30[sub_0804DBA4(id) + 79].unk10_8);
 
         if (find_map_event_by_coords(x, y) && gUnk_03006D38.unk3)
-            sub_08047BA8(gUnk_083D29E6[gUnk_03006D38.unk3]);
+            field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
     }
     sprite_entry_clear(sub_0804DBA4(id) + 79);
     sprite_entry_clear(sub_0804DBA4(id) + 121);
@@ -297,7 +297,7 @@ u32 sub_080509A0(void) {
         s->unk20 = gUnk_030057E0.unkC94[1];
         sub_080493D4(slot, sub_080502B4(slot, gUnk_030057E0.unkC94[1]));
         s->unk34 = s->unk10_8;
-        sub_08047BA8(0x70);
+        field_play_sound_effect(0x70);
         s->unk26++;
         break;
     case 1:

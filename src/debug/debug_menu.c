@@ -476,7 +476,7 @@ void debug_item_input(void) {
             break;
         case 1:
             if (gUnk_03000440.unk35[1] < 0x40)
-                sub_08042318(gUnk_03000440.unk35[1], 1);
+                item_remove_quantity(gUnk_03000440.unk35[1], 1);
             break;
         default:
             for (gUnk_03000440.unk35[2] = b; gUnk_03000440.unk35[2] < 0x3F; gUnk_03000440.unk35[2]++)

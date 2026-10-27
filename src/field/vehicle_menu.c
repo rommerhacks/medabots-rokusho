@@ -100,7 +100,7 @@ void sub_080572F8(void) {
         sprite_entry_init(0x7F, 0xC004, 0x307, 0xC, 0);
         update_cursor_sprite_position();
         gUnk_030064A0.unk65 = 0;
-        init_cursor_state();
+        message_steps_reset();
         sub_0804A1C4();
     }
 }
@@ -120,7 +120,7 @@ void sub_0805738C(void) {
         if (r != 0) {
             gUnk_030064A0.unk67 = 0;
             update_cursor_sprite_position();
-            sub_08047BA8(6);
+            field_play_sound_effect(6);
             switch (r) {
             case 1:
                 break;
@@ -139,11 +139,11 @@ void sub_0805738C(void) {
             }
         } else {
             copy_tilemap_rect_with_offset((u16 *)0x06002800, gUnk_030064A0.unk72, 0, 0, 0x1E, 0x14, 0x20, 0x20, r, r);
-            sub_08047BA8(4);
+            field_play_sound_effect(4);
             gGameSubState = 0xA;
         }
     } else if (KEYS_LO(gNewKeys) & 2) {
-        sub_08047BA8(5);
+        field_play_sound_effect(5);
         sprite_entry_clear(0x7F);
         gUnk_030064A0.unk6F = 0x10;
         sub_0804A1C4();
@@ -304,76 +304,76 @@ void sub_08057A24(void) {
         id = 0x55;
         switch (gUnk_030064A0.unk70) {
         case 0:
-            copy_string_to_text_buffer(0, sub_08047BDC(id));
+            copy_string_to_text_buffer(0, medabot_name(id));
             break;
         case 1:
-            copy_string_to_text_buffer(0, sub_08047BEC(0, id));
+            copy_string_to_text_buffer(0, medapart_name(0, id));
             break;
         case 2:
-            copy_string_to_text_buffer(1, sub_08047BEC(1, id));
+            copy_string_to_text_buffer(1, medapart_name(1, id));
             break;
         case 3:
-            copy_string_to_text_buffer(2, sub_08047BEC(2, id));
+            copy_string_to_text_buffer(2, medapart_name(2, id));
             break;
         case 4:
-            copy_string_to_text_buffer(3, sub_08047BEC(3, id));
+            copy_string_to_text_buffer(3, medapart_name(3, id));
             break;
         case 5:
-            copy_string_to_text_buffer(0, sub_08047BDC(id));
+            copy_string_to_text_buffer(0, medabot_name(id));
             break;
         }
     } else if (gUnk_030064A0.unk65 == 2) {
         id = 0xB;
         switch (gUnk_030064A0.unk70) {
         case 0:
-            copy_string_to_text_buffer(0, sub_08047BDC(id));
+            copy_string_to_text_buffer(0, medabot_name(id));
             break;
         case 1:
-            copy_string_to_text_buffer(0, sub_08047BEC(0, id));
+            copy_string_to_text_buffer(0, medapart_name(0, id));
             break;
         case 2:
-            copy_string_to_text_buffer(1, sub_08047BEC(1, id));
+            copy_string_to_text_buffer(1, medapart_name(1, id));
             break;
         case 3:
-            copy_string_to_text_buffer(2, sub_08047BEC(2, id));
+            copy_string_to_text_buffer(2, medapart_name(2, id));
             break;
         case 4:
-            copy_string_to_text_buffer(3, sub_08047BEC(3, id));
+            copy_string_to_text_buffer(3, medapart_name(3, id));
             break;
         case 5:
-            copy_string_to_text_buffer(0, sub_08047BDC(id));
+            copy_string_to_text_buffer(0, medabot_name(id));
             break;
         }
     } else if (gUnk_030064A0.unk65 == 3) {
         id = 0x6B;
         switch (gUnk_030064A0.unk70) {
         case 0:
-            copy_string_to_text_buffer(0, sub_08047BDC(id));
+            copy_string_to_text_buffer(0, medabot_name(id));
             break;
         case 1:
-            copy_string_to_text_buffer(0, sub_08047BEC(0, id));
+            copy_string_to_text_buffer(0, medapart_name(0, id));
             break;
         case 2:
-            copy_string_to_text_buffer(1, sub_08047BEC(1, id));
+            copy_string_to_text_buffer(1, medapart_name(1, id));
             break;
         case 3:
-            copy_string_to_text_buffer(2, sub_08047BEC(2, id));
+            copy_string_to_text_buffer(2, medapart_name(2, id));
             break;
         case 4:
-            copy_string_to_text_buffer(3, sub_08047BEC(3, id));
+            copy_string_to_text_buffer(3, medapart_name(3, id));
             break;
         case 5:
-            copy_string_to_text_buffer(0, sub_08047BDC(id));
+            copy_string_to_text_buffer(0, medabot_name(id));
             break;
         }
     }
     if (gUnk_030064A0.unk70 == 0)
-        init_cursor_state();
+        message_steps_reset();
     sub_0804A1C4();
 }
 
 void sub_08057B68(void) {
-    if (scene_transition_step_08047C24(1, 1, 0, gTextTable[gUnk_030064A0.unk70 + 0x82])) {
+    if (message_step_run(1, 1, 0, gTextTable[gUnk_030064A0.unk70 + 0x82])) {
         if (++gUnk_030064A0.unk70 <= 5)
             gGameSubState--;
         else
@@ -382,22 +382,22 @@ void sub_08057B68(void) {
 }
 
 void sub_08057BBC(void) {
-    init_cursor_state();
+    message_steps_reset();
     sub_0804A1C4();
 }
 
 void sub_08057BCC(void) {
-    if (scene_transition_step_08047C24(1, 1, 0, gTextTable[0x81]))
+    if (message_step_run(1, 1, 0, gTextTable[0x81]))
         gGameSubState = 2;
 }
 
 void sub_08057BF8(void) {
-    init_cursor_state();
+    message_steps_reset();
     sub_0804A1C4();
 }
 
 void sub_08057C08(void) {
-    if (scene_transition_step_08047C24(1, 1, 0, gTextTable[0x80]))
+    if (message_step_run(1, 1, 0, gTextTable[0x80]))
         gGameSubState = 2;
 }
 
@@ -411,18 +411,18 @@ static u32 check_vehicle_usability(s32 idx) {
 
     switch (idx) {
     case 0:
-        flag = sub_08047D8C(0x12);
+        flag = field_item_quantity(0x12);
         ret = 1;
         if (!flag)
             break;
-        n = check_position_table_match(0x55, 0);
-        n += check_position_table_match(0x55, 1);
-        n += check_position_table_match(0x55, 2);
-        n += check_position_table_match(0x55, 3);
+        n = team_has_part_equipped(0x55, 0);
+        n += team_has_part_equipped(0x55, 1);
+        n += team_has_part_equipped(0x55, 2);
+        n += team_has_part_equipped(0x55, 3);
         ret = 2;
         if (n != 4)
             break;
-        ok = sub_0804803C(0);
+        ok = current_area_flag(0);
         ret = 3;
         if (!ok)
             break;
@@ -435,7 +435,7 @@ static u32 check_vehicle_usability(s32 idx) {
             ret = 5;
         break;
     case 1:
-        flag = sub_08047D8C(0x18);
+        flag = field_item_quantity(0x18);
         ret = 1;
         if (!flag)
             break;
@@ -448,18 +448,18 @@ static u32 check_vehicle_usability(s32 idx) {
             ret = 5;
         break;
     case 2:
-        flag = sub_08047D8C(0x19);
+        flag = field_item_quantity(0x19);
         ret = 1;
         if (!flag)
             break;
-        n = check_position_table_match(0xB, 0);
-        n += check_position_table_match(0xB, 1);
-        n += check_position_table_match(0xB, 2);
-        n += check_position_table_match(0xB, 3);
+        n = team_has_part_equipped(0xB, 0);
+        n += team_has_part_equipped(0xB, 1);
+        n += team_has_part_equipped(0xB, 2);
+        n += team_has_part_equipped(0xB, 3);
         ret = 2;
         if (n != 4)
             break;
-        ok = sub_0804803C(1);
+        ok = current_area_flag(1);
         if (gUnk_083D29EB[gUnk_030057E0.unk7FE] == 0xA)
             ok = 0;
         ret = 3;
@@ -474,14 +474,14 @@ static u32 check_vehicle_usability(s32 idx) {
             ret = 5;
         break;
     case 3:
-        flag = sub_08047D8C(0x26);
+        flag = field_item_quantity(0x26);
         ret = 1;
         if (!flag)
             break;
-        n = check_position_table_match(0x6B, 0);
-        n += check_position_table_match(0x6B, 1);
-        n += check_position_table_match(0x6B, 2);
-        n += check_position_table_match(0x6B, 3);
+        n = team_has_part_equipped(0x6B, 0);
+        n += team_has_part_equipped(0x6B, 1);
+        n += team_has_part_equipped(0x6B, 2);
+        n += team_has_part_equipped(0x6B, 3);
         ret = 2;
         if (n != 4)
             break;
@@ -506,7 +506,7 @@ static void handle_cursor_up_down_input(s32 count) {
 
     gUnk_030057A0.unk15++;
     if (KEYS_LO(gRepeatKeys) & 0x40) {
-        sub_08047BA8(2);
+        field_play_sound_effect(2);
         s = &gUnk_030064A0;
         if (--s->unk65 == 0xFF)
             s->unk65 = count - 1;
@@ -514,7 +514,7 @@ static void handle_cursor_up_down_input(s32 count) {
         update_cursor_sprite_position();
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
-        sub_08047BA8(2);
+        field_play_sound_effect(2);
         s = &gUnk_030064A0;
         s->unk65++;
         if (s->unk65 >= count)

@@ -1,10 +1,12 @@
 // Thin wrappers the field event code calls: sound and music, data table lookups, message steps, text buffer
-// fills (numbers, strings), money, items, Medals, Medaparts and team (inventory/inventory), plus the
-// opponent-team position table checks and the yes/no choice window (text/choice_menu).
+// fills (numbers, strings), money, items, Medals, Medaparts and team (inventory/inventory), plus checks on the
+// player's team gUnk_030017A0 (9 slots; unk0 == 3 = a complete Medabot) and the yes/no choice window
+// (text/choice_menu). Name tables: gUnk_083B6410 Medals, gUnk_083BA4D8 Medabots (by head part id),
+// gUnk_083BB9CC Medaparts, gUnk_08484444 items.
 
 #include "global.h"
 
-void sub_08047BA8(u32 id) {
+void field_play_sound_effect(u32 id) {
     play_sound_effect(id);
 }
 
@@ -16,28 +18,31 @@ void field_stop_songs(u32 a) {
     sound_stop_all_with_fade_guard(a);
 }
 
-u32 sub_08047BCC(u32 idx) {
+u32 medal_name(u32 idx) {
     return gUnk_083B6410[idx];
 }
 
-u32 sub_08047BDC(u32 idx) {
+u32 medabot_name(u32 idx) {
     return gUnk_083BA4D8[idx];
 }
 
-u32 sub_08047BEC(u32 a, u32 b) {
+u32 medapart_name(u32 a, u32 b) {
     const u32 *t = (const u32 *)gUnk_083BB9CC;
     return t[b * 4 + a];
 }
 
-void init_cursor_state(void) {
-    sub_08047E4C();
+// Resets the message_step_run state before a multi-message script step.
+void message_steps_reset(void) {
+    nullsub_08047E4C();
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gUnk_030064A0.unk0 = 0;
     gUnk_030064A0.unk1 = 0;
 }
 
-u32 scene_transition_step_08047C24(u8 a, u8 b, u8 c, const void *text) {
+// One step of a script message: opens the window for the first message, continues it for later ones;
+// returns 1 when the message is done.
+u32 message_step_run(u8 a, u8 b, u8 c, const void *text) {
     u32 ret = 0;
 
     switch (gUnk_030064A0.unk0) {
@@ -83,7 +88,8 @@ void copy_string_to_text_buffer(u32 slot, u32 str) {
     *d = 0xFE;
 }
 
-void sub_08047D24(u32 slot, u32 n) {
+// Formats the money amount n into text buffer slot (used by the give / take money script steps).
+void format_money_to_text_buffer(u32 slot, u32 n) {
     u8 buf[12];
     struct TextBufTable4 t = gUnk_080ABBFC;
     divide_by_10000_b(t.p[slot], n);
@@ -108,56 +114,58 @@ void sub_money(u32 n) {
         gMoney = left;
 }
 
-u32 sub_08047D8C(u8 id) {
+u32 field_item_quantity(u8 id) {
     return get_item_quantity_by_id(id);
 }
 
-u32 sub_08047D9C(u8 a, u8 b) {
-    return sub_08042114(a, b);
+u32 field_medapart_counts(u8 a, u8 b) {
+    return medapart_get_counts(a, b);
 }
 
-u32 sub_08047DB0(u8 id) {
+u32 field_find_medal_slot(u8 id) {
     return find_medal_slot_by_id(id);
 }
 
-void sub_08047DC0(u8 id, u8 n) {
+void field_give_item(u8 id, u8 n) {
     if (n == 0)
         n = 1;
     item_add_quantity(id, n);
 }
 
-void sub_08047DD8(u8 id, u8 n) {
+void field_take_item(u8 id, u8 n) {
     if (n == 0)
         n = 1;
-    sub_08042318(id, n);
+    item_remove_quantity(id, n);
 }
 
-void sub_08047DF0(u8 a, u8 b, u8 n) {
+void field_give_medapart(u8 a, u8 b, u8 n) {
     medapart_add_quantity(a, b, n);
 }
 
-void sub_08047E08(u8 a, u8 b, u8 n) {
+void field_take_medapart(u8 a, u8 b, u8 n) {
     reduce_medapart_stat(a, b, n);
 }
 
-u32 sub_08047E20(u8 id) {
+u32 field_give_medal(u8 id) {
     return medal_add_by_id(id);
 }
 
-u32 sub_08047E30(void) {
+u32 field_team_is_full(void) {
     return team_is_full();
 }
 
-void sub_08047E3C(u8 id) {
+void field_team_add_tinpet(u8 id) {
     team_add_tinpet(id);
 }
 
-void sub_08047E4C(void) {}
+void nullsub_08047E4C(void) {}
 
-u32 lookup_position_table_value(u8 id, u8 which) {
+// guess: if a team Medabot has part id equipped in slot which, returns that bot's legs part byte 1 - 100
+// (load_part_data) and stores the bot's unk1 in gUnk_03006D38.unk6; else -1.
+u32 team_equipped_part_legs_value(u8 id, u8 which) {
     u8 buf[16];
     s32 v;
-    s32 match = check_position_table_match(id, which);
+    s32 match = team_has_part_equipped(id, which);
 
     if (match) {
         u32 found = 0;
@@ -198,7 +206,7 @@ u32 lookup_position_table_value(u8 id, u8 which) {
     return -1;
 }
 
-u32 check_position_table_match(u8 id, u8 which) {
+u32 team_has_part_equipped(u8 id, u8 which) {
     u32 found = 0;
     s32 i;
     struct Unk_030017A0 *p;
@@ -231,7 +239,7 @@ u32 check_position_table_match(u8 id, u8 which) {
     return found;
 }
 
-s32 sub_08047F50(void) {
+s32 team_count_complete_bots(void) {
     s32 n = 0;
     struct Unk_030017A0 *p = gUnk_030017A0;
     s32 i;
@@ -244,7 +252,8 @@ s32 sub_08047F50(void) {
     return n;
 }
 
-u32 sub_08047F70(u8 id) {
+// Whether a team Medabot wears all four parts of set id.
+u32 team_has_full_part_set(u8 id) {
     u32 found = 0;
     s32 i;
     struct Unk_030017A0 *p;
@@ -259,14 +268,14 @@ u32 sub_08047F70(u8 id) {
     return found;
 }
 
-void init_bg0_for_cursor(u32 mode) {
+void yes_no_menu_open(u32 mode) {
     REG_BG0CNT = 0x500;
     REG_DISPCNT = 0x1F60;
     open_choice_menu(mode, 0x16, 7);
     gUnk_030064A0.unk64 = 0;
 }
 
-u32 sub_08047FEC(void) {
+u32 yes_no_menu_poll(void) {
     u32 ret = 0;
     struct Unk_030064A0 *m = &gUnk_030064A0;
     u8 *step = &m->unk64;
@@ -286,7 +295,8 @@ u32 sub_08047FEC(void) {
     return ret;
 }
 
-u32 sub_0804803C(u32 arg) {
+// guess: bytes 2 / 3 of the current area's gUnk_083BEA90 record (meaning unknown).
+u32 current_area_flag(u32 arg) {
     u32 ret = 0;
 
     switch (arg) {
@@ -300,6 +310,6 @@ u32 sub_0804803C(u32 arg) {
     return ret;
 }
 
-u32 sub_08048088(u32 idx) {
+u32 item_name(u32 idx) {
     return gUnk_08484444[idx];
 }

@@ -159,7 +159,7 @@ void medaparts_list_handle_input(void) {
             gGameSubState++;
         }
     } else if (KEYS_LO(gNewKeys) & 1) {
-        if ((u16)sub_08042114(gUnk_03000440.unk3D, gUnk_03000440.unk3E)) {
+        if ((u16)medapart_get_counts(gUnk_03000440.unk3D, gUnk_03000440.unk3E)) {
             play_sound_effect(4);
             if (gUnk_03000440.unk3C == 4)
                 gGameSubState = 0x40;
@@ -601,7 +601,7 @@ void sub_0800EA98(void) {
     sub_080100BC();
     if (KEYS_LO(gNewKeys) & 1) {
         if (gUnk_03000440.unk4A == 1) {
-            r = (u16)sub_08042114(gUnk_03000440.unk3D, gUnk_03000440.unk3E);
+            r = (u16)medapart_get_counts(gUnk_03000440.unk3D, gUnk_03000440.unk3E);
             if ((r >> 8 & 0xFF) != (r & 0xFF))
                 goto ok;
             play_sound_effect(6);
@@ -920,7 +920,7 @@ static void load_medapart_sprite_by_slot(void) {
             load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 5);
             break;
         }
-    } else if (sub_08042114(gUnk_03000440.unk3D, gUnk_03000440.unk3E)) {
+    } else if (medapart_get_counts(gUnk_03000440.unk3D, gUnk_03000440.unk3E)) {
         obj = (struct SpriteTree *)0x02026000;
         obj->oams = (struct SpriteNodeOam *)0x020260D0;
         switch (gUnk_03000440.unk3E) {
@@ -1075,7 +1075,7 @@ void count_compatible_medaparts(void) {
     gUnk_03000440.unk41 = 0;
     if ((u8)(gUnk_03000440.unk3C - 2) > 1) {
         for (i = 0; i < 120; i++) {
-            r = sub_08042114(i, gUnk_03000440.unk3E);
+            r = medapart_get_counts(i, gUnk_03000440.unk3E);
             if (r) {
                 if (gUnk_03000440.unk3C == 1) {
                     u32 hi = r >> 8;
@@ -1133,7 +1133,7 @@ static u32 medapart_detail_cycle_part_input(void) {
                 gUnk_03000440.unk3D = 119;
             else
                 gUnk_03000440.unk3D--;
-            r = sub_08042114(gUnk_03000440.unk3D, gUnk_03000440.unk3E);
+            r = medapart_get_counts(gUnk_03000440.unk3D, gUnk_03000440.unk3E);
             if (r) {
                 if (gUnk_03000440.unk3C != 1)
                     break;
@@ -1154,7 +1154,7 @@ static u32 medapart_detail_cycle_part_input(void) {
                 gUnk_03000440.unk3D = 0;
             else
                 gUnk_03000440.unk3D++;
-            r = sub_08042114(gUnk_03000440.unk3D, gUnk_03000440.unk3E);
+            r = medapart_get_counts(gUnk_03000440.unk3D, gUnk_03000440.unk3E);
             if (r) {
                 if (gUnk_03000440.unk3C != 1)
                     break;
