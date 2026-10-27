@@ -171,7 +171,7 @@ void prebattle_load_gfx(void) {
 }
 
 // guess: fades the sprites in from white (state 6 sub 10)
-void sub_08010794(void) {
+void prebattle_fade_in(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (gUnk_03000440.unk84 <= 8) {
@@ -213,7 +213,7 @@ void prebattle_wait_for_start_input(void) {
     }
 }
 
-void sub_080108D0(void) {
+void prebattle_rubberobo_open_window(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (game_state_execute_handler_a()) {
@@ -256,7 +256,7 @@ void prebattle_rubberobo_use(void) {
     }
 }
 
-void sub_080109A0(void) {
+void prebattle_fade_out_init(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     palette_backup_from_hardware();
@@ -264,7 +264,7 @@ void sub_080109A0(void) {
     gGameSubState++;
 }
 
-void sub_080109CC(void) {
+void prebattle_fade_out(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (gUnk_03000440.unk84 <= 8) {
@@ -275,7 +275,7 @@ void sub_080109CC(void) {
         gGameSubState++;
 }
 
-void sub_08010A20(void) {
+void prebattle_clear_screen(void) {
     set_blend_effect_mode(0, 0, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
@@ -283,7 +283,7 @@ void sub_08010A20(void) {
     gGameSubState++;
 }
 
-void sub_08010A7C(void) {
+void prebattle_rubberobo_load_field(void) {
     area_load_graphics();
     blend_set_alpha_12_10();
     setup_blend_effect(0x40, 0x2F00, 5, 16, 16, 16, 12, 10, 0);
@@ -291,8 +291,9 @@ void sub_08010A7C(void) {
     gGameSubState++;
 }
 
-// guess: Rubberobo Medal used: fade to white, then skip the battle
-void sub_08010AC8(void) {
+// Rubberobo Medal used (runtime-checked: "You avoided the Robattle!", then back in the field): fade the field
+// back in and skip the battle.
+void prebattle_rubberobo_return_to_field(void) {
     if (gUnk_03000440.unk84 <= 16) {
         blend_effect_update();
         bg_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 2, 0xFFFF);
@@ -343,7 +344,7 @@ void afterbattle_show_opponent_line(void) {
     }
 }
 
-void sub_08010C28(void) {
+void afterbattle_close_opponent_line(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (game_state_execute_handler_b()) {
@@ -395,7 +396,7 @@ void afterbattle_show_part_acquired(void) {
 }
 
 // guess: new Medapart: "NEW" sprite (sprite 1, sound 0x2A)
-void sub_08010DAC(void) {
+void afterbattle_load_new_part_sprite(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
@@ -416,7 +417,7 @@ void sub_08010DAC(void) {
     gGameSubState++;
 }
 
-void sub_08010E50(void) {
+void afterbattle_animate_new_part_sprite(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
@@ -424,7 +425,7 @@ void sub_08010E50(void) {
         gGameSubState++;
 }
 
-void sub_08010E7C(void) {
+void afterbattle_load_part_icon_sprite(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
@@ -457,7 +458,8 @@ void afterbattle_part_details_input(void) {
     }
 }
 
-void sub_08010F6C(void) {
+// Some opponents (encounter setup unk1) also hand over a Rubberobo Medal (item 50) after the battle.
+void afterbattle_check_rubberobo_reward(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (gUnk_03001800.unk1) {
@@ -467,7 +469,7 @@ void sub_08010F6C(void) {
         gGameSubState = 0x40;
 }
 
-void sub_08010FA4(void) {
+void afterbattle_give_rubberobo_medal(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (run_message(gUnk_083C65C4[118])) {
@@ -500,7 +502,10 @@ void afterbattle_start_medal_level_up(void) {
     gGameSubState++;
 }
 
-void sub_08011078(void) {
+// guess: 0x43-0x45 announce, bot by bot (unk186 = team slot), each Medal that levelled up (unk16E[i][0] = Medal id
+// + 1); 0x47-0x49 then announce learned Medaforces (unk16E[i][6], name index [7]) and 0x4B-0x50 play the Medal
+// transform for bots with unk16E[i][1] set.
+void afterbattle_level_up_next_bot(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (gUnk_03001800.unk186 == 3) {
@@ -516,21 +521,21 @@ void sub_08011078(void) {
         gUnk_03001800.unk186++;
 }
 
-void sub_080110FC(void) {
+void afterbattle_level_up_show_message(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (run_message(gUnk_083C65C4[119]))
         gGameSubState++;
 }
 
-void sub_0801112C(void) {
+void afterbattle_level_up_advance(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     gUnk_03001800.unk186++;
     gGameSubState = 0x43;
 }
 
-void sub_08011158(void) {
+void afterbattle_medaforce_next_bot(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (gUnk_03001800.unk186 == 3) {
@@ -548,21 +553,21 @@ void sub_08011158(void) {
         gUnk_03001800.unk186++;
 }
 
-void sub_0801120C(void) {
+void afterbattle_medaforce_show_message(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (run_message(gUnk_083C65C4[120]))
         gGameSubState++;
 }
 
-void sub_0801123C(void) {
+void afterbattle_medaforce_advance(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     gUnk_03001800.unk186++;
     gGameSubState = 0x47;
 }
 
-void sub_08011268(void) {
+void afterbattle_transform_next_bot(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (gUnk_03001800.unk186 == 3) {
@@ -574,7 +579,7 @@ void sub_08011268(void) {
         gUnk_03001800.unk186++;
 }
 
-void sub_080112C4(void) {
+void afterbattle_fade_out_init(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     palette_backup_from_hardware();
@@ -582,7 +587,7 @@ void sub_080112C4(void) {
     gGameSubState++;
 }
 
-void sub_080112F0(void) {
+void afterbattle_fade_out(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (gUnk_03000440.unk84 <= 8) {
@@ -593,7 +598,7 @@ void sub_080112F0(void) {
         gGameSubState++;
 }
 
-void sub_08011344(void) {
+void afterbattle_start_medal_transform(void) {
     vu32 zero;
 
     clear_battle_sprite_slot(0, 0x80);
@@ -617,7 +622,7 @@ void sub_08011344(void) {
     gUnk_03001800.unk186++;
 }
 
-void sub_08011490(void) {
+void afterbattle_transform_advance(void) {
     if (gUnk_03001800.unk186 == 3) {
         gUnk_03001800.unk186 = 0;
         gGameSubState = 0x5B;
@@ -627,14 +632,14 @@ void sub_08011490(void) {
         gUnk_03001800.unk186++;
 }
 
-void sub_080114E0(void) {
+void afterbattle_stop_music(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     sound_stop_all_with_fade_guard(8);
     gGameSubState++;
 }
 
-void sub_08011500(void) {
+void afterbattle_resume_field(void) {
     play_song(1);
     clear_battle_sprite_slot(0, 0x80);
     clear_bg_scroll();
@@ -685,7 +690,7 @@ void afterbattle_part_detail_save_screen(void) {
 
 // Guess: START on "Medapart was acquired": open the Medaparts detail page (game state 5 sub 0x10) of the
 // won part (gUnk_03001800.unk168 = part kind, unk169 = part id).
-void sub_080116C4(void) {
+void afterbattle_part_detail_open_screen(void) {
     struct Unk_03000440 *g;
     struct Unk_03001800 *b;
     u8 kind;
@@ -818,8 +823,9 @@ void afterbattle_show_lost_message(void) {
     }
 }
 
-// guess: 0x71, waits for a handler, then 0x72 (fade out) if unkC2F else 0x77 (a Medapart is taken)
-void sub_08011B18(void) {
+// 0x71, after the loss message: a map-script battle (unkC2F set) just fades out (0x72); a random battle goes on
+// to 0x77, where a Medapart is taken.
+void afterbattle_lost_check_story_battle(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (game_state_execute_handler_b()) {
