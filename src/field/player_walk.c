@@ -172,7 +172,7 @@ void field_player_step(u8 dir) {
     case 0:
         if (gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y != 0) {
             gUnk_030057E0.player_y -= sprite_walk_speed(47);
-            advance_sprite_by_terrain_modifier(47);
+            script_sprite_advance_anim_by_speed(47);
             if (!field_map_origin_y() &&
                 gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y < gUnk_030057E0.unk802 * 8 - 0x60 &&
                 gBg1Scroll.y != 0)
@@ -182,7 +182,7 @@ void field_player_step(u8 dir) {
     case 1:
         if (gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y + 16 < gUnk_030057E0.unk802 * 8) {
             gUnk_030057E0.player_y += sprite_walk_speed(47);
-            advance_sprite_by_terrain_modifier(47);
+            script_sprite_advance_anim_by_speed(47);
             if (!field_map_origin_y() && gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y + 16 > 0x50 &&
                 gBg1Scroll.y + 0xA0 < gUnk_030057E0.unk802 * 8)
                 field_scroll_bg_y(sprite_walk_speed(47));
@@ -191,7 +191,7 @@ void field_player_step(u8 dir) {
     case 2:
         if (gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x != 0) {
             gUnk_030057E0.player_x -= sprite_walk_speed(47);
-            advance_sprite_by_terrain_modifier(47);
+            script_sprite_advance_anim_by_speed(47);
             if (!field_map_origin_x() &&
                 gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x < gUnk_030057E0.unk800 * 8 - 0x80 &&
                 gBg1Scroll.x != 0)
@@ -201,7 +201,7 @@ void field_player_step(u8 dir) {
     case 3:
         if (gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x + 16 < gUnk_030057E0.unk800 * 8) {
             gUnk_030057E0.player_x += sprite_walk_speed(47);
-            advance_sprite_by_terrain_modifier(47);
+            script_sprite_advance_anim_by_speed(47);
             if (!field_map_origin_x() && gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x + 16 > 0x80 &&
                 gBg1Scroll.x + 0xF0 < gUnk_030057E0.unk800 * 8)
                 field_scroll_bg_x(sprite_walk_speed(47));
@@ -332,7 +332,7 @@ void update_battle_direction_indicator(u8 flags) {
                 gUnk_030057E0.unkC75 = 2;
             if (gUnk_030057E0.unkC75 != prev) {
                 set_battle_state_byte_c83(gUnk_030057E0.unkC75);
-                sprite_anim_start(48, sub_080502B4(48, gUnk_030057E0.unkC75));
+                sprite_anim_start(48, sprite_walk_anim_id(48, gUnk_030057E0.unkC75));
             }
         }
     } else {
@@ -344,7 +344,7 @@ void update_battle_direction_indicator(u8 flags) {
             gUnk_030057E0.unkC75 = 0;
         if (gUnk_030057E0.unkC75 != prev) {
             set_battle_state_byte_c83(gUnk_030057E0.unkC75);
-            sprite_anim_start(48, sub_080502B4(48, gUnk_030057E0.unkC75));
+            sprite_anim_start(48, sprite_walk_anim_id(48, gUnk_030057E0.unkC75));
         }
     }
     gSpriteEntries[48].unk2A = gSpriteEntries[47].unk2A;
@@ -357,25 +357,25 @@ static void battle_camera_scroll_update(u8 dir) {
         case 0:
             if (gUnk_030057E0.unkC70 - gUnk_030057E0.map_origin_y != 0) {
                 gUnk_030057E0.unkC70 -= sprite_walk_speed(48);
-                advance_sprite_by_terrain_modifier(48);
+                script_sprite_advance_anim_by_speed(48);
             }
             break;
         case 1:
             if (gUnk_030057E0.unkC70 - gUnk_030057E0.map_origin_y + 16 < gUnk_030057E0.unk802 * 8) {
                 gUnk_030057E0.unkC70 += sprite_walk_speed(48);
-                advance_sprite_by_terrain_modifier(48);
+                script_sprite_advance_anim_by_speed(48);
             }
             break;
         case 2:
             if (gUnk_030057E0.unkC6E - gUnk_030057E0.map_origin_x != 0) {
                 gUnk_030057E0.unkC6E -= sprite_walk_speed(48);
-                advance_sprite_by_terrain_modifier(48);
+                script_sprite_advance_anim_by_speed(48);
             }
             break;
         case 3:
             if (gUnk_030057E0.unkC6E - gUnk_030057E0.map_origin_x + 16 < gUnk_030057E0.unk800 * 8) {
                 gUnk_030057E0.unkC6E += sprite_walk_speed(48);
-                advance_sprite_by_terrain_modifier(48);
+                script_sprite_advance_anim_by_speed(48);
             }
             break;
         }

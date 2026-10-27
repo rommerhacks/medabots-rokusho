@@ -764,8 +764,8 @@ void field_debug_draw_sprite_preview(void) {
         sprite_entry_clear(j);
         gSpriteEntries[slot].unk30 = gUnk_030057A0.unk20;
         if (gUnk_083D2C3D[gUnk_030057A0.unk20] == 3) {
-            sprite_entry_init(slot, 0xC804, calc_medapart_table_index(0), sub_08050264(0), 1);
-            gSpriteEntries[slot].unk2B = sub_08050264(0);
+            sprite_entry_init(slot, 0xC804, sprite_code_anim_index(0), sprite_code_kind(0), 1);
+            gSpriteEntries[slot].unk2B = sprite_code_kind(0);
             gSpriteEntries[slot].unkC_8 = gUnk_03006432 - 0x30;
             gSpriteEntries[slot].unk10_8 = gUnk_03006434 + 0x30;
             gUnk_030055A0[slot].unk0 = 0xFFFF;

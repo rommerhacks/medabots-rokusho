@@ -1314,8 +1314,8 @@ gFieldDebugSoundValues:
 gFieldDebugPageValues:
 	.incbin "baserom.gba", 0x3D60DC, 0x8C4
 
-	.global gUnk_083D69A0
-gUnk_083D69A0:
+	.global gJumpArcTable
+gJumpArcTable:
 	.incbin "baserom.gba", 0x3D69A0, 0x200
 
 	.global gUnk_083D6BA0

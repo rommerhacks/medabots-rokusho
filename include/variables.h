@@ -107,7 +107,7 @@ extern const struct AreaWarp *const gAreaWarps[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
 extern void (*const gMapScriptUpdates[])(void);  // per-command update handlers, run each frame while unkC89 is set
 extern const u8 gUnk_083D24AC[];                 // indexed by the player's facing (gSpriteEntries[47].unk21)
-extern const u8 gUnk_083D28B0[];        // indexed by gUnk_030057E0.player_form, passed to setup_battle_sprite_terrain
+extern const u8 gUnk_083D28B0[];        // indexed by gUnk_030057E0.player_form, passed to script_sprite_begin_walk
 extern const u8 *const gUnk_084045A8[]; // per area: tile map
 extern const struct AreaGfx gUnk_083F92F4[];
 extern const u8 gUnk_083D2903[];
@@ -285,7 +285,7 @@ extern u8 gUnk_03005664[];
 extern const void *const gUnk_0847E8C4[];         // text pointers (guess)
 extern const u32 *const gTextTable[];             // text pointers, banks 0-1 (guess)
 extern const u32 *const *const gTextBankTables[]; // text pointer tables, bank 2+ (guess)
-extern const s16 gUnk_083D69A0[][8]; // 16 steps; [n][0] / 16 = player sprite y offset (sub_0804DE28, guess: jump arc)
+extern const s16 gJumpArcTable[][8];              // jump arc: [n][0] / 16 = sprite y offset at frame n (hops / jumps)
 extern const u8 gUnk_083D2998[]; // map script terrain/palette id -> player_form/saved_player_form/unkC28 (sub_0804E324)
 extern struct Unk_03002B70 gUnk_03002B70;       // = gMoney, with the bytes after it
 extern const Func gUnk_083AC248[];              // game state 0 sub-state handlers (guess: debug map viewer)
@@ -1088,7 +1088,7 @@ extern const u8 gUnk_083C40C3[];        // [battlefield][0x80]: animation tile b
 extern const u8
     *const gUnk_083B1888[];       // 6 compressed sprite tile pointers per Medabot (decompress_sprite_to_vram_08042D94)
 extern const s16 gUnk_083D6BA0[]; // per angle 0-0xFF: cosine-like factor x256 (calc_polar_to_screen_coords x;
-                                  // gUnk_083D69A0 is the y factor)
+                                  // gJumpArcTable is the y factor)
 extern const u8 gUnk_0847EB80[];  // per area id (gUnk_030057E0.unk7FE), used unless unkC30 == 0xFF (area_song_id)
 extern struct Unk_03005290 gUnk_03005290;
 extern struct Unk_03005290 gUnk_030052B0;

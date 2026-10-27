@@ -762,7 +762,7 @@ void update_battle_icon_rotation(void) {
     }
     for (i = 1; i <= 2; i++) {
         if (gUnk_03006F8C[i] <= 2) {
-            if ((((gUnk_083D69A0[0])[(gUnk_08485CCD[gUnk_03006F84 + (j = i - 1) * 11] + gUnk_03007000[i - 1]) & 0xFF] >>
+            if ((((gJumpArcTable[0])[(gUnk_08485CCD[gUnk_03006F84 + (j = i - 1) * 11] + gUnk_03007000[i - 1]) & 0xFF] >>
                   5) &
                  7) +
                     6 <=
@@ -1031,8 +1031,8 @@ bool32 sub_0806B124(u8 sprite) {
 
 u32 update_sprite_position_sincos(u8 i) {
 #define S gSpriteEntries[i]
-    S.unkC_8 += gUnk_083D69A0[0][(S.unk23 + 0x40) & 0xFF];
-    S.unk10_8 += gUnk_083D69A0[0][S.unk23];
+    S.unkC_8 += gJumpArcTable[0][(S.unk23 + 0x40) & 0xFF];
+    S.unk10_8 += gJumpArcTable[0][S.unk23];
     if (i > 11) {
         S.unk2 = S.unkC_8 / 256 + 0x20;
         S.unk4 = 0x10 - S.unk10_8 / 256;

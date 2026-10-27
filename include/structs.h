@@ -113,7 +113,7 @@ struct Unk_03006D20 {
     u8 unk2;
     u8 unk3;
     u8 filler4[0x4];
-    u16 unk8; // base y of a sprite hop (sub_080508CC)
+    u16 unk8; // base y of a sprite hop (script_sprite_hop_step)
     u8 unkA;  // sprite slot (gSpriteEntries index)
     u8 unkB;
     u8 unkC;

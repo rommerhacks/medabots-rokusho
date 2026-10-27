@@ -116,7 +116,7 @@ void sub_0804DE28(void) {
     switch (gSpriteEntries[47].unk26) {
     case 0:
         if (gSpriteEntries[47].unk28 < 16) {
-            gSpriteEntries[47].unk4 = gUnk_030057E0.unkC94[0] - gUnk_083D69A0[gSpriteEntries[47].unk28][0] / 16;
+            gSpriteEntries[47].unk4 = gUnk_030057E0.unkC94[0] - gJumpArcTable[gSpriteEntries[47].unk28][0] / 16;
             gSpriteEntries[47].unk28++;
             if (gSpriteEntries[47].unk4 / 4 <= (gUnk_030057E0.unkC94[0] - 16) / 4)
                 gSpriteEntries[47].unkB = 0xFF;
@@ -150,12 +150,12 @@ void sub_0804DEF4(void) {
         gSpriteEntries[48].unk0 = 0;
         gSpriteEntries[47].unk28 = 0;
         gUnk_030057E0.unkC5F = 1;
-        sub_08050B50();
+        clear_input_keys();
         field_play_sound_effect(0x70);
         gUnk_030057E0.unkC93++;
         break;
     case 1:
-        sub_08050B50();
+        clear_input_keys();
         switch (gUnk_030057E0.unkC94[0]) {
         case 0:
             KEYS_LO(gHeldKeys) |= 0x40;
@@ -173,7 +173,7 @@ void sub_0804DEF4(void) {
         gSpriteEntries[46].unk2 = gSpriteEntries[47].unk2;
         if (gSpriteEntries[47].unk28 < 16 / sprite_walk_speed(47) * 2) {
             gSpriteEntries[46].unk4 = gSpriteEntries[47].unk4 -
-                                      gUnk_083D69A0[0][gSpriteEntries[47].unk28 * (sprite_walk_speed(47) << 2)] / 16;
+                                      gJumpArcTable[0][gSpriteEntries[47].unk28 * (sprite_walk_speed(47) << 2)] / 16;
             gSpriteEntries[47].unk28++;
             if (gSpriteEntries[46].unk4 / 4 <= (gSpriteEntries[47].unk4 - 16) / 4)
                 gSpriteEntries[46].unkB = 0xFF;
@@ -196,7 +196,7 @@ void sub_0804DEF4(void) {
 void sub_0804E0E8(void) {
     switch (gUnk_030057E0.unkC93) {
     case 0:
-        sub_08050B50();
+        clear_input_keys();
         if (gUnk_030057E0.unkC94[gSpriteEntries[47].unk26] == 0xFF) {
             gUnk_030057E0.unkC93++;
             break;
@@ -239,7 +239,7 @@ void sub_0804E0E8(void) {
             gUnk_030057E0.unkC93++;
             break;
         }
-        setup_battle_sprite_terrain(47, gUnk_030057E0.unkC94[gSpriteEntries[47].unk26], gSpriteEntries[47].unk2A);
+        script_sprite_begin_walk(47, gUnk_030057E0.unkC94[gSpriteEntries[47].unk26], gSpriteEntries[47].unk2A);
         switch (gUnk_030057E0.unkC94[gSpriteEntries[47].unk26] >> 4) {
         case 0:
             KEYS_LO(gHeldKeys) |= 0x40;
@@ -291,17 +291,17 @@ void sub_0804E324(void) {
 }
 
 void sub_0804E3F0(void) {
-    if (sub_08050868())
+    if (script_sprite_anim_step())
         map_script_command_done();
 }
 
 void sub_0804E404(void) {
-    if (sub_080508CC())
+    if (script_sprite_hop_step())
         map_script_command_done();
 }
 
 void sub_0804E418(void) {
-    if (sub_080507E0(gUnk_03006D20.unkA))
+    if (script_sprite_blink_step(gUnk_03006D20.unkA))
         map_script_command_done();
 }
 
@@ -319,11 +319,11 @@ static void sub_0804E44C(void) {
     switch (s->unkC93) {
     case 0:
         spawn_script_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
-        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 0);
+        script_sprite_begin_walk(gUnk_03006D20.unkA, s->unkC94[4], 0);
         s->unkC93++;
         break;
     case 1:
-        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 1))
+        if (script_sprite_update_walk(gUnk_03006D20.unkA, 1))
             map_script_command_done();
         break;
     }
@@ -342,28 +342,28 @@ static void sub_0804E4E8(void) {
 
     switch (s->unkC93) {
     case 0:
-        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[1], 0);
+        script_sprite_begin_walk(gUnk_03006D20.unkA, s->unkC94[1], 0);
         s->unkC93++;
         break;
     case 1:
-        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 1))
+        if (script_sprite_update_walk(gUnk_03006D20.unkA, 1))
             map_script_command_done();
         break;
     }
 }
 
 void sub_0804E540(void) {
-    if (sub_080507E0(gUnk_03006D20.unkA))
+    if (script_sprite_blink_step(gUnk_03006D20.unkA))
         map_script_command_done();
 }
 
 void sub_0804E55C(void) {
-    if (sub_08050868())
+    if (script_sprite_anim_step())
         map_script_command_done();
 }
 
 void sub_0804E570(void) {
-    if (sub_080508CC())
+    if (script_sprite_hop_step())
         map_script_command_done();
 }
 
@@ -384,21 +384,21 @@ static void sub_0804E5A4(u8 b, u8 mode) {
     switch (gUnk_030057E0.unkC93) {
     case 0:
         for (i = 0; i <= 3; i++) {
-            if (sub_0804DBA4(i) != -1 && gUnk_030055A0[sub_0804DBA4(i) + 79].unk0 != 0) {
+            if (script_object_slot(i) != -1 && gUnk_030055A0[script_object_slot(i) + 79].unk0 != 0) {
                 if (mode == 1)
-                    setup_battle_sprite_terrain(sub_0804DBA4(i) + 79, gUnk_030057E0.unkC94[0], b);
+                    script_sprite_begin_walk(script_object_slot(i) + 79, gUnk_030057E0.unkC94[0], b);
                 else
-                    sub_080500D8(sub_0804DBA4(i) + 79, gUnk_030057E0.unkC94[0], b);
+                    script_sprite_begin_slide(script_object_slot(i) + 79, gUnk_030057E0.unkC94[0], b);
             }
         }
         gUnk_030057E0.unkC93++;
         break;
     case 1:
         for (i = 0; i <= 3; i++) {
-            slot = sub_0804DBA4(i);
+            slot = script_object_slot(i);
             if (slot != -1) {
                 if (gUnk_030055A0[slot + 79].unk0 != 0)
-                    done += update_battle_sprite_movement(slot + 79, mode);
+                    done += script_sprite_update_walk(slot + 79, mode);
                 else
                     done++;
             } else
@@ -418,11 +418,11 @@ void sub_0804E6B4(void) {
     switch (s->unkC93) {
     case 0:
         spawn_script_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
-        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 0);
+        script_sprite_begin_walk(gUnk_03006D20.unkA, s->unkC94[4], 0);
         s->unkC93++;
         break;
     case 1:
-        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 0))
+        if (script_sprite_update_walk(gUnk_03006D20.unkA, 0))
             map_script_command_done();
         break;
     }
@@ -433,11 +433,11 @@ void sub_0804E738(void) {
 
     switch (s->unkC93) {
     case 0:
-        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[1], 0);
+        script_sprite_begin_walk(gUnk_03006D20.unkA, s->unkC94[1], 0);
         s->unkC93++;
         break;
     case 1:
-        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 0))
+        if (script_sprite_update_walk(gUnk_03006D20.unkA, 0))
             map_script_command_done();
         break;
     }
@@ -820,9 +820,9 @@ void sub_0804F058(void) {
     s32 i;
 
     for (i = 0; i <= 3; i++) {
-        if (sub_0804DBA4(i) != -1) {
-            if (gUnk_030055A0[sub_0804DBA4(i) + 79].unk0 != 0)
-                done += sub_080507E0(sub_0804DBA4(i) + 79);
+        if (script_object_slot(i) != -1) {
+            if (gUnk_030055A0[script_object_slot(i) + 79].unk0 != 0)
+                done += script_sprite_blink_step(script_object_slot(i) + 79);
             else
                 empty++;
         }
@@ -839,7 +839,7 @@ void sub_0804F0C4(void) {
     switch (s->unkC93) {
     case 0:
         s->unkC8A = 16 / sprite_walk_speed(47);
-        sub_080500D8(47, (s->unkC94[0] << 4) | s->unkC94[1], 0);
+        script_sprite_begin_slide(47, (s->unkC94[0] << 4) | s->unkC94[1], 0);
         s->unkC93++;
         break;
     case 1:
@@ -931,13 +931,13 @@ void sub_0804F3AC(void) {
             n = gUnk_030057E0.unkC94[2];
             idx = 256 / div * n / 2;
             if (gUnk_030057E0.unkC94[0] == 0) {
-                off = gUnk_083D69A0[0][idx] / (128 - ((phase = n & 3) + 1) * 16);
+                off = gJumpArcTable[0][idx] / (128 - ((phase = n & 3) + 1) * 16);
                 if (phase <= 1)
                     field_set_bg_scroll_x(gUnk_03005310.unk1E - off);
                 else
                     field_set_bg_scroll_x(off + gUnk_03005310.unk1E);
             } else {
-                off = gUnk_083D69A0[0][idx] / (128 - ((phase = n & 3) + 1) * 16);
+                off = gJumpArcTable[0][idx] / (128 - ((phase = n & 3) + 1) * 16);
                 if (phase <= 1)
                     field_set_bg_scroll_y(gUnk_03005310.unk26 - off);
                 else
@@ -1035,7 +1035,7 @@ void sub_0804F694(void) {
         break;
     case 1:
         gUnk_03006D20.unk0 = 16 / sprite_walk_speed(47);
-        sub_080500D8(47, (gUnk_030057E0.unkC94[0] << 4) | gUnk_030057E0.unkC94[1], 0);
+        script_sprite_begin_slide(47, (gUnk_030057E0.unkC94[0] << 4) | gUnk_030057E0.unkC94[1], 0);
         gUnk_030057E0.unkC93++;
         break;
     case 2:
@@ -1060,7 +1060,7 @@ void sub_0804F694(void) {
 }
 
 void sub_0804F7F0(void) {
-    if (sub_080509A0())
+    if (script_sprite_jump_step())
         map_script_command_done();
 }
 
@@ -1078,11 +1078,11 @@ void sub_0804F818(void) {
     switch (s->unkC93) {
     case 0:
         spawn_script_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
-        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 1);
+        script_sprite_begin_walk(gUnk_03006D20.unkA, s->unkC94[4], 1);
         s->unkC93++;
         break;
     case 1:
-        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 1))
+        if (script_sprite_update_walk(gUnk_03006D20.unkA, 1))
             map_script_command_done();
         break;
     }
@@ -1093,11 +1093,11 @@ void sub_0804F89C(void) {
 
     switch (s->unkC93) {
     case 0:
-        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[1], 1);
+        script_sprite_begin_walk(gUnk_03006D20.unkA, s->unkC94[1], 1);
         s->unkC93++;
         break;
     case 1:
-        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 1))
+        if (script_sprite_update_walk(gUnk_03006D20.unkA, 1))
             map_script_command_done();
         break;
     }
@@ -1109,11 +1109,11 @@ void sub_0804F8F4(void) {
     switch (s->unkC93) {
     case 0:
         spawn_script_sprite(s->unkC94[0], s->unkC94[1], s->unkC94[2], s->unkC94[3]);
-        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[4], 1);
+        script_sprite_begin_walk(gUnk_03006D20.unkA, s->unkC94[4], 1);
         s->unkC93++;
         break;
     case 1:
-        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 0))
+        if (script_sprite_update_walk(gUnk_03006D20.unkA, 0))
             map_script_command_done();
         break;
     }
@@ -1124,11 +1124,11 @@ void sub_0804F978(void) {
 
     switch (s->unkC93) {
     case 0:
-        setup_battle_sprite_terrain(gUnk_03006D20.unkA, s->unkC94[1], 1);
+        script_sprite_begin_walk(gUnk_03006D20.unkA, s->unkC94[1], 1);
         s->unkC93++;
         break;
     case 1:
-        if (update_battle_sprite_movement(gUnk_03006D20.unkA, 0))
+        if (script_sprite_update_walk(gUnk_03006D20.unkA, 0))
             map_script_command_done();
         break;
     }
@@ -1296,13 +1296,13 @@ void sub_0804FCC4(void) {
         else {
             switch (gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4]) {
             case 1:
-                set_battle_sprite_animation(gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 1],
+                script_object_set_direction(gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 1],
                                             gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 2]);
                 gUnk_030064A0.unkA[i]++;
                 break;
             case 2:
                 gUnk_030064A0.unk54[i] = gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 1];
-                sub_08050508(gUnk_030064A0.unk54[i]);
+                despawn_script_sprite(gUnk_030064A0.unk54[i]);
                 gUnk_030064A0.unkA[i]++;
                 break;
             case 3:
@@ -1318,13 +1318,14 @@ void sub_0804FCC4(void) {
                 }
                 switch (gUnk_030064A0.unk5C[i]) {
                 case 0:
-                    gUnk_030064A0.unk54[i] = sub_0804DBA4(gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 1]) + 79;
-                    setup_battle_sprite_terrain(gUnk_030064A0.unk54[i],
-                                                gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 2], b);
+                    gUnk_030064A0.unk54[i] =
+                        script_object_slot(gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 1]) + 79;
+                    script_sprite_begin_walk(gUnk_030064A0.unk54[i],
+                                             gUnk_030064A0.unk12[i][gUnk_030064A0.unkA[i] * 4 + 2], b);
                     gUnk_030064A0.unk5C[i]++;
                     break;
                 case 1:
-                    if (update_battle_sprite_movement(gUnk_030064A0.unk54[i], 1))
+                    if (script_sprite_update_walk(gUnk_030064A0.unk54[i], 1))
                         gUnk_030064A0.unk5C[i]++;
                     break;
                 case 2:
@@ -1399,7 +1400,7 @@ void sub_0804FE50(void) {
                     gSpriteEntries[obj->unk4_0 + 49].unk24 = 0xFF;
                     gSpriteEntries[obj->unk4_0 + 49].unk20 = 0;
                     sprite_anim_start(obj->unk4_0 + 49,
-                                      sub_080502B4(obj->unk4_0 + 49, gSpriteEntries[obj->unk4_0 + 49].unk20));
+                                      sprite_walk_anim_id(obj->unk4_0 + 49, gSpriteEntries[obj->unk4_0 + 49].unk20));
                     done = 1;
                 }
             }

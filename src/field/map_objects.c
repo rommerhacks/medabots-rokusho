@@ -541,7 +541,7 @@ void init_battle_medaforce_sprite(void) {
         gSpriteEntries[48].unkB = 0x40;
         gSpriteEntries[48].unk2B = gUnk_030057E0.unkC84;
         set_battle_state_byte_c83(gUnk_030057E0.unkC83);
-        sprite_anim_start(48, sub_080502B4(48, gUnk_030057E0.unkC83));
+        sprite_anim_start(48, sprite_walk_anim_id(48, gUnk_030057E0.unkC83));
         gUnk_030057E0.unkC72 = field_pixel_x_to_tile(gUnk_030057E0.unkC6E);
         gUnk_030057E0.unkC73 = field_pixel_y_to_tile(gUnk_030057E0.unkC70);
         gSpriteEntries[48].unk30 = area_sprite_sheet_id(gSpriteEntries[48].unk2B);

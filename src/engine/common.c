@@ -313,7 +313,7 @@ struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x, s32 y)
     struct Coords16 r;
 
     x += (u32)(gUnk_083D6BA0[angle] * (radius / 256.0f));
-    y += (u32)(gUnk_083D69A0[0][angle] * (radius / 256.0f));
+    y += (u32)(gJumpArcTable[0][angle] * (radius / 256.0f));
     r.x = x & 0x1FF;
     r.y = y & 0xFF;
     return r;
@@ -327,7 +327,7 @@ struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32
     if (radius < b)
         b = radius;
     cx += (u32)(gUnk_083D6BA0[angle] * ((radius - b) / 256.0f));
-    cy += (u32)(gUnk_083D69A0[0][angle] * ((radius - a) / 256.0f));
+    cy += (u32)(gJumpArcTable[0][angle] * ((radius - a) / 256.0f));
     r.x = cx & 0x1FF;
     r.y = cy & 0xFF;
     return r;
@@ -732,7 +732,7 @@ void start_scanline_wave_scroll(u32 phase, s32 amplitude, u32 lines) {
         if (i < lines) {
             if ((i & 3) == 0) {
                 idx = (i + phase) & 0xFF;
-                gUnk_03000440.unk86 = (u32)(gUnk_083D69A0[0][idx] * (amplitude / 512.0f));
+                gUnk_03000440.unk86 = (u32)(gJumpArcTable[0][idx] * (amplitude / 512.0f));
             }
             buf[i][0].x = gUnk_03000440.unk86 + (gBg0Scroll.x + gUnk_03002C2C.x);
             buf[i][0].y = gBg0Scroll.y + gUnk_03002C2C.y;
