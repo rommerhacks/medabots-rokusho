@@ -476,8 +476,8 @@ gBombGameObjTiles:
 gRaceObjTiles:
 	.incbin "baserom.gba", 0x7AD4E4, 0x8F8
 
-	.global gUnk_087ADDDC
-gUnk_087ADDDC:
+	.global gTitleObjTiles
+gTitleObjTiles:
 	.incbin "baserom.gba", 0x7ADDDC, 0x3F10
 
 	.global gUnk_087B1CEC
@@ -520,60 +520,60 @@ gBombGameBgTilemap3:
 gBombGameBgPalettes:
 	.incbin "baserom.gba", 0x7B551C, 0xA0
 
-	.global gUnk_087B55BC
-gUnk_087B55BC:
+	.global gTitleBgTiles
+gTitleBgTiles:
 	.incbin "baserom.gba", 0x7B55BC, 0x45B0
 
-	.global gUnk_087B9B6C
-gUnk_087B9B6C:
+	.global gTitleBg2Tiles
+gTitleBg2Tiles:
 	.incbin "baserom.gba", 0x7B9B6C, 0x240
 
-	.global gUnk_087B9DAC
-gUnk_087B9DAC:
+	.global gTitleBgPalettes
+gTitleBgPalettes:
 	.incbin "baserom.gba", 0x7B9DAC, 0xC0
 
-	.global gUnk_087B9E6C
-gUnk_087B9E6C:
+	.global gTitleBg0Tilemap
+gTitleBg0Tilemap:
 	.incbin "baserom.gba", 0x7B9E6C, 0x240
 
-	.global gUnk_087BA0AC
-gUnk_087BA0AC:
+	.global gTitleBg1Tilemap
+gTitleBg1Tilemap:
 	.incbin "baserom.gba", 0x7BA0AC, 0x540
 
-	.global gUnk_087BA5EC
-gUnk_087BA5EC:
+	.global gTitleBg2Tilemap
+gTitleBg2Tilemap:
 	.incbin "baserom.gba", 0x7BA5EC, 0x280
 
-	.global gUnk_087BA86C
-gUnk_087BA86C:
+	.global gIntroSilhouetteBgTiles
+gIntroSilhouetteBgTiles:
 	.incbin "baserom.gba", 0x7BA86C, 0x33A4
 
-	.global gUnk_087BDC10
-gUnk_087BDC10:
+	.global gIntroSilhouetteBgPalettes
+gIntroSilhouetteBgPalettes:
 	.incbin "baserom.gba", 0x7BDC10, 0x200
 
-	.global gUnk_087BDE10
-gUnk_087BDE10:
+	.global gIntroSilhouetteBg1Tilemap
+gIntroSilhouetteBg1Tilemap:
 	.incbin "baserom.gba", 0x7BDE10, 0x37C
 
-	.global gUnk_087BE18C
-gUnk_087BE18C:
+	.global gIntroSilhouetteBg3Tilemap
+gIntroSilhouetteBg3Tilemap:
 	.incbin "baserom.gba", 0x7BE18C, 0x308
 
-	.global gUnk_087BE494
-gUnk_087BE494:
+	.global gIntroScanBgTiles
+gIntroScanBgTiles:
 	.incbin "baserom.gba", 0x7BE494, 0x252C
 
-	.global gUnk_087C09C0
-gUnk_087C09C0:
+	.global gIntroScanBgPalettes
+gIntroScanBgPalettes:
 	.incbin "baserom.gba", 0x7C09C0, 0x200
 
-	.global gUnk_087C0BC0
-gUnk_087C0BC0:
+	.global gIntroScanBg2Tilemap
+gIntroScanBg2Tilemap:
 	.incbin "baserom.gba", 0x7C0BC0, 0x24C
 
-	.global gUnk_087C0E0C
-gUnk_087C0E0C:
+	.global gIntroScanBg3Tilemap
+gIntroScanBg3Tilemap:
 	.incbin "baserom.gba", 0x7C0E0C, 0x3B8
 
 	.global gUnk_087C11C4
@@ -668,48 +668,48 @@ gRaceStatusBarPalettes:
 gUnk_087C55F0:
 	.incbin "baserom.gba", 0x7C55F0, 0x2D78
 
-	.global gUnk_087C8368
-gUnk_087C8368:
+	.global gIntroSilhouetteBg2Tiles
+gIntroSilhouetteBg2Tiles:
 	.incbin "baserom.gba", 0x7C8368, 0x4B0
 
-	.global gUnk_087C8818
-gUnk_087C8818:
+	.global gIntroSilhouetteBg2Palette
+gIntroSilhouetteBg2Palette:
 	.incbin "baserom.gba", 0x7C8818, 0x20
 
-	.global gUnk_087C8838
-gUnk_087C8838:
+	.global gIntroSilhouetteBg2Tilemap
+gIntroSilhouetteBg2Tilemap:
 	.incbin "baserom.gba", 0x7C8838, 0xBC
 
-	.global gUnk_087C88F4
-gUnk_087C88F4:
+	.global gIntroScanFontTiles
+gIntroScanFontTiles:
 	.incbin "baserom.gba", 0x7C88F4, 0x2E4
 
-	.global gUnk_087C8BD8
-gUnk_087C8BD8:
+	.global gIntroPartNameFontTiles
+gIntroPartNameFontTiles:
 	.incbin "baserom.gba", 0x7C8BD8, 0xBC
 
-	.global gUnk_087C8C94
-gUnk_087C8C94:
+	.global gIntroCounterDigitTiles
+gIntroCounterDigitTiles:
 	.incbin "baserom.gba", 0x7C8C94, 0x50
 
-	.global gUnk_087C8CE4
-gUnk_087C8CE4:
+	.global gIntroPointerLineTiles
+gIntroPointerLineTiles:
 	.incbin "baserom.gba", 0x7C8CE4, 0x10
 
-	.global gUnk_087C8CF4
-gUnk_087C8CF4:
+	.global gIntroScanTextPalette
+gIntroScanTextPalette:
 	.incbin "baserom.gba", 0x7C8CF4, 0x20
 
-	.global gUnk_087C8D14
-gUnk_087C8D14:
+	.global gIntroScanLabelPalette
+gIntroScanLabelPalette:
 	.incbin "baserom.gba", 0x7C8D14, 0x20
 
-	.global gUnk_087C8D34
-gUnk_087C8D34:
+	.global gIntroScanBgPalette0
+gIntroScanBgPalette0:
 	.incbin "baserom.gba", 0x7C8D34, 0x20
 
-	.global gUnk_087C8D54
-gUnk_087C8D54:
+	.global gIntroScanTextGlyphs
+gIntroScanTextGlyphs:
 	.incbin "baserom.gba", 0x7C8D54, 0xAC
 
 	.global gUnk_087C8E00
@@ -772,14 +772,14 @@ gNatsumeLogoTilemap:
 gNatsumeLogoPalette:
 	.incbin "baserom.gba", 0x7F27D8, 0x20
 
-	.global gUnk_087F27F8
-gUnk_087F27F8:
+	.global gBootOverlayTiles
+gBootOverlayTiles:
 	.incbin "baserom.gba", 0x7F27F8, 0x878
 
-	.global gUnk_087F3070
-gUnk_087F3070:
+	.global gBootOverlayTilemap
+gBootOverlayTilemap:
 	.incbin "baserom.gba", 0x7F3070, 0x1E0
 
-	.global gUnk_087F3250
-gUnk_087F3250:
+	.global gBootOverlayPalette
+gBootOverlayPalette:
 	.incbin "baserom.gba", 0x7F3250, 0x20

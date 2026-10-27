@@ -124,15 +124,15 @@ void intro_load_silhouette_scene(void) {
     u16 buf1[0x78];
     u16 buf2[0x190];
 
-    LZ77UnCompVram(gUnk_087BA86C, (void *)VRAM);
-    LZ77UnCompVram(gUnk_087C8368, (void *)(VRAM + 0x8020));
+    LZ77UnCompVram(gIntroSilhouetteBgTiles, (void *)VRAM);
+    LZ77UnCompVram(gIntroSilhouetteBg2Tiles, (void *)(VRAM + 0x8020));
     LZ77UnCompVram(gIntroSilhouetteTiles[1], (void *)(VRAM + 0x8C80));
-    DmaSet(3, gUnk_087BDC10, PLTT, 0x84000080);
-    DmaSet(3, gUnk_087C8818, PLTT, 0x84000008);
+    DmaSet(3, gIntroSilhouetteBgPalettes, PLTT, 0x84000080);
+    DmaSet(3, gIntroSilhouetteBg2Palette, PLTT, 0x84000008);
     DmaSet(3, gIntroSilhouettePals[1], PLTT + 0x20, 0x84000008);
-    LZ77UnCompVram(gUnk_087BDE10, (void *)(VRAM + 0x7000));
-    LZ77UnCompVram(gUnk_087BE18C, (void *)(VRAM + 0x7800));
-    LZ77UnCompVram(gUnk_087C8838, buf1);
+    LZ77UnCompVram(gIntroSilhouetteBg1Tilemap, (void *)(VRAM + 0x7000));
+    LZ77UnCompVram(gIntroSilhouetteBg3Tilemap, (void *)(VRAM + 0x7800));
+    LZ77UnCompVram(gIntroSilhouetteBg2Tilemap, buf1);
     copy_tilemap_rect_to_vram(buf1, 0x1F, 0xA, 0xC, 0, 0, 1, 0);
     LZ77UnCompVram(gIntroSilhouetteMaps[1], buf2);
     copy_tilemap_rect_to_vram(buf2, 0x1E, 0x14, 0x14, 0xA, 0, 0x64, 1);
@@ -156,17 +156,17 @@ void intro_load_scan_screen(void) {
     u16 zero;
     s32 i;
 
-    LZ77UnCompVram(gUnk_087BE494, (void *)VRAM);
-    LZ77UnCompVram(gUnk_087C88F4, (void *)(VRAM + 0x8020));
-    LZ77UnCompVram(gUnk_087C8BD8, (void *)(VRAM + 0x8C80));
-    LZ77UnCompVram(gUnk_087C8C94, (void *)(VRAM + 0x9900));
-    LZ77UnCompVram(gUnk_087C8CE4, (void *)(VRAM + 0x9A40));
-    DmaSet(3, gUnk_087C09C0, PLTT, 0x84000080);
-    DmaSet(3, gUnk_087C8CF4, PLTT + 0x100, 0x84000008);
-    DmaSet(3, gUnk_087C8D14, PLTT + 0x120, 0x84000008);
-    DmaSet(3, gUnk_087C8D34, PLTT, 0x84000008);
-    LZ77UnCompVram(gUnk_087C0BC0, (void *)(VRAM + 0x7000));
-    LZ77UnCompVram(gUnk_087C0E0C, (void *)(VRAM + 0x7800));
+    LZ77UnCompVram(gIntroScanBgTiles, (void *)VRAM);
+    LZ77UnCompVram(gIntroScanFontTiles, (void *)(VRAM + 0x8020));
+    LZ77UnCompVram(gIntroPartNameFontTiles, (void *)(VRAM + 0x8C80));
+    LZ77UnCompVram(gIntroCounterDigitTiles, (void *)(VRAM + 0x9900));
+    LZ77UnCompVram(gIntroPointerLineTiles, (void *)(VRAM + 0x9A40));
+    DmaSet(3, gIntroScanBgPalettes, PLTT, 0x84000080);
+    DmaSet(3, gIntroScanTextPalette, PLTT + 0x100, 0x84000008);
+    DmaSet(3, gIntroScanLabelPalette, PLTT + 0x120, 0x84000008);
+    DmaSet(3, gIntroScanBgPalette0, PLTT, 0x84000008);
+    LZ77UnCompVram(gIntroScanBg2Tilemap, (void *)(VRAM + 0x7000));
+    LZ77UnCompVram(gIntroScanBg3Tilemap, (void *)(VRAM + 0x7800));
     zero = 0;
     fill = zero;
     DmaSet(3, &fill, VRAM + 0xF800, 0x85000200);
@@ -204,7 +204,7 @@ void intro_load_scan_screen(void) {
 
 void intro_load_scan_sprites(void) {
     LZ77UnCompVram(gIntroScanObjTiles[1], (void *)0x06010000);
-    LZ77UnCompVram(gUnk_087C8D54, gSceneWork.scanTextGlyphs);
+    LZ77UnCompVram(gIntroScanTextGlyphs, gSceneWork.scanTextGlyphs);
     gGameSubState = 6;
 }
 

@@ -14,11 +14,11 @@ void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c) {
     int i;
 
     gSceneStepFrames = 0;
-    gUnk_03000028 = c;
+    gTransitionFadeColor = c;
     gSceneStep = a;
-    gUnk_03000005 = b;
+    gTransitionFramesPerLevel = b;
     if (b == 0)
-        gUnk_03000005 = 1;
+        gTransitionFramesPerLevel = 1;
     switch (a) {
     case 1:
         REG_BLDCNT = 0xBF;
@@ -35,25 +35,25 @@ void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c) {
         for (i = 0; i < 0x280; i++)
             map[i] = (gRandomBytes[(gFrameCounter + i) & 0xFF] % 4) + 0xF1FC;
         DmaSet(3, map, 0x0600F800, 0x84000140);
-        DmaSet(3, &gUnk_03000028, 0x050001E2, 0x80000001);
+        DmaSet(3, &gTransitionFadeColor, 0x050001E2, 0x80000001);
         REG_BG0CNT = 0x1F0C;
         REG_DISPCNT |= 0x100;
         REG_BLDY = 0;
         for (i = 0; i < 4; i++) {
-            gUnk_03000008[i * 4 + 0] = (i + 0x1FC) * 0x20;
-            gUnk_03000008[i * 4 + 1] = (i + 0x1FC) * 0x20 + 2;
-            gUnk_03000008[i * 4 + 2] = (i + 0x1FC) * 0x20 + 0x10;
-            gUnk_03000008[i * 4 + 3] = (i + 0x1FC) * 0x20 + 0x12;
+            gTransitionWipeRows[i * 4 + 0] = (i + 0x1FC) * 0x20;
+            gTransitionWipeRows[i * 4 + 1] = (i + 0x1FC) * 0x20 + 2;
+            gTransitionWipeRows[i * 4 + 2] = (i + 0x1FC) * 0x20 + 0x10;
+            gTransitionWipeRows[i * 4 + 3] = (i + 0x1FC) * 0x20 + 0x12;
         }
         for (i = 0; i < 15; i++) {
             int j = gRandomBytes[(gFrameCounter + i) & 0xFF] % (16 - i) + i;
-            u16 tmp = gUnk_03000008[i];
-            gUnk_03000008[i] = gUnk_03000008[j];
-            gUnk_03000008[j] = tmp;
+            u16 tmp = gTransitionWipeRows[i];
+            gTransitionWipeRows[i] = gTransitionWipeRows[j];
+            gTransitionWipeRows[j] = tmp;
         }
         break;
     case 4:
-        gUnk_0300002C = gPaletteBackup;
+        gTransitionSourcePalette = gPaletteBackup;
         DmaSet(3, PLTT, gPaletteBackup, 0x80000200);
         for (i = 0; i < 0x200; i++)
             pal[i] = c;
@@ -68,11 +68,11 @@ void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c) {
     int i;
 
     gSceneStepFrames = b;
-    gUnk_03000028 = c;
+    gTransitionFadeColor = c;
     gSceneStep = a;
-    gUnk_03000005 = b;
+    gTransitionFramesPerLevel = b;
     if (b == 0)
-        gUnk_03000005 = 1;
+        gTransitionFramesPerLevel = 1;
     switch (a) {
     case 1:
         REG_BLDCNT = 0xBF;
@@ -87,24 +87,24 @@ void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c) {
         for (i = 0; i < 0x280; i++)
             map[i] = (gRandomBytes[(gFrameCounter + i) & 0xFF] % 4) + 0xF1FC;
         DmaSet(3, map, 0x0600F800, 0x84000140);
-        DmaSet(3, &gUnk_03000028, 0x050001E2, 0x80000001);
+        DmaSet(3, &gTransitionFadeColor, 0x050001E2, 0x80000001);
         REG_BG0CNT = 0x1F0C;
         REG_DISPCNT |= 0x100;
         for (i = 0; i < 4; i++) {
-            gUnk_03000008[i * 4 + 0] = (i + 0x1FC) * 0x20;
-            gUnk_03000008[i * 4 + 1] = (i + 0x1FC) * 0x20 + 2;
-            gUnk_03000008[i * 4 + 2] = (i + 0x1FC) * 0x20 + 0x10;
-            gUnk_03000008[i * 4 + 3] = (i + 0x1FC) * 0x20 + 0x12;
+            gTransitionWipeRows[i * 4 + 0] = (i + 0x1FC) * 0x20;
+            gTransitionWipeRows[i * 4 + 1] = (i + 0x1FC) * 0x20 + 2;
+            gTransitionWipeRows[i * 4 + 2] = (i + 0x1FC) * 0x20 + 0x10;
+            gTransitionWipeRows[i * 4 + 3] = (i + 0x1FC) * 0x20 + 0x12;
         }
         for (i = 0; i < 15; i++) {
             int j = gRandomBytes[(gFrameCounter + i) & 0xFF] % (16 - i) + i;
-            u16 tmp = gUnk_03000008[i];
-            gUnk_03000008[i] = gUnk_03000008[j];
-            gUnk_03000008[j] = tmp;
+            u16 tmp = gTransitionWipeRows[i];
+            gTransitionWipeRows[i] = gTransitionWipeRows[j];
+            gTransitionWipeRows[j] = tmp;
         }
         break;
     case 4:
-        gUnk_0300002C = gPaletteBackup;
+        gTransitionSourcePalette = gPaletteBackup;
         DmaSet(3, PLTT, gPaletteBackup, 0x80000200);
         scene_step_palette_fade_out();
         break;
@@ -113,7 +113,7 @@ void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c) {
 
 // Unused (nothing calls it): copies the saved palette back to PLTT.
 static void scene_restore_palette(void) {
-    DmaSet(3, gUnk_0300002C, PLTT, 0x80000200);
+    DmaSet(3, gTransitionSourcePalette, PLTT, 0x80000200);
 }
 
 bool32 scene_transition_step_080686F4(void) {
@@ -142,7 +142,7 @@ bool32 scene_step_none(void) {
 
 bool32 scene_step_fade_in_bldy(void) {
     s32 *c = &gSceneStepFrames;
-    u8 *np = &gUnk_03000005;
+    u8 *np = &gTransitionFramesPerLevel;
     u8 n = *np;
     s32 t = *c;
     if (t % n == 0)
@@ -159,15 +159,15 @@ bool32 scene_step_wipe_clear_bg0(void) {
     s32 t;
     REG_DISPCNT |= 0x100;
     c = &gSceneStepFrames;
-    np = &gUnk_03000005;
+    np = &gTransitionFramesPerLevel;
     {
         u8 n = *np;
         t = *c;
         if (t % n == 0) {
-            DmaSet(3, &zero, gUnk_03000008[t / *np] + 0x0600C000, 0x80000001);
-            DmaSet(3, &zero, gUnk_03000008[t / *np] + 0x0600C004, 0x80000001);
-            DmaSet(3, &zero, gUnk_03000008[t / *np] + 0x0600C008, 0x80000001);
-            DmaSet(3, &zero, gUnk_03000008[t / *np] + 0x0600C00C, 0x80000001);
+            DmaSet(3, &zero, gTransitionWipeRows[t / *np] + 0x0600C000, 0x80000001);
+            DmaSet(3, &zero, gTransitionWipeRows[t / *np] + 0x0600C004, 0x80000001);
+            DmaSet(3, &zero, gTransitionWipeRows[t / *np] + 0x0600C008, 0x80000001);
+            DmaSet(3, &zero, gTransitionWipeRows[t / *np] + 0x0600C00C, 0x80000001);
         }
     }
     if (*c == *np * 16) {
@@ -179,7 +179,7 @@ bool32 scene_step_wipe_clear_bg0(void) {
 
 bool32 scene_step_palette_fade_in(void) {
     s32 *c = &gSceneStepFrames;
-    s32 n = gUnk_03000005;
+    s32 n = gTransitionFramesPerLevel;
     s32 m = n * 32;
     s32 t = *c;
     if (t == m)
@@ -189,9 +189,10 @@ bool32 scene_step_palette_fade_in(void) {
         k = t / n;
         inv = 0x20 - k;
         for (i = 0; i < 0x200; i++) {
-            gPaletteBuffer[i] = (((gUnk_0300002C[i] & 0x1F) * k + (gUnk_03000028 & 0x1F) * inv) >> 5) +
-                                ((((gUnk_0300002C[i] & 0x3E0) * k + (gUnk_03000028 & 0x3E0) * inv) >> 5) & 0x3E0) +
-                                ((((gUnk_0300002C[i] & 0x7C00) * k + (gUnk_03000028 & 0x7C00) * inv) >> 5) & 0x7C00);
+            gPaletteBuffer[i] =
+                (((gTransitionSourcePalette[i] & 0x1F) * k + (gTransitionFadeColor & 0x1F) * inv) >> 5) +
+                ((((gTransitionSourcePalette[i] & 0x3E0) * k + (gTransitionFadeColor & 0x3E0) * inv) >> 5) & 0x3E0) +
+                ((((gTransitionSourcePalette[i] & 0x7C00) * k + (gTransitionFadeColor & 0x7C00) * inv) >> 5) & 0x7C00);
         }
         DmaSet(3, gPaletteBuffer, PLTT, 0x84000100);
     }
@@ -200,7 +201,7 @@ bool32 scene_step_palette_fade_in(void) {
 
 bool32 scene_step_fade_out_bldy(void) {
     s32 *c = &gSceneStepFrames;
-    u8 *np = &gUnk_03000005;
+    u8 *np = &gTransitionFramesPerLevel;
     u8 n = *np;
     s32 t = *c;
     if (t % n == 0)
@@ -217,12 +218,12 @@ bool32 scene_step_wipe_fill_bg0(void) {
     c = &gSceneStepFrames;
     if (*c == 0)
         REG_DISPCNT |= 0x100;
-    np = &gUnk_03000005;
+    np = &gTransitionFramesPerLevel;
     if (*c % *np == 0) {
-        DmaSet(3, &fill, gUnk_03000008[*c / *np] + 0x0600C000, 0x80000001);
-        DmaSet(3, &fill, gUnk_03000008[*c / *np] + 0x0600C004, 0x80000001);
-        DmaSet(3, &fill, gUnk_03000008[*c / *np] + 0x0600C008, 0x80000001);
-        DmaSet(3, &fill, gUnk_03000008[*c / *np] + 0x0600C00C, 0x80000001);
+        DmaSet(3, &fill, gTransitionWipeRows[*c / *np] + 0x0600C000, 0x80000001);
+        DmaSet(3, &fill, gTransitionWipeRows[*c / *np] + 0x0600C004, 0x80000001);
+        DmaSet(3, &fill, gTransitionWipeRows[*c / *np] + 0x0600C008, 0x80000001);
+        DmaSet(3, &fill, gTransitionWipeRows[*c / *np] + 0x0600C00C, 0x80000001);
     }
     if (*c == *np * 16)
         return TRUE;
@@ -231,7 +232,7 @@ bool32 scene_step_wipe_fill_bg0(void) {
 
 bool32 scene_step_palette_fade_out(void) {
     s32 *c = &gSceneStepFrames;
-    s32 n = gUnk_03000005;
+    s32 n = gTransitionFramesPerLevel;
     s32 m = n * 32;
     s32 t = *c;
     if (t == m)
@@ -242,13 +243,15 @@ bool32 scene_step_palette_fade_out(void) {
         k = t / n;
         inv = 0x20 - k;
         if (k <= 0) {
-            DmaSet(3, PLTT, gUnk_0300002C, 0x84000100);
+            DmaSet(3, PLTT, gTransitionSourcePalette, 0x84000100);
         } else {
             for (i = 0; i < 0x200; i++) {
                 gPaletteBuffer[i] =
-                    (((gUnk_0300002C[i] & 0x1F) * inv + (gUnk_03000028 & 0x1F) * k) >> 5) +
-                    ((((gUnk_0300002C[i] & 0x3E0) * inv + (gUnk_03000028 & 0x3E0) * k) >> 5) & 0x3E0) +
-                    ((((gUnk_0300002C[i] & 0x7C00) * inv + (gUnk_03000028 & 0x7C00) * k) >> 5) & 0x7C00);
+                    (((gTransitionSourcePalette[i] & 0x1F) * inv + (gTransitionFadeColor & 0x1F) * k) >> 5) +
+                    ((((gTransitionSourcePalette[i] & 0x3E0) * inv + (gTransitionFadeColor & 0x3E0) * k) >> 5) &
+                     0x3E0) +
+                    ((((gTransitionSourcePalette[i] & 0x7C00) * inv + (gTransitionFadeColor & 0x7C00) * k) >> 5) &
+                     0x7C00);
             }
             DmaSet(3, gPaletteBuffer, PLTT, 0x84000100);
         }

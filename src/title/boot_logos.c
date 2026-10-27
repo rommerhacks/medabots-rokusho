@@ -116,8 +116,8 @@ void boot_logos_load_overlay(void) {
     u16 out[20 * 32];
     s32 i, j;
 
-    LZ77UnCompVram(gUnk_087F27F8, (void *)(VRAM + 0x8000));
-    LZ77UnCompVram(gUnk_087F3070, map);
+    LZ77UnCompVram(gBootOverlayTiles, (void *)(VRAM + 0x8000));
+    LZ77UnCompVram(gBootOverlayTilemap, map);
     for (i = 0; i < 20; i++) {
         for (j = 0; j < 30; j++)
             out[i * 32 + j] = *(map[i] + j) + 0x1000;
@@ -125,7 +125,7 @@ void boot_logos_load_overlay(void) {
         out[i * 32 + 31] = 0;
     }
     DmaSet(3, out, VRAM + 0xF800, 0x84000140);
-    DmaSet(3, gUnk_087F3250, PLTT + 0x20, 0x80000010);
+    DmaSet(3, gBootOverlayPalette, PLTT + 0x20, 0x80000010);
     REG_BG1CNT = 0x1F0B;
     REG_DISPCNT |= 0x200;
     REG_BLDCNT = 0x241;

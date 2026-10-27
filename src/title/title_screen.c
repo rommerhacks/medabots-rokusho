@@ -26,7 +26,7 @@ static inline s32 mul120(u16 x) {
 }
 
 static inline s32 sub_counter(void) {
-    return 0x7800 - gUnk_030003F0;
+    return 0x7800 - gTitleBg2ScrollX;
 }
 
 // Builds the per-scanline BG2 PA / X tables read by the HBlank handler title_screen_hblank:
@@ -37,25 +37,25 @@ void title_screen_build_wave_tables(void) {
     s32 x;
     s32 c;
 
-    gUnk_030003F0 += 0x80;
+    gTitleBg2ScrollX += 0x80;
     for (i = 0; i < 32; i++) {
-        x = sub_counter() - mul120(gUnk_03000030[i]);
-        gUnk_03000170[i] = x;
-        gUnk_030002B0[i] = x >> 16;
+        x = sub_counter() - mul120(gTitleBg2PaTable[i]);
+        gTitleBg2XLowTable[i] = x;
+        gTitleBg2XHighTable[i] = x >> 16;
     }
     for (; i < 128; i++) {
-        gUnk_03000170[i] = 0;
-        gUnk_030002B0[i] = 0;
+        gTitleBg2XLowTable[i] = 0;
+        gTitleBg2XHighTable[i] = 0;
     }
     for (; i < 160; i++) {
-        c = gUnk_030003F0 + 0x7800;
-        x = c - mul120(gUnk_03000030[i]);
-        gUnk_03000170[i] = x;
-        gUnk_030002B0[i] = x >> 16;
+        c = gTitleBg2ScrollX + 0x7800;
+        x = c - mul120(gTitleBg2PaTable[i]);
+        gTitleBg2XLowTable[i] = x;
+        gTitleBg2XHighTable[i] = x >> 16;
     }
-    REG_BG2PA = gUnk_03000030[0];
-    REG_BG2X_L = gUnk_03000170[0];
-    REG_BG2X_H = gUnk_030002B0[0];
+    REG_BG2PA = gTitleBg2PaTable[0];
+    REG_BG2X_L = gTitleBg2XLowTable[0];
+    REG_BG2X_H = gTitleBg2XHighTable[0];
 }
 
 void title_screen_update(void) {
@@ -69,9 +69,9 @@ void title_screen_update(void) {
 // VCOUNT is read through a non-volatile pointer: the compare's load is reused for the first index.
 void title_screen_hblank(void) {
     if (*(u8 *)REG_ADDR_VCOUNT < 159) {
-        REG_BG2PA = gUnk_03000030[*(u8 *)REG_ADDR_VCOUNT + 1];
-        REG_BG2X_L = gUnk_03000170[*(u8 *)REG_ADDR_VCOUNT + 1];
-        REG_BG2X_H = gUnk_030002B0[*(u8 *)REG_ADDR_VCOUNT + 1];
+        REG_BG2PA = gTitleBg2PaTable[*(u8 *)REG_ADDR_VCOUNT + 1];
+        REG_BG2X_L = gTitleBg2XLowTable[*(u8 *)REG_ADDR_VCOUNT + 1];
+        REG_BG2X_H = gTitleBg2XHighTable[*(u8 *)REG_ADDR_VCOUNT + 1];
     }
 }
 
@@ -127,16 +127,16 @@ void title_screen_reset(void) {
 }
 
 void title_screen_load_graphics(void) {
-    LZ77UnCompVram(gUnk_087B55BC, (void *)VRAM);
-    DmaSet(3, gUnk_087B9B6C, VRAM + 0x8000, 0x84000090);
-    DmaSet(3, gUnk_087B9DAC, PLTT, 0x84000030);
-    LZ77UnCompVram(gUnk_087B9E6C, (void *)(VRAM + 0x6800));
-    LZ77UnCompVram(gUnk_087BA0AC, (void *)(VRAM + 0x7000));
-    DmaSet(3, gUnk_087BA5EC, VRAM + 0x7800, 0x840000A0);
+    LZ77UnCompVram(gTitleBgTiles, (void *)VRAM);
+    DmaSet(3, gTitleBg2Tiles, VRAM + 0x8000, 0x84000090);
+    DmaSet(3, gTitleBgPalettes, PLTT, 0x84000030);
+    LZ77UnCompVram(gTitleBg0Tilemap, (void *)(VRAM + 0x6800));
+    LZ77UnCompVram(gTitleBg1Tilemap, (void *)(VRAM + 0x7000));
+    DmaSet(3, gTitleBg2Tilemap, VRAM + 0x7800, 0x840000A0);
     REG_BG0CNT = 0xD01;
     REG_BG1CNT = 0xE03;
     REG_BG2CNT = 0x6F8A;
-    LZ77UnCompVram(gUnk_087ADDDC, (void *)(VRAM + 0x10000));
+    LZ77UnCompVram(gTitleObjTiles, (void *)(VRAM + 0x10000));
     DmaSet(3, gTitleObjPalettes, PLTT + 0x200, 0x80000060);
     DmaSet(3, gTitleObjPalettes + 0x60, &gSceneWork.unkC, 0x8000000E);
     setup_screen_transition_effect_080682CC(2, 1, 0);
@@ -221,9 +221,9 @@ void title_screen_start_wave(void) {
             if (i > 0x7F) {
                 x = (0x9F - i) * 4;
             div:
-                gUnk_03000030[i] = 0x10000u / (0x100 - x);
+                gTitleBg2PaTable[i] = 0x10000u / (0x100 - x);
             } else {
-                gUnk_03000030[i] = 0x100;
+                gTitleBg2PaTable[i] = 0x100;
             }
         }
     } else if (gSceneWork.timer > 0x40) {

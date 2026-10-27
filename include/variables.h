@@ -222,57 +222,57 @@ extern const Func gIntroSubStates[]; // game mode 3 state 1 (the animated intro 
                                      // gGameSubState (intro_update)
 extern const void
     *const gStoryIntroTexts[]; // story intro texts, by page gSceneWork.unkC.h (dispatch_battle_event_script)
-extern const void *const gStoryIntroTiles[];    // story intro compressed tiles (to 0x06008000), by page
-extern const void *const gStoryIntroTilemaps[]; // story intro compressed tilemaps (30x20), by page
-extern const void *const gStoryIntroPalettes[]; // story intro palettes (0xE0 halfwords), by page
-extern const u8 gLicensedByLogoTiles[];         // boot logo 1: compressed BG tiles (boot_logos_load_licensed_by)
-extern const u8 gLicensedByLogoTilemap[];       // boot logo 1: compressed 30x20 tilemap
-extern const u16 gLicensedByLogoPalette[];      // boot logo 1: palette (16 colours)
-extern const u8 gNatsumeLogoTiles[];            // boot logo 2: compressed BG tiles (boot_logos_load_natsume)
-extern const u8 gNatsumeLogoTilemap[];          // boot logo 2: compressed 30x20 tilemap
-extern const u16 gNatsumeLogoPalette[];         // boot logo 2: palette
-extern const u8 gUnk_087F27F8[];                // boot overlay: compressed BG tiles (boot_logos_load_overlay)
-extern const u8 gUnk_087F3070[];                // boot overlay: compressed 30x20 tilemap (palette 1)
-extern const u16 gUnk_087F3250[];               // boot overlay: palette 1
-extern const u8 gUnk_087ADDDC[];                // title (title_screen_load_graphics): compressed OBJ tiles
-extern const u8 gUnk_087B55BC[];                // title: compressed BG tiles
-extern const u8 gUnk_087B9B6C[];                // title: BG2 tiles (0x240 bytes, uncompressed)
-extern const u16 gUnk_087B9DAC[];               // title: BG palettes (0x60 colours)
-extern const u8 gUnk_087B9E6C[];                // title: compressed tilemap (to 0x06006800)
-extern const u8 gUnk_087BA0AC[];                // title: compressed tilemap (to 0x06007000)
-extern const u8 gUnk_087BA5EC[];                // title: BG2 affine tilemap (0x280 bytes)
-extern const u8 gUnk_087BA86C[];                // state 1 scene (intro_load_silhouette_scene): compressed BG tiles
-extern const u16 gUnk_087BDC10[];               // 256-colour BG palette
-extern const u8 gUnk_087BDE10[];                // compressed tilemap (to 0x06007000)
-extern const u8 gUnk_087BE18C[];                // compressed tilemap (to 0x06007800)
-extern const u8 gUnk_087BE494[];                // state 1 scene (intro_load_scan_screen): compressed BG tiles
-extern const u16 gUnk_087C09C0[];               // 256-colour BG palette
-extern const u8 gUnk_087C0BC0[];                // compressed tilemap (to 0x06007000)
-extern const u8 gUnk_087C0E0C[];                // compressed tilemap (to 0x06007800)
-extern const u8 gUnk_087C8368[];                // compressed tiles (to 0x06008020)
-extern const u16 gUnk_087C8818[];               // 16-colour palette
-extern const u8 gUnk_087C8838[];                // compressed 10x12 tilemap
-extern const u8 gUnk_087C88F4[];                // compressed tiles (intro_load_scan_screen)
-extern const u8 gUnk_087C8BD8[];
-extern const u8 gUnk_087C8C94[];
-extern const u8 gUnk_087C8CE4[];
-extern const u16 gUnk_087C8CF4[]; // 16-colour palettes (intro_load_scan_screen)
-extern const u16 gUnk_087C8D14[];
-extern const u16 gUnk_087C8D34[];
-extern const u8 gUnk_087C8D54[]; // compressed, decompressed to gSceneWork.unk30 (intro_load_scan_sprites)
+extern const void *const gStoryIntroTiles[];       // story intro compressed tiles (to 0x06008000), by page
+extern const void *const gStoryIntroTilemaps[];    // story intro compressed tilemaps (30x20), by page
+extern const void *const gStoryIntroPalettes[];    // story intro palettes (0xE0 halfwords), by page
+extern const u8 gLicensedByLogoTiles[];            // boot logo 1: compressed BG tiles (boot_logos_load_licensed_by)
+extern const u8 gLicensedByLogoTilemap[];          // boot logo 1: compressed 30x20 tilemap
+extern const u16 gLicensedByLogoPalette[];         // boot logo 1: palette (16 colours)
+extern const u8 gNatsumeLogoTiles[];               // boot logo 2: compressed BG tiles (boot_logos_load_natsume)
+extern const u8 gNatsumeLogoTilemap[];             // boot logo 2: compressed 30x20 tilemap
+extern const u16 gNatsumeLogoPalette[];            // boot logo 2: palette
+extern const u8 gBootOverlayTiles[];               // boot overlay: compressed BG1 tiles (boot_logos_load_overlay)
+extern const u8 gBootOverlayTilemap[];             // boot overlay: compressed 30x20 tilemap (palette 1)
+extern const u16 gBootOverlayPalette[];            // boot overlay: palette 1
+extern const u8 gTitleObjTiles[];                  // title (title_screen_load_graphics): compressed OBJ tiles
+extern const u8 gTitleBgTiles[];                   // title: compressed BG tiles
+extern const u8 gTitleBg2Tiles[];                  // title: BG2 tiles (0x240 bytes, uncompressed)
+extern const u16 gTitleBgPalettes[];               // title: BG palettes (0x60 colours)
+extern const u8 gTitleBg0Tilemap[];                // title: compressed tilemap (to 0x06006800)
+extern const u8 gTitleBg1Tilemap[];                // title: compressed tilemap (to 0x06007000)
+extern const u8 gTitleBg2Tilemap[];                // title: BG2 affine tilemap (0x280 bytes)
+extern const u8 gIntroSilhouetteBgTiles[];         // state 1 scene (intro_load_silhouette_scene): compressed BG tiles
+extern const u16 gIntroSilhouetteBgPalettes[];     // BG palettes 0-15 (256 colours)
+extern const u8 gIntroSilhouetteBg1Tilemap[];      // compressed tilemap (to 0x06007000)
+extern const u8 gIntroSilhouetteBg3Tilemap[];      // compressed tilemap (to 0x06007800)
+extern const u8 gIntroScanBgTiles[];               // state 1 scene (intro_load_scan_screen): compressed BG tiles
+extern const u16 gIntroScanBgPalettes[];           // BG palettes 0-15 (256 colours)
+extern const u8 gIntroScanBg2Tilemap[];            // compressed tilemap (to 0x06007000)
+extern const u8 gIntroScanBg3Tilemap[];            // compressed tilemap (to 0x06007800)
+extern const u8 gIntroSilhouetteBg2Tiles[];        // compressed BG2 tiles (to 0x06008020, from tile 1)
+extern const u16 gIntroSilhouetteBg2Palette[];     // BG palette 0
+extern const u8 gIntroSilhouetteBg2Tilemap[];      // compressed 10x12 BG2 tilemap
+extern const u8 gIntroScanFontTiles[];             // compressed BG1 scan text font (tile 1+, palette 8)
+extern const u8 gIntroPartNameFontTiles[];         // BG1 tile 0x64+: part name letters (palette 9)
+extern const u8 gIntroCounterDigitTiles[];         // BG1 tile 0xC8+: digits of the frame / noise counters
+extern const u8 gIntroPointerLineTiles[];          // BG1 tile 0xD2+: the scan pointer lines
+extern const u16 gIntroScanTextPalette[];          // BG palette 8 (scan text)
+extern const u16 gIntroScanLabelPalette[];         // BG palette 9 (part name, counters)
+extern const u16 gIntroScanBgPalette0[];           // BG palette 0
+extern const u8 gIntroScanTextGlyphs[];            // compressed glyph strings, to gSceneWork.scanTextGlyphs
 extern const void *const gIntroSilhouetteTiles[2]; // compressed tiles ([1] to 0x06008C80, intro_load_silhouette_scene)
 extern const void *const gIntroSilhouetteMaps[2];  // compressed 20x20 tilemaps ([1] in intro_load_silhouette_scene)
 extern const void *const gIntroSilhouettePals[2];  // 16-colour palettes ([1] in intro_load_silhouette_scene)
 extern const void *const gIntroScanObjTiles[2];    // compressed OBJ tiles (intro_load_scan_sprites)
 extern const void *const gIntroObjPals[2];         // OBJ palettes (0x50 halfwords; [1] in intro_load_rokusho_sprite)
-extern u8 gUnk_03000005;                           // scene step speed: frames per fade level
-extern u16 gUnk_03000008[];                        // BG0 tilemap offsets of the rows the wipe steps clear / fill
-extern u16 gUnk_03000028;                          // palette fade target color
-extern u16 *gUnk_0300002C;                         // palette fade source palette (0x200 colors)
-extern u16 gUnk_03000030[160];                     // title BG2 per-scanline values: BG2PA (title_screen_hblank, HBlank)
-extern u16 gUnk_03000170[160];                     // BG2X_L per scanline
-extern u16 gUnk_030002B0[160];                     // BG2X_H per scanline
-extern u16 gUnk_030003F0; // title BG2 scroll counter, += 0x80 per frame (title_screen_build_wave_tables)
+extern u8 gTransitionFramesPerLevel;               // scene step speed: frames per fade level
+extern u16 gTransitionWipeRows[];                  // BG0 tilemap offsets of the rows the wipe steps clear / fill
+extern u16 gTransitionFadeColor;                   // palette fade target color
+extern u16 *gTransitionSourcePalette;              // palette fade source palette (0x200 colors)
+extern u16 gTitleBg2PaTable[160];                  // title BG2 per-scanline values: BG2PA (title_screen_hblank, HBlank)
+extern u16 gTitleBg2XLowTable[160];                // BG2X_L per scanline
+extern u16 gTitleBg2XHighTable[160];               // BG2X_H per scanline
+extern u16 gTitleBg2ScrollX; // title BG2 scroll counter, += 0x80 per frame (title_screen_build_wave_tables)
 extern u8 gUnk_030004DE[];
 extern const u8 gRandomBytes[];           // random bytes, indexed by the low byte of gFrameCounter
 extern const void *const gRaceMessages[]; // referee lines of the race
