@@ -10,9 +10,10 @@
 
 #include "global.h"
 
-// Hidden function (no callers): remaps the record's unkE0 through gUnk_083AD3F9.
-void sub_0801C0A0(u32 rec) {
-    gUnk_03000590[rec].unkE0 = gUnk_083AD3F9[gUnk_03000590[rec].unkE0];
+// Hidden function (no callers): moves the record's target (unkE0, record + 1) to the same slot on the other side
+// (gTargetSwapSideTable: 1-3 <-> 4-6, 0 stays 0).
+void bot_target_swap_side(u32 rec) {
+    gUnk_03000590[rec].unkE0 = gTargetSwapSideTable[gUnk_03000590[rec].unkE0];
 }
 
 // The battle message runner: open the window, print message msg, finish; 1 when done.

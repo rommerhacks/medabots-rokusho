@@ -7,7 +7,7 @@
 static u32 battle_calculate_damage_modifier(void);
 static u32 battle_calculate_turn_speed(void);
 static void battle_process_speed_and_action(void);
-static u32 sub_08039134(u32 rec);
+static u32 count_intact_parts(u32 rec);
 static u32 battle_find_strongest_part(u32 rec);
 
 void battle_calc_attack_success(void) {
@@ -144,7 +144,7 @@ static void battle_process_speed_and_action(void) {
             subtract_s16_floored(&gUnk_03001800.unkE8, (s16)gUnk_03001800.unkEE);
             gUnk_03001800.unkF2 = gUnk_03001800.unkE8;
             gUnk_03000590[gUnk_03001800.unk88].unkBC |= 0x20;
-            if (sub_08039134(gUnk_03001800.unk88) == 1)
+            if (count_intact_parts(gUnk_03001800.unk88) == 1)
                 part = 1;
             else
                 part = battle_find_strongest_part(gUnk_03001800.unk88);
@@ -153,7 +153,7 @@ static void battle_process_speed_and_action(void) {
     }
 }
 
-static u32 sub_08039134(u32 rec) {
+static u32 count_intact_parts(u32 rec) {
     u32 n = 0;
     u32 i;
 

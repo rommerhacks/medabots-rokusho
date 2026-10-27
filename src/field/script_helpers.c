@@ -105,7 +105,7 @@ void add_money(u32 n) {
         gMoney = 99999;
 }
 
-void sub_money(u32 n) {
+void subtract_money(u32 n) {
     s32 left = gMoney - n;
 
     if (left < 0)

@@ -718,7 +718,7 @@ void map_script_update_take_money(void) {
         if (money - n <= 0)
             n = money;
         field_play_sound_effect(5);
-        sub_money(n);
+        subtract_money(n);
         format_money_to_text_buffer(0, n);
         s->unkC93 = 1;
         break;

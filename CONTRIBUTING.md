@@ -607,7 +607,7 @@
   value): an old-style definition `u32 f(a) u32 a; { ...; return a; }` with an unprototyped `u32 f();` in
   functions.h, so callers may still pass nothing (closeup_reset_text_states).
 * A non-void function with no return statement (`pop {r1}` epilogue, r0 never set) is written as `u32 f(...)`
-  without `return`; agbcc accepts it (sub_08037728).
+  without `return`; agbcc accepts it (hit_list_set_part_damage).
 * `x - (y / 2 - k)` refolded into `(x + k) - y / 2`: put the inner difference in an assignment,
   `x - (t = y / 2 - k)`. A `static inline` helper also stops the fold, but moves the array-base load after
   the arithmetic (name_entry_input).

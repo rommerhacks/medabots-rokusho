@@ -19,10 +19,10 @@ void sub_080268AC(void) {
 }
 
 void sub_080268D4(void) {
-    sub_08037728(gUnk_03001800.unk88, 0, gUnk_03001800.unkEC);
-    sub_08037728(gUnk_03001800.unk88, 1, gUnk_03001800.unkEC);
-    sub_08037728(gUnk_03001800.unk88, 2, gUnk_03001800.unkEC);
-    sub_08037728(gUnk_03001800.unk88, 3, gUnk_03001800.unkEC);
+    hit_list_set_part_damage(gUnk_03001800.unk88, 0, gUnk_03001800.unkEC);
+    hit_list_set_part_damage(gUnk_03001800.unk88, 1, gUnk_03001800.unkEC);
+    hit_list_set_part_damage(gUnk_03001800.unk88, 2, gUnk_03001800.unkEC);
+    hit_list_set_part_damage(gUnk_03001800.unk88, 3, gUnk_03001800.unkEC);
     gUnk_03001800.unkAA++;
 }
 

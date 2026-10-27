@@ -4,15 +4,16 @@
 // Skill helpers: damage split, Medal exp, action parameters, skill timers and targets.
 
 void reaction_counter_begin(void);
-u32 sub_08037230(u32 rec, u32 part); // 1 if the part is broken or at full armor
+u32 part_broken_or_undamaged(u32 rec, u32 part); // 1 if the part is broken or at full armor
 u32 decrement_battle_timer_and_check_zero(void);
 void calc_battle_stat_ratio(u32 rec, u32 part); // unkEC = (unkE8 / 4 + part data[6]) / part data[0xC], at least 1
 u32 clamp_1_99(u32 a);                          // clamps to 1..99
 u8 pick_random_change_part(u32 a, u32 kind);    // random part id (by a and the part kind)
 void medaforce_calc_success(u32 rec);
 void medaforce_calc_damage(u32 rec);
-u32 sub_08037728(u32 rec, u32 part,
-                 u32 amount); // unkD6[part] = min(amount, part armor), unkD2[part] = 1 when the armor is all used
+u32 hit_list_set_part_damage(
+    u32 rec, u32 part,
+    u32 amount); // unkD6[part] = min(amount, part armor), unkD2[part] = 1 when the armor is all used
 void calc_drain_amount(u32 a, u32 b);         // unkC8 = min(a, b) taken out of a (guess: drain clamp)
 void calc_fill_amount(u32 a, u32 max, u32 b); // unkC8 = min(b, max - a) (add clamp)
 void battle_bot_sprites_blink(

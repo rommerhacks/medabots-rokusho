@@ -19,7 +19,7 @@ void yes_no_menu_open(u32 mode);
 u32 yes_no_menu_poll(void);
 void format_money_to_text_buffer(u32 a, u32 n);
 void add_money(u32 n);
-void sub_money(u32 n);
+void subtract_money(u32 n);
 u32 item_name(u32 idx);
 u32 field_team_is_full(void);
 void field_team_add_tinpet(u8 id);

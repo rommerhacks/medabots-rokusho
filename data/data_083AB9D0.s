@@ -331,8 +331,8 @@ gUnk_083AD3D3:
 gUnk_083AD3F3:
 	.incbin "baserom.gba", 0x3AD3F3, 0x6
 
-	.global gUnk_083AD3F9
-gUnk_083AD3F9:
+	.global gTargetSwapSideTable
+gTargetSwapSideTable:
 	.incbin "baserom.gba", 0x3AD3F9, 0x7
 
 	.global gBattleMessageSteps

@@ -178,7 +178,8 @@ void reaction_counter_begin(void) {
     determine_battle_target_mode();
 }
 
-u32 sub_08037230(u32 rec, u32 part) {
+// 1 if the part is broken or at full armor (nothing for a heal to restore).
+u32 part_broken_or_undamaged(u32 rec, u32 part) {
     if (gUnk_03000590[rec].parts[part].unk11 != 0 &&
         gUnk_03000590[rec].parts[part].unk11 != gUnk_03000590[rec].parts[part].data[4])
         return 0;
@@ -383,8 +384,9 @@ void medaforce_calc_damage(u32 rec) {
         gUnk_03001800.unkEC = 1;
 }
 
+// Medaforce hit list entry for one part: unkD6 = damage it takes (capped at its armor), unkD2 = 1 if that breaks it.
 // No return statement: the original never sets r0 but is not void (`pop {r1}` epilogue).
-u32 sub_08037728(u32 rec, u32 part, u32 amount) {
+u32 hit_list_set_part_damage(u32 rec, u32 part, u32 amount) {
     if (gUnk_03000590[rec].parts[part].unk11 == 0) {
         gUnk_03001800.unkD6[part] = 0;
         gUnk_03001800.unkD2[part] = 0;

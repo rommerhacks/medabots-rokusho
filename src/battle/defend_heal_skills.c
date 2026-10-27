@@ -16,7 +16,7 @@ void recovery_run(void) {
 void recovery_begin(void) {
     u32 r;
 
-    if (!sub_08037230(gUnk_03001800.unk88, gUnk_03001800.unk8B)) {
+    if (!part_broken_or_undamaged(gUnk_03001800.unk88, gUnk_03001800.unk8B)) {
         calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
         apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
         r = decrement_battle_timer_and_check_zero();
