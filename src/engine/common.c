@@ -708,7 +708,7 @@ u32 check_random_encounter(void) {
         return 0;
     if (gUnk_030057E0.unkC29 == 0)
         return 0;
-    if (gUnk_030057E0.unkC2C & 1)
+    if (gUnk_030057E0.encounters_off & 1)
         return 0;
     n = ++gUnk_030057E0.unkC2B;
     if (n > 0x10 && (n > 0x1F || roll_encounter())) {

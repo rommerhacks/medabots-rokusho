@@ -649,9 +649,9 @@ void debug_rndtk_input(void) {
         render_text_sprites_08040DB8(gUnk_03000440.unk9E, 8, 2, 2, 8, 15, 1, 0);
     }
     if (KEYS_LO(gRepeatKeys) & 0x30)
-        gUnk_030057E0.unkC2C ^= 1;
+        gUnk_030057E0.encounters_off ^= 1;
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gUnk_03000440.unk9E, gUnk_030057E0.unkC2C);
+    divide_by_100000_08041370(gUnk_03000440.unk9E, gUnk_030057E0.encounters_off);
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x20, 8, 2, 3, 15, 1, 0);
     if (KEYS_LO(gNewKeys) & 2) {
         clear_battle_sprite_slot(8, 0x21);

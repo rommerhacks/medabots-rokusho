@@ -89,7 +89,7 @@ void dispatch_by_index_0476e8(u32 idx) {
     case 11:
         field_clear_ram();
         gUnk_030057E0.unkC88 = 0;
-        gUnk_030057E0.unkC89 = 0;
+        gUnk_030057E0.cmd_busy = 0;
         gUnk_03000588 = 1;
         gGameMode = 1;
         gGameState = 1;

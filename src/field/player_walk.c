@@ -28,7 +28,7 @@ void load_map_npc_sprites(s32 mode) {
     j = 0;
     for (k = 0; k < 32; k++) {
         for (e = gUnk_084837A0[gUnk_030057E0.unk7FE]; e->x != 0xFF; e++) {
-            if (!((e->unk6 >> gUnk_030057E0.unk7FF) & 1))
+            if (!((e->unk6 >> gUnk_030057E0.story_phase) & 1))
                 continue;
             if (e->unk5 != k)
                 continue;
@@ -147,7 +147,7 @@ void init_battle_field_setup(void) {
     gSpriteEntries[89].unk10_8 = gUnk_030057E0.player_y - 5;
     gSpriteEntries[89].unk2 = gSpriteEntries[47].unk2;
     gSpriteEntries[89].unk4 = gSpriteEntries[47].unk4 - 5;
-    if (gUnk_030057E0.unkC5B) {
+    if (gUnk_030057E0.player_visible) {
         gSpriteEntries[47].unk0 = 0xC804;
     } else {
         gSpriteEntries[47].unk0 = 0;

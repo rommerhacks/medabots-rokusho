@@ -105,8 +105,8 @@ extern const u8 gAreaMapSizes[][2];
 extern const u8 gUnk_0847E948[];
 extern const struct AreaWarp *const gAreaWarps[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
-extern void (*const gMapScriptUpdates[])(void);  // per-command update handlers, run each frame while unkC89 is set
-extern const u8 gUnk_083D24AC[];                 // indexed by the player's facing (gSpriteEntries[47].unk21)
+extern void (*const gMapScriptUpdates[])(void);  // per-command update handlers, run each frame while cmd_busy is set
+extern const u8 gOppositeDirection[];            // indexed by the player's facing (gSpriteEntries[47].unk21)
 extern const u8 gUnk_083D28B0[];        // indexed by gUnk_030057E0.player_form, passed to script_sprite_begin_walk
 extern const u8 *const gUnk_084045A8[]; // per area: tile map
 extern const struct AreaGfx gUnk_083F92F4[];
@@ -287,7 +287,8 @@ extern const void *const gUnk_0847E8C4[];         // text pointers (guess)
 extern const u32 *const gTextTable[];             // text pointers, banks 0-1 (guess)
 extern const u32 *const *const gTextBankTables[]; // text pointer tables, bank 2+ (guess)
 extern const s16 gJumpArcTable[][8];              // jump arc: [n][0] / 16 = sprite y offset at frame n (hops / jumps)
-extern const u8 gUnk_083D2998[]; // map script terrain/palette id -> player_form/saved_player_form/unkC28 (sub_0804E324)
+extern const u8 gUnk_083D2998[];                // map script terrain/palette id -> player_form/saved_player_form/unkC28
+                                                // (map_script_update_set_player_form)
 extern struct Unk_03002B70 gUnk_03002B70;       // = gMoney, with the bytes after it
 extern const Func gUnk_083AC248[];              // game state 0 sub-state handlers (guess: debug map viewer)
 extern const Func gFieldMenuHandlers[];         // game state 1 (field pause menu) sub-state handlers

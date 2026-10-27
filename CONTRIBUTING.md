@@ -582,11 +582,11 @@
   each branch, so the base is loaded before the index shift.
 * A switch whose compare tree doesn't match and whose inner switch gets merged into the outer one: add a
   case value outside -1..127 (e.g. `case 0xFF:` sharing the default's body). That turns off agbcc's switch
-  cost table and gave the original order in sub_0804FCC4.
+  cost table and gave the original order in map_script_update_move_queue_run.
 * `(a & 0xF0) >> 4` and `a >> 4` compile differently for a u8 `a`; use the masked form when the original
   has `movs rX, #0xF0; ands`.
 * A `[][8]` s16 table indexed with a flat computed index: write `tbl[0][idx]`, not a pointer cast
-  (`((const s16 *)tbl)[idx]` swapped two registers in sub_0804F3AC).
+  (`((const s16 *)tbl)[idx]` swapped two registers in map_script_update_shake_screen).
 * Text tile flush (`if (unk14 & 7) CpuSet(buf, VRAM + 0x280 + unk17 * 0x680 + col * 0x40, n)`): test the low
   bits through a bitfield view (`((struct TextColBits *)&gUnk_03000440)->col`, which makes gcc reload unk14),
   compute the column into a `u8` local with `/ 8` (not `>> 3`) and write the address as
@@ -647,8 +647,8 @@ really data (a false positive), the shifted build changes that data by `SHIFT`: 
   early-exit path with its own copy of the tail stores (message_cmd_portrait).
   The same works when the reload registers (r0/r1/r3 round-robin) are off by one: add a duplicate of an
   arm or comparison that cross-jumping merges after reload (medal_rename_select_medal: the `&= 0xBFFF` arm written
-  twice in an if / else-if chain; sub_0804CB90: the `>= unkC94[1]` test repeated in both arms;
-  field_update_music, sub_0804FE50: an extra `case 0: done = 1; break;` before the default).
+  twice in an if / else-if chain; map_script_cmd_jump_if_affinity_below: the `>= cmd_args[1]` test repeated in both arms;
+  field_update_music, map_script_update_anim_queue_run: an extra `case 0: done = 1; break;` before the default).
 * Loop registers wrong in a simple nested loop: gcc weights register uses inside loops, and goto loops
   are not seen as loops. Writing the loops with `goto` gave shell_sort_by_second_byte its registers.
 * `y += h` hoisted above the inner loop (GCSE, not the loop optimiser): keep the size pair in an array

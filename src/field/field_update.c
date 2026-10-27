@@ -40,7 +40,7 @@ void field_update(void) {
 
     gUnk_03005310.unk4++;
     if (gUnk_030057E0.unkC88) {
-        if (gUnk_030057E0.unkC89)
+        if (gUnk_030057E0.cmd_busy)
             map_script_update_command();
         else
             map_script_run_command();
@@ -76,8 +76,8 @@ void new_game_init(void) {
     DmaSet(3, &zero, OAM, 0x85000100);
     medal_list_init_order();
     team_init_order();
-    gUnk_030057E0.unkCBC = 16;
-    gUnk_030057E0.unkCBD = 16;
+    gUnk_030057E0.affinity_ar = 16;
+    gUnk_030057E0.affinity_ka = 16;
     REG_BG1CNT = 0xC609;
     REG_BG2CNT = 0xEA0A;
     REG_BG3CNT = 0xEE0B;
@@ -121,7 +121,7 @@ void new_game_init(void) {
     gUnk_030057E0.player_tile_x = field_pixel_x_to_tile(gUnk_030057E0.player_x);
     gUnk_030057E0.player_tile_y = field_pixel_y_to_tile(gUnk_030057E0.player_y);
     gUnk_030057E0.player_form = 0;
-    gUnk_030057E0.unkC5B = 1;
+    gUnk_030057E0.player_visible = 1;
     sprite_entry_init(0x2F, 0xC804, 3, 0, 1);
     update_bg_scroll_offsets_a();
     if (gUnk_030057E0.unkC76) {
@@ -149,7 +149,7 @@ void field_room_enter_reset(void) {
     bg2_affine_reset();
     gUnk_030057E0.unkC8A = 0;
     gUnk_030057E0.unkC88 = 0;
-    gUnk_030057E0.unkC89 = 0;
+    gUnk_030057E0.cmd_busy = 0;
     setup_palette_fade_to_color(0x7FFF, 32.0f, 0.0f, 8.0f);
     game_substate_advance();
 }
@@ -210,8 +210,8 @@ void field_continue_load(void) {
     memzero_bytes((u8 *)&gUnk_03000440, 0x13C);
     memzero_bytes((u8 *)gUnk_03000590, 0x600);
     gUnk_030057E0.unkC88 = 0;
-    gUnk_030057E0.unkC89 = 0;
-    gUnk_030057E0.unkC93 = 0;
+    gUnk_030057E0.cmd_busy = 0;
+    gUnk_030057E0.cmd_step = 0;
     gUnk_030057E0.unkC8A = 0;
     gUnk_030057E0.unkC8E = 0;
     gUnk_030057E0.unkC5F = 0;

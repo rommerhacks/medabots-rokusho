@@ -23,7 +23,7 @@ void debug_face_input(void); // rows: portrait 0-0xAF, expression 0-8; A draws i
 void debug_mdlpic_update(void);
 void debug_mdlpic_input(void); // rows: Medal graphic 0-29, sprite variant 0-4; A shows the Medal sprite
 void debug_rndtk_update(void);
-void debug_rndtk_input(void); // toggles gUnk_030057E0.unkC2C
+void debug_rndtk_input(void); // toggles gUnk_030057E0.encounters_off
 void debug_battle_update(void);
 void debug_battle_input(void); // A: unkC2A = id, starts game state 6 (Robattle intro)
 void debug_sound_update(void);

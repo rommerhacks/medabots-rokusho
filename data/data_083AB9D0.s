@@ -1198,8 +1198,8 @@ gFieldSubStates:
 gMapScriptCommands:
 	.incbin "baserom.gba", 0x3D20AC, 0x400
 
-	.global gUnk_083D24AC
-gUnk_083D24AC:
+	.global gOppositeDirection
+gOppositeDirection:
 	.incbin "baserom.gba", 0x3D24AC, 0x4
 
 	.global gMapScriptUpdates

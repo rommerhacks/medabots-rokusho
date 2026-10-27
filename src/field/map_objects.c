@@ -88,7 +88,7 @@ u32 map_cursor_move_and_check_event(void) {
             case 6:
                 gUnk_030057E0.unkC88 = 1;
                 gUnk_030057E0.unkC90 = gUnk_030057E0.unkC8E = obj->unk2 & 0xFFF;
-                gUnk_030057E0.unkC89 = 0;
+                gUnk_030057E0.cmd_busy = 0;
                 gUnk_030057E0.unkC8A = 0;
                 gUnk_030057E0.unkCB4 = i;
                 gSpriteEntries[47].unk25 = 1;
@@ -119,7 +119,7 @@ u32 find_npc_event_match(void) {
             if (obj->y == gUnk_030057E0.player_tile_y && (obj->unk2 & 0xF000) >> 12 == 8) {
                 gUnk_030057E0.unkC88 = 1;
                 gUnk_030057E0.unkC90 = gUnk_030057E0.unkC8E = obj->unk2 & 0xFFF;
-                gUnk_030057E0.unkC89 = 0;
+                gUnk_030057E0.cmd_busy = 0;
                 gUnk_030057E0.unkC8A = 0;
                 gUnk_030057E0.unkCB4 = i;
                 gSpriteEntries[47].unk25 = 1;

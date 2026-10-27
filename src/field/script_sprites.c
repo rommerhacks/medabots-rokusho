@@ -80,8 +80,8 @@ u32 script_sprite_update_walk(u8 slot, u8 mode) {
 
 // Ends the current command: the next frame runs the next one (map_script_run_command).
 void map_script_command_done(void) {
-    gUnk_030057E0.unkC93 = 0;
-    gUnk_030057E0.unkC89 = 0;
+    gUnk_030057E0.cmd_step = 0;
+    gUnk_030057E0.cmd_busy = 0;
 }
 
 // Map script sprite codes: high nibble = graphics kind, low 2 bits = direction (4 directions x 3 frames).
@@ -306,8 +306,8 @@ u32 script_sprite_jump_step(void) {
     case 0:
         s->unk28 = 0;
         s->unk2A = 0;
-        s->unk20 = gUnk_030057E0.unkC94[1];
-        sprite_anim_start(slot, sprite_walk_anim_id(slot, gUnk_030057E0.unkC94[1]));
+        s->unk20 = gUnk_030057E0.cmd_args[1];
+        sprite_anim_start(slot, sprite_walk_anim_id(slot, gUnk_030057E0.cmd_args[1]));
         s->unk34 = s->unk10_8;
         field_play_sound_effect(0x70);
         s->unk26++;
@@ -351,7 +351,8 @@ u32 script_sprite_jump_step(void) {
     return ret;
 }
 
-// Clears gNewKeys, gRepeatKeys and gHeldKeys (called every frame by sub_0804E0E8 during scripted scenes).
+// Clears gNewKeys, gRepeatKeys and gHeldKeys (called every frame by map_script_update_player_walk during scripted
+// scenes).
 void clear_input_keys(void) {
     memzero_bytes((u8 *)&gNewKeys, 4);
     memzero_bytes((u8 *)&gRepeatKeys, 4);

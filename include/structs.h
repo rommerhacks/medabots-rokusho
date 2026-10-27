@@ -968,11 +968,11 @@ struct Unk_030057E0 {
     struct ScriptSpriteSave unk7DC[8]; // sprite snapshot (save_script_sprites)
     u8 unk7FC;
     u8 unk7FD;
-    u8 unk7FE; // area id
-    u8 unk7FF;
-    u16 unk800; // map width * 2 (tiles are bytes, unk810 rows are unk800 / 2 long)
-    u16 unk802; // map height * 2
-    u16 unk804; // area tilemap header words (field_tilemap_header_word(area, 0 / 1))
+    u8 unk7FE;      // area id
+    u8 story_phase; // story chapter (map script opcode 0x6B; map object unk6 bit n = present in phase n)
+    u16 unk800;     // map width * 2 (tiles are bytes, unk810 rows are unk800 / 2 long)
+    u16 unk802;     // map height * 2
+    u16 unk804;     // area tilemap header words (field_tilemap_header_word(area, 0 / 1))
     u16 unk806;
     u8 filler808[0x8];
     u8 unk810[0x400]; // tile map
@@ -983,7 +983,7 @@ struct Unk_030057E0 {
     u8 unkC29; // area byte 0 of gUnk_083BEA90 (load_battlefield_data_to_buffer)
     u8 unkC2A; // battle id (set by the debug menu "Battle" entry before game state 6; guess)
     u8 unkC2B;
-    u8 unkC2C; // toggled by the debug menu "Rnd.tk" entry (guess: random encounters on)
+    u8 encounters_off; // bit 0: no random encounters (map script opcode 0x5F, debug menu "Rnd.tk")
     u8 unkC2D;
     u8 unkC2E;
     u8 unkC2F;
@@ -1010,7 +1010,7 @@ struct Unk_030057E0 {
     u8 unkC58;
     u8 unkC59;
     u8 fillerC5A[0x1];
-    u8 unkC5B;
+    u8 player_visible;     // player sprite shown (scripts hide it for jumps, warps and cutscenes)
     u8 player_form;        // 0 normal, 1-2 the vehicle menu forms, 3-8 / 0xD disguise items, 0xB / 0xC effect forms
     u8 useBlockFlags;      // set bits block: 0 disguises, 1 Mini S. Wheel, 2 Wings of Wind, 3 Periscope,
                            // 4 Silver Locket, 5 the town map
@@ -1034,14 +1034,14 @@ struct Unk_030057E0 {
     u8 unkC84;
     u8 fillerC85[0x3];
     u8 unkC88;
-    u8 unkC89;
-    u16 unkC8A; // map script read offset
-    u16 unkC8C;
-    u16 unkC8E; // current map script id
+    u8 cmd_busy;     // the current map script command still runs its gMapScriptUpdates handler
+    u16 unkC8A;      // map script read offset
+    u16 branch_base; // read offset just after the opcode; conditional jumps add their offset to it
+    u16 unkC8E;      // current map script id
     u16 unkC90;
-    u8 unkC92; // current map script command (gMapScriptCommands index)
-    u8 unkC93;
-    u8 unkC94[0x10]; // map script command arguments (read_map_script_bytes)
+    u8 unkC92;         // current map script command (gMapScriptCommands index)
+    u8 cmd_step;       // step of the running command update
+    u8 cmd_args[0x10]; // map script command arguments (read_map_script_bytes)
     u8 unkCA4[0x10];
     u8 unkCB4; // index of the map object running the script (unk5DC)
     u8 unkCB5;
@@ -1051,8 +1051,10 @@ struct Unk_030057E0 {
     u8 unkCB9;
     u8 unkCBA;
     u8 fillerCBB[0x1];
-    s8 unkCBC;
-    s8 unkCBD;
+    // guess: two friendship scores 0-32 (start 16, opcodes 0x3E / 0x3F / 0x50); the field debug page labels
+    // them "AR" and "KA" (Arika and Karin?)
+    s8 affinity_ar;
+    s8 affinity_ka;
 };
 
 // Four 0x20-byte records at 0x03005290 / 0x030052B0 / 0x030052D0 / 0x030052F0 (guess: BG layer state)
@@ -1308,7 +1310,8 @@ struct Unk_03005310 {
     s16 unk34; // 0x100
     u16 unk36; // 0-255, stepped by RIGHT / LEFT in debug_bg_scroll_input
     u8 unk38;
-    u8 sceneResult; // result of the last battle / minigame: 1 won, 2 lost (map script branch sub_0804CB48)
+    u8 sceneResult; // result of the last battle / minigame: 1 won, 2 lost (map script branch
+                    // map_script_cmd_jump_if_lost)
 };
 
 struct Unk_03006D38 {
@@ -1842,7 +1845,7 @@ struct MapNpcRecord {
     u16 unk2; // copied to MapObject.unk2 (type << 12 | event id)
     u8 unk4;  // bits 4-7: animation set, bits 0-3: animation state; 0xFF = no sprite
     u8 unk5;  // load order
-    u16 unk6; // bit n: present when the story phase gUnk_030057E0.unk7FF == n
+    u16 unk6; // bit n: present when the story phase gUnk_030057E0.story_phase == n
 };
 
 #endif // GUARD_STRUCTS_H

@@ -304,9 +304,9 @@ u32 check_medaforce_availability(u32 rec, u32 slot, u32 random) {
     }
 }
 
-// Opponents can't use Medaforce until the story phase (gUnk_030057E0.unk7FF) is past 2.
+// Opponents can't use Medaforce until the story phase (gUnk_030057E0.story_phase) is past 2.
 static u32 opponent_medaforce_locked(u32 rec) {
-    if (rec <= 2 || gUnk_030057E0.unk7FF > 2)
+    if (rec <= 2 || gUnk_030057E0.story_phase > 2)
         return 0;
     return 1;
 }

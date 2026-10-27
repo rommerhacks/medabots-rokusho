@@ -1,5 +1,5 @@
 // Mode-3 state 3: a full-screen picture with a message, entered from a field script (switch_game_mode case 0x12;
-// the picture index comes from map script command sub_0804D3B4). Returns to the field afterwards. Its
+// the picture index comes from map script command map_script_cmd_event_picture). Returns to the field afterwards. Its
 // fade-and-switch steps scene_switch_after_transition / scene_complete_dma_and_restore_state are shared by the boot
 // logos and intro tables. Name is a guess.
 #include "global.h"

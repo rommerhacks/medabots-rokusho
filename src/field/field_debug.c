@@ -457,7 +457,7 @@ static void field_debug_draw_page(u32 mode) {
             break;
         }
         field_debug_draw_label(gUnk_080AC4F8, 2, 0x30, 0x40);
-        field_debug_draw_value_blink(4, gUnk_030057E0.unk7FF, 8, 0x50, 0x40);
+        field_debug_draw_value_blink(4, gUnk_030057E0.story_phase, 8, 0x50, 0x40);
         field_debug_draw_label(gUnk_080AC4FC, 2, 0x30, 0x48);
         field_debug_draw_value_blink(5, gUnk_030057E0.unkC33, 8, 0x50, 0x48);
         break;
@@ -555,9 +555,9 @@ static void field_debug_draw_page(u32 mode) {
     case 7:
         field_debug_draw_label(gUnk_080AC514, 2, 0x68, 0x18);
         field_debug_draw_label(gUnk_080AC590, 2, 0x30, 0x20);
-        field_debug_draw_value_blink(0, gUnk_030057E0.unkCBC, 8, 0x50, 0x20);
+        field_debug_draw_value_blink(0, gUnk_030057E0.affinity_ar, 8, 0x50, 0x20);
         field_debug_draw_label(gUnk_080AC594, 2, 0x30, 0x28);
-        field_debug_draw_value_blink(1, gUnk_030057E0.unkCBD, 8, 0x50, 0x28);
+        field_debug_draw_value_blink(1, gUnk_030057E0.affinity_ka, 8, 0x50, 0x28);
         field_debug_draw_label(gUnk_080AC598, 3, 0x30, 0x30);
         field_debug_draw_value_blink(2, gUnk_030057A0.song_id, 8, 0x50, 0x30);
         field_debug_draw_label(gUnk_080AC59C, 2, 0x30, 0x38);
