@@ -49,8 +49,8 @@ void *memcpy(void *dst, const void *src, unsigned long n); // libc (the compiler
 void *custom_memset(void *dst, int c, u32 n);              // library
 u16 ReadEepromDword(u16 address, u16 *data);               // EEPROM library: reads 8 bytes
 u16 ProgramEepromDword(u16 address, u16 *data);            // EEPROM library: writes 8 bytes
-u32 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 bytes and verifies; u32 so sub_080603A4
-                                                  // tests the result without truncating it
+u32 ProgramEepromDwordEx(u16 address, u16 *data);          // EEPROM library: writes 8 bytes and verifies; u32 so
+                                                  // save_lost_erase_and_restart tests the result without truncating it
 // code_0805AB40
 // the BG0 tiles masked by gTitleOptionValueMasks
 u32 Sqrt(u32 n);

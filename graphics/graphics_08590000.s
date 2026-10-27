@@ -228,24 +228,24 @@ gUnk_087917F4:
 gUnk_087919C4:
 	.incbin "baserom.gba", 0x7919C4, 0x2E4
 
-	.global gUnk_08791CA8
-gUnk_08791CA8:
+	.global gSaveLostBgPalette
+gSaveLostBgPalette:
 	.incbin "baserom.gba", 0x791CA8, 0xE0
 
-	.global gUnk_08791D88
-gUnk_08791D88:
+	.global gSaveLostBgTiles
+gSaveLostBgTiles:
 	.incbin "baserom.gba", 0x791D88, 0xF48
 
-	.global gUnk_08792CD0
-gUnk_08792CD0:
+	.global gSaveLostBg0Tilemap
+gSaveLostBg0Tilemap:
 	.incbin "baserom.gba", 0x792CD0, 0x19C
 
-	.global gUnk_08792E6C
-gUnk_08792E6C:
+	.global gSaveLostBg1Tilemap
+gSaveLostBg1Tilemap:
 	.incbin "baserom.gba", 0x792E6C, 0x158
 
-	.global gUnk_08792FC4
-gUnk_08792FC4:
+	.global gSaveLostBg3Tilemap
+gSaveLostBg3Tilemap:
 	.incbin "baserom.gba", 0x792FC4, 0x464
 
 	.global gUnk_08793428

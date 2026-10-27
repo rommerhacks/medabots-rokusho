@@ -408,12 +408,12 @@ gGameOverLogoBounce:
 gGameOverIkkiFramesExit:
 	.incbin "baserom.gba", 0xAF968, 0x18
 
-	.global gUnk_080AF980
-gUnk_080AF980:
+	.global gSaveLostSpriteFrames
+gSaveLostSpriteFrames:
 	.incbin "baserom.gba", 0xAF980, 0x8
 
-	.global gUnk_080AF988
-gUnk_080AF988:
+	.global gSaveLostSpritePalette
+gSaveLostSpritePalette:
 	.incbin "baserom.gba", 0xAF988, 0x20
 
 	.global gUnk_080AF9A8

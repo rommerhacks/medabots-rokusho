@@ -616,7 +616,7 @@ struct Unk_03001800 {
     u8 unk57; // Robattle: TIME left, 40/30/20 by gOptionTimeLimit (robattle_time_init), -1 every 32 frames
               // (robattle_time_tick)
     u8 unk58; // Robattle: nonzero blocks Medaforce (check_medaforce_availability)
-    u8 unk59; // Robattle: effect amount left to apply (sub_08018D0C / sub_08018DF4)
+    u8 unk59; // Robattle: effect amount left to apply (battle_tick_buff_effect / battle_tick_status_effect)
     u8 unk5A; // Robattle: team Medabot count (3 in battle_start.ss0)
     u8 unk5B;
     u8 unk5C;    // Robattle AI: record choosing its action (battle_process_all_bot_actions)
@@ -819,16 +819,17 @@ struct Unk_03000590 {
     u8 unkC1; // Medaforce gauge, 0-80 (0x50: Medaforce ready, check_medaforce_availability; drawn as "MF nn/80",
               // runtime-checked)
     u8 fillerC2[0x2];
-    // Two timed effects, ticked every 32 frames by sub_08018CBC (sub_08018D0C / sub_08018DF4):
-    // type, part, frames left (-4 per tick; at 0 the effect ends and unkCE bit 0 / 1 is set), amount.
-    u8 unkC4; // effect A type (0x1F: restores armor to damaged parts, sub_08018D0C)
+    // Two timed effects, ticked every 32 frames by battle_tick_timed_effects (battle_tick_buff_effect /
+    // battle_tick_status_effect): type, part, frames left (-4 per tick; at 0 the effect ends and unkCE bit 0 / 1 is
+    // set), amount.
+    u8 unkC4; // effect A type (0x1F: restores armor to damaged parts, battle_tick_buff_effect)
     u8 unkC5;
     u8 unkC6;
     u8 unkC7;
     u8 unkC8; // number shown by the Robattle handler 0x70 (robattle_effect_a_number_init)
-    u8 unkC9; // effect B type (0x13/0x14: armor changes each tick, sub_08018DF4; 0x2C checked by
+    u8 unkC9; // effect B type (0x13/0x14: armor changes each tick, battle_tick_status_effect; 0x2C checked by
               // robattle_bot_ready_for_command / process_bot_battle_turn, 0x2B by part_blocked_by_effect)
-    u8 unkCA; // effect B part (compared by part_blocked_by_effect; sub_08018F6C starts there)
+    u8 unkCA; // effect B part (compared by part_blocked_by_effect; find_burnable_part starts there)
     u8 unkCB;
     u8 unkCC;
     u8 unkCD; // number shown by the Robattle handler 0x78 (robattle_effect_b_number_init)

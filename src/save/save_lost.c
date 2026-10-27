@@ -1,20 +1,22 @@
 // Mode-2 state 9: "saved data has been lost". Entered when the save fails to load; save_lost_dispatch
-// runs gUnk_08483CC4 (message, then sub_080603A4 zeroes EEPROM block 0). sub_080600E0 is its message helper.
+// runs gSaveLostStates: load the screen, fade in, wait for A, fade out, then save_lost_erase_and_restart
+// zeroes EEPROM block 0 and goes to the title screen.
 #include "global.h"
 
-void sub_080600E0(void) {
+// Cycles sprite 0 through its 8 frames (gSaveLostSpriteFrames), one every 8 frames.
+void save_lost_animate_sprite(void) {
     if (++gSpriteEntries[0].unk1A > 0x3F)
         gSpriteEntries[0].unk1A = 0;
-    gSpriteEntries[0].unk6 = gUnk_080AF980[(gSpriteEntries[0].unk1A >> 3) & 7] + 0x100;
+    gSpriteEntries[0].unk6 = gSaveLostSpriteFrames[(gSpriteEntries[0].unk1A >> 3) & 7] + 0x100;
 }
 
 void save_lost_dispatch(void) {
-    gUnk_08483CC4[gGameSubState]();
+    gSaveLostStates[gGameSubState]();
     if (gFrameCounter & 1)
         gBg3Scroll.y--;
 }
 
-void sub_08060154(void) {
+void save_lost_clear_screen(void) {
     u32 zero = 0;
 
     CpuFastSet(&zero, (void *)VRAM, 0x01006000);
@@ -26,28 +28,28 @@ void sub_08060154(void) {
     gGameSubState++;
 }
 
-void sub_080601A4(void) {
+void save_lost_load_graphics(void) {
     s32 size;
     vu16 *bg0, *bg1, *bg3;
-    u16 v;
+    u16 cnt;
 
     bg0 = &REG_BG0CNT;
-    v = 0x1F04;
-    *bg0 = v;
+    cnt = 0x1F04;
+    *bg0 = cnt;
     bg1 = &REG_BG1CNT;
-    v -= 0xFF;
-    *bg1 = v;
+    cnt -= 0xFF;
+    *bg1 = cnt;
     bg3 = &REG_BG3CNT;
-    v = 0x3C07;
-    *bg3 = v;
-    decompress_and_write_tilemap(gUnk_08792CD0, *bg0);
-    decompress_and_write_tilemap(gUnk_08792E6C, *bg1);
-    decompress_and_write_tilemap(gUnk_08792FC4, *bg3);
-    size = dma3_copy_or_decompress(gUnk_08791D88, gDecompressBuffer);
+    cnt = 0x3C07;
+    *bg3 = cnt;
+    decompress_and_write_tilemap(gSaveLostBg0Tilemap, *bg0);
+    decompress_and_write_tilemap(gSaveLostBg1Tilemap, *bg1);
+    decompress_and_write_tilemap(gSaveLostBg3Tilemap, *bg3);
+    size = dma3_copy_or_decompress(gSaveLostBgTiles, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
     gUnk_03006F74->unk36 = size / 32 - 1;
-    CpuFastSet(gUnk_08791CA8, (void *)PLTT, 0x38);
-    CpuFastSet(gUnk_080AF988, (void *)(PLTT + 0x200), 8);
+    CpuFastSet(gSaveLostBgPalette, (void *)PLTT, 0x38);
+    CpuFastSet(gSaveLostSpritePalette, (void *)(PLTT + 0x200), 8);
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
     gSpriteEntries[0].unk0 = 0xC000;
     gSpriteEntries[0].unk1C = 2;
@@ -59,7 +61,7 @@ void sub_080601A4(void) {
     gGameSubState++;
 }
 
-void sub_08060298(void) {
+void save_lost_start_fade_in(void) {
     REG_DISPCNT |= 0x100;
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x800;
@@ -69,17 +71,17 @@ void sub_08060298(void) {
     gGameSubState++;
 }
 
-void sub_080602F4(void) {
-    struct Unk_03006F74 *p = gUnk_03006F74;
+void save_lost_fade_in(void) {
+    struct Unk_03006F74 *state = gUnk_03006F74;
 
-    if (p->unk0 != 0)
-        REG_BLDY = p->unk0-- >> 1;
+    if (state->unk0 != 0)
+        REG_BLDY = state->unk0-- >> 1;
     else
         gGameSubState++;
 }
 
-void sub_08060324(void) {
-    sub_080600E0();
+void save_lost_wait_for_a(void) {
+    save_lost_animate_sprite();
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         gUnk_03006F74->unk0 = 0;
@@ -87,8 +89,8 @@ void sub_08060324(void) {
     }
 }
 
-void sub_0806035C(void) {
-    sub_080600E0();
+void save_lost_fade_out(void) {
+    save_lost_animate_sprite();
     if (gUnk_03006F74->unk0 != 32) {
         gUnk_03006F74->unk0++;
         REG_BLDY = gUnk_03006F74->unk0 >> 1;
@@ -98,19 +100,20 @@ void sub_0806035C(void) {
     }
 }
 
-void sub_080603A4(void) {
+// Once the A sound has finished: zeroes EEPROM block 0 (the save header, up to 4 tries), then the title.
+void save_lost_erase_and_restart(void) {
     u16 buf[4];
-    u32 r = is_sound_playing_with_lock(4);
+    u32 playing = is_sound_playing_with_lock(4);
     u16 ie;
     u32 zero;
     s32 i;
 
-    if (r == 0) {
-        REG_IME = r;
+    if (playing == 0) {
+        REG_IME = playing;
         ie = REG_IE;
         REG_IE = 0x2020;
         REG_IME = 1;
-        zero = r;
+        zero = playing;
         CpuSet(&zero, buf, 0x05000002);
         for (i = 0; i <= 3; i++) {
             if (ProgramEepromDwordEx(0, buf) == 0)

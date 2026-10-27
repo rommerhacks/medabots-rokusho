@@ -25,7 +25,7 @@ void robattle_time_tick(void) {
     if ((gUnk_03001800.unk56 = (gUnk_03001800.unk56 + 1) & 0x1F) == 0 && gUnk_03001800.unk57 != 0) {
         gUnk_03001800.unk57--;
         gUnk_03001800.unk16B++;
-        sub_08018CBC();
+        battle_tick_timed_effects();
     }
 }
 

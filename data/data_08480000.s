@@ -56,8 +56,8 @@ gTestModeStates:
 gGameOverStates:
 	.incbin "baserom.gba", 0x483CA4, 0x20
 
-	.global gUnk_08483CC4
-gUnk_08483CC4:
+	.global gSaveLostStates
+gSaveLostStates:
 	.incbin "baserom.gba", 0x483CC4, 0x1C
 
 	.global gAreaTownMapPlace
