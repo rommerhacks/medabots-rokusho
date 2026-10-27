@@ -92,7 +92,7 @@ gUnk_03003870    = 0x03003870;
 gUnk_03005664    = 0x03005664;
 
 /* code_0800025C: debug state 0, field menu (game state 1) */
-gUnk_03002B68       = 0x03002B68;
+gLinkTradeData       = 0x03002B68;
 
 /* code_0800025C: Medawatch menu (game state 2) */
 gTextComposeTile       = 0x02020000;

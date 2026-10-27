@@ -325,7 +325,7 @@ struct GameWork {
     u8 textBuf[0x50]; // digit buffer (divide_by_10000); also four 0x14-byte name buffers for messages
                       // (message_print_var_step)
     u8 partAbility;   // start of a 16-byte part data record (load_part_data): ability (gAttributeNames name)
-    u8 partSkill;     // skill id; >= 100: leg type (gUnk_083BE97C[partSkill - 100])
+    u8 partSkill;     // skill id; >= 100: leg type (gLegTypeNames[partSkill - 100])
     u8 partSkillType; // skill type (gSkillTypeNames name)
     u8 partGender;    // gender: 0 male, 1 female (matched against gTeamSlots[].portraitMode)
     u8 unkF2;         // stats: head Armor, Success, Power, (F5 power icon flag), Uses; legs Armor, Propulsion,

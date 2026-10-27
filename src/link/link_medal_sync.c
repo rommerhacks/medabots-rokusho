@@ -1,6 +1,6 @@
 // Link handshakes: state 27 (link_medal_sync_update, from link_menu) sends the owned-Medal mask over the serial
 // packets (0xF4xx data bytes / 0xFCxx acks) and then goes to state 17 or, on the receiving side, stores the mask
-// in gUnk_03002B68 and returns to mode 0; state 26 (link_handshake_update) syncs on 0xFEDF and enters link_menu.
+// in gLinkTradeData and returns to mode 0; state 26 (link_handshake_update) syncs on 0xFEDF and enters link_menu.
 // link_enter_* are the mode-2 entry points that goto_link_scene in engine/sprite_engine.c picks from: 26 (from the
 // Medals list), 17 Medal trade (Medals screen), 16 Medapart trade (Medaparts screen), 20 link menu (link Robattle).
 #include "global.h"
@@ -56,7 +56,7 @@ void link_medal_sync_exchange(void) {
             gGameState = 0x11;
             gGameSubState = 0;
         } else {
-            gUnk_03002B68 = gMenuWork->total;
+            gLinkTradeData = gMenuWork->total;
             init_game_mode(0);
         }
     }

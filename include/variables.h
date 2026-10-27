@@ -320,8 +320,10 @@ extern const u8 gSpriteFontTiles[]; // 8x16 OBJ font (letters, digits, $) at 0x0
 extern const u16 gSpriteFontPalette[];
 extern const u8 gFieldMenuCursorTiles[];
 extern const u16 gCursorArrowPalette[]; // OBJ palette 14 of the arrow cursor (gCursorArrowTiles)
-extern const u16 gUnk_084E2E78[];
-extern const u8 gUnk_084889F8[];
+extern const u16
+    gHelpCursorPalette[]; // OBJ palette 14 while a Medals / Medaparts help page is open. guess: help cursor colours
+extern const u8
+    gTradeChoiceWindowTilemap[]; // Details / Trade / Cancel window of the Medals and Medaparts link trade choice
 extern const void
     *const gAttributeHelpMessages[]; // messages (run_message), indexed by Medal record byte 4 (Medals help)
 extern const void
@@ -330,8 +332,8 @@ extern const u8 gMedalMedaforceIds[]; // 3 Medaforce ids per Medal graphic index
 extern const u8 gMedaforceRecords[];  // 6-byte Medaforce records: +1 skill type, +2 MF consumption, +5 icon
 extern const void *const gMedaforceTypeHelpMessages[];  // messages (run_message), Medals help Medaforce page
 extern const void *const gMedaforceSkillHelpMessages[]; // messages (run_message), Medals help page 5
-extern u32 gUnk_03002B68; // bit per Medal graphic index (medal_trade_check_medal); also (part kind << 16) + part id
-                          // (medapart_trade_store_part)
+extern u32 gLinkTradeData; // bit per Medal graphic index (medal_trade_check_medal); also (part kind << 16) + part id
+                           // (medapart_trade_store_part)
 extern const u8 gMedalSkillBgTiles[];
 extern const u8 gMedalSkillBg0Tilemap[];
 extern const u8 gMedalSkillBg1Tilemap[];
@@ -380,41 +382,48 @@ extern const u8 gUnk_083B296C[]; // 4 per-phase y bob flags (update_battle_sprit
 extern const u8 gUnk_083B2970[]; // indexed by gFieldWork.player_form (resolve_area_sprite_set)
 extern const u8 gUnk_083B827C[]; // 16 bytes per Medapart (part id * 64 + kind * 16), copied by load_part_data
 extern const u8 gUnk_083B286C[]; // random bytes, indexed by gGameWork.rngIndex when unk89 is set (rng_next_byte)
-extern const u8 gUnk_084EBF50[];
-extern const u8 gUnk_084C4014[];
-extern const u8 gUnk_084C4330[];
-extern const u8 gUnk_084C36F0[];
-extern const u8 gUnk_084EF550[];
-extern const u8 gUnk_084EFF74[];
-extern const u8 gUnk_084F0BF0[];
-extern const u8 gUnk_084F1D34[];
-extern const u8 gUnk_084ECB3C[];
-extern const u8 gUnk_084C43C0[];
-extern const u8 gUnk_084C47A0[];
-extern const u8 gUnk_084C47E0[];
-extern const u8 gBotActionIconTiles[]; // 2x2-tile icons beside each Medabot on the field (BG3 tiles 0x214+); also the
-                                       // Medaparts screen. guess: action / skill type icons
-extern const u8 gUnk_084EF5A4[];
-extern const u8 gUnk_084F0068[];
-extern const u8 gUnk_084F0CA4[];
-extern const u8 gUnk_084F1EC8[];
-extern const u16 gUnk_084F3460[];
-extern const u16 gUnk_084F3620[];
-extern const void *const gUnk_083BE3E4[]; // messages (run_message), Medaparts detail help for head / arms, indexed by
-                                          // medapart_detail_skill_help_index()
-extern const void *const gUnk_083BE92C[]; // messages (run_message), Medaparts detail help for legs, indexed by
-                                          // medapart_detail_skill_help_index()
-extern const void *const gUnk_083B6E24[]; // messages (run_message), indexed by the part record byte unkEE
-extern const void *const gUnk_083BD884[]; // messages (run_message), Medaparts help pages
+extern const u8
+    gMedapartsListBgTiles[]; // Medaparts list screen (medaparts_list_load_gfx; runtime: VRAM dump of the list)
+extern const u8 gMedapartTypeLabelTiles[]; // HEAD / RIGHT ARM / LEFT ARM / LEGS title labels of the Medaparts list
+extern const u8
+    gPartGenderIconTiles[];        // 2x2 icons: male (blue), female (pink); Medaparts list SEX column and detail page
+extern const u8 gTallDigitTiles[]; // 2-row digits for draw_number_tall_bgcnt (Medaparts list counts, Robattle)
+extern const u8 gMedapartsListBg0Tilemap[];
+extern const u8 gMedapartsListBg1Tilemap[];
+extern const u8 gMedapartsListBg2Tilemap[];
+extern const u8 gMedapartsListBg3Tilemap[];
+extern const u8
+    gMedapartDetailBgTiles[]; // Medapart detail page (medapart_detail_load_gfx; runtime: VRAM dump of the page)
+extern const u8
+    gMedapartStatLabelTiles[]; // ARMOR / RATE OF SUCCESS / POWER / AMOUNT OF USES / ... labels, 12 tiles each
+extern const u8
+    gPartPowerMarkTiles[]; // 2 tiles beside POWER when the part record byte unkF5 is set. guess: power bonus mark
+extern const u8 gSkillRangeIconTiles[]; // 2x2 icons: proximity, remote (skill_type_is_remote); Medapart detail page
+extern const u8 gBotActionIconTiles[];  // 2x2-tile icons beside each Medabot on the field (BG3 tiles 0x214+); also the
+                                        // Medaparts screen. guess: action / skill type icons
+extern const u8 gMedapartDetailBg0Tilemap[];
+extern const u8 gMedapartDetailBg1Tilemap[];
+extern const u8 gMedapartDetailBg2Tilemap[];
+extern const u8 gMedapartDetailBg3Tilemap[];
+extern const u16 gMedapartsListBgPalette[];                // BG palettes 0-6 of the Medaparts list
+extern const u16 gMedapartDetailBgPalette[];               // BG palettes 0-6 of the Medapart detail page
+extern const void *const gMedapartDetailHelpMessages[];    // messages (run_message), Medaparts detail help for head /
+                                                           // arms, indexed by medapart_detail_skill_help_index()
+extern const void *const gMedapartLegDetailHelpMessages[]; // messages (run_message), Medaparts detail help for legs,
+                                                           // indexed by medapart_detail_skill_help_index()
+extern const void *const gAbilityHelpMessages[];   // messages (run_message), ability help (e.g. "(Anti-Air) Damages Air
+                                                   // Medabots greatly."), indexed by gGameWork.partAbility
+extern const void *const gMedapartsHelpMessages[]; // messages (run_message), Medaparts help pages
 extern const u8 gMedalsListBgTiles[];
-extern const u8 gMedalsTabNumberTiles[]; // Medals list tab numbers 1-5 (runtime: blanking 0x06006000)
-extern const u8 gUnk_0848833C[];
+extern const u8 gMedalsTabNumberTiles[];   // Medals list tab numbers 1-5 (runtime: blanking 0x06006000)
+extern const u8 gTradeChoiceWindowTiles[]; // Details / Trade / Cancel window (runtime: tile base 0x380 of the Medaparts
+                                           // trade choice)
 extern const u8 gMedalsListBg0Tilemap[];
 extern const u8 gMedalsListBg1Tilemap[];
 extern const u8 gMedalsListBg2Tilemap[];
 extern const u8 gMedalsListBg3Tilemap[];
 extern const u16 gMedalsListBgPalette[];
-extern const u16 gUnk_08488B44[];
+extern const u16 gTradeChoiceWindowPalette[]; // BG palette 11 of the trade choice window
 extern const u16 gUnk_084E2E98[];
 extern const u8 gMedalAbilityBgTiles[];
 extern const u8 gMedalAbilityBg0Tilemap[];
@@ -506,7 +515,7 @@ extern const u8 *const gDebugMotionLabels[];  // "No"
 extern const u8
     gMedalSkillShineTiles[];        // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (medal_skill_load_shine_frame)
 extern const u32 gMedaforceNames[]; // Medaforce names, indexed by Medaforce id
-extern const u32 gUnk_083BE97C[];   // Medapart skill names for ids >= 100 (medapart_detail_draw_skill)
+extern const u32 gLegTypeNames[];   // Medapart skill names for ids >= 100 (medapart_detail_draw_skill)
 extern u16 gRobattleCounts[2]; // gPlayerRecord.robattleCounts: [0] fought, [1] won (gGameWork.unk9C == 1); capped at
                                // 9999 (runtime-checked; guess: Robattles fought / won)
 extern const void *const gUnk_083C3984[];   // after-battle opponent lines, by gBattleWork.encounterMessage

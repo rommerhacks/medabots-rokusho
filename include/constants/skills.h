@@ -2,7 +2,7 @@
 #define GUARD_CONSTANTS_SKILLS_H
 
 // Medapart skill ids (part data[1]). Names from the game's own skill list (0xFE-separated text at 0x083BE4D4,
-// indexed by id); leg types (100+) from the list at gUnk_083BE97C.
+// indexed by id); leg types (100+) from the list at gLegTypeNames.
 enum {
     SKILL_SWORD,
     SKILL_HAMMER,

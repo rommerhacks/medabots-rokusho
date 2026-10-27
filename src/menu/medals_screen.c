@@ -88,13 +88,13 @@ void medals_list_load_gfx(void) {
     lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06007600);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
-    lz_decompress_dispatch(gUnk_0848833C, (void *)0x06006A00);
+    lz_decompress_dispatch(gTradeChoiceWindowTiles, (void *)0x06006A00);
     set_tilemap_and_decompress_bg(0, 0, gMedalsListBg0Tilemap, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalsListBg1Tilemap, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalsListBg2Tilemap, REG_BG2CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalsListBg3Tilemap, REG_BG3CNT, 0x200);
     CpuFastSet(gMedalsListBgPalette, (void *)0x05000000, 0x70);
-    CpuFastSet(gUnk_08488B44, (void *)0x05000160, 8);
+    CpuFastSet(gTradeChoiceWindowPalette, (void *)0x05000160, 8);
     CpuFastSet(gUnk_0850DEF8, (void *)0x05000200, 0x40);
     CpuFastSet(gUnk_0850DD58, (void *)0x05000300, 8);
     CpuFastSet(gUnk_0850DD58 - 0x20, (void *)0x05000320, 8);
@@ -746,7 +746,7 @@ void medal_skill_debug_edit_input(void) {
 void medals_help_load(void) {
     medals_scroll_bg();
     clear_sprite_table_mask(1, 5);
-    CpuFastSet(gUnk_084E2E78, (void *)0x050003C0, 8);
+    CpuFastSet(gHelpCursorPalette, (void *)0x050003C0, 8);
     medals_help_init_cursor();
     message_next();
     gGameSubState++;
@@ -938,13 +938,13 @@ void medals_help_exit(void) {
 // Medals screen sub-states 96-104: A on a Medal in link trade mode (unk3C == 4) opens a 3-entry choice (cursor
 // unk4A): 0 opens the Medal's pages, 1 offers it for trade, 2 goes back to the list. Code-read only (needs a link
 // partner). guess: the refusal messages are gLinkMessages[9] for Medal flag 0x40 and [8] for a Medal kind the
-// partner already has (gUnk_03002B68 is synced from the partner in link_medal_sync).
+// partner already has (gLinkTradeData is synced from the partner in link_medal_sync).
 void medal_trade_choice_open(void) {
     medals_scroll_bg();
     medals_list_update_swap_marker();
     gSpriteEntries[1].unk0 &= 0xBFFF;
     gSpriteEntries[2].unk0 &= 0xBFFF;
-    set_tilemap_and_decompress_bg(0x12, 0xC, gUnk_084889F8, REG_BG0CNT, 0x350);
+    set_tilemap_and_decompress_bg(0x12, 0xC, gTradeChoiceWindowTilemap, REG_BG0CNT, 0x350);
     gGameWork.tradeChoice = 0;
     medal_trade_init_choice_cursor();
     gGameSubState++;
@@ -1003,7 +1003,7 @@ void medal_trade_check_medal(void) {
         text_window_init(1, 2, 0);
         gGameWork.unk84 = 9;
         gGameSubState++;
-    } else if ((bit = (1 << gMedals[gGameWork.shownId].graphicId) & gUnk_03002B68)) {
+    } else if ((bit = (1 << gMedals[gGameWork.shownId].graphicId) & gLinkTradeData)) {
         text_window_init(1, 2, 0);
         gGameWork.unk84 = 8;
         gGameSubState++;

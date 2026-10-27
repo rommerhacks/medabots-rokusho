@@ -922,8 +922,8 @@ gAttributeNames:
 gAttributeHelpMessages:
 	.incbin "baserom.gba", 0x3B69C8, 0x45C
 
-	.global gUnk_083B6E24
-gUnk_083B6E24:
+	.global gAbilityHelpMessages
+gAbilityHelpMessages:
 	.incbin "baserom.gba", 0x3B6E24, 0xA4
 
 	.global gSkillTypeNames
@@ -978,24 +978,24 @@ gUnk_083BA4D8:
 gMedapartNames:
 	.incbin "baserom.gba", 0x3BB9CC, 0x1EB8
 
-	.global gUnk_083BD884
-gUnk_083BD884:
+	.global gMedapartsHelpMessages
+gMedapartsHelpMessages:
 	.incbin "baserom.gba", 0x3BD884, 0xB60
 
-	.global gUnk_083BE3E4
-gUnk_083BE3E4:
+	.global gMedapartDetailHelpMessages
+gMedapartDetailHelpMessages:
 	.incbin "baserom.gba", 0x3BE3E4, 0x304
 
 	.global gSkillNames
 gSkillNames:
 	.incbin "baserom.gba", 0x3BE6E8, 0x244
 
-	.global gUnk_083BE92C
-gUnk_083BE92C:
+	.global gMedapartLegDetailHelpMessages
+gMedapartLegDetailHelpMessages:
 	.incbin "baserom.gba", 0x3BE92C, 0x50
 
-	.global gUnk_083BE97C
-gUnk_083BE97C:
+	.global gLegTypeNames
+gLegTypeNames:
 	.incbin "baserom.gba", 0x3BE97C, 0x6C
 
 	.global gUnk_083BE9E8

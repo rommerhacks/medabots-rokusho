@@ -6,7 +6,7 @@
 u32 medapart_trade_choice_close_step(void); // runs sprite 4's sub-state handler, 1 when done
 s32 medapart_detail_skill_help_index(void);
 void medapart_detail_draw_skill(void); // skill type name (gSkillTypeNames[unkF0]) or, for ids >= 100 in unkEF,
-                                       // gUnk_083BE97C[unkEF - 100] (leg type)
+                                       // gLegTypeNames[unkEF - 100] (leg type)
 void count_compatible_medaparts(
     void); // unk41 = owned parts of kind unk3E; from a Medabot (unk3C 1) only spare ones of its gender
 

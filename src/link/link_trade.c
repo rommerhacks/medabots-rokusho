@@ -260,8 +260,8 @@ static void trade_tiles_slow_down(void) {
 }
 
 void medapart_trade_take_selection(void) {
-    gMenuWork->own_part_id = gUnk_03002B68;
-    gMenuWork->own_part_kind = ((u16 *)&gUnk_03002B68)[1];
+    gMenuWork->own_part_id = gLinkTradeData;
+    gMenuWork->own_part_kind = ((u16 *)&gLinkTradeData)[1];
     gGameSubState++;
 }
 

@@ -609,7 +609,7 @@ void robattle_status_screen_init(void) {
     lz_decompress_dispatch(gUnk_084C50D8, (void *)0x06006000);
     lz_decompress_dispatch(gCompatibilityIconTiles, (void *)0x06006800);
     lz_decompress_dispatch(gUnk_084C4DB0, (void *)0x06006E00);
-    lz_decompress_dispatch(gUnk_084C36F0, (void *)0x06007200);
+    lz_decompress_dispatch(gTallDigitTiles, (void *)0x06007200);
     lz_decompress_dispatch(gUnk_084C50BC, (void *)0x06007480);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF5DC, REG_BG0CNT, 0x200);
