@@ -129,22 +129,22 @@ void init_opponent_bot_slots(void) {
     }
 }
 
-void battle_process_all_bots_actions(void) {
+void battle_pick_all_ai_targets(void) {
     u32 i;
 
     if (gUnk_03000440.unk89 != 1 || gUnk_03000B90 == 0) {
         for (i = 0; i <= 5; i++) {
             if (gUnk_03000590[i].unk40)
-                battle_process_all_bot_actions(i);
+                ai_pick_bot_targets(i);
         }
     } else {
         for (i = 3; i <= 5; i++) {
             if (gUnk_03000590[i].unk40)
-                battle_process_all_bot_actions(i);
+                ai_pick_bot_targets(i);
         }
         for (i = 0; i <= 2; i++) {
             if (gUnk_03000590[i].unk40)
-                battle_process_all_bot_actions(i);
+                ai_pick_bot_targets(i);
         }
     }
 }
@@ -272,7 +272,7 @@ u32 check_medaforce_availability(u32 rec, u32 slot, u32 random) {
     if (opponent_medaforce_locked(rec) || gUnk_03001800.unk58 || gUnk_03000590[rec].unkC1 != 0x50)
         return 1;
     if (random)
-        slot = rng_lookup_table_value();
+        slot = rng_random_slot();
     for (i = 0; i <= 2; i++) {
         if (slot == 0) {
             if (gUnk_03000590[rec].medal.unk5 > 9) {
@@ -323,7 +323,7 @@ void battle_ai_roll_part_order(void) {
 
 static u32 battle_part_unusable(u32 rec, u32 part) {
     if (!part_blocked_by_effect(rec, part) && !head_out_of_uses(rec, part) && !part_is_broken(rec, part) &&
-        !begin_battle_action_lookup(rec, part))
+        !ai_action_unusable(rec, part))
         return 0;
     return 1;
 }

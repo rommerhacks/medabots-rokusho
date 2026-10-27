@@ -9,7 +9,7 @@ void count_active_battle_bots(void);
 void battle_setup_team_bots(void);
 void battle_process_bot_actions_for_side(u32 side);
 void init_opponent_bots(void);
-void battle_process_all_bots_actions(void);
+void battle_pick_all_ai_targets(void);
 void process_bot_battle_turn(u32 rec);
 void battle_bot_select_medaforce(u32 rec, u32 part);
 void battle_bot_select_part(u32 rec, u32 part);

@@ -3234,7 +3234,7 @@ void sub_0802D758(void) {
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 &&
             battle_bot_lacks_stability(gUnk_03001800.unk60 + i)) {
-            gUnk_03001800.unkD2[i] = (s8)battle_find_next_active_bot(gUnk_03001800.unk60 + i) - 0x80;
+            gUnk_03001800.unkD2[i] = (s8)bot_random_intact_part(gUnk_03001800.unk60 + i) - 0x80;
             found = 1;
         }
     }

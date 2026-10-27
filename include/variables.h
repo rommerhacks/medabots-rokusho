@@ -968,12 +968,12 @@ extern const u8
 extern const Func
     gUnk_083AF000[]; // Robattle action script commands by script byte < 0x80 (battle_run_action_script; script from
                      // gUnk_083C6B28[gUnk_03001800.unkA8] at offset unkBC, battle_script_read_byte)
-extern const Func gUnk_083AEF10[]; // Robattle AI: action validity checks by part skill id data[1]; set
-                                   // gUnk_03001800.unk51 = 1 to reject (begin_battle_action_lookup)
-extern const u8 gUnk_083AEF00[];   // 16 slot numbers 0-2 picked by rng & 15 (rng_lookup_table_value)
-extern const Func gUnk_083AEE10[]; // Robattle AI: action handlers by part skill id data[1] (call_bot_action_handler)
-extern const Func gUnk_083AED20[]; // Robattle AI: action selection handlers by part skill id data[1]
-                                   // (battle_execute_action_selection)
+extern const Func gAiActionChecks[];     // Robattle AI: action validity checks by part skill id data[1]; set
+                                         // gUnk_03001800.unk51 = 1 to reject (ai_action_unusable)
+extern const u8 gRandomSlots[];          // 16 slot numbers 0-2 picked by rng & 15 (rng_random_slot)
+extern const Func gAiAfterPick[];        // Robattle AI: action handlers by part skill id data[1] (ai_run_after_pick)
+extern const Func gAiTargetPickers[];    // Robattle AI: action selection handlers by part skill id data[1]
+                                         // (ai_pick_part_target)
 extern const u8 gLevelUpSkillPalettes[]; // sprite 0x22 palette bits (unkA) by the levelled-up skill type
                                          // gUnk_03001800.unk166 (action_phase_level_up_skill_init)
 extern const u8 gUnk_084D796C[];         // compressed OBJ tiles at 0x06014800 (action_phase_level_up_init)

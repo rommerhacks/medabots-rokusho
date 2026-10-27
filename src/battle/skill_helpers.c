@@ -401,7 +401,7 @@ u32 sub_08037728(u32 rec, u32 part, u32 amount) {
 u32 battle_find_guarding_enemy(u32 base) {
     u32 i, j, dir;
 
-    i = rng_lookup_table_value();
+    i = rng_random_slot();
     dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
         if (gUnk_03000590[base + i].unk40 &&
@@ -423,7 +423,7 @@ u32 battle_find_guarding_enemy(u32 base) {
 u32 battle_find_enemy_same_legs(u32 base, u32 rec) {
     u32 i, j, dir;
 
-    i = rng_lookup_table_value();
+    i = rng_random_slot();
     dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
         if (gUnk_03000590[base + i].unk40 &&

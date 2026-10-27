@@ -29,7 +29,7 @@ void robattle_setup_bots(void) {
         battle_setup_team_bots();
         init_opponent_bots();
     }
-    battle_process_all_bots_actions();
+    battle_pick_all_ai_targets();
     if (gUnk_03000440.unk89 != 1)
         fill_opponent_medaforce_for_battle_type();
     gGameSubState++;
@@ -878,7 +878,7 @@ void robattle_bot_ready_for_command(void) {
     setup_battle_bot_sprite_group(gUnk_03001800.unk87, gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk2,
                                   gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4);
     battle_queue_pop();
-    battle_process_all_bot_actions(gUnk_03001800.unk87);
+    ai_pick_bot_targets(gUnk_03001800.unk87);
     if (gUnk_03001800.unk87 > 2) {
         if (gUnk_03000440.unk89 != 1) {
             process_bot_battle_turn(gUnk_03001800.unk87);

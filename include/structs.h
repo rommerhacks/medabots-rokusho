@@ -557,11 +557,13 @@ struct Unk_083AF94C {
 };
 
 struct BattlePart {
-    u8 data[0xD]; // part data record (load_part_data); data[0xA] summed as armor (accumulate_team_armor_stats)
+    u8 data[0xD]; // part data record (load_part_data): [1] skill id (SKILL_*), [2] skill type (SKILL_TYPE_*),
+                  // [4] max armor; data[0xA] summed as armor (accumulate_team_armor_stats)
     u8 fillerD;
-    u8 unkE; // copied to the record's unkE0 / unkE1 when this part is chosen (battle_bot_select_part)
-    u8 unkF;
-    u8 unk10; // head: copy of data[8]
+    u8 unkE;  // AI target record + 1, copied to the record's unkE0 / unkE1 when this part is chosen
+              // (battle_bot_select_part)
+    u8 unkF;  // AI target part + 1 (0 = whole Medabot, ai_clear_target_part)
+    u8 unk10; // head: copy of data[8], uses left (head_out_of_uses; Use Drain needs it nonzero)
     u8 unk11; // current armor, starts as data[4] = max armor (Status screen, runtime-checked); 0 = broken
               // (legs: data[4..9] copied to unk11..unk16)
     u8 unk12; // legs: data[5] (Propulsion; bot_move_delay_sub_propulsion)
@@ -611,6 +613,7 @@ struct Unk_03001800 {
                     // (battle_queue_add, sorted by battle_queue_sort; robattle_turn_next_action tests [0][0])
     u8 unk51; // Robattle: Medaforce gauge points left to add / remove one per frame (medaforce_gauge_fill_step /
               // _drain_step)
+              // also the AI result: 1 = skill unusable (gAiActionChecks, ai_action_unusable)
     u8 unk52;
     u8 unk53;
     u8 unk54;
@@ -622,12 +625,12 @@ struct Unk_03001800 {
     u8 unk59; // Robattle: effect amount left to apply (battle_tick_buff_effect / battle_tick_status_effect)
     u8 unk5A; // Robattle: team Medabot count (3 in battle_start.ss0)
     u8 unk5B;
-    u8 unk5C;    // Robattle AI: record choosing its action (battle_process_all_bot_actions)
+    u8 unk5C;    // Robattle AI: record choosing its action (ai_pick_bot_targets)
     u8 unk5D;    // Robattle AI: part being considered (0-2)
     u8 unk5E;    // Robattle AI: target record + 1
     u8 unk5F;    // Robattle AI: target part + 1
     u8 unk60;    // first record of the target side (battle_enemy_side_first_record, sub_08026FF8)
-    u8 unk61[3]; // Robattle AI: candidate targets (record + 1, 0 = none; select_battle_targets_and_actions)
+    u8 unk61[3]; // Robattle AI: candidate targets (record + 1, 0 = none; ai_target_attack)
     u8 unk64[4]; // filled by get_bot_part_effective_values (robattle_status_screen_init); AI part order from
                  // gUnk_083AD2F0 (battle_ai_roll_part_order)
     u8 filler68[0xC];
@@ -810,7 +813,7 @@ struct Unk_03000590 {
     u8 unkB8;    // own record index (battle_bots_load_parts)
     u8 unkB9; // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other (sub_0802C588, written
               // as &unkB8 + 1 to match)
-    u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
+    u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents); 2 = out of action (Reactivate)
     u8 moveDelay; // movement delay 0-0x1F, rebuilt each frame by bot_calc_move_delay; speed = 0x20 - moveDelay
     u8 unkBC; // hit flags, high nibble cleared by battle_action_cleanup: bit 4 dodged, bit 5 evaded onto the strongest
               // part, bit 6 hit above the threshold (attack_hit_check_critical)

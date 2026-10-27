@@ -647,20 +647,20 @@ gActionPhaseSteps:
 gLevelUpSkillPalettes:
 	.incbin "baserom.gba", 0x3AED18, 0x8
 
-	.global gUnk_083AED20
-gUnk_083AED20:
+	.global gAiTargetPickers
+gAiTargetPickers:
 	.incbin "baserom.gba", 0x3AED20, 0xF0
 
-	.global gUnk_083AEE10
-gUnk_083AEE10:
+	.global gAiAfterPick
+gAiAfterPick:
 	.incbin "baserom.gba", 0x3AEE10, 0xF0
 
-	.global gUnk_083AEF00
-gUnk_083AEF00:
+	.global gRandomSlots
+gRandomSlots:
 	.incbin "baserom.gba", 0x3AEF00, 0x10
 
-	.global gUnk_083AEF10
-gUnk_083AEF10:
+	.global gAiActionChecks
+gAiActionChecks:
 	.incbin "baserom.gba", 0x3AEF10, 0xF0
 
 	.global gUnk_083AF000

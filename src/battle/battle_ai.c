@@ -1,158 +1,172 @@
-// Battle AI and action checks. battle_process_all_bot_actions runs, for each of a Medabot's three parts,
-// the target picker gUnk_083AED20[ability] (enemy / ally / most damaged / broken part / status pickers,
-// select_*_battle_target). begin_battle_action_lookup runs the usability check gUnk_083AEF10[ability]
-// (sub_08033364..sub_080337CC set unk51 = 1 when the action can't be used). Called from battle_bots
-// (turn actions) and the action phase; reads the bot records gUnk_03000590.
+// Robattle AI. For each part of a Medabot, ai_pick_bot_targets runs the target picker gAiTargetPickers[skill]
+// (indexed by the part's skill id; attacks, Anti-Air / Anti-Sea, Stability, Recovery, Repair, Reactivate, charge and
+// status skills) and the after-pick hook gAiAfterPick[skill] (ai_clear_target_part for skills that target a whole
+// Medabot). The chosen target record + 1 and part + 1 go to the part's unkE / unkF.
+// Each picker narrows the candidates in passes: first the bots that suit the skill and have a part of the user's
+// Medal Aim skill type, then just the ones that suit the skill, then (usually) the Aim match alone, and last any
+// present bot. ai_action_unusable runs gAiActionChecks[skill], which set gUnk_03001800.unk51 when the skill
+// can't be used on the chosen target (battle_part_unusable). Reads the bot records gUnk_03000590.
 
 #include "global.h"
 
-static void clear_battle_action_selection(void);
-static u32 sub_08032FD0(u32 rec, u32 val);
-static u32 sub_08032FFC(void);
-static u32 select_battle_pending_action(void);
-static void sub_08033154(u32 rec, u32 part);
-static u32 sub_08033224(u32 rec);
-static u32 sub_08033240(u32 rec);
-static u32 sub_080332B4(u32 rec);
-static u32 sub_080332D0(u32 rec);
+static void ai_clear_target(void);
+// 1 if rec has an unbroken part (of the first three) of skill type type.
+static u32 bot_has_part_of_skill_type(u32 rec, u32 type);
+static u32 ai_has_candidates(void);
+// A random gUnk_03001800.unk61 candidate, as a record index.
+static u32 ai_pick_random_candidate(void);
+static void ai_store_target(u32 rec, u32 part);
+static u32 bot_has_no_buff(u32 rec);
+static u32 bot_has_no_status(u32 rec);
+static u32 bot_head_has_uses(u32 rec);
+static u32 bot_has_medaforce_charge(u32 rec);
 
-void battle_process_all_bot_actions(u32 rec) {
+// Picks a target for each of the three action parts of record rec.
+void ai_pick_bot_targets(u32 rec) {
     u32 i;
 
     gUnk_03001800.unk5C = rec;
     gUnk_03001800.unk5D = 0;
     for (i = 0; i <= 2; i++) {
-        battle_execute_action_selection();
-        call_bot_action_handler();
+        ai_pick_part_target();
+        ai_run_after_pick();
         gUnk_03001800.unk5D++;
     }
 }
 
-void battle_execute_action_selection(void) {
-    clear_battle_action_selection();
+void ai_pick_part_target(void) {
+    ai_clear_target();
     mem_fill8(gUnk_03001800.unk61, 3, 0);
-    gUnk_083AED20[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].data[1]]();
+    gAiTargetPickers[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].data[1]]();
 }
 
-void call_bot_action_handler(void) {
-    gUnk_083AEE10[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].data[1]]();
+void ai_run_after_pick(void) {
+    gAiAfterPick[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].data[1]]();
 }
 
-void select_battle_targets_and_actions(void) {
+// Attacks (Rifle..Press, Pushover, Sacrifice, TeamAttack): an opponent with a part of the Medal's Aim type.
+void ai_target_attack(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
     }
-    gUnk_03001800.unk5F = sub_080330E8(gUnk_03001800.unk5E - 1) + 1;
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+    gUnk_03001800.unk5F = ai_random_target_part(gUnk_03001800.unk5E - 1) + 1;
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void battle_ai_select_target_defend(void) {
+// Anti-Air: prefers opponents on Air legs.
+void ai_target_anti_air(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x64 &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+        if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
+            gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == SKILL_LEGS_AIR &&
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
-            if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x64)
+            if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
+                gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == SKILL_LEGS_AIR)
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
-                    sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
                     gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
                 gUnk_03001800.unk60++;
             }
-            if (sub_08032FFC())
-                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            if (ai_has_candidates())
+                gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
             else {
                 gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
     }
-    gUnk_03001800.unk5F = sub_080330E8(gUnk_03001800.unk5E - 1) + 1;
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+    gUnk_03001800.unk5F = ai_random_target_part(gUnk_03001800.unk5E - 1) + 1;
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void battle_ai_select_target_jump(void) {
+// Anti-Sea: prefers opponents on Sea legs.
+void ai_target_anti_sea(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x6A &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+        if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
+            gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == SKILL_LEGS_SEA &&
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
-            if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x6A)
+            if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
+                gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == SKILL_LEGS_SEA)
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
-                    sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
                     gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
                 gUnk_03001800.unk60++;
             }
-            if (sub_08032FFC())
-                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            if (ai_has_candidates())
+                gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
             else {
                 gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
     }
-    gUnk_03001800.unk5F = sub_080330E8(gUnk_03001800.unk5E - 1) + 1;
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+    gUnk_03001800.unk5F = ai_random_target_part(gUnk_03001800.unk5E - 1) + 1;
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void ai_select_target_enemy_side_ability22_status(void) {
+// Stability: a teammate without Stability that has a negative status (unkC9) to clear.
+void ai_target_stability(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
             gUnk_03000590[gUnk_03001800.unk60].unkC9 &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
@@ -161,41 +175,42 @@ void ai_select_target_enemy_side_ability22_status(void) {
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
-                    sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
                     gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
                 gUnk_03001800.unk60++;
             }
-            if (sub_08032FFC())
-                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            if (ai_has_candidates())
+                gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
             else {
                 gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
     }
-    gUnk_03001800.unk5F = sub_080330E8(gUnk_03001800.unk5E - 1) + 1;
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+    gUnk_03001800.unk5F = ai_random_target_part(gUnk_03001800.unk5E - 1) + 1;
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void ai_pick_ally_most_damaged(void) {
+// Recovery: the teammate part that lost the most armor.
+void ai_target_recovery(void) {
     u32 i;
     u32 part;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && find_most_damaged_part(gUnk_03001800.unk60) &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
@@ -203,18 +218,18 @@ void ai_pick_ally_most_damaged(void) {
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
-                    sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
                     gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
                 gUnk_03001800.unk60++;
             }
-            if (sub_08032FFC())
-                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            if (ai_has_candidates())
+                gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
             else {
                 gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
@@ -225,65 +240,67 @@ void ai_pick_ally_most_damaged(void) {
     if (part)
         gUnk_03001800.unk5F = part;
     else
-        gUnk_03001800.unk5F = sub_080330E8(gUnk_03001800.unk5E - 1) + 1;
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+        gUnk_03001800.unk5F = ai_random_target_part(gUnk_03001800.unk5E - 1) + 1;
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void battle_ai_select_target_ability22_enemy(void) {
+// AutoRecover, Boost Chrg: a teammate without Stability or a positive status (unkC4).
+void ai_target_buff(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
-            sub_08033224(gUnk_03001800.unk60) &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+            bot_has_no_buff(gUnk_03001800.unk60) &&
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
             if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
-                sub_08033224(gUnk_03001800.unk60))
+                bot_has_no_buff(gUnk_03001800.unk60))
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
-                    sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
                     gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
                 gUnk_03001800.unk60++;
             }
-            if (sub_08032FFC())
-                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            if (ai_has_candidates())
+                gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
             else {
                 gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
     }
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void ai_pick_ally_with_broken_part(void) {
+// Repair: a random broken part of a teammate.
+void ai_target_repair(void) {
     u32 i;
     u32 part;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && find_random_broken_part(gUnk_03001800.unk60) &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
@@ -291,18 +308,18 @@ void ai_pick_ally_with_broken_part(void) {
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
-                    sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
                     gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
                 gUnk_03001800.unk60++;
             }
-            if (sub_08032FFC())
-                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            if (ai_has_candidates())
+                gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
             else {
                 gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
@@ -313,22 +330,23 @@ void ai_pick_ally_with_broken_part(void) {
     if (part)
         gUnk_03001800.unk5F = part;
     else
-        gUnk_03001800.unk5F = sub_080330E8(gUnk_03001800.unk5E - 1) + 1;
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+        gUnk_03001800.unk5F = ai_random_target_part(gUnk_03001800.unk5E - 1) + 1;
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void select_enemy_battle_target(void) {
+// Reactivate: a teammate that is out of action (unkBA == 2).
+void ai_target_reactivate(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unkBA == 2 &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
@@ -336,38 +354,39 @@ void select_enemy_battle_target(void) {
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
-                if (sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                if (bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
                     gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
                 gUnk_03001800.unk60++;
             }
-            if (sub_08032FFC())
-                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            if (ai_has_candidates())
+                gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
             else {
                 gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
     }
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void select_battle_target_for_bot(void) {
+// Rapid Chrg: any teammate but the user.
+void ai_target_rapid_chrg(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03001800.unk60 != gUnk_03001800.unk5C &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
@@ -375,89 +394,91 @@ void select_battle_target_for_bot(void) {
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
             gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
         }
     }
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void battle_ai_select_target_ability22_ally(void) {
+// Drain Chrg, Confusion, No Escape, No Defense: an opponent without Stability or a negative status.
+void ai_target_status(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
-            sub_08033240(gUnk_03001800.unk60) &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+            bot_has_no_status(gUnk_03001800.unk60) &&
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
             if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
-                sub_08033240(gUnk_03001800.unk60))
+                bot_has_no_status(gUnk_03001800.unk60))
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
-                    sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
                     gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
                 gUnk_03001800.unk60++;
             }
-            if (sub_08032FFC())
-                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            if (ai_has_candidates())
+                gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
             else {
                 gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
     }
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void battle_ai_select_target_status58(void) {
+// Use Drain: an opponent whose head has uses left; aims at the head.
+void ai_target_use_drain(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03000590[gUnk_03001800.unk60].unk40 && sub_080332B4(gUnk_03001800.unk60) &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+        if (gUnk_03000590[gUnk_03001800.unk60].unk40 && bot_head_has_uses(gUnk_03001800.unk60) &&
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
-            if (gUnk_03000590[gUnk_03001800.unk60].unk40 && sub_080332B4(gUnk_03001800.unk60))
+            if (gUnk_03000590[gUnk_03001800.unk60].unk40 && bot_head_has_uses(gUnk_03001800.unk60))
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
-                    sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
                     gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
                 gUnk_03001800.unk60++;
             }
-            if (sub_08032FFC())
-                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            if (ai_has_candidates())
+                gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
             else {
                 gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
@@ -465,101 +486,103 @@ void battle_ai_select_target_status58(void) {
         }
     }
     gUnk_03001800.unk5F = 1;
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void select_player_battle_target(void) {
+// Forcedrain: an opponent with Medaforce charge.
+void ai_target_forcedrain(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03000590[gUnk_03001800.unk60].unk40 && sub_080332D0(gUnk_03001800.unk60) &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+        if (gUnk_03000590[gUnk_03001800.unk60].unk40 && bot_has_medaforce_charge(gUnk_03001800.unk60) &&
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
-            if (gUnk_03000590[gUnk_03001800.unk60].unk40 && sub_080332D0(gUnk_03001800.unk60))
+            if (gUnk_03000590[gUnk_03001800.unk60].unk40 && bot_has_medaforce_charge(gUnk_03001800.unk60))
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
-                    sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
                     gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
                 gUnk_03001800.unk60++;
             }
-            if (sub_08032FFC())
-                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            if (ai_has_candidates())
+                gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
             else {
                 gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
     }
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-void ai_select_target_player_side_ability22(void) {
+// Impair: like ai_target_status, aimed at a random intact part.
+void ai_target_impair(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
-            sub_08033240(gUnk_03001800.unk60) &&
-            sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+            bot_has_no_status(gUnk_03001800.unk60) &&
+            bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
             gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
         gUnk_03001800.unk60++;
     }
-    if (sub_08032FFC())
-        gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+    if (ai_has_candidates())
+        gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
     else {
         gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
             if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
-                sub_08033240(gUnk_03001800.unk60))
+                bot_has_no_status(gUnk_03001800.unk60))
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
             gUnk_03001800.unk60++;
         }
-        if (sub_08032FFC())
-            gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+        if (ai_has_candidates())
+            gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
         else {
             gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
-                    sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
+                    bot_has_part_of_skill_type(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
                     gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
                 gUnk_03001800.unk60++;
             }
-            if (sub_08032FFC())
-                gUnk_03001800.unk5E = select_battle_pending_action() + 1;
+            if (ai_has_candidates())
+                gUnk_03001800.unk5E = ai_pick_random_candidate() + 1;
             else {
                 gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
     }
-    gUnk_03001800.unk5F = battle_find_next_active_bot(gUnk_03001800.unk5E - 1) + 1;
-    sub_08033154(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
+    gUnk_03001800.unk5F = bot_random_intact_part(gUnk_03001800.unk5E - 1) + 1;
+    ai_store_target(gUnk_03001800.unk5C, gUnk_03001800.unk5D);
 }
 
-static void clear_battle_action_selection(void) {
+static void ai_clear_target(void) {
     gUnk_03001800.unk5E = 0;
     gUnk_03001800.unk5F = 0;
     gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkE = 0;
     gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkF = 0;
 }
 
-u32 battle_enemy_side_first_record(u32 a) {
-    switch (a) {
+u32 battle_enemy_side_first_record(u32 rec) {
+    switch (rec) {
     case 0:
     case 1:
     case 2:
@@ -569,8 +592,8 @@ u32 battle_enemy_side_first_record(u32 a) {
     }
 }
 
-u32 battle_side_first_record(u32 a) {
-    switch (a) {
+u32 battle_side_first_record(u32 rec) {
+    switch (rec) {
     case 0:
     case 1:
     case 2:
@@ -580,17 +603,17 @@ u32 battle_side_first_record(u32 a) {
     }
 }
 
-static u32 sub_08032FD0(u32 rec, u32 val) {
+static u32 bot_has_part_of_skill_type(u32 rec, u32 type) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03000590[rec].parts[i].unk11 && gUnk_03000590[rec].parts[i].data[2] == val)
+        if (gUnk_03000590[rec].parts[i].unk11 && gUnk_03000590[rec].parts[i].data[2] == type)
             return 1;
     }
     return 0;
 }
 
-static u32 sub_08032FFC(void) {
+static u32 ai_has_candidates(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -600,10 +623,10 @@ static u32 sub_08032FFC(void) {
     return 0;
 }
 
-static u32 select_battle_pending_action(void) {
+static u32 ai_pick_random_candidate(void) {
     u32 i, j, dir;
 
-    i = rng_lookup_table_value();
+    i = rng_random_slot();
     dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
         if (gUnk_03001800.unk61[i])
@@ -619,14 +642,15 @@ static u32 select_battle_pending_action(void) {
     return gUnk_03001800.unk61[i];
 }
 
-u32 rng_lookup_table_value(void) {
-    return gUnk_083AEF00[rng_next_byte() & 0xF];
+// Random 0-2 (from gRandomSlots).
+u32 rng_random_slot(void) {
+    return gRandomSlots[rng_next_byte() & 0xF];
 }
 
 u32 select_random_battle_target(u32 base) {
     u32 i, j, dir;
 
-    i = rng_lookup_table_value();
+    i = rng_random_slot();
     dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
         if (gUnk_03000590[base + i].unk40)
@@ -642,14 +666,15 @@ u32 select_random_battle_target(u32 base) {
     return base + i;
 }
 
-u32 sub_080330E8(u32 idx) {
+// Random part to aim at, weighted by which parts are intact (get_random_battle_weight_entry).
+u32 ai_random_target_part(u32 idx) {
     return get_random_battle_weight_entry(idx);
 }
 
-u32 battle_find_next_active_bot(u32 rec) {
+u32 bot_random_intact_part(u32 rec) {
     u32 i, j, dir;
 
-    i = rng_lookup_table_value();
+    i = rng_random_slot();
     dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
         if (gUnk_03000590[rec].parts[i].unk11)
@@ -665,7 +690,7 @@ u32 battle_find_next_active_bot(u32 rec) {
     return i;
 }
 
-static void sub_08033154(u32 rec, u32 part) {
+static void ai_store_target(u32 rec, u32 part) {
     gUnk_03000590[rec].parts[part].unkE = gUnk_03001800.unk5E;
     gUnk_03000590[rec].parts[part].unkF = gUnk_03001800.unk5F;
 }
@@ -692,20 +717,20 @@ u32 battle_bot_lacks_stability(u32 rec) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03000590[rec].parts[i].unk11 && gUnk_03000590[rec].parts[i].data[1] == 0x16)
+        if (gUnk_03000590[rec].parts[i].unk11 && gUnk_03000590[rec].parts[i].data[1] == SKILL_STABILITY)
             return 0;
     }
     return 1;
 }
 
-static u32 sub_08033224(u32 rec) {
+static u32 bot_has_no_buff(u32 rec) {
     if (gUnk_03000590[rec].unkC4 != 0)
         return 0;
     else
         return 1;
 }
 
-static u32 sub_08033240(u32 rec) {
+static u32 bot_has_no_status(u32 rec) {
     if (gUnk_03000590[rec].unkC9 != 0)
         return 0;
     else
@@ -728,47 +753,53 @@ u32 find_random_broken_part(u32 rec) {
     return 0;
 }
 
-static u32 sub_080332B4(u32 rec) {
+static u32 bot_head_has_uses(u32 rec) {
     if (gUnk_03000590[rec].parts[0].unk10 != 0)
         return 1;
     else
         return 0;
 }
 
-static u32 sub_080332D0(u32 rec) {
+static u32 bot_has_medaforce_charge(u32 rec) {
     if (gUnk_03000590[rec].unkC1 != 0)
         return 1;
     else
         return 0;
 }
 
-void sub_080332EC(void) {
+// gAiAfterPick: the skill targets the whole Medabot, not one part.
+void ai_clear_target_part(void) {
     gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkF = 0;
 }
 
-u32 begin_battle_action_lookup(u32 rec, u32 part) {
+// 1 if the skill of rec's part (1-3) can't be used on its chosen target (gAiActionChecks).
+u32 ai_action_unusable(u32 rec, u32 part) {
     gUnk_03001800.unk51 = 0;
     gUnk_03001800.unk5C = rec;
     gUnk_03001800.unk5D = --part;
-    gUnk_083AEF10[gUnk_03000590[rec].parts[part].data[1]]();
+    gAiActionChecks[gUnk_03000590[rec].parts[part].data[1]]();
     return gUnk_03001800.unk51;
 }
 
-void check_battle_bot_defeated_set_flag(void) {
+// Break Form: needs a trap or Team Form laid by the other side.
+void ai_check_break_form(void) {
     if (gUnk_03001800.unk28[bot_side_index(gUnk_03001800.unk5C, 0)].active == 0)
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_08033394(void) {
+// Stability: needs a target with a negative status.
+void ai_check_stability(void) {
     if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkE - 1].unkC9 == 0)
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_080333D4(void) {
+// Cancel*, Accel Chrg, Strengthen: never chosen as an action.
+void ai_check_never(void) {
     gUnk_03001800.unk51 = 1;
 }
 
-void sub_080333E4(void) {
+// Defence, Full Block, Half Block: need a teammate to guard.
+void ai_check_guard(void) {
     u32 i, n;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
@@ -780,7 +811,8 @@ void sub_080333E4(void) {
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_08033434(void) {
+// Recovery: the target part must be damaged but not broken.
+void ai_check_recovery(void) {
     if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkE - 1]
                 .parts[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkF - 1]
                 .unk11 == 0 ||
@@ -792,54 +824,63 @@ void sub_08033434(void) {
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_08033490(void) {
+// AutoRecover, Boost Chrg: target without a positive status or Stability.
+void ai_check_buff(void) {
     u32 rec = gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkE - 1;
 
     if (gUnk_03000590[rec].unkC4 != 0 || battle_bot_lacks_stability(rec) == 0)
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_080334E0(void) {
+// Drain Chrg, Impair, Confusion, No Escape, No Defense: target without a negative status or Stability.
+void ai_check_status(void) {
     if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkE - 1].unkC9 != 0)
         gUnk_03001800.unk51 = 1;
     if (battle_bot_lacks_stability(gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkE - 1) == 0)
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_08033550(void) {
+// Repair: the target part must be broken.
+void ai_check_repair(void) {
     if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkE - 1]
             .parts[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkF - 1]
             .unk11 != 0)
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_080335A0(void) {
+// Reactivate: the target must be out of action.
+void ai_check_reactivate(void) {
     if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkE - 1].unkBA != 2)
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_080335E0(void) {
+// Rapid Chrg: not on the user itself.
+void ai_check_rapid_chrg(void) {
     if (gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkE - 1 == gUnk_03001800.unk5C)
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_08033618(void) {
+// Use Drain: the target's head must have uses left.
+void ai_check_use_drain(void) {
     if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkE - 1].parts[0].unk10 == 0)
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_08033658(void) {
+// Forcedrain: the target must have Medaforce charge.
+void ai_check_forcedrain(void) {
     if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkE - 1].unkC1 == 0)
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_08033698(void) {
+// TeamAttack: needs the side's Team Form.
+void ai_check_team_attack(void) {
     if (gUnk_03001800.unk28[bot_side_index(gUnk_03001800.unk5C, 1)].active == 0 ||
-        gUnk_03001800.unk28[bot_side_index(gUnk_03001800.unk5C, 1)].skill != 0x33)
+        gUnk_03001800.unk28[bot_side_index(gUnk_03001800.unk5C, 1)].skill != SKILL_TEAM_FORM)
         gUnk_03001800.unk51 = 1;
 }
 
-void sub_080336DC(void) {
+// Grap Trap: an opponent must have a Strike or Berserk part.
+void ai_check_grap_trap(void) {
     u32 i, j;
 
     gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
@@ -847,9 +888,9 @@ void sub_080336DC(void) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40) {
             for (j = 0; j <= 2; j++) {
                 if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].unk11) {
-                    if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[2] == 0)
+                    if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[2] == SKILL_TYPE_STRIKE)
                         return;
-                    if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[2] == 1)
+                    if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[2] == SKILL_TYPE_BERSERK)
                         return;
                 }
             }
@@ -858,7 +899,8 @@ void sub_080336DC(void) {
     gUnk_03001800.unk51 = 1;
 }
 
-void sub_08033754(void) {
+// Shot Trap: an opponent must have a Shoot or Aim Shot part.
+void ai_check_shot_trap(void) {
     u32 i, j;
 
     gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
@@ -866,9 +908,9 @@ void sub_08033754(void) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40) {
             for (j = 0; j <= 2; j++) {
                 if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].unk11) {
-                    if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[2] == 2)
+                    if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[2] == SKILL_TYPE_SHOOT)
                         return;
-                    if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[2] == 3)
+                    if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[2] == SKILL_TYPE_AIM_SHOT)
                         return;
                 }
             }
@@ -877,7 +919,8 @@ void sub_08033754(void) {
     gUnk_03001800.unk51 = 1;
 }
 
-void sub_080337CC(void) {
+// Team Form: a teammate must have a TeamAttack part.
+void ai_check_team_form(void) {
     u32 i, j;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk5C);
@@ -885,7 +928,7 @@ void sub_080337CC(void) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40) {
             for (j = 0; j <= 2; j++) {
                 if (gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].unk11 &&
-                    gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[1] == 0x34)
+                    gUnk_03000590[gUnk_03001800.unk60 + i].parts[j].data[1] == SKILL_TEAM_ATTACK)
                     return;
             }
         }

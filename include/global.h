@@ -15,5 +15,6 @@ asm(".include \"asm/macros.inc\"");
 #include "variables.h"
 #include "functions.h"
 #include "keys.h"
+#include "constants/skills.h"
 
 #endif // GUARD_GLOBAL_H

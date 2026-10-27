@@ -831,7 +831,7 @@ void change_transform_part(void) {
     gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[0xC] = (&gUnk_03000440.unkEE)[0xC];
     gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[2] = 7;
     gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].unk17 = gUnk_03001800.unk11A;
-    battle_process_all_bot_actions(gUnk_03001800.unk87);
+    ai_pick_bot_targets(gUnk_03001800.unk87);
     battle_bot_select_part(gUnk_03001800.unk87, gUnk_03001800.unkA7 + 1);
     load_all_bot_part_sprites();
     iterate_bots_setup_battle_sprites();
