@@ -93,12 +93,12 @@ u32 battle_load_graphics_step(u32 direct) {
     return 0;
 }
 
-void sub_0801ABF8(void) {
+void battle_message_open(void) {
     if (gOptionSkipMessages == 0 || gUnk_03000440.unk89 == 1)
         text_window_init(1, 2, 0);
 }
 
-u32 sub_0801AC24(u32 msg) {
+u32 battle_message_print(u32 msg) {
     u32 done;
 
     if (gOptionSkipMessages == 0 || gUnk_03000440.unk89 == 1) {
@@ -110,14 +110,14 @@ u32 sub_0801AC24(u32 msg) {
     return 1;
 }
 
-u32 sub_0801AC6C(void) {
+u32 battle_message_finish(void) {
     if (gOptionSkipMessages == 0 || gUnk_03000440.unk89 == 1)
         return game_state_execute_handler_a();
     return 1;
 }
 
-void sub_0801AC98(u32 rec) {
-    if (rec <= 2) {
+void draw_bot_panel_frame(u32 bot) {
+    if (bot <= 2) {
         set_tilemap_and_decompress_bg(0, 13, gUnk_08488830, REG_BG1CNT, 0x258);
         set_tilemap_and_decompress_bg(0, 17, gUnk_08488744, REG_BG1CNT, 0x210);
     } else {
@@ -126,16 +126,16 @@ void sub_0801AC98(u32 rec) {
     }
 }
 
-void sub_0801AD10(u32 rec) {
-    if (gUnk_03000590[rec].unkC1 == 0x50)
-        draw_battle_panel_left_b(rec);
+void draw_bot_status_panel(u32 bot) {
+    if (gUnk_03000590[bot].unkC1 == 0x50)
+        draw_battle_panel_left_b(bot);
     else
-        draw_battle_panel_left_a(rec);
-    draw_medaforce_gauge_bar(rec);
-    draw_medaforce_gauge_value(rec);
+        draw_battle_panel_left_a(bot);
+    draw_medaforce_gauge_bar(bot);
+    draw_medaforce_gauge_value(bot);
 }
 
-void sub_0801AD48(u32 rec) {
+void target_arrows_init(u32 bot) {
     u32 i;
 
     clear_battle_sprite_slot(0x78, 8);
@@ -152,7 +152,7 @@ void sub_0801AD48(u32 rec) {
         gSpriteEntries[0x78 + i].unk27 = i * 2;
         gSpriteEntries[0x78 + i].unk21 = 0;
         gSpriteEntries[0x78 + i].unk22 = i & 3;
-        if (rec <= 2) {
+        if (bot <= 2) {
             gSpriteEntries[0x78 + i].unk0 |= 0x1000;
             gSpriteEntries[0x78 + i].unk2 = 0x5C;
         } else {
@@ -163,7 +163,7 @@ void sub_0801AD48(u32 rec) {
 }
 
 #define S gSpriteEntries[0x78 + i]
-u32 sub_0801ADE8(u32 rec) {
+u32 target_arrows_slide(u32 bot) {
     u32 done = 1;
     u32 i;
 
@@ -176,7 +176,7 @@ u32 sub_0801ADE8(u32 rec) {
             if (S.unk27 != 0)
                 S.unk27--;
             else {
-                if (rec <= 2)
+                if (bot <= 2)
                     S.unk2 += 4;
                 else
                     S.unk2 -= 4;
@@ -190,7 +190,7 @@ u32 sub_0801ADE8(u32 rec) {
 }
 #undef S
 
-void sub_0801AE70(u32 rec) {
+void target_arrows_animate(u32 bot) {
     u32 i;
 
     for (i = 0; i <= 7; i++) {
@@ -201,7 +201,7 @@ void sub_0801AE70(u32 rec) {
     }
 }
 
-void sub_0801AEB4(void) {
+void battle_substeps_reset(void) {
     gUnk_03001800.unk9C[0] = 0;
     gUnk_03001800.unk9C[1] = 0;
     gUnk_03001800.unk9C[2] = 0;
@@ -209,7 +209,7 @@ void sub_0801AEB4(void) {
     gUnk_03001800.unk9C[4] = 0;
 }
 
-void sub_0801AED4(void) {
+void battle_message_reset(void) {
     gUnk_03001800.unkA1[0] = 0;
     gUnk_03001800.unkA1[1] = 0;
     gUnk_03001800.unkA1[2] = 0;
@@ -227,29 +227,29 @@ void clear_battle_ui_tilemaps(void) {
     clear_battle_sprite_slot(10, 0x17);
 }
 
-u32 medaforce_gauge_fill_step(u32 rec) {
-    if (gUnk_03001800.unk51 != 0 && gUnk_03000590[rec].unkC1 != 0x50) {
-        gUnk_03000590[rec].unkC1++;
+u32 medaforce_gauge_fill_step(u32 bot) {
+    if (gUnk_03001800.unk51 != 0 && gUnk_03000590[bot].unkC1 != 0x50) {
+        gUnk_03000590[bot].unkC1++;
         gUnk_03001800.unk51--;
-        draw_medaforce_gauge_bar(rec);
-        draw_medaforce_gauge_value(rec);
+        draw_medaforce_gauge_bar(bot);
+        draw_medaforce_gauge_value(bot);
         return 0;
     }
     return 1;
 }
 
-u32 medaforce_gauge_drain_step(u32 rec) {
-    if (gUnk_03001800.unk51 != 0 && gUnk_03000590[rec].unkC1 != 0) {
-        gUnk_03000590[rec].unkC1--;
+u32 medaforce_gauge_drain_step(u32 bot) {
+    if (gUnk_03001800.unk51 != 0 && gUnk_03000590[bot].unkC1 != 0) {
+        gUnk_03000590[bot].unkC1--;
         gUnk_03001800.unk51--;
-        draw_medaforce_gauge_bar(rec);
-        draw_medaforce_gauge_value(rec);
+        draw_medaforce_gauge_bar(bot);
+        draw_medaforce_gauge_value(bot);
         return 0;
     }
     return 1;
 }
 
-void sub_0801B004(u32 rec) {
+void mf_charge_sparkles_init(u32 bot) {
     u32 i;
     struct Vec16 p;
 
@@ -262,11 +262,11 @@ void sub_0801B004(u32 rec) {
         gSpriteEntries[0x21 + i].unkB = 0x81;
         gSpriteEntries[0x21 + i].unk6 = 0xA10;
         gSpriteEntries[0x21 + i].unk20 = i << 5;
-        gSpriteEntries[0x21 + i].unk21 = gSpriteEntries[rec * 4 + 0x5D].unk4;
+        gSpriteEntries[0x21 + i].unk21 = gSpriteEntries[bot * 4 + 0x5D].unk4;
         gSpriteEntries[0x21 + i].unk28 = 0;
         gSpriteEntries[0x21 + i].unk27 = i * 4;
         gSpriteEntries[0x21 + i].unk26 = 0;
-        p = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].unk20, 16, gSpriteEntries[rec * 4 + 0x5D].unk2,
+        p = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].unk20, 16, gSpriteEntries[bot * 4 + 0x5D].unk2,
                                              gSpriteEntries[0x21 + i].unk21, 8, 0);
         gSpriteEntries[0x21 + i].unk2 = p.x;
         gSpriteEntries[0x21 + i].unk4 = p.y;
@@ -275,7 +275,7 @@ void sub_0801B004(u32 rec) {
     }
 }
 
-u32 sub_0801B0E8(u32 rec) {
+u32 mf_charge_sparkles_update(u32 bot) {
     u32 i;
     u32 done = 0;
     struct Vec16 p;
@@ -291,25 +291,25 @@ u32 sub_0801B0E8(u32 rec) {
         if ((gSpriteEntries[0x21 + i].unk28 & 7) == 0)
             gSpriteEntries[0x21 + i].unk21--;
         p = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].unk20, gSpriteEntries[0x21 + i].unk26 + 16,
-                                             gSpriteEntries[rec * 4 + 0x5D].unk2, gSpriteEntries[0x21 + i].unk21, 8, 0);
+                                             gSpriteEntries[bot * 4 + 0x5D].unk2, gSpriteEntries[0x21 + i].unk21, 8, 0);
         gSpriteEntries[0x21 + i].unk2 = p.x;
         gSpriteEntries[0x21 + i].unk4 = p.y;
         if (gSpriteEntries[0x21 + i].unk20 > 0x80)
-            gSpriteEntries[0x21 + i].unkB = rec * 4 + 0x59;
+            gSpriteEntries[0x21 + i].unkB = bot * 4 + 0x59;
         else
             gSpriteEntries[0x21 + i].unkB = 0x81;
-        if (gSpriteEntries[0x21 + i].unk21 > gSpriteEntries[rec * 4 + 0x5D].unk4 - 8 &&
+        if (gSpriteEntries[0x21 + i].unk21 > gSpriteEntries[bot * 4 + 0x5D].unk4 - 8 &&
             gSpriteEntries[0x21 + i].unk8 != 0x40) {
             gSpriteEntries[0x21 + i].unk8 += 4;
             gSpriteEntries[0x21 + i].unk9 += 4;
         }
-        if (gSpriteEntries[0x21 + i].unk21 < gSpriteEntries[rec * 4 + 0x5D].unk4 - 12 &&
+        if (gSpriteEntries[0x21 + i].unk21 < gSpriteEntries[bot * 4 + 0x5D].unk4 - 12 &&
             gSpriteEntries[0x21 + i].unk8 != 4) {
             gSpriteEntries[0x21 + i].unk8 -= 4;
             gSpriteEntries[0x21 + i].unk9 -= 4;
         }
         if (gSpriteEntries[0x21 + i].unk20 == 0xC0 &&
-            gSpriteEntries[0x21 + i].unk21 < gSpriteEntries[rec * 4 + 0x5D].unk4 - 16)
+            gSpriteEntries[0x21 + i].unk21 < gSpriteEntries[bot * 4 + 0x5D].unk4 - 16)
             clear_battle_sprite_slot(0x21 + i, 1);
     }
     if (done == 8)
@@ -317,22 +317,22 @@ u32 sub_0801B0E8(u32 rec) {
     return 0;
 }
 
-void sub_0801B274(u32 rec) {
+void battle_action_cleanup(u32 bot) {
     u32 i;
     u32 zero;
     u32 zero2;
 
-    gUnk_03000590[rec].unkBD &= ~1;
-    gUnk_03000590[rec].unkDE = gUnk_03000590[rec].unkDD;
-    if (gUnk_03000590[rec].unkDD == 0)
-        gUnk_03000590[rec].unkDF = 0;
-    else if (gUnk_03000590[rec].unkDD > 3)
-        gUnk_03000590[rec].unkDF = 0;
+    gUnk_03000590[bot].unkBD &= ~1;
+    gUnk_03000590[bot].unkDE = gUnk_03000590[bot].unkDD;
+    if (gUnk_03000590[bot].unkDD == 0)
+        gUnk_03000590[bot].unkDF = 0;
+    else if (gUnk_03000590[bot].unkDD > 3)
+        gUnk_03000590[bot].unkDF = 0;
     else
-        gUnk_03000590[rec].unkDF = gUnk_03000590[rec].parts[gUnk_03000590[rec].unkDD - 1].data[1];
+        gUnk_03000590[bot].unkDF = gUnk_03000590[bot].parts[gUnk_03000590[bot].unkDD - 1].data[1];
     for (i = 0; i <= 3; i++) {
-        gUnk_03000590[rec].parts[i].unkE = 0;
-        gUnk_03000590[rec].parts[i].unkF = 0;
+        gUnk_03000590[bot].parts[i].unkE = 0;
+        gUnk_03000590[bot].parts[i].unkF = 0;
     }
     zero = 0;
     CpuSet(&zero, gUnk_030018A8, 0x05000008);
@@ -347,10 +347,10 @@ void sub_0801B274(u32 rec) {
         if (gUnk_03000590[i].unkBA)
             gUnk_03000590[i].unkBC &= 0xF;
     }
-    sub_0801B3AC(rec);
+    restore_changed_part(bot);
 }
 
-void sub_0801B3AC(u32 rec) {
+void restore_changed_part(u32 bot) {
     u32 zero;
 
     if (gUnk_03001800.unk118) {

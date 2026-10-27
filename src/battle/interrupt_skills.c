@@ -523,17 +523,17 @@ void forcedrain_calc(void) {
     gUnk_03001800.unk52 = gUnk_03001800.unkC8;
     gUnk_03001800.unk64[0] = gUnk_03001800.unk87;
     gUnk_03001800.unk87 = gUnk_03001800.unk88;
-    sub_0801AEB4();
+    battle_substeps_reset();
     gUnk_03001800.unkAA++;
 }
 
 void forcedrain_substate_wait(void) {
-    if (dispatch_battle_action_substate(0))
+    if (target_panels_show(0))
         gUnk_03001800.unkAA++;
 }
 
 void forcedrain_gauge_sound(void) {
-    dispatch_battle_action_substate(0);
+    target_panels_show(0);
     play_sound_effect(0x51);
     gUnk_03001800.unkAA++;
 }
@@ -541,14 +541,14 @@ void forcedrain_gauge_sound(void) {
 void forcedrain_gauge_drain(void) {
     s32 done;
 
-    dispatch_battle_action_substate(0);
+    target_panels_show(0);
     done = medaforce_gauge_drain_step(gUnk_03001800.unk87);
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03000440.unk84], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF)
         done++;
     if (done == 2) {
         clear_battle_ui_tilemaps();
-        sub_0801AEB4();
+        battle_substeps_reset();
         gUnk_03001800.unkAA++;
     }
 }
@@ -571,7 +571,7 @@ void forcedrain_glass_return(void) {
 void forcedrain_gauge_fill(void) {
     s32 done;
 
-    dispatch_battle_action_substate(0);
+    target_panels_show(0);
     done = medaforce_gauge_fill_step(gUnk_03001800.unk87);
     if (gSpriteEntries[0x21].unk0 & 0x8000) {
         gSpriteEntries[0x21].unk0 |= 0x220;
@@ -586,7 +586,7 @@ void forcedrain_gauge_fill(void) {
     }
     if (done == 2) {
         clear_battle_ui_tilemaps();
-        sub_0801AEB4();
+        battle_substeps_reset();
         gUnk_03001800.unkAA++;
     }
 }

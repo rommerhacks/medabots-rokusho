@@ -1,9 +1,9 @@
-// Battle action step handlers. gUnk_083AD400 is one long table of step lists; each runner (sub_0801C0BC for
-// messages, dispatch_battle_action_substate, sub_0801C154 ...) calls entry [step] of its own sub-table and
-// the handlers advance the step counter. From sub_0801E2D8 on, the runners are the effect sequences of the
-// action script commands (gUnk_083AF000) in opcode order: 0x1E-0x22 are the normal attack (every Strike /
-// Shoot ability), 0x23 / 0x24 the variants of abilities 49 / 48. The list continues in defend_heal_skills.c.
-// Called from the battle action state code (state 8) and the action script commands (state 9).
+// Battle action step handlers. gBattleMessageSteps is one long table of step lists; each runner (battle_message_show
+// for messages, target_panels_show, miss_popup_run ...) calls entry [step] of its own sub-table and the handlers
+// advance the step counter. From sub_0801E2D8 on, the runners are the effect sequences of the action script commands
+// (gUnk_083AF000) in opcode order: 0x1E-0x22 are the normal attack (every Strike / Shoot ability), 0x23 / 0x24 the
+// variants of abilities 49 / 48. The list continues in defend_heal_skills.c. Called from the battle action state code
+// (state 8) and the action script commands (state 9).
 
 #include "global.h"
 
@@ -12,9 +12,10 @@ void sub_0801C0A0(u32 rec) {
     gUnk_03000590[rec].unkE0 = gUnk_083AD3F9[gUnk_03000590[rec].unkE0];
 }
 
-u32 sub_0801C0BC(u32 msg) {
+// The battle message runner: open the window, print message msg, finish; 1 when done.
+u32 battle_message_show(u32 msg) {
     gUnk_03001800.unkA1[1] = msg;
-    gUnk_083AD400[gUnk_03001800.unkA1[0]]();
+    gBattleMessageSteps[gUnk_03001800.unkA1[0]]();
     if (gUnk_03001800.unkA1[0] == 3) {
         gUnk_03001800.unkA1[0] = 0;
         return 1;
@@ -22,23 +23,25 @@ u32 sub_0801C0BC(u32 msg) {
     return 0;
 }
 
-void sub_0801C0F8(void) {
-    sub_0801ABF8();
+void battle_message_step_open(void) {
+    battle_message_open();
     gUnk_03001800.unkA1[0]++;
 }
 
-void sub_0801C110(void) {
-    if (sub_0801AC24(gUnk_03001800.unkA1[1]))
+void battle_message_step_print(void) {
+    if (battle_message_print(gUnk_03001800.unkA1[1]))
         gUnk_03001800.unkA1[0]++;
 }
 
-void sub_0801C138(void) {
-    if (sub_0801AC6C())
+void battle_message_step_finish(void) {
+    if (battle_message_finish())
         gUnk_03001800.unkA1[0]++;
 }
 
-u32 sub_0801C154(void) {
-    gUnk_083AD410[gUnk_03001800.unk9C[0]]();
+// The "MISS!!" popup (seen at runtime in the battle scenario): load its graphics, spawn it above the acting
+// Medabot, let it drop 4 px, hold it 60 frames (A skips); 1 when done.
+u32 miss_popup_run(void) {
+    gMissPopupSteps[gUnk_03001800.unk9C[0]]();
     if (gUnk_03001800.unk9C[0] == 4) {
         gUnk_03001800.unk9C[0] = 0;
         return 1;
@@ -46,13 +49,13 @@ u32 sub_0801C154(void) {
     return 0;
 }
 
-void sub_0801C188(void) {
+void miss_popup_load(void) {
     lz_decompress_dispatch(gUnk_084C8AC4, (void *)0x06014E00);
     CpuFastSet(gUnk_084E3078, (void *)0x050002C0, 8);
     gUnk_03001800.unk9C[0]++;
 }
 
-void sub_0801C1C0(void) {
+void miss_popup_spawn(void) {
     gSpriteEntries[3].unk0 = 0xC004;
     gSpriteEntries[3].unk1C = 0;
     gSpriteEntries[3].unk2 = gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
@@ -64,7 +67,7 @@ void sub_0801C1C0(void) {
     gUnk_03001800.unk9C[0]++;
 }
 
-void sub_0801C23C(void) {
+void miss_popup_drop(void) {
     if (gFrameCounter & 1) {
         gSpriteEntries[3].unk4++;
         if (gSpriteEntries[3].unk4 == gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk4 + 4) {
@@ -74,7 +77,7 @@ void sub_0801C23C(void) {
     }
 }
 
-void sub_0801C298(void) {
+void miss_popup_wait(void) {
     gUnk_03001800.unk9C[1]++;
     if (gUnk_03000440.unk89 == 0 && (KEYS_LO(gRepeatKeys) & 1))
         gUnk_03001800.unk9C[1] = 60;
@@ -84,35 +87,37 @@ void sub_0801C298(void) {
     }
 }
 
-u32 dispatch_battle_action_substate(u32 arg) {
-    gUnk_03001800.unk9C[1] = arg;
-    gUnk_083AD424[gUnk_03001800.unk9C[0]]();
+// Shows who acts on whom: a pointer line from the acting Medabot (unk87) and its panel; with show_target != 0
+// the arrows then run to the target's (unk88) panel. 1 once the panels are up (the last step idles).
+u32 target_panels_show(u32 show_target) {
+    gUnk_03001800.unk9C[1] = show_target;
+    gTargetPanelSteps[gUnk_03001800.unk9C[0]]();
     if (gUnk_03001800.unk9C[2] != 0)
         return 1;
     return 0;
 }
 
-void sub_0801C32C(void) {
+void target_panels_line_init(void) {
     CpuFastSet(gUnk_084E2EF8, (void *)0x05000300, 8);
     bot_pointer_line_init(gUnk_03001800.unk87);
     gUnk_03001800.unk9C[0]++;
 }
 
-void sub_0801C360(void) {
+void target_panels_line_extend(void) {
     if (bot_pointer_line_extend(gUnk_03001800.unk87))
         gUnk_03001800.unk9C[0]++;
 }
 
-void sub_0801C388(void) {
+void target_panels_actor_frame(void) {
     bot_pointer_line_animate(gUnk_03001800.unk87);
-    sub_0801AC98(gUnk_03001800.unk87);
+    draw_bot_panel_frame(gUnk_03001800.unk87);
     gUnk_03001800.unk9C[0]++;
 }
 
-void sub_0801C3B0(void) {
+void target_panels_actor_panel(void) {
     bot_pointer_line_animate(gUnk_03001800.unk87);
     render_bot_name_sprites(gUnk_03001800.unk87);
-    sub_0801AD10(gUnk_03001800.unk87);
+    draw_bot_status_panel(gUnk_03001800.unk87);
     if (gUnk_03001800.unk9C[1] == 0) {
         gUnk_03001800.unk9C[2] = 1;
         gUnk_03001800.unk9C[0]++;
@@ -120,42 +125,42 @@ void sub_0801C3B0(void) {
         gUnk_03001800.unk9C[0] = 5;
 }
 
-void sub_0801C3F8(void) {
+void target_panels_idle(void) {
     bot_pointer_line_animate(gUnk_03001800.unk87);
 }
 
-void sub_0801C40C(void) {
+void target_panels_arrows_init(void) {
     CpuFastSet(gUnk_084E2F18, (void *)0x05000320, 8);
     bot_pointer_line_animate(gUnk_03001800.unk87);
-    sub_0801AD48(gUnk_03001800.unk87);
+    target_arrows_init(gUnk_03001800.unk87);
     gUnk_03001800.unk9C[0]++;
 }
 
-void sub_0801C444(void) {
+void target_panels_arrows_slide(void) {
     bot_pointer_line_animate(gUnk_03001800.unk87);
-    if (sub_0801ADE8(gUnk_03001800.unk87))
+    if (target_arrows_slide(gUnk_03001800.unk87))
         gUnk_03001800.unk9C[0]++;
 }
 
-void sub_0801C470(void) {
+void target_panels_target_frame(void) {
     bot_pointer_line_animate(gUnk_03001800.unk87);
-    sub_0801AE70(gUnk_03001800.unk87);
-    sub_0801AC98(gUnk_03001800.unk88);
+    target_arrows_animate(gUnk_03001800.unk87);
+    draw_bot_panel_frame(gUnk_03001800.unk88);
     gUnk_03001800.unk9C[0]++;
 }
 
-void sub_0801C4A4(void) {
+void target_panels_target_panel(void) {
     bot_pointer_line_animate(gUnk_03001800.unk87);
-    sub_0801AE70(gUnk_03001800.unk87);
+    target_arrows_animate(gUnk_03001800.unk87);
     render_bot_name_sprites(gUnk_03001800.unk88);
-    sub_0801AD10(gUnk_03001800.unk88);
+    draw_bot_status_panel(gUnk_03001800.unk88);
     gUnk_03001800.unk9C[2] = 1;
     gUnk_03001800.unk9C[0]++;
 }
 
-void sub_0801C4E0(void) {
+void target_panels_arrows_idle(void) {
     bot_pointer_line_animate(gUnk_03001800.unk87);
-    sub_0801AE70(gUnk_03001800.unk87);
+    target_arrows_animate(gUnk_03001800.unk87);
 }
 
 void sub_0801C4FC(void) {

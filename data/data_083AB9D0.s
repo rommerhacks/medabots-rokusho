@@ -335,16 +335,16 @@ gUnk_083AD3F3:
 gUnk_083AD3F9:
 	.incbin "baserom.gba", 0x3AD3F9, 0x7
 
-	.global gUnk_083AD400
-gUnk_083AD400:
+	.global gBattleMessageSteps
+gBattleMessageSteps:
 	.incbin "baserom.gba", 0x3AD400, 0x10
 
-	.global gUnk_083AD410
-gUnk_083AD410:
+	.global gMissPopupSteps
+gMissPopupSteps:
 	.incbin "baserom.gba", 0x3AD410, 0x14
 
-	.global gUnk_083AD424
-gUnk_083AD424:
+	.global gTargetPanelSteps
+gTargetPanelSteps:
 	.incbin "baserom.gba", 0x3AD424, 0x28
 
 	.global gUnk_083AD44C

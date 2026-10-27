@@ -1,20 +1,20 @@
-// Step handlers shared by many ability and Medaforce effect sequences (entries of several gUnk_083AD400
-// sub-tables, no direct callers): show the battle message unkA6, wait for a timer (unk86) or a press of A,
-// and sub_0803080C, the last step of most lists (sets unkB5 = sequence done).
+// Step handlers shared by many ability and Medaforce effect sequences (entries of several step sub-tables, no
+// direct callers): show the battle message unkA6, the "MISS!!" popup, wait for a timer (gUnk_03000440.unk86) or a
+// press of A, play an animation on sprite 0x21, and effect_step_end, the last step of most lists (unkB5 = done).
 
 #include "global.h"
 
-void sub_080305E0(void) {
-    if (sub_0801C0BC(gUnk_03001800.unkA6))
+void effect_step_show_message(void) {
+    if (battle_message_show(gUnk_03001800.unkA6))
         gUnk_03001800.unkAA++;
 }
 
-void sub_08030608(void) {
-    if (sub_0801C154())
+void effect_step_miss_popup(void) {
+    if (miss_popup_run())
         gUnk_03001800.unkAA++;
 }
 
-void sub_08030624(void) {
+void effect_step_wait_clear_sprite(void) {
     if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1)) {
         clear_battle_sprite_slot(0xA, 1);
         gUnk_03001800.unkAA++;
@@ -26,7 +26,7 @@ void sub_08030624(void) {
     }
 }
 
-void sub_08030674(void) {
+void effect_step_wait(void) {
     if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
         gUnk_03001800.unkAA++;
     else if (gUnk_03000440.unk86)
@@ -35,7 +35,7 @@ void sub_08030674(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_080306B8(void) {
+void effect_step_wait_clear_sprites(void) {
     u32 i;
 
     if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1)) {
@@ -56,7 +56,7 @@ void sub_080306B8(void) {
     }
 }
 
-void sub_08030780(void) {
+void effect_step_wait_spin(void) {
     if (!(gUnk_03001800.unkF8 & 1))
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 - 0x40) & 0x3FF;
     else
@@ -69,11 +69,11 @@ void sub_08030780(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_0803080C(void) {
+void effect_step_end(void) {
     gUnk_03001800.unkB5 = 1;
 }
 
-void sub_0803081C(void) {
+void effect_step_play_anim(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03000440.unk84], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF)
         gUnk_03001800.unkAA++;

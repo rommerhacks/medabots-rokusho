@@ -158,65 +158,65 @@ void sub_08030CFC(void) {
     if (gUnk_03000590[gUnk_03001800.unk87].unkC1 == 0x50)
         gGameSubState++;
     else {
-        sub_0801AEB4();
+        battle_substeps_reset();
         gGameSubState = 0x14;
     }
 }
 
 void sub_08030D3C(void) {
-    if (sub_0801C154())
+    if (miss_popup_run())
         gGameSubState++;
 }
 
 void sub_08030D58(void) {
-    if (sub_0801C0BC(0))
+    if (battle_message_show(0))
         gGameSubState++;
 }
 
 void sub_08030D74(void) {
-    if (dispatch_battle_action_substate(0))
+    if (target_panels_show(0))
         gGameSubState++;
 }
 
 void sub_08030D90(void) {
-    dispatch_battle_action_substate(0);
-    if (sub_0801C0BC(1))
+    target_panels_show(0);
+    if (battle_message_show(1))
         gGameSubState++;
 }
 
 void sub_08030DB4(void) {
-    dispatch_battle_action_substate(0);
+    target_panels_show(0);
     play_sound_effect(0x51);
     if (gUnk_03000590[gUnk_03001800.unk87].unkC0 & 8)
         gUnk_03001800.unk51 = 0x50;
     else
         gUnk_03001800.unk51 = 0x28;
-    sub_0801B004(gUnk_03001800.unk87);
+    mf_charge_sparkles_init(gUnk_03001800.unk87);
     gGameSubState++;
 }
 
 void sub_08030E14(void) {
     u32 done;
 
-    dispatch_battle_action_substate(0);
+    target_panels_show(0);
     done = medaforce_gauge_fill_step(gUnk_03001800.unk87);
-    done += sub_0801B0E8(gUnk_03001800.unk87);
+    done += mf_charge_sparkles_update(gUnk_03001800.unk87);
     if (done == 2) {
         clear_battle_ui_tilemaps();
-        sub_0801AEB4();
+        battle_substeps_reset();
         gGameSubState++;
     }
 }
 
 void sub_08030E54(void) {
-    if (sub_0801C0BC(gUnk_03001800.unkA6))
+    if (battle_message_show(gUnk_03001800.unkA6))
         gGameSubState++;
 }
 
 void sub_08030E78(void) {
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
     increment_medal_skill_level(gUnk_03001800.unk87);
-    sub_0801B274(gUnk_03001800.unk87);
+    battle_action_cleanup(gUnk_03001800.unk87);
     gUnk_03000440.unk9C = 0;
     if (gUnk_03000590[0].unk40 == 0) {
         gUnk_03000440.unk9C = 2;
@@ -426,7 +426,7 @@ void sub_08031608(void) {
 }
 
 void sub_08031614(void) {
-    sub_0801AEB4();
+    battle_substeps_reset();
     if (gUnk_03001800.unk58) {
         gUnk_03001800.unkA6 = 0x79;
         gGameSubState++;
@@ -447,7 +447,7 @@ void sub_08031614(void) {
 }
 
 void sub_08031704(void) {
-    dispatch_battle_action_substate(0);
+    target_panels_show(0);
     CpuFastSet(gUnk_084E3018, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = ((gUnk_03001800.unk39[3] + 2) << 10) | 0xC004;
     gSpriteEntries[0x21].unk1C = 0;
@@ -468,13 +468,13 @@ void sub_08031704(void) {
 }
 
 void sub_0803185C(void) {
-    dispatch_battle_action_substate(0);
+    target_panels_show(0);
     medaforce_gauge_drain_step(gUnk_03001800.unk87);
     process_sprite_anim_commands(gUnk_083B5F80[0x4D], 0x21);
     process_sprite_anim_commands(gUnk_083B5F80[0x4E], 0x22);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_ui_tilemaps();
-        sub_0801AEB4();
+        battle_substeps_reset();
         clear_battle_sprite_slot(0x21, 2);
         gGameSubState++;
     }

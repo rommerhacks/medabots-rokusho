@@ -647,11 +647,11 @@ struct Unk_03001800 {
     u8 unk8C[3];
     u8 unk8F[3][4]; // per team member: gUnk_030017A0 bytes 3-6
     u8 filler9B;
-    u8 unk9C[5]; // cleared by sub_0801AEB4
-    u8 unkA1[5]; // cleared by sub_0801AED4
+    u8 unk9C[5]; // cleared by battle_substeps_reset
+    u8 unkA1[5]; // cleared by battle_message_reset
     u8 unkA6;    // Medaforce effect id 0xE-0x11 (sub_0801C524)
-    u8 unkA7;    // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to (sub_0801B3AC)
-    u8 unkA8;    // Robattle: skill id (data[1]) of the acting Medabot's chosen part (resolve_battle_action_phase)
+    u8 unkA7; // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to (restore_changed_part)
+    u8 unkA8; // Robattle: skill id (data[1]) of the acting Medabot's chosen part (resolve_battle_action_phase)
     u8 fillerA9;
     u8 unkAA;      // sub-state of the gUnk_083AD44C handlers (sub_0801C4FC) and gUnk_083AD50C handlers
                    // (battle_dispatch_phase_handler_0801D2F0)
@@ -709,11 +709,11 @@ struct Unk_03001800 {
     u8 unk113;
     u8 unk114[2]; // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (repair_redraw_bot)
     u8 filler116[0x2];
-    u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part
+    u8 unk118; // nonzero: restore_changed_part writes unk11C back into the acting Medabot's part
     u8 unk119; // part data[1] - 0x37 of the swapped part (change_transform_part)
     u8 unk11A; // id of the part swapped in (change_transform_part)
     u8 filler11B[0x1];
-    struct BattlePart unk11C; // saved part (data and id), restored by sub_0801B3AC
+    struct BattlePart unk11C; // saved part (data and id), restored by restore_changed_part
     u8 filler134[0x8];
     struct Vec16 unk13C[6]; // per record: x, y - 4 of its battle sprite (copy_battle_entity_positions)
     u16 unk154;             // effect sprite x, y when unkF8 bit 1 is set (sub_0801E474)
@@ -801,7 +801,7 @@ struct Unk_03000590 {
               // as &unkB8 + 1 to match)
     u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
     u8 unkBB;
-    u8 unkBC; // high nibble cleared by sub_0801B274
+    u8 unkBC; // high nibble cleared by battle_action_cleanup
     u8 unkBD; // flags (bit 2 toggled by the Robattle handlers robattle_action_finished /
               // robattle_bot_ready_for_command)
     u8 fillerBE;
@@ -841,8 +841,8 @@ struct Unk_03000590 {
     u8 unkDC; // unkDC..unkE3 cleared by reset_battle_bot_state
     u8 unkDD; // link Robattle: part choice exchanged over the serial link (robattle_link_exchange_commands,
               // robattle_link_apply_opponent_parts)
-    u8 unkDE; // copy of unkDD (sub_0801B274)
-    u8 unkDF; // skill of the part unkDD (1-3), 0 otherwise (sub_0801B274)
+    u8 unkDE; // copy of unkDD (battle_action_cleanup)
+    u8 unkDF; // skill of the part unkDD (1-3), 0 otherwise (battle_action_cleanup)
     u8 unkE0;
     u8 unkE1;
     u8 fillerE2[0x1E];
