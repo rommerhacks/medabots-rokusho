@@ -278,8 +278,8 @@ struct Unk_03000440 {
     u8 unk45; // Medals help: page count
     u8 unk46;
     u8 filler47;
-    u16 unk48; // Medal record unk20/unk28 index 0-7 (sub_08008A5C)
-    u8 unk4A;  // Medals: choice from sub_080091E0 (0 A, 2 B)
+    u16 unk48; // Medal record unk20/unk28 index 0-7 (medal_skill_debug_edit_input)
+    u8 unk4A;  // Medals: choice from medal_trade_choice_input (0 A, 2 B)
     u8 unk4B;  // Medals screen: song 7 started (when opened with unk3C == 4)
     u8 filler4C[0x4];
     u8 unk50; // Medabots screen mode: 0 plain (from the Medawatch), 1-3 team select (guess: battle type; 3 needs all
@@ -634,8 +634,9 @@ struct Unk_03001800 {
     u8 unk7D;    // battlefield animation tick, 0-2
     u8 unk7E;    // battlefield animation tile count / 8 (gUnk_083C40B8)
     u8 unk7F;    // battlefield animation tile block (gUnk_083C40C3), 0xFF ends the loop
-    u8 unk80;    // index of a 256-byte record in gUnk_03000590 (sub_0800B498 copies Medal rotation data there)
-    u8 unk81;    // Robattle: selected command ring slot 0-5 (name gUnk_083C466C[unk81], runtime-checked)
+    u8 unk80; // index of a 256-byte record in gUnk_03000590 (medal_rotation_store_to_battle_bot copies Medal rotation
+              // data there)
+    u8 unk81; // Robattle: selected command ring slot 0-5 (name gUnk_083C466C[unk81], runtime-checked)
     u8 unk82;
     u8 unk83; // Robattle: command ring turning, 1 right / 2 left (command_ring_input); nonzero blocks
               // robattle_command_input
@@ -769,7 +770,7 @@ struct Unk_03001800 {
 };
 
 struct Unk_03000BE0 {
-    u8 unk0;      // flags (0x40 tested by sub_080092D4)
+    u8 unk0;      // flags (0x40 tested by medal_trade_check_medal)
     u8 unk1;      // Medal graphic index (0x80-byte tiles at 0x084C21BC)
     u16 unk2;     // shown as "NEXT Lv" on the Medals list (render_medal_level_display; blank at level 100)
     u8 unk4;      // Attribute (gUnk_083B656C name, Ability page); Medals help: gUnk_083B69C8 message index
@@ -777,7 +778,7 @@ struct Unk_03000BE0 {
     u8 unk6;      // Aim skill type (gUnk_083B6EC8 name, Ability page); Medals help: gUnk_083B70AC message index
     u8 unk7;      // Compatibility icon (tile 0xD340 + unk7 * 4, Ability page)
     u8 unk8;      // Medal sprite variant, 0-4 (gUnk_083AC494[unk1][unk8])
-    u8 unk9;      // number of unk18 entries in use (sub_0800AB0C draws the rest greyed out)
+    u8 unk9;      // number of unk18 entries in use (medal_rotation_draw_actions draws the rest greyed out)
     u8 unkA[0xE]; // name text
     u8 unk18[8];  // indexed by Medals screen unk46 (gUnk_083B825C message ids; guess: rotation entries)
     u8 unk20[8];  // 0-100 (guess: skill levels, drawn by render_medal_skill_stats)

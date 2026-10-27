@@ -322,7 +322,8 @@ extern const u8 gUnk_083B7E0C[];          // 3 Medaforce ids per Medal graphic i
 extern const u8 gUnk_083B7CD4[];          // 6-byte Medaforce records: +1 skill type, +2 MF consumption, +5 icon
 extern const void *const gUnk_083B7F40[]; // messages (run_message), Medals help Medaforce page
 extern const void *const gUnk_083B8170[]; // messages (run_message), Medals help page 5
-extern u32 gUnk_03002B68; // bit per Medal graphic index (sub_080092D4); also (part kind << 16) + part id (sub_0800EBB8)
+extern u32 gUnk_03002B68; // bit per Medal graphic index (medal_trade_check_medal); also (part kind << 16) + part id
+                          // (sub_0800EBB8)
 extern const u8 gUnk_084EAC58[];
 extern const u8 gUnk_084EF4E0[];
 extern const u8 gUnk_084EFE28[];
@@ -455,20 +456,21 @@ extern const u8 gUnk_084F13C0[];
 extern const u16 gUnk_084F2820[];
 extern const u16 gUnk_0850DD58[];
 
-extern const u8 gUnk_084C21BC[];           // Medal icon tiles, 0x80 bytes per graphic index
-extern const u8 gUnk_084C30BC[];           // blank Medal icon tile
-extern const u8 *const gUnk_083AC494[][5]; // compressed Medal sprites (load_medal_sprite)
-extern const u32 gUnk_083B656C[];          // Medal Attribute names, indexed by Medal record unk4 (Ability page)
-extern const u32 gUnk_083B6EC8[];          // skill type names (Shoot, Strike, ...): Medal Aim, Medaforce skill
-extern const u8 *const gUnk_083B7EBC[];    // Medals help cursor layouts: count, then (x, y) tile pairs (sub_0800AA1C)
-extern const u16 gUnk_083AC8AC[];          // (y, x) pairs per Medal skill row 0-7 (setup_battle_cursor_sprite_0800B5E8)
-extern const Func
-    gUnk_083AC8CC[]; // sprite 7 sub-state handlers, by gSpriteEntries[7].unk29 (update_battle_sprite_and_check_done)
-extern const Func gDebugMenuHandlers[];       // game state 63 sub-state handlers (debug_menu_update)
-extern const Func gDebugMenuEntryHandlers[];  // game state 63: one handler per menu entry (debug_menu_run_entry)
-extern const Func gDebugProcessHandlers[];    // game state 63 entry 0 sub-state handlers (debug_process_update)
-extern const Func gDebugMedalHandlers[];      // entry 1 (debug_medal_update)
-extern const Func gDebugPartsHandlers[];      // entry 2 (debug_parts_update)
+extern const u8 gUnk_084C21BC[];              // Medal icon tiles, 0x80 bytes per graphic index
+extern const u8 gUnk_084C30BC[];              // blank Medal icon tile
+extern const u8 *const gUnk_083AC494[][5];    // compressed Medal sprites (load_medal_sprite)
+extern const u32 gUnk_083B656C[];             // Medal Attribute names, indexed by Medal record unk4 (Ability page)
+extern const u32 gUnk_083B6EC8[];             // skill type names (Shoot, Strike, ...): Medal Aim, Medaforce skill
+extern const u8 *const gHelpCursorLayouts[];  // Medals / Medaparts help cursor layouts: count, then (x, y) tile pairs
+                                              // (medals_help_init_cursor)
+extern const u16 gMedalSkillDebugCursorPos[]; // (y, x) pairs per Medal skill row 0-7 (medal_skill_debug_init_cursor)
+extern const Func gMedalTradeChoiceCloseSteps[]; // sprite 7 sub-state handlers, by gSpriteEntries[7].unk29
+                                                 // (medal_trade_choice_close_step)
+extern const Func gDebugMenuHandlers[];          // game state 63 sub-state handlers (debug_menu_update)
+extern const Func gDebugMenuEntryHandlers[];     // game state 63: one handler per menu entry (debug_menu_run_entry)
+extern const Func gDebugProcessHandlers[];       // game state 63 entry 0 sub-state handlers (debug_process_update)
+extern const Func gDebugMedalHandlers[];         // entry 1 (debug_medal_update)
+extern const Func gDebugPartsHandlers[];         // entry 2 (debug_parts_update)
 extern const u8 *const gDebugMenuLabels[];    // game state 63 menu labels, 11 x 8 bytes: Process, Medal, Parts, Tinpet,
                                               // Item, Face, Mdlpic, Rnd.tk, Battle, Sound, Motion
 extern const u8 *const gDebugProcessLabels[]; // game state 63 "Process" field labels "User", "Func.no", "S.func"
@@ -491,11 +493,11 @@ extern const u8 *const gDebugRndTkLabels[];   // "Switch"
 extern const u8 *const gDebugBattleLabels[];  // "No"
 extern const u8 *const gDebugSoundLabels[];   // "Se", "Bgm"
 extern const u8 *const gDebugMotionLabels[];  // "No"
-extern const u8 gUnk_084C3B14[];              // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (sub_0800B0F8)
-extern const u32 gUnk_083B7338[];             // Medaforce names, indexed by Medaforce id
-extern const u32 gUnk_083BE97C[];             // Medapart skill names for ids >= 100 (medapart_detail_draw_skill)
-extern u16 gUnk_03002B84[2]; // capped at 9999: [0] every game state 6 battle, [1] when gUnk_03000440.unk9C == 1
-                             // (runtime-checked; guess: Robattles fought / won)
+extern const u8 gUnk_084C3B14[];  // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (medal_skill_load_shine_frame)
+extern const u32 gUnk_083B7338[]; // Medaforce names, indexed by Medaforce id
+extern const u32 gUnk_083BE97C[]; // Medapart skill names for ids >= 100 (medapart_detail_draw_skill)
+extern u16 gUnk_03002B84[2];      // capped at 9999: [0] every game state 6 battle, [1] when gUnk_03000440.unk9C == 1
+                                  // (runtime-checked; guess: Robattles fought / won)
 extern const void *const gUnk_083C3984[]; // after-battle opponent lines, by gUnk_03001800.unk0
 extern const void *const gUnk_083C65C4[]; // messages (after-battle screen uses 107, 109, 118)
 extern const u8 *const gPartKindNames[];  // Medapart kind names, by kind

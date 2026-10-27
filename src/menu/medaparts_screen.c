@@ -1186,7 +1186,7 @@ none:
 }
 
 static void medaparts_help_init_cursor(void) {
-    const u8 *rec = gUnk_083B7EBC[gUnk_03000440.unk43];
+    const u8 *rec = gHelpCursorLayouts[gUnk_03000440.unk43];
 
     gUnk_03000440.unk45 = rec[0];
     gSpriteEntries[6].unk0 = 0xC004;
@@ -1200,7 +1200,7 @@ static void medaparts_help_init_cursor(void) {
 }
 
 static void sub_0800FFF4(void) {
-    const u8 *rec = gUnk_083B7EBC[gUnk_03000440.unk43];
+    const u8 *rec = gHelpCursorLayouts[gUnk_03000440.unk43];
 
     gSpriteEntries[6].unk2 = rec[(gUnk_03000440.unk44 + 1) << 1] * 8;
     gSpriteEntries[6].unk4 = rec[((gUnk_03000440.unk44 + 1) << 1) + 1] * 8;

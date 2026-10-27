@@ -143,12 +143,12 @@ gUnk_083AC494:
 gMedalsScreenHandlers:
 	.incbin "baserom.gba", 0x3AC6EC, 0x1C0
 
-	.global gUnk_083AC8AC
-gUnk_083AC8AC:
+	.global gMedalSkillDebugCursorPos
+gMedalSkillDebugCursorPos:
 	.incbin "baserom.gba", 0x3AC8AC, 0x20
 
-	.global gUnk_083AC8CC
-gUnk_083AC8CC:
+	.global gMedalTradeChoiceCloseSteps
+gMedalTradeChoiceCloseSteps:
 	.incbin "baserom.gba", 0x3AC8CC, 0x10
 
 	.global gDebugMenuHandlers
@@ -950,8 +950,8 @@ gUnk_083B7CD4:
 gUnk_083B7E0C:
 	.incbin "baserom.gba", 0x3B7E0C, 0xB0
 
-	.global gUnk_083B7EBC
-gUnk_083B7EBC:
+	.global gHelpCursorLayouts
+gHelpCursorLayouts:
 	.incbin "baserom.gba", 0x3B7EBC, 0x84
 
 	.global gUnk_083B7F40
