@@ -755,36 +755,36 @@ gUnk_083AF6E0:
 gUnk_083AF720:
 	.incbin "baserom.gba", 0x3AF720, 0x20
 
-	.global gUnk_083AF740
-gUnk_083AF740:
+	.global gBattleSeqCommands
+gBattleSeqCommands:
 	.incbin "baserom.gba", 0x3AF740, 0x148
 
-	.global gUnk_083AF888
-gUnk_083AF888:
+	.global gBattleSeqLegSoundSets
+gBattleSeqLegSoundSets:
 	.incbin "baserom.gba", 0x3AF888, 0x4
 
-	.global gUnk_083AF88C
-gUnk_083AF88C:
+	.global gBattleSeqEffectGfx
+gBattleSeqEffectGfx:
 	.incbin "baserom.gba", 0x3AF88C, 0xC0
 
-	.global gUnk_083AF94C
-gUnk_083AF94C:
+	.global gBattleSeqEffectSetPos
+gBattleSeqEffectSetPos:
 	.incbin "baserom.gba", 0x3AF94C, 0x10
 
-	.global gUnk_083AF95C
-gUnk_083AF95C:
+	.global gBattleSeqEwramGfx
+gBattleSeqEwramGfx:
 	.incbin "baserom.gba", 0x3AF95C, 0x10
 
-	.global gUnk_083AF96C
-gUnk_083AF96C:
+	.global gBattleSeqSpriteHandlers
+gBattleSeqSpriteHandlers:
 	.incbin "baserom.gba", 0x3AF96C, 0x140
 
-	.global gUnk_083AFAAC
-gUnk_083AFAAC:
+	.global gBattleBg3ParallaxShift
+gBattleBg3ParallaxShift:
 	.incbin "baserom.gba", 0x3AFAAC, 0xC
 
-	.global gUnk_083AFAB8
-gUnk_083AFAB8:
+	.global gBattleSeqWaveOffsets
+gBattleSeqWaveOffsets:
 	.incbin "baserom.gba", 0x3AFAB8, 0x40
 
 	.global gLinkRobattleHandlers
@@ -1090,20 +1090,20 @@ gUnk_083C6DF8:
 gUnk_083CABF8:
 	.incbin "baserom.gba", 0x3CABF8, 0x33EC
 
-	.global gUnk_083CDFE4
-gUnk_083CDFE4:
+	.global gBattleSeqScripts
+gBattleSeqScripts:
 	.incbin "baserom.gba", 0x3CDFE4, 0x210
 
-	.global gUnk_083CE1F4
-gUnk_083CE1F4:
+	.global gBattleSeqOperandCounts
+gBattleSeqOperandCounts:
 	.incbin "baserom.gba", 0x3CE1F4, 0x28C
 
 	.global gUnk_083CE480
 gUnk_083CE480:
 	.incbin "baserom.gba", 0x3CE480, 0x7F4
 
-	.global gUnk_083CEC74
-gUnk_083CEC74:
+	.global gBattleSeqTileAnims
+gBattleSeqTileAnims:
 	.incbin "baserom.gba", 0x3CEC74, 0x94
 
 	.global gUnk_083CED08

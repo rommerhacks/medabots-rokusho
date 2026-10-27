@@ -387,7 +387,7 @@
 * `movs r2, #0` before `ldr r1, =base` in a loop prologue: put the pointer init in the `for`,
   `for (i = 0, b = &gUnk_03001800; ...)` (sub_080385D0).
 * `x |= 0x80` with the constant's register as the result (`movs r0, #0x80; orrs r0, r1`): write it on the
-  struct field (`b->unk112 |= 0x80`), not through a `u8 *` alias (battle_advance_dialogue_text).
+  struct field (`b->unk112 |= 0x80`), not through a `u8 *` alias (closeup_left_pose_step).
 * An `else if` chain where the later cases jump back into the first case's `ands/cmp/bne` tail:
   `if (A) { if (f & 1) return 1; } else if (B) { if (f & 8) return 1; } ... return 0;` (bot_has_status_guard).
 * A table index `tbl[f(x) * 8 + (g() & 7)]` with the shift before the `ands`: write it as one
@@ -418,21 +418,21 @@
   the same inside): `if ((s8)(f.x = g()) < 0) { p = &f.x; do { ...; *p = g(); } while (*p < 0); }`
   (battle_sequence_run_command).
 * `a + 1 + tbl[...]` where the original does `adds r1, #1` between the table address and the `ldrb`:
-  read the u16 field into an `s32` local first (battle_advance_sequence_counter).
+  read the u16 field into an `s32` local first (battle_seq_advance).
 * A `switch` with two cases and a default comes out as `cmp #0; beq; cmp #1; beq; <default inline>`; an
-  `if / else if / else` chain puts the first case inline instead (battle_seq_cmd_wait_text).
+  `if / else if / else` chain puts the first case inline instead (battle_seq_cmd_wait_pose).
 * `(0x1E - t - (x + t)) - 1` stored to an s16 field: gcc reassociates the `- 1` into the subtraction
-  unless the inner part is cast, `(s16)(0x1E - t - (x + t)) - 1` (sub_0803A474).
+  unless the inner part is cast, `(s16)(0x1E - t - (x + t)) - 1` (battle_seq_cmd_bg_sweep).
 * A loop whose table pointer is loaded *after* the hoisted struct base and `&field` (`movs r7, #0; ldr r5,
   =base; adds r0, r5, #0xF8; mov r8, r0; ldr r6, =tbl`): write the base and field pointers as locals
   before the table pointer (`i = 0; b = &gUnk_03001800; f = &b->unkF8; tbl = gUnk_...; do {...}`)
-  (sub_0803B0C0).
-* `x - s->unk30` where the original loads `unk30` first: `x + (s->unk30 * -1)` (sub_0803CC8C); for `+`,
+  (battle_seq_cmd_spawn_effect_set).
+* `x - s->unk30` where the original loads `unk30` first: `x + (s->unk30 * -1)` (battle_seq_spr_trail); for `+`,
   swap the operands (`x + s->unk30` loads `unk30` first).
 * A slot byte loaded into a scratch register and copied to a callee-saved one only at `cmp #1`: don't
-  keep it in a local, test `if (gUnk_0300056F == 1)` again and let cse reuse the load (sub_0803B9A4).
+  keep it in a local, test `if (gUnk_0300056F == 1)` again and let cse reuse the load (battle_seq_spr_pose_set).
 * `if (A) { X; Y++; Y++; } else Y++;` where both `else if` arms of the caller do the same: write the
-  body in full in each arm; the original's tail-merged copies only come out that way (sub_0803B900).
+  body in full in each arm; the original's tail-merged copies only come out that way (battle_seq_spr_pose_wait).
 * A sprite slot found by a search loop and then used for many stores: index `gSpriteEntries[slot].f`
   every time instead of a `struct *s = &...[slot]` (the pointer swaps the `lsls/ldr` order).
 * An unrotated loop (`top: test; bls out; i += 3; b top`) where gcc rotates your `while`/`for`: write it

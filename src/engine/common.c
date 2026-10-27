@@ -1336,7 +1336,7 @@ void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8
     }
 }
 
-u32 advance_text_display(u32 a0, u32 a1, u32 a2) {
+u32 medabot_pose_anim_step(u32 a0, u32 a1, u32 a2) {
     u32 n;
     u8 *cnt;
     u8 *pos;

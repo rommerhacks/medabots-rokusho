@@ -837,8 +837,8 @@ void debug_motion_play(void) {
                                    gUnk_03000440.unk39, 0x38, 0x68, 0, 4, 0, 1, 0, 0);
     init_scene_with_bg_and_palette(1, gUnk_03000440.unk39, gUnk_03000440.unk39, gUnk_03000440.unk39,
                                    gUnk_03000440.unk39, 0xB8, 0x30, 0, 8, 1, 1, 1, 0x28);
-    advance_text_display(0, gUnk_03000440.unk35[gUnk_03000440.unk34], gUnk_03000440.unk39);
-    advance_text_display(1, gUnk_03000440.unk35[gUnk_03000440.unk34], gUnk_03000440.unk39);
+    medabot_pose_anim_step(0, gUnk_03000440.unk35[gUnk_03000440.unk34], gUnk_03000440.unk39);
+    medabot_pose_anim_step(1, gUnk_03000440.unk35[gUnk_03000440.unk34], gUnk_03000440.unk39);
     if (KEYS_LO(gNewKeys) & 2)
         gUnk_03000440.unk33 -= 2;
 }

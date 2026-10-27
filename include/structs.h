@@ -545,7 +545,7 @@ struct Coords16 {
     s16 y;
 };
 
-// 4-byte sprite positions (gUnk_083AF94C, sub_0803B0C0).
+// 4-byte sprite positions (gBattleSeqEffectSetPos, battle_seq_cmd_spawn_effect_set).
 struct Unk_083AF94C {
     u16 x;
     u8 y;
@@ -698,19 +698,20 @@ struct Unk_03001800 {
     u8 unkF6; // bit 0: the target has a reaction ready (sub_08038D30), run by reaction_check
     u8 fillerF7[0x1];
     u8 unkF8; // 0 when battle_set_actor_side gets a team record (0-2), 3 for an opponent
-    u8 unkF9; // skill shown by the action script command sub_08034074: chosen part's data[1], or Medaforce unkA8[0] +
-              // 0x50
+    u8 unkF9; // skill shown by the action script command script_op_skill_anim_start: chosen part's data[1], or
+              // Medaforce unkA8[0] + 0x50
     u8 fillerFA;
-    u8 unkFB; // cleared by sub_08034074
+    u8 unkFB; // cleared by script_op_skill_anim_start
     u8 unkFC;
-    u8 unkFD;
+    u8 unkFD; // skill animation condition (battle_seq_cmd_test_*), picks battle_seq_cmd_branch's label
     u8 unkFE;
     u8 unkFF;      // bits 0 / 1 set by sub_080347F8 with unk114[0] / unk114[1] = 0x28
-    u16 unk100;    // battle sequence: offset of the current command in gUnk_083CDFE4[unkF9] (cleared by sub_08034074)
-    s16 unk102[8]; // battle sequence: operands of the current command (load_battle_sequence_commands)
+    u16 unk100;    // battle sequence: offset of the current command in gBattleSeqScripts[unkF9] (cleared by
+                   // script_op_skill_anim_start)
+    s16 unk102[8]; // battle sequence: operands of the current command (battle_seq_load_operands)
     u8 unk112;     // set to 0x29 with unk113 (closeup_reset_text_states)
-    u8 unk113;
-    u8 unk114[2]; // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (repair_redraw_bot)
+    u8 unk113;     // right close-up Medabot pose (unk112: left; bit 7 = finished, medabot_pose_anim_step)
+    u8 unk114[2];  // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (repair_redraw_bot)
     u8 filler116[0x2];
     u8 unk118; // nonzero: restore_changed_part writes unk11C back into the acting Medabot's part
     u8 unk119; // part data[1] - 0x37 of the swapped part (change_transform_part)
@@ -724,8 +725,8 @@ struct Unk_03001800 {
     u16 unk158; // effect sprite x, y when unkF8 bit 1 is clear (attack_hit_critical_spawn)
     u16 unk15A;
     u8 unk15C[3]; // per Medapart select slot (unk82 - 1): nonzero skips the part sprite (target_marker_show)
-    u8 unk15F;    // result of battle_advance_dialogue_text (closeup_exit_init)
-    u8 unk160;    // result of battle_advance_action_text (closeup_exit_init)
+    u8 unk15F;    // left Medabot pose finished (closeup_left_pose_step), polled by battle_seq_cmd_wait_pose
+    u8 unk160;    // right Medabot pose finished (closeup_right_pose_step)
     u8 unk161;
     u8 unk162;
     u8 unk163;  // set by a gUnk_083AF000 step to run the next step in the same frame (battle_run_action_script)

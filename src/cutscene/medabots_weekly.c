@@ -963,7 +963,7 @@ u32 weekly_lecture_start_pose(void) {
     fill = 0x200;
     DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
     setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, 0, 1, 0);
-    advance_text_display(0, 0x2D, 0);
+    medabot_pose_anim_step(0, 0x2D, 0);
     gUnk_03001800_s.unk10.lecture.state++;
     gUnk_03001800_s.unk10.lecture.step = 0;
     return 0;
@@ -1005,7 +1005,7 @@ u32 weekly_lecture_run_pose(void) {
     case 2:
         break;
     }
-    if (advance_text_display(0, 0x2D, 0) != 0) {
+    if (medabot_pose_anim_step(0, 0x2D, 0) != 0) {
         gUnk_03001800_s.unk10.lecture.state = 0;
         return 1;
     }

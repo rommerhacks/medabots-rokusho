@@ -19,7 +19,7 @@ static void sub_0806E854(void) {
         u32 v = 0x200;
         DmaSet(3, &v, gSpriteWork->oamBuf, 0x85000100);
         setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x70, 0x50, gUnk_03000430, 0xC, 0, 1, 0);
-        advance_text_display(0, 0x2D, 0x2A);
+        medabot_pose_anim_step(0, 0x2D, 0x2A);
     }
 }
 

@@ -1,6 +1,6 @@
 // The action close-up scene: init_battle_closeup_scene and init_battle_scene_backgrounds set up the BG
-// layers, setup_battle_medapart_scenes the acting parts, and battle_advance_dialogue_text /
-// battle_advance_action_text step the message text. Called from battle/action_steps and action_script.
+// layers, setup_battle_medapart_scenes the acting parts, and closeup_left_pose_step /
+// closeup_right_pose_step step the message text. Called from battle/action_steps and action_script.
 
 #include "global.h"
 
@@ -126,13 +126,13 @@ u32 passthrough; // FAKEMATCH: returned unchanged to keep r0 live
     return passthrough;
 }
 
-u32 battle_advance_dialogue_text(void) {
+u32 closeup_left_pose_step(void) {
     struct Unk_03001800 *b = &gUnk_03001800;
     u8 *state = &b->unk112;
     u32 done;
     if (!(*state & 0x80) && !(b->unkFF & 1)) {
         get_active_bot_part_index_and_load_values(0);
-        done = advance_text_display(0, *state, b->unk64[3]);
+        done = medabot_pose_anim_step(0, *state, b->unk64[3]);
         if (done)
             b->unk112 |= 0x80;
         return done;
@@ -140,13 +140,13 @@ u32 battle_advance_dialogue_text(void) {
     return 1;
 }
 
-u32 battle_advance_action_text(void) {
+u32 closeup_right_pose_step(void) {
     struct Unk_03001800 *b = &gUnk_03001800;
     u8 *state = &b->unk113;
     u32 done;
     if (!(*state & 0x80) && !(b->unkFF & 2)) {
         get_active_bot_part_index_and_load_values(1);
-        done = advance_text_display(1, *state, b->unk64[3]);
+        done = medabot_pose_anim_step(1, *state, b->unk64[3]);
         if (done)
             b->unk113 |= 0x80;
         return done;

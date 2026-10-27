@@ -891,15 +891,16 @@ extern const u8 gUnk_084E20F8[];            // LZ graphics (link Robattle screen
 extern const u8 gUnk_084C68E0[];            // LZ graphics (link Robattle screen, prize_game_load)
 extern const u8 gUnk_084C66B8[];            // LZ graphics (link Robattle screen, prize_game_load)
 extern const u8 gUnk_084EDEF0[];            // LZ graphics (link Robattle screen, prize_game_load)
-extern const s16 gUnk_083AFAB8[];           // y offsets by sprite unk23 (0-31; sub_0803C680)
-extern const u8 gUnk_083AFAAC[];            // BG3 parallax shift by battlefield gUnk_03001800.unk38 (sub_0803BE44)
-extern const Func gUnk_083AF96C[];          // sprite handlers by unk29, slots 1-0x27 (battle_sequence_update_sprites)
+extern const s16 gBattleSeqWaveOffsets[];   // y offsets by sprite unk23 (0-31; battle_seq_spr_effect_wave)
 extern const u8
-    *const gUnk_083AF95C[]; // pairs: compressed OBJ tiles (lz_decompress to 0x02000000), OBJ palette 14 (sub_0803B19C)
-extern const struct Unk_083AF94C gUnk_083AF94C[]; // 4 sprite positions (sub_0803B0C0)
-extern const Func gUnk_083AF720[];                // sprite handlers by unk29 for slots 0x21-0x3B (sub_0803884C)
-extern const u16 gUnk_083AF520[];                 // 4 (x, y) particle offsets, x and y picked by separate rng & 3 rolls
-                                                  // (spawn_battle_particle_effect)
+    gBattleBg3ParallaxShift[]; // BG3 parallax shift by battlefield gUnk_03001800.unk38 (battle_seq_spr_actor_dash)
+extern const Func gBattleSeqSpriteHandlers[]; // sprite handlers by unk29, slots 1-0x27 (battle_sequence_update_sprites)
+extern const u8 *const gBattleSeqEwramGfx[];  // pairs: compressed OBJ tiles (lz_decompress to 0x02000000), OBJ palette
+                                              // 14 (battle_seq_cmd_load_effect_gfx_ewram)
+extern const struct Unk_083AF94C gBattleSeqEffectSetPos[]; // 4 sprite positions (battle_seq_cmd_spawn_effect_set)
+extern const Func gUnk_083AF720[];  // sprite handlers by unk29 for slots 0x21-0x3B (sub_0803884C)
+extern const u16 gUnk_083AF520[];   // 4 (x, y) particle offsets, x and y picked by separate rng & 3 rolls
+                                    // (spawn_battle_particle_effect)
 extern const u16 gUnk_083AF6D0[];   // 4 (x, y) offsets from the source sprite, picked by rng & 3 (sub_08038428)
 extern const u8 gUnk_083CED08[];    // random part ids (pick_random_change_part)
 extern const u8 gUnk_083CED88[];    // random part ids (pick_random_change_part)
@@ -940,14 +941,16 @@ extern u8 gUnk_0300056F;           // sprite slot whose handler is running (sub_
 extern const Func gUnk_083AF690[]; // battle effect sprite handlers by sprite unk29 (sub_080383E8, sprites 0x2B-0x3B)
 extern const Func gUnk_083AF530[]; // sprite handlers by sprite unk29 (sub_08037B9C, sprites 0x21-0x3B)
 extern const s16
-    *const gUnk_083CDFE4[];      // battle sequence scripts, by gUnk_03001800.unkF9 (load_battle_sequence_commands)
-extern const u8 gUnk_083CE1F4[]; // operand count per battle sequence command (battle_advance_sequence_counter)
-extern const u16 *const gUnk_083CEC74[]; // x, y passed to tile_anim_init, by sprite 4 unk2B (sub_080398AC)
-extern const u8 *const gUnk_083AF888[];  // by sequence operand: 4 animation sets, by legs data[1] - 0x64 (3 when
-                                         // gUnk_03001800.unk64[3] > 0x77; sub_08039AC8)
-extern const u8 *const gUnk_083AF88C[];  // pairs: compressed OBJ tiles, OBJ palette 14 (sub_0803A0E0)
-extern const Func gUnk_083AF740[];       // battle sequence commands, by sub_0803D424() (battle_sequence_run_command)
-extern const Func gUnk_083AF6E0[];       // sprite handlers by sprite unk29 (sub_080385F8, sprites 0x21-0x3B)
+    *const gBattleSeqScripts[];            // battle sequence scripts, by gUnk_03001800.unkF9 (battle_seq_load_operands)
+extern const u8 gBattleSeqOperandCounts[]; // operand count per battle sequence command (battle_seq_advance)
+extern const u16
+    *const gBattleSeqTileAnims[]; // x, y passed to tile_anim_init, by sprite 4 unk2B (battle_seq_cmd_bg_effect)
+extern const u8 *const gBattleSeqLegSoundSets[]; // by sequence operand: 4 animation sets, by legs data[1] - 0x64 (3
+                                                 // when gUnk_03001800.unk64[3] > 0x77; battle_seq_cmd_leg_sound)
+extern const u8
+    *const gBattleSeqEffectGfx[];       // pairs: compressed OBJ tiles, OBJ palette 14 (battle_seq_cmd_load_effect_gfx)
+extern const Func gBattleSeqCommands[]; // battle sequence commands, by battle_seq_peek() (battle_sequence_run_command)
+extern const Func gUnk_083AF6E0[];      // sprite handlers by sprite unk29 (sub_080385F8, sprites 0x21-0x3B)
 extern u16 gUnk_083AF480[];      // x, y offset pairs by part (effect_sprite_spawn_at_part); not const: hit_sparks_spawn
                                  // reloads it per iteration
 extern const u8 gUnk_083AF200[]; // 16 values, two random picks summed into gUnk_03001800.unk188 / unk189 (sub_08034AA0)

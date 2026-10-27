@@ -285,10 +285,10 @@ void script_op_closeup_enter(void) {
         battle_script_advance();
 }
 
-void sub_08034074(void) {
+void script_op_skill_anim_start(void) {
     init_battle_scene_backgrounds();
-    battle_advance_dialogue_text();
-    battle_advance_action_text();
+    closeup_left_pose_step();
+    closeup_right_pose_step();
     clear_battle_sprite_slot(0, 0x28);
     CpuFastSet(gUnk_084E30B8, (void *)0x05000380, 8);
     gUnk_03001800.unk100 = 0;
@@ -305,10 +305,10 @@ void sub_08034074(void) {
     battle_script_advance();
 }
 
-void sub_08034120(void) {
+void script_op_skill_anim_run(void) {
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     gUnk_03001800.unkB5 = 0;
     battle_sequence_update();
     if (gUnk_03001800.unkB5) {
@@ -319,8 +319,8 @@ void sub_08034120(void) {
 
 void script_op_set_damage(void) {
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     gUnk_03001800.unkD0 = gUnk_03001800.unk8B;
     battle_set_damage_vs_armor(gUnk_03001800.unk88, gUnk_03001800.unkD0, gUnk_03001800.unkEC);
     battle_script_advance();
@@ -328,8 +328,8 @@ void script_op_set_damage(void) {
 
 void script_op_attack_hit(void) {
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     attack_hit_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
@@ -337,8 +337,8 @@ void script_op_attack_hit(void) {
 
 void script_op_status_attack(void) {
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     status_attack_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
@@ -360,8 +360,8 @@ void script_op_bot_defeat(void) {
 
 void script_op_reaction(void) {
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     reaction_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
@@ -387,8 +387,8 @@ void script_op_recovery(void) {
 
 void script_op_recovery_heal(void) {
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     recovery_heal_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
@@ -402,8 +402,8 @@ void script_op_repair(void) {
 
 void script_op_repair_apply(void) {
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     repair_apply_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
@@ -557,8 +557,8 @@ void script_op_change(void) {
 
 void sub_08034684(void) {
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     sub_08026884();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
@@ -598,8 +598,8 @@ void sub_08034728(void) {
 
 void sub_0803476C(void) {
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     sub_08026CF4();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
@@ -621,8 +621,8 @@ void sub_080347BC(void) {
 
 void sub_080347F8(void) {
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     gUnk_03001800.unkF6 = 3;
     gUnk_03000590[gUnk_03001800.unk87].unkE0 = gUnk_03001800.unk87 + 1;
     gUnk_03001800.unk161 = gUnk_03001800.unk88;
@@ -644,8 +644,8 @@ void sub_080347F8(void) {
 
 void sub_080348D0(void) {
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     sub_08026ED0();
     if (gUnk_03001800.unkB5)
         battle_script_advance();

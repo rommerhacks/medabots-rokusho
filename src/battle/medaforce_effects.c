@@ -1,9 +1,9 @@
 // Medaforce effect sequences: action script opcodes 0x40-0x6A. A Medaforce runs script 0x50 + its id
-// (unkF9 = unkA8[0] + 0x50, sub_08034074), so scripts 80-131 use these; 0x45 (side_add_action_point) and a few
-// script-side commands sit elsewhere.
-// Each runner (sub_XXXXXXXX that clears unkB5 and calls entry [unkAA] of its gBattleMessageSteps sub-table) is
-// one action script command (gUnk_083AF000, opcode order = ROM order); its step handlers follow it and
-// the last step sets unkB5. Abilities are part data[1], and the script of ability n is gUnk_083C6B28[n].
+// (unkF9 = unkA8[0] + 0x50, script_op_skill_anim_start), so scripts 80-131 use these; 0x45 (side_add_action_point) and
+// a few script-side commands sit elsewhere. Each runner (sub_XXXXXXXX that clears unkB5 and calls entry [unkAA] of its
+// gBattleMessageSteps sub-table) is one action script command (gUnk_083AF000, opcode order = ROM order); its step
+// handlers follow it and the last step sets unkB5. Abilities are part data[1], and the script of ability n is
+// gUnk_083C6B28[n].
 
 #include "global.h"
 

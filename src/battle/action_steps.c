@@ -1024,8 +1024,8 @@ void closeup_enter_init_scene(void) {
 
 void closeup_enter_unwipe(void) {
     init_battle_scene_backgrounds();
-    battle_advance_dialogue_text();
-    battle_advance_action_text();
+    closeup_left_pose_step();
+    closeup_right_pose_step();
     vram_fill_tilemap_rect(0x1E, 1, 0, 9 - gUnk_03000440.unk84, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(0x1E, 1, 0, gUnk_03000440.unk84 + 10, REG_BG0CNT, 0);
     if (gUnk_03000440.unk84 == 9)
@@ -1036,8 +1036,8 @@ void closeup_enter_unwipe(void) {
 
 void closeup_enter_end(void) {
     init_battle_scene_backgrounds();
-    battle_advance_dialogue_text();
-    battle_advance_action_text();
+    closeup_left_pose_step();
+    closeup_right_pose_step();
     gUnk_03001800.unkB5 = 1;
 }
 
@@ -1784,8 +1784,8 @@ void closeup_exit_init(void) {
     u32 fill;
 
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     gUnk_03000440.unk84 = 0;
     zero = 0;
     CpuFastSet(&zero, (void *)0x05000120, 0x01000008);
@@ -1798,8 +1798,8 @@ void closeup_exit_wipe(void) {
     u32 v;
 
     init_battle_scene_backgrounds();
-    gUnk_03001800.unk15F = battle_advance_dialogue_text();
-    gUnk_03001800.unk160 = battle_advance_action_text();
+    gUnk_03001800.unk15F = closeup_left_pose_step();
+    gUnk_03001800.unk160 = closeup_right_pose_step();
     write_tilemap_rect(0x1E, 1, 0, gUnk_03000440.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
     write_tilemap_rect(0x1E, 1, 0, 0x13 - gUnk_03000440.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
     if (gUnk_03000440.unk84 == 9) {
