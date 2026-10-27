@@ -5,28 +5,28 @@
 #include "global.h"
 
 static void medabots_scroll_bg3(void);
-static void sub_08004E98(void);
-static void update_battle_sprite_orbit_clockwise(u32 i);
-static void sub_08004FD0(void);
-static void sub_08005000(void);
-static void sub_0800508C(void);
-static void sub_08005118(void);
-static void sub_0800519C(void);
-static void sub_0800522C(void);
-static void sub_0800529C(void);
-static void setup_overworld_scene_from_position(void);
+static void medabots_screen_init_cursor_icons(void);
+static void medabots_screen_orbit_cursor_icon(u32 i);
+static void medabots_screen_load_team_icon_gfx(void);
+static void medabots_screen_place_team_icons(void);
+static void medabots_screen_draw_legs_type_icons(void);
+static void medabots_screen_draw_medal_nickname(void);
+static void medabots_screen_draw_medal_kind_name(void);
+static void medabots_screen_draw_medal_icon(void);
+static void medabots_screen_init_bot_sprite(void);
+static void medabots_screen_draw_bot_sprite(void);
 static u32 medabots_screen_cursor_input(void);
 static void medabots_screen_start_reorder_orbit(void);
-static void update_battle_sprite_orbit_counterclockwise(u32 i);
-static void update_battle_icon_blink_and_orbit(void);
+static void medabots_screen_orbit_reorder_icon(u32 i);
+static void medabots_screen_update_reorder_icons(void);
 static u32 medabots_screen_reorder_input(void);
-static void sub_08005948(void);
-static void check_and_update_battle_sprite_orbit(void);
-static void sub_080059D0(void);
-static void sub_08005AD0(void);
-static void sub_08005B44(void);
-static void sub_08005BB4(void);
-static void sub_08005C10(void);
+static void medabots_screen_flag_invalid_bot(void);
+static void medabots_screen_animate_invalid_bot(void);
+static void medabot_detail_take_apart(void);
+static void medabot_detail_draw_medal_nickname(void);
+static void medabot_detail_draw_medal_icon(void);
+static void medabot_detail_draw_medal_level(void);
+static void medabot_detail_draw_medal_kind_name(void);
 static void medabot_detail_draw_head_name(void);
 static void medabot_detail_draw_head_skill_icon(void);
 static void medabot_detail_draw_rarm_name(void);
@@ -41,13 +41,13 @@ static void medabot_detail_draw_row_icon_2(u32 a);
 static void medabot_detail_draw_row_icon_3(u32 a);
 static void medabot_detail_draw_row_icon_4(u32 a);
 static void medabot_detail_draw_legs_type_icon(void);
-static void decompress_sprite_from_game_state(void);
-static void setup_battle_sprite_from_game_state(void);
+static void medabot_detail_load_icon_gfx(void);
+static void medabot_detail_place_icon(void);
 static void medabot_detail_place_row_arrows(void);
 static void medabot_detail_blink_row_arrows(void);
-static void init_scene_state(void);
-static void setup_scene_with_link_check(void);
-static void sub_08006764(void);
+static void medabot_detail_init_bot_sprite(void);
+static void medabot_detail_redraw_bot_sprite(void);
+static void medabot_detail_draw_bot_sprite(void);
 static void medabot_detail_blink_row_icon(void);
 static u32 medabot_detail_row_cursor_input(void);
 static u32 medabot_detail_cycle_medal_input(void);
@@ -58,8 +58,8 @@ static u32 medabot_detail_cycle_legs_input(void);
 static u32 medabot_detail_equip_full_set_input(void);
 // previous Medapart id: 0 wraps to 120 + slot unk1, >= 120 clamps to 119
 static u32 medabot_detail_prev_part_id(u32 part);
-static void battle_update_medabot_display(void);
-static void sub_08006F14(void);
+static void medabot_detail_update_invalid_bot(void);
+static void medabot_detail_animate_invalid_bot(void);
 static u8 medabot_detail_check_row_select(void);
 static void assign_medal_to_team_slot(void);
 static void team_select_draw_pick_markers(void);
@@ -67,9 +67,9 @@ static void medabots_screen_cancel_input(void);
 static void team_select_confirm_pick(void);
 static void team_select_finish_input(void);
 static u32 team_select_slot_not_picked(u32 n);
-static void sub_08007480(void);
-static void sub_0800750C(void);
-static void sub_08007540(void);
+static void team_select_blink_pick_markers(void);
+static void team_select_clear_hint_panel(void);
+static void team_select_link_load_opponents(void);
 
 // Game state 3: the Medabots screen (Medawatch > Medabots). Paused while the serial link is busy.
 void medabots_screen_update(void) {
@@ -89,7 +89,7 @@ void medabots_screen_load_gfx(void) {
     case 0:
         clear_bg_scroll();
         if (gUnk_03000440.unk56 == 1)
-            setup_overworld_scene_from_position();
+            medabots_screen_draw_bot_sprite();
         REG_DISPCNT &= 0xF0FF;
         REG_BG0CNT = 0x500;
         REG_BG1CNT = 0x1801;
@@ -104,7 +104,7 @@ void medabots_screen_load_gfx(void) {
         break;
     case 1:
         if (gUnk_03000440.unk56 == 1)
-            setup_overworld_scene_from_position();
+            medabots_screen_draw_bot_sprite();
         set_tilemap_and_decompress_bg(0, 0, gUnk_084EF2D8, REG_BG0CNT, 0x200);
         set_tilemap_and_decompress_bg(0, 0, gUnk_084EF95C, REG_BG1CNT, 0x200);
         set_tilemap_and_decompress_bg(0, 0, gUnk_084F02B8, REG_BG2CNT, 0x200);
@@ -134,19 +134,19 @@ void medabots_screen_load_gfx(void) {
         break;
     case 2:
         if (gUnk_03000440.unk56 == 1)
-            setup_overworld_scene_from_position();
+            medabots_screen_draw_bot_sprite();
         gUnk_03000440.unk96 = 1;
-        sub_08004FD0();
-        sub_08005000();
-        sub_08004E98();
-        sub_0800508C();
-        sub_08005118();
-        sub_0800519C();
-        sub_0800522C();
-        sub_08005948();
-        sub_0800750C();
+        medabots_screen_load_team_icon_gfx();
+        medabots_screen_place_team_icons();
+        medabots_screen_init_cursor_icons();
+        medabots_screen_draw_legs_type_icons();
+        medabots_screen_draw_medal_nickname();
+        medabots_screen_draw_medal_kind_name();
+        medabots_screen_draw_medal_icon();
+        medabots_screen_flag_invalid_bot();
+        team_select_clear_hint_panel();
         if (gUnk_03000440.unk56 == 0) {
-            sub_0800529C();
+            medabots_screen_init_bot_sprite();
             if (gUnk_03000440.unk50 == 3)
                 play_song(7);
         } else if (gUnk_03000440.unk52 & 0x80) {
@@ -163,13 +163,13 @@ void medabots_screen_fade_in(void) {
     u8 *flag;
 
     medabots_scroll_bg3();
-    update_battle_sprite_orbit_clockwise(0);
-    update_battle_sprite_orbit_clockwise(1);
-    update_battle_sprite_orbit_clockwise(2);
-    update_battle_sprite_orbit_clockwise(3);
-    setup_overworld_scene_from_position();
-    update_battle_icon_blink_and_orbit();
-    check_and_update_battle_sprite_orbit();
+    medabots_screen_orbit_cursor_icon(0);
+    medabots_screen_orbit_cursor_icon(1);
+    medabots_screen_orbit_cursor_icon(2);
+    medabots_screen_orbit_cursor_icon(3);
+    medabots_screen_draw_bot_sprite();
+    medabots_screen_update_reorder_icons();
+    medabots_screen_animate_invalid_bot();
     s = &gUnk_03000440;
     flag = &s->unk56;
     if (*flag == 1) {
@@ -187,13 +187,13 @@ void medabots_screen_fade_in(void) {
 
 void medabots_screen_handle_input(void) {
     medabots_scroll_bg3();
-    update_battle_sprite_orbit_clockwise(0);
-    update_battle_sprite_orbit_clockwise(1);
-    update_battle_sprite_orbit_clockwise(2);
-    update_battle_sprite_orbit_clockwise(3);
-    setup_overworld_scene_from_position();
-    update_battle_icon_blink_and_orbit();
-    check_and_update_battle_sprite_orbit();
+    medabots_screen_orbit_cursor_icon(0);
+    medabots_screen_orbit_cursor_icon(1);
+    medabots_screen_orbit_cursor_icon(2);
+    medabots_screen_orbit_cursor_icon(3);
+    medabots_screen_draw_bot_sprite();
+    medabots_screen_update_reorder_icons();
+    medabots_screen_animate_invalid_bot();
     team_select_draw_pick_markers();
     if (medabots_screen_reorder_input() == 0 && medabots_screen_cursor_input() == 0) {
         if (KEYS_LO(gNewKeys) & 2)
@@ -207,12 +207,12 @@ void medabots_screen_handle_input(void) {
 
 void medabots_screen_exit_start(void) {
     medabots_scroll_bg3();
-    update_battle_sprite_orbit_clockwise(0);
-    update_battle_sprite_orbit_clockwise(1);
-    update_battle_sprite_orbit_clockwise(2);
-    update_battle_sprite_orbit_clockwise(3);
-    setup_overworld_scene_from_position();
-    check_and_update_battle_sprite_orbit();
+    medabots_screen_orbit_cursor_icon(0);
+    medabots_screen_orbit_cursor_icon(1);
+    medabots_screen_orbit_cursor_icon(2);
+    medabots_screen_orbit_cursor_icon(3);
+    medabots_screen_draw_bot_sprite();
+    medabots_screen_animate_invalid_bot();
     set_blend_effect_mode(6, 0x3F, 0x20);
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
@@ -220,12 +220,12 @@ void medabots_screen_exit_start(void) {
 
 void medabots_screen_exit_fade(void) {
     medabots_scroll_bg3();
-    update_battle_sprite_orbit_clockwise(0);
-    update_battle_sprite_orbit_clockwise(1);
-    update_battle_sprite_orbit_clockwise(2);
-    update_battle_sprite_orbit_clockwise(3);
-    setup_overworld_scene_from_position();
-    check_and_update_battle_sprite_orbit();
+    medabots_screen_orbit_cursor_icon(0);
+    medabots_screen_orbit_cursor_icon(1);
+    medabots_screen_orbit_cursor_icon(2);
+    medabots_screen_orbit_cursor_icon(3);
+    medabots_screen_draw_bot_sprite();
+    medabots_screen_animate_invalid_bot();
     if (update_blend_effect())
         gGameSubState++;
 }
@@ -241,29 +241,29 @@ void medabots_screen_return_to_medawatch(void) {
 
 // Sub-states 8/9: A on a Medabot in the list fades out, then 16 (medabot_detail_load_gfx) opens its
 // detail ("Build") screen (runtime-checked: A -> sub-state 9 -> 18).
-void sub_08003F28(void) {
+void medabots_screen_open_detail_start(void) {
     medabots_scroll_bg3();
-    update_battle_sprite_orbit_clockwise(0);
-    update_battle_sprite_orbit_clockwise(1);
-    update_battle_sprite_orbit_clockwise(2);
-    update_battle_sprite_orbit_clockwise(3);
-    setup_overworld_scene_from_position();
-    update_battle_icon_blink_and_orbit();
-    check_and_update_battle_sprite_orbit();
+    medabots_screen_orbit_cursor_icon(0);
+    medabots_screen_orbit_cursor_icon(1);
+    medabots_screen_orbit_cursor_icon(2);
+    medabots_screen_orbit_cursor_icon(3);
+    medabots_screen_draw_bot_sprite();
+    medabots_screen_update_reorder_icons();
+    medabots_screen_animate_invalid_bot();
     palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
 
-void sub_08003F74(void) {
+void medabots_screen_open_detail_fade(void) {
     medabots_scroll_bg3();
-    update_battle_sprite_orbit_clockwise(0);
-    update_battle_sprite_orbit_clockwise(1);
-    update_battle_sprite_orbit_clockwise(2);
-    update_battle_sprite_orbit_clockwise(3);
-    setup_overworld_scene_from_position();
-    update_battle_icon_blink_and_orbit();
-    check_and_update_battle_sprite_orbit();
+    medabots_screen_orbit_cursor_icon(0);
+    medabots_screen_orbit_cursor_icon(1);
+    medabots_screen_orbit_cursor_icon(2);
+    medabots_screen_orbit_cursor_icon(3);
+    medabots_screen_draw_bot_sprite();
+    medabots_screen_update_reorder_icons();
+    medabots_screen_animate_invalid_bot();
     if (gUnk_03000440.unk84 <= 8) {
         bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xF0FF);
@@ -273,27 +273,28 @@ void sub_08003F74(void) {
     }
 }
 
-// guess: sub-states 11/12 show message 22 in a text window, then return to input.
-void sub_08003FE8(void) {
+// Sub-states 11/12: B on the list with no assembled Medabot (count_assembled_medabots) shows message 22 instead
+// of leaving, then returns to input (sub-state 2).
+void medabots_screen_no_bot_message_start(void) {
     medabots_scroll_bg3();
-    update_battle_sprite_orbit_clockwise(0);
-    update_battle_sprite_orbit_clockwise(1);
-    update_battle_sprite_orbit_clockwise(2);
-    update_battle_sprite_orbit_clockwise(3);
-    setup_overworld_scene_from_position();
-    check_and_update_battle_sprite_orbit();
+    medabots_screen_orbit_cursor_icon(0);
+    medabots_screen_orbit_cursor_icon(1);
+    medabots_screen_orbit_cursor_icon(2);
+    medabots_screen_orbit_cursor_icon(3);
+    medabots_screen_draw_bot_sprite();
+    medabots_screen_animate_invalid_bot();
     text_window_init(1, 2, 0);
     gGameSubState++;
 }
 
-void sub_08004028(void) {
+void medabots_screen_no_bot_message_run(void) {
     medabots_scroll_bg3();
-    update_battle_sprite_orbit_clockwise(0);
-    update_battle_sprite_orbit_clockwise(1);
-    update_battle_sprite_orbit_clockwise(2);
-    update_battle_sprite_orbit_clockwise(3);
-    setup_overworld_scene_from_position();
-    check_and_update_battle_sprite_orbit();
+    medabots_screen_orbit_cursor_icon(0);
+    medabots_screen_orbit_cursor_icon(1);
+    medabots_screen_orbit_cursor_icon(2);
+    medabots_screen_orbit_cursor_icon(3);
+    medabots_screen_draw_bot_sprite();
+    medabots_screen_animate_invalid_bot();
     if (run_message(gUnk_083B53F8[22]))
         gGameSubState = 2;
 }
@@ -302,7 +303,7 @@ void medabot_detail_load_gfx(void) {
     u32 zero;
 
     if (gUnk_03000440.unk56 == 0)
-        setup_overworld_scene_from_position();
+        medabots_screen_draw_bot_sprite();
     REG_DISPCNT &= 0xF0FF;
     REG_BG0CNT = 0x500;
     REG_BG1CNT = 0x1801;
@@ -328,7 +329,7 @@ void medabot_detail_load_gfx(void) {
         CpuFastSet(gUnk_0850DD58 - 0x20, (void *)0x0202F9E0, 8);
         CpuFastSet(gUnk_084E2E58, (void *)0x0202F9C0, 8);
         gUnk_03000440.unk5A = 0;
-        sub_080059D0();
+        medabot_detail_take_apart();
         gUnk_03000440.unk84 = 0;
     } else {
         CpuFastSet(gUnk_084F2820, (void *)0x05000000, 0x70);
@@ -350,10 +351,10 @@ void medabot_detail_load_gfx(void) {
     medabot_detail_draw_row_icon_2(0);
     medabot_detail_draw_row_icon_3(0);
     medabot_detail_draw_row_icon_4(0);
-    sub_08005AD0();
-    sub_08005B44();
-    sub_08005C10();
-    sub_08005BB4();
+    medabot_detail_draw_medal_nickname();
+    medabot_detail_draw_medal_icon();
+    medabot_detail_draw_medal_kind_name();
+    medabot_detail_draw_medal_level();
     medabot_detail_draw_head_name();
     medabot_detail_draw_head_skill_icon();
     medabot_detail_draw_rarm_name();
@@ -363,12 +364,12 @@ void medabot_detail_load_gfx(void) {
     medabot_detail_draw_legs_name();
     medabot_detail_draw_legs_skill_icon();
     medabot_detail_draw_legs_type_icon();
-    decompress_sprite_from_game_state();
+    medabot_detail_load_icon_gfx();
     init_battle_medabot_sprites(gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0,
                                 6, 0xA8, 0x20, gUnk_03000440.unk5E, 1, 5);
     medabot_detail_place_row_arrows();
     if (gUnk_03000440.unk56)
-        init_scene_state();
+        medabot_detail_init_bot_sprite();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
@@ -383,11 +384,11 @@ void medabot_detail_fade_in(void) {
     u8 *frame;
 
     medabots_scroll_bg3();
-    sub_08006764();
+    medabot_detail_draw_bot_sprite();
     medabot_detail_blink_row_arrows();
     medabot_detail_blink_row_icon();
-    battle_update_medabot_display();
-    sub_08006F14();
+    medabot_detail_update_invalid_bot();
+    medabot_detail_animate_invalid_bot();
     st = &gUnk_03000440;
     done = &st->unk56;
     if (*done == 0) {
@@ -408,11 +409,11 @@ void medabot_detail_handle_input(void) {
     u8 r;
 
     medabots_scroll_bg3();
-    sub_08006764();
+    medabot_detail_draw_bot_sprite();
     medabot_detail_blink_row_arrows();
     medabot_detail_blink_row_icon();
-    battle_update_medabot_display();
-    sub_08006F14();
+    medabot_detail_update_invalid_bot();
+    medabot_detail_animate_invalid_bot();
     if (medabot_detail_row_cursor_input() || medabot_detail_cycle_medal_input() || medabot_detail_cycle_head_input() ||
         medabot_detail_cycle_rarm_input() || medabot_detail_cycle_larm_input() || medabot_detail_cycle_legs_input() ||
         medabot_detail_equip_full_set_input())
@@ -423,8 +424,8 @@ void medabot_detail_handle_input(void) {
     } else if (*((u8 *)&gNewKeys + 1) & 3) {
         play_sound_effect(2);
         gUnk_03000440.unk5E ^= 1;
-        setup_scene_with_link_check();
-        setup_battle_sprite_from_game_state();
+        medabot_detail_redraw_bot_sprite();
+        medabot_detail_place_icon();
     } else {
         r = medabot_detail_check_row_select();
         if (r == 2)
@@ -441,11 +442,11 @@ void medabot_detail_exit_start(void) {
     u8 v;
 
     medabots_scroll_bg3();
-    sub_08006764();
+    medabot_detail_draw_bot_sprite();
     medabot_detail_blink_row_arrows();
     medabot_detail_blink_row_icon();
-    battle_update_medabot_display();
-    sub_08006F14();
+    medabot_detail_update_invalid_bot();
+    medabot_detail_animate_invalid_bot();
     st = &gUnk_03000440;
     v = st->unk50;
     if (v == 0) {
@@ -460,11 +461,11 @@ void medabot_detail_exit_fade(void) {
     u8 *frame;
 
     medabots_scroll_bg3();
-    sub_08006764();
+    medabot_detail_draw_bot_sprite();
     medabot_detail_blink_row_arrows();
     medabot_detail_blink_row_icon();
-    battle_update_medabot_display();
-    sub_08006F14();
+    medabot_detail_update_invalid_bot();
+    medabot_detail_animate_invalid_bot();
     if (gUnk_03000440.unk50 == 0) {
         frame = &gUnk_03000440.unk84;
         if (*frame > 8)
@@ -479,29 +480,29 @@ void medabot_detail_exit_fade(void) {
 }
 
 void medabot_detail_return_to_list(void) {
-    sub_08006764();
+    medabot_detail_draw_bot_sprite();
     assign_medal_to_team_slot();
     gGameSubState = 0;
 }
 
 void medabot_detail_open_info_start(void) {
     medabots_scroll_bg3();
-    sub_08006764();
+    medabot_detail_draw_bot_sprite();
     medabot_detail_blink_row_arrows();
     medabot_detail_blink_row_icon();
-    battle_update_medabot_display();
-    sub_08006F14();
+    medabot_detail_update_invalid_bot();
+    medabot_detail_animate_invalid_bot();
     set_blend_effect_mode(6, 0x3F, 0x20);
     gGameSubState++;
 }
 
 void medabot_detail_open_info_fade(void) {
     medabots_scroll_bg3();
-    sub_08006764();
+    medabot_detail_draw_bot_sprite();
     medabot_detail_blink_row_arrows();
     medabot_detail_blink_row_icon();
-    battle_update_medabot_display();
-    sub_08006F14();
+    medabot_detail_update_invalid_bot();
+    medabot_detail_animate_invalid_bot();
     if (update_blend_effect())
         gGameSubState++;
 }
@@ -554,19 +555,21 @@ void medabot_detail_open_info(void) {
     }
 }
 
-void sub_08004764(void) {
+// Sub-states 32-35 (battle) and 40-43 (race): the team is picked; the pick markers blink for 60 frames, then
+// the screen fades out. A link battle (unk50 == 1) goes to 48 instead.
+void team_select_done_start(void) {
     medabots_scroll_bg3();
-    sub_08005000();
-    setup_overworld_scene_from_position();
+    medabots_screen_place_team_icons();
+    medabots_screen_draw_bot_sprite();
     clear_sprite_table_mask(0, 4);
     gUnk_03000440.unk5C = 0;
     gGameSubState++;
 }
 
-void sub_08004798(void) {
+void team_select_battle_wait(void) {
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
-    sub_08007480();
+    medabots_screen_draw_bot_sprite();
+    team_select_blink_pick_markers();
     if (gUnk_03000440.unk5C > 60) {
         if (gUnk_03000440.unk50 == 1)
             gGameSubState = 48;
@@ -578,13 +581,13 @@ void sub_08004798(void) {
     }
 }
 
-void sub_080047EC(void) {
+void team_select_battle_fade_out(void) {
     struct Unk_03000440 *st;
     u8 *frame;
 
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
-    sub_08007480();
+    medabots_screen_draw_bot_sprite();
+    team_select_blink_pick_markers();
     st = &gUnk_03000440;
     frame = &st->unk84;
     if (*frame <= 32) {
@@ -603,10 +606,10 @@ void team_select_exit_battle(void) {
     gGameSubState = 0;
 }
 
-void sub_08004874(void) {
+void team_select_race_wait(void) {
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
-    sub_08007480();
+    medabots_screen_draw_bot_sprite();
+    team_select_blink_pick_markers();
     if (gUnk_03000440.unk5C > 60) {
         sound_stop_all_with_fade_guard(8);
         set_blend_effect_mode(6, 0x3F, 8);
@@ -614,10 +617,10 @@ void sub_08004874(void) {
     }
 }
 
-void sub_080048B0(void) {
+void team_select_race_fade_out(void) {
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
-    sub_08007480();
+    medabots_screen_draw_bot_sprite();
+    team_select_blink_pick_markers();
     if (update_blend_effect())
         gGameSubState++;
 }
@@ -641,32 +644,35 @@ void team_select_exit_race(void) {
     gGameSubState = 5;
 }
 
-void sub_080049C8(void) {
+// Sub-states 48-60: link battle. Show gLinkMessages[11], set up the team, wait for the partner, swap the
+// gUnk_03000590 bot records (53), then compare checksums (57; a mismatch retries from 50).
+// guess: 53 jumps straight to 58, so 54-57 look unused (code-read only, no link scenario).
+void team_select_link_message_start(void) {
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
+    medabots_screen_draw_bot_sprite();
     text_window_init(1, 0, 0);
     gGameSubState++;
 }
 
-void sub_080049EC(void) {
+void team_select_link_message_run(void) {
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
+    medabots_screen_draw_bot_sprite();
     if (run_message(gLinkMessages[11]))
         gGameSubState++;
 }
 
-void sub_08004A18(void) {
+void team_select_link_setup_bots(void) {
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
+    medabots_screen_draw_bot_sprite();
     clear_battle_bot_array();
     count_active_battle_bots();
     battle_setup_team_bots();
     gGameSubState++;
 }
 
-void sub_08004A40(void) {
+void team_select_link_wait_ready(void) {
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
+    medabots_screen_draw_bot_sprite();
     if (link_sync_both_ready()) {
         gUnk_03005010.unk6 = 0;
         gUnk_03000440.unk86 = 0;
@@ -674,12 +680,12 @@ void sub_08004A40(void) {
     }
 }
 
-void sub_08004A78(void) {
+void team_select_link_exchange_init(void) {
     struct Unk_03000440 *st;
     u16 *timer;
 
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
+    medabots_screen_draw_bot_sprite();
     st = &gUnk_03000440;
     timer = &st->unk86;
     if (*timer == 24) {
@@ -703,13 +709,13 @@ void sub_08004A78(void) {
 // byte per packet (bit 15 = valid, bit 8 = toggle), summing the received bytes in unk1A8. Near miss:
 // scratch/sub_08004AF8_nearmiss.c (one literal load order and an orrs/adds for the 0x8000 header).
 
-void sub_08004AF8(void) {
+void team_select_link_exchange_bots(void) {
     struct Unk_03001800 *s;
     s16 flag;
     u8 *src;
 
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
+    medabots_screen_draw_bot_sprite();
     s = &gUnk_03001800;
     if (s->unk51 != 3) {
         src = (u8 *)&gUnk_03000590[s->unk51];
@@ -743,12 +749,12 @@ void sub_08004AF8(void) {
         }
 }
 
-void sub_08004C58(void) {
+void team_select_link_checksum_init(void) {
     struct Unk_03000440 *st;
     u16 *timer;
 
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
+    medabots_screen_draw_bot_sprite();
     st = &gUnk_03000440;
     timer = &st->unk86;
     if (*timer == 16) {
@@ -762,11 +768,11 @@ void sub_08004C58(void) {
         (*timer)++;
 }
 
-void sub_08004CA4(void) {
+void team_select_link_compare_checksums(void) {
     u16 v;
 
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
+    medabots_screen_draw_bot_sprite();
     if (gUnk_03001800.unk51 < 2) {
         switch (gUnk_03001800.unk51) {
         case 0:
@@ -797,22 +803,22 @@ void sub_08004CA4(void) {
     }
 }
 
-void sub_08004DB4(void) {
+void team_select_link_done_start(void) {
     gUnk_03005010.unk6 = 0;
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
-    sub_08007540();
+    medabots_screen_draw_bot_sprite();
+    team_select_link_load_opponents();
     palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
 
-void sub_08004DF0(void) {
+void team_select_link_fade_out(void) {
     struct Unk_03000440 *st;
     u8 *frame;
 
     medabots_scroll_bg3();
-    setup_overworld_scene_from_position();
+    medabots_screen_draw_bot_sprite();
     st = &gUnk_03000440;
     frame = &st->unk84;
     if (*frame <= 32) {
@@ -823,7 +829,7 @@ void sub_08004DF0(void) {
         gGameSubState++;
 }
 
-void sub_08004E40(void) {
+void team_select_link_exit_battle(void) {
     clear_battle_sprite_slot(0, 0x80);
     gUnk_03000440.unk96 = 0;
     gUnk_03000430 = 0;
@@ -838,22 +844,22 @@ static void medabots_scroll_bg3(void) {
     }
 }
 
-static void sub_08004E98(void) {
+static void medabots_screen_init_cursor_icons(void) {
     gSpriteEntries[0].unk0 = 0xC604;
     gSpriteEntries[0].unk23 = 0;
-    update_battle_sprite_orbit_clockwise(0);
+    medabots_screen_orbit_cursor_icon(0);
     gSpriteEntries[1].unk0 = 0xC604;
     gSpriteEntries[1].unk23 = 0x10;
-    update_battle_sprite_orbit_clockwise(1);
+    medabots_screen_orbit_cursor_icon(1);
     gSpriteEntries[2].unk0 = 0xC604;
     gSpriteEntries[2].unk23 = 0x20;
-    update_battle_sprite_orbit_clockwise(2);
+    medabots_screen_orbit_cursor_icon(2);
     gSpriteEntries[3].unk0 = 0xC604;
     gSpriteEntries[3].unk23 = 0x30;
-    update_battle_sprite_orbit_clockwise(3);
+    medabots_screen_orbit_cursor_icon(3);
 }
 
-static void update_battle_sprite_orbit_clockwise(u32 i) {
+static void medabots_screen_orbit_cursor_icon(u32 i) {
     u32 cx = gUnk_083AC420[gUnk_03000440.unk51 * 2];
     u32 cy = gUnk_083AC420[gUnk_03000440.unk51 * 2 + 1];
     struct Vec16 p = compute_polar_to_screen_position(((gSpriteEntries[i].unk23 + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
@@ -873,7 +879,7 @@ static void update_battle_sprite_orbit_clockwise(u32 i) {
     gSpriteEntries[i].unk23 = (gSpriteEntries[i].unk23 + 1) & 0x3F;
 }
 
-static void sub_08004FD0(void) {
+static void medabots_screen_load_team_icon_gfx(void) {
     u32 i;
     struct Unk_030017A0 *bot;
 
@@ -887,7 +893,7 @@ static void sub_08004FD0(void) {
     } while (i <= 8);
 }
 
-static void sub_08005000(void) {
+static void medabots_screen_place_team_icons(void) {
     u32 i;
 
     for (i = 0; i <= 8; i++) {
@@ -900,7 +906,7 @@ static void sub_08005000(void) {
     }
 }
 
-static void sub_0800508C(void) {
+static void medabots_screen_draw_legs_type_icons(void) {
     u32 i;
 
     for (i = 0; i <= 8; i++) {
@@ -916,8 +922,8 @@ static void sub_0800508C(void) {
     }
 }
 
-// guess: draws the selected Medabot's Medal name (or blanks).
-static void sub_08005118(void) {
+// The selected Medabot's Medal nickname (Medal record unkA) as text sprites, or blanks.
+static void medabots_screen_draw_medal_nickname(void) {
     clear_sprite_table_mask(0x32, 10);
     if (gUnk_030017A0[gUnk_03000440.unk51].unk0 > 1)
         render_text_sprites_08040DB8((u8 *)0x03000BAA +
@@ -929,8 +935,8 @@ static void sub_08005118(void) {
     }
 }
 
-// guess: draws the selected Medabot's Medal type name (gMedalNames) (or blanks).
-static void sub_0800519C(void) {
+// The selected Medabot's Medal kind name (gMedalNames), or blanks.
+static void medabots_screen_draw_medal_kind_name(void) {
     clear_sprite_table_mask(0x3C, 10);
     if (gUnk_030017A0[gUnk_03000440.unk51].unk0 > 1) {
         memcpy_bytes_0803F63C((const void *)gMedalNames[gUnk_030017A0[gUnk_03000440.unk51].unk2], gUnk_03000440.unk9E,
@@ -942,7 +948,7 @@ static void sub_0800519C(void) {
     }
 }
 
-static void sub_0800522C(void) {
+static void medabots_screen_draw_medal_icon(void) {
     if (gUnk_030017A0[gUnk_03000440.unk51].unk0 > 1)
         CpuFastSet(gUnk_084C21BC + gUnk_030017A0[gUnk_03000440.unk51].unk2 * 0x80, (void *)0x06006600, 0x20);
     else
@@ -950,7 +956,7 @@ static void sub_0800522C(void) {
     draw_tile_block(2, 2, 1, 16, REG_BG1CNT, 0x6330);
 }
 
-static void sub_0800529C(void) {
+static void medabots_screen_init_bot_sprite(void) {
     struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u8 *b;
     u8 *c;
@@ -978,7 +984,7 @@ static void sub_0800529C(void) {
                                    gUnk_030017A0[gUnk_03000440.unk51].unk6, 0x28, 0x28, 0x1C2, 8, 1, 0);
 }
 
-static void sub_080053C8(void) {
+static void medabots_screen_redraw_bot_sprite(void) {
     struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u32 fill;
 
@@ -997,7 +1003,7 @@ static void sub_080053C8(void) {
     gSpriteWork->affineIdx = 0;
 }
 
-static void setup_overworld_scene_from_position(void) {
+static void medabots_screen_draw_bot_sprite(void) {
     if (gUnk_030017A0[gUnk_03000440.unk51].unk0) {
         if (gUnk_03000440.unk5E)
             setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000,
@@ -1037,16 +1043,16 @@ static u32 medabots_screen_cursor_input(void) {
     if (moved) {
         play_sound_effect(2);
         gUnk_03000440.unk51 = next[gUnk_03000440.unk51];
-        update_battle_sprite_orbit_clockwise(0);
-        update_battle_sprite_orbit_clockwise(1);
-        update_battle_sprite_orbit_clockwise(2);
-        update_battle_sprite_orbit_clockwise(3);
-        sub_08005118();
-        sub_0800519C();
-        sub_0800522C();
-        sub_080053C8();
-        sub_08005000();
-        sub_08005948();
+        medabots_screen_orbit_cursor_icon(0);
+        medabots_screen_orbit_cursor_icon(1);
+        medabots_screen_orbit_cursor_icon(2);
+        medabots_screen_orbit_cursor_icon(3);
+        medabots_screen_draw_medal_nickname();
+        medabots_screen_draw_medal_kind_name();
+        medabots_screen_draw_medal_icon();
+        medabots_screen_redraw_bot_sprite();
+        medabots_screen_place_team_icons();
+        medabots_screen_flag_invalid_bot();
         return 1;
     }
     return 0;
@@ -1055,19 +1061,19 @@ static u32 medabots_screen_cursor_input(void) {
 static void medabots_screen_start_reorder_orbit(void) {
     gSpriteEntries[4].unk0 = 0xC604;
     gSpriteEntries[4].unk23 = 0;
-    update_battle_sprite_orbit_counterclockwise(4);
+    medabots_screen_orbit_reorder_icon(4);
     gSpriteEntries[5].unk0 = 0xC604;
     gSpriteEntries[5].unk23 = 0x10;
-    update_battle_sprite_orbit_counterclockwise(5);
+    medabots_screen_orbit_reorder_icon(5);
     gSpriteEntries[6].unk0 = 0xC604;
     gSpriteEntries[6].unk23 = 0x20;
-    update_battle_sprite_orbit_counterclockwise(6);
+    medabots_screen_orbit_reorder_icon(6);
     gSpriteEntries[7].unk0 = 0xC604;
     gSpriteEntries[7].unk23 = 0x30;
-    update_battle_sprite_orbit_counterclockwise(7);
+    medabots_screen_orbit_reorder_icon(7);
 }
 
-static void update_battle_sprite_orbit_counterclockwise(u32 i) {
+static void medabots_screen_orbit_reorder_icon(u32 i) {
     u32 cx = gUnk_083AC420[(gUnk_03000440.unk52 & 0x7F) * 2];
     u32 cy = gUnk_083AC420[(gUnk_03000440.unk52 & 0x7F) * 2 + 1] - 4;
     struct Vec16 p = compute_polar_to_screen_position(((gSpriteEntries[i].unk23 + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
@@ -1087,7 +1093,7 @@ static void update_battle_sprite_orbit_counterclockwise(u32 i) {
     gSpriteEntries[i].unk23 = (gSpriteEntries[i].unk23 - 1) & 0x3F;
 }
 
-static void update_battle_icon_blink_and_orbit(void) {
+static void medabots_screen_update_reorder_icons(void) {
     if (gUnk_03000440.unk52 & 0x80) {
         if (gFrameCounter & 1) {
             gSpriteEntries[4].unk0 |= 0x4000;
@@ -1100,10 +1106,10 @@ static void update_battle_icon_blink_and_orbit(void) {
             gSpriteEntries[6].unk0 &= 0xBFFF;
             gSpriteEntries[7].unk0 &= 0xBFFF;
         }
-        update_battle_sprite_orbit_counterclockwise(4);
-        update_battle_sprite_orbit_counterclockwise(5);
-        update_battle_sprite_orbit_counterclockwise(6);
-        update_battle_sprite_orbit_counterclockwise(7);
+        medabots_screen_orbit_reorder_icon(4);
+        medabots_screen_orbit_reorder_icon(5);
+        medabots_screen_orbit_reorder_icon(6);
+        medabots_screen_orbit_reorder_icon(7);
     } else {
         gSpriteEntries[4].unk0 &= 0xBFFF;
         gSpriteEntries[5].unk0 &= 0xBFFF;
@@ -1121,43 +1127,45 @@ static u32 medabots_screen_reorder_input(void) {
             gUnk_03000440.unk52 &= 0x7F;
             if (gUnk_03000440.unk52 != gUnk_03000440.unk51) {
                 memswap(&gUnk_030017A0[gUnk_03000440.unk52], &gUnk_030017A0[gUnk_03000440.unk51], 8);
-                sub_08004FD0();
-                sub_08005000();
-                sub_0800508C();
-                sub_08005118();
-                sub_0800519C();
-                sub_0800522C();
-                sub_080053C8();
-                sub_08005948();
+                medabots_screen_load_team_icon_gfx();
+                medabots_screen_place_team_icons();
+                medabots_screen_draw_legs_type_icons();
+                medabots_screen_draw_medal_nickname();
+                medabots_screen_draw_medal_kind_name();
+                medabots_screen_draw_medal_icon();
+                medabots_screen_redraw_bot_sprite();
+                medabots_screen_flag_invalid_bot();
             }
             gUnk_03000440.unk52 = 0;
         } else {
             gUnk_03000440.unk52 = gUnk_03000440.unk51 + 0x80;
             medabots_screen_start_reorder_orbit();
         }
-        update_battle_icon_blink_and_orbit();
+        medabots_screen_update_reorder_icons();
         return 1;
     }
     return 0;
 }
 
-static void sub_08005948(void) {
+static void medabots_screen_flag_invalid_bot(void) {
     if (validate_medapart_stats(gUnk_030017A0[gUnk_03000440.unk51].unk2, gUnk_030017A0[gUnk_03000440.unk51].unk3,
                                 gUnk_030017A0[gUnk_03000440.unk51].unk4, gUnk_030017A0[gUnk_03000440.unk51].unk5,
                                 gUnk_030017A0[gUnk_03000440.unk51].unk6))
         battle_sprite_set_palette_index(gUnk_03000440.unk51 * 4 + 10, 8);
 }
 
-static void check_and_update_battle_sprite_orbit(void) {
+static void medabots_screen_animate_invalid_bot(void) {
     if (validate_medapart_stats(gUnk_030017A0[gUnk_03000440.unk51].unk2, gUnk_030017A0[gUnk_03000440.unk51].unk3,
                                 gUnk_030017A0[gUnk_03000440.unk51].unk4, gUnk_030017A0[gUnk_03000440.unk51].unk5,
                                 gUnk_030017A0[gUnk_03000440.unk51].unk6))
         update_battle_sprite_orbiting_positions(gUnk_03000440.unk51 * 4 + 10, gUnk_03000440.unk51, 0);
 }
 
-// guess: takes the selected Medabot apart: Medal (unk97, 0x1E = none) and parts to unk98-9B, parts
+// Detail screen entry: takes the selected Medabot apart into the edit copy: Medal slot (unk97, 0x1E = none) and
+// parts to unk98-9B, the parts back into the inventory, slot marked empty (assign_medal_to_team_slot puts it back).
+// guess: matches the Build screen (parts can be swapped freely), not runtime-checked.
 // back into the inventory (modify_medapart_quantity), slot marked empty.
-static void sub_080059D0(void) {
+static void medabot_detail_take_apart(void) {
     if (gUnk_030017A0[gUnk_03000440.unk51].unk2 == 0x1E)
         gUnk_03000440.unk97 = 0x1E;
     else
@@ -1179,7 +1187,7 @@ static void sub_080059D0(void) {
         modify_medapart_quantity(gUnk_03000440.unk9B, 3, 1, 1, 1);
 }
 
-static void sub_08005AD0(void) {
+static void medabot_detail_draw_medal_nickname(void) {
     clear_sprite_table_mask(10, 10);
     if (gUnk_03000440.unk97 < 30)
         render_text_sprites_08040DB8(gUnk_03000BE0[gUnk_03000440.unk97].unkA, 10, 1, 13, 10, 15, 0, 2);
@@ -1189,7 +1197,7 @@ static void sub_08005AD0(void) {
     }
 }
 
-static void sub_08005B44(void) {
+static void medabot_detail_draw_medal_icon(void) {
     if (gUnk_03000440.unk97 < 30)
         CpuFastSet(gUnk_084C21BC + gUnk_03000BE0[gUnk_03000440.unk97].unk1 * 0x80, (void *)0x06007800, 0x20);
     else
@@ -1197,14 +1205,14 @@ static void sub_08005B44(void) {
     draw_tile_block(2, 2, 16, 9, REG_BG1CNT, 0x63C0);
 }
 
-static void sub_08005BB4(void) {
+static void medabot_detail_draw_medal_level(void) {
     if (gUnk_03000440.unk97 < 30)
         fill_tilemap_pair_or_divide(gUnk_03000BE0[gUnk_03000440.unk97].unk5, 0x1A, 9, REG_BG1CNT, 0xD3A4);
     else
         fill_tilemap_pair_or_divide(0xFF, 0x1A, 9, REG_BG1CNT, 0xD3A4);
 }
 
-static void sub_08005C10(void) {
+static void medabot_detail_draw_medal_kind_name(void) {
     clear_sprite_table_mask(0x14, 10);
     if (gUnk_03000440.unk97 < 30) {
         memcpy_bytes_0803F63C((const void *)gMedalNames[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk9E,
@@ -1377,12 +1385,12 @@ static void medabot_detail_draw_legs_type_icon(void) {
     }
 }
 
-static void decompress_sprite_from_game_state(void) {
+static void medabot_detail_load_icon_gfx(void) {
     decompress_sprite_to_vram_08042D94(gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A,
                                        gUnk_03000440.unk9B, 0);
 }
 
-static void setup_battle_sprite_from_game_state(void) {
+static void medabot_detail_place_icon(void) {
     setup_battle_sprite_group(gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0, 6,
                               0xA8, 0x20, gUnk_03000440.unk5E, 1, 5);
 }
@@ -1414,7 +1422,7 @@ static void medabot_detail_blink_row_arrows(void) {
     }
 }
 
-static void init_scene_state(void) {
+static void medabot_detail_init_bot_sprite(void) {
     struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u8 *b;
     u8 *c;
@@ -1440,7 +1448,7 @@ static void init_scene_state(void) {
                                    gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 0);
 }
 
-static void setup_scene_with_link_check(void) {
+static void medabot_detail_redraw_bot_sprite(void) {
     struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
     u32 fill;
 
@@ -1457,7 +1465,7 @@ static void setup_scene_with_link_check(void) {
     gSpriteWork->affineIdx = 0;
 }
 
-static void sub_08006764(void) {
+static void medabot_detail_draw_bot_sprite(void) {
     if (gUnk_03000440.unk5E)
         setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gUnk_03000440.unk98,
                                    gUnk_03000440.unk99, gUnk_03000440.unk9A, gUnk_03000440.unk9B, 0x3C, 0x32, 0x1C2, 8,
@@ -1549,10 +1557,10 @@ static u32 medabot_detail_cycle_medal_input(void) {
         return 0;
     }
     play_sound_effect(2);
-    sub_08005AD0();
-    sub_08005B44();
-    sub_08005C10();
-    sub_08005BB4();
+    medabot_detail_draw_medal_nickname();
+    medabot_detail_draw_medal_icon();
+    medabot_detail_draw_medal_kind_name();
+    medabot_detail_draw_medal_level();
     medabot_detail_draw_head_skill_icon();
     medabot_detail_draw_rarm_skill_icon();
     medabot_detail_draw_larm_skill_icon();
@@ -1578,9 +1586,9 @@ static u32 medabot_detail_cycle_head_input(void) {
     play_sound_effect(2);
     medabot_detail_draw_head_name();
     medabot_detail_draw_head_skill_icon();
-    decompress_sprite_from_game_state();
-    setup_battle_sprite_from_game_state();
-    setup_scene_with_link_check();
+    medabot_detail_load_icon_gfx();
+    medabot_detail_place_icon();
+    medabot_detail_redraw_bot_sprite();
     return 1;
 }
 
@@ -1602,9 +1610,9 @@ static u32 medabot_detail_cycle_rarm_input(void) {
     play_sound_effect(2);
     medabot_detail_draw_rarm_name();
     medabot_detail_draw_rarm_skill_icon();
-    decompress_sprite_from_game_state();
-    setup_battle_sprite_from_game_state();
-    setup_scene_with_link_check();
+    medabot_detail_load_icon_gfx();
+    medabot_detail_place_icon();
+    medabot_detail_redraw_bot_sprite();
     return 1;
 }
 
@@ -1626,9 +1634,9 @@ static u32 medabot_detail_cycle_larm_input(void) {
     play_sound_effect(2);
     medabot_detail_draw_larm_name();
     medabot_detail_draw_larm_skill_icon();
-    decompress_sprite_from_game_state();
-    setup_battle_sprite_from_game_state();
-    setup_scene_with_link_check();
+    medabot_detail_load_icon_gfx();
+    medabot_detail_place_icon();
+    medabot_detail_redraw_bot_sprite();
     return 1;
 }
 
@@ -1651,9 +1659,9 @@ static u32 medabot_detail_cycle_legs_input(void) {
     medabot_detail_draw_legs_name();
     medabot_detail_draw_legs_skill_icon();
     medabot_detail_draw_legs_type_icon();
-    decompress_sprite_from_game_state();
-    setup_battle_sprite_from_game_state();
-    setup_scene_with_link_check();
+    medabot_detail_load_icon_gfx();
+    medabot_detail_place_icon();
+    medabot_detail_redraw_bot_sprite();
     return 1;
 }
 
@@ -1693,9 +1701,9 @@ static u32 medabot_detail_equip_full_set_input(void) {
         medabot_detail_draw_legs_name();
         medabot_detail_draw_legs_skill_icon();
         medabot_detail_draw_legs_type_icon();
-        decompress_sprite_from_game_state();
-        setup_battle_sprite_from_game_state();
-        setup_scene_with_link_check();
+        medabot_detail_load_icon_gfx();
+        medabot_detail_place_icon();
+        medabot_detail_redraw_bot_sprite();
         return 1;
     next:
         part = medabot_detail_prev_part_id(part);
@@ -1742,8 +1750,8 @@ static u32 medabot_detail_prev_part_id(volatile u32 part) {
 }
 
 // unk53 set while validate_medapart_stats rejects the shown Medal + Medaparts: the Medabot sprite
-// switches to palette 8 (and sub_08006F14 animates it); cleared and redrawn once valid again.
-static void battle_update_medabot_display(void) {
+// switches to palette 8 (and medabot_detail_animate_invalid_bot animates it); cleared and redrawn once valid again.
+static void medabot_detail_update_invalid_bot(void) {
     u32 r;
 
     if (gUnk_03000440.unk53) {
@@ -1763,7 +1771,7 @@ static void battle_update_medabot_display(void) {
     }
 }
 
-static void sub_08006F14(void) {
+static void medabot_detail_animate_invalid_bot(void) {
     if (gUnk_03000440.unk53)
         update_battle_sprite_orbiting_positions(6, 0, 0);
 }
@@ -1902,7 +1910,7 @@ static void medabots_screen_cancel_input(void) {
         if (gUnk_03000440.unk52 & 0x80) {
             play_sound_effect(2);
             gUnk_03000440.unk52 = 0;
-            update_battle_icon_blink_and_orbit();
+            medabots_screen_update_reorder_icons();
         } else if (count_assembled_medabots()) {
             play_sound_effect(5);
             gGameSubState++;
@@ -1941,16 +1949,16 @@ static void team_select_confirm_pick(void) {
                         gGameSubState = 0x20;
                     } else {
                         gUnk_03000440.unk51 = gUnk_083AC468[gUnk_03000440.unk51];
-                        update_battle_sprite_orbit_clockwise(0);
-                        update_battle_sprite_orbit_clockwise(1);
-                        update_battle_sprite_orbit_clockwise(2);
-                        update_battle_sprite_orbit_clockwise(3);
-                        sub_08005118();
-                        sub_0800519C();
-                        sub_0800522C();
-                        sub_080053C8();
-                        sub_08005000();
-                        sub_08005948();
+                        medabots_screen_orbit_cursor_icon(0);
+                        medabots_screen_orbit_cursor_icon(1);
+                        medabots_screen_orbit_cursor_icon(2);
+                        medabots_screen_orbit_cursor_icon(3);
+                        medabots_screen_draw_medal_nickname();
+                        medabots_screen_draw_medal_kind_name();
+                        medabots_screen_draw_medal_icon();
+                        medabots_screen_redraw_bot_sprite();
+                        medabots_screen_place_team_icons();
+                        medabots_screen_flag_invalid_bot();
                     }
                 } else {
                     play_sound_effect(6);
@@ -1995,8 +2003,8 @@ static u32 team_select_slot_not_picked(u32 n) {
     return 1;
 }
 
-// guess: blinks the team select pick markers (sprites 4-6) every 4 frames
-static void sub_08007480(void) {
+// Blinks the team select pick markers (sprites 4-6) every 4 frames.
+static void team_select_blink_pick_markers(void) {
     u32 i;
 
     if (gUnk_03000440.unk5C & 4) {
@@ -2013,13 +2021,14 @@ static void sub_08007480(void) {
     gUnk_03000440.unk5C++;
 }
 
-static void sub_0800750C(void) {
+// guess: the BG2 panel cleared in team select is the SELECT reorder hint (reorder is off there).
+static void team_select_clear_hint_panel(void) {
     if (gUnk_03000440.unk50)
         vram_fill_tilemap_rect(16, 4, 13, 16, REG_BG2CNT, 0);
 }
 
-// guess: counts the battle bots in use and draws their label
-static void sub_08007540(void) {
+// guess: counts the partner's bots received over the link (gUnk_03000590[3-5]) and loads their parts
+static void team_select_link_load_opponents(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {

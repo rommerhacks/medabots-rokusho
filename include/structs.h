@@ -286,7 +286,7 @@ struct Unk_03000440 {
               // three picks)
     u8 unk51; // Medabots screen: cursor slot (0-8)
     u8 unk52; // Medabots screen: reorder pick, slot | 0x80 while holding
-    u8 unk53;
+    u8 unk53; // Medabot detail: the edited set fails validate_medapart_stats (icon shown in palette 8)
     u8 filler54[0x2];
     u8 unk56; // game state 3: 0 = entered from the field (fades from the backup palette), 1 = from a submenu
     u8 filler57[0x3];
@@ -311,7 +311,8 @@ struct Unk_03000440 {
     u16 unk92; // blend effect speed, added to unk94 every frame
     u16 unk94; // blend effect progress (done at 0x100)
     u8 unk96;
-    u8 unk97; // shown Medabot: Medal, then unk98-9B its four Medaparts
+    u8 unk97; // shown Medabot: Medal slot (0x1E none), then unk98-9B its four Medaparts (>= 120 none); the
+              // detail screen's edit copy (medabot_detail_take_apart / assign_medal_to_team_slot)
     u8 unk98;
     u8 unk99;
     u8 unk9A;
