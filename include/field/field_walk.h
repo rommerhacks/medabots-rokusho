@@ -7,6 +7,6 @@ void init_battle_sprites(void);
 void field_walk_update(void);
 u32 scene_state_dispatch(u32 a, u32 b);
 void scene_state_reset(void);
-u32 battle_scene_state_dispatch(void);
+u32 field_effect_run_and_restore(void);
 
 #endif // GUARD_FIELD_FIELD_WALK_H

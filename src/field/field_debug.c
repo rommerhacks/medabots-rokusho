@@ -1,31 +1,34 @@
-// Debug battle-field screen: the field sub-states field_debug_open..field_debug_wait_effect in field/field_update call
-// in here. field_debug_update_page runs one page (gUnk_030057A0.unk14) a frame: the d-pad cycles values (R held = steps
-// of 16) through the cyclers sub_0805889C..sub_08058A88, sub_08058B04 draws the page as hex-digit sprites,
-// and init_battle_field_sprites previews the chosen battle field. State is gUnk_030057A0.
+// Debug screen inside the field: the field sub-states field_debug_open..field_debug_wait_effect in
+// field/field_update call in here. field_debug_update_page runs the current page (gUnk_030057A0.page) once a
+// frame: UP/DOWN pick a row (field_debug_cycle_row), LEFT/RIGHT change its value (R held = steps of 16 for
+// the 16-bit ones), SELECT goes to the next page, B closes, A acts on the page (start a field effect, play a
+// sound, show a message). field_debug_draw_page draws the page as label and hex-digit sprites. Pages (labels
+// from the ROM strings): map / player form, EVENT flags, PLAYER position, MAP_EFFECT, KWG, KOMA (sprite
+// preview), MESS (message viewer), sound test.
 #include "global.h"
 
-static void dispatch_by_index(u32 idx);
-static void sub_08058908(u32 idx, s32 max);
-static void sub_080589B0(u32 idx, s32 max);
-static void update_anim_counter(u32 idx, s32 max);
-static void sub_08058A88(u32 idx, u32 sub, s32 max);
-static void sub_08058B04(u32 idx);
-static void clear_all_battle_sprites(void);
-static void load_battle_sprite_from_index(u32 value, s32 bits, s32 x, s32 y);
+static void field_debug_enter_page(u32 idx);
+static void field_debug_cycle_event_value(u32 idx, s32 max);
+static void field_debug_cycle_message_value(u32 idx, s32 max);
+static void field_debug_cycle_sound_value(u32 idx, s32 max);
+static void field_debug_cycle_page_value(u32 idx, u32 sub, s32 max);
+static void field_debug_draw_page(u32 idx);
+static void field_debug_clear_sprites(void);
+static void field_debug_draw_hex(u32 value, s32 bits, s32 x, s32 y);
 
 void field_debug_init_page(void) {
-    dispatch_by_index(gUnk_030057A0.unk14);
+    field_debug_enter_page(gUnk_030057A0.page);
 }
 
-static void dispatch_by_index(u32 idx) {
+static void field_debug_enter_page(u32 idx) {
     switch (idx) {
     case 0:
-        gUnk_030057A0.unk26 = gUnk_030057E0.unk7FE;
+        gUnk_030057A0.area_id = gUnk_030057E0.unk7FE;
         break;
     case 1:
-        gUnk_030057A0.unk28 = gUnk_030057E0.unkC90;
-        gUnk_030057A0.unk2A = sub_08053194(gUnk_030057A0.unk28);
-        gUnk_030057A0.unk2C = sub_08053288(gUnk_030057A0.unk28);
+        gUnk_030057A0.event_id = gUnk_030057E0.unkC90;
+        gUnk_030057A0.event_flag = event_flag_get(gUnk_030057A0.event_id);
+        gUnk_030057A0.event_counter = event_counter_get(gUnk_030057A0.event_id);
         break;
     case 2:
         break;
@@ -34,70 +37,69 @@ static void dispatch_by_index(u32 idx) {
     case 4:
         break;
     case 5:
-        gUnk_030057A0.unk32 = 0;
+        gUnk_030057A0.showing = 0;
         break;
     case 6:
-        gUnk_030057A0.unk32 = 0;
-        gUnk_030057A0.unk24 = 0;
+        gUnk_030057A0.showing = 0;
+        gUnk_030057A0.text_auto_next = 0;
         break;
     }
 }
 
-static void sub_080581C0(u32 a, s32 b) {
+// EVENT page: re-read the flag / counter when the event number changes, write them back otherwise.
+static void field_debug_apply_event_value(u32 a, s32 b) {
     switch (a) {
     case 0:
         break;
     case 1:
         if (b == 0) {
-            gUnk_030057A0.unk2A = sub_08053194(gUnk_030057A0.unk28);
-            gUnk_030057A0.unk2C = sub_08053288(gUnk_030057A0.unk28);
+            gUnk_030057A0.event_flag = event_flag_get(gUnk_030057A0.event_id);
+            gUnk_030057A0.event_counter = event_counter_get(gUnk_030057A0.event_id);
         } else if (b < 0) {
         } else if (b <= 2) {
-            sub_080531D0(gUnk_030057A0.unk28, gUnk_030057A0.unk2A);
-            sub_080531EC(gUnk_030057A0.unk28, gUnk_030057A0.unk2C);
+            event_flag_write(gUnk_030057A0.event_id, gUnk_030057A0.event_flag);
+            event_counter_set(gUnk_030057A0.event_id, gUnk_030057A0.event_counter);
         }
         break;
     }
 }
 
-// Local view of gUnk_030057A0 (struct Unk_030057A0 would need unk0, unk12, unk15, s8 unk16[8], unk1E,
-
 void field_debug_update_page(u32 mode) {
-    gUnk_030057A0.unk15++;
+    gUnk_030057A0.frame++;
 
     switch (mode) {
     case 0:
-        sub_0805889C(6);
-        switch (gUnk_030057A0.unk16[gUnk_030057A0.unk14]) {
+        field_debug_cycle_row(6);
+        switch (gUnk_030057A0.rows[gUnk_030057A0.page]) {
         case 0:
-            sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 0xC0);
+            field_debug_cycle_page_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page], 0xC0);
             break;
         case 1:
-            sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 0x10);
+            field_debug_cycle_page_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page], 0x10);
             break;
         case 3:
-            sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 4);
+            field_debug_cycle_page_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page], 4);
             break;
         case 4:
-            sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 10);
+            field_debug_cycle_page_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page], 10);
             break;
         case 2:
         case 5:
-            sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 2);
+            field_debug_cycle_page_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page], 2);
             break;
         }
         break;
     case 1:
-        sub_0805889C(3);
-        switch (gUnk_030057A0.unk16[gUnk_030057A0.unk14]) {
+        field_debug_cycle_row(3);
+        switch (gUnk_030057A0.rows[gUnk_030057A0.page]) {
         case 0:
-            sub_08058908(0, 3000);
+            field_debug_cycle_event_value(0, 3000);
             break;
         case 1:
-            sub_08058908(1, 2);
+            field_debug_cycle_event_value(1, 2);
             break;
         case 2:
-            sub_08058908(2, 8);
+            field_debug_cycle_event_value(2, 8);
             break;
         }
         break;
@@ -116,54 +118,54 @@ void field_debug_update_page(u32 mode) {
         break;
     case 3:
         if (KEYS_LO(gRepeatKeys) & 0x20) {
-            if (--gUnk_030057A0.unk12 == 0xFF)
-                gUnk_030057A0.unk12 = 0x1F;
+            if (--gUnk_030057A0.effect_id == 0xFF)
+                gUnk_030057A0.effect_id = 0x1F;
         }
         if (KEYS_LO(gRepeatKeys) & 0x10) {
-            if (++gUnk_030057A0.unk12 > 0x1F)
-                gUnk_030057A0.unk12 = 0;
+            if (++gUnk_030057A0.effect_id > 0x1F)
+                gUnk_030057A0.effect_id = 0;
         }
         break;
     case 4:
-        sub_0805889C(6);
-        switch (gUnk_030057A0.unk16[gUnk_030057A0.unk14]) {
+        field_debug_cycle_row(6);
+        switch (gUnk_030057A0.rows[gUnk_030057A0.page]) {
         case 1:
-            sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 3);
+            field_debug_cycle_page_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page], 3);
             break;
         case 2:
-            sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 4);
+            field_debug_cycle_page_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page], 4);
             break;
         case 0:
         case 3:
         case 4:
-            sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 2);
+            field_debug_cycle_page_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page], 2);
             break;
         case 5:
-            sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 3);
+            field_debug_cycle_page_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page], 3);
             break;
         }
         REG_BLDALPHA = ((gBlendEffect.evb & 0x3F) << 8) | (gBlendEffect.eva & 0x3F);
         REG_BLDY = gBlendEffect.evy & 0x3F;
         break;
     case 5:
-        sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 0xB0);
-        gUnk_030057A0.unk32 = 1;
+        field_debug_cycle_page_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page], 0xB0);
+        gUnk_030057A0.showing = 1;
         break;
     case 6:
-        if (gUnk_030057A0.unk32 == 0) {
+        if (gUnk_030057A0.showing == 0) {
             const u32 *const *p;
             s32 n;
 
-            sub_0805889C(3);
-            switch (gUnk_030057A0.unk16[gUnk_030057A0.unk14]) {
+            field_debug_cycle_row(3);
+            switch (gUnk_030057A0.rows[gUnk_030057A0.page]) {
             case 0:
-                sub_080589B0(0, 0x10);
+                field_debug_cycle_message_value(0, 0x10);
                 break;
             case 1:
-                sub_080589B0(1, gUnk_030057A0.unk1E);
+                field_debug_cycle_message_value(1, gUnk_030057A0.text_count);
                 break;
             case 2:
-                sub_080589B0(2, 2);
+                field_debug_cycle_message_value(2, 2);
                 break;
             }
             p = (const u32 *const *)gTextBankTables[gUnk_030057A0.unk20];
@@ -176,36 +178,36 @@ void field_debug_update_page(u32 mode) {
                         break;
                 } while (*p != 0);
             }
-            gUnk_030057A0.unk1E = n;
-            if (gUnk_030057A0.unk30 >= (u16)n)
-                gUnk_030057A0.unk30 = n - 1;
+            gUnk_030057A0.text_count = n;
+            if (gUnk_030057A0.text_id >= (u16)n)
+                gUnk_030057A0.text_id = n - 1;
         }
         break;
     case 7:
-        sub_0805889C(5);
-        switch (gUnk_030057A0.unk16[gUnk_030057A0.unk14]) {
+        field_debug_cycle_row(5);
+        switch (gUnk_030057A0.rows[gUnk_030057A0.page]) {
         case 0:
         case 1:
-            update_anim_counter(gUnk_030057A0.unk16[gUnk_030057A0.unk14], 0x20);
+            field_debug_cycle_sound_value(gUnk_030057A0.rows[gUnk_030057A0.page], 0x20);
             break;
         case 2:
-            update_anim_counter(gUnk_030057A0.unk16[gUnk_030057A0.unk14], 0x80);
+            field_debug_cycle_sound_value(gUnk_030057A0.rows[gUnk_030057A0.page], 0x80);
             break;
         case 3:
-            update_anim_counter(gUnk_030057A0.unk16[gUnk_030057A0.unk14], 0xA0);
+            field_debug_cycle_sound_value(gUnk_030057A0.rows[gUnk_030057A0.page], 0xA0);
             break;
         case 4:
-            update_anim_counter(gUnk_030057A0.unk16[gUnk_030057A0.unk14], 0x100);
+            field_debug_cycle_sound_value(gUnk_030057A0.rows[gUnk_030057A0.page], 0x100);
             break;
         }
-        switch (gUnk_030057A0.unk16[gUnk_030057A0.unk14]) {
+        switch (gUnk_030057A0.rows[gUnk_030057A0.page]) {
         case 2:
             if (KEYS_LO(gRepeatKeys) & 1)
-                field_play_song(gUnk_030057A0.unk33);
+                field_play_song(gUnk_030057A0.song_id);
             break;
         case 3:
             if (KEYS_LO(gRepeatKeys) & 1)
-                field_play_sound_effect(gUnk_030057A0.unk34);
+                field_play_sound_effect(gUnk_030057A0.sound_id);
             break;
         case 1:
             break;
@@ -214,25 +216,24 @@ void field_debug_update_page(u32 mode) {
     }
 
     if (KEYS_LO(gNewKeys) & 4) {
-        if (++gUnk_030057A0.unk14 > 7)
-            gUnk_030057A0.unk14 = 0;
-        clear_all_battle_sprites();
-        dispatch_by_index(gUnk_030057A0.unk14);
+        if (++gUnk_030057A0.page > 7)
+            gUnk_030057A0.page = 0;
+        field_debug_clear_sprites();
+        field_debug_enter_page(gUnk_030057A0.page);
     }
     if (KEYS_LO(gRepeatKeys) & 2)
-        handle_battle_end_state_transition();
+        field_debug_close();
     if (KEYS_LO(gRepeatKeys) & 1) {
-        switch (gUnk_030057A0.unk14) {
+        switch (gUnk_030057A0.page) {
         case 3:
             gUnk_030057A0.unk10 = 0;
-            clear_all_battle_sprites();
-            init_sprite_affine_matrices_and_state(gUnk_030057A0.unk12, gUnk_030057E0.player_x, gUnk_030057E0.player_y,
-                                                  0);
-            if (gUnk_030057A0.unk12 == 0xE)
+            field_debug_clear_sprites();
+            field_effect_start(gUnk_030057A0.effect_id, gUnk_030057E0.player_x, gUnk_030057E0.player_y, 0);
+            if (gUnk_030057A0.effect_id == 0xE)
                 gUnk_030057E0.player_form = 0xC;
-            else if (gUnk_030057A0.unk12 == 0x12)
+            else if (gUnk_030057A0.effect_id == 0x12)
                 gUnk_030057E0.player_form = 0xB;
-            if (gUnk_030057A0.unk12 == 0xE || gUnk_030057A0.unk12 == 0x12) {
+            if (gUnk_030057A0.effect_id == 0xE || gUnk_030057A0.effect_id == 0x12) {
                 area_load_sprite_sheets();
                 DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.player_form]], OBJ_PLTT, 32);
                 gUnk_030057E0.unkC28 = gUnk_030057E0.player_form;
@@ -249,40 +250,40 @@ void field_debug_update_page(u32 mode) {
             play_sound_effect(gUnk_030057A0.unk0);
             break;
         case 6:
-            if (gUnk_030057A0.unk32 == 0) {
-                if (gUnk_030057A0.unk24 != 0) {
-                    gUnk_030057A0.unk30++;
-                    if (gUnk_030057A0.unk30 >= gUnk_030057A0.unk1E) {
-                        gUnk_030057A0.unk30 = 0;
-                        gUnk_030057A0.unk2E++;
-                        if (gUnk_030057A0.unk2E > 0xF)
-                            gUnk_030057A0.unk2E = 0;
+            if (gUnk_030057A0.showing == 0) {
+                if (gUnk_030057A0.text_auto_next != 0) {
+                    gUnk_030057A0.text_id++;
+                    if (gUnk_030057A0.text_id >= gUnk_030057A0.text_count) {
+                        gUnk_030057A0.text_id = 0;
+                        gUnk_030057A0.text_bank++;
+                        if (gUnk_030057A0.text_bank > 0xF)
+                            gUnk_030057A0.text_bank = 0;
                     }
                 }
-                gUnk_030057A0.unk15 = 0;
-                sub_08058B04(gUnk_030057A0.unk14);
+                gUnk_030057A0.frame = 0;
+                field_debug_draw_page(gUnk_030057A0.page);
                 message_steps_reset();
-                gUnk_030057A0.unk32++;
+                gUnk_030057A0.showing++;
             }
             break;
         }
     }
 }
 
-void sub_0805889C(s32 max) {
+void field_debug_cycle_row(s32 max) {
     if (KEYS_LO(gRepeatKeys) & 0x40) {
-        gUnk_030057A0.unk16[gUnk_030057A0.unk14]--;
-        if (gUnk_030057A0.unk16[gUnk_030057A0.unk14] < 0)
-            gUnk_030057A0.unk16[gUnk_030057A0.unk14] = max - 1;
+        gUnk_030057A0.rows[gUnk_030057A0.page]--;
+        if (gUnk_030057A0.rows[gUnk_030057A0.page] < 0)
+            gUnk_030057A0.rows[gUnk_030057A0.page] = max - 1;
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
-        gUnk_030057A0.unk16[gUnk_030057A0.unk14]++;
-        if (gUnk_030057A0.unk16[gUnk_030057A0.unk14] >= max)
-            gUnk_030057A0.unk16[gUnk_030057A0.unk14] = 0;
+        gUnk_030057A0.rows[gUnk_030057A0.page]++;
+        if (gUnk_030057A0.rows[gUnk_030057A0.page] >= max)
+            gUnk_030057A0.rows[gUnk_030057A0.page] = 0;
     }
 }
 
-static void sub_08058908(u32 idx, s32 max) {
+static void field_debug_cycle_event_value(u32 idx, s32 max) {
     u8 left;
     u16 *p;
     s32 step = 1;
@@ -291,20 +292,20 @@ static void sub_08058908(u32 idx, s32 max) {
         step = 0x10;
 
     if ((left = KEYS_LO(gRepeatKeys) & 0x20)) {
-        p = gUnk_083D6070[idx];
+        p = gFieldDebugEventValues[idx];
         if ((u16)(*p -= step) == 0xFFFF)
             *p = max - 1;
-        sub_080581C0(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14]);
+        field_debug_apply_event_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page]);
     } else if (KEYS_LO(gRepeatKeys) & 0x10) {
-        p = gUnk_083D6070[idx];
+        p = gFieldDebugEventValues[idx];
         *p += step;
         if (*p >= max)
             *p = left;
-        sub_080581C0(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14]);
+        field_debug_apply_event_value(gUnk_030057A0.page, gUnk_030057A0.rows[gUnk_030057A0.page]);
     }
 }
 
-static void sub_080589B0(u32 idx, s32 max) {
+static void field_debug_cycle_message_value(u32 idx, s32 max) {
     s32 v;
     u16 *p;
     s32 step = 1;
@@ -313,14 +314,14 @@ static void sub_080589B0(u32 idx, s32 max) {
         step = 0x10;
 
     if (KEYS_LO(gRepeatKeys) & 0x20) {
-        p = gUnk_083D607C[idx];
+        p = gFieldDebugMessageValues[idx];
         v = *p;
         v -= step;
         if (v == -1)
             v = max - 1;
         *p = v;
     } else if (KEYS_LO(gRepeatKeys) & 0x10) {
-        p = gUnk_083D607C[idx];
+        p = gFieldDebugMessageValues[idx];
         v = *p;
         v += step;
         if (v >= max)
@@ -329,30 +330,30 @@ static void sub_080589B0(u32 idx, s32 max) {
     }
 }
 
-static void update_anim_counter(u32 idx, s32 max) {
+static void field_debug_cycle_sound_value(u32 idx, s32 max) {
     u8 left;
     u8 *p;
 
     if ((left = KEYS_LO(gRepeatKeys) & 0x20)) {
-        p = gUnk_083D6088[idx];
+        p = gFieldDebugSoundValues[idx];
         if ((s8)-- * p == -1)
             *p = max - 1;
     } else if (KEYS_LO(gRepeatKeys) & 0x10) {
-        p = gUnk_083D6088[idx];
+        p = gFieldDebugSoundValues[idx];
         (*p)++;
         if (*p >= max)
             *p = left;
     }
 }
 
-static void sub_08058A88(u32 idx, u32 sub, s32 max) {
+static void field_debug_cycle_page_value(u32 idx, u32 sub, s32 max) {
     u8 changed = 0;
     s32 v;
     u8 **row;
 
     if (KEYS_LO(gRepeatKeys) & 0x20) {
         u8 *p;
-        row = gUnk_083D60DC[idx];
+        row = gFieldDebugPageValues[idx];
         p = row[sub];
         v = *p;
         v -= 1;
@@ -362,7 +363,7 @@ static void sub_08058A88(u32 idx, u32 sub, s32 max) {
         changed = 1;
     } else if (KEYS_LO(gRepeatKeys) & 0x10) {
         u8 *p;
-        row = gUnk_083D60DC[idx];
+        row = gFieldDebugPageValues[idx];
         p = row[sub];
         v = *p;
         v += 1;
@@ -372,157 +373,157 @@ static void sub_08058A88(u32 idx, u32 sub, s32 max) {
         changed = 1;
     }
     if (changed && idx == 5)
-        init_battle_field_sprites();
+        field_debug_draw_sprite_preview();
 }
 
-static void sub_08058B04(u32 mode) {
-    gUnk_030057A0.unk13 = 0;
+static void field_debug_draw_page(u32 mode) {
+    gUnk_030057A0.next_sprite = 0;
     update_bg_scroll_offsets_a();
-    load_battle_sprite_tile(gUnk_080AC494, 2, 0x28, 0x18);
-    load_battle_sprite_from_index(gUnk_030057A0.unk14, 8, 0x50, 0x18);
+    field_debug_draw_label(gUnk_080AC494, 2, 0x28, 0x18);
+    field_debug_draw_hex(gUnk_030057A0.page, 8, 0x50, 0x18);
     switch (mode) {
     case 0:
-        load_battle_sprite_tile(gUnk_080AC498, 2, 0x68, 0x18);
-        load_battle_sprite_tile(gUnk_080AC49C, 2, 0x30, 0x20);
-        load_or_clear_battle_sprites(0, gUnk_030057A0.unk26, 8, 0x50, 0x20);
-        load_battle_sprite_tile(gUnk_080AC4A0, 2, 0x30, 0x28);
-        load_or_clear_battle_sprites(1, gUnk_030057E0.player_form, 8, 0x50, 0x28);
+        field_debug_draw_label(gUnk_080AC498, 2, 0x68, 0x18);
+        field_debug_draw_label(gUnk_080AC49C, 2, 0x30, 0x20);
+        field_debug_draw_value_blink(0, gUnk_030057A0.area_id, 8, 0x50, 0x20);
+        field_debug_draw_label(gUnk_080AC4A0, 2, 0x30, 0x28);
+        field_debug_draw_value_blink(1, gUnk_030057E0.player_form, 8, 0x50, 0x28);
         switch (gUnk_030057E0.player_form) {
         case 0:
-            load_battle_sprite_tile(gUnk_080AC4A4, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4A4, 3, 0x70, 0x28);
             break;
         case 1:
-            load_battle_sprite_tile(gUnk_080AC4A8, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4A8, 3, 0x70, 0x28);
             break;
         case 2:
-            load_battle_sprite_tile(gUnk_080AC4AC, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4AC, 3, 0x70, 0x28);
             break;
         case 3:
-            load_battle_sprite_tile(gUnk_080AC4B0, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4B0, 3, 0x70, 0x28);
             break;
         case 4:
-            load_battle_sprite_tile(gUnk_080AC4B4, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4B4, 3, 0x70, 0x28);
             break;
         case 5:
-            load_battle_sprite_tile(gUnk_080AC4B8, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4B8, 3, 0x70, 0x28);
             break;
         case 6:
-            load_battle_sprite_tile(gUnk_080AC4BC, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4BC, 3, 0x70, 0x28);
             break;
         case 7:
-            load_battle_sprite_tile(gUnk_080AC4C0, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4C0, 3, 0x70, 0x28);
             break;
         case 8:
-            load_battle_sprite_tile(gUnk_080AC4C4, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4C4, 3, 0x70, 0x28);
             break;
         case 9:
-            load_battle_sprite_tile(gUnk_080AC4C8, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4C8, 3, 0x70, 0x28);
             break;
         case 10:
-            load_battle_sprite_tile(gUnk_080AC4CC, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4CC, 3, 0x70, 0x28);
             break;
         case 11:
-            load_battle_sprite_tile(gUnk_080AC4D0, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4D0, 3, 0x70, 0x28);
             break;
         case 12:
-            load_battle_sprite_tile(gUnk_080AC4D4, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4D4, 3, 0x70, 0x28);
             break;
         case 13:
-            load_battle_sprite_tile(gUnk_080AC4D8, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4D8, 3, 0x70, 0x28);
             break;
         case 14:
-            load_battle_sprite_tile(gUnk_080AC4DC, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4DC, 3, 0x70, 0x28);
             break;
         case 15:
-            load_battle_sprite_tile(gUnk_080AC4E0, 3, 0x70, 0x28);
+            field_debug_draw_label(gUnk_080AC4E0, 3, 0x70, 0x28);
             break;
         }
-        load_battle_sprite_tile(gUnk_080AC4E4, 2, 0x30, 0x30);
-        load_or_clear_battle_sprites(2, gUnk_030057E0.unkC4D, 8, 0x50, 0x30);
-        load_battle_sprite_tile(gUnk_080AC4E8, 2, 0x30, 0x38);
-        load_or_clear_battle_sprites(3, gUnk_030057E0.unkCB7, 8, 0x50, 0x38);
+        field_debug_draw_label(gUnk_080AC4E4, 2, 0x30, 0x30);
+        field_debug_draw_value_blink(2, gUnk_030057E0.unkC4D, 8, 0x50, 0x30);
+        field_debug_draw_label(gUnk_080AC4E8, 2, 0x30, 0x38);
+        field_debug_draw_value_blink(3, gUnk_030057E0.unkCB7, 8, 0x50, 0x38);
         switch (gUnk_030057E0.unkCB7) {
         case 0:
-            load_battle_sprite_tile(gUnk_080AC4EC, 2, 0x70, 0x38);
+            field_debug_draw_label(gUnk_080AC4EC, 2, 0x70, 0x38);
             break;
         case 1:
-            load_battle_sprite_tile(gUnk_080AC498, 2, 0x70, 0x38);
+            field_debug_draw_label(gUnk_080AC498, 2, 0x70, 0x38);
             break;
         case 2:
-            load_battle_sprite_tile(gUnk_080AC4F0, 2, 0x70, 0x38);
+            field_debug_draw_label(gUnk_080AC4F0, 2, 0x70, 0x38);
             break;
         case 3:
-            load_battle_sprite_tile(gUnk_080AC4F4, 2, 0x70, 0x38);
+            field_debug_draw_label(gUnk_080AC4F4, 2, 0x70, 0x38);
             break;
         }
-        load_battle_sprite_tile(gUnk_080AC4F8, 2, 0x30, 0x40);
-        load_or_clear_battle_sprites(4, gUnk_030057E0.unk7FF, 8, 0x50, 0x40);
-        load_battle_sprite_tile(gUnk_080AC4FC, 2, 0x30, 0x48);
-        load_or_clear_battle_sprites(5, gUnk_030057E0.unkC33, 8, 0x50, 0x48);
+        field_debug_draw_label(gUnk_080AC4F8, 2, 0x30, 0x40);
+        field_debug_draw_value_blink(4, gUnk_030057E0.unk7FF, 8, 0x50, 0x40);
+        field_debug_draw_label(gUnk_080AC4FC, 2, 0x30, 0x48);
+        field_debug_draw_value_blink(5, gUnk_030057E0.unkC33, 8, 0x50, 0x48);
         break;
     case 1:
-        load_battle_sprite_tile(gUnk_080AC500, 5, 0x68, 0x18);
-        load_battle_sprite_tile(gUnk_080AC508, 3, 0x30, 0x20);
-        load_or_clear_battle_sprites(0, *gUnk_083D6070[0], 16, 0x50, 0x20);
-        load_battle_sprite_tile(gUnk_080AC50C, 3, 0x30, 0x28);
-        load_or_clear_battle_sprites(1, *gUnk_083D6070[1], 8, 0x50, 0x28);
-        load_battle_sprite_tile(gUnk_080AC510, 1, 0x70, 0x28);
-        load_battle_sprite_tile(gUnk_080AC514, 2, 0x30, 0x30);
-        load_or_clear_battle_sprites(2, *gUnk_083D6070[2], 8, 0x50, 0x30);
-        load_battle_sprite_tile(gUnk_080AC510, 1, 0x70, 0x30);
+        field_debug_draw_label(gUnk_080AC500, 5, 0x68, 0x18);
+        field_debug_draw_label(gUnk_080AC508, 3, 0x30, 0x20);
+        field_debug_draw_value_blink(0, *gFieldDebugEventValues[0], 16, 0x50, 0x20);
+        field_debug_draw_label(gUnk_080AC50C, 3, 0x30, 0x28);
+        field_debug_draw_value_blink(1, *gFieldDebugEventValues[1], 8, 0x50, 0x28);
+        field_debug_draw_label(gUnk_080AC510, 1, 0x70, 0x28);
+        field_debug_draw_label(gUnk_080AC514, 2, 0x30, 0x30);
+        field_debug_draw_value_blink(2, *gFieldDebugEventValues[2], 8, 0x50, 0x30);
+        field_debug_draw_label(gUnk_080AC510, 1, 0x70, 0x30);
         break;
     case 2:
-        load_battle_sprite_tile(gUnk_080AC518, 6, 0x68, 0x18);
-        load_battle_sprite_tile(gUnk_080AC520, 3, 0x30, 0x20);
-        load_or_clear_battle_sprites(0, gUnk_030057E0.player_x, 16, 0x50, 0x20);
-        load_battle_sprite_tile(gUnk_080AC524, 3, 0x30, 0x28);
-        load_or_clear_battle_sprites(0, gUnk_030057E0.player_y, 16, 0x50, 0x28);
+        field_debug_draw_label(gUnk_080AC518, 6, 0x68, 0x18);
+        field_debug_draw_label(gUnk_080AC520, 3, 0x30, 0x20);
+        field_debug_draw_value_blink(0, gUnk_030057E0.player_x, 16, 0x50, 0x20);
+        field_debug_draw_label(gUnk_080AC524, 3, 0x30, 0x28);
+        field_debug_draw_value_blink(0, gUnk_030057E0.player_y, 16, 0x50, 0x28);
         break;
     case 3:
-        load_battle_sprite_tile(gUnk_080AC528, 10, 0x68, 0x18);
-        load_battle_sprite_tile(gUnk_080AC534, 3, 0x30, 0x20);
-        load_or_clear_battle_sprites(0, gUnk_030057A0.unk12, 16, 0x50, 0x20);
+        field_debug_draw_label(gUnk_080AC528, 10, 0x68, 0x18);
+        field_debug_draw_label(gUnk_080AC534, 3, 0x30, 0x20);
+        field_debug_draw_value_blink(0, gUnk_030057A0.effect_id, 16, 0x50, 0x20);
         break;
     case 4:
-        load_battle_sprite_tile(gUnk_080AC538, 3, 0x68, 0x18);
-        load_battle_sprite_tile(gUnk_080AC53C, 2, 0x30, 0x20);
-        load_or_clear_battle_sprites(0, gUnk_030057A0.unk11, 8, 0x50, 0x20);
-        load_battle_sprite_tile(gUnk_080AC540, 2, 0x30, 0x28);
-        load_or_clear_battle_sprites(1, gUnk_03006D38.unk2, 8, 0x50, 0x28);
-        load_battle_sprite_tile(gUnk_080AC544, 2, 0x30, 0x30);
-        load_or_clear_battle_sprites(2, gUnk_030057E0.unkC4E, 8, 0x50, 0x30);
+        field_debug_draw_label(gUnk_080AC538, 3, 0x68, 0x18);
+        field_debug_draw_label(gUnk_080AC53C, 2, 0x30, 0x20);
+        field_debug_draw_value_blink(0, gUnk_030057A0.unk11, 8, 0x50, 0x20);
+        field_debug_draw_label(gUnk_080AC540, 2, 0x30, 0x28);
+        field_debug_draw_value_blink(1, gUnk_03006D38.unk2, 8, 0x50, 0x28);
+        field_debug_draw_label(gUnk_080AC544, 2, 0x30, 0x30);
+        field_debug_draw_value_blink(2, gUnk_030057E0.unkC4E, 8, 0x50, 0x30);
         if (gUnk_030057E0.unkC4E & 1)
-            load_battle_sprite_tile(gUnk_080AC548, 1, 0x70, 0x30);
+            field_debug_draw_label(gUnk_080AC548, 1, 0x70, 0x30);
         else
-            load_battle_sprite_tile(gUnk_080AC54C, 1, 0x70, 0x30);
+            field_debug_draw_label(gUnk_080AC54C, 1, 0x70, 0x30);
         if (gUnk_030057E0.unkC4E & 2)
-            load_battle_sprite_tile(gUnk_080AC550, 1, 0x90, 0x30);
+            field_debug_draw_label(gUnk_080AC550, 1, 0x90, 0x30);
         else
-            load_battle_sprite_tile(gUnk_080AC54C, 1, 0x90, 0x30);
-        load_battle_sprite_tile(gUnk_080AC554, 2, 0x30, 0x38);
-        load_or_clear_battle_sprites(3, gUnk_030057E0.unkCB8, 8, 0x50, 0x38);
-        load_battle_sprite_tile(gUnk_080AC558, 2, 0x30, 0x40);
-        load_or_clear_battle_sprites(4, gUnk_030057E0.unkCB9, 8, 0x50, 0x40);
-        load_battle_sprite_tile(gUnk_080AC510, 1, 0x70, 0x40);
-        load_battle_sprite_tile(gUnk_080AC55C, 2, 0x30, 0x48);
-        load_or_clear_battle_sprites(5, gUnk_030057E0.unkC4F, 8, 0x50, 0x48);
+            field_debug_draw_label(gUnk_080AC54C, 1, 0x90, 0x30);
+        field_debug_draw_label(gUnk_080AC554, 2, 0x30, 0x38);
+        field_debug_draw_value_blink(3, gUnk_030057E0.unkCB8, 8, 0x50, 0x38);
+        field_debug_draw_label(gUnk_080AC558, 2, 0x30, 0x40);
+        field_debug_draw_value_blink(4, gUnk_030057E0.unkCB9, 8, 0x50, 0x40);
+        field_debug_draw_label(gUnk_080AC510, 1, 0x70, 0x40);
+        field_debug_draw_label(gUnk_080AC55C, 2, 0x30, 0x48);
+        field_debug_draw_value_blink(5, gUnk_030057E0.unkC4F, 8, 0x50, 0x48);
         switch (gUnk_030057E0.unkC4F) {
         case 0:
-            load_battle_sprite_tile(gUnk_080AC560, 1, 0x70, 0x48);
+            field_debug_draw_label(gUnk_080AC560, 1, 0x70, 0x48);
             break;
         case 1:
-            load_battle_sprite_tile(gUnk_080AC564, 1, 0x70, 0x48);
+            field_debug_draw_label(gUnk_080AC564, 1, 0x70, 0x48);
             break;
         case 2:
-            load_battle_sprite_tile(gUnk_080AC568, 1, 0x70, 0x48);
+            field_debug_draw_label(gUnk_080AC568, 1, 0x70, 0x48);
             break;
         }
         break;
     case 5:
-        load_battle_sprite_tile(gUnk_080AC56C, 4, 0x68, 0x18);
-        load_battle_sprite_tile(gUnk_080AC574, 3, 0x30, 0x20);
-        load_or_clear_battle_sprites(0, gUnk_030057A0.unk20, 16, 0x50, 0x20);
-        if (gUnk_030057A0.unk32 != 0) {
+        field_debug_draw_label(gUnk_080AC56C, 4, 0x68, 0x18);
+        field_debug_draw_label(gUnk_080AC574, 3, 0x30, 0x20);
+        field_debug_draw_value_blink(0, gUnk_030057A0.unk20, 16, 0x50, 0x20);
+        if (gUnk_030057A0.showing != 0) {
             advance_sprite_animation_frame(0x31);
             advance_sprite_animation_frame(0x32);
             advance_sprite_animation_frame(0x33);
@@ -532,71 +533,71 @@ static void sub_08058B04(u32 mode) {
         }
         break;
     case 6:
-        switch (gUnk_030057A0.unk32) {
+        switch (gUnk_030057A0.showing) {
         case 0:
-            load_battle_sprite_tile(gUnk_080AC578, 4, 0x68, 0x18);
-            load_battle_sprite_tile(gUnk_080AC580, 3, 0x30, 0x20);
-            load_or_clear_battle_sprites(0, gUnk_030057A0.unk2E, 16, 0x50, 0x20);
-            load_battle_sprite_tile(gUnk_080AC584, 3, 0x30, 0x28);
-            load_or_clear_battle_sprites(1, gUnk_030057A0.unk30, 16, 0x50, 0x28);
-            load_battle_sprite_tile(gUnk_080AC588, 3, 0x30, 0x30);
-            load_or_clear_battle_sprites(2, gUnk_030057A0.unk24, 16, 0x50, 0x30);
-            load_battle_sprite_tile(gUnk_080AC58C, 3, 0x30, 0x38);
-            load_or_clear_battle_sprites(3, gUnk_030057A0.unk1E, 16, 0x50, 0x38);
+            field_debug_draw_label(gUnk_080AC578, 4, 0x68, 0x18);
+            field_debug_draw_label(gUnk_080AC580, 3, 0x30, 0x20);
+            field_debug_draw_value_blink(0, gUnk_030057A0.text_bank, 16, 0x50, 0x20);
+            field_debug_draw_label(gUnk_080AC584, 3, 0x30, 0x28);
+            field_debug_draw_value_blink(1, gUnk_030057A0.text_id, 16, 0x50, 0x28);
+            field_debug_draw_label(gUnk_080AC588, 3, 0x30, 0x30);
+            field_debug_draw_value_blink(2, gUnk_030057A0.text_auto_next, 16, 0x50, 0x30);
+            field_debug_draw_label(gUnk_080AC58C, 3, 0x30, 0x38);
+            field_debug_draw_value_blink(3, gUnk_030057A0.text_count, 16, 0x50, 0x38);
             break;
         case 1: {
-            const u32 *const *bank = gTextBankTables[gUnk_030057A0.unk2E];
-            if (message_step_run(0, 0, 0, bank[gUnk_030057A0.unk30]))
-                gUnk_030057A0.unk32 = 0;
+            const u32 *const *bank = gTextBankTables[gUnk_030057A0.text_bank];
+            if (message_step_run(0, 0, 0, bank[gUnk_030057A0.text_id]))
+                gUnk_030057A0.showing = 0;
         } break;
         }
         break;
     case 7:
-        load_battle_sprite_tile(gUnk_080AC514, 2, 0x68, 0x18);
-        load_battle_sprite_tile(gUnk_080AC590, 2, 0x30, 0x20);
-        load_or_clear_battle_sprites(0, gUnk_030057E0.unkCBC, 8, 0x50, 0x20);
-        load_battle_sprite_tile(gUnk_080AC594, 2, 0x30, 0x28);
-        load_or_clear_battle_sprites(1, gUnk_030057E0.unkCBD, 8, 0x50, 0x28);
-        load_battle_sprite_tile(gUnk_080AC598, 3, 0x30, 0x30);
-        load_or_clear_battle_sprites(2, gUnk_030057A0.unk33, 8, 0x50, 0x30);
-        load_battle_sprite_tile(gUnk_080AC59C, 2, 0x30, 0x38);
-        load_or_clear_battle_sprites(3, gUnk_030057A0.unk34, 8, 0x50, 0x38);
-        load_battle_sprite_tile(gUnk_080AC5A0, 3, 0x30, 0x40);
-        load_or_clear_battle_sprites(4, gUnk_030057E0.unkC5D, 8, 0x50, 0x40);
-        load_battle_sprite_tile(gUnk_080AC510, 1, 0x70, 0x40);
+        field_debug_draw_label(gUnk_080AC514, 2, 0x68, 0x18);
+        field_debug_draw_label(gUnk_080AC590, 2, 0x30, 0x20);
+        field_debug_draw_value_blink(0, gUnk_030057E0.unkCBC, 8, 0x50, 0x20);
+        field_debug_draw_label(gUnk_080AC594, 2, 0x30, 0x28);
+        field_debug_draw_value_blink(1, gUnk_030057E0.unkCBD, 8, 0x50, 0x28);
+        field_debug_draw_label(gUnk_080AC598, 3, 0x30, 0x30);
+        field_debug_draw_value_blink(2, gUnk_030057A0.song_id, 8, 0x50, 0x30);
+        field_debug_draw_label(gUnk_080AC59C, 2, 0x30, 0x38);
+        field_debug_draw_value_blink(3, gUnk_030057A0.sound_id, 8, 0x50, 0x38);
+        field_debug_draw_label(gUnk_080AC5A0, 3, 0x30, 0x40);
+        field_debug_draw_value_blink(4, gUnk_030057E0.unkC5D, 8, 0x50, 0x40);
+        field_debug_draw_label(gUnk_080AC510, 1, 0x70, 0x40);
         break;
     }
 }
 
-void load_or_clear_battle_sprites(s8 key, s32 value, u8 width, u8 x, u8 y) {
+void field_debug_draw_value_blink(s8 key, s32 value, u8 width, u8 x, u8 y) {
     struct Unk_030057A0 *s = &gUnk_030057A0;
 
-    if (key != s->unk16[s->unk14]) {
-        load_battle_sprite_from_index(value, width, x, y);
-    } else if (s->unk15 & 0x10) {
+    if (key != s->rows[s->page]) {
+        field_debug_draw_hex(value, width, x, y);
+    } else if (s->frame & 0x10) {
         s32 i;
         for (i = 0; i < width >> 3; i++) {
-            sprite_entry_clear(s->unk13);
-            s->unk13++;
-            sprite_entry_clear(s->unk13);
-            s->unk13++;
+            sprite_entry_clear(s->next_sprite);
+            s->next_sprite++;
+            sprite_entry_clear(s->next_sprite);
+            s->next_sprite++;
         }
     } else {
-        load_battle_sprite_from_index(value, width, x, y);
+        field_debug_draw_hex(value, width, x, y);
     }
 }
 
 u32 field_debug_page_done(void) {
-    switch (gUnk_030057A0.unk14) {
+    switch (gUnk_030057A0.page) {
     case 0:
     case 1:
     case 2:
     case 4:
         return 1;
     case 3:
-        if (battle_sequence_dispatch() == 4) {
+        if (field_effect_run() == 4) {
             gUnk_030057E0.player_form = 0;
-            if (gUnk_030057A0.unk12 == 0xE || gUnk_030057A0.unk12 == 0x12) {
+            if (gUnk_030057A0.effect_id == 0xE || gUnk_030057A0.effect_id == 0x12) {
                 area_load_sprite_sheets();
                 DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.player_form]], (void *)PLTT + 0x200, 0x20);
                 gUnk_030057E0.unkC28 = gUnk_030057E0.player_form;
@@ -609,20 +610,20 @@ u32 field_debug_page_done(void) {
     }
 }
 
-static void clear_all_battle_sprites(void) {
+static void field_debug_clear_sprites(void) {
     s32 i;
 
     for (i = 0; i < 40; i++)
         sprite_entry_clear(i);
 }
 
-void handle_battle_end_state_transition(void) {
+void field_debug_close(void) {
     if (gUnk_030057A0.unk11 == 0) {
         gUnk_030057A0.unk10 = 0;
-        clear_all_battle_sprites();
+        field_debug_clear_sprites();
     }
-    gUnk_030057A0.unk15 = 0;
-    switch (gUnk_030057A0.unk14) {
+    gUnk_030057A0.frame = 0;
+    switch (gUnk_030057A0.page) {
     case 0:
     case 2:
         gUnk_03005310.unk1 = 0;
@@ -639,40 +640,40 @@ void handle_battle_end_state_transition(void) {
 }
 
 // Dead code (nothing calls it): draws *value as three decimal digit sprites at (x, y), like
-// load_battle_sprite_tile with the ASCII digits '0' + d.
-static void sub_08059490(u8 *value, s32 x, s32 y) {
+// field_debug_draw_label with the ASCII digits '0' + d.
+static void field_debug_draw_decimal3(u8 *value, s32 x, s32 y) {
     u8 hundreds, tens, ones;
 
     hundreds = *value / 100;
     tens = (*value - hundreds * 100) / 10;
     ones = *value - hundreds * 100 - tens * 10;
 
-    DmaSet(3, &gUnk_080ACB7C[(hundreds + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-    sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-    gSpriteEntries[gUnk_030057A0.unk13].unk2 = x;
-    gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
-    gUnk_030057A0.unk13++;
+    DmaSet(3, &gFieldDebugFont[(hundreds + '0') * 32], 0x06017A00 + gUnk_030057A0.next_sprite * 32, 0x84000008);
+    sprite_entry_init(gUnk_030057A0.next_sprite, 0xC004, gUnk_030057A0.next_sprite + 0x99, 14, 1);
+    gSpriteEntries[gUnk_030057A0.next_sprite].unk2 = x;
+    gSpriteEntries[gUnk_030057A0.next_sprite].unk4 = y;
+    gUnk_030057A0.next_sprite++;
 
-    DmaSet(3, &gUnk_080ACB7C[(tens + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-    sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-    gSpriteEntries[gUnk_030057A0.unk13].unk2 = x + 8;
-    gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
-    gUnk_030057A0.unk13++;
+    DmaSet(3, &gFieldDebugFont[(tens + '0') * 32], 0x06017A00 + gUnk_030057A0.next_sprite * 32, 0x84000008);
+    sprite_entry_init(gUnk_030057A0.next_sprite, 0xC004, gUnk_030057A0.next_sprite + 0x99, 14, 1);
+    gSpriteEntries[gUnk_030057A0.next_sprite].unk2 = x + 8;
+    gSpriteEntries[gUnk_030057A0.next_sprite].unk4 = y;
+    gUnk_030057A0.next_sprite++;
 
-    DmaSet(3, &gUnk_080ACB7C[(ones + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-    sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-    gSpriteEntries[gUnk_030057A0.unk13].unk2 = x + 16;
-    gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
-    gUnk_030057A0.unk13++;
+    DmaSet(3, &gFieldDebugFont[(ones + '0') * 32], 0x06017A00 + gUnk_030057A0.next_sprite * 32, 0x84000008);
+    sprite_entry_init(gUnk_030057A0.next_sprite, 0xC004, gUnk_030057A0.next_sprite + 0x99, 14, 1);
+    gSpriteEntries[gUnk_030057A0.next_sprite].unk2 = x + 16;
+    gSpriteEntries[gUnk_030057A0.next_sprite].unk4 = y;
+    gUnk_030057A0.next_sprite++;
 }
 
-static void load_battle_sprite_from_index(u32 value, s32 bits, s32 x, s32 y) {
+static void field_debug_draw_hex(u32 value, s32 bits, s32 x, s32 y) {
     u8 hex[16];
     s32 i;
     u8 b;
     u8 hi, lo;
 
-    memcpy_optimized(hex, gUnk_080AC5A4, 16);
+    memcpy_optimized(hex, gFieldDebugHexDigits, 16);
     for (i = 0; i < bits / 8; i++) {
         if (bits / 8 == 4) {
             if (i == 0)
@@ -695,30 +696,30 @@ static void load_battle_sprite_from_index(u32 value, s32 bits, s32 x, s32 y) {
         hi = b >> 4;
         lo = b - hi * 16;
 
-        DmaSet(3, &gUnk_080ACB7C[hex[hi] * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-        sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-        gSpriteEntries[gUnk_030057A0.unk13].unk2 = x + i * 16;
-        gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
-        gUnk_030057A0.unk13++;
+        DmaSet(3, &gFieldDebugFont[hex[hi] * 32], 0x06017A00 + gUnk_030057A0.next_sprite * 32, 0x84000008);
+        sprite_entry_init(gUnk_030057A0.next_sprite, 0xC004, gUnk_030057A0.next_sprite + 0x99, 14, 1);
+        gSpriteEntries[gUnk_030057A0.next_sprite].unk2 = x + i * 16;
+        gSpriteEntries[gUnk_030057A0.next_sprite].unk4 = y;
+        gUnk_030057A0.next_sprite++;
 
-        DmaSet(3, &gUnk_080ACB7C[hex[lo] * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-        sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-        gSpriteEntries[gUnk_030057A0.unk13].unk2 = x + i * 16 + 8;
-        gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
-        gUnk_030057A0.unk13++;
+        DmaSet(3, &gFieldDebugFont[hex[lo] * 32], 0x06017A00 + gUnk_030057A0.next_sprite * 32, 0x84000008);
+        sprite_entry_init(gUnk_030057A0.next_sprite, 0xC004, gUnk_030057A0.next_sprite + 0x99, 14, 1);
+        gSpriteEntries[gUnk_030057A0.next_sprite].unk2 = x + i * 16 + 8;
+        gSpriteEntries[gUnk_030057A0.next_sprite].unk4 = y;
+        gUnk_030057A0.next_sprite++;
     }
 }
 
-void load_battle_sprite_tile(const u8 *digits, s32 count, s32 x, s32 y) {
+void field_debug_draw_label(const u8 *digits, s32 count, s32 x, s32 y) {
     s32 i;
 
     for (i = 0; i < count; i++) {
-        DmaSet(3, &gUnk_080ACB7C[*digits * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-        sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-        gSpriteEntries[gUnk_030057A0.unk13].unk2 = x;
-        gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
+        DmaSet(3, &gFieldDebugFont[*digits * 32], 0x06017A00 + gUnk_030057A0.next_sprite * 32, 0x84000008);
+        sprite_entry_init(gUnk_030057A0.next_sprite, 0xC004, gUnk_030057A0.next_sprite + 0x99, 14, 1);
+        gSpriteEntries[gUnk_030057A0.next_sprite].unk2 = x;
+        gSpriteEntries[gUnk_030057A0.next_sprite].unk4 = y;
         x += 8;
-        gUnk_030057A0.unk13++;
+        gUnk_030057A0.next_sprite++;
         digits++;
     }
 }
@@ -742,7 +743,7 @@ static inline void init_field_sprite(u8 row, u8 col) {
     sprite_anim_start(slot, 4 + row * 16 + col * 5);
 }
 
-void init_battle_field_sprites(void) {
+void field_debug_draw_sprite_preview(void) {
     s16 zero; // FAKEMATCH: only set inside the first if, read after it (uninitialised on the other path)
 
     fill_sprite_sheets(gUnk_030057A0.unk20);

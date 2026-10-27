@@ -1,16 +1,16 @@
 // Field walking and scene changes: scene_state_dispatch fades out, switches to another game mode and
-// back (shops, menus, battles), battle_scene_state_dispatch runs a battle sequence inside the field, and
+// back (shops, menus, battles), field_effect_run_and_restore runs a field effect (field/scene_3d), and
 // field_walk_update is the frame handler that walks the player, triggers NPC / map events and warps.
 // Talks to field/field_mode, field/field_update, field/script_sprites and the engine.
 #include "global.h"
 
-u32 battle_scene_state_dispatch(void) {
+u32 field_effect_run_and_restore(void) {
     if ((gUnk_03005350.unk1D4 & 0x3F) == 0xD || (gUnk_03005350.unk1D4 & 0x3F) == 0x16) {
         gUnk_030057E0.unkC5B = 0;
         sub_08052BA0(0);
         update_bg_scroll_offsets_a();
     }
-    if (battle_sequence_dispatch() == 4) {
+    if (field_effect_run() == 4) {
         switch (gUnk_03005350.unk1D4 & 0x3F) {
         case 0:
         case 13:
@@ -91,8 +91,8 @@ u32 scene_state_dispatch(u32 a, u32 b) {
         field_center_camera_on_player();
         blend_set_alpha_12_10();
         if (a == 0x13) {
-            init_sprite_affine_matrices_and_state(0x93, gUnk_03005350.unk1D8, gUnk_03005350.unk1DC, 0);
-            while (!battle_scene_state_dispatch())
+            field_effect_start(0x93, gUnk_03005350.unk1D8, gUnk_03005350.unk1DC, 0);
+            while (!field_effect_run_and_restore())
                 ;
         }
         if (a != 8)

@@ -1,6 +1,6 @@
 // Field map objects: NPC idle animations, NPC / map event lookup at the cursor tile, tile and room-exit
 // checks, on-screen entity sprites, area tiles, camera centring and BG scroll, field_warp_to_area, and the
-// nibble-packed event flags in gUnk_030057D8 (sub_0805311C..sub_08053288). Used by field/player_walk,
+// nibble-packed event flags in gEventFlags (event_flag_clear..event_counter_get). Used by field/player_walk,
 // field/field_walk, field/field_update and the map script commands.
 #include "global.h"
 
@@ -566,75 +566,75 @@ void update_bg_scroll_offsets_b(void) {
     gSpriteEntries[90].unk4 = gSpriteEntries[48].unk4 - 5;
 }
 
-void sub_0805311C(u16 id) {
+void event_flag_clear(u16 id) {
     if (!(id & 1)) {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         flags[id >> 1] &= 0x7F;
     } else {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         flags[id >> 1] &= 0xF7;
     }
 }
 
-void sub_08053154(u16 id) {
+void event_flag_set(u16 id) {
     if (!(id & 1)) {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         flags[id >> 1] = (flags[id >> 1] & 0x7F) | 0x80;
     } else {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         flags[id >> 1] = (flags[id >> 1] & 0xF7) | 0x08;
     }
 }
 
-u32 sub_08053194(u16 id) {
+u32 event_flag_get(u16 id) {
     if (!(id & 1)) {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         return (u8)(flags[id >> 1] & 0x80) >> 7;
     } else {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         return (u8)(flags[id >> 1] & 0x08) >> 3;
     }
 }
 
-void sub_080531D0(u16 id, u8 val) {
+void event_flag_write(u16 id, u8 val) {
     if (val == 0)
-        sub_0805311C(id);
+        event_flag_clear(id);
     else
-        sub_08053154(id);
+        event_flag_set(id);
 }
 
-void sub_080531EC(u16 id, u8 val) {
+void event_counter_set(u16 id, u8 val) {
     if (!(id & 1)) {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         flags[id >> 1] = (flags[id >> 1] & 0x8F) | (val << 4);
     } else {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         flags[id >> 1] = (flags[id >> 1] & 0xF8) | val;
     }
 }
 
-void sub_08053234(u16 id) {
+void event_counter_increment(u16 id) {
     u8 n;
 
     if (!(id & 1)) {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         n = (flags[id >> 1] & 0x70) >> 4;
         n++;
         flags[id >> 1] = (flags[id >> 1] & 0x8F) | (n << 4);
     } else {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         n = flags[id >> 1] & 7;
         n++;
         flags[id >> 1] = (flags[id >> 1] & 0xF8) | n;
     }
 }
 
-u32 sub_08053288(u16 id) {
+u32 event_counter_get(u16 id) {
     if (!(id & 1)) {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         return (flags[id >> 1] & 0x70) >> 4;
     } else {
-        u8 *flags = gUnk_030057D8;
+        u8 *flags = gEventFlags;
         return flags[id >> 1] & 7;
     }
 }

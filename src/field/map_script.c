@@ -189,14 +189,14 @@ void sub_0804BB54(void) {
     gUnk_030057E0.unkC89 = 1;
 }
 
-void sub_0804BB7C(void) {
+void map_script_cmd_clear_event_flag(void) {
     read_map_script_bytes(2);
-    sub_0805311C((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]);
+    event_flag_clear((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]);
 }
 
-void sub_0804BBA8(void) {
+void map_script_cmd_set_event_flag(void) {
     read_map_script_bytes(2);
-    sub_08053154((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]);
+    event_flag_set((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]);
 }
 
 void sub_0804BBD4(void) {
@@ -220,14 +220,14 @@ void sub_0804BC88(void) {
         sub_0804D934(obj);
 }
 
-void sub_0804BCBC(void) {
+void map_script_cmd_set_event_counter(void) {
     read_map_script_bytes(3);
-    sub_080531EC((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1], gUnk_030057E0.unkC94[2] & 7);
+    event_counter_set((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1], gUnk_030057E0.unkC94[2] & 7);
 }
 
-void sub_0804BCF8(void) {
+void map_script_cmd_increment_event_counter(void) {
     read_map_script_bytes(2);
-    sub_08053234((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]);
+    event_counter_increment((gUnk_030057E0.unkC94[0] << 8) | gUnk_030057E0.unkC94[1]);
 }
 
 void sub_0804BD24(void) {
@@ -400,10 +400,10 @@ void sub_0804C398(void) {
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[2];
 }
 
-// guess: jump by a byte offset, selected by the flag nibble sub_08053288(script id)
+// guess: jump by a byte offset, selected by the flag nibble event_counter_get(script id)
 void sub_0804C3F8(void) {
     u16 start = gUnk_030057E0.unkC8A;
-    gUnk_030057E0.unkC8A += sub_08053288(gUnk_030057E0.unkC8E);
+    gUnk_030057E0.unkC8A += event_counter_get(gUnk_030057E0.unkC8E);
     gUnk_030057E0.unkC8A = start + read_map_script_byte();
 }
 
@@ -771,11 +771,10 @@ void sub_0804CFCC(void) {
     give_starter_medabot();
 }
 
-void sub_0804CFD8(void) {
+void map_script_cmd_start_field_effect(void) {
     read_map_script_bytes(3);
-    init_sprite_affine_matrices_and_state(gUnk_030057E0.unkC94[0],
-                                          (gUnk_030057E0.unkC94[1] & 0x7F) * 16 + gUnk_030057E0.unkC48,
-                                          (gUnk_030057E0.unkC94[2] & 0x7F) * 16 + gUnk_030057E0.unkC4A, 0);
+    field_effect_start(gUnk_030057E0.unkC94[0], (gUnk_030057E0.unkC94[1] & 0x7F) * 16 + gUnk_030057E0.unkC48,
+                       (gUnk_030057E0.unkC94[2] & 0x7F) * 16 + gUnk_030057E0.unkC4A, 0);
     gUnk_030057E0.unkC89 = 1;
 }
 

@@ -3,11 +3,11 @@
 
 // Field map objects: NPC animation, map events, tile and exit checks, camera, warps, event flag nibbles
 
-void sub_08053234(u16 id);
-u32 sub_08053288(u16 id);
-void sub_0805311C(u16 id);
-void sub_08053154(u16 id);
-void sub_080531EC(u16 id, u8 val);
+void event_counter_increment(u16 id);
+u32 event_counter_get(u16 id);
+void event_flag_clear(u16 id);
+void event_flag_set(u16 id);
+void event_counter_set(u16 id, u8 val);
 void sub_08052BA0(u8 on);
 void update_bg_scroll_offsets_a(void);
 void set_tile_data(u8 x, u8 y, u8 val);
@@ -43,7 +43,7 @@ void update_npc_sprite_animations(void);
 s32 check_room_exit_at_position(void);
 void check_and_update_battlefield_palette(void);
 u32 sub_08052990(u32 unused, u8 which);
-u32 sub_08053194(u16 id);
-void sub_080531D0(u16 id, u8 val);
+u32 event_flag_get(u16 id);
+void event_flag_write(u16 id, u8 val);
 
 #endif // GUARD_FIELD_MAP_OBJECTS_H

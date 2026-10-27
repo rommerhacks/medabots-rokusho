@@ -264,8 +264,8 @@ gUnk_080AC59C:
 gUnk_080AC5A0:
 	.incbin "baserom.gba", 0xAC5A0, 0x4
 
-	.global gUnk_080AC5A4
-gUnk_080AC5A4:
+	.global gFieldDebugHexDigits
+gFieldDebugHexDigits:
 	.incbin "baserom.gba", 0xAC5A4, 0x10
 
 	.global gUnk_080AC5B4
@@ -316,8 +316,8 @@ gUnk_080AC8D4:
 gUnk_080AC8F4:
 	.incbin "baserom.gba", 0xAC8F4, 0x288
 
-	.global gUnk_080ACB7C
-gUnk_080ACB7C:
+	.global gFieldDebugFont
+gFieldDebugFont:
 	.incbin "baserom.gba", 0xACB7C, 0x1C00
 
 	.global gSineTable

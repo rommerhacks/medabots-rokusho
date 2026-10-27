@@ -32,7 +32,7 @@ void load_map_npc_sprites(s32 mode) {
                 continue;
             if (e->unk5 != k)
                 continue;
-            if (sub_08053194(e->unk2 & 0xFFF))
+            if (event_flag_get(e->unk2 & 0xFFF))
                 continue;
             skip = 0;
             found = 0;

@@ -45,7 +45,7 @@ extern struct Unk_03006F74 *gUnk_03006F74;
 extern struct Unk_030055A0 gUnk_030055A0[];
 extern struct Vec16 gBg2Scroll; // BG2 scroll
 extern struct Vec16 gBg3Scroll; // BG3 scroll
-extern u8 *gUnk_030057D8;       // two 4-bit entries per byte (bit 3 / bit 7: flag, bits 0-2 / 4-6: count)
+extern u8 *gEventFlags;         // two 4-bit entries per byte (bit 3 / bit 7: flag, bits 0-2 / 4-6: count)
 extern u16 *gUnk_03006D14;
 extern struct Unk_03006D38 gUnk_03006D38;
 extern u8 gUnk_03003810;
@@ -1119,7 +1119,7 @@ extern u32 gUnk_0300534C;
 extern struct AffineParam gAffineParams[32];
 extern struct BattleEntity3D *gUnk_03006D30;
 extern const s32 *const
-    *const gUnk_083D2DB0[]; // per model set, per entity: s32 count, x[4], y[4], z[4] (update_3d_entity_projections)
+    *const gUnk_083D2DB0[]; // per model set, per entity: s32 count, x[4], y[4], z[4] (field_effect_project_objects)
 extern const float gUnk_083D6EA0[256]; // guess: sine, angle 0-255 (set_state_float_field)
 extern const float gUnk_083D72A0[256]; // guess: cosine
 extern const Func gItemMenuStates[];   // field menu Item screen states, by gGameSubState (item_menu_update)
@@ -1353,9 +1353,9 @@ extern const u8 gUnk_085FA7FC[];
 extern const u8 gUnk_085FAA18[];
 extern const u16 gUnk_085FA640[];
 extern const u16 gUnk_085FA85C[];
-extern u16 *gUnk_083D6070[];
-extern u16 *gUnk_083D607C[];
-extern u8 **gUnk_083D60DC[];
+extern u16 *gFieldDebugEventValues[];
+extern u16 *gFieldDebugMessageValues[];
+extern u8 **gFieldDebugPageValues[];
 extern const u8 gUnk_083D2C3D[];
 extern const u8 gUnk_080AC494[];
 extern const u8 gUnk_080AC498[];
@@ -1419,10 +1419,10 @@ extern const u8 gUnk_080AC594[];
 extern const u8 gUnk_080AC598[];
 extern const u8 gUnk_080AC59C[];
 extern const u8 gUnk_080AC5A0[];
-extern u8 *gUnk_083D6088[];
+extern u8 *gFieldDebugSoundValues[];
 extern const Func gUnk_083D5E08[];
-extern const u8 gUnk_080ACB7C[];
-extern const u8 gUnk_080AC5A4[];
+extern const u8 gFieldDebugFont[];
+extern const u8 gFieldDebugHexDigits[];
 
 // code_0805AB40 (session 91)
 extern const struct FuncTable6
@@ -1450,8 +1450,7 @@ extern const u32 gUnk_0879C89C[];
 extern const u8 gUnk_0879C69C[];
 extern const u8 gUnk_0850DD78[];
 
-extern s32
-    *gUnk_083D5D84[]; // battle sequence scripts, picked by gUnk_03005350.unk1D4 & 0x3F (battle_sequence_dispatch)
+extern s32 *gUnk_083D5D84[];        // field effect scripts, picked by gUnk_03005350.unk1D4 & 0x3F (field_effect_run)
 extern const void *gUnk_0847ECC0[]; // battle sequence sprite graphics (opcode 27)
 extern const void *gUnk_0847EC40[]; // battle sequence sprite palettes (opcode 27)
 extern const u8 gUnk_083D2AAB[];
@@ -1482,7 +1481,7 @@ extern struct SpriteFrame *const *const gUnk_083AC108[];
 extern const struct MapNpcRecord *const gUnk_084837A0[];
 extern u8 gUnk_02023000[];       // shop cart: quantity per sell-list entry; [0x78] = first visible entry
 extern const u8 gUnk_08483E50[]; // 4 Medapart ids per shop (gUnk_03002420 * 4 + i); 0xFF ends
-extern u16 gUnk_03006432;        // guess: battle field grid origin x (init_battle_field_sprites)
+extern u16 gUnk_03006432;        // guess: battle field grid origin x (field_debug_draw_sprite_preview)
 extern u16 gUnk_03006434;        // guess: battle field grid origin y
 
 #endif // GUARD_VARIABLES_H

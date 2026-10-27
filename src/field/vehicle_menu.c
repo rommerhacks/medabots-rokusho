@@ -504,7 +504,7 @@ static u32 check_vehicle_usability(s32 idx) {
 static void handle_cursor_up_down_input(s32 count) {
     struct Unk_030064A0 *s;
 
-    gUnk_030057A0.unk15++;
+    gUnk_030057A0.frame++;
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         field_play_sound_effect(2);
         s = &gUnk_030064A0;

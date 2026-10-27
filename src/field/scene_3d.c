@@ -1,24 +1,25 @@
-// 3-D scene sequences played inside the field (guess: warps and transformation effects; no scenario runs
-// them yet). init_sprite_affine_matrices_and_state picks a sequence and resets the state in
-// gUnk_03005350; battle_sequence_dispatch runs its script one frame at a time (4 = finished) over the
-// float camera / projection helpers and the interpolated tracks at the end of the file. Started by
-// field/field_update, field/map_script and field/field_walk.
+// Field effects ("MAP_EFFECT" on the debug screen): small 3-D sprite scenes played inside the field,
+// e.g. the map warp (0x12) and teleport (0xE) effects of field/field_update. field_effect_start picks an
+// effect (flags & 0x3F; 0x40 = at the player) and resets the state in gUnk_03005350; field_effect_run runs
+// its script one frame at a time (4 = finished) over the float camera / projection helpers and the
+// interpolated tracks at the end of the file. Started by field/field_update, field/map_script and
+// field/field_walk.
 #include "global.h"
 
 static void compute_plane_from_points(float *x, float *y, float *z, float *a, float *b, float *c, float *d);
 static void get_state_position_xyz(float *x, float *y, float *z);
-static void sub_0805378C(void);
-static void sub_08053798(void);
+static void field_effect_init_viewport(void);
+static void field_effect_init_viewport_centered(void);
 static void affine_set_destination_and_compute_transform(float x0, float x1, float y0, float y1);
 static void affine_set_source_and_compute_transform(float x0, float x1, float y0, float y1);
-static void sub_08053AB8(float *x, float *y, float *z);
-static void sub_08053B94(float x, float y, float z);
-static void sub_08053BB4(float a, float b);
-static void update_battle_entity_screen_position(float x, float y, float z);
+static void field_effect_project_object(float *x, float *y, float *z);
+static void field_effect_project_origin(float x, float y, float z);
+static void field_effect_view_to_screen_origin(float a, float b);
+static void field_effect_project_sprite(float x, float y, float z);
 static void compute_3d_transform_vectors(float x, float y, float z, float *outX, float *outY, float *outZ);
 static void get_state_float_as_int(float a, float b, s32 *x, s32 *y);
-static void update_entity_position_and_triggers(float a, float b);
-static void update_battle_sprite_status_effects(void);
+static void field_effect_place_sprite(float a, float b);
+static void field_effect_update_sprite_depth(void);
 
 static float float_default_to_one_if_zero(float x) {
     if (x == 0.0f)
@@ -42,7 +43,7 @@ static double compute_sqrt_scaled(double x) {
     return (u16)Sqrt((s32)x << 3) >> 3;
 }
 
-void init_sprite_affine_matrices_and_state(u32 flags, u32 x, u32 y, u32 d) {
+void field_effect_start(u32 flags, u32 x, u32 y, u32 d) {
     s32 i;
 
     affine_params_reset();
@@ -59,8 +60,8 @@ void init_sprite_affine_matrices_and_state(u32 flags, u32 x, u32 y, u32 d) {
     gUnk_03005350.unk1E0 = d;
 }
 
-void sub_08053418(void) {
-    sub_0805378C();
+void field_effect_reset_view(void) {
+    field_effect_init_viewport();
     gUnk_03005350.unkA4[0] = gUnk_03005350.unk1D8 - gBg1Scroll.x - 0x70;
     gUnk_03005350.unkA4[1] = gUnk_03005350.unk1DC - gBg1Scroll.y - 0x50;
     memzero_bytes((u8 *)gUnk_03006D30, 0x3000);
@@ -89,7 +90,7 @@ static void compute_distance_to_state_position(float *xs, float *ys, float *zs) 
     Div((s32)dy, (s32)dist);
     Div((s32)dz, (s32)dist);
     if (dist < 10000.0f)
-        sub_08053AB8(xs, ys, zs);
+        field_effect_project_object(xs, ys, zs);
 }
 
 // x, y, z: the three points' coordinates (x[i], y[i], z[i] = point i).
@@ -119,11 +120,11 @@ static void get_state_position_xyz(float *x, float *y, float *z) {
     *z = gUnk_03005350.unk48;
 }
 
-static void sub_0805378C(void) {
-    sub_08053798();
+static void field_effect_init_viewport(void) {
+    field_effect_init_viewport_centered();
 }
 
-static void sub_08053798(void) {
+static void field_effect_init_viewport_centered(void) {
     s32 zero;
 
     gUnk_03005350.unk0 = 240;
@@ -184,45 +185,45 @@ void set_state_float_field(float a, float b, float c, float d) {
     gUnk_03005350.unk48 = c * z;
 }
 
-static void sub_08053AB8(float *x, float *y, float *z) {
+static void field_effect_project_object(float *x, float *y, float *z) {
     float a, b, c;
     s32 i;
 
     a = x[0];
     b = y[0];
     c = z[0];
-    sub_08053B94(a, b, c);
+    field_effect_project_origin(a, b, c);
     for (i = 1; i < gUnk_03005350.unk1D0; i++) {
         a = x[i];
         b = y[i];
         c = z[i];
         gUnk_03006D30[gUnk_03005350.unk1CC].unk20C = i;
-        update_battle_entity_screen_position(a, b, c);
+        field_effect_project_sprite(a, b, c);
     }
     a = x[0];
     b = y[0];
     c = z[0];
     gUnk_03006D30[gUnk_03005350.unk1CC].unk20C = 0;
-    update_battle_entity_screen_position(a, b, c);
+    field_effect_project_sprite(a, b, c);
 }
 
-static void sub_08053B94(float a, float b, float c) {
+static void field_effect_project_origin(float a, float b, float c) {
     float x, y, z;
 
     compute_3d_transform_vectors(a, b, c, &x, &y, &z);
-    sub_08053BB4(x, y);
+    field_effect_view_to_screen_origin(x, y);
 }
 
-static void sub_08053BB4(float a, float b) {
+static void field_effect_view_to_screen_origin(float a, float b) {
     get_state_float_as_int(a, b, &gUnk_03005350.unkB4, &gUnk_03005350.unkB8);
 }
 
-static void update_battle_entity_screen_position(float x, float y, float z) {
+static void field_effect_project_sprite(float x, float y, float z) {
     float sx, sy, depth;
     struct SpriteEntry *sprites;
 
     compute_3d_transform_vectors(x, y, z, &sx, &sy, &depth);
-    update_entity_position_and_triggers(sx, sy);
+    field_effect_place_sprite(sx, sy);
     sprites = gSpriteEntries;
     sprites[gUnk_03006D30[gUnk_03005350.unk1CC].unk2DC[gUnk_03006D30[gUnk_03005350.unk1CC].unk20C]].unk14_8 = depth;
 }
@@ -249,7 +250,7 @@ static void get_state_float_as_int(float a, float b, s32 *x, s32 *y) {
 
 #define CUR_ENTITY gUnk_03006D30[gUnk_03005350.unk1CC]
 
-static void update_entity_position_and_triggers(float a, float b) {
+static void field_effect_place_sprite(float a, float b) {
     get_state_float_as_int(a, b, &gUnk_03005350.unkB4, &gUnk_03005350.unkB8);
     gSpriteEntries[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].unk2 =
         gUnk_03005350.unkB4 + CUR_ENTITY.unk2E0[CUR_ENTITY.unk20C];
@@ -287,7 +288,7 @@ static void init_affine_transform_viewport(s32 x, s32 y) {
     affine_set_source_and_compute_transform(-120.5f, 120.5f, -80.5f, 80.5f);
 }
 
-void update_3d_entity_projections(void) {
+void field_effect_project_objects(void) {
     s32 i, j;
     const s32 *p;
     const s32 *q;
@@ -331,9 +332,9 @@ void update_3d_entity_projections(void) {
 #define S (*(struct SeqState *)&gUnk_03005350)
 #define E ((struct SeqEntity *)gUnk_03006D30)
 
-// Battle 3-D sequence script interpreter (guess). Runs the script picked by unk1D4 & 0x3F until an opcode
+// Field effect script interpreter. Runs the script picked by unk1D4 & 0x3F until an opcode
 // returns control: 0 (script end), 1, 2 (wait a frame) or 4 (finished).
-u32 battle_sequence_dispatch(void) {
+u32 field_effect_run(void) {
     s32 *script;
     s32 buf[16];
     u32 zero;
@@ -375,7 +376,7 @@ u32 battle_sequence_dispatch(void) {
             S.unk218 = 0;
             S.unk21C = 0x400;
             S.unk220 = 0x800;
-            sub_08053418();
+            field_effect_reset_view();
             for (i = 0; i < 16; i++) {
                 E[i].unk160.value = 1.0f;
                 E[i].unk178.value = 1.0f;
@@ -562,7 +563,7 @@ u32 battle_sequence_dispatch(void) {
                 } else
                     E[i].unk4++;
             }
-            update_3d_entity_projections();
+            field_effect_project_objects();
             for (i = 0; i < 16; i++) {
                 if (E[i].unk0 == 2)
                     done++;
@@ -581,7 +582,7 @@ u32 battle_sequence_dispatch(void) {
                     }
                 }
             }
-            update_battle_sprite_status_effects();
+            field_effect_update_sprite_depth();
             if (S.unk1F4 != 0) {
                 if (S.unk200 <= S.unk1FC) {
                     S.unk1FC++;
@@ -756,7 +757,7 @@ u32 battle_sequence_dispatch(void) {
                 anim = &E[n].unkA0;
             memcpy_u8(&script[S.unkFC], buf, 0x40);
             S.unkFC += 0x10;
-            sub_0805689C(anim, buf);
+            anim_interp_init(anim, buf);
             break;
         case 23: // guess: 3-D scale x ramp
             S.unkFC++;
@@ -1161,7 +1162,7 @@ u32 battle_sequence_dispatch(void) {
 
 #include "keys.h"
 
-static void update_battle_sprite_status_effects(void) {
+static void field_effect_update_sprite_depth(void) {
     struct Unk_03005350 *b = &gUnk_03005350;
     s32 i, j;
     s32 d;
@@ -1188,7 +1189,7 @@ static void update_battle_sprite_status_effects(void) {
     }
 }
 
-void sub_0805689C(struct AnimInterp *p, s32 *a) {
+void anim_interp_init(struct AnimInterp *p, s32 *a) {
     s32 mode;
     float x, phase;
 

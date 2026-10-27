@@ -26,8 +26,8 @@ void map_script_update_message(void) {
     switch (s->unkC93) {
     case 0:
         message_steps_reset();
-        gUnk_030057A0.unk2E = s->unkC94[0] - 2;
-        gUnk_030057A0.unk30 = (s->unkC94[1] << 8) | s->unkC94[2];
+        gUnk_030057A0.text_bank = s->unkC94[0] - 2;
+        gUnk_030057A0.text_id = (s->unkC94[1] << 8) | s->unkC94[2];
         if (sub_0804B6EC())
             map_script_command_done();
         s->unkC93++;
@@ -1026,9 +1026,9 @@ void sub_0804F694(void) {
     case 0:
         kind = gUnk_03005350.unk1D4 & 0x3F;
         if (kind == 0xD || kind == 0x16) {
-            if (battle_scene_state_dispatch())
+            if (field_effect_run_and_restore())
                 gUnk_030057E0.unkC93++;
-        } else if (battle_scene_state_dispatch())
+        } else if (field_effect_run_and_restore())
             map_script_command_done();
         break;
     case 1:

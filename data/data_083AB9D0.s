@@ -1298,20 +1298,20 @@ gUnk_083D5F2C:
 gUnk_083D5F30:
 	.incbin "baserom.gba", 0x3D5F30, 0x140
 
-	.global gUnk_083D6070
-gUnk_083D6070:
+	.global gFieldDebugEventValues
+gFieldDebugEventValues:
 	.incbin "baserom.gba", 0x3D6070, 0xC
 
-	.global gUnk_083D607C
-gUnk_083D607C:
+	.global gFieldDebugMessageValues
+gFieldDebugMessageValues:
 	.incbin "baserom.gba", 0x3D607C, 0xC
 
-	.global gUnk_083D6088
-gUnk_083D6088:
+	.global gFieldDebugSoundValues
+gFieldDebugSoundValues:
 	.incbin "baserom.gba", 0x3D6088, 0x54
 
-	.global gUnk_083D60DC
-gUnk_083D60DC:
+	.global gFieldDebugPageValues
+gFieldDebugPageValues:
 	.incbin "baserom.gba", 0x3D60DC, 0x8C4
 
 	.global gUnk_083D69A0

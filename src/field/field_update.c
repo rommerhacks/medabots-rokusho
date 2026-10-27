@@ -83,7 +83,7 @@ void new_game_init(void) {
     REG_BG3CNT = 0xEE0B;
     REG_DISPCNT = 0x1E40;
     gMapScriptData = (u8 *)gUnk_08764CB0;
-    gUnk_030057D8 = (u8 *)&gUnk_030057E0;
+    gEventFlags = (u8 *)&gUnk_030057E0;
     gUnk_03006D30 = (struct BattleEntity3D *)0x02039000;
     gUnk_03006D14 = (u16 *)0x02030000;
     gUnk_030057DC = (u8 *)0x02038000;
@@ -222,7 +222,7 @@ void field_continue_load(void) {
     gUnk_03005310.unk1 = 0;
     restore_script_sprites();
     gUnk_03005590 = gUnk_08764CB0;
-    gUnk_030057D8 = (u8 *)&gUnk_030057E0;
+    gEventFlags = (u8 *)&gUnk_030057E0;
     gUnk_03006D30 = (struct BattleEntity3D *)0x02039000;
     gUnk_03006D14 = (u16 *)0x02030000;
     gUnk_030057DC = (u8 *)0x02038000;
@@ -424,7 +424,7 @@ void field_map_warp_start_effect(void) {
     if (run_blend_fade_transition(0)) {
         gUnk_030057E0.player_form = 0xB;
         load_battle_palette_via_dma(0);
-        init_sprite_affine_matrices_and_state(0x12, gUnk_030057E0.player_x, gUnk_030057E0.player_y, 0);
+        field_effect_start(0x12, gUnk_030057E0.player_x, gUnk_030057E0.player_y, 0);
         game_substate_advance();
     }
 }
@@ -459,7 +459,7 @@ void field_teleport_start_effect(void) {
     gUnk_030057E0.player_form = 0xC;
     load_battle_palette_via_dma(0);
     field_update_music(9, 0);
-    init_sprite_affine_matrices_and_state(0xE, gUnk_030057E0.player_x, gUnk_030057E0.player_y, 0);
+    field_effect_start(0xE, gUnk_030057E0.player_x, gUnk_030057E0.player_y, 0);
     game_substate_advance();
 }
 
@@ -489,7 +489,7 @@ static void nullsub_0804AF44(void) {}
 
 static void nullsub_0804AF48(void) {}
 
-// Sub-states 48-52: the debug battle-field screen (pages in field/field_debug); the area page warps.
+// Sub-states 48-52: the field debug screen (pages in field/field_debug); the map page warps.
 void field_debug_open(void) {
     struct Unk_030057A0 *debug = &gUnk_030057A0;
 
@@ -501,12 +501,12 @@ void field_debug_open(void) {
 }
 
 void field_debug_run_page(void) {
-    field_debug_update_page(gUnk_030057A0.unk14);
+    field_debug_update_page(gUnk_030057A0.page);
 }
 
 void field_debug_wait_effect(void) {
     if (field_debug_page_done())
-        handle_battle_end_state_transition();
+        field_debug_close();
 }
 
 void field_debug_fade_out(void) {
@@ -519,8 +519,8 @@ void field_debug_reload_area(void) {
 
     if (run_blend_fade_transition(0x7FFF)) {
         gMapScriptData = (u8 *)gUnk_08764CB0;
-        if (gUnk_030057A0.unk14 == 0)
-            gUnk_030057E0.unk7FE = gUnk_030057A0.unk26;
+        if (gUnk_030057A0.page == 0)
+            gUnk_030057E0.unk7FE = gUnk_030057A0.area_id;
         field_load_area_tiles(gUnk_030057E0.unk7FE);
         x = sub_080526F0(gUnk_030057E0.player_x);
         y = sub_08052714(gUnk_030057E0.player_y);
@@ -667,9 +667,9 @@ static void update_blend_effect_from_input(void) {
     }
 }
 
-// Whether the player effect sequence (battle_sequence_dispatch) has finished.
+// Whether the field effect (field_effect_run) has finished.
 static u32 field_effect_sequence_done(void) {
-    if (battle_sequence_dispatch() == 4)
+    if (field_effect_run() == 4)
         return 1;
     return 0;
 }

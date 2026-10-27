@@ -869,29 +869,32 @@ struct Unk_030017A0 {
     u8 unk7;
 };
 
+// Field scratch state; mostly the debug screen (field/field_debug), which draws its pages as hex
+// sprites. Page labels come from the ROM strings: 0 "MP" (map), 1 "EVENT", 2 "PLAYER", 3 "MAP_EFFECT",
+// 4 "KWG", 5 "KOMA", 6 "MESS", 7 "LV" (sound). text_bank / text_id are also used by map_script_update_message.
 struct Unk_030057A0 {
-    u8 unk0;
+    u8 unk0; // sound effect played by A on page 4
     u8 filler1[0xF];
     u8 unk10;
     u8 unk11;
-    u8 unk12;
-    u8 unk13;    // next free battle sprite slot (load_battle_sprite_tile)
-    u8 unk14;    // debug battle-field screen page (field_debug_update_page)
-    u8 unk15;    // bit 0x10: clear instead of load (load_or_clear_battle_sprites)
-    s8 unk16[8]; // per-page row values (sub_0805889C)
-    u16 unk1E;
-    u16 unk20; // battle field id (init_battle_field_sprites)
+    u8 effect_id;   // MAP_EFFECT page: field effect to start (0-0x1F)
+    u8 next_sprite; // next free debug sprite slot (field_debug_draw_label)
+    u8 page;        // debug screen page 0-7 (SELECT cycles)
+    u8 frame;       // frame counter; bit 0x10 blinks the selected value (field_debug_draw_value_blink)
+    s8 rows[8];     // selected row of each page (field_debug_cycle_row)
+    u16 text_count; // MESS page: number of messages in the bank
+    u16 unk20;      // KOMA page: sprite set previewed (field_debug_draw_sprite_preview)
     u8 filler22[0x2];
-    u16 unk24;
-    u16 unk26;
-    u16 unk28;
-    u16 unk2A;
-    u16 unk2C;
-    u16 unk2E; // text bank (map script opcode 0x8x argument - 2)
-    u16 unk30; // text id
-    u8 unk32;
-    s8 unk33;
-    s8 unk34;
+    u16 text_auto_next; // MESS page: A steps to the next message first
+    u16 area_id;        // MP page: area to warp to
+    u16 event_id;       // EVENT page: event number (event_flag_get / event_counter_get)
+    u16 event_flag;
+    u16 event_counter;
+    u16 text_bank; // text bank (map script opcode 0x8x argument - 2)
+    u16 text_id;   // text id
+    u8 showing;    // MESS page: message on screen; KOMA page: preview drawn
+    s8 song_id;    // LV page: BGM
+    s8 sound_id;   // LV page: SE
 };
 
 // Per-area record list (gUnk_0840FAF4), ends at mask 0. A record applies when the player steps
@@ -1128,7 +1131,7 @@ struct OamBits {
     u16 affineParam;
 };
 
-// Interpolated value stepped once per frame (sub_0805689C sets it up, animation_interpolation_step
+// Interpolated value stepped once per frame (anim_interp_init sets it up, animation_interpolation_step
 // runs it; modes 0x10-0x17).
 struct AnimInterp {
     float unk0; // current value
@@ -1335,7 +1338,7 @@ struct Unk_03005350 {
     float unk54;
     float unk58; // sin / cos of the pitch angle
     float unk5C;
-    float unk60[4]; // projected points x, y, z (update_3d_entity_projections)
+    float unk60[4]; // projected points x, y, z (field_effect_project_objects)
     float unk70[4];
     float unk80[4];
     float unk90; // yaw / pitch base angles
@@ -1343,7 +1346,7 @@ struct Unk_03005350 {
     float unk98;
     s32 unk9C;       // camera distance
     s32 unkA0;       // projection scale
-    double unkA4[2]; // camera origin x, y (sub_08053418)
+    double unkA4[2]; // camera origin x, y (field_effect_reset_view)
     s32 unkB4;       // projected screen x, y
     s32 unkB8;
     u8 fillerBC[0x4];
@@ -1357,7 +1360,7 @@ struct Unk_03005350 {
     s32 unk1CC; // current entity (index into gUnk_03006D30)
     s32 unk1D0; // part count of the current entity
     u32 unk1D4; // flags
-    s32 unk1D8; // x, y, d (init_sprite_affine_matrices_and_state)
+    s32 unk1D8; // x, y, d (field_effect_start)
     s32 unk1DC;
     u32 unk1E0;
     u8 filler1E4[0x26];
@@ -1663,7 +1666,7 @@ struct Unk_08486160 {
     u8 fillerA[2];
 };
 
-// Battle 3-D sequence interpreter views (battle_sequence_dispatch)
+// Field effect interpreter views (field_effect_run)
 // Rotation track (entity +0xE8 yaw, +0x100 pitch).
 struct SeqTrack {
     s32 active;
