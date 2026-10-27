@@ -965,7 +965,7 @@ struct Unk_030057E0 {
     u8 unk7FF;
     u16 unk800; // map width * 2 (tiles are bytes, unk810 rows are unk800 / 2 long)
     u16 unk802; // map height * 2
-    u16 unk804; // area tilemap header words (sub_08052990(area, 0 / 1))
+    u16 unk804; // area tilemap header words (field_tilemap_header_word(area, 0 / 1))
     u16 unk806;
     u8 filler808[0x8];
     u8 unk810[0x400]; // tile map
@@ -989,8 +989,8 @@ struct Unk_030057E0 {
     u8 unkC36; // frames until the next one (2: every 3rd frame; runtime-checked)
     u8 unkC37; // random seed
     u8 unkC38[0x10];
-    u16 unkC48;
-    u16 unkC4A;
+    u16 map_origin_x; // screen offset of a map smaller than the screen (field_load_area_tiles)
+    u16 map_origin_y;
     u8 unkC4C;
     u8 unkC4D;
     u8 unkC4E;
@@ -1488,7 +1488,7 @@ struct AreaWarp {
 
 // Per-area graphics record (gUnk_083F92F4, indexed by area id).
 struct AreaGfx {
-    const void *unk0; // LZ77 BG tilemaps, decompressed to gUnk_03006D14 (layers to 0x06003000 / 5000 / 7000)
+    const void *unk0; // LZ77 BG tilemaps, decompressed to gFieldTilemapBuf (layers to 0x06003000 / 5000 / 7000)
     const void *unk4;
     const void *unk8;
 };
@@ -1561,7 +1561,7 @@ struct Unk_03006F74 {
     u8 filler21[0xA];
     u8 unk2B;
     u16 unk2C;
-    u8 unk2E; // Medal list: first visible row (render_battle_medal_names)
+    u8 unk2E; // Medal list: first visible row (medal_rename_draw_list)
     u8 unk2F; // Medal list: cursor row
     u8 unk30; // Medal list: number of entries in unkB0
     u8 unk31;
@@ -1579,7 +1579,7 @@ struct Unk_03006F74 {
     u8 unk49;
     u8 unk4A;
     u8 unk4B;
-    u8 unk4C; // message pending (sub_08065418)
+    u8 unk4C; // message pending (medal_rename_no_money)
     u8 filler4D[0x3];
     u8 unk50[8];    // blend effect state (init_blend_effect, blend_fade_step_08065598)
     u8 unk58[0x20]; // name text buffer (name_entry_fade_out_store_name copies it to the player or Medal name)
@@ -1599,7 +1599,7 @@ struct Unk_03006F74 {
     u8 unkA2[5];
     u8 unkA7[5];
     const u8 *const *unkAC; // scene text (text_scroll_page_start)
-    u8 unkB0[0x20];         // Medal list: Medal indices (sub_08064CA0)
+    u8 unkB0[0x20];         // Medal list: Medal indices (medal_rename_build_list)
     struct RingPoint
         unkD0[18];    // points on a hexagon / circle (ring_points_place_on_hexagon, ring_points_place_on_circle)
     s32 unk1F0[4][4]; // 8.8 fixed-point 4x4 transform matrix (matrix_set_identity, matrix_rotate_xyz)

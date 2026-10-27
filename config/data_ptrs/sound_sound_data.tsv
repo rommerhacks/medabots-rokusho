@@ -126,9 +126,9 @@
 080AFB70	advance_substate_with_sound_ch1
 080AFB74	link_menu_wait_choice
 080AFB78	menu_yes_no_confirmation_handler
-080AFE9C	gUnk_08483EB4+0x2C
-080AFEA0	gUnk_08483EB4+0xA8
-080AFEA4	gUnk_08483EB4+0x11C
+080AFE9C	gMedalRenameStates+0x2C
+080AFEA0	gMedalRenameStates+0xA8
+080AFEA4	gMedalRenameStates+0x11C
 080AFEA8	text_scroll_init
 080AFEAC	text_scroll_fade_in
 080AFEB0	text_scroll_page_start

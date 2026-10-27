@@ -646,7 +646,7 @@ really data (a false positive), the shifted build changes that data by `SHIFT`: 
 * An extra reload in the original can come from a duplicated tail that a later pass merges away: write the
   early-exit path with its own copy of the tail stores (sub_0803FEB8).
   The same works when the reload registers (r0/r1/r3 round-robin) are off by one: add a duplicate of an
-  arm or comparison that cross-jumping merges after reload (sub_08065090: the `&= 0xBFFF` arm written
+  arm or comparison that cross-jumping merges after reload (medal_rename_select_medal: the `&= 0xBFFF` arm written
   twice in an if / else-if chain; sub_0804CB90: the `>= unkC94[1]` test repeated in both arms;
   field_update_music, sub_0804FE50: an extra `case 0: done = 1; break;` before the default).
 * Loop registers wrong in a simple nested loop: gcc weights register uses inside loops, and goto loops

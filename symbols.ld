@@ -82,7 +82,7 @@ gUnk_030055A0       = 0x030055A0;
 gBg2Scroll       = 0x0300057C;
 gBg3Scroll       = 0x03001C04;
 gEventFlags       = 0x030057D8;
-gUnk_03006D14       = 0x03006D14;
+gFieldTilemapBuf       = 0x03006D14;
 gUnk_03006D38       = 0x03006D38;
 gUnk_03003810       = 0x03003810;
 

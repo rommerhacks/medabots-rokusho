@@ -19,12 +19,12 @@ void sub_08057044(void) {
     memzero_bytes((u8 *)&gUnk_030064A0, 0x874);
     LZ77UnCompVram(gUnk_085FA144, (void *)0x06000F80);
     LZ77UnCompVram(gUnk_085FA5D8, (void *)0x06002100);
-    memzero_bytes((u8 *)gUnk_03006D14, 0x2000);
-    DmaSet(3, gUnk_085FA4D8, gUnk_03006D14, DMA_ENABLE | (0xE0 / 2));
-    DmaSet(3, gUnk_085FA620, gUnk_03006D14 + 0x200, DMA_ENABLE | (0x20 / 2));
-    copy_tilemap_region((u16 *)gUnk_083D5F30, gUnk_03006D14 + 0x400, 0, 0, 0x10, 10, 0, 0xF, 0);
-    fill_tilemap_rect(gUnk_03006D14 + 0x800, 2, 0xE, 0x10, 10, 0, 0xF, 0);
-    copy_tilemap_region(gUnk_03006D14, gUnk_03006D14 + 0x400, 1, 1, 0xE, 8, 0x7C, 0xE, 0);
+    memzero_bytes((u8 *)gFieldTilemapBuf, 0x2000);
+    DmaSet(3, gUnk_085FA4D8, gFieldTilemapBuf, DMA_ENABLE | (0xE0 / 2));
+    DmaSet(3, gUnk_085FA620, gFieldTilemapBuf + 0x200, DMA_ENABLE | (0x20 / 2));
+    copy_tilemap_region((u16 *)gUnk_083D5F30, gFieldTilemapBuf + 0x400, 0, 0, 0x10, 10, 0, 0xF, 0);
+    fill_tilemap_rect(gFieldTilemapBuf + 0x800, 2, 0xE, 0x10, 10, 0, 0xF, 0);
+    copy_tilemap_region(gFieldTilemapBuf, gFieldTilemapBuf + 0x400, 1, 1, 0xE, 8, 0x7C, 0xE, 0);
 
     switch (check_vehicle_usability(0)) {
     case 0:
@@ -93,7 +93,7 @@ void sub_080572F8(void) {
     gUnk_030064A0.unk66 = 0;
     if (gUnk_030064A0.unk6F < 0x10) {
         gUnk_030064A0.unk6F++;
-        copy_tilemap_rect_with_offset(gUnk_03006D14 + 0x400, (u16 *)0x06002800, 2, 0x1E - gUnk_030064A0.unk6F,
+        copy_tilemap_rect_with_offset(gFieldTilemapBuf + 0x400, (u16 *)0x06002800, 2, 0x1E - gUnk_030064A0.unk6F,
                                       gUnk_030064A0.unk6F, 10, 0x20, 0x20, 0, 0);
         init_vehicle_menu_sprite(0);
     } else {
@@ -152,9 +152,9 @@ void sub_0805738C(void) {
 
 void sub_08057494(void) {
     if (gUnk_030064A0.unk6F != 0) {
-        copy_tilemap_rect_with_offset(gUnk_03006D14 + 0x800, (u16 *)0x06002800, 2, 0x1E - gUnk_030064A0.unk6F, 1, 10,
+        copy_tilemap_rect_with_offset(gFieldTilemapBuf + 0x800, (u16 *)0x06002800, 2, 0x1E - gUnk_030064A0.unk6F, 1, 10,
                                       0x20, 0x20, 0, 0);
-        copy_tilemap_rect_with_offset(gUnk_03006D14 + 0x400, (u16 *)0x06002800, 2, 0x1F - gUnk_030064A0.unk6F,
+        copy_tilemap_rect_with_offset(gFieldTilemapBuf + 0x400, (u16 *)0x06002800, 2, 0x1F - gUnk_030064A0.unk6F,
                                       gUnk_030064A0.unk6F, 10, 0x20, 0x20, 0, 0);
         init_vehicle_menu_sprite(1);
         gUnk_030064A0.unk6F--;
@@ -202,12 +202,12 @@ void sub_08057598(void) {
     DmaCopy32(3, gUnk_08488A84, 0x0202FBE0, 32) lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
     DmaCopy32(3, gUnk_084E2E38, 0x0202F9E0, 32) LZ77UnCompVram(gUnk_085FA144, (void *)0x06000F80);
     LZ77UnCompVram(gUnk_085FA5D8, (void *)0x06002100);
-    memzero_bytes((u8 *)gUnk_03006D14, 0x2000);
-    DmaSet(3, gUnk_085FA4D8, gUnk_03006D14, DMA_ENABLE | (0xE0 / 2));
-    DmaSet(3, gUnk_085FA620, gUnk_03006D14 + 0x200, DMA_ENABLE | (0x20 / 2));
-    copy_tilemap_region((u16 *)gUnk_083D5F30, gUnk_03006D14 + 0x400, 0, 0, 0x10, 10, 0, 0xF, 0);
-    fill_tilemap_rect(gUnk_03006D14 + 0x800, 2, 0xE, 0x10, 10, 0, 0xF, 0);
-    copy_tilemap_region(gUnk_03006D14, gUnk_03006D14 + 0x400, 1, 1, 0xE, 8, 0x7C, 0xE, 0);
+    memzero_bytes((u8 *)gFieldTilemapBuf, 0x2000);
+    DmaSet(3, gUnk_085FA4D8, gFieldTilemapBuf, DMA_ENABLE | (0xE0 / 2));
+    DmaSet(3, gUnk_085FA620, gFieldTilemapBuf + 0x200, DMA_ENABLE | (0x20 / 2));
+    copy_tilemap_region((u16 *)gUnk_083D5F30, gFieldTilemapBuf + 0x400, 0, 0, 0x10, 10, 0, 0xF, 0);
+    fill_tilemap_rect(gFieldTilemapBuf + 0x800, 2, 0xE, 0x10, 10, 0, 0xF, 0);
+    copy_tilemap_region(gFieldTilemapBuf, gFieldTilemapBuf + 0x400, 1, 1, 0xE, 8, 0x7C, 0xE, 0);
 
     switch (check_vehicle_usability(0)) {
     case 0:
@@ -569,5 +569,5 @@ static void init_vehicle_menu_sprite(s32 x) {
 }
 
 static void render_npc_tilemap_row(s32 row) {
-    copy_tilemap_region(gUnk_03006D14 + 0x200, gUnk_03006D14 + 0x400, row * 2 + 1, 6, 8, 2, 0x108, 0xE, 0);
+    copy_tilemap_region(gFieldTilemapBuf + 0x200, gFieldTilemapBuf + 0x400, row * 2 + 1, 6, 8, 2, 0x108, 0xE, 0);
 }

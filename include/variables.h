@@ -46,7 +46,7 @@ extern struct Unk_030055A0 gUnk_030055A0[];
 extern struct Vec16 gBg2Scroll; // BG2 scroll
 extern struct Vec16 gBg3Scroll; // BG3 scroll
 extern u8 *gEventFlags;         // two 4-bit entries per byte (bit 3 / bit 7: flag, bits 0-2 / 4-6: count)
-extern u16 *gUnk_03006D14;
+extern u16 *gFieldTilemapBuf;
 extern struct Unk_03006D38 gUnk_03006D38;
 extern u8 gUnk_03003810;
 extern struct Unk_03005010 gUnk_03005010;
@@ -101,7 +101,7 @@ extern const u16 *const gUnk_083F8634[]; // 16-colour palettes
 extern const u8 gUnk_083D2918[][8];
 extern const u8 gUnk_083D2B8D[];
 extern const u8 gUnk_083D28C3[][16];
-extern const u8 gUnk_083F8B74[][2];
+extern const u8 gAreaMapSizes[][2];
 extern const u8 gUnk_0847E948[];
 extern const struct AreaWarp *const gAreaWarps[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
@@ -1213,10 +1213,10 @@ extern const struct FuncTable13
     gUnk_080AFB48;                // link menu sub-states by gGameSubState (dispatch_battle_menu_and_update_counters)
 extern const u8 gUnk_0848564F[];  // 0xFF-terminated message (setup_dialogue_script_from_rom)
 extern const u8 gUnk_0879C06C[];  // graphics (clear_vram_bg)
-extern const u8 gUnk_0879A634[];  // Medal list BG1 tilemap (sub_08064D3C)
-extern const u8 gUnk_0879A78C[];  // Medal list BG2 tilemap (sub_08064D3C)
-extern const u8 gUnk_0879A8BC[];  // Medal list BG3 tilemap (sub_08064D3C)
-extern const u32 gUnk_08799D98[]; // Medal list BG tiles, compressed (sub_08064D3C)
+extern const u8 gUnk_0879A634[];  // Medal list BG1 tilemap (medal_rename_load_graphics)
+extern const u8 gUnk_0879A78C[];  // Medal list BG2 tilemap (medal_rename_load_graphics)
+extern const u8 gUnk_0879A8BC[];  // Medal list BG3 tilemap (medal_rename_load_graphics)
+extern const u32 gUnk_08799D98[]; // Medal list BG tiles, compressed (medal_rename_load_graphics)
 extern const u8 gUnk_0879FDC0[];  // BG1 tilemap (medal_trade_init_screen)
 extern const u8 gUnk_0879FB10[];  // BG2 tilemap (medal_trade_init_screen)
 extern const u8 gUnk_087A0050[];  // BG3 tilemap (medal_trade_init_screen)
@@ -1227,7 +1227,7 @@ extern const u8 gUnk_0879C260[];
 extern const u8 gUnk_0879C3A0[];
 extern const u32 gUnk_0879AC40[];
 extern const u16 gUnk_0879AA40[];
-extern const u16 gUnk_08483AA0[]; // sub_08064EFC
+extern const u16 gUnk_08483AA0[]; // medal_rename_load_palettes
 extern const u16 gUnk_08799B98[];
 extern const u16 gUnk_080AFAE8[];
 extern const u8 gUnk_080AFB08[]; // message indices (battle_cutscene_dispatch)
@@ -1258,7 +1258,7 @@ struct FuncTable8 {
     Func f[8];
 };
 extern const struct FuncTable8 gUnk_080AFB10; // sub-state handlers by gGameSubState (dispatch_battle_cutscene_substate)
-extern const Func gUnk_08483EB4[];            // Medal list screen sub-states (sub_08064C3C)
+extern const Func gMedalRenameStates[];       // Medal list screen sub-states (medal_rename_main)
 extern const struct FuncTable7 gUnk_080AFEC4; // sub-state handlers by gGameSubState (medal_transform_update)
 struct S32Array3 {
     s32 v[3];

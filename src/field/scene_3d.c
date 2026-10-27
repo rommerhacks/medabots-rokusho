@@ -1043,8 +1043,8 @@ u32 field_effect_run(void) {
                 S.unk1DC = gUnk_083D2AB4[gUnk_03006D38.unk5 * 4 + 3] << 4;
                 gUnk_030057E0.player_x = S.unk1D8;
                 gUnk_030057E0.player_y = S.unk1DC;
-                gUnk_030057E0.player_tile_x = sub_080526F0(gUnk_030057E0.player_x);
-                gUnk_030057E0.player_tile_y = sub_08052714(gUnk_030057E0.player_y);
+                gUnk_030057E0.player_tile_x = field_pixel_x_to_tile(gUnk_030057E0.player_x);
+                gUnk_030057E0.player_tile_y = field_pixel_y_to_tile(gUnk_030057E0.player_y);
                 gUnk_030057E0.unk7FE = S.unk1E0;
                 field_center_camera_on_player();
                 field_update_music(0xC, 0);
@@ -1054,8 +1054,8 @@ u32 field_effect_run(void) {
                 S.unk1DC = gUnk_083D2AD9[3] << 4;
                 gUnk_030057E0.player_x = S.unk1D8;
                 gUnk_030057E0.player_y = S.unk1DC;
-                gUnk_030057E0.player_tile_x = sub_080526F0(gUnk_030057E0.player_x);
-                gUnk_030057E0.player_tile_y = sub_08052714(gUnk_030057E0.player_y);
+                gUnk_030057E0.player_tile_x = field_pixel_x_to_tile(gUnk_030057E0.player_x);
+                gUnk_030057E0.player_tile_y = field_pixel_y_to_tile(gUnk_030057E0.player_y);
                 gUnk_030057E0.unk7FE = S.unk1E0;
                 field_center_camera_on_player();
                 field_update_music(0xA, 0);

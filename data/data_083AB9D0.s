@@ -1346,8 +1346,8 @@ gUnk_083F80F4:
 gUnk_083F8634:
 	.incbin "baserom.gba", 0x3F8634, 0x540
 
-	.global gUnk_083F8B74
-gUnk_083F8B74:
+	.global gAreaMapSizes
+gAreaMapSizes:
 	.incbin "baserom.gba", 0x3F8B74, 0x180
 
 	.global gUnk_083F8CF4

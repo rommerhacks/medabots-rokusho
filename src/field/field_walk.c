@@ -7,7 +7,7 @@
 u32 field_effect_run_and_restore(void) {
     if ((gUnk_03005350.unk1D4 & 0x3F) == 0xD || (gUnk_03005350.unk1D4 & 0x3F) == 0x16) {
         gUnk_030057E0.unkC5B = 0;
-        sub_08052BA0(0);
+        field_set_player_sprite_visible(0);
         update_bg_scroll_offsets_a();
     }
     if (field_effect_run() == 4) {

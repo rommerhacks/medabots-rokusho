@@ -112,8 +112,8 @@ void field_debug_update_page(u32 mode) {
             gUnk_030057E0.player_x -= 0x10;
         if (KEYS_LO(gRepeatKeys) & 0x10)
             gUnk_030057E0.player_x += 0x10;
-        gUnk_030057E0.player_tile_x = sub_080526F0(gUnk_030057E0.player_x);
-        gUnk_030057E0.player_tile_y = sub_08052714(gUnk_030057E0.player_y);
+        gUnk_030057E0.player_tile_x = field_pixel_x_to_tile(gUnk_030057E0.player_x);
+        gUnk_030057E0.player_tile_y = field_pixel_y_to_tile(gUnk_030057E0.player_y);
         field_center_camera_on_player();
         break;
     case 3:

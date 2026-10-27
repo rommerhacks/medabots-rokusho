@@ -245,12 +245,13 @@ s32 check_room_exit_at_position(void) {
     return ret;
 }
 
-u8 sub_080526F0(u16 x) {
-    return (x - gUnk_030057E0.unkC48) / 16;
+// Field pixel position to map tile, relative to the map origin (non-zero for maps smaller than the screen).
+u8 field_pixel_x_to_tile(u16 x) {
+    return (x - gUnk_030057E0.map_origin_x) / 16;
 }
 
-u8 sub_08052714(u16 y) {
-    return (y - gUnk_030057E0.unkC4A) / 16;
+u8 field_pixel_y_to_tile(u16 y) {
+    return (y - gUnk_030057E0.map_origin_y) / 16;
 }
 
 void update_entity_sprites_on_screen(void) {
@@ -260,10 +261,10 @@ void update_entity_sprites_on_screen(void) {
     for (i = 0; i < 36; i++) {
         if (gUnk_030055A0[i + 49].unk0 != 0) {
             visible = 0;
-            if (gBg1Scroll.y < gSpriteEntries[i + 49].unk10_8 - gUnk_030057E0.unkC4A + 16 &&
-                gSpriteEntries[i + 49].unk10_8 - gUnk_030057E0.unkC4A < gBg1Scroll.y + 0xA8 &&
-                gBg1Scroll.x < gSpriteEntries[i + 49].unkC_8 - gUnk_030057E0.unkC48 + 16 &&
-                gSpriteEntries[i + 49].unkC_8 - gUnk_030057E0.unkC48 < gBg1Scroll.x + 0xF0)
+            if (gBg1Scroll.y < gSpriteEntries[i + 49].unk10_8 - gUnk_030057E0.map_origin_y + 16 &&
+                gSpriteEntries[i + 49].unk10_8 - gUnk_030057E0.map_origin_y < gBg1Scroll.y + 0xA8 &&
+                gBg1Scroll.x < gSpriteEntries[i + 49].unkC_8 - gUnk_030057E0.map_origin_x + 16 &&
+                gSpriteEntries[i + 49].unkC_8 - gUnk_030057E0.map_origin_x < gBg1Scroll.x + 0xF0)
                 visible = 1;
             if (visible) {
                 if (gSpriteEntries[i + 49].unk2D != 1) {
@@ -295,66 +296,69 @@ void update_entity_sprites_on_screen(void) {
 
 // Decompresses the area's tiles and centres maps smaller than the screen (15 x 10 tiles).
 void field_load_area_tiles(u8 area) {
-    LZ77UnCompVram(gUnk_083F92F4[area].unk0, gUnk_03006D14);
-    if (sub_08052960(gUnk_030057E0.unk7FE, 0) >> 1 <= 14)
-        gUnk_030057E0.unkC48 = (15 - (sub_08052960(area, 0) >> 1)) * 8;
+    LZ77UnCompVram(gUnk_083F92F4[area].unk0, gFieldTilemapBuf);
+    if (area_map_size(gUnk_030057E0.unk7FE, 0) >> 1 <= 14)
+        gUnk_030057E0.map_origin_x = (15 - (area_map_size(area, 0) >> 1)) * 8;
     else
-        gUnk_030057E0.unkC48 = 0;
-    if (sub_08052960(gUnk_030057E0.unk7FE, 1) >> 1 <= 9)
-        gUnk_030057E0.unkC4A = (10 - (sub_08052960(area, 1) >> 1)) * 8;
+        gUnk_030057E0.map_origin_x = 0;
+    if (area_map_size(gUnk_030057E0.unk7FE, 1) >> 1 <= 9)
+        gUnk_030057E0.map_origin_y = (10 - (area_map_size(area, 1) >> 1)) * 8;
     else
-        gUnk_030057E0.unkC4A = 0;
+        gUnk_030057E0.map_origin_y = 0;
 }
 
-u32 sub_08052960(u8 area, u8 which) {
+// Map width (which 0) or height (1) of an area, in 8-pixel units.
+u32 area_map_size(u8 area, u8 which) {
     u32 ret = 0;
 
     switch (which) {
     case 0:
-        ret = gUnk_083F8B74[area][which];
+        ret = gAreaMapSizes[area][which];
         break;
     case 1:
-        ret = gUnk_083F8B74[area][which];
+        ret = gAreaMapSizes[area][which];
         break;
     }
     return ret;
 }
 
-u32 sub_08052990(u32 unused, u8 which) {
+// The first two 32-bit header words of the last tilemap decompressed to gFieldTilemapBuf.
+u32 field_tilemap_header_word(u32 unused, u8 which) {
     u32 ret = 0;
 
     switch (which) {
     case 0:
-        ret = gUnk_03006D14[0] | (gUnk_03006D14[1] << 16);
+        ret = gFieldTilemapBuf[0] | (gFieldTilemapBuf[1] << 16);
         break;
     case 1:
-        ret = gUnk_03006D14[2] | (gUnk_03006D14[3] << 16);
+        ret = gFieldTilemapBuf[2] | (gFieldTilemapBuf[3] << 16);
         break;
     }
     return ret;
 }
 
-void sub_080529C4(u16 x) {
+// Sets (or below, moves) the scroll of all three field BG layers together.
+void field_set_bg_scroll_x(u16 x) {
     gBg1Scroll.x = x;
     gBg2Scroll.x = x;
     gBg3Scroll.x = x;
 }
 
-void sub_080529E4(u16 y) {
+void field_set_bg_scroll_y(u16 y) {
     gBg1Scroll.y = y;
     gBg2Scroll.y = y;
     gBg3Scroll.y = y;
 }
 
-u32 sub_08052A04(void) {
-    return gUnk_030057E0.unkC48;
+u32 field_map_origin_x(void) {
+    return gUnk_030057E0.map_origin_x;
 }
 
-u32 sub_08052A18(void) {
-    return gUnk_030057E0.unkC4A;
+u32 field_map_origin_y(void) {
+    return gUnk_030057E0.map_origin_y;
 }
 
-void sub_08052A2C(s16 dx) {
+void field_scroll_bg_x(s16 dx) {
     gBg1Scroll.x += dx;
     gBg2Scroll.x += dx;
     gBg3Scroll.x += dx;
@@ -366,26 +370,26 @@ void field_center_camera_on_player(void) {
     x = gUnk_030057E0.player_tile_x - 7;
     if (x < 0)
         x = 0;
-    if (x + 15 > sub_08052960(gUnk_030057E0.unk7FE, 0) >> 1) {
-        x = sub_08052960(gUnk_030057E0.unk7FE, 0) >> 1;
+    if (x + 15 > area_map_size(gUnk_030057E0.unk7FE, 0) >> 1) {
+        x = area_map_size(gUnk_030057E0.unk7FE, 0) >> 1;
         x -= 15;
-        if (sub_08052A04())
+        if (field_map_origin_x())
             x = 0;
     }
     y = gUnk_030057E0.player_tile_y - 4;
     if (y <= 0)
         y = 0;
-    if (y + 10 > sub_08052960(gUnk_030057E0.unk7FE, 1) >> 1) {
-        y = sub_08052960(gUnk_030057E0.unk7FE, 1) >> 1;
+    if (y + 10 > area_map_size(gUnk_030057E0.unk7FE, 1) >> 1) {
+        y = area_map_size(gUnk_030057E0.unk7FE, 1) >> 1;
         y -= 10;
-        if (sub_08052A18())
+        if (field_map_origin_y())
             y = 0;
     }
-    sub_080529C4(x * 16);
-    sub_080529E4(y * 16);
+    field_set_bg_scroll_x(x * 16);
+    field_set_bg_scroll_y(y * 16);
 }
 
-void sub_08052AF8(s16 dy) {
+void field_scroll_bg_y(s16 dy) {
     gBg1Scroll.y += dy;
     gBg2Scroll.y += dy;
     gBg3Scroll.y += dy;
@@ -398,12 +402,13 @@ void update_bg_scroll_offsets_a(void) {
     gSpriteEntries[89].unk4 = gSpriteEntries[47].unk4 - 5;
 }
 
-static void sub_08052B84(void) {
+static void field_hide_player_sprite(void) {
     gSpriteEntries[47].unk0 = 0;
     gSpriteEntries[89].unk0 = 0;
 }
 
-void sub_08052BA0(u8 on) {
+// Shows or hides the player sprite (entry 47) and its shadow (entry 89).
+void field_set_player_sprite_visible(u8 on) {
     if (on) {
         gSpriteEntries[47].unk0 = 0xC804;
         gSpriteEntries[89].unk0 = 0xCC0C;
@@ -445,19 +450,19 @@ bool32 field_player_at_map_edge(u8 dir) {
 
     switch (dir) {
     case 0:
-        if (gUnk_030057E0.player_y - gUnk_030057E0.unkC4A == 0)
+        if (gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y == 0)
             ret = 1;
         break;
     case 1:
-        if (gUnk_030057E0.player_y - gUnk_030057E0.unkC4A + 16 == gUnk_030057E0.unk802 * 8)
+        if (gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y + 16 == gUnk_030057E0.unk802 * 8)
             ret = 1;
         break;
     case 2:
-        if (gUnk_030057E0.player_x - gUnk_030057E0.unkC48 == 0)
+        if (gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x == 0)
             ret = 1;
         break;
     case 3:
-        if (gUnk_030057E0.player_x - gUnk_030057E0.unkC48 + 16 == gUnk_030057E0.unk800 * 8)
+        if (gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x + 16 == gUnk_030057E0.unk800 * 8)
             ret = 1;
         break;
     }
@@ -515,10 +520,10 @@ void field_warp_to_area(void) {
             gUnk_030057E0.unk7FE = w[i].area;
             field_load_area_tiles(gUnk_030057E0.unk7FE);
             field_set_player_facing(w[i].dir & 7);
-            gUnk_030057E0.player_x = (w[i].destX << 4) + gUnk_030057E0.unkC48;
-            gUnk_030057E0.player_y = (w[i].destY << 4) + gUnk_030057E0.unkC4A;
-            gUnk_030057E0.player_tile_x = sub_080526F0(gUnk_030057E0.player_x);
-            gUnk_030057E0.player_tile_y = sub_08052714(gUnk_030057E0.player_y);
+            gUnk_030057E0.player_x = (w[i].destX << 4) + gUnk_030057E0.map_origin_x;
+            gUnk_030057E0.player_y = (w[i].destY << 4) + gUnk_030057E0.map_origin_y;
+            gUnk_030057E0.player_tile_x = field_pixel_x_to_tile(gUnk_030057E0.player_x);
+            gUnk_030057E0.player_tile_y = field_pixel_y_to_tile(gUnk_030057E0.player_y);
             field_center_camera_on_player();
             found = 1;
         }
@@ -537,8 +542,8 @@ void init_battle_medaforce_sprite(void) {
         gSpriteEntries[48].unk2B = gUnk_030057E0.unkC84;
         set_battle_state_byte_c83(gUnk_030057E0.unkC83);
         sprite_anim_start(48, sub_080502B4(48, gUnk_030057E0.unkC83));
-        gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
-        gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
+        gUnk_030057E0.unkC72 = field_pixel_x_to_tile(gUnk_030057E0.unkC6E);
+        gUnk_030057E0.unkC73 = field_pixel_y_to_tile(gUnk_030057E0.unkC70);
         gSpriteEntries[48].unk30 = area_sprite_sheet_id(gSpriteEntries[48].unk2B);
         sprite_set_blend_from_kind(48);
         sprite_entry_init(90, 0xCC0C, 0x90, 14, 1);
@@ -553,8 +558,8 @@ void update_cursor_tile_position(void) {
     if (gUnk_030057E0.unkC76) {
         gUnk_030057E0.unkC6E = gUnk_030057E0.player_x;
         gUnk_030057E0.unkC70 = gUnk_030057E0.player_y;
-        gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
-        gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
+        gUnk_030057E0.unkC72 = field_pixel_x_to_tile(gUnk_030057E0.unkC6E);
+        gUnk_030057E0.unkC73 = field_pixel_y_to_tile(gUnk_030057E0.unkC70);
         set_battle_state_byte_c83(gSpriteEntries[47].unk20);
     }
 }

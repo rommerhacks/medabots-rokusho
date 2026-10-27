@@ -126,8 +126,8 @@ static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y) {
     spr = &gSpriteEntries[slot];
     spr->unk2B = anim;
     spr->unk20 = sub_0805026C(part);
-    spr->unkC_8 = x * 16 + gUnk_030057E0.unkC48;
-    spr->unk10_8 = y * 16 + gUnk_030057E0.unkC4A;
+    spr->unkC_8 = x * 16 + gUnk_030057E0.map_origin_x;
+    spr->unk10_8 = y * 16 + gUnk_030057E0.map_origin_y;
     gUnk_030055A0[slot].unk0 = 0xFFFF;
     spr->unk2C = 0;
     tile = area_sprite_sheet_id(spr->unk2B);
@@ -145,8 +145,8 @@ void sub_08050508(u8 arg) {
     u32 id = arg & 0xF;
 
     if (arg & 0xF0) {
-        u8 x = sub_080526F0(gSpriteEntries[sub_0804DBA4(id) + 79].unkC_8);
-        u8 y = sub_08052714(gSpriteEntries[sub_0804DBA4(id) + 79].unk10_8);
+        u8 x = field_pixel_x_to_tile(gSpriteEntries[sub_0804DBA4(id) + 79].unkC_8);
+        u8 y = field_pixel_y_to_tile(gSpriteEntries[sub_0804DBA4(id) + 79].unk10_8);
 
         if (find_map_event_by_coords(x, y) && gUnk_03006D38.unk3)
             field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
@@ -163,8 +163,8 @@ void save_script_sprites(void) {
     memzero_bytes((u8 *)gUnk_030057E0.unk7DC, sizeof(gUnk_030057E0.unk7DC));
     for (i = 0; i <= 5; i++) {
         if (gUnk_030055A0[i + 79].unk0) {
-            gUnk_030057E0.unk7DC[i].x = sub_080526F0(gSpriteEntries[i + 79].unkC_8);
-            gUnk_030057E0.unk7DC[i].y = sub_08052714(gSpriteEntries[i + 79].unk10_8);
+            gUnk_030057E0.unk7DC[i].x = field_pixel_x_to_tile(gSpriteEntries[i + 79].unkC_8);
+            gUnk_030057E0.unk7DC[i].y = field_pixel_y_to_tile(gSpriteEntries[i + 79].unk10_8);
             gUnk_030057E0.unk7DC[i].anim =
                 ((gSpriteEntries[i + 79].unk2B & 0xF) << 4) | (gSpriteEntries[i + 79].unk20 & 3);
             gUnk_030057E0.unk7DC[i].id = i;

@@ -100,8 +100,8 @@ gUnk_08483E50:
 gUnk_08483E8C:
 	.incbin "baserom.gba", 0x483E8C, 0x28
 
-	.global gUnk_08483EB4
-gUnk_08483EB4:
+	.global gMedalRenameStates
+gMedalRenameStates:
 	.incbin "baserom.gba", 0x483EB4, 0x2C8
 
 	.global gUnk_0848417C

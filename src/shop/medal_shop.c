@@ -1,13 +1,15 @@
-// Mode-2 state 18 (sub_08064C3C, guess: Medal shop): its sub-state table gUnk_08483EB4 directly follows the
-// shop list's (gUnk_08483E8C, shop/shop_list.c). Lists the owned Medals (render_battle_medal_names) and charges
-// for one (sub_08065484). Name is a guess.
+// Mode-2 state 18 (medal_rename_main): the screen before name entry. For the player name and a new Medal
+// (gNameEntryMode 0 / 1) it goes straight to name entry (state 6); for mode 2 it is the Medal rename service:
+// "Do you want to change a Medal name?", pick an owned Medal, pay 100, then rename it in name entry.
+// Its sub-state table gMedalRenameStates directly follows the shop list's (gUnk_08483E8C, shop/shop_list.c).
 #include "global.h"
 
 static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
 }
 
-void render_battle_medal_names(u8 start) {
+// Draws up to 4 Medal names (and their icons) of the owned list, from entry start.
+void medal_rename_draw_list(u8 start) {
     s32 i, j;
     s32 n;
     u8 *p = &gUnk_03006F74->unk30;
@@ -40,26 +42,27 @@ void render_battle_medal_names(u8 start) {
     }
 }
 
-void sub_08064C30(void) {
+// Last sub-state: back to building the list.
+void medal_rename_restart_list(void) {
     gGameSubState = 1;
 }
 
-void sub_08064C3C(void) {
-    gUnk_08483EB4[gGameSubState]();
+void medal_rename_main(void) {
+    gMedalRenameStates[gGameSubState]();
     if (gFrameCounter & 1) {
         gBg3Scroll.x++;
         gBg3Scroll.y++;
     }
 }
 
-void sub_08064C7C(void) {
+void medal_rename_reset_cursor(void) {
     gUnk_03006F74->unk2E = 0;
     gUnk_03006F74->unk2F = 0;
     gGameSubState++;
 }
 
-// guess: Medal list screen (pay 100 for a Medal, sub_08065484): builds the owned Medal list in unkB0
-void sub_08064CA0(void) {
+// Builds the owned Medal list in unkB0; outside rename mode it hands over to name entry at once.
+void medal_rename_build_list(void) {
     u32 zero;
     u32 z = 0;
     s32 i;
@@ -86,7 +89,7 @@ void sub_08064CA0(void) {
     }
 }
 
-void sub_08064D3C(void) {
+void medal_rename_load_graphics(void) {
     u32 size;
     u16 v;
     vu16 *bg1, *bg2, *bg3;
@@ -140,7 +143,7 @@ void sub_08064D3C(void) {
     gGameSubState++;
 }
 
-void sub_08064EFC(void) {
+void medal_rename_load_palettes(void) {
     s8 i;
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
@@ -152,7 +155,7 @@ void sub_08064EFC(void) {
         for (i = 0; i <= 15 && gUnk_03006F74->unk58[i] != 0xFE; i++)
             ;
     } else
-        render_battle_medal_names(gUnk_03006F74->unk2F);
+        medal_rename_draw_list(gUnk_03006F74->unk2F);
     CpuFastSet(gUnk_08483AA0, (void *)0x0202FA20, 8);
     CpuFastSet(gUnk_084E2E58, gPaletteBackup, 8);
     CpuFastSet(gUnk_084E2E38, (void *)0x0202F9E0, 8);
@@ -163,7 +166,7 @@ void sub_08064EFC(void) {
     gGameSubState++;
 }
 
-void sub_08065020(void) {
+void medal_rename_fade_in(void) {
     struct Unk_03000440 *s = &gUnk_03000440;
     if (s->unk84 <= 8) {
         bg_palettes_blend_masked_now(0, 32 - s->unk84 * 4, 0xFFFF);
@@ -177,7 +180,7 @@ void sub_08065020(void) {
     }
 }
 
-void sub_08065090(void) {
+void medal_rename_select_medal(void) {
     u32 r = 1;
     u8 keys;
     u32 se;
@@ -220,7 +223,7 @@ void sub_08065090(void) {
         if (se != 0)
             play_sound_effect(se);
     skip:
-        render_battle_medal_names(gUnk_03006F74->unk2F);
+        medal_rename_draw_list(gUnk_03006F74->unk2F);
     } else if (KEYS_LO(gRepeatKeys) & 0x80) {
         se = 2;
         if (gUnk_03006F74->unk30 <= 3) {
@@ -237,7 +240,7 @@ void sub_08065090(void) {
             gUnk_03006F74->unk2E++;
         if (se != 0)
             play_sound_effect(se);
-        render_battle_medal_names(gUnk_03006F74->unk2F);
+        medal_rename_draw_list(gUnk_03006F74->unk2F);
     } else if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         gSpriteEntries[10].unk0 &= 0xBFFF;
@@ -262,7 +265,7 @@ void sub_08065090(void) {
     gSpriteEntries[8].unk4 = gUnk_03006F74->unk2E * 16 + 0x1C;
 }
 
-void sub_08065348(void) {
+void medal_rename_fade_to_name_entry(void) {
     if (game_state_execute_handler_a()) {
         struct Unk_03000440 *s = &gUnk_03000440;
         if (s->unk84 <= 8) {
@@ -277,7 +280,7 @@ void sub_08065348(void) {
     }
 }
 
-void sub_080653B4(void) {
+void medal_rename_fade_to_field(void) {
     if (game_state_execute_handler_a()) {
         struct Unk_03000440 *s = &gUnk_03000440;
         if (s->unk84 <= 8) {
@@ -292,7 +295,7 @@ void sub_080653B4(void) {
     }
 }
 
-void sub_08065418(void) {
+void medal_rename_no_money(void) {
     u32 r = 1;
     if (gUnk_03006F74->unk4C) {
         if (game_state_execute_handler_a()) {
@@ -307,7 +310,8 @@ void sub_08065418(void) {
     }
 }
 
-void sub_08065484(void) {
+// "It'll cost you 100. Is that OK?": Yes pays and goes on to name entry for gUnk_030017EC.
+void medal_rename_confirm_payment(void) {
     u32 r = 1;
     u32 sel;
     if (gUnk_03006F74->unk4C) {
