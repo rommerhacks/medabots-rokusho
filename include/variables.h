@@ -323,7 +323,7 @@ extern const u8 gUnk_083B7CD4[];          // 6-byte Medaforce records: +1 skill 
 extern const void *const gUnk_083B7F40[]; // messages (run_message), Medals help Medaforce page
 extern const void *const gUnk_083B8170[]; // messages (run_message), Medals help page 5
 extern u32 gUnk_03002B68; // bit per Medal graphic index (medal_trade_check_medal); also (part kind << 16) + part id
-                          // (sub_0800EBB8)
+                          // (medapart_trade_store_part)
 extern const u8 gUnk_084EAC58[];
 extern const u8 gUnk_084EF4E0[];
 extern const u8 gUnk_084EFE28[];
@@ -343,11 +343,12 @@ extern u8 gUnk_02020040[]; // second 64-byte text tile buffer: glyph shifted the
                            // (text_render_glyph_step)
 extern u8 gUnk_02020000[]; // tilemap rect buffer for the Robattle team-side scroll (status_side_change_scroll_out)
 extern u8 gUnk_02020800[]; // BG tile backup (0x800 bytes of VRAM 0x06002800 while a Medawatch submenu runs)
-extern const Func gMedabotsScreenHandlers[];  // game state 3 sub-state handlers
-extern const Func gMedalsScreenHandlers[];    // game state 4 (Medals screen) sub-state handlers
-extern const Func gMedapartsScreenHandlers[]; // game state 5 (Medaparts screen) sub-state handlers
-extern const Func gUnk_083ACC94[];            // sprite 4 sub-state handlers, by gSpriteEntries[4].unk29 (sub_0801013C)
-extern const Func gPrebattleScreenHandlers[]; // game state 6 ("Get ready to Robattle") sub-state handlers
+extern const Func gMedabotsScreenHandlers[];        // game state 3 sub-state handlers
+extern const Func gMedalsScreenHandlers[];          // game state 4 (Medals screen) sub-state handlers
+extern const Func gMedapartsScreenHandlers[];       // game state 5 (Medaparts screen) sub-state handlers
+extern const Func gMedapartTradeChoiceCloseSteps[]; // sprite 4 sub-state handlers, by gSpriteEntries[4].unk29
+                                                    // (medapart_trade_choice_close_step)
+extern const Func gPrebattleScreenHandlers[];       // game state 6 ("Get ready to Robattle") sub-state handlers
 extern const u8 gUnk_084C696C[];
 extern const void *const gUnk_083C2BBC[]; // pre-battle opponent lines, by gUnk_03001800.unk0
 extern const u16 gUnk_084C6A78[];
@@ -362,7 +363,7 @@ extern const u16 gUnk_084E2FB8[];
 extern const u16 gUnk_084E2F98[];
 extern u8
     gMedapartInventory[4 * 120 * 2]; // 2 bytes per Medapart, 120 per kind (head, right arm, left arm, legs): [0] count
-                                     // owned (runtime-checked), [1] second count shown on the Medaparts list
+                                     // owned (runtime-checked), [1] count equipped (team_lose_equipped_part)
 // The Medaparts list shows 4 parts per page (part id = page * 4 + row); the game indexes it flat like this.
 #define MEDAPART_INV(kind, page, row, byte) gMedapartInventory[(kind) * 240 + (page) * 8 + (row) * 2 + (byte)]
 extern u8
@@ -390,10 +391,10 @@ extern const u8 gUnk_084F0CA4[];
 extern const u8 gUnk_084F1EC8[];
 extern const u16 gUnk_084F3460[];
 extern const u16 gUnk_084F3620[];
-extern const void
-    *const gUnk_083BE3E4[]; // messages (run_message), Medaparts detail help for head / arms, indexed by sub_0800F6CC()
-extern const void
-    *const gUnk_083BE92C[]; // messages (run_message), Medaparts detail help for legs, indexed by sub_0800F6CC()
+extern const void *const gUnk_083BE3E4[]; // messages (run_message), Medaparts detail help for head / arms, indexed by
+                                          // medapart_detail_skill_help_index()
+extern const void *const gUnk_083BE92C[]; // messages (run_message), Medaparts detail help for legs, indexed by
+                                          // medapart_detail_skill_help_index()
 extern const void *const gUnk_083B6E24[]; // messages (run_message), indexed by the part record byte unkEE
 extern const void *const gUnk_083BD884[]; // messages (run_message), Medaparts help pages
 extern const u8 gUnk_084E7264[];
@@ -512,12 +513,13 @@ extern const u8 gUnk_083BEA90[][8];     // per area: [1] = battlefield (load_are
 extern const u8
     gUnk_083BF090[][4]; // per area: random encounter ids, picked 40/30/20/10% (setup_random_encounter_enemies)
 extern const u8
-    *const gUnk_083C1A00[];            // encounter setups (0x28 bytes copied to gUnk_03001800), by gUnk_030057E0.unkC2A
-extern const u8 gUnk_083ACEE4[][2];    // per opponent Medabot: sprite position (init_opponent_medabot_sprites)
-extern const u8 gUnk_083ACEEA[][2];    // per opponent Medabot: leg type icon position (draw_opponent_leg_type_icons)
-extern const u8 gUnk_083ACEF0[16];     // random starting opponent slot 0-2 (sub_08012234, sub_080122F4)
-extern const u8 gUnk_083C3B04[][8];    // per battlefield (sub_080121A8)
-extern const Func gRobattleHandlers[]; // game state 7 (Robattle) sub-state handlers
+    *const gUnk_083C1A00[];         // encounter setups (0x28 bytes copied to gUnk_03001800), by gUnk_030057E0.unkC2A
+extern const u8 gUnk_083ACEE4[][2]; // per opponent Medabot: sprite position (init_opponent_medabot_sprites)
+extern const u8 gUnk_083ACEEA[][2]; // per opponent Medabot: leg type icon position (draw_opponent_leg_type_icons)
+extern const u8 gRandomBotSlotStarts[16]; // random starting opponent slot 0-2 (afterbattle_pick_unowned_part,
+                                          // battle_pick_random_bot_part)
+extern const u8 gBattlefieldParams[][8];  // per battlefield (battlefield_load_params)
+extern const Func gRobattleHandlers[];    // game state 7 (Robattle) sub-state handlers
 extern const void *const gUnk_083B24A8[]; // 5 compressed graphics pointers per battlefield (gUnk_03001800.unk38)
 extern const u16 gUnk_084E2F58[];         // Robattle palette (OBJ palette 10, robattle_parts_menu_open)
 extern const u16 gUnk_084E3038[];         // Robattle palette (OBJ palette 6, robattle_parts_menu_open)

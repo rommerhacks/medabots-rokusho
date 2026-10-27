@@ -255,8 +255,8 @@ gDebugMotionLabels:
 gMedapartsScreenHandlers:
 	.incbin "baserom.gba", 0x3ACB54, 0x140
 
-	.global gUnk_083ACC94
-gUnk_083ACC94:
+	.global gMedapartTradeChoiceCloseSteps
+gMedapartTradeChoiceCloseSteps:
 	.incbin "baserom.gba", 0x3ACC94, 0x10
 
 	.global gPrebattleScreenHandlers
@@ -271,8 +271,8 @@ gUnk_083ACEE4:
 gUnk_083ACEEA:
 	.incbin "baserom.gba", 0x3ACEEA, 0x6
 
-	.global gUnk_083ACEF0
-gUnk_083ACEF0:
+	.global gRandomBotSlotStarts
+gRandomBotSlotStarts:
 	.incbin "baserom.gba", 0x3ACEF0, 0x10
 
 	.global gRobattleHandlers
@@ -1026,8 +1026,8 @@ gUnk_083C2BBC:
 gUnk_083C3984:
 	.incbin "baserom.gba", 0x3C3984, 0x180
 
-	.global gUnk_083C3B04
-gUnk_083C3B04:
+	.global gBattlefieldParams
+gBattlefieldParams:
 	.incbin "baserom.gba", 0x3C3B04, 0x58
 
 	.global gUnk_083C3B5C

@@ -243,7 +243,7 @@ static void init_battle_bg_layer(void) {
     REG_BG3CNT = 0x1F0B;
     gUnk_03001800.unk38 = gUnk_03006F84;
     decompress_tileset_to_vram(gUnk_03001800.unk38, 0);
-    memcpy_bytes_0803F63C(gUnk_083C3B04[gUnk_03001800.unk38], gUnk_03001800.unk39, 8);
+    memcpy_bytes_0803F63C(gBattlefieldParams[gUnk_03001800.unk38], gUnk_03001800.unk39, 8);
     apply_battle_blend_effect_a();
     decompress_to_ewram_27000(gUnk_083B23F8[gUnk_03001800.unk38 * 5 + 1]);
     gBg2Scroll.x = 0;

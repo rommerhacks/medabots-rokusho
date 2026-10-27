@@ -3,8 +3,8 @@
 
 // Medaparts screen (game state 5): parts list, part detail, help pages
 
-u32 sub_0801013C(void); // runs sprite 4's sub-state handler, 1 when done
-s32 sub_0800F6CC(void);
+u32 medapart_trade_choice_close_step(void); // runs sprite 4's sub-state handler, 1 when done
+s32 medapart_detail_skill_help_index(void);
 void medapart_detail_draw_skill(
     void); // skill type name (gUnk_083B6EC8[unkF0]) or, for ids >= 100 in unkEF, gUnk_083BE97C[unkEF - 100] (leg type)
 void count_compatible_medaparts(

@@ -9,7 +9,7 @@ static void medaparts_scroll_bg(void);
 static void medaparts_list_set_cursor_from_part(void);
 static void medaparts_list_draw_names(void);
 static void medaparts_list_draw_counts(void);
-static void sub_0800EDA0(void);
+static void medaparts_list_draw_equipped_counts(void);
 static void medaparts_list_draw_part_icons(void);
 static void medaparts_list_init_page_arrows(void);
 static void medaparts_list_blink_page_arrows(void);
@@ -31,9 +31,9 @@ static void medapart_detail_init_arrows(void);
 static void medapart_detail_blink_arrows(void);
 static u32 medapart_detail_cycle_part_input(void);
 static void medaparts_help_init_cursor(void);
-static void sub_0800FFF4(void);
-static void sub_08010040(void);
-static void sub_080100BC(void);
+static void medaparts_help_move_cursor(void);
+static void medapart_trade_init_choice_cursor(void);
+static void medapart_trade_choice_cursor_input(void);
 
 void medaparts_screen_update(void) {
     u32 fill;
@@ -92,7 +92,7 @@ void medaparts_list_load_gfx(void) {
     draw_number_tall_bgcnt(gUnk_03000440.unk3F + 1, 0xB, 2, 2, REG_BG1CNT, 0x7360);
     medaparts_list_draw_names();
     medaparts_list_draw_counts();
-    sub_0800EDA0();
+    medaparts_list_draw_equipped_counts();
     medaparts_list_draw_part_icons();
     medaparts_list_init_page_arrows();
     medaparts_list_init_cursor();
@@ -307,10 +307,10 @@ void medapart_detail_show_hint(void) {
     load_medapart_sprite_by_slot();
     medapart_detail_blink_arrows();
     if (gUnk_03000440.unk3E <= 2) {
-        if (run_message(gUnk_083BE3E4[sub_0800F6CC()]))
+        if (run_message(gUnk_083BE3E4[medapart_detail_skill_help_index()]))
             gGameSubState++;
     } else {
-        if (run_message(gUnk_083BE92C[sub_0800F6CC()]))
+        if (run_message(gUnk_083BE92C[medapart_detail_skill_help_index()]))
             gGameSubState++;
     }
 }
@@ -454,14 +454,14 @@ void medaparts_help_cursor_input(void) {
         else
             gUnk_03000440.unk44--;
         play_sound_effect(2);
-        sub_0800FFF4();
+        medaparts_help_move_cursor();
     } else if (KEYS_LO(gRepeatKeys) & 0x80) {
         if (gUnk_03000440.unk44 == gUnk_03000440.unk45 - 1)
             gUnk_03000440.unk44 = up;
         else
             gUnk_03000440.unk44++;
         play_sound_effect(2);
-        sub_0800FFF4();
+        medaparts_help_move_cursor();
     } else if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         medaparts_help_init_cursor();
@@ -578,27 +578,28 @@ void medaparts_help_exit(void) {
     gGameSubState = 0x13;
 }
 
-// guess: sub-states 12-16 of the Medaparts screen: a 3-choice window (cursor sprite 4, choice in
-// gUnk_03000440.unk4A): 0 -> detail page, 1 -> stores the part in gUnk_03002B68, 2 -> back to the list.
-// Not reached by a scenario yet.
-void sub_0800EA2C(void) {
+// Medaparts screen sub-states 64-71: A on a part in link trade mode (unk3C == 4) opens a 3-entry choice (cursor
+// sprite 4, choice in gUnk_03000440.unk4A): 0 opens the part's detail page, 1 offers it for trade (refused with
+// sound 6 when every owned copy is equipped), 2 goes back to the list. Twin of the Medals screen's medal_trade_*.
+// Code-read only (needs a link partner).
+void medapart_trade_choice_open(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
     gSpriteEntries[1].unk0 &= 0xBFFF;
     gSpriteEntries[2].unk0 &= 0xBFFF;
     set_tilemap_and_decompress_bg(18, 5, gUnk_084889F8, REG_BG0CNT, 0x380);
     gUnk_03000440.unk4A = 0;
-    sub_08010040();
+    medapart_trade_init_choice_cursor();
     gGameSubState++;
 }
 
-void sub_0800EA98(void) {
+void medapart_trade_choice_input(void) {
     s32 r;
 
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
     sprite_bob_y(4, gFrameCounter, 0xA8);
-    sub_080100BC();
+    medapart_trade_choice_cursor_input();
     if (KEYS_LO(gNewKeys) & 1) {
         if (gUnk_03000440.unk4A == 1) {
             r = (u16)medapart_get_counts(gUnk_03000440.unk3D, gUnk_03000440.unk3E);
@@ -614,20 +615,20 @@ void sub_0800EA98(void) {
         gUnk_03000440.unk4A = 2;
     } else
         return;
-    sub_08010040();
+    medapart_trade_init_choice_cursor();
     gGameSubState++;
 }
 
-void sub_0800EB34(void) {
+void medapart_trade_choice_close(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    if (sub_0801013C()) {
+    if (medapart_trade_choice_close_step()) {
         clear_sprite_table_mask(4, 1);
         gGameSubState++;
     }
 }
 
-void sub_0800EB60(void) {
+void medapart_trade_choice_dispatch(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
     switch (gUnk_03000440.unk4A) {
@@ -644,12 +645,12 @@ void sub_0800EB60(void) {
     }
 }
 
-void sub_0800EBB8(void) {
+void medapart_trade_store_part(void) {
     gUnk_03002B68 = (gUnk_03000440.unk3E << 16) + gUnk_03000440.unk3D;
     gGameSubState++;
 }
 
-void sub_0800EBE4(void) {
+void medapart_trade_enter_link(void) {
     clear_battle_sprite_slot(0, 0x80);
     clear_bg_scroll();
     goto_link_scene(2);
@@ -696,7 +697,9 @@ static void medaparts_list_draw_counts(void) {
     }
 }
 
-static void sub_0800EDA0(void) {
+// The second count column: how many of each part are equipped (inventory byte 1, which
+// team_lose_equipped_part decrements together with the owned count).
+static void medaparts_list_draw_equipped_counts(void) {
     u32 i;
 
     for (i = 0; i < 4; i++) {
@@ -812,7 +815,7 @@ static u32 medaparts_list_page_input(void) {
         draw_number_tall_bgcnt(gUnk_03000440.unk3F + 1, 0xB, 2, 2, REG_BG1CNT, 0x7360);
         medaparts_list_draw_names();
         medaparts_list_draw_counts();
-        sub_0800EDA0();
+        medaparts_list_draw_equipped_counts();
         medaparts_list_draw_part_icons();
         medapart_draw_sprite();
         ret = 1;
@@ -843,7 +846,7 @@ static u32 medaparts_list_kind_input(void) {
         write_tilemap_rect(10, 2, 0x10, 0, gUnk_083B4AE0[gUnk_03000440.unk3E + 0x59], REG_BG0CNT, 0x200);
         medaparts_list_draw_names();
         medaparts_list_draw_counts();
-        sub_0800EDA0();
+        medaparts_list_draw_equipped_counts();
         medaparts_list_draw_part_icons();
         medapart_draw_sprite();
         ret = 1;
@@ -962,7 +965,8 @@ static void medapart_detail_init_sprite(void) {
                                   8, 1);
 }
 
-s32 sub_0800F6CC(void) {
+// The skill's index into the detail help messages: special skills (100 and up) restart at 0.
+s32 medapart_detail_skill_help_index(void) {
     s32 ret;
     if (gUnk_03000440.unkEF > 99)
         ret = gUnk_03000440.unkEF - 100;
@@ -1199,14 +1203,14 @@ static void medaparts_help_init_cursor(void) {
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[3], 6);
 }
 
-static void sub_0800FFF4(void) {
+static void medaparts_help_move_cursor(void) {
     const u8 *rec = gHelpCursorLayouts[gUnk_03000440.unk43];
 
     gSpriteEntries[6].unk2 = rec[(gUnk_03000440.unk44 + 1) << 1] * 8;
     gSpriteEntries[6].unk4 = rec[((gUnk_03000440.unk44 + 1) << 1) + 1] * 8;
 }
 
-static void sub_08010040(void) {
+static void medapart_trade_init_choice_cursor(void) {
     gSpriteEntries[4].unk0 = 0xD204;
     gSpriteEntries[4].unk2 = 0xA8;
     gSpriteEntries[4].unk4 = gUnk_03000440.unk4A * 16 + 0x38;
@@ -1220,7 +1224,7 @@ static void sub_08010040(void) {
     gSpriteEntries[4].unkB = 0xC1;
 }
 
-static void sub_080100BC(void) {
+static void medapart_trade_choice_cursor_input(void) {
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         if (gUnk_03000440.unk4A == 0)
             gUnk_03000440.unk4A = 2;
@@ -1239,14 +1243,15 @@ static void sub_080100BC(void) {
     }
 }
 
-u32 sub_0801013C(void) {
-    gUnk_083ACC94[gSpriteEntries[4].unk29]();
+// The choice window's close animation (blink, shrink, clear), one step per frame; 1 when done.
+u32 medapart_trade_choice_close_step(void) {
+    gMedapartTradeChoiceCloseSteps[gSpriteEntries[4].unk29]();
     if (gSpriteEntries[4].unk29 == 3)
         return 1;
     return 0;
 }
 
-void sub_08010170(void) {
+void medapart_trade_choice_blink_step(void) {
     if (gSpriteEntries[4].unk27 != 30) {
         if (gSpriteEntries[4].unk27 & 4)
             gSpriteEntries[4].unk0 &= 0xBFFF;
@@ -1259,7 +1264,7 @@ void sub_08010170(void) {
     }
 }
 
-void sub_080101E8(void) {
+void medapart_trade_choice_shrink_step(void) {
     gSpriteEntries[4].unk8 -= 8;
     gSpriteEntries[4].unk9 -= 8;
     if (gSpriteEntries[4].unk8 == 0) {
@@ -1268,7 +1273,7 @@ void sub_080101E8(void) {
     }
 }
 
-void sub_0801022C(void) {
+void medapart_trade_choice_clear_step(void) {
     vram_fill_tilemap_rect(12, 8, 18, 5, REG_BG0CNT, 0);
     gSpriteEntries[4].unk29++;
 }

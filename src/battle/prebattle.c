@@ -13,16 +13,16 @@ static void prebattle_draw_battlefield_name(void);
 static void load_opponent_medabot_sprites(void);
 static void update_all_battle_sprite_orbits(void);
 static void prebattle_init_rubberobo_sprite(void);
-static void sub_080121CC(void);
-static s32 sub_080121F0(void);
+static void afterbattle_choose_won_part(void);
+static s32 afterbattle_broken_part_chance(void);
 static void setup_battle_result_sprite(void);
-static void sub_08012468(void);
+static void afterbattle_pulse_new_sprite(void);
 static void setup_battle_result_sprite_animation(void);
 static void calc_average_bot_stat_080125B4(void);
 static void accumulate_alive_bot_score(void);
 static void calc_average_bot_stat_0801264C(void);
 static void calc_medaforce_gauge_from_damage(void);
-static void sub_0801275C(void);
+static void battle_score_add_time_bonus(void);
 static void battle_check_medal_level_up(void);
 
 // Game state 6, "Get ready to Robattle" (runtime-checked from the debug Battle entry): sub-states 0-5
@@ -164,7 +164,7 @@ void prebattle_load_gfx(void) {
     init_opponent_medabot_sprites();
     draw_opponent_leg_type_icons();
     prebattle_init_rubberobo_sprite();
-    sub_080121A8();
+    battlefield_load_params();
     apply_battle_blend_effect_a();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
@@ -360,7 +360,7 @@ void afterbattle_give_part(void) {
         gUnk_030057E0.unkC2E = 0;
         gGameSubState = 62;
     } else {
-        sub_080121CC();
+        afterbattle_choose_won_part();
         if (medapart_get_counts(gUnk_03001800.unk169, gUnk_03001800.unk168))
             gUnk_03001800.unk16A = 0;
         else
@@ -429,7 +429,7 @@ void afterbattle_load_part_icon_sprite(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
-    sub_08012468();
+    afterbattle_pulse_new_sprite();
     lz_decompress_dispatch(gUnk_084D7DB0, (void *)0x06016C00);
     DmaSet(3, gUnk_084E2F98, 0x05000360, 0x84000008);
     gSpriteEntries[2].unk0 = 0xC404;
@@ -446,7 +446,7 @@ void afterbattle_part_details_input(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
-    sub_08012468();
+    afterbattle_pulse_new_sprite();
     if (KEYS_LO(gNewKeys) & 3) {
         clear_battle_sprite_slot(1, 2);
         gUnk_03000430 = 0;
@@ -660,7 +660,7 @@ void afterbattle_part_detail_init_fade(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
-    sub_08012468();
+    afterbattle_pulse_new_sprite();
     palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
@@ -670,7 +670,7 @@ void afterbattle_part_detail_fade_out(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
-    sub_08012468();
+    afterbattle_pulse_new_sprite();
     if (gUnk_03000440.unk84 <= 8) {
         bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
@@ -781,7 +781,7 @@ void afterbattle_part_detail_restore_screen(void) {
     init_opponent_medabot_sprites();
     draw_opponent_leg_type_icons();
     prebattle_init_rubberobo_sprite();
-    sub_080121A8();
+    battlefield_load_params();
     apply_battle_blend_effect_a();
     setup_battle_result_sprite_animation();
     memcpy_bytes_0803F63C(gPartKindNames[gUnk_03001800.unk168], gUnk_03000440.unk9E, 14);
@@ -796,7 +796,7 @@ void afterbattle_part_detail_fade_in(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
-    sub_08012468();
+    afterbattle_pulse_new_sprite();
     if (gUnk_03000440.unk84 <= 8) {
         bg_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
         obj_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
@@ -809,7 +809,7 @@ void afterbattle_part_detail_return(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
-    sub_08012468();
+    afterbattle_pulse_new_sprite();
     gGameSubState = 0x3D;
 }
 
@@ -864,7 +864,8 @@ void afterbattle_exit_to_field(void) {
     gGameSubState = 0;
 }
 
-// 0x77: picks one of the player's parts (sub_080122F4(0): slots 0-2) and removes it (team_lose_equipped_part).
+// 0x77: picks one of the player's parts (battle_pick_random_bot_part(0): slots 0-2) and removes it
+// (team_lose_equipped_part).
 void battle_loss_take_part(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -872,7 +873,7 @@ void battle_loss_take_part(void) {
         gUnk_030057E0.unkC2E = 0;
         gGameSubState = 0x40;
     } else {
-        sub_080122F4(0);
+        battle_pick_random_bot_part(0);
         team_lose_equipped_part(gUnk_03000590[gUnk_03001800.unk187].unk47, gUnk_03001800.unk168);
         sub_0803FB0C();
         gGameSubState++;
@@ -1040,22 +1041,24 @@ static void prebattle_init_rubberobo_sprite(void) {
     }
 }
 
-// guess: battlefield parameters
-void sub_080121A8(void) {
-    memcpy_bytes_0803F63C(gUnk_083C3B04[gUnk_03001800.unk38], gUnk_03001800.unk39, 8);
+// guess: copies the battlefield's 8 parameter bytes (gBattlefieldParams[unk38]) into gUnk_03001800.unk39.
+void battlefield_load_params(void) {
+    memcpy_bytes_0803F63C(gBattlefieldParams[gUnk_03001800.unk38], gUnk_03001800.unk39, 8);
 }
 
-// guess: chooses the won Medapart: sub_080121F0 (10 per destroyed opponent part) against a 0-100 roll,
-// then sub_08012234 (a part the player doesn't own yet), else any opponent part (sub_080122F4(3)).
-static void sub_080121CC(void) {
-    s32 n = sub_080121F0();
+// Chooses the won Medapart (unk168 kind, unk169 id): afterbattle_broken_part_chance (10 per broken opponent part)
+// against a 0-100 roll, then afterbattle_pick_unowned_part (a part the player doesn't own yet), else any opponent
+// part (battle_pick_random_bot_part(3)).
+static void afterbattle_choose_won_part(void) {
+    s32 n = afterbattle_broken_part_chance();
 
-    if (n < rng_percent() || !sub_08012234())
-        sub_080122F4(3);
+    if (n < rng_percent() || !afterbattle_pick_unowned_part())
+        battle_pick_random_bot_part(3);
 }
 
-// Guess: 10 points per broken (armor 0) arm / legs part of the present opponents (records 3-5).
-static s32 sub_080121F0(void) {
+// Chance (percent) of winning a part the player doesn't own: 10 per broken (armor 0) arm / legs part of the
+// present opponents (records 3-5).
+static s32 afterbattle_broken_part_chance(void) {
     s32 sum = 0;
     u32 i = 0, j, k;
     struct Unk_03000590 *base = gUnk_03000590;
@@ -1082,12 +1085,14 @@ end:
     return sum;
 }
 
-u32 sub_08012234(void) {
+// Looks for an opponent part the player owns none of, from a random opponent and kind; 1 and sets unk168 / unk169
+// when found.
+u32 afterbattle_pick_unowned_part(void) {
     u32 slot, n, j, part, k;
     u8 *p;
     struct Unk_03000590 *bb;
 
-    slot = gUnk_083ACEF0[rng_next_byte() & 0xF];
+    slot = gRandomBotSlotStarts[rng_next_byte() & 0xF];
     for (n = 0; n < 3; n++) {
         register struct Unk_03000590 *base asm("r5") = gUnk_03000590;
         if (base[k = slot + 3].unkBA) {
@@ -1110,13 +1115,15 @@ u32 sub_08012234(void) {
     return 0;
 }
 
-void sub_080122F4(u32 a) {
+// Picks a random part of a present Medabot of one side (first = 0 player, 3 opponents): unk168 kind, unk169 id,
+// unk187 the Medabot record.
+void battle_pick_random_bot_part(u32 first) {
     u32 slot, dir, i, k;
 
-    slot = gUnk_083ACEF0[rng_next_byte() & 0xF];
+    slot = gRandomBotSlotStarts[rng_next_byte() & 0xF];
     dir = rng_next_byte() & 1;
     for (i = 0; i < 3; i++) {
-        k = a + slot;
+        k = first + slot;
         if (gUnk_03000590[k].unkBA) {
             gUnk_03001800.unk168 = rng_next_byte() & 3;
             gUnk_03001800.unk169 = gUnk_03000590[k].parts[gUnk_03001800.unk168].unk17;
@@ -1152,7 +1159,8 @@ static void setup_battle_result_sprite(void) {
     }
 }
 
-static void sub_08012468(void) {
+// Pulses the "NEW" sprite (sprite 1, unk9 between 0x40 and 0x80) while the won part is a new one.
+static void afterbattle_pulse_new_sprite(void) {
     if (gUnk_03001800.unk16A) {
         if (!gSpriteEntries[1].unk28) {
             if ((u8)(gSpriteEntries[1].unk9 += 2) == 0x80)
@@ -1190,7 +1198,7 @@ void calculate_battle_score_summary(void) {
     accumulate_alive_bot_score();
     calc_average_bot_stat_0801264C();
     calc_medaforce_gauge_from_damage();
-    sub_0801275C();
+    battle_score_add_time_bonus();
     accumulate_team_armor_stats();
 }
 
@@ -1260,7 +1268,8 @@ static void calc_medaforce_gauge_from_damage(void) {
     gUnk_03001800.unk16C += score * 2;
 }
 
-static void sub_0801275C(void) {
+// 5 experience points per Robattle TIME tick.
+static void battle_score_add_time_bonus(void) {
     gUnk_03001800.unk16C += gUnk_03001800.unk16B * 5;
 }
 

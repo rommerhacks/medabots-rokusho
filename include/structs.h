@@ -601,7 +601,7 @@ struct Unk_03001800 {
     struct EncounterBot unk4[3];
     struct Unk_03001800_28 unk28[2]; // per side (0 team, 1 opponents)
     u8 unk38;                        // battlefield
-    u8 unk39[8];                     // copied from gUnk_083C3B04[unk38] (sub_080121A8)
+    u8 unk39[8];                     // copied from gBattlefieldParams[unk38] (battlefield_load_params)
     u8 unk41[3];                     // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
     u8 unk44;                        // Robattle: bit (1 << team Medabot) set by robattle_command_auto
     u8 unk45[6][2];                  // Robattle action queue: record + 1 (0 = free), priority = legs Propulsion

@@ -668,7 +668,7 @@ static void link_robattle_draw_frame(void) {
 }
 
 static void link_robattle_load_battlefield_info(void) {
-    memcpy_bytes_0803F63C(gUnk_083C3B04[gUnk_03001800.unk38], gUnk_03001800.unk39, 8);
+    memcpy_bytes_0803F63C(gBattlefieldParams[gUnk_03001800.unk38], gUnk_03001800.unk39, 8);
 }
 
 static void prize_game_scroll_bg3(void) {
