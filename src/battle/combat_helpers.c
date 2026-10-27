@@ -83,7 +83,7 @@ void reduce_bot_part_stat(u32 rec, u32 part, s32 amount) {
         gUnk_03000590[rec].parts[part].unk11 -= amount;
 }
 
-void sub_08035194(u32 rec) {
+void bot_halve_broken_leg_stats(u32 rec) {
     if (gUnk_03000590[rec].parts[3].unk11 == 0) {
         gUnk_03000590[rec].parts[3].unk12 = gUnk_03000590[rec].parts[3].data[5] >> 1;
         gUnk_03000590[rec].parts[3].unk13 = gUnk_03000590[rec].parts[3].data[6] >> 1;
@@ -157,7 +157,7 @@ u32 update_sprite_deceleration(u32 slot, s16 a, s16 b) {
     return 0;
 }
 
-void sub_0803536C(u32 slot, u32 frame, u32 y) {
+void sprite_shake_x_step(u32 slot, u32 frame, u32 y) {
     switch ((frame & 6) >> 1) {
     case 1:
         gSpriteEntries[slot].unk2 = y + 1;
@@ -171,7 +171,7 @@ void sub_0803536C(u32 slot, u32 frame, u32 y) {
     }
 }
 
-void sub_080353AC(u32 a) {
+void bg3_shake_step(u32 a) {
     if (a & 2)
         gBg3Scroll.y = 2;
     else
@@ -387,12 +387,12 @@ void sub_080358F0(u32 rec) {
             gUnk_03001800.unkE8 += gUnk_03000590[rec].parts[i].data[5];
 }
 
-void sub_08035928(u32 rec, u32 target) {
+void battle_set_action_target(u32 rec, u32 target) {
     gUnk_03000590[rec].unkE0 = target;
     gUnk_03001800.unk88 = target - 1;
 }
 
-void sub_08035944(u32 rec, u32 part) {
+void battle_set_action_target_part(u32 rec, u32 part) {
     gUnk_03000590[rec].unkE1 = part;
     gUnk_03001800.unk8B = part - 1;
 }

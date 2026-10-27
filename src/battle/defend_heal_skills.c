@@ -323,8 +323,8 @@ void trap_sprite_slide(void) {
 
 // The side already holds this trap: pulse the sprite and add to it; Attack Clr skips the pulse.
 void trap_check_existing(void) {
-    if (gUnk_03001800.unk28[gUnk_03001800.unk8A].unk2 &&
-        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 == gUnk_03001800.unk52) {
+    if (gUnk_03001800.unk28[gUnk_03001800.unk8A].active &&
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].skill == gUnk_03001800.unk52) {
         gSpriteEntries[0x21].unk27 = 0;
         gUnk_03001800.unkAA++;
     } else if (gUnk_03001800.unk51 == 2) {
@@ -363,30 +363,30 @@ void trap_sprite_shrink(void) {
 
 // unk28[side]: the side's trap / Team Form record (active, skill kind, power); a repeat stacks half.
 void trap_apply(void) {
-    if (gUnk_03001800.unk28[gUnk_03001800.unk8A].unk2 &&
-        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 == gUnk_03001800.unk52) {
+    if (gUnk_03001800.unk28[gUnk_03001800.unk8A].active &&
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].skill == gUnk_03001800.unk52) {
         gUnk_03001800.unk53 = 1;
         if (gUnk_03001800.unk51 != 2) {
-            add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4, gUnk_03001800.unkE8 >> 1, 0xFF);
-            add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk8A].unk5,
+            add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk8A].durability, gUnk_03001800.unkE8 >> 1, 0xFF);
+            add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk8A].power,
                           (gUnk_03001800.unkEC + gUnk_03000590[gUnk_03001800.unk87].unkD5) >> 1, 0xFF);
             gUnk_03001800.unkAA++;
         } else {
-            gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4++;
+            gUnk_03001800.unk28[gUnk_03001800.unk8A].durability++;
             gUnk_03001800.unkAA++;
         }
     } else {
         gUnk_03001800.unk53 = 0;
-        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk2 = 1;
-        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 = gUnk_03001800.unk52;
-        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4 = 0;
-        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk5 = 0;
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].active = 1;
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].skill = gUnk_03001800.unk52;
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].durability = 0;
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].power = 0;
         if (gUnk_03001800.unk51 != 2) {
-            add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4, gUnk_03001800.unkE8, 0xFF);
-            add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk8A].unk5,
+            add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk8A].durability, gUnk_03001800.unkE8, 0xFF);
+            add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk8A].power,
                           gUnk_03001800.unkEC + gUnk_03000590[gUnk_03001800.unk87].unkD5, 0xFF);
         } else {
-            gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4++;
+            gUnk_03001800.unk28[gUnk_03001800.unk8A].durability++;
         }
         gUnk_03001800.unkAA++;
     }
@@ -471,8 +471,8 @@ void team_form_move(void) {
 }
 
 void team_form_check_existing(void) {
-    if (gUnk_03001800.unk28[gUnk_03001800.unk8A].unk2 &&
-        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 == gUnk_03001800.unk52) {
+    if (gUnk_03001800.unk28[gUnk_03001800.unk8A].active &&
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].skill == gUnk_03001800.unk52) {
         gSpriteEntries[0x21].unk27 = 0;
         gUnk_03001800.unkAA++;
     } else {
@@ -521,7 +521,7 @@ void break_form_begin(void) {
     if (decrement_battle_timer_and_check_zero()) {
         gUnk_03001800.unkA6 = 0x1A;
         gUnk_03001800.unkAA++;
-    } else if (!gUnk_03001800.unk28[gUnk_03001800.unk89].unk2) {
+    } else if (!gUnk_03001800.unk28[gUnk_03001800.unk89].active) {
         gUnk_03001800.unkA6 = 0x24;
         gUnk_03001800.unkAA++;
     } else {
@@ -633,7 +633,7 @@ void break_form_shatter(void) {
     u32 i;
 
     gUnk_03000440.unk86++;
-    sub_080353AC(gUnk_03000440.unk86);
+    bg3_shake_step(gUnk_03000440.unk86);
     for (i = 0; i < 6; i++) {
         if (gUnk_03000590[i].unk40) {
             advance_sprite_anim_frame(0x5A + i * 4, 0);
@@ -661,10 +661,10 @@ void break_form_shatter(void) {
 }
 
 void break_form_apply(void) {
-    gUnk_03001800.unk28[gUnk_03001800.unk89].unk2 = 0;
-    gUnk_03001800.unk28[gUnk_03001800.unk89].unk3 = 0;
-    gUnk_03001800.unk28[gUnk_03001800.unk89].unk4 = 0;
-    gUnk_03001800.unk28[gUnk_03001800.unk89].unk5 = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].active = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].skill = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].durability = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].power = 0;
     gUnk_03001800.unkAA++;
 }
 

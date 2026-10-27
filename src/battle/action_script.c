@@ -75,14 +75,14 @@ void sub_08033974(void) {
     gUnk_03001800.unk163 = 1;
 }
 
-void sub_080339F4(void) {
-    sub_0801C4FC();
+void script_op_trap_hit(void) {
+    trap_hit_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08033A10(void) {
-    battle_dispatch_phase_handler_0801D2F0();
+void script_op_action_part_check(void) {
+    action_part_check_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
@@ -96,25 +96,25 @@ void sub_08033A2C(void) {
     battle_script_advance();
 }
 
-void sub_08033A78(void) {
-    sub_0801D380();
+void script_op_target_part_check(void) {
+    target_part_check_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08033A94(void) {
-    sub_0801D40C();
+void script_op_action_flash(void) {
+    action_flash_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08033AB0(void) {
-    sub_0801D580();
+void script_op_guard(void) {
+    guard_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08033ACC(void) {
+void script_op_guard_restore(void) {
     if (gUnk_03001800.unkDE) {
         memcpy_bytes_0803F63C(gUnk_03003470, gUnk_03003470 + 0xE40 + ((gUnk_03001800.unkDE - 1) << 8), 0x40);
         memcpy_bytes_0803F63C(gUnk_03003470 + 0x40, gUnk_03003470 + 0xE80 + ((gUnk_03001800.unkDE - 1) << 8), 0x40);
@@ -232,8 +232,8 @@ void sub_08033D30(void) {
     if (gUnk_03000590[gUnk_03001800.unk87].unkD6 & 1)
         gUnk_03001800.unkEC += gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[6];
     if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1] == 0x34 &&
-        gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 == 0x33)
-        gUnk_03001800.unkEC += gUnk_03001800.unk28[gUnk_03001800.unk8A].unk5;
+        gUnk_03001800.unk28[gUnk_03001800.unk8A].skill == 0x33)
+        gUnk_03001800.unkEC += gUnk_03001800.unk28[gUnk_03001800.unk8A].power;
     sub_08035B9C(gUnk_03001800.unk87);
     subtract_s16_floored(&gUnk_03001800.unkEC, gUnk_03000590[gUnk_03001800.unk88].unkD1);
     if (gUnk_03001800.unkDE != 0 && gUnk_03001800.unkDF == 0x1B)
@@ -272,15 +272,15 @@ void sub_08034008(void) {
     battle_script_advance();
 }
 
-void sub_0803402C(void) {
-    sub_0801DE1C();
+void script_op_announce_action(void) {
+    action_announce_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08034048(void) {
+void script_op_closeup_enter(void) {
     gUnk_03000440.unk130 = 1;
-    sub_0801DEE4();
+    closeup_enter_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
@@ -530,10 +530,10 @@ void script_op_team_attack_turrets(void) {
 }
 
 void script_op_clear_queued_action(void) {
-    gUnk_03001800.unk28[gUnk_03001800.unk8A].unk2 = 0;
-    gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 = 0;
-    gUnk_03001800.unk28[gUnk_03001800.unk8A].unk4 = 0;
-    gUnk_03001800.unk28[gUnk_03001800.unk8A].unk5 = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk8A].active = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk8A].skill = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk8A].durability = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk8A].power = 0;
     battle_script_advance();
 }
 

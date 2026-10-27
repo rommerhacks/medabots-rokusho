@@ -334,7 +334,7 @@ struct Unk_03000440 {
     u8 filler11E[0x10];
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
     u8 unk12F; // sprite slot (sub_08028E84)
-    u8 unk130; // Robattle: set to 1 around the action script commands sub_08034048 .. sub_08034240
+    u8 unk130; // Robattle: set to 1 around the action script commands script_op_closeup_enter .. sub_08034240
     u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2
     u8 unk132;
     u8 unk133; // after-battle Medal level-up: Medal slot (find_medal_slot_by_id - 1)
@@ -501,7 +501,7 @@ struct TextColBits {
 };
 
 // Struct view of the gUnk_083B4AE0 tilemap pointer table: the Robattle screen wipes read entry 0x69 as a
-// field (base + 0x1A4, reloaded after each call: sub_0801DF60, sub_0801FADC).
+// field (base + 0x1A4, reloaded after each call: closeup_enter_wipe, sub_0801FADC).
 struct Unk_083B4AE0 {
     const void *unk0[0x49];
     const void *unk124; // message "more text" cursor, blink off (update_text_compose_and_input)
@@ -561,7 +561,8 @@ struct BattlePart {
     u8 unk11; // current armor, starts as data[4] = max armor (Status screen, runtime-checked); 0 = broken
               // (legs: data[4..9] copied to unk11..unk16)
     u8 unk12; // legs: data[5] (Propulsion; sub_0801928C)
-    u8 unk13; // legs: data[6..9] (unk12..unk16 restored by sub_080351E8, halved by sub_08035194 when broken)
+    u8 unk13; // legs: data[6..9] (unk12..unk16 restored by sub_080351E8, halved by bot_halve_broken_leg_stats when
+              // broken)
     u8 unk14;
     u8 unk15;
     u8 unk16;
@@ -581,11 +582,12 @@ struct SortEntry {
 // Per-side record at gUnk_03001800.unk28 (0 team, 1 opponents).
 struct Unk_03001800_28 {
     u8 unk0;
-    u8 unk1; // compared between the sides when TIME runs out with a tie (robattle_judge_time_up)
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
-    u8 unk5; // damage amount (sub_0801C660)
+    u8 unk1;       // compared between the sides when TIME runs out with a tie (robattle_judge_time_up)
+    u8 active;     // a trap / Team Form is laid on this side (trap_apply)
+    u8 skill;      // its skill id: 0xA Grap Trap, 0xB Shot Trap, 0xC Attack Clr, 0x33 Team Form, 0x5A Medaforce trap
+    u8 durability; // traps: worn down by the caught Medabot's legs (trap_hit_wear); Attack Clr: uses left;
+                   // Team Form: added to the attack power (action_calc)
+    u8 power;      // trap: damage dealt when it springs (trap_hit_calc_damage)
     u8 unk6;
     u8 unk7;
 };
@@ -649,17 +651,17 @@ struct Unk_03001800 {
     u8 filler9B;
     u8 unk9C[5]; // cleared by battle_substeps_reset
     u8 unkA1[5]; // cleared by battle_message_reset
-    u8 unkA6;    // Medaforce effect id 0xE-0x11 (sub_0801C524)
+    u8 unkA6;    // battle message id (gUnk_083C65C4) shown by effect_step_show_message; also the next handler
     u8 unkA7; // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to (restore_changed_part)
     u8 unkA8; // Robattle: skill id (data[1]) of the acting Medabot's chosen part (resolve_battle_action_phase)
     u8 fillerA9;
-    u8 unkAA;      // sub-state of the gUnk_083AD44C handlers (sub_0801C4FC) and gUnk_083AD50C handlers
-                   // (battle_dispatch_phase_handler_0801D2F0)
-    u8 unkAB;      // 0-2, set with unkB5 = 1 by the gUnk_083AD50C handlers (sub_0801D2AC..)
+    u8 unkAA;      // sub-state of the gTrapHitSteps handlers (trap_hit_run) and gActionPartCheckSteps handlers
+                   // (action_part_check_run)
+    u8 unkAB;      // 0-2, set with unkB5 = 1 by the gActionPartCheckSteps handlers (trap_hit_end_continue..)
     u8 unkAC[0x9]; // Robattle action script: operands of the current command (battle_script_load_operands)
-    // action effect step script done: cleared by each step dispatcher (sub_0801C4FC,
-    // battle_dispatch_phase_handler_0801D2F0..), set by the last step; the callers (sub_080339F4,
-    // sub_08033A10) then call battle_script_advance
+    // action effect step script done: cleared by each step dispatcher (trap_hit_run,
+    // action_part_check_run..), set by the last step; the callers (script_op_trap_hit,
+    // script_op_action_part_check) then call battle_script_advance
     u8 unkB5;
     u8 fillerB6[0x1];
     u8 unkB7; // effect result flags (bit 0, bit 1 checked by sub_0801E3C0)
@@ -673,16 +675,16 @@ struct Unk_03001800 {
     u8 unkBE;  // set with unkB7 / unkB8 by the script commands sub_08033F04 / sub_08033F64 (1, 5)
     u8 unkBF;  // set with unkB8 = 4 by sub_080392D8 / determine_battle_target_mode (2-4)
     u8 fillerC0[0x8];
-    u16 unkC8; // Robattle: effect amount (shown by sub_0801CA60, subtracted by apply_battle_damage_tick)
+    u16 unkC8; // Robattle: effect amount (shown by trap_hit_damage_popup_init, subtracted by trap_hit_apply_damage)
     u16 unkCA; // damage passed to battle_set_damage_vs_armor (sub_0801ECC0)
     u16 unkCC; // copy of unkC8 (sub_08036B84)
     u8 fillerCE[0x2];
-    u8 unkD0;     // last part (3..0) of the acting Medabot with armor left (sub_0801C660)
-    u8 unkD1;     // nonzero: battle_check_hit_and_set_timer goes to sub-state 0x1A
+    u8 unkD0;     // last part (3..0) of the acting Medabot with armor left (trap_hit_calc_damage)
+    u8 unkD1;     // nonzero: trap_hit_check_part_broken goes to sub-state 0x1A
     u8 unkD2[4];  // per part: nonzero shows an effect sprite (sub_08026AF4)
     u16 unkD6[4]; // per part: amounts shown by sub_08026924
-    u8 unkDE;     // record + 1 of a teammate of unk88 with unkBD bit 3 set (sub_0801D5A8), 0 = none
-    u8 unkDF;     // that teammate's unkDF (0x1B-0x1D pick the graphics in sub_0801D6A4)
+    u8 unkDE;     // record + 1 of the teammate guarding unk88 with Defence / Full / Half Block (guard_find), 0 = none
+    u8 unkDF;     // its block skill: 0x1B Defence, 0x1C Full Block, 0x1D Half Block (guard_load_graphics)
     u8 unkE0[3];  // per team record: record + 1 waiting for reset_battle_bot_state (sub_0801FE14)
     u8 fillerE3[0x5];
     s16 unkE8; // passed to battle_set_action_params with unkEC (sub_0801F9EC)
@@ -756,7 +758,7 @@ struct Unk_03001800 {
     u16 unk1A8;
     u16 unk1AA;
     u16 unk1AC;
-    u8 unk1AE; // set to 1 when the screen wipe of sub_0801DF60 is done
+    u8 unk1AE; // set to 1 when the screen wipe of closeup_enter_wipe is done
     u8 unk1AF;
     u8 unk1B0;
 };
@@ -806,7 +808,7 @@ struct Unk_03000590 {
               // robattle_bot_ready_for_command)
     u8 fillerBE;
     u8 unkBF;
-    u8 unkC0; // flags (bit 1 skips the Medaforce effect, sub_0801C524)
+    u8 unkC0; // flags (bit 1: traps don't spring on this Medabot, trap_hit_check)
     u8 unkC1; // Medaforce gauge, 0-80 (0x50: Medaforce ready, check_medaforce_availability; drawn as "MF nn/80",
               // runtime-checked)
     u8 fillerC2[0x2];

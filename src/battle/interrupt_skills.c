@@ -604,7 +604,7 @@ void team_attack_check_run(void) {
 // guess: TeamAttack needs the queued action of slot unk8A to be Team Form (skill 0x33); else it fails
 // with unkA6 0x22.
 void team_attack_check_form(void) {
-    if (gUnk_03001800.unk28[gUnk_03001800.unk8A].unk2 && gUnk_03001800.unk28[gUnk_03001800.unk8A].unk3 == 0x33) {
+    if (gUnk_03001800.unk28[gUnk_03001800.unk8A].active && gUnk_03001800.unk28[gUnk_03001800.unk8A].skill == 0x33) {
         gUnk_03001800.unkAB = 0;
         gUnk_03001800.unkAA++;
     } else {

@@ -1,9 +1,10 @@
 // Battle action step handlers. gBattleMessageSteps is one long table of step lists; each runner (battle_message_show
 // for messages, target_panels_show, miss_popup_run ...) calls entry [step] of its own sub-table and the handlers
-// advance the step counter. From sub_0801E2D8 on, the runners are the effect sequences of the action script commands
-// (gUnk_083AF000) in opcode order: 0x1E-0x22 are the normal attack (every Strike / Shoot ability), 0x23 / 0x24 the
-// variants of abilities 49 / 48. The list continues in defend_heal_skills.c. Called from the battle action state code
-// (state 8) and the action script commands (state 9).
+// advance the step counter. Then come the runners of script opcodes 0x04-0x09 and 0x19-0x1A (trap_hit_run ...
+// closeup_enter_run; their order in an attack was seen at runtime). From sub_0801E2D8 on, the runners are the effect
+// sequences of the action script commands (gUnk_083AF000) in opcode order: 0x1E-0x22 are the normal attack (every
+// Strike / Shoot ability), 0x23 / 0x24 the variants of abilities 49 / 48. The list continues in defend_heal_skills.c.
+// Called from the battle action state code (state 8) and the action script commands (state 9).
 
 #include "global.h"
 
@@ -163,12 +164,19 @@ void target_panels_arrows_idle(void) {
     target_arrows_animate(gUnk_03001800.unk87);
 }
 
-void sub_0801C4FC(void) {
+// Script opcode 0x04: a trap (Grap Trap / Shot Trap / Attack Clr) laid on the acting Medabot's side by the other side
+// (trap_apply, unk28[side]) springs on it. unkAB = 0 the action goes on, 1 it was stopped (Attack Clr), 2 the
+// actor's head broke.
+void trap_hit_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AD44C[gUnk_03001800.unkAA]();
+    gTrapHitSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0801C524(void) {
+// Does the trap catch this action? Grap Trap (0xA) catches part kinds 0-1, Shot Trap (0xB) kinds 2-3, Attack Clr
+// (0xC) any attack; type 0x5A (unk51 3) is the trap a Medaforce lays
+// (medaforce_effects). unkA6 = the "Caught in a ..."
+// message. Bit 1 of the actor's unkC0, or a part with skill 0x15 (combat_helpers), keeps it out.
+void trap_hit_check(void) {
     struct Unk_03001800 *b;
     u32 r;
     u32 type;
@@ -179,7 +187,7 @@ void sub_0801C524(void) {
     r = sub_08034F44(b->unk87);
     if (r != 0)
         goto fail;
-    type = b->unk28[b->unk89].unk3;
+    type = b->unk28[b->unk89].skill;
     if (type == 0xA) {
         k = gUnk_03000590[b->unk87].parts[gUnk_03000590[b->unk87].unkDD - 1].data[2];
         if (k == 0)
@@ -218,7 +226,8 @@ void sub_0801C524(void) {
     }
 }
 
-void sub_0801C660(void) {
+// The trap hits the actor's last part with armor left (legs first) for the trap's stored power.
+void trap_hit_calc_damage(void) {
     s32 i;
 
     for (i = 3; i >= 0; i--) {
@@ -227,11 +236,12 @@ void sub_0801C660(void) {
             break;
         }
     }
-    battle_set_damage_vs_armor(gUnk_03001800.unk87, gUnk_03001800.unkD0, gUnk_03001800.unk28[gUnk_03001800.unk89].unk5);
+    battle_set_damage_vs_armor(gUnk_03001800.unk87, gUnk_03001800.unkD0,
+                               gUnk_03001800.unk28[gUnk_03001800.unk89].power);
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801C6C4(void) {
+void trap_hit_load_graphics(void) {
     switch (gUnk_03001800.unk51) {
     case 0:
         lz_decompress_dispatch(gUnk_084C907C, (void *)0x06014800);
@@ -253,7 +263,7 @@ void sub_0801C6C4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801C774(void) {
+void trap_hit_sprite_spawn(void) {
     gSpriteEntries[0x21].unk0 = ((gUnk_03001800.unk39[3] + 2) << 10) | -0x3DFC;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unkA = 6;
@@ -308,7 +318,7 @@ void sub_0801C774(void) {
     }
 }
 
-void sub_0801C988(void) {
+void trap_hit_sprite_grow(void) {
     if ((gSpriteEntries[0x21].unk8 += 8) == 0x40) {
         if (gUnk_03001800.unkAA < 0x20)
             play_sound_effect(0x3F);
@@ -316,7 +326,7 @@ void sub_0801C988(void) {
     }
 }
 
-void sub_0801C9C8(void) {
+void trap_hit_sprite_animate(void) {
     set_target_sprite_position(gUnk_03001800.unk87, gFrameCounter, gUnk_03001800.unk51);
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03001800.unk52], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
@@ -325,7 +335,7 @@ void sub_0801C9C8(void) {
     }
 }
 
-void sub_0801CA2C(void) {
+void trap_hit_sprite_shrink(void) {
     if (gSpriteEntries[0x21].unk8 == 8) {
         clear_battle_sprite_slot(0x21, 1);
         gUnk_03001800.unkAA++;
@@ -334,7 +344,7 @@ void sub_0801CA2C(void) {
     }
 }
 
-void sub_0801CA60(void) {
+void trap_hit_damage_popup_init(void) {
     set_display_digit_type(&gUnk_03000440.unkEE, gUnk_03001800.unkC8, 1);
     battle_number_popup_init_slot(&gUnk_03000440.unkEE, gUnk_03001800.unk87, 0x21);
     play_sound_effect(0x5B);
@@ -342,7 +352,7 @@ void sub_0801CA60(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801CAA8(void) {
+void trap_hit_damage_popup_wait(void) {
     battle_popup_update_slot(&gUnk_03000440.unkEE, gUnk_03001800.unk87, 0x21);
     if (++gUnk_03000440.unk84, gUnk_03000440.unk89 == 0 && (KEYS_LO(gRepeatKeys) & 1) && gUnk_03000440.unk84 > 0x32)
         gUnk_03000440.unk84 = 0x78;
@@ -352,22 +362,24 @@ void sub_0801CAA8(void) {
     }
 }
 
-void load_battle_script_data_d0(void) {
+// Message 0x12: "Medapart <kind> received <n> damage".
+void trap_hit_damage_message(void) {
     memcpy_bytes_0803F63C(gPartKindNames[gUnk_03001800.unkD0], gUnk_03000440.unk9E, 0xE);
     divide_by_100000_b(gUnk_03000440.unk9E + 0x14, gUnk_03001800.unkC8, 0x35);
     gUnk_03001800.unkA6 = 0x12;
     gUnk_03001800.unkAA++;
 }
 
-void apply_battle_damage_tick(void) {
+void trap_hit_apply_damage(void) {
     reduce_bot_part_stat(gUnk_03001800.unk87, gUnk_03001800.unkD0, gUnk_03001800.unkC8);
     gUnk_03001800.unkAA++;
 }
 
-void battle_check_hit_and_set_timer(void) {
+// Message 0x13 "<kind> Medapart broke" and the break effect if the part broke.
+void trap_hit_check_part_broken(void) {
     if (gUnk_03001800.unkD1) {
         play_sound_effect(0x3B);
-        sub_08035194(gUnk_03001800.unk87);
+        bot_halve_broken_leg_stats(gUnk_03001800.unk87);
         gUnk_03001800.unkA6 = 0x13;
         gUnk_03001800.unkAA = 0x1A;
     } else {
@@ -375,7 +387,7 @@ void battle_check_hit_and_set_timer(void) {
     }
 }
 
-void sub_0801CBE4(void) {
+void trap_hit_check_head_broken(void) {
     if (gUnk_03000590[gUnk_03001800.unk87].parts[0].unk11 == 0) {
         add_bot_to_defeated_list(gUnk_03001800.unk87);
         gUnk_03001800.unkAA = 0x2F;
@@ -384,7 +396,8 @@ void sub_0801CBE4(void) {
     }
 }
 
-void sub_0801CC24(void) {
+// Attack Clr (and type 0x5A): the trap drops on the actor and shakes the screen.
+void trap_hit_erase_drop(void) {
     if (sprite_move_toward_target(0x21, 0x3C, 0x84)) {
         play_sound_effect(0x41);
         gUnk_03000440.unk84 = 0;
@@ -392,8 +405,8 @@ void sub_0801CC24(void) {
     }
 }
 
-void sub_0801CC58(void) {
-    sub_080353AC(gUnk_03000440.unk84);
+void trap_hit_erase_shake_bg(void) {
+    bg3_shake_step(gUnk_03000440.unk84);
     if (++gUnk_03000440.unk84 > 0x1D) {
         play_sound_effect(0x3F);
         gBg3Scroll.y = 0;
@@ -403,31 +416,32 @@ void sub_0801CC58(void) {
     }
 }
 
-void sub_0801CCB8(void) {
-    sub_0803536C(0x21, gUnk_03000440.unk84, gUnk_03000440.unk86);
+void trap_hit_erase_shake_sprite(void) {
+    sprite_shake_x_step(0x21, gUnk_03000440.unk84, gUnk_03000440.unk86);
     if (++gUnk_03000440.unk84 == 0x5A) {
         gSpriteEntries[0x21].unk2 = gUnk_03000440.unk86;
         gUnk_03001800.unkAA++;
     }
 }
 
-void sub_0801CD08(void) {
+void trap_hit_erase_branch(void) {
     if (gUnk_03001800.unk51 == 2)
         gUnk_03001800.unkAA++;
     else
         gUnk_03001800.unkAA = 8;
 }
 
-void sub_0801CD28(void) {
+// Message 0x15: "Your attack has been stopped by the Erase Attack Trap".
+void trap_hit_erase_message(void) {
     gUnk_03001800.unkA6 = 0x15;
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801CD40(void) {
+void trap_hit_goto_wear(void) {
     gUnk_03001800.unkAA = 0x20;
 }
 
-void sub_0801CD50(void) {
+void trap_hit_break_cursor_init(void) {
     lz_decompress_dispatch(gUnk_084CDBD8, (void *)0x06014800);
     CpuFastSet(gUnk_0850E378, (void *)0x050002E0, 8);
     setup_battle_cursor_sprite_08036FF8(0x21, gSpriteEntries[0x5A + gUnk_03001800.unk87 * 4 + gUnk_03001800.unkD0].unk2,
@@ -435,12 +449,12 @@ void sub_0801CD50(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801CDB4(void) {
+void trap_hit_break_cursor_wait(void) {
     if (update_sprite_animations_tick_080370AC(0x21, 4))
         gUnk_03001800.unkAA++;
 }
 
-void sub_0801CDD4(void) {
+void trap_hit_break_burst_init(void) {
     lz_decompress_dispatch(gUnk_084CC9A8, (void *)0x06014800);
     CpuFastSet(gUnk_0850E338, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC004;
@@ -453,7 +467,7 @@ void sub_0801CDD4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801CE94(void) {
+void trap_hit_break_burst_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x22], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
@@ -481,27 +495,29 @@ void sub_0801CE94(void) {
     }
 }
 
-void sub_0801CF78(void) {
+// Wear the trap down: Grap / Shot Trap lose half the actor's leg stat (unk12) of durability, Attack Clr one use;
+// used up -> the disarm animation.
+void trap_hit_wear(void) {
     u8 v;
 
     if (gUnk_03001800.unk51 != 2) {
         v = gUnk_03000590[gUnk_03001800.unk87].parts[3].unk12 >> 1;
-        if (v >= gUnk_03001800.unk28[gUnk_03001800.unk89].unk4) {
+        if (v >= gUnk_03001800.unk28[gUnk_03001800.unk89].durability) {
             gUnk_03001800.unkAA++;
         } else {
-            gUnk_03001800.unk28[gUnk_03001800.unk89].unk4 -= v;
+            gUnk_03001800.unk28[gUnk_03001800.unk89].durability -= v;
             gUnk_03001800.unkAA = 0x2D;
         }
     } else {
-        gUnk_03001800.unk28[gUnk_03001800.unk89].unk4--;
-        if (gUnk_03001800.unk28[gUnk_03001800.unk89].unk4 == 0)
+        gUnk_03001800.unk28[gUnk_03001800.unk89].durability--;
+        if (gUnk_03001800.unk28[gUnk_03001800.unk89].durability == 0)
             gUnk_03001800.unkAA++;
         else
             gUnk_03001800.unkAA = 0x2E;
     }
 }
 
-void sub_0801CFFC(void) {
+void trap_disarm_load_graphics(void) {
     switch (gUnk_03001800.unk51) {
     case 0:
         lz_decompress_dispatch(gUnk_084C907C, (void *)0x06015400);
@@ -519,7 +535,7 @@ void sub_0801CFFC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801D06C(void) {
+void trap_disarm_sprite_spawn(void) {
     gSpriteEntries[0x21].unk0 = ((gUnk_03001800.unk39[3] + 2) << 10) | -0x3DFC;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unkA = 6;
@@ -549,14 +565,14 @@ void sub_0801D06C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801D174(void) {
+void trap_disarm_hop_init(void) {
     gSpriteEntries[0x21].unk23 = 0;
     gUnk_03000440.unk84 = 0;
     play_sound_effect(0x34);
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801D1AC(void) {
+void trap_disarm_hop(void) {
     if (sprite_hop_step(0x21) == 0) {
         if (!(gUnk_03000440.unk84 & 1)) {
             if (gUnk_03001800.unk89 == 0)
@@ -573,43 +589,46 @@ void sub_0801D1AC(void) {
     }
 }
 
-void sub_0801D244(void) {
+void trap_disarm_end(void) {
     if (gUnk_03001800.unk51 == 2)
         gUnk_03001800.unkAA = 0x2E;
     else
         gUnk_03001800.unkAA = 0x2D;
 }
 
-void sub_0801D264(void) {
-    gUnk_03001800.unk28[gUnk_03001800.unk89].unk2 = 0;
-    gUnk_03001800.unk28[gUnk_03001800.unk89].unk3 = 0;
-    gUnk_03001800.unk28[gUnk_03001800.unk89].unk4 = 0;
-    gUnk_03001800.unk28[gUnk_03001800.unk89].unk5 = 0;
+// Clear the side's trap record, message 0x25 "Trap was disarmed".
+void trap_disarm_clear(void) {
+    gUnk_03001800.unk28[gUnk_03001800.unk89].active = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].skill = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].durability = 0;
+    gUnk_03001800.unk28[gUnk_03001800.unk89].power = 0;
     gUnk_03001800.unkA6 = 0x25;
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801D2AC(void) {
+void trap_hit_end_continue(void) {
     gUnk_03001800.unkB5 = 1;
     gUnk_03001800.unkAB = 0;
 }
 
-void sub_0801D2C4(void) {
+void trap_hit_end_stopped(void) {
     gUnk_03001800.unkB5 = 1;
     gUnk_03001800.unkAB = 1;
 }
 
-void sub_0801D2D8(void) {
+void trap_hit_end_defeated(void) {
     gUnk_03001800.unkB5 = 1;
     gUnk_03001800.unkAB = 2;
 }
 
-void battle_dispatch_phase_handler_0801D2F0(void) {
+// Script opcode 0x05: is the acting Medabot's chosen part still intact? If not, message 5 "The Medapart for that
+// action is broken" and unkAB = 1.
+void action_part_check_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AD50C[gUnk_03001800.unkAA]();
+    gActionPartCheckSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0801D318(void) {
+void action_part_check(void) {
     if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].unkDD - 1].unk11) {
         gUnk_03001800.unkB5 = 1;
         gUnk_03001800.unkAB = 0;
@@ -619,17 +638,19 @@ void sub_0801D318(void) {
     }
 }
 
-void sub_0801D36C(void) {
+void action_part_check_end_broken(void) {
     gUnk_03001800.unkB5 = 1;
     gUnk_03001800.unkAB = 1;
 }
 
-void sub_0801D380(void) {
+// Script opcode 0x07: is the targeted part still intact? If not, message 0xC "The target Medapart is broken" and
+// unkAB = 1.
+void target_part_check_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AD530[gUnk_03001800.unkAA]();
+    gTargetPartCheckSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0801D3A8(void) {
+void target_part_check(void) {
     if (gUnk_03000590[gUnk_03001800.unk88].parts[gUnk_03001800.unk8B].unk11) {
         gUnk_03001800.unkB5 = 1;
         gUnk_03001800.unkAB = 0;
@@ -639,22 +660,23 @@ void sub_0801D3A8(void) {
     }
 }
 
-void sub_0801D3F8(void) {
+void target_part_check_end_broken(void) {
     gUnk_03001800.unkB5 = 1;
     gUnk_03001800.unkAB = 1;
 }
 
-void sub_0801D40C(void) {
+// guess: script opcode 0x08, a small effect (animation 0x1B) that flies from the actor to the target.
+void action_flash_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AD550[gUnk_03001800.unkAA]();
+    gActionFlashSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0801D434(void) {
+void action_flash_load_palette(void) {
     CpuFastSet(gUnk_084E3038, (void *)0x050002C0, 8);
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801D45C(void) {
+void action_flash_spawn(void) {
     clear_battle_sprite_slot(9, 1);
     gSpriteEntries[9].unk0 = 0xC404;
     gSpriteEntries[9].unk1C = 0;
@@ -669,12 +691,12 @@ void sub_0801D45C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801D524(void) {
+void action_flash_move(void) {
     if (move_sprite_toward_target(9))
         gUnk_03001800.unkAA++;
 }
 
-void sub_0801D544(void) {
+void action_flash_finish(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x1B], 9);
     if (gSpriteEntries[9].unk22 == 0xFF) {
         clear_battle_sprite_slot(9, 1);
@@ -682,12 +704,15 @@ void sub_0801D544(void) {
     }
 }
 
-void sub_0801D580(void) {
+// Script opcode 0x09: a teammate of the target with Defence / Full Block / Half Block ready (unkBD bit 3, skill in
+// unkDF 0x1B-0x1D) jumps in front of it, shows its shield, message 0x16 "<name> protected!!" and becomes the new
+// target. script_op_guard_restore (opcode 0x0A) puts its sprites back.
+void guard_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AD570[gUnk_03001800.unkAA]();
+    gGuardSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0801D5A8(void) {
+void guard_find(void) {
     u32 base;
     u32 i;
 
@@ -716,7 +741,7 @@ void sub_0801D5A8(void) {
         gUnk_03001800.unkB5 = 1;
 }
 
-void sub_0801D6A4(void) {
+void guard_load_graphics(void) {
     switch (gUnk_03001800.unkDF) {
     case 0x1B:
         lz_decompress_dispatch(gUnk_084C9880, (void *)0x06014800);
@@ -734,7 +759,7 @@ void sub_0801D6A4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801D738(void) {
+void guard_sprite_copy(void) {
     memcpy_bytes_0803F63C(&gSpriteEntries[(gUnk_03001800.unkDE - 1) * 4 + 0x5A], &gSpriteEntries[0x21], 0x40);
     memcpy_bytes_0803F63C(&gSpriteEntries[(gUnk_03001800.unkDE - 1) * 4 + 0x5B], &gSpriteEntries[0x22], 0x40);
     memcpy_bytes_0803F63C(&gSpriteEntries[(gUnk_03001800.unkDE - 1) * 4 + 0x5C], &gSpriteEntries[0x23], 0x40);
@@ -751,7 +776,7 @@ void sub_0801D738(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801D878(void) {
+void guard_blink(void) {
     update_battle_sprite_orbiting_positions((gUnk_03001800.unkDE - 1) * 4 + 0x5A, gUnk_03001800.unkDE - 1,
                                             (gUnk_03001800.unkF8 & 1) ^ 1);
     if (gUnk_03000440.unk84 & 4)
@@ -769,7 +794,7 @@ void sub_0801D878(void) {
     }
 }
 
-void sub_0801D95C(void) {
+void guard_jump(void) {
     if (update_sprite_deceleration(gUnk_03001800.unkDE * 4 + 0x59, -0x20, -0x10)) {
         check_sprite_overlap_and_adjust(gUnk_03001800.unkDE * 4 + 0x59, gUnk_03001800.unkDE + 0x71);
         update_battle_sprite_orbiting_positions((gUnk_03001800.unkDE - 1) * 4 + 0x5A, gUnk_03001800.unkDE - 1,
@@ -782,7 +807,7 @@ void sub_0801D95C(void) {
     }
 }
 
-void sub_0801D9DC(void) {
+void guard_slide_center(void) {
     u32 done = 0;
 
     if (!(gUnk_03001800.unkF8 & 1)) {
@@ -807,7 +832,7 @@ void sub_0801D9DC(void) {
     }
 }
 
-void sub_0801DAEC(void) {
+void guard_move_in(void) {
     if (sprite_move_toward_target(gUnk_03001800.unkDE * 4 + 0x59, gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk4,
                                   gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk4 + 0x10)) {
         check_sprite_overlap_and_adjust(gUnk_03001800.unkDE * 4 + 0x59, gUnk_03001800.unkDE + 0x71);
@@ -833,7 +858,7 @@ void sub_0801DAEC(void) {
     }
 }
 
-void sub_0801DC74(void) {
+void guard_shield_spawn(void) {
     if (gUnk_03000440.unk84 != 0x1E) {
         gUnk_03000440.unk84++;
         return;
@@ -851,7 +876,7 @@ void sub_0801DC74(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801DD30(void) {
+void guard_shield_shrink(void) {
     if (gSpriteEntries[0x21].unk8 == 0x40) {
         play_sound_effect(0x30);
         gUnk_03001800.unkAA++;
@@ -861,7 +886,7 @@ void sub_0801DD30(void) {
     }
 }
 
-void sub_0801DD74(void) {
+void guard_shield_animate(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x1C], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         memcpy_bytes_0803F63C(gUnk_03000590[gUnk_03001800.unkDE - 1].medal.unkA, gUnk_03000440.unk9E, 0xE);
@@ -871,18 +896,19 @@ void sub_0801DD74(void) {
     }
 }
 
-void sub_0801DDDC(void) {
-    sub_08035928(gUnk_03001800.unk87, gUnk_03001800.unkDE);
-    sub_08035944(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unkDE - 1].unkDE);
+void guard_retarget(void) {
+    battle_set_action_target(gUnk_03001800.unk87, gUnk_03001800.unkDE);
+    battle_set_action_target_part(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unkDE - 1].unkDE);
     gUnk_03001800.unkB5 = 1;
 }
 
-void sub_0801DE1C(void) {
+// Script opcode 0x19: message 0x17 "<part kind> action <skill>" for the acting Medabot's part.
+void action_announce_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AD5B0[gUnk_03001800.unkAA]();
+    gActionAnnounceSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0801DE44(void) {
+void action_announce_prepare(void) {
     memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[2]],
                           gUnk_03000440.unk9E, 0xE);
     memcpy_bytes_0803F63C((void *)gUnk_083BE6E8[gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1]],
@@ -891,16 +917,18 @@ void sub_0801DE44(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801DED4(void) {
+void action_announce_end(void) {
     gUnk_03001800.unkB5 = 1;
 }
 
-void sub_0801DEE4(void) {
+// Script opcode 0x1A: wipe out the battlefield, save its VRAM and sprites to EWRAM and set up the action close-up
+// scene (closeup_scene.c).
+void closeup_enter_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083AD5D0[gUnk_03001800.unkAA]();
+    gCloseupEnterSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0801DF0C(void) {
+void closeup_enter_init(void) {
     u32 zero;
     u32 fill;
 
@@ -912,7 +940,7 @@ void sub_0801DF0C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801DF60(void) {
+void closeup_enter_wipe(void) {
     write_tilemap_rect(0x1E, 1, 0, gUnk_03000440.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
     write_tilemap_rect(0x1E, 1, 0, 0x13 - gUnk_03000440.unk84, gUnk_083B4AE0_s.unk1A4, REG_BG0CNT, 0);
     if (gUnk_03000440.unk84 == 9) {
@@ -923,7 +951,7 @@ void sub_0801DF60(void) {
     }
 }
 
-void sub_0801DFE0(void) {
+void closeup_enter_save_vram(void) {
     switch (gUnk_03000440.unk139) {
     case 0:
         CpuFastSet((void *)0x06002800, (void *)0x02020800, 0x200);
@@ -945,7 +973,7 @@ void sub_0801DFE0(void) {
     }
 }
 
-void sub_0801E09C(void) {
+void closeup_enter_setup_bgs(void) {
     u32 zero;
 
     switch (gUnk_03000440.unk139) {
@@ -981,7 +1009,7 @@ void sub_0801E09C(void) {
     }
 }
 
-void sub_0801E200(void) {
+void closeup_enter_init_scene(void) {
     u32 zero = 0;
 
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
@@ -992,7 +1020,7 @@ void sub_0801E200(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0801E248(void) {
+void closeup_enter_unwipe(void) {
     init_battle_scene_backgrounds();
     battle_advance_dialogue_text();
     battle_advance_action_text();
@@ -1004,7 +1032,7 @@ void sub_0801E248(void) {
         gUnk_03000440.unk84++;
 }
 
-void sub_0801E2B8(void) {
+void closeup_enter_end(void) {
     init_battle_scene_backgrounds();
     battle_advance_dialogue_text();
     battle_advance_action_text();
@@ -1231,7 +1259,7 @@ void sub_0801E9FC(void) {
 
 void sub_0801EA5C(void) {
     if (gUnk_03001800.unkD1) {
-        sub_08035194(gUnk_03001800.unk88);
+        bot_halve_broken_leg_stats(gUnk_03001800.unk88);
         gUnk_03001800.unkAA += 3;
     } else
         gUnk_03001800.unkAA++;

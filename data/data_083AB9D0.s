@@ -347,32 +347,32 @@ gMissPopupSteps:
 gTargetPanelSteps:
 	.incbin "baserom.gba", 0x3AD424, 0x28
 
-	.global gUnk_083AD44C
-gUnk_083AD44C:
+	.global gTrapHitSteps
+gTrapHitSteps:
 	.incbin "baserom.gba", 0x3AD44C, 0xC0
 
-	.global gUnk_083AD50C
-gUnk_083AD50C:
+	.global gActionPartCheckSteps
+gActionPartCheckSteps:
 	.incbin "baserom.gba", 0x3AD50C, 0x24
 
-	.global gUnk_083AD530
-gUnk_083AD530:
+	.global gTargetPartCheckSteps
+gTargetPartCheckSteps:
 	.incbin "baserom.gba", 0x3AD530, 0x20
 
-	.global gUnk_083AD550
-gUnk_083AD550:
+	.global gActionFlashSteps
+gActionFlashSteps:
 	.incbin "baserom.gba", 0x3AD550, 0x20
 
-	.global gUnk_083AD570
-gUnk_083AD570:
+	.global gGuardSteps
+gGuardSteps:
 	.incbin "baserom.gba", 0x3AD570, 0x40
 
-	.global gUnk_083AD5B0
-gUnk_083AD5B0:
+	.global gActionAnnounceSteps
+gActionAnnounceSteps:
 	.incbin "baserom.gba", 0x3AD5B0, 0x20
 
-	.global gUnk_083AD5D0
-gUnk_083AD5D0:
+	.global gCloseupEnterSteps
+gCloseupEnterSteps:
 	.incbin "baserom.gba", 0x3AD5D0, 0x40
 
 	.global gUnk_083AD610

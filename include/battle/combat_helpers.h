@@ -31,13 +31,15 @@ u32 update_sprite_deceleration(u32 slot, s16 a, s16 b);
 void check_sprite_overlap_and_adjust(u32 slot, u32 b);
 void sub_080356B4(u32 slot);
 void sub_08035C3C(void);
-void sub_08035928(u32 rec, u32 target); // guess: record rec targets record target - 1 (unkE0, gUnk_03001800.unk88)
-void sub_08035944(u32 rec, u32 part);   // guess: record rec targets part part - 1 (unkE1, gUnk_03001800.unk8B)
+void battle_set_action_target(u32 rec,
+                              u32 target); // guess: record rec targets record target - 1 (unkE0, gUnk_03001800.unk88)
+void battle_set_action_target_part(u32 rec,
+                                   u32 part); // guess: record rec targets part part - 1 (unkE1, gUnk_03001800.unk8B)
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);
-void sub_080353AC(u32 frame);
-void sub_0803536C(u32 slot, u32 frame, u32 y);            // sprite unk2 = y, +1 / -1 on frames 2-3 / 6-7 of 8
+void bg3_shake_step(u32 frame);
+void sprite_shake_x_step(u32 slot, u32 frame, u32 y);     // sprite unk2 = y, +1 / -1 on frames 2-3 / 6-7 of 8
 void reduce_bot_part_stat(u32 rec, u32 part, s32 amount); // part armor (unk11) -= amount, not below 0
-void sub_08035194(u32 rec);
+void bot_halve_broken_leg_stats(u32 rec);
 void set_target_sprite_position(u32 rec, u32 frame, u32 flag);
 void update_target_cursor_position(u32 rec);
 void calc_bot_evasion_modifier(u32 rec);
