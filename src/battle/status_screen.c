@@ -69,27 +69,27 @@ static void setup_bot_battle_sprites_08017A7C(u32 rec, u32 x, u32 y) {
     get_bot_part_effective_values(rec, gUnk_03001800.unk64);
     setup_battle_sprite_group(gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2],
                               gUnk_03001800.unk64[3], rec, k * 4, x, y, side, 2, k * 4);
-    gUnk_03002C30[k * 4 + 1].unk0 &= 0xFDFF;
-    gUnk_03002C30[k * 4 + 2].unk0 &= 0xFDFF;
+    gSpriteEntries[k * 4 + 1].unk0 &= 0xFDFF;
+    gSpriteEntries[k * 4 + 2].unk0 &= 0xFDFF;
 }
 
 void status_init_cursor(void) {
     u32 x, y, i;
 
-    gUnk_03002C30[8].unk0 = 0xC404;
-    gUnk_03002C30[8].unk1C = 0;
-    gUnk_03002C30[8].unkA = 0xE;
-    gUnk_03002C30[8].unkB = 0xC0;
+    gSpriteEntries[8].unk0 = 0xC404;
+    gSpriteEntries[8].unk1C = 0;
+    gSpriteEntries[8].unkA = 0xE;
+    gSpriteEntries[8].unkB = 0xC0;
     x = gUnk_083AD3A4[(gUnk_03000440.unk3D + gUnk_03000440.unk3C * 3) * 2];
     y = gUnk_083AD3A4[(gUnk_03000440.unk3D + gUnk_03000440.unk3C * 3) * 2 + 1];
     if (gUnk_03000440.unk3C == 0) {
-        gUnk_03002C30[8].unk2 = x + 16;
-        gUnk_03002C30[8].unk4 = y;
-        gUnk_03002C30[8].unk6 = 0x306;
+        gSpriteEntries[8].unk2 = x + 16;
+        gSpriteEntries[8].unk4 = y;
+        gSpriteEntries[8].unk6 = 0x306;
     } else {
-        gUnk_03002C30[8].unk2 = x - 16;
-        gUnk_03002C30[8].unk4 = y;
-        gUnk_03002C30[8].unk6 = 0x307;
+        gSpriteEntries[8].unk2 = x - 16;
+        gSpriteEntries[8].unk4 = y;
+        gSpriteEntries[8].unk6 = 0x307;
     }
 }
 
@@ -392,7 +392,7 @@ u32 status_side_change_scroll_out(void) {
             }
         }
         for (i = 0; i <= 12; i++)
-            gUnk_03002C30[9 + i].unk2 -= 8;
+            gSpriteEntries[9 + i].unk2 -= 8;
         read_vram_tilemap_rect(13, 6, 16 - gUnk_03000440.unk40, 13, REG_BG0CNT, (void *)0x02020000);
         write_vram_tilemap_rect(13, 6, 15 - gUnk_03000440.unk40, 13, REG_BG0CNT, (void *)0x02020000);
     } else {
@@ -405,7 +405,7 @@ u32 status_side_change_scroll_out(void) {
             }
         }
         for (i = 0; i <= 12; i++)
-            gUnk_03002C30[9 + i].unk2 += 8;
+            gSpriteEntries[9 + i].unk2 += 8;
         read_vram_tilemap_rect(13, 6, gUnk_03000440.unk40 + 1, 13, REG_BG0CNT, (void *)0x02020000);
         write_vram_tilemap_rect(13, 6, gUnk_03000440.unk40 + 2, 13, REG_BG0CNT, (void *)0x02020000);
     }

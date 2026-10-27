@@ -40,7 +40,7 @@ void sub_080306B8(void) {
 
     if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1)) {
         for (i = 0; i < 0x14; i++) {
-            if (gUnk_03002C30[0xA + i].unk0 & 0x8000)
+            if (gSpriteEntries[0xA + i].unk0 & 0x8000)
                 clear_battle_sprite_slot(0xA + i, 1);
         }
         gUnk_03001800.unkAA++;
@@ -49,7 +49,7 @@ void sub_080306B8(void) {
         gUnk_03000440.unk86--;
     else {
         for (i = 0; i < 0x14; i++) {
-            if (gUnk_03002C30[0xA + i].unk0 & 0x8000)
+            if (gSpriteEntries[0xA + i].unk0 & 0x8000)
                 clear_battle_sprite_slot(0xA + i, 1);
         }
         gUnk_03001800.unkAA++;
@@ -58,9 +58,9 @@ void sub_080306B8(void) {
 
 void sub_08030780(void) {
     if (!(gUnk_03001800.unkF8 & 1))
-        gUnk_03002C30[0x21].unk18 = (gUnk_03002C30[0x21].unk18 - 0x40) & 0x3FF;
+        gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 - 0x40) & 0x3FF;
     else
-        gUnk_03002C30[0x21].unk18 = (gUnk_03002C30[0x21].unk18 + 0x40) & 0x3FF;
+        gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x40) & 0x3FF;
     if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
         gUnk_03001800.unkAA++;
     else if (gUnk_03000440.unk86)
@@ -75,6 +75,6 @@ void sub_0803080C(void) {
 
 void sub_0803081C(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03000440.unk84], 0x21);
-    if (gUnk_03002C30[0x21].unk22 == 0xFF)
+    if (gSpriteEntries[0x21].unk22 == 0xFF)
         gUnk_03001800.unkAA++;
 }

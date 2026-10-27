@@ -80,15 +80,15 @@ static void sub_08048A40(void) {
     struct Unk_03005310 *p = &gUnk_03005310;
     s32 a;
 
-    p->unk8 = sub_08048B24(sine[a = p->unk36 + 0x40], divide_by_65536(p->unk32));
-    p->unkA = sub_08048B24(sine[p->unk36], divide_by_65536(p->unk32));
-    p->unkC = sub_08048B24(-sine[p->unk36], divide_by_65536(p->unk34));
-    p->unkE = sub_08048B24(sine[a = p->unk36 + 0x40], divide_by_65536(p->unk34));
+    p->unk8 = fixed_point_multiply(sine[a = p->unk36 + 0x40], divide_by_65536(p->unk32));
+    p->unkA = fixed_point_multiply(sine[p->unk36], divide_by_65536(p->unk32));
+    p->unkC = fixed_point_multiply(-sine[p->unk36], divide_by_65536(p->unk34));
+    p->unkE = fixed_point_multiply(sine[a = p->unk36 + 0x40], divide_by_65536(p->unk34));
     p->unk10 = (120 - p->unk2C) * 256 - p->unk8 * 120 - p->unkA * 80;
     p->unk14 = (120 - p->unk2E) * 256 - p->unkC * 120 - p->unkE * 80;
 }
 
-s16 sub_08048B24(s16 a, s16 b) {
+s16 fixed_point_multiply(s16 a, s16 b) {
     s32 r = a * b;
     r /= 256;
     return r;

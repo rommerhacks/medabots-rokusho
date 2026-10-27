@@ -19,7 +19,7 @@ void scene_switch_after_transition(void) {
 void scene_complete_dma_and_restore_state(void) {
     if (execute_scene_step()) {
         u32 zero = 0;
-        DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+        DmaSet(3, &zero, gSpriteEntries, 0x85000800);
         REG_DISPCNT &= 0x80FF;
         gGameMode = gUnk_03001800_s.nextMode;
         gGameState = gUnk_03001800_s.nextState;
@@ -33,7 +33,7 @@ void event_picture_init(void) {
     zero = 0;
     DmaSet(3, &zero, PLTT, 0x85000100);
     zero = 0;
-    DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+    DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     zero = 0;
     DmaSet(3, &zero, &gUnk_03001800_s, 0x85000004);
     REG_DISPCNT = 0x60;

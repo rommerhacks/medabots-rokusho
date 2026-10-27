@@ -140,29 +140,29 @@ void sub_0801AD48(u32 rec) {
 
     clear_battle_sprite_slot(0x78, 8);
     for (i = 0; i <= 7; i++) {
-        gUnk_03002C30[0x78 + i].unk0 = 0xC404;
-        gUnk_03002C30[0x78 + i].unk1C = 0;
-        gUnk_03002C30[0x78 + i].unk4 = 0x78;
-        gUnk_03002C30[0x78 + i].unkA = 9;
-        gUnk_03002C30[0x78 + i].unkB = 0x80;
-        gUnk_03002C30[0x78 + i].unk6 = (i & 3) + 0x616;
-        gUnk_03002C30[0x78 + i].unk24 = 0;
-        gUnk_03002C30[0x78 + i].unk26 = 7 - i;
-        gUnk_03002C30[0x78 + i].unk28 = 0;
-        gUnk_03002C30[0x78 + i].unk27 = i * 2;
-        gUnk_03002C30[0x78 + i].unk21 = 0;
-        gUnk_03002C30[0x78 + i].unk22 = i & 3;
+        gSpriteEntries[0x78 + i].unk0 = 0xC404;
+        gSpriteEntries[0x78 + i].unk1C = 0;
+        gSpriteEntries[0x78 + i].unk4 = 0x78;
+        gSpriteEntries[0x78 + i].unkA = 9;
+        gSpriteEntries[0x78 + i].unkB = 0x80;
+        gSpriteEntries[0x78 + i].unk6 = (i & 3) + 0x616;
+        gSpriteEntries[0x78 + i].unk24 = 0;
+        gSpriteEntries[0x78 + i].unk26 = 7 - i;
+        gSpriteEntries[0x78 + i].unk28 = 0;
+        gSpriteEntries[0x78 + i].unk27 = i * 2;
+        gSpriteEntries[0x78 + i].unk21 = 0;
+        gSpriteEntries[0x78 + i].unk22 = i & 3;
         if (rec <= 2) {
-            gUnk_03002C30[0x78 + i].unk0 |= 0x1000;
-            gUnk_03002C30[0x78 + i].unk2 = 0x5C;
+            gSpriteEntries[0x78 + i].unk0 |= 0x1000;
+            gSpriteEntries[0x78 + i].unk2 = 0x5C;
         } else {
-            gUnk_03002C30[0x78 + i].unk0 &= ~0x1000;
-            gUnk_03002C30[0x78 + i].unk2 = 0x94;
+            gSpriteEntries[0x78 + i].unk0 &= ~0x1000;
+            gSpriteEntries[0x78 + i].unk2 = 0x94;
         }
     }
 }
 
-#define S gUnk_03002C30[0x78 + i]
+#define S gSpriteEntries[0x78 + i]
 u32 sub_0801ADE8(u32 rec) {
     u32 done = 1;
     u32 i;
@@ -194,10 +194,10 @@ void sub_0801AE70(u32 rec) {
     u32 i;
 
     for (i = 0; i <= 7; i++) {
-        gUnk_03002C30[0x78 + i].unk21++;
-        if ((gUnk_03002C30[0x78 + i].unk21 & 3) == 0)
-            gUnk_03002C30[0x78 + i].unk6 =
-                (gUnk_03002C30[0x78 + i].unk22 = (gUnk_03002C30[0x78 + i].unk22 + 1) & 3) + 0x616;
+        gSpriteEntries[0x78 + i].unk21++;
+        if ((gSpriteEntries[0x78 + i].unk21 & 3) == 0)
+            gSpriteEntries[0x78 + i].unk6 =
+                (gSpriteEntries[0x78 + i].unk22 = (gSpriteEntries[0x78 + i].unk22 + 1) & 3) + 0x616;
     }
 }
 
@@ -256,22 +256,22 @@ void sub_0801B004(u32 rec) {
     CpuFastSet(gUnk_084E3058, (void *)0x050002C0, 8);
     for (i = 0; i <= 7; i++) {
         clear_battle_sprite_slot(i + 0x21, 1);
-        gUnk_03002C30[0x21 + i].unk0 = ((gUnk_03001800.unk39[3] + 2) << 10) | 0x4204;
-        gUnk_03002C30[0x21 + i].unk1C = 0;
-        gUnk_03002C30[0x21 + i].unkA = 6;
-        gUnk_03002C30[0x21 + i].unkB = 0x81;
-        gUnk_03002C30[0x21 + i].unk6 = 0xA10;
-        gUnk_03002C30[0x21 + i].unk20 = i << 5;
-        gUnk_03002C30[0x21 + i].unk21 = gUnk_03002C30[rec * 4 + 0x5D].unk4;
-        gUnk_03002C30[0x21 + i].unk28 = 0;
-        gUnk_03002C30[0x21 + i].unk27 = i * 4;
-        gUnk_03002C30[0x21 + i].unk26 = 0;
-        p = compute_polar_to_screen_position(gUnk_03002C30[0x21 + i].unk20, 16, gUnk_03002C30[rec * 4 + 0x5D].unk2,
-                                             gUnk_03002C30[0x21 + i].unk21, 8, 0);
-        gUnk_03002C30[0x21 + i].unk2 = p.x;
-        gUnk_03002C30[0x21 + i].unk4 = p.y;
-        gUnk_03002C30[0x21 + i].unk8 = 4;
-        gUnk_03002C30[0x21 + i].unk9 = 4;
+        gSpriteEntries[0x21 + i].unk0 = ((gUnk_03001800.unk39[3] + 2) << 10) | 0x4204;
+        gSpriteEntries[0x21 + i].unk1C = 0;
+        gSpriteEntries[0x21 + i].unkA = 6;
+        gSpriteEntries[0x21 + i].unkB = 0x81;
+        gSpriteEntries[0x21 + i].unk6 = 0xA10;
+        gSpriteEntries[0x21 + i].unk20 = i << 5;
+        gSpriteEntries[0x21 + i].unk21 = gSpriteEntries[rec * 4 + 0x5D].unk4;
+        gSpriteEntries[0x21 + i].unk28 = 0;
+        gSpriteEntries[0x21 + i].unk27 = i * 4;
+        gSpriteEntries[0x21 + i].unk26 = 0;
+        p = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].unk20, 16, gSpriteEntries[rec * 4 + 0x5D].unk2,
+                                             gSpriteEntries[0x21 + i].unk21, 8, 0);
+        gSpriteEntries[0x21 + i].unk2 = p.x;
+        gSpriteEntries[0x21 + i].unk4 = p.y;
+        gSpriteEntries[0x21 + i].unk8 = 4;
+        gSpriteEntries[0x21 + i].unk9 = 4;
     }
 }
 
@@ -281,35 +281,35 @@ u32 sub_0801B0E8(u32 rec) {
     struct Vec16 p;
 
     for (i = 0; i <= 7; i++) {
-        if (gUnk_03002C30[0x21 + i].unk0 == 0) {
+        if (gSpriteEntries[0x21 + i].unk0 == 0) {
             done++;
             continue;
         }
-        gUnk_03002C30[0x21 + i].unk0 |= 0x8000;
-        gUnk_03002C30[0x21 + i].unk28++;
-        gUnk_03002C30[0x21 + i].unk20 -= 8;
-        if ((gUnk_03002C30[0x21 + i].unk28 & 7) == 0)
-            gUnk_03002C30[0x21 + i].unk21--;
-        p = compute_polar_to_screen_position(gUnk_03002C30[0x21 + i].unk20, gUnk_03002C30[0x21 + i].unk26 + 16,
-                                             gUnk_03002C30[rec * 4 + 0x5D].unk2, gUnk_03002C30[0x21 + i].unk21, 8, 0);
-        gUnk_03002C30[0x21 + i].unk2 = p.x;
-        gUnk_03002C30[0x21 + i].unk4 = p.y;
-        if (gUnk_03002C30[0x21 + i].unk20 > 0x80)
-            gUnk_03002C30[0x21 + i].unkB = rec * 4 + 0x59;
+        gSpriteEntries[0x21 + i].unk0 |= 0x8000;
+        gSpriteEntries[0x21 + i].unk28++;
+        gSpriteEntries[0x21 + i].unk20 -= 8;
+        if ((gSpriteEntries[0x21 + i].unk28 & 7) == 0)
+            gSpriteEntries[0x21 + i].unk21--;
+        p = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].unk20, gSpriteEntries[0x21 + i].unk26 + 16,
+                                             gSpriteEntries[rec * 4 + 0x5D].unk2, gSpriteEntries[0x21 + i].unk21, 8, 0);
+        gSpriteEntries[0x21 + i].unk2 = p.x;
+        gSpriteEntries[0x21 + i].unk4 = p.y;
+        if (gSpriteEntries[0x21 + i].unk20 > 0x80)
+            gSpriteEntries[0x21 + i].unkB = rec * 4 + 0x59;
         else
-            gUnk_03002C30[0x21 + i].unkB = 0x81;
-        if (gUnk_03002C30[0x21 + i].unk21 > gUnk_03002C30[rec * 4 + 0x5D].unk4 - 8 &&
-            gUnk_03002C30[0x21 + i].unk8 != 0x40) {
-            gUnk_03002C30[0x21 + i].unk8 += 4;
-            gUnk_03002C30[0x21 + i].unk9 += 4;
+            gSpriteEntries[0x21 + i].unkB = 0x81;
+        if (gSpriteEntries[0x21 + i].unk21 > gSpriteEntries[rec * 4 + 0x5D].unk4 - 8 &&
+            gSpriteEntries[0x21 + i].unk8 != 0x40) {
+            gSpriteEntries[0x21 + i].unk8 += 4;
+            gSpriteEntries[0x21 + i].unk9 += 4;
         }
-        if (gUnk_03002C30[0x21 + i].unk21 < gUnk_03002C30[rec * 4 + 0x5D].unk4 - 12 &&
-            gUnk_03002C30[0x21 + i].unk8 != 4) {
-            gUnk_03002C30[0x21 + i].unk8 -= 4;
-            gUnk_03002C30[0x21 + i].unk9 -= 4;
+        if (gSpriteEntries[0x21 + i].unk21 < gSpriteEntries[rec * 4 + 0x5D].unk4 - 12 &&
+            gSpriteEntries[0x21 + i].unk8 != 4) {
+            gSpriteEntries[0x21 + i].unk8 -= 4;
+            gSpriteEntries[0x21 + i].unk9 -= 4;
         }
-        if (gUnk_03002C30[0x21 + i].unk20 == 0xC0 &&
-            gUnk_03002C30[0x21 + i].unk21 < gUnk_03002C30[rec * 4 + 0x5D].unk4 - 16)
+        if (gSpriteEntries[0x21 + i].unk20 == 0xC0 &&
+            gSpriteEntries[0x21 + i].unk21 < gSpriteEntries[rec * 4 + 0x5D].unk4 - 16)
             clear_battle_sprite_slot(0x21 + i, 1);
     }
     if (done == 8)

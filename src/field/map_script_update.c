@@ -105,7 +105,7 @@ static void sub_0804DD80(void) {
     gUnk_030057E0.unkC54 = gUnk_030057E0.unkC57 * 16 + gUnk_030057E0.unkC4A;
     init_battle_field_setup();
     update_bg_scroll_offsets_a();
-    gUnk_03002C30[47].unk25 = 1;
+    gSpriteEntries[47].unk25 = 1;
     field_set_player_facing(gUnk_030057E0.unkC67);
     update_cursor_tile_position();
     area_load_sprite_sheets();
@@ -113,23 +113,23 @@ static void sub_0804DD80(void) {
 }
 
 void sub_0804DE28(void) {
-    switch (gUnk_03002C30[47].unk26) {
+    switch (gSpriteEntries[47].unk26) {
     case 0:
-        if (gUnk_03002C30[47].unk28 < 16) {
-            gUnk_03002C30[47].unk4 = gUnk_030057E0.unkC94[0] - gUnk_083D69A0[gUnk_03002C30[47].unk28][0] / 16;
-            gUnk_03002C30[47].unk28++;
-            if (gUnk_03002C30[47].unk4 / 4 <= (gUnk_030057E0.unkC94[0] - 16) / 4)
-                gUnk_03002C30[47].unkB = 0xFF;
+        if (gSpriteEntries[47].unk28 < 16) {
+            gSpriteEntries[47].unk4 = gUnk_030057E0.unkC94[0] - gUnk_083D69A0[gSpriteEntries[47].unk28][0] / 16;
+            gSpriteEntries[47].unk28++;
+            if (gSpriteEntries[47].unk4 / 4 <= (gUnk_030057E0.unkC94[0] - 16) / 4)
+                gSpriteEntries[47].unkB = 0xFF;
             else
                 sprite_set_blend_from_kind(47);
         } else {
-            gUnk_03002C30[47].unk26 = 1;
-            gUnk_03002C30[47].unk28 = 0;
+            gSpriteEntries[47].unk26 = 1;
+            gSpriteEntries[47].unk28 = 0;
         }
         break;
     case 1:
         sprite_set_blend_from_kind(47);
-        gUnk_03002C30[47].unk4 = gUnk_030057E0.unkC94[0];
+        gSpriteEntries[47].unk4 = gUnk_030057E0.unkC94[0];
         map_script_command_done();
         break;
     }
@@ -143,12 +143,12 @@ void sub_0804DEF4(void) {
         gUnk_030057E0.unkC10[3] = 0;
         gUnk_030057E0.unkC10[7] = 0;
         field_set_player_facing(gUnk_030057E0.unkC94[0]);
-        memcpy_u8(&gUnk_03002C30[47], &gUnk_03002C30[46], 0x40);
+        memcpy_u8(&gSpriteEntries[47], &gSpriteEntries[46], 0x40);
         gUnk_030057E0.unkC5B = 0;
         sub_08052BA0(0);
-        gUnk_03002C30[89].unk0 = 0xCC0C;
-        gUnk_03002C30[48].unk0 = 0;
-        gUnk_03002C30[47].unk28 = 0;
+        gSpriteEntries[89].unk0 = 0xCC0C;
+        gSpriteEntries[48].unk0 = 0;
+        gSpriteEntries[47].unk28 = 0;
         gUnk_030057E0.unkC5F = 1;
         sub_08050B50();
         field_play_sound_effect(0x70);
@@ -170,18 +170,18 @@ void sub_0804DEF4(void) {
             KEYS_LO(gHeldKeys) |= 0x10;
             break;
         }
-        gUnk_03002C30[46].unk2 = gUnk_03002C30[47].unk2;
-        if (gUnk_03002C30[47].unk28 < 16 / sprite_walk_speed(47) * 2) {
-            gUnk_03002C30[46].unk4 =
-                gUnk_03002C30[47].unk4 - gUnk_083D69A0[0][gUnk_03002C30[47].unk28 * (sprite_walk_speed(47) << 2)] / 16;
-            gUnk_03002C30[47].unk28++;
-            if (gUnk_03002C30[46].unk4 / 4 <= (gUnk_03002C30[47].unk4 - 16) / 4)
-                gUnk_03002C30[46].unkB = 0xFF;
+        gSpriteEntries[46].unk2 = gSpriteEntries[47].unk2;
+        if (gSpriteEntries[47].unk28 < 16 / sprite_walk_speed(47) * 2) {
+            gSpriteEntries[46].unk4 = gSpriteEntries[47].unk4 -
+                                      gUnk_083D69A0[0][gSpriteEntries[47].unk28 * (sprite_walk_speed(47) << 2)] / 16;
+            gSpriteEntries[47].unk28++;
+            if (gSpriteEntries[46].unk4 / 4 <= (gSpriteEntries[47].unk4 - 16) / 4)
+                gSpriteEntries[46].unkB = 0xFF;
             else
                 sprite_set_blend_from_kind(46);
         } else {
-            gUnk_03002C30[47].unk26++;
-            gUnk_03002C30[47].unk28 = 0;
+            gSpriteEntries[47].unk26++;
+            gSpriteEntries[47].unk28 = 0;
             memcpy_u8(gUnk_030057E0.unkC18, gUnk_030057E0.unkC10, 8);
             sprite_entry_clear(46);
             gUnk_030057E0.unkC5B = 1;
@@ -197,13 +197,13 @@ void sub_0804E0E8(void) {
     switch (gUnk_030057E0.unkC93) {
     case 0:
         sub_08050B50();
-        if (gUnk_030057E0.unkC94[gUnk_03002C30[47].unk26] == 0xFF) {
+        if (gUnk_030057E0.unkC94[gSpriteEntries[47].unk26] == 0xFF) {
             gUnk_030057E0.unkC93++;
             break;
         }
-        if (gUnk_03002C30[47].unk28 == 0)
+        if (gSpriteEntries[47].unk28 == 0)
             break;
-        switch ((gUnk_030057E0.unkC94[gUnk_03002C30[47].unk26] & 0xF0) >> 4) {
+        switch ((gUnk_030057E0.unkC94[gSpriteEntries[47].unk26] & 0xF0) >> 4) {
         case 0:
             KEYS_LO(gHeldKeys) |= 0x40;
             break;
@@ -217,12 +217,12 @@ void sub_0804E0E8(void) {
             KEYS_LO(gHeldKeys) |= 0x10;
             break;
         }
-        gUnk_03002C30[47].unk28--;
-        if (gUnk_03002C30[47].unk28 != 0)
+        gSpriteEntries[47].unk28--;
+        if (gSpriteEntries[47].unk28 != 0)
             break;
-        gUnk_03002C30[47].unk28 = 16 / sprite_walk_speed(47);
-        gUnk_03002C30[47].unk27--;
-        if (gUnk_03002C30[47].unk27 != 0)
+        gSpriteEntries[47].unk28 = 16 / sprite_walk_speed(47);
+        gSpriteEntries[47].unk27--;
+        if (gSpriteEntries[47].unk27 != 0)
             break;
         gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
         gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
@@ -230,17 +230,17 @@ void sub_0804E0E8(void) {
             gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
             gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
         }
-        gUnk_03002C30[47].unk26++;
-        if (gUnk_03002C30[47].unk26 > 3) {
+        gSpriteEntries[47].unk26++;
+        if (gSpriteEntries[47].unk26 > 3) {
             gUnk_030057E0.unkC93++;
             break;
         }
-        if (gUnk_030057E0.unkC94[gUnk_03002C30[47].unk26] == 0xFF) {
+        if (gUnk_030057E0.unkC94[gSpriteEntries[47].unk26] == 0xFF) {
             gUnk_030057E0.unkC93++;
             break;
         }
-        setup_battle_sprite_terrain(47, gUnk_030057E0.unkC94[gUnk_03002C30[47].unk26], gUnk_03002C30[47].unk2A);
-        switch (gUnk_030057E0.unkC94[gUnk_03002C30[47].unk26] >> 4) {
+        setup_battle_sprite_terrain(47, gUnk_030057E0.unkC94[gSpriteEntries[47].unk26], gSpriteEntries[47].unk2A);
+        switch (gUnk_030057E0.unkC94[gSpriteEntries[47].unk26] >> 4) {
         case 0:
             KEYS_LO(gHeldKeys) |= 0x40;
             break;
@@ -271,7 +271,7 @@ void sub_0804E324(void) {
     gUnk_030057E0.unkC28 = gUnk_083D2998[gUnk_030057E0.unkC94[0]];
     load_battle_terrain_data();
     area_load_sprite_sheets();
-    switch (gUnk_03006F40.unk1) {
+    switch (gBlendEffect.type) {
     case 1:
     case 3:
     case 5:
@@ -860,7 +860,7 @@ static u32 sub_0804F13C(u8 dir) {
             if (!sub_08052A18() && gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A < gUnk_030057E0.unk802 * 8 - 0x60 &&
                 gBg1Scroll.y != 0) {
                 sub_08052AF8(-sprite_walk_speed(47));
-                gUnk_03002C30[0].unk4 += sprite_walk_speed(47);
+                gSpriteEntries[0].unk4 += sprite_walk_speed(47);
             }
         }
         break;
@@ -870,7 +870,7 @@ static u32 sub_0804F13C(u8 dir) {
             if (!sub_08052A18() && gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A + 16 > 0x50 &&
                 gBg1Scroll.y + 0xA0 < gUnk_030057E0.unk802 * 8) {
                 sub_08052AF8(sprite_walk_speed(47));
-                gUnk_03002C30[0].unk4 -= sprite_walk_speed(47);
+                gSpriteEntries[0].unk4 -= sprite_walk_speed(47);
             }
         }
         break;
@@ -880,7 +880,7 @@ static u32 sub_0804F13C(u8 dir) {
             if (!sub_08052A04() && gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 < gUnk_030057E0.unk800 * 8 - 0x80 &&
                 gBg1Scroll.x != 0) {
                 sub_08052A2C(-sprite_walk_speed(47));
-                gUnk_03002C30[0].unk2 += sprite_walk_speed(47);
+                gSpriteEntries[0].unk2 += sprite_walk_speed(47);
             }
         }
         break;
@@ -890,7 +890,7 @@ static u32 sub_0804F13C(u8 dir) {
             if (!sub_08052A04() && gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 + 16 > 0x80 &&
                 gBg1Scroll.x + 0xF0 < gUnk_030057E0.unk800 * 8) {
                 sub_08052A2C(sprite_walk_speed(47));
-                gUnk_03002C30[0].unk2 -= sprite_walk_speed(47);
+                gSpriteEntries[0].unk2 -= sprite_walk_speed(47);
             }
         }
         break;
@@ -1043,7 +1043,7 @@ void sub_0804F694(void) {
             gUnk_030057E0.unkC67 = 3;
         if (sub_0804F13C(gUnk_030057E0.unkC67)) {
             gUnk_030057E0.unkC5B = 1;
-            gUnk_03002C30[47].unk2A = gUnk_083D2908[gUnk_030057E0.unkC5C];
+            gSpriteEntries[47].unk2A = gUnk_083D2908[gUnk_030057E0.unkC5C];
             gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
             gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
             field_center_camera_on_player();
@@ -1275,11 +1275,11 @@ void sub_0804FC20(void) {
 
 // guess: opcode 0x7F, end the follower: copy sprite 48 and its shadow back to map object arg0.
 void sub_0804FC30(void) {
-    gUnk_03002C30[48].unkC_8 = gUnk_030057E0.unkC6E;
-    gUnk_03002C30[48].unk10_8 = gUnk_030057E0.unkC70;
-    memcpy_u8(&gUnk_03002C30[48], &gUnk_03002C30[gUnk_030057E0.unkC94[0] + 79], 0x40);
+    gSpriteEntries[48].unkC_8 = gUnk_030057E0.unkC6E;
+    gSpriteEntries[48].unk10_8 = gUnk_030057E0.unkC70;
+    memcpy_u8(&gSpriteEntries[48], &gSpriteEntries[gUnk_030057E0.unkC94[0] + 79], 0x40);
     gUnk_030055A0[gUnk_030057E0.unkC94[0] + 79].unk0 = 0xFFFF;
-    memcpy_u8(&gUnk_03002C30[90], &gUnk_03002C30[gUnk_030057E0.unkC94[0] + 121], 0x40);
+    memcpy_u8(&gSpriteEntries[90], &gSpriteEntries[gUnk_030057E0.unkC94[0] + 121], 0x40);
     map_script_command_done();
 }
 
@@ -1380,7 +1380,7 @@ void sub_0804FE50(void) {
                 gUnk_030064A0.unkA[i]++;
                 gUnk_030064A0.unk2[i] = 0;
                 if (gUnk_030064A0.unkA[i] > 3) {
-                    gUnk_03002C30[obj->unk4_0 + 49].unk24 = 0xFF;
+                    gSpriteEntries[obj->unk4_0 + 49].unk24 = 0xFF;
                     done = 1;
                 }
             }
@@ -1394,10 +1394,10 @@ void sub_0804FE50(void) {
                 gUnk_030064A0.unkA[i]++;
                 gUnk_030064A0.unk2[i] = 0;
                 if (gUnk_030064A0.unkA[i] > 3) {
-                    gUnk_03002C30[obj->unk4_0 + 49].unk24 = 0xFF;
-                    gUnk_03002C30[obj->unk4_0 + 49].unk20 = 0;
-                    sub_080493D4(obj->unk4_0 + 49,
-                                 sub_080502B4(obj->unk4_0 + 49, gUnk_03002C30[obj->unk4_0 + 49].unk20));
+                    gSpriteEntries[obj->unk4_0 + 49].unk24 = 0xFF;
+                    gSpriteEntries[obj->unk4_0 + 49].unk20 = 0;
+                    sprite_anim_start(obj->unk4_0 + 49,
+                                      sub_080502B4(obj->unk4_0 + 49, gSpriteEntries[obj->unk4_0 + 49].unk20));
                     done = 1;
                 }
             }

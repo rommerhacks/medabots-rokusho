@@ -324,8 +324,8 @@ gUnk_080ACB7C:
 gSineTable:
 	.incbin "baserom.gba", 0xAE77C, 0x280
 
-	.global gUnk_080AE9FC
-gUnk_080AE9FC:
+	.global gSpriteAnimGfx
+gSpriteAnimGfx:
 	.incbin "baserom.gba", 0xAE9FC, 0xC00
 
 	.global gUnk_080AF5FC

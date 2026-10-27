@@ -9,9 +9,9 @@ void set_bot_y_positions_by_count(void) {
     s32 i;
     for (i = 0; i < 3; i++) {
         s16 y = 0xC8;
-        if (i < gUnk_03002C30[30].unk20)
+        if (i < gSpriteEntries[30].unk20)
             y = 0x78;
-        gUnk_03002C30[13 + i].unk4 = y;
+        gSpriteEntries[13 + i].unk4 = y;
     }
 }
 
@@ -85,7 +85,7 @@ void sub_0806D420(void) {
 void teardown_scene_and_restore_state(void) {
     if (execute_scene_step()) {
         u32 zero = 0;
-        DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+        DmaSet(3, &zero, gSpriteEntries, 0x85000800);
         REG_DISPCNT &= 0x80FF;
         gGameMode = gUnk_03001800_s.nextMode;
         gGameState = gUnk_03001800_s.nextState;
@@ -116,7 +116,7 @@ void sub_0806D550(void) {
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     zero = 0;
-    DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+    DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     zero = 0;
     DmaSet(3, &zero, &gUnk_03001800_s, 0x8500000B);
     REG_DISPCNT = 0x61;
@@ -154,19 +154,19 @@ void load_scene_graphics(void) {
 void battle_transition_animate_step(void) {
     if (gUnk_03001800_s.timer == 0) {
         sprite_entry_init(0, 0xCC00, 0x224, 6, 3);
-        gUnk_03002C30[0].unk2 = 0x78;
-        gUnk_03002C30[0].unk4 = 0x3C;
-        gUnk_03002C30[0].unkB = 0x10;
+        gSpriteEntries[0].unk2 = 0x78;
+        gSpriteEntries[0].unk4 = 0x3C;
+        gSpriteEntries[0].unkB = 0x10;
         sub_0806DF80(1, 0);
         REG_DISPCNT |= 0x1000;
     } else if (gUnk_03001800_s.timer == 0x20) {
         sprite_entry_init(1, 0xC400, 0x200, 0, 3);
-        gUnk_03002C30[1].unk2 = 0x78;
-        gUnk_03002C30[1].unk4 = 0x3C;
-        gUnk_03002C30[1].unkB = 0x20;
+        gSpriteEntries[1].unk2 = 0x78;
+        gSpriteEntries[1].unk4 = 0x3C;
+        gSpriteEntries[1].unkB = 0x20;
         sub_0806DF80(2, 1);
     }
-    if (gUnk_03002C30[0].unk20 == 0) {
+    if (gSpriteEntries[0].unk20 == 0) {
         gUnk_03001800_s.nextSubState = 6;
         gUnk_03001800_s.timer = 0;
         setup_screen_transition_effect_080682CC(4, 4, 0x7FFF);
@@ -183,23 +183,23 @@ void battle_scene_intro_step(void) {
     if (gUnk_03001800_s.timer == 0) {
         play_song(0);
         sprite_entry_init(1, 0xC400, 0x211, 1, 3);
-        gUnk_03002C30[1].unk2 = 0x118;
-        gUnk_03002C30[1].unk4 = 0x55;
-        gUnk_03002C30[1].unkB = 0x20;
+        gSpriteEntries[1].unk2 = 0x118;
+        gSpriteEntries[1].unk4 = 0x55;
+        gSpriteEntries[1].unkB = 0x20;
         sub_0806DF80(3, 1);
     }
-    if (gUnk_03002C30[1].unk20 == 0) {
+    if (gSpriteEntries[1].unk20 == 0) {
         sprite_entry_init(3, 0xC000, 0x213, 3, 3);
-        gUnk_03002C30[3].unk2 = 0x12C;
-        gUnk_03002C30[3].unk4 = 0x55;
-        gUnk_03002C30[3].unkB = 0x40;
-        gUnk_03002C30[3].unk32 = 0;
+        gSpriteEntries[3].unk2 = 0x12C;
+        gSpriteEntries[3].unk4 = 0x55;
+        gSpriteEntries[3].unkB = 0x40;
+        gSpriteEntries[3].unk32 = 0;
         sub_0806DF80(7, 3);
         sprite_entry_init(4, 0xC400, 0x21C, 5, 3);
-        gUnk_03002C30[4].unk2 = 0x12C;
-        gUnk_03002C30[4].unk4 = 0x3C;
-        gUnk_03002C30[4].unkB = 0x10;
-        gUnk_03002C30[4].unk32 = 0;
+        gSpriteEntries[4].unk2 = 0x12C;
+        gSpriteEntries[4].unk4 = 0x3C;
+        gSpriteEntries[4].unkB = 0x10;
+        gSpriteEntries[4].unk32 = 0;
         sub_0806DF80(8, 4);
         gUnk_03001800_s.timer = 0;
         gGameSubState = 7;
@@ -234,7 +234,7 @@ void battle_transition_wipe_effect(void) {
             }
         }
     } else if (gUnk_03001800_s.timer > 0x40) {
-        gUnk_03002C30[2].unk0 &= ~0x200;
+        gSpriteEntries[2].unk0 &= ~0x200;
         sub_0806DF80(5, 2);
         gUnk_03001800_s.timer = 0;
         gGameSubState = 8;
@@ -246,10 +246,10 @@ void battle_transition_wipe_effect(void) {
     }
     if (gUnk_03001800_s.timer == 0x39) {
         sprite_entry_init(2, 0xC600, 0x212, 2, 3);
-        gUnk_03002C30[2].unk2 = 0x78;
-        gUnk_03002C30[2].unk4 = 0x73;
-        gUnk_03002C30[2].unk8 = 0x40;
-        gUnk_03002C30[2].unk9 = 8;
+        gSpriteEntries[2].unk2 = 0x78;
+        gSpriteEntries[2].unk4 = 0x73;
+        gSpriteEntries[2].unk8 = 0x40;
+        gSpriteEntries[2].unk9 = 8;
         sub_0806DF80(4, 2);
     }
     gUnk_03001800_s.timer++;
@@ -295,26 +295,26 @@ void sub_0806DB30(void) {
     play_song(0);
     sprite_entry_init(0, 0xC400, 0x21B, 4, 3);
     REG_DISPCNT |= 0x300;
-    gUnk_03002C30[0].unk2 = 0x78;
-    gUnk_03002C30[0].unk4 = 0x3C;
-    gUnk_03002C30[0].unkB = 0x10;
+    gSpriteEntries[0].unk2 = 0x78;
+    gSpriteEntries[0].unk4 = 0x3C;
+    gSpriteEntries[0].unkB = 0x10;
     sub_0806DF80(0, 0);
     sprite_entry_init(1, 0xC400, 0x211, 1, 3);
-    gUnk_03002C30[1].unk2 = 0x78;
-    gUnk_03002C30[1].unk4 = 0x55;
-    gUnk_03002C30[1].unkB = 0x20;
+    gSpriteEntries[1].unk2 = 0x78;
+    gSpriteEntries[1].unk4 = 0x55;
+    gSpriteEntries[1].unkB = 0x20;
     sub_0806DF80(0, 1);
     sprite_entry_init(3, 0xC000, 0x213, 3, 3);
-    gUnk_03002C30[3].unk2 = 0x12C;
-    gUnk_03002C30[3].unk4 = 0x55;
-    gUnk_03002C30[3].unkB = 0x40;
-    gUnk_03002C30[3].unk32 = 0x80;
+    gSpriteEntries[3].unk2 = 0x12C;
+    gSpriteEntries[3].unk4 = 0x55;
+    gSpriteEntries[3].unkB = 0x40;
+    gSpriteEntries[3].unk32 = 0x80;
     sub_0806DF80(7, 3);
     sprite_entry_init(4, 0xC400, 0x21C, 5, 3);
-    gUnk_03002C30[4].unk2 = 0x12C;
-    gUnk_03002C30[4].unk4 = 0x3C;
-    gUnk_03002C30[4].unkB = 0x10;
-    gUnk_03002C30[4].unk32 = 0x80;
+    gSpriteEntries[4].unk2 = 0x12C;
+    gSpriteEntries[4].unk4 = 0x3C;
+    gSpriteEntries[4].unkB = 0x10;
+    gSpriteEntries[4].unk32 = 0x80;
     sub_0806DF80(8, 4);
     REG_DISPCNT |= 0x1300;
     gUnk_03001800_s.nextSubState = 7;
@@ -326,12 +326,12 @@ void update_sprite_special_effects(void) {
     u8 i;
 
     for (i = 0; i < 5; i++) {
-        if (gUnk_03002C30[i].unk20 != 0) {
-            if (++gUnk_03002C30[i].unk1A % gUnk_08485F14[gUnk_03002C30[i].unk20 - 1] == 0) {
-                switch (gUnk_08485EF4[gUnk_03002C30[i].unk20 - 1](i)) {
+        if (gSpriteEntries[i].unk20 != 0) {
+            if (++gSpriteEntries[i].unk1A % gUnk_08485F14[gSpriteEntries[i].unk20 - 1] == 0) {
+                switch (gUnk_08485EF4[gSpriteEntries[i].unk20 - 1](i)) {
                 case 0:
-                    gUnk_03002C30[i].unk20 = 0;
-                    gUnk_03002C30[i].unk22 = 0;
+                    gSpriteEntries[i].unk20 = 0;
+                    gSpriteEntries[i].unk22 = 0;
                     break;
                 case 1:
                     break;
@@ -348,8 +348,8 @@ void update_sprite_special_effects(void) {
 // OBJ palette 6 step by step (unk22 = step 0..0x1E).
 bool32 sub_0806DD10(u8 idx) {
     u8 n;
-    struct Unk_03002C30 *base = gUnk_03002C30;
-    struct Unk_03002C30 *p = &base[idx];
+    struct SpriteEntry *base = gSpriteEntries;
+    struct SpriteEntry *p = &base[idx];
     u8 c = p->unk22;
 
     if (p->unk22 > 0x1E)
@@ -374,63 +374,63 @@ bool32 sub_0806DD10(u8 idx) {
         }
         DmaSet(3, &((u16 *)&gUnk_03001800_s.unkC)[p->unk22 - 15], PLTT + 0x2C0, 0x80000000 | (n / 2));
     }
-    gUnk_03002C30[idx].unk22++;
+    gSpriteEntries[idx].unk22++;
     return TRUE;
 }
 
 bool32 sub_0806DE34(u8 i) {
-    if (gUnk_03002C30[i].unk22 > 15)
+    if (gSpriteEntries[i].unk22 > 15)
         return FALSE;
-    if (gUnk_03002C30[i].unk22 != 0)
-        gUnk_03002C30[i].unk6++;
-    gUnk_03002C30[i].unk22++;
+    if (gSpriteEntries[i].unk22 != 0)
+        gSpriteEntries[i].unk6++;
+    gSpriteEntries[i].unk22++;
     return TRUE;
 }
 
 bool32 sub_0806DE64(u8 i) {
-    if ((gUnk_03002C30[i].unk2 -= 8) <= 0x78)
+    if ((gSpriteEntries[i].unk2 -= 8) <= 0x78)
         return FALSE;
     return TRUE;
 }
 
 bool32 sub_0806DE88(u8 i) {
-    if ((gUnk_03002C30[i].unk9 += 8) > 0x3F)
+    if ((gSpriteEntries[i].unk9 += 8) > 0x3F)
         return FALSE;
     return TRUE;
 }
 
 bool32 sub_0806DEAC(u8 i) {
-    if (gUnk_03002C30[i].unk22 & 1)
-        gUnk_03002C30[i].unk4 = 0x73;
+    if (gSpriteEntries[i].unk22 & 1)
+        gSpriteEntries[i].unk4 = 0x73;
     else
-        gUnk_03002C30[i].unk4 = 0xC8;
-    gUnk_03002C30[i].unk22++;
+        gSpriteEntries[i].unk4 = 0xC8;
+    gSpriteEntries[i].unk22++;
     return TRUE;
 }
 
 bool32 sub_0806DEE8(u8 i) {
-    if (gUnk_03002C30[i].unk32 < gUnk_03002C30[i].unk1A) {
-        if (gUnk_03002C30[i].unk22 > 7) {
-            gUnk_03002C30[i].unk2 = 300;
-            gUnk_03002C30[i].unk22 = 0;
-            gUnk_03002C30[i].unk32 = (rng_next(0) & 0x1FF) + 0x20;
-            gUnk_03002C30[i].unk6 = gUnk_03002C30[i].unk30;
-            gUnk_03002C30[i].unk1A = 0;
-        } else if (gGameSubState == 9 && gUnk_03002C30[i].unk22 == 0) {
-            gUnk_03002C30[i].unk32 |= 0xFFFF;
-            gUnk_03002C30[i].unk1A = 0;
-        } else if (++gUnk_03002C30[i].unk22 != 1) {
-            gUnk_03002C30[i].unk6++;
+    if (gSpriteEntries[i].unk32 < gSpriteEntries[i].unk1A) {
+        if (gSpriteEntries[i].unk22 > 7) {
+            gSpriteEntries[i].unk2 = 300;
+            gSpriteEntries[i].unk22 = 0;
+            gSpriteEntries[i].unk32 = (rng_next(0) & 0x1FF) + 0x20;
+            gSpriteEntries[i].unk6 = gSpriteEntries[i].unk30;
+            gSpriteEntries[i].unk1A = 0;
+        } else if (gGameSubState == 9 && gSpriteEntries[i].unk22 == 0) {
+            gSpriteEntries[i].unk32 |= 0xFFFF;
+            gSpriteEntries[i].unk1A = 0;
+        } else if (++gSpriteEntries[i].unk22 != 1) {
+            gSpriteEntries[i].unk6++;
         } else {
-            gUnk_03002C30[i].unk2 = 0x78;
+            gSpriteEntries[i].unk2 = 0x78;
         }
     }
     return TRUE;
 }
 
 static void sub_0806DF80(u8 a, u8 i) {
-    gUnk_03002C30[i].unk20 = a;
-    gUnk_03002C30[i].unk22 = 0;
-    gUnk_03002C30[i].unk30 = gUnk_03002C30[i].unk6;
-    gUnk_03002C30[i].unk1A = 0;
+    gSpriteEntries[i].unk20 = a;
+    gSpriteEntries[i].unk22 = 0;
+    gSpriteEntries[i].unk30 = gSpriteEntries[i].unk6;
+    gSpriteEntries[i].unk1A = 0;
 }

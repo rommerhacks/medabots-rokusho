@@ -133,7 +133,7 @@ void sub_0803D74C(void) {
     CpuFastSet(gUnk_0850DCF8, (void *)0x0202F9A0, 8);
     decompress_tileset_to_vram(gUnk_03001800.unk38, 1);
     c = 0;
-    CpuFastSet(&c, gUnk_03002C30, 0x01000800);
+    CpuFastSet(&c, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
     render_battle_text_label();
     load_battle_anim_data_38();
@@ -148,8 +148,8 @@ void sub_0803D74C(void) {
 void sub_0803D928(void) {
     update_scroll_movement_a();
     if (gUnk_03000440.unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
     } else
         gGameSubState++;
@@ -169,7 +169,7 @@ void sub_0803D9A0(void) {
 
 void sub_0803D9C8(void) {
     update_scroll_movement_a();
-    copy_obj_palette_to_buffer();
+    palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
@@ -177,8 +177,8 @@ void sub_0803D9C8(void) {
 void sub_0803D9F0(void) {
     update_scroll_movement_a();
     if (gUnk_03000440.unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
     } else
         gGameSubState++;
@@ -187,8 +187,8 @@ void sub_0803D9F0(void) {
 void sub_0803DA40(void) {
     update_scroll_movement_a();
     if (gUnk_03000440.unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
     } else
         gGameSubState++;
@@ -307,7 +307,7 @@ void sub_0803DCDC(void) {
     CpuFastSet(gUnk_084F39A0, (void *)PLTT, 0x60);
     CpuFastSet(gUnk_0850EF58, (void *)OBJ_PLTT, 0x10);
     zero = 0;
-    CpuFastSet(&zero, gUnk_03002C30, 0x01000800);
+    CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
     sub_0803E8B8();
     sub_0803E8EC();
@@ -395,8 +395,8 @@ void sub_0803E018(void) {
 void sub_0803E03C(void) {
     sub_0803E894();
     process_sprite_anim_commands(gUnk_083B5F80[0x75 - gUnk_03001800.unk1A2], 4);
-    if (gUnk_03002C30[4].unk22 == 0xFF) {
-        gUnk_03002C30[3].unk6 = 0x8505;
+    if (gSpriteEntries[4].unk22 == 0xFF) {
+        gSpriteEntries[3].unk6 = 0x8505;
         play_sound_effect(0x54);
         gGameSubState++;
     }
@@ -498,7 +498,7 @@ void sub_0803E2DC(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
-    copy_obj_palette_to_buffer();
+    palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
@@ -508,8 +508,8 @@ void sub_0803E314(void) {
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
     if (gUnk_03000440.unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
     } else
         gGameSubState++;
@@ -576,7 +576,7 @@ void sub_0803E4F4(void) {
     vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG2CNT, 0x9209);
     vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG3CNT, 0x9209);
     c = 0;
-    CpuFastSet(&c, gUnk_03002C30, 0x01000800);
+    CpuFastSet(&c, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
     set_blend_effect_mode(5, 0x3F, 0x20);
     gGameSubState++;
@@ -688,31 +688,31 @@ static void sub_0803E8EC(void) {
 
 static void sub_0803E934(void) {
     clear_battle_sprite_slot(2, 1);
-    gUnk_03002C30[2].unk0 = 0xC400;
-    gUnk_03002C30[2].unk2 = 0x68;
-    gUnk_03002C30[2].unk4 = 0x78;
-    gUnk_03002C30[2].unk6 = 0x8506;
-    gUnk_03002C30[2].unk1C = 0;
-    gUnk_03002C30[2].unkB = 0x82;
+    gSpriteEntries[2].unk0 = 0xC400;
+    gSpriteEntries[2].unk2 = 0x68;
+    gSpriteEntries[2].unk4 = 0x78;
+    gSpriteEntries[2].unk6 = 0x8506;
+    gSpriteEntries[2].unk1C = 0;
+    gSpriteEntries[2].unkB = 0x82;
 }
 
 static void sub_0803E978(void) {
     clear_battle_sprite_slot(3, 1);
-    gUnk_03002C30[3].unk0 = 0xC400;
-    gUnk_03002C30[3].unk2 = 0x78;
-    gUnk_03002C30[3].unk4 = 0x7C;
-    gUnk_03002C30[3].unk6 = 0x8504;
-    gUnk_03002C30[3].unk1C = 0;
-    gUnk_03002C30[3].unkB = 0x81;
+    gSpriteEntries[3].unk0 = 0xC400;
+    gSpriteEntries[3].unk2 = 0x78;
+    gSpriteEntries[3].unk4 = 0x7C;
+    gSpriteEntries[3].unk6 = 0x8504;
+    gSpriteEntries[3].unk1C = 0;
+    gSpriteEntries[3].unkB = 0x81;
 }
 
 static void sub_0803E9BC(void) {
     clear_battle_sprite_slot(4, 1);
-    gUnk_03002C30[4].unk0 = 0xC400;
-    gUnk_03002C30[4].unk2 = 0x9A;
-    gUnk_03002C30[4].unk4 = 0x58;
-    gUnk_03002C30[4].unk1C = 0;
-    gUnk_03002C30[4].unkB = 0x80;
+    gSpriteEntries[4].unk0 = 0xC400;
+    gSpriteEntries[4].unk2 = 0x9A;
+    gSpriteEntries[4].unk4 = 0x58;
+    gSpriteEntries[4].unk1C = 0;
+    gSpriteEntries[4].unkB = 0x80;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x70], 4);
 }
 
@@ -792,30 +792,30 @@ static void sub_0803EB5C(void) {
 }
 
 static void sub_0803EC04(void) {
-    gUnk_03002C30[2].unk24 = (gUnk_03001800.unk1A0 >> 2) + 4;
-    gUnk_03002C30[2].unk25 = 0;
+    gSpriteEntries[2].unk24 = (gUnk_03001800.unk1A0 >> 2) + 4;
+    gSpriteEntries[2].unk25 = 0;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x75 - gUnk_03001800.unk1A2], 4);
 }
 
 static void sub_0803EC50(void) {
-    u32 v = gUnk_03002C30[2].unk24 + gUnk_03002C30[2].unk20;
+    u32 v = gSpriteEntries[2].unk24 + gSpriteEntries[2].unk20;
     u32 d = v >> 2;
-    gUnk_03002C30[2].unk20 = v & 3;
-    if (gUnk_03002C30[2].unk25 == 0)
-        gUnk_03002C30[2].unk4 = (gUnk_03002C30[2].unk4 - d) & 0xFF;
+    gSpriteEntries[2].unk20 = v & 3;
+    if (gSpriteEntries[2].unk25 == 0)
+        gSpriteEntries[2].unk4 = (gSpriteEntries[2].unk4 - d) & 0xFF;
     else
-        gUnk_03002C30[2].unk4 = (gUnk_03002C30[2].unk4 + d) & 0xFF;
+        gSpriteEntries[2].unk4 = (gSpriteEntries[2].unk4 + d) & 0xFF;
 }
 
 static u32 sub_0803EC98(void) {
     sub_0803EC50();
-    if (gUnk_03002C30[2].unk4 <= gUnk_03001800.unk1A1) {
-        gUnk_03002C30[2].unk4 = gUnk_03001800.unk1A1;
+    if (gSpriteEntries[2].unk4 <= gUnk_03001800.unk1A1) {
+        gSpriteEntries[2].unk4 = gUnk_03001800.unk1A1;
         return 1;
     }
-    gUnk_03002C30[2].unk27++;
-    if (!(gUnk_03002C30[2].unk27 & 3) && gUnk_03002C30[2].unk24 != 1)
-        gUnk_03002C30[2].unk24--;
+    gSpriteEntries[2].unk27++;
+    if (!(gSpriteEntries[2].unk27 & 3) && gSpriteEntries[2].unk24 != 1)
+        gSpriteEntries[2].unk24--;
     return 0;
 }
 
@@ -825,19 +825,19 @@ static void sub_0803ECF0(void) {
 }
 
 static void sub_0803ED10(void) {
-    gUnk_03002C30[2].unk24 = 0;
-    gUnk_03002C30[2].unk25 = 1;
+    gSpriteEntries[2].unk24 = 0;
+    gSpriteEntries[2].unk25 = 1;
 }
 
 static u32 sub_0803ED28(void) {
     u32 r;
 
     sub_0803EC50();
-    if (gUnk_03002C30[2].unk4 < gUnk_03001800.unk1A3) {
-        gUnk_03002C30[2].unk24++;
+    if (gSpriteEntries[2].unk4 < gUnk_03001800.unk1A3) {
+        gSpriteEntries[2].unk24++;
         r = 0;
     } else {
-        gUnk_03002C30[2].unk4 = gUnk_03001800.unk1A3;
+        gSpriteEntries[2].unk4 = gUnk_03001800.unk1A3;
         r = 1;
     }
     return r;

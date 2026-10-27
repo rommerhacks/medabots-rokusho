@@ -49,13 +49,13 @@ u32 sub_08036D64(u32 rec, u32 skill) {
 }
 
 u32 medal_update_exp_progress(u32 slot, u32 n) {
-    if (!(gUnk_03002C30[slot].unk0 & 0x8000) || gUnk_03002C30[slot].unk23 == 0x10)
+    if (!(gSpriteEntries[slot].unk0 & 0x8000) || gSpriteEntries[slot].unk23 == 0x10)
         return 1;
     if (n == 0)
-        gUnk_03002C30[slot].unk2 = gUnk_03002C30[slot].unk2 + gUnk_083AF4B0[gUnk_03002C30[slot].unk23];
+        gSpriteEntries[slot].unk2 = gSpriteEntries[slot].unk2 + gUnk_083AF4B0[gSpriteEntries[slot].unk23];
     else
-        gUnk_03002C30[slot].unk2 = gUnk_03002C30[slot].unk2 - gUnk_083AF4B0[gUnk_03002C30[slot].unk23];
-    gUnk_03002C30[slot].unk23++;
+        gSpriteEntries[slot].unk2 = gSpriteEntries[slot].unk2 - gUnk_083AF4B0[gSpriteEntries[slot].unk23];
+    gSpriteEntries[slot].unk23++;
     return 0;
 }
 
@@ -114,15 +114,15 @@ void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u32 n) {
     s32 t2;
     clear_battle_sprite_slot(slot, n);
     for (i = 0; i < n; i++) {
-        gUnk_03002C30[slot + i].unk0 = 0x4004;
-        gUnk_03002C30[slot + i].unk1C = 0;
-        gUnk_03002C30[slot + i].unkA = 7;
-        gUnk_03002C30[slot + i].unkB = 0xF0;
-        gUnk_03002C30[slot + i].unk2C = i * 8;
+        gSpriteEntries[slot + i].unk0 = 0x4004;
+        gSpriteEntries[slot + i].unk1C = 0;
+        gSpriteEntries[slot + i].unkA = 7;
+        gSpriteEntries[slot + i].unkB = 0xF0;
+        gSpriteEntries[slot + i].unk2C = i * 8;
         t1 = gUnk_083AF4C0[i * 2] + x;
-        gUnk_03002C30[slot + i].unk2 = t1 & 0x1FF;
+        gSpriteEntries[slot + i].unk2 = t1 & 0x1FF;
         t2 = gUnk_083AF4C0[i * 2 + 1] + y;
-        gUnk_03002C30[slot + i].unk4 = t2 & 0xFF;
+        gSpriteEntries[slot + i].unk4 = t2 & 0xFF;
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[36], slot + i);
     }
 }
@@ -135,14 +135,14 @@ u32 update_sprite_animations_tick_080370AC(u32 slot, u32 n) {
 
     for (i = 0; i < n; i++) {
         anim = gUnk_083B6010;
-        if (gUnk_03002C30[slot + i].unk0 != 0) {
-            if (gUnk_03002C30[slot + i].unk2C != 0) {
-                gUnk_03002C30[slot + i].unk2C--;
+        if (gSpriteEntries[slot + i].unk0 != 0) {
+            if (gSpriteEntries[slot + i].unk2C != 0) {
+                gSpriteEntries[slot + i].unk2C--;
                 done = 0;
             } else {
-                gUnk_03002C30[slot + i].unk0 |= 0x8000;
+                gSpriteEntries[slot + i].unk0 |= 0x8000;
                 process_sprite_anim_commands(*anim, s = slot + i);
-                if (gUnk_03002C30[slot + i].unk22 == 0xFF)
+                if (gSpriteEntries[slot + i].unk22 == 0xFF)
                     clear_battle_sprite_slot(s, 1);
                 else
                     done = 0;
@@ -215,28 +215,28 @@ void battle_set_damage_display(u32 rec, u32 part, s32 amount) {
 
 void sub_08037330(u32 rec, u32 frame, u32 mask) {
     if (frame & mask) {
-        gUnk_03002C30[rec * 4 + 0x5A].unk0 |= 0x8000;
-        gUnk_03002C30[rec * 4 + 0x5B].unk0 |= 0x8000;
-        gUnk_03002C30[rec * 4 + 0x5C].unk0 |= 0x8000;
-        gUnk_03002C30[rec * 4 + 0x5D].unk0 |= 0x8000;
+        gSpriteEntries[rec * 4 + 0x5A].unk0 |= 0x8000;
+        gSpriteEntries[rec * 4 + 0x5B].unk0 |= 0x8000;
+        gSpriteEntries[rec * 4 + 0x5C].unk0 |= 0x8000;
+        gSpriteEntries[rec * 4 + 0x5D].unk0 |= 0x8000;
     } else {
-        gUnk_03002C30[rec * 4 + 0x5A].unk0 &= 0x7FFF;
-        gUnk_03002C30[rec * 4 + 0x5B].unk0 &= 0x7FFF;
-        gUnk_03002C30[rec * 4 + 0x5C].unk0 &= 0x7FFF;
-        gUnk_03002C30[rec * 4 + 0x5D].unk0 &= 0x7FFF;
+        gSpriteEntries[rec * 4 + 0x5A].unk0 &= 0x7FFF;
+        gSpriteEntries[rec * 4 + 0x5B].unk0 &= 0x7FFF;
+        gSpriteEntries[rec * 4 + 0x5C].unk0 &= 0x7FFF;
+        gSpriteEntries[rec * 4 + 0x5D].unk0 &= 0x7FFF;
     }
 }
 
 void sub_080373D4(u32 rec) {
-    gUnk_03002C30[rec * 4 + 0x5A].unk0 |= 0x8000;
-    gUnk_03002C30[rec * 4 + 0x5B].unk0 |= 0x8000;
-    gUnk_03002C30[rec * 4 + 0x5C].unk0 |= 0x8000;
-    gUnk_03002C30[rec * 4 + 0x5D].unk0 |= 0x8000;
+    gSpriteEntries[rec * 4 + 0x5A].unk0 |= 0x8000;
+    gSpriteEntries[rec * 4 + 0x5B].unk0 |= 0x8000;
+    gSpriteEntries[rec * 4 + 0x5C].unk0 |= 0x8000;
+    gSpriteEntries[rec * 4 + 0x5D].unk0 |= 0x8000;
 }
 
 void sub_08037424(u32 slot) {
-    gUnk_03002C30[slot].unk4 = (gUnk_03002C30[slot].unk4 + gUnk_083AF4E0[gUnk_03002C30[slot].unk23]) & 0xFF;
-    gUnk_03002C30[slot].unk23 = (gUnk_03002C30[slot].unk23 + 1) & 31;
+    gSpriteEntries[slot].unk4 = (gSpriteEntries[slot].unk4 + gUnk_083AF4E0[gSpriteEntries[slot].unk23]) & 0xFF;
+    gSpriteEntries[slot].unk23 = (gSpriteEntries[slot].unk23 + 1) & 31;
 }
 
 void sub_08037458(u32 rec, s32 amount) {

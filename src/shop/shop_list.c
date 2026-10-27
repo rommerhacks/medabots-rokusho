@@ -27,47 +27,47 @@ void shop_list_init(void) {
     REG_BG1CNT = 0x1B05;
     REG_BG2CNT = 0x1A06;
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
-    gUnk_03002C30[8].unk0 = 0x8400;
-    gUnk_03002C30[8].unk1C = 2;
-    gUnk_03002C30[8].unkA = 2;
-    gUnk_03002C30[8].unk6 = 6;
+    gSpriteEntries[8].unk0 = 0x8400;
+    gSpriteEntries[8].unk1C = 2;
+    gSpriteEntries[8].unkA = 2;
+    gSpriteEntries[8].unk6 = 6;
     for (i = 0; i < 2; i++) {
-        gUnk_03002C30[11 + i].unk0 = 0x8000;
-        gUnk_03002C30[11 + i].unk1C = 2;
-        gUnk_03002C30[11 + i].unkA = 2;
-        gUnk_03002C30[11 + i].unk6 = 5;
-        gUnk_03002C30[11 + i].unk2 = i * 24 + 0xD0;
-        gUnk_03002C30[11 + i].unk4 = gUnk_03006F74->unk1A * 16 + 0x54;
+        gSpriteEntries[11 + i].unk0 = 0x8000;
+        gSpriteEntries[11 + i].unk1C = 2;
+        gSpriteEntries[11 + i].unkA = 2;
+        gSpriteEntries[11 + i].unk6 = 5;
+        gSpriteEntries[11 + i].unk2 = i * 24 + 0xD0;
+        gSpriteEntries[11 + i].unk4 = gUnk_03006F74->unk1A * 16 + 0x54;
     }
-    gUnk_03002C30[11].unk0 |= 0x1000;
+    gSpriteEntries[11].unk0 |= 0x1000;
     for (i = 0; i < 2; i++) {
-        gUnk_03002C30[0x68 + i].unk0 = 0x8400;
-        gUnk_03002C30[0x68 + i].unk1C = 2;
-        gUnk_03002C30[0x68 + i].unkA = 2;
-        gUnk_03002C30[0x68 + i].unk6 = 8;
-        gUnk_03002C30[0x68 + i].unk2 = 0x1C;
-        gUnk_03002C30[0x68 + i].unk4 = i ? 0x95 : 0x44;
+        gSpriteEntries[0x68 + i].unk0 = 0x8400;
+        gSpriteEntries[0x68 + i].unk1C = 2;
+        gSpriteEntries[0x68 + i].unkA = 2;
+        gSpriteEntries[0x68 + i].unk6 = 8;
+        gSpriteEntries[0x68 + i].unk2 = 0x1C;
+        gSpriteEntries[0x68 + i].unk4 = i ? 0x95 : 0x44;
     }
-    gUnk_03002C30[0x69].unk0 |= 0x2000;
+    gSpriteEntries[0x69].unk0 |= 0x2000;
     for (i = 0; i < 4; i++) {
-        gUnk_03002C30[0x6A + i].unk0 = 0x8400;
-        gUnk_03002C30[0x6A + i].unk1C = 2;
-        gUnk_03002C30[0x6A + i].unkA = 3;
-        gUnk_03002C30[0x6A + i].unk2 = 0x78;
-        gUnk_03002C30[0x6A + i].unk4 = i * 16 + 0x50;
+        gSpriteEntries[0x6A + i].unk0 = 0x8400;
+        gSpriteEntries[0x6A + i].unk1C = 2;
+        gSpriteEntries[0x6A + i].unkA = 3;
+        gSpriteEntries[0x6A + i].unk2 = 0x78;
+        gSpriteEntries[0x6A + i].unk4 = i * 16 + 0x50;
     }
     for (i = 0; i < 4; i++) {
-        gUnk_03002C30[0x6E + i].unk0 = 0x8400;
-        gUnk_03002C30[0x6E + i].unk1C = 2;
-        gUnk_03002C30[0x6E + i].unkA = 3;
-        gUnk_03002C30[0x6E + i].unk6 = i + 0x1D;
-        gUnk_03002C30[0x6E + i].unk2 = 0x90;
-        gUnk_03002C30[0x6E + i].unk4 = i * 16 + 0x50;
+        gSpriteEntries[0x6E + i].unk0 = 0x8400;
+        gSpriteEntries[0x6E + i].unk1C = 2;
+        gSpriteEntries[0x6E + i].unkA = 3;
+        gSpriteEntries[0x6E + i].unk6 = i + 0x1D;
+        gSpriteEntries[0x6E + i].unk2 = 0x90;
+        gSpriteEntries[0x6E + i].unk4 = i * 16 + 0x50;
     }
     REG_BLDALPHA = 0x10;
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
-    gUnk_03002C30[8].unk2 = 8;
-    gUnk_03002C30[8].unk4 = gUnk_03006F74->unk1A * 16 + 0x54;
+    gSpriteEntries[8].unk2 = 8;
+    gSpriteEntries[8].unk4 = gUnk_03006F74->unk1A * 16 + 0x54;
     if (gUnk_03006F74->unk5 == 1) {
         shop_build_sell_list();
     } else {
@@ -126,7 +126,7 @@ void enable_obj_layer_and_load_palette(void) {
     if (gUnk_03006F74->unk20 != 0) {
         u8 *buf = (u8 *)0x02023000;
         draw_number_tall(buf[buf[0x78]], 2, 0x1B, 10, 6, (REG_BG1CNT >> 8) & 0x1F);
-        gUnk_03002C30[8].unk0 |= 0x4000;
+        gSpriteEntries[8].unk0 |= 0x4000;
     }
     if (gUnk_03006F74->unk20 > 1)
         draw_number_tall(((u8 *)0x02023000)[gUnk_02023078 + 1], 2, 0x1B, 12, 6, (REG_BG1CNT >> 8) & 0x1F);
@@ -142,8 +142,8 @@ void shop_list_fade_in(void) {
     u8 *n = &s->unk84;
 
     if (*n <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, 32 - *n * 4, 0xFFFE);
-        blend_obj_palettes_to_color_0803F998(0, 32 - *n * 4, 0x7FFD);
+        bg_palettes_blend_masked_now(0, 32 - *n * 4, 0xFFFE);
+        obj_palettes_blend_masked_now(0, 32 - *n * 4, 0x7FFD);
         (*n)++;
     } else {
         update_battle_sprite_priority_flags();
@@ -177,7 +177,7 @@ void shop_purchase_menu_handler(void) {
     if (gUnk_03006F74->unk5 == 0) {
         if (gFrameCounter & 8) {
             if (CART[gUnk_03006F74->unk1A] != 0)
-                gUnk_03002C30[11].unk0 |= 0x4000;
+                gSpriteEntries[11].unk0 |= 0x4000;
             {
                 u32 *m = &gUnk_03002B70.money;
                 u32 sum = CART[0];
@@ -191,11 +191,11 @@ void shop_purchase_menu_handler(void) {
                 p++;
                 sum += *(u32 *)((u8 *)p + off);
                 if (*m >= sum && ((struct ShopSellEntry *)(p - 1))[k].count + CART[k] <= 0x62)
-                    gUnk_03002C30[12].unk0 |= 0x4000;
+                    gSpriteEntries[12].unk0 |= 0x4000;
             }
         } else {
-            gUnk_03002C30[11].unk0 &= 0xBFFF;
-            gUnk_03002C30[12].unk0 &= 0xBFFF;
+            gSpriteEntries[11].unk0 &= 0xBFFF;
+            gSpriteEntries[12].unk0 &= 0xBFFF;
         }
     } else {
         if (gFrameCounter & 8) {
@@ -203,12 +203,12 @@ void shop_purchase_menu_handler(void) {
 
             idx = gUnk_03006F74->unk1A + CART[0x78];
             if (CART[idx] != 0)
-                gUnk_03002C30[11].unk0 |= 0x4000;
+                gSpriteEntries[11].unk0 |= 0x4000;
             if (l[idx].count > CART[idx])
-                gUnk_03002C30[12].unk0 |= 0x4000;
+                gSpriteEntries[12].unk0 |= 0x4000;
         } else {
-            gUnk_03002C30[11].unk0 &= 0xBFFF;
-            gUnk_03002C30[12].unk0 &= 0xBFFF;
+            gSpriteEntries[11].unk0 &= 0xBFFF;
+            gSpriteEntries[12].unk0 &= 0xBFFF;
         }
     }
 
@@ -278,7 +278,7 @@ void shop_purchase_menu_handler(void) {
         }
         play_sound_effect(4);
         for (i = 0; i <= 1; i++)
-            gUnk_03002C30[11 + i].unk0 &= 0xBFFF;
+            gSpriteEntries[11 + i].unk0 &= 0xBFFF;
         open_choice_menu(1, 0x16, 7);
         text_window_init(1, 0, 0);
         gGameSubState = 6;
@@ -295,9 +295,9 @@ void shop_purchase_menu_handler(void) {
     return;
 
 cursor:
-    gUnk_03002C30[8].unk4 = gUnk_03006F74->unk1A * 16 + 0x54;
-    gUnk_03002C30[11].unk4 = gUnk_03006F74->unk1A * 16 + 0x54;
-    gUnk_03002C30[12].unk4 = gUnk_03006F74->unk1A * 16 + 0x54;
+    gSpriteEntries[8].unk4 = gUnk_03006F74->unk1A * 16 + 0x54;
+    gSpriteEntries[11].unk4 = gUnk_03006F74->unk1A * 16 + 0x54;
+    gSpriteEntries[12].unk4 = gUnk_03006F74->unk1A * 16 + 0x54;
     return;
 
 changed:
@@ -329,8 +329,8 @@ void transition_fade_to_battle(void) {
     u8 *n = &s->unk84;
 
     if (*n <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, *n * 4, 0xFFFE);
-        blend_obj_palettes_to_color_0803F998(0, *n * 4, 0x7FFD);
+        bg_palettes_blend_masked_now(0, *n * 4, 0xFFFE);
+        obj_palettes_blend_masked_now(0, *n * 4, 0x7FFD);
         (*n)++;
     } else if (gUnk_03006F74->unk48 != 0) {
         struct Unk_03006F74 *p = gUnk_03006F74;
@@ -344,14 +344,14 @@ void transition_fade_to_battle(void) {
 
         REG_DISPCNT &= 0xFDFF;
         for (i = 0; i < 2; i++)
-            gUnk_03002C30[11 + i].unk0 &= 0xBFFF;
+            gSpriteEntries[11 + i].unk0 &= 0xBFFF;
         for (i = 0; i < 2; i++)
-            gUnk_03002C30[0x68 + i].unk0 &= 0xBFFF;
+            gSpriteEntries[0x68 + i].unk0 &= 0xBFFF;
         for (i = 0; i < 4; i++)
-            gUnk_03002C30[0x6A + i].unk0 &= 0xBFFF;
+            gSpriteEntries[0x6A + i].unk0 &= 0xBFFF;
         for (i = 0; i < 4; i++)
-            gUnk_03002C30[0x6E + i].unk0 &= 0xBFFF;
-        gUnk_03002C30[8].unk0 &= 0xBFFF;
+            gSpriteEntries[0x6E + i].unk0 &= 0xBFFF;
+        gSpriteEntries[8].unk0 &= 0xBFFF;
         REG_BLDALPHA = 0x1000;
         REG_BG1CNT = 0x1E05;
         REG_BG2CNT = 0x1D06;
@@ -421,8 +421,8 @@ void shop_list_fade_out_exit(void) {
     u8 *n = &s->unk84;
 
     if (*n <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, *n * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, *n * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, *n * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, *n * 4, 0xFFFF);
         (*n)++;
     } else {
         struct Unk_03006F74 *p = gUnk_03006F74;

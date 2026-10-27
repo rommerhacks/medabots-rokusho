@@ -90,29 +90,29 @@ void load_map_npc_sprites(s32 mode) {
                     u8 a = anim;
                     sprite_entry_init(slot, 0xC804, f, a, 1);
                     gUnk_030057E0.unk5DC[n].unk4_6 = 1;
-                    gUnk_03002C30[count + 49].unk30 = area_sprite_sheet_id(a);
+                    gSpriteEntries[count + 49].unk30 = area_sprite_sheet_id(a);
                     sprite_set_blend_from_kind(count + 49);
-                    if (gUnk_083D2B8D[gUnk_03002C30[count + 49].unk30])
+                    if (gUnk_083D2B8D[gSpriteEntries[count + 49].unk30])
                         sprite_entry_init(count + 91, 0xCC0C, 0x90, 14, 1);
                 } break;
                 }
                 gUnk_030057E0.unk5DC[n].unk4_0 = count;
                 anim = e->unk4 >> 4;
                 gUnk_030055A0[count + 49].unk0 = e->unk2 & 0xFFF;
-                gUnk_03002C30[count + 49].unk2B = anim;
-                gUnk_03002C30[count + 49].unkC_8 = e->x * 16 + gUnk_030057E0.unkC48;
-                gUnk_03002C30[count + 49].unk10_8 = e->y * 16 + gUnk_030057E0.unkC4A;
+                gSpriteEntries[count + 49].unk2B = anim;
+                gSpriteEntries[count + 49].unkC_8 = e->x * 16 + gUnk_030057E0.unkC48;
+                gSpriteEntries[count + 49].unk10_8 = e->y * 16 + gUnk_030057E0.unkC4A;
                 set_sprite_anim_and_store(count + 49, e->unk4 & 0xF, &gUnk_030057E0.unk5DC[n]);
-                sub_080493D4(count + 49, anim * 4 + (e->unk4 & 0xF));
+                sprite_anim_start(count + 49, anim * 4 + (e->unk4 & 0xF));
                 if (mode != 0 && found) {
                     set_sprite_anim_and_store(count + 49, saved[j].unk5, &gUnk_030057E0.unk5DC[n]);
-                    sub_080493D4(count + 49, saved[j].unk5 + anim * 4);
+                    sprite_anim_start(count + 49, saved[j].unk5 + anim * 4);
                 }
-                gUnk_03002C30[count + 49].unk2C = 0;
-                gUnk_03002C30[count + 91].unkC_8 = gUnk_03002C30[count + 49].unkC_8;
-                gUnk_03002C30[count + 91].unk10_8 = gUnk_03002C30[count + 49].unk10_8 - 5;
-                gUnk_03002C30[count + 91].unk2 = gUnk_03002C30[count + 49].unk2;
-                gUnk_03002C30[count + 91].unk4 = gUnk_03002C30[count + 49].unk4 - 5;
+                gSpriteEntries[count + 49].unk2C = 0;
+                gSpriteEntries[count + 91].unkC_8 = gSpriteEntries[count + 49].unkC_8;
+                gSpriteEntries[count + 91].unk10_8 = gSpriteEntries[count + 49].unk10_8 - 5;
+                gSpriteEntries[count + 91].unk2 = gSpriteEntries[count + 49].unk2;
+                gSpriteEntries[count + 91].unk4 = gSpriteEntries[count + 49].unk4 - 5;
             }
             count++;
         next:
@@ -140,24 +140,24 @@ void init_battle_field_setup(void) {
     sprite_entry_init(47, 0xC804, 3, 0, 1);
     field_set_player_facing(gUnk_030057E0.unkC67);
     update_battle_direction_indicator(3);
-    gUnk_03002C30[47].unkB = 0x40;
+    gSpriteEntries[47].unkB = 0x40;
     LZ77UnCompVram(gUnk_085FA104, (void *)0x06017FC0);
     sprite_entry_init(89, 0xCC0C, 0x90, 14, 1);
-    gUnk_03002C30[89].unkC_8 = gUnk_030057E0.unkC52;
-    gUnk_03002C30[89].unk10_8 = gUnk_030057E0.unkC54 - 5;
-    gUnk_03002C30[89].unk2 = gUnk_03002C30[47].unk2;
-    gUnk_03002C30[89].unk4 = gUnk_03002C30[47].unk4 - 5;
+    gSpriteEntries[89].unkC_8 = gUnk_030057E0.unkC52;
+    gSpriteEntries[89].unk10_8 = gUnk_030057E0.unkC54 - 5;
+    gSpriteEntries[89].unk2 = gSpriteEntries[47].unk2;
+    gSpriteEntries[89].unk4 = gSpriteEntries[47].unk4 - 5;
     if (gUnk_030057E0.unkC5B) {
-        gUnk_03002C30[47].unk0 = 0xC804;
+        gSpriteEntries[47].unk0 = 0xC804;
     } else {
-        gUnk_03002C30[47].unk0 = 0;
-        gUnk_03002C30[89].unk0 = 0;
+        gSpriteEntries[47].unk0 = 0;
+        gSpriteEntries[89].unk0 = 0;
     }
 }
 
 // Pixels per frame for a walking sprite: its own speed factor times the area's (16 / speed = frames per tile).
 s32 sprite_walk_speed(u8 idx) {
-    return gUnk_083D28C0[gUnk_03002C30[idx].unk2A] * gUnk_083D28C0[gUnk_03006D38.unk2];
+    return gUnk_083D28C0[gSpriteEntries[idx].unk2A] * gUnk_083D28C0[gUnk_03006D38.unk2];
 }
 
 void set_battle_state_cancel_flag(void) {
@@ -207,7 +207,7 @@ void field_player_step(u8 dir) {
         break;
     }
     if (--gUnk_030057E0.unkC58 == 0) {
-        gUnk_03002C30[47].unk2A = gUnk_083D2908[gUnk_030057E0.unkC5C];
+        gSpriteEntries[47].unk2A = gUnk_083D2908[gUnk_030057E0.unkC5C];
         gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
         gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
         if (gUnk_030057E0.unkC88 == 0 && !find_npc_event_match()) {
@@ -279,7 +279,7 @@ void field_player_walk_input(void) {
             if (gUnk_030057E0.unkC59 != dir) {
                 gUnk_030057E0.unkC59 = dir;
                 field_set_player_facing(dir);
-                sub_080493D4(0x2F, dir);
+                sprite_anim_start(0x2F, dir);
                 update_battle_direction_indicator(3);
             }
             if (!field_player_at_map_edge(dir) && !check_tile_and_trigger_battle_action(dir)) {
@@ -329,7 +329,7 @@ void update_battle_direction_indicator(u8 flags) {
                 gUnk_030057E0.unkC75 = 2;
             if (gUnk_030057E0.unkC75 != prev) {
                 set_battle_state_byte_c83(gUnk_030057E0.unkC75);
-                sub_080493D4(48, sub_080502B4(48, gUnk_030057E0.unkC75));
+                sprite_anim_start(48, sub_080502B4(48, gUnk_030057E0.unkC75));
             }
         }
     } else {
@@ -341,10 +341,10 @@ void update_battle_direction_indicator(u8 flags) {
             gUnk_030057E0.unkC75 = 0;
         if (gUnk_030057E0.unkC75 != prev) {
             set_battle_state_byte_c83(gUnk_030057E0.unkC75);
-            sub_080493D4(48, sub_080502B4(48, gUnk_030057E0.unkC75));
+            sprite_anim_start(48, sub_080502B4(48, gUnk_030057E0.unkC75));
         }
     }
-    gUnk_03002C30[48].unk2A = gUnk_03002C30[47].unk2A;
+    gSpriteEntries[48].unk2A = gSpriteEntries[47].unk2A;
 }
 
 // guess: one frame of sprite 48's step toward the player (see update_battle_direction_indicator)
@@ -377,7 +377,7 @@ static void battle_camera_scroll_update(u8 dir) {
             break;
         }
         if (--gUnk_030057E0.unkC74 == 0) {
-            gUnk_03002C30[48].unk2A = gUnk_03002C30[47].unk2A;
+            gSpriteEntries[48].unk2A = gSpriteEntries[47].unk2A;
             gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
             gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
         }

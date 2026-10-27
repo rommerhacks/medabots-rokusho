@@ -15,7 +15,7 @@ bool32 sub_08069F80(void);
 bool32 sub_0806A4C0(void);
 void update_sprite_animations_tick_0806AF40(void);
 void update_sprite_animations_0806B334(void);
-void clear_sprite_entry(u8 sprite); // zeroes gUnk_03002C30[sprite] (0x40 bytes)
+void clear_sprite_entry(u8 sprite); // zeroes gSpriteEntries[sprite] (0x40 bytes)
 void init_battle_field_screen(void);
 void init_battle_bg_layer1(void);
 void write_tilemap_tiles_dma(u8 a, u8 b, u8 c);

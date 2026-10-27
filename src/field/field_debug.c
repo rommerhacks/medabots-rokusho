@@ -142,8 +142,8 @@ void sub_08058214(u32 mode) {
             sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 3);
             break;
         }
-        REG_BLDALPHA = ((gUnk_03006F40.unk4 & 0x3F) << 8) | (gUnk_03006F40.unk3 & 0x3F);
-        REG_BLDY = gUnk_03006F40.unk5 & 0x3F;
+        REG_BLDALPHA = ((gBlendEffect.evb & 0x3F) << 8) | (gBlendEffect.eva & 0x3F);
+        REG_BLDY = gBlendEffect.evy & 0x3F;
         break;
     case 5:
         sub_08058A88(gUnk_030057A0.unk14, gUnk_030057A0.unk16[gUnk_030057A0.unk14], 0xB0);
@@ -648,20 +648,20 @@ static void sub_08059490(u8 *value, s32 x, s32 y) {
 
     DmaSet(3, &gUnk_080ACB7C[(hundreds + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
     sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-    gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x;
-    gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+    gSpriteEntries[gUnk_030057A0.unk13].unk2 = x;
+    gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
     gUnk_030057A0.unk13++;
 
     DmaSet(3, &gUnk_080ACB7C[(tens + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
     sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-    gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + 8;
-    gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+    gSpriteEntries[gUnk_030057A0.unk13].unk2 = x + 8;
+    gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
     gUnk_030057A0.unk13++;
 
     DmaSet(3, &gUnk_080ACB7C[(ones + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
     sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-    gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + 16;
-    gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+    gSpriteEntries[gUnk_030057A0.unk13].unk2 = x + 16;
+    gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
     gUnk_030057A0.unk13++;
 }
 
@@ -696,14 +696,14 @@ static void load_battle_sprite_from_index(u32 value, s32 bits, s32 x, s32 y) {
 
         DmaSet(3, &gUnk_080ACB7C[hex[hi] * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
         sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-        gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + i * 16;
-        gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+        gSpriteEntries[gUnk_030057A0.unk13].unk2 = x + i * 16;
+        gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
         gUnk_030057A0.unk13++;
 
         DmaSet(3, &gUnk_080ACB7C[hex[lo] * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
         sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-        gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + i * 16 + 8;
-        gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+        gSpriteEntries[gUnk_030057A0.unk13].unk2 = x + i * 16 + 8;
+        gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
         gUnk_030057A0.unk13++;
     }
 }
@@ -714,8 +714,8 @@ void load_battle_sprite_tile(const u8 *digits, s32 count, s32 x, s32 y) {
     for (i = 0; i < count; i++) {
         DmaSet(3, &gUnk_080ACB7C[*digits * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
         sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
-        gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x;
-        gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
+        gSpriteEntries[gUnk_030057A0.unk13].unk2 = x;
+        gSpriteEntries[gUnk_030057A0.unk13].unk4 = y;
         x += 8;
         gUnk_030057A0.unk13++;
         digits++;
@@ -727,18 +727,18 @@ static inline void init_field_sprite(u8 row, u8 col) {
     u8 slot = 49 + row * 4 + col;
     u8 j = slot + 42;
 
-    gUnk_03002C30[slot].unk30 = gUnk_030057A0.unk20;
-    gUnk_03002C30[slot].unkC_8 = gUnk_03006432 + (col * 32 - 48);
-    gUnk_03002C30[slot].unk10_8 = gUnk_03006434 + (16 - row * 32);
-    gUnk_03002C30[slot].unk0 = 0xC804;
-    gUnk_03002C30[slot].unk2E = 1;
-    gUnk_03002C30[j].unk0 = 0xCC0C;
-    gUnk_03002C30[slot].unk2 = gUnk_03002C30[slot].unkC_8 - (u16)gBg1Scroll.x;
-    gUnk_03002C30[slot].unk4 = gUnk_03002C30[slot].unk10_8 - (u16)gBg1Scroll.y;
-    gUnk_03002C30[j].unk2 = gUnk_03002C30[slot].unk2;
-    gUnk_03002C30[j].unk4 = gUnk_03002C30[slot].unk4 + (s16)(gUnk_03002C30[slot].unk2C - 5);
-    gUnk_03002C30[slot].unk6 = row * 48 + col * 15;
-    sub_080493D4(slot, 4 + row * 16 + col * 5);
+    gSpriteEntries[slot].unk30 = gUnk_030057A0.unk20;
+    gSpriteEntries[slot].unkC_8 = gUnk_03006432 + (col * 32 - 48);
+    gSpriteEntries[slot].unk10_8 = gUnk_03006434 + (16 - row * 32);
+    gSpriteEntries[slot].unk0 = 0xC804;
+    gSpriteEntries[slot].unk2E = 1;
+    gSpriteEntries[j].unk0 = 0xCC0C;
+    gSpriteEntries[slot].unk2 = gSpriteEntries[slot].unkC_8 - (u16)gBg1Scroll.x;
+    gSpriteEntries[slot].unk4 = gSpriteEntries[slot].unk10_8 - (u16)gBg1Scroll.y;
+    gSpriteEntries[j].unk2 = gSpriteEntries[slot].unk2;
+    gSpriteEntries[j].unk4 = gSpriteEntries[slot].unk4 + (s16)(gSpriteEntries[slot].unk2C - 5);
+    gSpriteEntries[slot].unk6 = row * 48 + col * 15;
+    sprite_anim_start(slot, 4 + row * 16 + col * 5);
 }
 
 void init_battle_field_sprites(void) {
@@ -760,21 +760,21 @@ void init_battle_field_sprites(void) {
 
         sprite_entry_clear(slot);
         sprite_entry_clear(j);
-        gUnk_03002C30[slot].unk30 = gUnk_030057A0.unk20;
+        gSpriteEntries[slot].unk30 = gUnk_030057A0.unk20;
         if (gUnk_083D2C3D[gUnk_030057A0.unk20] == 3) {
             sprite_entry_init(slot, 0xC804, calc_medapart_table_index(0), sub_08050264(0), 1);
-            gUnk_03002C30[slot].unk2B = sub_08050264(0);
-            gUnk_03002C30[slot].unkC_8 = gUnk_03006432 - 0x30;
-            gUnk_03002C30[slot].unk10_8 = gUnk_03006434 + 0x30;
+            gSpriteEntries[slot].unk2B = sub_08050264(0);
+            gSpriteEntries[slot].unkC_8 = gUnk_03006432 - 0x30;
+            gSpriteEntries[slot].unk10_8 = gUnk_03006434 + 0x30;
             gUnk_030055A0[slot].unk0 = 0xFFFF;
-            gUnk_03002C30[slot].unk2C = zero = 0;
-            sub_080493D4(slot, 0x60);
+            gSpriteEntries[slot].unk2C = zero = 0;
+            sprite_anim_start(slot, 0x60);
         }
-        gUnk_03002C30[j].unk0 = zero;
+        gSpriteEntries[j].unk0 = zero;
         if (gUnk_083D2B8D[gUnk_030057A0.unk20] != 0) {
-            gUnk_03002C30[j].unk0 = 0xCC0C;
-            gUnk_03002C30[j].unk2 = gUnk_03002C30[slot].unk2;
-            gUnk_03002C30[j].unk4 = gUnk_03002C30[slot].unk4 + (s16)(gUnk_03002C30[slot].unk2C - 5);
+            gSpriteEntries[j].unk0 = 0xCC0C;
+            gSpriteEntries[j].unk2 = gSpriteEntries[slot].unk2;
+            gSpriteEntries[j].unk4 = gSpriteEntries[slot].unk4 + (s16)(gSpriteEntries[slot].unk2C - 5);
         }
     }
 }

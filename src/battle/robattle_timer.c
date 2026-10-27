@@ -30,6 +30,6 @@ void robattle_time_tick(void) {
 }
 
 void robattle_time_draw(void) {
-    gUnk_03002C30[1].unk6 = (u8)(gUnk_03001800.unk57 / 10) + 0x624;
-    gUnk_03002C30[2].unk6 = (u8)(gUnk_03001800.unk57 % 10) + 0x624;
+    gSpriteEntries[1].unk6 = (u8)(gUnk_03001800.unk57 / 10) + 0x624;
+    gSpriteEntries[2].unk6 = (u8)(gUnk_03001800.unk57 % 10) + 0x624;
 }

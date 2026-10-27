@@ -144,10 +144,10 @@ void text_scroll_init(void) {
     }
     gUnk_03006F74->unk3C = 0;
     for (i = 0; i < 0x48; i++) {
-        gUnk_03002C30[i + 1].unk0 = 0xC800;
-        gUnk_03002C30[i + 1].unk1C = 2;
-        gUnk_03002C30[i + 1].unkA = i / 18;
-        gUnk_03002C30[i + 1].unk6 = 0x116;
+        gSpriteEntries[i + 1].unk0 = 0xC800;
+        gSpriteEntries[i + 1].unk1C = 2;
+        gSpriteEntries[i + 1].unkA = i / 18;
+        gSpriteEntries[i + 1].unk6 = 0x116;
     }
     matrix_set_identity();
     ring_points_place_on_hexagon(0x32);
@@ -181,8 +181,8 @@ void text_scroll_fade_in(void) {
     s = &gUnk_03000440;
     n = &s->unk84;
     if (*n <= 0x40) {
-        blend_obj_palettes_to_color_0803F684(0, 0x20 - (*n / 2), 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, 0x20 - (*n / 2), 0xFFFF);
+        bg_palettes_blend_masked_now(0, 0x20 - (*n / 2), 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - (*n / 2), 0xFFFF);
         s->unk84++;
         gUnk_03006F74->unk5 = 0;
     } else
@@ -258,8 +258,8 @@ void text_scroll_clear_bar(void) {
 void text_scroll_fade_out(void) {
     update_scene_animation_frame();
     if (gUnk_03006F74->unk3E <= 0xC0) {
-        blend_obj_palettes_to_color_0803F684(0, (s16)(gUnk_03006F74->unk3E / 6), 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, (s16)(gUnk_03006F74->unk3E / 6), 0xFFFF);
+        bg_palettes_blend_masked_now(0, (s16)(gUnk_03006F74->unk3E / 6), 0xFFFF);
+        obj_palettes_blend_masked_now(0, (s16)(gUnk_03006F74->unk3E / 6), 0xFFFF);
         gUnk_03006F74->unk3E++;
     } else if (sub_08074FB8() == 0) {
         gGameSubState = 0;

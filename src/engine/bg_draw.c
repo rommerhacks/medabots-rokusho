@@ -7,7 +7,7 @@ void free_all_sprites(void) {
     s32 i;
 
     for (i = 0; i < 128; i++)
-        gUnk_03002C30[i].unk0 = 0;
+        gSpriteEntries[i].unk0 = 0;
 }
 
 static void clear_vram_bg2_tilemap(void) {

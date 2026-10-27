@@ -101,24 +101,24 @@ void sub_0805FBA8(void) {
     CpuFastSet(gUnk_0879559C, (void *)PLTT, 0x80);
     CpuFastSet(gUnk_080AF900, (void *)(PLTT + 0x200), 0x10);
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
-    gUnk_03002C30[0].unk0 = 0x8A20;
-    gUnk_03002C30[0].unk1C = 2;
-    gUnk_03002C30[0].unk2 = 0x78;
-    gUnk_03002C30[0].unk4 = -0x20;
-    gUnk_03002C30[0].unkA = zero8;
-    gUnk_03002C30[0].unk6 = 0x108;
-    gUnk_03002C30[0].unk8 = 0x80;
-    gUnk_03002C30[0].unk9 = 0x80;
-    gUnk_03002C30[0].unk18 = zero16;
-    gUnk_03002C30[1].unk0 = 0x8220;
-    gUnk_03002C30[1].unk1C = 2;
-    gUnk_03002C30[1].unk2 = 0x78;
-    gUnk_03002C30[1].unk4 = -0x40;
-    gUnk_03002C30[1].unkA = one;
-    gUnk_03002C30[1].unk6 = 0x109;
-    gUnk_03002C30[1].unk8 = 0x80;
-    gUnk_03002C30[1].unk9 = 0x80;
-    gUnk_03002C30[1].unk18 = zero16;
+    gSpriteEntries[0].unk0 = 0x8A20;
+    gSpriteEntries[0].unk1C = 2;
+    gSpriteEntries[0].unk2 = 0x78;
+    gSpriteEntries[0].unk4 = -0x20;
+    gSpriteEntries[0].unkA = zero8;
+    gSpriteEntries[0].unk6 = 0x108;
+    gSpriteEntries[0].unk8 = 0x80;
+    gSpriteEntries[0].unk9 = 0x80;
+    gSpriteEntries[0].unk18 = zero16;
+    gSpriteEntries[1].unk0 = 0x8220;
+    gSpriteEntries[1].unk1C = 2;
+    gSpriteEntries[1].unk2 = 0x78;
+    gSpriteEntries[1].unk4 = -0x40;
+    gSpriteEntries[1].unkA = one;
+    gSpriteEntries[1].unk6 = 0x109;
+    gSpriteEntries[1].unk8 = 0x80;
+    gSpriteEntries[1].unk9 = 0x80;
+    gSpriteEntries[1].unk18 = zero16;
     gUnk_03006F74->unk2 = zero16;
     gUnk_03006F74->unk15 = 0x3C;
     gUnk_03006F74->unk16 = zero8;
@@ -140,14 +140,14 @@ void sub_0805FD60(void) {
         REG_BLDY = p->unk0-- >> 1;
     } else {
         p->unk2 = 0;
-        gUnk_03002C30[1].unk0 |= 0x4000;
-        gUnk_03002C30[1].unk1A = 0;
+        gSpriteEntries[1].unk0 |= 0x4000;
+        gSpriteEntries[1].unk1A = 0;
         gGameSubState++;
     }
 }
 
 void sub_0805FDB4(void) {
-    struct Unk_03002C30 *s = gUnk_03002C30;
+    struct SpriteEntry *s = gSpriteEntries;
     u32 c = s[1].unk1A;
     u16 zero;
 
@@ -186,25 +186,25 @@ void sub_0805FE90(void) {
             play_sound_effect(0x17);
         }
         if (gUnk_03006F74->unk3A <= 3)
-            gUnk_03002C30[1].unk4--;
+            gSpriteEntries[1].unk4--;
         else
-            gUnk_03002C30[1].unk4++;
+            gSpriteEntries[1].unk4++;
     } else {
         if ((u16)p->unk3A <= 0x31)
             p->unk3A++;
         t = gUnk_03006F74->unk3A - 9;
         if (t == 0)
-            gUnk_03002C30[0].unk0 |= 0x4000;
+            gSpriteEntries[0].unk0 |= 0x4000;
         if (t <= 0x13) {
             s32 q = (t << 6) / 20;
 
             y = q - 0x20;
-            gUnk_03002C30[0].unk9 = gUnk_03002C30[0].unk8 = -0x80 - q;
+            gSpriteEntries[0].unk9 = gSpriteEntries[0].unk8 = -0x80 - q;
         } else {
             t -= 0x14;
             if (t == 0) {
-                gUnk_03002C30[0].unk8 = 0x40;
-                gUnk_03002C30[0].unk9 = 0x40;
+                gSpriteEntries[0].unk8 = 0x40;
+                gSpriteEntries[0].unk9 = 0x40;
             }
             if (t <= 0xC)
                 y = gUnk_080AF95A[t] + 0x20;
@@ -217,13 +217,13 @@ void sub_0805FE90(void) {
                     done = 1;
             }
         }
-        gUnk_03002C30[0].unk4 = y;
+        gSpriteEntries[0].unk4 = y;
     }
-    if (++gUnk_03002C30[1].unk1A > 0x47)
-        gUnk_03002C30[1].unk1A = 0;
-    gUnk_03002C30[1].unk6 = gUnk_080AF942[gUnk_03002C30[1].unk1A / 6];
+    if (++gSpriteEntries[1].unk1A > 0x47)
+        gSpriteEntries[1].unk1A = 0;
+    gSpriteEntries[1].unk6 = gUnk_080AF942[gSpriteEntries[1].unk1A / 6];
     if ((KEYS_LO(gNewKeys) & 1) && done) {
-        gUnk_03002C30[1].unk0 = 0xCA20;
+        gSpriteEntries[1].unk0 = 0xCA20;
         gUnk_03006F74->unk3A = 0;
         gGameSubState += 2;
     }
@@ -246,9 +246,9 @@ void sub_0806006C(void) {
 
     p->unk3A++;
     clear_or_fill_bg2_tilemap(p->unk3A + 8);
-    if (++gUnk_03002C30[1].unk1A > 0x47)
-        gUnk_03002C30[1].unk1A = 0;
-    gUnk_03002C30[1].unk6 = gUnk_080AF968[(u16)(gUnk_03002C30[1].unk1A / 6)];
+    if (++gSpriteEntries[1].unk1A > 0x47)
+        gSpriteEntries[1].unk1A = 0;
+    gSpriteEntries[1].unk6 = gUnk_080AF968[(u16)(gSpriteEntries[1].unk1A / 6)];
     p = gUnk_03006F74;
     if (p->unk3A > 13) {
         p->unk0 = 0;

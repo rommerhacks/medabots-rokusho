@@ -31,8 +31,8 @@ u32 battle_scene_state_dispatch(void) {
 void init_battle_sprites(void) {
     s32 i;
 
-    memzero_bytes((u8 *)gUnk_03002C30, 0xA00);
-    sub_080492CC();
+    memzero_bytes((u8 *)gSpriteEntries, 0xA00);
+    affine_params_reset();
     for (i = 0; i < 32; i++)
         calculate_oam_affine_matrix(i);
 }
@@ -72,7 +72,7 @@ u32 scene_state_dispatch(u32 a, u32 b) {
         }
         break;
     case 2:
-        memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+        memzero_bytes((u8 *)gSpriteEntries, 0x2000);
         memzero_bytes((u8 *)gUnk_030055A0, 0x200);
         zero = 0;
         DmaSet(3, &zero, OAM, 0x85000100);
@@ -158,13 +158,13 @@ void field_walk_update(void) {
         set_battle_state_cancel_flag();
         if (find_map_event_by_coords(gUnk_030057E0.unkC56, gUnk_030057E0.unkC57)) {
             gUnk_030057E0.unkC58 = 16 / sprite_walk_speed(47);
-            field_set_player_facing(gUnk_03002C30[47].unk20);
-            sub_080493D4(47, gUnk_03002C30[47].unk20);
+            field_set_player_facing(gSpriteEntries[47].unk20);
+            sprite_anim_start(47, gSpriteEntries[47].unk20);
             if (gUnk_030057E0.unkC76) {
                 gUnk_030057E0.unkC6E = gUnk_030057E0.unkC52;
                 gUnk_030057E0.unkC70 = gUnk_030057E0.unkC54;
-                set_battle_state_byte_c83(gUnk_03002C30[47].unk20);
-                sub_080493D4(48, gUnk_03002C30[48].unk2B * 4 + gUnk_03002C30[48].unk20);
+                set_battle_state_byte_c83(gSpriteEntries[47].unk20);
+                sprite_anim_start(48, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
             }
             update_battle_direction_indicator(3);
             gUnk_03005310.unk1 = 1;
@@ -175,7 +175,7 @@ void field_walk_update(void) {
         }
         break;
     case 1:
-        field_player_step(gUnk_03002C30[47].unk20);
+        field_player_step(gSpriteEntries[47].unk20);
         if (gUnk_030057E0.unkC58 == 0) {
             if (gUnk_03006D38.unk3 == 4)
                 field_play_sound_effect(0);
@@ -200,10 +200,10 @@ void field_walk_update(void) {
                 }
                 if (!npc && !warp) {
                     if (KEYS_LO(gHeldKeys) & 1) {
-                        gUnk_03002C30[47].unk2A = 1;
-                        gUnk_03002C30[48].unk2A = 1;
+                        gSpriteEntries[47].unk2A = 1;
+                        gSpriteEntries[48].unk2A = 1;
                     } else {
-                        gUnk_03002C30[48].unk2A = gUnk_03002C30[47].unk2A = gUnk_083D2908[gUnk_030057E0.unkC5C];
+                        gSpriteEntries[48].unk2A = gSpriteEntries[47].unk2A = gUnk_083D2908[gUnk_030057E0.unkC5C];
                     }
                     if (KEYS_LO(gNewKeys) & 1) {
                         if (map_cursor_move_and_check_event())
@@ -228,9 +228,9 @@ void field_walk_update(void) {
                             gUnk_03005310.unk2A = gBg3Scroll.y;
                             gBg0Scroll.x = 0;
                             gBg0Scroll.y = 0;
-                            gUnk_030057E0.unkC67 = gUnk_03002C30[47].unk20;
-                            gUnk_030057E0.unkC83 = gUnk_03002C30[48].unk20;
-                            gUnk_030057E0.unkC84 = gUnk_03002C30[48].unk2B;
+                            gUnk_030057E0.unkC67 = gSpriteEntries[47].unk20;
+                            gUnk_030057E0.unkC83 = gSpriteEntries[48].unk20;
+                            gUnk_030057E0.unkC84 = gSpriteEntries[48].unk2B;
                             save_script_sprites();
                             gUnk_030057E0.unkCBA = 2;
                             done = 1;
@@ -246,8 +246,8 @@ void field_walk_update(void) {
                 field_play_sound_effect(0x74);
             field_player_walk_input();
         } else {
-            field_set_player_facing(gUnk_03002C30[47].unk20);
-            set_battle_state_byte_c83(gUnk_03002C30[48].unk20);
+            field_set_player_facing(gSpriteEntries[47].unk20);
+            set_battle_state_byte_c83(gSpriteEntries[48].unk20);
         }
         break;
     case 3:

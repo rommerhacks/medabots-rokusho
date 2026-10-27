@@ -57,12 +57,12 @@ void field_menu_handle_input(void) {
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         play_sound_effect(2);
         gUnk_03000440.unk8E = (gUnk_03000440.unk8E - 1) & 3;
-        gUnk_03002C30[0].unk4 = gUnk_03000440.unk8E * 16 + 8;
+        gSpriteEntries[0].unk4 = gUnk_03000440.unk8E * 16 + 8;
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
         play_sound_effect(2);
         gUnk_03000440.unk8E = (gUnk_03000440.unk8E + 1) & 3;
-        gUnk_03002C30[0].unk4 = gUnk_03000440.unk8E * 16 + 8;
+        gSpriteEntries[0].unk4 = gUnk_03000440.unk8E * 16 + 8;
     }
     if (KEYS_LO(gNewKeys) & 2) {
         sound_stop_all_with_fade_guard(0x10);
@@ -129,7 +129,7 @@ void field_menu_select_collapse(void) {
     vram_fill_tilemap_rect(12, 1, 18, gUnk_03000440.unk88 + 1, REG_BG0CNT, 0);
     if (--gUnk_03000440.unk88 == 0) {
         lz_decompress_dispatch(gUnk_084C1C14, (void *)0x060017E0);
-        copy_obj_palette_to_buffer();
+        palette_backup_from_hardware();
         gUnk_03000440.unk84 = 0;
         if (gUnk_03000440.unk8E == 0)
             sound_stop_all_with_fade_guard(0x10);
@@ -139,8 +139,8 @@ void field_menu_select_collapse(void) {
 
 void field_menu_select_slide(void) {
     if (gUnk_03000440.unk8E != 2 && gUnk_03000440.unk84 <= 16) {
-        blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 2, 0x1FFF);
-        blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 2, 0xFFFF);
+        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 2, 0x1FFF);
+        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 2, 0xFFFF);
         gUnk_03000440.unk84++;
     }
     write_tilemap_rect(12, 2, 18 - gUnk_03000440.unk88, 0, gUnk_083B4AE0[gUnk_03000440.unk8E * 13 + 0x1F], REG_BG0CNT,
@@ -197,8 +197,8 @@ void field_menu_return_init(void) {
 void field_menu_return_slide(void) {
     if (gUnk_03000440.unk8E != 2 && gUnk_03000440.unk84 <= 16) {
         blend_effect_update();
-        blend_obj_palettes_to_color_0803F684(0, 32 - gUnk_03000440.unk84 * 2, 0x1FFF);
-        blend_obj_palettes_to_color_0803F998(0, 32 - gUnk_03000440.unk84 * 2, 0xFFFF);
+        bg_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 2, 0x1FFF);
+        obj_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 2, 0xFFFF);
         gUnk_03000440.unk84++;
     }
     gUnk_03000440.unk88--;
@@ -253,11 +253,11 @@ void field_menu_return_expand(void) {
 static void field_menu_init_cursor(void) {
     lz_decompress_dispatch(gUnk_084C7174, (void *)0x06016C00);
     DmaSet(3, gUnk_084E2E58, 0x050003C0, 0x84000008);
-    gUnk_03002C30[0].unk0 = 0xC004;
-    gUnk_03002C30[0].unk2 = 0x88;
-    gUnk_03002C30[0].unk4 = gUnk_03000440.unk8E * 16 + 8;
-    gUnk_03002C30[0].unkA = 14;
-    gUnk_03002C30[0].unk1C = 0;
-    gUnk_03002C30[0].unkB = 0xFF;
+    gSpriteEntries[0].unk0 = 0xC004;
+    gSpriteEntries[0].unk2 = 0x88;
+    gSpriteEntries[0].unk4 = gUnk_03000440.unk8E * 16 + 8;
+    gSpriteEntries[0].unkA = 14;
+    gSpriteEntries[0].unk1C = 0;
+    gSpriteEntries[0].unkB = 0xFF;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0], 0);
 }

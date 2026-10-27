@@ -8,7 +8,7 @@ void battle_sequence_run_command(
 void sub_08039430(void);
 void battle_sequence_update_sprites(void);
 void battle_sequence_update(
-    void); // per frame during an attack animation: runs sequence commands until one yields (gUnk_03002C30[0].unk2A)
+    void); // per frame during an attack animation: runs sequence commands until one yields (gSpriteEntries[0].unk2A)
 s16 sub_0803D424(void);                     // current battle sequence entry (gUnk_083CDFE4[unkF9][unk100])
 void battle_advance_sequence_counter(void); // skips the current battle sequence command and its operands
 void load_battle_sequence_commands(void);

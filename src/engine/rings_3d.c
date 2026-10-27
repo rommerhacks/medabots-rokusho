@@ -299,7 +299,7 @@ void update_scene_animation_frame(void) {
         struct Unk_03006F74 *w;
         s32 x, y;
         s32 px, py, pz;
-        struct Unk_03002C30 *spr;
+        struct SpriteEntry *spr;
         s32 k;
 
         if (j == 0) {
@@ -317,7 +317,7 @@ void update_scene_animation_frame(void) {
         x >>= 8;
         y >>= 8;
         {
-            struct Unk_03002C30 *b = gUnk_03002C30;
+            struct SpriteEntry *b = gSpriteEntries;
             n = i + 1;
             spr = &b[n];
         }

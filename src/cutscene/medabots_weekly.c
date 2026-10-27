@@ -48,7 +48,7 @@ void medabots_weekly_init(void) {
     zero = 0;
     DmaSet(3, &zero, PLTT, 0x85000100);
     zero = 0;
-    DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+    DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     zero = 0;
     DmaSet(3, &zero, &gMedabotsWeekly, 0x85000005);
     play_song(0);
@@ -84,39 +84,39 @@ void weekly_load_studio(void) {
 
     for (i = 0; i <= 10; i++) {
         sprite_entry_init(i, 0xC800, 0x50E, 4, 3);
-        gUnk_03002C30[i].unk2 = i * 8 + 0x78;
-        gUnk_03002C30[i].unk4 = 0;
-        gUnk_03002C30[i].unkB = i + 0x40;
-        gUnk_03002C30[i].unk22 = i + 1;
+        gSpriteEntries[i].unk2 = i * 8 + 0x78;
+        gSpriteEntries[i].unk4 = 0;
+        gSpriteEntries[i].unkB = i + 0x40;
+        gSpriteEntries[i].unk22 = i + 1;
         sprite_entry_init(i + 11, 0xC800, 0x50E, 4, 3);
-        gUnk_03002C30[i + 11].unk2 = 0x70 - i * 8;
-        gUnk_03002C30[i + 11].unk4 = 0;
-        gUnk_03002C30[i + 11].unkB = i + 0x40;
-        gUnk_03002C30[i + 11].unk22 = i + 12;
+        gSpriteEntries[i + 11].unk2 = 0x70 - i * 8;
+        gSpriteEntries[i + 11].unk4 = 0;
+        gSpriteEntries[i + 11].unkB = i + 0x40;
+        gSpriteEntries[i + 11].unk22 = i + 12;
     }
-    gUnk_03002C30[10].unk22 = 0xFF;
-    gUnk_03002C30[21].unk22 = 0xFF;
+    gSpriteEntries[10].unk22 = 0xFF;
+    gSpriteEntries[21].unk22 = 0xFF;
 
     for (i = 0; i <= 3; i++) {
         sprite_entry_init(i + 22, 0xCC00, 0, i, 1);
-        gUnk_03002C30[i + 22].unk4 = 0x40;
+        gSpriteEntries[i + 22].unk4 = 0x40;
     }
-    gUnk_03002C30[22].unk2 = 0x10;
-    gUnk_03002C30[22].unkB = 8;
-    gUnk_03002C30[23].unk2 = 0xD0;
-    gUnk_03002C30[23].unkB = 8;
-    gUnk_03002C30[24].unk2 = 0x10;
-    gUnk_03002C30[24].unkB = 4;
-    gUnk_03002C30[24].unk4 = 0x30;
-    gUnk_03002C30[25].unk2 = 0xD0;
-    gUnk_03002C30[25].unkB = 6;
+    gSpriteEntries[22].unk2 = 0x10;
+    gSpriteEntries[22].unkB = 8;
+    gSpriteEntries[23].unk2 = 0xD0;
+    gSpriteEntries[23].unkB = 8;
+    gSpriteEntries[24].unk2 = 0x10;
+    gSpriteEntries[24].unkB = 4;
+    gSpriteEntries[24].unk4 = 0x30;
+    gSpriteEntries[25].unk2 = 0xD0;
+    gSpriteEntries[25].unkB = 6;
 
     for (i = 0; i <= 3; i++) {
         sprite_entry_init(i + 26, 0xCC08, 0x513, 0xE, 3);
-        gUnk_03002C30[i + 26].unk2 = gUnk_03002C30[i + 22].unk2;
-        gUnk_03002C30[i + 26].unk4 = 0x40;
+        gSpriteEntries[i + 26].unk2 = gSpriteEntries[i + 22].unk2;
+        gSpriteEntries[i + 26].unk4 = 0x40;
     }
-    gUnk_03002C30[28].unk4 = 0x38;
+    gSpriteEntries[28].unk4 = 0x38;
     gUnk_03001800_s.nextSubState = 6;
     gGameSubState = 4;
 }
@@ -164,41 +164,41 @@ void weekly_show_lecture(void) {
     REG_BLDALPHA = 0x80A;
 
     sprite_entry_init(6, 0xC800, 0x508, 8, 3);
-    gUnk_03002C30[6].unk2 = 0x40;
-    gUnk_03002C30[6].unk4 = 0x42;
-    gUnk_03002C30[6].unkB = 0x24;
+    gSpriteEntries[6].unk2 = 0x40;
+    gSpriteEntries[6].unk4 = 0x42;
+    gSpriteEntries[6].unkB = 0x24;
     sprite_entry_init(7, 0xC800, 0x509, 8, 3);
-    gUnk_03002C30[7].unk2 = 0x38;
-    gUnk_03002C30[7].unk4 = 0x3A;
-    gUnk_03002C30[7].unkB = 0x28;
+    gSpriteEntries[7].unk2 = 0x38;
+    gSpriteEntries[7].unk4 = 0x3A;
+    gSpriteEntries[7].unkB = 0x28;
     sprite_entry_init(8, 0xC800, 0x50A, 8, 3);
-    gUnk_03002C30[8].unk2 = 0x44;
-    gUnk_03002C30[8].unk4 = 0x3A;
-    gUnk_03002C30[8].unkB = 0x1C;
+    gSpriteEntries[8].unk2 = 0x44;
+    gSpriteEntries[8].unk4 = 0x3A;
+    gSpriteEntries[8].unkB = 0x1C;
     sprite_entry_init(9, 0xC800, 0x50B, 8, 3);
-    gUnk_03002C30[9].unk2 = 0x40;
-    gUnk_03002C30[9].unk4 = 0x42;
-    gUnk_03002C30[9].unkB = 0x20;
+    gSpriteEntries[9].unk2 = 0x40;
+    gSpriteEntries[9].unk4 = 0x42;
+    gSpriteEntries[9].unkB = 0x20;
     sprite_entry_init(2, 0xC800, 0x500, 8, 3);
-    gUnk_03002C30[2].unk2 = 0x50;
-    gUnk_03002C30[2].unk4 = -0x30;
-    gUnk_03002C30[2].unkB = 0x25;
+    gSpriteEntries[2].unk2 = 0x50;
+    gSpriteEntries[2].unk4 = -0x30;
+    gSpriteEntries[2].unkB = 0x25;
     sprite_entry_init(1, 0xC800, 0x50C, 1, 3);
-    gUnk_03002C30[1].unk2 = 0x50;
-    gUnk_03002C30[1].unk4 = -0x30;
-    gUnk_03002C30[1].unkB = 0x30;
+    gSpriteEntries[1].unk2 = 0x50;
+    gSpriteEntries[1].unk4 = -0x30;
+    gSpriteEntries[1].unkB = 0x30;
     sprite_entry_init(3, 0xC800, 0x501, 8, 3);
-    gUnk_03002C30[3].unk2 = 0x28;
-    gUnk_03002C30[3].unk4 = -0x30;
-    gUnk_03002C30[3].unkB = 0x29;
+    gSpriteEntries[3].unk2 = 0x28;
+    gSpriteEntries[3].unk4 = -0x30;
+    gSpriteEntries[3].unkB = 0x29;
     sprite_entry_init(4, 0xC800, 0x502, 8, 3);
-    gUnk_03002C30[4].unk2 = 0x54;
-    gUnk_03002C30[4].unk4 = -0x30;
-    gUnk_03002C30[4].unkB = 0x1D;
+    gSpriteEntries[4].unk2 = 0x54;
+    gSpriteEntries[4].unk4 = -0x30;
+    gSpriteEntries[4].unkB = 0x1D;
     sprite_entry_init(5, 0xC800, 0x503, 8, 3);
-    gUnk_03002C30[5].unk2 = 0x50;
-    gUnk_03002C30[5].unk4 = -0x30;
-    gUnk_03002C30[5].unkB = 0x29;
+    gSpriteEntries[5].unk2 = 0x50;
+    gSpriteEntries[5].unk4 = -0x30;
+    gSpriteEntries[5].unkB = 0x29;
 
     gMedabotsWeekly.scrollBg3 = 1;
     gMedabotsWeekly.animTiles = 0;
@@ -217,7 +217,7 @@ void weekly_open_curtains(void) {
 
 // Sub-state 7: once the curtains are open, characters 22 and 23 walk on from both sides.
 void weekly_enter_pair(void) {
-    if (gUnk_03002C30[10].unk22 == 0) {
+    if (gSpriteEntries[10].unk22 == 0) {
         sprite_cycle_anim_start(0x16, 0x2D, 8);
         sprite_cycle_anim_start(0x17, 0x36, 8);
         weekly_set_sprite_effect(5, 0x16, 0x48);
@@ -228,7 +228,7 @@ void weekly_enter_pair(void) {
 
 // Sub-state 8: character 24 jumps on stage.
 void weekly_enter_jumper(void) {
-    if (gUnk_03002C30[22].unk20 == 0) {
+    if (gSpriteEntries[22].unk20 == 0) {
         sprite_cycle_anim_stop(0x16, 0x27);
         sprite_cycle_anim_stop(0x17, 0x33);
         sprite_cycle_anim_start(0x18, 0x45, 8);
@@ -239,7 +239,7 @@ void weekly_enter_jumper(void) {
 
 // Sub-state 9: character 25 walks on.
 void weekly_enter_host(void) {
-    if (gUnk_03002C30[24].unk20 == 0) {
+    if (gSpriteEntries[24].unk20 == 0) {
         sprite_cycle_anim_start(0x18, 0x3F, 0xC);
         sprite_cycle_anim_start(0x19, 0x4E, 8);
         weekly_set_sprite_effect(6, 0x19, 0x60);
@@ -249,7 +249,7 @@ void weekly_enter_host(void) {
 
 // Sub-state 10: waits for character 25 to arrive.
 void weekly_wait_host(void) {
-    if (gUnk_03002C30[25].unk20 == 0) {
+    if (gSpriteEntries[25].unk20 == 0) {
         sprite_cycle_anim_stop(0x19, 0x4B);
         gGameSubState++;
     }
@@ -331,7 +331,7 @@ void weekly_opening_talk(void) {
 void weekly_go_to_lecture(void) {
     u32 zero = 0;
 
-    DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+    DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     gUnk_03001800_s.nextSubState = 0xD;
     gGameSubState = 5;
 }
@@ -378,10 +378,10 @@ void weekly_lecture(void) {
         break;
     case 22:
         sprite_entry_init(0, 0xC800, 0x50F, 0, 3);
-        gUnk_03002C30[0].unk2 = 0x42;
-        gUnk_03002C30[0].unk4 = -8;
-        gUnk_03002C30[0].unkB = 0x40;
-        gUnk_03002C30[0].unk1A = 0;
+        gSpriteEntries[0].unk2 = 0x42;
+        gSpriteEntries[0].unk4 = -8;
+        gSpriteEntries[0].unkB = 0x40;
+        gSpriteEntries[0].unk1A = 0;
         gUnk_03001800_s.timer++;
         break;
     case 3:
@@ -408,37 +408,37 @@ void weekly_back_to_studio(void) {
     s32 i;
     u32 zero_late; // FAKEMATCH: a second zero, loaded late for gUnk_03000430
 
-    DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+    DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     sprite_entry_init(0, 0xCC00, 0x50E, 4, 3);
-    gUnk_03002C30[0].unk2 = 0xD4;
-    gUnk_03002C30[0].unk4 = 0;
-    gUnk_03002C30[0].unkB = 0x4A;
-    gUnk_03002C30[10].unk22 = 0xFF;
+    gSpriteEntries[0].unk2 = 0xD4;
+    gSpriteEntries[0].unk4 = 0;
+    gSpriteEntries[0].unkB = 0x4A;
+    gSpriteEntries[10].unk22 = 0xFF;
     sprite_entry_init(0xB, 0xCC00, 0x50E, 4, 3);
-    gUnk_03002C30[11].unk2 = 0x14;
-    gUnk_03002C30[11].unk4 = 0;
-    gUnk_03002C30[11].unkB = 0x4A;
-    gUnk_03002C30[21].unk22 = 0xFF;
+    gSpriteEntries[11].unk2 = 0x14;
+    gSpriteEntries[11].unk4 = 0;
+    gSpriteEntries[11].unkB = 0x4A;
+    gSpriteEntries[21].unk22 = 0xFF;
     for (i = 0; i < 4; i++) {
         sprite_entry_init(i + 0x16, 0xCC00, (u16)(i * 12 + 0x27), i, 1);
-        gUnk_03002C30[i + 0x16].unk4 = 0x48;
+        gSpriteEntries[i + 0x16].unk4 = 0x48;
     }
-    gUnk_03002C30[0x16].unk2 = 0x58;
-    gUnk_03002C30[0x16].unkB = 8;
-    gUnk_03002C30[0x17].unk2 = 0x88;
-    gUnk_03002C30[0x17].unkB = 8;
-    gUnk_03002C30[0x18].unk2 = 0x70;
-    gUnk_03002C30[0x18].unkB = 0xC;
-    gUnk_03002C30[0x18].unk4 = 0x24;
-    gUnk_03002C30[0x19].unk2 = 0x70;
-    gUnk_03002C30[0x19].unkB = 4;
+    gSpriteEntries[0x16].unk2 = 0x58;
+    gSpriteEntries[0x16].unkB = 8;
+    gSpriteEntries[0x17].unk2 = 0x88;
+    gSpriteEntries[0x17].unkB = 8;
+    gSpriteEntries[0x18].unk2 = 0x70;
+    gSpriteEntries[0x18].unkB = 0xC;
+    gSpriteEntries[0x18].unk4 = 0x24;
+    gSpriteEntries[0x19].unk2 = 0x70;
+    gSpriteEntries[0x19].unkB = 4;
     for (i = 0; i < 4; i++) {
         sprite_entry_init(i + 0x1A, 0xCC08, 0x513, 0xE, 3);
-        gUnk_03002C30[i + 0x1A].unk2 = gUnk_03002C30[i + 0x16].unk2;
-        gUnk_03002C30[i + 0x1A].unk4 = 0x48;
+        gSpriteEntries[i + 0x1A].unk2 = gSpriteEntries[i + 0x16].unk2;
+        gSpriteEntries[i + 0x1A].unk4 = 0x48;
     }
     zero_late = 0;
-    gUnk_03002C30[0x1C].unk4 = 0x38;
+    gSpriteEntries[0x1C].unk4 = 0x38;
     gWeeklyCycleAnimMask = 0;
     sprite_cycle_anim_start(0x18, 0x3F, 0xC);
     gUnk_03000430 = zero_late;
@@ -494,7 +494,7 @@ void weekly_closing_talk(void) {
 
 // Sub-state 16: once the curtains are closed, fades the music out and leaves (sub-state 17).
 void weekly_wait_curtains_closed(void) {
-    if (gUnk_03002C30[10].unk22 == 0) {
+    if (gSpriteEntries[10].unk22 == 0) {
         sound_stop_all_with_fade_guard(0x20);
         gUnk_03001800_s.nextSubState = 0x11;
         gGameSubState = 2;
@@ -513,12 +513,12 @@ void weekly_run_sprite_effects(void) {
     u8 i;
 
     for (i = 0; i < 0x1A; i++) {
-        if (gUnk_03002C30[i].unk20 != 0) {
-            gUnk_03002C30[i].unk1A++;
-            switch (gWeeklySpriteEffects[gUnk_03002C30[i].unk20 - 1](i)) {
+        if (gSpriteEntries[i].unk20 != 0) {
+            gSpriteEntries[i].unk1A++;
+            switch (gWeeklySpriteEffects[gSpriteEntries[i].unk20 - 1](i)) {
             case 0:
-                gUnk_03002C30[i].unk20 = 0;
-                gUnk_03002C30[i].unk21 = 0;
+                gSpriteEntries[i].unk20 = 0;
+                gSpriteEntries[i].unk21 = 0;
                 break;
             case 1:
                 break;
@@ -539,14 +539,14 @@ void sprite_cycle_anim_update(void) {
     memcpy_optimized(frame_offsets, gCycleAnimFrameOffsets, 4);
     for (j = 0, mask = 1; j <= 3; j++, mask <<= 1) {
         if (gWeeklyCycleAnimMask & mask) {
-            s32 phase = gUnk_03002C30[j + 0x16].unk32 % gUnk_03002C30[j + 0x16].unk23;
+            s32 phase = gSpriteEntries[j + 0x16].unk32 % gSpriteEntries[j + 0x16].unk23;
             if (phase == 0) {
-                if (++gUnk_03002C30[j + 0x16].unk21 > 3)
-                    gUnk_03002C30[j + 0x16].unk21 = phase;
-                gUnk_03002C30[j + 0x16].unk6 =
-                    gUnk_03002C30[j + 0x16].unk30 + frame_offsets[gUnk_03002C30[j + 0x16].unk21];
+                if (++gSpriteEntries[j + 0x16].unk21 > 3)
+                    gSpriteEntries[j + 0x16].unk21 = phase;
+                gSpriteEntries[j + 0x16].unk6 =
+                    gSpriteEntries[j + 0x16].unk30 + frame_offsets[gSpriteEntries[j + 0x16].unk21];
             }
-            gUnk_03002C30[j + 0x16].unk32++;
+            gSpriteEntries[j + 0x16].unk32++;
         }
     }
 }
@@ -555,28 +555,28 @@ void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 period) {
     u8 mask = 1 << (sprite - 0x16);
 
     gWeeklyCycleAnimMask |= mask;
-    gUnk_03002C30[sprite].unk23 = period;
-    gUnk_03002C30[sprite].unk30 = frame;
-    gUnk_03002C30[sprite].unk6 = frame;
+    gSpriteEntries[sprite].unk23 = period;
+    gSpriteEntries[sprite].unk30 = frame;
+    gSpriteEntries[sprite].unk6 = frame;
 }
 
 void sprite_cycle_anim_stop(u8 sprite, u16 frame) {
     u8 mask = 1 << (sprite - 0x16);
 
     gWeeklyCycleAnimMask &= ~mask;
-    gUnk_03002C30[sprite].unk23 = 0;
-    gUnk_03002C30[sprite].unk6 = frame;
+    gSpriteEntries[sprite].unk23 = 0;
+    gSpriteEntries[sprite].unk6 = frame;
 }
 
 // Effect 1: a right-curtain strip slides right (gWeeklyCurtainOpenTimes) and starts the next strip (unk22)
 // halfway; deleted off screen.
 u32 weekly_fx_right_curtain_open(u8 sprite) {
     s8 step_times[8];
-    struct Unk_03002C30 *curtain;
-    struct Unk_03002C30 *sprites;
+    struct SpriteEntry *curtain;
+    struct SpriteEntry *sprites;
 
     memcpy_optimized(step_times, gWeeklyCurtainOpenTimes, 8);
-    sprites = gUnk_03002C30;
+    sprites = gSpriteEntries;
     curtain = &sprites[sprite];
     if (curtain->unk21 < 8) {
         if (curtain->unk1A == step_times[curtain->unk21]) {
@@ -586,11 +586,11 @@ u32 weekly_fx_right_curtain_open(u8 sprite) {
     } else {
         curtain->unk2++;
     }
-    if (gUnk_03002C30[sprite].unk21 == 4 && gUnk_03002C30[sprite].unk22 != 0xFF)
-        weekly_set_sprite_effect(1, gUnk_03002C30[sprite].unk22, 0);
-    if (gUnk_03002C30[sprite].unk2 == 0xC9)
-        gUnk_03002C30[sprite].unk0 = (gUnk_03002C30[sprite].unk0 & 0xF7FF) | 0xC00;
-    else if (gUnk_03002C30[sprite].unk2 > 0xCF)
+    if (gSpriteEntries[sprite].unk21 == 4 && gSpriteEntries[sprite].unk22 != 0xFF)
+        weekly_set_sprite_effect(1, gSpriteEntries[sprite].unk22, 0);
+    if (gSpriteEntries[sprite].unk2 == 0xC9)
+        gSpriteEntries[sprite].unk0 = (gSpriteEntries[sprite].unk0 & 0xF7FF) | 0xC00;
+    else if (gSpriteEntries[sprite].unk2 > 0xCF)
         return 0xFF;
     return 1;
 }
@@ -598,11 +598,11 @@ u32 weekly_fx_right_curtain_open(u8 sprite) {
 // Effect 2: the same for a left-curtain strip, sliding left.
 u32 weekly_fx_left_curtain_open(u8 sprite) {
     s8 step_times[8];
-    struct Unk_03002C30 *curtain;
-    struct Unk_03002C30 *sprites;
+    struct SpriteEntry *curtain;
+    struct SpriteEntry *sprites;
 
     memcpy_optimized(step_times, gWeeklyCurtainOpenTimes, 8);
-    sprites = gUnk_03002C30;
+    sprites = gSpriteEntries;
     curtain = &sprites[sprite];
     if (curtain->unk21 < 8) {
         if (curtain->unk1A == step_times[curtain->unk21]) {
@@ -612,11 +612,11 @@ u32 weekly_fx_left_curtain_open(u8 sprite) {
     } else {
         curtain->unk2--;
     }
-    if (gUnk_03002C30[sprite].unk21 == 4 && gUnk_03002C30[sprite].unk22 != 0xFF)
-        weekly_set_sprite_effect(2, gUnk_03002C30[sprite].unk22, 0);
-    if (gUnk_03002C30[sprite].unk2 == 0x1F)
-        gUnk_03002C30[sprite].unk0 = (gUnk_03002C30[sprite].unk0 & 0xF7FF) | 0xC00;
-    else if (gUnk_03002C30[sprite].unk2 < 0x19)
+    if (gSpriteEntries[sprite].unk21 == 4 && gSpriteEntries[sprite].unk22 != 0xFF)
+        weekly_set_sprite_effect(2, gSpriteEntries[sprite].unk22, 0);
+    if (gSpriteEntries[sprite].unk2 == 0x1F)
+        gSpriteEntries[sprite].unk0 = (gSpriteEntries[sprite].unk0 & 0xF7FF) | 0xC00;
+    else if (gSpriteEntries[sprite].unk2 < 0x19)
         return 0xFF;
     return 1;
 }
@@ -624,13 +624,13 @@ u32 weekly_fx_left_curtain_open(u8 sprite) {
 // Effect 3: a right-curtain strip slides left (gWeeklyCurtainCloseTimes), creating the next strip on the way.
 u32 weekly_fx_right_curtain_close(u8 sprite) {
     s8 step_times[12];
-    struct Unk_03002C30 *sprites;
-    struct Unk_03002C30 *curtain;
-    struct Unk_03002C30 *entries;
+    struct SpriteEntry *sprites;
+    struct SpriteEntry *curtain;
+    struct SpriteEntry *entries;
     u32 next;
 
     memcpy_optimized(step_times, gWeeklyCurtainCloseTimes, 12);
-    sprites = gUnk_03002C30;
+    sprites = gSpriteEntries;
     curtain = &sprites[sprite];
     if (curtain->unk21 <= 11) {
         if (curtain->unk1A == step_times[curtain->unk21]) {
@@ -643,7 +643,7 @@ u32 weekly_fx_right_curtain_close(u8 sprite) {
                     next = sprite + 1;
                     ((void (*)())sprite_entry_init)(next, 0xC800, 0x50E, 4, 3);
                 }
-                entries = gUnk_03002C30;
+                entries = gSpriteEntries;
                 entries[next].unk2 = entries[sprite].unk2;
                 entries[next].unk4 = 0;
                 entries[next].unkB = entries[sprite].unkB - 1;
@@ -665,13 +665,13 @@ u32 weekly_fx_right_curtain_close(u8 sprite) {
 // Effect 4: the same for the left curtain, sliding right.
 u32 weekly_fx_left_curtain_close(u8 sprite) {
     s8 step_times[12];
-    struct Unk_03002C30 *sprites;
-    struct Unk_03002C30 *curtain;
-    struct Unk_03002C30 *entries;
+    struct SpriteEntry *sprites;
+    struct SpriteEntry *curtain;
+    struct SpriteEntry *entries;
     u32 next;
 
     memcpy_optimized(step_times, gWeeklyCurtainCloseTimes, 12);
-    sprites = gUnk_03002C30;
+    sprites = gSpriteEntries;
     curtain = &sprites[sprite];
     if (curtain->unk21 <= 11) {
         if (curtain->unk1A == step_times[curtain->unk21]) {
@@ -684,7 +684,7 @@ u32 weekly_fx_left_curtain_close(u8 sprite) {
                     next = sprite + 1;
                     ((void (*)())sprite_entry_init)(next, 0xC800, 0x50E, 4, 3);
                 }
-                entries = gUnk_03002C30;
+                entries = gSpriteEntries;
                 entries[next].unk2 = entries[sprite].unk2;
                 entries[next].unk4 = 0;
                 entries[next].unkB = entries[sprite].unkB - 1;
@@ -705,8 +705,8 @@ u32 weekly_fx_left_curtain_close(u8 sprite) {
 
 // Effect 5: walks right (with the shadow, sprite + 4) for `duration` frames, then steps down (effect 8).
 u32 weekly_fx_walk_right(u8 sprite) {
-    struct Unk_03002C30 *sprites = gUnk_03002C30;
-    struct Unk_03002C30 *actor = &sprites[sprite];
+    struct SpriteEntry *sprites = gSpriteEntries;
+    struct SpriteEntry *actor = &sprites[sprite];
     u16 frame;
 
     actor->unk2++;
@@ -722,8 +722,8 @@ u32 weekly_fx_walk_right(u8 sprite) {
 
 // Effect 6: the same, walking left.
 u32 weekly_fx_walk_left(u8 sprite) {
-    struct Unk_03002C30 *sprites = gUnk_03002C30;
-    struct Unk_03002C30 *actor = &sprites[sprite];
+    struct SpriteEntry *sprites = gSpriteEntries;
+    struct SpriteEntry *actor = &sprites[sprite];
     u16 frame;
 
     actor->unk2--;
@@ -739,8 +739,8 @@ u32 weekly_fx_walk_left(u8 sprite) {
 
 // Effect 7: moves right on a sine arc (with the shadow) for `duration` frames.
 u32 weekly_fx_jump_in(u8 sprite) {
-    struct Unk_03002C30 *sprites = gUnk_03002C30;
-    struct Unk_03002C30 *actor = &sprites[sprite];
+    struct SpriteEntry *sprites = gSpriteEntries;
+    struct SpriteEntry *actor = &sprites[sprite];
 
     actor->unk2++;
     sprites[(u16)(sprite + 4)].unk2 = actor->unk2;
@@ -756,8 +756,8 @@ u32 weekly_fx_jump_in(u8 sprite) {
 
 // Effect 8: moves down 8 lines (with the shadow).
 u32 weekly_fx_step_down(u8 sprite) {
-    struct Unk_03002C30 *sprites = gUnk_03002C30;
-    struct Unk_03002C30 *actor = &sprites[sprite];
+    struct SpriteEntry *sprites = gSpriteEntries;
+    struct SpriteEntry *actor = &sprites[sprite];
 
     actor->unk4++;
     sprites[(u16)(sprite + 4)].unk4++;
@@ -767,8 +767,8 @@ u32 weekly_fx_step_down(u8 sprite) {
 }
 
 void weekly_set_sprite_effect(u8 effect, u8 sprite, u16 duration) {
-    struct Unk_03002C30 *sprites = gUnk_03002C30;
-    struct Unk_03002C30 *entry = &sprites[sprite];
+    struct SpriteEntry *sprites = gSpriteEntries;
+    struct SpriteEntry *entry = &sprites[sprite];
 
     entry->unk20 = effect;
     entry->unk21 = 0;
@@ -789,7 +789,7 @@ u32 weekly_lecture_skip_step(void) {
 
 // Lecture step 0: the new head (sprite 2, with sprite 1) drops, slides onto the body and replaces sprite 6.
 u32 weekly_lecture_attach_head(void) {
-    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    struct SpriteEntry *sprites = gSpriteEntries;
 
     if (sprites[2].unk4 <= 0x3D)
         sprites[1].unk4 = sprites[2].unk4 += 2;
@@ -810,7 +810,7 @@ u32 weekly_lecture_attach_head(void) {
 
 // Lecture step 1: an arm (sprite 3) drops and slides right onto the body, replacing sprite 7.
 u32 weekly_lecture_attach_arm_from_left(void) {
-    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    struct SpriteEntry *sprites = gSpriteEntries;
     s16 *y = &sprites[3].unk4;
     u16 *wait;
     s16 *x;
@@ -834,7 +834,7 @@ u32 weekly_lecture_attach_arm_from_left(void) {
 
 // Lecture step 2: an arm (sprite 4) drops and slides left onto the body, replacing sprite 8.
 u32 weekly_lecture_attach_arm_from_right(void) {
-    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    struct SpriteEntry *sprites = gSpriteEntries;
     s16 *y = &sprites[4].unk4;
     u16 *wait;
     s16 *x;
@@ -858,7 +858,7 @@ u32 weekly_lecture_attach_arm_from_right(void) {
 
 // Lecture step 3: the legs (sprite 5) drop and slide left, replacing sprite 9.
 u32 weekly_lecture_attach_legs(void) {
-    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    struct SpriteEntry *sprites = gSpriteEntries;
     s16 *y = &sprites[5].unk4;
     u16 *wait;
     s16 *x;
@@ -889,12 +889,12 @@ u32 weekly_lecture_attach_legs(void) {
 // Lecture step 5 ("the finishing touch"): the Medal (sprite 0) falls into the Medabot; backs up the OBJ
 // palettes for the flash.
 u32 weekly_lecture_drop_medal(void) {
-    if (gUnk_03002C30[0].unk1A++ & 1) {
-        if (++gUnk_03002C30[0].unk4 == 0)
+    if (gSpriteEntries[0].unk1A++ & 1) {
+        if (++gSpriteEntries[0].unk4 == 0)
             play_sound_effect(0x59);
     }
-    gUnk_03002C30[0].unk6 = ((gUnk_03002C30[0].unk1A >> 2) & 3) + 0x50F;
-    if (gUnk_03002C30[0].unk4 > 0x3F) {
+    gSpriteEntries[0].unk6 = ((gSpriteEntries[0].unk1A >> 2) & 3) + 0x50F;
+    if (gSpriteEntries[0].unk4 > 0x3F) {
         play_sound_effect(7);
         gWeeklyFlashPalette = gPaletteBackupBg;
         gUnk_03001800_s.unk10.lecture.step = 0;
@@ -938,7 +938,7 @@ u32 weekly_lecture_flash(void) {
 
 // Lecture step 7: sprite 1 blinks, then the finished Medabot is drawn from its parts.
 u32 weekly_lecture_show_medabot(void) {
-    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    struct SpriteEntry *sprites = gSpriteEntries;
     vu32 fill;
 
     if (sprites[1].unk1A & 4)
@@ -971,7 +971,7 @@ u32 weekly_lecture_start_pose(void) {
 
 // Lecture step 9: runs the action animation with its sound script (gWeeklyLectureSfxScript).
 u32 weekly_lecture_run_pose(void) {
-    struct Unk_03002C30 *sprites;
+    struct SpriteEntry *sprites;
     u8 script[13];
     vu32 fill;
     register u32 zero asm("r5"); // FAKEMATCH: pinned; the original keeps a second zero (r2) for the arguments
@@ -979,7 +979,7 @@ u32 weekly_lecture_run_pose(void) {
     s16 *head_y;
 
     memcpy_optimized(script, gWeeklyLectureSfxScript, 13);
-    sprites = gUnk_03002C30;
+    sprites = gSpriteEntries;
     head_y = &sprites[2].unk4;
     zero = 0;
     none = 0;

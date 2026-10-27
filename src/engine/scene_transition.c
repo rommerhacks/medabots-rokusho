@@ -33,7 +33,7 @@ void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c) {
             tiles[i] = 0x11;
         DmaSet(3, tiles, 0x0600FF80, 0x80000040);
         for (i = 0; i < 0x280; i++)
-            map[i] = (gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] % 4) + 0xF1FC;
+            map[i] = (gRandomBytes[(gFrameCounter + i) & 0xFF] % 4) + 0xF1FC;
         DmaSet(3, map, 0x0600F800, 0x84000140);
         DmaSet(3, &gUnk_03000028, 0x050001E2, 0x80000001);
         REG_BG0CNT = 0x1F0C;
@@ -46,7 +46,7 @@ void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c) {
             gUnk_03000008[i * 4 + 3] = (i + 0x1FC) * 0x20 + 0x12;
         }
         for (i = 0; i < 15; i++) {
-            int j = gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] % (16 - i) + i;
+            int j = gRandomBytes[(gFrameCounter + i) & 0xFF] % (16 - i) + i;
             u16 tmp = gUnk_03000008[i];
             gUnk_03000008[i] = gUnk_03000008[j];
             gUnk_03000008[j] = tmp;
@@ -85,7 +85,7 @@ void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c) {
             tiles[i] = 0x11;
         DmaSet(3, tiles, 0x0600FF80, 0x80000040);
         for (i = 0; i < 0x280; i++)
-            map[i] = (gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] % 4) + 0xF1FC;
+            map[i] = (gRandomBytes[(gFrameCounter + i) & 0xFF] % 4) + 0xF1FC;
         DmaSet(3, map, 0x0600F800, 0x84000140);
         DmaSet(3, &gUnk_03000028, 0x050001E2, 0x80000001);
         REG_BG0CNT = 0x1F0C;
@@ -97,7 +97,7 @@ void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c) {
             gUnk_03000008[i * 4 + 3] = (i + 0x1FC) * 0x20 + 0x12;
         }
         for (i = 0; i < 15; i++) {
-            int j = gUnk_083F7FF4[(gFrameCounter + i) & 0xFF] % (16 - i) + i;
+            int j = gRandomBytes[(gFrameCounter + i) & 0xFF] % (16 - i) + i;
             u16 tmp = gUnk_03000008[i];
             gUnk_03000008[i] = gUnk_03000008[j];
             gUnk_03000008[j] = tmp;

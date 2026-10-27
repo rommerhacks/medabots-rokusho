@@ -11,8 +11,8 @@ static void field_clear_ram(void) {
     memzero_bytes((u8 *)&gUnk_030057DC, 4);
     memzero_bytes((u8 *)&gUnk_0300534C, 4);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
-    memzero_bytes((u8 *)gUnk_03006D40, 0x200);
-    memzero_bytes((u8 *)&gUnk_03006F40, 0x34);
+    memzero_bytes((u8 *)gAffineParams, 0x200);
+    memzero_bytes((u8 *)&gBlendEffect, 0x34);
     memzero_bytes((u8 *)&gUnk_03006D38, 8);
     memzero_bytes((u8 *)&gUnk_03006D20, 0x10);
     memzero_bytes((u8 *)&gUnk_030057D8, 4);

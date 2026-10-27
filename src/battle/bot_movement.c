@@ -131,27 +131,27 @@ void battle_bot_move(u32 rec) {
     gUnk_03000590[rec].unkD7 %= 16;
     if (rec <= 2) {
         if (!(gUnk_03000590[rec].unkBD & 4)) {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].unkDA > 0x68)
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 = 0x68;
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].unkDA > 0x68)
+                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x68;
             else
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].unkDA;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].unkDA;
         } else {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].unkDA < 0x28)
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 = 0x28;
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].unkDA < 0x28)
+                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x28;
             else
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].unkDA;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].unkDA;
         }
     } else {
         if (!(gUnk_03000590[rec].unkBD & 4)) {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].unkDA < 0x88)
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 = 0x88;
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].unkDA < 0x88)
+                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x88;
             else
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].unkDA;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].unkDA;
         } else {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].unkDA > 0xC8)
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 = 0xC8;
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].unkDA > 0xC8)
+                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0xC8;
             else
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].unkDA;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].unkDA;
         }
     }
 }
@@ -164,39 +164,39 @@ u32 sub_08019440(u32 rec) {
     gUnk_03000590[rec].unkD7 %= 16;
     if (rec <= 2) {
         if (gUnk_03000590[rec].unkBD & 4) {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].unkDA > 0x68) {
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 = 0x68;
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].unkDA > 0x68) {
+                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x68;
                 done = 1;
             } else
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].unkDA;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].unkDA;
         } else {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].unkDA < 0x28) {
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 = 0x28;
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].unkDA < 0x28) {
+                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x28;
                 done = 1;
             } else
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].unkDA;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].unkDA;
         }
     } else {
         if (gUnk_03000590[rec].unkBD & 4) {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].unkDA < 0x88) {
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 = 0x88;
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].unkDA < 0x88) {
+                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x88;
                 done = 1;
             } else
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].unkDA;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].unkDA;
         } else {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].unkDA > 0xC8) {
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 = 0xC8;
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].unkDA > 0xC8) {
+                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0xC8;
                 done = 1;
             } else
-                gUnk_03002C30[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].unkDA;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].unkDA;
         }
     }
     return done;
 }
 
 void sub_08019544(u32 rec) {
-    if (gUnk_03002C30[rec * 4 + 0x5B].unk0 & 0x200) {
-        gUnk_03002C30[rec * 4 + 0x5D].unk24 = ((s32)(0x20 - gUnk_03000590[rec].unkBB) >> 1) + 1;
+    if (gSpriteEntries[rec * 4 + 0x5B].unk0 & 0x200) {
+        gSpriteEntries[rec * 4 + 0x5D].unk24 = ((s32)(0x20 - gUnk_03000590[rec].unkBB) >> 1) + 1;
         update_battle_sprite_orbiting_positions(rec * 4 + 0x5A, rec, bot_sprite_is_flipped(rec));
     } else {
         battle_sprite_set_palette_index(rec * 4 + 0x5A, ((s32)(0x20 - gUnk_03000590[rec].unkBB) >> 1) + 1);

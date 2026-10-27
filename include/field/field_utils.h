@@ -6,7 +6,7 @@
 s32 truncate_to_digit_count(s32 n, u8 k);
 s16 divide_by_65536(s16 a);
 s32 count_decimal_digits(s32 n); // number of decimal digits of n (1 for 0); was safe_divide_one
-s16 sub_08048B24(s16 a, s16 b);
+s16 fixed_point_multiply(s16 a, s16 b);
 u32 sub_08048914(u32 a);
 void sub_08048B6C(void);
 void copy_tilemap_with_offset_08048CA4(const void *src, void *dst, s32 a, s32 b, s32 c, s32 d, s32 e);

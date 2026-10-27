@@ -97,10 +97,10 @@ void setup_battle_bot_sprite_group(u32 rec, u32 x, u32 y) {
     flip = bot_sprite_is_flipped(rec);
     setup_battle_sprite_group(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip, gUnk_03001800.unk39[3] + 2,
                               rec * 4 + 0x5A);
-    gUnk_03002C30[rec * 4 + 0x5B].unk0 &= 0xFDFF;
-    gUnk_03002C30[rec * 4 + 0x5C].unk0 &= 0xFDFF;
-    gUnk_03002C30[rec * 4 + 0x5B].unk18 = 0;
-    gUnk_03002C30[rec * 4 + 0x5C].unk18 = 0;
+    gSpriteEntries[rec * 4 + 0x5B].unk0 &= 0xFDFF;
+    gSpriteEntries[rec * 4 + 0x5C].unk0 &= 0xFDFF;
+    gSpriteEntries[rec * 4 + 0x5B].unk18 = 0;
+    gSpriteEntries[rec * 4 + 0x5C].unk18 = 0;
 }
 
 void load_battle_bg_layers(void) {

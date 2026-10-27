@@ -12,7 +12,7 @@ void check_flag_and_fast_copy(void) {
     struct ObjSortEntry sorted[128];
     s32 zero;
     s32 x, y;
-    struct Unk_03002C30 *obj;
+    struct SpriteEntry *obj;
     s32 i, count, j, oamIdx, affIdx, dbl, affBits;
     s32 px, py, w, h;
     struct SpriteFrame *const *frameSet;
@@ -25,7 +25,7 @@ void check_flag_and_fast_copy(void) {
     }
     zero = 0;
     CpuFastSet(&zero, sorted, 0x01000040);
-    obj = gUnk_03002C30;
+    obj = gSpriteEntries;
     count = 0;
     for (i = 0; i < 128; i++, obj++) {
         if (obj->unk0 & 0x8000) {
@@ -45,7 +45,7 @@ void check_flag_and_fast_copy(void) {
         affIdx = 0;
     oamIdx = 0;
     for (i = 0; i < count; i++) {
-        obj = &gUnk_03002C30[sorted[i].idx];
+        obj = &gSpriteEntries[sorted[i].idx];
         gUnk_03005048 = -1;
         switch (obj->unk0 & 0xC0) {
         case 0x80:

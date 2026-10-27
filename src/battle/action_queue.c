@@ -42,10 +42,10 @@ u32 battle_bot_at_front_line(u32 rec, u32 peek) {
 
     if (!(gUnk_03000590[rec].unkBD & 4)) {
         if (rec <= 2) {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 == 0x68)
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 == 0x68)
                 reached = 1;
         } else {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 == 0x88)
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 == 0x88)
                 reached = 1;
         }
         if (peek == 0 && reached)
@@ -59,10 +59,10 @@ u32 battle_bot_at_home_line(u32 rec, u32 peek) {
 
     if (gUnk_03000590[rec].unkBD & 4) {
         if (rec <= 2) {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 == 0x28)
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 == 0x28)
                 reached = 1;
         } else {
-            if (gUnk_03002C30[rec * 4 + 0x5D].unk2 == 0xC8)
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 == 0xC8)
                 reached = 1;
         }
         if (peek == 0 && reached)
@@ -91,7 +91,7 @@ void iterate_bots_setup_battle_sprites(void) {
 
     for (i = 0; i <= 5; i++) {
         if (gUnk_03000590[i].unk40)
-            setup_battle_bot_sprite_group(i, gUnk_03002C30[0x5D + i * 4].unk2, gUnk_03002C30[0x5D + i * 4].unk4 - 4);
+            setup_battle_bot_sprite_group(i, gSpriteEntries[0x5D + i * 4].unk2, gSpriteEntries[0x5D + i * 4].unk4 - 4);
     }
 }
 
@@ -110,31 +110,31 @@ void battle_number_popup_init(u8 *buf, u32 rec) {
 
     for (i = 0; i <= 2; i++) {
         if (buf[i] == 0xFE) {
-            gUnk_03002C30[rec * 4 + 10 + i].unk21 = 0xFF;
+            gSpriteEntries[rec * 4 + 10 + i].unk21 = 0xFF;
             return;
         }
-        gUnk_03002C30[rec * 4 + 10 + i].unk0 = 0xC224;
-        gUnk_03002C30[rec * 4 + 10 + i].unk1C = 0;
-        gUnk_03002C30[rec * 4 + 10 + i].unk4 = gUnk_03002C30[rec * 4 + 0x5D].unk4 + 4;
-        gUnk_03002C30[rec * 4 + 10 + i].unkB = 0x90;
-        gUnk_03002C30[rec * 4 + 10 + i].unk6 = buf[i] + 0x800;
-        gUnk_03002C30[rec * 4 + 10 + i].unk20 = i * 4;
-        gUnk_03002C30[rec * 4 + 10 + i].unk21 = 0;
-        gUnk_03002C30[rec * 4 + 10 + i].unk9 = 0x40;
-        gUnk_03002C30[rec * 4 + 10 + i].unk8 = 0x40;
-        gUnk_03002C30[rec * 4 + 10 + i].unkA = buf[0] + 1;
+        gSpriteEntries[rec * 4 + 10 + i].unk0 = 0xC224;
+        gSpriteEntries[rec * 4 + 10 + i].unk1C = 0;
+        gSpriteEntries[rec * 4 + 10 + i].unk4 = gSpriteEntries[rec * 4 + 0x5D].unk4 + 4;
+        gSpriteEntries[rec * 4 + 10 + i].unkB = 0x90;
+        gSpriteEntries[rec * 4 + 10 + i].unk6 = buf[i] + 0x800;
+        gSpriteEntries[rec * 4 + 10 + i].unk20 = i * 4;
+        gSpriteEntries[rec * 4 + 10 + i].unk21 = 0;
+        gSpriteEntries[rec * 4 + 10 + i].unk9 = 0x40;
+        gSpriteEntries[rec * 4 + 10 + i].unk8 = 0x40;
+        gSpriteEntries[rec * 4 + 10 + i].unkA = buf[0] + 1;
         switch (buf[6]) {
         case 1:
-            gUnk_03002C30[rec * 4 + 10 + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 + i * 8;
+            gSpriteEntries[rec * 4 + 10 + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 + i * 8;
             break;
         case 2:
-            gUnk_03002C30[rec * 4 + 10 + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 - 4 + i * 8;
+            gSpriteEntries[rec * 4 + 10 + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 - 4 + i * 8;
             break;
         case 3:
-            gUnk_03002C30[rec * 4 + 10 + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 - 8 + i * 8;
+            gSpriteEntries[rec * 4 + 10 + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 - 8 + i * 8;
             break;
         case 4:
-            gUnk_03002C30[rec * 4 + 10 + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 - 12 + i * 8;
+            gSpriteEntries[rec * 4 + 10 + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 - 12 + i * 8;
             break;
         }
     }
@@ -144,15 +144,15 @@ void battle_number_popup_update(u32 rec) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03002C30[rec * 4 + 10 + i].unk21 == 0xFF)
+        if (gSpriteEntries[rec * 4 + 10 + i].unk21 == 0xFF)
             return;
-        if (gUnk_03002C30[rec * 4 + 10 + i].unk21 <= 0x1F) {
-            if (gUnk_03002C30[rec * 4 + 10 + i].unk20 == 0) {
-                gUnk_03002C30[rec * 4 + 10 + i].unk4 += gUnk_083AD3B3[gUnk_03002C30[rec * 4 + 10 + i].unk21];
-                gUnk_03002C30[rec * 4 + 10 + i].unk9 += 2;
-                gUnk_03002C30[rec * 4 + 10 + i].unk21++;
+        if (gSpriteEntries[rec * 4 + 10 + i].unk21 <= 0x1F) {
+            if (gSpriteEntries[rec * 4 + 10 + i].unk20 == 0) {
+                gSpriteEntries[rec * 4 + 10 + i].unk4 += gUnk_083AD3B3[gSpriteEntries[rec * 4 + 10 + i].unk21];
+                gSpriteEntries[rec * 4 + 10 + i].unk9 += 2;
+                gSpriteEntries[rec * 4 + 10 + i].unk21++;
             } else
-                gUnk_03002C30[rec * 4 + 10 + i].unk20--;
+                gSpriteEntries[rec * 4 + 10 + i].unk20--;
         }
     }
 }
@@ -207,28 +207,28 @@ void battle_number_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
     for (i = 0; i <= 4; i++) {
         if (buf[i] == 0xFE)
             return;
-        gUnk_03002C30[rec * 4 + slot + i].unk0 = 0xC224;
-        gUnk_03002C30[rec * 4 + slot + i].unk1C = 0;
-        gUnk_03002C30[rec * 4 + slot + i].unk4 = gUnk_03002C30[rec * 4 + 0x5D].unk4 + 4;
-        gUnk_03002C30[rec * 4 + slot + i].unkB = 0x90;
-        gUnk_03002C30[rec * 4 + slot + i].unk6 = buf[i] + 0x800;
-        gUnk_03002C30[rec * 4 + slot + i].unk20 = i * 4;
-        gUnk_03002C30[rec * 4 + slot + i].unk21 = 0;
-        gUnk_03002C30[rec * 4 + slot + i].unk9 = 0x40;
-        gUnk_03002C30[rec * 4 + slot + i].unk8 = 0x40;
-        gUnk_03002C30[rec * 4 + slot + i].unkA = buf[0] + 1;
+        gSpriteEntries[rec * 4 + slot + i].unk0 = 0xC224;
+        gSpriteEntries[rec * 4 + slot + i].unk1C = 0;
+        gSpriteEntries[rec * 4 + slot + i].unk4 = gSpriteEntries[rec * 4 + 0x5D].unk4 + 4;
+        gSpriteEntries[rec * 4 + slot + i].unkB = 0x90;
+        gSpriteEntries[rec * 4 + slot + i].unk6 = buf[i] + 0x800;
+        gSpriteEntries[rec * 4 + slot + i].unk20 = i * 4;
+        gSpriteEntries[rec * 4 + slot + i].unk21 = 0;
+        gSpriteEntries[rec * 4 + slot + i].unk9 = 0x40;
+        gSpriteEntries[rec * 4 + slot + i].unk8 = 0x40;
+        gSpriteEntries[rec * 4 + slot + i].unkA = buf[0] + 1;
         switch (buf[6]) {
         case 1:
-            gUnk_03002C30[rec * 4 + slot + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 + i * 8;
             break;
         case 2:
-            gUnk_03002C30[rec * 4 + slot + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 - 4 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 - 4 + i * 8;
             break;
         case 3:
-            gUnk_03002C30[rec * 4 + slot + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 - 8 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 - 8 + i * 8;
             break;
         case 4:
-            gUnk_03002C30[rec * 4 + slot + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 - 12 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 - 12 + i * 8;
             break;
         }
     }
@@ -240,28 +240,28 @@ void battle_text_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
     for (i = 0; i <= 4; i++) {
         if (buf[i] == 0xFE)
             return;
-        gUnk_03002C30[rec * 4 + slot + i].unk0 = 0xC224;
-        gUnk_03002C30[rec * 4 + slot + i].unk1C = 0;
-        gUnk_03002C30[rec * 4 + slot + i].unk4 = gUnk_03002C30[rec * 4 + 0x5D].unk4 + 4;
-        gUnk_03002C30[rec * 4 + slot + i].unkB = 0x90;
-        gUnk_03002C30[rec * 4 + slot + i].unk6 = buf[i] + 0x5100;
-        gUnk_03002C30[rec * 4 + slot + i].unk20 = i * 4;
-        gUnk_03002C30[rec * 4 + slot + i].unk21 = 0;
-        gUnk_03002C30[rec * 4 + slot + i].unk9 = 0x40;
-        gUnk_03002C30[rec * 4 + slot + i].unk8 = 0x40;
-        gUnk_03002C30[rec * 4 + slot + i].unkA = 0xC;
+        gSpriteEntries[rec * 4 + slot + i].unk0 = 0xC224;
+        gSpriteEntries[rec * 4 + slot + i].unk1C = 0;
+        gSpriteEntries[rec * 4 + slot + i].unk4 = gSpriteEntries[rec * 4 + 0x5D].unk4 + 4;
+        gSpriteEntries[rec * 4 + slot + i].unkB = 0x90;
+        gSpriteEntries[rec * 4 + slot + i].unk6 = buf[i] + 0x5100;
+        gSpriteEntries[rec * 4 + slot + i].unk20 = i * 4;
+        gSpriteEntries[rec * 4 + slot + i].unk21 = 0;
+        gSpriteEntries[rec * 4 + slot + i].unk9 = 0x40;
+        gSpriteEntries[rec * 4 + slot + i].unk8 = 0x40;
+        gSpriteEntries[rec * 4 + slot + i].unkA = 0xC;
         switch (buf[6]) {
         case 1:
-            gUnk_03002C30[rec * 4 + slot + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 + i * 8;
             break;
         case 2:
-            gUnk_03002C30[rec * 4 + slot + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 - 4 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 - 4 + i * 8;
             break;
         case 3:
-            gUnk_03002C30[rec * 4 + slot + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 - 8 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 - 8 + i * 8;
             break;
         case 4:
-            gUnk_03002C30[rec * 4 + slot + i].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 - 12 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 - 12 + i * 8;
             break;
         }
     }
@@ -273,17 +273,17 @@ void battle_text_popup_init_at(u8 *buf, u32 rec, u32 slot, u32 x, u32 y) {
     for (i = 0; i <= 4; i++) {
         if (buf[i] == 0xFE)
             return;
-        gUnk_03002C30[slot + rec * 4 + i].unk0 = 0xC224;
-        gUnk_03002C30[slot + rec * 4 + i].unk1C = 0;
-        gUnk_03002C30[slot + rec * 4 + i].unk4 = y;
-        gUnk_03002C30[slot + rec * 4 + i].unk2 = x + i * 8;
-        gUnk_03002C30[slot + rec * 4 + i].unkB = 0x90;
-        gUnk_03002C30[slot + rec * 4 + i].unk6 = buf[i] + 0x5100;
-        gUnk_03002C30[slot + rec * 4 + i].unk20 = i * 4;
-        gUnk_03002C30[slot + rec * 4 + i].unk21 = 0;
-        gUnk_03002C30[slot + rec * 4 + i].unk9 = 0x40;
-        gUnk_03002C30[slot + rec * 4 + i].unk8 = 0x40;
-        gUnk_03002C30[slot + rec * 4 + i].unkA = 0xC;
+        gSpriteEntries[slot + rec * 4 + i].unk0 = 0xC224;
+        gSpriteEntries[slot + rec * 4 + i].unk1C = 0;
+        gSpriteEntries[slot + rec * 4 + i].unk4 = y;
+        gSpriteEntries[slot + rec * 4 + i].unk2 = x + i * 8;
+        gSpriteEntries[slot + rec * 4 + i].unkB = 0x90;
+        gSpriteEntries[slot + rec * 4 + i].unk6 = buf[i] + 0x5100;
+        gSpriteEntries[slot + rec * 4 + i].unk20 = i * 4;
+        gSpriteEntries[slot + rec * 4 + i].unk21 = 0;
+        gSpriteEntries[slot + rec * 4 + i].unk9 = 0x40;
+        gSpriteEntries[slot + rec * 4 + i].unk8 = 0x40;
+        gSpriteEntries[slot + rec * 4 + i].unkA = 0xC;
     }
 }
 
@@ -293,13 +293,13 @@ void battle_popup_update_slot(u8 *buf, u32 rec, u32 slot) {
     for (i = 0; i <= 4; i++) {
         if (buf[i] == 0xFE)
             return;
-        if (gUnk_03002C30[slot + rec * 4 + i].unk21 <= 0x1F) {
-            if (gUnk_03002C30[slot + rec * 4 + i].unk20 == 0) {
-                gUnk_03002C30[slot + rec * 4 + i].unk4 += gUnk_083AD3B3[gUnk_03002C30[slot + rec * 4 + i].unk21];
-                gUnk_03002C30[slot + rec * 4 + i].unk9 += 2;
-                gUnk_03002C30[slot + rec * 4 + i].unk21++;
+        if (gSpriteEntries[slot + rec * 4 + i].unk21 <= 0x1F) {
+            if (gSpriteEntries[slot + rec * 4 + i].unk20 == 0) {
+                gSpriteEntries[slot + rec * 4 + i].unk4 += gUnk_083AD3B3[gSpriteEntries[slot + rec * 4 + i].unk21];
+                gSpriteEntries[slot + rec * 4 + i].unk9 += 2;
+                gSpriteEntries[slot + rec * 4 + i].unk21++;
             } else
-                gUnk_03002C30[slot + rec * 4 + i].unk20--;
+                gSpriteEntries[slot + rec * 4 + i].unk20--;
         }
     }
 }

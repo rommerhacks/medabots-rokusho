@@ -3,7 +3,7 @@
 #include "global.h"
 
 void sub_0805E170(u16 a) {
-    gUnk_03002C30[20].unk6 = gUnk_080AF808[a & 3];
+    gSpriteEntries[20].unk6 = gUnk_080AF808[a & 3];
 }
 
 static s32 calc_text_pixel_width(const u8 *s) {
@@ -115,21 +115,21 @@ void name_entry_init_graphics(void) {
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
     for (i = 0; i < 2; i++) {
-        gUnk_03002C30[i].unk0 = 0xC000;
-        gUnk_03002C30[i].unk1C = 2;
-        gUnk_03002C30[i].unkA = 0xE;
-        gUnk_03002C30[i].unk6 = 8;
+        gSpriteEntries[i].unk0 = 0xC000;
+        gSpriteEntries[i].unk1C = 2;
+        gSpriteEntries[i].unkA = 0xE;
+        gSpriteEntries[i].unk6 = 8;
     }
 
-    gUnk_03002C30[0].unk0 |= 0x2000;
-    gUnk_03002C30[20].unk0 = 0x8000;
-    gUnk_03002C30[20].unk1C = 2;
-    gUnk_03002C30[20].unk2 = 0x10;
-    gUnk_03002C30[20].unk4 = 0x10;
-    gUnk_03002C30[20].unkA = 0;
-    gUnk_03002C30[20].unk6 = 0x23;
+    gSpriteEntries[0].unk0 |= 0x2000;
+    gSpriteEntries[20].unk0 = 0x8000;
+    gSpriteEntries[20].unk1C = 2;
+    gSpriteEntries[20].unk2 = 0x10;
+    gSpriteEntries[20].unk4 = 0x10;
+    gSpriteEntries[20].unkA = 0;
+    gSpriteEntries[20].unk6 = 0x23;
     if (gUnk_03000584 == 0) {
-        gUnk_03002C30[20].unk0 |= 0x4000;
+        gSpriteEntries[20].unk0 |= 0x4000;
     } else {
         t = gUnk_03006F74->unk36 + ((gUnk_03000BE0[gUnk_030017EC].unk1 * 4) + 1);
         t |= 0x6000;
@@ -145,24 +145,24 @@ void name_entry_init_graphics(void) {
         *d = t + 3;
     }
     for (i = 0; i < 2; i++) {
-        gUnk_03002C30[i + 2].unk0 = 0x8000;
-        gUnk_03002C30[i + 2].unk1C = 2;
-        gUnk_03002C30[i + 2].unkA = 0xE;
-        gUnk_03002C30[i + 2].unk6 = 5;
+        gSpriteEntries[i + 2].unk0 = 0x8000;
+        gSpriteEntries[i + 2].unk1C = 2;
+        gSpriteEntries[i + 2].unkA = 0xE;
+        gSpriteEntries[i + 2].unk6 = 5;
     }
 
-    gUnk_03002C30[3].unk0 |= 0x1000;
+    gSpriteEntries[3].unk0 |= 0x1000;
     gUnk_03006F74->unkD = 0;
     gUnk_03006F74->unkE = 0;
     gUnk_03006F74->unk8 = 0;
-    gUnk_03002C30[0].unk2 = (y = (gUnk_03006F74->unkD * 8) + 0x14);
-    gUnk_03002C30[0].unk4 = mul16(gUnk_03006F74->unkE) + half4(gUnk_03006F74->unk8);
-    gUnk_03002C30[1].unk2 = y;
-    gUnk_03002C30[1].unk4 = mul16(gUnk_03006F74->unkE) - half8(gUnk_03006F74->unk8);
-    gUnk_03002C30[4].unk0 = 0xC000;
-    gUnk_03002C30[4].unk1C = 2;
-    gUnk_03002C30[4].unkA = 0xE;
-    gUnk_03002C30[4].unk6 = 0x26;
+    gSpriteEntries[0].unk2 = (y = (gUnk_03006F74->unkD * 8) + 0x14);
+    gSpriteEntries[0].unk4 = mul16(gUnk_03006F74->unkE) + half4(gUnk_03006F74->unk8);
+    gSpriteEntries[1].unk2 = y;
+    gSpriteEntries[1].unk4 = mul16(gUnk_03006F74->unkE) - half8(gUnk_03006F74->unk8);
+    gSpriteEntries[4].unk0 = 0xC000;
+    gSpriteEntries[4].unk1C = 2;
+    gSpriteEntries[4].unkA = 0xE;
+    gSpriteEntries[4].unk6 = 0x26;
     gGameSubState++;
 }
 
@@ -215,21 +215,21 @@ void sub_0805E5B0(void) {
         break;
     }
     CpuSet(gUnk_03006F74->unk58, gUnk_03006F74->unk58 + 0x10, 8);
-    gUnk_03002C30[4].unk2 = calc_text_pixel_width(gUnk_03006F74->unk58) + 0x28;
-    gUnk_03002C30[4].unk4 = 0x1B;
+    gSpriteEntries[4].unk2 = calc_text_pixel_width(gUnk_03006F74->unk58) + 0x28;
+    gSpriteEntries[4].unk4 = 0x1B;
     render_text_sprites_08040DB8(gUnk_03006F74->unk58, 5, 5, 3, 10, 13, 1, 0);
-    x = gUnk_03002C30[4].unk2 + 2;
+    x = gSpriteEntries[4].unk2 + 2;
     {
         register const u8(*tb)[2] asm("r4");
         for (i = gUnk_03006F74->unkF; i <= 9; i++) {
             tb = gUnk_083B4C88;
-            gUnk_03002C30[i + 5].unk0 = 0xC000;
-            gUnk_03002C30[i + 5].unk1C = 0;
-            gUnk_03002C30[i + 5].unkA = 0xD;
-            gUnk_03002C30[i + 5].unk6 = 0x42;
-            gUnk_03002C30[i + 5].unk2 = x;
-            gUnk_03002C30[i + 5].unk4 = 0x1C;
-            gUnk_03002C30[i + 5].unkB = 0xFF;
+            gSpriteEntries[i + 5].unk0 = 0xC000;
+            gSpriteEntries[i + 5].unk1C = 0;
+            gSpriteEntries[i + 5].unkA = 0xD;
+            gSpriteEntries[i + 5].unk6 = 0x42;
+            gSpriteEntries[i + 5].unk2 = x;
+            gSpriteEntries[i + 5].unk4 = 0x1C;
+            gSpriteEntries[i + 5].unkB = 0xFF;
             x += tb[0x43][0];
         }
     }
@@ -245,8 +245,8 @@ void sub_0805E5B0(void) {
 void sub_0805E878(void) {
     struct Unk_03000440 *b = &gUnk_03000440;
     if (b->unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, 0x20 - b->unk84 * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, 0x20 - b->unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0xFFFF);
         b->unk84++;
     } else {
         gUnk_03006F74->unk2 = 0;
@@ -264,7 +264,7 @@ void name_entry_update(void) {
     u8 col;
     s32 t;
 
-    gUnk_03002C30[4].unk6 = ((gFrameCounter / 6) & 3) + 0x26;
+    gSpriteEntries[4].unk6 = ((gFrameCounter / 6) & 3) + 0x26;
     if (gUnk_03006F74->unk6) {
         if (gUnk_03006F74->unk2++ < 8)
             gUnk_03006F74->unk8++;
@@ -331,23 +331,23 @@ void name_entry_update(void) {
     }
 
     if (gUnk_03006F74->unkE == 3) {
-        gUnk_03002C30[0].unk2 = gUnk_03006F74->unkD * 64 - (t = (s32)gUnk_03006F74->unk8 / 2 - 0x18);
-        gUnk_03002C30[0].unk4 = 0x8C;
-        gUnk_03002C30[1].unk2 = gUnk_03006F74->unkD * 64 + (t = (s32)gUnk_03006F74->unk8 / 2 + 0x58);
-        gUnk_03002C30[1].unk4 = gUnk_03002C30[0].unk4;
-        gUnk_03002C30[0].unk6 = 5;
-        gUnk_03002C30[1].unk6 = 5;
-        gUnk_03002C30[0].unk0 &= 0xDFFF;
-        gUnk_03002C30[1].unk0 |= 0x1000;
+        gSpriteEntries[0].unk2 = gUnk_03006F74->unkD * 64 - (t = (s32)gUnk_03006F74->unk8 / 2 - 0x18);
+        gSpriteEntries[0].unk4 = 0x8C;
+        gSpriteEntries[1].unk2 = gUnk_03006F74->unkD * 64 + (t = (s32)gUnk_03006F74->unk8 / 2 + 0x58);
+        gSpriteEntries[1].unk4 = gSpriteEntries[0].unk4;
+        gSpriteEntries[0].unk6 = 5;
+        gSpriteEntries[1].unk6 = 5;
+        gSpriteEntries[0].unk0 &= 0xDFFF;
+        gSpriteEntries[1].unk0 |= 0x1000;
     } else {
-        gUnk_03002C30[0].unk2 = gUnk_03006F74->unkD * 8 + 0x14;
-        gUnk_03002C30[0].unk4 = gUnk_03006F74->unkE * 24 + (t = (s32)gUnk_03006F74->unk8 / 2 + 0x40);
-        gUnk_03002C30[1].unk2 = gUnk_03002C30[0].unk2;
-        gUnk_03002C30[1].unk4 = gUnk_03006F74->unkE * 24 - (t = (s32)gUnk_03006F74->unk8 / 2 - 0x50);
-        gUnk_03002C30[0].unk6 = 8;
-        gUnk_03002C30[1].unk6 = 8;
-        gUnk_03002C30[0].unk0 |= 0x2000;
-        gUnk_03002C30[1].unk0 &= 0xEFFF;
+        gSpriteEntries[0].unk2 = gUnk_03006F74->unkD * 8 + 0x14;
+        gSpriteEntries[0].unk4 = gUnk_03006F74->unkE * 24 + (t = (s32)gUnk_03006F74->unk8 / 2 + 0x40);
+        gSpriteEntries[1].unk2 = gSpriteEntries[0].unk2;
+        gSpriteEntries[1].unk4 = gUnk_03006F74->unkE * 24 - (t = (s32)gUnk_03006F74->unk8 / 2 - 0x50);
+        gSpriteEntries[0].unk6 = 8;
+        gSpriteEntries[1].unk6 = 8;
+        gSpriteEntries[0].unk0 |= 0x2000;
+        gSpriteEntries[1].unk0 &= 0xEFFF;
     }
 
     if (KEYS_LO(gNewKeys) & 8) {
@@ -362,7 +362,7 @@ void name_entry_update(void) {
             gUnk_03006F74->unk58[gUnk_03006F74->unkF] = 0;
             gUnk_03006F74->unkF++;
             if (gUnk_03006F74->unkF == 10) {
-                gUnk_03002C30[4].unk0 &= 0xBFFF;
+                gSpriteEntries[4].unk0 &= 0xBFFF;
                 clear_sprite_table_mask(5, 10);
                 render_text_sprites_08040DB8(gUnk_03006F74->unk58, 5, 5, 3, 10, 13, 1, 0);
                 goto start;
@@ -378,7 +378,7 @@ void name_entry_update(void) {
             case 0:
                 goto space;
             case 2:
-                gUnk_03002C30[4].unk0 &= 0xBFFF;
+                gSpriteEntries[4].unk0 &= 0xBFFF;
                 blank = 1;
                 for (i = 0; (u32)i < 16 && gUnk_03006F74->unk58[i] != 0xFE; i++) {
                     if (gUnk_03006F74->unk58[i] != 0) {
@@ -400,7 +400,7 @@ void name_entry_update(void) {
             gUnk_03006F74->unk58[gUnk_03006F74->unkF] = gUnk_03006F74->unkE * 26 + gUnk_03006F74->unkD + 1;
             gUnk_03006F74->unkF++;
             if (gUnk_03006F74->unkF == 10) {
-                gUnk_03002C30[4].unk0 &= 0xBFFF;
+                gSpriteEntries[4].unk0 &= 0xBFFF;
                 clear_sprite_table_mask(5, 10);
                 render_text_sprites_08040DB8(gUnk_03006F74->unk58, 5, 5, 3, 10, 13, 1, 0);
                 goto start;
@@ -422,24 +422,24 @@ void name_entry_update(void) {
         }
         clear_sprite_table_mask(5, 10);
         render_text_sprites_08040DB8(gUnk_03006F74->unk58, 5, 5, 3, 10, 13, 1, 0);
-        gUnk_03002C30[4].unk0 |= 0x4000;
+        gSpriteEntries[4].unk0 |= 0x4000;
     } else
         return;
 
-    gUnk_03002C30[4].unk2 = calc_text_pixel_width(gUnk_03006F74->unk58) + 0x28;
-    gUnk_03002C30[4].unk4 = 0x1B;
-    x = gUnk_03002C30[4].unk2 + 2;
+    gSpriteEntries[4].unk2 = calc_text_pixel_width(gUnk_03006F74->unk58) + 0x28;
+    gSpriteEntries[4].unk4 = 0x1B;
+    x = gSpriteEntries[4].unk2 + 2;
     {
         register const u8(*tb)[2] asm("r4");
         for (i = gUnk_03006F74->unkF; i <= 9; i++) {
             tb = gUnk_083B4C88;
-            gUnk_03002C30[i + 5].unk0 = 0xC000;
-            gUnk_03002C30[i + 5].unk1C = 0;
-            gUnk_03002C30[i + 5].unkA = 0xD;
-            gUnk_03002C30[i + 5].unk6 = 0x42;
-            gUnk_03002C30[i + 5].unk2 = x;
-            gUnk_03002C30[i + 5].unk4 = 0x1C;
-            gUnk_03002C30[i + 5].unkB = 0xFF;
+            gSpriteEntries[i + 5].unk0 = 0xC000;
+            gSpriteEntries[i + 5].unk1C = 0;
+            gSpriteEntries[i + 5].unkA = 0xD;
+            gSpriteEntries[i + 5].unk6 = 0x42;
+            gSpriteEntries[i + 5].unk2 = x;
+            gSpriteEntries[i + 5].unk4 = 0x1C;
+            gSpriteEntries[i + 5].unkB = 0xFF;
             x += tb[0x43][0];
             tb = gUnk_083B4C88;
         }
@@ -459,8 +459,8 @@ void sub_0805EE94(void) {
     u8 *n = &s->unk84;
 
     if (*n <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, *n * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, *n * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, *n * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, *n * 4, 0xFFFF);
         (*n)++;
     } else {
         u32 zero;

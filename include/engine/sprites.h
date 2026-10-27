@@ -9,7 +9,7 @@ void divide_by_10000_b(u8 *dst, u32 n);  // guess: like divide_by_10000 without 
 void divide_by_100000_08041370(u8 *digits,
                                u32 n); // guess: n as text, up to 5 digits; >= 100000 writes a fixed overflow string
 void clear_sprite_table_mask(u8 first, u8 count);
-u32 find_next_free_sprite_slot(u8 first, u8 count); // first unused gUnk_03002C30 slot in [first, first + count)
+u32 find_next_free_sprite_slot(u8 first, u8 count); // first unused gSpriteEntries slot in [first, first + count)
 void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align,
                                   u16 prio); // 0xFE-terminated, one sprite per character from slot; x / y / width in
 void process_sprite_anim_commands(const u8 *cmds, u8 slot);

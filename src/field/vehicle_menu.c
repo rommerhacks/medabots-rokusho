@@ -23,7 +23,7 @@ void sub_08057044(void) {
     DmaSet(3, gUnk_085FA4D8, gUnk_03006D14, DMA_ENABLE | (0xE0 / 2));
     DmaSet(3, gUnk_085FA620, gUnk_03006D14 + 0x200, DMA_ENABLE | (0x20 / 2));
     copy_tilemap_region((u16 *)gUnk_083D5F30, gUnk_03006D14 + 0x400, 0, 0, 0x10, 10, 0, 0xF, 0);
-    fill_tilemap_rect_0804916C(gUnk_03006D14 + 0x800, 2, 0xE, 0x10, 10, 0, 0xF, 0);
+    fill_tilemap_rect(gUnk_03006D14 + 0x800, 2, 0xE, 0x10, 10, 0, 0xF, 0);
     copy_tilemap_region(gUnk_03006D14, gUnk_03006D14 + 0x400, 1, 1, 0xE, 8, 0x7C, 0xE, 0);
 
     switch (check_vehicle_usability(0)) {
@@ -86,7 +86,7 @@ void sub_08057044(void) {
     gUnk_030064A0.unk6E = gUnk_030064A0.unk6D = gUnk_030064A0.unk6C = 0;
     gUnk_030064A0.unk6C = 0x10;
     gUnk_030064A0.unk6D = 3;
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_080572F8(void) {
@@ -101,12 +101,12 @@ void sub_080572F8(void) {
         update_cursor_sprite_position();
         gUnk_030064A0.unk65 = 0;
         message_steps_reset();
-        sub_0804A1C4();
+        game_substate_advance();
     }
 }
 
 static void sub_08057380(void) {
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0805738C(void) {
@@ -146,7 +146,7 @@ void sub_0805738C(void) {
         field_play_sound_effect(5);
         sprite_entry_clear(0x7F);
         gUnk_030064A0.unk6F = 0x10;
-        sub_0804A1C4();
+        game_substate_advance();
     }
 }
 
@@ -160,7 +160,7 @@ void sub_08057494(void) {
         gUnk_030064A0.unk6F--;
     } else {
         lz_decompress_dispatch(gUnk_084C1ACC, (void *)0x06002100);
-        sub_0804A1C4();
+        game_substate_advance();
     }
 }
 
@@ -170,12 +170,12 @@ void sub_08057540(void) {
 
 void sub_08057550(void) {
     setup_palette_fade_to_color_with_obj(0, 0.0f, 32.0f, 8.0f);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_08057574(void) {
     if (run_blend_fade_transition(0))
-        sub_0804A1C4();
+        game_substate_advance();
 }
 
 void sub_08057588(void) {
@@ -186,7 +186,7 @@ void sub_08057598(void) {
     u32 zero;
 
     sub_0804B1FC();
-    memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+    memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
@@ -206,7 +206,7 @@ void sub_08057598(void) {
     DmaSet(3, gUnk_085FA4D8, gUnk_03006D14, DMA_ENABLE | (0xE0 / 2));
     DmaSet(3, gUnk_085FA620, gUnk_03006D14 + 0x200, DMA_ENABLE | (0x20 / 2));
     copy_tilemap_region((u16 *)gUnk_083D5F30, gUnk_03006D14 + 0x400, 0, 0, 0x10, 10, 0, 0xF, 0);
-    fill_tilemap_rect_0804916C(gUnk_03006D14 + 0x800, 2, 0xE, 0x10, 10, 0, 0xF, 0);
+    fill_tilemap_rect(gUnk_03006D14 + 0x800, 2, 0xE, 0x10, 10, 0, 0xF, 0);
     copy_tilemap_region(gUnk_03006D14, gUnk_03006D14 + 0x400, 1, 1, 0xE, 8, 0x7C, 0xE, 0);
 
     switch (check_vehicle_usability(0)) {
@@ -268,7 +268,7 @@ void sub_08057598(void) {
         copy_tilemap_rect_with_offset(gUnk_030064A0.unk72, (u16 *)0x06002800, 0, 0, 0x1E, 0x14, 0x20, 0x20, 0, 0);
     DmaCopy32(3, gUnk_085FA640, 0x0202F980, 32) DmaCopy32(3, gUnk_085FA85C, 0x0202F9A0, 32) init_vehicle_menu_sprite(0);
     setup_palette_fade_to_color(0, 32.0f, 0.0f, 8.0f);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_08057988(void) {
@@ -369,7 +369,7 @@ void sub_08057A24(void) {
     }
     if (gUnk_030064A0.unk70 == 0)
         message_steps_reset();
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_08057B68(void) {
@@ -383,7 +383,7 @@ void sub_08057B68(void) {
 
 void sub_08057BBC(void) {
     message_steps_reset();
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_08057BCC(void) {
@@ -393,7 +393,7 @@ void sub_08057BCC(void) {
 
 void sub_08057BF8(void) {
     message_steps_reset();
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_08057C08(void) {
@@ -537,35 +537,35 @@ static void update_cursor_sprite_position(void) {
 
     if (s->unk67 & 8)
         d = -d;
-    gUnk_03002C30[0x7F].unk2 = s->unk6C * 8 + 8 + d;
-    gUnk_03002C30[0x7F].unk4 = s->unk6D * 8 + 8;
-    gUnk_03002C30[0x7F].unk6 = 0x307;
-    gUnk_03002C30[0x7F].unkA = 0xE;
-    gUnk_03002C30[0x7F].unk1C = 0;
-    gUnk_03002C30[0x7F].unk8 = 1;
-    gUnk_03002C30[0x7F].unk9 = 1;
-    gUnk_03002C30[0x7F].unkB = 0xFF;
+    gSpriteEntries[0x7F].unk2 = s->unk6C * 8 + 8 + d;
+    gSpriteEntries[0x7F].unk4 = s->unk6D * 8 + 8;
+    gSpriteEntries[0x7F].unk6 = 0x307;
+    gSpriteEntries[0x7F].unkA = 0xE;
+    gSpriteEntries[0x7F].unk1C = 0;
+    gSpriteEntries[0x7F].unk8 = 1;
+    gSpriteEntries[0x7F].unk9 = 1;
+    gSpriteEntries[0x7F].unkB = 0xFF;
 }
 
 static void init_vehicle_menu_sprite(s32 x) {
     s32 ox;
 
     sprite_entry_init(0x20, 0xC004, 0x91, check_vehicle_usability(0) == 0 ? 0xC : 0xD, 1);
-    gUnk_03002C30[0x20].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + (ox = x * 8 + 0x90);
-    gUnk_03002C30[0x20].unk4 = 0x18;
-    gUnk_03002C30[0x20].unkB |= 0xFF;
+    gSpriteEntries[0x20].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + (ox = x * 8 + 0x90);
+    gSpriteEntries[0x20].unk4 = 0x18;
+    gSpriteEntries[0x20].unkB |= 0xFF;
     sprite_entry_init(0x21, 0xC004, 0x92, check_vehicle_usability(1) == 0 ? 0xC : 0xD, 1);
-    gUnk_03002C30[0x21].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + ox;
-    gUnk_03002C30[0x21].unk4 = 0x28;
-    gUnk_03002C30[0x21].unkB |= 0xFF;
+    gSpriteEntries[0x21].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + ox;
+    gSpriteEntries[0x21].unk4 = 0x28;
+    gSpriteEntries[0x21].unkB |= 0xFF;
     sprite_entry_init(0x22, 0xC004, 0x93, check_vehicle_usability(2) == 0 ? 0xC : 0xD, 1);
-    gUnk_03002C30[0x22].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + ox;
-    gUnk_03002C30[0x22].unk4 = 0x38;
-    gUnk_03002C30[0x22].unkB |= 0xFF;
+    gSpriteEntries[0x22].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + ox;
+    gSpriteEntries[0x22].unk4 = 0x38;
+    gSpriteEntries[0x22].unkB |= 0xFF;
     sprite_entry_init(0x23, 0xC004, 0x94, check_vehicle_usability(3) == 0 ? 0xC : 0xD, 1);
-    gUnk_03002C30[0x23].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + ox;
-    gUnk_03002C30[0x23].unk4 = 0x48;
-    gUnk_03002C30[0x23].unkB |= 0xFF;
+    gSpriteEntries[0x23].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + ox;
+    gSpriteEntries[0x23].unk4 = 0x48;
+    gSpriteEntries[0x23].unkB |= 0xFF;
 }
 
 static void render_npc_tilemap_row(s32 row) {

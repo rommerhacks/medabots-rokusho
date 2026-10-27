@@ -3,7 +3,7 @@
 
 // Palette buffer blends towards a color
 
-void blend_obj_palettes_to_color_0803F684(u16 a, u32 b, u16 c);
-void blend_obj_palettes_to_color_0803F998(u16 a, u32 b, u16 c);
+void bg_palettes_blend_masked_now(u16 a, u32 b, u16 c);
+void obj_palettes_blend_masked_now(u16 a, u32 b, u16 c);
 
 #endif // GUARD_ENGINE_PALETTE_BLEND_H

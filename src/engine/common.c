@@ -348,135 +348,135 @@ void decompress_sprite_to_vram_08042D94(u32 a, u32 b, u32 c, u32 d, u32 slot) {
 void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile, u32 sprite, u32 x, u32 y, u32 flip,
                                  u32 prio, u32 pal) {
     clear_battle_sprite_slot(sprite, 4);
-    gUnk_03002C30[sprite].unk0 = 0xC004 | (prio << 10);
+    gSpriteEntries[sprite].unk0 = 0xC004 | (prio << 10);
     if (flip)
-        gUnk_03002C30[sprite].unk0 |= 0x1000;
+        gSpriteEntries[sprite].unk0 |= 0x1000;
     else
-        gUnk_03002C30[sprite].unk0 &= 0xEFFF;
-    gUnk_03002C30[sprite].unk2 = x;
-    gUnk_03002C30[sprite].unk4 = y - 4;
-    gUnk_03002C30[sprite].unk6 = tile * 8 + 0x500;
-    gUnk_03002C30[sprite].unkA = gUnk_083BEA14[head];
-    gUnk_03002C30[sprite].unk1C = 0;
-    gUnk_03002C30[sprite].unkB = pal + 2;
+        gSpriteEntries[sprite].unk0 &= 0xEFFF;
+    gSpriteEntries[sprite].unk2 = x;
+    gSpriteEntries[sprite].unk4 = y - 4;
+    gSpriteEntries[sprite].unk6 = tile * 8 + 0x500;
+    gSpriteEntries[sprite].unkA = gUnk_083BEA14[head];
+    gSpriteEntries[sprite].unk1C = 0;
+    gSpriteEntries[sprite].unkB = pal + 2;
 
-    gUnk_03002C30[sprite + 1].unk0 = 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 1].unk0 = 0xC004 | (prio << 10);
     if (flip) {
-        gUnk_03002C30[sprite + 1].unk0 |= 0x1000;
-        gUnk_03002C30[sprite + 1].unk6 = tile * 8 + 0x502;
-        gUnk_03002C30[sprite + 1].unkB = pal;
+        gSpriteEntries[sprite + 1].unk0 |= 0x1000;
+        gSpriteEntries[sprite + 1].unk6 = tile * 8 + 0x502;
+        gSpriteEntries[sprite + 1].unkB = pal;
     } else {
-        gUnk_03002C30[sprite + 1].unk0 &= 0xEFFF;
-        gUnk_03002C30[sprite + 1].unk6 = tile * 8 + 0x501;
-        gUnk_03002C30[sprite + 1].unkB = pal + 3;
+        gSpriteEntries[sprite + 1].unk0 &= 0xEFFF;
+        gSpriteEntries[sprite + 1].unk6 = tile * 8 + 0x501;
+        gSpriteEntries[sprite + 1].unkB = pal + 3;
     }
-    gUnk_03002C30[sprite + 1].unk2 = x - 8;
-    gUnk_03002C30[sprite + 1].unk4 = y + 4;
-    gUnk_03002C30[sprite + 1].unkA = gUnk_083BEA14[rarm];
-    gUnk_03002C30[sprite + 1].unk1C = 0;
-    gUnk_03002C30[sprite + 1].unk8 = 0x40;
-    gUnk_03002C30[sprite + 1].unk9 = 0x40;
-    gUnk_03002C30[sprite + 1].unk18 = 0;
+    gSpriteEntries[sprite + 1].unk2 = x - 8;
+    gSpriteEntries[sprite + 1].unk4 = y + 4;
+    gSpriteEntries[sprite + 1].unkA = gUnk_083BEA14[rarm];
+    gSpriteEntries[sprite + 1].unk1C = 0;
+    gSpriteEntries[sprite + 1].unk8 = 0x40;
+    gSpriteEntries[sprite + 1].unk9 = 0x40;
+    gSpriteEntries[sprite + 1].unk18 = 0;
 
-    gUnk_03002C30[sprite + 2].unk0 = 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 2].unk0 = 0xC004 | (prio << 10);
     if (flip) {
-        gUnk_03002C30[sprite + 2].unk0 |= 0x1000;
-        gUnk_03002C30[sprite + 2].unk6 = tile * 8 + 0x503;
-        gUnk_03002C30[sprite + 2].unkB = pal + 3;
+        gSpriteEntries[sprite + 2].unk0 |= 0x1000;
+        gSpriteEntries[sprite + 2].unk6 = tile * 8 + 0x503;
+        gSpriteEntries[sprite + 2].unkB = pal + 3;
     } else {
-        gUnk_03002C30[sprite + 2].unk0 &= 0xEFFF;
-        gUnk_03002C30[sprite + 2].unk6 = tile * 8 + 0x504;
-        gUnk_03002C30[sprite + 2].unkB = pal;
+        gSpriteEntries[sprite + 2].unk0 &= 0xEFFF;
+        gSpriteEntries[sprite + 2].unk6 = tile * 8 + 0x504;
+        gSpriteEntries[sprite + 2].unkB = pal;
     }
-    gUnk_03002C30[sprite + 2].unk2 = x + 8;
-    gUnk_03002C30[sprite + 2].unk4 = y + 4;
-    gUnk_03002C30[sprite + 2].unkA = gUnk_083BEA14[larm];
-    gUnk_03002C30[sprite + 2].unk1C = 0;
-    gUnk_03002C30[sprite + 2].unk8 = 0x40;
-    gUnk_03002C30[sprite + 2].unk9 = 0x40;
-    gUnk_03002C30[sprite + 2].unk18 = 0;
+    gSpriteEntries[sprite + 2].unk2 = x + 8;
+    gSpriteEntries[sprite + 2].unk4 = y + 4;
+    gSpriteEntries[sprite + 2].unkA = gUnk_083BEA14[larm];
+    gSpriteEntries[sprite + 2].unk1C = 0;
+    gSpriteEntries[sprite + 2].unk8 = 0x40;
+    gSpriteEntries[sprite + 2].unk9 = 0x40;
+    gSpriteEntries[sprite + 2].unk18 = 0;
 
-    gUnk_03002C30[sprite + 3].unk0 = 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 3].unk0 = 0xC004 | (prio << 10);
     if (flip)
-        gUnk_03002C30[sprite + 3].unk0 |= 0x1000;
+        gSpriteEntries[sprite + 3].unk0 |= 0x1000;
     else
-        gUnk_03002C30[sprite + 3].unk0 &= 0xEFFF;
-    gUnk_03002C30[sprite + 3].unk2 = x;
-    gUnk_03002C30[sprite + 3].unk4 = y + 4;
-    gUnk_03002C30[sprite + 3].unk6 = tile * 8 + 0x505;
-    gUnk_03002C30[sprite + 3].unkA = gUnk_083BEA14[legs];
-    gUnk_03002C30[sprite + 3].unk1C = 0;
-    gUnk_03002C30[sprite + 3].unkB = pal + 1;
+        gSpriteEntries[sprite + 3].unk0 &= 0xEFFF;
+    gSpriteEntries[sprite + 3].unk2 = x;
+    gSpriteEntries[sprite + 3].unk4 = y + 4;
+    gSpriteEntries[sprite + 3].unk6 = tile * 8 + 0x505;
+    gSpriteEntries[sprite + 3].unkA = gUnk_083BEA14[legs];
+    gSpriteEntries[sprite + 3].unk1C = 0;
+    gSpriteEntries[sprite + 3].unkB = pal + 1;
 }
 
 void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile, u32 sprite, u32 x, u32 y, u32 flip,
                                u32 prio, u32 pal) {
-    gUnk_03002C30[sprite].unk0 |= 0xC004 | (prio << 10);
+    gSpriteEntries[sprite].unk0 |= 0xC004 | (prio << 10);
     if (flip)
-        gUnk_03002C30[sprite].unk0 |= 0x1000;
+        gSpriteEntries[sprite].unk0 |= 0x1000;
     else
-        gUnk_03002C30[sprite].unk0 &= 0xEFFF;
-    gUnk_03002C30[sprite].unk2 = x;
-    gUnk_03002C30[sprite].unk4 = y - 4;
-    gUnk_03002C30[sprite].unk6 = tile * 8 + 0x500;
-    gUnk_03002C30[sprite].unkA = gUnk_083BEA14[head];
-    gUnk_03002C30[sprite].unk1C = 0;
-    gUnk_03002C30[sprite].unkB = pal + 2;
+        gSpriteEntries[sprite].unk0 &= 0xEFFF;
+    gSpriteEntries[sprite].unk2 = x;
+    gSpriteEntries[sprite].unk4 = y - 4;
+    gSpriteEntries[sprite].unk6 = tile * 8 + 0x500;
+    gSpriteEntries[sprite].unkA = gUnk_083BEA14[head];
+    gSpriteEntries[sprite].unk1C = 0;
+    gSpriteEntries[sprite].unkB = pal + 2;
 
-    gUnk_03002C30[sprite + 1].unk0 |= 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 1].unk0 |= 0xC004 | (prio << 10);
     if (flip) {
-        gUnk_03002C30[sprite + 1].unk0 |= 0x1000;
-        gUnk_03002C30[sprite + 1].unk6 = tile * 8 + 0x502;
-        gUnk_03002C30[sprite + 1].unkB = pal;
+        gSpriteEntries[sprite + 1].unk0 |= 0x1000;
+        gSpriteEntries[sprite + 1].unk6 = tile * 8 + 0x502;
+        gSpriteEntries[sprite + 1].unkB = pal;
     } else {
-        gUnk_03002C30[sprite + 1].unk0 &= 0xEFFF;
-        gUnk_03002C30[sprite + 1].unk6 = tile * 8 + 0x501;
-        gUnk_03002C30[sprite + 1].unkB = pal + 3;
+        gSpriteEntries[sprite + 1].unk0 &= 0xEFFF;
+        gSpriteEntries[sprite + 1].unk6 = tile * 8 + 0x501;
+        gSpriteEntries[sprite + 1].unkB = pal + 3;
     }
-    gUnk_03002C30[sprite + 1].unk2 = x - 8;
-    gUnk_03002C30[sprite + 1].unk4 = y + 4;
-    gUnk_03002C30[sprite + 1].unkA = gUnk_083BEA14[rarm];
-    gUnk_03002C30[sprite + 1].unk1C = 0;
+    gSpriteEntries[sprite + 1].unk2 = x - 8;
+    gSpriteEntries[sprite + 1].unk4 = y + 4;
+    gSpriteEntries[sprite + 1].unkA = gUnk_083BEA14[rarm];
+    gSpriteEntries[sprite + 1].unk1C = 0;
 
-    gUnk_03002C30[sprite + 2].unk0 |= 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 2].unk0 |= 0xC004 | (prio << 10);
     if (flip) {
-        gUnk_03002C30[sprite + 2].unk0 |= 0x1000;
-        gUnk_03002C30[sprite + 2].unk6 = tile * 8 + 0x503;
-        gUnk_03002C30[sprite + 2].unkB = pal + 3;
+        gSpriteEntries[sprite + 2].unk0 |= 0x1000;
+        gSpriteEntries[sprite + 2].unk6 = tile * 8 + 0x503;
+        gSpriteEntries[sprite + 2].unkB = pal + 3;
     } else {
-        gUnk_03002C30[sprite + 2].unk0 &= 0xEFFF;
-        gUnk_03002C30[sprite + 2].unk6 = tile * 8 + 0x504;
-        gUnk_03002C30[sprite + 2].unkB = pal;
+        gSpriteEntries[sprite + 2].unk0 &= 0xEFFF;
+        gSpriteEntries[sprite + 2].unk6 = tile * 8 + 0x504;
+        gSpriteEntries[sprite + 2].unkB = pal;
     }
-    gUnk_03002C30[sprite + 2].unk2 = x + 8;
-    gUnk_03002C30[sprite + 2].unk4 = y + 4;
-    gUnk_03002C30[sprite + 2].unkA = gUnk_083BEA14[larm];
-    gUnk_03002C30[sprite + 2].unk1C = 0;
+    gSpriteEntries[sprite + 2].unk2 = x + 8;
+    gSpriteEntries[sprite + 2].unk4 = y + 4;
+    gSpriteEntries[sprite + 2].unkA = gUnk_083BEA14[larm];
+    gSpriteEntries[sprite + 2].unk1C = 0;
 
-    gUnk_03002C30[sprite + 3].unk0 |= 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 3].unk0 |= 0xC004 | (prio << 10);
     if (flip)
-        gUnk_03002C30[sprite + 3].unk0 |= 0x1000;
+        gSpriteEntries[sprite + 3].unk0 |= 0x1000;
     else
-        gUnk_03002C30[sprite + 3].unk0 &= 0xEFFF;
-    gUnk_03002C30[sprite + 3].unk2 = x;
-    gUnk_03002C30[sprite + 3].unk4 = y + 4;
-    gUnk_03002C30[sprite + 3].unk6 = tile * 8 + 0x505;
-    gUnk_03002C30[sprite + 3].unkA = gUnk_083BEA14[legs];
-    gUnk_03002C30[sprite + 3].unk1C = 0;
-    gUnk_03002C30[sprite + 3].unkB = pal + 1;
+        gSpriteEntries[sprite + 3].unk0 &= 0xEFFF;
+    gSpriteEntries[sprite + 3].unk2 = x;
+    gSpriteEntries[sprite + 3].unk4 = y + 4;
+    gSpriteEntries[sprite + 3].unk6 = tile * 8 + 0x505;
+    gSpriteEntries[sprite + 3].unkA = gUnk_083BEA14[legs];
+    gSpriteEntries[sprite + 3].unk1C = 0;
+    gSpriteEntries[sprite + 3].unkB = pal + 1;
 }
 
 void battle_sprite_set_palette_index(u32 sprite, u32 pal) {
     u32 i;
 
-    gUnk_03002C30[sprite + 1].unk0 |= 0x200;
-    gUnk_03002C30[sprite + 2].unk0 |= 0x200;
+    gSpriteEntries[sprite + 1].unk0 |= 0x200;
+    gSpriteEntries[sprite + 2].unk0 |= 0x200;
     for (i = 0; i < 16; i++)
         ;
-    gUnk_03002C30[sprite].unk24 = pal;
-    gUnk_03002C30[sprite + 1].unk24 = pal;
-    gUnk_03002C30[sprite + 2].unk24 = pal;
-    gUnk_03002C30[sprite + 3].unk24 = pal;
+    gSpriteEntries[sprite].unk24 = pal;
+    gSpriteEntries[sprite + 1].unk24 = pal;
+    gSpriteEntries[sprite + 2].unk24 = pal;
+    gSpriteEntries[sprite + 3].unk24 = pal;
 }
 
 void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c) {
@@ -484,92 +484,92 @@ void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c) {
     u32 t;
     u8 a;
 
-    gUnk_03002C30[sprite].unk2 = gUnk_03002C30[sprite + 3].unk2;
-    gUnk_03002C30[sprite + 3].unk26 += gUnk_03002C30[sprite + 3].unk24;
-    if (gUnk_03002C30[sprite + 3].unk26 > 0x3F) {
-        gUnk_03002C30[sprite + 3].unk26 -= 0x40;
-        gUnk_03002C30[sprite + 3].unk21 = (gUnk_03002C30[sprite + 3].unk21 + 1) & 3;
-        gUnk_03002C30[sprite + 3].unk6 = idx * 8 + 0x505 + gUnk_083B296C[gUnk_03002C30[sprite + 3].unk21];
+    gSpriteEntries[sprite].unk2 = gSpriteEntries[sprite + 3].unk2;
+    gSpriteEntries[sprite + 3].unk26 += gSpriteEntries[sprite + 3].unk24;
+    if (gSpriteEntries[sprite + 3].unk26 > 0x3F) {
+        gSpriteEntries[sprite + 3].unk26 -= 0x40;
+        gSpriteEntries[sprite + 3].unk21 = (gSpriteEntries[sprite + 3].unk21 + 1) & 3;
+        gSpriteEntries[sprite + 3].unk6 = idx * 8 + 0x505 + gUnk_083B296C[gSpriteEntries[sprite + 3].unk21];
     }
 
-    gUnk_03002C30[sprite + 1].unk26 += gUnk_03002C30[sprite + 1].unk24;
-    a = gUnk_03002C30[sprite + 1].unk26;
+    gSpriteEntries[sprite + 1].unk26 += gSpriteEntries[sprite + 1].unk24;
+    a = gSpriteEntries[sprite + 1].unk26;
     t = a >> 1;
     if (a > 0x3F) {
         t = 0x20;
-        gUnk_03002C30[sprite + 1].unk26 -= 0x40;
+        gSpriteEntries[sprite + 1].unk26 -= 0x40;
     }
-    switch (gUnk_03002C30[sprite + 1].unk21) {
+    switch (gSpriteEntries[sprite + 1].unk21) {
     case 0:
-        gUnk_03002C30[sprite + 1].unk18 = t * 4;
-        v = calc_polar_to_screen_coords(t + 0x60, 5, gUnk_03002C30[sprite + 3].unk2, gUnk_03002C30[sprite + 3].unk4);
-        gUnk_03002C30[sprite + 1].unk2 = v.x - 5;
-        gUnk_03002C30[sprite + 1].unk4 = v.y - 3;
+        gSpriteEntries[sprite + 1].unk18 = t * 4;
+        v = calc_polar_to_screen_coords(t + 0x60, 5, gSpriteEntries[sprite + 3].unk2, gSpriteEntries[sprite + 3].unk4);
+        gSpriteEntries[sprite + 1].unk2 = v.x - 5;
+        gSpriteEntries[sprite + 1].unk4 = v.y - 3;
         break;
     case 1:
-        gUnk_03002C30[sprite + 1].unk18 = 0x80 - t * 4;
-        v = calc_polar_to_screen_coords(0x80 - t, 5, gUnk_03002C30[sprite + 3].unk2, gUnk_03002C30[sprite + 3].unk4);
-        gUnk_03002C30[sprite + 1].unk2 = v.x - 5;
-        gUnk_03002C30[sprite + 1].unk4 = v.y - 3;
+        gSpriteEntries[sprite + 1].unk18 = 0x80 - t * 4;
+        v = calc_polar_to_screen_coords(0x80 - t, 5, gSpriteEntries[sprite + 3].unk2, gSpriteEntries[sprite + 3].unk4);
+        gSpriteEntries[sprite + 1].unk2 = v.x - 5;
+        gSpriteEntries[sprite + 1].unk4 = v.y - 3;
         break;
     case 2:
-        gUnk_03002C30[sprite + 1].unk18 = 0x400 - t * 4;
-        v = calc_polar_to_screen_coords(0x60 - t, 5, gUnk_03002C30[sprite + 3].unk2, gUnk_03002C30[sprite + 3].unk4);
-        gUnk_03002C30[sprite + 1].unk2 = v.x - 5;
-        gUnk_03002C30[sprite + 1].unk4 = v.y - 3;
+        gSpriteEntries[sprite + 1].unk18 = 0x400 - t * 4;
+        v = calc_polar_to_screen_coords(0x60 - t, 5, gSpriteEntries[sprite + 3].unk2, gSpriteEntries[sprite + 3].unk4);
+        gSpriteEntries[sprite + 1].unk2 = v.x - 5;
+        gSpriteEntries[sprite + 1].unk4 = v.y - 3;
         break;
     case 3:
-        gUnk_03002C30[sprite + 1].unk18 = t * 4 + 0x380;
-        v = calc_polar_to_screen_coords(t + 0x40, 5, gUnk_03002C30[sprite + 3].unk2, gUnk_03002C30[sprite + 3].unk4);
-        gUnk_03002C30[sprite + 1].unk2 = v.x - 5;
-        gUnk_03002C30[sprite + 1].unk4 = v.y - 3;
+        gSpriteEntries[sprite + 1].unk18 = t * 4 + 0x380;
+        v = calc_polar_to_screen_coords(t + 0x40, 5, gSpriteEntries[sprite + 3].unk2, gSpriteEntries[sprite + 3].unk4);
+        gSpriteEntries[sprite + 1].unk2 = v.x - 5;
+        gSpriteEntries[sprite + 1].unk4 = v.y - 3;
         break;
     }
     if (t == 0x20)
-        gUnk_03002C30[sprite + 1].unk21 = (gUnk_03002C30[sprite + 1].unk21 + 1) & 3;
+        gSpriteEntries[sprite + 1].unk21 = (gSpriteEntries[sprite + 1].unk21 + 1) & 3;
 
-    gUnk_03002C30[sprite + 2].unk26 += gUnk_03002C30[sprite + 2].unk24;
-    a = gUnk_03002C30[sprite + 2].unk26;
+    gSpriteEntries[sprite + 2].unk26 += gSpriteEntries[sprite + 2].unk24;
+    a = gSpriteEntries[sprite + 2].unk26;
     t = a >> 1;
     if (a > 0x3F) {
         t = 0x20;
-        gUnk_03002C30[sprite + 2].unk26 -= 0x40;
+        gSpriteEntries[sprite + 2].unk26 -= 0x40;
     }
-    switch (gUnk_03002C30[sprite + 2].unk21) {
+    switch (gSpriteEntries[sprite + 2].unk21) {
     case 2:
-        gUnk_03002C30[sprite + 2].unk18 = t * 4;
-        v = calc_polar_to_screen_coords(t + 0x20, 5, gUnk_03002C30[sprite + 3].unk2, gUnk_03002C30[sprite + 3].unk4);
-        gUnk_03002C30[sprite + 2].unk2 = v.x + 5;
-        gUnk_03002C30[sprite + 2].unk4 = v.y - 3;
+        gSpriteEntries[sprite + 2].unk18 = t * 4;
+        v = calc_polar_to_screen_coords(t + 0x20, 5, gSpriteEntries[sprite + 3].unk2, gSpriteEntries[sprite + 3].unk4);
+        gSpriteEntries[sprite + 2].unk2 = v.x + 5;
+        gSpriteEntries[sprite + 2].unk4 = v.y - 3;
         break;
     case 3:
-        gUnk_03002C30[sprite + 2].unk18 = 0x80 - t * 4;
-        v = calc_polar_to_screen_coords(0x40 - t, 5, gUnk_03002C30[sprite + 3].unk2, gUnk_03002C30[sprite + 3].unk4);
-        gUnk_03002C30[sprite + 2].unk2 = v.x + 5;
-        gUnk_03002C30[sprite + 2].unk4 = v.y - 3;
+        gSpriteEntries[sprite + 2].unk18 = 0x80 - t * 4;
+        v = calc_polar_to_screen_coords(0x40 - t, 5, gSpriteEntries[sprite + 3].unk2, gSpriteEntries[sprite + 3].unk4);
+        gSpriteEntries[sprite + 2].unk2 = v.x + 5;
+        gSpriteEntries[sprite + 2].unk4 = v.y - 3;
         break;
     case 0:
-        gUnk_03002C30[sprite + 2].unk18 = 0x400 - t * 4;
-        v = calc_polar_to_screen_coords(0x20 - t, 5, gUnk_03002C30[sprite + 3].unk2, gUnk_03002C30[sprite + 3].unk4);
-        gUnk_03002C30[sprite + 2].unk2 = v.x + 5;
-        gUnk_03002C30[sprite + 2].unk4 = v.y - 3;
+        gSpriteEntries[sprite + 2].unk18 = 0x400 - t * 4;
+        v = calc_polar_to_screen_coords(0x20 - t, 5, gSpriteEntries[sprite + 3].unk2, gSpriteEntries[sprite + 3].unk4);
+        gSpriteEntries[sprite + 2].unk2 = v.x + 5;
+        gSpriteEntries[sprite + 2].unk4 = v.y - 3;
         break;
     case 1:
-        gUnk_03002C30[sprite + 2].unk18 = t * 4 + 0x380;
-        v = calc_polar_to_screen_coords(t, 5, gUnk_03002C30[sprite + 3].unk2, gUnk_03002C30[sprite + 3].unk4);
-        gUnk_03002C30[sprite + 2].unk2 = v.x + 5;
-        gUnk_03002C30[sprite + 2].unk4 = v.y - 3;
+        gSpriteEntries[sprite + 2].unk18 = t * 4 + 0x380;
+        v = calc_polar_to_screen_coords(t, 5, gSpriteEntries[sprite + 3].unk2, gSpriteEntries[sprite + 3].unk4);
+        gSpriteEntries[sprite + 2].unk2 = v.x + 5;
+        gSpriteEntries[sprite + 2].unk4 = v.y - 3;
         break;
     }
     if (t == 0x20)
-        gUnk_03002C30[sprite + 2].unk21 = (gUnk_03002C30[sprite + 2].unk21 + 1) & 3;
+        gSpriteEntries[sprite + 2].unk21 = (gSpriteEntries[sprite + 2].unk21 + 1) & 3;
 
-    if (gUnk_083B296C[gUnk_03002C30[sprite + 3].unk21]) {
-        gUnk_03002C30[sprite].unk4 = gUnk_03002C30[sprite + 3].unk4 - 7;
-        gUnk_03002C30[sprite + 1].unk4++;
-        gUnk_03002C30[sprite + 2].unk4++;
+    if (gUnk_083B296C[gSpriteEntries[sprite + 3].unk21]) {
+        gSpriteEntries[sprite].unk4 = gSpriteEntries[sprite + 3].unk4 - 7;
+        gSpriteEntries[sprite + 1].unk4++;
+        gSpriteEntries[sprite + 2].unk4++;
     } else {
-        gUnk_03002C30[sprite].unk4 = gUnk_03002C30[sprite + 3].unk4 - 8;
+        gSpriteEntries[sprite].unk4 = gSpriteEntries[sprite + 3].unk4 - 8;
     }
 }
 
@@ -1069,18 +1069,18 @@ void race_enter_team_select(void) {
 void update_sprite_animation_position(u32 slot) {
     s32 mask = 0x1FF;
 
-    if (gUnk_03002C30[slot].unk24 != 0) {
-        gUnk_03002C30[slot].unk4 =
-            (gUnk_03002C30[slot].unk4 +
-             gUnk_083C6DF8[(gUnk_03002C30[slot].unk24 - 1) * 256 + gUnk_03002C30[slot].unk25 * 8 +
-                           (gUnk_03002C30[slot].unk27 & 3) * 2]) &
+    if (gSpriteEntries[slot].unk24 != 0) {
+        gSpriteEntries[slot].unk4 =
+            (gSpriteEntries[slot].unk4 +
+             gUnk_083C6DF8[(gSpriteEntries[slot].unk24 - 1) * 256 + gSpriteEntries[slot].unk25 * 8 +
+                           (gSpriteEntries[slot].unk27 & 3) * 2]) &
             0xFF;
-        gUnk_03002C30[slot].unk2 =
-            (gUnk_03002C30[slot].unk2 +
-             gUnk_083C6DF8[(gUnk_03002C30[slot].unk24 - 1) * 256 + gUnk_03002C30[slot].unk25 * 8 +
-                           (gUnk_03002C30[slot].unk27 & 3) * 2 + 1]) &
+        gSpriteEntries[slot].unk2 =
+            (gSpriteEntries[slot].unk2 +
+             gUnk_083C6DF8[(gSpriteEntries[slot].unk24 - 1) * 256 + gSpriteEntries[slot].unk25 * 8 +
+                           (gSpriteEntries[slot].unk27 & 3) * 2 + 1]) &
             mask;
-        gUnk_03002C30[slot].unk27++;
+        gSpriteEntries[slot].unk27++;
     }
 }
 

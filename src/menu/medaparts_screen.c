@@ -85,7 +85,7 @@ void medaparts_list_load_gfx(void) {
         set_blend_effect_mode(5, 0x3F, 0x20);
     }
     zero = 0;
-    CpuFastSet(&zero, gUnk_03002C30, 0x01000800);
+    CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
     write_tilemap_rect(10, 2, 0x10, 0, gUnk_083B4AE0[gUnk_03000440.unk3E + 0x59], REG_BG0CNT, 0x200);
     medaparts_list_set_cursor_from_part();
@@ -109,8 +109,8 @@ void medaparts_list_fade_in(void) {
     load_medapart_sprite_by_slot();
     if (gUnk_03000440.unk42 == 1) {
         if (gUnk_03000440.unk84 <= 8) {
-            blend_obj_palettes_to_color_0803F684(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
-            blend_obj_palettes_to_color_0803F998(0, 32 - gUnk_03000440.unk84 * 4, 0xF0FF);
+            bg_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xF0FF);
             gUnk_03000440.unk84++;
         } else {
             gUnk_03000440.unk42 = 0;
@@ -202,7 +202,7 @@ void medaparts_list_open_detail(void) {
     medaparts_list_blink_page_arrows();
     sprite_bob_y(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
-    copy_obj_palette_to_buffer();
+    palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
@@ -213,8 +213,8 @@ void medaparts_list_detail_fade_out(void) {
     sprite_bob_y(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
     if (gUnk_03000440.unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xF0FF);
+        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xF0FF);
         gUnk_03000440.unk84++;
     } else {
         gGameSubState = 0x10;
@@ -261,7 +261,7 @@ void medapart_detail_load_gfx(void) {
         set_blend_effect_mode(5, 0x3F, 0x20);
     }
     zero = 0;
-    CpuFastSet(&zero, gUnk_03002C30, 0x01000800);
+    CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
     load_part_data(gUnk_03000440.unk3D, gUnk_03000440.unk3E, &gUnk_03000440.unkEE);
     medapart_detail_draw_skill();
@@ -283,8 +283,8 @@ void medapart_detail_fade_in(void) {
     medapart_detail_blink_arrows();
     if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4) {
         if (gUnk_03000440.unk84 <= 8) {
-            blend_obj_palettes_to_color_0803F684(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
-            blend_obj_palettes_to_color_0803F998(0, 32 - gUnk_03000440.unk84 * 4, 0xF0FF);
+            bg_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xF0FF);
             gUnk_03000440.unk84++;
         } else {
             gGameSubState++;
@@ -348,7 +348,7 @@ void medapart_detail_start_fade_out(void) {
     load_medapart_sprite_by_slot();
     medapart_detail_blink_arrows();
     if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4) {
-        copy_obj_palette_to_buffer();
+        palette_backup_from_hardware();
         gUnk_03000440.unk84 = 0;
     } else {
         set_blend_effect_mode(6, 0x3F, 0x20);
@@ -362,8 +362,8 @@ void medapart_detail_wait_fade(void) {
     medapart_detail_blink_arrows();
     if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4) {
         if (gUnk_03000440.unk84 <= 8) {
-            blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-            blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xF0FF);
+            bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xF0FF);
             gUnk_03000440.unk84++;
         } else {
             gGameSubState++;
@@ -584,8 +584,8 @@ void medaparts_help_exit(void) {
 void sub_0800EA2C(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    gUnk_03002C30[1].unk0 &= 0xBFFF;
-    gUnk_03002C30[2].unk0 &= 0xBFFF;
+    gSpriteEntries[1].unk0 &= 0xBFFF;
+    gSpriteEntries[2].unk0 &= 0xBFFF;
     set_tilemap_and_decompress_bg(18, 5, gUnk_084889F8, REG_BG0CNT, 0x380);
     gUnk_03000440.unk4A = 0;
     sub_08010040();
@@ -726,40 +726,40 @@ static void medaparts_list_draw_part_icons(void) {
 }
 
 static void medaparts_list_init_page_arrows(void) {
-    gUnk_03002C30[1].unk0 = 0xC804;
-    gUnk_03002C30[1].unk2 = 0x4C;
-    gUnk_03002C30[1].unk4 = 0x18;
-    gUnk_03002C30[1].unk6 = 0x302;
-    gUnk_03002C30[1].unkA = 14;
-    gUnk_03002C30[1].unk1C = 0;
-    gUnk_03002C30[1].unkB = 0x80;
-    gUnk_03002C30[2].unk0 = 0xC804;
-    gUnk_03002C30[2].unk2 = 0x8C;
-    gUnk_03002C30[2].unk4 = 0x18;
-    gUnk_03002C30[2].unk6 = 0x303;
-    gUnk_03002C30[2].unkA = 14;
-    gUnk_03002C30[2].unk1C = 0;
-    gUnk_03002C30[2].unkB = 0x80;
+    gSpriteEntries[1].unk0 = 0xC804;
+    gSpriteEntries[1].unk2 = 0x4C;
+    gSpriteEntries[1].unk4 = 0x18;
+    gSpriteEntries[1].unk6 = 0x302;
+    gSpriteEntries[1].unkA = 14;
+    gSpriteEntries[1].unk1C = 0;
+    gSpriteEntries[1].unkB = 0x80;
+    gSpriteEntries[2].unk0 = 0xC804;
+    gSpriteEntries[2].unk2 = 0x8C;
+    gSpriteEntries[2].unk4 = 0x18;
+    gSpriteEntries[2].unk6 = 0x303;
+    gSpriteEntries[2].unkA = 14;
+    gSpriteEntries[2].unk1C = 0;
+    gSpriteEntries[2].unkB = 0x80;
 }
 
 static void medaparts_list_blink_page_arrows(void) {
     if (gFrameCounter & 8) {
-        gUnk_03002C30[1].unk0 &= 0xBFFF;
-        gUnk_03002C30[2].unk0 &= 0xBFFF;
+        gSpriteEntries[1].unk0 &= 0xBFFF;
+        gSpriteEntries[2].unk0 &= 0xBFFF;
     } else {
-        gUnk_03002C30[1].unk0 |= 0x4000;
-        gUnk_03002C30[2].unk0 |= 0x4000;
+        gSpriteEntries[1].unk0 |= 0x4000;
+        gSpriteEntries[2].unk0 |= 0x4000;
     }
 }
 
 static void medaparts_list_init_cursor(void) {
-    gUnk_03002C30[3].unk0 = 0xC804;
-    gUnk_03002C30[3].unk2 = 0x50;
-    gUnk_03002C30[3].unk4 = gUnk_03000440.unk40 * 16 + 0x30;
-    gUnk_03002C30[3].unk6 = 0x307;
-    gUnk_03002C30[3].unkA = 14;
-    gUnk_03002C30[3].unk1C = 0;
-    gUnk_03002C30[3].unkB = 0x81;
+    gSpriteEntries[3].unk0 = 0xC804;
+    gSpriteEntries[3].unk2 = 0x50;
+    gSpriteEntries[3].unk4 = gUnk_03000440.unk40 * 16 + 0x30;
+    gSpriteEntries[3].unk6 = 0x307;
+    gSpriteEntries[3].unkA = 14;
+    gSpriteEntries[3].unk1C = 0;
+    gSpriteEntries[3].unkB = 0x81;
 }
 
 static u32 medaparts_list_row_input(void) {
@@ -1093,31 +1093,31 @@ void count_compatible_medaparts(void) {
 
 static void medapart_detail_init_arrows(void) {
     if (gUnk_03000440.unk41 > 1) {
-        gUnk_03002C30[1].unk0 = 0xC804;
-        gUnk_03002C30[1].unk2 = 0x0C;
-        gUnk_03002C30[1].unk4 = 0x28;
-        gUnk_03002C30[1].unk6 = 0x302;
-        gUnk_03002C30[1].unkA = 14;
-        gUnk_03002C30[1].unk1C = 0;
-        gUnk_03002C30[1].unkB = 0x80;
-        gUnk_03002C30[2].unk0 = 0xC804;
-        gUnk_03002C30[2].unk2 = 0x54;
-        gUnk_03002C30[2].unk4 = 0x28;
-        gUnk_03002C30[2].unk6 = 0x303;
-        gUnk_03002C30[2].unkA = 14;
-        gUnk_03002C30[2].unk1C = 0;
-        gUnk_03002C30[2].unkB = 0x80;
+        gSpriteEntries[1].unk0 = 0xC804;
+        gSpriteEntries[1].unk2 = 0x0C;
+        gSpriteEntries[1].unk4 = 0x28;
+        gSpriteEntries[1].unk6 = 0x302;
+        gSpriteEntries[1].unkA = 14;
+        gSpriteEntries[1].unk1C = 0;
+        gSpriteEntries[1].unkB = 0x80;
+        gSpriteEntries[2].unk0 = 0xC804;
+        gSpriteEntries[2].unk2 = 0x54;
+        gSpriteEntries[2].unk4 = 0x28;
+        gSpriteEntries[2].unk6 = 0x303;
+        gSpriteEntries[2].unkA = 14;
+        gSpriteEntries[2].unk1C = 0;
+        gSpriteEntries[2].unkB = 0x80;
     }
 }
 
 static void medapart_detail_blink_arrows(void) {
     if (gUnk_03000440.unk41 > 1) {
         if (gFrameCounter & 8) {
-            gUnk_03002C30[1].unk0 &= 0xBFFF;
-            gUnk_03002C30[2].unk0 &= 0xBFFF;
+            gSpriteEntries[1].unk0 &= 0xBFFF;
+            gSpriteEntries[2].unk0 &= 0xBFFF;
         } else {
-            gUnk_03002C30[1].unk0 |= 0x4000;
-            gUnk_03002C30[2].unk0 |= 0x4000;
+            gSpriteEntries[1].unk0 |= 0x4000;
+            gSpriteEntries[2].unk0 |= 0x4000;
         }
     }
 }
@@ -1189,35 +1189,35 @@ static void medaparts_help_init_cursor(void) {
     const u8 *rec = gUnk_083B7EBC[gUnk_03000440.unk43];
 
     gUnk_03000440.unk45 = rec[0];
-    gUnk_03002C30[6].unk0 = 0xC004;
-    gUnk_03002C30[6].unk2 = rec[(gUnk_03000440.unk44 + 1) << 1] * 8;
-    gUnk_03002C30[6].unk4 = rec[((gUnk_03000440.unk44 + 1) << 1) + 1] * 8;
-    gUnk_03002C30[6].unk6 = 0x308;
-    gUnk_03002C30[6].unkA = 14;
-    gUnk_03002C30[6].unk1C = 0;
-    gUnk_03002C30[6].unkB = 0xC1;
+    gSpriteEntries[6].unk0 = 0xC004;
+    gSpriteEntries[6].unk2 = rec[(gUnk_03000440.unk44 + 1) << 1] * 8;
+    gSpriteEntries[6].unk4 = rec[((gUnk_03000440.unk44 + 1) << 1) + 1] * 8;
+    gSpriteEntries[6].unk6 = 0x308;
+    gSpriteEntries[6].unkA = 14;
+    gSpriteEntries[6].unk1C = 0;
+    gSpriteEntries[6].unkB = 0xC1;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[3], 6);
 }
 
 static void sub_0800FFF4(void) {
     const u8 *rec = gUnk_083B7EBC[gUnk_03000440.unk43];
 
-    gUnk_03002C30[6].unk2 = rec[(gUnk_03000440.unk44 + 1) << 1] * 8;
-    gUnk_03002C30[6].unk4 = rec[((gUnk_03000440.unk44 + 1) << 1) + 1] * 8;
+    gSpriteEntries[6].unk2 = rec[(gUnk_03000440.unk44 + 1) << 1] * 8;
+    gSpriteEntries[6].unk4 = rec[((gUnk_03000440.unk44 + 1) << 1) + 1] * 8;
 }
 
 static void sub_08010040(void) {
-    gUnk_03002C30[4].unk0 = 0xD204;
-    gUnk_03002C30[4].unk2 = 0xA8;
-    gUnk_03002C30[4].unk4 = gUnk_03000440.unk4A * 16 + 0x38;
-    gUnk_03002C30[4].unk6 = 0x307;
-    gUnk_03002C30[4].unkA = 14;
-    gUnk_03002C30[4].unk8 = 0x40;
-    gUnk_03002C30[4].unk9 = 0x40;
-    gUnk_03002C30[4].unk1C = 0;
-    gUnk_03002C30[4].unk29 = 0;
-    gUnk_03002C30[4].unk27 = 0;
-    gUnk_03002C30[4].unkB = 0xC1;
+    gSpriteEntries[4].unk0 = 0xD204;
+    gSpriteEntries[4].unk2 = 0xA8;
+    gSpriteEntries[4].unk4 = gUnk_03000440.unk4A * 16 + 0x38;
+    gSpriteEntries[4].unk6 = 0x307;
+    gSpriteEntries[4].unkA = 14;
+    gSpriteEntries[4].unk8 = 0x40;
+    gSpriteEntries[4].unk9 = 0x40;
+    gSpriteEntries[4].unk1C = 0;
+    gSpriteEntries[4].unk29 = 0;
+    gSpriteEntries[4].unk27 = 0;
+    gSpriteEntries[4].unkB = 0xC1;
 }
 
 static void sub_080100BC(void) {
@@ -1235,40 +1235,40 @@ static void sub_080100BC(void) {
     }
     if (KEYS_LO(gRepeatKeys) & 0xC0) {
         play_sound_effect(2);
-        gUnk_03002C30[4].unk4 = gUnk_03000440.unk4A * 16 + 0x38;
+        gSpriteEntries[4].unk4 = gUnk_03000440.unk4A * 16 + 0x38;
     }
 }
 
 u32 sub_0801013C(void) {
-    gUnk_083ACC94[gUnk_03002C30[4].unk29]();
-    if (gUnk_03002C30[4].unk29 == 3)
+    gUnk_083ACC94[gSpriteEntries[4].unk29]();
+    if (gSpriteEntries[4].unk29 == 3)
         return 1;
     return 0;
 }
 
 void sub_08010170(void) {
-    if (gUnk_03002C30[4].unk27 != 30) {
-        if (gUnk_03002C30[4].unk27 & 4)
-            gUnk_03002C30[4].unk0 &= 0xBFFF;
+    if (gSpriteEntries[4].unk27 != 30) {
+        if (gSpriteEntries[4].unk27 & 4)
+            gSpriteEntries[4].unk0 &= 0xBFFF;
         else
-            gUnk_03002C30[4].unk0 |= 0x4000;
-        gUnk_03002C30[4].unk27++;
+            gSpriteEntries[4].unk0 |= 0x4000;
+        gSpriteEntries[4].unk27++;
     } else {
-        gUnk_03002C30[4].unk0 |= 0x4000;
-        gUnk_03002C30[4].unk29++;
+        gSpriteEntries[4].unk0 |= 0x4000;
+        gSpriteEntries[4].unk29++;
     }
 }
 
 void sub_080101E8(void) {
-    gUnk_03002C30[4].unk8 -= 8;
-    gUnk_03002C30[4].unk9 -= 8;
-    if (gUnk_03002C30[4].unk8 == 0) {
+    gSpriteEntries[4].unk8 -= 8;
+    gSpriteEntries[4].unk9 -= 8;
+    if (gSpriteEntries[4].unk8 == 0) {
         clear_sprite_table_mask(4, 1);
-        gUnk_03002C30[4].unk29++;
+        gSpriteEntries[4].unk29++;
     }
 }
 
 void sub_0801022C(void) {
     vram_fill_tilemap_rect(12, 8, 18, 5, REG_BG0CNT, 0);
-    gUnk_03002C30[4].unk29++;
+    gSpriteEntries[4].unk29++;
 }

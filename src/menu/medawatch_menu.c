@@ -33,8 +33,8 @@ void medawatch_menu_load_gfx(void) {
 void medawatch_menu_fade_in(void) {
     medawatch_scroll_bg3();
     if (gUnk_03000440.unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, 32 - gUnk_03000440.unk84 * 4, 0x1FFF);
-        blend_obj_palettes_to_color_0803F998(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0x1FFF);
+        obj_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
     } else {
         medawatch_menu_init_cursor();
@@ -52,8 +52,8 @@ void medawatch_menu_handle_input(void) {
             gUnk_03000440.unk8F--;
         play_sound_effect(2);
         medawatch_menu_load_icon();
-        gUnk_03002C30[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
-        gUnk_03002C30[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
+        gSpriteEntries[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
+        gSpriteEntries[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
         if (gUnk_03000440.unk8F == 2)
@@ -62,8 +62,8 @@ void medawatch_menu_handle_input(void) {
             gUnk_03000440.unk8F++;
         play_sound_effect(2);
         medawatch_menu_load_icon();
-        gUnk_03002C30[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
-        gUnk_03002C30[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
+        gSpriteEntries[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
+        gSpriteEntries[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
     }
     if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
@@ -81,7 +81,7 @@ void medawatch_menu_handle_input(void) {
 void medawatch_menu_exit_start(void) {
     medawatch_scroll_bg3();
     clear_battle_sprite_slot(0, 1);
-    copy_obj_palette_to_buffer();
+    palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     sound_stop_all_with_fade_guard(8);
     gGameSubState++;
@@ -90,8 +90,8 @@ void medawatch_menu_exit_start(void) {
 void medawatch_menu_exit_fade(void) {
     medawatch_scroll_bg3();
     if (gUnk_03000440.unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0x1FFF);
-        blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0x1FFF);
+        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
     } else {
         gGameSubState++;
@@ -189,12 +189,12 @@ static void medawatch_menu_load_icon(void) {
 static void medawatch_menu_init_cursor(void) {
     lz_decompress_dispatch(gUnk_084C7174, (void *)0x06016C00);
     DmaSet(3, gUnk_084E2E58, 0x050003C0, 0x84000008);
-    gUnk_03002C30[0].unk0 = 0xC004;
-    gUnk_03002C30[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
-    gUnk_03002C30[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
-    gUnk_03002C30[0].unkA = 14;
-    gUnk_03002C30[0].unk1C = 0;
-    gUnk_03002C30[0].unkB = 0xFF;
+    gSpriteEntries[0].unk0 = 0xC004;
+    gSpriteEntries[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
+    gSpriteEntries[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
+    gSpriteEntries[0].unkA = 14;
+    gSpriteEntries[0].unk1C = 0;
+    gSpriteEntries[0].unkB = 0xFF;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0], 0);
 }
 

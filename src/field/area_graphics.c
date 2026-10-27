@@ -278,14 +278,14 @@ void fill_sprite_palettes(s32 arg) {
 
 // guess: sprite unkB (0xFF / 0 / 0x40) from the kind table gUnk_083D2ADD by sprite unk30.
 void sprite_set_blend_from_kind(u8 idx) {
-    u8 v = gUnk_083D2ADD[gUnk_03002C30[idx].unk30];
+    u8 v = gUnk_083D2ADD[gSpriteEntries[idx].unk30];
 
     if (v == 2)
-        gUnk_03002C30[idx].unkB = 0xFF;
+        gSpriteEntries[idx].unkB = 0xFF;
     else if (v == 1)
-        gUnk_03002C30[idx].unkB = 0;
+        gSpriteEntries[idx].unkB = 0;
     else
-        gUnk_03002C30[idx].unkB = 0x40;
+        gSpriteEntries[idx].unkB = 0x40;
 }
 
 static void blend_set_alpha_12_8(void) {
@@ -293,8 +293,8 @@ static void blend_set_alpha_12_8(void) {
     u16 v;
 
     REG_BLDCNT = 0x1F41;
-    gUnk_03006F40.unkC = 12.0f;
-    gUnk_03006F40.unk10 = 8.0f;
+    gBlendEffect.eva_level = 12.0f;
+    gBlendEffect.evb_level = 8.0f;
     bldalpha = &REG_BLDALPHA;
     v = 0x80C;
     *bldalpha = v;
@@ -305,22 +305,22 @@ void blend_set_alpha_12_10(void) {
     u16 v;
 
     REG_BLDCNT = 0xF40;
-    gUnk_03006F40.unkC = 12.0f;
-    gUnk_03006F40.unk10 = 10.0f;
+    gBlendEffect.eva_level = 12.0f;
+    gBlendEffect.evb_level = 10.0f;
     bldalpha = &REG_BLDALPHA;
     v = 0xA0C;
     *bldalpha = v;
 }
 
 void sprite_entry_init(u8 slot, u16 a, u32 frame, u8 c, u8 d) {
-    gUnk_03002C30[slot].unk0 = a;
-    gUnk_03002C30[slot].unk32 = a;
-    gUnk_03002C30[slot].unk6 = frame;
-    gUnk_03002C30[slot].unkA = c;
-    gUnk_03002C30[slot].unk1C = d;
+    gSpriteEntries[slot].unk0 = a;
+    gSpriteEntries[slot].unk32 = a;
+    gSpriteEntries[slot].unk6 = frame;
+    gSpriteEntries[slot].unkA = c;
+    gSpriteEntries[slot].unk1C = d;
 }
 
 void sprite_entry_clear(u8 slot) {
-    memzero_bytes((u8 *)&gUnk_03002C30[slot], 0x40);
+    memzero_bytes((u8 *)&gSpriteEntries[slot], 0x40);
     clear_entity_state(slot);
 }

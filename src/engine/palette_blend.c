@@ -8,7 +8,7 @@ static inline void flush_pal(const void *s) {
     CpuFastSet(s, (void *)PLTT, 0x80);
 }
 
-void blend_obj_palettes_to_color_0803F684(u16 color, u32 amount, u16 mask) {
+void bg_palettes_blend_masked_now(u16 color, u32 amount, u16 mask) {
     u32 i, j;
     u32 inv;
     u16 bit = 1;
@@ -33,7 +33,7 @@ void blend_obj_palettes_to_color_0803F684(u16 color, u32 amount, u16 mask) {
     flush_pal(gPaletteBufferBg);
 }
 
-static void blend_obj_palettes_to_color_0803F788(u16 color, u32 amount, u16 mask) {
+static void bg_palettes_blend_masked(u16 color, u32 amount, u16 mask) {
     u32 i, j;
     u32 inv;
     u16 bit = 1;
@@ -55,10 +55,10 @@ static void blend_obj_palettes_to_color_0803F788(u16 color, u32 amount, u16 mask
         }
         bit <<= 1;
     }
-    gVBlankOnceCallback = dma_obj_palette_to_hardware;
+    gVBlankOnceCallback = palette_buffer_upload;
 }
 
-static void palette_blend_to_color_0803F890(u16 color, u32 amount, u16 mask) {
+static void obj_palettes_blend_masked(u16 color, u32 amount, u16 mask) {
     u32 i, j;
     u32 inv;
     u16 bit = 1;
@@ -80,13 +80,13 @@ static void palette_blend_to_color_0803F890(u16 color, u32 amount, u16 mask) {
         }
         bit <<= 1;
     }
-    gVBlankOnceCallback = dma_obj_palette_to_hardware;
+    gVBlankOnceCallback = palette_buffer_upload;
 }
 
 static inline void flush_obj_pal(const void *s) {
     CpuFastSet(s, (void *)OBJ_PLTT, 0x80);
 }
-void blend_obj_palettes_to_color_0803F998(u16 color, u32 amount, u16 mask) {
+void obj_palettes_blend_masked_now(u16 color, u32 amount, u16 mask) {
     u32 i, j;
     u32 inv;
     u16 bit = 1;

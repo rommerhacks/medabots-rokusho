@@ -300,8 +300,8 @@ void sub_08034074(void) {
         gUnk_03001800.unkF9 = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
     else
         gUnk_03001800.unkF9 = gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50;
-    gUnk_03002C30[1].unk29 = 1;
-    gUnk_03002C30[2].unk29 = 1;
+    gSpriteEntries[1].unk29 = 1;
+    gSpriteEntries[2].unk29 = 1;
     battle_script_advance();
 }
 

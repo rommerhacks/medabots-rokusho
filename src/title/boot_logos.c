@@ -47,7 +47,7 @@ void boot_logos_init(void) {
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     zero = 0;
-    DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
+    DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     zero = 0;
     DmaSet(3, &zero, &gUnk_03001800_s, 0x85000005);
     play_song(0);

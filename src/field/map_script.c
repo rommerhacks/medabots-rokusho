@@ -69,7 +69,7 @@ void map_script_cmd_end(void) {
     gUnk_03005310.unk38 = 0;
     memzero_bytes(gUnk_030057E0.unkCA4, 16);
     memzero_bytes((u8 *)&gUnk_03006D20, 16);
-    gUnk_03002C30[47].unk25 = 1;
+    gSpriteEntries[47].unk25 = 1;
     set_battle_state_cancel_flag();
 }
 
@@ -144,22 +144,22 @@ static void map_script_read_warp(void) {
     gUnk_030057E0.unk7FD = read_map_script_byte();
     gUnk_030057E0.unkC56 = read_map_script_byte();
     gUnk_030057E0.unkC57 = read_map_script_byte();
-    gUnk_030057E0.unkC67 = gUnk_03002C30[47].unk20;
+    gUnk_030057E0.unkC67 = gSpriteEntries[47].unk20;
     gUnk_030057E0.unkC89 = 1;
 }
 
 void sub_0804BA10(void) {
     gUnk_030057E0.unkC94[0] = read_map_script_byte();
-    gUnk_03002C30[47].unk21 = gUnk_030057E0.unkC94[0];
-    sub_080493D4(47, gUnk_03002C30[47].unk21);
-    gUnk_03002C30[47].unk20 = gUnk_03002C30[47].unk21;
+    gSpriteEntries[47].unk21 = gUnk_030057E0.unkC94[0];
+    sprite_anim_start(47, gSpriteEntries[47].unk21);
+    gSpriteEntries[47].unk20 = gSpriteEntries[47].unk21;
     field_set_player_facing(gUnk_030057E0.unkC94[0]);
 }
 
 void sub_0804BA50(void) {
-    gUnk_030057E0.unkC94[0] = gUnk_03002C30[47].unk4;
-    gUnk_03002C30[47].unk26 = 0;
-    gUnk_03002C30[47].unk28 = 0;
+    gUnk_030057E0.unkC94[0] = gSpriteEntries[47].unk4;
+    gSpriteEntries[47].unk26 = 0;
+    gSpriteEntries[47].unk28 = 0;
     field_play_sound_effect(0x70);
     gUnk_030057E0.unkC89 = 1;
 }
@@ -174,12 +174,13 @@ void sub_0804BAC8(void) {
     *(u8 *)&gHeldKeys = 0; // drops the held buttons (A, B, D-pad...)
     memcpy_u8(gUnk_030057E0.unkC10, gUnk_030057E0.unkC20, 8);
     memzero_bytes(gUnk_030057E0.unkC10, 8);
-    gUnk_03002C30[47].unk28 = 0;
-    gUnk_03002C30[47].unk26 = 0;
-    gUnk_03002C30[47].unk27 = 0;
+    gSpriteEntries[47].unk28 = 0;
+    gSpriteEntries[47].unk26 = 0;
+    gSpriteEntries[47].unk27 = 0;
     gUnk_030057E0.unkC5F = 1;
-    setup_battle_sprite_terrain(47, gUnk_030057E0.unkC94[gUnk_03002C30[47].unk26], gUnk_083D28B0[gUnk_030057E0.unkC5C]);
-    field_set_player_facing(gUnk_03002C30[47].unk20);
+    setup_battle_sprite_terrain(47, gUnk_030057E0.unkC94[gSpriteEntries[47].unk26],
+                                gUnk_083D28B0[gUnk_030057E0.unkC5C]);
+    field_set_player_facing(gSpriteEntries[47].unk20);
     gUnk_030057E0.unkC89 = 1;
 }
 
@@ -250,7 +251,7 @@ void sub_0804BD8C(void) {
 void sub_0804BE04(void) {
     if ((gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4].unk2 & 0xFFF) == gUnk_030057E0.unkC8E)
         set_sprite_anim_and_store(gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4].unk4_0 + 49,
-                                  gUnk_083D24AC[gUnk_03002C30[47].unk21], &gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4]);
+                                  gUnk_083D24AC[gSpriteEntries[47].unk21], &gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4]);
 }
 
 void sub_0804BE78(void) {
@@ -263,8 +264,8 @@ void sub_0804BE78(void) {
 void sub_0804BEE8(void) {
     if ((gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4].unk2 & 0xFFF) == gUnk_030057E0.unkC8E) {
         gUnk_03006D20.unkA = gUnk_030057E0.unk5DC[gUnk_030057E0.unkCB4].unk4_0 + 49;
-        gUnk_03006D20.unk8 = gUnk_03002C30[gUnk_03006D20.unkA].unk10_8;
-        gUnk_03002C30[gUnk_03006D20.unkA].unk28 = 0;
+        gUnk_03006D20.unk8 = gSpriteEntries[gUnk_03006D20.unkA].unk10_8;
+        gSpriteEntries[gUnk_03006D20.unkA].unk28 = 0;
         field_play_sound_effect(0x70);
         gUnk_030057E0.unkC89 = 1;
     }
@@ -350,8 +351,8 @@ void sub_0804C1C4(void) {
 void sub_0804C220(void) {
     gUnk_030057E0.unkC94[0] = read_map_script_byte();
     gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
-    gUnk_03006D20.unk8 = gUnk_03002C30[gUnk_03006D20.unkA].unk10_8;
-    gUnk_03002C30[gUnk_03006D20.unkA].unk28 = 0;
+    gUnk_03006D20.unk8 = gSpriteEntries[gUnk_03006D20.unkA].unk10_8;
+    gSpriteEntries[gUnk_03006D20.unkA].unk28 = 0;
     field_play_sound_effect(0x70);
     gUnk_030057E0.unkC89 = 1;
 }
@@ -532,10 +533,10 @@ void sub_0804C81C(void) {
     gUnk_030057E0.unkC94[0] = read_map_script_byte();
     for (i = 0; i <= 3; i++) {
         if (sub_0804DBA4(i) != -1 && gUnk_030055A0[sub_0804DBA4(i) + 79].unk0 != 0) {
-            gUnk_03002C30[sub_0804DBA4(i) + 79].unk26 = gUnk_030057E0.unkC94[0];
-            gUnk_03002C30[sub_0804DBA4(i) + 79].unk27 = 0;
-            gUnk_03002C30[sub_0804DBA4(i) + 79].unk28 = 8;
-            gUnk_03002C30[sub_0804DBA4(i) + 79].unk29 = 8;
+            gSpriteEntries[sub_0804DBA4(i) + 79].unk26 = gUnk_030057E0.unkC94[0];
+            gSpriteEntries[sub_0804DBA4(i) + 79].unk27 = 0;
+            gSpriteEntries[sub_0804DBA4(i) + 79].unk28 = 8;
+            gSpriteEntries[sub_0804DBA4(i) + 79].unk29 = 8;
         }
     }
     gUnk_030057E0.unkC89 = 1;
@@ -577,7 +578,7 @@ void sub_0804C978(void) {
 void sub_0804C988(void) {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
     read_map_script_bytes(2);
-    if (gUnk_030057E0.unkC94[0] != gUnk_03002C30[47].unk21)
+    if (gUnk_030057E0.unkC94[0] != gSpriteEntries[47].unk21)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
 }
 
@@ -657,7 +658,7 @@ void sub_0804CCA8(void) {
         gUnk_030057E0.unkC94[0]--;
     gUnk_030057E0.unkC38[gUnk_030057E0.unkC94[0]] = gUnk_030057E0.unkC94[1];
     area_load_sprite_sheets();
-    switch (gUnk_03006F40.unk1) {
+    switch (gBlendEffect.type) {
     case 1:
     case 3:
     case 5:
@@ -694,9 +695,9 @@ void sub_0804CD38(void) {
 
 void sub_0804CD58(void) {
     gUnk_030057E0.unkC94[0] = read_map_script_byte();
-    gUnk_03002C30[48].unk21 = gUnk_030057E0.unkC94[0];
-    gUnk_03002C30[48].unk20 = gUnk_030057E0.unkC94[0];
-    sub_080493D4(48, sub_080502B4(48, gUnk_030057E0.unkC94[0] + gUnk_03002C30[48].unk2B * 4));
+    gSpriteEntries[48].unk21 = gUnk_030057E0.unkC94[0];
+    gSpriteEntries[48].unk20 = gUnk_030057E0.unkC94[0];
+    sprite_anim_start(48, sub_080502B4(48, gUnk_030057E0.unkC94[0] + gSpriteEntries[48].unk2B * 4));
     set_battle_state_byte_c83(gUnk_030057E0.unkC94[0]);
 }
 
@@ -787,7 +788,7 @@ void nullsub_0804D044(void) {}
 void sub_0804D048(void) {
     read_map_script_bytes(2);
     gUnk_03006D20.unkA = sub_0804DBA4(gUnk_030057E0.unkC94[0]) + 79;
-    gUnk_03002C30[gUnk_03006D20.unkA].unk26 = 0;
+    gSpriteEntries[gUnk_03006D20.unkA].unk26 = 0;
     gUnk_030057E0.unkC89 = 1;
 }
 
@@ -1093,21 +1094,21 @@ static void sub_0804D934(struct MapObject *obj) {
 static void sub_0804D9AC(u8 i) {
     sprite_entry_clear(48);
     sprite_entry_clear(90);
-    memcpy_u8(&gUnk_03002C30[i], &gUnk_03002C30[48], 0x40);
+    memcpy_u8(&gSpriteEntries[i], &gSpriteEntries[48], 0x40);
     memcpy_u8(&gUnk_030055A0[i], &gUnk_030055A0[48], 4);
     gUnk_030057E0.unkC76 = 1;
-    gUnk_030057E0.unkC6E = gUnk_03002C30[48].unk2 + gBg1Scroll.x;
-    gUnk_030057E0.unkC70 = gUnk_03002C30[48].unk4 + gBg1Scroll.y;
+    gUnk_030057E0.unkC6E = gSpriteEntries[48].unk2 + gBg1Scroll.x;
+    gUnk_030057E0.unkC70 = gSpriteEntries[48].unk4 + gBg1Scroll.y;
     gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
     gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
-    gUnk_030057E0.unkC84 = gUnk_03002C30[48].unk2B;
+    gUnk_030057E0.unkC84 = gSpriteEntries[48].unk2B;
     follower_clear_scroll_dir();
-    sub_080493D4(48, sub_080502B4(48, gUnk_03002C30[48].unk2B * 4 + gUnk_03002C30[48].unk21));
+    sprite_anim_start(48, sub_080502B4(48, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk21));
     sprite_entry_init(90, 0xCC0C, 0x90, 0xE, 1);
-    gUnk_03002C30[90].unk2 = gUnk_03002C30[48].unk2;
-    gUnk_03002C30[90].unk4 = gUnk_03002C30[48].unk4 - 5;
-    gUnk_03002C30[90].unkC_8 = gUnk_03002C30[48].unkC_8;
-    gUnk_03002C30[90].unk10_8 = gUnk_03002C30[48].unk10_8 - 5;
+    gSpriteEntries[90].unk2 = gSpriteEntries[48].unk2;
+    gSpriteEntries[90].unk4 = gSpriteEntries[48].unk4 - 5;
+    gSpriteEntries[90].unkC_8 = gSpriteEntries[48].unkC_8;
+    gSpriteEntries[90].unk10_8 = gSpriteEntries[48].unk10_8 - 5;
     update_battle_direction_indicator(1);
     gUnk_030057E0.unkC5E = gUnk_030057E0.unkC5D;
     gUnk_030057E0.unkC5D = 0xDF;

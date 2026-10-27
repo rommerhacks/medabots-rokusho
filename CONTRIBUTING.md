@@ -323,7 +323,7 @@
   lsls r1, #2` comes from indexing with the field just stored: `f(tbl[x.unk84])` (sub_08023B44).
 * `x = K; if (c) x |= M;` (on a struct field) makes gcc keep K in a register and `orrs` it for the second
   store; `x = K | M` folds the constant and a `u16 v = K` local moves the load (sub_08026184).
-* Loops over sprite slots `gUnk_03002C30[i + 0x21]` that compute `(i + 0x21) << 6` each time come from
+* Loops over sprite slots `gSpriteEntries[i + 0x21]` that compute `(i + 0x21) << 6` each time come from
   writing the index out in every statement; a `spr` pointer or `slot` local lets gcc fold `base + 0x840`
   (sub_08025FC8).
 * A 2D table read as `(a * 4 + b) * 4` is indexed flat, `tbl[0][a * 4 + b]` (gUnk_083BB9CC, sub_08026810).
@@ -347,12 +347,12 @@
   (no pointer strength reduction) and truncates the slot at calls: write `i + 0x21` at every use, not a
   separate `slot` counter (sub_0802C960).
 * Operand order of a sum decides how gcc splits it. For a sprite index the original computes as
-  `base + (i << 8) + 0xC00 + j * 0x40`, write `gUnk_03002C30[0x30 + j + i * 4]` (sub_0802D198,
+  `base + (i << 8) + 0xC00 + j * 0x40`, write `gSpriteEntries[0x30 + j + i * 4]` (sub_0802D198,
   sub_0802D270); `i * 4 + 0x30 + j` and friends regroup it. For an argument computed as `(i + 0x72)`
   then `+ unk60`, write `unk60 + 0x72 + i` (sub_0802CE4C).
 * An `i * 4` computed once (`lsls r4, r6, #2`) right after the first call's source address and reused
   by later index expressions and a u8 argument: assign it inside the first use,
-  `&gUnk_03002C30[(j = i * 4) + 0x24]`, then use `j` (sub_0802CE4C).
+  `&gSpriteEntries[(j = i * 4) + 0x24]`, then use `j` (sub_0802CE4C).
 * `subs r0, #0x80` before a `strb` (`adds r0, #0x80` is what `- 0x80` gives): cast the call result
   to `s8` first, `(s8)f(x) - 0x80` (sub_0802D758).
 * A chain of early-out failures that each store a different message and then share
@@ -378,8 +378,8 @@
 * Several `x == A || x == B` checks in a row: if one uses the `goto` pair through a `type` local and
   the registers come out swapped, write that check with the field read at both compares instead
   (sub_08033D30).
-* Array element base: `gUnk_03002C30[slot].x` at every use gives `ldr base; lsls; adds` (literal first);
-  a `struct X *s = &gUnk_03002C30[slot]` local gives `lsls; ldr; adds`. Pick the form by the order of
+* Array element base: `gSpriteEntries[slot].x` at every use gives `ldr base; lsls; adds` (literal first);
+  a `struct X *s = &gSpriteEntries[slot]` local gives `lsls; ldr; adds`. Pick the form by the order of
   the first two instructions (check_sprite_in_range, sub_080353CC).
 * `ldr r4, =gUnk_03001800; adds r4, #0xEC` (field address not folded into one literal): access the
   field through `struct Unk_03001800 *b = &gUnk_03001800;` (sub_08035BD4, calc_battle_action_speed);
@@ -433,7 +433,7 @@
   keep it in a local, test `if (gUnk_0300056F == 1)` again and let cse reuse the load (sub_0803B9A4).
 * `if (A) { X; Y++; Y++; } else Y++;` where both `else if` arms of the caller do the same: write the
   body in full in each arm; the original's tail-merged copies only come out that way (sub_0803B900).
-* A sprite slot found by a search loop and then used for many stores: index `gUnk_03002C30[slot].f`
+* A sprite slot found by a search loop and then used for many stores: index `gSpriteEntries[slot].f`
   every time instead of a `struct *s = &...[slot]` (the pointer swaps the `lsls/ldr` order).
 * An unrotated loop (`top: test; bls out; i += 3; b top`) where gcc rotates your `while`/`for`: write it
   with a label and `goto` (init_battle_sprite_entry_08040B90).
@@ -511,8 +511,8 @@
   `movs r0, #0`: write the FALSE case first (`if (a < b) return FALSE; return TRUE;`, or
   `if (x > 0x8F) { ...; return FALSE; } return TRUE;`). The mirrored `if (a >= b) return TRUE;`
   flips the branch (race sprite handlers sub_0806B014 .. sub_0806B124).
-* `ldr rB, =gUnk_03002C30` **before** `lsls rI, sprite, #6`: index the global in every statement
-  (`gUnk_03002C30[sprite].unk2 += 2;`); a `struct Unk_03002C30 *s = &gUnk_03002C30[sprite]` local
+* `ldr rB, =gSpriteEntries` **before** `lsls rI, sprite, #6`: index the global in every statement
+  (`gSpriteEntries[sprite].unk2 += 2;`); a `struct SpriteEntry *s = &gSpriteEntries[sprite]` local
   computes the shift first (sub_0806AFA0, update_sprite_animations_tick_0806AF40).
 * `x = c ? 1 : 2;` into a struct field reached through a pointer local loads the pointer before the
   test; an `if` with a temporary loads it after (sub_08069158).

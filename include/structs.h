@@ -114,7 +114,7 @@ struct Unk_03006D20 {
     u8 unk3;
     u8 filler4[0x4];
     u16 unk8; // base y of a sprite hop (sub_080508CC)
-    u8 unkA;  // sprite slot (gUnk_03002C30 index)
+    u8 unkA;  // sprite slot (gSpriteEntries index)
     u8 unkB;
     u8 unkC;
     u8 fillerD[0x3];
@@ -347,7 +347,7 @@ struct Unk_03000440 {
     u8 unk13A;
 };
 
-struct Unk_03002C30 {
+struct SpriteEntry {
     u16 unk0;
     s16 unk2;
     s16 unk4;
@@ -368,9 +368,9 @@ struct Unk_03002C30 {
     u8 filler1D[0x3];
     u8 unk20; // animation state (0-3)
     u8 unk21;
-    u8 unk22;
-    u8 unk23;
-    u8 unk24;
+    u8 unk22; // position in the animation script (advance_sprite_animation_frame)
+    u8 unk23; // frames shown of the current script frame
+    u8 unk24; // animation script id, gSpriteAnimScripts (sprite_anim_start)
     u8 unk25;
     u8 unk26;
     u8 unk27;
@@ -894,7 +894,7 @@ struct MapObject {
     u8 x;
     u8 y;
     u16 unk2;      // bits 12-15: type (8 = event), bits 0-11: event id
-    u8 unk4_0 : 5; // sprite slot (gUnk_03002C30 index - 49)
+    u8 unk4_0 : 5; // sprite slot (gSpriteEntries index - 49)
     u8 unk4_5 : 1;
     u8 unk4_6 : 1; // has a sprite (slot + 49, shadow slot + 91)
     u8 unk4_7 : 1; // animates at random
@@ -1041,33 +1041,33 @@ struct Unk_03005290 {
     u8 filler11[7];
 };
 
-// Blend effect state (setup_blend_effect / blend_effect_update)
-struct Unk_03006F40 {
-    u8 unk0; // BLDCNT target/mode bits
-    u8 unk1; // effect type 0..6
-    u8 unk2; // 1 = running, 2 = done
-    u8 unk3; // EVA
-    u8 unk4; // EVB
-    u8 unk5; // EVY
-    u8 unk6;
-    u8 unk7;
-    u8 unk8;
-    u8 unk9;
-    u8 unkA;
+// BG blend / brightness fade state, gBlendEffect (setup_blend_effect, blend_effect_update)
+struct BlendEffectState {
+    u8 mode;   // BLDCNT effect bits (0x40 alpha, 0x80 brighten, 0xC0 darken)
+    u8 type;   // effect type 0..6 (4/5/6: EVA/EVB from current/16/start toward target)
+    u8 status; // 1 = running, 2 = done
+    u8 eva;    // current EVA / EVB / EVY, written to BLDALPHA / BLDY in VBlank
+    u8 evb;
+    u8 evy;
+    u8 target_eva; // end values (types 4-6)
+    u8 target_evb;
+    u8 target_evy;
+    u8 start_eva; // BLDALPHA read at setup (type 6)
+    u8 start_evb;
     u8 fillerB;
-    float unkC; // blend weights (blend_set_alpha_12_10: 12.0, 10.0)
-    float unk10;
-    float unk14;
-    float unk18;
-    float unk1C;
-    float unk20;
-    float unk24; // palette fade amount (setup_palette_fade_to_color)
-    float unk28;
-    float unk2C;
-    float unk30;
+    float eva_level; // accumulated levels (blend_set_alpha_12_10: 12.0, 10.0)
+    float evb_level;
+    float evy_level;
+    float eva_step; // added per frame
+    float evb_step;
+    float evy_step;
+    float fade_amount; // palette fade amount (setup_palette_fade_to_color)
+    float fade_start;
+    float fade_end;
+    float fade_step;
 };
 
-// Affine parameters, gUnk_03006D40[32] (calculate_oam_affine_matrix)
+// Affine parameters, gAffineParams[32] (calculate_oam_affine_matrix)
 struct AffineParam {
     s16 scaleX;
     s16 scaleY;
@@ -1266,7 +1266,7 @@ struct Unk_03005310 {
     s16 unkE;  // pd
     s32 unk10; // affine x
     s32 unk14; // affine y
-    u16 unk18; // cleared with the gUnk_03006D40 affine params (sub_080492CC)
+    u16 unk18; // cleared with the gAffineParams affine params (affine_params_reset)
     u16 unk1A;
     u16 unk1C; // BG0 x scroll (new_game_init)
     u16 unk1E; // BG1-3 x scroll (area_load_graphics)

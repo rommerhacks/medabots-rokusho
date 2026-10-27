@@ -3,9 +3,9 @@
 #include "global.h"
 
 void sub_080600E0(void) {
-    if (++gUnk_03002C30[0].unk1A > 0x3F)
-        gUnk_03002C30[0].unk1A = 0;
-    gUnk_03002C30[0].unk6 = gUnk_080AF980[(gUnk_03002C30[0].unk1A >> 3) & 7] + 0x100;
+    if (++gSpriteEntries[0].unk1A > 0x3F)
+        gSpriteEntries[0].unk1A = 0;
+    gSpriteEntries[0].unk6 = gUnk_080AF980[(gSpriteEntries[0].unk1A >> 3) & 7] + 0x100;
 }
 
 void save_lost_dispatch(void) {
@@ -49,13 +49,13 @@ void sub_080601A4(void) {
     CpuFastSet(gUnk_08791CA8, (void *)PLTT, 0x38);
     CpuFastSet(gUnk_080AF988, (void *)(PLTT + 0x200), 8);
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
-    gUnk_03002C30[0].unk0 = 0xC000;
-    gUnk_03002C30[0].unk1C = 2;
-    gUnk_03002C30[0].unkA = 0;
-    gUnk_03002C30[0].unk6 = 0x112;
-    gUnk_03002C30[0].unk2 = 0x70;
-    gUnk_03002C30[0].unk4 = 0x18;
-    gUnk_03002C30[0].unk1A = 0;
+    gSpriteEntries[0].unk0 = 0xC000;
+    gSpriteEntries[0].unk1C = 2;
+    gSpriteEntries[0].unkA = 0;
+    gSpriteEntries[0].unk6 = 0x112;
+    gSpriteEntries[0].unk2 = 0x70;
+    gSpriteEntries[0].unk4 = 0x18;
+    gSpriteEntries[0].unk1A = 0;
     gGameSubState++;
 }
 

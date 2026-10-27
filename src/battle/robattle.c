@@ -51,7 +51,7 @@ void battle_scene_init_state_machine(void) {
     case 1:
         gUnk_03000440.unk84 = 0;
         fill = 0;
-        CpuFastSet(&fill, gUnk_03002C30, 0x01000800);
+        CpuFastSet(&fill, gSpriteEntries, 0x01000800);
         REG_DISPCNT |= 0x1F40;
         REG_DISPCNT &= 0xFFDF;
         gUnk_03000440.unk139++;
@@ -73,8 +73,8 @@ void battle_scene_init_state_machine(void) {
 
 void robattle_fade_in_from_white(void) {
     if (gUnk_03000440.unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
     } else
         gGameSubState++;
@@ -454,7 +454,7 @@ void sub_080136E8(void) {
     update_all_battle_status_sprites();
     animate_battle_sprites(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
-    copy_obj_palette_to_buffer();
+    palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
@@ -464,8 +464,8 @@ void sub_0801372C(void) {
     animate_battle_sprites(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     if (gUnk_03000440.unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
     } else {
         gGameSubState++;
@@ -477,7 +477,7 @@ void sub_08013798(void) {
     CpuFastSet((void *)0x0600C800, (void *)0x02021000, 0x200);
     CpuFastSet((void *)0x0600D000, (void *)0x02021800, 0x200);
     CpuFastSet((void *)0x0600D800, (void *)0x02022000, 0x200);
-    CpuFastSet(gUnk_03002C30, (void *)0x02028000, 0x800);
+    CpuFastSet(gSpriteEntries, (void *)0x02028000, 0x800);
     set_blend_effect_mode(5, 0x3F, 0x20);
     gVBlankCallback = nullsub_08000840;
     gGameSubState++;
@@ -517,7 +517,7 @@ void battle_phase_dispatch_0801387C(void) {
         break;
     case 1:
         fill = 0;
-        CpuFastSet(&fill, gUnk_03002C30, 0x01000800);
+        CpuFastSet(&fill, gSpriteEntries, 0x01000800);
         gUnk_03000440.unk139++;
         break;
     case 2:
@@ -538,7 +538,7 @@ void battle_phase_dispatch_0801387C(void) {
         gUnk_03000440.unk139++;
         break;
     case 5:
-        CpuFastSet((void *)0x02028000, gUnk_03002C30, 0x800);
+        CpuFastSet((void *)0x02028000, gSpriteEntries, 0x800);
         gVBlankCallback = battle_vblank_update_bg;
         gGameSubState++;
         gUnk_03000440.unk139 = 0;
@@ -551,8 +551,8 @@ void sub_08013A74(void) {
     animate_battle_sprites(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     if (gUnk_03000440.unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
     } else {
         gGameSubState = 0xB;
@@ -607,7 +607,7 @@ void sub_08013B8C(void) {
     CpuFastSet(&gUnk_0850DD58[-0x20], (void *)0x050003E0, 8);
     CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
     fill = 0;
-    CpuFastSet(&fill, gUnk_03002C30, 0x01000800);
+    CpuFastSet(&fill, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F40;
     mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
     gUnk_03000440.unk46 = 1;
@@ -729,41 +729,41 @@ void robattle_start_banner_init(void) {
 void robattle_start_banner(void) {
     switch (gUnk_03000440.unk84) {
     case 0:
-        gUnk_03002C30[3].unk0 = 0xC005;
-        gUnk_03002C30[3].unk1C = 0;
-        gUnk_03002C30[3].unk2 = 0x78;
-        gUnk_03002C30[3].unk4 = 0x38;
-        gUnk_03002C30[3].unkA = 0xF;
-        gUnk_03002C30[3].unkB = 0xC0;
-        gUnk_03002C30[3].unk6 = 0x900;
-        gUnk_03002C30[3].unk20 = 8;
-        REG_MOSAIC = (gUnk_03002C30[3].unk20 << 12) + (gUnk_03002C30[3].unk20 << 8);
+        gSpriteEntries[3].unk0 = 0xC005;
+        gSpriteEntries[3].unk1C = 0;
+        gSpriteEntries[3].unk2 = 0x78;
+        gSpriteEntries[3].unk4 = 0x38;
+        gSpriteEntries[3].unkA = 0xF;
+        gSpriteEntries[3].unkB = 0xC0;
+        gSpriteEntries[3].unk6 = 0x900;
+        gSpriteEntries[3].unk20 = 8;
+        REG_MOSAIC = (gSpriteEntries[3].unk20 << 12) + (gSpriteEntries[3].unk20 << 8);
         gUnk_03000440.unk84++;
         break;
     case 1:
         if (gFrameCounter & 1)
             break;
-        gUnk_03002C30[3].unk20--;
-        REG_MOSAIC = (gUnk_03002C30[3].unk20 << 12) + (gUnk_03002C30[3].unk20 << 8);
-        if (gUnk_03002C30[3].unk20 == 0) {
-            gUnk_03002C30[4].unk0 = 0xC224;
-            gUnk_03002C30[4].unk1C = 0;
-            gUnk_03002C30[4].unk2 = 0x78;
-            gUnk_03002C30[4].unk4 = 0x48;
-            gUnk_03002C30[4].unkA = 0xF;
-            gUnk_03002C30[4].unkB = 0xC0;
-            gUnk_03002C30[4].unk6 = 0x901;
-            gUnk_03002C30[4].unk9 = 8;
-            gUnk_03002C30[4].unk8 = 0x40;
+        gSpriteEntries[3].unk20--;
+        REG_MOSAIC = (gSpriteEntries[3].unk20 << 12) + (gSpriteEntries[3].unk20 << 8);
+        if (gSpriteEntries[3].unk20 == 0) {
+            gSpriteEntries[4].unk0 = 0xC224;
+            gSpriteEntries[4].unk1C = 0;
+            gSpriteEntries[4].unk2 = 0x78;
+            gSpriteEntries[4].unk4 = 0x48;
+            gSpriteEntries[4].unkA = 0xF;
+            gSpriteEntries[4].unkB = 0xC0;
+            gSpriteEntries[4].unk6 = 0x901;
+            gSpriteEntries[4].unk9 = 8;
+            gSpriteEntries[4].unk8 = 0x40;
             gUnk_03000440.unk84++;
         }
         break;
     case 2:
-        if ((gUnk_03002C30[4].unk9 += 8) == 0x60)
+        if ((gSpriteEntries[4].unk9 += 8) == 0x60)
             gUnk_03000440.unk84++;
         break;
     case 3:
-        if ((gUnk_03002C30[4].unk9 -= 8) == 0x40) {
+        if ((gSpriteEntries[4].unk9 -= 8) == 0x40) {
             gUnk_03000440.unk84++;
             gUnk_03000440.unk86 = 0;
         }
@@ -853,8 +853,8 @@ void sub_08014404(void) {
     update_all_battle_status_sprites();
     sub_08019078();
     gUnk_03000590[gUnk_03001800.unk87].unkBD ^= 4;
-    setup_battle_bot_sprite_group(gUnk_03001800.unk87, gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2,
-                                  gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4);
+    setup_battle_bot_sprite_group(gUnk_03001800.unk87, gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk2,
+                                  gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4);
     battle_queue_pop();
     battle_process_all_bot_actions(gUnk_03001800.unk87);
     if (gUnk_03001800.unk87 > 2) {
@@ -926,9 +926,9 @@ void sub_080145BC(void) {
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++) {
         if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 1)) {
-            gUnk_03002C30[0x46 + i * 3].unk0 |= 0x8220;
-            gUnk_03002C30[0x46 + i * 3].unk9 = 0x40;
-            gUnk_03002C30[0x46 + i * 3].unk8 = 0x40;
+            gSpriteEntries[0x46 + i * 3].unk0 |= 0x8220;
+            gSpriteEntries[0x46 + i * 3].unk9 = 0x40;
+            gSpriteEntries[0x46 + i * 3].unk8 = 0x40;
         }
     }
     play_sound_effect(0x37);
@@ -941,9 +941,9 @@ void sub_08014634(void) {
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++) {
         if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 1)) {
-            gUnk_03002C30[0x46 + i * 3].unk0 |= 0x8000;
-            gUnk_03002C30[0x46 + i * 3].unk9 += 4;
-            if ((gUnk_03002C30[0x46 + i * 3].unk8 -= 4) == 4) {
+            gSpriteEntries[0x46 + i * 3].unk0 |= 0x8000;
+            gSpriteEntries[0x46 + i * 3].unk9 += 4;
+            if ((gSpriteEntries[0x46 + i * 3].unk8 -= 4) == 4) {
                 gUnk_03001800.unk55 &= ~2;
                 gUnk_03000590[i].unkCE &= ~1;
                 clear_battle_sprite_slot(0x46 + i * 3, 1);
@@ -961,9 +961,9 @@ void sub_080146DC(void) {
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++) {
         if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 2)) {
-            gUnk_03002C30[0x47 + i * 3].unk0 |= 0x8220;
-            gUnk_03002C30[0x47 + i * 3].unk9 = 0x40;
-            gUnk_03002C30[0x47 + i * 3].unk8 = 0x40;
+            gSpriteEntries[0x47 + i * 3].unk0 |= 0x8220;
+            gSpriteEntries[0x47 + i * 3].unk9 = 0x40;
+            gSpriteEntries[0x47 + i * 3].unk8 = 0x40;
         }
     }
     play_sound_effect(0x37);
@@ -976,9 +976,9 @@ void sub_08014754(void) {
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++) {
         if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkCE & 2)) {
-            gUnk_03002C30[0x47 + i * 3].unk0 |= 0x8000;
-            gUnk_03002C30[0x47 + i * 3].unk9 += 4;
-            if ((gUnk_03002C30[0x47 + i * 3].unk8 -= 4) == 4) {
+            gSpriteEntries[0x47 + i * 3].unk0 |= 0x8000;
+            gSpriteEntries[0x47 + i * 3].unk9 += 4;
+            if ((gSpriteEntries[0x47 + i * 3].unk8 -= 4) == 4) {
                 gUnk_03001800.unk55 &= ~4;
                 gUnk_03000590[i].unkCE &= ~2;
                 clear_battle_sprite_slot(0x47 + i * 3, 1);

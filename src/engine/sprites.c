@@ -15,9 +15,9 @@ void message_fill_window_tiles(void) {
 void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot) {
     const u8 *p;
     u8 i;
-    gUnk_03002C30[slot].unk20 = 0;
-    gUnk_03002C30[slot].unk21 = 0;
-    gUnk_03002C30[slot].unk22 = 0;
+    gSpriteEntries[slot].unk20 = 0;
+    gSpriteEntries[slot].unk21 = 0;
+    gSpriteEntries[slot].unk22 = 0;
     i = 0;
 loop:
     p = (const u8 *)cmds + i;
@@ -25,46 +25,47 @@ loop:
         i += 3;
         goto loop;
     }
-    gUnk_03002C30[slot].unk6 = (p[1] << 8) + p[2];
+    gSpriteEntries[slot].unk6 = (p[1] << 8) + p[2];
 }
 
 void process_sprite_anim_commands(const u8 *cmds, u8 slot) {
     u32 run;
     u8 op;
 
-    if (gUnk_03002C30[slot].unk22 == 0xFF)
+    if (gSpriteEntries[slot].unk22 == 0xFF)
         return;
     run = 1;
     do {
-        if (gUnk_03002C30[slot].unk20 != 0) {
-            gUnk_03002C30[slot].unk20--;
+        if (gSpriteEntries[slot].unk20 != 0) {
+            gSpriteEntries[slot].unk20--;
             return;
         }
-        op = cmds[gUnk_03002C30[slot].unk21];
+        op = cmds[gSpriteEntries[slot].unk21];
         switch (op) {
         case 0xFB:
-            gUnk_03002C30[0].unk0 &= 0xBFFF;
-            gUnk_03002C30[slot].unk20 = cmds[gUnk_03002C30[slot].unk21 + 1];
-            gUnk_03002C30[slot].unk21 += 3;
+            gSpriteEntries[0].unk0 &= 0xBFFF;
+            gSpriteEntries[slot].unk20 = cmds[gSpriteEntries[slot].unk21 + 1];
+            gSpriteEntries[slot].unk21 += 3;
             return;
         case 0xFC:
-            gUnk_03002C30[0].unk0 |= 0x4000;
-            gUnk_03002C30[slot].unk21 += 3;
+            gSpriteEntries[0].unk0 |= 0x4000;
+            gSpriteEntries[slot].unk21 += 3;
             break;
         case 0xFD:
-            play_sound_effect(cmds[gUnk_03002C30[slot].unk21 + 1]);
-            gUnk_03002C30[slot].unk21 += 3;
+            play_sound_effect(cmds[gSpriteEntries[slot].unk21 + 1]);
+            gSpriteEntries[slot].unk21 += 3;
             break;
         case 0xFE:
-            gUnk_03002C30[slot].unk21 = cmds[gUnk_03002C30[slot].unk21 + 1] * 3;
+            gSpriteEntries[slot].unk21 = cmds[gSpriteEntries[slot].unk21 + 1] * 3;
             break;
         case 0xFF:
-            gUnk_03002C30[slot].unk22 = 0xFF;
+            gSpriteEntries[slot].unk22 = 0xFF;
             return;
         default:
-            gUnk_03002C30[slot].unk20 = op;
-            gUnk_03002C30[slot].unk6 = (cmds[gUnk_03002C30[slot].unk21 + 1] << 8) + cmds[gUnk_03002C30[slot].unk21 + 2];
-            gUnk_03002C30[slot].unk21 += 3;
+            gSpriteEntries[slot].unk20 = op;
+            gSpriteEntries[slot].unk6 =
+                (cmds[gSpriteEntries[slot].unk21 + 1] << 8) + cmds[gSpriteEntries[slot].unk21 + 2];
+            gSpriteEntries[slot].unk21 += 3;
             break;
         }
     } while (run);
@@ -76,20 +77,20 @@ void clear_battle_sprite_slot(u8 a, u8 b) {
 
     for (i = 0; i < b; i++) {
         zero = 0;
-        CpuFastSet(&zero, &gUnk_03002C30[a + i], 0x01000010);
+        CpuFastSet(&zero, &gSpriteEntries[a + i], 0x01000010);
     }
 }
 
 void clear_sprite_table_mask(u8 first, u8 count) {
     u32 i;
     for (i = 0; i < count; i++)
-        gUnk_03002C30[first + i].unk0 &= 0x7FFF;
+        gSpriteEntries[first + i].unk0 &= 0x7FFF;
 }
 
 void set_sprite_hidden_flags(u8 first, u8 count) {
     u32 i;
     for (i = 0; i < count; i++)
-        gUnk_03002C30[first + i].unk0 |= 0x8000;
+        gSpriteEntries[first + i].unk0 |= 0x8000;
 }
 
 u32 find_next_free_sprite_slot(u8 first, u8 count) {
@@ -99,7 +100,7 @@ u32 find_next_free_sprite_slot(u8 first, u8 count) {
         slot = first + i;
         if (slot == 0x80)
             return first;
-        if (gUnk_03002C30[slot].unk0 == 0)
+        if (gSpriteEntries[slot].unk0 == 0)
             return slot;
     }
     return first;
@@ -145,13 +146,13 @@ void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
     }
     for (i = 0; str[i] != 0xFE; i++) {
         if (str[i] != 0) {
-            gUnk_03002C30[slot + i].unk0 = (prio << 10) | 0xC004;
-            gUnk_03002C30[slot + i].unk2 = x;
-            gUnk_03002C30[slot + i].unk4 = y;
-            gUnk_03002C30[slot + i].unkA = pal;
-            gUnk_03002C30[slot + i].unk1C = 0;
-            gUnk_03002C30[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
-            gUnk_03002C30[slot + i].unk6 = str[i] - 1;
+            gSpriteEntries[slot + i].unk0 = (prio << 10) | 0xC004;
+            gSpriteEntries[slot + i].unk2 = x;
+            gSpriteEntries[slot + i].unk4 = y;
+            gSpriteEntries[slot + i].unkA = pal;
+            gSpriteEntries[slot + i].unk1C = 0;
+            gSpriteEntries[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
+            gSpriteEntries[slot + i].unk6 = str[i] - 1;
         }
         x += gUnk_083B4C88[str[i]][0];
     }
@@ -198,13 +199,13 @@ void render_text_sprites_08040EE4(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
     }
     for (i = 0; str[i] != 0xFE; i++) {
         if (str[i] != 0) {
-            gUnk_03002C30[slot + i].unk0 = (prio << 10) | 0xC004;
-            gUnk_03002C30[slot + i].unk2 = x;
-            gUnk_03002C30[slot + i].unk4 = y;
-            gUnk_03002C30[slot + i].unkA = pal;
-            gUnk_03002C30[slot + i].unk1C = 0;
-            gUnk_03002C30[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
-            gUnk_03002C30[slot + i].unk6 = str[i] - 1;
+            gSpriteEntries[slot + i].unk0 = (prio << 10) | 0xC004;
+            gSpriteEntries[slot + i].unk2 = x;
+            gSpriteEntries[slot + i].unk4 = y;
+            gSpriteEntries[slot + i].unkA = pal;
+            gSpriteEntries[slot + i].unk1C = 0;
+            gSpriteEntries[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
+            gSpriteEntries[slot + i].unk6 = str[i] - 1;
         }
         x += gUnk_083B4C88[str[i]][0];
     }
@@ -250,13 +251,13 @@ void render_text_string_to_sprites(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 
     }
     for (i = 0; str[i] != 0xFE; i++) {
         if (str[i] != 0) {
-            gUnk_03002C30[slot + i].unk0 = (prio << 10) | 0xC004;
-            gUnk_03002C30[slot + i].unk2 = x;
-            gUnk_03002C30[slot + i].unk4 = y;
-            gUnk_03002C30[slot + i].unkA = pal;
-            gUnk_03002C30[slot + i].unk1C = 0;
-            gUnk_03002C30[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
-            gUnk_03002C30[slot + i].unk6 = str[i] + 0x85FF;
+            gSpriteEntries[slot + i].unk0 = (prio << 10) | 0xC004;
+            gSpriteEntries[slot + i].unk2 = x;
+            gSpriteEntries[slot + i].unk4 = y;
+            gSpriteEntries[slot + i].unkA = pal;
+            gSpriteEntries[slot + i].unk1C = 0;
+            gSpriteEntries[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
+            gSpriteEntries[slot + i].unk6 = str[i] + 0x85FF;
         }
         x += gUnk_083B4C88[str[i]][0];
     }

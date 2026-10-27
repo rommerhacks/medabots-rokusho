@@ -75,11 +75,11 @@ static void medapart_copy_name(u16 id, u8 second) {
 
 // Loads the Medal picture into OBJ VRAM and sets up the affine Medal sprite (hidden for the receiver).
 static void medal_trade_show_medal_sprite(u32 medal, u32 frame) {
-    struct Unk_03002C30 *s;
+    struct SpriteEntry *s;
     u8 zero;
 
     lz_decompress_dispatch(gUnk_083AC494[medal][frame], (void *)0x06010000);
-    s = gUnk_03002C30;
+    s = gSpriteEntries;
     zero = 0;
     s->unk0 = 0x8A24;
     if (gUnk_03006F74->unk7A == 0)
@@ -301,12 +301,12 @@ void medapart_trade_init_screen(void) {
     load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
     trade_tiles_speed_up_two_rows();
     init_blend_effect(gUnk_03006F74->unk50, 0x10, 0, -1, 0xC0);
-    gUnk_03002C30[0x21].unk0 = 0x8000;
-    gUnk_03002C30[0x21].unk1C = 2;
-    gUnk_03002C30[0x21].unk2 = 0x28;
-    gUnk_03002C30[0x21].unk4 = 0x40;
-    gUnk_03002C30[0x21].unkA = 8;
-    gUnk_03002C30[0x21].unk6 = 0x2A;
+    gSpriteEntries[0x21].unk0 = 0x8000;
+    gSpriteEntries[0x21].unk1C = 2;
+    gSpriteEntries[0x21].unk2 = 0x28;
+    gSpriteEntries[0x21].unk4 = 0x40;
+    gSpriteEntries[0x21].unkA = 8;
+    gSpriteEntries[0x21].unk6 = 0x2A;
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
@@ -376,7 +376,7 @@ void medapart_trade_flash_white(void) {
     u8 *t = &g->unk84;
 
     if (*t <= 0x40) {
-        blend_obj_palettes_to_color_0803F998(0x7FFF, *t >> 1, 0xFF);
+        obj_palettes_blend_masked_now(0x7FFF, *t >> 1, 0xFF);
         (*t)++;
     } else {
         gUnk_03006F74->unk3C = 0;
@@ -452,7 +452,7 @@ void medapart_trade_blend_in(void) {
     s32 n = (s16)w->unk3C++;
 
     if (n <= 16) {
-        blend_obj_palettes_to_color_0803F998(0x7FFF, 0x20, 0xFF);
+        obj_palettes_blend_masked_now(0x7FFF, 0x20, 0xFF);
         REG_BLDCNT = 0xE50;
         REG_BLDALPHA = ((16 - n) << 8) | n;
         REG_BLDY = 8;
@@ -474,7 +474,7 @@ void medapart_trade_unflash(void) {
     u8 *t = &g->unk84;
 
     if (*t <= 0x40) {
-        blend_obj_palettes_to_color_0803F998(0x7FFF, 0x20 - (*t >> 1), 0xFF);
+        obj_palettes_blend_masked_now(0x7FFF, 0x20 - (*t >> 1), 0xFF);
         (*t)++;
     } else {
         CpuFastSet(gUnk_080AFA4C, (void *)0x05000300, 8);
@@ -493,12 +493,12 @@ void medapart_trade_scroll_in(void) {
     load_medapart_sprite_animation(gUnk_03006F74->unk32, gUnk_03006F74->unk34, 1);
     trade_tiles_slow_down_two_rows();
     if (gUnk_03006F74->unk3A == 0) {
-        gUnk_03002C30[0x21].unk0 = 0xC000;
-        gUnk_03002C30[0x21].unk1C = 2;
-        gUnk_03002C30[0x21].unk2 = 0x28;
-        gUnk_03002C30[0x21].unk4 = 0x40;
-        gUnk_03002C30[0x21].unkA = 8;
-        gUnk_03002C30[0x21].unk6 = 0x2A;
+        gSpriteEntries[0x21].unk0 = 0xC000;
+        gSpriteEntries[0x21].unk1C = 2;
+        gSpriteEntries[0x21].unk2 = 0x28;
+        gSpriteEntries[0x21].unk4 = 0x40;
+        gSpriteEntries[0x21].unkA = 8;
+        gSpriteEntries[0x21].unk6 = 0x2A;
         text_window_init(1, 0, 1);
         gGameSubState++;
     }
@@ -762,10 +762,10 @@ void medal_trade_flip_close(void) {
     if (t > 0xF) {
         gGameSubState++;
         if (s->unk7A == 0) {
-            gUnk_03002C30[0].unk0 &= 0xBFFF;
+            gSpriteEntries[0].unk0 &= 0xBFFF;
             return;
         }
-        gUnk_03002C30[0].unk0 |= 0x4000;
+        gSpriteEntries[0].unk0 |= 0x4000;
         lvl = s->unk230.unk5;
         render_text_sprites_08040DB8(s->unk230.unkA, 0x20, 4, 4, 10, 2, 0, 1);
         for (i = 0; i <= 9; i++)
@@ -805,12 +805,12 @@ void medal_trade_flip_close(void) {
         return;
     }
     if (t <= 7)
-        gUnk_03002C30[0].unk8 = 0x40 - (s16)s->unk3C * 8;
+        gSpriteEntries[0].unk8 = 0x40 - (s16)s->unk3C * 8;
     else
-        gUnk_03002C30[0].unk8 = 1;
+        gSpriteEntries[0].unk8 = 1;
     if ((s16)gUnk_03006F74->unk3C > 1) {
-        gUnk_03002C30[0].unk9 = (s16)gUnk_03006F74->unk3C * 4 + 0x38;
-        gUnk_03002C30[0].unk4 = 0x38 - ((s16)gUnk_03006F74->unk3C - 2) * 8;
+        gSpriteEntries[0].unk9 = (s16)gUnk_03006F74->unk3C * 4 + 0x38;
+        gSpriteEntries[0].unk4 = 0x38 - ((s16)gUnk_03006F74->unk3C - 2) * 8;
     }
 }
 
@@ -827,13 +827,13 @@ void medal_trade_flip_open(void) {
         return;
     }
     if (t <= 7)
-        gUnk_03002C30[0].unk8 = 0x40 - (s16)s->unk3C * 8;
+        gSpriteEntries[0].unk8 = 0x40 - (s16)s->unk3C * 8;
     else
-        gUnk_03002C30[0].unk8 = 1;
+        gSpriteEntries[0].unk8 = 1;
     s = gUnk_03006F74;
     if ((s16)s->unk3C > 1) {
-        gUnk_03002C30[0].unk9 = (s16)s->unk3C * 4 + 0x38;
-        gUnk_03002C30[0].unk4 = 0x38 - ((s16)s->unk3C - 2) * 8;
+        gSpriteEntries[0].unk9 = (s16)s->unk3C * 4 + 0x38;
+        gSpriteEntries[0].unk4 = 0x38 - ((s16)s->unk3C - 2) * 8;
     }
 }
 

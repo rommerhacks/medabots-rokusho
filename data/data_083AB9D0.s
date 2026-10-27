@@ -1330,12 +1330,12 @@ gUnk_083D6EA0:
 gUnk_083D72A0:
 	.incbin "baserom.gba", 0x3D72A0, 0x20954
 
-	.global gUnk_083F7BF4
-gUnk_083F7BF4:
+	.global gSpriteAnimScripts
+gSpriteAnimScripts:
 	.incbin "baserom.gba", 0x3F7BF4, 0x400
 
-	.global gUnk_083F7FF4
-gUnk_083F7FF4:
+	.global gRandomBytes
+gRandomBytes:
 	.incbin "baserom.gba", 0x3F7FF4, 0x100
 
 	.global gUnk_083F80F4

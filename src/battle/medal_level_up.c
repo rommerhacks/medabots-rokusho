@@ -14,9 +14,9 @@ void start_medal_transform(u8 slot) {
 static void medal_transform_update_sparkles(void) {
     int i, j, k;
     u16 t;
-    struct Unk_03002C30 *s;
+    struct SpriteEntry *s;
     for (i = 0; i < 16; i = j) {
-        struct Unk_03002C30 *base = gUnk_03002C30;
+        struct SpriteEntry *base = gSpriteEntries;
         k = i + 1;
         s = &base[k];
         t = s->unk1A;
@@ -96,15 +96,15 @@ void medal_transform_init(void) {
     CpuFastSet(pal, (void *)0x0202F860, 8);
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
     for (i = 0; i < 16; i++) {
-        gUnk_03002C30[i + 1].unk0 = 0xCA00;
-        gUnk_03002C30[i + 1].unk2 = 0x78;
-        gUnk_03002C30[i + 1].unk4 = 0x28;
-        gUnk_03002C30[i + 1].unk1C = 2;
-        gUnk_03002C30[i + 1].unkA = 3;
-        gUnk_03002C30[i + 1].unk6 = 0x117;
-        gUnk_03002C30[i + 1].unk8 = 0x40;
-        gUnk_03002C30[i + 1].unk9 = 0x40;
-        gUnk_03002C30[i + 1].unk1A = (i & 3) << 4;
+        gSpriteEntries[i + 1].unk0 = 0xCA00;
+        gSpriteEntries[i + 1].unk2 = 0x78;
+        gSpriteEntries[i + 1].unk4 = 0x28;
+        gSpriteEntries[i + 1].unk1C = 2;
+        gSpriteEntries[i + 1].unkA = 3;
+        gSpriteEntries[i + 1].unk6 = 0x117;
+        gSpriteEntries[i + 1].unk8 = 0x40;
+        gSpriteEntries[i + 1].unk9 = 0x40;
+        gSpriteEntries[i + 1].unk1A = (i & 3) << 4;
     }
     REG_BLDCNT = 0xC40;
     REG_BLDALPHA = 0x1010;
@@ -113,7 +113,7 @@ void medal_transform_init(void) {
 }
 
 void medal_transform_draw_medal(void) {
-    struct Unk_03002C30 *s;
+    struct SpriteEntry *s;
     u8 zero;
     int i;
     int id, fr;
@@ -121,7 +121,7 @@ void medal_transform_draw_medal(void) {
     id = gUnk_03000BE0[gUnk_030017EC].unk1;
     fr = gUnk_03000BE0[gUnk_030017EC].unk8 - 1;
     lz_decompress_dispatch(gUnk_083AC494[id][fr], (void *)0x06010000);
-    s = gUnk_03002C30;
+    s = gSpriteEntries;
     zero = 0;
     s->unk0 = 0xCA04;
     s->unk2 = 0x78;
@@ -175,8 +175,8 @@ void medal_transform_fade_in(void) {
     s = &gUnk_03000440;
     n = &s->unk84;
     if (*n <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, 0x20 - *n * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, 0x20 - *n * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, 0x20 - *n * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - *n * 4, 0xFFFF);
         (*n)++;
     } else {
         text_window_init(1, 2, 0);
@@ -191,7 +191,7 @@ void medal_transform_flash_in(void) {
         if (t > 0x77) {
             t -= 0x78;
             if (t <= 0x80)
-                blend_obj_palettes_to_color_0803F998(0x7FFF, t >> 2, 1);
+                obj_palettes_blend_masked_now(0x7FFF, t >> 2, 1);
             else {
                 struct Unk_03000BE0 *b = gUnk_03000BE0;
                 struct Unk_03000BE0 *m = &b[gUnk_030017EC];
@@ -211,7 +211,7 @@ void medal_transform_flash_out(void) {
     if (t > 0x3B) {
         t -= 0x3C;
         if (t <= 0x80)
-            blend_obj_palettes_to_color_0803F998(0x7FFF, 0x20 - (t >> 2), 1);
+            obj_palettes_blend_masked_now(0x7FFF, 0x20 - (t >> 2), 1);
         else {
             sub_0803FB0C();
             gGameSubState++;

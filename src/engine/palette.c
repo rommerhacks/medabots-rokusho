@@ -3,12 +3,12 @@
 
 #include "global.h"
 
-void copy_obj_palette_to_buffer(void) {
+void palette_backup_from_hardware(void) {
     CpuFastSet((void *)OBJ_PLTT, gPaletteBackup, 0x80);
     CpuFastSet((void *)PLTT, gPaletteBackupBg, 0x80);
 }
 
-void palette_blend_to_color_080013A8(u16 color, u32 amount) {
+void palettes_blend_to_color(u16 color, u32 amount) {
     u32 i;
     u32 inv;
     if (amount > 32)
@@ -21,10 +21,10 @@ void palette_blend_to_color_080013A8(u16 color, u32 amount) {
                ((((*src & 0x3E0) * inv + (color & 0x3E0) * amount) >> 5) & 0x3E0) |
                ((((*src & 0x7C00) * inv + (color & 0x7C00) * amount) >> 5) & 0x7C00);
     }
-    gVBlankOnceCallback = dma_obj_palette_to_hardware;
+    gVBlankOnceCallback = palette_buffer_upload;
 }
 
-void dma_obj_palette_to_hardware(void) {
+void palette_buffer_upload(void) {
     CpuFastSet(gPaletteBuffer, (void *)OBJ_PLTT, 0x80);
     CpuFastSet(gPaletteBufferBg, (void *)PLTT, 0x80);
 }

@@ -55,7 +55,7 @@ u32 run_message(const void *msg) {
 void message_open(void) {
     u8 v = gUnk_03000440.unk0;
     if (v == 0) {
-        copy_obj_palette_to_buffer();
+        palette_backup_from_hardware();
         gUnk_03000440.unk1C = v;
         gUnk_03000440.unk4++;
     } else {
@@ -65,8 +65,8 @@ void message_open(void) {
 
 // run_message state 1: blend all palettes toward 0x01B2 by unk1C * 2 / 32, 10 frames.
 void message_dim_palettes_step(void) {
-    blend_obj_palettes_to_color_0803F684(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
-    blend_obj_palettes_to_color_0803F998(0x1B2, gUnk_03000440.unk1C * 2, 0x3FFF);
+    bg_palettes_blend_masked_now(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
+    obj_palettes_blend_masked_now(0x1B2, gUnk_03000440.unk1C * 2, 0x3FFF);
     if (gUnk_03000440.unk1C > 8)
         gUnk_03000440.unk4++;
     else
@@ -653,8 +653,8 @@ void sub_08040AF0(void) {
 
 // Message close step: undo message_dim_palettes_step one frame at a time (unk1C down to 0).
 void message_undim_palettes_step(void) {
-    blend_obj_palettes_to_color_0803F684(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
-    blend_obj_palettes_to_color_0803F998(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
+    bg_palettes_blend_masked_now(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
+    obj_palettes_blend_masked_now(0x1B2, gUnk_03000440.unk1C * 2, 0x1FFF);
     if (gUnk_03000440.unk1C == 0)
         gUnk_03000440.unk1B++;
     else

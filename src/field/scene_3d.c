@@ -45,7 +45,7 @@ static double compute_sqrt_scaled(double x) {
 void init_sprite_affine_matrices_and_state(u32 flags, u32 x, u32 y, u32 d) {
     s32 i;
 
-    sub_080492CC();
+    affine_params_reset();
     for (i = 0; i < 32; i++)
         calculate_oam_affine_matrix(i);
     memzero_bytes((u8 *)&gUnk_03005350, 0x240);
@@ -219,11 +219,11 @@ static void sub_08053BB4(float a, float b) {
 
 static void update_battle_entity_screen_position(float x, float y, float z) {
     float sx, sy, depth;
-    struct Unk_03002C30 *sprites;
+    struct SpriteEntry *sprites;
 
     compute_3d_transform_vectors(x, y, z, &sx, &sy, &depth);
     update_entity_position_and_triggers(sx, sy);
-    sprites = gUnk_03002C30;
+    sprites = gSpriteEntries;
     sprites[gUnk_03006D30[gUnk_03005350.unk1CC].unk2DC[gUnk_03006D30[gUnk_03005350.unk1CC].unk20C]].unk14_8 = depth;
 }
 
@@ -251,9 +251,9 @@ static void get_state_float_as_int(float a, float b, s32 *x, s32 *y) {
 
 static void update_entity_position_and_triggers(float a, float b) {
     get_state_float_as_int(a, b, &gUnk_03005350.unkB4, &gUnk_03005350.unkB8);
-    gUnk_03002C30[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].unk2 =
+    gSpriteEntries[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].unk2 =
         gUnk_03005350.unkB4 + CUR_ENTITY.unk2E0[CUR_ENTITY.unk20C];
-    gUnk_03002C30[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].unk4 =
+    gSpriteEntries[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].unk4 =
         gUnk_03005350.unkB8 + CUR_ENTITY.unk2E8[CUR_ENTITY.unk20C];
     if (CUR_ENTITY.unk1EC && (u8)gUnk_03005350.unkB8 >= CUR_ENTITY.unk1F0 &&
         (u8)gUnk_03005350.unkB8 <= CUR_ENTITY.unk1F4) {
@@ -456,26 +456,26 @@ u32 battle_sequence_dispatch(void) {
                                     osc->value = osc->value + osc->amp;
                                     for (k = 0; k < 4; k++) {
                                         if (j == 0)
-                                            gUnk_03006D40[i * 4 + k].scaleX = osc->value;
+                                            gAffineParams[i * 4 + k].scaleX = osc->value;
                                         else if (j == 1)
-                                            gUnk_03006D40[i * 4 + k].scaleY = osc->value;
+                                            gAffineParams[i * 4 + k].scaleY = osc->value;
                                     }
                                 } else if (osc->type == 2) {
                                     osc->value = osc->amp * gSineTable[(s32)osc->angle & 0xFF];
                                     for (k = 0; k < 4; k++) {
                                         if (j == 0)
-                                            gUnk_03006D40[i * 4 + k].scaleX = osc->value;
+                                            gAffineParams[i * 4 + k].scaleX = osc->value;
                                         else if (j == 1)
-                                            gUnk_03006D40[i * 4 + k].scaleY = osc->value;
+                                            gAffineParams[i * 4 + k].scaleY = osc->value;
                                     }
                                     osc->angle = osc->angle + osc->angleStep;
                                 } else if (osc->type == 3) {
                                     osc->value = osc->amp * gSineTable[((s32)osc->angle & 0xFF) + 0x40];
                                     for (k = 0; k < 4; k++) {
                                         if (j == 0)
-                                            gUnk_03006D40[i * 4 + k].scaleX = osc->value;
+                                            gAffineParams[i * 4 + k].scaleX = osc->value;
                                         else if (j == 1)
-                                            gUnk_03006D40[i * 4 + k].scaleY = osc->value;
+                                            gAffineParams[i * 4 + k].scaleY = osc->value;
                                     }
                                     osc->angle = osc->angle + osc->angleStep;
                                 }
@@ -507,7 +507,7 @@ u32 battle_sequence_dispatch(void) {
                         if (E[i].unk1A8.start <= E[i].unk1A8.timer) {
                             E[i].unk1A8.value = E[i].unk1A8.value + E[i].unk1A8.step;
                             for (k = 0; k < 4; k++)
-                                gUnk_03006D40[i * 4 + k].angle = (s32)E[i].unk1A8.value & 0xFF;
+                                gAffineParams[i * 4 + k].angle = (s32)E[i].unk1A8.value & 0xFF;
                             E[i].unk1A8.timer++;
                             if (E[i].unk1A8.end != 0xFFFF && E[i].unk1A8.timer >= E[i].unk1A8.end)
                                 E[i].unk1A8.active = 0;
@@ -521,7 +521,7 @@ u32 battle_sequence_dispatch(void) {
                     if (E[i].unk1C0.active) {
                         if (E[i].unk1C0.start <= E[i].unk1C0.timer) {
                             for (k = 0; k < E[i].unk210; k++)
-                                gUnk_03002C30[E[i].unk2DC[k]].unk0 |= 0x4000;
+                                gSpriteEntries[E[i].unk2DC[k]].unk0 |= 0x4000;
                             E[i].unk1C0.timer++;
                             if (E[i].unk1C0.end != 0xFFFF && E[i].unk1C0.timer >= E[i].unk1C0.end) {
                                 for (k = 0; k < E[i].unk210; k++)
@@ -536,10 +536,10 @@ u32 battle_sequence_dispatch(void) {
                         if (E[i].unk1D0.start <= E[i].unk1D0.timer) {
                             if (!(E[i].unk1D0.timer & 1)) {
                                 for (k = 0; k < E[i].unk210; k++)
-                                    gUnk_03002C30[E[i].unk2DC[k]].unk0 &= ~0x4000;
+                                    gSpriteEntries[E[i].unk2DC[k]].unk0 &= ~0x4000;
                             } else {
                                 for (k = 0; k < E[i].unk210; k++)
-                                    gUnk_03002C30[E[i].unk2DC[k]].unk0 |= 0x4000;
+                                    gSpriteEntries[E[i].unk2DC[k]].unk0 |= 0x4000;
                             }
                             E[i].unk1D0.timer++;
                             if (E[i].unk1D0.end != 0xFFFF && E[i].unk1D0.timer >= E[i].unk1D0.end)
@@ -570,13 +570,13 @@ u32 battle_sequence_dispatch(void) {
             for (i = 0; i < 16; i++) {
                 if (E[i].unk0 != 0 && (E[i].unk118.type | E[i].unk13C.type) == 0) {
                     for (k = 0; k < 4; k++) {
-                        d = gUnk_03002C30[E[i].unk2DC[k]].unk14_8;
+                        d = gSpriteEntries[E[i].unk2DC[k]].unk14_8;
                         if (d > S.unk9C) {
-                            gUnk_03006D40[i * 4 + k].scaleX = 0x101 - d / S.unk9C;
-                            gUnk_03006D40[i * 4 + k].scaleY = 0x101 - gUnk_03002C30[E[i].unk2DC[k]].unk14_8 / S.unk9C;
+                            gAffineParams[i * 4 + k].scaleX = 0x101 - d / S.unk9C;
+                            gAffineParams[i * 4 + k].scaleY = 0x101 - gSpriteEntries[E[i].unk2DC[k]].unk14_8 / S.unk9C;
                         } else {
-                            gUnk_03006D40[i * 4 + k].scaleX = S.unk9C / d + 0xFF;
-                            gUnk_03006D40[i * 4 + k].scaleY = S.unk9C / gUnk_03002C30[E[i].unk2DC[k]].unk14_8 + 0xFF;
+                            gAffineParams[i * 4 + k].scaleX = S.unk9C / d + 0xFF;
+                            gAffineParams[i * 4 + k].scaleY = S.unk9C / gSpriteEntries[E[i].unk2DC[k]].unk14_8 + 0xFF;
                         }
                     }
                 }
@@ -600,8 +600,10 @@ u32 battle_sequence_dispatch(void) {
                         break;
                     case 3:
                         blend_effect_update();
-                        sub_08049E74(S.unk210 << 10 | S.unk20F << 5 | S.unk20E, S.unk208 * S.unk1F8, S.unk20A);
-                        sub_08049E88(S.unk210 << 10 | S.unk20F << 5 | S.unk20E, S.unk208 * S.unk1F8, S.unk20C);
+                        field_bg_palettes_blend_masked(S.unk210 << 10 | S.unk20F << 5 | S.unk20E, S.unk208 * S.unk1F8,
+                                                       S.unk20A);
+                        field_obj_palettes_blend_masked(S.unk210 << 10 | S.unk20F << 5 | S.unk20E, S.unk208 * S.unk1F8,
+                                                        S.unk20C);
                         if (S.unk208 < 0x20 / S.unk1F8)
                             S.unk208++;
                         else {
@@ -622,8 +624,8 @@ u32 battle_sequence_dispatch(void) {
                         if (bl < S.unk210)
                             bl = S.unk210;
                         color = bl << 10 | g << 5 | r;
-                        sub_08049E74(color, S.unk208 * S.unk1F8, S.unk20A);
-                        sub_08049E88(color, S.unk208 * S.unk1F8, S.unk20C);
+                        field_bg_palettes_blend_masked(color, S.unk208 * S.unk1F8, S.unk20A);
+                        field_obj_palettes_blend_masked(color, S.unk208 * S.unk1F8, S.unk20C);
                         if (S.unk208 != 0)
                             S.unk208--;
                         else {
@@ -709,7 +711,7 @@ u32 battle_sequence_dispatch(void) {
             if (E[n].unk118.type == 0)
                 break;
             for (k = 0; k < 4; k++)
-                gUnk_03006D40[n * 4 + k].scaleX = E[n].unk118.value;
+                gAffineParams[n * 4 + k].scaleX = E[n].unk118.value;
             break;
         case 12: // guess: set affine y-scale oscillator type/value
             S.unkFC++;
@@ -720,7 +722,7 @@ u32 battle_sequence_dispatch(void) {
             if (E[n].unk13C.type == 0)
                 break;
             for (k = 0; k < 4; k++)
-                gUnk_03006D40[n * 4 + k].scaleY = E[n].unk13C.value;
+                gAffineParams[n * 4 + k].scaleY = E[n].unk13C.value;
             break;
         case 13: // guess: set 3-D scale x
             S.unkFC++;
@@ -860,8 +862,8 @@ u32 battle_sequence_dispatch(void) {
                 DmaSet(3, gUnk_0847EC40[S.unkF8], 0x050003A0, 0x84000008) else DmaSet(3, gUnk_0847EC40[S.unkF8],
                                                                                       0x0202F9A0, 0x84000008)
                     sprite_entry_init(E[n].unk2DC[part], x, (u16)y, 0xD, 1);
-            gUnk_03002C30[E[n].unk2DC[part]].unk0 |= attr;
-            gUnk_03002C30[E[n].unk2DC[part]].filler1D[0] = n * 4 + part;
+            gSpriteEntries[E[n].unk2DC[part]].unk0 |= attr;
+            gSpriteEntries[E[n].unk2DC[part]].filler1D[0] = n * 4 + part;
             break;
         case 134: // guess: set a sprite part (slot, offsets, attributes)
             S.unkFC++;
@@ -871,8 +873,8 @@ u32 battle_sequence_dispatch(void) {
             E[n].unk2DC[part] = script[S.unkFC++];
             E[n].unk2E0[part] = script[S.unkFC++];
             E[n].unk2E8[part] = script[S.unkFC++];
-            gUnk_03002C30[E[n].unk2DC[part]].unk0 = script[S.unkFC++];
-            gUnk_03002C30[E[n].unk2DC[part]].filler1D[0] = n * 4 + part;
+            gSpriteEntries[E[n].unk2DC[part]].unk0 = script[S.unkFC++];
+            gSpriteEntries[E[n].unk2DC[part]].filler1D[0] = n * 4 + part;
             break;
         case 28: // guess: hide timer, then free the sprites
             S.unkFC++;
@@ -890,7 +892,7 @@ u32 battle_sequence_dispatch(void) {
             E[n].unk208 = script[S.unkFC++];
             E[n].unk204 = script[S.unkFC++];
             for (k = 0; k < 4; k++)
-                sub_080493D4(E[n].unk2DC[k], E[n].unk204);
+                sprite_anim_start(E[n].unk2DC[k], E[n].unk204);
             break;
         case 30: // guess: blink timer
             S.unkFC++;
@@ -996,7 +998,7 @@ u32 battle_sequence_dispatch(void) {
             S.unk200 = script[S.unkFC++];
             S.unk204 = script[S.unkFC++];
             S.unk1F4 = 3;
-            sub_08049CC0();
+            field_palette_backup();
             setup_blend_effect(0x40, 0x2F00, 6, 8, 8, 8, 0xD, 0xB, 0);
             break;
         case 131: // guess: palette blend out
@@ -1014,9 +1016,9 @@ u32 battle_sequence_dispatch(void) {
             S.unk1F4 = 4;
             if (S.unk208 != 0) {
                 if (S.unk208 == 0x10) {
-                    sub_08049CB0(0x7FFF, 0x20);
-                    gUnk_03006F40.unk24 = 32.0f;
-                    gUnk_03006F40.unk2C = 0.0f;
+                    field_palettes_blend_to_color(0x7FFF, 0x20);
+                    gBlendEffect.fade_amount = 32.0f;
+                    gBlendEffect.fade_end = 0.0f;
                     setup_blend_effect(0x40, 0x2F00, 5, 8, 8, 8, 0xE, 0xC, 0);
                 } else if (S.unk208 == 8)
                     setup_blend_effect(0x40, 0x2F00, 6, 8, 8, 8, 0xC, 0xA, 0);
@@ -1026,7 +1028,7 @@ u32 battle_sequence_dispatch(void) {
         case 132: // guess: clear the sprites and reload the field
             S.unkFC++;
             save_script_sprites();
-            memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+            memzero_bytes((u8 *)gSpriteEntries, 0x2000);
             memzero_bytes((u8 *)gUnk_030055A0, 0x200);
             zero = 0;
             DmaSet(3, &zero, OAM, 0x85000100);
@@ -1060,7 +1062,7 @@ u32 battle_sequence_dispatch(void) {
             gUnk_030057E0.unkCBA = 1;
             area_load_graphics();
             load_battlefield_data_to_buffer();
-            gUnk_03002C30[89].unk0 &= ~0x4000;
+            gSpriteEntries[89].unk0 &= ~0x4000;
             break;
         case 133: // guess: set unk214..unk220
             S.unkFC++;
@@ -1134,7 +1136,7 @@ u32 battle_sequence_dispatch(void) {
             if ((S.unk1D4 & 0x3F) != 0xD && (S.unk1D4 & 0x3F) != 0x16) {
                 s32 q;
 
-                sub_080492CC();
+                affine_params_reset();
                 for (q = 0; q < 32; q++)
                     calculate_oam_affine_matrix(q);
             }
@@ -1145,8 +1147,8 @@ u32 battle_sequence_dispatch(void) {
                 update_bg_scroll_offsets_a();
                 field_set_player_facing(gUnk_030057E0.unkC67);
                 if (gUnk_030057E0.unkC76) {
-                    set_battle_state_byte_c83(gUnk_03002C30[47].unk20);
-                    sub_080493D4(0x30, gUnk_03002C30[48].unk2B * 4 + gUnk_03002C30[48].unk20);
+                    set_battle_state_byte_c83(gSpriteEntries[47].unk20);
+                    sprite_anim_start(0x30, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
                 }
                 update_battle_entity_status_chars();
             }
@@ -1163,23 +1165,23 @@ static void update_battle_sprite_status_effects(void) {
     struct Unk_03005350 *b = &gUnk_03005350;
     s32 i, j;
     s32 d;
-    struct Unk_03002C30 *s;
+    struct SpriteEntry *s;
 
     if (b->unkF0 != 0) {
         for (i = 0; i <= 15; i++) {
             for (j = 0; j <= 3; j++) {
-                struct Unk_03002C30 *spr = gUnk_03002C30;
+                struct SpriteEntry *spr = gSpriteEntries;
 
                 s = &spr[gUnk_03006D30[i].unk2DC[j]];
                 d = s->unk14_8;
                 if (d > gUnk_03005350.unk9C) {
                     s->unkB = gUnk_03005350.unk218;
-                    gUnk_03002C30[gUnk_03006D30[i].unk2DC[j]].unk0 &= 0xF3FF;
-                    gUnk_03002C30[gUnk_03006D30[i].unk2DC[j]].unk0 |= gUnk_03005350.unk220;
+                    gSpriteEntries[gUnk_03006D30[i].unk2DC[j]].unk0 &= 0xF3FF;
+                    gSpriteEntries[gUnk_03006D30[i].unk2DC[j]].unk0 |= gUnk_03005350.unk220;
                 } else {
                     s->unkB = gUnk_03005350.unk214 + (gUnk_03005350.unk9C - d);
-                    gUnk_03002C30[gUnk_03006D30[i].unk2DC[j]].unk0 &= 0xF3FF;
-                    gUnk_03002C30[gUnk_03006D30[i].unk2DC[j]].unk0 |= gUnk_03005350.unk21C;
+                    gSpriteEntries[gUnk_03006D30[i].unk2DC[j]].unk0 &= 0xF3FF;
+                    gSpriteEntries[gUnk_03006D30[i].unk2DC[j]].unk0 |= gUnk_03005350.unk21C;
                 }
             }
         }

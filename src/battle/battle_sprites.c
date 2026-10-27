@@ -10,8 +10,8 @@ void copy_battle_entity_positions(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        gUnk_03001800.unk13C[i].x = gUnk_03002C30[0x5D + i * 4].unk2;
-        gUnk_03001800.unk13C[i].y = gUnk_03002C30[0x5D + i * 4].unk4 - 4;
+        gUnk_03001800.unk13C[i].x = gSpriteEntries[0x5D + i * 4].unk2;
+        gUnk_03001800.unk13C[i].y = gSpriteEntries[0x5D + i * 4].unk4 - 4;
     }
 }
 
@@ -27,13 +27,13 @@ void init_battle_bot_sprites(void) {
 }
 
 void init_battle_sprite_entry_0801BC04(u32 rec) {
-    gUnk_03002C30[rec + 0x72].unk0 = ((gUnk_03001800.unk39[3] + 2) << 10) | 0xC004;
-    gUnk_03002C30[rec + 0x72].unk1C = 0;
-    gUnk_03002C30[rec + 0x72].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2;
-    gUnk_03002C30[rec + 0x72].unk4 = gUnk_03002C30[rec * 4 + 0x5D].unk4 + 8;
-    gUnk_03002C30[rec + 0x72].unkA = 5;
-    gUnk_03002C30[rec + 0x72].unkB = 1;
-    gUnk_03002C30[rec + 0x72].unk6 = 0xF00;
+    gSpriteEntries[rec + 0x72].unk0 = ((gUnk_03001800.unk39[3] + 2) << 10) | 0xC004;
+    gSpriteEntries[rec + 0x72].unk1C = 0;
+    gSpriteEntries[rec + 0x72].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2;
+    gSpriteEntries[rec + 0x72].unk4 = gSpriteEntries[rec * 4 + 0x5D].unk4 + 8;
+    gSpriteEntries[rec + 0x72].unkA = 5;
+    gSpriteEntries[rec + 0x72].unkB = 1;
+    gSpriteEntries[rec + 0x72].unk6 = 0xF00;
 }
 
 void decompress_indexed_graphics_to_ewram(u32 list) {

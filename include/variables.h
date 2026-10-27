@@ -22,7 +22,7 @@ extern struct Unk_03001800_bomb gUnk_03001800_bomb; // same address as gUnk_0300
 extern u32 gMoney; // money, capped at 99999 (add_money)
 extern u32 gGameState;
 extern u32 gGameSubState;
-extern struct Unk_03002C30 gUnk_03002C30[];
+extern struct SpriteEntry gSpriteEntries[];
 extern struct SioLink gSioLink;
 extern s32 gUnk_03005048;       // OAM affine zoom override (-1 = off)
 extern s16 gUnk_080750E0[];     // Q14 sine table, 1024 steps per turn (cos at +0x100); not const: callers reload it
@@ -40,7 +40,7 @@ extern struct Unk_03007014 *gUnk_03007014;
 extern struct Unk_03007014 gUnk_03002430; // sound work area (soft_reset_to_title passes it to sound_init)
 extern struct Vec16 gBg1Scroll;           // BG1 scroll (field: map camera)
 extern struct Unk_03005310 gUnk_03005310;
-extern struct Unk_03006F40 gUnk_03006F40;
+extern struct BlendEffectState gBlendEffect;
 extern struct Unk_03006F74 *gUnk_03006F74;
 extern struct Unk_030055A0 gUnk_030055A0[];
 extern struct Vec16 gBg2Scroll; // BG2 scroll
@@ -67,9 +67,9 @@ extern struct Vec16 gUnk_03002C2C;  // scroll added to every BG layer
 extern struct Vec16 gBg0Scroll;     // BG0 scroll
 extern u16 gTilemapBaseEntry;       // added to every tilemap entry by write_tilemap_to_vram_08000E94
 extern u8 gDecompressBuffer[];      // EWRAM buffer the tilemap loaders decompress into
-extern u16 gPaletteBackup[0x200];   // OBJ then BG palette (copy_obj_palette_to_buffer)
+extern u16 gPaletteBackup[0x200];   // OBJ then BG palette (palette_backup_from_hardware)
 extern u16 gPaletteBackupBg[0x100]; // = gPaletteBackup + 0x100
-extern u16 gPaletteBuffer[0x200];   // OBJ then BG palette (dma_obj_palette_to_hardware)
+extern u16 gPaletteBuffer[0x200];   // OBJ then BG palette (palette_buffer_upload)
 extern u16 gPaletteBufferBg[0x100]; // = gPaletteBuffer + 0x100
 extern u32 gRngCounter;
 extern u32 gRngValue;
@@ -106,7 +106,7 @@ extern const u8 gUnk_0847E948[];
 extern const struct AreaWarp *const gUnk_08413114[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
 extern void (*const gMapScriptUpdates[])(void);  // per-command update handlers, run each frame while unkC89 is set
-extern const u8 gUnk_083D24AC[];                 // indexed by the player's facing (gUnk_03002C30[47].unk21)
+extern const u8 gUnk_083D24AC[];                 // indexed by the player's facing (gSpriteEntries[47].unk21)
 extern const u8 gUnk_083D28B0[];        // indexed by gUnk_030057E0.unkC5C, passed to setup_battle_sprite_terrain
 extern const u8 *const gUnk_084045A8[]; // per area: tile map
 extern const struct AreaGfx gUnk_083F92F4[];
@@ -187,7 +187,7 @@ extern const struct ByteTable3 gUnk_080AFF30; // 3 bytes copied to the stack, in
 extern u8 gUnk_08485CC4[3][3];      // sprite slots (ROM; declared without const, the code reloads it after stores)
 extern const u8 gUnk_08485CE3[][7]; // frame delays
 extern bool32 (*const gUnk_08485D30[])(
-    u8); // race sprite animations, by gUnk_03002C30[].unk20 - 1 (update_sprite_animations_tick_0806AF40)
+    u8); // race sprite animations, by gSpriteEntries[].unk20 - 1 (update_sprite_animations_tick_0806AF40)
 extern const s8 gUnk_08485E84[];
 extern u8 gUnk_03006FDC;  // race course (copied from gUnk_03006D38.unk0, sub_08068C6C)
 extern s32 gUnk_03000000; // scene step frame counter, reset when a step finishes (execute_scene_step)
@@ -208,7 +208,7 @@ extern const u16 gUnk_0807C0A0[];  // OBJ palettes (0xF0 colours)
 extern const s8 gUnk_08485E84[];   // per-frame y steps, by unk1A & 0x3F (sub_0806CDE8)
 extern const Func gUnk_08485EC4[]; // game mode 3 state 2 (title screen) sub-states, by gGameSubState (sub_0806D3F4)
 extern s32 (*const gUnk_08485EF4[])(
-    u8); // title sprite effects, by gUnk_03002C30[].unk20 - 1: 0 = done, 0xFF = hide (update_sprite_special_effects)
+    u8); // title sprite effects, by gSpriteEntries[].unk20 - 1: 0 = done, 0xFF = hide (update_sprite_special_effects)
 extern const u8 gUnk_08485F14[];   // title sprite effects: frame period, by unk20 - 1
 extern const Func gUnk_08485F1C[]; // game mode 3 state 3 (story intro) sub-states, by gGameSubState
                                    // (dispatch_game_substate_handler_0806DFA4)
@@ -270,7 +270,7 @@ extern u16 gUnk_03000170[160];             // BG2X_L per scanline
 extern u16 gUnk_030002B0[160];             // BG2X_H per scanline
 extern u16 gUnk_030003F0; // title BG2 scroll counter, += 0x80 per frame (update_bg2_affine_scanline_params)
 extern u8 gUnk_030004DE[];
-extern const u8 gUnk_083F7FF4[]; // random bytes, indexed by the low byte of gFrameCounter
+extern const u8 gRandomBytes[]; // random bytes, indexed by the low byte of gFrameCounter
 extern const void *const gUnk_084864E8[];
 extern const struct Unk_08486160 gUnk_08486160[]; // by gUnk_03006FDC (init_battle_background_layers)
 extern const u16 gUnk_0807C260[];                 // OBJ palettes (inside the 0x080750D8 data blob)
@@ -344,7 +344,7 @@ extern u8 gUnk_02020800[]; // BG tile backup (0x800 bytes of VRAM 0x06002800 whi
 extern const Func gMedabotsScreenHandlers[];  // game state 3 sub-state handlers
 extern const Func gMedalsScreenHandlers[];    // game state 4 (Medals screen) sub-state handlers
 extern const Func gMedapartsScreenHandlers[]; // game state 5 (Medaparts screen) sub-state handlers
-extern const Func gUnk_083ACC94[];            // sprite 4 sub-state handlers, by gUnk_03002C30[4].unk29 (sub_0801013C)
+extern const Func gUnk_083ACC94[];            // sprite 4 sub-state handlers, by gSpriteEntries[4].unk29 (sub_0801013C)
 extern const Func gPrebattleScreenHandlers[]; // game state 6 ("Get ready to Robattle") sub-state handlers
 extern const u8 gUnk_084C696C[];
 extern const void *const gUnk_083C2BBC[]; // pre-battle opponent lines, by gUnk_03001800.unk0
@@ -462,7 +462,7 @@ extern const u32 gUnk_083B6EC8[];          // skill type names (Shoot, Strike, .
 extern const u8 *const gUnk_083B7EBC[];    // Medals help cursor layouts: count, then (x, y) tile pairs (sub_0800AA1C)
 extern const u16 gUnk_083AC8AC[];          // (y, x) pairs per Medal skill row 0-7 (setup_battle_cursor_sprite_0800B5E8)
 extern const Func
-    gUnk_083AC8CC[]; // sprite 7 sub-state handlers, by gUnk_03002C30[7].unk29 (update_battle_sprite_and_check_done)
+    gUnk_083AC8CC[]; // sprite 7 sub-state handlers, by gSpriteEntries[7].unk29 (update_battle_sprite_and_check_done)
 extern const Func gDebugMenuHandlers[];       // game state 63 sub-state handlers (debug_menu_update)
 extern const Func gDebugMenuEntryHandlers[];  // game state 63: one handler per menu entry (debug_menu_run_entry)
 extern const Func gDebugProcessHandlers[];    // game state 63 entry 0 sub-state handlers (debug_process_update)
@@ -1076,7 +1076,7 @@ extern struct Unk_03005290 gUnk_03005290;
 extern struct Unk_03005290 gUnk_030052B0;
 extern struct Unk_03005290 gUnk_030052D0;
 extern struct Unk_03005290 gUnk_030052F0;
-extern const u8 gUnk_083D2ADD[]; // per animation id (gUnk_03002C30[].unk30): 2 -> unkB = 0xFF, 1 -> 0, else 0x40
+extern const u8 gUnk_083D2ADD[]; // per animation id (gSpriteEntries[].unk30): 2 -> unkB = 0xFF, 1 -> 0, else 0x40
                                  // (sprite_set_blend_from_kind)
 extern const u8 *const
     gUnk_08414394[]; // tile tables by id - 0xD0, indexed by gUnk_030057E0.unkC38[id - 0xD0] (resolve_sprite_sheet_id)
@@ -1098,7 +1098,7 @@ extern const u8
     *const gUnk_083F80F4[];       // compressed OBJ tile sets, NULL entries fall back to 1 (area_load_sprite_sheets)
 extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (area_load_sprite_palettes)
 extern u32 gUnk_0300534C;
-extern struct AffineParam gUnk_03006D40[32];
+extern struct AffineParam gAffineParams[32];
 extern struct BattleEntity3D *gUnk_03006D30;
 extern const s32 *const
     *const gUnk_083D2DB0[]; // per model set, per entity: s32 count, x[4], y[4], z[4] (update_3d_entity_projections)
@@ -1278,9 +1278,9 @@ extern const u8 gUnk_087D0E80[];  // LZ77 BG tiles (load_bg_screen_c)
 extern const u8 gUnk_087D424C[];  // LZ77 30x20 tilemap (load_bg_screen_c)
 extern const u16 gUnk_087D4564[]; // BG palette, 256 colours (load_bg_screen_c)
 extern s32 (*const gUnk_084860AC[])(
-    u8); // sprite actions, by gUnk_03002C30[].unk20 - 1: 0 = done, 0xFF = clear (update_sprite_animations_080703D8)
+    u8); // sprite actions, by gSpriteEntries[].unk20 - 1: 0 = done, 0xFF = clear (update_sprite_animations_080703D8)
 extern const u8 gUnk_084860C0[]; // sprite actions: frame period, by unk20 - 1
-extern const s8 gUnk_080AFF50[]; // 64-entry wave offsets, by gUnk_03002C30[].unk21 & 0x3F (sub_0807052C)
+extern const s8 gUnk_080AFF50[]; // 64-entry wave offsets, by gSpriteEntries[].unk21 & 0x3F (sub_0807052C)
 extern u8 gWeeklyAnimTiles[];    // animated BG tiles: 6 frames of 0x280 bytes, 0x100 copied (weekly_update_studio)
 extern u8 gWeeklyAnimTiles2[];   // animated BG tiles: 6 frames of 0x280 bytes, 0x180 copied (weekly_update_studio)
 extern u8 gWeeklyCycleAnimMask;
@@ -1302,8 +1302,8 @@ extern const u8 gWeeklyLectureSfxScript[13]; // weekly_lecture_run_pose script: 
                                              // play_sound_effect(id)
 extern u32 (*const gWeeklyLectureSteps[])(
     void); // Medabots Lecture steps by gUnk_03001800_s.unk10.lecture.state (weekly_lecture_run_step); 1 = done
-extern const struct SpriteAnimCmd *const gUnk_083F7BF4[];
-extern const struct SpriteAnimGfx gUnk_080AE9FC[];
+extern const struct SpriteAnimCmd *const gSpriteAnimScripts[];
+extern const struct SpriteAnimGfx gSpriteAnimGfx[];
 extern const u8 gUnk_08764CB0[];
 extern const Func gFieldSubStates[];
 extern const void *const gUnk_08411D54[];

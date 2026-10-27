@@ -36,11 +36,11 @@ void scroll_tilemap_window(void) {
 void sub_08016FB4(void) {
     u32 i;
     for (i = 0; i < 6; i++) {
-        gUnk_03002C30[i].unk9 += 8;
-        gUnk_03002C30[i].unk8 += 8;
-        if (gUnk_03002C30[i].unk9 > 0x40 - (0x90 - gUnk_03002C30[i].unk4) / 2) {
-            gUnk_03002C30[i].unk9 = 0x40 - (0x90 - gUnk_03002C30[i].unk4) / 2;
-            gUnk_03002C30[i].unk8 = 0x40 - (0x90 - gUnk_03002C30[i].unk4) / 2;
+        gSpriteEntries[i].unk9 += 8;
+        gSpriteEntries[i].unk8 += 8;
+        if (gSpriteEntries[i].unk9 > 0x40 - (0x90 - gSpriteEntries[i].unk4) / 2) {
+            gSpriteEntries[i].unk9 = 0x40 - (0x90 - gSpriteEntries[i].unk4) / 2;
+            gSpriteEntries[i].unk8 = 0x40 - (0x90 - gSpriteEntries[i].unk4) / 2;
         }
     }
 }
@@ -72,53 +72,53 @@ void sub_080170D4(void) {
 }
 
 void sub_08017104(void) {
-    gUnk_03002C30[0].unk0 = 0xC404;
-    gUnk_03002C30[0].unk1C = 0;
-    gUnk_03002C30[0].unk2 = 0x78;
-    gUnk_03002C30[0].unk4 = 0x78;
-    gUnk_03002C30[0].unkA = 0xA;
-    gUnk_03002C30[0].unkB = 0xC0;
-    gUnk_03002C30[0].unk6 = 0x61A;
+    gSpriteEntries[0].unk0 = 0xC404;
+    gSpriteEntries[0].unk1C = 0;
+    gSpriteEntries[0].unk2 = 0x78;
+    gSpriteEntries[0].unk4 = 0x78;
+    gSpriteEntries[0].unkA = 0xA;
+    gSpriteEntries[0].unkB = 0xC0;
+    gSpriteEntries[0].unk6 = 0x61A;
 }
 
 void sub_08017130(u32 a) {
-    gUnk_03002C30[1].unk0 = 0xC404;
-    gUnk_03002C30[1].unk1C = 0;
-    gUnk_03002C30[1].unk2 = 0x78;
-    gUnk_03002C30[1].unk4 = 0x84;
-    gUnk_03002C30[1].unkA = 0xA;
-    gUnk_03002C30[1].unkB = 0xC0;
-    gUnk_03002C30[1].unk6 = a * 4 + 0x61E;
+    gSpriteEntries[1].unk0 = 0xC404;
+    gSpriteEntries[1].unk1C = 0;
+    gSpriteEntries[1].unk2 = 0x78;
+    gSpriteEntries[1].unk4 = 0x84;
+    gSpriteEntries[1].unkA = 0xA;
+    gSpriteEntries[1].unkB = 0xC0;
+    gSpriteEntries[1].unk6 = a * 4 + 0x61E;
 }
 
 void sub_08017178(u32 a) {
-    gUnk_03002C30[2].unk0 = 0xC404;
-    gUnk_03002C30[2].unk1C = 0;
-    gUnk_03002C30[2].unk2 = 0x78;
-    gUnk_03002C30[2].unk4 = 0x6C;
-    gUnk_03002C30[2].unkA = 0xA;
-    gUnk_03002C30[2].unkB = 0xC0;
-    gUnk_03002C30[2].unk6 = a * 4 + 0x61B;
+    gSpriteEntries[2].unk0 = 0xC404;
+    gSpriteEntries[2].unk1C = 0;
+    gSpriteEntries[2].unk2 = 0x78;
+    gSpriteEntries[2].unk4 = 0x6C;
+    gSpriteEntries[2].unkA = 0xA;
+    gSpriteEntries[2].unkB = 0xC0;
+    gSpriteEntries[2].unk6 = a * 4 + 0x61B;
 }
 
 void sub_080171C0(u32 a) {
-    gUnk_03002C30[3].unk0 = 0xC404;
-    gUnk_03002C30[3].unk1C = 0;
-    gUnk_03002C30[3].unk2 = 0x6C;
-    gUnk_03002C30[3].unk4 = 0x78;
-    gUnk_03002C30[3].unkA = 0xA;
-    gUnk_03002C30[3].unkB = 0xC0;
-    gUnk_03002C30[3].unk6 = a * 4 + 0x61C;
+    gSpriteEntries[3].unk0 = 0xC404;
+    gSpriteEntries[3].unk1C = 0;
+    gSpriteEntries[3].unk2 = 0x6C;
+    gSpriteEntries[3].unk4 = 0x78;
+    gSpriteEntries[3].unkA = 0xA;
+    gSpriteEntries[3].unkB = 0xC0;
+    gSpriteEntries[3].unk6 = a * 4 + 0x61C;
 }
 
 void sub_08017208(u32 a) {
-    gUnk_03002C30[4].unk0 = 0xC404;
-    gUnk_03002C30[4].unk1C = 0;
-    gUnk_03002C30[4].unk2 = 0x84;
-    gUnk_03002C30[4].unk4 = 0x78;
-    gUnk_03002C30[4].unkA = 0xA;
-    gUnk_03002C30[4].unkB = 0xC0;
-    gUnk_03002C30[4].unk6 = a * 4 + 0x61D;
+    gSpriteEntries[4].unk0 = 0xC404;
+    gSpriteEntries[4].unk1C = 0;
+    gSpriteEntries[4].unk2 = 0x84;
+    gSpriteEntries[4].unk4 = 0x78;
+    gSpriteEntries[4].unkA = 0xA;
+    gSpriteEntries[4].unkB = 0xC0;
+    gSpriteEntries[4].unk6 = a * 4 + 0x61D;
 }
 
 // guess: Medaforce select names (cases 1-3 open at Medal level 10/30/60), same layout as the part select

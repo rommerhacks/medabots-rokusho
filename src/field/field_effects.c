@@ -14,7 +14,7 @@ void build_bg_tile_entry(u16 *dst, u16 id, u16 base, u16 y, u16 x, u16 yoff, u16
 }
 
 // Not called directly (hidden in the tail of build_bg_tile_entry).
-static void sub_080490F4(u16 *src, u16 *dst, s32 h, s32 w, s32 maxh, s32 pitch, s32 add, s32 pal) {
+static void copy_tilemap_rect_clamped(u16 *src, u16 *dst, s32 h, s32 w, s32 maxh, s32 pitch, s32 add, s32 pal) {
     s32 i, j;
     if (h > maxh)
         h = maxh;
@@ -26,11 +26,11 @@ static void sub_080490F4(u16 *src, u16 *dst, s32 h, s32 w, s32 maxh, s32 pitch, 
 }
 
 // Not called directly (hidden in the tail of build_bg_tile_entry).
-static void sub_0804914C(u8 slot, const void *src) {
+static void bg_palette_load_slot(u8 slot, const void *src) {
     DmaSet(3, src, PLTT + slot * 32, 0x80000008);
 }
 
-void fill_tilemap_rect_0804916C(u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 tile, s32 pal, s32 mode) {
+void fill_tilemap_rect(u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 tile, s32 pal, s32 mode) {
     s32 pitch;
     s32 i, j;
     u16 *row;
@@ -112,38 +112,39 @@ void copy_tilemap_rect_with_offset(u16 *src, u16 *dst, s32 y, s32 x, s32 w, s32 
     }
 }
 
-void sub_080492CC(void) {
+void affine_params_reset(void) {
     s32 i;
     gUnk_03005310.unk18 = 0;
     gUnk_03005310.unk1A = 0;
     for (i = 0; i < 32; i++) {
-        gUnk_03006D40[i].scaleX = 0x100;
-        gUnk_03006D40[i].scaleY = 0x100;
-        gUnk_03006D40[i].angle = 0;
+        gAffineParams[i].scaleX = 0x100;
+        gAffineParams[i].scaleY = 0x100;
+        gAffineParams[i].angle = 0;
     }
 }
 
 void clear_entity_state(u8 slot) {
     memzero_bytes((u8 *)&gUnk_030055A0[slot], 4);
-    memzero_bytes((u8 *)&gUnk_03002C30[slot], 0x40);
+    memzero_bytes((u8 *)&gSpriteEntries[slot], 0x40);
 }
 
 void calculate_oam_affine_matrix(u8 i) {
     const s16 *sine = gSineTable;
-    struct AffineParam *base = gUnk_03006D40;
+    struct AffineParam *base = gAffineParams;
     struct AffineParam *p = &base[i];
     s32 a;
 
-    p->pa = sub_08048B24(sine[a = p->angle + 0x40], divide_by_65536(p->scaleX));
-    p->pb = sub_08048B24(sine[p->angle], divide_by_65536(p->scaleX));
-    p->pc = sub_08048B24(-sine[p->angle], divide_by_65536(p->scaleY));
-    p->pd = sub_08048B24(sine[a = p->angle + 0x40], divide_by_65536(p->scaleY));
+    p->pa = fixed_point_multiply(sine[a = p->angle + 0x40], divide_by_65536(p->scaleX));
+    p->pb = fixed_point_multiply(sine[p->angle], divide_by_65536(p->scaleX));
+    p->pc = fixed_point_multiply(-sine[p->angle], divide_by_65536(p->scaleY));
+    p->pd = fixed_point_multiply(sine[a = p->angle + 0x40], divide_by_65536(p->scaleY));
 }
 
-void sub_080493D4(u8 idx, u8 val) {
-    gUnk_03002C30[idx].unk24 = val;
-    gUnk_03002C30[idx].unk23 = 0;
-    gUnk_03002C30[idx].unk22 = 0;
+// Starts animation script `anim_id` (gSpriteAnimScripts) on sprite `slot` from its first frame.
+void sprite_anim_start(u8 slot, u8 anim_id) {
+    gSpriteEntries[slot].unk24 = anim_id;
+    gSpriteEntries[slot].unk23 = 0;
+    gSpriteEntries[slot].unk22 = 0;
 }
 
 void advance_sprite_animation_frame(u8 idx) {
@@ -151,46 +152,46 @@ void advance_sprite_animation_frame(u8 idx) {
     u16 cmd, arg, duration, frame;
     const struct SpriteAnimGfx *gfx;
 
-    c = gUnk_083F7BF4[gUnk_03002C30[idx].unk24];
-    cmd = c[gUnk_03002C30[idx].unk22].cmd;
-    arg = c[gUnk_03002C30[idx].unk22].arg;
-    duration = c[gUnk_03002C30[idx].unk22].duration;
-    frame = c[gUnk_03002C30[idx].unk22].frame;
+    c = gSpriteAnimScripts[gSpriteEntries[idx].unk24];
+    cmd = c[gSpriteEntries[idx].unk22].cmd;
+    arg = c[gSpriteEntries[idx].unk22].arg;
+    duration = c[gSpriteEntries[idx].unk22].duration;
+    frame = c[gSpriteEntries[idx].unk22].frame;
 
     switch (cmd) {
     case 0xFFFD:
-        gUnk_03002C30[idx].unk22++;
+        gSpriteEntries[idx].unk22++;
         field_play_sound_effect(arg);
         advance_sprite_animation_frame(idx);
         break;
     case 0xFFFE:
-        gUnk_03002C30[idx].unk22 = arg;
-        gUnk_03002C30[idx].unk23 = 0;
+        gSpriteEntries[idx].unk22 = arg;
+        gSpriteEntries[idx].unk23 = 0;
         advance_sprite_animation_frame(idx);
         break;
     case 0xFFFA:
-        if (gUnk_03002C30[idx].unk23 < duration) {
-            gUnk_03002C30[idx].unk6 = frame + gUnk_03002C30[idx].unk2F;
-            gUnk_03002C30[idx].unk23++;
-            if (gUnk_03002C30[idx].unk23 >= duration) {
-                gUnk_03002C30[idx].unk23 = 0;
-                gUnk_03002C30[idx].unk22++;
+        if (gSpriteEntries[idx].unk23 < duration) {
+            gSpriteEntries[idx].unk6 = frame + gSpriteEntries[idx].unk2F;
+            gSpriteEntries[idx].unk23++;
+            if (gSpriteEntries[idx].unk23 >= duration) {
+                gSpriteEntries[idx].unk23 = 0;
+                gSpriteEntries[idx].unk22++;
             }
         }
         break;
     case 0xFFFC:
-        if (gUnk_03002C30[idx].unk23 == 0) {
-            gfx = &gUnk_080AE9FC[arg];
+        if (gSpriteEntries[idx].unk23 == 0) {
+            gfx = &gSpriteAnimGfx[arg];
             if (gfx->unk0 == 0)
                 LZ77UnCompVram(gfx->src, gfx->dst);
         }
     default:
-        if (gUnk_03002C30[idx].unk23 < duration) {
-            gUnk_03002C30[idx].unk6 = frame;
-            gUnk_03002C30[idx].unk23++;
-            if (gUnk_03002C30[idx].unk23 >= duration) {
-                gUnk_03002C30[idx].unk23 = 0;
-                gUnk_03002C30[idx].unk22++;
+        if (gSpriteEntries[idx].unk23 < duration) {
+            gSpriteEntries[idx].unk6 = frame;
+            gSpriteEntries[idx].unk23++;
+            if (gSpriteEntries[idx].unk23 >= duration) {
+                gSpriteEntries[idx].unk23 = 0;
+                gSpriteEntries[idx].unk22++;
             }
         }
         break;
@@ -202,50 +203,50 @@ void advance_sprite_animation_frame(u8 idx) {
 // Not called directly (hidden in the tail of advance_sprite_animation_frame).
 // guess: debug editor for affine entry 0 / sprite 0 position: A toggles unk18, SELECT + D-pad
 // scales and rotates, D-pad moves, R/L change unk1A, START resets the affine params.
-static u32 sub_0804950C(void) {
+static u32 affine_debug_input(void) {
     if (KEYS_LO(gNewKeys) & 1)
         gUnk_03005310.unk18 ^= 1;
     if (KEYS_LO(gHeldKeys) & 4) {
         if (KEYS_LO(gHeldKeys) & 0x40) {
-            gUnk_03006D40[0].scaleY += 16;
-            if (gUnk_03006D40[0].scaleY > 0x400)
-                gUnk_03006D40[0].scaleY = 0x400;
+            gAffineParams[0].scaleY += 16;
+            if (gAffineParams[0].scaleY > 0x400)
+                gAffineParams[0].scaleY = 0x400;
         }
         if (KEYS_LO(gHeldKeys) & 0x80) {
-            gUnk_03006D40[0].scaleY -= 8;
-            if (gUnk_03006D40[0].scaleY < 0x40)
-                gUnk_03006D40[0].scaleY = 0x40;
+            gAffineParams[0].scaleY -= 8;
+            if (gAffineParams[0].scaleY < 0x40)
+                gAffineParams[0].scaleY = 0x40;
         }
         if (KEYS_LO(gHeldKeys) & 0x20)
-            gUnk_03006D40[0].scaleX -= 8;
+            gAffineParams[0].scaleX -= 8;
         if (KEYS_LO(gHeldKeys) & 0x10) {
-            gUnk_03006D40[0].scaleX += 16;
-            if (gUnk_03006D40[0].scaleX > 0x400)
-                gUnk_03006D40[0].scaleX = 0x400;
-            gUnk_03006D40[0].angle = (gUnk_03006D40[0].angle + 1) & 0xFF;
+            gAffineParams[0].scaleX += 16;
+            if (gAffineParams[0].scaleX > 0x400)
+                gAffineParams[0].scaleX = 0x400;
+            gAffineParams[0].angle = (gAffineParams[0].angle + 1) & 0xFF;
         }
         if (KEYS_LO(gHeldKeys) & 0x20)
-            gUnk_03006D40[0].angle = (gUnk_03006D40[0].angle + 0xFF) & 0xFF;
+            gAffineParams[0].angle = (gAffineParams[0].angle + 0xFF) & 0xFF;
     } else {
         if (KEYS_LO(gHeldKeys) & 0x40) {
-            gUnk_03002C30[0].unk4 -= 2;
-            if (gUnk_03002C30[0].unk4 < -80)
-                gUnk_03002C30[0].unk4 = -80;
+            gSpriteEntries[0].unk4 -= 2;
+            if (gSpriteEntries[0].unk4 < -80)
+                gSpriteEntries[0].unk4 = -80;
         }
         if (KEYS_LO(gHeldKeys) & 0x80) {
-            gUnk_03002C30[0].unk4 += 2;
-            if (gUnk_03002C30[0].unk4 > 80)
-                gUnk_03002C30[0].unk4 = 80;
+            gSpriteEntries[0].unk4 += 2;
+            if (gSpriteEntries[0].unk4 > 80)
+                gSpriteEntries[0].unk4 = 80;
         }
         if (KEYS_LO(gHeldKeys) & 0x10) {
-            gUnk_03002C30[0].unk2 += 2;
-            if (gUnk_03002C30[0].unk2 > 120)
-                gUnk_03002C30[0].unk2 = 120;
+            gSpriteEntries[0].unk2 += 2;
+            if (gSpriteEntries[0].unk2 > 120)
+                gSpriteEntries[0].unk2 = 120;
         }
         if (KEYS_LO(gHeldKeys) & 0x20) {
-            gUnk_03002C30[0].unk2 -= 2;
-            if (gUnk_03002C30[0].unk2 < -120)
-                gUnk_03002C30[0].unk2 = -120;
+            gSpriteEntries[0].unk2 -= 2;
+            if (gSpriteEntries[0].unk2 < -120)
+                gSpriteEntries[0].unk2 = -120;
         }
         if (KEYS_HI(gNewKeys) & 1) {
             if (gUnk_03005310.unk1A <= 14)
@@ -257,7 +258,7 @@ static u32 sub_0804950C(void) {
         }
     }
     if (KEYS_LO(gNewKeys) & 8)
-        sub_080492CC();
+        affine_params_reset();
     return 0;
 }
 
@@ -265,7 +266,7 @@ static u32 sub_0804950C(void) {
 static void nullsub_080496A0(void) {}
 
 // Not called directly (hidden in the tail of advance_sprite_animation_frame).
-static void sub_080496A4(u8 slot, const void *src) {
+static void obj_palette_load_slot(u8 slot, const void *src) {
     DmaSet(3, src, OBJ_PLTT + slot * 32, 0x80000008);
 }
 
@@ -282,19 +283,19 @@ void memset_bytes(u8 *dst, u32 n, u8 val) {
         *dst++ = val;
 }
 
-static s32 count_byte_differences(const u8 *a, const u8 *b, s32 n) {
+static s32 count_byte_differences(const u8 *lhs, const u8 *rhs, s32 n) {
     s32 count = 0;
     s32 i;
 
     for (i = 0; i < n; i++) {
-        if (*a++ != *b++)
+        if (*lhs++ != *rhs++)
             count++;
     }
     return count;
 }
 
 // Not called directly (hidden in the tail of count_byte_differences at 0x0804971C).
-static s32 sum_bytes_0804971C(const u8 *p, s32 n) {
+static s32 sum_bytes(const u8 *p, s32 n) {
     s32 sum = 0;
     s32 i;
 
@@ -304,7 +305,7 @@ static s32 sum_bytes_0804971C(const u8 *p, s32 n) {
 }
 
 u8 field_random(u8 n) {
-    const u8 *tbl = gUnk_083F7FF4;
+    const u8 *tbl = gRandomBytes;
     u8 r;
 
     r = tbl[(gUnk_030057E0.unkC37 + gUnk_03005310.unk4) & 0xFF];
@@ -321,64 +322,67 @@ void memcpy_u8(const void *src, void *dst, u32 n) {
     }
 }
 
-void setup_blend_effect(u8 mode, u16 bldcnt, u8 type, u8 sa, u8 sb, u8 sy, u8 a, u8 b, u8 y) {
-    if (sa == 0)
-        sa = 1;
-    if (sb == 0)
-        sb = 1;
-    if (sy == 0)
-        sy = 1;
-    gUnk_03006F40.unk0 = mode;
-    gUnk_03006F40.unk1 = type;
-    gUnk_03006F40.unk14 = 0.0f;
-    gUnk_03006F40.unk2 = 1;
+// Starts BG blend effect `type`: alpha types 4-6 step EVA / EVB toward the targets over eva_frames /
+// evb_frames frames (blend_effect_update runs it, apply_blend_coefficients writes the registers in VBlank).
+void setup_blend_effect(u8 mode, u16 bldcnt, u8 type, u8 eva_frames, u8 evb_frames, u8 evy_frames, u8 target_eva,
+                        u8 target_evb, u8 target_evy) {
+    if (eva_frames == 0)
+        eva_frames = 1;
+    if (evb_frames == 0)
+        evb_frames = 1;
+    if (evy_frames == 0)
+        evy_frames = 1;
+    gBlendEffect.mode = mode;
+    gBlendEffect.type = type;
+    gBlendEffect.evy_level = 0.0f;
+    gBlendEffect.status = 1;
     if (mode & 0x80)
         bldcnt |= 0x20;
     else
         bldcnt &= ~0x20;
-    switch (gUnk_03006F40.unk1) {
+    switch (gBlendEffect.type) {
     case 0:
     case 2:
-        gUnk_03006F40.unk5 = 16;
+        gBlendEffect.evy = 16;
         break;
     case 1:
     case 3:
-        gUnk_03006F40.unk5 = 16;
+        gBlendEffect.evy = 16;
         break;
     case 4:
-        gUnk_03006F40.unk6 = REG_BLDALPHA & 0x1F;
-        gUnk_03006F40.unk7 = (REG_BLDALPHA & 0x1F00) >> 8;
-        gUnk_03006F40.unk8 = REG_BLDY & 0x1F;
-        gUnk_03006F40.unkC = 0.0f;
-        gUnk_03006F40.unk10 = 0.0f;
-        gUnk_03006F40.unk18 = (16 - gUnk_03006F40.unk6) / (float)sa;
-        gUnk_03006F40.unk1C = (16 - gUnk_03006F40.unk7) / (float)sb;
+        gBlendEffect.target_eva = REG_BLDALPHA & 0x1F;
+        gBlendEffect.target_evb = (REG_BLDALPHA & 0x1F00) >> 8;
+        gBlendEffect.target_evy = REG_BLDY & 0x1F;
+        gBlendEffect.eva_level = 0.0f;
+        gBlendEffect.evb_level = 0.0f;
+        gBlendEffect.eva_step = (16 - gBlendEffect.target_eva) / (float)eva_frames;
+        gBlendEffect.evb_step = (16 - gBlendEffect.target_evb) / (float)evb_frames;
         goto end;
     case 5:
-        gUnk_03006F40.unk6 = a;
-        gUnk_03006F40.unk7 = b;
-        gUnk_03006F40.unk8 = y;
-        gUnk_03006F40.unkC = 0.0f;
-        gUnk_03006F40.unk10 = 0.0f;
-        gUnk_03006F40.unk18 = (16 - a) / (float)sa;
-        gUnk_03006F40.unk1C = (16 - b) / (float)sb;
-        gUnk_03006F40.unk3 = 16;
-        gUnk_03006F40.unk4 = 16;
+        gBlendEffect.target_eva = target_eva;
+        gBlendEffect.target_evb = target_evb;
+        gBlendEffect.target_evy = target_evy;
+        gBlendEffect.eva_level = 0.0f;
+        gBlendEffect.evb_level = 0.0f;
+        gBlendEffect.eva_step = (16 - target_eva) / (float)eva_frames;
+        gBlendEffect.evb_step = (16 - target_evb) / (float)evb_frames;
+        gBlendEffect.eva = 16;
+        gBlendEffect.evb = 16;
         gVBlankCallback = apply_blend_coefficients;
         goto end;
     case 6:
-        gUnk_03006F40.unk9 = REG_BLDALPHA & 0x1F;
-        gUnk_03006F40.unkA = (REG_BLDALPHA & 0x1F00) >> 8;
-        gUnk_03006F40.unk6 = a;
-        gUnk_03006F40.unk7 = b;
-        gUnk_03006F40.unk8 = y;
-        gUnk_03006F40.unkC = 0.0f;
-        gUnk_03006F40.unk10 = 0.0f;
-        gUnk_03006F40.unk18 = (gUnk_03006F40.unk9 - a) / (float)sa;
-        gUnk_03006F40.unk1C = (gUnk_03006F40.unkA - b) / (float)sb;
+        gBlendEffect.start_eva = REG_BLDALPHA & 0x1F;
+        gBlendEffect.start_evb = (REG_BLDALPHA & 0x1F00) >> 8;
+        gBlendEffect.target_eva = target_eva;
+        gBlendEffect.target_evb = target_evb;
+        gBlendEffect.target_evy = target_evy;
+        gBlendEffect.eva_level = 0.0f;
+        gBlendEffect.evb_level = 0.0f;
+        gBlendEffect.eva_step = (gBlendEffect.start_eva - target_eva) / (float)eva_frames;
+        gBlendEffect.evb_step = (gBlendEffect.start_evb - target_evb) / (float)evb_frames;
         goto end;
     default:
-        gUnk_03006F40.unk5 = 0;
+        gBlendEffect.evy = 0;
         break;
     }
 end:
@@ -388,86 +392,86 @@ end:
 u32 blend_effect_update(void) {
     u32 done = 0;
 
-    if (gUnk_03006F40.unk2 == 2) {
+    if (gBlendEffect.status == 2) {
         done = 1;
         gVBlankCallback = nullsub_08000840;
-    } else if (gUnk_03006F40.unk2 == 1) {
-        switch (gUnk_03006F40.unk0) {
+    } else if (gBlendEffect.status == 1) {
+        switch (gBlendEffect.mode) {
         case 0x00:
         case 0x40:
             break;
         case 0x80:
         case 0xC0:
-            if (gUnk_03006F40.unk14 < 256.0f)
-                gUnk_03006F40.unk14 += gUnk_03006F40.unk20;
+            if (gBlendEffect.evy_level < 256.0f)
+                gBlendEffect.evy_level += gBlendEffect.evy_step;
             else
-                gUnk_03006F40.unk14 = 256.0f;
-            if (gUnk_03006F40.unk14 >= 256.0f)
+                gBlendEffect.evy_level = 256.0f;
+            if (gBlendEffect.evy_level >= 256.0f)
                 done = 1;
             break;
         }
-        switch (gUnk_03006F40.unk1) {
+        switch (gBlendEffect.type) {
         case 0:
         case 2:
-            gUnk_03006F40.unk3 = gUnk_03006F40.unkC * 0.0625f;
-            gUnk_03006F40.unk4 = gUnk_03006F40.unk10 * 0.0625f;
-            gUnk_03006F40.unk5 = gUnk_03006F40.unk14 * 0.0625f;
+            gBlendEffect.eva = gBlendEffect.eva_level * 0.0625f;
+            gBlendEffect.evb = gBlendEffect.evb_level * 0.0625f;
+            gBlendEffect.evy = gBlendEffect.evy_level * 0.0625f;
             break;
         case 1:
         case 3:
-            gUnk_03006F40.unk3 = 16.0f - gUnk_03006F40.unkC * 0.0625f;
-            gUnk_03006F40.unk4 = 16.0f - gUnk_03006F40.unk10 * 0.0625f;
-            gUnk_03006F40.unk5 = 16.0f - gUnk_03006F40.unk14 * 0.0625f;
+            gBlendEffect.eva = 16.0f - gBlendEffect.eva_level * 0.0625f;
+            gBlendEffect.evb = 16.0f - gBlendEffect.evb_level * 0.0625f;
+            gBlendEffect.evy = 16.0f - gBlendEffect.evy_level * 0.0625f;
             break;
         case 4:
-            gUnk_03006F40.unkC += gUnk_03006F40.unk18;
-            gUnk_03006F40.unk3 = (u8)gUnk_03006F40.unkC + gUnk_03006F40.unk6;
-            if (gUnk_03006F40.unk3 > 15) {
-                gUnk_03006F40.unk3 = 16;
+            gBlendEffect.eva_level += gBlendEffect.eva_step;
+            gBlendEffect.eva = (u8)gBlendEffect.eva_level + gBlendEffect.target_eva;
+            if (gBlendEffect.eva > 15) {
+                gBlendEffect.eva = 16;
                 done = 1;
             }
-            gUnk_03006F40.unk10 += gUnk_03006F40.unk1C;
-            gUnk_03006F40.unk4 = (u8)gUnk_03006F40.unk10 + gUnk_03006F40.unk7;
-            if (gUnk_03006F40.unk4 > 15) {
-                gUnk_03006F40.unk4 = 16;
+            gBlendEffect.evb_level += gBlendEffect.evb_step;
+            gBlendEffect.evb = (u8)gBlendEffect.evb_level + gBlendEffect.target_evb;
+            if (gBlendEffect.evb > 15) {
+                gBlendEffect.evb = 16;
                 done = 1;
             }
             break;
         case 5:
-            gUnk_03006F40.unkC += gUnk_03006F40.unk18;
-            gUnk_03006F40.unk3 = 16 - (u8)gUnk_03006F40.unkC;
-            if (gUnk_03006F40.unk3 <= gUnk_03006F40.unk6) {
-                gUnk_03006F40.unk3 = gUnk_03006F40.unk6;
+            gBlendEffect.eva_level += gBlendEffect.eva_step;
+            gBlendEffect.eva = 16 - (u8)gBlendEffect.eva_level;
+            if (gBlendEffect.eva <= gBlendEffect.target_eva) {
+                gBlendEffect.eva = gBlendEffect.target_eva;
                 done = 1;
             }
-            gUnk_03006F40.unk10 += gUnk_03006F40.unk1C;
-            gUnk_03006F40.unk4 = 16 - (u8)gUnk_03006F40.unk10;
-            if (gUnk_03006F40.unk4 <= gUnk_03006F40.unk7) {
-                gUnk_03006F40.unk4 = gUnk_03006F40.unk7;
+            gBlendEffect.evb_level += gBlendEffect.evb_step;
+            gBlendEffect.evb = 16 - (u8)gBlendEffect.evb_level;
+            if (gBlendEffect.evb <= gBlendEffect.target_evb) {
+                gBlendEffect.evb = gBlendEffect.target_evb;
                 done = 1;
             }
             break;
         case 6:
-            gUnk_03006F40.unkC += gUnk_03006F40.unk18;
-            gUnk_03006F40.unk3 = gUnk_03006F40.unk9 - (u8)gUnk_03006F40.unkC;
-            if (gUnk_03006F40.unk6 != gUnk_03006F40.unk9) {
-                if (gUnk_03006F40.unk3 >= gUnk_03006F40.unk6) {
-                    gUnk_03006F40.unk3 = gUnk_03006F40.unk6;
+            gBlendEffect.eva_level += gBlendEffect.eva_step;
+            gBlendEffect.eva = gBlendEffect.start_eva - (u8)gBlendEffect.eva_level;
+            if (gBlendEffect.target_eva != gBlendEffect.start_eva) {
+                if (gBlendEffect.eva >= gBlendEffect.target_eva) {
+                    gBlendEffect.eva = gBlendEffect.target_eva;
                     done = 1;
                 }
-            } else if (gUnk_03006F40.unk3 <= gUnk_03006F40.unk6) {
-                gUnk_03006F40.unk3 = gUnk_03006F40.unk6;
+            } else if (gBlendEffect.eva <= gBlendEffect.target_eva) {
+                gBlendEffect.eva = gBlendEffect.target_eva;
                 done = 1;
             }
-            gUnk_03006F40.unk10 += gUnk_03006F40.unk1C;
-            gUnk_03006F40.unk4 = gUnk_03006F40.unkA - (u8)gUnk_03006F40.unk10;
-            if (gUnk_03006F40.unk7 != gUnk_03006F40.unkA) {
-                if (gUnk_03006F40.unk4 >= gUnk_03006F40.unk7) {
-                    gUnk_03006F40.unk4 = gUnk_03006F40.unk7;
+            gBlendEffect.evb_level += gBlendEffect.evb_step;
+            gBlendEffect.evb = gBlendEffect.start_evb - (u8)gBlendEffect.evb_level;
+            if (gBlendEffect.target_evb != gBlendEffect.start_evb) {
+                if (gBlendEffect.evb >= gBlendEffect.target_evb) {
+                    gBlendEffect.evb = gBlendEffect.target_evb;
                     done = 1;
                 }
-            } else if (gUnk_03006F40.unk4 <= gUnk_03006F40.unk7) {
-                gUnk_03006F40.unk4 = gUnk_03006F40.unk7;
+            } else if (gBlendEffect.evb <= gBlendEffect.target_evb) {
+                gBlendEffect.evb = gBlendEffect.target_evb;
                 done = 1;
             }
             break;
@@ -476,49 +480,43 @@ u32 blend_effect_update(void) {
     gVBlankCallback = apply_blend_coefficients;
     if (done) {
         done = 0;
-        gUnk_03006F40.unk2 = 2;
+        gBlendEffect.status = 2;
     }
     return done;
 }
-// TEMP (testing only): libgcc.s has no __subsf3/__ltsf2/__gesf2/... aliases yet; remove once it does.
-
 static void apply_blend_coefficients(void) {
-    REG_BLDALPHA = ((gUnk_03006F40.unk4 & 0x3F) << 8) | (gUnk_03006F40.unk3 & 0x3F);
-    REG_BLDY = gUnk_03006F40.unk5 & 0x3F;
+    REG_BLDALPHA = ((gBlendEffect.evb & 0x3F) << 8) | (gBlendEffect.eva & 0x3F);
+    REG_BLDY = gBlendEffect.evy & 0x3F;
 }
 
-void sub_08049CB0(u16 color, u32 amount) {
-    palette_blend_to_color_080013A8(color, amount);
+void field_palettes_blend_to_color(u16 color, u32 amount) {
+    palettes_blend_to_color(color, amount);
 }
 
-void sub_08049CC0(void) {
-    copy_obj_palette_to_buffer();
+void field_palette_backup(void) {
+    palette_backup_from_hardware();
 }
 
 void setup_palette_fade_to_color(u16 color, float start, float end, float steps) {
     // called without a prototype in the original (the float is passed as a double)
-    ((void (*)())palette_blend_to_color_080013A8)(color, start);
-    gUnk_03006F40.unk24 = start;
-    gUnk_03006F40.unk28 = start;
-    gUnk_03006F40.unk2C = end;
-    gUnk_03006F40.unk30 = (start - end) / steps;
+    ((void (*)())palettes_blend_to_color)(color, start);
+    gBlendEffect.fade_amount = start;
+    gBlendEffect.fade_start = start;
+    gBlendEffect.fade_end = end;
+    gBlendEffect.fade_step = (start - end) / steps;
     setup_blend_effect(0x40, 0x2F00, 5, steps, steps, steps, 12, 10, 0);
 }
 
-// TEMP (testing only): libgcc.s lacks these __*sf* aliases; remove once added there.
-
 void setup_palette_fade_to_color_with_obj(u16 color, float start, float end, float steps) {
-    sub_08049CC0();
+    field_palette_backup();
     // called without a prototype in the original (the float is passed as a double)
-    ((void (*)())palette_blend_to_color_080013A8)(color, start);
-    gUnk_03006F40.unk24 = start;
-    gUnk_03006F40.unk28 = start;
-    gUnk_03006F40.unk2C = end;
-    gUnk_03006F40.unk30 = (start - end) / steps;
+    ((void (*)())palettes_blend_to_color)(color, start);
+    gBlendEffect.fade_amount = start;
+    gBlendEffect.fade_start = start;
+    gBlendEffect.fade_end = end;
+    gBlendEffect.fade_step = (start - end) / steps;
     setup_blend_effect(0x40, 0x2F00, 4, steps, steps, steps, 16, 16, 0);
 }
-
-// TEMP (testing only): libgcc.s lacks these __*sf* aliases; remove once added there.
 
 u32 run_blend_fade_transition(u16 color) {
     u32 done = 0;
@@ -526,29 +524,27 @@ u32 run_blend_fade_transition(u16 color) {
     blend_effect_update();
     gUnk_03005350.unk20A = 0xFFFF;
     gUnk_03005350.unk20C = 0xBFFF;
-    sub_08049E74(color, gUnk_03006F40.unk24, gUnk_03005350.unk20A);
-    sub_08049E88(color, gUnk_03006F40.unk24, gUnk_03005350.unk20C);
-    gUnk_03006F40.unk24 -= gUnk_03006F40.unk30;
-    if (gUnk_03006F40.unk30 > 0.0f) {
-        if (gUnk_03006F40.unk24 < gUnk_03006F40.unk2C) {
+    field_bg_palettes_blend_masked(color, gBlendEffect.fade_amount, gUnk_03005350.unk20A);
+    field_obj_palettes_blend_masked(color, gBlendEffect.fade_amount, gUnk_03005350.unk20C);
+    gBlendEffect.fade_amount -= gBlendEffect.fade_step;
+    if (gBlendEffect.fade_step > 0.0f) {
+        if (gBlendEffect.fade_amount < gBlendEffect.fade_end) {
             gVBlankCallback = nullsub_08000840;
             done = 1;
         }
-    } else if (gUnk_03006F40.unk24 > gUnk_03006F40.unk2C) {
+    } else if (gBlendEffect.fade_amount > gBlendEffect.fade_end) {
         gVBlankCallback = nullsub_08000840;
         done = 1;
     }
     return done;
 }
 
-// TEMP (testing only): libgcc.s lacks these __*sf* aliases; remove once added there.
-
-void sub_08049E74(u16 a, u32 b, u16 c) {
-    blend_obj_palettes_to_color_0803F684(a, b, c);
+void field_bg_palettes_blend_masked(u16 color, u32 amount, u16 mask) {
+    bg_palettes_blend_masked_now(color, amount, mask);
 }
 
-void sub_08049E88(u16 a, u32 b, u16 c) {
-    blend_obj_palettes_to_color_0803F998(a, b, c);
+void field_obj_palettes_blend_masked(u16 color, u32 amount, u16 mask) {
+    obj_palettes_blend_masked_now(color, amount, mask);
 }
 
 // Sorts arr[left..right] in ascending order (quicksort, pivot arr[left]).
@@ -584,7 +580,7 @@ static void quicksort_u8_array(u8 *arr, s16 left, s16 right) {
 
 // Not called directly (hidden in the tail of quicksort_u8_array).
 // guess: sorts u16 entries by their low byte, ascending
-static void sub_08049F84(u16 *arr, s16 left, s16 right) {
+static void quicksort_u16_low_byte_ascending(u16 *arr, s16 left, s16 right) {
     s32 i, j;
     u16 tmp;
 
@@ -609,14 +605,14 @@ static void sub_08049F84(u16 *arr, s16 left, s16 right) {
         tmp = arr[j];
         arr[j] = arr[left];
         arr[left] = tmp;
-        sub_08049F84(arr, left, j - 1);
-        sub_08049F84(arr, j + 1, right);
+        quicksort_u16_low_byte_ascending(arr, left, j - 1);
+        quicksort_u16_low_byte_ascending(arr, j + 1, right);
     }
 }
 
 // Not called directly (hidden in the tail of quicksort_u8_array).
 // guess: sorts u16 entries by their low byte, descending
-static void sub_0804A0A4(u16 *arr, s16 left, s16 right) {
+static void quicksort_u16_low_byte_descending(u16 *arr, s16 left, s16 right) {
     s32 i, j;
     u16 tmp;
 
@@ -641,11 +637,11 @@ static void sub_0804A0A4(u16 *arr, s16 left, s16 right) {
         tmp = arr[j];
         arr[j] = arr[left];
         arr[left] = tmp;
-        sub_0804A0A4(arr, left, j - 1);
-        sub_0804A0A4(arr, j + 1, right);
+        quicksort_u16_low_byte_descending(arr, left, j - 1);
+        quicksort_u16_low_byte_descending(arr, j + 1, right);
     }
 }
 
-void sub_0804A1C4(void) {
+void game_substate_advance(void) {
     gGameSubState++;
 }

@@ -3,8 +3,8 @@
 
 // Palette backup, fades and blends.
 
-void copy_obj_palette_to_buffer(void);
-void palette_blend_to_color_080013A8(u16 color, u32 amount);
-void dma_obj_palette_to_hardware(void);
+void palette_backup_from_hardware(void);
+void palettes_blend_to_color(u16 color, u32 amount);
+void palette_buffer_upload(void);
 
 #endif // GUARD_ENGINE_PALETTE_H

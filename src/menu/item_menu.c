@@ -16,11 +16,11 @@ static void sub_0805CA28(u32 a) {
     if (w->unk12) {
         if (w->unk13 >= w->unk11 && w->unk13 < w->unk11 + 5) {
             if (a & 1)
-                gUnk_03002C30[84].unk0 &= 0xBFFF;
+                gSpriteEntries[84].unk0 &= 0xBFFF;
             else
-                gUnk_03002C30[84].unk0 |= 0x4000;
+                gSpriteEntries[84].unk0 |= 0x4000;
         } else
-            gUnk_03002C30[84].unk0 &= 0xBFFF;
+            gSpriteEntries[84].unk0 &= 0xBFFF;
     }
 }
 
@@ -60,27 +60,27 @@ void item_menu_load_graphics(void) {
     gUnk_03006F74->unk36 = (size >> 5) - 1;
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     for (i = 0; i <= 1; i++) {
-        gUnk_03002C30[i + 0x51].unk0 = 0x8000;
-        gUnk_03002C30[i + 0x51].unk1C = 2;
-        gUnk_03002C30[i + 0x51].unk2 = i * 40 + 0x18;
-        gUnk_03002C30[i + 0x51].unk4 = 0x18;
-        gUnk_03002C30[i + 0x51].unkA = 0;
-        gUnk_03002C30[i + 0x51].unk6 = 5;
+        gSpriteEntries[i + 0x51].unk0 = 0x8000;
+        gSpriteEntries[i + 0x51].unk1C = 2;
+        gSpriteEntries[i + 0x51].unk2 = i * 40 + 0x18;
+        gSpriteEntries[i + 0x51].unk4 = 0x18;
+        gSpriteEntries[i + 0x51].unkA = 0;
+        gSpriteEntries[i + 0x51].unk6 = 5;
     }
-    gUnk_03002C30[0x51].unk0 |= 0x1000;
+    gSpriteEntries[0x51].unk0 |= 0x1000;
     for (i = 0; i <= 1; i++) {
-        gUnk_03002C30[i + 0x53].unk0 = 0x8000;
-        gUnk_03002C30[i + 0x53].unk1C = 2;
-        gUnk_03002C30[i + 0x53].unkA = 0;
-        gUnk_03002C30[i + 0x53].unk6 = 6;
+        gSpriteEntries[i + 0x53].unk0 = 0x8000;
+        gSpriteEntries[i + 0x53].unk1C = 2;
+        gSpriteEntries[i + 0x53].unkA = 0;
+        gSpriteEntries[i + 0x53].unk6 = 6;
     }
     for (i = 0; i <= 4; i++) {
-        gUnk_03002C30[i + 0x55].unk0 = 0x8000;
-        gUnk_03002C30[i + 0x55].unk1C = 2;
-        gUnk_03002C30[i + 0x55].unkA = 0xE;
-        gUnk_03002C30[i + 0x55].unk6 = 7;
-        gUnk_03002C30[i + 0x55].unk2 = 0xE0;
-        gUnk_03002C30[i + 0x55].unk4 = i * 16 + 0x20;
+        gSpriteEntries[i + 0x55].unk0 = 0x8000;
+        gSpriteEntries[i + 0x55].unk1C = 2;
+        gSpriteEntries[i + 0x55].unkA = 0xE;
+        gSpriteEntries[i + 0x55].unk6 = 7;
+        gSpriteEntries[i + 0x55].unk2 = 0xE0;
+        gSpriteEntries[i + 0x55].unk4 = i * 16 + 0x20;
     }
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
     gGameSubState++;
@@ -96,13 +96,13 @@ void item_menu_init(void) {
     unpack_item_inventory_to_buffer();
     update_battle_medapart_icons();
     if (gUnk_03006F74->unk10) {
-        gUnk_03002C30[0x53].unk0 |= 0x4000;
-        item_menu_set_cursor_pos(&gUnk_03002C30[0x53]);
+        gSpriteEntries[0x53].unk0 |= 0x4000;
+        item_menu_set_cursor_pos(&gSpriteEntries[0x53]);
     }
     w = gUnk_03006F74;
     if ((w->unk10 - 1) / 5) {
-        gUnk_03002C30[0x51].unk0 |= 0x4000;
-        gUnk_03002C30[0x52].unk0 |= 0x4000;
+        gSpriteEntries[0x51].unk0 |= 0x4000;
+        gSpriteEntries[0x52].unk0 |= 0x4000;
     }
     w->unk12 = 0;
     CpuFastSet(gUnk_0850DCF8, gPaletteBackup, 0x80);
@@ -123,10 +123,10 @@ void item_menu_fade_in(void) {
     struct Unk_03000440 *b = &gUnk_03000440;
     if (b->unk84 <= 8) {
         if (gUnk_03006F74->unk6 == 0)
-            blend_obj_palettes_to_color_0803F684(0, 0x20 - b->unk84 * 4, 0x3FFF);
+            bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0x3FFF);
         else
-            blend_obj_palettes_to_color_0803F684(0, 0x20 - b->unk84 * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
+            bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
         gUnk_03000440.unk84++;
     } else {
         text_window_init(1, 2, 0);
@@ -164,11 +164,11 @@ void sub_0805CE4C(void) {
     sprite_bob_y(0x53, gFrameCounter, 0x54);
     if ((gUnk_03006F74->unk10 - 1) / 5) {
         if ((gFrameCounter >> 4) & 1) {
-            gUnk_03002C30[0x51].unk0 |= 0x4000;
-            gUnk_03002C30[0x52].unk0 |= 0x4000;
+            gSpriteEntries[0x51].unk0 |= 0x4000;
+            gSpriteEntries[0x52].unk0 |= 0x4000;
         } else {
-            gUnk_03002C30[0x51].unk0 &= 0xBFFF;
-            gUnk_03002C30[0x52].unk0 &= 0xBFFF;
+            gSpriteEntries[0x51].unk0 &= 0xBFFF;
+            gSpriteEntries[0x52].unk0 &= 0xBFFF;
         }
     }
 
@@ -213,7 +213,7 @@ void sub_0805CE4C(void) {
                 goto other;
             gUnk_03006F74->unkC = gUnk_03006F74->unk11;
             update_battle_medapart_icons();
-            sub_0805B470(&gUnk_03002C30[0x54]);
+            sub_0805B470(&gSpriteEntries[0x54]);
             goto moved;
         }
     }
@@ -223,13 +223,13 @@ other:
     if (w2->unk12) {
         sub_0805CA28(gFrameCounter);
         if (KEYS_LO(gNewKeys) & 2) {
-            gUnk_03002C30[0x54].unk0 &= 0xBFFF;
+            gSpriteEntries[0x54].unk0 &= 0xBFFF;
             gUnk_03006F74->unk12 = 0;
             goto moved;
         }
         if (!(KEYS_LO(gNewKeys) & 5))
             return;
-        gUnk_03002C30[0x54].unk0 &= 0xBFFF;
+        gSpriteEntries[0x54].unk0 &= 0xBFFF;
         gUnk_03006F74->unk12 = 0;
         swap_inventory_items();
         unpack_item_inventory_to_buffer();
@@ -256,8 +256,8 @@ other:
         case 4:
             sub_0803FB0C();
             play_sound_effect(6);
-            gUnk_03002C30[0x51].unk0 &= 0xBFFF;
-            gUnk_03002C30[0x52].unk0 &= 0xBFFF;
+            gSpriteEntries[0x51].unk0 &= 0xBFFF;
+            gSpriteEntries[0x52].unk0 &= 0xBFFF;
             gGameSubState = 9;
             return;
         case 1:
@@ -303,7 +303,7 @@ other:
     if (KEYS_LO(gNewKeys) & 2) {
     cancel:
         play_sound_effect(5);
-        copy_obj_palette_to_buffer();
+        palette_backup_from_hardware();
         gUnk_03000440.unk84 = 0;
         gGameSubState = 7;
     }
@@ -312,7 +312,7 @@ other:
 moved:
     play_sound_effect(2);
     sub_0803FB0C();
-    item_menu_set_cursor_pos(&gUnk_03002C30[0x53]);
+    item_menu_set_cursor_pos(&gSpriteEntries[0x53]);
     gGameSubState = 4;
     sub_0805CA28(gFrameCounter);
 }
@@ -320,10 +320,10 @@ moved:
 // guess: starts the SELECT reorder: shows the second cursor (sprite 0x54) on the cursor item
 void init_fade_sprite_and_start_fade(void) {
     struct Unk_03006F74 **pw = &gUnk_03006F74;
-    item_menu_set_cursor_pos(&gUnk_03002C30[0x54]);
-    gUnk_03002C30[0x54].unk0 |= 0x4000;
-    gUnk_03002C30[0x54].unk2++;
-    gUnk_03002C30[0x54].unk4++;
+    item_menu_set_cursor_pos(&gSpriteEntries[0x54]);
+    gSpriteEntries[0x54].unk0 |= 0x4000;
+    gSpriteEntries[0x54].unk2++;
+    gSpriteEntries[0x54].unk4++;
     (*pw)->unk12 = 1;
     (*pw)->unk13 = (*pw)->unkC;
 }
@@ -336,8 +336,8 @@ void sub_0805D378(void) {
 void sub_0805D394(void) {
     struct Unk_03000440 *b = &gUnk_03000440;
     if (b->unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, b->unk84 * 4, 0x3FFF);
-        blend_obj_palettes_to_color_0803F998(0, b->unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, b->unk84 * 4, 0x3FFF);
+        obj_palettes_blend_masked_now(0, b->unk84 * 4, 0xFFFF);
         b->unk84++;
     } else {
         REG_DISPCNT &= 0xFDFF;

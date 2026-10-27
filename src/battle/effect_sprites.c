@@ -97,8 +97,8 @@ void sub_080364A8(u32 side, u32 rec) {
 
 u32 sub_080366DC(u32 slot, u32 part) {
     s16 dx, dy;
-    struct Unk_03002C30 *base = gUnk_03002C30;
-    struct Unk_03002C30 *s = &base[slot];
+    struct SpriteEntry *base = gSpriteEntries;
+    struct SpriteEntry *s = &base[slot];
     u8 *frame;
 
     if (!(s->unk0 & 0x8000) || *(frame = &s->unk23) == 0x10)
@@ -121,9 +121,9 @@ u32 sub_080366DC(u32 slot, u32 part) {
         dy = gUnk_083AF440[*frame * 2 + 1];
         break;
     }
-    gUnk_03002C30[slot].unk2 = (dx + gUnk_03002C30[slot].unk2) & 0x1FF;
-    gUnk_03002C30[slot].unk4 = (dy + gUnk_03002C30[slot].unk4) & 0xFF;
-    gUnk_03002C30[slot].unk23++;
+    gSpriteEntries[slot].unk2 = (dx + gSpriteEntries[slot].unk2) & 0x1FF;
+    gSpriteEntries[slot].unk4 = (dy + gSpriteEntries[slot].unk4) & 0xFF;
+    gSpriteEntries[slot].unk23++;
     return 0;
 }
 
@@ -133,19 +133,19 @@ void sub_08036784(u32 slot, u32 part, s16 x, s16 y) {
 
     clear_battle_sprite_slot(slot, 4);
     for (i = 0; i <= 3; i++) {
-        gUnk_03002C30[slot + i].unk0 = 0x4404;
-        gUnk_03002C30[slot + i].unk1C = 0;
-        gUnk_03002C30[slot + i].unkA = 0xE;
-        gUnk_03002C30[slot + i].unkB = 0x80;
-        gUnk_03002C30[slot + i].unk2C = i * 8;
+        gSpriteEntries[slot + i].unk0 = 0x4404;
+        gSpriteEntries[slot + i].unk1C = 0;
+        gSpriteEntries[slot + i].unkA = 0xE;
+        gSpriteEntries[slot + i].unkB = 0x80;
+        gSpriteEntries[slot + i].unk2C = i * 8;
         u = gUnk_083AF480[part << 1] + x;
         t = gUnk_083AF490[i * 2];
         t += u;
-        gUnk_03002C30[slot + i].unk2 = t & 0x1FF;
+        gSpriteEntries[slot + i].unk2 = t & 0x1FF;
         u = gUnk_083AF480[part * 2 + 1] + y;
         t = gUnk_083AF490[i * 2 + 1];
         t += u;
-        gUnk_03002C30[slot + i].unk4 = t & 0xFF;
+        gSpriteEntries[slot + i].unk4 = t & 0xFF;
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[29], slot + i);
     }
 }
@@ -156,17 +156,17 @@ u32 sub_0803684C(u32 slot) {
     u8 n;
 
     for (i = 0; i <= 3; i++) {
-        if (gUnk_03002C30[slot + i].unk0 != 0) {
-            if (gUnk_03002C30[slot + i].unk2C == 0) {
-                gUnk_03002C30[slot + i].unk0 |= 0x8004;
-                gUnk_03002C30[slot + i].unkA = 0xE;
+        if (gSpriteEntries[slot + i].unk0 != 0) {
+            if (gSpriteEntries[slot + i].unk2C == 0) {
+                gSpriteEntries[slot + i].unk0 |= 0x8004;
+                gSpriteEntries[slot + i].unkA = 0xE;
                 process_sprite_anim_commands(gUnk_083B5F80[29], n = slot + i);
-                if (gUnk_03002C30[slot + i].unk22 == 0xFF)
+                if (gSpriteEntries[slot + i].unk22 == 0xFF)
                     clear_battle_sprite_slot(n, 1);
                 else
                     done = 0;
             } else {
-                gUnk_03002C30[slot + i].unk2C--;
+                gSpriteEntries[slot + i].unk2C--;
                 done = 0;
             }
         }
@@ -181,29 +181,29 @@ void sub_080368C4(u8 *digits, u32 slot, u32 part, s16 x, s16 y) {
     for (; i <= 4; i++) {
         if (digits[i] == 0xFE)
             return;
-        gUnk_03002C30[slot + i].unk0 = 0xC624;
-        gUnk_03002C30[slot + i].unk1C = 0;
+        gSpriteEntries[slot + i].unk0 = 0xC624;
+        gSpriteEntries[slot + i].unk1C = 0;
         t = x;
         t += gUnk_083AF480[part << 1];
-        gUnk_03002C30[slot + i].unk2 = t & 0x1FF;
+        gSpriteEntries[slot + i].unk2 = t & 0x1FF;
         u = y;
         u += gUnk_083AF480[part * 2 + 1];
-        gUnk_03002C30[slot + i].unk4 = u & 0xFF;
-        gUnk_03002C30[slot + i].unkB = 0x80;
-        gUnk_03002C30[slot + i].unk6 = digits[i] + 0x2D00;
-        gUnk_03002C30[slot + i].unk23 = 0;
-        gUnk_03002C30[slot + i].unk9 = 0x40;
-        gUnk_03002C30[slot + i].unk8 = 0x40;
-        gUnk_03002C30[slot + i].unkA = 0xE;
+        gSpriteEntries[slot + i].unk4 = u & 0xFF;
+        gSpriteEntries[slot + i].unkB = 0x80;
+        gSpriteEntries[slot + i].unk6 = digits[i] + 0x2D00;
+        gSpriteEntries[slot + i].unk23 = 0;
+        gSpriteEntries[slot + i].unk9 = 0x40;
+        gSpriteEntries[slot + i].unk8 = 0x40;
+        gSpriteEntries[slot + i].unkA = 0xE;
         switch (digits[6]) {
         case 2:
-            gUnk_03002C30[slot + i].unk2 = 0xFFFC + gUnk_03002C30[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].unk2 = 0xFFFC + gSpriteEntries[slot + i].unk2 + i * 8;
             break;
         case 3:
-            gUnk_03002C30[slot + i].unk2 = 0xFFF8 + gUnk_03002C30[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].unk2 = 0xFFF8 + gSpriteEntries[slot + i].unk2 + i * 8;
             break;
         case 4:
-            gUnk_03002C30[slot + i].unk2 = 0xFFF4 + gUnk_03002C30[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].unk2 = 0xFFF4 + gSpriteEntries[slot + i].unk2 + i * 8;
             break;
         }
     }
@@ -216,27 +216,27 @@ void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 part, s16 x, s16 y) 
     for (; i <= 4; i++) {
         if (buf[i] == 0xFE)
             return;
-        gUnk_03002C30[slot + i].unk0 = 0xC404;
-        gUnk_03002C30[slot + i].unk1C = 0;
+        gSpriteEntries[slot + i].unk0 = 0xC404;
+        gSpriteEntries[slot + i].unk1C = 0;
         t = x;
         t += gUnk_083AF480[part << 1];
-        gUnk_03002C30[slot + i].unk2 = t & 0x1FF;
+        gSpriteEntries[slot + i].unk2 = t & 0x1FF;
         u = y;
         u += gUnk_083AF480[part * 2 + 1];
-        gUnk_03002C30[slot + i].unk4 = u & 0xFF;
-        gUnk_03002C30[slot + i].unkB = 0x80;
-        gUnk_03002C30[slot + i].unk6 = buf[i] + 0x2D00;
-        gUnk_03002C30[slot + i].unk23 = 0;
-        gUnk_03002C30[slot + i].unkA = 0xE;
+        gSpriteEntries[slot + i].unk4 = u & 0xFF;
+        gSpriteEntries[slot + i].unkB = 0x80;
+        gSpriteEntries[slot + i].unk6 = buf[i] + 0x2D00;
+        gSpriteEntries[slot + i].unk23 = 0;
+        gSpriteEntries[slot + i].unkA = 0xE;
         switch (buf[6]) {
         case 2:
-            gUnk_03002C30[slot + i].unk2 = 0xFFFC + gUnk_03002C30[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].unk2 = 0xFFFC + gSpriteEntries[slot + i].unk2 + i * 8;
             break;
         case 3:
-            gUnk_03002C30[slot + i].unk2 = 0xFFF8 + gUnk_03002C30[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].unk2 = 0xFFF8 + gSpriteEntries[slot + i].unk2 + i * 8;
             break;
         case 4:
-            gUnk_03002C30[slot + i].unk2 = 0xFFF4 + gUnk_03002C30[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].unk2 = 0xFFF4 + gSpriteEntries[slot + i].unk2 + i * 8;
             break;
         }
     }
@@ -244,13 +244,13 @@ void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 part, s16 x, s16 y) 
 
 u32 advance_sprite_anim_frame(u32 sprite, u32 b) {
     s32 f;
-    if (!(gUnk_03002C30[sprite].unk0 & 0x8000) || gUnk_03002C30[sprite].unk23 == 0x10)
+    if (!(gSpriteEntries[sprite].unk0 & 0x8000) || gSpriteEntries[sprite].unk23 == 0x10)
         return 1;
-    gUnk_03002C30[sprite].unk4 = (gUnk_03002C30[sprite].unk4 + gUnk_083AF4A0[gUnk_03002C30[sprite].unk23]) & 0xFF;
-    f = gUnk_03002C30[sprite].unk23 + 1;
-    gUnk_03002C30[sprite].unk23 = f;
+    gSpriteEntries[sprite].unk4 = (gSpriteEntries[sprite].unk4 + gUnk_083AF4A0[gSpriteEntries[sprite].unk23]) & 0xFF;
+    f = gSpriteEntries[sprite].unk23 + 1;
+    gSpriteEntries[sprite].unk23 = f;
     if (b)
-        gUnk_03002C30[sprite].unk9 = f * 4 + 0x40;
+        gSpriteEntries[sprite].unk9 = f * 4 + 0x40;
     return 0;
 }
 
@@ -312,12 +312,12 @@ void sub_08036BF4(u32 side) {
 }
 
 void sub_08036C20(u32 slot, u32 part, s16 x, s16 y, u32 n) {
-    struct Unk_03002C30 *s;
-    struct Unk_03002C30 *base;
+    struct SpriteEntry *s;
+    struct SpriteEntry *base;
     s32 t1, t2;
 
     clear_battle_sprite_slot(slot, 1);
-    base = gUnk_03002C30;
+    base = gSpriteEntries;
     s = &base[slot];
     s->unk0 = 0xC404;
     s->unk1C = 0;

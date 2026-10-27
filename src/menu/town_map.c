@@ -6,13 +6,13 @@ void town_map_update_cursor(void) {
     u8 row = gUnk_03006F74->unk18;
     const u8 *t;
 
-    if (++gUnk_03002C30[0].unk1A > 0x60)
-        gUnk_03002C30[0].unk1A = 0;
+    if (++gSpriteEntries[0].unk1A > 0x60)
+        gSpriteEntries[0].unk1A = 0;
     t = (const u8 *)gUnk_08483DC0;
-    gUnk_03002C30[0].unk2 = t[gUnk_03006F74->unk17 * 2] * 8 + gUnk_08483DD4[row][(gUnk_03002C30[0].unk1A >> 3) & 3];
-    gUnk_03002C30[0].unk4 =
-        t[(u16)(gUnk_03006F74->unk17 * 2 + 1)] * 8 + gUnk_08483DE4[row][(gUnk_03002C30[0].unk1A >> 3) & 3];
-    gUnk_03002C30[0].unk6 = gUnk_08483DF4[row][(gUnk_03002C30[0].unk1A >> 3) & 3];
+    gSpriteEntries[0].unk2 = t[gUnk_03006F74->unk17 * 2] * 8 + gUnk_08483DD4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
+    gSpriteEntries[0].unk4 =
+        t[(u16)(gUnk_03006F74->unk17 * 2 + 1)] * 8 + gUnk_08483DE4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
+    gSpriteEntries[0].unk6 = gUnk_08483DF4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
 }
 
 void update_animation_timer(void) {
@@ -100,21 +100,21 @@ void town_map_load_graphics(void) {
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
     CpuFastSet(gUnk_080AF9A8, (void *)(PLTT + 0x200), 0x18);
     gUnk_03006F74->unk17 = gUnk_08483CE0[gUnk_030057E0.unk7FE];
-    gUnk_03002C30[0].unk0 = 0xC000;
-    gUnk_03002C30[0].unk1C = 2;
-    gUnk_03002C30[0].unk4 = 0x3C;
+    gSpriteEntries[0].unk0 = 0xC000;
+    gSpriteEntries[0].unk1C = 2;
+    gSpriteEntries[0].unk4 = 0x3C;
     p = gUnk_03006F74;
-    gUnk_03002C30[0].unkA = p->unk18;
-    gUnk_03002C30[0].unk6 = 0x10D;
-    gUnk_03002C30[0].unk1A = 0;
-    gUnk_03002C30[1].unk0 = 0xC000;
-    gUnk_03002C30[1].unk1C = 2;
-    gUnk_03002C30[1].unk2 = gUnk_08483DC0[0][p->unk17 * 2] * 8;
-    gUnk_03002C30[1].unk4 = gUnk_08483DC0[0][p->unk17 * 2 + 1] * 8;
-    gUnk_03002C30[1].unkA = 2;
-    gUnk_03002C30[1].unk6 = 0x10E;
-    gUnk_03002C30[0].unk2 = gUnk_08483DC0[0][p->unk17 * 2] * 8;
-    gUnk_03002C30[0].unk4 = gUnk_08483DC0[0][p->unk17 * 2 + 1] * 8;
+    gSpriteEntries[0].unkA = p->unk18;
+    gSpriteEntries[0].unk6 = 0x10D;
+    gSpriteEntries[0].unk1A = 0;
+    gSpriteEntries[1].unk0 = 0xC000;
+    gSpriteEntries[1].unk1C = 2;
+    gSpriteEntries[1].unk2 = gUnk_08483DC0[0][p->unk17 * 2] * 8;
+    gSpriteEntries[1].unk4 = gUnk_08483DC0[0][p->unk17 * 2 + 1] * 8;
+    gSpriteEntries[1].unkA = 2;
+    gSpriteEntries[1].unk6 = 0x10E;
+    gSpriteEntries[0].unk2 = gUnk_08483DC0[0][p->unk17 * 2] * 8;
+    gSpriteEntries[0].unk4 = gUnk_08483DC0[0][p->unk17 * 2 + 1] * 8;
     dma3_copy_or_decompress(gUnk_087873A4, (void *)0x020301E0);
     gGameSubState++;
 }
@@ -182,7 +182,7 @@ void sub_0806098C(void) {
     town_map_update_cursor();
     update_animation_timer();
     if (game_state_execute_handler_a()) {
-        copy_obj_palette_to_buffer();
+        palette_backup_from_hardware();
         gUnk_03000440.unk84 = 0;
         gGameSubState++;
     }
@@ -197,8 +197,8 @@ void sub_080609C0(void) {
     s = &gUnk_03000440;
     n = &s->unk84;
     if (*n <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, *n * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, *n * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, *n * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, *n * 4, 0xFFFF);
         (*n)++;
     } else {
         REG_DISPCNT &= 0xFDFF;

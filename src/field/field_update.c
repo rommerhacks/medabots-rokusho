@@ -8,7 +8,7 @@
 
 static u32 sub_0804B694(void);
 
-// Copies the 32 affine matrices (pa..pd at +6 of each 16-byte gUnk_03006D40 entry) into the
+// Copies the 32 affine matrices (pa..pd at +6 of each 16-byte gAffineParams entry) into the
 // affineParam slots of gOamBuffer.
 static inline void copy_affine(u8 *base) {
     u16 *src = (u16 *)(base + 6);
@@ -47,7 +47,7 @@ void field_update(void) {
     for (i = 0; i < 32; i++)
         calculate_oam_affine_matrix(i);
     update_battle_entity_status_chars();
-    copy_affine((u8 *)gUnk_03006D40);
+    copy_affine((u8 *)gAffineParams);
 }
 
 void new_game_init(void) {
@@ -62,7 +62,7 @@ void new_game_init(void) {
     memzero_bytes((u8 *)&gUnk_03000440, 0x13C);
     memzero_bytes((u8 *)gUnk_03000590, 0x600);
     clear_oam();
-    memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+    memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
@@ -79,11 +79,11 @@ void new_game_init(void) {
     gUnk_03006D30 = (struct BattleEntity3D *)0x02039000;
     gUnk_03006D14 = (u16 *)0x02030000;
     gUnk_030057DC = (u8 *)0x02038000;
-    memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+    memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
-    sub_080492CC();
+    affine_params_reset();
     sub_08048B6C();
     gUnk_03005310.unk1C = 0;
     gUnk_03005310.unk24 = 0;
@@ -126,38 +126,38 @@ void new_game_init(void) {
     REG_BLDY = 0;
     blend_set_alpha_12_10();
     setup_palette_fade_to_color(0x7FFF, 32.0f, 0.0f, 8.0f);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804A5C0(void) {
     u32 zero;
-    memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+    memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
-    sub_080492CC();
+    affine_params_reset();
     sub_08048B6C();
     gUnk_030057E0.unkC8A = 0;
     gUnk_030057E0.unkC88 = 0;
     gUnk_030057E0.unkC89 = 0;
     setup_palette_fade_to_color(0x7FFF, 32.0f, 0.0f, 8.0f);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804A654(void) {
     area_load_graphics();
     load_battlefield_data_to_buffer();
     field_update_music(0, 0);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804A670(void) {
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804A67C(void) {
     if (run_blend_fade_transition(0x7FFF))
-        sub_0804A1C4();
+        game_substate_advance();
 }
 
 void sub_0804A694(void) {
@@ -165,7 +165,7 @@ void sub_0804A694(void) {
 }
 
 void sub_0804A6A0(void) {
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804A6AC(void) {
@@ -178,7 +178,7 @@ void sub_0804A6AC(void) {
 
 void sub_0804A6D8(void) {
     message_steps_reset();
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804A6E8(void) {
@@ -190,7 +190,7 @@ void sub_0804A6E8(void) {
 void sub_0804A718(void) {
     u32 zero;
     clear_oam();
-    memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+    memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
@@ -213,7 +213,7 @@ void sub_0804A718(void) {
     gUnk_03006D30 = (struct BattleEntity3D *)0x02039000;
     gUnk_03006D14 = (u16 *)0x02030000;
     gUnk_030057DC = (u8 *)0x02038000;
-    memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+    memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
@@ -227,7 +227,7 @@ void sub_0804A718(void) {
     field_center_camera_on_player();
     blend_set_alpha_12_10();
     setup_palette_fade_to_color(0x7FFF, 32.0f, 0.0f, 8.0f);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804A8B4(void) {
@@ -242,7 +242,7 @@ void sub_0804A8B4(void) {
 
 void sub_0804A8F8(void) {
     u32 zero;
-    memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+    memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
@@ -260,7 +260,7 @@ void sub_0804A8F8(void) {
     field_center_camera_on_player();
     blend_set_alpha_12_10();
     setup_palette_fade_to_color(0, 32.0f, 0.0f, 8.0f);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804A9B8(void) {
@@ -279,12 +279,12 @@ void sub_0804A9F8(void) {
         gUnk_030057E0.unkC69 = 0;
     } else
         gUnk_030057E0.unkC69 = gUnk_030057E0.unkC5C;
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804AA28(void) {
     u32 zero;
-    memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+    memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
@@ -294,16 +294,16 @@ void sub_0804AA28(void) {
     area_load_graphics();
     field_update_music(6, 0);
     setup_palette_fade_to_color(0, 32.0f, 0.0f, 8.0f);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804AAB8(void) {
     if (run_blend_fade_transition(0))
-        sub_0804A1C4();
+        game_substate_advance();
 }
 
 void sub_0804AACC(void) {
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 // Not called directly (hidden in the tail of sub_0804AACC).
@@ -313,17 +313,17 @@ void sub_0804AAD8(void) {
 }
 
 void sub_0804AAF0(void) {
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 // Not called directly (hidden in the tail of sub_0804AAF0).
 static void sub_0804AAFC(void) {
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 // Not called directly (hidden in the tail of sub_0804AAF0).
 static void sub_0804AB08(void) {
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804AB14(void) {
@@ -334,7 +334,7 @@ void sub_0804AB14(void) {
         gUnk_030057E0.unkC5C = gUnk_030057E0.unkC69;
     load_battle_palette_via_dma(0);
     field_update_music(7, 0);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 // Not called directly (hidden in the tail of sub_0804AB14).
@@ -344,7 +344,7 @@ void sub_0804AB5C(void) {
 }
 
 void sub_0804AB74(void) {
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804AB80(void) {
@@ -355,7 +355,7 @@ void sub_0804AB80(void) {
         gUnk_030057E0.unkC5C = gUnk_030057E0.unkC69;
     load_battle_palette_via_dma(0);
     field_update_music(8, 0);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804ABC8(void) {
@@ -364,13 +364,13 @@ void sub_0804ABC8(void) {
     r = sprite_walk_speed(47);
     s = &gUnk_030057E0;
     s->unkC58 = 0x10 / r;
-    field_set_player_facing(gUnk_03002C30[47].unk20);
-    sub_080493D4(47, gUnk_03002C30[47].unk20);
+    field_set_player_facing(gSpriteEntries[47].unk20);
+    sprite_anim_start(47, gSpriteEntries[47].unk20);
     if (s->unkC76) {
         s->unkC6E = s->unkC52;
         s->unkC70 = s->unkC54;
-        set_battle_state_byte_c83(gUnk_03002C30[47].unk20);
-        sub_080493D4(48, gUnk_03002C30[48].unk2B * 4 + gUnk_03002C30[48].unk20);
+        set_battle_state_byte_c83(gSpriteEntries[47].unk20);
+        sprite_anim_start(48, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
     }
     update_battle_direction_indicator(1);
     field_play_sound_effect(0x57);
@@ -379,13 +379,13 @@ void sub_0804ABC8(void) {
 }
 
 void sub_0804AC7C(void) {
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804AC88(void) {
     vu32 zero;
 
-    memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+    memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
@@ -396,7 +396,7 @@ void sub_0804AC88(void) {
     load_battlefield_data_to_buffer();
     field_update_music(0xB, 0);
     setup_palette_fade_to_color(0, 32.0f, 0.0f, 8.0f);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804AD1C(void) {
@@ -404,7 +404,7 @@ void sub_0804AD1C(void) {
         gUnk_030057E0.unkC5C = 0xB;
         load_battle_palette_via_dma(0);
         init_sprite_affine_matrices_and_state(0x12, gUnk_030057E0.unkC52, gUnk_030057E0.unkC54, 0);
-        sub_0804A1C4();
+        game_substate_advance();
     }
 }
 
@@ -420,8 +420,8 @@ void sub_0804AD68(void) {
         if (gUnk_030057E0.unkC76) {
             gUnk_030057E0.unkC6E = gUnk_030057E0.unkC52;
             gUnk_030057E0.unkC70 = gUnk_030057E0.unkC54;
-            set_battle_state_byte_c83(gUnk_03002C30[47].unk20);
-            sub_080493D4(0x30, gUnk_03002C30[48].unk2B * 4 + gUnk_03002C30[48].unk20);
+            set_battle_state_byte_c83(gSpriteEntries[47].unk20);
+            sprite_anim_start(0x30, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
         }
         update_battle_entity_status_chars();
         gGameSubState = 5;
@@ -437,7 +437,7 @@ void sub_0804AE34(void) {
     load_battle_palette_via_dma(0);
     field_update_music(9, 0);
     init_sprite_affine_matrices_and_state(0xE, gUnk_030057E0.unkC52, gUnk_030057E0.unkC54, 0);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804AE7C(void) {
@@ -452,8 +452,8 @@ void sub_0804AE7C(void) {
         if (gUnk_030057E0.unkC76) {
             gUnk_030057E0.unkC6E = gUnk_030057E0.unkC52;
             gUnk_030057E0.unkC70 = gUnk_030057E0.unkC54;
-            set_battle_state_byte_c83(gUnk_03002C30[47].unk20);
-            sub_080493D4(0x30, gUnk_03002C30[48].unk2B * 4 + gUnk_03002C30[48].unk20);
+            set_battle_state_byte_c83(gSpriteEntries[47].unk20);
+            sprite_anim_start(0x30, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
         }
         update_battle_entity_status_chars();
         gGameSubState = 5;
@@ -473,7 +473,7 @@ void sub_0804AF4C(void) {
         s->unk10 = 1;
         sub_08058110(0);
     }
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804AF6C(void) {
@@ -487,7 +487,7 @@ void sub_0804AF80(void) {
 
 void sub_0804AF94(void) {
     setup_palette_fade_to_color_with_obj(0x7FFF, 0.0f, 32.0f, 8.0f);
-    sub_0804A1C4();
+    game_substate_advance();
 }
 
 void sub_0804AFBC(void) {
@@ -533,16 +533,16 @@ void update_battle_entity_status_chars(void) {
 
     if (gUnk_030057E0.unkC4C) {
         for (i = 0x2E; i <= 0x7F; i++) {
-            if (gUnk_03002C30[i].unkB == 0xFF)
-                gUnk_03002C30[i].unkB = 0xFF;
-            else if (gUnk_03002C30[i].unkB != 0)
-                gUnk_03002C30[i].unkB = (gUnk_03002C30[i].unk4 + 0x10) / 4 + 0x40;
+            if (gSpriteEntries[i].unkB == 0xFF)
+                gSpriteEntries[i].unkB = 0xFF;
+            else if (gSpriteEntries[i].unkB != 0)
+                gSpriteEntries[i].unkB = (gSpriteEntries[i].unk4 + 0x10) / 4 + 0x40;
             else
-                gUnk_03002C30[i].unkB = 0;
+                gSpriteEntries[i].unkB = 0;
             if (i == 0x30 && gUnk_030057E0.unkC70 == gUnk_030057E0.unkC54)
-                gUnk_03002C30[48].unkB = gUnk_03002C30[47].unkB - 1;
+                gSpriteEntries[48].unkB = gSpriteEntries[47].unkB - 1;
             if (i == 0x59 && gUnk_030057E0.unkC70 == gUnk_030057E0.unkC54)
-                gUnk_03002C30[0x59].unkB = gUnk_03002C30[48].unkB - 1;
+                gSpriteEntries[0x59].unkB = gSpriteEntries[48].unkB - 1;
         }
     }
 }
@@ -626,19 +626,19 @@ void load_room_graphics(void) {
 
 static void update_blend_effect_from_input(void) {
     if (KEYS_LO(gNewKeys) & 0x40) {
-        gUnk_03006F40.unk14 += 1.0f;
-        gUnk_03006F40.unk14 = (s32)((u32)gUnk_03006F40.unk14 & 0xF);
-        REG_BLDY = (u32)gUnk_03006F40.unk14 % 64;
+        gBlendEffect.evy_level += 1.0f;
+        gBlendEffect.evy_level = (s32)((u32)gBlendEffect.evy_level & 0xF);
+        REG_BLDY = (u32)gBlendEffect.evy_level % 64;
     }
     if (KEYS_HI(gNewKeys) & 1) {
-        gUnk_03006F40.unkC += 1.0f;
-        gUnk_03006F40.unkC = (s32)((u32)gUnk_03006F40.unkC & 0xF);
-        REG_BLDALPHA = (((u32)gUnk_03006F40.unk10 & 0x3F) << 8) | ((u32)gUnk_03006F40.unkC & 0x3F);
+        gBlendEffect.eva_level += 1.0f;
+        gBlendEffect.eva_level = (s32)((u32)gBlendEffect.eva_level & 0xF);
+        REG_BLDALPHA = (((u32)gBlendEffect.evb_level & 0x3F) << 8) | ((u32)gBlendEffect.eva_level & 0x3F);
     }
     if (KEYS_HI(gNewKeys) & 2) {
-        gUnk_03006F40.unk10 += 1.0f;
-        gUnk_03006F40.unk10 = (s32)((u32)gUnk_03006F40.unk10 & 0xF);
-        REG_BLDALPHA = (((u32)gUnk_03006F40.unk10 & 0x3F) << 8) | ((u32)gUnk_03006F40.unkC & 0x3F);
+        gBlendEffect.evb_level += 1.0f;
+        gBlendEffect.evb_level = (s32)((u32)gBlendEffect.evb_level & 0xF);
+        REG_BLDALPHA = (((u32)gBlendEffect.evb_level & 0x3F) << 8) | ((u32)gBlendEffect.eva_level & 0x3F);
     }
 }
 

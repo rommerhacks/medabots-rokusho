@@ -20,7 +20,7 @@ void render_battle_medal_names(u8 start) {
         u16 v;
         u16 *dst;
         for (j = 0; j <= 10; j++)
-            gUnk_03002C30[i * 10 + 12 + j].unk0 &= 0xBFFF;
+            gSpriteEntries[i * 10 + 12 + j].unk0 &= 0xBFFF;
         for (j = 0; j <= 10; j++) {
             gUnk_03006F74->unk58[j] = gUnk_03000BE0[gUnk_03006F74->unkB0[i + start]].unkA[j];
             if (gUnk_03006F74->unk58[j] == 0xFE)
@@ -113,28 +113,28 @@ void sub_08064D3C(void) {
     CpuFastSet(gUnk_084C21BC, vram_at(size), 0x400);
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
-    gUnk_03002C30[8].unk0 = 0x8000;
-    gUnk_03002C30[8].unk1C = 2;
-    gUnk_03002C30[8].unkA = zero;
-    gUnk_03002C30[8].unk6 = 6;
-    gUnk_03002C30[8].unk2 = 0xC;
-    gUnk_03002C30[8].unk4 = gUnk_03006F74->unk2E * 16 + 0x1C;
+    gSpriteEntries[8].unk0 = 0x8000;
+    gSpriteEntries[8].unk1C = 2;
+    gSpriteEntries[8].unkA = zero;
+    gSpriteEntries[8].unk6 = 6;
+    gSpriteEntries[8].unk2 = 0xC;
+    gSpriteEntries[8].unk4 = gUnk_03006F74->unk2E * 16 + 0x1C;
     for (i = 0; i <= 1; i++) {
-        gUnk_03002C30[i + 10].unk0 = 0x8000;
-        gUnk_03002C30[i + 10].unk1C = 2;
-        gUnk_03002C30[i + 10].unkA = 0;
-        gUnk_03002C30[i + 10].unk6 = 8;
-        gUnk_03002C30[i + 10].unk2 = 0x20;
-        gUnk_03002C30[i + 10].unk4 = i * 72 + 0x14;
+        gSpriteEntries[i + 10].unk0 = 0x8000;
+        gSpriteEntries[i + 10].unk1C = 2;
+        gSpriteEntries[i + 10].unkA = 0;
+        gSpriteEntries[i + 10].unk6 = 8;
+        gSpriteEntries[i + 10].unk2 = 0x20;
+        gSpriteEntries[i + 10].unk4 = i * 72 + 0x14;
     }
-    gUnk_03002C30[11].unk0 |= 0x2000;
+    gSpriteEntries[11].unk0 |= 0x2000;
     z2 = 0;
-    gUnk_03002C30[7].unk0 = 0xC000;
-    gUnk_03002C30[7].unk1C = 2;
-    gUnk_03002C30[7].unkA = 10;
-    gUnk_03002C30[7].unk6 = 0x1A;
-    gUnk_03002C30[7].unk2 = 0x98;
-    gUnk_03002C30[7].unk4 = z2;
+    gSpriteEntries[7].unk0 = 0xC000;
+    gSpriteEntries[7].unk1C = 2;
+    gSpriteEntries[7].unkA = 10;
+    gSpriteEntries[7].unk6 = 0x1A;
+    gSpriteEntries[7].unk2 = 0x98;
+    gSpriteEntries[7].unk4 = z2;
     divide_by_10000(gUnk_030004DE, gMoney);
     render_text_sprites_08040DB8(gUnk_030004DE, 0, 0x15, 1, 7, 0xF, 1, z2);
     gGameSubState++;
@@ -166,8 +166,8 @@ void sub_08064EFC(void) {
 void sub_08065020(void) {
     struct Unk_03000440 *s = &gUnk_03000440;
     if (s->unk84 <= 8) {
-        blend_obj_palettes_to_color_0803F684(0, 32 - s->unk84 * 4, 0xFFFF);
-        blend_obj_palettes_to_color_0803F998(0, 32 - s->unk84 * 4, 0xFFFF);
+        bg_palettes_blend_masked_now(0, 32 - s->unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 32 - s->unk84 * 4, 0xFFFF);
         s->unk84++;
     } else {
         gUnk_03006F74->unk4C = 0;
@@ -191,21 +191,21 @@ void sub_08065090(void) {
     if (r != 0)
         return;
     sprite_bob_y(8, gFrameCounter, 12);
-    gUnk_03002C30[8].unk0 |= 0x4000;
+    gSpriteEntries[8].unk0 |= 0x4000;
     if (gUnk_03006F74->unk30 > 4) {
         if (gUnk_03006F74->unk2F != 0) {
             if ((gFrameCounter & 0xF) <= 9)
-                gUnk_03002C30[10].unk0 |= 0x4000;
+                gSpriteEntries[10].unk0 |= 0x4000;
             else
-                gUnk_03002C30[10].unk0 &= 0xBFFF;
+                gSpriteEntries[10].unk0 &= 0xBFFF;
         } else
-            gUnk_03002C30[10].unk0 &= 0xBFFF;
+            gSpriteEntries[10].unk0 &= 0xBFFF;
         if (gUnk_03006F74->unk2F + 4 >= gUnk_03006F74->unk30)
-            gUnk_03002C30[11].unk0 &= 0xBFFF;
+            gSpriteEntries[11].unk0 &= 0xBFFF;
         else if ((gFrameCounter & 0xF) <= 9)
-            gUnk_03002C30[11].unk0 |= 0x4000;
+            gSpriteEntries[11].unk0 |= 0x4000;
         else
-            gUnk_03002C30[11].unk0 &= 0xBFFF;
+            gSpriteEntries[11].unk0 &= 0xBFFF;
     }
     if ((keys = KEYS_LO(gRepeatKeys) & 0x40)) {
         se = 2;
@@ -240,9 +240,9 @@ void sub_08065090(void) {
         render_battle_medal_names(gUnk_03006F74->unk2F);
     } else if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
-        gUnk_03002C30[10].unk0 &= 0xBFFF;
-        gUnk_03002C30[11].unk0 &= 0xBFFF;
-        gUnk_03002C30[8].unk2 = 12;
+        gSpriteEntries[10].unk0 &= 0xBFFF;
+        gSpriteEntries[11].unk0 &= 0xBFFF;
+        gSpriteEntries[8].unk2 = 12;
         gUnk_03006F74->unk4C = 1;
         gUnk_03000440.unk1B = 0;
         gGameSubState = 9;
@@ -251,23 +251,23 @@ void sub_08065090(void) {
     } else {
         if (KEYS_LO(gNewKeys) & 2) {
             play_sound_effect(5);
-            gUnk_03002C30[8].unk0 &= 0xBFFF;
+            gSpriteEntries[8].unk0 &= 0xBFFF;
             gUnk_03000440.unk1B = 0;
             gUnk_03000440.unk84 = 0;
             gGameSubState = 7;
         }
         return;
     }
-    gUnk_03002C30[8].unk2 = 12;
-    gUnk_03002C30[8].unk4 = gUnk_03006F74->unk2E * 16 + 0x1C;
+    gSpriteEntries[8].unk2 = 12;
+    gSpriteEntries[8].unk4 = gUnk_03006F74->unk2E * 16 + 0x1C;
 }
 
 void sub_08065348(void) {
     if (game_state_execute_handler_a()) {
         struct Unk_03000440 *s = &gUnk_03000440;
         if (s->unk84 <= 8) {
-            blend_obj_palettes_to_color_0803F684(0, s->unk84 * 4, 0xFFFF);
-            blend_obj_palettes_to_color_0803F998(0, s->unk84 * 4, 0xFFFF);
+            bg_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
             s->unk84++;
         } else {
             REG_DISPCNT &= ~0x200;
@@ -281,8 +281,8 @@ void sub_080653B4(void) {
     if (game_state_execute_handler_a()) {
         struct Unk_03000440 *s = &gUnk_03000440;
         if (s->unk84 <= 8) {
-            blend_obj_palettes_to_color_0803F684(0, s->unk84 * 4, 0xFFFF);
-            blend_obj_palettes_to_color_0803F998(0, s->unk84 * 4, 0xFFFF);
+            bg_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
             s->unk84++;
         } else {
             REG_DISPCNT &= ~0x200;

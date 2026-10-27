@@ -91,8 +91,8 @@ void update_battle_medapart_icons(void) {
             draw_number_2digits_tall(counts[i], 0x18, i * 2 + 3);
             *((u16 *)0x0600F02E + ((i * 2 + 3) << 5)) = t0;
             *((u16 *)0x0600F02E + ((i * 2 + 4) << 5)) = t1;
-            gUnk_03002C30[i + 0x55].unk0 |= 0x4000;
-            gUnk_03002C30[i + 0x55].unk6 = sub_0805B4B0(ids[i]) ? 0x21 : 0x22;
+            gSpriteEntries[i + 0x55].unk0 |= 0x4000;
+            gSpriteEntries[i + 0x55].unk6 = sub_0805B4B0(ids[i]) ? 0x21 : 0x22;
         } else {
             u16 *map = (u16 *)0x0600F02E;
             u16 *p;
@@ -108,13 +108,13 @@ void update_battle_medapart_icons(void) {
             *p = 0;
             p = map + 2 + ((i * 2 + 4) << 5);
             *p = 0;
-            gUnk_03002C30[i + 0x55].unk0 &= ~0x4000;
+            gSpriteEntries[i + 0x55].unk0 &= ~0x4000;
         }
     }
     item_menu_draw_page_numbers();
 }
 
-void item_menu_set_cursor_pos(struct Unk_03002C30 *sprite) {
+void item_menu_set_cursor_pos(struct SpriteEntry *sprite) {
     sprite->unk2 = 0x54;
     sprite->unk4 = (u8)(gUnk_03006F74->unkC % 5) * 16 + 0x1C;
 }
@@ -164,7 +164,7 @@ void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot) {
         lz_decompress_dispatch(gUnk_083B1888[((id << 2) + (id << 1)) + 5], (void *)(slot * 0x80 + 0x06013340));
         break;
     }
-    gUnk_03002C30[slot + 0x6E].unkA = gUnk_083BEA14[id] + 4;
+    gSpriteEntries[slot + 0x6E].unkA = gUnk_083BEA14[id] + 4;
 }
 
 void render_battle_medapart_list(u32 mode) {
@@ -199,9 +199,9 @@ void render_battle_medapart_list(u32 mode) {
                 render_text_sprites_08040DB8((u8 *)gUnk_083BB9CC[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
                                              13, 1, 1);
                 draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, (REG_BG1CNT >> 8) & 0x1F);
-                gUnk_03002C30[i + 0x6A].unk0 |= 0x4000;
-                gUnk_03002C30[i + 0x6A].unk6 = genders[i] + 0x1B;
-                gUnk_03002C30[i + 0x6E].unk0 |= 0x4000;
+                gSpriteEntries[i + 0x6A].unk0 |= 0x4000;
+                gSpriteEntries[i + 0x6A].unk6 = genders[i] + 0x1B;
+                gSpriteEntries[i + 0x6E].unk0 |= 0x4000;
                 load_battle_sprite_tiles(ids[i], kind, i);
                 divide_by_10000(gUnk_030004DE, prices[i]);
                 render_text_sprites_08040DB8(gUnk_030004DE, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
@@ -212,9 +212,9 @@ void render_battle_medapart_list(u32 mode) {
                 render_text_sprites_08040DB8((u8 *)gUnk_083BB9CC[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
                                              13, 1, 1);
                 draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, (REG_BG1CNT >> 8) & 0x1F);
-                gUnk_03002C30[i + 0x6A].unk0 |= 0x4000;
-                gUnk_03002C30[i + 0x6A].unk6 = genders[i] + 0x1B;
-                gUnk_03002C30[i + 0x6E].unk0 |= 0x4000;
+                gSpriteEntries[i + 0x6A].unk0 |= 0x4000;
+                gSpriteEntries[i + 0x6A].unk6 = genders[i] + 0x1B;
+                gSpriteEntries[i + 0x6E].unk0 |= 0x4000;
                 load_battle_sprite_tiles(ids[i], kind, i);
                 divide_by_10000(gUnk_030004DE, prices[i]);
                 render_text_sprites_08040DB8(gUnk_030004DE, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
@@ -244,7 +244,7 @@ void swap_inventory_items(void) {
     memswap(gItemInventory[gUnk_03006F74->unk13], gItemInventory[gUnk_03006F74->unkC], 2);
 }
 
-void sub_0805B470(struct Unk_03002C30 *attr) {
+void sub_0805B470(struct SpriteEntry *attr) {
     struct Unk_03006F74 *w = gUnk_03006F74;
     if (w->unk12) {
         if (w->unk13 >= w->unk11 && w->unk13 < w->unk11 + 5)

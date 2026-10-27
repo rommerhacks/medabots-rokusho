@@ -12,9 +12,9 @@ void debug_menu_init(void) {
     vu32 zero;
 
     REG_DISPCNT |= 0x1000;
-    DmaSet(3, gUnk_03002C30, gUnk_02020800, 0x84000400);
+    DmaSet(3, gSpriteEntries, gUnk_02020800, 0x84000400);
     zero = 0;
-    DmaSet(3, &zero, gUnk_03002C30, 0x85000400);
+    DmaSet(3, &zero, gSpriteEntries, 0x85000400);
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
     DmaSet(3, gUnk_084E2E38, 0x050003E0, 0x84000008);
     gGameSubState++;
@@ -56,7 +56,7 @@ void debug_menu_select_input(void) {
 }
 
 void debug_menu_exit(void) {
-    DmaSet(3, gUnk_02020800, gUnk_03002C30, 0x84000400);
+    DmaSet(3, gUnk_02020800, gSpriteEntries, 0x84000400);
     gGameState = gUnk_03000440.unk30;
     gGameSubState = gUnk_03000440.unk31;
 }
@@ -137,7 +137,7 @@ void debug_process_input(void) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & 1) {
-        DmaSet(3, gUnk_02020800, gUnk_03002C30, 0x84000400);
+        DmaSet(3, gUnk_02020800, gSpriteEntries, 0x84000400);
         gGameMode = gUnk_03000440.unk35[0];
         gGameState = gUnk_03000440.unk35[1];
         gGameSubState = gUnk_03000440.unk35[2];
@@ -627,13 +627,13 @@ void debug_mdlpic_input(void) {
     } else if (KEYS_LO(gNewKeys) & 1) {
         DmaSet(3, gUnk_084E2E98, 0x050003E0, 0x84000008);
         lz_decompress_dispatch(gUnk_083AC494[gUnk_03000440.unk35[0]][gUnk_03000440.unk35[1]], (void *)0x06010000);
-        gUnk_03002C30[0].unk0 = 0xC004;
-        gUnk_03002C30[0].unk2 = 0x40;
-        gUnk_03002C30[0].unk4 = 0x50;
-        gUnk_03002C30[0].unk6 = 0x200;
-        gUnk_03002C30[0].unkA = 15;
-        gUnk_03002C30[0].unk1C = 0;
-        gUnk_03002C30[0].unkB = 0xC0;
+        gSpriteEntries[0].unk0 = 0xC004;
+        gSpriteEntries[0].unk2 = 0x40;
+        gSpriteEntries[0].unk4 = 0x50;
+        gSpriteEntries[0].unk6 = 0x200;
+        gSpriteEntries[0].unkA = 15;
+        gSpriteEntries[0].unk1C = 0;
+        gSpriteEntries[0].unkB = 0xC0;
     }
 }
 

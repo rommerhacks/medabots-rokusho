@@ -13,7 +13,7 @@
     else                                                                                                               \
         spr[k].unk4 = mid - WAVE_X(a)
 
-static u32 sprite_wave_bob8(struct Unk_03002C30 *spr) {
+static u32 sprite_wave_bob8(struct SpriteEntry *spr) {
     u32 done = 0;
     s32 d = 0x400;
     s32 mid = 80;
@@ -76,17 +76,17 @@ none:
 void update_battle_sprite_priority_flags(void) {
     if (gUnk_03006F74->unk20 > 4) {
         if ((*(u8 *)0x02023078) == 0)
-            gUnk_03002C30[104].unk0 &= 0xBFFF;
+            gSpriteEntries[104].unk0 &= 0xBFFF;
         else if (gFrameCounter & 8)
-            gUnk_03002C30[104].unk0 |= 0x4000;
+            gSpriteEntries[104].unk0 |= 0x4000;
         else
-            gUnk_03002C30[104].unk0 &= 0xBFFF;
+            gSpriteEntries[104].unk0 &= 0xBFFF;
         if ((*(u8 *)0x02023078) + 3 == gUnk_03006F74->unk20 - 1)
-            gUnk_03002C30[105].unk0 &= 0xBFFF;
+            gSpriteEntries[105].unk0 &= 0xBFFF;
         else if (gFrameCounter & 8)
-            gUnk_03002C30[105].unk0 |= 0x4000;
+            gSpriteEntries[105].unk0 |= 0x4000;
         else
-            gUnk_03002C30[105].unk0 &= 0xBFFF;
+            gSpriteEntries[105].unk0 &= 0xBFFF;
     }
 }
 
