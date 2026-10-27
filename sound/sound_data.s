@@ -540,8 +540,8 @@ gUnk_080AFF40:
 gUnk_080AFF48:
 	.incbin "baserom.gba", 0xAFF48, 0x8
 
-	.global gUnk_080AFF50
-gUnk_080AFF50:
+	.global gIntroBobOffsets
+gIntroBobOffsets:
 	.incbin "baserom.gba", 0xAFF50, 0x40
 
 	.global gCycleAnimFrameOffsets

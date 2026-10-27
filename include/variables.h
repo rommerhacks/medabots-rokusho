@@ -238,37 +238,37 @@ extern const u16 gUnk_087B9DAC[];         // title: BG palettes (0x60 colours)
 extern const u8 gUnk_087B9E6C[];          // title: compressed tilemap (to 0x06006800)
 extern const u8 gUnk_087BA0AC[];          // title: compressed tilemap (to 0x06007000)
 extern const u8 gUnk_087BA5EC[];          // title: BG2 affine tilemap (0x280 bytes)
-extern const u8 gUnk_087BA86C[];          // state 1 scene (load_battle_scene_graphics): compressed BG tiles
+extern const u8 gUnk_087BA86C[];          // state 1 scene (intro_load_silhouette_scene): compressed BG tiles
 extern const u16 gUnk_087BDC10[];         // 256-colour BG palette
 extern const u8 gUnk_087BDE10[];          // compressed tilemap (to 0x06007000)
 extern const u8 gUnk_087BE18C[];          // compressed tilemap (to 0x06007800)
-extern const u8 gUnk_087BE494[];          // state 1 scene (init_scene_graphics): compressed BG tiles
+extern const u8 gUnk_087BE494[];          // state 1 scene (intro_load_scan_screen): compressed BG tiles
 extern const u16 gUnk_087C09C0[];         // 256-colour BG palette
 extern const u8 gUnk_087C0BC0[];          // compressed tilemap (to 0x06007000)
 extern const u8 gUnk_087C0E0C[];          // compressed tilemap (to 0x06007800)
 extern const u8 gUnk_087C8368[];          // compressed tiles (to 0x06008020)
 extern const u16 gUnk_087C8818[];         // 16-colour palette
 extern const u8 gUnk_087C8838[];          // compressed 10x12 tilemap
-extern const u8 gUnk_087C88F4[];          // compressed tiles (init_scene_graphics)
+extern const u8 gUnk_087C88F4[];          // compressed tiles (intro_load_scan_screen)
 extern const u8 gUnk_087C8BD8[];
 extern const u8 gUnk_087C8C94[];
 extern const u8 gUnk_087C8CE4[];
-extern const u16 gUnk_087C8CF4[]; // 16-colour palettes (init_scene_graphics)
+extern const u16 gUnk_087C8CF4[]; // 16-colour palettes (intro_load_scan_screen)
 extern const u16 gUnk_087C8D14[];
 extern const u16 gUnk_087C8D34[];
-extern const u8 gUnk_087C8D54[];           // compressed, decompressed to gUnk_03001800_s.unk30 (load_battle_ui_assets)
-extern const void *const gUnk_08485FB8[2]; // compressed tiles ([1] to 0x06008C80, load_battle_scene_graphics)
-extern const void *const gUnk_08485FC0[2]; // compressed 20x20 tilemaps ([1] in load_battle_scene_graphics)
-extern const void *const gUnk_08485FC8[2]; // 16-colour palettes ([1] in load_battle_scene_graphics)
-extern const void *const gUnk_08485FD0[2]; // compressed OBJ tiles (load_battle_ui_assets)
-extern const void *const gUnk_08485FD8[2]; // OBJ palettes (0x50 halfwords; [1] in init_battle_result_screen)
-extern u8 gUnk_03000005;                   // scene step speed: frames per fade level
-extern u16 gUnk_03000008[];                // BG0 tilemap offsets of the rows the wipe steps clear / fill
-extern u16 gUnk_03000028;                  // palette fade target color
-extern u16 *gUnk_0300002C;                 // palette fade source palette (0x200 colors)
-extern u16 gUnk_03000030[160];             // title BG2 per-scanline values: BG2PA (title_screen_hblank, HBlank)
-extern u16 gUnk_03000170[160];             // BG2X_L per scanline
-extern u16 gUnk_030002B0[160];             // BG2X_H per scanline
+extern const u8 gUnk_087C8D54[]; // compressed, decompressed to gUnk_03001800_s.unk30 (intro_load_scan_sprites)
+extern const void *const gIntroSilhouetteTiles[2]; // compressed tiles ([1] to 0x06008C80, intro_load_silhouette_scene)
+extern const void *const gIntroSilhouetteMaps[2];  // compressed 20x20 tilemaps ([1] in intro_load_silhouette_scene)
+extern const void *const gIntroSilhouettePals[2];  // 16-colour palettes ([1] in intro_load_silhouette_scene)
+extern const void *const gIntroScanObjTiles[2];    // compressed OBJ tiles (intro_load_scan_sprites)
+extern const void *const gIntroObjPals[2];         // OBJ palettes (0x50 halfwords; [1] in intro_load_rokusho_sprite)
+extern u8 gUnk_03000005;                           // scene step speed: frames per fade level
+extern u16 gUnk_03000008[];                        // BG0 tilemap offsets of the rows the wipe steps clear / fill
+extern u16 gUnk_03000028;                          // palette fade target color
+extern u16 *gUnk_0300002C;                         // palette fade source palette (0x200 colors)
+extern u16 gUnk_03000030[160];                     // title BG2 per-scanline values: BG2PA (title_screen_hblank, HBlank)
+extern u16 gUnk_03000170[160];                     // BG2X_L per scanline
+extern u16 gUnk_030002B0[160];                     // BG2X_H per scanline
 extern u16 gUnk_030003F0; // title BG2 scroll counter, += 0x80 per frame (title_screen_build_wave_tables)
 extern u8 gUnk_030004DE[];
 extern const u8 gRandomBytes[]; // random bytes, indexed by the low byte of gFrameCounter
@@ -1288,21 +1288,21 @@ extern const u16 gUnk_085E19EC[];
 extern const u16 gUnk_085E0A38[];
 extern const u16 gUnk_0807C540[]; // 16-colour palettes (same table as weekly_show_lecture)
 extern const u16 gUnk_087C4DFC[];
-extern const u8 gUnk_087C8E00[];  // LZ77 BG tiles (load_bg_screen_a)
-extern const u8 gUnk_087CC7BC[];  // LZ77 30x20 tilemap (load_bg_screen_a)
-extern const u16 gUnk_087CCAEC[]; // BG palette, 256 colours (load_bg_screen_a)
-extern const u8 gUnk_087CCCEC[];  // LZ77 BG tiles (load_bg_screen_b)
-extern const u8 gUnk_087D0954[];  // LZ77 30x20 tilemap (load_bg_screen_b)
-extern const u16 gUnk_087D0C80[]; // BG palette, 256 colours (load_bg_screen_b)
-extern const u8 gUnk_087D0E80[];  // LZ77 BG tiles (load_bg_screen_c)
-extern const u8 gUnk_087D424C[];  // LZ77 30x20 tilemap (load_bg_screen_c)
-extern const u16 gUnk_087D4564[]; // BG palette, 256 colours (load_bg_screen_c)
-extern s32 (*const gUnk_084860AC[])(
-    u8); // sprite actions, by gSpriteEntries[].unk20 - 1: 0 = done, 0xFF = clear (update_sprite_animations_080703D8)
-extern const u8 gUnk_084860C0[]; // sprite actions: frame period, by unk20 - 1
-extern const s8 gUnk_080AFF50[]; // 64-entry wave offsets, by gSpriteEntries[].unk21 & 0x3F (sub_0807052C)
-extern u8 gWeeklyAnimTiles[];    // animated BG tiles: 6 frames of 0x280 bytes, 0x100 copied (weekly_update_studio)
-extern u8 gWeeklyAnimTiles2[];   // animated BG tiles: 6 frames of 0x280 bytes, 0x180 copied (weekly_update_studio)
+extern const u8 gUnk_087C8E00[];  // LZ77 BG tiles (intro_load_art_unused)
+extern const u8 gUnk_087CC7BC[];  // LZ77 30x20 tilemap (intro_load_art_unused)
+extern const u16 gUnk_087CCAEC[]; // BG palette, 256 colours (intro_load_art_unused)
+extern const u8 gUnk_087CCCEC[];  // LZ77 BG tiles (intro_load_versus_art)
+extern const u8 gUnk_087D0954[];  // LZ77 30x20 tilemap (intro_load_versus_art)
+extern const u16 gUnk_087D0C80[]; // BG palette, 256 colours (intro_load_versus_art)
+extern const u8 gUnk_087D0E80[];  // LZ77 BG tiles (intro_load_closeup_art)
+extern const u8 gUnk_087D424C[];  // LZ77 30x20 tilemap (intro_load_closeup_art)
+extern const u16 gUnk_087D4564[]; // BG palette, 256 colours (intro_load_closeup_art)
+extern s32 (*const gIntroSpriteActions[])(
+    u8); // sprite actions, by gSpriteEntries[].unk20 - 1: 0 = done, 0xFF = clear (intro_update_sprite_actions)
+extern const u8 gIntroSpriteActionPeriods[]; // sprite actions: frame period, by unk20 - 1
+extern const s8 gIntroBobOffsets[]; // 64-entry wave offsets, by gSpriteEntries[].unk21 & 0x3F (intro_action_bob)
+extern u8 gWeeklyAnimTiles[];       // animated BG tiles: 6 frames of 0x280 bytes, 0x100 copied (weekly_update_studio)
+extern u8 gWeeklyAnimTiles2[];      // animated BG tiles: 6 frames of 0x280 bytes, 0x180 copied (weekly_update_studio)
 extern u8 gWeeklyCycleAnimMask;
 extern const Func
     gMedabotsWeeklySubStates[]; // sub-states by gGameSubState (medabots_weekly_update); [0] = medabots_weekly_init
@@ -1310,9 +1310,9 @@ extern s32 (*const gWeeklySpriteEffects[])(u8);
 extern const s8 gWeeklyCurtainOpenTimes[8];
 extern const void *const gWeeklyMessages[];
 extern const u8 gUnk_08486114[];
-extern const u8 gUnk_0848604C[]; // 12 bytes per a, from +0x30: 3 rows (gUnk_03001800.unkED) of x, y, end x, end row
-extern const u8
-    *const gUnk_0848602C[]; // text strings for the battle intro; [a + 4] read by process_text_tile_and_dma_transfer
+extern const u8 gIntroPointerLines[]; // 12 bytes per scan part, from +0x30: 3 lines (lineIdx) of x, y, end x, end row
+extern const u8 *const
+    gIntroScanStrings[]; // intro scan screen strings; [part + 4] are the part names typed by intro_type_part_name
 extern const s8 gWeeklyCurtainCloseTimes[12]; // 12 frame counts (unk1A values) at which weekly_fx_right_curtain_close /
                                               // weekly_fx_left_curtain_close step
 extern const u8 gCycleAnimFrameOffsets[];     // sprite_cycle_anim_update table

@@ -126,10 +126,11 @@ struct Unk_03001800_s {
     u16 nextState;
     u16 nextSubState;
     u16 unk6;
-    s32 timer;   // frame counter of the current step
-    union {      // 4 bytes: agbcc pads unions to a word
-        u16 h;   // story intro: page (graphics gUnk_08487328 / text gUnk_08486EEC)
-        u8 b;    // boot logos: nonzero once START may skip them (boot_logos_check_skip)
+    s32 timer;             // frame counter of the current step
+    union {                // 4 bytes: agbcc pads unions to a word
+        u16 h;             // story intro: page (graphics gUnk_08487328 / text gUnk_08486EEC)
+        u16 afterSubState; // opening intro: sub-state to run after the next silhouette / scan step
+        u8 b;              // boot logos: nonzero once START may skip them (boot_logos_check_skip)
         s8 s[4]; // title: s[2] is a two-digit number shown with sprites 11 / 12 (get_battle_state_value_div10)
     } unkC;
     union {
@@ -142,19 +143,20 @@ struct Unk_03001800_s {
         } lecture;
     } unk10;
     u8 filler14[0x1A];
-    u8 unk2E; // cells drawn in the 40-cell grid (check_battle_timer_expired)
+    // The rest is the opening intro's Medapart scan screen (title/intro.c).
+    u8 scanTextLen; // glyphs typed into the 10x4 scan text box (intro_type_scan_text)
     u8 unk2F;
-    u16 unk30[0x50]; // decompression buffer (load_battle_ui_assets); tile source of that grid
-    u8 unkD0;        // text cursor (process_text_tile_and_dma_transfer)
+    u16 scanTextGlyphs[0x50]; // scan text glyphs, decompressed by intro_load_scan_sprites
+    u8 partNameLen;           // letters typed of the part name (intro_type_part_name)
     u8 unkD1;
-    u16 unkD2[13]; // text tile row, DMA'd to 0x0600FC44
-    u8 unkEC;      // column / row counters of battle_draw_tilemap_row_dma
-    u8 unkED;
-    s8 unkEE; // blend counter (scene_fade_out_and_restore_state)
+    u16 partNameTiles[13]; // part name tile row, DMA'd to 0x0600FC44
+    u8 lineStep;           // tile step of the pointer line being drawn (intro_draw_pointer_line)
+    u8 lineIdx;            // pointer line being drawn (0-2)
+    s8 flashAlpha;         // BLDALPHA fade of the lightning flash (intro_flash_state)
     u8 unkEF;
-    u16 unkF0;
-    u16 unkF2;
-    u16 unkF4;
+    u16 frameCounter; // counter readouts in the top right (intro_draw_counters)
+    u16 noiseCounter;
+    u16 unkF4; // guess: Rokusho pose scroll/scale values (only intro_init / intro_rokusho_pose_state)
     u16 unkF6;
 };
 

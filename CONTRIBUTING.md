@@ -561,7 +561,7 @@
 * A callee result compared with `bgt` for `> 1` (signed) where yours gives `bcc`: the function-table
   type returns `s32`, not `bool32` (title_screen_update_sprite_effects).
 * A loop that waits until `timer == n * 2` with `n` kept in a register: a local `s32 n = 0xC4;`, and
-  the test written `n * 2 <= timer` to keep the original `cmp` operand order (sub_0806F0B4).
+  the test written `n * 2 <= timer` to keep the original `cmp` operand order (intro_scan_arms_state).
 * `ands` with the constant loaded first (`movs r1, #3; ands r1, r0`) where `& 3` gives `ands r0, r1`
   the other way round: the original wrote `x % 4` on an unsigned value (sub_0806C7C4, bomb_game_drop_bombs).
 * A switch whose compare tree pivots on 1 instead of the middle case: add an empty `case 0: break;`

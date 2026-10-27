@@ -212,40 +212,40 @@ gBootLogosSubStates:
 gIntroSubStates:
 	.incbin "baserom.gba", 0x485F68, 0x50
 
-	.global gUnk_08485FB8
-gUnk_08485FB8:
+	.global gIntroSilhouetteTiles
+gIntroSilhouetteTiles:
 	.incbin "baserom.gba", 0x485FB8, 0x8
 
-	.global gUnk_08485FC0
-gUnk_08485FC0:
+	.global gIntroSilhouetteMaps
+gIntroSilhouetteMaps:
 	.incbin "baserom.gba", 0x485FC0, 0x8
 
-	.global gUnk_08485FC8
-gUnk_08485FC8:
+	.global gIntroSilhouettePals
+gIntroSilhouettePals:
 	.incbin "baserom.gba", 0x485FC8, 0x8
 
-	.global gUnk_08485FD0
-gUnk_08485FD0:
+	.global gIntroScanObjTiles
+gIntroScanObjTiles:
 	.incbin "baserom.gba", 0x485FD0, 0x8
 
-	.global gUnk_08485FD8
-gUnk_08485FD8:
+	.global gIntroObjPals
+gIntroObjPals:
 	.incbin "baserom.gba", 0x485FD8, 0x54
 
-	.global gUnk_0848602C
-gUnk_0848602C:
+	.global gIntroScanStrings
+gIntroScanStrings:
 	.incbin "baserom.gba", 0x48602C, 0x20
 
-	.global gUnk_0848604C
-gUnk_0848604C:
+	.global gIntroPointerLines
+gIntroPointerLines:
 	.incbin "baserom.gba", 0x48604C, 0x60
 
-	.global gUnk_084860AC
-gUnk_084860AC:
+	.global gIntroSpriteActions
+gIntroSpriteActions:
 	.incbin "baserom.gba", 0x4860AC, 0x14
 
-	.global gUnk_084860C0
-gUnk_084860C0:
+	.global gIntroSpriteActionPeriods
+gIntroSpriteActionPeriods:
 	.incbin "baserom.gba", 0x4860C0, 0x8
 
 	.global gMedabotsWeeklySubStates

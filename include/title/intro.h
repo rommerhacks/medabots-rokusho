@@ -3,11 +3,11 @@
 
 // Opening intro (mode 3, state 1)
 
-void update_sprite_animations_080703D8(void);
-void load_bg_screen_b(void);
-u32 check_battle_timer_expired(u8 a);
-u32 process_text_tile_and_dma_transfer(u8 a);
-u32 battle_draw_tilemap_row_dma(u8 a);
-void load_bg_screen_c(void);
+void intro_update_sprite_actions(void);
+void intro_load_versus_art(void);
+u32 intro_type_scan_text(u8 glyph_base);
+u32 intro_type_part_name(u8 part);
+u32 intro_draw_pointer_line(u8 part);
+void intro_load_closeup_art(void);
 
 #endif // GUARD_TITLE_INTRO_H
