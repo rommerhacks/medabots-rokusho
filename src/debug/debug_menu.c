@@ -822,7 +822,7 @@ void debug_motion_input(void) {
         gGameWork.debugSubState--;
     } else if (KEYS_LO(gNewKeys) & 2) {
         clear_battle_sprite_slot(8, 0x21);
-        gUnk_03000430 = b;
+        gVBlankOamMode = b;
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & 1)
         gGameWork.debugSubState++;

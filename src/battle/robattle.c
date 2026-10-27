@@ -13,7 +13,7 @@ void robattle_update(void) {
 
     if (link_error_check())
         return;
-    if (gUnk_03000430 == 2) {
+    if (gVBlankOamMode == 2) {
         fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
     }
@@ -65,7 +65,7 @@ void robattle_load_scene(void) {
         setup_all_battle_bot_sprite_positions();
         init_battle_bot_sprites();
         apply_battle_blend_effect_b();
-        decompress_to_ewram_27000((const u8 *)gUnk_083B24A8[gBattleWork.battlefield * 5 + 1]);
+        decompress_to_ewram_27000((const u8 *)gBattlefieldGraphics[gBattleWork.battlefield * 5 + 1]);
         gVBlankCallback = battle_vblank_update_bg;
         gGameSubState++;
         gGameWork.setupStep = 0;
@@ -256,7 +256,7 @@ void robattle_parts_menu_open(void) {
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
     CpuFastSet(gUnk_084E2F58, (void *)0x05000340, 8);
-    CpuFastSet(gUnk_084E3038, (void *)0x050002C0, 8);
+    CpuFastSet(gActionFlashPalette, (void *)0x050002C0, 8);
     clear_battle_sprite_slot(0, 6);
     clear_battle_sprite_slot(0x1E, 0xB);
     parts_menu_load_frame();
@@ -515,7 +515,7 @@ void robattle_restore_screen(void) {
     switch (gGameWork.setupStep) {
     case 0:
         gGameWork.unk96 = 0;
-        gUnk_03000430 = 0;
+        gVBlankOamMode = 0;
         clear_bg_scroll();
         load_battle_script_entry_b();
         REG_DISPCNT &= 0xF0FF;
@@ -537,7 +537,7 @@ void robattle_restore_screen(void) {
         REG_DISPCNT |= 0x1F40;
         load_all_bot_part_sprites();
         apply_battle_blend_effect_b();
-        decompress_to_ewram_27000((const u8 *)gUnk_083B24A8[gBattleWork.battlefield * 5 + 1]);
+        decompress_to_ewram_27000((const u8 *)gBattlefieldGraphics[gBattleWork.battlefield * 5 + 1]);
         gGameWork.setupStep++;
         break;
     case 3:
@@ -716,7 +716,7 @@ void robattle_status_screen_fade_out(void) {
     scroll_bg3_diagonal();
     if (update_blend_effect()) {
         gGameWork.unk96 = 0;
-        gUnk_03000430 = 0;
+        gVBlankOamMode = 0;
         fill1 = 0x200;
         CpuFastSet(&fill1, gSpriteWork->oamBuf, 0x01000100);
         fill2 = 0;

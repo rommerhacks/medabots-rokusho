@@ -74,7 +74,7 @@ static void team_select_link_load_opponents(void);
 // Game state 3: the Medabots screen (Medawatch > Medabots). Paused while the serial link is busy.
 void medabots_screen_update(void) {
     if (link_error_check() == 0) {
-        if (gUnk_03000430 == 2) {
+        if (gVBlankOamMode == 2) {
             u32 fill = 0x200;
             CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
         }
@@ -234,7 +234,7 @@ void medabots_screen_return_to_medawatch(void) {
     CpuFastSet(gUnk_084E2E38, (void *)0x050003E0, 8);
     clear_battle_sprite_slot(0, 0x80);
     gGameWork.unk96 = 0;
-    gUnk_03000430 = 0;
+    gVBlankOamMode = 0;
     gGameState = 2;
     gGameSubState = 16;
 }
@@ -510,7 +510,7 @@ void medabot_detail_open_info_fade(void) {
 void medabot_detail_open_info(void) {
     clear_battle_sprite_slot(0, 0x80);
     gGameWork.unk96 = 0;
-    gUnk_03000430 = 0;
+    gVBlankOamMode = 0;
     switch (gGameWork.detailRow) {
     case 0:
         mem_fill8(&gGameWork.openedFrom, 0x14, 0);
@@ -601,7 +601,7 @@ void team_select_battle_fade_out(void) {
 void team_select_exit_battle(void) {
     clear_battle_sprite_slot(0, 0x80);
     gGameWork.unk96 = 0;
-    gUnk_03000430 = 0;
+    gVBlankOamMode = 0;
     gGameState = 7;
     gGameSubState = 0;
 }
@@ -630,7 +630,7 @@ void team_select_exit_race(void) {
 
     clear_battle_sprite_slot(0, 0x80);
     gGameWork.unk96 = 0;
-    gUnk_03000430 = 0;
+    gVBlankOamMode = 0;
     for (i = 0; i <= 2; i++) {
         load_part_data(gTeamSlots[gBattleWork.teamPicks[i] & 0xF].legs, 3, &gGameWork.partAbility);
         gBattleWork.unk8C[i] = gGameWork.partSkill - 100;
@@ -832,7 +832,7 @@ void team_select_link_fade_out(void) {
 void team_select_link_exit_battle(void) {
     clear_battle_sprite_slot(0, 0x80);
     gGameWork.unk96 = 0;
-    gUnk_03000430 = 0;
+    gVBlankOamMode = 0;
     gGameState = 7;
     gGameSubState = 0;
 }
@@ -967,7 +967,7 @@ static void medabots_screen_init_bot_sprite(void) {
     mem_fill8(b, 0x800, 0);
     c = (u8 *)0x020268D0;
     mem_fill8(c, 0x60, 0);
-    gUnk_03000430 = 2;
+    gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
@@ -1439,7 +1439,7 @@ static void medabot_detail_init_bot_sprite(void) {
     mem_fill8(b, 0x800, 0);
     c = (u8 *)0x020268D0;
     mem_fill8(c, 0x60, 0);
-    gUnk_03000430 = 2;
+    gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);

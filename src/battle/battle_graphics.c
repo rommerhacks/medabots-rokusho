@@ -30,7 +30,7 @@ u32 battle_load_graphics_step(u32 direct) {
     case 3:
         lz_decompress_dispatch(gUnk_084C4BAC, (void *)0x0600C280);
         lz_decompress_dispatch(gUnk_084C7634, (void *)0x06012000);
-        lz_decompress_dispatch(gUnk_084C8AC4, (void *)0x06014E00);
+        lz_decompress_dispatch(gMissPopupTiles, (void *)0x06014E00);
         lz_decompress_dispatch(gUnk_084C984C, (void *)0x06017F80);
         lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
         gGameWork.unk13A++;
@@ -63,10 +63,10 @@ u32 battle_load_graphics_step(u32 direct) {
             CpuFastSet(gUnk_08488B04, (void *)0x0202FB60, 8);
             CpuFastSet(gUnk_08488AE4, (void *)0x0202FB80, 8);
             CpuFastSet(gUnk_084C6A38, (void *)0x0202FBA0, 8);
-            CpuFastSet(gUnk_084E2EF8, (void *)0x0202F900, 8);
-            CpuFastSet(gUnk_084E2F18, (void *)0x0202F920, 8);
+            CpuFastSet(gTargetLinePalette, (void *)0x0202F900, 8);
+            CpuFastSet(gTargetArrowsPalette, (void *)0x0202F920, 8);
             CpuFastSet(gUnk_084E2F38, (void *)0x0202F940, 8);
-            CpuFastSet(gUnk_0850DFF8, (void *)0x0202F960, 16);
+            CpuFastSet(gHealNumberPalette, (void *)0x0202F960, 16);
             CpuFastSet(gUnk_0850DDB8, (void *)0x0202F9A0, 8);
             CpuFastSet(gUnk_0850DDB8 + 0x20, (void *)0x0202F9C0, 8);
             CpuFastSet(gUnk_0850DDB8 + 0x40, (void *)0x0202F9E0, 8);
@@ -78,10 +78,10 @@ u32 battle_load_graphics_step(u32 direct) {
             CpuFastSet(gUnk_08488B04, (void *)0x05000160, 8);
             CpuFastSet(gUnk_08488AE4, (void *)0x05000180, 8);
             CpuFastSet(gUnk_084C6A38, (void *)0x050001A0, 8);
-            CpuFastSet(gUnk_084E2EF8, (void *)0x05000300, 8);
-            CpuFastSet(gUnk_084E2F18, (void *)0x05000320, 8);
+            CpuFastSet(gTargetLinePalette, (void *)0x05000300, 8);
+            CpuFastSet(gTargetArrowsPalette, (void *)0x05000320, 8);
             CpuFastSet(gUnk_084E2F38, (void *)0x05000340, 8);
-            CpuFastSet(gUnk_0850DFF8, (void *)0x05000360, 16);
+            CpuFastSet(gHealNumberPalette, (void *)0x05000360, 16);
             CpuFastSet(gUnk_0850DDB8, (void *)0x050003A0, 8);
             CpuFastSet(gUnk_0850DDB8 + 0x20, (void *)0x050003C0, 8);
             CpuFastSet(gUnk_0850DDB8 + 0x40, (void *)0x050003E0, 8);

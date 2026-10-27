@@ -31,7 +31,7 @@ static void battle_check_medal_level_up(void);
 void prebattle_screen_update(void) {
     u32 fill;
 
-    if (gUnk_03000430 == 2) {
+    if (gVBlankOamMode == 2) {
         fill = 0x200;
         DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
     }
@@ -449,7 +449,7 @@ void afterbattle_part_details_input(void) {
     afterbattle_pulse_new_sprite();
     if (KEYS_LO(gNewKeys) & 3) {
         clear_battle_sprite_slot(1, 2);
-        gUnk_03000430 = 0;
+        gVBlankOamMode = 0;
         play_sound_effect(13);
         gGameSubState++;
     } else if (KEYS_LO(gNewKeys) & 8) {
@@ -699,7 +699,7 @@ void afterbattle_part_detail_open_screen(void) {
     clear_battle_sprite_slot(0, 0x80);
     g = &gGameWork;
     g->unk96 = 0;
-    gUnk_03000430 = 0;
+    gVBlankOamMode = 0;
     b = &gBattleWork;
     kind = b->wonPartKind;
     switch (kind) {
@@ -885,7 +885,7 @@ void battle_loss_show_part_taken(void) {
     update_scroll_movement_a();
     setup_battle_result_sprite();
     if (run_message(gUnk_083C65C4[108]) && (KEYS_LO(gNewKeys) & 3)) {
-        gUnk_03000430 = 0;
+        gVBlankOamMode = 0;
         play_sound_effect(13);
         gGameSubState++;
     }

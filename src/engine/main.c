@@ -154,8 +154,8 @@ void vblank_body(void) {
         REG_BG3HOFS = gBg3Scroll.x + gUnk_03002C2C.x;
         REG_BG3VOFS = gBg3Scroll.y + gUnk_03002C2C.y;
     }
-    if (gUnk_03000430 != 0) {
-        if (gUnk_03000430 == 2) {
+    if (gVBlankOamMode != 0) {
+        if (gVBlankOamMode == 2) {
             update_anim_object_flags();
             copy_oam_affine_params(gSpriteWork->oamBuf, gSpriteWork->affineBuf);
             for (i = 0; i < 88; i++)
@@ -169,7 +169,7 @@ void vblank_body(void) {
             if (gGameWork.oamUploadPending)
                 CpuFastSet(gOamBuffer, (void *)OAM, 0xB0);
         } else {
-            gUnk_03000430 = 0;
+            gVBlankOamMode = 0;
         }
     } else if (gGameWork.oamUploadPending) {
         CpuFastSet(gOamBuffer, (void *)OAM, 0x100);

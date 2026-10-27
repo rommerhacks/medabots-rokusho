@@ -41,7 +41,7 @@ static void prize_game_blink_landing_slot(void);
 void link_robattle_update(void) {
     if (gGameSubState - 0x10 > 0xF && link_error_check())
         return;
-    if (gUnk_03000430 == 2) {
+    if (gVBlankOamMode == 2) {
         u32 fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
     }

@@ -39,7 +39,7 @@ void medaparts_screen_update(void) {
     u32 fill;
 
     if (link_error_check() == 0) {
-        if (gUnk_03000430 == 2) {
+        if (gVBlankOamMode == 2) {
             fill = 0x200;
             CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
         }
@@ -192,7 +192,7 @@ void medaparts_list_wait_fade(void) {
 
 void medaparts_list_exit(void) {
     clear_battle_sprite_slot(0, 0x80);
-    gUnk_03000430 = 0;
+    gVBlankOamMode = 0;
     gGameState = 2;
     gGameSubState = 0x10;
 }
@@ -384,7 +384,7 @@ void medapart_detail_exit(void) {
         gGameSubState = 0;
         break;
     case 1:
-        gUnk_03000430 = 0;
+        gVBlankOamMode = 0;
         gGameState = 3;
         gGameSubState = 0x10;
         switch (gGameWork.partSlot) {
@@ -407,7 +407,7 @@ void medapart_detail_exit(void) {
         CpuFastSet(&zero1, (void *)0x05000200, 0x01000080);
         zero2 = 0;
         CpuFastSet(&zero2, (void *)0x05000000, 0x01000080);
-        gUnk_03000430 = 0;
+        gVBlankOamMode = 0;
         gGameState = 6;
         gGameSubState = 0x65;
         break;
@@ -416,7 +416,7 @@ void medapart_detail_exit(void) {
         CpuFastSet(&zero3, (void *)0x05000200, 0x01000080);
         zero4 = 0;
         CpuFastSet(&zero4, (void *)0x05000000, 0x01000080);
-        gUnk_03000430 = 0;
+        gVBlankOamMode = 0;
         gGameMode = 2;
         gGameState = 0x19;
         gGameSubState = 0;
@@ -866,7 +866,7 @@ static void medaparts_list_load_part_sprite(void) {
     mem_fill8(b, 0x800, 0);
     c = (u8 *)0x020268D0;
     mem_fill8(c, 0x60, 0);
-    gUnk_03000430 = 2;
+    gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
@@ -953,7 +953,7 @@ static void medapart_detail_init_sprite(void) {
     mem_fill8(b, 0x800, 0);
     c = (u8 *)0x020268D0;
     mem_fill8(c, 0x60, 0);
-    gUnk_03000430 = 2;
+    gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);

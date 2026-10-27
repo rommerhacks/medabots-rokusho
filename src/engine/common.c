@@ -803,13 +803,13 @@ void decompress_tileset_to_vram(u32 idx, u32 backup) {
 }
 
 void decompress_sprite_to_vram_08043C08(u32 idx, u32 backup) {
-    lz_decompress_dispatch(gUnk_083B24A8[idx * 5], (void *)(VRAM + 0x8000));
-    set_tilemap_and_decompress_bg(0, 0, gUnk_083B24A8[idx * 5 + 3], REG_BG2CNT, 0);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_083B24A8[idx * 5 + 4], REG_BG3CNT, 0);
+    lz_decompress_dispatch(gBattlefieldGraphics[idx * 5], (void *)(VRAM + 0x8000));
+    set_tilemap_and_decompress_bg(0, 0, gBattlefieldGraphics[idx * 5 + 3], REG_BG2CNT, 0);
+    set_tilemap_and_decompress_bg(0, 0, gBattlefieldGraphics[idx * 5 + 4], REG_BG3CNT, 0);
     if (backup)
-        CpuFastSet(gUnk_083B24A8[idx * 5 + 2], gPaletteBackupBg, 0x40);
+        CpuFastSet(gBattlefieldGraphics[idx * 5 + 2], gPaletteBackupBg, 0x40);
     else
-        CpuFastSet(gUnk_083B24A8[idx * 5 + 2], (void *)PLTT, 0x40);
+        CpuFastSet(gBattlefieldGraphics[idx * 5 + 2], (void *)PLTT, 0x40);
 }
 
 // Random value 0-100.
@@ -1204,7 +1204,7 @@ void init_scene_buffers_080445F4(void) {
     mem_fill8(b, 0x820, 0);
     c = (u8 *)0x020268F0;
     mem_fill8(c, 0x60, 0);
-    gUnk_03000430 = 2;
+    gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
@@ -1411,7 +1411,7 @@ void init_battle_scene(u32 mode, u32 id) {
     clear_bg_scroll();
     clear_battle_sprite_slot(0, 0x80);
     gGameWork.unk96 = 0;
-    gUnk_03000430 = 0;
+    gVBlankOamMode = 0;
     mem_fill8(&gGameWork.openedFrom, 0x14, 0);
     gGameWork.openedFrom = 3;
     gGameWork.shownId = id;

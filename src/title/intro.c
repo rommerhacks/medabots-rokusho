@@ -18,10 +18,10 @@ static bool32 intro_silhouette_step(void);
 static void intro_sprite_set_action(u8 action, u8 i, u8 y);
 
 static void intro_draw_rokusho_pose(void) {
-    if (gUnk_03000430 == 2) {
+    if (gVBlankOamMode == 2) {
         u32 v = 0x200;
         DmaSet(3, &v, gSpriteWork->oamBuf, 0x85000100);
-        setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x70, 0x50, gUnk_03000430, 0xC, 0, 1, 0);
+        setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x70, 0x50, gVBlankOamMode, 0xC, 0, 1, 0);
         medabot_pose_anim_step(0, 0x2D, 0x2A);
     }
 }
@@ -29,7 +29,7 @@ static void intro_draw_rokusho_pose(void) {
 static void intro_check_skip(void) {
     if (KEYS_LO(gHeldKeys) & 8) {
         gTitleSkipIntro = 1;
-        gUnk_03000430 = 0;
+        gVBlankOamMode = 0;
         gGameMode = 3;
         gGameState = 2;
         gGameSubState = 0;
@@ -82,7 +82,7 @@ void intro_transition_out_state(void) {
     if (execute_scene_step()) {
         u32 zero = 0;
         DmaSet(3, &zero, gSpriteEntries, 0x85000800);
-        gUnk_03000430 = 0;
+        gVBlankOamMode = 0;
         REG_DISPCNT &= 0x80FF;
         gGameMode = gSceneWork.nextMode;
         gGameState = gSceneWork.nextState;
@@ -145,7 +145,7 @@ void intro_load_silhouette_scene(void) {
     gSpriteEntries[0].unk2 = 0x98;
     gSpriteEntries[0].unk4 = 0x40;
     setup_screen_transition_effect_080682CC(2, 1, 0);
-    gUnk_03000430 = 0;
+    gVBlankOamMode = 0;
     gSceneWork.nextSubState = gSceneWork.unkC.afterSubState;
     gGameSubState = 3;
 }

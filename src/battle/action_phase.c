@@ -27,7 +27,7 @@ void action_phase_load_gfx(void) {
         gGameWork.setupStep++;
         break;
     case 1:
-        lz_decompress_dispatch(gUnk_084C8AC4, (void *)0x06014E00);
+        lz_decompress_dispatch(gMissPopupTiles, (void *)0x06014E00);
         gGameWork.setupStep++;
         break;
     case 2:
@@ -156,8 +156,8 @@ void action_phase_goto_exit(void) {
 }
 
 void action_phase_next_turn(void) {
-    CpuFastSet(gUnk_084E2EF8, (void *)0x05000300, 8);
-    CpuFastSet(gUnk_084E2F18, (void *)0x05000320, 8);
+    CpuFastSet(gTargetLinePalette, (void *)0x05000300, 8);
+    CpuFastSet(gTargetArrowsPalette, (void *)0x05000320, 8);
     CpuFastSet(gUnk_084E2F38, (void *)0x05000340, 8);
     gGameState = 7;
     gGameSubState = 0x46;

@@ -54,8 +54,8 @@ u32 miss_popup_run(void) {
 }
 
 void miss_popup_load(void) {
-    lz_decompress_dispatch(gUnk_084C8AC4, (void *)0x06014E00);
-    CpuFastSet(gUnk_084E3078, (void *)0x050002C0, 8);
+    lz_decompress_dispatch(gMissPopupTiles, (void *)0x06014E00);
+    CpuFastSet(gMissPopupPalette, (void *)0x050002C0, 8);
     gBattleWork.unk9C[0]++;
 }
 
@@ -102,7 +102,7 @@ u32 target_panels_show(u32 show_target) {
 }
 
 void target_panels_line_init(void) {
-    CpuFastSet(gUnk_084E2EF8, (void *)0x05000300, 8);
+    CpuFastSet(gTargetLinePalette, (void *)0x05000300, 8);
     bot_pointer_line_init(gBattleWork.actor);
     gBattleWork.unk9C[0]++;
 }
@@ -134,7 +134,7 @@ void target_panels_idle(void) {
 }
 
 void target_panels_arrows_init(void) {
-    CpuFastSet(gUnk_084E2F18, (void *)0x05000320, 8);
+    CpuFastSet(gTargetArrowsPalette, (void *)0x05000320, 8);
     bot_pointer_line_animate(gBattleWork.actor);
     target_arrows_init(gBattleWork.actor);
     gBattleWork.unk9C[0]++;
@@ -247,20 +247,20 @@ void trap_hit_calc_damage(void) {
 void trap_hit_load_graphics(void) {
     switch (gBattleWork.unk51) {
     case 0:
-        lz_decompress_dispatch(gUnk_084C907C, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E058, (void *)0x050002C0, 8);
+        lz_decompress_dispatch(gGrapTrapTiles, (void *)0x06014800);
+        CpuFastSet(gGrapTrapPalette, (void *)0x050002C0, 8);
         break;
     case 1:
-        lz_decompress_dispatch(gUnk_084C9288, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E078, (void *)0x050002C0, 8);
+        lz_decompress_dispatch(gShotTrapTiles, (void *)0x06014800);
+        CpuFastSet(gShotTrapPalette, (void *)0x050002C0, 8);
         break;
     case 2:
-        lz_decompress_dispatch(gUnk_084C9624, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E098, (void *)0x050002C0, 8);
+        lz_decompress_dispatch(gAttackClrTrapTiles, (void *)0x06014800);
+        CpuFastSet(gAttackClrTrapPalette, (void *)0x050002C0, 8);
         break;
     case 3:
-        lz_decompress_dispatch(gUnk_084C978C, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E0B8, (void *)0x050002C0, 8);
+        lz_decompress_dispatch(gMedaforceTrapTiles, (void *)0x06014800);
+        CpuFastSet(gMedaforceTrapPalette, (void *)0x050002C0, 8);
         break;
     }
     gBattleWork.step++;
@@ -445,8 +445,8 @@ void trap_hit_goto_wear(void) {
 }
 
 void trap_hit_break_cursor_init(void) {
-    lz_decompress_dispatch(gUnk_084CDBD8, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E378, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gBreakRingTiles, (void *)0x06014800);
+    CpuFastSet(gBreakRingPalette, (void *)0x050002E0, 8);
     staggered_sprites_spawn(0x21, gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.damagePart].unk2,
                             gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.damagePart].unk4, 4);
     gBattleWork.step++;
@@ -458,8 +458,8 @@ void trap_hit_break_cursor_wait(void) {
 }
 
 void trap_hit_break_burst_init(void) {
-    lz_decompress_dispatch(gUnk_084CC9A8, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E338, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gHitSparksTiles, (void *)0x06014800);
+    CpuFastSet(gHitSparksPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC004;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.damagePart].unk2;
@@ -478,20 +478,20 @@ void trap_hit_break_burst_wait(void) {
         iterate_bots_setup_battle_sprites();
         switch (gBattleWork.unk51) {
         case 0:
-            lz_decompress_dispatch(gUnk_084C907C, (void *)0x06014800);
-            CpuFastSet(gUnk_0850E058, (void *)0x050002C0, 8);
+            lz_decompress_dispatch(gGrapTrapTiles, (void *)0x06014800);
+            CpuFastSet(gGrapTrapPalette, (void *)0x050002C0, 8);
             break;
         case 1:
-            lz_decompress_dispatch(gUnk_084C9288, (void *)0x06014800);
-            CpuFastSet(gUnk_0850E078, (void *)0x050002C0, 8);
+            lz_decompress_dispatch(gShotTrapTiles, (void *)0x06014800);
+            CpuFastSet(gShotTrapPalette, (void *)0x050002C0, 8);
             break;
         case 2:
-            lz_decompress_dispatch(gUnk_084C9624, (void *)0x06014800);
-            CpuFastSet(gUnk_0850E098, (void *)0x050002C0, 8);
+            lz_decompress_dispatch(gAttackClrTrapTiles, (void *)0x06014800);
+            CpuFastSet(gAttackClrTrapPalette, (void *)0x050002C0, 8);
             break;
         case 3:
-            lz_decompress_dispatch(gUnk_084C978C, (void *)0x06014800);
-            CpuFastSet(gUnk_0850E0B8, (void *)0x050002C0, 8);
+            lz_decompress_dispatch(gMedaforceTrapTiles, (void *)0x06014800);
+            CpuFastSet(gMedaforceTrapPalette, (void *)0x050002C0, 8);
             break;
         }
         gBattleWork.step = 0xE;
@@ -523,16 +523,16 @@ void trap_hit_wear(void) {
 void trap_disarm_load_graphics(void) {
     switch (gBattleWork.unk51) {
     case 0:
-        lz_decompress_dispatch(gUnk_084C907C, (void *)0x06015400);
+        lz_decompress_dispatch(gGrapTrapTiles, (void *)0x06015400);
         break;
     case 1:
-        lz_decompress_dispatch(gUnk_084C9288, (void *)0x06015400);
+        lz_decompress_dispatch(gShotTrapTiles, (void *)0x06015400);
         break;
     case 2:
-        lz_decompress_dispatch(gUnk_084C9624, (void *)0x06015400);
+        lz_decompress_dispatch(gAttackClrTrapTiles, (void *)0x06015400);
         break;
     case 3:
-        lz_decompress_dispatch(gUnk_084C978C, (void *)0x06015400);
+        lz_decompress_dispatch(gMedaforceTrapTiles, (void *)0x06015400);
         break;
     }
     gBattleWork.step++;
@@ -675,7 +675,7 @@ void action_flash_run(void) {
 }
 
 void action_flash_load_palette(void) {
-    CpuFastSet(gUnk_084E3038, (void *)0x050002C0, 8);
+    CpuFastSet(gActionFlashPalette, (void *)0x050002C0, 8);
     gBattleWork.step++;
 }
 
@@ -746,17 +746,17 @@ void guard_find(void) {
 
 void guard_load_graphics(void) {
     switch (gBattleWork.guardSkill) {
-    case 0x1B:
-        lz_decompress_dispatch(gUnk_084C9880, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E0F8, (void *)0x050002C0, 8);
+    case SKILL_DEFENCE:
+        lz_decompress_dispatch(gDefenceShieldTiles, (void *)0x06014800);
+        CpuFastSet(gDefenceShieldPalette, (void *)0x050002C0, 8);
         break;
-    case 0x1C:
-        lz_decompress_dispatch(gUnk_084C9B88, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E118, (void *)0x050002C0, 8);
+    case SKILL_FULL_BLOCK:
+        lz_decompress_dispatch(gFullBlockShieldTiles, (void *)0x06014800);
+        CpuFastSet(gFullBlockShieldPalette, (void *)0x050002C0, 8);
         break;
-    case 0x1D:
-        lz_decompress_dispatch(gUnk_084C9E9C, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E138, (void *)0x050002C0, 8);
+    case SKILL_HALF_BLOCK:
+        lz_decompress_dispatch(gHalfBlockShieldTiles, (void *)0x06014800);
+        CpuFastSet(gHalfBlockShieldPalette, (void *)0x050002C0, 8);
         break;
     }
     gBattleWork.step++;
@@ -914,7 +914,7 @@ void action_announce_run(void) {
 void action_announce_prepare(void) {
     memcpy_bytes_0803F63C((void *)gSkillTypeNames[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2]],
                           gGameWork.textBuf, 0xE);
-    memcpy_bytes_0803F63C((void *)gUnk_083BE6E8[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]],
+    memcpy_bytes_0803F63C((void *)gSkillNames[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]],
                           gGameWork.textBuf + 0x14, 0xE);
     gBattleWork.messageId = 0x17;
     gBattleWork.step++;
@@ -1099,8 +1099,8 @@ void attack_hit_check_critical(void) {
 }
 
 void attack_hit_critical_spawn(void) {
-    lz_decompress_dispatch(gUnk_084CC430, (void *)0x06010000);
-    CpuFastSet(gUnk_0850E2D8, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gCriticalHitTiles, (void *)0x06010000);
+    CpuFastSet(gCriticalHitPalette, (void *)0x050003C0, 8);
     gSpriteEntries[10].unk0 = 0xC404;
     gSpriteEntries[10].unk1C = 0;
     gSpriteEntries[10].unkA = 0xE;
@@ -1127,7 +1127,7 @@ void attack_effect_hop(void) {
 
 // Destroy, or a hit moved to the strongest part by evasion (unkBC bit 5): show which part is hit first.
 void attack_hit_check_part_marker(void) {
-    if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == 0x30)
+    if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == SKILL_DESTROY)
         gBattleWork.step++;
     else if (gBattleBots[gBattleWork.target].hitFlags & 0x20)
         gBattleWork.step++;
@@ -1136,32 +1136,32 @@ void attack_hit_check_part_marker(void) {
 }
 
 void attack_hit_part_marker_spawn(void) {
-    if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == 0x30) {
+    if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == SKILL_DESTROY) {
         battle_set_damage_break_part(gBattleWork.target, gBattleWork.targetPart);
-        lz_decompress_dispatch(gUnk_084CC7C8, (void *)0x06010000);
-        CpuFastSet(gUnk_0850E318, (void *)0x050003C0, 8);
+        lz_decompress_dispatch(gDestroyMarkerTiles, (void *)0x06010000);
+        CpuFastSet(gDestroyMarkerPalette, (void *)0x050003C0, 8);
         gSpriteEntries[10].unk6 = 0x2100;
         play_sound_effect(0x54);
     } else {
         switch (gBattleWork.targetPart) {
         case 0:
-            lz_decompress_dispatch(gUnk_084CB950, (void *)0x06010000);
-            CpuFastSet(gUnk_0850E258, (void *)0x050003C0, 8);
+            lz_decompress_dispatch(gHeadMarkerTiles, (void *)0x06010000);
+            CpuFastSet(gHeadMarkerPalette, (void *)0x050003C0, 8);
             gSpriteEntries[10].unk6 = 0x1B00;
             break;
         case 1:
-            lz_decompress_dispatch(gUnk_084CBC10, (void *)0x06010000);
-            CpuFastSet(gUnk_0850E278, (void *)0x050003C0, 8);
+            lz_decompress_dispatch(gRightArmMarkerTiles, (void *)0x06010000);
+            CpuFastSet(gRightArmMarkerPalette, (void *)0x050003C0, 8);
             gSpriteEntries[10].unk6 = 0x1C00;
             break;
         case 2:
-            lz_decompress_dispatch(gUnk_084CBF04, (void *)0x06010000);
-            CpuFastSet(gUnk_0850E298, (void *)0x050003C0, 8);
+            lz_decompress_dispatch(gLeftArmMarkerTiles, (void *)0x06010000);
+            CpuFastSet(gLeftArmMarkerPalette, (void *)0x050003C0, 8);
             gSpriteEntries[10].unk6 = 0x1D00;
             break;
         case 3:
-            lz_decompress_dispatch(gUnk_084CC19C, (void *)0x06010000);
-            CpuFastSet(gUnk_0850E2B8, (void *)0x050003C0, 8);
+            lz_decompress_dispatch(gLegsMarkerTiles, (void *)0x06010000);
+            CpuFastSet(gLegsMarkerPalette, (void *)0x050003C0, 8);
             gSpriteEntries[10].unk6 = 0x1E00;
             break;
         }
@@ -1198,8 +1198,8 @@ void attack_hit_part_marker_move(void) {
 void attack_hit_sparks_spawn(void) {
     u16 x, y;
 
-    lz_decompress_dispatch(gUnk_084CC9A8, (void *)0x06010800);
-    CpuFastSet(gUnk_0850E338, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gHitSparksTiles, (void *)0x06010800);
+    CpuFastSet(gHitSparksPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.unk158;
         y = gBattleWork.unk15A;
@@ -1212,7 +1212,7 @@ void attack_hit_sparks_spawn(void) {
 }
 
 void attack_hit_sparks_wait(void) {
-    CpuFastSet(gUnk_0850E338, (void *)0x050003C0, 8);
+    CpuFastSet(gHitSparksPalette, (void *)0x050003C0, 8);
     if (hit_sparks_update(10)) {
         gGameWork.unk86 = 10;
         gBattleWork.step++;
@@ -1222,8 +1222,8 @@ void attack_hit_sparks_wait(void) {
 void attack_hit_damage_popup_init(void) {
     u16 x, y;
 
-    lz_decompress_dispatch(gUnk_084D1824, (void *)0x06010000);
-    CpuFastSet(gUnk_0850E018, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gDamageNumberTiles, (void *)0x06010000);
+    CpuFastSet(gDamageNumberPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.unk158;
         y = gBattleWork.unk15A;
@@ -1292,8 +1292,8 @@ void attack_hit_end(void) {
 void attack_hit_break_burst_init(void) {
     u16 x, y;
 
-    lz_decompress_dispatch(gUnk_084CCE48, (void *)0x06010800);
-    CpuFastSet(gUnk_0850E358, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)0x06010800);
+    CpuFastSet(gPartBreakBurstPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.unk158;
         y = gBattleWork.unk15A;
@@ -1340,7 +1340,7 @@ void attack_hit_check_defeated(void) {
 
 // Leftover damage (unkCA) goes on to another part with actor unkD6 bit 1 or a piercing part (data[7]).
 void attack_hit_check_carry_over(void) {
-    if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == 0x30) {
+    if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == SKILL_DESTROY) {
         if (--gBattleWork.amount != 0) {
             gBattleWork.step = 0x20;
             return;
@@ -1358,7 +1358,7 @@ void attack_hit_carry_over_retarget(void) {
     battle_pick_random_target_part(gBattleWork.actor);
     battle_load_action_target(gBattleWork.actor);
     gBattleWork.damagePart = gBattleWork.targetPart;
-    if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == 0x30)
+    if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == SKILL_DESTROY)
         battle_set_damage_break_part(gBattleWork.target, gBattleWork.targetPart);
     else {
         if (gBattleBots[gBattleWork.actor].unkD6 & 2)
@@ -1369,14 +1369,14 @@ void attack_hit_carry_over_retarget(void) {
 }
 
 void attack_carry_marker_spawn(void) {
-    if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == 0x30) {
-        lz_decompress_dispatch(gUnk_084CC7C8, (void *)0x06010000);
-        CpuFastSet(gUnk_0850E318, (void *)0x050003C0, 8);
+    if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == SKILL_DESTROY) {
+        lz_decompress_dispatch(gDestroyMarkerTiles, (void *)0x06010000);
+        CpuFastSet(gDestroyMarkerPalette, (void *)0x050003C0, 8);
         gSpriteEntries[10].unk6 = 0x2100;
         play_sound_effect(0x54);
     } else {
-        lz_decompress_dispatch(gUnk_084CA61C, (void *)0x06010000);
-        CpuFastSet(gUnk_0850E198, (void *)0x050003C0, 8);
+        lz_decompress_dispatch(gCarryOverMarkerTiles, (void *)0x06010000);
+        CpuFastSet(gCarryOverMarkerPalette, (void *)0x050003C0, 8);
         gSpriteEntries[10].unk6 = 0x1500;
         play_sound_effect(0x2A);
     }
@@ -1407,8 +1407,8 @@ void attack_hit_goto_sparks(void) {
 
 // The miss branch (unkB7 bit 0: the target dodged, unkBC bit 4).
 void attack_miss_sprite_spawn(void) {
-    lz_decompress_dispatch(gUnk_084CA428, (void *)0x06010000);
-    CpuFastSet(gUnk_0850E178, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gAttackMissTiles, (void *)0x06010000);
+    CpuFastSet(gAttackMissPalette, (void *)0x050003C0, 8);
     gSpriteEntries[10].unk0 = 0xC404;
     gSpriteEntries[10].unk1C = 0;
     gSpriteEntries[10].unkA = 0xE;
@@ -1440,8 +1440,8 @@ void attack_miss_sprite_drop(void) {
 
 // The nullified branch (unkB8 == 2: Full / Half Block and the immunity checks of action_calc.c).
 void attack_nullified_sprite_spawn(void) {
-    lz_decompress_dispatch(gUnk_084CC5F8, (void *)0x06010000);
-    CpuFastSet(gUnk_0850E2F8, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gAttackNullifiedTiles, (void *)0x06010000);
+    CpuFastSet(gAttackNullifiedPalette, (void *)0x050003C0, 8);
     gSpriteEntries[10].unk0 = 0xC404;
     gSpriteEntries[10].unk1C = 0;
     gSpriteEntries[10].unkA = 0xE;
@@ -1461,8 +1461,8 @@ void attack_nullified_sprite_spawn(void) {
 
 // The absorbed branch (unkB8 == 4): the damage heals the target's most damaged parts instead.
 void attack_absorbed_sprite_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D18EC, (void *)0x06010000);
-    CpuFastSet(gUnk_0850E498, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gAttackAbsorbedTiles, (void *)0x06010000);
+    CpuFastSet(gAttackAbsorbedPalette, (void *)0x050003C0, 8);
     gSpriteEntries[10].unk0 = 0xC404;
     gSpriteEntries[10].unk1C = 0;
     gSpriteEntries[10].unkA = 0xE;
@@ -1494,8 +1494,8 @@ void attack_absorbed_find_part(void) {
 void attack_absorbed_sparkle_init(void) {
     u16 x, y;
 
-    lz_decompress_dispatch(gUnk_084CDCD4, (void *)0x06010800);
-    CpuFastSet(gUnk_0850E398, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gAbsorbSparkleTiles, (void *)0x06010800);
+    CpuFastSet(gAbsorbSparklePalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.unk158;
         y = gBattleWork.unk15A;
@@ -1519,8 +1519,8 @@ void attack_absorbed_sparkle_wait(void) {
 void attack_absorbed_heal_popup_init(void) {
     u16 x, y;
 
-    lz_decompress_dispatch(gUnk_084D1824, (void *)0x06010000);
-    CpuFastSet(gUnk_0850DFF8, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gDamageNumberTiles, (void *)0x06010000);
+    CpuFastSet(gHealNumberPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.unk158;
         y = gBattleWork.unk15A;
@@ -1649,8 +1649,8 @@ void status_attack_end(void) {
 void status_attack_flash_spawn(void) {
     u16 x, y;
 
-    lz_decompress_dispatch(gUnk_084CA89C, (void *)0x06010000);
-    CpuFastSet(gUnk_0850E1B8, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gStatusFlashTiles, (void *)0x06010000);
+    CpuFastSet(gStatusFlashPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.unk158;
         y = gBattleWork.unk15A;
@@ -1670,20 +1670,20 @@ void status_attack_flash_spawn(void) {
     gSpriteEntries[10].unk20 = 0;
     switch (gBattleWork.unk51) {
     case 0:
-        lz_decompress_dispatch(gUnk_084CE154, (void *)0x06010800);
-        CpuFastSet(gUnk_0850E3B8, (void *)0x050003A0, 8);
+        lz_decompress_dispatch(gBugEffectTiles, (void *)0x06010800);
+        CpuFastSet(gBugEffectPalette, (void *)0x050003A0, 8);
         break;
     case 1:
-        lz_decompress_dispatch(gUnk_084CE644, (void *)0x06010800);
-        CpuFastSet(gUnk_0850E3D8, (void *)0x050003A0, 8);
+        lz_decompress_dispatch(gThunderEffectTiles, (void *)0x06010800);
+        CpuFastSet(gThunderEffectPalette, (void *)0x050003A0, 8);
         break;
     case 2:
-        lz_decompress_dispatch(gUnk_084CEF14, (void *)0x06010800);
-        CpuFastSet(gUnk_0850E3F8, (void *)0x050003A0, 8);
+        lz_decompress_dispatch(gWaveEffectTiles, (void *)0x06010800);
+        CpuFastSet(gWaveEffectPalette, (void *)0x050003A0, 8);
         break;
     case 3:
-        lz_decompress_dispatch(gUnk_084CF340, (void *)0x06010800);
-        CpuFastSet(gUnk_0850E418, (void *)0x050003A0, 8);
+        lz_decompress_dispatch(gFireEffectTiles, (void *)0x06010800);
+        CpuFastSet(gFireEffectPalette, (void *)0x050003A0, 8);
         break;
     }
     gSpriteEntries[11].unk0 = 0xC404;
@@ -1723,20 +1723,20 @@ void status_attack_icons_spawn(void) {
     }
     switch (gBattleWork.unk51) {
     case 0:
-        lz_decompress_dispatch(gUnk_084CAB58, (void *)0x06010000);
-        CpuFastSet(gUnk_0850E1D8, (void *)0x050003C0, 8);
+        lz_decompress_dispatch(gBugIconTiles, (void *)0x06010000);
+        CpuFastSet(gBugIconPalette, (void *)0x050003C0, 8);
         break;
     case 1:
-        lz_decompress_dispatch(gUnk_084CAFD8, (void *)0x06010000);
-        CpuFastSet(gUnk_0850E1F8, (void *)0x050003C0, 8);
+        lz_decompress_dispatch(gThunderIconTiles, (void *)0x06010000);
+        CpuFastSet(gThunderIconPalette, (void *)0x050003C0, 8);
         break;
     case 2:
-        lz_decompress_dispatch(gUnk_084CB36C, (void *)0x06010000);
-        CpuFastSet(gUnk_0850E218, (void *)0x050003C0, 8);
+        lz_decompress_dispatch(gWaveIconTiles, (void *)0x06010000);
+        CpuFastSet(gWaveIconPalette, (void *)0x050003C0, 8);
         break;
     case 3:
-        lz_decompress_dispatch(gUnk_084CB684, (void *)0x06010000);
-        CpuFastSet(gUnk_0850E238, (void *)0x050003C0, 8);
+        lz_decompress_dispatch(gFireIconTiles, (void *)0x06010000);
+        CpuFastSet(gFireIconPalette, (void *)0x050003C0, 8);
         break;
     }
     sx = x;
@@ -1819,7 +1819,7 @@ void closeup_exit_reload(void) {
     switch (gGameWork.setupStep) {
     case 0:
         gGameWork.unk96 = 0;
-        gUnk_03000430 = 0;
+        gVBlankOamMode = 0;
         clear_bg_scroll();
         load_battle_script_entry_b();
         REG_DISPCNT &= 0xF0FF;
@@ -1837,7 +1837,7 @@ void closeup_exit_reload(void) {
         load_all_bot_part_sprites();
         iterate_bots_setup_battle_sprites();
         apply_battle_blend_effect_b();
-        decompress_to_ewram_27000(gUnk_083B24A8[gBattleWork.battlefield * 5 + 1]);
+        decompress_to_ewram_27000(gBattlefieldGraphics[gBattleWork.battlefield * 5 + 1]);
         gGameWork.setupStep++;
         break;
     case 2:
@@ -1896,8 +1896,8 @@ void bot_defeat_find(void) {
 }
 
 void bot_defeat_ring_init(void) {
-    lz_decompress_dispatch(gUnk_084CDBD8, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E378, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gBreakRingTiles, (void *)0x06014800);
+    CpuFastSet(gBreakRingPalette, (void *)0x050002E0, 8);
     staggered_sprites_spawn(0x21, gSpriteEntries[gBattleWork.unk51 * 4 + 0x5D].unk2,
                             gSpriteEntries[gBattleWork.unk51 * 4 + 0x5D].unk4 - 4, 8);
     gBattleWork.step++;
@@ -1909,8 +1909,8 @@ void bot_defeat_ring_wait(void) {
 }
 
 void bot_defeat_burst_init(void) {
-    lz_decompress_dispatch(gUnk_084CC9A8, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E338, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gHitSparksTiles, (void *)0x06014800);
+    CpuFastSet(gHitSparksPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC004;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.unk51 * 4 + 0x5D].unk2;
@@ -1961,10 +1961,10 @@ void reaction_check(void) {
 void reaction_rise_spawn(void) {
     u16 x, y;
 
-    lz_decompress_dispatch(gUnk_084CA1A4, (void *)0x06010000);
-    CpuFastSet(gUnk_0850E158, (void *)0x050003C0, 8);
-    lz_decompress_dispatch(gUnk_084D1074, (void *)0x06010800);
-    CpuFastSet(gUnk_0850E478, (void *)0x050003A0, 8);
+    lz_decompress_dispatch(gReactionRiseTiles, (void *)0x06010000);
+    CpuFastSet(gReactionRisePalette, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gReactionRiseFxTiles, (void *)0x06010800);
+    CpuFastSet(gReactionRiseFxPalette, (void *)0x050003A0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.unk158;
         y = gBattleWork.unk15A;
@@ -2019,8 +2019,8 @@ void reaction_check_counter(void) {
 }
 
 void reaction_drop_init(void) {
-    lz_decompress_dispatch(gUnk_084CA428, (void *)0x06010000);
-    CpuFastSet(gUnk_0850E178, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gAttackMissTiles, (void *)0x06010000);
+    CpuFastSet(gAttackMissPalette, (void *)0x050003C0, 8);
     gSpriteEntries[10].unk2B = 0;
     gSpriteEntries[10].unk2C = 0;
     play_sound_effect(0x2F);
@@ -2051,8 +2051,8 @@ void reaction_branch(void) {
 void reaction_nullify_init(void) {
     u16 x, y;
 
-    lz_decompress_dispatch(gUnk_084D01EC, (void *)0x06010800);
-    CpuFastSet(gUnk_0850E438, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gReactionNullifyTiles, (void *)0x06010800);
+    CpuFastSet(gReactionNullifyPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.unk158;
         y = gBattleWork.unk15A;
@@ -2083,8 +2083,8 @@ void reaction_nullify_wait(void) {
 void reaction_absorb_init(void) {
     u16 x, y;
 
-    lz_decompress_dispatch(gUnk_084D073C, (void *)0x06010800);
-    CpuFastSet(gUnk_0850E458, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gReactionAbsorbTiles, (void *)0x06010800);
+    CpuFastSet(gReactionAbsorbPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.unk158;
         y = gBattleWork.unk15A;
@@ -2119,8 +2119,8 @@ void sacrifice_run(void) {
 }
 
 void sacrifice_ring_init(void) {
-    lz_decompress_dispatch(gUnk_084CDBD8, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E378, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gBreakRingTiles, (void *)0x06014800);
+    CpuFastSet(gBreakRingPalette, (void *)0x050002E0, 8);
     staggered_sprites_spawn(0x21, gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.actorPart].unk2,
                             gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.actorPart].unk4, 4);
     gBattleWork.step++;
@@ -2132,8 +2132,8 @@ void sacrifice_ring_wait(void) {
 }
 
 void sacrifice_burst_init(void) {
-    lz_decompress_dispatch(gUnk_084CC9A8, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E338, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gHitSparksTiles, (void *)0x06014800);
+    CpuFastSet(gHitSparksPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC004;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.actorPart].unk2;

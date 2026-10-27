@@ -39,7 +39,7 @@ void check_flag_and_fast_copy(void) {
     else
         gUnk_03000438 = 0;
 
-    if (gUnk_03000430 == 2)
+    if (gVBlankOamMode == 2)
         affIdx = 22;
     else
         affIdx = 0;

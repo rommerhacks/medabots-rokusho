@@ -671,8 +671,8 @@ void pushover_finish(void) {
 }
 
 void pushover_part_destroyed_cursor(void) {
-    lz_decompress_dispatch(gUnk_084CDBD8, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E378, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gBreakRingTiles, (void *)0x06014800);
+    CpuFastSet(gBreakRingPalette, (void *)0x050002E0, 8);
     staggered_sprites_spawn(0x21, gSpriteEntries[0x5A + gBattleWork.target * 4 + gBattleWork.damagePart].unk2,
                             gSpriteEntries[0x5A + gBattleWork.target * 4 + gBattleWork.damagePart].unk4, 4);
     gBattleWork.step++;
@@ -684,8 +684,8 @@ void pushover_part_destroyed_cursor_wait(void) {
 }
 
 void pushover_part_explode_spawn(void) {
-    lz_decompress_dispatch(gUnk_084CC9A8, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E338, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gHitSparksTiles, (void *)0x06014800);
+    CpuFastSet(gHitSparksPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC004;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = gSpriteEntries[0x5A + gBattleWork.target * 4 + gBattleWork.damagePart].unk2;

@@ -275,7 +275,7 @@ void race_load_track_screen(void) {
     decompress_sprite_to_vram_08043C08(gBattleWork.battlefield, 0);
     load_battle_script_entry_b();
     apply_battle_blend_effect_b();
-    decompress_to_ewram_27000(gUnk_083B24A8[gBattleWork.battlefield * 5 + 1]);
+    decompress_to_ewram_27000(gBattlefieldGraphics[gBattleWork.battlefield * 5 + 1]);
     LZ77UnCompVram(gUnk_087C4EBC, (void *)0x0600C800);
     LZ77UnCompVram(gUnk_087C4F48, (void *)0x0600C880);
     LZ77UnCompVram(gUnk_087C4FDC, (void *)0x0600C9C0);

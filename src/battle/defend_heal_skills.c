@@ -232,8 +232,8 @@ void skill_cast_hop(void) {
 }
 
 void skill_cast_flash_init(void) {
-    lz_decompress_dispatch(gUnk_084CCE48, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E358, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)0x06014800);
+    CpuFastSet(gPartBreakBurstPalette, (void *)0x050002E0, 8);
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x23], 0x21);
     gBattleWork.step++;
 }
@@ -247,20 +247,20 @@ void skill_cast_flash_wait(void) {
 void trap_sprite_spawn(void) {
     switch (gBattleWork.unk51) {
     case 0:
-        lz_decompress_dispatch(gUnk_084C907C, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E058, (void *)0x050002E0, 8);
+        lz_decompress_dispatch(gGrapTrapTiles, (void *)0x06014800);
+        CpuFastSet(gGrapTrapPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].unk4 = 0x3C;
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x19], 0x21);
         break;
     case 1:
-        lz_decompress_dispatch(gUnk_084C9288, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E078, (void *)0x050002E0, 8);
+        lz_decompress_dispatch(gShotTrapTiles, (void *)0x06014800);
+        CpuFastSet(gShotTrapPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].unk4 = 0x3C;
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x1A], 0x21);
         break;
     case 2:
-        lz_decompress_dispatch(gUnk_084C9624, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E098, (void *)0x050002E0, 8);
+        lz_decompress_dispatch(gAttackClrTrapTiles, (void *)0x06014800);
+        CpuFastSet(gAttackClrTrapPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].unk4 = 0x3C;
         gSpriteEntries[0x21].unk6 = 0xD00;
         break;
@@ -612,8 +612,8 @@ void break_form_hit_wait(void) {
 void break_form_shatter_init(void) {
     u32 i;
 
-    lz_decompress_dispatch(gUnk_084CCE48, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E358, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)0x06014800);
+    CpuFastSet(gPartBreakBurstPalette, (void *)0x050002E0, 8);
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x23], 0x21);
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x23], 0x22);
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x23], 0x23);
@@ -868,16 +868,16 @@ void defence_begin(void) {
 void defence_shields_spawn(void) {
     switch (gBattleWork.unk51) {
     case 0:
-        lz_decompress_dispatch(gUnk_084C9880, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E0F8, (void *)0x050002E0, 8);
+        lz_decompress_dispatch(gDefenceShieldTiles, (void *)0x06014800);
+        CpuFastSet(gDefenceShieldPalette, (void *)0x050002E0, 8);
         break;
     case 1:
-        lz_decompress_dispatch(gUnk_084C9B88, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E118, (void *)0x050002E0, 8);
+        lz_decompress_dispatch(gFullBlockShieldTiles, (void *)0x06014800);
+        CpuFastSet(gFullBlockShieldPalette, (void *)0x050002E0, 8);
         break;
     default:
-        lz_decompress_dispatch(gUnk_084C9E9C, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E138, (void *)0x050002E0, 8);
+        lz_decompress_dispatch(gHalfBlockShieldTiles, (void *)0x06014800);
+        CpuFastSet(gHalfBlockShieldPalette, (void *)0x050002E0, 8);
         break;
     }
     gSpriteEntries[0x21].unk0 = 0xC624;

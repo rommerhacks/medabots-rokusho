@@ -22,7 +22,7 @@ static void medapart_trade_init_sprite_tree(u32 a) {
         mem_fill8((u8 *)0x020264E0, 0x820, 0);
         c = (u8 *)0x020268F0;
         mem_fill8(c, 0x60, 0);
-        gUnk_03000430 = 2;
+        gVBlankOamMode = 2;
         gSpriteWork = (struct SpriteWork *)0x02024000;
         fill = a;
         CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
@@ -532,7 +532,7 @@ void medapart_trade_fade_out(void) {
 void medapart_trade_update(void) {
     struct FuncTable13 t = gUnk_080AFA6C;
 
-    if (gUnk_03000430 == 2) {
+    if (gVBlankOamMode == 2) {
         u32 v = 0x200;
         CpuFastSet(&v, gSpriteWork->oamBuf, 0x01000100);
     }
@@ -877,7 +877,7 @@ void medal_trade_fade_out(void) {
 void medal_trade_update(void) {
     struct FuncTable12 t = gUnk_080AFAA0;
 
-    if (gUnk_03000430 == 2) {
+    if (gVBlankOamMode == 2) {
         u32 fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
     }

@@ -196,7 +196,7 @@ void part_select_draw_skill_name(void) {
         fill_text_blank(gGameWork.textBuf, 10);
     else if (k >= 0) {
         if (k <= 3)
-            memcpy_bytes_08041D04((const void *)gUnk_083BE6E8[gBattleBots[gBattleWork.unk80].parts[k - 1].data[1]],
+            memcpy_bytes_08041D04((const void *)gSkillNames[gBattleBots[gBattleWork.unk80].parts[k - 1].data[1]],
                                   gGameWork.textBuf, 12);
     }
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x14, 0x15, 0x11, 8, 14, 0, 0);

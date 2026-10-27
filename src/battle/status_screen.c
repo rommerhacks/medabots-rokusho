@@ -208,7 +208,7 @@ void status_init_portrait(void) {
     c = (u8 *)0x020268D0;
     mem_fill8(c, 0x60, 0);
     gGameWork.unk96 = 1;
-    gUnk_03000430 = 2;
+    gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);

@@ -9,7 +9,7 @@
 // gActionScriptCommands, others are skipped; a command sets unk163 to run the next one in the same frame.
 void battle_run_action_script(void) {
     if (link_error_check() == 0) {
-        if (gUnk_03000430 == 2) {
+        if (gVBlankOamMode == 2) {
             u32 fill = 0x200;
 
             CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);

@@ -30,8 +30,8 @@ void medaforce_spiral_bolt_set_damage(void) {
 void medaforce_spiral_bolt_digits_spawn(void) {
     s16 x, y;
 
-    lz_decompress_dispatch(gUnk_084D1824, (void *)0x06010000);
-    CpuFastSet(gUnk_0850E018, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gDamageNumberTiles, (void *)0x06010000);
+    CpuFastSet(gDamageNumberPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.unk158;
         y = gBattleWork.unk15A;
@@ -85,8 +85,8 @@ void medaforce_spiral_bolt_break_burst_spawn(void) {
     u16 x, y;
     s32 shown = 0;
 
-    lz_decompress_dispatch(gUnk_084CCE48, (void *)0x06010800);
-    CpuFastSet(gUnk_0850E358, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)0x06010800);
+    CpuFastSet(gPartBreakBurstPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.unk158;
         y = gBattleWork.unk15A;
@@ -180,8 +180,8 @@ void medaforce_hit_carry_over_retarget(void) {
 }
 
 void medaforce_part_marker_spawn(void) {
-    lz_decompress_dispatch(gUnk_084CA61C, (void *)0x06010000);
-    CpuFastSet(gUnk_0850E198, (void *)0x050003C0, 8);
+    lz_decompress_dispatch(gCarryOverMarkerTiles, (void *)0x06010000);
+    CpuFastSet(gCarryOverMarkerPalette, (void *)0x050003C0, 8);
     gSpriteEntries[0xA].unk6 = 0x1500;
     play_sound_effect(0x2A);
     gSpriteEntries[0xA].unk0 = 0xC404;
@@ -467,8 +467,8 @@ void decompress_sprite_tiles_to_vram_obj_4800_alt(void) {
     u32 done = 0;
     u32 i;
 
-    lz_decompress_dispatch(gUnk_084CDBD8, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E378, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gBreakRingTiles, (void *)0x06014800);
+    CpuFastSet(gBreakRingPalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.unkD2[i] & 0x80) {
             staggered_sprites_spawn(
@@ -498,8 +498,8 @@ void medaforce_team_break_burst_wait(void) {
 void medaforce_team_break_anim_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gUnk_084CC9A8, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E338, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gHitSparksTiles, (void *)0x06014800);
+    CpuFastSet(gHitSparksPalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.unkD2[i] & 0x80) {
             gSpriteEntries[i + 0x21].unk0 = 0xC004;
@@ -724,8 +724,8 @@ void medaforce_anti_attack_trap_run(void) {
 }
 
 void medaforce_anti_attack_trap_trap_spawn(void) {
-    lz_decompress_dispatch(gUnk_084C978C, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E0B8, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gMedaforceTrapTiles, (void *)0x06014800);
+    CpuFastSet(gMedaforceTrapPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x220;
     gSpriteEntries[0x21].unk9 = 0x40;
     gSpriteEntries[0x21].unk8 = 8;
@@ -1175,8 +1175,8 @@ void medaforce_cancel_status_emblem_hold(void) {
 }
 
 void medaforce_cancel_status_shatter_spawn(void) {
-    lz_decompress_dispatch(gUnk_084CCE48, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E358, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)0x06014800);
+    CpuFastSet(gPartBreakBurstPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk8 = 0x40;
     gSpriteEntries[0x21].unk9 = 0x40;
     gSpriteEntries[0x21].unk18 = 0;
@@ -3885,7 +3885,7 @@ void medaforce_crazy_shots_spawn(void) {
 
     lz_decompress_dispatch(gUnk_084E1518, (void *)0x06017000);
     CpuFastSet(gUnk_0850EED8, (void *)0x050002E0, 8);
-    lz_decompress_dispatch(gUnk_084C8AC4, (void *)0x06014E00);
+    lz_decompress_dispatch(gMissPopupTiles, (void *)0x06014E00);
     CpuFastSet(gUnk_084E3018, (void *)0x050002C0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.unkD2[i] == 0)

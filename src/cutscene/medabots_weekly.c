@@ -406,7 +406,7 @@ void weekly_lecture(void) {
 void weekly_back_to_studio(void) {
     u32 zero = 0;
     s32 i;
-    u32 zero_late; // FAKEMATCH: a second zero, loaded late for gUnk_03000430
+    u32 zero_late; // FAKEMATCH: a second zero, loaded late for gVBlankOamMode
 
     DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     sprite_entry_init(0, 0xCC00, 0x50E, 4, 3);
@@ -441,7 +441,7 @@ void weekly_back_to_studio(void) {
     gSpriteEntries[0x1C].unk4 = 0x38;
     gWeeklyCycleAnimMask = 0;
     sprite_cycle_anim_start(0x18, 0x3F, 0xC);
-    gUnk_03000430 = zero_late;
+    gVBlankOamMode = zero_late;
     gSceneWork.nextSubState = 0xF;
     gGameSubState = 4;
 }

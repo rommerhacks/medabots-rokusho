@@ -819,8 +819,8 @@ gUnk_083B1888:
 gUnk_083B23F8:
 	.incbin "baserom.gba", 0x3B23F8, 0xB0
 
-	.global gUnk_083B24A8
-gUnk_083B24A8:
+	.global gBattlefieldGraphics
+gBattlefieldGraphics:
 	.incbin "baserom.gba", 0x3B24A8, 0xDC
 
 	.global gUnk_083B2584
@@ -986,8 +986,8 @@ gUnk_083BD884:
 gUnk_083BE3E4:
 	.incbin "baserom.gba", 0x3BE3E4, 0x304
 
-	.global gUnk_083BE6E8
-gUnk_083BE6E8:
+	.global gSkillNames
+gSkillNames:
 	.incbin "baserom.gba", 0x3BE6E8, 0x244
 
 	.global gUnk_083BE92C
