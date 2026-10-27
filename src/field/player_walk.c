@@ -92,7 +92,7 @@ void load_map_npc_sprites(s32 mode) {
                     gFieldWork.objects[n].unk4_6 = 1;
                     gSpriteEntries[count + 49].unk30 = area_sprite_sheet_id(a);
                     sprite_set_blend_from_kind(count + 49);
-                    if (gUnk_083D2B8D[gSpriteEntries[count + 49].unk30])
+                    if (gSpriteSheetHasShadow[gSpriteEntries[count + 49].unk30])
                         sprite_entry_init(count + 91, 0xCC0C, 0x90, 14, 1);
                 } break;
                 }
@@ -300,9 +300,9 @@ void field_player_walk_input(void) {
 void load_battle_palette_via_dma(u32 toBuffer) {
     area_load_sprite_sheets();
     if (toBuffer == 0)
-        DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gFieldWork.player_form]], OBJ_PLTT,
-                  32) else DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gFieldWork.player_form]], 0x0202F800, 32)
-            gFieldWork.loaded_form = gFieldWork.player_form;
+        DmaCopy32(3, gFieldSpritePalettes[gPlayerFormSpriteSheets[gFieldWork.player_form]], OBJ_PLTT,
+                  32) else DmaCopy32(3, gFieldSpritePalettes[gPlayerFormSpriteSheets[gFieldWork.player_form]],
+                                     0x0202F800, 32) gFieldWork.loaded_form = gFieldWork.player_form;
     load_battle_terrain_data();
 }
 

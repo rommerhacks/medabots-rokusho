@@ -51,7 +51,7 @@ void animate_area_bg_tiles(void) {
 s32 resolve_sprite_sheet_id(s32 t) {
     s32 u;
     if (t == 0)
-        t = gUnk_083D29A6[gFieldWork.player_form];
+        t = gPlayerFormSpriteSheets[gFieldWork.player_form];
     else if (t <= 0xAF)
         ;
     else if (t <= 0xBF)
@@ -246,9 +246,9 @@ void area_load_sprite_palettes_now(void) {
 
     for (i = 0; (t = area_sprite_sheet_id(i)) != 0xFF; i++) {
         t = area_sprite_sheet_id(i);
-        if (gUnk_083F8634[t] == NULL)
+        if (gFieldSpritePalettes[t] == NULL)
             t = 1;
-        DmaSet(3, gUnk_083F8634[t], 0x05000200 + i * 0x20, 0x84000008);
+        DmaSet(3, gFieldSpritePalettes[t], 0x05000200 + i * 0x20, 0x84000008);
     }
 }
 
@@ -258,9 +258,9 @@ void area_load_sprite_palettes(void) {
 
     for (i = 0; (t = area_sprite_sheet_id(i)) != 0xFF; i++) {
         t = area_sprite_sheet_id(i);
-        if (gUnk_083F8634[t] == NULL)
+        if (gFieldSpritePalettes[t] == NULL)
             t = 1;
-        DmaSet(3, gUnk_083F8634[t], 0x0202F800 + i * 0x20, 0x84000008);
+        DmaSet(3, gFieldSpritePalettes[t], 0x0202F800 + i * 0x20, 0x84000008);
     }
     DmaSet(3, gUnk_085FA0E4, 0x0202F9C0, 0x84000008);
 }
@@ -270,9 +270,9 @@ void fill_sprite_palettes(s32 arg) {
     s32 t = resolve_sprite_sheet_id(arg);
 
     for (; i <= 11; i++) {
-        if (gUnk_083F8634[t] == NULL)
+        if (gFieldSpritePalettes[t] == NULL)
             t = 1;
-        DmaSet(3, gUnk_083F8634[t], 0x05000200 + i * 0x20, 0x84000008);
+        DmaSet(3, gFieldSpritePalettes[t], 0x05000200 + i * 0x20, 0x84000008);
     }
 }
 

@@ -1003,18 +1003,18 @@ struct FieldWork {
     u8 song;         // song playing (0xFF: the script override in script_song)
     u8 script_song;  // song set by a map script (field_update_music event 3)
     u8 unkC32;
-    u8 unkC33;          // Medawatch menu enabled (B opens the field menu only if set)
-    u8 bg_anim_enabled; // area BG tile animation enabled (animate_area_bg_tiles)
-    u8 bg_anim_frame;   // its frame index
-    u8 bg_anim_timer;   // frames until the next one (2: every 3rd frame; runtime-checked)
-    u8 rng_seed;        // random seed
+    u8 medawatch_enabled; // Medawatch menu enabled (B opens the field menu only if set; field debug "CM")
+    u8 bg_anim_enabled;   // area BG tile animation enabled (animate_area_bg_tiles)
+    u8 bg_anim_frame;     // its frame index
+    u8 bg_anim_timer;     // frames until the next one (2: every 3rd frame; runtime-checked)
+    u8 rng_seed;          // random seed
     u8 unkC38[0x10];
     u16 map_origin_x; // screen offset of a map smaller than the screen (field_load_area_tiles)
     u16 map_origin_y;
     u8 unkC4C;
-    u8 unkC4D;
-    u8 unkC4E;
-    u8 unkC4F;
+    u8 unkC4D;          // field debug page 0 "MF"
+    u8 unkC4E;          // field debug page 4 "BT" (bit 0 "R", bit 1 "E")
+    u8 robattle_result; // last map script Robattle: 0 none, 1 won, 2 lost (field debug "WL": N / W / L)
     u8 fillerC50[0x2];
     u16 player_x;
     u16 player_y;
@@ -1060,9 +1060,9 @@ struct FieldWork {
     u8 script_object;             // index of the map object running the script (objects)
     u8 unkCB5;
     u8 fillerCB6;
-    u8 unkCB7;
-    u8 unkCB8;
-    u8 unkCB9;
+    u8 unkCB7;        // field debug page 0 "EF" (0 EE, 1 MP, 2 TE, 3 EX)
+    u8 unkCB8;        // field debug page 4 "SK"
+    u8 unkCB9;        // field debug page 4 "SP"
     u8 npc_load_mode; // load_map_npc_sprites mode: 0 fresh area, 2 back from a menu or battle
     u8 fillerCBB[0x1];
     // guess: two friendship scores 0-32 (start 16, opcodes 0x3E / 0x3F / 0x50); the field debug page labels

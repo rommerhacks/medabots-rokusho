@@ -283,10 +283,10 @@ void map_script_update_set_player_form(void) {
         break;
     }
     i = area_sprite_sheet_id(0);
-    if (gUnk_083F8634[i] == NULL)
+    if (gFieldSpritePalettes[i] == NULL)
         i = 1;
     if (obj)
-        DmaCopy32(3, gUnk_083F8634[i], OBJ_PLTT, 32) else DmaCopy32(3, gUnk_083F8634[i], 0x0202F800, 32)
+        DmaCopy32(3, gFieldSpritePalettes[i], OBJ_PLTT, 32) else DmaCopy32(3, gFieldSpritePalettes[i], 0x0202F800, 32)
             map_script_command_done();
 }
 
@@ -505,7 +505,7 @@ void map_script_update_robattle(void) {
         break;
     case 1:
         if (scene_state_dispatch(0x20, 0)) {
-            u32 v = s->unkC4F;
+            u32 v = s->robattle_result;
             if (v == 1)
                 gUnk_03005310.sceneResult = v;
             else if (v == 2)

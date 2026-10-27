@@ -213,7 +213,7 @@ void field_walk_update(void) {
                             done = 1;
                         }
                     } else if (KEYS_LO(gNewKeys) & 2) {
-                        if (gFieldWork.unkC33) {
+                        if (gFieldWork.medawatch_enabled) {
                             message_reset_hook();
                             gGameMode = 0;
                             gGameState = 1;

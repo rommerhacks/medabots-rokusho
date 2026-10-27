@@ -382,16 +382,16 @@ void race_load_frame_bgs(void) {
 void race_load_character_sprites(void) {
     const u8 *setup;
     LZ77UnCompVram(gUnk_083F80F4[0x25], (void *)0x06012400);
-    DmaSet(3, gUnk_083F8634[0x25], 0x05000200, 0x80000010);
+    DmaSet(3, gFieldSpritePalettes[0x25], 0x05000200, 0x80000010);
     LZ77UnCompVram(gUnk_087AD4E4, (void *)0x06012E00);
     LZ77UnCompVram(gUnk_083F80F4[0], (void *)0x06015100);
-    DmaSet(3, gUnk_083F8634[0], 0x05000300, 0x84000008);
+    DmaSet(3, gFieldSpritePalettes[0], 0x05000300, 0x84000008);
     setup = gUnk_083C1A00[gRaces[gRaceId].rival1Setup];
     LZ77UnCompVram(gUnk_083F80F4[setup[0]], (void *)0x06015A00);
-    DmaSet(3, gUnk_083F8634[setup[0]], 0x05000320, 0x84000008);
+    DmaSet(3, gFieldSpritePalettes[setup[0]], 0x05000320, 0x84000008);
     setup = gUnk_083C1A00[gRaces[gRaceId].rival2Setup];
     LZ77UnCompVram(gUnk_083F80F4[setup[0]], (void *)0x06016300);
-    DmaSet(3, gUnk_083F8634[setup[0]], 0x05000340, 0x84000008);
+    DmaSet(3, gFieldSpritePalettes[setup[0]], 0x05000340, 0x84000008);
     DmaSet(3, gUnk_0807C300, 0x050003A0, 0x84000008);
 }
 

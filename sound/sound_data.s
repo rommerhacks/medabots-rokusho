@@ -16,252 +16,252 @@ gUnk_080ABBF4:
 gUnk_080ABBFC:
 	.incbin "baserom.gba", 0xABBFC, 0x898
 
-	.global gUnk_080AC494
-gUnk_080AC494:
+	.global gFieldDebugLabelMd
+gFieldDebugLabelMd:
 	.incbin "baserom.gba", 0xAC494, 0x4
 
-	.global gUnk_080AC498
-gUnk_080AC498:
+	.global gFieldDebugLabelMp
+gFieldDebugLabelMp:
 	.incbin "baserom.gba", 0xAC498, 0x4
 
-	.global gUnk_080AC49C
-gUnk_080AC49C:
+	.global gFieldDebugLabelMn
+gFieldDebugLabelMn:
 	.incbin "baserom.gba", 0xAC49C, 0x4
 
-	.global gUnk_080AC4A0
-gUnk_080AC4A0:
+	.global gFieldDebugLabelPt
+gFieldDebugLabelPt:
 	.incbin "baserom.gba", 0xAC4A0, 0x4
 
-	.global gUnk_080AC4A4
-gUnk_080AC4A4:
+	.global gFieldDebugLabelNor
+gFieldDebugLabelNor:
 	.incbin "baserom.gba", 0xAC4A4, 0x4
 
-	.global gUnk_080AC4A8
-gUnk_080AC4A8:
+	.global gFieldDebugLabelCar
+gFieldDebugLabelCar:
 	.incbin "baserom.gba", 0xAC4A8, 0x4
 
-	.global gUnk_080AC4AC
-gUnk_080AC4AC:
+	.global gFieldDebugLabelSen
+gFieldDebugLabelSen:
 	.incbin "baserom.gba", 0xAC4AC, 0x4
 
-	.global gUnk_080AC4B0
-gUnk_080AC4B0:
+	.global gFieldDebugLabelSka
+gFieldDebugLabelSka:
 	.incbin "baserom.gba", 0xAC4B0, 0x4
 
-	.global gUnk_080AC4B4
-gUnk_080AC4B4:
+	.global gFieldDebugLabelKim
+gFieldDebugLabelKim:
 	.incbin "baserom.gba", 0xAC4B4, 0x4
 
-	.global gUnk_080AC4B8
-gUnk_080AC4B8:
+	.global gFieldDebugLabelYus
+gFieldDebugLabelYus:
 	.incbin "baserom.gba", 0xAC4B8, 0x4
 
-	.global gUnk_080AC4BC
-gUnk_080AC4BC:
+	.global gFieldDebugLabelRob
+gFieldDebugLabelRob:
 	.incbin "baserom.gba", 0xAC4BC, 0x4
 
-	.global gUnk_080AC4C0
-gUnk_080AC4C0:
+	.global gFieldDebugLabelBan
+gFieldDebugLabelBan:
 	.incbin "baserom.gba", 0xAC4C0, 0x4
 
-	.global gUnk_080AC4C4
-gUnk_080AC4C4:
+	.global gFieldDebugLabelDor
+gFieldDebugLabelDor:
 	.incbin "baserom.gba", 0xAC4C4, 0x4
 
-	.global gUnk_080AC4C8
-gUnk_080AC4C8:
+	.global gFieldDebugLabelObo
+gFieldDebugLabelObo:
 	.incbin "baserom.gba", 0xAC4C8, 0x4
 
-	.global gUnk_080AC4CC
-gUnk_080AC4CC:
+	.global gFieldDebugLabelMef
+gFieldDebugLabelMef:
 	.incbin "baserom.gba", 0xAC4CC, 0x4
 
-	.global gUnk_080AC4D0
-gUnk_080AC4D0:
+	.global gFieldDebugLabelKaz
+gFieldDebugLabelKaz:
 	.incbin "baserom.gba", 0xAC4D0, 0x4
 
-	.global gUnk_080AC4D4
-gUnk_080AC4D4:
+	.global gFieldDebugLabelGin
+gFieldDebugLabelGin:
 	.incbin "baserom.gba", 0xAC4D4, 0x4
 
-	.global gUnk_080AC4D8
-gUnk_080AC4D8:
+	.global gFieldDebugLabelDog
+gFieldDebugLabelDog:
 	.incbin "baserom.gba", 0xAC4D8, 0x4
 
-	.global gUnk_080AC4DC
-gUnk_080AC4DC:
+	.global gFieldDebugLabelKok
+gFieldDebugLabelKok:
 	.incbin "baserom.gba", 0xAC4DC, 0x4
 
-	.global gUnk_080AC4E0
-gUnk_080AC4E0:
+	.global gFieldDebugLabelJet
+gFieldDebugLabelJet:
 	.incbin "baserom.gba", 0xAC4E0, 0x4
 
-	.global gUnk_080AC4E4
-gUnk_080AC4E4:
+	.global gFieldDebugLabelMf
+gFieldDebugLabelMf:
 	.incbin "baserom.gba", 0xAC4E4, 0x4
 
-	.global gUnk_080AC4E8
-gUnk_080AC4E8:
+	.global gFieldDebugLabelEf
+gFieldDebugLabelEf:
 	.incbin "baserom.gba", 0xAC4E8, 0x4
 
-	.global gUnk_080AC4EC
-gUnk_080AC4EC:
+	.global gFieldDebugLabelEe
+gFieldDebugLabelEe:
 	.incbin "baserom.gba", 0xAC4EC, 0x4
 
-	.global gUnk_080AC4F0
-gUnk_080AC4F0:
+	.global gFieldDebugLabelTe
+gFieldDebugLabelTe:
 	.incbin "baserom.gba", 0xAC4F0, 0x4
 
-	.global gUnk_080AC4F4
-gUnk_080AC4F4:
+	.global gFieldDebugLabelEx
+gFieldDebugLabelEx:
 	.incbin "baserom.gba", 0xAC4F4, 0x4
 
-	.global gUnk_080AC4F8
-gUnk_080AC4F8:
+	.global gFieldDebugLabelSt
+gFieldDebugLabelSt:
 	.incbin "baserom.gba", 0xAC4F8, 0x4
 
-	.global gUnk_080AC4FC
-gUnk_080AC4FC:
+	.global gFieldDebugLabelCm
+gFieldDebugLabelCm:
 	.incbin "baserom.gba", 0xAC4FC, 0x4
 
-	.global gUnk_080AC500
-gUnk_080AC500:
+	.global gFieldDebugLabelEvent
+gFieldDebugLabelEvent:
 	.incbin "baserom.gba", 0xAC500, 0x8
 
-	.global gUnk_080AC508
-gUnk_080AC508:
+	.global gFieldDebugLabelEno
+gFieldDebugLabelEno:
 	.incbin "baserom.gba", 0xAC508, 0x4
 
-	.global gUnk_080AC50C
-gUnk_080AC50C:
+	.global gFieldDebugLabelFlg
+gFieldDebugLabelFlg:
 	.incbin "baserom.gba", 0xAC50C, 0x4
 
-	.global gUnk_080AC510
-gUnk_080AC510:
+	.global gFieldDebugLabelX
+gFieldDebugLabelX:
 	.incbin "baserom.gba", 0xAC510, 0x4
 
-	.global gUnk_080AC514
-gUnk_080AC514:
+	.global gFieldDebugLabelLv
+gFieldDebugLabelLv:
 	.incbin "baserom.gba", 0xAC514, 0x4
 
-	.global gUnk_080AC518
-gUnk_080AC518:
+	.global gFieldDebugLabelPlayer
+gFieldDebugLabelPlayer:
 	.incbin "baserom.gba", 0xAC518, 0x8
 
-	.global gUnk_080AC520
-gUnk_080AC520:
+	.global gFieldDebugLabelPlx
+gFieldDebugLabelPlx:
 	.incbin "baserom.gba", 0xAC520, 0x4
 
-	.global gUnk_080AC524
-gUnk_080AC524:
+	.global gFieldDebugLabelPly
+gFieldDebugLabelPly:
 	.incbin "baserom.gba", 0xAC524, 0x4
 
-	.global gUnk_080AC528
-gUnk_080AC528:
+	.global gFieldDebugLabelMapEffect
+gFieldDebugLabelMapEffect:
 	.incbin "baserom.gba", 0xAC528, 0xC
 
-	.global gUnk_080AC534
-gUnk_080AC534:
+	.global gFieldDebugLabelMen
+gFieldDebugLabelMen:
 	.incbin "baserom.gba", 0xAC534, 0x4
 
-	.global gUnk_080AC538
-gUnk_080AC538:
+	.global gFieldDebugLabelKwg
+gFieldDebugLabelKwg:
 	.incbin "baserom.gba", 0xAC538, 0x4
 
-	.global gUnk_080AC53C
-gUnk_080AC53C:
+	.global gFieldDebugLabelDc
+gFieldDebugLabelDc:
 	.incbin "baserom.gba", 0xAC53C, 0x4
 
-	.global gUnk_080AC540
-gUnk_080AC540:
+	.global gFieldDebugLabelMl
+gFieldDebugLabelMl:
 	.incbin "baserom.gba", 0xAC540, 0x4
 
-	.global gUnk_080AC544
-gUnk_080AC544:
+	.global gFieldDebugLabelBt
+gFieldDebugLabelBt:
 	.incbin "baserom.gba", 0xAC544, 0x4
 
-	.global gUnk_080AC548
-gUnk_080AC548:
+	.global gFieldDebugLabelR
+gFieldDebugLabelR:
 	.incbin "baserom.gba", 0xAC548, 0x4
 
-	.global gUnk_080AC54C
-gUnk_080AC54C:
+	.global gFieldDebugLabelBlank
+gFieldDebugLabelBlank:
 	.incbin "baserom.gba", 0xAC54C, 0x4
 
-	.global gUnk_080AC550
-gUnk_080AC550:
+	.global gFieldDebugLabelE
+gFieldDebugLabelE:
 	.incbin "baserom.gba", 0xAC550, 0x4
 
-	.global gUnk_080AC554
-gUnk_080AC554:
+	.global gFieldDebugLabelSk
+gFieldDebugLabelSk:
 	.incbin "baserom.gba", 0xAC554, 0x4
 
-	.global gUnk_080AC558
-gUnk_080AC558:
+	.global gFieldDebugLabelSp
+gFieldDebugLabelSp:
 	.incbin "baserom.gba", 0xAC558, 0x4
 
-	.global gUnk_080AC55C
-gUnk_080AC55C:
+	.global gFieldDebugLabelWl
+gFieldDebugLabelWl:
 	.incbin "baserom.gba", 0xAC55C, 0x4
 
-	.global gUnk_080AC560
-gUnk_080AC560:
+	.global gFieldDebugLabelN
+gFieldDebugLabelN:
 	.incbin "baserom.gba", 0xAC560, 0x4
 
-	.global gUnk_080AC564
-gUnk_080AC564:
+	.global gFieldDebugLabelW
+gFieldDebugLabelW:
 	.incbin "baserom.gba", 0xAC564, 0x4
 
-	.global gUnk_080AC568
-gUnk_080AC568:
+	.global gFieldDebugLabelL
+gFieldDebugLabelL:
 	.incbin "baserom.gba", 0xAC568, 0x4
 
-	.global gUnk_080AC56C
-gUnk_080AC56C:
+	.global gFieldDebugLabelKoma
+gFieldDebugLabelKoma:
 	.incbin "baserom.gba", 0xAC56C, 0x8
 
-	.global gUnk_080AC574
-gUnk_080AC574:
+	.global gFieldDebugLabelKno
+gFieldDebugLabelKno:
 	.incbin "baserom.gba", 0xAC574, 0x4
 
-	.global gUnk_080AC578
-gUnk_080AC578:
+	.global gFieldDebugLabelMess
+gFieldDebugLabelMess:
 	.incbin "baserom.gba", 0xAC578, 0x8
 
-	.global gUnk_080AC580
-gUnk_080AC580:
+	.global gFieldDebugLabelMsb
+gFieldDebugLabelMsb:
 	.incbin "baserom.gba", 0xAC580, 0x4
 
-	.global gUnk_080AC584
-gUnk_080AC584:
+	.global gFieldDebugLabelMsn
+gFieldDebugLabelMsn:
 	.incbin "baserom.gba", 0xAC584, 0x4
 
-	.global gUnk_080AC588
-gUnk_080AC588:
+	.global gFieldDebugLabelMsf
+gFieldDebugLabelMsf:
 	.incbin "baserom.gba", 0xAC588, 0x4
 
-	.global gUnk_080AC58C
-gUnk_080AC58C:
+	.global gFieldDebugLabelMax
+gFieldDebugLabelMax:
 	.incbin "baserom.gba", 0xAC58C, 0x4
 
-	.global gUnk_080AC590
-gUnk_080AC590:
+	.global gFieldDebugLabelAr
+gFieldDebugLabelAr:
 	.incbin "baserom.gba", 0xAC590, 0x4
 
-	.global gUnk_080AC594
-gUnk_080AC594:
+	.global gFieldDebugLabelKa
+gFieldDebugLabelKa:
 	.incbin "baserom.gba", 0xAC594, 0x4
 
-	.global gUnk_080AC598
-gUnk_080AC598:
+	.global gFieldDebugLabelBgm
+gFieldDebugLabelBgm:
 	.incbin "baserom.gba", 0xAC598, 0x4
 
-	.global gUnk_080AC59C
-gUnk_080AC59C:
+	.global gFieldDebugLabelSe
+gFieldDebugLabelSe:
 	.incbin "baserom.gba", 0xAC59C, 0x4
 
-	.global gUnk_080AC5A0
-gUnk_080AC5A0:
+	.global gFieldDebugLabelPnt
+gFieldDebugLabelPnt:
 	.incbin "baserom.gba", 0xAC5A0, 0x4
 
 	.global gFieldDebugHexDigits

@@ -235,7 +235,7 @@ void field_debug_update_page(u32 mode) {
                 gFieldWork.player_form = 0xB;
             if (gFieldDebug.effect_id == 0xE || gFieldDebug.effect_id == 0x12) {
                 area_load_sprite_sheets();
-                DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gFieldWork.player_form]], OBJ_PLTT, 32);
+                DmaCopy32(3, gFieldSpritePalettes[gPlayerFormSpriteSheets[gFieldWork.player_form]], OBJ_PLTT, 32);
                 gFieldWork.loaded_form = gFieldWork.player_form;
                 load_battle_terrain_data();
             }
@@ -379,149 +379,149 @@ static void field_debug_cycle_page_value(u32 idx, u32 sub, s32 max) {
 static void field_debug_draw_page(u32 mode) {
     gFieldDebug.next_sprite = 0;
     update_bg_scroll_offsets_a();
-    field_debug_draw_label(gUnk_080AC494, 2, 0x28, 0x18);
+    field_debug_draw_label(gFieldDebugLabelMd, 2, 0x28, 0x18);
     field_debug_draw_hex(gFieldDebug.page, 8, 0x50, 0x18);
     switch (mode) {
     case 0:
-        field_debug_draw_label(gUnk_080AC498, 2, 0x68, 0x18);
-        field_debug_draw_label(gUnk_080AC49C, 2, 0x30, 0x20);
+        field_debug_draw_label(gFieldDebugLabelMp, 2, 0x68, 0x18);
+        field_debug_draw_label(gFieldDebugLabelMn, 2, 0x30, 0x20);
         field_debug_draw_value_blink(0, gFieldDebug.area_id, 8, 0x50, 0x20);
-        field_debug_draw_label(gUnk_080AC4A0, 2, 0x30, 0x28);
+        field_debug_draw_label(gFieldDebugLabelPt, 2, 0x30, 0x28);
         field_debug_draw_value_blink(1, gFieldWork.player_form, 8, 0x50, 0x28);
         switch (gFieldWork.player_form) {
         case 0:
-            field_debug_draw_label(gUnk_080AC4A4, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelNor, 3, 0x70, 0x28);
             break;
         case 1:
-            field_debug_draw_label(gUnk_080AC4A8, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelCar, 3, 0x70, 0x28);
             break;
         case 2:
-            field_debug_draw_label(gUnk_080AC4AC, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelSen, 3, 0x70, 0x28);
             break;
         case 3:
-            field_debug_draw_label(gUnk_080AC4B0, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelSka, 3, 0x70, 0x28);
             break;
         case 4:
-            field_debug_draw_label(gUnk_080AC4B4, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelKim, 3, 0x70, 0x28);
             break;
         case 5:
-            field_debug_draw_label(gUnk_080AC4B8, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelYus, 3, 0x70, 0x28);
             break;
         case 6:
-            field_debug_draw_label(gUnk_080AC4BC, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelRob, 3, 0x70, 0x28);
             break;
         case 7:
-            field_debug_draw_label(gUnk_080AC4C0, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelBan, 3, 0x70, 0x28);
             break;
         case 8:
-            field_debug_draw_label(gUnk_080AC4C4, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelDor, 3, 0x70, 0x28);
             break;
         case 9:
-            field_debug_draw_label(gUnk_080AC4C8, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelObo, 3, 0x70, 0x28);
             break;
         case 10:
-            field_debug_draw_label(gUnk_080AC4CC, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelMef, 3, 0x70, 0x28);
             break;
         case 11:
-            field_debug_draw_label(gUnk_080AC4D0, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelKaz, 3, 0x70, 0x28);
             break;
         case 12:
-            field_debug_draw_label(gUnk_080AC4D4, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelGin, 3, 0x70, 0x28);
             break;
         case 13:
-            field_debug_draw_label(gUnk_080AC4D8, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelDog, 3, 0x70, 0x28);
             break;
         case 14:
-            field_debug_draw_label(gUnk_080AC4DC, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelKok, 3, 0x70, 0x28);
             break;
         case 15:
-            field_debug_draw_label(gUnk_080AC4E0, 3, 0x70, 0x28);
+            field_debug_draw_label(gFieldDebugLabelJet, 3, 0x70, 0x28);
             break;
         }
-        field_debug_draw_label(gUnk_080AC4E4, 2, 0x30, 0x30);
+        field_debug_draw_label(gFieldDebugLabelMf, 2, 0x30, 0x30);
         field_debug_draw_value_blink(2, gFieldWork.unkC4D, 8, 0x50, 0x30);
-        field_debug_draw_label(gUnk_080AC4E8, 2, 0x30, 0x38);
+        field_debug_draw_label(gFieldDebugLabelEf, 2, 0x30, 0x38);
         field_debug_draw_value_blink(3, gFieldWork.unkCB7, 8, 0x50, 0x38);
         switch (gFieldWork.unkCB7) {
         case 0:
-            field_debug_draw_label(gUnk_080AC4EC, 2, 0x70, 0x38);
+            field_debug_draw_label(gFieldDebugLabelEe, 2, 0x70, 0x38);
             break;
         case 1:
-            field_debug_draw_label(gUnk_080AC498, 2, 0x70, 0x38);
+            field_debug_draw_label(gFieldDebugLabelMp, 2, 0x70, 0x38);
             break;
         case 2:
-            field_debug_draw_label(gUnk_080AC4F0, 2, 0x70, 0x38);
+            field_debug_draw_label(gFieldDebugLabelTe, 2, 0x70, 0x38);
             break;
         case 3:
-            field_debug_draw_label(gUnk_080AC4F4, 2, 0x70, 0x38);
+            field_debug_draw_label(gFieldDebugLabelEx, 2, 0x70, 0x38);
             break;
         }
-        field_debug_draw_label(gUnk_080AC4F8, 2, 0x30, 0x40);
+        field_debug_draw_label(gFieldDebugLabelSt, 2, 0x30, 0x40);
         field_debug_draw_value_blink(4, gFieldWork.story_phase, 8, 0x50, 0x40);
-        field_debug_draw_label(gUnk_080AC4FC, 2, 0x30, 0x48);
-        field_debug_draw_value_blink(5, gFieldWork.unkC33, 8, 0x50, 0x48);
+        field_debug_draw_label(gFieldDebugLabelCm, 2, 0x30, 0x48);
+        field_debug_draw_value_blink(5, gFieldWork.medawatch_enabled, 8, 0x50, 0x48);
         break;
     case 1:
-        field_debug_draw_label(gUnk_080AC500, 5, 0x68, 0x18);
-        field_debug_draw_label(gUnk_080AC508, 3, 0x30, 0x20);
+        field_debug_draw_label(gFieldDebugLabelEvent, 5, 0x68, 0x18);
+        field_debug_draw_label(gFieldDebugLabelEno, 3, 0x30, 0x20);
         field_debug_draw_value_blink(0, *gFieldDebugEventValues[0], 16, 0x50, 0x20);
-        field_debug_draw_label(gUnk_080AC50C, 3, 0x30, 0x28);
+        field_debug_draw_label(gFieldDebugLabelFlg, 3, 0x30, 0x28);
         field_debug_draw_value_blink(1, *gFieldDebugEventValues[1], 8, 0x50, 0x28);
-        field_debug_draw_label(gUnk_080AC510, 1, 0x70, 0x28);
-        field_debug_draw_label(gUnk_080AC514, 2, 0x30, 0x30);
+        field_debug_draw_label(gFieldDebugLabelX, 1, 0x70, 0x28);
+        field_debug_draw_label(gFieldDebugLabelLv, 2, 0x30, 0x30);
         field_debug_draw_value_blink(2, *gFieldDebugEventValues[2], 8, 0x50, 0x30);
-        field_debug_draw_label(gUnk_080AC510, 1, 0x70, 0x30);
+        field_debug_draw_label(gFieldDebugLabelX, 1, 0x70, 0x30);
         break;
     case 2:
-        field_debug_draw_label(gUnk_080AC518, 6, 0x68, 0x18);
-        field_debug_draw_label(gUnk_080AC520, 3, 0x30, 0x20);
+        field_debug_draw_label(gFieldDebugLabelPlayer, 6, 0x68, 0x18);
+        field_debug_draw_label(gFieldDebugLabelPlx, 3, 0x30, 0x20);
         field_debug_draw_value_blink(0, gFieldWork.player_x, 16, 0x50, 0x20);
-        field_debug_draw_label(gUnk_080AC524, 3, 0x30, 0x28);
+        field_debug_draw_label(gFieldDebugLabelPly, 3, 0x30, 0x28);
         field_debug_draw_value_blink(0, gFieldWork.player_y, 16, 0x50, 0x28);
         break;
     case 3:
-        field_debug_draw_label(gUnk_080AC528, 10, 0x68, 0x18);
-        field_debug_draw_label(gUnk_080AC534, 3, 0x30, 0x20);
+        field_debug_draw_label(gFieldDebugLabelMapEffect, 10, 0x68, 0x18);
+        field_debug_draw_label(gFieldDebugLabelMen, 3, 0x30, 0x20);
         field_debug_draw_value_blink(0, gFieldDebug.effect_id, 16, 0x50, 0x20);
         break;
     case 4:
-        field_debug_draw_label(gUnk_080AC538, 3, 0x68, 0x18);
-        field_debug_draw_label(gUnk_080AC53C, 2, 0x30, 0x20);
+        field_debug_draw_label(gFieldDebugLabelKwg, 3, 0x68, 0x18);
+        field_debug_draw_label(gFieldDebugLabelDc, 2, 0x30, 0x20);
         field_debug_draw_value_blink(0, gFieldDebug.unk11, 8, 0x50, 0x20);
-        field_debug_draw_label(gUnk_080AC540, 2, 0x30, 0x28);
+        field_debug_draw_label(gFieldDebugLabelMl, 2, 0x30, 0x28);
         field_debug_draw_value_blink(1, gUnk_03006D38.unk2, 8, 0x50, 0x28);
-        field_debug_draw_label(gUnk_080AC544, 2, 0x30, 0x30);
+        field_debug_draw_label(gFieldDebugLabelBt, 2, 0x30, 0x30);
         field_debug_draw_value_blink(2, gFieldWork.unkC4E, 8, 0x50, 0x30);
         if (gFieldWork.unkC4E & 1)
-            field_debug_draw_label(gUnk_080AC548, 1, 0x70, 0x30);
+            field_debug_draw_label(gFieldDebugLabelR, 1, 0x70, 0x30);
         else
-            field_debug_draw_label(gUnk_080AC54C, 1, 0x70, 0x30);
+            field_debug_draw_label(gFieldDebugLabelBlank, 1, 0x70, 0x30);
         if (gFieldWork.unkC4E & 2)
-            field_debug_draw_label(gUnk_080AC550, 1, 0x90, 0x30);
+            field_debug_draw_label(gFieldDebugLabelE, 1, 0x90, 0x30);
         else
-            field_debug_draw_label(gUnk_080AC54C, 1, 0x90, 0x30);
-        field_debug_draw_label(gUnk_080AC554, 2, 0x30, 0x38);
+            field_debug_draw_label(gFieldDebugLabelBlank, 1, 0x90, 0x30);
+        field_debug_draw_label(gFieldDebugLabelSk, 2, 0x30, 0x38);
         field_debug_draw_value_blink(3, gFieldWork.unkCB8, 8, 0x50, 0x38);
-        field_debug_draw_label(gUnk_080AC558, 2, 0x30, 0x40);
+        field_debug_draw_label(gFieldDebugLabelSp, 2, 0x30, 0x40);
         field_debug_draw_value_blink(4, gFieldWork.unkCB9, 8, 0x50, 0x40);
-        field_debug_draw_label(gUnk_080AC510, 1, 0x70, 0x40);
-        field_debug_draw_label(gUnk_080AC55C, 2, 0x30, 0x48);
-        field_debug_draw_value_blink(5, gFieldWork.unkC4F, 8, 0x50, 0x48);
-        switch (gFieldWork.unkC4F) {
+        field_debug_draw_label(gFieldDebugLabelX, 1, 0x70, 0x40);
+        field_debug_draw_label(gFieldDebugLabelWl, 2, 0x30, 0x48);
+        field_debug_draw_value_blink(5, gFieldWork.robattle_result, 8, 0x50, 0x48);
+        switch (gFieldWork.robattle_result) {
         case 0:
-            field_debug_draw_label(gUnk_080AC560, 1, 0x70, 0x48);
+            field_debug_draw_label(gFieldDebugLabelN, 1, 0x70, 0x48);
             break;
         case 1:
-            field_debug_draw_label(gUnk_080AC564, 1, 0x70, 0x48);
+            field_debug_draw_label(gFieldDebugLabelW, 1, 0x70, 0x48);
             break;
         case 2:
-            field_debug_draw_label(gUnk_080AC568, 1, 0x70, 0x48);
+            field_debug_draw_label(gFieldDebugLabelL, 1, 0x70, 0x48);
             break;
         }
         break;
     case 5:
-        field_debug_draw_label(gUnk_080AC56C, 4, 0x68, 0x18);
-        field_debug_draw_label(gUnk_080AC574, 3, 0x30, 0x20);
+        field_debug_draw_label(gFieldDebugLabelKoma, 4, 0x68, 0x18);
+        field_debug_draw_label(gFieldDebugLabelKno, 3, 0x30, 0x20);
         field_debug_draw_value_blink(0, gFieldDebug.unk20, 16, 0x50, 0x20);
         if (gFieldDebug.showing != 0) {
             advance_sprite_animation_frame(0x31);
@@ -535,14 +535,14 @@ static void field_debug_draw_page(u32 mode) {
     case 6:
         switch (gFieldDebug.showing) {
         case 0:
-            field_debug_draw_label(gUnk_080AC578, 4, 0x68, 0x18);
-            field_debug_draw_label(gUnk_080AC580, 3, 0x30, 0x20);
+            field_debug_draw_label(gFieldDebugLabelMess, 4, 0x68, 0x18);
+            field_debug_draw_label(gFieldDebugLabelMsb, 3, 0x30, 0x20);
             field_debug_draw_value_blink(0, gFieldDebug.text_bank, 16, 0x50, 0x20);
-            field_debug_draw_label(gUnk_080AC584, 3, 0x30, 0x28);
+            field_debug_draw_label(gFieldDebugLabelMsn, 3, 0x30, 0x28);
             field_debug_draw_value_blink(1, gFieldDebug.text_id, 16, 0x50, 0x28);
-            field_debug_draw_label(gUnk_080AC588, 3, 0x30, 0x30);
+            field_debug_draw_label(gFieldDebugLabelMsf, 3, 0x30, 0x30);
             field_debug_draw_value_blink(2, gFieldDebug.text_auto_next, 16, 0x50, 0x30);
-            field_debug_draw_label(gUnk_080AC58C, 3, 0x30, 0x38);
+            field_debug_draw_label(gFieldDebugLabelMax, 3, 0x30, 0x38);
             field_debug_draw_value_blink(3, gFieldDebug.text_count, 16, 0x50, 0x38);
             break;
         case 1: {
@@ -553,18 +553,18 @@ static void field_debug_draw_page(u32 mode) {
         }
         break;
     case 7:
-        field_debug_draw_label(gUnk_080AC514, 2, 0x68, 0x18);
-        field_debug_draw_label(gUnk_080AC590, 2, 0x30, 0x20);
+        field_debug_draw_label(gFieldDebugLabelLv, 2, 0x68, 0x18);
+        field_debug_draw_label(gFieldDebugLabelAr, 2, 0x30, 0x20);
         field_debug_draw_value_blink(0, gFieldWork.affinity_ar, 8, 0x50, 0x20);
-        field_debug_draw_label(gUnk_080AC594, 2, 0x30, 0x28);
+        field_debug_draw_label(gFieldDebugLabelKa, 2, 0x30, 0x28);
         field_debug_draw_value_blink(1, gFieldWork.affinity_ka, 8, 0x50, 0x28);
-        field_debug_draw_label(gUnk_080AC598, 3, 0x30, 0x30);
+        field_debug_draw_label(gFieldDebugLabelBgm, 3, 0x30, 0x30);
         field_debug_draw_value_blink(2, gFieldDebug.song_id, 8, 0x50, 0x30);
-        field_debug_draw_label(gUnk_080AC59C, 2, 0x30, 0x38);
+        field_debug_draw_label(gFieldDebugLabelSe, 2, 0x30, 0x38);
         field_debug_draw_value_blink(3, gFieldDebug.sound_id, 8, 0x50, 0x38);
-        field_debug_draw_label(gUnk_080AC5A0, 3, 0x30, 0x40);
+        field_debug_draw_label(gFieldDebugLabelPnt, 3, 0x30, 0x40);
         field_debug_draw_value_blink(4, gFieldWork.useBlockFlags, 8, 0x50, 0x40);
-        field_debug_draw_label(gUnk_080AC510, 1, 0x70, 0x40);
+        field_debug_draw_label(gFieldDebugLabelX, 1, 0x70, 0x40);
         break;
     }
 }
@@ -599,7 +599,8 @@ u32 field_debug_page_done(void) {
             gFieldWork.player_form = 0;
             if (gFieldDebug.effect_id == 0xE || gFieldDebug.effect_id == 0x12) {
                 area_load_sprite_sheets();
-                DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gFieldWork.player_form]], (void *)PLTT + 0x200, 0x20);
+                DmaCopy32(3, gFieldSpritePalettes[gPlayerFormSpriteSheets[gFieldWork.player_form]],
+                          (void *)PLTT + 0x200, 0x20);
                 gFieldWork.loaded_form = gFieldWork.player_form;
                 load_battle_terrain_data();
             }
@@ -773,7 +774,7 @@ void field_debug_draw_sprite_preview(void) {
             sprite_anim_start(slot, 0x60);
         }
         gSpriteEntries[j].unk0 = zero;
-        if (gUnk_083D2B8D[gFieldDebug.unk20] != 0) {
+        if (gSpriteSheetHasShadow[gFieldDebug.unk20] != 0) {
             gSpriteEntries[j].unk0 = 0xCC0C;
             gSpriteEntries[j].unk2 = gSpriteEntries[slot].unk2;
             gSpriteEntries[j].unk4 = gSpriteEntries[slot].unk4 + (s16)(gSpriteEntries[slot].unk2C - 5);

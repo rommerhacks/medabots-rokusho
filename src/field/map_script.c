@@ -718,7 +718,7 @@ void map_script_cmd_jump_unless_full_part_set(void) {
         gFieldWork.script_pos = gFieldWork.branch_base + gFieldWork.cmd_args[1];
 }
 
-// Opcode 0x5D. Bit 7 set: arg 1 sets / else clears useBlockFlags bit 5; else unkC33 (Medawatch
+// Opcode 0x5D. Bit 7 set: arg 1 sets / else clears useBlockFlags bit 5; else medawatch_enabled (Medawatch
 // menu flag) = arg & 0xF. Runtime: sets 0x03006413 to 1 when Dad gives Ikki the Medawatch.
 void map_script_cmd_set_medawatch_flag(void) {
     read_map_script_bytes(1);
@@ -728,7 +728,7 @@ void map_script_cmd_set_medawatch_flag(void) {
         else
             gFieldWork.useBlockFlags &= ~0x20;
     } else {
-        gFieldWork.unkC33 = gFieldWork.cmd_args[0] & 0xF;
+        gFieldWork.medawatch_enabled = gFieldWork.cmd_args[0] & 0xF;
     }
 }
 

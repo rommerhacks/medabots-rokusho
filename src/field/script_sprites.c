@@ -137,7 +137,7 @@ static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y) {
     tile = area_sprite_sheet_id(spr->unk2B);
     spr->unk30 = tile;
     sprite_set_blend_from_kind(slot);
-    if (gUnk_083D2B8D[tile]) {
+    if (gSpriteSheetHasShadow[tile]) {
         sprite_entry_init(idx + 0x79, 0xCC0C, 0x90, 0xE, 1);
         gSpriteEntries[idx + 0x79].unkC_8 = spr->unkC_8;
         gSpriteEntries[idx + 0x79].unk10_8 = spr->unk10_8 - 5;

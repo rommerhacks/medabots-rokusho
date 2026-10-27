@@ -268,7 +268,7 @@ void update_entity_sprites_on_screen(void) {
                     gSpriteEntries[i + 49].unk2E = 1;
                     gSpriteEntries[i + 49].unk2 = gSpriteEntries[i + 49].unkC_8 - gBg1Scroll.x;
                     gSpriteEntries[i + 49].unk4 = gSpriteEntries[i + 49].unk10_8 - gBg1Scroll.y;
-                    if (gUnk_083D2B8D[gSpriteEntries[i + 49].unk30]) {
+                    if (gSpriteSheetHasShadow[gSpriteEntries[i + 49].unk30]) {
                         gSpriteEntries[i + 91].unk0 = 0xCC0C;
                         gSpriteEntries[i + 91].unk2 = gSpriteEntries[i + 49].unk2;
                         gSpriteEntries[i + 91].unk4 =

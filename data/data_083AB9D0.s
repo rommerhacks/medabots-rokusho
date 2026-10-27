@@ -1234,8 +1234,8 @@ gUnk_083D2918:
 gUnk_083D2998:
 	.incbin "baserom.gba", 0x3D2998, 0xE
 
-	.global gUnk_083D29A6
-gUnk_083D29A6:
+	.global gPlayerFormSpriteSheets
+gPlayerFormSpriteSheets:
 	.incbin "baserom.gba", 0x3D29A6, 0x10
 
 	.global gUnk_083D29B6
@@ -1270,8 +1270,8 @@ gUnk_083D2AD9:
 gUnk_083D2ADD:
 	.incbin "baserom.gba", 0x3D2ADD, 0xB0
 
-	.global gUnk_083D2B8D
-gUnk_083D2B8D:
+	.global gSpriteSheetHasShadow
+gSpriteSheetHasShadow:
 	.incbin "baserom.gba", 0x3D2B8D, 0xB0
 
 	.global gUnk_083D2C3D
@@ -1342,8 +1342,8 @@ gRandomBytes:
 gUnk_083F80F4:
 	.incbin "baserom.gba", 0x3F80F4, 0x540
 
-	.global gUnk_083F8634
-gUnk_083F8634:
+	.global gFieldSpritePalettes
+gFieldSpritePalettes:
 	.incbin "baserom.gba", 0x3F8634, 0x540
 
 	.global gAreaMapSizes
