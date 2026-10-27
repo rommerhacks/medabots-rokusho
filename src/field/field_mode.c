@@ -6,7 +6,7 @@
 
 static void field_clear_ram(void) {
     memzero_bytes((u8 *)&gUnk_03005310, 0x3C);
-    memzero_bytes((u8 *)&gUnk_030057A0, 0x38);
+    memzero_bytes((u8 *)&gFieldDebug, 0x38);
     memzero_bytes((u8 *)&gFieldTilemapBuf, 4);
     memzero_bytes((u8 *)&gUnk_030057DC, 4);
     memzero_bytes((u8 *)&gUnk_0300534C, 4);
@@ -31,7 +31,7 @@ void field_resume(u32 a) {
     switch (a) {
     case 0:
         gUnk_03005310.sceneResult = gGameWork.unk9C;
-        if (gUnk_030057E0.unkC88 != 0) {
+        if (gFieldWork.script_running != 0) {
             gGameMode = 1;
             gGameState = 1;
             gGameSubState = 5;
@@ -80,7 +80,7 @@ void dispatch_by_index_0476e8(u32 idx) {
         break;
     case 10:
         field_clear_ram();
-        memzero_bytes((u8 *)&gUnk_030057E0, 0xCC0);
+        memzero_bytes((u8 *)&gFieldWork, 0xCC0);
         gUnk_03000588 = 1;
         gGameMode = 1;
         gGameState = 1;
@@ -88,8 +88,8 @@ void dispatch_by_index_0476e8(u32 idx) {
         return;
     case 11:
         field_clear_ram();
-        gUnk_030057E0.unkC88 = 0;
-        gUnk_030057E0.cmd_busy = 0;
+        gFieldWork.script_running = 0;
+        gFieldWork.cmd_busy = 0;
         gUnk_03000588 = 1;
         gGameMode = 1;
         gGameState = 1;
@@ -120,13 +120,13 @@ void field_return_from_scene(s32 mode) {
 void switch_game_mode(u32 a, u32 b) {
     switch (a) {
     case 0x20:
-        gUnk_030057E0.unkC2D = 1;
+        gFieldWork.fixed_battle = 1;
         gGameMode = 0;
         gGameState = 6;
         gGameSubState = 0;
         break;
     case 0x21:
-        gUnk_030057E0.unkC2D = 0;
+        gFieldWork.fixed_battle = 0;
         gGameMode = 0;
         gGameState = 6;
         gGameSubState = 0;

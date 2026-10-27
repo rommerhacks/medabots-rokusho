@@ -80,8 +80,8 @@ u32 script_sprite_update_walk(u8 slot, u8 mode) {
 
 // Ends the current command: the next frame runs the next one (map_script_run_command).
 void map_script_command_done(void) {
-    gUnk_030057E0.cmd_step = 0;
-    gUnk_030057E0.cmd_busy = 0;
+    gFieldWork.cmd_step = 0;
+    gFieldWork.cmd_busy = 0;
 }
 
 // Map script sprite codes: high nibble = graphics kind, low 2 bits = direction (4 directions x 3 frames).
@@ -130,8 +130,8 @@ static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y) {
     spr = &gSpriteEntries[slot];
     spr->unk2B = anim;
     spr->unk20 = sprite_code_direction(part);
-    spr->unkC_8 = x * 16 + gUnk_030057E0.map_origin_x;
-    spr->unk10_8 = y * 16 + gUnk_030057E0.map_origin_y;
+    spr->unkC_8 = x * 16 + gFieldWork.map_origin_x;
+    spr->unk10_8 = y * 16 + gFieldWork.map_origin_y;
     gUnk_030055A0[slot].unk0 = 0xFFFF;
     spr->unk2C = 0;
     tile = area_sprite_sheet_id(spr->unk2B);
@@ -161,20 +161,20 @@ void despawn_script_sprite(u8 arg) {
     script_object_free_slot(id);
 }
 
-// Snapshot of the 6 script sprites into gUnk_030057E0.unk7DC (runtime: opening the field menu).
+// Snapshot of the 6 script sprites into gFieldWork.sprite_snapshot (runtime: opening the field menu).
 void save_script_sprites(void) {
     s32 i;
 
-    memzero_bytes((u8 *)gUnk_030057E0.unk7DC, sizeof(gUnk_030057E0.unk7DC));
+    memzero_bytes((u8 *)gFieldWork.sprite_snapshot, sizeof(gFieldWork.sprite_snapshot));
     for (i = 0; i <= 5; i++) {
         if (gUnk_030055A0[i + 79].unk0) {
-            gUnk_030057E0.unk7DC[i].x = field_pixel_x_to_tile(gSpriteEntries[i + 79].unkC_8);
-            gUnk_030057E0.unk7DC[i].y = field_pixel_y_to_tile(gSpriteEntries[i + 79].unk10_8);
-            gUnk_030057E0.unk7DC[i].anim =
+            gFieldWork.sprite_snapshot[i].x = field_pixel_x_to_tile(gSpriteEntries[i + 79].unkC_8);
+            gFieldWork.sprite_snapshot[i].y = field_pixel_y_to_tile(gSpriteEntries[i + 79].unk10_8);
+            gFieldWork.sprite_snapshot[i].anim =
                 ((gSpriteEntries[i + 79].unk2B & 0xF) << 4) | (gSpriteEntries[i + 79].unk20 & 3);
-            gUnk_030057E0.unk7DC[i].id = i;
-            gUnk_030057E0.unk7DC[i].unk2_6 = gSpriteEntries[i + 79].unk2D;
-            gUnk_030057E0.unk7DC[i].active = 1;
+            gFieldWork.sprite_snapshot[i].id = i;
+            gFieldWork.sprite_snapshot[i].unk2_6 = gSpriteEntries[i + 79].unk2D;
+            gFieldWork.sprite_snapshot[i].active = 1;
         }
     }
 }
@@ -184,8 +184,9 @@ void restore_script_sprites(void) {
     s32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gUnk_030057E0.unk7DC[i].active && !gUnk_030057E0.unk7DC[i].unk2_6)
-            init_script_sprite(i, gUnk_030057E0.unk7DC[i].anim, gUnk_030057E0.unk7DC[i].x, gUnk_030057E0.unk7DC[i].y);
+        if (gFieldWork.sprite_snapshot[i].active && !gFieldWork.sprite_snapshot[i].unk2_6)
+            init_script_sprite(i, gFieldWork.sprite_snapshot[i].anim, gFieldWork.sprite_snapshot[i].x,
+                               gFieldWork.sprite_snapshot[i].y);
     }
 }
 
@@ -306,8 +307,8 @@ u32 script_sprite_jump_step(void) {
     case 0:
         s->unk28 = 0;
         s->unk2A = 0;
-        s->unk20 = gUnk_030057E0.cmd_args[1];
-        sprite_anim_start(slot, sprite_walk_anim_id(slot, gUnk_030057E0.cmd_args[1]));
+        s->unk20 = gFieldWork.cmd_args[1];
+        sprite_anim_start(slot, sprite_walk_anim_id(slot, gFieldWork.cmd_args[1]));
         s->unk34 = s->unk10_8;
         field_play_sound_effect(0x70);
         s->unk26++;

@@ -31,9 +31,9 @@ extern u32 gUnk_03005250[0x10]; // IWRAM copy of link_buffer_swap_arm
 extern u32 gUnk_03005050[0x48]; // IWRAM copy of serial_multiplayer_transfer_handler
 extern const Func gUnk_083ABE18[]; // game mode handlers (AgbMain)
 extern struct Unk_03005350 gUnk_03005350;
-extern struct Unk_030057A0 gUnk_030057A0;
+extern struct FieldDebugWork gFieldDebug;
 extern u8 *gMapScriptData; // current map script data (banked, see read_map_script_byte)
-extern struct Unk_030057E0 gUnk_030057E0;
+extern struct FieldWork gFieldWork;
 extern struct Unk_030064A0 gUnk_030064A0;
 extern struct Unk_03006D20 gUnk_03006D20;
 extern struct SoundWork *gSoundWork;
@@ -107,7 +107,7 @@ extern const struct AreaWarp *const gAreaWarps[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
 extern void (*const gMapScriptUpdates[])(void);  // per-command update handlers, run each frame while cmd_busy is set
 extern const u8 gOppositeDirection[];            // indexed by the player's facing (gSpriteEntries[47].unk21)
-extern const u8 gUnk_083D28B0[];        // indexed by gUnk_030057E0.player_form, passed to script_sprite_begin_walk
+extern const u8 gUnk_083D28B0[];        // indexed by gFieldWork.player_form, passed to script_sprite_begin_walk
 extern const u8 *const gUnk_084045A8[]; // per area: tile map
 extern const struct AreaGfx gUnk_083F92F4[];
 extern const u8 gUnk_083D2903[];
@@ -373,7 +373,7 @@ extern u8
 extern u8
     gItemInventory[64][2]; // item inventory (runtime-checked): [0] 0x80 | item id, [1] count (get_item_quantity_by_id)
 extern const u8 gUnk_083B296C[]; // 4 per-phase y bob flags (update_battle_sprite_orbiting_positions)
-extern const u8 gUnk_083B2970[]; // indexed by gUnk_030057E0.player_form (resolve_area_sprite_set)
+extern const u8 gUnk_083B2970[]; // indexed by gFieldWork.player_form (resolve_area_sprite_set)
 extern const u8 gUnk_083B827C[]; // 16 bytes per Medapart (part id * 64 + kind * 16), copied by load_part_data
 extern const u8 gUnk_083B286C[]; // random bytes, indexed by gGameWork.rngIndex when unk89 is set (rng_next_byte)
 extern const u8 gUnk_084EBF50[];
@@ -517,7 +517,7 @@ extern const u8 *const gUnk_083BE9E8[]; // battlefield names, by gBattleWork.bat
 extern const u8 gUnk_083BEA90[][8];     // per area: [1] = battlefield (load_area_battlefield)
 extern const u8
     gUnk_083BF090[][4]; // per area: random encounter ids, picked 40/30/20/10% (setup_random_encounter_enemies)
-extern const u8 *const gUnk_083C1A00[]; // encounter setups (0x28 bytes copied to gBattleWork), by gUnk_030057E0.unkC2A
+extern const u8 *const gUnk_083C1A00[]; // encounter setups (0x28 bytes copied to gBattleWork), by gFieldWork.battle_id
 extern const u8 gUnk_083ACEE4[][2];     // per opponent Medabot: sprite position (init_opponent_medabot_sprites)
 extern const u8 gUnk_083ACEEA[][2];     // per opponent Medabot: leg type icon position (draw_opponent_leg_type_icons)
 extern const u8 gRandomBotSlotStarts[16]; // random starting opponent slot 0-2 (afterbattle_pick_unowned_part,
@@ -598,7 +598,7 @@ extern const u8 gUnk_0878AA0C[];     // town map graphics (town_map_load_graphic
 extern const u32 gUnk_087877C4[];    // town map graphics (town_map_load_graphics)
 extern const u8 gUnk_087871E4[];     // town map graphics (town_map_load_graphics)
 extern const u8 gUnk_080AF9A8[];     // town map graphics (town_map_load_graphics)
-extern const u8 gAreaTownMapPlace[]; // town map place by area id (gUnk_030057E0.unk7FE, town_map_load_graphics)
+extern const u8 gAreaTownMapPlace[]; // town map place by area id (gFieldWork.area_id, town_map_load_graphics)
 extern const u32 gUnk_087873A4[];    // town map graphics (town_map_load_graphics)
 extern const u8 *gDefaultPlayerName; // -> "Ikki" (stored in the tail of gNameEntryStates), name entry mode 0
 extern const u16 gUnk_080AF810[];    // name entry OBJ palette (name_entry_load_name)
@@ -1095,7 +1095,7 @@ extern const u8
     *const gUnk_083B1888[];       // 6 compressed sprite tile pointers per Medabot (decompress_sprite_to_vram_08042D94)
 extern const s16 gUnk_083D6BA0[]; // per angle 0-0xFF: cosine-like factor x256 (calc_polar_to_screen_coords x;
                                   // gJumpArcTable is the y factor)
-extern const u8 gUnk_0847EB80[];  // per area id (gUnk_030057E0.unk7FE), used unless unkC30 == 0xFF (area_song_id)
+extern const u8 gUnk_0847EB80[];  // per area id (gFieldWork.area_id), used unless song == 0xFF (area_song_id)
 extern struct Unk_03005290 gUnk_03005290;
 extern struct Unk_03005290 gUnk_030052B0;
 extern struct Unk_03005290 gUnk_030052D0;
@@ -1103,8 +1103,8 @@ extern struct Unk_03005290 gUnk_030052F0;
 extern const u8 gUnk_083D2ADD[]; // per animation id (gSpriteEntries[].unk30): 2 -> unkB = 0xFF, 1 -> 0, else 0x40
                                  // (sprite_set_blend_from_kind)
 extern const u8 *const
-    gUnk_08414394[]; // tile tables by id - 0xD0, indexed by gUnk_030057E0.unkC38[id - 0xD0] (resolve_sprite_sheet_id)
-extern u8 *gUnk_030057DC;                // animated tile source for the area (animate_area_bg_tiles)
+    gUnk_08414394[];      // tile tables by id - 0xD0, indexed by gFieldWork.unkC38[id - 0xD0] (resolve_sprite_sheet_id)
+extern u8 *gUnk_030057DC; // animated tile source for the area (animate_area_bg_tiles)
 extern const u8 *const gUnk_084096F4[];  // per area id: tile animation [0] tiles per frame, [2] enabled, [3..] frame
                                          // list ending 0xFF (animate_area_bg_tiles)
 extern const u16 *const gUnk_083F9BF4[]; // per area id: 0xD0-color palette for 0x0202FA00, NULL = default set from
@@ -1136,7 +1136,7 @@ extern const u8
 extern const u8 gUnk_080AF755[]; // 0x53-byte message copied to the stack (load_rotation_grid_and_advance)
 extern const Func gMenuModeStates[]; // by gGameState (menu_mode_update)
 extern const u8 gUnk_080AF6EC[];     // 4 bytes copied to an unused local (init_multiplayer_id)
-extern const u8 gUnk_080AF5FC[];     // per gUnk_030057E0.unkC32: 10 x 4 next-entry bytes (right, left, up, down) by
+extern const u8 gUnk_080AF5FC[];     // per gFieldWork.unkC32: 10 x 4 next-entry bytes (right, left, up, down) by
                                      // gUnk_03006F74->unk17 (town_map_move_cursor)
 extern const u8 gUnk_080AF674[];     // same, used when gUnk_03006F74->unk18 is set (town_map_move_cursor)
 extern const u8 gUnk_083BEA14[];     // per Medabot (gUnk_083B1888 index): sprite palette - 4 (load_battle_sprite_tiles)

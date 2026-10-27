@@ -204,7 +204,7 @@ void prebattle_show_opponent_line(void) {
 void prebattle_wait_for_start_input(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if ((KEYS_LO(gNewKeys) & 8) && get_item_quantity_by_id(50) && gUnk_030057E0.unkC2D == 0) {
+    if ((KEYS_LO(gNewKeys) & 8) && get_item_quantity_by_id(50) && gFieldWork.fixed_battle == 0) {
         play_sound_effect(4);
         gGameSubState++;
     } else if (KEYS_LO(gNewKeys) & 1) {
@@ -356,8 +356,8 @@ void afterbattle_close_opponent_line(void) {
 void afterbattle_give_part(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (gUnk_030057E0.unkC2E & 0xF) {
-        gUnk_030057E0.unkC2E = 0;
+    if (gFieldWork.battle_flags & 0xF) {
+        gFieldWork.battle_flags = 0;
         gGameSubState = 62;
     } else {
         afterbattle_choose_won_part();
@@ -647,9 +647,9 @@ void afterbattle_resume_field(void) {
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG2CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG3CNT, 0);
-    gUnk_030057E0.unkC2D = 0;
-    gUnk_030057E0.unkC2E = 0;
-    gUnk_030057E0.unkC2F = 0;
+    gFieldWork.fixed_battle = 0;
+    gFieldWork.battle_flags = 0;
+    gFieldWork.story_battle = 0;
     gVBlankCallback = empty_callback;
     field_resume(0);
 }
@@ -829,7 +829,7 @@ void afterbattle_lost_check_story_battle(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (game_state_execute_handler_b()) {
-        if (gUnk_030057E0.unkC2F)
+        if (gFieldWork.story_battle)
             gGameSubState++;
         else
             gGameSubState = 0x77;
@@ -854,9 +854,9 @@ void afterbattle_exit_to_field(void) {
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG2CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG3CNT, 0);
-    gUnk_030057E0.unkC2D = 0;
-    gUnk_030057E0.unkC2E = 0;
-    gUnk_030057E0.unkC2F = 0;
+    gFieldWork.fixed_battle = 0;
+    gFieldWork.battle_flags = 0;
+    gFieldWork.story_battle = 0;
     gVBlankCallback = empty_callback;
     set_blend_effect_mode(3, 0x3F, 0x20);
     gGameMode = 2;
@@ -869,8 +869,8 @@ void afterbattle_exit_to_field(void) {
 void battle_loss_take_part(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (gUnk_030057E0.unkC2E & 0xF) {
-        gUnk_030057E0.unkC2E = 0;
+    if (gFieldWork.battle_flags & 0xF) {
+        gFieldWork.battle_flags = 0;
         gGameSubState = 0x40;
     } else {
         battle_pick_random_bot_part(0);
@@ -919,24 +919,24 @@ static void load_encounter_into_battle_setup(void) {
 }
 
 void load_area_battlefield(void) {
-    memcpy_bytes_08041D04(gUnk_083BEA90[gUnk_030057E0.unk7FE], &gGameWork.partAbility, 2);
+    memcpy_bytes_08041D04(gUnk_083BEA90[gFieldWork.area_id], &gGameWork.partAbility, 2);
     gBattleWork.battlefield = (&gGameWork.partAbility)[1];
 }
 
 // Picks the encounter (area table unless a debug battle set unkC2A), copies its setup and re-rolls
 // each opponent part with random_pick_weighted4 unless the setup has fixed parts (unk3).
 void setup_random_encounter_enemies(void) {
-    struct Unk_030057E0 *st;
+    struct FieldWork *st;
     u8 flag;
     u32 r;
     u8 id;
     u32 i;
     u8 a, b, c, d;
 
-    flag = gUnk_030057E0.unkC2D;
-    st = &gUnk_030057E0;
+    flag = gFieldWork.fixed_battle;
+    st = &gFieldWork;
     if (!flag) {
-        memcpy_bytes_08041D04(gUnk_083BF090[st->unk7FE], &gGameWork.partAbility, 4);
+        memcpy_bytes_08041D04(gUnk_083BF090[st->area_id], &gGameWork.partAbility, 4);
         r = rng_percent();
         if (r < 40)
             id = (&gGameWork.partAbility)[0];
@@ -946,9 +946,9 @@ void setup_random_encounter_enemies(void) {
             id = (&gGameWork.partAbility)[2];
         else
             id = (&gGameWork.partAbility)[3];
-        st->unkC2A = id;
+        st->battle_id = id;
     }
-    memcpy_bytes_08041D04(gUnk_083C1A00[st->unkC2A], &gBattleWork, 0x28);
+    memcpy_bytes_08041D04(gUnk_083C1A00[st->battle_id], &gBattleWork, 0x28);
     if (!gBattleWork.fixedParts) {
         for (i = 0; i < 3; i++) {
             a = random_pick_weighted4(gBattleWork.encounterBots[i].parts[0], gBattleWork.encounterBots[i].parts[1],
@@ -1032,7 +1032,7 @@ void draw_opponent_leg_type_icons(void) {
 
 // Shows sprite 0 when the player owns a Rubberobo Medal (item 50) outside debug battles.
 static void prebattle_init_rubberobo_sprite(void) {
-    if (!gGameWork.unk132 && get_item_quantity_by_id(50) && !gUnk_030057E0.unkC2D) {
+    if (!gGameWork.unk132 && get_item_quantity_by_id(50) && !gFieldWork.fixed_battle) {
         gSpriteEntries[0].unk0 = 0xC404;
         gSpriteEntries[0].unk2 = 8;
         gSpriteEntries[0].unk4 = 0x50;

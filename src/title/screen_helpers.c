@@ -55,7 +55,7 @@ u32 town_map_move_cursor(void) {
     struct Unk_03006F74 **pw = &gUnk_03006F74;
     struct Unk_03006F74 *w = *pw;
     u8 old = w->unk17;
-    u32 off = old * 4 + gUnk_030057E0.unkC32 * 40;
+    u32 off = old * 4 + gFieldWork.unkC32 * 40;
     const u8 *tbl = w->unk18 ? gUnk_080AF674 : gUnk_080AF5FC;
     if (*(u8 *)&gNewKeys & 0x20)
         w->unk17 = tbl[off];

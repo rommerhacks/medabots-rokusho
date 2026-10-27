@@ -52,8 +52,8 @@ void field_effect_start(u32 flags, u32 x, u32 y, u32 d) {
     memzero_bytes((u8 *)&gUnk_03005350, 0x240);
     gUnk_03005350.unk1D4 = flags;
     if (flags & 0x40) {
-        x = gUnk_030057E0.player_x;
-        y = gUnk_030057E0.player_y;
+        x = gFieldWork.player_x;
+        y = gFieldWork.player_y;
     }
     gUnk_03005350.unk1D8 = x;
     gUnk_03005350.unk1DC = y;
@@ -1041,28 +1041,28 @@ u32 field_effect_run(void) {
                     S.unk1E0 = 0;
                 S.unk1D8 = gUnk_083D2AB4[gUnk_03006D38.unk5 * 4 + 2] << 4;
                 S.unk1DC = gUnk_083D2AB4[gUnk_03006D38.unk5 * 4 + 3] << 4;
-                gUnk_030057E0.player_x = S.unk1D8;
-                gUnk_030057E0.player_y = S.unk1DC;
-                gUnk_030057E0.player_tile_x = field_pixel_x_to_tile(gUnk_030057E0.player_x);
-                gUnk_030057E0.player_tile_y = field_pixel_y_to_tile(gUnk_030057E0.player_y);
-                gUnk_030057E0.unk7FE = S.unk1E0;
+                gFieldWork.player_x = S.unk1D8;
+                gFieldWork.player_y = S.unk1DC;
+                gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
+                gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
+                gFieldWork.area_id = S.unk1E0;
                 field_center_camera_on_player();
                 field_update_music(0xC, 0);
             } else if (S.unkF8 == 0xE) {
                 S.unk1E0 = gUnk_083D2AD8;
                 S.unk1D8 = gUnk_083D2AD9[2] << 4;
                 S.unk1DC = gUnk_083D2AD9[3] << 4;
-                gUnk_030057E0.player_x = S.unk1D8;
-                gUnk_030057E0.player_y = S.unk1DC;
-                gUnk_030057E0.player_tile_x = field_pixel_x_to_tile(gUnk_030057E0.player_x);
-                gUnk_030057E0.player_tile_y = field_pixel_y_to_tile(gUnk_030057E0.player_y);
-                gUnk_030057E0.unk7FE = S.unk1E0;
+                gFieldWork.player_x = S.unk1D8;
+                gFieldWork.player_y = S.unk1DC;
+                gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
+                gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
+                gFieldWork.area_id = S.unk1E0;
                 field_center_camera_on_player();
                 field_update_music(0xA, 0);
             }
-            gUnk_030057E0.unkCBA = 1;
+            gFieldWork.npc_load_mode = 1;
             area_load_graphics();
-            load_battlefield_data_to_buffer();
+            area_load_encounter_rate();
             gSpriteEntries[89].unk0 &= ~0x4000;
             break;
         case 133: // guess: set unk214..unk220
@@ -1115,9 +1115,9 @@ u32 field_effect_run(void) {
             E[n].unk2EC.end = script[S.unkFC++];
             E[n].unk2FC = script[S.unkFC++];
             break;
-        case 136: // guess: set gUnk_030057E0.unkC4C and refresh the status chars
+        case 136: // guess: set gFieldWork.unkC4C and refresh the status chars
             S.unkFC++;
-            gUnk_030057E0.unkC4C = script[S.unkFC++];
+            gFieldWork.unkC4C = script[S.unkFC++];
             update_battle_entity_status_chars();
             break;
         default:
@@ -1142,13 +1142,13 @@ u32 field_effect_run(void) {
                     calculate_oam_affine_matrix(q);
             }
             if (S.unkF8 == 0xE || S.unkF8 == 0x12) {
-                gUnk_030057E0.player_facing = 1;
+                gFieldWork.player_facing = 1;
                 set_battle_state_cancel_flag();
                 init_battle_field_setup();
                 update_bg_scroll_offsets_a();
-                field_set_player_facing(gUnk_030057E0.player_facing);
-                if (gUnk_030057E0.unkC76) {
-                    set_battle_state_byte_c83(gSpriteEntries[47].unk20);
+                field_set_player_facing(gFieldWork.player_facing);
+                if (gFieldWork.follower_active) {
+                    follower_set_facing(gSpriteEntries[47].unk20);
                     sprite_anim_start(0x30, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
                 }
                 update_battle_entity_status_chars();

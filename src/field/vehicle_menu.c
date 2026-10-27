@@ -195,7 +195,7 @@ void vehicle_menu_reload(void) {
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     REG_DISPCNT = 0x1F40;
-    gUnk_030057E0.unkCBA = 1;
+    gFieldWork.npc_load_mode = 1;
     area_load_graphics();
     lz_decompress_dispatch(gUnk_084C1C14, (void *)0x060017E0);
     lz_decompress_dispatch(gUnk_084C1608, (void *)0x06001800);
@@ -436,12 +436,12 @@ static u32 vehicle_check_usable(s32 vehicle) {
         result = VEHICLE_AREA_FORBIDS;
         if (!allowed)
             break;
-        flag = gUnk_030057E0.useBlockFlags & 2;
+        flag = gFieldWork.useBlockFlags & 2;
         result = VEHICLE_BLOCKED;
         if (flag)
             break;
         result = VEHICLE_USABLE;
-        if (gUnk_030057E0.player_form == 2)
+        if (gFieldWork.player_form == 2)
             result = VEHICLE_FORM_CONFLICT;
         break;
     case VEHICLE_SILVER_LOCKET:
@@ -449,12 +449,12 @@ static u32 vehicle_check_usable(s32 vehicle) {
         result = VEHICLE_NOT_OWNED;
         if (!flag)
             break;
-        flag = gUnk_030057E0.useBlockFlags & 0x10;
+        flag = gFieldWork.useBlockFlags & 0x10;
         result = VEHICLE_BLOCKED;
         if (flag)
             break;
         result = VEHICLE_USABLE;
-        if (gUnk_030057E0.player_form == 1 || gUnk_030057E0.player_form == 2)
+        if (gFieldWork.player_form == 1 || gFieldWork.player_form == 2)
             result = VEHICLE_FORM_CONFLICT;
         break;
     case VEHICLE_WINGS_OF_WIND:
@@ -470,17 +470,17 @@ static u32 vehicle_check_usable(s32 vehicle) {
         if (parts != 4)
             break;
         allowed = area_allows_vehicle(1);
-        if (gUnk_083D29EB[gUnk_030057E0.unk7FE] == 0xA)
+        if (gUnk_083D29EB[gFieldWork.area_id] == 0xA)
             allowed = 0;
         result = VEHICLE_AREA_FORBIDS;
         if (!allowed)
             break;
-        flag = gUnk_030057E0.useBlockFlags & 4;
+        flag = gFieldWork.useBlockFlags & 4;
         result = VEHICLE_BLOCKED;
         if (flag)
             break;
         result = VEHICLE_USABLE;
-        if (gUnk_030057E0.player_form == 1 || gUnk_030057E0.player_form == 2)
+        if (gFieldWork.player_form == 1 || gFieldWork.player_form == 2)
             result = VEHICLE_FORM_CONFLICT;
         break;
     case VEHICLE_PERISCOPE:
@@ -495,16 +495,16 @@ static u32 vehicle_check_usable(s32 vehicle) {
         result = VEHICLE_BOT_INCOMPLETE;
         if (parts != 4)
             break;
-        flag = gUnk_030057E0.useBlockFlags & 8;
+        flag = gFieldWork.useBlockFlags & 8;
         result = VEHICLE_BLOCKED;
         if (flag)
             break;
-        flag = (u8)(gUnk_030057E0.player_form - 1);
+        flag = (u8)(gFieldWork.player_form - 1);
         result = VEHICLE_FORM_CONFLICT;
         if (flag <= 1)
             break;
         result = VEHICLE_USABLE;
-        if (get_adjacent_tile_value(gUnk_030057E0.player_facing) != 3)
+        if (get_adjacent_tile_value(gFieldWork.player_facing) != 3)
             result = VEHICLE_NOT_FACING_WATER;
         break;
     }
@@ -514,7 +514,7 @@ static u32 vehicle_check_usable(s32 vehicle) {
 static void vehicle_menu_move_cursor(s32 count) {
     struct Unk_030064A0 *menu;
 
-    gUnk_030057A0.frame++;
+    gFieldDebug.frame++;
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         field_play_sound_effect(2);
         menu = &gUnk_030064A0;

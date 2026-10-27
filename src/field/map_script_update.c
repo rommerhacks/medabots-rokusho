@@ -12,7 +12,7 @@ static void map_script_all_actors_move_step(u8 speed, u8 mode);
 static u32 map_script_player_slide_step(u8 a);
 
 void map_script_update_command(void) {
-    gMapScriptUpdates[gUnk_030057E0.unkC92]();
+    gMapScriptUpdates[gFieldWork.cmd]();
 }
 
 void map_script_update_none(void) {}
@@ -20,14 +20,14 @@ void map_script_update_none(void) {}
 // Opcode 1 update: shows message (C94[1] << 8 | C94[2]) of text bank C94[0] (runtime: bank 2, id 1
 // is the lab intro "Good afternoon!"), finishes once the text window closes.
 void map_script_update_message(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
     const u32 *const *tbl;
 
     switch (s->cmd_step) {
     case 0:
         message_steps_reset();
-        gUnk_030057A0.text_bank = s->cmd_args[0] - 2;
-        gUnk_030057A0.text_id = (s->cmd_args[1] << 8) | s->cmd_args[2];
+        gFieldDebug.text_bank = s->cmd_args[0] - 2;
+        gFieldDebug.text_id = (s->cmd_args[1] << 8) | s->cmd_args[2];
         if (map_script_always_zero())
             map_script_command_done();
         s->cmd_step++;
@@ -53,8 +53,8 @@ void map_script_update_wait_window_close(void) {
 }
 
 void map_script_update_wait(void) {
-    if (gUnk_030057E0.cmd_args[0] != 0)
-        gUnk_030057E0.cmd_args[0]--;
+    if (gFieldWork.cmd_args[0] != 0)
+        gFieldWork.cmd_args[0]--;
     else
         map_script_command_done();
 }
@@ -96,18 +96,18 @@ static void map_script_load_warp_area(void) {
     area_load_bg_palettes();
     area_load_sprite_palettes();
     load_room_graphics();
-    load_battlefield_data_to_buffer();
-    gUnk_030057E0.unkC35 = 0;
-    gUnk_030057E0.unkC36 = 0;
+    area_load_encounter_rate();
+    gFieldWork.bg_anim_frame = 0;
+    gFieldWork.bg_anim_timer = 0;
     animate_area_bg_tiles();
     load_battle_terrain_data();
-    gUnk_030057E0.player_x = gUnk_030057E0.player_tile_x * 16 + gUnk_030057E0.map_origin_x;
-    gUnk_030057E0.player_y = gUnk_030057E0.player_tile_y * 16 + gUnk_030057E0.map_origin_y;
+    gFieldWork.player_x = gFieldWork.player_tile_x * 16 + gFieldWork.map_origin_x;
+    gFieldWork.player_y = gFieldWork.player_tile_y * 16 + gFieldWork.map_origin_y;
     init_battle_field_setup();
     update_bg_scroll_offsets_a();
     gSpriteEntries[47].unk25 = 1;
-    field_set_player_facing(gUnk_030057E0.player_facing);
-    update_cursor_tile_position();
+    field_set_player_facing(gFieldWork.player_facing);
+    follower_snap_to_player();
     area_load_sprite_sheets();
     map_script_command_done();
 }
@@ -116,9 +116,9 @@ void map_script_update_player_hop(void) {
     switch (gSpriteEntries[47].unk26) {
     case 0:
         if (gSpriteEntries[47].unk28 < 16) {
-            gSpriteEntries[47].unk4 = gUnk_030057E0.cmd_args[0] - gJumpArcTable[gSpriteEntries[47].unk28][0] / 16;
+            gSpriteEntries[47].unk4 = gFieldWork.cmd_args[0] - gJumpArcTable[gSpriteEntries[47].unk28][0] / 16;
             gSpriteEntries[47].unk28++;
-            if (gSpriteEntries[47].unk4 / 4 <= (gUnk_030057E0.cmd_args[0] - 16) / 4)
+            if (gSpriteEntries[47].unk4 / 4 <= (gFieldWork.cmd_args[0] - 16) / 4)
                 gSpriteEntries[47].unkB = 0xFF;
             else
                 sprite_set_blend_from_kind(47);
@@ -129,34 +129,34 @@ void map_script_update_player_hop(void) {
         break;
     case 1:
         sprite_set_blend_from_kind(47);
-        gSpriteEntries[47].unk4 = gUnk_030057E0.cmd_args[0];
+        gSpriteEntries[47].unk4 = gFieldWork.cmd_args[0];
         map_script_command_done();
         break;
     }
 }
 
 void map_script_update_player_jump(void) {
-    switch (gUnk_030057E0.cmd_step) {
+    switch (gFieldWork.cmd_step) {
     case 0:
-        memcpy_u8(gUnk_030057E0.unkC10, gUnk_030057E0.unkC18, 8);
-        gUnk_030057E0.unkC10[0] = 0;
-        gUnk_030057E0.unkC10[3] = 0;
-        gUnk_030057E0.unkC10[7] = 0;
-        field_set_player_facing(gUnk_030057E0.cmd_args[0]);
+        memcpy_u8(gFieldWork.tile_actions, gFieldWork.saved_tile_actions, 8);
+        gFieldWork.tile_actions[0] = 0;
+        gFieldWork.tile_actions[3] = 0;
+        gFieldWork.tile_actions[7] = 0;
+        field_set_player_facing(gFieldWork.cmd_args[0]);
         memcpy_u8(&gSpriteEntries[47], &gSpriteEntries[46], 0x40);
-        gUnk_030057E0.player_visible = 0;
+        gFieldWork.player_visible = 0;
         field_set_player_sprite_visible(0);
         gSpriteEntries[89].unk0 = 0xCC0C;
         gSpriteEntries[48].unk0 = 0;
         gSpriteEntries[47].unk28 = 0;
-        gUnk_030057E0.unkC5F = 1;
+        gFieldWork.script_field_update = 1;
         clear_input_keys();
         field_play_sound_effect(0x70);
-        gUnk_030057E0.cmd_step++;
+        gFieldWork.cmd_step++;
         break;
     case 1:
         clear_input_keys();
-        switch (gUnk_030057E0.cmd_args[0]) {
+        switch (gFieldWork.cmd_args[0]) {
         case 0:
             KEYS_LO(gHeldKeys) |= 0x40;
             break;
@@ -182,11 +182,11 @@ void map_script_update_player_jump(void) {
         } else {
             gSpriteEntries[47].unk26++;
             gSpriteEntries[47].unk28 = 0;
-            memcpy_u8(gUnk_030057E0.unkC18, gUnk_030057E0.unkC10, 8);
+            memcpy_u8(gFieldWork.saved_tile_actions, gFieldWork.tile_actions, 8);
             sprite_entry_clear(46);
-            gUnk_030057E0.player_visible = 1;
+            gFieldWork.player_visible = 1;
             field_set_player_sprite_visible(1);
-            gUnk_030057E0.unkC5F = 0;
+            gFieldWork.script_field_update = 0;
             map_script_command_done();
         }
         break;
@@ -194,16 +194,16 @@ void map_script_update_player_jump(void) {
 }
 
 void map_script_update_player_walk(void) {
-    switch (gUnk_030057E0.cmd_step) {
+    switch (gFieldWork.cmd_step) {
     case 0:
         clear_input_keys();
-        if (gUnk_030057E0.cmd_args[gSpriteEntries[47].unk26] == 0xFF) {
-            gUnk_030057E0.cmd_step++;
+        if (gFieldWork.cmd_args[gSpriteEntries[47].unk26] == 0xFF) {
+            gFieldWork.cmd_step++;
             break;
         }
         if (gSpriteEntries[47].unk28 == 0)
             break;
-        switch ((gUnk_030057E0.cmd_args[gSpriteEntries[47].unk26] & 0xF0) >> 4) {
+        switch ((gFieldWork.cmd_args[gSpriteEntries[47].unk26] & 0xF0) >> 4) {
         case 0:
             KEYS_LO(gHeldKeys) |= 0x40;
             break;
@@ -224,23 +224,23 @@ void map_script_update_player_walk(void) {
         gSpriteEntries[47].unk27--;
         if (gSpriteEntries[47].unk27 != 0)
             break;
-        gUnk_030057E0.player_tile_x = field_pixel_x_to_tile(gUnk_030057E0.player_x);
-        gUnk_030057E0.player_tile_y = field_pixel_y_to_tile(gUnk_030057E0.player_y);
-        if (gUnk_030057E0.unkC76 != 0) {
-            gUnk_030057E0.unkC72 = field_pixel_x_to_tile(gUnk_030057E0.unkC6E);
-            gUnk_030057E0.unkC73 = field_pixel_y_to_tile(gUnk_030057E0.unkC70);
+        gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
+        gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
+        if (gFieldWork.follower_active != 0) {
+            gFieldWork.follower_tile_x = field_pixel_x_to_tile(gFieldWork.follower_x);
+            gFieldWork.follower_tile_y = field_pixel_y_to_tile(gFieldWork.follower_y);
         }
         gSpriteEntries[47].unk26++;
         if (gSpriteEntries[47].unk26 > 3) {
-            gUnk_030057E0.cmd_step++;
+            gFieldWork.cmd_step++;
             break;
         }
-        if (gUnk_030057E0.cmd_args[gSpriteEntries[47].unk26] == 0xFF) {
-            gUnk_030057E0.cmd_step++;
+        if (gFieldWork.cmd_args[gSpriteEntries[47].unk26] == 0xFF) {
+            gFieldWork.cmd_step++;
             break;
         }
-        script_sprite_begin_walk(47, gUnk_030057E0.cmd_args[gSpriteEntries[47].unk26], gSpriteEntries[47].unk2A);
-        switch (gUnk_030057E0.cmd_args[gSpriteEntries[47].unk26] >> 4) {
+        script_sprite_begin_walk(47, gFieldWork.cmd_args[gSpriteEntries[47].unk26], gSpriteEntries[47].unk2A);
+        switch (gFieldWork.cmd_args[gSpriteEntries[47].unk26] >> 4) {
         case 0:
             KEYS_LO(gHeldKeys) |= 0x40;
             break;
@@ -256,8 +256,8 @@ void map_script_update_player_walk(void) {
         }
         break;
     case 1:
-        memcpy_u8(gUnk_030057E0.unkC20, gUnk_030057E0.unkC10, 8);
-        gUnk_030057E0.unkC5F = 0;
+        memcpy_u8(gFieldWork.script_tile_actions, gFieldWork.tile_actions, 8);
+        gFieldWork.script_field_update = 0;
         map_script_command_done();
         break;
     }
@@ -267,8 +267,8 @@ void map_script_update_set_player_form(void) {
     u8 obj;
     u32 i;
 
-    gUnk_030057E0.saved_player_form = gUnk_030057E0.player_form = gUnk_083D2998[gUnk_030057E0.cmd_args[0]];
-    gUnk_030057E0.unkC28 = gUnk_083D2998[gUnk_030057E0.cmd_args[0]];
+    gFieldWork.saved_player_form = gFieldWork.player_form = gUnk_083D2998[gFieldWork.cmd_args[0]];
+    gFieldWork.loaded_form = gUnk_083D2998[gFieldWork.cmd_args[0]];
     load_battle_terrain_data();
     area_load_sprite_sheets();
     switch (gBlendEffect.type) {
@@ -314,7 +314,7 @@ void map_script_update_actor_spawn_walk_2(void) {
 }
 
 static void map_script_actor_spawn_walk_step(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -338,7 +338,7 @@ void map_script_update_actor_walk_2(void) {
 }
 
 static void map_script_actor_walk_step(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -382,17 +382,17 @@ static void map_script_all_actors_move_step(u8 speed, u8 mode) {
     s32 i;
     s32 slot;
 
-    switch (gUnk_030057E0.cmd_step) {
+    switch (gFieldWork.cmd_step) {
     case 0:
         for (i = 0; i <= 3; i++) {
             if (script_object_slot(i) != -1 && gUnk_030055A0[script_object_slot(i) + 79].unk0 != 0) {
                 if (mode == 1)
-                    script_sprite_begin_walk(script_object_slot(i) + 79, gUnk_030057E0.cmd_args[0], speed);
+                    script_sprite_begin_walk(script_object_slot(i) + 79, gFieldWork.cmd_args[0], speed);
                 else
-                    script_sprite_begin_slide(script_object_slot(i) + 79, gUnk_030057E0.cmd_args[0], speed);
+                    script_sprite_begin_slide(script_object_slot(i) + 79, gFieldWork.cmd_args[0], speed);
             }
         }
-        gUnk_030057E0.cmd_step++;
+        gFieldWork.cmd_step++;
         break;
     case 1:
         for (i = 0; i <= 3; i++) {
@@ -414,7 +414,7 @@ static void map_script_all_actors_move_step(u8 speed, u8 mode) {
 }
 
 void map_script_update_actor_spawn_glide(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -430,7 +430,7 @@ void map_script_update_actor_spawn_glide(void) {
 }
 
 void map_script_update_actor_glide(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -451,7 +451,7 @@ void map_script_update_switch_event_counter(void) {}
 void map_script_update_jump(void) {}
 
 void map_script_update_yes_no(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
     u32 r;
 
     switch (s->cmd_step) {
@@ -463,7 +463,7 @@ void map_script_update_yes_no(void) {
         r = yes_no_menu_poll();
         if (r) {
             if (r & 0xF0)
-                s->unkC8A = s->branch_base + s->cmd_args[0];
+                s->script_pos = s->branch_base + s->cmd_args[0];
             s->cmd_step++;
         }
         break;
@@ -475,7 +475,7 @@ void map_script_update_yes_no(void) {
 }
 
 void map_script_update_yes_no_keep_window(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
     u32 r;
 
     switch (s->cmd_step) {
@@ -487,7 +487,7 @@ void map_script_update_yes_no_keep_window(void) {
         r = yes_no_menu_poll();
         if (r) {
             if (r & 0xF0)
-                s->unkC8A = s->branch_base + s->cmd_args[0];
+                s->script_pos = s->branch_base + s->cmd_args[0];
             map_script_command_done();
         }
         break;
@@ -496,7 +496,7 @@ void map_script_update_yes_no_keep_window(void) {
 
 // Opcode 0x33: start Robattle (battle id unkC2A) and keep its result (1 won, 2 lost) in sceneResult.
 void map_script_update_robattle(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -523,7 +523,7 @@ static void map_script_update_unused_stub_2(void) {}
 
 // Opcode 0x36: give arg1 of item arg0 (capped at 99) and show the text.
 void map_script_update_give_item(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
     s32 have;
     s32 n;
 
@@ -542,10 +542,10 @@ void map_script_update_give_item(void) {
             n = 99 - have;
         else
             n = s->cmd_args[1];
-        field_give_item(gUnk_030057E0.cmd_args[0], n);
-        copy_string_to_text_buffer(0, item_name(gUnk_030057E0.cmd_args[0]));
+        field_give_item(gFieldWork.cmd_args[0], n);
+        copy_string_to_text_buffer(0, item_name(gFieldWork.cmd_args[0]));
         format_number_to_text_buffer(1, n);
-        gUnk_030057E0.cmd_step = 2;
+        gFieldWork.cmd_step = 2;
         break;
     case 1:
         if (message_step_run(0, 0, 0, gUnk_0847E8C4[0]))
@@ -560,7 +560,7 @@ void map_script_update_give_item(void) {
 
 // Opcode 0x37: take arg1 of item arg0 and show the text.
 void map_script_update_take_item(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
     s32 have;
     s32 n;
 
@@ -605,7 +605,7 @@ void map_script_update_take_item(void) {
 
 // Opcode 0x38: give arg2 of Medapart (arg0, arg1), capped at 99 (medapart_add_quantity), then show the text.
 void map_script_update_give_medapart(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
     s32 have;
     s32 n;
 
@@ -624,10 +624,10 @@ void map_script_update_give_medapart(void) {
             n = 99 - have;
         else
             n = s->cmd_args[2];
-        field_give_medapart(gUnk_030057E0.cmd_args[0], gUnk_030057E0.cmd_args[1], n);
-        copy_string_to_text_buffer(0, medapart_name(gUnk_030057E0.cmd_args[1], gUnk_030057E0.cmd_args[0]));
+        field_give_medapart(gFieldWork.cmd_args[0], gFieldWork.cmd_args[1], n);
+        copy_string_to_text_buffer(0, medapart_name(gFieldWork.cmd_args[1], gFieldWork.cmd_args[0]));
         format_number_to_text_buffer(1, n);
-        gUnk_030057E0.cmd_step = 2;
+        gFieldWork.cmd_step = 2;
         break;
     case 1:
         if (message_step_run(0, 0, 0, gUnk_0847E8C4[5]))
@@ -642,7 +642,7 @@ void map_script_update_give_medapart(void) {
 
 // Opcode 0x39: take arg2 of Medapart (arg0, arg1) and show the text.
 void map_script_update_take_medapart(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
     s32 have;
     s32 n;
 
@@ -687,7 +687,7 @@ void map_script_update_take_medapart(void) {
 
 // Opcode 0x3A: add the 16-bit argument * 10 to gMoney and show the "got money" text (runtime: +5000 in the intro).
 void map_script_update_give_money(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
     u32 n;
 
     switch (s->cmd_step) {
@@ -708,7 +708,7 @@ void map_script_update_give_money(void) {
 
 // Opcode 0x3B: subtract the 16-bit argument * 10 from gMoney, at most what is left (runtime: -4980 buying Rokusho).
 void map_script_update_take_money(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
     s32 n;
     s32 money;
 
@@ -734,7 +734,7 @@ void map_script_update_take_money(void) {
 
 // Opcode 0x3C: give medal arg0 unless already owned (find_medal_slot_by_id), then run scene 1.
 void map_script_update_give_medal(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -767,7 +767,7 @@ void map_script_update_give_medal(void) {
 
 // Opcode 0x3D: add Tinpet arg0 to the team unless it is full, then show its text (runs in walkthrough 01).
 void map_script_update_give_tinpet(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -793,7 +793,7 @@ void map_script_update_give_tinpet(void) {
 
 // Opcode 0x40: flash the screen white arg0 times.
 void map_script_update_flash_white(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -838,11 +838,11 @@ void map_script_update_all_actors_blink(void) {
 
 // Opcode 0x42 (its command is a nullsub, so this never runs).
 void map_script_update_player_slide(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
-        s->unkC8A = 16 / sprite_walk_speed(47);
+        s->script_pos = 16 / sprite_walk_speed(47);
         script_sprite_begin_slide(47, (s->cmd_args[0] << 4) | s->cmd_args[1], 0);
         s->cmd_step++;
         break;
@@ -859,42 +859,40 @@ static u32 map_script_player_slide_step(u8 dir) {
 
     switch (dir) {
     case 0:
-        if (gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y != 0) {
-            gUnk_030057E0.player_y -= sprite_walk_speed(47);
+        if (gFieldWork.player_y - gFieldWork.map_origin_y != 0) {
+            gFieldWork.player_y -= sprite_walk_speed(47);
             if (!field_map_origin_y() &&
-                gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y < gUnk_030057E0.unk802 * 8 - 0x60 &&
-                gBg1Scroll.y != 0) {
+                gFieldWork.player_y - gFieldWork.map_origin_y < gFieldWork.map_height * 8 - 0x60 && gBg1Scroll.y != 0) {
                 field_scroll_bg_y(-sprite_walk_speed(47));
                 gSpriteEntries[0].unk4 += sprite_walk_speed(47);
             }
         }
         break;
     case 1:
-        if (gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y + 16 < gUnk_030057E0.unk802 * 8) {
-            gUnk_030057E0.player_y += sprite_walk_speed(47);
-            if (!field_map_origin_y() && gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y + 16 > 0x50 &&
-                gBg1Scroll.y + 0xA0 < gUnk_030057E0.unk802 * 8) {
+        if (gFieldWork.player_y - gFieldWork.map_origin_y + 16 < gFieldWork.map_height * 8) {
+            gFieldWork.player_y += sprite_walk_speed(47);
+            if (!field_map_origin_y() && gFieldWork.player_y - gFieldWork.map_origin_y + 16 > 0x50 &&
+                gBg1Scroll.y + 0xA0 < gFieldWork.map_height * 8) {
                 field_scroll_bg_y(sprite_walk_speed(47));
                 gSpriteEntries[0].unk4 -= sprite_walk_speed(47);
             }
         }
         break;
     case 2:
-        if (gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x != 0) {
-            gUnk_030057E0.player_x -= sprite_walk_speed(47);
+        if (gFieldWork.player_x - gFieldWork.map_origin_x != 0) {
+            gFieldWork.player_x -= sprite_walk_speed(47);
             if (!field_map_origin_x() &&
-                gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x < gUnk_030057E0.unk800 * 8 - 0x80 &&
-                gBg1Scroll.x != 0) {
+                gFieldWork.player_x - gFieldWork.map_origin_x < gFieldWork.map_width * 8 - 0x80 && gBg1Scroll.x != 0) {
                 field_scroll_bg_x(-sprite_walk_speed(47));
                 gSpriteEntries[0].unk2 += sprite_walk_speed(47);
             }
         }
         break;
     case 3:
-        if (gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x + 16 < gUnk_030057E0.unk800 * 8) {
-            gUnk_030057E0.player_x += sprite_walk_speed(47);
-            if (!field_map_origin_x() && gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x + 16 > 0x80 &&
-                gBg1Scroll.x + 0xF0 < gUnk_030057E0.unk800 * 8) {
+        if (gFieldWork.player_x - gFieldWork.map_origin_x + 16 < gFieldWork.map_width * 8) {
+            gFieldWork.player_x += sprite_walk_speed(47);
+            if (!field_map_origin_x() && gFieldWork.player_x - gFieldWork.map_origin_x + 16 > 0x80 &&
+                gBg1Scroll.x + 0xF0 < gFieldWork.map_width * 8) {
                 field_scroll_bg_x(sprite_walk_speed(47));
                 gSpriteEntries[0].unk2 -= sprite_walk_speed(47);
             }
@@ -904,8 +902,8 @@ static u32 map_script_player_slide_step(u8 dir) {
     gUnk_03006D20.unk0--;
     ret = 0;
     if (gUnk_03006D20.unk0 == 0) {
-        gUnk_030057E0.player_tile_x = field_pixel_x_to_tile(gUnk_030057E0.player_x);
-        gUnk_030057E0.player_tile_y = field_pixel_y_to_tile(gUnk_030057E0.player_y);
+        gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
+        gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
         ret = 1;
     }
     return ret;
@@ -919,23 +917,23 @@ void map_script_update_shake_screen(void) {
     u8 div;
     u8 n;
 
-    switch (gUnk_030057E0.cmd_step) {
+    switch (gFieldWork.cmd_step) {
     case 0:
-        if (gUnk_030057E0.cmd_args[0] == 0)
+        if (gFieldWork.cmd_args[0] == 0)
             gUnk_03005310.unk1E = gBg1Scroll.x;
         else
             gUnk_03005310.unk26 = gBg1Scroll.y;
-        gUnk_030057E0.cmd_args[2] = 0;
-        gUnk_030057E0.cmd_args[4] = gUnk_030057E0.cmd_args[1];
-        gUnk_030057E0.cmd_step++;
+        gFieldWork.cmd_args[2] = 0;
+        gFieldWork.cmd_args[4] = gFieldWork.cmd_args[1];
+        gFieldWork.cmd_step++;
         break;
     case 1:
-        if (gUnk_030057E0.cmd_args[1] != 0) {
-            gUnk_030057E0.cmd_args[1]--;
-            div = gUnk_030057E0.cmd_args[4];
-            n = gUnk_030057E0.cmd_args[2];
+        if (gFieldWork.cmd_args[1] != 0) {
+            gFieldWork.cmd_args[1]--;
+            div = gFieldWork.cmd_args[4];
+            n = gFieldWork.cmd_args[2];
             idx = 256 / div * n / 2;
-            if (gUnk_030057E0.cmd_args[0] == 0) {
+            if (gFieldWork.cmd_args[0] == 0) {
                 off = gJumpArcTable[0][idx] / (128 - ((phase = n & 3) + 1) * 16);
                 if (phase <= 1)
                     field_set_bg_scroll_x(gUnk_03005310.unk1E - off);
@@ -949,17 +947,17 @@ void map_script_update_shake_screen(void) {
                     field_set_bg_scroll_y(off + gUnk_03005310.unk26);
             }
             update_bg_scroll_offsets_a();
-            if (gUnk_030057E0.unkC76)
-                update_bg_scroll_offsets_b();
-            gUnk_030057E0.cmd_args[2]++;
+            if (gFieldWork.follower_active)
+                follower_update_screen_pos();
+            gFieldWork.cmd_args[2]++;
         } else {
-            if (gUnk_030057E0.cmd_args[0] == 0)
+            if (gFieldWork.cmd_args[0] == 0)
                 field_set_bg_scroll_x(gUnk_03005310.unk1E);
             else
                 field_set_bg_scroll_y(gUnk_03005310.unk26);
             update_bg_scroll_offsets_a();
-            if (gUnk_030057E0.unkC76)
-                update_bg_scroll_offsets_b();
+            if (gFieldWork.follower_active)
+                follower_update_screen_pos();
             map_script_command_done();
         }
         break;
@@ -984,10 +982,10 @@ void map_script_update_reload_map(void) {
     memzero_bytes(gUnk_03005664, 0x90);
     memzero_bytes(gUnk_03005664 + 0xA8, 0x90);
     restore_script_sprites();
-    memzero_bytes(gUnk_030057E0.unk810, 0x400);
-    memcpy_u8(gUnk_084045A8[gUnk_030057E0.unk7FE], gUnk_030057E0.unk810,
-              (gUnk_030057E0.unk802 >> 1) * (gUnk_030057E0.unk800 >> 1));
-    gUnk_030057E0.unkCBA = 1;
+    memzero_bytes(gFieldWork.tile_map, 0x400);
+    memcpy_u8(gUnk_084045A8[gFieldWork.area_id], gFieldWork.tile_map,
+              (gFieldWork.map_height >> 1) * (gFieldWork.map_width >> 1));
+    gFieldWork.npc_load_mode = 1;
     load_map_npc_sprites();
     update_entity_sprites_on_screen();
     map_script_command_done();
@@ -998,7 +996,7 @@ void map_script_update_unused_57(void) {}
 void map_script_update_unused_58(void) {}
 
 void map_script_update_open_shop(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1029,33 +1027,33 @@ void map_script_update_give_starter_medabot(void) {}
 void map_script_update_field_effect(void) {
     u32 kind;
 
-    switch (gUnk_030057E0.cmd_step) {
+    switch (gFieldWork.cmd_step) {
     case 0:
         kind = gUnk_03005350.unk1D4 & 0x3F;
         if (kind == 0xD || kind == 0x16) {
             if (field_effect_run_and_restore())
-                gUnk_030057E0.cmd_step++;
+                gFieldWork.cmd_step++;
         } else if (field_effect_run_and_restore())
             map_script_command_done();
         break;
     case 1:
         gUnk_03006D20.unk0 = 16 / sprite_walk_speed(47);
-        script_sprite_begin_slide(47, (gUnk_030057E0.cmd_args[0] << 4) | gUnk_030057E0.cmd_args[1], 0);
-        gUnk_030057E0.cmd_step++;
+        script_sprite_begin_slide(47, (gFieldWork.cmd_args[0] << 4) | gFieldWork.cmd_args[1], 0);
+        gFieldWork.cmd_step++;
         break;
     case 2:
         if ((gUnk_03005350.unk1D4 & 0x3F) == 0xD)
-            gUnk_030057E0.player_facing = 2;
+            gFieldWork.player_facing = 2;
         else
-            gUnk_030057E0.player_facing = 3;
-        if (map_script_player_slide_step(gUnk_030057E0.player_facing)) {
-            gUnk_030057E0.player_visible = 1;
-            gSpriteEntries[47].unk2A = gUnk_083D2908[gUnk_030057E0.player_form];
-            gUnk_030057E0.player_tile_x = field_pixel_x_to_tile(gUnk_030057E0.player_x);
-            gUnk_030057E0.player_tile_y = field_pixel_y_to_tile(gUnk_030057E0.player_y);
+            gFieldWork.player_facing = 3;
+        if (map_script_player_slide_step(gFieldWork.player_facing)) {
+            gFieldWork.player_visible = 1;
+            gSpriteEntries[47].unk2A = gUnk_083D2908[gFieldWork.player_form];
+            gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
+            gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
             field_center_camera_on_player();
-            field_set_player_sprite_visible(gUnk_030057E0.player_visible);
-            field_set_player_facing(gUnk_030057E0.player_facing);
+            field_set_player_sprite_visible(gFieldWork.player_visible);
+            field_set_player_facing(gFieldWork.player_facing);
             update_bg_scroll_offsets_a();
             init_battle_sprites();
             map_script_command_done();
@@ -1079,7 +1077,7 @@ static void map_script_update_unused_stub_3(void) {}
 void map_script_update_unused_6a(void) {}
 
 void map_script_update_actor_spawn_walk_fast(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1095,7 +1093,7 @@ void map_script_update_actor_spawn_walk_fast(void) {
 }
 
 void map_script_update_actor_walk_fast(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1110,7 +1108,7 @@ void map_script_update_actor_walk_fast(void) {
 }
 
 void map_script_update_actor_spawn_glide_fast(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1126,7 +1124,7 @@ void map_script_update_actor_spawn_glide_fast(void) {
 }
 
 void map_script_update_actor_glide_fast(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1141,7 +1139,7 @@ void map_script_update_actor_glide_fast(void) {
 }
 
 void map_script_update_medabots_weekly(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1156,7 +1154,7 @@ void map_script_update_medabots_weekly(void) {
 }
 
 void map_script_update_enter_player_name(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1171,7 +1169,7 @@ void map_script_update_enter_player_name(void) {
 }
 
 void map_script_update_rename_medal(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1187,7 +1185,7 @@ void map_script_update_rename_medal(void) {
 
 // Opcode 0x73: the scrolling text screen (switch_game_mode 8, mode 2 state 22).
 void map_script_update_text_scroll(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1202,7 +1200,7 @@ void map_script_update_text_scroll(void) {
 }
 
 void map_script_update_link_start(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1227,7 +1225,7 @@ void map_script_update_link_start(void) {
 }
 
 void map_script_update_race(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1245,7 +1243,7 @@ void map_script_update_race(void) {
 }
 
 void map_script_update_event_picture(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1260,7 +1258,7 @@ void map_script_update_event_picture(void) {
 }
 
 void map_script_update_bomb_game(void) {
-    struct Unk_030057E0 *s = &gUnk_030057E0;
+    struct FieldWork *s = &gFieldWork;
 
     switch (s->cmd_step) {
     case 0:
@@ -1283,11 +1281,11 @@ void map_script_update_all_actors_slide(void) {
 
 // Opcode 0x7F: end the follower: copy sprite 48 and its shadow back to map object arg0.
 void map_script_update_follower_to_actor(void) {
-    gSpriteEntries[48].unkC_8 = gUnk_030057E0.unkC6E;
-    gSpriteEntries[48].unk10_8 = gUnk_030057E0.unkC70;
-    memcpy_u8(&gSpriteEntries[48], &gSpriteEntries[gUnk_030057E0.cmd_args[0] + 79], 0x40);
-    gUnk_030055A0[gUnk_030057E0.cmd_args[0] + 79].unk0 = 0xFFFF;
-    memcpy_u8(&gSpriteEntries[90], &gSpriteEntries[gUnk_030057E0.cmd_args[0] + 121], 0x40);
+    gSpriteEntries[48].unkC_8 = gFieldWork.follower_x;
+    gSpriteEntries[48].unk10_8 = gFieldWork.follower_y;
+    memcpy_u8(&gSpriteEntries[48], &gSpriteEntries[gFieldWork.cmd_args[0] + 79], 0x40);
+    gUnk_030055A0[gFieldWork.cmd_args[0] + 79].unk0 = 0xFFFF;
+    memcpy_u8(&gSpriteEntries[90], &gSpriteEntries[gFieldWork.cmd_args[0] + 121], 0x40);
     map_script_command_done();
 }
 
@@ -1359,8 +1357,8 @@ void map_script_update_move_queue_run(void) {
 }
 
 void map_script_update_set_bg_tile_anim(void) {
-    if (gUnk_030057E0.unkC36 == 0) {
-        gUnk_030057E0.unkC34 = gUnk_030057E0.cmd_args[0];
+    if (gFieldWork.bg_anim_timer == 0) {
+        gFieldWork.bg_anim_enabled = gFieldWork.cmd_args[0];
         map_script_command_done();
     }
 }

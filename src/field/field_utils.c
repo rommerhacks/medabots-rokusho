@@ -42,19 +42,19 @@ s32 truncate_to_digit_count(s32 n, u8 k) {
 }
 
 // Whether item a can be used now: 0 not a usable item, 1 yes, 2-4 not here (2: town map in an area of type
-// 0xA, 3: blocked by a gUnk_030057E0.useBlockFlags flag, 4: disguise while player_form is 1-2). Items 1, 5, 12, 13, 19,
+// 0xA, 3: blocked by a gFieldWork.useBlockFlags flag, 4: disguise while player_form is 1-2). Items 1, 5, 12, 13, 19,
 // 39, 40 are the disguises ("Transform Goods").
 u32 item_get_use_result(u32 a) {
     u32 r;
 
     switch (a) {
     case 0:
-        if (gUnk_083D29EB[gUnk_030057E0.unk7FE] == 0xA) {
+        if (gUnk_083D29EB[gFieldWork.area_id] == 0xA) {
             r = 2;
             break;
         }
         r = 1;
-        if (gUnk_030057E0.useBlockFlags & 0x20)
+        if (gFieldWork.useBlockFlags & 0x20)
             r = 3;
         break;
     case 1:
@@ -65,9 +65,9 @@ u32 item_get_use_result(u32 a) {
     case 39:
     case 40:
         r = 1;
-        if (gUnk_030057E0.useBlockFlags & 1)
+        if (gFieldWork.useBlockFlags & 1)
             r = 3;
-        else if ((u8)(gUnk_030057E0.player_form - 1) <= 1)
+        else if ((u8)(gFieldWork.player_form - 1) <= 1)
             r = 4;
         break;
     default:

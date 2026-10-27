@@ -78,7 +78,7 @@ void town_map_load_graphics(void) {
             q->unk18 = 0;
         }
     }
-    switch (gUnk_030057E0.unkC32) {
+    switch (gFieldWork.unkC32) {
     case 0:
         for (i = 0; i <= 2; i++) {
             tmp = 0;
@@ -99,7 +99,7 @@ void town_map_load_graphics(void) {
     CpuFastSet(gUnk_087871E4, (void *)PLTT, 0x70);
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
     CpuFastSet(gUnk_080AF9A8, (void *)(PLTT + 0x200), 0x18);
-    gUnk_03006F74->unk17 = gAreaTownMapPlace[gUnk_030057E0.unk7FE];
+    gUnk_03006F74->unk17 = gAreaTownMapPlace[gFieldWork.area_id];
     gSpriteEntries[0].unk0 = 0xC000;
     gSpriteEntries[0].unk1C = 2;
     gSpriteEntries[0].unk4 = 0x3C;

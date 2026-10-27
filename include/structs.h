@@ -890,7 +890,7 @@ struct TeamSlot {
 // Field scratch state; mostly the debug screen (field/field_debug), which draws its pages as hex
 // sprites. Page labels come from the ROM strings: 0 "MP" (map), 1 "EVENT", 2 "PLAYER", 3 "MAP_EFFECT",
 // 4 "KWG", 5 "KOMA", 6 "MESS", 7 "LV" (sound). text_bank / text_id are also used by map_script_update_message.
-struct Unk_030057A0 {
+struct FieldDebugWork {
     u8 unk0; // sound effect played by A on page 4
     u8 filler1[0xF];
     u8 unk10;
@@ -924,7 +924,7 @@ struct MapExit {
     u8 value; // returned by check_room_exit_at_position (0 = none)
 };
 
-// Map object record (64 at gUnk_030057E0.unk5DC).
+// Map object record (64 at gFieldWork.objects).
 struct MapObject {
     u8 x;
     u8 y;
@@ -962,7 +962,7 @@ struct Unk_030064A0 {
     u16 savedBg[30 * 20]; // BG tilemap saved before leaving through the town map
 };
 
-// One sprite of the snapshot at gUnk_030057E0.unk7DC (4 bytes)
+// One sprite of the snapshot at gFieldWork.sprite_snapshot (4 bytes)
 struct ScriptSpriteSave {
     u8 x; // tile
     u8 y;
@@ -973,39 +973,41 @@ struct ScriptSpriteSave {
     u8 anim; // (unk2B & 0xF) << 4 | facing
 };
 
-struct Unk_030057E0 {
+// Field state, gFieldWork (0x030057E0): the area, the player and the follower, the map script runner
+// and the battle a script or random encounter sets up.
+struct FieldWork {
     u8 filler0[0x5DC];
-    struct MapObject unk5DC[64];
-    struct ScriptSpriteSave unk7DC[8]; // sprite snapshot (save_script_sprites)
+    struct MapObject objects[64];
+    struct ScriptSpriteSave sprite_snapshot[8]; // sprite snapshot (save_script_sprites)
     u8 unk7FC;
     u8 unk7FD;
-    u8 unk7FE;      // area id
+    u8 area_id;
     u8 story_phase; // story chapter (map script opcode 0x6B; map object unk6 bit n = present in phase n)
-    u16 unk800;     // map width * 2 (tiles are bytes, unk810 rows are unk800 / 2 long)
-    u16 unk802;     // map height * 2
+    u16 map_width;  // in 8-px tiles (twice the 16-px tile count; tile_map rows are map_width / 2 long)
+    u16 map_height; // in 8-px tiles
     u16 unk804;     // area tilemap header words (field_tilemap_header_word(area, 0 / 1))
     u16 unk806;
     u8 filler808[0x8];
-    u8 unk810[0x400]; // tile map
-    u8 unkC10[0x8];   // tile value -> result of check_tile_and_trigger_battle_action
-    u8 unkC18[0x8];   // saved copy of unkC10
-    u8 unkC20[0x8];
-    u8 unkC28;
-    u8 unkC29; // area byte 0 of gUnk_083BEA90 (load_battlefield_data_to_buffer)
-    u8 unkC2A; // battle id (set by the debug menu "Battle" entry before game state 6; guess)
-    u8 unkC2B;
-    u8 encounters_off; // bit 0: no random encounters (map script opcode 0x5F, debug menu "Rnd.tk")
-    u8 unkC2D;
-    u8 unkC2E;
-    u8 unkC2F;
-    u8 unkC30;
-    u8 unkC31;
+    u8 tile_map[0x400];          // one byte per 16-px tile
+    u8 tile_actions[0x8];        // tile value -> result of check_tile_and_trigger_battle_action
+    u8 saved_tile_actions[0x8];  // saved copy of tile_actions
+    u8 script_tile_actions[0x8]; // tile_actions kept aside while a scripted walk clears them
+    u8 loaded_form;              // player form whose palette and tile actions are loaded (gUnk_083D2918)
+    u8 encounter_rate;           // area byte 0 of gUnk_083BEA90 (area_load_encounter_rate)
+    u8 battle_id;                // battle to set up (map script Robattle command, debug menu "Battle" entry)
+    u8 encounter_steps;          // steps since the last random encounter (one at 32, chance 1/32 per step after 16)
+    u8 encounters_off;           // bit 0: no random encounters (map script opcode 0x5F, debug menu "Rnd.tk")
+    u8 fixed_battle; // the battle is battle_id, not rolled from the area (no Rubberobo Medal use, no encounters)
+    u8 battle_flags; // high nibble: battle type (2: opponents start with full Medaforce); low nibble: prize part
+    u8 story_battle; // set by the map script Robattle command: a loss just fades out, no part is taken
+    u8 song;         // song playing (0xFF: the script override in script_song)
+    u8 script_song;  // song set by a map script (field_update_music event 3)
     u8 unkC32;
-    u8 unkC33; // Medawatch menu enabled (B opens the field menu only if set)
-    u8 unkC34; // area BG tile animation enabled (animate_area_bg_tiles)
-    u8 unkC35; // its frame index
-    u8 unkC36; // frames until the next one (2: every 3rd frame; runtime-checked)
-    u8 unkC37; // random seed
+    u8 unkC33;          // Medawatch menu enabled (B opens the field menu only if set)
+    u8 bg_anim_enabled; // area BG tile animation enabled (animate_area_bg_tiles)
+    u8 bg_anim_frame;   // its frame index
+    u8 bg_anim_timer;   // frames until the next one (2: every 3rd frame; runtime-checked)
+    u8 rng_seed;        // random seed
     u8 unkC38[0x10];
     u16 map_origin_x; // screen offset of a map smaller than the screen (field_load_area_tiles)
     u16 map_origin_y;
@@ -1018,49 +1020,50 @@ struct Unk_030057E0 {
     u16 player_y;
     u8 player_tile_x;
     u8 player_tile_y;
-    u8 unkC58;
-    u8 unkC59;
+    u8 player_step_frames; // frames left in the current step
+    u8 player_move_dir;
     u8 fillerC5A[0x1];
-    u8 player_visible;     // player sprite shown (scripts hide it for jumps, warps and cutscenes)
-    u8 player_form;        // 0 normal, 1-2 the vehicle menu forms, 3-8 / 0xD disguise items, 0xB / 0xC effect forms
-    u8 useBlockFlags;      // set bits block: 0 disguises, 1 Mini S. Wheel, 2 Wings of Wind, 3 Periscope,
-                           // 4 Silver Locket, 5 the town map
-    u8 savedUseBlockFlags; // copy of useBlockFlags while a script blocks all but bit 5 (0xDF)
-    u8 unkC5F;
+    u8 player_visible;      // player sprite shown (scripts hide it for jumps, warps and cutscenes)
+    u8 player_form;         // 0 normal, 1-2 the vehicle menu forms, 3-8 / 0xD disguise items, 0xB / 0xC effect forms
+    u8 useBlockFlags;       // set bits block: 0 disguises, 1 Mini S. Wheel, 2 Wings of Wind, 3 Periscope,
+                            // 4 Silver Locket, 5 the town map
+    u8 savedUseBlockFlags;  // copy of useBlockFlags while a script blocks all but bit 5 (0xDF)
+    u8 script_field_update; // the field sub-states keep running under the script (scripted walks)
     u8 unkC60;
     u8 fillerC61[0x6];
     u8 player_facing;
     u8 fillerC68[0x1];
     u8 saved_player_form; // the form to go back to after a temporary one
     u8 fillerC6A[0x4];
-    u16 unkC6E;
-    u16 unkC70;
-    u8 unkC72;
-    u8 unkC73;
-    u8 unkC74;
-    u8 unkC75;
-    u8 unkC76;
+    // follower: a script turns a map sprite into sprite 48 (shadow 90) that walks behind the player
+    u16 follower_x; // map pixels
+    u16 follower_y;
+    u8 follower_tile_x;
+    u8 follower_tile_y;
+    u8 follower_step_frames; // frames left in its current step
+    u8 follower_move_dir;    // 0 up, 1 down, 2 left, 3 right; 0xFF none
+    u8 follower_active;
     u8 fillerC77[0xC];
-    u8 unkC83;
-    u8 unkC84;
+    u8 follower_facing;
+    u8 follower_sprite_set; // its sprite set (gSpriteEntries.unk2B)
     u8 fillerC85[0x3];
-    u8 unkC88;
-    u8 cmd_busy;     // the current map script command still runs its gMapScriptUpdates handler
-    u16 unkC8A;      // map script read offset
-    u16 branch_base; // read offset just after the opcode; conditional jumps add their offset to it
-    u16 unkC8E;      // current map script id
-    u16 unkC90;
-    u8 unkC92;         // current map script command (gMapScriptCommands index)
-    u8 cmd_step;       // step of the running command update
-    u8 cmd_args[0x10]; // map script command arguments (read_map_script_bytes)
-    u8 unkCA4[0x10];
-    u8 unkCB4; // index of the map object running the script (unk5DC)
+    u8 script_running;            // a map script runs (the field update steps it instead of reading input)
+    u8 cmd_busy;                  // the current map script command still runs its gMapScriptUpdates handler
+    u16 script_pos;               // map script read offset
+    u16 branch_base;              // read offset just after the opcode; conditional jumps add their offset to it
+    u16 script_id;                // current map script id (0 once it ends)
+    u16 last_script_id;           // the last script started (kept after it ends; field debug EVENT page)
+    u8 cmd;                       // current map script command (gMapScriptCommands index)
+    u8 cmd_step;                  // step of the running command update
+    u8 cmd_args[0x10];            // map script command arguments (read_map_script_bytes)
+    u8 script_object_slots[0x10]; // script object slot + 1 (script_object_set_slot)
+    u8 script_object;             // index of the map object running the script (objects)
     u8 unkCB5;
     u8 fillerCB6;
     u8 unkCB7;
     u8 unkCB8;
     u8 unkCB9;
-    u8 unkCBA;
+    u8 npc_load_mode; // load_map_npc_sprites mode: 0 fresh area, 2 back from a menu or battle
     u8 fillerCBB[0x1];
     // guess: two friendship scores 0-32 (start 16, opcodes 0x3E / 0x3F / 0x50); the field debug page labels
     // them "AR" and "KA" (Arika and Karin?)
@@ -1670,7 +1673,7 @@ struct SaveData {
     u8 items[64][2];             // gItemInventory
     u16 checksum;                // byte sum of the whole image, computed with this field 0
     u8 fillerFF6[2];
-    u8 field[0xCC0]; // gUnk_030057E0
+    u8 field[0xCC0]; // gFieldWork
     u8 flags;        // bits 0-1 gOptionTimeLimit, bit 2 gOptionSkipMessages, bits 3-4 gOptionBattleMusic, bit 5
                      // gUnk_03001784.unk0_1
     u8 filler1CB9[3];
@@ -1856,7 +1859,7 @@ struct MapNpcRecord {
     u16 unk2; // copied to MapObject.unk2 (type << 12 | event id)
     u8 unk4;  // bits 4-7: animation set, bits 0-3: animation state; 0xFF = no sprite
     u8 unk5;  // load order
-    u16 unk6; // bit n: present when the story phase gUnk_030057E0.story_phase == n
+    u16 unk6; // bit n: present when the story phase gFieldWork.story_phase == n
 };
 
 #endif // GUARD_STRUCTS_H

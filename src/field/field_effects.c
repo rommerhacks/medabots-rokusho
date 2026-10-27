@@ -308,8 +308,8 @@ u8 field_random(u8 n) {
     const u8 *tbl = gRandomBytes;
     u8 r;
 
-    r = tbl[(gUnk_030057E0.unkC37 + gUnk_03005310.unk4) & 0xFF];
-    gUnk_030057E0.unkC37 = r;
+    r = tbl[(gFieldWork.rng_seed + gUnk_03005310.unk4) & 0xFF];
+    gFieldWork.rng_seed = r;
     return Mod(r, n);
 }
 

@@ -10,7 +10,7 @@ void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj) {
 }
 
 void update_npc_random_animation(void) {
-    struct MapObject *obj = gUnk_030057E0.unk5DC;
+    struct MapObject *obj = gFieldWork.objects;
 
     if ((gUnk_03005310.unk4 & 3) == 0) {
         obj += field_random(64);
@@ -20,14 +20,14 @@ void update_npc_random_animation(void) {
 }
 
 void update_npc_sprite_animations(void) {
-    struct MapObject *obj = gUnk_030057E0.unk5DC;
+    struct MapObject *obj = gFieldWork.objects;
     s32 i;
     u32 active;
 
     for (i = 0; i < 64; obj++, i++) {
-        if (gUnk_030057E0.unkC88) {
-            active = gUnk_030057E0.unkCB4 != i;
-            if (gUnk_030057E0.unkC92 != 0x87)
+        if (gFieldWork.script_running) {
+            active = gFieldWork.script_object != i;
+            if (gFieldWork.cmd != 0x87)
                 goto check;
             continue;
         } else {
@@ -43,10 +43,10 @@ void update_npc_sprite_animations(void) {
 }
 
 u32 map_cursor_move_and_check_event(void) {
-    struct MapObject *obj = gUnk_030057E0.unk5DC;
+    struct MapObject *obj = gFieldWork.objects;
     s32 blocked = 0;
-    s32 x = gUnk_030057E0.player_tile_x;
-    s32 y = gUnk_030057E0.player_tile_y;
+    s32 x = gFieldWork.player_tile_x;
+    s32 y = gFieldWork.player_tile_y;
     u8 found;
     s32 i;
 
@@ -58,7 +58,7 @@ u32 map_cursor_move_and_check_event(void) {
             y--;
         break;
     case 1:
-        if (y == (gUnk_030057E0.unk802 >> 1) - 1)
+        if (y == (gFieldWork.map_height >> 1) - 1)
             blocked = 1;
         else
             y++;
@@ -70,7 +70,7 @@ u32 map_cursor_move_and_check_event(void) {
             x--;
         break;
     case 3:
-        if (x == (gUnk_030057E0.unk800 >> 1) - 1)
+        if (x == (gFieldWork.map_width >> 1) - 1)
             blocked = 1;
         else
             x++;
@@ -86,11 +86,11 @@ u32 map_cursor_move_and_check_event(void) {
             case 0:
             case 4:
             case 6:
-                gUnk_030057E0.unkC88 = 1;
-                gUnk_030057E0.unkC90 = gUnk_030057E0.unkC8E = obj->unk2 & 0xFFF;
-                gUnk_030057E0.cmd_busy = 0;
-                gUnk_030057E0.unkC8A = 0;
-                gUnk_030057E0.unkCB4 = i;
+                gFieldWork.script_running = 1;
+                gFieldWork.last_script_id = gFieldWork.script_id = obj->unk2 & 0xFFF;
+                gFieldWork.cmd_busy = 0;
+                gFieldWork.script_pos = 0;
+                gFieldWork.script_object = i;
                 gSpriteEntries[47].unk25 = 1;
                 found = 1;
                 break;
@@ -111,17 +111,17 @@ u32 map_cursor_move_and_check_event(void) {
 
 u32 find_npc_event_match(void) {
     u8 found = 0;
-    struct MapObject *obj = gUnk_030057E0.unk5DC;
+    struct MapObject *obj = gFieldWork.objects;
     s32 i;
 
     for (i = 0; i < 64; i++) {
-        if (obj->x == gUnk_030057E0.player_tile_x) {
-            if (obj->y == gUnk_030057E0.player_tile_y && (obj->unk2 & 0xF000) >> 12 == 8) {
-                gUnk_030057E0.unkC88 = 1;
-                gUnk_030057E0.unkC90 = gUnk_030057E0.unkC8E = obj->unk2 & 0xFFF;
-                gUnk_030057E0.cmd_busy = 0;
-                gUnk_030057E0.unkC8A = 0;
-                gUnk_030057E0.unkCB4 = i;
+        if (obj->x == gFieldWork.player_tile_x) {
+            if (obj->y == gFieldWork.player_tile_y && (obj->unk2 & 0xF000) >> 12 == 8) {
+                gFieldWork.script_running = 1;
+                gFieldWork.last_script_id = gFieldWork.script_id = obj->unk2 & 0xFFF;
+                gFieldWork.cmd_busy = 0;
+                gFieldWork.script_pos = 0;
+                gFieldWork.script_object = i;
                 gSpriteEntries[47].unk25 = 1;
                 found = 1;
             }
@@ -130,31 +130,27 @@ u32 find_npc_event_match(void) {
         if (found)
             break;
     }
-    return gUnk_030057E0.unkC88;
+    return gFieldWork.script_running;
 }
 
 u32 get_adjacent_tile_value(u8 dir) {
     u8 tile;
     switch (dir) {
     case 0:
-        tile =
-            gUnk_030057E0
-                .unk810[(gUnk_030057E0.player_tile_y - 1) * (gUnk_030057E0.unk800 >> 1) + gUnk_030057E0.player_tile_x];
+        tile = gFieldWork
+                   .tile_map[(gFieldWork.player_tile_y - 1) * (gFieldWork.map_width >> 1) + gFieldWork.player_tile_x];
         break;
     case 1:
-        tile =
-            gUnk_030057E0
-                .unk810[(gUnk_030057E0.player_tile_y + 1) * (gUnk_030057E0.unk800 >> 1) + gUnk_030057E0.player_tile_x];
+        tile = gFieldWork
+                   .tile_map[(gFieldWork.player_tile_y + 1) * (gFieldWork.map_width >> 1) + gFieldWork.player_tile_x];
         break;
     case 2:
-        tile =
-            gUnk_030057E0
-                .unk810[gUnk_030057E0.player_tile_y * (gUnk_030057E0.unk800 >> 1) + (gUnk_030057E0.player_tile_x - 1)];
+        tile = gFieldWork
+                   .tile_map[gFieldWork.player_tile_y * (gFieldWork.map_width >> 1) + (gFieldWork.player_tile_x - 1)];
         break;
     case 3:
-        tile =
-            gUnk_030057E0
-                .unk810[gUnk_030057E0.player_tile_y * (gUnk_030057E0.unk800 >> 1) + (gUnk_030057E0.player_tile_x + 1)];
+        tile = gFieldWork
+                   .tile_map[gFieldWork.player_tile_y * (gFieldWork.map_width >> 1) + (gFieldWork.player_tile_x + 1)];
         break;
     }
     return tile;
@@ -164,15 +160,15 @@ bool32 check_tile_and_trigger_battle_action(u8 dir) {
     u8 tile;
     u32 ret;
 
-    if (gUnk_030057E0.player_form == 2) {
+    if (gFieldWork.player_form == 2) {
         tile = get_adjacent_tile_value(dir);
         if (tile == 0 || tile == 2) {
-            gUnk_030057E0.player_form = gUnk_030057E0.saved_player_form;
+            gFieldWork.player_form = gFieldWork.saved_player_form;
             load_battle_palette_via_dma(0);
         }
     }
     tile = get_adjacent_tile_value(dir);
-    ret = gUnk_030057E0.unkC10[tile];
+    ret = gFieldWork.tile_actions[tile];
     if (ret)
         field_set_player_facing(dir);
     return ret;
@@ -180,10 +176,10 @@ bool32 check_tile_and_trigger_battle_action(u8 dir) {
 
 s32 check_room_exit_at_position(void) {
     s32 ret = -1;
-    const struct MapExit *p = gUnk_0840FAF4[gUnk_030057E0.unk7FE];
+    const struct MapExit *p = gUnk_0840FAF4[gFieldWork.area_id];
     s32 blocked = 0;
-    s32 x = gUnk_030057E0.player_tile_x;
-    s32 y = gUnk_030057E0.player_tile_y;
+    s32 x = gFieldWork.player_tile_x;
+    s32 y = gFieldWork.player_tile_y;
     u8 mask;
     s32 i;
 
@@ -196,7 +192,7 @@ s32 check_room_exit_at_position(void) {
             y--;
         break;
     case 1:
-        if (y == (gUnk_030057E0.unk802 >> 1) - 1)
+        if (y == (gFieldWork.map_height >> 1) - 1)
             blocked = -1;
         else
             y++;
@@ -208,7 +204,7 @@ s32 check_room_exit_at_position(void) {
             x--;
         break;
     case 3:
-        if (x == (gUnk_030057E0.unk800 >> 1) - 1)
+        if (x == (gFieldWork.map_width >> 1) - 1)
             blocked = -1;
         else
             x++;
@@ -247,11 +243,11 @@ s32 check_room_exit_at_position(void) {
 
 // Field pixel position to map tile, relative to the map origin (non-zero for maps smaller than the screen).
 u8 field_pixel_x_to_tile(u16 x) {
-    return (x - gUnk_030057E0.map_origin_x) / 16;
+    return (x - gFieldWork.map_origin_x) / 16;
 }
 
 u8 field_pixel_y_to_tile(u16 y) {
-    return (y - gUnk_030057E0.map_origin_y) / 16;
+    return (y - gFieldWork.map_origin_y) / 16;
 }
 
 void update_entity_sprites_on_screen(void) {
@@ -261,10 +257,10 @@ void update_entity_sprites_on_screen(void) {
     for (i = 0; i < 36; i++) {
         if (gUnk_030055A0[i + 49].unk0 != 0) {
             visible = 0;
-            if (gBg1Scroll.y < gSpriteEntries[i + 49].unk10_8 - gUnk_030057E0.map_origin_y + 16 &&
-                gSpriteEntries[i + 49].unk10_8 - gUnk_030057E0.map_origin_y < gBg1Scroll.y + 0xA8 &&
-                gBg1Scroll.x < gSpriteEntries[i + 49].unkC_8 - gUnk_030057E0.map_origin_x + 16 &&
-                gSpriteEntries[i + 49].unkC_8 - gUnk_030057E0.map_origin_x < gBg1Scroll.x + 0xF0)
+            if (gBg1Scroll.y < gSpriteEntries[i + 49].unk10_8 - gFieldWork.map_origin_y + 16 &&
+                gSpriteEntries[i + 49].unk10_8 - gFieldWork.map_origin_y < gBg1Scroll.y + 0xA8 &&
+                gBg1Scroll.x < gSpriteEntries[i + 49].unkC_8 - gFieldWork.map_origin_x + 16 &&
+                gSpriteEntries[i + 49].unkC_8 - gFieldWork.map_origin_x < gBg1Scroll.x + 0xF0)
                 visible = 1;
             if (visible) {
                 if (gSpriteEntries[i + 49].unk2D != 1) {
@@ -297,14 +293,14 @@ void update_entity_sprites_on_screen(void) {
 // Decompresses the area's tiles and centres maps smaller than the screen (15 x 10 tiles).
 void field_load_area_tiles(u8 area) {
     LZ77UnCompVram(gUnk_083F92F4[area].unk0, gFieldTilemapBuf);
-    if (area_map_size(gUnk_030057E0.unk7FE, 0) >> 1 <= 14)
-        gUnk_030057E0.map_origin_x = (15 - (area_map_size(area, 0) >> 1)) * 8;
+    if (area_map_size(gFieldWork.area_id, 0) >> 1 <= 14)
+        gFieldWork.map_origin_x = (15 - (area_map_size(area, 0) >> 1)) * 8;
     else
-        gUnk_030057E0.map_origin_x = 0;
-    if (area_map_size(gUnk_030057E0.unk7FE, 1) >> 1 <= 9)
-        gUnk_030057E0.map_origin_y = (10 - (area_map_size(area, 1) >> 1)) * 8;
+        gFieldWork.map_origin_x = 0;
+    if (area_map_size(gFieldWork.area_id, 1) >> 1 <= 9)
+        gFieldWork.map_origin_y = (10 - (area_map_size(area, 1) >> 1)) * 8;
     else
-        gUnk_030057E0.map_origin_y = 0;
+        gFieldWork.map_origin_y = 0;
 }
 
 // Map width (which 0) or height (1) of an area, in 8-pixel units.
@@ -351,11 +347,11 @@ void field_set_bg_scroll_y(u16 y) {
 }
 
 u32 field_map_origin_x(void) {
-    return gUnk_030057E0.map_origin_x;
+    return gFieldWork.map_origin_x;
 }
 
 u32 field_map_origin_y(void) {
-    return gUnk_030057E0.map_origin_y;
+    return gFieldWork.map_origin_y;
 }
 
 void field_scroll_bg_x(s16 dx) {
@@ -367,20 +363,20 @@ void field_scroll_bg_x(s16 dx) {
 void field_center_camera_on_player(void) {
     s32 x, y;
 
-    x = gUnk_030057E0.player_tile_x - 7;
+    x = gFieldWork.player_tile_x - 7;
     if (x < 0)
         x = 0;
-    if (x + 15 > area_map_size(gUnk_030057E0.unk7FE, 0) >> 1) {
-        x = area_map_size(gUnk_030057E0.unk7FE, 0) >> 1;
+    if (x + 15 > area_map_size(gFieldWork.area_id, 0) >> 1) {
+        x = area_map_size(gFieldWork.area_id, 0) >> 1;
         x -= 15;
         if (field_map_origin_x())
             x = 0;
     }
-    y = gUnk_030057E0.player_tile_y - 4;
+    y = gFieldWork.player_tile_y - 4;
     if (y <= 0)
         y = 0;
-    if (y + 10 > area_map_size(gUnk_030057E0.unk7FE, 1) >> 1) {
-        y = area_map_size(gUnk_030057E0.unk7FE, 1) >> 1;
+    if (y + 10 > area_map_size(gFieldWork.area_id, 1) >> 1) {
+        y = area_map_size(gFieldWork.area_id, 1) >> 1;
         y -= 10;
         if (field_map_origin_y())
             y = 0;
@@ -396,8 +392,8 @@ void field_scroll_bg_y(s16 dy) {
 }
 
 void update_bg_scroll_offsets_a(void) {
-    gSpriteEntries[47].unk2 = gUnk_030057E0.player_x - gBg1Scroll.x;
-    gSpriteEntries[47].unk4 = gUnk_030057E0.player_y - gBg1Scroll.y;
+    gSpriteEntries[47].unk2 = gFieldWork.player_x - gBg1Scroll.x;
+    gSpriteEntries[47].unk4 = gFieldWork.player_y - gBg1Scroll.y;
     gSpriteEntries[89].unk2 = gSpriteEntries[47].unk2;
     gSpriteEntries[89].unk4 = gSpriteEntries[47].unk4 - 5;
 }
@@ -419,8 +415,8 @@ void field_set_player_sprite_visible(u8 on) {
 }
 
 void check_and_update_battlefield_palette(void) {
-    if (gUnk_030057E0.player_form == 1 && area_allows_vehicle(0) == 0) {
-        gUnk_030057E0.player_form = gUnk_030057E0.saved_player_form;
+    if (gFieldWork.player_form == 1 && area_allows_vehicle(0) == 0) {
+        gFieldWork.player_form = gFieldWork.saved_player_form;
         load_battle_palette_via_dma(1);
     }
 }
@@ -428,7 +424,7 @@ void check_and_update_battlefield_palette(void) {
 // Returns 1 if a warp of the current area sits at (x, y); stores its high dir nibble in gUnk_03006D38.unk3.
 u32 find_map_event_by_coords(u32 x, u32 y) {
     u32 found = 0;
-    const struct AreaWarp *w = gAreaWarps[gUnk_030057E0.unk7FE];
+    const struct AreaWarp *w = gAreaWarps[gFieldWork.area_id];
     s32 dir;
     s32 i;
 
@@ -450,19 +446,19 @@ bool32 field_player_at_map_edge(u8 dir) {
 
     switch (dir) {
     case 0:
-        if (gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y == 0)
+        if (gFieldWork.player_y - gFieldWork.map_origin_y == 0)
             ret = 1;
         break;
     case 1:
-        if (gUnk_030057E0.player_y - gUnk_030057E0.map_origin_y + 16 == gUnk_030057E0.unk802 * 8)
+        if (gFieldWork.player_y - gFieldWork.map_origin_y + 16 == gFieldWork.map_height * 8)
             ret = 1;
         break;
     case 2:
-        if (gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x == 0)
+        if (gFieldWork.player_x - gFieldWork.map_origin_x == 0)
             ret = 1;
         break;
     case 3:
-        if (gUnk_030057E0.player_x - gUnk_030057E0.map_origin_x + 16 == gUnk_030057E0.unk800 * 8)
+        if (gFieldWork.player_x - gFieldWork.map_origin_x + 16 == gFieldWork.map_width * 8)
             ret = 1;
         break;
     }
@@ -492,38 +488,38 @@ void set_sprite_animation_state(u8 idx, u8 state) {
 
 // Player facing (0 up, 1 down, 2 left, 3 right); sprite 47 is the player.
 void field_set_player_facing(u8 dir) {
-    gUnk_030057E0.player_facing = dir;
+    gFieldWork.player_facing = dir;
     set_sprite_animation_state(47, dir);
-    update_battle_direction_indicator(3);
+    follower_turn_toward_player(3);
 }
 
-void set_battle_state_byte_c83(u8 dir) {
-    gUnk_030057E0.unkC83 = dir;
+void follower_set_facing(u8 dir) {
+    gFieldWork.follower_facing = dir;
     set_sprite_animation_state(48, dir);
 }
 
 void set_tile_data(u8 x, u8 y, u8 val) {
-    gUnk_030057E0.unk810[y * (gUnk_030057E0.unk800 >> 1) + x] = val;
+    gFieldWork.tile_map[y * (gFieldWork.map_width >> 1) + x] = val;
 }
 
 // Runs at the end of a door transition: finds the warp under the player, switches area and places the player.
 void field_warp_to_area(void) {
     u32 found = 0;
-    u32 area = gUnk_030057E0.unk7FE;
+    u32 area = gFieldWork.area_id;
     const struct AreaWarp *w = gAreaWarps[area];
     s32 i;
 
     for (i = 0; w[i].x != 0xFF;) {
         u8 x = w[i].x;
         u8 y = w[i].y;
-        if (x == gUnk_030057E0.player_tile_x && y == gUnk_030057E0.player_tile_y) {
-            gUnk_030057E0.unk7FE = w[i].area;
-            field_load_area_tiles(gUnk_030057E0.unk7FE);
+        if (x == gFieldWork.player_tile_x && y == gFieldWork.player_tile_y) {
+            gFieldWork.area_id = w[i].area;
+            field_load_area_tiles(gFieldWork.area_id);
             field_set_player_facing(w[i].dir & 7);
-            gUnk_030057E0.player_x = (w[i].destX << 4) + gUnk_030057E0.map_origin_x;
-            gUnk_030057E0.player_y = (w[i].destY << 4) + gUnk_030057E0.map_origin_y;
-            gUnk_030057E0.player_tile_x = field_pixel_x_to_tile(gUnk_030057E0.player_x);
-            gUnk_030057E0.player_tile_y = field_pixel_y_to_tile(gUnk_030057E0.player_y);
+            gFieldWork.player_x = (w[i].destX << 4) + gFieldWork.map_origin_x;
+            gFieldWork.player_y = (w[i].destY << 4) + gFieldWork.map_origin_y;
+            gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
+            gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
             field_center_camera_on_player();
             found = 1;
         }
@@ -531,42 +527,43 @@ void field_warp_to_area(void) {
         if (found)
             break;
     }
-    update_cursor_tile_position();
+    follower_snap_to_player();
 }
 
-// guess: sets up sprite 48 and its shadow (90), see update_battle_direction_indicator
-void init_battle_medaforce_sprite(void) {
-    if (gUnk_030057E0.unkC76) {
-        sprite_entry_init(48, 0xC804, gUnk_030057E0.unkC84 * 12 + gUnk_030057E0.unkC83, gUnk_030057E0.unkC84, 1);
+// Recreates the follower sprite (48) and its shadow (90) after an area or screen reload.
+void follower_respawn(void) {
+    if (gFieldWork.follower_active) {
+        sprite_entry_init(48, 0xC804, gFieldWork.follower_sprite_set * 12 + gFieldWork.follower_facing,
+                          gFieldWork.follower_sprite_set, 1);
         gSpriteEntries[48].unkB = 0x40;
-        gSpriteEntries[48].unk2B = gUnk_030057E0.unkC84;
-        set_battle_state_byte_c83(gUnk_030057E0.unkC83);
-        sprite_anim_start(48, sprite_walk_anim_id(48, gUnk_030057E0.unkC83));
-        gUnk_030057E0.unkC72 = field_pixel_x_to_tile(gUnk_030057E0.unkC6E);
-        gUnk_030057E0.unkC73 = field_pixel_y_to_tile(gUnk_030057E0.unkC70);
+        gSpriteEntries[48].unk2B = gFieldWork.follower_sprite_set;
+        follower_set_facing(gFieldWork.follower_facing);
+        sprite_anim_start(48, sprite_walk_anim_id(48, gFieldWork.follower_facing));
+        gFieldWork.follower_tile_x = field_pixel_x_to_tile(gFieldWork.follower_x);
+        gFieldWork.follower_tile_y = field_pixel_y_to_tile(gFieldWork.follower_y);
         gSpriteEntries[48].unk30 = area_sprite_sheet_id(gSpriteEntries[48].unk2B);
         sprite_set_blend_from_kind(48);
         sprite_entry_init(90, 0xCC0C, 0x90, 14, 1);
-        gSpriteEntries[90].unkC_8 = gUnk_030057E0.unkC6E;
-        gSpriteEntries[90].unk10_8 = gUnk_030057E0.unkC70 - 5;
+        gSpriteEntries[90].unkC_8 = gFieldWork.follower_x;
+        gSpriteEntries[90].unk10_8 = gFieldWork.follower_y - 5;
         gSpriteEntries[90].unk2 = gSpriteEntries[48].unk2;
         gSpriteEntries[90].unk4 = gSpriteEntries[48].unk4 - 5;
     }
 }
 
-void update_cursor_tile_position(void) {
-    if (gUnk_030057E0.unkC76) {
-        gUnk_030057E0.unkC6E = gUnk_030057E0.player_x;
-        gUnk_030057E0.unkC70 = gUnk_030057E0.player_y;
-        gUnk_030057E0.unkC72 = field_pixel_x_to_tile(gUnk_030057E0.unkC6E);
-        gUnk_030057E0.unkC73 = field_pixel_y_to_tile(gUnk_030057E0.unkC70);
-        set_battle_state_byte_c83(gSpriteEntries[47].unk20);
+void follower_snap_to_player(void) {
+    if (gFieldWork.follower_active) {
+        gFieldWork.follower_x = gFieldWork.player_x;
+        gFieldWork.follower_y = gFieldWork.player_y;
+        gFieldWork.follower_tile_x = field_pixel_x_to_tile(gFieldWork.follower_x);
+        gFieldWork.follower_tile_y = field_pixel_y_to_tile(gFieldWork.follower_y);
+        follower_set_facing(gSpriteEntries[47].unk20);
     }
 }
 
-void update_bg_scroll_offsets_b(void) {
-    gSpriteEntries[48].unk2 = gUnk_030057E0.unkC6E - gBg1Scroll.x;
-    gSpriteEntries[48].unk4 = gUnk_030057E0.unkC70 - gBg1Scroll.y;
+void follower_update_screen_pos(void) {
+    gSpriteEntries[48].unk2 = gFieldWork.follower_x - gBg1Scroll.x;
+    gSpriteEntries[48].unk4 = gFieldWork.follower_y - gBg1Scroll.y;
     gSpriteEntries[90].unk2 = gSpriteEntries[48].unk2;
     gSpriteEntries[90].unk4 = gSpriteEntries[48].unk4 - 5;
 }
@@ -645,6 +642,6 @@ u32 event_counter_get(u16 id) {
 }
 
 void load_battle_terrain_data(void) {
-    memcpy_u8(gUnk_083D2918[gUnk_030057E0.unkC28], gUnk_030057E0.unkC10, 8);
-    gSpriteEntries[47].unk2A = gUnk_083D2908[gUnk_030057E0.player_form];
+    memcpy_u8(gUnk_083D2918[gFieldWork.loaded_form], gFieldWork.tile_actions, 8);
+    gSpriteEntries[47].unk2A = gUnk_083D2908[gFieldWork.player_form];
 }

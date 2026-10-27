@@ -303,10 +303,10 @@ u32 area_allows_vehicle(u32 arg) {
 
     switch (arg) {
     case 0:
-        ret = gUnk_083BEA90[0][gUnk_030057E0.unk7FE * 8 + 2];
+        ret = gUnk_083BEA90[0][gFieldWork.area_id * 8 + 2];
         break;
     case 1:
-        ret = gUnk_083BEA90[0][gUnk_030057E0.unk7FE * 8 + 3];
+        ret = gUnk_083BEA90[0][gFieldWork.area_id * 8 + 3];
         break;
     }
     return ret;

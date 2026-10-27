@@ -82,7 +82,7 @@ void load_save_data(struct SaveData *save) {
     for (i = 0; i < 9; i++)
         gTeamSlots[i] = save->team[i];
     CpuSet(save->items, gItemInventory, 0x40);
-    CpuSet(save->field, &gUnk_030057E0, 0x660);
+    CpuSet(save->field, &gFieldWork, 0x660);
     gOptionTimeLimit = save->flags & 3;
     gOptionSkipMessages = (save->flags >> 2) & 1;
     gOptionBattleMusic = (save->flags >> 3) & 3;
@@ -108,7 +108,7 @@ void serialize_save_data(struct SaveData *save) {
     for (i = 0; i < 9; i++)
         save->team[i] = gTeamSlots[i];
     CpuSet(gItemInventory, save->items, 0x40);
-    CpuSet(&gUnk_030057E0, save->field, 0x660);
+    CpuSet(&gFieldWork, save->field, 0x660);
     save->flags =
         gOptionTimeLimit | (gOptionSkipMessages << 2) | (gOptionBattleMusic << 3) | (gUnk_03001784.unk0_1 << 5);
     save->checksum = 0;

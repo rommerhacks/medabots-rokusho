@@ -70,11 +70,11 @@ void count_team_skill_uses(void) {
     }
 }
 
-// In battles of type 2 (gUnk_030057E0.unkC2E high nibble) the opponents start with a full Medaforce gauge.
+// In battles of type 2 (gFieldWork.battle_flags high nibble) the opponents start with a full Medaforce gauge.
 void fill_opponent_medaforce_for_battle_type(void) {
     u32 i;
 
-    if ((gUnk_030057E0.unkC2E & 0xF0) == 0x20) {
+    if ((gFieldWork.battle_flags & 0xF0) == 0x20) {
         for (i = 0; i <= 2; i++)
             gBattleBots[i + 3].medaforceGauge = 0x50;
     }
@@ -83,8 +83,8 @@ void fill_opponent_medaforce_for_battle_type(void) {
 void select_battle_music(void) {
     if (gGameWork.skipBotSetup == 1)
         play_song(9);
-    else if ((gUnk_030057E0.unkC2E & 0xF0) != 0) {
-        if ((gUnk_030057E0.unkC2E & 0xF0) == 0x10)
+    else if ((gFieldWork.battle_flags & 0xF0) != 0) {
+        if ((gFieldWork.battle_flags & 0xF0) == 0x10)
             play_song(0xC);
         else
             play_song(0xD);

@@ -687,10 +687,10 @@ u32 find_medabot_slot_by_medal(u8 medal) {
     return 0xFF;
 }
 
-void load_battlefield_data_to_buffer(void) {
-    memcpy_bytes_08041D04(gUnk_083BEA90[gUnk_030057E0.unk7FE], &gGameWork.partAbility, 1);
-    gUnk_030057E0.unkC29 = gGameWork.partAbility;
-    gUnk_030057E0.unkC2B = 0;
+void area_load_encounter_rate(void) {
+    memcpy_bytes_08041D04(gUnk_083BEA90[gFieldWork.area_id], &gGameWork.partAbility, 1);
+    gFieldWork.encounter_rate = gGameWork.partAbility;
+    gFieldWork.encounter_steps = 0;
 }
 
 static inline u32 roll_encounter(void) {
@@ -702,19 +702,19 @@ static inline u32 roll_encounter(void) {
 u32 check_random_encounter(void) {
     u8 n;
 
-    if (gUnk_030057E0.unkC2D != 0)
+    if (gFieldWork.fixed_battle != 0)
         return 0;
-    if (gUnk_030057E0.unkC5F != 0)
+    if (gFieldWork.script_field_update != 0)
         return 0;
-    if (gUnk_030057E0.unkC29 == 0)
+    if (gFieldWork.encounter_rate == 0)
         return 0;
-    if (gUnk_030057E0.encounters_off & 1)
+    if (gFieldWork.encounters_off & 1)
         return 0;
-    n = ++gUnk_030057E0.unkC2B;
+    n = ++gFieldWork.encounter_steps;
     if (n > 0x10 && (n > 0x1F || roll_encounter())) {
-        gUnk_030057E0.unkC2B = 0;
-        gUnk_030057E0.unkC2E = 0;
-        gUnk_030057E0.unkC2F = 0;
+        gFieldWork.encounter_steps = 0;
+        gFieldWork.battle_flags = 0;
+        gFieldWork.story_battle = 0;
         return 1;
     }
     return 0;
@@ -1385,10 +1385,10 @@ void lz_decompress(const u8 *src, void *dst) {
     lz_decompress_dispatch(src, dst);
 }
 
-// guess: message sprite set, 0 = the current area's default (gUnk_030057E0.player_form is the area palette id).
+// guess: message sprite set, 0 = the current area's default (gFieldWork.player_form is the area palette id).
 u32 resolve_area_sprite_set(u8 set) {
     if (set == 0)
-        return gUnk_083B2970[gUnk_030057E0.player_form];
+        return gUnk_083B2970[gFieldWork.player_form];
     return set;
 }
 

@@ -34,9 +34,9 @@ gSceneWork     = 0x03001800;
 gBombGameWork = 0x03001800;
 gMedals       = 0x03000BE0;
 gTeamSlots       = 0x030017A0;
-gUnk_030057A0       = 0x030057A0;
+gFieldDebug       = 0x030057A0;
 gMapScriptData      = 0x03005590;
-gUnk_030057E0       = 0x030057E0;
+gFieldWork       = 0x030057E0;
 
 /* main.c / irq */
 gUnk_03005010       = 0x03005010;

@@ -45,7 +45,7 @@ void decompress_tileset_to_vram(u32 id, u32 arg);
 void apply_battle_blend_effect_a(void);
 void update_scroll_movement_a(void);
 void give_starter_medabot(void); // team slot 0: Medal 0 with the four 0x2A parts
-void load_battlefield_data_to_buffer(void);
+void area_load_encounter_rate(void);
 u32 check_random_encounter(void);
 void start_scanline_wave_scroll(u32 phase, s32 amplitude, u32 lines); // sine-wave BG0-3 x scroll on the top `lines`
 void draw_number_bgcnt(u32 n, u32 x, u32 y, u32 digits, u32 bgcnt, u32 tile); // last `digits` digits, leading 0s blank

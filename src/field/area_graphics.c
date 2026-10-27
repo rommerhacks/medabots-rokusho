@@ -1,6 +1,6 @@
 // Field area graphics: the full area load (area_load_graphics), animated area BG tiles, the area's OBJ sprite
 // sheets (LZ to 0x06010000, 0x900 bytes each) and their palettes keyed by the current area
-// (gUnk_030057E0.unk7FE), the area music (field_update_music), blend presets and sprite-slot setup. Called by
+// (gFieldWork.area_id), the area music (field_update_music), blend presets and sprite-slot setup. Called by
 // the field modules, the field / pre-battle menus and the mode-3 scenes.
 
 #include "global.h"
@@ -15,43 +15,43 @@ void area_load_graphics(void) {
     area_load_bg_palettes();
     area_load_sprite_palettes();
     load_room_graphics();
-    gUnk_030057E0.unkC36 = 0;
+    gFieldWork.bg_anim_timer = 0;
     animate_area_bg_tiles();
-    load_map_npc_sprites(gUnk_030057E0.unkCBA);
+    load_map_npc_sprites(gFieldWork.npc_load_mode);
     update_entity_sprites_on_screen();
     init_battle_field_setup();
     update_bg_scroll_offsets_a();
-    init_battle_medaforce_sprite();
-    update_bg_scroll_offsets_b();
+    follower_respawn();
+    follower_update_screen_pos();
     area_load_sprite_sheets();
-    gUnk_030057E0.unkC4C = 1;
+    gFieldWork.unkC4C = 1;
     update_battle_entity_status_chars();
 }
 
 void animate_area_bg_tiles(void) {
-    const u8 *anim = gUnk_084096F4[gUnk_030057E0.unk7FE];
+    const u8 *anim = gUnk_084096F4[gFieldWork.area_id];
     u8 n = anim[0];
     u8 *src;
 
-    if (gUnk_030057E0.unkC34 != 0 && anim[2] != 0) {
-        if (gUnk_030057E0.unkC36 != 0) {
-            gUnk_030057E0.unkC36--;
+    if (gFieldWork.bg_anim_enabled != 0 && anim[2] != 0) {
+        if (gFieldWork.bg_anim_timer != 0) {
+            gFieldWork.bg_anim_timer--;
         } else {
-            if (anim[gUnk_030057E0.unkC35 + 3] == 0xFF)
-                gUnk_030057E0.unkC35 = 0;
-            src = gUnk_030057DC + anim[gUnk_030057E0.unkC35 + 3] * n * 32;
+            if (anim[gFieldWork.bg_anim_frame + 3] == 0xFF)
+                gFieldWork.bg_anim_frame = 0;
+            src = gUnk_030057DC + anim[gFieldWork.bg_anim_frame + 3] * n * 32;
             DmaSet(3, src, 0x06009020, 0x80000000 | (n << 4));
-            gUnk_030057E0.unkC35++;
-            gUnk_030057E0.unkC36 = 2;
+            gFieldWork.bg_anim_frame++;
+            gFieldWork.bg_anim_timer = 2;
         }
     }
 }
 
-// Sheet id 0 = the default for gUnk_030057E0.player_form, 0xD0-0xFE = a variant picked by state, 0xFF = end.
+// Sheet id 0 = the default for gFieldWork.player_form, 0xD0-0xFE = a variant picked by state, 0xFF = end.
 s32 resolve_sprite_sheet_id(s32 t) {
     s32 u;
     if (t == 0)
-        t = gUnk_083D29A6[gUnk_030057E0.player_form];
+        t = gUnk_083D29A6[gFieldWork.player_form];
     else if (t <= 0xAF)
         ;
     else if (t <= 0xBF)
@@ -60,7 +60,7 @@ s32 resolve_sprite_sheet_id(s32 t) {
         ;
     else if (t <= 0xFE) {
         const u8 *tbl = gUnk_08414394[t - 0xD0];
-        t = tbl[gUnk_030057E0.unkC38[t - 0xD0]];
+        t = tbl[gFieldWork.unkC38[t - 0xD0]];
     } else
         t = 0xFF;
     if (t != 0xFF && t > 0xBF)
@@ -101,7 +101,7 @@ void fill_sprite_sheets(s32 arg) {
 
 // guess: BG palettes (13 palettes into the buffer at 0x0202FA00, or a default set).
 void area_load_bg_palettes(void) {
-    const u16 *pal = gUnk_083F9BF4[gUnk_030057E0.unk7FE];
+    const u16 *pal = gUnk_083F9BF4[gFieldWork.area_id];
 
     if (pal != NULL) {
         DmaSet(3, pal, 0x0202FA00, 0x84000068);
@@ -118,17 +118,17 @@ void area_load_bg_palettes(void) {
     }
 }
 
-// The area's song (gUnk_0847EB80), or the script override in unkC31 while unkC30 is 0xFF.
+// The area's song (gUnk_0847EB80), or the script override in script_song while song is 0xFF.
 u8 area_song_id(void) {
-    if (gUnk_030057E0.unkC30 == 0xFF)
-        return gUnk_030057E0.unkC31;
-    return gUnk_0847EB80[gUnk_030057E0.unk7FE];
+    if (gFieldWork.song == 0xFF)
+        return gFieldWork.script_song;
+    return gUnk_0847EB80[gFieldWork.area_id];
 }
 
 // area_song_id returns its u8 widened: the original uses r0 untruncated here.
 #define area_song_id() ((u32(*)(void))area_song_id)()
 
-// Starts / keeps / overrides the field song (unkC30 = song playing) for an event code.
+// Starts / keeps / overrides the field song (song = song playing) for an event code.
 u32 field_update_music(u32 event, u32 song) {
     u32 prev_song;
     u32 area_song;
@@ -138,48 +138,48 @@ u32 field_update_music(u32 event, u32 song) {
     case 0:
     case 10:
     case 12:
-        if (gUnk_030057E0.unkC30 != 0xFF) {
+        if (gFieldWork.song != 0xFF) {
             area_song = area_song_id();
-            if (gUnk_030057E0.unkC30 != area_song) {
-                gUnk_030057E0.unkC30 = area_song;
+            if (gFieldWork.song != area_song) {
+                gFieldWork.song = area_song;
                 field_play_song(area_song);
             }
         }
         break;
     case 1:
-        gUnk_030057E0.unkC30 = song;
+        gFieldWork.song = song;
         field_play_song(song);
         break;
     case 2:
-        gUnk_030057E0.unkC30 = 0;
+        gFieldWork.song = 0;
         field_play_song(0);
         break;
     case 3:
-        if (gUnk_030057E0.unkC30 == 0xFF) {
+        if (gFieldWork.song == 0xFF) {
             if (song & 0x80) {
-                gUnk_030057E0.unkC31 = song & 0x7F;
-                gUnk_030057E0.unkC30 |= 0xFF;
+                gFieldWork.script_song = song & 0x7F;
+                gFieldWork.song |= 0xFF;
             }
             break;
         }
         if (!(song & 0x80)) {
-            gUnk_030057E0.unkC31 = song & 0x7F;
+            gFieldWork.script_song = song & 0x7F;
             field_play_song(song);
-            gUnk_030057E0.unkC30 = 0xFF;
+            gFieldWork.song = 0xFF;
             break;
         }
-        gUnk_030057E0.unkC31 = song & 0x7F;
-        gUnk_030057E0.unkC30 |= 0xFF;
+        gFieldWork.script_song = song & 0x7F;
+        gFieldWork.song |= 0xFF;
         break;
     case 4:
-        prev_song = gUnk_030057E0.unkC30;
-        gUnk_030057E0.unkC30 = 0;
+        prev_song = gFieldWork.song;
+        gFieldWork.song = 0;
         area_song = area_song_id();
         if (prev_song != area_song) {
-            gUnk_030057E0.unkC30 = area_song;
+            gFieldWork.song = area_song;
             field_play_song(area_song);
         } else
-            gUnk_030057E0.unkC30 = area_song;
+            gFieldWork.song = area_song;
         break;
     case 5:
     case 6:
@@ -189,7 +189,7 @@ u32 field_update_music(u32 event, u32 song) {
     case 19:
     case 28:
         area_song = area_song_id();
-        gUnk_030057E0.unkC30 = area_song;
+        gFieldWork.song = area_song;
         field_play_song(area_song);
         break;
     case 11:
@@ -199,12 +199,12 @@ u32 field_update_music(u32 event, u32 song) {
     case 21:
     case 22:
     case 26:
-        if (gUnk_030057E0.unkC30 != 0xFF) {
+        if (gFieldWork.song != 0xFF) {
             area_song = area_song_id();
-            gUnk_030057E0.unkC30 = area_song;
+            gFieldWork.song = area_song;
             field_play_song(area_song);
         } else
-            field_play_song(gUnk_030057E0.unkC31);
+            field_play_song(gFieldWork.script_song);
         break;
     case 23:
         if (gUnk_083D29B6[gUnk_03006D38.unk1 * 4])
@@ -213,7 +213,7 @@ u32 field_update_music(u32 event, u32 song) {
     case 24:
         if (gUnk_083D29B6[gUnk_03006D38.unk1 * 4]) {
             table_song = gUnk_083D29B6[gUnk_03006D38.unk1 * 4 + 1];
-            gUnk_030057E0.unkC30 = table_song;
+            gFieldWork.song = table_song;
             field_play_song(table_song);
         }
         break;
@@ -221,12 +221,12 @@ u32 field_update_music(u32 event, u32 song) {
         switch (gUnk_083D29B6[gUnk_03006D38.unk1 * 4 + 2]) {
         case 1:
             table_song = gUnk_083D29B6[gUnk_03006D38.unk1 * 4 + 3];
-            gUnk_030057E0.unkC30 = table_song;
+            gFieldWork.song = table_song;
             field_play_song(table_song);
             break;
         case 2:
             table_song = area_song_id();
-            gUnk_030057E0.unkC30 = table_song;
+            gFieldWork.song = table_song;
             field_play_song(table_song);
             break;
         }
@@ -237,7 +237,7 @@ u32 field_update_music(u32 event, u32 song) {
 #undef area_song_id
 
 u32 area_sprite_sheet_id(u32 arg) {
-    return resolve_sprite_sheet_id(gUnk_08413514[gUnk_030057E0.unk7FE][arg]);
+    return resolve_sprite_sheet_id(gUnk_08413514[gFieldWork.area_id][arg]);
 }
 
 void area_load_sprite_palettes_now(void) {

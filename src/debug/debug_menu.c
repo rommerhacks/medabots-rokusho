@@ -649,9 +649,9 @@ void debug_rndtk_input(void) {
         render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
     }
     if (KEYS_LO(gRepeatKeys) & 0x30)
-        gUnk_030057E0.encounters_off ^= 1;
+        gFieldWork.encounters_off ^= 1;
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gUnk_030057E0.encounters_off);
+    divide_by_100000_08041370(gGameWork.textBuf, gFieldWork.encounters_off);
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     if (KEYS_LO(gNewKeys) & 2) {
         clear_battle_sprite_slot(8, 0x21);
@@ -684,10 +684,10 @@ void debug_battle_input(void) {
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & 1) {
         clear_battle_sprite_slot(8, 0x21);
-        gUnk_030057E0.unkC2E = b;
-        gUnk_030057E0.unkC2F = b;
-        gUnk_030057E0.unkC2D = 1;
-        gUnk_030057E0.unkC2A = gGameWork.debugValues[gGameWork.debugRow];
+        gFieldWork.battle_flags = b;
+        gFieldWork.story_battle = b;
+        gFieldWork.fixed_battle = 1;
+        gFieldWork.battle_id = gGameWork.debugValues[gGameWork.debugRow];
         gGameState = 6;
         gGameSubState = b;
     }

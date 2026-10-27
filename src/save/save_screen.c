@@ -10,7 +10,7 @@ static inline void *vram_at(u32 off) {
 }
 
 // Item menu state 14 (the last entry of gItemMenuStates): fade out and return to the field, which applies
-// the disguise set in gUnk_030057E0.player_form.
+// the disguise set in gFieldWork.player_form.
 void item_menu_fade_out_use_item(void) {
     struct GameWork *b = &gGameWork;
     if (b->unk84 <= 8) {
