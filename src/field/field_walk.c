@@ -80,7 +80,7 @@ u32 scene_state_dispatch(u32 a, u32 b) {
         DmaSet(3, &zero, PLTT, 0x85000100);
         REG_BLDCNT = 0;
         REG_BLDY = 0;
-        sub_0804B1FC();
+        clear_vram_tiles_1000();
         restore_script_sprites();
         REG_DISPCNT = 0x1E40;
         if (a == 0x10 || a == 0x20)
@@ -156,13 +156,13 @@ void field_walk_update(void) {
     switch (gUnk_03005310.unk1) {
     case 0:
         set_battle_state_cancel_flag();
-        if (find_map_event_by_coords(gUnk_030057E0.unkC56, gUnk_030057E0.unkC57)) {
+        if (find_map_event_by_coords(gUnk_030057E0.player_tile_x, gUnk_030057E0.player_tile_y)) {
             gUnk_030057E0.unkC58 = 16 / sprite_walk_speed(47);
             field_set_player_facing(gSpriteEntries[47].unk20);
             sprite_anim_start(47, gSpriteEntries[47].unk20);
             if (gUnk_030057E0.unkC76) {
-                gUnk_030057E0.unkC6E = gUnk_030057E0.unkC52;
-                gUnk_030057E0.unkC70 = gUnk_030057E0.unkC54;
+                gUnk_030057E0.unkC6E = gUnk_030057E0.player_x;
+                gUnk_030057E0.unkC70 = gUnk_030057E0.player_y;
                 set_battle_state_byte_c83(gSpriteEntries[47].unk20);
                 sprite_anim_start(48, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
             }
@@ -191,7 +191,7 @@ void field_walk_update(void) {
             if (find_npc_event_match()) {
                 npc = 1;
             } else {
-                if (find_map_event_by_coords(gUnk_030057E0.unkC56, gUnk_030057E0.unkC57)) {
+                if (find_map_event_by_coords(gUnk_030057E0.player_tile_x, gUnk_030057E0.player_tile_y)) {
                     gUnk_03005310.unk1 = 3;
                     if (gUnk_03006D38.unk3)
                         field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
@@ -203,7 +203,7 @@ void field_walk_update(void) {
                         gSpriteEntries[47].unk2A = 1;
                         gSpriteEntries[48].unk2A = 1;
                     } else {
-                        gSpriteEntries[48].unk2A = gSpriteEntries[47].unk2A = gUnk_083D2908[gUnk_030057E0.unkC5C];
+                        gSpriteEntries[48].unk2A = gSpriteEntries[47].unk2A = gUnk_083D2908[gUnk_030057E0.player_form];
                     }
                     if (KEYS_LO(gNewKeys) & 1) {
                         if (map_cursor_move_and_check_event())
@@ -228,21 +228,21 @@ void field_walk_update(void) {
                             gUnk_03005310.unk2A = gBg3Scroll.y;
                             gBg0Scroll.x = 0;
                             gBg0Scroll.y = 0;
-                            gUnk_030057E0.unkC67 = gSpriteEntries[47].unk20;
+                            gUnk_030057E0.player_facing = gSpriteEntries[47].unk20;
                             gUnk_030057E0.unkC83 = gSpriteEntries[48].unk20;
                             gUnk_030057E0.unkC84 = gSpriteEntries[48].unk2B;
                             save_script_sprites();
                             gUnk_030057E0.unkCBA = 2;
                             done = 1;
                         }
-                    } else if (KEYS_HI(gNewKeys) & 1 && gUnk_030057E0.unkC5C == 1) {
+                    } else if (KEYS_HI(gNewKeys) & 1 && gUnk_030057E0.player_form == 1) {
                         field_play_sound_effect(0x74);
                     }
                 }
             }
         }
         if (!done && !npc && !warp) {
-            if (KEYS_HI(gNewKeys) & 1 && gUnk_030057E0.unkC5C == 1)
+            if (KEYS_HI(gNewKeys) & 1 && gUnk_030057E0.player_form == 1)
                 field_play_sound_effect(0x74);
             field_player_walk_input();
         } else {

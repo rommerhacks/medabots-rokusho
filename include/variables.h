@@ -103,11 +103,11 @@ extern const u8 gUnk_083D2B8D[];
 extern const u8 gUnk_083D28C3[][16];
 extern const u8 gUnk_083F8B74[][2];
 extern const u8 gUnk_0847E948[];
-extern const struct AreaWarp *const gUnk_08413114[];
+extern const struct AreaWarp *const gAreaWarps[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
 extern void (*const gMapScriptUpdates[])(void);  // per-command update handlers, run each frame while unkC89 is set
 extern const u8 gUnk_083D24AC[];                 // indexed by the player's facing (gSpriteEntries[47].unk21)
-extern const u8 gUnk_083D28B0[];        // indexed by gUnk_030057E0.unkC5C, passed to setup_battle_sprite_terrain
+extern const u8 gUnk_083D28B0[];        // indexed by gUnk_030057E0.player_form, passed to setup_battle_sprite_terrain
 extern const u8 *const gUnk_084045A8[]; // per area: tile map
 extern const struct AreaGfx gUnk_083F92F4[];
 extern const u8 gUnk_083D2903[];
@@ -286,7 +286,7 @@ extern const void *const gUnk_0847E8C4[];         // text pointers (guess)
 extern const u32 *const gTextTable[];             // text pointers, banks 0-1 (guess)
 extern const u32 *const *const gTextBankTables[]; // text pointer tables, bank 2+ (guess)
 extern const s16 gUnk_083D69A0[][8]; // 16 steps; [n][0] / 16 = player sprite y offset (sub_0804DE28, guess: jump arc)
-extern const u8 gUnk_083D2998[];     // map script terrain/palette id -> unkC5C/unkC69/unkC28 (sub_0804E324)
+extern const u8 gUnk_083D2998[]; // map script terrain/palette id -> player_form/saved_player_form/unkC28 (sub_0804E324)
 extern struct Unk_03002B70 gUnk_03002B70;       // = gMoney, with the bytes after it
 extern const Func gUnk_083AC248[];              // game state 0 sub-state handlers (guess: debug map viewer)
 extern const Func gFieldMenuHandlers[];         // game state 1 (field pause menu) sub-state handlers
@@ -367,7 +367,7 @@ extern u8
 extern u8
     gItemInventory[64][2]; // item inventory (runtime-checked): [0] 0x80 | item id, [1] count (get_item_quantity_by_id)
 extern const u8 gUnk_083B296C[]; // 4 per-phase y bob flags (update_battle_sprite_orbiting_positions)
-extern const u8 gUnk_083B2970[]; // indexed by gUnk_030057E0.unkC5C (resolve_area_sprite_set)
+extern const u8 gUnk_083B2970[]; // indexed by gUnk_030057E0.player_form (resolve_area_sprite_set)
 extern const u8 gUnk_083B827C[]; // 16 bytes per Medapart (part id * 64 + kind * 16), copied by load_part_data
 extern const u8 gUnk_083B286C[]; // random bytes, indexed by gUnk_03000440.unk8D when unk89 is set (rng_next_byte)
 extern const u8 gUnk_084EBF50[];
@@ -1321,7 +1321,7 @@ extern const struct SpriteAnimCmd *const gSpriteAnimScripts[];
 extern const struct SpriteAnimGfx gSpriteAnimGfx[];
 extern const u8 gUnk_08764CB0[];
 extern const Func gFieldSubStates[];
-extern const void *const gUnk_08411D54[];
+extern const void *const gRoomExitMessages[];
 extern const u8 *gUnk_03005590;
 extern const void *const gUnk_083F8CF4[];
 extern const void *const gUnk_083F8FF4[];

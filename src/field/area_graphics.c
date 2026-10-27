@@ -47,11 +47,11 @@ void animate_area_bg_tiles(void) {
     }
 }
 
-// Sheet id 0 = the default for gUnk_030057E0.unkC5C, 0xD0-0xFE = a variant picked by state, 0xFF = end.
+// Sheet id 0 = the default for gUnk_030057E0.player_form, 0xD0-0xFE = a variant picked by state, 0xFF = end.
 s32 resolve_sprite_sheet_id(s32 t) {
     s32 u;
     if (t == 0)
-        t = gUnk_083D29A6[gUnk_030057E0.unkC5C];
+        t = gUnk_083D29A6[gUnk_030057E0.player_form];
     else if (t <= 0xAF)
         ;
     else if (t <= 0xBF)

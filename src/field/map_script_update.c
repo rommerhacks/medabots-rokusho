@@ -101,12 +101,12 @@ static void sub_0804DD80(void) {
     gUnk_030057E0.unkC36 = 0;
     animate_area_bg_tiles();
     load_battle_terrain_data();
-    gUnk_030057E0.unkC52 = gUnk_030057E0.unkC56 * 16 + gUnk_030057E0.unkC48;
-    gUnk_030057E0.unkC54 = gUnk_030057E0.unkC57 * 16 + gUnk_030057E0.unkC4A;
+    gUnk_030057E0.player_x = gUnk_030057E0.player_tile_x * 16 + gUnk_030057E0.unkC48;
+    gUnk_030057E0.player_y = gUnk_030057E0.player_tile_y * 16 + gUnk_030057E0.unkC4A;
     init_battle_field_setup();
     update_bg_scroll_offsets_a();
     gSpriteEntries[47].unk25 = 1;
-    field_set_player_facing(gUnk_030057E0.unkC67);
+    field_set_player_facing(gUnk_030057E0.player_facing);
     update_cursor_tile_position();
     area_load_sprite_sheets();
     map_script_command_done();
@@ -224,8 +224,8 @@ void sub_0804E0E8(void) {
         gSpriteEntries[47].unk27--;
         if (gSpriteEntries[47].unk27 != 0)
             break;
-        gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
-        gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
+        gUnk_030057E0.player_tile_x = sub_080526F0(gUnk_030057E0.player_x);
+        gUnk_030057E0.player_tile_y = sub_08052714(gUnk_030057E0.player_y);
         if (gUnk_030057E0.unkC76 != 0) {
             gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
             gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
@@ -267,7 +267,7 @@ void sub_0804E324(void) {
     u8 obj;
     u32 i;
 
-    gUnk_030057E0.unkC69 = gUnk_030057E0.unkC5C = gUnk_083D2998[gUnk_030057E0.unkC94[0]];
+    gUnk_030057E0.saved_player_form = gUnk_030057E0.player_form = gUnk_083D2998[gUnk_030057E0.unkC94[0]];
     gUnk_030057E0.unkC28 = gUnk_083D2998[gUnk_030057E0.unkC94[0]];
     load_battle_terrain_data();
     area_load_sprite_sheets();
@@ -855,9 +855,9 @@ static u32 sub_0804F13C(u8 dir) {
 
     switch (dir) {
     case 0:
-        if (gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A != 0) {
-            gUnk_030057E0.unkC54 -= sprite_walk_speed(47);
-            if (!sub_08052A18() && gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A < gUnk_030057E0.unk802 * 8 - 0x60 &&
+        if (gUnk_030057E0.player_y - gUnk_030057E0.unkC4A != 0) {
+            gUnk_030057E0.player_y -= sprite_walk_speed(47);
+            if (!sub_08052A18() && gUnk_030057E0.player_y - gUnk_030057E0.unkC4A < gUnk_030057E0.unk802 * 8 - 0x60 &&
                 gBg1Scroll.y != 0) {
                 sub_08052AF8(-sprite_walk_speed(47));
                 gSpriteEntries[0].unk4 += sprite_walk_speed(47);
@@ -865,9 +865,9 @@ static u32 sub_0804F13C(u8 dir) {
         }
         break;
     case 1:
-        if (gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A + 16 < gUnk_030057E0.unk802 * 8) {
-            gUnk_030057E0.unkC54 += sprite_walk_speed(47);
-            if (!sub_08052A18() && gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A + 16 > 0x50 &&
+        if (gUnk_030057E0.player_y - gUnk_030057E0.unkC4A + 16 < gUnk_030057E0.unk802 * 8) {
+            gUnk_030057E0.player_y += sprite_walk_speed(47);
+            if (!sub_08052A18() && gUnk_030057E0.player_y - gUnk_030057E0.unkC4A + 16 > 0x50 &&
                 gBg1Scroll.y + 0xA0 < gUnk_030057E0.unk802 * 8) {
                 sub_08052AF8(sprite_walk_speed(47));
                 gSpriteEntries[0].unk4 -= sprite_walk_speed(47);
@@ -875,9 +875,9 @@ static u32 sub_0804F13C(u8 dir) {
         }
         break;
     case 2:
-        if (gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 != 0) {
-            gUnk_030057E0.unkC52 -= sprite_walk_speed(47);
-            if (!sub_08052A04() && gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 < gUnk_030057E0.unk800 * 8 - 0x80 &&
+        if (gUnk_030057E0.player_x - gUnk_030057E0.unkC48 != 0) {
+            gUnk_030057E0.player_x -= sprite_walk_speed(47);
+            if (!sub_08052A04() && gUnk_030057E0.player_x - gUnk_030057E0.unkC48 < gUnk_030057E0.unk800 * 8 - 0x80 &&
                 gBg1Scroll.x != 0) {
                 sub_08052A2C(-sprite_walk_speed(47));
                 gSpriteEntries[0].unk2 += sprite_walk_speed(47);
@@ -885,9 +885,9 @@ static u32 sub_0804F13C(u8 dir) {
         }
         break;
     case 3:
-        if (gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 + 16 < gUnk_030057E0.unk800 * 8) {
-            gUnk_030057E0.unkC52 += sprite_walk_speed(47);
-            if (!sub_08052A04() && gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 + 16 > 0x80 &&
+        if (gUnk_030057E0.player_x - gUnk_030057E0.unkC48 + 16 < gUnk_030057E0.unk800 * 8) {
+            gUnk_030057E0.player_x += sprite_walk_speed(47);
+            if (!sub_08052A04() && gUnk_030057E0.player_x - gUnk_030057E0.unkC48 + 16 > 0x80 &&
                 gBg1Scroll.x + 0xF0 < gUnk_030057E0.unk800 * 8) {
                 sub_08052A2C(sprite_walk_speed(47));
                 gSpriteEntries[0].unk2 -= sprite_walk_speed(47);
@@ -898,8 +898,8 @@ static u32 sub_0804F13C(u8 dir) {
     gUnk_03006D20.unk0--;
     ret = 0;
     if (gUnk_03006D20.unk0 == 0) {
-        gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
-        gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
+        gUnk_030057E0.player_tile_x = sub_080526F0(gUnk_030057E0.player_x);
+        gUnk_030057E0.player_tile_y = sub_08052714(gUnk_030057E0.player_y);
         ret = 1;
     }
     return ret;
@@ -1038,17 +1038,17 @@ void sub_0804F694(void) {
         break;
     case 2:
         if ((gUnk_03005350.unk1D4 & 0x3F) == 0xD)
-            gUnk_030057E0.unkC67 = 2;
+            gUnk_030057E0.player_facing = 2;
         else
-            gUnk_030057E0.unkC67 = 3;
-        if (sub_0804F13C(gUnk_030057E0.unkC67)) {
+            gUnk_030057E0.player_facing = 3;
+        if (sub_0804F13C(gUnk_030057E0.player_facing)) {
             gUnk_030057E0.unkC5B = 1;
-            gSpriteEntries[47].unk2A = gUnk_083D2908[gUnk_030057E0.unkC5C];
-            gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
-            gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
+            gSpriteEntries[47].unk2A = gUnk_083D2908[gUnk_030057E0.player_form];
+            gUnk_030057E0.player_tile_x = sub_080526F0(gUnk_030057E0.player_x);
+            gUnk_030057E0.player_tile_y = sub_08052714(gUnk_030057E0.player_y);
             field_center_camera_on_player();
             sub_08052BA0(gUnk_030057E0.unkC5B);
-            field_set_player_facing(gUnk_030057E0.unkC67);
+            field_set_player_facing(gUnk_030057E0.player_facing);
             update_bg_scroll_offsets_a();
             init_battle_sprites();
             map_script_command_done();

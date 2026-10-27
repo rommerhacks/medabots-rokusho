@@ -51,8 +51,8 @@ void init_sprite_affine_matrices_and_state(u32 flags, u32 x, u32 y, u32 d) {
     memzero_bytes((u8 *)&gUnk_03005350, 0x240);
     gUnk_03005350.unk1D4 = flags;
     if (flags & 0x40) {
-        x = gUnk_030057E0.unkC52;
-        y = gUnk_030057E0.unkC54;
+        x = gUnk_030057E0.player_x;
+        y = gUnk_030057E0.player_y;
     }
     gUnk_03005350.unk1D8 = x;
     gUnk_03005350.unk1DC = y;
@@ -1040,10 +1040,10 @@ u32 battle_sequence_dispatch(void) {
                     S.unk1E0 = 0;
                 S.unk1D8 = gUnk_083D2AB4[gUnk_03006D38.unk5 * 4 + 2] << 4;
                 S.unk1DC = gUnk_083D2AB4[gUnk_03006D38.unk5 * 4 + 3] << 4;
-                gUnk_030057E0.unkC52 = S.unk1D8;
-                gUnk_030057E0.unkC54 = S.unk1DC;
-                gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
-                gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
+                gUnk_030057E0.player_x = S.unk1D8;
+                gUnk_030057E0.player_y = S.unk1DC;
+                gUnk_030057E0.player_tile_x = sub_080526F0(gUnk_030057E0.player_x);
+                gUnk_030057E0.player_tile_y = sub_08052714(gUnk_030057E0.player_y);
                 gUnk_030057E0.unk7FE = S.unk1E0;
                 field_center_camera_on_player();
                 field_update_music(0xC, 0);
@@ -1051,10 +1051,10 @@ u32 battle_sequence_dispatch(void) {
                 S.unk1E0 = gUnk_083D2AD8;
                 S.unk1D8 = gUnk_083D2AD9[2] << 4;
                 S.unk1DC = gUnk_083D2AD9[3] << 4;
-                gUnk_030057E0.unkC52 = S.unk1D8;
-                gUnk_030057E0.unkC54 = S.unk1DC;
-                gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
-                gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
+                gUnk_030057E0.player_x = S.unk1D8;
+                gUnk_030057E0.player_y = S.unk1DC;
+                gUnk_030057E0.player_tile_x = sub_080526F0(gUnk_030057E0.player_x);
+                gUnk_030057E0.player_tile_y = sub_08052714(gUnk_030057E0.player_y);
                 gUnk_030057E0.unk7FE = S.unk1E0;
                 field_center_camera_on_player();
                 field_update_music(0xA, 0);
@@ -1141,11 +1141,11 @@ u32 battle_sequence_dispatch(void) {
                     calculate_oam_affine_matrix(q);
             }
             if (S.unkF8 == 0xE || S.unkF8 == 0x12) {
-                gUnk_030057E0.unkC67 = 1;
+                gUnk_030057E0.player_facing = 1;
                 set_battle_state_cancel_flag();
                 init_battle_field_setup();
                 update_bg_scroll_offsets_a();
-                field_set_player_facing(gUnk_030057E0.unkC67);
+                field_set_player_facing(gUnk_030057E0.player_facing);
                 if (gUnk_030057E0.unkC76) {
                     set_battle_state_byte_c83(gSpriteEntries[47].unk20);
                     sprite_anim_start(0x30, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);

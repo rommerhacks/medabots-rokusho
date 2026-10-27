@@ -185,7 +185,7 @@ void sub_08057588(void) {
 void sub_08057598(void) {
     u32 zero;
 
-    sub_0804B1FC();
+    clear_vram_tiles_1000();
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
@@ -283,7 +283,7 @@ void sub_080579C4(void) {
     struct Unk_030064A0 *s = &gUnk_030064A0;
 
     if (s->unk65 != 2) {
-        sub_0804B1FC();
+        clear_vram_tiles_1000();
         sub_08057EBC();
     }
     sprite_entry_clear(0x7F);
@@ -431,7 +431,7 @@ static u32 check_vehicle_usability(s32 idx) {
         if (flag)
             break;
         ret = 0;
-        if (gUnk_030057E0.unkC5C == 2)
+        if (gUnk_030057E0.player_form == 2)
             ret = 5;
         break;
     case 1:
@@ -444,7 +444,7 @@ static u32 check_vehicle_usability(s32 idx) {
         if (flag)
             break;
         ret = 0;
-        if (gUnk_030057E0.unkC5C == 1 || gUnk_030057E0.unkC5C == 2)
+        if (gUnk_030057E0.player_form == 1 || gUnk_030057E0.player_form == 2)
             ret = 5;
         break;
     case 2:
@@ -470,7 +470,7 @@ static u32 check_vehicle_usability(s32 idx) {
         if (flag)
             break;
         ret = 0;
-        if (gUnk_030057E0.unkC5C == 1 || gUnk_030057E0.unkC5C == 2)
+        if (gUnk_030057E0.player_form == 1 || gUnk_030057E0.player_form == 2)
             ret = 5;
         break;
     case 3:
@@ -489,12 +489,12 @@ static u32 check_vehicle_usability(s32 idx) {
         ret = 4;
         if (flag)
             break;
-        flag = (u8)(gUnk_030057E0.unkC5C - 1);
+        flag = (u8)(gUnk_030057E0.player_form - 1);
         ret = 5;
         if (flag <= 1)
             break;
         ret = 0;
-        if (get_adjacent_tile_value(gUnk_030057E0.unkC67) != 3)
+        if (get_adjacent_tile_value(gUnk_030057E0.player_facing) != 3)
             ret = 6;
         break;
     }

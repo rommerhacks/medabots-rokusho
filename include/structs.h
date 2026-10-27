@@ -873,7 +873,7 @@ struct Unk_030057A0 {
     u8 unk11;
     u8 unk12;
     u8 unk13;    // next free battle sprite slot (load_battle_sprite_tile)
-    u8 unk14;    // debug battle-field screen page (sub_08058214)
+    u8 unk14;    // debug battle-field screen page (field_debug_update_page)
     u8 unk15;    // bit 0x10: clear instead of load (load_or_clear_battle_sprites)
     s8 unk16[8]; // per-page row values (sub_0805889C)
     u16 unk1E;
@@ -990,23 +990,23 @@ struct Unk_030057E0 {
     u8 unkC4E;
     u8 unkC4F;
     u8 fillerC50[0x2];
-    u16 unkC52;
-    u16 unkC54;
-    u8 unkC56; // player tile x
-    u8 unkC57; // player tile y
+    u16 player_x;
+    u16 player_y;
+    u8 player_tile_x;
+    u8 player_tile_y;
     u8 unkC58;
     u8 unkC59;
     u8 fillerC5A[0x1];
     u8 unkC5B;
-    u8 unkC5C;
+    u8 player_form; // 0 normal, 1-2 the vehicle menu forms, 3-8 / 0xD disguise items, 0xB / 0xC effect forms
     u8 unkC5D;
     u8 unkC5E;
     u8 unkC5F;
     u8 unkC60;
     u8 fillerC61[0x6];
-    u8 unkC67;
+    u8 player_facing;
     u8 fillerC68[0x1];
-    u8 unkC69;
+    u8 saved_player_form; // the form to go back to after a temporary one
     u8 fillerC6A[0x4];
     u16 unkC6E;
     u16 unkC70;
@@ -1467,7 +1467,7 @@ struct Unk_03007014 {
     u8 filler732[0x2];
 };
 
-// Area warp record (gUnk_08413114, one 0xFF-terminated list per area): stepping onto (x, y)
+// Area warp record (gAreaWarps, one 0xFF-terminated list per area): stepping onto (x, y)
 // moves the player to (destX, destY) of area.
 struct AreaWarp {
     u8 x;

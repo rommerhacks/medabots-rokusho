@@ -1378,12 +1378,12 @@ gUnk_084096F4:
 gUnk_0840FAF4:
 	.incbin "baserom.gba", 0x40FAF4, 0x2260
 
-	.global gUnk_08411D54
-gUnk_08411D54:
+	.global gRoomExitMessages
+gRoomExitMessages:
 	.incbin "baserom.gba", 0x411D54, 0x13C0
 
-	.global gUnk_08413114
-gUnk_08413114:
+	.global gAreaWarps
+gAreaWarps:
 	.incbin "baserom.gba", 0x413114, 0x400
 
 	.global gUnk_08413514

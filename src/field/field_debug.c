@@ -1,5 +1,5 @@
-// Debug battle-field screen: the field sub-states sub_0804AF4C..sub_0804AF80 in field/field_update call
-// in here. sub_08058214 runs one page (gUnk_030057A0.unk14) a frame: the d-pad cycles values (R held = steps
+// Debug battle-field screen: the field sub-states field_debug_open..field_debug_wait_effect in field/field_update call
+// in here. field_debug_update_page runs one page (gUnk_030057A0.unk14) a frame: the d-pad cycles values (R held = steps
 // of 16) through the cyclers sub_0805889C..sub_08058A88, sub_08058B04 draws the page as hex-digit sprites,
 // and init_battle_field_sprites previews the chosen battle field. State is gUnk_030057A0.
 #include "global.h"
@@ -13,7 +13,7 @@ static void sub_08058B04(u32 idx);
 static void clear_all_battle_sprites(void);
 static void load_battle_sprite_from_index(u32 value, s32 bits, s32 x, s32 y);
 
-void sub_08058110(void) {
+void field_debug_init_page(void) {
     dispatch_by_index(gUnk_030057A0.unk14);
 }
 
@@ -62,7 +62,7 @@ static void sub_080581C0(u32 a, s32 b) {
 
 // Local view of gUnk_030057A0 (struct Unk_030057A0 would need unk0, unk12, unk15, s8 unk16[8], unk1E,
 
-void sub_08058214(u32 mode) {
+void field_debug_update_page(u32 mode) {
     gUnk_030057A0.unk15++;
 
     switch (mode) {
@@ -103,15 +103,15 @@ void sub_08058214(u32 mode) {
         break;
     case 2:
         if (KEYS_LO(gRepeatKeys) & 0x40)
-            gUnk_030057E0.unkC54 -= 0x10;
+            gUnk_030057E0.player_y -= 0x10;
         if (KEYS_LO(gRepeatKeys) & 0x80)
-            gUnk_030057E0.unkC54 += 0x10;
+            gUnk_030057E0.player_y += 0x10;
         if (KEYS_LO(gRepeatKeys) & 0x20)
-            gUnk_030057E0.unkC52 -= 0x10;
+            gUnk_030057E0.player_x -= 0x10;
         if (KEYS_LO(gRepeatKeys) & 0x10)
-            gUnk_030057E0.unkC52 += 0x10;
-        gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
-        gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
+            gUnk_030057E0.player_x += 0x10;
+        gUnk_030057E0.player_tile_x = sub_080526F0(gUnk_030057E0.player_x);
+        gUnk_030057E0.player_tile_y = sub_08052714(gUnk_030057E0.player_y);
         field_center_camera_on_player();
         break;
     case 3:
@@ -226,15 +226,16 @@ void sub_08058214(u32 mode) {
         case 3:
             gUnk_030057A0.unk10 = 0;
             clear_all_battle_sprites();
-            init_sprite_affine_matrices_and_state(gUnk_030057A0.unk12, gUnk_030057E0.unkC52, gUnk_030057E0.unkC54, 0);
+            init_sprite_affine_matrices_and_state(gUnk_030057A0.unk12, gUnk_030057E0.player_x, gUnk_030057E0.player_y,
+                                                  0);
             if (gUnk_030057A0.unk12 == 0xE)
-                gUnk_030057E0.unkC5C = 0xC;
+                gUnk_030057E0.player_form = 0xC;
             else if (gUnk_030057A0.unk12 == 0x12)
-                gUnk_030057E0.unkC5C = 0xB;
+                gUnk_030057E0.player_form = 0xB;
             if (gUnk_030057A0.unk12 == 0xE || gUnk_030057A0.unk12 == 0x12) {
                 area_load_sprite_sheets();
-                DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.unkC5C]], OBJ_PLTT, 32);
-                gUnk_030057E0.unkC28 = gUnk_030057E0.unkC5C;
+                DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.player_form]], OBJ_PLTT, 32);
+                gUnk_030057E0.unkC28 = gUnk_030057E0.player_form;
                 load_battle_terrain_data();
             }
             gGameSubState++;
@@ -385,8 +386,8 @@ static void sub_08058B04(u32 mode) {
         load_battle_sprite_tile(gUnk_080AC49C, 2, 0x30, 0x20);
         load_or_clear_battle_sprites(0, gUnk_030057A0.unk26, 8, 0x50, 0x20);
         load_battle_sprite_tile(gUnk_080AC4A0, 2, 0x30, 0x28);
-        load_or_clear_battle_sprites(1, gUnk_030057E0.unkC5C, 8, 0x50, 0x28);
-        switch (gUnk_030057E0.unkC5C) {
+        load_or_clear_battle_sprites(1, gUnk_030057E0.player_form, 8, 0x50, 0x28);
+        switch (gUnk_030057E0.player_form) {
         case 0:
             load_battle_sprite_tile(gUnk_080AC4A4, 3, 0x70, 0x28);
             break;
@@ -473,9 +474,9 @@ static void sub_08058B04(u32 mode) {
     case 2:
         load_battle_sprite_tile(gUnk_080AC518, 6, 0x68, 0x18);
         load_battle_sprite_tile(gUnk_080AC520, 3, 0x30, 0x20);
-        load_or_clear_battle_sprites(0, gUnk_030057E0.unkC52, 16, 0x50, 0x20);
+        load_or_clear_battle_sprites(0, gUnk_030057E0.player_x, 16, 0x50, 0x20);
         load_battle_sprite_tile(gUnk_080AC524, 3, 0x30, 0x28);
-        load_or_clear_battle_sprites(0, gUnk_030057E0.unkC54, 16, 0x50, 0x28);
+        load_or_clear_battle_sprites(0, gUnk_030057E0.player_y, 16, 0x50, 0x28);
         break;
     case 3:
         load_battle_sprite_tile(gUnk_080AC528, 10, 0x68, 0x18);
@@ -585,7 +586,7 @@ void load_or_clear_battle_sprites(s8 key, s32 value, u8 width, u8 x, u8 y) {
     }
 }
 
-u32 sub_0805937C(void) {
+u32 field_debug_page_done(void) {
     switch (gUnk_030057A0.unk14) {
     case 0:
     case 1:
@@ -594,11 +595,11 @@ u32 sub_0805937C(void) {
         return 1;
     case 3:
         if (battle_sequence_dispatch() == 4) {
-            gUnk_030057E0.unkC5C = 0;
+            gUnk_030057E0.player_form = 0;
             if (gUnk_030057A0.unk12 == 0xE || gUnk_030057A0.unk12 == 0x12) {
                 area_load_sprite_sheets();
-                DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.unkC5C]], (void *)PLTT + 0x200, 0x20);
-                gUnk_030057E0.unkC28 = gUnk_030057E0.unkC5C;
+                DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.player_form]], (void *)PLTT + 0x200, 0x20);
+                gUnk_030057E0.unkC28 = gUnk_030057E0.player_form;
                 load_battle_terrain_data();
             }
             init_battle_sprites();

@@ -45,8 +45,8 @@ void update_npc_sprite_animations(void) {
 u32 map_cursor_move_and_check_event(void) {
     struct MapObject *obj = gUnk_030057E0.unk5DC;
     s32 blocked = 0;
-    s32 x = gUnk_030057E0.unkC56;
-    s32 y = gUnk_030057E0.unkC57;
+    s32 x = gUnk_030057E0.player_tile_x;
+    s32 y = gUnk_030057E0.player_tile_y;
     u8 found;
     s32 i;
 
@@ -115,8 +115,8 @@ u32 find_npc_event_match(void) {
     s32 i;
 
     for (i = 0; i < 64; i++) {
-        if (obj->x == gUnk_030057E0.unkC56) {
-            if (obj->y == gUnk_030057E0.unkC57 && (obj->unk2 & 0xF000) >> 12 == 8) {
+        if (obj->x == gUnk_030057E0.player_tile_x) {
+            if (obj->y == gUnk_030057E0.player_tile_y && (obj->unk2 & 0xF000) >> 12 == 8) {
                 gUnk_030057E0.unkC88 = 1;
                 gUnk_030057E0.unkC90 = gUnk_030057E0.unkC8E = obj->unk2 & 0xFFF;
                 gUnk_030057E0.unkC89 = 0;
@@ -137,16 +137,24 @@ u32 get_adjacent_tile_value(u8 dir) {
     u8 tile;
     switch (dir) {
     case 0:
-        tile = gUnk_030057E0.unk810[(gUnk_030057E0.unkC57 - 1) * (gUnk_030057E0.unk800 >> 1) + gUnk_030057E0.unkC56];
+        tile =
+            gUnk_030057E0
+                .unk810[(gUnk_030057E0.player_tile_y - 1) * (gUnk_030057E0.unk800 >> 1) + gUnk_030057E0.player_tile_x];
         break;
     case 1:
-        tile = gUnk_030057E0.unk810[(gUnk_030057E0.unkC57 + 1) * (gUnk_030057E0.unk800 >> 1) + gUnk_030057E0.unkC56];
+        tile =
+            gUnk_030057E0
+                .unk810[(gUnk_030057E0.player_tile_y + 1) * (gUnk_030057E0.unk800 >> 1) + gUnk_030057E0.player_tile_x];
         break;
     case 2:
-        tile = gUnk_030057E0.unk810[gUnk_030057E0.unkC57 * (gUnk_030057E0.unk800 >> 1) + (gUnk_030057E0.unkC56 - 1)];
+        tile =
+            gUnk_030057E0
+                .unk810[gUnk_030057E0.player_tile_y * (gUnk_030057E0.unk800 >> 1) + (gUnk_030057E0.player_tile_x - 1)];
         break;
     case 3:
-        tile = gUnk_030057E0.unk810[gUnk_030057E0.unkC57 * (gUnk_030057E0.unk800 >> 1) + (gUnk_030057E0.unkC56 + 1)];
+        tile =
+            gUnk_030057E0
+                .unk810[gUnk_030057E0.player_tile_y * (gUnk_030057E0.unk800 >> 1) + (gUnk_030057E0.player_tile_x + 1)];
         break;
     }
     return tile;
@@ -156,10 +164,10 @@ bool32 check_tile_and_trigger_battle_action(u8 dir) {
     u8 tile;
     u32 ret;
 
-    if (gUnk_030057E0.unkC5C == 2) {
+    if (gUnk_030057E0.player_form == 2) {
         tile = get_adjacent_tile_value(dir);
         if (tile == 0 || tile == 2) {
-            gUnk_030057E0.unkC5C = gUnk_030057E0.unkC69;
+            gUnk_030057E0.player_form = gUnk_030057E0.saved_player_form;
             load_battle_palette_via_dma(0);
         }
     }
@@ -174,8 +182,8 @@ s32 check_room_exit_at_position(void) {
     s32 ret = -1;
     const struct MapExit *p = gUnk_0840FAF4[gUnk_030057E0.unk7FE];
     s32 blocked = 0;
-    s32 x = gUnk_030057E0.unkC56;
-    s32 y = gUnk_030057E0.unkC57;
+    s32 x = gUnk_030057E0.player_tile_x;
+    s32 y = gUnk_030057E0.player_tile_y;
     u8 mask;
     s32 i;
 
@@ -355,7 +363,7 @@ void sub_08052A2C(s16 dx) {
 void field_center_camera_on_player(void) {
     s32 x, y;
 
-    x = gUnk_030057E0.unkC56 - 7;
+    x = gUnk_030057E0.player_tile_x - 7;
     if (x < 0)
         x = 0;
     if (x + 15 > sub_08052960(gUnk_030057E0.unk7FE, 0) >> 1) {
@@ -364,7 +372,7 @@ void field_center_camera_on_player(void) {
         if (sub_08052A04())
             x = 0;
     }
-    y = gUnk_030057E0.unkC57 - 4;
+    y = gUnk_030057E0.player_tile_y - 4;
     if (y <= 0)
         y = 0;
     if (y + 10 > sub_08052960(gUnk_030057E0.unk7FE, 1) >> 1) {
@@ -384,8 +392,8 @@ void sub_08052AF8(s16 dy) {
 }
 
 void update_bg_scroll_offsets_a(void) {
-    gSpriteEntries[47].unk2 = gUnk_030057E0.unkC52 - gBg1Scroll.x;
-    gSpriteEntries[47].unk4 = gUnk_030057E0.unkC54 - gBg1Scroll.y;
+    gSpriteEntries[47].unk2 = gUnk_030057E0.player_x - gBg1Scroll.x;
+    gSpriteEntries[47].unk4 = gUnk_030057E0.player_y - gBg1Scroll.y;
     gSpriteEntries[89].unk2 = gSpriteEntries[47].unk2;
     gSpriteEntries[89].unk4 = gSpriteEntries[47].unk4 - 5;
 }
@@ -406,8 +414,8 @@ void sub_08052BA0(u8 on) {
 }
 
 void check_and_update_battlefield_palette(void) {
-    if (gUnk_030057E0.unkC5C == 1 && current_area_flag(0) == 0) {
-        gUnk_030057E0.unkC5C = gUnk_030057E0.unkC69;
+    if (gUnk_030057E0.player_form == 1 && current_area_flag(0) == 0) {
+        gUnk_030057E0.player_form = gUnk_030057E0.saved_player_form;
         load_battle_palette_via_dma(1);
     }
 }
@@ -415,7 +423,7 @@ void check_and_update_battlefield_palette(void) {
 // Returns 1 if a warp of the current area sits at (x, y); stores its high dir nibble in gUnk_03006D38.unk3.
 u32 find_map_event_by_coords(u32 x, u32 y) {
     u32 found = 0;
-    const struct AreaWarp *w = gUnk_08413114[gUnk_030057E0.unk7FE];
+    const struct AreaWarp *w = gAreaWarps[gUnk_030057E0.unk7FE];
     s32 dir;
     s32 i;
 
@@ -437,19 +445,19 @@ bool32 field_player_at_map_edge(u8 dir) {
 
     switch (dir) {
     case 0:
-        if (gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A == 0)
+        if (gUnk_030057E0.player_y - gUnk_030057E0.unkC4A == 0)
             ret = 1;
         break;
     case 1:
-        if (gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A + 16 == gUnk_030057E0.unk802 * 8)
+        if (gUnk_030057E0.player_y - gUnk_030057E0.unkC4A + 16 == gUnk_030057E0.unk802 * 8)
             ret = 1;
         break;
     case 2:
-        if (gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 == 0)
+        if (gUnk_030057E0.player_x - gUnk_030057E0.unkC48 == 0)
             ret = 1;
         break;
     case 3:
-        if (gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 + 16 == gUnk_030057E0.unk800 * 8)
+        if (gUnk_030057E0.player_x - gUnk_030057E0.unkC48 + 16 == gUnk_030057E0.unk800 * 8)
             ret = 1;
         break;
     }
@@ -479,7 +487,7 @@ void set_sprite_animation_state(u8 idx, u8 state) {
 
 // Player facing (0 up, 1 down, 2 left, 3 right); sprite 47 is the player.
 void field_set_player_facing(u8 dir) {
-    gUnk_030057E0.unkC67 = dir;
+    gUnk_030057E0.player_facing = dir;
     set_sprite_animation_state(47, dir);
     update_battle_direction_indicator(3);
 }
@@ -497,20 +505,20 @@ void set_tile_data(u8 x, u8 y, u8 val) {
 void field_warp_to_area(void) {
     u32 found = 0;
     u32 area = gUnk_030057E0.unk7FE;
-    const struct AreaWarp *w = gUnk_08413114[area];
+    const struct AreaWarp *w = gAreaWarps[area];
     s32 i;
 
     for (i = 0; w[i].x != 0xFF;) {
         u8 x = w[i].x;
         u8 y = w[i].y;
-        if (x == gUnk_030057E0.unkC56 && y == gUnk_030057E0.unkC57) {
+        if (x == gUnk_030057E0.player_tile_x && y == gUnk_030057E0.player_tile_y) {
             gUnk_030057E0.unk7FE = w[i].area;
             field_load_area_tiles(gUnk_030057E0.unk7FE);
             field_set_player_facing(w[i].dir & 7);
-            gUnk_030057E0.unkC52 = (w[i].destX << 4) + gUnk_030057E0.unkC48;
-            gUnk_030057E0.unkC54 = (w[i].destY << 4) + gUnk_030057E0.unkC4A;
-            gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
-            gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
+            gUnk_030057E0.player_x = (w[i].destX << 4) + gUnk_030057E0.unkC48;
+            gUnk_030057E0.player_y = (w[i].destY << 4) + gUnk_030057E0.unkC4A;
+            gUnk_030057E0.player_tile_x = sub_080526F0(gUnk_030057E0.player_x);
+            gUnk_030057E0.player_tile_y = sub_08052714(gUnk_030057E0.player_y);
             field_center_camera_on_player();
             found = 1;
         }
@@ -543,8 +551,8 @@ void init_battle_medaforce_sprite(void) {
 
 void update_cursor_tile_position(void) {
     if (gUnk_030057E0.unkC76) {
-        gUnk_030057E0.unkC6E = gUnk_030057E0.unkC52;
-        gUnk_030057E0.unkC70 = gUnk_030057E0.unkC54;
+        gUnk_030057E0.unkC6E = gUnk_030057E0.player_x;
+        gUnk_030057E0.unkC70 = gUnk_030057E0.player_y;
         gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
         gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
         set_battle_state_byte_c83(gSpriteEntries[47].unk20);
@@ -633,5 +641,5 @@ u32 sub_08053288(u16 id) {
 
 void load_battle_terrain_data(void) {
     memcpy_u8(gUnk_083D2918[gUnk_030057E0.unkC28], gUnk_030057E0.unkC10, 8);
-    gSpriteEntries[47].unk2A = gUnk_083D2908[gUnk_030057E0.unkC5C];
+    gSpriteEntries[47].unk2A = gUnk_083D2908[gUnk_030057E0.player_form];
 }

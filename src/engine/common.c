@@ -1385,10 +1385,10 @@ void lz_decompress(const u8 *src, void *dst) {
     lz_decompress_dispatch(src, dst);
 }
 
-// guess: message sprite set, 0 = the current area's default (gUnk_030057E0.unkC5C is the area palette id).
+// guess: message sprite set, 0 = the current area's default (gUnk_030057E0.player_form is the area palette id).
 u32 resolve_area_sprite_set(u8 set) {
     if (set == 0)
-        return gUnk_083B2970[gUnk_030057E0.unkC5C];
+        return gUnk_083B2970[gUnk_030057E0.player_form];
     return set;
 }
 

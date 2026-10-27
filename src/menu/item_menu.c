@@ -271,25 +271,25 @@ other:
                 gGameSubState = 0xB;
                 return;
             case 1:
-                gUnk_030057E0.unkC5C = 3;
+                gUnk_030057E0.player_form = 3;
                 break;
             case 5:
-                gUnk_030057E0.unkC5C = 4;
+                gUnk_030057E0.player_form = 4;
                 break;
             case 12:
-                gUnk_030057E0.unkC5C = 5;
+                gUnk_030057E0.player_form = 5;
                 break;
             case 13:
-                gUnk_030057E0.unkC5C = 8;
+                gUnk_030057E0.player_form = 8;
                 break;
             case 19:
-                gUnk_030057E0.unkC5C = 6;
+                gUnk_030057E0.player_form = 6;
                 break;
             case 39:
-                gUnk_030057E0.unkC5C = 7;
+                gUnk_030057E0.player_form = 7;
                 break;
             case 40:
-                gUnk_030057E0.unkC5C = 0xD;
+                gUnk_030057E0.player_form = 0xD;
                 break;
             default:
                 dispatch_by_index_0476e8(4);

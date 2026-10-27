@@ -142,9 +142,9 @@ static void map_script_read_warp(void) {
     gUnk_030057E0.unk7FE = read_map_script_byte();
     gUnk_030057E0.unk7FC = read_map_script_byte();
     gUnk_030057E0.unk7FD = read_map_script_byte();
-    gUnk_030057E0.unkC56 = read_map_script_byte();
-    gUnk_030057E0.unkC57 = read_map_script_byte();
-    gUnk_030057E0.unkC67 = gSpriteEntries[47].unk20;
+    gUnk_030057E0.player_tile_x = read_map_script_byte();
+    gUnk_030057E0.player_tile_y = read_map_script_byte();
+    gUnk_030057E0.player_facing = gSpriteEntries[47].unk20;
     gUnk_030057E0.unkC89 = 1;
 }
 
@@ -179,7 +179,7 @@ void sub_0804BAC8(void) {
     gSpriteEntries[47].unk27 = 0;
     gUnk_030057E0.unkC5F = 1;
     setup_battle_sprite_terrain(47, gUnk_030057E0.unkC94[gSpriteEntries[47].unk26],
-                                gUnk_083D28B0[gUnk_030057E0.unkC5C]);
+                                gUnk_083D28B0[gUnk_030057E0.player_form]);
     field_set_player_facing(gSpriteEntries[47].unk20);
     gUnk_030057E0.unkC89 = 1;
 }
