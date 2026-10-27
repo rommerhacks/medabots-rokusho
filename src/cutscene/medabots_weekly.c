@@ -264,43 +264,43 @@ void weekly_opening_talk(void) {
         gUnk_03001800_s.timer++;
         break;
     case 2:
-        sub_0803FB0C();
+        message_next();
         sprite_cycle_anim_stop(0x19, 0x4B);
         sprite_cycle_anim_start(0x16, 0x2D, 8);
         gUnk_03001800_s.timer++;
         break;
     case 4:
-        sub_0803FB0C();
+        message_next();
         sprite_cycle_anim_stop(0x16, 0x2D);
         sprite_cycle_anim_start(0x19, 0x4E, 8);
         gUnk_03001800_s.timer++;
         break;
     case 6:
-        sub_0803FB0C();
+        message_next();
         sprite_cycle_anim_stop(0x19, 0x4B);
         sprite_cycle_anim_start(0x17, 0x36, 8);
         gUnk_03001800_s.timer++;
         break;
     case 8:
-        sub_0803FB0C();
+        message_next();
         sprite_cycle_anim_stop(0x17, 0x36);
         sprite_cycle_anim_start(0x19, 0x51, 8);
         gUnk_03001800_s.timer++;
         break;
     case 10:
-        sub_0803FB0C();
+        message_next();
         sprite_cycle_anim_stop(0x19, 0x4B);
         sprite_cycle_anim_start(0x16, 0x2D, 8);
         gUnk_03001800_s.timer++;
         break;
     case 12:
-        sub_0803FB0C();
+        message_next();
         sprite_cycle_anim_stop(0x16, 0x2D);
         sprite_cycle_anim_start(0x19, 0x4B, 8);
         gUnk_03001800_s.timer++;
         break;
     case 14:
-        sub_0803FB0C();
+        message_next();
         sprite_cycle_anim_stop(0x16, 0x27);
         sprite_cycle_anim_stop(0x17, 0x33);
         sprite_cycle_anim_stop(0x19, 0x4B);
@@ -350,7 +350,7 @@ void weekly_lecture(void) {
     case 16:
     case 20:
     case 24:
-        sub_0803FB0C();
+        message_next();
         gUnk_03001800_s.timer++;
         break;
     case 1:
@@ -360,7 +360,7 @@ void weekly_lecture(void) {
     case 17:
     case 21:
         if (run_message(gWeeklyMessages[(gUnk_03001800_s.timer >> 2) + 8])) {
-            sub_0803FB0C();
+            message_next();
             run_message(gUnk_08486114);
             gUnk_03001800_s.timer++;
         }
@@ -455,19 +455,19 @@ void weekly_closing_talk(void) {
         gUnk_03001800_s.timer++;
         break;
     case 2:
-        sub_0803FB0C();
+        message_next();
         sprite_cycle_anim_stop(0x19, 0x4B);
         sprite_cycle_anim_start(0x17, 0x36, 8);
         gUnk_03001800_s.timer++;
         break;
     case 4:
-        sub_0803FB0C();
+        message_next();
         sprite_cycle_anim_stop(0x17, 0x36);
         sprite_cycle_anim_start(0x19, 0x4B, 8);
         gUnk_03001800_s.timer++;
         break;
     case 6:
-        sub_0803FB0C();
+        message_next();
         sprite_cycle_anim_stop(0x17, 0x33);
         sprite_cycle_anim_stop(0x19, 0x4B);
         sprite_cycle_anim_start(0x18, 0x3F, 6);

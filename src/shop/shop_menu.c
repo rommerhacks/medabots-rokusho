@@ -313,7 +313,7 @@ void sub_08061374(void) {
         REG_BLDALPHA = 0x1000;
         REG_DISPCNT &= 0xFDFF;
         gSpriteEntries[8].unk0 &= 0xBFFF;
-        sub_0803FB0C();
+        message_next();
         gGameSubState++;
     }
     gUnk_03006F74->unk19 = 0;
@@ -394,7 +394,7 @@ void sub_08061678(void) {
         REG_BLDALPHA = (t << 8) | (16 - t);
     } else {
         REG_BLDALPHA = 16;
-        sub_0803FB0C();
+        message_next();
         gGameSubState = 4;
     }
 }

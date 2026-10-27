@@ -50,7 +50,7 @@ u32 message_step_run(u8 a, u8 b, u8 c, const void *text) {
         if (gUnk_030064A0.unk1 == 0)
             text_window_init(a, b, c);
         else
-            sub_0803FB0C();
+            message_next();
         gUnk_030064A0.unk0++;
         break;
     case 1:

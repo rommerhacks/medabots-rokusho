@@ -77,7 +77,7 @@ void sub_08057044(void) {
 
     DmaCopy32(3, gUnk_085FA640, OBJ_PLTT + 0x180, 32) DmaCopy32(3, gUnk_085FA85C, OBJ_PLTT + 0x1A0, 32)
         decompress_bg_tiles_to_vram_bg();
-    DmaCopy32(3, gUnk_084C6998, PLTT + 0x1C0, 32) lz_decompress_dispatch(gUnk_084878EC, (void *)0x06002600);
+    DmaCopy32(3, gTextWindowObjPalette, PLTT + 0x1C0, 32) lz_decompress_dispatch(gUnk_084878EC, (void *)0x06002600);
     lz_decompress_dispatch(gUnk_0848796C, (void *)0x060026E0);
     lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
     DmaCopy32(3, gUnk_084E2E58, OBJ_PLTT + 0x1C0, 32) gUnk_030064A0.unk66 = 0;
@@ -260,7 +260,7 @@ void sub_08057598(void) {
 
     lz_decompress_dispatch(gUnk_084873D0, (void *)0x06000020);
     lz_decompress_dispatch(gUnk_084C31BC, (void *)0x06001780);
-    DmaCopy32(3, gUnk_08488A84, 0x0202FBE0, 32) DmaCopy32(3, gUnk_084C6998, 0x0202FBC0, 32)
+    DmaCopy32(3, gUnk_08488A84, 0x0202FBE0, 32) DmaCopy32(3, gTextWindowObjPalette, 0x0202FBC0, 32)
         lz_decompress_dispatch(gUnk_084878EC, (void *)0x06002600);
     lz_decompress_dispatch(gUnk_0848796C, (void *)0x060026E0);
     lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);

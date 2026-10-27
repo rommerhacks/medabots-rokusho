@@ -257,7 +257,7 @@ other:
         case 2:
         case 3:
         case 4:
-            sub_0803FB0C();
+            message_next();
             play_sound_effect(6);
             gSpriteEntries[0x51].unk0 &= 0xBFFF;
             gSpriteEntries[0x52].unk0 &= 0xBFFF;
@@ -314,7 +314,7 @@ other:
 
 moved:
     play_sound_effect(2);
-    sub_0803FB0C();
+    message_next();
     item_menu_set_cursor_pos(&gSpriteEntries[0x53]);
     gGameSubState = 4;
     item_menu_blink_swap_marker(gFrameCounter);
@@ -361,7 +361,7 @@ void item_menu_show_cannot_use(void) {
 void item_menu_wait_message_key(void) {
     if (*(u8 *)&gNewKeys & 3) {
         play_sound_effect(2);
-        sub_0803FB0C();
+        message_next();
         gGameSubState = 4;
     }
 }

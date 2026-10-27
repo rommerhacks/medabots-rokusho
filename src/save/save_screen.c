@@ -138,7 +138,7 @@ void save_screen_ask_save(void) {
 
 void save_screen_poll_save_choice(void) {
     if (poll_choice_menu()) {
-        sub_0803FB0C();
+        message_next();
         if (gUnk_03000440.unk2A == 0)
             gGameSubState = (*(u8 *)&gUnk_03001784 & 1) ? 13 : 6;
         else
@@ -155,7 +155,7 @@ void save_screen_ask_overwrite(void) {
 
 void save_screen_poll_overwrite_choice(void) {
     if (poll_choice_menu()) {
-        sub_0803FB0C();
+        message_next();
         if (gUnk_03000440.unk2A == 0)
             gGameSubState = 6;
         else
@@ -186,11 +186,11 @@ void save_screen_write_save(void) {
         }
         play_song(6);
         if (err == 0) {
-            sub_0803FB0C();
+            message_next();
             gUnk_03006F74->unk2 = err;
             gGameSubState++;
         } else {
-            sub_0803FB0C();
+            message_next();
             gUnk_03006F74->unk2 = 0;
             gGameSubState = 12;
         }
@@ -204,7 +204,7 @@ void save_screen_show_saved(void) {
 }
 
 void save_screen_exit_begin(void) {
-    sub_0803FB0C();
+    message_next();
     palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;

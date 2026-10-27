@@ -590,7 +590,7 @@
 * Text tile flush (`if (unk14 & 7) CpuSet(buf, VRAM + 0x280 + unk17 * 0x680 + col * 0x40, n)`): test the low
   bits through a bitfield view (`((struct TextColBits *)&gUnk_03000440)->col`, which makes gcc reload unk14),
   compute the column into a `u8` local with `/ 8` (not `>> 3`) and write the address as
-  `col * 0x40 + VRAM + 0x280 + unk17 * 0x680` (reset_text_tile_state, sub_0804070C ... in text/message).
+  `col * 0x40 + VRAM + 0x280 + unk17 * 0x680` (message_new_line, message_cmd_wait_skippable ... in text/message).
 * Where the original reads a field twice in a row or re-reads a byte just stored, only a volatile read
   reproduces it: `*(vu16 *)&gUnk_03000440.unkC`.
 * A constant like 0xFFFF8000 built from `x + 0x8000` with an `s16` intermediate: put the sum in an
@@ -644,7 +644,7 @@ really data (a false positive), the shifted build changes that data by `SHIFT`: 
 * One byte field written through `u8 *p = &s->f; p[1] = ...` instead of the struct field avoids the
   hoisted QImode zero agbcc emits for `(mem & 0) | v` byte stores (init_all_sound_channels).
 * An extra reload in the original can come from a duplicated tail that a later pass merges away: write the
-  early-exit path with its own copy of the tail stores (sub_0803FEB8).
+  early-exit path with its own copy of the tail stores (message_cmd_portrait).
   The same works when the reload registers (r0/r1/r3 round-robin) are off by one: add a duplicate of an
   arm or comparison that cross-jumping merges after reload (medal_rename_select_medal: the `&= 0xBFFF` arm written
   twice in an if / else-if chain; sub_0804CB90: the `>= unkC94[1]` test repeated in both arms;

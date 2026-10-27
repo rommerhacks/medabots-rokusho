@@ -827,32 +827,32 @@ gUnk_083B24A8:
 gUnk_083B2584:
 	.incbin "baserom.gba", 0x3B2584, 0x218
 
-	.global gUnk_083B279C
-gUnk_083B279C:
+	.global gMessageStates
+gMessageStates:
 	.incbin "baserom.gba", 0x3B279C, 0x24
 
-	.global gUnk_083B27C0
-gUnk_083B27C0:
+	.global gMessageEndModes
+gMessageEndModes:
 	.incbin "baserom.gba", 0x3B27C0, 0x14
 
-	.global gUnk_083B27D4
-gUnk_083B27D4:
+	.global gMessageEndWaitCloseSteps
+gMessageEndWaitCloseSteps:
 	.incbin "baserom.gba", 0x3B27D4, 0x18
 
-	.global gUnk_083B27EC
-gUnk_083B27EC:
+	.global gMessageEndCloseSteps
+gMessageEndCloseSteps:
 	.incbin "baserom.gba", 0x3B27EC, 0x18
 
-	.global gUnk_083B2804
-gUnk_083B2804:
+	.global gMessageEndWaitKeepSteps
+gMessageEndWaitKeepSteps:
 	.incbin "baserom.gba", 0x3B2804, 0x4
 
-	.global gUnk_083B2808
-gUnk_083B2808:
+	.global gMessageEndWaitClearSteps
+gMessageEndWaitClearSteps:
 	.incbin "baserom.gba", 0x3B2808, 0x8
 
-	.global gUnk_083B2810
-gUnk_083B2810:
+	.global gMessageEndKeepSteps
+gMessageEndKeepSteps:
 	.incbin "baserom.gba", 0x3B2810, 0x4
 
 	.global gUnk_083B2814
@@ -886,12 +886,12 @@ gUnk_083B4AE0:
 gUnk_083B4AE0_s:
 	.incbin "baserom.gba", 0x3B4AE0, 0x1A8
 
-	.global gUnk_083B4C88
-gUnk_083B4C88:
+	.global gFontWidths
+gFontWidths:
 	.incbin "baserom.gba", 0x3B4C88, 0x200
 
-	.global gUnk_083B4E88
-gUnk_083B4E88:
+	.global gAltFontWidths
+gAltFontWidths:
 	.incbin "baserom.gba", 0x3B4E88, 0x570
 
 	.global gUnk_083B53F8

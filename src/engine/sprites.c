@@ -8,7 +8,7 @@
 void message_fill_window_tiles(void) {
     u32 i;
     for (i = 0; i <= 0x33; i++)
-        CpuCopy16(gUnk_084C01C8, (void *)(VRAM + 0x280 + i * 0x40), 0x40);
+        CpuCopy16(gFontGlyphs, (void *)(VRAM + 0x280 + i * 0x40), 0x40);
     gUnk_03000440.unk1B++;
 }
 
@@ -115,7 +115,7 @@ void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
     y *= 8;
     len = 0;
     for (i = 0; str[i] != 0xFE; i++)
-        len += gUnk_083B4C88[str[i]][0];
+        len += gFontWidths[str[i]][0];
     w = width * 8;
     if (len <= w) {
         switch (align) {
@@ -154,7 +154,7 @@ void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
             gSpriteEntries[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
             gSpriteEntries[slot + i].unk6 = str[i] - 1;
         }
-        x += gUnk_083B4C88[str[i]][0];
+        x += gFontWidths[str[i]][0];
     }
 }
 
@@ -168,7 +168,7 @@ void render_text_sprites_08040EE4(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
     y = y * 8 + dy;
     len = 0;
     for (i = 0; str[i] != 0xFE; i++)
-        len += gUnk_083B4C88[str[i]][0];
+        len += gFontWidths[str[i]][0];
     w = width * 8;
     if (len <= w) {
         switch (align) {
@@ -207,7 +207,7 @@ void render_text_sprites_08040EE4(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
             gSpriteEntries[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
             gSpriteEntries[slot + i].unk6 = str[i] - 1;
         }
-        x += gUnk_083B4C88[str[i]][0];
+        x += gFontWidths[str[i]][0];
     }
 }
 
@@ -220,7 +220,7 @@ void render_text_string_to_sprites(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 
     y *= 8;
     len = 0;
     for (i = 0; str[i] != 0xFE; i++)
-        len += gUnk_083B4C88[str[i]][0];
+        len += gFontWidths[str[i]][0];
     w = width * 8;
     if (len <= w) {
         switch (align) {
@@ -259,7 +259,7 @@ void render_text_string_to_sprites(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 
             gSpriteEntries[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
             gSpriteEntries[slot + i].unk6 = str[i] + 0x85FF;
         }
-        x += gUnk_083B4C88[str[i]][0];
+        x += gFontWidths[str[i]][0];
     }
 }
 

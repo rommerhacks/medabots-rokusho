@@ -220,35 +220,35 @@ struct GfxListEntry {
 };
 
 struct Unk_03000440 {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 unk0; // message window: 0 = dim the palettes while open (text_window_init args a, b, c)
+    u8 unk1; // portrait mode: 0 = animated, 1 = static, 2 = none
+    u8 unk2; // 1 = no window frame
     u8 filler3;
     u8 unk4; // message handler state (run_message)
     u8 filler5[0x3];
     const u8 *unk8; // current message (run_message)
-    u16 unkC;
+    u16 unkC;       // read position in unk8
     u8 unkE;
-    u8 unkF;
-    s8 unk10;
-    s8 unk11;
-    u8 unk12;
-    u8 unk13;
-    u8 unk14;
-    u8 unk15;
-    u8 unk16;
-    u8 unk17;
-    u8 unk18;
-    u8 unk19;
-    u8 unk1A;
-    u8 unk1B;
-    u8 unk1C;
+    u8 unkF;  // portrait: shown animation / side (0 = right)
+    s8 unk10; // portrait: sprite set (-1 = none)
+    s8 unk11; // portrait: index
+    u8 unk12; // 1 = a portrait is shown
+    u8 unk13; // 1 = stop printing this frame (message_print_step)
+    u8 unk14; // text pen x in pixels
+    u8 unk15; // pixels left in the current word
+    u8 unk16; // pixels filled in gTextComposeTile
+    u8 unk17; // text line 0-1
+    u8 unk18; // 1 = the current word has been measured and fits
+    u8 unk19; // 1 = line full, 2 = page full (wait for A / B)
+    u8 unk1A; // wait counter (0xF7 / 0xFA codes)
+    u8 unk1B; // end mode step
+    u8 unk1C; // palette dim level 0-9
     u8 filler1D[0x3];
-    u8 *unk20; // string being drawn (message name / number buffers, sub_080402B4)
-    u8 unk24;
-    u8 unk25;
-    u8 unk26;
-    u8 unk27;
+    u8 *unk20; // string being drawn (message name / number buffers, message_print_var_step)
+    u8 unk24;  // read position in unk20
+    u8 unk25;  // page cursor blink timer
+    u8 unk26;  // window frame animation step
+    u8 unk27;  // 1 = alternate font (0xF8 code)
     u8 unk28;
     u8 unk29; // choice menu state (poll_choice_menu)
     u8 unk2A;
@@ -319,7 +319,8 @@ struct Unk_03000440 {
     u8 unk9B;
     u8 unk9C; // game state 6: 1 picks song 14 and counts gUnk_03002B84[1] (guess: battle won)
     u8 filler9D;
-    u8 unk9E[0x50]; // digit buffer (divide_by_10000); also four 0x14-byte name buffers for messages (sub_080402B4)
+    u8 unk9E[0x50]; // digit buffer (divide_by_10000); also four 0x14-byte name buffers for messages
+                    // (message_print_var_step)
     u8 unkEE;       // start of a 16-byte part data record (load_part_data): ability (gUnk_083B656C name)
     u8 unkEF;       // skill id; >= 100: leg type (gUnk_083BE97C[unkEF - 100])
     u8 unkF0;       // skill type (gUnk_083B6EC8 name)
@@ -494,7 +495,7 @@ struct ByteTable3 {
 };
 
 // Bitfield view of gUnk_03000440.unk14 (text pen x): the text tile flush code tests the pixel offset in
-// the current 8-pixel tile through it, which reloads unk14 (reset_text_tile_state and friends).
+// the current 8-pixel tile through it, which reloads unk14 (message_new_line and friends).
 struct TextColBits {
     u8 filler0[0x14];
     u8 col : 3;
@@ -505,7 +506,7 @@ struct TextColBits {
 // field (base + 0x1A4, reloaded after each call: closeup_enter_wipe, closeup_exit_wipe).
 struct Unk_083B4AE0 {
     const void *unk0[0x49];
-    const void *unk124; // message "more text" cursor, blink off (update_text_compose_and_input)
+    const void *unk124; // message "more text" cursor, blink off (message_wait_next_page)
     const void *unk128; // message cursor, blink on
     const void *unk12C[0x1E];
     const void *unk1A4; // blank tilemap row

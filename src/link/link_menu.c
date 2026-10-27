@@ -181,26 +181,26 @@ void handle_battle_menu_selection(void) {
     if (gUnk_03006F74->unk5 > 4) {
         if (KEYS_LO(gRepeatKeys) & 0xC1) {
             gUnk_03006F74->unk5 = gUnk_03006F74->unk5 == 5 ? 1 : 4;
-            sub_0803FB0C();
+            message_next();
         }
         return;
     }
 
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         gUnk_03006F74->unk5 = gUnk_03006F74->unk5 != 0 ? gUnk_03006F74->unk5 - 1 : 4;
-        sub_0803FB0C();
+        message_next();
         play_sound_effect(2);
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
         gUnk_03006F74->unk5 = gUnk_03006F74->unk5 <= 3 ? gUnk_03006F74->unk5 + 1 : 0;
-        sub_0803FB0C();
+        message_next();
         play_sound_effect(2);
     }
     gSpriteEntries[0].unk4 = gUnk_03006F74->unk5 * 16 + 0x1C;
     if (KEYS_LO(gRepeatKeys) & 1) {
         if (gUnk_03006F74->unk5 == 1 && gUnk_03006F74->unk7B == 0) {
             gUnk_03006F74->unk5 = 5;
-            sub_0803FB0C();
+            message_next();
             play_sound_effect(6);
         } else if (gUnk_03006F74->unk5 == 2 && gUnk_03006F74->unk7C == 0) {
             play_sound_effect(6);
@@ -232,7 +232,7 @@ void update_fade_transition_state_080662CC(void) {
     if (gUnk_03005010.unk8[1][1] == 0xFE0F) {
         if (gUnk_03006F74->unk5 == 4) {
             gGameSubState = 8;
-            sub_0803FB0C();
+            message_next();
         } else {
             init_blend_effect(gUnk_03006F74->unk50, 0, 0, 1, 0xC0);
             gGameSubState += 2;
@@ -296,7 +296,7 @@ void setup_dialogue_script_from_rom(void) {
     d[1] = 4;
     d = gUnk_03006F74->unk270;
     if (run_message(d)) {
-        sub_0803FB0C();
+        message_next();
         open_choice_menu(1, 0x16, 7);
         gGameSubState++;
     }
@@ -306,7 +306,7 @@ void link_menu_poll_yes_no(void) {
     if (poll_choice_menu()) {
         if (gUnk_03000440.unk2A == 0) {
             gGameSubState++;
-            sub_0803FB0C();
+            message_next();
         } else
             gGameSubState += 3;
     }
@@ -322,7 +322,7 @@ void advance_substate_with_sound_ch1(void) {
 void link_menu_wait_choice(void) {
     if (poll_choice_menu()) {
         gGameSubState++;
-        sub_0803FB0C();
+        message_next();
     }
 }
 
@@ -358,7 +358,7 @@ void menu_yes_no_confirmation_handler(void) {
         a = gUnk_03005010.unk8[0][1];
         b = gUnk_03005010.unk8[1][1];
         if ((a & 0xFF00) == 0xFF00 && (b & 0xFF00) == 0xFF00) {
-            sub_0803FB0C();
+            message_next();
             if (a == b) {
                 init_blend_effect(gUnk_03006F74->unk50, 0, 0, 1, 0xC0);
                 gGameSubState = 5;

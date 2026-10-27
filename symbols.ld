@@ -95,8 +95,8 @@ gUnk_03005664    = 0x03005664;
 gUnk_03002B68       = 0x03002B68;
 
 /* code_0800025C: Medawatch menu (game state 2) */
-gUnk_02020000       = 0x02020000;
-gUnk_02020040       = 0x02020040;
+gTextComposeTile       = 0x02020000;
+gTextGlyphTile       = 0x02020040;
 gUnk_02020800       = 0x02020800;
 
 /* code_0800025C: game state 3 */

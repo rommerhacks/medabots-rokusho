@@ -89,7 +89,7 @@ void devtest_message_then_choice(void) {
 
 void devtest_wait_choice(void) {
     if (poll_choice_menu()) {
-        sub_0803FB0C();
+        message_next();
         gGameSubState++;
     }
 }

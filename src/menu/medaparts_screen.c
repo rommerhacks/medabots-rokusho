@@ -320,7 +320,7 @@ void medapart_detail_handle_input(void) {
     load_medapart_sprite_by_slot();
     medapart_detail_blink_arrows();
     if (medapart_detail_cycle_part_input()) {
-        sub_0803FB0C();
+        message_next();
         gGameSubState--;
     } else if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
@@ -430,7 +430,7 @@ void medaparts_help_load(void) {
     clear_sprite_table_mask(1, 5);
     CpuFastSet(gUnk_084E2E78, (void *)0x050003C0, 8);
     medaparts_help_init_cursor();
-    sub_0803FB0C();
+    message_next();
     gGameSubState++;
 }
 
@@ -465,7 +465,7 @@ void medaparts_help_cursor_input(void) {
     } else if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         medaparts_help_init_cursor();
-        sub_0803FB0C();
+        message_next();
         gGameSubState++;
     } else if (KEYS_LO(gNewKeys) & 0xA) {
         play_sound_effect(5);
@@ -563,7 +563,7 @@ void medaparts_help_show_text(void) {
         break;
     }
     if (done) {
-        sub_0803FB0C();
+        message_next();
         gGameSubState = 0x21;
     }
 }
@@ -573,7 +573,7 @@ void medaparts_help_exit(void) {
     load_medapart_sprite_by_slot();
     clear_sprite_table_mask(6, 1);
     CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
-    sub_0803FB0C();
+    message_next();
     medapart_detail_init_arrows();
     gGameSubState = 0x13;
 }

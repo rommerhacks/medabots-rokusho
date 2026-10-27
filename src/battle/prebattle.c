@@ -239,7 +239,7 @@ void prebattle_rubberobo_choice(void) {
     r = poll_choice_menu();
     if (r) {
         if ((r >> 4) == 0) {
-            sub_0803FB0C();
+            message_next();
             gGameSubState++;
         } else
             gGameSubState = 32;
@@ -348,7 +348,7 @@ void afterbattle_close_opponent_line(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (game_state_execute_handler_b()) {
-        sub_0803FB0C();
+        message_next();
         gGameSubState++;
     }
 }
@@ -463,7 +463,7 @@ void afterbattle_check_rubberobo_reward(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (gUnk_03001800.unk1) {
-        sub_0803FB0C();
+        message_next();
         gGameSubState++;
     } else
         gGameSubState = 0x40;
@@ -483,7 +483,7 @@ void afterbattle_load_experience(void) {
     update_scroll_movement_a();
     calculate_battle_score_summary();
     divide_by_100000_b(gUnk_03000440.unk9E, gUnk_03001800.unk16C, 0x35);
-    sub_0803FB0C();
+    message_next();
     gGameSubState++;
 }
 
@@ -512,7 +512,7 @@ void afterbattle_level_up_next_bot(void) {
         gUnk_03001800.unk186 = 0;
         gGameSubState = 0x47;
     } else if (gUnk_03001800.unk16E[gUnk_03001800.unk186][0]) {
-        sub_0803FB0C();
+        message_next();
         memcpy_bytes_0803F63C((const void *)gMedalNames[gUnk_03001800.unk16E[gUnk_03001800.unk186][0] - 1],
                               gUnk_03000440.unk9E, 11);
         play_song(16);
@@ -542,7 +542,7 @@ void afterbattle_medaforce_next_bot(void) {
         gUnk_03001800.unk186 = 0;
         gGameSubState = 0x4B;
     } else if (gUnk_03001800.unk16E[gUnk_03001800.unk186][6]) {
-        sub_0803FB0C();
+        message_next();
         memcpy_bytes_0803F63C((const void *)gMedalNames[gUnk_03001800.unk16E[gUnk_03001800.unk186][0] - 1],
                               gUnk_03000440.unk9E, 11);
         memcpy_bytes_0803F63C((const void *)gUnk_083B7338[gUnk_03001800.unk16E[gUnk_03001800.unk186][7]],
@@ -875,7 +875,7 @@ void battle_loss_take_part(void) {
     } else {
         battle_pick_random_bot_part(0);
         team_lose_equipped_part(gUnk_03000590[gUnk_03001800.unk187].unk47, gUnk_03001800.unk168);
-        sub_0803FB0C();
+        message_next();
         gGameSubState++;
     }
 }
@@ -898,7 +898,7 @@ void battle_loss_check_team(void) {
     if (count_assembled_medabots())
         gGameSubState = 0x40;
     else {
-        sub_0803FB0C();
+        message_next();
         gGameSubState++;
     }
 }

@@ -12,7 +12,7 @@ static s32 calc_text_pixel_width(const u8 *s) {
     s32 w = 0;
     s32 i;
     for (i = 0; i < 10 && *s != 0xFE; i++)
-        w += gUnk_083B4C88[*s++][0];
+        w += gFontWidths[*s++][0];
     return w;
 }
 
@@ -224,7 +224,7 @@ void name_entry_load_name(void) {
     {
         register const u8(*tb)[2] asm("r4");
         for (i = gUnk_03006F74->unkF; i <= 9; i++) {
-            tb = gUnk_083B4C88;
+            tb = gFontWidths;
             gSpriteEntries[i + 5].unk0 = 0xC000;
             gSpriteEntries[i + 5].unk1C = 0;
             gSpriteEntries[i + 5].unkA = 0xD;
@@ -434,7 +434,7 @@ void name_entry_input(void) {
     {
         register const u8(*tb)[2] asm("r4");
         for (i = gUnk_03006F74->unkF; i <= 9; i++) {
-            tb = gUnk_083B4C88;
+            tb = gFontWidths;
             gSpriteEntries[i + 5].unk0 = 0xC000;
             gSpriteEntries[i + 5].unk1C = 0;
             gSpriteEntries[i + 5].unkA = 0xD;
@@ -443,7 +443,7 @@ void name_entry_input(void) {
             gSpriteEntries[i + 5].unk4 = 0x1C;
             gSpriteEntries[i + 5].unkB = 0xFF;
             x += tb[0x43][0];
-            tb = gUnk_083B4C88;
+            tb = gFontWidths;
         }
     }
 }

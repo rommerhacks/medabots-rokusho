@@ -1,15 +1,18 @@
 // Message window: text_window_init sets it up, run_message steps the window state machine
-// gUnk_083B279C by gUnk_03000440.unk4 (open, dim palettes, show the frame, clear, print with
-// message_print_step, run commands gUnk_083B27C0, close). Includes the glyph renderer and the text tile
-// flush helpers. Draws through engine/tilemap and engine/palette_blend; used by every scene with text.
+// gMessageStates by gUnk_03000440.unk4 (open, dim palettes, show the frame, clear, print with
+// message_print_step, then the end mode from gMessageEndModes, close). Message text is font characters
+// plus control codes: 0xF7 n wait n frames, 0xF8 toggle the alternate font, 0xF9 n print string variable
+// n, 0xFA n wait n frames (A / B skips), 0xFB anim set idx portrait, 0xFC wait for A / B and clear the
+// page, 0xFD new line, 0xFE ignored, 0xFF mode end of message (end modes 0-4). Draws through engine/tilemap and
+// engine/palette_blend; used by every scene with text.
 
 #include "global.h"
 
-static void sub_0803FEA8(void);
-static void sub_0803FEB8(void);
-static void sub_0804070C(void);
-static void sub_080407A4(void);
-static void sub_08040820(void);
+static void message_cmd_skip(void);
+static void message_cmd_portrait(void);
+static void message_cmd_wait_skippable(void);
+static void message_cmd_wait(void);
+static void message_cmd_end(void);
 
 void text_window_init(u8 a, u8 b, u32 c) {
     u8 c8 = c;
@@ -22,12 +25,13 @@ void text_window_init(u8 a, u8 b, u32 c) {
     gUnk_03000440.unk10 = -1;
     gUnk_03000440.unk11 = -1;
     decompress_bg_tiles_to_vram_bg();
-    CpuFastSet(gUnk_084C6998, (void *)(OBJ_PLTT - 0x40), 8);
+    CpuFastSet(gTextWindowObjPalette, (void *)(OBJ_PLTT - 0x40), 8);
     if (c8 == 1)
         setup_bg0_display_layer();
 }
 
-void sub_0803FB0C(void) {
+// Start the next message in an already open window (state 4 clears the text area first).
+void message_next(void) {
     gUnk_03000440.unk4 = 4;
     gUnk_03000440.unkC = 0;
     gUnk_03000440.unk14 = 0;
@@ -45,7 +49,7 @@ void sub_0803FB0C(void) {
 
 u32 run_message(const void *msg) {
     gUnk_03000440.unk8 = msg;
-    gUnk_083B279C[gUnk_03000440.unk4]();
+    gMessageStates[gUnk_03000440.unk4]();
     if (gUnk_03000440.unk4 > 7)
         return 1;
     return 0;
@@ -85,7 +89,8 @@ void message_show_window(void) {
     }
 }
 
-// run_message state 3: draws the window frame in three frames (unk26 0-2, reverse of sub_08040A40), then state 4.
+// run_message state 3: draws the window frame in three frames (unk26 0-2, reverse of message_close_window_frame), then
+// state 4.
 void message_open_window_frame(void) {
     switch (gUnk_03000440.unk26) {
     case 0:
@@ -114,7 +119,7 @@ void message_clear_text_area(void) {
     u8 *dst;
 
     for (i = 0, dst = (u8 *)0x06000280; i <= 0x33; i++) {
-        CpuFastSet(gUnk_084C01C8, dst, 0x10);
+        CpuFastSet(gFontGlyphs, dst, 0x10);
         dst += 0x40;
     }
     write_tilemap_rect(0x1A, 4, 2, 0xE, gUnk_083B4AE0[18], REG_BG0CNT, 0);
@@ -129,69 +134,69 @@ void message_print_step(void) {
         case 0xF9:
             if (gUnk_03000440.unk19 == 1) {
                 gUnk_03000440.unk13 = 0;
-                reset_text_tile_state();
+                message_new_line();
             } else if (gUnk_03000440.unk19 == 2) {
                 gUnk_03000440.unk13 = 1;
-                update_text_compose_and_input();
+                message_wait_next_page();
             } else {
                 gUnk_03000440.unk13 = 0;
-                sub_080402B4();
+                message_print_var_step();
                 if (gUnk_03000440.unk1A == 0xFF)
                     gUnk_03000440.unk13 = 0;
             }
             break;
         case 0xFA:
-            sub_0804070C();
+            message_cmd_wait_skippable();
             if (gUnk_03000440.unk1A == 0xFF)
                 gUnk_03000440.unk13 = 0;
             else
                 gUnk_03000440.unk13 = 1;
             break;
         case 0xF7:
-            sub_080407A4();
+            message_cmd_wait();
             if (gUnk_03000440.unk1A == 0xFF)
                 gUnk_03000440.unk13 = 0;
             else
                 gUnk_03000440.unk13 = 1;
             break;
         case 0xFB:
-            sub_0803FEB8();
+            message_cmd_portrait();
             gUnk_03000440.unk13 = 1;
             break;
         case 0xFC:
-            if (update_text_compose_and_input() == 1)
+            if (message_wait_next_page() == 1)
                 gUnk_03000440.unkC++;
             break;
         case 0xFD:
             if (gUnk_03000440.unk19 == 2) {
                 gUnk_03000440.unk13 = 1;
-                if (update_text_compose_and_input() == 1)
+                if (message_wait_next_page() == 1)
                     gUnk_03000440.unkC++;
             } else {
                 gUnk_03000440.unk13 = 0;
-                reset_text_tile_state();
+                message_new_line();
                 if (gUnk_03000440.unk19 == 0)
                     gUnk_03000440.unkC++;
             }
             break;
         case 0xFE:
-            sub_0803FEA8();
+            message_cmd_skip();
             break;
         case 0xF8:
             gUnk_03000440.unk27 ^= 1;
             gUnk_03000440.unkC++;
             break;
         case 0xFF:
-            sub_08040820();
+            message_cmd_end();
             gUnk_03000440.unk13 = 1;
             break;
         default:
             if (gUnk_03000440.unk19 == 1) {
                 gUnk_03000440.unk13 = 0;
-                reset_text_tile_state();
+                message_new_line();
             } else if (gUnk_03000440.unk19 == 2) {
                 gUnk_03000440.unk13 = 1;
-                update_text_compose_and_input();
+                message_wait_next_page();
             } else {
                 gUnk_03000440.unk13 = 0;
                 text_render_glyph_step();
@@ -203,11 +208,13 @@ void message_print_step(void) {
     } while (gUnk_03000440.unk13 == 0);
 }
 
-static void sub_0803FEA8(void) {
+// 0xFE: ignored.
+static void message_cmd_skip(void) {
     gUnk_03000440.unkC++;
 }
 
-static void sub_0803FEB8(void) {
+// 0xFB anim set idx: show / change the speaker portrait (set 0xFF = none); waits for its animation.
+static void message_cmd_portrait(void) {
     u32 anim, set, idx;
     u32 x;
     u8 zero;
@@ -217,7 +224,7 @@ static void sub_0803FEB8(void) {
     u8 n;
     if (((struct TextColBits *)&gUnk_03000440)->col) {
         u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
-        CpuFastSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
+        CpuFastSet(gTextComposeTile, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
     }
     s = &gUnk_03000440;
     zero = 0;
@@ -296,18 +303,18 @@ void text_render_glyph_step(void) {
         while (!done) {
             ch = gUnk_03000440.unk8[gUnk_03000440.unkC + shift++];
             if (gUnk_03000440.unk27)
-                width += gUnk_083B4E88[ch][0];
+                width += gAltFontWidths[ch][0];
             else
-                width += gUnk_083B4C88[ch][0];
+                width += gFontWidths[ch][0];
             ch = gUnk_03000440.unk8[gUnk_03000440.unkC + shift];
             if (ch > 0xF7)
                 break;
             if (ch == 0) {
                 done = 1;
                 if (gUnk_03000440.unk27)
-                    width += gUnk_083B4E88[0][0];
+                    width += gAltFontWidths[0][0];
                 else
-                    width += gUnk_083B4C88[0][0];
+                    width += gFontWidths[0][0];
             }
         }
         gUnk_03000440.unk15 = width;
@@ -321,32 +328,32 @@ void text_render_glyph_step(void) {
 
     ch = gUnk_03000440.unk8[gUnk_03000440.unkC];
     if (gUnk_03000440.unk27)
-        width = gUnk_083B4E88[ch][0];
+        width = gAltFontWidths[ch][0];
     else
-        width = gUnk_083B4C88[ch][0];
+        width = gFontWidths[ch][0];
     gUnk_03000440.unk14 += width;
     gUnk_03000440.unk15 -= width;
     if (gUnk_03000440.unk16 == 0) {
         if (gUnk_03000440.unk27) {
-            gUnk_03000440.unk16 = gUnk_083B4E88[ch][0];
-            CpuSet(gUnk_084C5188 + ch * 64, gUnk_02020000, 0x20);
+            gUnk_03000440.unk16 = gAltFontWidths[ch][0];
+            CpuSet(gAltFontGlyphs + ch * 64, gTextComposeTile, 0x20);
         } else {
-            gUnk_03000440.unk16 = gUnk_083B4C88[ch][0];
-            CpuSet(gUnk_084C01C8 + ch * 64, gUnk_02020000, 0x20);
+            gUnk_03000440.unk16 = gFontWidths[ch][0];
+            CpuSet(gFontGlyphs + ch * 64, gTextComposeTile, 0x20);
         }
     } else {
         shift = gUnk_03000440.unk16;
         if (gUnk_03000440.unk27)
-            CpuSet(gUnk_084C5188 + ch * 64, gUnk_02020040, 0x20);
+            CpuSet(gAltFontGlyphs + ch * 64, gTextGlyphTile, 0x20);
         else
-            CpuSet(gUnk_084C01C8 + ch * 64, gUnk_02020040, 0x20);
+            CpuSet(gFontGlyphs + ch * 64, gTextGlyphTile, 0x20);
         for (i = 0; i < 16; i++)
-            ((u32 *)gUnk_02020000)[i] |= ((u32 *)gUnk_02020040)[i] << (shift * 4);
+            ((u32 *)gTextComposeTile)[i] |= ((u32 *)gTextGlyphTile)[i] << (shift * 4);
         gUnk_03000440.unk16 += width;
     }
     if (gUnk_03000440.unk16 > 7) {
         u8 col = (gUnk_03000440.unk14 >> 3) - 1;
-        CpuSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 0x20);
+        CpuSet(gTextComposeTile, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 0x20);
         gUnk_03000440.unk13 = 1;
         if (gUnk_03000440.unk16 == 8)
             gUnk_03000440.unk16 = 0;
@@ -354,11 +361,11 @@ void text_render_glyph_step(void) {
             gUnk_03000440.unk16 -= 8;
             shift = 8 - shift;
             if (gUnk_03000440.unk27)
-                CpuSet(gUnk_084C5188, gUnk_02020000, 0x20);
+                CpuSet(gAltFontGlyphs, gTextComposeTile, 0x20);
             else
-                CpuSet(gUnk_084C01C8, gUnk_02020000, 0x20);
+                CpuSet(gFontGlyphs, gTextComposeTile, 0x20);
             for (i = 0; i < 16; i++)
-                ((u32 *)gUnk_02020000)[i] |= ((u32 *)gUnk_02020040)[i] >> (shift * 4);
+                ((u32 *)gTextComposeTile)[i] |= ((u32 *)gTextGlyphTile)[i] >> (shift * 4);
         }
     }
     if (gUnk_03000440.unk15 == 0)
@@ -366,7 +373,8 @@ void text_render_glyph_step(void) {
     gUnk_03000440.unkC++;
 }
 
-void sub_080402B4(void) {
+// 0xF9 n: print string variable n (0 = gUnk_03002B74, 1-4 = 20-byte buffers from unk9E), one glyph a call.
+void message_print_var_step(void) {
     u8 w;
     u8 n;
     u8 i;
@@ -399,9 +407,9 @@ void sub_080402B4(void) {
             }
             c = gUnk_03000440.unk20[gUnk_03000440.unk24 + n++];
             if (gUnk_03000440.unk27)
-                w += gUnk_083B4E88[c][0];
+                w += gAltFontWidths[c][0];
             else
-                w += gUnk_083B4C88[c][0];
+                w += gFontWidths[c][0];
             c = gUnk_03000440.unk20[gUnk_03000440.unk24 + n];
             if (c > 0xF7)
                 done = 1;
@@ -415,33 +423,33 @@ void sub_080402B4(void) {
     if (gUnk_03000440.unk19 == 0) {
         c = gUnk_03000440.unk20[gUnk_03000440.unk24];
         if (gUnk_03000440.unk27)
-            w = gUnk_083B4E88[c][0];
+            w = gAltFontWidths[c][0];
         else
-            w = gUnk_083B4C88[c][0];
+            w = gFontWidths[c][0];
         gUnk_03000440.unk14 += w;
         gUnk_03000440.unk15 -= w;
         if (gUnk_03000440.unk16 == 0) {
             if (gUnk_03000440.unk27)
-                gUnk_03000440.unk16 = gUnk_083B4E88[c][0];
+                gUnk_03000440.unk16 = gAltFontWidths[c][0];
             else
-                gUnk_03000440.unk16 = gUnk_083B4C88[c][0];
+                gUnk_03000440.unk16 = gFontWidths[c][0];
             if (gUnk_03000440.unk27)
-                CpuSet(&gUnk_084C5188[c * 64], gUnk_02020000, 0x20);
+                CpuSet(&gAltFontGlyphs[c * 64], gTextComposeTile, 0x20);
             else
-                CpuSet(&gUnk_084C01C8[c * 64], gUnk_02020000, 0x20);
+                CpuSet(&gFontGlyphs[c * 64], gTextComposeTile, 0x20);
         } else {
             n = gUnk_03000440.unk16;
             if (gUnk_03000440.unk27)
-                CpuSet(gUnk_084C5188 + c * 64, gUnk_02020040, 0x20);
+                CpuSet(gAltFontGlyphs + c * 64, gTextGlyphTile, 0x20);
             else
-                CpuSet(gUnk_084C01C8 + c * 64, gUnk_02020040, 0x20);
+                CpuSet(gFontGlyphs + c * 64, gTextGlyphTile, 0x20);
             for (i = 0; i <= 15; i++)
-                ((u32 *)gUnk_02020000)[i] |= ((u32 *)gUnk_02020040)[i] << (n * 4);
+                ((u32 *)gTextComposeTile)[i] |= ((u32 *)gTextGlyphTile)[i] << (n * 4);
             gUnk_03000440.unk16 += w;
         }
         if (gUnk_03000440.unk16 > 7) {
             i = (gUnk_03000440.unk14 >> 3) - 1;
-            CpuSet(gUnk_02020000, (void *)(VRAM + 0x280 + i * 0x40 + gUnk_03000440.unk17 * 0x680), 0x20);
+            CpuSet(gTextComposeTile, (void *)(VRAM + 0x280 + i * 0x40 + gUnk_03000440.unk17 * 0x680), 0x20);
             gUnk_03000440.unk13 = 1;
             if (gUnk_03000440.unk16 == 8) {
                 gUnk_03000440.unk16 = 0;
@@ -449,11 +457,11 @@ void sub_080402B4(void) {
                 gUnk_03000440.unk16 -= 8;
                 n = 8 - n;
                 if (gUnk_03000440.unk27)
-                    CpuSet(gUnk_084C5188, gUnk_02020000, 0x20);
+                    CpuSet(gAltFontGlyphs, gTextComposeTile, 0x20);
                 else
-                    CpuSet(gUnk_084C01C8, gUnk_02020000, 0x20);
+                    CpuSet(gFontGlyphs, gTextComposeTile, 0x20);
                 for (i = 0; i <= 15; i++)
-                    ((u32 *)gUnk_02020000)[i] |= ((u32 *)gUnk_02020040)[i] >> (n * 4);
+                    ((u32 *)gTextComposeTile)[i] |= ((u32 *)gTextGlyphTile)[i] >> (n * 4);
             }
         }
         if (gUnk_03000440.unk15 == 0) {
@@ -464,10 +472,10 @@ void sub_080402B4(void) {
     }
 }
 
-void reset_text_tile_state(void) {
+void message_new_line(void) {
     if (((struct TextColBits *)&gUnk_03000440)->col) {
         u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
-        CpuSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 0x20);
+        CpuSet(gTextComposeTile, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 0x20);
     }
     gUnk_03000440.unk14 = 0;
     gUnk_03000440.unk16 = 0;
@@ -479,13 +487,13 @@ void reset_text_tile_state(void) {
         gUnk_03000440.unk17 = 1;
 }
 
-u8 update_text_compose_and_input(void) {
+u8 message_wait_next_page(void) {
     u8 i;
     u8 blink;
 
     if (((struct TextColBits *)&gUnk_03000440)->col) {
         u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
-        CpuSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 0x20);
+        CpuSet(gTextComposeTile, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 0x20);
     }
     blink = gUnk_03000440.unk25 & 8;
     if (blink)
@@ -504,19 +512,20 @@ u8 update_text_compose_and_input(void) {
         gUnk_03000440.unk25 = 0;
         write_tilemap_rect(2, 1, 0xE, 0x12, gUnk_083B4AE0_s.unk124, REG_BG0CNT, 0);
         for (i = 0; i <= 0x33; i++)
-            CpuSet(gUnk_084C01C8, (void *)(0x06000280 + i * 0x40), 0x20);
+            CpuSet(gFontGlyphs, (void *)(0x06000280 + i * 0x40), 0x20);
         gUnk_03000440.unk13 = 0;
         return 1;
     }
     return 0;
 }
 
-static void sub_0804070C(void) {
+// 0xFA n: wait n frames (0xFF = forever); A or B ends the wait early unless unk89 (demo) is set.
+static void message_cmd_wait_skippable(void) {
     u16 c;
     if (gUnk_03000440.unk1A == 0) {
         if (((struct TextColBits *)&gUnk_03000440)->col) {
             u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
-            CpuFastSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
+            CpuFastSet(gTextComposeTile, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
         }
         c = gUnk_03000440.unkC;
         gUnk_03000440.unk1A = gUnk_03000440.unk8[*(vu16 *)&gUnk_03000440.unkC + 1];
@@ -530,12 +539,13 @@ static void sub_0804070C(void) {
     }
 }
 
-static void sub_080407A4(void) {
+// 0xF7 n: wait n frames (0xFF = forever).
+static void message_cmd_wait(void) {
     u16 c;
     if (gUnk_03000440.unk1A == 0) {
         if (((struct TextColBits *)&gUnk_03000440)->col) {
             u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
-            CpuFastSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
+            CpuFastSet(gTextComposeTile, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
         }
         c = gUnk_03000440.unkC;
         gUnk_03000440.unk1A = gUnk_03000440.unk8[*(vu16 *)&gUnk_03000440.unkC + 1];
@@ -545,10 +555,11 @@ static void sub_080407A4(void) {
         gUnk_03000440.unkC += 2;
 }
 
-static void sub_08040820(void) {
+// 0xFF mode: end of message. Modes 0, 2, 3 wait for A / B; then run_message state 6 runs the end mode.
+static void message_cmd_end(void) {
     if (((struct TextColBits *)&gUnk_03000440)->col) {
         u8 col = (gUnk_03000440.unk14 + 8) / 8 - 1;
-        CpuFastSet(gUnk_02020000, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
+        CpuFastSet(gTextComposeTile, (void *)(col * 0x40 + VRAM + 0x280 + gUnk_03000440.unk17 * 0x680), 16);
     }
     gUnk_03000440.unk14 = 0;
     switch (gUnk_03000440.unk8[gUnk_03000440.unkC + 1]) {
@@ -570,32 +581,33 @@ static void sub_08040820(void) {
     }
 }
 
-// run_message state 6: run message command gUnk_083B27C0[unk8[unkC + 1]] (each steps through its own table by unk1B).
+// run_message state 6: run end mode gMessageEndModes[unk8[unkC + 1]] (each steps through its own table by unk1B).
 void message_run_command(void) {
-    gUnk_083B27C0[gUnk_03000440.unk8[gUnk_03000440.unkC + 1]]();
+    gMessageEndModes[gUnk_03000440.unk8[gUnk_03000440.unkC + 1]]();
 }
 
-void sub_080408F4(void) {
-    gUnk_083B27D4[gUnk_03000440.unk1B]();
+void message_end_wait_close(void) {
+    gMessageEndWaitCloseSteps[gUnk_03000440.unk1B]();
 }
 
-void sub_08040914(void) {
-    gUnk_083B27EC[gUnk_03000440.unk1B]();
+void message_end_close(void) {
+    gMessageEndCloseSteps[gUnk_03000440.unk1B]();
 }
 
-void sub_08040934(void) {
-    gUnk_083B2804[gUnk_03000440.unk1B]();
+void message_end_wait_keep(void) {
+    gMessageEndWaitKeepSteps[gUnk_03000440.unk1B]();
 }
 
-void sub_08040954(void) {
-    gUnk_083B2808[gUnk_03000440.unk1B]();
+void message_end_wait_clear(void) {
+    gMessageEndWaitClearSteps[gUnk_03000440.unk1B]();
 }
 
-void sub_08040974(void) {
-    gUnk_083B2810[gUnk_03000440.unk1B]();
+void message_end_keep(void) {
+    gMessageEndKeepSteps[gUnk_03000440.unk1B]();
 }
 
-void sub_08040994(void) {
+// End step 0: clear the speaker portrait.
+void message_close_portrait(void) {
     struct Unk_03000440 *p = &gUnk_03000440;
     u8 x;
     u8 m;
@@ -614,7 +626,8 @@ void sub_08040994(void) {
     p->unk1B++;
 }
 
-void sub_08040A00(void) {
+// End step 1: a frameless window (unk2 == 1) is just cleared, skipping the frame animation.
+void message_close_check_frame(void) {
     if (gUnk_03000440.unk2 == 1) {
         vram_fill_tilemap_rect(0x1E, 6, 0, 0xD, REG_BG0CNT, 0);
         gUnk_03000440.unk1B += 2;
@@ -622,7 +635,8 @@ void sub_08040A00(void) {
         gUnk_03000440.unk1B++;
 }
 
-void sub_08040A40(void) {
+// End step 2: closes the window frame in three frames (reverse of message_open_window_frame).
+void message_close_window_frame(void) {
     switch (gUnk_03000440.unk26) {
     case 3:
         lz_decompress_dispatch(gUnk_08487524, (void *)(VRAM + 0x20));
@@ -644,7 +658,8 @@ void sub_08040A40(void) {
     }
 }
 
-void sub_08040AF0(void) {
+// End step 3: undim the palettes only if message_open dimmed them (unk0 == 0).
+void message_close_check_dim(void) {
     if (gUnk_03000440.unk0 == 0)
         gUnk_03000440.unk1B += 1;
     else

@@ -173,7 +173,7 @@ void town_map_handle_input(void) {
         gUnk_03006F74->unk0 = 0;
         gGameSubState++;
     } else {
-        sub_0803FB0C();
+        message_next();
         gGameSubState = 4;
     }
 }

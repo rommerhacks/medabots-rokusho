@@ -237,7 +237,7 @@ void link_robattle_outro_message(void) {
 void link_robattle_outro_close_message(void) {
     update_scroll_movement_a();
     if (game_state_execute_handler_b()) {
-        sub_0803FB0C();
+        message_next();
         gGameSubState++;
     }
 }

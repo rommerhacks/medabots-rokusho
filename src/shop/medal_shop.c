@@ -305,7 +305,7 @@ void medal_rename_no_money(void) {
     } else if (run_message(gUnk_08485788[15]))
         r = 0;
     if (r == 0 && KEYS_LO(gNewKeys) & 3) {
-        sub_0803FB0C();
+        message_next();
         gGameSubState = 5;
     }
 }

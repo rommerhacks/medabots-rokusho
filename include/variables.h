@@ -339,10 +339,10 @@ extern const u16 gUnk_084F24E0[];
 extern const u8 gUnk_084C1C24[];
 extern const u8 gUnk_084C1E04[];
 extern const u8 gUnk_084C1FD4[];
-extern u8 gUnk_02020040[]; // second 64-byte text tile buffer: glyph shifted then ORed into gUnk_02020000
-                           // (text_render_glyph_step)
-extern u8 gUnk_02020000[]; // tilemap rect buffer for the Robattle team-side scroll (status_side_change_scroll_out)
-extern u8 gUnk_02020800[]; // BG tile backup (0x800 bytes of VRAM 0x06002800 while a Medawatch submenu runs)
+extern u8 gTextGlyphTile[];   // message text: the next glyph, shifted then ORed into gTextComposeTile
+                              // (text_render_glyph_step)
+extern u8 gTextComposeTile[]; // message text: the 8x16 tile being composed, flushed to the window tiles when full
+extern u8 gUnk_02020800[];    // BG tile backup (0x800 bytes of VRAM 0x06002800 while a Medawatch submenu runs)
 extern const Func gMedabotsScreenHandlers[];        // game state 3 sub-state handlers
 extern const Func gMedalsScreenHandlers[];          // game state 4 (Medals screen) sub-state handlers
 extern const Func gMedapartsScreenHandlers[];       // game state 5 (Medaparts screen) sub-state handlers
@@ -881,7 +881,7 @@ extern const u8 gUnk_083C4C60[][4];         // status sprite OAM attribute sets,
 extern const u16 gUnk_083AF4C0[];           // battle cursor sprite data (staggered_sprites_spawn)
 extern const u8 *const gUnk_083AFD08[][9];  // LZ assets by set and index (decompress_indexed_asset)
 extern const u16 *const gUnk_083B15C8[];    // palettes by asset set (decompress_indexed_asset)
-extern const u16 gUnk_084C6998[];           // text window OBJ palette (text_window_init)
+extern const u16 gTextWindowObjPalette[];   // text window OBJ palette (text_window_init)
 extern const u8 gUnk_08488540[];            // LZ text window graphics (text/message)
 extern const u8 gUnk_084C31BC[];            // LZ text window graphics (text/message)
 extern const u8 gUnk_084873D0[];            // LZ text window graphics (text/message)
@@ -1047,32 +1047,32 @@ extern const u8 gUnk_084DD45C[];   // compressed tiles (code_08028A00)
 extern const u8 gUnk_0850EC98[];   // 64-byte OBJ palettes (code_08028A00)
 extern const u8 gUnk_084DCF54[];   // compressed tiles (code_08028A00)
 extern const u8 gUnk_0850EC58[];   // 64-byte OBJ palettes (code_08028A00)
-extern const Func gUnk_083B27D4[]; // by gUnk_03000440.unk1B (sub_080408F4)
-extern const Func gUnk_083B27EC[]; // by gUnk_03000440.unk1B (sub_08040914)
-extern const Func gUnk_083B2804[]; // by gUnk_03000440.unk1B (sub_08040934)
-extern const Func gUnk_083B2808[]; // by gUnk_03000440.unk1B (sub_08040954)
-extern const Func gUnk_083B2810[]; // by gUnk_03000440.unk1B (sub_08040974)
+extern const Func
+    gMessageEndWaitCloseSteps[]; // end mode 0 steps by gUnk_03000440.unk1B: portrait, window, frame, palettes, done
+extern const Func gMessageEndCloseSteps[];     // end mode 1 steps (same as mode 0, no wait for A / B)
+extern const Func gMessageEndWaitKeepSteps[];  // end mode 2 steps: message_close only (window stays open)
+extern const Func gMessageEndWaitClearSteps[]; // end mode 3 steps: clear the text tiles, then message_close
+extern const Func gMessageEndKeepSteps[];      // end mode 4 steps: message_close only, no wait
 extern const u8
     gLinkBattlefields[32]; // battlefields, picked at random into gUnk_03001800.unk38 (link_robattle_pick_battlefield)
 extern const Func
-    gUnk_083B279C[]; // run_message states by gUnk_03000440.unk4: message_open, message_dim_palettes_step,
-                     // message_show_window, ..., message_run_command (runtime-checked in 03_new_game_intro)
-extern const Func gUnk_083B27C0[]; // message commands, by the byte after gUnk_03000440.unk8[unkC] (message_run_command)
+    gMessageStates[]; // run_message states by gUnk_03000440.unk4: message_open, message_dim_palettes_step,
+                      // message_show_window, ..., message_run_command (runtime-checked in 03_new_game_intro)
+extern const Func gMessageEndModes[];      // end modes 0-4, by the byte after the 0xFF end code (message_run_command)
 extern const u8 gPrizeGameSlotSets[16][6]; // prize rows per set, one set picked at random into gPrizeGameSlots
                                            // (prize_game_pick_slots)
-extern const u8 gUnk_084C01C8[]; // 64 bytes of tiles copied 52 times to VRAM 0x280 (message_fill_window_tiles)
-extern u8 gPrizeGameSlots[6];    // 6 bytes from gPrizeGameSlotSets (prize_game_pick_slots); = gUnk_03001800.prizeSlots
+extern const u8 gFontGlyphs[]; // message font, 64 bytes (two 4bpp tiles, 8x16) per character; character 0 is blank
+extern u8 gPrizeGameSlots[6];  // 6 bytes from gPrizeGameSlotSets (prize_game_pick_slots); = gUnk_03001800.prizeSlots
 extern const u8 gPrizeGameBotPicks[16]; // record index 0-2 picked at random (prize_game_pick_prize_part)
-extern const u8
-    gUnk_083B4E88[][2];          // alternate font widths, used when gUnk_03000440.unk27 is set (text_render_glyph_step)
-extern const u8 gUnk_084C5188[]; // alternate font glyphs, 64 bytes per character
-extern const u8 gUnk_083B4C88[][2]; // per character code: [0] width in pixels (render_text_sprites_08040DB8)
+extern const u8 gAltFontWidths[][2];    // alternate font widths, used after a 0xF8 code (gUnk_03000440.unk27)
+extern const u8 gAltFontGlyphs[];       // alternate font glyphs, 64 bytes per character
+extern const u8 gFontWidths[][2];       // message font: per character code, [0] width in pixels
 extern const Func
     gLinkRobattleHandlers[];     // link Robattle game state: sub-state handlers by gGameSubState (link_robattle_update)
-extern const u8 gUnk_08487524[]; // compressed tiles, message window frame style 3 (sub_08040A40)
-extern const u8 gUnk_084885A8[]; // compressed tilemap, message window frame style 3 (sub_08040A40)
-extern const u8 gUnk_08487630[]; // compressed tiles, message window frame style 2 (sub_08040A40)
-extern const u8 gUnk_08488600[]; // compressed tilemap, message window frame style 2 (sub_08040A40)
+extern const u8 gUnk_08487524[]; // compressed tiles, message window frame style 3 (message_close_window_frame)
+extern const u8 gUnk_084885A8[]; // compressed tilemap, message window frame style 3 (message_close_window_frame)
+extern const u8 gUnk_08487630[]; // compressed tiles, message window frame style 2 (message_close_window_frame)
+extern const u8 gUnk_08488600[]; // compressed tilemap, message window frame style 2 (message_close_window_frame)
 extern const u8 gUnk_083C3B5C[][8];     // per battlefield, copied to gUnk_03001800.unk74 (load_battle_script_entry_b)
 extern const Func gUnk_083B2814[];      // choice menu states by gUnk_03000440.unk29 (poll_choice_menu)
 extern const Func gUnk_083B284C[];      // by gUnk_03000440.unk1B (game_state_execute_handler_a)

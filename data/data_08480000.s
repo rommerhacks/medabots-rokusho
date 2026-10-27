@@ -484,8 +484,8 @@ gUnk_08488B24:
 gUnk_08488B44:
 	.incbin "baserom.gba", 0x488B44, 0x37684
 
-	.global gUnk_084C01C8
-gUnk_084C01C8:
+	.global gFontGlyphs
+gFontGlyphs:
 	.incbin "baserom.gba", 0x4C01C8, 0x1440
 
 	.global gUnk_084C1608
@@ -628,8 +628,8 @@ gUnk_084C50BC:
 gUnk_084C50D8:
 	.incbin "baserom.gba", 0x4C50D8, 0xB0
 
-	.global gUnk_084C5188
-gUnk_084C5188:
+	.global gAltFontGlyphs
+gAltFontGlyphs:
 	.incbin "baserom.gba", 0x4C5188, 0x1440
 
 	.global gUnk_084C65C8
@@ -648,8 +648,8 @@ gUnk_084C68E0:
 gUnk_084C696C:
 	.incbin "baserom.gba", 0x4C696C, 0x2C
 
-	.global gUnk_084C6998
-gUnk_084C6998:
+	.global gTextWindowObjPalette
+gTextWindowObjPalette:
 	.incbin "baserom.gba", 0x4C6998, 0x20
 
 	.global gUnk_084C69B8

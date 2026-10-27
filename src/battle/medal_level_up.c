@@ -213,7 +213,7 @@ void medal_transform_flash_out(void) {
         if (t <= 0x80)
             obj_palettes_blend_masked_now(0x7FFF, 0x20 - (t >> 2), 1);
         else {
-            sub_0803FB0C();
+            message_next();
             gGameSubState++;
         }
     }

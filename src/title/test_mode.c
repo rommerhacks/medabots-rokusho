@@ -276,7 +276,7 @@ void test_mode_erase_prompt(void) {
 void test_mode_erase_choice(void) {
     if (poll_choice_menu()) {
         gUnk_03006F74->unk2 = 0;
-        sub_0803FB0C();
+        message_next();
         if (gUnk_03000440.unk2A == 0)
             gGameSubState = 9;
         else
@@ -318,11 +318,11 @@ void test_mode_erase_save(void) {
                 break;
         }
         if (err == 0) {
-            sub_0803FB0C();
+            message_next();
             gUnk_03006F74->unk2 = err;
             gGameSubState++;
         } else {
-            sub_0803FB0C();
+            message_next();
             gUnk_03006F74->unk2 = 0;
             gGameSubState = 12;
         }

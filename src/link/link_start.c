@@ -26,7 +26,7 @@ void battle_cutscene_dispatch(void) {
                 gGameSubState++;
                 *(u8 *)&gUnk_03001784 |= 2;
             } else
-                sub_0803FB0C();
+                message_next();
         }
         return;
     }
@@ -35,7 +35,7 @@ void battle_cutscene_dispatch(void) {
         if (run_message(gUnk_08485BD8[gUnk_080AFB0B[gUnk_03006F74->unk8]]) && KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
             gUnk_03006F74->unk8++;
-            sub_0803FB0C();
+            message_next();
             open_choice_menu(1, 0, 7);
         }
         break;
@@ -57,7 +57,7 @@ void battle_cutscene_dispatch(void) {
                 gUnk_03006F74->unk8 = 0;
                 gGameSubState += 2;
             }
-            sub_0803FB0C();
+            message_next();
         }
         break;
     case 4:
@@ -79,7 +79,7 @@ void battle_cutscene_dispatch(void) {
             play_song(gUnk_03006F74->unk7F);
             gUnk_03006F74->unk8 = r;
             gGameSubState += 3;
-            sub_0803FB0C();
+            message_next();
             serial_link_init();
         }
         break;
@@ -94,7 +94,7 @@ void link_start_show_messages(void) {
             gUnk_03000440.unk1B = 0;
             gGameSubState--;
         } else
-            sub_0803FB0C();
+            message_next();
     }
 }
 
@@ -142,7 +142,7 @@ void multiplayer_battle_sync_update(void) {
                 gUnk_03005030 = -1;
                 return;
             }
-            sub_0803FB0C();
+            message_next();
             gUnk_03006F74->unk8 = 1;
             gGameSubState--;
             link->unk6 = zero;
@@ -153,7 +153,7 @@ void multiplayer_battle_sync_update(void) {
         return;
     }
     if (++gUnk_03006F74->unk3A > 300) {
-        sub_0803FB0C();
+        message_next();
         gUnk_03006F74->unk8 = 1;
         gGameSubState--;
         gUnk_03005010.unk6 = 0;
@@ -167,13 +167,13 @@ void multiplayer_battle_sync_update(void) {
 
 void handle_battle_fade_transition(void) {
     if (gUnk_03000B90 > 1) {
-        sub_0803FB0C();
+        message_next();
         gUnk_03006F74->unk8 = 1;
         gGameSubState -= 2;
     } else if (gUnk_03005010.unk0 & (1 << gUnk_03000B90)) {
         gGameSubState++;
     } else {
-        sub_0803FB0C();
+        message_next();
         gUnk_03006F74->unk8 = 1;
         gGameSubState -= 2;
     }

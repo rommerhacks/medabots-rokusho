@@ -543,7 +543,7 @@ bool32 sub_08069F80(void) {
         break;
     case 14:
         if (run_message(gUnk_084864E8[1])) {
-            sub_0803FB0C();
+            message_next();
             init_battle_sprite_medium();
             sprite_animation_dispatch(1, 4, 0, 0);
             gUnk_03006F88++;
@@ -551,7 +551,7 @@ bool32 sub_08069F80(void) {
         break;
     case 15:
         if (run_message(gUnk_084864E8[2])) {
-            sub_0803FB0C();
+            message_next();
             gUnk_03006F88++;
         }
         break;
@@ -561,7 +561,7 @@ bool32 sub_08069F80(void) {
         break;
     case 17:
         if (run_message(gUnk_084864E8[5])) {
-            sub_0803FB0C();
+            message_next();
             e = gUnk_083C1A00[gUnk_08486160[gUnk_03006FDC].unk2];
             sub_08069EE4(gUnk_030004DE, (u8 *)gUnk_083C3F38[e[0]]);
             sprite_animation_dispatch(0, 2, 0x40, 0);
@@ -571,13 +571,13 @@ bool32 sub_08069F80(void) {
         break;
     case 18:
         if (run_message(gUnk_084864E8[3]) && gSpriteEntries[0].unk20 == 0) {
-            sub_0803FB0C();
+            message_next();
             gUnk_03006F88++;
         }
         break;
     case 19:
         if (run_message(gUnk_084864E8[gUnk_08486160[gUnk_03006FDC].unk9])) {
-            sub_0803FB0C();
+            message_next();
             e = gUnk_083C1A00[gUnk_08486160[gUnk_03006FDC].unk6];
             sub_08069EE4(gUnk_030004DE, (u8 *)gUnk_083C3F38[e[0]]);
             sprite_animation_dispatch(0, 2, 0x40, 0);
@@ -587,13 +587,13 @@ bool32 sub_08069F80(void) {
         break;
     case 20:
         if (run_message(gUnk_084864E8[4]) && gSpriteEntries[0].unk20 == 0) {
-            sub_0803FB0C();
+            message_next();
             gUnk_03006F88++;
         }
         break;
     case 21:
         if (run_message(gUnk_084864E8[gUnk_08486160[gUnk_03006FDC].unk9 + 1])) {
-            sub_0803FB0C();
+            message_next();
             gUnk_03006F88++;
         }
         break;
@@ -660,12 +660,12 @@ static bool32 sub_0806A230(void) {
         init_battle_sprite_entry_1();
         sprite_animation_dispatch(1, 6, 0, 0);
         gSpriteEntries[1].unk2 = (gUnk_03006F94[0] - 1) * 64 + 0x18;
-        sub_0803FB0C();
+        message_next();
         gUnk_03006F88++;
         break;
     case 0x97:
         if (run_message(gUnk_084864E8[7]) && gSpriteEntries[1].unk20 == 0) {
-            sub_0803FB0C();
+            message_next();
             if (gUnk_03006F94[0] == 1)
                 gUnk_03006F88++;
             else
