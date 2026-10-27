@@ -531,7 +531,7 @@ void prize_game_transfer_part(void) {
     if (gUnk_03000440.unk9C == 1)
         medapart_add_quantity(gUnk_03001800.prizePart, (gUnk_03001800.prizeSlots + 0)[gUnk_03001800.prizeRow], 1);
     else
-        sub_080421B4(gUnk_03001800.prizeMedal, (gUnk_03001800.prizeSlots + 0)[gUnk_03001800.prizeRow]);
+        team_lose_equipped_part(gUnk_03001800.prizeMedal, (gUnk_03001800.prizeSlots + 0)[gUnk_03001800.prizeRow]);
     memcpy_bytes_08041D04(
         (const void *)gUnk_083BB9CC[0][gUnk_03001800.prizePart * 4 + gUnk_03001800.prizeSlots[gUnk_03001800.prizeRow]],
         gUnk_03000440.unk9E, 0xF);

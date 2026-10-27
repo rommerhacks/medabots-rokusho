@@ -4,9 +4,9 @@
 
 #include "global.h"
 
-static u32 clear_ewram_buffer_02023000(void);
+static u32 medal_new_level(void);
 
-void sub_08041D28(void) {
+void medal_list_init_order(void) {
     u32 i;
     for (i = 0; i < 30; i++)
         gUnk_03000BE0[i].unk0 = i;
@@ -32,9 +32,9 @@ u32 medal_add_by_id(u8 id) {
             gUnk_03000BE0[i].unk4 = gUnk_03000440.unkEF;
             gUnk_03000BE0[i].unk6 = gUnk_03000440.unkF0;
             gUnk_03000BE0[i].unk7 = gUnk_03000440.unkF5;
-            gUnk_03000BE0[i].unk5 = clear_ewram_buffer_02023000();
-            gUnk_03000BE0[i].unk8 = sub_080420C4(gUnk_03000BE0[i].unk5, gUnk_03000440.unkF1, gUnk_03000440.unkF2,
-                                                 gUnk_03000440.unkF3, gUnk_03000440.unkF4);
+            gUnk_03000BE0[i].unk5 = medal_new_level();
+            gUnk_03000BE0[i].unk8 = medal_tier_for_level(gUnk_03000BE0[i].unk5, gUnk_03000440.unkF1,
+                                                         gUnk_03000440.unkF2, gUnk_03000440.unkF3, gUnk_03000440.unkF4);
             gUnk_03000BE0[i].unk2 = (gUnk_03000BE0[i].unk5 + 1) * 100;
             if ((u8)(gUnk_03000BE0[i].unk5 / 10) * gUnk_03000440.unkF6 + gUnk_03000440.unkF6 > 100)
                 gUnk_03000BE0[i].unk20[0] = 100;
@@ -106,7 +106,8 @@ void medal_add_from_buffer(const void *src) {
     }
 }
 
-static u32 clear_ewram_buffer_02023000(void) {
+// Level for a new Medal: halfway between the highest and the fourth-highest Medal levels.
+static u32 medal_new_level(void) {
     u32 zero = 0;
     struct SortEntry *e = SORT_BUFFER;
     struct Unk_03000BE0 *m;
@@ -115,11 +116,12 @@ static u32 clear_ewram_buffer_02023000(void) {
     CpuFastSet(&zero, e, 0x01000080);
     for (i = 0, m = gUnk_03000BE0; i < 30; m++, e++, i++)
         e->key = m->unk5;
-    sub_0804242C(30);
+    sort_buffer_descending(30);
     return (SORT_BUFFER[0].key - SORT_BUFFER[3].key) / 2 + SORT_BUFFER[3].key;
 }
 
-u32 sub_080420C4(u8 level, u8 a, u8 b, u8 c, u8 d) {
+// How many of the thresholds a-d (0 = none) level reaches (0-4).
+u32 medal_tier_for_level(u8 level, u8 a, u8 b, u8 c, u8 d) {
     if (d != 0 && level >= d)
         return 4;
     if (c != 0 && level >= c)
@@ -157,13 +159,14 @@ void reduce_medapart_stat(u8 id, u8 kind, u8 n) {
     *p = v;
 }
 
-void sub_080421A0(void) {
+void team_init_order(void) {
     u32 i;
     for (i = 0; i < 9; i++)
         gUnk_030017A0[i].unk7 = i;
 }
 
-void sub_080421B4(u8 medal, u8 kind) {
+// The Medabot with Medal medal loses its part of kind kind: back to the bare Tinpet part, one less owned.
+void team_lose_equipped_part(u8 medal, u8 kind) {
     u32 i;
 
     for (i = 0; i < 9; i++) {
@@ -263,7 +266,7 @@ void item_remove_quantity(u8 id, u8 n) {
 
 // Bubble sort of the n SORT_BUFFER entries (struct SortEntry), ascending by key then key2.
 
-static void sub_080423A0(u8 n) {
+static void sort_buffer_ascending(u8 n) {
     u16 t0, t1, t2, t3;
     u32 j;
     struct SortEntry *a, *b;
@@ -307,7 +310,7 @@ static void sub_080423A0(u8 n) {
 
 // Bubble sort of the n SORT_BUFFER entries (struct SortEntry), descending by key then key2.
 
-void sub_0804242C(u8 n) {
+void sort_buffer_descending(u8 n) {
     u16 t0, t1, t2, t3;
     u32 j;
     struct SortEntry *a, *b;

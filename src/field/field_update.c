@@ -66,8 +66,8 @@ void new_game_init(void) {
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
-    sub_08041D28();
-    sub_080421A0();
+    medal_list_init_order();
+    team_init_order();
     gUnk_030057E0.unkCBC = 16;
     gUnk_030057E0.unkCBD = 16;
     REG_BG1CNT = 0xC609;
@@ -84,7 +84,7 @@ void new_game_init(void) {
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     affine_params_reset();
-    sub_08048B6C();
+    bg2_affine_reset();
     gUnk_03005310.unk1C = 0;
     gUnk_03005310.unk24 = 0;
     gUnk_03005310.unk1E = 0;
@@ -136,7 +136,7 @@ void sub_0804A5C0(void) {
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     affine_params_reset();
-    sub_08048B6C();
+    bg2_affine_reset();
     gUnk_030057E0.unkC8A = 0;
     gUnk_030057E0.unkC88 = 0;
     gUnk_030057E0.unkC89 = 0;

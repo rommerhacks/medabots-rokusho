@@ -12,8 +12,8 @@ gUnk_084837A0:
 gUnk_08483AA0:
 	.incbin "baserom.gba", 0x483AA0, 0x20
 
-	.global gUnk_08483AC0
-gUnk_08483AC0:
+	.global gItemUsable
+gItemUsable:
 	.incbin "baserom.gba", 0x483AC0, 0x40
 
 	.global gUnk_08483B00
@@ -60,16 +60,16 @@ gUnk_08483CA4:
 gUnk_08483CC4:
 	.incbin "baserom.gba", 0x483CC4, 0x1C
 
-	.global gUnk_08483CE0
-gUnk_08483CE0:
+	.global gAreaTownMapPlace
+gAreaTownMapPlace:
 	.incbin "baserom.gba", 0x483CE0, 0xC0
 
-	.global gUnk_08483DA0
-gUnk_08483DA0:
+	.global gTownMapStates
+gTownMapStates:
 	.incbin "baserom.gba", 0x483DA0, 0x20
 
-	.global gUnk_08483DC0
-gUnk_08483DC0:
+	.global gTownMapPlacePositions
+gTownMapPlacePositions:
 	.incbin "baserom.gba", 0x483DC0, 0x14
 
 	.global gUnk_08483DD4
@@ -108,16 +108,16 @@ gUnk_08483EB4:
 gUnk_0848417C:
 	.incbin "baserom.gba", 0x48417C, 0x2C8
 
-	.global gUnk_08484444
-gUnk_08484444:
+	.global gItemNames
+gItemNames:
 	.incbin "baserom.gba", 0x484444, 0xD88
 
 	.global gItemDescriptions
 gItemDescriptions:
 	.incbin "baserom.gba", 0x4851CC, 0x338
 
-	.global gUnk_08485504
-gUnk_08485504:
+	.global gTownMapPlaceNames
+gTownMapPlaceNames:
 	.incbin "baserom.gba", 0x485504, 0x28
 
 	.global gUnk_0848552C

@@ -3,14 +3,14 @@
 // Its callers are in the mode-2 screens; uses engine/ sprite and tilemap helpers.
 #include "global.h"
 
-static void sub_0805B3E4(s32 x, s32 y, s32 n);
+static void clear_item_list_map_run(s32 x, s32 y, s32 n);
 
-static void sub_0805AB40(void) {
+static void upload_palette_buffers(void) {
     CpuFastSet(gPaletteBuffer, (void *)OBJ_PLTT, 0x80);
     CpuFastSet(gPaletteBufferBg, (void *)PLTT, 0x80);
 }
 
-static void sub_0805AB68(u16 color, s32 t, u32 pal) {
+static void obj_palette_blend_to_color(u16 color, s32 t, u32 pal) {
     u32 inv;
     u32 i;
 
@@ -28,10 +28,10 @@ static void sub_0805AB68(u16 color, s32 t, u32 pal) {
             gPaletteBuffer[i] = gPaletteBackup[i];
         }
     }
-    gVBlankOnceCallback = sub_0805AB40;
+    gVBlankOnceCallback = upload_palette_buffers;
 }
 
-static void sub_0805AC4C(u16 color, s32 t) {
+static void bg_palettes_blend_to_color(u16 color, s32 t) {
     u32 inv;
     u32 i;
 
@@ -47,7 +47,7 @@ static void sub_0805AC4C(u16 color, s32 t) {
              ((((*s & 0x3E0) * inv + (color & 0x3E0) * t) >> 5) & 0x3E0) |
              ((((*s & 0x7C00) * inv + (color & 0x7C00) * t) >> 5) & 0x7C00);
     }
-    gVBlankOnceCallback = sub_0805AB40;
+    gVBlankOnceCallback = upload_palette_buffers;
 }
 
 void unpack_item_inventory_to_buffer(void) {
@@ -79,20 +79,20 @@ void update_battle_medapart_icons(void) {
     }
     for (i = 0; i < n; i++) {
         clear_sprite_table_mask(i * 16, 0x10);
-        sub_0805B3E4(0x18, i * 2 + 3, 3);
-        sub_0805B3E4(0x18, i * 2 + 4, 3);
+        clear_item_list_map_run(0x18, i * 2 + 3, 3);
+        clear_item_list_map_run(0x18, i * 2 + 4, 3);
     }
     t0 = *(u16 *)0x0600F0EE;
     t1 = *(u16 *)0x0600F12E;
     for (i = 0; i < n; i++) {
         if (counts[i]) {
-            memcpy_bytes_0803F63C((void *)gUnk_08484444[ids[i]], gUnk_030004DE, 0x11);
+            memcpy_bytes_0803F63C((void *)gItemNames[ids[i]], gUnk_030004DE, 0x11);
             render_text_sprites_08040DB8(gUnk_030004DE, i * 15, 0xC, i * 2 + 3, 7, 8, 1, 2);
             draw_number_2digits_tall(counts[i], 0x18, i * 2 + 3);
             *((u16 *)0x0600F02E + ((i * 2 + 3) << 5)) = t0;
             *((u16 *)0x0600F02E + ((i * 2 + 4) << 5)) = t1;
             gSpriteEntries[i + 0x55].unk0 |= 0x4000;
-            gSpriteEntries[i + 0x55].unk6 = sub_0805B4B0(ids[i]) ? 0x21 : 0x22;
+            gSpriteEntries[i + 0x55].unk6 = item_is_usable(ids[i]) ? 0x21 : 0x22;
         } else {
             u16 *map = (u16 *)0x0600F02E;
             u16 *p;
@@ -189,8 +189,8 @@ void render_battle_medapart_list(u32 mode) {
     }
     for (i = 0; i < n; i++) {
         clear_sprite_table_mask(i * 14 + 13, 14);
-        sub_0805B3E4(0xC, i * 2 + 10, 3);
-        sub_0805B3E4(0xC, i * 2 + 11, 3);
+        clear_item_list_map_run(0xC, i * 2 + 10, 3);
+        clear_item_list_map_run(0xC, i * 2 + 11, 3);
         clear_sprite_table_mask(i * 7 + 0x45, 7);
     }
     for (i = 0; i < n; i++) {
@@ -226,7 +226,7 @@ void render_battle_medapart_list(u32 mode) {
     render_text_sprites_08040DB8(gUnk_030004DE, 0x61, 0x13, 5, 7, 12, 2, 0);
 }
 
-static void sub_0805B3E4(s32 x, s32 y, s32 n) {
+static void clear_item_list_map_run(s32 x, s32 y, s32 n) {
     u16 *base = (u16 *)0x0600B000 + x;
     u16 *p = base + y * 32;
     u16 i;
@@ -244,7 +244,7 @@ void swap_inventory_items(void) {
     memswap(gItemInventory[gUnk_03006F74->unk13], gItemInventory[gUnk_03006F74->unkC], 2);
 }
 
-void sub_0805B470(struct SpriteEntry *attr) {
+void item_menu_update_swap_marker(struct SpriteEntry *attr) {
     struct Unk_03006F74 *w = gUnk_03006F74;
     if (w->unk12) {
         if (w->unk13 >= w->unk11 && w->unk13 < w->unk11 + 5)
@@ -254,9 +254,9 @@ void sub_0805B470(struct SpriteEntry *attr) {
     }
 }
 
-bool32 sub_0805B4B0(u32 id) {
+bool32 item_is_usable(u32 id) {
     bool32 r = FALSE;
-    if (gUnk_08483AC0[id] == 1)
+    if (gItemUsable[id] == 1)
         r = TRUE;
     return r;
 }

@@ -858,7 +858,7 @@ void afterbattle_exit_to_field(void) {
     gGameSubState = 0;
 }
 
-// 0x77: picks one of the player's parts (sub_080122F4(0): slots 0-2) and removes it (sub_080421B4).
+// 0x77: picks one of the player's parts (sub_080122F4(0): slots 0-2) and removes it (team_lose_equipped_part).
 void battle_loss_take_part(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
@@ -867,7 +867,7 @@ void battle_loss_take_part(void) {
         gGameSubState = 0x40;
     } else {
         sub_080122F4(0);
-        sub_080421B4(gUnk_03000590[gUnk_03001800.unk187].unk47, gUnk_03001800.unk168);
+        team_lose_equipped_part(gUnk_03000590[gUnk_03001800.unk187].unk47, gUnk_03001800.unk168);
         sub_0803FB0C();
         gGameSubState++;
     }
@@ -1298,8 +1298,8 @@ static void battle_check_medal_level_up(void) {
         medal->unk2 = (medal->unk5 + 1) * 100;
         gUnk_03001800.unk16E[i][0] = medal->unk1 + 1;
         memcpy_bytes_08041D04(gUnk_083B6158[medal->unk1], &gUnk_03000440.unkEE, 16);
-        variant = sub_080420C4(medal->unk5, (&gUnk_03000440.unkEE)[3], (&gUnk_03000440.unkEE)[4],
-                               (&gUnk_03000440.unkEE)[5], (&gUnk_03000440.unkEE)[6]);
+        variant = medal_tier_for_level(medal->unk5, (&gUnk_03000440.unkEE)[3], (&gUnk_03000440.unkEE)[4],
+                                       (&gUnk_03000440.unkEE)[5], (&gUnk_03000440.unkEE)[6]);
         if (variant != medal->unk8) {
             gUnk_03001800.unk16E[i][1] = 1;
             gUnk_03001800.unk16E[i][2] = medal->unk1;

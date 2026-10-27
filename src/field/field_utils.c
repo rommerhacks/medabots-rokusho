@@ -41,7 +41,10 @@ s32 truncate_to_digit_count(s32 n, u8 k) {
     return rem;
 }
 
-u32 sub_08048914(u32 a) {
+// Whether item a can be used now: 0 not a usable item, 1 yes, 2-4 not here (2: town map in an area of type
+// 0xA, 3: blocked by a gUnk_030057E0.unkC5D flag, 4: disguise while unkC5C is 1-2). Items 1, 5, 12, 13, 19,
+// 39, 40 are the disguises ("Transform Goods").
+u32 item_get_use_result(u32 a) {
     u32 r;
 
     switch (a) {
@@ -75,7 +78,7 @@ u32 sub_08048914(u32 a) {
 }
 
 // Dead code (nothing calls it): BG2 affine matrix for gUnk_03005310 (guess).
-static void sub_08048A40(void) {
+static void bg2_affine_update_matrix(void) {
     const s16 *sine = gSineTable;
     struct Unk_03005310 *p = &gUnk_03005310;
     s32 a;
@@ -104,7 +107,7 @@ s16 divide_by_65536(s16 a) {
     return n / a;
 }
 
-void sub_08048B6C(void) {
+void bg2_affine_reset(void) {
     struct Unk_03005310 *p = &gUnk_03005310;
 
     p->unk10 = 0;
@@ -121,9 +124,9 @@ void sub_08048B6C(void) {
     p->unk2E = 0;
 }
 
-// Not called directly (hidden in the tail of sub_08048B6C). Guess: debug, B + D-pad scrolls BG1-3,
+// Not called directly (hidden in the tail of bg2_affine_reset). Guess: debug, B + D-pad scrolls BG1-3,
 // RIGHT/LEFT step unk36 (0-255).
-void sub_08048B94(void) {
+void debug_bg_scroll_input(void) {
     if (KEYS_LO(gHeldKeys) & 2) {
         if (KEYS_LO(gHeldKeys) & 0x40) {
             gUnk_03005310.unk26 -= 4;
@@ -152,8 +155,8 @@ void sub_08048B94(void) {
         gUnk_03005310.unk36 = (gUnk_03005310.unk36 + 0xFF) & 0xFF;
 }
 
-// Not called directly (hidden in the tail of sub_08048B6C).
-static void sub_08048C5C(u16 *src, u16 *dst, s32 h, s32 w, s32 maxh, s32 pitch, s32 add) {
+// Not called directly (hidden in the tail of bg2_affine_reset).
+static void copy_tilemap_rows_add(u16 *src, u16 *dst, s32 h, s32 w, s32 maxh, s32 pitch, s32 add) {
     s32 i, j;
     if (h > maxh)
         h = maxh;
@@ -234,7 +237,7 @@ void copy_tiles_to_bg_tilemap(const void *src, void *dst, s32 h, s32 w, s32 c, s
 #undef MAP
 
 // Not called directly (hidden in the tail of copy_tiles_to_bg_tilemap). Writes one 2x2 metatile.
-static void sub_0804908C(u16 *dst, s32 pal, s32 tile) {
+static void write_metatile_2x2(u16 *dst, s32 pal, s32 tile) {
     s32 t = (pal + 1) * 4;
     s32 attr = (pal << 12) + tile;
 

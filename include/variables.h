@@ -130,10 +130,10 @@ extern const u8 gUnk_083B6158[][16]; // 16-byte records per Medal graphic index 
                                      // skill, byte 7 icon)
 extern const u8 gUnk_083D1BF8[];
 extern const u32 gUnk_083BA4D8[];
-extern const u8 gUnk_083AD200[];     // 8 bytes per Medal attribute: base skill levels (init_enemy_bot_medal)
-extern const u8 gUnk_083AD2F0[][4];  // 32 part orders (0xFF = end) tried by select_bot_battle_action
-extern const u32 gUnk_083BB9CC[][4]; // Medapart name pointers: [part id][kind: head, right arm, left arm, legs]
-extern const u32 gUnk_08484444[];
+extern const u8 gUnk_083AD200[];         // 8 bytes per Medal attribute: base skill levels (init_enemy_bot_medal)
+extern const u8 gUnk_083AD2F0[][4];      // 32 part orders (0xFF = end) tried by select_bot_battle_action
+extern const u32 gUnk_083BB9CC[][4];     // Medapart name pointers: [part id][kind: head, right arm, left arm, legs]
+extern const u32 gItemNames[];           // item name strings by item id (17 bytes, item lists)
 extern vu32 *const gSoundFifoAddrs[];    // REG_FIFO_A, REG_FIFO_B
 extern vu32 *const gSoundTimerRegs[];    // REG_TM0CNT, REG_TM1CNT (sample rate timers of FIFO A / B)
 extern const u8 gSoundFifoResetBits[];   // SOUNDCNT_H high byte: FIFO A / B reset
@@ -580,23 +580,23 @@ extern const void *const gUnk_08485BD8[]; // messages (sub_0805D9B8 uses 18)
 extern const Func gSaveScreenStates[15];  // save screen states, by gGameSubState (save_screen_update): 6 stops the
                                           // music, 7 writes the save, 8 / 12 show the result
 
-extern const u8 gUnk_0878DE10[];  // save screen BG1 tilemap (LZ77, decompress_and_write_tilemap)
-extern const u8 gUnk_0878DFE0[];  // save screen BG2 tilemap
-extern const u8 gUnk_0878E104[];  // save screen BG3 tilemap
-extern const u32 gUnk_0878CC64[]; // save screen BG tiles (dma3_copy_or_decompress)
-extern const u8 gUnk_0878A844[];  // town map graphics (town_map_load_graphics)
-extern const u8 gUnk_0878A918[];  // town map graphics (town_map_load_graphics)
-extern const u8 gUnk_0878AA0C[];  // town map graphics (town_map_load_graphics)
-extern const u32 gUnk_087877C4[]; // town map graphics (town_map_load_graphics)
-extern const u8 gUnk_087871E4[];  // town map graphics (town_map_load_graphics)
-extern const u8 gUnk_080AF9A8[];  // town map graphics (town_map_load_graphics)
-extern const u8 gUnk_08483CE0[];  // town map graphics (town_map_load_graphics)
-extern const u32 gUnk_087873A4[]; // town map graphics (town_map_load_graphics)
-extern const u8 *gUnk_08483C68;   // name entry (sub_0805E5B0)
-extern const u16 gUnk_080AF810[]; // name entry OBJ palette (sub_0805E5B0)
-extern const u16 gUnk_08793428[]; // name entry BG palettes (sub_0805E5B0)
-extern const u8 gUnk_08784CB0[];  // save screen BG tiles, after gUnk_0878CC64 (LZ77)
-extern const u8 gUnk_08784DA4[];  // save screen OBJ tiles (LZ77)
+extern const u8 gUnk_0878DE10[];     // save screen BG1 tilemap (LZ77, decompress_and_write_tilemap)
+extern const u8 gUnk_0878DFE0[];     // save screen BG2 tilemap
+extern const u8 gUnk_0878E104[];     // save screen BG3 tilemap
+extern const u32 gUnk_0878CC64[];    // save screen BG tiles (dma3_copy_or_decompress)
+extern const u8 gUnk_0878A844[];     // town map graphics (town_map_load_graphics)
+extern const u8 gUnk_0878A918[];     // town map graphics (town_map_load_graphics)
+extern const u8 gUnk_0878AA0C[];     // town map graphics (town_map_load_graphics)
+extern const u32 gUnk_087877C4[];    // town map graphics (town_map_load_graphics)
+extern const u8 gUnk_087871E4[];     // town map graphics (town_map_load_graphics)
+extern const u8 gUnk_080AF9A8[];     // town map graphics (town_map_load_graphics)
+extern const u8 gAreaTownMapPlace[]; // town map place by area id (gUnk_030057E0.unk7FE, town_map_load_graphics)
+extern const u32 gUnk_087873A4[];    // town map graphics (town_map_load_graphics)
+extern const u8 *gUnk_08483C68;      // name entry (sub_0805E5B0)
+extern const u16 gUnk_080AF810[];    // name entry OBJ palette (sub_0805E5B0)
+extern const u16 gUnk_08793428[];    // name entry BG palettes (sub_0805E5B0)
+extern const u8 gUnk_08784CB0[];     // save screen BG tiles, after gUnk_0878CC64 (LZ77)
+extern const u8 gUnk_08784DA4[];     // save screen OBJ tiles (LZ77)
 
 extern const Func gUnk_08483B78[]; // state handlers by gGameSubState (sub_0805BF88)
 
@@ -1130,22 +1130,22 @@ extern const u16 gUnk_0878AE78[0x100]; // BG palettes of the field menu item lis
 extern const u8 gUnk_080AF980[8]; // sprite 0 frame offsets (sub_080600E0)
 extern const u8 gUnk_080AFA10[];  // indexed by gUnk_03002420 (copy_text_with_lookup)
 extern u8 gUnk_03002420;
-extern const Func gUnk_08483DA0[];        // sub-state handlers (town_map_dispatch)
-extern const Func gUnk_08483CA4[];        // sub-state handlers (sub_0805FAF0)
-extern const Func gUnk_08483CC4[];        // sub-state handlers (save_lost_dispatch)
-extern const Func gUnk_08483C6C[];        // sub-state handlers (test_mode_dispatch)
-extern const Func gUnk_08483E8C[];        // sub-state handlers (shop_list_dispatch)
-extern const void *const gUnk_08485504[]; // messages by gUnk_03006F74->unk17 (sub_080608B4)
-extern const u8 gUnk_08485580[];          // message text (sub_0806142C, gUnk_03006F74->unk5 set)
-extern const u8 gUnk_08485551[];          // message text (sub_0806142C, gUnk_03006F74->unk5 clear)
-extern const u8 gUnk_08483DC0[][2];       // x, y in tiles by gUnk_03006F74->unk17 (town_map_update_cursor)
-extern const u16 gUnk_08483DD4[][4];      // x offsets [unk18][frame]
-extern const u16 gUnk_08483DE4[][4];      // y offsets [unk18][frame]
-extern const u16 gUnk_08483DF4[][4];      // animation frames [unk18][frame]
-extern const u8 gUnk_08483E04[];          // frame index by gUnk_03006F74->unk3A / 10 (update_animation_timer)
-extern const u8 gUnk_0848552C[];          // message text (sub_08061180)
-extern const Func gUnk_08483E10[];        // sub-state handlers (shop_menu_dispatch)
-extern const u16 gUnk_080AF968[];         // sprite 1 animation frames by unk1A / 6 (sub_0806006C)
+extern const Func gTownMapStates[];            // sub-state handlers (town_map_dispatch)
+extern const Func gUnk_08483CA4[];             // sub-state handlers (sub_0805FAF0)
+extern const Func gUnk_08483CC4[];             // sub-state handlers (save_lost_dispatch)
+extern const Func gUnk_08483C6C[];             // sub-state handlers (test_mode_dispatch)
+extern const Func gUnk_08483E8C[];             // sub-state handlers (shop_list_dispatch)
+extern const void *const gTownMapPlaceNames[]; // messages by gUnk_03006F74->unk17 (town_map_show_place_name)
+extern const u8 gUnk_08485580[];               // message text (sub_0806142C, gUnk_03006F74->unk5 set)
+extern const u8 gUnk_08485551[];               // message text (sub_0806142C, gUnk_03006F74->unk5 clear)
+extern const u8 gTownMapPlacePositions[][2];   // x, y in tiles by gUnk_03006F74->unk17 (town_map_update_cursor)
+extern const u16 gUnk_08483DD4[][4];           // x offsets [unk18][frame]
+extern const u16 gUnk_08483DE4[][4];           // y offsets [unk18][frame]
+extern const u16 gUnk_08483DF4[][4];           // animation frames [unk18][frame]
+extern const u8 gUnk_08483E04[];               // frame index by gUnk_03006F74->unk3A / 10 (town_map_animate_tiles)
+extern const u8 gUnk_0848552C[];               // message text (sub_08061180)
+extern const Func gUnk_08483E10[];             // sub-state handlers (shop_menu_dispatch)
+extern const u16 gUnk_080AF968[];              // sprite 1 animation frames by unk1A / 6 (sub_0806006C)
 extern u8 gUnk_03007008;
 extern const u8 gUnk_080AFA3C[][4][2]; // x, y by [which][kind] (load_medapart_sprite_animation)
 extern const u16 gUnk_08488AA4[];      // OBJ palette 1 (sub_08060FD4)
@@ -1411,7 +1411,7 @@ extern const u8 gUnk_080AC5A4[];
 // code_0805AB40 (session 91)
 extern const struct FuncTable6
     gUnk_080AF7A8; // sub-states by gGameSubState (dispatch_rotation_menu_substate; guess: title options screen)
-extern const u8 gUnk_08483AC0[]; // per item id: 1 for some kind (sub_0805B4B0)
+extern const u8 gItemUsable[];   // per item id: 1 if usable from the item menu (town map 0 and the disguises)
 extern const u8 gUnk_080AF752[]; // song per battle music option (sub_0805C428 preview)
 extern const u16 gUnk_0878CA64[];
 extern const u16 gUnk_080AF7E8[];

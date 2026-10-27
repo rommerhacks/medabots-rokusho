@@ -1,5 +1,5 @@
-// Mode-2 state 10: the Town Map. town_map_dispatch runs gUnk_08483DA0 (graphics, then cursor states that
-// call town_map_update_cursor / update_animation_timer, the two helpers at the top of the file).
+// Mode-2 state 10: the Town Map. town_map_dispatch runs gTownMapStates (graphics, then cursor states that
+// call town_map_update_cursor / town_map_animate_tiles, the two helpers at the top of the file).
 #include "global.h"
 
 void town_map_update_cursor(void) {
@@ -8,14 +8,14 @@ void town_map_update_cursor(void) {
 
     if (++gSpriteEntries[0].unk1A > 0x60)
         gSpriteEntries[0].unk1A = 0;
-    t = (const u8 *)gUnk_08483DC0;
+    t = (const u8 *)gTownMapPlacePositions;
     gSpriteEntries[0].unk2 = t[gUnk_03006F74->unk17 * 2] * 8 + gUnk_08483DD4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
     gSpriteEntries[0].unk4 =
         t[(u16)(gUnk_03006F74->unk17 * 2 + 1)] * 8 + gUnk_08483DE4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
     gSpriteEntries[0].unk6 = gUnk_08483DF4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
 }
 
-void update_animation_timer(void) {
+void town_map_animate_tiles(void) {
     s32 t;
 
     if ((u16)++gUnk_03006F74->unk3A > 0x6D)
@@ -26,10 +26,10 @@ void update_animation_timer(void) {
 }
 
 void town_map_dispatch(void) {
-    gUnk_08483DA0[gGameSubState]();
+    gTownMapStates[gGameSubState]();
 }
 
-void copy_bg2_tilemap_to_ewram(void) {
+void town_map_save_bg2_and_reset(void) {
     u32 zero;
 
     CpuFastSet((void *)0x06002800, (void *)0x02020800, 0x28);
@@ -99,7 +99,7 @@ void town_map_load_graphics(void) {
     CpuFastSet(gUnk_087871E4, (void *)PLTT, 0x70);
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
     CpuFastSet(gUnk_080AF9A8, (void *)(PLTT + 0x200), 0x18);
-    gUnk_03006F74->unk17 = gUnk_08483CE0[gUnk_030057E0.unk7FE];
+    gUnk_03006F74->unk17 = gAreaTownMapPlace[gUnk_030057E0.unk7FE];
     gSpriteEntries[0].unk0 = 0xC000;
     gSpriteEntries[0].unk1C = 2;
     gSpriteEntries[0].unk4 = 0x3C;
@@ -109,17 +109,17 @@ void town_map_load_graphics(void) {
     gSpriteEntries[0].unk1A = 0;
     gSpriteEntries[1].unk0 = 0xC000;
     gSpriteEntries[1].unk1C = 2;
-    gSpriteEntries[1].unk2 = gUnk_08483DC0[0][p->unk17 * 2] * 8;
-    gSpriteEntries[1].unk4 = gUnk_08483DC0[0][p->unk17 * 2 + 1] * 8;
+    gSpriteEntries[1].unk2 = gTownMapPlacePositions[0][p->unk17 * 2] * 8;
+    gSpriteEntries[1].unk4 = gTownMapPlacePositions[0][p->unk17 * 2 + 1] * 8;
     gSpriteEntries[1].unkA = 2;
     gSpriteEntries[1].unk6 = 0x10E;
-    gSpriteEntries[0].unk2 = gUnk_08483DC0[0][p->unk17 * 2] * 8;
-    gSpriteEntries[0].unk4 = gUnk_08483DC0[0][p->unk17 * 2 + 1] * 8;
+    gSpriteEntries[0].unk2 = gTownMapPlacePositions[0][p->unk17 * 2] * 8;
+    gSpriteEntries[0].unk4 = gTownMapPlacePositions[0][p->unk17 * 2 + 1] * 8;
     dma3_copy_or_decompress(gUnk_087873A4, (void *)0x020301E0);
     gGameSubState++;
 }
 
-void sub_08060804(void) {
+void town_map_enable_layers(void) {
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
@@ -130,7 +130,7 @@ void sub_08060804(void) {
     gGameSubState++;
 }
 
-void sub_0806086C(void) {
+void town_map_fade_in(void) {
     struct Unk_03006F74 *p = gUnk_03006F74;
 
     if (p->unk0 != 0) {
@@ -141,22 +141,22 @@ void sub_0806086C(void) {
         gGameSubState++;
     }
     town_map_update_cursor();
-    update_animation_timer();
+    town_map_animate_tiles();
 }
 
-void sub_080608B4(void) {
+void town_map_show_place_name(void) {
     u8 i = gUnk_03006F74->unk17;
-    if (run_message(gUnk_08485504[i]))
+    if (run_message(gTownMapPlaceNames[i]))
         gGameSubState++;
     town_map_update_cursor();
-    update_animation_timer();
+    town_map_animate_tiles();
 }
 
-void sub_080608EC(void) {
+void town_map_handle_input(void) {
     u8 keys;
 
     town_map_update_cursor();
-    update_animation_timer();
+    town_map_animate_tiles();
     if (town_map_move_cursor() == 0) {
         if (!((keys = KEYS_LO(gNewKeys)) & 3))
             return;
@@ -178,9 +178,9 @@ void sub_080608EC(void) {
     }
 }
 
-void sub_0806098C(void) {
+void town_map_close_message(void) {
     town_map_update_cursor();
-    update_animation_timer();
+    town_map_animate_tiles();
     if (game_state_execute_handler_a()) {
         palette_backup_from_hardware();
         gUnk_03000440.unk84 = 0;
@@ -188,12 +188,12 @@ void sub_0806098C(void) {
     }
 }
 
-void sub_080609C0(void) {
+void town_map_fade_out_exit(void) {
     struct Unk_03000440 *s;
     u8 *n;
 
     town_map_update_cursor();
-    update_animation_timer();
+    town_map_animate_tiles();
     s = &gUnk_03000440;
     n = &s->unk84;
     if (*n <= 8) {

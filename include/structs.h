@@ -568,7 +568,7 @@ struct BattlePart {
     u8 unk17; // part id
 };
 
-// 8-byte entry of the sort buffer at 0x02023000, sorted by key then key2, largest first (sub_0804242C).
+// 8-byte entry of the sort buffer at 0x02023000, sorted by key then key2, largest first (sort_buffer_descending).
 struct SortEntry {
     u16 key;
     u16 key2;
@@ -1264,7 +1264,7 @@ struct Unk_03005310 {
     u8 unk1;
     u8 filler2[0x2];
     u32 unk4;  // frame counter
-    s16 unk8;  // affine pa (identity 0x100, sub_08048B6C)
+    s16 unk8;  // affine pa (identity 0x100, bg2_affine_reset)
     s16 unkA;  // pb
     s16 unkC;  // pc
     s16 unkE;  // pd
@@ -1283,9 +1283,9 @@ struct Unk_03005310 {
     s16 unk2C;
     s16 unk2E;
     s16 unk30;
-    s16 unk32; // 0x100 (sub_08048B6C)
+    s16 unk32; // 0x100 (bg2_affine_reset)
     s16 unk34; // 0x100
-    u16 unk36; // 0-255, stepped by RIGHT / LEFT in sub_08048B94
+    u16 unk36; // 0-255, stepped by RIGHT / LEFT in debug_bg_scroll_input
     u8 unk38;
     u8 unk39;
 };
@@ -1295,7 +1295,7 @@ struct Unk_03006D38 {
     u8 unk1;
     u8 unk2;
     u8 unk3;
-    u8 unk4; // selected item id (item menu, sub_0805CE4C)
+    u8 unk4; // selected item id (item menu, item_menu_handle_input)
     u8 unk5;
     u8 unk6;
 };

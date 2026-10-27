@@ -2,7 +2,7 @@
 // fills (numbers, strings), money, items, Medals, Medaparts and team (inventory/inventory), plus checks on the
 // player's team gUnk_030017A0 (9 slots; unk0 == 3 = a complete Medabot) and the yes/no choice window
 // (text/choice_menu). Name tables: gUnk_083B6410 Medals, gUnk_083BA4D8 Medabots (by head part id),
-// gUnk_083BB9CC Medaparts, gUnk_08484444 items.
+// gUnk_083BB9CC Medaparts, gItemNames items.
 
 #include "global.h"
 
@@ -311,5 +311,5 @@ u32 current_area_flag(u32 arg) {
 }
 
 u32 item_name(u32 idx) {
-    return gUnk_08484444[idx];
+    return gItemNames[idx];
 }

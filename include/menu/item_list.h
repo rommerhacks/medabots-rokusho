@@ -4,10 +4,10 @@
 // Item / Medapart list drawing shared by the item menu and the shop
 
 void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot);
-u32 sub_0805B4B0(u32 id); // gUnk_08483AC0[id] == 1
+u32 item_is_usable(u32 id); // gItemUsable[id] == 1
 void swap_inventory_items(void);
 void item_menu_draw_page_numbers(void); // "page / pages" on the item screen
-void sub_0805B470(struct SpriteEntry *sprite);
+void item_menu_update_swap_marker(struct SpriteEntry *sprite);
 void unpack_item_inventory_to_buffer(
     void); // gItemInventory -> struct ItemListEntry list at 0x02040000, count in gUnk_03006F74->unk10
 void update_battle_medapart_icons(void);

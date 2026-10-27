@@ -681,7 +681,7 @@ u32 find_most_damaged_part(u32 rec) {
             gUnk_03000590[rec].parts[i].unk11 != gUnk_03000590[rec].parts[i].data[4])
             SORT_BUFFER[i].key = gUnk_03000590[rec].parts[i].data[4] - gUnk_03000590[rec].parts[i].unk11;
     }
-    sub_0804242C(4);
+    sort_buffer_descending(4);
     if (SORT_BUFFER[0].key != 0)
         return SORT_BUFFER[0].value + 1;
     else

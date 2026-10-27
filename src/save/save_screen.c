@@ -1,4 +1,4 @@
-// Mode-2 state 5: the save screen (save_screen_update runs its gUnk_08483B78 sub-states: graphics, the info
+// Mode-2 state 5: the save screen (save_screen_update runs its gSaveScreenStates sub-states: graphics, the info
 // panel, the save prompt, attempt_save_and_transition writes through save/save_data.c, then back to the
 // field or the title). init_linking_mode (end of the file) switches to mode 3 for the link scenes.
 #include "global.h"
@@ -7,7 +7,9 @@ static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
 }
 
-void sub_0805D50C(void) {
+// Item menu state 14 (the last entry of gItemMenuStates): fade out and return to the field, which applies
+// the disguise set in gUnk_030057E0.unkC5C.
+void item_menu_fade_out_use_item(void) {
     struct Unk_03000440 *b = &gUnk_03000440;
     if (b->unk84 <= 8) {
         bg_palettes_blend_masked_now(0, b->unk84 * 4, 0xFFFF);

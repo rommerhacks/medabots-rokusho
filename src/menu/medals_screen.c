@@ -1908,8 +1908,8 @@ static void increment_medal_level_on_input(void) {
         gUnk_03000BE0[gUnk_03000440.unk3D].unk5++;
         memcpy_bytes_08041D04(gUnk_083B6158[gUnk_03000BE0[gUnk_03000440.unk3D].unk1], &gUnk_03000440.unkEE, 16);
         gUnk_03000BE0[gUnk_03000440.unk3D].unk8 =
-            sub_080420C4(gUnk_03000BE0[gUnk_03000440.unk3D].unk5, gUnk_03000440.unkF1, gUnk_03000440.unkF2,
-                         gUnk_03000440.unkF3, gUnk_03000440.unkF4);
+            medal_tier_for_level(gUnk_03000BE0[gUnk_03000440.unk3D].unk5, gUnk_03000440.unkF1, gUnk_03000440.unkF2,
+                                 gUnk_03000440.unkF3, gUnk_03000440.unkF4);
         load_medal_sprite();
         render_medal_slots_in_menu();
     }

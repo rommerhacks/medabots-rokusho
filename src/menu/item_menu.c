@@ -1,6 +1,8 @@
-// Mode-2 state 4: the item menu opened from the field menu (item_menu_update runs its gUnk_08483B78
-// sub-states: load graphics, init, fade in, item descriptions, list input, swap / use, fade out). Lists are
-// drawn by menu/item_list.c; uses text/ messages and engine/ sprites.
+// Mode-2 state 4: the item menu opened from the field menu. item_menu_update runs gItemMenuStates:
+//   0 reset, 1 load graphics, 2 init, 3 fade in, 4 item description, 5 list input, 6 start a SELECT swap,
+//   7-8 close the message and fade out to the field, 9-10 "can't use" message, 11-12 white fade to the town
+//   map (item 0), 13-14 close the message and fade out wearing a disguise (item_menu_fade_out_use_item is in
+//   save/save_screen.c). Lists are drawn by menu/item_list.c; uses text/ messages and engine/ sprites.
 #include "global.h"
 
 void item_menu_update(void) {
@@ -11,7 +13,8 @@ void item_menu_update(void) {
     }
 }
 
-static void sub_0805CA28(u32 a) {
+// While a SELECT swap is active, blinks the swap marker (sprite 84) if the marked item is on this page.
+static void item_menu_blink_swap_marker(u32 a) {
     struct Unk_03006F74 *w = gUnk_03006F74;
     if (w->unk12) {
         if (w->unk13 >= w->unk11 && w->unk13 < w->unk11 + 5) {
@@ -24,7 +27,7 @@ static void sub_0805CA28(u32 a) {
     }
 }
 
-void sub_0805CA94(void) {
+void item_menu_reset(void) {
     u32 zero = 0;
     CpuFastSet(&zero, gUnk_03006F74, 0x01000100);
     reset_bg_scroll();
@@ -137,7 +140,7 @@ void item_menu_fade_in(void) {
 void item_menu_show_description(void) {
     u8 id;
     struct Unk_03006F74 *w;
-    sub_0805CA28(gFrameCounter);
+    item_menu_blink_swap_marker(gFrameCounter);
     sprite_bob_y(0x53, gFrameCounter, 0x54);
     w = gUnk_03006F74;
     if (w->unk10) {
@@ -151,8 +154,8 @@ void item_menu_show_description(void) {
 
 #define ITEM_LIST ((struct ItemListEntry *)0x02040000)
 
-// guess: item_menu_handle_input (5 items per page; D-pad moves / pages, SELECT reorders, A uses, B closes)
-void sub_0805CE4C(void) {
+// Item list input: 5 items per page; UP/DOWN move, LEFT/RIGHT page, SELECT starts a swap, A uses, B closes.
+void item_menu_handle_input(void) {
     struct Unk_03006F74 *w;
     struct Unk_03006F74 *w2;
     struct Unk_03006F74 *w3;
@@ -213,7 +216,7 @@ void sub_0805CE4C(void) {
                 goto other;
             gUnk_03006F74->unkC = gUnk_03006F74->unk11;
             update_battle_medapart_icons();
-            sub_0805B470(&gSpriteEntries[0x54]);
+            item_menu_update_swap_marker(&gSpriteEntries[0x54]);
             goto moved;
         }
     }
@@ -221,7 +224,7 @@ void sub_0805CE4C(void) {
 other:
     w2 = gUnk_03006F74;
     if (w2->unk12) {
-        sub_0805CA28(gFrameCounter);
+        item_menu_blink_swap_marker(gFrameCounter);
         if (KEYS_LO(gNewKeys) & 2) {
             gSpriteEntries[0x54].unk0 &= 0xBFFF;
             gUnk_03006F74->unk12 = 0;
@@ -239,7 +242,7 @@ other:
     if (w2->unk10 > 1 && (KEYS_LO(gNewKeys) & 4)) {
         w2->unk2 = 0;
         play_sound_effect(2);
-        init_fade_sprite_and_start_fade();
+        item_menu_start_swap();
     }
     w3 = gUnk_03006F74;
     if (w3->unk12)
@@ -250,7 +253,7 @@ other:
         sel = &gUnk_03006D38;
         list = ITEM_LIST;
         sel->unk4 = list[w3->unkC].id;
-        switch ((s32)sub_08048914(list[w3->unkC].id)) {
+        switch ((s32)item_get_use_result(list[w3->unkC].id)) {
         case 2:
         case 3:
         case 4:
@@ -314,11 +317,11 @@ moved:
     sub_0803FB0C();
     item_menu_set_cursor_pos(&gSpriteEntries[0x53]);
     gGameSubState = 4;
-    sub_0805CA28(gFrameCounter);
+    item_menu_blink_swap_marker(gFrameCounter);
 }
 
-// guess: starts the SELECT reorder: shows the second cursor (sprite 0x54) on the cursor item
-void init_fade_sprite_and_start_fade(void) {
+// Starts the SELECT reorder: shows the swap marker (sprite 0x54) on the cursor item and remembers it in unk13.
+void item_menu_start_swap(void) {
     struct Unk_03006F74 **pw = &gUnk_03006F74;
     item_menu_set_cursor_pos(&gSpriteEntries[0x54]);
     gSpriteEntries[0x54].unk0 |= 0x4000;
@@ -328,12 +331,12 @@ void init_fade_sprite_and_start_fade(void) {
     (*pw)->unk13 = (*pw)->unkC;
 }
 
-void sub_0805D378(void) {
+void item_menu_close_message(void) {
     if (game_state_execute_handler_a())
         gGameSubState++;
 }
 
-void sub_0805D394(void) {
+void item_menu_fade_out_exit(void) {
     struct Unk_03000440 *b = &gUnk_03000440;
     if (b->unk84 <= 8) {
         bg_palettes_blend_masked_now(0, b->unk84 * 4, 0x3FFF);
@@ -349,12 +352,13 @@ void sub_0805D394(void) {
     }
 }
 
-void sub_0805D418(void) {
+// item_get_use_result 2-4: the item can't be used here (message 8 of gUnk_08485788).
+void item_menu_show_cannot_use(void) {
     if (run_message(gUnk_08485788[8]))
         gGameSubState++;
 }
 
-void check_ab_press_play_confirm_sound(void) {
+void item_menu_wait_message_key(void) {
     if (*(u8 *)&gNewKeys & 3) {
         play_sound_effect(2);
         sub_0803FB0C();
@@ -362,12 +366,12 @@ void check_ab_press_play_confirm_sound(void) {
     }
 }
 
-void sub_0805D468(void) {
+void item_menu_start_town_map_fade(void) {
     REG_BLDCNT = 0x2FF;
     gGameSubState++;
 }
 
-void sub_0805D488(void) {
+void item_menu_fade_to_town_map(void) {
     struct Unk_03006F74 *w = gUnk_03006F74;
     if (w->unk0 != 8) {
         REG_BLDY = ++w->unk0 * 2;
@@ -381,7 +385,7 @@ void sub_0805D488(void) {
     }
 }
 
-void sub_0805D4F0(void) {
+void item_menu_close_use_message(void) {
     if (game_state_execute_handler_a())
         gGameSubState++;
 }
