@@ -358,7 +358,7 @@
 * A chain of early-out failures that each store a different message and then share
   `gGameSubState = 0x20`: write each one in full (`unkA6 = N; gGameSubState = 0x20; return;`) so gcc
   cross-jumps the tails like the original; a `goto fail` with the store before it adds a branch per
-  case (resolve_battle_action_phase).
+  case (action_phase_resolve_command).
 * Callee prototypes: if the asm callee uses an argument without truncating it, declare it `u32`, or the
   caller emits `lsls/lsrs` the original doesn't have (reduce_bot_part_stat, sprite_slide_x_step).
 * A fixed EWRAM buffer whose literal is reloaded inside the loop (`ldr r1, =0x02023000` per iteration,

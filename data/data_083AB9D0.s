@@ -639,12 +639,12 @@ gUnk_083AEAD8:
 gUnk_083AEB18:
 	.incbin "baserom.gba", 0x3AEB18, 0x40
 
-	.global gUnk_083AEB58
-gUnk_083AEB58:
+	.global gActionPhaseSteps
+gActionPhaseSteps:
 	.incbin "baserom.gba", 0x3AEB58, 0x1C0
 
-	.global gUnk_083AED18
-gUnk_083AED18:
+	.global gLevelUpSkillPalettes
+gLevelUpSkillPalettes:
 	.incbin "baserom.gba", 0x3AED18, 0x8
 
 	.global gUnk_083AED20

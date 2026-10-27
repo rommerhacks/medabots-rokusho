@@ -32,7 +32,7 @@ static u32 battle_count_broken_parts(u32 first) {
 
 // Decides the Robattle winner from the team / opponent records: fewer Medabots with unkBA == 2, then fewer
 // broken parts, then the larger gUnk_03001800.unk28[side].unk1, then a coin flip (mirrored on link player 1).
-// gUnk_03000440.unk9C = 1 team wins, 2 opponents win. Called by sub_08031120 when TIME (unk57) is 0.
+// gUnk_03000440.unk9C = 1 team wins, 2 opponents win. Called by action_phase_time_check when TIME (unk57) is 0.
 void robattle_judge_time_up(void) {
     u32 team = count_knocked_out_bots(0);
     u32 opp = count_knocked_out_bots(3);

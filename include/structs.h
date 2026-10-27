@@ -653,7 +653,7 @@ struct Unk_03001800 {
     u8 unkA1[5]; // cleared by battle_message_reset
     u8 unkA6;    // battle message id (gUnk_083C65C4) shown by effect_step_show_message; also the next handler
     u8 unkA7; // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to (restore_changed_part)
-    u8 unkA8; // Robattle: skill id (data[1]) of the acting Medabot's chosen part (resolve_battle_action_phase)
+    u8 unkA8; // Robattle: skill id (data[1]) of the acting Medabot's chosen part (action_phase_resolve_command)
     u8 fillerA9;
     u8 unkAA;      // sub-state of the gTrapHitSteps handlers (trap_hit_run) and gActionPartCheckSteps handlers
                    // (action_part_check_run)
@@ -733,7 +733,7 @@ struct Unk_03001800 {
     u8 unk162;
     u8 unk163;  // set by a gUnk_083AF000 step to run the next step in the same frame (battle_run_action_script)
     u8 unk164;  // nonzero: Medal skill levels can grow (increment_medal_skill_level)
-    u8 unk165;  // set to 1 when a Medal skill levels up (sub_08031120 then goes to sub-state 0x60)
+    u8 unk165;  // set to 1 when a Medal skill levels up (action_phase_time_check then goes to sub-state 0x60)
     u8 unk166;  // skill type that levelled up
     u8 unk167;  // its new level
     u8 unk168;  // won Medapart: kind (0 head, 1 right arm, 2 left arm, 3 legs)
