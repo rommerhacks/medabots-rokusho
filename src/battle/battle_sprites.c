@@ -129,10 +129,10 @@ void increment_medal_skill_level(u32 rec) {
         return;
     if (gUnk_03001800.unk164 == 0)
         return;
-    if (gUnk_03000590[rec].unkDD > 3)
+    if (gUnk_03000590[rec].chosenAction > 3)
         skill = gUnk_03000590[rec].unkA8[1];
     else
-        skill = gUnk_03000590[rec].parts[gUnk_03000590[rec].unkDD - 1].data[2];
+        skill = gUnk_03000590[rec].parts[gUnk_03000590[rec].chosenAction - 1].data[2];
     if (gUnk_03000590[rec].medal.unk20[skill] == 100) {
         if (gUnk_03000590[rec].medal.unk28[skill] <= 6)
             gUnk_03000590[rec].medal.unk28[skill]++;

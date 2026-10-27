@@ -636,8 +636,9 @@ extern const u16 gUnk_0878E3F4[];          // title menu BG palette (0x100 color
 extern u8 gOptionTimeLimit;                // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
 extern u8 gOptionBattleMusic;              // index into gUnk_083AD3B0 (battle music)
 extern const u8 gUnk_083AD3B0[];           // battle song ids (select_battle_music)
-extern const u8 gUnk_083C4C10[]; // per leg type (skill id - 100), 11 bytes: one per battlefield (gUnk_03001800.unk38);
-                                 // added to unkBB (sub_080191E4)
+// Per leg type (skill id - 100), 11 bytes: one per battlefield (gUnk_03001800.unk38); added to moveDelay
+// (bot_move_delay_add_terrain).
+extern const u8 gTerrainMoveDelays[];
 extern const s8 gUnk_083AD3B3[]; // 32 y steps of the number pop-up over a Medabot (battle_number_popup_update)
 extern const u8 gUnk_083AD3D3[]; // 32 random record orders (find_next_active_bot)
 extern const u8 gUnk_083AD3F3[]; // record remap when gUnk_03000B90 is set in a link Robattle (find_next_active_bot)

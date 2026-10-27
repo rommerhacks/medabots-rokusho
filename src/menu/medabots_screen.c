@@ -1151,7 +1151,7 @@ static void medabots_screen_flag_invalid_bot(void) {
     if (validate_medapart_stats(gUnk_030017A0[gUnk_03000440.unk51].unk2, gUnk_030017A0[gUnk_03000440.unk51].unk3,
                                 gUnk_030017A0[gUnk_03000440.unk51].unk4, gUnk_030017A0[gUnk_03000440.unk51].unk5,
                                 gUnk_030017A0[gUnk_03000440.unk51].unk6))
-        battle_sprite_set_palette_index(gUnk_03000440.unk51 * 4 + 10, 8);
+        battle_sprite_group_set_anim(gUnk_03000440.unk51 * 4 + 10, 8);
 }
 
 static void medabots_screen_animate_invalid_bot(void) {
@@ -1765,7 +1765,7 @@ static void medabot_detail_update_invalid_bot(void) {
     } else {
         if (validate_medapart_stats(gUnk_03000440.unk97, gUnk_03000440.unk98, gUnk_03000440.unk99, gUnk_03000440.unk9A,
                                     gUnk_03000440.unk9B)) {
-            battle_sprite_set_palette_index(6, 8);
+            battle_sprite_group_set_anim(6, 8);
             gUnk_03000440.unk53 = 1;
         }
     }

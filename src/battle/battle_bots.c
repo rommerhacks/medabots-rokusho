@@ -257,7 +257,7 @@ u32 bot_side_index(u32 a, u32 b) {
 }
 
 void battle_bot_select_part(u32 rec, u32 part) {
-    gUnk_03000590[rec].unkDD = part;
+    gUnk_03000590[rec].chosenAction = part;
     if (part == 0)
         return;
     if (part <= 3) {

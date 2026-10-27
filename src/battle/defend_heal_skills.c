@@ -946,7 +946,7 @@ void defence_apply(void) {
     gUnk_03000590[gUnk_03001800.unk87].unkBD |= 8;
     gUnk_03000590[gUnk_03001800.unk87].unkDF = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
     gUnk_03000590[gUnk_03001800.unk87].unkD8 = 0;
-    add_u8_capped(&gUnk_03000590[gUnk_03001800.unk87].unkD7 + 1, gUnk_03001800.unkEC, 0xFF);
+    add_u8_capped(&gUnk_03000590[gUnk_03001800.unk87].moveSubpixel + 1, gUnk_03001800.unkEC, 0xFF);
     gUnk_03001800.unkAA++;
 }
 

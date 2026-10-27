@@ -217,7 +217,7 @@ void battle_seq_cmd_bg_effect(void) {
     u32 t;
 
     battle_seq_load_operands();
-    if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3)
+    if (gUnk_03000590[gUnk_03001800.unk87].chosenAction <= 3)
         skill = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
     else
         skill = gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50;
@@ -515,7 +515,7 @@ void battle_seq_cmd_bg_sweep(void) {
 
     battle_seq_load_operands();
     clear_battle_sprite_slot(0x23, 1);
-    if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3)
+    if (gUnk_03000590[gUnk_03001800.unk87].chosenAction <= 3)
         skill = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
     else
         skill = gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50;
@@ -545,7 +545,7 @@ void battle_seq_cmd_bg_effect_at(void) {
     u32 skill;
 
     battle_seq_load_operands();
-    if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3)
+    if (gUnk_03000590[gUnk_03001800.unk87].chosenAction <= 3)
         skill = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
     else
         skill = gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50;
@@ -769,7 +769,7 @@ void battle_seq_cmd_bg_effect_keep(void) {
     u32 skill;
 
     battle_seq_load_operands();
-    if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3)
+    if (gUnk_03000590[gUnk_03001800.unk87].chosenAction <= 3)
         skill = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
     else
         skill = gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50;
@@ -916,7 +916,7 @@ void battle_seq_cmd_set_tile_anim(void) {
 
 // Opcode 0x32: decompresses the skill's graphics to EWRAM.
 void battle_seq_cmd_load_skill_gfx(void) {
-    if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3)
+    if (gUnk_03000590[gUnk_03001800.unk87].chosenAction <= 3)
         decompress_indexed_graphics_to_ewram(gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1]);
     else
         decompress_indexed_graphics_to_ewram(gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50);
@@ -1021,7 +1021,7 @@ void battle_seq_cmd_bg_effect_noflip(void) {
     u32 skill;
 
     battle_seq_load_operands();
-    if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3)
+    if (gUnk_03000590[gUnk_03001800.unk87].chosenAction <= 3)
         skill = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
     else
         skill = gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50;

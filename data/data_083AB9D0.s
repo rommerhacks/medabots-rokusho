@@ -1054,8 +1054,8 @@ gUnk_083C466C:
 gBattleMenuTexts:
 	.incbin "baserom.gba", 0x3C4A10, 0x200
 
-	.global gUnk_083C4C10
-gUnk_083C4C10:
+	.global gTerrainMoveDelays
+gTerrainMoveDelays:
 	.incbin "baserom.gba", 0x3C4C10, 0x50
 
 	.global gUnk_083C4C60

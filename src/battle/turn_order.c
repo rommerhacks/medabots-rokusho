@@ -98,8 +98,8 @@ void battle_set_actor_side(u32 rec) {
 
 void select_next_bot_and_action(u32 rec) {
     if (gUnk_03000590[rec].unkC9 == 0x2C) {
-        if (gUnk_03000590[rec].parts[gUnk_03000590[rec].unkDD - 1].data[2] <= 3 ||
-            gUnk_03000590[rec].parts[gUnk_03000590[rec].unkDD - 1].data[1] == 0x34) {
+        if (gUnk_03000590[rec].parts[gUnk_03000590[rec].chosenAction - 1].data[2] <= 3 ||
+            gUnk_03000590[rec].parts[gUnk_03000590[rec].chosenAction - 1].data[1] == 0x34) {
             gUnk_03000590[rec].unkE0 = find_next_active_bot(rec) + 1;
             gUnk_03000590[rec].unkE1 = sub_080330E8(gUnk_03000590[rec].unkE0 - 1) + 1;
         }

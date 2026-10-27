@@ -562,7 +562,7 @@ struct BattlePart {
     u8 unk10; // head: copy of data[8]
     u8 unk11; // current armor, starts as data[4] = max armor (Status screen, runtime-checked); 0 = broken
               // (legs: data[4..9] copied to unk11..unk16)
-    u8 unk12; // legs: data[5] (Propulsion; sub_0801928C)
+    u8 unk12; // legs: data[5] (Propulsion; bot_move_delay_sub_propulsion)
     u8 unk13; // legs: data[6..9] (unk12..unk16 restored by bot_restore_leg_stats, halved by bot_halve_broken_leg_stats
               // when broken)
     u8 unk14;
@@ -809,7 +809,7 @@ struct Unk_03000590 {
     u8 unkB9; // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other (sub_0802C588, written
               // as &unkB8 + 1 to match)
     u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
-    u8 unkBB;
+    u8 moveDelay; // movement delay 0-0x1F, rebuilt each frame by bot_calc_move_delay; speed = 0x20 - moveDelay
     u8 unkBC; // hit flags, high nibble cleared by battle_action_cleanup: bit 4 dodged, bit 5 evaded onto the strongest
               // part, bit 6 hit above the threshold (attack_hit_check_critical)
     u8 unkBD; // flags (bit 2 toggled by the Robattle handlers robattle_action_finished /
@@ -841,19 +841,19 @@ struct Unk_03000590 {
     u8 unkD0;
     u8 unkD1; // raised by gUnk_03001800.unkEC up to 0xFF (sub_0802AC7C, written as &unkD0 + 1 to match)
     u8 unkD2;
-    u8 unkD3;  // added to gUnk_03001800.unkEC for parts with data[2] 0 / 1 (script_op_calc_damage)
-    u8 unkD4;  // added for data[2] 2 / 3 (script_op_calc_damage)
-    u8 unkD5;  // added to gUnk_03001800.unkEC for unk28[side].unk5 (trap_apply)
-    u8 unkD6;  // flags (bit 1: +10 damage, attack_hit_carry_over_retarget)
-    u8 unkD7;  // movement: sub-pixel accumulator, + (0x20 - unkBB) per frame, 1/16 px (battle_bot_move)
-    u16 unkD8; // cleared, then raised by gUnk_03001800.unkEC up to 0xFF (defence_apply)
-    u8 unkDA;  // movement: whole pixels moved this frame
+    u8 unkD3;        // added to gUnk_03001800.unkEC for parts with data[2] 0 / 1 (script_op_calc_damage)
+    u8 unkD4;        // added for data[2] 2 / 3 (script_op_calc_damage)
+    u8 unkD5;        // added to gUnk_03001800.unkEC for unk28[side].unk5 (trap_apply)
+    u8 unkD6;        // flags (bit 1: +10 damage, attack_hit_carry_over_retarget)
+    u8 moveSubpixel; // movement: sub-pixel accumulator, + (0x20 - moveDelay) per frame, 1/16 px (battle_bot_move)
+    u16 unkD8;       // cleared, then raised by gUnk_03001800.unkEC up to 0xFF (defence_apply)
+    u8 moveStep;     // movement: whole pixels moved this frame
     u8 fillerDB;
-    u8 unkDC; // unkDC..unkE3 cleared by reset_battle_bot_state
-    u8 unkDD; // link Robattle: part choice exchanged over the serial link (robattle_link_exchange_commands,
-              // robattle_link_apply_opponent_parts)
-    u8 unkDE; // copy of unkDD (battle_action_cleanup)
-    u8 unkDF; // skill of the part unkDD (1-3), 0 otherwise (battle_action_cleanup)
+    u8 unkDC;        // unkDC..unkE3 cleared by reset_battle_bot_state
+    u8 chosenAction; // chosen command: 0 none, 1-3 head / right arm / left arm, 4+ Medaforce 0..; exchanged over the
+                     // serial link in link Robattles (robattle_link_exchange_commands)
+    u8 unkDE;        // copy of chosenAction (battle_action_cleanup)
+    u8 unkDF;        // skill of the part chosenAction (1-3), 0 otherwise (battle_action_cleanup)
     u8 unkE0;
     u8 unkE1;
     u8 fillerE2[0x1E];

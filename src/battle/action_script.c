@@ -314,7 +314,7 @@ void script_op_skill_anim_start(void) {
     gUnk_03001800.unkFC = 0;
     gUnk_03001800.unkFD = 0;
     gUnk_03001800.unkFE = 0;
-    if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3)
+    if (gUnk_03000590[gUnk_03001800.unk87].chosenAction <= 3)
         gUnk_03001800.unkF9 = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
     else
         gUnk_03001800.unkF9 = gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50;

@@ -64,9 +64,9 @@ void mf_menu_slide_bg1(void) {
     }
 }
 
-// guess: starts on the slot of the Medaforce used last (unkDD).
+// guess: starts on the slot of the Medaforce used last (action).
 void mf_menu_init_cursor(void) {
-    u32 v = gUnk_03000590[gUnk_03001800.unk80].unkDD;
+    u32 v = gUnk_03000590[gUnk_03001800.unk80].chosenAction;
     if (v <= 3)
         v = 0;
     else

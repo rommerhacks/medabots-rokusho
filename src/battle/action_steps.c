@@ -191,7 +191,7 @@ void trap_hit_check(void) {
         goto fail;
     type = b->unk28[b->unk89].skill;
     if (type == 0xA) {
-        k = gUnk_03000590[b->unk87].parts[gUnk_03000590[b->unk87].unkDD - 1].data[2];
+        k = gUnk_03000590[b->unk87].parts[gUnk_03000590[b->unk87].chosenAction - 1].data[2];
         if (k == 0)
             goto okA;
         if (k != 1)
@@ -201,7 +201,7 @@ void trap_hit_check(void) {
         b->unk51 = r;
         b->unkAA++;
     } else if (type == 0xB) {
-        k = gUnk_03000590[b->unk87].parts[gUnk_03000590[b->unk87].unkDD - 1].data[2];
+        k = gUnk_03000590[b->unk87].parts[gUnk_03000590[b->unk87].chosenAction - 1].data[2];
         if (k == 2)
             goto okB;
         if (k != 3)
@@ -211,13 +211,13 @@ void trap_hit_check(void) {
         b->unk51 = 1;
         b->unkAA++;
     } else if (type == 0xC) {
-        if (gUnk_03000590[b->unk87].parts[gUnk_03000590[b->unk87].unkDD - 1].data[2] > 3)
+        if (gUnk_03000590[b->unk87].parts[gUnk_03000590[b->unk87].chosenAction - 1].data[2] > 3)
             goto fail;
         b->unkA6 = 0x10;
         b->unk51 = 2;
         b->unkAA++;
     } else if (type == 0x5A) {
-        if (gUnk_03000590[b->unk87].parts[gUnk_03000590[b->unk87].unkDD - 1].data[2] > 3)
+        if (gUnk_03000590[b->unk87].parts[gUnk_03000590[b->unk87].chosenAction - 1].data[2] > 3)
             goto fail;
         b->unkA6 = 0x11;
         b->unk51 = 3;
@@ -631,7 +631,7 @@ void action_part_check_run(void) {
 }
 
 void action_part_check(void) {
-    if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].unkDD - 1].unk11) {
+    if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].chosenAction - 1].unk11) {
         gUnk_03001800.unkB5 = 1;
         gUnk_03001800.unkAB = 0;
     } else {
@@ -773,7 +773,7 @@ void guard_sprite_copy(void) {
                               gSpriteEntries[gUnk_03001800.unkDE * 4 + 0x59].unk2,
                               gSpriteEntries[gUnk_03001800.unkDE * 4 + 0x59].unk4 - 4, (gUnk_03001800.unkF8 & 1) ^ 1,
                               gUnk_03001800.unk39[3] + 2, gUnk_03001800.unkDE * 4 + 0x56);
-    battle_sprite_set_palette_index(gUnk_03001800.unkDE * 4 + 0x56, 8);
+    battle_sprite_group_set_anim(gUnk_03001800.unkDE * 4 + 0x56, 8);
     gUnk_03000440.unk84 = 0;
     gUnk_03001800.unkAA++;
 }
@@ -997,7 +997,7 @@ void closeup_enter_setup_bgs(void) {
         REG_DISPCNT |= 0x1F40;
         REG_DISPCNT &= 0xFFDF;
         apply_battle_blend_effect_a();
-        if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3)
+        if (gUnk_03000590[gUnk_03001800.unk87].chosenAction <= 3)
             decompress_indexed_graphics_to_ewram(gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1]);
         else
             decompress_indexed_graphics_to_ewram(gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50);

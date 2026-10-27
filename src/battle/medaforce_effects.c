@@ -1896,9 +1896,9 @@ void sub_0802A824(void) {
         gUnk_03000590[gUnk_03001800.unk60 + i].unkBD |= 4;
         gUnk_03001800.unkD2[i] = 1;
         sub_080385D0(gUnk_03001800.unk60 + i);
-        gUnk_03000590[gUnk_03001800.unk60 + i].unkD7 = 0;
-        gUnk_03000590[gUnk_03001800.unk60 + i].unkBB = 0x14;
-        gUnk_03000590[gUnk_03001800.unk60 + i].unkDA = 0;
+        gUnk_03000590[gUnk_03001800.unk60 + i].moveSubpixel = 0;
+        gUnk_03000590[gUnk_03001800.unk60 + i].moveDelay = 0x14;
+        gUnk_03000590[gUnk_03001800.unk60 + i].moveStep = 0;
         gSpriteEntries[0x22 + i].unk0 = 0xC404;
         gSpriteEntries[0x22 + i].unk1C = 0;
         gSpriteEntries[0x22 + i].unk2 = gSpriteEntries[(gUnk_03001800.unk60 + i) * 4 + 0x5D].unk2;
@@ -1928,8 +1928,8 @@ void sub_0802A9B8(void) {
         if (gUnk_03001800.unkD2[i] == 0)
             continue;
         count++;
-        sub_08019544(gUnk_03001800.unk60 + i);
-        if (sub_08019440(gUnk_03001800.unk60 + i))
+        bot_update_walk_anim(gUnk_03001800.unk60 + i);
+        if (battle_bot_move_reverse(gUnk_03001800.unk60 + i))
             done++;
         process_sprite_anim_commands(gUnk_083B5F80[0x63], 0x22 + i);
         gSpriteEntries[0x22 + i].unk2 = gSpriteEntries[(gUnk_03001800.unk60 + i) * 4 + 0x5D].unk2;

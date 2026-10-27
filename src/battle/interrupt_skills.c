@@ -746,7 +746,7 @@ void counter_attack_apply(void) {
     gUnk_03000590[gUnk_03001800.unk87].unkBD |= 0x10;
     gUnk_03000590[gUnk_03001800.unk87].unkDF = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
     gUnk_03000590[gUnk_03001800.unk87].unkD8 = 0;
-    add_u8_capped(&gUnk_03000590[gUnk_03001800.unk87].unkD7 + 1,
+    add_u8_capped(&gUnk_03000590[gUnk_03001800.unk87].moveSubpixel + 1,
                   gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[6], 0xFF);
     gUnk_03001800.unkAA++;
 }

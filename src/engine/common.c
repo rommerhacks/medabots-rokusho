@@ -466,17 +466,17 @@ void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile,
     gSpriteEntries[sprite + 3].unkB = pal + 1;
 }
 
-void battle_sprite_set_palette_index(u32 sprite, u32 pal) {
+void battle_sprite_group_set_anim(u32 sprite, u32 anim) {
     u32 i;
 
     gSpriteEntries[sprite + 1].unk0 |= 0x200;
     gSpriteEntries[sprite + 2].unk0 |= 0x200;
     for (i = 0; i < 16; i++)
         ;
-    gSpriteEntries[sprite].unk24 = pal;
-    gSpriteEntries[sprite + 1].unk24 = pal;
-    gSpriteEntries[sprite + 2].unk24 = pal;
-    gSpriteEntries[sprite + 3].unk24 = pal;
+    gSpriteEntries[sprite].unk24 = anim;
+    gSpriteEntries[sprite + 1].unk24 = anim;
+    gSpriteEntries[sprite + 2].unk24 = anim;
+    gSpriteEntries[sprite + 3].unk24 = anim;
 }
 
 void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c) {

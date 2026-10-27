@@ -29,7 +29,7 @@ void draw_medabot_sprite();             // (u32 slot, u8 head, u8 rarm, u8 larm,
 u32 medabot_pose_anim_step(u32 a0, u32 a1, u32 a2);
 u32 medabot_detail_is_full_set(void); // 1 if gUnk_03000440.unk98-9B (the four shown Medaparts) are all the same set
 u32 count_assembled_medabots(void);   // team slots (gUnk_030017A0) with state 3
-void battle_sprite_set_palette_index(u32 sprite, u32 pal);
+void battle_sprite_group_set_anim(u32 sprite, u32 anim); // sets anim script unk24 on the 4 sprites from sprite
 void update_battle_sprite_orbiting_positions(
     u32 sprite, u32 idx,
     u32 c); // guess: idle animation of a part-sprite Medabot (legs anchor, arms swing on a circle, head bobs)

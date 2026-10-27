@@ -323,13 +323,13 @@ void battle_action_cleanup(u32 bot) {
     u32 zero2;
 
     gUnk_03000590[bot].unkBD &= ~1;
-    gUnk_03000590[bot].unkDE = gUnk_03000590[bot].unkDD;
-    if (gUnk_03000590[bot].unkDD == 0)
+    gUnk_03000590[bot].unkDE = gUnk_03000590[bot].chosenAction;
+    if (gUnk_03000590[bot].chosenAction == 0)
         gUnk_03000590[bot].unkDF = 0;
-    else if (gUnk_03000590[bot].unkDD > 3)
+    else if (gUnk_03000590[bot].chosenAction > 3)
         gUnk_03000590[bot].unkDF = 0;
     else
-        gUnk_03000590[bot].unkDF = gUnk_03000590[bot].parts[gUnk_03000590[bot].unkDD - 1].data[1];
+        gUnk_03000590[bot].unkDF = gUnk_03000590[bot].parts[gUnk_03000590[bot].chosenAction - 1].data[1];
     for (i = 0; i <= 3; i++) {
         gUnk_03000590[bot].parts[i].unkE = 0;
         gUnk_03000590[bot].parts[i].unkF = 0;

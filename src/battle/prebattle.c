@@ -1005,7 +1005,7 @@ void init_opponent_medabot_sprites(void) {
         init_battle_medabot_sprites(gUnk_03001800.unk4[i].parts[0], gUnk_03001800.unk4[i].parts[1],
                                     gUnk_03001800.unk4[i].parts[2], gUnk_03001800.unk4[i].parts[3], i, 40 + i * 4,
                                     gUnk_083ACEE4[i][0], gUnk_083ACEE4[i][1], 1, 1, 0);
-        battle_sprite_set_palette_index(40 + i * 4, 8);
+        battle_sprite_group_set_anim(40 + i * 4, 8);
     }
 }
 

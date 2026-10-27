@@ -114,7 +114,7 @@ void robattle_command_ring_open(void) {
     draw_medaforce_gauge_value(gUnk_03001800.unk80);
     command_ring_draw_name();
     command_ring_init_icons();
-    battle_sprite_set_palette_index(gUnk_03001800.unk80 * 4 + 0x5A, 8);
+    battle_sprite_group_set_anim(gUnk_03001800.unk80 * 4 + 0x5A, 8);
     gGameSubState++;
 }
 
@@ -640,7 +640,7 @@ void robattle_status_screen_init(void) {
     set_portrait_parts(gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2], gUnk_03001800.unk64[3]);
     status_init_portrait();
     status_draw_team_sprites();
-    battle_sprite_set_palette_index(0, 8);
+    battle_sprite_group_set_anim(0, 8);
     draw_tile_block(2, 2, 0xB, 2, REG_BG1CNT, 0x63C0);
     set_blend_effect_mode(5, 0x3F, 0x20);
     gGameSubState++;
@@ -698,7 +698,7 @@ void robattle_status_screen_input(void) {
         set_portrait_parts(gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2],
                            gUnk_03001800.unk64[3]);
         status_init_portrait();
-        battle_sprite_set_palette_index(0, 8);
+        battle_sprite_group_set_anim(0, 8);
         draw_tile_block(2, 2, 0xB, 2, REG_BG1CNT, 0x63C0);
         status_reset_portrait();
         gUnk_03000440.unk3F = 0;
@@ -817,11 +817,11 @@ void robattle_turn_loop(void) {
     else if (gUnk_03001800.unk55 & 0x10)
         gGameSubState = 0x78;
     else {
-        sub_0801902C();
+        battle_bots_move_all();
         update_all_battle_status_sprites();
         init_battle_bot_sprites();
         if (battle_queue_bots_at_lines()) {
-            sub_08019078();
+            battle_bots_update_walk_anims();
             gGameSubState++;
         }
     }
@@ -834,7 +834,7 @@ void robattle_turn_next_action(void) {
     u8 flag;
 
     update_all_battle_status_sprites();
-    sub_08019078();
+    battle_bots_update_walk_anims();
     battle_queue_sort();
     if (gUnk_03001800.unk45[0][0] == 0) {
         gGameSubState = 0x44;
@@ -873,7 +873,7 @@ void robattle_action_finished(void) {
 // 4) chooses its next command. Holding B cancels a kept command.
 void robattle_bot_ready_for_command(void) {
     update_all_battle_status_sprites();
-    sub_08019078();
+    battle_bots_update_walk_anims();
     gUnk_03000590[gUnk_03001800.unk87].unkBD ^= 4;
     setup_battle_bot_sprite_group(gUnk_03001800.unk87, gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk2,
                                   gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4);
@@ -928,9 +928,9 @@ void robattle_bots_extra_move(void) {
         if (rec->unk40 && rec->unkBF) {
             u32 a, b;
 
-            rec->unkBB = 8;
+            rec->moveDelay = 8;
             battle_bot_move(i);
-            sub_08019544(i);
+            bot_update_walk_anim(i);
             a = battle_bot_at_front_line(i, 1);
             b = battle_bot_at_home_line(i, 1);
             if (a || b) {
@@ -1088,7 +1088,7 @@ void robattle_effect_b_number_update(void) {
     }
 }
 
-// Robattle handlers 0x90-0x99 and 0xA0-0xAF: exchange each side's chosen parts (unkDD) over the
+// Robattle handlers 0x90-0x99 and 0xA0-0xAF: exchange each side's chosen parts (action) over the
 // serial link (gUnk_03005010), guess: link Robattle (only when gUnk_03000440.unk89 = 1).
 void robattle_link_message_open(void) {
     text_window_init(1, 0, 0);
@@ -1133,7 +1133,7 @@ void robattle_link_exchange_commands(void) {
 
     if (gUnk_03001800.unk51 != 3) {
         gUnk_03005010.unk6 =
-            gUnk_03000590[gUnk_03001800.unk51].unkDD + (flag = ((gUnk_03001800.unk1AF << 8) & 0x100) + 0x8000);
+            gUnk_03000590[gUnk_03001800.unk51].chosenAction + (flag = ((gUnk_03001800.unk1AF << 8) & 0x100) + 0x8000);
         gUnk_03000440.unk86++;
         if (!(gUnk_03000440.unk86 & 1)) {
             gUnk_03001800.unk1AF ^= 1;
@@ -1144,7 +1144,7 @@ void robattle_link_exchange_commands(void) {
         r = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
         if ((r & 0x8000) && ((u16)(r & 0x100) >> 8) != gUnk_03001800.unk1B0) {
             gUnk_03001800.unk1B0 ^= 1;
-            gUnk_03000590[gUnk_03001800.unk53 + 3].unkDD = r;
+            gUnk_03000590[gUnk_03001800.unk53 + 3].chosenAction = r;
             gUnk_03001800.unk53++;
         }
     }
@@ -1158,9 +1158,9 @@ void robattle_link_exchange_commands(void) {
 
 void robattle_link_apply_opponent_parts(void) {
     gUnk_03005010.unk6 = 0;
-    battle_bot_select_part(3, gUnk_03000590[3].unkDD);
-    battle_bot_select_part(4, gUnk_03000590[4].unkDD);
-    battle_bot_select_part(5, gUnk_03000590[5].unkDD);
+    battle_bot_select_part(3, gUnk_03000590[3].chosenAction);
+    battle_bot_select_part(4, gUnk_03000590[4].chosenAction);
+    battle_bot_select_part(5, gUnk_03000590[5].chosenAction);
     gGameSubState++;
 }
 
@@ -1168,8 +1168,8 @@ void robattle_link_apply_opponent_medaforces(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03000590[i + 3].unkDD > 3)
-            battle_bot_select_medaforce(i + 3, gUnk_03000590[i + 3].unkDD - 4);
+        if (gUnk_03000590[i + 3].chosenAction > 3)
+            battle_bot_select_medaforce(i + 3, gUnk_03000590[i + 3].chosenAction - 4);
     }
     gGameSubState++;
 }
@@ -1187,14 +1187,14 @@ void robattle_link_exchange_bot_command(void) {
     u16 r;
 
     if (gUnk_03001800.unk87 <= 2) {
-        gUnk_03005010.unk6 = gUnk_03000590[gUnk_03001800.unk87].unkDD + 0x8000;
+        gUnk_03005010.unk6 = gUnk_03000590[gUnk_03001800.unk87].chosenAction + 0x8000;
         if (gUnk_03001800.unk1AF)
             goto next;
         gUnk_03001800.unk1AF = 1;
     } else {
         r = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
         if (r & 0x8000) {
-            gUnk_03000590[gUnk_03001800.unk87].unkDD = r;
+            gUnk_03000590[gUnk_03001800.unk87].chosenAction = r;
         next:
             gGameSubState++;
         }
@@ -1207,13 +1207,13 @@ void robattle_link_skip_step(void) {
 
 void robattle_link_apply_bot_part(void) {
     if (gUnk_03001800.unk87 > 2)
-        battle_bot_select_part(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].unkDD);
+        battle_bot_select_part(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].chosenAction);
     gGameSubState++;
 }
 
 void robattle_link_apply_bot_medaforce(void) {
-    if (gUnk_03001800.unk87 > 2 && gUnk_03000590[gUnk_03001800.unk87].unkDD > 3)
-        battle_bot_select_medaforce(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].unkDD - 4);
+    if (gUnk_03001800.unk87 > 2 && gUnk_03000590[gUnk_03001800.unk87].chosenAction > 3)
+        battle_bot_select_medaforce(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].chosenAction - 4);
     gGameSubState++;
 }
 

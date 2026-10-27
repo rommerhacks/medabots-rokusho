@@ -59,13 +59,13 @@ void action_phase_cursor_anim(void) {
     }
 }
 
-// Fails with message 4 when the acting Medabot has unkBD bit 0 set; no part chosen (unkDD == 0) goes to
+// Fails with message 4 when the acting Medabot has unkBD bit 0 set; no part chosen (action == 0) goes to
 // sub-state 0x10, otherwise on to action_phase_resolve_command.
 void action_phase_check_command(void) {
     if (gUnk_03000590[gUnk_03001800.unk87].unkBD & 1) {
         gUnk_03001800.unkA6 = 4;
         gGameSubState = 0x20;
-    } else if (gUnk_03000590[gUnk_03001800.unk87].unkDD == 0)
+    } else if (gUnk_03000590[gUnk_03001800.unk87].chosenAction == 0)
         gGameSubState = 0x10;
     else
         gGameSubState++;
@@ -78,31 +78,31 @@ void action_phase_resolve_command(void) {
         gGameSubState = 0x20;
         return;
     }
-    if (gUnk_03000590[gUnk_03001800.unk87].unkDD <= 3 &&
-        gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].unkDD - 1].unk11 == 0) {
+    if (gUnk_03000590[gUnk_03001800.unk87].chosenAction <= 3 &&
+        gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].chosenAction - 1].unk11 == 0) {
         gUnk_03001800.unkA6 = 5;
         gGameSubState = 0x20;
         return;
     }
     if (gUnk_03000590[gUnk_03001800.unk87].unkC9 == 0x2B &&
-        gUnk_03000590[gUnk_03001800.unk87].unkCA == gUnk_03000590[gUnk_03001800.unk87].unkDD) {
+        gUnk_03000590[gUnk_03001800.unk87].unkCA == gUnk_03000590[gUnk_03001800.unk87].chosenAction) {
         gUnk_03001800.unkA6 = 6;
         gGameSubState = 0x20;
         return;
     }
-    if (gUnk_03000590[gUnk_03001800.unk87].unkDD > 3) {
-        gUnk_03001800.unkA7 = gUnk_03000590[gUnk_03001800.unk87].unkDD - 4;
+    if (gUnk_03000590[gUnk_03001800.unk87].chosenAction > 3) {
+        gUnk_03001800.unkA7 = gUnk_03000590[gUnk_03001800.unk87].chosenAction - 4;
         gGameSubState = 0x30;
         return;
     }
     gUnk_03001800.unk164 = 1;
     select_next_bot_and_action(gUnk_03001800.unk87);
-    if (part_skill_is_passive(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].unkDD - 1)) {
+    if (part_skill_is_passive(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].chosenAction - 1)) {
         gUnk_03001800.unkA6 = 7;
         gGameSubState = 0x20;
         return;
     }
-    if (gUnk_03000590[gUnk_03001800.unk87].unkDD == 1 && gUnk_03001800.unk118 != 1) {
+    if (gUnk_03000590[gUnk_03001800.unk87].chosenAction == 1 && gUnk_03001800.unk118 != 1) {
         if (gUnk_03000590[gUnk_03001800.unk87].parts[0].unk10 == 0) {
             gUnk_03001800.unkA6 = 8;
             gGameSubState = 0x20;
@@ -111,7 +111,8 @@ void action_phase_resolve_command(void) {
         gUnk_03000590[gUnk_03001800.unk87].parts[0].unk10--;
     }
     if (gUnk_03000590[gUnk_03001800.unk87].unkE0) {
-        if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].unkDD - 1].data[1] == 0x21) {
+        if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].chosenAction - 1].data[1] ==
+            0x21) {
             if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk87].unkE0 - 1].unk40) {
                 gUnk_03001800.unkA6 = 9;
                 gGameSubState = 0x20;
@@ -124,7 +125,8 @@ void action_phase_resolve_command(void) {
         }
     }
     if (gUnk_03000590[gUnk_03001800.unk87].unkE1) {
-        if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].unkDD - 1].data[1] == 0x20) {
+        if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].chosenAction - 1].data[1] ==
+            0x20) {
             if (gUnk_03000590[gUnk_03000590[gUnk_03001800.unk87].unkE0 - 1]
                     .parts[gUnk_03000590[gUnk_03001800.unk87].unkE1 - 1]
                     .unk11) {
@@ -141,8 +143,8 @@ void action_phase_resolve_command(void) {
         }
     }
     gUnk_03001800.unkA8 =
-        gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].unkDD - 1].data[1];
-    gUnk_03001800.unkA7 = gUnk_03000590[gUnk_03001800.unk87].unkDD - 1;
+        gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03000590[gUnk_03001800.unk87].chosenAction - 1].data[1];
+    gUnk_03001800.unkA7 = gUnk_03000590[gUnk_03001800.unk87].chosenAction - 1;
     gGameState = 9;
     gGameSubState = 0;
 }

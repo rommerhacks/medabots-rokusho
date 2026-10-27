@@ -361,7 +361,7 @@ void status_select_input(void) {
                            gUnk_03001800.unk64[3]);
         status_reset_portrait();
         position_battle_team_cursors(gUnk_03000440.unk3C * 3, 0);
-        battle_sprite_set_palette_index(0, 8);
+        battle_sprite_group_set_anim(0, 8);
         draw_tile_block(2, 2, 0xB, 2, REG_BG1CNT, 0x63C0);
     }
 }

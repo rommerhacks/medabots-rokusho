@@ -203,7 +203,7 @@ void part_select_draw_skill_name(void) {
 }
 
 void part_select_init_cursor(void) {
-    u8 v = gUnk_03000590[gUnk_03001800.unk80].unkDD;
+    u8 v = gUnk_03000590[gUnk_03001800.unk80].chosenAction;
     if (v > 3)
         v = 0;
     gUnk_03001800.unk82 = v;
