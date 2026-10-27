@@ -870,8 +870,8 @@ void prize_game_pick_prize_part(void) {
         base = 0;
     pick = gPrizeGameBotPicks[rng_next_byte() & 0xF];
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[base + pick].unkBA != 0) {
-            gBattleWork.prizeMedal = gBattleBots[base + pick].unk47;
+        if (gBattleBots[base + pick].present != 0) {
+            gBattleWork.prizeMedal = gBattleBots[base + pick].teamSlot;
             gBattleWork.prizePart = gBattleBots[base + pick].parts[gBattleWork.prizeSlots[gBattleWork.prizeRow]].unk17;
             return;
         }

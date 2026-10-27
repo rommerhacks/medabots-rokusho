@@ -127,7 +127,7 @@ void draw_bot_panel_frame(u32 bot) {
 }
 
 void draw_bot_status_panel(u32 bot) {
-    if (gBattleBots[bot].unkC1 == 0x50)
+    if (gBattleBots[bot].medaforceGauge == 0x50)
         draw_battle_panel_left_b(bot);
     else
         draw_battle_panel_left_a(bot);
@@ -228,8 +228,8 @@ void clear_battle_ui_tilemaps(void) {
 }
 
 u32 medaforce_gauge_fill_step(u32 bot) {
-    if (gBattleWork.unk51 != 0 && gBattleBots[bot].unkC1 != 0x50) {
-        gBattleBots[bot].unkC1++;
+    if (gBattleWork.unk51 != 0 && gBattleBots[bot].medaforceGauge != 0x50) {
+        gBattleBots[bot].medaforceGauge++;
         gBattleWork.unk51--;
         draw_medaforce_gauge_bar(bot);
         draw_medaforce_gauge_value(bot);
@@ -239,8 +239,8 @@ u32 medaforce_gauge_fill_step(u32 bot) {
 }
 
 u32 medaforce_gauge_drain_step(u32 bot) {
-    if (gBattleWork.unk51 != 0 && gBattleBots[bot].unkC1 != 0) {
-        gBattleBots[bot].unkC1--;
+    if (gBattleWork.unk51 != 0 && gBattleBots[bot].medaforceGauge != 0) {
+        gBattleBots[bot].medaforceGauge--;
         gBattleWork.unk51--;
         draw_medaforce_gauge_bar(bot);
         draw_medaforce_gauge_value(bot);
@@ -322,14 +322,14 @@ void battle_action_cleanup(u32 bot) {
     u32 zero;
     u32 zero2;
 
-    gBattleBots[bot].unkBD &= ~1;
-    gBattleBots[bot].unkDE = gBattleBots[bot].chosenAction;
+    gBattleBots[bot].stateFlags &= ~1;
+    gBattleBots[bot].lastAction = gBattleBots[bot].chosenAction;
     if (gBattleBots[bot].chosenAction == 0)
-        gBattleBots[bot].unkDF = 0;
+        gBattleBots[bot].lastActionSkill = 0;
     else if (gBattleBots[bot].chosenAction > 3)
-        gBattleBots[bot].unkDF = 0;
+        gBattleBots[bot].lastActionSkill = 0;
     else
-        gBattleBots[bot].unkDF = gBattleBots[bot].parts[gBattleBots[bot].chosenAction - 1].data[1];
+        gBattleBots[bot].lastActionSkill = gBattleBots[bot].parts[gBattleBots[bot].chosenAction - 1].data[1];
     for (i = 0; i <= 3; i++) {
         gBattleBots[bot].parts[i].unkE = 0;
         gBattleBots[bot].parts[i].unkF = 0;
@@ -339,13 +339,13 @@ void battle_action_cleanup(u32 bot) {
     zero2 = 0;
     CpuSet(&zero2, gUnk_030018A8 + 8, 0x05000008);
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40 && (gBattleBots[i].unkBD & 0x18) && (u8)(gBattleBots[i].unkDE - 1) <= 2 &&
-            gBattleBots[i].parts[gBattleBots[i].unkDE - 1].unk11 == 0)
-            gBattleBots[i].unkBD &= 0xE7;
+        if (gBattleBots[i].teamState && (gBattleBots[i].stateFlags & 0x18) &&
+            (u8)(gBattleBots[i].lastAction - 1) <= 2 && gBattleBots[i].parts[gBattleBots[i].lastAction - 1].unk11 == 0)
+            gBattleBots[i].stateFlags &= 0xE7;
     }
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unkBA)
-            gBattleBots[i].unkBC &= 0xF;
+        if (gBattleBots[i].present)
+            gBattleBots[i].hitFlags &= 0xF;
     }
     restore_changed_part(bot);
 }

@@ -9,7 +9,7 @@ static u32 count_knocked_out_bots(u32 first) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[first + i].unkBA == 2)
+        if (gBattleBots[first + i].present == 2)
             n++;
     }
     return n;
@@ -20,7 +20,7 @@ static u32 battle_count_broken_parts(u32 first) {
     u32 i, j;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[first + i].unkBA) {
+        if (gBattleBots[first + i].present) {
             for (j = 0; j <= 3; j++) {
                 if (gBattleBots[first + i].parts[j].unk11 == 0)
                     n++;
@@ -74,8 +74,8 @@ void robattle_judge_time_up(void) {
 void reset_bot_status_and_init_palette_transfers(u32 rec) {
     u32 z0, z1, z2, z3, z4;
 
-    gBattleBots[rec].unkBC = 0;
-    gBattleBots[rec].unkBD &= 0xE5;
+    gBattleBots[rec].hitFlags = 0;
+    gBattleBots[rec].stateFlags &= 0xE5;
     z0 = 0;
     CpuSet(&z0, gUnk_030018A8, 0x05000008);
     z1 = 0;
@@ -97,7 +97,7 @@ void battle_set_actor_side(u32 rec) {
 }
 
 void select_next_bot_and_action(u32 rec) {
-    if (gBattleBots[rec].unkC9 == 0x2C) {
+    if (gBattleBots[rec].statusType == 0x2C) {
         if (gBattleBots[rec].parts[gBattleBots[rec].chosenAction - 1].data[2] <= 3 ||
             gBattleBots[rec].parts[gBattleBots[rec].chosenAction - 1].data[1] == 0x34) {
             gBattleBots[rec].unkE0 = find_next_active_bot(rec) + 1;
@@ -115,7 +115,7 @@ u32 find_next_active_bot(u32 rec) {
         r = gUnk_083AD3D3[k];
         if (gGameWork.unk89 == 1 && gUnk_03000B90)
             r = gUnk_083AD3F3[r];
-        if (gBattleBots[r].unk40 && rec != r)
+        if (gBattleBots[r].teamState && rec != r)
             return r;
         k = (k + 1) & 0x1F;
     }
@@ -131,19 +131,19 @@ void determine_battle_part_action_priority(void) {
         gBattleWork.unk15C[0] = 4;
     if (part_skill_is_passive(gBattleWork.unk80, 0))
         gBattleWork.unk15C[0] = 3;
-    if (gBattleBots[gBattleWork.unk80].unkC9 == 0x2B && gBattleBots[gBattleWork.unk80].unkCA == 1)
+    if (gBattleBots[gBattleWork.unk80].statusType == 0x2B && gBattleBots[gBattleWork.unk80].statusPart == 1)
         gBattleWork.unk15C[0] = 2;
 
     if (part_skill_is_passive(gBattleWork.unk80, 1))
         gBattleWork.unk15C[1] = 3;
-    if (gBattleBots[gBattleWork.unk80].unkC9 == 0x2B && gBattleBots[gBattleWork.unk80].unkCA == 2)
+    if (gBattleBots[gBattleWork.unk80].statusType == 0x2B && gBattleBots[gBattleWork.unk80].statusPart == 2)
         gBattleWork.unk15C[1] = 2;
     if (gBattleBots[gBattleWork.unk80].parts[1].unk11 == 0)
         gBattleWork.unk15C[1] = 1;
 
     if (part_skill_is_passive(gBattleWork.unk80, 2))
         gBattleWork.unk15C[2] = 3;
-    if (gBattleBots[gBattleWork.unk80].unkC9 == 0x2B && gBattleBots[gBattleWork.unk80].unkCA == 3)
+    if (gBattleBots[gBattleWork.unk80].statusType == 0x2B && gBattleBots[gBattleWork.unk80].statusPart == 3)
         gBattleWork.unk15C[2] = 2;
     if (gBattleBots[gBattleWork.unk80].parts[2].unk11 == 0)
         gBattleWork.unk15C[2] = 1;

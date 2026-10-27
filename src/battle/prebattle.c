@@ -872,7 +872,7 @@ void battle_loss_take_part(void) {
         gGameSubState = 0x40;
     } else {
         battle_pick_random_bot_part(0);
-        team_lose_equipped_part(gBattleBots[gBattleWork.unk187].unk47, gBattleWork.unk168);
+        team_lose_equipped_part(gBattleBots[gBattleWork.unk187].teamSlot, gBattleWork.unk168);
         message_next();
         gGameSubState++;
     }
@@ -1093,7 +1093,7 @@ u32 afterbattle_pick_unowned_part(void) {
     slot = gRandomBotSlotStarts[rng_next_byte() & 0xF];
     for (n = 0; n < 3; n++) {
         register struct BattleBot *base asm("r5") = gBattleBots;
-        if (base[k = slot + 3].unkBA) {
+        if (base[k = slot + 3].present) {
             part = rng_next_byte() & 3;
             for (j = 0, bb = base; j < 4; j++) {
                 p = (u8 *)(part * 24 + ((slot + 3) << 8) + (u32)bb) + 0x5F;
@@ -1122,7 +1122,7 @@ void battle_pick_random_bot_part(u32 first) {
     dir = rng_next_byte() & 1;
     for (i = 0; i < 3; i++) {
         k = first + slot;
-        if (gBattleBots[k].unkBA) {
+        if (gBattleBots[k].present) {
             gBattleWork.unk168 = rng_next_byte() & 3;
             gBattleWork.unk169 = gBattleBots[k].parts[gBattleWork.unk168].unk17;
             gBattleWork.unk187 = k;
@@ -1205,7 +1205,7 @@ static void calc_average_bot_stat_080125B4(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[i + 3].unkBA)
+        if (gBattleBots[i + 3].present)
             sum += gBattleBots[i + 3].medal.level;
     }
     gBattleWork.unk16C += sum / 3;
@@ -1216,7 +1216,7 @@ static void accumulate_alive_bot_score(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[i + 3].unkBA)
+        if (gBattleBots[i + 3].present)
             n++;
     }
     gBattleWork.unk16C += n * 8;
@@ -1230,14 +1230,14 @@ static void calc_average_bot_stat_0801264C(void) {
     u32 nteam;
 
     for (i = 0, nopp = 0; i <= 2; i++) {
-        if (gBattleBots[i + 3].unkBA) {
+        if (gBattleBots[i + 3].present) {
             opp += gBattleBots[i + 3].medal.level;
             nopp++;
         }
     }
     opp = opp / nopp;
     for (i = 0, nteam = 0; i <= 2; i++) {
-        if (gBattleBots[i].unkBA) {
+        if (gBattleBots[i].present) {
             team += gBattleBots[i].medal.level;
             nteam++;
         }
@@ -1252,7 +1252,7 @@ static void calc_medaforce_gauge_from_damage(void) {
     u32 score;
 
     for (i = 0, score = 0; i <= 2; i++) {
-        if (gBattleBots[i + 3].unkBA) {
+        if (gBattleBots[i + 3].present) {
             if (!gBattleBots[i + 3].parts[0].unk11)
                 score += 8;
             if (!gBattleBots[i + 3].parts[1].unk11)
@@ -1276,7 +1276,7 @@ void accumulate_team_armor_stats(void) {
     u32 sum;
 
     for (i = 0, sum = 0; i <= 2; i++) {
-        if (gBattleBots[i + 3].unkBA) {
+        if (gBattleBots[i + 3].present) {
             sum += gBattleBots[i + 3].parts[0].data[0xA];
             sum += gBattleBots[i + 3].parts[1].data[0xA];
             sum += gBattleBots[i + 3].parts[2].data[0xA];
@@ -1294,7 +1294,7 @@ static void battle_check_medal_level_up(void) {
 
     mem_fill8(&gBattleWork.unk16E[0][0], 0x18, 0);
     for (i = 0; i <= 2; i++) {
-        if (!gBattleBots[i].unkBA)
+        if (!gBattleBots[i].present)
             continue;
         slot = find_medal_slot_by_id(gBattleBots[i].medal.graphicId) - 1;
         {

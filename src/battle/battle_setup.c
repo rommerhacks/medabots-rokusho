@@ -55,7 +55,7 @@ void count_bot_skill_use(u32 rec) {
     }
     {
         u32 t = k + off;
-        register u32 q asm("r0") = (u32)base->unkB0;
+        register u32 q asm("r0") = (u32)base->skillUseCount;
         t += q;
         (*(u8 *)t)++;
     }
@@ -65,7 +65,7 @@ void count_team_skill_uses(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[i].unk40)
+        if (gBattleBots[i].teamState)
             count_bot_skill_use(i);
     }
 }
@@ -76,7 +76,7 @@ void fill_opponent_medaforce_for_battle_type(void) {
 
     if ((gUnk_030057E0.unkC2E & 0xF0) == 0x20) {
         for (i = 0; i <= 2; i++)
-            gBattleBots[i + 3].unkC1 = 0x50;
+            gBattleBots[i + 3].medaforceGauge = 0x50;
     }
 }
 

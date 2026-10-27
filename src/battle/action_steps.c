@@ -185,7 +185,7 @@ void trap_hit_check(void) {
     u32 type;
     u32 k;
 
-    if (gBattleBots[(b = &gBattleWork)->unk87].unkC0 & 2)
+    if (gBattleBots[(b = &gBattleWork)->unk87].guardFlags & 2)
         goto fail;
     r = bot_has_break_form_part(b->unk87);
     if (r != 0)
@@ -718,24 +718,24 @@ void guard_find(void) {
     u32 base;
     u32 i;
 
-    if (gBattleBots[gBattleWork.unk87].unkC0 & 4) {
+    if (gBattleBots[gBattleWork.unk87].guardFlags & 4) {
         gBattleWork.unkB5 = 1;
         return;
     }
     base = battle_side_first_record(gBattleWork.unk88);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[base + i].unk40 == 0)
+        if (gBattleBots[base + i].teamState == 0)
             continue;
-        if (!(gBattleBots[base + i].unkBD & 8))
+        if (!(gBattleBots[base + i].stateFlags & 8))
             continue;
         if (gBattleWork.unk88 == base + i)
             continue;
-        if (gBattleBots[base + i].unkC9 == 0x2F)
+        if (gBattleBots[base + i].statusType == 0x2F)
             continue;
-        if (gBattleBots[base + i].parts[gBattleBots[base + i].unkDE - 1].unk11 == 0)
+        if (gBattleBots[base + i].parts[gBattleBots[base + i].lastAction - 1].unk11 == 0)
             continue;
         gBattleWork.unkDE = base + i + 1;
-        gBattleWork.unkDF = gBattleBots[base + i].unkDF;
+        gBattleWork.unkDF = gBattleBots[base + i].lastActionSkill;
     }
     if (gBattleWork.unkDE)
         gBattleWork.unkAA++;
@@ -899,7 +899,7 @@ void guard_shield_animate(void) {
 
 void guard_retarget(void) {
     battle_set_action_target(gBattleWork.unk87, gBattleWork.unkDE);
-    battle_set_action_target_part(gBattleWork.unk87, gBattleBots[gBattleWork.unkDE - 1].unkDE);
+    battle_set_action_target_part(gBattleWork.unk87, gBattleBots[gBattleWork.unkDE - 1].lastAction);
     gBattleWork.unkB5 = 1;
 }
 
@@ -999,7 +999,7 @@ void closeup_enter_setup_bgs(void) {
         if (gBattleBots[gBattleWork.unk87].chosenAction <= 3)
             decompress_indexed_graphics_to_ewram(gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1]);
         else
-            decompress_indexed_graphics_to_ewram(gBattleBots[gBattleWork.unk87].unkA8[0] + 0x50);
+            decompress_indexed_graphics_to_ewram(gBattleBots[gBattleWork.unk87].medaforce[0] + 0x50);
         decompress_fixed_graphics_to_ewram();
         action_bg_set_side_scroll();
         gVBlankCallback = battle_bg_scroll_vblank;
@@ -1090,7 +1090,7 @@ void attack_hit_branch(void) {
 
 // guess: unkBC bit 6 is set with bits 2-3 by battle_check_damage_threshold (a clean / critical hit).
 void attack_hit_check_critical(void) {
-    if (gBattleBots[gBattleWork.unk88].unkBC & 0x40)
+    if (gBattleBots[gBattleWork.unk88].hitFlags & 0x40)
         gBattleWork.unkAA++;
     else
         gBattleWork.unkAA = 6;
@@ -1127,7 +1127,7 @@ void attack_effect_hop(void) {
 void attack_hit_check_part_marker(void) {
     if (gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1] == 0x30)
         gBattleWork.unkAA++;
-    else if (gBattleBots[gBattleWork.unk88].unkBC & 0x20)
+    else if (gBattleBots[gBattleWork.unk88].hitFlags & 0x20)
         gBattleWork.unkAA++;
     else
         gBattleWork.unkAA = 10;
@@ -2173,7 +2173,7 @@ void destroy_check_run(void) {
 }
 
 void destroy_check(void) {
-    if (gBattleBots[gBattleWork.unk88].unkBD & 4) {
+    if (gBattleBots[gBattleWork.unk88].stateFlags & 4) {
         gBattleWork.unkAA++;
         gBattleWork.unkAB = 0;
     } else {

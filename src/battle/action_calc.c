@@ -31,26 +31,26 @@ void battle_calc_attack_success(void) {
         gBattleWork.unk28[gBattleWork.unk8A].skill == 0x33)
         gBattleWork.unkE8 += gBattleWork.unk28[gBattleWork.unk8A].durability;
     apply_battle_bot_damage_reduction(gBattleWork.unk87);
-    subtract_s16_floored(&gBattleWork.unkE8, gBattleBots[gBattleWork.unk88].unkB9);
+    subtract_s16_floored(&gBattleWork.unkE8, gBattleBots[gBattleWork.unk88].evasionBonus);
 }
 
 // guess: a guarding teammate (unkDE) or the target's cover part (unkBD bit 4) takes the hit: unkAB = 1.
 void battle_check_guard_or_cover(void) {
-    gBattleBots[gBattleWork.unk88].unkBC &= 3;
-    gBattleBots[gBattleWork.unk88].unkBD |= 2;
+    gBattleBots[gBattleWork.unk88].hitFlags &= 3;
+    gBattleBots[gBattleWork.unk88].stateFlags |= 2;
     if (gBattleWork.unkDE) {
-        gBattleBots[gBattleWork.unk88].unkBC |= 0xC;
+        gBattleBots[gBattleWork.unk88].hitFlags |= 0xC;
         gBattleWork.unkF2 = gBattleWork.unkE8;
         gBattleWork.unkAB = 1;
-        if ((gBattleBots[gBattleWork.unk88].unkC0 & 1) && (rng_next_byte() & 1)) {
+        if ((gBattleBots[gBattleWork.unk88].guardFlags & 1) && (rng_next_byte() & 1)) {
             gBattleWork.unkF6 = 1;
             gBattleWork.unkB7 = 3;
         }
-    } else if (!(gBattleBots[gBattleWork.unk87].unkC0 & 4) && (gBattleBots[gBattleWork.unk88].unkBD & 0x10) &&
-               gBattleBots[gBattleWork.unk88].parts[gBattleBots[gBattleWork.unk88].unkDE - 1].unk11) {
-        gBattleBots[gBattleWork.unk88].unkBC |= 0xC;
+    } else if (!(gBattleBots[gBattleWork.unk87].guardFlags & 4) && (gBattleBots[gBattleWork.unk88].stateFlags & 0x10) &&
+               gBattleBots[gBattleWork.unk88].parts[gBattleBots[gBattleWork.unk88].lastAction - 1].unk11) {
+        gBattleBots[gBattleWork.unk88].hitFlags |= 0xC;
         gBattleWork.unkF2 = gBattleWork.unkE8;
-        battle_set_action_target_part(gBattleWork.unk87, gBattleBots[gBattleWork.unk88].unkDE);
+        battle_set_action_target_part(gBattleWork.unk87, gBattleBots[gBattleWork.unk88].lastAction);
         gBattleWork.unkF6 = 1;
         gBattleWork.unkAB = 1;
     } else {
@@ -60,7 +60,7 @@ void battle_check_guard_or_cover(void) {
 
 void battle_begin_action_phase(void) {
     gBattleWork.unkEE = 0;
-    if ((gBattleBots[gBattleWork.unk88].unkBC & 4) && (gBattleBots[gBattleWork.unk88].unkBC & 8))
+    if ((gBattleBots[gBattleWork.unk88].hitFlags & 4) && (gBattleBots[gBattleWork.unk88].hitFlags & 8))
         battle_calculate_damage_modifier();
     else if (!battle_calculate_turn_speed())
         battle_process_speed_and_action();
@@ -98,7 +98,7 @@ static u32 battle_calculate_damage_modifier(void) {
 u32 battle_check_damage_threshold(s16 v) {
     if (gBattleWork.unkE8 > v) {
         gBattleWork.unkEE = 0;
-        gBattleBots[gBattleWork.unk88].unkBC |= 0x4C;
+        gBattleBots[gBattleWork.unk88].hitFlags |= 0x4C;
         gBattleWork.unkF2 = gBattleWork.unkE8;
         return 1;
     }
@@ -107,10 +107,10 @@ u32 battle_check_damage_threshold(s16 v) {
 
 static u32 battle_calculate_turn_speed(void) {
     gBattleWork.unkEE = 0;
-    if (!(gBattleBots[gBattleWork.unk88].unkBC & 4)) {
+    if (!(gBattleBots[gBattleWork.unk88].hitFlags & 4)) {
         accumulate_battle_speed_value(gBattleWork.unk88);
         gBattleWork.unkEE += gBattleBots[gBattleWork.unk88].parts[3].unk13;
-        if (!(gBattleBots[gBattleWork.unk88].unkBC & 8))
+        if (!(gBattleBots[gBattleWork.unk88].hitFlags & 8))
             subtract_s16_floored((s16 *)&gBattleWork.unkEE, 8);
         if (battle_calculate_damage_modifier())
             return 1;
@@ -122,7 +122,7 @@ static u32 battle_calculate_turn_speed(void) {
             if (type == 7)
                 return 0;
             if (!(gBattleBots[gBattleWork.unk87].unkD6 & 2)) {
-                gBattleBots[gBattleWork.unk88].unkBC |= 0x10;
+                gBattleBots[gBattleWork.unk88].hitFlags |= 0x10;
                 return 1;
             }
         }
@@ -135,15 +135,15 @@ static void battle_process_speed_and_action(void) {
 
     gBattleWork.unkEE = 0;
     gBattleWork.unkF2 = gBattleWork.unkE8;
-    if (!(gBattleBots[gBattleWork.unk88].unkBC & 8)) {
+    if (!(gBattleBots[gBattleWork.unk88].hitFlags & 8)) {
         accumulate_battle_speed_value(gBattleWork.unk88);
         gBattleWork.unkEE += gBattleBots[gBattleWork.unk88].parts[3].unk14;
-        if (!(gBattleBots[gBattleWork.unk88].unkBC & 4))
+        if (!(gBattleBots[gBattleWork.unk88].hitFlags & 4))
             subtract_s16_floored((s16 *)&gBattleWork.unkEE, 8);
         if (!battle_calculate_damage_modifier() && (s16)gBattleWork.unkEE > 0x1F) {
             subtract_s16_floored(&gBattleWork.unkE8, (s16)gBattleWork.unkEE);
             gBattleWork.unkF2 = gBattleWork.unkE8;
-            gBattleBots[gBattleWork.unk88].unkBC |= 0x20;
+            gBattleBots[gBattleWork.unk88].hitFlags |= 0x20;
             if (count_intact_parts(gBattleWork.unk88) == 1)
                 part = 1;
             else
@@ -179,7 +179,7 @@ static u32 battle_find_strongest_part(u32 rec) {
 }
 
 void battle_check_dodged(void) {
-    u8 f = gBattleBots[gBattleWork.unk88].unkBC & 0x10;
+    u8 f = gBattleBots[gBattleWork.unk88].hitFlags & 0x10;
     if (f) {
         gBattleWork.unkAB = 1;
         gBattleWork.unkB7 = 1;

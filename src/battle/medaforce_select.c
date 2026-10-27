@@ -174,7 +174,7 @@ void mf_menu_draw_status(u32 a) {
 
         if (gBattleBots[gBattleWork.unk80].medal.level > 9) {
             if (gBattleWork.unk58 == 0) {
-                if (gBattleBots[gBattleWork.unk80].unkC1 == 0x50) {
+                if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50) {
                     memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
                                           &gGameWork.unkEE, 3);
                     memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.unkEE * 6, gGameWork.unk10E, 6);
@@ -197,7 +197,7 @@ void mf_menu_draw_status(u32 a) {
 
         if (gBattleBots[gBattleWork.unk80].medal.level > 29) {
             if (gBattleWork.unk58 == 0) {
-                if (gBattleBots[gBattleWork.unk80].unkC1 == 0x50) {
+                if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50) {
                     memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
                                           &gGameWork.unkEE, 3);
                     memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.unkEF * 6, gGameWork.unk10E, 6);
@@ -220,7 +220,7 @@ void mf_menu_draw_status(u32 a) {
 
         if (gBattleBots[gBattleWork.unk80].medal.level > 59) {
             if (gBattleWork.unk58 == 0) {
-                if (gBattleBots[gBattleWork.unk80].unkC1 == 0x50) {
+                if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50) {
                     memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
                                           &gGameWork.unkEE, 3);
                     memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.unkF0 * 6, gGameWork.unk10E, 6);
@@ -335,14 +335,14 @@ static void mf_menu_draw_cost_bar(u32 a) {
     } else {
         vram_fill_tilemap_rect(8, 1, 1, 0x11, REG_BG0CNT, i);
         draw_medaforce_gauge_value(gBattleWork.unk80);
-        if (gBattleBots[gBattleWork.unk80].unkC1 != 0x50)
+        if (gBattleBots[gBattleWork.unk80].medaforceGauge != 0x50)
             draw_battle_panel_left_a(gBattleWork.unk80);
     }
 }
 
 // The Medabot's panel blinks while its Medaforce gauge is full (80).
 void mf_gauge_full_blink_panel(void) {
-    if (gBattleBots[gBattleWork.unk80].unkC1 == 0x50) {
+    if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50) {
         gBattleWork.unk85++;
         if (gBattleWork.unk85 & 8)
             draw_battle_panel_left_b(gBattleWork.unk80);
@@ -352,7 +352,7 @@ void mf_gauge_full_blink_panel(void) {
 }
 
 void mf_gauge_draw_panel(void) {
-    if (gBattleBots[gBattleWork.unk80].unkC1 == 0x50)
+    if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50)
         draw_battle_panel_left_b(gBattleWork.unk80);
     else
         draw_battle_panel_left_a(gBattleWork.unk80);

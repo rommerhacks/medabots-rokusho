@@ -267,7 +267,7 @@ void medaforce_side_bolt_calc(void) {
     bots = gBattleBots;
     for (; i <= 2; i++) {
         u32 rec = gBattleWork.unk60 + i;
-        if (bots[rec].unk40 && bots[rec].parts[0].unk11) {
+        if (bots[rec].teamState && bots[rec].parts[0].unk11) {
             gBattleWork.unkD2[i] = get_random_battle_weight_entry(rec);
             battle_set_damage_vs_armor(gBattleWork.unk60 + i, gBattleWork.unkD2[i], gBattleWork.unkEC);
             gBattleWork.unkD2[i] |= gBattleWork.unkD1 << 7;
@@ -400,7 +400,7 @@ void medaforce_side_bolt_set_message(void) {
 void medaforce_side_bolt_apply_damage(void) {
     u32 i;
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11) {
+        if (gBattleBots[gBattleWork.unk60 + i].teamState && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11) {
             gBattleBots[gBattleWork.unk60 + i].parts[gBattleWork.unkD2[i] & 0x7F].unk11 -= gBattleWork.unkD6[i];
             bot_halve_broken_leg_stats(gBattleWork.unk60 + i);
             if ((gBattleWork.unkD2[i] & 0x7F) == 0 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 == 0)
@@ -413,7 +413,7 @@ void medaforce_side_bolt_apply_damage(void) {
 void medaforce_team_damage_popup_init(void) {
     u32 i;
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40) {
+        if (gBattleBots[gBattleWork.unk60 + i].teamState) {
             switch (i) {
             case 0:
                 set_display_digit_type(gGameWork.unk9E, gBattleWork.unkD6[i], 1);
@@ -438,7 +438,7 @@ void medaforce_team_damage_popup_init(void) {
 void medaforce_team_popup_wait(void) {
     u32 i;
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40) {
+        if (gBattleBots[gBattleWork.unk60 + i].teamState) {
             switch (i) {
             case 0:
                 battle_popup_update_slot(gGameWork.unk9E, gBattleWork.unk60 + i, 0x21);
@@ -540,7 +540,7 @@ void medaforce_form_run(void) {
 }
 
 void medaforce_form_begin(void) {
-    switch (gBattleBots[gBattleWork.unk87].unkA8[0]) {
+    switch (gBattleBots[gBattleWork.unk87].medaforce[0]) {
     case 4:
         gBattleWork.unk51 = 0;
         break;
@@ -566,7 +566,7 @@ void medaforce_form_begin(void) {
 void medaforce_form_emblem_spawn(void) {
     lz_decompress_dispatch(gUnk_084DBB28, (void *)0x06014800);
     CpuFastSet(gUnk_084E30B8, (void *)0x050002C0, 8);
-    switch (gBattleBots[gBattleWork.unk87].unkA8[0]) {
+    switch (gBattleBots[gBattleWork.unk87].medaforce[0]) {
     case 4:
     case 5:
         lz_decompress_dispatch(gUnk_084DBCAC, (void *)0x06014C00);
@@ -667,7 +667,7 @@ void medaforce_form_shrink_out(void) {
 }
 
 void medaforce_form_apply(void) {
-    switch (gBattleBots[gBattleWork.unk87].unkA8[0]) {
+    switch (gBattleBots[gBattleWork.unk87].medaforce[0]) {
     case 4:
         gBattleBots[gBattleWork.unk87].unkD6 |= 1;
         break;
@@ -691,7 +691,7 @@ void medaforce_form_apply(void) {
 }
 
 void medaforce_form_set_message(void) {
-    switch (gBattleBots[gBattleWork.unk87].unkA8[0]) {
+    switch (gBattleBots[gBattleWork.unk87].medaforce[0]) {
     case 4:
         gBattleWork.unkA6 = 0x4A;
         break;
@@ -772,7 +772,7 @@ void medaforce_anti_attack_trap_apply(void) {
         gBattleWork.unk53 = 1;
         add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].durability, gBattleWork.unkE8 >> 1, 0xFF);
         add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].power,
-                      (gBattleWork.unkEC + gBattleBots[gBattleWork.unk87].unkD5) >> 1, 0xFF);
+                      (gBattleWork.unkEC + gBattleBots[gBattleWork.unk87].trapBonus) >> 1, 0xFF);
         gBattleWork.unkAA++;
     } else {
         gBattleWork.unk53 = 0;
@@ -782,7 +782,7 @@ void medaforce_anti_attack_trap_apply(void) {
         gBattleWork.unk28[gBattleWork.unk8A].power = 0;
         add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].durability, gBattleWork.unkE8, 0xFF);
         add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].power,
-                      gBattleWork.unkEC + gBattleBots[gBattleWork.unk87].unkD5, 0xFF);
+                      gBattleWork.unkEC + gBattleBots[gBattleWork.unk87].trapBonus, 0xFF);
         gBattleWork.unkAA++;
     }
 }
@@ -835,7 +835,7 @@ void medaforce_cancel_formation_blink(void) {
 }
 
 void medaforce_cancel_formation_apply(void) {
-    gBattleBots[gBattleWork.unk87].unkC0 |= 2;
+    gBattleBots[gBattleWork.unk87].guardFlags |= 2;
     gBattleWork.unkAA++;
 }
 
@@ -851,7 +851,7 @@ void medaforce_inflict_status_run(void) {
 }
 
 void medaforce_inflict_status_begin(void) {
-    switch (gBattleBots[gBattleWork.unk87].unkA8[0]) {
+    switch (gBattleBots[gBattleWork.unk87].medaforce[0]) {
     case 0xC:
         gBattleWork.unk51 = 0;
         break;
@@ -872,7 +872,7 @@ void medaforce_inflict_status_begin(void) {
 }
 
 void medaforce_inflict_status_orb_spawn(void) {
-    switch (gBattleBots[gBattleWork.unk87].unkA8[0]) {
+    switch (gBattleBots[gBattleWork.unk87].medaforce[0]) {
     case 0xC:
         lz_decompress_dispatch(gUnk_084DBEE4, (void *)0x06014800);
         CpuFastSet(gUnk_0850EBD8, (void *)0x050002E0, 8);
@@ -938,13 +938,13 @@ void medaforce_inflict_status_apply(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 == 0)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState == 0)
             continue;
         if (gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 == 0)
             continue;
         if (battle_bot_lacks_stability(gBattleWork.unk60 + i) == 0)
             continue;
-        switch (gBattleBots[gBattleWork.unk87].unkA8[0]) {
+        switch (gBattleBots[gBattleWork.unk87].medaforce[0]) {
         case 0xC:
             if (bot_has_status_guard(gBattleWork.unk60 + i, 0xD) == 0) {
                 gBattleWork.unkD2[i] = 1;
@@ -1076,7 +1076,7 @@ void medaforce_cancel_status_run(void) {
 }
 
 void medaforce_cancel_status_begin(void) {
-    switch (gBattleBots[gBattleWork.unk87].unkA8[0]) {
+    switch (gBattleBots[gBattleWork.unk87].medaforce[0]) {
     case 0xD:
         gBattleWork.unk51 = 0;
         break;
@@ -1223,7 +1223,7 @@ void medaforce_cancel_status_sparkle_spawn(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 == 0)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState == 0)
             continue;
         if (gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 == 0)
             continue;
@@ -1265,36 +1265,36 @@ void medaforce_cancel_status_apply(void) {
         switch (gBattleWork.unk51) {
         case 0:
             gBattleBots[gBattleWork.unk60 + i].unkCF |= 1;
-            if (gBattleBots[gBattleWork.unk60 + i].unkC9 == 0xD)
+            if (gBattleBots[gBattleWork.unk60 + i].statusType == 0xD)
                 goto call_0xD;
-            if (gBattleBots[gBattleWork.unk60 + i].unkC9 != 0xE)
+            if (gBattleBots[gBattleWork.unk60 + i].statusType != 0xE)
                 break;
         call_0xD:
             bot_clear_effects(gBattleWork.unk60 + i, 1);
             break;
         case 1:
             gBattleBots[gBattleWork.unk60 + i].unkCF |= 8;
-            if (gBattleBots[gBattleWork.unk60 + i].unkC9 == 0xF)
+            if (gBattleBots[gBattleWork.unk60 + i].statusType == 0xF)
                 goto call_0xF;
-            if (gBattleBots[gBattleWork.unk60 + i].unkC9 != 0x10)
+            if (gBattleBots[gBattleWork.unk60 + i].statusType != 0x10)
                 break;
         call_0xF:
             bot_clear_effects(gBattleWork.unk60 + i, 1);
             break;
         case 2:
             gBattleBots[gBattleWork.unk60 + i].unkCF |= 2;
-            if (gBattleBots[gBattleWork.unk60 + i].unkC9 == 0x11)
+            if (gBattleBots[gBattleWork.unk60 + i].statusType == 0x11)
                 goto call_0x11;
-            if (gBattleBots[gBattleWork.unk60 + i].unkC9 != 0x12)
+            if (gBattleBots[gBattleWork.unk60 + i].statusType != 0x12)
                 break;
         call_0x11:
             bot_clear_effects(gBattleWork.unk60 + i, 1);
             break;
         case 3:
             gBattleBots[gBattleWork.unk60 + i].unkCF |= 4;
-            if (gBattleBots[gBattleWork.unk60 + i].unkC9 == 0x13)
+            if (gBattleBots[gBattleWork.unk60 + i].statusType == 0x13)
                 goto call_0x13;
-            if (gBattleBots[gBattleWork.unk60 + i].unkC9 != 0x14)
+            if (gBattleBots[gBattleWork.unk60 + i].statusType != 0x14)
                 break;
         call_0x13:
             bot_clear_effects(gBattleWork.unk60 + i, 1);
@@ -1362,11 +1362,11 @@ void medaforce_status_restore_check_targets(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 == 0)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState == 0)
             continue;
         if (gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 == 0)
             continue;
-        if (gBattleBots[gBattleWork.unk60 + i].unkC9 == 0)
+        if (gBattleBots[gBattleWork.unk60 + i].statusType == 0)
             continue;
         found = 1;
         gBattleWork.unkD2[i] = found;
@@ -1471,7 +1471,7 @@ void medaforce_total_recovery_check_targets(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 == 0)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState == 0)
             continue;
         if (gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 == 0)
             continue;
@@ -1646,7 +1646,7 @@ void medaforce_full_body_repair_check_targets(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 == 0)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState == 0)
             continue;
         if (gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 == 0)
             continue;
@@ -1765,7 +1765,7 @@ void medaforce_full_body_up_orbs_spawn(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 == 0)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState == 0)
             continue;
         if (gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 == 0)
             continue;
@@ -1909,11 +1909,11 @@ void medaforce_full_body_rad_push_back_init(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 == 0)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState == 0)
             continue;
         if (gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 == 0)
             continue;
-        gBattleBots[gBattleWork.unk60 + i].unkBD |= 4;
+        gBattleBots[gBattleWork.unk60 + i].stateFlags |= 4;
         gBattleWork.unkD2[i] = 1;
         battle_queue_remove_bot(gBattleWork.unk60 + i);
         gBattleBots[gBattleWork.unk60 + i].moveSubpixel = 0;
@@ -2011,7 +2011,7 @@ void medaforce_iron_wall_begin(void) {
 }
 
 void medaforce_iron_wall_apply_defence(void) {
-    add_u8_capped(&gBattleBots[gBattleWork.unk87].unkD0 + 1, gBattleWork.unkEC, 0xFF);
+    add_u8_capped(&gBattleBots[gBattleWork.unk87].powerBonus + 1, gBattleWork.unkEC, 0xFF);
     gBattleWork.unkAA++;
 }
 
@@ -2088,7 +2088,7 @@ void medaforce_power_up_aura_anim_wait(void) {
 }
 
 void medaforce_power_up_apply_power(void) {
-    add_u8_capped(&gBattleBots[gBattleWork.unk87].unkD0, gBattleWork.unkEC, 0xFF);
+    add_u8_capped(&gBattleBots[gBattleWork.unk87].powerBonus, gBattleWork.unkEC, 0xFF);
     gBattleWork.unkAA++;
 }
 
@@ -2122,7 +2122,7 @@ void medaforce_anti_terrain_beam_spawn(void) {
     gSpriteEntries[0x22].unkA = 7;
     gSpriteEntries[0x22].unkB = 0xE0;
     gSpriteEntries[0x22].unk2D = 0;
-    if (gBattleBots[gBattleWork.unk87].unkA8[0] == 0x1E)
+    if (gBattleBots[gBattleWork.unk87].medaforce[0] == 0x1E)
         gSpriteEntries[0x22].unk6 = 0x7A01;
     else
         gSpriteEntries[0x22].unk6 = 0x7A02;
@@ -2137,10 +2137,11 @@ void medaforce_anti_terrain_check_targets(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 == 0 || gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 == 0 ||
+        if (gBattleBots[gBattleWork.unk60 + i].teamState == 0 ||
+            gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 == 0 ||
             battle_bot_lacks_stability(gBattleWork.unk60 + i) == 0)
             continue;
-        if (gBattleBots[gBattleWork.unk87].unkA8[0] == 0x1E) {
+        if (gBattleBots[gBattleWork.unk87].medaforce[0] == 0x1E) {
             if (gBattleBots[gBattleWork.unk60 + i].parts[3].data[1] == 0x64) {
                 gBattleWork.unkD2[i] = 1;
                 found = 1;
@@ -2286,28 +2287,28 @@ void medaforce_anti_terrain_apply_status(void) {
             battle_inflict_status(gBattleWork.unk60 + i, 0x10, gBattleWork.unkE8, gBattleWork.unkEC);
             break;
         case 4:
-            gBattleBots[gBattleWork.unk60 + i].unkC9 = 0x2B;
-            gBattleBots[gBattleWork.unk60 + i].unkCB = clamp_1_99(gBattleWork.unkE8);
-            gBattleBots[gBattleWork.unk60 + i].unkCC = clamp_1_99(gBattleWork.unkEC);
-            gBattleBots[gBattleWork.unk60 + i].unkCA = 1;
+            gBattleBots[gBattleWork.unk60 + i].statusType = 0x2B;
+            gBattleBots[gBattleWork.unk60 + i].statusTimer = clamp_1_99(gBattleWork.unkE8);
+            gBattleBots[gBattleWork.unk60 + i].statusAmount = clamp_1_99(gBattleWork.unkEC);
+            gBattleBots[gBattleWork.unk60 + i].statusPart = 1;
             break;
         case 5:
-            gBattleBots[gBattleWork.unk60 + i].unkC9 = 0x2C;
-            gBattleBots[gBattleWork.unk60 + i].unkCA = 0;
-            gBattleBots[gBattleWork.unk60 + i].unkCB = clamp_1_99(gBattleWork.unkE8);
-            gBattleBots[gBattleWork.unk60 + i].unkCC = clamp_1_99(gBattleWork.unkEC);
+            gBattleBots[gBattleWork.unk60 + i].statusType = 0x2C;
+            gBattleBots[gBattleWork.unk60 + i].statusPart = 0;
+            gBattleBots[gBattleWork.unk60 + i].statusTimer = clamp_1_99(gBattleWork.unkE8);
+            gBattleBots[gBattleWork.unk60 + i].statusAmount = clamp_1_99(gBattleWork.unkEC);
             break;
         case 6:
-            gBattleBots[gBattleWork.unk60 + i].unkC9 = 0x2E;
-            gBattleBots[gBattleWork.unk60 + i].unkCA = 0;
-            gBattleBots[gBattleWork.unk60 + i].unkCB = clamp_1_99(gBattleWork.unkE8);
-            gBattleBots[gBattleWork.unk60 + i].unkCC = clamp_1_99(gBattleWork.unkEC);
+            gBattleBots[gBattleWork.unk60 + i].statusType = 0x2E;
+            gBattleBots[gBattleWork.unk60 + i].statusPart = 0;
+            gBattleBots[gBattleWork.unk60 + i].statusTimer = clamp_1_99(gBattleWork.unkE8);
+            gBattleBots[gBattleWork.unk60 + i].statusAmount = clamp_1_99(gBattleWork.unkEC);
             break;
         case 7:
-            gBattleBots[gBattleWork.unk60 + i].unkC9 = 0x2F;
-            gBattleBots[gBattleWork.unk60 + i].unkCA = 0;
-            gBattleBots[gBattleWork.unk60 + i].unkCB = clamp_1_99(gBattleWork.unkE8);
-            gBattleBots[gBattleWork.unk60 + i].unkCC = clamp_1_99(gBattleWork.unkEC);
+            gBattleBots[gBattleWork.unk60 + i].statusType = 0x2F;
+            gBattleBots[gBattleWork.unk60 + i].statusPart = 0;
+            gBattleBots[gBattleWork.unk60 + i].statusTimer = clamp_1_99(gBattleWork.unkE8);
+            gBattleBots[gBattleWork.unk60 + i].statusAmount = clamp_1_99(gBattleWork.unkEC);
             break;
         }
     }
@@ -2315,7 +2316,7 @@ void medaforce_anti_terrain_apply_status(void) {
 }
 
 void medaforce_anti_terrain_finish(void) {
-    if (gBattleBots[gBattleWork.unk87].unkA8[0] == 0x1E)
+    if (gBattleBots[gBattleWork.unk87].medaforce[0] == 0x1E)
         gBattleWork.unkA6 = 0x4D;
     else
         gBattleWork.unkA6 = 0x4E;
@@ -2334,10 +2335,10 @@ void medaforce_legs_stat_up_begin(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 != 0 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 != 0)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState != 0 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 != 0)
             gBattleWork.unkD2[i] = 1;
     }
-    switch (gBattleBots[gBattleWork.unk87].unkA8[0]) {
+    switch (gBattleBots[gBattleWork.unk87].medaforce[0]) {
     case 0x1F:
         gBattleWork.unk51 = 0;
         break;
@@ -2560,12 +2561,12 @@ void medaforce_mark_both_sides(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 != 0 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 != 0)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState != 0 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 != 0)
             gBattleWork.unkD2[i] = 1;
     }
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 != 0 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 != 0)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState != 0 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 != 0)
             gBattleWork.unkD6[i] = 1;
     }
     gBattleWork.unkAA++;
@@ -2744,12 +2745,12 @@ void medaforce_hide_n_seek_apply_evasion(void) {
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.unkD2[i] != 0)
-            add_u8_capped(&gBattleBots[gBattleWork.unk60 + i].unkB8 + 1, gBattleWork.unkEC, 0x78);
+            add_u8_capped(&gBattleBots[gBattleWork.unk60 + i].index + 1, gBattleWork.unkEC, 0x78);
     }
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.unkD6[i] != 0)
-            subtract_u8_floored(&gBattleBots[gBattleWork.unk60 + i].unkB8 + 1, gBattleWork.unkEC);
+            subtract_u8_floored(&gBattleBots[gBattleWork.unk60 + i].index + 1, gBattleWork.unkEC);
     }
     gBattleWork.unkAA++;
 }
@@ -2807,7 +2808,8 @@ void medaforce_charge_check_targets(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 != 0 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 != 0 &&
+        if (gBattleBots[gBattleWork.unk60 + i].teamState != 0 &&
+            gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 != 0 &&
             battle_bot_lacks_stability(gBattleWork.unk60 + i) != 0) {
             gBattleWork.unkD2[i] = 1;
             found = 1;
@@ -2922,10 +2924,10 @@ void medaforce_charge_apply_buff(void) {
 
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.unkD2[i]) {
-            gBattleBots[gBattleWork.unk60 + i].unkC4 = 0x26;
-            gBattleBots[gBattleWork.unk60 + i].unkC5 = 0;
-            gBattleBots[gBattleWork.unk60 + i].unkC6 = clamp_1_99(gBattleWork.unkE8);
-            gBattleBots[gBattleWork.unk60 + i].unkC7 = clamp_1_99(gBattleWork.unkEC);
+            gBattleBots[gBattleWork.unk60 + i].buffType = 0x26;
+            gBattleBots[gBattleWork.unk60 + i].buffPart = 0;
+            gBattleBots[gBattleWork.unk60 + i].buffTimer = clamp_1_99(gBattleWork.unkE8);
+            gBattleBots[gBattleWork.unk60 + i].buffAmount = clamp_1_99(gBattleWork.unkEC);
         }
     }
     gBattleWork.unkAA++;
@@ -2948,7 +2950,7 @@ void medaforce_pushover_attack_begin(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11)
             gBattleWork.unkD2[i] = 1;
     }
     gBattleWork.unkAA++;
@@ -3150,7 +3152,7 @@ void apply_battle_damage_and_render(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.unkD2[i] == 0)
             continue;
-        if (gBattleBots[gBattleWork.unk60 + i].unkBD & 4)
+        if (gBattleBots[gBattleWork.unk60 + i].stateFlags & 4)
             battle_set_damage_vs_armor(gBattleWork.unk60 + i, 0, 1);
         else
             battle_set_damage_vs_armor(gBattleWork.unk60 + i, 0, gBattleWork.unkEC);
@@ -3217,8 +3219,8 @@ void apply_battle_damage_to_team(void) {
             add_bot_to_defeated_list(gBattleWork.unk60 + i);
             gBattleWork.unkD2[i] = 0x80;
             defeated = 1;
-        } else if (!(gBattleBots[gBattleWork.unk60 + i].unkBD & 4))
-            gBattleBots[gBattleWork.unk60 + i].unkBD |= 1;
+        } else if (!(gBattleBots[gBattleWork.unk60 + i].stateFlags & 4))
+            gBattleBots[gBattleWork.unk60 + i].stateFlags |= 1;
     }
     if (defeated)
         gBattleWork.unkAA = 0x10;
@@ -3260,7 +3262,7 @@ void medaforce_useless_find_targets(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 &&
+        if (gBattleBots[gBattleWork.unk60 + i].teamState && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 &&
             battle_bot_lacks_stability(gBattleWork.unk60 + i)) {
             gBattleWork.unkD2[i] = (s8)bot_random_intact_part(gBattleWork.unk60 + i) - 0x80;
             found = 1;
@@ -3432,18 +3434,18 @@ void medaforce_useless_apply_impair(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.unkD2[i] == 0)
             continue;
-        gBattleBots[gBattleWork.unk60 + i].unkC9 = 0x2B;
-        gBattleBots[gBattleWork.unk60 + i].unkCB = clamp_1_99(gBattleWork.unkE8);
-        gBattleBots[gBattleWork.unk60 + i].unkCC = clamp_1_99(gBattleWork.unkEC);
+        gBattleBots[gBattleWork.unk60 + i].statusType = 0x2B;
+        gBattleBots[gBattleWork.unk60 + i].statusTimer = clamp_1_99(gBattleWork.unkE8);
+        gBattleBots[gBattleWork.unk60 + i].statusAmount = clamp_1_99(gBattleWork.unkEC);
         switch (gBattleWork.unkD2[i] & 0x7F) {
         case 1:
-            gBattleBots[gBattleWork.unk60 + i].unkCA = 2;
+            gBattleBots[gBattleWork.unk60 + i].statusPart = 2;
             break;
         case 2:
-            gBattleBots[gBattleWork.unk60 + i].unkCA = 3;
+            gBattleBots[gBattleWork.unk60 + i].statusPart = 3;
             break;
         default:
-            gBattleBots[gBattleWork.unk60 + i].unkCA = 1;
+            gBattleBots[gBattleWork.unk60 + i].statusPart = 1;
             break;
         }
     }
@@ -3557,8 +3559,8 @@ void medaforce_destroyer_find_targets(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 &&
-            (gBattleBots[gBattleWork.unk60 + i].unkBD & 4)) {
+        if (gBattleBots[gBattleWork.unk60 + i].teamState && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11 &&
+            (gBattleBots[gBattleWork.unk60 + i].stateFlags & 4)) {
             gBattleWork.unkD2[i] = 1;
             found = 1;
         }
@@ -3698,9 +3700,9 @@ void medaforce_crazy_find_targets(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11) {
+        if (gBattleBots[gBattleWork.unk60 + i].teamState && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11) {
             gBattleWork.unkD2[i] = 1;
-            gBattleWork.unkD6[i] = gBattleBots[gBattleWork.unk60 + i].unkC1;
+            gBattleWork.unkD6[i] = gBattleBots[gBattleWork.unk60 + i].medaforceGauge;
         }
     }
     gBattleWork.unkAA++;
@@ -3902,7 +3904,7 @@ void medaforce_crazy_apply_damage(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.unkD2[i] == 0)
             continue;
-        gBattleBots[gBattleWork.unk60 + i].unkC1 = 0;
+        gBattleBots[gBattleWork.unk60 + i].medaforceGauge = 0;
         gBattleWork.unkD2[i] = get_random_battle_weight_entry(gBattleWork.unk60 + i);
         battle_set_damage_vs_armor(gBattleWork.unk60 + i, gBattleWork.unkD2[i], gBattleWork.unkD6[i]);
         gBattleWork.unkD2[i] |= gBattleWork.unkD1 << 7;
@@ -3927,7 +3929,7 @@ void medaforce_up_find_targets(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11)
+        if (gBattleBots[gBattleWork.unk60 + i].teamState && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11)
             gBattleWork.unkD2[i] = 1;
     }
     gBattleWork.unkAA++;
@@ -4065,7 +4067,7 @@ void medaforce_up_apply_gauge_boost(void) {
 
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.unkD2[i])
-            gBattleBots[gBattleWork.unk60 + i].unkC0 |= 8;
+            gBattleBots[gBattleWork.unk60 + i].guardFlags |= 8;
     }
     gBattleWork.unkAA++;
 }
@@ -4211,7 +4213,7 @@ void medaforce_formation_orders_burst_wait(void) {
 }
 
 void medaforce_formation_orders_apply_trap_boost(void) {
-    add_u8_capped(&gBattleBots[gBattleWork.unk87].unkD0 + 5, gBattleWork.unkEC, 0xFF);
+    add_u8_capped(&gBattleBots[gBattleWork.unk87].powerBonus + 5, gBattleWork.unkEC, 0xFF);
     gBattleWork.unkAA++;
 }
 
@@ -4232,7 +4234,7 @@ void medaforce_leg_crash_find_targets(void) {
     medaforce_clear_hit_list();
     gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unk40 && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11) {
+        if (gBattleBots[gBattleWork.unk60 + i].teamState && gBattleBots[gBattleWork.unk60 + i].parts[0].unk11) {
             gBattleWork.unkD2[i] = 1;
             gBattleWork.unkD6[i] = gBattleBots[gBattleWork.unk60 + i].parts[3].unk11;
         }
@@ -4448,7 +4450,7 @@ void medaforce_protector_shield_vanish(void) {
 }
 
 void medaforce_protector_apply_protect(void) {
-    gBattleBots[gBattleWork.unk87].unkC0 |= 1;
+    gBattleBots[gBattleWork.unk87].guardFlags |= 1;
     gBattleWork.unkAA++;
 }
 
@@ -4623,7 +4625,7 @@ void medaforce_anti_protection_pieces_scatter(void) {
 }
 
 void medaforce_anti_protection_apply(void) {
-    gBattleBots[gBattleWork.unk87].unkC0 |= 4;
+    gBattleBots[gBattleWork.unk87].guardFlags |= 4;
     gBattleWork.unkAA++;
 }
 

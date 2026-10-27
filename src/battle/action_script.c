@@ -142,11 +142,11 @@ void script_op_set_attack_type_flags(void) {
         goto both;
     if (type == 1) {
     both:
-        gBattleBots[gBattleWork.unk87].unkBC |= 2;
+        gBattleBots[gBattleWork.unk87].hitFlags |= 2;
         if (gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[2] == 1)
-            gBattleBots[gBattleWork.unk87].unkBC |= 1;
+            gBattleBots[gBattleWork.unk87].hitFlags |= 1;
     } else if (type == 3)
-        gBattleBots[gBattleWork.unk87].unkBC |= 1;
+        gBattleBots[gBattleWork.unk87].hitFlags |= 1;
     battle_script_advance();
 }
 
@@ -166,21 +166,21 @@ void script_op_guard_check(void) {
 void script_op_set_target_no_dodge_flags(void) {
     u32 type;
 
-    if (gBattleBots[gBattleWork.unk88].unkC9 == 0x2E)
-        gBattleBots[gBattleWork.unk88].unkBC |= 4;
-    if (gBattleBots[gBattleWork.unk88].unkC9 == 0x2F)
-        gBattleBots[gBattleWork.unk88].unkBC |= 8;
-    type = gBattleBots[gBattleWork.unk88].unkC9;
+    if (gBattleBots[gBattleWork.unk88].statusType == 0x2E)
+        gBattleBots[gBattleWork.unk88].hitFlags |= 4;
+    if (gBattleBots[gBattleWork.unk88].statusType == 0x2F)
+        gBattleBots[gBattleWork.unk88].hitFlags |= 8;
+    type = gBattleBots[gBattleWork.unk88].statusType;
     if (type == 0xF)
         goto both;
     if (type == 0x10) {
     both:
-        gBattleBots[gBattleWork.unk88].unkBC |= 0xC;
+        gBattleBots[gBattleWork.unk88].hitFlags |= 0xC;
     }
-    if (gBattleBots[gBattleWork.unk88].unkBC & 1)
-        gBattleBots[gBattleWork.unk88].unkBC |= 4;
-    if (gBattleBots[gBattleWork.unk88].unkBC & 2)
-        gBattleBots[gBattleWork.unk88].unkBC |= 8;
+    if (gBattleBots[gBattleWork.unk88].hitFlags & 1)
+        gBattleBots[gBattleWork.unk88].hitFlags |= 4;
+    if (gBattleBots[gBattleWork.unk88].hitFlags & 2)
+        gBattleBots[gBattleWork.unk88].hitFlags |= 8;
     battle_script_advance();
 }
 
@@ -220,19 +220,19 @@ void script_op_calc_damage(void) {
 
     gBattleWork.unkEC = 0;
     gBattleWork.unkEC = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[6] + gBattleWork.unkEA;
-    gBattleWork.unkEC += gBattleBots[gBattleWork.unk87].unkD0;
+    gBattleWork.unkEC += gBattleBots[gBattleWork.unk87].powerBonus;
     type = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[2];
     if (type == 0)
         goto melee;
     if (type == 1) {
     melee:
-        gBattleWork.unkEC += gBattleBots[gBattleWork.unk87].unkD3;
+        gBattleWork.unkEC += gBattleBots[gBattleWork.unk87].meleeBonus;
     }
     if (gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[2] == 2)
         goto ranged;
     if (gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[2] == 3) {
     ranged:
-        gBattleWork.unkEC += gBattleBots[gBattleWork.unk87].unkD4;
+        gBattleWork.unkEC += gBattleBots[gBattleWork.unk87].rangedBonus;
     }
     if (gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[2] == 1)
         gBattleWork.unkEC += gBattleBots[gBattleWork.unk87].parts[3].unk12 >> 1;
@@ -249,16 +249,16 @@ void script_op_calc_damage(void) {
         gBattleWork.unk28[gBattleWork.unk8A].skill == 0x33)
         gBattleWork.unkEC += gBattleWork.unk28[gBattleWork.unk8A].power;
     damage_add_strengthen_parts(gBattleWork.unk87);
-    subtract_s16_floored(&gBattleWork.unkEC, gBattleBots[gBattleWork.unk88].unkD1);
+    subtract_s16_floored(&gBattleWork.unkEC, gBattleBots[gBattleWork.unk88].ironWallBonus);
     if (gBattleWork.unkDE != 0 && gBattleWork.unkDF == 0x1B)
-        subtract_s16_floored(&gBattleWork.unkEC, (s16)gBattleBots[gBattleWork.unk88].unkD8);
+        subtract_s16_floored(&gBattleWork.unkEC, (s16)gBattleBots[gBattleWork.unk88].defence);
     battle_script_advance();
 }
 
 // Opcode 0x15: Half Block guard: damage below the guard's threshold (unkD8) is nullified.
 void script_op_half_block_check(void) {
     if (gBattleWork.unkDE != 0 && gBattleWork.unkDF == 0x1D && gBattleWork.unkB8 == 0 &&
-        gBattleWork.unkEC < (s16)gBattleBots[gBattleWork.unk88].unkD8) {
+        gBattleWork.unkEC < (s16)gBattleBots[gBattleWork.unk88].defence) {
         gBattleWork.unkB8 = 2;
         gBattleWork.unkBE = 1;
     }
@@ -276,9 +276,9 @@ void script_op_full_block_check(void) {
 
 // Opcode 0x17: guess: the target counters (unkB7 = 3) damage above its threshold (unkD8).
 void script_op_counter_check(void) {
-    if ((gBattleBots[gBattleWork.unk88].unkBD & 0x10) &&
-        gBattleBots[gBattleWork.unk88].parts[gBattleBots[gBattleWork.unk88].unkDE - 1].unk11 != 0 &&
-        gBattleWork.unkB7 == 0 && gBattleWork.unkEC > (s16)gBattleBots[gBattleWork.unk88].unkD8)
+    if ((gBattleBots[gBattleWork.unk88].stateFlags & 0x10) &&
+        gBattleBots[gBattleWork.unk88].parts[gBattleBots[gBattleWork.unk88].lastAction - 1].unk11 != 0 &&
+        gBattleWork.unkB7 == 0 && gBattleWork.unkEC > (s16)gBattleBots[gBattleWork.unk88].defence)
         gBattleWork.unkB7 = 3;
     battle_script_advance();
 }
@@ -317,7 +317,7 @@ void script_op_skill_anim_start(void) {
     if (gBattleBots[gBattleWork.unk87].chosenAction <= 3)
         gBattleWork.unkF9 = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
     else
-        gBattleWork.unkF9 = gBattleBots[gBattleWork.unk87].unkA8[0] + 0x50;
+        gBattleWork.unkF9 = gBattleBots[gBattleWork.unk87].medaforce[0] + 0x50;
     gSpriteEntries[1].unk29 = 1;
     gSpriteEntries[2].unk29 = 1;
     battle_script_advance();
@@ -696,7 +696,7 @@ void script_op_damage_from_broken_parts(void) {
 
     gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk87);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].unkBA != 0) {
+        if (gBattleBots[gBattleWork.unk60 + i].present != 0) {
             for (j = 0; j <= 3; j++) {
                 if (gBattleBots[gBattleWork.unk60 + i].parts[j].unk11 == 0)
                     gBattleWork.unkEC += 10;
@@ -714,7 +714,7 @@ void script_op_target_guarding_enemy(void) {
     t = battle_find_guarding_enemy(gBattleWork.unk60);
     if (t != 0xFF) {
         gBattleBots[gBattleWork.unk87].unkE0 = t + 1;
-        gBattleBots[gBattleWork.unk87].unkE1 = gBattleBots[t].unkDE;
+        gBattleBots[gBattleWork.unk87].unkE1 = gBattleBots[t].lastAction;
     } else {
         gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk87);
         gBattleBots[gBattleWork.unk87].unkE0 = select_random_battle_target(gBattleWork.unk60) + 1;

@@ -90,7 +90,7 @@ void scout_arrows_spawn(void) {
     u32 first = battle_side_first_record(gBattleWork.unk87);
 
     for (i = 0; i < 3; i++) {
-        if (gBattleBots[first + i].unk40) {
+        if (gBattleBots[first + i].teamState) {
             gSpriteEntries[0x21 + i].unk0 = 0xC624;
             gSpriteEntries[0x21 + i].unk1C = 0;
             gSpriteEntries[0x21 + i].unk2 = gSpriteEntries[(first + i) * 4 + 0x5D].unk2;
@@ -222,7 +222,7 @@ void conceal_blink_wait(void) {
 
 // Raises the user's unkB9 by unkEC (up to 0x78): Conceal raises evasion.
 void conceal_apply_evasion(void) {
-    add_u8_capped(&gBattleBots[gBattleWork.unk87].unkB8 + 1, gBattleWork.unkEC, 0x78);
+    add_u8_capped(&gBattleBots[gBattleWork.unk87].index + 1, gBattleWork.unkEC, 0x78);
     gBattleWork.unkAA++;
 }
 
@@ -315,10 +315,10 @@ void charge_hourglass_shrink(void) {
 
 // Puts the Time status (effect A 0x26) on the target: faster CRG/RAD.
 void boost_charge_apply(void) {
-    gBattleBots[gBattleWork.unk88].unkC4 = 0x26;
-    gBattleBots[gBattleWork.unk88].unkC5 = 0;
-    gBattleBots[gBattleWork.unk88].unkC6 = clamp_1_99(gBattleWork.unkE8);
-    gBattleBots[gBattleWork.unk88].unkC7 = clamp_1_99(gBattleWork.unkEC);
+    gBattleBots[gBattleWork.unk88].buffType = 0x26;
+    gBattleBots[gBattleWork.unk88].buffPart = 0;
+    gBattleBots[gBattleWork.unk88].buffTimer = clamp_1_99(gBattleWork.unkE8);
+    gBattleBots[gBattleWork.unk88].buffAmount = clamp_1_99(gBattleWork.unkEC);
     gBattleWork.unkAA++;
 }
 
@@ -467,14 +467,14 @@ void drain_charge_hourglass_burst(void) {
 
 // Effect B 0x29 on the target (Bind: slower CRG/RAD) and effect A 0x29 on the user (Time).
 void drain_charge_apply(void) {
-    gBattleBots[gBattleWork.unk88].unkC9 = 0x29;
-    gBattleBots[gBattleWork.unk88].unkCA = 0;
-    gBattleBots[gBattleWork.unk88].unkCB = clamp_1_99(gBattleWork.unkE8);
-    gBattleBots[gBattleWork.unk88].unkCC = clamp_1_99(gBattleWork.unkEC);
-    gBattleBots[gBattleWork.unk87].unkC4 = 0x29;
-    gBattleBots[gBattleWork.unk87].unkC5 = 0;
-    gBattleBots[gBattleWork.unk87].unkC6 = clamp_1_99(gBattleWork.unkE8);
-    gBattleBots[gBattleWork.unk87].unkC7 = clamp_1_99(gBattleWork.unkEC);
+    gBattleBots[gBattleWork.unk88].statusType = 0x29;
+    gBattleBots[gBattleWork.unk88].statusPart = 0;
+    gBattleBots[gBattleWork.unk88].statusTimer = clamp_1_99(gBattleWork.unkE8);
+    gBattleBots[gBattleWork.unk88].statusAmount = clamp_1_99(gBattleWork.unkEC);
+    gBattleBots[gBattleWork.unk87].buffType = 0x29;
+    gBattleBots[gBattleWork.unk87].buffPart = 0;
+    gBattleBots[gBattleWork.unk87].buffTimer = clamp_1_99(gBattleWork.unkE8);
+    gBattleBots[gBattleWork.unk87].buffAmount = clamp_1_99(gBattleWork.unkEC);
     gBattleWork.unkAA++;
 }
 
@@ -618,7 +618,7 @@ void pushover_burst(void) {
 }
 
 void pushover_damage_init(void) {
-    if (gBattleBots[gBattleWork.unk88].unkBD & 4)
+    if (gBattleBots[gBattleWork.unk88].stateFlags & 4)
         battle_set_damage_vs_armor(gBattleWork.unk88, 0, 1);
     else
         battle_set_damage_vs_armor(gBattleWork.unk88, 0, gBattleWork.unkEC);
@@ -654,14 +654,14 @@ void pushover_apply_head_damage(void) {
 
 // guess: unkBD bit 2 set -> step 0x14, which leads to pushover_flag_target (unkBD bit 0).
 void pushover_check_target_flag(void) {
-    if (gBattleBots[gBattleWork.unk88].unkBD & 4)
+    if (gBattleBots[gBattleWork.unk88].stateFlags & 4)
         gBattleWork.unkAA++;
     else
         gBattleWork.unkAA = 0x15;
 }
 
 void pushover_flag_target(void) {
-    gBattleBots[gBattleWork.unk88].unkBD |= 1;
+    gBattleBots[gBattleWork.unk88].stateFlags |= 1;
     gBattleWork.unkAA++;
 }
 

@@ -1,6 +1,6 @@
 // Timed battle effects on the battle records gBattleBots, ticked every 32 frames by robattle_time_tick:
-// effect A (unkC4-unkC8) is AutoRecover (skill 0x1F), which restores armor to damaged parts; effect B
-// (unkC9-unkCD) is a status, of which Fire / Melt (skills 0x13 / 0x14) burn armor down to 1 each tick.
+// effect A (buffType..buffNumber) is AutoRecover (skill 0x1F), which restores armor to damaged parts; effect B
+// (statusType..statusNumber) is a status, of which Fire / Melt (skills 0x13 / 0x14) burn armor down to 1 each tick.
 // Each tick takes 4 from the frames left; at 0 the effect ends. Skill names from the ROM's skill list.
 
 #include "global.h"
@@ -15,34 +15,34 @@ void battle_tick_timed_effects(void) {
 
     gBattleWork.unk55 = 0;
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40) {
-            if (gBattleBots[i].unkC4)
+        if (gBattleBots[i].teamState) {
+            if (gBattleBots[i].buffType)
                 battle_tick_buff_effect(i);
-            if (gBattleBots[i].unkC9)
+            if (gBattleBots[i].statusType)
                 battle_tick_status_effect(i);
         }
     }
 }
 
-// AutoRecover: spreads unkC7 armor over up to 4 damaged parts; unkC8 = the total, shown as a number.
+// AutoRecover: spreads buffAmount armor over up to 4 damaged parts; buffNumber = the total, shown as a number.
 void battle_tick_buff_effect(u32 rec) {
     s32 frames;
     u32 i, part, result, done;
 
-    frames = gBattleBots[rec].unkC6 - 4;
+    frames = gBattleBots[rec].buffTimer - 4;
     if (frames <= 0) {
-        gBattleBots[rec].unkC4 = 0;
-        gBattleBots[rec].unkC5 = 0;
-        gBattleBots[rec].unkC6 = 0;
-        gBattleBots[rec].unkC7 = 0;
-        gBattleBots[rec].unkCE |= 1;
+        gBattleBots[rec].buffType = 0;
+        gBattleBots[rec].buffPart = 0;
+        gBattleBots[rec].buffTimer = 0;
+        gBattleBots[rec].buffAmount = 0;
+        gBattleBots[rec].effectShownFlags |= 1;
         gBattleWork.unk55 |= 2;
         return;
     }
-    gBattleBots[rec].unkC6 = frames;
-    if (gBattleBots[rec].unkC4 != 0x1F)
+    gBattleBots[rec].buffTimer = frames;
+    if (gBattleBots[rec].buffType != 0x1F)
         return;
-    gBattleWork.unk59 = gBattleBots[rec].unkC7;
+    gBattleWork.unk59 = gBattleBots[rec].buffAmount;
     gBattleWork.unk86 = 0;
     done = 0;
     for (i = 0; i <= 3; i++) {
@@ -58,31 +58,31 @@ void battle_tick_buff_effect(u32 rec) {
             break;
     }
     if (done) {
-        gBattleBots[rec].unkC8 = gBattleWork.unk86;
-        gBattleBots[rec].unkCE |= 4;
+        gBattleBots[rec].buffNumber = gBattleWork.unk86;
+        gBattleBots[rec].effectShownFlags |= 4;
         gBattleWork.unk55 |= 8;
     }
 }
 
-// Fire / Melt: burns unkCC armor off up to 4 parts (never below 1); unkCD = the total, shown as a number.
+// Fire / Melt: burns statusAmount armor off up to 4 parts (never below 1); statusNumber = the total, shown as a number.
 void battle_tick_status_effect(u32 rec) {
     s32 frames;
     u32 i, part, result, done;
 
-    frames = gBattleBots[rec].unkCB - 4;
+    frames = gBattleBots[rec].statusTimer - 4;
     if (frames <= 0) {
-        gBattleBots[rec].unkC9 = 0;
-        gBattleBots[rec].unkCA = 0;
-        gBattleBots[rec].unkCB = 0;
-        gBattleBots[rec].unkCC = 0;
-        gBattleBots[rec].unkCE |= 2;
+        gBattleBots[rec].statusType = 0;
+        gBattleBots[rec].statusPart = 0;
+        gBattleBots[rec].statusTimer = 0;
+        gBattleBots[rec].statusAmount = 0;
+        gBattleBots[rec].effectShownFlags |= 2;
         gBattleWork.unk55 |= 4;
         return;
     }
-    gBattleBots[rec].unkCB = frames;
-    if ((u8)(gBattleBots[rec].unkC9 - 0x13) > 1)
+    gBattleBots[rec].statusTimer = frames;
+    if ((u8)(gBattleBots[rec].statusType - 0x13) > 1)
         return;
-    gBattleWork.unk59 = gBattleBots[rec].unkCC;
+    gBattleWork.unk59 = gBattleBots[rec].statusAmount;
     gBattleWork.unk86 = 0;
     done = 0;
     for (i = 0; i <= 3; i++) {
@@ -98,8 +98,8 @@ void battle_tick_status_effect(u32 rec) {
             break;
     }
     if (done) {
-        gBattleBots[rec].unkCD = gBattleWork.unk86;
-        gBattleBots[rec].unkCE |= 8;
+        gBattleBots[rec].statusNumber = gBattleWork.unk86;
+        gBattleBots[rec].effectShownFlags |= 8;
         gBattleWork.unk55 |= 0x10;
     }
 }
@@ -144,14 +144,14 @@ static u32 find_last_part_with_armor(u32 rec) {
     return 0;
 }
 
-// Part (1-4) with more than 1 armor, starting at the status's part (unkCA, 0 = part 4) and going down.
+// Part (1-4) with more than 1 armor, starting at the status's part (statusPart, 0 = part 4) and going down.
 u32 find_burnable_part(u32 rec) {
     u32 part, i;
 
-    if (gBattleBots[rec].unkCA == 0)
+    if (gBattleBots[rec].statusPart == 0)
         part = 4;
     else
-        part = gBattleBots[rec].unkCA;
+        part = gBattleBots[rec].statusPart;
     for (i = 0; i <= 3; i++) {
         if (gBattleBots[rec].parts[part - 1].unk11 > 1)
             return part;

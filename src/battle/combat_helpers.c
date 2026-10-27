@@ -212,7 +212,7 @@ void battle_target_nearest_enemy(u32 rec) {
     if (rec <= 2) {
         best_x = 0xFF;
         for (i = 5, best = 5; i > 2; i--) {
-            if (gBattleBots[i].unk40 != 0 && gSpriteEntries[i * 4 + 0x5D].unk2 < best_x) {
+            if (gBattleBots[i].teamState != 0 && gSpriteEntries[i * 4 + 0x5D].unk2 < best_x) {
                 best_x = gSpriteEntries[i * 4 + 0x5D].unk2;
                 best = i;
             }
@@ -220,7 +220,7 @@ void battle_target_nearest_enemy(u32 rec) {
     } else {
         best_x = 0;
         for (i = 2, best = 2; i >= 0; i--) {
-            if (gBattleBots[i].unk40 != 0 && gSpriteEntries[i * 4 + 0x5D].unk2 > best_x) {
+            if (gBattleBots[i].teamState != 0 && gSpriteEntries[i * 4 + 0x5D].unk2 > best_x) {
                 best_x = gSpriteEntries[i * 4 + 0x5D].unk2;
                 best = i;
             }
@@ -364,8 +364,8 @@ void calc_battle_action_speed(u32 rec, u32 part) {
 }
 
 void apply_battle_bot_damage_reduction(u32 rec) {
-    if ((u8)(gBattleBots[rec].unkC9 - 0xD) <= 1)
-        subtract_s16_floored(&gBattleWork.unkE8, gBattleBots[rec].unkCC);
+    if ((u8)(gBattleBots[rec].statusType - 0xD) <= 1)
+        subtract_s16_floored(&gBattleWork.unkE8, gBattleBots[rec].statusAmount);
 }
 
 void accumulate_battle_speed_value(u32 rec) {
@@ -435,7 +435,7 @@ u32 check_bot_can_use_shoot_part(u32 rec, u32 part, u32 target) {
 }
 
 u32 check_bot_status_effect_4(u32 rec, u32 part, u32 target) {
-    if ((gBattleBots[target].unkC0 & 2) && gBattleBots[rec].parts[part].data[1] == 0x34)
+    if ((gBattleBots[target].guardFlags & 2) && gBattleBots[rec].parts[part].data[1] == 0x34)
         return 1;
     return 0;
 }

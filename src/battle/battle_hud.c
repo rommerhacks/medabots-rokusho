@@ -11,13 +11,13 @@ void draw_battle_bot_portraits(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[i].unk40)
+        if (gBattleBots[i].teamState)
             draw_tile_block(2, 2, 2, i * 3 + 4, REG_BG3CNT, (gBattleBots[i].parts[3].data[1] << 2) + 0x8084);
         else
             draw_tile_block(2, 2, 2, i * 3 + 4, REG_BG3CNT, 0x8230);
     }
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[i + 3].unk40)
+        if (gBattleBots[i + 3].teamState)
             draw_tile_block(2, 2, 26, i * 3 + 4, REG_BG3CNT, (gBattleBots[i + 3].parts[3].data[1] << 2) + 0x8084);
         else
             draw_tile_block(2, 2, 26, i * 3 + 4, REG_BG3CNT, 0x8230);
@@ -28,19 +28,19 @@ void get_bot_part_effective_values(u32 bot, u8 *out) {
     if (gBattleBots[bot].parts[0].unk11)
         *out++ = gBattleBots[bot].parts[0].unk17;
     else
-        *out++ = gBattleBots[bot].unk41 + 0x78;
+        *out++ = gBattleBots[bot].gender + 0x78;
     if (gBattleBots[bot].parts[1].unk11)
         *out++ = gBattleBots[bot].parts[1].unk17;
     else
-        *out++ = gBattleBots[bot].unk41 + 0x78;
+        *out++ = gBattleBots[bot].gender + 0x78;
     if (gBattleBots[bot].parts[2].unk11)
         *out++ = gBattleBots[bot].parts[2].unk17;
     else
-        *out++ = gBattleBots[bot].unk41 + 0x78;
+        *out++ = gBattleBots[bot].gender + 0x78;
     if (gBattleBots[bot].parts[3].unk11)
         *out = gBattleBots[bot].parts[3].unk17;
     else
-        *out = gBattleBots[bot].unk41 + 0x78;
+        *out = gBattleBots[bot].gender + 0x78;
 }
 
 void load_bot_part_sprite(u32 rec) {
@@ -52,7 +52,7 @@ void load_bot_part_sprite(u32 rec) {
 void load_all_bot_part_sprites(void) {
     u32 i;
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40)
+        if (gBattleBots[i].teamState)
             load_bot_part_sprite(i);
     }
 }
@@ -60,11 +60,11 @@ void load_all_bot_part_sprites(void) {
 // Team sprites face right, opponents left; flag bit 2 of unkBD turns a Medabot round.
 u32 bot_sprite_is_flipped(u32 rec) {
     if (rec <= 2) {
-        if (gBattleBots[rec].unkBD & 4)
+        if (gBattleBots[rec].stateFlags & 4)
             return 1;
         return 0;
     }
-    if (gBattleBots[rec].unkBD & 4)
+    if (gBattleBots[rec].stateFlags & 4)
         return 0;
     return 1;
 }
@@ -81,7 +81,7 @@ static void init_battle_bot_sprite(u32 rec, u32 x, u32 y) {
 void setup_all_battle_bot_sprite_positions(void) {
     u32 i;
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40) {
+        if (gBattleBots[i].teamState) {
             u32 x = 200;
             if (i <= 2)
                 x = 40;
@@ -144,10 +144,10 @@ void draw_medaforce_gauge_bar(u32 rec) {
     u32 i, full, partial;
 
     if (rec <= 2) {
-        full = scale_to_bar_fill(64, 80, gBattleBots[rec].unkC1);
+        full = scale_to_bar_fill(64, 80, gBattleBots[rec].medaforceGauge);
         partial = full & 0xFFFF;
         full >>= 16;
-        if (gBattleBots[rec].unkC1 != 0 && full == 0 && partial == 0)
+        if (gBattleBots[rec].medaforceGauge != 0 && full == 0 && partial == 0)
             partial = 1;
         for (i = 0; i < full; i++) {
             draw_tile_block(1, 1, x + 1, 17, REG_BG1CNT, 0xD208);
@@ -162,10 +162,10 @@ void draw_medaforce_gauge_bar(u32 rec) {
             x++;
         }
     } else {
-        full = scale_to_bar_fill(64, 80, gBattleBots[rec].unkC1);
+        full = scale_to_bar_fill(64, 80, gBattleBots[rec].medaforceGauge);
         partial = full & 0xFFFF;
         full >>= 16;
-        if (gBattleBots[rec].unkC1 != 0 && full == 0 && partial == 0)
+        if (gBattleBots[rec].medaforceGauge != 0 && full == 0 && partial == 0)
             partial = 1;
         for (i = 0; i < full; i++) {
             draw_tile_block(1, 1, x + 21, 17, REG_BG1CNT, 0xD208);
@@ -192,11 +192,11 @@ u32 scale_to_bar_fill(u32 a, u32 b, u32 c) {
 
 void draw_medaforce_gauge_value(u32 rec) {
     if (rec <= 2) {
-        draw_number_bgcnt(gBattleBots[rec].unkC1, 4, 18, 2, REG_BG1CNT, 0xD220);
+        draw_number_bgcnt(gBattleBots[rec].medaforceGauge, 4, 18, 2, REG_BG1CNT, 0xD220);
         draw_tile_block(1, 1, 6, 18, REG_BG1CNT, 0xD21A);
         draw_number_bgcnt(80, 7, 18, 2, REG_BG1CNT, 0xD220);
     } else {
-        draw_number_bgcnt(gBattleBots[rec].unkC1, 24, 18, 2, REG_BG1CNT, 0xD220);
+        draw_number_bgcnt(gBattleBots[rec].medaforceGauge, 24, 18, 2, REG_BG1CNT, 0xD220);
         draw_tile_block(1, 1, 26, 18, REG_BG1CNT, 0xD21A);
         draw_number_bgcnt(80, 27, 18, 2, REG_BG1CNT, 0xD220);
     }

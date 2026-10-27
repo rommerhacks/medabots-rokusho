@@ -364,16 +364,16 @@ void medaforce_clear_hit_list(void) {
 
 void bot_clear_effects(u32 rec, u32 flags) {
     if (flags & 1) {
-        gBattleBots[rec].unkC9 = 0;
-        gBattleBots[rec].unkCA = 0;
-        gBattleBots[rec].unkCB = 0;
-        gBattleBots[rec].unkCC = 0;
+        gBattleBots[rec].statusType = 0;
+        gBattleBots[rec].statusPart = 0;
+        gBattleBots[rec].statusTimer = 0;
+        gBattleBots[rec].statusAmount = 0;
     }
     if (flags & 2) {
-        gBattleBots[rec].unkC4 = 0;
-        gBattleBots[rec].unkC5 = 0;
-        gBattleBots[rec].unkC6 = 0;
-        gBattleBots[rec].unkC7 = 0;
+        gBattleBots[rec].buffType = 0;
+        gBattleBots[rec].buffPart = 0;
+        gBattleBots[rec].buffTimer = 0;
+        gBattleBots[rec].buffAmount = 0;
     }
 }
 

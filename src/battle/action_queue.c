@@ -13,20 +13,20 @@ u32 battle_queue_bots_at_lines(void) {
 
     if (gGameWork.unk89 != 1 || gUnk_03000B90 == 0) {
         for (i = 0; i <= 5; i++) {
-            if (gBattleBots[i].unk40) {
+            if (gBattleBots[i].teamState) {
                 a += battle_bot_at_front_line(i, 0);
                 b += battle_bot_at_home_line(i, 0);
             }
         }
     } else {
         for (i = 3; i <= 5; i++) {
-            if (gBattleBots[i].unk40) {
+            if (gBattleBots[i].teamState) {
                 a += battle_bot_at_front_line(i, 0);
                 b += battle_bot_at_home_line(i, 0);
             }
         }
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[i].unk40) {
+            if (gBattleBots[i].teamState) {
                 a += battle_bot_at_front_line(i, 0);
                 b += battle_bot_at_home_line(i, 0);
             }
@@ -40,7 +40,7 @@ u32 battle_queue_bots_at_lines(void) {
 u32 battle_bot_at_front_line(u32 rec, u32 peek) {
     u32 reached = 0;
 
-    if (!(gBattleBots[rec].unkBD & 4)) {
+    if (!(gBattleBots[rec].stateFlags & 4)) {
         if (rec <= 2) {
             if (gSpriteEntries[rec * 4 + 0x5D].unk2 == 0x68)
                 reached = 1;
@@ -57,7 +57,7 @@ u32 battle_bot_at_front_line(u32 rec, u32 peek) {
 u32 battle_bot_at_home_line(u32 rec, u32 peek) {
     u32 reached = 0;
 
-    if (gBattleBots[rec].unkBD & 4) {
+    if (gBattleBots[rec].stateFlags & 4) {
         if (rec <= 2) {
             if (gSpriteEntries[rec * 4 + 0x5D].unk2 == 0x28)
                 reached = 1;
@@ -90,7 +90,7 @@ void iterate_bots_setup_battle_sprites(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40)
+        if (gBattleBots[i].teamState)
             setup_battle_bot_sprite_group(i, gSpriteEntries[0x5D + i * 4].unk2, gSpriteEntries[0x5D + i * 4].unk4 - 4);
     }
 }
@@ -344,7 +344,7 @@ u32 any_bot_extra_move_pending(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40 && gBattleBots[i].unkBF)
+        if (gBattleBots[i].teamState && gBattleBots[i].unkBF)
             return 1;
     }
     return 0;

@@ -19,7 +19,7 @@ void init_battle_bot_sprites(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40)
+        if (gBattleBots[i].teamState)
             init_battle_sprite_entry_0801BC04(i);
         else
             clear_sprite_table_mask(0x72 + i, 1);
@@ -130,7 +130,7 @@ void increment_medal_skill_level(u32 rec) {
     if (gBattleWork.unk164 == 0)
         return;
     if (gBattleBots[rec].chosenAction > 3)
-        skill = gBattleBots[rec].unkA8[1];
+        skill = gBattleBots[rec].medaforce[1];
     else
         skill = gBattleBots[rec].parts[gBattleBots[rec].chosenAction - 1].data[2];
     if (gBattleBots[rec].medal.skillLevel[skill] == 100) {

@@ -369,7 +369,7 @@ void trap_apply(void) {
         if (gBattleWork.unk51 != 2) {
             add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].durability, gBattleWork.unkE8 >> 1, 0xFF);
             add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].power,
-                          (gBattleWork.unkEC + gBattleBots[gBattleWork.unk87].unkD5) >> 1, 0xFF);
+                          (gBattleWork.unkEC + gBattleBots[gBattleWork.unk87].trapBonus) >> 1, 0xFF);
             gBattleWork.unkAA++;
         } else {
             gBattleWork.unk28[gBattleWork.unk8A].durability++;
@@ -384,7 +384,7 @@ void trap_apply(void) {
         if (gBattleWork.unk51 != 2) {
             add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].durability, gBattleWork.unkE8, 0xFF);
             add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].power,
-                          gBattleWork.unkEC + gBattleBots[gBattleWork.unk87].unkD5, 0xFF);
+                          gBattleWork.unkEC + gBattleBots[gBattleWork.unk87].trapBonus, 0xFF);
         } else {
             gBattleWork.unk28[gBattleWork.unk8A].durability++;
         }
@@ -618,7 +618,7 @@ void break_form_shatter_init(void) {
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x23], 0x23);
     set_sprite_hidden_flags(0x21, 3);
     for (i = 0; i < 6; i++) {
-        if (gBattleBots[i].unk40) {
+        if (gBattleBots[i].teamState) {
             gSpriteEntries[0x5A + i * 4].unk23 = 0;
             gSpriteEntries[0x5B + i * 4].unk23 = 0;
             gSpriteEntries[0x5C + i * 4].unk23 = 0;
@@ -635,7 +635,7 @@ void break_form_shatter(void) {
     gGameWork.unk86++;
     bg3_shake_step(gGameWork.unk86);
     for (i = 0; i < 6; i++) {
-        if (gBattleBots[i].unk40) {
+        if (gBattleBots[i].teamState) {
             advance_sprite_anim_frame(0x5A + i * 4, 0);
             advance_sprite_anim_frame(0x5B + i * 4, 0);
             advance_sprite_anim_frame(0x5C + i * 4, 0);
@@ -647,7 +647,7 @@ void break_form_shatter(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x23], 0x23);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         for (i = 0; i < 6; i++) {
-            if (gBattleBots[i].unk40) {
+            if (gBattleBots[i].teamState) {
                 gSpriteEntries[0x5A + i * 4].unk23 = 0;
                 gSpriteEntries[0x5B + i * 4].unk23 = 0;
                 gSpriteEntries[0x5C + i * 4].unk23 = 0;
@@ -684,7 +684,7 @@ void stability_begin(void) {
     if (decrement_battle_timer_and_check_zero()) {
         gBattleWork.unkA6 = 0x1A;
         gBattleWork.unkAA++;
-    } else if (!gBattleBots[gBattleWork.unk88].unkC9) {
+    } else if (!gBattleBots[gBattleWork.unk88].statusType) {
         gBattleWork.unkA6 = 0x70;
         gBattleWork.unkAA++;
     } else {
@@ -724,10 +724,10 @@ void stability_sprite_fly(void) {
 
 // Stability cures the target's negative status (unkC9-unkCC, set by Impair, Confusion...).
 void stability_apply(void) {
-    gBattleBots[gBattleWork.unk88].unkC9 = 0;
-    gBattleBots[gBattleWork.unk88].unkCA = 0;
-    gBattleBots[gBattleWork.unk88].unkCB = 0;
-    gBattleBots[gBattleWork.unk88].unkCC = 0;
+    gBattleBots[gBattleWork.unk88].statusType = 0;
+    gBattleBots[gBattleWork.unk88].statusPart = 0;
+    gBattleBots[gBattleWork.unk88].statusTimer = 0;
+    gBattleBots[gBattleWork.unk88].statusAmount = 0;
     gSpriteEntries[gBattleWork.unk88 * 3 + 0x47].unk0 |= 0x8220;
     gSpriteEntries[gBattleWork.unk88 * 3 + 0x47].unk9 = 0x40;
     gSpriteEntries[gBattleWork.unk88 * 3 + 0x47].unk8 = 0x40;
@@ -943,9 +943,9 @@ void defence_shield_anim_wait(void) {
 
 // Marks the user as guarding (unkBD bit 3) with this skill (Defence, Full Block or Half Block).
 void defence_apply(void) {
-    gBattleBots[gBattleWork.unk87].unkBD |= 8;
-    gBattleBots[gBattleWork.unk87].unkDF = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
-    gBattleBots[gBattleWork.unk87].unkD8 = 0;
+    gBattleBots[gBattleWork.unk87].stateFlags |= 8;
+    gBattleBots[gBattleWork.unk87].lastActionSkill = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
+    gBattleBots[gBattleWork.unk87].defence = 0;
     add_u8_capped(&gBattleBots[gBattleWork.unk87].moveSubpixel + 1, gBattleWork.unkEC, 0xFF);
     gBattleWork.unkAA++;
 }
@@ -1081,10 +1081,10 @@ void heal_ring_spin(void) {
 
 // Gives the target the AutoRecover status (unkC4 = skill 31) with this action's power.
 void autorecover_apply(void) {
-    gBattleBots[gBattleWork.unk88].unkC4 = 0x1F;
-    gBattleBots[gBattleWork.unk88].unkC5 = 0;
-    gBattleBots[gBattleWork.unk88].unkC6 = clamp_1_99(gBattleWork.unkE8);
-    gBattleBots[gBattleWork.unk88].unkC7 = clamp_1_99(gBattleWork.unkEC);
+    gBattleBots[gBattleWork.unk88].buffType = 0x1F;
+    gBattleBots[gBattleWork.unk88].buffPart = 0;
+    gBattleBots[gBattleWork.unk88].buffTimer = clamp_1_99(gBattleWork.unkE8);
+    gBattleBots[gBattleWork.unk88].buffAmount = clamp_1_99(gBattleWork.unkEC);
     gBattleWork.unkAA++;
 }
 
@@ -1164,10 +1164,10 @@ void reactivate_ring_spawn(void) {
 
 // Revives a target whose head is broken: refills the head and redraws its parts.
 void reactivate_apply(void) {
-    gBattleBots[gBattleWork.unk88].unk40 = 3;
+    gBattleBots[gBattleWork.unk88].teamState = 3;
     battle_calc_damage_split(gBattleWork.unk88, 0, gBattleWork.unkEC);
     gBattleBots[gBattleWork.unk88].parts[0].unk11 = gBattleWork.unkC8;
-    gBattleBots[gBattleWork.unk88].unkBA = 1;
+    gBattleBots[gBattleWork.unk88].present = 1;
     load_all_bot_part_sprites();
     iterate_bots_setup_battle_sprites();
     gBattleWork.unkAA++;

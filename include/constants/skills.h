@@ -76,7 +76,7 @@ enum {
     SKILL_LEGS_SEA,
 };
 
-// Skill types (part data[2]; a Medal's Aim, medal.unk6). Names from the list at gUnk_083B6EC8.
+// Skill types (part data[2]; a Medal's Aim, medal.aimSkillType). Names from the list at gUnk_083B6EC8.
 // Grap Trap catches Strike / Berserk attackers, Shot Trap Shoot / Aim Shot ones.
 enum {
     SKILL_TYPE_STRIKE,

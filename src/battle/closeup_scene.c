@@ -163,12 +163,12 @@ void side_add_action_point(void) {
 void charge_target_medaforce(void) {
     u32 add;
     u32 v;
-    if (gBattleBots[gBattleWork.unk88].unkC0 & 8)
+    if (gBattleBots[gBattleWork.unk88].guardFlags & 8)
         add = 0x28;
     else
         add = 0x14;
-    v = gBattleBots[gBattleWork.unk88].unkC1 + add;
+    v = gBattleBots[gBattleWork.unk88].medaforceGauge + add;
     if (v > 0x4F)
         v = 0x50;
-    gBattleBots[gBattleWork.unk88].unkC1 = v;
+    gBattleBots[gBattleWork.unk88].medaforceGauge = v;
 }

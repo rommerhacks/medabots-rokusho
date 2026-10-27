@@ -69,42 +69,42 @@ u32 clamp_1_99(u32 a) {
 
 void battle_inflict_status(u32 rec, u32 skill, s32 a, u32 b) {
     if (skill - 0xD <= 1) {
-        gBattleBots[rec].unkC9 = skill;
-        gBattleBots[rec].unkCA = gBattleWork.unk8B + 1;
-        gBattleBots[rec].unkCB = clamp_1_99(a);
-        gBattleBots[rec].unkCC = clamp_1_99(b * 2);
+        gBattleBots[rec].statusType = skill;
+        gBattleBots[rec].statusPart = gBattleWork.unk8B + 1;
+        gBattleBots[rec].statusTimer = clamp_1_99(a);
+        gBattleBots[rec].statusAmount = clamp_1_99(b * 2);
     } else if (skill - 0xF <= 1) {
-        gBattleBots[rec].unkC9 = skill;
-        gBattleBots[rec].unkCA = gBattleWork.unk8B + 1;
-        gBattleBots[rec].unkCB = clamp_1_99(b >> 3);
-        gBattleBots[rec].unkCC = 0;
+        gBattleBots[rec].statusType = skill;
+        gBattleBots[rec].statusPart = gBattleWork.unk8B + 1;
+        gBattleBots[rec].statusTimer = clamp_1_99(b >> 3);
+        gBattleBots[rec].statusAmount = 0;
     } else if (skill - 0x11 <= 1) {
-        gBattleBots[rec].unkC9 = skill;
-        gBattleBots[rec].unkCA = gBattleWork.unk8B + 1;
-        gBattleBots[rec].unkCB = clamp_1_99(a);
-        gBattleBots[rec].unkCC = clamp_1_99(b >> 2);
+        gBattleBots[rec].statusType = skill;
+        gBattleBots[rec].statusPart = gBattleWork.unk8B + 1;
+        gBattleBots[rec].statusTimer = clamp_1_99(a);
+        gBattleBots[rec].statusAmount = clamp_1_99(b >> 2);
     } else if (skill - 0x13 <= 1) {
-        gBattleBots[rec].unkC9 = skill;
-        gBattleBots[rec].unkCA = gBattleWork.unk8B + 1;
-        gBattleBots[rec].unkCB = clamp_1_99(a);
-        gBattleBots[rec].unkCC = clamp_1_99(b >> 1);
+        gBattleBots[rec].statusType = skill;
+        gBattleBots[rec].statusPart = gBattleWork.unk8B + 1;
+        gBattleBots[rec].statusTimer = clamp_1_99(a);
+        gBattleBots[rec].statusAmount = clamp_1_99(b >> 1);
     } else {
-        gBattleBots[rec].unkC9 = skill;
-        gBattleBots[rec].unkCA = gBattleWork.unk8B;
-        gBattleBots[rec].unkCB = clamp_1_99(a);
-        gBattleBots[rec].unkCC = clamp_1_99(b);
+        gBattleBots[rec].statusType = skill;
+        gBattleBots[rec].statusPart = gBattleWork.unk8B;
+        gBattleBots[rec].statusTimer = clamp_1_99(a);
+        gBattleBots[rec].statusAmount = clamp_1_99(b);
     }
 }
 
 void reset_battle_bot_state(u32 rec) {
-    gBattleBots[rec].unk40 = 0;
+    gBattleBots[rec].teamState = 0;
     gBattleBots[rec].parts[0].unk11 = 0;
-    gBattleBots[rec].unkB9 = 0;
-    gBattleBots[rec].unkBA = 2;
-    gBattleBots[rec].unkBC = 0;
-    gBattleBots[rec].unkBD &= 0xE4;
-    gBattleBots[rec].unkBC = 0;
-    mem_fill8(&gBattleBots[rec].unkC4, 0xC, 0);
+    gBattleBots[rec].evasionBonus = 0;
+    gBattleBots[rec].present = 2;
+    gBattleBots[rec].hitFlags = 0;
+    gBattleBots[rec].stateFlags &= 0xE4;
+    gBattleBots[rec].hitFlags = 0;
+    mem_fill8(&gBattleBots[rec].buffType, 0xC, 0);
     mem_fill8(&gBattleBots[rec].unkDC, 8, 0);
 }
 
@@ -371,15 +371,15 @@ u8 pick_random_change_part(u32 a, u32 kind) {
 
 void medaforce_calc_success(u32 rec) {
     gBattleWork.unkE8 = 0;
-    gBattleWork.unkE8 = gBattleBots[rec].unkA8[3];
+    gBattleWork.unkE8 = gBattleBots[rec].medaforce[3];
     gBattleWork.unkE8 += calc_bot_matching_part_power(rec);
     gBattleWork.unkE8 += rng_next_byte() & 7;
-    gBattleWork.unkE8 += gBattleBots[rec].medal.skillLevel[gBattleBots[rec].unkA8[1]];
+    gBattleWork.unkE8 += gBattleBots[rec].medal.skillLevel[gBattleBots[rec].medaforce[1]];
 }
 
 void medaforce_calc_damage(u32 rec) {
     gBattleWork.unkEC = gBattleWork.unkE8 >> 3;
-    gBattleWork.unkEC += gBattleBots[rec].unkA8[4];
+    gBattleWork.unkEC += gBattleBots[rec].medaforce[4];
     if (gBattleWork.unkEC == 0)
         gBattleWork.unkEC = 1;
 }
@@ -406,9 +406,9 @@ u32 battle_find_guarding_enemy(u32 base) {
     i = rng_random_slot();
     dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
-        if (gBattleBots[base + i].unk40 &&
-            ((gBattleBots[base + i].unkBD & 8) || (gBattleBots[base + i].unkBD & 0x10)) &&
-            gBattleBots[base + i].parts[gBattleBots[base + i].unkDE - 1].unk11)
+        if (gBattleBots[base + i].teamState &&
+            ((gBattleBots[base + i].stateFlags & 8) || (gBattleBots[base + i].stateFlags & 0x10)) &&
+            gBattleBots[base + i].parts[gBattleBots[base + i].lastAction - 1].unk11)
             return base + i;
         if (dir) {
             if (++i > 2)
@@ -428,7 +428,8 @@ u32 battle_find_enemy_same_legs(u32 base, u32 rec) {
     i = rng_random_slot();
     dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
-        if (gBattleBots[base + i].unk40 && gBattleBots[base + i].parts[3].data[1] == gBattleBots[rec].parts[3].data[1])
+        if (gBattleBots[base + i].teamState &&
+            gBattleBots[base + i].parts[3].data[1] == gBattleBots[rec].parts[3].data[1])
             return base + i;
         if (dir) {
             if (++i > 2)

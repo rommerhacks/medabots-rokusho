@@ -139,7 +139,8 @@ void part_select_draw_skill_type(void) {
         if (k <= 3) {
             if (gBattleBots[gBattleWork.unk80].parts[k - 1].unk11 == 0)
                 memcpy_bytes_08041D04(gBattleMenuTexts[0], gGameWork.unk9E, 14);
-            else if (gBattleBots[gBattleWork.unk80].unkC9 == 0x2B && k == gBattleBots[gBattleWork.unk80].unkCA)
+            else if (gBattleBots[gBattleWork.unk80].statusType == 0x2B &&
+                     k == gBattleBots[gBattleWork.unk80].statusPart)
                 memcpy_bytes_08041D04(gBattleMenuTexts[1], gGameWork.unk9E, 14);
             else if (part_skill_is_passive(gBattleWork.unk80, gBattleWork.unk82 - 1))
                 memcpy_bytes_08041D04(gBattleMenuTexts[1], gGameWork.unk9E, 14);
@@ -165,7 +166,8 @@ void part_select_blink_status(void) {
             if (gBattleBots[gBattleWork.unk80].parts[k - 1].unk11 == 0) {
                 memcpy_bytes_08041D04(gBattleMenuTexts[0], gGameWork.unk9E, 14);
                 show = 1;
-            } else if (gBattleBots[gBattleWork.unk80].unkC9 == 0x2B && k == gBattleBots[gBattleWork.unk80].unkCA) {
+            } else if (gBattleBots[gBattleWork.unk80].statusType == 0x2B &&
+                       k == gBattleBots[gBattleWork.unk80].statusPart) {
                 memcpy_bytes_08041D04(gBattleMenuTexts[1], gGameWork.unk9E, 14);
                 show = 1;
             } else if (part_skill_is_passive(gBattleWork.unk80, gBattleWork.unk82 - 1)) {

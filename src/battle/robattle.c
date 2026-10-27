@@ -842,9 +842,9 @@ void robattle_turn_next_action(void) {
     battle_queue_take_head();
     rec = gBattleBots;
     rec += gBattleWork.unk87;
-    if (rec->unk40 == 0) {
+    if (rec->teamState == 0) {
         battle_queue_pop();
-    } else if ((flag = rec->unkBD & 4)) {
+    } else if ((flag = rec->stateFlags & 4)) {
         gGameSubState = 0x47;
     } else {
         iterate_bots_setup_battle_sprites();
@@ -856,7 +856,7 @@ void robattle_turn_next_action(void) {
 // Sub-state 0x46 (guess: entered when game state 8 finishes an action): next rotation entry, back to 0x45.
 void robattle_action_finished(void) {
     update_all_battle_status_sprites();
-    gBattleBots[gBattleWork.unk87].unkBD ^= 4;
+    gBattleBots[gBattleWork.unk87].stateFlags ^= 4;
     iterate_bots_setup_battle_sprites();
     battle_queue_pop();
     battle_bot_advance_rotation(gBattleWork.unk87);
@@ -873,7 +873,7 @@ void robattle_action_finished(void) {
 void robattle_bot_ready_for_command(void) {
     update_all_battle_status_sprites();
     battle_bots_update_walk_anims();
-    gBattleBots[gBattleWork.unk87].unkBD ^= 4;
+    gBattleBots[gBattleWork.unk87].stateFlags ^= 4;
     setup_battle_bot_sprite_group(gBattleWork.unk87, gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2,
                                   gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 - 4);
     battle_queue_pop();
@@ -883,11 +883,11 @@ void robattle_bot_ready_for_command(void) {
             process_bot_battle_turn(gBattleWork.unk87);
             gGameSubState = 0x45;
         } else {
-            if (gBattleBots[gBattleWork.unk87].unkC9 == 0x2C)
+            if (gBattleBots[gBattleWork.unk87].statusType == 0x2C)
                 process_bot_battle_turn(gBattleWork.unk87);
             gGameSubState = 0xA0;
         }
-    } else if (gBattleBots[gBattleWork.unk87].unkC9 == 0x2C) {
+    } else if (gBattleBots[gBattleWork.unk87].statusType == 0x2C) {
         process_bot_battle_turn(gBattleWork.unk87);
         count_bot_skill_use(gBattleWork.unk87);
         if (gGameWork.unk89 != 1)
@@ -924,7 +924,7 @@ void robattle_bots_extra_move(void) {
         struct BattleBot *rec = gBattleBots;
 
         rec += i;
-        if (rec->unk40 && rec->unkBF) {
+        if (rec->teamState && rec->unkBF) {
             u32 a, b;
 
             rec->moveDelay = 8;
@@ -949,7 +949,7 @@ void robattle_effect_a_end_init(void) {
     update_all_battle_status_sprites();
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40 && (gBattleBots[i].unkCE & 1)) {
+        if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 1)) {
             gSpriteEntries[0x46 + i * 3].unk0 |= 0x8220;
             gSpriteEntries[0x46 + i * 3].unk9 = 0x40;
             gSpriteEntries[0x46 + i * 3].unk8 = 0x40;
@@ -964,12 +964,12 @@ void robattle_effect_a_end_anim(void) {
 
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40 && (gBattleBots[i].unkCE & 1)) {
+        if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 1)) {
             gSpriteEntries[0x46 + i * 3].unk0 |= 0x8000;
             gSpriteEntries[0x46 + i * 3].unk9 += 4;
             if ((gSpriteEntries[0x46 + i * 3].unk8 -= 4) == 4) {
                 gBattleWork.unk55 &= ~2;
-                gBattleBots[i].unkCE &= ~1;
+                gBattleBots[i].effectShownFlags &= ~1;
                 clear_battle_sprite_slot(0x46 + i * 3, 1);
             }
         }
@@ -984,7 +984,7 @@ void robattle_effect_b_end_init(void) {
     update_all_battle_status_sprites();
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40 && (gBattleBots[i].unkCE & 2)) {
+        if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 2)) {
             gSpriteEntries[0x47 + i * 3].unk0 |= 0x8220;
             gSpriteEntries[0x47 + i * 3].unk9 = 0x40;
             gSpriteEntries[0x47 + i * 3].unk8 = 0x40;
@@ -999,12 +999,12 @@ void robattle_effect_b_end_anim(void) {
 
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40 && (gBattleBots[i].unkCE & 2)) {
+        if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 2)) {
             gSpriteEntries[0x47 + i * 3].unk0 |= 0x8000;
             gSpriteEntries[0x47 + i * 3].unk9 += 4;
             if ((gSpriteEntries[0x47 + i * 3].unk8 -= 4) == 4) {
                 gBattleWork.unk55 &= ~4;
-                gBattleBots[i].unkCE &= ~2;
+                gBattleBots[i].effectShownFlags &= ~2;
                 clear_battle_sprite_slot(0x47 + i * 3, 1);
             }
         }
@@ -1021,8 +1021,8 @@ void robattle_effect_a_number_init(void) {
     update_all_battle_status_sprites();
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40 && (gBattleBots[i].unkCE & 4)) {
-            set_display_digit_type(&gGameWork.unkEE, gBattleBots[i].unkC8, 0);
+        if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 4)) {
+            set_display_digit_type(&gGameWork.unkEE, gBattleBots[i].buffNumber, 0);
             battle_number_popup_init(&gGameWork.unkEE, i);
         }
     }
@@ -1036,13 +1036,13 @@ void robattle_effect_a_number_update(void) {
 
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40 && (gBattleBots[i].unkCE & 4))
+        if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 4))
             battle_number_popup_update(i);
     }
     if (++gGameWork.unk84 == 90) {
         for (i = 0; i <= 5; i++) {
-            if (gBattleBots[i].unk40 && (gBattleBots[i].unkCE & 4)) {
-                gBattleBots[i].unkCE &= ~4;
+            if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 4)) {
+                gBattleBots[i].effectShownFlags &= ~4;
                 clear_battle_sprite_slot(10 + i * 4, 3);
             }
         }
@@ -1057,8 +1057,8 @@ void robattle_effect_b_number_init(void) {
     update_all_battle_status_sprites();
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40 && (gBattleBots[i].unkCE & 8)) {
-            set_display_digit_type(&gGameWork.unkEE, gBattleBots[i].unkCD, 1);
+        if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 8)) {
+            set_display_digit_type(&gGameWork.unkEE, gBattleBots[i].statusNumber, 1);
             battle_number_popup_init(&gGameWork.unkEE, i);
         }
     }
@@ -1072,13 +1072,13 @@ void robattle_effect_b_number_update(void) {
 
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].unk40 && (gBattleBots[i].unkCE & 8))
+        if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 8))
             battle_number_popup_update(i);
     }
     if (++gGameWork.unk84 == 90) {
         for (i = 0; i <= 5; i++) {
-            if (gBattleBots[i].unk40 && (gBattleBots[i].unkCE & 8)) {
-                gBattleBots[i].unkCE &= ~8;
+            if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 8)) {
+                gBattleBots[i].effectShownFlags &= ~8;
                 clear_battle_sprite_slot(10 + i * 4, 3);
             }
         }

@@ -2018,7 +2018,7 @@ static void team_select_link_load_opponents(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[i + 3].unk40)
+        if (gBattleBots[i + 3].teamState)
             gBattleWork.unk5B++;
     }
     battle_bots_load_parts(3, gBattleWork.unk5B);

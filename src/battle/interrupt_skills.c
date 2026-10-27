@@ -116,18 +116,18 @@ void interrupt_cross_shake(void) {
 }
 
 void impair_apply(void) {
-    gBattleBots[gBattleWork.unk88].unkC9 = 0x2B;
-    gBattleBots[gBattleWork.unk88].unkCB = clamp_1_99(gBattleWork.unkE8);
-    gBattleBots[gBattleWork.unk88].unkCC = clamp_1_99(gBattleWork.unkEC);
+    gBattleBots[gBattleWork.unk88].statusType = 0x2B;
+    gBattleBots[gBattleWork.unk88].statusTimer = clamp_1_99(gBattleWork.unkE8);
+    gBattleBots[gBattleWork.unk88].statusAmount = clamp_1_99(gBattleWork.unkEC);
     switch (gBattleWork.unk8B) {
     case 1:
-        gBattleBots[gBattleWork.unk88].unkCA = 2;
+        gBattleBots[gBattleWork.unk88].statusPart = 2;
         break;
     case 2:
-        gBattleBots[gBattleWork.unk88].unkCA = 3;
+        gBattleBots[gBattleWork.unk88].statusPart = 3;
         break;
     default:
-        gBattleBots[gBattleWork.unk88].unkCA = 1;
+        gBattleBots[gBattleWork.unk88].statusPart = 1;
         break;
     }
     gBattleWork.unkAA++;
@@ -227,10 +227,10 @@ void confusion_marks_spawn(void) {
 
 void confusion_apply(void) {
     clear_battle_sprite_slot(0x21, 1);
-    gBattleBots[gBattleWork.unk88].unkC9 = 0x2C;
-    gBattleBots[gBattleWork.unk88].unkCA = 0;
-    gBattleBots[gBattleWork.unk88].unkCB = clamp_1_99(gBattleWork.unkE8);
-    gBattleBots[gBattleWork.unk88].unkCC = clamp_1_99(gBattleWork.unkEC);
+    gBattleBots[gBattleWork.unk88].statusType = 0x2C;
+    gBattleBots[gBattleWork.unk88].statusPart = 0;
+    gBattleBots[gBattleWork.unk88].statusTimer = clamp_1_99(gBattleWork.unkE8);
+    gBattleBots[gBattleWork.unk88].statusAmount = clamp_1_99(gBattleWork.unkEC);
     gBattleWork.unkAA++;
 }
 
@@ -453,13 +453,13 @@ void no_escape_defense_icon_spawn(void) {
 }
 
 void no_escape_defense_apply(void) {
-    gBattleBots[gBattleWork.unk88].unkCA = 0;
-    gBattleBots[gBattleWork.unk88].unkCB = clamp_1_99(gBattleWork.unkE8);
-    gBattleBots[gBattleWork.unk88].unkCC = clamp_1_99(gBattleWork.unkEC);
+    gBattleBots[gBattleWork.unk88].statusPart = 0;
+    gBattleBots[gBattleWork.unk88].statusTimer = clamp_1_99(gBattleWork.unkE8);
+    gBattleBots[gBattleWork.unk88].statusAmount = clamp_1_99(gBattleWork.unkEC);
     if (gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1] == 0x2E)
-        gBattleBots[gBattleWork.unk88].unkC9 = 0x2E;
+        gBattleBots[gBattleWork.unk88].statusType = 0x2E;
     else
-        gBattleBots[gBattleWork.unk88].unkC9 = 0x2F;
+        gBattleBots[gBattleWork.unk88].statusType = 0x2F;
     gBattleWork.unkAA++;
 }
 
@@ -483,7 +483,7 @@ void forcedrain_begin(void) {
     if (decrement_battle_timer_and_check_zero()) {
         gBattleWork.unkA6 = 0x1A;
         gBattleWork.unkAA++;
-    } else if (gBattleBots[gBattleWork.unk88].unkC1 == 0) {
+    } else if (gBattleBots[gBattleWork.unk88].medaforceGauge == 0) {
         gBattleWork.unkA6 = 0x74;
         gBattleWork.unkAA++;
     } else {
@@ -514,12 +514,12 @@ void forcedrain_glass_spawn(void) {
 // Drains up to unkEC Medaforce from the target and gives it to the user (doubled when unkC0 bit 3 is set);
 // the gauge steps run on the target first (unk87 swapped, restored by forcedrain_glass_return).
 void forcedrain_calc(void) {
-    calc_drain_amount(gBattleBots[gBattleWork.unk88].unkC1, gBattleWork.unkEC);
+    calc_drain_amount(gBattleBots[gBattleWork.unk88].medaforceGauge, gBattleWork.unkEC);
     gBattleWork.unk51 = gBattleWork.unkC8;
-    if (gBattleBots[gBattleWork.unk87].unkC0 & 8)
-        calc_fill_amount(gBattleBots[gBattleWork.unk87].unkC1, 0x50, gBattleWork.unk51 * 2);
+    if (gBattleBots[gBattleWork.unk87].guardFlags & 8)
+        calc_fill_amount(gBattleBots[gBattleWork.unk87].medaforceGauge, 0x50, gBattleWork.unk51 * 2);
     else
-        calc_fill_amount(gBattleBots[gBattleWork.unk87].unkC1, 0x50, gBattleWork.unk51);
+        calc_fill_amount(gBattleBots[gBattleWork.unk87].medaforceGauge, 0x50, gBattleWork.unk51);
     gBattleWork.unk52 = gBattleWork.unkC8;
     gBattleWork.unk64[0] = gBattleWork.unk87;
     gBattleWork.unk87 = gBattleWork.unk88;
@@ -743,9 +743,9 @@ void counter_attack_glove_pulse_shrink(void) {
 // Arms the counter on the user: unkBD bit 4, unkDF = the skill id, unkD8 = the part's data[6].
 void counter_attack_apply(void) {
     clear_battle_sprite_slot(0x21, 1);
-    gBattleBots[gBattleWork.unk87].unkBD |= 0x10;
-    gBattleBots[gBattleWork.unk87].unkDF = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
-    gBattleBots[gBattleWork.unk87].unkD8 = 0;
+    gBattleBots[gBattleWork.unk87].stateFlags |= 0x10;
+    gBattleBots[gBattleWork.unk87].lastActionSkill = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
+    gBattleBots[gBattleWork.unk87].defence = 0;
     add_u8_capped(&gBattleBots[gBattleWork.unk87].moveSubpixel + 1,
                   gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[6], 0xFF);
     gBattleWork.unkAA++;

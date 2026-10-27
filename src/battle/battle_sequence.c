@@ -220,7 +220,7 @@ void battle_seq_cmd_bg_effect(void) {
     if (gBattleBots[gBattleWork.unk87].chosenAction <= 3)
         skill = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
     else
-        skill = gBattleBots[gBattleWork.unk87].unkA8[0] + 0x50;
+        skill = gBattleBots[gBattleWork.unk87].medaforce[0] + 0x50;
     load_battle_entity_palette(skill, gBattleWork.unk102[4], 9);
     gSpriteEntries[4].unk2E = gBattleWork.unk102[0];
     gSpriteEntries[4].unk2F = gBattleWork.unk102[1];
@@ -316,7 +316,7 @@ void battle_seq_cmd_actor_move(void) {
 
 // Opcode 0x12: condition = target unkBC bit 5 (guess: evaded onto its strongest part).
 void battle_seq_cmd_test_evaded(void) {
-    u8 f = gBattleBots[gBattleWork.unk88].unkBC & 0x20;
+    u8 f = gBattleBots[gBattleWork.unk88].hitFlags & 0x20;
     if (f)
         gBattleWork.unkFD = 1;
     else
@@ -518,7 +518,7 @@ void battle_seq_cmd_bg_sweep(void) {
     if (gBattleBots[gBattleWork.unk87].chosenAction <= 3)
         skill = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
     else
-        skill = gBattleBots[gBattleWork.unk87].unkA8[0] + 0x50;
+        skill = gBattleBots[gBattleWork.unk87].medaforce[0] + 0x50;
     load_battle_entity_palette(skill, gBattleWork.unk102[4], 9);
     gSpriteEntries[0x23].unk2E = gBattleWork.unk102[0];
     gSpriteEntries[0x23].unk2F = gBattleWork.unk102[1];
@@ -548,7 +548,7 @@ void battle_seq_cmd_bg_effect_at(void) {
     if (gBattleBots[gBattleWork.unk87].chosenAction <= 3)
         skill = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
     else
-        skill = gBattleBots[gBattleWork.unk87].unkA8[0] + 0x50;
+        skill = gBattleBots[gBattleWork.unk87].medaforce[0] + 0x50;
     load_battle_entity_palette(skill, gBattleWork.unk102[4], 9);
     gSpriteEntries[4].unk2E = gBattleWork.unk102[0];
     gSpriteEntries[4].unk2F = gBattleWork.unk102[1];
@@ -772,7 +772,7 @@ void battle_seq_cmd_bg_effect_keep(void) {
     if (gBattleBots[gBattleWork.unk87].chosenAction <= 3)
         skill = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
     else
-        skill = gBattleBots[gBattleWork.unk87].unkA8[0] + 0x50;
+        skill = gBattleBots[gBattleWork.unk87].medaforce[0] + 0x50;
     load_battle_entity_palette(skill, gBattleWork.unk102[4], 9);
     gSpriteEntries[4].unk2E = gBattleWork.unk102[0];
     gSpriteEntries[4].unk2F = gBattleWork.unk102[1];
@@ -919,7 +919,7 @@ void battle_seq_cmd_load_skill_gfx(void) {
     if (gBattleBots[gBattleWork.unk87].chosenAction <= 3)
         decompress_indexed_graphics_to_ewram(gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1]);
     else
-        decompress_indexed_graphics_to_ewram(gBattleBots[gBattleWork.unk87].unkA8[0] + 0x50);
+        decompress_indexed_graphics_to_ewram(gBattleBots[gBattleWork.unk87].medaforce[0] + 0x50);
     battle_seq_advance();
 }
 
@@ -1024,7 +1024,7 @@ void battle_seq_cmd_bg_effect_noflip(void) {
     if (gBattleBots[gBattleWork.unk87].chosenAction <= 3)
         skill = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
     else
-        skill = gBattleBots[gBattleWork.unk87].unkA8[0] + 0x50;
+        skill = gBattleBots[gBattleWork.unk87].medaforce[0] + 0x50;
     load_battle_entity_palette(skill, gBattleWork.unk102[4], 9);
     gSpriteEntries[4].unk2E = gBattleWork.unk102[0];
     gSpriteEntries[4].unk2F = gBattleWork.unk102[1];
