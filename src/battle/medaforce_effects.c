@@ -1,5 +1,5 @@
 // Medaforce effect sequences: action script opcodes 0x40-0x6A. A Medaforce runs script 0x50 + its id
-// (unkF9 = unkA8[0] + 0x50, sub_08034074), so scripts 80-131 use these; 0x45 (sub_08036270) and a few
+// (unkF9 = unkA8[0] + 0x50, sub_08034074), so scripts 80-131 use these; 0x45 (side_add_action_point) and a few
 // script-side commands sit elsewhere.
 // Each runner (sub_XXXXXXXX that clears unkB5 and calls entry [unkAA] of its gUnk_083AD400 sub-table) is
 // one action script command (gUnk_083AF000, opcode order = ROM order); its step handlers follow it and

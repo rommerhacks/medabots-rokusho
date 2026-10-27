@@ -89,8 +89,7 @@ void iterate_bots_setup_battle_sprites(void) {
 
     for (i = 0; i <= 5; i++) {
         if (gUnk_03000590[i].unk40)
-            setup_bot_battle_sprites_08015A00(i, gUnk_03002C30[0x5D + i * 4].unk2,
-                                              gUnk_03002C30[0x5D + i * 4].unk4 - 4);
+            setup_battle_bot_sprite_group(i, gUnk_03002C30[0x5D + i * 4].unk2, gUnk_03002C30[0x5D + i * 4].unk4 - 4);
     }
 }
 

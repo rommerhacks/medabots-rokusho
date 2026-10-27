@@ -1,5 +1,5 @@
 // Battle sprite setup (positions, init_battle_bot_sprites), indexed / fixed graphics decompression to EWRAM,
-// palettes, process_animation_script (sprite tile animation scripts) and the Medal skill level-up after
+// palettes, tile_anim_run (sprite tile animation scripts) and the Medal skill level-up after
 // a part is used (increment_medal_skill_level, sync_medal_stats_from_battle_bot).
 
 #include "global.h"
@@ -64,13 +64,15 @@ void load_battle_entity_palette(u32 list, u32 entry, u32 slot) {
     CpuFastSet(gUnk_083B2584[l[entry].index * 2 + 1], (void *)(0x05000000 + slot * 32), 8);
 }
 
-void init_game_state_entry(const u16 *pos, u8 arg, u32 slot) {
-    gUnk_03000440.unk64[slot].unk0 = 0;
-    gUnk_03000440.unk64[slot].unk1 = 2;
-    gUnk_03000440.unk64[slot].unk2 = 0;
-    gUnk_03000440.unk64[slot].unk4 = pos[0];
-    gUnk_03000440.unk64[slot].unk6 = pos[1];
-    gUnk_03000440.unk64[slot].unk3 = arg;
+// Tile animation slots (gUnk_03000440.tileAnims): tile_anim_run steps a script of (frames, tile) pairs that
+// copies frames of a sheet into OBJ VRAM; 0xFD plays a sound, 0xFE jumps, 0xFF ends.
+void tile_anim_init(const u16 *pos, u8 obj_tile, u32 slot) {
+    gUnk_03000440.tileAnims[slot].wait = 0;
+    gUnk_03000440.tileAnims[slot].pos = 2;
+    gUnk_03000440.tileAnims[slot].state = 0;
+    gUnk_03000440.tileAnims[slot].sheetTile = pos[0];
+    gUnk_03000440.tileAnims[slot].frameTiles = pos[1];
+    gUnk_03000440.tileAnims[slot].objTile = obj_tile;
 }
 
 // tree folding happens before inlining: these keep the EWRAM base added after the multiply
@@ -81,36 +83,36 @@ static inline u32 ewram_offset(u32 n, u32 m) {
     return n * m + 0x02000000;
 }
 
-void process_animation_script(const u16 *script, u32 slot) {
+void tile_anim_run(const u16 *script, u32 slot) {
     u32 run = 1;
 
-    if (gUnk_03000440.unk64[slot].unk2 == 0xFF)
+    if (gUnk_03000440.tileAnims[slot].state == 0xFF)
         return;
 
     while (run) {
-        if (gUnk_03000440.unk64[slot].unk0) {
-            gUnk_03000440.unk64[slot].unk0--;
+        if (gUnk_03000440.tileAnims[slot].wait) {
+            gUnk_03000440.tileAnims[slot].wait--;
             return;
         }
-        switch (*(u8 *)&script[gUnk_03000440.unk64[slot].unk1]) {
+        switch (*(u8 *)&script[gUnk_03000440.tileAnims[slot].pos]) {
         case 0xFD:
-            play_sound_effect(script[gUnk_03000440.unk64[slot].unk1 + 1]);
-            gUnk_03000440.unk64[slot].unk1 += 2;
+            play_sound_effect(script[gUnk_03000440.tileAnims[slot].pos + 1]);
+            gUnk_03000440.tileAnims[slot].pos += 2;
             break;
         case 0xFE:
-            gUnk_03000440.unk64[slot].unk1 = script[gUnk_03000440.unk64[slot].unk1 + 1] * 2;
+            gUnk_03000440.tileAnims[slot].pos = script[gUnk_03000440.tileAnims[slot].pos + 1] * 2;
             break;
         case 0xFF:
-            gUnk_03000440.unk64[slot].unk2 = 0xFF;
+            gUnk_03000440.tileAnims[slot].state = 0xFF;
             return;
         default:
-            gUnk_03000440.unk64[slot].unk0 = script[gUnk_03000440.unk64[slot].unk1];
-            CpuSet(
-                (void *)(tile_offset(gUnk_03000440.unk64[slot].unk4) +
-                         ewram_offset(gUnk_03000440.unk64[slot].unk6, script[gUnk_03000440.unk64[slot].unk1 + 1] * 32)),
-                (void *)(gUnk_03000440.unk64[slot].unk3 * 0x1200 + 0x06004000),
-                (gUnk_03000440.unk64[slot].unk6 * 8) | 0x04000000);
-            gUnk_03000440.unk64[slot].unk1 += 2;
+            gUnk_03000440.tileAnims[slot].wait = script[gUnk_03000440.tileAnims[slot].pos];
+            CpuSet((void *)(tile_offset(gUnk_03000440.tileAnims[slot].sheetTile) +
+                            ewram_offset(gUnk_03000440.tileAnims[slot].frameTiles,
+                                         script[gUnk_03000440.tileAnims[slot].pos + 1] * 32)),
+                   (void *)(gUnk_03000440.tileAnims[slot].objTile * 0x1200 + 0x06004000),
+                   (gUnk_03000440.tileAnims[slot].frameTiles * 8) | 0x04000000);
+            gUnk_03000440.tileAnims[slot].pos += 2;
             break;
         }
     }
@@ -157,52 +159,53 @@ static void sync_medal_stats_from_battle_bot(u32 rec) {
     }
 }
 
-void sub_0801BF64(u16 *counter, u16 max) {
+void inc_u16_saturating(u16 *counter, u16 max) {
     if (*counter != max)
         (*counter)++;
 }
 
-void sub_0801BF78(const u16 *pos, u8 arg, u32 slot) {
-    gUnk_03000440.unk64[slot].unk0 = 0;
-    gUnk_03000440.unk64[slot].unk1 = 2;
-    gUnk_03000440.unk64[slot].unk2 = 0;
-    gUnk_03000440.unk64[slot].unk4 = pos[0];
-    gUnk_03000440.unk64[slot].unk6 = pos[1];
-    gUnk_03000440.unk64[slot].unk3 = arg;
+// Identical copies of tile_anim_init / tile_anim_run (the original has both).
+void tile_anim_init_dup(const u16 *pos, u8 obj_tile, u32 slot) {
+    gUnk_03000440.tileAnims[slot].wait = 0;
+    gUnk_03000440.tileAnims[slot].pos = 2;
+    gUnk_03000440.tileAnims[slot].state = 0;
+    gUnk_03000440.tileAnims[slot].sheetTile = pos[0];
+    gUnk_03000440.tileAnims[slot].frameTiles = pos[1];
+    gUnk_03000440.tileAnims[slot].objTile = obj_tile;
 }
 
 // tree folding happens before inlining: these keep the EWRAM base added after the multiply
 
-void sub_0801BFB4(const u16 *script, u32 slot) {
+void tile_anim_run_dup(const u16 *script, u32 slot) {
     u32 run = 1;
 
-    if (gUnk_03000440.unk64[slot].unk2 == 0xFF)
+    if (gUnk_03000440.tileAnims[slot].state == 0xFF)
         return;
 
     while (run) {
-        if (gUnk_03000440.unk64[slot].unk0) {
-            gUnk_03000440.unk64[slot].unk0--;
+        if (gUnk_03000440.tileAnims[slot].wait) {
+            gUnk_03000440.tileAnims[slot].wait--;
             return;
         }
-        switch (*(u8 *)&script[gUnk_03000440.unk64[slot].unk1]) {
+        switch (*(u8 *)&script[gUnk_03000440.tileAnims[slot].pos]) {
         case 0xFD:
-            play_sound_effect(script[gUnk_03000440.unk64[slot].unk1 + 1]);
-            gUnk_03000440.unk64[slot].unk1 += 2;
+            play_sound_effect(script[gUnk_03000440.tileAnims[slot].pos + 1]);
+            gUnk_03000440.tileAnims[slot].pos += 2;
             break;
         case 0xFE:
-            gUnk_03000440.unk64[slot].unk1 = script[gUnk_03000440.unk64[slot].unk1 + 1] * 2;
+            gUnk_03000440.tileAnims[slot].pos = script[gUnk_03000440.tileAnims[slot].pos + 1] * 2;
             break;
         case 0xFF:
-            gUnk_03000440.unk64[slot].unk2 = 0xFF;
+            gUnk_03000440.tileAnims[slot].state = 0xFF;
             return;
         default:
-            gUnk_03000440.unk64[slot].unk0 = script[gUnk_03000440.unk64[slot].unk1];
-            CpuSet(
-                (void *)(tile_offset(gUnk_03000440.unk64[slot].unk4) +
-                         ewram_offset(gUnk_03000440.unk64[slot].unk6, script[gUnk_03000440.unk64[slot].unk1 + 1] * 32)),
-                (void *)(gUnk_03000440.unk64[slot].unk3 * 32 + 0x06010000),
-                (gUnk_03000440.unk64[slot].unk6 * 8) | 0x04000000);
-            gUnk_03000440.unk64[slot].unk1 += 2;
+            gUnk_03000440.tileAnims[slot].wait = script[gUnk_03000440.tileAnims[slot].pos];
+            CpuSet((void *)(tile_offset(gUnk_03000440.tileAnims[slot].sheetTile) +
+                            ewram_offset(gUnk_03000440.tileAnims[slot].frameTiles,
+                                         script[gUnk_03000440.tileAnims[slot].pos + 1] * 32)),
+                   (void *)(gUnk_03000440.tileAnims[slot].objTile * 32 + 0x06010000),
+                   (gUnk_03000440.tileAnims[slot].frameTiles * 8) | 0x04000000);
+            gUnk_03000440.tileAnims[slot].pos += 2;
             break;
         }
     }

@@ -127,19 +127,19 @@ void determine_battle_part_action_priority(void) {
 
     if (gUnk_03000590[gUnk_03001800.unk80].parts[0].unk10 == 0)
         gUnk_03001800.unk15C[0] = 4;
-    if (sub_08016E5C(gUnk_03001800.unk80, 0))
+    if (part_skill_is_passive(gUnk_03001800.unk80, 0))
         gUnk_03001800.unk15C[0] = 3;
     if (gUnk_03000590[gUnk_03001800.unk80].unkC9 == 0x2B && gUnk_03000590[gUnk_03001800.unk80].unkCA == 1)
         gUnk_03001800.unk15C[0] = 2;
 
-    if (sub_08016E5C(gUnk_03001800.unk80, 1))
+    if (part_skill_is_passive(gUnk_03001800.unk80, 1))
         gUnk_03001800.unk15C[1] = 3;
     if (gUnk_03000590[gUnk_03001800.unk80].unkC9 == 0x2B && gUnk_03000590[gUnk_03001800.unk80].unkCA == 2)
         gUnk_03001800.unk15C[1] = 2;
     if (gUnk_03000590[gUnk_03001800.unk80].parts[1].unk11 == 0)
         gUnk_03001800.unk15C[1] = 1;
 
-    if (sub_08016E5C(gUnk_03001800.unk80, 2))
+    if (part_skill_is_passive(gUnk_03001800.unk80, 2))
         gUnk_03001800.unk15C[2] = 3;
     if (gUnk_03000590[gUnk_03001800.unk80].unkC9 == 0x2B && gUnk_03000590[gUnk_03001800.unk80].unkCA == 3)
         gUnk_03001800.unk15C[2] = 2;

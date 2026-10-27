@@ -316,9 +316,9 @@ void prebattle_open_team_select(void) {
 // re/scratch/afterbattle_probe.txt): 53 opponent line, 55-61 Medapart won (START = details),
 // 64-65 experience, 66+ Medal level-ups and Medaforces per team member (unk186)
 void afterbattle_count_battle(void) {
-    sub_0801BF64(&gUnk_03002B84[0], 9999);
+    inc_u16_saturating(&gUnk_03002B84[0], 9999);
     if (gUnk_03000440.unk9C == 1) {
-        sub_0801BF64(&gUnk_03002B84[1], 9999);
+        inc_u16_saturating(&gUnk_03002B84[1], 9999);
         play_song(14);
     } else
         play_song(15);
@@ -613,7 +613,7 @@ void sub_08011344(void) {
     gUnk_03000440.unk135 = gUnk_03001800.unk16E[gUnk_03001800.unk186][3];
     gUnk_03000440.unk136 = gUnk_03001800.unk16E[gUnk_03001800.unk186][4];
     gUnk_03000440.unk137 = gUnk_03001800.unk16E[gUnk_03001800.unk186][5];
-    sub_08067A48(gUnk_03000440.unk133);
+    start_medal_transform(gUnk_03000440.unk133);
     gUnk_03001800.unk186++;
 }
 

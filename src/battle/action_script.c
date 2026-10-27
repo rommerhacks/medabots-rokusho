@@ -606,7 +606,7 @@ void sub_0803476C(void) {
 }
 
 void sub_080347AC(void) {
-    sub_08036270();
+    side_add_action_point();
     battle_script_advance();
 }
 

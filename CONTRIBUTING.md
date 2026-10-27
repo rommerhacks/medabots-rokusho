@@ -239,7 +239,7 @@
   (`d = DESC;` just before the call, then `d->w` in the loop conditions) made the hoisted desc word the
   older pseudo (setup_oam_sprite_entries).
 * **A constant gcc folds into a sum** that the original adds separately: load it into a pinned local in
-  its own statement, `t = k + off; register u32 q asm("r0") = (u32)base->unkB0; t += q;` (sub_08018900).
+  its own statement, `t = k + off; register u32 q asm("r0") = (u32)base->unkB0; t += q;` (count_bot_skill_use).
 * **A clamp whose two results land in ip / r8 swapped:** `if (h > 32) do { h = 32; } while (0);` (likely a
   clamp macro in the original; copy_tilemap_with_offset_08000F78).
 * **Old near misses that copy the asm's control flow** (duplicated increments, gotos) often match once
@@ -521,7 +521,7 @@
   (`u16 pal[16] = {0, 0x6FFF, ..., 0, 0, 0}`). agbcc only takes the clear-then-store path when 3/4
   of the *written* elements are zero; with the zeros left implicit it copies the whole array from
   .rodata with memcpy instead. `memset` is a second label on `custom_memset` in `asm/lib/libgcc.s`
-  (init_scene_with_palette_and_song_25).
+  (medal_transform_init).
 * `ldrh; ands rX, #0x1f` done in place (no second register for the masked value) and a later
   `strb rX` of the known-zero result: `(u16)s->unk3A % 32 == 0` instead of `(s->unk3A & 0x1F) == 0`
   (sub_080677E0).
@@ -535,7 +535,7 @@
   zero constant is materialized (sub_080676DC).
 * Two values read from the same struct in one function where the original loads the struct base
   first, then the index (`ldr r2, =base; ldr r0, =&idx; ldrb r1, [r0]`): `struct T *b = gBase;
-  struct T *m = &b[gIdx];` (sub_08068104).
+  struct T *m = &b[gIdx];` (medal_transform_flash_in).
 * Unsolved: `x - (y - k)` computed as `subs r1, #k; subs r1, rX, r1` in the original; agbcc folds
   every spelling tried into `(x + k) - y` (`-((y - k) - x)`, casts to `u32`, `+ -k`)
   (divide_by_3, sub_08069A68, update_battle_bot_damage_animations).
@@ -605,7 +605,7 @@
   if / else-if chain and `goto fail` from the checks above it (sub_0801C524).
 * A function that leaves its incoming r0 untouched and returns it (no `movs r0`, but callers ignore the
   value): an old-style definition `u32 f(a) u32 a; { ...; return a; }` with an unprototyped `u32 f();` in
-  functions.h, so callers may still pass nothing (sub_080361A8).
+  functions.h, so callers may still pass nothing (closeup_reset_text_states).
 * A non-void function with no return statement (`pop {r1}` epilogue, r0 never set) is written as `u32 f(...)`
   without `return`; agbcc accepts it (sub_08037728).
 * `x - (y / 2 - k)` refolded into `(x + k) - y / 2`: put the inner difference in an assignment,

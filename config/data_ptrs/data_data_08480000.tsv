@@ -215,7 +215,7 @@
 08483B54	dispatch_battle_cutscene_substate
 08483B58	dispatch_scene_substate_and_scroll
 08483B5C	town_map_dispatch
-08483B60	dispatch_battle_end_substate
+08483B60	medal_transform_update
 08483B64	dispatch_substate_handler
 08483B68	sub_08064A44
 08483B6C	dispatch_fade_substate

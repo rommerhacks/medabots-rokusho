@@ -981,7 +981,7 @@ void sub_0801E200(void) {
     CpuFastSet(&zero, gUnk_03002C30, 0x01000800);
     init_battle_closeup_scene();
     init_battle_scene_backgrounds();
-    sub_080361A8();
+    closeup_reset_text_states();
     gUnk_03000440.unk84 = 0;
     gUnk_03001800.unkAA++;
 }
@@ -1036,15 +1036,15 @@ void sub_0801E3C0(void) {
     if (gUnk_03001800.unkB7 & 1)
         gUnk_03001800.unkAA = 0x28;
     else if (gUnk_03001800.unkB7 & 3) {
-        sub_0803628C();
+        charge_target_medaforce();
         gUnk_03001800.unkAA = 10;
     } else if (gUnk_03001800.unkB8 & 2)
         gUnk_03001800.unkAA = 0x30;
     else if (gUnk_03001800.unkB8 & 4)
         gUnk_03001800.unkAA = 0x38;
     else {
-        sub_08036270();
-        sub_0803628C();
+        side_add_action_point();
+        charge_target_medaforce();
         gUnk_03001800.unkAA++;
     }
 }

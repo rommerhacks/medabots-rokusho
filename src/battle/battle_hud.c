@@ -57,7 +57,8 @@ void load_all_bot_part_sprites(void) {
     }
 }
 
-u32 sub_08015924(u32 rec) {
+// Team sprites face right, opponents left; flag bit 2 of unkBD turns a Medabot round.
+u32 bot_sprite_is_flipped(u32 rec) {
     if (rec <= 2) {
         if (gUnk_03000590[rec].unkBD & 4)
             return 1;
@@ -68,11 +69,11 @@ u32 sub_08015924(u32 rec) {
     return 1;
 }
 
-static void setup_battle_bot_sprites_08015960(u32 rec, u32 x, u32 y) {
+static void init_battle_bot_sprite(u32 rec, u32 x, u32 y) {
     u8 *p = gUnk_03001800.unk64;
     u32 flip;
     get_bot_part_effective_values(rec, p);
-    flip = sub_08015924(rec);
+    flip = bot_sprite_is_flipped(rec);
     init_battle_medabot_sprites(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip, gUnk_03001800.unk39[3] + 2,
                                 rec * 4 + 0x5A);
 }
@@ -84,16 +85,16 @@ void setup_all_battle_bot_sprite_positions(void) {
             u32 x = 200;
             if (i <= 2)
                 x = 40;
-            setup_battle_bot_sprites_08015960(i, x, (i % 3) * 24 + 36);
+            init_battle_bot_sprite(i, x, (i % 3) * 24 + 36);
         }
     }
 }
 
-void setup_bot_battle_sprites_08015A00(u32 rec, u32 x, u32 y) {
+void setup_battle_bot_sprite_group(u32 rec, u32 x, u32 y) {
     u8 *p = gUnk_03001800.unk64;
     u32 flip;
     get_bot_part_effective_values(rec, p);
-    flip = sub_08015924(rec);
+    flip = bot_sprite_is_flipped(rec);
     setup_battle_sprite_group(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip, gUnk_03001800.unk39[3] + 2,
                               rec * 4 + 0x5A);
     gUnk_03002C30[rec * 4 + 0x5B].unk0 &= 0xFDFF;

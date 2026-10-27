@@ -34,8 +34,9 @@ void init_battle_closeup_scene(void) {
                                    gUnk_03001800.unk39[3] + 2, 8, 1, 0, 1, gUnk_03001800.unk114[1]);
 }
 
-static u32 sub_08035DD4(u32 a) {
-    if (a - 0x128 <= 0xA8)
+// The close-up scene parks a side outside x 0x128-0x1D0 when it is not shown.
+static u32 closeup_x_on_screen(u32 x) {
+    if (x - 0x128 <= 0xA8)
         return 0;
     return 1;
 }
@@ -45,7 +46,7 @@ void init_battle_scene_backgrounds(void) {
         gUnk_03000440.unk96 = 1;
     else
         gUnk_03000440.unk96 = 0;
-    if (sub_08035DD4((s16)gUnk_03001800.unk154)) {
+    if (closeup_x_on_screen((s16)gUnk_03001800.unk154)) {
         get_active_bot_part_index_and_load_values(0);
         init_scene_with_bg_and_palette(0, gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2],
                                        gUnk_03001800.unk64[3], (s16)gUnk_03001800.unk154, (s16)gUnk_03001800.unk156,
@@ -55,7 +56,7 @@ void init_battle_scene_backgrounds(void) {
         gUnk_03000440.unk96 = 1;
     else
         gUnk_03000440.unk96 = 0;
-    if (sub_08035DD4((s16)gUnk_03001800.unk158)) {
+    if (closeup_x_on_screen((s16)gUnk_03001800.unk158)) {
         get_active_bot_part_index_and_load_values(1);
         init_scene_with_bg_and_palette(1, gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2],
                                        gUnk_03001800.unk64[3], (s16)gUnk_03001800.unk158, (s16)gUnk_03001800.unk15A,
@@ -69,7 +70,7 @@ void setup_battle_medapart_scenes(void) {
         gUnk_03000440.unk96 = 1;
     else
         gUnk_03000440.unk96 = 0;
-    if (sub_08035DD4((s16)gUnk_03001800.unk154)) {
+    if (closeup_x_on_screen((s16)gUnk_03001800.unk154)) {
         get_active_bot_part_index_and_load_values(0);
         init_scene_with_bg_and_palette(0, gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2],
                                        gUnk_03001800.unk64[3], (s16)gUnk_03001800.unk154, (s16)gUnk_03001800.unk156,
@@ -82,7 +83,7 @@ void setup_battle_medapart_scenes(void) {
         gUnk_03000440.unk96 = 1;
     else
         gUnk_03000440.unk96 = 0;
-    if (sub_08035DD4((s16)gUnk_03001800.unk158)) {
+    if (closeup_x_on_screen((s16)gUnk_03001800.unk158)) {
         get_active_bot_part_index_and_load_values(1);
         init_scene_with_bg_and_palette(1, gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2],
                                        gUnk_03001800.unk64[3], (s16)gUnk_03001800.unk158, (s16)gUnk_03001800.unk15A,
@@ -115,13 +116,14 @@ void get_active_bot_part_index_and_load_values(u32 side) {
 }
 
 // r0 stays live through the function: it passes its (unused) argument through.
-u32 sub_080361A8(a)
-u32 a;
+// guess: 0x29 is the starting pose/text state for both close-up sides.
+u32 closeup_reset_text_states(passthrough)
+u32 passthrough; // FAKEMATCH: returned unchanged to keep r0 live
 {
     struct Unk_03001800 *b = &gUnk_03001800;
     b->unk112 = 0x29;
     b->unk113 = 0x29;
-    return a;
+    return passthrough;
 }
 
 u32 battle_advance_dialogue_text(void) {
@@ -152,11 +154,13 @@ u32 battle_advance_action_text(void) {
     return 1;
 }
 
-void sub_08036270(void) {
+// guess: per-side tally of successful actions, compared when TIME runs out (robattle_judge_time_up).
+void side_add_action_point(void) {
     gUnk_03001800.unk28[gUnk_03001800.unk89].unk1++;
 }
 
-void sub_0803628C(void) {
+// The Medabot in unk88 gains 20 Medaforce (40 with unkC0 bit 3), up to the full 80.
+void charge_target_medaforce(void) {
     u32 add;
     u32 v;
     if (gUnk_03000590[gUnk_03001800.unk88].unkC0 & 8)

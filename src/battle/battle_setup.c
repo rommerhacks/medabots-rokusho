@@ -1,5 +1,5 @@
-// Robattle start helpers: per-Medal skill use counters (sub_08018900, called for each team Medabot by
-// sub_080189EC), opponent defaults, the battle music choice (select_battle_music) and the action-select UI
+// Robattle start helpers: per-Medal skill use counters (count_bot_skill_use, called for each team Medabot by
+// count_team_skill_uses), opponent defaults, the battle music choice (select_battle_music) and the action-select UI
 // windows. Called from battle/robattle.
 
 #include "global.h"
@@ -9,7 +9,9 @@ static inline u32 sub1(u32 x) {
     return x - 1;
 }
 
-void sub_08018900(u32 rec) {
+// Adds one to the bot's per-skill-type use counter (unkB0) for its chosen action: a part (unkDD 1-3) or
+// one of the three Medal skills (4-6, available from Medal level 10 / 30 / 60).
+void count_bot_skill_use(u32 rec) {
     u8 k;
     struct Unk_03000590 *base;
     struct Unk_03000590 *r;
@@ -59,16 +61,17 @@ void sub_08018900(u32 rec) {
     }
 }
 
-void sub_080189EC(void) {
+void count_team_skill_uses(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[i].unk40)
-            sub_08018900(i);
+            count_bot_skill_use(i);
     }
 }
 
-void sub_08018A18(void) {
+// In battles of type 2 (gUnk_030057E0.unkC2E high nibble) the opponents start with a full Medaforce gauge.
+void fill_opponent_medaforce_for_battle_type(void) {
     u32 i;
 
     if ((gUnk_030057E0.unkC2E & 0xF0) == 0x20) {

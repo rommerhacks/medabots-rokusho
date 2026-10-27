@@ -202,14 +202,15 @@ struct Unk_03002B70 {
     u32 unk18;    // at most 0x014996FF (validate_save_data; guess: play time in frames, below 100 hours)
 };
 
-// 8-byte records at gUnk_03000440.unk64 (init_game_state_entry).
-struct Unk_03000440_64 {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    u16 unk4;
-    u16 unk6;
+// Tile animation slot at gUnk_03000440.tileAnims (tile_anim_init / tile_anim_run): each script step copies
+// frameTiles tiles of frame N from the EWRAM sheet (at tile sheetTile) to OBJ tile objTile.
+struct TileAnim {
+    u8 wait;        // frames left on the current step
+    u8 pos;         // script index (u16 units; starts at 2, after the x/y header)
+    u8 state;       // 0xFF once the script has ended
+    u8 objTile;     // destination OBJ tile
+    u16 sheetTile;  // first tile of the sheet in EWRAM
+    u16 frameTiles; // tiles per frame
 };
 
 // Graphics list entry (gUnk_083CE480 lists, end at size 0): size in 32-byte tiles, gUnk_083B2584 index.
@@ -294,8 +295,8 @@ struct Unk_03000440 {
     u16 unk5C; // timer
     u8 unk5E;  // Medabot detail: which Medabot is shown, L/R toggle (runtime-checked)
     u8 filler5F[0x5];
-    struct Unk_03000440_64 unk64[4]; // set up by init_game_state_entry / sub_0801BF78
-    u8 unk84;                        // field menu: animation frame counter
+    struct TileAnim tileAnims[4];
+    u8 unk84; // field menu: animation frame counter
     u8 unk85;
     u16 unk86; // link exchange frame counter; also the current wave x offset of start_scanline_wave_scroll
     u8 unk88;  // field menu: row animation counter
@@ -704,7 +705,7 @@ struct Unk_03001800 {
     u8 unkFF;      // bits 0 / 1 set by sub_080347F8 with unk114[0] / unk114[1] = 0x28
     u16 unk100;    // battle sequence: offset of the current command in gUnk_083CDFE4[unkF9] (cleared by sub_08034074)
     s16 unk102[8]; // battle sequence: operands of the current command (load_battle_sequence_commands)
-    u8 unk112;     // set to 0x29 with unk113 (sub_080361A8)
+    u8 unk112;     // set to 0x29 with unk113 (closeup_reset_text_states)
     u8 unk113;
     u8 unk114[2]; // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (sub_08020B4C)
     u8 filler116[0x2];
@@ -793,7 +794,7 @@ struct Unk_03000590 {
     struct BattlePart parts[4]; // head, right arm, left arm, legs
     u8 unkA8[6];                // chosen Medaforce: gUnk_083B7CD4 record (battle_bot_select_medaforce)
     u8 fillerAE[0x2];
-    u8 unkB0[8]; // per skill type: times used this battle (sub_08018900)
+    u8 unkB0[8]; // per skill type: times used this battle (count_bot_skill_use)
     u8 unkB8;    // own record index (battle_bots_load_parts)
     u8 unkB9; // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other (sub_0802C588, written
               // as &unkB8 + 1 to match)

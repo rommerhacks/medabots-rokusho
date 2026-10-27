@@ -6,7 +6,7 @@
 void position_battle_team_cursors(u32 a, u32 b);
 void status_init_cursor(void);
 void status_draw_bot_name(void);
-void sub_08017D14(void);
+void status_draw_row_icons(void);
 void status_load_medal_icon(void);
 void status_draw_medal_name(void);
 void status_draw_part_names(void);
@@ -15,7 +15,7 @@ void status_draw_part_armor(void);
 void set_portrait_parts(u8 a, u8 b, u8 c, u8 d);
 void status_init_portrait(void);
 void status_draw_team_sprites(void);
-void sub_080182D0(void);
+void status_next_other_slot(void);
 void status_blink_lr_button(void);
 void status_update_portrait(void);
 u32 status_cursor_x(void);

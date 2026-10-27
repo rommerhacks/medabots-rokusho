@@ -29,7 +29,7 @@ void battle_init_phase(void) {
     }
     battle_process_all_bots_actions();
     if (gUnk_03000440.unk89 != 1)
-        sub_08018A18();
+        fill_opponent_medaforce_for_battle_type();
     gGameSubState++;
 }
 
@@ -136,7 +136,7 @@ void robattle_command_input(void) {
     } else if (KEYS_LO(gNewKeys) & 2) {
         if (gUnk_03001800.unk84 == 0 && gUnk_03001800.unk80 != 0) {
             play_sound_effect(5);
-            setup_bot_battle_sprites_08015A00(gUnk_03001800.unk80, 0x28, (u8)(gUnk_03001800.unk80 % 3) * 24 + 0x24);
+            setup_battle_bot_sprite_group(gUnk_03001800.unk80, 0x28, (u8)(gUnk_03001800.unk80 % 3) * 24 + 0x24);
             gUnk_03001800.unk80--;
             draw_battle_panel_left_a(0);
             sub_0801A744(gUnk_03001800.unk80);
@@ -217,7 +217,7 @@ void robattle_command_commit(void) {
         process_bot_battle_turn(gUnk_03001800.unk80);
         break;
     }
-    setup_bot_battle_sprites_08015A00(gUnk_03001800.unk80, 0x28, (u8)(gUnk_03001800.unk80 % 3) * 24 + 0x24);
+    setup_battle_bot_sprite_group(gUnk_03001800.unk80, 0x28, (u8)(gUnk_03001800.unk80 % 3) * 24 + 0x24);
     gUnk_03001800.unk81 = 0;
     gUnk_03001800.unk82 = 0;
     gUnk_03001800.unk80++;
@@ -234,7 +234,7 @@ void robattle_command_commit(void) {
 
 void sub_08012FF8(void) {
     update_all_battle_status_sprites();
-    sub_08018900(gUnk_03001800.unk87);
+    count_bot_skill_use(gUnk_03001800.unk87);
     init_battle_action_select_ui(0);
     if (gUnk_03000440.unk89 != 1)
         gGameSubState = 0x45;
@@ -614,7 +614,7 @@ void sub_08013B8C(void) {
     position_battle_team_cursors(0, 0);
     status_init_cursor();
     status_draw_bot_name();
-    sub_08017D14();
+    status_draw_row_icons();
     status_load_medal_icon();
     status_draw_medal_name();
     status_draw_part_names();
@@ -631,7 +631,7 @@ void sub_08013B8C(void) {
 }
 
 void sub_08013DE4(void) {
-    sub_080182D0();
+    status_next_other_slot();
     status_blink_lr_button();
     status_update_portrait();
     status_draw_team_sprites();
@@ -642,7 +642,7 @@ void sub_08013DE4(void) {
 }
 
 void sub_08013E30(void) {
-    sub_080182D0();
+    status_next_other_slot();
     status_update_portrait();
     scroll_bg3_diagonal();
     switch (gUnk_03000440.unk3F) {
@@ -693,7 +693,7 @@ void sub_08013E30(void) {
 void sub_08013FA8(void) {
     u32 fill1, fill2, fill3;
 
-    sub_080182D0();
+    status_next_other_slot();
     status_blink_lr_button();
     status_update_portrait();
     status_draw_team_sprites();
@@ -714,7 +714,7 @@ void sub_08013FA8(void) {
 
 // Robattle sub-state 0x40: loads the "MEDABOTS ROBATTLE" logo sprites, plays sound 0x6E.
 void robattle_start_banner_init(void) {
-    sub_080189EC();
+    count_team_skill_uses();
     gUnk_03001800.unk84 = 1;
     lz_decompress_dispatch(gUnk_084C84E4, (void *)0x06014800);
     CpuFastSet(gUnk_084E2FD8, (void *)0x050003E0, 8);
@@ -853,8 +853,8 @@ void sub_08014404(void) {
     update_all_battle_status_sprites();
     sub_08019078();
     gUnk_03000590[gUnk_03001800.unk87].unkBD ^= 4;
-    setup_bot_battle_sprites_08015A00(gUnk_03001800.unk87, gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2,
-                                      gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4);
+    setup_battle_bot_sprite_group(gUnk_03001800.unk87, gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2,
+                                  gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4);
     battle_queue_pop();
     battle_process_all_bot_actions(gUnk_03001800.unk87);
     if (gUnk_03001800.unk87 > 2) {
@@ -868,7 +868,7 @@ void sub_08014404(void) {
         }
     } else if (gUnk_03000590[gUnk_03001800.unk87].unkC9 == 0x2C) {
         process_bot_battle_turn(gUnk_03001800.unk87);
-        sub_08018900(gUnk_03001800.unk87);
+        count_bot_skill_use(gUnk_03001800.unk87);
         if (gUnk_03000440.unk89 != 1)
             gGameSubState = 0x45;
         else
@@ -877,7 +877,7 @@ void sub_08014404(void) {
         if (sub_0801A6EC(gUnk_03001800.unk87)) {
             if (!(KEYS_LO(gHeldKeys) & 2)) {
                 process_bot_battle_turn(gUnk_03001800.unk87);
-                sub_08018900(gUnk_03001800.unk87);
+                count_bot_skill_use(gUnk_03001800.unk87);
                 gGameSubState = 0x45;
                 return;
             }

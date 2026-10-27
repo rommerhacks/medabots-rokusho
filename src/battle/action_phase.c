@@ -88,7 +88,7 @@ void resolve_battle_action_phase(void) {
     }
     gUnk_03001800.unk164 = 1;
     select_next_bot_and_action(gUnk_03001800.unk87);
-    if (sub_08016E5C(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].unkDD - 1)) {
+    if (part_skill_is_passive(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].unkDD - 1)) {
         gUnk_03001800.unkA6 = 7;
         gGameSubState = 0x20;
         return;

@@ -1,16 +1,17 @@
-// Mode-2 state 24, started by sub_08067A48 from battle/prebattle.c after a won Robattle for each Medal with
+// Mode-2 state 24, started by start_medal_transform from battle/prebattle.c after a won Robattle for each Medal with
 // new stats. Sub-states gUnk_080AFEC4: decompress the Medal sprite, sparkle sprites, two messages, then back
-// to mode 0 state 6 (after-battle). Name is a guess (Medal level-up).
+// to mode 0 state 6 (after-battle). Messages 0x11/0x12: "Wow!!! <Medal>!!! It's transformed into a new shape!",
+// so this is the Medal transformation that follows a level-up (new variant unk8 of the Medal sprite).
 #include "global.h"
 
-void sub_08067A48(u8 slot) {
+void start_medal_transform(u8 slot) {
     gUnk_030017EC = slot;
     gGameMode = 2;
     gGameState = 0x18;
     gGameSubState = 0;
 }
 
-static void update_battle_sprite_explosions(void) {
+static void medal_transform_update_sparkles(void) {
     int i, j, k;
     u16 t;
     struct Unk_03002C30 *s;
@@ -47,7 +48,7 @@ static void update_battle_sprite_explosions(void) {
     REG_BLDY = 8;
 }
 
-void init_scene_with_palette_and_song_25(void) {
+void medal_transform_init(void) {
     u16 pal[16] = {0, 0x6FFF, 0x6B7A, 0x66D5, 0x622F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     u8 slot = gUnk_030017EC;
     u32 zero;
@@ -111,7 +112,7 @@ void init_scene_with_palette_and_song_25(void) {
     gGameSubState++;
 }
 
-void decompress_medal_sprite_to_vram(void) {
+void medal_transform_draw_medal(void) {
     struct Unk_03002C30 *s;
     u8 zero;
     int i;
@@ -167,10 +168,10 @@ void decompress_medal_sprite_to_vram(void) {
     gUnk_03000440.unk84 = 0;
 }
 
-void sub_080680A4(void) {
+void medal_transform_fade_in(void) {
     struct Unk_03000440 *s;
     u8 *n;
-    update_battle_sprite_explosions();
+    medal_transform_update_sparkles();
     s = &gUnk_03000440;
     n = &s->unk84;
     if (*n <= 8) {
@@ -183,8 +184,8 @@ void sub_080680A4(void) {
     }
 }
 
-void sub_08068104(void) {
-    update_battle_sprite_explosions();
+void medal_transform_flash_in(void) {
+    medal_transform_update_sparkles();
     if (run_message(gUnk_08485788[0x11])) {
         int t = (s16)gUnk_03006F74->unk3A++;
         if (t > 0x77) {
@@ -203,9 +204,9 @@ void sub_08068104(void) {
     }
 }
 
-void sub_08068194(void) {
+void medal_transform_flash_out(void) {
     int t;
-    update_battle_sprite_explosions();
+    medal_transform_update_sparkles();
     t = (s16)gUnk_03006F74->unk3A++;
     if (t > 0x3B) {
         t -= 0x3C;
@@ -218,15 +219,15 @@ void sub_08068194(void) {
     }
 }
 
-void battle_end_wait_for_confirm(void) {
-    update_battle_sprite_explosions();
+void medal_transform_wait_confirm(void) {
+    medal_transform_update_sparkles();
     if (run_message(gUnk_08485788[0x12]) && (*(u8 *)&gNewKeys & 1)) {
         init_blend_effect(gUnk_03006F74->unk50, 0, 0, 1, 0xC0);
         gGameSubState++;
     }
 }
 
-void advance_fade_and_transition_state(void) {
+void medal_transform_exit(void) {
     if (blend_fade_step_08065598(gUnk_03006F74->unk50)) {
         gGameMode = 0;
         gGameState = 6;
@@ -234,7 +235,7 @@ void advance_fade_and_transition_state(void) {
     }
 }
 
-void dispatch_battle_end_substate(void) {
+void medal_transform_update(void) {
     struct FuncTable7 t = gUnk_080AFEC4;
     t.f[gGameSubState]();
     gBg2Scroll.y++;

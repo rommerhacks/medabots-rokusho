@@ -208,7 +208,7 @@ void sub_080398AC(void) {
     gUnk_03002C30[4].unk2B = gUnk_03001800.unk102[6];
     gUnk_03002C30[4].unk30 = gUnk_03001800.unk102[5];
     gUnk_03002C30[4].unk29 = 0x10;
-    init_game_state_entry(gUnk_083CEC74[gUnk_03002C30[4].unk2B], 0, 0);
+    tile_anim_init(gUnk_083CEC74[gUnk_03002C30[4].unk2B], 0, 0);
     gUnk_03002C30[4].unk4 = gUnk_03001800.unk102[3];
     if (!(gUnk_03001800.unkF8 & 2)) {
         gUnk_03002C30[4].unk2 = gUnk_03001800.unk102[2];
@@ -310,7 +310,7 @@ void sub_08039CF8(void) {
     gUnk_03002C30[4].unk2B = gUnk_03001800.unk102[6];
     gUnk_03002C30[4].unk30 = gUnk_03001800.unk102[5];
     gUnk_03002C30[4].unk29 = 0x10;
-    init_game_state_entry(gUnk_083CEC74[gUnk_03002C30[4].unk2B], 0, 0);
+    tile_anim_init(gUnk_083CEC74[gUnk_03002C30[4].unk2B], 0, 0);
     gUnk_03002C30[4].unk4 = gUnk_03001800.unk102[3];
     if (!(gUnk_03001800.unkF8 & 2)) {
         gUnk_03002C30[4].unk2 = gUnk_03001800.unk102[2];
@@ -489,7 +489,7 @@ void sub_0803A474(void) {
     gUnk_03002C30[0x23].unk2B = gUnk_03001800.unk102[6];
     gUnk_03002C30[0x23].unk30 = gUnk_03001800.unk102[5];
     gUnk_03002C30[0x23].unk29 = 0x11;
-    init_game_state_entry(gUnk_083CEC74[gUnk_03002C30[0x23].unk2B], 1, 1);
+    tile_anim_init(gUnk_083CEC74[gUnk_03002C30[0x23].unk2B], 1, 1);
     gUnk_03002C30[0x23].unk4 = gUnk_03001800.unk102[3];
     if (!(gUnk_03001800.unkF8 & 2)) {
         gUnk_03002C30[0x23].unk2 = gUnk_03001800.unk102[2];
@@ -518,7 +518,7 @@ void sub_0803A5CC(void) {
     gUnk_03002C30[4].unk2B = gUnk_03001800.unk102[6];
     gUnk_03002C30[4].unk30 = gUnk_03001800.unk102[5];
     gUnk_03002C30[4].unk29 = 0x12;
-    init_game_state_entry(gUnk_083CEC74[gUnk_03002C30[4].unk2B], 0, 0);
+    tile_anim_init(gUnk_083CEC74[gUnk_03002C30[4].unk2B], 0, 0);
     gUnk_03002C30[4].unk4 = 4;
     if (!(gUnk_03001800.unkF8 & 2)) {
         gUnk_03002C30[4].unk2 = gUnk_03001800.unk102[2];
@@ -729,7 +729,7 @@ void sub_0803ADFC(void) {
     gUnk_03002C30[4].unk2B = gUnk_03001800.unk102[6];
     gUnk_03002C30[4].unk30 = gUnk_03001800.unk102[5];
     gUnk_03002C30[4].unk29 = 0x13;
-    init_game_state_entry(gUnk_083CEC74[gUnk_03002C30[4].unk2B], 0, 0);
+    tile_anim_init(gUnk_083CEC74[gUnk_03002C30[4].unk2B], 0, 0);
     gUnk_03002C30[4].unk4 = 4;
     if (!(gUnk_03001800.unkF8 & 2)) {
         gUnk_03002C30[4].unk2 = gUnk_03001800.unk102[2];
@@ -855,7 +855,7 @@ void sub_0803B1EC(void) {
 void sub_0803B328(void) {
     load_battle_sequence_commands();
     gUnk_03002C30[gUnk_03001800.unk102[1]].unk2E = gUnk_03001800.unk102[0];
-    sub_0801BF78(gUnk_083CEC74[gUnk_03001800.unk102[0]], 0, 0);
+    tile_anim_init_dup(gUnk_083CEC74[gUnk_03001800.unk102[0]], 0, 0);
     battle_advance_sequence_counter();
 }
 
@@ -968,7 +968,7 @@ void sub_0803B754(void) {
     gUnk_03002C30[4].unk2B = gUnk_03001800.unk102[6];
     gUnk_03002C30[4].unk30 = gUnk_03001800.unk102[5];
     gUnk_03002C30[4].unk29 = 0x10;
-    init_game_state_entry(gUnk_083CEC74[gUnk_03002C30[4].unk2B], 0, 0);
+    tile_anim_init(gUnk_083CEC74[gUnk_03002C30[4].unk2B], 0, 0);
     gUnk_03002C30[4].unk4 = gUnk_03001800.unk102[3];
     gUnk_03002C30[4].unk2C = gUnk_03001800.unk102[7];
     if (!(gUnk_03001800.unkF8 & 2))
@@ -1373,7 +1373,7 @@ void sub_0803C738(void) {
     } else {
         gUnk_03002C30[gUnk_03000440.unk12F].unk0 |= 0x8000;
         process_sprite_anim_commands(gUnk_083B5F80[gUnk_03002C30[gUnk_03000440.unk12F].unk2D], gUnk_03000440.unk12F);
-        sub_0801BFB4(gUnk_083CEC74[gUnk_03002C30[gUnk_03000440.unk12F].unk2E], 0);
+        tile_anim_run_dup(gUnk_083CEC74[gUnk_03002C30[gUnk_03000440.unk12F].unk2E], 0);
     }
     if (gUnk_03002C30[gUnk_03000440.unk12F].unk2B != 0)
         gUnk_03002C30[gUnk_03000440.unk12F].unk2B--;
@@ -1386,8 +1386,8 @@ void sub_0803C7DC(void) {
         gUnk_03002C30[gUnk_03000440.unk12F].unk30--;
         return;
     }
-    process_animation_script(gUnk_083CEC74[gUnk_03002C30[gUnk_03000440.unk12F].unk2B], 0);
-    if (gUnk_03000440.unk64[0].unk2 == 0xFF) {
+    tile_anim_run(gUnk_083CEC74[gUnk_03002C30[gUnk_03000440.unk12F].unk2B], 0);
+    if (gUnk_03000440.tileAnims[0].state == 0xFF) {
         vram_fill_tilemap_rect(gUnk_03002C30[gUnk_03000440.unk12F].unk2E, gUnk_03002C30[gUnk_03000440.unk12F].unk2F,
                                gUnk_03002C30[gUnk_03000440.unk12F].unk2, gUnk_03002C30[gUnk_03000440.unk12F].unk4,
                                REG_BG0CNT, 0);
@@ -1404,7 +1404,7 @@ void sub_0803C8AC(void) {
         gUnk_03002C30[gUnk_03000440.unk12F].unk30--;
         return;
     }
-    process_animation_script(gUnk_083CEC74[gUnk_03002C30[gUnk_03000440.unk12F].unk2B], 1);
+    tile_anim_run(gUnk_083CEC74[gUnk_03002C30[gUnk_03000440.unk12F].unk2B], 1);
     gUnk_03002C30[gUnk_03000440.unk12F].unk28++;
     if ((gUnk_03002C30[gUnk_03000440.unk12F].unk28 & 1) && gUnk_03002C30[gUnk_03000440.unk12F].unk27 == 0) {
         if (!(gUnk_03001800.unkF8 & 2))
@@ -1428,8 +1428,8 @@ void sub_0803C9E0(void) {
         gUnk_03002C30[gUnk_03000440.unk12F].unk30--;
         return;
     }
-    process_animation_script(gUnk_083CEC74[gUnk_03002C30[gUnk_03000440.unk12F].unk2B], 0);
-    if (gUnk_03000440.unk64[0].unk2 == 0xFF) {
+    tile_anim_run(gUnk_083CEC74[gUnk_03002C30[gUnk_03000440.unk12F].unk2B], 0);
+    if (gUnk_03000440.tileAnims[0].state == 0xFF) {
         tilemap_fill_rect(gUnk_03002C30[gUnk_03000440.unk12F].unk2E, gUnk_03002C30[gUnk_03000440.unk12F].unk2F,
                           gUnk_03002C30[gUnk_03000440.unk12F].unk2, gUnk_03002C30[gUnk_03000440.unk12F].unk4,
                           REG_BG0CNT, 0);
@@ -1447,8 +1447,8 @@ void sub_0803CAB0(void) {
         gUnk_03002C30[gUnk_03000440.unk12F].unk30--;
         return;
     }
-    process_animation_script(gUnk_083CEC74[gUnk_03002C30[gUnk_03000440.unk12F].unk2B], 0);
-    if (gUnk_03000440.unk64[0].unk2 == 0xFF) {
+    tile_anim_run(gUnk_083CEC74[gUnk_03002C30[gUnk_03000440.unk12F].unk2B], 0);
+    if (gUnk_03000440.tileAnims[0].state == 0xFF) {
         clear_battle_sprite_slot(gUnk_03000440.unk12F, 1);
     } else if (gUnk_03002C30[gUnk_03000440.unk12F].unk2D == 0) {
         write_tilemap_to_vram_0803F1C8(

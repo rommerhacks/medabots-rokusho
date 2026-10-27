@@ -197,7 +197,7 @@ u32 sub_08019440(u32 rec) {
 void sub_08019544(u32 rec) {
     if (gUnk_03002C30[rec * 4 + 0x5B].unk0 & 0x200) {
         gUnk_03002C30[rec * 4 + 0x5D].unk24 = ((s32)(0x20 - gUnk_03000590[rec].unkBB) >> 1) + 1;
-        update_battle_sprite_orbiting_positions(rec * 4 + 0x5A, rec, sub_08015924(rec));
+        update_battle_sprite_orbiting_positions(rec * 4 + 0x5A, rec, bot_sprite_is_flipped(rec));
     } else {
         battle_sprite_set_palette_index(rec * 4 + 0x5A, ((s32)(0x20 - gUnk_03000590[rec].unkBB) >> 1) + 1);
     }

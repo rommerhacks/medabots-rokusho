@@ -141,7 +141,7 @@ void part_select_draw_skill_type(void) {
                 memcpy_bytes_08041D04(gUnk_083C4A10[0], gUnk_03000440.unk9E, 14);
             else if (gUnk_03000590[gUnk_03001800.unk80].unkC9 == 0x2B && k == gUnk_03000590[gUnk_03001800.unk80].unkCA)
                 memcpy_bytes_08041D04(gUnk_083C4A10[1], gUnk_03000440.unk9E, 14);
-            else if (sub_08016E5C(gUnk_03001800.unk80, gUnk_03001800.unk82 - 1))
+            else if (part_skill_is_passive(gUnk_03001800.unk80, gUnk_03001800.unk82 - 1))
                 memcpy_bytes_08041D04(gUnk_083C4A10[1], gUnk_03000440.unk9E, 14);
             else if (gUnk_03001800.unk82 == 1 && gUnk_03000590[gUnk_03001800.unk80].parts[0].unk10 == 0)
                 memcpy_bytes_08041D04(gUnk_083C4A10[2], gUnk_03000440.unk9E, 14);
@@ -170,7 +170,7 @@ void part_select_blink_status(void) {
                        k == gUnk_03000590[gUnk_03001800.unk80].unkCA) {
                 memcpy_bytes_08041D04(gUnk_083C4A10[1], gUnk_03000440.unk9E, 14);
                 show = 1;
-            } else if (sub_08016E5C(gUnk_03001800.unk80, gUnk_03001800.unk82 - 1)) {
+            } else if (part_skill_is_passive(gUnk_03001800.unk80, gUnk_03001800.unk82 - 1)) {
                 memcpy_bytes_08041D04(gUnk_083C4A10[1], gUnk_03000440.unk9E, 14);
                 show = 1;
             } else if (gUnk_03001800.unk82 == 1 && gUnk_03000590[gUnk_03001800.unk80].parts[0].unk10 == 0) {
@@ -218,7 +218,9 @@ void part_select_draw_head_uses(void) {
         vram_fill_tilemap_rect(7, 1, 0xE, 0xC, REG_BG0CNT, 0);
 }
 
-u32 sub_08016E5C(u32 rec, u32 part) {
+// Skills that work on their own and cannot be chosen as an action (Cancel Optic/Bomb/Grav, Accel Chrg,
+// Strengthen: names from the skill name table); part select shows them with the "sealed" text.
+u32 part_skill_is_passive(u32 rec, u32 part) {
     switch (gUnk_03000590[rec].parts[part].data[1]) {
     case 0x18:
     case 0x19:

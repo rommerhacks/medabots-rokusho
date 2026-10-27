@@ -15,8 +15,8 @@ void draw_battle_bot_portraits(void);
 void load_all_bot_part_sprites(void);
 void setup_all_battle_bot_sprite_positions(void);
 void load_bot_part_sprite(u32 rec);
-u32 sub_08015924(u32 rec);
-void setup_bot_battle_sprites_08015A00(u32 rec, u32 x, u32 y);
+u32 bot_sprite_is_flipped(u32 rec);
+void setup_battle_bot_sprite_group(u32 rec, u32 x, u32 y);
 void decompress_two_bg1_layers(void);
 void get_bot_part_effective_values(u32 bot, u8 *out);
 

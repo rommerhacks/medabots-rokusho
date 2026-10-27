@@ -158,7 +158,7 @@ extern const u8 gUnk_087B2CCC[];  // race BG tiles (LZ77, load_bg_tilemaps_and_p
 extern const u8 gUnk_087B3710[];  // race BG2 tilemap (LZ77)
 extern const u8 gUnk_087B384C[];  // race BG3 tilemap (LZ77)
 extern const u16 gUnk_087B3AF0[]; // race BG palette
-extern const u8 gUnk_087A44F8[];  // Medal scene OBJ palettes (init_scene_with_palette_and_song_25)
+extern const u8 gUnk_087A44F8[];  // Medal scene OBJ palettes (medal_transform_init)
 extern const u32 gUnk_087A46F8[]; // Medal scene BG tiles (dma3_copy_or_decompress)
 extern const u8 gUnk_087A7F98[];  // Medal scene BG1 tilemap (decompress_and_write_tilemap)
 extern const u8 gUnk_087A80E8[];  // BG2 tilemap
@@ -935,7 +935,7 @@ extern const Func gUnk_083AF530[]; // sprite handlers by sprite unk29 (sub_08037
 extern const s16
     *const gUnk_083CDFE4[];      // battle sequence scripts, by gUnk_03001800.unkF9 (load_battle_sequence_commands)
 extern const u8 gUnk_083CE1F4[]; // operand count per battle sequence command (battle_advance_sequence_counter)
-extern const u16 *const gUnk_083CEC74[]; // x, y passed to init_game_state_entry, by sprite 4 unk2B (sub_080398AC)
+extern const u16 *const gUnk_083CEC74[]; // x, y passed to tile_anim_init, by sprite 4 unk2B (sub_080398AC)
 extern const u8 *const gUnk_083AF888[];  // by sequence operand: 4 animation sets, by legs data[1] - 0x64 (3 when
                                          // gUnk_03001800.unk64[3] > 0x77; sub_08039AC8)
 extern const u8 *const gUnk_083AF88C[];  // pairs: compressed OBJ tiles, OBJ palette 14 (sub_0803A0E0)
@@ -1240,7 +1240,7 @@ struct FuncTable8 {
 };
 extern const struct FuncTable8 gUnk_080AFB10; // sub-state handlers by gGameSubState (dispatch_battle_cutscene_substate)
 extern const Func gUnk_08483EB4[];            // Medal list screen sub-states (sub_08064C3C)
-extern const struct FuncTable7 gUnk_080AFEC4; // sub-state handlers by gGameSubState (dispatch_battle_end_substate)
+extern const struct FuncTable7 gUnk_080AFEC4; // sub-state handlers by gGameSubState (medal_transform_update)
 struct S32Array3 {
     s32 v[3];
 };

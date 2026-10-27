@@ -3,7 +3,7 @@
 
 // Robattle part select: part icons, names, skill info, head uses
 
-u32 sub_08016E5C(u32 rec, u32 part); // 1 if the part's skill id (data[1]) is 0x18-0x1A, 0x28 or 0x35
+u32 part_skill_is_passive(u32 rec, u32 part); // 1 if the part's skill id (data[1]) is 0x18-0x1A, 0x28 or 0x35
 void part_select_init_cursor(void);
 void part_select_init_center_icon(void);
 void part_select_draw_part_name(void);

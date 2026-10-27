@@ -21,7 +21,7 @@ void sub_080249C0(void) {
         gUnk_03001800.unkA6 = 0x39;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
         gUnk_03001800.unkAA = 4;
     }
@@ -157,7 +157,7 @@ void sub_08024E2C(void) {
         gUnk_03001800.unkA6 = 0x39;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
         gUnk_03001800.unkAA = 4;
     }
@@ -244,7 +244,7 @@ void sub_080251B4(void) {
         gUnk_03001800.unkA6 = 0x34;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
         gUnk_03001800.unkAA = 4;
     }
@@ -398,7 +398,7 @@ void process_battle_action_phase(void) {
         gUnk_03001800.unkA6 = 0x39;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
         gUnk_03001800.unkAA = 4;
     }
@@ -473,7 +473,7 @@ void sub_08025B20(void) {
         gUnk_03001800.unkA6 = 0x74;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
         gUnk_03001800.unkAA = 4;
     }
@@ -656,7 +656,7 @@ void sub_08026130(void) {
         gUnk_03001800.unkA6 = 0x1A;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
         gUnk_03001800.unkAA = 4;
     }
@@ -753,7 +753,7 @@ void sub_08026484(void) {
         gUnk_03001800.unkA6 = 0x1A;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
         gUnk_03001800.unkAB = r;
         gUnk_03001800.unkAA = 4;

@@ -9,7 +9,7 @@ static void status_switch_side(void);
 // Robattle Status screen (ring slot 2, sub-states 0x23-0x26; runtime-checked, re/scratch/b34_status_probe.txt):
 // gUnk_03000440.unk3C = side shown (0 team, 1 opponents, R / L switches), unk3D = selected Medabot, D-pad moves it.
 // Draws the record's sprite if it is the selected one (unk3D) or the one in unk46.
-static void setup_battle_bot_sprites_08017994(u32 rec, u32 x, u32 y) {
+static void status_draw_bot_sprite(u32 rec, u32 x, u32 y) {
     u32 slot, side, k;
 
     if (rec <= 2) {
@@ -45,7 +45,7 @@ void position_battle_team_cursors(u32 first, u32 flag) {
                 if (flag)
                     x += 0x68;
             }
-            setup_battle_bot_sprites_08017994(first + i, x, y);
+            status_draw_bot_sprite(first + i, x, y);
         }
     }
 }
@@ -126,7 +126,7 @@ void status_blink_lr_button(void) {
 }
 
 // Status screen: column of 5 row icons at BG1 (9, 2..10)
-void sub_08017D14(void) {
+void status_draw_row_icons(void) {
     u32 i, y;
 
     for (i = 0, y = 2; i <= 4; y += 2, i++)
@@ -255,7 +255,7 @@ void scroll_bg3_diagonal(void) {
 }
 
 // Status screen: advance unk46 to the next Medabot slot (0-2), skipping the selected one
-void sub_080182D0(void) {
+void status_next_other_slot(void) {
     if (gUnk_03000440.unk46 == 2)
         gUnk_03000440.unk46 = 0;
     else
@@ -279,7 +279,7 @@ void status_draw_team_sprites(void) {
     for (i = 0, recs = gUnk_03000590; i <= 2; i++) {
         rec = gUnk_03000440.unk3C * 3 + i;
         if (recs[rec].unk40 && i != gUnk_03000440.unk3D)
-            setup_battle_bot_sprites_08017994(rec, gUnk_083AD3A4[rec * 2], gUnk_083AD3A4[rec * 2 + 1]);
+            status_draw_bot_sprite(rec, gUnk_083AD3A4[rec * 2], gUnk_083AD3A4[rec * 2 + 1]);
     }
     update_battle_sprite_orbiting_positions(0, gUnk_03000440.unk3D + gUnk_03000440.unk3C * 3, gUnk_03000440.unk3C);
 }
@@ -388,7 +388,7 @@ u32 status_side_change_scroll_out(void) {
             rec = gUnk_03000440.unk3C * 3 + i;
             if (recs[rec].unk40) {
                 x = gUnk_083AD3A4[rec * 2] - gUnk_03000440.unk40 * 8;
-                setup_battle_bot_sprites_08017994(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
+                status_draw_bot_sprite(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
             }
         }
         for (i = 0; i <= 12; i++)
@@ -401,7 +401,7 @@ u32 status_side_change_scroll_out(void) {
             if (recs[rec].unk40) {
                 register u32 k asm("r0") = rec * 2;
                 x = gUnk_083AD3A4[k] + gUnk_03000440.unk40 * 8;
-                setup_battle_bot_sprites_08017994(rec, x, gUnk_083AD3A4[k + 1]);
+                status_draw_bot_sprite(rec, x, gUnk_083AD3A4[k + 1]);
             }
         }
         for (i = 0; i <= 12; i++)
@@ -435,7 +435,7 @@ u32 status_side_change_scroll_in(void) {
             rec = gUnk_03000440.unk3C * 3 + i;
             if (recs[rec].unk40) {
                 x = gUnk_083AD3A4[rec * 2] - (13 - gUnk_03000440.unk40) * 8;
-                setup_battle_bot_sprites_08017994(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
+                status_draw_bot_sprite(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
             }
         }
     } else {
@@ -443,7 +443,7 @@ u32 status_side_change_scroll_in(void) {
             rec = gUnk_03000440.unk3C * 3 + i;
             if (recs[rec].unk40) {
                 x = gUnk_083AD3A4[rec * 2] + (13 - gUnk_03000440.unk40) * 8;
-                setup_battle_bot_sprites_08017994(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
+                status_draw_bot_sprite(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
             }
         }
     }

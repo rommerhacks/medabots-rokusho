@@ -24,7 +24,7 @@ void sub_08020844(void) {
             gUnk_03001800.unkAB = 1;
         } else {
             calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
-            sub_08036270();
+            side_add_action_point();
             gUnk_03001800.unkAA++;
             gUnk_03001800.unkAB = r;
         }
@@ -85,7 +85,7 @@ void sub_080209D8(void) {
             gUnk_03001800.unkAB = 1;
         } else {
             calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
-            sub_08036270();
+            side_add_action_point();
             gUnk_03001800.unkAA++;
             gUnk_03001800.unkAB = r;
         }
@@ -167,7 +167,7 @@ void sub_08020D24(void) {
         return;
     }
     calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
-    sub_08036270();
+    side_add_action_point();
     switch (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1]) {
     case 0xA:
         gUnk_03001800.unk51 = r;
@@ -519,7 +519,7 @@ void sub_080218E4(void) {
         gUnk_03001800.unkA6 = 0x24;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         gUnk_03001800.unkAA = 4;
     }
 }
@@ -682,7 +682,7 @@ void sub_08021E2C(void) {
         gUnk_03001800.unkA6 = 0x70;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         gUnk_03001800.unkAA = 4;
     }
 }
@@ -759,7 +759,7 @@ void sub_0802217C(void) {
         gUnk_03001800.unkA6 = 0x1A;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         gUnk_03001800.unkAA = 4;
     }
 }
@@ -839,7 +839,7 @@ void sub_080223E4(void) {
         gUnk_03001800.unkA6 = 0x1A;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         switch (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1]) {
         case 0x1B:
             gUnk_03001800.unk51 = r;
@@ -961,7 +961,7 @@ void sub_08022800(void) {
         gUnk_03001800.unkA6 = 0x39;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
         gUnk_03001800.unkAA = 4;
     }
@@ -1098,7 +1098,7 @@ void sub_08022CD0(void) {
         gUnk_03001800.unkA6 = 9;
         gUnk_03001800.unkAA++;
     } else {
-        sub_08036270();
+        side_add_action_point();
         calc_battle_stat_ratio(gUnk_03001800.unk87, gUnk_03001800.unkA7);
         gUnk_03001800.unkAA = 4;
     }

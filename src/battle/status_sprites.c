@@ -208,7 +208,7 @@ static void battle_setup_part_sprite(u32 rec, u32 slot, u32 kind, u32 attr) {
     off = v = gUnk_03000440.unkEE;
     if (v & 0x80)
         off = v - 0x100;
-    if (sub_08015924(rec)) {
+    if (bot_sprite_is_flipped(rec)) {
         gUnk_03002C30[rec * 3 + 0x46 + slot].unk2 = gUnk_03002C30[rec * 4 + 0x5D].unk2 - off;
         if (gUnk_03000440.unkF1)
             gUnk_03002C30[rec * 3 + 0x46 + slot].unk0 |= 0x1000;
