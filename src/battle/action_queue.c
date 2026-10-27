@@ -339,7 +339,7 @@ void battle_queue_pop(void) {
     gUnk_03001800.unk45[0][i * 2 + 1] = 0;
 }
 
-// guess: unkBF is set by a support skill (sub_08023C50); such Medabots keep moving in sub-state 0x4C.
+// guess: unkBF is set by a support skill (rapid_charge_apply); such Medabots keep moving in sub-state 0x4C.
 u32 any_bot_extra_move_pending(void) {
     u32 i;
 

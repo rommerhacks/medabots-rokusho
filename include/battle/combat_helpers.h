@@ -24,7 +24,7 @@ u32 check_battle_can_special_target(u32 rec, u32 part, u32 target);
 void battle_set_damage_vs_armor(u32 rec, u32 part, s32 amount);
 u32 sub_08034F44(u32 rec);
 void add_bot_to_defeated_list(u32 rec);
-u32 sub_080353CC(u32 slot);
+u32 sprite_hop_step(u32 slot);
 u32 move_sprite_toward_target(u32 slot);
 void sub_08035694(u32 slot);
 u32 update_sprite_deceleration(u32 slot, s16 a, s16 b);
@@ -43,8 +43,8 @@ void update_target_cursor_position(u32 rec);
 void calc_bot_evasion_modifier(u32 rec);
 void sub_080355C4(u32 rec);
 void sub_080351E8(u32 rec);
-void sub_08035740(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, max)
-void sub_0803572C(u8 *val, s32 amount);          // *val = max(*val - amount, 0)
+void add_u8_capped(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, max)
+void sub_0803572C(u8 *val, s32 amount);           // *val = max(*val - amount, 0)
 void sub_08035BD4(void);
 void sub_08035BFC(u32 rec, u32 part);
 void sub_08035754(s16 *amount, s32 sub); // *amount -= sub, not below 0

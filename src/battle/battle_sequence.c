@@ -1686,7 +1686,7 @@ void sub_0803D2A8(void) {
 
 void sub_0803D3C0(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[gUnk_03000440.unk12F].unk26], gUnk_03000440.unk12F);
-    if (sub_080353CC(gUnk_03000440.unk12F)) {
+    if (sprite_hop_step(gUnk_03000440.unk12F)) {
         gSpriteEntries[gUnk_03000440.unk12F].unk6 = 0x6307 + gSpriteEntries[gUnk_03000440.unk12F].unk28;
         gSpriteEntries[gUnk_03000440.unk12F].unk29 = 0;
     }

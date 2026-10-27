@@ -59,7 +59,7 @@ u32 medal_update_exp_progress(u32 slot, u32 n) {
     return 0;
 }
 
-u32 sub_08036E54(u32 a) {
+u32 clamp_1_99(u32 a) {
     if (a > 99)
         a = 99;
     else if (a == 0)
@@ -71,28 +71,28 @@ void battle_set_action_params(u32 rec, u32 skill, s32 a, u32 b) {
     if (skill - 0xD <= 1) {
         gUnk_03000590[rec].unkC9 = skill;
         gUnk_03000590[rec].unkCA = gUnk_03001800.unk8B + 1;
-        gUnk_03000590[rec].unkCB = sub_08036E54(a);
-        gUnk_03000590[rec].unkCC = sub_08036E54(b * 2);
+        gUnk_03000590[rec].unkCB = clamp_1_99(a);
+        gUnk_03000590[rec].unkCC = clamp_1_99(b * 2);
     } else if (skill - 0xF <= 1) {
         gUnk_03000590[rec].unkC9 = skill;
         gUnk_03000590[rec].unkCA = gUnk_03001800.unk8B + 1;
-        gUnk_03000590[rec].unkCB = sub_08036E54(b >> 3);
+        gUnk_03000590[rec].unkCB = clamp_1_99(b >> 3);
         gUnk_03000590[rec].unkCC = 0;
     } else if (skill - 0x11 <= 1) {
         gUnk_03000590[rec].unkC9 = skill;
         gUnk_03000590[rec].unkCA = gUnk_03001800.unk8B + 1;
-        gUnk_03000590[rec].unkCB = sub_08036E54(a);
-        gUnk_03000590[rec].unkCC = sub_08036E54(b >> 2);
+        gUnk_03000590[rec].unkCB = clamp_1_99(a);
+        gUnk_03000590[rec].unkCC = clamp_1_99(b >> 2);
     } else if (skill - 0x13 <= 1) {
         gUnk_03000590[rec].unkC9 = skill;
         gUnk_03000590[rec].unkCA = gUnk_03001800.unk8B + 1;
-        gUnk_03000590[rec].unkCB = sub_08036E54(a);
-        gUnk_03000590[rec].unkCC = sub_08036E54(b >> 1);
+        gUnk_03000590[rec].unkCB = clamp_1_99(a);
+        gUnk_03000590[rec].unkCC = clamp_1_99(b >> 1);
     } else {
         gUnk_03000590[rec].unkC9 = skill;
         gUnk_03000590[rec].unkCA = gUnk_03001800.unk8B;
-        gUnk_03000590[rec].unkCB = sub_08036E54(a);
-        gUnk_03000590[rec].unkCC = sub_08036E54(b);
+        gUnk_03000590[rec].unkCB = clamp_1_99(a);
+        gUnk_03000590[rec].unkCC = clamp_1_99(b);
     }
 }
 
@@ -213,7 +213,7 @@ void battle_set_damage_display(u32 rec, u32 part, s32 amount) {
     }
 }
 
-void sub_08037330(u32 rec, u32 frame, u32 mask) {
+void battle_bot_sprites_blink(u32 rec, u32 frame, u32 mask) {
     if (frame & mask) {
         gSpriteEntries[rec * 4 + 0x5A].unk0 |= 0x8000;
         gSpriteEntries[rec * 4 + 0x5B].unk0 |= 0x8000;
@@ -227,7 +227,7 @@ void sub_08037330(u32 rec, u32 frame, u32 mask) {
     }
 }
 
-void sub_080373D4(u32 rec) {
+void battle_bot_sprites_show(u32 rec) {
     gSpriteEntries[rec * 4 + 0x5A].unk0 |= 0x8000;
     gSpriteEntries[rec * 4 + 0x5B].unk0 |= 0x8000;
     gSpriteEntries[rec * 4 + 0x5C].unk0 |= 0x8000;

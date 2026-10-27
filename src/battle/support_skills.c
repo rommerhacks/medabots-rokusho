@@ -1,17 +1,22 @@
-// Effect sequences of the Support abilities: action script opcodes 0x30-0x35, used by abilities 36, 37,
-// 38, 39, 41 and 42.
-// Each runner (sub_XXXXXXXX that clears unkB5 and calls entry [unkAA] of its gUnk_083AD400 sub-table) is
-// one action script command (gUnk_083AF000, opcode order = ROM order); its step handlers follow it and
-// the last step sets unkB5. Abilities are part data[1], and the script of ability n is gUnk_083C6B28[n].
+// Effect sequences of the Support abilities: action script opcodes 0x30-0x35.
+// Each runner (*_run: clears unkB5 and calls entry [unkAA] of its step table) is one action script command
+// (gUnk_083AF000, opcode order = ROM order); its step handlers follow it and the last step sets unkB5.
+// Abilities are part data[1], and the script of ability n is gUnk_083C6B28[n]:
+//   0x30 Scout (36), 0x31 Conceal (37), 0x32 Boost Chrg (38), 0x33 Rapid Chrg (39), 0x34 Drain Chrg (41),
+//   0x35 Pushover (42; guess, see pushover_run). Ability 40 (Accel Chrg) has an empty script: it works
+//   while equipped. Skill names from the parts that carry them (re/tables/parts.json) and a public FAQ.
+// The *_begin step of each sequence ends the action on a battle time-out (unkA6 0x1A); otherwise it skips
+// the time-out steps 1-3 and starts the effect at step 4. A target with a working Stability part shrugs off
+// the Charge effects (unkA6 0x39, battle_bot_lacks_stability).
 
 #include "global.h"
 
-void sub_08022FF0(void) {
+void scout_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083ADC6C[gUnk_03001800.unkAA]();
+    gScoutSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08023018(void) {
+void scout_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
@@ -24,19 +29,19 @@ void sub_08023018(void) {
     }
 }
 
-void sub_0802306C(void) {
+void scout_load_graphics(void) {
     lz_decompress_dispatch(gUnk_084D5D78, (void *)0x06014800);
     CpuFastSet(gUnk_0850E778, (void *)0x050002C0, 0x10);
     gUnk_03001800.unkAA++;
 }
 
-void sub_080230A4(void) {
+void scout_darken_init(void) {
     palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     gUnk_03001800.unkAA++;
 }
 
-void sub_080230C8(void) {
+void scout_darken(void) {
     bg_palettes_blend_masked_now(0x1084, gUnk_03000440.unk84, 0xFFFF);
     obj_palettes_blend_masked_now(0x1084, gUnk_03000440.unk84, 0xFF00);
     if (gUnk_03000440.unk84 == 0x10)
@@ -45,7 +50,7 @@ void sub_080230C8(void) {
         gUnk_03000440.unk84++;
 }
 
-void sub_08023118(void) {
+void scout_beam_spawn(void) {
     gSpriteEntries[0x21].unk0 = 0xC604;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
@@ -61,7 +66,7 @@ void sub_08023118(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080231D4(void) {
+void scout_beam_spin(void) {
     if (gSpriteEntries[0x21].unk2D == 0x40) {
         clear_battle_sprite_slot(0x21, 2);
         gUnk_03001800.unkAA++;
@@ -71,7 +76,7 @@ void sub_080231D4(void) {
     }
 }
 
-void sub_08023224(void) {
+void scout_brighten(void) {
     bg_palettes_blend_masked_now(0x1084, gUnk_03000440.unk84, 0xFFFF);
     obj_palettes_blend_masked_now(0x1084, gUnk_03000440.unk84, 0xFF00);
     if (gUnk_03000440.unk84 == 0)
@@ -80,9 +85,9 @@ void sub_08023224(void) {
         gUnk_03000440.unk84--;
 }
 
-void sub_08023274(void) {
+void scout_arrows_spawn(void) {
     u32 i;
-    u32 first = sub_08032FC4(gUnk_03001800.unk87);
+    u32 first = battle_side_first_record(gUnk_03001800.unk87);
 
     for (i = 0; i < 3; i++) {
         if (gUnk_03000590[first + i].unk40) {
@@ -102,7 +107,7 @@ void sub_08023274(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023328(void) {
+void scout_arrows_rise(void) {
     u32 i;
 
     if (gUnk_03000440.unk86 == 0x14) {
@@ -117,7 +122,7 @@ void sub_08023328(void) {
     }
 }
 
-void sub_08023384(void) {
+void scout_arrows_shrink(void) {
     u32 i;
 
     for (i = 0; i < 3; i++) {
@@ -132,22 +137,23 @@ void sub_08023384(void) {
     }
 }
 
-void sub_080233E0(void) {
-    sub_08035740(&gUnk_03001800.unk28[gUnk_03001800.unk89].unk0, gUnk_03001800.unkEC, 0xA0);
+// Raises the side bonus unk28[side].unk0 by unkEC (up to 0xA0): Scout raises Power and success for the team.
+void scout_apply_bonus(void) {
+    add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk89].unk0, gUnk_03001800.unkEC, 0xA0);
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023414(void) {
+void scout_finish(void) {
     gUnk_03001800.unkA6 = 0x1C;
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802342C(void) {
+void conceal_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083ADCC0[gUnk_03001800.unkAA]();
+    gConcealSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08023454(void) {
+void conceal_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
@@ -160,7 +166,7 @@ void sub_08023454(void) {
     }
 }
 
-void sub_080234A8(void) {
+void conceal_dome_spawn(void) {
     lz_decompress_dispatch(gUnk_084D5EBC, (void *)0x06014800);
     CpuFastSet(gUnk_0850E7B8, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC404;
@@ -174,7 +180,7 @@ void sub_080234A8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023564(void) {
+void conceal_dome_open_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x40], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         gUnk_03000440.unk86 = 0x3C;
@@ -182,16 +188,16 @@ void sub_08023564(void) {
     }
 }
 
-void sub_080235AC(void) {
+void conceal_dome_close_init(void) {
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x41], 0x21);
     play_sound_effect(0x4D);
     gUnk_03000440.unk84 = 0;
     gUnk_03001800.unkAA++;
 }
 
-void sub_080235E8(void) {
+void conceal_dome_close(void) {
     gUnk_03000440.unk84++;
-    sub_08037330(gUnk_03001800.unk87, gUnk_03000440.unk84, 2);
+    battle_bot_sprites_blink(gUnk_03001800.unk87, gUnk_03000440.unk84, 2);
     process_sprite_anim_commands(gUnk_083B5F80[0x41], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
@@ -200,42 +206,43 @@ void sub_080235E8(void) {
     }
 }
 
-void sub_08023658(void) {
+void conceal_blink_wait(void) {
     gUnk_03000440.unk84++;
-    sub_08037330(gUnk_03001800.unk87, gUnk_03000440.unk84, 2);
+    battle_bot_sprites_blink(gUnk_03001800.unk87, gUnk_03000440.unk84, 2);
     if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1)) {
-        sub_080373D4(gUnk_03001800.unk87);
+        battle_bot_sprites_show(gUnk_03001800.unk87);
         gUnk_03001800.unkAA++;
     } else if (gUnk_03000440.unk86)
         gUnk_03000440.unk86--;
     else {
-        sub_080373D4(gUnk_03001800.unk87);
+        battle_bot_sprites_show(gUnk_03001800.unk87);
         gUnk_03001800.unkAA++;
     }
 }
 
-void sub_080236E0(void) {
-    sub_08035740(&gUnk_03000590[gUnk_03001800.unk87].unkB8 + 1, gUnk_03001800.unkEC, 0x78);
+// Raises the user's unkB9 by unkEC (up to 0x78): Conceal raises evasion.
+void conceal_apply_evasion(void) {
+    add_u8_capped(&gUnk_03000590[gUnk_03001800.unk87].unkB8 + 1, gUnk_03001800.unkEC, 0x78);
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023718(void) {
+void conceal_finish(void) {
     gUnk_03001800.unkA6 = 0x1D;
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023730(void) {
+void boost_charge_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083ADD20[gUnk_03001800.unkAA]();
+    gBoostChargeSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08023758(void) {
+void boost_charge_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
         gUnk_03001800.unkA6 = 0x1A;
         gUnk_03001800.unkAA++;
-    } else if (sub_080331F8(gUnk_03001800.unk88) == 0) {
+    } else if (battle_bot_lacks_stability(gUnk_03001800.unk88) == 0) {
         gUnk_03001800.unkA6 = 0x39;
         gUnk_03001800.unkAA++;
     } else {
@@ -245,7 +252,7 @@ void sub_08023758(void) {
     }
 }
 
-void sub_080237C8(void) {
+void boost_charge_hourglass_spawn(void) {
     lz_decompress_dispatch(gUnk_084D6098, (void *)0x06014800);
     CpuFastSet(gUnk_0850E7D8, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x220;
@@ -261,7 +268,7 @@ void sub_080237C8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080238A0(void) {
+void charge_hourglass_hold(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03000440.unk84], 0x21);
     if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
         gUnk_03001800.unkAA++;
@@ -271,7 +278,7 @@ void sub_080238A0(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_08023900(void) {
+void charge_hourglass_fly(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03000440.unk84], 0x21);
     if (!(gUnk_03001800.unkF8 & 1))
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 - 0x40) & 0x3FF;
@@ -283,20 +290,20 @@ void sub_08023900(void) {
     }
 }
 
-void sub_08023988(void) {
+void boost_charge_hourglass_burst(void) {
     gUnk_03000440.unk84 = 0x43;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x43], 0x21);
     play_sound_effect(0x4E);
     gUnk_03001800.unkAA++;
 }
 
-void sub_080239C0(void) {
+void charge_hourglass_anim_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gUnk_03000440.unk84], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF)
         gUnk_03001800.unkAA++;
 }
 
-void sub_08023A04(void) {
+void charge_hourglass_shrink(void) {
     if (gSpriteEntries[0x21].unk8 == 8) {
         clear_battle_sprite_slot(0x21, 1);
         gUnk_03001800.unkAA++;
@@ -306,25 +313,26 @@ void sub_08023A04(void) {
     }
 }
 
-void sub_08023A48(void) {
+// Puts the Time status (effect A 0x26) on the target: faster CRG/RAD.
+void boost_charge_apply(void) {
     gUnk_03000590[gUnk_03001800.unk88].unkC4 = 0x26;
     gUnk_03000590[gUnk_03001800.unk88].unkC5 = 0;
-    gUnk_03000590[gUnk_03001800.unk88].unkC6 = sub_08036E54(gUnk_03001800.unkE8);
-    gUnk_03000590[gUnk_03001800.unk88].unkC7 = sub_08036E54(gUnk_03001800.unkEC);
+    gUnk_03000590[gUnk_03001800.unk88].unkC6 = clamp_1_99(gUnk_03001800.unkE8);
+    gUnk_03000590[gUnk_03001800.unk88].unkC7 = clamp_1_99(gUnk_03001800.unkEC);
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023AB0(void) {
+void boost_charge_finish(void) {
     gUnk_03001800.unkA6 = 0x2C;
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023AC8(void) {
+void rapid_charge_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083ADD80[gUnk_03001800.unkAA]();
+    gRapidChargeSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08023AF0(void) {
+void rapid_charge_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
@@ -337,7 +345,7 @@ void sub_08023AF0(void) {
     }
 }
 
-void sub_08023B44(void) {
+void rapid_charge_hourglass_spawn(void) {
     lz_decompress_dispatch(gUnk_084D61DC, (void *)0x06014800);
     CpuFastSet(gUnk_0850E7F8, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x220;
@@ -353,38 +361,39 @@ void sub_08023B44(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023C18(void) {
+void rapid_charge_hourglass_burst(void) {
     gUnk_03000440.unk84 = 0x46;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x46], 0x21);
     play_sound_effect(0x4E);
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023C50(void) {
+// guess: unkBF makes the target run straight to the center / its side (action_queue.c).
+void rapid_charge_apply(void) {
     gUnk_03000590[gUnk_03001800.unk88].unkBF = 1;
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023C78(void) {
+void rapid_charge_finish(void) {
     gUnk_03001800.unkA6 = 0x2B;
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023C90(void) {
+void drain_charge_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083ADDE0[gUnk_03001800.unkAA]();
+    gDrainChargeSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08023CB8(void) {
+void drain_charge_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
         gUnk_03001800.unkA6 = 0x1A;
         gUnk_03001800.unkAA++;
-    } else if (sub_080331F8(gUnk_03001800.unk88) == 0) {
+    } else if (battle_bot_lacks_stability(gUnk_03001800.unk88) == 0) {
         gUnk_03001800.unkA6 = 0x39;
         gUnk_03001800.unkAA++;
-    } else if (sub_080331F8(gUnk_03001800.unk87) == 0) {
+    } else if (battle_bot_lacks_stability(gUnk_03001800.unk87) == 0) {
         gUnk_03001800.unkA6 = 0x39;
         gUnk_03001800.unkAA++;
     } else {
@@ -394,7 +403,7 @@ void sub_08023CB8(void) {
     }
 }
 
-void sub_08023D44(void) {
+void drain_charge_hourglass_spawn(void) {
     lz_decompress_dispatch(gUnk_084D6320, (void *)0x06014800);
     CpuFastSet(gUnk_0850E818, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x220;
@@ -410,14 +419,14 @@ void sub_08023D44(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023E18(void) {
+void drain_charge_hourglass_drain(void) {
     gUnk_03000440.unk84 = 0x44;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x44], 0x21);
     play_sound_effect(0x4E);
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023E50(void) {
+void drain_charge_hourglass_shrink(void) {
     if (gSpriteEntries[0x21].unk8 == 8) {
         clear_sprite_table_mask(0x21, 1);
         gUnk_03001800.unkAA++;
@@ -427,7 +436,7 @@ void sub_08023E50(void) {
     }
 }
 
-void sub_08023E94(void) {
+void drain_charge_hourglass_return(void) {
     lz_decompress_dispatch(gUnk_084D6098, (void *)0x06014800);
     CpuFastSet(gUnk_0850E7D8, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x8000;
@@ -440,7 +449,7 @@ void sub_08023E94(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023F48(void) {
+void drain_charge_hourglass_grow(void) {
     if (gSpriteEntries[0x21].unk8 == 0x40)
         gUnk_03001800.unkAA++;
     else {
@@ -449,36 +458,40 @@ void sub_08023F48(void) {
     }
 }
 
-void sub_08023F80(void) {
+void drain_charge_hourglass_burst(void) {
     gUnk_03000440.unk84 = 0x43;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x43], 0x21);
     play_sound_effect(0x4E);
     gUnk_03001800.unkAA++;
 }
 
-void sub_08023FB8(void) {
+// Effect B 0x29 on the target (Bind: slower CRG/RAD) and effect A 0x29 on the user (Time).
+void drain_charge_apply(void) {
     gUnk_03000590[gUnk_03001800.unk88].unkC9 = 0x29;
     gUnk_03000590[gUnk_03001800.unk88].unkCA = 0;
-    gUnk_03000590[gUnk_03001800.unk88].unkCB = sub_08036E54(gUnk_03001800.unkE8);
-    gUnk_03000590[gUnk_03001800.unk88].unkCC = sub_08036E54(gUnk_03001800.unkEC);
+    gUnk_03000590[gUnk_03001800.unk88].unkCB = clamp_1_99(gUnk_03001800.unkE8);
+    gUnk_03000590[gUnk_03001800.unk88].unkCC = clamp_1_99(gUnk_03001800.unkEC);
     gUnk_03000590[gUnk_03001800.unk87].unkC4 = 0x29;
     gUnk_03000590[gUnk_03001800.unk87].unkC5 = 0;
-    gUnk_03000590[gUnk_03001800.unk87].unkC6 = sub_08036E54(gUnk_03001800.unkE8);
-    gUnk_03000590[gUnk_03001800.unk87].unkC7 = sub_08036E54(gUnk_03001800.unkEC);
+    gUnk_03000590[gUnk_03001800.unk87].unkC6 = clamp_1_99(gUnk_03001800.unkE8);
+    gUnk_03000590[gUnk_03001800.unk87].unkC7 = clamp_1_99(gUnk_03001800.unkEC);
     gUnk_03001800.unkAA++;
 }
 
-void sub_08024078(void) {
+void drain_charge_finish(void) {
     gUnk_03001800.unkA6 = 0x2D;
     gUnk_03001800.unkAA++;
 }
 
-void sub_08024090(void) {
+// guess: Pushover (ability 42, the Majoram head): a thrown object spins onto the target, the target hops
+// and falls over, its head takes unkEC damage (1 if unkBD bit 2 is set) and the script goes on with
+// opcode 0x21. The guide describes Pushover as "throws a banana, very little damage, erases orders".
+void pushover_run(void) {
     gUnk_03001800.unkB5 = 0;
-    gUnk_083ADE60[gUnk_03001800.unkAA]();
+    gPushoverSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_080240B8(void) {
+void pushover_begin(void) {
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     apply_battle_bot_damage_reduction(gUnk_03001800.unk87);
     if (decrement_battle_timer_and_check_zero()) {
@@ -491,7 +504,7 @@ void sub_080240B8(void) {
     }
 }
 
-void sub_0802410C(void) {
+void pushover_banana_spawn(void) {
     lz_decompress_dispatch(gUnk_084D6464, (void *)0x06014800);
     CpuFastSet(gUnk_0850E838, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x220;
@@ -508,12 +521,12 @@ void sub_0802410C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080241F0(void) {
+void pushover_banana_fly(void) {
     if (move_sprite_toward_target(0x21))
         gUnk_03001800.unkAA++;
 }
 
-void sub_08024210(void) {
+void pushover_target_hop_init(void) {
     gSpriteEntries[0x21].unk23 = 0;
     memcpy_bytes_0803F63C(&gSpriteEntries[gUnk_03001800.unk88 * 4 + 0x5A], &gSpriteEntries[0x22], 0x40);
     memcpy_bytes_0803F63C(&gSpriteEntries[gUnk_03001800.unk88 * 4 + 0x5B], &gSpriteEntries[0x23], 0x40);
@@ -529,7 +542,7 @@ void sub_08024210(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080242F8(void) {
+void pushover_target_hop(void) {
     u32 r;
 
     if (gSpriteEntries[0x21].unk0 & 0x8000) {
@@ -543,10 +556,10 @@ void sub_080242F8(void) {
             gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x10) & 0x3FF;
         }
     }
-    sub_080353CC(gUnk_03001800.unk88 * 4 + 0x5A);
-    sub_080353CC(gUnk_03001800.unk88 * 4 + 0x5B);
-    sub_080353CC(gUnk_03001800.unk88 * 4 + 0x5C);
-    r = sub_080353CC(gUnk_03001800.unk88 * 4 + 0x5D);
+    sprite_hop_step(gUnk_03001800.unk88 * 4 + 0x5A);
+    sprite_hop_step(gUnk_03001800.unk88 * 4 + 0x5B);
+    sprite_hop_step(gUnk_03001800.unk88 * 4 + 0x5C);
+    r = sprite_hop_step(gUnk_03001800.unk88 * 4 + 0x5D);
     if (gSpriteEntries[gUnk_03001800.unk88 * 4 + 0x5D].unk23 == 0x10) {
         gSpriteEntries[gUnk_03001800.unk88 * 4 + 0x5A].unk4 += 8;
         gSpriteEntries[gUnk_03001800.unk88 * 4 + 0x5B].unk4 -= 8;
@@ -565,7 +578,7 @@ void sub_080242F8(void) {
     }
 }
 
-void sub_08024488(void) {
+void pushover_burst_spawn(void) {
     u32 i;
 
     for (i = 0; i < 4; i++) {
@@ -576,14 +589,14 @@ void sub_08024488(void) {
         gSpriteEntries[0x26 + i].unkA = 7;
         gSpriteEntries[0x26 + i].unkB = 0xF0;
         gSpriteEntries[0x26 + i].unk24 = 6;
-        gSpriteEntries[0x26 + i].unk25 = gUnk_083ADEE0[i];
+        gSpriteEntries[0x26 + i].unk25 = gBurstSpriteDirections[i];
         gSpriteEntries[0x26 + i].unk6 = 0x4D01;
     }
     gUnk_03000440.unk84 = 0;
     gUnk_03001800.unkAA++;
 }
 
-void sub_08024538(void) {
+void pushover_burst(void) {
     u32 i;
 
     for (i = 0; i < 4; i++)
@@ -604,7 +617,7 @@ void sub_08024538(void) {
         gUnk_03000440.unk84++;
 }
 
-void sub_0802463C(void) {
+void pushover_damage_init(void) {
     if (gUnk_03000590[gUnk_03001800.unk88].unkBD & 4)
         battle_set_damage_vs_armor(gUnk_03001800.unk88, 0, 1);
     else
@@ -616,7 +629,7 @@ void sub_0802463C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080246C0(void) {
+void pushover_damage_popup(void) {
     battle_popup_update_slot(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
     if (++gUnk_03000440.unk84, gUnk_03000440.unk89 == 0 && (KEYS_LO(gRepeatKeys) & 1) && gUnk_03000440.unk84 > 0x32)
         gUnk_03000440.unk84 = 0x78;
@@ -626,7 +639,7 @@ void sub_080246C0(void) {
     }
 }
 
-void battle_process_bot_defeat(void) {
+void pushover_apply_head_damage(void) {
     u8 armor;
 
     reduce_bot_part_stat(gUnk_03001800.unk88, 0, gUnk_03001800.unkC8);
@@ -639,24 +652,25 @@ void battle_process_bot_defeat(void) {
         gUnk_03001800.unkAA = 0x13;
 }
 
-void sub_08024790(void) {
+// guess: unkBD bit 2 set -> step 0x14, which leads to pushover_flag_target (unkBD bit 0).
+void pushover_check_target_flag(void) {
     if (gUnk_03000590[gUnk_03001800.unk88].unkBD & 4)
         gUnk_03001800.unkAA++;
     else
         gUnk_03001800.unkAA = 0x15;
 }
 
-void sub_080247C8(void) {
+void pushover_flag_target(void) {
     gUnk_03000590[gUnk_03001800.unk88].unkBD |= 1;
     gUnk_03001800.unkAA++;
 }
 
-void sub_080247F4(void) {
+void pushover_finish(void) {
     gUnk_03001800.unkA6 = 0x2E;
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802480C(void) {
+void pushover_part_destroyed_cursor(void) {
     lz_decompress_dispatch(gUnk_084CDBD8, (void *)0x06014800);
     CpuFastSet(gUnk_0850E378, (void *)0x050002E0, 8);
     setup_battle_cursor_sprite_08036FF8(0x21, gSpriteEntries[0x5A + gUnk_03001800.unk88 * 4 + gUnk_03001800.unkD0].unk2,
@@ -664,12 +678,12 @@ void sub_0802480C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08024870(void) {
+void pushover_part_destroyed_cursor_wait(void) {
     if (update_sprite_animations_tick_080370AC(0x21, 4))
         gUnk_03001800.unkAA++;
 }
 
-void sub_08024890(void) {
+void pushover_part_explode_spawn(void) {
     lz_decompress_dispatch(gUnk_084CC9A8, (void *)0x06014800);
     CpuFastSet(gUnk_0850E338, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC004;
@@ -682,7 +696,7 @@ void sub_08024890(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802494C(void) {
+void pushover_part_explode(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x22], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);

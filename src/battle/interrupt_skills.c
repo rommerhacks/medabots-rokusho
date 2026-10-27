@@ -17,7 +17,7 @@ void sub_080249C0(void) {
     if (decrement_battle_timer_and_check_zero()) {
         gUnk_03001800.unkA6 = 0x1A;
         gUnk_03001800.unkAA++;
-    } else if (sub_080331F8(gUnk_03001800.unk88) == 0) {
+    } else if (battle_bot_lacks_stability(gUnk_03001800.unk88) == 0) {
         gUnk_03001800.unkA6 = 0x39;
         gUnk_03001800.unkAA++;
     } else {
@@ -107,8 +107,8 @@ void sub_08024C94(void) {
 
 void sub_08024D18(void) {
     gUnk_03000590[gUnk_03001800.unk88].unkC9 = 0x2B;
-    gUnk_03000590[gUnk_03001800.unk88].unkCB = sub_08036E54(gUnk_03001800.unkE8);
-    gUnk_03000590[gUnk_03001800.unk88].unkCC = sub_08036E54(gUnk_03001800.unkEC);
+    gUnk_03000590[gUnk_03001800.unk88].unkCB = clamp_1_99(gUnk_03001800.unkE8);
+    gUnk_03000590[gUnk_03001800.unk88].unkCC = clamp_1_99(gUnk_03001800.unkEC);
     switch (gUnk_03001800.unk8B) {
     case 1:
         gUnk_03000590[gUnk_03001800.unk88].unkCA = 2;
@@ -153,7 +153,7 @@ void sub_08024E2C(void) {
     if (decrement_battle_timer_and_check_zero()) {
         gUnk_03001800.unkA6 = 0x1A;
         gUnk_03001800.unkAA++;
-    } else if (sub_080331F8(gUnk_03001800.unk88) == 0) {
+    } else if (battle_bot_lacks_stability(gUnk_03001800.unk88) == 0) {
         gUnk_03001800.unkA6 = 0x39;
         gUnk_03001800.unkAA++;
     } else {
@@ -219,8 +219,8 @@ void sub_08025104(void) {
     clear_battle_sprite_slot(0x21, 1);
     gUnk_03000590[gUnk_03001800.unk88].unkC9 = 0x2C;
     gUnk_03000590[gUnk_03001800.unk88].unkCA = 0;
-    gUnk_03000590[gUnk_03001800.unk88].unkCB = sub_08036E54(gUnk_03001800.unkE8);
-    gUnk_03000590[gUnk_03001800.unk88].unkCC = sub_08036E54(gUnk_03001800.unkEC);
+    gUnk_03000590[gUnk_03001800.unk88].unkCB = clamp_1_99(gUnk_03001800.unkE8);
+    gUnk_03000590[gUnk_03001800.unk88].unkCC = clamp_1_99(gUnk_03001800.unkEC);
     gUnk_03001800.unkAA++;
 }
 
@@ -349,8 +349,8 @@ void sub_080255F8(void) {
     sub_0803572C(&gUnk_03000590[gUnk_03001800.unk88].parts[0].unk10, gUnk_03001800.unk51);
     sub_08037498(gUnk_03001800.unk87, gUnk_03001800.unk51);
     gUnk_03001800.unk52 = gUnk_03001800.unkC8;
-    sub_08035740(&gUnk_03000590[gUnk_03001800.unk87].parts[0].unk10, gUnk_03001800.unk52,
-                 gUnk_03000590[gUnk_03001800.unk87].parts[0].data[8]);
+    add_u8_capped(&gUnk_03000590[gUnk_03001800.unk87].parts[0].unk10, gUnk_03001800.unk52,
+                  gUnk_03000590[gUnk_03001800.unk87].parts[0].data[8]);
     gUnk_03001800.unkAA++;
 }
 
@@ -394,7 +394,7 @@ void process_battle_action_phase(void) {
     if (decrement_battle_timer_and_check_zero()) {
         gUnk_03001800.unkA6 = 0x1A;
         gUnk_03001800.unkAA++;
-    } else if (sub_080331F8(gUnk_03001800.unk88) == 0) {
+    } else if (battle_bot_lacks_stability(gUnk_03001800.unk88) == 0) {
         gUnk_03001800.unkA6 = 0x39;
         gUnk_03001800.unkAA++;
     } else {
@@ -441,8 +441,8 @@ void sub_08025974(void) {
 
 void sub_08025A18(void) {
     gUnk_03000590[gUnk_03001800.unk88].unkCA = 0;
-    gUnk_03000590[gUnk_03001800.unk88].unkCB = sub_08036E54(gUnk_03001800.unkE8);
-    gUnk_03000590[gUnk_03001800.unk88].unkCC = sub_08036E54(gUnk_03001800.unkEC);
+    gUnk_03000590[gUnk_03001800.unk88].unkCB = clamp_1_99(gUnk_03001800.unkE8);
+    gUnk_03000590[gUnk_03001800.unk88].unkCC = clamp_1_99(gUnk_03001800.unkEC);
     if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1] == 0x2E)
         gUnk_03000590[gUnk_03001800.unk88].unkC9 = 0x2E;
     else
@@ -727,8 +727,8 @@ void sub_080263BC(void) {
     gUnk_03000590[gUnk_03001800.unk87].unkBD |= 0x10;
     gUnk_03000590[gUnk_03001800.unk87].unkDF = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1];
     gUnk_03000590[gUnk_03001800.unk87].unkD8 = 0;
-    sub_08035740(&gUnk_03000590[gUnk_03001800.unk87].unkD7 + 1,
-                 gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[6], 0xFF);
+    add_u8_capped(&gUnk_03000590[gUnk_03001800.unk87].unkD7 + 1,
+                  gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[6], 0xFF);
     gUnk_03001800.unkAA++;
 }
 

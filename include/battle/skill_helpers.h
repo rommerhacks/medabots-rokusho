@@ -7,7 +7,7 @@ void sub_0803713C(void);
 u32 sub_08037230(u32 rec, u32 part); // 1 if the part is broken or at full armor
 u32 decrement_battle_timer_and_check_zero(void);
 void calc_battle_stat_ratio(u32 rec, u32 part); // unkEC = (unkE8 / 4 + part data[6]) / part data[0xC], at least 1
-u32 sub_08036E54(u32 a);                        // clamps to 1..99
+u32 clamp_1_99(u32 a);                          // clamps to 1..99
 u8 sub_08037578(u32 a, u32 kind);               // random part id (by a and the part kind)
 void sub_0803769C(u32 rec);
 void sub_080376F4(u32 rec);
@@ -15,9 +15,10 @@ u32 sub_08037728(u32 rec, u32 part,
                  u32 amount);    // unkD6[part] = min(amount, part armor), unkD2[part] = 1 when the armor is all used
 void sub_080374E0(u32 a, u32 b); // unkC8 = min(a, b) taken out of a (guess: drain clamp)
 void sub_0803752C(u32 a, u32 max, u32 b); // unkC8 = min(b, max - a) (add clamp)
-void sub_08037330(u32 rec, u32 frame,
-                  u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
-void sub_080373D4(u32 rec);  // sets bit 15 of unk0 on the bot's 4 part sprites
+void battle_bot_sprites_blink(
+    u32 rec, u32 frame,
+    u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
+void battle_bot_sprites_show(u32 rec); // sets bit 15 of unk0 on the bot's 4 part sprites
 void sub_08037424(
     u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
 u32 update_sprite_animations_tick_080370AC(u32 slot, u32 n);

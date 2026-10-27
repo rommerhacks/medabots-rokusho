@@ -452,37 +452,37 @@ void sub_08034460(void) {
 }
 
 void sub_0803447C(void) {
-    sub_08022FF0();
+    scout_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
 void sub_08034498(void) {
-    sub_0802342C();
+    conceal_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
 void sub_080344B4(void) {
-    sub_08023730();
+    boost_charge_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
 void sub_080344D0(void) {
-    sub_08023AC8();
+    rapid_charge_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
 void sub_080344EC(void) {
-    sub_08023C90();
+    drain_charge_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
 void sub_08034508(void) {
-    sub_08024090();
+    pushover_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
@@ -664,7 +664,7 @@ void sub_08034910(void) {
 void sub_0803496C(void) {
     u32 i, j;
 
-    gUnk_03001800.unk60 = sub_08032FC4(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unkBA != 0) {
             for (j = 0; j <= 3; j++) {

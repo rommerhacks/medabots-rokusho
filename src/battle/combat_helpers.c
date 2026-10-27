@@ -178,9 +178,9 @@ void sub_080353AC(u32 a) {
         gBg3Scroll.y = 0;
 }
 
-u32 sub_080353CC(u32 slot) {
+u32 sprite_hop_step(u32 slot) {
     if ((gSpriteEntries[slot].unk0 & 0x8000) && gSpriteEntries[slot].unk23 != 0x20) {
-        gSpriteEntries[slot].unk4 = (gSpriteEntries[slot].unk4 + gUnk_083AF310[gSpriteEntries[slot].unk23]) & 0xFF;
+        gSpriteEntries[slot].unk4 = (gSpriteEntries[slot].unk4 + gSpriteHopOffsets[gSpriteEntries[slot].unk23]) & 0xFF;
         gSpriteEntries[slot].unk23++;
         return 0;
     }
@@ -320,7 +320,7 @@ void sub_0803572C(u8 *val, s32 amount) {
         *val -= amount;
 }
 
-void sub_08035740(u8 *val, u32 amount, u32 max) {
+void add_u8_capped(u8 *val, u32 amount, u32 max) {
     u32 sum = *val + amount;
     if (sum > max)
         *val = max;

@@ -552,7 +552,7 @@ void sub_0801D174(void) {
 }
 
 void sub_0801D1AC(void) {
-    if (sub_080353CC(0x21) == 0) {
+    if (sprite_hop_step(0x21) == 0) {
         if (!(gUnk_03000440.unk84 & 1)) {
             if (gUnk_03001800.unk89 == 0)
                 gSpriteEntries[0x21].unk2++;
@@ -690,7 +690,7 @@ void sub_0801D5A8(void) {
         gUnk_03001800.unkB5 = 1;
         return;
     }
-    base = sub_08032FC4(gUnk_03001800.unk88);
+    base = battle_side_first_record(gUnk_03001800.unk88);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[base + i].unk40 == 0)
             continue;
@@ -1078,7 +1078,7 @@ void sub_0801E474(void) {
 }
 
 void sub_0801E54C(void) {
-    if (sub_080353CC(10)) {
+    if (sprite_hop_step(10)) {
         gUnk_03000440.unk86 = 0x3C;
         gUnk_03001800.unkAA++;
     }
@@ -1546,7 +1546,7 @@ void sub_0801F4AC(void) {
         s->unkAA++;
     else if (!gUnk_03000590[s->unk88].parts[0].unk11)
         s->unkAA++;
-    else if (!sub_080331F8(s->unk88))
+    else if (!battle_bot_lacks_stability(s->unk88))
         s->unkAA++;
     else if (sub_08036D64(s->unk88, gUnk_03000590[s->unk87].parts[s->unkA7].data[1]))
         s->unkAA++;

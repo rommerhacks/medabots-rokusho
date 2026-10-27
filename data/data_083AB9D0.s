@@ -447,32 +447,32 @@ gUnk_083ADBAC:
 gUnk_083ADC0C:
 	.incbin "baserom.gba", 0x3ADC0C, 0x60
 
-	.global gUnk_083ADC6C
-gUnk_083ADC6C:
+	.global gScoutSteps
+gScoutSteps:
 	.incbin "baserom.gba", 0x3ADC6C, 0x54
 
-	.global gUnk_083ADCC0
-gUnk_083ADCC0:
+	.global gConcealSteps
+gConcealSteps:
 	.incbin "baserom.gba", 0x3ADCC0, 0x60
 
-	.global gUnk_083ADD20
-gUnk_083ADD20:
+	.global gBoostChargeSteps
+gBoostChargeSteps:
 	.incbin "baserom.gba", 0x3ADD20, 0x60
 
-	.global gUnk_083ADD80
-gUnk_083ADD80:
+	.global gRapidChargeSteps
+gRapidChargeSteps:
 	.incbin "baserom.gba", 0x3ADD80, 0x60
 
-	.global gUnk_083ADDE0
-gUnk_083ADDE0:
+	.global gDrainChargeSteps
+gDrainChargeSteps:
 	.incbin "baserom.gba", 0x3ADDE0, 0x80
 
-	.global gUnk_083ADE60
-gUnk_083ADE60:
+	.global gPushoverSteps
+gPushoverSteps:
 	.incbin "baserom.gba", 0x3ADE60, 0x80
 
-	.global gUnk_083ADEE0
-gUnk_083ADEE0:
+	.global gBurstSpriteDirections
+gBurstSpriteDirections:
 	.incbin "baserom.gba", 0x3ADEE0, 0x4
 
 	.global gUnk_083ADEE4
@@ -675,8 +675,8 @@ gUnk_083AF200:
 gUnk_083AF210:
 	.incbin "baserom.gba", 0x3AF210, 0x100
 
-	.global gUnk_083AF310
-gUnk_083AF310:
+	.global gSpriteHopOffsets
+gSpriteHopOffsets:
 	.incbin "baserom.gba", 0x3AF310, 0x20
 
 	.global gUnk_083AF330

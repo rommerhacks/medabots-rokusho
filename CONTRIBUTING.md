@@ -318,9 +318,9 @@
   base into one register (sub_08022938).
 * A field address built as `base + rec*0x100` + an offset, then `adds r0, #1` (literal `base + off`, not
   `base + off + 1`): take the address of the field *before* it and add one, `&gUnk_03000590[r].unkB8 + 1`
-  (sub_080236E0) or `&...unkD7 + 1` for a u16 at 0xD8 (sub_08022748). `&...unkB9` folds the 1 into the literal.
+  (conceal_apply_evasion) or `&...unkD7 + 1` for a u16 at 0xD8 (sub_08022748). `&...unkB9` folds the 1 into the literal.
 * `x.unk84 = 0x45; f(tbl[0x45]);` loads 0x114 as a fresh constant; the original's `movs r1, #0x45; strb;
-  lsls r1, #2` comes from indexing with the field just stored: `f(tbl[x.unk84])` (sub_08023B44).
+  lsls r1, #2` comes from indexing with the field just stored: `f(tbl[x.unk84])` (rapid_charge_hourglass_spawn).
 * `x = K; if (c) x |= M;` (on a struct field) makes gcc keep K in a register and `orrs` it for the second
   store; `x = K | M` folds the constant and a `u16 v = K` local moves the load (sub_08026184).
 * Loops over sprite slots `gSpriteEntries[i + 0x21]` that compute `(i + 0x21) << 6` each time come from
@@ -380,7 +380,7 @@
   (sub_08033D30).
 * Array element base: `gSpriteEntries[slot].x` at every use gives `ldr base; lsls; adds` (literal first);
   a `struct X *s = &gSpriteEntries[slot]` local gives `lsls; ldr; adds`. Pick the form by the order of
-  the first two instructions (check_sprite_in_range, sub_080353CC).
+  the first two instructions (check_sprite_in_range, sprite_hop_step).
 * `ldr r4, =gUnk_03001800; adds r4, #0xEC` (field address not folded into one literal): access the
   field through `struct Unk_03001800 *b = &gUnk_03001800;` (sub_08035BD4, calc_battle_action_speed);
   plain `gUnk_03001800.unkEC` gives `ldr r4, =0x030018EC`.
