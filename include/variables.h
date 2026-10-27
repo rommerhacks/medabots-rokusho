@@ -1189,8 +1189,7 @@ struct TextBufTable4 {
 extern const struct ObjAffineDstData
     gAffineIdentityRotated;                           // identity affine matrix (render_sprite_if_visible_rotated)
 extern const struct ObjAffineDstData gAffineIdentity; // identity affine matrix (render_sprite_node_recursive)
-extern const u8
-    gMirroredPartNode[]; // mirrored sprite node index per node (render_sprite_node_recursive)
+extern const u8 gMirroredPartNode[]; // mirrored sprite node index per node (render_sprite_node_recursive)
 extern const struct TextBufTable4
     gUnk_080ABBFC;               // the 4 text buffers 0x030004DE + 0x14 * n (copy_string_to_text_buffer)
 extern const u8 gUnk_080AFE96[]; // first tilemap column by gMenuWork->cursor (text_scroll_shift_row)
