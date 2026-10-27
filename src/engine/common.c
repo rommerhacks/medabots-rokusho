@@ -1208,12 +1208,13 @@ void init_scene_buffers_080445F4(void) {
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gUnk_03005308 = (struct SceneSlot *)c;
+    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
     fill2 = 0x200;
     CpuFastSet(&fill2, gSpriteWork->oamBuf, 0x01000100);
     gSpriteWork->oamCount = 0;
     gSpriteWork->affineIdx = 0;
-    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
+                     (struct SpriteNodeOam *)b);
 }
 
 // K&R definitions: the callers were compiled without a prototype (promoted int arguments), and the

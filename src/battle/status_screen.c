@@ -212,8 +212,9 @@ void status_init_portrait(void) {
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gUnk_03005308 = (struct SceneSlot *)c;
-    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
+    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
+                     (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
     setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gGameWork.shownHead, gGameWork.shownRightArm,
                                gGameWork.shownLeftArm, gGameWork.shownLegs, 0x28, 0x28, 0x1C2, 8, 1, 0);

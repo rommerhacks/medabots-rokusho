@@ -4,12 +4,12 @@
 gData_080AB000:
 	.incbin "baserom.gba", 0xAB000, 0xBEC
 
-	.global gUnk_080ABBEC
-gUnk_080ABBEC:
+	.global gAffineIdentityRotated
+gAffineIdentityRotated:
 	.incbin "baserom.gba", 0xABBEC, 0x8
 
-	.global gUnk_080ABBF4
-gUnk_080ABBF4:
+	.global gAffineIdentity
+gAffineIdentity:
 	.incbin "baserom.gba", 0xABBF4, 0x8
 
 	.global gUnk_080ABBFC

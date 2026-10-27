@@ -870,8 +870,9 @@ static void medaparts_list_load_part_sprite(void) {
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gUnk_03005308 = (struct SceneSlot *)c;
-    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
+    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
+                     (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
     load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, gGameWork.partSlot, 0x3C, 0x28, 0x1C2, 8,
                                   1);
@@ -957,8 +958,9 @@ static void medapart_detail_init_sprite(void) {
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gUnk_03005308 = (struct SceneSlot *)c;
-    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
+    init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
+                     (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
     load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.shownId, gGameWork.partSlot, 0x3C, 0x28, 0x1C2, 8,
                                   1);

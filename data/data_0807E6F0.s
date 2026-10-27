@@ -15,30 +15,30 @@ gRngTable:
 gUnk_0807E77C:
 	.incbin "baserom.gba", 0x7E77C, 0x524
 
-	.global gUnk_0807ECA0
-gUnk_0807ECA0:
+	.global gHeadPartLayerTemplate
+gHeadPartLayerTemplate:
 	.incbin "baserom.gba", 0x7ECA0, 0x18
 
-	.global gUnk_0807ECB8
-gUnk_0807ECB8:
+	.global gLeftArmPartLayerTemplate
+gLeftArmPartLayerTemplate:
 	.incbin "baserom.gba", 0x7ECB8, 0x18
 
-	.global gUnk_0807ECD0
-gUnk_0807ECD0:
+	.global gRightArmPartLayerTemplate
+gRightArmPartLayerTemplate:
 	.incbin "baserom.gba", 0x7ECD0, 0x18
 
-	.global gUnk_0807ECE8
-gUnk_0807ECE8:
+	.global gLegPartLayerTemplate
+gLegPartLayerTemplate:
 	.incbin "baserom.gba", 0x7ECE8, 0x18
 
-	.global gUnk_0807ED00
-gUnk_0807ED00:
+	.global gHeadPartSpriteNodes
+gHeadPartSpriteNodes:
 	.incbin "baserom.gba", 0x7ED00, 0x7A0
 
-	.global gUnk_0807F4A0
-gUnk_0807F4A0:
+	.global gRightArmPartSpriteNodes
+gRightArmPartSpriteNodes:
 	.incbin "baserom.gba", 0x7F4A0, 0x7A0
 
-	.global gUnk_0807FC40
-gUnk_0807FC40:
+	.global gLeftArmPartSpriteNodes
+gLeftArmPartSpriteNodes:
 	.incbin "baserom.gba", 0x7FC40, 0x3C0

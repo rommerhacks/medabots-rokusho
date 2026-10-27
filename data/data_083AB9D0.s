@@ -1170,8 +1170,8 @@ gUnk_083CF148:
 gLinkMessages:
 	.incbin "baserom.gba", 0x3CF3B0, 0x2848
 
-	.global gUnk_083D1BF8
-gUnk_083D1BF8:
+	.global gMedabotSpriteNodeDescs
+gMedabotSpriteNodeDescs:
 	.incbin "baserom.gba", 0x3D1BF8, 0xC8
 
 	.global gUnk_083D1CC0

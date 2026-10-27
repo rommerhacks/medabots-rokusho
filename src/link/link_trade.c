@@ -26,15 +26,16 @@ static void medapart_trade_init_sprite_tree(u32 a) {
         gSpriteWork = (struct SpriteWork *)0x02024000;
         fill = a;
         CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-        gUnk_03005308 = (struct SceneSlot *)c;
-        init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
+        gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
+        init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
+                         (struct SpriteNodeOam *)b);
         obj->oams = (struct SpriteNodeOam *)b;
         load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gMenuWork->own_part_id, gMenuWork->own_part_kind, 0x3C,
                                       0x28, 0xC7, a, 1);
     } else {
         struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
 
-        init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8,
+        init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                          (struct SpriteNodeOam *)0x020264E0);
         obj->oams = (struct SpriteNodeOam *)0x020264E0;
         load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gMenuWork->partner_part_id,

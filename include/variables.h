@@ -60,7 +60,7 @@ extern Func gVBlankOnceCallback;       // called at the next vblank, then reset 
 extern Func gHBlankCallback;           // called by hblank_irq
 extern struct OamData gOamBuffer[128]; // copied to OAM in vblank_body
 extern struct SpriteWork *gSpriteWork;
-extern struct SceneSlot *gUnk_03005308;
+extern struct MedabotSpriteSlot *gMedabotSpriteSlots;
 extern u32 gVBlankOamMode;          // vblank_body OAM mode (0, 2)
 extern u8 gUnk_03000434;            // bit 0: vblank_body skips the BG scroll registers
 extern struct Vec16 gUnk_03002C2C;  // scroll added to every BG layer
@@ -79,15 +79,16 @@ extern u8 gUnk_03000588;
 // ROM data
 extern const Func gIntrTableTemplate[14];
 extern const u32 gRngTable[16];
-extern const struct Unk_03005290 gUnk_0807ECA0; // part layer templates: head, left arm, right arm, legs
-extern const struct Unk_03005290 gUnk_0807ECB8; // (setup_medabot_part_sprites)
-extern const struct Unk_03005290 gUnk_0807ECD0;
-extern const struct Unk_03005290 gUnk_0807ECE8;
+extern const struct PartSpriteLayer gHeadPartLayerTemplate; // part layer templates (setup_medabot_part_sprites)
+extern const struct PartSpriteLayer gLeftArmPartLayerTemplate;
+extern const struct PartSpriteLayer gRightArmPartLayerTemplate;
+extern const struct PartSpriteLayer gLegPartLayerTemplate;
 // Sprite tree node lists by part id: head, right arm, left arm, legs (non-const: needed to match)
-extern struct SpriteTileRef gUnk_0807ED00[][4];
-extern struct SpriteTileRef gUnk_0807F4A0[][4];
-extern struct SpriteTileRef gUnk_0807FC40[][4];
-extern struct SpriteTileRef gUnk_080803E0[][8];
+// Sprite tree node list per Medapart id, one table per part kind (lists end with node 0)
+extern struct SpriteTileRef gHeadPartSpriteNodes[][4];
+extern struct SpriteTileRef gRightArmPartSpriteNodes[][4];
+extern struct SpriteTileRef gLeftArmPartSpriteNodes[][4];
+extern struct SpriteTileRef gLegPartSpriteNodes[][8];
 extern struct SoundSongHeader *gSongTable[];        // song table (sound_init)
 extern struct SoundSongHeader *gSoundEffectTable[]; // sound effect table (sound_init)
 extern struct SoundDrumKit gDrumKit;
@@ -128,7 +129,7 @@ extern const Func gGameStateHandlers_083AC148[];
 extern const u32 gMedalNames[];      // Medal names by Medal id (0 KUWAGATA, 6 SNAKE...); +0x20: "Rokusho" / "Metabee"
 extern const u8 gUnk_083B6158[][16]; // 16-byte records per Medal graphic index (byte 1 compared with a Medapart's
                                      // skill, byte 7 icon)
-extern const u8 gUnk_083D1BF8[];
+extern const u8 gMedabotSpriteNodeDescs[]; // SpriteNodeDesc pointers of the Medabot sprite tree
 extern const u32 gUnk_083BA4D8[];
 extern const u8 gUnk_083AD200[];         // 8 bytes per Medal attribute: base skill levels (init_enemy_bot_medal)
 extern const u8 gUnk_083AD2F0[][4];      // 32 part orders (0xFF = end) tried by select_bot_battle_action
@@ -1098,10 +1099,10 @@ extern const u8
 extern const s16 gUnk_083D6BA0[]; // per angle 0-0xFF: cosine-like factor x256 (calc_polar_to_screen_coords x;
                                   // gJumpArcTable is the y factor)
 extern const u8 gUnk_0847EB80[];  // per area id (gFieldWork.area_id), used unless song == 0xFF (area_song_id)
-extern struct Unk_03005290 gUnk_03005290;
-extern struct Unk_03005290 gUnk_030052B0;
-extern struct Unk_03005290 gUnk_030052D0;
-extern struct Unk_03005290 gUnk_030052F0;
+extern struct PartSpriteLayer gRightArmPartLayer;
+extern struct PartSpriteLayer gLeftArmPartLayer;
+extern struct PartSpriteLayer gHeadPartLayer;
+extern struct PartSpriteLayer gLegPartLayer;
 extern const u8 gUnk_083D2ADD[]; // per animation id (gSpriteEntries[].unk30): 2 -> unkB = 0xFF, 1 -> 0, else 0x40
                                  // (sprite_set_blend_from_kind)
 extern const u8 *const
@@ -1185,9 +1186,11 @@ extern const struct FuncTable7 gUnk_080AFEA8; // sub-state handlers by gGameSubS
 struct TextBufTable4 {
     u8 *p[4];
 };
-extern const struct ObjAffineDstData gUnk_080ABBEC; // identity affine matrix (render_sprite_if_visible_rotated)
-extern const struct ObjAffineDstData gUnk_080ABBF4; // affine matrix template (render_sprite_node_recursive)
-extern const u8 gUnk_08081320[]; // mirrored sprite node index per node (render_sprite_node_recursive)
+extern const struct ObjAffineDstData
+    gAffineIdentityRotated;                           // identity affine matrix (render_sprite_if_visible_rotated)
+extern const struct ObjAffineDstData gAffineIdentity; // identity affine matrix (render_sprite_node_recursive)
+extern const u8
+    gMirroredPartNode[]; // mirrored sprite node index per node (render_sprite_node_recursive)
 extern const struct TextBufTable4
     gUnk_080ABBFC;               // the 4 text buffers 0x030004DE + 0x14 * n (copy_string_to_text_buffer)
 extern const u8 gUnk_080AFE96[]; // first tilemap column by gMenuWork->cursor (text_scroll_shift_row)

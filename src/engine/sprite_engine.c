@@ -636,7 +636,7 @@ u16 render_sprite_if_visible_rotated(struct SpriteOamList *list, void *dst, u16 
         if (affine != NULL) {
             struct ObjAffineSrcData src = {0x100, 0x100, 0x10000 - angle};
 
-            d = gUnk_080ABBEC;
+            d = gAffineIdentityRotated;
             ObjAffineSet(&src, &d, 1, 2);
             k *= 4;
             affine[k] = d.pa;
@@ -789,23 +789,23 @@ u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct O
     fill = zero;
     CpuFastSet((void *)&fill, work, 0x01000426);
     gSpriteWork = work;
-    init_sprite_tree(&obj.o, (u8 *)work, (struct SpriteNodeDesc **)gUnk_083D1BF8, oams);
+    init_sprite_tree(&obj.o, (u8 *)work, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs, oams);
     gSpriteWork->oamCount = zero;
     gSpriteWork->affineIdx = side;
     gSpriteWork->unk1097 = zero;
     base = 0x160;
-    gUnk_030052D0 = gUnk_0807ECA0;
-    gUnk_030052B0 = gUnk_0807ECB8;
-    gUnk_03005290 = gUnk_0807ECD0;
-    gUnk_030052F0 = gUnk_0807ECE8;
-    pa = gUnk_0807ED00[a];
-    gUnk_030052D0.unk10 = pa->node;
-    pb = gUnk_0807F4A0[b];
-    gUnk_03005290.unk10 = pb->node;
-    pc = gUnk_0807FC40[c];
-    gUnk_030052B0.unk10 = pc->node;
-    pd = gUnk_080803E0[d];
-    gUnk_030052F0.unk10 = pd->node;
+    gHeadPartLayer = gHeadPartLayerTemplate;
+    gLeftArmPartLayer = gLeftArmPartLayerTemplate;
+    gRightArmPartLayer = gRightArmPartLayerTemplate;
+    gLegPartLayer = gLegPartLayerTemplate;
+    pa = gHeadPartSpriteNodes[a];
+    gHeadPartLayer.root_node = pa->node;
+    pb = gRightArmPartSpriteNodes[b];
+    gRightArmPartLayer.root_node = pb->node;
+    pc = gLeftArmPartSpriteNodes[c];
+    gLeftArmPartLayer.root_node = pc->node;
+    pd = gLegPartSpriteNodes[d];
+    gLegPartLayer.root_node = pd->node;
     tile = base + 0x140;
     load_sprite_tree_recursive(obj.o.nodes, pa, pa->node, pal, obj.o.oams, &tile, alt);
     tile = base + 0x1A0;
@@ -815,30 +815,30 @@ u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct O
     tile = base + 0x220;
     load_sprite_tree_recursive(obj.o.nodes, pd, pd->node, pal, obj.o.oams, &tile, alt);
     if (alt != 0) {
-        for (k = 0; gUnk_0807F4A0[b][k].node; k++) {
-            if (!gUnk_0807F4A0[b][k].alt)
-                load_sprite_tiles_by_table(obj.o.nodes, obj.o.oams, gUnk_0807FC40[b], gUnk_0807FC40[b][k].node,
-                                           gUnk_0807F4A0[b][k].node);
+        for (k = 0; gRightArmPartSpriteNodes[b][k].node; k++) {
+            if (!gRightArmPartSpriteNodes[b][k].alt)
+                load_sprite_tiles_by_table(obj.o.nodes, obj.o.oams, gLeftArmPartSpriteNodes[b],
+                                           gLeftArmPartSpriteNodes[b][k].node, gRightArmPartSpriteNodes[b][k].node);
         }
-        for (k = 0; gUnk_0807FC40[c][k].node; k++) {
-            if (!gUnk_0807FC40[c][k].alt)
-                load_sprite_tiles_by_table(obj.o.nodes, obj.o.oams, gUnk_0807F4A0[c], gUnk_0807F4A0[c][k].node,
-                                           gUnk_0807FC40[c][k].node);
+        for (k = 0; gLeftArmPartSpriteNodes[c][k].node; k++) {
+            if (!gLeftArmPartSpriteNodes[c][k].alt)
+                load_sprite_tiles_by_table(obj.o.nodes, obj.o.oams, gRightArmPartSpriteNodes[c],
+                                           gRightArmPartSpriteNodes[c][k].node, gLeftArmPartSpriteNodes[c][k].node);
         }
         toggle_bg_layer_visibility(a, b, c, d);
     }
     dst = buf;
-    if (gUnk_030052D0.unk10)
-        for (src = gUnk_0807ED00[a]; src->node;)
+    if (gHeadPartLayer.root_node)
+        for (src = gHeadPartSpriteNodes[a]; src->node;)
             *dst++ = *src++;
-    if (gUnk_03005290.unk10)
-        for (src = gUnk_0807F4A0[b]; src->node;)
+    if (gRightArmPartLayer.root_node)
+        for (src = gRightArmPartSpriteNodes[b]; src->node;)
             *dst++ = *src++;
-    if (gUnk_030052B0.unk10)
-        for (src = gUnk_0807FC40[c]; src->node;)
+    if (gLeftArmPartLayer.root_node)
+        for (src = gLeftArmPartSpriteNodes[c]; src->node;)
             *dst++ = *src++;
-    if (gUnk_030052F0.unk10)
-        for (src = gUnk_080803E0[d]; src->node;)
+    if (gLegPartLayer.root_node)
+        for (src = gLegPartSpriteNodes[d]; src->node;)
             *dst++ = *src++;
     render_sprite_node_recursive(&obj.o, buf, 1, x << 8, y << 8, depth, 0, alt);
     CpuSet(((struct SpriteWork *)obj.o.unk0)->oamBuf, oam, gSpriteWork->oamCount << 2);
@@ -854,7 +854,7 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
     s16 z;
     struct SpriteNodeDesc *desc = obj->nodes[node];
     struct SpriteNodeOam *oam = &obj->oams[node];
-    struct ObjAffineDstData d = gUnk_080ABBF4;
+    struct ObjAffineDstData d = gAffineIdentity;
     struct ObjAffineSrcData src = {0x100, 0x100, -angle};
     s32 offx, offy;
     s32 dx, dy;
@@ -864,7 +864,7 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
     struct OamFull *e;
 
     if (flip) {
-        u8 m = gUnk_08081320[node];
+        u8 m = gMirroredPartNode[node];
         desc = obj->nodes[m];
         rot = obj->oams[m].unkC;
         offx = obj->oams[m].unk8;
@@ -986,52 +986,54 @@ void load_sprite_animation_by_type(struct OamData *oam, struct SpriteTree *obj, 
 
     switch ((s32)kind) {
     case 0:
-        list = gUnk_0807ED00[id];
+        list = gHeadPartSpriteNodes[id];
         t = 0x140;
         break;
     case 1:
-        list = gUnk_0807F4A0[id];
+        list = gRightArmPartSpriteNodes[id];
         t = 0x1A0;
         break;
     case 2:
-        list = gUnk_0807FC40[id];
+        list = gLeftArmPartSpriteNodes[id];
         t = 0x1E0;
         break;
     case 3:
-        list = gUnk_080803E0[id];
+        list = gLegPartSpriteNodes[id];
         t = 0x220;
         break;
     }
 
     if (!(e & 4)) {
-        gUnk_03005308[slot].unk2C = (gUnk_03005308[slot].unk2C | 1) & ~8;
-        gUnk_03005308[slot].unk28 = slot;
-    } else if (gUnk_03005308[slot].unk2C & 2) {
+        gMedabotSpriteSlots[slot].flags = (gMedabotSpriteSlots[slot].flags | 1) & ~8;
+        gMedabotSpriteSlots[slot].side = slot;
+    } else if (gMedabotSpriteSlots[slot].flags & 2) {
         if (e & 2)
             t += 0x160;
         load_sprite_tree_recursive(obj->nodes, list, list->node, pal, obj->oams, &t, slot);
         if (slot) {
             switch (kind) {
             case 1:
-                for (j = 0; gUnk_0807F4A0[id][j].node; j++) {
-                    if (!gUnk_0807F4A0[id][j].alt)
-                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807FC40[id], gUnk_0807FC40[id][j].node,
-                                                   gUnk_0807F4A0[id][j].node);
+                for (j = 0; gRightArmPartSpriteNodes[id][j].node; j++) {
+                    if (!gRightArmPartSpriteNodes[id][j].alt)
+                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gLeftArmPartSpriteNodes[id],
+                                                   gLeftArmPartSpriteNodes[id][j].node,
+                                                   gRightArmPartSpriteNodes[id][j].node);
                 }
                 break;
             case 2:
-                for (j = 0; gUnk_0807FC40[id][j].node; j++) {
-                    if (!gUnk_0807FC40[id][j].alt)
-                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807F4A0[id], gUnk_0807F4A0[id][j].node,
-                                                   gUnk_0807FC40[id][j].node);
+                for (j = 0; gLeftArmPartSpriteNodes[id][j].node; j++) {
+                    if (!gLeftArmPartSpriteNodes[id][j].alt)
+                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gRightArmPartSpriteNodes[id],
+                                                   gRightArmPartSpriteNodes[id][j].node,
+                                                   gLeftArmPartSpriteNodes[id][j].node);
                 }
                 break;
             }
         }
-        gUnk_03005308[slot].unk2C &= ~2;
-        gUnk_03005308[slot].unk2C |= 4;
-        gUnk_03005308[slot].unk2C |= 8;
-    } else if (gUnk_03005308[slot].unk2C & 8) {
+        gMedabotSpriteSlots[slot].flags &= ~2;
+        gMedabotSpriteSlots[slot].flags |= 4;
+        gMedabotSpriteSlots[slot].flags |= 8;
+    } else if (gMedabotSpriteSlots[slot].flags & 8) {
         x -= obj->nodes[list->node]->unkC;
         y -= obj->nodes[list->node]->unkD;
         render_sprite_node_recursive(obj, list, list->node, x << 8, y << 8, tile, 0, slot);
@@ -1040,13 +1042,13 @@ void load_sprite_animation_by_type(struct OamData *oam, struct SpriteTree *obj, 
 
 void toggle_bg_layer_visibility(s32 a, s32 b, s32 c, s32 d) {
     if (a >= 0)
-        gUnk_030052D0.unkD = -gUnk_030052D0.unkD - 2;
+        gHeadPartLayer.mirror_pos = -gHeadPartLayer.mirror_pos - 2;
     if (b >= 0)
-        gUnk_03005290.unkD = -gUnk_03005290.unkD - 2;
+        gRightArmPartLayer.mirror_pos = -gRightArmPartLayer.mirror_pos - 2;
     if (c >= 0)
-        gUnk_030052B0.unkD = -gUnk_030052B0.unkD - 2;
+        gLeftArmPartLayer.mirror_pos = -gLeftArmPartLayer.mirror_pos - 2;
     if (d >= 0)
-        gUnk_030052F0.unkD = -gUnk_030052F0.unkD - 2;
+        gLegPartLayer.mirror_pos = -gLegPartLayer.mirror_pos - 2;
 }
 
 void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g,
@@ -1062,38 +1064,38 @@ void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b,
     if (!(i & 4)) {
         if (gGameWork.inCloseup)
             gGameWork.skipOamHigh = 1;
-        gUnk_03005308[slot].unk2C = (gUnk_03005308[slot].unk2C | 1) & ~8;
-        gUnk_03005308[slot].unk4 = a;
-        gUnk_03005308[slot].unk8 = b;
-        gUnk_03005308[slot].unkC = c;
-        gUnk_03005308[slot].unk10 = d;
-        gUnk_03005308[slot].unk28 = slot;
-    } else if (gUnk_03005308[slot].unk2C & 2) {
+        gMedabotSpriteSlots[slot].flags = (gMedabotSpriteSlots[slot].flags | 1) & ~8;
+        gMedabotSpriteSlots[slot].head = a;
+        gMedabotSpriteSlots[slot].right_arm = b;
+        gMedabotSpriteSlots[slot].left_arm = c;
+        gMedabotSpriteSlots[slot].legs = d;
+        gMedabotSpriteSlots[slot].side = slot;
+    } else if (gMedabotSpriteSlots[slot].flags & 2) {
         base = 0;
         if (i & 2)
             base = 0x160;
-        gUnk_030052D0 = gUnk_0807ECA0;
-        gUnk_030052B0 = gUnk_0807ECB8;
-        gUnk_03005290 = gUnk_0807ECD0;
-        gUnk_030052F0 = gUnk_0807ECE8;
-        a = gUnk_03005308[slot].unk4;
-        b = gUnk_03005308[slot].unk8;
-        c = gUnk_03005308[slot].unkC;
-        d = gUnk_03005308[slot].unk10;
-        j = gUnk_03005308[slot].unk28;
+        gHeadPartLayer = gHeadPartLayerTemplate;
+        gLeftArmPartLayer = gLeftArmPartLayerTemplate;
+        gRightArmPartLayer = gRightArmPartLayerTemplate;
+        gLegPartLayer = gLegPartLayerTemplate;
+        a = gMedabotSpriteSlots[slot].head;
+        b = gMedabotSpriteSlots[slot].right_arm;
+        c = gMedabotSpriteSlots[slot].left_arm;
+        d = gMedabotSpriteSlots[slot].legs;
+        j = gMedabotSpriteSlots[slot].side;
         if ((s32)a < 0) {
-            gUnk_030052D0.unk10 = 0;
-            gUnk_03005290.unk10 = 0;
-            gUnk_030052B0.unk10 = 0;
+            gHeadPartLayer.root_node = 0;
+            gRightArmPartLayer.root_node = 0;
+            gLeftArmPartLayer.root_node = 0;
         } else {
-            pa = gUnk_0807ED00[a];
-            gUnk_030052D0.unk10 = pa->node;
-            pb = gUnk_0807F4A0[b];
-            gUnk_03005290.unk10 = pb->node;
-            pc = gUnk_0807FC40[c];
-            gUnk_030052B0.unk10 = pc->node;
-            pd = gUnk_080803E0[d];
-            gUnk_030052F0.unk10 = pd->node;
+            pa = gHeadPartSpriteNodes[a];
+            gHeadPartLayer.root_node = pa->node;
+            pb = gRightArmPartSpriteNodes[b];
+            gRightArmPartLayer.root_node = pb->node;
+            pc = gLeftArmPartSpriteNodes[c];
+            gLeftArmPartLayer.root_node = pc->node;
+            pd = gLegPartSpriteNodes[d];
+            gLegPartLayer.root_node = pd->node;
             tile = base + 0x140;
             load_sprite_tree_recursive(obj->nodes, pa, pa->node, h, obj->oams, &tile, j);
             tile = base + 0x1A0;
@@ -1103,50 +1105,52 @@ void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b,
             tile = base + 0x220;
             load_sprite_tree_recursive(obj->nodes, pd, pd->node, h, obj->oams, &tile, j);
             if (slot != 0) {
-                for (k = 0; gUnk_0807F4A0[b][k].node; k++) {
-                    if (!gUnk_0807F4A0[b][k].alt)
-                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807FC40[b], gUnk_0807FC40[b][k].node,
-                                                   gUnk_0807F4A0[b][k].node);
+                for (k = 0; gRightArmPartSpriteNodes[b][k].node; k++) {
+                    if (!gRightArmPartSpriteNodes[b][k].alt)
+                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gLeftArmPartSpriteNodes[b],
+                                                   gLeftArmPartSpriteNodes[b][k].node,
+                                                   gRightArmPartSpriteNodes[b][k].node);
                 }
-                for (k = 0; gUnk_0807FC40[c][k].node; k++) {
-                    if (!gUnk_0807FC40[c][k].alt)
-                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807F4A0[c], gUnk_0807F4A0[c][k].node,
-                                                   gUnk_0807FC40[c][k].node);
+                for (k = 0; gLeftArmPartSpriteNodes[c][k].node; k++) {
+                    if (!gLeftArmPartSpriteNodes[c][k].alt)
+                        load_sprite_tiles_by_table(obj->nodes, obj->oams, gRightArmPartSpriteNodes[c],
+                                                   gRightArmPartSpriteNodes[c][k].node,
+                                                   gLeftArmPartSpriteNodes[c][k].node);
                 }
                 toggle_bg_layer_visibility(a, b, c, d);
             }
         }
-        obj->layers[slot][0] = gUnk_030052D0;
-        obj->layers[slot][1] = gUnk_03005290;
-        obj->layers[slot][2] = gUnk_030052B0;
-        obj->layers[slot][3] = gUnk_030052F0;
-        gUnk_03005308[slot].unk2C = (gUnk_03005308[slot].unk2C & ~2) | 4;
-        gUnk_03005308[slot].unk2C |= 8;
-    } else if (gUnk_03005308[slot].unk2C & 8) {
+        obj->layers[slot][0] = gHeadPartLayer;
+        obj->layers[slot][1] = gRightArmPartLayer;
+        obj->layers[slot][2] = gLeftArmPartLayer;
+        obj->layers[slot][3] = gLegPartLayer;
+        gMedabotSpriteSlots[slot].flags = (gMedabotSpriteSlots[slot].flags & ~2) | 4;
+        gMedabotSpriteSlots[slot].flags |= 8;
+    } else if (gMedabotSpriteSlots[slot].flags & 8) {
         struct SpriteTileRef buf[32];
 
         custom_memset(buf, 0, sizeof(buf));
         gGameWork.skipOamHigh = 0;
-        a = gUnk_03005308[slot].unk4;
-        b = gUnk_03005308[slot].unk8;
-        c = gUnk_03005308[slot].unkC;
-        d = gUnk_03005308[slot].unk10;
-        gUnk_030052D0 = obj->layers[slot][0];
-        gUnk_03005290 = obj->layers[slot][1];
-        gUnk_030052B0 = obj->layers[slot][2];
-        gUnk_030052F0 = obj->layers[slot][3];
+        a = gMedabotSpriteSlots[slot].head;
+        b = gMedabotSpriteSlots[slot].right_arm;
+        c = gMedabotSpriteSlots[slot].left_arm;
+        d = gMedabotSpriteSlots[slot].legs;
+        gHeadPartLayer = obj->layers[slot][0];
+        gRightArmPartLayer = obj->layers[slot][1];
+        gLeftArmPartLayer = obj->layers[slot][2];
+        gLegPartLayer = obj->layers[slot][3];
         dst = buf;
-        if (gUnk_030052D0.unk10)
-            for (src = gUnk_0807ED00[a]; src->node;)
+        if (gHeadPartLayer.root_node)
+            for (src = gHeadPartSpriteNodes[a]; src->node;)
                 *dst++ = *src++;
-        if (gUnk_03005290.unk10)
-            for (src = gUnk_0807F4A0[b]; src->node;)
+        if (gRightArmPartLayer.root_node)
+            for (src = gRightArmPartSpriteNodes[b]; src->node;)
                 *dst++ = *src++;
-        if (gUnk_030052B0.unk10)
-            for (src = gUnk_0807FC40[c]; src->node;)
+        if (gLeftArmPartLayer.root_node)
+            for (src = gLeftArmPartSpriteNodes[c]; src->node;)
                 *dst++ = *src++;
-        if (gUnk_030052F0.unk10)
-            for (src = gUnk_080803E0[d]; src->node;)
+        if (gLegPartLayer.root_node)
+            for (src = gLegPartSpriteNodes[d]; src->node;)
                 *dst++ = *src++;
         render_sprite_node_recursive(obj, buf, 1, e << 8, f << 8, g, 0, j);
     }
@@ -1156,16 +1160,16 @@ void update_anim_object_flags(void) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        u32 v = gUnk_03005308[i].unk2C;
+        u32 v = gMedabotSpriteSlots[i].flags;
         if (v & 1) {
             v &= ~1;
             v |= 2;
-            gUnk_03005308[i].unk2C = v;
+            gMedabotSpriteSlots[i].flags = v;
         } else if (!(v & 2)) {
             if (v & 8) {
                 if (v & 4) {
                     v &= ~4;
-                    gUnk_03005308[i].unk2C = v;
+                    gMedabotSpriteSlots[i].flags = v;
                 }
             }
         }
@@ -1189,28 +1193,30 @@ static void load_medabot_part_sprite_tree(u32 unused0, struct SpriteTree *obj, s
         struct SpriteTileRef *t;
 
         tile = base + 0x140;
-        load_sprite_tree_recursive(obj->nodes, t = gUnk_0807ED00[idx], t->node, pal, obj->oams, &tile, alt);
+        load_sprite_tree_recursive(obj->nodes, t = gHeadPartSpriteNodes[idx], t->node, pal, obj->oams, &tile, alt);
         break;
     }
     case 1:
         tile = base + 0x1A0;
-        load_sprite_tree_recursive(obj->nodes, e = gUnk_0807F4A0[idx], e->node, pal, obj->oams, &tile, alt);
+        load_sprite_tree_recursive(obj->nodes, e = gRightArmPartSpriteNodes[idx], e->node, pal, obj->oams, &tile, alt);
         if (alt) {
-            for (i = 0; gUnk_0807F4A0[idx][i].node; i++) {
-                if (!gUnk_0807F4A0[idx][i].alt)
-                    load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807FC40[idx], gUnk_0807FC40[idx][i].node,
-                                               gUnk_0807F4A0[idx][i].node);
+            for (i = 0; gRightArmPartSpriteNodes[idx][i].node; i++) {
+                if (!gRightArmPartSpriteNodes[idx][i].alt)
+                    load_sprite_tiles_by_table(obj->nodes, obj->oams, gLeftArmPartSpriteNodes[idx],
+                                               gLeftArmPartSpriteNodes[idx][i].node,
+                                               gRightArmPartSpriteNodes[idx][i].node);
             }
         }
         break;
     case 2:
         tile = base + 0x1E0;
-        load_sprite_tree_recursive(obj->nodes, e = gUnk_0807FC40[idx], e->node, pal, obj->oams, &tile, alt);
+        load_sprite_tree_recursive(obj->nodes, e = gLeftArmPartSpriteNodes[idx], e->node, pal, obj->oams, &tile, alt);
         if (alt) {
-            for (i = 0; gUnk_0807FC40[idx][i].node; i++) {
-                if (!gUnk_0807FC40[idx][i].alt)
-                    load_sprite_tiles_by_table(obj->nodes, obj->oams, gUnk_0807F4A0[idx], gUnk_0807F4A0[idx][i].node,
-                                               gUnk_0807FC40[idx][i].node);
+            for (i = 0; gLeftArmPartSpriteNodes[idx][i].node; i++) {
+                if (!gLeftArmPartSpriteNodes[idx][i].alt)
+                    load_sprite_tiles_by_table(obj->nodes, obj->oams, gRightArmPartSpriteNodes[idx],
+                                               gRightArmPartSpriteNodes[idx][i].node,
+                                               gLeftArmPartSpriteNodes[idx][i].node);
             }
         }
         break;
@@ -1218,7 +1224,7 @@ static void load_medabot_part_sprite_tree(u32 unused0, struct SpriteTree *obj, s
         struct SpriteTileRef *t;
 
         tile = base + 0x220;
-        load_sprite_tree_recursive(obj->nodes, t = gUnk_080803E0[idx], t->node, pal, obj->oams, &tile, alt);
+        load_sprite_tree_recursive(obj->nodes, t = gLegPartSpriteNodes[idx], t->node, pal, obj->oams, &tile, alt);
         break;
     }
     }

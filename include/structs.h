@@ -1070,14 +1070,13 @@ struct FieldWork {
     s8 affinity_ka;
 };
 
-// Four 0x20-byte records at 0x03005290 / 0x030052B0 / 0x030052D0 / 0x030052F0 (guess: BG layer state)
-// Sprite part layer (24 bytes): gUnk_030052D0 / 03005290 / 030052B0 / 030052F0 (head, right arm, left arm,
-// legs) are loaded from the ROM templates gUnk_0807ECA0.. and saved per side in struct SpriteTree.
-struct Unk_03005290 {
+// Medapart sprite layer (0x20 bytes apart in IWRAM): gHeadPartLayer / gRightArmPartLayer / gLeftArmPartLayer /
+// gLegPartLayer are loaded from the ROM templates g*PartLayerTemplate and saved per side in struct SpriteTree.
+struct PartSpriteLayer {
     u8 filler0[0xD];
-    u8 unkD; // toggled between x and -2 - x (toggle_bg_layer_visibility)
+    u8 mirror_pos; // guess: x offset; toggled between x and -2 - x (toggle_bg_layer_visibility)
     u8 fillerE[2];
-    u8 unk10; // root node of the part's sprite tree (0 = hidden)
+    u8 root_node; // root node of the part's sprite tree (0 = hidden)
     u8 filler11[7];
 };
 
@@ -1523,7 +1522,7 @@ struct SpriteTree {
     u8 *unk0; // gSpriteWork record
     struct SpriteNodeDesc **nodes;
     struct SpriteNodeOam *oams;
-    struct Unk_03005290 layers[2][4]; // part layers saved per side (setup_medabot_part_sprites)
+    struct PartSpriteLayer layers[2][4]; // part layers saved per side (setup_medabot_part_sprites)
 };
 
 // struct SpriteTree padded to the 0xD0 bytes build_medabot_sprite clears
@@ -1532,16 +1531,16 @@ struct SpriteTreePadded {
     u32 pad;
 };
 
-// 48-byte records at gUnk_03005308, one per side (setup_medabot_part_sprites).
-struct SceneSlot {
+// One per side (gMedabotSpriteSlots): the parts shown and the load state (setup_medabot_part_sprites).
+struct MedabotSpriteSlot {
     u8 filler0[4];
-    u32 unk4;  // head part
-    u32 unk8;  // right arm part
-    u32 unkC;  // left arm part
-    u32 unk10; // legs part
+    u32 head; // part ids (index the g*PartSpriteNodes tables)
+    u32 right_arm;
+    u32 left_arm;
+    u32 legs;
     u8 filler14[0x14];
-    u32 unk28; // side
-    u32 unk2C; // flags: 1 pending, 2 load, 4 loaded, 8 visible
+    u32 side;
+    u32 flags; // 1 pending, 2 load, 4 loaded, 8 visible
 };
 
 // One of 18 points placed on a hexagon (ring_points_place_on_hexagon) or a circle (ring_points_place_on_circle)
