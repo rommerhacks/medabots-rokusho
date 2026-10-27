@@ -299,15 +299,15 @@
 * `if (a && b && (r = f())) {...} else x++;` where the original's else path reuses the
   `gUnk_03001800` base kept in a callee-saved register (no new literal): write the function with a
   struct pointer local (`struct Unk_03001800 *s = &gUnk_03001800;`). With the global, gcc reloads the
-  base at the join (sub_08020AD0).
+  base at the join (repair_spread).
 * `n = (r | -r) >> 31;` gives the original's `rsbs; orrs; lsrs #31` for "count 1 if nonzero";
-  `n = f() != 0` gets a branch (sub_08021734).
+  `n = f() != 0` gets a branch (team_form_move).
 * A table whose entries the original reloads after every call (`ldr r0, [r4]` before each `bl`) must
   not be declared with `const` elements (`const void *gUnk_083B5F80[]`, not `const void *const`):
   gcc keeps a const element in a register across calls.
 * Two stores of the same value after a select (`if (c) x = 0x88; else x = 0x68; a = b = c = x;`) come
   out as one join when written as chained stores in each arm: `if (c) p[2].f = p[1].f = p[0].f = 0x88;
-  else ... = 0x68;` (sub_0802167C).
+  else ... = 0x68;` (team_form_split).
 * A caller passing an un-truncated register (`ldrh` value, a loop counter + 0x5A) to an asm callee that
   doesn't truncate its parameter either means the parameter is u32, not u8.
 * An out-parameter read back as one word and split (`ldr r0, [sp, #4]; strh r0, [..]; asrs r0, r0, #16;
@@ -315,10 +315,10 @@
   (`v = pos; a = v; b = v >> 16;`); a `struct { s16 x, y; }` gives two `ldrh` (calc_polar_to_screen_coords).
 * The global base loaded again for the second test of `if (a == 0 && b) next; else if (c) c--; else next;`
   comes from writing the two `next` arms out separately; `if ((a || !b) && c) c--; else next;` CSEs the
-  base into one register (sub_08022938).
+  base into one register (heal_orb_hold).
 * A field address built as `base + rec*0x100` + an offset, then `adds r0, #1` (literal `base + off`, not
   `base + off + 1`): take the address of the field *before* it and add one, `&gUnk_03000590[r].unkB8 + 1`
-  (conceal_apply_evasion) or `&...unkD7 + 1` for a u16 at 0xD8 (sub_08022748). `&...unkB9` folds the 1 into the literal.
+  (conceal_apply_evasion) or `&...unkD7 + 1` for a u16 at 0xD8 (defence_apply). `&...unkB9` folds the 1 into the literal.
 * `x.unk84 = 0x45; f(tbl[0x45]);` loads 0x114 as a fresh constant; the original's `movs r1, #0x45; strb;
   lsls r1, #2` comes from indexing with the field just stored: `f(tbl[x.unk84])` (rapid_charge_hourglass_spawn).
 * `x = K; if (c) x |= M;` (on a struct field) makes gcc keep K in a register and `orrs` it for the second

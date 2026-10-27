@@ -379,109 +379,109 @@ void sub_080342E4(void) {
         battle_script_advance();
 }
 
-void sub_08034300(void) {
-    sub_0802081C();
+void script_op_recovery(void) {
+    recovery_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_0803431C(void) {
+void script_op_recovery_heal(void) {
     init_battle_scene_backgrounds();
     gUnk_03001800.unk15F = battle_advance_dialogue_text();
     gUnk_03001800.unk160 = battle_advance_action_text();
-    sub_080208C0();
+    recovery_heal_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_0803435C(void) {
-    sub_080209B0();
+void script_op_repair(void) {
+    repair_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08034378(void) {
+void script_op_repair_apply(void) {
     init_battle_scene_backgrounds();
     gUnk_03001800.unk15F = battle_advance_dialogue_text();
     gUnk_03001800.unk160 = battle_advance_action_text();
-    sub_08020A68();
+    repair_apply_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_080343B8(void) {
-    sub_08020CFC();
+void script_op_trap(void) {
+    trap_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_080343D4(void) {
-    sub_080218BC();
+void script_op_break_form(void) {
+    break_form_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_080343F0(void) {
-    sub_08021E04();
+void script_op_stability(void) {
+    stability_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_0803440C(void) {
-    sub_08022154();
+void script_op_force_bind(void) {
+    force_bind_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08034428(void) {
-    sub_080223BC();
+void script_op_defence(void) {
+    defence_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08034444(void) {
-    sub_080227D8();
+void script_op_autorecover(void) {
+    autorecover_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08034460(void) {
-    sub_08022CA8();
+void script_op_reactivate(void) {
+    reactivate_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_0803447C(void) {
+void script_op_scout(void) {
     scout_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08034498(void) {
+void script_op_conceal(void) {
     conceal_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_080344B4(void) {
+void script_op_boost_charge(void) {
     boost_charge_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_080344D0(void) {
+void script_op_rapid_charge(void) {
     rapid_charge_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_080344EC(void) {
+void script_op_drain_charge(void) {
     drain_charge_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08034508(void) {
+void script_op_pushover(void) {
     pushover_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();

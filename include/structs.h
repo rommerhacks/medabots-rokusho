@@ -707,7 +707,7 @@ struct Unk_03001800 {
     s16 unk102[8]; // battle sequence: operands of the current command (load_battle_sequence_commands)
     u8 unk112;     // set to 0x29 with unk113 (closeup_reset_text_states)
     u8 unk113;
-    u8 unk114[2]; // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (sub_08020B4C)
+    u8 unk114[2]; // per side (0 team, 1 opponents): passed to init_scene_with_bg_and_palette (repair_redraw_bot)
     u8 filler116[0x2];
     u8 unk118; // nonzero: sub_0801B3AC writes unk11C back into the acting Medabot's part
     u8 unk119; // part data[1] - 0x37 of the swapped part (change_transform_part)
@@ -832,10 +832,10 @@ struct Unk_03000590 {
     u8 unkD2;
     u8 unkD3;  // added to gUnk_03001800.unkEC for parts with data[2] 0 / 1 (sub_08033D30)
     u8 unkD4;  // added for data[2] 2 / 3 (sub_08033D30)
-    u8 unkD5;  // added to gUnk_03001800.unkEC for unk28[side].unk5 (sub_08021418)
+    u8 unkD5;  // added to gUnk_03001800.unkEC for unk28[side].unk5 (trap_apply)
     u8 unkD6;  // flags (bit 1: +10 damage, sub_0801ECC0)
     u8 unkD7;  // movement: sub-pixel accumulator, + (0x20 - unkBB) per frame, 1/16 px (battle_bot_move)
-    u16 unkD8; // cleared, then raised by gUnk_03001800.unkEC up to 0xFF (sub_08022748)
+    u16 unkD8; // cleared, then raised by gUnk_03001800.unkEC up to 0xFF (defence_apply)
     u8 unkDA;  // movement: whole pixels moved this frame
     u8 fillerDB;
     u8 unkDC; // unkDC..unkE3 cleared by reset_battle_bot_state

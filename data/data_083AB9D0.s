@@ -403,48 +403,48 @@ gUnk_083AD878:
 gUnk_083AD898:
 	.incbin "baserom.gba", 0x3AD898, 0x20
 
-	.global gUnk_083AD8B8
-gUnk_083AD8B8:
+	.global gRecoverySteps
+gRecoverySteps:
 	.incbin "baserom.gba", 0x3AD8B8, 0x20
 
-	.global gUnk_083AD8D8
-gUnk_083AD8D8:
+	.global gRecoveryHealSteps
+gRecoveryHealSteps:
 	.incbin "baserom.gba", 0x3AD8D8, 0x64
 
-	.global gUnk_083AD93C
-gUnk_083AD93C:
+	.global gRepairSteps
+gRepairSteps:
 	.incbin "baserom.gba", 0x3AD93C, 0x20
 
-	.global gUnk_083AD95C
-gUnk_083AD95C:
+	.global gRepairApplySteps
+gRepairApplySteps:
 	.incbin "baserom.gba", 0x3AD95C, 0x64
 
-	.global gUnk_083AD9C0
-gUnk_083AD9C0:
+	.global gTrapSteps
+gTrapSteps:
 	.incbin "baserom.gba", 0x3AD9C0, 0xAC
 
-	.global gUnk_083ADA6C
-gUnk_083ADA6C:
+	.global gBreakFormSteps
+gBreakFormSteps:
 	.incbin "baserom.gba", 0x3ADA6C, 0x80
 
-	.global gUnk_083ADAEC
-gUnk_083ADAEC:
+	.global gStabilitySteps
+gStabilitySteps:
 	.incbin "baserom.gba", 0x3ADAEC, 0x40
 
-	.global gUnk_083ADB2C
-gUnk_083ADB2C:
+	.global gForceBindSteps
+gForceBindSteps:
 	.incbin "baserom.gba", 0x3ADB2C, 0x40
 
-	.global gUnk_083ADB6C
-gUnk_083ADB6C:
+	.global gDefenceSteps
+gDefenceSteps:
 	.incbin "baserom.gba", 0x3ADB6C, 0x40
 
-	.global gUnk_083ADBAC
-gUnk_083ADBAC:
+	.global gAutoRecoverSteps
+gAutoRecoverSteps:
 	.incbin "baserom.gba", 0x3ADBAC, 0x60
 
-	.global gUnk_083ADC0C
-gUnk_083ADC0C:
+	.global gReactivateSteps
+gReactivateSteps:
 	.incbin "baserom.gba", 0x3ADC0C, 0x60
 
 	.global gScoutSteps
