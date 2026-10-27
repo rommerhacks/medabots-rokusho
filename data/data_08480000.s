@@ -256,12 +256,12 @@ gMedabotsWeeklySubStates:
 gUnk_08486114:
 	.incbin "baserom.gba", 0x486114, 0x4
 
-	.global gUnk_08486118
-gUnk_08486118:
+	.global gWeeklySpriteEffects
+gWeeklySpriteEffects:
 	.incbin "baserom.gba", 0x486118, 0x20
 
-	.global gUnk_08486138
-gUnk_08486138:
+	.global gWeeklyLectureSteps
+gWeeklyLectureSteps:
 	.incbin "baserom.gba", 0x486138, 0x28
 
 	.global gUnk_08486160
@@ -276,8 +276,8 @@ gUnk_084864E8:
 gUnk_08486EEC:
 	.incbin "baserom.gba", 0x486EEC, 0x3F0
 
-	.global gUnk_084872DC
-gUnk_084872DC:
+	.global gWeeklyMessages
+gWeeklyMessages:
 	.incbin "baserom.gba", 0x4872DC, 0x4C
 
 	.global gUnk_08487328

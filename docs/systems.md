@@ -75,7 +75,10 @@ screen.
 from field scripts.
 
 **Cutscenes** (`src/cutscene/`). The scrolling-text scene, the event picture with a message and Medabots
-Weekly.
+Weekly, the in-game TV show: curtains open on a studio, four characters walk on and talk, the "Medabots
+Lecture" corner assembles a Medabot part by part, and the curtains close again. Its sub-states are a linear
+script; sprite moves are small effect functions (`gWeeklySpriteEffects`) and the lecture's build steps are
+`gWeeklyLectureSteps`.
 
 **Minigames** (`src/minigame/`). The race and the bomb game, both mode-3 states.
 

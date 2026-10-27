@@ -1,41 +1,45 @@
 // Mode-3 state 6: Medabots Weekly, the in-game TV show. medabots_weekly_update runs the scrolling / animated BG
-// helpers at the top of the file, then gMedabotsWeeklySubStates[gGameSubState] (19 entries, init first). The
-// sub-states load the show's graphics, run scripted sprite moves (gUnk_08486118 sprite effects, driven by
-// sub_08071614) and messages, and end with the gUnk_08486138 closing sequence. Everything here is reached only from
-// these tables; it talks to the mode-3 scene transitions (engine/scene_transition.c), the message window and the
-// sound engine. The "battle" names on some sub-states are older guesses and predate this module.
+// helpers, then gMedabotsWeeklySubStates[gGameSubState] (19 entries, init first). Runtime (scenario
+// 20_medabots_weekly): a TV studio whose curtains (sprites 0-10 right half, 11-21 left half) open; four
+// characters (sprites 22-25, shadows 26-29) walk or jump on stage and talk (gWeeklyMessages 0-7); then the
+// "Medabots Lecture" corner builds a Medabot part by part (head, both arms, legs, then the Medal and a white
+// flash, gWeeklyLectureSteps); back in the studio a closing talk, the curtains close and the game returns to
+// mode 1. Sprite moves are effects from gWeeklySpriteEffects, run every frame by weekly_run_sprite_effects.
 #include "global.h"
 
-void sub_0807068C(void) {
+// Scrolls BG3 down one line every other frame (gMedabotsWeekly.scrollBg3, the lecture backdrop).
+void weekly_scroll_bg3(void) {
     if (gFrameCounter & 1)
         gBg3Scroll.y++;
 }
 
-void sub_080706AC(void) {
+// Studio frame update: cycles the two animated BG tile strips, runs the sprite effects and the cycle anims.
+void weekly_update_studio(void) {
     if ((gFrameCounter & 3) == 0) {
-        if (++gUnk_03001800_bganim.unkE > 5)
-            gUnk_03001800_bganim.unkE = 0;
-        DmaSet(3, gUnk_02031000 + gUnk_03001800_bganim.unkE * 0x280, VRAM + 0x4020, 0x84000040);
+        if (++gMedabotsWeekly.tileFrame > 5)
+            gMedabotsWeekly.tileFrame = 0;
+        DmaSet(3, gWeeklyAnimTiles + gMedabotsWeekly.tileFrame * 0x280, VRAM + 0x4020, 0x84000040);
     }
     if ((gFrameCounter & 0xF) == 0) {
-        if (++gUnk_03001800_bganim.unkF > 5)
-            gUnk_03001800_bganim.unkF = 0;
-        if (gUnk_03001800_bganim.unkF <= 5)
-            DmaSet(3, gUnk_02031100 + gUnk_03001800_bganim.unkF * 0x280, VRAM + 0x4120, 0x84000060);
+        if (++gMedabotsWeekly.tileFrame2 > 5)
+            gMedabotsWeekly.tileFrame2 = 0;
+        if (gMedabotsWeekly.tileFrame2 <= 5)
+            DmaSet(3, gWeeklyAnimTiles2 + gMedabotsWeekly.tileFrame2 * 0x280, VRAM + 0x4120, 0x84000060);
     }
-    sub_08071614();
-    if (gUnk_03007010 != 0)
-        sub_0807168C();
+    weekly_run_sprite_effects();
+    if (gWeeklyCycleAnimMask != 0)
+        sprite_cycle_anim_update();
 }
 
 void medabots_weekly_update(void) {
-    if (gUnk_03001800_bganim.unkC != 0)
-        sub_0807068C();
-    if (gUnk_03001800_bganim.unkD != 0)
-        sub_080706AC();
+    if (gMedabotsWeekly.scrollBg3 != 0)
+        weekly_scroll_bg3();
+    if (gMedabotsWeekly.animTiles != 0)
+        weekly_update_studio();
     gMedabotsWeeklySubStates[gGameSubState]();
 }
 
+// Sub-state 0: clears VRAM, palettes and sprites, then loads the studio (sub-state 3).
 void medabots_weekly_init(void) {
     vu32 zero;
 
@@ -46,11 +50,11 @@ void medabots_weekly_init(void) {
     zero = 0;
     DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
     zero = 0;
-    DmaSet(3, &zero, &gUnk_03001800_bganim, 0x85000005);
+    DmaSet(3, &zero, &gMedabotsWeekly, 0x85000005);
     play_song(0);
     REG_DISPCNT = 0x60;
-    gUnk_03001800_bganim.unk0 = 3;
-    gUnk_03001800_bganim.unk2 = 6;
+    gMedabotsWeekly.unk0 = 3;
+    gMedabotsWeekly.unk2 = 6;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;
@@ -59,11 +63,13 @@ void medabots_weekly_init(void) {
     gBg2Scroll.y = 0;
     gBg3Scroll.x = 0;
     gBg3Scroll.y = 0;
-    gUnk_03007010 = 0;
+    gWeeklyCycleAnimMask = 0;
     gGameSubState = 3;
 }
 
-void load_battle_bg_tilemaps(void) {
+// Sub-state 3: decompresses the studio graphics and builds the curtain (0-21), character (22-25) and shadow
+// (26-29) sprites; continues with sub-state 4, then 6.
+void weekly_load_studio(void) {
     s32 i;
 
     LZ77UnCompVram(gUnk_087C11C4, (void *)0x06004000);
@@ -115,7 +121,8 @@ void load_battle_bg_tilemaps(void) {
     gGameSubState = 4;
 }
 
-void load_battle_field_graphics(void) {
+// Sub-state 4: studio palettes and BG layers, starts the tile animation and fades in.
+void weekly_show_studio(void) {
     LZ77UnCompVram(gUnk_087C481C, (void *)0x02031000);
     DmaSet(3, gUnk_087C4C5C, PLTT, 0x84000068);
     LZ77UnCompVram(gUnk_085E3AC8, (void *)0x06011B00);
@@ -133,16 +140,18 @@ void load_battle_field_graphics(void) {
     REG_BG3CNT = 0xF07;
     REG_BLDCNT = 0xC40;
     REG_BLDALPHA = 0xA0C;
-    gUnk_03001800_bganim.unkC = 0;
+    gMedabotsWeekly.scrollBg3 = 0;
     gBg3Scroll.x = 0;
     gBg3Scroll.y = 0;
-    gUnk_03001800_bganim.unkD = 1;
+    gMedabotsWeekly.animTiles = 1;
     setup_screen_transition_effect_080682CC(4, 2, 0);
     REG_DISPCNT |= 0x1E00;
     gGameSubState = 1;
 }
 
-void init_battle_bg_palettes_and_layers(void) {
+// Sub-state 5: "Medabots Lecture" palettes and BG layers; the bare Medabot (sprites 6-9) and the new parts
+// (2-5, above the screen); fades in.
+void weekly_show_lecture(void) {
     DmaSet(3, gUnk_087C4DFC, PLTT, 0x84000030);
     DmaSet(3, &gUnk_0807C540[0xE0], PLTT + 0x200, 0x80000010);
     DmaSet(3, &gUnk_0807C540[0xC0], PLTT + 0x220, 0x80000010);
@@ -191,57 +200,63 @@ void init_battle_bg_palettes_and_layers(void) {
     gUnk_03002C30[5].unk4 = -0x30;
     gUnk_03002C30[5].unkB = 0x29;
 
-    gUnk_03001800_bganim.unkC = 1;
-    gUnk_03001800_bganim.unkD = 0;
+    gMedabotsWeekly.scrollBg3 = 1;
+    gMedabotsWeekly.animTiles = 0;
     setup_screen_transition_effect_080682CC(4, 2, 0);
     REG_DISPCNT |= 0x1E00;
     gGameSubState = 1;
 }
 
-void sub_08070EB8(void) {
+// Sub-state 6: show music, both curtains start opening.
+void weekly_open_curtains(void) {
     play_song(4);
-    sub_08071C40(1, 0, 0);
-    sub_08071C40(2, 11, 0);
+    weekly_set_sprite_effect(1, 0, 0);
+    weekly_set_sprite_effect(2, 11, 0);
     gGameSubState++;
 }
 
-void sub_08070EE4(void) {
+// Sub-state 7: once the curtains are open, characters 22 and 23 walk on from both sides.
+void weekly_enter_pair(void) {
     if (gUnk_03002C30[10].unk22 == 0) {
         sprite_cycle_anim_start(0x16, 0x2D, 8);
         sprite_cycle_anim_start(0x17, 0x36, 8);
-        sub_08071C40(5, 0x16, 0x48);
-        sub_08071C40(6, 0x17, 0x48);
+        weekly_set_sprite_effect(5, 0x16, 0x48);
+        weekly_set_sprite_effect(6, 0x17, 0x48);
         gGameSubState++;
     }
 }
 
-void sub_08070F34(void) {
+// Sub-state 8: character 24 jumps on stage.
+void weekly_enter_jumper(void) {
     if (gUnk_03002C30[22].unk20 == 0) {
         sprite_cycle_anim_stop(0x16, 0x27);
         sprite_cycle_anim_stop(0x17, 0x33);
         sprite_cycle_anim_start(0x18, 0x45, 8);
-        sub_08071C40(7, 0x18, 0x60);
+        weekly_set_sprite_effect(7, 0x18, 0x60);
         gGameSubState++;
     }
 }
 
-void sub_08070F7C(void) {
+// Sub-state 9: character 25 walks on.
+void weekly_enter_host(void) {
     if (gUnk_03002C30[24].unk20 == 0) {
         sprite_cycle_anim_start(0x18, 0x3F, 0xC);
         sprite_cycle_anim_start(0x19, 0x4E, 8);
-        sub_08071C40(6, 0x19, 0x60);
+        weekly_set_sprite_effect(6, 0x19, 0x60);
         gGameSubState++;
     }
 }
 
-void sub_08070FC0(void) {
+// Sub-state 10: waits for character 25 to arrive.
+void weekly_wait_host(void) {
     if (gUnk_03002C30[25].unk20 == 0) {
         sprite_cycle_anim_stop(0x19, 0x4B);
         gGameSubState++;
     }
 }
 
-void sub_08070FEC(void) {
+// Sub-state 11: the opening talk (gWeeklyMessages 0-7); the speaker's sprite cycles while their line is shown.
+void weekly_opening_talk(void) {
     switch (gUnk_03001800_s.timer) {
     case 0:
         text_window_init(1, 0, 0);
@@ -300,7 +315,7 @@ void sub_08070FEC(void) {
     case 11:
     case 13:
     case 15:
-        if (run_message(gUnk_084872DC[gUnk_03001800_s.timer >> 1]))
+        if (run_message(gWeeklyMessages[gUnk_03001800_s.timer >> 1]))
             gUnk_03001800_s.timer++;
         break;
     default:
@@ -312,8 +327,8 @@ void sub_08070FEC(void) {
     }
 }
 
-// Medabots Weekly sub-state 12 (gMedabotsWeeklySubStates); only reached through that table.
-void sub_08071150(void) {
+// Sub-state 12: clears the sprites and goes to the lecture screen (sub-state 5, then 13).
+void weekly_go_to_lecture(void) {
     u32 zero = 0;
 
     DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
@@ -321,7 +336,9 @@ void sub_08071150(void) {
     gGameSubState = 5;
 }
 
-void sub_0807118C(void) {
+// Sub-state 13: the lecture talk (gWeeklyMessages 8-13); after each line one gWeeklyLectureSteps step runs to
+// its end.
+void weekly_lecture(void) {
     switch (gUnk_03001800_s.timer) {
     case 0:
         text_window_init(1, 0, 0);
@@ -342,14 +359,14 @@ void sub_0807118C(void) {
     case 13:
     case 17:
     case 21:
-        if (run_message(gUnk_084872DC[(gUnk_03001800_s.timer >> 2) + 8])) {
+        if (run_message(gWeeklyMessages[(gUnk_03001800_s.timer >> 2) + 8])) {
             sub_0803FB0C();
             run_message(gUnk_08486114);
             gUnk_03001800_s.timer++;
         }
         break;
     case 25:
-        if (run_message(gUnk_084872DC[(gUnk_03001800_s.timer >> 2) + 8]))
+        if (run_message(gWeeklyMessages[(gUnk_03001800_s.timer >> 2) + 8]))
             gUnk_03001800_s.timer++;
         break;
     case 2:
@@ -373,7 +390,7 @@ void sub_0807118C(void) {
     case 15:
     case 19:
     case 23:
-        if (call_battle_handler_by_state_08071C64())
+        if (weekly_lecture_run_step())
             gUnk_03001800_s.timer++;
         break;
     default:
@@ -385,10 +402,11 @@ void sub_0807118C(void) {
     }
 }
 
-void sub_080712E8(void) {
+// Sub-state 14: rebuilds the studio with closed curtains and the characters on stage (sub-state 4, then 15).
+void weekly_back_to_studio(void) {
     u32 zero = 0;
     s32 i;
-    u32 z;
+    u32 zero_late; // FAKEMATCH: a second zero, loaded late for gUnk_03000430
 
     DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
     init_battle_sprite_entry_08048818(0, 0xCC00, 0x50E, 4, 3);
@@ -419,16 +437,17 @@ void sub_080712E8(void) {
         gUnk_03002C30[i + 0x1A].unk2 = gUnk_03002C30[i + 0x16].unk2;
         gUnk_03002C30[i + 0x1A].unk4 = 0x48;
     }
-    z = 0;
+    zero_late = 0;
     gUnk_03002C30[0x1C].unk4 = 0x38;
-    gUnk_03007010 = 0;
+    gWeeklyCycleAnimMask = 0;
     sprite_cycle_anim_start(0x18, 0x3F, 0xC);
-    gUnk_03000430 = z;
+    gUnk_03000430 = zero_late;
     gUnk_03001800_s.nextSubState = 0xF;
     gGameSubState = 4;
 }
 
-void battle_audio_phase_dispatch(void) {
+// Sub-state 15: the closing talk (gWeeklyMessages 15-18), then the curtains close.
+void weekly_closing_talk(void) {
     switch (gUnk_03001800_s.timer) {
     case 0:
         text_window_init(1, 0, 0);
@@ -458,7 +477,7 @@ void battle_audio_phase_dispatch(void) {
     case 3:
     case 5:
     case 7:
-        if (run_message(gUnk_084872DC[(gUnk_03001800_s.timer >> 1) + 15]))
+        if (run_message(gWeeklyMessages[(gUnk_03001800_s.timer >> 1) + 15]))
             gUnk_03001800_s.timer++;
         break;
     default:
@@ -466,14 +485,15 @@ void battle_audio_phase_dispatch(void) {
         sprite_cycle_anim_start(0x16, 0x27, 8);
         sprite_cycle_anim_start(0x17, 0x33, 8);
         sprite_cycle_anim_start(0x19, 0x4B, 8);
-        sub_08071C40(3, 0, 0);
-        sub_08071C40(4, 0xB, 0);
+        weekly_set_sprite_effect(3, 0, 0);
+        weekly_set_sprite_effect(4, 0xB, 0);
         gGameSubState++;
         break;
     }
 }
 
-void check_sprite_done_and_advance_battle(void) {
+// Sub-state 16: once the curtains are closed, fades the music out and leaves (sub-state 17).
+void weekly_wait_curtains_closed(void) {
     if (gUnk_03002C30[10].unk22 == 0) {
         sound_stop_all_with_fade_guard(0x20);
         gUnk_03001800_s.nextSubState = 0x11;
@@ -481,18 +501,21 @@ void check_sprite_done_and_advance_battle(void) {
     }
 }
 
-void sub_08071600(void) {
+// Sub-state 17: back to game mode 1.
+void weekly_exit(void) {
     play_song(0);
     sub_08047850(3);
 }
 
-void sub_08071614(void) {
+// Runs each sprite's effect (unk20 = gWeeklySpriteEffects index + 1) and counts its frames in unk1A.
+// Effects return 1 to go on, 0 when done, 0xFF to delete the sprite.
+void weekly_run_sprite_effects(void) {
     u8 i;
 
     for (i = 0; i < 0x1A; i++) {
         if (gUnk_03002C30[i].unk20 != 0) {
             gUnk_03002C30[i].unk1A++;
-            switch (gUnk_08486118[gUnk_03002C30[i].unk20 - 1](i)) {
+            switch (gWeeklySpriteEffects[gUnk_03002C30[i].unk20 - 1](i)) {
             case 0:
                 gUnk_03002C30[i].unk20 = 0;
                 gUnk_03002C30[i].unk21 = 0;
@@ -507,30 +530,32 @@ void sub_08071614(void) {
     }
 }
 
-void sub_0807168C(void) {
-    u8 buf[4];
+// Steps the cycle anims of sprites 0x16-0x19 (gWeeklyCycleAnimMask): base frame + gCycleAnimFrameOffsets.
+void sprite_cycle_anim_update(void) {
+    u8 frame_offsets[4];
     s32 j;
     u8 mask;
 
-    memcpy_optimized(buf, gUnk_080AFF90, 4);
+    memcpy_optimized(frame_offsets, gCycleAnimFrameOffsets, 4);
     for (j = 0, mask = 1; j <= 3; j++, mask <<= 1) {
-        if (gUnk_03007010 & mask) {
-            s32 r = gUnk_03002C30[j + 0x16].unk32 % gUnk_03002C30[j + 0x16].unk23;
-            if (r == 0) {
+        if (gWeeklyCycleAnimMask & mask) {
+            s32 phase = gUnk_03002C30[j + 0x16].unk32 % gUnk_03002C30[j + 0x16].unk23;
+            if (phase == 0) {
                 if (++gUnk_03002C30[j + 0x16].unk21 > 3)
-                    gUnk_03002C30[j + 0x16].unk21 = r;
-                gUnk_03002C30[j + 0x16].unk6 = gUnk_03002C30[j + 0x16].unk30 + buf[gUnk_03002C30[j + 0x16].unk21];
+                    gUnk_03002C30[j + 0x16].unk21 = phase;
+                gUnk_03002C30[j + 0x16].unk6 =
+                    gUnk_03002C30[j + 0x16].unk30 + frame_offsets[gUnk_03002C30[j + 0x16].unk21];
             }
             gUnk_03002C30[j + 0x16].unk32++;
         }
     }
 }
 
-void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 arg2) {
+void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 period) {
     u8 mask = 1 << (sprite - 0x16);
 
-    gUnk_03007010 |= mask;
-    gUnk_03002C30[sprite].unk23 = arg2;
+    gWeeklyCycleAnimMask |= mask;
+    gUnk_03002C30[sprite].unk23 = period;
     gUnk_03002C30[sprite].unk30 = frame;
     gUnk_03002C30[sprite].unk6 = frame;
 }
@@ -538,29 +563,31 @@ void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 arg2) {
 void sprite_cycle_anim_stop(u8 sprite, u16 frame) {
     u8 mask = 1 << (sprite - 0x16);
 
-    gUnk_03007010 &= ~mask;
+    gWeeklyCycleAnimMask &= ~mask;
     gUnk_03002C30[sprite].unk23 = 0;
     gUnk_03002C30[sprite].unk6 = frame;
 }
 
-u32 sub_08071794(u8 sprite) {
-    s8 tbl[8];
-    struct Unk_03002C30 *p;
-    struct Unk_03002C30 *base;
+// Effect 1: a right-curtain strip slides right (gWeeklyCurtainOpenTimes) and starts the next strip (unk22)
+// halfway; deleted off screen.
+u32 weekly_fx_right_curtain_open(u8 sprite) {
+    s8 step_times[8];
+    struct Unk_03002C30 *curtain;
+    struct Unk_03002C30 *sprites;
 
-    memcpy_optimized(tbl, gUnk_080AFF94, 8);
-    base = gUnk_03002C30;
-    p = &base[sprite];
-    if (p->unk21 < 8) {
-        if (p->unk1A == tbl[p->unk21]) {
-            p->unk2++;
-            p->unk21++;
+    memcpy_optimized(step_times, gWeeklyCurtainOpenTimes, 8);
+    sprites = gUnk_03002C30;
+    curtain = &sprites[sprite];
+    if (curtain->unk21 < 8) {
+        if (curtain->unk1A == step_times[curtain->unk21]) {
+            curtain->unk2++;
+            curtain->unk21++;
         }
     } else {
-        p->unk2++;
+        curtain->unk2++;
     }
     if (gUnk_03002C30[sprite].unk21 == 4 && gUnk_03002C30[sprite].unk22 != 0xFF)
-        sub_08071C40(1, gUnk_03002C30[sprite].unk22, 0);
+        weekly_set_sprite_effect(1, gUnk_03002C30[sprite].unk22, 0);
     if (gUnk_03002C30[sprite].unk2 == 0xC9)
         gUnk_03002C30[sprite].unk0 = (gUnk_03002C30[sprite].unk0 & 0xF7FF) | 0xC00;
     else if (gUnk_03002C30[sprite].unk2 > 0xCF)
@@ -568,24 +595,25 @@ u32 sub_08071794(u8 sprite) {
     return 1;
 }
 
-u32 sub_08071840(u8 sprite) {
-    s8 tbl[8];
-    struct Unk_03002C30 *p;
-    struct Unk_03002C30 *base;
+// Effect 2: the same for a left-curtain strip, sliding left.
+u32 weekly_fx_left_curtain_open(u8 sprite) {
+    s8 step_times[8];
+    struct Unk_03002C30 *curtain;
+    struct Unk_03002C30 *sprites;
 
-    memcpy_optimized(tbl, gUnk_080AFF94, 8);
-    base = gUnk_03002C30;
-    p = &base[sprite];
-    if (p->unk21 < 8) {
-        if (p->unk1A == tbl[p->unk21]) {
-            p->unk2--;
-            p->unk21++;
+    memcpy_optimized(step_times, gWeeklyCurtainOpenTimes, 8);
+    sprites = gUnk_03002C30;
+    curtain = &sprites[sprite];
+    if (curtain->unk21 < 8) {
+        if (curtain->unk1A == step_times[curtain->unk21]) {
+            curtain->unk2--;
+            curtain->unk21++;
         }
     } else {
-        p->unk2--;
+        curtain->unk2--;
     }
     if (gUnk_03002C30[sprite].unk21 == 4 && gUnk_03002C30[sprite].unk22 != 0xFF)
-        sub_08071C40(2, gUnk_03002C30[sprite].unk22, 0);
+        weekly_set_sprite_effect(2, gUnk_03002C30[sprite].unk22, 0);
     if (gUnk_03002C30[sprite].unk2 == 0x1F)
         gUnk_03002C30[sprite].unk0 = (gUnk_03002C30[sprite].unk0 & 0xF7FF) | 0xC00;
     else if (gUnk_03002C30[sprite].unk2 < 0x19)
@@ -593,262 +621,274 @@ u32 sub_08071840(u8 sprite) {
     return 1;
 }
 
-u32 sub_080718EC(u8 sprite) {
-    s8 tbl[12];
-    struct Unk_03002C30 *base;
-    struct Unk_03002C30 *s;
-    struct Unk_03002C30 *p;
-    u32 n;
+// Effect 3: a right-curtain strip slides left (gWeeklyCurtainCloseTimes), creating the next strip on the way.
+u32 weekly_fx_right_curtain_close(u8 sprite) {
+    s8 step_times[12];
+    struct Unk_03002C30 *sprites;
+    struct Unk_03002C30 *curtain;
+    struct Unk_03002C30 *entries;
+    u32 next;
 
-    memcpy_optimized(tbl, gUnk_080AFF9C, 12);
-    base = gUnk_03002C30;
-    s = &base[sprite];
-    if (s->unk21 <= 11) {
-        if (s->unk1A == tbl[s->unk21]) {
-            s->unk2--;
-            if (++s->unk21 == 8 && s->unk22 != 0xFF) {
+    memcpy_optimized(step_times, gWeeklyCurtainCloseTimes, 12);
+    sprites = gUnk_03002C30;
+    curtain = &sprites[sprite];
+    if (curtain->unk21 <= 11) {
+        if (curtain->unk1A == step_times[curtain->unk21]) {
+            curtain->unk2--;
+            if (++curtain->unk21 == 8 && curtain->unk22 != 0xFF) {
                 if (sprite == 0) {
                     init_battle_sprite_entry_08048818(1, 0xCC00, 0x50E, 4, 3);
-                    n = 1;
+                    next = 1;
                 } else {
-                    n = sprite + 1;
-                    ((void (*)())init_battle_sprite_entry_08048818)(n, 0xC800, 0x50E, 4, 3);
+                    next = sprite + 1;
+                    ((void (*)())init_battle_sprite_entry_08048818)(next, 0xC800, 0x50E, 4, 3);
                 }
-                p = gUnk_03002C30;
-                p[n].unk2 = p[sprite].unk2;
-                p[n].unk4 = 0;
-                p[n].unkB = p[sprite].unkB - 1;
-                sub_08071C40(3, n, 0);
+                entries = gUnk_03002C30;
+                entries[next].unk2 = entries[sprite].unk2;
+                entries[next].unk4 = 0;
+                entries[next].unkB = entries[sprite].unkB - 1;
+                weekly_set_sprite_effect(3, next, 0);
             }
         }
     } else {
         if (sprite == 0) {
-            base[0].unk0 = (base[0].unk0 & 0xF3FF) | 0x800;
-            base[1].unk0 = (base[1].unk0 & 0xF3FF) | 0x800;
+            sprites[0].unk0 = (sprites[0].unk0 & 0xF3FF) | 0x800;
+            sprites[1].unk0 = (sprites[1].unk0 & 0xF3FF) | 0x800;
         }
-        if (s->unk22 == 0xFF)
-            s->unk22 = 0;
+        if (curtain->unk22 == 0xFF)
+            curtain->unk22 = 0;
         return 0;
     }
     return 1;
 }
 
-u32 sub_080719EC(u8 sprite) {
-    s8 tbl[12];
-    struct Unk_03002C30 *base;
-    struct Unk_03002C30 *s;
-    struct Unk_03002C30 *p;
-    u32 n;
+// Effect 4: the same for the left curtain, sliding right.
+u32 weekly_fx_left_curtain_close(u8 sprite) {
+    s8 step_times[12];
+    struct Unk_03002C30 *sprites;
+    struct Unk_03002C30 *curtain;
+    struct Unk_03002C30 *entries;
+    u32 next;
 
-    memcpy_optimized(tbl, gUnk_080AFF9C, 12);
-    base = gUnk_03002C30;
-    s = &base[sprite];
-    if (s->unk21 <= 11) {
-        if (s->unk1A == tbl[s->unk21]) {
-            s->unk2++;
-            if (++s->unk21 == 8 && s->unk22 != 0xFF) {
+    memcpy_optimized(step_times, gWeeklyCurtainCloseTimes, 12);
+    sprites = gUnk_03002C30;
+    curtain = &sprites[sprite];
+    if (curtain->unk21 <= 11) {
+        if (curtain->unk1A == step_times[curtain->unk21]) {
+            curtain->unk2++;
+            if (++curtain->unk21 == 8 && curtain->unk22 != 0xFF) {
                 if (sprite == 11) {
                     init_battle_sprite_entry_08048818(12, 0xCC00, 0x50E, 4, 3);
-                    n = 12;
+                    next = 12;
                 } else {
-                    n = sprite + 1;
-                    ((void (*)())init_battle_sprite_entry_08048818)(n, 0xC800, 0x50E, 4, 3);
+                    next = sprite + 1;
+                    ((void (*)())init_battle_sprite_entry_08048818)(next, 0xC800, 0x50E, 4, 3);
                 }
-                p = gUnk_03002C30;
-                p[n].unk2 = p[sprite].unk2;
-                p[n].unk4 = 0;
-                p[n].unkB = p[sprite].unkB - 1;
-                sub_08071C40(4, n, 0);
+                entries = gUnk_03002C30;
+                entries[next].unk2 = entries[sprite].unk2;
+                entries[next].unk4 = 0;
+                entries[next].unkB = entries[sprite].unkB - 1;
+                weekly_set_sprite_effect(4, next, 0);
             }
         }
     } else {
         if (sprite == 11) {
-            s->unk0 = (s->unk0 & 0xF3FF) | 0x800;
-            base[12].unk0 = (base[12].unk0 & 0xF3FF) | 0x800;
+            curtain->unk0 = (curtain->unk0 & 0xF3FF) | 0x800;
+            sprites[12].unk0 = (sprites[12].unk0 & 0xF3FF) | 0x800;
         }
-        if (s->unk22 != 0xFF)
-            s->unk22 = 0;
+        if (curtain->unk22 != 0xFF)
+            curtain->unk22 = 0;
         return 0;
     }
     return 1;
 }
 
-u32 sub_08071AF0(u8 sprite) {
-    struct Unk_03002C30 *base = gUnk_03002C30;
-    struct Unk_03002C30 *s = &base[sprite];
-    u16 f;
+// Effect 5: walks right (with the shadow, sprite + 4) for `duration` frames, then steps down (effect 8).
+u32 weekly_fx_walk_right(u8 sprite) {
+    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    struct Unk_03002C30 *actor = &sprites[sprite];
+    u16 frame;
 
-    s->unk2++;
-    base[(u16)(sprite + 4)].unk2 = s->unk2;
-    if (s->unk34 <= s->unk1A) {
-        f = s->unk6 / 12;
-        f = f * 12;
-        s->unk6 = s->unk30 = f + 3;
-        sub_08071C40(8, sprite, 0);
+    actor->unk2++;
+    sprites[(u16)(sprite + 4)].unk2 = actor->unk2;
+    if (actor->unk34 <= actor->unk1A) {
+        frame = actor->unk6 / 12;
+        frame = frame * 12;
+        actor->unk6 = actor->unk30 = frame + 3;
+        weekly_set_sprite_effect(8, sprite, 0);
     }
     return 1;
 }
 
-u32 sub_08071B44(u8 sprite) {
-    struct Unk_03002C30 *base = gUnk_03002C30;
-    struct Unk_03002C30 *s = &base[sprite];
-    u16 f;
+// Effect 6: the same, walking left.
+u32 weekly_fx_walk_left(u8 sprite) {
+    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    struct Unk_03002C30 *actor = &sprites[sprite];
+    u16 frame;
 
-    s->unk2--;
-    base[(u16)(sprite + 4)].unk2 = s->unk2;
-    if (s->unk34 <= s->unk1A) {
-        f = s->unk6 / 12;
-        f = f * 12;
-        s->unk6 = s->unk30 = f + 3;
-        sub_08071C40(8, sprite, 0);
+    actor->unk2--;
+    sprites[(u16)(sprite + 4)].unk2 = actor->unk2;
+    if (actor->unk34 <= actor->unk1A) {
+        frame = actor->unk6 / 12;
+        frame = frame * 12;
+        actor->unk6 = actor->unk30 = frame + 3;
+        weekly_set_sprite_effect(8, sprite, 0);
     }
     return 1;
 }
 
-// Sprite effects 7 and 8 (gUnk_08486118); only reached through that table.
-u32 sub_08071B98(u8 sprite) {
-    struct Unk_03002C30 *base = gUnk_03002C30;
-    struct Unk_03002C30 *s = &base[sprite];
+// Effect 7: moves right on a sine arc (with the shadow) for `duration` frames.
+u32 weekly_fx_jump_in(u8 sprite) {
+    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    struct Unk_03002C30 *actor = &sprites[sprite];
 
-    s->unk2++;
-    base[(u16)(sprite + 4)].unk2 = s->unk2;
-    s->unk4 = 0x32 - (gSineTable[s->unk1A >> 1] >> 4);
-    if (s->unk2 == 0x20)
-        s->unk0 = (s->unk0 & 0xF3FF) | 0x800;
-    if (s->unk34 <= s->unk1A) {
-        s->unk0 = (s->unk0 & 0xF7FF) | 0xC00;
+    actor->unk2++;
+    sprites[(u16)(sprite + 4)].unk2 = actor->unk2;
+    actor->unk4 = 0x32 - (gSineTable[actor->unk1A >> 1] >> 4);
+    if (actor->unk2 == 0x20)
+        actor->unk0 = (actor->unk0 & 0xF3FF) | 0x800;
+    if (actor->unk34 <= actor->unk1A) {
+        actor->unk0 = (actor->unk0 & 0xF7FF) | 0xC00;
         return 0;
     }
     return 1;
 }
 
-u32 sub_08071C10(u8 sprite) {
-    struct Unk_03002C30 *base = gUnk_03002C30;
-    struct Unk_03002C30 *s = &base[sprite];
+// Effect 8: moves down 8 lines (with the shadow).
+u32 weekly_fx_step_down(u8 sprite) {
+    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    struct Unk_03002C30 *actor = &sprites[sprite];
 
-    s->unk4++;
-    base[(u16)(sprite + 4)].unk4++;
-    if (s->unk1A > 7)
+    actor->unk4++;
+    sprites[(u16)(sprite + 4)].unk4++;
+    if (actor->unk1A > 7)
         return 0;
     return 1;
 }
 
-void sub_08071C40(u8 state, u8 sprite, u16 arg2) {
-    struct Unk_03002C30 *base = gUnk_03002C30;
-    struct Unk_03002C30 *s = &base[sprite];
+void weekly_set_sprite_effect(u8 effect, u8 sprite, u16 duration) {
+    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    struct Unk_03002C30 *entry = &sprites[sprite];
 
-    s->unk20 = state;
-    s->unk21 = 0;
-    s->unk34 = arg2;
-    s->unk1A = 0;
+    entry->unk20 = effect;
+    entry->unk21 = 0;
+    entry->unk34 = duration;
+    entry->unk1A = 0;
 }
 
-u32 call_battle_handler_by_state_08071C64(void) {
-    return gUnk_08486138[gUnk_03001800_s.unk10.end.state]();
+// Runs the current lecture step; nonzero once it is done.
+u32 weekly_lecture_run_step(void) {
+    return gWeeklyLectureSteps[gUnk_03001800_s.unk10.lecture.state]();
 }
 
-// Battle-end state 4 (gUnk_08486138): just moves on.
-u32 sub_08071C84(void) {
-    gUnk_03001800_s.unk10.end.state++;
+// Lecture step 4: nothing to show.
+u32 weekly_lecture_skip_step(void) {
+    gUnk_03001800_s.unk10.lecture.state++;
     return 1;
 }
 
-u32 sub_08071C94(void) {
-    struct Unk_03002C30 *base = gUnk_03002C30;
+// Lecture step 0: the new head (sprite 2, with sprite 1) drops, slides onto the body and replaces sprite 6.
+u32 weekly_lecture_attach_head(void) {
+    struct Unk_03002C30 *sprites = gUnk_03002C30;
 
-    if (base[2].unk4 <= 0x3D)
-        base[1].unk4 = base[2].unk4 += 2;
-    else if (base[2].unk4 <= 0x41)
-        base[1].unk4 = base[2].unk4 += 1;
-    else if (base[2].unk1A <= 0x1F)
-        base[2].unk1A++;
-    else if (base[2].unk2 <= 0x40) {
+    if (sprites[2].unk4 <= 0x3D)
+        sprites[1].unk4 = sprites[2].unk4 += 2;
+    else if (sprites[2].unk4 <= 0x41)
+        sprites[1].unk4 = sprites[2].unk4 += 1;
+    else if (sprites[2].unk1A <= 0x1F)
+        sprites[2].unk1A++;
+    else if (sprites[2].unk2 <= 0x40) {
         clear_sprite_entry(6);
         play_sound_effect(0x54);
-        base[2].unk1A = 0;
-        gUnk_03001800_s.unk10.end.state++;
+        sprites[2].unk1A = 0;
+        gUnk_03001800_s.unk10.lecture.state++;
         return 1;
     } else
-        base[1].unk2 = base[2].unk2 -= 4;
+        sprites[1].unk2 = sprites[2].unk2 -= 4;
     return 0;
 }
 
-u32 sub_08071D14(void) {
-    struct Unk_03002C30 *base = gUnk_03002C30;
-    s16 *y = &base[3].unk4;
-    u16 *t;
+// Lecture step 1: an arm (sprite 3) drops and slides right onto the body, replacing sprite 7.
+u32 weekly_lecture_attach_arm_from_left(void) {
+    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    s16 *y = &sprites[3].unk4;
+    u16 *wait;
     s16 *x;
 
     if (*y <= 0x35)
         *y += 2;
     else if (*y <= 0x39)
         *y += 1;
-    else if (*(t = &base[3].unk1A) <= 0x1F)
-        (*t)++;
-    else if (*(x = &base[3].unk2) > 0x37) {
+    else if (*(wait = &sprites[3].unk1A) <= 0x1F)
+        (*wait)++;
+    else if (*(x = &sprites[3].unk2) > 0x37) {
         clear_sprite_entry(7);
         play_sound_effect(0x54);
-        *t = 0;
-        gUnk_03001800_s.unk10.end.state++;
+        *wait = 0;
+        gUnk_03001800_s.unk10.lecture.state++;
         return 1;
     } else
         *x += 4;
     return 0;
 }
 
-u32 sub_08071D84(void) {
-    struct Unk_03002C30 *base = gUnk_03002C30;
-    s16 *y = &base[4].unk4;
-    u16 *t;
+// Lecture step 2: an arm (sprite 4) drops and slides left onto the body, replacing sprite 8.
+u32 weekly_lecture_attach_arm_from_right(void) {
+    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    s16 *y = &sprites[4].unk4;
+    u16 *wait;
     s16 *x;
 
     if (*y <= 0x35)
         *y += 2;
     else if (*y <= 0x39)
         *y += 1;
-    else if (*(t = &base[4].unk1A) <= 0x1F)
-        (*t)++;
-    else if (*(x = &base[4].unk2) <= 0x44) {
+    else if (*(wait = &sprites[4].unk1A) <= 0x1F)
+        (*wait)++;
+    else if (*(x = &sprites[4].unk2) <= 0x44) {
         clear_sprite_entry(8);
         play_sound_effect(0x54);
-        *t = 0;
-        gUnk_03001800_s.unk10.end.state++;
+        *wait = 0;
+        gUnk_03001800_s.unk10.lecture.state++;
         return 1;
     } else
         *x -= 4;
     return 0;
 }
 
-u32 sub_08071DFC(void) {
-    struct Unk_03002C30 *base = gUnk_03002C30;
-    s16 *y = &base[5].unk4;
-    u16 *t;
+// Lecture step 3: the legs (sprite 5) drop and slide left, replacing sprite 9.
+u32 weekly_lecture_attach_legs(void) {
+    struct Unk_03002C30 *sprites = gUnk_03002C30;
+    s16 *y = &sprites[5].unk4;
+    u16 *wait;
     s16 *x;
 
     if (*y <= 0x3D)
         *y += 2;
     else if (*y <= 0x41)
         *y += 1;
-    else if (*(t = &base[5].unk1A) <= 0x1F)
-        (*t)++;
-    else if (*(x = &base[5].unk2) <= 0x40) {
+    else if (*(wait = &sprites[5].unk1A) <= 0x1F)
+        (*wait)++;
+    else if (*(x = &sprites[5].unk2) <= 0x40) {
         clear_sprite_entry(9);
         play_sound_effect(0x54);
         {
-            u8 *b = &base[5].unkB;
+            u8 *priority = &sprites[5].unkB;
             u16 zero = 0;
 
-            *b = 0x21;
-            *t = zero;
+            *priority = 0x21;
+            *wait = zero;
         }
-        gUnk_03001800_s.unk10.end.state++;
+        gUnk_03001800_s.unk10.lecture.state++;
         return 1;
     } else
         *x -= 4;
     return 0;
 }
 
-u32 sub_08071E80(void) {
+// Lecture step 5 ("the finishing touch"): the Medal (sprite 0) falls into the Medabot; backs up the OBJ
+// palettes for the flash.
+u32 weekly_lecture_drop_medal(void) {
     if (gUnk_03002C30[0].unk1A++ & 1) {
         if (++gUnk_03002C30[0].unk4 == 0)
             play_sound_effect(0x59);
@@ -856,113 +896,117 @@ u32 sub_08071E80(void) {
     gUnk_03002C30[0].unk6 = ((gUnk_03002C30[0].unk1A >> 2) & 3) + 0x50F;
     if (gUnk_03002C30[0].unk4 > 0x3F) {
         play_sound_effect(7);
-        gUnk_0300700C = gPaletteBackupBg;
-        gUnk_03001800_s.unk10.end.step = 0;
+        gWeeklyFlashPalette = gPaletteBackupBg;
+        gUnk_03001800_s.unk10.lecture.step = 0;
         DmaSet(3, OBJ_PLTT, gPaletteBackupBg, 0x84000080);
-        gUnk_03001800_s.unk10.end.state++;
+        gUnk_03001800_s.unk10.lecture.state++;
     }
     return 0;
 }
 
-u32 sub_08071F08(void) {
-    u8 t;
-    u8 w;
+// Lecture step 6: the OBJ palettes fade to white and back.
+u32 weekly_lecture_flash(void) {
+    u8 fade;
+    u8 white;
     s32 i;
     u16 *dst = gPaletteBufferBg;
 
-    if (gUnk_03001800_s.unk10.end.step > 0x40) {
+    if (gUnk_03001800_s.unk10.lecture.step > 0x40) {
         play_sound_effect(10);
-        gUnk_03001800_s.unk10.end.state++;
+        gUnk_03001800_s.unk10.lecture.state++;
     } else {
-        if (gUnk_03001800_s.unk10.end.step < 0x20)
-            t = 0x20 - gUnk_03001800_s.unk10.end.step;
+        if (gUnk_03001800_s.unk10.lecture.step < 0x20)
+            fade = 0x20 - gUnk_03001800_s.unk10.lecture.step;
         else
-            t = gUnk_03001800_s.unk10.end.step - 0x20;
-        if (gUnk_03001800_s.unk10.end.step == 0x20)
+            fade = gUnk_03001800_s.unk10.lecture.step - 0x20;
+        if (gUnk_03001800_s.unk10.lecture.step == 0x20)
             clear_sprite_entry(0);
-        if (gUnk_03001800_s.unk10.end.step == 0x14)
+        if (gUnk_03001800_s.unk10.lecture.step == 0x14)
             play_sound_effect(0x51);
-        w = 0x20 - t;
+        white = 0x20 - fade;
         for (i = 0; i <= 0xFF; i++) {
-            dst[i] = (((gUnk_0300700C[i] & 0x1F) * t + w * 31) >> 5) +
-                     ((((gUnk_0300700C[i] & 0x3E0) * t + (w * 31 << 5)) >> 5) & 0x3E0) +
-                     ((((gUnk_0300700C[i] & 0x7C00) * t + (w * 31 << 10)) >> 5) & 0x7C00);
+            dst[i] = (((gWeeklyFlashPalette[i] & 0x1F) * fade + white * 31) >> 5) +
+                     ((((gWeeklyFlashPalette[i] & 0x3E0) * fade + (white * 31 << 5)) >> 5) & 0x3E0) +
+                     ((((gWeeklyFlashPalette[i] & 0x7C00) * fade + (white * 31 << 10)) >> 5) & 0x7C00);
         }
         DmaSet(3, dst, OBJ_PLTT, 0x84000080);
     }
     if (gFrameCounter & 1)
-        gUnk_03001800_s.unk10.end.step++;
+        gUnk_03001800_s.unk10.lecture.step++;
     return 0;
 }
 
-u32 sub_08072010(void) {
-    struct Unk_03002C30 *base = gUnk_03002C30;
+// Lecture step 7: sprite 1 blinks, then the finished Medabot is drawn from its parts.
+u32 weekly_lecture_show_medabot(void) {
+    struct Unk_03002C30 *sprites = gUnk_03002C30;
     vu32 fill;
 
-    if (base[1].unk1A & 4)
-        base[1].unk4 = 0xC8;
+    if (sprites[1].unk1A & 4)
+        sprites[1].unk4 = 0xC8;
     else
-        base[1].unk4 = 0x42;
-    if (base[1].unk1A++ > 0x1F) {
+        sprites[1].unk4 = 0x42;
+    if (sprites[1].unk1A++ > 0x1F) {
         clear_sprite_entry(1);
         init_scene_buffers_080445F4();
         fill = 0x200;
         DmaSet(3, &fill, gUnk_03002414->unkB84, 0x85000100);
         setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, 0, 0, 0);
-        gUnk_03001800_s.unk10.end.state++;
+        gUnk_03001800_s.unk10.lecture.state++;
     }
     return 0;
 }
 
-u32 sub_080720BC(void) {
+// Lecture step 8: starts the Medabot's action animation.
+u32 weekly_lecture_start_pose(void) {
     vu32 fill;
 
     fill = 0x200;
     DmaSet(3, &fill, gUnk_03002414->unkB84, 0x85000100);
     setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, 0, 1, 0);
     advance_text_display(0, 0x2D, 0);
-    gUnk_03001800_s.unk10.end.state++;
-    gUnk_03001800_s.unk10.end.step = 0;
+    gUnk_03001800_s.unk10.lecture.state++;
+    gUnk_03001800_s.unk10.lecture.step = 0;
     return 0;
 }
 
-u32 sub_08072138(void) {
-    struct Unk_03002C30 *base;
+// Lecture step 9: runs the action animation with its sound script (gWeeklyLectureSfxScript).
+u32 weekly_lecture_run_pose(void) {
+    struct Unk_03002C30 *sprites;
     u8 script[13];
     vu32 fill;
-    register u32 zero asm("r5"); // pinned: the original keeps a second zero (r2) for the arguments
-    u32 h;
-    s16 *p;
+    register u32 zero asm("r5"); // FAKEMATCH: pinned; the original keeps a second zero (r2) for the arguments
+    u32 none;                    // FAKEMATCH: the original keeps this zero apart from `zero`
+    s16 *head_y;
 
-    memcpy_optimized(script, gUnk_080AFFA8, 13);
-    base = gUnk_03002C30;
-    p = &base[2].unk4;
+    memcpy_optimized(script, gWeeklyLectureSfxScript, 13);
+    sprites = gUnk_03002C30;
+    head_y = &sprites[2].unk4;
     zero = 0;
-    h = 0;
-    *p = 0xC8;
-    *&base[3].unk4 = 0xC8;
-    *&base[4].unk4 = 0xC8;
-    *&base[5].unk4 = 0xC8;
+    none = 0;
+    *head_y = 0xC8;
+    *&sprites[3].unk4 = 0xC8;
+    *&sprites[4].unk4 = 0xC8;
+    *&sprites[5].unk4 = 0xC8;
     fill = 0x200;
     DmaSet(3, &fill, gUnk_03002414->unkB84, 0x85000100);
-    setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, h, 1, h);
-    switch (script[gUnk_03001800_s.unk10.end.pos]) {
+    setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, none, 1, none);
+    switch (script[gUnk_03001800_s.unk10.lecture.pos]) {
     case 0:
-        if (script[gUnk_03001800_s.unk10.end.pos + 1] >= gUnk_03001800_s.unk10.end.step++)
+        if (script[gUnk_03001800_s.unk10.lecture.pos + 1] >= gUnk_03001800_s.unk10.lecture.step++)
             break;
-        gUnk_03001800_s.unk10.end.pos += 2;
-        gUnk_03001800_s.unk10.end.step = zero;
+        gUnk_03001800_s.unk10.lecture.pos += 2;
+        gUnk_03001800_s.unk10.lecture.step = zero;
         break;
     case 1:
-        play_sound_effect(script[gUnk_03001800_s.unk10.end.pos + 1]);
-        gUnk_03001800_s.unk10.end.pos += 2;
-        gUnk_03001800_s.unk10.end.step = zero;
+        play_sound_effect(script[gUnk_03001800_s.unk10.lecture.pos + 1]);
+        gUnk_03001800_s.unk10.lecture.pos += 2;
+        gUnk_03001800_s.unk10.lecture.step = zero;
         break;
     case 2:
         break;
     }
     if (advance_text_display(0, 0x2D, 0) != 0) {
-        gUnk_03001800_s.unk10.end.state = 0;
+        gUnk_03001800_s.unk10.lecture.state = 0;
         return 1;
     }
     return 0;

@@ -18,7 +18,7 @@ extern struct Unk_03001800 gUnk_03001800;
 extern struct Unk_03001800_s gUnk_03001800_s;       // same address as gUnk_03001800 (game mode 3 scenes)
 extern struct Unk_03001800_bomb gUnk_03001800_bomb; // same address as gUnk_03001800 (game mode 3 state 5)
 // A view through gUnk_03001800 itself: the scene init also clears that block, and the literal pool shares one address.
-#define gUnk_03001800_bganim (*(struct Unk_03001800_bganim *)&gUnk_03001800)
+#define gMedabotsWeekly (*(struct MedabotsWeeklyWork *)&gUnk_03001800)
 extern u32 gMoney; // money, capped at 99999 (add_money)
 extern u32 gGameState;
 extern u32 gGameSubState;
@@ -1266,7 +1266,7 @@ extern const u16 gUnk_085E3AA8[];
 extern const u16 gUnk_085E32A0[];
 extern const u16 gUnk_085E19EC[];
 extern const u16 gUnk_085E0A38[];
-extern const u16 gUnk_0807C540[]; // 16-colour palettes (same table as init_battle_bg_palettes_and_layers)
+extern const u16 gUnk_0807C540[]; // 16-colour palettes (same table as weekly_show_lecture)
 extern const u16 gUnk_087C4DFC[];
 extern const u8 gUnk_087C8E00[];  // LZ77 BG tiles (load_bg_screen_a)
 extern const u8 gUnk_087CC7BC[];  // LZ77 30x20 tilemap (load_bg_screen_a)
@@ -1281,24 +1281,27 @@ extern s32 (*const gUnk_084860AC[])(
     u8); // sprite actions, by gUnk_03002C30[].unk20 - 1: 0 = done, 0xFF = clear (update_sprite_animations_080703D8)
 extern const u8 gUnk_084860C0[]; // sprite actions: frame period, by unk20 - 1
 extern const s8 gUnk_080AFF50[]; // 64-entry wave offsets, by gUnk_03002C30[].unk21 & 0x3F (sub_0807052C)
-extern u8 gUnk_02031000[];       // animated BG tiles: 6 frames of 0x280 bytes, 0x100 copied (sub_080706AC)
-extern u8 gUnk_02031100[];       // animated BG tiles: 6 frames of 0x280 bytes, 0x180 copied (sub_080706AC)
-extern u8 gUnk_03007010;
+extern u8 gWeeklyAnimTiles[];    // animated BG tiles: 6 frames of 0x280 bytes, 0x100 copied (weekly_update_studio)
+extern u8 gWeeklyAnimTiles2[];   // animated BG tiles: 6 frames of 0x280 bytes, 0x180 copied (weekly_update_studio)
+extern u8 gWeeklyCycleAnimMask;
 extern const Func
     gMedabotsWeeklySubStates[]; // sub-states by gGameSubState (medabots_weekly_update); [0] = medabots_weekly_init
-extern s32 (*const gUnk_08486118[])(u8);
-extern const s8 gUnk_080AFF94[8];
-extern const void *const gUnk_084872DC[];
+extern s32 (*const gWeeklySpriteEffects[])(u8);
+extern const s8 gWeeklyCurtainOpenTimes[8];
+extern const void *const gWeeklyMessages[];
 extern const u8 gUnk_08486114[];
 extern const u8 gUnk_0848604C[]; // 12 bytes per a, from +0x30: 3 rows (gUnk_03001800.unkED) of x, y, end x, end row
 extern const u8
     *const gUnk_0848602C[]; // text strings for the battle intro; [a + 4] read by process_text_tile_and_dma_transfer
-extern const s8 gUnk_080AFF9C[12]; // 12 frame counts (unk1A values) at which sub_080718EC / sub_080719EC step
-extern const u8 gUnk_080AFF90[];   // sub_0807168C table
-extern u16 *gUnk_0300700C;         // palette the fade in sub_08071F08 reads from (set to gPaletteBackupBg = 0x0202FA00)
-extern const u8 gUnk_080AFFA8[13]; // sub_08072138 script: pairs (0, n) = wait n frames, (1, id) = play_sound_effect(id)
-extern u32 (*const gUnk_08486138[])(
-    void); // battle-end steps by gUnk_03001800_s.unk10.end.state (call_battle_handler_by_state_08071C64); 1 = done
+extern const s8 gWeeklyCurtainCloseTimes[12]; // 12 frame counts (unk1A values) at which weekly_fx_right_curtain_close /
+                                              // weekly_fx_left_curtain_close step
+extern const u8 gCycleAnimFrameOffsets[];     // sprite_cycle_anim_update table
+extern u16
+    *gWeeklyFlashPalette; // palette the fade in weekly_lecture_flash reads from (set to gPaletteBackupBg = 0x0202FA00)
+extern const u8 gWeeklyLectureSfxScript[13]; // weekly_lecture_run_pose script: pairs (0, n) = wait n frames, (1, id) =
+                                             // play_sound_effect(id)
+extern u32 (*const gWeeklyLectureSteps[])(
+    void); // Medabots Lecture steps by gUnk_03001800_s.unk10.lecture.state (weekly_lecture_run_step); 1 = done
 extern const struct SpriteAnimCmd *const gUnk_083F7BF4[];
 extern const struct SpriteAnimGfx gUnk_080AE9FC[];
 extern const u8 gUnk_08764CB0[];

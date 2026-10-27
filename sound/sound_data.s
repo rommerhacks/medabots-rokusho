@@ -544,20 +544,20 @@ gUnk_080AFF48:
 gUnk_080AFF50:
 	.incbin "baserom.gba", 0xAFF50, 0x40
 
-	.global gUnk_080AFF90
-gUnk_080AFF90:
+	.global gCycleAnimFrameOffsets
+gCycleAnimFrameOffsets:
 	.incbin "baserom.gba", 0xAFF90, 0x4
 
-	.global gUnk_080AFF94
-gUnk_080AFF94:
+	.global gWeeklyCurtainOpenTimes
+gWeeklyCurtainOpenTimes:
 	.incbin "baserom.gba", 0xAFF94, 0x8
 
-	.global gUnk_080AFF9C
-gUnk_080AFF9C:
+	.global gWeeklyCurtainCloseTimes
+gWeeklyCurtainCloseTimes:
 	.incbin "baserom.gba", 0xAFF9C, 0xC
 
-	.global gUnk_080AFFA8
-gUnk_080AFFA8:
+	.global gWeeklyLectureSfxScript
+gWeeklyLectureSfxScript:
 	.incbin "baserom.gba", 0xAFFA8, 0x10
 
 	.global gUnk_080AFFB8

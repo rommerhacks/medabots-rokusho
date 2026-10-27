@@ -1,18 +1,19 @@
 #ifndef GUARD_CUTSCENE_MEDABOTS_WEEKLY_H
 #define GUARD_CUTSCENE_MEDABOTS_WEEKLY_H
 
-// Medabots Weekly (mode 3, state 6)
+// Medabots Weekly (mode 3, state 6), the in-game TV show
 
-void sub_0807068C(void);
-void sub_080706AC(void);
-void sub_08071614(void);
-void sub_0807168C(void);
-// sprite (0x16+): unk23 = arg2, unk30 = unk6 = frame; sets bit (sprite - 0x16) in byte 0x03007010
-void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 arg2);
-// clears that bit, unk23 = 0, unk6 = frame
+void weekly_scroll_bg3(void);
+void weekly_update_studio(void);
+void weekly_run_sprite_effects(void);
+void sprite_cycle_anim_update(void);
+// Starts a looping 4-frame animation on sprite 0x16..0x19 (base frame, one step every `period` frames); sets bit
+// (sprite - 0x16) in gWeeklyCycleAnimMask.
+void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 period);
+// Clears that bit and shows `frame`.
 void sprite_cycle_anim_stop(u8 sprite, u16 frame);
-// gUnk_03002C30[sprite]: unk20 = state, unk21 = 0, unk34 = arg2, unk1A = 0
-void sub_08071C40(u8 state, u8 sprite, u16 arg2);
-u32 call_battle_handler_by_state_08071C64(void);
+// Starts sprite effect `effect` (gWeeklySpriteEffects[effect - 1]) on a sprite; `duration` is its frame count.
+void weekly_set_sprite_effect(u8 effect, u8 sprite, u16 duration);
+u32 weekly_lecture_run_step(void);
 
 #endif // GUARD_CUTSCENE_MEDABOTS_WEEKLY_H

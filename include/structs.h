@@ -135,11 +135,11 @@ struct Unk_03001800_s {
     union {
         s32 w; // countdown: play_song(3) when it reaches 0
         struct {
-            u8 state; // battle-end state machine: index into gUnk_08486138
+            u8 state; // Medabots Lecture step: index into gWeeklyLectureSteps
             u8 step;  // step counter of the current state
-            u8 pos;   // script position (sub_08072138)
+            u8 pos;   // script position (weekly_lecture_run_pose)
             u8 pad;
-        } end;
+        } lecture;
     } unk10;
     u8 filler14[0x1A];
     u8 unk2E; // cells drawn in the 40-cell grid (check_battle_timer_expired)
@@ -174,14 +174,14 @@ struct Unk_03001800_bomb {
 
 // 0x03001800 during game mode 3 state 6, the "Medabots Weekly" TV show (medabots_weekly_update); the same RAM
 // as gUnk_03001800.
-struct Unk_03001800_bganim {
+struct MedabotsWeeklyWork {
     u16 unk0; // next mode? (cf. Unk_03001800_s.nextMode)
     u16 unk2; // next state?
     u8 filler4[8];
-    u8 unkC; // nonzero: scroll BG3 every other frame (sub_0807068C)
-    u8 unkD; // nonzero: animate BG tiles (sub_080706AC)
-    u8 unkE; // tile animation frame 0..5 (every 4 frames)
-    u8 unkF; // tile animation frame 0..5 (every 16 frames)
+    u8 scrollBg3;  // nonzero: scroll BG3 every other frame (weekly_scroll_bg3)
+    u8 animTiles;  // nonzero: animate BG tiles (weekly_update_studio)
+    u8 tileFrame;  // tile animation frame 0..5 (every 4 frames)
+    u8 tileFrame2; // tile animation frame 0..5 (every 16 frames)
     u8 filler10[4];
 };
 
@@ -383,7 +383,7 @@ struct Unk_03002C30 {
     u8 unk2F;
     u16 unk30;
     u16 unk32;
-    u16 unk34; // frame target unk1A counts up to (sub_08071C40)
+    u16 unk34; // frame target unk1A counts up to (weekly_set_sprite_effect)
     u8 filler36[0x4];
     u16 unk3A; // previous frame's unk1A (update_battle_bot_entry_animations)
     u8 filler3C[0x4];
