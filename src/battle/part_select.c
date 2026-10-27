@@ -107,8 +107,8 @@ void part_select_input(void) {
         part_select_draw_skill_type();
         part_select_draw_skill_name();
         part_select_draw_head_uses();
-        sub_0801BACC();
-        sub_0801B894();
+        target_marker_hide();
+        target_marker_show();
     }
 }
 

@@ -357,17 +357,17 @@ void sub_080255F8(void) {
 void sub_08025674(void) {
     lz_decompress_dispatch(gUnk_084D6BFC, (void *)0x06017E00);
     set_display_digit_type(&gUnk_03000440.unkEE, gUnk_03001800.unk51, 1);
-    battle_setup_text_sprites_0801A418(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
+    battle_text_popup_init_slot(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
     set_display_digit_type(&gUnk_03000440.unkEE + 0x20, gUnk_03001800.unk52, 0);
-    battle_setup_text_sprites_0801A418(&gUnk_03000440.unkEE + 0x20, gUnk_03001800.unk87, 0x21);
+    battle_text_popup_init_slot(&gUnk_03000440.unkEE + 0x20, gUnk_03001800.unk87, 0x21);
     play_sound_effect(0x5B);
     gUnk_03000440.unk84 = 0;
     gUnk_03001800.unkAA++;
 }
 
 void sub_080256EC(void) {
-    update_battle_sprite_animations(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
-    update_battle_sprite_animations(&gUnk_03000440.unkEE + 0x20, gUnk_03001800.unk87, 0x21);
+    battle_popup_update_slot(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
+    battle_popup_update_slot(&gUnk_03000440.unkEE + 0x20, gUnk_03001800.unk87, 0x21);
     if (++gUnk_03000440.unk84, gUnk_03000440.unk89 == 0 && (KEYS_LO(gRepeatKeys) & 1) && gUnk_03000440.unk84 > 0x32)
         gUnk_03000440.unk84 = 0x78;
     if (gUnk_03000440.unk84 == 0x78) {

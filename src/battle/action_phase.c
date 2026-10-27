@@ -63,7 +63,7 @@ void sub_080309C8(void) {
 }
 
 void resolve_battle_action_phase(void) {
-    sub_0801B67C(gUnk_03001800.unk87);
+    battle_set_actor_side(gUnk_03001800.unk87);
     if (gUnk_03000590[gUnk_03001800.unk87].unkBD & 1) {
         gUnk_03001800.unkA6 = 4;
         gGameSubState = 0x20;
@@ -405,15 +405,15 @@ void sub_08031518(void) {
 void sub_08031538(void) {
     lz_decompress_dispatch(gUnk_084D6BFC, (void *)0x06017E00);
     set_display_digit_type(&gUnk_03000440.unkEE, gUnk_03001800.unk167, 2);
-    battle_setup_text_sprites_0801A4F4(&gUnk_03000440.unkEE, gUnk_03001800.unk87, 0x23,
-                                       gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2 + 0x18,
-                                       gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 + 4);
+    battle_text_popup_init_at(&gUnk_03000440.unkEE, gUnk_03001800.unk87, 0x23,
+                              gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk2 + 0x18,
+                              gUnk_03002C30[gUnk_03001800.unk87 * 4 + 0x5D].unk4 + 4);
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
 
 void sub_080315B0(void) {
-    update_battle_sprite_animations(&gUnk_03000440.unkEE, gUnk_03001800.unk87, 0x23);
+    battle_popup_update_slot(&gUnk_03000440.unkEE, gUnk_03001800.unk87, 0x23);
     if (++gUnk_03000440.unk84 == 0x78) {
         clear_battle_sprite_slot(0x21, 2);
         clear_battle_sprite_slot(gUnk_03001800.unk87 * 4 + 0x23, 4);

@@ -4,7 +4,9 @@
 
 #include "global.h"
 
-u32 sub_08019EF0(void) {
+// Queues every Medabot standing on its front or home line (link player 1 queues the opponents first);
+// returns 1 if any did.
+u32 battle_queue_bots_at_lines(void) {
     u32 i;
     u32 a = 0;
     u32 b = 0;
@@ -94,7 +96,7 @@ void iterate_bots_setup_battle_sprites(void) {
 }
 
 // Hidden function (no callers): 2-digit number buffer, [0] = 0xB when neg else 0xA (sign tile), [1] tens, [2] ones.
-static void sub_0801A118(u8 *buf, u32 n, u32 neg) {
+static void number_to_sign_digits(u8 *buf, u32 n, u32 neg) {
     if (neg)
         buf[0] = 0xB;
     else
@@ -199,7 +201,7 @@ void set_display_digit_type(u8 *buf, u32 value, u32 type) {
     buf[6] = n;
 }
 
-void render_battle_text_sprites(u8 *buf, u32 rec, u32 slot) {
+void battle_number_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
     u32 i;
 
     for (i = 0; i <= 4; i++) {
@@ -232,7 +234,7 @@ void render_battle_text_sprites(u8 *buf, u32 rec, u32 slot) {
     }
 }
 
-void battle_setup_text_sprites_0801A418(u8 *buf, u32 rec, u32 slot) {
+void battle_text_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
     u32 i;
 
     for (i = 0; i <= 4; i++) {
@@ -265,7 +267,7 @@ void battle_setup_text_sprites_0801A418(u8 *buf, u32 rec, u32 slot) {
     }
 }
 
-void battle_setup_text_sprites_0801A4F4(u8 *buf, u32 rec, u32 slot, u32 x, u32 y) {
+void battle_text_popup_init_at(u8 *buf, u32 rec, u32 slot, u32 x, u32 y) {
     u32 i;
 
     for (i = 0; i <= 4; i++) {
@@ -285,7 +287,7 @@ void battle_setup_text_sprites_0801A4F4(u8 *buf, u32 rec, u32 slot, u32 x, u32 y
     }
 }
 
-void update_battle_sprite_animations(u8 *buf, u32 rec, u32 slot) {
+void battle_popup_update_slot(u8 *buf, u32 rec, u32 slot) {
     u32 i;
 
     for (i = 0; i <= 4; i++) {
@@ -337,7 +339,8 @@ void battle_queue_pop(void) {
     gUnk_03001800.unk45[0][i * 2 + 1] = 0;
 }
 
-u32 sub_0801A6B0(void) {
+// guess: unkBF is set by a support skill (sub_08023C50); such Medabots keep moving in sub-state 0x4C.
+u32 any_bot_extra_move_pending(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
@@ -347,7 +350,9 @@ u32 sub_0801A6B0(void) {
     return 0;
 }
 
-u32 sub_0801A6EC(u32 rec) {
+// guess: bit set by sub_08013AE4 from the command ring; when set, sub_08014404 runs the Medabot's turn
+// without the command menu unless B is held.
+u32 team_bot_command_kept(u32 rec) {
     if (rec <= 2) {
         switch (rec) {
         case 0:
@@ -366,7 +371,7 @@ u32 sub_0801A6EC(u32 rec) {
     }
 }
 
-void sub_0801A744(u32 rec) {
+void team_bot_clear_command_kept(u32 rec) {
     if (rec <= 2) {
         switch (rec) {
         case 0:

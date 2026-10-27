@@ -694,7 +694,7 @@ struct Unk_03001800 {
     u8 fillerF4[0x2];
     u8 unkF6; // bit 0 checked by sub_08020078
     u8 fillerF7[0x1];
-    u8 unkF8; // 0 when sub_0801B67C gets a team record (0-2), 3 for an opponent
+    u8 unkF8; // 0 when battle_set_actor_side gets a team record (0-2), 3 for an opponent
     u8 unkF9; // skill shown by the action script command sub_08034074: chosen part's data[1], or Medaforce unkA8[0] +
               // 0x50
     u8 fillerFA;
@@ -720,7 +720,7 @@ struct Unk_03001800 {
     u16 unk156;
     u16 unk158; // effect sprite x, y when unkF8 bit 1 is clear (sub_0801E474)
     u16 unk15A;
-    u8 unk15C[3]; // per Medapart select slot (unk82 - 1): nonzero skips the part sprite (sub_0801B894)
+    u8 unk15C[3]; // per Medapart select slot (unk82 - 1): nonzero skips the part sprite (target_marker_show)
     u8 unk15F;    // result of battle_advance_dialogue_text (sub_0801FA68)
     u8 unk160;    // result of battle_advance_action_text (sub_0801FA68)
     u8 unk161;
@@ -816,8 +816,8 @@ struct Unk_03000590 {
     u8 unkC7;
     u8 unkC8; // number shown by the Robattle handler 0x70 (sub_080147FC)
     u8 unkC9; // effect B type (0x13/0x14: armor changes each tick, sub_08018DF4; 0x2C checked by sub_08014404 /
-              // process_bot_battle_turn, 0x2B by sub_080154E0)
-    u8 unkCA; // effect B part (compared by sub_080154E0; sub_08018F6C starts there)
+              // process_bot_battle_turn, 0x2B by part_blocked_by_effect)
+    u8 unkCA; // effect B part (compared by part_blocked_by_effect; sub_08018F6C starts there)
     u8 unkCB;
     u8 unkCC;
     u8 unkCD; // number shown by the Robattle handler 0x78 (sub_08014920)
@@ -1566,7 +1566,7 @@ struct Unk_03006F74 {
     u8 filler4D[0x3];
     u8 unk50[8];    // blend effect state (init_blend_effect, blend_fade_step_08065598)
     u8 unk58[0x20]; // name text buffer (sub_0805EE94 copies it to the player or Medal name)
-    u16 unk78;      // link: the other player's keys last frame (sub_0805B9EC)
+    u16 unk78;      // link: the other player's keys last frame (keys_update_from)
     s8 unk7A;
     s8 unk7B;     // link: both sides OK flag, 0 / -1 (fade_state_dispatch)
     s8 unk7C;     // link: both sides OK flag, 0 / -1 (fade_state_dispatch)

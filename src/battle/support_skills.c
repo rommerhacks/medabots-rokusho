@@ -610,14 +610,14 @@ void sub_0802463C(void) {
     else
         battle_set_damage_vs_armor(gUnk_03001800.unk88, 0, gUnk_03001800.unkEC);
     set_display_digit_type(&gUnk_03000440.unkEE, gUnk_03001800.unkC8, 1);
-    render_battle_text_sprites(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
+    battle_number_popup_init_slot(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
     play_sound_effect(0x5B);
     gUnk_03000440.unk84 = 0;
     gUnk_03001800.unkAA++;
 }
 
 void sub_080246C0(void) {
-    update_battle_sprite_animations(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
+    battle_popup_update_slot(&gUnk_03000440.unkEE, gUnk_03001800.unk88, 0x21);
     if (++gUnk_03000440.unk84, gUnk_03000440.unk89 == 0 && (KEYS_LO(gRepeatKeys) & 1) && gUnk_03000440.unk84 > 0x32)
         gUnk_03000440.unk84 = 0x78;
     if (gUnk_03000440.unk84 == 0x78) {

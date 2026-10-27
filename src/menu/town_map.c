@@ -157,7 +157,7 @@ void sub_080608EC(void) {
 
     town_map_update_cursor();
     update_animation_timer();
-    if (sub_0805B7A0() == 0) {
+    if (town_map_move_cursor() == 0) {
         if (!((keys = KEYS_LO(gNewKeys)) & 3))
             return;
         if (gGameState == 10) {

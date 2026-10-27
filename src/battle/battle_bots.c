@@ -6,7 +6,7 @@
 
 static void copy_player_medals_to_battle_bots(void);
 static u32 battle_dispatch_action_by_type(u32 rec);
-static u32 sub_08015648(u32 rec);
+static u32 opponent_medaforce_locked(u32 rec);
 static u32 battle_part_unusable(u32 rec, u32 part);
 
 void clear_battle_bot_array(void) {
@@ -225,25 +225,27 @@ void select_bot_battle_action(u32 rec) {
     battle_bot_select_part(rec, 0);
 }
 
-u32 sub_080154E0(u32 rec, u32 part) {
+// Effect B type 0x2B disables the part in unkCA.
+u32 part_blocked_by_effect(u32 rec, u32 part) {
     if (gUnk_03000590[rec].unkC9 == 0x2B && gUnk_03000590[rec].unkCA == part)
         return 1;
     return 0;
 }
 
-static u32 sub_08015508(u32 rec, u32 part) {
+static u32 head_out_of_uses(u32 rec, u32 part) {
     if (part == 1 && gUnk_03000590[rec].parts[0].unk10 == 0)
         return 1;
     return 0;
 }
 
-static u32 sub_08015528(u32 rec, u32 part) {
+static u32 part_is_broken(u32 rec, u32 part) {
     if (gUnk_03000590[rec].parts[part - 1].unk11 == 0)
         return 1;
     return 0;
 }
 
-u32 sub_0801554C(u32 a, u32 b) {
+// Side index (0 team, 1 opponents) of record a, or of the opposite side when b is nonzero.
+u32 bot_side_index(u32 a, u32 b) {
     if (b == 0) {
         if (a <= 2)
             return 0;
@@ -267,7 +269,7 @@ void battle_bot_select_part(u32 rec, u32 part) {
 u32 check_medaforce_availability(u32 rec, u32 slot, u32 random) {
     u32 i;
 
-    if (sub_08015648(rec) || gUnk_03001800.unk58 || gUnk_03000590[rec].unkC1 != 0x50)
+    if (opponent_medaforce_locked(rec) || gUnk_03001800.unk58 || gUnk_03000590[rec].unkC1 != 0x50)
         return 1;
     if (random)
         slot = rng_lookup_table_value();
@@ -302,7 +304,8 @@ u32 check_medaforce_availability(u32 rec, u32 slot, u32 random) {
     }
 }
 
-static u32 sub_08015648(u32 rec) {
+// Opponents can't use Medaforce until the story phase (gUnk_030057E0.unk7FF) is past 2.
+static u32 opponent_medaforce_locked(u32 rec) {
     if (rec <= 2 || gUnk_030057E0.unk7FF > 2)
         return 0;
     return 1;
@@ -319,7 +322,7 @@ void battle_ai_roll_part_order(void) {
 }
 
 static u32 battle_part_unusable(u32 rec, u32 part) {
-    if (!sub_080154E0(rec, part) && !sub_08015508(rec, part) && !sub_08015528(rec, part) &&
+    if (!part_blocked_by_effect(rec, part) && !head_out_of_uses(rec, part) && !part_is_broken(rec, part) &&
         !begin_battle_action_lookup(rec, part))
         return 0;
     return 1;

@@ -755,7 +755,7 @@ u32 begin_battle_action_lookup(u32 rec, u32 part) {
 }
 
 void check_battle_bot_defeated_set_flag(void) {
-    if (gUnk_03001800.unk28[sub_0801554C(gUnk_03001800.unk5C, 0)].unk2 == 0)
+    if (gUnk_03001800.unk28[bot_side_index(gUnk_03001800.unk5C, 0)].unk2 == 0)
         gUnk_03001800.unk51 = 1;
 }
 
@@ -834,8 +834,8 @@ void sub_08033658(void) {
 }
 
 void sub_08033698(void) {
-    if (gUnk_03001800.unk28[sub_0801554C(gUnk_03001800.unk5C, 1)].unk2 == 0 ||
-        gUnk_03001800.unk28[sub_0801554C(gUnk_03001800.unk5C, 1)].unk3 != 0x33)
+    if (gUnk_03001800.unk28[bot_side_index(gUnk_03001800.unk5C, 1)].unk2 == 0 ||
+        gUnk_03001800.unk28[bot_side_index(gUnk_03001800.unk5C, 1)].unk3 != 0x33)
         gUnk_03001800.unk51 = 1;
 }
 

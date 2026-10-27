@@ -3,7 +3,8 @@
 
 #include "global.h"
 
-static u32 sub_0801B4C8(u32 first) {
+// unkBA == 2: set by reset_battle_bot_state when a Medabot stops functioning.
+static u32 count_knocked_out_bots(u32 first) {
     u32 n = 0;
     u32 i;
 
@@ -33,8 +34,8 @@ static u32 battle_count_broken_parts(u32 first) {
 // broken parts, then the larger gUnk_03001800.unk28[side].unk1, then a coin flip (mirrored on link player 1).
 // gUnk_03000440.unk9C = 1 team wins, 2 opponents win. Called by sub_08031120 when TIME (unk57) is 0.
 void robattle_judge_time_up(void) {
-    u32 team = sub_0801B4C8(0);
-    u32 opp = sub_0801B4C8(3);
+    u32 team = count_knocked_out_bots(0);
+    u32 opp = count_knocked_out_bots(3);
 
     if (team < opp)
         gUnk_03000440.unk9C = 1;
@@ -87,7 +88,8 @@ void reset_bot_status_and_init_palette_transfers(u32 rec) {
     CpuSet(&z4, gUnk_030018A8 + 47, 0x05000001);
 }
 
-void sub_0801B67C(u32 rec) {
+// unkF8 = first record of the acting Medabot's side (0 team, 3 opponents).
+void battle_set_actor_side(u32 rec) {
     if (rec <= 2)
         gUnk_03001800.unkF8 = 0;
     else
@@ -147,7 +149,9 @@ void determine_battle_part_action_priority(void) {
         gUnk_03001800.unk15C[2] = 1;
 }
 
-void sub_0801B894(void) {
+// Sprite 9 marks the target of the selected part (parts[].unkE = target record + 1, unkF = target part);
+// target_marker_update pulses that part sprite's scale, target_marker_hide restores it.
+void target_marker_show(void) {
     clear_battle_sprite_slot(9, 1);
     if (gUnk_03001800.unk82 != 0 && gUnk_03001800.unk15C[gUnk_03001800.unk82 - 1] == 0 &&
         gUnk_03000590[gUnk_03001800.unk80].parts[gUnk_03001800.unk82 - 1].unkE) {
@@ -167,7 +171,7 @@ void sub_0801B894(void) {
     }
 }
 
-void sub_0801B9C4(void) {
+void target_marker_update(void) {
     if (gUnk_03002C30[9].unk0 & 0x8000) {
         process_sprite_anim_commands(gUnk_083B5F80[24], 9);
         if (gUnk_03002C30[9].unk24) {
@@ -192,7 +196,7 @@ void sub_0801B9C4(void) {
     }
 }
 
-void sub_0801BACC(void) {
+void target_marker_hide(void) {
     if (gUnk_03002C30[9].unk0 & 0x8000) {
         if (gUnk_03002C30[9].unk24) {
             gUnk_03002C30[(gUnk_03002C30[9].unk25 - 1) * 4 + gUnk_03002C30[9].unk24 + 0x59].unk8 = 0x40;

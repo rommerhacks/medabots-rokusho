@@ -184,7 +184,7 @@
   compiled before it in the same file, so a function can match in a scratch file and not in its
   module. `python3 tools/scripts/tryin.py <name> variants.c [N]` tries each `----`-separated
   variant in place of the module's `INCLUDE_ASM` line and restores the module afterwards
-  (sub_0805B7A0, sub_0805BDC8, sub_0805C190 only matched this way).
+  (town_map_move_cursor, sub_0805BDC8, sub_0805C190 only matched this way).
 * A non-constant array initializer `u8 cur[3] = {gA, gB, gC};` builds a temporary on the stack and
   copies it with a `bl memcpy` (sub_0805BCC0). `memcpy` is a second label on `memcpy_optimized` in
   `asm/lib/libgcc.s`.
@@ -192,7 +192,7 @@
   r0, #5; orrs ...`) comes from a local variable: `s32 w = 31; c = (w << 10) | (w << 5) | w;`
   (sub_0805C6AC).
 * Repeated key tests that `ands` into a fresh register each time: write `*(u8 *)&gNewKeys & 0x20`
-  at every test instead of a `keys` local (sub_0805B7A0).
+  at every test instead of a `keys` local (town_map_move_cursor).
 * A `u16` loaded once and split into fields in two places: `u16 c = buf[i];` locals (not `u32`, not
   re-reading the array) (sub_0805BDC8).
 * Unsolved: callees that zero-extend `u16` x/y params at entry, then sign-extend them at each use
@@ -616,9 +616,9 @@
 * A pinned table pointer (`register ... asm("r4")`) whose loop still hoists a constant into a callee-saved
   register: assign the pin at both the start and the end of the loop body (name_entry_update).
 * A `bl __divsi3` by a power of two (divisor kept in a register): divide by a local `s32 d = 0x400;`.
-  Division is expanded before constant propagation, so the call stays (sub_0805B4C8).
+  Division is expanded before constant propagation, so the call stays (sprite_wave_bob8).
 * `if (s < 0) y = x + mid; else y = mid - x;` where one arm in the original is `negs` and both arms
-  share an `adds r0, #80`: write that arm as `-x + mid` (sub_0805B4C8).
+  share an `adds r0, #80`: write that arm as `-x + mid` (sprite_wave_bob8).
 * A table value reduced to 0-3 where `& 3` gives the wrong registers for the whole block: write `% 4`
   (setup_screen_transition_effect_080684F0).
 * A store through `map[0x62]` whose address constant lands in the wrong register while the next stores

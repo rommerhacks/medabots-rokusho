@@ -13,7 +13,7 @@
     else                                                                                                               \
         spr[k].unk4 = mid - WAVE_X(a)
 
-static u32 sub_0805B4C8(struct Unk_03002C30 *spr) {
+static u32 sprite_wave_bob8(struct Unk_03002C30 *spr) {
     u32 done = 0;
     s32 d = 0x400;
     s32 mid = 80;
@@ -50,7 +50,8 @@ static u32 sub_0805B4C8(struct Unk_03002C30 *spr) {
     return done;
 }
 
-u32 sub_0805B7A0(void) {
+// D-pad moves the town map cursor (unk17) through the neighbour table of the current map; returns 1 on a press.
+u32 town_map_move_cursor(void) {
     struct Unk_03006F74 **pw = &gUnk_03006F74;
     struct Unk_03006F74 *w = *pw;
     u8 old = w->unk17;
@@ -135,7 +136,8 @@ void init_multiplayer_id(void) {
     gUnk_03000B90 = (*(vu32 *)0x04000128 << 26) >> 30;
 }
 
-void sub_0805B9EC(u16 keys) {
+// guess: link play uses a key word received over the link; new / released keys from it (no callers).
+void keys_update_from(u16 keys) {
     u16 *newKeys = &gNewKeys;
     u16 *prev = &gUnk_03006F74->unk78;
     *newKeys = keys & ~*prev;
@@ -143,19 +145,19 @@ void sub_0805B9EC(u16 keys) {
     *prev = keys;
 }
 
-static void sub_0805BA20(void) {
+static void link_poll_keys(void) {
     if (gUnk_03005030 != 0) {
         if (gUnk_03000B90)
-            sub_0805B9EC(gUnk_03005010.unk8[0][0]);
+            keys_update_from(gUnk_03005010.unk8[0][0]);
         else {
             register struct Unk_03005010 *p asm("r0") = &gUnk_03005010;
             p->unk4 = gHeldKeys;
-            sub_0805B9EC(p->unk8[0][0]);
+            keys_update_from(p->unk8[0][0]);
         }
     }
 }
 
-static u16 sub_0805BA68(s16 x1, s16 y1, s16 x2, s16 y2) {
+static u16 point_distance(s16 x1, s16 y1, s16 x2, s16 y2) {
     s32 dx = x2 - x1;
     s32 dy = y2 - y1;
     return Sqrt(dx * dx + dy * dy);
