@@ -3,11 +3,11 @@
 
 // Battle graphics loading, message windows, Medabot panels, UI tilemaps, Medaforce gauge
 
-// One LZ graphics load per call (step gUnk_03000440.unk13A 0-8); returns 1 when done. direct = 0 stages the
+// One LZ graphics load per call (step gGameWork.unk13A 0-8); returns 1 when done. direct = 0 stages the
 // palettes in the EWRAM buffer instead of palette RAM.
 u32 battle_load_graphics_step(u32 direct);
 // Battle message window: open, print message msg (gUnk_083C65C4), finish (close). With gOptionSkipMessages set they
-// do nothing and report done, unless gUnk_03000440.unk89 == 1 forces the message.
+// do nothing and report done, unless gGameWork.unk89 == 1 forces the message.
 void battle_message_open(void);
 u32 battle_message_print(u32 msg);
 u32 battle_message_finish(void);
@@ -24,7 +24,7 @@ void target_arrows_animate(u32 bot);
 void battle_substeps_reset(void);
 void battle_message_reset(void);
 void clear_battle_ui_tilemaps(void);
-// Moves one point from gUnk_03001800.unk51 into the Medaforce gauge (max 80) and redraws it; 1 when done.
+// Moves one point from gBattleWork.unk51 into the Medaforce gauge (max 80) and redraws it; 1 when done.
 u32 medaforce_gauge_fill_step(u32 bot);
 // The same, taking one point out of the gauge.
 u32 medaforce_gauge_drain_step(u32 bot);
@@ -35,7 +35,7 @@ u32 mf_charge_sparkles_update(u32 bot);
 // End of a Medabot's action: unkDE / unkDF = chosen part and its skill, clears the per-turn part and defence
 // state, then restore_changed_part.
 void battle_action_cleanup(u32 bot);
-// Writes the part saved by a Change skill (gUnk_03001800.unk11C, flag unk118) back into the acting Medabot's
+// Writes the part saved by a Change skill (gBattleWork.unk11C, flag unk118) back into the acting Medabot's
 // part unkA7 and reloads the part sprites.
 void restore_changed_part(u32 bot);
 

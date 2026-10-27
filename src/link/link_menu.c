@@ -304,7 +304,7 @@ void setup_dialogue_script_from_rom(void) {
 
 void link_menu_poll_yes_no(void) {
     if (poll_choice_menu()) {
-        if (gUnk_03000440.unk2A == 0) {
+        if (gGameWork.unk2A == 0) {
             gGameSubState++;
             message_next();
         } else
@@ -351,7 +351,7 @@ void menu_yes_no_confirmation_handler(void) {
     i++;
     d[i] = s[i];
     if (run_message(gUnk_03006F74->unk270)) {
-        if (gUnk_03000440.unk2A == 0)
+        if (gGameWork.unk2A == 0)
             gUnk_03005010.unk6 = 0xFF00;
         else
             gUnk_03005010.unk6 = 0xFF01;

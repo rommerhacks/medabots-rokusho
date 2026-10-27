@@ -13,15 +13,15 @@ static inline u32 sub1(u32 x) {
 // one of the three Medal skills (4-6, available from Medal level 10 / 30 / 60).
 void count_bot_skill_use(u32 rec) {
     u8 k;
-    struct Unk_03000590 *base;
-    struct Unk_03000590 *r;
+    struct BattleBot *base;
+    struct BattleBot *r;
     u32 off;
 
     if (rec > 2)
         return;
-    base = gUnk_03000590;
+    base = gBattleBots;
     off = rec << 8;
-    r = (struct Unk_03000590 *)((u8 *)base + off);
+    r = (struct BattleBot *)((u8 *)base + off);
     if (r->chosenAction == 0)
         return;
     if (r->chosenAction <= 3) {
@@ -31,23 +31,23 @@ void count_bot_skill_use(u32 rec) {
         case 0:
             if (r->medal.unk5 <= 9)
                 return;
-            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
-            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gUnk_03000440.unkEE)[0] * 6], gUnk_03000440.unk10E, 6);
-            k = gUnk_03000440.unk10E[1];
+            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.unk1 * 3], &gGameWork.unkEE, 3);
+            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gGameWork.unkEE)[0] * 6], gGameWork.unk10E, 6);
+            k = gGameWork.unk10E[1];
             break;
         case 1:
             if (r->medal.unk5 <= 29)
                 return;
-            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
-            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gUnk_03000440.unkEE)[1] * 6], gUnk_03000440.unk10E, 6);
-            k = gUnk_03000440.unk10E[1];
+            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.unk1 * 3], &gGameWork.unkEE, 3);
+            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gGameWork.unkEE)[1] * 6], gGameWork.unk10E, 6);
+            k = gGameWork.unk10E[1];
             break;
         case 2:
             if (r->medal.unk5 <= 59)
                 return;
-            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.unk1 * 3], &gUnk_03000440.unkEE, 3);
-            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gUnk_03000440.unkEE)[2] * 6], gUnk_03000440.unk10E, 6);
-            k = gUnk_03000440.unk10E[1];
+            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.unk1 * 3], &gGameWork.unkEE, 3);
+            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gGameWork.unkEE)[2] * 6], gGameWork.unk10E, 6);
+            k = gGameWork.unk10E[1];
             break;
         default:
             return;
@@ -65,7 +65,7 @@ void count_team_skill_uses(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03000590[i].unk40)
+        if (gBattleBots[i].unk40)
             count_bot_skill_use(i);
     }
 }
@@ -76,12 +76,12 @@ void fill_opponent_medaforce_for_battle_type(void) {
 
     if ((gUnk_030057E0.unkC2E & 0xF0) == 0x20) {
         for (i = 0; i <= 2; i++)
-            gUnk_03000590[i + 3].unkC1 = 0x50;
+            gBattleBots[i + 3].unkC1 = 0x50;
     }
 }
 
 void select_battle_music(void) {
-    if (gUnk_03000440.unk89 == 1)
+    if (gGameWork.unk89 == 1)
         play_song(9);
     else if ((gUnk_030057E0.unkC2E & 0xF0) != 0) {
         if ((gUnk_030057E0.unkC2E & 0xF0) == 0x10)
@@ -112,13 +112,13 @@ void init_battle_action_select_ui(u32 a) {
         gSpriteEntries[1].unkB = 0x40;
         gSpriteEntries[1].unk2 = 0x70;
         gSpriteEntries[1].unk4 = 0x90;
-        gSpriteEntries[1].unk6 = (u8)(gUnk_03001800.unk57 / 10) + 0x624;
+        gSpriteEntries[1].unk6 = (u8)(gBattleWork.unk57 / 10) + 0x624;
         gSpriteEntries[2].unk0 = 0xC404;
         gSpriteEntries[2].unk1C = 0;
         gSpriteEntries[2].unkA = 0xA;
         gSpriteEntries[2].unkB = 0x40;
         gSpriteEntries[2].unk2 = 0x80;
         gSpriteEntries[2].unk4 = 0x90;
-        gSpriteEntries[2].unk6 = (u8)(gUnk_03001800.unk57 % 10) + 0x624;
+        gSpriteEntries[2].unk6 = (u8)(gBattleWork.unk57 % 10) + 0x624;
     }
 }

@@ -24,12 +24,12 @@ void medal_rename_draw_list(u8 start) {
         for (j = 0; j <= 10; j++)
             gSpriteEntries[i * 10 + 12 + j].unk0 &= 0xBFFF;
         for (j = 0; j <= 10; j++) {
-            gUnk_03006F74->unk58[j] = gUnk_03000BE0[gUnk_03006F74->unkB0[i + start]].unkA[j];
+            gUnk_03006F74->unk58[j] = gMedals[gUnk_03006F74->unkB0[i + start]].unkA[j];
             if (gUnk_03006F74->unk58[j] == 0xFE)
                 break;
         }
         render_text_sprites_08040DB8(gUnk_03006F74->unk58, i * 10 + 12, 6, i * 2 + 3, 10, 13, 1, 1);
-        v = gUnk_03006F74->unk36 + (gUnk_03000BE0[gUnk_03006F74->unkB0[i + start]].unk1 * 4 + 1);
+        v = gUnk_03006F74->unk36 + (gMedals[gUnk_03006F74->unkB0[i + start]].unk1 * 4 + 1);
         v |= 0x6000;
         dst = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + (i * 2 + 3) * 32;
         *dst = v;
@@ -73,7 +73,7 @@ void medal_rename_build_list(void) {
     *(u16 *)PLTT = z;
     n = 0;
     for (i = 0; i < 30; i++) {
-        if (gUnk_03000BE0[i].unk0 & 0x80) {
+        if (gMedals[i].unk0 & 0x80) {
             gUnk_03006F74->unkB0[n] = i;
             n++;
         }
@@ -162,12 +162,12 @@ void medal_rename_load_palettes(void) {
     CpuFastSet(gUnk_0850DD18, (void *)0x0202F9A0, 8);
     CpuFastSet(gUnk_08799B98, gPaletteBackupBg, 0x80);
     CpuFastSet(gUnk_080AFAE8, (void *)0x0202F940, 8);
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
 void medal_rename_fade_in(void) {
-    struct Unk_03000440 *s = &gUnk_03000440;
+    struct GameWork *s = &gGameWork;
     if (s->unk84 <= 8) {
         bg_palettes_blend_masked_now(0, 32 - s->unk84 * 4, 0xFFFF);
         obj_palettes_blend_masked_now(0, 32 - s->unk84 * 4, 0xFFFF);
@@ -247,7 +247,7 @@ void medal_rename_select_medal(void) {
         gSpriteEntries[11].unk0 &= 0xBFFF;
         gSpriteEntries[8].unk2 = 12;
         gUnk_03006F74->unk4C = 1;
-        gUnk_03000440.unk1B = 0;
+        gGameWork.unk1B = 0;
         gGameSubState = 9;
         open_choice_menu(1, 0x16, 7);
         return;
@@ -255,8 +255,8 @@ void medal_rename_select_medal(void) {
         if (KEYS_LO(gNewKeys) & 2) {
             play_sound_effect(5);
             gSpriteEntries[8].unk0 &= 0xBFFF;
-            gUnk_03000440.unk1B = 0;
-            gUnk_03000440.unk84 = 0;
+            gGameWork.unk1B = 0;
+            gGameWork.unk84 = 0;
             gGameSubState = 7;
         }
         return;
@@ -267,7 +267,7 @@ void medal_rename_select_medal(void) {
 
 void medal_rename_fade_to_name_entry(void) {
     if (game_state_execute_handler_a()) {
-        struct Unk_03000440 *s = &gUnk_03000440;
+        struct GameWork *s = &gGameWork;
         if (s->unk84 <= 8) {
             bg_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
             obj_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
@@ -282,7 +282,7 @@ void medal_rename_fade_to_name_entry(void) {
 
 void medal_rename_fade_to_field(void) {
     if (game_state_execute_handler_a()) {
-        struct Unk_03000440 *s = &gUnk_03000440;
+        struct GameWork *s = &gGameWork;
         if (s->unk84 <= 8) {
             bg_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
             obj_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
@@ -333,7 +333,7 @@ void medal_rename_confirm_payment(void) {
         } else {
             gMoney -= 100;
             gUnk_030017EC = gUnk_03006F74->unkB0[gUnk_03006F74->unk2E + gUnk_03006F74->unk2F];
-            gUnk_03000440.unk84 = c;
+            gGameWork.unk84 = c;
             gGameSubState = 6;
         }
     }

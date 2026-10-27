@@ -9,26 +9,26 @@ static void scanline_scroll_vblank(void);
 
 // Second RNG (0-255): mixes the frame counter into a 16-bit state, or replays gUnk_083B286C when unk89 is set.
 s32 rng_next_byte(void) {
-    if (gUnk_03000440.unk89 == 0) {
-        u16 s = gUnk_03000440.unk8A + gUnk_03000440.unk8C;
+    if (gGameWork.unk89 == 0) {
+        u16 s = gGameWork.unk8A + gGameWork.unk8C;
 
         s += 0x87 + (((gFrameCounter << 4) + (gFrameCounter >> 4) + 1) >> 1);
-        gUnk_03000440.unk8A = ((s & 0xFF) << 8) | (((s & 0xFF00) >> 8) ^ (s & 0xFF));
-        gUnk_03000440.unk8C = ((s & 0xFF00) >> 8) ^ s;
-        return gUnk_03000440.unk8C;
+        gGameWork.unk8A = ((s & 0xFF) << 8) | (((s & 0xFF00) >> 8) ^ (s & 0xFF));
+        gGameWork.unk8C = ((s & 0xFF00) >> 8) ^ s;
+        return gGameWork.unk8C;
     } else {
-        gUnk_03000440.unk8D++;
-        gUnk_03000440.unk8C = gUnk_083B286C[gUnk_03000440.unk8D];
-        return gUnk_03000440.unk8C;
+        gGameWork.unk8D++;
+        gGameWork.unk8C = gUnk_083B286C[gGameWork.unk8D];
+        return gGameWork.unk8C;
     }
 }
 
 void set_blend_effect_mode(u8 mode, u16 targets, u16 speed) {
     u16 bld, eva, evb, evy;
 
-    gUnk_03000440.unk90 = mode;
-    gUnk_03000440.unk92 = speed;
-    gUnk_03000440.unk94 = 0;
+    gGameWork.unk90 = mode;
+    gGameWork.unk92 = speed;
+    gGameWork.unk94 = 0;
     switch (mode) {
     case 1:
         bld = 0x40;
@@ -82,26 +82,26 @@ void set_blend_effect_mode(u8 mode, u16 targets, u16 speed) {
 u32 update_blend_effect(void) {
     u16 eva, evb, evy;
 
-    gUnk_03000440.unk94 += gUnk_03000440.unk92;
-    switch (gUnk_03000440.unk90) {
+    gGameWork.unk94 += gGameWork.unk92;
+    switch (gGameWork.unk90) {
     case 1:
     case 3:
     case 5:
-        eva = 16 - (gUnk_03000440.unk94 >> 4);
+        eva = 16 - (gGameWork.unk94 >> 4);
         evb = eva;
         evy = eva;
         break;
     case 2:
     case 4:
     case 6:
-        eva = gUnk_03000440.unk94 >> 4;
+        eva = gGameWork.unk94 >> 4;
         evb = eva;
         evy = eva;
         break;
     }
     REG_BLDALPHA = ((evb & 0x1F) << 8) | (eva & 0x1F);
     REG_BLDY = evy & 0x1F;
-    if (gUnk_03000440.unk94 > 0xFF)
+    if (gGameWork.unk94 > 0xFF)
         return 1;
     return 0;
 }
@@ -602,8 +602,8 @@ void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags) {
 u32 find_next_free_medal(volatile u32 medal, volatile u32 backward) {
     if (backward) {
         if (medal != 0) {
-            struct Unk_03000BE0 *medals = gUnk_03000BE0;
-            struct Unk_03000BE0 *medals2 = gUnk_03000BE0; // FAKEMATCH: second base copy
+            struct MedalData *medals = gMedals;
+            struct MedalData *medals2 = gMedals; // FAKEMATCH: second base copy
         loop:
             medal--;
             if (medals2[medal].unk0 & 0x80) {
@@ -620,7 +620,7 @@ u32 find_next_free_medal(volatile u32 medal, volatile u32 backward) {
                 medal = 0;
             if (medal == 30)
                 goto none;
-        } while (!(gUnk_03000BE0[medal].unk0 & 0x80) || (gUnk_03000BE0[medal].unk0 & 0x40));
+        } while (!(gMedals[medal].unk0 & 0x80) || (gMedals[medal].unk0 & 0x40));
         return medal;
     }
 none:
@@ -633,8 +633,8 @@ u32 find_next_available_medapart_slot(vu32 part, vu32 kind, vu32 backward, vu32 
             part--;
             if (part == 0x78)
                 part--;
-            load_part_data(part, kind, gUnk_03000440.unk10E);
-            if (gender == gUnk_03000440.unk10E[3] && gMedapartInventory[kind * 240 + part * 2] != 0 &&
+            load_part_data(part, kind, gGameWork.unk10E);
+            if (gender == gGameWork.unk10E[3] && gMedapartInventory[kind * 240 + part * 2] != 0 &&
                 gMedapartInventory[kind * 240 + part * 2] - gMedapartInventory[kind * 240 + part * 2 + 1] != 0)
                 goto found;
         }
@@ -647,8 +647,8 @@ u32 find_next_available_medapart_slot(vu32 part, vu32 kind, vu32 backward, vu32 
                 part = 0;
             if (part == gender + 0x78)
                 return gender + 0x78;
-            load_part_data(part, kind, gUnk_03000440.unk10E);
-            if (gender == gUnk_03000440.unk10E[3] && gMedapartInventory[kind * 240 + part * 2] != 0 &&
+            load_part_data(part, kind, gGameWork.unk10E);
+            if (gender == gGameWork.unk10E[3] && gMedapartInventory[kind * 240 + part * 2] != 0 &&
                 gMedapartInventory[kind * 240 + part * 2] - gMedapartInventory[kind * 240 + part * 2 + 1] != 0)
                 return part;
         }
@@ -661,11 +661,11 @@ fail:
 }
 
 u32 medabot_detail_is_full_set(void) {
-    if (gUnk_03000440.unk98 != gUnk_03000440.unk99)
+    if (gGameWork.unk98 != gGameWork.unk99)
         return 0;
-    if (gUnk_03000440.unk98 != gUnk_03000440.unk9A)
+    if (gGameWork.unk98 != gGameWork.unk9A)
         return 0;
-    if (gUnk_03000440.unk98 != gUnk_03000440.unk9B)
+    if (gGameWork.unk98 != gGameWork.unk9B)
         return 0;
     return 1;
 }
@@ -682,14 +682,14 @@ u32 find_medabot_slot_by_medal(u8 medal) {
     if (medal >= 0x1E)
         return 0xFF;
     for (i = 0; i < 9; i++)
-        if (gUnk_030017A0[i].unk0 > 1 && gUnk_030017A0[i].unk2 == medal)
+        if (gTeamSlots[i].unk0 > 1 && gTeamSlots[i].unk2 == medal)
             return i;
     return 0xFF;
 }
 
 void load_battlefield_data_to_buffer(void) {
-    memcpy_bytes_08041D04(gUnk_083BEA90[gUnk_030057E0.unk7FE], &gUnk_03000440.unkEE, 1);
-    gUnk_030057E0.unkC29 = gUnk_03000440.unkEE;
+    memcpy_bytes_08041D04(gUnk_083BEA90[gUnk_030057E0.unk7FE], &gGameWork.unkEE, 1);
+    gUnk_030057E0.unkC29 = gGameWork.unkEE;
     gUnk_030057E0.unkC2B = 0;
 }
 
@@ -732,15 +732,15 @@ void start_scanline_wave_scroll(u32 phase, s32 amplitude, u32 lines) {
         if (i < lines) {
             if ((i & 3) == 0) {
                 idx = (i + phase) & 0xFF;
-                gUnk_03000440.unk86 = (u32)(gJumpArcTable[0][idx] * (amplitude / 512.0f));
+                gGameWork.unk86 = (u32)(gJumpArcTable[0][idx] * (amplitude / 512.0f));
             }
-            buf[i][0].x = gUnk_03000440.unk86 + (gBg0Scroll.x + gUnk_03002C2C.x);
+            buf[i][0].x = gGameWork.unk86 + (gBg0Scroll.x + gUnk_03002C2C.x);
             buf[i][0].y = gBg0Scroll.y + gUnk_03002C2C.y;
-            buf[i][1].x = gUnk_03000440.unk86 + (gBg1Scroll.x + gUnk_03002C2C.x);
+            buf[i][1].x = gGameWork.unk86 + (gBg1Scroll.x + gUnk_03002C2C.x);
             buf[i][1].y = gBg1Scroll.y + gUnk_03002C2C.y;
-            buf[i][2].x = gUnk_03000440.unk86 + (gBg2Scroll.x + gUnk_03002C2C.x);
+            buf[i][2].x = gGameWork.unk86 + (gBg2Scroll.x + gUnk_03002C2C.x);
             buf[i][2].y = gBg2Scroll.y + gUnk_03002C2C.y;
-            buf[i][3].x = gUnk_03000440.unk86 + (gBg3Scroll.x + gUnk_03002C2C.x);
+            buf[i][3].x = gGameWork.unk86 + (gBg3Scroll.x + gUnk_03002C2C.x);
             buf[i][3].y = gBg3Scroll.y + gUnk_03002C2C.y;
         } else {
             buf[i][0].x = gBg0Scroll.x + gUnk_03002C2C.x;
@@ -832,63 +832,63 @@ void update_scroll_movement_a(void) {
     vu8 *acc;
     u32 t;
 
-    if (gUnk_03001800.unk39[0] == 0)
+    if (gBattleWork.unk39[0] == 0)
         return;
-    acc = &gUnk_03001800.unk39[6];
-    *acc = *(vu8 *)&gUnk_03001800.unk39[2] + *acc;
+    acc = &gBattleWork.unk39[6];
+    *acc = *(vu8 *)&gBattleWork.unk39[2] + *acc;
     if ((t = *acc >> 2) == 0)
         return;
-    gUnk_03001800.unk39[7] = t;
+    gBattleWork.unk39[7] = t;
     {
         u32 v = *acc;
         register u32 mask asm("r1") = 3; // pinned: the original loads the byte into r0, the mask into r1
         *acc = v & mask;
     }
-    if (gUnk_03001800.unk39[1] & 1) {
-        switch (gUnk_03001800.unk39[0]) {
+    if (gBattleWork.unk39[1] & 1) {
+        switch (gBattleWork.unk39[0]) {
         case 1:
-            gBg2Scroll.y += gUnk_03001800.unk39[7];
+            gBg2Scroll.y += gBattleWork.unk39[7];
             break;
         case 2:
-            gBg3Scroll.y += gUnk_03001800.unk39[7];
+            gBg3Scroll.y += gBattleWork.unk39[7];
             break;
         }
     }
-    if (gUnk_03001800.unk39[1] & 2) {
-        switch (gUnk_03001800.unk39[0]) {
+    if (gBattleWork.unk39[1] & 2) {
+        switch (gBattleWork.unk39[0]) {
         case 1:
-            gBg2Scroll.y -= gUnk_03001800.unk39[7];
+            gBg2Scroll.y -= gBattleWork.unk39[7];
             break;
         case 2:
-            gBg3Scroll.y -= gUnk_03001800.unk39[7];
+            gBg3Scroll.y -= gBattleWork.unk39[7];
             break;
         }
     }
-    if (gUnk_03001800.unk39[1] & 4) {
-        switch (gUnk_03001800.unk39[0]) {
+    if (gBattleWork.unk39[1] & 4) {
+        switch (gBattleWork.unk39[0]) {
         case 1:
-            gBg2Scroll.x += gUnk_03001800.unk39[7];
+            gBg2Scroll.x += gBattleWork.unk39[7];
             break;
         case 2:
-            gBg3Scroll.x += gUnk_03001800.unk39[7];
+            gBg3Scroll.x += gBattleWork.unk39[7];
             break;
         }
     }
-    if (gUnk_03001800.unk39[1] & 8) {
-        switch (gUnk_03001800.unk39[0]) {
+    if (gBattleWork.unk39[1] & 8) {
+        switch (gBattleWork.unk39[0]) {
         case 1:
-            gBg2Scroll.x -= gUnk_03001800.unk39[7];
+            gBg2Scroll.x -= gBattleWork.unk39[7];
             break;
         case 2:
-            gBg3Scroll.x -= gUnk_03001800.unk39[7];
+            gBg3Scroll.x -= gBattleWork.unk39[7];
             break;
         }
     }
 }
 
 void apply_battle_blend_effect_a(void) {
-    if (gUnk_03001800.unk39[3]) {
-        REG_BLDALPHA = (gUnk_03001800.unk39[4] << 8) | gUnk_03001800.unk39[5];
+    if (gBattleWork.unk39[3]) {
+        REG_BLDALPHA = (gBattleWork.unk39[4] << 8) | gBattleWork.unk39[5];
         REG_BLDY = 0;
         REG_BLDCNT = 0x1844;
     } else
@@ -901,70 +901,70 @@ void battle_bg_scroll_vblank(void) {
 }
 
 void load_battle_script_entry_b(void) {
-    memcpy_bytes_0803F63C(gUnk_083C3B5C[gUnk_03001800.unk38], gUnk_03001800.unk74, 8);
+    memcpy_bytes_0803F63C(gUnk_083C3B5C[gBattleWork.unk38], gBattleWork.unk74, 8);
 }
 
 static void update_scroll_movement_b(void) {
     vu8 *acc;
     u32 t;
 
-    if (gUnk_03001800.unk74[0] == 0)
+    if (gBattleWork.unk74[0] == 0)
         return;
-    acc = &gUnk_03001800.unk74[6];
-    *acc = *(vu8 *)&gUnk_03001800.unk74[2] + *acc;
+    acc = &gBattleWork.unk74[6];
+    *acc = *(vu8 *)&gBattleWork.unk74[2] + *acc;
     if ((t = *acc >> 2) == 0)
         return;
-    gUnk_03001800.unk74[7] = t;
+    gBattleWork.unk74[7] = t;
     {
         u32 v = *acc;
         register u32 mask asm("r1") = 3; // pinned: the original loads the byte into r0, the mask into r1
         *acc = v & mask;
     }
-    if (gUnk_03001800.unk74[1] & 1) {
-        switch (gUnk_03001800.unk74[0]) {
+    if (gBattleWork.unk74[1] & 1) {
+        switch (gBattleWork.unk74[0]) {
         case 1:
-            gBg2Scroll.y += gUnk_03001800.unk74[7];
+            gBg2Scroll.y += gBattleWork.unk74[7];
             break;
         case 2:
-            gBg3Scroll.y += gUnk_03001800.unk74[7];
+            gBg3Scroll.y += gBattleWork.unk74[7];
             break;
         }
     }
-    if (gUnk_03001800.unk74[1] & 2) {
-        switch (gUnk_03001800.unk74[0]) {
+    if (gBattleWork.unk74[1] & 2) {
+        switch (gBattleWork.unk74[0]) {
         case 1:
-            gBg2Scroll.y -= gUnk_03001800.unk74[7];
+            gBg2Scroll.y -= gBattleWork.unk74[7];
             break;
         case 2:
-            gBg3Scroll.y -= gUnk_03001800.unk74[7];
+            gBg3Scroll.y -= gBattleWork.unk74[7];
             break;
         }
     }
-    if (gUnk_03001800.unk74[1] & 4) {
-        switch (gUnk_03001800.unk74[0]) {
+    if (gBattleWork.unk74[1] & 4) {
+        switch (gBattleWork.unk74[0]) {
         case 1:
-            gBg2Scroll.x += gUnk_03001800.unk74[7];
+            gBg2Scroll.x += gBattleWork.unk74[7];
             break;
         case 2:
-            gBg3Scroll.x += gUnk_03001800.unk74[7];
+            gBg3Scroll.x += gBattleWork.unk74[7];
             break;
         }
     }
-    if (gUnk_03001800.unk74[1] & 8) {
-        switch (gUnk_03001800.unk74[0]) {
+    if (gBattleWork.unk74[1] & 8) {
+        switch (gBattleWork.unk74[0]) {
         case 1:
-            gBg2Scroll.x -= gUnk_03001800.unk74[7];
+            gBg2Scroll.x -= gBattleWork.unk74[7];
             break;
         case 2:
-            gBg3Scroll.x -= gUnk_03001800.unk74[7];
+            gBg3Scroll.x -= gBattleWork.unk74[7];
             break;
         }
     }
 }
 
 void apply_battle_blend_effect_b(void) {
-    if (gUnk_03001800.unk74[3]) {
-        REG_BLDALPHA = (gUnk_03001800.unk74[4] << 8) | gUnk_03001800.unk74[5];
+    if (gBattleWork.unk74[3]) {
+        REG_BLDALPHA = (gBattleWork.unk74[4] << 8) | gBattleWork.unk74[5];
         REG_BLDY = 0;
         REG_BLDCNT = 0x1844;
     } else
@@ -972,17 +972,17 @@ void apply_battle_blend_effect_b(void) {
 }
 
 void advance_battle_animation_frame(u32 field) {
-    if (++gUnk_03001800.unk7D > 2) {
-        gUnk_03001800.unk7D = 0;
-        gUnk_03001800.unk7C = (gUnk_03001800.unk7C + 1) & 0x7F;
-        memcpy_bytes_08041D04(&gUnk_083C40B8[field], &gUnk_03001800.unk7E, 1);
-        memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128 + gUnk_03001800.unk7C], &gUnk_03001800.unk7F, 1);
-        if (gUnk_03001800.unk7F == 0xFF) {
-            gUnk_03001800.unk7C = 0;
-            memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128], &gUnk_03001800.unk7F, 1);
+    if (++gBattleWork.unk7D > 2) {
+        gBattleWork.unk7D = 0;
+        gBattleWork.unk7C = (gBattleWork.unk7C + 1) & 0x7F;
+        memcpy_bytes_08041D04(&gUnk_083C40B8[field], &gBattleWork.unk7E, 1);
+        memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128 + gBattleWork.unk7C], &gBattleWork.unk7F, 1);
+        if (gBattleWork.unk7F == 0xFF) {
+            gBattleWork.unk7C = 0;
+            memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128], &gBattleWork.unk7F, 1);
         }
-        CpuSet((void *)(0x02027000 + gUnk_03001800.unk7E * gUnk_03001800.unk7F * 32), (void *)(VRAM + 0x8020),
-               (gUnk_03001800.unk7E * 8) | 0x04000000);
+        CpuSet((void *)(0x02027000 + gBattleWork.unk7E * gBattleWork.unk7F * 32), (void *)(VRAM + 0x8020),
+               (gBattleWork.unk7E * 8) | 0x04000000);
     }
 }
 
@@ -999,7 +999,7 @@ u32 count_assembled_medabots(void) {
     u32 i;
 
     for (i = 0; i < 9; i++)
-        if (gUnk_030017A0[i].unk0 == 3)
+        if (gTeamSlots[i].unk0 == 3)
             n++;
     return n;
 }
@@ -1016,7 +1016,7 @@ u32 medaparts_all_equipped(void) {
 
 void battle_vblank_update_bg(void) {
     update_scroll_movement_b();
-    advance_battle_animation_frame(gUnk_03001800.unk38);
+    advance_battle_animation_frame(gBattleWork.unk38);
 }
 
 void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, void *dst) {
@@ -1054,11 +1054,11 @@ void race_enter_team_select(void) {
     CpuFastSet(&a, (void *)OBJ_PLTT, 0x01000080);
     b = 0;
     CpuFastSet(&b, (void *)PLTT, 0x01000080);
-    mem_fill8(&gUnk_03000440.unk50, 0x14, 0);
-    gUnk_03000440.unk50 = 3;
-    gUnk_03001800.unk41[0] = 0;
-    gUnk_03001800.unk41[1] = 0;
-    gUnk_03001800.unk41[2] = 0;
+    mem_fill8(&gGameWork.unk50, 0x14, 0);
+    gGameWork.unk50 = 3;
+    gBattleWork.unk41[0] = 0;
+    gBattleWork.unk41[1] = 0;
+    gBattleWork.unk41[2] = 0;
     gGameMode = 0;
     gGameState = 3;
     gGameSubState = 0;
@@ -1394,13 +1394,13 @@ u32 resolve_area_sprite_set(u8 set) {
 
 // Map script: puts the first Medabot in team slot 0 (Medal 0 owned and set, parts 0x2A in use).
 void give_starter_medabot(void) {
-    gUnk_03000BE0[0].unk0 |= 0xC0;
-    gUnk_030017A0[0].unk0 = 3;
-    gUnk_030017A0[0].unk2 = 0;
-    gUnk_030017A0[0].unk3 = 0x2A;
-    gUnk_030017A0[0].unk4 = 0x2A;
-    gUnk_030017A0[0].unk5 = 0x2A;
-    gUnk_030017A0[0].unk6 = 0x2A;
+    gMedals[0].unk0 |= 0xC0;
+    gTeamSlots[0].unk0 = 3;
+    gTeamSlots[0].unk2 = 0;
+    gTeamSlots[0].unk3 = 0x2A;
+    gTeamSlots[0].unk4 = 0x2A;
+    gTeamSlots[0].unk5 = 0x2A;
+    gTeamSlots[0].unk6 = 0x2A;
     gMedapartInventory[0 * 240 + 0x2A * 2 + 1] = 1;
     gMedapartInventory[1 * 240 + 0x2A * 2 + 1] = 1;
     gMedapartInventory[2 * 240 + 0x2A * 2 + 1] = 1;
@@ -1410,23 +1410,23 @@ void give_starter_medabot(void) {
 void init_battle_scene(u32 mode, u32 id) {
     clear_bg_scroll();
     clear_battle_sprite_slot(0, 0x80);
-    gUnk_03000440.unk96 = 0;
+    gGameWork.unk96 = 0;
     gUnk_03000430 = 0;
-    mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
-    gUnk_03000440.unk3C = 3;
-    gUnk_03000440.unk3D = id;
+    mem_fill8(&gGameWork.unk3C, 0x14, 0);
+    gGameWork.unk3C = 3;
+    gGameWork.unk3D = id;
     switch (mode) {
     case 0:
-        gUnk_03000440.unk3E = 0;
+        gGameWork.unk3E = 0;
         break;
     case 1:
-        gUnk_03000440.unk3E = mode;
+        gGameWork.unk3E = mode;
         break;
     case 2:
-        gUnk_03000440.unk3E = mode;
+        gGameWork.unk3E = mode;
         break;
     case 3:
-        gUnk_03000440.unk3E = mode;
+        gGameWork.unk3E = mode;
         break;
     }
     gGameMode = 0;
@@ -1436,31 +1436,31 @@ void init_battle_scene(u32 mode, u32 id) {
 
 void init_game_mode(u32 mode) {
     clear_bg_scroll();
-    mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
-    mem_fill8(&gUnk_03000440.unk3C + 0x14, 0x14, 0);
-    gUnk_03000440.unk89 = 1;
-    gUnk_03000440.unk8D = 0;
+    mem_fill8(&gGameWork.unk3C, 0x14, 0);
+    mem_fill8(&gGameWork.unk3C + 0x14, 0x14, 0);
+    gGameWork.unk89 = 1;
+    gGameWork.unk8D = 0;
     switch (mode) {
     case 0:
-        gUnk_03000440.unk3C = 4;
+        gGameWork.unk3C = 4;
         gGameMode = 0;
         gGameState = 4;
         gGameSubState = 0;
         break;
     case 1:
-        gUnk_03000440.unk3C = 4;
+        gGameWork.unk3C = 4;
         gGameMode = 0;
         gGameState = 5;
         gGameSubState = 0;
         break;
     case 2:
-        gUnk_03000440.unk138 = 0;
+        gGameWork.unk138 = 0;
         gGameMode = 0;
         gGameState = 10;
         gGameSubState = 0;
         break;
     case 3:
-        gUnk_03000440.unk138 = 1;
+        gGameWork.unk138 = 1;
         gGameMode = 0;
         gGameState = 10;
         gGameSubState = 0;

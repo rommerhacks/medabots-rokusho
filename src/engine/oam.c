@@ -244,7 +244,7 @@ void check_flag_and_fast_copy(void) {
 end:
     for (i = oamIdx; i < 128; i++)
         ((u16 *)gOamBuffer)[i * 4] = 0x200;
-    gUnk_03000440.unk12E = 1;
+    gGameWork.unk12E = 1;
 }
 
 static void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags) {

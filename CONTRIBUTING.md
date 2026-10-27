@@ -157,8 +157,8 @@
   (render_text_sprites_08040DB8).
 * `struct` field addresses above 0xFF on a global that the original materializes as
   `ldr rA, =gX; ldr rB, =0x12F; adds`: access the field directly every time
-  (`gArr[gUnk_03000440.unk12F]`), not through a `u8 *slot` local.
-* Fields of `gUnk_03001800` past 0x100 (literal `0x030019A4`, the next one as `-10` from it): the
+  (`gArr[gGameWork.unk12F]`), not through a `u8 *slot` local.
+* Fields of `gBattleWork` past 0x100 (literal `0x030019A4`, the next one as `-10` from it): the
   struct field, not a separate symbol like `gLinkPartnerName[0x1A]`.
 * Tilemap rect copies whose address is `x * 2 + VRAM` then `+ bg_base`, `+ y * 64`: write
   `(u16 *)(VRAM + bg_base) + x + y * 32`; `bg_base + (VRAM + x * 2)` gets reassociated
@@ -297,8 +297,8 @@
 * Two branches that store the same fields from different sources (`a = p->x; b = p->y - 16; c = p->y`)
   match when written out in each branch; a shared local after the if gives a different tail.
 * `if (a && b && (r = f())) {...} else x++;` where the original's else path reuses the
-  `gUnk_03001800` base kept in a callee-saved register (no new literal): write the function with a
-  struct pointer local (`struct Unk_03001800 *s = &gUnk_03001800;`). With the global, gcc reloads the
+  `gBattleWork` base kept in a callee-saved register (no new literal): write the function with a
+  struct pointer local (`struct BattleWork *s = &gBattleWork;`). With the global, gcc reloads the
   base at the join (repair_spread).
 * `n = (r | -r) >> 31;` gives the original's `rsbs; orrs; lsrs #31` for "count 1 if nonzero";
   `n = f() != 0` gets a branch (team_form_move).
@@ -317,7 +317,7 @@
   comes from writing the two `next` arms out separately; `if ((a || !b) && c) c--; else next;` CSEs the
   base into one register (heal_orb_hold).
 * A field address built as `base + rec*0x100` + an offset, then `adds r0, #1` (literal `base + off`, not
-  `base + off + 1`): take the address of the field *before* it and add one, `&gUnk_03000590[r].unkB8 + 1`
+  `base + off + 1`): take the address of the field *before* it and add one, `&gBattleBots[r].unkB8 + 1`
   (conceal_apply_evasion) or `&...unkD7 + 1` for a u16 at 0xD8 (defence_apply). `&...unkB9` folds the 1 into the literal.
 * `x.unk84 = 0x45; f(tbl[0x45]);` loads 0x114 as a fresh constant; the original's `movs r1, #0x45; strb;
   lsls r1, #2` comes from indexing with the field just stored: `f(tbl[x.unk84])` (rapid_charge_hourglass_spawn).
@@ -381,11 +381,11 @@
 * Array element base: `gSpriteEntries[slot].x` at every use gives `ldr base; lsls; adds` (literal first);
   a `struct X *s = &gSpriteEntries[slot]` local gives `lsls; ldr; adds`. Pick the form by the order of
   the first two instructions (check_sprite_in_range, sprite_hop_step).
-* `ldr r4, =gUnk_03001800; adds r4, #0xEC` (field address not folded into one literal): access the
-  field through `struct Unk_03001800 *b = &gUnk_03001800;` (damage_add_small_random, calc_battle_action_speed);
-  plain `gUnk_03001800.unkEC` gives `ldr r4, =0x030018EC`.
+* `ldr r4, =gBattleWork; adds r4, #0xEC` (field address not folded into one literal): access the
+  field through `struct BattleWork *b = &gBattleWork;` (damage_add_small_random, calc_battle_action_speed);
+  plain `gBattleWork.unkEC` gives `ldr r4, =0x030018EC`.
 * `movs r2, #0` before `ldr r1, =base` in a loop prologue: put the pointer init in the `for`,
-  `for (i = 0, b = &gUnk_03001800; ...)` (battle_queue_remove_bot).
+  `for (i = 0, b = &gBattleWork; ...)` (battle_queue_remove_bot).
 * `x |= 0x80` with the constant's register as the result (`movs r0, #0x80; orrs r0, r1`): write it on the
   struct field (`b->unk112 |= 0x80`), not through a `u8 *` alias (closeup_left_pose_step).
 * An `else if` chain where the later cases jump back into the first case's `ands/cmp/bne` tail:
@@ -425,7 +425,7 @@
   unless the inner part is cast, `(s16)(0x1E - t - (x + t)) - 1` (battle_seq_cmd_bg_sweep).
 * A loop whose table pointer is loaded *after* the hoisted struct base and `&field` (`movs r7, #0; ldr r5,
   =base; adds r0, r5, #0xF8; mov r8, r0; ldr r6, =tbl`): write the base and field pointers as locals
-  before the table pointer (`i = 0; b = &gUnk_03001800; f = &b->unkF8; tbl = gUnk_...; do {...}`)
+  before the table pointer (`i = 0; b = &gBattleWork; f = &b->unkF8; tbl = gUnk_...; do {...}`)
   (battle_seq_cmd_spawn_effect_set).
 * `x - s->unk30` where the original loads `unk30` first: `x + (s->unk30 * -1)` (battle_seq_spr_trail); for `+`,
   swap the operands (`x + s->unk30` loads `unk30` first).
@@ -551,7 +551,7 @@
   (text_scroll_init).
 * **agbcc pads every union (and struct) to a multiple of 4 bytes.** A `union { u16 h; u8 b; }` at
   0xC takes 0xC..0xF, so a field declared after it lands at 0x10, not 0xE. Put such neighbours inside
-  the union (`s8 s[4]`, struct Unk_03001800_s.unkC).
+  the union (`s8 s[4]`, struct SceneWork.unkC).
 * Two copies of one stack-array base (`movs r7, #0` before `mov ip, r5` in the original, the other
   order in yours) in a "widen a 30x20 tilemap to 32x20" loop: read the source as `*(map[i] + j)`
   instead of `map[i][j]` (boot_logos_load_licensed_by and its two siblings).
@@ -588,11 +588,11 @@
 * A `[][8]` s16 table indexed with a flat computed index: write `tbl[0][idx]`, not a pointer cast
   (`((const s16 *)tbl)[idx]` swapped two registers in map_script_update_shake_screen).
 * Text tile flush (`if (unk14 & 7) CpuSet(buf, VRAM + 0x280 + unk17 * 0x680 + col * 0x40, n)`): test the low
-  bits through a bitfield view (`((struct TextColBits *)&gUnk_03000440)->col`, which makes gcc reload unk14),
+  bits through a bitfield view (`((struct TextColBits *)&gGameWork)->col`, which makes gcc reload unk14),
   compute the column into a `u8` local with `/ 8` (not `>> 3`) and write the address as
   `col * 0x40 + VRAM + 0x280 + unk17 * 0x680` (message_new_line, message_cmd_wait_skippable ... in text/message).
 * Where the original reads a field twice in a row or re-reads a byte just stored, only a volatile read
-  reproduces it: `*(vu16 *)&gUnk_03000440.unkC`.
+  reproduces it: `*(vu16 *)&gGameWork.unkC`.
 * A constant like 0xFFFF8000 built from `x + 0x8000` with an `s16` intermediate: put the sum in an
   assignment inside the expression, `a + (flag = (b & 0x100) + 0x8000)` with `s16 flag` (robattle_link_exchange_commands).
 * An address strength-reduced across a loop that the original recomputes: assign the row inside the index,

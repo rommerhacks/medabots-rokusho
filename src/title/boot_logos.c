@@ -3,9 +3,9 @@
 #include "global.h"
 
 void boot_logos_check_skip(void) {
-    if (--gUnk_03001800_s.unk10.w == 0)
+    if (--gSceneWork.unk10.w == 0)
         play_song(3);
-    if (gUnk_03001800_s.unkC.b != 0 && (KEYS_LO(gNewKeys) & 8)) {
+    if (gSceneWork.unkC.b != 0 && (KEYS_LO(gNewKeys) & 8)) {
         gGameMode = 3;
         gGameState = 2;
         gGameSubState = 0;
@@ -19,23 +19,23 @@ void boot_logos_update(void) {
 }
 
 static bool32 blend_fade_step_0806E2F8(void) {
-    if ((gUnk_03001800_s.timer & 3) == 0) {
-        u8 a = 16 - (gUnk_03001800_s.timer >> 2);
+    if ((gSceneWork.timer & 3) == 0) {
+        u8 a = 16 - (gSceneWork.timer >> 2);
         u8 b = 16 - a;
         REG_BLDALPHA = (b << 8) | a;
         if (b == 16)
             return TRUE;
     }
-    gUnk_03001800_s.timer++;
+    gSceneWork.timer++;
     return FALSE;
 }
 
 void scene_switch_after_blend_fade(void) {
     if (blend_fade_step_0806E2F8()) {
-        gUnk_03001800_s.timer = 0;
-        gGameMode = gUnk_03001800_s.nextMode;
-        gGameState = gUnk_03001800_s.nextState;
-        gGameSubState = gUnk_03001800_s.nextSubState;
+        gSceneWork.timer = 0;
+        gGameMode = gSceneWork.nextMode;
+        gGameState = gSceneWork.nextState;
+        gGameSubState = gSceneWork.nextSubState;
     }
 }
 
@@ -49,12 +49,12 @@ void boot_logos_init(void) {
     zero = 0;
     DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     zero = 0;
-    DmaSet(3, &zero, &gUnk_03001800_s, 0x85000005);
+    DmaSet(3, &zero, &gSceneWork, 0x85000005);
     play_song(0);
     REG_DISPCNT = 0x60;
-    gUnk_03001800_s.nextMode = 3;
-    gUnk_03001800_s.nextState = 0;
-    gUnk_03001800_s.timer = 0;
+    gSceneWork.nextMode = 3;
+    gSceneWork.nextState = 0;
+    gSceneWork.timer = 0;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;
@@ -85,7 +85,7 @@ void boot_logos_load_licensed_by(void) {
     DmaSet(3, gUnk_087F1F38, PLTT, 0x80000010);
     REG_BG0CNT = 0xF01;
     REG_DISPCNT |= 0x100;
-    gUnk_03001800_s.nextSubState = 5;
+    gSceneWork.nextSubState = 5;
     gGameSubState = 1;
 }
 
@@ -104,10 +104,10 @@ void boot_logos_load_natsume(void) {
     }
     DmaSet(3, out, VRAM + 0x7800, 0x84000140);
     DmaSet(3, gUnk_087F27D8, PLTT, 0x80000010);
-    gUnk_03001800_s.unk10.w = 0x34;
+    gSceneWork.unk10.w = 0x34;
     REG_BG0CNT = 0xF02;
     REG_DISPCNT |= 0x100;
-    gUnk_03001800_s.nextSubState = 7;
+    gSceneWork.nextSubState = 7;
     gGameSubState = 1;
 }
 
@@ -130,43 +130,43 @@ void boot_logos_load_overlay(void) {
     REG_DISPCNT |= 0x200;
     REG_BLDCNT = 0x241;
     REG_BLDALPHA = 0x10;
-    gUnk_03001800_s.nextSubState = 9;
+    gSceneWork.nextSubState = 9;
     gGameSubState = 3;
 }
 
 void boot_logos_hold_licensed_by(void) {
-    if (gUnk_03001800_s.timer == 0) {
-    } else if (gUnk_03001800_s.timer > 60) {
-        gUnk_03001800_s.timer = 0;
-        gUnk_03001800_s.nextSubState = 6;
+    if (gSceneWork.timer == 0) {
+    } else if (gSceneWork.timer > 60) {
+        gSceneWork.timer = 0;
+        gSceneWork.nextSubState = 6;
         gGameSubState = 2;
         return;
     }
-    gUnk_03001800_s.timer++;
+    gSceneWork.timer++;
 }
 
 void boot_logos_hold_natsume(void) {
-    if (gUnk_03001800_s.timer == 0) {
-        gUnk_03001800_s.unkC.b = 1;
-    } else if (gUnk_03001800_s.timer > 60) {
-        gUnk_03001800_s.timer = 0;
+    if (gSceneWork.timer == 0) {
+        gSceneWork.unkC.b = 1;
+    } else if (gSceneWork.timer > 60) {
+        gSceneWork.timer = 0;
         gGameSubState = 8;
         return;
     }
-    gUnk_03001800_s.timer++;
+    gSceneWork.timer++;
 }
 
 void boot_logos_hold_overlay(void) {
-    if (gUnk_03001800_s.timer == 0) {
+    if (gSceneWork.timer == 0) {
         REG_DISPCNT &= 0xFEFF;
-    } else if (gUnk_03001800_s.timer > 60) {
-        gUnk_03001800_s.timer = 0;
+    } else if (gSceneWork.timer > 60) {
+        gSceneWork.timer = 0;
         setup_screen_transition_effect_080684F0(2, 4, 0);
-        gUnk_03001800_s.nextSubState = 10;
+        gSceneWork.nextSubState = 10;
         gGameSubState = 2;
         return;
     }
-    gUnk_03001800_s.timer++;
+    gSceneWork.timer++;
 }
 
 void boot_logos_end(void) {

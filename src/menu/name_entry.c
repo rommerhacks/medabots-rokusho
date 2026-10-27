@@ -133,7 +133,7 @@ void name_entry_init_graphics(void) {
     if (gNameEntryMode == 0) {
         gSpriteEntries[20].unk0 |= 0x4000;
     } else {
-        t = gUnk_03006F74->unk36 + ((gUnk_03000BE0[gUnk_030017EC].unk1 * 4) + 1);
+        t = gUnk_03006F74->unk36 + ((gMedals[gUnk_030017EC].unk1 * 4) + 1);
         t |= 0x6000;
         base = ((REG_BG1CNT >> 8) & 0x1F) << 11;
         map = (u16 *)(0x06000000 + base);
@@ -191,7 +191,7 @@ void name_entry_load_name(void) {
         gUnk_03006F74->unkF = i;
         break;
     case 1:
-        k = gUnk_03000BE0[gUnk_030017EC].unk1;
+        k = gMedals[gUnk_030017EC].unk1;
         if (k <= 1) {
             for (i = 0; i < 16; i++) {
                 gUnk_03006F74->unk58[i] = ((const u8 *)gMedalNames[k + 0x20])[i];
@@ -209,7 +209,7 @@ void name_entry_load_name(void) {
         break;
     case 2:
         for (i = 0; i < 16; i++) {
-            gUnk_03006F74->unk58[i] = gUnk_03000BE0[gUnk_030017EC].unkA[i];
+            gUnk_03006F74->unk58[i] = gMedals[gUnk_030017EC].unkA[i];
             if (gUnk_03006F74->unk58[i] == 0xFE)
                 break;
         }
@@ -240,12 +240,12 @@ void name_entry_load_name(void) {
     CpuFastSet(gUnk_084E2E38, (void *)0x0202F9A0, 8);
     CpuFastSet(gUnk_080AF810, gPaletteBackup, 8);
     CpuFastSet(gUnk_08793428, gPaletteBackupBg, 0x80);
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
 void name_entry_fade_in(void) {
-    struct Unk_03000440 *b = &gUnk_03000440;
+    struct GameWork *b = &gGameWork;
     if (b->unk84 <= 8) {
         bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0xFFFF);
         obj_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0xFFFF);
@@ -451,13 +451,13 @@ void name_entry_input(void) {
 void name_entry_wait_sound(void) {
     u32 r = is_sound_effect_playing(7);
     if (r == 0) {
-        gUnk_03000440.unk84 = r;
+        gGameWork.unk84 = r;
         gGameSubState++;
     }
 }
 
 void name_entry_fade_out_store_name(void) {
-    struct Unk_03000440 *s = &gUnk_03000440;
+    struct GameWork *s = &gGameWork;
     u8 *n = &s->unk84;
 
     if (*n <= 8) {
@@ -476,11 +476,11 @@ void name_entry_fade_out_store_name(void) {
             dispatch_by_index_0476e8(0);
             break;
         case 1:
-            CpuSet(gUnk_03006F74->unk58, gUnk_03000BE0[gUnk_030017EC].unkA, 7);
+            CpuSet(gUnk_03006F74->unk58, gMedals[gUnk_030017EC].unkA, 7);
             dispatch_by_index_0476e8(1);
             break;
         case 2:
-            CpuSet(gUnk_03006F74->unk58, gUnk_03000BE0[gUnk_030017EC].unkA, 7);
+            CpuSet(gUnk_03006F74->unk58, gMedals[gUnk_030017EC].unkA, 7);
             gGameState = 0x12;
             gGameSubState = 10;
             break;

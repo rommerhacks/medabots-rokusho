@@ -62,13 +62,13 @@ void new_game_init(void) {
     u32 zero;
 
     memzero_bytes((u8 *)&gUnk_03002B70, 0x1C);
-    memzero_bytes((u8 *)gUnk_03000BE0, 0x780);
+    memzero_bytes((u8 *)gMedals, 0x780);
     memzero_bytes(gMedapartInventory, 0x3C0);
-    memzero_bytes((u8 *)gUnk_030017A0, 0x48);
+    memzero_bytes((u8 *)gTeamSlots, 0x48);
     memzero_bytes((u8 *)gItemInventory, 0x80);
     memzero_bytes((u8 *)&gUnk_030057E0, 0xCC0);
-    memzero_bytes((u8 *)&gUnk_03000440, 0x13C);
-    memzero_bytes((u8 *)gUnk_03000590, 0x600);
+    memzero_bytes((u8 *)&gGameWork, 0x13C);
+    memzero_bytes((u8 *)gBattleBots, 0x600);
     clear_oam();
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
@@ -207,8 +207,8 @@ void field_continue_load(void) {
     memzero_bytes((u8 *)gUnk_030055A0, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
-    memzero_bytes((u8 *)&gUnk_03000440, 0x13C);
-    memzero_bytes((u8 *)gUnk_03000590, 0x600);
+    memzero_bytes((u8 *)&gGameWork, 0x13C);
+    memzero_bytes((u8 *)gBattleBots, 0x600);
     gUnk_030057E0.unkC88 = 0;
     gUnk_030057E0.cmd_busy = 0;
     gUnk_030057E0.cmd_step = 0;

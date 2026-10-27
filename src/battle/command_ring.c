@@ -8,8 +8,8 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir);
 
 void command_ring_draw_name(void) {
     clear_sprite_table_mask(30, 11);
-    memcpy_bytes_08041D04(gUnk_083C466C[gUnk_03001800.unk81], gUnk_03000440.unk9E, 12);
-    render_text_sprites_08040DB8(gUnk_03000440.unk9E, 30, 21, 17, 8, 14, 0, 1);
+    memcpy_bytes_08041D04(gUnk_083C466C[gBattleWork.unk81], gGameWork.unk9E, 12);
+    render_text_sprites_08040DB8(gGameWork.unk9E, 30, 21, 17, 8, 14, 0, 1);
 }
 
 void command_ring_init_icons(void) {
@@ -24,7 +24,7 @@ void command_ring_init_icon(u32 i) {
 
     clear_battle_sprite_slot(i, 1);
     gSpriteEntries[i].unk0 = 0xC604;
-    k = i - gUnk_03001800.unk81;
+    k = i - gBattleWork.unk81;
     if (k > 5)
         k += 6;
     p = compute_polar_to_screen_position(gUnk_083AD370[k], 24, 120, 128, 8, 0);
@@ -58,7 +58,7 @@ static void command_ring_init_icon_hidden(u32 i) {
 
     clear_battle_sprite_slot(i, 1);
     gSpriteEntries[i].unk0 = 0xC604;
-    k = i - gUnk_03001800.unk81;
+    k = i - gBattleWork.unk81;
     if (k > 5)
         k += 6;
     p = compute_polar_to_screen_position(gUnk_083AD370[k], 24, 120, 128, 8, 0);
@@ -95,9 +95,9 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir) {
 
     gSpriteEntries[i].unk0 &= ~0x20;
     if (dir == 0)
-        n = gUnk_083AD376[gUnk_03001800.unk81];
+        n = gUnk_083AD376[gBattleWork.unk81];
     else
-        n = gUnk_083AD37C[gUnk_03001800.unk81];
+        n = gUnk_083AD37C[gBattleWork.unk81];
     k = i - n;
     if (k > 5)
         k += 6;
@@ -130,37 +130,37 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir) {
 }
 
 void command_ring_input(void) {
-    if (gUnk_03001800.unk83) {
-        if (command_ring_rotate_step(gUnk_03001800.unk83 - 1)) {
-            if (gUnk_03001800.unk83 == 1)
-                gUnk_03001800.unk81 = gUnk_083AD376[gUnk_03001800.unk81];
+    if (gBattleWork.unk83) {
+        if (command_ring_rotate_step(gBattleWork.unk83 - 1)) {
+            if (gBattleWork.unk83 == 1)
+                gBattleWork.unk81 = gUnk_083AD376[gBattleWork.unk81];
             else
-                gUnk_03001800.unk81 = gUnk_083AD37C[gUnk_03001800.unk81];
-            gUnk_03001800.unk83 = 0;
+                gBattleWork.unk81 = gUnk_083AD37C[gBattleWork.unk81];
+            gBattleWork.unk83 = 0;
             command_ring_draw_name();
         }
     } else {
         if (KEYS_LO(gRepeatKeys) & 0x10) {
             play_sound_effect(2);
-            gUnk_03001800.unk83 = 1;
+            gBattleWork.unk83 = 1;
         }
         if (KEYS_LO(gRepeatKeys) & 0x20) {
             play_sound_effect(2);
-            gUnk_03001800.unk83 = 2;
+            gBattleWork.unk83 = 2;
         }
     }
 }
 
 void command_ring_pulse_selected(void) {
-    if (gUnk_03001800.unk83 == 0) {
-        gSpriteEntries[gUnk_03001800.unk81].unk0 |= 0x20;
-        gSpriteEntries[gUnk_03001800.unk81].unk22++;
-        if (gSpriteEntries[gUnk_03001800.unk81].unk22 & 8) {
-            gSpriteEntries[gUnk_03001800.unk81].unk9 = 0x50;
-            gSpriteEntries[gUnk_03001800.unk81].unk8 = 0x50;
+    if (gBattleWork.unk83 == 0) {
+        gSpriteEntries[gBattleWork.unk81].unk0 |= 0x20;
+        gSpriteEntries[gBattleWork.unk81].unk22++;
+        if (gSpriteEntries[gBattleWork.unk81].unk22 & 8) {
+            gSpriteEntries[gBattleWork.unk81].unk9 = 0x50;
+            gSpriteEntries[gBattleWork.unk81].unk8 = 0x50;
         } else {
-            gSpriteEntries[gUnk_03001800.unk81].unk9 = 0x40;
-            gSpriteEntries[gUnk_03001800.unk81].unk8 = 0x40;
+            gSpriteEntries[gBattleWork.unk81].unk9 = 0x40;
+            gSpriteEntries[gBattleWork.unk81].unk8 = 0x40;
         }
     }
 }
@@ -249,19 +249,19 @@ void bot_pointer_line_animate(u32 kind) {
 }
 
 void command_ring_flash_selected(void) {
-    gSpriteEntries[gUnk_03001800.unk81].unk0 |= 0x20;
-    gSpriteEntries[gUnk_03001800.unk81].unk22++;
-    if (gSpriteEntries[gUnk_03001800.unk81].unk22 & 4) {
-        gSpriteEntries[gUnk_03001800.unk81].unk9 = 0x60;
-        gSpriteEntries[gUnk_03001800.unk81].unk8 = 0x60;
+    gSpriteEntries[gBattleWork.unk81].unk0 |= 0x20;
+    gSpriteEntries[gBattleWork.unk81].unk22++;
+    if (gSpriteEntries[gBattleWork.unk81].unk22 & 4) {
+        gSpriteEntries[gBattleWork.unk81].unk9 = 0x60;
+        gSpriteEntries[gBattleWork.unk81].unk8 = 0x60;
     } else {
-        gSpriteEntries[gUnk_03001800.unk81].unk9 = 0x40;
-        gSpriteEntries[gUnk_03001800.unk81].unk8 = 0x40;
+        gSpriteEntries[gBattleWork.unk81].unk9 = 0x40;
+        gSpriteEntries[gBattleWork.unk81].unk8 = 0x40;
     }
 }
 
 void command_ring_goto_selected(void) {
-    gGameSubState = gUnk_083AD39A[gUnk_03001800.unk81];
+    gGameSubState = gUnk_083AD39A[gBattleWork.unk81];
 }
 
 void command_ring_shrink_icons(void) {
@@ -283,14 +283,14 @@ void command_ring_shrink_icons(void) {
 }
 
 void command_ring_close_scroll_right(void) {
-    if (gUnk_03000440.unk84 < 10) {
+    if (gGameWork.unk84 < 10) {
         read_vram_tilemap_rect(0xB, 4, 0x13, 0x10, REG_BG1CNT, gUnk_02020800);
         write_vram_tilemap_rect(0xB, 4, 0x14, 0x10, REG_BG1CNT, gUnk_02020800);
     }
 }
 
 void command_ring_close_scroll_down(void) {
-    if (gUnk_03000440.unk84 < 5) {
+    if (gGameWork.unk84 < 5) {
         read_vram_tilemap_rect(6, 6, 0xC, 0xE, REG_BG1CNT, gUnk_02020800);
         write_vram_tilemap_rect(6, 6, 0xC, 0xF, REG_BG1CNT, gUnk_02020800);
     }
@@ -302,13 +302,13 @@ void parts_menu_load_frame(void) {
 }
 
 void parts_menu_slide_bg0(void) {
-    if (gUnk_03000440.unk84 < 4)
-        write_vram_tilemap_rect(0xC, 4, 9, 0x13 - gUnk_03000440.unk84, REG_BG0CNT, gUnk_02020800);
+    if (gGameWork.unk84 < 4)
+        write_vram_tilemap_rect(0xC, 4, 9, 0x13 - gGameWork.unk84, REG_BG0CNT, gUnk_02020800);
 }
 
 void parts_menu_slide_bg1(void) {
-    if (gUnk_03000440.unk84 < 12) {
-        read_vram_tilemap_rect(gUnk_03000440.unk84 + 1, 7, 0x12, 0x15, REG_BG1CNT, gUnk_02021000);
-        write_vram_tilemap_rect(gUnk_03000440.unk84 + 1, 7, 0x1D - gUnk_03000440.unk84, 0xD, REG_BG1CNT, gUnk_02021000);
+    if (gGameWork.unk84 < 12) {
+        read_vram_tilemap_rect(gGameWork.unk84 + 1, 7, 0x12, 0x15, REG_BG1CNT, gUnk_02021000);
+        write_vram_tilemap_rect(gGameWork.unk84 + 1, 7, 0x1D - gGameWork.unk84, 0xD, REG_BG1CNT, gUnk_02021000);
     }
 }

@@ -1,6 +1,6 @@
 // Thin wrappers the field event code calls: sound and music, data table lookups, message steps, text buffer
 // fills (numbers, strings), money, items, Medals, Medaparts and team (inventory/inventory), plus checks on the
-// player's team gUnk_030017A0 (9 slots; unk0 == 3 = a complete Medabot) and the yes/no choice window
+// player's team gTeamSlots (9 slots; unk0 == 3 = a complete Medabot) and the yes/no choice window
 // (text/choice_menu). Name tables: gMedalNames Medals, gUnk_083BA4D8 Medabots (by head part id),
 // gUnk_083BB9CC Medaparts, gItemNames items.
 
@@ -170,9 +170,9 @@ u32 team_equipped_part_legs_value(u8 id, u8 which) {
     if (match) {
         u32 found = 0;
         s32 i;
-        struct Unk_030017A0 *p;
+        struct TeamSlot *p;
 
-        for (i = 0, p = gUnk_030017A0; i <= 8; i++) {
+        for (i = 0, p = gTeamSlots; i <= 8; i++) {
             if (p->unk0 == 3) {
                 switch (which) {
                 case 0:
@@ -197,9 +197,9 @@ u32 team_equipped_part_legs_value(u8 id, u8 which) {
                 break;
             p++;
         }
-        load_part_data(gUnk_030017A0[i].unk6, 3, buf);
+        load_part_data(gTeamSlots[i].unk6, 3, buf);
         v = buf[1] - 100;
-        gUnk_03006D38.unk6 = gUnk_030017A0[i].unk1;
+        gUnk_03006D38.unk6 = gTeamSlots[i].unk1;
     }
     if (match)
         return v;
@@ -209,9 +209,9 @@ u32 team_equipped_part_legs_value(u8 id, u8 which) {
 u32 team_has_part_equipped(u8 id, u8 which) {
     u32 found = 0;
     s32 i;
-    struct Unk_030017A0 *p;
+    struct TeamSlot *p;
 
-    for (i = 0, p = gUnk_030017A0; i <= 8; i++) {
+    for (i = 0, p = gTeamSlots; i <= 8; i++) {
         if (p->unk0 == 3) {
             switch (which) {
             case 0:
@@ -241,7 +241,7 @@ u32 team_has_part_equipped(u8 id, u8 which) {
 
 s32 team_count_complete_bots(void) {
     s32 n = 0;
-    struct Unk_030017A0 *p = gUnk_030017A0;
+    struct TeamSlot *p = gTeamSlots;
     s32 i;
 
     for (i = 8; i >= 0; i--) {
@@ -256,9 +256,9 @@ s32 team_count_complete_bots(void) {
 u32 team_has_full_part_set(u8 id) {
     u32 found = 0;
     s32 i;
-    struct Unk_030017A0 *p;
+    struct TeamSlot *p;
 
-    for (i = 0, p = gUnk_030017A0; i <= 8; i++) {
+    for (i = 0, p = gTeamSlots; i <= 8; i++) {
         if (p->unk0 == 3 && p->unk3 == id && p->unk4 == id && p->unk5 == id && p->unk6 == id)
             found = 1;
         if (found)
@@ -285,7 +285,7 @@ u32 yes_no_menu_poll(void) {
         if (game_state_execute_handler_b() == 0)
             break;
     case 0:
-        gUnk_03000440.unk1B = ret;
+        gGameWork.unk1B = ret;
         (*step)++;
         break;
     case 2:

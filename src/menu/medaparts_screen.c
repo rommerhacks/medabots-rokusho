@@ -50,9 +50,9 @@ void medaparts_screen_update(void) {
 void medaparts_list_load_gfx(void) {
     u32 zero;
 
-    if (gUnk_03000440.unk42 == 1)
+    if (gGameWork.unk42 == 1)
         load_medapart_sprite_by_slot();
-    else if (gUnk_03000440.unk3C == 4)
+    else if (gGameWork.unk3C == 4)
         play_song(7);
     REG_DISPCNT &= 0xF0FF;
     REG_BG0CNT = 0x500;
@@ -70,13 +70,13 @@ void medaparts_list_load_gfx(void) {
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EFF74, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0BF0, REG_BG2CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F1D34, REG_BG3CNT, 0x200);
-    if (gUnk_03000440.unk42 == 1) {
+    if (gGameWork.unk42 == 1) {
         CpuFastSet(gUnk_084F3460, (void *)0x0202FA00, 0x70);
         CpuFastSet((void *)0x05000200, (void *)0x0202F800, 0x80);
         CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x0202F9A0, 8);
         CpuFastSet(gUnk_084E2E58, (void *)0x0202F9C0, 8);
         CpuFastSet(gUnk_08488B44, (void *)0x0202FB60, 8);
-        gUnk_03000440.unk84 = 0;
+        gGameWork.unk84 = 0;
     } else {
         CpuFastSet(gUnk_084F3460, (void *)0x05000000, 0x70);
         CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x050003A0, 8);
@@ -87,17 +87,17 @@ void medaparts_list_load_gfx(void) {
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
-    write_tilemap_rect(10, 2, 0x10, 0, gUnk_083B4AE0[gUnk_03000440.unk3E + 0x59], REG_BG0CNT, 0x200);
+    write_tilemap_rect(10, 2, 0x10, 0, gUnk_083B4AE0[gGameWork.unk3E + 0x59], REG_BG0CNT, 0x200);
     medaparts_list_set_cursor_from_part();
-    draw_number_tall_bgcnt(gUnk_03000440.unk3F + 1, 0xB, 2, 2, REG_BG1CNT, 0x7360);
+    draw_number_tall_bgcnt(gGameWork.unk3F + 1, 0xB, 2, 2, REG_BG1CNT, 0x7360);
     medaparts_list_draw_names();
     medaparts_list_draw_counts();
     medaparts_list_draw_equipped_counts();
     medaparts_list_draw_part_icons();
     medaparts_list_init_page_arrows();
     medaparts_list_init_cursor();
-    gUnk_03000440.unk44 = 0;
-    if (gUnk_03000440.unk42 != 1)
+    gGameWork.unk44 = 0;
+    if (gGameWork.unk42 != 1)
         medaparts_list_load_part_sprite();
     gGameSubState++;
 }
@@ -107,17 +107,17 @@ void medaparts_list_fade_in(void) {
     medaparts_list_blink_page_arrows();
     sprite_bob_y(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
-    if (gUnk_03000440.unk42 == 1) {
-        if (gUnk_03000440.unk84 <= 8) {
-            bg_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
-            obj_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xF0FF);
-            gUnk_03000440.unk84++;
+    if (gGameWork.unk42 == 1) {
+        if (gGameWork.unk84 <= 8) {
+            bg_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xF0FF);
+            gGameWork.unk84++;
         } else {
-            gUnk_03000440.unk42 = 0;
+            gGameWork.unk42 = 0;
             gGameSubState++;
         }
     } else if (update_blend_effect()) {
-        gUnk_03000440.unk42 = 0;
+        gGameWork.unk42 = 0;
         gGameSubState++;
     }
 }
@@ -152,16 +152,16 @@ void medaparts_list_handle_input(void) {
     if (medaparts_list_kind_input())
         return;
     if (KEYS_LO(gNewKeys) & 2) {
-        if (gUnk_03000440.unk3C == 4) {
+        if (gGameWork.unk3C == 4) {
             play_sound_effect(6);
         } else {
             play_sound_effect(5);
             gGameSubState++;
         }
     } else if (KEYS_LO(gNewKeys) & 1) {
-        if ((u16)medapart_get_counts(gUnk_03000440.unk3D, gUnk_03000440.unk3E)) {
+        if ((u16)medapart_get_counts(gGameWork.unk3D, gGameWork.unk3E)) {
             play_sound_effect(4);
-            if (gUnk_03000440.unk3C == 4)
+            if (gGameWork.unk3C == 4)
                 gGameSubState = 0x40;
             else
                 gGameSubState = 10;
@@ -203,7 +203,7 @@ void medaparts_list_open_detail(void) {
     sprite_bob_y(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
     palette_backup_from_hardware();
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
@@ -212,10 +212,10 @@ void medaparts_list_detail_fade_out(void) {
     medaparts_list_blink_page_arrows();
     sprite_bob_y(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
-    if (gUnk_03000440.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xF0FF);
-        gUnk_03000440.unk84++;
+    if (gGameWork.unk84 <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xF0FF);
+        gGameWork.unk84++;
     } else {
         gGameSubState = 0x10;
     }
@@ -225,7 +225,7 @@ void medapart_detail_load_gfx(void) {
     u32 zero;
 
     clear_bg_scroll();
-    if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4)
+    if (gGameWork.unk3C == 0 || gGameWork.unk3C == 4)
         load_medapart_sprite_by_slot();
     REG_DISPCNT &= 0xF0FF;
     REG_BG0CNT = 0x500;
@@ -244,13 +244,13 @@ void medapart_detail_load_gfx(void) {
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0068, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0CA4, REG_BG2CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F1EC8, REG_BG3CNT, 0x200);
-    if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4) {
+    if (gGameWork.unk3C == 0 || gGameWork.unk3C == 4) {
         CpuFastSet(gUnk_084F3620, (void *)0x0202FA00, 0x70);
         CpuFastSet((void *)0x05000200, (void *)0x0202F800, 0x80);
         CpuFastSet(gUnk_0850DD58 + 0x40, (void *)0x0202F980, 8);
         CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x0202F9A0, 8);
         CpuFastSet(gUnk_084E2E58, (void *)0x0202F9C0, 8);
-        gUnk_03000440.unk84 = 0;
+        gGameWork.unk84 = 0;
     } else {
         CpuFastSet(gUnk_084F3620, (void *)0x05000000, 0x70);
         CpuFastSet(gUnk_0850DD58 + 0x40, (void *)0x05000380, 8);
@@ -263,7 +263,7 @@ void medapart_detail_load_gfx(void) {
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
-    load_part_data(gUnk_03000440.unk3D, gUnk_03000440.unk3E, &gUnk_03000440.unkEE);
+    load_part_data(gGameWork.unk3D, gGameWork.unk3E, &gGameWork.unkEE);
     medapart_detail_draw_skill();
     medapart_detail_draw_ability();
     medapart_detail_draw_skill_icon();
@@ -273,7 +273,7 @@ void medapart_detail_load_gfx(void) {
     medapart_detail_draw_stats();
     count_compatible_medaparts();
     medapart_detail_init_arrows();
-    gUnk_03000440.unk42 = 1;
+    gGameWork.unk42 = 1;
     gGameSubState++;
 }
 
@@ -281,11 +281,11 @@ void medapart_detail_fade_in(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
     medapart_detail_blink_arrows();
-    if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4) {
-        if (gUnk_03000440.unk84 <= 8) {
-            bg_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
-            obj_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xF0FF);
-            gUnk_03000440.unk84++;
+    if (gGameWork.unk3C == 0 || gGameWork.unk3C == 4) {
+        if (gGameWork.unk84 <= 8) {
+            bg_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xF0FF);
+            gGameWork.unk84++;
         } else {
             gGameSubState++;
         }
@@ -306,7 +306,7 @@ void medapart_detail_show_hint(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
     medapart_detail_blink_arrows();
-    if (gUnk_03000440.unk3E <= 2) {
+    if (gGameWork.unk3E <= 2) {
         if (run_message(gUnk_083BE3E4[medapart_detail_skill_help_index()]))
             gGameSubState++;
     } else {
@@ -327,16 +327,16 @@ void medapart_detail_handle_input(void) {
         gGameSubState++;
     } else if (KEYS_LO(gNewKeys) & 8) {
         play_sound_effect(4);
-        switch (gUnk_03000440.unk3E) {
+        switch (gGameWork.unk3E) {
         case 0:
-            gUnk_03000440.unk43 = 3;
+            gGameWork.unk43 = 3;
             break;
         case 1:
         case 2:
-            gUnk_03000440.unk43 = 4;
+            gGameWork.unk43 = 4;
             break;
         case 3:
-            gUnk_03000440.unk43 = 5;
+            gGameWork.unk43 = 5;
             break;
         }
         gGameSubState = 0x20;
@@ -347,9 +347,9 @@ void medapart_detail_start_fade_out(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
     medapart_detail_blink_arrows();
-    if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4) {
+    if (gGameWork.unk3C == 0 || gGameWork.unk3C == 4) {
         palette_backup_from_hardware();
-        gUnk_03000440.unk84 = 0;
+        gGameWork.unk84 = 0;
     } else {
         set_blend_effect_mode(6, 0x3F, 0x20);
     }
@@ -360,11 +360,11 @@ void medapart_detail_wait_fade(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
     medapart_detail_blink_arrows();
-    if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4) {
-        if (gUnk_03000440.unk84 <= 8) {
-            bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-            obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xF0FF);
-            gUnk_03000440.unk84++;
+    if (gGameWork.unk3C == 0 || gGameWork.unk3C == 4) {
+        if (gGameWork.unk84 <= 8) {
+            bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xF0FF);
+            gGameWork.unk84++;
         } else {
             gGameSubState++;
         }
@@ -378,7 +378,7 @@ void medapart_detail_exit(void) {
 
     load_medapart_sprite_by_slot();
     clear_battle_sprite_slot(0, 0x80);
-    switch (gUnk_03000440.unk3C) {
+    switch (gGameWork.unk3C) {
     case 0:
     case 4:
         gGameSubState = 0;
@@ -387,18 +387,18 @@ void medapart_detail_exit(void) {
         gUnk_03000430 = 0;
         gGameState = 3;
         gGameSubState = 0x10;
-        switch (gUnk_03000440.unk3E) {
+        switch (gGameWork.unk3E) {
         case 0:
-            gUnk_03000440.unk98 = gUnk_03000440.unk3D;
+            gGameWork.unk98 = gGameWork.unk3D;
             break;
         case 1:
-            gUnk_03000440.unk99 = gUnk_03000440.unk3D;
+            gGameWork.unk99 = gGameWork.unk3D;
             break;
         case 2:
-            gUnk_03000440.unk9A = gUnk_03000440.unk3D;
+            gGameWork.unk9A = gGameWork.unk3D;
             break;
         case 3:
-            gUnk_03000440.unk9B = gUnk_03000440.unk3D;
+            gGameWork.unk9B = gGameWork.unk3D;
             break;
         }
         break;
@@ -449,17 +449,17 @@ void medaparts_help_cursor_input(void) {
     load_medapart_sprite_by_slot();
     process_sprite_anim_commands(gUnk_083B5F80[3], 6);
     if ((up = KEYS_LO(gRepeatKeys) & 0x40)) {
-        if (gUnk_03000440.unk44 == 0)
-            gUnk_03000440.unk44 = gUnk_03000440.unk45 - 1;
+        if (gGameWork.unk44 == 0)
+            gGameWork.unk44 = gGameWork.unk45 - 1;
         else
-            gUnk_03000440.unk44--;
+            gGameWork.unk44--;
         play_sound_effect(2);
         medaparts_help_move_cursor();
     } else if (KEYS_LO(gRepeatKeys) & 0x80) {
-        if (gUnk_03000440.unk44 == gUnk_03000440.unk45 - 1)
-            gUnk_03000440.unk44 = up;
+        if (gGameWork.unk44 == gGameWork.unk45 - 1)
+            gGameWork.unk44 = up;
         else
-            gUnk_03000440.unk44++;
+            gGameWork.unk44++;
         play_sound_effect(2);
         medaparts_help_move_cursor();
     } else if (KEYS_LO(gNewKeys) & 1) {
@@ -478,17 +478,17 @@ void medaparts_help_show_text(void) {
 
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    switch (gUnk_03000440.unk3E) {
+    switch (gGameWork.unk3E) {
     case 0:
-        switch (gUnk_03000440.unk44) {
+        switch (gGameWork.unk44) {
         case 0:
-            done = run_message(gUnk_083B8170[gUnk_03000440.unkF0]);
+            done = run_message(gUnk_083B8170[gGameWork.unkF0]);
             break;
         case 1:
-            done = run_message(gUnk_083B6E24[gUnk_03000440.unkEE]);
+            done = run_message(gUnk_083B6E24[gGameWork.unkEE]);
             break;
         case 2:
-            done = run_message(gUnk_083B53F8[skill_type_is_remote(gUnk_03000440.unkF0) + 17]);
+            done = run_message(gUnk_083B53F8[skill_type_is_remote(gGameWork.unkF0) + 17]);
             break;
         case 3:
             done = run_message(gUnk_083BD884[0]);
@@ -506,15 +506,15 @@ void medaparts_help_show_text(void) {
         break;
     case 1:
     case 2:
-        switch (gUnk_03000440.unk44) {
+        switch (gGameWork.unk44) {
         case 0:
-            done = run_message(gUnk_083B8170[gUnk_03000440.unkF0]);
+            done = run_message(gUnk_083B8170[gGameWork.unkF0]);
             break;
         case 1:
-            done = run_message(gUnk_083B6E24[gUnk_03000440.unkEE]);
+            done = run_message(gUnk_083B6E24[gGameWork.unkEE]);
             break;
         case 2:
-            done = run_message(gUnk_083B53F8[skill_type_is_remote(gUnk_03000440.unkF0) + 17]);
+            done = run_message(gUnk_083B53F8[skill_type_is_remote(gGameWork.unkF0) + 17]);
             break;
         case 3:
             done = run_message(gUnk_083BD884[0]);
@@ -534,9 +534,9 @@ void medaparts_help_show_text(void) {
         }
         break;
     case 3:
-        switch (gUnk_03000440.unk44) {
+        switch (gGameWork.unk44) {
         case 0:
-            done = run_message(gUnk_083B6E24[gUnk_03000440.unkEE]);
+            done = run_message(gUnk_083B6E24[gGameWork.unkEE]);
             break;
         case 1:
             done = run_message(gUnk_083B53F8[19]);
@@ -579,7 +579,7 @@ void medaparts_help_exit(void) {
 }
 
 // Medaparts screen sub-states 64-71: A on a part in link trade mode (unk3C == 4) opens a 3-entry choice (cursor
-// sprite 4, choice in gUnk_03000440.unk4A): 0 opens the part's detail page, 1 offers it for trade (refused with
+// sprite 4, choice in gGameWork.unk4A): 0 opens the part's detail page, 1 offers it for trade (refused with
 // sound 6 when every owned copy is equipped), 2 goes back to the list. Twin of the Medals screen's medal_trade_*.
 // Code-read only (needs a link partner).
 void medapart_trade_choice_open(void) {
@@ -588,7 +588,7 @@ void medapart_trade_choice_open(void) {
     gSpriteEntries[1].unk0 &= 0xBFFF;
     gSpriteEntries[2].unk0 &= 0xBFFF;
     set_tilemap_and_decompress_bg(18, 5, gUnk_084889F8, REG_BG0CNT, 0x380);
-    gUnk_03000440.unk4A = 0;
+    gGameWork.unk4A = 0;
     medapart_trade_init_choice_cursor();
     gGameSubState++;
 }
@@ -601,8 +601,8 @@ void medapart_trade_choice_input(void) {
     sprite_bob_y(4, gFrameCounter, 0xA8);
     medapart_trade_choice_cursor_input();
     if (KEYS_LO(gNewKeys) & 1) {
-        if (gUnk_03000440.unk4A == 1) {
-            r = (u16)medapart_get_counts(gUnk_03000440.unk3D, gUnk_03000440.unk3E);
+        if (gGameWork.unk4A == 1) {
+            r = (u16)medapart_get_counts(gGameWork.unk3D, gGameWork.unk3E);
             if ((r >> 8 & 0xFF) != (r & 0xFF))
                 goto ok;
             play_sound_effect(6);
@@ -612,7 +612,7 @@ void medapart_trade_choice_input(void) {
         play_sound_effect(4);
     } else if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
-        gUnk_03000440.unk4A = 2;
+        gGameWork.unk4A = 2;
     } else
         return;
     medapart_trade_init_choice_cursor();
@@ -631,7 +631,7 @@ void medapart_trade_choice_close(void) {
 void medapart_trade_choice_dispatch(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    switch (gUnk_03000440.unk4A) {
+    switch (gGameWork.unk4A) {
     case 0:
         gGameSubState = 10;
         break;
@@ -646,7 +646,7 @@ void medapart_trade_choice_dispatch(void) {
 }
 
 void medapart_trade_store_part(void) {
-    gUnk_03002B68 = (gUnk_03000440.unk3E << 16) + gUnk_03000440.unk3D;
+    gUnk_03002B68 = (gGameWork.unk3E << 16) + gGameWork.unk3D;
     gGameSubState++;
 }
 
@@ -664,8 +664,8 @@ static void medaparts_scroll_bg(void) {
 }
 
 static void medaparts_list_set_cursor_from_part(void) {
-    gUnk_03000440.unk3F = gUnk_03000440.unk3D / 4;
-    gUnk_03000440.unk40 = gUnk_03000440.unk3D % 4;
+    gGameWork.unk3F = gGameWork.unk3D / 4;
+    gGameWork.unk40 = gGameWork.unk3D % 4;
 }
 
 static void medaparts_list_draw_names(void) {
@@ -674,13 +674,12 @@ static void medaparts_list_draw_names(void) {
 
     clear_sprite_table_mask(10, 60);
     for (i = 0; i < 4; i++) {
-        if (gMedapartInventory[gUnk_03000440.unk3E * 240 + (page = gUnk_03000440.unk3F * 4) * 2 + i * 2]) {
-            memcpy_bytes_08041D04((void *)gUnk_083BB9CC[0][(page + i) * 4 + gUnk_03000440.unk3E], gUnk_03000440.unk9E,
-                                  15);
-            render_text_sprites_08040DB8(gUnk_03000440.unk9E, i * 15 + 10, 11, i * 2 + 5, 10, 13, 1, 1);
+        if (gMedapartInventory[gGameWork.unk3E * 240 + (page = gGameWork.unk3F * 4) * 2 + i * 2]) {
+            memcpy_bytes_08041D04((void *)gUnk_083BB9CC[0][(page + i) * 4 + gGameWork.unk3E], gGameWork.unk9E, 15);
+            render_text_sprites_08040DB8(gGameWork.unk9E, i * 15 + 10, 11, i * 2 + 5, 10, 13, 1, 1);
         } else {
-            fill_text_blank(gUnk_03000440.unk9E, 13);
-            render_text_sprites_08040DB8(gUnk_03000440.unk9E, i * 15 + 10, 11, i * 2 + 5, 10, 13, 1, 1);
+            fill_text_blank(gGameWork.unk9E, 13);
+            render_text_sprites_08040DB8(gGameWork.unk9E, i * 15 + 10, 11, i * 2 + 5, 10, 13, 1, 1);
         }
     }
 }
@@ -689,9 +688,9 @@ static void medaparts_list_draw_counts(void) {
     u32 i;
 
     for (i = 0; i < 4; i++) {
-        if (MEDAPART_INV(gUnk_03000440.unk3E, gUnk_03000440.unk3F, i, 0))
-            draw_number_tall_bgcnt(MEDAPART_INV(gUnk_03000440.unk3E, gUnk_03000440.unk3F, i, 0), 0x16, i * 2 + 5, 2,
-                                   REG_BG1CNT, 0x7360);
+        if (MEDAPART_INV(gGameWork.unk3E, gGameWork.unk3F, i, 0))
+            draw_number_tall_bgcnt(MEDAPART_INV(gGameWork.unk3E, gGameWork.unk3F, i, 0), 0x16, i * 2 + 5, 2, REG_BG1CNT,
+                                   0x7360);
         else
             draw_number_tall_bgcnt(0, 0x16, i * 2 + 5, 2, REG_BG1CNT, 0x7360);
     }
@@ -703,9 +702,9 @@ static void medaparts_list_draw_equipped_counts(void) {
     u32 i;
 
     for (i = 0; i < 4; i++) {
-        if (MEDAPART_INV(gUnk_03000440.unk3E, gUnk_03000440.unk3F, i, 1))
-            draw_number_tall_bgcnt(MEDAPART_INV(gUnk_03000440.unk3E, gUnk_03000440.unk3F, i, 1), 0x19, i * 2 + 5, 1,
-                                   REG_BG1CNT, 0x6360);
+        if (MEDAPART_INV(gGameWork.unk3E, gGameWork.unk3F, i, 1))
+            draw_number_tall_bgcnt(MEDAPART_INV(gGameWork.unk3E, gGameWork.unk3F, i, 1), 0x19, i * 2 + 5, 1, REG_BG1CNT,
+                                   0x6360);
         else
             draw_number_tall_bgcnt(0, 0x19, i * 2 + 5, 1, REG_BG1CNT, 0x6360);
     }
@@ -716,9 +715,9 @@ static void medaparts_list_draw_part_icons(void) {
     u32 page;
 
     for (i = 0; i < 4; i++) {
-        if (gMedapartInventory[gUnk_03000440.unk3E * 240 + (page = gUnk_03000440.unk3F * 4) * 2 + i * 2]) {
-            load_part_data(page + i, gUnk_03000440.unk3E, &gUnk_03000440.unkEE);
-            if (gUnk_03000440.unkF1)
+        if (gMedapartInventory[gGameWork.unk3E * 240 + (page = gGameWork.unk3F * 4) * 2 + i * 2]) {
+            load_part_data(page + i, gGameWork.unk3E, &gGameWork.unkEE);
+            if (gGameWork.unkF1)
                 draw_tile_block(2, 2, 0x1B, i * 2 + 5, REG_BG1CNT, 0xA354);
             else
                 draw_tile_block(2, 2, 0x1B, i * 2 + 5, REG_BG1CNT, 0xA350);
@@ -758,7 +757,7 @@ static void medaparts_list_blink_page_arrows(void) {
 static void medaparts_list_init_cursor(void) {
     gSpriteEntries[3].unk0 = 0xC804;
     gSpriteEntries[3].unk2 = 0x50;
-    gSpriteEntries[3].unk4 = gUnk_03000440.unk40 * 16 + 0x30;
+    gSpriteEntries[3].unk4 = gGameWork.unk40 * 16 + 0x30;
     gSpriteEntries[3].unk6 = 0x307;
     gSpriteEntries[3].unkA = 14;
     gSpriteEntries[3].unk1C = 0;
@@ -769,22 +768,22 @@ static u32 medaparts_list_row_input(void) {
     u32 ret;
 
     if (KEYS_LO(gRepeatKeys) & 0x40) {
-        if (gUnk_03000440.unk40 == 0)
-            gUnk_03000440.unk40 = 3;
+        if (gGameWork.unk40 == 0)
+            gGameWork.unk40 = 3;
         else
-            gUnk_03000440.unk40--;
+            gGameWork.unk40--;
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
-        if (gUnk_03000440.unk40 == 3)
-            gUnk_03000440.unk40 = 0;
+        if (gGameWork.unk40 == 3)
+            gGameWork.unk40 = 0;
         else
-            gUnk_03000440.unk40++;
+            gGameWork.unk40++;
     }
     if (!(KEYS_LO(gRepeatKeys) & 0xC0)) {
         ret = 0;
     } else {
         play_sound_effect(2);
-        gUnk_03000440.unk3D = gUnk_03000440.unk3F * 4 + gUnk_03000440.unk40;
+        gGameWork.unk3D = gGameWork.unk3F * 4 + gGameWork.unk40;
         medaparts_list_init_cursor();
         medapart_draw_sprite();
         ret = 1;
@@ -796,23 +795,23 @@ static u32 medaparts_list_page_input(void) {
     u32 ret;
 
     if (KEYS_LO(gRepeatKeys) & 0x20) {
-        if (gUnk_03000440.unk3F == 0)
-            gUnk_03000440.unk3F = 29;
+        if (gGameWork.unk3F == 0)
+            gGameWork.unk3F = 29;
         else
-            gUnk_03000440.unk3F--;
+            gGameWork.unk3F--;
     }
     if (KEYS_LO(gRepeatKeys) & 0x10) {
-        if (gUnk_03000440.unk3F == 29)
-            gUnk_03000440.unk3F = 0;
+        if (gGameWork.unk3F == 29)
+            gGameWork.unk3F = 0;
         else
-            gUnk_03000440.unk3F++;
+            gGameWork.unk3F++;
     }
     if (!(KEYS_LO(gRepeatKeys) & 0x30)) {
         ret = 0;
     } else {
         play_sound_effect(2);
-        gUnk_03000440.unk3D = gUnk_03000440.unk3F * 4 + gUnk_03000440.unk40;
-        draw_number_tall_bgcnt(gUnk_03000440.unk3F + 1, 0xB, 2, 2, REG_BG1CNT, 0x7360);
+        gGameWork.unk3D = gGameWork.unk3F * 4 + gGameWork.unk40;
+        draw_number_tall_bgcnt(gGameWork.unk3F + 1, 0xB, 2, 2, REG_BG1CNT, 0x7360);
         medaparts_list_draw_names();
         medaparts_list_draw_counts();
         medaparts_list_draw_equipped_counts();
@@ -827,23 +826,23 @@ static u32 medaparts_list_kind_input(void) {
     u32 ret;
 
     if (KEYS_HI(gNewKeys) & 2) {
-        if (gUnk_03000440.unk3E == 0)
-            gUnk_03000440.unk3E = 3;
+        if (gGameWork.unk3E == 0)
+            gGameWork.unk3E = 3;
         else
-            gUnk_03000440.unk3E--;
+            gGameWork.unk3E--;
     }
     if (KEYS_HI(gNewKeys) & 1) {
-        if (gUnk_03000440.unk3E == 3)
-            gUnk_03000440.unk3E = 0;
+        if (gGameWork.unk3E == 3)
+            gGameWork.unk3E = 0;
         else
-            gUnk_03000440.unk3E++;
+            gGameWork.unk3E++;
     }
     if (!(KEYS_HI(gNewKeys) & 3)) {
         ret = 0;
     } else {
         play_sound_effect(2);
-        gUnk_03000440.unk3D = gUnk_03000440.unk3F * 4 + gUnk_03000440.unk40;
-        write_tilemap_rect(10, 2, 0x10, 0, gUnk_083B4AE0[gUnk_03000440.unk3E + 0x59], REG_BG0CNT, 0x200);
+        gGameWork.unk3D = gGameWork.unk3F * 4 + gGameWork.unk40;
+        write_tilemap_rect(10, 2, 0x10, 0, gUnk_083B4AE0[gGameWork.unk3E + 0x59], REG_BG0CNT, 0x200);
         medaparts_list_draw_names();
         medaparts_list_draw_counts();
         medaparts_list_draw_equipped_counts();
@@ -860,7 +859,7 @@ static void medaparts_list_load_part_sprite(void) {
     u8 *c;
     u32 fill;
 
-    gUnk_03000440.unk3D = gUnk_03000440.unk3F * 4 + gUnk_03000440.unk40;
+    gGameWork.unk3D = gGameWork.unk3F * 4 + gGameWork.unk40;
     obj = (struct SpriteTree *)0x02026000;
     mem_fill8((u8 *)obj, 0xD0, 0);
     b = (u8 *)0x020260D0;
@@ -874,8 +873,7 @@ static void medaparts_list_load_part_sprite(void) {
     gUnk_03005308 = (struct SceneSlot *)c;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
-    load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, gUnk_03000440.unk3E, 0x3C, 0x28, 0x1C2,
-                                  8, 1);
+    load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, gGameWork.unk3E, 0x3C, 0x28, 0x1C2, 8, 1);
 }
 
 static void medapart_draw_sprite(void) {
@@ -883,18 +881,18 @@ static void medapart_draw_sprite(void) {
     u32 fill;
 
     obj->oams = (struct SpriteNodeOam *)0x020260D0;
-    switch (gUnk_03000440.unk3E) {
+    switch (gGameWork.unk3E) {
     case 0:
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 1);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 1);
         break;
     case 1:
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 1);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 1);
         break;
     case 2:
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 2);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 2);
         break;
     case 3:
-        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 1);
+        load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 1);
         break;
     }
     fill = 0x200;
@@ -906,38 +904,38 @@ static void medapart_draw_sprite(void) {
 static void load_medapart_sprite_by_slot(void) {
     struct SpriteTree *obj;
 
-    if ((u8)(gUnk_03000440.unk3C - 2) <= 1) {
+    if ((u8)(gGameWork.unk3C - 2) <= 1) {
         obj = (struct SpriteTree *)0x02026000;
         obj->oams = (struct SpriteNodeOam *)0x020260D0;
-        switch (gUnk_03000440.unk3E) {
+        switch (gGameWork.unk3E) {
         case 0:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 5);
             break;
         case 1:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 5);
             break;
         case 2:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 6);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 6);
             break;
         case 3:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 5);
             break;
         }
-    } else if (medapart_get_counts(gUnk_03000440.unk3D, gUnk_03000440.unk3E)) {
+    } else if (medapart_get_counts(gGameWork.unk3D, gGameWork.unk3E)) {
         obj = (struct SpriteTree *)0x02026000;
         obj->oams = (struct SpriteNodeOam *)0x020260D0;
-        switch (gUnk_03000440.unk3E) {
+        switch (gGameWork.unk3E) {
         case 0:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 0, 0x3C, 0x32, 0x1C2, 8, 5);
             break;
         case 1:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 1, 0x28, 0x3C, 0x1C2, 8, 5);
             break;
         case 2:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 6);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 2, 0x28, 0x28, 0x1C2, 8, 6);
             break;
         case 3:
-            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 5);
+            load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, 3, 0x1E, 0x32, 0x1C2, 8, 5);
             break;
         }
     }
@@ -961,57 +959,55 @@ static void medapart_detail_init_sprite(void) {
     gUnk_03005308 = (struct SceneSlot *)c;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
-    load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gUnk_03000440.unk3D, gUnk_03000440.unk3E, 0x3C, 0x28, 0x1C2,
-                                  8, 1);
+    load_sprite_animation_by_type(gSpriteWork->oamBuf, obj, gGameWork.unk3D, gGameWork.unk3E, 0x3C, 0x28, 0x1C2, 8, 1);
 }
 
 // The skill's index into the detail help messages: special skills (100 and up) restart at 0.
 s32 medapart_detail_skill_help_index(void) {
     s32 ret;
-    if (gUnk_03000440.unkEF > 99)
-        ret = gUnk_03000440.unkEF - 100;
+    if (gGameWork.unkEF > 99)
+        ret = gGameWork.unkEF - 100;
     else
-        ret = gUnk_03000440.unkEF;
+        ret = gGameWork.unkEF;
     return ret;
 }
 
 void medapart_detail_draw_skill(void) {
     clear_sprite_table_mask(10, 15);
-    if (gUnk_03000440.unkEF < 100) {
-        memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gUnk_03000440.unkF0], gUnk_03000440.unk9E, 14);
-        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 10, 1, 9, 10, 12, 0, 1);
+    if (gGameWork.unkEF < 100) {
+        memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gGameWork.unkF0], gGameWork.unk9E, 14);
+        render_text_sprites_08040DB8(gGameWork.unk9E, 10, 1, 9, 10, 12, 0, 1);
     } else {
-        memcpy_bytes_0803F63C((void *)gUnk_083BE97C[gUnk_03000440.unkEF - 100], gUnk_03000440.unk9E, 14);
-        render_text_sprites_08040DB8(gUnk_03000440.unk9E, 10, 1, 9, 10, 12, 0, 1);
+        memcpy_bytes_0803F63C((void *)gUnk_083BE97C[gGameWork.unkEF - 100], gGameWork.unk9E, 14);
+        render_text_sprites_08040DB8(gGameWork.unk9E, 10, 1, 9, 10, 12, 0, 1);
     }
 }
 
 static void medapart_detail_draw_ability(void) {
     clear_sprite_table_mask(25, 15);
-    memcpy_bytes_0803F63C((void *)gUnk_083B656C[gUnk_03000440.unkEE], gUnk_03000440.unk9E, 14);
-    render_text_sprites_08040DB8(gUnk_03000440.unk9E, 25, 2, 11, 8, 12, 0, 1);
+    memcpy_bytes_0803F63C((void *)gUnk_083B656C[gGameWork.unkEE], gGameWork.unk9E, 14);
+    render_text_sprites_08040DB8(gGameWork.unk9E, 25, 2, 11, 8, 12, 0, 1);
 }
 
 static void medapart_detail_draw_skill_icon(void) {
-    if (gUnk_03000440.unk3E <= 2)
-        draw_tile_block(2, 2, 11, 9, REG_BG1CNT, 0x8390 + skill_type_is_remote(gUnk_03000440.unkF0) * 4);
+    if (gGameWork.unk3E <= 2)
+        draw_tile_block(2, 2, 11, 9, REG_BG1CNT, 0x8390 + skill_type_is_remote(gGameWork.unkF0) * 4);
     else
-        draw_tile_block(2, 2, 11, 9, REG_BG1CNT, 0xA208 + gUnk_03000440.unkEF * 4);
+        draw_tile_block(2, 2, 11, 9, REG_BG1CNT, 0xA208 + gGameWork.unkEF * 4);
 }
 
 static void medapart_detail_draw_name(void) {
     clear_sprite_table_mask(40, 15);
-    memcpy_bytes_08041D04((void *)gUnk_083BB9CC[0][gUnk_03000440.unk3D * 4 + gUnk_03000440.unk3E], gUnk_03000440.unk9E,
-                          15);
-    render_text_sprites_08040DB8(gUnk_03000440.unk9E, 40, 11, 3, 10, 13, 0, 1);
+    memcpy_bytes_08041D04((void *)gUnk_083BB9CC[0][gGameWork.unk3D * 4 + gGameWork.unk3E], gGameWork.unk9E, 15);
+    render_text_sprites_08040DB8(gGameWork.unk9E, 40, 11, 3, 10, 13, 0, 1);
 }
 
 static void medapart_detail_draw_gender_icon(void) {
-    draw_tile_block(2, 2, 21, 3, REG_BG1CNT, 0x7388 + gUnk_03000440.unkF1 * 4);
+    draw_tile_block(2, 2, 21, 3, REG_BG1CNT, 0x7388 + gGameWork.unkF1 * 4);
 }
 
 static void medapart_detail_draw_stat_labels(void) {
-    switch (gUnk_03000440.unk3E) {
+    switch (gGameWork.unk3E) {
     case 0:
         draw_tile_block(12, 1, 14, 6, REG_BG1CNT, 0x5300);
         draw_tile_block(12, 1, 14, 7, REG_BG1CNT, 0x530C);
@@ -1038,36 +1034,36 @@ static void medapart_detail_draw_stat_labels(void) {
 }
 
 static void medapart_detail_draw_stats(void) {
-    switch (gUnk_03000440.unk3E) {
+    switch (gGameWork.unk3E) {
     case 0:
-        draw_number_bgcnt(gUnk_03000440.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF6, 26, 9, 3, REG_BG1CNT, 0x53C4);
-        if (gUnk_03000440.unkF5)
+        draw_number_bgcnt(gGameWork.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF6, 26, 9, 3, REG_BG1CNT, 0x53C4);
+        if (gGameWork.unkF5)
             draw_tile_block(2, 1, 25, 8, REG_BG1CNT, 0x5384);
         else
             vram_fill_tilemap_rect(2, 1, 25, 8, REG_BG1CNT, 0);
         break;
     case 1:
     case 2:
-        draw_number_bgcnt(gUnk_03000440.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF6, 26, 9, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF7, 26, 10, 3, REG_BG1CNT, 0x53C4);
-        if (gUnk_03000440.unkF5)
+        draw_number_bgcnt(gGameWork.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF6, 26, 9, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF7, 26, 10, 3, REG_BG1CNT, 0x53C4);
+        if (gGameWork.unkF5)
             draw_tile_block(2, 1, 25, 8, REG_BG1CNT, 0x5384);
         else
             vram_fill_tilemap_rect(2, 1, 25, 8, REG_BG1CNT, 0);
         break;
     case 3:
-        draw_number_bgcnt(gUnk_03000440.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF5, 26, 9, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF6, 26, 10, 3, REG_BG1CNT, 0x53C4);
-        draw_number_bgcnt(gUnk_03000440.unkF7, 26, 11, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF5, 26, 9, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF6, 26, 10, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gGameWork.unkF7, 26, 11, 3, REG_BG1CNT, 0x53C4);
         break;
     }
 }
@@ -1076,27 +1072,27 @@ void count_compatible_medaparts(void) {
     u32 i;
     u16 r;
 
-    gUnk_03000440.unk41 = 0;
-    if ((u8)(gUnk_03000440.unk3C - 2) > 1) {
+    gGameWork.unk41 = 0;
+    if ((u8)(gGameWork.unk3C - 2) > 1) {
         for (i = 0; i < 120; i++) {
-            r = medapart_get_counts(i, gUnk_03000440.unk3E);
+            r = medapart_get_counts(i, gGameWork.unk3E);
             if (r) {
-                if (gUnk_03000440.unk3C == 1) {
+                if (gGameWork.unk3C == 1) {
                     u32 hi = r >> 8;
                     if (hi != (r & 0xFF)) {
-                        load_part_data(i, gUnk_03000440.unk3E, gUnk_03000440.unk10E);
-                        if (gUnk_030017A0[gUnk_03000440.unk51].unk1 == gUnk_03000440.unk10E[3])
-                            gUnk_03000440.unk41++;
+                        load_part_data(i, gGameWork.unk3E, gGameWork.unk10E);
+                        if (gTeamSlots[gGameWork.unk51].unk1 == gGameWork.unk10E[3])
+                            gGameWork.unk41++;
                     }
                 } else
-                    gUnk_03000440.unk41++;
+                    gGameWork.unk41++;
             }
         }
     }
 }
 
 static void medapart_detail_init_arrows(void) {
-    if (gUnk_03000440.unk41 > 1) {
+    if (gGameWork.unk41 > 1) {
         gSpriteEntries[1].unk0 = 0xC804;
         gSpriteEntries[1].unk2 = 0x0C;
         gSpriteEntries[1].unk4 = 0x28;
@@ -1115,7 +1111,7 @@ static void medapart_detail_init_arrows(void) {
 }
 
 static void medapart_detail_blink_arrows(void) {
-    if (gUnk_03000440.unk41 > 1) {
+    if (gGameWork.unk41 > 1) {
         if (gFrameCounter & 8) {
             gSpriteEntries[1].unk0 &= 0xBFFF;
             gSpriteEntries[2].unk0 &= 0xBFFF;
@@ -1129,23 +1125,23 @@ static void medapart_detail_blink_arrows(void) {
 static u32 medapart_detail_cycle_part_input(void) {
     u16 r;
 
-    if (gUnk_03000440.unk41 <= 1)
+    if (gGameWork.unk41 <= 1)
         goto none;
     if (KEYS_LO(gRepeatKeys) & 0x20) {
         while (1) {
-            if (gUnk_03000440.unk3D == 0)
-                gUnk_03000440.unk3D = 119;
+            if (gGameWork.unk3D == 0)
+                gGameWork.unk3D = 119;
             else
-                gUnk_03000440.unk3D--;
-            r = medapart_get_counts(gUnk_03000440.unk3D, gUnk_03000440.unk3E);
+                gGameWork.unk3D--;
+            r = medapart_get_counts(gGameWork.unk3D, gGameWork.unk3E);
             if (r) {
-                if (gUnk_03000440.unk3C != 1)
+                if (gGameWork.unk3C != 1)
                     break;
                 {
                     u32 hi = r >> 8;
                     if (hi != (r & 0xFF)) {
-                        load_part_data(gUnk_03000440.unk3D, gUnk_03000440.unk3E, gUnk_03000440.unk10E);
-                        if (gUnk_030017A0[gUnk_03000440.unk51].unk1 == gUnk_03000440.unk10E[3])
+                        load_part_data(gGameWork.unk3D, gGameWork.unk3E, gGameWork.unk10E);
+                        if (gTeamSlots[gGameWork.unk51].unk1 == gGameWork.unk10E[3])
                             break;
                     }
                 }
@@ -1154,19 +1150,19 @@ static u32 medapart_detail_cycle_part_input(void) {
     }
     if (KEYS_LO(gRepeatKeys) & 0x10) {
         while (1) {
-            if (gUnk_03000440.unk3D == 119)
-                gUnk_03000440.unk3D = 0;
+            if (gGameWork.unk3D == 119)
+                gGameWork.unk3D = 0;
             else
-                gUnk_03000440.unk3D++;
-            r = medapart_get_counts(gUnk_03000440.unk3D, gUnk_03000440.unk3E);
+                gGameWork.unk3D++;
+            r = medapart_get_counts(gGameWork.unk3D, gGameWork.unk3E);
             if (r) {
-                if (gUnk_03000440.unk3C != 1)
+                if (gGameWork.unk3C != 1)
                     break;
                 {
                     u32 hi = r >> 8;
                     if (hi != (r & 0xFF)) {
-                        load_part_data(gUnk_03000440.unk3D, gUnk_03000440.unk3E, gUnk_03000440.unk10E);
-                        if (gUnk_030017A0[gUnk_03000440.unk51].unk1 == gUnk_03000440.unk10E[3])
+                        load_part_data(gGameWork.unk3D, gGameWork.unk3E, gGameWork.unk10E);
+                        if (gTeamSlots[gGameWork.unk51].unk1 == gGameWork.unk10E[3])
                             break;
                     }
                 }
@@ -1175,7 +1171,7 @@ static u32 medapart_detail_cycle_part_input(void) {
     }
     if (KEYS_LO(gRepeatKeys) & 0x30) {
         play_sound_effect(2);
-        load_part_data(gUnk_03000440.unk3D, gUnk_03000440.unk3E, &gUnk_03000440.unkEE);
+        load_part_data(gGameWork.unk3D, gGameWork.unk3E, &gGameWork.unkEE);
         medapart_detail_draw_skill();
         medapart_detail_draw_ability();
         medapart_detail_draw_skill_icon();
@@ -1190,12 +1186,12 @@ none:
 }
 
 static void medaparts_help_init_cursor(void) {
-    const u8 *rec = gHelpCursorLayouts[gUnk_03000440.unk43];
+    const u8 *rec = gHelpCursorLayouts[gGameWork.unk43];
 
-    gUnk_03000440.unk45 = rec[0];
+    gGameWork.unk45 = rec[0];
     gSpriteEntries[6].unk0 = 0xC004;
-    gSpriteEntries[6].unk2 = rec[(gUnk_03000440.unk44 + 1) << 1] * 8;
-    gSpriteEntries[6].unk4 = rec[((gUnk_03000440.unk44 + 1) << 1) + 1] * 8;
+    gSpriteEntries[6].unk2 = rec[(gGameWork.unk44 + 1) << 1] * 8;
+    gSpriteEntries[6].unk4 = rec[((gGameWork.unk44 + 1) << 1) + 1] * 8;
     gSpriteEntries[6].unk6 = 0x308;
     gSpriteEntries[6].unkA = 14;
     gSpriteEntries[6].unk1C = 0;
@@ -1204,16 +1200,16 @@ static void medaparts_help_init_cursor(void) {
 }
 
 static void medaparts_help_move_cursor(void) {
-    const u8 *rec = gHelpCursorLayouts[gUnk_03000440.unk43];
+    const u8 *rec = gHelpCursorLayouts[gGameWork.unk43];
 
-    gSpriteEntries[6].unk2 = rec[(gUnk_03000440.unk44 + 1) << 1] * 8;
-    gSpriteEntries[6].unk4 = rec[((gUnk_03000440.unk44 + 1) << 1) + 1] * 8;
+    gSpriteEntries[6].unk2 = rec[(gGameWork.unk44 + 1) << 1] * 8;
+    gSpriteEntries[6].unk4 = rec[((gGameWork.unk44 + 1) << 1) + 1] * 8;
 }
 
 static void medapart_trade_init_choice_cursor(void) {
     gSpriteEntries[4].unk0 = 0xD204;
     gSpriteEntries[4].unk2 = 0xA8;
-    gSpriteEntries[4].unk4 = gUnk_03000440.unk4A * 16 + 0x38;
+    gSpriteEntries[4].unk4 = gGameWork.unk4A * 16 + 0x38;
     gSpriteEntries[4].unk6 = 0x307;
     gSpriteEntries[4].unkA = 14;
     gSpriteEntries[4].unk8 = 0x40;
@@ -1226,20 +1222,20 @@ static void medapart_trade_init_choice_cursor(void) {
 
 static void medapart_trade_choice_cursor_input(void) {
     if (KEYS_LO(gRepeatKeys) & 0x40) {
-        if (gUnk_03000440.unk4A == 0)
-            gUnk_03000440.unk4A = 2;
+        if (gGameWork.unk4A == 0)
+            gGameWork.unk4A = 2;
         else
-            gUnk_03000440.unk4A--;
+            gGameWork.unk4A--;
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
-        if (gUnk_03000440.unk4A == 2)
-            gUnk_03000440.unk4A = 0;
+        if (gGameWork.unk4A == 2)
+            gGameWork.unk4A = 0;
         else
-            gUnk_03000440.unk4A++;
+            gGameWork.unk4A++;
     }
     if (KEYS_LO(gRepeatKeys) & 0xC0) {
         play_sound_effect(2);
-        gSpriteEntries[4].unk4 = gUnk_03000440.unk4A * 16 + 0x38;
+        gSpriteEntries[4].unk4 = gGameWork.unk4A * 16 + 0x38;
     }
 }
 

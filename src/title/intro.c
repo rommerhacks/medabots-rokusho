@@ -44,39 +44,39 @@ void intro_update(void) {
 
 void intro_eyes_fade_in_state(void) {
     if (intro_eyes_fade_in_step()) {
-        gGameMode = gUnk_03001800_s.nextMode;
-        gGameState = gUnk_03001800_s.nextState;
-        gGameSubState = gUnk_03001800_s.nextSubState;
+        gGameMode = gSceneWork.nextMode;
+        gGameState = gSceneWork.nextState;
+        gGameSubState = gSceneWork.nextSubState;
     }
 }
 
 void intro_mosaic_fade_in_state(void) {
     if (intro_mosaic_fade_in_step()) {
-        gGameMode = gUnk_03001800_s.nextMode;
-        gGameState = gUnk_03001800_s.nextState;
-        gGameSubState = gUnk_03001800_s.nextSubState;
+        gGameMode = gSceneWork.nextMode;
+        gGameState = gSceneWork.nextState;
+        gGameSubState = gSceneWork.nextSubState;
     }
 }
 
 void intro_flash_state(void) {
-    if (gUnk_03001800_s.timer > 0x4C && gUnk_03001800_s.flashAlpha >= 0) {
-        u8 src_weight = gUnk_03001800_s.flashAlpha;
-        u8 dst_weight = 16 - gUnk_03001800_s.flashAlpha;
+    if (gSceneWork.timer > 0x4C && gSceneWork.flashAlpha >= 0) {
+        u8 src_weight = gSceneWork.flashAlpha;
+        u8 dst_weight = 16 - gSceneWork.flashAlpha;
         REG_BLDALPHA = src_weight | (dst_weight << 8);
-        gUnk_03001800_s.flashAlpha--;
+        gSceneWork.flashAlpha--;
     }
     if (scene_transition_step_080686F4()) {
         REG_DISPCNT &= 0xFBFF;
-        gGameMode = gUnk_03001800_s.nextMode;
-        gGameState = gUnk_03001800_s.nextState;
-        gGameSubState = gUnk_03001800_s.nextSubState;
+        gGameMode = gSceneWork.nextMode;
+        gGameState = gSceneWork.nextState;
+        gGameSubState = gSceneWork.nextSubState;
     }
-    gUnk_03001800_s.timer++;
+    gSceneWork.timer++;
 }
 
 void intro_transition_out_state(void) {
-    gUnk_03001800_s.frameCounter++;
-    gUnk_03001800_s.noiseCounter += 0x6F;
+    gSceneWork.frameCounter++;
+    gSceneWork.noiseCounter += 0x6F;
     intro_draw_counters();
     intro_update_sprite_actions();
     if (execute_scene_step()) {
@@ -84,9 +84,9 @@ void intro_transition_out_state(void) {
         DmaSet(3, &zero, gSpriteEntries, 0x85000800);
         gUnk_03000430 = 0;
         REG_DISPCNT &= 0x80FF;
-        gGameMode = gUnk_03001800_s.nextMode;
-        gGameState = gUnk_03001800_s.nextState;
-        gGameSubState = gUnk_03001800_s.nextSubState;
+        gGameMode = gSceneWork.nextMode;
+        gGameState = gSceneWork.nextState;
+        gGameSubState = gSceneWork.nextSubState;
     }
 }
 
@@ -98,11 +98,11 @@ void intro_init(void) {
     zero = 0;
     DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     zero = 0;
-    DmaSet(3, &zero, &gUnk_03001800_s, 0x8500003E);
+    DmaSet(3, &zero, &gSceneWork, 0x8500003E);
     REG_DISPCNT = 0x60;
-    gUnk_03001800_s.nextMode = 3;
-    gUnk_03001800_s.nextState = 1;
-    gUnk_03001800_s.timer = 0;
+    gSceneWork.nextMode = 3;
+    gSceneWork.nextState = 1;
+    gSceneWork.timer = 0;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;
@@ -111,11 +111,11 @@ void intro_init(void) {
     gBg2Scroll.y = 0;
     gBg3Scroll.x = 0;
     gBg3Scroll.y = 0;
-    gUnk_03001800_s.unkC.afterSubState = 11;
-    gUnk_03001800_s.nextSubState = 11;
-    gUnk_03001800_s.unk6 = 1;
-    gUnk_03001800_s.unkF4 = 0x7C0;
-    gUnk_03001800_s.unkF6 = 0x100;
+    gSceneWork.unkC.afterSubState = 11;
+    gSceneWork.nextSubState = 11;
+    gSceneWork.unk6 = 1;
+    gSceneWork.unkF4 = 0x7C0;
+    gSceneWork.unkF6 = 0x100;
     gTitleSkipIntro = 0;
     gGameSubState = 8;
 }
@@ -146,7 +146,7 @@ void intro_load_silhouette_scene(void) {
     gSpriteEntries[0].unk4 = 0x40;
     setup_screen_transition_effect_080682CC(2, 1, 0);
     gUnk_03000430 = 0;
-    gUnk_03001800_s.nextSubState = gUnk_03001800_s.unkC.afterSubState;
+    gSceneWork.nextSubState = gSceneWork.unkC.afterSubState;
     gGameSubState = 3;
 }
 
@@ -198,13 +198,13 @@ void intro_load_scan_screen(void) {
     REG_DISPCNT |= 0x1E00;
     REG_BLDCNT = 0x1844;
     REG_BLDALPHA = 0x80B;
-    gUnk_03001800_s.nextSubState = gUnk_03001800_s.unkC.afterSubState;
+    gSceneWork.nextSubState = gSceneWork.unkC.afterSubState;
     gGameSubState = 1;
 }
 
 void intro_load_scan_sprites(void) {
     LZ77UnCompVram(gIntroScanObjTiles[1], (void *)0x06010000);
-    LZ77UnCompVram(gUnk_087C8D54, gUnk_03001800_s.scanTextGlyphs);
+    LZ77UnCompVram(gUnk_087C8D54, gSceneWork.scanTextGlyphs);
     gGameSubState = 6;
 }
 
@@ -218,25 +218,25 @@ void intro_load_rokusho_sprite(void) {
     DmaSet(3, gIntroObjPals[1], PLTT + 0x200, 0x80000050);
     setup_screen_transition_effect_080682CC(2, 4, 0);
     REG_DISPCNT |= 0x1000;
-    gUnk_03001800_s.nextSubState = 15;
+    gSceneWork.nextSubState = 15;
     gGameSubState = 1;
 }
 
 void intro_load_versus_scene(void) {
     intro_load_versus_art();
     REG_MOSAIC = 0xFF;
-    gUnk_03001800_s.unk6 = 6;
+    gSceneWork.unk6 = 6;
     gBg0Scroll.y = 0xFFE4;
     DmaSet(3, gIntroObjPals[1], PLTT + 0x200, 0x80000050);
-    gUnk_03001800_s.nextSubState = gUnk_03001800_s.unkC.afterSubState;
+    gSceneWork.nextSubState = gSceneWork.unkC.afterSubState;
     gGameSubState = 4;
 }
 
 void intro_silhouette_first_state(void) {
     if (intro_silhouette_step()) {
-        gUnk_03001800_s.timer = 0;
-        gUnk_03001800_s.nextSubState = 7;
-        gUnk_03001800_s.unkC.afterSubState = 12;
+        gSceneWork.timer = 0;
+        gSceneWork.nextSubState = 7;
+        gSceneWork.unkC.afterSubState = 12;
     }
 }
 
@@ -244,10 +244,10 @@ void intro_scan_arms_state(void) {
     s32 half = 0xC4;
     s32 i;
 
-    gUnk_03001800_s.frameCounter++;
-    gUnk_03001800_s.noiseCounter += 0x6F;
-    if (gUnk_03001800_s.timer < half) {
-        switch (gUnk_03001800_s.timer) {
+    gSceneWork.frameCounter++;
+    gSceneWork.noiseCounter += 0x6F;
+    if (gSceneWork.timer < half) {
+        switch (gSceneWork.timer) {
         case 0:
             sprite_entry_init(1, 0xCA00, 0x409, 3, 3);
             gSpriteEntries[1].unk2 = 0x50;
@@ -257,11 +257,11 @@ void intro_scan_arms_state(void) {
             intro_sprite_set_action(1, 1, 0);
             intro_sprite_set_action(4, 9, 0);
             intro_sprite_set_action(5, 10, 0);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         case 1:
             if (gSpriteEntries[1].unk20 == 0)
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             break;
         case 2:
             sprite_entry_init(2, 0xC600, 0x406, 2, 3);
@@ -270,7 +270,7 @@ void intro_scan_arms_state(void) {
             gSpriteEntries[2].unk8 = 2;
             gSpriteEntries[2].unk9 = 2;
             intro_sprite_set_action(2, 2, 0);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         case 3:
             if (gSpriteEntries[2].unk20 == 0) {
@@ -280,20 +280,20 @@ void intro_scan_arms_state(void) {
                 intro_sprite_set_action(3, 6, 0x70);
                 intro_sprite_set_action(3, 7, 0x78);
                 intro_sprite_set_action(3, 8, 0x78);
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             }
             break;
         case 4:
             if (intro_draw_pointer_line(0))
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             break;
         default:
             if (intro_type_scan_text(0))
                 intro_type_part_name(0);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         }
-    } else if (gUnk_03001800_s.timer == half) {
+    } else if (gSceneWork.timer == half) {
         intro_clear_part_name();
         intro_clear_scan_text();
         intro_clear_pointer_lines();
@@ -305,20 +305,20 @@ void intro_scan_arms_state(void) {
             intro_sprite_set_action(0, i + 3, 0);
             gSpriteEntries[i + 3].unk4 = 0xC8;
         }
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
     } else {
-        switch (gUnk_03001800_s.timer) {
+        switch (gSceneWork.timer) {
         case 0xC5:
             gSpriteEntries[1].unk6 = 0x40A;
             gSpriteEntries[1].unk4 = 0x38;
             gSpriteEntries[1].unk8 = 2;
             gSpriteEntries[1].unk9 = 2;
             intro_sprite_set_action(1, 1, 0);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         case 0xC6:
             if (gSpriteEntries[1].unk20 == 0)
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             break;
         case 0xC7:
             gSpriteEntries[2].unk6 = 0x407;
@@ -326,7 +326,7 @@ void intro_scan_arms_state(void) {
             gSpriteEntries[2].unk8 = 2;
             gSpriteEntries[2].unk9 = 2;
             intro_sprite_set_action(2, 2, 0);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         case 0xC8:
             if (gSpriteEntries[2].unk20 == 0) {
@@ -336,26 +336,26 @@ void intro_scan_arms_state(void) {
                 intro_sprite_set_action(3, 6, 0x70);
                 intro_sprite_set_action(3, 7, 0x68);
                 intro_sprite_set_action(3, 8, 0x70);
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             }
             break;
         case 0xC9:
             if (intro_draw_pointer_line(1))
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             break;
         default:
             if (intro_type_scan_text(0x28))
                 intro_type_part_name(1);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         }
     }
     intro_draw_counters();
     intro_update_sprite_actions();
-    if (half * 2 <= gUnk_03001800_s.timer) {
-        gUnk_03001800_s.timer = 0;
-        gUnk_03001800_s.nextSubState = 6;
-        gUnk_03001800_s.unkC.afterSubState = 13;
+    if (half * 2 <= gSceneWork.timer) {
+        gSceneWork.timer = 0;
+        gSceneWork.nextSubState = 6;
+        gSceneWork.unkC.afterSubState = 13;
         gGameSubState = 2;
     }
 }
@@ -364,9 +364,9 @@ void intro_silhouette_second_state(void) {
     if (intro_silhouette_step()) {
         intro_clear_part_name();
         intro_clear_scan_text();
-        gUnk_03001800_s.timer = 0;
-        gUnk_03001800_s.nextSubState = 7;
-        gUnk_03001800_s.unkC.afterSubState = 0xE;
+        gSceneWork.timer = 0;
+        gSceneWork.nextSubState = 7;
+        gSceneWork.unkC.afterSubState = 0xE;
     }
 }
 
@@ -374,10 +374,10 @@ void intro_scan_legs_head_state(void) {
     s32 half = 0xC4;
     s32 i;
 
-    gUnk_03001800_s.frameCounter++;
-    gUnk_03001800_s.noiseCounter += 0x6F;
-    if (gUnk_03001800_s.timer < half) {
-        switch (gUnk_03001800_s.timer) {
+    gSceneWork.frameCounter++;
+    gSceneWork.noiseCounter += 0x6F;
+    if (gSceneWork.timer < half) {
+        switch (gSceneWork.timer) {
         case 0:
             sprite_entry_init(1, 0xCA00, 0x40B, 3, 3);
             gSpriteEntries[1].unk2 = 0x50;
@@ -387,11 +387,11 @@ void intro_scan_legs_head_state(void) {
             intro_sprite_set_action(1, 1, 0);
             intro_sprite_set_action(4, 9, 0);
             intro_sprite_set_action(5, 10, 0);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         case 1:
             if (gSpriteEntries[1].unk20 == 0)
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             break;
         case 2:
             sprite_entry_init(2, 0xC600, 0x406, 2, 3);
@@ -400,7 +400,7 @@ void intro_scan_legs_head_state(void) {
             gSpriteEntries[2].unk8 = 2;
             gSpriteEntries[2].unk9 = 2;
             intro_sprite_set_action(2, 2, 0);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         case 3:
             if (gSpriteEntries[2].unk20 == 0) {
@@ -410,20 +410,20 @@ void intro_scan_legs_head_state(void) {
                 intro_sprite_set_action(3, 6, 0x70);
                 intro_sprite_set_action(3, 7, 0x78);
                 intro_sprite_set_action(3, 8, 0x78);
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             }
             break;
         case 4:
             if (intro_draw_pointer_line(2))
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             break;
         default:
             if (intro_type_scan_text(0x28))
                 intro_type_part_name(2);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         }
-    } else if (gUnk_03001800_s.timer == half) {
+    } else if (gSceneWork.timer == half) {
         intro_clear_part_name();
         intro_clear_scan_text();
         intro_clear_pointer_lines();
@@ -435,20 +435,20 @@ void intro_scan_legs_head_state(void) {
             intro_sprite_set_action(0, i + 3, 0);
             gSpriteEntries[i + 3].unk4 = 200;
         }
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
     } else {
-        switch (gUnk_03001800_s.timer) {
+        switch (gSceneWork.timer) {
         case 0xC5:
             gSpriteEntries[1].unk6 = 0x40C;
             gSpriteEntries[1].unk4 = 0x38;
             gSpriteEntries[1].unk8 = 2;
             gSpriteEntries[1].unk9 = 2;
             intro_sprite_set_action(1, 1, 0);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         case 0xC6:
             if (gSpriteEntries[1].unk20 == 0)
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             break;
         case 0xC7:
             gSpriteEntries[2].unk6 = 0x407;
@@ -456,7 +456,7 @@ void intro_scan_legs_head_state(void) {
             gSpriteEntries[2].unk8 = 2;
             gSpriteEntries[2].unk9 = 2;
             intro_sprite_set_action(2, 2, 0);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         case 0xC8:
             if (gSpriteEntries[2].unk20 == 0) {
@@ -466,68 +466,68 @@ void intro_scan_legs_head_state(void) {
                 intro_sprite_set_action(3, 6, 0x70);
                 intro_sprite_set_action(3, 7, 0x68);
                 intro_sprite_set_action(3, 8, 0x70);
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             }
             break;
         case 0xC9:
             if (intro_draw_pointer_line(3))
-                gUnk_03001800_s.timer++;
+                gSceneWork.timer++;
             break;
         default:
             if (intro_type_scan_text(0))
                 intro_type_part_name(3);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
             break;
         }
     }
     intro_draw_counters();
     intro_update_sprite_actions();
-    if (half * 2 <= gUnk_03001800_s.timer) {
-        gUnk_03001800_s.timer = 0;
-        gUnk_03001800_s.nextSubState = 9;
+    if (half * 2 <= gSceneWork.timer) {
+        gSceneWork.timer = 0;
+        gSceneWork.nextSubState = 9;
         gGameSubState = 2;
     }
 }
 
 // Sub-state 15: Rokusho's sprite is shown (intro_draw_rokusho_pose) for ~60 frames.
 void intro_rokusho_pose_state(void) {
-    gUnk_03001800_s.unkF4 += 0x10;
-    gUnk_03001800_s.unkF6 -= 0x10;
-    if (gUnk_03001800_s.timer++ > 0x3A) {
-        gUnk_03001800_s.timer = 0;
-        gUnk_03001800_s.nextSubState = 6;
-        gUnk_03001800_s.unkC.afterSubState = 0x10;
+    gSceneWork.unkF4 += 0x10;
+    gSceneWork.unkF6 -= 0x10;
+    if (gSceneWork.timer++ > 0x3A) {
+        gSceneWork.timer = 0;
+        gSceneWork.nextSubState = 6;
+        gSceneWork.unkC.afterSubState = 0x10;
         gGameSubState = 2;
     }
 }
 
 void intro_silhouette_third_state(void) {
     if (intro_silhouette_step()) {
-        gUnk_03001800_s.timer = 0;
-        gUnk_03001800_s.nextSubState = 0xA;
-        gUnk_03001800_s.unkC.afterSubState = 0x11;
+        gSceneWork.timer = 0;
+        gSceneWork.nextSubState = 0xA;
+        gSceneWork.unkC.afterSubState = 0x11;
     }
 }
 
 void intro_closeup_art_state(void) {
     s32 flash_frame = 0x3C;
 
-    if (flash_frame == gUnk_03001800_s.timer) {
+    if (flash_frame == gSceneWork.timer) {
         REG_BLDCNT = 0xBF;
         REG_BLDY = 0x10;
         intro_load_closeup_art();
         setup_screen_transition_effect_080682CC(4, 4, 0x7FFF);
         REG_BLDY = 0;
-        gUnk_03001800_s.nextSubState = gGameSubState;
+        gSceneWork.nextSubState = gGameSubState;
         gGameSubState = 1;
-    } else if (flash_frame < gUnk_03001800_s.timer) {
-        gUnk_03001800_s.timer = 0;
-        gUnk_03001800_s.nextSubState = 0x12;
+    } else if (flash_frame < gSceneWork.timer) {
+        gSceneWork.timer = 0;
+        gSceneWork.nextSubState = 0x12;
         setup_screen_transition_effect_080684F0(4, 4, 0);
         gGameSubState = 2;
         return;
     }
-    gUnk_03001800_s.timer++;
+    gSceneWork.timer++;
 }
 
 // Sub-state 18: the intro is over, go to the title screen.
@@ -537,7 +537,7 @@ void intro_go_to_title(void) {
     gGameSubState = 0;
 }
 
-// View of 0x03001800 (gUnk_03001800_s) for the eye palette fade-in: savedPal holds a copy of OBJ palette 4
+// View of 0x03001800 (gSceneWork) for the eye palette fade-in: savedPal holds a copy of OBJ palette 4
 // (0x05000280, 16 colours).
 struct IntroFade {
     u16 nextMode;
@@ -548,7 +548,7 @@ struct IntroFade {
     u16 afterSubState;
     u16 savedPal[16]; // saved palette (PLTT + 0x280)
 };
-#define gIntroFade (*(struct IntroFade *)&gUnk_03001800_s)
+#define gIntroFade (*(struct IntroFade *)&gSceneWork)
 
 // guess: fades OBJ palette 4 (the silhouette's eyes sprite) in from black over 32 steps while BLDY fades out.
 static bool32 intro_eyes_fade_in_step(void) {
@@ -590,8 +590,8 @@ static bool32 intro_eyes_fade_in_step(void) {
 }
 
 static bool32 intro_mosaic_fade_in_step(void) {
-    u16 step = gUnk_03001800_s.unk6;
-    s32 frame = gUnk_03001800_s.timer;
+    u16 step = gSceneWork.unk6;
+    s32 frame = gSceneWork.timer;
     u8 level;
 
     if (frame % step == 0) {
@@ -599,11 +599,11 @@ static bool32 intro_mosaic_fade_in_step(void) {
         REG_BLDY = level;
         REG_MOSAIC = (level & 0xF) | ((level & 0xF) << 4);
         if (level == 0) {
-            gUnk_03001800_s.timer = level;
+            gSceneWork.timer = level;
             return TRUE;
         }
     }
-    gUnk_03001800_s.timer++;
+    gSceneWork.timer++;
     return FALSE;
 }
 
@@ -626,50 +626,50 @@ u32 intro_type_part_name(u8 part) {
     const u8 *str = gIntroScanStrings[part + 4];
     u8 ch;
 
-    str += gUnk_03001800_s.partNameLen;
-    if (gUnk_03001800_s.timer & 1) {
+    str += gSceneWork.partNameLen;
+    if (gSceneWork.timer & 1) {
         if (*str == 0x14)
             return 1;
         return 0;
     }
     if (*str == 0x14) {
-        if (gUnk_03001800_s.timer & 8)
-            gUnk_03001800_s.partNameTiles[gUnk_03001800_s.partNameLen] = 0;
+        if (gSceneWork.timer & 8)
+            gSceneWork.partNameTiles[gSceneWork.partNameLen] = 0;
         else
-            gUnk_03001800_s.partNameTiles[gUnk_03001800_s.partNameLen] = 0x9078;
-        DmaSet(3, gUnk_03001800_s.partNameTiles, 0x0600FC44, 0x8000000D);
+            gSceneWork.partNameTiles[gSceneWork.partNameLen] = 0x9078;
+        DmaSet(3, gSceneWork.partNameTiles, 0x0600FC44, 0x8000000D);
         return 1;
     }
     ch = *str;
     if (ch == 0x15)
-        gUnk_03001800_s.partNameTiles[gUnk_03001800_s.partNameLen] = 0;
+        gSceneWork.partNameTiles[gSceneWork.partNameLen] = 0;
     else
-        gUnk_03001800_s.partNameTiles[gUnk_03001800_s.partNameLen] = ch + 0x9064;
-    gUnk_03001800_s.partNameLen++;
-    DmaSet(3, gUnk_03001800_s.partNameTiles, 0x0600FC44, 0x8000000D);
+        gSceneWork.partNameTiles[gSceneWork.partNameLen] = ch + 0x9064;
+    gSceneWork.partNameLen++;
+    DmaSet(3, gSceneWork.partNameTiles, 0x0600FC44, 0x8000000D);
     return 0;
 }
 
 u32 intro_type_scan_text(u8 glyph_base) {
     u16 tile;
-    register u8 len asm("r8") = gUnk_03001800_s.scanTextLen;
+    register u8 len asm("r8") = gSceneWork.scanTextLen;
 
     if (len > 39)
         return 1;
-    if (!(gUnk_03001800_s.timer & 1)) {
-        u8 cell = *(vu8 *)&gUnk_03001800_s.scanTextLen;
+    if (!(gSceneWork.timer & 1)) {
+        u8 cell = *(vu8 *)&gSceneWork.scanTextLen;
         u32 offset = (u8)(cell / 10) * 64 + (u8)(cell % 10) * 2;
-        tile = gUnk_03001800_s.scanTextGlyphs[cell + glyph_base] + 0x8001;
+        tile = gSceneWork.scanTextGlyphs[cell + glyph_base] + 0x8001;
         DmaSet(3, &tile, 0x0600FB0A + offset, 0x80000001);
-        gUnk_03001800_s.scanTextLen = len + 1;
+        gSceneWork.scanTextLen = len + 1;
     }
     return 0;
 }
 
 static void intro_draw_counters(void) {
     u16 buf[8];
-    u16 frames = gUnk_03001800_s.frameCounter;
-    u16 noise = gUnk_03001800_s.noiseCounter % 1000;
+    u16 frames = gSceneWork.frameCounter;
+    u16 noise = gSceneWork.noiseCounter % 1000;
     u16 rest;
 
     buf[3] = frames % 10 + 0x90C8;
@@ -687,7 +687,7 @@ static void intro_draw_counters(void) {
 }
 
 // Pointer line `lineIdx` of scan `part`: start column, row, end column, end row.
-#define ROW_ENT(field) gIntroPointerLines[gUnk_03001800_s.lineIdx * 4 + part * 12 + 0x30 + (field)]
+#define ROW_ENT(field) gIntroPointerLines[gSceneWork.lineIdx * 4 + part * 12 + 0x30 + (field)]
 
 u32 intro_draw_pointer_line(u8 part) {
     u16 tile = 0xD2;
@@ -695,34 +695,34 @@ u32 intro_draw_pointer_line(u8 part) {
     s32 pos;
     s32 first_slot = 14;
 
-    if (gUnk_03001800_s.lineIdx > 2)
+    if (gSceneWork.lineIdx > 2)
         return 1;
-    if (ROW_ENT(2) <= ROW_ENT(0) + gUnk_03001800_s.lineStep) {
-        gSpriteEntries[gUnk_03001800_s.lineIdx + 11].unk4 = ROW_ENT(3) * 8;
-        gUnk_03001800_s.lineStep = 0;
-        gUnk_03001800_s.lineIdx++;
+    if (ROW_ENT(2) <= ROW_ENT(0) + gSceneWork.lineStep) {
+        gSpriteEntries[gSceneWork.lineIdx + 11].unk4 = ROW_ENT(3) * 8;
+        gSceneWork.lineStep = 0;
+        gSceneWork.lineIdx++;
         return 0;
     }
-    if (gUnk_03001800_s.lineStep <= 1) {
-        if (ROW_ENT(3) + gUnk_03001800_s.lineStep < ROW_ENT(1)) {
-            slot = gUnk_03001800_s.lineIdx * 2 + (gUnk_03001800_s.lineStep + first_slot);
+    if (gSceneWork.lineStep <= 1) {
+        if (ROW_ENT(3) + gSceneWork.lineStep < ROW_ENT(1)) {
+            slot = gSceneWork.lineIdx * 2 + (gSceneWork.lineStep + first_slot);
             ((void (*)())sprite_entry_init)(slot, 0xC400, 0x403, 0, 3);
-            gSpriteEntries[slot].unk2 = (ROW_ENT(0) + gUnk_03001800_s.lineStep) * 8;
-            gSpriteEntries[slot].unk4 = (ROW_ENT(1) - gUnk_03001800_s.lineStep) * 8 - 4;
-        } else if (ROW_ENT(1) + gUnk_03001800_s.lineStep < ROW_ENT(3)) {
-            slot = gUnk_03001800_s.lineIdx * 2 + (gUnk_03001800_s.lineStep + first_slot);
+            gSpriteEntries[slot].unk2 = (ROW_ENT(0) + gSceneWork.lineStep) * 8;
+            gSpriteEntries[slot].unk4 = (ROW_ENT(1) - gSceneWork.lineStep) * 8 - 4;
+        } else if (ROW_ENT(1) + gSceneWork.lineStep < ROW_ENT(3)) {
+            slot = gSceneWork.lineIdx * 2 + (gSceneWork.lineStep + first_slot);
             ((void (*)())sprite_entry_init)(slot, 0xE400, 0x403, 0, 3);
-            gSpriteEntries[slot].unk2 = (ROW_ENT(0) + gUnk_03001800_s.lineStep) * 8;
-            gSpriteEntries[slot].unk4 = (ROW_ENT(1) + gUnk_03001800_s.lineStep) * 8 + 12;
+            gSpriteEntries[slot].unk2 = (ROW_ENT(0) + gSceneWork.lineStep) * 8;
+            gSpriteEntries[slot].unk4 = (ROW_ENT(1) + gSceneWork.lineStep) * 8 + 12;
         } else {
-            pos = gUnk_03001800_s.lineStep + (ROW_ENT(0) + ROW_ENT(3) * 32);
+            pos = gSceneWork.lineStep + (ROW_ENT(0) + ROW_ENT(3) * 32);
             DmaSet(3, &tile, (u16 *)0x0600F800 + pos, 0x80000001);
         }
     } else {
-        pos = gUnk_03001800_s.lineStep + (ROW_ENT(0) + ROW_ENT(3) * 32);
+        pos = gSceneWork.lineStep + (ROW_ENT(0) + ROW_ENT(3) * 32);
         DmaSet(3, &tile, (u16 *)0x0600F800 + pos, 0x80000001);
     }
-    gUnk_03001800_s.lineStep++;
+    gSceneWork.lineStep++;
     return 0;
 }
 
@@ -732,9 +732,9 @@ static void intro_clear_part_name(void) {
     s32 i;
 
     for (i = 0; i < 13; i++)
-        gUnk_03001800_s.partNameTiles[i] = 0;
-    gUnk_03001800_s.partNameLen = 0;
-    DmaSet(3, gUnk_03001800_s.partNameTiles, 0x0600FC44, 0x8000000D);
+        gSceneWork.partNameTiles[i] = 0;
+    gSceneWork.partNameLen = 0;
+    DmaSet(3, gSceneWork.partNameTiles, 0x0600FC44, 0x8000000D);
 }
 
 static void intro_clear_scan_text(void) {
@@ -748,14 +748,14 @@ static void intro_clear_scan_text(void) {
     DmaSet(3, &fill, 0x0600FB8A, 0x8100000A);
     fill = 0;
     DmaSet(3, &fill, 0x0600FBCA, 0x8100000A);
-    gUnk_03001800_s.scanTextLen = 0;
+    gSceneWork.scanTextLen = 0;
 }
 
 static void intro_clear_counters(void) {
     u16 fill;
 
-    gUnk_03001800_s.noiseCounter = 0;
-    gUnk_03001800_s.frameCounter = 0;
+    gSceneWork.noiseCounter = 0;
+    gSceneWork.frameCounter = 0;
     fill = 0;
     DmaSet(3, &fill, 0x0600F86C, 0x81000007);
 }
@@ -764,8 +764,8 @@ static void intro_clear_pointer_lines(void) {
     u32 fill;
     s32 i;
 
-    gUnk_03001800_s.lineStep = 0;
-    gUnk_03001800_s.lineIdx = 0;
+    gSceneWork.lineStep = 0;
+    gSceneWork.lineIdx = 0;
     fill = 0;
     DmaSet(3, &fill, 0x0600F800, 0x850000A0);
     for (i = 0; i < 6; i++)
@@ -773,21 +773,21 @@ static void intro_clear_pointer_lines(void) {
 }
 
 static bool32 intro_silhouette_step(void) {
-    if (gUnk_03001800_s.timer == 0x3C) {
+    if (gSceneWork.timer == 0x3C) {
         setup_screen_transition_effect_080682CC(4, 1, 0x7FFF);
         REG_BLDCNT = 0x844;
         REG_BLDALPHA = 0x10;
         REG_BLDY = 0;
         REG_DISPCNT |= 0x400;
-        gUnk_03001800_s.nextSubState = gGameSubState;
-        gUnk_03001800_s.flashAlpha = 0x10;
+        gSceneWork.nextSubState = gGameSubState;
+        gSceneWork.flashAlpha = 0x10;
         gGameSubState = 5;
-    } else if (gUnk_03001800_s.timer > 0x3C) {
+    } else if (gSceneWork.timer > 0x3C) {
         setup_screen_transition_effect_080684F0(2, 2, 0);
         gGameSubState = 2;
         return TRUE;
     }
-    gUnk_03001800_s.timer++;
+    gSceneWork.timer++;
     return FALSE;
 }
 

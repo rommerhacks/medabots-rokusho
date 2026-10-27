@@ -11,22 +11,22 @@ u32 battle_queue_bots_at_lines(void) {
     u32 a = 0;
     u32 b = 0;
 
-    if (gUnk_03000440.unk89 != 1 || gUnk_03000B90 == 0) {
+    if (gGameWork.unk89 != 1 || gUnk_03000B90 == 0) {
         for (i = 0; i <= 5; i++) {
-            if (gUnk_03000590[i].unk40) {
+            if (gBattleBots[i].unk40) {
                 a += battle_bot_at_front_line(i, 0);
                 b += battle_bot_at_home_line(i, 0);
             }
         }
     } else {
         for (i = 3; i <= 5; i++) {
-            if (gUnk_03000590[i].unk40) {
+            if (gBattleBots[i].unk40) {
                 a += battle_bot_at_front_line(i, 0);
                 b += battle_bot_at_home_line(i, 0);
             }
         }
         for (i = 0; i <= 2; i++) {
-            if (gUnk_03000590[i].unk40) {
+            if (gBattleBots[i].unk40) {
                 a += battle_bot_at_front_line(i, 0);
                 b += battle_bot_at_home_line(i, 0);
             }
@@ -40,7 +40,7 @@ u32 battle_queue_bots_at_lines(void) {
 u32 battle_bot_at_front_line(u32 rec, u32 peek) {
     u32 reached = 0;
 
-    if (!(gUnk_03000590[rec].unkBD & 4)) {
+    if (!(gBattleBots[rec].unkBD & 4)) {
         if (rec <= 2) {
             if (gSpriteEntries[rec * 4 + 0x5D].unk2 == 0x68)
                 reached = 1;
@@ -49,7 +49,7 @@ u32 battle_bot_at_front_line(u32 rec, u32 peek) {
                 reached = 1;
         }
         if (peek == 0 && reached)
-            battle_queue_add(rec, gUnk_03000590[rec].parts[3].unk12);
+            battle_queue_add(rec, gBattleBots[rec].parts[3].unk12);
     }
     return reached;
 }
@@ -57,7 +57,7 @@ u32 battle_bot_at_front_line(u32 rec, u32 peek) {
 u32 battle_bot_at_home_line(u32 rec, u32 peek) {
     u32 reached = 0;
 
-    if (gUnk_03000590[rec].unkBD & 4) {
+    if (gBattleBots[rec].unkBD & 4) {
         if (rec <= 2) {
             if (gSpriteEntries[rec * 4 + 0x5D].unk2 == 0x28)
                 reached = 1;
@@ -66,17 +66,17 @@ u32 battle_bot_at_home_line(u32 rec, u32 peek) {
                 reached = 1;
         }
         if (peek == 0 && reached)
-            battle_queue_add(rec, gUnk_03000590[rec].parts[3].unk12);
+            battle_queue_add(rec, gBattleBots[rec].parts[3].unk12);
     }
     return reached;
 }
 
 void battle_queue_add(u32 rec, u32 prio) {
     u32 i;
-    struct Unk_03001800 *g;
+    struct BattleWork *g;
 
     i = 0;
-    g = &gUnk_03001800;
+    g = &gBattleWork;
     for (; i <= 5; i++) {
         if (g->unk45[i][0] == 0) {
             g->unk45[i][0] = rec + 1;
@@ -90,7 +90,7 @@ void iterate_bots_setup_battle_sprites(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gUnk_03000590[i].unk40)
+        if (gBattleBots[i].unk40)
             setup_battle_bot_sprite_group(i, gSpriteEntries[0x5D + i * 4].unk2, gSpriteEntries[0x5D + i * 4].unk4 - 4);
     }
 }
@@ -310,33 +310,33 @@ void battle_queue_sort(void) {
 
     for (n = 5; n != 0; n--) {
         for (i = 0; i < n; i++) {
-            if (gUnk_03001800.unk45[0][i * 2 + 1] < gUnk_03001800.unk45[0][(i + 1) * 2 + 1]) {
-                r = gUnk_03001800.unk45[0][(i + 1) * 2];
-                p = gUnk_03001800.unk45[0][(i + 1) * 2 + 1];
-                gUnk_03001800.unk45[0][(i + 1) * 2] = gUnk_03001800.unk45[0][i * 2];
-                gUnk_03001800.unk45[0][(i + 1) * 2 + 1] = gUnk_03001800.unk45[0][i * 2 + 1];
-                gUnk_03001800.unk45[0][i * 2] = r;
-                gUnk_03001800.unk45[0][i * 2 + 1] = p;
+            if (gBattleWork.unk45[0][i * 2 + 1] < gBattleWork.unk45[0][(i + 1) * 2 + 1]) {
+                r = gBattleWork.unk45[0][(i + 1) * 2];
+                p = gBattleWork.unk45[0][(i + 1) * 2 + 1];
+                gBattleWork.unk45[0][(i + 1) * 2] = gBattleWork.unk45[0][i * 2];
+                gBattleWork.unk45[0][(i + 1) * 2 + 1] = gBattleWork.unk45[0][i * 2 + 1];
+                gBattleWork.unk45[0][i * 2] = r;
+                gBattleWork.unk45[0][i * 2 + 1] = p;
             }
         }
     }
 }
 
 void battle_queue_take_head(void) {
-    gUnk_03001800.unk87 = gUnk_03001800.unk45[0][0] - 1;
-    gUnk_03001800.unk89 = (gUnk_03001800.unk45[0][0] - 1) / 3;
-    gUnk_03001800.unk8A = gUnk_03001800.unk89 ^ 1;
+    gBattleWork.unk87 = gBattleWork.unk45[0][0] - 1;
+    gBattleWork.unk89 = (gBattleWork.unk45[0][0] - 1) / 3;
+    gBattleWork.unk8A = gBattleWork.unk89 ^ 1;
 }
 
 void battle_queue_pop(void) {
     u32 i;
 
     for (i = 0; i <= 4; i++) {
-        gUnk_03001800.unk45[0][i * 2] = gUnk_03001800.unk45[0][(i + 1) * 2];
-        gUnk_03001800.unk45[0][i * 2 + 1] = gUnk_03001800.unk45[0][(i + 1) * 2 + 1];
+        gBattleWork.unk45[0][i * 2] = gBattleWork.unk45[0][(i + 1) * 2];
+        gBattleWork.unk45[0][i * 2 + 1] = gBattleWork.unk45[0][(i + 1) * 2 + 1];
     }
-    gUnk_03001800.unk45[0][i * 2] = 0;
-    gUnk_03001800.unk45[0][i * 2 + 1] = 0;
+    gBattleWork.unk45[0][i * 2] = 0;
+    gBattleWork.unk45[0][i * 2 + 1] = 0;
 }
 
 // guess: unkBF is set by a support skill (rapid_charge_apply); such Medabots keep moving in sub-state 0x4C.
@@ -344,7 +344,7 @@ u32 any_bot_extra_move_pending(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gUnk_03000590[i].unk40 && gUnk_03000590[i].unkBF)
+        if (gBattleBots[i].unk40 && gBattleBots[i].unkBF)
             return 1;
     }
     return 0;
@@ -356,15 +356,15 @@ u32 team_bot_command_kept(u32 rec) {
     if (rec <= 2) {
         switch (rec) {
         case 0:
-            if (gUnk_03001800.unk44 & 1)
+            if (gBattleWork.unk44 & 1)
                 return 1;
             return 0;
         case 1:
-            if (gUnk_03001800.unk44 & 2)
+            if (gBattleWork.unk44 & 2)
                 return 1;
             return 0;
         case 2:
-            if (gUnk_03001800.unk44 & 4)
+            if (gBattleWork.unk44 & 4)
                 return 1;
             return 0;
         }
@@ -375,13 +375,13 @@ void team_bot_clear_command_kept(u32 rec) {
     if (rec <= 2) {
         switch (rec) {
         case 0:
-            gUnk_03001800.unk44 &= ~1;
+            gBattleWork.unk44 &= ~1;
             break;
         case 1:
-            gUnk_03001800.unk44 &= ~2;
+            gBattleWork.unk44 &= ~2;
             break;
         case 2:
-            gUnk_03001800.unk44 &= ~4;
+            gBattleWork.unk44 &= ~4;
             break;
         }
     }

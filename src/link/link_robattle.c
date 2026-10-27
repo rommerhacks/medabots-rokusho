@@ -1,12 +1,12 @@
-// Link Robattle (game state 10, guess: entered when gUnk_03000440.unk89 == 1). link_robattle_update runs
+// Link Robattle (game state 10, guess: entered when gGameWork.unk89 == 1). link_robattle_update runs
 // gLinkRobattleHandlers[gGameSubState]. Sub-states (messages from gLinkMessages / decoded text):
-//   0x00-0x06  handshake: sync, player 0 sends the RNG seed (gUnk_03000440.unk8D), 0x50-0x54 swap player names
+//   0x00-0x06  handshake: sync, player 0 sends the RNG seed (gGameWork.unk8D), 0x50-0x54 swap player names
 //              (link_robattle_exchange_names), pick a random battlefield
 //   0x07-0x0E  intro screen "Okay let's Robattle!", fade out, gGameState = 3 (the Robattle)
 //   0x10-0x18  link error: "A link error has occurred", soft reset to the title
 //   0x20-0x2D  after the battle: "That was a great Robattle!", "Checking connection", then the prize game if
-//              gUnk_03000440.unk138 is set, else back to the link menu
-//   0x30-0x4B  prize game: the winner (gUnk_03000440.unk9C == 1) stops a power gauge with A ("Get Medaparts by
+//              gGameWork.unk138 is set, else back to the link menu
+//   0x30-0x4B  prize game: the winner (gGameWork.unk9C == 1) stops a power gauge with A ("Get Medaparts by
 //              pressing A Button with a good timing"); a ball flies up and lands on one of 6 rows
 //              (prizeSlots); a part row moves that part from the loser to the winner ("You got / lost the
 //              Medapart"), a miss row gives nothing ("Sorry! You missed!" / "Lucky! You didn't lose any").
@@ -37,7 +37,7 @@ static u32 prize_game_ball_fall(void);
 static void prize_game_blink_landing_slot(void);
 
 // Game state 10 handler: runs gLinkRobattleHandlers[gGameSubState]; outside sub-states 0x10-0x1F a link error
-// (link_error_check) restarts it at 0x10. guess: link Robattle (entered when gUnk_03000440.unk89 == 1).
+// (link_error_check) restarts it at 0x10. guess: link Robattle (entered when gGameWork.unk89 == 1).
 void link_robattle_update(void) {
     if (gGameSubState - 0x10 > 0xF && link_error_check())
         return;
@@ -52,32 +52,32 @@ void link_robattle_update(void) {
 void link_robattle_init(void) {
     u32 zero = 0;
 
-    CpuFastSet(&zero, &gUnk_03001800, 0x01000100);
-    gUnk_03000440.unk86 = 0;
-    gUnk_03000440.unk84 = 0;
+    CpuFastSet(&zero, &gBattleWork, 0x01000100);
+    gGameWork.unk86 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
 void link_robattle_wait_sync(void) {
     if (link_sync_both_ready()) {
-        gUnk_03000440.unk86 = 0;
+        gGameWork.unk86 = 0;
         gGameSubState++;
     }
 }
 
 void link_robattle_delay(void) {
-    if (gUnk_03000440.unk86 == 8) {
-        gUnk_03000440.unk86 = 0;
+    if (gGameWork.unk86 == 8) {
+        gGameWork.unk86 = 0;
         gGameSubState++;
     } else {
-        gUnk_03000440.unk86++;
+        gGameWork.unk86++;
     }
 }
 
 void link_robattle_send_seed(void) {
     if (gUnk_03000B90 == 0) {
-        gUnk_03000440.unk8D = gFrameCounter;
-        gUnk_03005010.unk6 = gUnk_03000440.unk8D + 0x8000;
+        gGameWork.unk8D = gFrameCounter;
+        gUnk_03005010.unk6 = gGameWork.unk8D + 0x8000;
     }
     gGameSubState++;
 }
@@ -87,29 +87,29 @@ void link_robattle_receive_seed(void) {
         u16 seed = gUnk_03005010.unk8[0][1];
         if (!(seed & 0x8000))
             return;
-        gUnk_03000440.unk8D = seed;
+        gGameWork.unk8D = seed;
     }
     gGameSubState++;
 }
 
 void link_robattle_start_name_exchange(void) {
-    gUnk_03000440.unk84 = 0;
-    gUnk_03001800.unk51 = 0;
-    gUnk_03001800.unk52 = 0;
-    gUnk_03001800.unk53 = 0;
-    gUnk_03001800.unk54 = 0;
-    gUnk_03001800.unk1A6 = 0;
-    gUnk_03001800.unk1A8 = 0;
-    gUnk_03001800.unk1AA = 0;
-    gUnk_03001800.unk1AC = 0;
-    gUnk_03001800.unk1AF = 0;
-    gUnk_03001800.unk1B0 = 1;
-    gUnk_03000440.unk86 = 0;
+    gGameWork.unk84 = 0;
+    gBattleWork.unk51 = 0;
+    gBattleWork.unk52 = 0;
+    gBattleWork.unk53 = 0;
+    gBattleWork.unk54 = 0;
+    gBattleWork.unk1A6 = 0;
+    gBattleWork.unk1A8 = 0;
+    gBattleWork.unk1AA = 0;
+    gBattleWork.unk1AC = 0;
+    gBattleWork.unk1AF = 0;
+    gBattleWork.unk1B0 = 1;
+    gGameWork.unk86 = 0;
     gGameSubState = 0x50;
 }
 
 void link_robattle_pick_battlefield(void) {
-    gUnk_03001800.unk38 = gLinkBattlefields[rng_next_byte() & 0x1F];
+    gBattleWork.unk38 = gLinkBattlefields[rng_next_byte() & 0x1F];
     gGameSubState++;
 }
 
@@ -139,7 +139,7 @@ void link_robattle_screen_load(void) {
     CpuFastSet(gUnk_0850DEF8, (void *)0x0202F800, 0x40);
     CpuFastSet(gUnk_0850DCF8 + 0xB0, (void *)0x0202F980, 8);
     CpuFastSet(gUnk_0850DCF8, (void *)0x0202F9A0, 8);
-    decompress_tileset_to_vram(gUnk_03001800.unk38, 1);
+    decompress_tileset_to_vram(gBattleWork.unk38, 1);
     zero_sprites = 0;
     CpuFastSet(&zero_sprites, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
@@ -149,16 +149,16 @@ void link_robattle_screen_load(void) {
     link_robattle_load_battlefield_info();
     apply_battle_blend_effect_a();
     play_song(8);
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
 void link_robattle_fade_in(void) {
     update_scroll_movement_a();
-    if (gUnk_03000440.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
-        gUnk_03000440.unk84++;
+    if (gGameWork.unk84 <= 8) {
+        bg_palettes_blend_masked_now(0, 0x20 - gGameWork.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - gGameWork.unk84 * 4, 0xFFFF);
+        gGameWork.unk84++;
     } else
         gGameSubState++;
 }
@@ -178,26 +178,26 @@ void link_robattle_intro_message(void) {
 void link_robattle_backup_palettes(void) {
     update_scroll_movement_a();
     palette_backup_from_hardware();
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
 void link_robattle_fade_out(void) {
     update_scroll_movement_a();
-    if (gUnk_03000440.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        gUnk_03000440.unk84++;
+    if (gGameWork.unk84 <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
+        gGameWork.unk84++;
     } else
         gGameSubState++;
 }
 
 void link_robattle_fade_out_dup(void) {
     update_scroll_movement_a();
-    if (gUnk_03000440.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        gUnk_03000440.unk84++;
+    if (gGameWork.unk84 <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
+        gGameWork.unk84++;
     } else
         gGameSubState++;
 }
@@ -211,14 +211,14 @@ void link_robattle_clear_screen(void) {
 }
 
 void link_robattle_start_battle(void) {
-    mem_fill8(&gUnk_03000440.unk50, 0x14, 0);
-    gUnk_03000440.unk50 = 1;
+    mem_fill8(&gGameWork.unk50, 0x14, 0);
+    gGameWork.unk50 = 1;
     gGameState = 3;
     gGameSubState = 0;
 }
 
 void link_robattle_play_result_song(void) {
-    if (gUnk_03000440.unk9C == 1)
+    if (gGameWork.unk9C == 1)
         play_song(14);
     else
         play_song(15);
@@ -228,7 +228,7 @@ void link_robattle_play_result_song(void) {
 void link_robattle_outro_message(void) {
     update_scroll_movement_a();
     if (run_message(gUnk_083C3984[1]) && (*(u8 *)&gNewKeys & 3)) {
-        gUnk_03000440.unk1B = 0;
+        gGameWork.unk1B = 0;
         play_sound_effect(0xD);
         gGameSubState++;
     }
@@ -251,18 +251,18 @@ void link_robattle_checking_connection(void) {
 void link_robattle_outro_wait_sync(void) {
     update_scroll_movement_a();
     if (link_sync_both_ready()) {
-        gUnk_03000440.unk86 = 0;
+        gGameWork.unk86 = 0;
         gGameSubState++;
     }
 }
 
 void link_robattle_outro_delay(void) {
     update_scroll_movement_a();
-    if (gUnk_03000440.unk86 == 8) {
-        gUnk_03000440.unk86 = 0;
+    if (gGameWork.unk86 == 8) {
+        gGameWork.unk86 = 0;
         gGameSubState++;
     } else {
-        gUnk_03000440.unk86++;
+        gGameWork.unk86++;
     }
 }
 
@@ -274,7 +274,7 @@ void link_robattle_fade_music(void) {
 
 void link_robattle_check_prize_game(void) {
     update_scroll_movement_a();
-    if (gUnk_03000440.unk138 == 0)
+    if (gGameWork.unk138 == 0)
         gGameSubState++;
     else
         gGameSubState = 0x30;
@@ -322,7 +322,7 @@ void prize_game_load(void) {
     prize_game_init_ball();
     prize_game_init_launcher();
     prize_game_init_row_marker();
-    gUnk_03001800.prizePower = 0;
+    gBattleWork.prizePower = 0;
     play_song(0x14);
     gGameSubState++;
 }
@@ -341,7 +341,7 @@ void prize_game_open_text_window(void) {
 
 void prize_game_intro_message(void) {
     prize_game_scroll_bg3();
-    if (run_message(gUnk_03000440.unk9C == 1 ? gLinkMessages[2] : gLinkMessages[3]))
+    if (run_message(gGameWork.unk9C == 1 ? gLinkMessages[2] : gLinkMessages[3]))
         gGameSubState++;
 }
 
@@ -349,23 +349,23 @@ void prize_game_gauge_input(void) {
     u16 pkt;
 
     prize_game_scroll_bg3();
-    if (gUnk_03000440.unk9C == 1) {
+    if (gGameWork.unk9C == 1) {
         prize_game_gauge_step();
         prize_game_draw_gauge();
         if (!(*(u8 *)&gNewKeys & 1))
             return;
         play_sound_effect(4);
-        gUnk_03005010.unk6 = gUnk_03001800.prizePower + 0x8000;
-        gUnk_03000440.unk86 = 0;
+        gUnk_03005010.unk6 = gBattleWork.prizePower + 0x8000;
+        gGameWork.unk86 = 0;
         gGameSubState++;
     } else {
         pkt = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
         if (!(pkt & 0x8000))
             return;
         play_sound_effect(4);
-        gUnk_03001800.prizePower = pkt;
-        gUnk_03000440.unk1B = 0;
-        gUnk_03000440.unk86 = 0;
+        gBattleWork.prizePower = pkt;
+        gGameWork.unk1B = 0;
+        gGameWork.unk86 = 0;
         gGameSubState++;
     }
 }
@@ -374,16 +374,16 @@ void prize_game_gauge_blink(void) {
     u16 frames;
 
     prize_game_scroll_bg3();
-    if (gUnk_03000440.unk9C == 1) {
-        gUnk_03005010.unk6 = gUnk_03001800.prizePower + 0x8000;
+    if (gGameWork.unk9C == 1) {
+        gUnk_03005010.unk6 = gBattleWork.prizePower + 0x8000;
         prize_game_blink_gauge();
-        frames = ++gUnk_03000440.unk86;
+        frames = ++gGameWork.unk86;
     } else {
         prize_game_blink_gauge();
-        gUnk_03000440.unk86++;
+        gGameWork.unk86++;
         if (!game_state_execute_handler_a())
             return;
-        frames = gUnk_03000440.unk86;
+        frames = gGameWork.unk86;
     }
     if (frames == 0x3C) {
         play_sound_effect(0x39);
@@ -402,7 +402,7 @@ void prize_game_launch(void) {
 
 void prize_game_launch_anim(void) {
     prize_game_scroll_bg3();
-    process_sprite_anim_commands(gUnk_083B5F80[0x75 - gUnk_03001800.prizeRow], 4);
+    process_sprite_anim_commands(gUnk_083B5F80[0x75 - gBattleWork.prizeRow], 4);
     if (gSpriteEntries[4].unk22 == 0xFF) {
         gSpriteEntries[3].unk6 = 0x8505;
         play_sound_effect(0x54);
@@ -423,7 +423,7 @@ void prize_game_ball_fall_step(void) {
     prize_game_scroll_bg3();
     if (prize_game_ball_fall()) {
         play_sound_effect(0x2A);
-        gUnk_03000440.unk86 = 0;
+        gGameWork.unk86 = 0;
         gGameSubState++;
     }
 }
@@ -431,17 +431,17 @@ void prize_game_ball_fall_step(void) {
 void prize_game_result_blink(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    if (gUnk_03000440.unk86 == 0x78)
+    if (gGameWork.unk86 == 0x78)
         gGameSubState++;
     else
-        gUnk_03000440.unk86++;
+        gGameWork.unk86++;
 }
 
 void prize_game_check_miss(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
-    if (gUnk_03001800.prizeSlots[gUnk_03001800.prizeRow] == 4)
+    gGameWork.unk86++;
+    if (gBattleWork.prizeSlots[gBattleWork.prizeRow] == 4)
         gGameSubState++;
     else
         gGameSubState = 0x48;
@@ -450,7 +450,7 @@ void prize_game_check_miss(void) {
 void prize_game_reopen_text_window(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
+    gGameWork.unk86++;
     text_window_init(1, 0, 0);
     gGameSubState++;
 }
@@ -458,8 +458,8 @@ void prize_game_reopen_text_window(void) {
 void prize_game_miss_message(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
-    if (run_message(gUnk_03000440.unk9C == 1 ? gLinkMessages[4] : gLinkMessages[5])) {
+    gGameWork.unk86++;
+    if (run_message(gGameWork.unk9C == 1 ? gLinkMessages[4] : gLinkMessages[5])) {
         text_window_init(1, 0, 0);
         gGameSubState++;
     }
@@ -468,7 +468,7 @@ void prize_game_miss_message(void) {
 void prize_game_checking_connection(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
+    gGameWork.unk86++;
     if (run_message(gLinkMessages[1]))
         gGameSubState++;
 }
@@ -476,9 +476,9 @@ void prize_game_checking_connection(void) {
 void prize_game_wait_sync(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
+    gGameWork.unk86++;
     if (link_sync_both_ready()) {
-        gUnk_03000440.unk84 = 0;
+        gGameWork.unk84 = 0;
         gGameSubState++;
     }
 }
@@ -486,18 +486,18 @@ void prize_game_wait_sync(void) {
 void prize_game_delay(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
-    if (gUnk_03000440.unk84 == 4) {
-        gUnk_03000440.unk84 = 0;
+    gGameWork.unk86++;
+    if (gGameWork.unk84 == 4) {
+        gGameWork.unk84 = 0;
         gGameSubState++;
     } else
-        gUnk_03000440.unk84++;
+        gGameWork.unk84++;
 }
 
 void prize_game_fade_music(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
+    gGameWork.unk86++;
     fade_out_music(8);
     gGameSubState++;
 }
@@ -505,20 +505,20 @@ void prize_game_fade_music(void) {
 void prize_game_backup_palettes(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
+    gGameWork.unk86++;
     palette_backup_from_hardware();
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
 void prize_game_fade_out(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
-    if (gUnk_03000440.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        gUnk_03000440.unk84++;
+    gGameWork.unk86++;
+    if (gGameWork.unk84 <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
+        gGameWork.unk84++;
     } else
         gGameSubState++;
 }
@@ -526,23 +526,23 @@ void prize_game_fade_out(void) {
 void prize_game_transfer_part(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
+    gGameWork.unk86++;
     prize_game_pick_prize_part();
-    if (gUnk_03000440.unk9C == 1)
-        medapart_add_quantity(gUnk_03001800.prizePart, (gUnk_03001800.prizeSlots + 0)[gUnk_03001800.prizeRow], 1);
+    if (gGameWork.unk9C == 1)
+        medapart_add_quantity(gBattleWork.prizePart, (gBattleWork.prizeSlots + 0)[gBattleWork.prizeRow], 1);
     else
-        team_lose_equipped_part(gUnk_03001800.prizeMedal, (gUnk_03001800.prizeSlots + 0)[gUnk_03001800.prizeRow]);
+        team_lose_equipped_part(gBattleWork.prizeMedal, (gBattleWork.prizeSlots + 0)[gBattleWork.prizeRow]);
     memcpy_bytes_08041D04(
-        (const void *)gUnk_083BB9CC[0][gUnk_03001800.prizePart * 4 + gUnk_03001800.prizeSlots[gUnk_03001800.prizeRow]],
-        gUnk_03000440.unk9E, 0xF);
+        (const void *)gUnk_083BB9CC[0][gBattleWork.prizePart * 4 + gBattleWork.prizeSlots[gBattleWork.prizeRow]],
+        gGameWork.unk9E, 0xF);
     gGameSubState++;
 }
 
 void prize_game_part_message(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
-    if (run_message(gUnk_03000440.unk9C == 1 ? gLinkMessages[6] : gLinkMessages[7])) {
+    gGameWork.unk86++;
+    if (run_message(gGameWork.unk9C == 1 ? gLinkMessages[6] : gLinkMessages[7])) {
         text_window_init(1, 0, 0);
         gGameSubState++;
     }
@@ -551,7 +551,7 @@ void prize_game_part_message(void) {
 void prize_game_goto_checking(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gUnk_03000440.unk86++;
+    gGameWork.unk86++;
     gGameSubState = 0x3E;
 }
 
@@ -613,19 +613,19 @@ void link_robattle_exchange_names(void) {
     struct Unk_03005010 *link = &gUnk_03005010;
     u16 packet;
     s16 flag;
-    link->unk6 = gUnk_03002B70.unk4[gUnk_03001800.unk51] + (flag = ((gUnk_03001800.unk1AF << 8) & 0x100) + 0x8000);
-    gUnk_03000440.unk86++;
-    if (!(gUnk_03000440.unk86 & 1)) {
-        gUnk_03001800.unk1AF ^= 1;
-        gUnk_03001800.unk51++;
+    link->unk6 = gUnk_03002B70.unk4[gBattleWork.unk51] + (flag = ((gBattleWork.unk1AF << 8) & 0x100) + 0x8000);
+    gGameWork.unk86++;
+    if (!(gGameWork.unk86 & 1)) {
+        gBattleWork.unk1AF ^= 1;
+        gBattleWork.unk51++;
     }
     packet = link->unk8[gUnk_03000B90 ^ 1][1];
     if (packet & 0x8000) {
-        if ((u16)(packet & 0x100) >> 8 != gUnk_03001800.unk1B0) {
-            gUnk_03001800.unk1B0 ^= 1;
-            gUnk_03001800.partnerName[gUnk_03001800.unk52] = packet;
-            if (++gUnk_03001800.unk52 > 10) {
-                gUnk_03000440.unk86 = 0;
+        if ((u16)(packet & 0x100) >> 8 != gBattleWork.unk1B0) {
+            gBattleWork.unk1B0 ^= 1;
+            gBattleWork.partnerName[gBattleWork.unk52] = packet;
+            if (++gBattleWork.unk52 > 10) {
+                gGameWork.unk86 = 0;
                 gGameSubState++;
             }
         }
@@ -641,7 +641,7 @@ void link_robattle_goto_name_exchange(void) {
 }
 
 void link_clear_send_word(void) {
-    if (gUnk_03000440.unk89 == 1)
+    if (gGameWork.unk89 == 1)
         gUnk_03005010.unk6 = 0;
 }
 
@@ -657,8 +657,8 @@ static void link_robattle_draw_partner_name(void) {
 }
 
 static void link_robattle_draw_battlefield_name(void) {
-    memcpy_bytes_0803F63C(gUnk_083BE9E8[gUnk_03001800.unk38], gUnk_03000440.unk9E, 0xB);
-    render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x1E, 1, 3, 8, 0xC, 0, 1);
+    memcpy_bytes_0803F63C(gUnk_083BE9E8[gBattleWork.unk38], gGameWork.unk9E, 0xB);
+    render_text_sprites_08040DB8(gGameWork.unk9E, 0x1E, 1, 3, 8, 0xC, 0, 1);
 }
 
 static void link_robattle_draw_frame(void) {
@@ -668,7 +668,7 @@ static void link_robattle_draw_frame(void) {
 }
 
 static void link_robattle_load_battlefield_info(void) {
-    memcpy_bytes_0803F63C(gBattlefieldParams[gUnk_03001800.unk38], gUnk_03001800.unk39, 8);
+    memcpy_bytes_0803F63C(gBattlefieldParams[gBattleWork.unk38], gBattleWork.unk39, 8);
 }
 
 static void prize_game_scroll_bg3(void) {
@@ -725,22 +725,22 @@ static void prize_game_init_row_marker(void) {
 }
 
 static void prize_game_gauge_step(void) {
-    if (gUnk_03001800.prizePower == 0x60)
-        gUnk_03001800.prizePower = 0;
+    if (gBattleWork.prizePower == 0x60)
+        gBattleWork.prizePower = 0;
     else
-        gUnk_03001800.prizePower += 4;
+        gBattleWork.prizePower += 4;
 }
 
 static void prize_game_draw_gauge(void) {
     u32 x = 0;
     u32 i, cnt;
 
-    cnt = gUnk_03001800.prizePower >> 3;
+    cnt = gBattleWork.prizePower >> 3;
     for (i = 0; i < cnt; i++) {
         draw_tile_block(1, 1, x + 7, 0x12, REG_BG1CNT, 0x53D8);
         x++;
     }
-    cnt = gUnk_03001800.prizePower;
+    cnt = gBattleWork.prizePower;
     cnt &= 7;
     if (cnt != 0) {
         draw_tile_block(1, 1, x + 7, 0x12, REG_BG1CNT, cnt | 0x53D0);
@@ -759,50 +759,50 @@ static void prize_game_clear_gauge(void) {
 }
 
 static void prize_game_blink_gauge(void) {
-    if (gUnk_03000440.unk86 & 4)
+    if (gGameWork.unk86 & 4)
         prize_game_draw_gauge();
     else
         prize_game_clear_gauge();
 }
 
 static void prize_game_set_peak(void) {
-    gUnk_03001800.prizePeakY = 0x68 - gUnk_03001800.prizePower;
-    if (gUnk_03001800.prizePeakY <= 12)
-        gUnk_03001800.prizePeakY = 12;
+    gBattleWork.prizePeakY = 0x68 - gBattleWork.prizePower;
+    if (gBattleWork.prizePeakY <= 12)
+        gBattleWork.prizePeakY = 12;
 }
 
 static void prize_game_set_landing_row(void) {
-    gUnk_03001800.prizeRow = gUnk_03001800.prizePower >> 4;
-    switch (gUnk_03001800.prizeRow) {
+    gBattleWork.prizeRow = gBattleWork.prizePower >> 4;
+    switch (gBattleWork.prizeRow) {
     case 0:
-        gUnk_03001800.prizeRow = 5;
+        gBattleWork.prizeRow = 5;
         break;
     case 1:
-        gUnk_03001800.prizeRow = 4;
+        gBattleWork.prizeRow = 4;
         break;
     case 2:
-        gUnk_03001800.prizeRow = 3;
+        gBattleWork.prizeRow = 3;
         break;
     case 3:
-        gUnk_03001800.prizeRow = 2;
+        gBattleWork.prizeRow = 2;
         break;
     case 4:
-        gUnk_03001800.prizeRow = 1;
+        gBattleWork.prizeRow = 1;
         break;
     case 5:
-        gUnk_03001800.prizeRow = 0;
+        gBattleWork.prizeRow = 0;
         break;
     case 6:
-        gUnk_03001800.prizeRow = 0;
+        gBattleWork.prizeRow = 0;
         break;
     }
-    gUnk_03001800.prizeLandY = gUnk_03001800.prizeRow * 16 + 0x18;
+    gBattleWork.prizeLandY = gBattleWork.prizeRow * 16 + 0x18;
 }
 
 static void prize_game_launch_ball(void) {
-    gSpriteEntries[2].unk24 = (gUnk_03001800.prizePower >> 2) + 4;
+    gSpriteEntries[2].unk24 = (gBattleWork.prizePower >> 2) + 4;
     gSpriteEntries[2].unk25 = 0;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x75 - gUnk_03001800.prizeRow], 4);
+    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x75 - gBattleWork.prizeRow], 4);
 }
 
 static void prize_game_move_ball(void) {
@@ -817,8 +817,8 @@ static void prize_game_move_ball(void) {
 
 static u32 prize_game_ball_rise(void) {
     prize_game_move_ball();
-    if (gSpriteEntries[2].unk4 <= gUnk_03001800.prizePeakY) {
-        gSpriteEntries[2].unk4 = gUnk_03001800.prizePeakY;
+    if (gSpriteEntries[2].unk4 <= gBattleWork.prizePeakY) {
+        gSpriteEntries[2].unk4 = gBattleWork.prizePeakY;
         return 1;
     }
     gSpriteEntries[2].unk27++;
@@ -828,7 +828,7 @@ static u32 prize_game_ball_rise(void) {
 }
 
 static void prize_game_full_power_sfx(void) {
-    if (gUnk_03001800.prizePower == 0x60)
+    if (gBattleWork.prizePower == 0x60)
         play_sound_effect(7);
 }
 
@@ -841,39 +841,38 @@ static u32 prize_game_ball_fall(void) {
     u32 landed;
 
     prize_game_move_ball();
-    if (gSpriteEntries[2].unk4 < gUnk_03001800.prizeLandY) {
+    if (gSpriteEntries[2].unk4 < gBattleWork.prizeLandY) {
         gSpriteEntries[2].unk24++;
         landed = 0;
     } else {
-        gSpriteEntries[2].unk4 = gUnk_03001800.prizeLandY;
+        gSpriteEntries[2].unk4 = gBattleWork.prizeLandY;
         landed = 1;
     }
     return landed;
 }
 
 static void prize_game_blink_landing_slot(void) {
-    if (gUnk_03000440.unk86 & 4)
-        draw_tile_block(7, 2, 4, gUnk_03001800.prizeRow * 2 + 2, REG_BG1CNT,
-                        gUnk_03001800.prizeSlots[gUnk_03001800.prizeRow] * 14 + 0x3380);
+    if (gGameWork.unk86 & 4)
+        draw_tile_block(7, 2, 4, gBattleWork.prizeRow * 2 + 2, REG_BG1CNT,
+                        gBattleWork.prizeSlots[gBattleWork.prizeRow] * 14 + 0x3380);
     else
-        draw_tile_block(7, 2, 4, gUnk_03001800.prizeRow * 2 + 2, REG_BG1CNT,
-                        gUnk_03001800.prizeSlots[gUnk_03001800.prizeRow] * 14 + 0x4380);
+        draw_tile_block(7, 2, 4, gBattleWork.prizeRow * 2 + 2, REG_BG1CNT,
+                        gBattleWork.prizeSlots[gBattleWork.prizeRow] * 14 + 0x4380);
 }
 
 void prize_game_pick_prize_part(void) {
     u32 base;
     u32 pick, i;
 
-    if (gUnk_03000440.unk9C == 1)
+    if (gGameWork.unk9C == 1)
         base = 3;
     else
         base = 0;
     pick = gPrizeGameBotPicks[rng_next_byte() & 0xF];
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03000590[base + pick].unkBA != 0) {
-            gUnk_03001800.prizeMedal = gUnk_03000590[base + pick].unk47;
-            gUnk_03001800.prizePart =
-                gUnk_03000590[base + pick].parts[gUnk_03001800.prizeSlots[gUnk_03001800.prizeRow]].unk17;
+        if (gBattleBots[base + pick].unkBA != 0) {
+            gBattleWork.prizeMedal = gBattleBots[base + pick].unk47;
+            gBattleWork.prizePart = gBattleBots[base + pick].parts[gBattleWork.prizeSlots[gBattleWork.prizeRow]].unk17;
             return;
         }
         if (pick == 2)
@@ -885,12 +884,12 @@ void prize_game_pick_prize_part(void) {
 
 u32 link_error_check(void) {
     // unk1C..unk1F read as one word (the struct has no u32 there)
-    if (gUnk_03000440.unk89 == 1 && (((struct {
-                                         u8 f[0x1C];
-                                         u32 x;
-                                     } *)&gUnk_03005010)
-                                         ->x &
-                                     0xFFFF00)) {
+    if (gGameWork.unk89 == 1 && (((struct {
+                                     u8 f[0x1C];
+                                     u32 x;
+                                 } *)&gUnk_03005010)
+                                     ->x &
+                                 0xFFFF00)) {
         gGameMode = 0;
         gGameState = 10;
         gGameSubState = 0x10;

@@ -15,7 +15,7 @@ void shop_return_init(void) {
     CpuFastSet(gUnk_084E2E58, (void *)0x0202F9C0, 8);
     CpuFastSet(gUnk_08488AA4, (void *)0x0202F820, 8);
     CpuFastSet(gUnk_0879671C, (void *)0x0202FA00, 0x80);
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gUnk_03006F74->unk6 = 1;
     gGameSubState++;
     REG_DISPCNT |= 0x100;
@@ -29,12 +29,12 @@ void shop_return_init(void) {
     gSpriteEntries[7].unk6 = 0x1A;
     gSpriteEntries[7].unk2 = 0x98;
     gSpriteEntries[7].unk4 = 0;
-    divide_by_10000(gUnk_03000440.unk9E, gUnk_03002B70.money);
-    render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0, 0x15, 1, 7, 0xF, 1, 0);
+    divide_by_10000(gGameWork.unk9E, gUnk_03002B70.money);
+    render_text_sprites_08040DB8(gGameWork.unk9E, 0, 0x15, 1, 7, 0xF, 1, 0);
 }
 
 void fade_out_transition_step(void) {
-    struct Unk_03000440 *s = &gUnk_03000440;
+    struct GameWork *s = &gGameWork;
     u8 *n = &s->unk84;
 
     if (*n <= 8) {

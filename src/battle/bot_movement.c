@@ -19,7 +19,7 @@ void battle_bots_move_all(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gUnk_03000590[i].unk40 && (u8)(gUnk_03000590[i].unkC9 - 0xF) > 1) {
+        if (gBattleBots[i].unk40 && (u8)(gBattleBots[i].unkC9 - 0xF) > 1) {
             bot_calc_move_delay(i);
             battle_bot_move(i);
             bot_update_walk_anim(i);
@@ -32,7 +32,7 @@ void battle_bots_update_walk_anims(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gUnk_03000590[i].unk40 && (u8)(gUnk_03000590[i].unkC9 - 0xF) > 1) {
+        if (gBattleBots[i].unk40 && (u8)(gBattleBots[i].unkC9 - 0xF) > 1) {
             bot_update_walk_anim(i);
         }
     }
@@ -40,7 +40,7 @@ void battle_bots_update_walk_anims(void) {
 
 // Rebuilds moveDelay: the additions first, then the reductions, capped at 0x1F.
 static void bot_calc_move_delay(u32 rec) {
-    gUnk_03000590[rec].moveDelay = 0;
+    gBattleBots[rec].moveDelay = 0;
     bot_move_delay_add_action(rec);
     bot_move_delay_add_broken_legs(rec);
     bot_move_delay_add_terrain(rec);
@@ -55,71 +55,70 @@ static void bot_calc_move_delay(u32 rec) {
 // The chosen action's delay: Medaforce 12, head 6, an arm its part data[8] on the way out and data[9] on the way
 // back (unkBD bit 2); nothing for a broken part.
 static void bot_move_delay_add_action(u32 rec) {
-    if (gUnk_03000590[rec].chosenAction == 0)
+    if (gBattleBots[rec].chosenAction == 0)
         return;
-    if (gUnk_03000590[rec].chosenAction > 3) {
+    if (gBattleBots[rec].chosenAction > 3) {
         bot_move_delay_add(rec, 12);
         return;
     }
-    if (gUnk_03000590[rec].parts[gUnk_03000590[rec].chosenAction - 1].unk11 == 0)
+    if (gBattleBots[rec].parts[gBattleBots[rec].chosenAction - 1].unk11 == 0)
         return;
-    if (gUnk_03000590[rec].chosenAction == 1)
+    if (gBattleBots[rec].chosenAction == 1)
         bot_move_delay_add(rec, 6);
-    else if (!(gUnk_03000590[rec].unkBD & 4))
-        bot_move_delay_add(rec, gUnk_03000590[rec].parts[gUnk_03000590[rec].chosenAction - 1].data[8]);
+    else if (!(gBattleBots[rec].unkBD & 4))
+        bot_move_delay_add(rec, gBattleBots[rec].parts[gBattleBots[rec].chosenAction - 1].data[8]);
     else
-        bot_move_delay_add(rec, gUnk_03000590[rec].parts[gUnk_03000590[rec].chosenAction - 1].data[9]);
+        bot_move_delay_add(rec, gBattleBots[rec].parts[gBattleBots[rec].chosenAction - 1].data[9]);
 }
 
 static void bot_move_delay_add(u32 rec, u32 amount) {
-    amount += gUnk_03000590[rec].moveDelay;
+    amount += gBattleBots[rec].moveDelay;
     if (amount > 0xFF)
         amount = 0xFF;
-    gUnk_03000590[rec].moveDelay = amount;
+    gBattleBots[rec].moveDelay = amount;
 }
 
 static void bot_move_delay_sub(u32 rec, u32 amount) {
-    s32 delay = gUnk_03000590[rec].moveDelay - amount;
+    s32 delay = gBattleBots[rec].moveDelay - amount;
 
     if (delay < 0)
         delay = 0;
-    gUnk_03000590[rec].moveDelay = delay;
+    gBattleBots[rec].moveDelay = delay;
 }
 
 // +6 while the legs are broken.
 static void bot_move_delay_add_broken_legs(u32 rec) {
-    if (gUnk_03000590[rec].parts[3].unk11 == 0)
+    if (gBattleBots[rec].parts[3].unk11 == 0)
         bot_move_delay_add(rec, 6);
 }
 
 // + the battlefield's delay for the leg type (gTerrainMoveDelays).
 void bot_move_delay_add_terrain(u32 rec) {
-    memcpy_bytes_08041D04(&gTerrainMoveDelays[gUnk_03001800.unk38 + (gUnk_03000590[rec].parts[3].data[1] - 100) * 11],
-                          &gUnk_03000440.unkEE, 1);
-    bot_move_delay_add(rec, gUnk_03000440.unkEE);
+    memcpy_bytes_08041D04(&gTerrainMoveDelays[gBattleWork.unk38 + (gBattleBots[rec].parts[3].data[1] - 100) * 11],
+                          &gGameWork.unkEE, 1);
+    bot_move_delay_add(rec, gGameWork.unkEE);
 }
 
 // + the status amount while slowed by Wave / Hold (effect B 0x11 / 0x12) or Bind (0x29).
 static void bot_move_delay_add_slow_status(u32 rec) {
-    if (gUnk_03000590[rec].unkC9 != 0 &&
-        ((u8)(gUnk_03000590[rec].unkC9 - 0x11) <= 1 || gUnk_03000590[rec].unkC9 == 0x29))
-        bot_move_delay_add(rec, gUnk_03000590[rec].unkCC);
+    if (gBattleBots[rec].unkC9 != 0 && ((u8)(gBattleBots[rec].unkC9 - 0x11) <= 1 || gBattleBots[rec].unkC9 == 0x29))
+        bot_move_delay_add(rec, gBattleBots[rec].unkCC);
 }
 
 // - Medal level / 10.
 static void bot_move_delay_sub_medal_level(u32 rec) {
-    bot_move_delay_sub(rec, (u8)(gUnk_03000590[rec].medal.unk5 / 10));
+    bot_move_delay_sub(rec, (u8)(gBattleBots[rec].medal.unk5 / 10));
 }
 
 // - legs Propulsion / 20.
 void bot_move_delay_sub_propulsion(u32 rec) {
-    bot_move_delay_sub(rec, (u8)(gUnk_03000590[rec].parts[3].unk12 / 20));
+    bot_move_delay_sub(rec, (u8)(gBattleBots[rec].parts[3].unk12 / 20));
 }
 
 // - the status amount while sped up by Time (effect A 0x26 / 0x29).
 static void bot_move_delay_sub_time_status(u32 rec) {
-    if (gUnk_03000590[rec].unkC4 != 0 && (gUnk_03000590[rec].unkC4 == 0x26 || gUnk_03000590[rec].unkC4 == 0x29))
-        bot_move_delay_sub(rec, gUnk_03000590[rec].unkC7);
+    if (gBattleBots[rec].unkC4 != 0 && (gBattleBots[rec].unkC4 == 0x26 || gBattleBots[rec].unkC4 == 0x29))
+        bot_move_delay_sub(rec, gBattleBots[rec].unkC7);
 }
 
 // - data[6] of each unbroken head / arm with the passive skill 0x28 (guess: a speed-up skill).
@@ -127,44 +126,44 @@ static void bot_move_delay_sub_speed_parts(u32 rec) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03000590[rec].parts[i].data[1] == 0x28 && gUnk_03000590[rec].parts[i].unk11 != 0)
-            bot_move_delay_sub(rec, gUnk_03000590[rec].parts[i].data[6]);
+        if (gBattleBots[rec].parts[i].data[1] == 0x28 && gBattleBots[rec].parts[i].unk11 != 0)
+            bot_move_delay_sub(rec, gBattleBots[rec].parts[i].data[6]);
     }
 }
 
 static void bot_move_delay_clamp(u32 rec) {
-    if (gUnk_03000590[rec].moveDelay > 0x1F)
-        gUnk_03000590[rec].moveDelay = 0x1F;
+    if (gBattleBots[rec].moveDelay > 0x1F)
+        gBattleBots[rec].moveDelay = 0x1F;
 }
 
 void battle_bot_move(u32 rec) {
 
-    gUnk_03000590[rec].moveSubpixel += 0x20 - gUnk_03000590[rec].moveDelay;
-    gUnk_03000590[rec].moveStep = gUnk_03000590[rec].moveSubpixel / 16;
-    gUnk_03000590[rec].moveSubpixel %= 16;
+    gBattleBots[rec].moveSubpixel += 0x20 - gBattleBots[rec].moveDelay;
+    gBattleBots[rec].moveStep = gBattleBots[rec].moveSubpixel / 16;
+    gBattleBots[rec].moveSubpixel %= 16;
     if (rec <= 2) {
-        if (!(gUnk_03000590[rec].unkBD & 4)) {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].moveStep > 0x68)
+        if (!(gBattleBots[rec].unkBD & 4)) {
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gBattleBots[rec].moveStep > 0x68)
                 gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x68;
             else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 += gBattleBots[rec].moveStep;
         } else {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].moveStep < 0x28)
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gBattleBots[rec].moveStep < 0x28)
                 gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x28;
             else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gBattleBots[rec].moveStep;
         }
     } else {
-        if (!(gUnk_03000590[rec].unkBD & 4)) {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].moveStep < 0x88)
+        if (!(gBattleBots[rec].unkBD & 4)) {
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gBattleBots[rec].moveStep < 0x88)
                 gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x88;
             else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gBattleBots[rec].moveStep;
         } else {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].moveStep > 0xC8)
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gBattleBots[rec].moveStep > 0xC8)
                 gSpriteEntries[rec * 4 + 0x5D].unk2 = 0xC8;
             else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 += gBattleBots[rec].moveStep;
         }
     }
 }
@@ -174,36 +173,36 @@ void battle_bot_move(u32 rec) {
 u32 battle_bot_move_reverse(u32 rec) {
     u32 done = 0;
 
-    gUnk_03000590[rec].moveSubpixel += 0x20 - gUnk_03000590[rec].moveDelay;
-    gUnk_03000590[rec].moveStep = gUnk_03000590[rec].moveSubpixel / 16;
-    gUnk_03000590[rec].moveSubpixel %= 16;
+    gBattleBots[rec].moveSubpixel += 0x20 - gBattleBots[rec].moveDelay;
+    gBattleBots[rec].moveStep = gBattleBots[rec].moveSubpixel / 16;
+    gBattleBots[rec].moveSubpixel %= 16;
     if (rec <= 2) {
-        if (gUnk_03000590[rec].unkBD & 4) {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].moveStep > 0x68) {
+        if (gBattleBots[rec].unkBD & 4) {
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gBattleBots[rec].moveStep > 0x68) {
                 gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x68;
                 done = 1;
             } else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 += gBattleBots[rec].moveStep;
         } else {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].moveStep < 0x28) {
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gBattleBots[rec].moveStep < 0x28) {
                 gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x28;
                 done = 1;
             } else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gBattleBots[rec].moveStep;
         }
     } else {
-        if (gUnk_03000590[rec].unkBD & 4) {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gUnk_03000590[rec].moveStep < 0x88) {
+        if (gBattleBots[rec].unkBD & 4) {
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gBattleBots[rec].moveStep < 0x88) {
                 gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x88;
                 done = 1;
             } else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gUnk_03000590[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gBattleBots[rec].moveStep;
         } else {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gUnk_03000590[rec].moveStep > 0xC8) {
+            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gBattleBots[rec].moveStep > 0xC8) {
                 gSpriteEntries[rec * 4 + 0x5D].unk2 = 0xC8;
                 done = 1;
             } else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 += gUnk_03000590[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].unk2 += gBattleBots[rec].moveStep;
         }
     }
     return done;
@@ -212,9 +211,9 @@ u32 battle_bot_move_reverse(u32 rec) {
 // Sets the Medabot's walk animation from its speed: anim script (0x20 - moveDelay) / 2 + 1.
 void bot_update_walk_anim(u32 rec) {
     if (gSpriteEntries[rec * 4 + 0x5B].unk0 & 0x200) {
-        gSpriteEntries[rec * 4 + 0x5D].unk24 = ((s32)(0x20 - gUnk_03000590[rec].moveDelay) >> 1) + 1;
+        gSpriteEntries[rec * 4 + 0x5D].unk24 = ((s32)(0x20 - gBattleBots[rec].moveDelay) >> 1) + 1;
         update_battle_sprite_orbiting_positions(rec * 4 + 0x5A, rec, bot_sprite_is_flipped(rec));
     } else {
-        battle_sprite_group_set_anim(rec * 4 + 0x5A, ((s32)(0x20 - gUnk_03000590[rec].moveDelay) >> 1) + 1);
+        battle_sprite_group_set_anim(rec * 4 + 0x5A, ((s32)(0x20 - gBattleBots[rec].moveDelay) >> 1) + 1);
     }
 }

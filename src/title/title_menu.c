@@ -9,7 +9,7 @@
 void menu_mode_update(void) {
     gUnk_03005010.unk4 = gHeldKeys;
     gUnk_03005010.unk6 = 0;
-    gUnk_03006F74 = (struct Unk_03006F74 *)&gUnk_03001800;
+    gUnk_03006F74 = (struct Unk_03006F74 *)&gBattleWork;
     if (gUnk_03005030 != 0 && (*(u32 *)&gUnk_03005010.unk19[3] & 0x00FFFF00)) {
         gGameMode = 0;
         gGameState = 10;
@@ -404,10 +404,10 @@ void title_menu_confirm_flash(void) {
             title_menu_pulse_selected(gUnk_03006F74->unk5, ((gUnk_03006F74->unk48 * 4) & 0x1F) <= 15 ? 0x20 : 0);
         else {
             palette_backup_from_hardware();
-            gUnk_03000440.unk84 = n;
+            gGameWork.unk84 = n;
         }
     } else if (!is_sound_effect_playing(4)) {
-        struct Unk_03000440 *b = &gUnk_03000440;
+        struct GameWork *b = &gGameWork;
         if (b->unk84 <= 8) {
             s32 w = 31;
             s32 c = (w << 10) | (w << 5) | w;

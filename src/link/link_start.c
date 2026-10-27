@@ -21,8 +21,8 @@ void battle_cutscene_dispatch(void) {
         if (run_message(gUnk_08485BD8[gUnk_080AFB08[gUnk_03006F74->unk8]]) && KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
             if (++gUnk_03006F74->unk8 > 2) {
-                gUnk_03000440.unk84 = r;
-                gUnk_03000440.unk1B = r;
+                gGameWork.unk84 = r;
+                gGameWork.unk1B = r;
                 gGameSubState++;
                 *(u8 *)&gUnk_03001784 |= 2;
             } else
@@ -43,7 +43,7 @@ void battle_cutscene_dispatch(void) {
     case 2:
     case 3:
         if (run_message(gUnk_08485BD8[gUnk_080AFB0B[gUnk_03006F74->unk8]]) && poll_choice_menu()) {
-            if (gUnk_03000440.unk2A == 0) {
+            if (gGameWork.unk2A == 0) {
                 if (*(u8 *)&gUnk_03001784 & 1) {
                     if (++gUnk_03006F74->unk8 <= 3)
                         open_choice_menu(1, 0, 7);
@@ -90,8 +90,8 @@ void link_start_show_messages(void) {
     if (run_message(gUnk_08485BD8[gUnk_03006F74->unk8 ? 7 : 6]) && KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(0xD);
         if ((s32)++gUnk_03006F74->unk8 > 1) {
-            gUnk_03000440.unk84 = 0;
-            gUnk_03000440.unk1B = 0;
+            gGameWork.unk84 = 0;
+            gGameWork.unk1B = 0;
             gGameSubState--;
         } else
             message_next();
@@ -112,8 +112,8 @@ void fade_transition_and_input_check(void) {
             w->unk3A = w->unk8;
         } else if (KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
-            gUnk_03000440.unk84 = 0;
-            gUnk_03000440.unk1B = 0;
+            gGameWork.unk84 = 0;
+            gGameWork.unk1B = 0;
             gGameSubState -= 2;
         }
     }

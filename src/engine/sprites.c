@@ -9,7 +9,7 @@ void message_fill_window_tiles(void) {
     u32 i;
     for (i = 0; i <= 0x33; i++)
         CpuCopy16(gFontGlyphs, (void *)(VRAM + 0x280 + i * 0x40), 0x40);
-    gUnk_03000440.unk1B++;
+    gGameWork.unk1B++;
 }
 
 void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot) {

@@ -277,7 +277,7 @@ void test_mode_erase_choice(void) {
     if (poll_choice_menu()) {
         gUnk_03006F74->unk2 = 0;
         message_next();
-        if (gUnk_03000440.unk2A == 0)
+        if (gGameWork.unk2A == 0)
             gGameSubState = 9;
         else
             gGameSubState++;

@@ -170,15 +170,15 @@ void text_scroll_init(void) {
     gUnk_03006F74->unk49 = 0;
     gUnk_03006F74->unk4A = 0;
     gUnk_03006F74->unk4B = 0;
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
 void text_scroll_fade_in(void) {
-    struct Unk_03000440 *s;
+    struct GameWork *s;
     u8 *n;
     update_scene_animation_frame();
-    s = &gUnk_03000440;
+    s = &gGameWork;
     n = &s->unk84;
     if (*n <= 0x40) {
         bg_palettes_blend_masked_now(0, 0x20 - (*n / 2), 0xFFFF);

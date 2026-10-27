@@ -69,18 +69,18 @@ s32 load_save_with_retries(void) {
 
 void load_save_data(struct SaveData *save) {
     s32 i;
-    struct Unk_03000BE0 *medal;
+    struct MedalData *medal;
 
     gUnk_03002B70 = save->unk10;
     medal = save->medals;
     for (i = 0; i < 30; i++) {
-        memcpy_optimized(&gUnk_03000BE0[i], medal, sizeof(struct Unk_03000BE0));
+        memcpy_optimized(&gMedals[i], medal, sizeof(struct MedalData));
         medal++;
     }
     for (i = 0; i < 0x3C0; i++)
         gMedapartInventory[i] = save->medaparts[i];
     for (i = 0; i < 9; i++)
-        gUnk_030017A0[i] = save->team[i];
+        gTeamSlots[i] = save->team[i];
     CpuSet(save->items, gItemInventory, 0x40);
     CpuSet(save->field, &gUnk_030057E0, 0x660);
     gOptionTimeLimit = save->flags & 3;
@@ -93,20 +93,20 @@ void serialize_save_data(struct SaveData *save) {
     s32 i;
     u16 sum;
     u8 *p;
-    struct Unk_03000BE0 *medal;
+    struct MedalData *medal;
 
     for (i = 0; i < 16; i++)
         save->magic[i] = gSaveMagic[i];
     save->unk10 = gUnk_03002B70;
     medal = save->medals;
     for (i = 0; i < 30; i++) {
-        memcpy_optimized(medal, &gUnk_03000BE0[i], sizeof(struct Unk_03000BE0));
+        memcpy_optimized(medal, &gMedals[i], sizeof(struct MedalData));
         medal++;
     }
     for (i = 0; i < 0x3C0; i++)
         save->medaparts[i] = gMedapartInventory[i];
     for (i = 0; i < 9; i++)
-        save->team[i] = gUnk_030017A0[i];
+        save->team[i] = gTeamSlots[i];
     CpuSet(gItemInventory, save->items, 0x40);
     CpuSet(&gUnk_030057E0, save->field, 0x660);
     save->flags =

@@ -27,10 +27,10 @@ void armor_panel_draw_bars(u32 side, u32 rec) {
     u32 x = 5;
     if (side == 0)
         x = 0x13;
-    armor_bar_draw(x, 1, 0x40, gUnk_03000590[rec].parts[0].data[4], gUnk_03000590[rec].parts[0].unk11);
-    armor_bar_draw(x, 4, 0x40, gUnk_03000590[rec].parts[1].data[4], gUnk_03000590[rec].parts[1].unk11);
-    armor_bar_draw(x, 7, 0x40, gUnk_03000590[rec].parts[2].data[4], gUnk_03000590[rec].parts[2].unk11);
-    armor_bar_draw(x, 10, 0x40, gUnk_03000590[rec].parts[3].data[4], gUnk_03000590[rec].parts[3].unk11);
+    armor_bar_draw(x, 1, 0x40, gBattleBots[rec].parts[0].data[4], gBattleBots[rec].parts[0].unk11);
+    armor_bar_draw(x, 4, 0x40, gBattleBots[rec].parts[1].data[4], gBattleBots[rec].parts[1].unk11);
+    armor_bar_draw(x, 7, 0x40, gBattleBots[rec].parts[2].data[4], gBattleBots[rec].parts[2].unk11);
+    armor_bar_draw(x, 10, 0x40, gBattleBots[rec].parts[3].data[4], gBattleBots[rec].parts[3].unk11);
 }
 
 static void armor_bar_draw(u32 x, u32 y, u32 w, u32 max, u32 cur) {
@@ -65,33 +65,33 @@ void armor_panel_draw_numbers(u32 side, u32 rec) {
     if (side == 0)
         x = 0x14;
     y = 2;
-    if (gUnk_03000590[rec].parts[0].unk11 != 0) {
-        draw_number_bgcnt(gUnk_03000590[rec].parts[0].unk11, x, y, 3, REG_BG1CNT, 0xA330);
-        draw_number_bgcnt(gUnk_03000590[rec].parts[0].data[4], x + 4, y, 3, REG_BG1CNT, 0xA330);
+    if (gBattleBots[rec].parts[0].unk11 != 0) {
+        draw_number_bgcnt(gBattleBots[rec].parts[0].unk11, x, y, 3, REG_BG1CNT, 0xA330);
+        draw_number_bgcnt(gBattleBots[rec].parts[0].data[4], x + 4, y, 3, REG_BG1CNT, 0xA330);
     } else {
-        draw_number_bgcnt(gUnk_03000590[rec].parts[0].unk11, x, y, 3, REG_BG1CNT, 0x8330);
-        draw_number_bgcnt(gUnk_03000590[rec].parts[0].data[4], x + 4, y, 3, REG_BG1CNT, 0x8330);
+        draw_number_bgcnt(gBattleBots[rec].parts[0].unk11, x, y, 3, REG_BG1CNT, 0x8330);
+        draw_number_bgcnt(gBattleBots[rec].parts[0].data[4], x + 4, y, 3, REG_BG1CNT, 0x8330);
     }
-    if (gUnk_03000590[rec].parts[1].unk11 != 0) {
-        draw_number_bgcnt(gUnk_03000590[rec].parts[1].unk11, x, y + 3, 3, REG_BG1CNT, 0xA330);
-        draw_number_bgcnt(gUnk_03000590[rec].parts[1].data[4], x + 4, y + 3, 3, REG_BG1CNT, 0xA330);
+    if (gBattleBots[rec].parts[1].unk11 != 0) {
+        draw_number_bgcnt(gBattleBots[rec].parts[1].unk11, x, y + 3, 3, REG_BG1CNT, 0xA330);
+        draw_number_bgcnt(gBattleBots[rec].parts[1].data[4], x + 4, y + 3, 3, REG_BG1CNT, 0xA330);
     } else {
-        draw_number_bgcnt(gUnk_03000590[rec].parts[1].unk11, x, y + 3, 3, REG_BG1CNT, 0x8330);
-        draw_number_bgcnt(gUnk_03000590[rec].parts[1].data[4], x + 4, y + 3, 3, REG_BG1CNT, 0x8330);
+        draw_number_bgcnt(gBattleBots[rec].parts[1].unk11, x, y + 3, 3, REG_BG1CNT, 0x8330);
+        draw_number_bgcnt(gBattleBots[rec].parts[1].data[4], x + 4, y + 3, 3, REG_BG1CNT, 0x8330);
     }
-    if (gUnk_03000590[rec].parts[2].unk11 != 0) {
-        draw_number_bgcnt(gUnk_03000590[rec].parts[2].unk11, x, y + 6, 3, REG_BG1CNT, 0xA330);
-        draw_number_bgcnt(gUnk_03000590[rec].parts[2].data[4], x + 4, y + 6, 3, REG_BG1CNT, 0xA330);
+    if (gBattleBots[rec].parts[2].unk11 != 0) {
+        draw_number_bgcnt(gBattleBots[rec].parts[2].unk11, x, y + 6, 3, REG_BG1CNT, 0xA330);
+        draw_number_bgcnt(gBattleBots[rec].parts[2].data[4], x + 4, y + 6, 3, REG_BG1CNT, 0xA330);
     } else {
-        draw_number_bgcnt(gUnk_03000590[rec].parts[2].unk11, x, y + 6, 3, REG_BG1CNT, 0x8330);
-        draw_number_bgcnt(gUnk_03000590[rec].parts[2].data[4], x + 4, y + 6, 3, REG_BG1CNT, 0x8330);
+        draw_number_bgcnt(gBattleBots[rec].parts[2].unk11, x, y + 6, 3, REG_BG1CNT, 0x8330);
+        draw_number_bgcnt(gBattleBots[rec].parts[2].data[4], x + 4, y + 6, 3, REG_BG1CNT, 0x8330);
     }
-    if (gUnk_03000590[rec].parts[3].unk11 != 0) {
-        draw_number_bgcnt(gUnk_03000590[rec].parts[3].unk11, x, y + 9, 3, REG_BG1CNT, 0xA330);
-        draw_number_bgcnt(gUnk_03000590[rec].parts[3].data[4], x + 4, y + 9, 3, REG_BG1CNT, 0xA330);
+    if (gBattleBots[rec].parts[3].unk11 != 0) {
+        draw_number_bgcnt(gBattleBots[rec].parts[3].unk11, x, y + 9, 3, REG_BG1CNT, 0xA330);
+        draw_number_bgcnt(gBattleBots[rec].parts[3].data[4], x + 4, y + 9, 3, REG_BG1CNT, 0xA330);
     } else {
-        draw_number_bgcnt(gUnk_03000590[rec].parts[3].unk11, x, y + 9, 3, REG_BG1CNT, 0x8330);
-        draw_number_bgcnt(gUnk_03000590[rec].parts[3].data[4], x + 4, y + 9, 3, REG_BG1CNT, 0x8330);
+        draw_number_bgcnt(gBattleBots[rec].parts[3].unk11, x, y + 9, 3, REG_BG1CNT, 0x8330);
+        draw_number_bgcnt(gBattleBots[rec].parts[3].data[4], x + 4, y + 9, 3, REG_BG1CNT, 0x8330);
     }
 }
 
@@ -289,16 +289,16 @@ done:
 }
 
 void battle_set_damage_break_part(u32 rec, u32 part) {
-    gUnk_03001800.unkC8 = gUnk_03000590[rec].parts[part].unk11;
-    gUnk_03001800.unkCC = gUnk_03000590[rec].parts[part].unk11;
-    gUnk_03001800.unkD1 = 1;
+    gBattleWork.unkC8 = gBattleBots[rec].parts[part].unk11;
+    gBattleWork.unkCC = gBattleBots[rec].parts[part].unk11;
+    gBattleWork.unkD1 = 1;
 }
 
 u32 armor_drain_step(u16 *amount, u32 rec, u32 part) {
     u8 *n = (u8 *)amount;
-    if (gUnk_03000590[rec].parts[part].unk11 != 0 && *n != 0) {
+    if (gBattleBots[rec].parts[part].unk11 != 0 && *n != 0) {
         (*n)--;
-        gUnk_03000590[rec].parts[part].unk11--;
+        gBattleBots[rec].parts[part].unk11--;
         return 0;
     }
     return 1;

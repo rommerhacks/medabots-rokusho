@@ -8,7 +8,7 @@ It is compiled like the Makefile does: agbcc -fprologue-bugfix (--old: old_agbcc
 against the symbols of the last full build (medabots_rokusho.elf, so run `make` once first), and
 compared byte for byte with baserom.gba over the original function's size (code and literal pool).
 
-Undefined symbols named like gUnk_03000BE0 / sub_08012345 that the build doesn't define yet get the
+Undefined symbols named like gMedals / sub_08012345 that the build doesn't define yet get the
 address from their name (add them to symbols.ld when installing).
 
 Exit status 0 = match. On mismatch, prints a side-by-side disassembly.

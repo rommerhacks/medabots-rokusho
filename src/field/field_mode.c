@@ -30,7 +30,7 @@ void field_mode_dispatch(void) {
 void field_resume(u32 a) {
     switch (a) {
     case 0:
-        gUnk_03005310.sceneResult = gUnk_03000440.unk9C;
+        gUnk_03005310.sceneResult = gGameWork.unk9C;
         if (gUnk_030057E0.unkC88 != 0) {
             gGameMode = 1;
             gGameState = 1;

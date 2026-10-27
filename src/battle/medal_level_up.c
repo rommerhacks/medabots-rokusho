@@ -71,7 +71,7 @@ void medal_transform_init(void) {
     CpuFastSet((void *)0x02030000, (void *)0x06004000, (size << 9) >> 11);
     size = 0x1800;
     gUnk_03006F74->unk36 = 0xC4;
-    CpuFastSet(gUnk_084C21BC + gUnk_03000BE0[slot].unk1 * 0x80, vram + size, 0x20);
+    CpuFastSet(gUnk_084C21BC + gMedals[slot].unk1 * 0x80, vram + size, 0x20);
     lz_decompress_dispatch(gUnk_084C3208, (void *)(size + 0x06000080));
     {
         u16 t = 0x60C0;
@@ -118,8 +118,8 @@ void medal_transform_draw_medal(void) {
     int i;
     int id, fr;
 
-    id = gUnk_03000BE0[gUnk_030017EC].unk1;
-    fr = gUnk_03000BE0[gUnk_030017EC].unk8 - 1;
+    id = gMedals[gUnk_030017EC].unk1;
+    fr = gMedals[gUnk_030017EC].unk8 - 1;
     lz_decompress_dispatch(gUnk_083AC494[id][fr], (void *)0x06010000);
     s = gSpriteEntries;
     zero = 0;
@@ -133,27 +133,27 @@ void medal_transform_draw_medal(void) {
     s->unk8 = 0x40;
     s->unk9 = 0x40;
     for (i = 0; i < 16; i++) {
-        gUnk_030004DE[i] = ((const u8 *)gMedalNames[gUnk_03000BE0[gUnk_030017EC].unk1])[i];
+        gUnk_030004DE[i] = ((const u8 *)gMedalNames[gMedals[gUnk_030017EC].unk1])[i];
         if (gUnk_030004DE[i] == 0xFE)
             break;
     }
     render_text_sprites_08040DB8(gUnk_030004DE, 0x14, 5, 10, 10, 1, 1, 0);
-    if (gUnk_03000BE0[gUnk_030017EC].unk5 == 100) {
+    if (gMedals[gUnk_030017EC].unk5 == 100) {
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029A) = (gUnk_03006F74->unk36 + 0x14) | 0x7000;
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DA) = (gUnk_03006F74->unk36 + 0x15) | 0x7000;
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029C) = (gUnk_03006F74->unk36 + 0x16) | 0x7000;
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DC) = (gUnk_03006F74->unk36 + 0x17) | 0x7000;
     } else {
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029A) =
-            (gUnk_03006F74->unk36 + (u8)(gUnk_03000BE0[gUnk_030017EC].unk5 / 10u) * 2) | 0x7000;
+            (gUnk_03006F74->unk36 + (u8)(gMedals[gUnk_030017EC].unk5 / 10u) * 2) | 0x7000;
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DA) =
-            (gUnk_03006F74->unk36 + (u8)(gUnk_03000BE0[gUnk_030017EC].unk5 / 10u) * 2 + 1) | 0x7000;
+            (gUnk_03006F74->unk36 + (u8)(gMedals[gUnk_030017EC].unk5 / 10u) * 2 + 1) | 0x7000;
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029C) =
-            (gUnk_03006F74->unk36 + (u8)(gUnk_03000BE0[gUnk_030017EC].unk5 % 10u) * 2) | 0x7000;
+            (gUnk_03006F74->unk36 + (u8)(gMedals[gUnk_030017EC].unk5 % 10u) * 2) | 0x7000;
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DC) =
-            (gUnk_03006F74->unk36 + (u8)(gUnk_03000BE0[gUnk_030017EC].unk5 % 10u) * 2 + 1) | 0x7000;
+            (gUnk_03006F74->unk36 + (u8)(gMedals[gUnk_030017EC].unk5 % 10u) * 2 + 1) | 0x7000;
     }
-    render_text_sprites_08040DB8(gUnk_03000BE0[gUnk_030017EC].unkA, 0x1E, 0x11, 10, 10, 2, 0, 0);
+    render_text_sprites_08040DB8(gMedals[gUnk_030017EC].unkA, 0x1E, 0x11, 10, 10, 2, 0, 0);
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
@@ -165,14 +165,14 @@ void medal_transform_draw_medal(void) {
     gUnk_03006F74->unk4B = 0;
     gUnk_03006F74->unk5 = 0;
     gGameSubState++;
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
 }
 
 void medal_transform_fade_in(void) {
-    struct Unk_03000440 *s;
+    struct GameWork *s;
     u8 *n;
     medal_transform_update_sparkles();
-    s = &gUnk_03000440;
+    s = &gGameWork;
     n = &s->unk84;
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, 0x20 - *n * 4, 0xFFFF);
@@ -193,8 +193,8 @@ void medal_transform_flash_in(void) {
             if (t <= 0x80)
                 obj_palettes_blend_masked_now(0x7FFF, t >> 2, 1);
             else {
-                struct Unk_03000BE0 *b = gUnk_03000BE0;
-                struct Unk_03000BE0 *m = &b[gUnk_030017EC];
+                struct MedalData *b = gMedals;
+                struct MedalData *m = &b[gUnk_030017EC];
                 u8 id = m->unk1;
                 lz_decompress_dispatch(gUnk_083AC494[id][m->unk8], (void *)0x06010000);
                 gUnk_03006F74->unk3A = 0;

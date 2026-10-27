@@ -7,7 +7,7 @@ void load_battle_entity_palette(u32 list, u32 entry, u32 slot);
 void tile_anim_init(const u16 *pos, u8 obj_tile, u32 slot);
 void tile_anim_init_dup(const u16 *pos, u8 obj_tile, u32 slot); // same as tile_anim_init
 void tile_anim_run_dup(const u16 *script, u32 slot);            // same as tile_anim_run
-void tile_anim_run(const u16 *script, u32 slot);                // steps gUnk_03000440.tileAnims[slot]
+void tile_anim_run(const u16 *script, u32 slot);                // steps gGameWork.tileAnims[slot]
 void inc_u16_saturating(u16 *counter, u16 max);
 void init_battle_bot_sprites(void);
 void init_battle_sprite_entry_0801BC04(u32 rec);

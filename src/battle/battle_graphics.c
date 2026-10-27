@@ -5,19 +5,19 @@
 #include "global.h"
 
 u32 battle_load_graphics_step(u32 direct) {
-    switch (gUnk_03000440.unk13A) {
+    switch (gGameWork.unk13A) {
     case 0:
         lz_decompress_dispatch(gUnk_084C4F00, (void *)0x06004000);
         lz_decompress_dispatch(gUnk_084C4F8C, (void *)0x06004140);
         lz_decompress_dispatch(gUnk_084879F0, (void *)0x06004200);
-        gUnk_03000440.unk13A++;
+        gGameWork.unk13A++;
         break;
     case 1:
         lz_decompress_dispatch(gUnk_084C5080, (void *)0x06004300);
         lz_decompress_dispatch(gUnk_084C3648, (void *)0x06004400);
         lz_decompress_dispatch(gUnk_08487A24, (void *)0x0600C000);
         lz_decompress_dispatch(gUnk_084C5008, (void *)0x0600C600);
-        gUnk_03000440.unk13A++;
+        gGameWork.unk13A++;
         break;
     case 2:
         lz_decompress_dispatch(gUnk_08487E68, (void *)0x06004E00);
@@ -25,7 +25,7 @@ u32 battle_load_graphics_step(u32 direct) {
         lz_decompress_dispatch(gUnk_0848803C, (void *)0x06005400);
         lz_decompress_dispatch(gUnk_08488114, (void *)0x06005700);
         lz_decompress_dispatch(gUnk_084881EC, (void *)0x06005A00);
-        gUnk_03000440.unk13A++;
+        gGameWork.unk13A++;
         break;
     case 3:
         lz_decompress_dispatch(gUnk_084C4BAC, (void *)0x0600C280);
@@ -33,31 +33,31 @@ u32 battle_load_graphics_step(u32 direct) {
         lz_decompress_dispatch(gUnk_084C8AC4, (void *)0x06014E00);
         lz_decompress_dispatch(gUnk_084C984C, (void *)0x06017F80);
         lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
-        gUnk_03000440.unk13A++;
+        gGameWork.unk13A++;
         break;
     case 4:
         lz_decompress_dispatch(gUnk_08487B80, (void *)0x06004600);
         lz_decompress_dispatch(gUnk_08487C94, (void *)0x06004800);
         lz_decompress_dispatch(gUnk_08487D6C, (void *)0x06004B00);
-        gUnk_03000440.unk13A++;
+        gGameWork.unk13A++;
         break;
     case 5:
-        gUnk_03000440.unk13A++;
+        gGameWork.unk13A++;
         break;
     case 6:
         lz_decompress_dispatch(gUnk_084C7FC0, (void *)0x06013000);
         lz_decompress_dispatch(gUnk_084E2950, (void *)0x06013C00);
         lz_decompress_dispatch(gUnk_084E2C18, (void *)0x06014200);
-        gUnk_03000440.unk13A++;
+        gGameWork.unk13A++;
         break;
     case 7:
         vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG1CNT, 0);
-        gUnk_03000440.unk13A++;
+        gGameWork.unk13A++;
         break;
     case 8:
         if (direct == 0) {
             vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG0CNT, direct);
-            decompress_sprite_to_vram_08043C08(gUnk_03001800.unk38, 1);
+            decompress_sprite_to_vram_08043C08(gBattleWork.unk38, 1);
             CpuFastSet(gUnk_084C6A18, (void *)0x0202FB00, 8);
             CpuFastSet(gUnk_08488AC4, (void *)0x0202FB40, 8);
             CpuFastSet(gUnk_08488B04, (void *)0x0202FB60, 8);
@@ -72,7 +72,7 @@ u32 battle_load_graphics_step(u32 direct) {
             CpuFastSet(gUnk_0850DDB8 + 0x40, (void *)0x0202F9E0, 8);
             CpuFastSet(gUnk_0850E0D8, (void *)0x0202F8A0, 8);
         } else {
-            decompress_sprite_to_vram_08043C08(gUnk_03001800.unk38, 0);
+            decompress_sprite_to_vram_08043C08(gBattleWork.unk38, 0);
             CpuFastSet(gUnk_084C6A18, (void *)0x05000100, 8);
             CpuFastSet(gUnk_08488AC4, (void *)0x05000140, 8);
             CpuFastSet(gUnk_08488B04, (void *)0x05000160, 8);
@@ -87,31 +87,31 @@ u32 battle_load_graphics_step(u32 direct) {
             CpuFastSet(gUnk_0850DDB8 + 0x40, (void *)0x050003E0, 8);
             CpuFastSet(gUnk_0850E0D8, (void *)0x050002A0, 8);
         }
-        gUnk_03000440.unk13A = 0;
+        gGameWork.unk13A = 0;
         return 1;
     }
     return 0;
 }
 
 void battle_message_open(void) {
-    if (gOptionSkipMessages == 0 || gUnk_03000440.unk89 == 1)
+    if (gOptionSkipMessages == 0 || gGameWork.unk89 == 1)
         text_window_init(1, 2, 0);
 }
 
 u32 battle_message_print(u32 msg) {
     u32 done;
 
-    if (gOptionSkipMessages == 0 || gUnk_03000440.unk89 == 1) {
+    if (gOptionSkipMessages == 0 || gGameWork.unk89 == 1) {
         done = run_message(gUnk_083C65C4[msg]);
         if (done)
-            gUnk_03000440.unk1B = 0;
+            gGameWork.unk1B = 0;
         return done;
     }
     return 1;
 }
 
 u32 battle_message_finish(void) {
-    if (gOptionSkipMessages == 0 || gUnk_03000440.unk89 == 1)
+    if (gOptionSkipMessages == 0 || gGameWork.unk89 == 1)
         return game_state_execute_handler_a();
     return 1;
 }
@@ -127,7 +127,7 @@ void draw_bot_panel_frame(u32 bot) {
 }
 
 void draw_bot_status_panel(u32 bot) {
-    if (gUnk_03000590[bot].unkC1 == 0x50)
+    if (gBattleBots[bot].unkC1 == 0x50)
         draw_battle_panel_left_b(bot);
     else
         draw_battle_panel_left_a(bot);
@@ -202,19 +202,19 @@ void target_arrows_animate(u32 bot) {
 }
 
 void battle_substeps_reset(void) {
-    gUnk_03001800.unk9C[0] = 0;
-    gUnk_03001800.unk9C[1] = 0;
-    gUnk_03001800.unk9C[2] = 0;
-    gUnk_03001800.unk9C[3] = 0;
-    gUnk_03001800.unk9C[4] = 0;
+    gBattleWork.unk9C[0] = 0;
+    gBattleWork.unk9C[1] = 0;
+    gBattleWork.unk9C[2] = 0;
+    gBattleWork.unk9C[3] = 0;
+    gBattleWork.unk9C[4] = 0;
 }
 
 void battle_message_reset(void) {
-    gUnk_03001800.unkA1[0] = 0;
-    gUnk_03001800.unkA1[1] = 0;
-    gUnk_03001800.unkA1[2] = 0;
-    gUnk_03001800.unkA1[3] = 0;
-    gUnk_03001800.unkA1[4] = 0;
+    gBattleWork.unkA1[0] = 0;
+    gBattleWork.unkA1[1] = 0;
+    gBattleWork.unkA1[2] = 0;
+    gBattleWork.unkA1[3] = 0;
+    gBattleWork.unkA1[4] = 0;
 }
 
 void clear_battle_ui_tilemaps(void) {
@@ -228,9 +228,9 @@ void clear_battle_ui_tilemaps(void) {
 }
 
 u32 medaforce_gauge_fill_step(u32 bot) {
-    if (gUnk_03001800.unk51 != 0 && gUnk_03000590[bot].unkC1 != 0x50) {
-        gUnk_03000590[bot].unkC1++;
-        gUnk_03001800.unk51--;
+    if (gBattleWork.unk51 != 0 && gBattleBots[bot].unkC1 != 0x50) {
+        gBattleBots[bot].unkC1++;
+        gBattleWork.unk51--;
         draw_medaforce_gauge_bar(bot);
         draw_medaforce_gauge_value(bot);
         return 0;
@@ -239,9 +239,9 @@ u32 medaforce_gauge_fill_step(u32 bot) {
 }
 
 u32 medaforce_gauge_drain_step(u32 bot) {
-    if (gUnk_03001800.unk51 != 0 && gUnk_03000590[bot].unkC1 != 0) {
-        gUnk_03000590[bot].unkC1--;
-        gUnk_03001800.unk51--;
+    if (gBattleWork.unk51 != 0 && gBattleBots[bot].unkC1 != 0) {
+        gBattleBots[bot].unkC1--;
+        gBattleWork.unk51--;
         draw_medaforce_gauge_bar(bot);
         draw_medaforce_gauge_value(bot);
         return 0;
@@ -256,7 +256,7 @@ void mf_charge_sparkles_init(u32 bot) {
     CpuFastSet(gUnk_084E3058, (void *)0x050002C0, 8);
     for (i = 0; i <= 7; i++) {
         clear_battle_sprite_slot(i + 0x21, 1);
-        gSpriteEntries[0x21 + i].unk0 = ((gUnk_03001800.unk39[3] + 2) << 10) | 0x4204;
+        gSpriteEntries[0x21 + i].unk0 = ((gBattleWork.unk39[3] + 2) << 10) | 0x4204;
         gSpriteEntries[0x21 + i].unk1C = 0;
         gSpriteEntries[0x21 + i].unkA = 6;
         gSpriteEntries[0x21 + i].unkB = 0x81;
@@ -322,30 +322,30 @@ void battle_action_cleanup(u32 bot) {
     u32 zero;
     u32 zero2;
 
-    gUnk_03000590[bot].unkBD &= ~1;
-    gUnk_03000590[bot].unkDE = gUnk_03000590[bot].chosenAction;
-    if (gUnk_03000590[bot].chosenAction == 0)
-        gUnk_03000590[bot].unkDF = 0;
-    else if (gUnk_03000590[bot].chosenAction > 3)
-        gUnk_03000590[bot].unkDF = 0;
+    gBattleBots[bot].unkBD &= ~1;
+    gBattleBots[bot].unkDE = gBattleBots[bot].chosenAction;
+    if (gBattleBots[bot].chosenAction == 0)
+        gBattleBots[bot].unkDF = 0;
+    else if (gBattleBots[bot].chosenAction > 3)
+        gBattleBots[bot].unkDF = 0;
     else
-        gUnk_03000590[bot].unkDF = gUnk_03000590[bot].parts[gUnk_03000590[bot].chosenAction - 1].data[1];
+        gBattleBots[bot].unkDF = gBattleBots[bot].parts[gBattleBots[bot].chosenAction - 1].data[1];
     for (i = 0; i <= 3; i++) {
-        gUnk_03000590[bot].parts[i].unkE = 0;
-        gUnk_03000590[bot].parts[i].unkF = 0;
+        gBattleBots[bot].parts[i].unkE = 0;
+        gBattleBots[bot].parts[i].unkF = 0;
     }
     zero = 0;
     CpuSet(&zero, gUnk_030018A8, 0x05000008);
     zero2 = 0;
     CpuSet(&zero2, gUnk_030018A8 + 8, 0x05000008);
     for (i = 0; i <= 5; i++) {
-        if (gUnk_03000590[i].unk40 && (gUnk_03000590[i].unkBD & 0x18) && (u8)(gUnk_03000590[i].unkDE - 1) <= 2 &&
-            gUnk_03000590[i].parts[gUnk_03000590[i].unkDE - 1].unk11 == 0)
-            gUnk_03000590[i].unkBD &= 0xE7;
+        if (gBattleBots[i].unk40 && (gBattleBots[i].unkBD & 0x18) && (u8)(gBattleBots[i].unkDE - 1) <= 2 &&
+            gBattleBots[i].parts[gBattleBots[i].unkDE - 1].unk11 == 0)
+            gBattleBots[i].unkBD &= 0xE7;
     }
     for (i = 0; i <= 5; i++) {
-        if (gUnk_03000590[i].unkBA)
-            gUnk_03000590[i].unkBC &= 0xF;
+        if (gBattleBots[i].unkBA)
+            gBattleBots[i].unkBC &= 0xF;
     }
     restore_changed_part(bot);
 }
@@ -353,17 +353,17 @@ void battle_action_cleanup(u32 bot) {
 void restore_changed_part(u32 bot) {
     u32 zero;
 
-    if (gUnk_03001800.unk118) {
-        gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[0] = gUnk_03001800.unk11C.data[0];
-        gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1] = gUnk_03001800.unk11C.data[1];
-        gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[5] = gUnk_03001800.unk11C.data[5];
-        gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[6] = gUnk_03001800.unk11C.data[6];
-        gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[7] = gUnk_03001800.unk11C.data[7];
-        gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[0xC] = gUnk_03001800.unk11C.data[0xC];
-        gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].unk17 = gUnk_03001800.unk11C.unk17;
+    if (gBattleWork.unk118) {
+        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[0] = gBattleWork.unk11C.data[0];
+        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1] = gBattleWork.unk11C.data[1];
+        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[5] = gBattleWork.unk11C.data[5];
+        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[6] = gBattleWork.unk11C.data[6];
+        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[7] = gBattleWork.unk11C.data[7];
+        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[0xC] = gBattleWork.unk11C.data[0xC];
+        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].unk17 = gBattleWork.unk11C.unk17;
         load_all_bot_part_sprites();
         iterate_bots_setup_battle_sprites();
     }
     zero = 0;
-    CpuSet(&zero, &gUnk_03001800.unk118, 0x05000009);
+    CpuSet(&zero, &gBattleWork.unk118, 0x05000009);
 }

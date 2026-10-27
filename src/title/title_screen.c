@@ -9,7 +9,7 @@
 static void title_sprite_start_effect(u8 effect, u8 sprite);
 
 static void title_screen_check_skip_or_test_mode(void) {
-    if (gUnk_03001800_s.nextSubState == 5 && ((KEYS_LO(gHeldKeys) & 8) || gTitleSkipIntro != 0)) {
+    if (gSceneWork.nextSubState == 5 && ((KEYS_LO(gHeldKeys) & 8) || gTitleSkipIntro != 0)) {
         gTitleSkipIntro = 0;
         gGameMode = 3;
         gGameState = 2;
@@ -80,9 +80,9 @@ void title_screen_fade_out_exit(void) {
         u32 zero = 0;
         DmaSet(3, &zero, gSpriteEntries, 0x85000800);
         REG_DISPCNT &= 0x80FF;
-        gGameMode = gUnk_03001800_s.nextMode;
-        gGameState = gUnk_03001800_s.nextState;
-        gGameSubState = gUnk_03001800_s.nextSubState;
+        gGameMode = gSceneWork.nextMode;
+        gGameState = gSceneWork.nextState;
+        gGameSubState = gSceneWork.nextSubState;
         REG_DISPCNT &= ~0x0400;
         REG_IE &= ~2;
         REG_DISPSTAT &= ~0x10;
@@ -92,11 +92,11 @@ void title_screen_fade_out_exit(void) {
 }
 
 void title_screen_wait_then_exit(void) {
-    if (gUnk_03001800_s.unk6 < ++gUnk_03001800_s.timer) {
-        gUnk_03001800_s.timer = 0;
-        gGameMode = gUnk_03001800_s.nextMode;
-        gGameState = gUnk_03001800_s.nextState;
-        gGameSubState = gUnk_03001800_s.nextSubState;
+    if (gSceneWork.unk6 < ++gSceneWork.timer) {
+        gSceneWork.timer = 0;
+        gGameMode = gSceneWork.nextMode;
+        gGameState = gSceneWork.nextState;
+        gGameSubState = gSceneWork.nextSubState;
     }
 }
 
@@ -111,10 +111,10 @@ void title_screen_reset(void) {
     zero = 0;
     DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     zero = 0;
-    DmaSet(3, &zero, &gUnk_03001800_s, 0x8500000B);
+    DmaSet(3, &zero, &gSceneWork, 0x8500000B);
     REG_DISPCNT = 0x61;
-    gUnk_03001800_s.nextMode = 3;
-    gUnk_03001800_s.nextState = 2;
+    gSceneWork.nextMode = 3;
+    gSceneWork.nextState = 2;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;
@@ -138,21 +138,21 @@ void title_screen_load_graphics(void) {
     REG_BG2CNT = 0x6F8A;
     LZ77UnCompVram(gUnk_087ADDDC, (void *)(VRAM + 0x10000));
     DmaSet(3, gUnk_0807C320, PLTT + 0x200, 0x80000060);
-    DmaSet(3, gUnk_0807C320 + 0x60, &gUnk_03001800_s.unkC, 0x8000000E);
+    DmaSet(3, gUnk_0807C320 + 0x60, &gSceneWork.unkC, 0x8000000E);
     setup_screen_transition_effect_080682CC(2, 1, 0);
-    gUnk_03001800_s.nextSubState = 5;
+    gSceneWork.nextSubState = 5;
     gGameSubState = 1;
 }
 
 void title_screen_show_logo(void) {
-    if (gUnk_03001800_s.timer == 0) {
+    if (gSceneWork.timer == 0) {
         sprite_entry_init(0, 0xCC00, 0x224, 6, 3);
         gSpriteEntries[0].unk2 = 0x78;
         gSpriteEntries[0].unk4 = 0x3C;
         gSpriteEntries[0].unkB = 0x10;
         title_sprite_start_effect(1, 0);
         REG_DISPCNT |= 0x1000;
-    } else if (gUnk_03001800_s.timer == 0x20) {
+    } else if (gSceneWork.timer == 0x20) {
         sprite_entry_init(1, 0xC400, 0x200, 0, 3);
         gSpriteEntries[1].unk2 = 0x78;
         gSpriteEntries[1].unk4 = 0x3C;
@@ -160,20 +160,20 @@ void title_screen_show_logo(void) {
         title_sprite_start_effect(2, 1);
     }
     if (gSpriteEntries[0].unk20 == 0) {
-        gUnk_03001800_s.nextSubState = 6;
-        gUnk_03001800_s.timer = 0;
+        gSceneWork.nextSubState = 6;
+        gSceneWork.timer = 0;
         setup_screen_transition_effect_080682CC(4, 4, 0x7FFF);
         clear_sprite_entry(1);
         sprite_entry_init(0, 0xC400, 0x21B, 4, 3);
         REG_DISPCNT |= 0x300;
         gGameSubState = 1;
     } else {
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
     }
 }
 
 void title_screen_slide_in_sprites(void) {
-    if (gUnk_03001800_s.timer == 0) {
+    if (gSceneWork.timer == 0) {
         play_song(0);
         sprite_entry_init(1, 0xC400, 0x211, 1, 3);
         gSpriteEntries[1].unk2 = 0x118;
@@ -194,17 +194,17 @@ void title_screen_slide_in_sprites(void) {
         gSpriteEntries[4].unkB = 0x10;
         gSpriteEntries[4].unk32 = 0;
         title_sprite_start_effect(8, 4);
-        gUnk_03001800_s.timer = 0;
+        gSceneWork.timer = 0;
         gGameSubState = 7;
     } else {
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
     }
 }
 
 void title_screen_start_wave(void) {
     s32 i;
 
-    if (gUnk_03001800_s.timer == 0) {
+    if (gSceneWork.timer == 0) {
         play_song(2);
         REG_BLDCNT = 0x244;
         REG_BLDALPHA = 0x1000;
@@ -226,18 +226,18 @@ void title_screen_start_wave(void) {
                 gUnk_03000030[i] = 0x100;
             }
         }
-    } else if (gUnk_03001800_s.timer > 0x40) {
+    } else if (gSceneWork.timer > 0x40) {
         gSpriteEntries[2].unk0 &= ~0x200;
         title_sprite_start_effect(5, 2);
-        gUnk_03001800_s.timer = 0;
+        gSceneWork.timer = 0;
         gGameSubState = 8;
         return;
-    } else if ((gUnk_03001800_s.timer & 7) == 0) {
+    } else if ((gSceneWork.timer & 7) == 0) {
         REG_BLDALPHA++;
-        if ((gUnk_03001800_s.timer & 0xF) == 0)
+        if ((gSceneWork.timer & 0xF) == 0)
             REG_BLDALPHA -= 0x100;
     }
-    if (gUnk_03001800_s.timer == 0x39) {
+    if (gSceneWork.timer == 0x39) {
         sprite_entry_init(2, 0xC600, 0x212, 2, 3);
         gSpriteEntries[2].unk2 = 0x78;
         gSpriteEntries[2].unk4 = 0x73;
@@ -245,7 +245,7 @@ void title_screen_start_wave(void) {
         gSpriteEntries[2].unk9 = 8;
         title_sprite_start_effect(4, 2);
     }
-    gUnk_03001800_s.timer++;
+    gSceneWork.timer++;
 }
 
 void title_screen_wait_start(void) {
@@ -253,32 +253,32 @@ void title_screen_wait_start(void) {
     if ((start = KEYS_LO(gNewKeys) & 8) != 0) {
         title_sprite_start_effect(6, 2);
         play_sound_effect(3);
-        gUnk_03001800_s.timer = 0;
+        gSceneWork.timer = 0;
         gGameSubState++;
-    } else if (gUnk_03001800_s.timer > 0x547) {
-        gUnk_03001800_s.timer = start;
+    } else if (gSceneWork.timer > 0x547) {
+        gSceneWork.timer = start;
         clear_sprite_entry(2);
         setup_screen_transition_effect_080684F0(4, 1, 0);
-        gUnk_03001800_s.nextMode = 3;
-        gUnk_03001800_s.nextState = start;
-        gUnk_03001800_s.nextSubState = start;
+        gSceneWork.nextMode = 3;
+        gSceneWork.nextState = start;
+        gSceneWork.nextSubState = start;
         gGameSubState = 2;
     } else {
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
     }
 }
 
 void title_screen_start_pressed(void) {
-    if (gUnk_03001800_s.timer > 0x28) {
-        gUnk_03001800_s.timer = 0;
+    if (gSceneWork.timer > 0x28) {
+        gSceneWork.timer = 0;
         clear_sprite_entry(2);
         setup_screen_transition_effect_080684F0(4, 1, 0);
-        gUnk_03001800_s.nextMode = 2;
-        gUnk_03001800_s.nextState = 3;
-        gUnk_03001800_s.nextSubState = 0;
+        gSceneWork.nextMode = 2;
+        gSceneWork.nextState = 3;
+        gSceneWork.nextSubState = 0;
         gGameSubState = 2;
     } else {
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
     }
 }
 
@@ -310,8 +310,8 @@ void title_screen_skip_intro(void) {
     gSpriteEntries[4].unk32 = 0x80;
     title_sprite_start_effect(8, 4);
     REG_DISPCNT |= 0x1300;
-    gUnk_03001800_s.nextSubState = 7;
-    gUnk_03001800_s.timer = 0;
+    gSceneWork.nextSubState = 7;
+    gSceneWork.timer = 0;
     gGameSubState = 1;
 }
 
@@ -337,7 +337,7 @@ void title_screen_update_sprite_effects(void) {
     }
 }
 
-// Title sprite palette fade-in: copies the title palette (gUnk_03001800_s.unkC, u16[14]) into
+// Title sprite palette fade-in: copies the title palette (gSceneWork.unkC, u16[14]) into
 // OBJ palette 6 step by step (unk22 = step 0..0x1E).
 bool32 title_effect_palette_fade_in(u8 idx) {
     u8 n;
@@ -356,16 +356,16 @@ bool32 title_effect_palette_fade_in(u8 idx) {
             vu32 zero = 0;
             DmaSet(3, &zero, PLTT + 0x2C0, 0x85000000 | ((0x20 - n) / 4));
         }
-        DmaSet(3, (u16 *)&gUnk_03001800_s.unkC, PLTT + 0x2E0 - n, 0x80000000 | (n / 2));
+        DmaSet(3, (u16 *)&gSceneWork.unkC, PLTT + 0x2E0 - n, 0x80000000 | (n / 2));
     } else if (p->unk22 == 0xF) {
-        DmaSet(3, (u16 *)&gUnk_03001800_s.unkC, PLTT + 0x2C0, 0x80000000 | (0x1C / 2));
+        DmaSet(3, (u16 *)&gSceneWork.unkC, PLTT + 0x2C0, 0x80000000 | (0x1C / 2));
     } else {
         n = (0x1E - c) * 2;
         {
             vu32 zero = 0;
             DmaSet(3, &zero, PLTT + 0x2C0 + n, 0x85000000 | ((0x20 - n) / 4));
         }
-        DmaSet(3, &((u16 *)&gUnk_03001800_s.unkC)[p->unk22 - 15], PLTT + 0x2C0, 0x80000000 | (n / 2));
+        DmaSet(3, &((u16 *)&gSceneWork.unkC)[p->unk22 - 15], PLTT + 0x2C0, 0x80000000 | (n / 2));
     }
     gSpriteEntries[idx].unk22++;
     return TRUE;

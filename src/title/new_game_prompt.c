@@ -28,7 +28,7 @@ void load_rotation_grid_and_advance(void) {
 
 void new_game_prompt_poll_choice(void) {
     if (poll_choice_menu()) {
-        if (gUnk_03000440.unk2A == 0)
+        if (gGameWork.unk2A == 0)
             gGameSubState++;
         else
             gGameSubState += 2;

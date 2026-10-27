@@ -708,7 +708,7 @@ u32 load_sprite_tree_recursive(struct SpriteNodeDesc **nodes, struct SpriteTileR
 
             if ((u8)key == v.node) {
                 frame = (v.frame + (alt & v.alt)) << 1;
-                if (gUnk_03000440.unk96)
+                if (gGameWork.unk96)
                     affine = 0;
                 else
                     affine = v.affine;
@@ -730,7 +730,7 @@ u32 load_sprite_tree_recursive(struct SpriteNodeDesc **nodes, struct SpriteTileR
             CpuCopy16((void *)0x02030800, (void *)(0x06010000 + *tile * 32), size);
         obj = &oams[node];
         *tile += init_oam_sprite_entry(&obj->oam, desc, pal, *tile);
-        if (gUnk_03000440.unk96)
+        if (gGameWork.unk96)
             obj->oam.affineMode = 0;
         else
             obj->oam.affineMode = affine;
@@ -888,7 +888,7 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
     else
         x += d.pa * dy + d.pc * dx;
 
-    if (gUnk_03000440.unk96)
+    if (gGameWork.unk96)
         vis = 0;
     else
         vis = 1;
@@ -899,7 +899,7 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
             struct SpriteTileRef v = list[i];
 
             if ((u8)key == v.node) {
-                if (gUnk_03000440.unk96)
+                if (gGameWork.unk96)
                     vis = 0;
                 else
                     vis = v.affine;
@@ -1060,8 +1060,8 @@ void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b,
     struct SpriteTileRef *pa, *pb, *pc, *pd;
 
     if (!(i & 4)) {
-        if (gUnk_03000440.unk130)
-            gUnk_03000440.unk131 = 1;
+        if (gGameWork.unk130)
+            gGameWork.unk131 = 1;
         gUnk_03005308[slot].unk2C = (gUnk_03005308[slot].unk2C | 1) & ~8;
         gUnk_03005308[slot].unk4 = a;
         gUnk_03005308[slot].unk8 = b;
@@ -1126,7 +1126,7 @@ void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b,
         struct SpriteTileRef buf[32];
 
         custom_memset(buf, 0, sizeof(buf));
-        gUnk_03000440.unk131 = 0;
+        gGameWork.unk131 = 0;
         a = gUnk_03005308[slot].unk4;
         b = gUnk_03005308[slot].unk8;
         c = gUnk_03005308[slot].unkC;

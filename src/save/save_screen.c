@@ -12,7 +12,7 @@ static inline void *vram_at(u32 off) {
 // Item menu state 14 (the last entry of gItemMenuStates): fade out and return to the field, which applies
 // the disguise set in gUnk_030057E0.player_form.
 void item_menu_fade_out_use_item(void) {
-    struct Unk_03000440 *b = &gUnk_03000440;
+    struct GameWork *b = &gGameWork;
     if (b->unk84 <= 8) {
         bg_palettes_blend_masked_now(0, b->unk84 * 4, 0xFFFF);
         obj_palettes_blend_masked_now(0, b->unk84 * 4, 0xFFFF);
@@ -86,7 +86,7 @@ void save_screen_draw_info(void) {
 
     n = 0;
     for (i = 0; i < 30; i++) {
-        if (gUnk_03000BE0[i].unk0 & 0x80)
+        if (gMedals[i].unk0 & 0x80)
             n++;
     }
     ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n, 2, 10, 4, 10, (REG_BG1CNT >> 8) & 0x1F);
@@ -103,23 +103,23 @@ void save_screen_draw_info(void) {
                                                           (REG_BG1CNT >> 8) & 0x1F);
     ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(gUnk_03002B70.unk14[0], 0, 8, 11, 13,
                                                           (REG_BG1CNT >> 8) & 0x1F);
-    divide_by_10000(gUnk_03000440.unk9E, gUnk_03002B70.money);
-    render_text_sprites_08040DB8(gUnk_03000440.unk9E, 1, 15, 9, 7, 15, 1, 0);
+    divide_by_10000(gGameWork.unk9E, gUnk_03002B70.money);
+    render_text_sprites_08040DB8(gGameWork.unk9E, 1, 15, 9, 7, 15, 1, 0);
     render_text_sprites_08040DB8(gUnk_03002B70.unk4, 13, 14, 4, 10, 13, 0, 0);
     open_choice_menu(1, 0x16, 7);
     CpuFastSet(gUnk_0878CA64, gPaletteBackupBg, 0x80);
     CpuFastSet(gUnk_0850DCF8, (void *)0x0202F9A0, 8);
     CpuFastSet(gUnk_084E2E38, (void *)0x0202F9E0, 8);
     CpuFastSet(gUnk_080AF7E8, gPaletteBackup, 8);
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
 void save_screen_fade_in(void) {
-    if (gUnk_03000440.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0x3FFF);
-        obj_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
-        if (++gUnk_03000440.unk84 == 1) {
+    if (gGameWork.unk84 <= 8) {
+        bg_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0x3FFF);
+        obj_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xFFFF);
+        if (++gGameWork.unk84 == 1) {
             REG_DISPCNT |= 0x200;
             REG_DISPCNT |= 0x400;
             REG_DISPCNT |= 0x800;
@@ -139,7 +139,7 @@ void save_screen_ask_save(void) {
 void save_screen_poll_save_choice(void) {
     if (poll_choice_menu()) {
         message_next();
-        if (gUnk_03000440.unk2A == 0)
+        if (gGameWork.unk2A == 0)
             gGameSubState = (*(u8 *)&gUnk_03001784 & 1) ? 13 : 6;
         else
             gGameSubState = 9;
@@ -156,7 +156,7 @@ void save_screen_ask_overwrite(void) {
 void save_screen_poll_overwrite_choice(void) {
     if (poll_choice_menu()) {
         message_next();
-        if (gUnk_03000440.unk2A == 0)
+        if (gGameWork.unk2A == 0)
             gGameSubState = 6;
         else
             gGameSubState = 9;
@@ -206,7 +206,7 @@ void save_screen_show_saved(void) {
 void save_screen_exit_begin(void) {
     message_next();
     palette_backup_from_hardware();
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
@@ -216,10 +216,10 @@ void save_screen_exit_wait(void) {
 }
 
 void save_screen_fade_out(void) {
-    if (gUnk_03000440.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0x3FFF);
-        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        gUnk_03000440.unk84++;
+    if (gGameWork.unk84 <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0x3FFF);
+        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
+        gGameWork.unk84++;
     } else {
         REG_DISPCNT &= 0xFDFF;
         REG_DISPCNT &= 0xFBFF;

@@ -7,7 +7,7 @@ static void medawatch_menu_load_icon(void);
 static void medawatch_menu_init_cursor(void);
 static void medawatch_scroll_bg3(void);
 
-// Game state 2: the Medawatch menu (Medabots / Medals / Medaparts, cursor gUnk_03000440.unk8F).
+// Game state 2: the Medawatch menu (Medabots / Medals / Medaparts, cursor gGameWork.unk8F).
 void medawatch_menu_update(void) {
     gMedawatchMenuHandlers[gGameSubState]();
 }
@@ -26,16 +26,16 @@ void medawatch_menu_load_gfx(void) {
     DmaSet(3, gUnk_084F24E0, 0x0202FA00, 0x84000060);
     write_tilemap_rect(4, 4, 5, 9, gUnk_083B4AE0[0x48], REG_BG1CNT, 0);
     REG_DISPCNT |= 0x1F60;
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
 void medawatch_menu_fade_in(void) {
     medawatch_scroll_bg3();
-    if (gUnk_03000440.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0x1FFF);
-        obj_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
-        gUnk_03000440.unk84++;
+    if (gGameWork.unk84 <= 8) {
+        bg_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0x1FFF);
+        obj_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xFFFF);
+        gGameWork.unk84++;
     } else {
         medawatch_menu_init_cursor();
         gGameSubState++;
@@ -46,24 +46,24 @@ void medawatch_menu_handle_input(void) {
     medawatch_scroll_bg3();
     process_sprite_anim_commands(gUnk_083B5F80[0], 0);
     if (KEYS_LO(gRepeatKeys) & 0x40) {
-        if (gUnk_03000440.unk8F == 0)
-            gUnk_03000440.unk8F = 2;
+        if (gGameWork.unk8F == 0)
+            gGameWork.unk8F = 2;
         else
-            gUnk_03000440.unk8F--;
+            gGameWork.unk8F--;
         play_sound_effect(2);
         medawatch_menu_load_icon();
-        gSpriteEntries[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
-        gSpriteEntries[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
+        gSpriteEntries[0].unk2 = 0x88 - gGameWork.unk8F * 8;
+        gSpriteEntries[0].unk4 = gGameWork.unk8F * 24 + 32;
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
-        if (gUnk_03000440.unk8F == 2)
-            gUnk_03000440.unk8F = 0;
+        if (gGameWork.unk8F == 2)
+            gGameWork.unk8F = 0;
         else
-            gUnk_03000440.unk8F++;
+            gGameWork.unk8F++;
         play_sound_effect(2);
         medawatch_menu_load_icon();
-        gSpriteEntries[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
-        gSpriteEntries[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
+        gSpriteEntries[0].unk2 = 0x88 - gGameWork.unk8F * 8;
+        gSpriteEntries[0].unk4 = gGameWork.unk8F * 24 + 32;
     }
     if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
@@ -73,7 +73,7 @@ void medawatch_menu_handle_input(void) {
         play_sound_effect(4);
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[1], 0);
         set_blend_effect_mode(6, 0x3F, 0x20);
-        gUnk_03000440.unk84 = 0;
+        gGameWork.unk84 = 0;
         gGameSubState = 8;
     }
 }
@@ -82,17 +82,17 @@ void medawatch_menu_exit_start(void) {
     medawatch_scroll_bg3();
     clear_battle_sprite_slot(0, 1);
     palette_backup_from_hardware();
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     fade_out_music(8);
     gGameSubState++;
 }
 
 void medawatch_menu_exit_fade(void) {
     medawatch_scroll_bg3();
-    if (gUnk_03000440.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0x1FFF);
-        obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
-        gUnk_03000440.unk84++;
+    if (gGameWork.unk84 <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0x1FFF);
+        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
+        gGameWork.unk84++;
     } else {
         gGameSubState++;
     }
@@ -114,19 +114,19 @@ void medawatch_menu_select_fade(void) {
 // Saves the BG tiles at 0x06002800 and enters game state 3 (Medabots), 4 (Medals) or 5 (Medaparts).
 void medawatch_menu_run_choice(void) {
     DmaSet(3, 0x06002800, gUnk_02020800, 0x84000200);
-    switch (gUnk_03000440.unk8F) {
+    switch (gGameWork.unk8F) {
     case 0:
-        mem_fill8((u8 *)&gUnk_03000440 + 0x50, 0x14, 0);
+        mem_fill8((u8 *)&gGameWork + 0x50, 0x14, 0);
         gGameState = 3;
         gGameSubState = 0;
         break;
     case 1:
-        mem_fill8((u8 *)&gUnk_03000440 + 0x3C, 0x14, 0);
+        mem_fill8((u8 *)&gGameWork + 0x3C, 0x14, 0);
         gGameState = 4;
         gGameSubState = 0;
         break;
     default:
-        mem_fill8((u8 *)&gUnk_03000440 + 0x3C, 0x14, 0);
+        mem_fill8((u8 *)&gGameWork + 0x3C, 0x14, 0);
         gGameState = 5;
         gGameSubState = 0;
         break;
@@ -151,7 +151,7 @@ void medawatch_menu_return_init(void) {
     write_tilemap_rect(4, 4, 5, 9, gUnk_083B4AE0[0x48], REG_BG1CNT, 0);
     REG_DISPCNT |= 0x1F60;
     set_blend_effect_mode(5, 0x3F, 0x20);
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
@@ -172,7 +172,7 @@ void medawatch_menu_return_done(void) {
 static void medawatch_menu_load_icon(void) {
     const u8 *src;
 
-    switch (gUnk_03000440.unk8F) {
+    switch (gGameWork.unk8F) {
     case 0:
         src = gUnk_084C1C24;
         break;
@@ -190,8 +190,8 @@ static void medawatch_menu_init_cursor(void) {
     lz_decompress_dispatch(gUnk_084C7174, (void *)0x06016C00);
     DmaSet(3, gUnk_084E2E58, 0x050003C0, 0x84000008);
     gSpriteEntries[0].unk0 = 0xC004;
-    gSpriteEntries[0].unk2 = 0x88 - gUnk_03000440.unk8F * 8;
-    gSpriteEntries[0].unk4 = gUnk_03000440.unk8F * 24 + 32;
+    gSpriteEntries[0].unk2 = 0x88 - gGameWork.unk8F * 8;
+    gSpriteEntries[0].unk4 = gGameWork.unk8F * 24 + 32;
     gSpriteEntries[0].unkA = 14;
     gSpriteEntries[0].unk1C = 0;
     gSpriteEntries[0].unkB = 0xFF;

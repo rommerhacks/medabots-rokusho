@@ -117,7 +117,7 @@ void weekly_load_studio(void) {
         gSpriteEntries[i + 26].unk4 = 0x40;
     }
     gSpriteEntries[28].unk4 = 0x38;
-    gUnk_03001800_s.nextSubState = 6;
+    gSceneWork.nextSubState = 6;
     gGameSubState = 4;
 }
 
@@ -257,47 +257,47 @@ void weekly_wait_host(void) {
 
 // Sub-state 11: the opening talk (gWeeklyMessages 0-7); the speaker's sprite cycles while their line is shown.
 void weekly_opening_talk(void) {
-    switch (gUnk_03001800_s.timer) {
+    switch (gSceneWork.timer) {
     case 0:
         text_window_init(1, 0, 0);
         sprite_cycle_anim_start(0x19, 0x4B, 8);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 2:
         message_next();
         sprite_cycle_anim_stop(0x19, 0x4B);
         sprite_cycle_anim_start(0x16, 0x2D, 8);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 4:
         message_next();
         sprite_cycle_anim_stop(0x16, 0x2D);
         sprite_cycle_anim_start(0x19, 0x4E, 8);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 6:
         message_next();
         sprite_cycle_anim_stop(0x19, 0x4B);
         sprite_cycle_anim_start(0x17, 0x36, 8);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 8:
         message_next();
         sprite_cycle_anim_stop(0x17, 0x36);
         sprite_cycle_anim_start(0x19, 0x51, 8);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 10:
         message_next();
         sprite_cycle_anim_stop(0x19, 0x4B);
         sprite_cycle_anim_start(0x16, 0x2D, 8);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 12:
         message_next();
         sprite_cycle_anim_stop(0x16, 0x2D);
         sprite_cycle_anim_start(0x19, 0x4B, 8);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 14:
         message_next();
@@ -305,7 +305,7 @@ void weekly_opening_talk(void) {
         sprite_cycle_anim_stop(0x17, 0x33);
         sprite_cycle_anim_stop(0x19, 0x4B);
         sprite_cycle_anim_start(0x18, 0x3F, 6);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 1:
     case 3:
@@ -315,13 +315,13 @@ void weekly_opening_talk(void) {
     case 11:
     case 13:
     case 15:
-        if (run_message(gWeeklyMessages[gUnk_03001800_s.timer >> 1]))
-            gUnk_03001800_s.timer++;
+        if (run_message(gWeeklyMessages[gSceneWork.timer >> 1]))
+            gSceneWork.timer++;
         break;
     default:
         sprite_cycle_anim_start(0x18, 0x3F, 0xC);
-        gUnk_03001800_s.timer = 0;
-        gUnk_03001800_s.nextSubState = 0xC;
+        gSceneWork.timer = 0;
+        gSceneWork.nextSubState = 0xC;
         gGameSubState = 2;
         break;
     }
@@ -332,17 +332,17 @@ void weekly_go_to_lecture(void) {
     u32 zero = 0;
 
     DmaSet(3, &zero, gSpriteEntries, 0x85000800);
-    gUnk_03001800_s.nextSubState = 0xD;
+    gSceneWork.nextSubState = 0xD;
     gGameSubState = 5;
 }
 
 // Sub-state 13: the lecture talk (gWeeklyMessages 8-13); after each line one gWeeklyLectureSteps step runs to
 // its end.
 void weekly_lecture(void) {
-    switch (gUnk_03001800_s.timer) {
+    switch (gSceneWork.timer) {
     case 0:
         text_window_init(1, 0, 0);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 4:
     case 8:
@@ -351,7 +351,7 @@ void weekly_lecture(void) {
     case 20:
     case 24:
         message_next();
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 1:
     case 5:
@@ -359,22 +359,22 @@ void weekly_lecture(void) {
     case 13:
     case 17:
     case 21:
-        if (run_message(gWeeklyMessages[(gUnk_03001800_s.timer >> 2) + 8])) {
+        if (run_message(gWeeklyMessages[(gSceneWork.timer >> 2) + 8])) {
             message_next();
             run_message(gUnk_08486114);
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
         }
         break;
     case 25:
-        if (run_message(gWeeklyMessages[(gUnk_03001800_s.timer >> 2) + 8]))
-            gUnk_03001800_s.timer++;
+        if (run_message(gWeeklyMessages[(gSceneWork.timer >> 2) + 8]))
+            gSceneWork.timer++;
         break;
     case 2:
     case 6:
     case 10:
     case 14:
     case 18:
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 22:
         sprite_entry_init(0, 0xC800, 0x50F, 0, 3);
@@ -382,7 +382,7 @@ void weekly_lecture(void) {
         gSpriteEntries[0].unk4 = -8;
         gSpriteEntries[0].unkB = 0x40;
         gSpriteEntries[0].unk1A = 0;
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 3:
     case 7:
@@ -391,12 +391,12 @@ void weekly_lecture(void) {
     case 19:
     case 23:
         if (weekly_lecture_run_step())
-            gUnk_03001800_s.timer++;
+            gSceneWork.timer++;
         break;
     default:
         setup_screen_transition_effect_080684F0(4, 2, 0);
-        gUnk_03001800_s.timer = 0;
-        gUnk_03001800_s.nextSubState = 0xE;
+        gSceneWork.timer = 0;
+        gSceneWork.nextSubState = 0xE;
         gGameSubState = 2;
         break;
     }
@@ -442,46 +442,46 @@ void weekly_back_to_studio(void) {
     gWeeklyCycleAnimMask = 0;
     sprite_cycle_anim_start(0x18, 0x3F, 0xC);
     gUnk_03000430 = zero_late;
-    gUnk_03001800_s.nextSubState = 0xF;
+    gSceneWork.nextSubState = 0xF;
     gGameSubState = 4;
 }
 
 // Sub-state 15: the closing talk (gWeeklyMessages 15-18), then the curtains close.
 void weekly_closing_talk(void) {
-    switch (gUnk_03001800_s.timer) {
+    switch (gSceneWork.timer) {
     case 0:
         text_window_init(1, 0, 0);
         sprite_cycle_anim_start(0x19, 0x4B, 8);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 2:
         message_next();
         sprite_cycle_anim_stop(0x19, 0x4B);
         sprite_cycle_anim_start(0x17, 0x36, 8);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 4:
         message_next();
         sprite_cycle_anim_stop(0x17, 0x36);
         sprite_cycle_anim_start(0x19, 0x4B, 8);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 6:
         message_next();
         sprite_cycle_anim_stop(0x17, 0x33);
         sprite_cycle_anim_stop(0x19, 0x4B);
         sprite_cycle_anim_start(0x18, 0x3F, 6);
-        gUnk_03001800_s.timer++;
+        gSceneWork.timer++;
         break;
     case 1:
     case 3:
     case 5:
     case 7:
-        if (run_message(gWeeklyMessages[(gUnk_03001800_s.timer >> 1) + 15]))
-            gUnk_03001800_s.timer++;
+        if (run_message(gWeeklyMessages[(gSceneWork.timer >> 1) + 15]))
+            gSceneWork.timer++;
         break;
     default:
-        gUnk_03001800_s.timer = 0;
+        gSceneWork.timer = 0;
         sprite_cycle_anim_start(0x16, 0x27, 8);
         sprite_cycle_anim_start(0x17, 0x33, 8);
         sprite_cycle_anim_start(0x19, 0x4B, 8);
@@ -496,7 +496,7 @@ void weekly_closing_talk(void) {
 void weekly_wait_curtains_closed(void) {
     if (gSpriteEntries[10].unk22 == 0) {
         fade_out_music(0x20);
-        gUnk_03001800_s.nextSubState = 0x11;
+        gSceneWork.nextSubState = 0x11;
         gGameSubState = 2;
     }
 }
@@ -778,12 +778,12 @@ void weekly_set_sprite_effect(u8 effect, u8 sprite, u16 duration) {
 
 // Runs the current lecture step; nonzero once it is done.
 u32 weekly_lecture_run_step(void) {
-    return gWeeklyLectureSteps[gUnk_03001800_s.unk10.lecture.state]();
+    return gWeeklyLectureSteps[gSceneWork.unk10.lecture.state]();
 }
 
 // Lecture step 4: nothing to show.
 u32 weekly_lecture_skip_step(void) {
-    gUnk_03001800_s.unk10.lecture.state++;
+    gSceneWork.unk10.lecture.state++;
     return 1;
 }
 
@@ -801,7 +801,7 @@ u32 weekly_lecture_attach_head(void) {
         clear_sprite_entry(6);
         play_sound_effect(0x54);
         sprites[2].unk1A = 0;
-        gUnk_03001800_s.unk10.lecture.state++;
+        gSceneWork.unk10.lecture.state++;
         return 1;
     } else
         sprites[1].unk2 = sprites[2].unk2 -= 4;
@@ -825,7 +825,7 @@ u32 weekly_lecture_attach_arm_from_left(void) {
         clear_sprite_entry(7);
         play_sound_effect(0x54);
         *wait = 0;
-        gUnk_03001800_s.unk10.lecture.state++;
+        gSceneWork.unk10.lecture.state++;
         return 1;
     } else
         *x += 4;
@@ -849,7 +849,7 @@ u32 weekly_lecture_attach_arm_from_right(void) {
         clear_sprite_entry(8);
         play_sound_effect(0x54);
         *wait = 0;
-        gUnk_03001800_s.unk10.lecture.state++;
+        gSceneWork.unk10.lecture.state++;
         return 1;
     } else
         *x -= 4;
@@ -879,7 +879,7 @@ u32 weekly_lecture_attach_legs(void) {
             *priority = 0x21;
             *wait = zero;
         }
-        gUnk_03001800_s.unk10.lecture.state++;
+        gSceneWork.unk10.lecture.state++;
         return 1;
     } else
         *x -= 4;
@@ -897,9 +897,9 @@ u32 weekly_lecture_drop_medal(void) {
     if (gSpriteEntries[0].unk4 > 0x3F) {
         play_sound_effect(7);
         gWeeklyFlashPalette = gPaletteBackupBg;
-        gUnk_03001800_s.unk10.lecture.step = 0;
+        gSceneWork.unk10.lecture.step = 0;
         DmaSet(3, OBJ_PLTT, gPaletteBackupBg, 0x84000080);
-        gUnk_03001800_s.unk10.lecture.state++;
+        gSceneWork.unk10.lecture.state++;
     }
     return 0;
 }
@@ -911,17 +911,17 @@ u32 weekly_lecture_flash(void) {
     s32 i;
     u16 *dst = gPaletteBufferBg;
 
-    if (gUnk_03001800_s.unk10.lecture.step > 0x40) {
+    if (gSceneWork.unk10.lecture.step > 0x40) {
         play_sound_effect(10);
-        gUnk_03001800_s.unk10.lecture.state++;
+        gSceneWork.unk10.lecture.state++;
     } else {
-        if (gUnk_03001800_s.unk10.lecture.step < 0x20)
-            fade = 0x20 - gUnk_03001800_s.unk10.lecture.step;
+        if (gSceneWork.unk10.lecture.step < 0x20)
+            fade = 0x20 - gSceneWork.unk10.lecture.step;
         else
-            fade = gUnk_03001800_s.unk10.lecture.step - 0x20;
-        if (gUnk_03001800_s.unk10.lecture.step == 0x20)
+            fade = gSceneWork.unk10.lecture.step - 0x20;
+        if (gSceneWork.unk10.lecture.step == 0x20)
             clear_sprite_entry(0);
-        if (gUnk_03001800_s.unk10.lecture.step == 0x14)
+        if (gSceneWork.unk10.lecture.step == 0x14)
             play_sound_effect(0x51);
         white = 0x20 - fade;
         for (i = 0; i <= 0xFF; i++) {
@@ -932,7 +932,7 @@ u32 weekly_lecture_flash(void) {
         DmaSet(3, dst, OBJ_PLTT, 0x84000080);
     }
     if (gFrameCounter & 1)
-        gUnk_03001800_s.unk10.lecture.step++;
+        gSceneWork.unk10.lecture.step++;
     return 0;
 }
 
@@ -951,7 +951,7 @@ u32 weekly_lecture_show_medabot(void) {
         fill = 0x200;
         DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
         setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, 0, 0, 0);
-        gUnk_03001800_s.unk10.lecture.state++;
+        gSceneWork.unk10.lecture.state++;
     }
     return 0;
 }
@@ -964,8 +964,8 @@ u32 weekly_lecture_start_pose(void) {
     DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
     setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, 0, 1, 0);
     medabot_pose_anim_step(0, 0x2D, 0);
-    gUnk_03001800_s.unk10.lecture.state++;
-    gUnk_03001800_s.unk10.lecture.step = 0;
+    gSceneWork.unk10.lecture.state++;
+    gSceneWork.unk10.lecture.step = 0;
     return 0;
 }
 
@@ -990,23 +990,23 @@ u32 weekly_lecture_run_pose(void) {
     fill = 0x200;
     DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
     setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, none, 1, none);
-    switch (script[gUnk_03001800_s.unk10.lecture.pos]) {
+    switch (script[gSceneWork.unk10.lecture.pos]) {
     case 0:
-        if (script[gUnk_03001800_s.unk10.lecture.pos + 1] >= gUnk_03001800_s.unk10.lecture.step++)
+        if (script[gSceneWork.unk10.lecture.pos + 1] >= gSceneWork.unk10.lecture.step++)
             break;
-        gUnk_03001800_s.unk10.lecture.pos += 2;
-        gUnk_03001800_s.unk10.lecture.step = zero;
+        gSceneWork.unk10.lecture.pos += 2;
+        gSceneWork.unk10.lecture.step = zero;
         break;
     case 1:
-        play_sound_effect(script[gUnk_03001800_s.unk10.lecture.pos + 1]);
-        gUnk_03001800_s.unk10.lecture.pos += 2;
-        gUnk_03001800_s.unk10.lecture.step = zero;
+        play_sound_effect(script[gSceneWork.unk10.lecture.pos + 1]);
+        gSceneWork.unk10.lecture.pos += 2;
+        gSceneWork.unk10.lecture.step = zero;
         break;
     case 2:
         break;
     }
     if (medabot_pose_anim_step(0, 0x2D, 0) != 0) {
-        gUnk_03001800_s.unk10.lecture.state = 0;
+        gSceneWork.unk10.lecture.state = 0;
         return 1;
     }
     return 0;

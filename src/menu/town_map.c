@@ -183,18 +183,18 @@ void town_map_close_message(void) {
     town_map_animate_tiles();
     if (game_state_execute_handler_a()) {
         palette_backup_from_hardware();
-        gUnk_03000440.unk84 = 0;
+        gGameWork.unk84 = 0;
         gGameSubState++;
     }
 }
 
 void town_map_fade_out_exit(void) {
-    struct Unk_03000440 *s;
+    struct GameWork *s;
     u8 *n;
 
     town_map_update_cursor();
     town_map_animate_tiles();
-    s = &gUnk_03000440;
+    s = &gGameWork;
     n = &s->unk84;
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, *n * 4, 0xFFFF);

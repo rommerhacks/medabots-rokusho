@@ -121,8 +121,8 @@ struct Unk_03006D20 {
     u8 fillerD[0x3];
 };
 
-// 0x03001800 while game mode 3 (boot logos / story intro, code_0806B160) runs; the same RAM as gUnk_03001800.
-struct Unk_03001800_s {
+// 0x03001800 while game mode 3 (boot logos / story intro, code_0806B160) runs; the same RAM as gBattleWork.
+struct SceneWork {
     u16 nextMode; // gGameMode / gGameState / gGameSubState to go to when the scene ends
     u16 nextState;
     u16 nextSubState;
@@ -132,7 +132,7 @@ struct Unk_03001800_s {
         u16 h;             // story intro: page (graphics gUnk_08487328 / text gUnk_08486EEC)
         u16 afterSubState; // opening intro: sub-state to run after the next silhouette / scan step
         u8 b;              // boot logos: nonzero once START may skip them (boot_logos_check_skip)
-        s8 s[4];           // bomb minigame: roundBombs / dropInterval / bombsLeft (struct Unk_03001800_bomb)
+        s8 s[4];           // bomb minigame: roundBombs / dropInterval / bombsLeft (struct BombGameWork)
     } unkC;
     union {
         s32 w; // countdown: play_song(3) when it reaches 0
@@ -162,8 +162,8 @@ struct Unk_03001800_s {
 };
 
 // 0x03001800 while game mode 3 state 5 (gBombGameStates, the bomb minigame) is active; the same RAM as
-// gUnk_03001800 (bomb_game_init sets the first three counters through Unk_03001800_s.unkC).
-struct Unk_03001800_bomb {
+// gBattleWork (bomb_game_init sets the first three counters through SceneWork.unkC).
+struct BombGameWork {
     u8 filler0[8];
     s32 timer;          // frames since the round started; bombs drop when it passes nextDropTime
     s8 roundBombs;      // bombs this round (50; after a lost life: bombs left + 10, at most 50), entries in bombLanes
@@ -176,9 +176,9 @@ struct Unk_03001800_bomb {
 };
 
 // 0x03001800 during game mode 3 state 6, the "Medabots Weekly" TV show (medabots_weekly_update); the same RAM
-// as gUnk_03001800.
+// as gBattleWork.
 struct MedabotsWeeklyWork {
-    u16 unk0; // next mode? (cf. Unk_03001800_s.nextMode)
+    u16 unk0; // next mode? (cf. SceneWork.nextMode)
     u16 unk2; // next state?
     u8 filler4[8];
     u8 scrollBg3;  // nonzero: scroll BG3 every other frame (weekly_scroll_bg3)
@@ -205,7 +205,7 @@ struct Unk_03002B70 {
     u32 unk18;    // at most 0x014996FF (validate_save_data; guess: play time in frames, below 100 hours)
 };
 
-// Tile animation slot at gUnk_03000440.tileAnims (tile_anim_init / tile_anim_run): each script step copies
+// Tile animation slot at gGameWork.tileAnims (tile_anim_init / tile_anim_run): each script step copies
 // frameTiles tiles of frame N from the EWRAM sheet (at tile sheetTile) to OBJ tile objTile.
 struct TileAnim {
     u8 wait;        // frames left on the current step
@@ -222,7 +222,7 @@ struct GfxListEntry {
     u16 index;
 };
 
-struct Unk_03000440 {
+struct GameWork {
     u8 unk0; // message window: 0 = dim the palettes while open (text_window_init args a, b, c)
     u8 unk1; // portrait mode: 0 = animated, 1 = static, 2 = none
     u8 unk2; // 1 = no window frame
@@ -327,7 +327,7 @@ struct Unk_03000440 {
     u8 unkEE;       // start of a 16-byte part data record (load_part_data): ability (gUnk_083B656C name)
     u8 unkEF;       // skill id; >= 100: leg type (gUnk_083BE97C[unkEF - 100])
     u8 unkF0;       // skill type (gUnk_083B6EC8 name)
-    u8 unkF1;       // gender: 0 male, 1 female (matched against gUnk_030017A0[].unk1)
+    u8 unkF1;       // gender: 0 male, 1 female (matched against gTeamSlots[].unk1)
     u8 unkF2;       // stats: head Armor, Success, Power, (F5 power icon flag), Uses; legs Armor, Propulsion,
     u8 unkF3;       // Evasion, Defense, Proximity, Remoteness (runtime-checked on the detail page)
     u8 unkF4;
@@ -497,7 +497,7 @@ struct ByteTable3 {
     u8 b[3];
 };
 
-// Bitfield view of gUnk_03000440.unk14 (text pen x): the text tile flush code tests the pixel offset in
+// Bitfield view of gGameWork.unk14 (text pen x): the text tile flush code tests the pixel offset in
 // the current 8-pixel tile through it, which reloads unk14 (message_new_line and friends).
 struct TextColBits {
     u8 filler0[0x14];
@@ -527,7 +527,7 @@ struct SpriteWork {
     u8 unk1097;
 };
 
-// Opponent Medabot in an encounter setup (gUnk_03001800.unk4).
+// Opponent Medabot in an encounter setup (gBattleWork.unk4).
 struct EncounterBot {
     u8 parts[4]; // head, right arm, left arm, legs part ids
     u8 unk4;     // Medal (gUnk_083B6158 record; init_enemy_bot_medal)
@@ -543,7 +543,7 @@ struct Vec16 {
     s16 y;
 };
 
-// Battle Medapart record (0x18 bytes, 4 per gUnk_03000590 record from +0x48; battle_bots_load_parts).
+// Battle Medapart record (0x18 bytes, 4 per gBattleBots record from +0x48; battle_bots_load_parts).
 // Screen position returned by value (a 4-byte struct, so in memory via a hidden pointer: calc_polar_to_screen_coords).
 struct Coords16 {
     s16 x;
@@ -586,8 +586,8 @@ struct SortEntry {
 // The game indexes it through the constant address (a symbol doesn't match find_most_damaged_part).
 #define SORT_BUFFER ((struct SortEntry *)0x02023000)
 
-// Per-side record at gUnk_03001800.unk28 (0 team, 1 opponents).
-struct Unk_03001800_28 {
+// Per-side record at gBattleWork.unk28 (0 team, 1 opponents).
+struct BattleSideTrap {
     u8 unk0;
     u8 unk1;       // compared between the sides when TIME runs out with a tie (robattle_judge_time_up)
     u8 active;     // a trap / Team Form is laid on this side (trap_apply)
@@ -599,18 +599,18 @@ struct Unk_03001800_28 {
     u8 unk7;
 };
 
-struct Unk_03001800 {
+struct BattleWork {
     u8 unk0; // encounter: opponent message index (gUnk_083C2BBC)
     u8 unk1;
     u8 unk2; // opponent Medabot count
     u8 unk3; // nonzero: fixed opponent parts (else each part is re-rolled by random_pick_weighted4)
     struct EncounterBot unk4[3];
-    struct Unk_03001800_28 unk28[2]; // per side (0 team, 1 opponents)
-    u8 unk38;                        // battlefield
-    u8 unk39[8];                     // copied from gBattlefieldParams[unk38] (battlefield_load_params)
-    u8 unk41[3];                     // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
-    u8 unk44;                        // Robattle: bit (1 << team Medabot) set by robattle_command_auto
-    u8 unk45[6][2];                  // Robattle action queue: record + 1 (0 = free), priority = legs Propulsion
+    struct BattleSideTrap unk28[2]; // per side (0 team, 1 opponents)
+    u8 unk38;                       // battlefield
+    u8 unk39[8];                    // copied from gBattlefieldParams[unk38] (battlefield_load_params)
+    u8 unk41[3];                    // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
+    u8 unk44;                       // Robattle: bit (1 << team Medabot) set by robattle_command_auto
+    u8 unk45[6][2];                 // Robattle action queue: record + 1 (0 = free), priority = legs Propulsion
                     // (battle_queue_add, sorted by battle_queue_sort; robattle_turn_next_action tests [0][0])
     u8 unk51; // Robattle: Medaforce gauge points left to add / remove one per frame (medaforce_gauge_fill_step /
               // _drain_step)
@@ -641,22 +641,22 @@ struct Unk_03001800 {
     u8 unk7D;    // battlefield animation tick, 0-2
     u8 unk7E;    // battlefield animation tile count / 8 (gUnk_083C40B8)
     u8 unk7F;    // battlefield animation tile block (gUnk_083C40C3), 0xFF ends the loop
-    u8 unk80; // index of a 256-byte record in gUnk_03000590 (medal_rotation_store_to_battle_bot copies Medal rotation
-              // data there)
-    u8 unk81; // Robattle: selected command ring slot 0-5 (name gUnk_083C466C[unk81], runtime-checked)
+    u8 unk80;    // index of a 256-byte record in gBattleBots (medal_rotation_store_to_battle_bot copies Medal rotation
+                 // data there)
+    u8 unk81;    // Robattle: selected command ring slot 0-5 (name gUnk_083C466C[unk81], runtime-checked)
     u8 unk82;
     u8 unk83; // Robattle: command ring turning, 1 right / 2 left (command_ring_input); nonzero blocks
               // robattle_command_input
     u8 unk84;
     u8 unk85;
     u8 unk86;
-    u8 unk87; // Robattle: gUnk_03000590 record of the acting Medabot
+    u8 unk87; // Robattle: gBattleBots record of the acting Medabot
     u8 unk88;
     u8 unk89; // Robattle: side of the acting Medabot (unk87 / 3: 0 team, 1 opponents)
     u8 unk8A; // Robattle: the other side (unk89 ^ 1)
     u8 unk8B;
     u8 unk8C[3];
-    u8 unk8F[3][4]; // per team member: gUnk_030017A0 bytes 3-6
+    u8 unk8F[3][4]; // per team member: gTeamSlots bytes 3-6
     u8 filler9B;
     u8 unk9C[5]; // cleared by battle_substeps_reset
     u8 unkA1[5]; // cleared by battle_message_reset
@@ -675,7 +675,7 @@ struct Unk_03001800 {
     u8 fillerB6[0x1];
     u8 unkB7; // attack result: 1 missed (target dodged, battle_check_dodged), 3 countered (reaction_check_counter)
     u8 unkB8; // attack result: 2 nullified (Full / Half Block, immunities), 4 absorbed as healing (attack_hit_branch)
-    u8 unkB9; // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other
+    u8 unkB9; // raised by gBattleWork.unkEC up to 0x78 on the own side, lowered on the other
               // (medaforce_hide_n_seek_apply_evasion, written as &unkB8 + 1 to match)
     u8 unkBA;
     u8 unkBB;
@@ -752,10 +752,10 @@ struct Unk_03001800 {
     u16 unk16C; // battle score (calculate_battle_score_summary), then experience points
     // After-battle result per team member (u8 array: a struct would be 4-byte aligned):
     // [0] Medal id + 1, 0 = none (name from gMedalNames), [1] nonzero: Medal level-up screen,
-    // [2]-[5] copied to gUnk_03000440.unk134-137, [6] nonzero: [7] = Medaforce id (gMedaforceNames)
+    // [2]-[5] copied to gGameWork.unk134-137, [6] nonzero: [7] = Medaforce id (gMedaforceNames)
     u8 unk16E[3][8];
     u8 unk186; // after-battle screen: team member being shown (0-2, 3 = done)
-    u8 unk187; // gUnk_03000590 record index (battle_loss_take_part)
+    u8 unk187; // gBattleBots record index (battle_loss_take_part)
     u8 unk188; // two rolls from gUnk_083AF200 (script_op_roll_dice_damage); unkEC = (unk188 + unk189) * 10
     u8 unk189;
     u8 partnerName[0x10]; // link Robattle: the partner's player name (link_robattle_exchange_names)
@@ -776,7 +776,7 @@ struct Unk_03001800 {
     u8 unk1B0;
 };
 
-struct Unk_03000BE0 {
+struct MedalData {
     u8 unk0;      // flags (0x40 tested by medal_trade_check_medal)
     u8 unk1;      // Medal graphic index (0x80-byte tiles at 0x084C21BC)
     u16 unk2;     // shown as "NEXT Lv" on the Medals list (render_medal_level_display; blank at level 100)
@@ -794,10 +794,10 @@ struct Unk_03000BE0 {
     u8 unk3F; // Robattle: current unk18 entry (battle_bot_advance_rotation advances it, wraps at 8 to unk9)
 };
 
-// 256-byte records at gUnk_03000590 (6 of them, cleared together); each starts with a Medal record copy.
-struct Unk_03000590 {
-    struct Unk_03000BE0 medal;
-    // 0x40-0x47: copy of the team slot (struct Unk_030017A0, copy_team_slots_to_battle_bots);
+// 256-byte records at gBattleBots (6 of them, cleared together); each starts with a Medal record copy.
+struct BattleBot {
+    struct MedalData medal;
+    // 0x40-0x47: copy of the team slot (struct TeamSlot, copy_team_slots_to_battle_bots);
     // opponents: unk40 = 3, unk41 = head part byte 3, unk42 = Medal graphic (init_opponent_bot_slots)
     u8 unk40; // nonzero: record in use
     u8 unk41;
@@ -812,7 +812,7 @@ struct Unk_03000590 {
     u8 fillerAE[0x2];
     u8 unkB0[8];  // per skill type: times used this battle (count_bot_skill_use)
     u8 unkB8;     // own record index (battle_bots_load_parts)
-    u8 unkB9;     // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other
+    u8 unkB9;     // raised by gBattleWork.unkEC up to 0x78 on the own side, lowered on the other
                   // (medaforce_hide_n_seek_apply_evasion, written as &unkB8 + 1 to match)
     u8 unkBA;     // nonzero: Medabot present (records 0-2 player team, 3-5 opponents); 2 = out of action (Reactivate)
     u8 moveDelay; // movement delay 0-0x1F, rebuilt each frame by bot_calc_move_delay; speed = 0x20 - moveDelay
@@ -843,17 +843,17 @@ struct Unk_03000590 {
     u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (robattle_effect_a_end_init ..
               // robattle_effect_b_end_anim), bit 2 / bit 3 = numbers shown by robattle_effect_a_number_init /
               // robattle_effect_b_number_init
-    u8 unkCF; // flags: bits 0/1/2/3 set by medaforce_cancel_status_apply (by gUnk_03001800.unk51)
+    u8 unkCF; // flags: bits 0/1/2/3 set by medaforce_cancel_status_apply (by gBattleWork.unk51)
     u8 unkD0;
-    u8 unkD1; // raised by gUnk_03001800.unkEC up to 0xFF (medaforce_iron_wall_apply_defence, written as &unkD0 + 1 to
+    u8 unkD1; // raised by gBattleWork.unkEC up to 0xFF (medaforce_iron_wall_apply_defence, written as &unkD0 + 1 to
               // match)
     u8 unkD2;
-    u8 unkD3;        // added to gUnk_03001800.unkEC for parts with data[2] 0 / 1 (script_op_calc_damage)
+    u8 unkD3;        // added to gBattleWork.unkEC for parts with data[2] 0 / 1 (script_op_calc_damage)
     u8 unkD4;        // added for data[2] 2 / 3 (script_op_calc_damage)
-    u8 unkD5;        // added to gUnk_03001800.unkEC for unk28[side].unk5 (trap_apply)
+    u8 unkD5;        // added to gBattleWork.unkEC for unk28[side].unk5 (trap_apply)
     u8 unkD6;        // flags (bit 1: +10 damage, attack_hit_carry_over_retarget)
     u8 moveSubpixel; // movement: sub-pixel accumulator, + (0x20 - moveDelay) per frame, 1/16 px (battle_bot_move)
-    u16 unkD8;       // cleared, then raised by gUnk_03001800.unkEC up to 0xFF (defence_apply)
+    u16 unkD8;       // cleared, then raised by gBattleWork.unkEC up to 0xFF (defence_apply)
     u8 moveStep;     // movement: whole pixels moved this frame
     u8 fillerDB;
     u8 unkDC;        // unkDC..unkE3 cleared by reset_battle_bot_state
@@ -866,7 +866,7 @@ struct Unk_03000590 {
     u8 fillerE2[0x1E];
 };
 
-struct Unk_030017A0 {
+struct TeamSlot {
     u8 unk0; // slot in use (> 1: has a Medal)
     u8 unk1; // guess: Medabot gender (compared with the Medapart gender unkF1 in count_compatible_medaparts)
     u8 unk2; // Medal id
@@ -1614,10 +1614,10 @@ struct Unk_03006F74 {
     const u8 *const *unkAC; // scene text (text_scroll_page_start)
     u8 unkB0[0x20];         // Medal list: Medal indices (medal_rename_build_list)
     struct RingPoint
-        unkD0[18];    // points on a hexagon / circle (ring_points_place_on_hexagon, ring_points_place_on_circle)
-    s32 unk1F0[4][4]; // 8.8 fixed-point 4x4 transform matrix (matrix_set_identity, matrix_rotate_xyz)
-    struct Unk_03000BE0 unk230; // link: Medal record received from the other player (medal_trade_transfer)
-    u8 unk270[0x30];            // message text buffer (shop_menu_greeting)
+        unkD0[18];           // points on a hexagon / circle (ring_points_place_on_hexagon, ring_points_place_on_circle)
+    s32 unk1F0[4][4];        // 8.8 fixed-point 4x4 transform matrix (matrix_set_identity, matrix_rotate_xyz)
+    struct MedalData unk230; // link: Medal record received from the other player (medal_trade_transfer)
+    u8 unk270[0x30];         // message text buffer (shop_menu_greeting)
 };
 
 // BLDY fade state (init_blend_effect / blend_fade_step_08065598; Unk_03006F74.unk50)
@@ -1652,13 +1652,13 @@ struct Unk_03001784 {
 
 // Battery save image (0x1CBC bytes), built by serialize_save_data and read back by load_save_data
 struct SaveData {
-    u8 magic[16];                   // copied from gSaveMagic
-    struct Unk_03002B70 unk10;      // gUnk_03002B70 (money, name, ...)
-    struct Unk_03000BE0 medals[30]; // gUnk_03000BE0
-    u16 medaparts[4 * 120 * 2];     // gMedapartInventory, one byte per halfword
-    struct Unk_030017A0 team[9];    // gUnk_030017A0
-    u8 items[64][2];                // gItemInventory
-    u16 checksum;                   // byte sum of the whole image, computed with this field 0
+    u8 magic[16];                // copied from gSaveMagic
+    struct Unk_03002B70 unk10;   // gUnk_03002B70 (money, name, ...)
+    struct MedalData medals[30]; // gMedals
+    u16 medaparts[4 * 120 * 2];  // gMedapartInventory, one byte per halfword
+    struct TeamSlot team[9];     // gTeamSlots
+    u8 items[64][2];             // gItemInventory
+    u16 checksum;                // byte sum of the whole image, computed with this field 0
     u8 fillerFF6[2];
     u8 field[0xCC0]; // gUnk_030057E0
     u8 flags;        // bits 0-1 gOptionTimeLimit, bit 2 gOptionSkipMessages, bits 3-4 gOptionBattleMusic, bit 5

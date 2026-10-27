@@ -180,18 +180,18 @@ void shop_menu_show_layers(void) {
     CpuFastSet(gUnk_084E2E58, (void *)0x0202F9C0, 8);
     CpuFastSet(gUnk_08488AA4, (void *)0x0202F820, 8);
     CpuFastSet(gUnk_0879671C, (void *)0x0202FA00, 0x80);
-    gUnk_03000440.unk84 = 0;
+    gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
 // State 3: fade in from white; back from the list (unk6 == 1) it goes straight to the part types (state 9).
 void shop_menu_fade_in(void) {
     if (gUnk_03006F74->unk6 == 1) {
-        struct Unk_03000440 *s;
+        struct GameWork *s;
         u8 *n;
 
         shop_highlight_part_type_icon(gUnk_03006F74->unk19, 8);
-        s = &gUnk_03000440;
+        s = &gGameWork;
         n = &s->unk84;
         if (*n <= 8) {
             bg_palettes_blend_masked_now(0, 0x20 - *n * 4, 0x7FFE);
@@ -206,7 +206,7 @@ void shop_menu_fade_in(void) {
             gGameSubState = 9;
         }
     } else {
-        struct Unk_03000440 *s = &gUnk_03000440;
+        struct GameWork *s = &gGameWork;
         u8 *n = &s->unk84;
 
         if (*n <= 8) {
@@ -269,7 +269,7 @@ void shop_menu_choose_action(void) {
             break;
         case 2:
         cancel:
-            gUnk_03000440.unk84 = 0;
+            gGameWork.unk84 = 0;
             gGameSubState = 6;
             break;
         }
@@ -281,13 +281,13 @@ void shop_menu_choose_action(void) {
 
 void shop_menu_close_message(void) {
     if (game_state_execute_handler_a()) {
-        gUnk_03000440.unk84 = 0;
+        gGameWork.unk84 = 0;
         gGameSubState++;
     }
 }
 
 void shop_menu_fade_out_exit(void) {
-    struct Unk_03000440 *s = &gUnk_03000440;
+    struct GameWork *s = &gGameWork;
     u8 *n = &s->unk84;
 
     if (*n <= 8) {
@@ -372,7 +372,7 @@ void shop_menu_choose_part_type(void) {
         back:
             gGameSubState = 0xB;
         } else {
-            gUnk_03000440.unk84 = 0;
+            gGameWork.unk84 = 0;
             gUnk_03006F74->unk48 = 0x2D;
             gGameSubState = 0xC;
         }
@@ -413,13 +413,13 @@ void shop_menu_part_type_chosen(void) {
     if (*t != 0)
         (*t)--;
     else if (game_state_execute_handler_a()) {
-        gUnk_03000440.unk84 = 0;
+        gGameWork.unk84 = 0;
         gGameSubState++;
     }
 }
 
 void shop_menu_fade_out_to_list(void) {
-    struct Unk_03000440 *s = &gUnk_03000440;
+    struct GameWork *s = &gGameWork;
     u8 *n = &s->unk84;
     s32 i;
 

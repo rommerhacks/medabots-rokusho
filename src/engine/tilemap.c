@@ -186,7 +186,7 @@ static inline s32 sub8(u32 v) {
     return v - 8;
 }
 
-// One frame of the message window portrait animation (8x8 tiles on BG0): frame gUnk_03000440.unkE of
+// One frame of the message window portrait animation (8x8 tiles on BG0): frame gGameWork.unkE of
 // tilemap set anim (9 frames, gUnk_083B4AE0[anim * 9 ..]), played backwards when reverse is set; loads
 // portrait set/idx (gUnk_083AFD08, as load_bg0_tilemap) first. Returns 1 after the last frame.
 // Runtime: message_clear_text_area calls it 9 frames in a row with (0, 4, 3, 5, ...) on the new game prompt.
@@ -196,17 +196,17 @@ u32 message_portrait_anim_step(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 rev
 
     *p++ = set;
     *p = idx;
-    if (gUnk_03000440.unkE == 0) {
+    if (gGameWork.unkE == 0) {
         REG_DISPCNT |= 0x100;
         REG_BG0CNT = 0x500;
         lz_decompress_dispatch(gUnk_083AFD08[set][idx], (void *)0x06000F80);
         CpuFastSet(gUnk_083B15C8[set], (void *)0x050001A0, 8);
     }
     if (reverse == 0)
-        write_tilemap_rect(8, 8, x, y, gUnk_083B4AE0[anim * 9 + gUnk_03000440.unkE], REG_BG0CNT, 0);
+        write_tilemap_rect(8, 8, x, y, gUnk_083B4AE0[anim * 9 + gGameWork.unkE], REG_BG0CNT, 0);
     else
-        write_tilemap_rect(8, 8, x, y, gUnk_083B4AE0[mul9(anim) - sub8(gUnk_03000440.unkE)], REG_BG0CNT, 0);
-    if (++gUnk_03000440.unkE == 9)
+        write_tilemap_rect(8, 8, x, y, gUnk_083B4AE0[mul9(anim) - sub8(gGameWork.unkE)], REG_BG0CNT, 0);
+    if (++gGameWork.unkE == 9)
         return 1;
     return 0;
 }
