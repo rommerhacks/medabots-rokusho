@@ -75,12 +75,12 @@ void shop_list_init(void) {
         u32 *prices;
         const u8 *tbl;
 
-        tbl = gUnk_08483E50;
+        tbl = gShopStock;
         i = 0;
         l = (struct ShopSellEntry *)0x02040000;
         prices = (u32 *)0x02040004;
         for (; i < 4; i++) {
-            const u8 *e = (const u8 *)(gUnk_03002420 * 4 + i + (u32)tbl);
+            const u8 *e = (const u8 *)(gShopId * 4 + i + (u32)tbl);
 
             if (*e != 0xFF && (*e != 0x20 || gUnk_03006F74->unk19 == 3)) {
                 l[i].id = *e;

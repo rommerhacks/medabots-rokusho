@@ -6,7 +6,7 @@
 void shop_return_init(void) {
     s32 i;
 
-    battle_menu_highlight_icons(gUnk_03006F74->unk19, 8);
+    shop_highlight_part_type_icon(gUnk_03006F74->unk19, 8);
     clear_battle_sprite_slot(0, 0x80);
     for (i = 0; i < 4; i++)
         gSpriteEntries[12 + i].unk0 &= 0xBFFF;

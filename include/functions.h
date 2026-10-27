@@ -64,7 +64,7 @@ struct RotateSrc;
 void LZ77UnCompWram(const void *src, void *dst);
 // code_0805EE6C
 // gUnk_03000440.unk9E (+0x14 if second), 0xFE-terminated
-// = gUnk_080AFA10[gUnk_03002420]; one caller passes only dst, src
+// = gShopkeeperPortraitSets[gShopId]; one caller passes only dst, src
 // gDecompressBuffer to VRAM 0x06004020
 // up sprite 0 at (0xB8, 0x38)
 

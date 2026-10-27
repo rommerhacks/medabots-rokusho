@@ -420,12 +420,12 @@ gSaveLostSpritePalette:
 gUnk_080AF9A8:
 	.incbin "baserom.gba", 0xAF9A8, 0x60
 
-	.global gUnk_080AFA08
-gUnk_080AFA08:
+	.global gShopPartTypeIconPos
+gShopPartTypeIconPos:
 	.incbin "baserom.gba", 0xAFA08, 0x8
 
-	.global gUnk_080AFA10
-gUnk_080AFA10:
+	.global gShopkeeperPortraitSets
+gShopkeeperPortraitSets:
 	.incbin "baserom.gba", 0xAFA10, 0x10
 
 	.global gUnk_080AFA20

@@ -1,5 +1,5 @@
-// Mode-2 state 11: the Medaparts shop menu (Buy / Sell / Exit). shop_menu_dispatch runs gUnk_08483E10.
-// battle_menu_highlight_icons (4-icon menu highlight) and copy_text_with_lookup are shared with
+// Mode-2 state 11: the Medaparts shop menu (Buy / Sell / Exit). shop_menu_dispatch runs gShopMenuStates.
+// shop_highlight_part_type_icon (4-icon menu highlight) and shop_copy_text_with_portrait are shared with
 // shop_list.c and shop_return.c.
 #include "global.h"
 
@@ -7,7 +7,7 @@ static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
 }
 
-void battle_menu_highlight_icons(u32 sel, u32 frame) {
+void shop_highlight_part_type_icon(u32 sel, u32 frame) {
     u16 t = (s16)(sel * 4 + gUnk_03006F74->unk38 + 5) | (s16)0xC000;
     s32 i, j;
     u16 *a, *b;
@@ -18,8 +18,10 @@ void battle_menu_highlight_icons(u32 sel, u32 frame) {
     *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000192) = t++;
     *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000194) = t;
     for (i = 0; i < 4; i++) {
-        a = (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + gUnk_080AFA08[i][0] + gUnk_080AFA08[i][1] * 32;
-        b = (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + gUnk_080AFA08[i][0] + (gUnk_080AFA08[i][1] + 1) * 32;
+        a = (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + gShopPartTypeIconPos[i][0] +
+            gShopPartTypeIconPos[i][1] * 32;
+        b = (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + gShopPartTypeIconPos[i][0] +
+            (gShopPartTypeIconPos[i][1] + 1) * 32;
         if (frame & 8)
             pal = (i == sel) ? 0x6000 : 0x5000;
         else
@@ -33,7 +35,7 @@ void battle_menu_highlight_icons(u32 sel, u32 frame) {
     }
 }
 
-void copy_text_with_lookup(dst, src, unused, i) u8 *dst;
+void shop_copy_text_with_portrait(dst, src, unused, i) u8 *dst;
 u8 *src;
 u32 unused;
 u32 i;
@@ -45,28 +47,29 @@ u32 i;
     dst[i] = src[i];
     i++;
     dst[i] = src[i];
-    dst[2] = gUnk_080AFA10[gUnk_03002420];
+    dst[2] = gShopkeeperPortraitSets[gShopId];
 }
 
 void shop_menu_dispatch(void) {
-    gUnk_08483E10[gGameSubState]();
+    gShopMenuStates[gGameSubState]();
     if (gFrameCounter & 1) {
         gBg3Scroll.x++;
         gBg3Scroll.y++;
     }
 }
 
-void sub_08060C44(void) {
+void shop_menu_start(void) {
     gUnk_03006F74->unk5 = 0;
     gUnk_03006F74->unk6 = 0;
     gGameSubState = 14;
 }
 
-void sub_08060C60(void) {
+void shop_menu_goto_init(void) {
     gGameSubState = 1;
 }
 
-void sub_08060C6C(void) {
+// State 14: clears VRAM, loads the shop backdrop, menu tilemaps and tiles; -> 15.
+void shop_menu_load_graphics(void) {
     u32 zero;
     vu16 *bg1, *bg2, *bg3;
     u16 v;
@@ -167,7 +170,7 @@ void shop_menu_init(void) {
     gGameSubState++;
 }
 
-void sub_08060FD4(void) {
+void shop_menu_show_layers(void) {
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
@@ -181,12 +184,13 @@ void sub_08060FD4(void) {
     gGameSubState++;
 }
 
-void sub_08061080(void) {
+// State 3: fade in from white; back from the list (unk6 == 1) it goes straight to the part types (state 9).
+void shop_menu_fade_in(void) {
     if (gUnk_03006F74->unk6 == 1) {
         struct Unk_03000440 *s;
         u8 *n;
 
-        battle_menu_highlight_icons(gUnk_03006F74->unk19, 8);
+        shop_highlight_part_type_icon(gUnk_03006F74->unk19, 8);
         s = &gUnk_03000440;
         n = &s->unk84;
         if (*n <= 8) {
@@ -220,17 +224,18 @@ void sub_08061080(void) {
     }
 }
 
-void sub_08061180(void) {
+void shop_menu_greeting(void) {
     u8 *buf = gUnk_03006F74->unk270;
 
-    copy_text_with_lookup(buf, gUnk_0848552C);
+    shop_copy_text_with_portrait(buf, gShopGreetingText);
     if (run_message(buf)) {
         gSpriteEntries[8].unk0 |= 0x4000;
         gGameSubState++;
     }
 }
 
-void sub_080611D0(void) {
+// State 5: Buy / Sell / Exit cursor (unk5 = 0 / 1 / 2). Buy and Sell -> 8, Exit or B -> 6.
+void shop_menu_choose_action(void) {
     sprite_bob_y(8, gFrameCounter, 8);
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         play_sound_effect(2);
@@ -254,13 +259,13 @@ void sub_080611D0(void) {
             gUnk_03006F74->unk2 = 0;
             gGameSubState = 8;
             gUnk_03006F74->unk6 = 0;
-            battle_menu_highlight_icons(0, 0);
+            shop_highlight_part_type_icon(0, 0);
             break;
         case 1:
             gUnk_03006F74->unk2 = 0;
             gGameSubState = 8;
             gUnk_03006F74->unk6 = 0;
-            battle_menu_highlight_icons(0, 0);
+            shop_highlight_part_type_icon(0, 0);
             break;
         case 2:
         cancel:
@@ -274,14 +279,14 @@ void sub_080611D0(void) {
     }
 }
 
-void sub_080612D8(void) {
+void shop_menu_close_message(void) {
     if (game_state_execute_handler_a()) {
         gUnk_03000440.unk84 = 0;
         gGameSubState++;
     }
 }
 
-void sub_08061300(void) {
+void shop_menu_fade_out_exit(void) {
     struct Unk_03000440 *s = &gUnk_03000440;
     u8 *n = &s->unk84;
 
@@ -298,7 +303,7 @@ void sub_08061300(void) {
     }
 }
 
-void sub_08061374(void) {
+void shop_menu_open_part_types(void) {
     u8 t = gUnk_03006F74->unk2++;
 
     if (gSpriteEntries[8].unk8 > 4) {
@@ -319,15 +324,16 @@ void sub_08061374(void) {
     gUnk_03006F74->unk19 = 0;
 }
 
-void sub_0806142C(void) {
+void shop_menu_part_type_prompt(void) {
     u8 buf[0x30];
 
-    copy_text_with_lookup(buf, gUnk_03006F74->unk5 == 0 ? gUnk_08485551 : gUnk_08485580);
+    shop_copy_text_with_portrait(buf, gUnk_03006F74->unk5 == 0 ? gShopBuyPartTypeText : gShopSellPartTypeText);
     if (run_message(buf))
         gGameSubState++;
 }
 
-void sub_0806146C(void) {
+// State 10: part type (unk19): Up head, Left right arm, Right left arm, Down legs. A -> 12, B -> 11.
+void shop_menu_choose_part_type(void) {
     s8 i;
 
     for (i = 0; i < 4; i++) {
@@ -339,25 +345,25 @@ void sub_0806146C(void) {
     if (KEYS_LO(gNewKeys) & 0x40) {
         play_sound_effect(2);
         gUnk_03006F74->unk19 = 0;
-        battle_menu_highlight_icons(0, gFrameCounter);
+        shop_highlight_part_type_icon(0, gFrameCounter);
     }
     if (KEYS_LO(gNewKeys) & 0x80) {
         play_sound_effect(2);
         gUnk_03006F74->unk19 = 3;
-        battle_menu_highlight_icons(3, gFrameCounter);
+        shop_highlight_part_type_icon(3, gFrameCounter);
     }
     if (KEYS_LO(gNewKeys) & 0x20) {
         play_sound_effect(2);
         gUnk_03006F74->unk19 = 1;
-        battle_menu_highlight_icons(1, gFrameCounter);
+        shop_highlight_part_type_icon(1, gFrameCounter);
     }
     if (KEYS_LO(gNewKeys) & 0x10) {
         play_sound_effect(2);
         gUnk_03006F74->unk19 = 2;
-        battle_menu_highlight_icons(2, gFrameCounter);
+        shop_highlight_part_type_icon(2, gFrameCounter);
     }
     if (!(gFrameCounter & 7))
-        battle_menu_highlight_icons(gUnk_03006F74->unk19, gFrameCounter);
+        shop_highlight_part_type_icon(gUnk_03006F74->unk19, gFrameCounter);
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         for (i = 0; i < 4; i++)
@@ -381,7 +387,7 @@ void sub_0806146C(void) {
     }
 }
 
-void sub_08061678(void) {
+void shop_menu_close_part_types(void) {
     u8 t = gUnk_03006F74->unk2--;
 
     if (gSpriteEntries[8].unk8 < 0x40) {
@@ -399,10 +405,10 @@ void sub_08061678(void) {
     }
 }
 
-void sub_080616F8(void) {
+void shop_menu_part_type_chosen(void) {
     u8 *t;
 
-    battle_menu_highlight_icons(gUnk_03006F74->unk19, gFrameCounter * 2);
+    shop_highlight_part_type_icon(gUnk_03006F74->unk19, gFrameCounter * 2);
     t = &gUnk_03006F74->unk48;
     if (*t != 0)
         (*t)--;
@@ -412,7 +418,7 @@ void sub_080616F8(void) {
     }
 }
 
-void sub_0806174C(void) {
+void shop_menu_fade_out_to_list(void) {
     struct Unk_03000440 *s = &gUnk_03000440;
     u8 *n = &s->unk84;
     s32 i;

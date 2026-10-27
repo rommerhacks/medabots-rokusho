@@ -205,7 +205,7 @@
 * A switch whose `case 0` and `case 1` jump to the same code but whose compare tree is `1 / >1 / 0`
   (not a `0..1` range): write the two case bodies out in full; gcc's cross-jumping merges them later.
   The same change made the original's zero constants appear early in callee-saved registers
-  (sub_080611D0).
+  (shop_menu_choose_action).
 * `a = b = v;` stores `b` first. Swap the chain if two byte stores come out in the wrong order
   (game_over_logo_drop).
 * Loop pointer start order (`dst` literal before `src = base + v * 0x200`): explicit pointer locals

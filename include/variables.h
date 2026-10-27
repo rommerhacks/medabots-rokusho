@@ -617,13 +617,13 @@ extern const u32 gSaveLostBgTiles[];       // BG tiles (dma3_copy_or_decompress,
 extern const u16 gSaveLostBgPalette[];     // BG palette (save_lost_load_graphics)
 extern const u16 gSaveLostSpritePalette[]; // OBJ palette 0 (save_lost_load_graphics)
 extern const u8 gUnk_08785F34[];           // OBJ tiles (LZ77, save_lost_load_graphics)
-extern const u8 gUnk_08799838[];           // BG1 tilemap (LZ77, sub_08060C6C)
-extern const u8 gUnk_087999EC[];           // BG2 tilemap (LZ77, sub_08060C6C)
-extern const u8 gUnk_08798608[];           // BG1 tilemap (LZ77, sub_08060C6C)
-extern const u8 gUnk_08798824[];           // BG2 tilemap (LZ77, sub_08060C6C)
-extern const u8 gUnk_08798A34[];           // BG3 tilemap (LZ77, sub_08060C6C)
-extern const u32 gUnk_0879691C[];          // BG tiles (dma3_copy_or_decompress, sub_08060C6C)
-extern const u32 gUnk_08798F2C[];          // BG tiles (dma3_copy_or_decompress, sub_08060C6C)
+extern const u8 gUnk_08799838[];           // BG1 tilemap (LZ77, shop_menu_load_graphics)
+extern const u8 gUnk_087999EC[];           // BG2 tilemap (LZ77, shop_menu_load_graphics)
+extern const u8 gUnk_08798608[];           // BG1 tilemap (LZ77, shop_menu_load_graphics)
+extern const u8 gUnk_08798824[];           // BG2 tilemap (LZ77, shop_menu_load_graphics)
+extern const u8 gUnk_08798A34[];           // BG3 tilemap (LZ77, shop_menu_load_graphics)
+extern const u32 gUnk_0879691C[];          // BG tiles (dma3_copy_or_decompress, shop_menu_load_graphics)
+extern const u32 gUnk_08798F2C[];          // BG tiles (dma3_copy_or_decompress, shop_menu_load_graphics)
 extern const u8 gUnk_087962E8[];           // BG0 tilemap (LZ77, game_over_load_graphics)
 extern const u8 gUnk_08796474[];           // BG2 tilemap (LZ77, game_over_load_graphics)
 extern const u8 gUnk_08796598[];           // BG3 tilemap (LZ77, game_over_load_graphics)
@@ -1143,30 +1143,30 @@ extern const u32 gUnk_0878B078[];   // field menu item list BG tiles (dma3_copy_
 extern const u16 gUnk_080AF7C0[16]; // OBJ palette 14 of the field menu item list (item_menu_init)
 extern const u16 gUnk_0878AE78[0x100]; // BG palettes of the field menu item list (item_menu_init)
 // code_0805EE6C
-extern const u8 gSaveLostSpriteFrames[8]; // sprite 0 frame offsets (save_lost_animate_sprite)
-extern const u8 gUnk_080AFA10[];          // indexed by gUnk_03002420 (copy_text_with_lookup)
-extern u8 gUnk_03002420;
+extern const u8 gSaveLostSpriteFrames[8];      // sprite 0 frame offsets (save_lost_animate_sprite)
+extern const u8 gShopkeeperPortraitSets[];     // 0xFB portrait set by gShopId (shop_copy_text_with_portrait)
+extern u8 gShopId;                             // Medaparts shop id: stock row in gShopStock, shopkeeper portrait
 extern const Func gTownMapStates[];            // sub-state handlers (town_map_dispatch)
 extern const Func gGameOverStates[];           // sub-state handlers (game_over_update)
 extern const Func gSaveLostStates[];           // sub-state handlers (save_lost_dispatch)
 extern const Func gTestModeStates[];           // sub-state handlers (test_mode_dispatch)
 extern const Func gUnk_08483E8C[];             // sub-state handlers (shop_list_dispatch)
 extern const void *const gTownMapPlaceNames[]; // messages by gUnk_03006F74->unk17 (town_map_show_place_name)
-extern const u8 gUnk_08485580[];               // message text (sub_0806142C, gUnk_03006F74->unk5 set)
-extern const u8 gUnk_08485551[];               // message text (sub_0806142C, gUnk_03006F74->unk5 clear)
+extern const u8 gShopSellPartTypeText[];       // message text (shop_menu_part_type_prompt, gUnk_03006F74->unk5 set)
+extern const u8 gShopBuyPartTypeText[];        // message text (shop_menu_part_type_prompt, gUnk_03006F74->unk5 clear)
 extern const u8 gTownMapPlacePositions[][2];   // x, y in tiles by gUnk_03006F74->unk17 (town_map_update_cursor)
 extern const u16 gUnk_08483DD4[][4];           // x offsets [unk18][frame]
 extern const u16 gUnk_08483DE4[][4];           // y offsets [unk18][frame]
 extern const u16 gUnk_08483DF4[][4];           // animation frames [unk18][frame]
 extern const u8 gUnk_08483E04[];               // frame index by gUnk_03006F74->unk3A / 10 (town_map_animate_tiles)
-extern const u8 gUnk_0848552C[];               // message text (sub_08061180)
-extern const Func gUnk_08483E10[];             // sub-state handlers (shop_menu_dispatch)
+extern const u8 gShopGreetingText[];           // message text (shop_menu_greeting)
+extern const Func gShopMenuStates[];           // sub-state handlers (shop_menu_dispatch)
 extern const u16 gGameOverIkkiFramesExit[];    // sprite 1 animation frames by unk1A / 6 (game_over_wipe_out)
 extern u8 gTitleSkipIntro;
-extern const u8 gUnk_080AFA3C[][4][2]; // x, y by [which][kind] (load_medapart_sprite_animation)
-extern const u16 gUnk_08488AA4[];      // OBJ palette 1 (sub_08060FD4)
-extern const u16 gUnk_0879671C[];      // BG palettes (sub_08060FD4)
-extern const u8 gUnk_080AFA08[4][2];   // icon x, y in BG2 tiles (battle_menu_highlight_icons)
+extern const u8 gUnk_080AFA3C[][4][2];      // x, y by [which][kind] (load_medapart_sprite_animation)
+extern const u16 gUnk_08488AA4[];           // OBJ palette 1 (shop_menu_show_layers)
+extern const u16 gUnk_0879671C[];           // BG palettes (shop_menu_show_layers)
+extern const u8 gShopPartTypeIconPos[4][2]; // icon x, y in BG2 tiles (shop_highlight_part_type_icon)
 // A function table that the code copies to the stack before indexing it (agbcc emits ldm / stm for
 // the struct copy), like a local initialized array whose initializer lives in ROM.
 struct FuncTable7 {
@@ -1479,9 +1479,9 @@ extern struct SpriteFrame *const *const gUnk_083AC088[];
 extern struct SpriteFrame *const *const gUnk_083AC0C8[];
 extern struct SpriteFrame *const *const gUnk_083AC108[];
 extern const struct MapNpcRecord *const gUnk_084837A0[];
-extern u8 gUnk_02023000[];       // shop cart: quantity per sell-list entry; [0x78] = first visible entry
-extern const u8 gUnk_08483E50[]; // 4 Medapart ids per shop (gUnk_03002420 * 4 + i); 0xFF ends
-extern u16 gUnk_03006432;        // guess: battle field grid origin x (field_debug_draw_sprite_preview)
-extern u16 gUnk_03006434;        // guess: battle field grid origin y
+extern u8 gUnk_02023000[];    // shop cart: quantity per sell-list entry; [0x78] = first visible entry
+extern const u8 gShopStock[]; // 4 Medapart ids per shop (gShopId * 4 + i); 0xFF ends
+extern u16 gUnk_03006432;     // guess: battle field grid origin x (field_debug_draw_sprite_preview)
+extern u16 gUnk_03006434;     // guess: battle field grid origin y
 
 #endif // GUARD_VARIABLES_H

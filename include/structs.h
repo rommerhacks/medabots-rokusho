@@ -1605,7 +1605,7 @@ struct Unk_03006F74 {
         unkD0[18];    // points on a hexagon / circle (ring_points_place_on_hexagon, ring_points_place_on_circle)
     s32 unk1F0[4][4]; // 8.8 fixed-point 4x4 transform matrix (matrix_set_identity, matrix_rotate_xyz)
     struct Unk_03000BE0 unk230; // link: Medal record received from the other player (medal_trade_transfer)
-    u8 unk270[0x30];            // message text buffer (sub_08061180)
+    u8 unk270[0x30];            // message text buffer (shop_menu_greeting)
 };
 
 // BLDY fade state (init_blend_effect / blend_fade_step_08065598; Unk_03006F74.unk50)

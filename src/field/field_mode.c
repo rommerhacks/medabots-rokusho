@@ -170,7 +170,7 @@ void switch_game_mode(u32 a, u32 b) {
         gGameSubState = 0;
         break;
     case 3:
-        gUnk_03002420 = b;
+        gShopId = b;
         gGameMode = 2;
         gGameState = 0xB;
         gGameSubState = 0;

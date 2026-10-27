@@ -67,7 +67,7 @@
 080AF7B4	new_game_prompt_start_intro
 080AF7B8	advance_substate_with_fade
 080AF7BC	fade_step_and_transition_to_mode3
-080AFA20	sub_08060C6C
+080AFA20	shop_menu_load_graphics
 080AFA24	shop_menu_init
 080AFA28	shop_return_init
 080AFA2C	shop_list_reset_scroll

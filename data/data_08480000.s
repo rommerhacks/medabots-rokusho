@@ -88,12 +88,12 @@ gUnk_08483DF4:
 gUnk_08483E04:
 	.incbin "baserom.gba", 0x483E04, 0xC
 
-	.global gUnk_08483E10
-gUnk_08483E10:
+	.global gShopMenuStates
+gShopMenuStates:
 	.incbin "baserom.gba", 0x483E10, 0x40
 
-	.global gUnk_08483E50
-gUnk_08483E50:
+	.global gShopStock
+gShopStock:
 	.incbin "baserom.gba", 0x483E50, 0x3C
 
 	.global gUnk_08483E8C
@@ -120,16 +120,16 @@ gItemDescriptions:
 gTownMapPlaceNames:
 	.incbin "baserom.gba", 0x485504, 0x28
 
-	.global gUnk_0848552C
-gUnk_0848552C:
+	.global gShopGreetingText
+gShopGreetingText:
 	.incbin "baserom.gba", 0x48552C, 0x25
 
-	.global gUnk_08485551
-gUnk_08485551:
+	.global gShopBuyPartTypeText
+gShopBuyPartTypeText:
 	.incbin "baserom.gba", 0x485551, 0x2F
 
-	.global gUnk_08485580
-gUnk_08485580:
+	.global gShopSellPartTypeText
+gShopSellPartTypeText:
 	.incbin "baserom.gba", 0x485580, 0xCF
 
 	.global gUnk_0848564F
