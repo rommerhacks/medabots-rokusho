@@ -419,7 +419,7 @@ void field_set_player_sprite_visible(u8 on) {
 }
 
 void check_and_update_battlefield_palette(void) {
-    if (gUnk_030057E0.player_form == 1 && current_area_flag(0) == 0) {
+    if (gUnk_030057E0.player_form == 1 && area_allows_vehicle(0) == 0) {
         gUnk_030057E0.player_form = gUnk_030057E0.saved_player_form;
         load_battle_palette_via_dma(1);
     }

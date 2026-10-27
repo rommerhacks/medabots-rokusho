@@ -931,18 +931,18 @@ struct Unk_030064A0 {
     u8 unk54[8];
     u8 unk5C[8];
     u8 unk64; // choice menu step (yes_no_menu_poll: 0 setup, 1 wait handler, 2 poll)
-    // Vehicle menu (sub_08057044 .. sub_08057598) reuses the area after the choice menu.
-    u8 unk65; // cursor: selected vehicle
+    // Vehicle menu (vehicle_menu_load_gfx .. vehicle_menu_reload) reuses the area after the choice menu.
+    u8 cursor; // selected entry (enum VehicleId)
     u8 unk66;
-    u8 unk67; // frame counter (cursor wobble)
+    u8 frame; // counter for the cursor wobble
     u8 filler68[0x4];
-    u8 unk6C; // cursor tile x
-    u8 unk6D; // cursor tile y
+    u8 cursorX; // cursor tile x
+    u8 cursorY; // cursor tile y
     u8 unk6E;
-    u8 unk6F; // slide step (0..16)
-    u8 unk70; // text page
+    u8 slideStep; // window slide-in progress (0..16)
+    u8 textPage;  // page of the missing-parts message (0..5)
     u8 filler71;
-    u16 unk72[30 * 20]; // saved BG tilemap
+    u16 savedBg[30 * 20]; // BG tilemap saved before leaving through the town map
 };
 
 // One sprite of the snapshot at gUnk_030057E0.unk7DC (4 bytes)
@@ -1005,9 +1005,10 @@ struct Unk_030057E0 {
     u8 unkC59;
     u8 fillerC5A[0x1];
     u8 unkC5B;
-    u8 player_form; // 0 normal, 1-2 the vehicle menu forms, 3-8 / 0xD disguise items, 0xB / 0xC effect forms
-    u8 unkC5D;
-    u8 unkC5E;
+    u8 player_form;        // 0 normal, 1-2 the vehicle menu forms, 3-8 / 0xD disguise items, 0xB / 0xC effect forms
+    u8 useBlockFlags;      // set bits block: 0 disguises, 1 Mini S. Wheel, 2 Wings of Wind, 3 Periscope,
+                           // 4 Silver Locket, 5 the town map
+    u8 savedUseBlockFlags; // copy of useBlockFlags while a script blocks all but bit 5 (0xDF)
     u8 unkC5F;
     u8 unkC60;
     u8 fillerC61[0x6];

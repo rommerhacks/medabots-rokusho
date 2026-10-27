@@ -378,9 +378,9 @@ void sub_0804C2CC(void) {
 
 void sub_0804C318(void) {
     if ((gUnk_030057E0.unkC94[0] = read_map_script_byte()) == 1)
-        gUnk_030057E0.unkC5D = (gUnk_030057E0.unkC5D & ~0x10) | 0x10;
+        gUnk_030057E0.useBlockFlags = (gUnk_030057E0.useBlockFlags & ~0x10) | 0x10;
     else
-        gUnk_030057E0.unkC5D &= ~0x10;
+        gUnk_030057E0.useBlockFlags &= ~0x10;
 }
 
 void sub_0804C360(void) {
@@ -716,15 +716,15 @@ void sub_0804CDF8(void) {
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[1];
 }
 
-// Opcode 0x5D. Bit 7 set: arg 1 sets / else clears unkC5D bit 5; else unkC33 (Medawatch
+// Opcode 0x5D. Bit 7 set: arg 1 sets / else clears useBlockFlags bit 5; else unkC33 (Medawatch
 // menu flag) = arg & 0xF. Runtime: sets 0x03006413 to 1 when Dad gives Ikki the Medawatch.
 void map_script_cmd_set_medawatch_flag(void) {
     read_map_script_bytes(1);
     if (gUnk_030057E0.unkC94[0] & 0x80) {
         if ((gUnk_030057E0.unkC94[0] & 0xF) == 1)
-            gUnk_030057E0.unkC5D = (gUnk_030057E0.unkC5D & ~0x20) | 0x20;
+            gUnk_030057E0.useBlockFlags = (gUnk_030057E0.useBlockFlags & ~0x20) | 0x20;
         else
-            gUnk_030057E0.unkC5D &= ~0x20;
+            gUnk_030057E0.useBlockFlags &= ~0x20;
     } else {
         gUnk_030057E0.unkC33 = gUnk_030057E0.unkC94[0] & 0xF;
     }
@@ -732,9 +732,9 @@ void map_script_cmd_set_medawatch_flag(void) {
 
 void sub_0804CEAC(void) {
     if ((gUnk_030057E0.unkC94[0] = read_map_script_byte()) == 1)
-        gUnk_030057E0.unkC5D = (gUnk_030057E0.unkC5D & ~0x01) | 0x01;
+        gUnk_030057E0.useBlockFlags = (gUnk_030057E0.useBlockFlags & ~0x01) | 0x01;
     else
-        gUnk_030057E0.unkC5D &= ~0x01;
+        gUnk_030057E0.useBlockFlags &= ~0x01;
 }
 
 void sub_0804CEF4(void) {
@@ -1109,15 +1109,15 @@ static void sub_0804D9AC(u8 i) {
     gSpriteEntries[90].unkC_8 = gSpriteEntries[48].unkC_8;
     gSpriteEntries[90].unk10_8 = gSpriteEntries[48].unk10_8 - 5;
     update_battle_direction_indicator(1);
-    gUnk_030057E0.unkC5E = gUnk_030057E0.unkC5D;
-    gUnk_030057E0.unkC5D = 0xDF;
+    gUnk_030057E0.savedUseBlockFlags = gUnk_030057E0.useBlockFlags;
+    gUnk_030057E0.useBlockFlags = 0xDF;
 }
 
 static void sub_0804DB34(void) {
     sprite_entry_clear(48);
     sprite_entry_clear(90);
     gUnk_030057E0.unkC76 = 0;
-    gUnk_030057E0.unkC5D = gUnk_030057E0.unkC5E;
+    gUnk_030057E0.useBlockFlags = gUnk_030057E0.savedUseBlockFlags;
 }
 
 void script_object_free_slot(u8 i) {

@@ -1,74 +1,75 @@
-// Vehicle menu (guess from the code: no scenario reaches it), mode-1 handler 2: sub_08057024 runs the
-// gUnk_083D5E08 sub-states (load graphics, slide the window in, cursor input, slide out, leave through
-// switch_game_mode, restore the field). check_vehicle_usability says which of the four entries can be used;
-// the menu state lives in gUnk_030064A0 after the choice menu. Uses engine/ tilemap and sprite helpers.
+// Vehicle menu (the field menu's "Vehicle" entry), mode-1 handler 2: vehicle_menu_update runs the
+// gVehicleMenuStates sub-states: 0 load, 1 slide the window in, 2 input, 3-4 slide out and go back to the field
+// menu; 5-7 fade out to the town map (Wings of Wind), 8-9 reload and fade back in; 0xA use the chosen vehicle;
+// 0xB-0x10 the "can't use" messages. vehicle_check_usable says which of the 4 entries (enum VehicleId) can be
+// used. The menu state lives in gUnk_030064A0 after the choice menu fields.
 #include "global.h"
 
-static u32 check_vehicle_usability(s32 idx);
-static void handle_cursor_up_down_input(s32 count);
-static void sub_08057EBC(void);
-static void update_cursor_sprite_position(void);
-static void init_vehicle_menu_sprite(s32 slide);
-static void render_npc_tilemap_row(s32 row);
+static u32 vehicle_check_usable(s32 vehicle);
+static void vehicle_menu_move_cursor(s32 count);
+static void vehicle_menu_clear_icons(void);
+static void vehicle_menu_update_cursor(void);
+static void vehicle_menu_place_icons(s32 slide_out);
+static void vehicle_menu_draw_unowned_row(s32 row);
 
-void sub_08057024(void) {
-    gUnk_083D5E08[gGameSubState]();
+void vehicle_menu_update(void) {
+    gVehicleMenuStates[gGameSubState]();
 }
 
-void sub_08057044(void) {
+void vehicle_menu_load_gfx(void) {
     memzero_bytes((u8 *)&gUnk_030064A0, 0x874);
     LZ77UnCompVram(gUnk_085FA144, (void *)0x06000F80);
     LZ77UnCompVram(gUnk_085FA5D8, (void *)0x06002100);
     memzero_bytes((u8 *)gFieldTilemapBuf, 0x2000);
     DmaSet(3, gUnk_085FA4D8, gFieldTilemapBuf, DMA_ENABLE | (0xE0 / 2));
     DmaSet(3, gUnk_085FA620, gFieldTilemapBuf + 0x200, DMA_ENABLE | (0x20 / 2));
-    copy_tilemap_region((u16 *)gUnk_083D5F30, gFieldTilemapBuf + 0x400, 0, 0, 0x10, 10, 0, 0xF, 0);
+    copy_tilemap_region((u16 *)gVehicleMenuWindowTilemap, gFieldTilemapBuf + 0x400, 0, 0, 0x10, 10, 0, 0xF, 0);
     fill_tilemap_rect(gFieldTilemapBuf + 0x800, 2, 0xE, 0x10, 10, 0, 0xF, 0);
     copy_tilemap_region(gFieldTilemapBuf, gFieldTilemapBuf + 0x400, 1, 1, 0xE, 8, 0x7C, 0xE, 0);
 
-    switch (check_vehicle_usability(0)) {
+    switch (vehicle_check_usable(0)) {
     case 0:
         LZ77UnCompVram(gUnk_085FA660, (void *)0x06016F80);
         break;
     case 1:
         LZ77UnCompVram(gUnk_085FAA98, (void *)0x06016F80);
-        render_npc_tilemap_row(0);
+        vehicle_menu_draw_unowned_row(0);
         break;
     default:
         LZ77UnCompVram(gUnk_085FA87C, (void *)0x06016F80);
         break;
     }
-    switch (check_vehicle_usability(1)) {
+    switch (vehicle_check_usable(1)) {
     case 0:
         LZ77UnCompVram(gUnk_085FA6E8, (void *)0x06017000);
         break;
     case 1:
         LZ77UnCompVram(gUnk_085FAA98, (void *)0x06017000);
-        render_npc_tilemap_row(1);
+        vehicle_menu_draw_unowned_row(1);
         break;
     default:
         LZ77UnCompVram(gUnk_085FA904, (void *)0x06017000);
         break;
     }
-    switch (check_vehicle_usability(2)) {
+    switch (vehicle_check_usable(2)) {
     case 0:
         LZ77UnCompVram(gUnk_085FA774, (void *)0x06017080);
         break;
     case 1:
         LZ77UnCompVram(gUnk_085FAA98, (void *)0x06017080);
-        render_npc_tilemap_row(2);
+        vehicle_menu_draw_unowned_row(2);
         break;
     default:
         LZ77UnCompVram(gUnk_085FA990, (void *)0x06017080);
         break;
     }
-    switch (check_vehicle_usability(3)) {
+    switch (vehicle_check_usable(3)) {
     case 0:
         LZ77UnCompVram(gUnk_085FA7FC, (void *)0x06017100);
         break;
     case 1:
         LZ77UnCompVram(gUnk_085FAA98, (void *)0x06017100);
-        render_npc_tilemap_row(3);
+        vehicle_menu_draw_unowned_row(3);
         break;
     default:
         LZ77UnCompVram(gUnk_085FAA18, (void *)0x06017100);
@@ -81,108 +82,111 @@ void sub_08057044(void) {
     lz_decompress_dispatch(gUnk_0848796C, (void *)0x060026E0);
     lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
     DmaCopy32(3, gUnk_084E2E58, OBJ_PLTT + 0x1C0, 32) gUnk_030064A0.unk66 = 0;
-    gUnk_030064A0.unk67 = 0;
-    gUnk_030064A0.unk6F = 0;
-    gUnk_030064A0.unk6E = gUnk_030064A0.unk6D = gUnk_030064A0.unk6C = 0;
-    gUnk_030064A0.unk6C = 0x10;
-    gUnk_030064A0.unk6D = 3;
+    gUnk_030064A0.frame = 0;
+    gUnk_030064A0.slideStep = 0;
+    gUnk_030064A0.unk6E = gUnk_030064A0.cursorY = gUnk_030064A0.cursorX = 0;
+    gUnk_030064A0.cursorX = 0x10;
+    gUnk_030064A0.cursorY = 3;
     game_substate_advance();
 }
 
-void sub_080572F8(void) {
+void vehicle_menu_slide_in(void) {
     gUnk_030064A0.unk66 = 0;
-    if (gUnk_030064A0.unk6F < 0x10) {
-        gUnk_030064A0.unk6F++;
-        copy_tilemap_rect_with_offset(gFieldTilemapBuf + 0x400, (u16 *)0x06002800, 2, 0x1E - gUnk_030064A0.unk6F,
-                                      gUnk_030064A0.unk6F, 10, 0x20, 0x20, 0, 0);
-        init_vehicle_menu_sprite(0);
+    if (gUnk_030064A0.slideStep < 0x10) {
+        gUnk_030064A0.slideStep++;
+        copy_tilemap_rect_with_offset(gFieldTilemapBuf + 0x400, (u16 *)0x06002800, 2, 0x1E - gUnk_030064A0.slideStep,
+                                      gUnk_030064A0.slideStep, 10, 0x20, 0x20, 0, 0);
+        vehicle_menu_place_icons(0);
     } else {
         sprite_entry_init(0x7F, 0xC004, 0x307, 0xC, 0);
-        update_cursor_sprite_position();
-        gUnk_030064A0.unk65 = 0;
+        vehicle_menu_update_cursor();
+        gUnk_030064A0.cursor = 0;
         message_steps_reset();
         game_substate_advance();
     }
 }
 
-static void sub_08057380(void) {
+static void vehicle_menu_next_state(void) {
     game_substate_advance();
 }
 
-void sub_0805738C(void) {
-    u32 r;
+void vehicle_menu_handle_input(void) {
+    u32 result;
 
-    gUnk_030064A0.unk67++;
-    update_cursor_sprite_position();
-    handle_cursor_up_down_input(4);
+    gUnk_030064A0.frame++;
+    vehicle_menu_update_cursor();
+    vehicle_menu_move_cursor(VEHICLE_COUNT);
     if (KEYS_LO(gNewKeys) & 1) {
-        r = check_vehicle_usability(gUnk_030064A0.unk65);
-        if (r != 0) {
-            gUnk_030064A0.unk67 = 0;
-            update_cursor_sprite_position();
+        result = vehicle_check_usable(gUnk_030064A0.cursor);
+        if (result != VEHICLE_USABLE) {
+            gUnk_030064A0.frame = 0;
+            vehicle_menu_update_cursor();
             field_play_sound_effect(6);
-            switch (r) {
-            case 1:
+            switch (result) {
+            case VEHICLE_NOT_OWNED:
                 break;
-            case 2:
-                gUnk_030064A0.unk70 = 0;
+            case VEHICLE_BOT_INCOMPLETE:
+                gUnk_030064A0.textPage = 0;
                 gGameSubState = 0xB;
                 break;
-            case 3:
+            case VEHICLE_AREA_FORBIDS:
                 gGameSubState = 0xD;
                 break;
-            case 4:
-            case 5:
-            case 6:
+            case VEHICLE_BLOCKED:
+            case VEHICLE_FORM_CONFLICT:
+            case VEHICLE_NOT_FACING_WATER:
                 gGameSubState = 0xF;
                 break;
             }
         } else {
-            copy_tilemap_rect_with_offset((u16 *)0x06002800, gUnk_030064A0.unk72, 0, 0, 0x1E, 0x14, 0x20, 0x20, r, r);
+            copy_tilemap_rect_with_offset((u16 *)0x06002800, gUnk_030064A0.savedBg, 0, 0, 0x1E, 0x14, 0x20, 0x20,
+                                          result, result);
             field_play_sound_effect(4);
             gGameSubState = 0xA;
         }
     } else if (KEYS_LO(gNewKeys) & 2) {
         field_play_sound_effect(5);
         sprite_entry_clear(0x7F);
-        gUnk_030064A0.unk6F = 0x10;
+        gUnk_030064A0.slideStep = 0x10;
         game_substate_advance();
     }
 }
 
-void sub_08057494(void) {
-    if (gUnk_030064A0.unk6F != 0) {
-        copy_tilemap_rect_with_offset(gFieldTilemapBuf + 0x800, (u16 *)0x06002800, 2, 0x1E - gUnk_030064A0.unk6F, 1, 10,
-                                      0x20, 0x20, 0, 0);
-        copy_tilemap_rect_with_offset(gFieldTilemapBuf + 0x400, (u16 *)0x06002800, 2, 0x1F - gUnk_030064A0.unk6F,
-                                      gUnk_030064A0.unk6F, 10, 0x20, 0x20, 0, 0);
-        init_vehicle_menu_sprite(1);
-        gUnk_030064A0.unk6F--;
+void vehicle_menu_slide_out(void) {
+    if (gUnk_030064A0.slideStep != 0) {
+        copy_tilemap_rect_with_offset(gFieldTilemapBuf + 0x800, (u16 *)0x06002800, 2, 0x1E - gUnk_030064A0.slideStep, 1,
+                                      10, 0x20, 0x20, 0, 0);
+        copy_tilemap_rect_with_offset(gFieldTilemapBuf + 0x400, (u16 *)0x06002800, 2, 0x1F - gUnk_030064A0.slideStep,
+                                      gUnk_030064A0.slideStep, 10, 0x20, 0x20, 0, 0);
+        vehicle_menu_place_icons(1);
+        gUnk_030064A0.slideStep--;
     } else {
         lz_decompress_dispatch(gUnk_084C1ACC, (void *)0x06002100);
         game_substate_advance();
     }
 }
 
-void sub_08057540(void) {
+void vehicle_menu_return_to_field_menu(void) {
     switch_game_mode(0x40, 0);
 }
 
-void sub_08057550(void) {
+void vehicle_menu_start_fade_out(void) {
     setup_palette_fade_to_color_with_obj(0, 0.0f, 32.0f, 8.0f);
     game_substate_advance();
 }
 
-void sub_08057574(void) {
+void vehicle_menu_wait_fade_out(void) {
     if (run_blend_fade_transition(0))
         game_substate_advance();
 }
 
-void sub_08057588(void) {
+void vehicle_menu_open_flight_map(void) {
     switch_game_mode(6, 0);
 }
 
-void sub_08057598(void) {
+// Re-entry from field_mode result 6 (guess: the town map cancelled without flying): reload the area and the
+// menu, then fade in.
+void vehicle_menu_reload(void) {
     u32 zero;
 
     clear_vram_tiles_1000();
@@ -205,53 +209,53 @@ void sub_08057598(void) {
     memzero_bytes((u8 *)gFieldTilemapBuf, 0x2000);
     DmaSet(3, gUnk_085FA4D8, gFieldTilemapBuf, DMA_ENABLE | (0xE0 / 2));
     DmaSet(3, gUnk_085FA620, gFieldTilemapBuf + 0x200, DMA_ENABLE | (0x20 / 2));
-    copy_tilemap_region((u16 *)gUnk_083D5F30, gFieldTilemapBuf + 0x400, 0, 0, 0x10, 10, 0, 0xF, 0);
+    copy_tilemap_region((u16 *)gVehicleMenuWindowTilemap, gFieldTilemapBuf + 0x400, 0, 0, 0x10, 10, 0, 0xF, 0);
     fill_tilemap_rect(gFieldTilemapBuf + 0x800, 2, 0xE, 0x10, 10, 0, 0xF, 0);
     copy_tilemap_region(gFieldTilemapBuf, gFieldTilemapBuf + 0x400, 1, 1, 0xE, 8, 0x7C, 0xE, 0);
 
-    switch (check_vehicle_usability(0)) {
+    switch (vehicle_check_usable(0)) {
     case 0:
         LZ77UnCompVram(gUnk_085FA660, (void *)0x06016F80);
         break;
     case 1:
         LZ77UnCompVram(gUnk_085FAA98, (void *)0x06016F80);
-        render_npc_tilemap_row(0);
+        vehicle_menu_draw_unowned_row(0);
         break;
     default:
         LZ77UnCompVram(gUnk_085FA87C, (void *)0x06016F80);
         break;
     }
-    switch (check_vehicle_usability(1)) {
+    switch (vehicle_check_usable(1)) {
     case 0:
         LZ77UnCompVram(gUnk_085FA6E8, (void *)0x06017000);
         break;
     case 1:
         LZ77UnCompVram(gUnk_085FAA98, (void *)0x06017000);
-        render_npc_tilemap_row(1);
+        vehicle_menu_draw_unowned_row(1);
         break;
     default:
         LZ77UnCompVram(gUnk_085FA904, (void *)0x06017000);
         break;
     }
-    switch (check_vehicle_usability(2)) {
+    switch (vehicle_check_usable(2)) {
     case 0:
         LZ77UnCompVram(gUnk_085FA774, (void *)0x06017080);
         break;
     case 1:
         LZ77UnCompVram(gUnk_085FAA98, (void *)0x06017080);
-        render_npc_tilemap_row(2);
+        vehicle_menu_draw_unowned_row(2);
         break;
     default:
         LZ77UnCompVram(gUnk_085FA990, (void *)0x06017080);
         break;
     }
-    switch (check_vehicle_usability(3)) {
+    switch (vehicle_check_usable(3)) {
     case 0:
         LZ77UnCompVram(gUnk_085FA7FC, (void *)0x06017100);
         break;
     case 1:
         LZ77UnCompVram(gUnk_085FAA98, (void *)0x06017100);
-        render_npc_tilemap_row(3);
+        vehicle_menu_draw_unowned_row(3);
         break;
     default:
         LZ77UnCompVram(gUnk_085FAA18, (void *)0x06017100);
@@ -265,280 +269,286 @@ void sub_08057598(void) {
     lz_decompress_dispatch(gUnk_0848796C, (void *)0x060026E0);
     lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
     DmaCopy32(3, gUnk_084E2E58, 0x0202F9C0, 32)
-        copy_tilemap_rect_with_offset(gUnk_030064A0.unk72, (u16 *)0x06002800, 0, 0, 0x1E, 0x14, 0x20, 0x20, 0, 0);
-    DmaCopy32(3, gUnk_085FA640, 0x0202F980, 32) DmaCopy32(3, gUnk_085FA85C, 0x0202F9A0, 32) init_vehicle_menu_sprite(0);
+        copy_tilemap_rect_with_offset(gUnk_030064A0.savedBg, (u16 *)0x06002800, 0, 0, 0x1E, 0x14, 0x20, 0x20, 0, 0);
+    DmaCopy32(3, gUnk_085FA640, 0x0202F980, 32) DmaCopy32(3, gUnk_085FA85C, 0x0202F9A0, 32) vehicle_menu_place_icons(0);
     setup_palette_fade_to_color(0, 32.0f, 0.0f, 8.0f);
     game_substate_advance();
 }
 
-void sub_08057988(void) {
+void vehicle_menu_wait_fade_in(void) {
     if (run_blend_fade_transition(0)) {
         sprite_entry_init(0x7F, 0xC004, 0x307, 0xC, 0);
-        update_cursor_sprite_position();
+        vehicle_menu_update_cursor();
         gGameSubState = 2;
     }
 }
 
-void sub_080579C4(void) {
-    struct Unk_030064A0 *s = &gUnk_030064A0;
+// The field takes over: 0x41 rides the car, 0x43 runs the Silver Locket warp, 0x42 swims; Wings of Wind fades
+// out to the town map first.
+void vehicle_menu_use_vehicle(void) {
+    struct Unk_030064A0 *menu = &gUnk_030064A0;
 
-    if (s->unk65 != 2) {
+    if (menu->cursor != VEHICLE_WINGS_OF_WIND) {
         clear_vram_tiles_1000();
-        sub_08057EBC();
+        vehicle_menu_clear_icons();
     }
     sprite_entry_clear(0x7F);
-    if (s->unk65 == 0)
+    if (menu->cursor == VEHICLE_MINI_S_WHEEL)
         switch_game_mode(0x41, 0);
-    else if (s->unk65 == 1)
+    else if (menu->cursor == VEHICLE_SILVER_LOCKET)
         switch_game_mode(0x43, 0);
-    else if (s->unk65 == 2)
+    else if (menu->cursor == VEHICLE_WINGS_OF_WIND)
         gGameSubState = 5;
-    else if (s->unk65 == 3)
+    else if (menu->cursor == VEHICLE_PERISCOPE)
         switch_game_mode(0x42, 0);
 }
 
-void sub_08057A24(void) {
-    u32 id;
+// Puts the name of the Medabot (pages 0, 5) or its part (pages 1-4) the chosen vehicle needs into the text
+// buffer for the missing-parts message page.
+void vehicle_menu_load_part_name(void) {
+    u32 bot_id;
 
-    if (gUnk_030064A0.unk65 == 0) {
-        id = 0x55;
-        switch (gUnk_030064A0.unk70) {
+    if (gUnk_030064A0.cursor == VEHICLE_MINI_S_WHEEL) {
+        bot_id = 0x55;
+        switch (gUnk_030064A0.textPage) {
         case 0:
-            copy_string_to_text_buffer(0, medabot_name(id));
+            copy_string_to_text_buffer(0, medabot_name(bot_id));
             break;
         case 1:
-            copy_string_to_text_buffer(0, medapart_name(0, id));
+            copy_string_to_text_buffer(0, medapart_name(0, bot_id));
             break;
         case 2:
-            copy_string_to_text_buffer(1, medapart_name(1, id));
+            copy_string_to_text_buffer(1, medapart_name(1, bot_id));
             break;
         case 3:
-            copy_string_to_text_buffer(2, medapart_name(2, id));
+            copy_string_to_text_buffer(2, medapart_name(2, bot_id));
             break;
         case 4:
-            copy_string_to_text_buffer(3, medapart_name(3, id));
+            copy_string_to_text_buffer(3, medapart_name(3, bot_id));
             break;
         case 5:
-            copy_string_to_text_buffer(0, medabot_name(id));
+            copy_string_to_text_buffer(0, medabot_name(bot_id));
             break;
         }
-    } else if (gUnk_030064A0.unk65 == 2) {
-        id = 0xB;
-        switch (gUnk_030064A0.unk70) {
+    } else if (gUnk_030064A0.cursor == VEHICLE_WINGS_OF_WIND) {
+        bot_id = 0xB;
+        switch (gUnk_030064A0.textPage) {
         case 0:
-            copy_string_to_text_buffer(0, medabot_name(id));
+            copy_string_to_text_buffer(0, medabot_name(bot_id));
             break;
         case 1:
-            copy_string_to_text_buffer(0, medapart_name(0, id));
+            copy_string_to_text_buffer(0, medapart_name(0, bot_id));
             break;
         case 2:
-            copy_string_to_text_buffer(1, medapart_name(1, id));
+            copy_string_to_text_buffer(1, medapart_name(1, bot_id));
             break;
         case 3:
-            copy_string_to_text_buffer(2, medapart_name(2, id));
+            copy_string_to_text_buffer(2, medapart_name(2, bot_id));
             break;
         case 4:
-            copy_string_to_text_buffer(3, medapart_name(3, id));
+            copy_string_to_text_buffer(3, medapart_name(3, bot_id));
             break;
         case 5:
-            copy_string_to_text_buffer(0, medabot_name(id));
+            copy_string_to_text_buffer(0, medabot_name(bot_id));
             break;
         }
-    } else if (gUnk_030064A0.unk65 == 3) {
-        id = 0x6B;
-        switch (gUnk_030064A0.unk70) {
+    } else if (gUnk_030064A0.cursor == VEHICLE_PERISCOPE) {
+        bot_id = 0x6B;
+        switch (gUnk_030064A0.textPage) {
         case 0:
-            copy_string_to_text_buffer(0, medabot_name(id));
+            copy_string_to_text_buffer(0, medabot_name(bot_id));
             break;
         case 1:
-            copy_string_to_text_buffer(0, medapart_name(0, id));
+            copy_string_to_text_buffer(0, medapart_name(0, bot_id));
             break;
         case 2:
-            copy_string_to_text_buffer(1, medapart_name(1, id));
+            copy_string_to_text_buffer(1, medapart_name(1, bot_id));
             break;
         case 3:
-            copy_string_to_text_buffer(2, medapart_name(2, id));
+            copy_string_to_text_buffer(2, medapart_name(2, bot_id));
             break;
         case 4:
-            copy_string_to_text_buffer(3, medapart_name(3, id));
+            copy_string_to_text_buffer(3, medapart_name(3, bot_id));
             break;
         case 5:
-            copy_string_to_text_buffer(0, medabot_name(id));
+            copy_string_to_text_buffer(0, medabot_name(bot_id));
             break;
         }
     }
-    if (gUnk_030064A0.unk70 == 0)
+    if (gUnk_030064A0.textPage == 0)
         message_steps_reset();
     game_substate_advance();
 }
 
-void sub_08057B68(void) {
-    if (message_step_run(1, 1, 0, gTextTable[gUnk_030064A0.unk70 + 0x82])) {
-        if (++gUnk_030064A0.unk70 <= 5)
+void vehicle_menu_show_parts_message(void) {
+    if (message_step_run(1, 1, 0, gTextTable[gUnk_030064A0.textPage + 0x82])) {
+        if (++gUnk_030064A0.textPage <= 5)
             gGameSubState--;
         else
             gGameSubState = 2;
     }
 }
 
-void sub_08057BBC(void) {
+void vehicle_menu_area_message_init(void) {
     message_steps_reset();
     game_substate_advance();
 }
 
-void sub_08057BCC(void) {
+void vehicle_menu_show_area_message(void) {
     if (message_step_run(1, 1, 0, gTextTable[0x81]))
         gGameSubState = 2;
 }
 
-void sub_08057BF8(void) {
+void vehicle_menu_blocked_message_init(void) {
     message_steps_reset();
     game_substate_advance();
 }
 
-void sub_08057C08(void) {
+void vehicle_menu_show_blocked_message(void) {
     if (message_step_run(1, 1, 0, gTextTable[0x80]))
         gGameSubState = 2;
 }
 
-static void nullsub_08057C34(void) {}
+static void vehicle_menu_unused_nop(void) {}
 
-static u32 check_vehicle_usability(s32 idx) {
-    u32 ret = 0;
-    s32 n;
-    u32 ok;
+// Whether vehicle can be used now (enum VehicleUse): the item, the full Medabot on the team, the area, the
+// map-script block flags, the current player_form; checked in that order.
+static u32 vehicle_check_usable(s32 vehicle) {
+    u32 result = 0;
+    s32 parts;
+    u32 allowed;
     u32 flag;
 
-    switch (idx) {
-    case 0:
+    switch (vehicle) {
+    case VEHICLE_MINI_S_WHEEL:
         flag = field_item_quantity(0x12);
-        ret = 1;
+        result = VEHICLE_NOT_OWNED;
         if (!flag)
             break;
-        n = team_has_part_equipped(0x55, 0);
-        n += team_has_part_equipped(0x55, 1);
-        n += team_has_part_equipped(0x55, 2);
-        n += team_has_part_equipped(0x55, 3);
-        ret = 2;
-        if (n != 4)
+        parts = team_has_part_equipped(0x55, 0);
+        parts += team_has_part_equipped(0x55, 1);
+        parts += team_has_part_equipped(0x55, 2);
+        parts += team_has_part_equipped(0x55, 3);
+        result = VEHICLE_BOT_INCOMPLETE;
+        if (parts != 4)
             break;
-        ok = current_area_flag(0);
-        ret = 3;
-        if (!ok)
+        allowed = area_allows_vehicle(0);
+        result = VEHICLE_AREA_FORBIDS;
+        if (!allowed)
             break;
-        flag = gUnk_030057E0.unkC5D & 2;
-        ret = 4;
+        flag = gUnk_030057E0.useBlockFlags & 2;
+        result = VEHICLE_BLOCKED;
         if (flag)
             break;
-        ret = 0;
+        result = VEHICLE_USABLE;
         if (gUnk_030057E0.player_form == 2)
-            ret = 5;
+            result = VEHICLE_FORM_CONFLICT;
         break;
-    case 1:
+    case VEHICLE_SILVER_LOCKET:
         flag = field_item_quantity(0x18);
-        ret = 1;
+        result = VEHICLE_NOT_OWNED;
         if (!flag)
             break;
-        flag = gUnk_030057E0.unkC5D & 0x10;
-        ret = 4;
+        flag = gUnk_030057E0.useBlockFlags & 0x10;
+        result = VEHICLE_BLOCKED;
         if (flag)
             break;
-        ret = 0;
+        result = VEHICLE_USABLE;
         if (gUnk_030057E0.player_form == 1 || gUnk_030057E0.player_form == 2)
-            ret = 5;
+            result = VEHICLE_FORM_CONFLICT;
         break;
-    case 2:
+    case VEHICLE_WINGS_OF_WIND:
         flag = field_item_quantity(0x19);
-        ret = 1;
+        result = VEHICLE_NOT_OWNED;
         if (!flag)
             break;
-        n = team_has_part_equipped(0xB, 0);
-        n += team_has_part_equipped(0xB, 1);
-        n += team_has_part_equipped(0xB, 2);
-        n += team_has_part_equipped(0xB, 3);
-        ret = 2;
-        if (n != 4)
+        parts = team_has_part_equipped(0xB, 0);
+        parts += team_has_part_equipped(0xB, 1);
+        parts += team_has_part_equipped(0xB, 2);
+        parts += team_has_part_equipped(0xB, 3);
+        result = VEHICLE_BOT_INCOMPLETE;
+        if (parts != 4)
             break;
-        ok = current_area_flag(1);
+        allowed = area_allows_vehicle(1);
         if (gUnk_083D29EB[gUnk_030057E0.unk7FE] == 0xA)
-            ok = 0;
-        ret = 3;
-        if (!ok)
+            allowed = 0;
+        result = VEHICLE_AREA_FORBIDS;
+        if (!allowed)
             break;
-        flag = gUnk_030057E0.unkC5D & 4;
-        ret = 4;
+        flag = gUnk_030057E0.useBlockFlags & 4;
+        result = VEHICLE_BLOCKED;
         if (flag)
             break;
-        ret = 0;
+        result = VEHICLE_USABLE;
         if (gUnk_030057E0.player_form == 1 || gUnk_030057E0.player_form == 2)
-            ret = 5;
+            result = VEHICLE_FORM_CONFLICT;
         break;
-    case 3:
+    case VEHICLE_PERISCOPE:
         flag = field_item_quantity(0x26);
-        ret = 1;
+        result = VEHICLE_NOT_OWNED;
         if (!flag)
             break;
-        n = team_has_part_equipped(0x6B, 0);
-        n += team_has_part_equipped(0x6B, 1);
-        n += team_has_part_equipped(0x6B, 2);
-        n += team_has_part_equipped(0x6B, 3);
-        ret = 2;
-        if (n != 4)
+        parts = team_has_part_equipped(0x6B, 0);
+        parts += team_has_part_equipped(0x6B, 1);
+        parts += team_has_part_equipped(0x6B, 2);
+        parts += team_has_part_equipped(0x6B, 3);
+        result = VEHICLE_BOT_INCOMPLETE;
+        if (parts != 4)
             break;
-        flag = gUnk_030057E0.unkC5D & 8;
-        ret = 4;
+        flag = gUnk_030057E0.useBlockFlags & 8;
+        result = VEHICLE_BLOCKED;
         if (flag)
             break;
         flag = (u8)(gUnk_030057E0.player_form - 1);
-        ret = 5;
+        result = VEHICLE_FORM_CONFLICT;
         if (flag <= 1)
             break;
-        ret = 0;
+        result = VEHICLE_USABLE;
         if (get_adjacent_tile_value(gUnk_030057E0.player_facing) != 3)
-            ret = 6;
+            result = VEHICLE_NOT_FACING_WATER;
         break;
     }
-    return ret;
+    return result;
 }
 
-static void handle_cursor_up_down_input(s32 count) {
-    struct Unk_030064A0 *s;
+static void vehicle_menu_move_cursor(s32 count) {
+    struct Unk_030064A0 *menu;
 
     gUnk_030057A0.frame++;
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         field_play_sound_effect(2);
-        s = &gUnk_030064A0;
-        if (--s->unk65 == 0xFF)
-            s->unk65 = count - 1;
-        s->unk6D = gUnk_083D5F2C[s->unk65];
-        update_cursor_sprite_position();
+        menu = &gUnk_030064A0;
+        if (--menu->cursor == 0xFF)
+            menu->cursor = count - 1;
+        menu->cursorY = gVehicleMenuCursorRows[menu->cursor];
+        vehicle_menu_update_cursor();
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
         field_play_sound_effect(2);
-        s = &gUnk_030064A0;
-        s->unk65++;
-        if (s->unk65 >= count)
-            s->unk65 = 0;
-        s->unk6D = gUnk_083D5F2C[s->unk65];
-        update_cursor_sprite_position();
+        menu = &gUnk_030064A0;
+        menu->cursor++;
+        if (menu->cursor >= count)
+            menu->cursor = 0;
+        menu->cursorY = gVehicleMenuCursorRows[menu->cursor];
+        vehicle_menu_update_cursor();
     }
 }
 
-static void sub_08057EBC(void) {
+static void vehicle_menu_clear_icons(void) {
     sprite_entry_clear(0x20);
     sprite_entry_clear(0x21);
     sprite_entry_clear(0x22);
     sprite_entry_clear(0x23);
 }
 
-static void update_cursor_sprite_position(void) {
-    struct Unk_030064A0 *s = &gUnk_030064A0;
-    s32 d = (u8)(s->unk67 & 4) >> 2;
+static void vehicle_menu_update_cursor(void) {
+    struct Unk_030064A0 *menu = &gUnk_030064A0;
+    s32 wobble = (u8)(menu->frame & 4) >> 2;
 
-    if (s->unk67 & 8)
-        d = -d;
-    gSpriteEntries[0x7F].unk2 = s->unk6C * 8 + 8 + d;
-    gSpriteEntries[0x7F].unk4 = s->unk6D * 8 + 8;
+    if (menu->frame & 8)
+        wobble = -wobble;
+    gSpriteEntries[0x7F].unk2 = menu->cursorX * 8 + 8 + wobble;
+    gSpriteEntries[0x7F].unk4 = menu->cursorY * 8 + 8;
     gSpriteEntries[0x7F].unk6 = 0x307;
     gSpriteEntries[0x7F].unkA = 0xE;
     gSpriteEntries[0x7F].unk1C = 0;
@@ -547,27 +557,29 @@ static void update_cursor_sprite_position(void) {
     gSpriteEntries[0x7F].unkB = 0xFF;
 }
 
-static void init_vehicle_menu_sprite(s32 x) {
-    s32 ox;
+// Icon sprites 0x20-0x23, palette 0xC when usable else 0xD, following the window as it slides.
+static void vehicle_menu_place_icons(s32 slide_out) {
+    s32 base_x;
 
-    sprite_entry_init(0x20, 0xC004, 0x91, check_vehicle_usability(0) == 0 ? 0xC : 0xD, 1);
-    gSpriteEntries[0x20].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + (ox = x * 8 + 0x90);
+    sprite_entry_init(0x20, 0xC004, 0x91, vehicle_check_usable(0) == 0 ? 0xC : 0xD, 1);
+    gSpriteEntries[0x20].unk2 = (0x10 - gUnk_030064A0.slideStep) * 8 + (base_x = slide_out * 8 + 0x90);
     gSpriteEntries[0x20].unk4 = 0x18;
     gSpriteEntries[0x20].unkB |= 0xFF;
-    sprite_entry_init(0x21, 0xC004, 0x92, check_vehicle_usability(1) == 0 ? 0xC : 0xD, 1);
-    gSpriteEntries[0x21].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + ox;
+    sprite_entry_init(0x21, 0xC004, 0x92, vehicle_check_usable(1) == 0 ? 0xC : 0xD, 1);
+    gSpriteEntries[0x21].unk2 = (0x10 - gUnk_030064A0.slideStep) * 8 + base_x;
     gSpriteEntries[0x21].unk4 = 0x28;
     gSpriteEntries[0x21].unkB |= 0xFF;
-    sprite_entry_init(0x22, 0xC004, 0x93, check_vehicle_usability(2) == 0 ? 0xC : 0xD, 1);
-    gSpriteEntries[0x22].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + ox;
+    sprite_entry_init(0x22, 0xC004, 0x93, vehicle_check_usable(2) == 0 ? 0xC : 0xD, 1);
+    gSpriteEntries[0x22].unk2 = (0x10 - gUnk_030064A0.slideStep) * 8 + base_x;
     gSpriteEntries[0x22].unk4 = 0x38;
     gSpriteEntries[0x22].unkB |= 0xFF;
-    sprite_entry_init(0x23, 0xC004, 0x94, check_vehicle_usability(3) == 0 ? 0xC : 0xD, 1);
-    gSpriteEntries[0x23].unk2 = (0x10 - gUnk_030064A0.unk6F) * 8 + ox;
+    sprite_entry_init(0x23, 0xC004, 0x94, vehicle_check_usable(3) == 0 ? 0xC : 0xD, 1);
+    gSpriteEntries[0x23].unk2 = (0x10 - gUnk_030064A0.slideStep) * 8 + base_x;
     gSpriteEntries[0x23].unk4 = 0x48;
     gSpriteEntries[0x23].unkB |= 0xFF;
 }
 
-static void render_npc_tilemap_row(s32 row) {
+// Blanks the name of an entry whose item the player lacks.
+static void vehicle_menu_draw_unowned_row(s32 row) {
     copy_tilemap_region(gFieldTilemapBuf + 0x200, gFieldTilemapBuf + 0x400, row * 2 + 1, 6, 8, 2, 0x108, 0xE, 0);
 }

@@ -563,7 +563,7 @@ static void field_debug_draw_page(u32 mode) {
         field_debug_draw_label(gUnk_080AC59C, 2, 0x30, 0x38);
         field_debug_draw_value_blink(3, gUnk_030057A0.sound_id, 8, 0x50, 0x38);
         field_debug_draw_label(gUnk_080AC5A0, 3, 0x30, 0x40);
-        field_debug_draw_value_blink(4, gUnk_030057E0.unkC5D, 8, 0x50, 0x40);
+        field_debug_draw_value_blink(4, gUnk_030057E0.useBlockFlags, 8, 0x50, 0x40);
         field_debug_draw_label(gUnk_080AC510, 1, 0x70, 0x40);
         break;
     }

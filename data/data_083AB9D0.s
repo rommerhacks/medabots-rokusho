@@ -1286,16 +1286,16 @@ gUnk_083D2DB0:
 gUnk_083D5D84:
 	.incbin "baserom.gba", 0x3D5D84, 0x84
 
-	.global gUnk_083D5E08
-gUnk_083D5E08:
+	.global gVehicleMenuStates
+gVehicleMenuStates:
 	.incbin "baserom.gba", 0x3D5E08, 0x124
 
-	.global gUnk_083D5F2C
-gUnk_083D5F2C:
+	.global gVehicleMenuCursorRows
+gVehicleMenuCursorRows:
 	.incbin "baserom.gba", 0x3D5F2C, 0x4
 
-	.global gUnk_083D5F30
-gUnk_083D5F30:
+	.global gVehicleMenuWindowTilemap
+gVehicleMenuWindowTilemap:
 	.incbin "baserom.gba", 0x3D5F30, 0x140
 
 	.global gFieldDebugEventValues

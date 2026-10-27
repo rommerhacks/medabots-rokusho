@@ -14,7 +14,7 @@ u32 team_equipped_part_legs_value(u8 a, u8 b);
 s32 team_count_complete_bots(void);
 u32 team_has_full_part_set(u8 id);
 u32 message_step_run(u8 a, u8 b, u8 c, const void *text);
-u32 current_area_flag(u32 arg);
+u32 area_allows_vehicle(u32 arg);
 void yes_no_menu_open(u32 mode);
 u32 yes_no_menu_poll(void);
 void format_money_to_text_buffer(u32 a, u32 n);

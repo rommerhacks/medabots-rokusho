@@ -295,8 +295,9 @@ u32 yes_no_menu_poll(void) {
     return ret;
 }
 
-// guess: bytes 2 / 3 of the current area's gUnk_083BEA90 record (meaning unknown).
-u32 current_area_flag(u32 arg) {
+// Bytes 2 / 3 of the current area's gUnk_083BEA90 record: whether the Landmotor car (0) / the Femjet flight (1)
+// may be used here (vehicle_check_usable; check_and_update_battlefield_palette drops the car form when 0).
+u32 area_allows_vehicle(u32 arg) {
     u32 ret = 0;
 
     switch (arg) {
