@@ -52,7 +52,7 @@ u16 ProgramEepromDword(u16 address, u16 *data);            // EEPROM library: wr
 u32 ProgramEepromDwordEx(u16 address, u16 *data); // EEPROM library: writes 8 bytes and verifies; u32 so sub_080603A4
                                                   // tests the result without truncating it
 // code_0805AB40
-// the BG0 tiles masked by gUnk_080AF740
+// the BG0 tiles masked by gTitleOptionValueMasks
 u32 Sqrt(u32 n);
 void ObjAffineSet(struct ObjAffineSrcData *src, void *dest, s32 count, s32 offset);
 // screen (guess: name entry)

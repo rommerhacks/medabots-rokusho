@@ -1,6 +1,6 @@
 // Mode-2 state 7: the hidden TEST MODE screen (Music / Effect / Erase saved game / Exit).
-// test_mode_dispatch runs gUnk_08483C6C: graphics, fades, test_mode_update (menu input, sound test), then the
-// erase-save steps (sub_0805F8F0 retries save_dispatch(2) through save/save_data.c).
+// test_mode_dispatch runs gTestModeStates: graphics, fades, test_mode_update (menu input, sound test), then the
+// erase-save steps (test_mode_erase_save retries save_dispatch(2) through save/save_data.c).
 #include "global.h"
 
 static inline void *vram_at(u32 off) {
@@ -8,14 +8,14 @@ static inline void *vram_at(u32 off) {
 }
 
 void test_mode_dispatch(void) {
-    gUnk_08483C6C[gGameSubState]();
+    gTestModeStates[gGameSubState]();
     if (gFrameCounter & 1) {
         gBg3Scroll.x++;
         gBg3Scroll.y++;
     }
 }
 
-void silence_and_clear_vram(void) {
+void test_mode_reset(void) {
     u32 zero;
 
     play_song(0);
@@ -89,7 +89,7 @@ void test_mode_load_graphics(void) {
     gGameSubState++;
 }
 
-void init_fade_screen_setup(void) {
+void test_mode_show_screen(void) {
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
@@ -103,7 +103,7 @@ void init_fade_screen_setup(void) {
     gGameSubState++;
 }
 
-void update_fade_effect(void) {
+void test_mode_fade_in(void) {
     struct Unk_03006F74 *p = gUnk_03006F74;
 
     if (p->unk0 != 0) {
@@ -218,11 +218,11 @@ void test_mode_update(void) {
     if (KEYS_LO(gNewKeys) & 1) {
         switch (gUnk_03006F74->unk5) {
         case 0:
-            play_song(gUnk_080AF854[gUnk_03006F74->unk2B]);
+            play_song(gSoundTestSongs[gUnk_03006F74->unk2B]);
             return;
         case 1:
             gUnk_03006F74->unk4B = 2;
-            gUnk_03006F74->unk4A = gUnk_080AF888[gUnk_03006F74->unk2C];
+            gUnk_03006F74->unk4A = gSoundTestEffects[gUnk_03006F74->unk2C];
             play_song(0);
             play_sound_effect(0);
             return;
@@ -253,7 +253,7 @@ void test_mode_update(void) {
     gSpriteEntries[4].unk0 &= 0xBFFF;
 }
 
-void update_fade_transition_state_0805F778(void) {
+void test_mode_fade_out_exit(void) {
     if (gUnk_03006F74->unk0 == 1)
         play_sound_effect(gUnk_03006F74->unk49 ? 5 : 4);
     if (gUnk_03006F74->unk0 != 32) {
@@ -264,16 +264,16 @@ void update_fade_transition_state_0805F778(void) {
         gGameMode = 3;
         gGameState = 2;
         gGameSubState = 0;
-        gUnk_03007008 = 1;
+        gTitleSkipIntro = 1;
     }
 }
 
-void advance_substate_on_handler_complete(void) {
+void test_mode_erase_prompt(void) {
     if (run_message(gUnk_08485788[3]))
         gGameSubState++;
 }
 
-void sub_0805F81C(void) {
+void test_mode_erase_choice(void) {
     if (poll_choice_menu()) {
         gUnk_03006F74->unk2 = 0;
         sub_0803FB0C();
@@ -284,19 +284,19 @@ void sub_0805F81C(void) {
     }
 }
 
-void sub_0805F860(void) {
+void test_mode_erase_caution(void) {
     if (run_message(gUnk_08485788[16])) {
         if (gUnk_03006F74->unk2++ > 60)
             gGameSubState = 13;
     }
 }
 
-void sub_0805F898(void) {
+void test_mode_close_message(void) {
     if (game_state_execute_handler_a())
         gGameSubState = 4;
 }
 
-void sub_0805F8B0(void) {
+void test_mode_erase_start(void) {
     if (run_message(gUnk_08485788[4])) {
         play_song(0);
         play_sound_effect(0);
@@ -306,7 +306,7 @@ void sub_0805F8B0(void) {
     }
 }
 
-void sub_0805F8F0(void) {
+void test_mode_erase_save(void) {
     u8 t = gUnk_03006F74->unk2++;
     u16 err = 0;
     s8 i;
@@ -329,14 +329,14 @@ void sub_0805F8F0(void) {
     }
 }
 
-void sub_0805F974(void) {
+void test_mode_erase_done(void) {
     if (run_message(gUnk_08485788[5])) {
         if (gUnk_03006F74->unk2++ > 60)
             gGameSubState = 8;
     }
 }
 
-void sub_0805F9AC(void) {
+void test_mode_erase_failed(void) {
     if (run_message(gUnk_08485788[6])) {
         if (gUnk_03006F74->unk2++ > 60)
             gGameSubState = 8;

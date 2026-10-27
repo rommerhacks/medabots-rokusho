@@ -89,7 +89,7 @@ void select_battle_music(void) {
         else
             play_song(0xD);
     } else
-        play_song(gUnk_083AD3B0[gUnk_03000B94]);
+        play_song(gUnk_083AD3B0[gOptionBattleMusic]);
 }
 
 void init_battle_action_select_ui(u32 a) {

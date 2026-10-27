@@ -1,40 +1,41 @@
 // Mode-2 state 8: entered after a lost Robattle (battle/prebattle.c sub-states 0x74/0x75); shows Ikki
-// falling on the Medabots logo. Name is a guess. clear_or_fill_bg2_tilemap is its BG2 helper;
-// sub_0805FAF0 runs the sub-states gUnk_08483CA4.
+// falling on the Medabots logo. Name is a guess. game_over_draw_wipe is its BG2 helper;
+// game_over_update runs the sub-states gGameOverStates: 0 reset, 1 graphics, 2-3 fade in, 4 Ikki falls,
+// 5 the logo drops and bounces (A when done), 7 wipe out, 6 fade out back to the boot logos.
 #include "global.h"
 
 static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
 }
 
-static void clear_or_fill_bg2_tilemap(s32 a) {
+static void game_over_draw_wipe(s32 step) {
     u16 buf[0x20];
     u16 *d;
     u16 *s;
     s32 i;
 
-    if (a < 8) {
+    if (step < 8) {
         u32 zero = 0;
 
         CpuFastSet(&zero, buf, 0x01000010);
-        CpuSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800 + (7 - a) * 2, buf, (a + 1) & 0x1FFFFF);
-        CpuSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x2C, &buf[0x1D - a], (a + 1) & 0x1FFFFF);
+        CpuSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800 + (7 - step) * 2, buf, (step + 1) & 0x1FFFFF);
+        CpuSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x2C, &buf[0x1D - step], (step + 1) & 0x1FFFFF);
     } else {
-        a -= 8;
+        step -= 8;
         CpuFastSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800, buf, 0x10);
         d = &buf[14];
-        s = &buf[13 - a];
+        s = &buf[13 - step];
         for (i = 13; i >= 0; i--) {
-            if (i <= a)
+            if (i <= step)
                 *d = buf[0];
             else
                 *d = *s--;
             d--;
         }
         d = &buf[15];
-        s = &buf[16 + a];
+        s = &buf[16 + step];
         for (i = 13; i >= 0; i--) {
-            if (i <= a)
+            if (i <= step)
                 *d = buf[29];
             else
                 *d = *s++;
@@ -45,13 +46,13 @@ static void clear_or_fill_bg2_tilemap(s32 a) {
         CpuFastSet(buf, (u8 *)VRAM + ((REG_BG1CNT >> 8) & 0x1F) * 0x800 + i * 0x40, 0x10);
 }
 
-void sub_0805FAF0(void) {
-    gUnk_08483CA4[gGameSubState]();
+void game_over_update(void) {
+    gGameOverStates[gGameSubState]();
     if (gFrameCounter & 1)
         gBg3Scroll.y++;
 }
 
-void sub_0805FB2C(void) {
+void game_over_reset(void) {
     u32 zero = 0;
 
     CpuFastSet(&zero, (void *)VRAM, 0x01006000);
@@ -68,7 +69,7 @@ void sub_0805FB2C(void) {
     gGameSubState++;
 }
 
-void sub_0805FBA8(void) {
+void game_over_load_graphics(void) {
     vu16 *bg0, *bg1, *bg2, *bg3;
     u16 v;
     u32 size;
@@ -125,7 +126,7 @@ void sub_0805FBA8(void) {
     gGameSubState++;
 }
 
-void sub_0805FD1C(void) {
+void game_over_show_screen(void) {
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
     gUnk_03006F74->unk0 = 0x20;
@@ -133,7 +134,7 @@ void sub_0805FD1C(void) {
     gGameSubState++;
 }
 
-void sub_0805FD60(void) {
+void game_over_fade_in(void) {
     struct Unk_03006F74 *p = gUnk_03006F74;
 
     if (p->unk0 != 0) {
@@ -146,7 +147,7 @@ void sub_0805FD60(void) {
     }
 }
 
-void sub_0805FDB4(void) {
+void game_over_ikki_fall(void) {
     struct SpriteEntry *s = gSpriteEntries;
     u32 c = s[1].unk1A;
     u16 zero;
@@ -173,7 +174,7 @@ void sub_0805FDB4(void) {
     }
 }
 
-void sub_0805FE90(void) {
+void game_over_logo_drop(void) {
     u32 done = 0;
     struct Unk_03006F74 *p = gUnk_03006F74;
     u16 t;
@@ -207,12 +208,12 @@ void sub_0805FE90(void) {
                 gSpriteEntries[0].unk9 = 0x40;
             }
             if (t <= 0xC)
-                y = gUnk_080AF95A[t] + 0x20;
+                y = gGameOverLogoBounce[t] + 0x20;
             else {
                 y = 0x20;
                 t -= 0xD;
                 if (t <= 7)
-                    clear_or_fill_bg2_tilemap(t);
+                    game_over_draw_wipe(t);
                 else
                     done = 1;
             }
@@ -221,7 +222,7 @@ void sub_0805FE90(void) {
     }
     if (++gSpriteEntries[1].unk1A > 0x47)
         gSpriteEntries[1].unk1A = 0;
-    gSpriteEntries[1].unk6 = gUnk_080AF942[gSpriteEntries[1].unk1A / 6];
+    gSpriteEntries[1].unk6 = gGameOverIkkiFrames[gSpriteEntries[1].unk1A / 6];
     if ((KEYS_LO(gNewKeys) & 1) && done) {
         gSpriteEntries[1].unk0 = 0xCA20;
         gUnk_03006F74->unk3A = 0;
@@ -229,7 +230,7 @@ void sub_0805FE90(void) {
     }
 }
 
-void sub_08060018(void) {
+void game_over_fade_out_exit(void) {
     if (gUnk_03006F74->unk0 != 32) {
         gUnk_03006F74->unk0++;
         REG_BLDY = gUnk_03006F74->unk0 >> 1;
@@ -241,14 +242,14 @@ void sub_08060018(void) {
     }
 }
 
-void sub_0806006C(void) {
+void game_over_wipe_out(void) {
     struct Unk_03006F74 *p = gUnk_03006F74;
 
     p->unk3A++;
-    clear_or_fill_bg2_tilemap(p->unk3A + 8);
+    game_over_draw_wipe(p->unk3A + 8);
     if (++gSpriteEntries[1].unk1A > 0x47)
         gSpriteEntries[1].unk1A = 0;
-    gSpriteEntries[1].unk6 = gUnk_080AF968[(u16)(gSpriteEntries[1].unk1A / 6)];
+    gSpriteEntries[1].unk6 = gGameOverIkkiFramesExit[(u16)(gSpriteEntries[1].unk1A / 6)];
     p = gUnk_03006F74;
     if (p->unk3A > 13) {
         p->unk0 = 0;

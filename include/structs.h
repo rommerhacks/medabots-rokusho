@@ -610,7 +610,7 @@ struct Unk_03001800 {
     u8 unk54;
     u8 unk55; // Robattle: result flags (2, 4, 8, 0x10 pick sub-states 0x60-0x78 in robattle_turn_loop)
     u8 unk56; // Robattle: frame counter, mod 32 (robattle_time_tick)
-    u8 unk57; // Robattle: TIME left, 40/30/20 by gUnk_03001788 (robattle_time_init), -1 every 32 frames
+    u8 unk57; // Robattle: TIME left, 40/30/20 by gOptionTimeLimit (robattle_time_init), -1 every 32 frames
               // (robattle_time_tick)
     u8 unk58; // Robattle: nonzero blocks Medaforce (check_medaforce_availability)
     u8 unk59; // Robattle: effect amount left to apply (sub_08018D0C / sub_08018DF4)
@@ -1558,7 +1558,7 @@ struct Unk_03006F74 {
     u8 filler35;
     u16 unk36; // save screen: last BG tile index loaded (save_screen_load_graphics)
     u16 unk38;
-    s16 unk3A; // title: blend step (sub_0805BB10)
+    s16 unk3A; // title: blend step (title_menu_blend_step)
     u16 unk3C;
     s16 unk3E;
     u16 unk40[4];
@@ -1635,7 +1635,8 @@ struct SaveData {
     u16 checksum;                   // byte sum of the whole image, computed with this field 0
     u8 fillerFF6[2];
     u8 field[0xCC0]; // gUnk_030057E0
-    u8 flags;        // bits 0-1 gUnk_03001788, bit 2 gUnk_03001360, bits 3-4 gUnk_03000B94, bit 5 gUnk_03001784.unk0_1
+    u8 flags;        // bits 0-1 gOptionTimeLimit, bit 2 gOptionSkipMessages, bits 3-4 gOptionBattleMusic, bit 5
+                     // gUnk_03001784.unk0_1
     u8 filler1CB9[3];
 };
 

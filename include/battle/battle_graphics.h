@@ -3,11 +3,12 @@
 
 // Battle graphics loading, message windows, UI tilemaps, Medaforce gauge
 
-void sub_0801ABF8(void);    // text_window_init(1, 2, 0) unless gUnk_03001360 is set (guess: skipped in link Robattles)
-u32 sub_0801AC6C(void);     // game_state_execute_handler_a() unless gUnk_03001360 is set (then 1)
+void sub_0801ABF8(
+    void); // text_window_init(1, 2, 0) unless gOptionSkipMessages is set (guess: skipped in link Robattles)
+u32 sub_0801AC6C(void);     // game_state_execute_handler_a() unless gOptionSkipMessages is set (then 1)
 void sub_0801AC98(u32 rec); // draws the BG1 message frame tilemaps on the team (rec 0-2) or opponent side
 u32 battle_load_graphics_step(u32 direct); // one LZ graphics load per call (step 0x0300057A 0-8); returns 1 when done,
-u32 sub_0801AC24(u32 msg);                 // run_message(gUnk_083C65C4[msg]) unless gUnk_03001360 is set (then 1)
+u32 sub_0801AC24(u32 msg);                 // run_message(gUnk_083C65C4[msg]) unless gOptionSkipMessages is set (then 1)
 void sub_0801AD10(u32 rec); // redraws a Medabot's panel (left_b when the Medaforce gauge is full) and its gauge
 void sub_0801AD48(u32 rec); // guess: Medaforce effect: 8 sprites 0x78-0x7F (tiles 0x616-0x619) lined up at y 0x78, x
 u32 sub_0801ADE8(u32 rec);  // moves those sprites 4 px per step toward the other side; 1 when all are done

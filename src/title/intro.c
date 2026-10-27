@@ -25,7 +25,7 @@ static void sub_0806E854(void) {
 
 static void intro_check_skip(void) {
     if (KEYS_LO(gHeldKeys) & 8) {
-        gUnk_03007008 = 1;
+        gTitleSkipIntro = 1;
         gUnk_03000430 = 0;
         gGameMode = 3;
         gGameState = 2;
@@ -113,7 +113,7 @@ void battle_scene_init_clear(void) {
     gUnk_03001800_s.unk6 = 1;
     gUnk_03001800_s.unkF4 = 0x7C0;
     gUnk_03001800_s.unkF6 = 0x100;
-    gUnk_03007008 = 0;
+    gTitleSkipIntro = 0;
     gGameSubState = 8;
 }
 

@@ -120,6 +120,6 @@ void sub_080603A4(void) {
         gGameMode = 3;
         gGameState = 2;
         gGameSubState = 0;
-        gUnk_03007008 = 1;
+        gTitleSkipIntro = 1;
     }
 }

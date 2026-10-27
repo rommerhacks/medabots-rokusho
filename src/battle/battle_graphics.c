@@ -94,14 +94,14 @@ u32 battle_load_graphics_step(u32 direct) {
 }
 
 void sub_0801ABF8(void) {
-    if (gUnk_03001360 == 0 || gUnk_03000440.unk89 == 1)
+    if (gOptionSkipMessages == 0 || gUnk_03000440.unk89 == 1)
         text_window_init(1, 2, 0);
 }
 
 u32 sub_0801AC24(u32 msg) {
     u32 done;
 
-    if (gUnk_03001360 == 0 || gUnk_03000440.unk89 == 1) {
+    if (gOptionSkipMessages == 0 || gUnk_03000440.unk89 == 1) {
         done = run_message(gUnk_083C65C4[msg]);
         if (done)
             gUnk_03000440.unk1B = 0;
@@ -111,7 +111,7 @@ u32 sub_0801AC24(u32 msg) {
 }
 
 u32 sub_0801AC6C(void) {
-    if (gUnk_03001360 == 0 || gUnk_03000440.unk89 == 1)
+    if (gOptionSkipMessages == 0 || gUnk_03000440.unk89 == 1)
         return game_state_execute_handler_a();
     return 1;
 }

@@ -83,9 +83,9 @@ void load_save_data(struct SaveData *save) {
         gUnk_030017A0[i] = save->team[i];
     CpuSet(save->items, gItemInventory, 0x40);
     CpuSet(save->field, &gUnk_030057E0, 0x660);
-    gUnk_03001788 = save->flags & 3;
-    gUnk_03001360 = (save->flags >> 2) & 1;
-    gUnk_03000B94 = (save->flags >> 3) & 3;
+    gOptionTimeLimit = save->flags & 3;
+    gOptionSkipMessages = (save->flags >> 2) & 1;
+    gOptionBattleMusic = (save->flags >> 3) & 3;
     gUnk_03001784.unk0_1 = (save->flags >> 5) & 1;
 }
 
@@ -109,7 +109,8 @@ void serialize_save_data(struct SaveData *save) {
         save->team[i] = gUnk_030017A0[i];
     CpuSet(gItemInventory, save->items, 0x40);
     CpuSet(&gUnk_030057E0, save->field, 0x660);
-    save->flags = gUnk_03001788 | (gUnk_03001360 << 2) | (gUnk_03000B94 << 3) | (gUnk_03001784.unk0_1 << 5);
+    save->flags =
+        gOptionTimeLimit | (gOptionSkipMessages << 2) | (gOptionBattleMusic << 3) | (gUnk_03001784.unk0_1 << 5);
     save->checksum = 0;
     sum = 0;
     p = (u8 *)save;

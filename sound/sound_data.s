@@ -340,16 +340,16 @@ gUnk_080AF674:
 gUnk_080AF6EC:
 	.incbin "baserom.gba", 0xAF6EC, 0x4
 
-	.global gUnk_080AF6F0
-gUnk_080AF6F0:
+	.global gTitleMenuBlendAlphas
+gTitleMenuBlendAlphas:
 	.incbin "baserom.gba", 0xAF6F0, 0x50
 
-	.global gUnk_080AF740
-gUnk_080AF740:
+	.global gTitleOptionValueMasks
+gTitleOptionValueMasks:
 	.incbin "baserom.gba", 0xAF740, 0x12
 
-	.global gUnk_080AF752
-gUnk_080AF752:
+	.global gBattleMusicOptionSongs
+gBattleMusicOptionSongs:
 	.incbin "baserom.gba", 0xAF752, 0x3
 
 	.global gUnk_080AF755
@@ -384,28 +384,28 @@ gUnk_080AF810:
 gUnk_080AF850:
 	.incbin "baserom.gba", 0xAF850, 0x4
 
-	.global gUnk_080AF854
-gUnk_080AF854:
+	.global gSoundTestSongs
+gSoundTestSongs:
 	.incbin "baserom.gba", 0xAF854, 0x34
 
-	.global gUnk_080AF888
-gUnk_080AF888:
+	.global gSoundTestEffects
+gSoundTestEffects:
 	.incbin "baserom.gba", 0xAF888, 0x78
 
 	.global gUnk_080AF900
 gUnk_080AF900:
 	.incbin "baserom.gba", 0xAF900, 0x42
 
-	.global gUnk_080AF942
-gUnk_080AF942:
+	.global gGameOverIkkiFrames
+gGameOverIkkiFrames:
 	.incbin "baserom.gba", 0xAF942, 0x18
 
-	.global gUnk_080AF95A
-gUnk_080AF95A:
+	.global gGameOverLogoBounce
+gGameOverLogoBounce:
 	.incbin "baserom.gba", 0xAF95A, 0xE
 
-	.global gUnk_080AF968
-gUnk_080AF968:
+	.global gGameOverIkkiFramesExit
+gGameOverIkkiFramesExit:
 	.incbin "baserom.gba", 0xAF968, 0x18
 
 	.global gUnk_080AF980

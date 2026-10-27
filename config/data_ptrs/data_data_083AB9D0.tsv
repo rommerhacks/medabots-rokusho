@@ -31,7 +31,7 @@
 083ABD0C	gUnk_083ABCB8
 083ABE18	dispatch_game_state_handler_08002534
 083ABE1C	field_mode_dispatch
-083ABE20	dispatch_game_state_handler_0805BA94
+083ABE20	menu_mode_update
 083ABE24	dispatch_game_mode_handler
 083ABE30	gUnk_080750E0+0xDA8
 083ABE34	gUnk_080750E0+0xF34

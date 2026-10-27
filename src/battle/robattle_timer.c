@@ -8,7 +8,7 @@ void robattle_time_init(void) {
         gUnk_03001800.unk57 = 40;
         return;
     }
-    switch (gUnk_03001788) {
+    switch (gOptionTimeLimit) {
     case 0:
         gUnk_03001800.unk57 = 40;
         break;

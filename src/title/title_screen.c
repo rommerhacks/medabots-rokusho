@@ -1,9 +1,12 @@
-// Mode-3 state 2: the title screen. sub_0806D3F4 runs gUnk_08485EC4 with a BG2 per-scanline wave (HBlank
-// handler sub_0806D420). START goes to the title menu (mode 2 state 3), SELECT+START to the test mode
+// Mode-3 state 2: the title screen. title_screen_update runs gTitleScreenStates with a BG2 per-scanline wave (HBlank
+// handler title_screen_hblank). START goes to the title menu (mode 2 state 3), SELECT+START to the test mode
 // (mode 2 state 7); after a timeout it loops back to the boot logos (mode 3 state 0).
+// Sub-states: 0 reset, 4 graphics, 5 logo, 6 sprites slide in, 7 wave + PRESS START, 8 wait for START,
+// 9 START pressed, 10 skip the intro (START held, or gTitleSkipIntro set by the logos / intro / test mode),
+// 1-3 shared fade / exit helpers. Each sprite runs a per-frame effect from gTitleSpriteEffects (unk20).
 #include "global.h"
 
-static void sub_0806DF80(u8 anim, u8 sprite);
+static void title_sprite_start_effect(u8 effect, u8 sprite);
 
 void set_bot_y_positions_by_count(void) {
     s32 i;
@@ -15,9 +18,9 @@ void set_bot_y_positions_by_count(void) {
     }
 }
 
-static void sub_0806D288(void) {
-    if (gUnk_03001800_s.nextSubState == 5 && ((KEYS_LO(gHeldKeys) & 8) || gUnk_03007008 != 0)) {
-        gUnk_03007008 = 0;
+static void title_screen_check_skip_or_test_mode(void) {
+    if (gUnk_03001800_s.nextSubState == 5 && ((KEYS_LO(gHeldKeys) & 8) || gTitleSkipIntro != 0)) {
+        gTitleSkipIntro = 0;
         gGameMode = 3;
         gGameState = 2;
         gGameSubState = 10;
@@ -36,10 +39,10 @@ static inline s32 sub_counter(void) {
     return 0x7800 - gUnk_030003F0;
 }
 
-// Builds the per-scanline BG2 PA / X tables read by the HBlank handler sub_0806D420:
+// Builds the per-scanline BG2 PA / X tables read by the HBlank handler title_screen_hblank:
 // lines 0-31 and 128-159 get X = 0x7800 -+ counter - PA * 120, lines 32-127 X = 0.
-// Builds the BG2 PA / X tables read by the HBlank handler sub_0806D420 (rows 32-127 get X = 0).
-void update_bg2_affine_scanline_params(void) {
+// Builds the BG2 PA / X tables read by the HBlank handler title_screen_hblank (rows 32-127 get X = 0).
+void title_screen_build_wave_tables(void) {
     s32 i;
     s32 x;
     s32 c;
@@ -65,16 +68,16 @@ void update_bg2_affine_scanline_params(void) {
     REG_BG2X_H = gUnk_030002B0[0];
 }
 
-void sub_0806D3F4(void) {
-    update_bg2_affine_scanline_params();
-    gUnk_08485EC4[gGameSubState]();
-    update_sprite_special_effects();
-    sub_0806D288();
+void title_screen_update(void) {
+    title_screen_build_wave_tables();
+    gTitleScreenStates[gGameSubState]();
+    title_screen_update_sprite_effects();
+    title_screen_check_skip_or_test_mode();
 }
 
-// HBlank: sets the next scanline's BG2 PA and X from the tables built by update_bg2_affine_scanline_params.
+// HBlank: sets the next scanline's BG2 PA and X from the tables built by title_screen_build_wave_tables.
 // VCOUNT is read through a non-volatile pointer: the compare's load is reused for the first index.
-void sub_0806D420(void) {
+void title_screen_hblank(void) {
     if (*(u8 *)REG_ADDR_VCOUNT < 159) {
         REG_BG2PA = gUnk_03000030[*(u8 *)REG_ADDR_VCOUNT + 1];
         REG_BG2X_L = gUnk_03000170[*(u8 *)REG_ADDR_VCOUNT + 1];
@@ -82,7 +85,7 @@ void sub_0806D420(void) {
     }
 }
 
-void teardown_scene_and_restore_state(void) {
+void title_screen_fade_out_exit(void) {
     if (execute_scene_step()) {
         u32 zero = 0;
         DmaSet(3, &zero, gSpriteEntries, 0x85000800);
@@ -98,7 +101,7 @@ void teardown_scene_and_restore_state(void) {
     }
 }
 
-void sub_0806D518(void) {
+void title_screen_wait_then_exit(void) {
     if (gUnk_03001800_s.unk6 < ++gUnk_03001800_s.timer) {
         gUnk_03001800_s.timer = 0;
         gGameMode = gUnk_03001800_s.nextMode;
@@ -107,8 +110,8 @@ void sub_0806D518(void) {
     }
 }
 
-// Title screen sub-state 0: clears the screen and the scene struct, then sub-state 4 (load_scene_graphics).
-void sub_0806D550(void) {
+// Title screen sub-state 0: clears the screen and the scene struct, then sub-state 4 (title_screen_load_graphics).
+void title_screen_reset(void) {
     u32 zero = 0;
     DmaSet(3, &zero, VRAM, 0x85006000);
     zero = 0;
@@ -133,7 +136,7 @@ void sub_0806D550(void) {
     gGameSubState = 4;
 }
 
-void load_scene_graphics(void) {
+void title_screen_load_graphics(void) {
     LZ77UnCompVram(gUnk_087B55BC, (void *)VRAM);
     DmaSet(3, gUnk_087B9B6C, VRAM + 0x8000, 0x84000090);
     DmaSet(3, gUnk_087B9DAC, PLTT, 0x84000030);
@@ -151,20 +154,20 @@ void load_scene_graphics(void) {
     gGameSubState = 1;
 }
 
-void battle_transition_animate_step(void) {
+void title_screen_show_logo(void) {
     if (gUnk_03001800_s.timer == 0) {
         sprite_entry_init(0, 0xCC00, 0x224, 6, 3);
         gSpriteEntries[0].unk2 = 0x78;
         gSpriteEntries[0].unk4 = 0x3C;
         gSpriteEntries[0].unkB = 0x10;
-        sub_0806DF80(1, 0);
+        title_sprite_start_effect(1, 0);
         REG_DISPCNT |= 0x1000;
     } else if (gUnk_03001800_s.timer == 0x20) {
         sprite_entry_init(1, 0xC400, 0x200, 0, 3);
         gSpriteEntries[1].unk2 = 0x78;
         gSpriteEntries[1].unk4 = 0x3C;
         gSpriteEntries[1].unkB = 0x20;
-        sub_0806DF80(2, 1);
+        title_sprite_start_effect(2, 1);
     }
     if (gSpriteEntries[0].unk20 == 0) {
         gUnk_03001800_s.nextSubState = 6;
@@ -179,14 +182,14 @@ void battle_transition_animate_step(void) {
     }
 }
 
-void battle_scene_intro_step(void) {
+void title_screen_slide_in_sprites(void) {
     if (gUnk_03001800_s.timer == 0) {
         play_song(0);
         sprite_entry_init(1, 0xC400, 0x211, 1, 3);
         gSpriteEntries[1].unk2 = 0x118;
         gSpriteEntries[1].unk4 = 0x55;
         gSpriteEntries[1].unkB = 0x20;
-        sub_0806DF80(3, 1);
+        title_sprite_start_effect(3, 1);
     }
     if (gSpriteEntries[1].unk20 == 0) {
         sprite_entry_init(3, 0xC000, 0x213, 3, 3);
@@ -194,13 +197,13 @@ void battle_scene_intro_step(void) {
         gSpriteEntries[3].unk4 = 0x55;
         gSpriteEntries[3].unkB = 0x40;
         gSpriteEntries[3].unk32 = 0;
-        sub_0806DF80(7, 3);
+        title_sprite_start_effect(7, 3);
         sprite_entry_init(4, 0xC400, 0x21C, 5, 3);
         gSpriteEntries[4].unk2 = 0x12C;
         gSpriteEntries[4].unk4 = 0x3C;
         gSpriteEntries[4].unkB = 0x10;
         gSpriteEntries[4].unk32 = 0;
-        sub_0806DF80(8, 4);
+        title_sprite_start_effect(8, 4);
         gUnk_03001800_s.timer = 0;
         gGameSubState = 7;
     } else {
@@ -208,7 +211,7 @@ void battle_scene_intro_step(void) {
     }
 }
 
-void battle_transition_wipe_effect(void) {
+void title_screen_start_wave(void) {
     s32 i;
 
     if (gUnk_03001800_s.timer == 0) {
@@ -218,7 +221,7 @@ void battle_transition_wipe_effect(void) {
         REG_DISPCNT |= 0x400;
         REG_IE |= 2;
         REG_DISPSTAT |= 0x10;
-        gHBlankCallback = sub_0806D420;
+        gHBlankCallback = title_screen_hblank;
         for (i = 0; i < 160; i++) {
             s32 x;
             if (i < 32) {
@@ -235,7 +238,7 @@ void battle_transition_wipe_effect(void) {
         }
     } else if (gUnk_03001800_s.timer > 0x40) {
         gSpriteEntries[2].unk0 &= ~0x200;
-        sub_0806DF80(5, 2);
+        title_sprite_start_effect(5, 2);
         gUnk_03001800_s.timer = 0;
         gGameSubState = 8;
         return;
@@ -250,15 +253,15 @@ void battle_transition_wipe_effect(void) {
         gSpriteEntries[2].unk4 = 0x73;
         gSpriteEntries[2].unk8 = 0x40;
         gSpriteEntries[2].unk9 = 8;
-        sub_0806DF80(4, 2);
+        title_sprite_start_effect(4, 2);
     }
     gUnk_03001800_s.timer++;
 }
 
-void battle_intro_countdown_tick(void) {
+void title_screen_wait_start(void) {
     u8 start;
     if ((start = KEYS_LO(gNewKeys) & 8) != 0) {
-        sub_0806DF80(6, 2);
+        title_sprite_start_effect(6, 2);
         play_sound_effect(3);
         gUnk_03001800_s.timer = 0;
         gGameSubState++;
@@ -275,7 +278,7 @@ void battle_intro_countdown_tick(void) {
     }
 }
 
-void sub_0806DAEC(void) {
+void title_screen_start_pressed(void) {
     if (gUnk_03001800_s.timer > 0x28) {
         gUnk_03001800_s.timer = 0;
         clear_sprite_entry(2);
@@ -289,7 +292,7 @@ void sub_0806DAEC(void) {
     }
 }
 
-void sub_0806DB30(void) {
+void title_screen_skip_intro(void) {
     setup_screen_transition_effect_080682CC(4, 2, 0x7FFF);
     REG_BLDY = 0;
     play_song(0);
@@ -298,37 +301,37 @@ void sub_0806DB30(void) {
     gSpriteEntries[0].unk2 = 0x78;
     gSpriteEntries[0].unk4 = 0x3C;
     gSpriteEntries[0].unkB = 0x10;
-    sub_0806DF80(0, 0);
+    title_sprite_start_effect(0, 0);
     sprite_entry_init(1, 0xC400, 0x211, 1, 3);
     gSpriteEntries[1].unk2 = 0x78;
     gSpriteEntries[1].unk4 = 0x55;
     gSpriteEntries[1].unkB = 0x20;
-    sub_0806DF80(0, 1);
+    title_sprite_start_effect(0, 1);
     sprite_entry_init(3, 0xC000, 0x213, 3, 3);
     gSpriteEntries[3].unk2 = 0x12C;
     gSpriteEntries[3].unk4 = 0x55;
     gSpriteEntries[3].unkB = 0x40;
     gSpriteEntries[3].unk32 = 0x80;
-    sub_0806DF80(7, 3);
+    title_sprite_start_effect(7, 3);
     sprite_entry_init(4, 0xC400, 0x21C, 5, 3);
     gSpriteEntries[4].unk2 = 0x12C;
     gSpriteEntries[4].unk4 = 0x3C;
     gSpriteEntries[4].unkB = 0x10;
     gSpriteEntries[4].unk32 = 0x80;
-    sub_0806DF80(8, 4);
+    title_sprite_start_effect(8, 4);
     REG_DISPCNT |= 0x1300;
     gUnk_03001800_s.nextSubState = 7;
     gUnk_03001800_s.timer = 0;
     gGameSubState = 1;
 }
 
-void update_sprite_special_effects(void) {
+void title_screen_update_sprite_effects(void) {
     u8 i;
 
     for (i = 0; i < 5; i++) {
         if (gSpriteEntries[i].unk20 != 0) {
-            if (++gSpriteEntries[i].unk1A % gUnk_08485F14[gSpriteEntries[i].unk20 - 1] == 0) {
-                switch (gUnk_08485EF4[gSpriteEntries[i].unk20 - 1](i)) {
+            if (++gSpriteEntries[i].unk1A % gTitleSpriteEffectPeriods[gSpriteEntries[i].unk20 - 1] == 0) {
+                switch (gTitleSpriteEffects[gSpriteEntries[i].unk20 - 1](i)) {
                 case 0:
                     gSpriteEntries[i].unk20 = 0;
                     gSpriteEntries[i].unk22 = 0;
@@ -346,7 +349,7 @@ void update_sprite_special_effects(void) {
 
 // Title sprite palette fade-in: copies the title palette (gUnk_03001800_s.unkC, u16[14]) into
 // OBJ palette 6 step by step (unk22 = step 0..0x1E).
-bool32 sub_0806DD10(u8 idx) {
+bool32 title_effect_palette_fade_in(u8 idx) {
     u8 n;
     struct SpriteEntry *base = gSpriteEntries;
     struct SpriteEntry *p = &base[idx];
@@ -378,7 +381,7 @@ bool32 sub_0806DD10(u8 idx) {
     return TRUE;
 }
 
-bool32 sub_0806DE34(u8 i) {
+bool32 title_effect_animate_frames(u8 i) {
     if (gSpriteEntries[i].unk22 > 15)
         return FALSE;
     if (gSpriteEntries[i].unk22 != 0)
@@ -387,19 +390,19 @@ bool32 sub_0806DE34(u8 i) {
     return TRUE;
 }
 
-bool32 sub_0806DE64(u8 i) {
+bool32 title_effect_slide_left(u8 i) {
     if ((gSpriteEntries[i].unk2 -= 8) <= 0x78)
         return FALSE;
     return TRUE;
 }
 
-bool32 sub_0806DE88(u8 i) {
+bool32 title_effect_grow(u8 i) {
     if ((gSpriteEntries[i].unk9 += 8) > 0x3F)
         return FALSE;
     return TRUE;
 }
 
-bool32 sub_0806DEAC(u8 i) {
+bool32 title_effect_blink(u8 i) {
     if (gSpriteEntries[i].unk22 & 1)
         gSpriteEntries[i].unk4 = 0x73;
     else
@@ -408,7 +411,7 @@ bool32 sub_0806DEAC(u8 i) {
     return TRUE;
 }
 
-bool32 sub_0806DEE8(u8 i) {
+bool32 title_effect_glint(u8 i) {
     if (gSpriteEntries[i].unk32 < gSpriteEntries[i].unk1A) {
         if (gSpriteEntries[i].unk22 > 7) {
             gSpriteEntries[i].unk2 = 300;
@@ -428,9 +431,10 @@ bool32 sub_0806DEE8(u8 i) {
     return TRUE;
 }
 
-static void sub_0806DF80(u8 a, u8 i) {
-    gSpriteEntries[i].unk20 = a;
-    gSpriteEntries[i].unk22 = 0;
-    gSpriteEntries[i].unk30 = gSpriteEntries[i].unk6;
-    gSpriteEntries[i].unk1A = 0;
+// Starts effect `effect` (1-based index into gTitleSpriteEffects) on title sprite `sprite`.
+static void title_sprite_start_effect(u8 effect, u8 sprite) {
+    gSpriteEntries[sprite].unk20 = effect;
+    gSpriteEntries[sprite].unk22 = 0;
+    gSpriteEntries[sprite].unk30 = gSpriteEntries[sprite].unk6;
+    gSpriteEntries[sprite].unk1A = 0;
 }

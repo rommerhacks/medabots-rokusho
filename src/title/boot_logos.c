@@ -9,7 +9,7 @@ void boot_logos_check_skip(void) {
         gGameMode = 3;
         gGameState = 2;
         gGameSubState = 0;
-        gUnk_03007008 = 1;
+        gTitleSkipIntro = 1;
     }
 }
 
@@ -63,7 +63,7 @@ void boot_logos_init(void) {
     gBg2Scroll.y = 0;
     gBg3Scroll.x = 0;
     gBg3Scroll.y = 0;
-    gUnk_03007008 = 0;
+    gTitleSkipIntro = 0;
     setup_screen_transition_effect_080682CC(2, 4, 0);
     gGameSubState = 4;
 }

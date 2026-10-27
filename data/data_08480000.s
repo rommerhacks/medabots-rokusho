@@ -16,12 +16,12 @@ gUnk_08483AA0:
 gItemUsable:
 	.incbin "baserom.gba", 0x483AC0, 0x40
 
-	.global gUnk_08483B00
-gUnk_08483B00:
+	.global gMenuModeStates
+gMenuModeStates:
 	.incbin "baserom.gba", 0x483B00, 0x78
 
-	.global gUnk_08483B78
-gUnk_08483B78:
+	.global gTitleMenuStates
+gTitleMenuStates:
 	.incbin "baserom.gba", 0x483B78, 0x28
 
 	.global gItemMenuStates
@@ -48,12 +48,12 @@ gNameEntryStates:
 gDefaultPlayerName:
 	.incbin "baserom.gba", 0x483C68, 0x4
 
-	.global gUnk_08483C6C
-gUnk_08483C6C:
+	.global gTestModeStates
+gTestModeStates:
 	.incbin "baserom.gba", 0x483C6C, 0x38
 
-	.global gUnk_08483CA4
-gUnk_08483CA4:
+	.global gGameOverStates
+gGameOverStates:
 	.incbin "baserom.gba", 0x483CA4, 0x20
 
 	.global gUnk_08483CC4
@@ -188,16 +188,16 @@ gUnk_08485E5C:
 gUnk_08485E84:
 	.incbin "baserom.gba", 0x485E84, 0x40
 
-	.global gUnk_08485EC4
-gUnk_08485EC4:
+	.global gTitleScreenStates
+gTitleScreenStates:
 	.incbin "baserom.gba", 0x485EC4, 0x30
 
-	.global gUnk_08485EF4
-gUnk_08485EF4:
+	.global gTitleSpriteEffects
+gTitleSpriteEffects:
 	.incbin "baserom.gba", 0x485EF4, 0x20
 
-	.global gUnk_08485F14
-gUnk_08485F14:
+	.global gTitleSpriteEffectPeriods
+gTitleSpriteEffectPeriods:
 	.incbin "baserom.gba", 0x485F14, 0x8
 
 	.global gUnk_08485F1C

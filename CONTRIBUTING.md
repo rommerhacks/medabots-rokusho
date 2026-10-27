@@ -184,17 +184,17 @@
   compiled before it in the same file, so a function can match in a scratch file and not in its
   module. `python3 tools/scripts/tryin.py <name> variants.c [N]` tries each `----`-separated
   variant in place of the module's `INCLUDE_ASM` line and restores the module afterwards
-  (town_map_move_cursor, sub_0805BDC8, sub_0805C190 only matched this way).
+  (town_map_move_cursor, title_options_pulse_palette, title_menu_load_save only matched this way).
 * A non-constant array initializer `u8 cur[3] = {gA, gB, gC};` builds a temporary on the stack and
-  copies it with a `bl memcpy` (sub_0805BCC0). `memcpy` is a second label on `memcpy_optimized` in
+  copies it with a `bl memcpy` (title_options_draw_values). `memcpy` is a second label on `memcpy_optimized` in
   `asm/lib/libgcc.s`.
 * A constant that the original builds at run time (`movs r0, #0x1f; lsls r4, r0, #10; lsls r1,
   r0, #5; orrs ...`) comes from a local variable: `s32 w = 31; c = (w << 10) | (w << 5) | w;`
-  (sub_0805C6AC).
+  (title_menu_confirm_flash).
 * Repeated key tests that `ands` into a fresh register each time: write `*(u8 *)&gNewKeys & 0x20`
   at every test instead of a `keys` local (town_map_move_cursor).
 * A `u16` loaded once and split into fields in two places: `u16 c = buf[i];` locals (not `u32`, not
-  re-reading the array) (sub_0805BDC8).
+  re-reading the array) (title_options_pulse_palette).
 * Unsolved: callees that zero-extend `u16` x/y params at entry, then sign-extend them at each use
   (`lsls #16; asrs #16` before `& 0x1FF`), while their callers pass sign-extended values (an `s16`
   prototype). `(s16)x` on a `u16` param gets dropped under the mask; see the near misses in NOTES
@@ -207,19 +207,19 @@
   The same change made the original's zero constants appear early in callee-saved registers
   (sub_080611D0).
 * `a = b = v;` stores `b` first. Swap the chain if two byte stores come out in the wrong order
-  (sub_0805FE90).
+  (game_over_logo_drop).
 * Loop pointer start order (`dst` literal before `src = base + v * 0x200`): explicit pointer locals
   assigned in the original's order, then `v <<= 9; src = base + v;` (trade_tiles_slow_down).
 * `CpuCopy16(buf, (void *)0x06004000, size); lz_decompress_dispatch(src, (void *)(0x06004000 + size));`
   keeps 0x06004000 in a callee-saved register; the original loads the literal twice. Solved by a helper
   `static inline void *vram_at(u32 off) { return (void *)(0x06004000 + off); }` used for both destinations
-  (save_screen_load_graphics, item_menu_load_graphics; retry sub_0805FBA8, load_battle_background_graphics this way).
+  (save_screen_load_graphics, item_menu_load_graphics; retry game_over_load_graphics, load_battle_background_graphics this way).
 * `id * 6` where the original computes `(id << 2) + (id << 1)`: write the shifts out
   (load_battle_sprite_tiles; retry decompress_sprite_to_vram_08042D94).
 * Variable-length arrays (`s32 n = 5; u8 ids[n];`) reproduced a stack frame where the constant only
   appears through reload (update_battle_medapart_icons, render_battle_medapart_list).
 * A function that matches standalone can break when an unrelated function earlier in the file becomes C
-  (session 91: sub_0805C190 rotates r8 / sl / ip). Bisect by reverting single functions to INCLUDE_ASM
+  (session 91: title_menu_load_save rotates r8 / sl / ip). Bisect by reverting single functions to INCLUDE_ASM
   and keep the cheapest one as asm until the next neighbour is installed.
 * **Last resort for a few-line register swap:** a GNU local register variable,
   `register u8 *p asm("r0") = (u8 *)&gX;`. Keep it in the smallest block that needs it; a function-wide
@@ -492,17 +492,17 @@
 * **The file context changes the high-register choice.** Which of `ip` / `sl` / `r8` holds a value
   (and so which `mov` encodings appear) depends on the functions compiled *before* it in the same
   `.c` file; `INCLUDE_ASM` functions don't count, C functions do. A function can match in
-  `match.py` (compiled alone) and still fail in `install_func.py` (sub_0805C190: same code, the three
+  `match.py` (compiled alone) and still fail in `install_func.py` (title_menu_load_save: same code, the three
   hi registers rotated). Nothing about the function's own source fixes it; it should match once the
   `INCLUDE_ASM` functions before it in the file are C. Keep such functions in `scratch/` and retry
   later. A mismatch that is only an `ip`/`r8` swap in scratch may be the same effect.
 * `p = (u16 *)(bgbase + x * 2) + y * 32`-style tilemap addresses: gcc reassociates
   `bg * 0x800 + (x * 2 + VRAM)` so the constant ends up last. Writing
   `(u16 *)(VRAM + (bg << 11)) + col + row * 32` gives the original's `row * 64 + 0x060000xx` then
-  `+ bg` order (sub_0805BC6C, sub_0805C190).
+  `+ bg` order (title_options_dim_values, title_menu_load_save).
 * Inner loops `for (j = 0; j <= 15; j++)` and `for (j = 15; j >= 0; j--)` both become count-down
   loops, but only the up-counting source gives the original's `i + 1` kept in another register
-  (sub_0805BC6C).
+  (title_options_dim_values).
 * One local reused for two unrelated values (an "empty name" flag, then a stored checksum) shows as
   both living in the same callee-saved register (validate_save_data).
 * A u8 parameter tested as `lsls r1, r1, #24; cmp r1, #0` with the truncation *after* other setup:
@@ -557,9 +557,9 @@
   instead of `map[i][j]` (boot_logos_load_licensed_by and its two siblings).
 * An I/O register read once for a compare and the value reused for the first use, then re-read
   after each store (`ldrb r0, [r3]; cmp r0, #0x9E; ... adds r0, #1` with no second load): the original
-  read it through a non-volatile pointer (`*(u8 *)REG_ADDR_VCOUNT`, sub_0806D420).
+  read it through a non-volatile pointer (`*(u8 *)REG_ADDR_VCOUNT`, title_screen_hblank).
 * A callee result compared with `bgt` for `> 1` (signed) where yours gives `bcc`: the function-table
-  type returns `s32`, not `bool32` (update_sprite_special_effects).
+  type returns `s32`, not `bool32` (title_screen_update_sprite_effects).
 * A loop that waits until `timer == n * 2` with `n` kept in a register: a local `s32 n = 0xC4;`, and
   the test written `n * 2 <= timer` to keep the original `cmp` operand order (sub_0806F0B4).
 * `ands` with the constant loaded first (`movs r1, #3; ands r1, r0`) where `& 3` gives `ands r0, r1`
@@ -657,4 +657,4 @@ really data (a false positive), the shifted build changes that data by `SHIFT`: 
 * `&f87` computed as `&f88 - 1` is `reload_cse_move2add`; extra labels (an if / else-if chain with a
   separate `s->unkAA++` per arm) stop it (sub_0801F4AC).
 * `v = *p; v &= 0xFFF;` and `r = v << 16; r >>= 16;` instead of the one-expression forms change
-  hoisted-constant priorities (sub_0805BBF8).
+  hoisted-constant priorities (title_options_highlight_row).
