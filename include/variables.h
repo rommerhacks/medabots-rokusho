@@ -290,7 +290,7 @@ extern struct Unk_03002B70 gUnk_03002B70;       // = gMoney, with the bytes afte
 extern const Func gUnk_083AC248[];              // game state 0 sub-state handlers (guess: debug map viewer)
 extern const Func gFieldMenuHandlers[];         // game state 1 (field pause menu) sub-state handlers
 extern const void *const gUnk_083B53F8[];       // messages used by game state 0 (guess: debug menu)
-extern const void *const gUnk_083CF3B0[];       // message table (run_message)
+extern const void *const gLinkMessages[];       // message table (run_message)
 extern const u8 gUnk_083AC420[];                // orbit centre x, y per gUnk_03000440.unk51
 extern const u8 gUnk_083AC432[];                // per slot sprite priority base
 extern const u8 gUnk_083AC43B[];                // x, y per team select slot (9)
@@ -879,16 +879,16 @@ extern const u16 gUnk_084C6998[];           // text window OBJ palette (text_win
 extern const u8 gUnk_08488540[];            // LZ text window graphics (text/message)
 extern const u8 gUnk_084C31BC[];            // LZ text window graphics (text/message)
 extern const u8 gUnk_084873D0[];            // LZ text window graphics (text/message)
-extern const u16 gUnk_0850EF58[];           // OBJ palettes (link Robattle screen, sub_0803DCDC)
-extern const u16 gUnk_084F39A0[];           // BG palettes (link Robattle screen, sub_0803DCDC)
-extern const u8 gUnk_084F21E8[];            // LZ graphics (link Robattle screen, sub_0803DCDC)
-extern const u8 gUnk_084F0D9C[];            // LZ graphics (link Robattle screen, sub_0803DCDC)
-extern const u8 gUnk_084F0194[];            // LZ graphics (link Robattle screen, sub_0803DCDC)
-extern const u8 gUnk_084EF668[];            // LZ graphics (link Robattle screen, sub_0803DCDC)
-extern const u8 gUnk_084E20F8[];            // LZ graphics (link Robattle screen, sub_0803DCDC)
-extern const u8 gUnk_084C68E0[];            // LZ graphics (link Robattle screen, sub_0803DCDC)
-extern const u8 gUnk_084C66B8[];            // LZ graphics (link Robattle screen, sub_0803DCDC)
-extern const u8 gUnk_084EDEF0[];            // LZ graphics (link Robattle screen, sub_0803DCDC)
+extern const u16 gUnk_0850EF58[];           // OBJ palettes (link Robattle screen, prize_game_load)
+extern const u16 gUnk_084F39A0[];           // BG palettes (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084F21E8[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084F0D9C[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084F0194[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084EF668[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084E20F8[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084C68E0[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084C66B8[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084EDEF0[];            // LZ graphics (link Robattle screen, prize_game_load)
 extern const s16 gUnk_083AFAB8[];           // y offsets by sprite unk23 (0-31; sub_0803C680)
 extern const u8 gUnk_083AFAAC[];            // BG3 parallax shift by battlefield gUnk_03001800.unk38 (sub_0803BE44)
 extern const Func gUnk_083AF96C[];          // sprite handlers by unk29, slots 1-0x27 (battle_sequence_update_sprites)
@@ -962,10 +962,9 @@ extern const Func gUnk_083AED20[]; // Robattle AI: action selection handlers by 
 extern const u8 gUnk_083AED18[];   // sprite 0x22 palette bits (unkA) by the levelled-up skill type gUnk_03001800.unk166
                                    // (sub_08031458)
 extern const u8 gUnk_084D796C[];   // compressed OBJ tiles at 0x06014800 (sub_08031390)
-extern u8
-    gUnk_0300198A[]; // 18-byte name copied when gUnk_03000440.unk89 == 1 (sub_080310A0; guess: link opponent name)
-extern u8 gUnk_03002B74[]; // 14-byte name copied for message 2 when gUnk_03000440.unk9C == 1 (sub_080310A0; guess:
-                           // player name)
+extern u8 gLinkPartnerName[]; // = gUnk_03001800.partnerName: link partner's player name (link_robattle_exchange_names)
+extern u8 gUnk_03002B74[];    // 14-byte name copied for message 2 when gUnk_03000440.unk9C == 1 (sub_080310A0; guess:
+                              // player name)
 extern const u8 gUnk_084E2FF8[];   // 32-byte OBJ palette (code_0802CA5C)
 extern const Func gUnk_083AEB58[]; // by gGameSubState (battle_action_state_update)
 extern const u8 gUnk_084E1EA4[];   // compressed tiles (code_0802CA5C)
@@ -1038,24 +1037,27 @@ extern const Func gUnk_083B27EC[]; // by gUnk_03000440.unk1B (sub_08040914)
 extern const Func gUnk_083B2804[]; // by gUnk_03000440.unk1B (sub_08040934)
 extern const Func gUnk_083B2808[]; // by gUnk_03000440.unk1B (sub_08040954)
 extern const Func gUnk_083B2810[]; // by gUnk_03000440.unk1B (sub_08040974)
-extern const u8 gUnk_083AFC78[32]; // battlefields, picked at random into gUnk_03001800.unk38 (sub_0803D71C)
+extern const u8
+    gLinkBattlefields[32]; // battlefields, picked at random into gUnk_03001800.unk38 (link_robattle_pick_battlefield)
 extern const Func
     gUnk_083B279C[]; // run_message states by gUnk_03000440.unk4: message_open, message_dim_palettes_step,
                      // message_show_window, ..., message_run_command (runtime-checked in 03_new_game_intro)
 extern const Func gUnk_083B27C0[]; // message commands, by the byte after gUnk_03000440.unk8[unkC] (message_run_command)
-extern const u8 gUnk_083AFC98[16][6]; // 6 bytes picked at random into gUnk_03001800.unk18A[0x10] (sub_0803E8B8)
-extern const u8 gUnk_084C01C8[];      // 64 bytes of tiles copied 52 times to VRAM 0x280 (message_fill_window_tiles)
-extern u8 gUnk_0300199A[6];           // 6 bytes from gUnk_083AFC98 (sub_0803E8B8); = gUnk_03001800.unk18A + 0x10
-extern const u8 gUnk_083AFCF8[16];    // record index 0-2 picked at random (sub_0803EE10)
+extern const u8 gPrizeGameSlotSets[16][6]; // prize rows per set, one set picked at random into gPrizeGameSlots
+                                           // (prize_game_pick_slots)
+extern const u8 gUnk_084C01C8[]; // 64 bytes of tiles copied 52 times to VRAM 0x280 (message_fill_window_tiles)
+extern u8 gPrizeGameSlots[6];    // 6 bytes from gPrizeGameSlotSets (prize_game_pick_slots); = gUnk_03001800.prizeSlots
+extern const u8 gPrizeGameBotPicks[16]; // record index 0-2 picked at random (prize_game_pick_prize_part)
 extern const u8
     gUnk_083B4E88[][2];          // alternate font widths, used when gUnk_03000440.unk27 is set (text_render_glyph_step)
 extern const u8 gUnk_084C5188[]; // alternate font glyphs, 64 bytes per character
-extern const u8 gUnk_083B4C88[][2];     // per character code: [0] width in pixels (render_text_sprites_08040DB8)
-extern const Func gUnk_083AFAF8[];      // link Robattle game state: sub-state handlers by gGameSubState (sub_0803D538)
-extern const u8 gUnk_08487524[];        // compressed tiles, message window frame style 3 (sub_08040A40)
-extern const u8 gUnk_084885A8[];        // compressed tilemap, message window frame style 3 (sub_08040A40)
-extern const u8 gUnk_08487630[];        // compressed tiles, message window frame style 2 (sub_08040A40)
-extern const u8 gUnk_08488600[];        // compressed tilemap, message window frame style 2 (sub_08040A40)
+extern const u8 gUnk_083B4C88[][2]; // per character code: [0] width in pixels (render_text_sprites_08040DB8)
+extern const Func
+    gLinkRobattleHandlers[];     // link Robattle game state: sub-state handlers by gGameSubState (link_robattle_update)
+extern const u8 gUnk_08487524[]; // compressed tiles, message window frame style 3 (sub_08040A40)
+extern const u8 gUnk_084885A8[]; // compressed tilemap, message window frame style 3 (sub_08040A40)
+extern const u8 gUnk_08487630[]; // compressed tiles, message window frame style 2 (sub_08040A40)
+extern const u8 gUnk_08488600[]; // compressed tilemap, message window frame style 2 (sub_08040A40)
 extern const u8 gUnk_083C3B5C[][8];     // per battlefield, copied to gUnk_03001800.unk74 (load_battle_script_entry_b)
 extern const Func gUnk_083B2814[];      // choice menu states by gUnk_03000440.unk29 (poll_choice_menu)
 extern const Func gUnk_083B284C[];      // by gUnk_03000440.unk1B (game_state_execute_handler_a)

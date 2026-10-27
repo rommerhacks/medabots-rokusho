@@ -1016,7 +1016,7 @@ void sub_080092D4(void) {
 void sub_08009374(void) {
     medals_scroll_bg();
     update_battle_sprite_visibility();
-    if (run_message(gUnk_083CF3B0[gUnk_03000440.unk84]))
+    if (run_message(gLinkMessages[gUnk_03000440.unk84]))
         gGameSubState = 2;
 }
 

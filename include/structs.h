@@ -342,7 +342,7 @@ struct Unk_03000440 {
     u8 unk135;
     u8 unk136;
     u8 unk137;
-    u8 unk138; // nonzero: sub_0803DC58 jumps to sub-state 0x30
+    u8 unk138; // nonzero: link_robattle_check_prize_game jumps to sub-state 0x30
     u8 unk139; // game state 3 setup step (medabots_screen_load_gfx); Robattle setup step
     u8 unk13A;
 };
@@ -743,14 +743,15 @@ struct Unk_03001800 {
     u8 unk187; // gUnk_03000590 record index (battle_loss_take_part)
     u8 unk188; // two rolls from gUnk_083AF200 (sub_08034AA0); unkEC = (unk188 + unk189) * 10
     u8 unk189;
-    u8 unk18A[0x10]; // link exchange: received bytes (sub_0803E680)
-    u8 unk19A[6];    // = gUnk_0300199A (sub_0803E8B8); indexed by unk1A2
-    u8 unk1A0;
-    u8 unk1A1;
-    u8 unk1A2;
-    u8 unk1A3;
-    u8 unk1A4;
-    u8 unk1A5;
+    u8 partnerName[0x10]; // link Robattle: the partner's player name (link_robattle_exchange_names)
+    // Link prize game (after a link Robattle, link/link_robattle.c):
+    u8 prizeSlots[6]; // part type per row (4 = miss); = gPrizeGameSlots (prize_game_pick_slots)
+    u8 prizePower;    // gauge 0-0x60, stopped with A
+    u8 prizePeakY;    // ball's highest y (0x68 - prizePower, at least 12)
+    u8 prizeRow;      // landing row 0-5 (prizePower >> 4, reversed)
+    u8 prizeLandY;    // ball's landing y (prizeRow * 16 + 0x18)
+    u8 prizeMedal;    // losing bot's record unk47 (prize_game_pick_prize_part)
+    u8 prizePart;     // part id taken from it
     u16 unk1A6;
     u16 unk1A8;
     u16 unk1AA;

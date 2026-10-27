@@ -159,7 +159,7 @@
   `ldr rA, =gX; ldr rB, =0x12F; adds`: access the field directly every time
   (`gArr[gUnk_03000440.unk12F]`), not through a `u8 *slot` local.
 * Fields of `gUnk_03001800` past 0x100 (literal `0x030019A4`, the next one as `-10` from it): the
-  struct field, not a separate symbol like `gUnk_0300198A[0x1A]`.
+  struct field, not a separate symbol like `gLinkPartnerName[0x1A]`.
 * Tilemap rect copies whose address is `x * 2 + VRAM` then `+ bg_base`, `+ y * 64`: write
   `(u16 *)(VRAM + bg_base) + x + y * 32`; `bg_base + (VRAM + x * 2)` gets reassociated
   (read_vram_tilemap_rect, draw_tile_block). Row loops that keep a row pointer and a
@@ -443,7 +443,7 @@
   copied before each `ands`: read it through a pointer, `u16 *src = &tbl[k]; ... *src & 0x1F ... *src &
   0x3E0` (the palette blends at 0x0803F684..0x0803F998).
 * `ldrb; adds #1; strb; ands #3` with no `& 0xFF`: write `x++; if (!(x & 3))`, not `++x & 3`
-  (sub_0803EC98).
+  (prize_game_ball_rise).
 * A struct word read across byte fields (`ldr r0, [base, #0x1C]` over `unk19[3]`..`unk1E`): cast to a
   local anonymous struct with the word at that offset; a `(u32 *)` cast folds into `=sym+0x1C`
   (link_error_check).

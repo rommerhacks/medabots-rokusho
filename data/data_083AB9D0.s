@@ -787,20 +787,20 @@ gUnk_083AFAAC:
 gUnk_083AFAB8:
 	.incbin "baserom.gba", 0x3AFAB8, 0x40
 
-	.global gUnk_083AFAF8
-gUnk_083AFAF8:
+	.global gLinkRobattleHandlers
+gLinkRobattleHandlers:
 	.incbin "baserom.gba", 0x3AFAF8, 0x180
 
-	.global gUnk_083AFC78
-gUnk_083AFC78:
+	.global gLinkBattlefields
+gLinkBattlefields:
 	.incbin "baserom.gba", 0x3AFC78, 0x20
 
-	.global gUnk_083AFC98
-gUnk_083AFC98:
+	.global gPrizeGameSlotSets
+gPrizeGameSlotSets:
 	.incbin "baserom.gba", 0x3AFC98, 0x60
 
-	.global gUnk_083AFCF8
-gUnk_083AFCF8:
+	.global gPrizeGameBotPicks
+gPrizeGameBotPicks:
 	.incbin "baserom.gba", 0x3AFCF8, 0x10
 
 	.global gUnk_083AFD08
@@ -1166,8 +1166,8 @@ gUnk_083CF108:
 gUnk_083CF148:
 	.incbin "baserom.gba", 0x3CF148, 0x268
 
-	.global gUnk_083CF3B0
-gUnk_083CF3B0:
+	.global gLinkMessages
+gLinkMessages:
 	.incbin "baserom.gba", 0x3CF3B0, 0x2848
 
 	.global gUnk_083D1BF8

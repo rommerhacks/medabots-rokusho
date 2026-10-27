@@ -1096,7 +1096,7 @@ void robattle_link_message_open(void) {
 }
 
 void robattle_link_message_show(void) {
-    if (run_message(gUnk_083CF3B0[1]))
+    if (run_message(gLinkMessages[1]))
         gGameSubState++;
 }
 

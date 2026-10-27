@@ -5,7 +5,7 @@
 // resolve_battle_action_phase; runtime-checked in the battle scenario).
 void battle_action_state_update(void) {
     if (link_error_check() == 0) {
-        sub_0803E780();
+        link_clear_send_word();
         update_all_battle_status_sprites();
         gUnk_083AEB58[gGameSubState]();
     }
@@ -286,7 +286,7 @@ void sub_080310A0(void) {
     else if (gUnk_03000440.unk89 != 1)
         memcpy_bytes_0803F63C(gUnk_083C3F38[gUnk_03001800.unk0], gUnk_03000440.unk9E, 0x12);
     else
-        memcpy_bytes_0803F63C(gUnk_0300198A, gUnk_03000440.unk9E, 0x12);
+        memcpy_bytes_0803F63C(gLinkPartnerName, gUnk_03000440.unk9E, 0x12);
     if (run_message(gUnk_083C65C4[2]))
         gGameSubState++;
 }
@@ -325,7 +325,7 @@ void sub_08031218(void) {
     else if (gUnk_03000440.unk89 != 1)
         memcpy_bytes_0803F63C(gUnk_083C3F38[gUnk_03001800.unk0], gUnk_03000440.unk9E, 0x12);
     else
-        memcpy_bytes_0803F63C(gUnk_0300198A, gUnk_03000440.unk9E, 0x12);
+        memcpy_bytes_0803F63C(gLinkPartnerName, gUnk_03000440.unk9E, 0x12);
     if (run_message(gUnk_083C65C4[3]))
         gGameSubState++;
 }
@@ -502,7 +502,7 @@ void sub_08031978(void) {
 }
 
 void sub_08031994(void) {
-    if (run_message(gUnk_083CF3B0[1]))
+    if (run_message(gLinkMessages[1]))
         gGameSubState++;
 }
 

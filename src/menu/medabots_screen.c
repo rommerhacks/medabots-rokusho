@@ -651,7 +651,7 @@ void sub_080049C8(void) {
 void sub_080049EC(void) {
     medabots_scroll_bg3();
     setup_overworld_scene_from_position();
-    if (run_message(gUnk_083CF3B0[11]))
+    if (run_message(gLinkMessages[11]))
         gGameSubState++;
 }
 
