@@ -1,7 +1,9 @@
 // Game state 7: the Robattle itself. robattle_update runs the sub-state machine in gRobattleHandlers:
-// battle init, command input on the ring, action commit and execution, the start banner, damage / repair
-// number pop-ups. Calls into battle_bots (turn logic), battle_hud, command_ring, part_select and
-// status_screen; the action scripts run in game states 8-9.
+// 0x00-0x02 setup and fade-in, 0x03-0x0E command ring (the six ring commands, decoded from their name
+// text gUnk_083C466C, jump to gUnk_083AD39A: Medaparts 0x10, MF 0x18, Status 0x20, Aim 0x28, Rotation 0x30,
+// Auto 0x38), 0x3C-0x3D screen restore after a full-screen menu, 0x40-0x42 start banner, 0x44-0x4C the turn
+// loop, 0x60-0x79 timed effect ends / numbers, 0x90-0xAF link Robattle command exchange. Calls into battle_bots (turn
+// logic), battle_hud, command_ring, part_select and status_screen; the action scripts run in game states 8-9.
 
 #include "global.h"
 
@@ -9,7 +11,7 @@
 void robattle_update(void) {
     u32 fill;
 
-    if (sub_0803EED8())
+    if (link_error_check())
         return;
     if (gUnk_03000430 == 2) {
         fill = 0x200;
@@ -18,7 +20,7 @@ void robattle_update(void) {
     gRobattleHandlers[gGameSubState]();
 }
 
-void battle_init_phase(void) {
+void robattle_setup_bots(void) {
     gUnk_03000440.unk139 = 0;
     gUnk_03000440.unk13A = 0;
     if (gUnk_03000440.unk89 != 1) {
@@ -33,7 +35,7 @@ void battle_init_phase(void) {
     gGameSubState++;
 }
 
-void battle_scene_init_state_machine(void) {
+void robattle_load_scene(void) {
     u32 fill;
 
     switch (gUnk_03000440.unk139) {
@@ -80,28 +82,31 @@ void robattle_fade_in_from_white(void) {
         gGameSubState++;
 }
 
-void sub_08012B94(void) {
+// Sub-state 3: the AI picks the opponents' (records 3-5) first commands.
+void robattle_opponents_choose_commands(void) {
     update_all_battle_status_sprites();
     if (gUnk_03000440.unk89 != 1)
         battle_process_bot_actions_for_side(3);
     gGameSubState++;
 }
 
-void sub_08012BC0(void) {
+// Sub-state 4: starts the pointer line towards team Medabot unk80 (bot_pointer_line_init).
+void robattle_command_begin(void) {
     update_all_battle_status_sprites();
-    sub_08016370(gUnk_03001800.unk80);
+    bot_pointer_line_init(gUnk_03001800.unk80);
     gGameSubState++;
 }
 
-void sub_08012BE4(void) {
+void robattle_command_pointer_wait(void) {
     update_all_battle_status_sprites();
-    if (sub_08016438(gUnk_03001800.unk80))
+    if (bot_pointer_line_extend(gUnk_03001800.unk80))
         gGameSubState++;
 }
 
-void sub_08012C0C(void) {
+// Sub-state 6: draws the Medabot's panel, MF gauge and the command ring.
+void robattle_command_ring_open(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     load_battle_bg_layers();
     render_bot_name_sprites(gUnk_03001800.unk80);
     draw_battle_panel_left_a(gUnk_03001800.unk80);
@@ -117,7 +122,7 @@ void sub_08012C0C(void) {
 // B -> back to the previous Medabot (sub-state 4).
 void robattle_command_input(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     command_ring_input();
     sub_080178CC();
@@ -150,11 +155,11 @@ void robattle_command_input(void) {
     }
 }
 
-void sub_08012D98(void) {
+void robattle_command_chosen_flash(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
-    sub_08016554();
+    command_ring_flash_selected();
     if (++gUnk_03000440.unk84 == 20) {
         clear_battle_sprite_slot(0x1E, 0xB);
         gUnk_03000440.unk84 = 0;
@@ -162,20 +167,22 @@ void sub_08012D98(void) {
     }
 }
 
-void sub_08012DF4(void) {
+// Sub-state 9: shrinks the ring icons, then jumps to the selected command's sub-state.
+void robattle_command_ring_close(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
-    sub_080165D0();
-    sub_08016614();
-    sub_08016660();
+    command_ring_shrink_icons();
+    command_ring_close_scroll_right();
+    command_ring_close_scroll_down();
     if (++gUnk_03000440.unk84 == 16)
         command_ring_goto_selected();
 }
 
-void sub_08012E40(void) {
+// Sub-states 0x0B-0x0C: the ring comes back after a command menu was cancelled -> sub-state 7.
+void robattle_command_ring_reopen(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     decompress_two_bg1_layers();
     command_ring_init_icons_hidden();
@@ -184,9 +191,9 @@ void sub_08012E40(void) {
     gGameSubState++;
 }
 
-void sub_08012EA8(void) {
+void robattle_command_ring_reopen_anim(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     draw_partial_bg1_column();
     scroll_tilemap_window();
@@ -201,7 +208,7 @@ void sub_08012EA8(void) {
 // sub-state 0x40 (0x90 when unk89 is 1) after the last one.
 void robattle_command_commit(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     switch (gUnk_03001800.unk81) {
     case 0:
@@ -232,7 +239,8 @@ void robattle_command_commit(void) {
         gGameSubState++;
 }
 
-void sub_08012FF8(void) {
+// Sub-state 0x0E: a command chosen during the turn loop (unk84 set) -> back to 0x45 (0xA0 when linked).
+void robattle_command_resume_turn(void) {
     update_all_battle_status_sprites();
     count_bot_skill_use(gUnk_03001800.unk87);
     init_battle_action_select_ui(0);
@@ -242,27 +250,28 @@ void sub_08012FF8(void) {
         gGameSubState = 0xA0;
 }
 
-void sub_0801303C(void) {
+// Sub-states 0x10-0x15: the Medaparts command (part_select).
+void robattle_parts_menu_open(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     CpuFastSet(gUnk_084E2F58, (void *)0x05000340, 8);
     CpuFastSet(gUnk_084E3038, (void *)0x050002C0, 8);
     clear_battle_sprite_slot(0, 6);
     clear_battle_sprite_slot(0x1E, 0xB);
-    sub_080166AC();
+    parts_menu_load_frame();
     determine_battle_part_action_priority();
     read_vram_tilemap_rect(0xC, 4, 9, 0x15, REG_BG0CNT, gUnk_02020800);
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
 
-void sub_080130D8(void) {
+void robattle_parts_menu_slide_in(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
-    sub_080166F0();
-    sub_0801672C();
+    parts_menu_slide_bg0();
+    parts_menu_slide_bg1();
     if (++gUnk_03000440.unk84 == 16) {
         part_select_init_cursor();
         part_select_init_center_icon();
@@ -280,12 +289,12 @@ void sub_080130D8(void) {
     }
 }
 
-// guess: Medaforce panel input (shows "Charge MF"; sub-state 18, B -> 19, A -> 21)
-void sub_08013164(void) {
+// Sub-state 0x12: Medapart select input (part_select). B -> 0x13 (back to the ring), A -> 0x15.
+void robattle_parts_menu_input(void) {
     u8 b;
 
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     target_marker_update();
     gUnk_03000440.unk84++;
@@ -308,9 +317,9 @@ void sub_08013164(void) {
     }
 }
 
-void sub_08013228(void) {
+void robattle_parts_menu_cancel(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     save_restore_bg0_tilemap_region();
     save_restore_bg1_tilemap_region();
@@ -320,9 +329,9 @@ void sub_08013228(void) {
     }
 }
 
-void sub_08013288(void) {
+void robattle_parts_menu_confirm(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     gUnk_03000440.unk84++;
     gUnk_03000440.unk84++;
@@ -337,9 +346,10 @@ void sub_08013288(void) {
     }
 }
 
-void sub_08013330(void) {
+// Sub-states 0x18-0x1D: the MF (Medaforce) command (battle/medaforce_select).
+void robattle_mf_menu_open(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     CpuFastSet(gUnk_084E2F78, (void *)0x05000340, 8);
     clear_battle_sprite_slot(0, 6);
@@ -350,9 +360,9 @@ void sub_08013330(void) {
     gGameSubState++;
 }
 
-void sub_080133B8(void) {
+void robattle_mf_menu_slide_in(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     sub_08017048();
     sub_08017084();
@@ -370,11 +380,11 @@ void sub_080133B8(void) {
     }
 }
 
-void sub_08013438(void) {
+void robattle_mf_menu_input(void) {
     u8 b;
 
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     gUnk_03000440.unk84++;
     sub_0801767C();
@@ -395,9 +405,9 @@ void sub_08013438(void) {
     }
 }
 
-void sub_08013508(void) {
+void robattle_mf_menu_cancel(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     save_restore_bg0_tilemap_region();
     sub_08017948();
@@ -407,9 +417,9 @@ void sub_08013508(void) {
     }
 }
 
-void sub_08013568(void) {
+void robattle_mf_menu_confirm(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     gUnk_03000440.unk84++;
     gUnk_03000440.unk84++;
@@ -424,17 +434,18 @@ void sub_08013568(void) {
     }
 }
 
-void sub_08013614(void) {
+// Sub-states 0x28-0x2A: the Aim command shows the Medal's message (gUnk_083B70AC by Medal byte 6).
+void robattle_aim_message_open(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     text_window_init(1, 2, 0);
     gGameSubState++;
 }
 
-void sub_08013650(void) {
+void robattle_aim_message_show(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     if (run_message(gUnk_083B70AC[gUnk_03000590[gUnk_03001800.unk80].medal.unk6])) {
         gUnk_03000440.unk1B = 0;
@@ -442,26 +453,27 @@ void sub_08013650(void) {
     }
 }
 
-void sub_080136B0(void) {
+void robattle_aim_message_close(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     if (game_state_execute_handler_a())
         gGameSubState = 0xB;
 }
 
-void sub_080136E8(void) {
+// Sub-states 0x20-0x22 (Status) and 0x30-0x32 (Rotation): fade to white and back up VRAM / OAM.
+void robattle_fade_to_white_init(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
 
-void sub_0801372C(void) {
+void robattle_fade_to_white(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     if (gUnk_03000440.unk84 <= 8) {
         bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
@@ -472,7 +484,7 @@ void sub_0801372C(void) {
     }
 }
 
-void sub_08013798(void) {
+void robattle_backup_screen(void) {
     CpuFastSet((void *)0x06002800, (void *)0x02020800, 0x200);
     CpuFastSet((void *)0x0600C800, (void *)0x02021000, 0x200);
     CpuFastSet((void *)0x0600D000, (void *)0x02021800, 0x200);
@@ -484,8 +496,9 @@ void sub_08013798(void) {
 }
 
 // guess: Robattle sub-state 0x33 opens the Medals screen (game state 4, sub 0x28) on the Rotation page of
-// the current Medabot's Medal; sub_08013798 (0x32) saves VRAM/OAM, battle_phase_dispatch_0801387C (0x3C) restores it.
-void sub_08013824(void) {
+// the current Medabot's Medal; robattle_backup_screen (0x32) saves VRAM/OAM, robattle_restore_screen (0x3C) restores
+// it.
+void robattle_rotation_open_medals_screen(void) {
     mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
     gUnk_03000440.unk3C = 2;
     gUnk_03000440.unk3D = find_medal_slot_by_id(gUnk_03000590[gUnk_03001800.unk80].medal.unk1) - 1;
@@ -496,7 +509,7 @@ void sub_08013824(void) {
     gGameSubState = 0x28;
 }
 
-void battle_phase_dispatch_0801387C(void) {
+void robattle_restore_screen(void) {
     u32 fill;
 
     switch (gUnk_03000440.unk139) {
@@ -546,9 +559,10 @@ void battle_phase_dispatch_0801387C(void) {
     }
 }
 
-void sub_08013A74(void) {
+// Sub-state 0x3D: fade back in after robattle_restore_screen -> the ring (0x0B).
+void robattle_return_fade_in(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     if (gUnk_03000440.unk84 <= 8) {
         bg_palettes_blend_masked_now(0, 0x20 - gUnk_03000440.unk84 * 4, 0xFFFF);
@@ -559,9 +573,10 @@ void sub_08013A74(void) {
     }
 }
 
-void sub_08013AE4(void) {
+// Sub-state 0x38: the Auto command sets the Medabot's bit in unk44 and lets the AI choose (commit, 0x0D).
+void robattle_command_auto(void) {
     update_all_battle_status_sprites();
-    animate_battle_sprites(gUnk_03001800.unk80);
+    bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     switch (gUnk_03001800.unk80) {
     case 0:
@@ -580,7 +595,8 @@ void sub_08013AE4(void) {
     gGameSubState = 0xD;
 }
 
-void sub_08013B8C(void) {
+// Sub-states 0x23-0x26: the Status command's team status screen (status_screen); B -> 0x3C.
+void robattle_status_screen_init(void) {
     u32 fill;
 
     clear_bg_scroll();
@@ -630,7 +646,7 @@ void sub_08013B8C(void) {
     gGameSubState++;
 }
 
-void sub_08013DE4(void) {
+void robattle_status_screen_fade_in(void) {
     status_next_other_slot();
     status_blink_lr_button();
     status_update_portrait();
@@ -641,7 +657,7 @@ void sub_08013DE4(void) {
         gGameSubState++;
 }
 
-void sub_08013E30(void) {
+void robattle_status_screen_input(void) {
     status_next_other_slot();
     status_update_portrait();
     scroll_bg3_diagonal();
@@ -690,7 +706,7 @@ void sub_08013E30(void) {
     }
 }
 
-void sub_08013FA8(void) {
+void robattle_status_screen_fade_out(void) {
     u32 fill1, fill2, fill3;
 
     status_next_other_slot();
@@ -778,7 +794,8 @@ void robattle_start_banner(void) {
     }
 }
 
-void sub_0801425C(void) {
+// Sub-state 0x42: battle music, TIME counter -> the turn loop (0x44).
+void robattle_turn_loop_init(void) {
     select_battle_music();
     init_battle_action_select_ui(0);
     robattle_time_init();
@@ -786,7 +803,7 @@ void sub_0801425C(void) {
 }
 
 // Robattle sub-state 0x44: turn loop (TIME counter on screen); unk55 flags 2/4/8/0x10 -> 0x60/0x68/0x70/0x78.
-void sub_0801427C(void) {
+void robattle_turn_loop(void) {
     if (gUnk_03001800.unk55 == 0) {
         robattle_time_tick();
         robattle_time_draw();
@@ -810,7 +827,9 @@ void sub_0801427C(void) {
     }
 }
 
-void sub_08014314(void) {
+// Sub-state 0x45: takes the head of the action queue; a Medabot back home (unkBD bit 2) chooses a
+// command (0x47), one at the front line acts (game state 8).
+void robattle_turn_next_action(void) {
     struct Unk_03000590 *rec;
     u8 flag;
 
@@ -835,7 +854,8 @@ void sub_08014314(void) {
     }
 }
 
-void sub_080143A0(void) {
+// Sub-state 0x46 (guess: entered when game state 8 finishes an action): next rotation entry, back to 0x45.
+void robattle_action_finished(void) {
     update_all_battle_status_sprites();
     gUnk_03000590[gUnk_03001800.unk87].unkBD ^= 4;
     iterate_bots_setup_battle_sprites();
@@ -849,7 +869,9 @@ void sub_080143A0(void) {
     }
 }
 
-void sub_08014404(void) {
+// Sub-state 0x47: a Medabot is back home; the AI (opponents, effect 0x2C) or the player (ring, sub-state
+// 4) chooses its next command. Holding B cancels a kept command.
+void robattle_bot_ready_for_command(void) {
     update_all_battle_status_sprites();
     sub_08019078();
     gUnk_03000590[gUnk_03001800.unk87].unkBD ^= 4;
@@ -893,7 +915,8 @@ void sub_08014404(void) {
     }
 }
 
-void sub_08014548(void) {
+// Sub-state 0x4C (guess): Medabots with unkBF set keep moving until one reaches a line.
+void robattle_bots_extra_move(void) {
     u32 i;
 
     update_all_battle_status_sprites();
@@ -919,7 +942,9 @@ void sub_08014548(void) {
     }
 }
 
-void sub_080145BC(void) {
+// Sub-states 0x60-0x61 / 0x68-0x69: timed effect A / B ended (unkCE bit 0 / 1): its icon over the
+// Medabot shrinks away.
+void robattle_effect_a_end_init(void) {
     u32 i;
 
     update_all_battle_status_sprites();
@@ -935,7 +960,7 @@ void sub_080145BC(void) {
     gGameSubState++;
 }
 
-void sub_08014634(void) {
+void robattle_effect_a_end_anim(void) {
     u32 i;
 
     update_all_battle_status_sprites();
@@ -954,7 +979,7 @@ void sub_08014634(void) {
         gGameSubState = 0x44;
 }
 
-void sub_080146DC(void) {
+void robattle_effect_b_end_init(void) {
     u32 i;
 
     update_all_battle_status_sprites();
@@ -970,7 +995,7 @@ void sub_080146DC(void) {
     gGameSubState++;
 }
 
-void sub_08014754(void) {
+void robattle_effect_b_end_anim(void) {
     u32 i;
 
     update_all_battle_status_sprites();
@@ -991,7 +1016,7 @@ void sub_08014754(void) {
 
 // Robattle (game state 7) handlers 0x70/0x71 and 0x78/0x79: show a number over each Medabot with
 // unkCE bit 2 (unkC8) / bit 3 (unkCD) for 90 frames (guess: damage / repair numbers).
-void sub_080147FC(void) {
+void robattle_effect_a_number_init(void) {
     u32 i;
 
     update_all_battle_status_sprites();
@@ -1007,7 +1032,7 @@ void sub_080147FC(void) {
     gGameSubState++;
 }
 
-void sub_08014870(void) {
+void robattle_effect_a_number_update(void) {
     u32 i;
 
     update_all_battle_status_sprites();
@@ -1027,7 +1052,7 @@ void sub_08014870(void) {
     }
 }
 
-void sub_08014920(void) {
+void robattle_effect_b_number_init(void) {
     u32 i;
 
     update_all_battle_status_sprites();
@@ -1043,7 +1068,7 @@ void sub_08014920(void) {
     gGameSubState++;
 }
 
-void sub_08014994(void) {
+void robattle_effect_b_number_update(void) {
     u32 i;
 
     update_all_battle_status_sprites();
@@ -1065,32 +1090,32 @@ void sub_08014994(void) {
 
 // Robattle handlers 0x90-0x99 and 0xA0-0xAF: exchange each side's chosen parts (unkDD) over the
 // serial link (gUnk_03005010), guess: link Robattle (only when gUnk_03000440.unk89 = 1).
-void sub_08014A44(void) {
+void robattle_link_message_open(void) {
     text_window_init(1, 0, 0);
     gGameSubState++;
 }
 
-void sub_08014A60(void) {
+void robattle_link_message_show(void) {
     if (run_message(gUnk_083CF3B0[1]))
         gGameSubState++;
 }
 
-void sub_08014A84(void) {
-    if (sub_0803E79C()) {
+void robattle_link_sync(void) {
+    if (link_sync_both_ready()) {
         gUnk_03005010.unk6 = 0;
         gUnk_03000440.unk86 = 0;
         gGameSubState++;
     }
 }
 
-void sub_08014AB4(void) {
+void robattle_link_delay(void) {
     if (gUnk_03000440.unk86 == 16)
         gGameSubState++;
     else
         gUnk_03000440.unk86++;
 }
 
-void sub_08014ADC(void) {
+void robattle_link_exchange_init(void) {
     gUnk_03001800.unk51 = 0;
     gUnk_03001800.unk52 = 0;
     gUnk_03001800.unk53 = 0;
@@ -1102,7 +1127,7 @@ void sub_08014ADC(void) {
     gGameSubState++;
 }
 
-void sub_08014B34(void) {
+void robattle_link_exchange_commands(void) {
     u16 r;
     s16 flag;
 
@@ -1131,7 +1156,7 @@ void sub_08014B34(void) {
     }
 }
 
-void sub_08014C30(void) {
+void robattle_link_apply_opponent_parts(void) {
     gUnk_03005010.unk6 = 0;
     battle_bot_select_part(3, gUnk_03000590[3].unkDD);
     battle_bot_select_part(4, gUnk_03000590[4].unkDD);
@@ -1139,7 +1164,7 @@ void sub_08014C30(void) {
     gGameSubState++;
 }
 
-void sub_08014C84(void) {
+void robattle_link_apply_opponent_medaforces(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -1149,16 +1174,16 @@ void sub_08014C84(void) {
     gGameSubState++;
 }
 
-void sub_08014CC8(void) {
+void robattle_link_message_close(void) {
     if (game_state_execute_handler_a())
         gGameSubState++;
 }
 
-void sub_08014CE4(void) {
+void robattle_link_start_banner(void) {
     gGameSubState = 0x40;
 }
 
-void sub_08014CF0(void) {
+void robattle_link_exchange_bot_command(void) {
     u16 r;
 
     if (gUnk_03001800.unk87 <= 2) {
@@ -1176,36 +1201,36 @@ void sub_08014CF0(void) {
     }
 }
 
-void sub_08014D84(void) {
+void robattle_link_skip_step(void) {
     gGameSubState++;
 }
 
-void sub_08014D94(void) {
+void robattle_link_apply_bot_part(void) {
     if (gUnk_03001800.unk87 > 2)
         battle_bot_select_part(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].unkDD);
     gGameSubState++;
 }
 
-void sub_08014DC8(void) {
+void robattle_link_apply_bot_medaforce(void) {
     if (gUnk_03001800.unk87 > 2 && gUnk_03000590[gUnk_03001800.unk87].unkDD > 3)
         battle_bot_select_medaforce(gUnk_03001800.unk87, gUnk_03000590[gUnk_03001800.unk87].unkDD - 4);
     gGameSubState++;
 }
 
-void sub_08014E08(void) {
+void robattle_link_resume_turn(void) {
     gUnk_03005010.unk6 = 0;
     gGameSubState = 0x45;
 }
 
-void sub_08014E20(void) {
+void robattle_link_sync_counted(void) {
     gUnk_03000440.unk86++;
-    if (sub_0803E79C()) {
+    if (link_sync_both_ready()) {
         gUnk_03005010.unk6 = 0;
         gGameSubState++;
     }
 }
 
-void sub_08014E54(void) {
+void robattle_link_sync_delay(void) {
     if (gUnk_03000440.unk86)
         gUnk_03000440.unk86--;
     else

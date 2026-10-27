@@ -516,8 +516,8 @@ extern const u8 gUnk_083ACEF0[16];     // random starting opponent slot 0-2 (sub
 extern const u8 gUnk_083C3B04[][8];    // per battlefield (sub_080121A8)
 extern const Func gRobattleHandlers[]; // game state 7 (Robattle) sub-state handlers
 extern const void *const gUnk_083B24A8[]; // 5 compressed graphics pointers per battlefield (gUnk_03001800.unk38)
-extern const u16 gUnk_084E2F58[];         // Robattle palette (OBJ palette 10, sub_0801303C)
-extern const u16 gUnk_084E3038[];         // Robattle palette (OBJ palette 6, sub_0801303C)
+extern const u16 gUnk_084E2F58[];         // Robattle palette (OBJ palette 10, robattle_parts_menu_open)
+extern const u16 gUnk_084E3038[];         // Robattle palette (OBJ palette 6, robattle_parts_menu_open)
 extern const u16 gUnk_084E2F38[];         // Robattle palette (OBJ palette 10)
 extern const u16 gUnk_084E2F78[];         // Robattle palette (OBJ palette 10)
 
@@ -546,8 +546,8 @@ extern const u8 gUnk_083AD370[]; // angles for compute_polar_to_screen_position,
 extern const u8
     gUnk_083AD376[]; // next slot after a right turn of the ring, by gUnk_03001800.unk81 (command_ring_input)
 extern const u8 gUnk_083AD37C[]; // next slot after a left turn
-extern const u8
-    gUnk_083AD382[]; // 4-byte records: sprite count, start value, x, y (sub_08016370, animate_battle_sprites)
+extern const u8 gUnk_083AD382[]; // 4-byte records: sprite count, start value, x, y (bot_pointer_line_init,
+                                 // bot_pointer_line_animate)
 extern const u8
     gUnk_083AD3A0[]; // part select: centre sprite frame by gUnk_03001800.unk82 (part_select_init_center_icon)
 extern const u8 *const gUnk_083C4A10[]; // part select status texts: [0] part broken (unk11 == 0), [1] sealed, [2] head

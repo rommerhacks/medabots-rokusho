@@ -71,7 +71,7 @@ static void handle_menu_cursor_updown(void);
 // list (unk3F tab, unk40 row); A opens a Medal's pages, L/R cycle unk42: 8.. Ability, 24.. Medaforce,
 // 40.. Rotation, 56.. Skill. START = help (0x48..).
 void medals_screen_update(void) {
-    if (sub_0803EED8() == 0)
+    if (link_error_check() == 0)
         gMedalsScreenHandlers[gGameSubState]();
 }
 

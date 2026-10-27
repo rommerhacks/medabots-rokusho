@@ -2,7 +2,7 @@
 // sub_0803D538 runs the sub-state handlers gUnk_083AFAF8 (sub_0803D5A0 .. sub_0803E774): the player-0 /
 // player-1 handshake seeding gUnk_03000440.unk8D, screen setups, palette fades, message steps and the link
 // packet exchange through gUnk_03005010 (link/serial). Ends with the battle-screen helpers they use, the
-// link Medapart exchange (sub_0803EE10), the link error check sub_0803EED8 (called by the battle and menu
+// link Medapart exchange (sub_0803EE10), the link error check link_error_check (called by the battle and menu
 // states) and soft_reset_to_title. Not runnable in the single-GBA harness, so names are guesses.
 
 #include "global.h"
@@ -29,9 +29,9 @@ static u32 sub_0803ED28(void);
 static void draw_battle_bg1_tilemap_row(void);
 
 // Game state 10 handler: runs gUnk_083AFAF8[gGameSubState]; outside sub-states 0x10-0x1F a link error
-// (sub_0803EED8) restarts it at 0x10. guess: link Robattle (entered when gUnk_03000440.unk89 == 1).
+// (link_error_check) restarts it at 0x10. guess: link Robattle (entered when gUnk_03000440.unk89 == 1).
 void sub_0803D538(void) {
-    if (gGameSubState - 0x10 > 0xF && sub_0803EED8())
+    if (gGameSubState - 0x10 > 0xF && link_error_check())
         return;
     if (gUnk_03000430 == 2) {
         u32 fill = 0x200;
@@ -51,7 +51,7 @@ void sub_0803D5A0(void) {
 }
 
 void sub_0803D5E0(void) {
-    if (sub_0803E79C()) {
+    if (link_sync_both_ready()) {
         gUnk_03000440.unk86 = 0;
         gGameSubState++;
     }
@@ -242,7 +242,7 @@ void sub_0803DBB8(void) {
 
 void sub_0803DBE0(void) {
     update_scroll_movement_a();
-    if (sub_0803E79C()) {
+    if (link_sync_both_ready()) {
         gUnk_03000440.unk86 = 0;
         gGameSubState++;
     }
@@ -469,7 +469,7 @@ void sub_0803E234(void) {
     sub_0803E894();
     draw_battle_bg1_tilemap_row();
     gUnk_03000440.unk86++;
-    if (sub_0803E79C()) {
+    if (link_sync_both_ready()) {
         gUnk_03000440.unk84 = 0;
         gGameSubState++;
     }
@@ -637,7 +637,7 @@ void sub_0803E780(void) {
         gUnk_03005010.unk6 = 0;
 }
 
-u32 sub_0803E79C(void) {
+u32 link_sync_both_ready(void) {
     gUnk_03005010.unk6 = 0xFFFE;
     if (gUnk_03005010.unk8[0][1] == 0xFFFE && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1])
         return 1;
@@ -874,7 +874,7 @@ void sub_0803EE10(void) {
     }
 }
 
-u32 sub_0803EED8(void) {
+u32 link_error_check(void) {
     // unk1C..unk1F read as one word (the struct has no u32 there)
     if (gUnk_03000440.unk89 == 1 && (((struct {
                                          u8 f[0x1C];

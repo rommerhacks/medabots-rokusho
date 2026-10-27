@@ -446,7 +446,7 @@
   (sub_0803EC98).
 * A struct word read across byte fields (`ldr r0, [base, #0x1C]` over `unk19[3]`..`unk1E`): cast to a
   local anonymous struct with the word at that offset; a `(u32 *)` cast folds into `=sym+0x1C`
-  (sub_0803EED8).
+  (link_error_check).
 * A loop that keeps a global array's address in a callee-saved register (`ldr r6, =sym` before the
   loop, `adds r0, r4, r6` inside): declare the pointer inside the loop body
   (`for (...) { u8 *p = gSym; f(p[i]); }`); a pointer declared outside swaps the `adds` operands.
@@ -594,7 +594,7 @@
 * Where the original reads a field twice in a row or re-reads a byte just stored, only a volatile read
   reproduces it: `*(vu16 *)&gUnk_03000440.unkC`.
 * A constant like 0xFFFF8000 built from `x + 0x8000` with an `s16` intermediate: put the sum in an
-  assignment inside the expression, `a + (flag = (b & 0x100) + 0x8000)` with `s16 flag` (sub_08014B34).
+  assignment inside the expression, `a + (flag = (b & 0x100) + 0x8000)` with `s16 flag` (robattle_link_exchange_commands).
 * An address strength-reduced across a loop that the original recomputes: assign the row inside the index,
   `[((a = i + 4) - step) * 32]` (text_scroll_slide_out_heading).
 * A `cond ? tblA[c] : tblB[c]` that computes `c * 2` too early: write if / else with the whole statement in

@@ -38,7 +38,7 @@ static void sub_080100BC(void);
 void medaparts_screen_update(void) {
     u32 fill;
 
-    if (sub_0803EED8() == 0) {
+    if (link_error_check() == 0) {
         if (gUnk_03000430 == 2) {
             fill = 0x200;
             CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);

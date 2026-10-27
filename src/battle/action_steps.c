@@ -94,23 +94,23 @@ u32 dispatch_battle_action_substate(u32 arg) {
 
 void sub_0801C32C(void) {
     CpuFastSet(gUnk_084E2EF8, (void *)0x05000300, 8);
-    sub_08016370(gUnk_03001800.unk87);
+    bot_pointer_line_init(gUnk_03001800.unk87);
     gUnk_03001800.unk9C[0]++;
 }
 
 void sub_0801C360(void) {
-    if (sub_08016438(gUnk_03001800.unk87))
+    if (bot_pointer_line_extend(gUnk_03001800.unk87))
         gUnk_03001800.unk9C[0]++;
 }
 
 void sub_0801C388(void) {
-    animate_battle_sprites(gUnk_03001800.unk87);
+    bot_pointer_line_animate(gUnk_03001800.unk87);
     sub_0801AC98(gUnk_03001800.unk87);
     gUnk_03001800.unk9C[0]++;
 }
 
 void sub_0801C3B0(void) {
-    animate_battle_sprites(gUnk_03001800.unk87);
+    bot_pointer_line_animate(gUnk_03001800.unk87);
     render_bot_name_sprites(gUnk_03001800.unk87);
     sub_0801AD10(gUnk_03001800.unk87);
     if (gUnk_03001800.unk9C[1] == 0) {
@@ -121,31 +121,31 @@ void sub_0801C3B0(void) {
 }
 
 void sub_0801C3F8(void) {
-    animate_battle_sprites(gUnk_03001800.unk87);
+    bot_pointer_line_animate(gUnk_03001800.unk87);
 }
 
 void sub_0801C40C(void) {
     CpuFastSet(gUnk_084E2F18, (void *)0x05000320, 8);
-    animate_battle_sprites(gUnk_03001800.unk87);
+    bot_pointer_line_animate(gUnk_03001800.unk87);
     sub_0801AD48(gUnk_03001800.unk87);
     gUnk_03001800.unk9C[0]++;
 }
 
 void sub_0801C444(void) {
-    animate_battle_sprites(gUnk_03001800.unk87);
+    bot_pointer_line_animate(gUnk_03001800.unk87);
     if (sub_0801ADE8(gUnk_03001800.unk87))
         gUnk_03001800.unk9C[0]++;
 }
 
 void sub_0801C470(void) {
-    animate_battle_sprites(gUnk_03001800.unk87);
+    bot_pointer_line_animate(gUnk_03001800.unk87);
     sub_0801AE70(gUnk_03001800.unk87);
     sub_0801AC98(gUnk_03001800.unk88);
     gUnk_03001800.unk9C[0]++;
 }
 
 void sub_0801C4A4(void) {
-    animate_battle_sprites(gUnk_03001800.unk87);
+    bot_pointer_line_animate(gUnk_03001800.unk87);
     sub_0801AE70(gUnk_03001800.unk87);
     render_bot_name_sprites(gUnk_03001800.unk88);
     sub_0801AD10(gUnk_03001800.unk88);
@@ -154,7 +154,7 @@ void sub_0801C4A4(void) {
 }
 
 void sub_0801C4E0(void) {
-    animate_battle_sprites(gUnk_03001800.unk87);
+    bot_pointer_line_animate(gUnk_03001800.unk87);
     sub_0801AE70(gUnk_03001800.unk87);
 }
 

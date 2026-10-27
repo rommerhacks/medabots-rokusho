@@ -8,7 +8,7 @@
 // Runs the acting Medabot's action script (gUnk_083C6B28[gUnk_03001800.unkA8]): commands < 0x80 go to
 // gUnk_083AF000, others are skipped; a command sets unk163 to run the next one in the same frame.
 void battle_run_action_script(void) {
-    if (sub_0803EED8() == 0) {
+    if (link_error_check() == 0) {
         if (gUnk_03000430 == 2) {
             u32 fill = 0x200;
 

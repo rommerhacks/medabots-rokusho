@@ -300,7 +300,7 @@ struct Unk_03000440 {
     u8 unk85;
     u16 unk86; // link exchange frame counter; also the current wave x offset of start_scanline_wave_scroll
     u8 unk88;  // field menu: row animation counter
-    u8 unk89;  // Robattle: 1 skips the bot setup in battle_init_phase
+    u8 unk89;  // Robattle: 1 skips the bot setup in robattle_setup_bots
     u16 unk8A; // rng seed (rng_next_byte)
     u8 unk8C;  // last rng_next_byte value
     u8 unk8D;  // rng table index when unk89 is set
@@ -600,15 +600,15 @@ struct Unk_03001800 {
     u8 unk38;                        // battlefield
     u8 unk39[8];                     // copied from gUnk_083C3B04[unk38] (sub_080121A8)
     u8 unk41[3];                     // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
-    u8 unk44;                        // Robattle: bit (1 << team Medabot) set by sub_08013AE4
+    u8 unk44;                        // Robattle: bit (1 << team Medabot) set by robattle_command_auto
     u8 unk45[6][2];                  // Robattle action queue: record + 1 (0 = free), priority = legs Propulsion
-                                     // (battle_queue_add, sorted by battle_queue_sort; sub_08014314 tests [0][0])
+                    // (battle_queue_add, sorted by battle_queue_sort; robattle_turn_next_action tests [0][0])
     u8 unk51; // Robattle: Medaforce gauge points left to add / remove one per frame (medaforce_gauge_fill_step /
               // _drain_step)
     u8 unk52;
     u8 unk53;
     u8 unk54;
-    u8 unk55; // Robattle: result flags (2, 4, 8, 0x10 pick sub-states 0x60-0x78 in sub_0801427C)
+    u8 unk55; // Robattle: result flags (2, 4, 8, 0x10 pick sub-states 0x60-0x78 in robattle_turn_loop)
     u8 unk56; // Robattle: frame counter, mod 32 (robattle_time_tick)
     u8 unk57; // Robattle: TIME left, 40/30/20 by gUnk_03001788 (robattle_time_init), -1 every 32 frames
               // (robattle_time_tick)
@@ -622,8 +622,8 @@ struct Unk_03001800 {
     u8 unk5F;    // Robattle AI: target part + 1
     u8 unk60;    // first record of the target side (sub_08032FB8, sub_08026FF8)
     u8 unk61[3]; // Robattle AI: candidate targets (record + 1, 0 = none; select_battle_targets_and_actions)
-    u8 unk64[4]; // filled by get_bot_part_effective_values (sub_08013B8C); AI part order from gUnk_083AD2F0
-                 // (battle_ai_roll_part_order)
+    u8 unk64[4]; // filled by get_bot_part_effective_values (robattle_status_screen_init); AI part order from
+                 // gUnk_083AD2F0 (battle_ai_roll_part_order)
     u8 filler68[0xC];
     u8 unk74[8]; // copied from gUnk_083C3B5C[unk38] (load_battle_script_entry_b); [3] nonzero: [4] << 8 | [5] ->
                  // REG_BLDALPHA
@@ -801,7 +801,8 @@ struct Unk_03000590 {
     u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents)
     u8 unkBB;
     u8 unkBC; // high nibble cleared by sub_0801B274
-    u8 unkBD; // flags (bit 2 toggled by the Robattle handlers sub_080143A0 / sub_08014404)
+    u8 unkBD; // flags (bit 2 toggled by the Robattle handlers robattle_action_finished /
+              // robattle_bot_ready_for_command)
     u8 fillerBE;
     u8 unkBF;
     u8 unkC0; // flags (bit 1 skips the Medaforce effect, sub_0801C524)
@@ -814,15 +815,16 @@ struct Unk_03000590 {
     u8 unkC5;
     u8 unkC6;
     u8 unkC7;
-    u8 unkC8; // number shown by the Robattle handler 0x70 (sub_080147FC)
-    u8 unkC9; // effect B type (0x13/0x14: armor changes each tick, sub_08018DF4; 0x2C checked by sub_08014404 /
-              // process_bot_battle_turn, 0x2B by part_blocked_by_effect)
+    u8 unkC8; // number shown by the Robattle handler 0x70 (robattle_effect_a_number_init)
+    u8 unkC9; // effect B type (0x13/0x14: armor changes each tick, sub_08018DF4; 0x2C checked by
+              // robattle_bot_ready_for_command / process_bot_battle_turn, 0x2B by part_blocked_by_effect)
     u8 unkCA; // effect B part (compared by part_blocked_by_effect; sub_08018F6C starts there)
     u8 unkCB;
     u8 unkCC;
-    u8 unkCD; // number shown by the Robattle handler 0x78 (sub_08014920)
-    u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (sub_080145BC .. sub_08014754),
-              // bit 2 / bit 3 = numbers shown by sub_080147FC / sub_08014920
+    u8 unkCD; // number shown by the Robattle handler 0x78 (robattle_effect_b_number_init)
+    u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (robattle_effect_a_end_init ..
+              // robattle_effect_b_end_anim), bit 2 / bit 3 = numbers shown by robattle_effect_a_number_init /
+              // robattle_effect_b_number_init
     u8 unkCF; // flags: bits 0/1/2/3 set by sub_08029354 (by gUnk_03001800.unk51)
     u8 unkD0;
     u8 unkD1; // raised by gUnk_03001800.unkEC up to 0xFF (sub_0802AC7C, written as &unkD0 + 1 to match)
@@ -836,7 +838,8 @@ struct Unk_03000590 {
     u8 unkDA;  // movement: whole pixels moved this frame
     u8 fillerDB;
     u8 unkDC; // unkDC..unkE3 cleared by reset_battle_bot_state
-    u8 unkDD; // link Robattle: part choice exchanged over the serial link (sub_08014B34, sub_08014C30)
+    u8 unkDD; // link Robattle: part choice exchanged over the serial link (robattle_link_exchange_commands,
+              // robattle_link_apply_opponent_parts)
     u8 unkDE; // copy of unkDD (sub_0801B274)
     u8 unkDF; // skill of the part unkDD (1-3), 0 otherwise (sub_0801B274)
     u8 unkE0;

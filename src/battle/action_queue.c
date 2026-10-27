@@ -350,8 +350,8 @@ u32 any_bot_extra_move_pending(void) {
     return 0;
 }
 
-// guess: bit set by sub_08013AE4 from the command ring; when set, sub_08014404 runs the Medabot's turn
-// without the command menu unless B is held.
+// guess: bit set by robattle_command_auto from the command ring; when set, robattle_bot_ready_for_command runs the
+// Medabot's turn without the command menu unless B is held.
 u32 team_bot_command_kept(u32 rec) {
     if (rec <= 2) {
         switch (rec) {

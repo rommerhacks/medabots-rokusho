@@ -73,7 +73,7 @@ static void sub_08007540(void);
 
 // Game state 3: the Medabots screen (Medawatch > Medabots). Paused while the serial link is busy.
 void medabots_screen_update(void) {
-    if (sub_0803EED8() == 0) {
+    if (link_error_check() == 0) {
         if (gUnk_03000430 == 2) {
             u32 fill = 0x200;
             CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
@@ -667,7 +667,7 @@ void sub_08004A18(void) {
 void sub_08004A40(void) {
     medabots_scroll_bg3();
     setup_overworld_scene_from_position();
-    if (sub_0803E79C()) {
+    if (link_sync_both_ready()) {
         gUnk_03005010.unk6 = 0;
         gUnk_03000440.unk86 = 0;
         gGameSubState++;

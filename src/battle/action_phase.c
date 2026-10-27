@@ -4,7 +4,7 @@
 // gGameSubState (load sprites 0x08030890, turn cursor 0x08030910 / 0x08030990, choice check sub_080309C8,
 // resolve_battle_action_phase; runtime-checked in the battle scenario).
 void battle_action_state_update(void) {
-    if (sub_0803EED8() == 0) {
+    if (link_error_check() == 0) {
         sub_0803E780();
         update_all_battle_status_sprites();
         gUnk_083AEB58[gGameSubState]();
@@ -507,7 +507,7 @@ void sub_08031994(void) {
 }
 
 void sub_080319B8(void) {
-    if (sub_0803E79C()) {
+    if (link_sync_both_ready()) {
         gUnk_03000440.unk86 = 0;
         gGameSubState++;
     }

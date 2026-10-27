@@ -4,7 +4,7 @@
 #include "global.h"
 
 static void command_ring_init_icon_hidden(u32 a);
-static u32 sub_08016154(u32 i, u32 dir);
+static u32 command_ring_rotate_icon(u32 i, u32 dir);
 
 void command_ring_draw_name(void) {
     clear_sprite_table_mask(30, 11);
@@ -83,11 +83,11 @@ static void command_ring_init_icon_hidden(u32 i) {
 static u32 command_ring_rotate_step(u32 dir) {
     u32 i, done;
     for (i = 0; i <= 5; i++)
-        done = sub_08016154(i, dir);
+        done = command_ring_rotate_icon(i, dir);
     return done;
 }
 
-static u32 sub_08016154(u32 i, u32 dir) {
+static u32 command_ring_rotate_icon(u32 i, u32 dir) {
     u32 done = 0;
     u32 k;
     u32 n;
@@ -165,7 +165,7 @@ void command_ring_pulse_selected(void) {
     }
 }
 
-void sub_08016370(u32 kind) {
+void bot_pointer_line_init(u32 kind) {
     s32 count = gUnk_083AD382[kind * 4];
     u32 speed = gUnk_083AD382[kind * 4 + 1];
     u32 x = gUnk_083AD382[kind * 4 + 2];
@@ -193,7 +193,7 @@ void sub_08016370(u32 kind) {
     }
 }
 
-u32 sub_08016438(u32 kind) {
+u32 bot_pointer_line_extend(u32 kind) {
     u32 done = 1;
     u32 count = gUnk_083AD382[kind * 4];
     u32 i;
@@ -230,7 +230,7 @@ u32 sub_08016438(u32 kind) {
     return done;
 }
 
-void animate_battle_sprites(u32 kind) {
+void bot_pointer_line_animate(u32 kind) {
     u32 count = gUnk_083AD382[kind * 4];
     u32 i;
 
@@ -248,7 +248,7 @@ void animate_battle_sprites(u32 kind) {
     }
 }
 
-void sub_08016554(void) {
+void command_ring_flash_selected(void) {
     gSpriteEntries[gUnk_03001800.unk81].unk0 |= 0x20;
     gSpriteEntries[gUnk_03001800.unk81].unk22++;
     if (gSpriteEntries[gUnk_03001800.unk81].unk22 & 4) {
@@ -264,7 +264,7 @@ void command_ring_goto_selected(void) {
     gGameSubState = gUnk_083AD39A[gUnk_03001800.unk81];
 }
 
-void sub_080165D0(void) {
+void command_ring_shrink_icons(void) {
     u32 i;
     for (i = 0; i < 6; i++) {
         if (gSpriteEntries[i].unk9 == 1)
@@ -282,31 +282,31 @@ void sub_080165D0(void) {
     }
 }
 
-void sub_08016614(void) {
+void command_ring_close_scroll_right(void) {
     if (gUnk_03000440.unk84 < 10) {
         read_vram_tilemap_rect(0xB, 4, 0x13, 0x10, REG_BG1CNT, gUnk_02020800);
         write_vram_tilemap_rect(0xB, 4, 0x14, 0x10, REG_BG1CNT, gUnk_02020800);
     }
 }
 
-void sub_08016660(void) {
+void command_ring_close_scroll_down(void) {
     if (gUnk_03000440.unk84 < 5) {
         read_vram_tilemap_rect(6, 6, 0xC, 0xE, REG_BG1CNT, gUnk_02020800);
         write_vram_tilemap_rect(6, 6, 0xC, 0xF, REG_BG1CNT, gUnk_02020800);
     }
 }
 
-void sub_080166AC(void) {
+void parts_menu_load_frame(void) {
     set_tilemap_and_decompress_bg(9, 0x15, gUnk_084888A8, REG_BG0CNT, 0x288);
     set_tilemap_and_decompress_bg(0x12, 0x15, gUnk_0848895C, REG_BG1CNT, 0x2D0);
 }
 
-void sub_080166F0(void) {
+void parts_menu_slide_bg0(void) {
     if (gUnk_03000440.unk84 < 4)
         write_vram_tilemap_rect(0xC, 4, 9, 0x13 - gUnk_03000440.unk84, REG_BG0CNT, gUnk_02020800);
 }
 
-void sub_0801672C(void) {
+void parts_menu_slide_bg1(void) {
     if (gUnk_03000440.unk84 < 12) {
         read_vram_tilemap_rect(gUnk_03000440.unk84 + 1, 7, 0x12, 0x15, REG_BG1CNT, gUnk_02021000);
         write_vram_tilemap_rect(gUnk_03000440.unk84 + 1, 7, 0x1D - gUnk_03000440.unk84, 0xD, REG_BG1CNT, gUnk_02021000);
