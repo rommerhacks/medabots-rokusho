@@ -122,9 +122,9 @@
   `if (!cond) ret = 0; else { ...; ret = 1; } return ret;` (early `return`s put the body first).
 * A global array base hoisted into a high register (`ldr r0, =gArr; mov r9, r0`) and loaded
   before the loop counter's other setup: a pointer local assigned after the counter,
-  `i = 0; bots = gArr; for (; i <= 2; i++)` (sub_08026FF8). When the original instead re-adds the
+  `i = 0; bots = gArr; for (; i <= 2; i++)` (medaforce_side_bolt_calc). When the original instead re-adds the
   base after the scaled index, index the global directly with the full expression in every use
-  and no `rec` local (sub_08027494).
+  and no `rec` local (medaforce_side_bolt_apply_damage).
 * A slot counter `adds r5, #4` set up after the other loop invariants: write the call argument as
   `i * 4 + 0x21` and let gcc strength-reduce it; an explicit `slot += 4` variable is set up first.
 * A `u8` local computed right before a call (`lsls/lsrs #24` after the first argument's load):
@@ -249,7 +249,7 @@
   directly (`REG_BG0HOFS = gBg0Scroll.x + off.x;`), not through a pointer or a loop (vblank_body).
 * **Several pointers walking one struct array from different field offsets:** write some fields through the
   global (`gArr[0x24 + i].unk0`) and the others through a pointer local set in the loop init (`for (i = 0,
-  spr = gArr; ...) spr[0x24 + i].unk4`); which fields go which way decides the grouping (sub_0802D8D0).
+  spr = gArr; ...) spr[0x24 + i].unk4`); which fields go which way decides the grouping (medaforce_useless_orbs_fly).
 * **Reload registers that are all off by one in rotation** (`mov r2, sl` where the original has
   `mov r0, sl`, and so on down the function): reload hands out spare registers round-robin. One extra
   spilled loop invariant (e.g. `tbl = table;` before the loop, so `ldr r0, =table` is rematerialised inside
@@ -328,33 +328,33 @@
   (team_attack_turrets_spawn).
 * A 2D table read as `(a * 4 + b) * 4` is indexed flat, `tbl[0][a * 4 + b]` (gUnk_083BB9CC, change_finish).
 * `v = 0; if (x) v = 1;` and `v = !x` order the zero differently: `if (!(f & 2)) v = 1; else v = 0;` gives
-  `ands; movs v, #0; cmp; bne; movs v, #1` (sub_08026A74).
+  `ands; movs v, #0; cmp; bne; movs v, #1` (medaforce_spiral_bolt_drain_armor).
 * Nested loops where the original reloads loop invariants inside the outer loop (and keeps `i + 1` in a
   saved register): leave the inner loop with `goto next;` (label just before the outer loop's closing
   brace) instead of `break`. With `break`, gcc hoists everything to the top of the function
-  (sub_08029B84, sub_08029FE0).
+  (medaforce_total_recovery_apply_heal, medaforce_full_body_repair_apply_repair).
 * `x == A || x == B` per switch case can come out as `x - A <= 1`; the original's `cmp A; beq; cmp B; bne`
-  needs `if (x == A) goto call; if (x != B) break; call: f();` (sub_08029354).
+  needs `if (x == A) goto call; if (x != B) break; call: f();` (medaforce_cancel_status_apply).
 * `strh` of a `0xFFFFxxxx` literal / `movs; rsbs` for a byte: the source wrote a negative constant
-  (`unk0 = -0x39DC`, `unkB = -0x10`) (sub_0802AAF8).
+  (`unk0 = -0x39DC`, `unkB = -0x10`) (medaforce_iron_wall_begin).
 * Switch cases that share a tail in the original (`movs r2, #0` hoisted into each case, then a branch to
   a shared `strb r1, [r0]`): write every case out in full. gcc tail-merges identical case tails itself;
-  a hand-written `goto common` gives different code (sub_0802B5AC).
+  a hand-written `goto common` gives different code (medaforce_anti_terrain_apply_status).
 * `x = (a + b) & 0x3FF` stored to a u16, where the original loads the mask into a spare register and
   copies it (`ldr r4, =0x3FF; adds r0, r4, #0; ands`): cast the sum, `(u16)(a + b) & 0x3FF`
-  (sub_0802BE44, sub_0802C960).
+  (medaforce_spy_game_beam_spin, medaforce_charge_hourglass_fly).
 * A loop over `i` with a sprite slot `i + 0x21` where the original recomputes `slot << 6` each time
   (no pointer strength reduction) and truncates the slot at calls: write `i + 0x21` at every use, not a
-  separate `slot` counter (sub_0802C960).
+  separate `slot` counter (medaforce_charge_hourglass_fly).
 * Operand order of a sum decides how gcc splits it. For a sprite index the original computes as
-  `base + (i << 8) + 0xC00 + j * 0x40`, write `gSpriteEntries[0x30 + j + i * 4]` (sub_0802D198,
-  sub_0802D270); `i * 4 + 0x30 + j` and friends regroup it. For an argument computed as `(i + 0x72)`
-  then `+ unk60`, write `unk60 + 0x72 + i` (sub_0802CE4C).
+  `base + (i << 8) + 0xC00 + j * 0x40`, write `gSpriteEntries[0x30 + j + i * 4]` (medaforce_pushover_attack_burst_spawn,
+  medaforce_pushover_attack_burst); `i * 4 + 0x30 + j` and friends regroup it. For an argument computed as `(i + 0x72)`
+  then `+ unk60`, write `unk60 + 0x72 + i` (medaforce_pushover_attack_target_hop_init).
 * An `i * 4` computed once (`lsls r4, r6, #2`) right after the first call's source address and reused
   by later index expressions and a u8 argument: assign it inside the first use,
-  `&gSpriteEntries[(j = i * 4) + 0x24]`, then use `j` (sub_0802CE4C).
+  `&gSpriteEntries[(j = i * 4) + 0x24]`, then use `j` (medaforce_pushover_attack_target_hop_init).
 * `subs r0, #0x80` before a `strb` (`adds r0, #0x80` is what `- 0x80` gives): cast the call result
-  to `s8` first, `(s8)f(x) - 0x80` (sub_0802D758).
+  to `s8` first, `(s8)f(x) - 0x80` (medaforce_useless_find_targets).
 * A chain of early-out failures that each store a different message and then share
   `gGameSubState = 0x20`: write each one in full (`unkA6 = N; gGameSubState = 0x20; return;`) so gcc
   cross-jumps the tails like the original; a `goto fail` with the store before it adds a branch per

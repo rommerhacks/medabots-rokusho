@@ -338,7 +338,7 @@ struct Unk_03000440 {
     u8 unk10E[0x10]; // 16-byte record from gUnk_083B6158 (per Medal graphic index)
     u8 filler11E[0x10];
     u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
-    u8 unk12F; // sprite slot whose handler is running (also gEffectSpriteSlot; sub_08028E84)
+    u8 unk12F; // sprite slot whose handler is running (also gEffectSpriteSlot; medaforce_cancel_status_emblem_rise)
     u8 unk130; // Robattle: set to 1 around the action script commands script_op_closeup_enter .. script_op_closeup_exit
     u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2
     u8 unk132;
@@ -630,7 +630,7 @@ struct Unk_03001800 {
     u8 unk5D;    // Robattle AI: part being considered (0-2)
     u8 unk5E;    // Robattle AI: target record + 1
     u8 unk5F;    // Robattle AI: target part + 1
-    u8 unk60;    // first record of the target side (battle_enemy_side_first_record, sub_08026FF8)
+    u8 unk60;    // first record of the target side (battle_enemy_side_first_record, medaforce_side_bolt_calc)
     u8 unk61[3]; // Robattle AI: candidate targets (record + 1, 0 = none; ai_target_attack)
     u8 unk64[4]; // filled by get_bot_part_effective_values (robattle_status_screen_init); AI part order from
                  // gUnk_083AD2F0 (battle_ai_roll_part_order)
@@ -675,8 +675,8 @@ struct Unk_03001800 {
     u8 fillerB6[0x1];
     u8 unkB7; // attack result: 1 missed (target dodged, battle_check_dodged), 3 countered (reaction_check_counter)
     u8 unkB8; // attack result: 2 nullified (Full / Half Block, immunities), 4 absorbed as healing (attack_hit_branch)
-    u8 unkB9; // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other (sub_0802C588, written
-              // as &unkB8 + 1 to match)
+    u8 unkB9; // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other
+              // (medaforce_hide_n_seek_apply_evasion, written as &unkB8 + 1 to match)
     u8 unkBA;
     u8 unkBB;
     u16 unkBC; // Robattle action script: offset of the current command (battle_script_read_byte /
@@ -691,8 +691,8 @@ struct Unk_03001800 {
     u8 fillerCE[0x2];
     u8 unkD0;     // last part (3..0) of the acting Medabot with armor left (trap_hit_calc_damage)
     u8 unkD1;     // nonzero: trap_hit_check_part_broken goes to sub-state 0x1A
-    u8 unkD2[4];  // per part: nonzero shows an effect sprite (sub_08026AF4)
-    u16 unkD6[4]; // per part: amounts shown by sub_08026924
+    u8 unkD2[4];  // per part: nonzero shows an effect sprite (medaforce_spiral_bolt_break_burst_spawn)
+    u16 unkD6[4]; // per part: amounts shown by medaforce_spiral_bolt_digits_spawn
     u8 unkDE;     // record + 1 of the teammate guarding unk88 with Defence / Full / Half Block (guard_find), 0 = none
     u8 unkDF;     // its block skill: 0x1B Defence, 0x1C Full Block, 0x1D Half Block (guard_load_graphics)
     u8 unkE0[3];  // per team record: record + 1 waiting for reset_battle_bot_state (bot_defeat_find)
@@ -810,11 +810,11 @@ struct Unk_03000590 {
     struct BattlePart parts[4]; // head, right arm, left arm, legs
     u8 unkA8[6];                // chosen Medaforce: gUnk_083B7CD4 record (battle_bot_select_medaforce)
     u8 fillerAE[0x2];
-    u8 unkB0[8]; // per skill type: times used this battle (count_bot_skill_use)
-    u8 unkB8;    // own record index (battle_bots_load_parts)
-    u8 unkB9; // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other (sub_0802C588, written
-              // as &unkB8 + 1 to match)
-    u8 unkBA; // nonzero: Medabot present (records 0-2 player team, 3-5 opponents); 2 = out of action (Reactivate)
+    u8 unkB0[8];  // per skill type: times used this battle (count_bot_skill_use)
+    u8 unkB8;     // own record index (battle_bots_load_parts)
+    u8 unkB9;     // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other
+                  // (medaforce_hide_n_seek_apply_evasion, written as &unkB8 + 1 to match)
+    u8 unkBA;     // nonzero: Medabot present (records 0-2 player team, 3-5 opponents); 2 = out of action (Reactivate)
     u8 moveDelay; // movement delay 0-0x1F, rebuilt each frame by bot_calc_move_delay; speed = 0x20 - moveDelay
     u8 unkBC; // hit flags, high nibble cleared by battle_action_cleanup: bit 4 dodged, bit 5 evaded onto the strongest
               // part, bit 6 hit above the threshold (attack_hit_check_critical)
@@ -843,9 +843,10 @@ struct Unk_03000590 {
     u8 unkCE; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (robattle_effect_a_end_init ..
               // robattle_effect_b_end_anim), bit 2 / bit 3 = numbers shown by robattle_effect_a_number_init /
               // robattle_effect_b_number_init
-    u8 unkCF; // flags: bits 0/1/2/3 set by sub_08029354 (by gUnk_03001800.unk51)
+    u8 unkCF; // flags: bits 0/1/2/3 set by medaforce_cancel_status_apply (by gUnk_03001800.unk51)
     u8 unkD0;
-    u8 unkD1; // raised by gUnk_03001800.unkEC up to 0xFF (sub_0802AC7C, written as &unkD0 + 1 to match)
+    u8 unkD1; // raised by gUnk_03001800.unkEC up to 0xFF (medaforce_iron_wall_apply_defence, written as &unkD0 + 1 to
+              // match)
     u8 unkD2;
     u8 unkD3;        // added to gUnk_03001800.unkEC for parts with data[2] 0 / 1 (script_op_calc_damage)
     u8 unkD4;        // added for data[2] 2 / 3 (script_op_calc_damage)

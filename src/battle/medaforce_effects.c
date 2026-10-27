@@ -13,13 +13,13 @@ void medaforce_spiral_bolt_run(void) {
     gMedaforceSpiralBoltSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_080268AC(void) {
+void medaforce_spiral_bolt_calc(void) {
     medaforce_calc_success(gUnk_03001800.unk87);
     medaforce_calc_damage(gUnk_03001800.unk87);
     gUnk_03001800.unkAA++;
 }
 
-void sub_080268D4(void) {
+void medaforce_spiral_bolt_set_damage(void) {
     hit_list_set_part_damage(gUnk_03001800.unk88, 0, gUnk_03001800.unkEC);
     hit_list_set_part_damage(gUnk_03001800.unk88, 1, gUnk_03001800.unkEC);
     hit_list_set_part_damage(gUnk_03001800.unk88, 2, gUnk_03001800.unkEC);
@@ -27,7 +27,7 @@ void sub_080268D4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08026924(void) {
+void medaforce_spiral_bolt_digits_spawn(void) {
     s16 x, y;
 
     lz_decompress_dispatch(gUnk_084D1824, (void *)0x06010000);
@@ -51,7 +51,7 @@ void sub_08026924(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08026A24(void) {
+void medaforce_spiral_bolt_digits_rise(void) {
     sprite_group_rise_step(gUnk_03000440.unk9E, 0xA);
     sprite_group_rise_step(gUnk_03000440.unk9E + 0x14, 0xE);
     sprite_group_rise_step(gUnk_03000440.unk9E + 0x28, 0x12);
@@ -61,7 +61,7 @@ void sub_08026A24(void) {
     }
 }
 
-void sub_08026A74(void) {
+void medaforce_spiral_bolt_drain_armor(void) {
     s32 n;
     u32 side;
 
@@ -81,7 +81,7 @@ void sub_08026A74(void) {
     }
 }
 
-void sub_08026AF4(void) {
+void medaforce_spiral_bolt_break_burst_spawn(void) {
     u16 x, y;
     s32 shown = 0;
 
@@ -118,7 +118,7 @@ void sub_08026AF4(void) {
     }
 }
 
-void sub_08026BF8(void) {
+void medaforce_spiral_bolt_break_burst_wait(void) {
     s32 done = 0;
 
     if (gUnk_03001800.unkD2[0]) {
@@ -147,7 +147,7 @@ void sub_08026BF8(void) {
     }
 }
 
-void sub_08026CBC(void) {
+void medaforce_spiral_bolt_check_defeated(void) {
     if (gUnk_03000590[gUnk_03001800.unk88].parts[0].unk11 == 0)
         add_bot_to_defeated_list(gUnk_03001800.unk88);
     gUnk_03001800.unkAA++;
@@ -160,14 +160,14 @@ void medaforce_hit_run(void) {
     gMedaforceHitSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08026D1C(void) {
+void medaforce_hit_check_nullified(void) {
     if (gUnk_03001800.unkB8 & 2)
         gUnk_03001800.unkAA = 0x20;
     else
         gUnk_03001800.unkAA++;
 }
 
-void sub_08026D44(void) {
+void medaforce_hit_carry_over_retarget(void) {
     if (gUnk_03001800.unkCA) {
         battle_pick_random_target_part(gUnk_03001800.unk87);
         battle_load_action_target(gUnk_03001800.unk87);
@@ -179,7 +179,7 @@ void sub_08026D44(void) {
     }
 }
 
-void sub_08026D98(void) {
+void medaforce_part_marker_spawn(void) {
     lz_decompress_dispatch(gUnk_084CA61C, (void *)0x06010000);
     CpuFastSet(gUnk_0850E198, (void *)0x050003C0, 8);
     gSpriteEntries[0xA].unk6 = 0x1500;
@@ -205,7 +205,7 @@ void sub_08026D98(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08026EC0(void) {
+void medaforce_hit_goto_sparks(void) {
     gUnk_03001800.unkAA = 2;
 }
 
@@ -215,7 +215,7 @@ void medaforce_life_drain_heal_run(void) {
     gMedaforceLifeDrainHealSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08026EF8(void) {
+void medaforce_life_drain_heal_find_part(void) {
     u32 r = find_most_damaged_part(gUnk_03001800.unk87);
     if (r) {
         gUnk_03001800.unk8B = gUnk_03001800.unkD0 = r - 1;
@@ -225,13 +225,13 @@ void sub_08026EF8(void) {
     }
 }
 
-void sub_08026F34(void) {
+void medaforce_life_drain_heal_calc(void) {
     clear_battle_sprite_slot(0, 0x80);
     battle_calc_damage_split(gUnk_03001800.unk87, gUnk_03001800.unkD0, gUnk_03001800.unkEC);
     gUnk_03001800.unkAA++;
 }
 
-void sub_08026F6C(void) {
+void medaforce_life_drain_heal_carry_over(void) {
     u32 r;
     struct Unk_03001800 *g = &gUnk_03001800;
     if (g->unkCA && (r = find_most_damaged_part(g->unk88))) {
@@ -245,7 +245,7 @@ void sub_08026F6C(void) {
     }
 }
 
-void sub_08026FC0(void) {
+void medaforce_life_drain_heal_goto_sparkle(void) {
     gUnk_03001800.unkAA = 4;
 }
 
@@ -255,7 +255,7 @@ void medaforce_side_bolt_run(void) {
     gMedaforceSideBoltSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08026FF8(void) {
+void medaforce_side_bolt_calc(void) {
     u32 i;
     struct Unk_03000590 *bots;
     for (i = 0; i <= 2; i++) {
@@ -277,7 +277,9 @@ void sub_08026FF8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080270BC(void) {
+// guess: sprite meaning unsure; two big scaled sprites (0x21/0x22) at screen centre
+
+void medaforce_side_bolt_halves_spawn(void) {
     lz_decompress_dispatch(gUnk_084DB788, (void *)0x06014800);
     CpuFastSet(gUnk_0850EB38, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC624;
@@ -301,7 +303,9 @@ void sub_080270BC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080271C4(void) {
+// guess: sprite meaning unsure; scale 0x80->0x40 one after the other, sfx 0x30
+
+void medaforce_side_bolt_halves_shrink(void) {
     if (gSpriteEntries[0x21].unk8 != 0x40) {
         gSpriteEntries[0x21].unk8 -= 8;
         gSpriteEntries[0x21].unk9 -= 8;
@@ -321,7 +325,7 @@ void sub_080271C4(void) {
     }
 }
 
-void sub_0802724C(void) {
+void medaforce_side_bolt_bolt_spawn(void) {
     clear_battle_sprite_slot(0x21, 2);
     gSpriteEntries[0x21].unk0 = 0xC404;
     if (gUnk_03001800.unkF8 & 2)
@@ -335,7 +339,7 @@ void sub_0802724C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080272EC(void) {
+void medaforce_side_bolt_bolt_anim_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x5A], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         gUnk_03000440.unk86 = 0;
@@ -344,7 +348,7 @@ void sub_080272EC(void) {
     }
 }
 
-void sub_0802733C(void) {
+void medaforce_side_bolt_slide(void) {
     gUnk_03000440.unk86++;
     particle_slide_lead_sprite();
     if (gUnk_03000440.unk86 == 0x10) {
@@ -354,7 +358,7 @@ void sub_0802733C(void) {
     }
 }
 
-void sub_08027378(void) {
+void medaforce_side_bolt_flash_in(void) {
     gUnk_03000440.unk86++;
     particle_slide_lead_sprite();
     if (gUnk_03000440.unk84 <= 4) {
@@ -367,7 +371,7 @@ void sub_08027378(void) {
     }
 }
 
-void sub_080273DC(void) {
+void medaforce_side_bolt_flash_out(void) {
     gUnk_03000440.unk86++;
     particle_slide_lead_sprite();
     if (gUnk_03000440.unk84 <= 8) {
@@ -379,7 +383,7 @@ void sub_080273DC(void) {
     }
 }
 
-void sub_08027444(void) {
+void medaforce_side_bolt_slide_end(void) {
     gUnk_03000440.unk86++;
     particle_slide_lead_sprite();
     if (gUnk_03000440.unk86 > 0x23) {
@@ -388,12 +392,12 @@ void sub_08027444(void) {
     }
 }
 
-void sub_0802747C(void) {
+void medaforce_side_bolt_set_message(void) {
     gUnk_03001800.unkA6 = 0x3A;
     gUnk_03001800.unkAA++;
 }
 
-void sub_08027494(void) {
+void medaforce_side_bolt_apply_damage(void) {
     u32 i;
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11) {
@@ -406,7 +410,7 @@ void sub_08027494(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08027544(void) {
+void medaforce_team_damage_popup_init(void) {
     u32 i;
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40) {
@@ -431,7 +435,7 @@ void sub_08027544(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802761C(void) {
+void medaforce_team_popup_wait(void) {
     u32 i;
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40) {
@@ -478,7 +482,7 @@ void decompress_sprite_tiles_to_vram_obj_4800_alt(void) {
         gUnk_03001800.unkAA += 3;
 }
 
-void sub_08027798(void) {
+void medaforce_team_break_burst_wait(void) {
     u32 r = 0;
     u32 i;
     for (i = 0; i <= 2; i++) {
@@ -489,7 +493,7 @@ void sub_08027798(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_080277DC(void) {
+void medaforce_team_break_anim_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084CC9A8, (void *)0x06014800);
@@ -510,7 +514,7 @@ void sub_080277DC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080278B8(void) {
+void medaforce_team_break_anim_wait(void) {
     u32 done = 0;
     u32 i;
     for (i = 0; i <= 2; i++) {
@@ -536,7 +540,7 @@ void medaforce_form_run(void) {
     gMedaforceFormSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08027964(void) {
+void medaforce_form_begin(void) {
     switch (gUnk_03000590[gUnk_03001800.unk87].unkA8[0]) {
     case 4:
         gUnk_03001800.unk51 = 0;
@@ -560,7 +564,7 @@ void sub_08027964(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080279E4(void) {
+void medaforce_form_emblem_spawn(void) {
     lz_decompress_dispatch(gUnk_084DBB28, (void *)0x06014800);
     CpuFastSet(gUnk_084E30B8, (void *)0x050002C0, 8);
     switch (gUnk_03000590[gUnk_03001800.unk87].unkA8[0]) {
@@ -600,14 +604,14 @@ void sub_080279E4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08027BA0(void) {
+void medaforce_form_emblem_spin(void) {
     gUnk_03000440.unk86++;
     gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x40) & 0x3FF;
     if (gUnk_03000440.unk86 > 0x3C)
         gUnk_03001800.unkAA++;
 }
 
-void sub_08027BEC(void) {
+void medaforce_form_ring_spawn(void) {
     gUnk_03000440.unk86++;
     gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x40) & 0x3FF;
     gSpriteEntries[0x22].unk0 = 0xC624;
@@ -622,7 +626,7 @@ void sub_08027BEC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08027CB0(void) {
+void medaforce_form_ring_shrink(void) {
     gUnk_03000440.unk86++;
     gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x40) & 0x3FF;
     if (gSpriteEntries[0x22].unk8 == 0x40) {
@@ -635,7 +639,7 @@ void sub_08027CB0(void) {
     }
 }
 
-void sub_08027D24(void) {
+void medaforce_form_hold(void) {
     gUnk_03000440.unk86++;
     gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x40) & 0x3FF;
     if (gUnk_03000440.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1)) {
@@ -649,7 +653,7 @@ void sub_08027D24(void) {
     }
 }
 
-void sub_08027D98(void) {
+void medaforce_form_shrink_out(void) {
     gUnk_03000440.unk86++;
     gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x40) & 0x3FF;
     if (gSpriteEntries[0x21].unk8 == 4) {
@@ -663,7 +667,7 @@ void sub_08027D98(void) {
     }
 }
 
-void sub_08027E1C(void) {
+void medaforce_form_apply(void) {
     switch (gUnk_03000590[gUnk_03001800.unk87].unkA8[0]) {
     case 4:
         gUnk_03000590[gUnk_03001800.unk87].unkD6 |= 1;
@@ -687,7 +691,7 @@ void sub_08027E1C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08027EDC(void) {
+void medaforce_form_set_message(void) {
     switch (gUnk_03000590[gUnk_03001800.unk87].unkA8[0]) {
     case 4:
         gUnk_03001800.unkA6 = 0x4A;
@@ -717,7 +721,7 @@ void medaforce_anti_attack_trap_run(void) {
     gMedaforceAntiAttackTrapSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08027F84(void) {
+void medaforce_anti_attack_trap_trap_spawn(void) {
     lz_decompress_dispatch(gUnk_084C978C, (void *)0x06014800);
     CpuFastSet(gUnk_0850E0B8, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x220;
@@ -732,7 +736,7 @@ void sub_08027F84(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08028034(void) {
+void medaforce_anti_attack_trap_trap_grow(void) {
     gSpriteEntries[0x21].unk8 += 8;
     if (gSpriteEntries[0x21].unk8 == 0x40) {
         gUnk_03000440.unk86 = 0x3C;
@@ -741,7 +745,7 @@ void sub_08028034(void) {
     }
 }
 
-void sub_08028078(void) {
+void medaforce_anti_attack_trap_check_existing(void) {
     if (gUnk_03001800.unk28[gUnk_03001800.unk8A].active && gUnk_03001800.unk28[gUnk_03001800.unk8A].skill == 0x5A) {
         gSpriteEntries[0x21].unk27 = 0;
         gUnk_03001800.unkAA++;
@@ -751,7 +755,7 @@ void sub_08028078(void) {
     }
 }
 
-void sub_080280D4(void) {
+void medaforce_anti_attack_trap_trap_pulse(void) {
     if (gSpriteEntries[0x21].unk27 == 0x10) {
         play_sound_effect(0x3E);
         gUnk_03001800.unkAA++;
@@ -764,7 +768,7 @@ void sub_080280D4(void) {
     gSpriteEntries[0x21].unk27++;
 }
 
-void sub_08028130(void) {
+void medaforce_anti_attack_trap_apply(void) {
     if (gUnk_03001800.unk28[gUnk_03001800.unk8A].active && gUnk_03001800.unk28[gUnk_03001800.unk8A].skill == 0x5A) {
         gUnk_03001800.unk53 = 1;
         add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk8A].durability, gUnk_03001800.unkE8 >> 1, 0xFF);
@@ -784,7 +788,7 @@ void sub_08028130(void) {
     }
 }
 
-void sub_08028230(void) {
+void medaforce_anti_attack_trap_set_message(void) {
     gUnk_03001800.unkA6 = 0x50;
     gUnk_03001800.unkAA++;
 }
@@ -795,7 +799,7 @@ void medaforce_cancel_formation_run(void) {
     gMedaforceCancelFormationSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08028270(void) {
+void medaforce_cancel_formation_load_graphics(void) {
     lz_decompress_dispatch(gUnk_084DBDC8, (void *)0x06014800);
     CpuFastSet(gUnk_0850EBB8, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk6 = 0x6A00;
@@ -805,7 +809,7 @@ void sub_08028270(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080282E0(void) {
+void medaforce_cancel_formation_slide(void) {
     if (gSpriteEntries[0x21].unk27 == 0x10) {
         play_sound_effect(0x28);
         gSpriteEntries[0x21].unk27 = 0;
@@ -819,7 +823,7 @@ void sub_080282E0(void) {
     gSpriteEntries[0x21].unk27++;
 }
 
-void sub_08028350(void) {
+void medaforce_cancel_formation_blink(void) {
     gSpriteEntries[0x21].unk27++;
     if (gSpriteEntries[0x21].unk27 & 2)
         gSpriteEntries[0x21].unk0 |= 0x8000;
@@ -831,12 +835,12 @@ void sub_08028350(void) {
     }
 }
 
-void sub_080283C0(void) {
+void medaforce_cancel_formation_apply(void) {
     gUnk_03000590[gUnk_03001800.unk87].unkC0 |= 2;
     gUnk_03001800.unkAA++;
 }
 
-void sub_080283EC(void) {
+void medaforce_cancel_formation_set_message(void) {
     gUnk_03001800.unkA6 = 0x64;
     gUnk_03001800.unkAA++;
 }
@@ -847,7 +851,7 @@ void medaforce_inflict_status_run(void) {
     gMedaforceInflictStatusSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802842C(void) {
+void medaforce_inflict_status_begin(void) {
     switch (gUnk_03000590[gUnk_03001800.unk87].unkA8[0]) {
     case 0xC:
         gUnk_03001800.unk51 = 0;
@@ -868,7 +872,7 @@ void sub_0802842C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08028504(void) {
+void medaforce_inflict_status_orb_spawn(void) {
     switch (gUnk_03000590[gUnk_03001800.unk87].unkA8[0]) {
     case 0xC:
         lz_decompress_dispatch(gUnk_084DBEE4, (void *)0x06014800);
@@ -924,12 +928,12 @@ void sub_08028504(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080287C0(void) {
+void medaforce_orb_orbit_wait(void) {
     if (particle_run_orbit_handlers())
         gUnk_03001800.unkAA++;
 }
 
-void sub_080287DC(void) {
+void medaforce_inflict_status_apply(void) {
     u32 i;
 
     medaforce_clear_hit_list();
@@ -975,7 +979,7 @@ void sub_080287DC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08028A00(void) {
+void medaforce_inflict_status_check_any(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -987,7 +991,7 @@ void sub_08028A00(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08028A38(void) {
+void medaforce_inflict_status_icons_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084DCF54, (void *)0x06016000);
@@ -1027,7 +1031,7 @@ void sub_08028A38(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08028B58(void) {
+void medaforce_team_icons_anim_wait(void) {
     u32 done = 0;
     u32 i;
 
@@ -1041,7 +1045,7 @@ void sub_08028B58(void) {
     }
 }
 
-void sub_08028BA8(void) {
+void medaforce_inflict_status_set_message(void) {
     clear_battle_sprite_slot(0x21, 3);
     switch (gUnk_03001800.unk51) {
     case 0:
@@ -1072,7 +1076,7 @@ void medaforce_cancel_status_run(void) {
     gMedaforceCancelStatusSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08028C68(void) {
+void medaforce_cancel_status_begin(void) {
     switch (gUnk_03000590[gUnk_03001800.unk87].unkA8[0]) {
     case 0xD:
         gUnk_03001800.unk51 = 0;
@@ -1090,7 +1094,7 @@ void sub_08028C68(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08028CC8(void) {
+void medaforce_cancel_status_emblem_spawn(void) {
     switch (gUnk_03001800.unk51) {
     case 0:
         lz_decompress_dispatch(gUnk_084DBEE4, (void *)0x06014800);
@@ -1132,7 +1136,7 @@ void sub_08028CC8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08028E84(void) {
+void medaforce_cancel_status_emblem_rise(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[0x21].unk2E], 0x21);
     if (gSpriteEntries[0x21].unk4 == 0x40) {
         gUnk_03000440.unk86 = 0x3C;
@@ -1149,7 +1153,7 @@ void sub_08028E84(void) {
     }
 }
 
-void sub_08028F4C(void) {
+void medaforce_cancel_status_emblem_hold(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[0x21].unk2E], 0x21);
     if (gUnk_03001800.unkF8 & 1) {
         if (gUnk_03001800.unk51 != 3)
@@ -1166,7 +1170,7 @@ void sub_08028F4C(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_08029004(void) {
+void medaforce_cancel_status_shatter_spawn(void) {
     lz_decompress_dispatch(gUnk_084CCE48, (void *)0x06014800);
     CpuFastSet(gUnk_0850E358, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk8 = 0x40;
@@ -1198,7 +1202,7 @@ void sub_08029004(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08029178(void) {
+void medaforce_cancel_status_shatter_wait(void) {
     u32 i;
 
     for (i = 0; i <= 4; i++) {
@@ -1212,7 +1216,7 @@ void sub_08029178(void) {
     }
 }
 
-void sub_080291E0(void) {
+void medaforce_cancel_status_sparkle_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084DD45C, (void *)0x06014800);
@@ -1236,7 +1240,7 @@ void sub_080291E0(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_080292D4(void) {
+void medaforce_cancel_status_sparkle_wait(void) {
     u32 done = 0;
     u32 i;
 
@@ -1253,7 +1257,7 @@ void sub_080292D4(void) {
     }
 }
 
-void sub_08029354(void) {
+void medaforce_cancel_status_apply(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -1301,7 +1305,7 @@ void sub_08029354(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08029464(void) {
+void medaforce_cancel_status_set_message(void) {
     switch (gUnk_03001800.unk51) {
     case 0:
         gUnk_03001800.unkA6 = 0x55;
@@ -1325,7 +1329,7 @@ void medaforce_status_restore_run(void) {
     gMedaforceStatusRestoreSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_080294DC(void) {
+void medaforce_status_restore_orb_spawn(void) {
     lz_decompress_dispatch(gUnk_084DD648, (void *)0x06014800);
     CpuFastSet(gUnk_0850ECB8, (void *)0x050002E0, 8);
     CpuFastSet(gUnk_084E30B8, (void *)0x050002C0, 8);
@@ -1352,7 +1356,7 @@ void sub_080294DC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08029600(void) {
+void medaforce_status_restore_check_targets(void) {
     u32 found = 0;
     u32 i;
 
@@ -1374,7 +1378,7 @@ void sub_08029600(void) {
         gUnk_03001800.unkAA += 2;
 }
 
-void sub_08029680(void) {
+void medaforce_status_restore_sparkle_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084D55D0, (void *)0x06014800);
@@ -1396,7 +1400,7 @@ void sub_08029680(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802976C(void) {
+void medaforce_status_restore_sparkle_wait(void) {
     u32 done = 0;
     u32 i;
 
@@ -1413,7 +1417,7 @@ void sub_0802976C(void) {
     }
 }
 
-void sub_080297EC(void) {
+void medaforce_status_restore_apply(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -1423,7 +1427,7 @@ void sub_080297EC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08029828(void) {
+void medaforce_status_restore_set_message(void) {
     gUnk_03001800.unkA6 = 0x53;
     gUnk_03001800.unkAA++;
 }
@@ -1434,7 +1438,7 @@ void medaforce_total_recovery_run(void) {
     gMedaforceTotalRecoverySteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08029868(void) {
+void medaforce_total_recovery_orb_spawn(void) {
     lz_decompress_dispatch(gUnk_084DD894, (void *)0x06014800);
     CpuFastSet(gUnk_0850ECD8, (void *)0x050002E0, 8);
     CpuFastSet(gUnk_084E30B8, (void *)0x050002C0, 8);
@@ -1461,7 +1465,7 @@ void sub_08029868(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08029984(void) {
+void medaforce_total_recovery_check_targets(void) {
     u32 found = 0;
     u32 i;
 
@@ -1483,7 +1487,7 @@ void sub_08029984(void) {
         gUnk_03001800.unkAA += 2;
 }
 
-void sub_08029A14(void) {
+void medaforce_team_heal_sparkle_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084DE4BC, (void *)0x06014800);
@@ -1505,7 +1509,7 @@ void sub_08029A14(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08029B04(void) {
+void medaforce_team_heal_sparkle_wait(void) {
     u32 done = 0;
     u32 i;
 
@@ -1522,7 +1526,7 @@ void sub_08029B04(void) {
     }
 }
 
-void sub_08029B84(void) {
+void medaforce_total_recovery_apply_heal(void) {
     u32 i, j;
     u32 r;
 
@@ -1572,7 +1576,7 @@ void init_battle_bot_display_digits(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08029D28(void) {
+void medaforce_team_marked_popup_wait(void) {
     u32 i;
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD2[i]) {
@@ -1598,7 +1602,7 @@ void sub_08029D28(void) {
     }
 }
 
-void sub_08029DF4(void) {
+void medaforce_total_recovery_set_message(void) {
     gUnk_03001800.unkA6 = 0x3B;
     gUnk_03001800.unkAA++;
 }
@@ -1609,7 +1613,7 @@ void medaforce_full_body_repair_run(void) {
     gMedaforceFullBodyRepairSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_08029E34(void) {
+void medaforce_full_body_repair_begin(void) {
     lz_decompress_dispatch(gUnk_084DDEA4, (void *)0x06014800);
     CpuFastSet(gUnk_0850ECF8, (void *)0x050002E0, 8);
     CpuFastSet(gUnk_084E30B8, (void *)0x050002C0, 8);
@@ -1636,7 +1640,7 @@ void sub_08029E34(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08029F50(void) {
+void medaforce_full_body_repair_check_targets(void) {
     u32 found = 0;
     u32 i;
 
@@ -1658,7 +1662,7 @@ void sub_08029F50(void) {
         gUnk_03001800.unkAA += 2;
 }
 
-void sub_08029FE0(void) {
+void medaforce_full_body_repair_apply_repair(void) {
     u32 i, j;
     u32 r;
 
@@ -1685,7 +1689,7 @@ void sub_08029FE0(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802A0D0(void) {
+void medaforce_full_body_repair_finish(void) {
     gUnk_03001800.unkA6 = 0x3C;
     gUnk_03001800.unkAA++;
 }
@@ -1696,7 +1700,7 @@ void medaforce_full_body_up_run(void) {
     gMedaforceFullBodyUpSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802A110(void) {
+void medaforce_full_body_up_begin(void) {
     lz_decompress_dispatch(gUnk_084DE628, (void *)0x06014800);
     CpuFastSet(gUnk_0850ED38, (void *)0x050002E0, 8);
     CpuFastSet(gUnk_084E30B8, (void *)0x050002C0, 8);
@@ -1724,7 +1728,9 @@ void sub_0802A110(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802A274(void) {
+// guess: sprite meaning unsure; scales sprites 0x21/0x22 up to 0x40, then 60-frame wait (orb)
+
+void medaforce_full_body_up_orb_grow(void) {
     if (gSpriteEntries[0x21].unk8 == 0x40) {
         gUnk_03000440.unk86 = 0x3C;
         gUnk_03001800.unkAA++;
@@ -1736,7 +1742,7 @@ void sub_0802A274(void) {
     }
 }
 
-void sub_0802A2D4(void) {
+void medaforce_full_body_up_orb_rise(void) {
     if (gSpriteEntries[0x21].unk4 == 0x20) {
         play_sound_effect(0x42);
         gUnk_03001800.unkAA++;
@@ -1746,7 +1752,7 @@ void sub_0802A2D4(void) {
     }
 }
 
-void sub_0802A31C(void) {
+void medaforce_full_body_up_orb_anim_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x61], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
@@ -1754,7 +1760,7 @@ void sub_0802A31C(void) {
     }
 }
 
-void sub_0802A360(void) {
+void medaforce_full_body_up_orbs_spawn(void) {
     u32 i;
 
     medaforce_clear_hit_list();
@@ -1775,7 +1781,7 @@ void sub_0802A360(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802A440(void) {
+void medaforce_full_body_up_orbs_fly(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -1794,7 +1800,7 @@ void sub_0802A440(void) {
     }
 }
 
-void sub_0802A4C4(void) {
+void medaforce_full_body_up_orbs_shrink(void) {
     u32 done = 0;
     u32 i;
 
@@ -1813,7 +1819,7 @@ void sub_0802A4C4(void) {
     }
 }
 
-void sub_0802A534(void) {
+void medaforce_full_body_up_apply_head_uses(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -1827,7 +1833,7 @@ void sub_0802A534(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802A5C0(void) {
+void medaforce_team_text_popups_init(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084D6BFC, (void *)0x06017E00);
@@ -1854,7 +1860,7 @@ void sub_0802A5C0(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802A694(void) {
+void medaforce_full_body_up_finish(void) {
     gUnk_03001800.unkA6 = 0x54;
     gUnk_03001800.unkAA++;
 }
@@ -1865,7 +1871,7 @@ void medaforce_full_body_rad_run(void) {
     gMedaforceFullBodyRadSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802A6D4(void) {
+void medaforce_full_body_rad_begin(void) {
     lz_decompress_dispatch(gUnk_084DED1C, (void *)0x06014800);
     CpuFastSet(gUnk_0850ED58, (void *)0x050002E0, 8);
     CpuFastSet(gUnk_084E30B8, (void *)0x050002C0, 8);
@@ -1888,7 +1894,7 @@ void sub_0802A6D4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802A7E0(void) {
+void medaforce_full_body_rad_grow(void) {
     if (gSpriteEntries[0x21].unk8 == 0x40) {
         gUnk_03000440.unk86 = 0x3C;
         gUnk_03001800.unkAA++;
@@ -1898,7 +1904,7 @@ void sub_0802A7E0(void) {
     }
 }
 
-void sub_0802A824(void) {
+void medaforce_full_body_rad_push_back_init(void) {
     u32 i;
 
     medaforce_clear_hit_list();
@@ -1934,7 +1940,7 @@ void sub_0802A824(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802A9B8(void) {
+void medaforce_full_body_rad_push_back(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -1963,7 +1969,7 @@ void sub_0802A9B8(void) {
     }
 }
 
-void sub_0802AAB8(void) {
+void medaforce_full_body_rad_finish(void) {
     gUnk_03001800.unkA6 = 0x65;
     gUnk_03001800.unkAA++;
 }
@@ -1974,7 +1980,7 @@ void medaforce_iron_wall_run(void) {
     gMedaforceIronWallSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802AAF8(void) {
+void medaforce_iron_wall_begin(void) {
     lz_decompress_dispatch(gUnk_084DF024, (void *)0x06014800);
     CpuFastSet(gUnk_0850ED78, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = -0x39DC;
@@ -2005,12 +2011,12 @@ void sub_0802AAF8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802AC7C(void) {
+void medaforce_iron_wall_apply_defence(void) {
     add_u8_capped(&gUnk_03000590[gUnk_03001800.unk87].unkD0 + 1, gUnk_03001800.unkEC, 0xFF);
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802ACB4(void) {
+void medaforce_iron_wall_finish(void) {
     gUnk_03001800.unkA6 = 0x45;
     gUnk_03001800.unkAA++;
 }
@@ -2021,7 +2027,7 @@ void medaforce_power_up_run(void) {
     gMedaforcePowerUpSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802ACF4(void) {
+void medaforce_power_up_begin(void) {
     lz_decompress_dispatch(gUnk_084DF400, (void *)0x06014800);
     CpuFastSet(gUnk_0850ED98, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = -0x39DC;
@@ -2052,7 +2058,7 @@ void sub_0802ACF4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802AE88(void) {
+void medaforce_power_up_shield_anim_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x64], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
@@ -2060,7 +2066,9 @@ void sub_0802AE88(void) {
     }
 }
 
-void sub_0802AECC(void) {
+// guess: sprite meaning unsure; spawns sprite 0x21 (anim 0x65) on the user, sound 0x71    (aura)
+
+void medaforce_power_up_aura_spawn(void) {
     gSpriteEntries[0x21].unk0 = 0xCC04;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
@@ -2072,7 +2080,7 @@ void sub_0802AECC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802AF6C(void) {
+void medaforce_power_up_aura_anim_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x65], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
@@ -2080,12 +2088,12 @@ void sub_0802AF6C(void) {
     }
 }
 
-void sub_0802AFB0(void) {
+void medaforce_power_up_apply_power(void) {
     add_u8_capped(&gUnk_03000590[gUnk_03001800.unk87].unkD0, gUnk_03001800.unkEC, 0xFF);
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802AFE8(void) {
+void medaforce_power_up_finish(void) {
     gUnk_03001800.unkA6 = 0x44;
     gUnk_03001800.unkAA++;
 }
@@ -2096,7 +2104,7 @@ void medaforce_anti_terrain_run(void) {
     gMedaforceAntiTerrainSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802B028(void) {
+void medaforce_anti_terrain_beam_spawn(void) {
     lz_decompress_dispatch(gUnk_084DFA88, (void *)0x06014800);
     CpuFastSet(gUnk_0850EDB8, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].unk0 = 0xC604;
@@ -2123,7 +2131,7 @@ void sub_0802B028(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802B184(void) {
+void medaforce_anti_terrain_check_targets(void) {
     u32 i;
     u32 found = 0;
 
@@ -2150,7 +2158,7 @@ void sub_0802B184(void) {
         gUnk_03001800.unkAA += 2;
 }
 
-void sub_0802B258(void) {
+void medaforce_anti_terrain_bolts_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084DFBD4, (void *)0x06014800);
@@ -2181,7 +2189,7 @@ void sub_0802B258(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802B388(void) {
+void medaforce_anti_terrain_bolts_fly(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -2197,7 +2205,7 @@ void sub_0802B388(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_0802B3CC(void) {
+void medaforce_anti_terrain_burst_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084DCF54, (void *)0x06016000);
@@ -2212,7 +2220,7 @@ void sub_0802B3CC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802B460(void) {
+void medaforce_anti_terrain_burst_anim_wait(void) {
     u32 done = 0;
     u32 i;
 
@@ -2227,7 +2235,7 @@ void sub_0802B460(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_0802B4D8(void) {
+void medaforce_anti_terrain_roll_status(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -2259,7 +2267,7 @@ void sub_0802B4D8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802B5AC(void) {
+void medaforce_anti_terrain_apply_status(void) {
     u32 i;
 
     clear_battle_sprite_slot(0x21, 3);
@@ -2308,7 +2316,7 @@ void sub_0802B5AC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802B7AC(void) {
+void medaforce_anti_terrain_finish(void) {
     if (gUnk_03000590[gUnk_03001800.unk87].unkA8[0] == 0x1E)
         gUnk_03001800.unkA6 = 0x4D;
     else
@@ -2322,7 +2330,7 @@ void medaforce_legs_stat_up_run(void) {
     gMedaforceLegsStatUpSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802B810(void) {
+void medaforce_legs_stat_up_begin(void) {
     u32 i;
 
     medaforce_clear_hit_list();
@@ -2349,7 +2357,9 @@ void sub_0802B810(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802B8BC(void) {
+// guess: sprite meaning unsure; loads graphics, spawns sprites 0x21+i (anim 0x67) above each target    (arrows)
+
+void medaforce_legs_stat_up_arrows_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084DFC18, (void *)0x06014800);
@@ -2369,7 +2379,7 @@ void sub_0802B8BC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802B980(void) {
+void medaforce_legs_stat_up_arrows_fall(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -2388,7 +2398,7 @@ void sub_0802B980(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_0802BA2C(void) {
+void medaforce_legs_stat_up_burst_spawn(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -2402,7 +2412,7 @@ void sub_0802BA2C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802BAAC(void) {
+void medaforce_legs_stat_up_burst_anim_wait(void) {
     u32 done = 0;
     u32 i;
 
@@ -2417,7 +2427,7 @@ void sub_0802BAAC(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_0802BB24(void) {
+void medaforce_legs_stat_up_icon_spawn(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -2434,7 +2444,7 @@ void sub_0802BB24(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802BBA8(void) {
+void medaforce_legs_stat_up_icon_rise(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -2447,7 +2457,7 @@ void sub_0802BBA8(void) {
     }
 }
 
-void sub_0802BC1C(void) {
+void medaforce_legs_stat_up_set_amounts(void) {
     u32 i;
 
     clear_battle_sprite_slot(0x21, 3);
@@ -2458,7 +2468,7 @@ void sub_0802BC1C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802BC60(void) {
+void medaforce_legs_stat_up_apply_stat(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -2484,7 +2494,7 @@ void sub_0802BC60(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802BD1C(void) {
+void medaforce_legs_stat_up_finish(void) {
     switch (gUnk_03001800.unk51) {
     case 0:
         gUnk_03001800.unkA6 = 0x3D;
@@ -2508,7 +2518,7 @@ void medaforce_spy_game_run(void) {
     gMedaforceSpyGameSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802BD94(void) {
+void medaforce_spy_game_beam_spawn(void) {
     gSpriteEntries[0x21].unk0 = 0xC604;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = 0x78;
@@ -2526,7 +2536,7 @@ void sub_0802BD94(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802BE44(void) {
+void medaforce_spy_game_beam_spin(void) {
     u32 v;
 
     if (gUnk_03000440.unk84 <= 2) {
@@ -2547,7 +2557,7 @@ void sub_0802BE44(void) {
     }
 }
 
-void sub_0802BEEC(void) {
+void medaforce_mark_both_sides(void) {
     u32 i;
 
     medaforce_clear_hit_list();
@@ -2566,7 +2576,7 @@ void sub_0802BEEC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802BF9C(void) {
+void medaforce_spy_game_arrows_spawn(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk87);
@@ -2602,7 +2612,7 @@ void sub_0802BF9C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802C0DC(void) {
+void medaforce_spy_game_arrows_move(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk87);
@@ -2622,7 +2632,7 @@ void sub_0802C0DC(void) {
         gUnk_03000440.unk84++;
 }
 
-void sub_0802C1A4(void) {
+void medaforce_spy_game_arrows_shrink(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk87);
@@ -2645,13 +2655,13 @@ void sub_0802C1A4(void) {
     }
 }
 
-void sub_0802C24C(void) {
+void medaforce_spy_game_apply_bonus(void) {
     add_u8_capped(&gUnk_03001800.unk28[gUnk_03001800.unk89].unk0, gUnk_03001800.unkEC, 0xA0);
     subtract_u8_floored(&gUnk_03001800.unk28[gUnk_03001800.unk8A].unk0, gUnk_03001800.unkEC);
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802C294(void) {
+void medaforce_spy_game_finish(void) {
     gUnk_03001800.unkA6 = 0x5B;
     gUnk_03001800.unkAA++;
 }
@@ -2662,7 +2672,7 @@ void medaforce_hide_n_seek_run(void) {
     gMedaforceHideNSeekSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802C2D4(void) {
+void medaforce_hide_n_seek_domes_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084D5EBC, (void *)0x06014800);
@@ -2695,7 +2705,7 @@ void sub_0802C2D4(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802C440(void) {
+void medaforce_hide_n_seek_domes_anim_wait(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk87);
@@ -2715,7 +2725,7 @@ void sub_0802C440(void) {
     }
 }
 
-void sub_0802C4F8(void) {
+void medaforce_hide_n_seek_blink_wait(void) {
     u32 i;
 
     gUnk_03000440.unk84++;
@@ -2733,7 +2743,7 @@ void sub_0802C4F8(void) {
     }
 }
 
-void sub_0802C588(void) {
+void medaforce_hide_n_seek_apply_evasion(void) {
     u32 i;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk87);
@@ -2749,7 +2759,7 @@ void sub_0802C588(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802C62C(void) {
+void medaforce_hide_n_seek_finish(void) {
     gUnk_03001800.unkA6 = 0x5C;
     gUnk_03001800.unkAA++;
 }
@@ -2760,7 +2770,7 @@ void medaforce_charge_run(void) {
     gMedaforceChargeSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802C66C(void) {
+void medaforce_charge_begin(void) {
     lz_decompress_dispatch(gUnk_084DFFE4, (void *)0x06014800);
     CpuFastSet(gUnk_0850EE78, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC604;
@@ -2776,7 +2786,7 @@ void sub_0802C66C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802C714(void) {
+void medaforce_center_sprite_grow(void) {
     if (gSpriteEntries[0x21].unk8 == 0x40) {
         gUnk_03000440.unk86 = 0x3C;
         gUnk_03001800.unkAA++;
@@ -2786,7 +2796,7 @@ void sub_0802C714(void) {
     }
 }
 
-void sub_0802C758(void) {
+void medaforce_center_sprite_shrink_half(void) {
     if (gSpriteEntries[0x21].unk8 == 0x20) {
         gUnk_03001800.unkAA++;
     } else {
@@ -2795,7 +2805,7 @@ void sub_0802C758(void) {
     }
 }
 
-void sub_0802C790(void) {
+void medaforce_charge_check_targets(void) {
     u32 i;
     u32 found = 0;
 
@@ -2815,7 +2825,7 @@ void sub_0802C790(void) {
         gUnk_03001800.unkAA += 3;
 }
 
-void sub_0802C820(void) {
+void medaforce_center_sprite_shrink_out(void) {
     if (gSpriteEntries[0x21].unk8 == 4) {
         clear_battle_sprite_slot(0x21, 1);
         gUnk_03001800.unkAA++;
@@ -2825,7 +2835,7 @@ void sub_0802C820(void) {
     }
 }
 
-void sub_0802C864(void) {
+void medaforce_charge_hourglass_spawn(void) {
     u32 i;
 
     clear_battle_sprite_slot(0x21, 1);
@@ -2851,7 +2861,7 @@ void sub_0802C864(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802C960(void) {
+void medaforce_charge_hourglass_fly(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -2880,7 +2890,7 @@ void sub_0802C960(void) {
     }
 }
 
-void sub_0802CA5C(void) {
+void medaforce_charge_hourglass_burst_wait(void) {
     u32 done = 0;
     u32 i;
 
@@ -2895,7 +2905,7 @@ void sub_0802CA5C(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_0802CAD4(void) {
+void medaforce_charge_hourglass_shrink(void) {
     u32 done = 0;
     u32 i;
 
@@ -2913,7 +2923,7 @@ void sub_0802CAD4(void) {
     }
 }
 
-void sub_0802CB34(void) {
+void medaforce_charge_apply_buff(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -2927,7 +2937,7 @@ void sub_0802CB34(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802CBD0(void) {
+void medaforce_charge_finish(void) {
     gUnk_03001800.unkA6 = 0x59;
     gUnk_03001800.unkAA++;
 }
@@ -2938,7 +2948,7 @@ void medaforce_pushover_attack_run(void) {
     gMedaforcePushoverAttackSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802CC10(void) {
+void medaforce_pushover_attack_begin(void) {
     u32 i;
 
     medaforce_clear_hit_list();
@@ -2950,7 +2960,7 @@ void sub_0802CC10(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802CC74(void) {
+void medaforce_pushover_attack_banana_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084D6464, (void *)0x06014800);
@@ -2977,7 +2987,7 @@ void sub_0802CC74(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802CD48(void) {
+void medaforce_pushover_attack_banana_drop(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -3000,7 +3010,7 @@ void sub_0802CD48(void) {
     }
 }
 
-void sub_0802CE08(void) {
+void medaforce_pushover_attack_banana_fly(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -3016,7 +3026,7 @@ void sub_0802CE08(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_0802CE4C(void) {
+void medaforce_pushover_attack_target_hop_init(void) {
     u32 i;
     u32 j;
 
@@ -3040,7 +3050,7 @@ void sub_0802CE4C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802CFAC(void) {
+void medaforce_pushover_attack_target_hop(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i, j;
@@ -3086,7 +3096,7 @@ void sub_0802CFAC(void) {
     }
 }
 
-void sub_0802D198(void) {
+void medaforce_pushover_attack_burst_spawn(void) {
     u32 i, j;
 
     for (i = 0; i <= 2; i++) {
@@ -3108,7 +3118,7 @@ void sub_0802D198(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802D270(void) {
+void medaforce_pushover_attack_burst(void) {
     u32 i, j;
 
     for (i = 0; i <= 2; i++) {
@@ -3171,7 +3181,7 @@ void apply_battle_damage_and_render(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802D4D8(void) {
+void medaforce_pushover_attack_damage_popup_wait(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -3222,7 +3232,7 @@ void apply_battle_damage_to_team(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_0802D670(void) {
+void medaforce_pushover_attack_finish(void) {
     gUnk_03001800.unkA6 = 0x42;
     gUnk_03001800.unkAA++;
 }
@@ -3233,7 +3243,7 @@ void medaforce_useless_run(void) {
     gMedaforceUselessSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802D6B0(void) {
+void medaforce_useless_begin(void) {
     lz_decompress_dispatch(gUnk_084E0360, (void *)0x06014800);
     CpuFastSet(gUnk_0850EE98, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC604;
@@ -3249,7 +3259,7 @@ void sub_0802D6B0(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802D758(void) {
+void medaforce_useless_find_targets(void) {
     u32 found = 0;
     u32 i;
 
@@ -3268,7 +3278,7 @@ void sub_0802D758(void) {
         gUnk_03001800.unkAA += 3;
 }
 
-void sub_0802D7EC(void) {
+void medaforce_useless_orbs_spawn(void) {
     u32 i;
 
     clear_battle_sprite_slot(0x21, 1);
@@ -3294,7 +3304,7 @@ void sub_0802D7EC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802D8D0(void) {
+void medaforce_useless_orbs_fly(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -3344,7 +3354,7 @@ void sub_0802D8D0(void) {
     }
 }
 
-void sub_0802DA0C(void) {
+void medaforce_useless_part_icons_wait(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -3362,7 +3372,9 @@ void sub_0802DA0C(void) {
     }
 }
 
-void sub_0802DA60(void) {
+// guess: sprite meaning unsure; set affine flags, scale 0x80 on target marks
+
+void medaforce_useless_marks_scale_init(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -3377,7 +3389,7 @@ void sub_0802DA60(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802DAD0(void) {
+void medaforce_useless_marks_shrink(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -3400,7 +3412,9 @@ void sub_0802DAD0(void) {
     }
 }
 
-void sub_0802DB3C(void) {
+// guess: sprite meaning unsure; jitter marks x +/-2 for 0x3C frames, then clear sprites
+
+void medaforce_useless_marks_shake(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -3418,7 +3432,7 @@ void sub_0802DB3C(void) {
         gUnk_03000440.unk86++;
 }
 
-void sub_0802DBD8(void) {
+void medaforce_useless_apply_impair(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -3442,7 +3456,7 @@ void sub_0802DBD8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802DC9C(void) {
+void medaforce_useless_finish(void) {
     gUnk_03001800.unkA6 = 0x5E;
     gUnk_03001800.unkAA++;
 }
@@ -3453,7 +3467,7 @@ void medaforce_destroyer_run(void) {
     gMedaforceDestroyerSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802DCDC(void) {
+void medaforce_destroyer_begin(void) {
     lz_decompress_dispatch(gUnk_084E046C, (void *)0x06014800);
     CpuFastSet(gUnk_0850EEB8, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC404;
@@ -3469,7 +3483,7 @@ void sub_0802DCDC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802DD98(void) {
+void medaforce_destroyer_descend(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x69], 0x21);
     if (gSpriteEntries[0x21].unk4 == 0x40) {
         gUnk_03000440.unk86 = 0;
@@ -3482,7 +3496,9 @@ void sub_0802DD98(void) {
         gSpriteEntries[0x21].unk4 = (gSpriteEntries[0x21].unk4 + 1) & 0xFF;
 }
 
-void sub_0802DE1C(void) {
+// guess: sprite meaning unsure; follow path table gUnk_083AE988; at end clear sprite, goto step 10 (brighten)
+
+void medaforce_destroyer_swing(void) {
     const u8 *tbl;
 
     if ((gUnk_03000440.unk86 & 0x1F) == 0 && gSpriteEntries[0x21].unk23 <= 7) {
@@ -3511,13 +3527,13 @@ void sub_0802DE1C(void) {
     gSpriteEntries[0x21].unk23++;
 }
 
-void sub_0802DF18(void) {
+void medaforce_destroyer_flash_begin(void) {
     gSpriteEntries[0x21].unk6 = 0x7F02;
     play_sound_effect(0x38);
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802DF48(void) {
+void medaforce_destroyer_flash_white(void) {
     bg_palettes_blend_masked_now(0x7FFF, gUnk_03000440.unk84, 0xFFFF);
     obj_palettes_blend_masked_now(0x7FFF, gUnk_03000440.unk84, 0xFF00);
     if (gUnk_03000440.unk84 == 0x20)
@@ -3526,7 +3542,7 @@ void sub_0802DF48(void) {
         gUnk_03000440.unk84 += 2;
 }
 
-void sub_0802DF98(void) {
+void medaforce_destroyer_flash_fade(void) {
     bg_palettes_blend_masked_now(0x1084, gUnk_03000440.unk84, 0xFFFF);
     obj_palettes_blend_masked_now(0x1084, gUnk_03000440.unk84, 0xFF00);
     if (gUnk_03000440.unk84 == 0x10)
@@ -3535,12 +3551,12 @@ void sub_0802DF98(void) {
         gUnk_03000440.unk84 -= 2;
 }
 
-void sub_0802DFE8(void) {
+void medaforce_destroyer_goto_swing(void) {
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x69], 0x21);
     gUnk_03001800.unkAA = 4;
 }
 
-void sub_0802E010(void) {
+void medaforce_destroyer_find_targets(void) {
     u32 found = 0;
     u32 i;
 
@@ -3559,7 +3575,7 @@ void sub_0802E010(void) {
         gUnk_03001800.unkAA += 2;
 }
 
-void sub_0802E098(void) {
+void medaforce_destroyer_marks_spawn(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -3579,7 +3595,7 @@ void sub_0802E098(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802E140(void) {
+void medaforce_destroyer_marks_shrink(void) {
     u32 done = 0;
     u32 i;
 
@@ -3599,13 +3615,13 @@ void sub_0802E140(void) {
     }
 }
 
-void sub_0802E1A4(void) {
+void medaforce_destroyer_set_message(void) {
     clear_battle_sprite_slot(0x21, 3);
     gUnk_03001800.unkA6 = 0x43;
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802E1C8(void) {
+void medaforce_destroyer_apply_damage(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -3623,7 +3639,7 @@ void sub_0802E1C8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802E294(void) {
+void medaforce_destroyer_damage_popups_init(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -3649,7 +3665,7 @@ void sub_0802E294(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802E358(void) {
+void medaforce_destroyer_damage_popups_wait(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -3682,7 +3698,7 @@ void medaforce_crazy_run(void) {
     gMedaforceCrazySteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802E44C(void) {
+void medaforce_crazy_find_targets(void) {
     u32 i;
 
     medaforce_clear_hit_list();
@@ -3696,7 +3712,7 @@ void sub_0802E44C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802E4C8(void) {
+void medaforce_crazy_orbs_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084D6F88, (void *)0x06014800);
@@ -3724,7 +3740,7 @@ void sub_0802E4C8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802E5D4(void) {
+void medaforce_crazy_orbs_grow(void) {
     u32 done = 0;
     u32 i;
 
@@ -3744,7 +3760,7 @@ void sub_0802E5D4(void) {
     }
 }
 
-void sub_0802E638(void) {
+void medaforce_crazy_orbs_fly(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -3771,7 +3787,7 @@ void sub_0802E638(void) {
     }
 }
 
-void sub_0802E70C(void) {
+void medaforce_crazy_drain_anim_wait(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -3792,7 +3808,7 @@ void sub_0802E70C(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_0802E7A0(void) {
+void medaforce_crazy_orbs_target_user(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -3805,7 +3821,7 @@ void sub_0802E7A0(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802E820(void) {
+void medaforce_crazy_orbs_return(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -3829,7 +3845,7 @@ void sub_0802E820(void) {
     }
 }
 
-void sub_0802E8D4(void) {
+void medaforce_crazy_orbs_shrink(void) {
     u32 done = 0;
     u32 i;
 
@@ -3848,7 +3864,7 @@ void sub_0802E8D4(void) {
         gUnk_03001800.unkAA++;
 }
 
-void sub_0802E948(void) {
+void medaforce_crazy_shots_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084E1518, (void *)0x06017000);
@@ -3876,17 +3892,17 @@ void sub_0802E948(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802EAA4(void) {
+void medaforce_crazy_shots_wait(void) {
     if (particle_run_shot_handlers())
         gUnk_03001800.unkAA++;
 }
 
-void sub_0802EAC0(void) {
+void medaforce_crazy_set_message(void) {
     gUnk_03001800.unkA6 = 0x67;
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802EAD8(void) {
+void medaforce_crazy_apply_damage(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -3911,7 +3927,7 @@ void medaforce_up_run(void) {
     gMedaforceUpSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802EBE8(void) {
+void medaforce_up_find_targets(void) {
     u32 i;
 
     medaforce_clear_hit_list();
@@ -3923,7 +3939,7 @@ void sub_0802EBE8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802EC4C(void) {
+void medaforce_up_sparkles_spawn(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084D6F88, (void *)0x06014800);
@@ -3947,7 +3963,7 @@ void sub_0802EC4C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802ED34(void) {
+void medaforce_up_sparkles_shrink(void) {
     u32 done = 0;
     u32 i;
 
@@ -3967,7 +3983,7 @@ void sub_0802ED34(void) {
     }
 }
 
-void sub_0802ED90(void) {
+void medaforce_up_sparkles_anim_wait(void) {
     u32 done = 0;
     u32 i;
 
@@ -4012,7 +4028,9 @@ void decrement_timer_and_decompress_sprite(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802EF0C(void) {
+// guess: sprite meaning unsure; sprite_slide_x_step on icons 0x24+, timer 0x3C
+
+void medaforce_up_arrows_slide_wait(void) {
     u32 done = 0;
     u32 i;
 
@@ -4026,7 +4044,7 @@ void sub_0802EF0C(void) {
     }
 }
 
-void sub_0802EF5C(void) {
+void medaforce_up_sprites_shrink(void) {
     u32 done = 0;
     u32 i;
 
@@ -4048,7 +4066,7 @@ void sub_0802EF5C(void) {
     }
 }
 
-void sub_0802EFD0(void) {
+void medaforce_up_apply_gauge_boost(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -4058,7 +4076,7 @@ void sub_0802EFD0(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F018(void) {
+void medaforce_up_finish(void) {
     gUnk_03001800.unkA6 = 0x68;
     gUnk_03001800.unkAA++;
 }
@@ -4069,7 +4087,7 @@ void medaforce_formation_orders_run(void) {
     gMedaforceFormationOrdersSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802F058(void) {
+void medaforce_formation_orders_begin(void) {
     lz_decompress_dispatch(gUnk_084D50DC, (void *)0x06015800);
     CpuFastSet(gUnk_0850E658, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC624;
@@ -4088,7 +4106,7 @@ void sub_0802F058(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F13C(void) {
+void medaforce_formation_orders_first_hop(void) {
     sprite_hop_step(0x21);
     if (gSpriteEntries[0x21].unk27 == 0x20) {
         gSpriteEntries[0x21].unk18 = 0;
@@ -4109,7 +4127,7 @@ void sub_0802F13C(void) {
     gSpriteEntries[0x21].unk27++;
 }
 
-void sub_0802F214(void) {
+void medaforce_formation_orders_next_spawn(void) {
     gSpriteEntries[gUnk_03000440.unk84 + 0x21].unk0 = 0xC604;
     gSpriteEntries[gUnk_03000440.unk84 + 0x21].unk1C = 0;
     gSpriteEntries[gUnk_03000440.unk84 + 0x21].unk2 = gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
@@ -4126,7 +4144,7 @@ void sub_0802F214(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F2F4(void) {
+void medaforce_formation_orders_next_hop(void) {
     sprite_hop_step(gUnk_03000440.unk84 + 0x21);
     if (gSpriteEntries[gUnk_03000440.unk84 + 0x21].unk27 == 0x20) {
         clear_battle_sprite_slot(gUnk_03000440.unk84 + 0x21, 1);
@@ -4153,7 +4171,7 @@ void sub_0802F2F4(void) {
     gSpriteEntries[gUnk_03000440.unk84 + 0x21].unk27++;
 }
 
-void sub_0802F3FC(void) {
+void medaforce_formation_orders_target_user(void) {
     gSpriteEntries[0x21].unk30 = gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unk24 = 4;
@@ -4161,14 +4179,14 @@ void sub_0802F3FC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F468(void) {
+void medaforce_formation_orders_move(void) {
     if (move_sprite_toward_target(0x21)) {
         play_sound_effect(0x2B);
         gUnk_03001800.unkAA++;
     }
 }
 
-void sub_0802F48C(void) {
+void medaforce_formation_orders_shrink(void) {
     if (gSpriteEntries[0x21].unk8 == 4) {
         clear_battle_sprite_slot(0x21, 1);
         gUnk_03001800.unkAA++;
@@ -4178,7 +4196,7 @@ void sub_0802F48C(void) {
     }
 }
 
-void sub_0802F4D0(void) {
+void medaforce_formation_orders_burst_spawn(void) {
     lz_decompress_dispatch(gUnk_084DFC18, (void *)0x06014800);
     CpuFastSet(gUnk_0850EE38, (void *)0x050002E0, 0x10);
     gSpriteEntries[0x21].unk0 = 0xCC04;
@@ -4192,7 +4210,7 @@ void sub_0802F4D0(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F594(void) {
+void medaforce_formation_orders_burst_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x68], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
@@ -4200,12 +4218,12 @@ void sub_0802F594(void) {
     }
 }
 
-void sub_0802F5D8(void) {
+void medaforce_formation_orders_apply_trap_boost(void) {
     add_u8_capped(&gUnk_03000590[gUnk_03001800.unk87].unkD0 + 5, gUnk_03001800.unkEC, 0xFF);
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F610(void) {
+void medaforce_formation_orders_finish(void) {
     gUnk_03001800.unkA6 = 0x51;
     gUnk_03001800.unkAA++;
 }
@@ -4216,7 +4234,7 @@ void medaforce_leg_crash_run(void) {
     gMedaforceLegCrashSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802F650(void) {
+void medaforce_leg_crash_find_targets(void) {
     u32 i;
 
     medaforce_clear_hit_list();
@@ -4230,7 +4248,7 @@ void sub_0802F650(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F6CC(void) {
+void medaforce_leg_crash_begin(void) {
     u32 i;
 
     lz_decompress_dispatch(gUnk_084E1884, (void *)0x06014800);
@@ -4256,7 +4274,7 @@ void sub_0802F6CC(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F7B8(void) {
+void medaforce_leg_crash_drop(void) {
     u32 done = 0;
     u32 count = 0;
     u32 i;
@@ -4279,17 +4297,17 @@ void sub_0802F7B8(void) {
     }
 }
 
-void sub_0802F864(void) {
+void medaforce_leg_crash_sound(void) {
     play_sound_effect(0x22);
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802F880(void) {
+void medaforce_leg_crash_sweep_wait(void) {
     if (particle_run_sweep_handlers())
         gUnk_03001800.unkAA++;
 }
 
-void sub_0802F89C(void) {
+void medaforce_leg_crash_check_legs(void) {
     u32 found = 0;
     u32 i;
 
@@ -4303,7 +4321,7 @@ void sub_0802F89C(void) {
         gUnk_03001800.unkAA += 2;
 }
 
-void sub_0802F8E4(void) {
+void medaforce_leg_crash_apply_damage(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -4325,7 +4343,7 @@ void medaforce_protector_run(void) {
     gMedaforceProtectorSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802F9B8(void) {
+void medaforce_protector_begin(void) {
     lz_decompress_dispatch(gUnk_084E1B98, (void *)0x06014800);
     CpuFastSet(gUnk_0850EF18, (void *)0x050002C0, 8);
     CpuFastSet(gUnk_084E30B8, (void *)0x050002E0, 8);
@@ -4356,7 +4374,7 @@ void sub_0802F9B8(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802FB74(void) {
+void medaforce_protector_halves_close(void) {
     if (gUnk_03000440.unk86 == 0x18) {
         gUnk_03000440.unk86 = 0;
         gUnk_03001800.unkAA++;
@@ -4372,7 +4390,7 @@ void sub_0802FB74(void) {
     }
 }
 
-void sub_0802FBF4(void) {
+void medaforce_protector_halves_lower(void) {
     if (gUnk_03000440.unk86 == 0xC) {
         gUnk_03001800.unkAA++;
         return;
@@ -4382,7 +4400,7 @@ void sub_0802FBF4(void) {
     gSpriteEntries[0x22].unk4 += 2;
 }
 
-void sub_0802FC3C(void) {
+void medaforce_protector_shield_spawn(void) {
     clear_battle_sprite_slot(0x21, 2);
     CpuFastSet(gUnk_0850EF18, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].unk0 = 0xC624;
@@ -4398,7 +4416,7 @@ void sub_0802FC3C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802FD08(void) {
+void medaforce_protector_shield_shrink(void) {
     if (gSpriteEntries[0x21].unk8 == 0x40) {
         play_sound_effect(0x54);
         gUnk_03001800.unkAA++;
@@ -4408,7 +4426,7 @@ void sub_0802FD08(void) {
     }
 }
 
-void sub_0802FD4C(void) {
+void medaforce_protector_shield_grow(void) {
     if (gSpriteEntries[0x21].unk8 == 0x60)
         gUnk_03001800.unkAA++;
     else {
@@ -4417,7 +4435,7 @@ void sub_0802FD4C(void) {
     }
 }
 
-void sub_0802FD84(void) {
+void medaforce_protector_shield_settle(void) {
     if (gSpriteEntries[0x21].unk8 == 0x40) {
         gUnk_03000440.unk86 = 0x3C;
         gUnk_03001800.unkAA++;
@@ -4427,7 +4445,7 @@ void sub_0802FD84(void) {
     }
 }
 
-void sub_0802FDC8(void) {
+void medaforce_protector_shield_vanish(void) {
     if (gSpriteEntries[0x21].unk8 == 4) {
         clear_battle_sprite_slot(0x21, 1);
         gUnk_03001800.unkAA++;
@@ -4437,12 +4455,12 @@ void sub_0802FDC8(void) {
     }
 }
 
-void sub_0802FE0C(void) {
+void medaforce_protector_apply_protect(void) {
     gUnk_03000590[gUnk_03001800.unk87].unkC0 |= 1;
     gUnk_03001800.unkAA++;
 }
 
-void sub_0802FE38(void) {
+void medaforce_protector_finish(void) {
     gUnk_03001800.unkA6 = 0x4F;
     gUnk_03001800.unkAA++;
 }
@@ -4453,7 +4471,7 @@ void medaforce_anti_protection_run(void) {
     gMedaforceAntiProtectionSteps[gUnk_03001800.unkAA]();
 }
 
-void sub_0802FE78(void) {
+void medaforce_anti_protection_begin(void) {
     lz_decompress_dispatch(gUnk_084E1EA4, (void *)0x06014800);
     CpuFastSet(gUnk_0850EF18, (void *)0x050002C0, 8);
     CpuFastSet(gUnk_084E30B8, (void *)0x050002E0, 8);
@@ -4506,7 +4524,7 @@ void sub_0802FE78(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08030180(void) {
+void medaforce_anti_protection_pieces_close(void) {
     if (gUnk_03000440.unk86 == 0x18) {
         gUnk_03000440.unk86 = 0;
         gUnk_03001800.unkAA++;
@@ -4526,7 +4544,7 @@ void sub_08030180(void) {
     }
 }
 
-void sub_08030238(void) {
+void medaforce_anti_protection_pieces_lower(void) {
     if (gUnk_03000440.unk86 == 0xC) {
         gUnk_03001800.unkAA++;
         return;
@@ -4538,7 +4556,7 @@ void sub_08030238(void) {
     gSpriteEntries[0x24].unk4 += 2;
 }
 
-void sub_0803029C(void) {
+void medaforce_anti_protection_break_spawn(void) {
     gSpriteEntries[0x25].unk0 = 0xC404;
     gSpriteEntries[0x25].unk1C = 0;
     gSpriteEntries[0x25].unk2 = gSpriteEntries[gUnk_03001800.unk87 * 4 + 0x5D].unk2;
@@ -4552,7 +4570,7 @@ void sub_0803029C(void) {
     gUnk_03001800.unkAA++;
 }
 
-void sub_08030354(void) {
+void medaforce_anti_protection_break_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x6F], 0x25);
     if (gSpriteEntries[0x25].unk22 == 0xFF) {
         gUnk_03000440.unk86 = 0;
@@ -4561,7 +4579,7 @@ void sub_08030354(void) {
     }
 }
 
-void sub_080303A4(void) {
+void medaforce_anti_protection_pieces_split(void) {
     if (gUnk_03000440.unk86 == 0x20) {
         gUnk_03000440.unk86 = 0;
         gUnk_03001800.unkAA++;
@@ -4583,7 +4601,9 @@ void sub_080303A4(void) {
     gUnk_03000440.unk86++;
 }
 
-void sub_08030494(void) {
+// guess: sprite meaning unsure; drift pieces vertically while flickering, then clear
+
+void medaforce_anti_protection_pieces_scatter(void) {
     if (gUnk_03000440.unk86 == 0x20) {
         clear_battle_sprite_slot(0x21, 4);
         gUnk_03000440.unk86 = 0;
@@ -4610,12 +4630,12 @@ void sub_08030494(void) {
     gUnk_03000440.unk86++;
 }
 
-void sub_0803059C(void) {
+void medaforce_anti_protection_apply(void) {
     gUnk_03000590[gUnk_03001800.unk87].unkC0 |= 4;
     gUnk_03001800.unkAA++;
 }
 
-void sub_080305C8(void) {
+void medaforce_anti_protection_finish(void) {
     gUnk_03001800.unkA6 = 0x6A;
     gUnk_03001800.unkAA++;
 }
