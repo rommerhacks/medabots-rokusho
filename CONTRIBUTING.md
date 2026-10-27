@@ -369,20 +369,20 @@
   (sub_08033224).
 * `cmp #0; beq; cmp #1; beq` (no `cmp #1; bls`): two separate `if (x == 0) return; if (x == 1) return;`
   (sub_080336DC). For `x == 0 || x == 1` in an if/else chain use `if (x == 0) goto both; if (x == 1)
-  { both: ... }` (sub_08033B7C).
+  { both: ... }` (script_op_set_attack_type_flags).
 * An index computed before the record (`part * 0x18` first, then `rec << 8`) with the field offset
   added separately (`adds #0x59`): index the global in full at each use, no `struct *` local
   (sub_08033434, sub_08033550).
 * Toggle then test a flag: `f ^= 2; if (!(f & 2))` reloads the constant like the original;
-  `if (!((f ^= 2) & 2))` reuses the register (sub_080347F8).
+  `if (!((f ^= 2) & 2))` reuses the register (script_op_target_self).
 * Several `x == A || x == B` checks in a row: if one uses the `goto` pair through a `type` local and
   the registers come out swapped, write that check with the field read at both compares instead
-  (sub_08033D30).
+  (script_op_calc_damage).
 * Array element base: `gSpriteEntries[slot].x` at every use gives `ldr base; lsls; adds` (literal first);
   a `struct X *s = &gSpriteEntries[slot]` local gives `lsls; ldr; adds`. Pick the form by the order of
   the first two instructions (check_sprite_in_range, sprite_hop_step).
 * `ldr r4, =gUnk_03001800; adds r4, #0xEC` (field address not folded into one literal): access the
-  field through `struct Unk_03001800 *b = &gUnk_03001800;` (sub_08035BD4, calc_battle_action_speed);
+  field through `struct Unk_03001800 *b = &gUnk_03001800;` (damage_add_small_random, calc_battle_action_speed);
   plain `gUnk_03001800.unkEC` gives `ldr r4, =0x030018EC`.
 * `movs r2, #0` before `ldr r1, =base` in a loop prologue: put the pointer init in the `for`,
   `for (i = 0, b = &gUnk_03001800; ...)` (sub_080385D0).

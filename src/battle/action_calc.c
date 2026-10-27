@@ -10,7 +10,7 @@ static void battle_process_speed_and_action(void);
 static u32 sub_08039134(u32 rec);
 static u32 battle_find_strongest_part(u32 rec);
 
-void sub_08038BC0(void) {
+void battle_calc_attack_success(void) {
     gUnk_03001800.unkE8 = 0;
     calc_battle_action_speed(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     if (check_bot_ability_type_strike(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk88))
@@ -20,7 +20,7 @@ void sub_08038BC0(void) {
     if (gUnk_03000590[gUnk_03001800.unk87].unkD6 & 4)
         gUnk_03001800.unkE8 += gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[5];
     gUnk_03001800.unkE8 += gUnk_03001800.unk28[gUnk_03001800.unk89].unk0;
-    sub_080358F0(gUnk_03001800.unk87);
+    success_add_strengthen_parts(gUnk_03001800.unk87);
     if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1] == 8)
         goto add;
     if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1] == 9) {
@@ -34,7 +34,8 @@ void sub_08038BC0(void) {
     subtract_s16_floored(&gUnk_03001800.unkE8, gUnk_03000590[gUnk_03001800.unk88].unkB9);
 }
 
-void sub_08038D30(void) {
+// guess: a guarding teammate (unkDE) or the target's cover part (unkBD bit 4) takes the hit: unkAB = 1.
+void battle_check_guard_or_cover(void) {
     gUnk_03000590[gUnk_03001800.unk88].unkBC &= 3;
     gUnk_03000590[gUnk_03001800.unk88].unkBD |= 2;
     if (gUnk_03001800.unkDE) {
@@ -177,7 +178,7 @@ static u32 battle_find_strongest_part(u32 rec) {
     return idx + 1;
 }
 
-void sub_08039188(void) {
+void battle_check_dodged(void) {
     u8 f = gUnk_03000590[gUnk_03001800.unk88].unkBC & 0x10;
     if (f) {
         gUnk_03001800.unkAB = 1;
@@ -187,7 +188,7 @@ void sub_08039188(void) {
     }
 }
 
-void sub_080391C4(void) {
+void battle_check_nullified(void) {
     if (check_bot_can_shoot(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk88)) {
         gUnk_03001800.unkB8 = 2;
         gUnk_03001800.unkBE = 2;
@@ -219,7 +220,7 @@ void select_ai_action_type(void) {
     }
 }
 
-void sub_080392D8(void) {
+void battle_check_absorbed(void) {
     if (check_can_target_bot(gUnk_03001800.unk87, gUnk_03001800.unkA7, gUnk_03001800.unk88)) {
         gUnk_03001800.unkB8 = 4;
         gUnk_03001800.unkBF = 2;

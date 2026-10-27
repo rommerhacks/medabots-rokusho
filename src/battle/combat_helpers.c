@@ -201,7 +201,8 @@ static void battle_sprite_blink_update(u32 slot, u8 *counter, u8 *n) {
     }
 }
 
-void sub_08035478(u32 rec) {
+// guess: targets the living enemy whose sprite is closest in x (smallest x for the team, largest for opponents).
+void battle_target_nearest_enemy(u32 rec) {
     u32 best_x;
     s32 i;
     s32 best;
@@ -227,10 +228,11 @@ void sub_08035478(u32 rec) {
 
 // get_random_battle_weight_entry inlined, with the "- 1" inside
 static inline u32 pick_evasion_weight(u32 n) {
-    return gUnk_083AF330[sub_08035590(n - 1) * 8 + (rng_next_byte() & 7)];
+    return gUnk_083AF330[bot_intact_parts_class(n - 1) * 8 + (rng_next_byte() & 7)];
 }
 
-void calc_bot_evasion_modifier(u32 rec) {
+// Picks a random intact part of the target (unkE1), weighted by gUnk_083AF330 per intact-part class.
+void battle_pick_random_target_part(u32 rec) {
     struct Unk_03000590 *base = gUnk_03000590;
     struct Unk_03000590 *b = &base[rec];
 
@@ -239,10 +241,11 @@ void calc_bot_evasion_modifier(u32 rec) {
 }
 
 u32 get_random_battle_weight_entry(u32 rec) {
-    return gUnk_083AF330[sub_08035590(rec) * 8 + (rng_next_byte() & 7)];
+    return gUnk_083AF330[bot_intact_parts_class(rec) * 8 + (rng_next_byte() & 7)];
 }
 
-u32 sub_08035590(u32 rec) {
+// Which of the arms and legs are intact, as 0-8 (right arm 1, left arm 3, legs 5): row of gUnk_083AF330.
+u32 bot_intact_parts_class(u32 rec) {
     u32 n = gUnk_03000590[rec].parts[1].unk11 != 0;
     if (gUnk_03000590[rec].parts[2].unk11 != 0)
         n += 3;
@@ -251,7 +254,7 @@ u32 sub_08035590(u32 rec) {
     return n;
 }
 
-void sub_080355C4(u32 rec) {
+void battle_load_action_target(u32 rec) {
     gUnk_03001800.unk88 = gUnk_03000590[rec].unkE0 - 1;
     gUnk_03001800.unk8B = gUnk_03000590[rec].unkE1 - 1;
 }
@@ -380,7 +383,7 @@ u32 check_bot_ability_type_shoot(u32 rec, u32 part, u32 target) {
     return 0;
 }
 
-void sub_080358F0(u32 rec) {
+void success_add_strengthen_parts(u32 rec) {
     u32 i;
     for (i = 0; i <= 2; i++)
         if (gUnk_03000590[rec].parts[i].unk11 != 0 && gUnk_03000590[rec].parts[i].data[1] == 0x35)
@@ -453,20 +456,21 @@ u32 check_battle_can_special_target(u32 rec, u32 part, u32 target) {
     return 0;
 }
 
-void sub_08035B9C(u32 rec) {
+void damage_add_strengthen_parts(u32 rec) {
     u32 i;
     for (i = 0; i <= 2; i++)
         if (gUnk_03000590[rec].parts[i].unk11 != 0 && gUnk_03000590[rec].parts[i].data[1] == 0x35)
             gUnk_03001800.unkEC += gUnk_03000590[rec].parts[i].data[6];
 }
 
-void sub_08035BD4(void) {
+void damage_add_small_random(void) {
     struct Unk_03001800 *b = &gUnk_03001800;
     if (b->unkEC <= 2)
         b->unkEC += rng_next_byte() & 3;
 }
 
-void sub_08035BFC(u32 rec, u32 part) {
+// guess: data[0xC] is a per-part damage divisor (multi-hit parts?); the result is at least 1.
+void damage_divide_by_part_divisor(u32 rec, u32 part) {
     struct Unk_03001800 *b = &gUnk_03001800;
     b->unkEC = b->unkEC / gUnk_03000590[rec].parts[part].data[0xC];
     if (b->unkEC == 0)

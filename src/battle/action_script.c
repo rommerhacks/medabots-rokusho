@@ -1,5 +1,5 @@
 // Battle state 9: battle_run_action_script reads the acting Medabot's action script one byte at a time
-// and calls gUnk_083AF000[command] (sub_080338DC..sub_08034E78, in ROM order; opcodes 0x1E-0x6A start the
+// and calls gUnk_083AF000[command] (script_op_end_action..sub_08034E78, in ROM order; opcodes 0x1E-0x6A start the
 // effect sequences of battle/action_steps and the *_skills / medaforce_effects modules). Ends with the
 // script reader (battle_script_read_byte / load_operands / advance).
 
@@ -28,12 +28,14 @@ void battle_run_action_script(void) {
     }
 }
 
-void sub_080338DC(void) {
+// Opcode 0x01: ends the action script (battle state 8, sub-state 0x40).
+void script_op_end_action(void) {
     gGameState = 8;
     gGameSubState = 0x40;
 }
 
-void sub_080338F4(void) {
+// Opcode 0x02: skips forward to the next command byte equal to operand 0.
+void script_op_skip_to_label(void) {
     vu8 found = 0;
     struct Unk_03001800 *s;
     const u8 *const *tbl;
@@ -54,7 +56,8 @@ void sub_080338F4(void) {
     gUnk_03001800.unk163 = 1;
 }
 
-void sub_08033974(void) {
+// Opcode 0x03: skips forward to the command byte equal to operand [unkAB] (the last check's 0-2 result).
+void script_op_branch_on_result(void) {
     vu8 found = 0;
     struct Unk_03001800 *s;
     const u8 *const *tbl;
@@ -87,12 +90,13 @@ void script_op_action_part_check(void) {
         battle_script_advance();
 }
 
-void sub_08033A2C(void) {
+// Opcode 0x06: no target yet -> the nearest enemy; no target part -> a random intact one; then loads both.
+void script_op_resolve_target(void) {
     if (gUnk_03000590[gUnk_03001800.unk87].unkE0 == 0)
-        sub_08035478(gUnk_03001800.unk87);
+        battle_target_nearest_enemy(gUnk_03001800.unk87);
     if (gUnk_03000590[gUnk_03001800.unk87].unkE1 == 0)
-        calc_bot_evasion_modifier(gUnk_03001800.unk87);
-    sub_080355C4(gUnk_03001800.unk87);
+        battle_pick_random_target_part(gUnk_03001800.unk87);
+    battle_load_action_target(gUnk_03001800.unk87);
     battle_script_advance();
 }
 
@@ -130,7 +134,8 @@ void script_op_guard_restore(void) {
     battle_script_advance();
 }
 
-void sub_08033B7C(void) {
+// Opcode 0x0B: sets the actor's unkBC bits 1 / 0 by skill type (data[2]: 0 Strike, 1 Berserk, 3 Aim Shot).
+void script_op_set_attack_type_flags(void) {
     u32 type = gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[2];
 
     if (type == 0)
@@ -145,17 +150,20 @@ void sub_08033B7C(void) {
     battle_script_advance();
 }
 
-void sub_08033C00(void) {
-    sub_08038BC0();
+// Opcode 0x0C: the attack's success value (unkE8).
+void script_op_calc_success(void) {
+    battle_calc_attack_success();
     battle_script_advance();
 }
 
-void sub_08033C10(void) {
-    sub_08038D30();
+// Opcode 0x0D: a guarding teammate or a cover part takes the attack (unkAB = 1).
+void script_op_guard_check(void) {
+    battle_check_guard_or_cover();
     battle_script_advance();
 }
 
-void sub_08033C20(void) {
+// Opcode 0x0E: guess: sets the target's unkBC bits 2 / 3 (no dodge) from its status effect and attack type.
+void script_op_set_target_no_dodge_flags(void) {
     u32 type;
 
     if (gUnk_03000590[gUnk_03001800.unk88].unkC9 == 0x2E)
@@ -176,32 +184,38 @@ void sub_08033C20(void) {
     battle_script_advance();
 }
 
-void sub_08033CD0(void) {
+// Opcode 0x0F: success (unkE8) against the target's evasion (unkEE).
+void script_op_evasion_check(void) {
     battle_begin_action_phase();
     battle_script_advance();
 }
 
-void sub_08033CE0(void) {
-    sub_08039188();
+// Opcode 0x10: unkAB = 1, unkB7 = 1 (missed) when the target dodged.
+void script_op_dodge_check(void) {
+    battle_check_dodged();
     battle_script_advance();
 }
 
-void sub_08033CF0(void) {
-    sub_080391C4();
+// Opcode 0x11: unkB8 = 2 (nullified) when the target is immune (unkBE says why).
+void script_op_nullify_check(void) {
+    battle_check_nullified();
     battle_script_advance();
 }
 
-void sub_08033D00(void) {
-    sub_080392D8();
+// Opcode 0x12: unkB8 = 4 (absorbed) when the target absorbs the attack (unkBF says why).
+void script_op_absorb_check(void) {
+    battle_check_absorbed();
     battle_script_advance();
 }
 
-void sub_08033D10(void) {
+// Opcode 0x13: unkEA = success / 4, added to the damage by script_op_calc_damage.
+void script_op_success_bonus(void) {
     gUnk_03001800.unkEA = gUnk_03001800.unkE8 >> 2;
     battle_script_advance();
 }
 
-void sub_08033D30(void) {
+// Opcode 0x14: the damage (unkEC) from the part's power (data[6]) and the actor's and target's modifiers.
+void script_op_calc_damage(void) {
     u32 type;
 
     gUnk_03001800.unkEC = 0;
@@ -234,14 +248,15 @@ void sub_08033D30(void) {
     if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1] == 0x34 &&
         gUnk_03001800.unk28[gUnk_03001800.unk8A].skill == 0x33)
         gUnk_03001800.unkEC += gUnk_03001800.unk28[gUnk_03001800.unk8A].power;
-    sub_08035B9C(gUnk_03001800.unk87);
+    damage_add_strengthen_parts(gUnk_03001800.unk87);
     subtract_s16_floored(&gUnk_03001800.unkEC, gUnk_03000590[gUnk_03001800.unk88].unkD1);
     if (gUnk_03001800.unkDE != 0 && gUnk_03001800.unkDF == 0x1B)
         subtract_s16_floored(&gUnk_03001800.unkEC, (s16)gUnk_03000590[gUnk_03001800.unk88].unkD8);
     battle_script_advance();
 }
 
-void sub_08033F04(void) {
+// Opcode 0x15: Half Block guard: damage below the guard's threshold (unkD8) is nullified.
+void script_op_half_block_check(void) {
     if (gUnk_03001800.unkDE != 0 && gUnk_03001800.unkDF == 0x1D && gUnk_03001800.unkB8 == 0 &&
         gUnk_03001800.unkEC < (s16)gUnk_03000590[gUnk_03001800.unk88].unkD8) {
         gUnk_03001800.unkB8 = 2;
@@ -250,7 +265,8 @@ void sub_08033F04(void) {
     battle_script_advance();
 }
 
-void sub_08033F64(void) {
+// Opcode 0x16: Full Block guard: the attack is nullified.
+void script_op_full_block_check(void) {
     if (gUnk_03001800.unkDE != 0 && gUnk_03001800.unkDF == 0x1C && gUnk_03001800.unkB8 == 0) {
         gUnk_03001800.unkB8 = 2;
         gUnk_03001800.unkBE = 5;
@@ -258,7 +274,8 @@ void sub_08033F64(void) {
     battle_script_advance();
 }
 
-void sub_08033F9C(void) {
+// Opcode 0x17: guess: the target counters (unkB7 = 3) damage above its threshold (unkD8).
+void script_op_counter_check(void) {
     if ((gUnk_03000590[gUnk_03001800.unk88].unkBD & 0x10) &&
         gUnk_03000590[gUnk_03001800.unk88].parts[gUnk_03000590[gUnk_03001800.unk88].unkDE - 1].unk11 != 0 &&
         gUnk_03001800.unkB7 == 0 && gUnk_03001800.unkEC > (s16)gUnk_03000590[gUnk_03001800.unk88].unkD8)
@@ -266,9 +283,10 @@ void sub_08033F9C(void) {
     battle_script_advance();
 }
 
-void sub_08034008(void) {
-    sub_08035BD4();
-    sub_08035BFC(gUnk_03001800.unk87, gUnk_03001800.unkA7);
+// Opcode 0x18: small damage gets + rng & 3, then the damage is divided by the part's data[0xC].
+void script_op_finish_damage(void) {
+    damage_add_small_random();
+    damage_divide_by_part_divisor(gUnk_03001800.unk87, gUnk_03001800.unkA7);
     battle_script_advance();
 }
 
@@ -564,21 +582,24 @@ void sub_08034684(void) {
         battle_script_advance();
 }
 
-void sub_080346C4(void) {
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+// Opcode 0x41: targets a random enemy and a random intact part of it.
+void script_op_target_random_enemy(void) {
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     gUnk_03000590[gUnk_03001800.unk87].unkE0 = select_random_battle_target(gUnk_03001800.unk60) + 1;
-    calc_bot_evasion_modifier(gUnk_03001800.unk87);
-    sub_080355C4(gUnk_03001800.unk87);
+    battle_pick_random_target_part(gUnk_03001800.unk87);
+    battle_load_action_target(gUnk_03001800.unk87);
     battle_script_advance();
 }
 
-void sub_08034708(void) {
-    sub_0803769C(gUnk_03001800.unk87);
-    sub_080376F4(gUnk_03001800.unk87);
+// Opcode 0x42: Medaforce success and damage (unkA8 = the Medaforce record).
+void script_op_medaforce_damage(void) {
+    medaforce_calc_success(gUnk_03001800.unk87);
+    medaforce_calc_damage(gUnk_03001800.unk87);
     battle_script_advance();
 }
 
-void sub_08034728(void) {
+// Opcode 0x43: adds the power of the actor's intact Shoot / Aim Shot parts to the damage.
+void script_op_damage_add_shoot_parts(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
@@ -605,12 +626,14 @@ void sub_0803476C(void) {
         battle_script_advance();
 }
 
-void sub_080347AC(void) {
+// Opcode 0x45.
+void script_op_add_action_point(void) {
     side_add_action_point();
     battle_script_advance();
 }
 
-void sub_080347BC(void) {
+// Opcode 0x46: adds the armor the actor has lost to the damage.
+void script_op_damage_from_armor_lost(void) {
     u32 i;
 
     for (i = 0; i <= 3; i++)
@@ -619,14 +642,15 @@ void sub_080347BC(void) {
     battle_script_advance();
 }
 
-void sub_080347F8(void) {
+// Opcode 0x47: guess: the actor targets itself (old target in unk161) and the close-up sides swap.
+void script_op_target_self(void) {
     init_battle_scene_backgrounds();
     gUnk_03001800.unk15F = closeup_left_pose_step();
     gUnk_03001800.unk160 = closeup_right_pose_step();
     gUnk_03001800.unkF6 = 3;
     gUnk_03000590[gUnk_03001800.unk87].unkE0 = gUnk_03001800.unk87 + 1;
     gUnk_03001800.unk161 = gUnk_03001800.unk88;
-    sub_080355C4(gUnk_03001800.unk87);
+    battle_load_action_target(gUnk_03001800.unk87);
     gUnk_03001800.unkF8 ^= 2;
     if (!(gUnk_03001800.unkF8 & 2))
         gUnk_03001800.unk114[0] = 0;
@@ -651,7 +675,8 @@ void sub_080348D0(void) {
         battle_script_advance();
 }
 
-void sub_08034910(void) {
+// Opcode 0x49: half of each of the actor's part armors (kept in unkD6[]) is added to the damage.
+void script_op_damage_from_half_armor(void) {
     u32 i;
 
     for (i = 0; i <= 3; i++) {
@@ -661,7 +686,8 @@ void sub_08034910(void) {
     battle_script_advance();
 }
 
-void sub_0803496C(void) {
+// Opcode 0x4A: + 10 damage per broken part on the actor's team.
+void script_op_damage_from_broken_parts(void) {
     u32 i, j;
 
     gUnk_03001800.unk60 = battle_side_first_record(gUnk_03001800.unk87);
@@ -676,55 +702,60 @@ void sub_0803496C(void) {
     battle_script_advance();
 }
 
-void sub_080349D8(void) {
+// Opcode 0x4B: targets a guarding enemy's guard part; none: a random enemy, nullified (unkB8 = 2).
+void script_op_target_guarding_enemy(void) {
     u32 t;
 
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
-    t = sub_08037798(gUnk_03001800.unk60);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
+    t = battle_find_guarding_enemy(gUnk_03001800.unk60);
     if (t != 0xFF) {
         gUnk_03000590[gUnk_03001800.unk87].unkE0 = t + 1;
         gUnk_03000590[gUnk_03001800.unk87].unkE1 = gUnk_03000590[t].unkDE;
     } else {
-        gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+        gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
         gUnk_03000590[gUnk_03001800.unk87].unkE0 = select_random_battle_target(gUnk_03001800.unk60) + 1;
-        calc_bot_evasion_modifier(gUnk_03001800.unk87);
+        battle_pick_random_target_part(gUnk_03001800.unk87);
         gUnk_03001800.unkB8 = 2;
     }
-    sub_080355C4(gUnk_03001800.unk87);
+    battle_load_action_target(gUnk_03001800.unk87);
     battle_script_advance();
 }
 
-void sub_08034A68(void) {
+// Opcode 0x4C: the damage is the target part's armor.
+void script_op_damage_equals_target_armor(void) {
     gUnk_03001800.unkEC = gUnk_03000590[gUnk_03001800.unk88].parts[gUnk_03001800.unk8B].unk11;
     battle_script_advance();
 }
 
-void sub_08034AA0(void) {
+// Opcode 0x4D: two random digits (unk188, unk189); damage = their sum * 10.
+void script_op_roll_dice_damage(void) {
     gUnk_03001800.unk188 = gUnk_083AF200[rng_next_byte() & 0xF];
     gUnk_03001800.unk189 = gUnk_083AF200[rng_next_byte() & 0xF];
     gUnk_03001800.unkEC = (gUnk_03001800.unk188 + gUnk_03001800.unk189) * 10;
     battle_script_advance();
 }
 
-void sub_08034AF4(void) {
+// Opcode 0x4E: targets a random enemy with the actor's leg type, else any random enemy.
+void script_op_target_same_legs_enemy(void) {
     u32 t;
 
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
-    t = battle_select_random_target(gUnk_03001800.unk60, gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
+    t = battle_find_enemy_same_legs(gUnk_03001800.unk60, gUnk_03001800.unk87);
     if (t != 0xFF)
         gUnk_03000590[gUnk_03001800.unk87].unkE0 = t + 1;
     else {
-        gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+        gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
         gUnk_03000590[gUnk_03001800.unk87].unkE0 = select_random_battle_target(gUnk_03001800.unk60) + 1;
     }
-    calc_bot_evasion_modifier(gUnk_03001800.unk87);
-    sub_080355C4(gUnk_03001800.unk87);
+    battle_pick_random_target_part(gUnk_03001800.unk87);
+    battle_load_action_target(gUnk_03001800.unk87);
     battle_script_advance();
 }
 
-void sub_08034B68(void) {
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
-    if (battle_select_random_target(gUnk_03001800.unk60, gUnk_03001800.unk87) == 0xFF)
+// Opcode 0x4F: damage = 10 when no enemy has the actor's leg type.
+void script_op_damage_if_no_same_legs(void) {
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
+    if (battle_find_enemy_same_legs(gUnk_03001800.unk60, gUnk_03001800.unk87) == 0xFF)
         gUnk_03001800.unkEC = 10;
     battle_script_advance();
 }

@@ -41,7 +41,7 @@ void call_bot_action_handler(void) {
 void select_battle_targets_and_actions(void) {
     u32 i;
 
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
             sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
@@ -51,7 +51,7 @@ void select_battle_targets_and_actions(void) {
     if (sub_08032FFC())
         gUnk_03001800.unk5E = select_battle_pending_action() + 1;
     else {
-        gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+        gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
     }
     gUnk_03001800.unk5F = sub_080330E8(gUnk_03001800.unk5E - 1) + 1;
@@ -61,7 +61,7 @@ void select_battle_targets_and_actions(void) {
 void battle_ai_select_target_defend(void) {
     u32 i;
 
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x64 &&
             sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
@@ -71,7 +71,7 @@ void battle_ai_select_target_defend(void) {
     if (sub_08032FFC())
         gUnk_03001800.unk5E = select_battle_pending_action() + 1;
     else {
-        gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+        gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
             if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x64)
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
@@ -80,7 +80,7 @@ void battle_ai_select_target_defend(void) {
         if (sub_08032FFC())
             gUnk_03001800.unk5E = select_battle_pending_action() + 1;
         else {
-            gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+            gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
                     sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
@@ -90,7 +90,7 @@ void battle_ai_select_target_defend(void) {
             if (sub_08032FFC())
                 gUnk_03001800.unk5E = select_battle_pending_action() + 1;
             else {
-                gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+                gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
@@ -102,7 +102,7 @@ void battle_ai_select_target_defend(void) {
 void battle_ai_select_target_jump(void) {
     u32 i;
 
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x6A &&
             sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
@@ -112,7 +112,7 @@ void battle_ai_select_target_jump(void) {
     if (sub_08032FFC())
         gUnk_03001800.unk5E = select_battle_pending_action() + 1;
     else {
-        gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+        gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
             if (gUnk_03000590[gUnk_03001800.unk60].unk40 && gUnk_03000590[gUnk_03001800.unk60].parts[3].data[1] == 0x6A)
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
@@ -121,7 +121,7 @@ void battle_ai_select_target_jump(void) {
         if (sub_08032FFC())
             gUnk_03001800.unk5E = select_battle_pending_action() + 1;
         else {
-            gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+            gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
                     sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
@@ -131,7 +131,7 @@ void battle_ai_select_target_jump(void) {
             if (sub_08032FFC())
                 gUnk_03001800.unk5E = select_battle_pending_action() + 1;
             else {
-                gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+                gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
@@ -388,7 +388,7 @@ void select_battle_target_for_bot(void) {
 void battle_ai_select_target_ability22_ally(void) {
     u32 i;
 
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
             sub_08033240(gUnk_03001800.unk60) &&
@@ -399,7 +399,7 @@ void battle_ai_select_target_ability22_ally(void) {
     if (sub_08032FFC())
         gUnk_03001800.unk5E = select_battle_pending_action() + 1;
     else {
-        gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+        gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
             if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
                 sub_08033240(gUnk_03001800.unk60))
@@ -409,7 +409,7 @@ void battle_ai_select_target_ability22_ally(void) {
         if (sub_08032FFC())
             gUnk_03001800.unk5E = select_battle_pending_action() + 1;
         else {
-            gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+            gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
                     sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
@@ -419,7 +419,7 @@ void battle_ai_select_target_ability22_ally(void) {
             if (sub_08032FFC())
                 gUnk_03001800.unk5E = select_battle_pending_action() + 1;
             else {
-                gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+                gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
@@ -430,7 +430,7 @@ void battle_ai_select_target_ability22_ally(void) {
 void battle_ai_select_target_status58(void) {
     u32 i;
 
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && sub_080332B4(gUnk_03001800.unk60) &&
             sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
@@ -440,7 +440,7 @@ void battle_ai_select_target_status58(void) {
     if (sub_08032FFC())
         gUnk_03001800.unk5E = select_battle_pending_action() + 1;
     else {
-        gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+        gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
             if (gUnk_03000590[gUnk_03001800.unk60].unk40 && sub_080332B4(gUnk_03001800.unk60))
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
@@ -449,7 +449,7 @@ void battle_ai_select_target_status58(void) {
         if (sub_08032FFC())
             gUnk_03001800.unk5E = select_battle_pending_action() + 1;
         else {
-            gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+            gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
                     sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
@@ -459,7 +459,7 @@ void battle_ai_select_target_status58(void) {
             if (sub_08032FFC())
                 gUnk_03001800.unk5E = select_battle_pending_action() + 1;
             else {
-                gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+                gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
@@ -471,7 +471,7 @@ void battle_ai_select_target_status58(void) {
 void select_player_battle_target(void) {
     u32 i;
 
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && sub_080332D0(gUnk_03001800.unk60) &&
             sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
@@ -481,7 +481,7 @@ void select_player_battle_target(void) {
     if (sub_08032FFC())
         gUnk_03001800.unk5E = select_battle_pending_action() + 1;
     else {
-        gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+        gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
             if (gUnk_03000590[gUnk_03001800.unk60].unk40 && sub_080332D0(gUnk_03001800.unk60))
                 gUnk_03001800.unk61[i] = gUnk_03001800.unk60 + 1;
@@ -490,7 +490,7 @@ void select_player_battle_target(void) {
         if (sub_08032FFC())
             gUnk_03001800.unk5E = select_battle_pending_action() + 1;
         else {
-            gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+            gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
                     sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
@@ -500,7 +500,7 @@ void select_player_battle_target(void) {
             if (sub_08032FFC())
                 gUnk_03001800.unk5E = select_battle_pending_action() + 1;
             else {
-                gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+                gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
@@ -511,7 +511,7 @@ void select_player_battle_target(void) {
 void ai_select_target_player_side_ability22(void) {
     u32 i;
 
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
             sub_08033240(gUnk_03001800.unk60) &&
@@ -522,7 +522,7 @@ void ai_select_target_player_side_ability22(void) {
     if (sub_08032FFC())
         gUnk_03001800.unk5E = select_battle_pending_action() + 1;
     else {
-        gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+        gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
         for (i = 0; i <= 2; i++) {
             if (gUnk_03000590[gUnk_03001800.unk60].unk40 && battle_bot_lacks_stability(gUnk_03001800.unk60) &&
                 sub_08033240(gUnk_03001800.unk60))
@@ -532,7 +532,7 @@ void ai_select_target_player_side_ability22(void) {
         if (sub_08032FFC())
             gUnk_03001800.unk5E = select_battle_pending_action() + 1;
         else {
-            gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+            gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
             for (i = 0; i <= 2; i++) {
                 if (gUnk_03000590[gUnk_03001800.unk60].unk40 &&
                     sub_08032FD0(gUnk_03001800.unk60, gUnk_03000590[gUnk_03001800.unk5C].medal.unk6))
@@ -542,7 +542,7 @@ void ai_select_target_player_side_ability22(void) {
             if (sub_08032FFC())
                 gUnk_03001800.unk5E = select_battle_pending_action() + 1;
             else {
-                gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+                gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
                 gUnk_03001800.unk5E = select_random_battle_target(gUnk_03001800.unk60) + 1;
             }
         }
@@ -558,7 +558,7 @@ static void clear_battle_action_selection(void) {
     gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].unkF = 0;
 }
 
-u32 sub_08032FB8(u32 a) {
+u32 battle_enemy_side_first_record(u32 a) {
     switch (a) {
     case 0:
     case 1:
@@ -842,7 +842,7 @@ void sub_08033698(void) {
 void sub_080336DC(void) {
     u32 i, j;
 
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40) {
             for (j = 0; j <= 2; j++) {
@@ -861,7 +861,7 @@ void sub_080336DC(void) {
 void sub_08033754(void) {
     u32 i, j;
 
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk5C);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk5C);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40) {
             for (j = 0; j <= 2; j++) {

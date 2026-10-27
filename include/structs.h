@@ -622,7 +622,7 @@ struct Unk_03001800 {
     u8 unk5D;    // Robattle AI: part being considered (0-2)
     u8 unk5E;    // Robattle AI: target record + 1
     u8 unk5F;    // Robattle AI: target part + 1
-    u8 unk60;    // first record of the target side (sub_08032FB8, sub_08026FF8)
+    u8 unk60;    // first record of the target side (battle_enemy_side_first_record, sub_08026FF8)
     u8 unk61[3]; // Robattle AI: candidate targets (record + 1, 0 = none; select_battle_targets_and_actions)
     u8 unk64[4]; // filled by get_bot_part_effective_values (robattle_status_screen_init); AI part order from
                  // gUnk_083AD2F0 (battle_ai_roll_part_order)
@@ -664,7 +664,7 @@ struct Unk_03001800 {
     // script_op_action_part_check) then call battle_script_advance
     u8 unkB5;
     u8 fillerB6[0x1];
-    u8 unkB7; // attack result: 1 missed (target dodged, sub_08039188), 3 countered (reaction_check_counter)
+    u8 unkB7; // attack result: 1 missed (target dodged, battle_check_dodged), 3 countered (reaction_check_counter)
     u8 unkB8; // attack result: 2 nullified (Full / Half Block, immunities), 4 absorbed as healing (attack_hit_branch)
     u8 unkB9; // raised by gUnk_03001800.unkEC up to 0x78 on the own side, lowered on the other (sub_0802C588, written
               // as &unkB8 + 1 to match)
@@ -672,8 +672,9 @@ struct Unk_03001800 {
     u8 unkBB;
     u16 unkBC; // Robattle action script: offset of the current command (battle_script_read_byte /
                // battle_script_advance)
-    u8 unkBE;  // set with unkB7 / unkB8 by the script commands sub_08033F04 / sub_08033F64 (1, 5)
-    u8 unkBF;  // set with unkB8 = 4 by sub_080392D8 / determine_battle_target_mode (2-4)
+    u8 unkBE;  // set with unkB7 / unkB8 by the script commands script_op_half_block_check / script_op_full_block_check
+               // (1, 5)
+    u8 unkBF;  // set with unkB8 = 4 by battle_check_absorbed / determine_battle_target_mode (2-4)
     u8 fillerC0[0x8];
     u16 unkC8; // Robattle: effect amount (shown by trap_hit_damage_popup_init, subtracted by trap_hit_apply_damage)
     u16 unkCA; // damage passed to battle_set_damage_vs_armor (attack_hit_carry_over_retarget)
@@ -688,14 +689,15 @@ struct Unk_03001800 {
     u8 unkE0[3];  // per team record: record + 1 waiting for reset_battle_bot_state (bot_defeat_find)
     u8 fillerE3[0x5];
     s16 unkE8; // passed to battle_inflict_status with unkEC (status_attack_apply)
-    s16 unkEA; // unkE8 / 4 (script command sub_08033D10)
+    s16 unkEA; // unkE8 / 4 (script command script_op_success_bonus)
     s16 unkEC; // amount for battle_calc_damage_split (attack_absorbed_find_part); counted down by
                // attack_hit_check_carry_over
     u16 unkEE; // + Medal level + matching parts power + rng & 7 (accumulate_battle_speed_value)
     u8 fillerF0[0x2];
-    s16 unkF2; // copy of unkE8 when the action phase starts (sub_08038D30, battle_check_damage_threshold)
+    s16 unkF2; // copy of unkE8 when the action phase starts (battle_check_guard_or_cover,
+               // battle_check_damage_threshold)
     u8 fillerF4[0x2];
-    u8 unkF6; // bit 0: the target has a reaction ready (sub_08038D30), run by reaction_check
+    u8 unkF6; // bit 0: the target has a reaction ready (battle_check_guard_or_cover), run by reaction_check
     u8 fillerF7[0x1];
     u8 unkF8; // 0 when battle_set_actor_side gets a team record (0-2), 3 for an opponent
     u8 unkF9; // skill shown by the action script command script_op_skill_anim_start: chosen part's data[1], or
@@ -705,7 +707,7 @@ struct Unk_03001800 {
     u8 unkFC;
     u8 unkFD; // skill animation condition (battle_seq_cmd_test_*), picks battle_seq_cmd_branch's label
     u8 unkFE;
-    u8 unkFF;      // bits 0 / 1 set by sub_080347F8 with unk114[0] / unk114[1] = 0x28
+    u8 unkFF;      // bits 0 / 1 set by script_op_target_self with unk114[0] / unk114[1] = 0x28
     u16 unk100;    // battle sequence: offset of the current command in gBattleSeqScripts[unkF9] (cleared by
                    // script_op_skill_anim_start)
     s16 unk102[8]; // battle sequence: operands of the current command (battle_seq_load_operands)
@@ -745,7 +747,7 @@ struct Unk_03001800 {
     u8 unk16E[3][8];
     u8 unk186; // after-battle screen: team member being shown (0-2, 3 = done)
     u8 unk187; // gUnk_03000590 record index (battle_loss_take_part)
-    u8 unk188; // two rolls from gUnk_083AF200 (sub_08034AA0); unkEC = (unk188 + unk189) * 10
+    u8 unk188; // two rolls from gUnk_083AF200 (script_op_roll_dice_damage); unkEC = (unk188 + unk189) * 10
     u8 unk189;
     u8 partnerName[0x10]; // link Robattle: the partner's player name (link_robattle_exchange_names)
     // Link prize game (after a link Robattle, link/link_robattle.c):
@@ -835,8 +837,8 @@ struct Unk_03000590 {
     u8 unkD0;
     u8 unkD1; // raised by gUnk_03001800.unkEC up to 0xFF (sub_0802AC7C, written as &unkD0 + 1 to match)
     u8 unkD2;
-    u8 unkD3;  // added to gUnk_03001800.unkEC for parts with data[2] 0 / 1 (sub_08033D30)
-    u8 unkD4;  // added for data[2] 2 / 3 (sub_08033D30)
+    u8 unkD3;  // added to gUnk_03001800.unkEC for parts with data[2] 0 / 1 (script_op_calc_damage)
+    u8 unkD4;  // added for data[2] 2 / 3 (script_op_calc_damage)
     u8 unkD5;  // added to gUnk_03001800.unkEC for unk28[side].unk5 (trap_apply)
     u8 unkD6;  // flags (bit 1: +10 damage, attack_hit_carry_over_retarget)
     u8 unkD7;  // movement: sub-pixel accumulator, + (0x20 - unkBB) per frame, 1/16 px (battle_bot_move)

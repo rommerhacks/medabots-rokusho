@@ -927,15 +927,15 @@ extern const u16
     gUnk_083AF3C0[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
 extern const u16
     gUnk_083AF380[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
-extern const u16 gUnk_083AF4E0[]; // 32 y offsets added to a sprite's unk4 by sprite_bob_step
-extern const u8 gUnk_083AF4A0[];  // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
-extern const u8 gUnk_083AF4B0[];  // 16 x offsets added to / subtracted from a sprite's unk2 by sprite_slide_x_step
-extern const u8 gUnk_083AF210[];  // 256 speed steps (quarter pixels) by a sprite's unk30 (sprite_move_toward_target,
-                                  // update_sprite_deceleration)
-extern const u16 gUnk_083AF670[]; // 16 x offsets by a sprite's unk2D & 15 (sub_080380F0)
-extern const u8 gUnk_083AF630[];  // radius steps (byte pairs) by a sprite's unk2D & 31 (sub_08037C50)
-extern const u8
-    gUnk_083AF330[]; // 8 entries per sub_08035590 result, one picked at random (get_random_battle_weight_entry)
+extern const u16 gUnk_083AF4E0[];  // 32 y offsets added to a sprite's unk4 by sprite_bob_step
+extern const u8 gUnk_083AF4A0[];   // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
+extern const u8 gUnk_083AF4B0[];   // 16 x offsets added to / subtracted from a sprite's unk2 by sprite_slide_x_step
+extern const u8 gUnk_083AF210[];   // 256 speed steps (quarter pixels) by a sprite's unk30 (sprite_move_toward_target,
+                                   // update_sprite_deceleration)
+extern const u16 gUnk_083AF670[];  // 16 x offsets by a sprite's unk2D & 15 (sub_080380F0)
+extern const u8 gUnk_083AF630[];   // radius steps (byte pairs) by a sprite's unk2D & 31 (sub_08037C50)
+extern const u8 gUnk_083AF330[];   // 8 entries per bot_intact_parts_class result, one picked at random
+                                   // (get_random_battle_weight_entry)
 extern const u8 gUnk_084889B4[];   // compressed tilemap (armor_panel_draw_frame)
 extern u8 gUnk_0300056F;           // sprite slot whose handler is running (sub_080383E8)
 extern const Func gUnk_083AF690[]; // battle effect sprite handlers by sprite unk29 (sub_080383E8, sprites 0x2B-0x3B)
@@ -953,7 +953,8 @@ extern const Func gBattleSeqCommands[]; // battle sequence commands, by battle_s
 extern const Func gUnk_083AF6E0[];      // sprite handlers by sprite unk29 (sub_080385F8, sprites 0x21-0x3B)
 extern u16 gUnk_083AF480[];      // x, y offset pairs by part (effect_sprite_spawn_at_part); not const: hit_sparks_spawn
                                  // reloads it per iteration
-extern const u8 gUnk_083AF200[]; // 16 values, two random picks summed into gUnk_03001800.unk188 / unk189 (sub_08034AA0)
+extern const u8 gUnk_083AF200[]; // 16 values, two random picks summed into gUnk_03001800.unk188 / unk189
+                                 // (script_op_roll_dice_damage)
 extern u8 gUnk_03003470[]; // IWRAM buffer; script_op_guard_restore copies 4 x 0x40 bytes from +0xE40 + (rec * 0x100) to
                            // its start
 extern const u8 gUnk_083C6D38[];     // Robattle action script: operand count per command byte (battle_script_advance)

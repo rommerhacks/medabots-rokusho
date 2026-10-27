@@ -158,7 +158,7 @@ void reaction_counter_begin(void) {
     if ((gUnk_03001800.unk162 = gUnk_03001800.unk8B) == 3)
         gUnk_03001800.unk162 = 0;
     gUnk_03001800.unk161 = gUnk_03001800.unk88;
-    sub_080355C4(gUnk_03001800.unk87);
+    battle_load_action_target(gUnk_03001800.unk87);
     gUnk_03001800.unkF8 ^= 2;
     gUnk_03001800.unkB7 = 0;
     gUnk_03001800.unkF6 = 2;
@@ -368,7 +368,7 @@ u8 pick_random_change_part(u32 a, u32 kind) {
     return ret;
 }
 
-void sub_0803769C(u32 rec) {
+void medaforce_calc_success(u32 rec) {
     gUnk_03001800.unkE8 = 0;
     gUnk_03001800.unkE8 = gUnk_03000590[rec].unkA8[3];
     gUnk_03001800.unkE8 += calc_bot_matching_part_power(rec);
@@ -376,7 +376,7 @@ void sub_0803769C(u32 rec) {
     gUnk_03001800.unkE8 += gUnk_03000590[rec].medal.unk20[gUnk_03000590[rec].unkA8[1]];
 }
 
-void sub_080376F4(u32 rec) {
+void medaforce_calc_damage(u32 rec) {
     gUnk_03001800.unkEC = gUnk_03001800.unkE8 >> 3;
     gUnk_03001800.unkEC += gUnk_03000590[rec].unkA8[4];
     if (gUnk_03001800.unkEC == 0)
@@ -397,7 +397,8 @@ u32 sub_08037728(u32 rec, u32 part, u32 amount) {
     }
 }
 
-u32 sub_08037798(u32 base) {
+// guess: a random living bot from base..base+2 that is guarding (unkBD bit 3 or 4) with its guard part intact.
+u32 battle_find_guarding_enemy(u32 base) {
     u32 i, j, dir;
 
     i = rng_lookup_table_value();
@@ -418,7 +419,8 @@ u32 sub_08037798(u32 base) {
     return 0xFF;
 }
 
-u32 battle_select_random_target(u32 base, u32 rec) {
+// A random living bot from base..base+2 with the same leg type (parts[3].data[1]) as rec, else 0xFF.
+u32 battle_find_enemy_same_legs(u32 base, u32 rec) {
     u32 i, j, dir;
 
     i = rng_lookup_table_value();

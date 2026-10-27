@@ -3,9 +3,9 @@
 
 // Combat helpers: armor damage, target cursor, sprite movement, evasion, part/ability checks.
 
-void sub_08035478(u32 rec);
+void battle_target_nearest_enemy(u32 rec);
 void sub_080350E0(u32 rec);
-u32 sub_08035590(u32 rec);
+u32 bot_intact_parts_class(u32 rec);
 u32 calc_bot_matching_part_power(u32 rec);
 void accumulate_battle_speed_value(u32 rec);
 u32 get_random_battle_weight_entry(u32 idx);
@@ -13,7 +13,7 @@ void calc_battle_action_speed(u32 rec, u32 part);
 void apply_battle_bot_damage_reduction(u32 rec);
 u32 check_bot_ability_type_strike(u32 rec, u32 part, u32 target);
 u32 check_bot_ability_type_shoot(u32 rec, u32 part, u32 target);
-void sub_080358F0(u32 rec);
+void success_add_strengthen_parts(u32 rec);
 u32 check_bot_can_shoot(u32 rec, u32 part, u32 target);
 u32 check_bot_can_support(u32 rec, u32 part, u32 target);
 u32 check_bot_can_use_shoot_part(u32 rec, u32 part, u32 target);
@@ -42,14 +42,14 @@ void reduce_bot_part_stat(u32 rec, u32 part, s32 amount); // part armor (unk11) 
 void bot_halve_broken_leg_stats(u32 rec);
 void set_target_sprite_position(u32 rec, u32 frame, u32 flag);
 void update_target_cursor_position(u32 rec);
-void calc_bot_evasion_modifier(u32 rec);
-void sub_080355C4(u32 rec);
+void battle_pick_random_target_part(u32 rec);
+void battle_load_action_target(u32 rec);
 void sub_080351E8(u32 rec);
 void add_u8_capped(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, max)
 void subtract_u8_floored(u8 *val, s32 amount);    // *val = max(*val - amount, 0)
-void sub_08035BD4(void);
-void sub_08035BFC(u32 rec, u32 part);
+void damage_add_small_random(void);
+void damage_divide_by_part_divisor(u32 rec, u32 part);
 void subtract_s16_floored(s16 *amount, s32 sub); // *amount -= sub, not below 0
-void sub_08035B9C(u32 rec);
+void damage_add_strengthen_parts(u32 rec);
 
 #endif // GUARD_BATTLE_COMBAT_HELPERS_H

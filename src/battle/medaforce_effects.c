@@ -13,8 +13,8 @@ void sub_08026884(void) {
 }
 
 void sub_080268AC(void) {
-    sub_0803769C(gUnk_03001800.unk87);
-    sub_080376F4(gUnk_03001800.unk87);
+    medaforce_calc_success(gUnk_03001800.unk87);
+    medaforce_calc_damage(gUnk_03001800.unk87);
     gUnk_03001800.unkAA++;
 }
 
@@ -166,8 +166,8 @@ void sub_08026D1C(void) {
 
 void sub_08026D44(void) {
     if (gUnk_03001800.unkCA) {
-        calc_bot_evasion_modifier(gUnk_03001800.unk87);
-        sub_080355C4(gUnk_03001800.unk87);
+        battle_pick_random_target_part(gUnk_03001800.unk87);
+        battle_load_action_target(gUnk_03001800.unk87);
         gUnk_03001800.unkD0 = gUnk_03001800.unk8B;
         battle_set_damage_vs_armor(gUnk_03001800.unk88, gUnk_03001800.unk8B, gUnk_03001800.unkCA);
         gUnk_03001800.unkAA += 3;
@@ -257,7 +257,7 @@ void sub_08026FF8(void) {
         gUnk_03001800.unkD2[i] = 0;
         gUnk_03001800.unkD6[i] = 0;
     }
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     i = 0;
     bots = gUnk_03000590;
     for (; i <= 2; i++) {
@@ -924,7 +924,7 @@ void sub_080287DC(void) {
     u32 i;
 
     sub_0803836C();
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 == 0)
             continue;
@@ -1887,7 +1887,7 @@ void sub_0802A824(void) {
     u32 i;
 
     sub_0803836C();
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 == 0)
             continue;
@@ -2110,7 +2110,7 @@ void sub_0802B184(void) {
     u32 found = 0;
 
     sub_0803836C();
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 == 0 ||
             gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 == 0 ||
@@ -2537,7 +2537,7 @@ void sub_0802BEEC(void) {
             gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 != 0)
             gUnk_03001800.unkD2[i] = 1;
     }
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 != 0 &&
             gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 != 0)
@@ -2563,7 +2563,7 @@ void sub_0802BF9C(void) {
         gSpriteEntries[i + 0x21].unk9 = 0x40;
         gSpriteEntries[i + 0x21].unk6 = 0x4801;
     }
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD6[i] == 0)
             continue;
@@ -2590,7 +2590,7 @@ void sub_0802C0DC(void) {
         if (gUnk_03001800.unkD2[i] != 0 && !(gUnk_03000440.unk84 & 1))
             gSpriteEntries[i + 0x21].unk4--;
     }
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD6[i] != 0 && !(gUnk_03000440.unk84 & 1))
             gSpriteEntries[i + 0x24].unk4++;
@@ -2612,7 +2612,7 @@ void sub_0802C1A4(void) {
             gSpriteEntries[i + 0x21].unk9 += 8;
         }
     }
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD6[i] != 0) {
             gSpriteEntries[i + 0x24].unk8 -= 8;
@@ -2658,7 +2658,7 @@ void sub_0802C2D4(void) {
         gSpriteEntries[i + 0x21].unkB = 0xF0;
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x40], i + 0x21);
     }
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD6[i] == 0)
             continue;
@@ -2682,7 +2682,7 @@ void sub_0802C440(void) {
         if (gUnk_03001800.unkD2[i] != 0)
             process_sprite_anim_commands(gUnk_083B5F80[0x40], i + 0x21);
     }
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD6[i] != 0)
             process_sprite_anim_commands(gUnk_083B5F80[0x41], i + 0x24);
@@ -2720,7 +2720,7 @@ void sub_0802C588(void) {
         if (gUnk_03001800.unkD2[i] != 0)
             add_u8_capped(&gUnk_03000590[gUnk_03001800.unk60 + i].unkB8 + 1, gUnk_03001800.unkEC, 0x78);
     }
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD6[i] != 0)
             subtract_u8_floored(&gUnk_03000590[gUnk_03001800.unk60 + i].unkB8 + 1, gUnk_03001800.unkEC);
@@ -2919,7 +2919,7 @@ void sub_0802CC10(void) {
     u32 i;
 
     sub_0803836C();
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11)
             gUnk_03001800.unkD2[i] = 1;
@@ -3230,7 +3230,7 @@ void sub_0802D758(void) {
     u32 i;
 
     sub_0803836C();
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 &&
             battle_bot_lacks_stability(gUnk_03001800.unk60 + i)) {
@@ -3520,7 +3520,7 @@ void sub_0802E010(void) {
     u32 i;
 
     sub_0803836C();
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11 &&
             (gUnk_03000590[gUnk_03001800.unk60 + i].unkBD & 4)) {
@@ -3660,7 +3660,7 @@ void sub_0802E44C(void) {
     u32 i;
 
     sub_0803836C();
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11) {
             gUnk_03001800.unkD2[i] = 1;
@@ -4191,7 +4191,7 @@ void sub_0802F650(void) {
     u32 i;
 
     sub_0803836C();
-    gUnk_03001800.unk60 = sub_08032FB8(gUnk_03001800.unk87);
+    gUnk_03001800.unk60 = battle_enemy_side_first_record(gUnk_03001800.unk87);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[gUnk_03001800.unk60 + i].unk40 && gUnk_03000590[gUnk_03001800.unk60 + i].parts[0].unk11) {
             gUnk_03001800.unkD2[i] = 1;

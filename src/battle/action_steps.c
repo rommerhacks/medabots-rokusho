@@ -1354,8 +1354,8 @@ void attack_hit_check_carry_over(void) {
 }
 
 void attack_hit_carry_over_retarget(void) {
-    calc_bot_evasion_modifier(gUnk_03001800.unk87);
-    sub_080355C4(gUnk_03001800.unk87);
+    battle_pick_random_target_part(gUnk_03001800.unk87);
+    battle_load_action_target(gUnk_03001800.unk87);
     gUnk_03001800.unkD0 = gUnk_03001800.unk8B;
     if (gUnk_03000590[gUnk_03001800.unk87].parts[gUnk_03001800.unkA7].data[1] == 0x30)
         battle_set_damage_break_part(gUnk_03001800.unk88, gUnk_03001800.unk8B);
@@ -1940,9 +1940,9 @@ void bot_defeat_next(void) {
     gUnk_03001800.unkAA = 0;
 }
 
-// Opcode 0x22 (gReactionSteps). guess: the target's prepared reaction (unkF6 bit 0, set by sub_08038D30 for a guard
-// or a readied part): a sprite rises; with unkB7 == 3 it turns into a counter (reaction_counter_begin swaps the
-// sides), else it drops back with a nullify or absorb effect. Runtime: runs first in each attack, skipped there.
+// Opcode 0x22 (gReactionSteps). guess: the target's prepared reaction (unkF6 bit 0, set by battle_check_guard_or_cover
+// for a guard or a readied part): a sprite rises; with unkB7 == 3 it turns into a counter (reaction_counter_begin swaps
+// the sides), else it drops back with a nullify or absorb effect. Runtime: runs first in each attack, skipped there.
 void reaction_run(void) {
     gUnk_03001800.unkB5 = 0;
     gReactionSteps[gUnk_03001800.unkAA]();
