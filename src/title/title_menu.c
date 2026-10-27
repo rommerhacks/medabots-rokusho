@@ -207,8 +207,8 @@ void title_menu_load_graphics(void) {
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     CpuFastSet(gUnk_0878E3F4, gPaletteBackupBg, 0x80);
     CpuFastSet(gUnk_0878E3F4, (void *)PLTT, 0x80);
-    CpuFastSet(gUnk_084E2E58, gPaletteBackup, 0x80);
-    CpuFastSet(gUnk_084E2E58, (void *)(PLTT + 0x200), 0x80);
+    CpuFastSet(gCursorArrowPalette, gPaletteBackup, 0x80);
+    CpuFastSet(gCursorArrowPalette, (void *)(PLTT + 0x200), 0x80);
     gSpriteEntries[14].unk0 = 0x8000;
     gSpriteEntries[14].unkB = one;
     gSpriteEntries[14].unk1C = 2;

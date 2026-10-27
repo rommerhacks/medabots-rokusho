@@ -295,7 +295,7 @@ void medabots_screen_no_bot_message_run(void) {
     medabots_screen_orbit_cursor_icon(3);
     medabots_screen_draw_bot_sprite();
     medabots_screen_animate_invalid_bot();
-    if (run_message(gUnk_083B53F8[22]))
+    if (run_message(gMenuMessages[22]))
         gGameSubState = 2;
 }
 
@@ -312,10 +312,10 @@ void medabot_detail_load_gfx(void) {
     lz_decompress_dispatch(gUnk_084E61CC, (void *)0x06004000);
     lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06006000);
     lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06006200);
-    lz_decompress_dispatch(gUnk_084C3208, (void *)0x06007480);
-    lz_decompress_dispatch(gUnk_084C33DC, (void *)0x06006800);
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06007480);
+    lz_decompress_dispatch(gCompatibilityIconTiles, (void *)0x06006800);
     lz_decompress_dispatch(gUnk_084C4DB0, (void *)0x06006E00);
-    lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF310, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF9C8, REG_BG1CNT, 0x200);
@@ -327,7 +327,7 @@ void medabot_detail_load_gfx(void) {
         CpuFastSet(gUnk_0850DD58, (void *)0x0202F980, 8);
         CpuFastSet(gUnk_0850DD58 + 0x20, (void *)0x0202F9A0, 8);
         CpuFastSet(gUnk_0850DD58 - 0x20, (void *)0x0202F9E0, 8);
-        CpuFastSet(gUnk_084E2E58, (void *)0x0202F9C0, 8);
+        CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
         gGameWork.detailRow = 0;
         medabot_detail_take_apart();
         gGameWork.unk84 = 0;
@@ -337,7 +337,7 @@ void medabot_detail_load_gfx(void) {
         CpuFastSet(gUnk_0850DD58, (void *)0x05000380, 8);
         CpuFastSet(gUnk_0850DD58 + 0x20, (void *)0x050003A0, 8);
         CpuFastSet(gUnk_0850DD58 - 0x20, (void *)0x050003E0, 8);
-        CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+        CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
         set_blend_effect_mode(5, 0x3F, 0x20);
     }
     zero = 0;
@@ -950,9 +950,9 @@ static void medabots_screen_draw_medal_kind_name(void) {
 
 static void medabots_screen_draw_medal_icon(void) {
     if (gTeamSlots[gGameWork.medabotsCursor].state > 1)
-        CpuFastSet(gUnk_084C21BC + gTeamSlots[gGameWork.medabotsCursor].medal * 0x80, (void *)0x06006600, 0x20);
+        CpuFastSet(gMedalIconTiles + gTeamSlots[gGameWork.medabotsCursor].medal * 0x80, (void *)0x06006600, 0x20);
     else
-        CpuFastSet(gUnk_084C30BC, (void *)0x06006600, 0x20);
+        CpuFastSet(gMedalIconBlankTiles, (void *)0x06006600, 0x20);
     draw_tile_block(2, 2, 1, 16, REG_BG1CNT, 0x6330);
 }
 
@@ -1205,9 +1205,9 @@ static void medabot_detail_draw_medal_nickname(void) {
 
 static void medabot_detail_draw_medal_icon(void) {
     if (gGameWork.shownMedal < 30)
-        CpuFastSet(gUnk_084C21BC + gMedals[gGameWork.shownMedal].graphicId * 0x80, (void *)0x06007800, 0x20);
+        CpuFastSet(gMedalIconTiles + gMedals[gGameWork.shownMedal].graphicId * 0x80, (void *)0x06007800, 0x20);
     else
-        CpuFastSet(gUnk_084C30BC, (void *)0x06007800, 0x20);
+        CpuFastSet(gMedalIconBlankTiles, (void *)0x06007800, 0x20);
     draw_tile_block(2, 2, 16, 9, REG_BG1CNT, 0x63C0);
 }
 

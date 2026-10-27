@@ -81,26 +81,26 @@ void medals_list_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x1902;
     REG_BG3CNT = 0x1A03;
-    lz_decompress_dispatch(gUnk_084E7264, (void *)0x06004000);
-    lz_decompress_dispatch(gUnk_084C32DC, (void *)0x06006000);
-    lz_decompress_dispatch(gUnk_084C3208, (void *)0x06006280);
+    lz_decompress_dispatch(gMedalsListBgTiles, (void *)0x06004000);
+    lz_decompress_dispatch(gMedalsTabNumberTiles, (void *)0x06006000);
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06006280);
     lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06007400);
     lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06007600);
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
-    lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     lz_decompress_dispatch(gUnk_0848833C, (void *)0x06006A00);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EF348, REG_BG0CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EFB5C, REG_BG1CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F04F0, REG_BG2CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F1554, REG_BG3CNT, 0x200);
-    CpuFastSet(gUnk_084F2BA0, (void *)0x05000000, 0x70);
+    set_tilemap_and_decompress_bg(0, 0, gMedalsListBg0Tilemap, REG_BG0CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalsListBg1Tilemap, REG_BG1CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalsListBg2Tilemap, REG_BG2CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalsListBg3Tilemap, REG_BG3CNT, 0x200);
+    CpuFastSet(gMedalsListBgPalette, (void *)0x05000000, 0x70);
     CpuFastSet(gUnk_08488B44, (void *)0x05000160, 8);
     CpuFastSet(gUnk_0850DEF8, (void *)0x05000200, 0x40);
     CpuFastSet(gUnk_0850DD58, (void *)0x05000300, 8);
     CpuFastSet(gUnk_0850DD58 - 0x20, (void *)0x05000320, 8);
     CpuFastSet(gUnk_084E2E98, (void *)0x050003A0, 8);
     CpuFastSet(gUnk_0850DD58 + 0x60, (void *)0x05000340, 8);
-    CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+    CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
@@ -205,20 +205,20 @@ void medal_ability_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x1902;
     REG_BG3CNT = 0x1A03;
-    lz_decompress_dispatch(gUnk_084E80B0, (void *)0x06004000);
-    lz_decompress_dispatch(gUnk_084C3208, (void *)0x06006280);
-    lz_decompress_dispatch(gUnk_084C33DC, (void *)0x06006800);
-    lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EF380, REG_BG0CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EFBE0, REG_BG1CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F0688, REG_BG2CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F16E8, REG_BG3CNT, 0x200);
-    CpuFastSet(gUnk_084F2D60, (void *)0x05000000, 0x70);
+    lz_decompress_dispatch(gMedalAbilityBgTiles, (void *)0x06004000);
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06006280);
+    lz_decompress_dispatch(gCompatibilityIconTiles, (void *)0x06006800);
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    set_tilemap_and_decompress_bg(0, 0, gMedalAbilityBg0Tilemap, REG_BG0CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalAbilityBg1Tilemap, REG_BG1CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalAbilityBg2Tilemap, REG_BG2CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalAbilityBg3Tilemap, REG_BG3CNT, 0x200);
+    CpuFastSet(gMedalAbilityBgPalette, (void *)0x05000000, 0x70);
     CpuFastSet(gUnk_0850DD58 + 0x70, (void *)0x05000340, 8);
     CpuFastSet(gUnk_0850DD58 + 0x40, (void *)0x05000360, 8);
     CpuFastSet(gUnk_0850DD58 - 0x20, (void *)0x05000380, 8);
     CpuFastSet(gUnk_0850DD58 - 0x10, (void *)0x050003A0, 8);
-    CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+    CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
@@ -253,7 +253,7 @@ void medal_page_open_text_window(void) {
 void medal_ability_show_hint(void) {
     medals_scroll_bg();
     medal_page_blink_medal_arrows();
-    if (run_message(gUnk_083B53F8[4]))
+    if (run_message(gMenuMessages[4]))
         gGameSubState++;
 }
 
@@ -341,21 +341,21 @@ void medal_medaforce_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x1902;
     REG_BG3CNT = 0x1A03;
-    lz_decompress_dispatch(gUnk_084E9020, (void *)0x06004000);
-    lz_decompress_dispatch(gUnk_084C3208, (void *)0x06006280);
-    lz_decompress_dispatch(gUnk_084C3524, (void *)0x06006000);
-    lz_decompress_dispatch(gUnk_084C3648, (void *)0x06006680);
-    lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EF3F4, REG_BG0CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EFCDC, REG_BG1CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F07B8, REG_BG2CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F187C, REG_BG3CNT, 0x200);
-    CpuFastSet(gUnk_084F2F20, (void *)0x05000000, 0x70);
+    lz_decompress_dispatch(gMedalMedaforceBgTiles, (void *)0x06004000);
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06006280);
+    lz_decompress_dispatch(gMedaforceTypeIconTiles, (void *)0x06006000);
+    lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06006680);
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    set_tilemap_and_decompress_bg(0, 0, gMedalMedaforceBg0Tilemap, REG_BG0CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalMedaforceBg1Tilemap, REG_BG1CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalMedaforceBg2Tilemap, REG_BG2CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalMedaforceBg3Tilemap, REG_BG3CNT, 0x200);
+    CpuFastSet(gMedalMedaforceBgPalette, (void *)0x05000000, 0x70);
     CpuFastSet(gUnk_0850DD58 + 0x30, (void *)0x05000340, 8);
     CpuFastSet(gUnk_0850DD58 + 0x40, (void *)0x05000360, 8);
     CpuFastSet(gUnk_0850DD58 - 0x20, (void *)0x05000380, 8);
     CpuFastSet(gUnk_0850DD58 - 0x10, (void *)0x050003A0, 8);
-    CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+    CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
@@ -394,7 +394,7 @@ void medal_medaforce_show_message(void) {
     medals_scroll_bg();
     medal_page_blink_medal_arrows();
     sprite_bob_y(3, gFrameCounter, 8);
-    if (run_message(gUnk_083B7C00[medal_medaforce_get_selected()]))
+    if (run_message(gMedaforceDescMessages[medal_medaforce_get_selected()]))
         gGameSubState++;
 }
 
@@ -433,7 +433,7 @@ void medal_medaforce_show_message_back(void) {
     medals_scroll_bg();
     medal_page_blink_medal_arrows();
     sprite_bob_y(3, gFrameCounter, 8);
-    if (run_message(gUnk_083B7C00[medal_medaforce_get_selected()]))
+    if (run_message(gMedaforceDescMessages[medal_medaforce_get_selected()]))
         gGameSubState--;
 }
 
@@ -453,22 +453,22 @@ void medal_rotation_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x1902;
     REG_BG3CNT = 0x1A03;
-    lz_decompress_dispatch(gUnk_084E9E68, (void *)0x06004000);
-    lz_decompress_dispatch(gUnk_084C3208, (void *)0x06006280);
-    lz_decompress_dispatch(gUnk_084C37A4, (void *)0x06006800);
-    lz_decompress_dispatch(gUnk_084C3990, (void *)0x06006C00);
+    lz_decompress_dispatch(gMedalRotationBgTiles, (void *)0x06004000);
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06006280);
+    lz_decompress_dispatch(gRotationActionIconTiles, (void *)0x06006800);
+    lz_decompress_dispatch(gRotationPathTiles, (void *)0x06006C00);
     lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06007400);
     lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06007600);
-    lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EF46C, REG_BG0CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EFD74, REG_BG1CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F08F0, REG_BG2CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F1A10, REG_BG3CNT, 0x200);
-    CpuFastSet(gUnk_084F30E0, (void *)0x05000000, 0x70);
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    set_tilemap_and_decompress_bg(0, 0, gMedalRotationBg0Tilemap, REG_BG0CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalRotationBg1Tilemap, REG_BG1CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalRotationBg2Tilemap, REG_BG2CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalRotationBg3Tilemap, REG_BG3CNT, 0x200);
+    CpuFastSet(gMedalRotationBgPalette, (void *)0x05000000, 0x70);
     CpuFastSet(gUnk_0850DEF8, (void *)0x05000200, 0x40);
     CpuFastSet(gUnk_0850DD18, (void *)0x05000380, 8);
     CpuFastSet(gUnk_0850DD18 + 0x10, (void *)0x050003A0, 8);
-    CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+    CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
@@ -506,7 +506,7 @@ void medal_rotation_open_text_window(void) {
 void medal_rotation_show_hint(void) {
     medals_scroll_bg();
     medal_page_blink_medal_arrows();
-    if (run_message(gUnk_083B53F8[12]))
+    if (run_message(gMenuMessages[12]))
         gGameSubState++;
 }
 
@@ -562,9 +562,9 @@ void medal_rotation_edit_show_message(void) {
     medals_scroll_bg();
     if (gGameWork.unk3F == 0) {
         medal_rotation_blink_slot_arrows();
-        msg = gUnk_083B825C[gMedals[gGameWork.shownId].rotation[gGameWork.unk46]];
+        msg = gRotationActionMessages[gMedals[gGameWork.shownId].rotation[gGameWork.unk46]];
     } else {
-        msg = gUnk_083B53F8[15];
+        msg = gMenuMessages[15];
     }
     if (run_message(msg))
         gGameSubState++;
@@ -646,18 +646,18 @@ void medal_skill_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x1902;
     REG_BG3CNT = 0x1A03;
-    lz_decompress_dispatch(gUnk_084EAC58, (void *)0x06004000);
-    lz_decompress_dispatch(gUnk_084C3208, (void *)0x06007480);
-    lz_decompress_dispatch(gUnk_084C3648, (void *)0x06007880);
-    lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EF4E0, REG_BG0CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EFE28, REG_BG1CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F0A00, REG_BG2CNT, 0x200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F1BA0, REG_BG3CNT, 0x200);
-    CpuFastSet(gUnk_084F32A0, (void *)0x05000000, 0x70);
+    lz_decompress_dispatch(gMedalSkillBgTiles, (void *)0x06004000);
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06007480);
+    lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06007880);
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    set_tilemap_and_decompress_bg(0, 0, gMedalSkillBg0Tilemap, REG_BG0CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalSkillBg1Tilemap, REG_BG1CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalSkillBg2Tilemap, REG_BG2CNT, 0x200);
+    set_tilemap_and_decompress_bg(0, 0, gMedalSkillBg3Tilemap, REG_BG3CNT, 0x200);
+    CpuFastSet(gMedalSkillBgPalette, (void *)0x05000000, 0x70);
     CpuFastSet(gUnk_0850DD18, (void *)0x05000380, 8);
     CpuFastSet(gUnk_0850DD18 + 0x10, (void *)0x050003A0, 8);
-    CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+    CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
@@ -754,7 +754,7 @@ void medals_help_load(void) {
 
 void medals_help_show_intro(void) {
     medals_scroll_bg();
-    if (run_message(gUnk_083B53F8[5]))
+    if (run_message(gMenuMessages[5]))
         gGameSubState++;
 }
 
@@ -796,19 +796,19 @@ void medals_help_show_text(void) {
     case 0:
         switch (gGameWork.helpPage) {
         case 0:
-            done = run_message(gUnk_083B53F8[6]);
+            done = run_message(gMenuMessages[6]);
             break;
         case 1:
-            done = run_message(gUnk_083B53F8[7]);
+            done = run_message(gMenuMessages[7]);
             break;
         case 2:
-            done = run_message(gUnk_083B69C8[gMedals[gGameWork.shownId].attribute]);
+            done = run_message(gAttributeHelpMessages[gMedals[gGameWork.shownId].attribute]);
             break;
         case 3:
-            done = run_message(gUnk_083B70AC[gMedals[gGameWork.shownId].aimSkillType]);
+            done = run_message(gSkillTypeHelpMessages[gMedals[gGameWork.shownId].aimSkillType]);
             break;
         case 4:
-            done = run_message(gUnk_083B53F8[8]);
+            done = run_message(gMenuMessages[8]);
             break;
         }
         break;
@@ -818,37 +818,37 @@ void medals_help_show_text(void) {
             if (gMedals[gGameWork.shownId].level > 9) {
                 memcpy_bytes_08041D04(gMedalMedaforceIds + gMedals[gGameWork.shownId].graphicId * 3,
                                       &gGameWork.partAbility, 3);
-                memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.partAbility * 6, gGameWork.medalGfxRecord, 6);
-                done = run_message(gUnk_083B7F40[gGameWork.medalGfxRecord[5]]);
+                memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partAbility * 6, gGameWork.medalGfxRecord, 6);
+                done = run_message(gMedaforceTypeHelpMessages[gGameWork.medalGfxRecord[5]]);
             } else {
-                done = run_message(gUnk_083B7F40[4]);
+                done = run_message(gMedaforceTypeHelpMessages[4]);
             }
             break;
         case 1:
             if (gMedals[gGameWork.shownId].level > 29) {
                 memcpy_bytes_08041D04(gMedalMedaforceIds + gMedals[gGameWork.shownId].graphicId * 3,
                                       &gGameWork.partAbility, 3);
-                memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.partSkill * 6, gGameWork.medalGfxRecord, 6);
-                done = run_message(gUnk_083B7F40[gGameWork.medalGfxRecord[5]]);
+                memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partSkill * 6, gGameWork.medalGfxRecord, 6);
+                done = run_message(gMedaforceTypeHelpMessages[gGameWork.medalGfxRecord[5]]);
             } else {
-                done = run_message(gUnk_083B7F40[4]);
+                done = run_message(gMedaforceTypeHelpMessages[4]);
             }
             break;
         case 2:
             if (gMedals[gGameWork.shownId].level > 59) {
                 memcpy_bytes_08041D04(gMedalMedaforceIds + gMedals[gGameWork.shownId].graphicId * 3,
                                       &gGameWork.partAbility, 3);
-                memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.partSkillType * 6, gGameWork.medalGfxRecord, 6);
-                done = run_message(gUnk_083B7F40[gGameWork.medalGfxRecord[5]]);
+                memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partSkillType * 6, gGameWork.medalGfxRecord, 6);
+                done = run_message(gMedaforceTypeHelpMessages[gGameWork.medalGfxRecord[5]]);
             } else {
-                done = run_message(gUnk_083B7F40[4]);
+                done = run_message(gMedaforceTypeHelpMessages[4]);
             }
             break;
         case 3:
-            done = run_message(gUnk_083B53F8[9]);
+            done = run_message(gMenuMessages[9]);
             break;
         case 4:
-            done = run_message(gUnk_083B53F8[10]);
+            done = run_message(gMenuMessages[10]);
             break;
         case 5:
             switch (gGameWork.unk46) {
@@ -856,33 +856,33 @@ void medals_help_show_text(void) {
                 if (gMedals[gGameWork.shownId].level > 9) {
                     memcpy_bytes_08041D04(gMedalMedaforceIds + gMedals[gGameWork.shownId].graphicId * 3,
                                           &gGameWork.partAbility, 3);
-                    memcpy_bytes_08041D04(gUnk_083B7CD4 + (&gGameWork.partAbility)[gGameWork.unk46] * 6,
+                    memcpy_bytes_08041D04(gMedaforceRecords + (&gGameWork.partAbility)[gGameWork.unk46] * 6,
                                           gGameWork.medalGfxRecord, 6);
-                    done = run_message(gUnk_083B8170[gGameWork.medalGfxRecord[1]]);
+                    done = run_message(gMedaforceSkillHelpMessages[gGameWork.medalGfxRecord[1]]);
                 } else {
-                    done = run_message(gUnk_083B53F8[11]);
+                    done = run_message(gMenuMessages[11]);
                 }
                 break;
             case 1:
                 if (gMedals[gGameWork.shownId].level > 29) {
                     memcpy_bytes_08041D04(gMedalMedaforceIds + gMedals[gGameWork.shownId].graphicId * 3,
                                           &gGameWork.partAbility, 3);
-                    memcpy_bytes_08041D04(gUnk_083B7CD4 + (&gGameWork.partAbility)[gGameWork.unk46] * 6,
+                    memcpy_bytes_08041D04(gMedaforceRecords + (&gGameWork.partAbility)[gGameWork.unk46] * 6,
                                           gGameWork.medalGfxRecord, 6);
-                    done = run_message(gUnk_083B8170[gGameWork.medalGfxRecord[1]]);
+                    done = run_message(gMedaforceSkillHelpMessages[gGameWork.medalGfxRecord[1]]);
                 } else {
-                    done = run_message(gUnk_083B53F8[11]);
+                    done = run_message(gMenuMessages[11]);
                 }
                 break;
             case 2:
                 if (gMedals[gGameWork.shownId].level > 59) {
                     memcpy_bytes_08041D04(gMedalMedaforceIds + gMedals[gGameWork.shownId].graphicId * 3,
                                           &gGameWork.partAbility, 3);
-                    memcpy_bytes_08041D04(gUnk_083B7CD4 + (&gGameWork.partAbility)[gGameWork.unk46] * 6,
+                    memcpy_bytes_08041D04(gMedaforceRecords + (&gGameWork.partAbility)[gGameWork.unk46] * 6,
                                           gGameWork.medalGfxRecord, 6);
-                    done = run_message(gUnk_083B8170[gGameWork.medalGfxRecord[1]]);
+                    done = run_message(gMedaforceSkillHelpMessages[gGameWork.medalGfxRecord[1]]);
                 } else {
-                    done = run_message(gUnk_083B53F8[11]);
+                    done = run_message(gMenuMessages[11]);
                 }
                 break;
             }
@@ -892,10 +892,10 @@ void medals_help_show_text(void) {
     case 2:
         switch (gGameWork.helpPage) {
         case 0:
-            done = run_message(gUnk_083B53F8[13]);
+            done = run_message(gMenuMessages[13]);
             break;
         case 1:
-            done = run_message(gUnk_083B53F8[14]);
+            done = run_message(gMenuMessages[14]);
             break;
         }
         break;
@@ -909,7 +909,7 @@ void medals_help_show_text(void) {
 void medals_help_exit(void) {
     medals_scroll_bg();
     clear_sprite_table_mask(6, 1);
-    CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+    CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     switch (gGameWork.medalPage) {
     case 0:
         message_next();
@@ -1061,9 +1061,9 @@ static void render_medal_sprite_tile(void) {
 
     for (i = gGameWork.unk3F * 6; i < gGameWork.unk3F * 6 + 6; n++, i++) {
         if (gMedals[i].flags & 0x80)
-            CpuFastSet(gUnk_084C21BC + gMedals[i].graphicId * 0x80, (void *)0x06006600 + n * 0x80, 0x20);
+            CpuFastSet(gMedalIconTiles + gMedals[i].graphicId * 0x80, (void *)0x06006600 + n * 0x80, 0x20);
         else
-            CpuFastSet(gUnk_084C30BC, (void *)0x06006600 + n * 0x80, 0x20);
+            CpuFastSet(gMedalIconBlankTiles, (void *)0x06006600 + n * 0x80, 0x20);
     }
     write_tilemap_rect(2, 12, 4, 4, gUnk_083B4AE0[0x50], REG_BG1CNT, 0x200);
 }
@@ -1115,7 +1115,7 @@ void load_medal_sprite(void) {
     gGameWork.shownId = gGameWork.unk3F * 6 + gGameWork.medalRow;
     if (gMedals[gGameWork.shownId].flags & 0x80) {
         lz_decompress_dispatch(
-            gUnk_083AC494[gMedals[gGameWork.shownId].graphicId][gMedals[gGameWork.shownId].spriteVariant],
+            gMedalSpriteGfx[gMedals[gGameWork.shownId].graphicId][gMedals[gGameWork.shownId].spriteVariant],
             (void *)0x06010000);
         gSpriteEntries[0].unk0 = 0xC804;
         gSpriteEntries[0].unk2 = 0xC0;
@@ -1335,12 +1335,12 @@ static void draw_medal_position_tile(void) {
 }
 
 static void medal_page_draw_icon(void) {
-    CpuFastSet(gUnk_084C21BC + gMedals[gGameWork.shownId].graphicId * 0x80, (void *)0x06006600, 0x20);
+    CpuFastSet(gMedalIconTiles + gMedals[gGameWork.shownId].graphicId * 0x80, (void *)0x06006600, 0x20);
     draw_tile_block(2, 2, 2, 3, REG_BG1CNT, 0x6330);
 }
 
 static void medal_skill_draw_icon(void) {
-    CpuFastSet(gUnk_084C21BC + gMedals[gGameWork.shownId].graphicId * 0x80, (void *)0x06007800, 0x20);
+    CpuFastSet(gMedalIconTiles + gMedals[gGameWork.shownId].graphicId * 0x80, (void *)0x06007800, 0x20);
     draw_tile_block(2, 2, 2, 3, REG_BG1CNT, 0x63C0);
 }
 
@@ -1365,13 +1365,13 @@ static void medal_skill_draw_level(void) {
 
 static void medal_ability_draw_attribute(void) {
     clear_sprite_table_mask(0x1E, 15);
-    memcpy_bytes_0803F63C((void *)gUnk_083B656C[gMedals[gGameWork.shownId].attribute], gGameWork.textBuf, 14);
+    memcpy_bytes_0803F63C((void *)gAttributeNames[gMedals[gGameWork.shownId].attribute], gGameWork.textBuf, 14);
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x1E, 10, 7, 8, 11, 1, 1);
 }
 
 static void medal_ability_draw_aim(void) {
     clear_sprite_table_mask(0x2D, 13);
-    memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gMedals[gGameWork.shownId].aimSkillType], gGameWork.textBuf, 14);
+    memcpy_bytes_0803F63C((void *)gSkillTypeNames[gMedals[gGameWork.shownId].aimSkillType], gGameWork.textBuf, 14);
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x2D, 10, 10, 10, 10, 1, 1);
 }
 
@@ -1465,7 +1465,7 @@ static void medal_medaforce_draw_list(void) {
     clear_sprite_table_mask(0x1E, 0x3C);
     if (gMedals[gGameWork.shownId].level >= 10) {
         memcpy_bytes_08041D04(gMedalMedaforceIds + gMedals[gGameWork.shownId].graphicId * 3, &gGameWork.partAbility, 3);
-        memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.partAbility * 6, gGameWork.medalGfxRecord, 6);
+        memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partAbility * 6, gGameWork.medalGfxRecord, 6);
         memcpy_bytes_0803F63C((void *)gMedaforceNames[gGameWork.partAbility], gGameWork.textBuf, 17);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x1E, 2, 6, 10, 10, 1, 1);
         draw_tile_block(2, 2, 12, 6, REG_BG1CNT, gGameWork.medalGfxRecord[5] * 4 + 0x5300);
@@ -1475,7 +1475,7 @@ static void medal_medaforce_draw_list(void) {
         vram_fill_tilemap_rect(2, 2, 12, 6, REG_BG1CNT, 0);
     }
     if (gMedals[gGameWork.shownId].level >= 30) {
-        memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.partSkill * 6, gGameWork.medalGfxRecord, 6);
+        memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partSkill * 6, gGameWork.medalGfxRecord, 6);
         memcpy_bytes_0803F63C((void *)gMedaforceNames[gGameWork.partSkill], gGameWork.textBuf, 17);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x32, 2, 8, 10, 10, 1, 1);
         draw_tile_block(2, 2, 12, 8, REG_BG1CNT, gGameWork.medalGfxRecord[5] * 4 + 0x5300);
@@ -1485,7 +1485,7 @@ static void medal_medaforce_draw_list(void) {
         vram_fill_tilemap_rect(2, 2, 12, 8, REG_BG1CNT, 0);
     }
     if (gMedals[gGameWork.shownId].level >= 60) {
-        memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.partSkillType * 6, gGameWork.medalGfxRecord, 6);
+        memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partSkillType * 6, gGameWork.medalGfxRecord, 6);
         memcpy_bytes_0803F63C((void *)gMedaforceNames[gGameWork.partSkillType], gGameWork.textBuf, 17);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x46, 2, 10, 10, 10, 1, 1);
         draw_tile_block(2, 2, 12, 10, REG_BG1CNT, gGameWork.medalGfxRecord[5] * 4 + 0x5300);
@@ -1503,8 +1503,8 @@ static void medal_medaforce_draw_selected(void) {
         if (gMedals[gGameWork.shownId].level >= 10) {
             memcpy_bytes_08041D04(gMedalMedaforceIds + gMedals[gGameWork.shownId].graphicId * 3, &gGameWork.partAbility,
                                   3);
-            memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.partAbility * 6, gGameWork.medalGfxRecord, 6);
-            memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gGameWork.medalGfxRecord[1]], gGameWork.textBuf, 14);
+            memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partAbility * 6, gGameWork.medalGfxRecord, 6);
+            memcpy_bytes_0803F63C((void *)gSkillTypeNames[gGameWork.medalGfxRecord[1]], gGameWork.textBuf, 14);
             render_text_sprites_08040DB8(gGameWork.textBuf, 0x5A, 0x13, 7, 10, 11, 1, 1);
             draw_number_bgcnt(gGameWork.medalGfxRecord[2], 0x19, 10, 2, REG_BG1CNT, 0xD334);
         } else {
@@ -1517,8 +1517,8 @@ static void medal_medaforce_draw_selected(void) {
         if (gMedals[gGameWork.shownId].level >= 30) {
             memcpy_bytes_08041D04(gMedalMedaforceIds + gMedals[gGameWork.shownId].graphicId * 3, &gGameWork.partAbility,
                                   3);
-            memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.partSkill * 6, gGameWork.medalGfxRecord, 6);
-            memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gGameWork.medalGfxRecord[1]], gGameWork.textBuf, 14);
+            memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partSkill * 6, gGameWork.medalGfxRecord, 6);
+            memcpy_bytes_0803F63C((void *)gSkillTypeNames[gGameWork.medalGfxRecord[1]], gGameWork.textBuf, 14);
             render_text_sprites_08040DB8(gGameWork.textBuf, 0x5A, 0x13, 7, 10, 11, 1, 1);
             draw_number_bgcnt(gGameWork.medalGfxRecord[2], 0x19, 10, 2, REG_BG1CNT, 0xD334);
         } else {
@@ -1531,8 +1531,8 @@ static void medal_medaforce_draw_selected(void) {
         if (gMedals[gGameWork.shownId].level >= 60) {
             memcpy_bytes_08041D04(gMedalMedaforceIds + gMedals[gGameWork.shownId].graphicId * 3, &gGameWork.partAbility,
                                   3);
-            memcpy_bytes_08041D04(gUnk_083B7CD4 + gGameWork.partSkillType * 6, gGameWork.medalGfxRecord, 6);
-            memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gGameWork.medalGfxRecord[1]], gGameWork.textBuf, 14);
+            memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partSkillType * 6, gGameWork.medalGfxRecord, 6);
+            memcpy_bytes_0803F63C((void *)gSkillTypeNames[gGameWork.medalGfxRecord[1]], gGameWork.textBuf, 14);
             render_text_sprites_08040DB8(gGameWork.textBuf, 0x5A, 0x13, 7, 10, 11, 1, 1);
             draw_number_bgcnt(gGameWork.medalGfxRecord[2], 0x19, 10, 2, REG_BG1CNT, 0xD334);
         } else {
@@ -1815,7 +1815,7 @@ void medal_skill_load_shine_frame(void) {
     u32 i;
 
     for (i = 0; i < 5; i++)
-        CpuFastSet(gUnk_084C3B14 + (i * 0x100 + gGameWork.unk3F * 0x20), (void *)0x06007A00 + i * 0x20, 8);
+        CpuFastSet(gMedalSkillShineTiles + (i * 0x100 + gGameWork.unk3F * 0x20), (void *)0x06007A00 + i * 0x20, 8);
 }
 
 static void medal_skill_animate_shine(void) {

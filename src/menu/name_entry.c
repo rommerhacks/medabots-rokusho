@@ -109,7 +109,7 @@ void name_entry_init_graphics(void) {
     size = dma3_copy_or_decompress(gUnk_08793628, gDecompressBuffer);
     CpuSet(gDecompressBuffer, vram_at2(0), (size / 2) & 0x1FFFFF);
     gUnk_03006F74->unk36 = (size >> 5) - 1;
-    CpuSet(gUnk_084C21BC, vram_at2(size), (0x1000 / 2) & 0x1FFFFF);
+    CpuSet(gMedalIconTiles, vram_at2(size), (0x1000 / 2) & 0x1FFFFF);
     zero = 0;
     CpuFastSet(&zero, (void *)0x05000000, 0x01000080);
     zero2 = 0;
@@ -236,7 +236,7 @@ void name_entry_load_name(void) {
         }
     }
     CpuFastSet(gUnk_08483AA0, (void *)0x0202FA20, 8);
-    CpuFastSet(gUnk_084E2E58, (void *)0x0202F9C0, 8);
+    CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
     CpuFastSet(gUnk_084E2E38, (void *)0x0202F9A0, 8);
     CpuFastSet(gUnk_080AF810, gPaletteBackup, 8);
     CpuFastSet(gUnk_08793428, gPaletteBackupBg, 0x80);

@@ -32,21 +32,21 @@ void count_bot_skill_use(u32 rec) {
             if (r->medal.level <= 9)
                 return;
             memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.graphicId * 3], &gGameWork.partAbility, 3);
-            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gGameWork.partAbility)[0] * 6], gGameWork.medalGfxRecord, 6);
+            memcpy_bytes_08041D04(&gMedaforceRecords[(&gGameWork.partAbility)[0] * 6], gGameWork.medalGfxRecord, 6);
             k = gGameWork.medalGfxRecord[1];
             break;
         case 1:
             if (r->medal.level <= 29)
                 return;
             memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.graphicId * 3], &gGameWork.partAbility, 3);
-            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gGameWork.partAbility)[1] * 6], gGameWork.medalGfxRecord, 6);
+            memcpy_bytes_08041D04(&gMedaforceRecords[(&gGameWork.partAbility)[1] * 6], gGameWork.medalGfxRecord, 6);
             k = gGameWork.medalGfxRecord[1];
             break;
         case 2:
             if (r->medal.level <= 59)
                 return;
             memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.graphicId * 3], &gGameWork.partAbility, 3);
-            memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gGameWork.partAbility)[2] * 6], gGameWork.medalGfxRecord, 6);
+            memcpy_bytes_08041D04(&gMedaforceRecords[(&gGameWork.partAbility)[2] * 6], gGameWork.medalGfxRecord, 6);
             k = gGameWork.medalGfxRecord[1];
             break;
         default:

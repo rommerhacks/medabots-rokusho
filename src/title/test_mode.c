@@ -56,7 +56,7 @@ void test_mode_load_graphics(void) {
     CpuFastSet(gUnk_08790400, (void *)PLTT, 0x80);
     CpuFastSet(gUnk_08483AA0, (void *)(PLTT + 0x1C0), 8);
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
-    CpuFastSet(gUnk_084E2E58, (void *)(PLTT + 0x3C0), 8);
+    CpuFastSet(gCursorArrowPalette, (void *)(PLTT + 0x3C0), 8);
     gSpriteEntries[0].unk0 = 0x8000;
     gSpriteEntries[0].unk1C = 2;
     gSpriteEntries[0].unkA = 0xE;

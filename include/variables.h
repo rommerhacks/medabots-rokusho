@@ -286,12 +286,13 @@ extern const void *const gUnk_0847E8C4[];         // text pointers (guess)
 extern const u32 *const gTextTable[];             // text pointers, banks 0-1 (guess)
 extern const u32 *const *const gTextBankTables[]; // text pointer tables, bank 2+ (guess)
 extern const s16 gJumpArcTable[][8];              // jump arc: [n][0] / 16 = sprite y offset at frame n (hops / jumps)
-extern const u8 gUnk_083D2998[];                // map script terrain/palette id -> player_form/saved_player_form/unkC28
-                                                // (map_script_update_set_player_form)
-extern struct Unk_03002B70 gUnk_03002B70;       // = gMoney, with the bytes after it
-extern const Func gUnk_083AC248[];              // game state 0 sub-state handlers (guess: debug map viewer)
-extern const Func gFieldMenuHandlers[];         // game state 1 (field pause menu) sub-state handlers
-extern const void *const gUnk_083B53F8[];       // messages used by game state 0 (guess: debug menu)
+extern const u8 gUnk_083D2998[];          // map script terrain/palette id -> player_form/saved_player_form/unkC28
+                                          // (map_script_update_set_player_form)
+extern struct Unk_03002B70 gUnk_03002B70; // = gMoney, with the bytes after it
+extern const Func gUnk_083AC248[];        // game state 0 sub-state handlers (guess: debug map viewer)
+extern const Func gFieldMenuHandlers[];   // game state 1 (field pause menu) sub-state handlers
+extern const void
+    *const gMenuMessages[]; // menu messages: debug menu (0-3), Medals screen hints / help (4-15), pre-battle (20-21)
 extern const void *const gLinkMessages[];       // message table (run_message)
 extern const u8 gUnk_083AC420[];                // orbit centre x, y per gGameWork.medabotsCursor
 extern const u8 gUnk_083AC432[];                // per slot sprite priority base
@@ -314,23 +315,25 @@ extern const u8 gUnk_08488644[];
 extern const u8 gUnk_084C6A98[];
 extern const u16 gUnk_084E2E38[];
 extern const u8 gUnk_084C7174[];
-extern const u16 gUnk_084E2E58[];
+extern const u16 gCursorArrowPalette[]; // OBJ palette 14 of the arrow cursor (gCursorArrowTiles)
 extern const u16 gUnk_084E2E78[];
 extern const u8 gUnk_084889F8[];
-extern const void *const gUnk_083B69C8[]; // messages (run_message), indexed by Medal record byte 4 (Medals help)
-extern const void *const gUnk_083B70AC[]; // messages (run_message), indexed by Medal record byte 6 (Medals help)
-extern const u8 gMedalMedaforceIds[];     // 3 Medaforce ids per Medal graphic index (slots open at level 10/30/60)
-extern const u8 gUnk_083B7CD4[];          // 6-byte Medaforce records: +1 skill type, +2 MF consumption, +5 icon
-extern const void *const gUnk_083B7F40[]; // messages (run_message), Medals help Medaforce page
-extern const void *const gUnk_083B8170[]; // messages (run_message), Medals help page 5
+extern const void
+    *const gAttributeHelpMessages[]; // messages (run_message), indexed by Medal record byte 4 (Medals help)
+extern const void
+    *const gSkillTypeHelpMessages[];  // messages (run_message), indexed by Medal record byte 6 (Medals help)
+extern const u8 gMedalMedaforceIds[]; // 3 Medaforce ids per Medal graphic index (slots open at level 10/30/60)
+extern const u8 gMedaforceRecords[];  // 6-byte Medaforce records: +1 skill type, +2 MF consumption, +5 icon
+extern const void *const gMedaforceTypeHelpMessages[];  // messages (run_message), Medals help Medaforce page
+extern const void *const gMedaforceSkillHelpMessages[]; // messages (run_message), Medals help page 5
 extern u32 gUnk_03002B68; // bit per Medal graphic index (medal_trade_check_medal); also (part kind << 16) + part id
                           // (medapart_trade_store_part)
-extern const u8 gUnk_084EAC58[];
-extern const u8 gUnk_084EF4E0[];
-extern const u8 gUnk_084EFE28[];
-extern const u8 gUnk_084F0A00[];
-extern const u8 gUnk_084F1BA0[];
-extern const u16 gUnk_084F32A0[];
+extern const u8 gMedalSkillBgTiles[];
+extern const u8 gMedalSkillBg0Tilemap[];
+extern const u8 gMedalSkillBg1Tilemap[];
+extern const u8 gMedalSkillBg2Tilemap[];
+extern const u8 gMedalSkillBg3Tilemap[];
+extern const u16 gMedalSkillBgPalette[];
 extern const Func gMedawatchMenuHandlers[]; // game state 2 (Medawatch menu) sub-state handlers
 extern const u8 gUnk_084E30D8[];
 extern const u8 gUnk_084EF6A0[];
@@ -398,41 +401,41 @@ extern const void *const gUnk_083BE92C[]; // messages (run_message), Medaparts d
                                           // medapart_detail_skill_help_index()
 extern const void *const gUnk_083B6E24[]; // messages (run_message), indexed by the part record byte unkEE
 extern const void *const gUnk_083BD884[]; // messages (run_message), Medaparts help pages
-extern const u8 gUnk_084E7264[];
-extern const u8 gUnk_084C32DC[];
+extern const u8 gMedalsListBgTiles[];
+extern const u8 gMedalsTabNumberTiles[]; // Medals list tab numbers 1-5 (runtime: blanking 0x06006000)
 extern const u8 gUnk_0848833C[];
-extern const u8 gUnk_084EF348[];
-extern const u8 gUnk_084EFB5C[];
-extern const u8 gUnk_084F04F0[];
-extern const u8 gUnk_084F1554[];
-extern const u16 gUnk_084F2BA0[];
+extern const u8 gMedalsListBg0Tilemap[];
+extern const u8 gMedalsListBg1Tilemap[];
+extern const u8 gMedalsListBg2Tilemap[];
+extern const u8 gMedalsListBg3Tilemap[];
+extern const u16 gMedalsListBgPalette[];
 extern const u16 gUnk_08488B44[];
 extern const u16 gUnk_084E2E98[];
-extern const u8 gUnk_084E80B0[];
-extern const u8 gUnk_084EF380[];
-extern const u8 gUnk_084EFBE0[];
-extern const u8 gUnk_084F0688[];
-extern const u8 gUnk_084F16E8[];
-extern const u16 gUnk_084F2D60[];
-extern const u8 gUnk_084E9020[];
-extern const u8 gUnk_084C3524[];
-extern const u8 gUnk_084C3648[];
-extern const u8 gUnk_084EF3F4[];
-extern const u8 gUnk_084EFCDC[];
-extern const u8 gUnk_084F07B8[];
-extern const u8 gUnk_084F187C[];
-extern const u16 gUnk_084F2F20[];
-extern const u8 gUnk_084E9E68[];
-extern const u8 gUnk_084C37A4[];
-extern const u8 gUnk_084C3990[];
-extern const u8 gUnk_084EF46C[];
-extern const u8 gUnk_084EFD74[];
-extern const u8 gUnk_084F08F0[];
-extern const u8 gUnk_084F1A10[];
-extern const u16 gUnk_084F30E0[];
-extern const void *const gUnk_083B7C00[]; // messages (run_message), indexed by medal_medaforce_get_selected()
-extern const void
-    *const gUnk_083B825C[]; // messages (run_message), indexed by a Medal record byte at +0x18 (guess: rotation entries)
+extern const u8 gMedalAbilityBgTiles[];
+extern const u8 gMedalAbilityBg0Tilemap[];
+extern const u8 gMedalAbilityBg1Tilemap[];
+extern const u8 gMedalAbilityBg2Tilemap[];
+extern const u8 gMedalAbilityBg3Tilemap[];
+extern const u16 gMedalAbilityBgPalette[];
+extern const u8 gMedalMedaforceBgTiles[];
+extern const u8 gMedaforceTypeIconTiles[]; // Medaforce page type icons next to each Medaforce (runtime)
+extern const u8 gMedaforceGaugeTiles[];    // Medaforce gauge pips (MF consumption; runtime on the Medaforce page)
+extern const u8 gMedalMedaforceBg0Tilemap[];
+extern const u8 gMedalMedaforceBg1Tilemap[];
+extern const u8 gMedalMedaforceBg2Tilemap[];
+extern const u8 gMedalMedaforceBg3Tilemap[];
+extern const u16 gMedalMedaforceBgPalette[];
+extern const u8 gMedalRotationBgTiles[];
+extern const u8 gRotationActionIconTiles[]; // Rotation page action slot icons (runtime)
+extern const u8 gRotationPathTiles[];       // Rotation page arrow path under the slots (runtime)
+extern const u8 gMedalRotationBg0Tilemap[];
+extern const u8 gMedalRotationBg1Tilemap[];
+extern const u8 gMedalRotationBg2Tilemap[];
+extern const u8 gMedalRotationBg3Tilemap[];
+extern const u16 gMedalRotationBgPalette[];
+extern const void *const gMedaforceDescMessages[];  // messages (run_message), indexed by medal_medaforce_get_selected()
+extern const void *const gRotationActionMessages[]; // messages (run_message), indexed by a Medal record byte at +0x18
+                                                    // (guess: rotation entries)
 extern const u8 gUnk_084E5650[];
 extern const u8 gUnk_084C48B4[];
 extern const u8 gUnk_084C4A34[];
@@ -447,10 +450,10 @@ extern const u16 gUnk_0850DD18[];
 extern const u16 gUnk_084E2EB8[];
 extern const u16 gUnk_084E2ED8[];
 extern const u8 gUnk_084E61CC[];
-extern const u8 gUnk_084C3208[];
-extern const u8 gUnk_084C33DC[];
+extern const u8 gSmallDigitTiles[]; // small digits (Medal levels; runtime: blanking 0x06006280 on the Medals list)
+extern const u8 gCompatibilityIconTiles[]; // Ability page compatibility icon (runtime)
 extern const u8 gUnk_084C4DB0[];
-extern const u8 gUnk_084C7318[];
+extern const u8 gCursorArrowTiles[]; // arrow cursor OBJ tiles at 0x06017E00 (runtime: Medals list cursor)
 extern const u8 gUnk_084EF310[];
 extern const u8 gUnk_084EF9C8[];
 extern const u8 gUnk_084F03EC[];
@@ -458,11 +461,11 @@ extern const u8 gUnk_084F13C0[];
 extern const u16 gUnk_084F2820[];
 extern const u16 gUnk_0850DD58[];
 
-extern const u8 gUnk_084C21BC[];              // Medal icon tiles, 0x80 bytes per graphic index
-extern const u8 gUnk_084C30BC[];              // blank Medal icon tile
-extern const u8 *const gUnk_083AC494[][5];    // compressed Medal sprites (load_medal_sprite)
-extern const u32 gUnk_083B656C[];             // Medal Attribute names, indexed by Medal record unk4 (Ability page)
-extern const u32 gUnk_083B6EC8[];             // skill type names (Shoot, Strike, ...): Medal Aim, Medaforce skill
+extern const u8 gMedalIconTiles[];            // Medal icon tiles, 0x80 bytes per graphic index
+extern const u8 gMedalIconBlankTiles[];       // blank Medal icon tile
+extern const u8 *const gMedalSpriteGfx[][5];  // compressed Medal sprites (load_medal_sprite)
+extern const u32 gAttributeNames[];           // Medal Attribute names, indexed by Medal record unk4 (Ability page)
+extern const u32 gSkillTypeNames[];           // skill type names (Shoot, Strike, ...): Medal Aim, Medaforce skill
 extern const u8 *const gHelpCursorLayouts[];  // Medals / Medaparts help cursor layouts: count, then (x, y) tile pairs
                                               // (medals_help_init_cursor)
 extern const u16 gMedalSkillDebugCursorPos[]; // (y, x) pairs per Medal skill row 0-7 (medal_skill_debug_init_cursor)
@@ -495,7 +498,8 @@ extern const u8 *const gDebugRndTkLabels[];   // "Switch"
 extern const u8 *const gDebugBattleLabels[];  // "No"
 extern const u8 *const gDebugSoundLabels[];   // "Se", "Bgm"
 extern const u8 *const gDebugMotionLabels[];  // "No"
-extern const u8 gUnk_084C3B14[];    // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (medal_skill_load_shine_frame)
+extern const u8
+    gMedalSkillShineTiles[];        // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (medal_skill_load_shine_frame)
 extern const u32 gMedaforceNames[]; // Medaforce names, indexed by Medaforce id
 extern const u32 gUnk_083BE97C[];   // Medapart skill names for ids >= 100 (medapart_detail_draw_skill)
 extern u16 gUnk_03002B84[2];        // capped at 9999: [0] every game state 6 battle, [1] when gGameWork.unk9C == 1

@@ -252,7 +252,7 @@ void field_menu_return_expand(void) {
 
 static void field_menu_init_cursor(void) {
     lz_decompress_dispatch(gUnk_084C7174, (void *)0x06016C00);
-    DmaSet(3, gUnk_084E2E58, 0x050003C0, 0x84000008);
+    DmaSet(3, gCursorArrowPalette, 0x050003C0, 0x84000008);
     gSpriteEntries[0].unk0 = 0xC004;
     gSpriteEntries[0].unk2 = 0x88;
     gSpriteEntries[0].unk4 = gGameWork.fieldMenuCursor * 16 + 8;

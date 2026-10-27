@@ -41,10 +41,10 @@ u32 poll_choice_menu(void) {
 void decompress_bg_tilemap_to_vram(void) {
     lz_decompress_dispatch(gUnk_084878EC, (void *)(VRAM + 0x2600));
     lz_decompress_dispatch(gUnk_0848796C, (void *)(VRAM + 0x26E0));
-    lz_decompress_dispatch(gUnk_084C7318, (void *)(VRAM + 0x17E00));
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)(VRAM + 0x17E00));
     set_tilemap_and_decompress_bg(0, 0x15, gUnk_084886D0, REG_BG0CNT, 0x130);
     set_tilemap_and_decompress_bg(2, 0x16, gUnk_08488718, REG_BG0CNT, 0x137);
-    CpuFastSet(gUnk_084E2E58, (void *)(PLTT + 0x3C0), 8);
+    CpuFastSet(gCursorArrowPalette, (void *)(PLTT + 0x3C0), 8);
     gGameWork.choiceState++;
 }
 

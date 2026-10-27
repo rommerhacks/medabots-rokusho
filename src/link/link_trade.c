@@ -78,7 +78,7 @@ static void medal_trade_show_medal_sprite(u32 medal, u32 frame) {
     struct SpriteEntry *s;
     u8 zero;
 
-    lz_decompress_dispatch(gUnk_083AC494[medal][frame], (void *)0x06010000);
+    lz_decompress_dispatch(gMedalSpriteGfx[medal][frame], (void *)0x06010000);
     s = gSpriteEntries;
     zero = 0;
     s->unk0 = 0x8A24;
@@ -584,7 +584,7 @@ void medal_trade_init_screen(void) {
     CpuCopy16((void *)0x02030000, (void *)0x06004000, size);
     lz_decompress_dispatch(gUnk_08784CB0, (void *)(size + 0x06004000));
     gUnk_03006F74->unk36 = (size >> 5) + 4;
-    lz_decompress_dispatch(gUnk_084C3208, (void *)(size + 0x06004080));
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + 0x06004080));
     CpuFastSet(gUnk_0879E4D8, (void *)PLTT, 0x50);
     CpuFastSet(gUnk_0850DD18 + 0x30, (void *)0x050003A0, 8);
     CpuFastSet(gUnk_0850DD18 + 0x30, (void *)0x0202F9A0, 8);
@@ -628,7 +628,7 @@ void medal_trade_init_screen(void) {
             TM(REG_BG1CNT, 0x10E) = (gUnk_03006F74->unk36 + lvl % 10 * 2) | 0x7000;
             TM(REG_BG1CNT, 0x12E) = (gUnk_03006F74->unk36 + lvl % 10 * 2 + 1) | 0x7000;
         }
-        CpuSet(gUnk_084C21BC + medal * 0x80, (void *)(size + 0x06004000), 0x40);
+        CpuSet(gMedalIconTiles + medal * 0x80, (void *)(size + 0x06004000), 0x40);
         tt = t;
         e = tt | 0x6000;
         p = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + 8 * 32;
@@ -786,7 +786,7 @@ void medal_trade_flip_close(void) {
             BG1(0x21C) = (gUnk_03006F74->unk36 + (u8)(lvl % 10) * 2) | 0x7000;
             BG1(0x25C) = (gUnk_03006F74->unk36 + (u8)(lvl % 10) * 2 + 1) | 0x7000;
         }
-        CpuFastSet(gUnk_084C21BC + gUnk_03006F74->unk230.graphicId * 0x80,
+        CpuFastSet(gMedalIconTiles + gUnk_03006F74->unk230.graphicId * 0x80,
                    (void *)(VRAM + 0x3F80 + gUnk_03006F74->unk36 * 32), 0x20);
         {
             u16 v;

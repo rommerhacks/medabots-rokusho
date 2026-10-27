@@ -75,13 +75,13 @@ void init_save_prompt_text(void) {
     gUnk_03002B70.unk4[7] = 0x2D;
     gUnk_03002B70.unk4[8] = 0x2E;
     gUnk_03002B70.unk4[9] = 0xFE;
-    r = run_message(gUnk_083B53F8[0]);
+    r = run_message(gMenuMessages[0]);
     if (r == 1)
         gGameSubState = r;
 }
 
 void devtest_message_then_choice(void) {
-    if (run_message(gUnk_083B53F8[1])) {
+    if (run_message(gMenuMessages[1])) {
         open_choice_menu(0, 0x16, 7);
         gGameSubState++;
     }
@@ -99,9 +99,9 @@ void devtest_show_choice_result(void) {
     const void *msg;
 
     if (gGameWork.unk28 & 0xF0)
-        msg = gUnk_083B53F8[3];
+        msg = gMenuMessages[3];
     else
-        msg = gUnk_083B53F8[2];
+        msg = gMenuMessages[2];
     if (run_message(msg))
         gGameSubState = 1;
 }

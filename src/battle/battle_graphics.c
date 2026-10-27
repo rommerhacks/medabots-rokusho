@@ -14,7 +14,7 @@ u32 battle_load_graphics_step(u32 direct) {
         break;
     case 1:
         lz_decompress_dispatch(gUnk_084C5080, (void *)0x06004300);
-        lz_decompress_dispatch(gUnk_084C3648, (void *)0x06004400);
+        lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06004400);
         lz_decompress_dispatch(gUnk_08487A24, (void *)0x0600C000);
         lz_decompress_dispatch(gUnk_084C5008, (void *)0x0600C600);
         gGameWork.unk13A++;

@@ -312,7 +312,7 @@ static u32 opponent_medaforce_locked(u32 rec) {
 
 void battle_bot_select_medaforce(u32 rec, u32 part) {
     memcpy_bytes_08041D04(&gMedalMedaforceIds[gBattleBots[rec].medal.graphicId * 3], &gGameWork.partAbility, 3);
-    memcpy_bytes_08041D04(&gUnk_083B7CD4[(&gGameWork.partAbility)[part] * 6], gBattleBots[rec].medaforce, 6);
+    memcpy_bytes_08041D04(&gMedaforceRecords[(&gGameWork.partAbility)[part] * 6], gBattleBots[rec].medaforce, 6);
     battle_bot_select_part(rec, part + 4);
 }
 

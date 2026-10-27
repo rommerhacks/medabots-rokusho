@@ -63,7 +63,7 @@ void medaparts_list_load_gfx(void) {
     lz_decompress_dispatch(gUnk_084C4014, (void *)0x06006000);
     lz_decompress_dispatch(gUnk_084C4330, (void *)0x06006A00);
     lz_decompress_dispatch(gUnk_084C36F0, (void *)0x06006C00);
-    lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     lz_decompress_dispatch(gUnk_0848833C, (void *)0x06007000);
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF550, REG_BG0CNT, 0x200);
@@ -74,13 +74,13 @@ void medaparts_list_load_gfx(void) {
         CpuFastSet(gUnk_084F3460, (void *)0x0202FA00, 0x70);
         CpuFastSet((void *)0x05000200, (void *)0x0202F800, 0x80);
         CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x0202F9A0, 8);
-        CpuFastSet(gUnk_084E2E58, (void *)0x0202F9C0, 8);
+        CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
         CpuFastSet(gUnk_08488B44, (void *)0x0202FB60, 8);
         gGameWork.unk84 = 0;
     } else {
         CpuFastSet(gUnk_084F3460, (void *)0x05000000, 0x70);
         CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x050003A0, 8);
-        CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+        CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
         CpuFastSet(gUnk_08488B44, (void *)0x05000160, 8);
         set_blend_effect_mode(5, 0x3F, 0x20);
     }
@@ -136,7 +136,7 @@ void medaparts_list_show_hint(void) {
     medaparts_list_blink_page_arrows();
     sprite_bob_y(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
-    if (run_message(gUnk_083B53F8[16]))
+    if (run_message(gMenuMessages[16]))
         gGameSubState++;
 }
 
@@ -238,8 +238,8 @@ void medapart_detail_load_gfx(void) {
     lz_decompress_dispatch(gUnk_084C4330, (void *)0x06007100);
     lz_decompress_dispatch(gUnk_084C47E0, (void *)0x06007200);
     lz_decompress_dispatch(gUnk_084C4BAC, (void *)0x06007300);
-    lz_decompress_dispatch(gUnk_084C3648, (void *)0x06007880);
-    lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
+    lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06007880);
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF5A4, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0068, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0CA4, REG_BG2CNT, 0x200);
@@ -249,13 +249,13 @@ void medapart_detail_load_gfx(void) {
         CpuFastSet((void *)0x05000200, (void *)0x0202F800, 0x80);
         CpuFastSet(gUnk_0850DD58 + 0x40, (void *)0x0202F980, 8);
         CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x0202F9A0, 8);
-        CpuFastSet(gUnk_084E2E58, (void *)0x0202F9C0, 8);
+        CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
         gGameWork.unk84 = 0;
     } else {
         CpuFastSet(gUnk_084F3620, (void *)0x05000000, 0x70);
         CpuFastSet(gUnk_0850DD58 + 0x40, (void *)0x05000380, 8);
         CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x050003A0, 8);
-        CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+        CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
         medapart_detail_init_sprite();
         medapart_draw_sprite();
         set_blend_effect_mode(5, 0x3F, 0x20);
@@ -438,7 +438,7 @@ void medaparts_help_show_intro(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
     process_sprite_anim_commands(gUnk_083B5F80[3], 6);
-    if (run_message(gUnk_083B53F8[5]))
+    if (run_message(gMenuMessages[5]))
         gGameSubState++;
 }
 
@@ -482,13 +482,13 @@ void medaparts_help_show_text(void) {
     case 0:
         switch (gGameWork.helpPage) {
         case 0:
-            done = run_message(gUnk_083B8170[gGameWork.partSkillType]);
+            done = run_message(gMedaforceSkillHelpMessages[gGameWork.partSkillType]);
             break;
         case 1:
             done = run_message(gUnk_083B6E24[gGameWork.partAbility]);
             break;
         case 2:
-            done = run_message(gUnk_083B53F8[skill_type_is_remote(gGameWork.partSkillType) + 17]);
+            done = run_message(gMenuMessages[skill_type_is_remote(gGameWork.partSkillType) + 17]);
             break;
         case 3:
             done = run_message(gUnk_083BD884[0]);
@@ -508,13 +508,13 @@ void medaparts_help_show_text(void) {
     case 2:
         switch (gGameWork.helpPage) {
         case 0:
-            done = run_message(gUnk_083B8170[gGameWork.partSkillType]);
+            done = run_message(gMedaforceSkillHelpMessages[gGameWork.partSkillType]);
             break;
         case 1:
             done = run_message(gUnk_083B6E24[gGameWork.partAbility]);
             break;
         case 2:
-            done = run_message(gUnk_083B53F8[skill_type_is_remote(gGameWork.partSkillType) + 17]);
+            done = run_message(gMenuMessages[skill_type_is_remote(gGameWork.partSkillType) + 17]);
             break;
         case 3:
             done = run_message(gUnk_083BD884[0]);
@@ -539,7 +539,7 @@ void medaparts_help_show_text(void) {
             done = run_message(gUnk_083B6E24[gGameWork.partAbility]);
             break;
         case 1:
-            done = run_message(gUnk_083B53F8[19]);
+            done = run_message(gMenuMessages[19]);
             break;
         case 2:
             done = run_message(gUnk_083BD884[0]);
@@ -572,7 +572,7 @@ void medaparts_help_exit(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
     clear_sprite_table_mask(6, 1);
-    CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+    CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     message_next();
     medapart_detail_init_arrows();
     gGameSubState = 0x13;
@@ -977,7 +977,7 @@ s32 medapart_detail_skill_help_index(void) {
 void medapart_detail_draw_skill(void) {
     clear_sprite_table_mask(10, 15);
     if (gGameWork.partSkill < 100) {
-        memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gGameWork.partSkillType], gGameWork.textBuf, 14);
+        memcpy_bytes_0803F63C((void *)gSkillTypeNames[gGameWork.partSkillType], gGameWork.textBuf, 14);
         render_text_sprites_08040DB8(gGameWork.textBuf, 10, 1, 9, 10, 12, 0, 1);
     } else {
         memcpy_bytes_0803F63C((void *)gUnk_083BE97C[gGameWork.partSkill - 100], gGameWork.textBuf, 14);
@@ -987,7 +987,7 @@ void medapart_detail_draw_skill(void) {
 
 static void medapart_detail_draw_ability(void) {
     clear_sprite_table_mask(25, 15);
-    memcpy_bytes_0803F63C((void *)gUnk_083B656C[gGameWork.partAbility], gGameWork.textBuf, 14);
+    memcpy_bytes_0803F63C((void *)gAttributeNames[gGameWork.partAbility], gGameWork.textBuf, 14);
     render_text_sprites_08040DB8(gGameWork.textBuf, 25, 2, 11, 8, 12, 0, 1);
 }
 

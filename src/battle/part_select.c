@@ -148,7 +148,7 @@ void part_select_draw_skill_type(void) {
                 memcpy_bytes_08041D04(gBattleMenuTexts[2], gGameWork.textBuf, 14);
             else
                 memcpy_bytes_08041D04(
-                    (const void *)gUnk_083B6EC8[gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].data[2]],
+                    (const void *)gSkillTypeNames[gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].data[2]],
                     gGameWork.textBuf, 14);
         }
     }

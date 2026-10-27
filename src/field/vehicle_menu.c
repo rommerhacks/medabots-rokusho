@@ -80,8 +80,8 @@ void vehicle_menu_load_gfx(void) {
         decompress_bg_tiles_to_vram_bg();
     DmaCopy32(3, gTextWindowObjPalette, PLTT + 0x1C0, 32) lz_decompress_dispatch(gUnk_084878EC, (void *)0x06002600);
     lz_decompress_dispatch(gUnk_0848796C, (void *)0x060026E0);
-    lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
-    DmaCopy32(3, gUnk_084E2E58, OBJ_PLTT + 0x1C0, 32) gUnk_030064A0.unk66 = 0;
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    DmaCopy32(3, gCursorArrowPalette, OBJ_PLTT + 0x1C0, 32) gUnk_030064A0.unk66 = 0;
     gUnk_030064A0.frame = 0;
     gUnk_030064A0.slideStep = 0;
     gUnk_030064A0.unk6E = gUnk_030064A0.cursorY = gUnk_030064A0.cursorX = 0;
@@ -267,8 +267,8 @@ void vehicle_menu_reload(void) {
     DmaCopy32(3, gUnk_08488A84, 0x0202FBE0, 32) DmaCopy32(3, gTextWindowObjPalette, 0x0202FBC0, 32)
         lz_decompress_dispatch(gUnk_084878EC, (void *)0x06002600);
     lz_decompress_dispatch(gUnk_0848796C, (void *)0x060026E0);
-    lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
-    DmaCopy32(3, gUnk_084E2E58, 0x0202F9C0, 32)
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    DmaCopy32(3, gCursorArrowPalette, 0x0202F9C0, 32)
         copy_tilemap_rect_with_offset(gUnk_030064A0.savedBg, (u16 *)0x06002800, 0, 0, 0x1E, 0x14, 0x20, 0x20, 0, 0);
     DmaCopy32(3, gUnk_085FA640, 0x0202F980, 32) DmaCopy32(3, gUnk_085FA85C, 0x0202F9A0, 32) vehicle_menu_place_icons(0);
     setup_palette_fade_to_color(0, 32.0f, 0.0f, 8.0f);

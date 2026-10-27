@@ -912,7 +912,7 @@ void action_announce_run(void) {
 }
 
 void action_announce_prepare(void) {
-    memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2]],
+    memcpy_bytes_0803F63C((void *)gSkillTypeNames[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2]],
                           gGameWork.textBuf, 0xE);
     memcpy_bytes_0803F63C((void *)gUnk_083BE6E8[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]],
                           gGameWork.textBuf + 0x14, 0xE);
@@ -1056,7 +1056,7 @@ void attack_hit_load_graphics(void) {
 
     lz_decompress_dispatch(gUnk_084C4F00, (void *)0x06006400);
     lz_decompress_dispatch(gUnk_084882F4, (void *)0x06006520);
-    lz_decompress_dispatch(gUnk_084C3648, (void *)0x06006600);
+    lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06006600);
     lz_decompress_dispatch(gUnk_084C65C8, (void *)0x06006800);
     CpuFastSet(gUnk_08488B24, (void *)0x05000140, 8);
     CpuFastSet(gUnk_084E3098, (void *)0x05000100, 8);

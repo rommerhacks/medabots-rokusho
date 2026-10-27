@@ -520,52 +520,52 @@ gUnk_084C1E04:
 gUnk_084C1FD4:
 	.incbin "baserom.gba", 0x4C1FD4, 0x1E8
 
-	.global gUnk_084C21BC
-gUnk_084C21BC:
+	.global gMedalIconTiles
+gMedalIconTiles:
 	.incbin "baserom.gba", 0x4C21BC, 0xF00
 
-	.global gUnk_084C30BC
-gUnk_084C30BC:
+	.global gMedalIconBlankTiles
+gMedalIconBlankTiles:
 	.incbin "baserom.gba", 0x4C30BC, 0x100
 
 	.global gUnk_084C31BC
 gUnk_084C31BC:
 	.incbin "baserom.gba", 0x4C31BC, 0x4C
 
-	.global gUnk_084C3208
-gUnk_084C3208:
+	.global gSmallDigitTiles
+gSmallDigitTiles:
 	.incbin "baserom.gba", 0x4C3208, 0xD4
 
-	.global gUnk_084C32DC
-gUnk_084C32DC:
+	.global gMedalsTabNumberTiles
+gMedalsTabNumberTiles:
 	.incbin "baserom.gba", 0x4C32DC, 0x100
 
-	.global gUnk_084C33DC
-gUnk_084C33DC:
+	.global gCompatibilityIconTiles
+gCompatibilityIconTiles:
 	.incbin "baserom.gba", 0x4C33DC, 0x148
 
-	.global gUnk_084C3524
-gUnk_084C3524:
+	.global gMedaforceTypeIconTiles
+gMedaforceTypeIconTiles:
 	.incbin "baserom.gba", 0x4C3524, 0x124
 
-	.global gUnk_084C3648
-gUnk_084C3648:
+	.global gMedaforceGaugeTiles
+gMedaforceGaugeTiles:
 	.incbin "baserom.gba", 0x4C3648, 0xA8
 
 	.global gUnk_084C36F0
 gUnk_084C36F0:
 	.incbin "baserom.gba", 0x4C36F0, 0xB4
 
-	.global gUnk_084C37A4
-gUnk_084C37A4:
+	.global gRotationActionIconTiles
+gRotationActionIconTiles:
 	.incbin "baserom.gba", 0x4C37A4, 0x1EC
 
-	.global gUnk_084C3990
-gUnk_084C3990:
+	.global gRotationPathTiles
+gRotationPathTiles:
 	.incbin "baserom.gba", 0x4C3990, 0x184
 
-	.global gUnk_084C3B14
-gUnk_084C3B14:
+	.global gMedalSkillShineTiles
+gMedalSkillShineTiles:
 	.incbin "baserom.gba", 0x4C3B14, 0x500
 
 	.global gUnk_084C4014
@@ -688,8 +688,8 @@ gUnk_084C6A98:
 gUnk_084C7174:
 	.incbin "baserom.gba", 0x4C7174, 0x1A4
 
-	.global gUnk_084C7318
-gUnk_084C7318:
+	.global gCursorArrowTiles
+gCursorArrowTiles:
 	.incbin "baserom.gba", 0x4C7318, 0x110
 
 	.global gUnk_084C7428
@@ -1104,8 +1104,8 @@ gUnk_084E2C18:
 gUnk_084E2E38:
 	.incbin "baserom.gba", 0x4E2E38, 0x20
 
-	.global gUnk_084E2E58
-gUnk_084E2E58:
+	.global gCursorArrowPalette
+gCursorArrowPalette:
 	.incbin "baserom.gba", 0x4E2E58, 0x20
 
 	.global gUnk_084E2E78
@@ -1200,24 +1200,24 @@ gUnk_084E61CC:
 gUnk_084E6C9C:
 	.incbin "baserom.gba", 0x4E6C9C, 0x5C8
 
-	.global gUnk_084E7264
-gUnk_084E7264:
+	.global gMedalsListBgTiles
+gMedalsListBgTiles:
 	.incbin "baserom.gba", 0x4E7264, 0xE4C
 
-	.global gUnk_084E80B0
-gUnk_084E80B0:
+	.global gMedalAbilityBgTiles
+gMedalAbilityBgTiles:
 	.incbin "baserom.gba", 0x4E80B0, 0xF70
 
-	.global gUnk_084E9020
-gUnk_084E9020:
+	.global gMedalMedaforceBgTiles
+gMedalMedaforceBgTiles:
 	.incbin "baserom.gba", 0x4E9020, 0xE48
 
-	.global gUnk_084E9E68
-gUnk_084E9E68:
+	.global gMedalRotationBgTiles
+gMedalRotationBgTiles:
 	.incbin "baserom.gba", 0x4E9E68, 0xDF0
 
-	.global gUnk_084EAC58
-gUnk_084EAC58:
+	.global gMedalSkillBgTiles
+gMedalSkillBgTiles:
 	.incbin "baserom.gba", 0x4EAC58, 0x12F8
 
 	.global gUnk_084EBF50
@@ -1244,24 +1244,24 @@ gUnk_084EF2D8:
 gUnk_084EF310:
 	.incbin "baserom.gba", 0x4EF310, 0x38
 
-	.global gUnk_084EF348
-gUnk_084EF348:
+	.global gMedalsListBg0Tilemap
+gMedalsListBg0Tilemap:
 	.incbin "baserom.gba", 0x4EF348, 0x38
 
-	.global gUnk_084EF380
-gUnk_084EF380:
+	.global gMedalAbilityBg0Tilemap
+gMedalAbilityBg0Tilemap:
 	.incbin "baserom.gba", 0x4EF380, 0x74
 
-	.global gUnk_084EF3F4
-gUnk_084EF3F4:
+	.global gMedalMedaforceBg0Tilemap
+gMedalMedaforceBg0Tilemap:
 	.incbin "baserom.gba", 0x4EF3F4, 0x78
 
-	.global gUnk_084EF46C
-gUnk_084EF46C:
+	.global gMedalRotationBg0Tilemap
+gMedalRotationBg0Tilemap:
 	.incbin "baserom.gba", 0x4EF46C, 0x74
 
-	.global gUnk_084EF4E0
-gUnk_084EF4E0:
+	.global gMedalSkillBg0Tilemap
+gMedalSkillBg0Tilemap:
 	.incbin "baserom.gba", 0x4EF4E0, 0x70
 
 	.global gUnk_084EF550
@@ -1296,24 +1296,24 @@ gUnk_084EF9C8:
 gUnk_084EFA34:
 	.incbin "baserom.gba", 0x4EFA34, 0x128
 
-	.global gUnk_084EFB5C
-gUnk_084EFB5C:
+	.global gMedalsListBg1Tilemap
+gMedalsListBg1Tilemap:
 	.incbin "baserom.gba", 0x4EFB5C, 0x84
 
-	.global gUnk_084EFBE0
-gUnk_084EFBE0:
+	.global gMedalAbilityBg1Tilemap
+gMedalAbilityBg1Tilemap:
 	.incbin "baserom.gba", 0x4EFBE0, 0xFC
 
-	.global gUnk_084EFCDC
-gUnk_084EFCDC:
+	.global gMedalMedaforceBg1Tilemap
+gMedalMedaforceBg1Tilemap:
 	.incbin "baserom.gba", 0x4EFCDC, 0x98
 
-	.global gUnk_084EFD74
-gUnk_084EFD74:
+	.global gMedalRotationBg1Tilemap
+gMedalRotationBg1Tilemap:
 	.incbin "baserom.gba", 0x4EFD74, 0xB4
 
-	.global gUnk_084EFE28
-gUnk_084EFE28:
+	.global gMedalSkillBg1Tilemap
+gMedalSkillBg1Tilemap:
 	.incbin "baserom.gba", 0x4EFE28, 0x14C
 
 	.global gUnk_084EFF74
@@ -1344,24 +1344,24 @@ gUnk_084F02B8:
 gUnk_084F03EC:
 	.incbin "baserom.gba", 0x4F03EC, 0x104
 
-	.global gUnk_084F04F0
-gUnk_084F04F0:
+	.global gMedalsListBg2Tilemap
+gMedalsListBg2Tilemap:
 	.incbin "baserom.gba", 0x4F04F0, 0x198
 
-	.global gUnk_084F0688
-gUnk_084F0688:
+	.global gMedalAbilityBg2Tilemap
+gMedalAbilityBg2Tilemap:
 	.incbin "baserom.gba", 0x4F0688, 0x130
 
-	.global gUnk_084F07B8
-gUnk_084F07B8:
+	.global gMedalMedaforceBg2Tilemap
+gMedalMedaforceBg2Tilemap:
 	.incbin "baserom.gba", 0x4F07B8, 0x138
 
-	.global gUnk_084F08F0
-gUnk_084F08F0:
+	.global gMedalRotationBg2Tilemap
+gMedalRotationBg2Tilemap:
 	.incbin "baserom.gba", 0x4F08F0, 0x110
 
-	.global gUnk_084F0A00
-gUnk_084F0A00:
+	.global gMedalSkillBg2Tilemap
+gMedalSkillBg2Tilemap:
 	.incbin "baserom.gba", 0x4F0A00, 0x1F0
 
 	.global gUnk_084F0BF0
@@ -1392,24 +1392,24 @@ gUnk_084F122C:
 gUnk_084F13C0:
 	.incbin "baserom.gba", 0x4F13C0, 0x194
 
-	.global gUnk_084F1554
-gUnk_084F1554:
+	.global gMedalsListBg3Tilemap
+gMedalsListBg3Tilemap:
 	.incbin "baserom.gba", 0x4F1554, 0x194
 
-	.global gUnk_084F16E8
-gUnk_084F16E8:
+	.global gMedalAbilityBg3Tilemap
+gMedalAbilityBg3Tilemap:
 	.incbin "baserom.gba", 0x4F16E8, 0x194
 
-	.global gUnk_084F187C
-gUnk_084F187C:
+	.global gMedalMedaforceBg3Tilemap
+gMedalMedaforceBg3Tilemap:
 	.incbin "baserom.gba", 0x4F187C, 0x194
 
-	.global gUnk_084F1A10
-gUnk_084F1A10:
+	.global gMedalRotationBg3Tilemap
+gMedalRotationBg3Tilemap:
 	.incbin "baserom.gba", 0x4F1A10, 0x190
 
-	.global gUnk_084F1BA0
-gUnk_084F1BA0:
+	.global gMedalSkillBg3Tilemap
+gMedalSkillBg3Tilemap:
 	.incbin "baserom.gba", 0x4F1BA0, 0x194
 
 	.global gUnk_084F1D34
@@ -1444,24 +1444,24 @@ gUnk_084F2820:
 gUnk_084F29E0:
 	.incbin "baserom.gba", 0x4F29E0, 0x1C0
 
-	.global gUnk_084F2BA0
-gUnk_084F2BA0:
+	.global gMedalsListBgPalette
+gMedalsListBgPalette:
 	.incbin "baserom.gba", 0x4F2BA0, 0x1C0
 
-	.global gUnk_084F2D60
-gUnk_084F2D60:
+	.global gMedalAbilityBgPalette
+gMedalAbilityBgPalette:
 	.incbin "baserom.gba", 0x4F2D60, 0x1C0
 
-	.global gUnk_084F2F20
-gUnk_084F2F20:
+	.global gMedalMedaforceBgPalette
+gMedalMedaforceBgPalette:
 	.incbin "baserom.gba", 0x4F2F20, 0x1C0
 
-	.global gUnk_084F30E0
-gUnk_084F30E0:
+	.global gMedalRotationBgPalette
+gMedalRotationBgPalette:
 	.incbin "baserom.gba", 0x4F30E0, 0x1C0
 
-	.global gUnk_084F32A0
-gUnk_084F32A0:
+	.global gMedalSkillBgPalette
+gMedalSkillBgPalette:
 	.incbin "baserom.gba", 0x4F32A0, 0x1C0
 
 	.global gUnk_084F3460

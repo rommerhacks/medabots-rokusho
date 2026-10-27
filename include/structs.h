@@ -325,9 +325,9 @@ struct GameWork {
     u8 filler9D;
     u8 textBuf[0x50]; // digit buffer (divide_by_10000); also four 0x14-byte name buffers for messages
                       // (message_print_var_step)
-    u8 partAbility;   // start of a 16-byte part data record (load_part_data): ability (gUnk_083B656C name)
+    u8 partAbility;   // start of a 16-byte part data record (load_part_data): ability (gAttributeNames name)
     u8 partSkill;     // skill id; >= 100: leg type (gUnk_083BE97C[partSkill - 100])
-    u8 partSkillType; // skill type (gUnk_083B6EC8 name)
+    u8 partSkillType; // skill type (gSkillTypeNames name)
     u8 partGender;    // gender: 0 male, 1 female (matched against gTeamSlots[].portraitMode)
     u8 unkF2;         // stats: head Armor, Success, Power, (F5 power icon flag), Uses; legs Armor, Propulsion,
     u8 unkF3;         // Evasion, Defense, Proximity, Remoteness (runtime-checked on the detail page)
@@ -787,14 +787,15 @@ struct MedalData {
     u8 flags;         // bit 7: owned, bit 6: in a Medabot (0x40 tested by medal_trade_check_medal)
     u8 graphicId;     // Medal graphic index (0x80-byte tiles at 0x084C21BC)
     u16 nextLevelExp; // shown as "NEXT Lv" on the Medals list (render_medal_level_display; blank at level 100)
-    u8 attribute;     // Attribute (gUnk_083B656C name, Ability page); Medals help: gUnk_083B69C8 message index
-    u8 level;         // level (Medals help: Medaforce slots open at 10 / 30 / 60)
-    u8 aimSkillType;  // Aim skill type (gUnk_083B6EC8 name, Ability page); Medals help: gUnk_083B70AC message index
+    u8 attribute; // Attribute (gAttributeNames name, Ability page); Medals help: gAttributeHelpMessages message index
+    u8 level;     // level (Medals help: Medaforce slots open at 10 / 30 / 60)
+    u8 aimSkillType; // Aim skill type (gSkillTypeNames name, Ability page); Medals help: gSkillTypeHelpMessages message
+                     // index
     u8 compatibility; // Compatibility icon (tile 0xD340 + compatibility * 4, Ability page)
-    u8 spriteVariant; // Medal sprite variant, 0-4 (gUnk_083AC494[graphicId][spriteVariant])
+    u8 spriteVariant; // Medal sprite variant, 0-4 (gMedalSpriteGfx[graphicId][spriteVariant])
     u8 rotationLen;   // rotation entries in use (medal_rotation_draw_actions draws the rest greyed out)
     u8 name[0xE];     // name text
-    u8 rotation[8];   // Rotation page actions (gUnk_083B825C message ids)
+    u8 rotation[8];   // Rotation page actions (gRotationActionMessages message ids)
     u8 skillLevel[8]; // per skill type: level 0-100 (render_medal_skill_stats)
     u8 skillExp[8];   // per skill type: progress to the next level, 0-7, drawn as bar tiles (draw_medal_skill_bars)
     u8 filler30[0xF];
@@ -816,7 +817,7 @@ struct BattleBot {
     u8 legs;
     u8 teamSlot;                // TeamSlot.slotId
     struct BattlePart parts[4]; // head, right arm, left arm, legs
-    u8 medaforce[6];            // chosen Medaforce: gUnk_083B7CD4 record (battle_bot_select_medaforce)
+    u8 medaforce[6];            // chosen Medaforce: gMedaforceRecords record (battle_bot_select_medaforce)
     u8 fillerAE[0x2];
     u8 skillUseCount[8]; // per skill type: times used this battle (count_bot_skill_use)
     u8 index;            // own record index (battle_bots_load_parts)

@@ -626,7 +626,7 @@ void debug_mdlpic_input(void) {
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & 1) {
         DmaSet(3, gUnk_084E2E98, 0x050003E0, 0x84000008);
-        lz_decompress_dispatch(gUnk_083AC494[gGameWork.debugValues[0]][gGameWork.debugValues[1]], (void *)0x06010000);
+        lz_decompress_dispatch(gMedalSpriteGfx[gGameWork.debugValues[0]][gGameWork.debugValues[1]], (void *)0x06010000);
         gSpriteEntries[0].unk0 = 0xC004;
         gSpriteEntries[0].unk2 = 0x40;
         gSpriteEntries[0].unk4 = 0x50;

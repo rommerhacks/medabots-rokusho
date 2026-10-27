@@ -71,8 +71,8 @@ void medal_transform_init(void) {
     CpuFastSet((void *)0x02030000, (void *)0x06004000, (size << 9) >> 11);
     size = 0x1800;
     gUnk_03006F74->unk36 = 0xC4;
-    CpuFastSet(gUnk_084C21BC + gMedals[slot].graphicId * 0x80, vram + size, 0x20);
-    lz_decompress_dispatch(gUnk_084C3208, (void *)(size + 0x06000080));
+    CpuFastSet(gMedalIconTiles + gMedals[slot].graphicId * 0x80, vram + size, 0x20);
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + 0x06000080));
     {
         u16 t = 0x60C0;
         u32 bg = ((REG_BG0CNT >> 8) & 0x1F) * 0x800;
@@ -120,7 +120,7 @@ void medal_transform_draw_medal(void) {
 
     id = gMedals[gUnk_030017EC].graphicId;
     fr = gMedals[gUnk_030017EC].spriteVariant - 1;
-    lz_decompress_dispatch(gUnk_083AC494[id][fr], (void *)0x06010000);
+    lz_decompress_dispatch(gMedalSpriteGfx[id][fr], (void *)0x06010000);
     s = gSpriteEntries;
     zero = 0;
     s->unk0 = 0xCA04;
@@ -196,7 +196,7 @@ void medal_transform_flash_in(void) {
                 struct MedalData *b = gMedals;
                 struct MedalData *m = &b[gUnk_030017EC];
                 u8 id = m->graphicId;
-                lz_decompress_dispatch(gUnk_083AC494[id][m->spriteVariant], (void *)0x06010000);
+                lz_decompress_dispatch(gMedalSpriteGfx[id][m->spriteVariant], (void *)0x06010000);
                 gUnk_03006F74->unk3A = 0;
                 gGameSubState++;
             }

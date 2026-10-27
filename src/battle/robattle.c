@@ -434,7 +434,7 @@ void robattle_mf_menu_confirm(void) {
     }
 }
 
-// Sub-states 0x28-0x2A: the Aim command shows the Medal's message (gUnk_083B70AC by Medal byte 6).
+// Sub-states 0x28-0x2A: the Aim command shows the Medal's message (gSkillTypeHelpMessages by Medal byte 6).
 void robattle_aim_message_open(void) {
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.unk80);
@@ -447,7 +447,7 @@ void robattle_aim_message_show(void) {
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
-    if (run_message(gUnk_083B70AC[gBattleBots[gBattleWork.unk80].medal.aimSkillType])) {
+    if (run_message(gSkillTypeHelpMessages[gBattleBots[gBattleWork.unk80].medal.aimSkillType])) {
         gGameWork.endModeStep = 0;
         gGameSubState++;
     }
@@ -607,11 +607,11 @@ void robattle_status_screen_init(void) {
     REG_BG3CNT = 0x1B03;
     lz_decompress_dispatch(gUnk_084ED4C4, (void *)0x06004000);
     lz_decompress_dispatch(gUnk_084C50D8, (void *)0x06006000);
-    lz_decompress_dispatch(gUnk_084C33DC, (void *)0x06006800);
+    lz_decompress_dispatch(gCompatibilityIconTiles, (void *)0x06006800);
     lz_decompress_dispatch(gUnk_084C4DB0, (void *)0x06006E00);
     lz_decompress_dispatch(gUnk_084C36F0, (void *)0x06007200);
     lz_decompress_dispatch(gUnk_084C50BC, (void *)0x06007480);
-    lz_decompress_dispatch(gUnk_084C7318, (void *)0x06017E00);
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF5DC, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0128, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0D24, REG_BG2CNT, 0x200);
@@ -621,7 +621,7 @@ void robattle_status_screen_init(void) {
     CpuFastSet(gUnk_0850DD58, (void *)0x05000380, 8);
     CpuFastSet(&gUnk_0850DD58[0x20], (void *)0x050003A0, 8);
     CpuFastSet(&gUnk_0850DD58[-0x20], (void *)0x050003E0, 8);
-    CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+    CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     fill = 0;
     CpuFastSet(&fill, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F40;

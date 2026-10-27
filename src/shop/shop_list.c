@@ -114,7 +114,7 @@ void shop_list_init(void) {
 void enable_obj_layer_and_load_palette(void) {
     REG_DISPCNT |= 0x1000;
     CpuFastSet(gUnk_0850DD58 + 0x30, (void *)0x0202F9A0, 8);
-    CpuFastSet(gUnk_084E2E58, (void *)0x0202F840, 8);
+    CpuFastSet(gCursorArrowPalette, (void *)0x0202F840, 8);
     CpuFastSet(gUnk_084C69B8, (void *)0x0202F860, 8);
     CpuFastSet(gUnk_0850DD58 + 0xB0, (void *)0x0202F9C0, 8);
     CpuFastSet(gUnk_0850DD58 - 0x30, (void *)0x0202F9E0, 8);

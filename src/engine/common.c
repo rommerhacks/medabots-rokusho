@@ -291,7 +291,7 @@ void load_part_data(u32 part, u32 kind, u8 *dst) {
         *d++ = gUnk_083B827C[part * 64 + kind * 16 + i];
 }
 
-// Skill types 0, 1, 4, 5 are proximity, 2, 3, 6, 7 remote (gUnk_083B53F8 messages 17 / 18: "Proximity
+// Skill types 0, 1, 4, 5 are proximity, 2, 3, 6, 7 remote (gMenuMessages messages 17 / 18: "Proximity
 // Medaparts" / "Remote Medaparts"). No return for type > 7: the original falls through with type in r0.
 u32 skill_type_is_remote(u32 type) {
     switch (type) {

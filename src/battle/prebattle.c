@@ -225,7 +225,7 @@ void prebattle_rubberobo_open_window(void) {
 void prebattle_rubberobo_ask(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (run_message(gUnk_083B53F8[20])) {
+    if (run_message(gMenuMessages[20])) {
         open_choice_menu(1, 22, 7);
         gGameSubState++;
     }
@@ -249,7 +249,7 @@ void prebattle_rubberobo_choice(void) {
 void prebattle_rubberobo_use(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (run_message(gUnk_083B53F8[21])) {
+    if (run_message(gMenuMessages[21])) {
         fade_out_music(8);
         item_remove_quantity(50, 1);
         gGameSubState++;

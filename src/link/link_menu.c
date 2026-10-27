@@ -21,7 +21,7 @@ void clear_vram_bg(void) {
     size = dma3_copy_or_decompress(gUnk_0879AC40, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
     CpuFastSet(gUnk_0879AA40, (void *)PLTT, 0x80);
-    CpuFastSet(gUnk_084E2E58, (void *)0x050003C0, 8);
+    CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     CpuFastSet(gUnk_0850DEB8, (void *)0x05000200, 8);
     gSpriteEntries[0].unk0 = 0x8000;

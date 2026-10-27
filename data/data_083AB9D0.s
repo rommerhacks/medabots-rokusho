@@ -135,8 +135,8 @@ gUnk_083AC468:
 gMedabotSlotDpadMoves:
 	.incbin "baserom.gba", 0x3AC484, 0x10
 
-	.global gUnk_083AC494
-gUnk_083AC494:
+	.global gMedalSpriteGfx
+gMedalSpriteGfx:
 	.incbin "baserom.gba", 0x3AC494, 0x258
 
 	.global gMedalsScreenHandlers
@@ -894,8 +894,8 @@ gFontWidths:
 gAltFontWidths:
 	.incbin "baserom.gba", 0x3B4E88, 0x570
 
-	.global gUnk_083B53F8
-gUnk_083B53F8:
+	.global gMenuMessages
+gMenuMessages:
 	.incbin "baserom.gba", 0x3B53F8, 0xB88
 
 	.global gUnk_083B5F80
@@ -914,36 +914,36 @@ gUnk_083B6158:
 gMedalNames:
 	.incbin "baserom.gba", 0x3B6410, 0x15C
 
-	.global gUnk_083B656C
-gUnk_083B656C:
+	.global gAttributeNames
+gAttributeNames:
 	.incbin "baserom.gba", 0x3B656C, 0x45C
 
-	.global gUnk_083B69C8
-gUnk_083B69C8:
+	.global gAttributeHelpMessages
+gAttributeHelpMessages:
 	.incbin "baserom.gba", 0x3B69C8, 0x45C
 
 	.global gUnk_083B6E24
 gUnk_083B6E24:
 	.incbin "baserom.gba", 0x3B6E24, 0xA4
 
-	.global gUnk_083B6EC8
-gUnk_083B6EC8:
+	.global gSkillTypeNames
+gSkillTypeNames:
 	.incbin "baserom.gba", 0x3B6EC8, 0x1E4
 
-	.global gUnk_083B70AC
-gUnk_083B70AC:
+	.global gSkillTypeHelpMessages
+gSkillTypeHelpMessages:
 	.incbin "baserom.gba", 0x3B70AC, 0x28C
 
 	.global gMedaforceNames
 gMedaforceNames:
 	.incbin "baserom.gba", 0x3B7338, 0x8C8
 
-	.global gUnk_083B7C00
-gUnk_083B7C00:
+	.global gMedaforceDescMessages
+gMedaforceDescMessages:
 	.incbin "baserom.gba", 0x3B7C00, 0xD4
 
-	.global gUnk_083B7CD4
-gUnk_083B7CD4:
+	.global gMedaforceRecords
+gMedaforceRecords:
 	.incbin "baserom.gba", 0x3B7CD4, 0x138
 
 	.global gMedalMedaforceIds
@@ -954,16 +954,16 @@ gMedalMedaforceIds:
 gHelpCursorLayouts:
 	.incbin "baserom.gba", 0x3B7EBC, 0x84
 
-	.global gUnk_083B7F40
-gUnk_083B7F40:
+	.global gMedaforceTypeHelpMessages
+gMedaforceTypeHelpMessages:
 	.incbin "baserom.gba", 0x3B7F40, 0x230
 
-	.global gUnk_083B8170
-gUnk_083B8170:
+	.global gMedaforceSkillHelpMessages
+gMedaforceSkillHelpMessages:
 	.incbin "baserom.gba", 0x3B8170, 0xEC
 
-	.global gUnk_083B825C
-gUnk_083B825C:
+	.global gRotationActionMessages
+gRotationActionMessages:
 	.incbin "baserom.gba", 0x3B825C, 0x20
 
 	.global gUnk_083B827C
