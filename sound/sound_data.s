@@ -528,16 +528,16 @@ gUnk_080AFF20:
 gUnk_080AFF30:
 	.incbin "baserom.gba", 0xAFF30, 0x4
 
-	.global gUnk_080AFF34
-gUnk_080AFF34:
+	.global gBombGameDebrisTimes
+gBombGameDebrisTimes:
 	.incbin "baserom.gba", 0xAFF34, 0xC
 
-	.global gUnk_080AFF40
-gUnk_080AFF40:
+	.global gBombGameBannerEva
+gBombGameBannerEva:
 	.incbin "baserom.gba", 0xAFF40, 0x8
 
-	.global gUnk_080AFF48
-gUnk_080AFF48:
+	.global gBombGameBannerEvb
+gBombGameBannerEvb:
 	.incbin "baserom.gba", 0xAFF48, 0x8
 
 	.global gIntroBobOffsets

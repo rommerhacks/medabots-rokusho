@@ -8,16 +8,6 @@
 
 static void title_sprite_start_effect(u8 effect, u8 sprite);
 
-void set_bot_y_positions_by_count(void) {
-    s32 i;
-    for (i = 0; i < 3; i++) {
-        s16 y = 0xC8;
-        if (i < gSpriteEntries[30].unk20)
-            y = 0x78;
-        gSpriteEntries[13 + i].unk4 = y;
-    }
-}
-
 static void title_screen_check_skip_or_test_mode(void) {
     if (gUnk_03001800_s.nextSubState == 5 && ((KEYS_LO(gHeldKeys) & 8) || gTitleSkipIntro != 0)) {
         gTitleSkipIntro = 0;

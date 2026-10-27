@@ -3,12 +3,13 @@
 
 // Bomb minigame (mode 3, state 5)
 
-u32 sub_0806BBDC(void);
-void sub_0806C994(void);
-void sub_0806BE58(void);
+u32 bomb_game_round_intro(void);
+void bomb_game_animate_round_banner(void);
+void bomb_game_move_player(void);
 void bomb_game_drop_bombs(void);
-void sub_0806C500(void);
-void get_battle_state_value_div10(void);
-void sub_0806CDE8(void);
+void bomb_game_player_blown_up(void);
+void bomb_game_draw_bomb_count(void);
+void bomb_game_animate_bombs(void);
+void bomb_game_draw_lives(void);
 
 #endif // GUARD_MINIGAME_BOMB_GAME_H

@@ -505,9 +505,9 @@ void sub_0804E878(void) {
         if (scene_state_dispatch(0x20, 0)) {
             u32 v = s->unkC4F;
             if (v == 1)
-                gUnk_03005310.unk39 = v;
+                gUnk_03005310.sceneResult = v;
             else if (v == 2)
-                gUnk_03005310.unk39 = v;
+                gUnk_03005310.sceneResult = v;
             map_script_command_done();
         }
         break;
@@ -1231,7 +1231,7 @@ void sub_0804FB40(void) {
     case 1:
         if (scene_state_dispatch(0x10, 0)) {
             if (sub_0804B6EC())
-                gUnk_03005310.unk39 = 1;
+                gUnk_03005310.sceneResult = 1;
             map_script_command_done();
         }
         break;
@@ -1264,7 +1264,7 @@ void sub_0804FBD0(void) {
     case 1:
         if (scene_state_dispatch(0x11, 0)) {
             if (sub_0804B6EC())
-                gUnk_03005310.unk39 = 1;
+                gUnk_03005310.sceneResult = 1;
             map_script_command_done();
         }
         break;

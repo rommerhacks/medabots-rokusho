@@ -563,13 +563,13 @@
 * A loop that waits until `timer == n * 2` with `n` kept in a register: a local `s32 n = 0xC4;`, and
   the test written `n * 2 <= timer` to keep the original `cmp` operand order (intro_scan_arms_state).
 * `ands` with the constant loaded first (`movs r1, #3; ands r1, r0`) where `& 3` gives `ands r0, r1`
-  the other way round: the original wrote `x % 4` on an unsigned value (sub_0806C7C4, bomb_game_drop_bombs).
+  the other way round: the original wrote `x % 4` on an unsigned value (bomb_game_over_banner, bomb_game_drop_bombs).
 * A switch whose compare tree pivots on 1 instead of the middle case: add an empty `case 0: break;`
-  (sub_0806BEF0, sub_0806C20C). Case body order in the source also changes the block order.
+  (bomb_game_update_thrower, bomb_game_update_bombs). Case body order in the source also changes the block order.
 * `x = cond ? a : b - 1;` stored with a single `strb` after both paths: write the store as one ternary;
-  an if/else gives two stores (sub_0806B9D0).
-* A table copied to the stack with `ldm`/`stm` is a struct copy (`struct S32Array3 t = gUnk_080AFF34;`);
-  a byte-wise `memcpy` call is `memcpy(buf, table, n)` (sub_0806C500, sub_0806C994). Both tables live
+  an if/else gives two stores (bomb_game_pick_lanes_state).
+* A table copied to the stack with `ldm`/`stm` is a struct copy (`struct S32Array3 t = gBombGameDebrisTimes;`);
+  a byte-wise `memcpy` call is `memcpy(buf, table, n)` (bomb_game_player_blown_up, bomb_game_animate_round_banner). Both tables live
   in the data blob, so they need symbols, not local initializers.
 * A VRAM store followed by a read-back of the same halfword (`strh r0, [r1]; ldrh r0, [r1]`) is a
   `vu16 *p` with a bare `*p++;` statement after the store (the number drawers `draw_number*`).

@@ -622,7 +622,7 @@ void sub_0804CAE8(void) {
 void sub_0804CB48(void) {
     gUnk_030057E0.unkC8C = gUnk_030057E0.unkC8A;
     read_map_script_bytes(1);
-    if (gUnk_03005310.unk39 == 2)
+    if (gUnk_03005310.sceneResult == 2)
         gUnk_030057E0.unkC8A = gUnk_030057E0.unkC8C + gUnk_030057E0.unkC94[0];
 }
 

@@ -188,15 +188,14 @@ extern u8 gUnk_08485CC4[3][3];      // sprite slots (ROM; declared without const
 extern const u8 gUnk_08485CE3[][7]; // frame delays
 extern bool32 (*const gUnk_08485D30[])(
     u8); // race sprite animations, by gSpriteEntries[].unk20 - 1 (update_sprite_animations_tick_0806AF40)
-extern const s8 gUnk_08485E84[];
 extern u8 gUnk_03006FDC;  // race course (copied from gUnk_03006D38.unk0, sub_08068C6C)
 extern s32 gUnk_03000000; // scene step frame counter, reset when a step finishes (execute_scene_step)
 extern u8 gUnk_03000004;  // scene step, gUnk_08485C7C index
 extern bool32 (*const gUnk_08485C7C[])(void); // scene steps (execute_scene_step)
 extern bool32 (*const gUnk_08485C68[])(void); // transition steps (scene_transition_step_080686F4)
-extern const u16 gUnk_0807C320[];  // title OBJ palettes (0x60 colours), then 0x1C bytes copied to gUnk_03001800_s + 0xC
-                                   // (title_screen_load_graphics)
-extern const Func gUnk_08485E5C[]; // game mode 3 state 5 sub-states, by gGameSubState (bomb_game_dispatch)
+extern const u16 gUnk_0807C320[]; // title OBJ palettes (0x60 colours), then 0x1C bytes copied to gUnk_03001800_s + 0xC
+                                  // (title_screen_load_graphics)
+extern const Func gBombGameStates[]; // game mode 3 state 5 sub-states, by gGameSubState (bomb_game_dispatch)
 extern const struct SpriteAnimFrame gUnk_08485D5C[]; // sprite animation steps (update_sprite_animations_0806B334)
 extern const u8 gUnk_087B3B30[];  // game mode 3 state 5 (bomb_game_load_graphics): compressed BG tiles
 extern const u8 gUnk_087B50AC[];  // compressed BG map (VRAM + 0x800)
@@ -205,7 +204,7 @@ extern const u8 gUnk_087B52E4[];  // compressed BG map (VRAM + 0x1800)
 extern const u16 gUnk_087B551C[]; // BG palettes (0x50 colours)
 extern const u8 gUnk_087AA19C[];  // compressed OBJ tiles
 extern const u16 gUnk_0807C0A0[]; // OBJ palettes (0xF0 colours)
-extern const s8 gUnk_08485E84[];  // per-frame y steps, by unk1A & 0x3F (sub_0806CDE8)
+extern const s8 gHalfSineArc[];   // 64 steps of a half sine, 0..47..2: bounce / hop heights (bomb game, race)
 extern const Func
     gTitleScreenStates[]; // game mode 3 state 2 (title screen) sub-states, by gGameSubState (title_screen_update)
 extern s32 (*const gTitleSpriteEffects[])(u8); // title sprite effects, by gSpriteEntries[].unk20 - 1: 0 = done, 0xFF =
@@ -1264,9 +1263,10 @@ extern const struct FuncTable7 gUnk_080AFEC4; // sub-state handlers by gGameSubS
 struct S32Array3 {
     s32 v[3];
 };
-extern const struct S32Array3 gUnk_080AFF34; // {0x50, 0x40, 0x20}: bomb minigame debris intervals (sub_0806C500)
-extern const u8 gUnk_080AFF40[8];            // bomb minigame BLDALPHA EVA steps (sub_0806C994)
-extern const u8 gUnk_080AFF48[8];            // bomb minigame BLDALPHA EVB steps (sub_0806C994)
+extern const struct S32Array3
+    gBombGameDebrisTimes;              // {0x50, 0x40, 0x20}: bomb minigame debris intervals (bomb_game_player_blown_up)
+extern const u8 gBombGameBannerEva[8]; // bomb minigame BLDALPHA EVA steps (bomb_game_animate_round_banner)
+extern const u8 gBombGameBannerEvb[8]; // bomb minigame BLDALPHA EVB steps (bomb_game_animate_round_banner)
 extern const u8 gUnk_087C11C4[];
 extern const u8 gUnk_087C2598[];
 extern const u8 gUnk_087C3928[];

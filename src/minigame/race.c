@@ -195,7 +195,7 @@ void sub_08069158(void) {
     sub_0806918C();
     play_song(0);
     p = &gUnk_03005310;
-    p->unk39 = gUnk_03006F94[0] == 1 ? 1 : 2;
+    p->sceneResult = gUnk_03006F94[0] == 1 ? 1 : 2;
     field_return_from_scene(0);
 }
 
@@ -961,7 +961,7 @@ bool32 sub_0806AFA0(u8 sprite) {
     if (gSpriteEntries[sprite].unk1A < 0x20) {
         gSpriteEntries[sprite].unk2++;
         gSpriteEntries[sprite].unk4 =
-            gSpriteEntries[sprite].unk23 + 3 - gUnk_08485E84[gSpriteEntries[sprite].unk1A + 0x20];
+            gSpriteEntries[sprite].unk23 + 3 - gHalfSineArc[gSpriteEntries[sprite].unk1A + 0x20];
     } else if (gSpriteEntries[sprite].unk1A < 0x30) {
         gSpriteEntries[sprite].unk4 = gSpriteEntries[sprite].unk23 + 3;
     } else {

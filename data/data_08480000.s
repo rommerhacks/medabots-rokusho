@@ -180,12 +180,12 @@ gUnk_08485D30:
 gUnk_08485D5C:
 	.incbin "baserom.gba", 0x485D5C, 0x100
 
-	.global gUnk_08485E5C
-gUnk_08485E5C:
+	.global gBombGameStates
+gBombGameStates:
 	.incbin "baserom.gba", 0x485E5C, 0x28
 
-	.global gUnk_08485E84
-gUnk_08485E84:
+	.global gHalfSineArc
+gHalfSineArc:
 	.incbin "baserom.gba", 0x485E84, 0x40
 
 	.global gTitleScreenStates

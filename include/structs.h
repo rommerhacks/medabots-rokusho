@@ -131,7 +131,7 @@ struct Unk_03001800_s {
         u16 h;             // story intro: page (graphics gUnk_08487328 / text gUnk_08486EEC)
         u16 afterSubState; // opening intro: sub-state to run after the next silhouette / scan step
         u8 b;              // boot logos: nonzero once START may skip them (boot_logos_check_skip)
-        s8 s[4]; // title: s[2] is a two-digit number shown with sprites 11 / 12 (get_battle_state_value_div10)
+        s8 s[4];           // bomb minigame: roundBombs / dropInterval / bombsLeft (struct Unk_03001800_bomb)
     } unkC;
     union {
         s32 w; // countdown: play_song(3) when it reaches 0
@@ -160,18 +160,18 @@ struct Unk_03001800_s {
     u16 unkF6;
 };
 
-// 0x03001800 while game mode 3 state 5 (gUnk_08485E5C, the bomb minigame) is active; the same RAM as
-// gUnk_03001800.
+// 0x03001800 while game mode 3 state 5 (gBombGameStates, the bomb minigame) is active; the same RAM as
+// gUnk_03001800 (bomb_game_init sets the first three counters through Unk_03001800_s.unkC).
 struct Unk_03001800_bomb {
     u8 filler0[8];
-    s32 timer; // frame counter of the current step (sub_0806BBDC)
-    s8 unkC;   // bombs per round (50), the number of entries in unkF
-    s8 unkD;
-    s8 unkE;       // bombs left this round, shown as BOMB (runtime: 50 -> 48, back to 50 in round 2)
-    s8 unkF[0x32]; // 0..2 each (guess: lane per bomb), a random walk (sub_0806B9D0)
-    s8 unk41;      // -8..8, pushed by R / L, eases back to 0 (sub_0806BE58)
+    s32 timer;          // frames since the round started; bombs drop when it passes nextDropTime
+    s8 roundBombs;      // bombs this round (50; after a lost life: bombs left + 10, at most 50), entries in bombLanes
+    s8 dropInterval;    // base frames between drops (12, +4 per lost life)
+    s8 bombsLeft;       // bombs still to drop this round, shown as BOMB (bomb_game_draw_bomb_count)
+    s8 bombLanes[0x32]; // lane of each bomb: 0 left, 1 middle, 2 right; a random walk (bomb_game_pick_lanes_state)
+    s8 playerPos;       // -8..8, pushed by R / L, eases back to 0; lane = playerPos / 5 + 1 (bomb_game_move_player)
     u8 filler42[2];
-    s32 unk44; // timer value of the next bomb drop (bomb_game_drop_bombs); unkC + unkD once the intro ends
+    s32 nextDropTime; // timer value of the next bomb drop (bomb_game_drop_bombs)
 };
 
 // 0x03001800 during game mode 3 state 6, the "Medabots Weekly" TV show (medabots_weekly_update); the same RAM
@@ -1304,7 +1304,7 @@ struct Unk_03005310 {
     s16 unk34; // 0x100
     u16 unk36; // 0-255, stepped by RIGHT / LEFT in debug_bg_scroll_input
     u8 unk38;
-    u8 unk39;
+    u8 sceneResult; // result of the last battle / minigame: 1 won, 2 lost (map script branch sub_0804CB48)
 };
 
 struct Unk_03006D38 {
