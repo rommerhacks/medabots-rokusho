@@ -74,7 +74,7 @@ void effect_step_end(void) {
 }
 
 void effect_step_play_anim(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[gGameWork.unk84], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF)
         gBattleWork.step++;
 }

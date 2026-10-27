@@ -13,7 +13,7 @@ u32 find_next_free_sprite_slot(u8 first, u8 count); // first unused gSpriteEntri
 void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align,
                                   u16 prio); // 0xFE-terminated, one sprite per character from slot; x / y / width in
 void process_sprite_anim_commands(const u8 *cmds, u8 slot);
-void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot);
+void battle_sprite_anim_init(const void *cmds, u8 slot);
 void divide_by_100000_b(u8 *buf, u32 value,
                         u32 tile); // guess: value as text, digits + tile; >= 100000 writes a fixed overflow string
 void render_text_sprites_08040EE4(u8 *text, u8 a, u32 x, u32 y, u8 b, u8 c, u8 d, u16 e, s32 f, s32 g);

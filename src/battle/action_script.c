@@ -308,7 +308,7 @@ void script_op_skill_anim_start(void) {
     closeup_left_pose_step();
     closeup_right_pose_step();
     clear_battle_sprite_slot(0, 0x28);
-    CpuFastSet(gUnk_084E30B8, (void *)0x05000380, 8);
+    CpuFastSet(gEffectCommonPalette, (void *)0x05000380, 8);
     gBattleWork.seqOffset = 0;
     gBattleWork.unkFB = 0;
     gBattleWork.unkFC = 0;

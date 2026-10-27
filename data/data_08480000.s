@@ -860,8 +860,8 @@ gDamageNumberTiles:
 gAttackAbsorbedTiles:
 	.incbin "baserom.gba", 0x4D18EC, 0x37F0
 
-	.global gUnk_084D50DC
-gUnk_084D50DC:
+	.global gSkillCastHopTiles
+gSkillCastHopTiles:
 	.incbin "baserom.gba", 0x4D50DC, 0x60
 
 	.global gUnk_084D513C
@@ -872,8 +872,8 @@ gUnk_084D513C:
 gUnk_084D54BC:
 	.incbin "baserom.gba", 0x4D54BC, 0x114
 
-	.global gUnk_084D55D0
-gUnk_084D55D0:
+	.global gStabilitySparkleTiles
+gStabilitySparkleTiles:
 	.incbin "baserom.gba", 0x4D55D0, 0x1B8
 
 	.global gUnk_084D5788
@@ -892,12 +892,12 @@ gUnk_084D5B08:
 gUnk_084D5D78:
 	.incbin "baserom.gba", 0x4D5D78, 0x144
 
-	.global gUnk_084D5EBC
-gUnk_084D5EBC:
+	.global gConcealDomeTiles
+gConcealDomeTiles:
 	.incbin "baserom.gba", 0x4D5EBC, 0x1DC
 
-	.global gUnk_084D6098
-gUnk_084D6098:
+	.global gChargeHourglassTiles
+gChargeHourglassTiles:
 	.incbin "baserom.gba", 0x4D6098, 0x144
 
 	.global gUnk_084D61DC
@@ -908,12 +908,12 @@ gUnk_084D61DC:
 gUnk_084D6320:
 	.incbin "baserom.gba", 0x4D6320, 0x144
 
-	.global gUnk_084D6464
-gUnk_084D6464:
+	.global gPushoverBananaTiles
+gPushoverBananaTiles:
 	.incbin "baserom.gba", 0x4D6464, 0xB8
 
-	.global gUnk_084D651C
-gUnk_084D651C:
+	.global gImpairPortraitTiles
+gImpairPortraitTiles:
 	.incbin "baserom.gba", 0x4D651C, 0x264
 
 	.global gUnk_084D6780
@@ -924,8 +924,8 @@ gUnk_084D6780:
 gUnk_084D6AAC:
 	.incbin "baserom.gba", 0x4D6AAC, 0x150
 
-	.global gUnk_084D6BFC
-gUnk_084D6BFC:
+	.global gBattlePopupDigitTiles
+gBattlePopupDigitTiles:
 	.incbin "baserom.gba", 0x4D6BFC, 0xC8
 
 	.global gUnk_084D6CC4
@@ -936,8 +936,8 @@ gUnk_084D6CC4:
 gUnk_084D6E20:
 	.incbin "baserom.gba", 0x4D6E20, 0x168
 
-	.global gUnk_084D6F88
-gUnk_084D6F88:
+	.global gForcedrainGlassTiles
+gForcedrainGlassTiles:
 	.incbin "baserom.gba", 0x4D6F88, 0x250
 
 	.global gUnk_084D71D8
@@ -960,132 +960,132 @@ gUnk_084D7C9C:
 gUnk_084D7DB0:
 	.incbin "baserom.gba", 0x4D7DB0, 0x39D8
 
-	.global gUnk_084DB788
-gUnk_084DB788:
+	.global gMedaforceSideBoltTiles
+gMedaforceSideBoltTiles:
 	.incbin "baserom.gba", 0x4DB788, 0x3A0
 
-	.global gUnk_084DBB28
-gUnk_084DBB28:
+	.global gMedaforceFormEmblemTiles
+gMedaforceFormEmblemTiles:
 	.incbin "baserom.gba", 0x4DBB28, 0x184
 
-	.global gUnk_084DBCAC
-gUnk_084DBCAC:
+	.global gMedaforceOpticFormTiles
+gMedaforceOpticFormTiles:
 	.incbin "baserom.gba", 0x4DBCAC, 0x60
 
-	.global gUnk_084DBD0C
-gUnk_084DBD0C:
+	.global gMedaforceBombFormTiles
+gMedaforceBombFormTiles:
 	.incbin "baserom.gba", 0x4DBD0C, 0x54
 
-	.global gUnk_084DBD60
-gUnk_084DBD60:
+	.global gMedaforceGravityFormTiles
+gMedaforceGravityFormTiles:
 	.incbin "baserom.gba", 0x4DBD60, 0x68
 
-	.global gUnk_084DBDC8
-gUnk_084DBDC8:
+	.global gMedaforceCancelFormationTiles
+gMedaforceCancelFormationTiles:
 	.incbin "baserom.gba", 0x4DBDC8, 0x11C
 
-	.global gUnk_084DBEE4
-gUnk_084DBEE4:
+	.global gMedaforceMovementEmblemTiles
+gMedaforceMovementEmblemTiles:
 	.incbin "baserom.gba", 0x4DBEE4, 0x21C
 
-	.global gUnk_084DC100
-gUnk_084DC100:
+	.global gMedaforceStopEmblemTiles
+gMedaforceStopEmblemTiles:
 	.incbin "baserom.gba", 0x4DC100, 0x444
 
-	.global gUnk_084DC544
-gUnk_084DC544:
+	.global gMedaforceBindEmblemTiles
+gMedaforceBindEmblemTiles:
 	.incbin "baserom.gba", 0x4DC544, 0x28C
 
-	.global gUnk_084DC7D0
-gUnk_084DC7D0:
+	.global gMedaforceFlowEmblemTiles
+gMedaforceFlowEmblemTiles:
 	.incbin "baserom.gba", 0x4DC7D0, 0x784
 
-	.global gUnk_084DCF54
-gUnk_084DCF54:
+	.global gMedaforceTargetBurstTiles
+gMedaforceTargetBurstTiles:
 	.incbin "baserom.gba", 0x4DCF54, 0x234
 
-	.global gUnk_084DD188
-gUnk_084DD188:
+	.global gMedaforceChaosEmblemTiles
+gMedaforceChaosEmblemTiles:
 	.incbin "baserom.gba", 0x4DD188, 0x2D4
 
-	.global gUnk_084DD45C
-gUnk_084DD45C:
+	.global gMedaforceCancelStatusSparkleTiles
+gMedaforceCancelStatusSparkleTiles:
 	.incbin "baserom.gba", 0x4DD45C, 0x1EC
 
-	.global gUnk_084DD648
-gUnk_084DD648:
+	.global gMedaforceStatusRestoreTiles
+gMedaforceStatusRestoreTiles:
 	.incbin "baserom.gba", 0x4DD648, 0x24C
 
-	.global gUnk_084DD894
-gUnk_084DD894:
+	.global gMedaforceTotalRecoveryTiles
+gMedaforceTotalRecoveryTiles:
 	.incbin "baserom.gba", 0x4DD894, 0x610
 
-	.global gUnk_084DDEA4
-gUnk_084DDEA4:
+	.global gMedaforceFullBodyRepairTiles
+gMedaforceFullBodyRepairTiles:
 	.incbin "baserom.gba", 0x4DDEA4, 0x618
 
-	.global gUnk_084DE4BC
-gUnk_084DE4BC:
+	.global gMedaforceTotalRecoverySparkleTiles
+gMedaforceTotalRecoverySparkleTiles:
 	.incbin "baserom.gba", 0x4DE4BC, 0x16C
 
-	.global gUnk_084DE628
-gUnk_084DE628:
+	.global gMedaforceFullBodyUpTiles
+gMedaforceFullBodyUpTiles:
 	.incbin "baserom.gba", 0x4DE628, 0x6F4
 
-	.global gUnk_084DED1C
-gUnk_084DED1C:
+	.global gMedaforceFullBodyRadTiles
+gMedaforceFullBodyRadTiles:
 	.incbin "baserom.gba", 0x4DED1C, 0x308
 
-	.global gUnk_084DF024
-gUnk_084DF024:
+	.global gMedaforceIronWallTiles
+gMedaforceIronWallTiles:
 	.incbin "baserom.gba", 0x4DF024, 0x3DC
 
-	.global gUnk_084DF400
-gUnk_084DF400:
+	.global gMedaforcePowerUpTiles
+gMedaforcePowerUpTiles:
 	.incbin "baserom.gba", 0x4DF400, 0x688
 
-	.global gUnk_084DFA88
-gUnk_084DFA88:
+	.global gMedaforceAntiTerrainBeamTiles
+gMedaforceAntiTerrainBeamTiles:
 	.incbin "baserom.gba", 0x4DFA88, 0x14C
 
-	.global gUnk_084DFBD4
-gUnk_084DFBD4:
+	.global gMedaforceAntiTerrainBoltTiles
+gMedaforceAntiTerrainBoltTiles:
 	.incbin "baserom.gba", 0x4DFBD4, 0x44
 
-	.global gUnk_084DFC18
-gUnk_084DFC18:
+	.global gMedaforceUpArrowTiles
+gMedaforceUpArrowTiles:
 	.incbin "baserom.gba", 0x4DFC18, 0x3CC
 
-	.global gUnk_084DFFE4
-gUnk_084DFFE4:
+	.global gMedaforceChargeTiles
+gMedaforceChargeTiles:
 	.incbin "baserom.gba", 0x4DFFE4, 0x37C
 
-	.global gUnk_084E0360
-gUnk_084E0360:
+	.global gMedaforceUselessTiles
+gMedaforceUselessTiles:
 	.incbin "baserom.gba", 0x4E0360, 0x10C
 
-	.global gUnk_084E046C
-gUnk_084E046C:
+	.global gMedaforceDestroyerTiles
+gMedaforceDestroyerTiles:
 	.incbin "baserom.gba", 0x4E046C, 0x10AC
 
-	.global gUnk_084E1518
-gUnk_084E1518:
+	.global gMedaforceCrazyShotTiles
+gMedaforceCrazyShotTiles:
 	.incbin "baserom.gba", 0x4E1518, 0x2C8
 
-	.global gUnk_084E17E0
-gUnk_084E17E0:
+	.global gMedaforceUpTiles
+gMedaforceUpTiles:
 	.incbin "baserom.gba", 0x4E17E0, 0xA4
 
-	.global gUnk_084E1884
-gUnk_084E1884:
+	.global gMedaforceLegCrashTiles
+gMedaforceLegCrashTiles:
 	.incbin "baserom.gba", 0x4E1884, 0x314
 
-	.global gUnk_084E1B98
-gUnk_084E1B98:
+	.global gMedaforceProtectorTiles
+gMedaforceProtectorTiles:
 	.incbin "baserom.gba", 0x4E1B98, 0x30C
 
-	.global gUnk_084E1EA4
-gUnk_084E1EA4:
+	.global gMedaforceAntiProtectionTiles
+gMedaforceAntiProtectionTiles:
 	.incbin "baserom.gba", 0x4E1EA4, 0x254
 
 	.global gUnk_084E20F8
@@ -1160,8 +1160,8 @@ gUnk_084E2FD8:
 gUnk_084E2FF8:
 	.incbin "baserom.gba", 0x4E2FF8, 0x20
 
-	.global gUnk_084E3018
-gUnk_084E3018:
+	.global gMedaforceActivatePalette
+gMedaforceActivatePalette:
 	.incbin "baserom.gba", 0x4E3018, 0x20
 
 	.global gActionFlashPalette
@@ -1180,8 +1180,8 @@ gMissPopupPalette:
 gUnk_084E3098:
 	.incbin "baserom.gba", 0x4E3098, 0x20
 
-	.global gUnk_084E30B8
-gUnk_084E30B8:
+	.global gEffectCommonPalette
+gEffectCommonPalette:
 	.incbin "baserom.gba", 0x4E30B8, 0x20
 
 	.global gUnk_084E30D8
@@ -1660,8 +1660,8 @@ gReactionRiseFxPalette:
 gAttackAbsorbedPalette:
 	.incbin "baserom.gba", 0x50E498, 0x1C0
 
-	.global gUnk_0850E658
-gUnk_0850E658:
+	.global gSkillCastHopPalette
+gSkillCastHopPalette:
 	.incbin "baserom.gba", 0x50E658, 0x20
 
 	.global gUnk_0850E678
@@ -1672,8 +1672,8 @@ gUnk_0850E678:
 gUnk_0850E698:
 	.incbin "baserom.gba", 0x50E698, 0x20
 
-	.global gUnk_0850E6B8
-gUnk_0850E6B8:
+	.global gStabilitySparklePalette
+gStabilitySparklePalette:
 	.incbin "baserom.gba", 0x50E6B8, 0x20
 
 	.global gUnk_0850E6D8
@@ -1692,12 +1692,12 @@ gUnk_0850E738:
 gUnk_0850E778:
 	.incbin "baserom.gba", 0x50E778, 0x40
 
-	.global gUnk_0850E7B8
-gUnk_0850E7B8:
+	.global gConcealDomePalette
+gConcealDomePalette:
 	.incbin "baserom.gba", 0x50E7B8, 0x20
 
-	.global gUnk_0850E7D8
-gUnk_0850E7D8:
+	.global gChargeHourglassPalette
+gChargeHourglassPalette:
 	.incbin "baserom.gba", 0x50E7D8, 0x20
 
 	.global gUnk_0850E7F8
@@ -1708,12 +1708,12 @@ gUnk_0850E7F8:
 gUnk_0850E818:
 	.incbin "baserom.gba", 0x50E818, 0x20
 
-	.global gUnk_0850E838
-gUnk_0850E838:
+	.global gPushoverBananaPalette
+gPushoverBananaPalette:
 	.incbin "baserom.gba", 0x50E838, 0x20
 
-	.global gUnk_0850E858
-gUnk_0850E858:
+	.global gImpairPortraitPalette
+gImpairPortraitPalette:
 	.incbin "baserom.gba", 0x50E858, 0x20
 
 	.global gUnk_0850E878
@@ -1732,8 +1732,8 @@ gUnk_0850E8F8:
 gUnk_0850E918:
 	.incbin "baserom.gba", 0x50E918, 0x20
 
-	.global gUnk_0850E938
-gUnk_0850E938:
+	.global gForcedrainGlassPalettes
+gForcedrainGlassPalettes:
 	.incbin "baserom.gba", 0x50E938, 0x40
 
 	.global gUnk_0850E978
@@ -1748,120 +1748,120 @@ gUnk_0850E998:
 gUnk_0850E9D8:
 	.incbin "baserom.gba", 0x50E9D8, 0x160
 
-	.global gUnk_0850EB38
-gUnk_0850EB38:
+	.global gMedaforceSideBoltPalette
+gMedaforceSideBoltPalette:
 	.incbin "baserom.gba", 0x50EB38, 0x20
 
-	.global gUnk_0850EB58
-gUnk_0850EB58:
+	.global gMedaforceOpticFormPalette
+gMedaforceOpticFormPalette:
 	.incbin "baserom.gba", 0x50EB58, 0x20
 
-	.global gUnk_0850EB78
-gUnk_0850EB78:
+	.global gMedaforceBombFormPalette
+gMedaforceBombFormPalette:
 	.incbin "baserom.gba", 0x50EB78, 0x20
 
-	.global gUnk_0850EB98
-gUnk_0850EB98:
+	.global gMedaforceGravityFormPalette
+gMedaforceGravityFormPalette:
 	.incbin "baserom.gba", 0x50EB98, 0x20
 
-	.global gUnk_0850EBB8
-gUnk_0850EBB8:
+	.global gMedaforceCancelFormationPalette
+gMedaforceCancelFormationPalette:
 	.incbin "baserom.gba", 0x50EBB8, 0x20
 
-	.global gUnk_0850EBD8
-gUnk_0850EBD8:
+	.global gMedaforceMovementEmblemPalette
+gMedaforceMovementEmblemPalette:
 	.incbin "baserom.gba", 0x50EBD8, 0x20
 
-	.global gUnk_0850EBF8
-gUnk_0850EBF8:
+	.global gMedaforceStopEmblemPalette
+gMedaforceStopEmblemPalette:
 	.incbin "baserom.gba", 0x50EBF8, 0x20
 
-	.global gUnk_0850EC18
-gUnk_0850EC18:
+	.global gMedaforceBindEmblemPalette
+gMedaforceBindEmblemPalette:
 	.incbin "baserom.gba", 0x50EC18, 0x20
 
-	.global gUnk_0850EC38
-gUnk_0850EC38:
+	.global gMedaforceFlowEmblemPalette
+gMedaforceFlowEmblemPalette:
 	.incbin "baserom.gba", 0x50EC38, 0x20
 
-	.global gUnk_0850EC58
-gUnk_0850EC58:
+	.global gMedaforceTargetBurstPalette
+gMedaforceTargetBurstPalette:
 	.incbin "baserom.gba", 0x50EC58, 0x20
 
-	.global gUnk_0850EC78
-gUnk_0850EC78:
+	.global gMedaforceChaosEmblemPalette
+gMedaforceChaosEmblemPalette:
 	.incbin "baserom.gba", 0x50EC78, 0x20
 
-	.global gUnk_0850EC98
-gUnk_0850EC98:
+	.global gMedaforceCancelStatusSparklePalette
+gMedaforceCancelStatusSparklePalette:
 	.incbin "baserom.gba", 0x50EC98, 0x20
 
-	.global gUnk_0850ECB8
-gUnk_0850ECB8:
+	.global gMedaforceStatusRestorePalette
+gMedaforceStatusRestorePalette:
 	.incbin "baserom.gba", 0x50ECB8, 0x20
 
-	.global gUnk_0850ECD8
-gUnk_0850ECD8:
+	.global gMedaforceTotalRecoveryPalette
+gMedaforceTotalRecoveryPalette:
 	.incbin "baserom.gba", 0x50ECD8, 0x20
 
-	.global gUnk_0850ECF8
-gUnk_0850ECF8:
+	.global gMedaforceFullBodyRepairPalette
+gMedaforceFullBodyRepairPalette:
 	.incbin "baserom.gba", 0x50ECF8, 0x20
 
-	.global gUnk_0850ED18
-gUnk_0850ED18:
+	.global gMedaforceTotalRecoverySparklePalette
+gMedaforceTotalRecoverySparklePalette:
 	.incbin "baserom.gba", 0x50ED18, 0x20
 
-	.global gUnk_0850ED38
-gUnk_0850ED38:
+	.global gMedaforceFullBodyUpPalette
+gMedaforceFullBodyUpPalette:
 	.incbin "baserom.gba", 0x50ED38, 0x20
 
-	.global gUnk_0850ED58
-gUnk_0850ED58:
+	.global gMedaforceFullBodyRadPalette
+gMedaforceFullBodyRadPalette:
 	.incbin "baserom.gba", 0x50ED58, 0x20
 
-	.global gUnk_0850ED78
-gUnk_0850ED78:
+	.global gMedaforceIronWallPalette
+gMedaforceIronWallPalette:
 	.incbin "baserom.gba", 0x50ED78, 0x20
 
-	.global gUnk_0850ED98
-gUnk_0850ED98:
+	.global gMedaforcePowerUpPalette
+gMedaforcePowerUpPalette:
 	.incbin "baserom.gba", 0x50ED98, 0x20
 
-	.global gUnk_0850EDB8
-gUnk_0850EDB8:
+	.global gMedaforceAntiTerrainBeamPalettes
+gMedaforceAntiTerrainBeamPalettes:
 	.incbin "baserom.gba", 0x50EDB8, 0x40
 
-	.global gUnk_0850EDF8
-gUnk_0850EDF8:
+	.global gMedaforceAntiTerrainBoltPalettes
+gMedaforceAntiTerrainBoltPalettes:
 	.incbin "baserom.gba", 0x50EDF8, 0x40
 
-	.global gUnk_0850EE38
-gUnk_0850EE38:
+	.global gMedaforceUpArrowPalettes
+gMedaforceUpArrowPalettes:
 	.incbin "baserom.gba", 0x50EE38, 0x40
 
-	.global gUnk_0850EE78
-gUnk_0850EE78:
+	.global gMedaforceChargePalette
+gMedaforceChargePalette:
 	.incbin "baserom.gba", 0x50EE78, 0x20
 
-	.global gUnk_0850EE98
-gUnk_0850EE98:
+	.global gMedaforceUselessPalette
+gMedaforceUselessPalette:
 	.incbin "baserom.gba", 0x50EE98, 0x20
 
-	.global gUnk_0850EEB8
-gUnk_0850EEB8:
+	.global gMedaforceDestroyerPalette
+gMedaforceDestroyerPalette:
 	.incbin "baserom.gba", 0x50EEB8, 0x20
 
-	.global gUnk_0850EED8
-gUnk_0850EED8:
+	.global gMedaforceCrazyShotPalette
+gMedaforceCrazyShotPalette:
 	.incbin "baserom.gba", 0x50EED8, 0x20
 
-	.global gUnk_0850EEF8
-gUnk_0850EEF8:
+	.global gMedaforceLegCrashPalette
+gMedaforceLegCrashPalette:
 	.incbin "baserom.gba", 0x50EEF8, 0x20
 
-	.global gUnk_0850EF18
-gUnk_0850EF18:
+	.global gMedaforceProtectorPalettes
+gMedaforceProtectorPalettes:
 	.incbin "baserom.gba", 0x50EF18, 0x40
 
 	.global gUnk_0850EF58

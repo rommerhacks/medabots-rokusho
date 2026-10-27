@@ -44,7 +44,7 @@ void medawatch_menu_fade_in(void) {
 
 void medawatch_menu_handle_input(void) {
     medawatch_scroll_bg3();
-    process_sprite_anim_commands(gUnk_083B5F80[0], 0);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0], 0);
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         if (gGameWork.medawatchCursor == 0)
             gGameWork.medawatchCursor = 2;
@@ -71,7 +71,7 @@ void medawatch_menu_handle_input(void) {
     }
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
-        init_battle_sprite_entry_08040B90(gUnk_083B5F80[1], 0);
+        battle_sprite_anim_init(gBattleSpriteAnimScripts[1], 0);
         set_blend_effect_mode(6, 0x3F, 0x20);
         gGameWork.unk84 = 0;
         gGameSubState = 8;
@@ -106,7 +106,7 @@ void medawatch_menu_return_to_field_menu(void) {
 
 void medawatch_menu_select_fade(void) {
     medawatch_scroll_bg3();
-    process_sprite_anim_commands(gUnk_083B5F80[1], 0);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[1], 0);
     if (update_blend_effect())
         gGameSubState++;
 }
@@ -195,7 +195,7 @@ static void medawatch_menu_init_cursor(void) {
     gSpriteEntries[0].unkA = 14;
     gSpriteEntries[0].unk1C = 0;
     gSpriteEntries[0].unkB = 0xFF;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0], 0);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0], 0);
 }
 
 // Scrolls the background pattern diagonally every other frame.

@@ -12,7 +12,7 @@ void message_fill_window_tiles(void) {
     gGameWork.endModeStep++;
 }
 
-void init_battle_sprite_entry_08040B90(const void *cmds, u8 slot) {
+void battle_sprite_anim_init(const void *cmds, u8 slot) {
     const u8 *p;
     u8 i;
     gSpriteEntries[slot].unk20 = 0;

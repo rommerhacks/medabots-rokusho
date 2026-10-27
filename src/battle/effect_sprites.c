@@ -146,7 +146,7 @@ void hit_sparks_spawn(u32 slot, u32 part, s16 x, s16 y) {
         t = gUnk_083AF490[i * 2 + 1];
         t += u;
         gSpriteEntries[slot + i].unk4 = t & 0xFF;
-        init_battle_sprite_entry_08040B90(gUnk_083B5F80[29], slot + i);
+        battle_sprite_anim_init(gBattleSpriteAnimScripts[29], slot + i);
     }
 }
 
@@ -160,7 +160,7 @@ u32 hit_sparks_update(u32 slot) {
             if (gSpriteEntries[slot + i].unk2C == 0) {
                 gSpriteEntries[slot + i].unk0 |= 0x8004;
                 gSpriteEntries[slot + i].unkA = 0xE;
-                process_sprite_anim_commands(gUnk_083B5F80[29], n = slot + i);
+                process_sprite_anim_commands(gBattleSpriteAnimScripts[29], n = slot + i);
                 if (gSpriteEntries[slot + i].unk22 == 0xFF)
                     clear_battle_sprite_slot(n, 1);
                 else
@@ -327,5 +327,5 @@ void effect_sprite_spawn_at_part(u32 slot, u32 part, s16 x, s16 y, u32 n) {
     s->unk2 = t1 & 0x1FF;
     t2 = gUnk_083AF480[part * 2 + 1] + y;
     s->unk4 = t2 & 0xFF;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[n], slot);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[n], slot);
 }

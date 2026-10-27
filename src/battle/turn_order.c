@@ -167,13 +167,13 @@ void target_marker_show(void) {
         gSpriteEntries[9].unk25 = gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkE;
         gSpriteEntries[9].unk26 = 0;
         gSpriteEntries[9].unk27 = 0;
-        init_battle_sprite_entry_08040B90(gUnk_083B5F80[24], 9);
+        battle_sprite_anim_init(gBattleSpriteAnimScripts[24], 9);
     }
 }
 
 void target_marker_update(void) {
     if (gSpriteEntries[9].unk0 & 0x8000) {
-        process_sprite_anim_commands(gUnk_083B5F80[24], 9);
+        process_sprite_anim_commands(gBattleSpriteAnimScripts[24], 9);
         if (gSpriteEntries[9].unk24) {
             gSpriteEntries[9].unk27++;
             gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].unk0 |= 0x220;

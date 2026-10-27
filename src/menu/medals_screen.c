@@ -762,7 +762,7 @@ void medals_help_cursor_input(void) {
     u8 b;
 
     medals_scroll_bg();
-    process_sprite_anim_commands(gUnk_083B5F80[3], 6);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[3], 6);
     if ((b = KEYS_LO(gRepeatKeys) & 0x40)) {
         if (gGameWork.helpPage == 0)
             gGameWork.helpPage = gGameWork.helpPageCount - 1;
@@ -1623,7 +1623,7 @@ void medals_help_init_cursor(void) {
     gSpriteEntries[6].unkA = 14;
     gSpriteEntries[6].unk1C = 0;
     gSpriteEntries[6].unkB = 0xC1;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[3], 6);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[3], 6);
 }
 
 static void medals_help_move_cursor(void) {

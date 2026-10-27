@@ -53,7 +53,7 @@ void field_menu_open_anim(void) {
 }
 
 void field_menu_handle_input(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0], 0);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0], 0);
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         play_sound_effect(2);
         gGameWork.fieldMenuCursor = (gGameWork.fieldMenuCursor - 1) & 3;
@@ -259,5 +259,5 @@ static void field_menu_init_cursor(void) {
     gSpriteEntries[0].unkA = 14;
     gSpriteEntries[0].unk1C = 0;
     gSpriteEntries[0].unkB = 0xFF;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0], 0);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0], 0);
 }

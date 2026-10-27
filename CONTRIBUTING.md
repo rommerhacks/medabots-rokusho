@@ -303,7 +303,7 @@
 * `n = (r | -r) >> 31;` gives the original's `rsbs; orrs; lsrs #31` for "count 1 if nonzero";
   `n = f() != 0` gets a branch (team_form_move).
 * A table whose entries the original reloads after every call (`ldr r0, [r4]` before each `bl`) must
-  not be declared with `const` elements (`const void *gUnk_083B5F80[]`, not `const void *const`):
+  not be declared with `const` elements (`const void *gBattleSpriteAnimScripts[]`, not `const void *const`):
   gcc keeps a const element in a register across calls.
 * Two stores of the same value after a select (`if (c) x = 0x88; else x = 0x68; a = b = c = x;`) come
   out as one join when written as chained stores in each arm: `if (c) p[2].f = p[1].f = p[0].f = 0x88;
@@ -436,7 +436,7 @@
 * A sprite slot found by a search loop and then used for many stores: index `gSpriteEntries[slot].f`
   every time instead of a `struct *s = &...[slot]` (the pointer swaps the `lsls/ldr` order).
 * An unrotated loop (`top: test; bls out; i += 3; b top`) where gcc rotates your `while`/`for`: write it
-  with a label and `goto` (init_battle_sprite_entry_08040B90).
+  with a label and `goto` (battle_sprite_anim_init).
 * `VRAM + ((bgcnt >> 8) & 0x1F) << 11` screen-base addressing: `(u16 *)(VRAM + (screen << 11)) + x + y * 32`
   matches; byte sums in other orders put `VRAM` in the wrong add (vram_fill_tilemap_rect, tilemap_fill_rect).
 * A value loaded once (`ldrh r2`) and used non-destructively three times where your `u16 c` local gets

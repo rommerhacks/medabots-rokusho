@@ -282,7 +282,7 @@ void trap_hit_sprite_spawn(void) {
         gSpriteEntries[0x21].unk8 = 8;
         gSpriteEntries[0x21].unk4 = 0x3C;
         gBattleWork.unk52 = 0x19;
-        init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x19], 0x21);
+        battle_sprite_anim_init(gBattleSpriteAnimScripts[0x19], 0x21);
         play_sound_effect(0x3E);
         gBattleWork.step++;
         break;
@@ -291,7 +291,7 @@ void trap_hit_sprite_spawn(void) {
         gSpriteEntries[0x21].unk8 = 8;
         gSpriteEntries[0x21].unk4 = 0x3C;
         gBattleWork.unk52 = 0x1A;
-        init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x1A], 0x21);
+        battle_sprite_anim_init(gBattleSpriteAnimScripts[0x1A], 0x21);
         play_sound_effect(0x3E);
         gBattleWork.step++;
         break;
@@ -331,7 +331,7 @@ void trap_hit_sprite_grow(void) {
 
 void trap_hit_sprite_animate(void) {
     set_target_sprite_position(gBattleWork.actor, gFrameCounter, gBattleWork.unk51);
-    process_sprite_anim_commands(gUnk_083B5F80[gBattleWork.unk52], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gBattleWork.unk52], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         update_target_cursor_position(gBattleWork.actor);
         gBattleWork.step++;
@@ -466,12 +466,12 @@ void trap_hit_break_burst_init(void) {
     gSpriteEntries[0x21].unk4 = gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.damagePart].unk4;
     gSpriteEntries[0x21].unkA = 7;
     gSpriteEntries[0x21].unkB = 0xF0;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x22], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x22], 0x21);
     gBattleWork.step++;
 }
 
 void trap_hit_break_burst_wait(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x22], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x22], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
         load_all_bot_part_sprites();
@@ -690,7 +690,7 @@ void action_flash_spawn(void) {
     gSpriteEntries[9].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2;
     gSpriteEntries[9].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[9].unk24 = 6;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x1B], 9);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x1B], 9);
     gBattleWork.step++;
 }
 
@@ -700,7 +700,7 @@ void action_flash_move(void) {
 }
 
 void action_flash_finish(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x1B], 9);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x1B], 9);
     if (gSpriteEntries[9].unk22 == 0xFF) {
         clear_battle_sprite_slot(9, 1);
         gBattleWork.stepDone = 1;
@@ -875,7 +875,7 @@ void guard_shield_spawn(void) {
     gSpriteEntries[0x21].unk8 = 0x80;
     gSpriteEntries[0x21].unk9 = 0x80;
     gSpriteEntries[0x21].unkB = 0xF0;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x1C], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x1C], 0x21);
     gBattleWork.step++;
 }
 
@@ -890,7 +890,7 @@ void guard_shield_shrink(void) {
 }
 
 void guard_shield_animate(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x1C], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x1C], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         memcpy_bytes_0803F63C(gBattleBots[gBattleWork.guardBot - 1].medal.name, gGameWork.textBuf, 0xE);
         gBattleWork.messageId = 0x16;
@@ -1307,7 +1307,7 @@ void attack_hit_break_burst_init(void) {
 }
 
 void attack_hit_break_burst_wait(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x1E], 10);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x1E], 10);
     if (gSpriteEntries[10].unk22 == 0xFF) {
         clear_battle_sprite_slot(10, 1);
         gBattleWork.step++;
@@ -1508,7 +1508,7 @@ void attack_absorbed_sparkle_init(void) {
 }
 
 void attack_absorbed_sparkle_wait(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x20], 10);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x20], 10);
     if (gSpriteEntries[10].unk22 == 0xFF) {
         clear_battle_sprite_slot(10, 1);
         gGameWork.unk86 = 0x3C;
@@ -1692,7 +1692,7 @@ void status_attack_flash_spawn(void) {
     gSpriteEntries[11].unk4 = y;
     gSpriteEntries[11].unkA = 0xD;
     gSpriteEntries[11].unkB = 0x80;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x21], 11);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x21], 11);
     play_sound_effect(0x2F);
     gBattleWork.step++;
 }
@@ -1703,7 +1703,7 @@ void status_attack_flash_animate(void) {
             gSpriteEntries[10].unk20 = 1;
     } else if (gSpriteEntries[10].unk9 != 0x40)
         gSpriteEntries[10].unk9 -= 4;
-    process_sprite_anim_commands(gUnk_083B5F80[0x21], 11);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x21], 11);
     if (gSpriteEntries[11].unk22 == 0xFF) {
         clear_battle_sprite_slot(10, 2);
         gBattleWork.step++;
@@ -1917,12 +1917,12 @@ void bot_defeat_burst_init(void) {
     gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.unk51 * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unkA = 7;
     gSpriteEntries[0x21].unkB = 0xF0;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x22], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x22], 0x21);
     gBattleWork.step++;
 }
 
 void bot_defeat_burst_wait(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x22], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x22], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
         clear_sprite_table_mask(0x5A + gBattleWork.unk51 * 4, 4);
@@ -1988,13 +1988,13 @@ void reaction_rise_spawn(void) {
     gSpriteEntries[11].unkA = 0xD;
     gSpriteEntries[11].unkB = 0x80;
     gSpriteEntries[11].unk6 = 0x2C00;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x37], 11);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x37], 11);
     play_sound_effect(0x53);
     gBattleWork.step++;
 }
 
 void reaction_rise(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x37], 11);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x37], 11);
     if (gSpriteEntries[10].unk2B == 0x28) {
         clear_battle_sprite_slot(11, 1);
         gBattleWork.step++;
@@ -2066,13 +2066,13 @@ void reaction_nullify_init(void) {
     gSpriteEntries[10].unk4 = y;
     gSpriteEntries[10].unkA = 0xE;
     gSpriteEntries[10].unkB = 0x80;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x25], 10);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x25], 10);
     play_sound_effect(0x37);
     gBattleWork.step++;
 }
 
 void reaction_nullify_wait(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x25], 10);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x25], 10);
     if (gSpriteEntries[10].unk22 == 0xFF) {
         gGameWork.unk86 = 0x3C;
         clear_battle_sprite_slot(10, 1);
@@ -2098,13 +2098,13 @@ void reaction_absorb_init(void) {
     gSpriteEntries[10].unk4 = y;
     gSpriteEntries[10].unkA = 0xE;
     gSpriteEntries[10].unkB = 0x80;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x26], 10);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x26], 10);
     play_sound_effect(0x2B);
     gBattleWork.step++;
 }
 
 void reaction_absorb_wait(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x26], 10);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x26], 10);
     if (gSpriteEntries[10].unk22 == 0xFF) {
         gGameWork.unk86 = 0x3C;
         clear_battle_sprite_slot(10, 1);
@@ -2140,12 +2140,12 @@ void sacrifice_burst_init(void) {
     gSpriteEntries[0x21].unk4 = gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.actorPart].unk4;
     gSpriteEntries[0x21].unkA = 7;
     gSpriteEntries[0x21].unkB = 0xF0;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x22], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x22], 0x21);
     gBattleWork.step++;
 }
 
 void sacrifice_burst_wait(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x22], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x22], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
         gBattleWork.step++;

@@ -437,7 +437,7 @@ void medaparts_help_load(void) {
 void medaparts_help_show_intro(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    process_sprite_anim_commands(gUnk_083B5F80[3], 6);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[3], 6);
     if (run_message(gMenuMessages[5]))
         gGameSubState++;
 }
@@ -447,7 +447,7 @@ void medaparts_help_cursor_input(void) {
 
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    process_sprite_anim_commands(gUnk_083B5F80[3], 6);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[3], 6);
     if ((up = KEYS_LO(gRepeatKeys) & 0x40)) {
         if (gGameWork.helpPage == 0)
             gGameWork.helpPage = gGameWork.helpPageCount - 1;
@@ -1198,7 +1198,7 @@ static void medaparts_help_init_cursor(void) {
     gSpriteEntries[6].unkA = 14;
     gSpriteEntries[6].unk1C = 0;
     gSpriteEntries[6].unkB = 0xC1;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[3], 6);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[3], 6);
 }
 
 static void medaparts_help_move_cursor(void) {

@@ -123,7 +123,7 @@ void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n) {
         gSpriteEntries[slot + i].unk2 = t1 & 0x1FF;
         t2 = gUnk_083AF4C0[i * 2 + 1] + y;
         gSpriteEntries[slot + i].unk4 = t2 & 0xFF;
-        init_battle_sprite_entry_08040B90(gUnk_083B5F80[36], slot + i);
+        battle_sprite_anim_init(gBattleSpriteAnimScripts[36], slot + i);
     }
 }
 

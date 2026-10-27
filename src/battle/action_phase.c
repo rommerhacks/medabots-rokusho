@@ -46,13 +46,13 @@ void action_phase_cursor_init(void) {
     gSpriteEntries[3].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[3].unkA = 6;
     gSpriteEntries[3].unkB = 0x81;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x15], 3);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x15], 3);
     play_sound_effect(7);
     gGameSubState++;
 }
 
 void action_phase_cursor_anim(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x15], 3);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x15], 3);
     if (gSpriteEntries[3].unk22 == 0xFF) {
         clear_battle_sprite_slot(3, 1);
         gGameSubState++;
@@ -422,7 +422,7 @@ void action_phase_level_up_skill_slide(void) {
 }
 
 void action_phase_level_up_digits_init(void) {
-    lz_decompress_dispatch(gUnk_084D6BFC, (void *)0x06017E00);
+    lz_decompress_dispatch(gBattlePopupDigitTiles, (void *)0x06017E00);
     set_display_digit_type(&gGameWork.partAbility, gBattleWork.levelUpLevel, 2);
     battle_text_popup_init_at(&gGameWork.partAbility, gBattleWork.actor, 0x23,
                               gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2 + 0x18,
@@ -469,21 +469,21 @@ void action_phase_medaforce_check(void) {
 
 void action_phase_medaforce_anim_init(void) {
     target_panels_show(0);
-    CpuFastSet(gUnk_084E3018, (void *)0x050002E0, 8);
+    CpuFastSet(gMedaforceActivatePalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
     gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unkA = 7;
     gSpriteEntries[0x21].unkB = 0x81;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x4D], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x4D], 0x21);
     gSpriteEntries[0x22].unk0 = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
     gSpriteEntries[0x22].unk1C = 0;
     gSpriteEntries[0x22].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
     gSpriteEntries[0x22].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x22].unkA = 7;
     gSpriteEntries[0x22].unkB = gBattleWork.actor * 4 + 0x59;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x4E], 0x22);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x4E], 0x22);
     gBattleWork.unk51 = gBattleBots[gBattleWork.actor].medaforce[2];
     gGameSubState++;
 }
@@ -491,8 +491,8 @@ void action_phase_medaforce_anim_init(void) {
 void action_phase_medaforce_anim(void) {
     target_panels_show(0);
     medaforce_gauge_drain_step(gBattleWork.actor);
-    process_sprite_anim_commands(gUnk_083B5F80[0x4D], 0x21);
-    process_sprite_anim_commands(gUnk_083B5F80[0x4E], 0x22);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x4D], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x4E], 0x22);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_ui_tilemaps();
         battle_substeps_reset();

@@ -431,7 +431,7 @@ void battle_seq_cmd_spawn_effect(void) {
     gSpriteEntries[slot].unkA = 0xE;
     gSpriteEntries[slot].unkB = 0x80;
     gSpriteEntries[slot].unk2D = gBattleWork.seqOperands[7];
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[gSpriteEntries[slot].unk2D], slot);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gSpriteEntries[slot].unk2D], slot);
     gSpriteEntries[slot].unk2B = gBattleWork.seqOperands[0];
     gSpriteEntries[slot].unk4 = gBattleWork.seqOperands[2];
     gSpriteEntries[slot].unk24 = gBattleWork.seqOperands[4];
@@ -741,7 +741,7 @@ void battle_seq_cmd_spawn_effect_wave(void) {
     gSpriteEntries[slot].unkA = 0xE;
     gSpriteEntries[slot].unkB = 0x80;
     gSpriteEntries[slot].unk2D = gBattleWork.seqOperands[7];
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[gSpriteEntries[slot].unk2D], slot);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gSpriteEntries[slot].unk2D], slot);
     gSpriteEntries[slot].unk2B = gBattleWork.seqOperands[0];
     gSpriteEntries[slot].unk4 = gBattleWork.seqOperands[2];
     gSpriteEntries[slot].unk24 = gBattleWork.seqOperands[4];
@@ -816,7 +816,7 @@ void battle_seq_cmd_spawn_orbit(void) {
         gSpriteEntries[i + 0xB].unkA = 0xE;
         gSpriteEntries[i + 0xB].unkB = 0x80;
         gSpriteEntries[i + 0xB].unk2D = gBattleWork.seqOperands[7];
-        init_battle_sprite_entry_08040B90(gUnk_083B5F80[gSpriteEntries[i + 0xB].unk2D], i + 0xB);
+        battle_sprite_anim_init(gBattleSpriteAnimScripts[gSpriteEntries[i + 0xB].unk2D], i + 0xB);
         gSpriteEntries[i + 0xB].unk2B = gBattleWork.seqOperands[0];
         gSpriteEntries[i + 0xB].unk2C = gBattleWork.seqOperands[5];
         gSpriteEntries[i + 0xB].unk29 = 0x31;
@@ -852,7 +852,7 @@ void battle_seq_cmd_spawn_effect_set(void) {
         gSpriteEntries[i + 0xA].unk24 = b->seqOperands[2];
         gSpriteEntries[i + 0xA].unk29 = 0xB;
         gSpriteEntries[i + 0xA].unk2D = b->seqOperands[3];
-        init_battle_sprite_entry_08040B90(gUnk_083B5F80[gSpriteEntries[i + 0xA].unk2D], i + 0xA);
+        battle_sprite_anim_init(gBattleSpriteAnimScripts[gSpriteEntries[i + 0xA].unk2D], i + 0xA);
         if (!(*f & 2))
             gSpriteEntries[i + 0xA].unk2 = tbl->x;
         else
@@ -889,7 +889,7 @@ void battle_seq_cmd_spawn_effect_tiles(void) {
     gSpriteEntries[slot].unkA = 0xE;
     gSpriteEntries[slot].unkB = 0x80;
     gSpriteEntries[slot].unk2D = gBattleWork.seqOperands[7];
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[gSpriteEntries[slot].unk2D], slot);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gSpriteEntries[slot].unk2D], slot);
     gSpriteEntries[slot].unk2B = gBattleWork.seqOperands[0];
     gSpriteEntries[slot].unk4 = gBattleWork.seqOperands[2];
     gSpriteEntries[slot].unk24 = gBattleWork.seqOperands[4];
@@ -943,8 +943,8 @@ void battle_seq_cmd_scale_sprite(void) {
     gSpriteEntries[gBattleWork.seqOperands[0]].unk2D = gBattleWork.seqOperands[2];
     gSpriteEntries[gBattleWork.seqOperands[0]].unk23 = gBattleWork.seqOperands[1];
     gSpriteEntries[gBattleWork.seqOperands[0]].unk29 = 0x34;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[gSpriteEntries[gBattleWork.seqOperands[0]].unk2D],
-                                      gBattleWork.seqOperands[0]);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gSpriteEntries[gBattleWork.seqOperands[0]].unk2D],
+                            gBattleWork.seqOperands[0]);
     battle_seq_advance();
 }
 
@@ -972,7 +972,7 @@ void battle_seq_cmd_spawn_ring(void) {
         gSpriteEntries[i + 0xB].unk2B = 0;
         gSpriteEntries[i + 0xB].unk23 = gBattleWork.seqOperands[1];
         gSpriteEntries[i + 0xB].unk2D = gBattleWork.seqOperands[2];
-        init_battle_sprite_entry_08040B90(gUnk_083B5F80[gSpriteEntries[i + 0xB].unk2D], i + 0xB);
+        battle_sprite_anim_init(gBattleSpriteAnimScripts[gSpriteEntries[i + 0xB].unk2D], i + 0xB);
     }
     battle_seq_advance();
 }
@@ -1424,7 +1424,7 @@ void battle_seq_spr_effect(void) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C--;
     } else {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk0 |= 0x8000;
-        process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
+        process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                      gGameWork.runningSpriteSlot);
     }
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2B != 0)
@@ -1439,7 +1439,7 @@ void battle_seq_spr_effect_wave(void) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C--;
     } else {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk0 |= 0x8000;
-        process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
+        process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                      gGameWork.runningSpriteSlot);
     }
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2B != 0) {
@@ -1459,7 +1459,7 @@ void battle_seq_spr_effect_tiles(void) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C--;
     } else {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk0 |= 0x8000;
-        process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
+        process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                      gGameWork.runningSpriteSlot);
         tile_anim_run_dup(gBattleSeqTileAnims[gSpriteEntries[gGameWork.runningSpriteSlot].unk2E], 0);
     }
@@ -1583,13 +1583,13 @@ void battle_seq_spr_anim_delay(void) {
     gSpriteEntries[n].unkA = gSpriteEntries[gGameWork.runningSpriteSlot].unkA;
     gSpriteEntries[n].unk2D = gSpriteEntries[gGameWork.runningSpriteSlot].unk2D;
     gSpriteEntries[n].unk29 = 0x21;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[gSpriteEntries[n].unk2D], n);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gSpriteEntries[n].unk2D], n);
     clear_battle_sprite_slot(gGameWork.runningSpriteSlot, 1);
 }
 
 // State 0x21: runs the sprite animation until it ends, then frees the slot.
 void battle_seq_spr_anim_once(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                  gGameWork.runningSpriteSlot);
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk22 == 0xFF)
         clear_battle_sprite_slot(gGameWork.runningSpriteSlot, 1);
@@ -1626,12 +1626,12 @@ void battle_seq_spr_trail(void) {
     gSpriteEntries[n].unkB = 0x80;
     gSpriteEntries[n].unk29 = 0x23;
     gSpriteEntries[n].unk2D = gSpriteEntries[gGameWork.runningSpriteSlot].unk2D;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D], n);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D], n);
 }
 
 // State 0x23: a trail puff: plays its animation once.
 void battle_seq_spr_trail_puff(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                  gGameWork.runningSpriteSlot);
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk22 == 0xFF)
         clear_battle_sprite_slot(gGameWork.runningSpriteSlot, 1);
@@ -1695,7 +1695,7 @@ void battle_seq_spr_orbit(void) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C--;
     else {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk0 |= 0x8000;
-        process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
+        process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                      gGameWork.runningSpriteSlot);
     }
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2B != 0) {
@@ -1717,7 +1717,7 @@ void battle_seq_spr_scale(void) {
     struct SpriteEntry *s;
     u8 i;
 
-    process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                  gGameWork.runningSpriteSlot);
     i = gGameWork.runningSpriteSlot;
     s = &gSpriteEntries[i];
@@ -1740,7 +1740,7 @@ void battle_seq_spr_scale(void) {
 void battle_seq_spr_ring_spiral(void) {
     struct Coords16 v;
 
-    process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                  gGameWork.runningSpriteSlot);
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2B <= 6) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk8 += 8;
@@ -1801,7 +1801,7 @@ void battle_seq_spr_armor_drain(void) {
 
 // State 0x3A: hops, then shows its digit.
 void battle_seq_spr_roll_hop(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[gSpriteEntries[gGameWork.runningSpriteSlot].unk26],
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk26],
                                  gGameWork.runningSpriteSlot);
     if (sprite_hop_step(gGameWork.runningSpriteSlot)) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk6 = 0x6307 + gSpriteEntries[gGameWork.runningSpriteSlot].unk28;

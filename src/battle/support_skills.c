@@ -167,21 +167,21 @@ void conceal_begin(void) {
 }
 
 void conceal_dome_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D5EBC, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E7B8, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gConcealDomeTiles, (void *)0x06014800);
+    CpuFastSet(gConcealDomePalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC404;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
     gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unkA = 7;
     gSpriteEntries[0x21].unkB = 0xF0;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x40], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x40], 0x21);
     play_sound_effect(0x4D);
     gBattleWork.step++;
 }
 
 void conceal_dome_open_wait(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x40], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x40], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         gGameWork.unk86 = 0x3C;
         gBattleWork.step++;
@@ -189,7 +189,7 @@ void conceal_dome_open_wait(void) {
 }
 
 void conceal_dome_close_init(void) {
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x41], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x41], 0x21);
     play_sound_effect(0x4D);
     gGameWork.unk84 = 0;
     gBattleWork.step++;
@@ -198,7 +198,7 @@ void conceal_dome_close_init(void) {
 void conceal_dome_close(void) {
     gGameWork.unk84++;
     battle_bot_sprites_blink(gBattleWork.actor, gGameWork.unk84, 2);
-    process_sprite_anim_commands(gUnk_083B5F80[0x41], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x41], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
         gGameWork.unk86 = 0x3C;
@@ -253,8 +253,8 @@ void boost_charge_begin(void) {
 }
 
 void boost_charge_hourglass_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D6098, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E7D8, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gChargeHourglassTiles, (void *)0x06014800);
+    CpuFastSet(gChargeHourglassPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x220;
     gSpriteEntries[0x21].unk8 = 0x40;
     gSpriteEntries[0x21].unk9 = 0x40;
@@ -263,13 +263,13 @@ void boost_charge_hourglass_spawn(void) {
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unk24 = 6;
     gGameWork.unk84 = 0x42;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x42], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x42], 0x21);
     gGameWork.unk86 = 0x3C;
     gBattleWork.step++;
 }
 
 void charge_hourglass_hold(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[gGameWork.unk84], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
     if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gBattleWork.step++;
     else if (gGameWork.unk86)
@@ -279,7 +279,7 @@ void charge_hourglass_hold(void) {
 }
 
 void charge_hourglass_fly(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[gGameWork.unk84], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
     if (!(gBattleWork.actorSideFlags & 1))
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 - 0x40) & 0x3FF;
     else
@@ -292,13 +292,13 @@ void charge_hourglass_fly(void) {
 
 void boost_charge_hourglass_burst(void) {
     gGameWork.unk84 = 0x43;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x43], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x43], 0x21);
     play_sound_effect(0x4E);
     gBattleWork.step++;
 }
 
 void charge_hourglass_anim_wait(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[gGameWork.unk84], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF)
         gBattleWork.step++;
 }
@@ -356,14 +356,14 @@ void rapid_charge_hourglass_spawn(void) {
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unk24 = 6;
     gGameWork.unk84 = 0x45;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[gGameWork.unk84], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
     gGameWork.unk86 = 0x3C;
     gBattleWork.step++;
 }
 
 void rapid_charge_hourglass_burst(void) {
     gGameWork.unk84 = 0x46;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x46], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x46], 0x21);
     play_sound_effect(0x4E);
     gBattleWork.step++;
 }
@@ -414,14 +414,14 @@ void drain_charge_hourglass_spawn(void) {
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unk24 = 6;
     gGameWork.unk84 = 0x42;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[gGameWork.unk84], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
     gGameWork.unk86 = 0x3C;
     gBattleWork.step++;
 }
 
 void drain_charge_hourglass_drain(void) {
     gGameWork.unk84 = 0x44;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x44], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x44], 0x21);
     play_sound_effect(0x4E);
     gBattleWork.step++;
 }
@@ -437,14 +437,14 @@ void drain_charge_hourglass_shrink(void) {
 }
 
 void drain_charge_hourglass_return(void) {
-    lz_decompress_dispatch(gUnk_084D6098, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E7D8, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gChargeHourglassTiles, (void *)0x06014800);
+    CpuFastSet(gChargeHourglassPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x8000;
     gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unk24 = 6;
     gGameWork.unk84 = 0x42;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[gGameWork.unk84], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
     gGameWork.unk86 = 0x3C;
     gBattleWork.step++;
 }
@@ -460,7 +460,7 @@ void drain_charge_hourglass_grow(void) {
 
 void drain_charge_hourglass_burst(void) {
     gGameWork.unk84 = 0x43;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x43], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x43], 0x21);
     play_sound_effect(0x4E);
     gBattleWork.step++;
 }
@@ -505,8 +505,8 @@ void pushover_begin(void) {
 }
 
 void pushover_banana_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D6464, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E838, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gPushoverBananaTiles, (void *)0x06014800);
+    CpuFastSet(gPushoverBananaPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x220;
     gSpriteEntries[0x21].unk8 = 0x40;
     gSpriteEntries[0x21].unk9 = 0x40;
@@ -692,12 +692,12 @@ void pushover_part_explode_spawn(void) {
     gSpriteEntries[0x21].unk4 = gSpriteEntries[0x5A + gBattleWork.target * 4 + gBattleWork.damagePart].unk4;
     gSpriteEntries[0x21].unkA = 7;
     gSpriteEntries[0x21].unkB = 0xF0;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x22], 0x21);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x22], 0x21);
     gBattleWork.step++;
 }
 
 void pushover_part_explode(void) {
-    process_sprite_anim_commands(gUnk_083B5F80[0x22], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x22], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
         load_bot_part_sprite(gBattleWork.target);

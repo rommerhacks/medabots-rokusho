@@ -587,8 +587,8 @@ gMedaforceLegsStatUpSteps:
 gMedaforceSpyGameSteps:
 	.incbin "baserom.gba", 0x3AE790, 0x40
 
-	.global gUnk_083AE7D0
-gUnk_083AE7D0:
+	.global gSpyGameBeamSpinFrames
+gSpyGameBeamSpinFrames:
 	.incbin "baserom.gba", 0x3AE7D0, 0x4
 
 	.global gMedaforceHideNSeekSteps
@@ -611,8 +611,8 @@ gMedaforceUselessSteps:
 gMedaforceDestroyerSteps:
 	.incbin "baserom.gba", 0x3AE908, 0x80
 
-	.global gUnk_083AE988
-gUnk_083AE988:
+	.global gDestroyerSwingFrames
+gDestroyerSwingFrames:
 	.incbin "baserom.gba", 0x3AE988, 0x14
 
 	.global gMedaforceCrazySteps
@@ -898,8 +898,8 @@ gAltFontWidths:
 gMenuMessages:
 	.incbin "baserom.gba", 0x3B53F8, 0xB88
 
-	.global gUnk_083B5F80
-gUnk_083B5F80:
+	.global gBattleSpriteAnimScripts
+gBattleSpriteAnimScripts:
 	.incbin "baserom.gba", 0x3B5F80, 0x90
 
 	.global gUnk_083B6010

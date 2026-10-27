@@ -402,7 +402,7 @@ void prize_game_launch(void) {
 
 void prize_game_launch_anim(void) {
     prize_game_scroll_bg3();
-    process_sprite_anim_commands(gUnk_083B5F80[0x75 - gBattleWork.prizeRow], 4);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[0x75 - gBattleWork.prizeRow], 4);
     if (gSpriteEntries[4].unk22 == 0xFF) {
         gSpriteEntries[3].unk6 = 0x8505;
         play_sound_effect(0x54);
@@ -721,7 +721,7 @@ static void prize_game_init_row_marker(void) {
     gSpriteEntries[4].unk4 = 0x58;
     gSpriteEntries[4].unk1C = 0;
     gSpriteEntries[4].unkB = 0x80;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x70], 4);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x70], 4);
 }
 
 static void prize_game_gauge_step(void) {
@@ -802,7 +802,7 @@ static void prize_game_set_landing_row(void) {
 static void prize_game_launch_ball(void) {
     gSpriteEntries[2].unk24 = (gBattleWork.prizePower >> 2) + 4;
     gSpriteEntries[2].unk25 = 0;
-    init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x75 - gBattleWork.prizeRow], 4);
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[0x75 - gBattleWork.prizeRow], 4);
 }
 
 static void prize_game_move_ball(void) {
