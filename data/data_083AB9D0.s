@@ -910,8 +910,8 @@ gUnk_083B6010:
 gUnk_083B6158:
 	.incbin "baserom.gba", 0x3B6158, 0x2B8
 
-	.global gUnk_083B6410
-gUnk_083B6410:
+	.global gMedalNames
+gMedalNames:
 	.incbin "baserom.gba", 0x3B6410, 0x15C
 
 	.global gUnk_083B656C

@@ -231,7 +231,7 @@ void debug_medal_input(void) {
         case 0:
             if (gUnk_03000440.unk35[0] < 30 && !find_medal_slot_by_id(gUnk_03000440.unk35[0])) {
                 slot = medal_add_by_id(gUnk_03000440.unk35[gUnk_03000440.unk34]);
-                memcpy_bytes_0803F63C((void *)gUnk_083B6410[gUnk_03000440.unk35[gUnk_03000440.unk34]],
+                memcpy_bytes_0803F63C((void *)gMedalNames[gUnk_03000440.unk35[gUnk_03000440.unk34]],
                                       gUnk_03000BE0[slot].unkA, 11);
             }
             break;
@@ -243,7 +243,7 @@ void debug_medal_input(void) {
             for (gUnk_03000440.unk35[2] = b; gUnk_03000440.unk35[2] < 30; gUnk_03000440.unk35[2]++) {
                 if (!find_medal_slot_by_id(gUnk_03000440.unk35[2])) {
                     slot = medal_add_by_id(gUnk_03000440.unk35[2]);
-                    memcpy_bytes_0803F63C((void *)gUnk_083B6410[gUnk_03000440.unk35[2]], gUnk_03000BE0[slot].unkA, 11);
+                    memcpy_bytes_0803F63C((void *)gMedalNames[gUnk_03000440.unk35[2]], gUnk_03000BE0[slot].unkA, 11);
                 }
             }
             break;

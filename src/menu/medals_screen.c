@@ -1073,7 +1073,7 @@ static void render_medal_list_entries(void) {
     clear_sprite_table_mask(10, 0x3C);
     for (i = gUnk_03000440.unk3F * 6; i < gUnk_03000440.unk3F * 6 + 6; n++, i++) {
         if (gUnk_03000BE0[i].unk0 & 0x80) {
-            memcpy_bytes_0803F63C((void *)gUnk_083B6410[gUnk_03000BE0[i].unk1], gUnk_03000440.unk9E, 11);
+            memcpy_bytes_0803F63C((void *)gMedalNames[gUnk_03000BE0[i].unk1], gUnk_03000440.unk9E, 11);
             render_text_sprites_08040DB8(gUnk_03000440.unk9E, n * 10 + 10, 6, n * 2 + 4, 7, 8, 1, 2);
         } else {
             fill_text_blank(gUnk_03000440.unk9E, 9);
@@ -1344,7 +1344,7 @@ static void medal_skill_draw_icon(void) {
 
 static void medal_page_draw_kind_name(void) {
     clear_sprite_table_mask(10, 10);
-    memcpy_bytes_0803F63C((void *)gUnk_083B6410[gUnk_03000BE0[gUnk_03000440.unk3D].unk1], gUnk_03000440.unk9E, 11);
+    memcpy_bytes_0803F63C((void *)gMedalNames[gUnk_03000BE0[gUnk_03000440.unk3D].unk1], gUnk_03000440.unk9E, 11);
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 10, 4, 3, 7, 13, 1, 1);
 }
 

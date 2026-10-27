@@ -152,19 +152,19 @@ void switch_game_mode(u32 a, u32 b) {
         gGameSubState = 0x28;
         break;
     case 0:
-        gUnk_03000584 = 0;
+        gNameEntryMode = 0;
         gGameMode = 2;
         gGameState = 0x12;
         gGameSubState = 0;
         break;
     case 1:
-        gUnk_03000584 = 1;
+        gNameEntryMode = 1;
         gGameMode = 2;
         gGameState = 0x12;
         gGameSubState = 0;
         break;
     case 2:
-        gUnk_03000584 = 2;
+        gNameEntryMode = 2;
         gGameMode = 2;
         gGameState = 0x12;
         gGameSubState = 0;

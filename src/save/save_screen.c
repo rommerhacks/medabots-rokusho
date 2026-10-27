@@ -1,6 +1,8 @@
-// Mode-2 state 5: the save screen (save_screen_update runs its gSaveScreenStates sub-states: graphics, the info
-// panel, the save prompt, attempt_save_and_transition writes through save/save_data.c, then back to the
-// field or the title). init_linking_mode (end of the file) switches to mode 3 for the link scenes.
+// Mode-2 state 5: the save screen. save_screen_update runs gSaveScreenStates: 0 clear, 1 graphics, 2 info panel,
+// 3 fade in, 4/5 "Do you want to save your game?" (No -> 9), 13/14 "Do you wish to Overwrite?" when a save
+// exists, 6 "Saving game data now.", 7 save_screen_write_save (save/save_data.c), 8 "Game data saved." /
+// 12 "Failed to save.", 9-11 leave and fade out back to the field. init_linking_mode (end of the file) switches to mode
+// 3 for the link scenes.
 #include "global.h"
 
 static inline void *vram_at(u32 off) {
@@ -24,8 +26,8 @@ void item_menu_fade_out_use_item(void) {
     }
 }
 
-void sub_0805D57C(u16 a) {
-    gSpriteEntries[0].unk6 = gUnk_080AF7E0[a & 3];
+void save_screen_animate_sprite(u16 a) {
+    gSpriteEntries[0].unk6 = gSaveScreenSpriteFrames[a & 3];
 }
 
 void save_screen_update(void) {
@@ -34,10 +36,10 @@ void save_screen_update(void) {
         gBg3Scroll.x++;
         gBg3Scroll.y++;
     }
-    sub_0805D57C(gFrameCounter >> 3);
+    save_screen_animate_sprite(gFrameCounter >> 3);
 }
 
-void sub_0805D5E8(void) {
+void save_screen_clear(void) {
     u32 zero = 0;
     CpuFastSet(&zero, gUnk_03006F74, 0x01000100);
     reset_bg_scroll();
@@ -45,7 +47,7 @@ void sub_0805D5E8(void) {
     gGameSubState++;
 }
 
-void sub_0805D628(void) {
+void save_screen_load_graphics(void) {
     u32 size;
     u16 v;
     vu16 *bg1, *bg2, *bg3;
@@ -76,9 +78,9 @@ void sub_0805D628(void) {
     gGameSubState++;
 }
 
-// guess: save screen info panel (Medal / Medapart counts, play time, Robattle counters, money, name).
+// The info panel: Medals and Medaparts owned, play time (h:mm), Robattles fought / won, money, player name.
 // draw_number is called through a cast: this caller passes untruncated ints, the header has u8 / u16 params.
-void sub_0805D6F8(void) {
+void save_screen_draw_info(void) {
     s32 n;
     s32 i;
 
@@ -113,7 +115,7 @@ void sub_0805D6F8(void) {
     gGameSubState++;
 }
 
-void sub_0805D8AC(void) {
+void save_screen_fade_in(void) {
     if (gUnk_03000440.unk84 <= 8) {
         bg_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0x3FFF);
         obj_palettes_blend_masked_now(0, 32 - gUnk_03000440.unk84 * 4, 0xFFFF);
@@ -129,12 +131,12 @@ void sub_0805D8AC(void) {
     }
 }
 
-void sub_0805D948(void) {
+void save_screen_ask_save(void) {
     if (run_message(gUnk_08485788[9]))
         gGameSubState++;
 }
 
-void sub_0805D96C(void) {
+void save_screen_poll_save_choice(void) {
     if (poll_choice_menu()) {
         sub_0803FB0C();
         if (gUnk_03000440.unk2A == 0)
@@ -144,14 +146,14 @@ void sub_0805D96C(void) {
     }
 }
 
-void sub_0805D9B8(void) {
+void save_screen_ask_overwrite(void) {
     if (run_message(gUnk_08485BD8[18])) {
         open_choice_menu(1, 0x16, 7);
         gGameSubState++;
     }
 }
 
-void sub_0805D9E4(void) {
+void save_screen_poll_overwrite_choice(void) {
     if (poll_choice_menu()) {
         sub_0803FB0C();
         if (gUnk_03000440.unk2A == 0)
@@ -161,7 +163,7 @@ void sub_0805D9E4(void) {
     }
 }
 
-void sub_0805DA1C(void) {
+void save_screen_show_saving(void) {
     if (run_message(gUnk_08485788[10])) {
         play_song(0);
         play_sound_effect(0);
@@ -171,7 +173,7 @@ void sub_0805DA1C(void) {
     }
 }
 
-void attempt_save_and_transition(void) {
+void save_screen_write_save(void) {
     u8 t = gUnk_03006F74->unk2++;
     u16 err = 0;
     s8 i;
@@ -195,25 +197,25 @@ void attempt_save_and_transition(void) {
     }
 }
 
-void sub_0805DAE4(void) {
+void save_screen_show_saved(void) {
     u8 t = gUnk_03006F74->unk2++;
     if (run_message(gUnk_08485788[11]) && t > 60)
         gGameSubState++;
 }
 
-void sub_0805DB20(void) {
+void save_screen_exit_begin(void) {
     sub_0803FB0C();
     palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
 }
 
-void sub_0805DB48(void) {
+void save_screen_exit_wait(void) {
     if (game_state_execute_handler_a())
         gGameSubState++;
 }
 
-void sub_0805DB64(void) {
+void save_screen_fade_out(void) {
     if (gUnk_03000440.unk84 <= 8) {
         bg_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0x3FFF);
         obj_palettes_blend_masked_now(0, gUnk_03000440.unk84 * 4, 0xFFFF);
@@ -228,7 +230,7 @@ void sub_0805DB64(void) {
     }
 }
 
-void sub_0805DBE8(void) {
+void save_screen_show_failed(void) {
     u8 t = gUnk_03006F74->unk2++;
     if (run_message(gUnk_08485788[12]) && t > 60)
         gGameSubState = 9;

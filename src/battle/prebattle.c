@@ -508,7 +508,7 @@ void sub_08011078(void) {
         gGameSubState = 0x47;
     } else if (gUnk_03001800.unk16E[gUnk_03001800.unk186][0]) {
         sub_0803FB0C();
-        memcpy_bytes_0803F63C((const void *)gUnk_083B6410[gUnk_03001800.unk16E[gUnk_03001800.unk186][0] - 1],
+        memcpy_bytes_0803F63C((const void *)gMedalNames[gUnk_03001800.unk16E[gUnk_03001800.unk186][0] - 1],
                               gUnk_03000440.unk9E, 11);
         play_song(16);
         gGameSubState++;
@@ -538,7 +538,7 @@ void sub_08011158(void) {
         gGameSubState = 0x4B;
     } else if (gUnk_03001800.unk16E[gUnk_03001800.unk186][6]) {
         sub_0803FB0C();
-        memcpy_bytes_0803F63C((const void *)gUnk_083B6410[gUnk_03001800.unk16E[gUnk_03001800.unk186][0] - 1],
+        memcpy_bytes_0803F63C((const void *)gMedalNames[gUnk_03001800.unk16E[gUnk_03001800.unk186][0] - 1],
                               gUnk_03000440.unk9E, 11);
         memcpy_bytes_0803F63C((const void *)gUnk_083B7338[gUnk_03001800.unk16E[gUnk_03001800.unk186][7]],
                               gUnk_03000440.unk9E + 20, 17);

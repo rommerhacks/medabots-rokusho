@@ -40,12 +40,12 @@ gSaveMagic:
 gSaveMagicErased:
 	.incbin "baserom.gba", 0x483C31, 0x13
 
-	.global gUnk_08483C44
-gUnk_08483C44:
+	.global gNameEntryStates
+gNameEntryStates:
 	.incbin "baserom.gba", 0x483C44, 0x24
 
-	.global gUnk_08483C68
-gUnk_08483C68:
+	.global gDefaultPlayerName
+gDefaultPlayerName:
 	.incbin "baserom.gba", 0x483C68, 0x4
 
 	.global gUnk_08483C6C

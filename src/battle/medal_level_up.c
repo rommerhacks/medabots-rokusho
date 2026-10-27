@@ -133,7 +133,7 @@ void medal_transform_draw_medal(void) {
     s->unk8 = 0x40;
     s->unk9 = 0x40;
     for (i = 0; i < 16; i++) {
-        gUnk_030004DE[i] = ((const u8 *)gUnk_083B6410[gUnk_03000BE0[gUnk_030017EC].unk1])[i];
+        gUnk_030004DE[i] = ((const u8 *)gMedalNames[gUnk_03000BE0[gUnk_030017EC].unk1])[i];
         if (gUnk_030004DE[i] == 0xFE)
             break;
     }

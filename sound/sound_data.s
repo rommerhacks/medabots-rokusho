@@ -364,16 +364,16 @@ gUnk_080AF7A8:
 gUnk_080AF7C0:
 	.incbin "baserom.gba", 0xAF7C0, 0x20
 
-	.global gUnk_080AF7E0
-gUnk_080AF7E0:
+	.global gSaveScreenSpriteFrames
+gSaveScreenSpriteFrames:
 	.incbin "baserom.gba", 0xAF7E0, 0x8
 
 	.global gUnk_080AF7E8
 gUnk_080AF7E8:
 	.incbin "baserom.gba", 0xAF7E8, 0x20
 
-	.global gUnk_080AF808
-gUnk_080AF808:
+	.global gNameEntrySpriteFrames
+gNameEntrySpriteFrames:
 	.incbin "baserom.gba", 0xAF808, 0x8
 
 	.global gUnk_080AF810

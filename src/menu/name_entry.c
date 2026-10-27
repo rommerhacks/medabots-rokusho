@@ -1,9 +1,11 @@
-// Mode-2 state 6: name entry (naming a Medal): sub_0805E29C runs gUnk_08483C44 (graphics, letter grid input
-// in name_entry_update, confirm, leave). calc_text_pixel_width centres the name. Uses text/ and engine/.
+// Mode-2 state 0x12: name entry (the player's name, a new Medal's name, or renaming a Medal: gNameEntryMode).
+// name_entry_screen_update runs gNameEntryStates: 0 clear, 1 graphics, 2 load the current / default name,
+// 3 fade in, 4 letter grid input (name_entry_input), 5 wait for the sound, 6 fade out and store the name.
+// calc_text_pixel_width centres the name. Uses text/ and engine/.
 #include "global.h"
 
-void sub_0805E170(u16 a) {
-    gSpriteEntries[20].unk6 = gUnk_080AF808[a & 3];
+void name_entry_animate_sprite(u16 a) {
+    gSpriteEntries[20].unk6 = gNameEntrySpriteFrames[a & 3];
 }
 
 static s32 calc_text_pixel_width(const u8 *s) {
@@ -18,7 +20,7 @@ static inline u32 ato(u32 s, u32 c) {
     return (s << 11) + c * 2;
 }
 
-static void sub_0805E1CC(const u8 *s) {
+static void name_entry_draw_name_tiles(const u8 *s) {
     u16 *top;
     u16 *bot;
     s32 i;
@@ -43,16 +45,16 @@ static void sub_0805E1CC(const u8 *s) {
     }
 }
 
-void sub_0805E29C(void) {
-    gUnk_08483C44[gGameSubState]();
+void name_entry_screen_update(void) {
+    gNameEntryStates[gGameSubState]();
     if (gFrameCounter & 1) {
         gBg3Scroll.x++;
         gBg3Scroll.y++;
     }
-    sub_0805E170(gFrameCounter >> 3);
+    name_entry_animate_sprite(gFrameCounter >> 3);
 }
 
-void sub_0805E2E8(void) {
+void name_entry_clear(void) {
     clear_battle_sprite_slot(0, 0x80);
     reset_bg_scroll();
     REG_DISPCNT = 0x60;
@@ -128,7 +130,7 @@ void name_entry_init_graphics(void) {
     gSpriteEntries[20].unk4 = 0x10;
     gSpriteEntries[20].unkA = 0;
     gSpriteEntries[20].unk6 = 0x23;
-    if (gUnk_03000584 == 0) {
+    if (gNameEntryMode == 0) {
         gSpriteEntries[20].unk0 |= 0x4000;
     } else {
         t = gUnk_03006F74->unk36 + ((gUnk_03000BE0[gUnk_030017EC].unk1 * 4) + 1);
@@ -166,7 +168,7 @@ void name_entry_init_graphics(void) {
     gGameSubState++;
 }
 
-void sub_0805E5B0(void) {
+void name_entry_load_name(void) {
     s8 i;
     s32 x;
     u8 k;
@@ -179,10 +181,10 @@ void sub_0805E5B0(void) {
     for (i = 0; i < 16; i++)
         gUnk_03006F74->unk58[i] = 0xFE;
     clear_sprite_table_mask(5, 10);
-    switch (gUnk_03000584) {
+    switch (gNameEntryMode) {
     case 0:
         for (i = 0; i < 16; i++) {
-            gUnk_03006F74->unk58[i] = gUnk_08483C68[i];
+            gUnk_03006F74->unk58[i] = gDefaultPlayerName[i];
             if (gUnk_03006F74->unk58[i] == 0xFE)
                 break;
         }
@@ -192,13 +194,13 @@ void sub_0805E5B0(void) {
         k = gUnk_03000BE0[gUnk_030017EC].unk1;
         if (k <= 1) {
             for (i = 0; i < 16; i++) {
-                gUnk_03006F74->unk58[i] = ((const u8 *)gUnk_083B6410[k + 0x20])[i];
+                gUnk_03006F74->unk58[i] = ((const u8 *)gMedalNames[k + 0x20])[i];
                 if (gUnk_03006F74->unk58[i] == 0xFE)
                     break;
             }
         } else {
             for (i = 0; i < 16; i++) {
-                gUnk_03006F74->unk58[i] = ((const u8 *)gUnk_083B6410[k])[i];
+                gUnk_03006F74->unk58[i] = ((const u8 *)gMedalNames[k])[i];
                 if (gUnk_03006F74->unk58[i] == 0xFE)
                     break;
             }
@@ -242,7 +244,7 @@ void sub_0805E5B0(void) {
     gGameSubState++;
 }
 
-void sub_0805E878(void) {
+void name_entry_fade_in(void) {
     struct Unk_03000440 *b = &gUnk_03000440;
     if (b->unk84 <= 8) {
         bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0xFFFF);
@@ -257,7 +259,7 @@ void sub_0805E878(void) {
 
 // Per-frame update of the name-entry screen (runs every frame while naming a Medal): cursor blink and
 // movement (rows 0-2 letters, row 3 Space / Back / End), Start / R / A / B, edits the name in unk58.
-void name_entry_update(void) {
+void name_entry_input(void) {
     s32 i;
     s32 x;
     u8 blank;
@@ -446,7 +448,7 @@ void name_entry_update(void) {
     }
 }
 
-void sub_0805EE6C(void) {
+void name_entry_wait_sound(void) {
     u32 r = is_sound_playing_with_lock(7);
     if (r == 0) {
         gUnk_03000440.unk84 = r;
@@ -454,7 +456,7 @@ void sub_0805EE6C(void) {
     }
 }
 
-void sub_0805EE94(void) {
+void name_entry_fade_out_store_name(void) {
     struct Unk_03000440 *s = &gUnk_03000440;
     u8 *n = &s->unk84;
 
@@ -468,7 +470,7 @@ void sub_0805EE94(void) {
         REG_DISPCNT &= 0xFDFF;
         zero = 0;
         CpuFastSet(&zero, (void *)VRAM, 0x01006000);
-        switch (gUnk_03000584) {
+        switch (gNameEntryMode) {
         case 0:
             CpuSet(gUnk_03006F74->unk58, gUnk_03002B70.unk4, 8);
             dispatch_by_index_0476e8(0);

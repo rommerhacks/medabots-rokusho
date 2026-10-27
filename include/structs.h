@@ -736,7 +736,7 @@ struct Unk_03001800 {
     u8 unk16B;  // Robattle: TIME ticks elapsed (robattle_time_tick)
     u16 unk16C; // battle score (calculate_battle_score_summary), then experience points
     // After-battle result per team member (u8 array: a struct would be 4-byte aligned):
-    // [0] Medal id + 1, 0 = none (name from gUnk_083B6410), [1] nonzero: Medal level-up screen,
+    // [0] Medal id + 1, 0 = none (name from gMedalNames), [1] nonzero: Medal level-up screen,
     // [2]-[5] copied to gUnk_03000440.unk134-137, [6] nonzero: [7] = Medaforce id (gUnk_083B7338)
     u8 unk16E[3][8];
     u8 unk186; // after-battle screen: team member being shown (0-2, 3 = done)
@@ -1556,7 +1556,7 @@ struct Unk_03006F74 {
     u8 unk33;
     u8 unk34;
     u8 filler35;
-    u16 unk36; // save screen: last BG tile index loaded (sub_0805D628)
+    u16 unk36; // save screen: last BG tile index loaded (save_screen_load_graphics)
     u16 unk38;
     s16 unk3A; // title: blend step (sub_0805BB10)
     u16 unk3C;
@@ -1569,7 +1569,7 @@ struct Unk_03006F74 {
     u8 unk4C; // message pending (sub_08065418)
     u8 filler4D[0x3];
     u8 unk50[8];    // blend effect state (init_blend_effect, blend_fade_step_08065598)
-    u8 unk58[0x20]; // name text buffer (sub_0805EE94 copies it to the player or Medal name)
+    u8 unk58[0x20]; // name text buffer (name_entry_fade_out_store_name copies it to the player or Medal name)
     u16 unk78;      // link: the other player's keys last frame (keys_update_from)
     s8 unk7A;
     s8 unk7B;     // link: both sides OK flag, 0 / -1 (fade_state_dispatch)
@@ -1619,7 +1619,7 @@ struct ShopSellEntry {
 
 // Game flags byte at 0x03001784
 struct Unk_03001784 {
-    u32 unk0_0 : 1; // sub_0805D96C: next game state 13 instead of 6
+    u32 unk0_0 : 1; // save_screen_poll_save_choice: next game state 13 instead of 6
     u32 unk0_1 : 1; // saved in SaveData.flags bit 5
     u32 unk0_2 : 30;
 };

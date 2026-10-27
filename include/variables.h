@@ -125,7 +125,7 @@ extern const u16 gSoundSemitoneRatios[12];  // 2^(i/12) * 0x1000
 extern const u16 gSoundFinetuneRatios[128]; // 2^(i/(12*128)) * 0x1000
 extern const u32 gSoundEffectTracks[6];     // track indices of the sound effect tracks (4-7, 10, 11)
 extern const Func gGameStateHandlers_083AC148[];
-extern const u32 gUnk_083B6410[];
+extern const u32 gMedalNames[];      // Medal names by Medal id (0 KUWAGATA, 6 SNAKE...); +0x20: "Rokusho" / "Metabee"
 extern const u8 gUnk_083B6158[][16]; // 16-byte records per Medal graphic index (byte 1 compared with a Medapart's
                                      // skill, byte 7 icon)
 extern const u8 gUnk_083D1BF8[];
@@ -278,7 +278,7 @@ extern const u16 gUnk_0807C280[];
 extern const u16 gUnk_0807C2A0[];
 extern const u16 gUnk_0807C2C0[];
 extern const u16 gUnk_0807C300[];
-extern u8 gUnk_03000584; // 0 player name, 1 / 2 Medal name gUnk_03000BE0[gUnk_030017EC] (sub_0805EE94)
+extern u8 gNameEntryMode; // 0 player name, 1 new Medal (default name), 2 rename a Medal gUnk_03000BE0[gUnk_030017EC]
 extern u8 gUnk_03003870[];
 extern u8 gUnk_03005664[];
 extern const void *const gUnk_0847E8C4[];         // text pointers (guess)
@@ -562,9 +562,9 @@ extern u8 gUnk_02021000[];       // BG tile backup, second half (see gUnk_020208
 extern const u8 gUnk_083AD39A[]; // Robattle sub-state per command ring slot (command_ring_goto_selected)
 extern const u8 gUnk_083AD3A4[]; // battle bot screen positions (x, y) per record 0-5 (position_battle_team_cursors)
 
-extern const u32 gUnk_080AF6F0[]; // BLDALPHA values by fade step / 8 (sub_0805BB10)
-extern const u16 gUnk_080AF7E0[]; // animation frames by (arg & 3) (sub_0805D57C)
-extern const u16 gUnk_080AF808[]; // animation frames by (arg & 3) (sub_0805E170)
+extern const u32 gUnk_080AF6F0[];           // BLDALPHA values by fade step / 8 (sub_0805BB10)
+extern const u16 gSaveScreenSpriteFrames[]; // sprite 0 tile by (frame >> 3) & 3 (save_screen_animate_sprite)
+extern const u16 gNameEntrySpriteFrames[];  // sprite 20 tile by (frame >> 3) & 3 (name_entry_animate_sprite)
 
 extern u8 gUnk_02023078;                   // first visible list entry (update_battle_sprite_priority_flags)
 extern struct Vec16 gUnk_02023200[160][4]; // per-scanline BG0-3 scroll, even frames (start_scanline_wave_scroll)
@@ -576,7 +576,7 @@ extern const u8
     gSaveMagicErased[17]; // written by save_dispatch(2) instead of gSaveMagic, so validate_save_data rejects the save
 
 extern const void *const gUnk_08485788[]; // save screen messages
-extern const void *const gUnk_08485BD8[]; // messages (sub_0805D9B8 uses 18)
+extern const void *const gUnk_08485BD8[]; // messages (save_screen_ask_overwrite uses 18)
 extern const Func gSaveScreenStates[15];  // save screen states, by gGameSubState (save_screen_update): 6 stops the
                                           // music, 7 writes the save, 8 / 12 show the result
 
@@ -592,9 +592,9 @@ extern const u8 gUnk_087871E4[];     // town map graphics (town_map_load_graphic
 extern const u8 gUnk_080AF9A8[];     // town map graphics (town_map_load_graphics)
 extern const u8 gAreaTownMapPlace[]; // town map place by area id (gUnk_030057E0.unk7FE, town_map_load_graphics)
 extern const u32 gUnk_087873A4[];    // town map graphics (town_map_load_graphics)
-extern const u8 *gUnk_08483C68;      // name entry (sub_0805E5B0)
-extern const u16 gUnk_080AF810[];    // name entry OBJ palette (sub_0805E5B0)
-extern const u16 gUnk_08793428[];    // name entry BG palettes (sub_0805E5B0)
+extern const u8 *gDefaultPlayerName; // -> "Ikki" (stored in the tail of gNameEntryStates), name entry mode 0
+extern const u16 gUnk_080AF810[];    // name entry OBJ palette (name_entry_load_name)
+extern const u16 gUnk_08793428[];    // name entry BG palettes (name_entry_load_name)
 extern const u8 gUnk_08784CB0[];     // save screen BG tiles, after gUnk_0878CC64 (LZ77)
 extern const u8 gUnk_08784DA4[];     // save screen OBJ tiles (LZ77)
 
@@ -1108,7 +1108,7 @@ extern const s32 *const
 extern const float gUnk_083D6EA0[256]; // guess: sine, angle 0-255 (set_state_float_field)
 extern const float gUnk_083D72A0[256]; // guess: cosine
 extern const Func gItemMenuStates[];   // field menu Item screen states, by gGameSubState (item_menu_update)
-extern const Func gUnk_08483C44[];     // by gGameSubState (sub_0805E29C)
+extern const Func gNameEntryStates[];  // 7 name entry sub-states, by gGameSubState (name_entry_screen_update)
 extern const u8
     *const gItemDescriptions[];  // item description messages by item id (runtime: item 1 Skirt -> "Transform Goods No.1
                                  // / A frilly mini-skirt."); 0x3F with an empty list (item_menu_show_description)

@@ -929,11 +929,11 @@ static void sub_08005118(void) {
     }
 }
 
-// guess: draws the selected Medabot's Medal type name (gUnk_083B6410) (or blanks).
+// guess: draws the selected Medabot's Medal type name (gMedalNames) (or blanks).
 static void sub_0800519C(void) {
     clear_sprite_table_mask(0x3C, 10);
     if (gUnk_030017A0[gUnk_03000440.unk51].unk0 > 1) {
-        memcpy_bytes_0803F63C((const void *)gUnk_083B6410[gUnk_030017A0[gUnk_03000440.unk51].unk2], gUnk_03000440.unk9E,
+        memcpy_bytes_0803F63C((const void *)gMedalNames[gUnk_030017A0[gUnk_03000440.unk51].unk2], gUnk_03000440.unk9E,
                               11);
         render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x3C, 4, 16, 7, 14, 1, 2);
     } else {
@@ -1211,7 +1211,7 @@ static void sub_08005BB4(void) {
 static void sub_08005C10(void) {
     clear_sprite_table_mask(0x14, 10);
     if (gUnk_03000440.unk97 < 30) {
-        memcpy_bytes_0803F63C((const void *)gUnk_083B6410[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk9E,
+        memcpy_bytes_0803F63C((const void *)gMedalNames[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk9E,
                               11);
         render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x14, 0x12, 9, 7, 12, 1, 2);
     } else {

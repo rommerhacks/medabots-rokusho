@@ -213,7 +213,7 @@
 * `CpuCopy16(buf, (void *)0x06004000, size); lz_decompress_dispatch(src, (void *)(0x06004000 + size));`
   keeps 0x06004000 in a callee-saved register; the original loads the literal twice. Solved by a helper
   `static inline void *vram_at(u32 off) { return (void *)(0x06004000 + off); }` used for both destinations
-  (sub_0805D628, item_menu_load_graphics; retry sub_0805FBA8, load_battle_background_graphics this way).
+  (save_screen_load_graphics, item_menu_load_graphics; retry sub_0805FBA8, load_battle_background_graphics this way).
 * `id * 6` where the original computes `(id << 2) + (id << 1)`: write the shifts out
   (load_battle_sprite_tiles; retry decompress_sprite_to_vram_08042D94).
 * Variable-length arrays (`s32 n = 5; u8 ids[n];`) reproduced a stack frame where the constant only
@@ -226,7 +226,7 @@
   pin often reshuffles everything else. It solved: load_save_with_retries (call result kept in r1),
   save_dispatch (bit-set address in r0), status_side_change_scroll_out (`rec * 2` in r0),
   update_sound_channel_frequency_080733AC (pin the two pointer params, `cnt` declared first),
-  town_map_load_graphics, and sub_0805E5B0 (table pointer pinned to r4 *and* assigned inside the loop
+  town_map_load_graphics, and name_entry_load_name (table pointer pinned to r4 *and* assigned inside the loop
   body, so it is loaded after the loop guard). It does not help when the swapped register only holds a
   constant (no variable to pin) or a spill slot.
 * **An invariant the original recomputes inside a loop** (`lsls r1, r6, #12` each pass where gcc hoists
@@ -610,11 +610,11 @@
   without `return`; agbcc accepts it (sub_08037728).
 * `x - (y / 2 - k)` refolded into `(x + k) - y / 2`: put the inner difference in an assignment,
   `x - (t = y / 2 - k)`. A `static inline` helper also stops the fold, but moves the array-base load after
-  the arithmetic (name_entry_update).
+  the arithmetic (name_entry_input).
 * A pair of sprites set to the same position: `[1].unk2 = [0].unk2;` reuses the value just stored, the way
-  the original does; storing the expression twice recomputes it (name_entry_update).
+  the original does; storing the expression twice recomputes it (name_entry_input).
 * A pinned table pointer (`register ... asm("r4")`) whose loop still hoists a constant into a callee-saved
-  register: assign the pin at both the start and the end of the loop body (name_entry_update).
+  register: assign the pin at both the start and the end of the loop body (name_entry_input).
 * A `bl __divsi3` by a power of two (divisor kept in a register): divide by a local `s32 d = 0x400;`.
   Division is expanded before constant propagation, so the call stays (sprite_wave_bob8).
 * `if (s < 0) y = x + mid; else y = mid - x;` where one arm in the original is `negs` and both arms

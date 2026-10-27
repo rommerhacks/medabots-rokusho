@@ -611,7 +611,7 @@ void medal_trade_init_screen(void) {
         j = 0;
         t = size >> 5;
         buf = (u32)gUnk_03000440.unk9E;
-        names = (const u8 *const *)gUnk_083B6410;
+        names = (const u8 *const *)gMedalNames;
         for (; j <= 9; j++)
             *(u8 *)(j + buf) = names[medal][j];
         render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x10, 5, 8, 0xA, 1, 1, 1);
@@ -769,7 +769,7 @@ void medal_trade_flip_close(void) {
         lvl = s->unk230.unk5;
         render_text_sprites_08040DB8(s->unk230.unkA, 0x20, 4, 4, 10, 2, 0, 1);
         for (i = 0; i <= 9; i++)
-            gUnk_03000440.unk9E[i] = ((const u8 *)gUnk_083B6410[gUnk_03006F74->unk230.unk1])[i];
+            gUnk_03000440.unk9E[i] = ((const u8 *)gMedalNames[gUnk_03006F74->unk230.unk1])[i];
         render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x10, 5, 8, 10, 1, 1, 1);
         BG2(0x218) = gUnk_03006F74->unk40[0];
         BG2(0x21A) = gUnk_03006F74->unk40[1];

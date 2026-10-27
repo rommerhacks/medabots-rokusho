@@ -141,7 +141,7 @@ void status_load_medal_icon(void) {
 void status_draw_medal_name(void) {
     clear_sprite_table_mask(0x16, 10);
     memcpy_bytes_0803F63C(
-        (const void *)gUnk_083B6410[gUnk_03000590[gUnk_03000440.unk3D + gUnk_03000440.unk3C * 3].medal.unk1],
+        (const void *)gMedalNames[gUnk_03000590[gUnk_03000440.unk3D + gUnk_03000440.unk3C * 3].medal.unk1],
         gUnk_03000440.unk9E, 11);
     render_text_sprites_08040DB8(gUnk_03000440.unk9E, 0x16, 0xD, 2, 7, 12, 1, 2);
 }

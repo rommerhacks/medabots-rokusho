@@ -76,7 +76,7 @@ void sub_08064CA0(void) {
         }
     }
     gUnk_03006F74->unk30 = n;
-    if (gUnk_03000584 != 2) {
+    if (gNameEntryMode != 2) {
         gGameState = 6;
         gGameSubState = 0;
     } else {
@@ -148,7 +148,7 @@ void sub_08064EFC(void) {
     REG_DISPCNT |= 0x1000;
     for (i = 0; i <= 15; i++)
         gUnk_03006F74->unk58[i] = 0xFE;
-    if (gUnk_03000584 == 0) {
+    if (gNameEntryMode == 0) {
         for (i = 0; i <= 15 && gUnk_03006F74->unk58[i] != 0xFE; i++)
             ;
     } else
