@@ -250,7 +250,7 @@ void text_scroll_clear_bar(void) {
     if (++s->unk3A > 0xE) {
         gGameSubState++;
         s->unk3E = 0;
-        sound_stop_all_with_fade_guard(0xC0);
+        fade_out_music(0xC0);
     } else
         ((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[(s->unk3A + 2) * 32] = 0;
 }
@@ -261,7 +261,7 @@ void text_scroll_fade_out(void) {
         bg_palettes_blend_masked_now(0, (s16)(gUnk_03006F74->unk3E / 6), 0xFFFF);
         obj_palettes_blend_masked_now(0, (s16)(gUnk_03006F74->unk3E / 6), 0xFFFF);
         gUnk_03006F74->unk3E++;
-    } else if (sub_08074FB8() == 0) {
+    } else if (is_music_fading() == 0) {
         gGameSubState = 0;
         dispatch_by_index_0476e8(0xC);
     }

@@ -449,7 +449,7 @@ void name_entry_input(void) {
 }
 
 void name_entry_wait_sound(void) {
-    u32 r = is_sound_playing_with_lock(7);
+    u32 r = is_sound_effect_playing(7);
     if (r == 0) {
         gUnk_03000440.unk84 = r;
         gGameSubState++;

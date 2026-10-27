@@ -83,7 +83,7 @@ void medawatch_menu_exit_start(void) {
     clear_battle_sprite_slot(0, 1);
     palette_backup_from_hardware();
     gUnk_03000440.unk84 = 0;
-    sound_stop_all_with_fade_guard(8);
+    fade_out_music(8);
     gGameSubState++;
 }
 

@@ -70,7 +70,7 @@ void battle_cutscene_dispatch(void) {
         }
         break;
     case 5:
-        if (t > 0x1D && !is_sound_playing_with_lock(4)) {
+        if (t > 0x1D && !is_sound_effect_playing(4)) {
             for (i = 0; i < 4; i++) {
                 r = save_dispatch(0);
                 if (r == 0)

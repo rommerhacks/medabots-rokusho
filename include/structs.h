@@ -5,41 +5,42 @@
 
 // Sound sequence track (sound_seq.c), 0x74 bytes; unk14 is the read pointer into the sequence data.
 struct SoundTrack {
-    struct SoundTrack *unk0; // previous in the circular list at gUnk_03007014->unk5E4
-    struct SoundTrack *unk4; // next in the circular list at gUnk_03007014->unk5E4
-    u8 *unk8;                // ring buffer of 0x30 bytes, write index at unk8[0x30]
-    u32 unkC;
-    void (*unk10)(struct SoundTrack *track);
-    u8 *unk14;
-    u8 *unk18;
-    u8 *unk1C;
-    u8 *unk20;
-    u8 *unk24;
-    u32 unk28;
-    u32 unk2C;
-    u32 unk30;
-    s32 unk34;
-    s32 unk38;
-    u32 unk3C; // fade: frames left
-    u16 unk40; // fade: current volume scale (0x1000 = full)
-    u16 unk42; // fade: target volume scale
-    s16 unk44; // fade: step per frame
-    u16 unk46;
-    u16 unk48;
-    u16 unk4A;
-    u16 unk4C;
-    u16 unk4E;
-    u8 unk50; // dirty flags
-    u8 unk51;
-    u8 unk52;
-    u8 unk53;
-    u8 unk54;
-    u8 unk55;
-    u8 unk56;
-    u8 unk57;
-    u8 unk58;
-    u8 unk59;
-    u8 unk5A;        // Medabot detail cursor: 0 Medal, 1-4 Medaparts (runtime-checked)
+    struct SoundTrack *prev; // circular list of active tracks at gSoundWork->activeTracks
+    struct SoundTrack *next;
+    u8 *echoBuffer; // last 0x30 notes played (0xFF = silent), write index at echoBuffer[0x30]; NULL = no echo
+    u32 onEnd;      // called by sound_track_stop (gSoundTrackConfigs)
+    void (*tick)(struct SoundTrack *track); // per-frame envelope / vibrato / fade update
+    u8 *seqPos;                             // sequence read position, NULL = track stopped
+    u8 *loopPos;                            // 0xF0 / 0xF1 loop
+    u8 *loop2Pos;                           // 0xF2 / 0xF3 loop
+    u8 *returnPos;                          // 0xF5 call / 0xF6 return
+    u8 *drumSeq;                            // noise channel: sub-sequence of the current drum
+    u32 wait;                               // frames until the next sequence command
+    u32 fixedLength;                        // note length for note mode 1 (0xE1)
+    u32 drumWait;
+    s32 vibratoStep;
+    s32 vibratoOffset; // added to the frequency (>> 4)
+    u32 fadeFrames;    // fade: frames left
+    u16 fadeVolume;    // fade: current volume scale (0x1000 = full)
+    u16 fadeTarget;    // fade: target volume scale
+    s16 fadeStep;      // fade: step per frame
+    u16 freq;          // PSG frequency register value
+    u16 note;          // note / drum index, 0xFF = rest
+    u16 outVolume;     // envVolume * fadeVolume, top 4 bits
+    u16 markerCount;   // counts 0xEB markers
+    u16 soundId;       // sound effect playing on the track, 0xFFFF = none
+    u8 dirty;          // registers to rewrite: 1 freq, 2 volume, 4 duty, 8 sweep, 0x10 trigger, 0x20 wave, 0x40 pan
+    u8 index;          // 0-3 music PSG 1-4, 4-7 sound effect PSG 1-4, 8/9 music FIFO A/B, 10/11 sound
+                       // effect FIFO A/B, 12 music drums on the noise channel (follows track 9)
+    u8 loopCount;
+    u8 loop2Count;
+    u8 sweep;        // SOUND1CNT_L (0xF7)
+    u8 detune;       // added to the frequency (0xF8)
+    u8 vibratoDelay; // 0xF9: frames before the vibrato starts
+    u8 vibratoPeriod;
+    u8 vibratoDepth; // in units of 2 semitones / period, 0 = off
+    u8 vibratoWait;
+    u8 vibratoCounter;
     u8 envAttack;    // high nibble: frames per step, low nibble: volume step
     u8 envDecay;     // same layout as envAttack
     u8 envReleaseAt; // release starts when this many frames of the note remain
@@ -48,63 +49,63 @@ struct SoundTrack {
     s8 envStep;      // volume change per step / steps left in release
     u8 envPhase;     // 0 off, 1 key-on delay, 2 attack, 3 decay, 4 sustain, 5 release
     u8 envEnabled;
-    u8 unk63;
-    u8 unk64;
+    u8 noteMode;    // 0xFE: 0 notes, 1 raw frequencies, 2 drum kit
+    u8 channelType; // 0 square 1, 1 square 2, 2 wave, 3 noise, 4 FIFO A, 5 FIFO B
     u8 volume;
-    u8 envVolume; // current envelope volume (0..15)
-    u8 unk67;
+    u8 envVolume;  // current envelope volume (0..15)
+    u8 instrument; // duty bits (PSG), wave pattern (wave), sample index (FIFO)
     u8 unk68;
-    u8 unk69;
-    u8 unk6A;
-    u8 unk6B;
-    u8 unk6C;
-    u8 unk6D;
-    u8 unk6E;
-    u8 unk6F;
-    u8 unk70;
+    u8 noiseParams; // SOUND4CNT_H low byte (0xE2)
+    u8 transpose;   // 0xE8, signed
+    u8 echoDelay;   // 0xE9: frames back in echoBuffer the echo note is taken from, 0 = off
+    u8 echoNote;    // last echo note written
+    u8 priority;    // from SoundSongHeader.priority
+    u8 lengthHigh;  // 0xFA: high byte of the next note length
+    u8 pan;         // 0xEA: 0 off, 1, 2, 3 both
+    u8 panOverride; // set by play_song_panned / play_sound_effect_panned, 0 = use pan
     u8 filler71[0x3];
 };
 
 // Header of a Direct Sound sample (pointed to by SoundMixChannel.unk0).
 struct SoundSampleHeader {
-    u32 unk0;
+    u32 length;  // in bytes
     u16 rate;    // playback rate at baseNote
     u8 fineTune; // 1/128 semitones
     u8 baseNote;
-    u32 unk8;
-    u32 unkC;
+    u32 flags; // bit 0: loop
+    u32 loopStart;
     s8 data[1]; // 8-bit PCM
 };
 
 // Direct Sound channel (FIFO A / B) state, 0x48 bytes, two of them in the sound work area.
 struct SoundMixChannel {
-    u32 unk0;
-    u32 unk4;
-    u32 unk8;
-    u32 unkC;
-    u32 unk10;
-    u32 unk14;
-    u32 unk18;
-    u32 unk1C;
-    u32 unk20;
-    u32 unk24;
-    u32 unk28;
-    u32 unk2C;
-    u8 unk30;
-    u8 unk31;
+    u32 sample;      // struct SoundSampleHeader *, 0 = idle
+    u32 rate;        // playback rate
+    u32 position;    // bytes of the sample streamed so far
+    u32 flags;       // 1 paused, 2 rate changed, 4 output changed
+    u32 timerReload; // TMxCNT value
+    u32 rateOffset;  // vibrato
+    u32 track;       // struct SoundTrack * that queued the note
+    u32 queuedSample;
+    u32 queuedRatio;
+    u32 queuedNote;
+    u32 queuedVolume;
+    u32 queuedLength;
+    u8 queuedPan;
+    u8 queuedPanOverride;
     u8 filler32[0x2];
-    u16 unk34;
-    u16 unk36;
-    u16 unk38;
-    u8 unk3A; // 1 = FIFO A, 2 = FIFO B
-    u8 unk3B;
-    u8 unk3C;
+    u16 length; // note length in frames
+    u16 elapsed;
+    u16 pendingFrames; // frames counted by sound_mix_tick since the last refill
+    u8 fifo;           // 1 = FIFO A, 2 = FIFO B
+    u8 note;
+    u8 volume; // 0..15
     u8 filler3D[0x1];
-    u8 unk3E; // state
-    u8 unk3F; // Medals list: tab (6 Medals per tab)
-    u8 unk40; // Medals list: row
+    u8 request; // for sound_mix_run_request: 1 start note, 2 start at rate, 3 stop, 4 pause, 5 resume
+    u8 pan;
+    u8 panOverride;
     u8 filler41[0x3];
-    u32 unk44; // counts frames while no sample is set
+    u32 idleFrames; // counts frames while no sample is set
 };
 
 struct Unk_03006D20 {
@@ -1434,49 +1435,50 @@ struct BattleEntity3D {
     u8 filler2EC[0x14];
 };
 
-// Table pointed to by the sound work area at 0x728: note -> sample/frequency entry.
-struct SoundNoteTable {
+// Drum kit (gSoundWork->drumKit): notes base..base+count-1 map to a drum; entries are the noise channel
+// sub-sequences, pans the per-drum pan, the samples are in gSoundWork->drumSamples.
+struct SoundDrumKit {
     u16 count;
     u16 base;
-    u32 unk4;
+    u32 pans;       // u8 [count]: pan per drum
     u8 *entries[1]; // count entries
 };
 
 // Per-track configuration (gSoundTrackConfigs, one per SoundTrack).
 struct SoundTrackConfig {
-    u32 unk0;                               // -> SoundTrack.unkC
-    void (*unk4)(struct SoundTrack *track); // -> SoundTrack.unk10
-    u8 unk8;                                // -> SoundTrack.unk64
-    u8 unk9;                                // ring buffer index (work+0x5EC), 0xFF = none
+    u32 onEnd;                              // -> SoundTrack.onEnd
+    void (*tick)(struct SoundTrack *track); // -> SoundTrack.tick
+    u8 channelType;                         // -> SoundTrack.channelType
+    u8 echoBuffer;                          // index into SoundWork.echoBuffers, 0xFF = none
     u8 fillerA[2];
 };
 
-// Song / sound effect header (tables at gUnk_03007014->unk688 / unk68C).
+// Song / sound effect header (tables at gSoundWork->songs / soundEffects).
 struct SoundSongHeader {
     u16 trackMask; // bit 11 - i set: track i is used (0x800 = track 0)
-    u8 priority;   // copied to SoundTrack.unk6D
+    u8 priority;   // copied to SoundTrack.priority
     u8 unk3;
     u8 *tracks[1]; // one sequence pointer per set bit, in track order
 };
 
 // Sound driver work area (0x734 bytes, cleared by sound_engine_init).
-struct Unk_03007014 {
+struct SoundWork {
     struct SoundTrack tracks[13];
-    struct SoundTrack *unk5E4;
+    struct SoundTrack *activeTracks;
     u32 unk5E8;
-    u8 unk5EC[3][0x34];              // SoundTrack.unk8 ring buffers (0x30 bytes + write index)
-    struct SoundSongHeader **unk688; // songs
-    struct SoundSongHeader **unk68C; // sound effects
-    struct SoundMixChannel unk690;
-    struct SoundMixChannel unk6D8;
-    u32 unk720;
-    u32 unk724;
-    struct SoundNoteTable *unk728;
-    u8 unk72C; // flags
-    u8 unk72D;
-    u8 unk72E;
-    u8 unk72F;
-    u16 unk730;
+    u8 echoBuffers[3][0x34]; // SoundTrack.echoBuffer (0x30 notes + write index)
+    struct SoundSongHeader **songs;
+    struct SoundSongHeader **soundEffects;
+    struct SoundMixChannel fifoA;
+    struct SoundMixChannel fifoB;
+    u32 instrumentSamples; // struct SoundSampleHeader *[], by SoundTrack.instrument
+    u32 drumSamples;       // struct SoundSampleHeader *[], by drum index
+    struct SoundDrumKit *drumKit;
+    u8 flags;      // 1 master volume changed, 2 paused, 4 mono (pan forced to both)
+    u8 volumeLeft; // SOUNDCNT_L 0-7
+    u8 volumeRight;
+    u8 songId;
+    u16 lockCount; // nonzero while the game updates the work area (sound_engine_tick skips the frame)
     u8 filler732[0x2];
 };
 

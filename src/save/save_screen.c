@@ -178,7 +178,7 @@ void save_screen_write_save(void) {
     u16 err = 0;
     s8 i;
 
-    if (t > 29 && !is_sound_playing_with_lock(4)) {
+    if (t > 29 && !is_sound_effect_playing(4)) {
         for (i = 0; i <= 3; i++) {
             err = save_dispatch(0);
             if (err == 0)
@@ -248,6 +248,6 @@ void init_linking_mode(void) {
     gGameSubState = 0;
     REG_DMA0CNT_H = 0;
     VBlankIntrWait();
-    sound_init(&gUnk_03002430);
+    sound_init(&gSoundWorkArea);
     VBlankIntrWait();
 }

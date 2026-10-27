@@ -495,7 +495,7 @@ void weekly_closing_talk(void) {
 // Sub-state 16: once the curtains are closed, fades the music out and leaves (sub-state 17).
 void weekly_wait_curtains_closed(void) {
     if (gSpriteEntries[10].unk22 == 0) {
-        sound_stop_all_with_fade_guard(0x20);
+        fade_out_music(0x20);
         gUnk_03001800_s.nextSubState = 0x11;
         gGameSubState = 2;
     }

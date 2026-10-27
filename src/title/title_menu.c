@@ -406,7 +406,7 @@ void title_menu_confirm_flash(void) {
             palette_backup_from_hardware();
             gUnk_03000440.unk84 = n;
         }
-    } else if (!is_sound_playing_with_lock(4)) {
+    } else if (!is_sound_effect_playing(4)) {
         struct Unk_03000440 *b = &gUnk_03000440;
         if (b->unk84 <= 8) {
             s32 w = 31;

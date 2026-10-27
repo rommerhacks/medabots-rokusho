@@ -196,7 +196,7 @@ void race_show_results(void) {
         REG_BLDY = 0;
         REG_BLDCNT = 0xFF;
         gRaceStep = 0;
-        sound_stop_all_with_fade_guard(0x20);
+        fade_out_music(0x20);
         gRaceNextSubState = 12;
         gGameSubState = 2;
     }

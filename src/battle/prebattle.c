@@ -250,7 +250,7 @@ void prebattle_rubberobo_use(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (run_message(gUnk_083B53F8[21])) {
-        sound_stop_all_with_fade_guard(8);
+        fade_out_music(8);
         item_remove_quantity(50, 1);
         gGameSubState++;
     }
@@ -635,7 +635,7 @@ void afterbattle_transform_advance(void) {
 void afterbattle_stop_music(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    sound_stop_all_with_fade_guard(8);
+    fade_out_music(8);
     gGameSubState++;
 }
 

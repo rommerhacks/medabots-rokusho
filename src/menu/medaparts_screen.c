@@ -636,7 +636,7 @@ void medapart_trade_choice_dispatch(void) {
         gGameSubState = 10;
         break;
     case 1:
-        sound_stop_all_with_fade_guard(8);
+        fade_out_music(8);
         gGameSubState++;
         break;
     case 2:

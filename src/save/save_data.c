@@ -49,7 +49,7 @@ s32 load_save_with_retries(void) {
     u8 *p;
     u8 fe;
     register s32 r asm("r1");
-    if ((r = is_sound_playing_with_lock(4)) != 0)
+    if ((r = is_sound_effect_playing(4)) != 0)
         return r;
     play_song(0);
     play_sound_effect(0);

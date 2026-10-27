@@ -734,7 +734,7 @@ void robattle_start_banner_init(void) {
     gUnk_03001800.unk84 = 1;
     lz_decompress_dispatch(gUnk_084C84E4, (void *)0x06014800);
     CpuFastSet(gUnk_084E2FD8, (void *)0x050003E0, 8);
-    sound_stop_all_with_fade_guard(8);
+    fade_out_music(8);
     play_sound_effect(0x6E);
     gUnk_03000440.unk84 = 0;
     gGameSubState++;

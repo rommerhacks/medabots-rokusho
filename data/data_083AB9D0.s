@@ -3,12 +3,12 @@
 	.global gData_083AB9D0
 gData_083AB9D0:
 
-	.global gUnk_083AB9D0
-gUnk_083AB9D0:
+	.global gSoundPsgNoteFreqs
+gSoundPsgNoteFreqs:
 	.incbin "baserom.gba", 0x3AB9D0, 0x92
 
-	.global gUnk_083ABA62
-gUnk_083ABA62:
+	.global gSoundWaveVolumes
+gSoundWaveVolumes:
 	.incbin "baserom.gba", 0x3ABA62, 0x10
 
 	.global gSoundOutputMasks
@@ -19,12 +19,12 @@ gSoundOutputMasks:
 gSoundOutputBits:
 	.incbin "baserom.gba", 0x3ABA76, 0x12
 
-	.global gUnk_083ABA88
-gUnk_083ABA88:
+	.global gSoundFifoVolumeMasks
+gSoundFifoVolumeMasks:
 	.incbin "baserom.gba", 0x3ABA88, 0x4
 
-	.global gUnk_083ABA8C
-gUnk_083ABA8C:
+	.global gSoundFifoVolumeBits
+gSoundFifoVolumeBits:
 	.incbin "baserom.gba", 0x3ABA8C, 0x20
 
 	.global gSoundFifoResetBits
@@ -35,12 +35,12 @@ gSoundFifoResetBits:
 gSoundFifoEnableBits:
 	.incbin "baserom.gba", 0x3ABAAE, 0x4
 
-	.global gUnk_083ABAB2
-gUnk_083ABAB2:
+	.global gSoundFifoOutputBits
+gSoundFifoOutputBits:
 	.incbin "baserom.gba", 0x3ABAB2, 0x10
 
-	.global gUnk_083ABAC2
-gUnk_083ABAC2:
+	.global gSoundFifoOutputMasks
+gSoundFifoOutputMasks:
 	.incbin "baserom.gba", 0x3ABAC2, 0x4
 
 	.global gSoundSemitoneRatios

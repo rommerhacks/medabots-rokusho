@@ -268,7 +268,7 @@ void link_robattle_outro_delay(void) {
 
 void link_robattle_fade_music(void) {
     update_scroll_movement_a();
-    sound_stop_all_with_fade_guard(8);
+    fade_out_music(8);
     gGameSubState++;
 }
 
@@ -498,7 +498,7 @@ void prize_game_fade_music(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
     gUnk_03000440.unk86++;
-    sound_stop_all_with_fade_guard(8);
+    fade_out_music(8);
     gGameSubState++;
 }
 
@@ -556,7 +556,7 @@ void prize_game_goto_checking(void) {
 }
 
 void link_error_fade_out(void) {
-    sound_stop_all_with_fade_guard(8);
+    fade_out_music(8);
     set_blend_effect_mode(6, 0x3F, 0x20);
     gGameSubState++;
 }
@@ -913,6 +913,6 @@ void soft_reset_to_title(void) {
     gGameSubState = 0;
     REG_DMA0CNT_H = 0;
     VBlankIntrWait();
-    sound_init(&gUnk_03002430);
+    sound_init(&gSoundWorkArea);
     VBlankIntrWait();
 }

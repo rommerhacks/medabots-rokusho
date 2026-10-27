@@ -65,7 +65,7 @@ void field_menu_handle_input(void) {
         gSpriteEntries[0].unk4 = gUnk_03000440.unk8E * 16 + 8;
     }
     if (KEYS_LO(gNewKeys) & 2) {
-        sound_stop_all_with_fade_guard(0x10);
+        fade_out_music(0x10);
         play_sound_effect(5);
         clear_battle_sprite_slot(0, 1);
         clear_battle_sprite_slot(10, 7);
@@ -132,7 +132,7 @@ void field_menu_select_collapse(void) {
         palette_backup_from_hardware();
         gUnk_03000440.unk84 = 0;
         if (gUnk_03000440.unk8E == 0)
-            sound_stop_all_with_fade_guard(0x10);
+            fade_out_music(0x10);
         gGameSubState++;
     }
 }

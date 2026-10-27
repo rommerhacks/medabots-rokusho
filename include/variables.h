@@ -36,9 +36,9 @@ extern u8 *gMapScriptData; // current map script data (banked, see read_map_scri
 extern struct Unk_030057E0 gUnk_030057E0;
 extern struct Unk_030064A0 gUnk_030064A0;
 extern struct Unk_03006D20 gUnk_03006D20;
-extern struct Unk_03007014 *gUnk_03007014;
-extern struct Unk_03007014 gUnk_03002430; // sound work area (soft_reset_to_title passes it to sound_init)
-extern struct Vec16 gBg1Scroll;           // BG1 scroll (field: map camera)
+extern struct SoundWork *gSoundWork;
+extern struct SoundWork gSoundWorkArea; // sound work area (soft_reset_to_title passes it to sound_init)
+extern struct Vec16 gBg1Scroll;         // BG1 scroll (field: map camera)
 extern struct Unk_03005310 gUnk_03005310;
 extern struct BlendEffectState gBlendEffect;
 extern struct Unk_03006F74 *gUnk_03006F74;
@@ -88,11 +88,11 @@ extern struct SpriteTileRef gUnk_0807ED00[][4];
 extern struct SpriteTileRef gUnk_0807F4A0[][4];
 extern struct SpriteTileRef gUnk_0807FC40[][4];
 extern struct SpriteTileRef gUnk_080803E0[][8];
-extern struct SoundSongHeader *gUnk_080AFFB8[]; // song table (sound_init)
-extern struct SoundSongHeader *gUnk_080B06EC[]; // sound effect table (sound_init)
-extern struct SoundNoteTable gUnk_080B1788;
-extern const u8 gUnk_080B1570[];
-extern const u8 gUnk_080B1718[];
+extern struct SoundSongHeader *gSongTable[];        // song table (sound_init)
+extern struct SoundSongHeader *gSoundEffectTable[]; // sound effect table (sound_init)
+extern struct SoundDrumKit gDrumKit;
+extern const u8 gInstrumentSamples[]; // sample pointers by SoundTrack.instrument
+extern const u8 gDrumSamples[];       // sample pointers by drum index
 extern const u8 gUnk_083D28C0[];
 extern const u8 gUnk_083D2908[];
 extern const u8 gUnk_083D29A6[];
@@ -114,13 +114,13 @@ extern const u8 gUnk_083D2903[];
 extern const u8 gUnk_083D29E6[];
 extern const u8 gUnk_085FA104[];                    // LZ77 sprite tiles
 extern const struct MapExit *const gUnk_0840FAF4[]; // per area: 8-byte map exit records, 0xFF-terminated
-extern const u16 gUnk_083AB9D0[];
-extern const u16 gUnk_083ABA88[];
-extern const u8 gUnk_083ABA8C[][16];
-extern const u16 gUnk_083ABAB2[][4];
-extern const u16 gUnk_083ABAC2[];
+extern const u16 gSoundPsgNoteFreqs[];
+extern const u16 gSoundFifoVolumeMasks[];
+extern const u8 gSoundFifoVolumeBits[][16];
+extern const u16 gSoundFifoOutputBits[][4];
+extern const u16 gSoundFifoOutputMasks[];
 extern const u8 gSoundWavePatterns[][16];   // 4-bit samples for the wave channel (sound 3)
-extern const u8 gUnk_083ABA62[16];          // envelope volume -> SOUND3CNT_H volume bits (>> 8)
+extern const u8 gSoundWaveVolumes[16];      // envelope volume -> SOUND3CNT_H volume bits (>> 8)
 extern const u16 gSoundSemitoneRatios[12];  // 2^(i/12) * 0x1000
 extern const u16 gSoundFinetuneRatios[128]; // 2^(i/(12*128)) * 0x1000
 extern const u32 gSoundEffectTracks[6];     // track indices of the sound effect tracks (4-7, 10, 11)

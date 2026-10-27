@@ -236,12 +236,12 @@ void action_phase_end_check(void) {
     gUnk_03000440.unk9C = 0;
     if (gUnk_03000590[0].unk40 == 0) {
         gUnk_03000440.unk9C = 2;
-        sound_stop_all_with_fade_guard(4);
+        fade_out_music(4);
         play_sound_effect(0x6F);
         gGameSubState++;
     } else if (gUnk_03000590[3].unk40 == 0) {
         gUnk_03000440.unk9C = 1;
-        sound_stop_all_with_fade_guard(4);
+        fade_out_music(4);
         play_sound_effect(0x6F);
         gGameSubState++;
     } else
@@ -351,7 +351,7 @@ void action_phase_show_time_up_message(void) {
 
 void action_phase_exit_begin(void) {
     if (gUnk_03000440.unk89 != 1) {
-        sound_stop_all_with_fade_guard(8);
+        fade_out_music(8);
         gGameSubState++;
     } else
         gGameSubState = 0x58;
@@ -550,6 +550,6 @@ void action_phase_link_finish(void) {
 }
 
 void action_phase_link_exit(void) {
-    sound_stop_all_with_fade_guard(8);
+    fade_out_music(8);
     gGameSubState = 0x51;
 }

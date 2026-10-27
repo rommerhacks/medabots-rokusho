@@ -15,7 +15,7 @@ void field_play_song(u32 id) {
 }
 
 void field_stop_songs(u32 a) {
-    sound_stop_all_with_fade_guard(a);
+    fade_out_music(a);
 }
 
 u32 medal_name(u32 idx) {

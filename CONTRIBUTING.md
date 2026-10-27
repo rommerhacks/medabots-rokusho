@@ -225,7 +225,7 @@
   `register u8 *p asm("r0") = (u8 *)&gX;`. Keep it in the smallest block that needs it; a function-wide
   pin often reshuffles everything else. It solved: load_save_with_retries (call result kept in r1),
   save_dispatch (bit-set address in r0), status_side_change_scroll_out (`rec * 2` in r0),
-  update_sound_channel_frequency_080733AC (pin the two pointer params, `cnt` declared first),
+  sound_output_echo (pin the two pointer params, `cnt` declared first),
   town_map_load_graphics, and name_entry_load_name (table pointer pinned to r4 *and* assigned inside the loop
   body, so it is loaded after the loop guard). It does not help when the swapped register only holds a
   constant (no variable to pin) or a spill slot.
@@ -637,12 +637,12 @@ really data (a false positive), the shifted build changes that data by `SHIFT`: 
 * The original often **reuses a local as a scratch variable** for an unrelated later value (offsets, then
   half sizes, then the final screen position; a delta, then an array index). Shared variables share
   registers, so when callee-saved registers are rotated across a whole function, look for values that
-  could live in the same variable (render_sprite_node_recursive, sound_engine_update_all_channels: the loop
+  could live in the same variable (render_sprite_node_recursive, sound_engine_update: the loop
   pointer `track` is later reassigned to the track array base).
 * A global's address kept in a register across a loop exit where the original reloads it is GCSE
   (`-fno-gcse` makes it match). Pin the reload: `{ register T **p asm("r0") = &gX; v = (*p)->f; }`.
 * One byte field written through `u8 *p = &s->f; p[1] = ...` instead of the struct field avoids the
-  hoisted QImode zero agbcc emits for `(mem & 0) | v` byte stores (init_all_sound_channels).
+  hoisted QImode zero agbcc emits for `(mem & 0) | v` byte stores (sound_init_tracks).
 * An extra reload in the original can come from a duplicated tail that a later pass merges away: write the
   early-exit path with its own copy of the tail stores (message_cmd_portrait).
   The same works when the reload registers (r0/r1/r3 round-robin) are off by one: add a duplicate of an

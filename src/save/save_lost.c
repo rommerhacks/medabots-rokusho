@@ -103,7 +103,7 @@ void save_lost_fade_out(void) {
 // Once the A sound has finished: zeroes EEPROM block 0 (the save header, up to 4 tries), then the title.
 void save_lost_erase_and_restart(void) {
     u16 buf[4];
-    u32 playing = is_sound_playing_with_lock(4);
+    u32 playing = is_sound_effect_playing(4);
     u16 ie;
     u32 zero;
     s32 i;

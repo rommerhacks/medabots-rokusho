@@ -10,6 +10,6 @@ void irq_init(void);
 void vblank_body(void);
 void soft_reset(void);
 void read_keys(void);
-void sound_init(struct Unk_03007014 *work);
+void sound_init(struct SoundWork *work);
 
 #endif // GUARD_ENGINE_MAIN_H

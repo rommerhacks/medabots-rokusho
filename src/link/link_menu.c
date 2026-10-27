@@ -241,7 +241,7 @@ void update_fade_transition_state_080662CC(void) {
 }
 
 void advance_fade_and_play_music(void) {
-    if (blend_fade_step_08065598(gUnk_03006F74->unk50) && !is_sound_playing_with_lock(4)) {
+    if (blend_fade_step_08065598(gUnk_03006F74->unk50) && !is_sound_effect_playing(4)) {
         play_song(0);
         play_sound_effect(0);
         eeprom_setup_timer_irq();

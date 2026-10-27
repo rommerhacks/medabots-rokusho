@@ -611,7 +611,7 @@ void team_select_race_wait(void) {
     medabots_screen_draw_bot_sprite();
     team_select_blink_pick_markers();
     if (gUnk_03000440.unk5C > 60) {
-        sound_stop_all_with_fade_guard(8);
+        fade_out_music(8);
         set_blend_effect_mode(6, 0x3F, 8);
         gGameSubState++;
     }

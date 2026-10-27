@@ -19,7 +19,7 @@ void AgbMain(void) {
     gGameState = 0;
     gGameSubState = 0;
     serial_link_init();
-    sound_init(&gUnk_03002430);
+    sound_init(&gSoundWorkArea);
     *(u16 *)&gUnk_03001784 = 0;
     gUnk_03005030 = 0;
     gUnk_03002410 = 0;
@@ -54,7 +54,7 @@ void AgbMain(void) {
         }
         if (check_soft_reset()) {
             VBlankIntrWait();
-            sound_init(&gUnk_03002430);
+            sound_init(&gSoundWorkArea);
             VBlankIntrWait();
         } else if (gUnk_03005030) {
             u32 other = 0;
@@ -114,13 +114,13 @@ void clear_oam(void) {
     CpuFastSet((void *)&b, (void *)VRAM, 0x01006000);
 }
 
-void sound_init(struct Unk_03007014 *work) {
+void sound_init(struct SoundWork *work) {
     sound_engine_init(work);
-    sub_08074900(gUnk_080AFFB8);
-    sub_08074BC4(gUnk_080B06EC);
-    sub_08074E70(&gUnk_080B1788);
-    sub_08073AE4((u32)gUnk_080B1570);
-    sub_08073AF8((u32)gUnk_080B1718);
+    sound_set_song_table(gSongTable);
+    sound_set_se_table(gSoundEffectTable);
+    sound_set_drum_kit(&gDrumKit);
+    sound_set_instrument_samples((u32)gInstrumentSamples);
+    sound_set_drum_samples((u32)gDrumSamples);
     play_song(0);
 }
 
@@ -180,7 +180,7 @@ void vblank_body(void) {
     gVBlankOnceCallback = nullsub_08000840;
     INTR_CHECK = 1;
     REG_IF = 1;
-    sound_tick_both_channels();
+    sound_mix_tick();
     sound_engine_tick();
 }
 
@@ -250,11 +250,11 @@ static u32 check_soft_reset(void) {
 }
 
 void dma1_irq_sound(void) {
-    sound_update_channel_at_690();
+    sound_mix_refill_fifo_a();
 }
 
 void dma2_irq_sound(void) {
-    sound_update_channel_at_6d8();
+    sound_mix_refill_fifo_b();
 }
 
 static void nullsub_080009B4(void) {}

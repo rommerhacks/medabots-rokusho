@@ -1009,7 +1009,7 @@ void medal_trade_check_medal(void) {
         gGameSubState++;
     } else {
         clear_battle_sprite_slot(5, 1);
-        sound_stop_all_with_fade_guard(8);
+        fade_out_music(8);
         gUnk_03000440.unk3E = bit;
         gGameSubState = 0x68;
     }

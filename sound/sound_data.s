@@ -560,26 +560,26 @@ gWeeklyCurtainCloseTimes:
 gWeeklyLectureSfxScript:
 	.incbin "baserom.gba", 0xAFFA8, 0x10
 
-	.global gUnk_080AFFB8
-gUnk_080AFFB8:
+	.global gSongTable
+gSongTable:
 	.incbin "baserom.gba", 0xAFFB8, 0x6F4
 
 	.global gSoundWavePatterns
 gSoundWavePatterns:
 	.incbin "baserom.gba", 0xB06AC, 0x40
 
-	.global gUnk_080B06EC
-gUnk_080B06EC:
+	.global gSoundEffectTable
+gSoundEffectTable:
 	.incbin "baserom.gba", 0xB06EC, 0xE84
 
-	.global gUnk_080B1570
-gUnk_080B1570:
+	.global gInstrumentSamples
+gInstrumentSamples:
 	.incbin "baserom.gba", 0xB1570, 0x1A8
 
-	.global gUnk_080B1718
-gUnk_080B1718:
+	.global gDrumSamples
+gDrumSamples:
 	.incbin "baserom.gba", 0xB1718, 0x70
 
-	.global gUnk_080B1788
-gUnk_080B1788:
+	.global gDrumKit
+gDrumKit:
 	.incbin "baserom.gba", 0xB1788, 0x2FA248

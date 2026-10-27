@@ -87,3 +87,10 @@ script; sprite moves are small effect functions (`gWeeklySpriteEffects`) and the
 **Audio** (`src/audio/`). The game's own sound engine (not m4a): the sequencer (`sound_seq.c`) reads the song
 byte streams and runs envelopes and vibrato; the driver (`sound_driver.c`) ticks once a frame from the VBlank
 handler and writes the PSG and Direct Sound channels. Screens call `play_song` and `play_sound_effect`.
+The work area (`struct SoundWork`, `gSoundWork`) holds 13 tracks (`struct SoundTrack`): 0-3 music on PSG
+channels 1-4, 4-7 sound effects on the same channels, 8/9 music and 10/11 sound effects on Direct Sound FIFO A/B,
+12 music drums on the noise channel. A sound effect track takes its channel over and hands it back when it ends
+(`sound_on_*_end`). Each track has a sequence pointer (`seqPos`), a command stream of notes, rests, volumes and
+0xE0-0xFF commands (`sound_cmd_*`: loops, jump/call, envelope, vibrato, pan, echo, note mode), and a per-frame
+`tick`. The two Direct Sound channels (`struct SoundMixChannel`) are refilled from the DMA1/DMA2 interrupts
+(`sound_mix_refill_fifo_a/b`); songs and effects come from `gSongTable` / `gSoundEffectTable`.

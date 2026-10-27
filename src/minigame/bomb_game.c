@@ -195,7 +195,7 @@ void bomb_game_clear_state(void) {
     bomb_game_clear_effects();
     if (bomb_game_clear_banner()) {
         gUnk_03005310.sceneResult = 1;
-        sound_stop_all_with_fade_guard(0x30);
+        fade_out_music(0x30);
         gGameSubState = 8;
     }
 }
@@ -207,7 +207,7 @@ void bomb_game_over_state(void) {
     bomb_game_animate_bombs();
     if (bomb_game_over_banner()) {
         gUnk_03005310.sceneResult = 2;
-        sound_stop_all_with_fade_guard(0x30);
+        fade_out_music(0x30);
         gGameSubState = 8;
     }
 }

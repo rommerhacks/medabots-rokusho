@@ -311,7 +311,7 @@ void test_mode_erase_save(void) {
     u16 err = 0;
     s8 i;
 
-    if (t > 29 && !is_sound_playing_with_lock(4)) {
+    if (t > 29 && !is_sound_effect_playing(4)) {
         for (i = 0; i <= 3; i++) {
             err = save_dispatch(2);
             if (err == 0)
