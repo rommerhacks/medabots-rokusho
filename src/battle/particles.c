@@ -7,7 +7,7 @@
 #include "global.h"
 
 void particle_slide_lead_sprite(void) {
-    if (!(gBattleWork.unkF8 & 2))
+    if (!(gBattleWork.actorSideFlags & 2))
         gSpriteEntries[0x21].unk2 = (gSpriteEntries[0x21].unk2 + 4) & 0x1FF;
     else
         gSpriteEntries[0x21].unk2 = (gSpriteEntries[0x21].unk2 - 4) & 0x1FF;
@@ -187,7 +187,7 @@ void particle_orbit_a(void) {
     }
     gSpriteEntries[gGameWork.unk12F].unk2B +=
         gParticleOrbitRadiusSteps[(gSpriteEntries[gGameWork.unk12F].unk2D & 0x1F) * 2];
-    if (!(gBattleWork.unkF8 & 1)) {
+    if (!(gBattleWork.actorSideFlags & 1)) {
         if (gBattleWork.unk51 != 3)
             gSpriteEntries[gGameWork.unk12F].unk18 = (gSpriteEntries[gGameWork.unk12F].unk18 - 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.unk12F].unk2C--;
@@ -230,7 +230,7 @@ void particle_orbit_b(void) {
     }
     gSpriteEntries[gGameWork.unk12F].unk2B +=
         gParticleOrbitRadiusSteps[(gSpriteEntries[gGameWork.unk12F].unk2D & 0x1F) * 2];
-    if (gBattleWork.unkF8 & 1) {
+    if (gBattleWork.actorSideFlags & 1) {
         if (gBattleWork.unk51 == 0)
             gSpriteEntries[gGameWork.unk12F].unk18 = (gSpriteEntries[gGameWork.unk12F].unk18 - 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.unk12F].unk2C--;
@@ -318,7 +318,7 @@ void particle_spin_35(void) {
     if (gSpriteEntries[gGameWork.unk12F].unk2D == 0x23) {
         gSpriteEntries[gGameWork.unk12F].unk29++;
     } else {
-        if (!(gBattleWork.unkF8 & 1))
+        if (!(gBattleWork.actorSideFlags & 1))
             gSpriteEntries[gGameWork.unk12F].unk18 = (gSpriteEntries[gGameWork.unk12F].unk18 - 0x10) & 0x3FF;
         else
             gSpriteEntries[gGameWork.unk12F].unk18 = (gSpriteEntries[gGameWork.unk12F].unk18 + 0x10) & 0x3FF;
@@ -333,7 +333,7 @@ void particle_spin_down(void) {
     } else {
         if (gSpriteEntries[gGameWork.unk12F].unk2D & 1)
             gSpriteEntries[gGameWork.unk12F].unk4++;
-        if (!(gBattleWork.unkF8 & 1))
+        if (!(gBattleWork.actorSideFlags & 1))
             gSpriteEntries[gGameWork.unk12F].unk18 = (gSpriteEntries[gGameWork.unk12F].unk18 - 0x10) & 0x3FF;
         else
             gSpriteEntries[gGameWork.unk12F].unk18 = (gSpriteEntries[gGameWork.unk12F].unk18 + 0x10) & 0x3FF;
@@ -346,7 +346,7 @@ void particle_spin_back_90(void) {
     if (gSpriteEntries[gGameWork.unk12F].unk2D == 0x5A) {
         gSpriteEntries[gGameWork.unk12F].unk29++;
     } else {
-        if (gBattleWork.unkF8 & 1)
+        if (gBattleWork.actorSideFlags & 1)
             gSpriteEntries[gGameWork.unk12F].unk18 = (gSpriteEntries[gGameWork.unk12F].unk18 - 0x10) & 0x3FF;
         else
             gSpriteEntries[gGameWork.unk12F].unk18 = (gSpriteEntries[gGameWork.unk12F].unk18 + 0x10) & 0x3FF;
@@ -411,7 +411,7 @@ void particle_spark_emitter(void) {
         particle->unk24 = 3;
         particle->unk23 = 0;
         roll = rng_next_byte() & 3;
-        if (!(gBattleWork.unkF8 & 1)) {
+        if (!(gBattleWork.actorSideFlags & 1)) {
             particle->unk2 = (base[gGameWork.unk12F].unk2 + gParticleSparkOffsets[roll << 1]) & 0x1FF;
             particle->unk4 = (base[gGameWork.unk12F].unk4 + gParticleSparkOffsets[roll * 2 + 1]) & 0xFF;
             particle->unk30 = base[gGameWork.unk12F].unk2 + 0x10;
@@ -436,9 +436,9 @@ void battle_queue_remove_bot(u32 rec) {
     u32 i;
     struct BattleWork *battle;
     for (i = 0, battle = &gBattleWork; i <= 5; i++) {
-        if (battle->unk45[i][0] == rec + 1) {
-            battle->unk45[i][0] = 0;
-            battle->unk45[i][1] = 0;
+        if (battle->actionQueue[i][0] == rec + 1) {
+            battle->actionQueue[i][0] = 0;
+            battle->actionQueue[i][1] = 0;
         }
     }
 }
@@ -468,7 +468,8 @@ void particle_shot_fly(void) {
         gSpriteEntries[gGameWork.unk12F].unk29++;
         memcpy_bytes_0803F63C(&gSpriteEntries[gGameWork.unk12F], &gSpriteEntries[gGameWork.unk12F + 3], 0x40);
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x6C], gGameWork.unk12F + 3);
-        gSpriteEntries[gGameWork.unk12F + 3].unkB = (gGameWork.unk12F + (gBattleWork.unk60 + 0xDF)) * 4 + 0x59;
+        gSpriteEntries[gGameWork.unk12F + 3].unkB =
+            (gGameWork.unk12F + (gBattleWork.targetSideFirst + 0xDF)) * 4 + 0x59;
         gSpriteEntries[gGameWork.unk12F + 3].unk29 = 3;
     }
 }
@@ -477,17 +478,17 @@ void particle_shot_fly(void) {
 void particle_shot_shake_target(void) {
     gSpriteEntries[gGameWork.unk12F].unk28++;
     if (gSpriteEntries[gGameWork.unk12F].unk28 & 2)
-        gSpriteEntries[((gBattleWork.unk60 + (gGameWork.unk12F - 0x21))) * 4 + 0x5D].unk4 =
-            gBattleWork.unk13C[(gBattleWork.unk60 + (gGameWork.unk12F - 0x21))].y + 2;
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21))) * 4 + 0x5D].unk4 =
+            gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21))].y + 2;
     else
-        gSpriteEntries[((gBattleWork.unk60 + (gGameWork.unk12F - 0x21))) * 4 + 0x5D].unk4 =
-            gBattleWork.unk13C[(gBattleWork.unk60 + (gGameWork.unk12F - 0x21))].y + 4;
-    target_cursor_place_markers((gBattleWork.unk60 + (gGameWork.unk12F - 0x21)));
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21))) * 4 + 0x5D].unk4 =
+            gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21))].y + 4;
+    target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21)));
     process_sprite_anim_commands(gUnk_083B5F80[0x6B], gGameWork.unk12F);
     if (gSpriteEntries[gGameWork.unk12F].unk22 == 0xFF) {
-        gSpriteEntries[((gBattleWork.unk60 + (gGameWork.unk12F - 0x21))) * 4 + 0x5D].unk4 =
-            gBattleWork.unk13C[(gBattleWork.unk60 + (gGameWork.unk12F - 0x21))].y + 4;
-        target_cursor_place_markers((gBattleWork.unk60 + (gGameWork.unk12F - 0x21)));
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21))) * 4 + 0x5D].unk4 =
+            gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21))].y + 4;
+        target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21)));
         clear_battle_sprite_slot(gGameWork.unk12F, 1);
     }
 }
@@ -517,18 +518,18 @@ u32 particle_run_sweep_handlers(void) {
 // hit sound and starts a hit sprite 3 slots on. Freed after 41 frames.
 void particle_sweep_across(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x6D], gGameWork.unk12F);
-    if (!(gBattleWork.unkF8 & 1)) {
+    if (!(gBattleWork.actorSideFlags & 1)) {
         gSpriteEntries[gGameWork.unk12F].unk2 = (gSpriteEntries[gGameWork.unk12F].unk2 + 4) & 0x1FF;
         if (gSpriteEntries[gGameWork.unk12F].unk2 >
-                gSpriteEntries[(gBattleWork.unk60 + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk2 &&
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk2 &&
             gBattleWork.unkD6[gGameWork.unk12F - 0x21] != 0 && gSpriteEntries[gGameWork.unk12F].unk28 == 0) {
             play_sound_effect(0x54);
             gSpriteEntries[gGameWork.unk12F + 3].unk0 = 0xC404;
             gSpriteEntries[gGameWork.unk12F + 3].unk1C = 0;
             gSpriteEntries[gGameWork.unk12F + 3].unk2 =
-                gSpriteEntries[(gBattleWork.unk60 + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk2;
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk2;
             gSpriteEntries[gGameWork.unk12F + 3].unk4 =
-                gSpriteEntries[(gBattleWork.unk60 + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk4 - 4;
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk4 - 4;
             gSpriteEntries[gGameWork.unk12F + 3].unkA = 6;
             gSpriteEntries[gGameWork.unk12F + 3].unkB = 0xF1;
             gSpriteEntries[gGameWork.unk12F + 3].unk29 = 2;
@@ -539,15 +540,15 @@ void particle_sweep_across(void) {
     } else {
         gSpriteEntries[gGameWork.unk12F].unk2 = (gSpriteEntries[gGameWork.unk12F].unk2 - 4) & 0x1FF;
         if (gSpriteEntries[gGameWork.unk12F].unk2 <
-                gSpriteEntries[(gBattleWork.unk60 + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk2 &&
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk2 &&
             gBattleWork.unkD6[gGameWork.unk12F - 0x21] != 0 && gSpriteEntries[gGameWork.unk12F].unk28 == 0) {
             play_sound_effect(0x54);
             gSpriteEntries[gGameWork.unk12F + 3].unk0 = 0xD404;
             gSpriteEntries[gGameWork.unk12F + 3].unk1C = 0;
             gSpriteEntries[gGameWork.unk12F + 3].unk2 =
-                gSpriteEntries[(gBattleWork.unk60 + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk2;
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk2;
             gSpriteEntries[gGameWork.unk12F + 3].unk4 =
-                gSpriteEntries[(gBattleWork.unk60 + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk4 - 4;
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x21)) * 4 + 0x5D].unk4 - 4;
             gSpriteEntries[gGameWork.unk12F + 3].unkA = 6;
             gSpriteEntries[gGameWork.unk12F + 3].unkB = 0xF1;
             gSpriteEntries[gGameWork.unk12F + 3].unk29 = 2;
@@ -566,17 +567,17 @@ void particle_sweep_across(void) {
 void particle_sweep_shake_target(void) {
     gSpriteEntries[gGameWork.unk12F].unk28++;
     if (gSpriteEntries[gGameWork.unk12F].unk28 & 2)
-        gSpriteEntries[((gBattleWork.unk60 + (gGameWork.unk12F - 0x24))) * 4 + 0x5D].unk2 =
-            gBattleWork.unk13C[(gBattleWork.unk60 + (gGameWork.unk12F - 0x24))].x + 2;
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x24))) * 4 + 0x5D].unk2 =
+            gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x24))].x + 2;
     else
-        gSpriteEntries[((gBattleWork.unk60 + (gGameWork.unk12F - 0x24))) * 4 + 0x5D].unk2 =
-            gBattleWork.unk13C[(gBattleWork.unk60 + (gGameWork.unk12F - 0x24))].x - 2;
-    target_cursor_place_markers((gBattleWork.unk60 + (gGameWork.unk12F - 0x24)));
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x24))) * 4 + 0x5D].unk2 =
+            gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x24))].x - 2;
+    target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x24)));
     process_sprite_anim_commands(gUnk_083B5F80[0x6E], gGameWork.unk12F);
     if (gSpriteEntries[gGameWork.unk12F].unk22 == 0xFF) {
-        gSpriteEntries[((gBattleWork.unk60 + (gGameWork.unk12F - 0x24))) * 4 + 0x5D].unk2 =
-            gBattleWork.unk13C[(gBattleWork.unk60 + (gGameWork.unk12F - 0x24))].x;
-        target_cursor_place_markers((gBattleWork.unk60 + (gGameWork.unk12F - 0x24)));
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x24))) * 4 + 0x5D].unk2 =
+            gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x24))].x;
+        target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.unk12F - 0x24)));
         clear_battle_sprite_slot(gGameWork.unk12F, 1);
     }
 }

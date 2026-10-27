@@ -10,8 +10,8 @@ void copy_battle_entity_positions(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        gBattleWork.unk13C[i].x = gSpriteEntries[0x5D + i * 4].unk2;
-        gBattleWork.unk13C[i].y = gSpriteEntries[0x5D + i * 4].unk4 - 4;
+        gBattleWork.botPositions[i].x = gSpriteEntries[0x5D + i * 4].unk2;
+        gBattleWork.botPositions[i].y = gSpriteEntries[0x5D + i * 4].unk4 - 4;
     }
 }
 
@@ -27,7 +27,7 @@ void init_battle_bot_sprites(void) {
 }
 
 void init_battle_sprite_entry_0801BC04(u32 rec) {
-    gSpriteEntries[rec + 0x72].unk0 = ((gBattleWork.unk39[3] + 2) << 10) | 0xC004;
+    gSpriteEntries[rec + 0x72].unk0 = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
     gSpriteEntries[rec + 0x72].unk1C = 0;
     gSpriteEntries[rec + 0x72].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2;
     gSpriteEntries[rec + 0x72].unk4 = gSpriteEntries[rec * 4 + 0x5D].unk4 + 8;
@@ -127,7 +127,7 @@ void increment_medal_skill_level(u32 rec) {
         return;
     if (gBattleBots[rec].medal.level == 100)
         return;
-    if (gBattleWork.unk164 == 0)
+    if (gBattleWork.skillGrowthOn == 0)
         return;
     if (gBattleBots[rec].chosenAction > 3)
         skill = gBattleBots[rec].medaforce[1];
@@ -141,9 +141,9 @@ void increment_medal_skill_level(u32 rec) {
         if (gBattleBots[rec].medal.skillExp[skill] > 7) {
             gBattleBots[rec].medal.skillExp[skill] = 0;
             gBattleBots[rec].medal.skillLevel[skill]++;
-            gBattleWork.unk165 = 1;
-            gBattleWork.unk166 = skill;
-            gBattleWork.unk167 = gBattleBots[rec].medal.skillLevel[skill];
+            gBattleWork.skillLevelledUp = 1;
+            gBattleWork.levelUpSkill = skill;
+            gBattleWork.levelUpLevel = gBattleBots[rec].medal.skillLevel[skill];
         }
     }
     sync_medal_stats_from_battle_bot(rec);

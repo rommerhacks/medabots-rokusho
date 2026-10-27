@@ -18,32 +18,32 @@ void count_active_battle_bots(void) {
     u32 n;
 
     for (i = 0, n = 0; i <= 2; i++) {
-        if (gBattleWork.unk41[i])
+        if (gBattleWork.teamPicks[i])
             n++;
     }
-    gBattleWork.unk5A = n;
-    gBattleWork.unk5B = gBattleWork.unk2;
+    gBattleWork.teamCount = n;
+    gBattleWork.unk5B = gBattleWork.opponentCount;
 }
 
 void battle_setup_team_bots(void) {
     copy_player_medals_to_battle_bots();
     copy_team_slots_to_battle_bots();
-    battle_bots_load_parts(0, gBattleWork.unk5A);
+    battle_bots_load_parts(0, gBattleWork.teamCount);
 }
 
 static void copy_player_medals_to_battle_bots(void) {
     u32 i;
 
-    for (i = 0; i < gBattleWork.unk5A; i++)
-        memcpy_bytes_0803F63C(&gMedals[find_medal_slot_by_id(gTeamSlots[gBattleWork.unk41[i] & 0xF].medal) - 1],
+    for (i = 0; i < gBattleWork.teamCount; i++)
+        memcpy_bytes_0803F63C(&gMedals[find_medal_slot_by_id(gTeamSlots[gBattleWork.teamPicks[i] & 0xF].medal) - 1],
                               &gBattleBots[i], 0x40);
 }
 
 void copy_team_slots_to_battle_bots(void) {
     u32 i;
 
-    for (i = 0; i < gBattleWork.unk5A; i++)
-        memcpy_bytes_0803F63C(&gTeamSlots[gBattleWork.unk41[i] & 0xF], &gBattleBots[i].teamState, 8);
+    for (i = 0; i < gBattleWork.teamCount; i++)
+        memcpy_bytes_0803F63C(&gTeamSlots[gBattleWork.teamPicks[i] & 0xF], &gBattleBots[i].teamState, 8);
 }
 
 void battle_bots_load_parts(u32 rec, u32 n) {
@@ -86,19 +86,19 @@ void init_enemy_bot_medal(u8 i) {
     u32 v;
     u32 lvl;
 
-    memcpy_bytes_08041D04(gUnk_083B6158[gBattleWork.unk4[i].unk4], &gGameWork.unkEE, 16);
+    memcpy_bytes_08041D04(gUnk_083B6158[gBattleWork.encounterBots[i].unk4], &gGameWork.unkEE, 16);
     gBattleBots[i + 3].medal.flags = 0x80;
     gBattleBots[i + 3].medal.graphicId = (&gGameWork.unkEE)[0];
     gBattleBots[i + 3].medal.attribute = (&gGameWork.unkEE)[1];
-    gBattleBots[i + 3].medal.level = gBattleWork.unk4[i].unk5;
+    gBattleBots[i + 3].medal.level = gBattleWork.encounterBots[i].unk5;
     gBattleBots[i + 3].medal.aimSkillType = (&gGameWork.unkEE)[2];
     gBattleBots[i + 3].medal.compatibility = (&gGameWork.unkEE)[7];
-    gBattleBots[i + 3].medal.rotationLen = gBattleWork.unk4[i].unkA;
-    memcpy_bytes_08041D04((const void *)gUnk_083BA4D8[gBattleWork.unk4[i].parts[0]], gBattleBots[i + 3].medal.name,
-                          0xE);
+    gBattleBots[i + 3].medal.rotationLen = gBattleWork.encounterBots[i].unkA;
+    memcpy_bytes_08041D04((const void *)gUnk_083BA4D8[gBattleWork.encounterBots[i].parts[0]],
+                          gBattleBots[i + 3].medal.name, 0xE);
     for (k = 0; k <= 3; k++) {
-        gBattleBots[i + 3].medal.rotation[k * 2] = gBattleWork.unk4[i].unk6[k] >> 4;
-        gBattleBots[i + 3].medal.rotation[k * 2 + 1] = gBattleWork.unk4[i].unk6[k] & 0xF;
+        gBattleBots[i + 3].medal.rotation[k * 2] = gBattleWork.encounterBots[i].unk6[k] >> 4;
+        gBattleBots[i + 3].medal.rotation[k * 2 + 1] = gBattleWork.encounterBots[i].unk6[k] & 0xF;
     }
     for (k = 0; k <= 7; k++) {
         v = gUnk_083AD200[gBattleBots[i + 3].medal.attribute * 8 + k];
@@ -118,13 +118,13 @@ void init_opponent_bot_slots(void) {
 
     for (i = 0; i < gBattleWork.unk5B; i++) {
         gBattleBots[i + 3].teamState = 3;
-        load_part_data(gBattleWork.unk4[i].parts[0], 0, &gGameWork.unkEE);
+        load_part_data(gBattleWork.encounterBots[i].parts[0], 0, &gGameWork.unkEE);
         gBattleBots[i + 3].gender = (&gGameWork.unkEE)[3];
         gBattleBots[i + 3].medalId = gBattleBots[i + 3].medal.graphicId;
-        gBattleBots[i + 3].head = gBattleWork.unk4[i].parts[0];
-        gBattleBots[i + 3].rightArm = gBattleWork.unk4[i].parts[1];
-        gBattleBots[i + 3].leftArm = gBattleWork.unk4[i].parts[2];
-        gBattleBots[i + 3].legs = gBattleWork.unk4[i].parts[3];
+        gBattleBots[i + 3].head = gBattleWork.encounterBots[i].parts[0];
+        gBattleBots[i + 3].rightArm = gBattleWork.encounterBots[i].parts[1];
+        gBattleBots[i + 3].leftArm = gBattleWork.encounterBots[i].parts[2];
+        gBattleBots[i + 3].legs = gBattleWork.encounterBots[i].parts[3];
     }
 }
 
@@ -268,7 +268,7 @@ void battle_bot_select_part(u32 rec, u32 part) {
 u32 check_medaforce_availability(u32 rec, u32 slot, u32 random) {
     u32 i;
 
-    if (opponent_medaforce_locked(rec) || gBattleWork.unk58 || gBattleBots[rec].medaforceGauge != 0x50)
+    if (opponent_medaforce_locked(rec) || gBattleWork.medaforceBlocked || gBattleBots[rec].medaforceGauge != 0x50)
         return 1;
     if (random)
         slot = rng_random_slot();

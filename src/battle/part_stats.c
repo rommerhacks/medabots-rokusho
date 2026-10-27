@@ -9,11 +9,11 @@ static u32 find_damaged_part(u32 rec);
 static u32 add_part_stat_clamped(u32 rec, u32 part, s32 amount);
 static u32 subtract_part_armor_keep_one(u32 rec, u32 part, s32 amount);
 
-// Ticks both timed effects of every present Medabot; gBattleWork.unk55 collects what happened.
+// Ticks both timed effects of every present Medabot; gBattleWork.resultFlags collects what happened.
 void battle_tick_timed_effects(void) {
     u32 i;
 
-    gBattleWork.unk55 = 0;
+    gBattleWork.resultFlags = 0;
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState) {
             if (gBattleBots[i].buffType)
@@ -36,23 +36,23 @@ void battle_tick_buff_effect(u32 rec) {
         gBattleBots[rec].buffTimer = 0;
         gBattleBots[rec].buffAmount = 0;
         gBattleBots[rec].effectShownFlags |= 1;
-        gBattleWork.unk55 |= 2;
+        gBattleWork.resultFlags |= 2;
         return;
     }
     gBattleBots[rec].buffTimer = frames;
     if (gBattleBots[rec].buffType != 0x1F)
         return;
-    gBattleWork.unk59 = gBattleBots[rec].buffAmount;
+    gBattleWork.effectAmountLeft = gBattleBots[rec].buffAmount;
     gBattleWork.unk86 = 0;
     done = 0;
     for (i = 0; i <= 3; i++) {
         part = find_damaged_part(rec);
         if (part != 0) {
-            result = add_part_stat_clamped(rec, part - 1, gBattleWork.unk59);
+            result = add_part_stat_clamped(rec, part - 1, gBattleWork.effectAmountLeft);
             gBattleWork.unk86 += result;
-            gBattleWork.unk59 = (result & 0xFF00) >> 8;
+            gBattleWork.effectAmountLeft = (result & 0xFF00) >> 8;
             done = 1;
-            if (gBattleWork.unk59 == 0)
+            if (gBattleWork.effectAmountLeft == 0)
                 break;
         } else
             break;
@@ -60,7 +60,7 @@ void battle_tick_buff_effect(u32 rec) {
     if (done) {
         gBattleBots[rec].buffNumber = gBattleWork.unk86;
         gBattleBots[rec].effectShownFlags |= 4;
-        gBattleWork.unk55 |= 8;
+        gBattleWork.resultFlags |= 8;
     }
 }
 
@@ -76,23 +76,23 @@ void battle_tick_status_effect(u32 rec) {
         gBattleBots[rec].statusTimer = 0;
         gBattleBots[rec].statusAmount = 0;
         gBattleBots[rec].effectShownFlags |= 2;
-        gBattleWork.unk55 |= 4;
+        gBattleWork.resultFlags |= 4;
         return;
     }
     gBattleBots[rec].statusTimer = frames;
     if ((u8)(gBattleBots[rec].statusType - 0x13) > 1)
         return;
-    gBattleWork.unk59 = gBattleBots[rec].statusAmount;
+    gBattleWork.effectAmountLeft = gBattleBots[rec].statusAmount;
     gBattleWork.unk86 = 0;
     done = 0;
     for (i = 0; i <= 3; i++) {
         part = find_burnable_part(rec);
         if (part != 0) {
-            result = subtract_part_armor_keep_one(rec, part - 1, gBattleWork.unk59);
+            result = subtract_part_armor_keep_one(rec, part - 1, gBattleWork.effectAmountLeft);
             gBattleWork.unk86 += result;
-            gBattleWork.unk59 = (result & 0xFF00) >> 8;
+            gBattleWork.effectAmountLeft = (result & 0xFF00) >> 8;
             done = 1;
-            if (gBattleWork.unk59 == 0)
+            if (gBattleWork.effectAmountLeft == 0)
                 break;
         } else
             break;
@@ -100,7 +100,7 @@ void battle_tick_status_effect(u32 rec) {
     if (done) {
         gBattleBots[rec].statusNumber = gBattleWork.unk86;
         gBattleBots[rec].effectShownFlags |= 8;
-        gBattleWork.unk55 |= 0x10;
+        gBattleWork.resultFlags |= 0x10;
     }
 }
 

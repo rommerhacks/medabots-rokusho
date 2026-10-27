@@ -8,7 +8,7 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir);
 
 void command_ring_draw_name(void) {
     clear_sprite_table_mask(30, 11);
-    memcpy_bytes_08041D04(gUnk_083C466C[gBattleWork.unk81], gGameWork.unk9E, 12);
+    memcpy_bytes_08041D04(gUnk_083C466C[gBattleWork.ringSlot], gGameWork.unk9E, 12);
     render_text_sprites_08040DB8(gGameWork.unk9E, 30, 21, 17, 8, 14, 0, 1);
 }
 
@@ -24,7 +24,7 @@ void command_ring_init_icon(u32 i) {
 
     clear_battle_sprite_slot(i, 1);
     gSpriteEntries[i].unk0 = 0xC604;
-    k = i - gBattleWork.unk81;
+    k = i - gBattleWork.ringSlot;
     if (k > 5)
         k += 6;
     p = compute_polar_to_screen_position(gUnk_083AD370[k], 24, 120, 128, 8, 0);
@@ -58,7 +58,7 @@ static void command_ring_init_icon_hidden(u32 i) {
 
     clear_battle_sprite_slot(i, 1);
     gSpriteEntries[i].unk0 = 0xC604;
-    k = i - gBattleWork.unk81;
+    k = i - gBattleWork.ringSlot;
     if (k > 5)
         k += 6;
     p = compute_polar_to_screen_position(gUnk_083AD370[k], 24, 120, 128, 8, 0);
@@ -95,9 +95,9 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir) {
 
     gSpriteEntries[i].unk0 &= ~0x20;
     if (dir == 0)
-        n = gUnk_083AD376[gBattleWork.unk81];
+        n = gUnk_083AD376[gBattleWork.ringSlot];
     else
-        n = gUnk_083AD37C[gBattleWork.unk81];
+        n = gUnk_083AD37C[gBattleWork.ringSlot];
     k = i - n;
     if (k > 5)
         k += 6;
@@ -130,37 +130,37 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir) {
 }
 
 void command_ring_input(void) {
-    if (gBattleWork.unk83) {
-        if (command_ring_rotate_step(gBattleWork.unk83 - 1)) {
-            if (gBattleWork.unk83 == 1)
-                gBattleWork.unk81 = gUnk_083AD376[gBattleWork.unk81];
+    if (gBattleWork.ringTurning) {
+        if (command_ring_rotate_step(gBattleWork.ringTurning - 1)) {
+            if (gBattleWork.ringTurning == 1)
+                gBattleWork.ringSlot = gUnk_083AD376[gBattleWork.ringSlot];
             else
-                gBattleWork.unk81 = gUnk_083AD37C[gBattleWork.unk81];
-            gBattleWork.unk83 = 0;
+                gBattleWork.ringSlot = gUnk_083AD37C[gBattleWork.ringSlot];
+            gBattleWork.ringTurning = 0;
             command_ring_draw_name();
         }
     } else {
         if (KEYS_LO(gRepeatKeys) & 0x10) {
             play_sound_effect(2);
-            gBattleWork.unk83 = 1;
+            gBattleWork.ringTurning = 1;
         }
         if (KEYS_LO(gRepeatKeys) & 0x20) {
             play_sound_effect(2);
-            gBattleWork.unk83 = 2;
+            gBattleWork.ringTurning = 2;
         }
     }
 }
 
 void command_ring_pulse_selected(void) {
-    if (gBattleWork.unk83 == 0) {
-        gSpriteEntries[gBattleWork.unk81].unk0 |= 0x20;
-        gSpriteEntries[gBattleWork.unk81].unk22++;
-        if (gSpriteEntries[gBattleWork.unk81].unk22 & 8) {
-            gSpriteEntries[gBattleWork.unk81].unk9 = 0x50;
-            gSpriteEntries[gBattleWork.unk81].unk8 = 0x50;
+    if (gBattleWork.ringTurning == 0) {
+        gSpriteEntries[gBattleWork.ringSlot].unk0 |= 0x20;
+        gSpriteEntries[gBattleWork.ringSlot].unk22++;
+        if (gSpriteEntries[gBattleWork.ringSlot].unk22 & 8) {
+            gSpriteEntries[gBattleWork.ringSlot].unk9 = 0x50;
+            gSpriteEntries[gBattleWork.ringSlot].unk8 = 0x50;
         } else {
-            gSpriteEntries[gBattleWork.unk81].unk9 = 0x40;
-            gSpriteEntries[gBattleWork.unk81].unk8 = 0x40;
+            gSpriteEntries[gBattleWork.ringSlot].unk9 = 0x40;
+            gSpriteEntries[gBattleWork.ringSlot].unk8 = 0x40;
         }
     }
 }
@@ -249,19 +249,19 @@ void bot_pointer_line_animate(u32 kind) {
 }
 
 void command_ring_flash_selected(void) {
-    gSpriteEntries[gBattleWork.unk81].unk0 |= 0x20;
-    gSpriteEntries[gBattleWork.unk81].unk22++;
-    if (gSpriteEntries[gBattleWork.unk81].unk22 & 4) {
-        gSpriteEntries[gBattleWork.unk81].unk9 = 0x60;
-        gSpriteEntries[gBattleWork.unk81].unk8 = 0x60;
+    gSpriteEntries[gBattleWork.ringSlot].unk0 |= 0x20;
+    gSpriteEntries[gBattleWork.ringSlot].unk22++;
+    if (gSpriteEntries[gBattleWork.ringSlot].unk22 & 4) {
+        gSpriteEntries[gBattleWork.ringSlot].unk9 = 0x60;
+        gSpriteEntries[gBattleWork.ringSlot].unk8 = 0x60;
     } else {
-        gSpriteEntries[gBattleWork.unk81].unk9 = 0x40;
-        gSpriteEntries[gBattleWork.unk81].unk8 = 0x40;
+        gSpriteEntries[gBattleWork.ringSlot].unk9 = 0x40;
+        gSpriteEntries[gBattleWork.ringSlot].unk8 = 0x40;
     }
 }
 
 void command_ring_goto_selected(void) {
-    gGameSubState = gUnk_083AD39A[gBattleWork.unk81];
+    gGameSubState = gUnk_083AD39A[gBattleWork.ringSlot];
 }
 
 void command_ring_shrink_icons(void) {

@@ -527,7 +527,7 @@ struct SpriteWork {
     u8 unk1097;
 };
 
-// Opponent Medabot in an encounter setup (gBattleWork.unk4).
+// Opponent Medabot in an encounter setup (gBattleWork.encounterBots).
 struct EncounterBot {
     u8 parts[4]; // head, right arm, left arm, legs part ids
     u8 unk4;     // Medal (gUnk_083B6158 record; init_enemy_bot_medal)
@@ -586,7 +586,7 @@ struct SortEntry {
 // The game indexes it through the constant address (a symbol doesn't match find_most_damaged_part).
 #define SORT_BUFFER ((struct SortEntry *)0x02023000)
 
-// Per-side record at gBattleWork.unk28 (0 team, 1 opponents).
+// Per-side record at gBattleWork.traps (0 team, 1 opponents).
 struct BattleSideTrap {
     u8 unk0;
     u8 unk1;       // compared between the sides when TIME runs out with a tie (robattle_judge_time_up)
@@ -600,129 +600,132 @@ struct BattleSideTrap {
 };
 
 struct BattleWork {
-    u8 unk0; // encounter: opponent message index (gUnk_083C2BBC)
+    u8 encounterMessage; // encounter: opponent message index (gUnk_083C2BBC)
     u8 unk1;
-    u8 unk2; // opponent Medabot count
-    u8 unk3; // nonzero: fixed opponent parts (else each part is re-rolled by random_pick_weighted4)
-    struct EncounterBot unk4[3];
-    struct BattleSideTrap unk28[2]; // per side (0 team, 1 opponents)
-    u8 unk38;                       // battlefield
-    u8 unk39[8];                    // copied from gBattlefieldParams[unk38] (battlefield_load_params)
-    u8 unk41[3];                    // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
-    u8 unk44;                       // Robattle: bit (1 << team Medabot) set by robattle_command_auto
-    u8 unk45[6][2];                 // Robattle action queue: record + 1 (0 = free), priority = legs Propulsion
-                    // (battle_queue_add, sorted by battle_queue_sort; robattle_turn_next_action tests [0][0])
+    u8 opponentCount; // opponent Medabot count
+    u8 fixedParts;    // nonzero: fixed opponent parts (else each part is re-rolled by random_pick_weighted4)
+    struct EncounterBot encounterBots[3];
+    struct BattleSideTrap traps[2]; // per side (0 team, 1 opponents)
+    u8 battlefield;                 // battlefield
+    u8 battlefieldParams[8];        // copied from gBattlefieldParams[battlefield] (battlefield_load_params)
+    u8 teamPicks[3];                // team select picks: 0x10 | Medabots screen slot, 0 = empty (runtime-checked)
+    u8 autoCommandBits;             // Robattle: bit (1 << team Medabot) set by robattle_command_auto
+    u8 actionQueue[6][2];           // Robattle action queue: record + 1 (0 = free), priority = legs Propulsion
+                          // (battle_queue_add, sorted by battle_queue_sort; robattle_turn_next_action tests [0][0])
     u8 unk51; // Robattle: Medaforce gauge points left to add / remove one per frame (medaforce_gauge_fill_step /
               // _drain_step)
               // also the AI result: 1 = skill unusable (gAiActionChecks, ai_action_unusable)
     u8 unk52;
     u8 unk53;
     u8 unk54;
-    u8 unk55; // Robattle: result flags (2, 4, 8, 0x10 pick sub-states 0x60-0x78 in robattle_turn_loop)
-    u8 unk56; // Robattle: frame counter, mod 32 (robattle_time_tick)
-    u8 unk57; // Robattle: TIME left, 40/30/20 by gOptionTimeLimit (robattle_time_init), -1 every 32 frames
-              // (robattle_time_tick)
-    u8 unk58; // Robattle: nonzero blocks Medaforce (check_medaforce_availability)
-    u8 unk59; // Robattle: effect amount left to apply (battle_tick_buff_effect / battle_tick_status_effect)
-    u8 unk5A; // Robattle: team Medabot count (3 in battle_start.ss0)
+    u8 resultFlags;      // Robattle: result flags (2, 4, 8, 0x10 pick sub-states 0x60-0x78 in robattle_turn_loop)
+    u8 timeFrame;        // Robattle: frame counter, mod 32 (robattle_time_tick)
+    u8 timeLeft;         // Robattle: TIME left, 40/30/20 by gOptionTimeLimit (robattle_time_init), -1 every 32 frames
+                         // (robattle_time_tick)
+    u8 medaforceBlocked; // Robattle: nonzero blocks Medaforce (check_medaforce_availability)
+    u8 effectAmountLeft; // Robattle: effect amount left to apply (battle_tick_buff_effect / battle_tick_status_effect)
+    u8 teamCount;        // Robattle: team Medabot count (3 in battle_start.ss0)
     u8 unk5B;
-    u8 unk5C;    // Robattle AI: record choosing its action (ai_pick_bot_targets)
-    u8 unk5D;    // Robattle AI: part being considered (0-2)
-    u8 unk5E;    // Robattle AI: target record + 1
-    u8 unk5F;    // Robattle AI: target part + 1
-    u8 unk60;    // first record of the target side (battle_enemy_side_first_record, medaforce_side_bolt_calc)
-    u8 unk61[3]; // Robattle AI: candidate targets (record + 1, 0 = none; ai_target_attack)
-    u8 unk64[4]; // filled by get_bot_part_effective_values (robattle_status_screen_init); AI part order from
-                 // gUnk_083AD2F0 (battle_ai_roll_part_order)
+    u8 aiBot;           // Robattle AI: record choosing its action (ai_pick_bot_targets)
+    u8 aiPart;          // Robattle AI: part being considered (0-2)
+    u8 aiTarget;        // Robattle AI: target record + 1
+    u8 aiTargetPart;    // Robattle AI: target part + 1
+    u8 targetSideFirst; // first record of the target side (battle_enemy_side_first_record, medaforce_side_bolt_calc)
+    u8 aiCandidates[3]; // Robattle AI: candidate targets (record + 1, 0 = none; ai_target_attack)
+    u8 unk64[4];        // filled by get_bot_part_effective_values (robattle_status_screen_init); AI part order from
+                        // gUnk_083AD2F0 (battle_ai_roll_part_order)
     u8 filler68[0xC];
-    u8 unk74[8]; // copied from gUnk_083C3B5C[unk38] (load_battle_script_entry_b); [3] nonzero: [4] << 8 | [5] ->
+    u8 unk74[8]; // copied from gUnk_083C3B5C[battlefield] (load_battle_script_entry_b); [3] nonzero: [4] << 8 | [5] ->
                  // REG_BLDALPHA
-    u8 unk7C;    // battlefield animation frame, 0-0x7F (advance_battle_animation_frame)
-    u8 unk7D;    // battlefield animation tick, 0-2
-    u8 unk7E;    // battlefield animation tile count / 8 (gUnk_083C40B8)
-    u8 unk7F;    // battlefield animation tile block (gUnk_083C40C3), 0xFF ends the loop
+    u8 fieldAnimFrame; // battlefield animation frame, 0-0x7F (advance_battle_animation_frame)
+    u8 fieldAnimTick;  // battlefield animation tick, 0-2
+    u8 fieldAnimTiles; // battlefield animation tile count / 8 (gUnk_083C40B8)
+    u8 fieldAnimBlock; // battlefield animation tile block (gUnk_083C40C3), 0xFF ends the loop
     u8 unk80;    // index of a 256-byte record in gBattleBots (medal_rotation_store_to_battle_bot copies Medal rotation
                  // data there)
-    u8 unk81;    // Robattle: selected command ring slot 0-5 (name gUnk_083C466C[unk81], runtime-checked)
+    u8 ringSlot; // Robattle: selected command ring slot 0-5 (name gUnk_083C466C[ringSlot], runtime-checked)
     u8 unk82;
-    u8 unk83; // Robattle: command ring turning, 1 right / 2 left (command_ring_input); nonzero blocks
-              // robattle_command_input
+    u8 ringTurning; // Robattle: command ring turning, 1 right / 2 left (command_ring_input); nonzero blocks
+                    // robattle_command_input
     u8 unk84;
     u8 unk85;
     u8 unk86;
-    u8 unk87; // Robattle: gBattleBots record of the acting Medabot
-    u8 unk88;
-    u8 unk89; // Robattle: side of the acting Medabot (unk87 / 3: 0 team, 1 opponents)
-    u8 unk8A; // Robattle: the other side (unk89 ^ 1)
-    u8 unk8B;
+    u8 actor; // Robattle: gBattleBots record of the acting Medabot
+    u8 target;
+    u8 actorSide; // Robattle: side of the acting Medabot (actor / 3: 0 team, 1 opponents)
+    u8 otherSide; // Robattle: the other side (actorSide ^ 1)
+    u8 targetPart;
     u8 unk8C[3];
     u8 unk8F[3][4]; // per team member: gTeamSlots bytes 3-6
     u8 filler9B;
-    u8 unk9C[5]; // cleared by battle_substeps_reset
-    u8 unkA1[5]; // cleared by battle_message_reset
-    u8 unkA6;    // battle message id (gUnk_083C65C4) shown by effect_step_show_message; also the next handler
-    u8 unkA7; // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to (restore_changed_part)
-    u8 unkA8; // Robattle: skill id (data[1]) of the acting Medabot's chosen part (action_phase_resolve_command)
+    u8 unk9C[5];   // cleared by battle_substeps_reset
+    u8 unkA1[5];   // cleared by battle_message_reset
+    u8 messageId;  // battle message id (gUnk_083C65C4) shown by effect_step_show_message; also the next handler
+    u8 actorPart;  // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to
+                   // (restore_changed_part)
+    u8 actorSkill; // Robattle: skill id (data[1]) of the acting Medabot's chosen part (action_phase_resolve_command)
     u8 fillerA9;
-    u8 unkAA;      // sub-state of the gTrapHitSteps handlers (trap_hit_run) and gActionPartCheckSteps handlers
-                   // (action_part_check_run)
-    u8 unkAB;      // 0-2, set with unkB5 = 1 by the gActionPartCheckSteps handlers (trap_hit_end_continue..)
-    u8 unkAC[0x9]; // Robattle action script: operands of the current command (battle_script_load_operands)
+    u8 step;  // sub-state of the gTrapHitSteps handlers (trap_hit_run) and gActionPartCheckSteps handlers
+              // (action_part_check_run)
+    u8 unkAB; // 0-2, set with stepDone = 1 by the gActionPartCheckSteps handlers (trap_hit_end_continue..)
+    u8 scriptOperands[0x9]; // Robattle action script: operands of the current command (battle_script_load_operands)
     // action effect step script done: cleared by each step dispatcher (trap_hit_run,
     // action_part_check_run..), set by the last step; the callers (script_op_trap_hit,
     // script_op_action_part_check) then call battle_script_advance
-    u8 unkB5;
+    u8 stepDone;
     u8 fillerB6[0x1];
-    u8 unkB7; // attack result: 1 missed (target dodged, battle_check_dodged), 3 countered (reaction_check_counter)
-    u8 unkB8; // attack result: 2 nullified (Full / Half Block, immunities), 4 absorbed as healing (attack_hit_branch)
-    u8 unkB9; // raised by gBattleWork.unkEC up to 0x78 on the own side, lowered on the other
-              // (medaforce_hide_n_seek_apply_evasion, written as &index + 1 to match)
+    u8 hitResult; // attack result: 1 missed (target dodged, battle_check_dodged), 3 countered (reaction_check_counter)
+    u8 blockResult; // attack result: 2 nullified (Full / Half Block, immunities), 4 absorbed as healing
+                    // (attack_hit_branch)
+    u8 unkB9;       // raised by gBattleWork.amount up to 0x78 on the own side, lowered on the other
+                    // (medaforce_hide_n_seek_apply_evasion, written as &index + 1 to match)
     u8 unkBA;
     u8 unkBB;
-    u16 unkBC; // Robattle action script: offset of the current command (battle_script_read_byte /
-               // battle_script_advance)
-    u8 unkBE;  // set with unkB7 / unkB8 by the script commands script_op_half_block_check / script_op_full_block_check
-               // (1, 5)
-    u8 unkBF;  // set with unkB8 = 4 by battle_check_absorbed / determine_battle_target_mode (2-4)
+    u16 scriptOffset; // Robattle action script: offset of the current command (battle_script_read_byte /
+                      // battle_script_advance)
+    u8 unkBE;         // set with hitResult / blockResult by the script commands script_op_half_block_check /
+                      // script_op_full_block_check (1, 5)
+    u8 unkBF;         // set with blockResult = 4 by battle_check_absorbed / determine_battle_target_mode (2-4)
     u8 fillerC0[0x8];
-    u16 unkC8; // Robattle: effect amount (shown by trap_hit_damage_popup_init, subtracted by trap_hit_apply_damage)
-    u16 unkCA; // damage passed to battle_set_damage_vs_armor (attack_hit_carry_over_retarget)
-    u16 unkCC; // copy of unkC8 (battle_set_damage_break_part)
+    u16 appliedAmount;  // Robattle: effect amount (shown by trap_hit_damage_popup_init, subtracted by
+                        // trap_hit_apply_damage)
+    u16 overflowAmount; // damage passed to battle_set_damage_vs_armor (attack_hit_carry_over_retarget)
+    u16 unkCC;          // copy of appliedAmount (battle_set_damage_break_part)
     u8 fillerCE[0x2];
-    u8 unkD0;     // last part (3..0) of the acting Medabot with armor left (trap_hit_calc_damage)
-    u8 unkD1;     // nonzero: trap_hit_check_part_broken goes to sub-state 0x1A
-    u8 unkD2[4];  // per part: nonzero shows an effect sprite (medaforce_spiral_bolt_break_burst_spawn)
-    u16 unkD6[4]; // per part: amounts shown by medaforce_spiral_bolt_digits_spawn
-    u8 unkDE;     // record + 1 of the teammate guarding unk88 with Defence / Full / Half Block (guard_find), 0 = none
-    u8 unkDF;     // its block skill: 0x1B Defence, 0x1C Full Block, 0x1D Half Block (guard_load_graphics)
-    u8 unkE0[3];  // per team record: record + 1 waiting for reset_battle_bot_state (bot_defeat_find)
+    u8 damagePart; // last part (3..0) of the acting Medabot with armor left (trap_hit_calc_damage)
+    u8 partBroken; // nonzero: trap_hit_check_part_broken goes to sub-state 0x1A
+    u8 unkD2[4];   // per part: nonzero shows an effect sprite (medaforce_spiral_bolt_break_burst_spawn)
+    u16 unkD6[4];  // per part: amounts shown by medaforce_spiral_bolt_digits_spawn
+    u8 guardBot;   // record + 1 of the teammate guarding target with Defence / Full / Half Block (guard_find), 0 = none
+    u8 guardSkill; // its block skill: 0x1B Defence, 0x1C Full Block, 0x1D Half Block (guard_load_graphics)
+    u8 unkE0[3];   // per team record: record + 1 waiting for reset_battle_bot_state (bot_defeat_find)
     u8 fillerE3[0x5];
-    s16 unkE8; // passed to battle_inflict_status with unkEC (status_attack_apply)
-    s16 unkEA; // unkE8 / 4 (script command script_op_success_bonus)
-    s16 unkEC; // amount for battle_calc_damage_split (attack_absorbed_find_part); counted down by
-               // attack_hit_check_carry_over
-    u16 unkEE; // + Medal level + matching parts power + rng & 7 (accumulate_battle_speed_value)
+    s16 success; // passed to battle_inflict_status with amount (status_attack_apply)
+    s16 unkEA;   // success / 4 (script command script_op_success_bonus)
+    s16 amount;  // amount for battle_calc_damage_split (attack_absorbed_find_part); counted down by
+                 // attack_hit_check_carry_over
+    u16 unkEE;   // + Medal level + matching parts power + rng & 7 (accumulate_battle_speed_value)
     u8 fillerF0[0x2];
-    s16 unkF2; // copy of unkE8 when the action phase starts (battle_check_guard_or_cover,
+    s16 unkF2; // copy of success when the action phase starts (battle_check_guard_or_cover,
                // battle_check_damage_threshold)
     u8 fillerF4[0x2];
     u8 unkF6; // bit 0: the target has a reaction ready (battle_check_guard_or_cover), run by reaction_check
     u8 fillerF7[0x1];
-    u8 unkF8; // 0 when battle_set_actor_side gets a team record (0-2), 3 for an opponent
-    u8 unkF9; // skill shown by the action script command script_op_skill_anim_start: chosen part's data[1], or
-              // Medaforce unkA8[0] + 0x50
+    u8 actorSideFlags; // 0 when battle_set_actor_side gets a team record (0-2), 3 for an opponent
+    u8 animSkill;      // skill shown by the action script command script_op_skill_anim_start: chosen part's data[1], or
+                       // Medaforce actorSkill[0] + 0x50
     u8 fillerFA;
     u8 unkFB; // cleared by script_op_skill_anim_start
     u8 unkFC;
-    u8 unkFD; // skill animation condition (battle_seq_cmd_test_*), picks battle_seq_cmd_branch's label
+    u8 seqCondition; // skill animation condition (battle_seq_cmd_test_*), picks battle_seq_cmd_branch's label
     u8 unkFE;
-    u8 unkFF;      // bits 0 / 1 set by script_op_target_self with unk114[0] / unk114[1] = 0x28
-    u16 unk100;    // battle sequence: offset of the current command in gBattleSeqScripts[unkF9] (cleared by
-                   // script_op_skill_anim_start)
-    s16 unk102[8]; // battle sequence: operands of the current command (battle_seq_load_operands)
-    u8 unk112;     // set to 0x29 with unk113 (closeup_reset_text_states)
-    u8 unk113;     // right close-up Medabot pose (unk112: left; bit 7 = finished, medabot_pose_anim_step)
-    u8 unk114[2];  // per side (0 team, 1 opponents): passed to draw_medabot_sprite (repair_redraw_bot)
+    u8 unkFF;           // bits 0 / 1 set by script_op_target_self with unk114[0] / unk114[1] = 0x28
+    u16 seqOffset;      // battle sequence: offset of the current command in gBattleSeqScripts[animSkill] (cleared by
+                        // script_op_skill_anim_start)
+    s16 seqOperands[8]; // battle sequence: operands of the current command (battle_seq_load_operands)
+    u8 unk112;          // set to 0x29 with unk113 (closeup_reset_text_states)
+    u8 unk113;          // right close-up Medabot pose (unk112: left; bit 7 = finished, medabot_pose_anim_step)
+    u8 unk114[2];       // per side (0 team, 1 opponents): passed to draw_medabot_sprite (repair_redraw_bot)
     u8 filler116[0x2];
     u8 unk118; // nonzero: restore_changed_part writes unk11C back into the acting Medabot's part
     u8 unk119; // part data[1] - 0x37 of the swapped part (change_transform_part)
@@ -730,34 +733,35 @@ struct BattleWork {
     u8 filler11B[0x1];
     struct BattlePart unk11C; // saved part (data and id), restored by restore_changed_part
     u8 filler134[0x8];
-    struct Vec16 unk13C[6]; // per record: x, y - 4 of its battle sprite (copy_battle_entity_positions)
-    u16 unk154;             // effect sprite x, y when unkF8 bit 1 is set (attack_hit_critical_spawn)
+    struct Vec16 botPositions[6]; // per record: x, y - 4 of its battle sprite (copy_battle_entity_positions)
+    u16 unk154;                   // effect sprite x, y when actorSideFlags bit 1 is set (attack_hit_critical_spawn)
     u16 unk156;
-    u16 unk158; // effect sprite x, y when unkF8 bit 1 is clear (attack_hit_critical_spawn)
+    u16 unk158; // effect sprite x, y when actorSideFlags bit 1 is clear (attack_hit_critical_spawn)
     u16 unk15A;
     u8 unk15C[3]; // per Medapart select slot (unk82 - 1): nonzero skips the part sprite (target_marker_show)
     u8 unk15F;    // left Medabot pose finished (closeup_left_pose_step), polled by battle_seq_cmd_wait_pose
     u8 unk160;    // right Medabot pose finished (closeup_right_pose_step)
     u8 unk161;
     u8 unk162;
-    u8 unk163;  // set by a gActionScriptCommands step to run the next step in the same frame (battle_run_action_script)
-    u8 unk164;  // nonzero: Medal skill levels can grow (increment_medal_skill_level)
-    u8 unk165;  // set to 1 when a Medal skill levels up (action_phase_time_check then goes to sub-state 0x60)
-    u8 unk166;  // skill type that levelled up
-    u8 unk167;  // its new level
-    u8 unk168;  // won Medapart: kind (0 head, 1 right arm, 2 left arm, 3 legs)
-    u8 unk169;  // won Medapart: id
-    u8 unk16A;  // won Medapart: 1 = not owned before
-    u8 unk16B;  // Robattle: TIME ticks elapsed (robattle_time_tick)
-    u16 unk16C; // battle score (calculate_battle_score_summary), then experience points
+    u8 runNextStep;     // set by a gActionScriptCommands step to run the next step in the same frame
+                        // (battle_run_action_script)
+    u8 skillGrowthOn;   // nonzero: Medal skill levels can grow (increment_medal_skill_level)
+    u8 skillLevelledUp; // set to 1 when a Medal skill levels up (action_phase_time_check then goes to sub-state 0x60)
+    u8 levelUpSkill;    // skill type that levelled up
+    u8 levelUpLevel;    // its new level
+    u8 wonPartKind;     // won Medapart: kind (0 head, 1 right arm, 2 left arm, 3 legs)
+    u8 wonPartId;       // won Medapart: id
+    u8 wonPartNew;      // won Medapart: 1 = not owned before
+    u8 timeTicks;       // Robattle: TIME ticks elapsed (robattle_time_tick)
+    u16 score;          // battle score (calculate_battle_score_summary), then experience points
     // After-battle result per team member (u8 array: a struct would be 4-byte aligned):
     // [0] Medal id + 1, 0 = none (name from gMedalNames), [1] nonzero: Medal level-up screen,
     // [2]-[5] copied to gGameWork.unk134-137, [6] nonzero: [7] = Medaforce id (gMedaforceNames)
     u8 unk16E[3][8];
-    u8 unk186; // after-battle screen: team member being shown (0-2, 3 = done)
-    u8 unk187; // gBattleBots record index (battle_loss_take_part)
-    u8 unk188; // two rolls from gUnk_083AF200 (script_op_roll_dice_damage); unkEC = (unk188 + unk189) * 10
-    u8 unk189;
+    u8 resultsMember; // after-battle screen: team member being shown (0-2, 3 = done)
+    u8 lossBot;       // gBattleBots record index (battle_loss_take_part)
+    u8 dice1;         // two rolls from gUnk_083AF200 (script_op_roll_dice_damage); amount = (dice1 + dice2) * 10
+    u8 dice2;
     u8 partnerName[0x10]; // link Robattle: the partner's player name (link_robattle_exchange_names)
     // Link prize game (after a link Robattle, link/link_robattle.c):
     u8 prizeSlots[6]; // part type per row (4 = miss); = gPrizeGameSlots (prize_game_pick_slots)
@@ -813,7 +817,7 @@ struct BattleBot {
     u8 fillerAE[0x2];
     u8 skillUseCount[8]; // per skill type: times used this battle (count_bot_skill_use)
     u8 index;            // own record index (battle_bots_load_parts)
-    u8 evasionBonus;     // raised by gBattleWork.unkEC up to 0x78 on the own side, lowered on the other
+    u8 evasionBonus;     // raised by gBattleWork.amount up to 0x78 on the own side, lowered on the other
                          // (medaforce_hide_n_seek_apply_evasion, written as &index + 1 to match)
     u8 present;    // nonzero: Medabot present (records 0-2 player team, 3-5 opponents); 2 = out of action (Reactivate)
     u8 moveDelay;  // movement delay 0-0x1F, rebuilt each frame by bot_calc_move_delay; speed = 0x20 - moveDelay
@@ -846,16 +850,16 @@ struct BattleBot {
                          // robattle_effect_b_end_anim), bit 2 / bit 3 = numbers shown by robattle_effect_a_number_init
                          // / robattle_effect_b_number_init
     u8 unkCF;            // flags: bits 0/1/2/3 set by medaforce_cancel_status_apply (by gBattleWork.unk51)
-    u8 powerBonus;       // added to gBattleWork.unkEC by script_op_calc_damage (Power Up)
-    u8 ironWallBonus;    // raised by gBattleWork.unkEC up to 0xFF (medaforce_iron_wall_apply_defence, written as
+    u8 powerBonus;       // added to gBattleWork.amount by script_op_calc_damage (Power Up)
+    u8 ironWallBonus;    // raised by gBattleWork.amount up to 0xFF (medaforce_iron_wall_apply_defence, written as
                          // &powerBonus + 1 to match)
     u8 unkD2;
-    u8 meleeBonus;   // added to gBattleWork.unkEC for parts with data[2] 0 / 1 (script_op_calc_damage)
+    u8 meleeBonus;   // added to gBattleWork.amount for parts with data[2] 0 / 1 (script_op_calc_damage)
     u8 rangedBonus;  // added for data[2] 2 / 3 (script_op_calc_damage)
-    u8 trapBonus;    // added to gBattleWork.unkEC for unk28[side].power (trap_apply; Formation Orders)
+    u8 trapBonus;    // added to gBattleWork.amount for unk28[side].power (trap_apply; Formation Orders)
     u8 unkD6;        // flags (bit 1: +10 damage, attack_hit_carry_over_retarget)
     u8 moveSubpixel; // movement: sub-pixel accumulator, + (0x20 - moveDelay) per frame, 1/16 px (battle_bot_move)
-    u16 defence;     // cleared, then raised by gBattleWork.unkEC up to 0xFF (defence_apply)
+    u16 defence;     // cleared, then raised by gBattleWork.amount up to 0xFF (defence_apply)
     u8 moveStep;     // movement: whole pixels moved this frame
     u8 fillerDB;
     u8 unkDC;           // unkDC..unkE3 cleared by reset_battle_bot_state

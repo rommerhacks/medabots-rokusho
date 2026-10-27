@@ -6,12 +6,12 @@
 u32 battle_queue_bots_at_lines(void);
 void battle_queue_sort(void);
 void battle_queue_take_head(
-    void); // acting Medabot = queue head: gBattleWork.unk87 = record, unk89 = side, unk8A = other side
+    void); // acting Medabot = queue head: gBattleWork.actor = record, unk89 = side, unk8A = other side
 void battle_queue_pop(void); // drops the queue head, shifting the rest up
 void iterate_bots_setup_battle_sprites(void);
 u32 any_bot_extra_move_pending(void);
-u32 team_bot_command_kept(u32 rec);        // tests gBattleWork.unk44 bit rec (rec 0-2)
-void team_bot_clear_command_kept(u32 rec); // clears gBattleWork.unk44 bit rec (rec 0-2)
+u32 team_bot_command_kept(u32 rec);        // tests gBattleWork.autoCommandBits bit rec (rec 0-2)
+void team_bot_clear_command_kept(u32 rec); // clears gBattleWork.autoCommandBits bit rec (rec 0-2)
 u32 battle_bot_at_front_line(
     u32 rec,
     u32 peek); // 1 when the Medabot has reached its front line (x 0x68 team, 0x88 opponents); queues it unless peek

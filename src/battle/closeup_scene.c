@@ -6,7 +6,7 @@
 
 void init_battle_closeup_scene(void) {
     init_scene_buffers_080445F4();
-    if (!(gBattleWork.unkF8 & 1)) {
+    if (!(gBattleWork.actorSideFlags & 1)) {
         gBattleWork.unk154 = 0x3C;
         gBattleWork.unk114[0] = 0;
     } else {
@@ -17,9 +17,9 @@ void init_battle_closeup_scene(void) {
     get_active_bot_part_index_and_load_values(0);
     gBattleWork.unk156 = 0x50;
     draw_medabot_sprite(0, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                        (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.unk39[3] + 2, 4, 0, 0, 0,
-                        gBattleWork.unk114[0]);
-    if (!(gBattleWork.unkF8 & 1)) {
+                        (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.battlefieldParams[3] + 2, 4, 0, 0,
+                        0, gBattleWork.unk114[0]);
+    if (!(gBattleWork.actorSideFlags & 1)) {
         gBattleWork.unk158 = 0x1C4;
         gBattleWork.unk114[1] = 0x28;
         gBattleWork.unkFF |= 2;
@@ -30,8 +30,8 @@ void init_battle_closeup_scene(void) {
     get_active_bot_part_index_and_load_values(1);
     gBattleWork.unk15A = 0x50;
     draw_medabot_sprite(1, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                        (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.unk39[3] + 2, 8, 1, 0, 1,
-                        gBattleWork.unk114[1]);
+                        (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.battlefieldParams[3] + 2, 8, 1, 0,
+                        1, gBattleWork.unk114[1]);
 }
 
 // The close-up scene parks a side outside x 0x128-0x1D0 when it is not shown.
@@ -49,8 +49,8 @@ void init_battle_scene_backgrounds(void) {
     if (closeup_x_on_screen((s16)gBattleWork.unk154)) {
         get_active_bot_part_index_and_load_values(0);
         draw_medabot_sprite(0, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.unk39[3] + 2, 4, 0, 1, 0,
-                            gBattleWork.unk114[0]);
+                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.battlefieldParams[3] + 2, 4,
+                            0, 1, 0, gBattleWork.unk114[0]);
     }
     if (gBattleWork.unkFF & 2)
         gGameWork.unk96 = 1;
@@ -59,8 +59,8 @@ void init_battle_scene_backgrounds(void) {
     if (closeup_x_on_screen((s16)gBattleWork.unk158)) {
         get_active_bot_part_index_and_load_values(1);
         draw_medabot_sprite(1, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.unk39[3] + 2, 8, 1, 1, 1,
-                            gBattleWork.unk114[1]);
+                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.battlefieldParams[3] + 2, 8,
+                            1, 1, 1, gBattleWork.unk114[1]);
     }
     gGameWork.unk96 = 0;
 }
@@ -73,11 +73,11 @@ void setup_battle_medapart_scenes(void) {
     if (closeup_x_on_screen((s16)gBattleWork.unk154)) {
         get_active_bot_part_index_and_load_values(0);
         draw_medabot_sprite(0, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.unk39[3] + 2, 4, 0, 2, 0,
-                            gBattleWork.unk114[0]);
+                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.battlefieldParams[3] + 2, 4,
+                            0, 2, 0, gBattleWork.unk114[0]);
         draw_medabot_sprite(0, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.unk39[3] + 2, 4, 0, 1, 0,
-                            gBattleWork.unk114[0]);
+                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.battlefieldParams[3] + 2, 4,
+                            0, 1, 0, gBattleWork.unk114[0]);
     }
     if (gBattleWork.unkFF & 2)
         gGameWork.unk96 = 1;
@@ -86,31 +86,31 @@ void setup_battle_medapart_scenes(void) {
     if (closeup_x_on_screen((s16)gBattleWork.unk158)) {
         get_active_bot_part_index_and_load_values(1);
         draw_medabot_sprite(1, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.unk39[3] + 2, 8, 1, 2, 1,
-                            gBattleWork.unk114[1]);
+                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.battlefieldParams[3] + 2, 8,
+                            1, 2, 1, gBattleWork.unk114[1]);
         draw_medabot_sprite(1, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.unk39[3] + 2, 8, 1, 1, 1,
-                            gBattleWork.unk114[1]);
+                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.battlefieldParams[3] + 2, 8,
+                            1, 1, 1, gBattleWork.unk114[1]);
     }
     gGameWork.unk96 = 0;
 }
 
 void get_active_bot_part_index_and_load_values(u32 side) {
     if (side == 0) {
-        if (!(gBattleWork.unkF8 & 1))
-            get_bot_part_effective_values(gBattleWork.unk87, gBattleWork.unk64);
+        if (!(gBattleWork.actorSideFlags & 1))
+            get_bot_part_effective_values(gBattleWork.actor, gBattleWork.unk64);
         else if (gBattleWork.unkF6 & 2)
             get_bot_part_effective_values(gBattleWork.unk161, gBattleWork.unk64);
         else
-            get_bot_part_effective_values(gBattleWork.unk88, gBattleWork.unk64);
+            get_bot_part_effective_values(gBattleWork.target, gBattleWork.unk64);
     } else {
-        if (!(gBattleWork.unkF8 & 1)) {
+        if (!(gBattleWork.actorSideFlags & 1)) {
             if (gBattleWork.unkF6 & 2)
                 get_bot_part_effective_values(gBattleWork.unk161, gBattleWork.unk64);
             else
-                get_bot_part_effective_values(gBattleWork.unk88, gBattleWork.unk64);
+                get_bot_part_effective_values(gBattleWork.target, gBattleWork.unk64);
         } else {
-            get_bot_part_effective_values(gBattleWork.unk87, gBattleWork.unk64);
+            get_bot_part_effective_values(gBattleWork.actor, gBattleWork.unk64);
         }
     }
 }
@@ -156,19 +156,19 @@ u32 closeup_right_pose_step(void) {
 
 // guess: per-side tally of successful actions, compared when TIME runs out (robattle_judge_time_up).
 void side_add_action_point(void) {
-    gBattleWork.unk28[gBattleWork.unk89].unk1++;
+    gBattleWork.traps[gBattleWork.actorSide].unk1++;
 }
 
 // The Medabot in unk88 gains 20 Medaforce (40 with unkC0 bit 3), up to the full 80.
 void charge_target_medaforce(void) {
     u32 add;
     u32 v;
-    if (gBattleBots[gBattleWork.unk88].guardFlags & 8)
+    if (gBattleBots[gBattleWork.target].guardFlags & 8)
         add = 0x28;
     else
         add = 0x14;
-    v = gBattleBots[gBattleWork.unk88].medaforceGauge + add;
+    v = gBattleBots[gBattleWork.target].medaforceGauge + add;
     if (v > 0x4F)
         v = 0x50;
-    gBattleBots[gBattleWork.unk88].medaforceGauge = v;
+    gBattleBots[gBattleWork.target].medaforceGauge = v;
 }

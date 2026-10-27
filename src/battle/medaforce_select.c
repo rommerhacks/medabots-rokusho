@@ -173,7 +173,7 @@ void mf_menu_draw_status(u32 a) {
     case 1:
 
         if (gBattleBots[gBattleWork.unk80].medal.level > 9) {
-            if (gBattleWork.unk58 == 0) {
+            if (gBattleWork.medaforceBlocked == 0) {
                 if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50) {
                     memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
                                           &gGameWork.unkEE, 3);
@@ -196,7 +196,7 @@ void mf_menu_draw_status(u32 a) {
     case 2:
 
         if (gBattleBots[gBattleWork.unk80].medal.level > 29) {
-            if (gBattleWork.unk58 == 0) {
+            if (gBattleWork.medaforceBlocked == 0) {
                 if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50) {
                     memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
                                           &gGameWork.unkEE, 3);
@@ -219,7 +219,7 @@ void mf_menu_draw_status(u32 a) {
     case 3:
 
         if (gBattleBots[gBattleWork.unk80].medal.level > 59) {
-            if (gBattleWork.unk58 == 0) {
+            if (gBattleWork.medaforceBlocked == 0) {
                 if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50) {
                     memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
                                           &gGameWork.unkEE, 3);

@@ -74,8 +74,8 @@ static void init_battle_bot_sprite(u32 rec, u32 x, u32 y) {
     u32 flip;
     get_bot_part_effective_values(rec, p);
     flip = bot_sprite_is_flipped(rec);
-    init_battle_medabot_sprites(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip, gBattleWork.unk39[3] + 2,
-                                rec * 4 + 0x5A);
+    init_battle_medabot_sprites(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip,
+                                gBattleWork.battlefieldParams[3] + 2, rec * 4 + 0x5A);
 }
 
 void setup_all_battle_bot_sprite_positions(void) {
@@ -95,8 +95,8 @@ void setup_battle_bot_sprite_group(u32 rec, u32 x, u32 y) {
     u32 flip;
     get_bot_part_effective_values(rec, p);
     flip = bot_sprite_is_flipped(rec);
-    setup_battle_sprite_group(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip, gBattleWork.unk39[3] + 2,
-                              rec * 4 + 0x5A);
+    setup_battle_sprite_group(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip,
+                              gBattleWork.battlefieldParams[3] + 2, rec * 4 + 0x5A);
     gSpriteEntries[rec * 4 + 0x5B].unk0 &= 0xFDFF;
     gSpriteEntries[rec * 4 + 0x5C].unk0 &= 0xFDFF;
     gSpriteEntries[rec * 4 + 0x5B].unk18 = 0;

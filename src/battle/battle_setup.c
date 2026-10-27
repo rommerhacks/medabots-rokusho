@@ -112,13 +112,13 @@ void init_battle_action_select_ui(u32 a) {
         gSpriteEntries[1].unkB = 0x40;
         gSpriteEntries[1].unk2 = 0x70;
         gSpriteEntries[1].unk4 = 0x90;
-        gSpriteEntries[1].unk6 = (u8)(gBattleWork.unk57 / 10) + 0x624;
+        gSpriteEntries[1].unk6 = (u8)(gBattleWork.timeLeft / 10) + 0x624;
         gSpriteEntries[2].unk0 = 0xC404;
         gSpriteEntries[2].unk1C = 0;
         gSpriteEntries[2].unkA = 0xA;
         gSpriteEntries[2].unkB = 0x40;
         gSpriteEntries[2].unk2 = 0x80;
         gSpriteEntries[2].unk4 = 0x90;
-        gSpriteEntries[2].unk6 = (u8)(gBattleWork.unk57 % 10) + 0x624;
+        gSpriteEntries[2].unk6 = (u8)(gBattleWork.timeLeft % 10) + 0x624;
     }
 }

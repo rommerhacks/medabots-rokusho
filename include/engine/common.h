@@ -73,7 +73,7 @@ u32 calculate_direction_index(
 struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x,
                                             s32 y); // returned in memory (hidden pointer in r0)
 void battle_bg_scroll_vblank(void);                 // gVBlankCallback: BG2/BG3 scroll movement (unk39)
-void advance_battle_animation_frame(u32 field);     // steps the battlefield tile animation (gBattleWork.unk7C-7F)
+void advance_battle_animation_frame(u32 field); // steps the battlefield tile animation (gBattleWork.fieldAnimFrame-7F)
 void race_enter_team_select(void);
 void decompress_sprite_to_vram_08043C08(u32 idx, u32 backup);
 void init_battle_scene(u32 mode, u32 id);

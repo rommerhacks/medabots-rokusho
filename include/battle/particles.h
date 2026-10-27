@@ -10,7 +10,8 @@ u32 particle_run_shot_handlers(void);
 u32 particle_run_sweep_handlers(void);
 void particle_run_spark_handlers(void); // slots 0x2B-0x3B, no idle check
 
-void particle_slide_lead_sprite(void); // moves sprite 0x21 4 px (right if gBattleWork.unkF8 bit 1 clear, else left)
+void particle_slide_lead_sprite(
+    void); // moves sprite 0x21 4 px (right if gBattleWork.actorSideFlags bit 1 clear, else left)
 void particle_spawn_trail_b(u32 src);
 
 void medaforce_clear_hit_list(void);        // clears gBattleWork.unkD2[0..2] / unkD6[0..2]

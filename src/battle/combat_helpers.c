@@ -18,15 +18,15 @@ u32 bot_has_break_form_part(u32 rec) {
 void battle_set_damage_vs_armor(u32 rec, u32 part, s32 amount) {
     s32 armor = gBattleBots[rec].parts[part].unk11;
     if (armor > amount) {
-        gBattleWork.unkC8 = amount;
+        gBattleWork.appliedAmount = amount;
         gBattleWork.unkCC = amount;
-        gBattleWork.unkCA = 0;
-        gBattleWork.unkD1 = 0;
+        gBattleWork.overflowAmount = 0;
+        gBattleWork.partBroken = 0;
     } else {
-        gBattleWork.unkC8 = armor;
+        gBattleWork.appliedAmount = armor;
         gBattleWork.unkCC = armor;
-        gBattleWork.unkCA = amount - armor;
-        gBattleWork.unkD1 = 1;
+        gBattleWork.overflowAmount = amount - armor;
+        gBattleWork.partBroken = 1;
     }
 }
 
@@ -34,28 +34,28 @@ void set_target_sprite_position(u32 rec, u32 dir, u32 axis) {
     if (axis == 0) {
         switch ((dir & 6) >> 1) {
         case 1:
-            gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.unk13C[rec].x + 1;
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.unk13C[rec].y;
+            gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.botPositions[rec].x + 1;
+            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y;
             break;
         case 3:
-            gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.unk13C[rec].x - 1;
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.unk13C[rec].y;
+            gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.botPositions[rec].x - 1;
+            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y;
             break;
         default:
-            gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.unk13C[rec].x;
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.unk13C[rec].y;
+            gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.botPositions[rec].x;
+            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y;
             break;
         }
     } else {
         switch ((dir & 6) >> 1) {
         case 1:
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.unk13C[rec].y - 2;
+            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y - 2;
             break;
         case 3:
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.unk13C[rec].y;
+            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y;
             break;
         default:
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.unk13C[rec].y - 1;
+            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y - 1;
             break;
         }
     }
@@ -73,8 +73,8 @@ void target_cursor_place_markers(u32 rec) {
 }
 
 void update_target_cursor_position(u32 rec) {
-    gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.unk13C[rec].x;
-    gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.unk13C[rec].y + 4;
+    gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.botPositions[rec].x;
+    gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y + 4;
     target_cursor_place_markers(rec);
 }
 
@@ -258,8 +258,8 @@ u32 bot_intact_parts_class(u32 rec) {
 }
 
 void battle_load_action_target(u32 rec) {
-    gBattleWork.unk88 = gBattleBots[rec].unkE0 - 1;
-    gBattleWork.unk8B = gBattleBots[rec].unkE1 - 1;
+    gBattleWork.target = gBattleBots[rec].unkE0 - 1;
+    gBattleWork.targetPart = gBattleBots[rec].unkE1 - 1;
 }
 
 u32 move_sprite_toward_target(u32 slot) {
@@ -353,19 +353,19 @@ u32 calc_bot_matching_part_power(u32 rec) {
 
 void calc_battle_action_speed(u32 rec, u32 part) {
     struct BattleWork *b = &gBattleWork;
-    b->unkE8 += gBattleBots[rec].parts[part].data[5];
-    b->unkE8 += calc_bot_matching_part_power(rec);
-    b->unkE8 += rng_next_byte() & 7;
-    b->unkE8 += gBattleBots[rec].medal.skillLevel[gBattleBots[rec].parts[part].data[2]];
+    b->success += gBattleBots[rec].parts[part].data[5];
+    b->success += calc_bot_matching_part_power(rec);
+    b->success += rng_next_byte() & 7;
+    b->success += gBattleBots[rec].medal.skillLevel[gBattleBots[rec].parts[part].data[2]];
     if (skill_type_is_remote(gBattleBots[rec].parts[part].data[2]))
-        b->unkE8 += gBattleBots[rec].parts[3].unk16;
+        b->success += gBattleBots[rec].parts[3].unk16;
     else
-        b->unkE8 += gBattleBots[rec].parts[3].unk15;
+        b->success += gBattleBots[rec].parts[3].unk15;
 }
 
 void apply_battle_bot_damage_reduction(u32 rec) {
     if ((u8)(gBattleBots[rec].statusType - 0xD) <= 1)
-        subtract_s16_floored(&gBattleWork.unkE8, gBattleBots[rec].statusAmount);
+        subtract_s16_floored(&gBattleWork.success, gBattleBots[rec].statusAmount);
 }
 
 void accumulate_battle_speed_value(u32 rec) {
@@ -391,17 +391,17 @@ void success_add_strengthen_parts(u32 rec) {
     u32 i;
     for (i = 0; i <= 2; i++)
         if (gBattleBots[rec].parts[i].unk11 != 0 && gBattleBots[rec].parts[i].data[1] == 0x35)
-            gBattleWork.unkE8 += gBattleBots[rec].parts[i].data[5];
+            gBattleWork.success += gBattleBots[rec].parts[i].data[5];
 }
 
 void battle_set_action_target(u32 rec, u32 target) {
     gBattleBots[rec].unkE0 = target;
-    gBattleWork.unk88 = target - 1;
+    gBattleWork.target = target - 1;
 }
 
 void battle_set_action_target_part(u32 rec, u32 part) {
     gBattleBots[rec].unkE1 = part;
-    gBattleWork.unk8B = part - 1;
+    gBattleWork.targetPart = part - 1;
 }
 
 // Whether any part with armor left has the given skill id (0x18 CancelOptic for check_bot_can_shoot).
@@ -465,27 +465,27 @@ void damage_add_strengthen_parts(u32 rec) {
     u32 i;
     for (i = 0; i <= 2; i++)
         if (gBattleBots[rec].parts[i].unk11 != 0 && gBattleBots[rec].parts[i].data[1] == 0x35)
-            gBattleWork.unkEC += gBattleBots[rec].parts[i].data[6];
+            gBattleWork.amount += gBattleBots[rec].parts[i].data[6];
 }
 
 void damage_add_small_random(void) {
     struct BattleWork *b = &gBattleWork;
-    if (b->unkEC <= 2)
-        b->unkEC += rng_next_byte() & 3;
+    if (b->amount <= 2)
+        b->amount += rng_next_byte() & 3;
 }
 
 // guess: data[0xC] is a per-part damage divisor (multi-hit parts?); the result is at least 1.
 void damage_divide_by_part_divisor(u32 rec, u32 part) {
     struct BattleWork *b = &gBattleWork;
-    b->unkEC = b->unkEC / gBattleBots[rec].parts[part].data[0xC];
-    if (b->unkEC == 0)
-        b->unkEC = 1;
+    b->amount = b->amount / gBattleBots[rec].parts[part].data[0xC];
+    if (b->amount == 0)
+        b->amount = 1;
 }
 
 // Scrolls BG2/BG3 to x 0x110 when the actor is an opponent (unkF8 bit 0), else to 0: the action close-up
 // background faces the acting side.
 void action_bg_set_side_scroll(void) {
-    u32 t = gBattleWork.unkF8 & 1;
+    u32 t = gBattleWork.actorSideFlags & 1;
     if (t) {
         gBg2Scroll.x = 0x110;
         gBg3Scroll.x = 0x110;

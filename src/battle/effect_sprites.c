@@ -289,9 +289,9 @@ done:
 }
 
 void battle_set_damage_break_part(u32 rec, u32 part) {
-    gBattleWork.unkC8 = gBattleBots[rec].parts[part].unk11;
+    gBattleWork.appliedAmount = gBattleBots[rec].parts[part].unk11;
     gBattleWork.unkCC = gBattleBots[rec].parts[part].unk11;
-    gBattleWork.unkD1 = 1;
+    gBattleWork.partBroken = 1;
 }
 
 u32 armor_drain_step(u16 *amount, u32 rec, u32 part) {

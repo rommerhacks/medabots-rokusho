@@ -5,34 +5,34 @@
 #include "global.h"
 
 void effect_step_show_message(void) {
-    if (battle_message_show(gBattleWork.unkA6))
-        gBattleWork.unkAA++;
+    if (battle_message_show(gBattleWork.messageId))
+        gBattleWork.step++;
 }
 
 void effect_step_miss_popup(void) {
     if (miss_popup_run())
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
 }
 
 void effect_step_wait_clear_sprite(void) {
     if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1)) {
         clear_battle_sprite_slot(0xA, 1);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     } else if (gGameWork.unk86)
         gGameWork.unk86--;
     else {
         clear_battle_sprite_slot(0xA, 1);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
 void effect_step_wait(void) {
     if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     else if (gGameWork.unk86)
         gGameWork.unk86--;
     else
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
 }
 
 void effect_step_wait_clear_sprites(void) {
@@ -43,7 +43,7 @@ void effect_step_wait_clear_sprites(void) {
             if (gSpriteEntries[0xA + i].unk0 & 0x8000)
                 clear_battle_sprite_slot(0xA + i, 1);
         }
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
     if (gGameWork.unk86)
         gGameWork.unk86--;
@@ -52,29 +52,29 @@ void effect_step_wait_clear_sprites(void) {
             if (gSpriteEntries[0xA + i].unk0 & 0x8000)
                 clear_battle_sprite_slot(0xA + i, 1);
         }
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
 void effect_step_wait_spin(void) {
-    if (!(gBattleWork.unkF8 & 1))
+    if (!(gBattleWork.actorSideFlags & 1))
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 - 0x40) & 0x3FF;
     else
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x40) & 0x3FF;
     if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     else if (gGameWork.unk86)
         gGameWork.unk86--;
     else
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
 }
 
 void effect_step_end(void) {
-    gBattleWork.unkB5 = 1;
+    gBattleWork.stepDone = 1;
 }
 
 void effect_step_play_anim(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gGameWork.unk84], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF)
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
 }

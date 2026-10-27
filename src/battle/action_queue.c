@@ -78,9 +78,9 @@ void battle_queue_add(u32 rec, u32 prio) {
     i = 0;
     g = &gBattleWork;
     for (; i <= 5; i++) {
-        if (g->unk45[i][0] == 0) {
-            g->unk45[i][0] = rec + 1;
-            g->unk45[i][1] = prio;
+        if (g->actionQueue[i][0] == 0) {
+            g->actionQueue[i][0] = rec + 1;
+            g->actionQueue[i][1] = prio;
             return;
         }
     }
@@ -310,33 +310,33 @@ void battle_queue_sort(void) {
 
     for (n = 5; n != 0; n--) {
         for (i = 0; i < n; i++) {
-            if (gBattleWork.unk45[0][i * 2 + 1] < gBattleWork.unk45[0][(i + 1) * 2 + 1]) {
-                r = gBattleWork.unk45[0][(i + 1) * 2];
-                p = gBattleWork.unk45[0][(i + 1) * 2 + 1];
-                gBattleWork.unk45[0][(i + 1) * 2] = gBattleWork.unk45[0][i * 2];
-                gBattleWork.unk45[0][(i + 1) * 2 + 1] = gBattleWork.unk45[0][i * 2 + 1];
-                gBattleWork.unk45[0][i * 2] = r;
-                gBattleWork.unk45[0][i * 2 + 1] = p;
+            if (gBattleWork.actionQueue[0][i * 2 + 1] < gBattleWork.actionQueue[0][(i + 1) * 2 + 1]) {
+                r = gBattleWork.actionQueue[0][(i + 1) * 2];
+                p = gBattleWork.actionQueue[0][(i + 1) * 2 + 1];
+                gBattleWork.actionQueue[0][(i + 1) * 2] = gBattleWork.actionQueue[0][i * 2];
+                gBattleWork.actionQueue[0][(i + 1) * 2 + 1] = gBattleWork.actionQueue[0][i * 2 + 1];
+                gBattleWork.actionQueue[0][i * 2] = r;
+                gBattleWork.actionQueue[0][i * 2 + 1] = p;
             }
         }
     }
 }
 
 void battle_queue_take_head(void) {
-    gBattleWork.unk87 = gBattleWork.unk45[0][0] - 1;
-    gBattleWork.unk89 = (gBattleWork.unk45[0][0] - 1) / 3;
-    gBattleWork.unk8A = gBattleWork.unk89 ^ 1;
+    gBattleWork.actor = gBattleWork.actionQueue[0][0] - 1;
+    gBattleWork.actorSide = (gBattleWork.actionQueue[0][0] - 1) / 3;
+    gBattleWork.otherSide = gBattleWork.actorSide ^ 1;
 }
 
 void battle_queue_pop(void) {
     u32 i;
 
     for (i = 0; i <= 4; i++) {
-        gBattleWork.unk45[0][i * 2] = gBattleWork.unk45[0][(i + 1) * 2];
-        gBattleWork.unk45[0][i * 2 + 1] = gBattleWork.unk45[0][(i + 1) * 2 + 1];
+        gBattleWork.actionQueue[0][i * 2] = gBattleWork.actionQueue[0][(i + 1) * 2];
+        gBattleWork.actionQueue[0][i * 2 + 1] = gBattleWork.actionQueue[0][(i + 1) * 2 + 1];
     }
-    gBattleWork.unk45[0][i * 2] = 0;
-    gBattleWork.unk45[0][i * 2 + 1] = 0;
+    gBattleWork.actionQueue[0][i * 2] = 0;
+    gBattleWork.actionQueue[0][i * 2 + 1] = 0;
 }
 
 // guess: unkBF is set by a support skill (rapid_charge_apply); such Medabots keep moving in sub-state 0x4C.
@@ -356,15 +356,15 @@ u32 team_bot_command_kept(u32 rec) {
     if (rec <= 2) {
         switch (rec) {
         case 0:
-            if (gBattleWork.unk44 & 1)
+            if (gBattleWork.autoCommandBits & 1)
                 return 1;
             return 0;
         case 1:
-            if (gBattleWork.unk44 & 2)
+            if (gBattleWork.autoCommandBits & 2)
                 return 1;
             return 0;
         case 2:
-            if (gBattleWork.unk44 & 4)
+            if (gBattleWork.autoCommandBits & 4)
                 return 1;
             return 0;
         }
@@ -375,13 +375,13 @@ void team_bot_clear_command_kept(u32 rec) {
     if (rec <= 2) {
         switch (rec) {
         case 0:
-            gBattleWork.unk44 &= ~1;
+            gBattleWork.autoCommandBits &= ~1;
             break;
         case 1:
-            gBattleWork.unk44 &= ~2;
+            gBattleWork.autoCommandBits &= ~2;
             break;
         case 2:
-            gBattleWork.unk44 &= ~4;
+            gBattleWork.autoCommandBits &= ~4;
             break;
         }
     }

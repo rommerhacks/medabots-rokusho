@@ -7,13 +7,13 @@
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount) {
     s32 room = gBattleBots[rec].parts[part].data[4] - gBattleBots[rec].parts[part].unk11;
     if (room > amount) {
-        gBattleWork.unkC8 = amount;
+        gBattleWork.appliedAmount = amount;
         gBattleWork.unkCC = amount;
-        gBattleWork.unkCA = 0;
+        gBattleWork.overflowAmount = 0;
     } else {
-        gBattleWork.unkC8 = room;
+        gBattleWork.appliedAmount = room;
         gBattleWork.unkCC = room;
-        gBattleWork.unkCA = amount - room;
+        gBattleWork.overflowAmount = amount - room;
     }
 }
 
@@ -70,27 +70,27 @@ u32 clamp_1_99(u32 a) {
 void battle_inflict_status(u32 rec, u32 skill, s32 a, u32 b) {
     if (skill - 0xD <= 1) {
         gBattleBots[rec].statusType = skill;
-        gBattleBots[rec].statusPart = gBattleWork.unk8B + 1;
+        gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
         gBattleBots[rec].statusTimer = clamp_1_99(a);
         gBattleBots[rec].statusAmount = clamp_1_99(b * 2);
     } else if (skill - 0xF <= 1) {
         gBattleBots[rec].statusType = skill;
-        gBattleBots[rec].statusPart = gBattleWork.unk8B + 1;
+        gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
         gBattleBots[rec].statusTimer = clamp_1_99(b >> 3);
         gBattleBots[rec].statusAmount = 0;
     } else if (skill - 0x11 <= 1) {
         gBattleBots[rec].statusType = skill;
-        gBattleBots[rec].statusPart = gBattleWork.unk8B + 1;
+        gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
         gBattleBots[rec].statusTimer = clamp_1_99(a);
         gBattleBots[rec].statusAmount = clamp_1_99(b >> 2);
     } else if (skill - 0x13 <= 1) {
         gBattleBots[rec].statusType = skill;
-        gBattleBots[rec].statusPart = gBattleWork.unk8B + 1;
+        gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
         gBattleBots[rec].statusTimer = clamp_1_99(a);
         gBattleBots[rec].statusAmount = clamp_1_99(b >> 1);
     } else {
         gBattleBots[rec].statusType = skill;
-        gBattleBots[rec].statusPart = gBattleWork.unk8B;
+        gBattleBots[rec].statusPart = gBattleWork.targetPart;
         gBattleBots[rec].statusTimer = clamp_1_99(a);
         gBattleBots[rec].statusAmount = clamp_1_99(b);
     }
@@ -153,27 +153,27 @@ u32 staggered_sprites_update(u32 slot, u32 n) {
 }
 
 void reaction_counter_begin(void) {
-    gBattleBots[gBattleWork.unk87].unkE0 = gBattleWork.unk87 + 1;
-    gBattleBots[gBattleWork.unk87].unkE1 = gBattleWork.unkA7 + 1;
-    if ((gBattleWork.unk162 = gBattleWork.unk8B) == 3)
+    gBattleBots[gBattleWork.actor].unkE0 = gBattleWork.actor + 1;
+    gBattleBots[gBattleWork.actor].unkE1 = gBattleWork.actorPart + 1;
+    if ((gBattleWork.unk162 = gBattleWork.targetPart) == 3)
         gBattleWork.unk162 = 0;
-    gBattleWork.unk161 = gBattleWork.unk88;
-    battle_load_action_target(gBattleWork.unk87);
-    gBattleWork.unkF8 ^= 2;
-    gBattleWork.unkB7 = 0;
+    gBattleWork.unk161 = gBattleWork.target;
+    battle_load_action_target(gBattleWork.actor);
+    gBattleWork.actorSideFlags ^= 2;
+    gBattleWork.hitResult = 0;
     gBattleWork.unkF6 = 2;
-    if (!(gBattleWork.unkF8 & 2))
+    if (!(gBattleWork.actorSideFlags & 2))
         gBattleWork.unk114[0] = 0;
     else {
         gBattleWork.unk114[0] = 0x28;
         gBattleWork.unkFF |= 1;
     }
-    if (!(gBattleWork.unkF8 & 2)) {
+    if (!(gBattleWork.actorSideFlags & 2)) {
         gBattleWork.unk114[1] = 0x28;
         gBattleWork.unkFF |= 2;
     } else
         gBattleWork.unk114[1] = 0;
-    gBattleWork.unkB8 = 0;
+    gBattleWork.blockResult = 0;
     select_ai_action_type();
     determine_battle_target_mode();
 }
@@ -187,30 +187,30 @@ u32 part_broken_or_undamaged(u32 rec, u32 part) {
 }
 
 u32 decrement_battle_timer_and_check_zero(void) {
-    subtract_s16_floored(&gBattleWork.unkE8, 0x20);
-    if (gBattleWork.unkE8 != 0)
+    subtract_s16_floored(&gBattleWork.success, 0x20);
+    if (gBattleWork.success != 0)
         return 0;
     return 1;
 }
 
 void calc_battle_stat_ratio(u32 rec, u32 part) {
     struct BattleWork *b = &gBattleWork;
-    b->unkEC = b->unkE8 >> 2;
-    b->unkEC += gBattleBots[rec].parts[part].data[6];
-    b->unkEC = b->unkEC / gBattleBots[rec].parts[part].data[0xC];
-    if (b->unkEC == 0)
-        b->unkEC = 1;
+    b->amount = b->success >> 2;
+    b->amount += gBattleBots[rec].parts[part].data[6];
+    b->amount = b->amount / gBattleBots[rec].parts[part].data[0xC];
+    if (b->amount == 0)
+        b->amount = 1;
 }
 
 void battle_set_damage_display(u32 rec, u32 part, s32 amount) {
     if (gBattleBots[rec].parts[part].data[4] >= amount) {
-        gBattleWork.unkC8 = amount;
+        gBattleWork.appliedAmount = amount;
         gBattleWork.unkCC = amount;
-        gBattleWork.unkCA = 0;
+        gBattleWork.overflowAmount = 0;
     } else {
-        gBattleWork.unkC8 = gBattleBots[rec].parts[part].data[4];
+        gBattleWork.appliedAmount = gBattleBots[rec].parts[part].data[4];
         gBattleWork.unkCC = gBattleBots[rec].parts[part].data[4];
-        gBattleWork.unkCA = amount - gBattleBots[rec].parts[part].data[4];
+        gBattleWork.overflowAmount = amount - gBattleBots[rec].parts[part].data[4];
     }
 }
 
@@ -243,55 +243,55 @@ void sprite_bob_step(u32 slot) {
 void calc_head_uses_taken(u32 rec, s32 amount) {
     s32 head = gBattleBots[rec].parts[0].unk10;
     if (head > amount) {
-        gBattleWork.unkC8 = amount;
+        gBattleWork.appliedAmount = amount;
         gBattleWork.unkCC = amount;
-        gBattleWork.unkCA = 0;
+        gBattleWork.overflowAmount = 0;
     } else {
-        gBattleWork.unkC8 = head;
+        gBattleWork.appliedAmount = head;
         gBattleWork.unkCC = head;
-        gBattleWork.unkCA = amount - head;
+        gBattleWork.overflowAmount = amount - head;
     }
 }
 
 void calc_head_uses_given(u32 rec, s32 amount) {
     s32 room = gBattleBots[rec].parts[0].data[8] - gBattleBots[rec].parts[0].unk10;
     if (room > amount) {
-        gBattleWork.unkC8 = amount;
+        gBattleWork.appliedAmount = amount;
         gBattleWork.unkCC = amount;
-        gBattleWork.unkCA = 0;
+        gBattleWork.overflowAmount = 0;
     } else {
-        gBattleWork.unkC8 = room;
+        gBattleWork.appliedAmount = room;
         gBattleWork.unkCC = room;
-        gBattleWork.unkCA = amount - room;
+        gBattleWork.overflowAmount = amount - room;
     }
 }
 
 void calc_drain_amount(u32 a, u32 b) {
     if (a > b) {
-        gBattleWork.unkC8 = b;
+        gBattleWork.appliedAmount = b;
         gBattleWork.unkCC = b;
-        gBattleWork.unkCA = 0;
-        gBattleWork.unkD1 = 0;
+        gBattleWork.overflowAmount = 0;
+        gBattleWork.partBroken = 0;
     } else {
-        gBattleWork.unkC8 = a;
+        gBattleWork.appliedAmount = a;
         gBattleWork.unkCC = a;
-        gBattleWork.unkCA = b - a;
-        gBattleWork.unkD1 = 1;
+        gBattleWork.overflowAmount = b - a;
+        gBattleWork.partBroken = 1;
     }
 }
 
 void calc_fill_amount(u32 a, u32 max, u32 b) {
     u32 room = max - a;
     if (room > b) {
-        gBattleWork.unkC8 = b;
+        gBattleWork.appliedAmount = b;
         gBattleWork.unkCC = b;
-        gBattleWork.unkCA = 0;
-        gBattleWork.unkD1 = 0;
+        gBattleWork.overflowAmount = 0;
+        gBattleWork.partBroken = 0;
     } else {
-        gBattleWork.unkC8 = room;
+        gBattleWork.appliedAmount = room;
         gBattleWork.unkCC = room;
-        gBattleWork.unkCA = b - room;
-        gBattleWork.unkD1 = 1;
+        gBattleWork.overflowAmount = b - room;
+        gBattleWork.partBroken = 1;
     }
 }
 
@@ -370,18 +370,18 @@ u8 pick_random_change_part(u32 a, u32 kind) {
 }
 
 void medaforce_calc_success(u32 rec) {
-    gBattleWork.unkE8 = 0;
-    gBattleWork.unkE8 = gBattleBots[rec].medaforce[3];
-    gBattleWork.unkE8 += calc_bot_matching_part_power(rec);
-    gBattleWork.unkE8 += rng_next_byte() & 7;
-    gBattleWork.unkE8 += gBattleBots[rec].medal.skillLevel[gBattleBots[rec].medaforce[1]];
+    gBattleWork.success = 0;
+    gBattleWork.success = gBattleBots[rec].medaforce[3];
+    gBattleWork.success += calc_bot_matching_part_power(rec);
+    gBattleWork.success += rng_next_byte() & 7;
+    gBattleWork.success += gBattleBots[rec].medal.skillLevel[gBattleBots[rec].medaforce[1]];
 }
 
 void medaforce_calc_damage(u32 rec) {
-    gBattleWork.unkEC = gBattleWork.unkE8 >> 3;
-    gBattleWork.unkEC += gBattleBots[rec].medaforce[4];
-    if (gBattleWork.unkEC == 0)
-        gBattleWork.unkEC = 1;
+    gBattleWork.amount = gBattleWork.success >> 3;
+    gBattleWork.amount += gBattleBots[rec].medaforce[4];
+    if (gBattleWork.amount == 0)
+        gBattleWork.amount = 1;
 }
 
 // Medaforce hit list entry for one part: unkD6 = damage it takes (capped at its armor), unkD2 = 1 if that breaks it.

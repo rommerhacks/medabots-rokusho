@@ -632,12 +632,12 @@ void team_select_exit_race(void) {
     gGameWork.unk96 = 0;
     gUnk_03000430 = 0;
     for (i = 0; i <= 2; i++) {
-        load_part_data(gTeamSlots[gBattleWork.unk41[i] & 0xF].legs, 3, &gGameWork.unkEE);
+        load_part_data(gTeamSlots[gBattleWork.teamPicks[i] & 0xF].legs, 3, &gGameWork.unkEE);
         gBattleWork.unk8C[i] = gGameWork.unkEF - 100;
-        gBattleWork.unk8F[i][0] = gTeamSlots[gBattleWork.unk41[i] & 0xF].head;
-        gBattleWork.unk8F[i][1] = gTeamSlots[gBattleWork.unk41[i] & 0xF].rightArm;
-        gBattleWork.unk8F[i][2] = gTeamSlots[gBattleWork.unk41[i] & 0xF].leftArm;
-        gBattleWork.unk8F[i][3] = gTeamSlots[gBattleWork.unk41[i] & 0xF].legs;
+        gBattleWork.unk8F[i][0] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].head;
+        gBattleWork.unk8F[i][1] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].rightArm;
+        gBattleWork.unk8F[i][2] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].leftArm;
+        gBattleWork.unk8F[i][3] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].legs;
     }
     gGameMode = 3;
     gGameState = 4;
@@ -1845,10 +1845,10 @@ static void team_select_draw_pick_markers(void) {
     case 1:
     case 2:
         for (i = 0; i < 3; i++) {
-            if (gBattleWork.unk41[i]) {
+            if (gBattleWork.teamPicks[i]) {
                 gSpriteEntries[i + 4].unk0 = 0xC004;
-                gSpriteEntries[i + 4].unk2 = gUnk_083AC43B[(gBattleWork.unk41[i] & 0xF) * 2];
-                gSpriteEntries[i + 4].unk4 = gUnk_083AC43B[(gBattleWork.unk41[i] & 0xF) * 2 + 1];
+                gSpriteEntries[i + 4].unk2 = gUnk_083AC43B[(gBattleWork.teamPicks[i] & 0xF) * 2];
+                gSpriteEntries[i + 4].unk4 = gUnk_083AC43B[(gBattleWork.teamPicks[i] & 0xF) * 2 + 1];
                 gSpriteEntries[i + 4].unk6 = i + 0x401;
                 gSpriteEntries[i + 4].unkA = 15;
                 gSpriteEntries[i + 4].unk1C = 0;
@@ -1860,10 +1860,10 @@ static void team_select_draw_pick_markers(void) {
         break;
     case 3:
         for (i = 0; i < 3; i++) {
-            if (gBattleWork.unk41[i]) {
+            if (gBattleWork.teamPicks[i]) {
                 gSpriteEntries[i + 4].unk0 = 0xC004;
-                gSpriteEntries[i + 4].unk2 = gUnk_083AC43B[(gBattleWork.unk41[i] & 0xF) * 2];
-                gSpriteEntries[i + 4].unk4 = gUnk_083AC43B[(gBattleWork.unk41[i] & 0xF) * 2 + 1];
+                gSpriteEntries[i + 4].unk2 = gUnk_083AC43B[(gBattleWork.teamPicks[i] & 0xF) * 2];
+                gSpriteEntries[i + 4].unk4 = gUnk_083AC43B[(gBattleWork.teamPicks[i] & 0xF) * 2 + 1];
                 gSpriteEntries[i + 4].unk6 = i + 0x404;
                 gSpriteEntries[i + 4].unkA = 15;
                 gSpriteEntries[i + 4].unk1C = 0;
@@ -1884,8 +1884,8 @@ static void medabots_screen_cancel_input(void) {
     case 2:
     case 3:
         for (i = 2; i >= 0; i--) {
-            if (gBattleWork.unk41[i]) {
-                gBattleWork.unk41[i] = 0;
+            if (gBattleWork.teamPicks[i]) {
+                gBattleWork.teamPicks[i] = 0;
                 team_select_draw_pick_markers();
                 play_sound_effect(5);
                 return;
@@ -1916,10 +1916,10 @@ static void team_select_confirm_pick(void) {
     case 2:
     case 3:
         for (i = 0; i < 3; i++) {
-            if (gBattleWork.unk41[i] == 0) {
+            if (gBattleWork.teamPicks[i] == 0) {
                 if (team_select_slot_not_picked(i) && gTeamSlots[gGameWork.unk51].state == 3) {
                     play_sound_effect(4);
-                    gBattleWork.unk41[i] = gGameWork.unk51 + 0x10;
+                    gBattleWork.teamPicks[i] = gGameWork.unk51 + 0x10;
                     team_select_draw_pick_markers();
                     if (i == 2) {
                         switch (gGameWork.unk50) {
@@ -1969,7 +1969,7 @@ static void team_select_finish_input(void) {
     switch (gGameWork.unk50) {
     case 1:
     case 2:
-        if (gBattleWork.unk41[0]) {
+        if (gBattleWork.teamPicks[0]) {
             play_sound_effect(4);
             gGameSubState = 0x20;
         }
@@ -1983,7 +1983,7 @@ static u32 team_select_slot_not_picked(u32 n) {
     if (n == 0)
         return 1;
     for (i = 0; i < n; i++) {
-        if ((gBattleWork.unk41[i] & 0xF) == gGameWork.unk51)
+        if ((gBattleWork.teamPicks[i] & 0xF) == gGameWork.unk51)
             return 0;
     }
     return 1;
@@ -1995,12 +1995,12 @@ static void team_select_blink_pick_markers(void) {
 
     if (gGameWork.unk5C & 4) {
         for (i = 0; i <= 2; i++) {
-            if (gBattleWork.unk41[i])
+            if (gBattleWork.teamPicks[i])
                 gSpriteEntries[i + 4].unk0 &= 0xBFFF;
         }
     } else {
         for (i = 0; i <= 2; i++) {
-            if (gBattleWork.unk41[i])
+            if (gBattleWork.teamPicks[i])
                 gSpriteEntries[i + 4].unk0 |= 0x4000;
         }
     }

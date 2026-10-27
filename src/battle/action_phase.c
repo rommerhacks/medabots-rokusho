@@ -4,7 +4,7 @@
 // step for gGameSubState. Sub-states (runtime-checked in the battle scenario):
 //   0x00-0x04 turn cursor over the acting Medabot, then the command check
 //   0x10-0x18 no part chosen: charge the Medaforce gauge (or say it is full)
-//   0x20-0x22 the command fails: popup + message gBattleWork.unkA6
+//   0x20-0x22 the command fails: popup + message gBattleWork.messageId
 //   0x30-0x39 Medaforce chosen: level / gauge checks, activation animation, then battle state 9
 //   0x40-0x45 after an action: a side's leader is down -> win / lose banner and message
 //   0x48-0x4D TIME check: time up -> banner and judgement message; 0x4F back to the turn order (state 7)
@@ -22,7 +22,7 @@ void battle_action_state_update(void) {
 void action_phase_load_gfx(void) {
     switch (gGameWork.unk139) {
     case 0:
-        reset_bot_status_and_init_palette_transfers(gBattleWork.unk87);
+        reset_bot_status_and_init_palette_transfers(gBattleWork.actor);
         copy_battle_entity_positions();
         gGameWork.unk139++;
         break;
@@ -42,8 +42,8 @@ void action_phase_load_gfx(void) {
 void action_phase_cursor_init(void) {
     gSpriteEntries[3].unk0 = 0xC004;
     gSpriteEntries[3].unk1C = 0;
-    gSpriteEntries[3].unk2 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2;
-    gSpriteEntries[3].unk4 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[3].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
+    gSpriteEntries[3].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[3].unkA = 6;
     gSpriteEntries[3].unkB = 0x81;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x15], 3);
@@ -62,86 +62,87 @@ void action_phase_cursor_anim(void) {
 // Fails with message 4 when the acting Medabot has unkBD bit 0 set; no part chosen (action == 0) goes to
 // sub-state 0x10, otherwise on to action_phase_resolve_command.
 void action_phase_check_command(void) {
-    if (gBattleBots[gBattleWork.unk87].stateFlags & 1) {
-        gBattleWork.unkA6 = 4;
+    if (gBattleBots[gBattleWork.actor].stateFlags & 1) {
+        gBattleWork.messageId = 4;
         gGameSubState = 0x20;
-    } else if (gBattleBots[gBattleWork.unk87].chosenAction == 0)
+    } else if (gBattleBots[gBattleWork.actor].chosenAction == 0)
         gGameSubState = 0x10;
     else
         gGameSubState++;
 }
 
 void action_phase_resolve_command(void) {
-    battle_set_actor_side(gBattleWork.unk87);
-    if (gBattleBots[gBattleWork.unk87].stateFlags & 1) {
-        gBattleWork.unkA6 = 4;
+    battle_set_actor_side(gBattleWork.actor);
+    if (gBattleBots[gBattleWork.actor].stateFlags & 1) {
+        gBattleWork.messageId = 4;
         gGameSubState = 0x20;
         return;
     }
-    if (gBattleBots[gBattleWork.unk87].chosenAction <= 3 &&
-        gBattleBots[gBattleWork.unk87].parts[gBattleBots[gBattleWork.unk87].chosenAction - 1].unk11 == 0) {
-        gBattleWork.unkA6 = 5;
+    if (gBattleBots[gBattleWork.actor].chosenAction <= 3 &&
+        gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].unk11 == 0) {
+        gBattleWork.messageId = 5;
         gGameSubState = 0x20;
         return;
     }
-    if (gBattleBots[gBattleWork.unk87].statusType == 0x2B &&
-        gBattleBots[gBattleWork.unk87].statusPart == gBattleBots[gBattleWork.unk87].chosenAction) {
-        gBattleWork.unkA6 = 6;
+    if (gBattleBots[gBattleWork.actor].statusType == 0x2B &&
+        gBattleBots[gBattleWork.actor].statusPart == gBattleBots[gBattleWork.actor].chosenAction) {
+        gBattleWork.messageId = 6;
         gGameSubState = 0x20;
         return;
     }
-    if (gBattleBots[gBattleWork.unk87].chosenAction > 3) {
-        gBattleWork.unkA7 = gBattleBots[gBattleWork.unk87].chosenAction - 4;
+    if (gBattleBots[gBattleWork.actor].chosenAction > 3) {
+        gBattleWork.actorPart = gBattleBots[gBattleWork.actor].chosenAction - 4;
         gGameSubState = 0x30;
         return;
     }
-    gBattleWork.unk164 = 1;
-    select_next_bot_and_action(gBattleWork.unk87);
-    if (part_skill_is_passive(gBattleWork.unk87, gBattleBots[gBattleWork.unk87].chosenAction - 1)) {
-        gBattleWork.unkA6 = 7;
+    gBattleWork.skillGrowthOn = 1;
+    select_next_bot_and_action(gBattleWork.actor);
+    if (part_skill_is_passive(gBattleWork.actor, gBattleBots[gBattleWork.actor].chosenAction - 1)) {
+        gBattleWork.messageId = 7;
         gGameSubState = 0x20;
         return;
     }
-    if (gBattleBots[gBattleWork.unk87].chosenAction == 1 && gBattleWork.unk118 != 1) {
-        if (gBattleBots[gBattleWork.unk87].parts[0].unk10 == 0) {
-            gBattleWork.unkA6 = 8;
+    if (gBattleBots[gBattleWork.actor].chosenAction == 1 && gBattleWork.unk118 != 1) {
+        if (gBattleBots[gBattleWork.actor].parts[0].unk10 == 0) {
+            gBattleWork.messageId = 8;
             gGameSubState = 0x20;
             return;
         }
-        gBattleBots[gBattleWork.unk87].parts[0].unk10--;
+        gBattleBots[gBattleWork.actor].parts[0].unk10--;
     }
-    if (gBattleBots[gBattleWork.unk87].unkE0) {
-        if (gBattleBots[gBattleWork.unk87].parts[gBattleBots[gBattleWork.unk87].chosenAction - 1].data[1] == 0x21) {
-            if (gBattleBots[gBattleBots[gBattleWork.unk87].unkE0 - 1].teamState) {
-                gBattleWork.unkA6 = 9;
+    if (gBattleBots[gBattleWork.actor].unkE0) {
+        if (gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].data[1] == 0x21) {
+            if (gBattleBots[gBattleBots[gBattleWork.actor].unkE0 - 1].teamState) {
+                gBattleWork.messageId = 9;
                 gGameSubState = 0x20;
                 return;
             }
-        } else if (gBattleBots[gBattleBots[gBattleWork.unk87].unkE0 - 1].teamState == 0) {
-            gBattleWork.unkA6 = 0xA;
+        } else if (gBattleBots[gBattleBots[gBattleWork.actor].unkE0 - 1].teamState == 0) {
+            gBattleWork.messageId = 0xA;
             gGameSubState = 0x20;
             return;
         }
     }
-    if (gBattleBots[gBattleWork.unk87].unkE1) {
-        if (gBattleBots[gBattleWork.unk87].parts[gBattleBots[gBattleWork.unk87].chosenAction - 1].data[1] == 0x20) {
-            if (gBattleBots[gBattleBots[gBattleWork.unk87].unkE0 - 1]
-                    .parts[gBattleBots[gBattleWork.unk87].unkE1 - 1]
+    if (gBattleBots[gBattleWork.actor].unkE1) {
+        if (gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].data[1] == 0x20) {
+            if (gBattleBots[gBattleBots[gBattleWork.actor].unkE0 - 1]
+                    .parts[gBattleBots[gBattleWork.actor].unkE1 - 1]
                     .unk11) {
-                gBattleWork.unkA6 = 0xB;
+                gBattleWork.messageId = 0xB;
                 gGameSubState = 0x20;
                 return;
             }
-        } else if (gBattleBots[gBattleBots[gBattleWork.unk87].unkE0 - 1]
-                       .parts[gBattleBots[gBattleWork.unk87].unkE1 - 1]
+        } else if (gBattleBots[gBattleBots[gBattleWork.actor].unkE0 - 1]
+                       .parts[gBattleBots[gBattleWork.actor].unkE1 - 1]
                        .unk11 == 0) {
-            gBattleWork.unkA6 = 0xC;
+            gBattleWork.messageId = 0xC;
             gGameSubState = 0x20;
             return;
         }
     }
-    gBattleWork.unkA8 = gBattleBots[gBattleWork.unk87].parts[gBattleBots[gBattleWork.unk87].chosenAction - 1].data[1];
-    gBattleWork.unkA7 = gBattleBots[gBattleWork.unk87].chosenAction - 1;
+    gBattleWork.actorSkill =
+        gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].data[1];
+    gBattleWork.actorPart = gBattleBots[gBattleWork.actor].chosenAction - 1;
     gGameState = 9;
     gGameSubState = 0;
 }
@@ -164,7 +165,7 @@ void action_phase_next_turn(void) {
 
 // No part chosen: a full gauge (80) shows message 0 instead of charging.
 void action_phase_charge_check(void) {
-    if (gBattleBots[gBattleWork.unk87].medaforceGauge == 0x50)
+    if (gBattleBots[gBattleWork.actor].medaforceGauge == 0x50)
         gGameSubState++;
     else {
         battle_substeps_reset();
@@ -198,11 +199,11 @@ void action_phase_show_charge_message(void) {
 void action_phase_charge_init(void) {
     target_panels_show(0);
     play_sound_effect(0x51);
-    if (gBattleBots[gBattleWork.unk87].guardFlags & 8)
+    if (gBattleBots[gBattleWork.actor].guardFlags & 8)
         gBattleWork.unk51 = 0x50;
     else
         gBattleWork.unk51 = 0x28;
-    mf_charge_sparkles_init(gBattleWork.unk87);
+    mf_charge_sparkles_init(gBattleWork.actor);
     gGameSubState++;
 }
 
@@ -210,8 +211,8 @@ void action_phase_charge_fill(void) {
     u32 done;
 
     target_panels_show(0);
-    done = medaforce_gauge_fill_step(gBattleWork.unk87);
-    done += mf_charge_sparkles_update(gBattleWork.unk87);
+    done = medaforce_gauge_fill_step(gBattleWork.actor);
+    done += mf_charge_sparkles_update(gBattleWork.actor);
     if (done == 2) {
         clear_battle_ui_tilemaps();
         battle_substeps_reset();
@@ -220,7 +221,7 @@ void action_phase_charge_fill(void) {
 }
 
 void action_phase_show_message(void) {
-    if (battle_message_show(gBattleWork.unkA6))
+    if (battle_message_show(gBattleWork.messageId))
         gGameSubState++;
 }
 
@@ -228,8 +229,8 @@ void action_phase_show_message(void) {
 // leader) down = won (unk9C 1); otherwise on to the TIME check.
 void action_phase_end_check(void) {
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06017400);
-    increment_medal_skill_level(gBattleWork.unk87);
-    battle_action_cleanup(gBattleWork.unk87);
+    increment_medal_skill_level(gBattleWork.actor);
+    battle_action_cleanup(gBattleWork.actor);
     gGameWork.unk9C = 0;
     if (gBattleBots[0].teamState == 0) {
         gGameWork.unk9C = 2;
@@ -299,7 +300,7 @@ void action_phase_show_winner_message(void) {
     if (gGameWork.unk9C == 1)
         memcpy_bytes_0803F63C(gUnk_03002B74, gGameWork.unk9E, 0xE);
     else if (gGameWork.unk89 != 1)
-        memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.unk0], gGameWork.unk9E, 0x12);
+        memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.unk9E, 0x12);
     else
         memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.unk9E, 0x12);
     if (run_message(gUnk_083C65C4[2]))
@@ -308,8 +309,8 @@ void action_phase_show_winner_message(void) {
 
 // TIME left: a levelled-up Medal skill (unk165) shows the level-up popup, else next turn. Time up: judge it.
 void action_phase_time_check(void) {
-    if (gBattleWork.unk57) {
-        if (gBattleWork.unk165)
+    if (gBattleWork.timeLeft) {
+        if (gBattleWork.skillLevelledUp)
             gGameSubState = 0x60;
         else
             gGameSubState = 0x4F;
@@ -339,7 +340,7 @@ void action_phase_show_time_up_message(void) {
     if (gGameWork.unk9C == 1)
         memcpy_bytes_0803F63C(gUnk_03002B74, gGameWork.unk9E, 0xE);
     else if (gGameWork.unk89 != 1)
-        memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.unk0], gGameWork.unk9E, 0x12);
+        memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.unk9E, 0x12);
     else
         memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.unk9E, 0x12);
     if (run_message(gUnk_083C65C4[3]))
@@ -387,8 +388,8 @@ void action_phase_level_up_init(void) {
     lz_decompress_dispatch(gUnk_084D796C, (void *)0x06014800);
     gSpriteEntries[0x21].unk0 = 0xC404;
     gSpriteEntries[0x21].unk1C = 0;
-    gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2;
-    gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
+    gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unkA = 0xC;
     gSpriteEntries[0x21].unkB = 0x80;
     gSpriteEntries[0x21].unk6 = 0x5800;
@@ -405,11 +406,11 @@ void action_phase_level_up_anim(void) {
 void action_phase_level_up_skill_init(void) {
     gSpriteEntries[0x22].unk0 = 0xC404;
     gSpriteEntries[0x22].unk1C = 0;
-    gSpriteEntries[0x22].unk2 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2 - 0x10;
-    gSpriteEntries[0x22].unk4 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 + 4;
-    gSpriteEntries[0x22].unkA = gLevelUpSkillPalettes[gBattleWork.unk166];
+    gSpriteEntries[0x22].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2 - 0x10;
+    gSpriteEntries[0x22].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 + 4;
+    gSpriteEntries[0x22].unkA = gLevelUpSkillPalettes[gBattleWork.levelUpSkill];
     gSpriteEntries[0x22].unkB = 0x80;
-    gSpriteEntries[0x22].unk6 = 0x5801 + gBattleWork.unk166;
+    gSpriteEntries[0x22].unk6 = 0x5801 + gBattleWork.levelUpSkill;
     gSpriteEntries[0x22].unk23 = 0;
     play_sound_effect(0x2A);
     gGameSubState++;
@@ -422,19 +423,19 @@ void action_phase_level_up_skill_slide(void) {
 
 void action_phase_level_up_digits_init(void) {
     lz_decompress_dispatch(gUnk_084D6BFC, (void *)0x06017E00);
-    set_display_digit_type(&gGameWork.unkEE, gBattleWork.unk167, 2);
-    battle_text_popup_init_at(&gGameWork.unkEE, gBattleWork.unk87, 0x23,
-                              gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2 + 0x18,
-                              gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 + 4);
+    set_display_digit_type(&gGameWork.unkEE, gBattleWork.levelUpLevel, 2);
+    battle_text_popup_init_at(&gGameWork.unkEE, gBattleWork.actor, 0x23,
+                              gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2 + 0x18,
+                              gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 + 4);
     gGameWork.unk84 = 0;
     gGameSubState++;
 }
 
 void action_phase_level_up_wait(void) {
-    battle_popup_update_slot(&gGameWork.unkEE, gBattleWork.unk87, 0x23);
+    battle_popup_update_slot(&gGameWork.unkEE, gBattleWork.actor, 0x23);
     if (++gGameWork.unk84 == 0x78) {
         clear_battle_sprite_slot(0x21, 2);
-        clear_battle_sprite_slot(gBattleWork.unk87 * 4 + 0x23, 4);
+        clear_battle_sprite_slot(gBattleWork.actor * 4 + 0x23, 4);
         gGameSubState++;
     }
 }
@@ -447,20 +448,20 @@ void action_phase_level_up_done(void) {
 // (below 10 / 30 / 60, message 0x36) or gauge not full (message 0x37) fail; otherwise activate it.
 void action_phase_medaforce_check(void) {
     battle_substeps_reset();
-    if (gBattleWork.unk58) {
-        gBattleWork.unkA6 = 0x79;
+    if (gBattleWork.medaforceBlocked) {
+        gBattleWork.messageId = 0x79;
         gGameSubState++;
-    } else if (gBattleWork.unkA7 == 0 && gBattleBots[gBattleWork.unk87].medal.level <= 9) {
-        gBattleWork.unkA6 = 0x36;
+    } else if (gBattleWork.actorPart == 0 && gBattleBots[gBattleWork.actor].medal.level <= 9) {
+        gBattleWork.messageId = 0x36;
         gGameSubState++;
-    } else if (gBattleWork.unkA7 == 1 && gBattleBots[gBattleWork.unk87].medal.level <= 0x1D) {
-        gBattleWork.unkA6 = 0x36;
+    } else if (gBattleWork.actorPart == 1 && gBattleBots[gBattleWork.actor].medal.level <= 0x1D) {
+        gBattleWork.messageId = 0x36;
         gGameSubState++;
-    } else if (gBattleWork.unkA7 == 2 && gBattleBots[gBattleWork.unk87].medal.level <= 0x3B) {
-        gBattleWork.unkA6 = 0x36;
+    } else if (gBattleWork.actorPart == 2 && gBattleBots[gBattleWork.actor].medal.level <= 0x3B) {
+        gBattleWork.messageId = 0x36;
         gGameSubState++;
-    } else if (gBattleBots[gBattleWork.unk87].medaforceGauge != 0x50) {
-        gBattleWork.unkA6 = 0x37;
+    } else if (gBattleBots[gBattleWork.actor].medaforceGauge != 0x50) {
+        gBattleWork.messageId = 0x37;
         gGameSubState++;
     } else
         gGameSubState = 0x34;
@@ -469,27 +470,27 @@ void action_phase_medaforce_check(void) {
 void action_phase_medaforce_anim_init(void) {
     target_panels_show(0);
     CpuFastSet(gUnk_084E3018, (void *)0x050002E0, 8);
-    gSpriteEntries[0x21].unk0 = ((gBattleWork.unk39[3] + 2) << 10) | 0xC004;
+    gSpriteEntries[0x21].unk0 = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
     gSpriteEntries[0x21].unk1C = 0;
-    gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2;
-    gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
+    gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unkA = 7;
     gSpriteEntries[0x21].unkB = 0x81;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x4D], 0x21);
-    gSpriteEntries[0x22].unk0 = ((gBattleWork.unk39[3] + 2) << 10) | 0xC004;
+    gSpriteEntries[0x22].unk0 = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
     gSpriteEntries[0x22].unk1C = 0;
-    gSpriteEntries[0x22].unk2 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2;
-    gSpriteEntries[0x22].unk4 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x22].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
+    gSpriteEntries[0x22].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x22].unkA = 7;
-    gSpriteEntries[0x22].unkB = gBattleWork.unk87 * 4 + 0x59;
+    gSpriteEntries[0x22].unkB = gBattleWork.actor * 4 + 0x59;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x4E], 0x22);
-    gBattleWork.unk51 = gBattleBots[gBattleWork.unk87].medaforce[2];
+    gBattleWork.unk51 = gBattleBots[gBattleWork.actor].medaforce[2];
     gGameSubState++;
 }
 
 void action_phase_medaforce_anim(void) {
     target_panels_show(0);
-    medaforce_gauge_drain_step(gBattleWork.unk87);
+    medaforce_gauge_drain_step(gBattleWork.actor);
     process_sprite_anim_commands(gUnk_083B5F80[0x4D], 0x21);
     process_sprite_anim_commands(gUnk_083B5F80[0x4E], 0x22);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
@@ -501,17 +502,17 @@ void action_phase_medaforce_anim(void) {
 }
 
 void action_phase_medaforce_name(void) {
-    memcpy_bytes_0803F63C((void *)gMedaforceNames[gBattleBots[gBattleWork.unk87].medaforce[0]], gGameWork.unk9E, 0x11);
-    gBattleWork.unkA6 = 0x38;
+    memcpy_bytes_0803F63C((void *)gMedaforceNames[gBattleBots[gBattleWork.actor].medaforce[0]], gGameWork.unk9E, 0x11);
+    gBattleWork.messageId = 0x38;
     gGameSubState++;
 }
 
 // Runs the Medaforce as action unkA8[0] + 0x50 in battle state 9.
 void action_phase_start_medaforce(void) {
-    gBattleWork.unk164 = 1;
-    gBattleWork.unkA8 = gBattleBots[gBattleWork.unk87].medaforce[0] + 0x50;
-    gBattleBots[gBattleWork.unk87].unkE0 = 0;
-    gBattleBots[gBattleWork.unk87].unkE1 = 0;
+    gBattleWork.skillGrowthOn = 1;
+    gBattleWork.actorSkill = gBattleBots[gBattleWork.actor].medaforce[0] + 0x50;
+    gBattleBots[gBattleWork.actor].unkE0 = 0;
+    gBattleBots[gBattleWork.actor].unkE1 = 0;
     gGameState = 9;
     gGameSubState = 0;
 }

@@ -192,7 +192,7 @@ static void battle_setup_part_sprite(u32 rec, u32 slot, u32 kind, u32 attr) {
     s16 v;
     s32 t;
 
-    gSpriteEntries[rec * 3 + 0x46 + slot].unk0 = ((gBattleWork.unk39[3] + 2) << 10) | 0xC004;
+    gSpriteEntries[rec * 3 + 0x46 + slot].unk0 = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
     gSpriteEntries[rec * 3 + 0x46 + slot].unk1C = 0;
     gSpriteEntries[rec * 3 + 0x46 + slot].unkA = gGameWork.unkF0 + 0xB;
     gSpriteEntries[rec * 3 + 0x46 + slot].unkB = attr;

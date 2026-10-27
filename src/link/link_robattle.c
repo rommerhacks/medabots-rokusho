@@ -109,7 +109,7 @@ void link_robattle_start_name_exchange(void) {
 }
 
 void link_robattle_pick_battlefield(void) {
-    gBattleWork.unk38 = gLinkBattlefields[rng_next_byte() & 0x1F];
+    gBattleWork.battlefield = gLinkBattlefields[rng_next_byte() & 0x1F];
     gGameSubState++;
 }
 
@@ -139,7 +139,7 @@ void link_robattle_screen_load(void) {
     CpuFastSet(gUnk_0850DEF8, (void *)0x0202F800, 0x40);
     CpuFastSet(gUnk_0850DCF8 + 0xB0, (void *)0x0202F980, 8);
     CpuFastSet(gUnk_0850DCF8, (void *)0x0202F9A0, 8);
-    decompress_tileset_to_vram(gBattleWork.unk38, 1);
+    decompress_tileset_to_vram(gBattleWork.battlefield, 1);
     zero_sprites = 0;
     CpuFastSet(&zero_sprites, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F60;
@@ -657,7 +657,7 @@ static void link_robattle_draw_partner_name(void) {
 }
 
 static void link_robattle_draw_battlefield_name(void) {
-    memcpy_bytes_0803F63C(gUnk_083BE9E8[gBattleWork.unk38], gGameWork.unk9E, 0xB);
+    memcpy_bytes_0803F63C(gUnk_083BE9E8[gBattleWork.battlefield], gGameWork.unk9E, 0xB);
     render_text_sprites_08040DB8(gGameWork.unk9E, 0x1E, 1, 3, 8, 0xC, 0, 1);
 }
 
@@ -668,7 +668,7 @@ static void link_robattle_draw_frame(void) {
 }
 
 static void link_robattle_load_battlefield_info(void) {
-    memcpy_bytes_0803F63C(gBattlefieldParams[gBattleWork.unk38], gBattleWork.unk39, 8);
+    memcpy_bytes_0803F63C(gBattlefieldParams[gBattleWork.battlefield], gBattleWork.battlefieldParams, 8);
 }
 
 static void prize_game_scroll_bg3(void) {

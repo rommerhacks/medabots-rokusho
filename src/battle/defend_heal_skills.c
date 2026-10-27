@@ -9,168 +9,169 @@
 #include "global.h"
 
 void recovery_run(void) {
-    gBattleWork.unkB5 = 0;
-    gRecoverySteps[gBattleWork.unkAA]();
+    gBattleWork.stepDone = 0;
+    gRecoverySteps[gBattleWork.step]();
 }
 
 void recovery_begin(void) {
     u32 r;
 
-    if (!part_broken_or_undamaged(gBattleWork.unk88, gBattleWork.unk8B)) {
-        calc_battle_action_speed(gBattleWork.unk87, gBattleWork.unkA7);
-        apply_battle_bot_damage_reduction(gBattleWork.unk87);
+    if (!part_broken_or_undamaged(gBattleWork.target, gBattleWork.targetPart)) {
+        calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
+        apply_battle_bot_damage_reduction(gBattleWork.actor);
         r = decrement_battle_timer_and_check_zero();
         if (r) {
-            gBattleWork.unkA6 = 0x1A;
-            gBattleWork.unkAA = 2;
+            gBattleWork.messageId = 0x1A;
+            gBattleWork.step = 2;
             gBattleWork.unkAB = 1;
         } else {
-            calc_battle_stat_ratio(gBattleWork.unk87, gBattleWork.unkA7);
+            calc_battle_stat_ratio(gBattleWork.actor, gBattleWork.actorPart);
             side_add_action_point();
-            gBattleWork.unkAA++;
+            gBattleWork.step++;
             gBattleWork.unkAB = r;
         }
     } else {
-        gBattleWork.unkA6 = 0x26;
-        gBattleWork.unkAA = 2;
+        gBattleWork.messageId = 0x26;
+        gBattleWork.step = 2;
         gBattleWork.unkAB = 1;
     }
 }
 
 void recovery_heal_run(void) {
-    gBattleWork.unkB5 = 0;
-    gRecoveryHealSteps[gBattleWork.unkAA]();
+    gBattleWork.stepDone = 0;
+    gRecoveryHealSteps[gBattleWork.step]();
 }
 
 void recovery_heal_apply(void) {
     clear_battle_sprite_slot(0, 0x80);
-    gBattleWork.unkD0 = gBattleWork.unk8B;
-    battle_calc_damage_split(gBattleWork.unk88, gBattleWork.unkD0, gBattleWork.unkEC);
-    gBattleWork.unkAA++;
+    gBattleWork.damagePart = gBattleWork.targetPart;
+    battle_calc_damage_split(gBattleWork.target, gBattleWork.damagePart, gBattleWork.amount);
+    gBattleWork.step++;
 }
 
 void recovery_heal_spread(void) {
     u32 part;
     struct BattleWork *s;
 
-    if (gBattleBots[gBattleWork.unk87].parts[(s = &gBattleWork)->unkA7].data[7] && s->unkCA &&
-        (part = find_most_damaged_part(s->unk88))) {
+    if (gBattleBots[gBattleWork.actor].parts[(s = &gBattleWork)->actorPart].data[7] && s->overflowAmount &&
+        (part = find_most_damaged_part(s->target))) {
         part--;
-        s->unkD0 = part;
-        s->unk8B = part;
-        battle_calc_damage_split(s->unk88, s->unkD0, s->unkCA);
-        s->unkAA = 0xE;
+        s->damagePart = part;
+        s->targetPart = part;
+        battle_calc_damage_split(s->target, s->damagePart, s->overflowAmount);
+        s->step = 0xE;
     } else {
-        s->unkAA++;
+        s->step++;
     }
 }
 
 void recovery_heal_repeat(void) {
-    gBattleWork.unkAA = 2;
+    gBattleWork.step = 2;
 }
 
 void repair_run(void) {
-    gBattleWork.unkB5 = 0;
-    gRepairSteps[gBattleWork.unkAA]();
+    gBattleWork.stepDone = 0;
+    gRepairSteps[gBattleWork.step]();
 }
 
 void repair_begin(void) {
     u32 r;
 
-    if (!gBattleBots[gBattleWork.unk88].parts[gBattleWork.unk8B].unk11) {
-        calc_battle_action_speed(gBattleWork.unk87, gBattleWork.unkA7);
-        apply_battle_bot_damage_reduction(gBattleWork.unk87);
+    if (!gBattleBots[gBattleWork.target].parts[gBattleWork.targetPart].unk11) {
+        calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
+        apply_battle_bot_damage_reduction(gBattleWork.actor);
         r = decrement_battle_timer_and_check_zero();
         if (r) {
-            gBattleWork.unkA6 = 0x1A;
-            gBattleWork.unkAA = 2;
+            gBattleWork.messageId = 0x1A;
+            gBattleWork.step = 2;
             gBattleWork.unkAB = 1;
         } else {
-            calc_battle_stat_ratio(gBattleWork.unk87, gBattleWork.unkA7);
+            calc_battle_stat_ratio(gBattleWork.actor, gBattleWork.actorPart);
             side_add_action_point();
-            gBattleWork.unkAA++;
+            gBattleWork.step++;
             gBattleWork.unkAB = r;
         }
     } else {
-        gBattleWork.unkA6 = 0x27;
-        gBattleWork.unkAA = 2;
+        gBattleWork.messageId = 0x27;
+        gBattleWork.step = 2;
         gBattleWork.unkAB = 1;
     }
 }
 
 void repair_apply_run(void) {
-    gBattleWork.unkB5 = 0;
-    gRepairApplySteps[gBattleWork.unkAA]();
+    gBattleWork.stepDone = 0;
+    gRepairApplySteps[gBattleWork.step]();
 }
 
 void repair_apply(void) {
     clear_battle_sprite_slot(0, 0x80);
-    gBattleWork.unkD0 = gBattleWork.unk8B;
-    battle_set_damage_display(gBattleWork.unk88, gBattleWork.unkD0, gBattleWork.unkEC);
-    gBattleWork.unkAA++;
+    gBattleWork.damagePart = gBattleWork.targetPart;
+    battle_set_damage_display(gBattleWork.target, gBattleWork.damagePart, gBattleWork.amount);
+    gBattleWork.step++;
 }
 
 void repair_spread(void) {
     u32 part;
     struct BattleWork *s = &gBattleWork;
 
-    bot_restore_leg_stats(s->unk88);
-    if (gBattleBots[s->unk87].parts[s->unkA7].data[7] && s->unkCA && (part = find_random_broken_part(s->unk88))) {
+    bot_restore_leg_stats(s->target);
+    if (gBattleBots[s->actor].parts[s->actorPart].data[7] && s->overflowAmount &&
+        (part = find_random_broken_part(s->target))) {
         part--;
-        s->unkD0 = part;
-        s->unk8B = part;
-        battle_set_damage_display(s->unk88, s->unkD0, s->unkCA);
-        s->unkAA = 0xF;
+        s->damagePart = part;
+        s->targetPart = part;
+        battle_set_damage_display(s->target, s->damagePart, s->overflowAmount);
+        s->step = 0xF;
     } else {
-        s->unkAA++;
+        s->step++;
     }
 }
 
 void repair_redraw_bot(void) {
-    armor_heal_step(&gBattleWork.unkC8, gBattleWork.unk88, gBattleWork.unk8B);
-    if (gBattleWork.unkF8 & 2) {
+    armor_heal_step(&gBattleWork.appliedAmount, gBattleWork.target, gBattleWork.targetPart);
+    if (gBattleWork.actorSideFlags & 2) {
         get_active_bot_part_index_and_load_values(0);
         draw_medabot_sprite(0, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.unk39[3] + 2, 4, 0, 2, 0,
-                            gBattleWork.unk114[0]);
+                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.battlefieldParams[3] + 2, 4,
+                            0, 2, 0, gBattleWork.unk114[0]);
         draw_medabot_sprite(0, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.unk39[3] + 2, 4, 0, 1, 0,
-                            gBattleWork.unk114[0]);
+                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.battlefieldParams[3] + 2, 4,
+                            0, 1, 0, gBattleWork.unk114[0]);
     } else {
         get_active_bot_part_index_and_load_values(1);
         draw_medabot_sprite(1, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.unk39[3] + 2, 8, 1, 2, 1,
-                            gBattleWork.unk114[1]);
+                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.battlefieldParams[3] + 2, 8,
+                            1, 2, 1, gBattleWork.unk114[1]);
         draw_medabot_sprite(1, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.unk39[3] + 2, 8, 1, 1, 1,
-                            gBattleWork.unk114[1]);
+                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.battlefieldParams[3] + 2, 8,
+                            1, 1, 1, gBattleWork.unk114[1]);
     }
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void repair_repeat(void) {
-    gBattleWork.unkAA = 2;
+    gBattleWork.step = 2;
 }
 
 void trap_run(void) {
-    gBattleWork.unkB5 = 0;
-    gTrapSteps[gBattleWork.unkAA]();
+    gBattleWork.stepDone = 0;
+    gTrapSteps[gBattleWork.step]();
 }
 
 void trap_begin(void) {
     u32 r;
 
-    calc_battle_action_speed(gBattleWork.unk87, gBattleWork.unkA7);
-    apply_battle_bot_damage_reduction(gBattleWork.unk87);
+    calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
+    apply_battle_bot_damage_reduction(gBattleWork.actor);
     r = decrement_battle_timer_and_check_zero();
     if (r) {
-        gBattleWork.unkA6 = 0x1A;
-        gBattleWork.unkAA++;
+        gBattleWork.messageId = 0x1A;
+        gBattleWork.step++;
         return;
     }
-    calc_battle_stat_ratio(gBattleWork.unk87, gBattleWork.unkA7);
+    calc_battle_stat_ratio(gBattleWork.actor, gBattleWork.actorPart);
     side_add_action_point();
-    switch (gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1]) {
+    switch (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]) {
     case 0xA:
         gBattleWork.unk51 = r;
         break;
@@ -184,8 +185,8 @@ void trap_begin(void) {
         gBattleWork.unk51 = 3;
         break;
     }
-    gBattleWork.unk52 = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
-    gBattleWork.unkAA = 4;
+    gBattleWork.unk52 = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1];
+    gBattleWork.step = 4;
 }
 
 // Steps 4-7 of most skill sequences (also the Interrupt skills): a sprite hops over the user, then a
@@ -195,8 +196,8 @@ void skill_cast_hop_spawn(void) {
     CpuFastSet(gUnk_0850E658, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC604;
     gSpriteEntries[0x21].unk1C = 0;
-    gSpriteEntries[0x21].unk2 = gSpriteEntries[0x5D + gBattleWork.unk87 * 4].unk2;
-    gSpriteEntries[0x21].unk4 = gSpriteEntries[0x5D + gBattleWork.unk87 * 4].unk4 - 4;
+    gSpriteEntries[0x21].unk2 = gSpriteEntries[0x5D + gBattleWork.actor * 4].unk2;
+    gSpriteEntries[0x21].unk4 = gSpriteEntries[0x5D + gBattleWork.actor * 4].unk4 - 4;
     gSpriteEntries[0x21].unkA = 7;
     gSpriteEntries[0x21].unkB = 0xF0;
     gSpriteEntries[0x21].unk8 = 0x40;
@@ -206,7 +207,7 @@ void skill_cast_hop_spawn(void) {
     gSpriteEntries[0x21].unk23 = 0;
     gSpriteEntries[0x21].unk27 = 0;
     play_sound_effect(0x29);
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void skill_cast_hop(void) {
@@ -214,15 +215,15 @@ void skill_cast_hop(void) {
     if (gSpriteEntries[0x21].unk27 == 0x20) {
         gSpriteEntries[0x21].unk0 &= ~0x200;
         gSpriteEntries[0x21].unk18 = 0;
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
         return;
     }
-    if (!(gBattleWork.unkF8 & 1))
+    if (!(gBattleWork.actorSideFlags & 1))
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x20) & 0x3FF;
     else
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 - 0x20) & 0x3FF;
     if (!(gSpriteEntries[0x21].unk27 & 1)) {
-        if (!(gBattleWork.unkF8 & 1))
+        if (!(gBattleWork.actorSideFlags & 1))
             gSpriteEntries[0x21].unk2++;
         else
             gSpriteEntries[0x21].unk2--;
@@ -234,13 +235,13 @@ void skill_cast_flash_init(void) {
     lz_decompress_dispatch(gUnk_084CCE48, (void *)0x06014800);
     CpuFastSet(gUnk_0850E358, (void *)0x050002E0, 8);
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x23], 0x21);
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void skill_cast_flash_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x23], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF)
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
 }
 
 void trap_sprite_spawn(void) {
@@ -272,11 +273,11 @@ void trap_sprite_spawn(void) {
     gSpriteEntries[0x21].unk0 |= 0x220;
     gSpriteEntries[0x21].unk9 = 0x40;
     gSpriteEntries[0x21].unk8 = 8;
-    if (gBattleWork.unkF8 & 1) {
+    if (gBattleWork.actorSideFlags & 1) {
         gSpriteEntries[0x21].unk0 |= 0x1000;
         gSpriteEntries[0x21].unk2--;
     }
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void trap_sprite_grow(void) {
@@ -285,7 +286,7 @@ void trap_sprite_grow(void) {
             gGameWork.unk86 = 1;
         else
             gGameWork.unk86 = 0x3C;
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
@@ -299,11 +300,11 @@ void trap_sprite_hold(void) {
         case 1:
         case 2:
             gSpriteEntries[0x21].unk27 = 0;
-            gBattleWork.unkAA++;
+            gBattleWork.step++;
             break;
         case 3:
             play_sound_effect(0x52);
-            gBattleWork.unkAA = 0x20;
+            gBattleWork.step = 0x20;
             break;
         }
     }
@@ -311,10 +312,10 @@ void trap_sprite_hold(void) {
 
 void trap_sprite_slide(void) {
     if (gSpriteEntries[0x21].unk27 == 0x10) {
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
         return;
     }
-    if (!(gBattleWork.unkF8 & 1))
+    if (!(gBattleWork.actorSideFlags & 1))
         gSpriteEntries[0x21].unk2++;
     else
         gSpriteEntries[0x21].unk2--;
@@ -323,25 +324,25 @@ void trap_sprite_slide(void) {
 
 // The side already holds this trap: pulse the sprite and add to it; Attack Clr skips the pulse.
 void trap_check_existing(void) {
-    if (gBattleWork.unk28[gBattleWork.unk8A].active &&
-        gBattleWork.unk28[gBattleWork.unk8A].skill == gBattleWork.unk52) {
+    if (gBattleWork.traps[gBattleWork.otherSide].active &&
+        gBattleWork.traps[gBattleWork.otherSide].skill == gBattleWork.unk52) {
         gSpriteEntries[0x21].unk27 = 0;
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     } else if (gBattleWork.unk51 == 2) {
-        gBattleWork.unkAA = 0x14;
+        gBattleWork.step = 0x14;
     } else {
         play_sound_effect(0x3E);
-        gBattleWork.unkAA = 0xE;
+        gBattleWork.step = 0xE;
     }
 }
 
 void trap_sprite_pulse(void) {
     if (gSpriteEntries[0x21].unk27 == 0x10) {
         if (gBattleWork.unk51 == 2) {
-            gBattleWork.unkAA = 0x14;
+            gBattleWork.step = 0x14;
         } else {
             play_sound_effect(0x3E);
-            gBattleWork.unkAA = 0xE;
+            gBattleWork.step = 0xE;
         }
         return;
     }
@@ -355,7 +356,7 @@ void trap_sprite_pulse(void) {
 void trap_sprite_shrink(void) {
     if (gSpriteEntries[0x21].unk8 == 8) {
         clear_battle_sprite_slot(0x21, 1);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     } else {
         gSpriteEntries[0x21].unk8 -= 8;
     }
@@ -363,53 +364,53 @@ void trap_sprite_shrink(void) {
 
 // unk28[side]: the side's trap / Team Form record (active, skill kind, power); a repeat stacks half.
 void trap_apply(void) {
-    if (gBattleWork.unk28[gBattleWork.unk8A].active &&
-        gBattleWork.unk28[gBattleWork.unk8A].skill == gBattleWork.unk52) {
+    if (gBattleWork.traps[gBattleWork.otherSide].active &&
+        gBattleWork.traps[gBattleWork.otherSide].skill == gBattleWork.unk52) {
         gBattleWork.unk53 = 1;
         if (gBattleWork.unk51 != 2) {
-            add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].durability, gBattleWork.unkE8 >> 1, 0xFF);
-            add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].power,
-                          (gBattleWork.unkEC + gBattleBots[gBattleWork.unk87].trapBonus) >> 1, 0xFF);
-            gBattleWork.unkAA++;
+            add_u8_capped(&gBattleWork.traps[gBattleWork.otherSide].durability, gBattleWork.success >> 1, 0xFF);
+            add_u8_capped(&gBattleWork.traps[gBattleWork.otherSide].power,
+                          (gBattleWork.amount + gBattleBots[gBattleWork.actor].trapBonus) >> 1, 0xFF);
+            gBattleWork.step++;
         } else {
-            gBattleWork.unk28[gBattleWork.unk8A].durability++;
-            gBattleWork.unkAA++;
+            gBattleWork.traps[gBattleWork.otherSide].durability++;
+            gBattleWork.step++;
         }
     } else {
         gBattleWork.unk53 = 0;
-        gBattleWork.unk28[gBattleWork.unk8A].active = 1;
-        gBattleWork.unk28[gBattleWork.unk8A].skill = gBattleWork.unk52;
-        gBattleWork.unk28[gBattleWork.unk8A].durability = 0;
-        gBattleWork.unk28[gBattleWork.unk8A].power = 0;
+        gBattleWork.traps[gBattleWork.otherSide].active = 1;
+        gBattleWork.traps[gBattleWork.otherSide].skill = gBattleWork.unk52;
+        gBattleWork.traps[gBattleWork.otherSide].durability = 0;
+        gBattleWork.traps[gBattleWork.otherSide].power = 0;
         if (gBattleWork.unk51 != 2) {
-            add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].durability, gBattleWork.unkE8, 0xFF);
-            add_u8_capped(&gBattleWork.unk28[gBattleWork.unk8A].power,
-                          gBattleWork.unkEC + gBattleBots[gBattleWork.unk87].trapBonus, 0xFF);
+            add_u8_capped(&gBattleWork.traps[gBattleWork.otherSide].durability, gBattleWork.success, 0xFF);
+            add_u8_capped(&gBattleWork.traps[gBattleWork.otherSide].power,
+                          gBattleWork.amount + gBattleBots[gBattleWork.actor].trapBonus, 0xFF);
         } else {
-            gBattleWork.unk28[gBattleWork.unk8A].durability++;
+            gBattleWork.traps[gBattleWork.otherSide].durability++;
         }
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
 void trap_finish(void) {
     switch (gBattleWork.unk51) {
     case 0:
-        gBattleWork.unkA6 = 0x1E;
+        gBattleWork.messageId = 0x1E;
         break;
     case 1:
-        gBattleWork.unkA6 = 0x1F;
+        gBattleWork.messageId = 0x1F;
         break;
     case 2:
-        gBattleWork.unkA6 = 0x20;
+        gBattleWork.messageId = 0x20;
         break;
     case 3:
-        gBattleWork.unkA6 = 0x21;
+        gBattleWork.messageId = 0x21;
         break;
     }
     if (gBattleWork.unk53)
-        gBattleWork.unkA6 = 0x71;
-    gBattleWork.unkAA++;
+        gBattleWork.messageId = 0x71;
+    gBattleWork.step++;
 }
 
 void trap_sprite_fly_init(void) {
@@ -417,13 +418,13 @@ void trap_sprite_fly_init(void) {
     gSpriteEntries[0x21].unk25 = 0;
     gSpriteEntries[0x21].unk30 = 0;
     play_sound_effect(0x40);
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void trap_sprite_fly(void) {
     if (update_sprite_deceleration(0x21, -0x40, -0x30)) {
         clear_battle_sprite_slot(0x21, 1);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
@@ -431,7 +432,7 @@ void team_form_anim_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x38], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         gGameWork.unk86 = 0x3C;
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
@@ -451,11 +452,11 @@ void team_form_split(void) {
         spr[1].unk24 = 6;
         spr[2].unk32 = 0x28;
         spr[2].unk24 = 6;
-        if (!(gBattleWork.unkF8 & 1))
+        if (!(gBattleWork.actorSideFlags & 1))
             spr[2].unk30 = spr[1].unk30 = spr[0].unk30 = 0x88;
         else
             spr[2].unk30 = spr[1].unk30 = spr[0].unk30 = 0x68;
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
@@ -467,24 +468,24 @@ void team_form_move(void) {
     if (move_sprite_toward_target(0x23))
         n++;
     if (n == 3)
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
 }
 
 void team_form_check_existing(void) {
-    if (gBattleWork.unk28[gBattleWork.unk8A].active &&
-        gBattleWork.unk28[gBattleWork.unk8A].skill == gBattleWork.unk52) {
+    if (gBattleWork.traps[gBattleWork.otherSide].active &&
+        gBattleWork.traps[gBattleWork.otherSide].skill == gBattleWork.unk52) {
         gSpriteEntries[0x21].unk27 = 0;
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     } else {
         play_sound_effect(0x3E);
-        gBattleWork.unkAA = 0x25;
+        gBattleWork.step = 0x25;
     }
 }
 
 void team_form_pulse(void) {
     if (gSpriteEntries[0x21].unk27 == 0x10) {
         play_sound_effect(0x3E);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
         return;
     }
     if (gSpriteEntries[0x21].unk27 < 8) {
@@ -502,7 +503,7 @@ void team_form_pulse(void) {
 void team_form_shrink(void) {
     if (gSpriteEntries[0x21].unk8 == 8) {
         clear_battle_sprite_slot(0x21, 3);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     } else {
         gSpriteEntries[0x21].unk8 -= 8;
         gSpriteEntries[0x22].unk8 -= 8;
@@ -511,22 +512,22 @@ void team_form_shrink(void) {
 }
 
 void break_form_run(void) {
-    gBattleWork.unkB5 = 0;
-    gBreakFormSteps[gBattleWork.unkAA]();
+    gBattleWork.stepDone = 0;
+    gBreakFormSteps[gBattleWork.step]();
 }
 
 void break_form_begin(void) {
-    calc_battle_action_speed(gBattleWork.unk87, gBattleWork.unkA7);
-    apply_battle_bot_damage_reduction(gBattleWork.unk87);
+    calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
+    apply_battle_bot_damage_reduction(gBattleWork.actor);
     if (decrement_battle_timer_and_check_zero()) {
-        gBattleWork.unkA6 = 0x1A;
-        gBattleWork.unkAA++;
-    } else if (!gBattleWork.unk28[gBattleWork.unk89].active) {
-        gBattleWork.unkA6 = 0x24;
-        gBattleWork.unkAA++;
+        gBattleWork.messageId = 0x1A;
+        gBattleWork.step++;
+    } else if (!gBattleWork.traps[gBattleWork.actorSide].active) {
+        gBattleWork.messageId = 0x24;
+        gBattleWork.step++;
     } else {
         side_add_action_point();
-        gBattleWork.unkAA = 4;
+        gBattleWork.step = 4;
     }
 }
 
@@ -534,9 +535,9 @@ void break_form_sprite_spawn(void) {
     lz_decompress_dispatch(gUnk_084D54BC, (void *)0x06014800);
     CpuFastSet(gUnk_0850E698, (void *)0x050002E0, 8);
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x39], 0x21);
-    if (gBattleWork.unkF8 & 1)
+    if (gBattleWork.actorSideFlags & 1)
         gSpriteEntries[0x21].unk0 |= 0x1000;
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void break_form_anim_wait(void) {
@@ -544,7 +545,7 @@ void break_form_anim_wait(void) {
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x3B], 0x21);
         gGameWork.unk86 = 0x3C;
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
@@ -554,7 +555,7 @@ void break_form_hold(void) {
     if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
         gGameWork.unk86 = 0;
     if (gGameWork.unk86 == 0)
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
 }
 
 void break_form_split(void) {
@@ -570,11 +571,11 @@ void break_form_split(void) {
     spr[1].unk24 = 6;
     spr[2].unk32 = 0x28;
     spr[2].unk24 = 6;
-    if (gBattleWork.unkF8 & 1)
+    if (gBattleWork.actorSideFlags & 1)
         spr[2].unk30 = spr[1].unk30 = spr[0].unk30 = 0x88;
     else
         spr[2].unk30 = spr[1].unk30 = spr[0].unk30 = 0x68;
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void break_form_move(void) {
@@ -593,7 +594,7 @@ void break_form_move(void) {
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x3A], 0x21);
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x3A], 0x22);
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x3A], 0x23);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
@@ -604,7 +605,7 @@ void break_form_hit_wait(void) {
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_sprite_table_mask(0x21, 3);
         gGameWork.unk86 = 0x3C;
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
@@ -626,7 +627,7 @@ void break_form_shatter_init(void) {
         }
     }
     gGameWork.unk86 = 0;
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void break_form_shatter(void) {
@@ -656,118 +657,118 @@ void break_form_shatter(void) {
         }
         gBg3Scroll.y = 0;
         clear_battle_sprite_slot(0x21, 3);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
 void break_form_apply(void) {
-    gBattleWork.unk28[gBattleWork.unk89].active = 0;
-    gBattleWork.unk28[gBattleWork.unk89].skill = 0;
-    gBattleWork.unk28[gBattleWork.unk89].durability = 0;
-    gBattleWork.unk28[gBattleWork.unk89].power = 0;
-    gBattleWork.unkAA++;
+    gBattleWork.traps[gBattleWork.actorSide].active = 0;
+    gBattleWork.traps[gBattleWork.actorSide].skill = 0;
+    gBattleWork.traps[gBattleWork.actorSide].durability = 0;
+    gBattleWork.traps[gBattleWork.actorSide].power = 0;
+    gBattleWork.step++;
 }
 
 void break_form_finish(void) {
-    gBattleWork.unkA6 = 0x25;
-    gBattleWork.unkAA++;
+    gBattleWork.messageId = 0x25;
+    gBattleWork.step++;
 }
 
 void stability_run(void) {
-    gBattleWork.unkB5 = 0;
-    gStabilitySteps[gBattleWork.unkAA]();
+    gBattleWork.stepDone = 0;
+    gStabilitySteps[gBattleWork.step]();
 }
 
 void stability_begin(void) {
-    calc_battle_action_speed(gBattleWork.unk87, gBattleWork.unkA7);
-    apply_battle_bot_damage_reduction(gBattleWork.unk87);
+    calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
+    apply_battle_bot_damage_reduction(gBattleWork.actor);
     if (decrement_battle_timer_and_check_zero()) {
-        gBattleWork.unkA6 = 0x1A;
-        gBattleWork.unkAA++;
-    } else if (!gBattleBots[gBattleWork.unk88].statusType) {
-        gBattleWork.unkA6 = 0x70;
-        gBattleWork.unkAA++;
+        gBattleWork.messageId = 0x1A;
+        gBattleWork.step++;
+    } else if (!gBattleBots[gBattleWork.target].statusType) {
+        gBattleWork.messageId = 0x70;
+        gBattleWork.step++;
     } else {
         side_add_action_point();
-        gBattleWork.unkAA = 4;
+        gBattleWork.step = 4;
     }
 }
 
 void stability_sprite_spawn(void) {
     lz_decompress_dispatch(gUnk_084D55D0, (void *)0x06014800);
     CpuFastSet(gUnk_0850E6B8, (void *)0x050002E0, 8);
-    if (gBattleWork.unkF8 & 1)
+    if (gBattleWork.actorSideFlags & 1)
         gSpriteEntries[0x21].unk0 |= 0x1000;
     gSpriteEntries[0x21].unk0 |= 0x200;
     gSpriteEntries[0x21].unk8 = 0x40;
     gSpriteEntries[0x21].unk9 = 0x40;
     gSpriteEntries[0x21].unk18 = 0;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk2;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2;
+    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unk24 = 6;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x3C], 0x21);
     gGameWork.unk86 = 0x3C;
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void stability_sprite_fly(void) {
-    if (!(gBattleWork.unkF8 & 1))
+    if (!(gBattleWork.actorSideFlags & 1))
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 - 0x40) & 0x3FF;
     else
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x40) & 0x3FF;
     if (move_sprite_toward_target(0x21)) {
         gSpriteEntries[0x21].unk0 &= ~0x200;
         gSpriteEntries[0x21].unk18 = 0;
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
 // Stability cures the target's negative status (unkC9-unkCC, set by Impair, Confusion...).
 void stability_apply(void) {
-    gBattleBots[gBattleWork.unk88].statusType = 0;
-    gBattleBots[gBattleWork.unk88].statusPart = 0;
-    gBattleBots[gBattleWork.unk88].statusTimer = 0;
-    gBattleBots[gBattleWork.unk88].statusAmount = 0;
-    gSpriteEntries[gBattleWork.unk88 * 3 + 0x47].unk0 |= 0x8220;
-    gSpriteEntries[gBattleWork.unk88 * 3 + 0x47].unk9 = 0x40;
-    gSpriteEntries[gBattleWork.unk88 * 3 + 0x47].unk8 = 0x40;
+    gBattleBots[gBattleWork.target].statusType = 0;
+    gBattleBots[gBattleWork.target].statusPart = 0;
+    gBattleBots[gBattleWork.target].statusTimer = 0;
+    gBattleBots[gBattleWork.target].statusAmount = 0;
+    gSpriteEntries[gBattleWork.target * 3 + 0x47].unk0 |= 0x8220;
+    gSpriteEntries[gBattleWork.target * 3 + 0x47].unk9 = 0x40;
+    gSpriteEntries[gBattleWork.target * 3 + 0x47].unk8 = 0x40;
     play_sound_effect(0x37);
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void stability_status_icon_fade(void) {
-    if (gSpriteEntries[gBattleWork.unk88 * 3 + 0x47].unk8 != 4) {
-        gSpriteEntries[gBattleWork.unk88 * 3 + 0x47].unk0 |= 0x8000;
-        gSpriteEntries[gBattleWork.unk88 * 3 + 0x47].unk9 += 4;
-        gSpriteEntries[gBattleWork.unk88 * 3 + 0x47].unk8 -= 4;
+    if (gSpriteEntries[gBattleWork.target * 3 + 0x47].unk8 != 4) {
+        gSpriteEntries[gBattleWork.target * 3 + 0x47].unk0 |= 0x8000;
+        gSpriteEntries[gBattleWork.target * 3 + 0x47].unk9 += 4;
+        gSpriteEntries[gBattleWork.target * 3 + 0x47].unk8 -= 4;
     }
     process_sprite_anim_commands(gUnk_083B5F80[0x3C], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
-        clear_battle_sprite_slot(gBattleWork.unk88 * 3 + 0x47, 1);
-        gBattleWork.unkAA++;
+        clear_battle_sprite_slot(gBattleWork.target * 3 + 0x47, 1);
+        gBattleWork.step++;
     }
 }
 
 void stability_finish(void) {
-    gBattleWork.unkA6 = 0x23;
-    gBattleWork.unkAA++;
+    gBattleWork.messageId = 0x23;
+    gBattleWork.step++;
 }
 
 void force_bind_run(void) {
-    gBattleWork.unkB5 = 0;
-    gForceBindSteps[gBattleWork.unkAA]();
+    gBattleWork.stepDone = 0;
+    gForceBindSteps[gBattleWork.step]();
 }
 
 void force_bind_begin(void) {
-    calc_battle_action_speed(gBattleWork.unk87, gBattleWork.unkA7);
-    apply_battle_bot_damage_reduction(gBattleWork.unk87);
+    calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
+    apply_battle_bot_damage_reduction(gBattleWork.actor);
     if (decrement_battle_timer_and_check_zero()) {
-        gBattleWork.unkA6 = 0x1A;
-        gBattleWork.unkAA++;
+        gBattleWork.messageId = 0x1A;
+        gBattleWork.step++;
     } else {
         side_add_action_point();
-        gBattleWork.unkAA = 4;
+        gBattleWork.step = 4;
     }
 }
 
@@ -779,8 +780,8 @@ void force_bind_orbs_spawn(void) {
     for (i = 0; i < 4; i++) {
         gSpriteEntries[0x21 + i].unk0 = 0xC604;
         gSpriteEntries[0x21 + i].unk1C = 0;
-        gSpriteEntries[0x21 + i].unk2 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2;
-        gSpriteEntries[0x21 + i].unk4 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 - 4;
+        gSpriteEntries[0x21 + i].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
+        gSpriteEntries[0x21 + i].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
         gSpriteEntries[0x21 + i].unkA = 7;
         gSpriteEntries[0x21 + i].unkB = 0xF0;
         gSpriteEntries[0x21 + i].unk8 = 0x40;
@@ -791,7 +792,7 @@ void force_bind_orbs_spawn(void) {
         init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x3D], 0x21 + i);
     }
     play_sound_effect(0x5C);
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void force_bind_orbs_spin(void) {
@@ -801,8 +802,8 @@ void force_bind_orbs_spin(void) {
     for (i = 0; i < 4; i++) {
         process_sprite_anim_commands(gUnk_083B5F80[0x3D], 0x21 + i);
         v = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
-                                        gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2,
-                                        gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 - 4);
+                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2,
+                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4);
         gSpriteEntries[0x21 + i].unk2 = v.x;
         gSpriteEntries[0x21 + i].unk4 = v.y;
         gSpriteEntries[0x21 + i].unk2C += 4;
@@ -816,39 +817,39 @@ void force_bind_orbs_spin(void) {
     }
     if (gSpriteEntries[0x21].unk9 == 4) {
         clear_battle_sprite_slot(0x21, 4);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
 // Each use toggles Force Bind on (message 0x72) or off (0x73).
 void force_bind_toggle(void) {
-    if (!gBattleWork.unk58) {
-        gBattleWork.unkA6 = 0x72;
-        gBattleWork.unk58 = 1;
+    if (!gBattleWork.medaforceBlocked) {
+        gBattleWork.messageId = 0x72;
+        gBattleWork.medaforceBlocked = 1;
     } else {
-        gBattleWork.unkA6 = 0x73;
-        gBattleWork.unk58 = 0;
+        gBattleWork.messageId = 0x73;
+        gBattleWork.medaforceBlocked = 0;
     }
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void defence_run(void) {
-    gBattleWork.unkB5 = 0;
-    gDefenceSteps[gBattleWork.unkAA]();
+    gBattleWork.stepDone = 0;
+    gDefenceSteps[gBattleWork.step]();
 }
 
 void defence_begin(void) {
     u32 r;
 
-    calc_battle_action_speed(gBattleWork.unk87, gBattleWork.unkA7);
-    apply_battle_bot_damage_reduction(gBattleWork.unk87);
+    calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
+    apply_battle_bot_damage_reduction(gBattleWork.actor);
     r = decrement_battle_timer_and_check_zero();
     if (r) {
-        gBattleWork.unkA6 = 0x1A;
-        gBattleWork.unkAA++;
+        gBattleWork.messageId = 0x1A;
+        gBattleWork.step++;
     } else {
         side_add_action_point();
-        switch (gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1]) {
+        switch (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]) {
         case 0x1B:
             gBattleWork.unk51 = r;
             break;
@@ -859,8 +860,8 @@ void defence_begin(void) {
             gBattleWork.unk51 = 2;
             break;
         }
-        calc_battle_stat_ratio(gBattleWork.unk87, gBattleWork.unkA7);
-        gBattleWork.unkAA = 4;
+        calc_battle_stat_ratio(gBattleWork.actor, gBattleWork.actorPart);
+        gBattleWork.step = 4;
     }
 }
 
@@ -881,8 +882,8 @@ void defence_shields_spawn(void) {
     }
     gSpriteEntries[0x21].unk0 = 0xC624;
     gSpriteEntries[0x21].unk1C = 0;
-    gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2 - 0x20;
-    gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2 - 0x20;
+    gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unkA = 7;
     gSpriteEntries[0x21].unkB = 0xF0;
     gSpriteEntries[0x21].unk8 = 0x80;
@@ -893,8 +894,8 @@ void defence_shields_spawn(void) {
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x1C], 0x21);
     gSpriteEntries[0x22].unk0 = 0xC624;
     gSpriteEntries[0x22].unk1C = 0;
-    gSpriteEntries[0x22].unk2 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2 + 0x20;
-    gSpriteEntries[0x22].unk4 = gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x22].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2 + 0x20;
+    gSpriteEntries[0x22].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x22].unkA = 7;
     gSpriteEntries[0x22].unkB = 0xF0;
     gSpriteEntries[0x22].unk8 = 0x80;
@@ -904,7 +905,7 @@ void defence_shields_spawn(void) {
     gSpriteEntries[0x22].unk2D = 0;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x1C], 0x22);
     play_sound_effect(0x33);
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void defence_shields_spin(void) {
@@ -913,8 +914,8 @@ void defence_shields_spin(void) {
 
     for (i = 0; i < 2; i++) {
         v = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
-                                        gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk2,
-                                        gSpriteEntries[gBattleWork.unk87 * 4 + 0x5D].unk4 - 4);
+                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2,
+                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4);
         gSpriteEntries[0x21 + i].unk2 = v.x;
         gSpriteEntries[0x21 + i].unk4 = v.y;
         gSpriteEntries[0x21 + i].unk2C += 8;
@@ -929,7 +930,7 @@ void defence_shields_spin(void) {
     if (gSpriteEntries[0x21].unk2B == 0) {
         play_sound_effect(0x30);
         clear_battle_sprite_slot(0x22, 1);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
@@ -937,42 +938,43 @@ void defence_shield_anim_wait(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x1C], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
 // Marks the user as guarding (unkBD bit 3) with this skill (Defence, Full Block or Half Block).
 void defence_apply(void) {
-    gBattleBots[gBattleWork.unk87].stateFlags |= 8;
-    gBattleBots[gBattleWork.unk87].lastActionSkill = gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1];
-    gBattleBots[gBattleWork.unk87].defence = 0;
-    add_u8_capped(&gBattleBots[gBattleWork.unk87].moveSubpixel + 1, gBattleWork.unkEC, 0xFF);
-    gBattleWork.unkAA++;
+    gBattleBots[gBattleWork.actor].stateFlags |= 8;
+    gBattleBots[gBattleWork.actor].lastActionSkill =
+        gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1];
+    gBattleBots[gBattleWork.actor].defence = 0;
+    add_u8_capped(&gBattleBots[gBattleWork.actor].moveSubpixel + 1, gBattleWork.amount, 0xFF);
+    gBattleWork.step++;
 }
 
 void defence_finish(void) {
-    gBattleWork.unkA6 = 0x1B;
-    gBattleWork.unkAA++;
+    gBattleWork.messageId = 0x1B;
+    gBattleWork.step++;
 }
 
 void autorecover_run(void) {
-    gBattleWork.unkB5 = 0;
-    gAutoRecoverSteps[gBattleWork.unkAA]();
+    gBattleWork.stepDone = 0;
+    gAutoRecoverSteps[gBattleWork.step]();
 }
 
 void autorecover_begin(void) {
-    calc_battle_action_speed(gBattleWork.unk87, gBattleWork.unkA7);
-    apply_battle_bot_damage_reduction(gBattleWork.unk87);
+    calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
+    apply_battle_bot_damage_reduction(gBattleWork.actor);
     if (decrement_battle_timer_and_check_zero()) {
-        gBattleWork.unkA6 = 0x1A;
-        gBattleWork.unkAA++;
-    } else if (!battle_bot_lacks_stability(gBattleWork.unk88)) {
-        gBattleWork.unkA6 = 0x39;
-        gBattleWork.unkAA++;
+        gBattleWork.messageId = 0x1A;
+        gBattleWork.step++;
+    } else if (!battle_bot_lacks_stability(gBattleWork.target)) {
+        gBattleWork.messageId = 0x39;
+        gBattleWork.step++;
     } else {
         side_add_action_point();
-        calc_battle_stat_ratio(gBattleWork.unk87, gBattleWork.unkA7);
-        gBattleWork.unkAA = 4;
+        calc_battle_stat_ratio(gBattleWork.actor, gBattleWork.actorPart);
+        gBattleWork.step = 4;
     }
 }
 
@@ -983,35 +985,35 @@ void autorecover_orb_spawn(void) {
     gSpriteEntries[0x21].unk8 = 0x40;
     gSpriteEntries[0x21].unk9 = 0x40;
     gSpriteEntries[0x21].unkA = 6;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk2;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2;
+    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unk24 = 6;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x3E], 0x21);
     gGameWork.unk86 = 0x3C;
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void heal_orb_hold(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x3E], 0x21);
     if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     else if (gGameWork.unk86)
         gGameWork.unk86--;
     else
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
 }
 
 void heal_orb_fly(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x3E], 0x21);
     if (move_sprite_toward_target(0x21))
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
 }
 
 void heal_orb_shrink(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x3E], 0x21);
     if (gSpriteEntries[0x21].unk8 == 8) {
         clear_battle_sprite_slot(0x21, 1);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     } else
         gSpriteEntries[0x21].unk8 -= 8;
 }
@@ -1022,8 +1024,8 @@ void autorecover_ring_spawn(void) {
 
     gSpriteEntries[0x25].unk0 = 0xC604;
     gSpriteEntries[0x25].unk1C = 0;
-    gSpriteEntries[0x25].unk2 = gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk2;
-    gSpriteEntries[0x25].unk4 = gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x25].unk2 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2;
+    gSpriteEntries[0x25].unk4 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x25].unkA = 7;
     gSpriteEntries[0x25].unk8 = 0x40;
     gSpriteEntries[0x25].unk9 = 0x40;
@@ -1031,8 +1033,8 @@ void autorecover_ring_spawn(void) {
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x3F], 0x25);
     for (i = 0; i < 4; i++) {
         gSpriteEntries[0x21 + i].unk0 = 0xC604;
-        v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk2,
-                                        gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk4 - 4);
+        v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2,
+                                        gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4);
         gSpriteEntries[0x21 + i].unk2 = v.x;
         gSpriteEntries[0x21 + i].unk4 = v.y;
         gSpriteEntries[0x21 + i].unk1C = 0;
@@ -1046,7 +1048,7 @@ void autorecover_ring_spawn(void) {
         gSpriteEntries[0x21 + i].unk2D = 0;
     }
     play_sound_effect(0x4A);
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void heal_ring_spin(void) {
@@ -1058,8 +1060,8 @@ void heal_ring_spin(void) {
     for (i = 0; i < 5; i++) {
         if (i < 4) {
             v = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
-                                            gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk2,
-                                            gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk4 - 4);
+                                            gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2,
+                                            gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4);
             gSpriteEntries[0x21 + i].unk2 = v.x;
             gSpriteEntries[0x21 + i].unk4 = v.y;
             gSpriteEntries[0x21 + i].unk2C += 4;
@@ -1075,42 +1077,42 @@ void heal_ring_spin(void) {
     }
     if (gSpriteEntries[0x21].unk9 == 4) {
         clear_battle_sprite_slot(0x21, 5);
-        gBattleWork.unkAA++;
+        gBattleWork.step++;
     }
 }
 
 // Gives the target the AutoRecover status (unkC4 = skill 31) with this action's power.
 void autorecover_apply(void) {
-    gBattleBots[gBattleWork.unk88].buffType = 0x1F;
-    gBattleBots[gBattleWork.unk88].buffPart = 0;
-    gBattleBots[gBattleWork.unk88].buffTimer = clamp_1_99(gBattleWork.unkE8);
-    gBattleBots[gBattleWork.unk88].buffAmount = clamp_1_99(gBattleWork.unkEC);
-    gBattleWork.unkAA++;
+    gBattleBots[gBattleWork.target].buffType = 0x1F;
+    gBattleBots[gBattleWork.target].buffPart = 0;
+    gBattleBots[gBattleWork.target].buffTimer = clamp_1_99(gBattleWork.success);
+    gBattleBots[gBattleWork.target].buffAmount = clamp_1_99(gBattleWork.amount);
+    gBattleWork.step++;
 }
 
 void autorecover_finish(void) {
-    gBattleWork.unkA6 = 0x29;
-    gBattleWork.unkAA++;
+    gBattleWork.messageId = 0x29;
+    gBattleWork.step++;
 }
 
 void reactivate_run(void) {
-    gBattleWork.unkB5 = 0;
-    gReactivateSteps[gBattleWork.unkAA]();
+    gBattleWork.stepDone = 0;
+    gReactivateSteps[gBattleWork.step]();
 }
 
 void reactivate_begin(void) {
-    calc_battle_action_speed(gBattleWork.unk87, gBattleWork.unkA7);
-    apply_battle_bot_damage_reduction(gBattleWork.unk87);
+    calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
+    apply_battle_bot_damage_reduction(gBattleWork.actor);
     if (decrement_battle_timer_and_check_zero()) {
-        gBattleWork.unkA6 = 0x1A;
-        gBattleWork.unkAA++;
-    } else if (gBattleBots[gBattleWork.unk88].parts[0].unk11) {
-        gBattleWork.unkA6 = 9;
-        gBattleWork.unkAA++;
+        gBattleWork.messageId = 0x1A;
+        gBattleWork.step++;
+    } else if (gBattleBots[gBattleWork.target].parts[0].unk11) {
+        gBattleWork.messageId = 9;
+        gBattleWork.step++;
     } else {
         side_add_action_point();
-        calc_battle_stat_ratio(gBattleWork.unk87, gBattleWork.unkA7);
-        gBattleWork.unkAA = 4;
+        calc_battle_stat_ratio(gBattleWork.actor, gBattleWork.actorPart);
+        gBattleWork.step = 4;
     }
 }
 
@@ -1121,12 +1123,12 @@ void reactivate_orb_spawn(void) {
     gSpriteEntries[0x21].unk8 = 0x40;
     gSpriteEntries[0x21].unk9 = 0x40;
     gSpriteEntries[0x21].unkA = 6;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk2;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2;
+    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x21].unk24 = 6;
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x3E], 0x21);
     gGameWork.unk86 = 0x3C;
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void reactivate_ring_spawn(void) {
@@ -1135,8 +1137,8 @@ void reactivate_ring_spawn(void) {
 
     gSpriteEntries[0x25].unk0 = 0xC604;
     gSpriteEntries[0x25].unk1C = 0;
-    gSpriteEntries[0x25].unk2 = gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk2;
-    gSpriteEntries[0x25].unk4 = gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x25].unk2 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2;
+    gSpriteEntries[0x25].unk4 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
     gSpriteEntries[0x25].unkA = 7;
     gSpriteEntries[0x25].unk8 = 0x40;
     gSpriteEntries[0x25].unk9 = 0x40;
@@ -1144,8 +1146,8 @@ void reactivate_ring_spawn(void) {
     init_battle_sprite_entry_08040B90(gUnk_083B5F80[0x3F], 0x25);
     for (i = 0; i < 4; i++) {
         gSpriteEntries[0x21 + i].unk0 = 0xC604;
-        v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk2,
-                                        gSpriteEntries[gBattleWork.unk88 * 4 + 0x5D].unk4 - 4);
+        v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2,
+                                        gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4);
         gSpriteEntries[0x21 + i].unk2 = v.x;
         gSpriteEntries[0x21 + i].unk4 = v.y;
         gSpriteEntries[0x21 + i].unk1C = 0;
@@ -1159,22 +1161,22 @@ void reactivate_ring_spawn(void) {
         gSpriteEntries[0x21 + i].unk2D = 0;
     }
     play_sound_effect(0x4B);
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 // Revives a target whose head is broken: refills the head and redraws its parts.
 void reactivate_apply(void) {
-    gBattleBots[gBattleWork.unk88].teamState = 3;
-    battle_calc_damage_split(gBattleWork.unk88, 0, gBattleWork.unkEC);
-    gBattleBots[gBattleWork.unk88].parts[0].unk11 = gBattleWork.unkC8;
-    gBattleBots[gBattleWork.unk88].present = 1;
+    gBattleBots[gBattleWork.target].teamState = 3;
+    battle_calc_damage_split(gBattleWork.target, 0, gBattleWork.amount);
+    gBattleBots[gBattleWork.target].parts[0].unk11 = gBattleWork.appliedAmount;
+    gBattleBots[gBattleWork.target].present = 1;
     load_all_bot_part_sprites();
     iterate_bots_setup_battle_sprites();
-    gBattleWork.unkAA++;
+    gBattleWork.step++;
 }
 
 void reactivate_finish(void) {
-    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.unk88].medal.name, gGameWork.unk9E, 0xE);
-    gBattleWork.unkA6 = 0x28;
-    gBattleWork.unkAA++;
+    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.target].medal.name, gGameWork.unk9E, 0xE);
+    gBattleWork.messageId = 0x28;
+    gBattleWork.step++;
 }

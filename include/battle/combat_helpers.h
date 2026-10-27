@@ -32,9 +32,9 @@ void check_sprite_overlap_and_adjust(u32 slot, u32 b);
 void sprite_disable_affine(u32 slot);
 void action_bg_set_side_scroll(void);
 void battle_set_action_target(u32 rec,
-                              u32 target); // guess: record rec targets record target - 1 (unkE0, gBattleWork.unk88)
+                              u32 target); // guess: record rec targets record target - 1 (unkE0, gBattleWork.target)
 void battle_set_action_target_part(u32 rec,
-                                   u32 part); // guess: record rec targets part part - 1 (unkE1, gBattleWork.unk8B)
+                                   u32 part); // guess: record rec targets part part - 1 (unkE1, gBattleWork.targetPart)
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);
 void bg3_shake_step(u32 frame);
 void sprite_shake_x_step(u32 slot, u32 frame, u32 y);     // sprite unk2 = y, +1 / -1 on frames 2-3 / 6-7 of 8

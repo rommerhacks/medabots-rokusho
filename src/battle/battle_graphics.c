@@ -57,7 +57,7 @@ u32 battle_load_graphics_step(u32 direct) {
     case 8:
         if (direct == 0) {
             vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG0CNT, direct);
-            decompress_sprite_to_vram_08043C08(gBattleWork.unk38, 1);
+            decompress_sprite_to_vram_08043C08(gBattleWork.battlefield, 1);
             CpuFastSet(gUnk_084C6A18, (void *)0x0202FB00, 8);
             CpuFastSet(gUnk_08488AC4, (void *)0x0202FB40, 8);
             CpuFastSet(gUnk_08488B04, (void *)0x0202FB60, 8);
@@ -72,7 +72,7 @@ u32 battle_load_graphics_step(u32 direct) {
             CpuFastSet(gUnk_0850DDB8 + 0x40, (void *)0x0202F9E0, 8);
             CpuFastSet(gUnk_0850E0D8, (void *)0x0202F8A0, 8);
         } else {
-            decompress_sprite_to_vram_08043C08(gBattleWork.unk38, 0);
+            decompress_sprite_to_vram_08043C08(gBattleWork.battlefield, 0);
             CpuFastSet(gUnk_084C6A18, (void *)0x05000100, 8);
             CpuFastSet(gUnk_08488AC4, (void *)0x05000140, 8);
             CpuFastSet(gUnk_08488B04, (void *)0x05000160, 8);
@@ -256,7 +256,7 @@ void mf_charge_sparkles_init(u32 bot) {
     CpuFastSet(gUnk_084E3058, (void *)0x050002C0, 8);
     for (i = 0; i <= 7; i++) {
         clear_battle_sprite_slot(i + 0x21, 1);
-        gSpriteEntries[0x21 + i].unk0 = ((gBattleWork.unk39[3] + 2) << 10) | 0x4204;
+        gSpriteEntries[0x21 + i].unk0 = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0x4204;
         gSpriteEntries[0x21 + i].unk1C = 0;
         gSpriteEntries[0x21 + i].unkA = 6;
         gSpriteEntries[0x21 + i].unkB = 0x81;
@@ -354,13 +354,13 @@ void restore_changed_part(u32 bot) {
     u32 zero;
 
     if (gBattleWork.unk118) {
-        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[0] = gBattleWork.unk11C.data[0];
-        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[1] = gBattleWork.unk11C.data[1];
-        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[5] = gBattleWork.unk11C.data[5];
-        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[6] = gBattleWork.unk11C.data[6];
-        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[7] = gBattleWork.unk11C.data[7];
-        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].data[0xC] = gBattleWork.unk11C.data[0xC];
-        gBattleBots[gBattleWork.unk87].parts[gBattleWork.unkA7].unk17 = gBattleWork.unk11C.unk17;
+        gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[0] = gBattleWork.unk11C.data[0];
+        gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] = gBattleWork.unk11C.data[1];
+        gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[5] = gBattleWork.unk11C.data[5];
+        gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[6] = gBattleWork.unk11C.data[6];
+        gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[7] = gBattleWork.unk11C.data[7];
+        gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[0xC] = gBattleWork.unk11C.data[0xC];
+        gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].unk17 = gBattleWork.unk11C.unk17;
         load_all_bot_part_sprites();
         iterate_bots_setup_battle_sprites();
     }

@@ -383,7 +383,7 @@
   the first two instructions (check_sprite_in_range, sprite_hop_step).
 * `ldr r4, =gBattleWork; adds r4, #0xEC` (field address not folded into one literal): access the
   field through `struct BattleWork *b = &gBattleWork;` (damage_add_small_random, calc_battle_action_speed);
-  plain `gBattleWork.unkEC` gives `ldr r4, =0x030018EC`.
+  plain `gBattleWork.amount` gives `ldr r4, =0x030018EC`.
 * `movs r2, #0` before `ldr r1, =base` in a loop prologue: put the pointer init in the `for`,
   `for (i = 0, b = &gBattleWork; ...)` (battle_queue_remove_bot).
 * `x |= 0x80` with the constant's register as the result (`movs r0, #0x80; orrs r0, r1`): write it on the

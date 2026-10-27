@@ -832,63 +832,63 @@ void update_scroll_movement_a(void) {
     vu8 *acc;
     u32 t;
 
-    if (gBattleWork.unk39[0] == 0)
+    if (gBattleWork.battlefieldParams[0] == 0)
         return;
-    acc = &gBattleWork.unk39[6];
-    *acc = *(vu8 *)&gBattleWork.unk39[2] + *acc;
+    acc = &gBattleWork.battlefieldParams[6];
+    *acc = *(vu8 *)&gBattleWork.battlefieldParams[2] + *acc;
     if ((t = *acc >> 2) == 0)
         return;
-    gBattleWork.unk39[7] = t;
+    gBattleWork.battlefieldParams[7] = t;
     {
         u32 v = *acc;
         register u32 mask asm("r1") = 3; // pinned: the original loads the byte into r0, the mask into r1
         *acc = v & mask;
     }
-    if (gBattleWork.unk39[1] & 1) {
-        switch (gBattleWork.unk39[0]) {
+    if (gBattleWork.battlefieldParams[1] & 1) {
+        switch (gBattleWork.battlefieldParams[0]) {
         case 1:
-            gBg2Scroll.y += gBattleWork.unk39[7];
+            gBg2Scroll.y += gBattleWork.battlefieldParams[7];
             break;
         case 2:
-            gBg3Scroll.y += gBattleWork.unk39[7];
+            gBg3Scroll.y += gBattleWork.battlefieldParams[7];
             break;
         }
     }
-    if (gBattleWork.unk39[1] & 2) {
-        switch (gBattleWork.unk39[0]) {
+    if (gBattleWork.battlefieldParams[1] & 2) {
+        switch (gBattleWork.battlefieldParams[0]) {
         case 1:
-            gBg2Scroll.y -= gBattleWork.unk39[7];
+            gBg2Scroll.y -= gBattleWork.battlefieldParams[7];
             break;
         case 2:
-            gBg3Scroll.y -= gBattleWork.unk39[7];
+            gBg3Scroll.y -= gBattleWork.battlefieldParams[7];
             break;
         }
     }
-    if (gBattleWork.unk39[1] & 4) {
-        switch (gBattleWork.unk39[0]) {
+    if (gBattleWork.battlefieldParams[1] & 4) {
+        switch (gBattleWork.battlefieldParams[0]) {
         case 1:
-            gBg2Scroll.x += gBattleWork.unk39[7];
+            gBg2Scroll.x += gBattleWork.battlefieldParams[7];
             break;
         case 2:
-            gBg3Scroll.x += gBattleWork.unk39[7];
+            gBg3Scroll.x += gBattleWork.battlefieldParams[7];
             break;
         }
     }
-    if (gBattleWork.unk39[1] & 8) {
-        switch (gBattleWork.unk39[0]) {
+    if (gBattleWork.battlefieldParams[1] & 8) {
+        switch (gBattleWork.battlefieldParams[0]) {
         case 1:
-            gBg2Scroll.x -= gBattleWork.unk39[7];
+            gBg2Scroll.x -= gBattleWork.battlefieldParams[7];
             break;
         case 2:
-            gBg3Scroll.x -= gBattleWork.unk39[7];
+            gBg3Scroll.x -= gBattleWork.battlefieldParams[7];
             break;
         }
     }
 }
 
 void apply_battle_blend_effect_a(void) {
-    if (gBattleWork.unk39[3]) {
-        REG_BLDALPHA = (gBattleWork.unk39[4] << 8) | gBattleWork.unk39[5];
+    if (gBattleWork.battlefieldParams[3]) {
+        REG_BLDALPHA = (gBattleWork.battlefieldParams[4] << 8) | gBattleWork.battlefieldParams[5];
         REG_BLDY = 0;
         REG_BLDCNT = 0x1844;
     } else
@@ -901,7 +901,7 @@ void battle_bg_scroll_vblank(void) {
 }
 
 void load_battle_script_entry_b(void) {
-    memcpy_bytes_0803F63C(gUnk_083C3B5C[gBattleWork.unk38], gBattleWork.unk74, 8);
+    memcpy_bytes_0803F63C(gUnk_083C3B5C[gBattleWork.battlefield], gBattleWork.unk74, 8);
 }
 
 static void update_scroll_movement_b(void) {
@@ -972,17 +972,17 @@ void apply_battle_blend_effect_b(void) {
 }
 
 void advance_battle_animation_frame(u32 field) {
-    if (++gBattleWork.unk7D > 2) {
-        gBattleWork.unk7D = 0;
-        gBattleWork.unk7C = (gBattleWork.unk7C + 1) & 0x7F;
-        memcpy_bytes_08041D04(&gUnk_083C40B8[field], &gBattleWork.unk7E, 1);
-        memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128 + gBattleWork.unk7C], &gBattleWork.unk7F, 1);
-        if (gBattleWork.unk7F == 0xFF) {
-            gBattleWork.unk7C = 0;
-            memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128], &gBattleWork.unk7F, 1);
+    if (++gBattleWork.fieldAnimTick > 2) {
+        gBattleWork.fieldAnimTick = 0;
+        gBattleWork.fieldAnimFrame = (gBattleWork.fieldAnimFrame + 1) & 0x7F;
+        memcpy_bytes_08041D04(&gUnk_083C40B8[field], &gBattleWork.fieldAnimTiles, 1);
+        memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128 + gBattleWork.fieldAnimFrame], &gBattleWork.fieldAnimBlock, 1);
+        if (gBattleWork.fieldAnimBlock == 0xFF) {
+            gBattleWork.fieldAnimFrame = 0;
+            memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128], &gBattleWork.fieldAnimBlock, 1);
         }
-        CpuSet((void *)(0x02027000 + gBattleWork.unk7E * gBattleWork.unk7F * 32), (void *)(VRAM + 0x8020),
-               (gBattleWork.unk7E * 8) | 0x04000000);
+        CpuSet((void *)(0x02027000 + gBattleWork.fieldAnimTiles * gBattleWork.fieldAnimBlock * 32),
+               (void *)(VRAM + 0x8020), (gBattleWork.fieldAnimTiles * 8) | 0x04000000);
     }
 }
 
@@ -1016,7 +1016,7 @@ u32 medaparts_all_equipped(void) {
 
 void battle_vblank_update_bg(void) {
     update_scroll_movement_b();
-    advance_battle_animation_frame(gBattleWork.unk38);
+    advance_battle_animation_frame(gBattleWork.battlefield);
 }
 
 void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, void *dst) {
@@ -1056,9 +1056,9 @@ void race_enter_team_select(void) {
     CpuFastSet(&b, (void *)PLTT, 0x01000080);
     mem_fill8(&gGameWork.unk50, 0x14, 0);
     gGameWork.unk50 = 3;
-    gBattleWork.unk41[0] = 0;
-    gBattleWork.unk41[1] = 0;
-    gBattleWork.unk41[2] = 0;
+    gBattleWork.teamPicks[0] = 0;
+    gBattleWork.teamPicks[1] = 0;
+    gBattleWork.teamPicks[2] = 0;
     gGameMode = 0;
     gGameState = 3;
     gGameSubState = 0;

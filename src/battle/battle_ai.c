@@ -13,7 +13,7 @@ static void ai_clear_target(void);
 // 1 if rec has an unbroken part (of the first three) of skill type type.
 static u32 bot_has_part_of_skill_type(u32 rec, u32 type);
 static u32 ai_has_candidates(void);
-// A random gBattleWork.unk61 candidate, as a record index.
+// A random gBattleWork.aiCandidates candidate, as a record index.
 static u32 ai_pick_random_candidate(void);
 static void ai_store_target(u32 rec, u32 part);
 static u32 bot_has_no_buff(u32 rec);
@@ -25,176 +25,182 @@ static u32 bot_has_medaforce_charge(u32 rec);
 void ai_pick_bot_targets(u32 rec) {
     u32 i;
 
-    gBattleWork.unk5C = rec;
-    gBattleWork.unk5D = 0;
+    gBattleWork.aiBot = rec;
+    gBattleWork.aiPart = 0;
     for (i = 0; i <= 2; i++) {
         ai_pick_part_target();
         ai_run_after_pick();
-        gBattleWork.unk5D++;
+        gBattleWork.aiPart++;
     }
 }
 
 void ai_pick_part_target(void) {
     ai_clear_target();
-    mem_fill8(gBattleWork.unk61, 3, 0);
-    gAiTargetPickers[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].data[1]]();
+    mem_fill8(gBattleWork.aiCandidates, 3, 0);
+    gAiTargetPickers[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].data[1]]();
 }
 
 void ai_run_after_pick(void) {
-    gAiAfterPick[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].data[1]]();
+    gAiAfterPick[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].data[1]]();
 }
 
 // Attacks (Rifle..Press, Pushover, Sacrifice, TeamAttack): an opponent with a part of the Medal's Aim type.
 void ai_target_attack(void) {
     u32 i;
 
-    gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
-        gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+        gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
+        gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
     }
-    gBattleWork.unk5F = ai_random_target_part(gBattleWork.unk5E - 1) + 1;
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+    gBattleWork.aiTargetPart = ai_random_target_part(gBattleWork.aiTarget - 1) + 1;
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // Anti-Air: prefers opponents on Air legs.
 void ai_target_anti_air(void) {
     u32 i;
 
-    gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState &&
-            gBattleBots[gBattleWork.unk60].parts[3].data[1] == SKILL_LEGS_AIR &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+            gBattleBots[gBattleWork.targetSideFirst].parts[3].data[1] == SKILL_LEGS_AIR &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].teamState &&
-                gBattleBots[gBattleWork.unk60].parts[3].data[1] == SKILL_LEGS_AIR)
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                gBattleBots[gBattleWork.targetSideFirst].parts[3].data[1] == SKILL_LEGS_AIR)
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+            gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
             for (i = 0; i <= 2; i++) {
-                if (gBattleBots[gBattleWork.unk60].teamState &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-                    gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-                gBattleWork.unk60++;
+                if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                    bot_has_part_of_skill_type(gBattleWork.targetSideFirst,
+                                               gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+                    gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+                gBattleWork.targetSideFirst++;
             }
             if (ai_has_candidates())
-                gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+                gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
             else {
-                gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
-                gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+                gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
+                gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
             }
         }
     }
-    gBattleWork.unk5F = ai_random_target_part(gBattleWork.unk5E - 1) + 1;
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+    gBattleWork.aiTargetPart = ai_random_target_part(gBattleWork.aiTarget - 1) + 1;
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // Anti-Sea: prefers opponents on Sea legs.
 void ai_target_anti_sea(void) {
     u32 i;
 
-    gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState &&
-            gBattleBots[gBattleWork.unk60].parts[3].data[1] == SKILL_LEGS_SEA &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+            gBattleBots[gBattleWork.targetSideFirst].parts[3].data[1] == SKILL_LEGS_SEA &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].teamState &&
-                gBattleBots[gBattleWork.unk60].parts[3].data[1] == SKILL_LEGS_SEA)
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                gBattleBots[gBattleWork.targetSideFirst].parts[3].data[1] == SKILL_LEGS_SEA)
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+            gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
             for (i = 0; i <= 2; i++) {
-                if (gBattleBots[gBattleWork.unk60].teamState &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-                    gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-                gBattleWork.unk60++;
+                if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                    bot_has_part_of_skill_type(gBattleWork.targetSideFirst,
+                                               gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+                    gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+                gBattleWork.targetSideFirst++;
             }
             if (ai_has_candidates())
-                gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+                gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
             else {
-                gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
-                gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+                gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
+                gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
             }
         }
     }
-    gBattleWork.unk5F = ai_random_target_part(gBattleWork.unk5E - 1) + 1;
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+    gBattleWork.aiTargetPart = ai_random_target_part(gBattleWork.aiTarget - 1) + 1;
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // Stability: a teammate without Stability that has a negative status (unkC9) to clear.
 void ai_target_stability(void) {
     u32 i;
 
-    gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState && battle_bot_lacks_stability(gBattleWork.unk60) &&
-            gBattleBots[gBattleWork.unk60].statusType &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+            battle_bot_lacks_stability(gBattleWork.targetSideFirst) &&
+            gBattleBots[gBattleWork.targetSideFirst].statusType &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].teamState && battle_bot_lacks_stability(gBattleWork.unk60) &&
-                gBattleBots[gBattleWork.unk60].statusType)
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                battle_bot_lacks_stability(gBattleWork.targetSideFirst) &&
+                gBattleBots[gBattleWork.targetSideFirst].statusType)
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+            gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
             for (i = 0; i <= 2; i++) {
-                if (gBattleBots[gBattleWork.unk60].teamState && battle_bot_lacks_stability(gBattleWork.unk60) &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-                    gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-                gBattleWork.unk60++;
+                if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                    battle_bot_lacks_stability(gBattleWork.targetSideFirst) &&
+                    bot_has_part_of_skill_type(gBattleWork.targetSideFirst,
+                                               gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+                    gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+                gBattleWork.targetSideFirst++;
             }
             if (ai_has_candidates())
-                gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+                gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
             else {
-                gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
-                gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+                gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
+                gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
             }
         }
     }
-    gBattleWork.unk5F = ai_random_target_part(gBattleWork.unk5E - 1) + 1;
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+    gBattleWork.aiTargetPart = ai_random_target_part(gBattleWork.aiTarget - 1) + 1;
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // Recovery: the teammate part that lost the most armor.
@@ -202,89 +208,92 @@ void ai_target_recovery(void) {
     u32 i;
     u32 part;
 
-    gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState && find_most_damaged_part(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState && find_most_damaged_part(gBattleWork.targetSideFirst) &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].teamState && find_most_damaged_part(gBattleWork.unk60))
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                find_most_damaged_part(gBattleWork.targetSideFirst))
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+            gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
             for (i = 0; i <= 2; i++) {
-                if (gBattleBots[gBattleWork.unk60].teamState &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-                    gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-                gBattleWork.unk60++;
+                if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                    bot_has_part_of_skill_type(gBattleWork.targetSideFirst,
+                                               gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+                    gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+                gBattleWork.targetSideFirst++;
             }
             if (ai_has_candidates())
-                gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+                gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
             else {
-                gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
-                gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+                gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
+                gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
             }
         }
     }
-    part = find_most_damaged_part(gBattleWork.unk5E - 1);
+    part = find_most_damaged_part(gBattleWork.aiTarget - 1);
     if (part)
-        gBattleWork.unk5F = part;
+        gBattleWork.aiTargetPart = part;
     else
-        gBattleWork.unk5F = ai_random_target_part(gBattleWork.unk5E - 1) + 1;
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+        gBattleWork.aiTargetPart = ai_random_target_part(gBattleWork.aiTarget - 1) + 1;
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // AutoRecover, Boost Chrg: a teammate without Stability or a positive status (unkC4).
 void ai_target_buff(void) {
     u32 i;
 
-    gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState && battle_bot_lacks_stability(gBattleWork.unk60) &&
-            bot_has_no_buff(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+            battle_bot_lacks_stability(gBattleWork.targetSideFirst) && bot_has_no_buff(gBattleWork.targetSideFirst) &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].teamState && battle_bot_lacks_stability(gBattleWork.unk60) &&
-                bot_has_no_buff(gBattleWork.unk60))
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                battle_bot_lacks_stability(gBattleWork.targetSideFirst) && bot_has_no_buff(gBattleWork.targetSideFirst))
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+            gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
             for (i = 0; i <= 2; i++) {
-                if (gBattleBots[gBattleWork.unk60].teamState &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-                    gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-                gBattleWork.unk60++;
+                if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                    bot_has_part_of_skill_type(gBattleWork.targetSideFirst,
+                                               gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+                    gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+                gBattleWork.targetSideFirst++;
             }
             if (ai_has_candidates())
-                gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+                gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
             else {
-                gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
-                gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+                gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
+                gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
             }
         }
     }
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // Repair: a random broken part of a teammate.
@@ -292,293 +301,305 @@ void ai_target_repair(void) {
     u32 i;
     u32 part;
 
-    gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState && find_random_broken_part(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+            find_random_broken_part(gBattleWork.targetSideFirst) &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].teamState && find_random_broken_part(gBattleWork.unk60))
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                find_random_broken_part(gBattleWork.targetSideFirst))
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+            gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
             for (i = 0; i <= 2; i++) {
-                if (gBattleBots[gBattleWork.unk60].teamState &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-                    gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-                gBattleWork.unk60++;
+                if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                    bot_has_part_of_skill_type(gBattleWork.targetSideFirst,
+                                               gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+                    gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+                gBattleWork.targetSideFirst++;
             }
             if (ai_has_candidates())
-                gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+                gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
             else {
-                gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
-                gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+                gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
+                gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
             }
         }
     }
-    part = find_random_broken_part(gBattleWork.unk5E - 1);
+    part = find_random_broken_part(gBattleWork.aiTarget - 1);
     if (part)
-        gBattleWork.unk5F = part;
+        gBattleWork.aiTargetPart = part;
     else
-        gBattleWork.unk5F = ai_random_target_part(gBattleWork.unk5E - 1) + 1;
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+        gBattleWork.aiTargetPart = ai_random_target_part(gBattleWork.aiTarget - 1) + 1;
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // Reactivate: a teammate that is out of action (unkBA == 2).
 void ai_target_reactivate(void) {
     u32 i;
 
-    gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].present == 2 &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].present == 2 &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].present == 2)
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].present == 2)
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+            gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
             for (i = 0; i <= 2; i++) {
-                if (bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-                    gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-                gBattleWork.unk60++;
+                if (bot_has_part_of_skill_type(gBattleWork.targetSideFirst,
+                                               gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+                    gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+                gBattleWork.targetSideFirst++;
             }
             if (ai_has_candidates())
-                gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+                gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
             else {
-                gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
-                gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+                gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
+                gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
             }
         }
     }
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // Rapid Chrg: any teammate but the user.
 void ai_target_rapid_chrg(void) {
     u32 i;
 
-    gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState && gBattleWork.unk60 != gBattleWork.unk5C &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState && gBattleWork.targetSideFirst != gBattleWork.aiBot &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].teamState && gBattleWork.unk60 != gBattleWork.unk5C)
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].teamState && gBattleWork.targetSideFirst != gBattleWork.aiBot)
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
-            gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+            gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
+            gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
         }
     }
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // Drain Chrg, Confusion, No Escape, No Defense: an opponent without Stability or a negative status.
 void ai_target_status(void) {
     u32 i;
 
-    gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState && battle_bot_lacks_stability(gBattleWork.unk60) &&
-            bot_has_no_status(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+            battle_bot_lacks_stability(gBattleWork.targetSideFirst) && bot_has_no_status(gBattleWork.targetSideFirst) &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].teamState && battle_bot_lacks_stability(gBattleWork.unk60) &&
-                bot_has_no_status(gBattleWork.unk60))
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                battle_bot_lacks_stability(gBattleWork.targetSideFirst) &&
+                bot_has_no_status(gBattleWork.targetSideFirst))
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+            gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
             for (i = 0; i <= 2; i++) {
-                if (gBattleBots[gBattleWork.unk60].teamState &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-                    gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-                gBattleWork.unk60++;
+                if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                    bot_has_part_of_skill_type(gBattleWork.targetSideFirst,
+                                               gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+                    gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+                gBattleWork.targetSideFirst++;
             }
             if (ai_has_candidates())
-                gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+                gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
             else {
-                gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
-                gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+                gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
+                gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
             }
         }
     }
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // Use Drain: an opponent whose head has uses left; aims at the head.
 void ai_target_use_drain(void) {
     u32 i;
 
-    gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState && bot_head_has_uses(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState && bot_head_has_uses(gBattleWork.targetSideFirst) &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].teamState && bot_head_has_uses(gBattleWork.unk60))
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].teamState && bot_head_has_uses(gBattleWork.targetSideFirst))
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+            gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
             for (i = 0; i <= 2; i++) {
-                if (gBattleBots[gBattleWork.unk60].teamState &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-                    gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-                gBattleWork.unk60++;
+                if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                    bot_has_part_of_skill_type(gBattleWork.targetSideFirst,
+                                               gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+                    gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+                gBattleWork.targetSideFirst++;
             }
             if (ai_has_candidates())
-                gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+                gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
             else {
-                gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
-                gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+                gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
+                gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
             }
         }
     }
-    gBattleWork.unk5F = 1;
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+    gBattleWork.aiTargetPart = 1;
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // Forcedrain: an opponent with Medaforce charge.
 void ai_target_forcedrain(void) {
     u32 i;
 
-    gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState && bot_has_medaforce_charge(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+            bot_has_medaforce_charge(gBattleWork.targetSideFirst) &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].teamState && bot_has_medaforce_charge(gBattleWork.unk60))
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                bot_has_medaforce_charge(gBattleWork.targetSideFirst))
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+            gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
             for (i = 0; i <= 2; i++) {
-                if (gBattleBots[gBattleWork.unk60].teamState &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-                    gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-                gBattleWork.unk60++;
+                if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                    bot_has_part_of_skill_type(gBattleWork.targetSideFirst,
+                                               gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+                    gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+                gBattleWork.targetSideFirst++;
             }
             if (ai_has_candidates())
-                gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+                gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
             else {
-                gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
-                gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+                gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
+                gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
             }
         }
     }
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 // Impair: like ai_target_status, aimed at a random intact part.
 void ai_target_impair(void) {
     u32 i;
 
-    gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60].teamState && battle_bot_lacks_stability(gBattleWork.unk60) &&
-            bot_has_no_status(gBattleWork.unk60) &&
-            bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-            gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-        gBattleWork.unk60++;
+        if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+            battle_bot_lacks_stability(gBattleWork.targetSideFirst) && bot_has_no_status(gBattleWork.targetSideFirst) &&
+            bot_has_part_of_skill_type(gBattleWork.targetSideFirst, gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+            gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+        gBattleWork.targetSideFirst++;
     }
     if (ai_has_candidates())
-        gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+        gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
     else {
-        gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+        gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
         for (i = 0; i <= 2; i++) {
-            if (gBattleBots[gBattleWork.unk60].teamState && battle_bot_lacks_stability(gBattleWork.unk60) &&
-                bot_has_no_status(gBattleWork.unk60))
-                gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-            gBattleWork.unk60++;
+            if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                battle_bot_lacks_stability(gBattleWork.targetSideFirst) &&
+                bot_has_no_status(gBattleWork.targetSideFirst))
+                gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+            gBattleWork.targetSideFirst++;
         }
         if (ai_has_candidates())
-            gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+            gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
         else {
-            gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+            gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
             for (i = 0; i <= 2; i++) {
-                if (gBattleBots[gBattleWork.unk60].teamState &&
-                    bot_has_part_of_skill_type(gBattleWork.unk60, gBattleBots[gBattleWork.unk5C].medal.aimSkillType))
-                    gBattleWork.unk61[i] = gBattleWork.unk60 + 1;
-                gBattleWork.unk60++;
+                if (gBattleBots[gBattleWork.targetSideFirst].teamState &&
+                    bot_has_part_of_skill_type(gBattleWork.targetSideFirst,
+                                               gBattleBots[gBattleWork.aiBot].medal.aimSkillType))
+                    gBattleWork.aiCandidates[i] = gBattleWork.targetSideFirst + 1;
+                gBattleWork.targetSideFirst++;
             }
             if (ai_has_candidates())
-                gBattleWork.unk5E = ai_pick_random_candidate() + 1;
+                gBattleWork.aiTarget = ai_pick_random_candidate() + 1;
             else {
-                gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
-                gBattleWork.unk5E = select_random_battle_target(gBattleWork.unk60) + 1;
+                gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
+                gBattleWork.aiTarget = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
             }
         }
     }
-    gBattleWork.unk5F = bot_random_intact_part(gBattleWork.unk5E - 1) + 1;
-    ai_store_target(gBattleWork.unk5C, gBattleWork.unk5D);
+    gBattleWork.aiTargetPart = bot_random_intact_part(gBattleWork.aiTarget - 1) + 1;
+    ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
 static void ai_clear_target(void) {
-    gBattleWork.unk5E = 0;
-    gBattleWork.unk5F = 0;
-    gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE = 0;
-    gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkF = 0;
+    gBattleWork.aiTarget = 0;
+    gBattleWork.aiTargetPart = 0;
+    gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE = 0;
+    gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF = 0;
 }
 
 u32 battle_enemy_side_first_record(u32 rec) {
@@ -617,7 +638,7 @@ static u32 ai_has_candidates(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleWork.unk61[i])
+        if (gBattleWork.aiCandidates[i])
             return 1;
     }
     return 0;
@@ -629,8 +650,8 @@ static u32 ai_pick_random_candidate(void) {
     i = rng_random_slot();
     dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
-        if (gBattleWork.unk61[i])
-            return gBattleWork.unk61[i] - 1;
+        if (gBattleWork.aiCandidates[i])
+            return gBattleWork.aiCandidates[i] - 1;
         if (dir) {
             if (++i > 2)
                 i = 0;
@@ -639,7 +660,7 @@ static u32 ai_pick_random_candidate(void) {
         else
             i--;
     }
-    return gBattleWork.unk61[i];
+    return gBattleWork.aiCandidates[i];
 }
 
 // Random 0-2 (from gRandomSlots).
@@ -691,8 +712,8 @@ u32 bot_random_intact_part(u32 rec) {
 }
 
 static void ai_store_target(u32 rec, u32 part) {
-    gBattleBots[rec].parts[part].unkE = gBattleWork.unk5E;
-    gBattleBots[rec].parts[part].unkF = gBattleWork.unk5F;
+    gBattleBots[rec].parts[part].unkE = gBattleWork.aiTarget;
+    gBattleBots[rec].parts[part].unkF = gBattleWork.aiTargetPart;
 }
 
 u32 find_most_damaged_part(u32 rec) {
@@ -769,27 +790,27 @@ static u32 bot_has_medaforce_charge(u32 rec) {
 
 // gAiAfterPick: the skill targets the whole Medabot, not one part.
 void ai_clear_target_part(void) {
-    gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkF = 0;
+    gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF = 0;
 }
 
 // 1 if the skill of rec's part (1-3) can't be used on its chosen target (gAiActionChecks).
 u32 ai_action_unusable(u32 rec, u32 part) {
     gBattleWork.unk51 = 0;
-    gBattleWork.unk5C = rec;
-    gBattleWork.unk5D = --part;
+    gBattleWork.aiBot = rec;
+    gBattleWork.aiPart = --part;
     gAiActionChecks[gBattleBots[rec].parts[part].data[1]]();
     return gBattleWork.unk51;
 }
 
 // Break Form: needs a trap or Team Form laid by the other side.
 void ai_check_break_form(void) {
-    if (gBattleWork.unk28[bot_side_index(gBattleWork.unk5C, 0)].active == 0)
+    if (gBattleWork.traps[bot_side_index(gBattleWork.aiBot, 0)].active == 0)
         gBattleWork.unk51 = 1;
 }
 
 // Stability: needs a target with a negative status.
 void ai_check_stability(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1].statusType == 0)
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1].statusType == 0)
         gBattleWork.unk51 = 1;
 }
 
@@ -802,9 +823,9 @@ void ai_check_never(void) {
 void ai_check_guard(void) {
     u32 i, n;
 
-    gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
     for (i = 0, n = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].teamState)
+        if (gBattleBots[gBattleWork.targetSideFirst + i].teamState)
             n++;
     }
     if (n <= 1)
@@ -813,20 +834,20 @@ void ai_check_guard(void) {
 
 // Recovery: the target part must be damaged but not broken.
 void ai_check_recovery(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1]
-                .parts[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkF - 1]
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1]
+                .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF - 1]
                 .unk11 == 0 ||
-        gBattleBots[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1]
-                .parts[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkF - 1]
-                .unk11 == gBattleBots[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1]
-                              .parts[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkF - 1]
+        gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1]
+                .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF - 1]
+                .unk11 == gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1]
+                              .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF - 1]
                               .data[4])
         gBattleWork.unk51 = 1;
 }
 
 // AutoRecover, Boost Chrg: target without a positive status or Stability.
 void ai_check_buff(void) {
-    u32 rec = gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1;
+    u32 rec = gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1;
 
     if (gBattleBots[rec].buffType != 0 || battle_bot_lacks_stability(rec) == 0)
         gBattleWork.unk51 = 1;
@@ -834,48 +855,48 @@ void ai_check_buff(void) {
 
 // Drain Chrg, Impair, Confusion, No Escape, No Defense: target without a negative status or Stability.
 void ai_check_status(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1].statusType != 0)
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1].statusType != 0)
         gBattleWork.unk51 = 1;
-    if (battle_bot_lacks_stability(gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1) == 0)
+    if (battle_bot_lacks_stability(gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1) == 0)
         gBattleWork.unk51 = 1;
 }
 
 // Repair: the target part must be broken.
 void ai_check_repair(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1]
-            .parts[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkF - 1]
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1]
+            .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF - 1]
             .unk11 != 0)
         gBattleWork.unk51 = 1;
 }
 
 // Reactivate: the target must be out of action.
 void ai_check_reactivate(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1].present != 2)
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1].present != 2)
         gBattleWork.unk51 = 1;
 }
 
 // Rapid Chrg: not on the user itself.
 void ai_check_rapid_chrg(void) {
-    if (gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1 == gBattleWork.unk5C)
+    if (gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1 == gBattleWork.aiBot)
         gBattleWork.unk51 = 1;
 }
 
 // Use Drain: the target's head must have uses left.
 void ai_check_use_drain(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1].parts[0].unk10 == 0)
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1].parts[0].unk10 == 0)
         gBattleWork.unk51 = 1;
 }
 
 // Forcedrain: the target must have Medaforce charge.
 void ai_check_forcedrain(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.unk5C].parts[gBattleWork.unk5D].unkE - 1].medaforceGauge == 0)
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1].medaforceGauge == 0)
         gBattleWork.unk51 = 1;
 }
 
 // TeamAttack: needs the side's Team Form.
 void ai_check_team_attack(void) {
-    if (gBattleWork.unk28[bot_side_index(gBattleWork.unk5C, 1)].active == 0 ||
-        gBattleWork.unk28[bot_side_index(gBattleWork.unk5C, 1)].skill != SKILL_TEAM_FORM)
+    if (gBattleWork.traps[bot_side_index(gBattleWork.aiBot, 1)].active == 0 ||
+        gBattleWork.traps[bot_side_index(gBattleWork.aiBot, 1)].skill != SKILL_TEAM_FORM)
         gBattleWork.unk51 = 1;
 }
 
@@ -883,14 +904,14 @@ void ai_check_team_attack(void) {
 void ai_check_grap_trap(void) {
     u32 i, j;
 
-    gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].teamState) {
+        if (gBattleBots[gBattleWork.targetSideFirst + i].teamState) {
             for (j = 0; j <= 2; j++) {
-                if (gBattleBots[gBattleWork.unk60 + i].parts[j].unk11) {
-                    if (gBattleBots[gBattleWork.unk60 + i].parts[j].data[2] == SKILL_TYPE_STRIKE)
+                if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].unk11) {
+                    if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].data[2] == SKILL_TYPE_STRIKE)
                         return;
-                    if (gBattleBots[gBattleWork.unk60 + i].parts[j].data[2] == SKILL_TYPE_BERSERK)
+                    if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].data[2] == SKILL_TYPE_BERSERK)
                         return;
                 }
             }
@@ -903,14 +924,14 @@ void ai_check_grap_trap(void) {
 void ai_check_shot_trap(void) {
     u32 i, j;
 
-    gBattleWork.unk60 = battle_enemy_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].teamState) {
+        if (gBattleBots[gBattleWork.targetSideFirst + i].teamState) {
             for (j = 0; j <= 2; j++) {
-                if (gBattleBots[gBattleWork.unk60 + i].parts[j].unk11) {
-                    if (gBattleBots[gBattleWork.unk60 + i].parts[j].data[2] == SKILL_TYPE_SHOOT)
+                if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].unk11) {
+                    if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].data[2] == SKILL_TYPE_SHOOT)
                         return;
-                    if (gBattleBots[gBattleWork.unk60 + i].parts[j].data[2] == SKILL_TYPE_AIM_SHOT)
+                    if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].data[2] == SKILL_TYPE_AIM_SHOT)
                         return;
                 }
             }
@@ -923,12 +944,12 @@ void ai_check_shot_trap(void) {
 void ai_check_team_form(void) {
     u32 i, j;
 
-    gBattleWork.unk60 = battle_side_first_record(gBattleWork.unk5C);
+    gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.aiBot);
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.unk60 + i].teamState) {
+        if (gBattleBots[gBattleWork.targetSideFirst + i].teamState) {
             for (j = 0; j <= 2; j++) {
-                if (gBattleBots[gBattleWork.unk60 + i].parts[j].unk11 &&
-                    gBattleBots[gBattleWork.unk60 + i].parts[j].data[1] == SKILL_TEAM_ATTACK)
+                if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].unk11 &&
+                    gBattleBots[gBattleWork.targetSideFirst + i].parts[j].data[1] == SKILL_TEAM_ATTACK)
                     return;
             }
         }
