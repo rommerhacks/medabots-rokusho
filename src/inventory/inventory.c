@@ -86,7 +86,7 @@ void medal_remove_by_id(u8 id) {
     for (i = 0; i < 30; i++) {
         if ((gUnk_03000BE0[i].unk0 & 0x80) && gUnk_03000BE0[i].unk1 == id) {
             u8 f = gUnk_03000BE0[i].unk0 & 0x1F;
-            sub_0803F624((u8 *)&gUnk_03000BE0[i], 0x40, 0);
+            mem_fill8((u8 *)&gUnk_03000BE0[i], 0x40, 0);
             gUnk_03000BE0[i].unk0 = f;
             return;
         }

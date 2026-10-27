@@ -703,12 +703,12 @@
 08485C5C	bomb_game_dispatch
 08485C60	medabots_weekly_update
 08485C64	nullsub_08000840
-08485C68	sub_0806878C
+08485C68	scene_step_none
 08485C6C	scene_step_fade_in_bldy
 08485C70	scene_step_fade_in_bldy
 08485C74	scene_step_wipe_clear_bg0
 08485C78	scene_step_palette_fade_in
-08485C7C	sub_0806878C
+08485C7C	scene_step_none
 08485C80	scene_step_fade_out_bldy
 08485C84	scene_step_fade_out_bldy
 08485C88	scene_step_wipe_fill_bg0

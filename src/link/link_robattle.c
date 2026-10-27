@@ -203,7 +203,7 @@ void sub_0803DA90(void) {
 }
 
 void sub_0803DAEC(void) {
-    sub_0803F624(&gUnk_03000440.unk50, 0x14, 0);
+    mem_fill8(&gUnk_03000440.unk50, 0x14, 0);
     gUnk_03000440.unk50 = 1;
     gGameState = 3;
     gGameSubState = 0;

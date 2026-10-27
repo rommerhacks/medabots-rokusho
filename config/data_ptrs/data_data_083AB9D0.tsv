@@ -295,13 +295,13 @@
 083AC23C	nullsub_08000840
 083AC240	nullsub_08000840
 083AC244	debug_menu_update
-083AC248	sub_08002574
-083AC24C	sub_080025B4
+083AC248	devtest_init
+083AC24C	devtest_update
 083AC250	load_overworld_column_and_advance
 083AC254	init_save_prompt_text
-083AC258	sub_08002730
-083AC25C	sub_0800275C
-083AC260	sub_0800277C
+083AC258	devtest_message_then_choice
+083AC25C	devtest_wait_choice
+083AC260	devtest_show_choice_result
 083AC264	nullsub_08000840
 083AC268	nullsub_08000840
 083AC26C	nullsub_08000840
@@ -6267,7 +6267,7 @@
 083B27FC	message_undim_palettes_step
 083B2800	message_close
 083B2804	message_close
-083B2808	sub_08040B5C
+083B2808	message_fill_window_tiles
 083B280C	message_close
 083B2810	message_close
 083B2814	decompress_bg_tilemap_to_vram

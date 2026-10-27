@@ -486,7 +486,7 @@ void sub_08013798(void) {
 // guess: Robattle sub-state 0x33 opens the Medals screen (game state 4, sub 0x28) on the Rotation page of
 // the current Medabot's Medal; sub_08013798 (0x32) saves VRAM/OAM, battle_phase_dispatch_0801387C (0x3C) restores it.
 void sub_08013824(void) {
-    sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
+    mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
     gUnk_03000440.unk3C = 2;
     gUnk_03000440.unk3D = find_medal_slot_by_id(gUnk_03000590[gUnk_03001800.unk80].medal.unk1) - 1;
     gUnk_03000440.unk41 = 1;
@@ -609,7 +609,7 @@ void sub_08013B8C(void) {
     fill = 0;
     CpuFastSet(&fill, gUnk_03002C30, 0x01000800);
     REG_DISPCNT |= 0x1F40;
-    sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
+    mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
     gUnk_03000440.unk46 = 1;
     position_battle_team_cursors(0, 0);
     status_init_cursor();
@@ -842,7 +842,7 @@ void sub_080143A0(void) {
     battle_queue_pop();
     battle_bot_advance_rotation(gUnk_03001800.unk87);
     if (sub_0801A6B0()) {
-        sub_0803F624(gUnk_03001800.unk45[0], 0xC, 0);
+        mem_fill8(gUnk_03001800.unk45[0], 0xC, 0);
         gGameSubState = 0x4C;
     } else {
         gGameSubState = 0x45;

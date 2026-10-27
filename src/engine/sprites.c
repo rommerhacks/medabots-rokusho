@@ -4,7 +4,8 @@
 
 #include "global.h"
 
-void sub_08040B5C(void) {
+// Message step: fills the 104 window tiles at VRAM 0x280 with colour 1 (the window background).
+void message_fill_window_tiles(void) {
     u32 i;
     for (i = 0; i <= 0x33; i++)
         CpuCopy16(gUnk_084C01C8, (void *)(VRAM + 0x280 + i * 0x40), 0x40);

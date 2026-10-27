@@ -16,6 +16,6 @@ u32 rng_next(u16 range) {
 }
 
 // Linear interpolation in 4.12 fixed point: a at t = 0, b at t = 0x1000. Not called.
-static s32 sub_0800134C(s32 a, s32 b, s32 t) {
-    return b * t / 4096 + a * (4096 - t) / 4096;
+static s32 lerp_fixed12(s32 from, s32 to, s32 t) {
+    return to * t / 4096 + from * (4096 - t) / 4096;
 }

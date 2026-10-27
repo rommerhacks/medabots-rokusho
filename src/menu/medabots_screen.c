@@ -512,7 +512,7 @@ void medabot_detail_open_info(void) {
     gUnk_03000430 = 0;
     switch (gUnk_03000440.unk5A) {
     case 0:
-        sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
+        mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
         gUnk_03000440.unk3C = 1;
         gUnk_03000440.unk3D = gUnk_03000440.unk97;
         count_unequipped_medals();
@@ -520,7 +520,7 @@ void medabot_detail_open_info(void) {
         gGameSubState = 8;
         break;
     case 1:
-        sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
+        mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
         gUnk_03000440.unk3C = 1;
         gUnk_03000440.unk3D = gUnk_03000440.unk98;
         gUnk_03000440.unk3E = 0;
@@ -528,7 +528,7 @@ void medabot_detail_open_info(void) {
         gGameSubState = 16;
         break;
     case 2:
-        sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
+        mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
         gUnk_03000440.unk3C = 1;
         gUnk_03000440.unk3D = gUnk_03000440.unk99;
         gUnk_03000440.unk3E = 1;
@@ -536,7 +536,7 @@ void medabot_detail_open_info(void) {
         gGameSubState = 16;
         break;
     case 3:
-        sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
+        mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
         gUnk_03000440.unk3C = 1;
         gUnk_03000440.unk3D = gUnk_03000440.unk9A;
         gUnk_03000440.unk3E = 2;
@@ -544,7 +544,7 @@ void medabot_detail_open_info(void) {
         gGameSubState = 16;
         break;
     case 4:
-        sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
+        mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
         gUnk_03000440.unk3C = 1;
         gUnk_03000440.unk3D = gUnk_03000440.unk9B;
         gUnk_03000440.unk3E = 3;
@@ -956,11 +956,11 @@ static void sub_0800529C(void) {
     u8 *c;
     u32 fill;
 
-    sub_0803F624((u8 *)obj, 0xD0, 0);
+    mem_fill8((u8 *)obj, 0xD0, 0);
     b = (u8 *)0x020260D0;
-    sub_0803F624(b, 0x800, 0);
+    mem_fill8(b, 0x800, 0);
     c = (u8 *)0x020268D0;
-    sub_0803F624(c, 0x60, 0);
+    mem_fill8(c, 0x60, 0);
     gUnk_03000430 = 2;
     gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
     fill = 0;
@@ -1424,11 +1424,11 @@ static void init_scene_state(void) {
     u8 *c;
     u32 fill;
 
-    sub_0803F624((u8 *)obj, 0xD0, 0);
+    mem_fill8((u8 *)obj, 0xD0, 0);
     b = (u8 *)0x020260D0;
-    sub_0803F624(b, 0x800, 0);
+    mem_fill8(b, 0x800, 0);
     c = (u8 *)0x020268D0;
-    sub_0803F624(c, 0x60, 0);
+    mem_fill8(c, 0x60, 0);
     gUnk_03000430 = 2;
     gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
     fill = 0;

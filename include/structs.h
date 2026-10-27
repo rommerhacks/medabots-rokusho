@@ -412,7 +412,7 @@ struct SioLink {
     u8 recvOk;      // per-player bits, packets received intact this frame
     u8 sendPending; // serial_prepare_send_packet filled nextSend
     u8 recvDone;    // all 4 words received (cleared by link_buffer_swap_arm)
-    u8 started;     // set by sub_08002190
+    u8 started;     // set by sio_start_transfers
     u8 error;       // SIOCNT error bit
     u8 filler8[3];
     u8 frame; // frame counter, sent in each packet

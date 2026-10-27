@@ -10,7 +10,7 @@ static u32 sub_08015648(u32 rec);
 static u32 battle_part_unusable(u32 rec, u32 part);
 
 void clear_battle_bot_array(void) {
-    sub_0803F624((u8 *)gUnk_03000590, 0x600, 0);
+    mem_fill8((u8 *)gUnk_03000590, 0x600, 0);
 }
 
 void count_active_battle_bots(void) {

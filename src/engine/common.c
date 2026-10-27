@@ -1041,7 +1041,7 @@ void race_enter_team_select(void) {
     CpuFastSet(&a, (void *)OBJ_PLTT, 0x01000080);
     b = 0;
     CpuFastSet(&b, (void *)PLTT, 0x01000080);
-    sub_0803F624(&gUnk_03000440.unk50, 0x14, 0);
+    mem_fill8(&gUnk_03000440.unk50, 0x14, 0);
     gUnk_03000440.unk50 = 3;
     gUnk_03001800.unk41[0] = 0;
     gUnk_03001800.unk41[1] = 0;
@@ -1186,11 +1186,11 @@ void init_scene_buffers_080445F4(void) {
     u32 fill;
     u32 fill2;
 
-    sub_0803F624((u8 *)obj, 0xD0, 0);
+    mem_fill8((u8 *)obj, 0xD0, 0);
     b = (u8 *)0x020260D0;
-    sub_0803F624(b, 0x820, 0);
+    mem_fill8(b, 0x820, 0);
     c = (u8 *)0x020268F0;
-    sub_0803F624(c, 0x60, 0);
+    mem_fill8(c, 0x60, 0);
     gUnk_03000430 = 2;
     gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
     fill = 0;
@@ -1395,7 +1395,7 @@ void init_battle_scene(u32 mode, u32 id) {
     clear_battle_sprite_slot(0, 0x80);
     gUnk_03000440.unk96 = 0;
     gUnk_03000430 = 0;
-    sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
+    mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
     gUnk_03000440.unk3C = 3;
     gUnk_03000440.unk3D = id;
     switch (mode) {
@@ -1419,8 +1419,8 @@ void init_battle_scene(u32 mode, u32 id) {
 
 void init_game_mode(u32 mode) {
     sub_08043CA8();
-    sub_0803F624(&gUnk_03000440.unk3C, 0x14, 0);
-    sub_0803F624(&gUnk_03000440.unk3C + 0x14, 0x14, 0);
+    mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
+    mem_fill8(&gUnk_03000440.unk3C + 0x14, 0x14, 0);
     gUnk_03000440.unk89 = 1;
     gUnk_03000440.unk8D = 0;
     switch (mode) {

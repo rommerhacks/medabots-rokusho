@@ -30,7 +30,8 @@ void serial_link_init(void) {
     REG_IME = 1;
 }
 
-void sub_08002190(void) {
+// The parent marks the link as started so the VBlank handler begins transfers.
+void sio_start_transfers(void) {
     if (gSioLink.isParent)
         gSioLink.started = 1;
 }
@@ -119,18 +120,20 @@ static u8 serial_link_receive_packets(u32 *dst) {
     return gSioLink.recvOk;
 }
 
-void sub_080023D8(void) {
+// Called from the VBlank interrupt while linked: swaps the receive buffers (and the send buffers if a new
+// packet is pending), then starts this frame's multiplayer transfer and timer 3.
+void sio_vblank_start_frame(void) {
     if (gSioLink.running && gSioLink.started) {
-        void *p;
+        void *swap;
 
         gSioLink.recvIdx = -1;
-        p = gSioLink.lastRecv;
+        swap = gSioLink.lastRecv;
         gSioLink.lastRecv = gSioLink.curRecv;
-        gSioLink.curRecv = p;
+        gSioLink.curRecv = swap;
         if (gSioLink.sendPending) {
-            p = gSioLink.curSend;
+            swap = gSioLink.curSend;
             gSioLink.curSend = gSioLink.nextSend;
-            gSioLink.nextSend = p;
+            gSioLink.nextSend = swap;
             gSioLink.sendPending = 0;
             gSioLink.sendIdx = 0;
         }

@@ -202,11 +202,11 @@ void status_init_portrait(void) {
     u8 *c;
     u32 fill;
 
-    sub_0803F624((u8 *)obj, 0xD0, 0);
+    mem_fill8((u8 *)obj, 0xD0, 0);
     b = (u8 *)0x020260D0;
-    sub_0803F624(b, 0x800, 0);
+    mem_fill8(b, 0x800, 0);
     c = (u8 *)0x020268D0;
-    sub_0803F624(c, 0x60, 0);
+    mem_fill8(c, 0x60, 0);
     gUnk_03000440.unk96 = 1;
     gUnk_03000430 = 2;
     gUnk_03002414 = (struct Unk_03002414 *)0x02024000;

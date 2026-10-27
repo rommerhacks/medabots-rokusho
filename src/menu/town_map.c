@@ -36,7 +36,7 @@ void copy_bg2_tilemap_to_ewram(void) {
     zero = 0;
     CpuFastSet(&zero, (void *)0x06002800, 0x01000200);
     reset_bg_scroll();
-    sub_08059D04();
+    free_all_sprites();
     REG_DISPCNT = 0x60;
     REG_BLDCNT = 0x2FF;
     REG_BLDY = 0x10;

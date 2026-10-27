@@ -18,7 +18,7 @@ void reset_bg_scroll(void) {
 }
 
 void open_choice_menu(u8 a, u8 b, u8 c) {
-    sub_0803F624(&gUnk_03000440.unk28, 8, 0);
+    mem_fill8(&gUnk_03000440.unk28, 8, 0);
     gUnk_03000440.unk2A = a;
     gUnk_03000440.unk2B = 0x7F;
     gUnk_03000440.unk2C = b;
@@ -26,7 +26,7 @@ void open_choice_menu(u8 a, u8 b, u8 c) {
 }
 
 static void init_window_params(u8 a, u8 b, u8 c, u8 d) {
-    sub_0803F624(&gUnk_03000440.unk28, 8, 0);
+    mem_fill8(&gUnk_03000440.unk28, 8, 0);
     gUnk_03000440.unk2A = a;
     gUnk_03000440.unk2B = d;
     gUnk_03000440.unk2C = b;

@@ -14,7 +14,7 @@ static void sub_08040820(void);
 void text_window_init(u8 a, u8 b, u32 c) {
     u8 c8 = c;
 
-    sub_0803F624((u8 *)&gUnk_03000440, 0x28, 0);
+    mem_fill8((u8 *)&gUnk_03000440, 0x28, 0);
     gUnk_03000440.unk0 = a;
     gUnk_03000440.unk1 = b;
     gUnk_03000440.unk2 = c8;

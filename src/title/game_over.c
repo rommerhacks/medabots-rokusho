@@ -55,7 +55,7 @@ void sub_0805FB2C(void) {
     u32 zero = 0;
 
     CpuFastSet(&zero, (void *)VRAM, 0x01006000);
-    sub_08059D04();
+    free_all_sprites();
     reset_bg_scroll();
     REG_WIN0H = 0xF0;
     REG_WIN0V = 0x80;

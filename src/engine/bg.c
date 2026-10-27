@@ -183,6 +183,6 @@ static void hblank_dma0_bg2affine(void) {
 }
 
 // Stops the per-scanline affine DMA (unreferenced).
-static void sub_080012E4(void) {
+static void affine_dma_stop(void) {
     REG_DMA0CNT_H = 0;
 }

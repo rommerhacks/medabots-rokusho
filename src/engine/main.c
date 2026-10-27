@@ -130,7 +130,7 @@ void vblank_irq(void) {
         vblank_body();
         gUnk_03002B90 &= ~1;
         if (gUnk_03005010.unk0 & 0x80)
-            sub_080023D8();
+            sio_vblank_start_frame();
         REG_IME = 0;
         if (++gUnk_03002410 > 5 && gSioLink.sendPending) {
             gUnk_03005010.unk1E = 0xFF;

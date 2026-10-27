@@ -12,7 +12,8 @@ void dispatch_game_substate_handler_08002554(void) {
     gUnk_083AC248[gGameSubState]();
 }
 
-void sub_08002574(void) {
+// Sub-state 0: shows BG1 over the screen.
+void devtest_init(void) {
     u16 priority;
     REG_BLDCNT = 0;
     REG_BLDY = 0;
@@ -24,7 +25,8 @@ void sub_08002574(void) {
 }
 
 // guess: debug map viewer input (D-pad scrolls gBg1Scroll, START/SELECT open text windows)
-void sub_080025B4(void) {
+// Sub-state 1: D-pad scrolls BG1; A, Start and Select start the tests, B leaves for the field menu state.
+void devtest_update(void) {
     if (KEYS_LO(gHeldKeys) & 0x40)
         gBg1Scroll.y++;
     if (KEYS_LO(gHeldKeys) & 0x80)
@@ -78,21 +80,22 @@ void init_save_prompt_text(void) {
         gGameSubState = r;
 }
 
-void sub_08002730(void) {
+void devtest_message_then_choice(void) {
     if (run_message(gUnk_083B53F8[1])) {
         open_choice_menu(0, 0x16, 7);
         gGameSubState++;
     }
 }
 
-void sub_0800275C(void) {
+void devtest_wait_choice(void) {
     if (poll_choice_menu()) {
         sub_0803FB0C();
         gGameSubState++;
     }
 }
 
-void sub_0800277C(void) {
+// guess: shows one of two messages depending on the choice made, then returns to sub-state 1.
+void devtest_show_choice_result(void) {
     const void *msg;
 
     if (gUnk_03000440.unk28 & 0xF0)

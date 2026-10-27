@@ -12,12 +12,12 @@ static void init_scene_rendering_context(u32 a) {
         u8 *c;
         u32 fill;
 
-        sub_0803F624((u8 *)obj, 0xD0, 0);
+        mem_fill8((u8 *)obj, 0xD0, 0);
         b = (u8 *)0x020260D0;
-        sub_0803F624(b, 0x820, 0);
-        sub_0803F624((u8 *)0x020264E0, 0x820, 0);
+        mem_fill8(b, 0x820, 0);
+        mem_fill8((u8 *)0x020264E0, 0x820, 0);
         c = (u8 *)0x020268F0;
-        sub_0803F624(c, 0x60, 0);
+        mem_fill8(c, 0x60, 0);
         gUnk_03000430 = 2;
         gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
         fill = a;

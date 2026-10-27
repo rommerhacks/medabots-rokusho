@@ -170,7 +170,7 @@ void sub_0805BFDC(void) {
     u32 zero = 0;
     CpuFastSet(&zero, (void *)VRAM, 0x01006000);
     reset_bg_scroll();
-    sub_08059D04();
+    free_all_sprites();
     REG_DISPCNT = 0x60;
     init_blend_effect(gUnk_03006F74->unk50, 0x10, 0, -1, 0xC0);
     gGameSubState++;

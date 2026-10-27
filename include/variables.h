@@ -1043,7 +1043,7 @@ extern const Func
                      // message_show_window, ..., message_run_command (runtime-checked in 03_new_game_intro)
 extern const Func gUnk_083B27C0[]; // message commands, by the byte after gUnk_03000440.unk8[unkC] (message_run_command)
 extern const u8 gUnk_083AFC98[16][6]; // 6 bytes picked at random into gUnk_03001800.unk18A[0x10] (sub_0803E8B8)
-extern const u8 gUnk_084C01C8[];      // 64 bytes of tiles copied 52 times to VRAM 0x280 (sub_08040B5C)
+extern const u8 gUnk_084C01C8[];      // 64 bytes of tiles copied 52 times to VRAM 0x280 (message_fill_window_tiles)
 extern u8 gUnk_0300199A[6];           // 6 bytes from gUnk_083AFC98 (sub_0803E8B8); = gUnk_03001800.unk18A + 0x10
 extern const u8 gUnk_083AFCF8[16];    // record index 0-2 picked at random (sub_0803EE10)
 extern const u8

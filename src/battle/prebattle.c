@@ -306,7 +306,7 @@ void sub_08010AC8(void) {
 
 // A on the pre-battle screen: Medabots screen in team select mode (game state 3, unk50 = 2)
 void prebattle_open_team_select(void) {
-    sub_0803F624(&gUnk_03000440.unk50, 0x14, 0);
+    mem_fill8(&gUnk_03000440.unk50, 0x14, 0);
     gUnk_03000440.unk50 = 2;
     gGameState = 3;
     gGameSubState = 0;
@@ -699,7 +699,7 @@ void sub_080116C4(void) {
     kind = b->unk168;
     switch (kind) {
     case 0:
-        sub_0803F624(&g->unk3C, 0x14, 0);
+        mem_fill8(&g->unk3C, 0x14, 0);
         g->unk3C = 2;
         g->unk3D = b->unk169;
         g->unk3E = kind;
@@ -707,7 +707,7 @@ void sub_080116C4(void) {
         gGameSubState = 0x10;
         break;
     case 1:
-        sub_0803F624(&g->unk3C, 0x14, 0);
+        mem_fill8(&g->unk3C, 0x14, 0);
         g->unk3C = 2;
         g->unk3D = b->unk169;
         g->unk3E = kind;
@@ -715,7 +715,7 @@ void sub_080116C4(void) {
         gGameSubState = 0x10;
         break;
     case 2:
-        sub_0803F624(&g->unk3C, 0x14, 0);
+        mem_fill8(&g->unk3C, 0x14, 0);
         g->unk3C = 2;
         g->unk3D = b->unk169;
         g->unk3E = kind;
@@ -723,7 +723,7 @@ void sub_080116C4(void) {
         gGameSubState = 0x10;
         break;
     case 3:
-        sub_0803F624(&g->unk3C, 0x14, 0);
+        mem_fill8(&g->unk3C, 0x14, 0);
         g->unk3C = 2;
         g->unk3D = b->unk169;
         g->unk3E = kind;
@@ -1279,7 +1279,7 @@ static void battle_check_medal_level_up(void) {
     u32 variant;
     u32 slot;
 
-    sub_0803F624(&gUnk_03001800.unk16E[0][0], 0x18, 0);
+    mem_fill8(&gUnk_03001800.unk16E[0][0], 0x18, 0);
     for (i = 0; i <= 2; i++) {
         if (!gUnk_03000590[i].unkBA)
             continue;

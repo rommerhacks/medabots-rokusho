@@ -126,7 +126,7 @@ void multiplayer_battle_sync_update(void) {
 
     if (!(gUnk_03005010.unk0 & 0xF00) && !(gFrameCounter & 0xF))
         serial_link_init();
-    sub_08002190();
+    sio_start_transfers();
     init_multiplayer_id();
     link = &gUnk_03005010;
     w = gUnk_03006F74;

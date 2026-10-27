@@ -3,7 +3,7 @@
 // code_0805AB40 and code_0805EE6C; several of the variants are dead code.
 #include "global.h"
 
-void sub_08059D04(void) {
+void free_all_sprites(void) {
     s32 i;
 
     for (i = 0; i < 128; i++)
@@ -369,18 +369,20 @@ static void draw_number_7digits(u32 value, u32 x, u32 y) {
     *p = (value % 10 + base) | (pal << 12);
 }
 
-static void sub_0805AA80(u8 *src, u16 row, u16 x, u16 y, u8 len) {
-    u32 v;
-    vu16 *p;
+// Unused (nothing calls it): writes row `row` of a len-wide byte grid to screenblock 22 at (x, y) as
+// tiles 0x9F + byte, palette 1.
+static void bg22_draw_tile_row(u8 *src, u16 row, u16 x, u16 y, u8 len) {
+    u32 entry;
+    vu16 *dst;
     u32 sbb = 22;
     u16 i;
 
-    v &= 0xFFFF0000;
-    p = (vu16 *)(VRAM + sbb * 0x800 + x * 2 + y * 64);
-    ((struct BgTileEntry *)&v)->pal = 1;
+    entry &= 0xFFFF0000;
+    dst = (vu16 *)(VRAM + sbb * 0x800 + x * 2 + y * 64);
+    ((struct BgTileEntry *)&entry)->pal = 1;
     for (i = 0; i < len; i++) {
-        ((struct BgTileEntry *)&v)->tile = (src + i)[row * len] + 0x9F;
-        *p++ = *(u16 *)&v;
+        ((struct BgTileEntry *)&entry)->tile = (src + i)[row * len] + 0x9F;
+        *dst++ = *(u16 *)&entry;
     }
 }
 

@@ -104,8 +104,8 @@ void reset_battle_bot_state(u32 rec) {
     gUnk_03000590[rec].unkBC = 0;
     gUnk_03000590[rec].unkBD &= 0xE4;
     gUnk_03000590[rec].unkBC = 0;
-    sub_0803F624(&gUnk_03000590[rec].unkC4, 0xC, 0);
-    sub_0803F624(&gUnk_03000590[rec].unkDC, 8, 0);
+    mem_fill8(&gUnk_03000590[rec].unkC4, 0xC, 0);
+    mem_fill8(&gUnk_03000590[rec].unkDC, 8, 0);
 }
 
 void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u32 n) {

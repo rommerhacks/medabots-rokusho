@@ -859,11 +859,11 @@ static void medaparts_list_load_part_sprite(void) {
 
     gUnk_03000440.unk3D = gUnk_03000440.unk3F * 4 + gUnk_03000440.unk40;
     obj = (struct Unk_08047414 *)0x02026000;
-    sub_0803F624((u8 *)obj, 0xD0, 0);
+    mem_fill8((u8 *)obj, 0xD0, 0);
     b = (u8 *)0x020260D0;
-    sub_0803F624(b, 0x800, 0);
+    mem_fill8(b, 0x800, 0);
     c = (u8 *)0x020268D0;
-    sub_0803F624(c, 0x60, 0);
+    mem_fill8(c, 0x60, 0);
     gUnk_03000430 = 2;
     gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
     fill = 0;
@@ -946,11 +946,11 @@ static void medapart_detail_init_sprite(void) {
     u8 *c;
     u32 fill;
 
-    sub_0803F624((u8 *)obj, 0xD0, 0);
+    mem_fill8((u8 *)obj, 0xD0, 0);
     b = (u8 *)0x020260D0;
-    sub_0803F624(b, 0x800, 0);
+    mem_fill8(b, 0x800, 0);
     c = (u8 *)0x020268D0;
-    sub_0803F624(c, 0x60, 0);
+    mem_fill8(c, 0x60, 0);
     gUnk_03000430 = 2;
     gUnk_03002414 = (struct Unk_03002414 *)0x02024000;
     fill = 0;

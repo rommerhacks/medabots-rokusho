@@ -30,7 +30,7 @@ void battle_process_all_bot_actions(u32 rec) {
 
 void battle_execute_action_selection(void) {
     clear_battle_action_selection();
-    sub_0803F624(gUnk_03001800.unk61, 3, 0);
+    mem_fill8(gUnk_03001800.unk61, 3, 0);
     gUnk_083AED20[gUnk_03000590[gUnk_03001800.unk5C].parts[gUnk_03001800.unk5D].data[1]]();
 }
 

@@ -112,7 +112,7 @@ void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c) {
 }
 
 // Unused (nothing calls it): copies the saved palette back to PLTT.
-static void sub_080686D0(void) {
+static void scene_restore_palette(void) {
     DmaSet(3, gUnk_0300002C, PLTT, 0x80000200);
 }
 
@@ -136,7 +136,7 @@ bool32 execute_scene_step(void) {
     return FALSE;
 }
 
-bool32 sub_0806878C(void) {
+bool32 scene_step_none(void) {
     return TRUE;
 }
 

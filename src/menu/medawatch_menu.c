@@ -116,17 +116,17 @@ void medawatch_menu_run_choice(void) {
     DmaSet(3, 0x06002800, gUnk_02020800, 0x84000200);
     switch (gUnk_03000440.unk8F) {
     case 0:
-        sub_0803F624((u8 *)&gUnk_03000440 + 0x50, 0x14, 0);
+        mem_fill8((u8 *)&gUnk_03000440 + 0x50, 0x14, 0);
         gGameState = 3;
         gGameSubState = 0;
         break;
     case 1:
-        sub_0803F624((u8 *)&gUnk_03000440 + 0x3C, 0x14, 0);
+        mem_fill8((u8 *)&gUnk_03000440 + 0x3C, 0x14, 0);
         gGameState = 4;
         gGameSubState = 0;
         break;
     default:
-        sub_0803F624((u8 *)&gUnk_03000440 + 0x3C, 0x14, 0);
+        mem_fill8((u8 *)&gUnk_03000440 + 0x3C, 0x14, 0);
         gGameState = 5;
         gGameSubState = 0;
         break;
