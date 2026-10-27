@@ -944,7 +944,7 @@ void sub_0801E09C(void) {
 
     switch (gUnk_03000440.unk139) {
     case 0:
-        sub_08043CA8();
+        clear_bg_scroll();
         REG_DISPCNT &= 0xE0FF;
         REG_BG0CNT = 0x500;
         REG_BG1CNT = 0x1801;
@@ -967,7 +967,7 @@ void sub_0801E09C(void) {
             decompress_indexed_graphics_to_ewram(gUnk_03000590[gUnk_03001800.unk87].unkA8[0] + 0x50);
         decompress_fixed_graphics_to_ewram();
         sub_08035C3C();
-        gVBlankCallback = sub_08043E48;
+        gVBlankCallback = battle_bg_scroll_vblank;
         gUnk_03000440.unk84 = 0;
         gUnk_03000440.unk139 = 0;
         gUnk_03001800.unkAA++;
@@ -1767,7 +1767,7 @@ void sub_0801FBC4(void) {
     case 0:
         gUnk_03000440.unk96 = 0;
         gUnk_03000430 = 0;
-        sub_08043CA8();
+        clear_bg_scroll();
         load_battle_script_entry_b();
         REG_DISPCNT &= 0xF0FF;
         REG_BG0CNT = 0x500;

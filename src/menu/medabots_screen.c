@@ -87,7 +87,7 @@ void medabots_screen_load_gfx(void) {
 
     switch (gUnk_03000440.unk139) {
     case 0:
-        sub_08043CA8();
+        clear_bg_scroll();
         if (gUnk_03000440.unk56 == 1)
             setup_overworld_scene_from_position();
         REG_DISPCNT &= 0xF0FF;
@@ -947,7 +947,7 @@ static void sub_0800522C(void) {
         CpuFastSet(gUnk_084C21BC + gUnk_030017A0[gUnk_03000440.unk51].unk2 * 0x80, (void *)0x06006600, 0x20);
     else
         CpuFastSet(gUnk_084C30BC, (void *)0x06006600, 0x20);
-    fill_tilemap_rect_08042698(2, 2, 1, 16, REG_BG1CNT, 0x6330);
+    draw_tile_block(2, 2, 1, 16, REG_BG1CNT, 0x6330);
 }
 
 static void sub_0800529C(void) {
@@ -1198,7 +1198,7 @@ static void sub_08005B44(void) {
         CpuFastSet(gUnk_084C21BC + gUnk_03000BE0[gUnk_03000440.unk97].unk1 * 0x80, (void *)0x06007800, 0x20);
     else
         CpuFastSet(gUnk_084C30BC, (void *)0x06007800, 0x20);
-    fill_tilemap_rect_08042698(2, 2, 16, 9, REG_BG1CNT, 0x63C0);
+    draw_tile_block(2, 2, 16, 9, REG_BG1CNT, 0x63C0);
 }
 
 static void sub_08005BB4(void) {
@@ -1239,9 +1239,9 @@ static void medabot_detail_draw_head_skill_icon(void) {
             load_part_data(gUnk_03000440.unk98, 0, &gUnk_03000440.unkEE);
             memcpy_bytes_08041D04(gUnk_083B6158[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk10E, 16);
             if (gUnk_03000440.unkEE == gUnk_03000440.unk10E[1])
-                fill_tilemap_rect_08042698(2, 2, 16, 11, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
+                draw_tile_block(2, 2, 16, 11, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
             else
-                fill_tilemap_rect_08042698(2, 2, 16, 11, REG_BG1CNT, 0xD340);
+                draw_tile_block(2, 2, 16, 11, REG_BG1CNT, 0xD340);
         } else {
             vram_fill_tilemap_rect(2, 2, 16, 11, REG_BG1CNT, 0);
         }
@@ -1267,9 +1267,9 @@ static void medabot_detail_draw_rarm_skill_icon(void) {
             load_part_data(gUnk_03000440.unk99, 1, &gUnk_03000440.unkEE);
             memcpy_bytes_08041D04(gUnk_083B6158[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk10E, 16);
             if (gUnk_03000440.unkEE == gUnk_03000440.unk10E[1])
-                fill_tilemap_rect_08042698(2, 2, 16, 13, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
+                draw_tile_block(2, 2, 16, 13, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
             else
-                fill_tilemap_rect_08042698(2, 2, 16, 13, REG_BG1CNT, 0xD340);
+                draw_tile_block(2, 2, 16, 13, REG_BG1CNT, 0xD340);
         } else {
             vram_fill_tilemap_rect(2, 2, 16, 13, REG_BG1CNT, 0);
         }
@@ -1295,9 +1295,9 @@ static void medabot_detail_draw_larm_skill_icon(void) {
             load_part_data(gUnk_03000440.unk9A, 2, &gUnk_03000440.unkEE);
             memcpy_bytes_08041D04(gUnk_083B6158[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk10E, 16);
             if (gUnk_03000440.unkEE == gUnk_03000440.unk10E[1])
-                fill_tilemap_rect_08042698(2, 2, 16, 15, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
+                draw_tile_block(2, 2, 16, 15, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
             else
-                fill_tilemap_rect_08042698(2, 2, 16, 15, REG_BG1CNT, 0xD340);
+                draw_tile_block(2, 2, 16, 15, REG_BG1CNT, 0xD340);
         } else {
             vram_fill_tilemap_rect(2, 2, 16, 15, REG_BG1CNT, 0);
         }
@@ -1323,9 +1323,9 @@ static void medabot_detail_draw_legs_skill_icon(void) {
             load_part_data(gUnk_03000440.unk9B, 3, &gUnk_03000440.unkEE);
             memcpy_bytes_08041D04(gUnk_083B6158[gUnk_03000BE0[gUnk_03000440.unk97].unk1], gUnk_03000440.unk10E, 16);
             if (gUnk_03000440.unkEE == gUnk_03000440.unk10E[1])
-                fill_tilemap_rect_08042698(2, 2, 16, 17, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
+                draw_tile_block(2, 2, 16, 17, REG_BG1CNT, 0xD340 + gUnk_03000440.unk10E[7] * 4);
             else
-                fill_tilemap_rect_08042698(2, 2, 16, 17, REG_BG1CNT, 0xD340);
+                draw_tile_block(2, 2, 16, 17, REG_BG1CNT, 0xD340);
         } else {
             vram_fill_tilemap_rect(2, 2, 16, 17, REG_BG1CNT, 0);
         }
@@ -1338,37 +1338,37 @@ static void medabot_detail_draw_legs_skill_icon(void) {
 // alternates a = 0 / 1 on the selected row every 8 frames.
 static void medabot_detail_draw_row_icon_0(u32 a) {
     if (a == 0)
-        fill_tilemap_rect_08042698(2, 2, 14, 9, REG_BG1CNT, 0xC370);
+        draw_tile_block(2, 2, 14, 9, REG_BG1CNT, 0xC370);
     else
-        fill_tilemap_rect_08042698(2, 2, 14, 9, REG_BG1CNT, 0xC384);
+        draw_tile_block(2, 2, 14, 9, REG_BG1CNT, 0xC384);
 }
 
 static void medabot_detail_draw_row_icon_1(u32 a) {
     if (a == 0)
-        fill_tilemap_rect_08042698(2, 2, 14, 11, REG_BG1CNT, 0xC374);
+        draw_tile_block(2, 2, 14, 11, REG_BG1CNT, 0xC374);
     else
-        fill_tilemap_rect_08042698(2, 2, 14, 11, REG_BG1CNT, 0xC388);
+        draw_tile_block(2, 2, 14, 11, REG_BG1CNT, 0xC388);
 }
 
 static void medabot_detail_draw_row_icon_2(u32 a) {
     if (a == 0)
-        fill_tilemap_rect_08042698(2, 2, 14, 13, REG_BG1CNT, 0xC378);
+        draw_tile_block(2, 2, 14, 13, REG_BG1CNT, 0xC378);
     else
-        fill_tilemap_rect_08042698(2, 2, 14, 13, REG_BG1CNT, 0xC388);
+        draw_tile_block(2, 2, 14, 13, REG_BG1CNT, 0xC388);
 }
 
 static void medabot_detail_draw_row_icon_3(u32 a) {
     if (a == 0)
-        fill_tilemap_rect_08042698(2, 2, 14, 15, REG_BG1CNT, 0xC37C);
+        draw_tile_block(2, 2, 14, 15, REG_BG1CNT, 0xC37C);
     else
-        fill_tilemap_rect_08042698(2, 2, 14, 15, REG_BG1CNT, 0xC388);
+        draw_tile_block(2, 2, 14, 15, REG_BG1CNT, 0xC388);
 }
 
 static void medabot_detail_draw_row_icon_4(u32 a) {
     if (a == 0)
-        fill_tilemap_rect_08042698(2, 2, 14, 17, REG_BG1CNT, 0xC380);
+        draw_tile_block(2, 2, 14, 17, REG_BG1CNT, 0xC380);
     else
-        fill_tilemap_rect_08042698(2, 2, 14, 17, REG_BG1CNT, 0xC388);
+        draw_tile_block(2, 2, 14, 17, REG_BG1CNT, 0xC388);
 }
 
 // Legs type icon above the Medal row (part data byte 1 - 100, 0xFF = none).
@@ -1545,9 +1545,9 @@ static u32 medabot_detail_cycle_medal_input(void) {
         goto none;
     old = gUnk_03000440.unk97;
     if (KEYS_LO(gRepeatKeys) & 0x20)
-        gUnk_03000440.unk97 = sub_0804361C(old, 1);
+        gUnk_03000440.unk97 = find_next_free_medal(old, 1);
     if (KEYS_LO(gRepeatKeys) & 0x10)
-        gUnk_03000440.unk97 = sub_0804361C(gUnk_03000440.unk97, 0);
+        gUnk_03000440.unk97 = find_next_free_medal(gUnk_03000440.unk97, 0);
     if (old == gUnk_03000440.unk97) {
     none:
         return 0;
@@ -1907,7 +1907,7 @@ static void medabots_screen_cancel_input(void) {
             play_sound_effect(2);
             gUnk_03000440.unk52 = 0;
             update_battle_icon_blink_and_orbit();
-        } else if (sub_080440B4()) {
+        } else if (count_assembled_medabots()) {
             play_sound_effect(5);
             gGameSubState++;
         } else {
@@ -1941,7 +1941,7 @@ static void team_select_confirm_pick(void) {
                             gGameSubState = 0x28;
                             break;
                         }
-                    } else if (sub_080440B4() == i + 1) {
+                    } else if (count_assembled_medabots() == i + 1) {
                         gGameSubState = 0x20;
                     } else {
                         gUnk_03000440.unk51 = gUnk_083AC468[gUnk_03000440.unk51];

@@ -297,7 +297,7 @@ void sub_0803752C(u32 a, u32 max, u32 b) {
 u8 sub_08037578(u32 a, u32 kind) {
     u8 ret = 0;
 
-    rng_next_080424B8();
+    rng_next_byte();
     switch (a) {
     case 0:
         switch (kind) {
@@ -372,7 +372,7 @@ void sub_0803769C(u32 rec) {
     gUnk_03001800.unkE8 = 0;
     gUnk_03001800.unkE8 = gUnk_03000590[rec].unkA8[3];
     gUnk_03001800.unkE8 += calc_bot_matching_part_power(rec);
-    gUnk_03001800.unkE8 += rng_next_080424B8() & 7;
+    gUnk_03001800.unkE8 += rng_next_byte() & 7;
     gUnk_03001800.unkE8 += gUnk_03000590[rec].medal.unk20[gUnk_03000590[rec].unkA8[1]];
 }
 
@@ -401,7 +401,7 @@ u32 sub_08037798(u32 base) {
     u32 i, j, dir;
 
     i = rng_lookup_table_value();
-    dir = rng_next_080424B8() & 1;
+    dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
         if (gUnk_03000590[base + i].unk40 &&
             ((gUnk_03000590[base + i].unkBD & 8) || (gUnk_03000590[base + i].unkBD & 0x10)) &&
@@ -422,7 +422,7 @@ u32 battle_select_random_target(u32 base, u32 rec) {
     u32 i, j, dir;
 
     i = rng_lookup_table_value();
-    dir = rng_next_080424B8() & 1;
+    dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
         if (gUnk_03000590[base + i].unk40 &&
             gUnk_03000590[base + i].parts[3].data[1] == gUnk_03000590[rec].parts[3].data[1])

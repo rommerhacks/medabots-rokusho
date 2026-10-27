@@ -41,7 +41,7 @@ void sub_08038D30(void) {
         gUnk_03000590[gUnk_03001800.unk88].unkBC |= 0xC;
         gUnk_03001800.unkF2 = gUnk_03001800.unkE8;
         gUnk_03001800.unkAB = 1;
-        if ((gUnk_03000590[gUnk_03001800.unk88].unkC0 & 1) && (rng_next_080424B8() & 1)) {
+        if ((gUnk_03000590[gUnk_03001800.unk88].unkC0 & 1) && (rng_next_byte() & 1)) {
             gUnk_03001800.unkF6 = 1;
             gUnk_03001800.unkB7 = 3;
         }

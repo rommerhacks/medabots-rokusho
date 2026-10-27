@@ -38,7 +38,7 @@ void battle_scene_init_state_machine(void) {
 
     switch (gUnk_03000440.unk139) {
     case 0:
-        sub_08043CA8();
+        clear_bg_scroll();
         load_battle_script_entry_b();
         REG_DISPCNT &= 0xF0FF;
         REG_BG0CNT = 0x500;
@@ -491,7 +491,7 @@ void sub_08013824(void) {
     gUnk_03000440.unk3D = find_medal_slot_by_id(gUnk_03000590[gUnk_03001800.unk80].medal.unk1) - 1;
     gUnk_03000440.unk41 = 1;
     gUnk_03000440.unk42 = 2;
-    sub_08043CA8();
+    clear_bg_scroll();
     gGameState = 4;
     gGameSubState = 0x28;
 }
@@ -503,7 +503,7 @@ void battle_phase_dispatch_0801387C(void) {
     case 0:
         gUnk_03000440.unk96 = 0;
         gUnk_03000430 = 0;
-        sub_08043CA8();
+        clear_bg_scroll();
         load_battle_script_entry_b();
         REG_DISPCNT &= 0xF0FF;
         REG_BG0CNT = 0x500;
@@ -583,7 +583,7 @@ void sub_08013AE4(void) {
 void sub_08013B8C(void) {
     u32 fill;
 
-    sub_08043CA8();
+    clear_bg_scroll();
     REG_DISPCNT &= 0xF0FF;
     REG_BG0CNT = 0x500;
     REG_BG1CNT = 0x1901;
@@ -625,7 +625,7 @@ void sub_08013B8C(void) {
     status_init_portrait();
     status_draw_team_sprites();
     battle_sprite_set_palette_index(0, 8);
-    fill_tilemap_rect_08042698(2, 2, 0xB, 2, REG_BG1CNT, 0x63C0);
+    draw_tile_block(2, 2, 0xB, 2, REG_BG1CNT, 0x63C0);
     set_blend_effect_mode(5, 0x3F, 0x20);
     gGameSubState++;
 }
@@ -683,7 +683,7 @@ void sub_08013E30(void) {
                            gUnk_03001800.unk64[3]);
         status_init_portrait();
         battle_sprite_set_palette_index(0, 8);
-        fill_tilemap_rect_08042698(2, 2, 0xB, 2, REG_BG1CNT, 0x63C0);
+        draw_tile_block(2, 2, 0xB, 2, REG_BG1CNT, 0x63C0);
         status_reset_portrait();
         gUnk_03000440.unk3F = 0;
         break;

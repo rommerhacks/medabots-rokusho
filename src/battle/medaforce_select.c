@@ -324,13 +324,13 @@ static void sub_08017734(u32 a) {
         }
         for (j = i; j <= 7; j++) {
             if (!(gUnk_03000440.unk84 & 4))
-                fill_tilemap_rect_08042698(1, 1, i + 1, 0x11, REG_BG0CNT, 0xB208);
+                draw_tile_block(1, 1, i + 1, 0x11, REG_BG0CNT, 0xB208);
             else
-                fill_tilemap_rect_08042698(1, 1, i + 1, 0x11, REG_BG0CNT, 0xC208);
+                draw_tile_block(1, 1, i + 1, 0x11, REG_BG0CNT, 0xC208);
             i++;
         }
         vram_fill_tilemap_rect(5, 1, 4, 0x12, REG_BG1CNT, 0);
-        divide_by_100000_08042838(gUnk_03000440.unk10E[2], 4, 0x12, 2, REG_BG1CNT, 0xD220);
+        draw_number_bgcnt(gUnk_03000440.unk10E[2], 4, 0x12, 2, REG_BG1CNT, 0xD220);
         draw_battle_panel_left_b(gUnk_03001800.unk80);
     } else {
         vram_fill_tilemap_rect(8, 1, 1, 0x11, REG_BG0CNT, i);

@@ -700,8 +700,8 @@ void sub_08034A68(void) {
 }
 
 void sub_08034AA0(void) {
-    gUnk_03001800.unk188 = gUnk_083AF200[rng_next_080424B8() & 0xF];
-    gUnk_03001800.unk189 = gUnk_083AF200[rng_next_080424B8() & 0xF];
+    gUnk_03001800.unk188 = gUnk_083AF200[rng_next_byte() & 0xF];
+    gUnk_03001800.unk189 = gUnk_083AF200[rng_next_byte() & 0xF];
     gUnk_03001800.unkEC = (gUnk_03001800.unk188 + gUnk_03001800.unk189) * 10;
     battle_script_advance();
 }

@@ -199,9 +199,9 @@ static inline void rings_set_radius(u8 *p, u8 *q) {
 void update_scene_animation_frame(void) {
     s32 i, n;
 
-    rng_next_080424B8();
+    rng_next_byte();
     if (gUnk_03006F74->unk48 == 0) {
-        gUnk_03006F74->unk48 = rng_next_080424B8();
+        gUnk_03006F74->unk48 = rng_next_byte();
         if (gUnk_03006F74->unk48 == 0)
             gUnk_03006F74->unk48++;
         gUnk_03006F74->unk49 = gUnk_03006F74->unk48 >> 1;
@@ -244,14 +244,14 @@ void update_scene_animation_frame(void) {
     matrix_set_identity();
     gUnk_03006F74->unk3C++;
     if ((gUnk_03006F74->unk3C & 0xFF) == 0) {
-        s32 r = rng_next_080424B8() & 0xFF;
+        s32 r = rng_next_byte() & 0xFF;
         gUnk_03006F74->unkA2[0] = gSineTable[r] * 5 >> 5;
         gUnk_03006F74->unkA7[0] = gSineTable[r + 0x40] * 5 >> 5;
         gUnk_03006F74->unkA2[0] += 0x78;
         gUnk_03006F74->unkA7[0] += 0x50;
     }
     if ((gUnk_03006F74->unk3C & 0x3F) == 0)
-        gUnk_03006F74->unk7E = rng_next_080424B8() & 3;
+        gUnk_03006F74->unk7E = rng_next_byte() & 3;
 
     switch (gUnk_03006F74->unk7E & 3) {
     case 0:

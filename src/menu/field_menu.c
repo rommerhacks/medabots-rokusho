@@ -93,7 +93,7 @@ void field_menu_close_anim(void) {
     if (gUnk_03000440.unk84 == 12)
         vram_fill_tilemap_rect(9, 4, 0x15, 9, REG_BG0CNT, 0);
     if (++gUnk_03000440.unk84 > 18)
-        sub_08044094();
+        return_to_field();
 }
 
 void field_menu_select_start(void) {

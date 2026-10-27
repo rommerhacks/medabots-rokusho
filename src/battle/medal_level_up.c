@@ -25,8 +25,8 @@ static void update_battle_sprite_explosions(void) {
             s->unk4 = 0x28;
             s->unkC_8 = s->unk2 << 8;
             s->unk10_8 = s->unk4 << 8;
-            s->unkC_0 = rng_next_080424B8();
-            s->unk10_0 = rng_next_080424B8();
+            s->unkC_0 = rng_next_byte();
+            s->unk10_0 = rng_next_byte();
             s->unk1A = 0x3F;
             s->unk8 = 0;
             s->unk9 = 0;

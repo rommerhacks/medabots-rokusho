@@ -224,7 +224,7 @@ static void sub_0803FEB8(void) {
     s->unk14 = zero;
     if (s->unk1 != 2) {
         anim = s->unk8[s->unkC + 1];
-        set = (u8)sub_08044B34(s->unk8[s->unkC + 2]);
+        set = (u8)resolve_area_sprite_set(s->unk8[s->unkC + 2]);
         idx = s->unk8[s->unkC + 3];
         if (s->unk12 == 1) {
             if (s->unkF == 0)

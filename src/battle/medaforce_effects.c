@@ -2214,7 +2214,7 @@ void sub_0802B4D8(void) {
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD2[i] == 0)
             continue;
-        gUnk_03001800.unkD6[i] = rng_next_080424B8() & 7;
+        gUnk_03001800.unkD6[i] = rng_next_byte() & 7;
         switch (gUnk_03001800.unkD6[i]) {
         case 0:
             if (sub_08036D64(gUnk_03001800.unk60 + i, 0xD))

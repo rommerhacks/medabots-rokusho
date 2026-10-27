@@ -12,17 +12,15 @@ void draw_battle_bot_portraits(void) {
 
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[i].unk40)
-            fill_tilemap_rect_08042698(2, 2, 2, i * 3 + 4, REG_BG3CNT,
-                                       (gUnk_03000590[i].parts[3].data[1] << 2) + 0x8084);
+            draw_tile_block(2, 2, 2, i * 3 + 4, REG_BG3CNT, (gUnk_03000590[i].parts[3].data[1] << 2) + 0x8084);
         else
-            fill_tilemap_rect_08042698(2, 2, 2, i * 3 + 4, REG_BG3CNT, 0x8230);
+            draw_tile_block(2, 2, 2, i * 3 + 4, REG_BG3CNT, 0x8230);
     }
     for (i = 0; i <= 2; i++) {
         if (gUnk_03000590[i + 3].unk40)
-            fill_tilemap_rect_08042698(2, 2, 26, i * 3 + 4, REG_BG3CNT,
-                                       (gUnk_03000590[i + 3].parts[3].data[1] << 2) + 0x8084);
+            draw_tile_block(2, 2, 26, i * 3 + 4, REG_BG3CNT, (gUnk_03000590[i + 3].parts[3].data[1] << 2) + 0x8084);
         else
-            fill_tilemap_rect_08042698(2, 2, 26, i * 3 + 4, REG_BG3CNT, 0x8230);
+            draw_tile_block(2, 2, 26, i * 3 + 4, REG_BG3CNT, 0x8230);
     }
 }
 
@@ -128,16 +126,16 @@ void render_bot_name_sprites(u32 rec) {
 
 void draw_battle_panel_left_a(u32 rec) {
     if (rec <= 2)
-        fill_tilemap_rect_08042698(3, 1, 1, 18, REG_BG1CNT, 0xD20A);
+        draw_tile_block(3, 1, 1, 18, REG_BG1CNT, 0xD20A);
     else
-        fill_tilemap_rect_08042698(3, 1, 21, 18, REG_BG1CNT, 0xD20A);
+        draw_tile_block(3, 1, 21, 18, REG_BG1CNT, 0xD20A);
 }
 
 void draw_battle_panel_left_b(u32 rec) {
     if (rec <= 2)
-        fill_tilemap_rect_08042698(3, 1, 1, 18, REG_BG1CNT, 0xD20D);
+        draw_tile_block(3, 1, 1, 18, REG_BG1CNT, 0xD20D);
     else
-        fill_tilemap_rect_08042698(3, 1, 21, 18, REG_BG1CNT, 0xD20D);
+        draw_tile_block(3, 1, 21, 18, REG_BG1CNT, 0xD20D);
 }
 
 void draw_medaforce_gauge_bar(u32 rec) {
@@ -151,15 +149,15 @@ void draw_medaforce_gauge_bar(u32 rec) {
         if (gUnk_03000590[rec].unkC1 != 0 && full == 0 && partial == 0)
             partial = 1;
         for (i = 0; i < full; i++) {
-            fill_tilemap_rect_08042698(1, 1, x + 1, 17, REG_BG1CNT, 0xD208);
+            draw_tile_block(1, 1, x + 1, 17, REG_BG1CNT, 0xD208);
             x++;
         }
         if (partial) {
-            fill_tilemap_rect_08042698(1, 1, x + 1, 17, REG_BG1CNT, 0xD200 + partial);
+            draw_tile_block(1, 1, x + 1, 17, REG_BG1CNT, 0xD200 + partial);
             x++;
         }
         for (i = x; i <= 7; i++) {
-            fill_tilemap_rect_08042698(1, 1, x + 1, 17, REG_BG1CNT, 0xD200);
+            draw_tile_block(1, 1, x + 1, 17, REG_BG1CNT, 0xD200);
             x++;
         }
     } else {
@@ -169,15 +167,15 @@ void draw_medaforce_gauge_bar(u32 rec) {
         if (gUnk_03000590[rec].unkC1 != 0 && full == 0 && partial == 0)
             partial = 1;
         for (i = 0; i < full; i++) {
-            fill_tilemap_rect_08042698(1, 1, x + 21, 17, REG_BG1CNT, 0xD208);
+            draw_tile_block(1, 1, x + 21, 17, REG_BG1CNT, 0xD208);
             x++;
         }
         if (partial) {
-            fill_tilemap_rect_08042698(1, 1, x + 21, 17, REG_BG1CNT, 0xD200 + partial);
+            draw_tile_block(1, 1, x + 21, 17, REG_BG1CNT, 0xD200 + partial);
             x++;
         }
         for (i = x; i <= 7; i++) {
-            fill_tilemap_rect_08042698(1, 1, x + 21, 17, REG_BG1CNT, 0xD200);
+            draw_tile_block(1, 1, x + 21, 17, REG_BG1CNT, 0xD200);
             x++;
         }
     }
@@ -193,12 +191,12 @@ u32 scale_to_bar_fill(u32 a, u32 b, u32 c) {
 
 void draw_medaforce_gauge_value(u32 rec) {
     if (rec <= 2) {
-        divide_by_100000_08042838(gUnk_03000590[rec].unkC1, 4, 18, 2, REG_BG1CNT, 0xD220);
-        fill_tilemap_rect_08042698(1, 1, 6, 18, REG_BG1CNT, 0xD21A);
-        divide_by_100000_08042838(80, 7, 18, 2, REG_BG1CNT, 0xD220);
+        draw_number_bgcnt(gUnk_03000590[rec].unkC1, 4, 18, 2, REG_BG1CNT, 0xD220);
+        draw_tile_block(1, 1, 6, 18, REG_BG1CNT, 0xD21A);
+        draw_number_bgcnt(80, 7, 18, 2, REG_BG1CNT, 0xD220);
     } else {
-        divide_by_100000_08042838(gUnk_03000590[rec].unkC1, 24, 18, 2, REG_BG1CNT, 0xD220);
-        fill_tilemap_rect_08042698(1, 1, 26, 18, REG_BG1CNT, 0xD21A);
-        divide_by_100000_08042838(80, 27, 18, 2, REG_BG1CNT, 0xD220);
+        draw_number_bgcnt(gUnk_03000590[rec].unkC1, 24, 18, 2, REG_BG1CNT, 0xD220);
+        draw_tile_block(1, 1, 26, 18, REG_BG1CNT, 0xD21A);
+        draw_number_bgcnt(80, 27, 18, 2, REG_BG1CNT, 0xD220);
     }
 }

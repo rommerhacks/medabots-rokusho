@@ -52,17 +52,17 @@ void robattle_judge_time_up(void) {
         else if (gUnk_03001800.unk28[0].unk1 < gUnk_03001800.unk28[1].unk1)
             gUnk_03000440.unk9C = 2;
         else if (gUnk_03000440.unk89 != 1) {
-            if (rng_next_080424B8() & 1)
+            if (rng_next_byte() & 1)
                 gUnk_03000440.unk9C = 1;
             else
                 gUnk_03000440.unk9C = 2;
         } else if (gUnk_03000B90 == 0) {
-            if (rng_next_080424B8() & 1)
+            if (rng_next_byte() & 1)
                 gUnk_03000440.unk9C = 1;
             else
                 gUnk_03000440.unk9C = 2;
         } else {
-            if (rng_next_080424B8() & 1)
+            if (rng_next_byte() & 1)
                 gUnk_03000440.unk9C = 2;
             else
                 gUnk_03000440.unk9C = 1;
@@ -105,7 +105,7 @@ void select_next_bot_and_action(u32 rec) {
 }
 
 u32 find_next_active_bot(u32 rec) {
-    u32 k = rng_next_080424B8() & 0x1F;
+    u32 k = rng_next_byte() & 0x1F;
     u32 i;
     u32 r;
 

@@ -162,7 +162,7 @@
   struct field, not a separate symbol like `gUnk_0300198A[0x1A]`.
 * Tilemap rect copies whose address is `x * 2 + VRAM` then `+ bg_base`, `+ y * 64`: write
   `(u16 *)(VRAM + bg_base) + x + y * 32`; `bg_base + (VRAM + x * 2)` gets reassociated
-  (read_vram_tilemap_rect, fill_tilemap_rect_08042698). Row loops that keep a row pointer and a
+  (read_vram_tilemap_rect, draw_tile_block). Row loops that keep a row pointer and a
   write pointer (`adds r4, #0x40; adds r2, r4, #0`) are `d = base; row = d; ... row += 32; d = row;`,
   with the source rows the same way (`srow = s; ... srow += 32; s = srow;`; declare `srow` before
   `row`): copy_transition_tiles_to_bg2, clear_and_copy_tilemap_rows.
@@ -179,7 +179,7 @@
 * `(id & 1)` written at each use instead of a `b = id & 1` local lets gcc share the constant 1 with
   a `= 1` store (team_add_tinpet).
 * Params read and written through `[sp]` in a leaf (`sub sp, #8; str r0, [sp]`): `vu32` params
-  (sub_0804361C, not matched yet).
+  (find_next_free_medal, not matched yet).
 * **File context**: register choices (and sometimes block order) change with the C functions
   compiled before it in the same file, so a function can match in a scratch file and not in its
   module. `python3 tools/scripts/tryin.py <name> variants.c [N]` tries each `----`-separated

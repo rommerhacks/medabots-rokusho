@@ -89,7 +89,7 @@ void medaparts_list_load_gfx(void) {
     REG_DISPCNT |= 0x1F60;
     write_tilemap_rect(10, 2, 0x10, 0, gUnk_083B4AE0[gUnk_03000440.unk3E + 0x59], REG_BG0CNT, 0x200);
     medaparts_list_set_cursor_from_part();
-    sub_08042950(gUnk_03000440.unk3F + 1, 0xB, 2, 2, REG_BG1CNT, 0x7360);
+    draw_number_tall_bgcnt(gUnk_03000440.unk3F + 1, 0xB, 2, 2, REG_BG1CNT, 0x7360);
     medaparts_list_draw_names();
     medaparts_list_draw_counts();
     sub_0800EDA0();
@@ -224,7 +224,7 @@ void medaparts_list_detail_fade_out(void) {
 void medapart_detail_load_gfx(void) {
     u32 zero;
 
-    sub_08043CA8();
+    clear_bg_scroll();
     if (gUnk_03000440.unk3C == 0 || gUnk_03000440.unk3C == 4)
         load_medapart_sprite_by_slot();
     REG_DISPCNT &= 0xF0FF;
@@ -488,7 +488,7 @@ void medaparts_help_show_text(void) {
             done = run_message(gUnk_083B6E24[gUnk_03000440.unkEE]);
             break;
         case 2:
-            done = run_message(gUnk_083B53F8[sub_08042B80(gUnk_03000440.unkF0) + 17]);
+            done = run_message(gUnk_083B53F8[skill_type_is_remote(gUnk_03000440.unkF0) + 17]);
             break;
         case 3:
             done = run_message(gUnk_083BD884[0]);
@@ -514,7 +514,7 @@ void medaparts_help_show_text(void) {
             done = run_message(gUnk_083B6E24[gUnk_03000440.unkEE]);
             break;
         case 2:
-            done = run_message(gUnk_083B53F8[sub_08042B80(gUnk_03000440.unkF0) + 17]);
+            done = run_message(gUnk_083B53F8[skill_type_is_remote(gUnk_03000440.unkF0) + 17]);
             break;
         case 3:
             done = run_message(gUnk_083BD884[0]);
@@ -651,7 +651,7 @@ void sub_0800EBB8(void) {
 
 void sub_0800EBE4(void) {
     clear_battle_sprite_slot(0, 0x80);
-    sub_08043CA8();
+    clear_bg_scroll();
     sub_08044CDC(2);
 }
 
@@ -689,10 +689,10 @@ static void medaparts_list_draw_counts(void) {
 
     for (i = 0; i < 4; i++) {
         if (MEDAPART_INV(gUnk_03000440.unk3E, gUnk_03000440.unk3F, i, 0))
-            sub_08042950(MEDAPART_INV(gUnk_03000440.unk3E, gUnk_03000440.unk3F, i, 0), 0x16, i * 2 + 5, 2, REG_BG1CNT,
-                         0x7360);
+            draw_number_tall_bgcnt(MEDAPART_INV(gUnk_03000440.unk3E, gUnk_03000440.unk3F, i, 0), 0x16, i * 2 + 5, 2,
+                                   REG_BG1CNT, 0x7360);
         else
-            sub_08042950(0, 0x16, i * 2 + 5, 2, REG_BG1CNT, 0x7360);
+            draw_number_tall_bgcnt(0, 0x16, i * 2 + 5, 2, REG_BG1CNT, 0x7360);
     }
 }
 
@@ -701,10 +701,10 @@ static void sub_0800EDA0(void) {
 
     for (i = 0; i < 4; i++) {
         if (MEDAPART_INV(gUnk_03000440.unk3E, gUnk_03000440.unk3F, i, 1))
-            sub_08042950(MEDAPART_INV(gUnk_03000440.unk3E, gUnk_03000440.unk3F, i, 1), 0x19, i * 2 + 5, 1, REG_BG1CNT,
-                         0x6360);
+            draw_number_tall_bgcnt(MEDAPART_INV(gUnk_03000440.unk3E, gUnk_03000440.unk3F, i, 1), 0x19, i * 2 + 5, 1,
+                                   REG_BG1CNT, 0x6360);
         else
-            sub_08042950(0, 0x19, i * 2 + 5, 1, REG_BG1CNT, 0x6360);
+            draw_number_tall_bgcnt(0, 0x19, i * 2 + 5, 1, REG_BG1CNT, 0x6360);
     }
 }
 
@@ -716,9 +716,9 @@ static void medaparts_list_draw_part_icons(void) {
         if (gMedapartInventory[gUnk_03000440.unk3E * 240 + (page = gUnk_03000440.unk3F * 4) * 2 + i * 2]) {
             load_part_data(page + i, gUnk_03000440.unk3E, &gUnk_03000440.unkEE);
             if (gUnk_03000440.unkF1)
-                fill_tilemap_rect_08042698(2, 2, 0x1B, i * 2 + 5, REG_BG1CNT, 0xA354);
+                draw_tile_block(2, 2, 0x1B, i * 2 + 5, REG_BG1CNT, 0xA354);
             else
-                fill_tilemap_rect_08042698(2, 2, 0x1B, i * 2 + 5, REG_BG1CNT, 0xA350);
+                draw_tile_block(2, 2, 0x1B, i * 2 + 5, REG_BG1CNT, 0xA350);
         } else {
             vram_fill_tilemap_rect(2, 2, 0x1B, i * 2 + 5, REG_BG1CNT, 0);
         }
@@ -809,7 +809,7 @@ static u32 medaparts_list_page_input(void) {
     } else {
         play_sound_effect(2);
         gUnk_03000440.unk3D = gUnk_03000440.unk3F * 4 + gUnk_03000440.unk40;
-        sub_08042950(gUnk_03000440.unk3F + 1, 0xB, 2, 2, REG_BG1CNT, 0x7360);
+        draw_number_tall_bgcnt(gUnk_03000440.unk3F + 1, 0xB, 2, 2, REG_BG1CNT, 0x7360);
         medaparts_list_draw_names();
         medaparts_list_draw_counts();
         sub_0800EDA0();
@@ -990,9 +990,9 @@ static void medapart_detail_draw_ability(void) {
 
 static void medapart_detail_draw_skill_icon(void) {
     if (gUnk_03000440.unk3E <= 2)
-        fill_tilemap_rect_08042698(2, 2, 11, 9, REG_BG1CNT, 0x8390 + sub_08042B80(gUnk_03000440.unkF0) * 4);
+        draw_tile_block(2, 2, 11, 9, REG_BG1CNT, 0x8390 + skill_type_is_remote(gUnk_03000440.unkF0) * 4);
     else
-        fill_tilemap_rect_08042698(2, 2, 11, 9, REG_BG1CNT, 0xA208 + gUnk_03000440.unkEF * 4);
+        draw_tile_block(2, 2, 11, 9, REG_BG1CNT, 0xA208 + gUnk_03000440.unkEF * 4);
 }
 
 static void medapart_detail_draw_name(void) {
@@ -1003,32 +1003,32 @@ static void medapart_detail_draw_name(void) {
 }
 
 static void medapart_detail_draw_gender_icon(void) {
-    fill_tilemap_rect_08042698(2, 2, 21, 3, REG_BG1CNT, 0x7388 + gUnk_03000440.unkF1 * 4);
+    draw_tile_block(2, 2, 21, 3, REG_BG1CNT, 0x7388 + gUnk_03000440.unkF1 * 4);
 }
 
 static void medapart_detail_draw_stat_labels(void) {
     switch (gUnk_03000440.unk3E) {
     case 0:
-        fill_tilemap_rect_08042698(12, 1, 14, 6, REG_BG1CNT, 0x5300);
-        fill_tilemap_rect_08042698(12, 1, 14, 7, REG_BG1CNT, 0x530C);
-        fill_tilemap_rect_08042698(12, 1, 14, 8, REG_BG1CNT, 0x5318);
-        fill_tilemap_rect_08042698(12, 1, 14, 9, REG_BG1CNT, 0x5324);
+        draw_tile_block(12, 1, 14, 6, REG_BG1CNT, 0x5300);
+        draw_tile_block(12, 1, 14, 7, REG_BG1CNT, 0x530C);
+        draw_tile_block(12, 1, 14, 8, REG_BG1CNT, 0x5318);
+        draw_tile_block(12, 1, 14, 9, REG_BG1CNT, 0x5324);
         break;
     case 1:
     case 2:
-        fill_tilemap_rect_08042698(12, 1, 14, 6, REG_BG1CNT, 0x5300);
-        fill_tilemap_rect_08042698(12, 1, 14, 7, REG_BG1CNT, 0x530C);
-        fill_tilemap_rect_08042698(12, 1, 14, 8, REG_BG1CNT, 0x5318);
-        fill_tilemap_rect_08042698(12, 1, 14, 9, REG_BG1CNT, 0x5330);
-        fill_tilemap_rect_08042698(12, 1, 14, 10, REG_BG1CNT, 0x533C);
+        draw_tile_block(12, 1, 14, 6, REG_BG1CNT, 0x5300);
+        draw_tile_block(12, 1, 14, 7, REG_BG1CNT, 0x530C);
+        draw_tile_block(12, 1, 14, 8, REG_BG1CNT, 0x5318);
+        draw_tile_block(12, 1, 14, 9, REG_BG1CNT, 0x5330);
+        draw_tile_block(12, 1, 14, 10, REG_BG1CNT, 0x533C);
         break;
     case 3:
-        fill_tilemap_rect_08042698(12, 1, 14, 6, REG_BG1CNT, 0x5300);
-        fill_tilemap_rect_08042698(12, 1, 14, 7, REG_BG1CNT, 0x5348);
-        fill_tilemap_rect_08042698(12, 1, 14, 8, REG_BG1CNT, 0x5354);
-        fill_tilemap_rect_08042698(12, 1, 14, 9, REG_BG1CNT, 0x5360);
-        fill_tilemap_rect_08042698(12, 1, 14, 10, REG_BG1CNT, 0x536C);
-        fill_tilemap_rect_08042698(12, 1, 14, 11, REG_BG1CNT, 0x5378);
+        draw_tile_block(12, 1, 14, 6, REG_BG1CNT, 0x5300);
+        draw_tile_block(12, 1, 14, 7, REG_BG1CNT, 0x5348);
+        draw_tile_block(12, 1, 14, 8, REG_BG1CNT, 0x5354);
+        draw_tile_block(12, 1, 14, 9, REG_BG1CNT, 0x5360);
+        draw_tile_block(12, 1, 14, 10, REG_BG1CNT, 0x536C);
+        draw_tile_block(12, 1, 14, 11, REG_BG1CNT, 0x5378);
         break;
     }
 }
@@ -1036,34 +1036,34 @@ static void medapart_detail_draw_stat_labels(void) {
 static void medapart_detail_draw_stats(void) {
     switch (gUnk_03000440.unk3E) {
     case 0:
-        divide_by_100000_08042838(gUnk_03000440.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF6, 26, 9, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF6, 26, 9, 3, REG_BG1CNT, 0x53C4);
         if (gUnk_03000440.unkF5)
-            fill_tilemap_rect_08042698(2, 1, 25, 8, REG_BG1CNT, 0x5384);
+            draw_tile_block(2, 1, 25, 8, REG_BG1CNT, 0x5384);
         else
             vram_fill_tilemap_rect(2, 1, 25, 8, REG_BG1CNT, 0);
         break;
     case 1:
     case 2:
-        divide_by_100000_08042838(gUnk_03000440.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF6, 26, 9, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF7, 26, 10, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF6, 26, 9, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF7, 26, 10, 3, REG_BG1CNT, 0x53C4);
         if (gUnk_03000440.unkF5)
-            fill_tilemap_rect_08042698(2, 1, 25, 8, REG_BG1CNT, 0x5384);
+            draw_tile_block(2, 1, 25, 8, REG_BG1CNT, 0x5384);
         else
             vram_fill_tilemap_rect(2, 1, 25, 8, REG_BG1CNT, 0);
         break;
     case 3:
-        divide_by_100000_08042838(gUnk_03000440.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF5, 26, 9, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF6, 26, 10, 3, REG_BG1CNT, 0x53C4);
-        divide_by_100000_08042838(gUnk_03000440.unkF7, 26, 11, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF2, 26, 6, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF3, 26, 7, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF4, 26, 8, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF5, 26, 9, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF6, 26, 10, 3, REG_BG1CNT, 0x53C4);
+        draw_number_bgcnt(gUnk_03000440.unkF7, 26, 11, 3, REG_BG1CNT, 0x53C4);
         break;
     }
 }

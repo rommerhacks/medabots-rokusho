@@ -5,9 +5,10 @@
 
 #include "global.h"
 
-static void sub_08043AE0(void);
+static void scanline_scroll_vblank(void);
 
-s32 rng_next_080424B8(void) {
+// Second RNG (0-255): mixes the frame counter into a 16-bit state, or replays gUnk_083B286C when unk89 is set.
+s32 rng_next_byte(void) {
     if (gUnk_03000440.unk89 == 0) {
         u16 s = gUnk_03000440.unk8A + gUnk_03000440.unk8C;
 
@@ -113,7 +114,7 @@ void fill_text_blank(u8 *buf, u8 n) {
     *buf = 0xFE;
 }
 
-void fill_tilemap_rect_08042698(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 entry) {
+void draw_tile_block(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 entry) {
     u32 i, j;
     u16 *base = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
 
@@ -129,27 +130,28 @@ void fill_tilemap_pair_or_divide(u8 value, u8 x, u8 y, u32 bgcnt, u16 tile) {
     u8 r;
 
     if (value == 0xFF) {
-        fill_tilemap_rect_08042698(1, 2, x, y, bgcnt, tile + 0x18);
-        fill_tilemap_rect_08042698(1, 2, x + 1, y, bgcnt, tile + 0x18);
+        draw_tile_block(1, 2, x, y, bgcnt, tile + 0x18);
+        draw_tile_block(1, 2, x + 1, y, bgcnt, tile + 0x18);
     } else {
         d[0] = value / 100;
         r = value - (u8)(value / 100) * 100;
         d[1] = r / 10;
         d[2] = r - (u8)(r / 10) * 10;
         if (d[0] != 0) {
-            fill_tilemap_rect_08042698(1, 2, x, y, bgcnt, tile + 0x14);
-            fill_tilemap_rect_08042698(1, 2, x + 1, y, bgcnt, tile + 0x16);
+            draw_tile_block(1, 2, x, y, bgcnt, tile + 0x14);
+            draw_tile_block(1, 2, x + 1, y, bgcnt, tile + 0x16);
         } else if (d[1] != 0) {
-            fill_tilemap_rect_08042698(1, 2, x, y, bgcnt, tile + d[1] * 2);
-            fill_tilemap_rect_08042698(1, 2, x + 1, y, bgcnt, tile + d[2] * 2);
+            draw_tile_block(1, 2, x, y, bgcnt, tile + d[1] * 2);
+            draw_tile_block(1, 2, x + 1, y, bgcnt, tile + d[2] * 2);
         } else {
             vram_fill_tilemap_rect(1, 2, x, y, bgcnt, 0);
-            fill_tilemap_rect_08042698(1, 2, x + 1, y, bgcnt, tile + d[2] * 2);
+            draw_tile_block(1, 2, x + 1, y, bgcnt, tile + d[2] * 2);
         }
     }
 }
 
-void divide_by_100000_08042838(u32 n, u32 x, u32 y, u32 digits, u32 bgcnt, u32 tile) {
+// Draws the last `digits` decimal digits of n as tiles (tile + digit); leading zeros blank, the last digit always.
+void draw_number_bgcnt(u32 n, u32 x, u32 y, u32 digits, u32 bgcnt, u32 tile) {
     u8 d[6];
     u32 r;
     u32 i;
@@ -194,7 +196,8 @@ static inline u32 lower_digit_tile(s16 base, u32 digit) {
     return base + 1 + digit * 2;
 }
 
-void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base) {
+// draw_number_bgcnt with 2-row digits: top tile base + digit * 2, bottom tile one row below.
+void draw_number_tall_bgcnt(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base) {
     u8 d[6];
     u32 rem;
     u32 i;
@@ -243,7 +246,8 @@ void sub_08042950(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base) {
     }
 }
 
-void sub_08042A90(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt, u16 tile2) {
+// "cur<tile>max" with 1-2 digits each (a leading 0 is skipped).
+void draw_count_over_max(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt, u16 tile2) {
     u8 a[2];
     u8 b[2];
     u16 *dst;
@@ -287,9 +291,10 @@ void load_part_data(u32 part, u32 kind, u8 *dst) {
         *d++ = gUnk_083B827C[part * 64 + kind * 16 + i];
 }
 
-// No return for a > 7: the original falls through with a still in r0.
-u32 sub_08042B80(u32 a) {
-    switch (a) {
+// Skill types 0, 1, 4, 5 are proximity, 2, 3, 6, 7 remote (gUnk_083B53F8 messages 17 / 18: "Proximity
+// Medaparts" / "Remote Medaparts"). No return for type > 7: the original falls through with type in r0.
+u32 skill_type_is_remote(u32 type) {
+    switch (type) {
     case 0:
     case 1:
     case 4:
@@ -584,25 +589,25 @@ void modify_medapart_quantity(u32 id, u32 kind, u32 byte, u32 subtract, u32 n) {
 
 void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags) {
     if (id == 0xFF)
-        fill_tilemap_rect_08042698(2, 2, x, y, bgcnt, flags + 0x101C);
+        draw_tile_block(2, 2, x, y, bgcnt, flags + 0x101C);
     else if (id >> 2)
-        fill_tilemap_rect_08042698(2, 2, x, y, bgcnt, flags + id * 4 + 0x1000);
+        draw_tile_block(2, 2, x, y, bgcnt, flags + id * 4 + 0x1000);
     else
-        fill_tilemap_rect_08042698(2, 2, x, y, bgcnt, flags + id * 4);
+        draw_tile_block(2, 2, x, y, bgcnt, flags + id * 4);
 }
 
-// Previous/next owned Medal slot (guess). The backward search is a goto loop (no loop hoisting of 0x80)
-// with two pointer locals for the two base copies (r2/r3) the original keeps.
-
-u32 sub_0804361C(volatile u32 medal, volatile u32 backward) {
+// Previous (backward) or next Medal that is owned (bit 7) and not set in a Medabot (bit 6); 30 if none.
+// FAKEMATCH: the backward search is a goto loop (no loop hoisting of 0x80) with two pointer locals for the
+// two base copies (r2/r3) the original keeps.
+u32 find_next_free_medal(volatile u32 medal, volatile u32 backward) {
     if (backward) {
         if (medal != 0) {
-            struct Unk_03000BE0 *p = gUnk_03000BE0;
-            struct Unk_03000BE0 *q = gUnk_03000BE0;
+            struct Unk_03000BE0 *medals = gUnk_03000BE0;
+            struct Unk_03000BE0 *medals2 = gUnk_03000BE0; // FAKEMATCH: second base copy
         loop:
             medal--;
-            if (q[medal].unk0 & 0x80) {
-                if (!(p[medal].unk0 & 0x40))
+            if (medals2[medal].unk0 & 0x80) {
+                if (!(medals[medal].unk0 & 0x40))
                     return medal;
             }
             if (medal != 0)
@@ -671,7 +676,8 @@ u32 validate_medapart_stats(u8 medal, u8 head, u8 rarm, u8 larm, u8 legs) {
     return 0;
 }
 
-u32 sub_0804384C(u8 medal) {
+// Team slot whose Medabot holds Medal `medal`, or 0xFF.
+u32 find_medabot_slot_by_medal(u8 medal) {
     u32 i;
     if (medal >= 0x1E)
         return 0xFF;
@@ -688,7 +694,7 @@ void load_battlefield_data_to_buffer(void) {
 }
 
 static inline u32 roll_encounter(void) {
-    if ((rng_next_080424B8() & 0x1F) == 0x1F)
+    if ((rng_next_byte() & 0x1F) == 0x1F)
         return 1;
     return 0;
 }
@@ -714,7 +720,9 @@ u32 check_random_encounter(void) {
     return 0;
 }
 
-void sub_08043960(u32 phase, s32 amplitude, u32 lines) {
+// Fills next frame's per-scanline BG0-3 scroll table: lines above `lines` get a sine x offset (every 4th
+// line recomputed), the rest the plain scroll. scanline_scroll_vblank then feeds it to the BG registers.
+void start_scanline_wave_scroll(u32 phase, s32 amplitude, u32 lines) {
     s32 i;
     u32 idx;
     struct Vec16(*buf)[4];
@@ -745,13 +753,13 @@ void sub_08043960(u32 phase, s32 amplitude, u32 lines) {
             buf[i][3].y = gBg3Scroll.y + gUnk_03002C2C.y;
         }
     }
-    gVBlankOnceCallback = sub_08043AE0;
+    gVBlankOnceCallback = scanline_scroll_vblank;
 }
 
 // Own code (0x78) matches; the .s has a hidden function at 0x08043B58 (0x24 bytes) after the pool.
 // Vblank-once callback: line 0 of the double-buffered per-scanline BG0-3 scroll table to BG0HOFS..BG3VOFS,
 // then DMA0 (hblank, repeat, 4 words) for the remaining lines.
-static void sub_08043AE0(void) {
+static void scanline_scroll_vblank(void) {
     vu32 *dma = (vu32 *)REG_ADDR_DMA0;
     u16 *src;
 
@@ -773,8 +781,8 @@ static void sub_08043AE0(void) {
     dma[2] = 0xA6600004;
 }
 
-// guess: stops the scanline scroll wave started by sub_08043960
-static void sub_08043B58(void) {
+// Stops the scanline scroll started by start_scanline_wave_scroll (DMA0 off, no vblank-once callback).
+static void stop_scanline_wave_scroll(void) {
     VBlankIntrWait();
     REG_DMA0CNT_H = 0;
     gVBlankOnceCallback = nullsub_08000840;
@@ -804,11 +812,12 @@ void decompress_sprite_to_vram_08043C08(u32 idx, u32 backup) {
         CpuFastSet(gUnk_083B24A8[idx * 5 + 2], (void *)PLTT, 0x40);
 }
 
-s32 sub_08043C94(void) {
-    return rng_next_080424B8() * 100 / 255;
+// Random value 0-100.
+s32 rng_percent(void) {
+    return rng_next_byte() * 100 / 255;
 }
 
-void sub_08043CA8(void) {
+void clear_bg_scroll(void) {
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;
@@ -886,7 +895,8 @@ void apply_battle_blend_effect_a(void) {
         set_blend_effect_mode(0, 0, 0);
 }
 
-void sub_08043E48(void) {
+// gVBlankCallback of the battle intro and the race: BG2/BG3 scroll movement only.
+void battle_bg_scroll_vblank(void) {
     update_scroll_movement_a();
 }
 
@@ -976,13 +986,15 @@ void advance_battle_animation_frame(u32 field) {
     }
 }
 
-void sub_08044094(void) {
+// Back to the field: mode 1, state 1, sub-state 7 (restores the script sprites, then resumes the map).
+void return_to_field(void) {
     gGameMode = 1;
     gGameState = 1;
     gGameSubState = 7;
 }
 
-u32 sub_080440B4(void) {
+// guess: state 3 = Medal and parts set (the Medabots screen and link battles refuse when this is 0 / <= 1).
+u32 count_assembled_medabots(void) {
     u32 n = 0;
     u32 i;
 
@@ -992,7 +1004,8 @@ u32 sub_080440B4(void) {
     return n;
 }
 
-u32 sub_080440D4(void) {
+// 1 if every Medapart's owned count equals its in-use count (no spare part to trade).
+u32 medaparts_all_equipped(void) {
     u32 i;
 
     for (i = 0; i < 480; i++)
@@ -1366,17 +1379,19 @@ u32 advance_text_display(u32 a0, u32 a1, u32 a2) {
     return 0;
 }
 
-void sub_08044B28(const u8 *src, void *dst) {
+void lz_decompress(const u8 *src, void *dst) {
     lz_decompress_dispatch(src, dst);
 }
 
-u32 sub_08044B34(u8 a) {
-    if (a == 0)
+// guess: message sprite set, 0 = the current area's default (gUnk_030057E0.unkC5C is the area palette id).
+u32 resolve_area_sprite_set(u8 set) {
+    if (set == 0)
         return gUnk_083B2970[gUnk_030057E0.unkC5C];
-    return a;
+    return set;
 }
 
-void sub_08044B58(void) {
+// Map script: puts the first Medabot in team slot 0 (Medal 0 owned and set, parts 0x2A in use).
+void give_starter_medabot(void) {
     gUnk_03000BE0[0].unk0 |= 0xC0;
     gUnk_030017A0[0].unk0 = 3;
     gUnk_030017A0[0].unk2 = 0;
@@ -1391,7 +1406,7 @@ void sub_08044B58(void) {
 }
 
 void init_battle_scene(u32 mode, u32 id) {
-    sub_08043CA8();
+    clear_bg_scroll();
     clear_battle_sprite_slot(0, 0x80);
     gUnk_03000440.unk96 = 0;
     gUnk_03000430 = 0;
@@ -1418,7 +1433,7 @@ void init_battle_scene(u32 mode, u32 id) {
 }
 
 void init_game_mode(u32 mode) {
-    sub_08043CA8();
+    clear_bg_scroll();
     mem_fill8(&gUnk_03000440.unk3C, 0x14, 0);
     mem_fill8(&gUnk_03000440.unk3C + 0x14, 0x14, 0);
     gUnk_03000440.unk89 = 1;

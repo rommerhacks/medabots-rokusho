@@ -366,9 +366,9 @@ extern u8
 extern u8
     gItemInventory[64][2]; // item inventory (runtime-checked): [0] 0x80 | item id, [1] count (get_item_quantity_by_id)
 extern const u8 gUnk_083B296C[]; // 4 per-phase y bob flags (update_battle_sprite_orbiting_positions)
-extern const u8 gUnk_083B2970[]; // indexed by gUnk_030057E0.unkC5C (sub_08044B34)
+extern const u8 gUnk_083B2970[]; // indexed by gUnk_030057E0.unkC5C (resolve_area_sprite_set)
 extern const u8 gUnk_083B827C[]; // 16 bytes per Medapart (part id * 64 + kind * 16), copied by load_part_data
-extern const u8 gUnk_083B286C[]; // random bytes, indexed by gUnk_03000440.unk8D when unk89 is set (rng_next_080424B8)
+extern const u8 gUnk_083B286C[]; // random bytes, indexed by gUnk_03000440.unk8D when unk89 is set (rng_next_byte)
 extern const u8 gUnk_084EBF50[];
 extern const u8 gUnk_084C4014[];
 extern const u8 gUnk_084C4330[];
@@ -566,8 +566,8 @@ extern const u16 gUnk_080AF7E0[]; // animation frames by (arg & 3) (sub_0805D57C
 extern const u16 gUnk_080AF808[]; // animation frames by (arg & 3) (sub_0805E170)
 
 extern u8 gUnk_02023078;                   // first visible list entry (update_battle_sprite_priority_flags)
-extern struct Vec16 gUnk_02023200[160][4]; // per-scanline BG0-3 scroll, even frames (sub_08043960)
-extern struct Vec16 gUnk_02023C00[160][4]; // per-scanline BG0-3 scroll, odd frames (sub_08043960)
+extern struct Vec16 gUnk_02023200[160][4]; // per-scanline BG0-3 scroll, even frames (start_scanline_wave_scroll)
+extern struct Vec16 gUnk_02023C00[160][4]; // per-scanline BG0-3 scroll, odd frames (start_scanline_wave_scroll)
 
 extern struct Unk_03001784 gUnk_03001784;
 extern const u8 gSaveMagic[17]; // save file signature (serialize_save_data, validate_save_data)
@@ -892,7 +892,7 @@ extern const s16 gUnk_083AFAB8[];           // y offsets by sprite unk23 (0-31; 
 extern const u8 gUnk_083AFAAC[];            // BG3 parallax shift by battlefield gUnk_03001800.unk38 (sub_0803BE44)
 extern const Func gUnk_083AF96C[];          // sprite handlers by unk29, slots 1-0x27 (battle_sequence_update_sprites)
 extern const u8
-    *const gUnk_083AF95C[]; // pairs: compressed OBJ tiles (sub_08044B28 to 0x02000000), OBJ palette 14 (sub_0803B19C)
+    *const gUnk_083AF95C[]; // pairs: compressed OBJ tiles (lz_decompress to 0x02000000), OBJ palette 14 (sub_0803B19C)
 extern const struct Unk_083AF94C gUnk_083AF94C[]; // 4 sprite positions (sub_0803B0C0)
 extern const Func gUnk_083AF720[];                // sprite handlers by unk29 for slots 0x21-0x3B (sub_0803884C)
 extern const u16 gUnk_083AF520[];                 // 4 (x, y) particle offsets, x and y picked by separate rng & 3 rolls

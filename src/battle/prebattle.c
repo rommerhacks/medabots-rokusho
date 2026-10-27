@@ -132,7 +132,7 @@ void prebattle_load_encounter(void) {
 void prebattle_load_gfx(void) {
     u32 zero;
 
-    sub_08043CA8();
+    clear_bg_scroll();
     REG_DISPCNT &= 0xE0FF;
     REG_BG0CNT = 0x500;
     REG_BG1CNT = 0x1801;
@@ -300,7 +300,7 @@ void sub_08010AC8(void) {
         gUnk_03000440.unk84++;
     } else {
         gVBlankCallback = nullsub_08000840;
-        sub_08044094();
+        return_to_field();
     }
 }
 
@@ -597,7 +597,7 @@ void sub_08011344(void) {
     vu32 zero;
 
     clear_battle_sprite_slot(0, 0x80);
-    sub_08043CA8();
+    clear_bg_scroll();
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG2CNT, 0);
@@ -637,7 +637,7 @@ void sub_080114E0(void) {
 void sub_08011500(void) {
     play_song(1);
     clear_battle_sprite_slot(0, 0x80);
-    sub_08043CA8();
+    clear_bg_scroll();
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG2CNT, 0);
@@ -690,7 +690,7 @@ void sub_080116C4(void) {
     struct Unk_03001800 *b;
     u8 kind;
 
-    sub_08043CA8();
+    clear_bg_scroll();
     clear_battle_sprite_slot(0, 0x80);
     g = &gUnk_03000440;
     g->unk96 = 0;
@@ -737,7 +737,7 @@ void afterbattle_part_detail_restore_screen(void) {
     const u32 *tbl;
     u32 zero;
 
-    sub_08043CA8();
+    clear_bg_scroll();
     REG_DISPCNT &= 0xE0FF;
     REG_BG0CNT = 0x500;
     REG_BG1CNT = 0x1801;
@@ -843,7 +843,7 @@ void afterbattle_fade_to_white(void) {
 
 void afterbattle_exit_to_field(void) {
     clear_battle_sprite_slot(0, 0x80);
-    sub_08043CA8();
+    clear_bg_scroll();
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG2CNT, 0);
@@ -884,11 +884,11 @@ void battle_loss_show_part_taken(void) {
     }
 }
 
-// guess: sub_080440B4() nonzero = a Medabot is still assembled
+// guess: count_assembled_medabots() nonzero = a Medabot is still assembled
 void battle_loss_check_team(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (sub_080440B4())
+    if (count_assembled_medabots())
         gGameSubState = 0x40;
     else {
         sub_0803FB0C();
@@ -930,7 +930,7 @@ void setup_random_encounter_enemies(void) {
     st = &gUnk_030057E0;
     if (!flag) {
         memcpy_bytes_08041D04(gUnk_083BF090[st->unk7FE], &gUnk_03000440.unkEE, 4);
-        r = sub_08043C94();
+        r = rng_percent();
         if (r < 40)
             id = (&gUnk_03000440.unkEE)[0];
         else if (r < 70)
@@ -962,7 +962,7 @@ void setup_random_encounter_enemies(void) {
 
 // Returns a, b, c or d with 40/30/20/10% probability.
 u32 random_pick_weighted4(u32 a, u32 b, u32 c, u32 d) {
-    u32 r = sub_08043C94();
+    u32 r = rng_percent();
 
     if (r < 40)
         return a;
@@ -1044,7 +1044,7 @@ void sub_080121A8(void) {
 static void sub_080121CC(void) {
     s32 n = sub_080121F0();
 
-    if (n < sub_08043C94() || !sub_08012234())
+    if (n < rng_percent() || !sub_08012234())
         sub_080122F4(3);
 }
 
@@ -1081,11 +1081,11 @@ u32 sub_08012234(void) {
     u8 *p;
     struct Unk_03000590 *bb;
 
-    slot = gUnk_083ACEF0[rng_next_080424B8() & 0xF];
+    slot = gUnk_083ACEF0[rng_next_byte() & 0xF];
     for (n = 0; n < 3; n++) {
         register struct Unk_03000590 *base asm("r5") = gUnk_03000590;
         if (base[k = slot + 3].unkBA) {
-            part = rng_next_080424B8() & 3;
+            part = rng_next_byte() & 3;
             for (j = 0, bb = base; j < 4; j++) {
                 p = (u8 *)(part * 24 + ((slot + 3) << 8) + (u32)bb) + 0x5F;
                 if (!sub_08042114(*p, part)) {
@@ -1107,12 +1107,12 @@ u32 sub_08012234(void) {
 void sub_080122F4(u32 a) {
     u32 slot, dir, i, k;
 
-    slot = gUnk_083ACEF0[rng_next_080424B8() & 0xF];
-    dir = rng_next_080424B8() & 1;
+    slot = gUnk_083ACEF0[rng_next_byte() & 0xF];
+    dir = rng_next_byte() & 1;
     for (i = 0; i < 3; i++) {
         k = a + slot;
         if (gUnk_03000590[k].unkBA) {
-            gUnk_03001800.unk168 = rng_next_080424B8() & 3;
+            gUnk_03001800.unk168 = rng_next_byte() & 3;
             gUnk_03001800.unk169 = gUnk_03000590[k].parts[gUnk_03001800.unk168].unk17;
             gUnk_03001800.unk187 = k;
             return;

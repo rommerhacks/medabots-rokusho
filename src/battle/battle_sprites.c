@@ -42,7 +42,7 @@ void decompress_indexed_graphics_to_ewram(u32 list) {
     u32 i;
 
     for (i = 0; e[i].size != 0; i++) {
-        sub_08044B28(gUnk_083B2584[e[i].index * 2], dst);
+        lz_decompress(gUnk_083B2584[e[i].index * 2], dst);
         dst += e[i].size * 32;
     }
 }
@@ -53,7 +53,7 @@ void decompress_fixed_graphics_to_ewram(void) {
     u32 i;
 
     for (i = 0; e[i].size != 0; i++) {
-        sub_08044B28(gUnk_083B2584[e[i].index * 2], dst);
+        lz_decompress(gUnk_083B2584[e[i].index * 2], dst);
         dst += e[i].size * 32;
     }
 }

@@ -604,7 +604,7 @@ static u32 select_battle_pending_action(void) {
     u32 i, j, dir;
 
     i = rng_lookup_table_value();
-    dir = rng_next_080424B8() & 1;
+    dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
         if (gUnk_03001800.unk61[i])
             return gUnk_03001800.unk61[i] - 1;
@@ -620,14 +620,14 @@ static u32 select_battle_pending_action(void) {
 }
 
 u32 rng_lookup_table_value(void) {
-    return gUnk_083AEF00[rng_next_080424B8() & 0xF];
+    return gUnk_083AEF00[rng_next_byte() & 0xF];
 }
 
 u32 select_random_battle_target(u32 base) {
     u32 i, j, dir;
 
     i = rng_lookup_table_value();
-    dir = rng_next_080424B8() & 1;
+    dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
         if (gUnk_03000590[base + i].unk40)
             return base + i;
@@ -650,7 +650,7 @@ u32 battle_find_next_active_bot(u32 rec) {
     u32 i, j, dir;
 
     i = rng_lookup_table_value();
-    dir = rng_next_080424B8() & 1;
+    dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
         if (gUnk_03000590[rec].parts[i].unk11)
             return i;
@@ -715,8 +715,8 @@ static u32 sub_08033240(u32 rec) {
 u32 find_random_broken_part(u32 rec) {
     u32 i, slot, dir;
 
-    slot = rng_next_080424B8() & 3;
-    dir = rng_next_080424B8() & 1;
+    slot = rng_next_byte() & 3;
+    dir = rng_next_byte() & 1;
     for (i = 0; i <= 3; i++) {
         if (gUnk_03000590[rec].parts[slot].unk11 == 0)
             return slot + 1;

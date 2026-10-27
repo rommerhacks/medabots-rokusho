@@ -297,11 +297,11 @@ struct Unk_03000440 {
     struct Unk_03000440_64 unk64[4]; // set up by init_game_state_entry / sub_0801BF78
     u8 unk84;                        // field menu: animation frame counter
     u8 unk85;
-    u16 unk86; // link exchange frame counter; also the current wave x offset of sub_08043960
+    u16 unk86; // link exchange frame counter; also the current wave x offset of start_scanline_wave_scroll
     u8 unk88;  // field menu: row animation counter
     u8 unk89;  // Robattle: 1 skips the bot setup in battle_init_phase
-    u16 unk8A; // rng seed (rng_next_080424B8)
-    u8 unk8C;  // last rng_next_080424B8 value
+    u16 unk8A; // rng seed (rng_next_byte)
+    u8 unk8C;  // last rng_next_byte value
     u8 unk8D;  // rng table index when unk89 is set
     u8 unk8E;  // field menu cursor: 0 Medawatch, 1 Item, 2 Vehicle, 3 Save (runtime-checked)
     u8 unk8F;  // Medawatch menu cursor (0..2)

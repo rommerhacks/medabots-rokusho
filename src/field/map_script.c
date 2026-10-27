@@ -767,7 +767,7 @@ void sub_0804CFC0(void) {
 }
 
 void sub_0804CFCC(void) {
-    sub_08044B58();
+    give_starter_medabot();
 }
 
 void sub_0804CFD8(void) {

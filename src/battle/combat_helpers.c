@@ -227,7 +227,7 @@ void sub_08035478(u32 rec) {
 
 // get_random_battle_weight_entry inlined, with the "- 1" inside
 static inline u32 pick_evasion_weight(u32 n) {
-    return gUnk_083AF330[sub_08035590(n - 1) * 8 + (rng_next_080424B8() & 7)];
+    return gUnk_083AF330[sub_08035590(n - 1) * 8 + (rng_next_byte() & 7)];
 }
 
 void calc_bot_evasion_modifier(u32 rec) {
@@ -239,7 +239,7 @@ void calc_bot_evasion_modifier(u32 rec) {
 }
 
 u32 get_random_battle_weight_entry(u32 rec) {
-    return gUnk_083AF330[sub_08035590(rec) * 8 + (rng_next_080424B8() & 7)];
+    return gUnk_083AF330[sub_08035590(rec) * 8 + (rng_next_byte() & 7)];
 }
 
 u32 sub_08035590(u32 rec) {
@@ -347,9 +347,9 @@ void calc_battle_action_speed(u32 rec, u32 part) {
     struct Unk_03001800 *b = &gUnk_03001800;
     b->unkE8 += gUnk_03000590[rec].parts[part].data[5];
     b->unkE8 += calc_bot_matching_part_power(rec);
-    b->unkE8 += rng_next_080424B8() & 7;
+    b->unkE8 += rng_next_byte() & 7;
     b->unkE8 += gUnk_03000590[rec].medal.unk20[gUnk_03000590[rec].parts[part].data[2]];
-    if (sub_08042B80(gUnk_03000590[rec].parts[part].data[2]))
+    if (skill_type_is_remote(gUnk_03000590[rec].parts[part].data[2]))
         b->unkE8 += gUnk_03000590[rec].parts[3].unk16;
     else
         b->unkE8 += gUnk_03000590[rec].parts[3].unk15;
@@ -364,7 +364,7 @@ void accumulate_battle_speed_value(u32 rec) {
     struct Unk_03001800 *b = &gUnk_03001800;
     b->unkEE += gUnk_03000590[rec].medal.unk5;
     b->unkEE += calc_bot_matching_part_power(rec);
-    b->unkEE += rng_next_080424B8() & 7;
+    b->unkEE += rng_next_byte() & 7;
 }
 
 u32 check_bot_ability_type_strike(u32 rec, u32 part, u32 target) {
@@ -462,7 +462,7 @@ void sub_08035B9C(u32 rec) {
 void sub_08035BD4(void) {
     struct Unk_03001800 *b = &gUnk_03001800;
     if (b->unkEC <= 2)
-        b->unkEC += rng_next_080424B8() & 3;
+        b->unkEC += rng_next_byte() & 3;
 }
 
 void sub_08035BFC(u32 rec, u32 part) {

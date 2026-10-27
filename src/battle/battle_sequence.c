@@ -813,7 +813,7 @@ void sub_0803B0C0(void) {
 
 void sub_0803B19C(void) {
     load_battle_sequence_commands();
-    sub_08044B28(gUnk_083AF95C[gUnk_03001800.unk102[0] * 2], (void *)0x02000000);
+    lz_decompress(gUnk_083AF95C[gUnk_03001800.unk102[0] * 2], (void *)0x02000000);
     CpuFastSet(gUnk_083AF95C[gUnk_03001800.unk102[0] * 2 + 1], (void *)0x050003C0, 8);
     battle_advance_sequence_counter();
 }

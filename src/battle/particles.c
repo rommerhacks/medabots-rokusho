@@ -45,15 +45,15 @@ static void sub_080378F0(u32 src) {
         s = &base[n];
         s->unk0 = 0xC604;
         s->unk1C = 0;
-        s->unk2 = (p->unk2 + gUnk_083AF520[(rng_next_080424B8() & 3) * 2]) & 0x1FF;
-        s->unk4 = (p->unk4 + gUnk_083AF520[(rng_next_080424B8() & 3) * 2 + 1]) & 0xFF;
+        s->unk2 = (p->unk2 + gUnk_083AF520[(rng_next_byte() & 3) * 2]) & 0x1FF;
+        s->unk4 = (p->unk4 + gUnk_083AF520[(rng_next_byte() & 3) * 2 + 1]) & 0xFF;
         s->unk8 = 0x40;
         s->unk9 = 0x40;
         s->unkA = 6;
         s->unkB = 0xE0;
         switch (gUnk_03001800.unk51) {
         case 0:
-            gUnk_03002C30[n].unk6 = (rng_next_080424B8() & 3) + 0x6B01;
+            gUnk_03002C30[n].unk6 = (rng_next_byte() & 3) + 0x6B01;
             gUnk_03002C30[n].unk29 = 0x10;
             break;
         case 1:
@@ -103,8 +103,8 @@ void spawn_battle_particle_effect(u32 src) {
         s = &base[n];
         s->unk0 = 0xC604;
         s->unk1C = 0;
-        s->unk2 = (p->unk2 + gUnk_083AF520[(rng_next_080424B8() & 3) * 2]) & 0x1FF;
-        s->unk4 = (p->unk4 + gUnk_083AF520[(rng_next_080424B8() & 3) * 2 + 1]) & 0xFF;
+        s->unk2 = (p->unk2 + gUnk_083AF520[(rng_next_byte() & 3) * 2]) & 0x1FF;
+        s->unk4 = (p->unk4 + gUnk_083AF520[(rng_next_byte() & 3) * 2 + 1]) & 0xFF;
         s->unk8 = 0x40;
         s->unk9 = 0x40;
         s->unkA = 6;
@@ -391,7 +391,7 @@ void sub_08038428(void) {
         s->unk29 = 2;
         s->unk24 = 3;
         s->unk23 = 0;
-        r = rng_next_080424B8() & 3;
+        r = rng_next_byte() & 3;
         if (!(gUnk_03001800.unkF8 & 1)) {
             s->unk2 = (base[gUnk_03000440.unk12F].unk2 + gUnk_083AF6D0[r << 1]) & 0x1FF;
             s->unk4 = (base[gUnk_03000440.unk12F].unk4 + gUnk_083AF6D0[r * 2 + 1]) & 0xFF;

@@ -48,7 +48,7 @@ void fade_state_dispatch(void) {
     if (gUnk_03000B90 != 0) {
         switch (gUnk_03006F74->unk3A) {
         case 0:
-            if ((s32)sub_080440B4() <= 1) {
+            if ((s32)count_assembled_medabots() <= 1) {
                 gUnk_03006F74->unk7B = 0;
                 gUnk_03005010.unk6 = 0xFF02;
             } else {
@@ -73,7 +73,7 @@ void fade_state_dispatch(void) {
                 gUnk_03006F74->unk3A++;
             break;
         case 3:
-            if (sub_080440D4()) {
+            if (medaparts_all_equipped()) {
                 gUnk_03006F74->unk7C = 0;
                 gUnk_03005010.unk6 = 0xFF02;
             } else {
@@ -109,7 +109,7 @@ void fade_state_dispatch(void) {
                 gUnk_03006F74->unk3A++;
             break;
         case 1:
-            if (gUnk_03006F74->unk7B == 0 || (s32)sub_080440B4() <= 1) {
+            if (gUnk_03006F74->unk7B == 0 || (s32)count_assembled_medabots() <= 1) {
                 gUnk_03005010.unk6 = 0xFF02;
                 gUnk_03006F74->unk7B = 0;
             } else {
@@ -134,7 +134,7 @@ void fade_state_dispatch(void) {
                 gUnk_03006F74->unk3A++;
             break;
         case 4:
-            if (gUnk_03006F74->unk7C == 0 || sub_080440D4()) {
+            if (gUnk_03006F74->unk7C == 0 || medaparts_all_equipped()) {
                 gUnk_03005010.unk6 = 0xFF02;
                 gUnk_03006F74->unk7C = 0;
             } else {

@@ -250,7 +250,7 @@ static void init_battle_bg_layer(void) {
     gBg2Scroll.y = 0;
     gBg3Scroll.x = 0;
     gBg3Scroll.y = 0;
-    gVBlankCallback = sub_08043E48;
+    gVBlankCallback = battle_bg_scroll_vblank;
 }
 
 void init_battle_field_screen(void) {

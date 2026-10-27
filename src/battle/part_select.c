@@ -211,9 +211,9 @@ void part_select_init_cursor(void) {
 
 void part_select_draw_head_uses(void) {
     if (gUnk_03001800.unk82 == 1) {
-        fill_tilemap_rect_08042698(2, 1, 0xE, 0xC, REG_BG0CNT, 0xD218);
-        sub_08042A90(gUnk_03000590[gUnk_03001800.unk80].parts[0].unk10,
-                     gUnk_03000590[gUnk_03001800.unk80].parts[0].data[8], 0x10, 0xC, 0xD21A, REG_BG0CNT, 0xD220);
+        draw_tile_block(2, 1, 0xE, 0xC, REG_BG0CNT, 0xD218);
+        draw_count_over_max(gUnk_03000590[gUnk_03001800.unk80].parts[0].unk10,
+                            gUnk_03000590[gUnk_03001800.unk80].parts[0].data[8], 0x10, 0xC, 0xD21A, REG_BG0CNT, 0xD220);
     } else
         vram_fill_tilemap_rect(7, 1, 0xE, 0xC, REG_BG0CNT, 0);
 }

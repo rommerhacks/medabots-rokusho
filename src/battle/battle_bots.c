@@ -209,7 +209,7 @@ static void battle_advance_all_rotations(void) {
 void select_bot_battle_action(u32 rec) {
     u32 i;
 
-    if (gUnk_03000590[rec].unkC1 == 0x50 && (rng_next_080424B8() & 1) && !check_medaforce_availability(rec, 0, 1))
+    if (gUnk_03000590[rec].unkC1 == 0x50 && (rng_next_byte() & 1) && !check_medaforce_availability(rec, 0, 1))
         return;
     battle_ai_roll_part_order();
     for (i = 0; i <= 3; i++) {
@@ -315,7 +315,7 @@ void battle_bot_select_medaforce(u32 rec, u32 part) {
 }
 
 void battle_ai_roll_part_order(void) {
-    memcpy_bytes_08041D04(gUnk_083AD2F0[rng_next_080424B8() & 0x1F], gUnk_03001800.unk64, 4);
+    memcpy_bytes_08041D04(gUnk_083AD2F0[rng_next_byte() & 0x1F], gUnk_03001800.unk64, 4);
 }
 
 static u32 battle_part_unusable(u32 rec, u32 part) {
