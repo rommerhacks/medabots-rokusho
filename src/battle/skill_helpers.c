@@ -17,7 +17,7 @@ void battle_calc_damage_split(u32 rec, u32 part, s32 amount) {
     }
 }
 
-u32 battle_check_action_counter(u16 *amount, u32 rec, u32 part) {
+u32 armor_heal_step(u16 *amount, u32 rec, u32 part) {
     u8 *n = (u8 *)amount;
     if (gUnk_03000590[rec].parts[part].unk11 != gUnk_03000590[rec].parts[part].data[4]) {
         gUnk_03000590[rec].parts[part].unk11++;
@@ -27,7 +27,7 @@ u32 battle_check_action_counter(u16 *amount, u32 rec, u32 part) {
     return 1;
 }
 
-u32 sub_08036D64(u32 rec, u32 skill) {
+u32 bot_has_status_guard(u32 rec, u32 skill) {
     if (skill - 0xd <= 1) {
         if (gUnk_03000590[rec].unkCF & 1)
             return 1;
@@ -48,7 +48,7 @@ u32 sub_08036D64(u32 rec, u32 skill) {
     return 0;
 }
 
-u32 medal_update_exp_progress(u32 slot, u32 n) {
+u32 sprite_slide_x_step(u32 slot, u32 n) {
     if (!(gSpriteEntries[slot].unk0 & 0x8000) || gSpriteEntries[slot].unk23 == 0x10)
         return 1;
     if (n == 0)
@@ -67,7 +67,7 @@ u32 clamp_1_99(u32 a) {
     return a;
 }
 
-void battle_set_action_params(u32 rec, u32 skill, s32 a, u32 b) {
+void battle_inflict_status(u32 rec, u32 skill, s32 a, u32 b) {
     if (skill - 0xD <= 1) {
         gUnk_03000590[rec].unkC9 = skill;
         gUnk_03000590[rec].unkCA = gUnk_03001800.unk8B + 1;
@@ -108,7 +108,7 @@ void reset_battle_bot_state(u32 rec) {
     mem_fill8(&gUnk_03000590[rec].unkDC, 8, 0);
 }
 
-void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u32 n) {
+void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n) {
     u32 i;
     s32 t1;
     s32 t2;
@@ -127,7 +127,7 @@ void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u32 n) {
     }
 }
 
-u32 update_sprite_animations_tick_080370AC(u32 slot, u32 n) {
+u32 staggered_sprites_update(u32 slot, u32 n) {
     u32 done = 1;
     u32 i;
     u8 s;
@@ -152,7 +152,7 @@ u32 update_sprite_animations_tick_080370AC(u32 slot, u32 n) {
     return done;
 }
 
-void sub_0803713C(void) {
+void reaction_counter_begin(void) {
     gUnk_03000590[gUnk_03001800.unk87].unkE0 = gUnk_03001800.unk87 + 1;
     gUnk_03000590[gUnk_03001800.unk87].unkE1 = gUnk_03001800.unkA7 + 1;
     if ((gUnk_03001800.unk162 = gUnk_03001800.unk8B) == 3)

@@ -317,7 +317,7 @@ void sub_08034120(void) {
     }
 }
 
-void sub_08034170(void) {
+void script_op_set_damage(void) {
     init_battle_scene_backgrounds();
     gUnk_03001800.unk15F = battle_advance_dialogue_text();
     gUnk_03001800.unk160 = battle_advance_action_text();
@@ -326,55 +326,55 @@ void sub_08034170(void) {
     battle_script_advance();
 }
 
-void sub_080341C0(void) {
+void script_op_attack_hit(void) {
     init_battle_scene_backgrounds();
     gUnk_03001800.unk15F = battle_advance_dialogue_text();
     gUnk_03001800.unk160 = battle_advance_action_text();
-    sub_0801E2D8();
+    attack_hit_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08034200(void) {
+void script_op_status_attack(void) {
     init_battle_scene_backgrounds();
     gUnk_03001800.unk15F = battle_advance_dialogue_text();
     gUnk_03001800.unk160 = battle_advance_action_text();
-    sub_0801F484();
+    status_attack_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08034240(void) {
-    sub_0801FA40();
+void script_op_closeup_exit(void) {
+    closeup_exit_run();
     if (gUnk_03001800.unkB5) {
         gUnk_03000440.unk130 = 0;
         battle_script_advance();
     }
 }
 
-void sub_0803426C(void) {
-    sub_0801FDEC();
+void script_op_bot_defeat(void) {
+    bot_defeat_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_08034288(void) {
+void script_op_reaction(void) {
     init_battle_scene_backgrounds();
     gUnk_03001800.unk15F = battle_advance_dialogue_text();
     gUnk_03001800.unk160 = battle_advance_action_text();
-    sub_08020050();
+    reaction_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_080342C8(void) {
-    sub_0802057C();
+void script_op_sacrifice(void) {
+    sacrifice_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }
 
-void sub_080342E4(void) {
-    sub_080207A4();
+void script_op_destroy_check(void) {
+    destroy_check_run();
     if (gUnk_03001800.unkB5)
         battle_script_advance();
 }

@@ -51,10 +51,10 @@ void sub_08026924(void) {
 }
 
 void sub_08026A24(void) {
-    sub_08036B50(gUnk_03000440.unk9E, 0xA);
-    sub_08036B50(gUnk_03000440.unk9E + 0x14, 0xE);
-    sub_08036B50(gUnk_03000440.unk9E + 0x28, 0x12);
-    if (sub_08036B50(gUnk_03000440.unk9E + 0x3C, 0x16)) {
+    sprite_group_rise_step(gUnk_03000440.unk9E, 0xA);
+    sprite_group_rise_step(gUnk_03000440.unk9E + 0x14, 0xE);
+    sprite_group_rise_step(gUnk_03000440.unk9E + 0x28, 0x12);
+    if (sprite_group_rise_step(gUnk_03000440.unk9E + 0x3C, 0x16)) {
         gUnk_03000440.unk86 = 0x3C;
         gUnk_03001800.unkAA++;
     }
@@ -64,16 +64,16 @@ void sub_08026A74(void) {
     s32 n;
     u32 side;
 
-    n = sub_08036BB8(&gUnk_03001800.unkD6[0], gUnk_03001800.unk88, 0);
-    n += sub_08036BB8(&gUnk_03001800.unkD6[1], gUnk_03001800.unk88, 1);
-    n += sub_08036BB8(&gUnk_03001800.unkD6[2], gUnk_03001800.unk88, 2);
-    n += sub_08036BB8(&gUnk_03001800.unkD6[3], gUnk_03001800.unk88, 3);
+    n = armor_drain_step(&gUnk_03001800.unkD6[0], gUnk_03001800.unk88, 0);
+    n += armor_drain_step(&gUnk_03001800.unkD6[1], gUnk_03001800.unk88, 1);
+    n += armor_drain_step(&gUnk_03001800.unkD6[2], gUnk_03001800.unk88, 2);
+    n += armor_drain_step(&gUnk_03001800.unkD6[3], gUnk_03001800.unk88, 3);
     if (!(gUnk_03001800.unkF8 & 2))
         side = 1;
     else
         side = 0;
-    sub_08036370(side, gUnk_03001800.unk88);
-    sub_080364A8(side, gUnk_03001800.unk88);
+    armor_panel_draw_bars(side, gUnk_03001800.unk88);
+    armor_panel_draw_numbers(side, gUnk_03001800.unk88);
     if (n == 4) {
         gUnk_03000440.unk86 = 0x3C;
         gUnk_03001800.unkAA++;
@@ -94,19 +94,19 @@ void sub_08026AF4(void) {
         y = gUnk_03001800.unk156;
     }
     if (gUnk_03001800.unkD2[0]) {
-        sub_08036C20(0xA, 0, x, y, 0x1E);
+        effect_sprite_spawn_at_part(0xA, 0, x, y, 0x1E);
         shown = 1;
     }
     if (gUnk_03001800.unkD2[1]) {
-        sub_08036C20(0xB, 1, x, y, 0x1E);
+        effect_sprite_spawn_at_part(0xB, 1, x, y, 0x1E);
         shown = 1;
     }
     if (gUnk_03001800.unkD2[2]) {
-        sub_08036C20(0xC, 2, x, y, 0x1E);
+        effect_sprite_spawn_at_part(0xC, 2, x, y, 0x1E);
         shown = 1;
     }
     if (gUnk_03001800.unkD2[3]) {
-        sub_08036C20(0xD, 3, x, y, 0x1E);
+        effect_sprite_spawn_at_part(0xD, 3, x, y, 0x1E);
         shown = 1;
     }
     if (shown) {
@@ -460,7 +460,7 @@ void decompress_sprite_tiles_to_vram_obj_4800_alt(void) {
     CpuFastSet(gUnk_0850E378, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD2[i] & 0x80) {
-            setup_battle_cursor_sprite_08036FF8(
+            staggered_sprites_spawn(
                 i * 4 + 0x21,
                 gSpriteEntries[0x5A + (gUnk_03001800.unk60 + i) * 4 + (gUnk_03001800.unkD2[i] & 0x7F)].unk2,
                 gSpriteEntries[0x5A + (gUnk_03001800.unk60 + i) * 4 + (gUnk_03001800.unkD2[i] & 0x7F)].unk4, 4);
@@ -478,7 +478,7 @@ void sub_08027798(void) {
     u32 i;
     for (i = 0; i <= 2; i++) {
         if (gUnk_03001800.unkD2[i] & 0x80)
-            r = update_sprite_animations_tick_080370AC(i * 4 + 0x21, 4);
+            r = staggered_sprites_update(i * 4 + 0x21, 4);
     }
     if (r)
         gUnk_03001800.unkAA++;
@@ -934,32 +934,32 @@ void sub_080287DC(void) {
             continue;
         switch (gUnk_03000590[gUnk_03001800.unk87].unkA8[0]) {
         case 0xC:
-            if (sub_08036D64(gUnk_03001800.unk60 + i, 0xD) == 0) {
+            if (bot_has_status_guard(gUnk_03001800.unk60 + i, 0xD) == 0) {
                 gUnk_03001800.unkD2[i] = 1;
-                battle_set_action_params(gUnk_03001800.unk60 + i, 0xD, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+                battle_inflict_status(gUnk_03001800.unk60 + i, 0xD, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
             }
             break;
         case 0xE:
-            if (sub_08036D64(gUnk_03001800.unk60 + i, 0x10) == 0) {
+            if (bot_has_status_guard(gUnk_03001800.unk60 + i, 0x10) == 0) {
                 gUnk_03001800.unkD2[i] = 1;
-                battle_set_action_params(gUnk_03001800.unk60 + i, 0x10, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+                battle_inflict_status(gUnk_03001800.unk60 + i, 0x10, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
             }
             break;
         case 0x10:
-            if (sub_08036D64(gUnk_03001800.unk60 + i, 0x12) == 0) {
+            if (bot_has_status_guard(gUnk_03001800.unk60 + i, 0x12) == 0) {
                 gUnk_03001800.unkD2[i] = 1;
-                battle_set_action_params(gUnk_03001800.unk60 + i, 0x12, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+                battle_inflict_status(gUnk_03001800.unk60 + i, 0x12, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
             }
             break;
         case 0x12:
-            if (sub_08036D64(gUnk_03001800.unk60 + i, 0x13) == 0) {
+            if (bot_has_status_guard(gUnk_03001800.unk60 + i, 0x13) == 0) {
                 gUnk_03001800.unkD2[i] = 1;
-                battle_set_action_params(gUnk_03001800.unk60 + i, 0x13, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+                battle_inflict_status(gUnk_03001800.unk60 + i, 0x13, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
             }
             break;
         case 0x28:
             gUnk_03001800.unkD2[i] = 1;
-            battle_set_action_params(gUnk_03001800.unk60 + i, 0x2C, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+            battle_inflict_status(gUnk_03001800.unk60 + i, 0x2C, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
             break;
         }
     }
@@ -2218,19 +2218,19 @@ void sub_0802B4D8(void) {
         gUnk_03001800.unkD6[i] = rng_next_byte() & 7;
         switch (gUnk_03001800.unkD6[i]) {
         case 0:
-            if (sub_08036D64(gUnk_03001800.unk60 + i, 0xD))
+            if (bot_has_status_guard(gUnk_03001800.unk60 + i, 0xD))
                 gUnk_03001800.unkD6[i] = 5;
             break;
         case 1:
-            if (sub_08036D64(gUnk_03001800.unk60 + i, 0x11))
+            if (bot_has_status_guard(gUnk_03001800.unk60 + i, 0x11))
                 gUnk_03001800.unkD6[i] = 5;
             break;
         case 2:
-            if (sub_08036D64(gUnk_03001800.unk60 + i, 0x13))
+            if (bot_has_status_guard(gUnk_03001800.unk60 + i, 0x13))
                 gUnk_03001800.unkD6[i] = 5;
             break;
         case 3:
-            if (sub_08036D64(gUnk_03001800.unk60 + i, 0x10))
+            if (bot_has_status_guard(gUnk_03001800.unk60 + i, 0x10))
                 gUnk_03001800.unkD6[i] = 5;
             break;
         }
@@ -2250,16 +2250,16 @@ void sub_0802B5AC(void) {
             continue;
         switch (gUnk_03001800.unkD6[i]) {
         case 0:
-            battle_set_action_params(gUnk_03001800.unk60 + i, 0xD, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+            battle_inflict_status(gUnk_03001800.unk60 + i, 0xD, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
             break;
         case 1:
-            battle_set_action_params(gUnk_03001800.unk60 + i, 0x11, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+            battle_inflict_status(gUnk_03001800.unk60 + i, 0x11, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
             break;
         case 2:
-            battle_set_action_params(gUnk_03001800.unk60 + i, 0x13, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+            battle_inflict_status(gUnk_03001800.unk60 + i, 0x13, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
             break;
         case 3:
-            battle_set_action_params(gUnk_03001800.unk60 + i, 0x10, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
+            battle_inflict_status(gUnk_03001800.unk60 + i, 0x10, gUnk_03001800.unkE8, gUnk_03001800.unkEC);
             break;
         case 4:
             gUnk_03000590[gUnk_03001800.unk60 + i].unkC9 = 0x2B;
@@ -3990,7 +3990,7 @@ void sub_0802EF0C(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03001800.unkD2[i] && medal_update_exp_progress(0x24 + i, 0))
+        if (gUnk_03001800.unkD2[i] && sprite_slide_x_step(0x24 + i, 0))
             done = 1;
     }
     if (done) {

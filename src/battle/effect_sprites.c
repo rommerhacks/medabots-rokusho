@@ -1,12 +1,12 @@
-// Sprites and tilemap windows for action effects: OAM entry setup (setup_battle_sprite_oam_entries),
-// animation frames (advance_sprite_anim_frame, used by every skill module) and the offset tables
-// gUnk_083AF380..gUnk_083AF4A0.
+// Sprites and tilemap windows for action effects: the target's armor panel on BG1 (part icons, bars, current / max
+// armor numbers: armor_panel_*), armor drain per frame, hit sparks and damage digits placed at a part through the
+// offset tables gUnk_083AF380..gUnk_083AF4A0, and the OAM / animation-frame helpers used by every skill module.
 
 #include "global.h"
 
-static void sub_080363E8(u32 x, u32 y, u32 w, u32 max, u32 cur);
+static void armor_bar_draw(u32 x, u32 y, u32 w, u32 max, u32 cur);
 
-void sub_080362C4(u32 side) {
+void armor_panel_draw_icons(u32 side) {
     u32 x = 2;
     if (side == 0)
         x = 0x10;
@@ -16,24 +16,24 @@ void sub_080362C4(u32 side) {
     draw_tile_block(2, 2, x, 10, REG_BG1CNT, 0xB34C);
 }
 
-void sub_08036340(u32 side) {
+void armor_panel_draw_frame(u32 side) {
     u32 x = 4;
     if (side == 0)
         x = 0x12;
     set_tilemap_and_decompress_bg(x, 0, gUnk_084889B4, REG_BG1CNT, 0x329);
 }
 
-void sub_08036370(u32 side, u32 rec) {
+void armor_panel_draw_bars(u32 side, u32 rec) {
     u32 x = 5;
     if (side == 0)
         x = 0x13;
-    sub_080363E8(x, 1, 0x40, gUnk_03000590[rec].parts[0].data[4], gUnk_03000590[rec].parts[0].unk11);
-    sub_080363E8(x, 4, 0x40, gUnk_03000590[rec].parts[1].data[4], gUnk_03000590[rec].parts[1].unk11);
-    sub_080363E8(x, 7, 0x40, gUnk_03000590[rec].parts[2].data[4], gUnk_03000590[rec].parts[2].unk11);
-    sub_080363E8(x, 10, 0x40, gUnk_03000590[rec].parts[3].data[4], gUnk_03000590[rec].parts[3].unk11);
+    armor_bar_draw(x, 1, 0x40, gUnk_03000590[rec].parts[0].data[4], gUnk_03000590[rec].parts[0].unk11);
+    armor_bar_draw(x, 4, 0x40, gUnk_03000590[rec].parts[1].data[4], gUnk_03000590[rec].parts[1].unk11);
+    armor_bar_draw(x, 7, 0x40, gUnk_03000590[rec].parts[2].data[4], gUnk_03000590[rec].parts[2].unk11);
+    armor_bar_draw(x, 10, 0x40, gUnk_03000590[rec].parts[3].data[4], gUnk_03000590[rec].parts[3].unk11);
 }
 
-static void sub_080363E8(u32 x, u32 y, u32 w, u32 max, u32 cur) {
+static void armor_bar_draw(u32 x, u32 y, u32 w, u32 max, u32 cur) {
     u32 full, rem, col, i;
 
     full = scale_to_bar_fill(w, max, cur);
@@ -57,7 +57,7 @@ static void sub_080363E8(u32 x, u32 y, u32 w, u32 max, u32 cur) {
     }
 }
 
-void sub_080364A8(u32 side, u32 rec) {
+void armor_panel_draw_numbers(u32 side, u32 rec) {
     u32 x;
     u32 y;
 
@@ -95,7 +95,7 @@ void sub_080364A8(u32 side, u32 rec) {
     }
 }
 
-u32 sub_080366DC(u32 slot, u32 part) {
+u32 effect_sprite_fly_to_part(u32 slot, u32 part) {
     s16 dx, dy;
     struct SpriteEntry *base = gSpriteEntries;
     struct SpriteEntry *s = &base[slot];
@@ -127,7 +127,7 @@ u32 sub_080366DC(u32 slot, u32 part) {
     return 0;
 }
 
-void sub_08036784(u32 slot, u32 part, s16 x, s16 y) {
+void hit_sparks_spawn(u32 slot, u32 part, s16 x, s16 y) {
     u32 i;
     s32 t, u;
 
@@ -150,7 +150,7 @@ void sub_08036784(u32 slot, u32 part, s16 x, s16 y) {
     }
 }
 
-u32 sub_0803684C(u32 slot) {
+u32 hit_sparks_update(u32 slot) {
     u32 done = 1;
     u32 i;
     u8 n;
@@ -174,7 +174,7 @@ u32 sub_0803684C(u32 slot) {
     return done;
 }
 
-void sub_080368C4(u8 *digits, u32 slot, u32 part, s16 x, s16 y) {
+void damage_digits_spawn(u8 *digits, u32 slot, u32 part, s16 x, s16 y) {
     u32 i = 0;
     s32 t;
     s32 u;
@@ -271,7 +271,7 @@ done:
     return busy;
 }
 
-u32 sub_08036B50(u8 *buf, u32 slot) {
+u32 sprite_group_rise_step(u8 *buf, u32 slot) {
     u32 busy = 0;
     u32 i = 0;
 
@@ -288,13 +288,13 @@ done:
     return busy;
 }
 
-void sub_08036B84(u32 rec, u32 part) {
+void battle_set_damage_break_part(u32 rec, u32 part) {
     gUnk_03001800.unkC8 = gUnk_03000590[rec].parts[part].unk11;
     gUnk_03001800.unkCC = gUnk_03000590[rec].parts[part].unk11;
     gUnk_03001800.unkD1 = 1;
 }
 
-u32 sub_08036BB8(u16 *amount, u32 rec, u32 part) {
+u32 armor_drain_step(u16 *amount, u32 rec, u32 part) {
     u8 *n = (u8 *)amount;
     if (gUnk_03000590[rec].parts[part].unk11 != 0 && *n != 0) {
         (*n)--;
@@ -304,14 +304,14 @@ u32 sub_08036BB8(u16 *amount, u32 rec, u32 part) {
     return 1;
 }
 
-void sub_08036BF4(u32 side) {
+void armor_panel_clear(u32 side) {
     u32 y = 2;
     if (side == 0)
         y = 0x10;
     vram_fill_tilemap_rect(0xC, 0xD, y, 0, REG_BG1CNT, 0);
 }
 
-void sub_08036C20(u32 slot, u32 part, s16 x, s16 y, u32 n) {
+void effect_sprite_spawn_at_part(u32 slot, u32 part, s16 x, s16 y, u32 n) {
     struct SpriteEntry *s;
     struct SpriteEntry *base;
     s32 t1, t2;

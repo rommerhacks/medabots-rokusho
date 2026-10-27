@@ -673,13 +673,13 @@ void pushover_finish(void) {
 void pushover_part_destroyed_cursor(void) {
     lz_decompress_dispatch(gUnk_084CDBD8, (void *)0x06014800);
     CpuFastSet(gUnk_0850E378, (void *)0x050002E0, 8);
-    setup_battle_cursor_sprite_08036FF8(0x21, gSpriteEntries[0x5A + gUnk_03001800.unk88 * 4 + gUnk_03001800.unkD0].unk2,
-                                        gSpriteEntries[0x5A + gUnk_03001800.unk88 * 4 + gUnk_03001800.unkD0].unk4, 4);
+    staggered_sprites_spawn(0x21, gSpriteEntries[0x5A + gUnk_03001800.unk88 * 4 + gUnk_03001800.unkD0].unk2,
+                            gSpriteEntries[0x5A + gUnk_03001800.unk88 * 4 + gUnk_03001800.unkD0].unk4, 4);
     gUnk_03001800.unkAA++;
 }
 
 void pushover_part_destroyed_cursor_wait(void) {
-    if (update_sprite_animations_tick_080370AC(0x21, 4))
+    if (staggered_sprites_update(0x21, 4))
         gUnk_03001800.unkAA++;
 }
 

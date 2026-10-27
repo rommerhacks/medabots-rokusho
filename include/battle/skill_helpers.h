@@ -3,7 +3,7 @@
 
 // Skill helpers: damage split, Medal exp, action parameters, skill timers and targets.
 
-void sub_0803713C(void);
+void reaction_counter_begin(void);
 u32 sub_08037230(u32 rec, u32 part); // 1 if the part is broken or at full armor
 u32 decrement_battle_timer_and_check_zero(void);
 void calc_battle_stat_ratio(u32 rec, u32 part); // unkEC = (unkE8 / 4 + part data[6]) / part data[0xC], at least 1
@@ -21,15 +21,16 @@ void battle_bot_sprites_blink(
 void battle_bot_sprites_show(u32 rec); // sets bit 15 of unk0 on the bot's 4 part sprites
 void sprite_bob_step(
     u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
-u32 update_sprite_animations_tick_080370AC(u32 slot, u32 n);
-void setup_battle_cursor_sprite_08036FF8(u32 slot, s16 x, s16 y, u32 n);
+u32 staggered_sprites_update(u32 slot, u32 n);
+void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n);
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount); // unkC8 = unkCC = min(amount, part data[4] - armor unk11)
-u32 battle_check_action_counter(
+u32 armor_heal_step(
     u16 *amount, u32 rec,
     u32 part); // moves one point from *amount (low byte) into the part's armor (max data[4]); 1 when done
-u32 sub_08036D64(u32 rec, u32 skill); // 1 if unkCF has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8),
-u32 medal_update_exp_progress(u32 slot, u32 n);
-void battle_set_action_params(u32 rec, u32 skill, s32 a, u32 b);
+u32 bot_has_status_guard(u32 rec,
+                         u32 skill); // 1 if unkCF has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8),
+u32 sprite_slide_x_step(u32 slot, u32 n);
+void battle_inflict_status(u32 rec, u32 skill, s32 a, u32 b);
 void reset_battle_bot_state(u32 rec);
 void battle_set_damage_display(u32 rec, u32 part, s32 amount);
 void calc_head_uses_taken(u32 rec,

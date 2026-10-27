@@ -1664,22 +1664,22 @@ void sub_0803D2A8(void) {
         return;
     }
     if (gSpriteEntries[gUnk_03000440.unk12F].unk2E != 0) {
-        sub_080362C4(gSpriteEntries[gUnk_03000440.unk12F].unk2D);
-        sub_08036340(gSpriteEntries[gUnk_03000440.unk12F].unk2D);
-        sub_08036370(gSpriteEntries[gUnk_03000440.unk12F].unk2D, gUnk_03001800.unk87);
-        sub_080364A8(gSpriteEntries[gUnk_03000440.unk12F].unk2D, gUnk_03001800.unk87);
+        armor_panel_draw_icons(gSpriteEntries[gUnk_03000440.unk12F].unk2D);
+        armor_panel_draw_frame(gSpriteEntries[gUnk_03000440.unk12F].unk2D);
+        armor_panel_draw_bars(gSpriteEntries[gUnk_03000440.unk12F].unk2D, gUnk_03001800.unk87);
+        armor_panel_draw_numbers(gSpriteEntries[gUnk_03000440.unk12F].unk2D, gUnk_03001800.unk87);
         gSpriteEntries[gUnk_03000440.unk12F].unk2E = 0;
     }
     if (gSpriteEntries[gUnk_03000440.unk12F].unk2C != 0) {
         gSpriteEntries[gUnk_03000440.unk12F].unk2C--;
         return;
     }
-    done = sub_08036BB8(&gUnk_03001800.unkD6[0], gUnk_03001800.unk87, 0);
-    done += sub_08036BB8(&gUnk_03001800.unkD6[1], gUnk_03001800.unk87, 1);
-    done += sub_08036BB8(&gUnk_03001800.unkD6[2], gUnk_03001800.unk87, 2);
-    done += sub_08036BB8(&gUnk_03001800.unkD6[3], gUnk_03001800.unk87, 3);
-    sub_08036370(gSpriteEntries[gUnk_03000440.unk12F].unk2D, gUnk_03001800.unk87);
-    sub_080364A8(gSpriteEntries[gUnk_03000440.unk12F].unk2D, gUnk_03001800.unk87);
+    done = armor_drain_step(&gUnk_03001800.unkD6[0], gUnk_03001800.unk87, 0);
+    done += armor_drain_step(&gUnk_03001800.unkD6[1], gUnk_03001800.unk87, 1);
+    done += armor_drain_step(&gUnk_03001800.unkD6[2], gUnk_03001800.unk87, 2);
+    done += armor_drain_step(&gUnk_03001800.unkD6[3], gUnk_03001800.unk87, 3);
+    armor_panel_draw_bars(gSpriteEntries[gUnk_03000440.unk12F].unk2D, gUnk_03001800.unk87);
+    armor_panel_draw_numbers(gSpriteEntries[gUnk_03000440.unk12F].unk2D, gUnk_03001800.unk87);
     if (done == 4)
         clear_battle_sprite_slot(gUnk_03000440.unk12F, 1);
 }

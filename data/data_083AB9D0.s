@@ -375,32 +375,32 @@ gActionAnnounceSteps:
 gCloseupEnterSteps:
 	.incbin "baserom.gba", 0x3AD5D0, 0x40
 
-	.global gUnk_083AD610
-gUnk_083AD610:
+	.global gAttackHitSteps
+gAttackHitSteps:
 	.incbin "baserom.gba", 0x3AD610, 0x140
 
-	.global gUnk_083AD750
-gUnk_083AD750:
+	.global gStatusAttackSteps
+gStatusAttackSteps:
 	.incbin "baserom.gba", 0x3AD750, 0x44
 
-	.global gUnk_083AD794
-gUnk_083AD794:
+	.global gCloseupExitSteps
+gCloseupExitSteps:
 	.incbin "baserom.gba", 0x3AD794, 0x40
 
-	.global gUnk_083AD7D4
-gUnk_083AD7D4:
+	.global gBotDefeatSteps
+gBotDefeatSteps:
 	.incbin "baserom.gba", 0x3AD7D4, 0x40
 
-	.global gUnk_083AD814
-gUnk_083AD814:
+	.global gReactionSteps
+gReactionSteps:
 	.incbin "baserom.gba", 0x3AD814, 0x64
 
-	.global gUnk_083AD878
-gUnk_083AD878:
+	.global gSacrificeSteps
+gSacrificeSteps:
 	.incbin "baserom.gba", 0x3AD878, 0x20
 
-	.global gUnk_083AD898
-gUnk_083AD898:
+	.global gDestroyCheckSteps
+gDestroyCheckSteps:
 	.incbin "baserom.gba", 0x3AD898, 0x20
 
 	.global gRecoverySteps

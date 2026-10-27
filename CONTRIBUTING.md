@@ -133,12 +133,12 @@
 * Hardware I/O addresses (`OAM`, `VRAM`, `INTR_CHECK`, ...) are in `include/gba/io_reg.h`;
   `CpuCopy16(src, dst, size)` gives the `lsls #10; lsrs #11` count of a 16-bit CpuSet.
 * `ldr rB, =gArr` **before** `lsls rI, slot, #6` (and `rB` reused later for other indexes, often
-  copied to `ip`): take a base pointer local, `base = gArr; s = &base[slot];` (sub_080366DC,
+  copied to `ip`): take a base pointer local, `base = gArr; s = &base[slot];` (effect_sprite_fly_to_part,
   sub_08038428, spawn_battle_particle_effect).
 * A pair `tbl[n * 2]`, `tbl[n * 2 + 1]` that the original loads as `n << 1` first, then `n << 2`
   for the first element and `(n * 2 + 1) * 2` unfolded for the second: write the first index as
   `tbl[n << 1]` and keep `tbl[n * 2 + 1]`. Several tables picked by a switch whose loads share
-  one tail: write the loads in every case with the table named directly (sub_080366DC).
+  one tail: write the loads in every case with the table named directly (effect_sprite_fly_to_part).
 * A variable set only in some switch cases (`case 0: case 1: case 2: mask = 7;`) gets folded to a
   constant; separate identical case bodies keep the original's branch tree
   (spawn_battle_particle_effect).
@@ -146,7 +146,7 @@
   grouping `a + (b + 0xDF)` / `b + (a - 0x21)`; the first operand gcc sees decides the order
   (sub_08038650, sub_08038700).
 * A loop-invariant table address hoisted after the loop guard (`cmp; bhs; ldr rT, =tbl`): assign a
-  pointer local inside the loop body, `tbl = gTable;` (update_sprite_animations_tick_080370AC).
+  pointer local inside the loop body, `tbl = gTable;` (staggered_sprites_update).
 * `subs r1, #8; subs r0, r0, r1` where C's `a * 9 - (b - 8)` always folds to `(a * 9 + 8) - b`:
   tree folding happens before inlining, so `static inline` helpers keep the terms apart:
   `mul9(a) - sub8(b)` (message_portrait_anim_step). One helper alone is evaluated first, like a call.
@@ -198,7 +198,7 @@
 * Unsolved: callees that zero-extend `u16` x/y params at entry, then sign-extend them at each use
   (`lsls #16; asrs #16` before `& 0x1FF`), while their callers pass sign-extended values (an `s16`
   prototype). `(s16)x` on a `u16` param gets dropped under the mask; see the near misses in NOTES
-  (sub_08036784, sub_08036C20, setup_battle_cursor_sprite_08036FF8).
+  (hit_sparks_spawn, effect_sprite_spawn_at_part, staggered_sprites_spawn).
 * A pointer table copied to the stack with `ldm` / `stm` before an indexed call: copy a struct that
   wraps the array, `struct FuncTable7 t = gUnk_080AFA20; t.f[i]();` (dispatch_substate_handler). The
   ROM table stays in the data blob; only a symbol is needed.
@@ -360,7 +360,7 @@
   cross-jumps the tails like the original; a `goto fail` with the store before it adds a branch per
   case (resolve_battle_action_phase).
 * Callee prototypes: if the asm callee uses an argument without truncating it, declare it `u32`, or the
-  caller emits `lsls/lsrs` the original doesn't have (reduce_bot_part_stat, medal_update_exp_progress).
+  caller emits `lsls/lsrs` the original doesn't have (reduce_bot_part_stat, sprite_slide_x_step).
 * A fixed EWRAM buffer whose literal is reloaded inside the loop (`ldr r1, =0x02023000` per iteration,
   index not strength-reduced): index a cast constant (`SORT_BUFFER[i]`, `((struct X *)0x02023000)`),
   not a linker symbol; with a symbol gcc keeps the pointer in a register (find_most_damaged_part).
@@ -389,11 +389,11 @@
 * `x |= 0x80` with the constant's register as the result (`movs r0, #0x80; orrs r0, r1`): write it on the
   struct field (`b->unk112 |= 0x80`), not through a `u8 *` alias (battle_advance_dialogue_text).
 * An `else if` chain where the later cases jump back into the first case's `ands/cmp/bne` tail:
-  `if (A) { if (f & 1) return 1; } else if (B) { if (f & 8) return 1; } ... return 0;` (sub_08036D64).
+  `if (A) { if (f & 1) return 1; } else if (B) { if (f & 8) return 1; } ... return 0;` (bot_has_status_guard).
 * A table index `tbl[f(x) * 8 + (g() & 7)]` with the shift before the `ands`: write it as one
   expression on the global; with a `tbl` or `row` local gcc does the `ands` first
   (get_random_battle_weight_entry).
-* Callers can depend on a narrow prototype: sub_08036C20's callers only match with `s16 x, s16 y`, even
+* Callers can depend on a narrow prototype: effect_sprite_spawn_at_part's callers only match with `s16 x, s16 y`, even
   though the callee zero-extends them; check `make compare` after every prototype change.
 * `s16` parameters are zero-extended at entry (`lsls/lsrs`) and sign-extended at each use: that is just
   how agbcc promotes `s16` params. If the original keeps the `lsls/asrs` before an `& 0x1FF` / `& 0xFF`,
@@ -405,7 +405,7 @@
 * A switch whose cases each write two fields, with one shared tail in the original: write both stores in
   every case and let gcc cross-jump them (set_target_sprite_position).
 * A constant not folded (`movs r6, #2; adds r6, #3`): it came from a local (`y = 2; ... y + 3`)
-  (sub_080364A8).
+  (armor_panel_draw_numbers).
 * `tools/scripts/split_scratch.py FILE.c OUTDIR` splits a scratch file with several functions into one
   file per function (with prototypes of the others), so each can be checked with `match.py` at its own
   address; calls between functions in one file otherwise link locally and the `bl` offsets differ.
@@ -655,6 +655,6 @@ really data (a false positive), the shifted build changes that data by `SHIFT`: 
   `u32 dims[2]` (as setup_oam_sprite_entries); `do { ... } while (0);` around one store can tip a close
   register priority (set_oam_sprite_tile_positions).
 * `&f87` computed as `&f88 - 1` is `reload_cse_move2add`; extra labels (an if / else-if chain with a
-  separate `s->unkAA++` per arm) stop it (sub_0801F4AC).
+  separate `s->unkAA++` per arm) stop it (status_attack_check).
 * `v = *p; v &= 0xFFF;` and `r = v << 16; r >>= 16;` instead of the one-expression forms change
   hoisted-constant priorities (title_options_highlight_row).

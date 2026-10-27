@@ -398,7 +398,7 @@ void sub_08031458(void) {
 }
 
 void sub_08031518(void) {
-    if (medal_update_exp_progress(0x22, 0))
+    if (sprite_slide_x_step(0x22, 0))
         gGameSubState++;
 }
 

@@ -127,7 +127,7 @@ void repair_spread(void) {
 }
 
 void repair_redraw_bot(void) {
-    battle_check_action_counter(&gUnk_03001800.unkC8, gUnk_03001800.unk88, gUnk_03001800.unk8B);
+    armor_heal_step(&gUnk_03001800.unkC8, gUnk_03001800.unk88, gUnk_03001800.unk8B);
     if (gUnk_03001800.unkF8 & 2) {
         get_active_bot_part_index_and_load_values(0);
         init_scene_with_bg_and_palette(0, gUnk_03001800.unk64[0], gUnk_03001800.unk64[1], gUnk_03001800.unk64[2],
