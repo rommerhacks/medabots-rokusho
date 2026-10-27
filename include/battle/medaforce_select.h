@@ -3,26 +3,26 @@
 
 // Tilemap window save/restore and the Medaforce select (names, skill, cost bar)
 
-void sub_080178CC(void);
-void sub_08017914(void);
+void mf_gauge_full_blink_panel(void);
+void mf_gauge_draw_panel(void);
 void draw_partial_bg1_column(void);
 void scroll_tilemap_window(void);
-void sub_08016FB4(void);
-void sub_0801767C(void);
-void sub_080175FC(void);
-void sub_08017948(void);
+void command_ring_grow_icons(void);
+void mf_menu_blink_selected_icon(void);
+void mf_menu_input(void);
+void mf_menu_slide_out_bg1(void);
 void save_restore_bg0_tilemap_region(void);
 void save_restore_bg1_tilemap_region(void);
-void sub_08017004(void);
-void sub_08017048(void);
-void sub_08017084(void);
-void sub_080170D4(void);
-void sub_08017104(void);
-void sub_08017268(void);
-void sub_08017178(u32 a);
-void sub_080171C0(u32 a);
-void sub_08017208(u32 a);
-void sub_08017130(u32 a);
-void sub_080173B4(u32 a);
+void mf_menu_load_frame(void);
+void mf_menu_slide_bg0(void);
+void mf_menu_slide_bg1(void);
+void mf_menu_init_cursor(void);
+void mf_menu_init_center_icon(void);
+void mf_menu_draw_medaforce_name(void);
+void mf_menu_init_top_icon(u32 a);
+void mf_menu_init_left_icon(u32 a);
+void mf_menu_init_right_icon(u32 a);
+void mf_menu_init_charge_icon(u32 a);
+void mf_menu_draw_status(u32 a);
 
 #endif // GUARD_BATTLE_MEDAFORCE_SELECT_H

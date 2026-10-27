@@ -125,7 +125,7 @@ void robattle_command_input(void) {
     bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     command_ring_input();
-    sub_080178CC();
+    mf_gauge_full_blink_panel();
     if (gUnk_03001800.unk83)
         return;
     command_ring_pulse_selected();
@@ -135,7 +135,7 @@ void robattle_command_input(void) {
             return;
         }
         play_sound_effect(4);
-        sub_08017914();
+        mf_gauge_draw_panel();
         gUnk_03000440.unk84 = 0;
         gGameSubState++;
     } else if (KEYS_LO(gNewKeys) & 2) {
@@ -197,7 +197,7 @@ void robattle_command_ring_reopen_anim(void) {
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     draw_partial_bg1_column();
     scroll_tilemap_window();
-    sub_08016FB4();
+    command_ring_grow_icons();
     if (++gUnk_03000440.unk84 == 10) {
         command_ring_draw_name();
         gGameSubState = 7;
@@ -354,7 +354,7 @@ void robattle_mf_menu_open(void) {
     CpuFastSet(gUnk_084E2F78, (void *)0x05000340, 8);
     clear_battle_sprite_slot(0, 6);
     clear_battle_sprite_slot(0x1E, 0xB);
-    sub_08017004();
+    mf_menu_load_frame();
     read_vram_tilemap_rect(0xC, 4, 9, 0x15, REG_BG0CNT, gUnk_02020800);
     gUnk_03000440.unk84 = 0;
     gGameSubState++;
@@ -364,17 +364,17 @@ void robattle_mf_menu_slide_in(void) {
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
-    sub_08017048();
-    sub_08017084();
+    mf_menu_slide_bg0();
+    mf_menu_slide_bg1();
     if (++gUnk_03000440.unk84 == 16) {
-        sub_080170D4();
-        sub_08017104();
-        sub_08017178(1);
-        sub_080171C0(1);
-        sub_08017208(1);
-        sub_08017130(1);
-        sub_08017268();
-        sub_080173B4(0);
+        mf_menu_init_cursor();
+        mf_menu_init_center_icon();
+        mf_menu_init_top_icon(1);
+        mf_menu_init_left_icon(1);
+        mf_menu_init_right_icon(1);
+        mf_menu_init_charge_icon(1);
+        mf_menu_draw_medaforce_name();
+        mf_menu_draw_status(0);
         gUnk_03000440.unk84 = 0;
         gGameSubState++;
     }
@@ -387,9 +387,9 @@ void robattle_mf_menu_input(void) {
     bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     gUnk_03000440.unk84++;
-    sub_0801767C();
-    sub_080175FC();
-    sub_080173B4(1);
+    mf_menu_blink_selected_icon();
+    mf_menu_input();
+    mf_menu_draw_status(1);
     if ((b = KEYS_LO(gNewKeys) & 2)) {
         play_sound_effect(5);
         vram_fill_tilemap_rect(8, 1, 1, 0x11, REG_BG0CNT, 0);
@@ -410,7 +410,7 @@ void robattle_mf_menu_cancel(void) {
     bot_pointer_line_animate(gUnk_03001800.unk80);
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     save_restore_bg0_tilemap_region();
-    sub_08017948();
+    mf_menu_slide_out_bg1();
     if (++gUnk_03000440.unk84 == 16) {
         CpuFastSet(gUnk_084E2F38, (void *)0x05000340, 8);
         gGameSubState = 0xB;
@@ -423,8 +423,8 @@ void robattle_mf_menu_confirm(void) {
     update_battle_sprite_orbiting_positions(gUnk_03001800.unk80 * 4 + 0x5A, gUnk_03001800.unk80, 0);
     gUnk_03000440.unk84++;
     gUnk_03000440.unk84++;
-    sub_0801767C();
-    sub_080173B4(1);
+    mf_menu_blink_selected_icon();
+    mf_menu_draw_status(1);
     if (++gUnk_03000440.unk86 == 16) {
         clear_battle_sprite_slot(0, 0x46);
         vram_fill_tilemap_rect(0x1E, 8, 0, 0xC, REG_BG0CNT, 0);

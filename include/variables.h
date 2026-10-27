@@ -550,9 +550,10 @@ extern const u8 gUnk_083AD382[]; // 4-byte records: sprite count, start value, x
                                  // bot_pointer_line_animate)
 extern const u8
     gUnk_083AD3A0[]; // part select: centre sprite frame by gUnk_03001800.unk82 (part_select_init_center_icon)
-extern const u8 *const gUnk_083C4A10[]; // part select status texts: [0] part broken (unk11 == 0), [1] sealed, [2] head
-                                        // out of uses, [3] unk82 == 0
-extern const u32 gUnk_083BE6E8[];       // names by part skill id (part data[1]; part_select_draw_skill_name)
+// Part / MF menu messages: Damaged, Unusable, Used Up, Charge MF, MF low, Unmastered
+extern const u8 *const gBattleMenuTexts[];
+// names by part skill id (part data[1]; part_select_draw_skill_name)
+extern const u32 gUnk_083BE6E8[];
 extern const u8 gUnk_084888A8[];
 extern const u8 gUnk_0848895C[];
 extern const u8 gUnk_084888E4[];

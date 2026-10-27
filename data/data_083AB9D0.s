@@ -1050,8 +1050,8 @@ gUnk_083C40C3:
 gUnk_083C466C:
 	.incbin "baserom.gba", 0x3C466C, 0x3A4
 
-	.global gUnk_083C4A10
-gUnk_083C4A10:
+	.global gBattleMenuTexts
+gBattleMenuTexts:
 	.incbin "baserom.gba", 0x3C4A10, 0x200
 
 	.global gUnk_083C4C10
