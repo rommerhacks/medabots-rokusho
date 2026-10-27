@@ -296,13 +296,13 @@ void init_battle_bg_layer1(void) {
     write_tilemap_tiles_dma(4, 0xB, 0xE);
     write_tilemap_tiles_dma(4, 0x15, 0xE);
     REG_BG1CNT = 0x1D0D;
-    init_battle_sprite_entry_08048818(1, 0xC400, 0x6F, 8, 1);
+    sprite_entry_init(1, 0xC400, 0x6F, 8, 1);
     gUnk_03002C30[1].unk2 = 0xF;
     gUnk_03002C30[1].unk4 = 0x7F;
-    init_battle_sprite_entry_08048818(2, 0xC400, 0x7B, 9, 1);
+    sprite_entry_init(2, 0xC400, 0x7B, 9, 1);
     gUnk_03002C30[2].unk2 = 0x5F;
     gUnk_03002C30[2].unk4 = 0x7F;
-    init_battle_sprite_entry_08048818(3, 0xC400, 0x87, 10, 1);
+    sprite_entry_init(3, 0xC400, 0x87, 10, 1);
     gUnk_03002C30[3].unk2 = 0xAF;
     gUnk_03002C30[3].unk4 = 0x7F;
 }
@@ -416,7 +416,7 @@ static void init_battle_icon_positions(void) {
     sub_08069A68(8, -32, 0x52, 0, 4);
     // original passes i + 20 untruncated: compiled against an int prototype
     for (i = 0; i <= 8; i++)
-        ((void (*)(int, int, int, int, int))init_battle_sprite_entry_08048818)(i + 20, 0xCC00, 0x110, 0xD, 3);
+        ((void (*)(int, int, int, int, int))sprite_entry_init)(i + 20, 0xCC00, 0x110, 0xD, 3);
     for (i = 0; i <= 2; i++) {
         gUnk_03002C30[20 + i * 3].unk2 = 0x2C;
         gUnk_03002C30[21 + i * 3].unk2 = -32;
@@ -429,12 +429,12 @@ static void init_battle_icon_positions(void) {
 }
 
 static void init_battle_sprite_small(void) {
-    init_battle_sprite_entry_08048818(0, 0xC004, 0x33, 0, 1);
+    sprite_entry_init(0, 0xC004, 0x33, 0, 1);
     gUnk_03002C30[0].unk2 = -16;
 }
 
 static void init_battle_sprite_medium(void) {
-    init_battle_sprite_entry_08048818(1, 0xC404, 0x100, 1, 3);
+    sprite_entry_init(1, 0xC404, 0x100, 1, 3);
     gUnk_03002C30[1].unk2 = 0x28;
     gUnk_03002C30[1].unk4 = 0x10;
     gUnk_03002C30[1].unk1A = 0;
@@ -442,7 +442,7 @@ static void init_battle_sprite_medium(void) {
 }
 
 static void init_battle_sprite_c400(void) {
-    init_battle_sprite_entry_08048818(0, 0xC400, 0x104, 0xC, 3);
+    sprite_entry_init(0, 0xC400, 0x104, 0xC, 3);
     gUnk_03002C30[0].unk2 = 0x78;
     gUnk_03002C30[0].unk4 = -16;
     gUnk_03002C30[0].unk1A = 0;
@@ -451,7 +451,7 @@ static void init_battle_sprite_c400(void) {
 }
 
 static void init_battle_sprite_entry_1(void) {
-    init_battle_sprite_entry_08048818(1, 0xC808, 0x10B, 3, 3);
+    sprite_entry_init(1, 0xC808, 0x10B, 3, 3);
     gUnk_03002C30[1].unk4 = 0x40;
     gUnk_03002C30[1].unk1A = 0;
     DmaSet(3, gUnk_0807C2C0, 0x05000260, 0x84000008);
@@ -460,19 +460,19 @@ static void init_battle_sprite_entry_1(void) {
 }
 
 static void init_battle_sprite_large(void) {
-    init_battle_sprite_entry_08048818(2, 0xCB20, 0x108, 2, 3);
+    sprite_entry_init(2, 0xCB20, 0x108, 2, 3);
     gUnk_03002C30[2].unk4 = 0xC8;
     gUnk_03002C30[2].unk8 = 0x88;
     gUnk_03002C30[2].unk9 = 0x88;
     gUnk_03002C30[2].unk18 = 0;
     gUnk_03002C30[2].unk1A = 0;
-    init_battle_sprite_entry_08048818(3, 0xCB20, 0x109, 2, 3);
+    sprite_entry_init(3, 0xCB20, 0x109, 2, 3);
     gUnk_03002C30[3].unk4 = 0xC8;
     gUnk_03002C30[3].unk8 = 0x88;
     gUnk_03002C30[3].unk9 = 0x88;
     gUnk_03002C30[3].unk18 = 0;
     gUnk_03002C30[3].unk1A = 0;
-    init_battle_sprite_entry_08048818(4, 0xCB20, 0x10A, 2, 3);
+    sprite_entry_init(4, 0xCB20, 0x10A, 2, 3);
     gUnk_03002C30[4].unk4 = 0xC8;
     gUnk_03002C30[4].unk8 = 0x88;
     gUnk_03002C30[4].unk9 = 0x88;
@@ -830,7 +830,7 @@ void update_battle_bot_entry_animations(void) {
                         u8 r = gUnk_083F7FF4[(gFrameCounter + k) & 0xFF];
                         r &= 3;
                         // the original passes k + 4 untruncated: called without (or with an int-slot) prototype
-                        ((void (*)())init_battle_sprite_entry_08048818)(k + 4, 0xC400, r + 0x10C, 0xB, 3);
+                        ((void (*)())sprite_entry_init)(k + 4, 0xC400, r + 0x10C, 0xB, 3);
                         gUnk_03002C30[k + 4].unkB = 0x64;
                         sprite_animation_dispatch(k + 4, 8, r, (k * 16) & 0x7F);
                     }

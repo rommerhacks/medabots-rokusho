@@ -48,7 +48,7 @@ void init_sprite_affine_matrices_and_state(u32 flags, u32 x, u32 y, u32 d) {
     sub_080492CC();
     for (i = 0; i < 32; i++)
         calculate_oam_affine_matrix(i);
-    sub_080496C8((u8 *)&gUnk_03005350, 0x240);
+    memzero_bytes((u8 *)&gUnk_03005350, 0x240);
     gUnk_03005350.unk1D4 = flags;
     if (flags & 0x40) {
         x = gUnk_030057E0.unkC52;
@@ -63,7 +63,7 @@ void sub_08053418(void) {
     sub_0805378C();
     gUnk_03005350.unkA4[0] = gUnk_03005350.unk1D8 - gBg1Scroll.x - 0x70;
     gUnk_03005350.unkA4[1] = gUnk_03005350.unk1DC - gBg1Scroll.y - 0x50;
-    sub_080496C8((u8 *)gUnk_03006D30, 0x3000);
+    memzero_bytes((u8 *)gUnk_03006D30, 0x3000);
 }
 
 static void compute_distance_to_state_position(float *xs, float *ys, float *zs) {
@@ -525,7 +525,7 @@ u32 battle_sequence_dispatch(void) {
                             E[i].unk1C0.timer++;
                             if (E[i].unk1C0.end != 0xFFFF && E[i].unk1C0.timer >= E[i].unk1C0.end) {
                                 for (k = 0; k < E[i].unk210; k++)
-                                    clear_battle_sprite_entry(E[i].unk2DC[k]);
+                                    sprite_entry_clear(E[i].unk2DC[k]);
                                 E[i].unk1C0.active = 0;
                                 E[i].unk208 = 0;
                             }
@@ -859,7 +859,7 @@ u32 battle_sequence_dispatch(void) {
             if (!(S.unk1D4 & 0x80))
                 DmaSet(3, gUnk_0847EC40[S.unkF8], 0x050003A0, 0x84000008) else DmaSet(3, gUnk_0847EC40[S.unkF8],
                                                                                       0x0202F9A0, 0x84000008)
-                    init_battle_sprite_entry_08048818(E[n].unk2DC[part], x, (u16)y, 0xD, 1);
+                    sprite_entry_init(E[n].unk2DC[part], x, (u16)y, 0xD, 1);
             gUnk_03002C30[E[n].unk2DC[part]].unk0 |= attr;
             gUnk_03002C30[E[n].unk2DC[part]].filler1D[0] = n * 4 + part;
             break;
@@ -1026,8 +1026,8 @@ u32 battle_sequence_dispatch(void) {
         case 132: // guess: clear the sprites and reload the field
             S.unkFC++;
             save_script_sprites();
-            sub_080496C8((u8 *)gUnk_03002C30, 0x2000);
-            sub_080496C8((u8 *)gUnk_030055A0, 0x200);
+            memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+            memzero_bytes((u8 *)gUnk_030055A0, 0x200);
             zero = 0;
             DmaSet(3, &zero, OAM, 0x85000100);
             restore_script_sprites();
@@ -1044,7 +1044,7 @@ u32 battle_sequence_dispatch(void) {
                 gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
                 gUnk_030057E0.unk7FE = S.unk1E0;
                 field_center_camera_on_player();
-                dispatch_jump_table_29(0xC, 0);
+                field_update_music(0xC, 0);
             } else if (S.unkF8 == 0xE) {
                 S.unk1E0 = gUnk_083D2AD8;
                 S.unk1D8 = gUnk_083D2AD9[2] << 4;
@@ -1055,10 +1055,10 @@ u32 battle_sequence_dispatch(void) {
                 gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
                 gUnk_030057E0.unk7FE = S.unk1E0;
                 field_center_camera_on_player();
-                dispatch_jump_table_29(0xA, 0);
+                field_update_music(0xA, 0);
             }
             gUnk_030057E0.unkCBA = 1;
-            update_battle_field_frame();
+            area_load_graphics();
             load_battlefield_data_to_buffer();
             gUnk_03002C30[89].unk0 &= ~0x4000;
             break;

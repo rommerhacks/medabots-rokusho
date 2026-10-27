@@ -4,7 +4,8 @@
 // (story text). Uses text/ and engine/ helpers only.
 #include "global.h"
 
-static int sub_08067160(u8 *s) {
+// Line length, 0 for a one-character line.
+static int text_line_glyph_count(u8 *s) {
     int n = 0;
     int r;
     while (s[n] != 0)
@@ -15,7 +16,7 @@ static int sub_08067160(u8 *s) {
     return r;
 }
 
-static void clear_stack_buffer_64(s32 len, s32 step) {
+static void text_scroll_draw_bar(s32 len, s32 step) {
     u16 buf[32];
     u32 zero = 0;
     CpuFastSet(&zero, buf, 0x01000010);
@@ -35,7 +36,7 @@ static void clear_stack_buffer_64(s32 len, s32 step) {
     CpuFastSet(buf, (void *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x06000400), 0x10);
 }
 
-void scroll_tilemap_column(s32 row, s32 step) {
+void text_scroll_shift_row(s32 row, s32 step) {
     u16 buf[32];
     u8 x = gUnk_080AFE96[gUnk_03006F74->unk5];
     if (step <= 14) {
@@ -56,7 +57,7 @@ void scroll_tilemap_column(s32 row, s32 step) {
     }
 }
 
-static void render_text_right_aligned(const u8 *s, u8 row) {
+static void text_scroll_draw_line(const u8 *s, u8 row) {
     int len;
     u16 *dst;
     int i;
@@ -81,7 +82,7 @@ static void render_text_right_aligned(const u8 *s, u8 row) {
     }
 }
 
-static bool32 copy_bg_tile_column(s32 col, s32 step) {
+static bool32 text_scroll_slide_in_heading(s32 col, s32 step) {
     int i;
     if (step > 13)
         return TRUE;
@@ -91,7 +92,7 @@ static bool32 copy_bg_tile_column(s32 col, s32 step) {
     return FALSE;
 }
 
-static bool32 bg_tilemap_scroll_up_row(s32 step) {
+static bool32 text_scroll_slide_out_heading(s32 step) {
     int i;
     int a, b;
     if (step > 3)
@@ -102,7 +103,7 @@ static bool32 bg_tilemap_scroll_up_row(s32 step) {
     return FALSE;
 }
 
-void init_scene_with_palette_and_song_5(void) {
+void text_scroll_init(void) {
     u16 pal[64] = {
         0, 0x6B40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x5EE0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0x5280, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x4A40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -173,7 +174,7 @@ void init_scene_with_palette_and_song_5(void) {
     gGameSubState++;
 }
 
-void sub_080676DC(void) {
+void text_scroll_fade_in(void) {
     struct Unk_03000440 *s;
     u8 *n;
     update_scene_animation_frame();
@@ -188,50 +189,50 @@ void sub_080676DC(void) {
         gGameSubState++;
 }
 
-void scene_text_scroll_step(void) {
+void text_scroll_page_start(void) {
     struct PtrTable3 t = gUnk_080AFE9C;
     struct Unk_03006F74 *s;
     update_scene_animation_frame();
     s = gUnk_03006F74;
     if (++s->unk3A > 0xD) {
-        if (copy_bg_tile_column(s->unk5, s->unk3A - 0xE)) {
+        if (text_scroll_slide_in_heading(s->unk5, s->unk3A - 0xE)) {
             struct Unk_03006F74 *u = gUnk_03006F74;
             u->unkAC = t.p[u->unk5];
             u->unk3A = 0;
             gGameSubState++;
-            gUnk_03006F74->unk7D = sub_08067160((u8 *)*u->unkAC);
+            gUnk_03006F74->unk7D = text_line_glyph_count((u8 *)*u->unkAC);
         }
     } else
         ((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[(s->unk3A + 2) * 32] = *(u16 *)0x0600D8C0;
 }
 
-void sub_080677E0(void) {
+void text_scroll_lines(void) {
     int lines;
     update_scene_animation_frame();
     lines = gUnk_0848417C[gUnk_03006F74->unk5];
     if ((u16)gUnk_03006F74->unk3A % 32 == 0) {
         if (lines > gUnk_03006F74->unk3A / 32) {
-            render_text_right_aligned(*gUnk_03006F74->unkAC, (gUnk_03006F74->unk3A / 32 + 0x10) & 0x1F);
+            text_scroll_draw_line(*gUnk_03006F74->unkAC, (gUnk_03006F74->unk3A / 32 + 0x10) & 0x1F);
             if (lines == gUnk_03006F74->unk3A / 32)
                 gUnk_03006F74->unk7D = 0;
             else
-                gUnk_03006F74->unk7D = sub_08067160((u8 *)*gUnk_03006F74->unkAC);
+                gUnk_03006F74->unk7D = text_line_glyph_count((u8 *)*gUnk_03006F74->unkAC);
             gUnk_03006F74->unkAC++;
         } else {
             gGameSubState++;
             gUnk_03006F74->unk3A = -1;
         }
     }
-    clear_stack_buffer_64(gUnk_03006F74->unk7D, gUnk_03006F74->unk3A & 0x1F);
-    scroll_tilemap_column((gUnk_03006F74->unk3A / 32 + 5) & 0x1F, (gUnk_03006F74->unk3A + 2) & 0x1F);
+    text_scroll_draw_bar(gUnk_03006F74->unk7D, gUnk_03006F74->unk3A & 0x1F);
+    text_scroll_shift_row((gUnk_03006F74->unk3A / 32 + 5) & 0x1F, (gUnk_03006F74->unk3A + 2) & 0x1F);
     if ((gUnk_03006F74->unk3A & 3) == 0)
         gBg1Scroll.y++;
     gUnk_03006F74->unk3A++;
 }
 
-void sub_080678DC(void) {
+void text_scroll_page_end(void) {
     update_scene_animation_frame();
-    if (bg_tilemap_scroll_up_row(gUnk_03006F74->unk3A++)) {
+    if (text_scroll_slide_out_heading(gUnk_03006F74->unk3A++)) {
         gUnk_03006F74->unk3A = 0;
         if (++gUnk_03006F74->unk5 > 2)
             gGameSubState++;
@@ -242,7 +243,7 @@ void sub_080678DC(void) {
     }
 }
 
-void sub_08067938(void) {
+void text_scroll_clear_bar(void) {
     struct Unk_03006F74 *s;
     update_scene_animation_frame();
     s = gUnk_03006F74;
@@ -254,7 +255,7 @@ void sub_08067938(void) {
         ((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[(s->unk3A + 2) * 32] = 0;
 }
 
-void sub_08067994(void) {
+void text_scroll_fade_out(void) {
     update_scene_animation_frame();
     if (gUnk_03006F74->unk3E <= 0xC0) {
         blend_obj_palettes_to_color_0803F684(0, (s16)(gUnk_03006F74->unk3E / 6), 0xFFFF);
@@ -266,7 +267,7 @@ void sub_08067994(void) {
     }
 }
 
-void dispatch_scene_substate_and_scroll(void) {
+void text_scroll_update(void) {
     struct FuncTable7 t = gUnk_080AFEA8;
     t.f[gGameSubState]();
     gBg2Scroll.y--;

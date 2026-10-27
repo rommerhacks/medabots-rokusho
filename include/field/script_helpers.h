@@ -4,7 +4,7 @@
 // Wrappers the field event scripts call: sound, money, items, Medals, team, text
 
 void sub_08047BA8(u32 id);
-void sub_08047BC0(u32 a);
+void field_stop_songs(u32 a);
 void init_cursor_state(void);
 u32 get_money(void);
 u32 sub_08047D8C(u8 id);
@@ -35,6 +35,6 @@ void sub_08047E08(u8 a, u8 b, u8 n);
 void sub_08047E4C(void);
 u32 check_position_table_match(u8 id, u8 which);
 u32 sub_08047BDC(u32 idx);
-void sub_08047BB4(u32 id);
+void field_play_song(u32 id);
 
 #endif // GUARD_FIELD_SCRIPT_HELPERS_H

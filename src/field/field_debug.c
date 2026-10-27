@@ -201,7 +201,7 @@ void sub_08058214(u32 mode) {
         switch (gUnk_030057A0.unk16[gUnk_030057A0.unk14]) {
         case 2:
             if (KEYS_LO(gRepeatKeys) & 1)
-                sub_08047BB4(gUnk_030057A0.unk33);
+                field_play_song(gUnk_030057A0.unk33);
             break;
         case 3:
             if (KEYS_LO(gRepeatKeys) & 1)
@@ -232,7 +232,7 @@ void sub_08058214(u32 mode) {
             else if (gUnk_030057A0.unk12 == 0x12)
                 gUnk_030057E0.unkC5C = 0xB;
             if (gUnk_030057A0.unk12 == 0xE || gUnk_030057A0.unk12 == 0x12) {
-                decompress_battle_tile_graphics();
+                area_load_sprite_sheets();
                 DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.unkC5C]], OBJ_PLTT, 32);
                 gUnk_030057E0.unkC28 = gUnk_030057E0.unkC5C;
                 load_battle_terrain_data();
@@ -575,9 +575,9 @@ void load_or_clear_battle_sprites(s8 key, s32 value, u8 width, u8 x, u8 y) {
     } else if (s->unk15 & 0x10) {
         s32 i;
         for (i = 0; i < width >> 3; i++) {
-            clear_battle_sprite_entry(s->unk13);
+            sprite_entry_clear(s->unk13);
             s->unk13++;
-            clear_battle_sprite_entry(s->unk13);
+            sprite_entry_clear(s->unk13);
             s->unk13++;
         }
     } else {
@@ -596,7 +596,7 @@ u32 sub_0805937C(void) {
         if (battle_sequence_dispatch() == 4) {
             gUnk_030057E0.unkC5C = 0;
             if (gUnk_030057A0.unk12 == 0xE || gUnk_030057A0.unk12 == 0x12) {
-                decompress_battle_tile_graphics();
+                area_load_sprite_sheets();
                 DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.unkC5C]], (void *)PLTT + 0x200, 0x20);
                 gUnk_030057E0.unkC28 = gUnk_030057E0.unkC5C;
                 load_battle_terrain_data();
@@ -612,7 +612,7 @@ static void clear_all_battle_sprites(void) {
     s32 i;
 
     for (i = 0; i < 40; i++)
-        clear_battle_sprite_entry(i);
+        sprite_entry_clear(i);
 }
 
 void handle_battle_end_state_transition(void) {
@@ -647,19 +647,19 @@ static void sub_08059490(u8 *value, s32 x, s32 y) {
     ones = *value - hundreds * 100 - tens * 10;
 
     DmaSet(3, &gUnk_080ACB7C[(hundreds + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-    init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+    sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
     gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x;
     gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
     gUnk_030057A0.unk13++;
 
     DmaSet(3, &gUnk_080ACB7C[(tens + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-    init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+    sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
     gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + 8;
     gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
     gUnk_030057A0.unk13++;
 
     DmaSet(3, &gUnk_080ACB7C[(ones + '0') * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-    init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+    sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
     gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + 16;
     gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
     gUnk_030057A0.unk13++;
@@ -695,13 +695,13 @@ static void load_battle_sprite_from_index(u32 value, s32 bits, s32 x, s32 y) {
         lo = b - hi * 16;
 
         DmaSet(3, &gUnk_080ACB7C[hex[hi] * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-        init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+        sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
         gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + i * 16;
         gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
         gUnk_030057A0.unk13++;
 
         DmaSet(3, &gUnk_080ACB7C[hex[lo] * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-        init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+        sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
         gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x + i * 16 + 8;
         gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
         gUnk_030057A0.unk13++;
@@ -713,7 +713,7 @@ void load_battle_sprite_tile(const u8 *digits, s32 count, s32 x, s32 y) {
 
     for (i = 0; i < count; i++) {
         DmaSet(3, &gUnk_080ACB7C[*digits * 32], 0x06017A00 + gUnk_030057A0.unk13 * 32, 0x84000008);
-        init_battle_sprite_entry_08048818(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
+        sprite_entry_init(gUnk_030057A0.unk13, 0xC004, gUnk_030057A0.unk13 + 0x99, 14, 1);
         gUnk_03002C30[gUnk_030057A0.unk13].unk2 = x;
         gUnk_03002C30[gUnk_030057A0.unk13].unk4 = y;
         x += 8;
@@ -744,8 +744,8 @@ static inline void init_field_sprite(u8 row, u8 col) {
 void init_battle_field_sprites(void) {
     s16 zero; // FAKEMATCH: only set inside the first if, read after it (uninitialised on the other path)
 
-    decompress_terrain_tiles_to_vram(gUnk_030057A0.unk20);
-    dma_load_obj_palettes_08048730(gUnk_030057A0.unk20);
+    fill_sprite_sheets(gUnk_030057A0.unk20);
+    fill_sprite_palettes(gUnk_030057A0.unk20);
     init_field_sprite(0, 0);
     init_field_sprite(0, 1);
     init_field_sprite(0, 2);
@@ -758,11 +758,11 @@ void init_battle_field_sprites(void) {
         u8 slot = 57;
         u8 j = slot + 42;
 
-        clear_battle_sprite_entry(slot);
-        clear_battle_sprite_entry(j);
+        sprite_entry_clear(slot);
+        sprite_entry_clear(j);
         gUnk_03002C30[slot].unk30 = gUnk_030057A0.unk20;
         if (gUnk_083D2C3D[gUnk_030057A0.unk20] == 3) {
-            init_battle_sprite_entry_08048818(slot, 0xC804, calc_medapart_table_index(0), sub_08050264(0), 1);
+            sprite_entry_init(slot, 0xC804, calc_medapart_table_index(0), sub_08050264(0), 1);
             gUnk_03002C30[slot].unk2B = sub_08050264(0);
             gUnk_03002C30[slot].unkC_8 = gUnk_03006432 - 0x30;
             gUnk_03002C30[slot].unk10_8 = gUnk_03006434 + 0x30;

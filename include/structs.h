@@ -1055,7 +1055,7 @@ struct Unk_03006F40 {
     u8 unk9;
     u8 unkA;
     u8 fillerB;
-    float unkC; // blend weights (sub_080487E4: 12.0, 10.0)
+    float unkC; // blend weights (blend_set_alpha_12_10: 12.0, 10.0)
     float unk10;
     float unk14;
     float unk18;
@@ -1269,7 +1269,7 @@ struct Unk_03005310 {
     u16 unk18; // cleared with the gUnk_03006D40 affine params (sub_080492CC)
     u16 unk1A;
     u16 unk1C; // BG0 x scroll (new_game_init)
-    u16 unk1E; // BG1-3 x scroll (update_battle_field_frame)
+    u16 unk1E; // BG1-3 x scroll (area_load_graphics)
     u16 unk20;
     u16 unk22;
     u16 unk24; // BG0 y scroll
@@ -1570,18 +1570,18 @@ struct Unk_03006F74 {
     s8 unk7A;
     s8 unk7B;     // link: both sides OK flag, 0 / -1 (fade_state_dispatch)
     s8 unk7C;     // link: both sides OK flag, 0 / -1 (fade_state_dispatch)
-    s8 unk7D;     // length of the text at *unkAC (scene_text_scroll_step)
+    s8 unk7D;     // length of the text at *unkAC (text_scroll_page_start)
     u8 unk7E;     // rings: random rotation mode (update_scene_animation_frame)
     u8 unk7F;     // sound_current_song result (link_start_init); song played by battle_cutscene_dispatch
     s16 unk80[3]; // rings: rotation angles x / y / z
     s8 unk86[3];  // rings: rotation speeds, clamped to +-16
     u8 filler89;
-    u16 unk8A[4]; // race: per-sprite values set by init_scene_with_palette_and_song_5
+    u16 unk8A[4]; // race: per-sprite values set by text_scroll_init
     u16 unk92[4];
     u16 unk9A[4];
     u8 unkA2[5];
     u8 unkA7[5];
-    const u8 *const *unkAC; // scene text (scene_text_scroll_step)
+    const u8 *const *unkAC; // scene text (text_scroll_page_start)
     u8 unkB0[0x20];         // Medal list: Medal indices (sub_08064CA0)
     struct RingPoint
         unkD0[18];    // points on a hexagon / circle (ring_points_place_on_hexagon, ring_points_place_on_circle)

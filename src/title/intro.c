@@ -138,7 +138,7 @@ void load_battle_scene_graphics(void) {
     REG_BG0CNT = 0x1E08;
     REG_BG2CNT = 0x1F0A;
     DmaSet(3, gUnk_08485FD8[1], PLTT + 0x200, 0x80000050);
-    init_battle_sprite_entry_08048818(0, 0xC000, 0x40D, 4, 3);
+    sprite_entry_init(0, 0xC000, 0x40D, 4, 3);
     gUnk_03002C30[0].unk2 = 0x98;
     gUnk_03002C30[0].unk4 = 0x40;
     setup_screen_transition_effect_080682CC(2, 1, 0);
@@ -171,19 +171,19 @@ void init_scene_graphics(void) {
     REG_BG2CNT = 0xE02;
     REG_BG3CNT = 0xF03;
     setup_screen_transition_effect_080682CC(4, 1, 0);
-    init_battle_sprite_entry_08048818(9, 0xC800, 0x404, 1, 3);
+    sprite_entry_init(9, 0xC800, 0x404, 1, 3);
     gUnk_03002C30[9].unk2 = 8;
     gUnk_03002C30[9].unk4 = 0xA0;
-    init_battle_sprite_entry_08048818(10, 0xC800, 0x405, 1, 3);
+    sprite_entry_init(10, 0xC800, 0x405, 1, 3);
     gUnk_03002C30[10].unk2 = zero;
     gUnk_03002C30[10].unk4 = 0x90;
     for (i = 0; i <= 2; i++) {
-        ((void (*)())init_battle_sprite_entry_08048818)(i + 11, 0xC400, i + 0x400, 0, 3);
+        ((void (*)())sprite_entry_init)(i + 11, 0xC400, i + 0x400, 0, 3);
         gUnk_03002C30[i + 11].unk2 = 0xC0;
         gUnk_03002C30[i + 11].unk4 = 0xC8;
     }
     for (i = 0; i <= 5; i++) {
-        ((void (*)())init_battle_sprite_entry_08048818)(i + 3, 0xC400, 0x408, 2, 3);
+        ((void (*)())sprite_entry_init)(i + 3, 0xC400, 0x408, 2, 3);
         gUnk_03002C30[i + 3].unk2 = i * 8 + 0xA0;
         gUnk_03002C30[i + 3].unk4 = 0xC8;
         gUnk_03002C30[i + 3].unkB = 0x20;
@@ -246,7 +246,7 @@ void sub_0806F0B4(void) {
     if (gUnk_03001800_s.timer < n) {
         switch (gUnk_03001800_s.timer) {
         case 0:
-            init_battle_sprite_entry_08048818(1, 0xCA00, 0x409, 3, 3);
+            sprite_entry_init(1, 0xCA00, 0x409, 3, 3);
             gUnk_03002C30[1].unk2 = 0x50;
             gUnk_03002C30[1].unk4 = 0x38;
             gUnk_03002C30[1].unk8 = 2;
@@ -261,7 +261,7 @@ void sub_0806F0B4(void) {
                 gUnk_03001800_s.timer++;
             break;
         case 2:
-            init_battle_sprite_entry_08048818(2, 0xC600, 0x406, 2, 3);
+            sprite_entry_init(2, 0xC600, 0x406, 2, 3);
             gUnk_03002C30[2].unk2 = 0xB8;
             gUnk_03002C30[2].unk4 = 0x70;
             gUnk_03002C30[2].unk8 = 2;
@@ -376,7 +376,7 @@ void sub_0806F418(void) {
     if (gUnk_03001800_s.timer < n) {
         switch (gUnk_03001800_s.timer) {
         case 0:
-            init_battle_sprite_entry_08048818(1, 0xCA00, 0x40B, 3, 3);
+            sprite_entry_init(1, 0xCA00, 0x40B, 3, 3);
             gUnk_03002C30[1].unk2 = 0x50;
             gUnk_03002C30[1].unk4 = 0x38;
             gUnk_03002C30[1].unk8 = 2;
@@ -391,7 +391,7 @@ void sub_0806F418(void) {
                 gUnk_03001800_s.timer++;
             break;
         case 2:
-            init_battle_sprite_entry_08048818(2, 0xC600, 0x406, 2, 3);
+            sprite_entry_init(2, 0xC600, 0x406, 2, 3);
             gUnk_03002C30[2].unk2 = 0xB8;
             gUnk_03002C30[2].unk4 = 0x70;
             gUnk_03002C30[2].unk8 = 2;
@@ -702,12 +702,12 @@ u32 battle_draw_tilemap_row_dma(u8 a) {
     if (gUnk_03001800_s.unkEC <= 1) {
         if (ROW_ENT(3) + gUnk_03001800_s.unkEC < ROW_ENT(1)) {
             slot = gUnk_03001800_s.unkED * 2 + (gUnk_03001800_s.unkEC + k);
-            ((void (*)())init_battle_sprite_entry_08048818)(slot, 0xC400, 0x403, 0, 3);
+            ((void (*)())sprite_entry_init)(slot, 0xC400, 0x403, 0, 3);
             gUnk_03002C30[slot].unk2 = (ROW_ENT(0) + gUnk_03001800_s.unkEC) * 8;
             gUnk_03002C30[slot].unk4 = (ROW_ENT(1) - gUnk_03001800_s.unkEC) * 8 - 4;
         } else if (ROW_ENT(1) + gUnk_03001800_s.unkEC < ROW_ENT(3)) {
             slot = gUnk_03001800_s.unkED * 2 + (gUnk_03001800_s.unkEC + k);
-            ((void (*)())init_battle_sprite_entry_08048818)(slot, 0xE400, 0x403, 0, 3);
+            ((void (*)())sprite_entry_init)(slot, 0xE400, 0x403, 0, 3);
             gUnk_03002C30[slot].unk2 = (ROW_ENT(0) + gUnk_03001800_s.unkEC) * 8;
             gUnk_03002C30[slot].unk4 = (ROW_ENT(1) + gUnk_03001800_s.unkEC) * 8 + 12;
         } else {

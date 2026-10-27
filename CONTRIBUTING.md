@@ -474,14 +474,14 @@
 * A constant stored to an I/O register that goes **straight into `r0`** after the address
   (`ldr r1, =REG; ldr r0, =0xA0C; strh r0, [r1]`), while plain `REG = 0xA0C;` gives
   `ldr r2, =0xA0C; adds r0, r2, #0`: take the register's address and the value into locals,
-  `vu16 *r = &REG_BLDALPHA; u16 v = 0xA0C; *r = v;` (sub_080487E4, sub_080487AC). Worth trying on
+  `vu16 *r = &REG_BLDALPHA; u16 v = 0xA0C; *r = v;` (blend_set_alpha_12_10, blend_set_alpha_12_8). Worth trying on
   the older `REG_X = const` near misses.
 * `adds r0, r0, #imm` folded into one constant where the original kept `(t - 0xC0) * 2` and
-  `(x + 0x28)` apart: combine reassociates even through a `static inline` helper (sub_080481C4,
+  `(x + 0x28)` apart: combine reassociates even through a `static inline` helper (resolve_sprite_sheet_id,
   unsolved).
 * A loop whose index is only used in an address (`0x05000200 + i * 0x20`) keeps its up-counter
   and the strength-reduced address is set up *after* the hoisted invariants; an explicit
-  `dst += 0x20` pointer is set up first (dma_load_obj_palettes_08048664).
+  `dst += 0x20` pointer is set up first (area_load_sprite_palettes_now).
 * A loop condition that calls a function and a body that calls it again with the same argument
   (`for (i = 0; (t = f(i)) != 0xFF; i++) { t = f(i); ... }`): the original really calls it twice.
 * A bitfield tested with `ldrb; movs #0xF; ands` but read elsewhere with `lsls/lsrs`: the test was
@@ -524,7 +524,7 @@
   (medal_transform_init).
 * `ldrh; ands rX, #0x1f` done in place (no second register for the masked value) and a later
   `strb rX` of the known-zero result: `(u16)s->unk3A % 32 == 0` instead of `(s->unk3A & 0x1F) == 0`
-  (sub_080677E0).
+  (text_scroll_lines).
 * A ROM table that the original reloads after unrelated stores (outgoing stack arguments, struct
   fields) is declared without `const`: agbcc keeps loads from `const` arrays live across stores and
   CSEs them (gUnk_08485CC4, divide_by_3 / update_battle_bot_damage_animations).
@@ -532,7 +532,7 @@
   (`add r1, sp, #4; movs r0, #0; strh r0, [r1]`): declare it `vu16` / `vu32`
   (init_battle_bg_layer1, load_bg_tilemaps_and_palette).
 * `s->unk84++` through a struct pointer vs `(*n)++` through a `u8 *` local change where a following
-  zero constant is materialized (sub_080676DC).
+  zero constant is materialized (text_scroll_fade_in).
 * Two values read from the same struct in one function where the original loads the struct base
   first, then the index (`ldr r2, =base; ldr r0, =&idx; ldrb r1, [r0]`): `struct T *b = gBase;
   struct T *m = &b[gIdx];` (medal_transform_flash_in).
@@ -548,7 +548,7 @@
   prototype takes `u8`: the original saw an `int` / unprototyped declaration; call through a
   `((void (*)())f)(...)` cast (update_battle_bot_entry_animations).
 * `for (i = 0; i < 5u; i++)` / `i < sizeof(arr)` (unsigned bound) gives `bls` instead of `ble`
-  (init_scene_with_palette_and_song_5).
+  (text_scroll_init).
 * **agbcc pads every union (and struct) to a multiple of 4 bytes.** A `union { u16 h; u8 b; }` at
   0xC takes 0xC..0xF, so a field declared after it lands at 0x10, not 0xE. Put such neighbours inside
   the union (`s8 s[4]`, struct Unk_03001800_s.unkC).
@@ -596,7 +596,7 @@
 * A constant like 0xFFFF8000 built from `x + 0x8000` with an `s16` intermediate: put the sum in an
   assignment inside the expression, `a + (flag = (b & 0x100) + 0x8000)` with `s16 flag` (sub_08014B34).
 * An address strength-reduced across a loop that the original recomputes: assign the row inside the index,
-  `[((a = i + 4) - step) * 32]` (bg_tilemap_scroll_up_row).
+  `[((a = i + 4) - step) * 32]` (text_scroll_slide_out_heading).
 * A `cond ? tblA[c] : tblB[c]` that computes `c * 2` too early: write if / else with the whole statement in
   both arms.
 * Do not run `tools/scripts/tryin.py` for two functions of the same module at the same time (or while
@@ -648,7 +648,7 @@ really data (a false positive), the shifted build changes that data by `SHIFT`: 
   The same works when the reload registers (r0/r1/r3 round-robin) are off by one: add a duplicate of an
   arm or comparison that cross-jumping merges after reload (sub_08065090: the `&= 0xBFFF` arm written
   twice in an if / else-if chain; sub_0804CB90: the `>= unkC94[1]` test repeated in both arms;
-  dispatch_jump_table_29, sub_0804FE50: an extra `case 0: done = 1; break;` before the default).
+  field_update_music, sub_0804FE50: an extra `case 0: done = 1; break;` before the default).
 * Loop registers wrong in a simple nested loop: gcc weights register uses inside loops, and goto loops
   are not seen as loops. Writing the loops with `goto` gave shell_sort_by_second_byte its registers.
 * `y += h` hoisted above the inner loop (GCSE, not the loop optimiser): keep the size pair in an array

@@ -93,8 +93,8 @@ void sub_0804DD74(void) {
 }
 
 static void sub_0804DD80(void) {
-    sub_080482C0();
-    dma_load_battle_palettes();
+    area_load_bg_palettes();
+    area_load_sprite_palettes();
     load_room_graphics();
     load_battlefield_data_to_buffer();
     gUnk_030057E0.unkC35 = 0;
@@ -108,7 +108,7 @@ static void sub_0804DD80(void) {
     gUnk_03002C30[47].unk25 = 1;
     field_set_player_facing(gUnk_030057E0.unkC67);
     update_cursor_tile_position();
-    decompress_battle_tile_graphics();
+    area_load_sprite_sheets();
     map_script_command_done();
 }
 
@@ -121,14 +121,14 @@ void sub_0804DE28(void) {
             if (gUnk_03002C30[47].unk4 / 4 <= (gUnk_030057E0.unkC94[0] - 16) / 4)
                 gUnk_03002C30[47].unkB = 0xFF;
             else
-                sub_0804877C(47);
+                sprite_set_blend_from_kind(47);
         } else {
             gUnk_03002C30[47].unk26 = 1;
             gUnk_03002C30[47].unk28 = 0;
         }
         break;
     case 1:
-        sub_0804877C(47);
+        sprite_set_blend_from_kind(47);
         gUnk_03002C30[47].unk4 = gUnk_030057E0.unkC94[0];
         map_script_command_done();
         break;
@@ -178,12 +178,12 @@ void sub_0804DEF4(void) {
             if (gUnk_03002C30[46].unk4 / 4 <= (gUnk_03002C30[47].unk4 - 16) / 4)
                 gUnk_03002C30[46].unkB = 0xFF;
             else
-                sub_0804877C(46);
+                sprite_set_blend_from_kind(46);
         } else {
             gUnk_03002C30[47].unk26++;
             gUnk_03002C30[47].unk28 = 0;
             memcpy_u8(gUnk_030057E0.unkC18, gUnk_030057E0.unkC10, 8);
-            clear_battle_sprite_entry(46);
+            sprite_entry_clear(46);
             gUnk_030057E0.unkC5B = 1;
             sub_08052BA0(1);
             gUnk_030057E0.unkC5F = 0;
@@ -270,7 +270,7 @@ void sub_0804E324(void) {
     gUnk_030057E0.unkC69 = gUnk_030057E0.unkC5C = gUnk_083D2998[gUnk_030057E0.unkC94[0]];
     gUnk_030057E0.unkC28 = gUnk_083D2998[gUnk_030057E0.unkC94[0]];
     load_battle_terrain_data();
-    decompress_battle_tile_graphics();
+    area_load_sprite_sheets();
     switch (gUnk_03006F40.unk1) {
     case 1:
     case 3:
@@ -282,7 +282,7 @@ void sub_0804E324(void) {
         obj = 0;
         break;
     }
-    i = resolve_tile_from_battle_state(0);
+    i = area_sprite_sheet_id(0);
     if (gUnk_083F8634[i] == NULL)
         i = 1;
     if (obj)
@@ -972,12 +972,12 @@ void nullsub_0804F58C(void) {}
 // guess: opcode 0x56, reload the map (clears tile buffers, recopies the collision map, reloads NPC sprites).
 void sub_0804F590(void) {
     save_script_sprites();
-    sub_080496C8(gUnk_03003870, 0x900);
-    sub_080496C8(gUnk_03003870 + 0xA80, 0x900);
-    sub_080496C8(gUnk_03005664, 0x90);
-    sub_080496C8(gUnk_03005664 + 0xA8, 0x90);
+    memzero_bytes(gUnk_03003870, 0x900);
+    memzero_bytes(gUnk_03003870 + 0xA80, 0x900);
+    memzero_bytes(gUnk_03005664, 0x90);
+    memzero_bytes(gUnk_03005664 + 0xA8, 0x90);
     restore_script_sprites();
-    sub_080496C8(gUnk_030057E0.unk810, 0x400);
+    memzero_bytes(gUnk_030057E0.unk810, 0x400);
     memcpy_u8(gUnk_084045A8[gUnk_030057E0.unk7FE], gUnk_030057E0.unk810,
               (gUnk_030057E0.unk802 >> 1) * (gUnk_030057E0.unk800 >> 1));
     gUnk_030057E0.unkCBA = 1;
@@ -1344,7 +1344,7 @@ void sub_0804FCC4(void) {
     }
     if (done == gUnk_030064A0.unk52) {
         gUnk_030064A0.unk52 = 0;
-        sub_080496C8(gUnk_030064A0.unk12[0], 64);
+        memzero_bytes(gUnk_030064A0.unk12[0], 64);
         map_script_command_done();
     }
 }
@@ -1409,7 +1409,7 @@ void sub_0804FE50(void) {
     }
     if (done) {
         gUnk_030064A0.unk52 = 0;
-        sub_080496C8(gUnk_030064A0.unk12[0], 64);
+        memzero_bytes(gUnk_030064A0.unk12[0], 64);
         map_script_command_done();
     }
 }

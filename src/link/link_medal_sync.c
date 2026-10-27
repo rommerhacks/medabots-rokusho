@@ -1,10 +1,12 @@
-// Link handshakes: state 27 (dispatch_fade_substate) exchanges owned-Medal masks over the serial packets
-// (0xF4xx / 0xFCxx) and then goes to state 17 or back to mode 0; state 26 (sub_08064A44) syncs on 0xFEDF and
-// enters link_menu. sub_08064A74..sub_08064AD4 are the mode-2 entry points (states 26/17/16/20) that
-// goto_link_scene in engine/sprite_engine.c picks from.
+// Link handshakes: state 27 (link_medal_sync_update, from link_menu) sends the owned-Medal mask over the serial
+// packets (0xF4xx data bytes / 0xFCxx acks) and then goes to state 17 or, on the receiving side, stores the mask
+// in gUnk_03002B68 and returns to mode 0; state 26 (link_handshake_update) syncs on 0xFEDF and enters link_menu.
+// link_enter_* are the mode-2 entry points that goto_link_scene in engine/sprite_engine.c picks from: 26 (from the
+// Medals list), 17 Medal trade (Medals screen), 16 Medapart trade (Medaparts screen), 20 link menu (link Robattle).
 #include "global.h"
 
-void sub_08064890(void) {
+// guess: Medal flag 0x80 = owned; one bit per Medal graphic index.
+void link_medal_sync_init(void) {
     u32 mask = 0;
     s32 i;
 
@@ -20,7 +22,7 @@ void sub_08064890(void) {
     gGameSubState++;
 }
 
-void process_fade_transition_step(void) {
+void link_medal_sync_exchange(void) {
     struct Unk_03006F74 *s;
     s32 pkt;
     u32 m;
@@ -60,13 +62,13 @@ void process_fade_transition_step(void) {
     }
 }
 
-void dispatch_fade_substate(void) {
+void link_medal_sync_update(void) {
     struct FuncTable2 t = gUnk_080AFAE0;
 
     t.f[gGameSubState]();
 }
 
-void sub_08064A44(void) {
+void link_handshake_update(void) {
     gUnk_03005010.unk6 = 0xFEDF;
     if (gUnk_03005010.unk8[0][1] == 0xFEDF && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1]) {
         gGameState = 0x14;
@@ -74,25 +76,25 @@ void sub_08064A44(void) {
     }
 }
 
-void sub_08064A74(void) {
+void link_enter_handshake(void) {
     gGameMode = 2;
     gGameState = 0x1a;
     gGameSubState = 0;
 }
 
-void sub_08064A94(void) {
+void link_enter_medal_trade(void) {
     gGameMode = 2;
     gGameState = 0x11;
     gGameSubState = 0;
 }
 
-void sub_08064AB4(void) {
+void link_enter_medapart_trade(void) {
     gGameMode = 2;
     gGameState = 0x10;
     gGameSubState = 0;
 }
 
-void sub_08064AD4(void) {
+void link_enter_menu(void) {
     gGameMode = 2;
     gGameState = 0x14;
     gGameSubState = 0;

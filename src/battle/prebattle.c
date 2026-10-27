@@ -284,8 +284,8 @@ void sub_08010A20(void) {
 }
 
 void sub_08010A7C(void) {
-    update_battle_field_frame();
-    sub_080487E4();
+    area_load_graphics();
+    blend_set_alpha_12_10();
     setup_blend_effect(0x40, 0x2F00, 5, 16, 16, 16, 12, 10, 0);
     gUnk_03000440.unk84 = 0;
     gGameSubState++;

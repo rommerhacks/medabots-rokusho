@@ -83,12 +83,12 @@ void weekly_load_studio(void) {
     LZ77UnCompVram(gUnk_087B1CEC, (void *)0x06010000);
 
     for (i = 0; i <= 10; i++) {
-        init_battle_sprite_entry_08048818(i, 0xC800, 0x50E, 4, 3);
+        sprite_entry_init(i, 0xC800, 0x50E, 4, 3);
         gUnk_03002C30[i].unk2 = i * 8 + 0x78;
         gUnk_03002C30[i].unk4 = 0;
         gUnk_03002C30[i].unkB = i + 0x40;
         gUnk_03002C30[i].unk22 = i + 1;
-        init_battle_sprite_entry_08048818(i + 11, 0xC800, 0x50E, 4, 3);
+        sprite_entry_init(i + 11, 0xC800, 0x50E, 4, 3);
         gUnk_03002C30[i + 11].unk2 = 0x70 - i * 8;
         gUnk_03002C30[i + 11].unk4 = 0;
         gUnk_03002C30[i + 11].unkB = i + 0x40;
@@ -98,7 +98,7 @@ void weekly_load_studio(void) {
     gUnk_03002C30[21].unk22 = 0xFF;
 
     for (i = 0; i <= 3; i++) {
-        init_battle_sprite_entry_08048818(i + 22, 0xCC00, 0, i, 1);
+        sprite_entry_init(i + 22, 0xCC00, 0, i, 1);
         gUnk_03002C30[i + 22].unk4 = 0x40;
     }
     gUnk_03002C30[22].unk2 = 0x10;
@@ -112,7 +112,7 @@ void weekly_load_studio(void) {
     gUnk_03002C30[25].unkB = 6;
 
     for (i = 0; i <= 3; i++) {
-        init_battle_sprite_entry_08048818(i + 26, 0xCC08, 0x513, 0xE, 3);
+        sprite_entry_init(i + 26, 0xCC08, 0x513, 0xE, 3);
         gUnk_03002C30[i + 26].unk2 = gUnk_03002C30[i + 22].unk2;
         gUnk_03002C30[i + 26].unk4 = 0x40;
     }
@@ -163,39 +163,39 @@ void weekly_show_lecture(void) {
     REG_BLDCNT = 0x1C42;
     REG_BLDALPHA = 0x80A;
 
-    init_battle_sprite_entry_08048818(6, 0xC800, 0x508, 8, 3);
+    sprite_entry_init(6, 0xC800, 0x508, 8, 3);
     gUnk_03002C30[6].unk2 = 0x40;
     gUnk_03002C30[6].unk4 = 0x42;
     gUnk_03002C30[6].unkB = 0x24;
-    init_battle_sprite_entry_08048818(7, 0xC800, 0x509, 8, 3);
+    sprite_entry_init(7, 0xC800, 0x509, 8, 3);
     gUnk_03002C30[7].unk2 = 0x38;
     gUnk_03002C30[7].unk4 = 0x3A;
     gUnk_03002C30[7].unkB = 0x28;
-    init_battle_sprite_entry_08048818(8, 0xC800, 0x50A, 8, 3);
+    sprite_entry_init(8, 0xC800, 0x50A, 8, 3);
     gUnk_03002C30[8].unk2 = 0x44;
     gUnk_03002C30[8].unk4 = 0x3A;
     gUnk_03002C30[8].unkB = 0x1C;
-    init_battle_sprite_entry_08048818(9, 0xC800, 0x50B, 8, 3);
+    sprite_entry_init(9, 0xC800, 0x50B, 8, 3);
     gUnk_03002C30[9].unk2 = 0x40;
     gUnk_03002C30[9].unk4 = 0x42;
     gUnk_03002C30[9].unkB = 0x20;
-    init_battle_sprite_entry_08048818(2, 0xC800, 0x500, 8, 3);
+    sprite_entry_init(2, 0xC800, 0x500, 8, 3);
     gUnk_03002C30[2].unk2 = 0x50;
     gUnk_03002C30[2].unk4 = -0x30;
     gUnk_03002C30[2].unkB = 0x25;
-    init_battle_sprite_entry_08048818(1, 0xC800, 0x50C, 1, 3);
+    sprite_entry_init(1, 0xC800, 0x50C, 1, 3);
     gUnk_03002C30[1].unk2 = 0x50;
     gUnk_03002C30[1].unk4 = -0x30;
     gUnk_03002C30[1].unkB = 0x30;
-    init_battle_sprite_entry_08048818(3, 0xC800, 0x501, 8, 3);
+    sprite_entry_init(3, 0xC800, 0x501, 8, 3);
     gUnk_03002C30[3].unk2 = 0x28;
     gUnk_03002C30[3].unk4 = -0x30;
     gUnk_03002C30[3].unkB = 0x29;
-    init_battle_sprite_entry_08048818(4, 0xC800, 0x502, 8, 3);
+    sprite_entry_init(4, 0xC800, 0x502, 8, 3);
     gUnk_03002C30[4].unk2 = 0x54;
     gUnk_03002C30[4].unk4 = -0x30;
     gUnk_03002C30[4].unkB = 0x1D;
-    init_battle_sprite_entry_08048818(5, 0xC800, 0x503, 8, 3);
+    sprite_entry_init(5, 0xC800, 0x503, 8, 3);
     gUnk_03002C30[5].unk2 = 0x50;
     gUnk_03002C30[5].unk4 = -0x30;
     gUnk_03002C30[5].unkB = 0x29;
@@ -377,7 +377,7 @@ void weekly_lecture(void) {
         gUnk_03001800_s.timer++;
         break;
     case 22:
-        init_battle_sprite_entry_08048818(0, 0xC800, 0x50F, 0, 3);
+        sprite_entry_init(0, 0xC800, 0x50F, 0, 3);
         gUnk_03002C30[0].unk2 = 0x42;
         gUnk_03002C30[0].unk4 = -8;
         gUnk_03002C30[0].unkB = 0x40;
@@ -409,18 +409,18 @@ void weekly_back_to_studio(void) {
     u32 zero_late; // FAKEMATCH: a second zero, loaded late for gUnk_03000430
 
     DmaSet(3, &zero, gUnk_03002C30, 0x85000800);
-    init_battle_sprite_entry_08048818(0, 0xCC00, 0x50E, 4, 3);
+    sprite_entry_init(0, 0xCC00, 0x50E, 4, 3);
     gUnk_03002C30[0].unk2 = 0xD4;
     gUnk_03002C30[0].unk4 = 0;
     gUnk_03002C30[0].unkB = 0x4A;
     gUnk_03002C30[10].unk22 = 0xFF;
-    init_battle_sprite_entry_08048818(0xB, 0xCC00, 0x50E, 4, 3);
+    sprite_entry_init(0xB, 0xCC00, 0x50E, 4, 3);
     gUnk_03002C30[11].unk2 = 0x14;
     gUnk_03002C30[11].unk4 = 0;
     gUnk_03002C30[11].unkB = 0x4A;
     gUnk_03002C30[21].unk22 = 0xFF;
     for (i = 0; i < 4; i++) {
-        init_battle_sprite_entry_08048818(i + 0x16, 0xCC00, (u16)(i * 12 + 0x27), i, 1);
+        sprite_entry_init(i + 0x16, 0xCC00, (u16)(i * 12 + 0x27), i, 1);
         gUnk_03002C30[i + 0x16].unk4 = 0x48;
     }
     gUnk_03002C30[0x16].unk2 = 0x58;
@@ -433,7 +433,7 @@ void weekly_back_to_studio(void) {
     gUnk_03002C30[0x19].unk2 = 0x70;
     gUnk_03002C30[0x19].unkB = 4;
     for (i = 0; i < 4; i++) {
-        init_battle_sprite_entry_08048818(i + 0x1A, 0xCC08, 0x513, 0xE, 3);
+        sprite_entry_init(i + 0x1A, 0xCC08, 0x513, 0xE, 3);
         gUnk_03002C30[i + 0x1A].unk2 = gUnk_03002C30[i + 0x16].unk2;
         gUnk_03002C30[i + 0x1A].unk4 = 0x48;
     }
@@ -637,11 +637,11 @@ u32 weekly_fx_right_curtain_close(u8 sprite) {
             curtain->unk2--;
             if (++curtain->unk21 == 8 && curtain->unk22 != 0xFF) {
                 if (sprite == 0) {
-                    init_battle_sprite_entry_08048818(1, 0xCC00, 0x50E, 4, 3);
+                    sprite_entry_init(1, 0xCC00, 0x50E, 4, 3);
                     next = 1;
                 } else {
                     next = sprite + 1;
-                    ((void (*)())init_battle_sprite_entry_08048818)(next, 0xC800, 0x50E, 4, 3);
+                    ((void (*)())sprite_entry_init)(next, 0xC800, 0x50E, 4, 3);
                 }
                 entries = gUnk_03002C30;
                 entries[next].unk2 = entries[sprite].unk2;
@@ -678,11 +678,11 @@ u32 weekly_fx_left_curtain_close(u8 sprite) {
             curtain->unk2++;
             if (++curtain->unk21 == 8 && curtain->unk22 != 0xFF) {
                 if (sprite == 11) {
-                    init_battle_sprite_entry_08048818(12, 0xCC00, 0x50E, 4, 3);
+                    sprite_entry_init(12, 0xCC00, 0x50E, 4, 3);
                     next = 12;
                 } else {
                     next = sprite + 1;
-                    ((void (*)())init_battle_sprite_entry_08048818)(next, 0xC800, 0x50E, 4, 3);
+                    ((void (*)())sprite_entry_init)(next, 0xC800, 0x50E, 4, 3);
                 }
                 entries = gUnk_03002C30;
                 entries[next].unk2 = entries[sprite].unk2;

@@ -524,17 +524,16 @@ void field_warp_to_area(void) {
 // guess: sets up sprite 48 and its shadow (90), see update_battle_direction_indicator
 void init_battle_medaforce_sprite(void) {
     if (gUnk_030057E0.unkC76) {
-        init_battle_sprite_entry_08048818(48, 0xC804, gUnk_030057E0.unkC84 * 12 + gUnk_030057E0.unkC83,
-                                          gUnk_030057E0.unkC84, 1);
+        sprite_entry_init(48, 0xC804, gUnk_030057E0.unkC84 * 12 + gUnk_030057E0.unkC83, gUnk_030057E0.unkC84, 1);
         gUnk_03002C30[48].unkB = 0x40;
         gUnk_03002C30[48].unk2B = gUnk_030057E0.unkC84;
         set_battle_state_byte_c83(gUnk_030057E0.unkC83);
         sub_080493D4(48, sub_080502B4(48, gUnk_030057E0.unkC83));
         gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
         gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
-        gUnk_03002C30[48].unk30 = resolve_tile_from_battle_state(gUnk_03002C30[48].unk2B);
-        sub_0804877C(48);
-        init_battle_sprite_entry_08048818(90, 0xCC0C, 0x90, 14, 1);
+        gUnk_03002C30[48].unk30 = area_sprite_sheet_id(gUnk_03002C30[48].unk2B);
+        sprite_set_blend_from_kind(48);
+        sprite_entry_init(90, 0xCC0C, 0x90, 14, 1);
         gUnk_03002C30[90].unkC_8 = gUnk_030057E0.unkC6E;
         gUnk_03002C30[90].unk10_8 = gUnk_030057E0.unkC70 - 5;
         gUnk_03002C30[90].unk2 = gUnk_03002C30[48].unk2;

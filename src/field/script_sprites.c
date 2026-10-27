@@ -120,8 +120,8 @@ static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y) {
     u32 tile;
     u8 anim;
 
-    clear_battle_sprite_entry(slot);
-    init_battle_sprite_entry_08048818(slot, 0xC804, calc_medapart_table_index(part), sub_08050264(part), 1);
+    sprite_entry_clear(slot);
+    sprite_entry_init(slot, 0xC804, calc_medapart_table_index(part), sub_08050264(part), 1);
     anim = sub_08050264(part);
     spr = &gUnk_03002C30[slot];
     spr->unk2B = anim;
@@ -130,11 +130,11 @@ static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y) {
     spr->unk10_8 = y * 16 + gUnk_030057E0.unkC4A;
     gUnk_030055A0[slot].unk0 = 0xFFFF;
     spr->unk2C = 0;
-    tile = resolve_tile_from_battle_state(spr->unk2B);
+    tile = area_sprite_sheet_id(spr->unk2B);
     spr->unk30 = tile;
-    sub_0804877C(slot);
+    sprite_set_blend_from_kind(slot);
     if (gUnk_083D2B8D[tile]) {
-        init_battle_sprite_entry_08048818(idx + 0x79, 0xCC0C, 0x90, 0xE, 1);
+        sprite_entry_init(idx + 0x79, 0xCC0C, 0x90, 0xE, 1);
         gUnk_03002C30[idx + 0x79].unkC_8 = spr->unkC_8;
         gUnk_03002C30[idx + 0x79].unk10_8 = spr->unk10_8 - 5;
     }
@@ -151,8 +151,8 @@ void sub_08050508(u8 arg) {
         if (find_map_event_by_coords(x, y) && gUnk_03006D38.unk3)
             sub_08047BA8(gUnk_083D29E6[gUnk_03006D38.unk3]);
     }
-    clear_battle_sprite_entry(sub_0804DBA4(id) + 79);
-    clear_battle_sprite_entry(sub_0804DBA4(id) + 121);
+    sprite_entry_clear(sub_0804DBA4(id) + 79);
+    sprite_entry_clear(sub_0804DBA4(id) + 121);
     sub_0804DB68(id);
 }
 
@@ -160,7 +160,7 @@ void sub_08050508(u8 arg) {
 void save_script_sprites(void) {
     s32 i;
 
-    sub_080496C8((u8 *)gUnk_030057E0.unk7DC, sizeof(gUnk_030057E0.unk7DC));
+    memzero_bytes((u8 *)gUnk_030057E0.unk7DC, sizeof(gUnk_030057E0.unk7DC));
     for (i = 0; i <= 5; i++) {
         if (gUnk_030055A0[i + 79].unk0) {
             gUnk_030057E0.unk7DC[i].x = sub_080526F0(gUnk_03002C30[i + 79].unkC_8);
@@ -274,9 +274,9 @@ u32 sub_080508CC(void) {
         if (gUnk_03002C30[gUnk_03006D20.unkA].unk10_8 / 4 <= (gUnk_03006D20.unk8 - 16) / 4)
             gUnk_03002C30[gUnk_03006D20.unkA].unkB = 0xFF;
         else
-            sub_0804877C(gUnk_03006D20.unkA);
+            sprite_set_blend_from_kind(gUnk_03006D20.unkA);
     } else {
-        sub_0804877C(gUnk_03006D20.unkA);
+        sprite_set_blend_from_kind(gUnk_03006D20.unkA);
         gUnk_03002C30[gUnk_03006D20.unkA].unk10_8 = gUnk_03006D20.unk8;
         gUnk_03002C30[gUnk_03006D20.unkA].unk2C = 0;
         ret = 1;
@@ -326,10 +326,10 @@ u32 sub_080509A0(void) {
                 if (gUnk_03002C30[slot].unk10_8 / 4 <= (gUnk_03002C30[slot].unk34 - 16) / 4)
                     gUnk_03002C30[slot].unkB = 0xFE;
                 else
-                    sub_0804877C(slot);
+                    sprite_set_blend_from_kind(slot);
             }
         } else {
-            sub_0804877C(slot);
+            sprite_set_blend_from_kind(slot);
             s->unk10_8 = s->unk34;
             s->unk2C = 0;
             ret = 1;
@@ -341,7 +341,7 @@ u32 sub_080509A0(void) {
 
 // Clears gNewKeys, gRepeatKeys and gHeldKeys (called every frame by sub_0804E0E8 during scripted scenes).
 void sub_08050B50(void) {
-    sub_080496C8((u8 *)&gNewKeys, 4);
-    sub_080496C8((u8 *)&gRepeatKeys, 4);
-    sub_080496C8((u8 *)&gHeldKeys, 4);
+    memzero_bytes((u8 *)&gNewKeys, 4);
+    memzero_bytes((u8 *)&gRepeatKeys, 4);
+    memzero_bytes((u8 *)&gHeldKeys, 4);
 }

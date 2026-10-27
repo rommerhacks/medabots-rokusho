@@ -124,8 +124,8 @@ void sub_080492CC(void) {
 }
 
 void clear_entity_state(u8 slot) {
-    sub_080496C8((u8 *)&gUnk_030055A0[slot], 4);
-    sub_080496C8((u8 *)&gUnk_03002C30[slot], 0x40);
+    memzero_bytes((u8 *)&gUnk_030055A0[slot], 4);
+    memzero_bytes((u8 *)&gUnk_03002C30[slot], 0x40);
 }
 
 void calculate_oam_affine_matrix(u8 i) {
@@ -269,13 +269,13 @@ static void sub_080496A4(u8 slot, const void *src) {
     DmaSet(3, src, OBJ_PLTT + slot * 32, 0x80000008);
 }
 
-void sub_080496C8(u8 *dst, u32 size) {
+void memzero_bytes(u8 *dst, u32 size) {
     u32 i;
     for (i = 0; i < size; i++)
         *dst++ = 0;
 }
 
-void sub_080496DC(u8 *dst, u32 n, u8 val) {
+void memset_bytes(u8 *dst, u32 n, u8 val) {
     u32 i;
 
     for (i = 0; i < n; i++)

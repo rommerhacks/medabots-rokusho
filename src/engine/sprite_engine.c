@@ -9,16 +9,16 @@
 void goto_link_scene(u32 a) {
     switch (a) {
     case 0:
-        sub_08064A74();
+        link_enter_handshake();
         break;
     case 1:
-        sub_08064A94();
+        link_enter_medal_trade();
         break;
     case 2:
-        sub_08064AB4();
+        link_enter_medapart_trade();
         break;
     case 3:
-        sub_08064AD4();
+        link_enter_menu();
         break;
     }
 }

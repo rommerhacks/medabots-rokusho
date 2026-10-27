@@ -5,21 +5,21 @@
 #include "global.h"
 
 static void field_clear_ram(void) {
-    sub_080496C8((u8 *)&gUnk_03005310, 0x3C);
-    sub_080496C8((u8 *)&gUnk_030057A0, 0x38);
-    sub_080496C8((u8 *)&gUnk_03006D14, 4);
-    sub_080496C8((u8 *)&gUnk_030057DC, 4);
-    sub_080496C8((u8 *)&gUnk_0300534C, 4);
-    sub_080496C8((u8 *)gUnk_030055A0, 0x200);
-    sub_080496C8((u8 *)gUnk_03006D40, 0x200);
-    sub_080496C8((u8 *)&gUnk_03006F40, 0x34);
-    sub_080496C8((u8 *)&gUnk_03006D38, 8);
-    sub_080496C8((u8 *)&gUnk_03006D20, 0x10);
-    sub_080496C8((u8 *)&gUnk_030057D8, 4);
-    sub_080496C8((u8 *)&gMapScriptData, 4);
-    sub_080496C8((u8 *)&gUnk_03005350, 0x240);
-    sub_080496C8((u8 *)&gUnk_03006D30, 4);
-    sub_080496C8((u8 *)&gUnk_030064A0, 0x874);
+    memzero_bytes((u8 *)&gUnk_03005310, 0x3C);
+    memzero_bytes((u8 *)&gUnk_030057A0, 0x38);
+    memzero_bytes((u8 *)&gUnk_03006D14, 4);
+    memzero_bytes((u8 *)&gUnk_030057DC, 4);
+    memzero_bytes((u8 *)&gUnk_0300534C, 4);
+    memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+    memzero_bytes((u8 *)gUnk_03006D40, 0x200);
+    memzero_bytes((u8 *)&gUnk_03006F40, 0x34);
+    memzero_bytes((u8 *)&gUnk_03006D38, 8);
+    memzero_bytes((u8 *)&gUnk_03006D20, 0x10);
+    memzero_bytes((u8 *)&gUnk_030057D8, 4);
+    memzero_bytes((u8 *)&gMapScriptData, 4);
+    memzero_bytes((u8 *)&gUnk_03005350, 0x240);
+    memzero_bytes((u8 *)&gUnk_03006D30, 4);
+    memzero_bytes((u8 *)&gUnk_030064A0, 0x874);
 }
 
 void field_mode_dispatch(void) {
@@ -80,7 +80,7 @@ void dispatch_by_index_0476e8(u32 idx) {
         break;
     case 10:
         field_clear_ram();
-        sub_080496C8((u8 *)&gUnk_030057E0, 0xCC0);
+        memzero_bytes((u8 *)&gUnk_030057E0, 0xCC0);
         gUnk_03000588 = 1;
         gGameMode = 1;
         gGameState = 1;

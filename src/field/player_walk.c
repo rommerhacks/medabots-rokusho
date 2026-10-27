@@ -20,9 +20,9 @@ void load_map_npc_sprites(s32 mode) {
     const struct MapNpcRecord *e;
 
     obj = gUnk_030057E0.unk5DC;
-    sub_080496C8((u8 *)saved, sizeof(saved));
+    memzero_bytes((u8 *)saved, sizeof(saved));
     memcpy_u8(obj, saved, sizeof(saved));
-    sub_080496C8((u8 *)obj, sizeof(saved));
+    memzero_bytes((u8 *)obj, sizeof(saved));
     count = 0;
     n = 0;
     j = 0;
@@ -88,12 +88,12 @@ void load_map_npc_sprites(s32 mode) {
                     u8 slot = count + 49;
                     u32 f = anim * 12;
                     u8 a = anim;
-                    init_battle_sprite_entry_08048818(slot, 0xC804, f, a, 1);
+                    sprite_entry_init(slot, 0xC804, f, a, 1);
                     gUnk_030057E0.unk5DC[n].unk4_6 = 1;
-                    gUnk_03002C30[count + 49].unk30 = resolve_tile_from_battle_state(a);
-                    sub_0804877C(count + 49);
+                    gUnk_03002C30[count + 49].unk30 = area_sprite_sheet_id(a);
+                    sprite_set_blend_from_kind(count + 49);
                     if (gUnk_083D2B8D[gUnk_03002C30[count + 49].unk30])
-                        init_battle_sprite_entry_08048818(count + 91, 0xCC0C, 0x90, 14, 1);
+                        sprite_entry_init(count + 91, 0xCC0C, 0x90, 14, 1);
                 } break;
                 }
                 gUnk_030057E0.unk5DC[n].unk4_0 = count;
@@ -137,12 +137,12 @@ void init_battle_field_setup(void) {
     load_battle_terrain_data();
     gUnk_030057E0.unkC56 = sub_080526F0(gUnk_030057E0.unkC52);
     gUnk_030057E0.unkC57 = sub_08052714(gUnk_030057E0.unkC54);
-    init_battle_sprite_entry_08048818(47, 0xC804, 3, 0, 1);
+    sprite_entry_init(47, 0xC804, 3, 0, 1);
     field_set_player_facing(gUnk_030057E0.unkC67);
     update_battle_direction_indicator(3);
     gUnk_03002C30[47].unkB = 0x40;
     LZ77UnCompVram(gUnk_085FA104, (void *)0x06017FC0);
-    init_battle_sprite_entry_08048818(89, 0xCC0C, 0x90, 14, 1);
+    sprite_entry_init(89, 0xCC0C, 0x90, 14, 1);
     gUnk_03002C30[89].unkC_8 = gUnk_030057E0.unkC52;
     gUnk_03002C30[89].unk10_8 = gUnk_030057E0.unkC54 - 5;
     gUnk_03002C30[89].unk2 = gUnk_03002C30[47].unk2;
@@ -298,7 +298,7 @@ void field_player_walk_input(void) {
 }
 
 void load_battle_palette_via_dma(u32 toBuffer) {
-    decompress_battle_tile_graphics();
+    area_load_sprite_sheets();
     if (toBuffer == 0)
         DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.unkC5C]], OBJ_PLTT,
                   32) else DmaCopy32(3, gUnk_083F8634[gUnk_083D29A6[gUnk_030057E0.unkC5C]], 0x0202F800, 32)

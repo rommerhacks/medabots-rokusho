@@ -153,14 +153,14 @@ void load_scene_graphics(void) {
 
 void battle_transition_animate_step(void) {
     if (gUnk_03001800_s.timer == 0) {
-        init_battle_sprite_entry_08048818(0, 0xCC00, 0x224, 6, 3);
+        sprite_entry_init(0, 0xCC00, 0x224, 6, 3);
         gUnk_03002C30[0].unk2 = 0x78;
         gUnk_03002C30[0].unk4 = 0x3C;
         gUnk_03002C30[0].unkB = 0x10;
         sub_0806DF80(1, 0);
         REG_DISPCNT |= 0x1000;
     } else if (gUnk_03001800_s.timer == 0x20) {
-        init_battle_sprite_entry_08048818(1, 0xC400, 0x200, 0, 3);
+        sprite_entry_init(1, 0xC400, 0x200, 0, 3);
         gUnk_03002C30[1].unk2 = 0x78;
         gUnk_03002C30[1].unk4 = 0x3C;
         gUnk_03002C30[1].unkB = 0x20;
@@ -171,7 +171,7 @@ void battle_transition_animate_step(void) {
         gUnk_03001800_s.timer = 0;
         setup_screen_transition_effect_080682CC(4, 4, 0x7FFF);
         clear_sprite_entry(1);
-        init_battle_sprite_entry_08048818(0, 0xC400, 0x21B, 4, 3);
+        sprite_entry_init(0, 0xC400, 0x21B, 4, 3);
         REG_DISPCNT |= 0x300;
         gGameSubState = 1;
     } else {
@@ -182,20 +182,20 @@ void battle_transition_animate_step(void) {
 void battle_scene_intro_step(void) {
     if (gUnk_03001800_s.timer == 0) {
         play_song(0);
-        init_battle_sprite_entry_08048818(1, 0xC400, 0x211, 1, 3);
+        sprite_entry_init(1, 0xC400, 0x211, 1, 3);
         gUnk_03002C30[1].unk2 = 0x118;
         gUnk_03002C30[1].unk4 = 0x55;
         gUnk_03002C30[1].unkB = 0x20;
         sub_0806DF80(3, 1);
     }
     if (gUnk_03002C30[1].unk20 == 0) {
-        init_battle_sprite_entry_08048818(3, 0xC000, 0x213, 3, 3);
+        sprite_entry_init(3, 0xC000, 0x213, 3, 3);
         gUnk_03002C30[3].unk2 = 0x12C;
         gUnk_03002C30[3].unk4 = 0x55;
         gUnk_03002C30[3].unkB = 0x40;
         gUnk_03002C30[3].unk32 = 0;
         sub_0806DF80(7, 3);
-        init_battle_sprite_entry_08048818(4, 0xC400, 0x21C, 5, 3);
+        sprite_entry_init(4, 0xC400, 0x21C, 5, 3);
         gUnk_03002C30[4].unk2 = 0x12C;
         gUnk_03002C30[4].unk4 = 0x3C;
         gUnk_03002C30[4].unkB = 0x10;
@@ -245,7 +245,7 @@ void battle_transition_wipe_effect(void) {
             REG_BLDALPHA -= 0x100;
     }
     if (gUnk_03001800_s.timer == 0x39) {
-        init_battle_sprite_entry_08048818(2, 0xC600, 0x212, 2, 3);
+        sprite_entry_init(2, 0xC600, 0x212, 2, 3);
         gUnk_03002C30[2].unk2 = 0x78;
         gUnk_03002C30[2].unk4 = 0x73;
         gUnk_03002C30[2].unk8 = 0x40;
@@ -293,24 +293,24 @@ void sub_0806DB30(void) {
     setup_screen_transition_effect_080682CC(4, 2, 0x7FFF);
     REG_BLDY = 0;
     play_song(0);
-    init_battle_sprite_entry_08048818(0, 0xC400, 0x21B, 4, 3);
+    sprite_entry_init(0, 0xC400, 0x21B, 4, 3);
     REG_DISPCNT |= 0x300;
     gUnk_03002C30[0].unk2 = 0x78;
     gUnk_03002C30[0].unk4 = 0x3C;
     gUnk_03002C30[0].unkB = 0x10;
     sub_0806DF80(0, 0);
-    init_battle_sprite_entry_08048818(1, 0xC400, 0x211, 1, 3);
+    sprite_entry_init(1, 0xC400, 0x211, 1, 3);
     gUnk_03002C30[1].unk2 = 0x78;
     gUnk_03002C30[1].unk4 = 0x55;
     gUnk_03002C30[1].unkB = 0x20;
     sub_0806DF80(0, 1);
-    init_battle_sprite_entry_08048818(3, 0xC000, 0x213, 3, 3);
+    sprite_entry_init(3, 0xC000, 0x213, 3, 3);
     gUnk_03002C30[3].unk2 = 0x12C;
     gUnk_03002C30[3].unk4 = 0x55;
     gUnk_03002C30[3].unkB = 0x40;
     gUnk_03002C30[3].unk32 = 0x80;
     sub_0806DF80(7, 3);
-    init_battle_sprite_entry_08048818(4, 0xC400, 0x21C, 5, 3);
+    sprite_entry_init(4, 0xC400, 0x21C, 5, 3);
     gUnk_03002C30[4].unk2 = 0x12C;
     gUnk_03002C30[4].unk4 = 0x3C;
     gUnk_03002C30[4].unkB = 0x10;

@@ -31,7 +31,7 @@ u32 battle_scene_state_dispatch(void) {
 void init_battle_sprites(void) {
     s32 i;
 
-    sub_080496C8((u8 *)gUnk_03002C30, 0xA00);
+    memzero_bytes((u8 *)gUnk_03002C30, 0xA00);
     sub_080492CC();
     for (i = 0; i < 32; i++)
         calculate_oam_affine_matrix(i);
@@ -50,7 +50,7 @@ u32 scene_state_dispatch(u32 a, u32 b) {
         if (a != 0x20) {
             s32 n;
             if (a == 0x12)
-                dispatch_jump_table_29(0x17, 0);
+                field_update_music(0x17, 0);
             n = 8;
             if (a == 8)
                 n = 0xFF;
@@ -65,15 +65,15 @@ u32 scene_state_dispatch(u32 a, u32 b) {
             gUnk_03006D20.unkB++;
         } else if (run_blend_fade_transition(0)) {
             if (a == 0x12)
-                dispatch_jump_table_29(0x18, 0);
+                field_update_music(0x18, 0);
             save_script_sprites();
             switch_game_mode(a, b);
             gUnk_03006D20.unkB++;
         }
         break;
     case 2:
-        sub_080496C8((u8 *)gUnk_03002C30, 0x2000);
-        sub_080496C8((u8 *)gUnk_030055A0, 0x200);
+        memzero_bytes((u8 *)gUnk_03002C30, 0x2000);
+        memzero_bytes((u8 *)gUnk_030055A0, 0x200);
         zero = 0;
         DmaSet(3, &zero, OAM, 0x85000100);
         zero = 0;
@@ -87,9 +87,9 @@ u32 scene_state_dispatch(u32 a, u32 b) {
             gUnk_030057E0.unkCBA = 2;
         else
             gUnk_030057E0.unkCBA = 1;
-        update_battle_field_frame();
+        area_load_graphics();
         field_center_camera_on_player();
-        sub_080487E4();
+        blend_set_alpha_12_10();
         if (a == 0x13) {
             init_sprite_affine_matrices_and_state(0x93, gUnk_03005350.unk1D8, gUnk_03005350.unk1DC, 0);
             while (!battle_scene_state_dispatch())
@@ -99,40 +99,40 @@ u32 scene_state_dispatch(u32 a, u32 b) {
             setup_palette_fade_to_color(0, 32.0f, 0.0f, 8.0f);
         switch (a) {
         case 0x20:
-            dispatch_jump_table_29(0xD, 0);
+            field_update_music(0xD, 0);
             break;
         case 1:
-            dispatch_jump_table_29(0x11, 0);
+            field_update_music(0x11, 0);
             break;
         case 3:
-            dispatch_jump_table_29(0x14, 0);
+            field_update_music(0x14, 0);
             break;
         case 0x13:
-            dispatch_jump_table_29(0x13, 0);
+            field_update_music(0x13, 0);
             break;
         case 0:
-            dispatch_jump_table_29(0x10, 0);
+            field_update_music(0x10, 0);
             break;
         case 2:
-            dispatch_jump_table_29(0x12, 0);
+            field_update_music(0x12, 0);
             break;
         case 8:
-            dispatch_jump_table_29(0x1B, 0);
+            field_update_music(0x1B, 0);
             break;
         case 5:
-            dispatch_jump_table_29(0x1A, 0);
+            field_update_music(0x1A, 0);
             break;
         case 0x10:
-            dispatch_jump_table_29(0x15, 0);
+            field_update_music(0x15, 0);
             break;
         case 0x12:
-            dispatch_jump_table_29(0x19, 0);
+            field_update_music(0x19, 0);
             break;
         case 0x11:
-            dispatch_jump_table_29(0x16, 0);
+            field_update_music(0x16, 0);
             break;
         case 0x14:
-            dispatch_jump_table_29(0xF, 0);
+            field_update_music(0xF, 0);
             break;
         }
         gUnk_03006D20.unkB++;

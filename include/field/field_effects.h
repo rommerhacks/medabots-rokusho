@@ -4,7 +4,7 @@
 // Field helpers: metatile/tilemap rects, OAM affine, sprite animation frames, random, blend effects and palette fades,
 // u8 sort
 
-void sub_080496C8(u8 *dst, u32 size);
+void memzero_bytes(u8 *dst, u32 size);
 u32 run_blend_fade_transition(u16 a);
 void sub_0804A1C4(void);
 void setup_palette_fade_to_color(u16 color, float a, float b, float c);
@@ -18,7 +18,7 @@ void calculate_oam_affine_matrix(u8 i);
 void setup_blend_effect(u8 mode, u16 bldcnt, u8 type, u8 sa, u8 sb, u8 sy, u8 a, u8 b, u8 y);
 u32 blend_effect_update(void);
 void clear_entity_state(u8 slot);
-void sub_080496DC(u8 *dst, u32 n, u8 val);
+void memset_bytes(u8 *dst, u32 n, u8 val);
 void sub_08049E74(u16 a, u32 b, u16 c);
 void sub_08049E88(u16 a, u32 b, u16 c);
 void sub_08049CC0(void);

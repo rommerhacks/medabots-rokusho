@@ -61,7 +61,7 @@ void bomb_game_load_graphics(void) {
     LZ77UnCompVram(gUnk_087AA19C, (void *)(VRAM + 0x10000));
     DmaSet(3, gUnk_0807C0A0, PLTT + 0x200, 0x800000F0);
 
-    init_battle_sprite_entry_08048818(30, 0xCF20, 0, 0, 3);
+    sprite_entry_init(30, 0xCF20, 0, 0, 3);
     gUnk_03002C30[30].unk2 = 0x78;
     gUnk_03002C30[30].unk4 = 0x80;
     gUnk_03002C30[30].unk8 = 0x40;
@@ -71,37 +71,37 @@ void bomb_game_load_graphics(void) {
     gUnk_03002C30[30].unk20 = 3;
     gUnk_03002C30[30].unk21 = 0;
 
-    init_battle_sprite_entry_08048818(32, 0xCC00, 7, 1, 3);
+    sprite_entry_init(32, 0xCC00, 7, 1, 3);
     gUnk_03002C30[32].unk2 = 0x78;
     gUnk_03002C30[32].unk4 = 0x10;
-    init_battle_sprite_entry_08048818(31, 0xCC00, 0x10, 2, 3);
+    sprite_entry_init(31, 0xCC00, 0x10, 2, 3);
     gUnk_03002C30[31].unk4 = 0xC8;
-    init_battle_sprite_entry_08048818(10, 0xC400, 0x10, 2, 3);
+    sprite_entry_init(10, 0xC400, 0x10, 2, 3);
     gUnk_03002C30[10].unk2 = 0x10;
     gUnk_03002C30[10].unk4 = 0x30;
     for (i = 0; i < 2; i++) {
-        init_battle_sprite_entry_08048818(i + 11, 0xC400, 0x21, 8, 3);
+        sprite_entry_init(i + 11, 0xC400, 0x21, 8, 3);
         gUnk_03002C30[11 + i].unk2 = 0x18 + i * 16;
         gUnk_03002C30[11 + i].unk4 = 0x28;
     }
-    init_battle_sprite_entry_08048818(57, 0xC800, 0x2B, 9, 3);
+    sprite_entry_init(57, 0xC800, 0x2B, 9, 3);
     gUnk_03002C30[57].unk2 = 0x78;
     gUnk_03002C30[57].unk4 = 0x98;
     for (i = 0; i < 3; i++) {
-        init_battle_sprite_entry_08048818(i + 13, 0xC400, 0x18, 5, 3);
+        sprite_entry_init(i + 13, 0xC400, 0x18, 5, 3);
         gUnk_03002C30[13 + i].unk2 = 8 + i * 16;
         gUnk_03002C30[13 + i].unk4 = 0x78;
     }
-    init_battle_sprite_entry_08048818(16, 0xC400, 0x1E, 7, 3);
+    sprite_entry_init(16, 0xC400, 0x1E, 7, 3);
     gUnk_03002C30[16].unk2 = 0xB8;
     gUnk_03002C30[16].unk4 = 0x68;
-    init_battle_sprite_entry_08048818(17, 0xC400, 0x1A, 6, 3);
+    sprite_entry_init(17, 0xC400, 0x1A, 6, 3);
     gUnk_03002C30[17].unk2 = 0xB8;
     gUnk_03002C30[17].unk4 = 0x58;
-    init_battle_sprite_entry_08048818(18, 0xC400, 0x1C, 6, 3);
+    sprite_entry_init(18, 0xC400, 0x1C, 6, 3);
     gUnk_03002C30[18].unk2 = 0xD8;
     gUnk_03002C30[18].unk4 = 0x58;
-    init_battle_sprite_entry_08048818(19, 0xC400, 0x19, 6, 3);
+    sprite_entry_init(19, 0xC400, 0x19, 6, 3);
     gUnk_03002C30[19].unk2 = 0xB8;
     gUnk_03002C30[19].unk4 = 0xC8;
     REG_DISPCNT |= 0x1E00;
@@ -202,7 +202,7 @@ void sub_0806BBA8(void) {
 u32 sub_0806BBDC(void) {
     switch (gUnk_03002C30[0].unk20) {
     case 0:
-        init_battle_sprite_entry_08048818(0, 0xCA00, 0x2E, 10, 3);
+        sprite_entry_init(0, 0xCA00, 0x2E, 10, 3);
         gUnk_03002C30[0].unk2 = 0x78;
         gUnk_03002C30[0].unk4 = 0x50;
         gUnk_03002C30[0].unk1A = 0;
@@ -229,7 +229,7 @@ u32 sub_0806BBDC(void) {
         break;
     case 3:
         if (gUnk_03001800_bomb.unkC == gUnk_03001800_bomb.unkE) {
-            init_battle_sprite_entry_08048818(0, 0xCA08, 0x2F, 11, 3);
+            sprite_entry_init(0, 0xCA08, 0x2F, 11, 3);
             gUnk_03002C30[0].unk2 = 0x78;
             gUnk_03002C30[0].unk4 = 0x50;
             gUnk_03002C30[0].unk8 = 0;
@@ -400,14 +400,14 @@ void bomb_game_drop_bombs(void) {
         s->unk44 += s->unkE * s->unkE / 50 + s->unkD;
         for (i = 0; i < 8; i++) {
             if (gUnk_03002C30[40 + i].unk20 == 0) {
-                ((void (*)())init_battle_sprite_entry_08048818)(i + 0x28, 0xC800, 0x10, 2, 3);
+                ((void (*)())sprite_entry_init)(i + 0x28, 0xC800, 0x10, 2, 3);
                 gUnk_03002C30[40 + i].unk2 = gUnk_03002C30[32].unk2;
                 gUnk_03002C30[40 + i].unk4 = 0xC;
                 gUnk_03002C30[40 + i].unk1A = 0;
                 gUnk_03002C30[40 + i].unk20 = 1;
                 gUnk_03002C30[40 + i].unk21 = gUnk_03001800_bomb.unkF[gUnk_03001800_bomb.unkE];
                 k = i + 0x30;
-                ((void (*)())init_battle_sprite_entry_08048818)(k, 0xCC08, 0x12, 2, 3);
+                ((void (*)())sprite_entry_init)(k, 0xCC08, 0x12, 2, 3);
                 gUnk_03002C30[k].unk2 = gUnk_03002C30[40 + i].unk2;
                 gUnk_03002C30[k].unk4 = 0x10;
                 play_sound_effect(0x61);
@@ -449,7 +449,7 @@ static void sub_0806C20C(void) {
                         gUnk_03002C30[19].unk21 = 0;
                         gUnk_03002C30[19].unk4 = 0xC8;
                         gUnk_03002C30[19].unk1A = 0;
-                        init_battle_sprite_entry_08048818(0x21, 0xCC08, 0x12, 2, 3);
+                        sprite_entry_init(0x21, 0xCC08, 0x12, 2, 3);
                         gUnk_03002C30[33].unk2 = gUnk_03002C30[30].unk2;
                         gUnk_03002C30[33].unk4 = gUnk_03002C30[30].unk4 + 0xC;
                     }
@@ -459,7 +459,7 @@ static void sub_0806C20C(void) {
                         if (gUnk_03002C30[40 + i].unk21 == 1)
                             gUnk_03002C30[40 + i].unk21 = gUnk_03001800_bomb.unkE & 2;
                         gUnk_03002C30[40 + i].unk20 = 2;
-                        init_battle_sprite_entry_08048818(0x38, 0xC400, 0x17, 4, 3);
+                        sprite_entry_init(0x38, 0xC400, 0x17, 4, 3);
                         gUnk_03002C30[56].unk2 = gUnk_03002C30[40 + i].unk2;
                         gUnk_03002C30[56].unk4 =
                             gUnk_03002C30[40 + i].unk4 - gUnk_08485E84[gUnk_03002C30[40 + i].unk1A & 0x3F];
@@ -490,7 +490,7 @@ static void sub_0806C20C(void) {
             break;
         case 3:
             if (gUnk_03002C30[40 + i].unk1A == 0)
-                ((void (*)())init_battle_sprite_entry_08048818)(i + 0x28, 0xC400, 0x13, 3, 3);
+                ((void (*)())sprite_entry_init)(i + 0x28, 0xC400, 0x13, 3, 3);
             else if (gUnk_03002C30[40 + i].unk1A > 0xF)
                 clear_sprite_entry(i + 0x28);
             gUnk_03002C30[40 + i].unk1A++;
@@ -572,13 +572,13 @@ static bool32 sub_0806C6F8(void) {
 
     switch (s->unk20) {
     case 0:
-        init_battle_sprite_entry_08048818(0, 0xC000, 0x33, 0xC, 3);
+        sprite_entry_init(0, 0xC000, 0x33, 0xC, 3);
         s->unk2 = 0x78;
         s->unk4 = 0x50;
         s->unk1A = 0;
         s->unk20++;
         gUnk_03002C30[30].unk6 = 0;
-        init_battle_sprite_entry_08048818(0x21, 0xCC08, 0x12, 2, 3);
+        sprite_entry_init(0x21, 0xCC08, 0x12, 2, 3);
         gUnk_03002C30[33].unk2 = gUnk_03002C30[30].unk2;
         gUnk_03002C30[33].unk4 = gUnk_03002C30[30].unk4 + 10;
         break;
@@ -600,18 +600,18 @@ static u32 sub_0806C7C4(void) {
 
     switch (gUnk_03002C30[0].unk20) {
     case 0:
-        init_battle_sprite_entry_08048818(0, 0xC000, 0x34, 0xD, 3);
+        sprite_entry_init(0, 0xC000, 0x34, 0xD, 3);
         gUnk_03002C30[0].unk2 = 0x78;
         gUnk_03002C30[0].unk4 = -0x10;
         gUnk_03002C30[0].unk1A = 0;
         gUnk_03002C30[0].unk21 = 1;
         gUnk_03002C30[0].unk20++;
         if (gUnk_03001800_s.unkC.s[2] > 0x23) {
-            init_battle_sprite_entry_08048818(0x2E, 0xC800, 0x10, 2, 3);
-            init_battle_sprite_entry_08048818(0x36, 0xCC08, 0x12, 2, 3);
+            sprite_entry_init(0x2E, 0xC800, 0x10, 2, 3);
+            sprite_entry_init(0x36, 0xCC08, 0x12, 2, 3);
             gUnk_03002C30[0x36].unk4 = 0x1E;
         } else if (gUnk_03001800_s.unkC.s[2] > 0) {
-            init_battle_sprite_entry_08048818(0x21, 0xCC08, 0x12, 2, 3);
+            sprite_entry_init(0x21, 0xCC08, 0x12, 2, 3);
             gUnk_03002C30[0x21].unk2 = gUnk_03002C30[0x20].unk2;
             gUnk_03002C30[0x21].unk4 = gUnk_03002C30[0x20].unk4 + 8;
         }
@@ -638,8 +638,8 @@ static u32 sub_0806C7C4(void) {
             return 1;
         }
         if (++gUnk_03002C30[0].unk1A == 0x20) {
-            init_battle_sprite_entry_08048818(0x2F, 0xC800, 0x10, 2, 3);
-            init_battle_sprite_entry_08048818(0x37, 0xCC08, 0x12, 2, 3);
+            sprite_entry_init(0x2F, 0xC800, 0x10, 2, 3);
+            sprite_entry_init(0x37, 0xCC08, 0x12, 2, 3);
             gUnk_03002C30[0x37].unk4 = 0x1E;
         }
         break;
@@ -896,6 +896,6 @@ static void sub_0806CFA4(void) {
 
 void get_battle_state_value_div10(void) {
     u16 attr = 0xC400;
-    init_battle_sprite_entry_08048818(11, attr, (s8)(gUnk_03001800_s.unkC.s[2] / 10) + 0x21, 8, 3);
-    init_battle_sprite_entry_08048818(12, attr, (s8)(gUnk_03001800_s.unkC.s[2] % 10) + 0x21, 8, 3);
+    sprite_entry_init(11, attr, (s8)(gUnk_03001800_s.unkC.s[2] / 10) + 0x21, 8, 3);
+    sprite_entry_init(12, attr, (s8)(gUnk_03001800_s.unkC.s[2] % 10) + 0x21, 8, 3);
 }

@@ -176,7 +176,7 @@ extern const u8 gUnk_087C52C8[];  // race BG1 tiles (LZ77, init_battle_bg_layer1
 extern const u8 gUnk_087C5518[];  // race BG1 tiles, second part (LZ77)
 extern const u16 gUnk_087C55D0[]; // race BG1 palettes
 extern const u16 gUnk_087C55F0[];
-extern const u8 gUnk_0848417C[]; // scene text line counts by gUnk_03006F74->unk5 (sub_080677E0)
+extern const u8 gUnk_0848417C[]; // scene text line counts by gUnk_03006F74->unk5 (text_scroll_lines)
 extern u8 gUnk_03006FEC[3];      // per racer (set to 0x20 at the start, sub_0806A4C0)
 extern u8 gUnk_03006FF0[3];      // per racer (cleared at the start, sub_0806A4C0)
 extern s32 gUnk_03006FF8[2];
@@ -1071,32 +1071,32 @@ extern const u8
     *const gUnk_083B1888[];       // 6 compressed sprite tile pointers per Medabot (decompress_sprite_to_vram_08042D94)
 extern const s16 gUnk_083D6BA0[]; // per angle 0-0xFF: cosine-like factor x256 (calc_polar_to_screen_coords x;
                                   // gUnk_083D69A0 is the y factor)
-extern const u8 gUnk_0847EB80[];  // per area id (gUnk_030057E0.unk7FE), used unless unkC30 == 0xFF (sub_080483AC)
+extern const u8 gUnk_0847EB80[];  // per area id (gUnk_030057E0.unk7FE), used unless unkC30 == 0xFF (area_song_id)
 extern struct Unk_03005290 gUnk_03005290;
 extern struct Unk_03005290 gUnk_030052B0;
 extern struct Unk_03005290 gUnk_030052D0;
 extern struct Unk_03005290 gUnk_030052F0;
-extern const u8
-    gUnk_083D2ADD[]; // per animation id (gUnk_03002C30[].unk30): 2 -> unkB = 0xFF, 1 -> 0, else 0x40 (sub_0804877C)
-extern const u8
-    *const gUnk_08414394[]; // tile tables by id - 0xD0, indexed by gUnk_030057E0.unkC38[id - 0xD0] (sub_080481C4)
-extern u8 *gUnk_030057DC;   // animated tile source for the area (animate_area_bg_tiles)
+extern const u8 gUnk_083D2ADD[]; // per animation id (gUnk_03002C30[].unk30): 2 -> unkB = 0xFF, 1 -> 0, else 0x40
+                                 // (sprite_set_blend_from_kind)
+extern const u8 *const
+    gUnk_08414394[]; // tile tables by id - 0xD0, indexed by gUnk_030057E0.unkC38[id - 0xD0] (resolve_sprite_sheet_id)
+extern u8 *gUnk_030057DC;                // animated tile source for the area (animate_area_bg_tiles)
 extern const u8 *const gUnk_084096F4[];  // per area id: tile animation [0] tiles per frame, [2] enabled, [3..] frame
                                          // list ending 0xFF (animate_area_bg_tiles)
 extern const u16 *const gUnk_083F9BF4[]; // per area id: 0xD0-color palette for 0x0202FA00, NULL = default set from
-                                         // gUnk_080AC5B4 (sub_080482C0)
-extern const u16 gUnk_080AC5B4[];        // default palette (sub_080482C0)
-extern const u16 gUnk_080AC654[];        // default palette (sub_080482C0)
-extern const u16 gUnk_080AC6F4[];        // default palette (sub_080482C0)
-extern const u16 gUnk_080AC794[];        // default palette (sub_080482C0)
-extern const u16 gUnk_080AC834[];        // default palette (sub_080482C0)
-extern const u16 gUnk_080AC8D4[];        // default palette (sub_080482C0)
+                                         // gUnk_080AC5B4 (area_load_bg_palettes)
+extern const u16 gUnk_080AC5B4[];        // default palette (area_load_bg_palettes)
+extern const u16 gUnk_080AC654[];        // default palette (area_load_bg_palettes)
+extern const u16 gUnk_080AC6F4[];        // default palette (area_load_bg_palettes)
+extern const u16 gUnk_080AC794[];        // default palette (area_load_bg_palettes)
+extern const u16 gUnk_080AC834[];        // default palette (area_load_bg_palettes)
+extern const u16 gUnk_080AC8D4[];        // default palette (area_load_bg_palettes)
 extern const Func gUnk_083D1F84[];       // by gGameState (field_mode_dispatch)
 extern const u8
-    *const gUnk_08413514[]; // per area id: tile ids, resolved through sub_080481C4 (resolve_tile_from_battle_state)
+    *const gUnk_08413514[]; // per area id: tile ids, resolved through resolve_sprite_sheet_id (area_sprite_sheet_id)
 extern const u8
-    *const gUnk_083F80F4[]; // compressed OBJ tile sets, NULL entries fall back to 1 (decompress_battle_tile_graphics)
-extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (dma_load_battle_palettes)
+    *const gUnk_083F80F4[];       // compressed OBJ tile sets, NULL entries fall back to 1 (area_load_sprite_sheets)
+extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (area_load_sprite_palettes)
 extern u32 gUnk_0300534C;
 extern struct AffineParam gUnk_03006D40[32];
 extern struct BattleEntity3D *gUnk_03006D30;
@@ -1154,8 +1154,7 @@ struct FuncTable7 {
     Func f[7];
 };
 extern const struct FuncTable7 gUnk_080AFA20; // sub-state handlers by gGameSubState (dispatch_substate_handler)
-extern const struct FuncTable7
-    gUnk_080AFEA8; // sub-state handlers by gGameSubState (dispatch_scene_substate_and_scroll)
+extern const struct FuncTable7 gUnk_080AFEA8; // sub-state handlers by gGameSubState (text_scroll_update)
 struct TextBufTable4 {
     u8 *p[4];
 };
@@ -1164,7 +1163,7 @@ extern const struct ObjAffineDstData gUnk_080ABBF4; // affine matrix template (r
 extern const u8 gUnk_08081320[]; // mirrored sprite node index per node (render_sprite_node_recursive)
 extern const struct TextBufTable4
     gUnk_080ABBFC;               // the 4 text buffers 0x030004DE + 0x14 * n (copy_string_to_text_buffer)
-extern const u8 gUnk_080AFE96[]; // first tilemap column by gUnk_03006F74->unk5 (scroll_tilemap_column)
+extern const u8 gUnk_080AFE96[]; // first tilemap column by gUnk_03006F74->unk5 (text_scroll_shift_row)
 struct U16PtrArray8 {
     const u16 *v[8];
 };
@@ -1182,7 +1181,7 @@ extern const u8 gUnk_0850DEB8[];                // OBJ palette (0x20 bytes to 0x
 struct PtrTable3 {
     const u8 *const *p[3];
 };
-extern const struct PtrTable3 gUnk_080AFE9C; // scene texts by gUnk_03006F74->unk5 (scene_text_scroll_step)
+extern const struct PtrTable3 gUnk_080AFE9C; // scene texts by gUnk_03006F74->unk5 (text_scroll_page_start)
 extern const u16 gUnk_080AFA4C[16];          // OBJ palette for the link Medapart trade scene (sub_08063090)
 struct FuncTable13 {
     Func f[13];
@@ -1234,7 +1233,7 @@ struct FuncTable12 {
 };
 extern const struct FuncTable12 gUnk_080AFAA0; // link Medal exchange sub-states by gGameSubState (sub_080644C4)
 extern const struct FuncTable4 gUnk_080AFAD0;  // sub-states by gGameSubState (scene_dispatch_and_tick)
-extern const struct FuncTable2 gUnk_080AFAE0;  // sub-states by gGameSubState (dispatch_fade_substate)
+extern const struct FuncTable2 gUnk_080AFAE0;  // sub-states by gGameSubState (link_medal_sync_update)
 struct FuncTable8 {
     Func f[8];
 };

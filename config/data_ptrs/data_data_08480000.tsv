@@ -213,12 +213,12 @@
 08483B4C	scene_dispatch_and_tick
 08483B50	dispatch_battle_menu_and_update_counters
 08483B54	dispatch_battle_cutscene_substate
-08483B58	dispatch_scene_substate_and_scroll
+08483B58	text_scroll_update
 08483B5C	town_map_dispatch
 08483B60	medal_transform_update
 08483B64	dispatch_substate_handler
-08483B68	sub_08064A44
-08483B6C	dispatch_fade_substate
+08483B68	link_handshake_update
+08483B6C	link_medal_sync_update
 08483B70	dispatch_rotation_menu_substate
 08483B74	nullsub_08000840
 08483B78	sub_0805BFDC
