@@ -11,7 +11,7 @@ u32 battle_queue_bots_at_lines(void) {
     u32 a = 0;
     u32 b = 0;
 
-    if (gGameWork.unk89 != 1 || gUnk_03000B90 == 0) {
+    if (gGameWork.skipBotSetup != 1 || gUnk_03000B90 == 0) {
         for (i = 0; i <= 5; i++) {
             if (gBattleBots[i].teamState) {
                 a += battle_bot_at_front_line(i, 0);

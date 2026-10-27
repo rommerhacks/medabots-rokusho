@@ -20,20 +20,20 @@ void battle_action_state_update(void) {
 
 // Resets the actor's status sprites and loads the turn cursor graphics, one step per frame.
 void action_phase_load_gfx(void) {
-    switch (gGameWork.unk139) {
+    switch (gGameWork.setupStep) {
     case 0:
         reset_bot_status_and_init_palette_transfers(gBattleWork.actor);
         copy_battle_entity_positions();
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 1:
         lz_decompress_dispatch(gUnk_084C8AC4, (void *)0x06014E00);
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 2:
         CpuFastSet(gUnk_084E2FF8, (void *)0x050002C0, 8);
         gGameSubState++;
-        gGameWork.unk139 = 0;
+        gGameWork.setupStep = 0;
         break;
     }
 }
@@ -298,11 +298,11 @@ void action_phase_time_up_banner_hold(void) {
 // Puts the winner's name (player, opponent or link partner) in the message buffer.
 void action_phase_show_winner_message(void) {
     if (gGameWork.unk9C == 1)
-        memcpy_bytes_0803F63C(gUnk_03002B74, gGameWork.unk9E, 0xE);
-    else if (gGameWork.unk89 != 1)
-        memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.unk9E, 0x12);
+        memcpy_bytes_0803F63C(gUnk_03002B74, gGameWork.textBuf, 0xE);
+    else if (gGameWork.skipBotSetup != 1)
+        memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
     else
-        memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.unk9E, 0x12);
+        memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.textBuf, 0x12);
     if (run_message(gUnk_083C65C4[2]))
         gGameSubState++;
 }
@@ -338,17 +338,17 @@ void action_phase_time_up_banner_init(void) {
 
 void action_phase_show_time_up_message(void) {
     if (gGameWork.unk9C == 1)
-        memcpy_bytes_0803F63C(gUnk_03002B74, gGameWork.unk9E, 0xE);
-    else if (gGameWork.unk89 != 1)
-        memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.unk9E, 0x12);
+        memcpy_bytes_0803F63C(gUnk_03002B74, gGameWork.textBuf, 0xE);
+    else if (gGameWork.skipBotSetup != 1)
+        memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
     else
-        memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.unk9E, 0x12);
+        memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.textBuf, 0x12);
     if (run_message(gUnk_083C65C4[3]))
         gGameSubState++;
 }
 
 void action_phase_exit_begin(void) {
-    if (gGameWork.unk89 != 1) {
+    if (gGameWork.skipBotSetup != 1) {
         fade_out_music(8);
         gGameSubState++;
     } else
@@ -374,7 +374,7 @@ void action_phase_exit_fade_step(void) {
 void action_phase_exit(void) {
     gVBlankCallback = nullsub_08000840;
     gGameWork.unk132 = 1;
-    if (gGameWork.unk89 != 1) {
+    if (gGameWork.skipBotSetup != 1) {
         gGameState = 6;
         gGameSubState = 0x30;
     } else {
@@ -423,8 +423,8 @@ void action_phase_level_up_skill_slide(void) {
 
 void action_phase_level_up_digits_init(void) {
     lz_decompress_dispatch(gUnk_084D6BFC, (void *)0x06017E00);
-    set_display_digit_type(&gGameWork.unkEE, gBattleWork.levelUpLevel, 2);
-    battle_text_popup_init_at(&gGameWork.unkEE, gBattleWork.actor, 0x23,
+    set_display_digit_type(&gGameWork.partAbility, gBattleWork.levelUpLevel, 2);
+    battle_text_popup_init_at(&gGameWork.partAbility, gBattleWork.actor, 0x23,
                               gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2 + 0x18,
                               gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 + 4);
     gGameWork.unk84 = 0;
@@ -432,7 +432,7 @@ void action_phase_level_up_digits_init(void) {
 }
 
 void action_phase_level_up_wait(void) {
-    battle_popup_update_slot(&gGameWork.unkEE, gBattleWork.actor, 0x23);
+    battle_popup_update_slot(&gGameWork.partAbility, gBattleWork.actor, 0x23);
     if (++gGameWork.unk84 == 0x78) {
         clear_battle_sprite_slot(0x21, 2);
         clear_battle_sprite_slot(gBattleWork.actor * 4 + 0x23, 4);
@@ -502,7 +502,8 @@ void action_phase_medaforce_anim(void) {
 }
 
 void action_phase_medaforce_name(void) {
-    memcpy_bytes_0803F63C((void *)gMedaforceNames[gBattleBots[gBattleWork.actor].medaforce[0]], gGameWork.unk9E, 0x11);
+    memcpy_bytes_0803F63C((void *)gMedaforceNames[gBattleBots[gBattleWork.actor].medaforce[0]], gGameWork.textBuf,
+                          0x11);
     gBattleWork.messageId = 0x38;
     gGameSubState++;
 }

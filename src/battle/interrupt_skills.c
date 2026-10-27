@@ -147,7 +147,7 @@ void impair_finish(void) {
         kind_name = gPartKindNames[0];
         break;
     }
-    memcpy_bytes_0803F63C(kind_name, gGameWork.unk9E, 0xE);
+    memcpy_bytes_0803F63C(kind_name, gGameWork.textBuf, 0xE);
     gBattleWork.messageId = 0x30;
     gBattleWork.step++;
 }
@@ -280,7 +280,7 @@ void use_drain_bubble_spawn(void) {
 
 void use_drain_bubble_hold(void) {
     sprite_bob_step(0x21);
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gBattleWork.step++;
     else if (gGameWork.unk86)
         gGameWork.unk86--;
@@ -368,19 +368,19 @@ void use_drain_apply(void) {
 
 void use_drain_popup_init(void) {
     lz_decompress_dispatch(gUnk_084D6BFC, (void *)0x06017E00);
-    set_display_digit_type(&gGameWork.unkEE, gBattleWork.unk51, 1);
-    battle_text_popup_init_slot(&gGameWork.unkEE, gBattleWork.target, 0x21);
-    set_display_digit_type(&gGameWork.unkEE + 0x20, gBattleWork.unk52, 0);
-    battle_text_popup_init_slot(&gGameWork.unkEE + 0x20, gBattleWork.actor, 0x21);
+    set_display_digit_type(&gGameWork.partAbility, gBattleWork.unk51, 1);
+    battle_text_popup_init_slot(&gGameWork.partAbility, gBattleWork.target, 0x21);
+    set_display_digit_type(&gGameWork.partAbility + 0x20, gBattleWork.unk52, 0);
+    battle_text_popup_init_slot(&gGameWork.partAbility + 0x20, gBattleWork.actor, 0x21);
     play_sound_effect(0x5B);
     gGameWork.unk84 = 0;
     gBattleWork.step++;
 }
 
 void use_drain_popup_wait(void) {
-    battle_popup_update_slot(&gGameWork.unkEE, gBattleWork.target, 0x21);
-    battle_popup_update_slot(&gGameWork.unkEE + 0x20, gBattleWork.actor, 0x21);
-    if (++gGameWork.unk84, gGameWork.unk89 == 0 && (KEYS_LO(gRepeatKeys) & 1) && gGameWork.unk84 > 0x32)
+    battle_popup_update_slot(&gGameWork.partAbility, gBattleWork.target, 0x21);
+    battle_popup_update_slot(&gGameWork.partAbility + 0x20, gBattleWork.actor, 0x21);
+    if (++gGameWork.unk84, gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & 1) && gGameWork.unk84 > 0x32)
         gGameWork.unk84 = 0x78;
     if (gGameWork.unk84 == 0x78) {
         clear_battle_sprite_slot(gBattleWork.target * 4 + 0x21, 4);
@@ -390,7 +390,7 @@ void use_drain_popup_wait(void) {
 }
 
 void use_drain_finish(void) {
-    divide_by_100000_b(gGameWork.unk9E, gBattleWork.unk51, 0x35);
+    divide_by_100000_b(gGameWork.textBuf, gBattleWork.unk51, 0x35);
     gBattleWork.messageId = 0x35;
     gBattleWork.step++;
 }
@@ -823,13 +823,13 @@ void change_transform_part(void) {
     gBattleWork.unk119 = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] - 0x37;
     gBattleWork.unk11A = pick_random_change_part(gBattleWork.unk119, gBattleWork.actorPart);
     memcpy_bytes_0803F63C(&gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart], &gBattleWork.unk11C, 0x18);
-    load_part_data(gBattleWork.unk11A, gBattleWork.actorPart, &gGameWork.unkEE);
-    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[0] = (&gGameWork.unkEE)[0];
-    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] = (&gGameWork.unkEE)[1];
-    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[5] = (&gGameWork.unkEE)[5];
-    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[6] = (&gGameWork.unkEE)[6];
-    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[7] = (&gGameWork.unkEE)[7];
-    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[0xC] = (&gGameWork.unkEE)[0xC];
+    load_part_data(gBattleWork.unk11A, gBattleWork.actorPart, &gGameWork.partAbility);
+    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[0] = (&gGameWork.partAbility)[0];
+    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] = (&gGameWork.partAbility)[1];
+    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[5] = (&gGameWork.partAbility)[5];
+    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[6] = (&gGameWork.partAbility)[6];
+    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[7] = (&gGameWork.partAbility)[7];
+    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[0xC] = (&gGameWork.partAbility)[0xC];
     gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2] = 7;
     gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].unk17 = gBattleWork.unk11A;
     ai_pick_bot_targets(gBattleWork.actor);
@@ -843,9 +843,9 @@ void change_transform_part(void) {
 void change_finish(void) {
     clear_battle_sprite_slot(0x21, 2);
     memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gBattleWork.unk11C.unk17 * 4 + gBattleWork.actorPart],
-                          gGameWork.unk9E, 0xF);
+                          gGameWork.textBuf, 0xF);
     memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gBattleWork.unk11A * 4 + gBattleWork.actorPart],
-                          gGameWork.unk9E + 0x14, 0xF);
+                          gGameWork.textBuf + 0x14, 0xF);
     gBattleWork.messageId = 0x2F;
     gBattleWork.step++;
 }

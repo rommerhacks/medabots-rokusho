@@ -85,9 +85,9 @@ void shop_list_init(void) {
             if (*e != 0xFF && (*e != 0x20 || gUnk_03006F74->unk19 == 3)) {
                 l[i].id = *e;
                 l[i].count = gMedapartInventory[l[i].id * 2 + gUnk_03006F74->unk19 * 240];
-                load_part_data(l[i].id, gUnk_03006F74->unk19, &gGameWork.unkEE);
-                l[i].unk3 = (&gGameWork.unkEE)[3];
-                prices[i * 2] = (&gGameWork.unkEE)[0xB] * 100;
+                load_part_data(l[i].id, gUnk_03006F74->unk19, &gGameWork.partAbility);
+                l[i].unk3 = (&gGameWork.partAbility)[3];
+                prices[i * 2] = (&gGameWork.partAbility)[0xB] * 100;
             } else {
                 break;
             }
@@ -320,8 +320,8 @@ changed:
     if (gUnk_03006F74->unk1C > 99999)
         gUnk_03006F74->unk1C = 99999;
     clear_sprite_table_mask(0x61, 7);
-    divide_by_10000(gGameWork.unk9E, gUnk_03006F74->unk1C);
-    render_text_sprites_08040DB8(gGameWork.unk9E, 0x61, 0x13, 5, 7, 0xC, 2, 0);
+    divide_by_10000(gGameWork.textBuf, gUnk_03006F74->unk1C);
+    render_text_sprites_08040DB8(gGameWork.textBuf, 0x61, 0x13, 5, 7, 0xC, 2, 0);
 }
 
 void transition_fade_to_battle(void) {
@@ -371,7 +371,7 @@ void shop_complete_transaction(void) {
     if (!poll_choice_menu())
         return;
     gGameWork.unk84 = 0;
-    gGameWork.unk1B = 0;
+    gGameWork.endModeStep = 0;
     if (gGameWork.unk2A == 0) {
         if (gUnk_03006F74->unk5 == 0) {
             gUnk_03002B70.money -= gUnk_03006F74->unk1C;
@@ -396,8 +396,8 @@ void shop_complete_transaction(void) {
             }
         }
         clear_sprite_table_mask(0, 7);
-        divide_by_10000(gGameWork.unk9E, gUnk_03002B70.money);
-        render_text_sprites_08040DB8(gGameWork.unk9E, 0, 0x15, 1, 7, 0xF, 1, 0);
+        divide_by_10000(gGameWork.textBuf, gUnk_03002B70.money);
+        render_text_sprites_08040DB8(gGameWork.textBuf, 0, 0x15, 1, 7, 0xF, 1, 0);
         gGameWork.unk84 = 0;
     }
     gGameSubState++;

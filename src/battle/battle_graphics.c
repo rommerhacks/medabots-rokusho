@@ -94,24 +94,24 @@ u32 battle_load_graphics_step(u32 direct) {
 }
 
 void battle_message_open(void) {
-    if (gOptionSkipMessages == 0 || gGameWork.unk89 == 1)
+    if (gOptionSkipMessages == 0 || gGameWork.skipBotSetup == 1)
         text_window_init(1, 2, 0);
 }
 
 u32 battle_message_print(u32 msg) {
     u32 done;
 
-    if (gOptionSkipMessages == 0 || gGameWork.unk89 == 1) {
+    if (gOptionSkipMessages == 0 || gGameWork.skipBotSetup == 1) {
         done = run_message(gUnk_083C65C4[msg]);
         if (done)
-            gGameWork.unk1B = 0;
+            gGameWork.endModeStep = 0;
         return done;
     }
     return 1;
 }
 
 u32 battle_message_finish(void) {
-    if (gOptionSkipMessages == 0 || gGameWork.unk89 == 1)
+    if (gOptionSkipMessages == 0 || gGameWork.skipBotSetup == 1)
         return game_state_execute_handler_a();
     return 1;
 }

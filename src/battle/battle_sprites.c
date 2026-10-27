@@ -123,7 +123,7 @@ void increment_medal_skill_level(u32 rec) {
 
     if (rec > 2)
         return;
-    if (gGameWork.unk89 == 1)
+    if (gGameWork.skipBotSetup == 1)
         return;
     if (gBattleBots[rec].medal.level == 100)
         return;

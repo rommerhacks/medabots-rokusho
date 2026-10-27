@@ -29,8 +29,8 @@ void shop_return_init(void) {
     gSpriteEntries[7].unk6 = 0x1A;
     gSpriteEntries[7].unk2 = 0x98;
     gSpriteEntries[7].unk4 = 0;
-    divide_by_10000(gGameWork.unk9E, gUnk_03002B70.money);
-    render_text_sprites_08040DB8(gGameWork.unk9E, 0, 0x15, 1, 7, 0xF, 1, 0);
+    divide_by_10000(gGameWork.textBuf, gUnk_03002B70.money);
+    render_text_sprites_08040DB8(gGameWork.textBuf, 0, 0x15, 1, 7, 0xF, 1, 0);
 }
 
 void fade_out_transition_step(void) {

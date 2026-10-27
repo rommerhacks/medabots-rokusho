@@ -103,8 +103,8 @@ void save_screen_draw_info(void) {
                                                           (REG_BG1CNT >> 8) & 0x1F);
     ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(gUnk_03002B70.unk14[0], 0, 8, 11, 13,
                                                           (REG_BG1CNT >> 8) & 0x1F);
-    divide_by_10000(gGameWork.unk9E, gUnk_03002B70.money);
-    render_text_sprites_08040DB8(gGameWork.unk9E, 1, 15, 9, 7, 15, 1, 0);
+    divide_by_10000(gGameWork.textBuf, gUnk_03002B70.money);
+    render_text_sprites_08040DB8(gGameWork.textBuf, 1, 15, 9, 7, 15, 1, 0);
     render_text_sprites_08040DB8(gUnk_03002B70.unk4, 13, 14, 4, 10, 13, 0, 0);
     open_choice_menu(1, 0x16, 7);
     CpuFastSet(gUnk_0878CA64, gPaletteBackupBg, 0x80);

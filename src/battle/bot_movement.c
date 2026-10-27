@@ -95,8 +95,8 @@ static void bot_move_delay_add_broken_legs(u32 rec) {
 // + the battlefield's delay for the leg type (gTerrainMoveDelays).
 void bot_move_delay_add_terrain(u32 rec) {
     memcpy_bytes_08041D04(&gTerrainMoveDelays[gBattleWork.battlefield + (gBattleBots[rec].parts[3].data[1] - 100) * 11],
-                          &gGameWork.unkEE, 1);
-    bot_move_delay_add(rec, gGameWork.unkEE);
+                          &gGameWork.partAbility, 1);
+    bot_move_delay_add(rec, gGameWork.partAbility);
 }
 
 // + the status amount while slowed by Wave / Hold (effect B 0x11 / 0x12) or Bind (0x29).

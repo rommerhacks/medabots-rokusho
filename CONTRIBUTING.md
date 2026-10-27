@@ -157,7 +157,7 @@
   (render_text_sprites_08040DB8).
 * `struct` field addresses above 0xFF on a global that the original materializes as
   `ldr rA, =gX; ldr rB, =0x12F; adds`: access the field directly every time
-  (`gArr[gGameWork.unk12F]`), not through a `u8 *slot` local.
+  (`gArr[gGameWork.runningSpriteSlot]`), not through a `u8 *slot` local.
 * Fields of `gBattleWork` past 0x100 (literal `0x030019A4`, the next one as `-10` from it): the
   struct field, not a separate symbol like `gLinkPartnerName[0x1A]`.
 * Tilemap rect copies whose address is `x * 2 + VRAM` then `+ bg_base`, `+ y * 64`: write
@@ -592,7 +592,7 @@
   compute the column into a `u8` local with `/ 8` (not `>> 3`) and write the address as
   `col * 0x40 + VRAM + 0x280 + unk17 * 0x680` (message_new_line, message_cmd_wait_skippable ... in text/message).
 * Where the original reads a field twice in a row or re-reads a byte just stored, only a volatile read
-  reproduces it: `*(vu16 *)&gGameWork.unkC`.
+  reproduces it: `*(vu16 *)&gGameWork.msgPos`.
 * A constant like 0xFFFF8000 built from `x + 0x8000` with an `s16` intermediate: put the sum in an
   assignment inside the expression, `a + (flag = (b & 0x100) + 0x8000)` with `s16 flag` (robattle_link_exchange_commands).
 * An address strength-reduced across a loop that the original recomputes: assign the row inside the index,

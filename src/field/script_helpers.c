@@ -285,7 +285,7 @@ u32 yes_no_menu_poll(void) {
         if (game_state_execute_handler_b() == 0)
             break;
     case 0:
-        gGameWork.unk1B = ret;
+        gGameWork.endModeStep = ret;
         (*step)++;
         break;
     case 2:

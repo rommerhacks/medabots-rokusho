@@ -24,16 +24,16 @@ u32 find_medal_slot_by_id(u8 id) {
 u32 medal_add_by_id(u8 id) {
     u32 i;
 
-    memcpy_bytes_08041D04(gUnk_083B6158[id], &gGameWork.unkEE, 16);
+    memcpy_bytes_08041D04(gUnk_083B6158[id], &gGameWork.partAbility, 16);
     for (i = 0; i < 30; i++) {
         if (!(gMedals[i].flags & 0x80)) {
             gMedals[i].flags |= 0x80;
             gMedals[i].graphicId = id;
-            gMedals[i].attribute = gGameWork.unkEF;
-            gMedals[i].aimSkillType = gGameWork.unkF0;
+            gMedals[i].attribute = gGameWork.partSkill;
+            gMedals[i].aimSkillType = gGameWork.partSkillType;
             gMedals[i].compatibility = gGameWork.unkF5;
             gMedals[i].level = medal_new_level();
-            gMedals[i].spriteVariant = medal_tier_for_level(gMedals[i].level, gGameWork.unkF1, gGameWork.unkF2,
+            gMedals[i].spriteVariant = medal_tier_for_level(gMedals[i].level, gGameWork.partGender, gGameWork.unkF2,
                                                             gGameWork.unkF3, gGameWork.unkF4);
             gMedals[i].nextLevelExp = (gMedals[i].level + 1) * 100;
             if ((u8)(gMedals[i].level / 10) * gGameWork.unkF6 + gGameWork.unkF6 > 100)

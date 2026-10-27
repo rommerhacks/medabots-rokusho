@@ -21,16 +21,16 @@ void robattle_update(void) {
 }
 
 void robattle_setup_bots(void) {
-    gGameWork.unk139 = 0;
+    gGameWork.setupStep = 0;
     gGameWork.unk13A = 0;
-    if (gGameWork.unk89 != 1) {
+    if (gGameWork.skipBotSetup != 1) {
         clear_battle_bot_array();
         count_active_battle_bots();
         battle_setup_team_bots();
         init_opponent_bots();
     }
     battle_pick_all_ai_targets();
-    if (gGameWork.unk89 != 1)
+    if (gGameWork.skipBotSetup != 1)
         fill_opponent_medaforce_for_battle_type();
     gGameSubState++;
 }
@@ -38,7 +38,7 @@ void robattle_setup_bots(void) {
 void robattle_load_scene(void) {
     u32 fill;
 
-    switch (gGameWork.unk139) {
+    switch (gGameWork.setupStep) {
     case 0:
         clear_bg_scroll();
         load_battle_script_entry_b();
@@ -48,7 +48,7 @@ void robattle_load_scene(void) {
         REG_BG2CNT = 0x1A0A;
         REG_BG3CNT = 0x1B0B;
         if (battle_load_graphics_step(0))
-            gGameWork.unk139++;
+            gGameWork.setupStep++;
         break;
     case 1:
         gGameWork.unk84 = 0;
@@ -56,7 +56,7 @@ void robattle_load_scene(void) {
         CpuFastSet(&fill, gSpriteEntries, 0x01000800);
         REG_DISPCNT |= 0x1F40;
         REG_DISPCNT &= 0xFFDF;
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 2:
         load_bg3_tilemap_08488764();
@@ -68,7 +68,7 @@ void robattle_load_scene(void) {
         decompress_to_ewram_27000((const u8 *)gUnk_083B24A8[gBattleWork.battlefield * 5 + 1]);
         gVBlankCallback = battle_vblank_update_bg;
         gGameSubState++;
-        gGameWork.unk139 = 0;
+        gGameWork.setupStep = 0;
         break;
     }
 }
@@ -85,7 +85,7 @@ void robattle_fade_in_from_white(void) {
 // Sub-state 3: the AI picks the opponents' (records 3-5) first commands.
 void robattle_opponents_choose_commands(void) {
     update_all_battle_status_sprites();
-    if (gGameWork.unk89 != 1)
+    if (gGameWork.skipBotSetup != 1)
         battle_process_bot_actions_for_side(3);
     gGameSubState++;
 }
@@ -130,7 +130,7 @@ void robattle_command_input(void) {
         return;
     command_ring_pulse_selected();
     if (KEYS_LO(gNewKeys) & 1) {
-        if (gGameWork.unk89 == 1 && gBattleWork.ringSlot == 5) {
+        if (gGameWork.skipBotSetup == 1 && gBattleWork.ringSlot == 5) {
             play_sound_effect(6);
             return;
         }
@@ -231,7 +231,7 @@ void robattle_command_commit(void) {
     if (gBattleWork.unk84 == 0) {
         if (gBattleWork.unk80 != 3 && gBattleWork.unk80 < gBattleWork.teamCount)
             gGameSubState = 4;
-        else if (gGameWork.unk89 != 1)
+        else if (gGameWork.skipBotSetup != 1)
             gGameSubState = 0x40;
         else
             gGameSubState = 0x90;
@@ -244,7 +244,7 @@ void robattle_command_resume_turn(void) {
     update_all_battle_status_sprites();
     count_bot_skill_use(gBattleWork.actor);
     init_battle_action_select_ui(0);
-    if (gGameWork.unk89 != 1)
+    if (gGameWork.skipBotSetup != 1)
         gGameSubState = 0x45;
     else
         gGameSubState = 0xA0;
@@ -448,7 +448,7 @@ void robattle_aim_message_show(void) {
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
     if (run_message(gUnk_083B70AC[gBattleBots[gBattleWork.unk80].medal.aimSkillType])) {
-        gGameWork.unk1B = 0;
+        gGameWork.endModeStep = 0;
         gGameSubState++;
     }
 }
@@ -499,11 +499,11 @@ void robattle_backup_screen(void) {
 // the current Medabot's Medal; robattle_backup_screen (0x32) saves VRAM/OAM, robattle_restore_screen (0x3C) restores
 // it.
 void robattle_rotation_open_medals_screen(void) {
-    mem_fill8(&gGameWork.unk3C, 0x14, 0);
-    gGameWork.unk3C = 2;
-    gGameWork.unk3D = find_medal_slot_by_id(gBattleBots[gBattleWork.unk80].medal.graphicId) - 1;
-    gGameWork.unk41 = 1;
-    gGameWork.unk42 = 2;
+    mem_fill8(&gGameWork.openedFrom, 0x14, 0);
+    gGameWork.openedFrom = 2;
+    gGameWork.shownId = find_medal_slot_by_id(gBattleBots[gBattleWork.unk80].medal.graphicId) - 1;
+    gGameWork.freeMedalCount = 1;
+    gGameWork.medalPage = 2;
     clear_bg_scroll();
     gGameState = 4;
     gGameSubState = 0x28;
@@ -512,7 +512,7 @@ void robattle_rotation_open_medals_screen(void) {
 void robattle_restore_screen(void) {
     u32 fill;
 
-    switch (gGameWork.unk139) {
+    switch (gGameWork.setupStep) {
     case 0:
         gGameWork.unk96 = 0;
         gUnk_03000430 = 0;
@@ -525,36 +525,36 @@ void robattle_restore_screen(void) {
         REG_BG3CNT = 0x1B0B;
         if (battle_load_graphics_step(0)) {
             gGameWork.unk84 = 0;
-            gGameWork.unk139++;
+            gGameWork.setupStep++;
         }
         break;
     case 1:
         fill = 0;
         CpuFastSet(&fill, gSpriteEntries, 0x01000800);
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 2:
         REG_DISPCNT |= 0x1F40;
         load_all_bot_part_sprites();
         apply_battle_blend_effect_b();
         decompress_to_ewram_27000((const u8 *)gUnk_083B24A8[gBattleWork.battlefield * 5 + 1]);
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 3:
         CpuFastSet((void *)0x02020800, (void *)0x06002800, 0x200);
         CpuFastSet((void *)0x02021000, (void *)0x0600C800, 0x200);
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 4:
         CpuFastSet((void *)0x02021800, (void *)0x0600D000, 0x200);
         CpuFastSet((void *)0x02022000, (void *)0x0600D800, 0x200);
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 5:
         CpuFastSet((void *)0x02028000, gSpriteEntries, 0x800);
         gVBlankCallback = battle_vblank_update_bg;
         gGameSubState++;
-        gGameWork.unk139 = 0;
+        gGameWork.setupStep = 0;
         break;
     }
 }
@@ -625,7 +625,7 @@ void robattle_status_screen_init(void) {
     fill = 0;
     CpuFastSet(&fill, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F40;
-    mem_fill8(&gGameWork.unk3C, 0x14, 0);
+    mem_fill8(&gGameWork.openedFrom, 0x14, 0);
     gGameWork.unk46 = 1;
     position_battle_team_cursors(0, 0);
     status_init_cursor();
@@ -636,7 +636,7 @@ void robattle_status_screen_init(void) {
     status_draw_part_names();
     status_draw_part_ability_icons();
     status_draw_part_armor();
-    get_bot_part_effective_values(gGameWork.unk3C * 3 + gGameWork.unk3D, gBattleWork.unk64);
+    get_bot_part_effective_values(gGameWork.openedFrom * 3 + gGameWork.shownId, gBattleWork.unk64);
     set_portrait_parts(gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3]);
     status_init_portrait();
     status_draw_team_sprites();
@@ -667,15 +667,15 @@ void robattle_status_screen_input(void) {
         status_draw_team_sprites();
         sprite_bob_y(8, gFrameCounter, status_cursor_x());
         status_select_input();
-        if ((KEYS_HI(gNewKeys) & 1) && gGameWork.unk3C == 0) {
+        if ((KEYS_HI(gNewKeys) & 1) && gGameWork.openedFrom == 0) {
             play_sound_effect(2);
             status_begin_side_change();
-            gGameWork.unk40 = 0;
+            gGameWork.medalRow = 0;
             gGameWork.unk3F++;
-        } else if ((KEYS_HI(gNewKeys) & 2) && gGameWork.unk3C == 1) {
+        } else if ((KEYS_HI(gNewKeys) & 2) && gGameWork.openedFrom == 1) {
             play_sound_effect(2);
             status_begin_side_change();
-            gGameWork.unk40 = 0;
+            gGameWork.medalRow = 0;
             gGameWork.unk3F++;
         } else if (KEYS_LO(gNewKeys) & 2) {
             play_sound_effect(5);
@@ -685,7 +685,7 @@ void robattle_status_screen_input(void) {
         break;
     case 1:
         if (status_side_change_scroll_out()) {
-            gGameWork.unk40 = 0;
+            gGameWork.medalRow = 0;
             gGameWork.unk3F++;
         }
         break;
@@ -694,7 +694,7 @@ void robattle_status_screen_input(void) {
             gGameWork.unk3F++;
         break;
     case 3:
-        get_bot_part_effective_values(gGameWork.unk3D + gGameWork.unk3C * 3, gBattleWork.unk64);
+        get_bot_part_effective_values(gGameWork.shownId + gGameWork.openedFrom * 3, gBattleWork.unk64);
         set_portrait_parts(gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3]);
         status_init_portrait();
         battle_sprite_group_set_anim(0, 8);
@@ -879,7 +879,7 @@ void robattle_bot_ready_for_command(void) {
     battle_queue_pop();
     ai_pick_bot_targets(gBattleWork.actor);
     if (gBattleWork.actor > 2) {
-        if (gGameWork.unk89 != 1) {
+        if (gGameWork.skipBotSetup != 1) {
             process_bot_battle_turn(gBattleWork.actor);
             gGameSubState = 0x45;
         } else {
@@ -890,7 +890,7 @@ void robattle_bot_ready_for_command(void) {
     } else if (gBattleBots[gBattleWork.actor].statusType == 0x2C) {
         process_bot_battle_turn(gBattleWork.actor);
         count_bot_skill_use(gBattleWork.actor);
-        if (gGameWork.unk89 != 1)
+        if (gGameWork.skipBotSetup != 1)
             gGameSubState = 0x45;
         else
             gGameSubState = 0xA0;
@@ -1022,8 +1022,8 @@ void robattle_effect_a_number_init(void) {
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 4)) {
-            set_display_digit_type(&gGameWork.unkEE, gBattleBots[i].buffNumber, 0);
-            battle_number_popup_init(&gGameWork.unkEE, i);
+            set_display_digit_type(&gGameWork.partAbility, gBattleBots[i].buffNumber, 0);
+            battle_number_popup_init(&gGameWork.partAbility, i);
         }
     }
     play_sound_effect(0x5B);
@@ -1058,8 +1058,8 @@ void robattle_effect_b_number_init(void) {
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 8)) {
-            set_display_digit_type(&gGameWork.unkEE, gBattleBots[i].statusNumber, 1);
-            battle_number_popup_init(&gGameWork.unkEE, i);
+            set_display_digit_type(&gGameWork.partAbility, gBattleBots[i].statusNumber, 1);
+            battle_number_popup_init(&gGameWork.partAbility, i);
         }
     }
     play_sound_effect(0x5B);
@@ -1088,7 +1088,7 @@ void robattle_effect_b_number_update(void) {
 }
 
 // Robattle handlers 0x90-0x99 and 0xA0-0xAF: exchange each side's chosen parts (action) over the
-// serial link (gUnk_03005010), guess: link Robattle (only when gGameWork.unk89 = 1).
+// serial link (gUnk_03005010), guess: link Robattle (only when gGameWork.skipBotSetup = 1).
 void robattle_link_message_open(void) {
     text_window_init(1, 0, 0);
     gGameSubState++;

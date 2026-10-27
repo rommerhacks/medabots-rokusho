@@ -1060,8 +1060,8 @@ void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b,
     struct SpriteTileRef *pa, *pb, *pc, *pd;
 
     if (!(i & 4)) {
-        if (gGameWork.unk130)
-            gGameWork.unk131 = 1;
+        if (gGameWork.inCloseup)
+            gGameWork.skipOamHigh = 1;
         gUnk_03005308[slot].unk2C = (gUnk_03005308[slot].unk2C | 1) & ~8;
         gUnk_03005308[slot].unk4 = a;
         gUnk_03005308[slot].unk8 = b;
@@ -1126,7 +1126,7 @@ void setup_medabot_part_sprites(void *oam, struct SpriteTree *obj, u32 a, u32 b,
         struct SpriteTileRef buf[32];
 
         custom_memset(buf, 0, sizeof(buf));
-        gGameWork.unk131 = 0;
+        gGameWork.skipOamHigh = 0;
         a = gUnk_03005308[slot].unk4;
         b = gUnk_03005308[slot].unk8;
         c = gUnk_03005308[slot].unkC;

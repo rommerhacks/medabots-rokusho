@@ -162,19 +162,19 @@ void vblank_body(void) {
                 gOamBuffer[i].affineParam = gSpriteWork->oamBuf[i].affineParam;
             for (i = 0; i < 40; i++)
                 gSpriteWork->oamBuf[i].affineParam = gOamBuffer[88 + i].affineParam;
-            if (gGameWork.unk131 == 0)
+            if (gGameWork.skipOamHigh == 0)
                 CpuFastSet(gSpriteWork->oamBuf, (void *)(OAM + 88 * 8), 0x50);
             gSpriteWork->oamCount = 0;
             gSpriteWork->affineIdx = 0;
-            if (gGameWork.unk12E)
+            if (gGameWork.oamUploadPending)
                 CpuFastSet(gOamBuffer, (void *)OAM, 0xB0);
         } else {
             gUnk_03000430 = 0;
         }
-    } else if (gGameWork.unk12E) {
+    } else if (gGameWork.oamUploadPending) {
         CpuFastSet(gOamBuffer, (void *)OAM, 0x100);
     }
-    gGameWork.unk12E = 0;
+    gGameWork.oamUploadPending = 0;
     gVBlankOnceCallback();
     gVBlankCallback();
     gVBlankOnceCallback = nullsub_08000840;

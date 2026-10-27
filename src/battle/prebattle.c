@@ -307,8 +307,8 @@ void prebattle_rubberobo_return_to_field(void) {
 
 // A on the pre-battle screen: Medabots screen in team select mode (game state 3, unk50 = 2)
 void prebattle_open_team_select(void) {
-    mem_fill8(&gGameWork.unk50, 0x14, 0);
-    gGameWork.unk50 = 2;
+    mem_fill8(&gGameWork.medabotsMode, 0x14, 0);
+    gGameWork.medabotsMode = 2;
     gGameState = 3;
     gGameSubState = 0;
 }
@@ -338,7 +338,7 @@ void afterbattle_show_opponent_line(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (run_message(gUnk_083C3984[gBattleWork.encounterMessage]) && (KEYS_LO(gNewKeys) & 3)) {
-        gGameWork.unk1B = 0;
+        gGameWork.endModeStep = 0;
         play_sound_effect(13);
         gGameSubState++;
     }
@@ -376,10 +376,10 @@ void afterbattle_load_part_name(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite_animation();
-    memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.wonPartKind], gGameWork.unk9E, 14);
+    memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.wonPartKind], gGameWork.textBuf, 14);
     tbl = gUnk_083BB9CC[0];
-    memcpy_bytes_0803F63C((const void *)tbl[gBattleWork.wonPartId * 4 + gBattleWork.wonPartKind], gGameWork.unk9E + 20,
-                          15);
+    memcpy_bytes_0803F63C((const void *)tbl[gBattleWork.wonPartId * 4 + gBattleWork.wonPartKind],
+                          gGameWork.textBuf + 20, 15);
     gGameSubState++;
 }
 
@@ -482,7 +482,7 @@ void afterbattle_load_experience(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     calculate_battle_score_summary();
-    divide_by_100000_b(gGameWork.unk9E, gBattleWork.score, 0x35);
+    divide_by_100000_b(gGameWork.textBuf, gBattleWork.score, 0x35);
     message_next();
     gGameSubState++;
 }
@@ -514,7 +514,7 @@ void afterbattle_level_up_next_bot(void) {
     } else if (gBattleWork.unk16E[gBattleWork.resultsMember][0]) {
         message_next();
         memcpy_bytes_0803F63C((const void *)gMedalNames[gBattleWork.unk16E[gBattleWork.resultsMember][0] - 1],
-                              gGameWork.unk9E, 11);
+                              gGameWork.textBuf, 11);
         play_song(16);
         gGameSubState++;
     } else
@@ -544,9 +544,9 @@ void afterbattle_medaforce_next_bot(void) {
     } else if (gBattleWork.unk16E[gBattleWork.resultsMember][6]) {
         message_next();
         memcpy_bytes_0803F63C((const void *)gMedalNames[gBattleWork.unk16E[gBattleWork.resultsMember][0] - 1],
-                              gGameWork.unk9E, 11);
+                              gGameWork.textBuf, 11);
         memcpy_bytes_0803F63C((const void *)gMedaforceNames[gBattleWork.unk16E[gBattleWork.resultsMember][7]],
-                              gGameWork.unk9E + 20, 17);
+                              gGameWork.textBuf + 20, 17);
         play_song(16);
         gGameSubState++;
     } else
@@ -613,12 +613,12 @@ void afterbattle_start_medal_transform(void) {
     DmaSet(3, &zero, 0x05000200, 0x85000080);
     zero = 0;
     DmaSet(3, &zero, 0x05000000, 0x85000080);
-    gGameWork.unk133 = find_medal_slot_by_id(gBattleWork.unk16E[gBattleWork.resultsMember][0] - 1) - 1;
+    gGameWork.levelUpMedalSlot = find_medal_slot_by_id(gBattleWork.unk16E[gBattleWork.resultsMember][0] - 1) - 1;
     gGameWork.unk134 = gBattleWork.unk16E[gBattleWork.resultsMember][2];
     gGameWork.unk135 = gBattleWork.unk16E[gBattleWork.resultsMember][3];
     gGameWork.unk136 = gBattleWork.unk16E[gBattleWork.resultsMember][4];
     gGameWork.unk137 = gBattleWork.unk16E[gBattleWork.resultsMember][5];
-    start_medal_transform(gGameWork.unk133);
+    start_medal_transform(gGameWork.levelUpMedalSlot);
     gBattleWork.resultsMember++;
 }
 
@@ -704,34 +704,34 @@ void afterbattle_part_detail_open_screen(void) {
     kind = b->wonPartKind;
     switch (kind) {
     case 0:
-        mem_fill8(&g->unk3C, 0x14, 0);
-        g->unk3C = 2;
-        g->unk3D = b->wonPartId;
-        g->unk3E = kind;
+        mem_fill8(&g->openedFrom, 0x14, 0);
+        g->openedFrom = 2;
+        g->shownId = b->wonPartId;
+        g->partSlot = kind;
         gGameState = 5;
         gGameSubState = 0x10;
         break;
     case 1:
-        mem_fill8(&g->unk3C, 0x14, 0);
-        g->unk3C = 2;
-        g->unk3D = b->wonPartId;
-        g->unk3E = kind;
+        mem_fill8(&g->openedFrom, 0x14, 0);
+        g->openedFrom = 2;
+        g->shownId = b->wonPartId;
+        g->partSlot = kind;
         gGameState = 5;
         gGameSubState = 0x10;
         break;
     case 2:
-        mem_fill8(&g->unk3C, 0x14, 0);
-        g->unk3C = 2;
-        g->unk3D = b->wonPartId;
-        g->unk3E = kind;
+        mem_fill8(&g->openedFrom, 0x14, 0);
+        g->openedFrom = 2;
+        g->shownId = b->wonPartId;
+        g->partSlot = kind;
         gGameState = 5;
         gGameSubState = 0x10;
         break;
     case 3:
-        mem_fill8(&g->unk3C, 0x14, 0);
-        g->unk3C = 2;
-        g->unk3D = b->wonPartId;
-        g->unk3E = kind;
+        mem_fill8(&g->openedFrom, 0x14, 0);
+        g->openedFrom = 2;
+        g->shownId = b->wonPartId;
+        g->partSlot = kind;
         gGameState = 5;
         gGameSubState = 0x10;
         break;
@@ -784,10 +784,10 @@ void afterbattle_part_detail_restore_screen(void) {
     battlefield_load_params();
     apply_battle_blend_effect_a();
     setup_battle_result_sprite_animation();
-    memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.wonPartKind], gGameWork.unk9E, 14);
+    memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.wonPartKind], gGameWork.textBuf, 14);
     tbl = gUnk_083BB9CC[0];
-    memcpy_bytes_0803F63C((const void *)tbl[gBattleWork.wonPartId * 4 + gBattleWork.wonPartKind], gGameWork.unk9E + 20,
-                          15);
+    memcpy_bytes_0803F63C((const void *)tbl[gBattleWork.wonPartId * 4 + gBattleWork.wonPartKind],
+                          gGameWork.textBuf + 20, 15);
     gGameWork.unk84 = 0;
     gGameSubState++;
 }
@@ -818,7 +818,7 @@ void afterbattle_show_lost_message(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (run_message(gUnk_083C65C4[110])) {
-        gGameWork.unk1B = 0;
+        gGameWork.endModeStep = 0;
         gGameSubState++;
     }
 }
@@ -919,8 +919,8 @@ static void load_encounter_into_battle_setup(void) {
 }
 
 void load_area_battlefield(void) {
-    memcpy_bytes_08041D04(gUnk_083BEA90[gUnk_030057E0.unk7FE], &gGameWork.unkEE, 2);
-    gBattleWork.battlefield = (&gGameWork.unkEE)[1];
+    memcpy_bytes_08041D04(gUnk_083BEA90[gUnk_030057E0.unk7FE], &gGameWork.partAbility, 2);
+    gBattleWork.battlefield = (&gGameWork.partAbility)[1];
 }
 
 // Picks the encounter (area table unless a debug battle set unkC2A), copies its setup and re-rolls
@@ -936,16 +936,16 @@ void setup_random_encounter_enemies(void) {
     flag = gUnk_030057E0.unkC2D;
     st = &gUnk_030057E0;
     if (!flag) {
-        memcpy_bytes_08041D04(gUnk_083BF090[st->unk7FE], &gGameWork.unkEE, 4);
+        memcpy_bytes_08041D04(gUnk_083BF090[st->unk7FE], &gGameWork.partAbility, 4);
         r = rng_percent();
         if (r < 40)
-            id = (&gGameWork.unkEE)[0];
+            id = (&gGameWork.partAbility)[0];
         else if (r < 70)
-            id = (&gGameWork.unkEE)[1];
+            id = (&gGameWork.partAbility)[1];
         else if (r < 90)
-            id = (&gGameWork.unkEE)[2];
+            id = (&gGameWork.partAbility)[2];
         else
-            id = (&gGameWork.unkEE)[3];
+            id = (&gGameWork.partAbility)[3];
         st->unkC2A = id;
     }
     memcpy_bytes_08041D04(gUnk_083C1A00[st->unkC2A], &gBattleWork, 0x28);
@@ -981,13 +981,13 @@ u32 random_pick_weighted4(u32 a, u32 b, u32 c, u32 d) {
 }
 
 static void prebattle_draw_opponent_name(void) {
-    memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.unk9E, 18);
-    render_text_sprites_08040EE4(gGameWork.unk9E, 10, 18, 3, 10, 13, 0, 1, 0, -4);
+    memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.textBuf, 18);
+    render_text_sprites_08040EE4(gGameWork.textBuf, 10, 18, 3, 10, 13, 0, 1, 0, -4);
 }
 
 static void prebattle_draw_battlefield_name(void) {
-    memcpy_bytes_0803F63C(gUnk_083BE9E8[gBattleWork.battlefield], gGameWork.unk9E, 11);
-    render_text_sprites_08040DB8(gGameWork.unk9E, 30, 1, 3, 8, 12, 0, 1);
+    memcpy_bytes_0803F63C(gUnk_083BE9E8[gBattleWork.battlefield], gGameWork.textBuf, 11);
+    render_text_sprites_08040DB8(gGameWork.textBuf, 30, 1, 3, 8, 12, 0, 1);
 }
 
 static void load_opponent_medabot_sprites(void) {
@@ -1022,9 +1022,9 @@ void draw_opponent_leg_type_icons(void) {
 
     for (i = 0; i < 3; i++) {
         if (gBattleWork.opponentCount > i) {
-            load_part_data(gBattleWork.encounterBots[i].parts[3], 3, &gGameWork.unkEE);
-            draw_tilemap_with_offset((&gGameWork.unkEE)[1] - 100, gUnk_083ACEEA[i][0], gUnk_083ACEEA[i][1], REG_BG0CNT,
-                                     0x8300);
+            load_part_data(gBattleWork.encounterBots[i].parts[3], 3, &gGameWork.partAbility);
+            draw_tilemap_with_offset((&gGameWork.partAbility)[1] - 100, gUnk_083ACEEA[i][0], gUnk_083ACEEA[i][1],
+                                     REG_BG0CNT, 0x8300);
         } else
             draw_tilemap_with_offset(0xFF, gUnk_083ACEEA[i][0], gUnk_083ACEEA[i][1], REG_BG0CNT, 0x8300);
     }
@@ -1313,9 +1313,9 @@ static void battle_check_medal_level_up(void) {
         medal->level++;
         medal->nextLevelExp = (medal->level + 1) * 100;
         gBattleWork.unk16E[i][0] = medal->graphicId + 1;
-        memcpy_bytes_08041D04(gUnk_083B6158[medal->graphicId], &gGameWork.unkEE, 16);
-        variant = medal_tier_for_level(medal->level, (&gGameWork.unkEE)[3], (&gGameWork.unkEE)[4],
-                                       (&gGameWork.unkEE)[5], (&gGameWork.unkEE)[6]);
+        memcpy_bytes_08041D04(gUnk_083B6158[medal->graphicId], &gGameWork.partAbility, 16);
+        variant = medal_tier_for_level(medal->level, (&gGameWork.partAbility)[3], (&gGameWork.partAbility)[4],
+                                       (&gGameWork.partAbility)[5], (&gGameWork.partAbility)[6]);
         if (variant != medal->spriteVariant) {
             gBattleWork.unk16E[i][1] = 1;
             gBattleWork.unk16E[i][2] = medal->graphicId;
@@ -1324,18 +1324,18 @@ static void battle_check_medal_level_up(void) {
             gBattleWork.unk16E[i][5] = variant;
             medal->spriteVariant = variant;
         }
-        memcpy_bytes_08041D04(&gMedalMedaforceIds[medal->graphicId * 3], &gGameWork.unkEE, 3);
+        memcpy_bytes_08041D04(&gMedalMedaforceIds[medal->graphicId * 3], &gGameWork.partAbility, 3);
         if (medal->level == 10) {
             gBattleWork.unk16E[i][6] = 1;
-            gBattleWork.unk16E[i][7] = (&gGameWork.unkEE)[0];
+            gBattleWork.unk16E[i][7] = (&gGameWork.partAbility)[0];
         }
         if (medal->level == 30) {
             gBattleWork.unk16E[i][6] = 1;
-            gBattleWork.unk16E[i][7] = (&gGameWork.unkEE)[1];
+            gBattleWork.unk16E[i][7] = (&gGameWork.partAbility)[1];
         }
         if (medal->level == 60) {
             gBattleWork.unk16E[i][6] = 1;
-            gBattleWork.unk16E[i][7] = (&gGameWork.unkEE)[2];
+            gBattleWork.unk16E[i][7] = (&gGameWork.partAbility)[2];
         }
     }
 }

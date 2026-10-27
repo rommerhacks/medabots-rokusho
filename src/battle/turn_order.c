@@ -52,7 +52,7 @@ void robattle_judge_time_up(void) {
             gGameWork.unk9C = 1;
         else if (gBattleWork.traps[0].unk1 < gBattleWork.traps[1].unk1)
             gGameWork.unk9C = 2;
-        else if (gGameWork.unk89 != 1) {
+        else if (gGameWork.skipBotSetup != 1) {
             if (rng_next_byte() & 1)
                 gGameWork.unk9C = 1;
             else
@@ -113,7 +113,7 @@ u32 find_next_active_bot(u32 rec) {
 
     for (i = 0; i <= 5; i++) {
         r = gUnk_083AD3D3[k];
-        if (gGameWork.unk89 == 1 && gUnk_03000B90)
+        if (gGameWork.skipBotSetup == 1 && gUnk_03000B90)
             r = gUnk_083AD3F3[r];
         if (gBattleBots[r].teamState && rec != r)
             return r;

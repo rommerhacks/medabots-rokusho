@@ -247,7 +247,7 @@ void medal_rename_select_medal(void) {
         gSpriteEntries[11].unk0 &= 0xBFFF;
         gSpriteEntries[8].unk2 = 12;
         gUnk_03006F74->unk4C = 1;
-        gGameWork.unk1B = 0;
+        gGameWork.endModeStep = 0;
         gGameSubState = 9;
         open_choice_menu(1, 0x16, 7);
         return;
@@ -255,7 +255,7 @@ void medal_rename_select_medal(void) {
         if (KEYS_LO(gNewKeys) & 2) {
             play_sound_effect(5);
             gSpriteEntries[8].unk0 &= 0xBFFF;
-            gGameWork.unk1B = 0;
+            gGameWork.endModeStep = 0;
             gGameWork.unk84 = 0;
             gGameSubState = 7;
         }

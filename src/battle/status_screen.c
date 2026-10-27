@@ -7,7 +7,7 @@
 static void status_switch_side(void);
 
 // Robattle Status screen (ring slot 2, sub-states 0x23-0x26; runtime-checked, re/scratch/b34_status_probe.txt):
-// gGameWork.unk3C = side shown (0 team, 1 opponents, R / L switches), unk3D = selected Medabot, D-pad moves it.
+// gGameWork.openedFrom = side shown (0 team, 1 opponents, R / L switches), unk3D = selected Medabot, D-pad moves it.
 // Draws the record's sprite if it is the selected one (unk3D) or the one in unk46.
 static void status_draw_bot_sprite(u32 rec, u32 x, u32 y) {
     u32 slot, side, k;
@@ -19,7 +19,7 @@ static void status_draw_bot_sprite(u32 rec, u32 x, u32 y) {
         slot = rec - 3;
         side = 1;
     }
-    if (slot == gGameWork.unk3D)
+    if (slot == gGameWork.shownId)
         k = 0;
     else if (slot == gGameWork.unk46)
         k = 1;
@@ -60,7 +60,7 @@ static void setup_bot_battle_sprites_08017A7C(u32 rec, u32 x, u32 y) {
         slot = rec - 3;
         side = 1;
     }
-    if (slot == gGameWork.unk3D)
+    if (slot == gGameWork.shownId)
         k = 0;
     else if (slot == gGameWork.unk46)
         k = 1;
@@ -80,9 +80,9 @@ void status_init_cursor(void) {
     gSpriteEntries[8].unk1C = 0;
     gSpriteEntries[8].unkA = 0xE;
     gSpriteEntries[8].unkB = 0xC0;
-    x = gUnk_083AD3A4[(gGameWork.unk3D + gGameWork.unk3C * 3) * 2];
-    y = gUnk_083AD3A4[(gGameWork.unk3D + gGameWork.unk3C * 3) * 2 + 1];
-    if (gGameWork.unk3C == 0) {
+    x = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
+    y = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2 + 1];
+    if (gGameWork.openedFrom == 0) {
         gSpriteEntries[8].unk2 = x + 16;
         gSpriteEntries[8].unk4 = y;
         gSpriteEntries[8].unk6 = 0x306;
@@ -95,22 +95,22 @@ void status_init_cursor(void) {
 
 void status_draw_bot_name(void) {
     clear_sprite_table_mask(9, 13);
-    if (gGameWork.unk3C == 0)
-        render_text_sprites_08040DB8(gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.name, 9, 0x11, 0xE, 10,
-                                     15, 0, 0);
+    if (gGameWork.openedFrom == 0)
+        render_text_sprites_08040DB8(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].medal.name, 9, 0x11, 0xE,
+                                     10, 15, 0, 0);
     else
-        render_text_sprites_08040DB8(gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.name, 9, 3, 0xE, 10, 15,
-                                     0, 0);
+        render_text_sprites_08040DB8(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].medal.name, 9, 3, 0xE,
+                                     10, 15, 0, 0);
 }
 
 static void status_draw_lr_button(u32 a) {
     if (a == 0) {
-        if (gGameWork.unk3C == 0)
+        if (gGameWork.openedFrom == 0)
             draw_tile_block(2, 2, 0x1A, 0x11, REG_BG0CNT, 0x8304);
         else
             draw_tile_block(2, 2, 2, 0x11, REG_BG0CNT, 0x8300);
     } else {
-        if (gGameWork.unk3C == 0)
+        if (gGameWork.openedFrom == 0)
             vram_fill_tilemap_rect(2, 2, 0x1A, 0x11, REG_BG0CNT, 0);
         else
             vram_fill_tilemap_rect(2, 2, 2, 0x11, REG_BG0CNT, 0);
@@ -134,15 +134,16 @@ void status_draw_row_icons(void) {
 }
 
 void status_load_medal_icon(void) {
-    CpuFastSet(gUnk_084C21BC + gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.graphicId * 0x80,
+    CpuFastSet(gUnk_084C21BC + gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].medal.graphicId * 0x80,
                (void *)0x06007800, 0x20);
 }
 
 void status_draw_medal_name(void) {
     clear_sprite_table_mask(0x16, 10);
-    memcpy_bytes_0803F63C((const void *)gMedalNames[gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.graphicId],
-                          gGameWork.unk9E, 11);
-    render_text_sprites_08040DB8(gGameWork.unk9E, 0x16, 0xD, 2, 7, 12, 1, 2);
+    memcpy_bytes_0803F63C(
+        (const void *)gMedalNames[gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].medal.graphicId],
+        gGameWork.textBuf, 11);
+    render_text_sprites_08040DB8(gGameWork.textBuf, 0x16, 0xD, 2, 7, 12, 1, 2);
 }
 
 void status_draw_part_names(void) {
@@ -151,9 +152,10 @@ void status_draw_part_names(void) {
     clear_sprite_table_mask(0x20, 0x38);
     for (i = 0; i <= 3; i++) {
         memcpy_bytes_08041D04(
-            (const void *)gUnk_083BB9CC[0][gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].parts[i].unk17 * 4 + i],
-            gGameWork.unk9E, 15);
-        render_text_sprites_08040DB8(gGameWork.unk9E, 0x20 + i * 14, 0xD, 4 + i * 2, 10, 13, 1, 2);
+            (const void *)
+                gUnk_083BB9CC[0][gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].unk17 * 4 + i],
+            gGameWork.textBuf, 15);
+        render_text_sprites_08040DB8(gGameWork.textBuf, 0x20 + i * 14, 0xD, 4 + i * 2, 10, 13, 1, 2);
     }
 }
 
@@ -161,11 +163,12 @@ void status_draw_part_ability_icons(void) {
     u32 i;
 
     for (i = 0; i <= 3; i++) {
-        load_part_data(gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].parts[i].unk17, i, &gGameWork.unkEE);
-        memcpy_bytes_08041D04(gUnk_083B6158[gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].medal.graphicId],
-                              gGameWork.unk10E, 16);
-        if (gGameWork.unkEE == gGameWork.unk10E[1])
-            draw_tile_block(2, 2, 0xB, i * 2 + 4, REG_BG1CNT, gGameWork.unk10E[7] * 4 + 0xD340);
+        load_part_data(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].unk17, i,
+                       &gGameWork.partAbility);
+        memcpy_bytes_08041D04(gUnk_083B6158[gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].medal.graphicId],
+                              gGameWork.medalGfxRecord, 16);
+        if (gGameWork.partAbility == gGameWork.medalGfxRecord[1])
+            draw_tile_block(2, 2, 0xB, i * 2 + 4, REG_BG1CNT, gGameWork.medalGfxRecord[7] * 4 + 0xD340);
         else
             draw_tile_block(2, 2, 0xB, i * 2 + 4, REG_BG1CNT, 0xD340);
     }
@@ -177,20 +180,20 @@ void status_draw_part_armor(void) {
     u16 pal;
 
     for (i = 0; i <= 3; i++) {
-        pal = gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].parts[i].unk11 ? 0xA000 : 0xB000;
-        draw_number_tall_bgcnt(gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].parts[i].unk11, 0x17, i * 2 + 4, 3,
-                               REG_BG1CNT, pal | 0x390);
+        pal = gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].unk11 ? 0xA000 : 0xB000;
+        draw_number_tall_bgcnt(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].unk11, 0x17,
+                               i * 2 + 4, 3, REG_BG1CNT, pal | 0x390);
         draw_tile_block(1, 2, 0x1A, i * 2 + 4, REG_BG1CNT, pal | 0x3A4);
-        draw_number_tall_bgcnt(gBattleBots[gGameWork.unk3D + gGameWork.unk3C * 3].parts[i].data[4], 0x1B, i * 2 + 4, 3,
-                               REG_BG1CNT, pal | 0x390);
+        draw_number_tall_bgcnt(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].data[4], 0x1B,
+                               i * 2 + 4, 3, REG_BG1CNT, pal | 0x390);
     }
 }
 
 void set_portrait_parts(u8 a, u8 b, u8 c, u8 d) {
-    gGameWork.unk98 = a;
-    gGameWork.unk99 = b;
-    gGameWork.unk9A = c;
-    gGameWork.unk9B = d;
+    gGameWork.shownHead = a;
+    gGameWork.shownRightArm = b;
+    gGameWork.shownLeftArm = c;
+    gGameWork.shownLegs = d;
 }
 
 void status_init_portrait(void) {
@@ -212,8 +215,8 @@ void status_init_portrait(void) {
     gUnk_03005308 = (struct SceneSlot *)c;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gUnk_083D1BF8, (struct SpriteNodeOam *)b);
     obj->oams = (struct SpriteNodeOam *)b;
-    setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gGameWork.unk98, gGameWork.unk99, gGameWork.unk9A,
-                               gGameWork.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 0);
+    setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gGameWork.shownHead, gGameWork.shownRightArm,
+                               gGameWork.shownLeftArm, gGameWork.shownLegs, 0x28, 0x28, 0x1C2, 8, 1, 0);
 }
 
 void status_reset_portrait(void) {
@@ -221,8 +224,8 @@ void status_reset_portrait(void) {
     u32 fill;
 
     obj->oams = (struct SpriteNodeOam *)0x020260D0;
-    setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gGameWork.unk98, gGameWork.unk99, gGameWork.unk9A,
-                               gGameWork.unk9B, 0x28, 0x28, 0x1C2, 8, 1, 0);
+    setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gGameWork.shownHead, gGameWork.shownRightArm,
+                               gGameWork.shownLeftArm, gGameWork.shownLegs, 0x28, 0x28, 0x1C2, 8, 1, 0);
     fill = 0x200;
     CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
     gSpriteWork->oamCount = 0;
@@ -230,14 +233,15 @@ void status_reset_portrait(void) {
 }
 
 void status_update_portrait(void) {
-    setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gGameWork.unk98, gGameWork.unk99,
-                               gGameWork.unk9A, gGameWork.unk9B, 0x44, 0x2A, 0x1C2, 8, 5, 0);
+    setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gGameWork.shownHead,
+                               gGameWork.shownRightArm, gGameWork.shownLeftArm, gGameWork.shownLegs, 0x44, 0x2A, 0x1C2,
+                               8, 5, 0);
 }
 
 u32 status_cursor_x(void) {
-    u8 x = gUnk_083AD3A4[(gGameWork.unk3D + gGameWork.unk3C * 3) * 2];
+    u8 x = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
 
-    if (gGameWork.unk3C == 0)
+    if (gGameWork.openedFrom == 0)
         return x + 16;
     else
         return x - 16;
@@ -256,8 +260,8 @@ void status_next_other_slot(void) {
         gGameWork.unk46 = 0;
     else
         gGameWork.unk46++;
-    if (gGameWork.unk3D == gGameWork.unk46) {
-        if (gGameWork.unk3D == 2)
+    if (gGameWork.shownId == gGameWork.unk46) {
+        if (gGameWork.shownId == 2)
             gGameWork.unk46 = 0;
         else
             gGameWork.unk46++;
@@ -273,11 +277,11 @@ void status_draw_team_sprites(void) {
     clear_sprite_table_mask(6, 1);
     clear_sprite_table_mask(7, 1);
     for (i = 0, recs = gBattleBots; i <= 2; i++) {
-        rec = gGameWork.unk3C * 3 + i;
-        if (recs[rec].teamState && i != gGameWork.unk3D)
+        rec = gGameWork.openedFrom * 3 + i;
+        if (recs[rec].teamState && i != gGameWork.shownId)
             status_draw_bot_sprite(rec, gUnk_083AD3A4[rec * 2], gUnk_083AD3A4[rec * 2 + 1]);
     }
-    update_battle_sprite_orbiting_positions(0, gGameWork.unk3D + gGameWork.unk3C * 3, gGameWork.unk3C);
+    update_battle_sprite_orbiting_positions(0, gGameWork.shownId + gGameWork.openedFrom * 3, gGameWork.openedFrom);
 }
 
 void status_select_input(void) {
@@ -286,58 +290,58 @@ void status_select_input(void) {
     s32 slot;
     u32 base;
 
-    x = gUnk_083AD3A4[(gGameWork.unk3D + gGameWork.unk3C * 3) * 2];
-    y = gUnk_083AD3A4[(gGameWork.unk3D + gGameWork.unk3C * 3) * 2 + 1];
-    slot = gGameWork.unk3D;
-    base = gGameWork.unk3C * 3;
-    if (gGameWork.unk3C == 0) {
+    x = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
+    y = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2 + 1];
+    slot = gGameWork.shownId;
+    base = gGameWork.openedFrom * 3;
+    if (gGameWork.openedFrom == 0) {
         if (KEYS_LO(gRepeatKeys) & 0xA0) {
-            if (gGameWork.unk3D != 2) {
+            if (gGameWork.shownId != 2) {
                 if (gBattleBots[slot + 1 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);
-                    gGameWork.unk3D++;
+                    gGameWork.shownId++;
                     moved = 1;
-                } else if (gGameWork.unk3D == 0 && gBattleBots[slot + 2 + base].teamState) {
+                } else if (gGameWork.shownId == 0 && gBattleBots[slot + 2 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);
-                    gGameWork.unk3D = 2;
+                    gGameWork.shownId = 2;
                     moved = 1;
                 }
             }
         } else if (KEYS_LO(gRepeatKeys) & 0x50) {
-            if (gGameWork.unk3D != 0) {
+            if (gGameWork.shownId != 0) {
                 if (gBattleBots[slot - 1 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);
-                    gGameWork.unk3D--;
+                    gGameWork.shownId--;
                     moved = 1;
-                } else if (gGameWork.unk3D == 2 && gBattleBots[slot - 2 + base].teamState) {
+                } else if (gGameWork.shownId == 2 && gBattleBots[slot - 2 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);
-                    gGameWork.unk3D = 0;
+                    gGameWork.shownId = 0;
                     moved = 1;
                 }
             }
         }
     } else {
         if (KEYS_LO(gRepeatKeys) & 0x60) {
-            if (gGameWork.unk3D != 0) {
+            if (gGameWork.shownId != 0) {
                 if (gBattleBots[slot - 1 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);
-                    gGameWork.unk3D--;
+                    gGameWork.shownId--;
                     moved = 1;
-                } else if (gGameWork.unk3D == 2 && gBattleBots[slot - 2 + base].teamState) {
+                } else if (gGameWork.shownId == 2 && gBattleBots[slot - 2 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);
-                    gGameWork.unk3D = 0;
+                    gGameWork.shownId = 0;
                     moved = 1;
                 }
             }
         } else if (KEYS_LO(gRepeatKeys) & 0x90) {
-            if (gGameWork.unk3D != 2) {
+            if (gGameWork.shownId != 2) {
                 if (gBattleBots[slot + 1 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);
-                    gGameWork.unk3D++;
+                    gGameWork.shownId++;
                     moved = 1;
-                } else if (gGameWork.unk3D == 0 && gBattleBots[slot + 2 + base].teamState) {
+                } else if (gGameWork.shownId == 0 && gBattleBots[slot + 2 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);
-                    gGameWork.unk3D = 2;
+                    gGameWork.shownId = 2;
                     moved = 1;
                 }
             }
@@ -352,20 +356,20 @@ void status_select_input(void) {
         status_draw_part_names();
         status_draw_part_ability_icons();
         status_draw_part_armor();
-        get_bot_part_effective_values(gGameWork.unk3D + gGameWork.unk3C * 3, gBattleWork.unk64);
+        get_bot_part_effective_values(gGameWork.shownId + gGameWork.openedFrom * 3, gBattleWork.unk64);
         set_portrait_parts(gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3]);
         status_reset_portrait();
-        position_battle_team_cursors(gGameWork.unk3C * 3, 0);
+        position_battle_team_cursors(gGameWork.openedFrom * 3, 0);
         battle_sprite_group_set_anim(0, 8);
         draw_tile_block(2, 2, 0xB, 2, REG_BG1CNT, 0x63C0);
     }
 }
 
 void status_begin_side_change(void) {
-    u32 x = gUnk_083AD3A4[(gGameWork.unk3D + gGameWork.unk3C * 3) * 2];
-    u32 y = gUnk_083AD3A4[(gGameWork.unk3D + gGameWork.unk3C * 3) * 2 + 1];
+    u32 x = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
+    u32 y = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2 + 1];
 
-    setup_bot_battle_sprites_08017A7C(gGameWork.unk3D + gGameWork.unk3C * 3, x, y);
+    setup_bot_battle_sprites_08017A7C(gGameWork.shownId + gGameWork.openedFrom * 3, x, y);
     clear_battle_sprite_slot(8, 1);
     status_draw_lr_button(1);
 }
@@ -378,33 +382,33 @@ u32 status_side_change_scroll_out(void) {
     clear_sprite_table_mask(5, 1);
     clear_sprite_table_mask(6, 1);
     clear_sprite_table_mask(7, 1);
-    if (gGameWork.unk3C == 0) {
+    if (gGameWork.openedFrom == 0) {
         for (i = 0, recs = gBattleBots; i <= 2; i++) {
-            rec = gGameWork.unk3C * 3 + i;
+            rec = gGameWork.openedFrom * 3 + i;
             if (recs[rec].teamState) {
-                x = gUnk_083AD3A4[rec * 2] - gGameWork.unk40 * 8;
+                x = gUnk_083AD3A4[rec * 2] - gGameWork.medalRow * 8;
                 status_draw_bot_sprite(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
             }
         }
         for (i = 0; i <= 12; i++)
             gSpriteEntries[9 + i].unk2 -= 8;
-        read_vram_tilemap_rect(13, 6, 16 - gGameWork.unk40, 13, REG_BG0CNT, (void *)0x02020000);
-        write_vram_tilemap_rect(13, 6, 15 - gGameWork.unk40, 13, REG_BG0CNT, (void *)0x02020000);
+        read_vram_tilemap_rect(13, 6, 16 - gGameWork.medalRow, 13, REG_BG0CNT, (void *)0x02020000);
+        write_vram_tilemap_rect(13, 6, 15 - gGameWork.medalRow, 13, REG_BG0CNT, (void *)0x02020000);
     } else {
         for (i = 0, recs = gBattleBots; i <= 2; i++) {
-            rec = gGameWork.unk3C * 3 + i;
+            rec = gGameWork.openedFrom * 3 + i;
             if (recs[rec].teamState) {
                 register u32 k asm("r0") = rec * 2;
-                x = gUnk_083AD3A4[k] + gGameWork.unk40 * 8;
+                x = gUnk_083AD3A4[k] + gGameWork.medalRow * 8;
                 status_draw_bot_sprite(rec, x, gUnk_083AD3A4[k + 1]);
             }
         }
         for (i = 0; i <= 12; i++)
             gSpriteEntries[9 + i].unk2 += 8;
-        read_vram_tilemap_rect(13, 6, gGameWork.unk40 + 1, 13, REG_BG0CNT, (void *)0x02020000);
-        write_vram_tilemap_rect(13, 6, gGameWork.unk40 + 2, 13, REG_BG0CNT, (void *)0x02020000);
+        read_vram_tilemap_rect(13, 6, gGameWork.medalRow + 1, 13, REG_BG0CNT, (void *)0x02020000);
+        write_vram_tilemap_rect(13, 6, gGameWork.medalRow + 2, 13, REG_BG0CNT, (void *)0x02020000);
     }
-    if (++gGameWork.unk40 == 14) {
+    if (++gGameWork.medalRow == 14) {
         status_switch_side();
         return 1;
     }
@@ -412,9 +416,9 @@ u32 status_side_change_scroll_out(void) {
 }
 
 static void status_switch_side(void) {
-    gGameWork.unk3D = 0;
-    gGameWork.unk3C ^= 1;
-    position_battle_team_cursors(gGameWork.unk3C * 3, 1);
+    gGameWork.shownId = 0;
+    gGameWork.openedFrom ^= 1;
+    position_battle_team_cursors(gGameWork.openedFrom * 3, 1);
 }
 
 u32 status_side_change_scroll_in(void) {
@@ -425,24 +429,24 @@ u32 status_side_change_scroll_in(void) {
     clear_sprite_table_mask(5, 1);
     clear_sprite_table_mask(6, 1);
     clear_sprite_table_mask(7, 1);
-    if (gGameWork.unk3C == 0) {
+    if (gGameWork.openedFrom == 0) {
         for (i = 0, recs = gBattleBots; i <= 2; i++) {
-            rec = gGameWork.unk3C * 3 + i;
+            rec = gGameWork.openedFrom * 3 + i;
             if (recs[rec].teamState) {
-                x = gUnk_083AD3A4[rec * 2] - (13 - gGameWork.unk40) * 8;
+                x = gUnk_083AD3A4[rec * 2] - (13 - gGameWork.medalRow) * 8;
                 status_draw_bot_sprite(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
             }
         }
     } else {
         for (i = 0, recs = gBattleBots; i <= 2; i++) {
-            rec = gGameWork.unk3C * 3 + i;
+            rec = gGameWork.openedFrom * 3 + i;
             if (recs[rec].teamState) {
-                x = gUnk_083AD3A4[rec * 2] + (13 - gGameWork.unk40) * 8;
+                x = gUnk_083AD3A4[rec * 2] + (13 - gGameWork.medalRow) * 8;
                 status_draw_bot_sprite(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
             }
         }
     }
-    if (++gGameWork.unk40 == 14) {
+    if (++gGameWork.medalRow == 14) {
         status_init_cursor();
         status_draw_bot_name();
         status_load_medal_icon();

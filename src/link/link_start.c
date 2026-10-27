@@ -22,7 +22,7 @@ void battle_cutscene_dispatch(void) {
             play_sound_effect(0xD);
             if (++gUnk_03006F74->unk8 > 2) {
                 gGameWork.unk84 = r;
-                gGameWork.unk1B = r;
+                gGameWork.endModeStep = r;
                 gGameSubState++;
                 *(u8 *)&gUnk_03001784 |= 2;
             } else
@@ -91,7 +91,7 @@ void link_start_show_messages(void) {
         play_sound_effect(0xD);
         if ((s32)++gUnk_03006F74->unk8 > 1) {
             gGameWork.unk84 = 0;
-            gGameWork.unk1B = 0;
+            gGameWork.endModeStep = 0;
             gGameSubState--;
         } else
             message_next();
@@ -113,7 +113,7 @@ void fade_transition_and_input_check(void) {
         } else if (KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
             gGameWork.unk84 = 0;
-            gGameWork.unk1B = 0;
+            gGameWork.endModeStep = 0;
             gGameSubState -= 2;
         }
     }

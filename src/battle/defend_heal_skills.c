@@ -292,7 +292,7 @@ void trap_sprite_grow(void) {
 
 void trap_sprite_hold(void) {
     gGameWork.unk86--;
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gGameWork.unk86 = 0;
     if (gGameWork.unk86 == 0) {
         switch (gBattleWork.unk51) {
@@ -440,7 +440,7 @@ void team_form_split(void) {
     struct SpriteEntry *spr;
 
     gGameWork.unk86--;
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gGameWork.unk86 = 0;
     if (gGameWork.unk86 == 0) {
         spr = &gSpriteEntries[0x21];
@@ -552,7 +552,7 @@ void break_form_anim_wait(void) {
 void break_form_hold(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x3B], 0x21);
     gGameWork.unk86--;
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gGameWork.unk86 = 0;
     if (gGameWork.unk86 == 0)
         gBattleWork.step++;
@@ -995,7 +995,7 @@ void autorecover_orb_spawn(void) {
 
 void heal_orb_hold(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x3E], 0x21);
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gBattleWork.step++;
     else if (gGameWork.unk86)
         gGameWork.unk86--;
@@ -1176,7 +1176,7 @@ void reactivate_apply(void) {
 }
 
 void reactivate_finish(void) {
-    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.target].medal.name, gGameWork.unk9E, 0xE);
+    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.target].medal.name, gGameWork.textBuf, 0xE);
     gBattleWork.messageId = 0x28;
     gBattleWork.step++;
 }

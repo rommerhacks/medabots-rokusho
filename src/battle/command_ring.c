@@ -8,8 +8,8 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir);
 
 void command_ring_draw_name(void) {
     clear_sprite_table_mask(30, 11);
-    memcpy_bytes_08041D04(gUnk_083C466C[gBattleWork.ringSlot], gGameWork.unk9E, 12);
-    render_text_sprites_08040DB8(gGameWork.unk9E, 30, 21, 17, 8, 14, 0, 1);
+    memcpy_bytes_08041D04(gUnk_083C466C[gBattleWork.ringSlot], gGameWork.textBuf, 12);
+    render_text_sprites_08040DB8(gGameWork.textBuf, 30, 21, 17, 8, 14, 0, 1);
 }
 
 void command_ring_init_icons(void) {

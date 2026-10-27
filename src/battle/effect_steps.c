@@ -15,7 +15,7 @@ void effect_step_miss_popup(void) {
 }
 
 void effect_step_wait_clear_sprite(void) {
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1)) {
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1)) {
         clear_battle_sprite_slot(0xA, 1);
         gBattleWork.step++;
     } else if (gGameWork.unk86)
@@ -27,7 +27,7 @@ void effect_step_wait_clear_sprite(void) {
 }
 
 void effect_step_wait(void) {
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gBattleWork.step++;
     else if (gGameWork.unk86)
         gGameWork.unk86--;
@@ -38,7 +38,7 @@ void effect_step_wait(void) {
 void effect_step_wait_clear_sprites(void) {
     u32 i;
 
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1)) {
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1)) {
         for (i = 0; i < 0x14; i++) {
             if (gSpriteEntries[0xA + i].unk0 & 0x8000)
                 clear_battle_sprite_slot(0xA + i, 1);
@@ -61,7 +61,7 @@ void effect_step_wait_spin(void) {
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 - 0x40) & 0x3FF;
     else
         gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x40) & 0x3FF;
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gBattleWork.step++;
     else if (gGameWork.unk86)
         gGameWork.unk86--;

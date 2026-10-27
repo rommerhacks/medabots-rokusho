@@ -1,11 +1,11 @@
-// Link Robattle (game state 10, guess: entered when gGameWork.unk89 == 1). link_robattle_update runs
+// Link Robattle (game state 10, guess: entered when gGameWork.skipBotSetup == 1). link_robattle_update runs
 // gLinkRobattleHandlers[gGameSubState]. Sub-states (messages from gLinkMessages / decoded text):
-//   0x00-0x06  handshake: sync, player 0 sends the RNG seed (gGameWork.unk8D), 0x50-0x54 swap player names
+//   0x00-0x06  handshake: sync, player 0 sends the RNG seed (gGameWork.rngIndex), 0x50-0x54 swap player names
 //              (link_robattle_exchange_names), pick a random battlefield
 //   0x07-0x0E  intro screen "Okay let's Robattle!", fade out, gGameState = 3 (the Robattle)
 //   0x10-0x18  link error: "A link error has occurred", soft reset to the title
 //   0x20-0x2D  after the battle: "That was a great Robattle!", "Checking connection", then the prize game if
-//              gGameWork.unk138 is set, else back to the link menu
+//              gGameWork.prizeGamePending is set, else back to the link menu
 //   0x30-0x4B  prize game: the winner (gGameWork.unk9C == 1) stops a power gauge with A ("Get Medaparts by
 //              pressing A Button with a good timing"); a ball flies up and lands on one of 6 rows
 //              (prizeSlots); a part row moves that part from the loser to the winner ("You got / lost the
@@ -37,7 +37,7 @@ static u32 prize_game_ball_fall(void);
 static void prize_game_blink_landing_slot(void);
 
 // Game state 10 handler: runs gLinkRobattleHandlers[gGameSubState]; outside sub-states 0x10-0x1F a link error
-// (link_error_check) restarts it at 0x10. guess: link Robattle (entered when gGameWork.unk89 == 1).
+// (link_error_check) restarts it at 0x10. guess: link Robattle (entered when gGameWork.skipBotSetup == 1).
 void link_robattle_update(void) {
     if (gGameSubState - 0x10 > 0xF && link_error_check())
         return;
@@ -76,8 +76,8 @@ void link_robattle_delay(void) {
 
 void link_robattle_send_seed(void) {
     if (gUnk_03000B90 == 0) {
-        gGameWork.unk8D = gFrameCounter;
-        gUnk_03005010.unk6 = gGameWork.unk8D + 0x8000;
+        gGameWork.rngIndex = gFrameCounter;
+        gUnk_03005010.unk6 = gGameWork.rngIndex + 0x8000;
     }
     gGameSubState++;
 }
@@ -87,7 +87,7 @@ void link_robattle_receive_seed(void) {
         u16 seed = gUnk_03005010.unk8[0][1];
         if (!(seed & 0x8000))
             return;
-        gGameWork.unk8D = seed;
+        gGameWork.rngIndex = seed;
     }
     gGameSubState++;
 }
@@ -211,8 +211,8 @@ void link_robattle_clear_screen(void) {
 }
 
 void link_robattle_start_battle(void) {
-    mem_fill8(&gGameWork.unk50, 0x14, 0);
-    gGameWork.unk50 = 1;
+    mem_fill8(&gGameWork.medabotsMode, 0x14, 0);
+    gGameWork.medabotsMode = 1;
     gGameState = 3;
     gGameSubState = 0;
 }
@@ -228,7 +228,7 @@ void link_robattle_play_result_song(void) {
 void link_robattle_outro_message(void) {
     update_scroll_movement_a();
     if (run_message(gUnk_083C3984[1]) && (*(u8 *)&gNewKeys & 3)) {
-        gGameWork.unk1B = 0;
+        gGameWork.endModeStep = 0;
         play_sound_effect(0xD);
         gGameSubState++;
     }
@@ -274,7 +274,7 @@ void link_robattle_fade_music(void) {
 
 void link_robattle_check_prize_game(void) {
     update_scroll_movement_a();
-    if (gGameWork.unk138 == 0)
+    if (gGameWork.prizeGamePending == 0)
         gGameSubState++;
     else
         gGameSubState = 0x30;
@@ -364,7 +364,7 @@ void prize_game_gauge_input(void) {
             return;
         play_sound_effect(4);
         gBattleWork.prizePower = pkt;
-        gGameWork.unk1B = 0;
+        gGameWork.endModeStep = 0;
         gGameWork.unk86 = 0;
         gGameSubState++;
     }
@@ -534,7 +534,7 @@ void prize_game_transfer_part(void) {
         team_lose_equipped_part(gBattleWork.prizeMedal, (gBattleWork.prizeSlots + 0)[gBattleWork.prizeRow]);
     memcpy_bytes_08041D04(
         (const void *)gUnk_083BB9CC[0][gBattleWork.prizePart * 4 + gBattleWork.prizeSlots[gBattleWork.prizeRow]],
-        gGameWork.unk9E, 0xF);
+        gGameWork.textBuf, 0xF);
     gGameSubState++;
 }
 
@@ -641,7 +641,7 @@ void link_robattle_goto_name_exchange(void) {
 }
 
 void link_clear_send_word(void) {
-    if (gGameWork.unk89 == 1)
+    if (gGameWork.skipBotSetup == 1)
         gUnk_03005010.unk6 = 0;
 }
 
@@ -657,8 +657,8 @@ static void link_robattle_draw_partner_name(void) {
 }
 
 static void link_robattle_draw_battlefield_name(void) {
-    memcpy_bytes_0803F63C(gUnk_083BE9E8[gBattleWork.battlefield], gGameWork.unk9E, 0xB);
-    render_text_sprites_08040DB8(gGameWork.unk9E, 0x1E, 1, 3, 8, 0xC, 0, 1);
+    memcpy_bytes_0803F63C(gUnk_083BE9E8[gBattleWork.battlefield], gGameWork.textBuf, 0xB);
+    render_text_sprites_08040DB8(gGameWork.textBuf, 0x1E, 1, 3, 8, 0xC, 0, 1);
 }
 
 static void link_robattle_draw_frame(void) {
@@ -884,12 +884,12 @@ void prize_game_pick_prize_part(void) {
 
 u32 link_error_check(void) {
     // unk1C..unk1F read as one word (the struct has no u32 there)
-    if (gGameWork.unk89 == 1 && (((struct {
-                                     u8 f[0x1C];
-                                     u32 x;
-                                 } *)&gUnk_03005010)
-                                     ->x &
-                                 0xFFFF00)) {
+    if (gGameWork.skipBotSetup == 1 && (((struct {
+                                            u8 f[0x1C];
+                                            u32 x;
+                                        } *)&gUnk_03005010)
+                                            ->x &
+                                        0xFFFF00)) {
         gGameMode = 0;
         gGameState = 10;
         gGameSubState = 0x10;

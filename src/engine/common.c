@@ -9,26 +9,26 @@ static void scanline_scroll_vblank(void);
 
 // Second RNG (0-255): mixes the frame counter into a 16-bit state, or replays gUnk_083B286C when unk89 is set.
 s32 rng_next_byte(void) {
-    if (gGameWork.unk89 == 0) {
-        u16 s = gGameWork.unk8A + gGameWork.unk8C;
+    if (gGameWork.skipBotSetup == 0) {
+        u16 s = gGameWork.rngSeed + gGameWork.rngLast;
 
         s += 0x87 + (((gFrameCounter << 4) + (gFrameCounter >> 4) + 1) >> 1);
-        gGameWork.unk8A = ((s & 0xFF) << 8) | (((s & 0xFF00) >> 8) ^ (s & 0xFF));
-        gGameWork.unk8C = ((s & 0xFF00) >> 8) ^ s;
-        return gGameWork.unk8C;
+        gGameWork.rngSeed = ((s & 0xFF) << 8) | (((s & 0xFF00) >> 8) ^ (s & 0xFF));
+        gGameWork.rngLast = ((s & 0xFF00) >> 8) ^ s;
+        return gGameWork.rngLast;
     } else {
-        gGameWork.unk8D++;
-        gGameWork.unk8C = gUnk_083B286C[gGameWork.unk8D];
-        return gGameWork.unk8C;
+        gGameWork.rngIndex++;
+        gGameWork.rngLast = gUnk_083B286C[gGameWork.rngIndex];
+        return gGameWork.rngLast;
     }
 }
 
 void set_blend_effect_mode(u8 mode, u16 targets, u16 speed) {
     u16 bld, eva, evb, evy;
 
-    gGameWork.unk90 = mode;
-    gGameWork.unk92 = speed;
-    gGameWork.unk94 = 0;
+    gGameWork.blendMode = mode;
+    gGameWork.blendSpeed = speed;
+    gGameWork.blendProgress = 0;
     switch (mode) {
     case 1:
         bld = 0x40;
@@ -82,26 +82,26 @@ void set_blend_effect_mode(u8 mode, u16 targets, u16 speed) {
 u32 update_blend_effect(void) {
     u16 eva, evb, evy;
 
-    gGameWork.unk94 += gGameWork.unk92;
-    switch (gGameWork.unk90) {
+    gGameWork.blendProgress += gGameWork.blendSpeed;
+    switch (gGameWork.blendMode) {
     case 1:
     case 3:
     case 5:
-        eva = 16 - (gGameWork.unk94 >> 4);
+        eva = 16 - (gGameWork.blendProgress >> 4);
         evb = eva;
         evy = eva;
         break;
     case 2:
     case 4:
     case 6:
-        eva = gGameWork.unk94 >> 4;
+        eva = gGameWork.blendProgress >> 4;
         evb = eva;
         evy = eva;
         break;
     }
     REG_BLDALPHA = ((evb & 0x1F) << 8) | (eva & 0x1F);
     REG_BLDY = evy & 0x1F;
-    if (gGameWork.unk94 > 0xFF)
+    if (gGameWork.blendProgress > 0xFF)
         return 1;
     return 0;
 }
@@ -633,8 +633,8 @@ u32 find_next_available_medapart_slot(vu32 part, vu32 kind, vu32 backward, vu32 
             part--;
             if (part == 0x78)
                 part--;
-            load_part_data(part, kind, gGameWork.unk10E);
-            if (gender == gGameWork.unk10E[3] && gMedapartInventory[kind * 240 + part * 2] != 0 &&
+            load_part_data(part, kind, gGameWork.medalGfxRecord);
+            if (gender == gGameWork.medalGfxRecord[3] && gMedapartInventory[kind * 240 + part * 2] != 0 &&
                 gMedapartInventory[kind * 240 + part * 2] - gMedapartInventory[kind * 240 + part * 2 + 1] != 0)
                 goto found;
         }
@@ -647,8 +647,8 @@ u32 find_next_available_medapart_slot(vu32 part, vu32 kind, vu32 backward, vu32 
                 part = 0;
             if (part == gender + 0x78)
                 return gender + 0x78;
-            load_part_data(part, kind, gGameWork.unk10E);
-            if (gender == gGameWork.unk10E[3] && gMedapartInventory[kind * 240 + part * 2] != 0 &&
+            load_part_data(part, kind, gGameWork.medalGfxRecord);
+            if (gender == gGameWork.medalGfxRecord[3] && gMedapartInventory[kind * 240 + part * 2] != 0 &&
                 gMedapartInventory[kind * 240 + part * 2] - gMedapartInventory[kind * 240 + part * 2 + 1] != 0)
                 return part;
         }
@@ -661,11 +661,11 @@ fail:
 }
 
 u32 medabot_detail_is_full_set(void) {
-    if (gGameWork.unk98 != gGameWork.unk99)
+    if (gGameWork.shownHead != gGameWork.shownRightArm)
         return 0;
-    if (gGameWork.unk98 != gGameWork.unk9A)
+    if (gGameWork.shownHead != gGameWork.shownLeftArm)
         return 0;
-    if (gGameWork.unk98 != gGameWork.unk9B)
+    if (gGameWork.shownHead != gGameWork.shownLegs)
         return 0;
     return 1;
 }
@@ -688,8 +688,8 @@ u32 find_medabot_slot_by_medal(u8 medal) {
 }
 
 void load_battlefield_data_to_buffer(void) {
-    memcpy_bytes_08041D04(gUnk_083BEA90[gUnk_030057E0.unk7FE], &gGameWork.unkEE, 1);
-    gUnk_030057E0.unkC29 = gGameWork.unkEE;
+    memcpy_bytes_08041D04(gUnk_083BEA90[gUnk_030057E0.unk7FE], &gGameWork.partAbility, 1);
+    gUnk_030057E0.unkC29 = gGameWork.partAbility;
     gUnk_030057E0.unkC2B = 0;
 }
 
@@ -1054,8 +1054,8 @@ void race_enter_team_select(void) {
     CpuFastSet(&a, (void *)OBJ_PLTT, 0x01000080);
     b = 0;
     CpuFastSet(&b, (void *)PLTT, 0x01000080);
-    mem_fill8(&gGameWork.unk50, 0x14, 0);
-    gGameWork.unk50 = 3;
+    mem_fill8(&gGameWork.medabotsMode, 0x14, 0);
+    gGameWork.medabotsMode = 3;
     gBattleWork.teamPicks[0] = 0;
     gBattleWork.teamPicks[1] = 0;
     gBattleWork.teamPicks[2] = 0;
@@ -1412,21 +1412,21 @@ void init_battle_scene(u32 mode, u32 id) {
     clear_battle_sprite_slot(0, 0x80);
     gGameWork.unk96 = 0;
     gUnk_03000430 = 0;
-    mem_fill8(&gGameWork.unk3C, 0x14, 0);
-    gGameWork.unk3C = 3;
-    gGameWork.unk3D = id;
+    mem_fill8(&gGameWork.openedFrom, 0x14, 0);
+    gGameWork.openedFrom = 3;
+    gGameWork.shownId = id;
     switch (mode) {
     case 0:
-        gGameWork.unk3E = 0;
+        gGameWork.partSlot = 0;
         break;
     case 1:
-        gGameWork.unk3E = mode;
+        gGameWork.partSlot = mode;
         break;
     case 2:
-        gGameWork.unk3E = mode;
+        gGameWork.partSlot = mode;
         break;
     case 3:
-        gGameWork.unk3E = mode;
+        gGameWork.partSlot = mode;
         break;
     }
     gGameMode = 0;
@@ -1436,31 +1436,31 @@ void init_battle_scene(u32 mode, u32 id) {
 
 void init_game_mode(u32 mode) {
     clear_bg_scroll();
-    mem_fill8(&gGameWork.unk3C, 0x14, 0);
-    mem_fill8(&gGameWork.unk3C + 0x14, 0x14, 0);
-    gGameWork.unk89 = 1;
-    gGameWork.unk8D = 0;
+    mem_fill8(&gGameWork.openedFrom, 0x14, 0);
+    mem_fill8(&gGameWork.openedFrom + 0x14, 0x14, 0);
+    gGameWork.skipBotSetup = 1;
+    gGameWork.rngIndex = 0;
     switch (mode) {
     case 0:
-        gGameWork.unk3C = 4;
+        gGameWork.openedFrom = 4;
         gGameMode = 0;
         gGameState = 4;
         gGameSubState = 0;
         break;
     case 1:
-        gGameWork.unk3C = 4;
+        gGameWork.openedFrom = 4;
         gGameMode = 0;
         gGameState = 5;
         gGameSubState = 0;
         break;
     case 2:
-        gGameWork.unk138 = 0;
+        gGameWork.prizeGamePending = 0;
         gGameMode = 0;
         gGameState = 10;
         gGameSubState = 0;
         break;
     case 3:
-        gGameWork.unk138 = 1;
+        gGameWork.prizeGamePending = 1;
         gGameMode = 0;
         gGameState = 10;
         gGameSubState = 0;

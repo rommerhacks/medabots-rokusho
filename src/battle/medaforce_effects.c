@@ -39,23 +39,23 @@ void medaforce_spiral_bolt_digits_spawn(void) {
         x = gBattleWork.unk154;
         y = gBattleWork.unk156;
     }
-    set_display_digit_type(gGameWork.unk9E, gBattleWork.unkD6[0], 1);
-    setup_battle_sprite_oam_entries(gGameWork.unk9E, 0xA, 0, x, y);
-    set_display_digit_type(gGameWork.unk9E + 0x14, gBattleWork.unkD6[1], 1);
-    setup_battle_sprite_oam_entries(gGameWork.unk9E + 0x14, 0xE, 1, x, y);
-    set_display_digit_type(gGameWork.unk9E + 0x28, gBattleWork.unkD6[2], 1);
-    setup_battle_sprite_oam_entries(gGameWork.unk9E + 0x28, 0x12, 2, x, y);
-    set_display_digit_type(gGameWork.unk9E + 0x3C, gBattleWork.unkD6[3], 1);
-    setup_battle_sprite_oam_entries(gGameWork.unk9E + 0x3C, 0x16, 3, x, y);
+    set_display_digit_type(gGameWork.textBuf, gBattleWork.unkD6[0], 1);
+    setup_battle_sprite_oam_entries(gGameWork.textBuf, 0xA, 0, x, y);
+    set_display_digit_type(gGameWork.textBuf + 0x14, gBattleWork.unkD6[1], 1);
+    setup_battle_sprite_oam_entries(gGameWork.textBuf + 0x14, 0xE, 1, x, y);
+    set_display_digit_type(gGameWork.textBuf + 0x28, gBattleWork.unkD6[2], 1);
+    setup_battle_sprite_oam_entries(gGameWork.textBuf + 0x28, 0x12, 2, x, y);
+    set_display_digit_type(gGameWork.textBuf + 0x3C, gBattleWork.unkD6[3], 1);
+    setup_battle_sprite_oam_entries(gGameWork.textBuf + 0x3C, 0x16, 3, x, y);
     play_sound_effect(0x5B);
     gBattleWork.step++;
 }
 
 void medaforce_spiral_bolt_digits_rise(void) {
-    sprite_group_rise_step(gGameWork.unk9E, 0xA);
-    sprite_group_rise_step(gGameWork.unk9E + 0x14, 0xE);
-    sprite_group_rise_step(gGameWork.unk9E + 0x28, 0x12);
-    if (sprite_group_rise_step(gGameWork.unk9E + 0x3C, 0x16)) {
+    sprite_group_rise_step(gGameWork.textBuf, 0xA);
+    sprite_group_rise_step(gGameWork.textBuf + 0x14, 0xE);
+    sprite_group_rise_step(gGameWork.textBuf + 0x28, 0x12);
+    if (sprite_group_rise_step(gGameWork.textBuf + 0x3C, 0x16)) {
         gGameWork.unk86 = 0x3C;
         gBattleWork.step++;
     }
@@ -418,16 +418,16 @@ void medaforce_team_damage_popup_init(void) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState) {
             switch (i) {
             case 0:
-                set_display_digit_type(gGameWork.unk9E, gBattleWork.unkD6[i], 1);
-                battle_number_popup_init_slot(gGameWork.unk9E, gBattleWork.targetSideFirst + i, 0x21);
+                set_display_digit_type(gGameWork.textBuf, gBattleWork.unkD6[i], 1);
+                battle_number_popup_init_slot(gGameWork.textBuf, gBattleWork.targetSideFirst + i, 0x21);
                 break;
             case 1:
-                set_display_digit_type(gGameWork.unk9E + 0x14, gBattleWork.unkD6[1], 1);
-                battle_number_popup_init_slot(gGameWork.unk9E + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
+                set_display_digit_type(gGameWork.textBuf + 0x14, gBattleWork.unkD6[1], 1);
+                battle_number_popup_init_slot(gGameWork.textBuf + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
                 break;
             case 2:
-                set_display_digit_type(gGameWork.unk9E + 0x28, gBattleWork.unkD6[2], 1);
-                battle_number_popup_init_slot(gGameWork.unk9E + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
+                set_display_digit_type(gGameWork.textBuf + 0x28, gBattleWork.unkD6[2], 1);
+                battle_number_popup_init_slot(gGameWork.textBuf + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
                 break;
             }
         }
@@ -443,19 +443,19 @@ void medaforce_team_popup_wait(void) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState) {
             switch (i) {
             case 0:
-                battle_popup_update_slot(gGameWork.unk9E, gBattleWork.targetSideFirst + i, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf, gBattleWork.targetSideFirst + i, 0x21);
                 break;
             case 1:
-                battle_popup_update_slot(gGameWork.unk9E + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
                 break;
             case 2:
-                battle_popup_update_slot(gGameWork.unk9E + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
                 break;
             }
         }
     }
     gGameWork.unk84++;
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.unk84 > 0x32)
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.unk84 > 0x32)
         gGameWork.unk84 = 0x78;
     if (gGameWork.unk84 == 0x78) {
         clear_battle_sprite_slot(gBattleWork.targetSideFirst * 4 + 0x21, 0xC);
@@ -644,7 +644,7 @@ void medaforce_form_ring_shrink(void) {
 void medaforce_form_hold(void) {
     gGameWork.unk86++;
     gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x40) & 0x3FF;
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1)) {
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1)) {
         play_sound_effect(0x2B);
         gBattleWork.step++;
     } else if (gGameWork.unk84) {
@@ -1148,10 +1148,12 @@ void medaforce_cancel_status_emblem_rise(void) {
     gSpriteEntries[0x21].unk4 = (gSpriteEntries[0x21].unk4 + 2) & 0xFF;
     if (gBattleWork.actorSideFlags & 1) {
         if (gBattleWork.unk51 != 3)
-            gSpriteEntries[gGameWork.unk12F].unk18 = (gSpriteEntries[gGameWork.unk12F].unk18 - 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 - 0x10) & 0x3FF;
     } else {
         if (gBattleWork.unk51 != 3)
-            gSpriteEntries[gGameWork.unk12F].unk18 = (gSpriteEntries[gGameWork.unk12F].unk18 + 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 + 0x10) & 0x3FF;
     }
 }
 
@@ -1164,7 +1166,7 @@ void medaforce_cancel_status_emblem_hold(void) {
         if (gBattleWork.unk51 != 3)
             gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x10) & 0x3FF;
     }
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gBattleWork.step++;
     else if (gGameWork.unk86)
         gGameWork.unk86--;
@@ -1561,16 +1563,16 @@ void init_battle_bot_display_digits(void) {
             continue;
         switch (i) {
         case 0:
-            set_display_digit_type(gGameWork.unk9E, gBattleWork.unkD6[i], 0);
-            battle_number_popup_init_slot(gGameWork.unk9E, gBattleWork.targetSideFirst + i, 0x21);
+            set_display_digit_type(gGameWork.textBuf, gBattleWork.unkD6[i], 0);
+            battle_number_popup_init_slot(gGameWork.textBuf, gBattleWork.targetSideFirst + i, 0x21);
             break;
         case 1:
-            set_display_digit_type(gGameWork.unk9E + 0x14, gBattleWork.unkD6[1], 0);
-            battle_number_popup_init_slot(gGameWork.unk9E + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
+            set_display_digit_type(gGameWork.textBuf + 0x14, gBattleWork.unkD6[1], 0);
+            battle_number_popup_init_slot(gGameWork.textBuf + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
             break;
         case 2:
-            set_display_digit_type(gGameWork.unk9E + 0x28, gBattleWork.unkD6[2], 0);
-            battle_number_popup_init_slot(gGameWork.unk9E + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
+            set_display_digit_type(gGameWork.textBuf + 0x28, gBattleWork.unkD6[2], 0);
+            battle_number_popup_init_slot(gGameWork.textBuf + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
             break;
         }
     }
@@ -1585,19 +1587,19 @@ void medaforce_team_marked_popup_wait(void) {
         if (gBattleWork.unkD2[i]) {
             switch (i) {
             case 0:
-                battle_popup_update_slot(gGameWork.unk9E, gBattleWork.targetSideFirst + i, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf, gBattleWork.targetSideFirst + i, 0x21);
                 break;
             case 1:
-                battle_popup_update_slot(gGameWork.unk9E + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
                 break;
             case 2:
-                battle_popup_update_slot(gGameWork.unk9E + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
                 break;
             }
         }
     }
     gGameWork.unk84++;
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.unk84 > 0x32)
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.unk84 > 0x32)
         gGameWork.unk84 = 0x78;
     if (gGameWork.unk84 == 0x78) {
         clear_battle_sprite_slot(gBattleWork.targetSideFirst * 4 + 0x21, 0xC);
@@ -1846,16 +1848,16 @@ void medaforce_team_text_popups_init(void) {
             continue;
         switch (i) {
         case 0:
-            set_display_digit_type(gGameWork.unk9E, gBattleWork.unkD6[i], 0);
-            battle_text_popup_init_slot(gGameWork.unk9E, gBattleWork.targetSideFirst + i, 0x21);
+            set_display_digit_type(gGameWork.textBuf, gBattleWork.unkD6[i], 0);
+            battle_text_popup_init_slot(gGameWork.textBuf, gBattleWork.targetSideFirst + i, 0x21);
             break;
         case 1:
-            set_display_digit_type(gGameWork.unk9E + 0x14, gBattleWork.unkD6[1], 0);
-            battle_text_popup_init_slot(gGameWork.unk9E + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
+            set_display_digit_type(gGameWork.textBuf + 0x14, gBattleWork.unkD6[1], 0);
+            battle_text_popup_init_slot(gGameWork.textBuf + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
             break;
         case 2:
-            set_display_digit_type(gGameWork.unk9E + 0x28, gBattleWork.unkD6[2], 0);
-            battle_text_popup_init_slot(gGameWork.unk9E + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
+            set_display_digit_type(gGameWork.textBuf + 0x28, gBattleWork.unkD6[2], 0);
+            battle_text_popup_init_slot(gGameWork.textBuf + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
             break;
         }
     }
@@ -3174,16 +3176,16 @@ void apply_battle_damage_and_render(void) {
         gBattleWork.unkD6[i] = gBattleWork.appliedAmount;
         switch (i) {
         case 0:
-            set_display_digit_type(gGameWork.unk9E, gBattleWork.appliedAmount, 1);
-            battle_number_popup_init_slot(gGameWork.unk9E, gBattleWork.targetSideFirst + i, 0x21);
+            set_display_digit_type(gGameWork.textBuf, gBattleWork.appliedAmount, 1);
+            battle_number_popup_init_slot(gGameWork.textBuf, gBattleWork.targetSideFirst + i, 0x21);
             break;
         case 1:
-            set_display_digit_type(gGameWork.unk9E + 0x14, gBattleWork.appliedAmount, 1);
-            battle_number_popup_init_slot(gGameWork.unk9E + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
+            set_display_digit_type(gGameWork.textBuf + 0x14, gBattleWork.appliedAmount, 1);
+            battle_number_popup_init_slot(gGameWork.textBuf + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
             break;
         case 2:
-            set_display_digit_type(gGameWork.unk9E + 0x28, gBattleWork.appliedAmount, 1);
-            battle_number_popup_init_slot(gGameWork.unk9E + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
+            set_display_digit_type(gGameWork.textBuf + 0x28, gBattleWork.appliedAmount, 1);
+            battle_number_popup_init_slot(gGameWork.textBuf + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
             break;
         }
     }
@@ -3199,19 +3201,19 @@ void medaforce_pushover_attack_damage_popup_wait(void) {
         if (gBattleWork.unkD2[i]) {
             switch (i) {
             case 0:
-                battle_popup_update_slot(gGameWork.unk9E, gBattleWork.targetSideFirst + i, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf, gBattleWork.targetSideFirst + i, 0x21);
                 break;
             case 1:
-                battle_popup_update_slot(gGameWork.unk9E + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
                 break;
             case 2:
-                battle_popup_update_slot(gGameWork.unk9E + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
                 break;
             }
         }
     }
     gGameWork.unk84++;
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.unk84 > 0x32)
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.unk84 > 0x32)
         gGameWork.unk84 = 0x78;
     if (gGameWork.unk84 == 0x78) {
         for (i = 0; i <= 2; i++) {
@@ -3659,16 +3661,16 @@ void medaforce_destroyer_damage_popups_init(void) {
         if (gBattleWork.unkD2[i]) {
             switch (i) {
             case 0:
-                set_display_digit_type(gGameWork.unk9E, gBattleWork.unkD6[i], 1);
-                battle_number_popup_init_slot(gGameWork.unk9E, gBattleWork.targetSideFirst + i, 0x21);
+                set_display_digit_type(gGameWork.textBuf, gBattleWork.unkD6[i], 1);
+                battle_number_popup_init_slot(gGameWork.textBuf, gBattleWork.targetSideFirst + i, 0x21);
                 break;
             case 1:
-                set_display_digit_type(gGameWork.unk9E + 0x14, gBattleWork.unkD6[1], 1);
-                battle_number_popup_init_slot(gGameWork.unk9E + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
+                set_display_digit_type(gGameWork.textBuf + 0x14, gBattleWork.unkD6[1], 1);
+                battle_number_popup_init_slot(gGameWork.textBuf + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
                 break;
             case 2:
-                set_display_digit_type(gGameWork.unk9E + 0x28, gBattleWork.unkD6[2], 1);
-                battle_number_popup_init_slot(gGameWork.unk9E + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
+                set_display_digit_type(gGameWork.textBuf + 0x28, gBattleWork.unkD6[2], 1);
+                battle_number_popup_init_slot(gGameWork.textBuf + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
                 break;
             }
         }
@@ -3685,19 +3687,19 @@ void medaforce_destroyer_damage_popups_wait(void) {
         if (gBattleWork.unkD2[i]) {
             switch (i) {
             case 0:
-                battle_popup_update_slot(gGameWork.unk9E, gBattleWork.targetSideFirst + i, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf, gBattleWork.targetSideFirst + i, 0x21);
                 break;
             case 1:
-                battle_popup_update_slot(gGameWork.unk9E + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf + 0x14, gBattleWork.targetSideFirst + 1, 0x21);
                 break;
             case 2:
-                battle_popup_update_slot(gGameWork.unk9E + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
+                battle_popup_update_slot(gGameWork.textBuf + 0x28, gBattleWork.targetSideFirst + 2, 0x21);
                 break;
             }
         }
     }
     gGameWork.unk84++;
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.unk84 > 0x32)
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.unk84 > 0x32)
         gGameWork.unk84 = 0x78;
     if (gGameWork.unk84 == 0x78) {
         clear_battle_sprite_slot(gBattleWork.targetSideFirst * 4 + 0x21, 0xC);

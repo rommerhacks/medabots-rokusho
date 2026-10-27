@@ -223,132 +223,135 @@ struct GfxListEntry {
 };
 
 struct GameWork {
-    u8 unk0; // message window: 0 = dim the palettes while open (text_window_init args a, b, c)
-    u8 unk1; // portrait mode: 0 = animated, 1 = static, 2 = none
-    u8 unk2; // 1 = no window frame
+    u8 msgKeepPalettes; // message window: 0 = dim the palettes while open (text_window_init args a, b, c)
+    u8 portraitMode;    // portrait mode: 0 = animated, 1 = static, 2 = none
+    u8 noWindowFrame;   // 1 = no window frame
     u8 filler3;
-    u8 unk4; // message handler state (run_message)
+    u8 msgState; // message handler state (run_message)
     u8 filler5[0x3];
-    const u8 *unk8; // current message (run_message)
-    u16 unkC;       // read position in unk8
+    const u8 *msgText; // current message (run_message)
+    u16 msgPos;        // read position in msgText
     u8 unkE;
-    u8 unkF;  // portrait: shown animation / side (0 = right)
-    s8 unk10; // portrait: sprite set (-1 = none)
-    s8 unk11; // portrait: index
-    u8 unk12; // 1 = a portrait is shown
-    u8 unk13; // 1 = stop printing this frame (message_print_step)
-    u8 unk14; // text pen x in pixels
-    u8 unk15; // pixels left in the current word
-    u8 unk16; // pixels filled in gTextComposeTile
-    u8 unk17; // text line 0-1
-    u8 unk18; // 1 = the current word has been measured and fits
-    u8 unk19; // 1 = line full, 2 = page full (wait for A / B)
-    u8 unk1A; // wait counter (0xF7 / 0xFA codes)
-    u8 unk1B; // end mode step
-    u8 unk1C; // palette dim level 0-9
+    u8 portraitSide;   // portrait: shown animation / side (0 = right)
+    s8 portraitSet;    // portrait: sprite set (-1 = none)
+    s8 portraitIndex;  // portrait: index
+    u8 portraitShown;  // 1 = a portrait is shown
+    u8 msgStopPrint;   // 1 = stop printing this frame (message_print_step)
+    u8 penX;           // text pen x in pixels
+    u8 wordPixelsLeft; // pixels left in the current word
+    u8 composePixels;  // pixels filled in gTextComposeTile
+    u8 textLine;       // text line 0-1
+    u8 wordFits;       // 1 = the current word has been measured and fits
+    u8 lineFull;       // 1 = line full, 2 = page full (wait for A / B)
+    u8 msgWait;        // wait counter (0xF7 / 0xFA codes)
+    u8 endModeStep;    // end mode step
+    u8 dimLevel;       // palette dim level 0-9
     u8 filler1D[0x3];
-    u8 *unk20; // string being drawn (message name / number buffers, message_print_var_step)
-    u8 unk24;  // read position in unk20
-    u8 unk25;  // page cursor blink timer
-    u8 unk26;  // window frame animation step
-    u8 unk27;  // 1 = alternate font (0xF8 code)
+    u8 *varText;      // string being drawn (message name / number buffers, message_print_var_step)
+    u8 varPos;        // read position in varText
+    u8 cursorBlink;   // page cursor blink timer
+    u8 frameAnimStep; // window frame animation step
+    u8 altFont;       // 1 = alternate font (0xF8 code)
     u8 unk28;
-    u8 unk29; // choice menu state (poll_choice_menu)
+    u8 choiceState; // choice menu state (poll_choice_menu)
     u8 unk2A;
-    u8 unk2B; // sprite slot (advance_sprite_scroll_animation)
-    u8 unk2C; // tilemap x (copy_transition_tiles_to_bg2)
-    u8 unk2D; // tilemap y
+    u8 scrollSpriteSlot; // sprite slot (advance_sprite_scroll_animation)
+    u8 transTileX;       // tilemap x (copy_transition_tiles_to_bg2)
+    u8 transTileY;       // tilemap y
     u8 filler2E[0x2];
-    u8 unk30;    // game state to return to from game state 63 (debug_menu_exit)
-    u8 unk31;    // its sub-state
-    u8 unk32;    // game state 63 menu cursor, 0-10 (debug_menu_select_input)
-    u8 unk33;    // game state 63 submenu sub-state
-    u8 unk34;    // game state 63 submenu row
-    u8 unk35[3]; // game state 63 submenu values, one per row
+    u8 debugReturnState;    // game state to return to from game state 63 (debug_menu_exit)
+    u8 debugReturnSubState; // its sub-state
+    u8 debugCursor;         // game state 63 menu cursor, 0-10 (debug_menu_select_input)
+    u8 debugSubState;       // game state 63 submenu sub-state
+    u8 debugRow;            // game state 63 submenu row
+    u8 debugValues[3];      // game state 63 submenu values, one per row
     u8 filler38;
-    u8 unk39; // game state 63 "Motion" entry: scene / animation id 0-0x79 (START / SELECT)
+    u8 debugMotion; // game state 63 "Motion" entry: scene / animation id 0-0x79 (START / SELECT)
     u8 filler3A[0x2];
-    u8 unk3C; // where the Medals / Medaparts screen was opened from: 0 Medawatch, 1 Medabot detail
-              // (medabot_detail_open_info), 2/4 others
-    u8 unk3D; // Medal / Medapart id to show
-    u8 unk3E; // Medapart slot 0-3
-    u8 unk3F; // Medals list: tab (6 Medals per tab)
-    u8 unk40; // Medals list: row
-    u8 unk41; // count of owned, unequipped Medals (count_unequipped_medals)
-    u8 unk42; // Medal pages: 0 Ability, 1 Medaforce, 2 Rotation, 3 Skill (L/R, runtime-checked)
-    u8 unk43; // Medal pages: help opened from 0 Ability, 1 Medaforce
-    u8 unk44; // Medals help: page cursor
-    u8 unk45; // Medals help: page count
+    u8 openedFrom;     // where the Medals / Medaparts screen was opened from: 0 Medawatch, 1 Medabot detail
+                       // (medabot_detail_open_info), 2/4 others; Robattle status screen: side shown (shownId: member)
+    u8 shownId;        // Medal / Medapart id to show
+    u8 partSlot;       // Medapart slot 0-3
+    u8 unk3F;          // Medals list: tab (6 Medals per tab)
+    u8 medalRow;       // Medals list: row
+    u8 freeMedalCount; // count of owned, unequipped Medals (count_unequipped_medals)
+    u8 medalPage;      // Medal pages: 0 Ability, 1 Medaforce, 2 Rotation, 3 Skill (L/R, runtime-checked)
+    u8 helpFromPage;   // Medal pages: help opened from 0 Ability, 1 Medaforce
+    u8 helpPage;       // Medals help: page cursor
+    u8 helpPageCount;  // Medals help: page count
     u8 unk46;
     u8 filler47;
-    u16 unk48; // Medal record unk20/unk28 index 0-7 (medal_skill_debug_edit_input)
-    u8 unk4A;  // Medals: choice from medal_trade_choice_input (0 A, 2 B)
-    u8 unk4B;  // Medals screen: song 7 started (when opened with unk3C == 4)
+    u16 unk48;            // Medal record varText/unk28 index 0-7 (medal_skill_debug_edit_input)
+    u8 tradeChoice;       // Medals: choice from medal_trade_choice_input (0 A, 2 B)
+    u8 medalsSongStarted; // Medals screen: song 7 started (when opened with openedFrom == 4)
     u8 filler4C[0x4];
-    u8 unk50; // Medabots screen mode: 0 plain (from the Medawatch), 1-3 team select (guess: battle type; 3 needs all
-              // three picks)
-    u8 unk51; // Medabots screen: cursor slot (0-8)
-    u8 unk52; // Medabots screen: reorder pick, slot | 0x80 while holding
-    u8 unk53; // Medabot detail: the edited set fails validate_medapart_stats (icon shown in palette 8)
+    u8 medabotsMode; // Medabots screen mode: 0 plain (from the Medawatch), 1-3 team select (guess: battle type; 3 needs
+                     // all three picks)
+    u8 medabotsCursor; // Medabots screen: cursor slot (0-8)
+    u8 reorderPick;    // Medabots screen: reorder pick, slot | 0x80 while holding
+    u8 detailInvalid;  // Medabot detail: the edited set fails validate_medapart_stats (icon shown in palette 8)
     u8 filler54[0x2];
-    u8 unk56; // game state 3: 0 = entered from the field (fades from the backup palette), 1 = from a submenu
+    u8 enteredFromSubmenu; // game state 3: 0 = entered from the field (fades from the backup palette), 1 = from a
+                           // submenu
     u8 filler57[0x3];
-    u8 unk5A; // Medabot detail: row cursor, 0 Medal, 1-4 head / right arm / left arm / legs (runtime-checked)
+    u8 detailRow; // Medabot detail: row cursor, 0 Medal, 1-4 head / right arm / left arm / legs (runtime-checked)
     u8 filler5B;
-    u16 unk5C; // timer
-    u8 unk5E;  // Medabot detail: which Medabot is shown, L/R toggle (runtime-checked)
+    u16 timer;    // timer
+    u8 detailBot; // Medabot detail: which Medabot is shown, L/R toggle (runtime-checked)
     u8 filler5F[0x5];
     struct TileAnim tileAnims[4];
     u8 unk84; // field menu: animation frame counter
     u8 unk85;
-    u16 unk86; // link exchange frame counter; also the current wave x offset of start_scanline_wave_scroll
-    u8 unk88;  // field menu: row animation counter
-    u8 unk89;  // Robattle: 1 skips the bot setup in robattle_setup_bots
-    u16 unk8A; // rng seed (rng_next_byte)
-    u8 unk8C;  // last rng_next_byte value
-    u8 unk8D;  // rng table index when unk89 is set
-    u8 unk8E;  // field menu cursor: 0 Medawatch, 1 Item, 2 Vehicle, 3 Save (runtime-checked)
-    u8 unk8F;  // Medawatch menu cursor (0..2)
-    u8 unk90;  // blend effect mode 1-6 (set_blend_effect_mode): odd fades the blend in, even out
+    u16 unk86;          // link exchange frame counter; also the current wave x offset of start_scanline_wave_scroll
+    u8 menuRowAnim;     // field menu: row animation counter
+    u8 skipBotSetup;    // Robattle: 1 skips the bot setup in robattle_setup_bots
+    u16 rngSeed;        // rng seed (rng_next_byte)
+    u8 rngLast;         // last rng_next_byte value
+    u8 rngIndex;        // rng table index when skipBotSetup is set
+    u8 fieldMenuCursor; // field menu cursor: 0 Medawatch, 1 Item, 2 Vehicle, 3 Save (runtime-checked)
+    u8 medawatchCursor; // Medawatch menu cursor (0..2)
+    u8 blendMode;       // blend effect mode 1-6 (set_blend_effect_mode): odd fades the blend in, even out
     u8 filler91;
-    u16 unk92; // blend effect speed, added to unk94 every frame
-    u16 unk94; // blend effect progress (done at 0x100)
+    u16 blendSpeed;    // blend effect speed, added to blendProgress every frame
+    u16 blendProgress; // blend effect progress (done at 0x100)
     u8 unk96;
-    u8 unk97; // shown Medabot: Medal slot (0x1E none), then unk98-9B its four Medaparts (>= 120 none); the
-              // detail screen's edit copy (medabot_detail_take_apart / assign_medal_to_team_slot)
-    u8 unk98;
-    u8 unk99;
-    u8 unk9A;
-    u8 unk9B;
+    u8 shownMedal; // shown Medabot: Medal slot (0x1E none), then shownHead-9B its four Medaparts (>= 120 none); the
+                   // detail screen's edit copy (medabot_detail_take_apart / assign_medal_to_team_slot)
+    u8 shownHead;
+    u8 shownRightArm;
+    u8 shownLeftArm;
+    u8 shownLegs;
     u8 unk9C; // game state 6: 1 picks song 14 and counts gUnk_03002B84[1] (guess: battle won)
     u8 filler9D;
-    u8 unk9E[0x50]; // digit buffer (divide_by_10000); also four 0x14-byte name buffers for messages
-                    // (message_print_var_step)
-    u8 unkEE;       // start of a 16-byte part data record (load_part_data): ability (gUnk_083B656C name)
-    u8 unkEF;       // skill id; >= 100: leg type (gUnk_083BE97C[unkEF - 100])
-    u8 unkF0;       // skill type (gUnk_083B6EC8 name)
-    u8 unkF1;       // gender: 0 male, 1 female (matched against gTeamSlots[].unk1)
-    u8 unkF2;       // stats: head Armor, Success, Power, (F5 power icon flag), Uses; legs Armor, Propulsion,
-    u8 unkF3;       // Evasion, Defense, Proximity, Remoteness (runtime-checked on the detail page)
+    u8 textBuf[0x50]; // digit buffer (divide_by_10000); also four 0x14-byte name buffers for messages
+                      // (message_print_var_step)
+    u8 partAbility;   // start of a 16-byte part data record (load_part_data): ability (gUnk_083B656C name)
+    u8 partSkill;     // skill id; >= 100: leg type (gUnk_083BE97C[partSkill - 100])
+    u8 partSkillType; // skill type (gUnk_083B6EC8 name)
+    u8 partGender;    // gender: 0 male, 1 female (matched against gTeamSlots[].portraitMode)
+    u8 unkF2;         // stats: head Armor, Success, Power, (F5 power icon flag), Uses; legs Armor, Propulsion,
+    u8 unkF3;         // Evasion, Defense, Proximity, Remoteness (runtime-checked on the detail page)
     u8 unkF4;
     u8 unkF5;
     u8 unkF6;
     u8 unkF7;
     u8 fillerF8[0x16];
-    u8 unk10E[0x10]; // 16-byte record from gUnk_083B6158 (per Medal graphic index)
+    u8 medalGfxRecord[0x10]; // 16-byte record from gUnk_083B6158 (per Medal graphic index)
     u8 filler11E[0x10];
-    u8 unk12E; // set: copy gOamBuffer to OAM at the next vblank
-    u8 unk12F; // sprite slot whose handler is running (also gEffectSpriteSlot; medaforce_cancel_status_emblem_rise)
-    u8 unk130; // Robattle: set to 1 around the action script commands script_op_closeup_enter .. script_op_closeup_exit
-    u8 unk131; // set: vblank_body skips the OAM 88-127 upload in mode 2
+    u8 oamUploadPending;  // set: copy gOamBuffer to OAM at the next vblank
+    u8 runningSpriteSlot; // sprite slot whose handler is running (also gEffectSpriteSlot;
+                          // medaforce_cancel_status_emblem_rise)
+    u8 inCloseup;         // Robattle: set to 1 around the action script commands script_op_closeup_enter ..
+                          // script_op_closeup_exit
+    u8 skipOamHigh;       // set: vblank_body skips the OAM 88-127 upload in mode 2
     u8 unk132;
-    u8 unk133; // after-battle Medal level-up: Medal slot (find_medal_slot_by_id - 1)
+    u8 levelUpMedalSlot; // after-battle Medal level-up: Medal slot (find_medal_slot_by_id - 1)
     u8 unk134;
     u8 unk135;
     u8 unk136;
     u8 unk137;
-    u8 unk138; // nonzero: link_robattle_check_prize_game jumps to sub-state 0x30
-    u8 unk139; // game state 3 setup step (medabots_screen_load_gfx); Robattle setup step
+    u8 prizeGamePending; // nonzero: link_robattle_check_prize_game jumps to sub-state 0x30
+    u8 setupStep;        // game state 3 setup step (medabots_screen_load_gfx); Robattle setup step
     u8 unk13A;
 };
 
@@ -497,7 +500,7 @@ struct ByteTable3 {
     u8 b[3];
 };
 
-// Bitfield view of gGameWork.unk14 (text pen x): the text tile flush code tests the pixel offset in
+// Bitfield view of gGameWork.penX (text pen x): the text tile flush code tests the pixel offset in
 // the current 8-pixel tile through it, which reloads unk14 (message_new_line and friends).
 struct TextColBits {
     u8 filler0[0x14];

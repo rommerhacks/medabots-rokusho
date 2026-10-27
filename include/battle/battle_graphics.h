@@ -7,7 +7,7 @@
 // palettes in the EWRAM buffer instead of palette RAM.
 u32 battle_load_graphics_step(u32 direct);
 // Battle message window: open, print message msg (gUnk_083C65C4), finish (close). With gOptionSkipMessages set they
-// do nothing and report done, unless gGameWork.unk89 == 1 forces the message.
+// do nothing and report done, unless gGameWork.skipBotSetup == 1 forces the message.
 void battle_message_open(void);
 u32 battle_message_print(u32 msg);
 u32 battle_message_finish(void);

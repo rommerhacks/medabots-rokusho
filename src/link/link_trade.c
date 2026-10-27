@@ -62,7 +62,7 @@ static void medapart_copy_name(u16 id, u8 second) {
     u32 i;
 
     src = (const u8 *)gUnk_083BB9CC[0][id];
-    dst = gGameWork.unk9E;
+    dst = gGameWork.textBuf;
     if (second)
         dst += 0x14;
     for (i = 0; i < 20; i++) {
@@ -296,7 +296,7 @@ void medapart_trade_init_screen(void) {
     lz_decompress_dispatch(gUnk_084C6A98, (void *)0x06011E00);
     gUnk_03006F74->unk3A = 0x280;
     medapart_copy_name(gUnk_03006F74->unk31 * 4 + gUnk_03006F74->unk33, 0);
-    render_text_string_to_sprites(gGameWork.unk9E, 0, 0, 10, 16, 13, z, 1);
+    render_text_string_to_sprites(gGameWork.textBuf, 0, 0, 10, 16, 13, z, 1);
     medapart_trade_init_sprite_tree(0);
     load_medapart_sprite_animation(gUnk_03006F74->unk31, gUnk_03006F74->unk33, 0);
     trade_tiles_speed_up_two_rows();
@@ -349,7 +349,7 @@ void medapart_trade_exchange_parts(void) {
         }
         medapart_trade_init_sprite_tree(1);
         medapart_copy_name(gUnk_03006F74->unk32 * 4 + gUnk_03006F74->unk34, 1);
-        render_text_string_to_sprites(gGameWork.unk9E + 0x14, 0x10, 0xE, 0xA, 0x10, 0xD, 0, 1);
+        render_text_string_to_sprites(gGameWork.textBuf + 0x14, 0x10, 0xE, 0xA, 0x10, 0xD, 0, 1);
         text_window_init(1, 0, 1);
         gGameSubState++;
     }
@@ -441,8 +441,8 @@ void medapart_trade_swap_palettes(void) {
     clear_battle_sprite_slot(0, 0x80);
     medapart_copy_name(gUnk_03006F74->unk31 * 4 + gUnk_03006F74->unk33, 0);
     medapart_copy_name(gUnk_03006F74->unk32 * 4 + gUnk_03006F74->unk34, 1);
-    render_text_string_to_sprites(gGameWork.unk9E, 0, 0, 10, 16, 13, zero, one);
-    render_text_string_to_sprites(gGameWork.unk9E + 0x14, 16, 14, 10, 16, 13, zero, one);
+    render_text_string_to_sprites(gGameWork.textBuf, 0, 0, 10, 16, 13, zero, one);
+    render_text_string_to_sprites(gGameWork.textBuf + 0x14, 16, 14, 10, 16, 13, zero, one);
     play_sound_effect(0x2A);
     trade_tiles_speed_up_two_rows();
 }
@@ -610,11 +610,11 @@ void medal_trade_init_screen(void) {
         render_text_sprites_08040DB8(gUnk_03006F74->unk230.name, 0x20, 4, 4, 0xA, 2, f, 1);
         j = 0;
         t = size >> 5;
-        buf = (u32)gGameWork.unk9E;
+        buf = (u32)gGameWork.textBuf;
         names = (const u8 *const *)gMedalNames;
         for (; j <= 9; j++)
             *(u8 *)(j + buf) = names[medal][j];
-        render_text_sprites_08040DB8(gGameWork.unk9E, 0x10, 5, 8, 0xA, 1, 1, 1);
+        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 5, 8, 0xA, 1, 1, 1);
         w2 = gUnk_03006F74;
         lvl = w2->unk230.level;
         if (lvl == 100) {
@@ -769,8 +769,8 @@ void medal_trade_flip_close(void) {
         lvl = s->unk230.level;
         render_text_sprites_08040DB8(s->unk230.name, 0x20, 4, 4, 10, 2, 0, 1);
         for (i = 0; i <= 9; i++)
-            gGameWork.unk9E[i] = ((const u8 *)gMedalNames[gUnk_03006F74->unk230.graphicId])[i];
-        render_text_sprites_08040DB8(gGameWork.unk9E, 0x10, 5, 8, 10, 1, 1, 1);
+            gGameWork.textBuf[i] = ((const u8 *)gMedalNames[gUnk_03006F74->unk230.graphicId])[i];
+        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 5, 8, 10, 1, 1, 1);
         BG2(0x218) = gUnk_03006F74->unk40[0];
         BG2(0x21A) = gUnk_03006F74->unk40[1];
         BG2(0x258) = gUnk_03006F74->unk40[2];

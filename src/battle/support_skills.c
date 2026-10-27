@@ -209,7 +209,7 @@ void conceal_dome_close(void) {
 void conceal_blink_wait(void) {
     gGameWork.unk84++;
     battle_bot_sprites_blink(gBattleWork.actor, gGameWork.unk84, 2);
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1)) {
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1)) {
         battle_bot_sprites_show(gBattleWork.actor);
         gBattleWork.step++;
     } else if (gGameWork.unk86)
@@ -270,7 +270,7 @@ void boost_charge_hourglass_spawn(void) {
 
 void charge_hourglass_hold(void) {
     process_sprite_anim_commands(gUnk_083B5F80[gGameWork.unk84], 0x21);
-    if (gGameWork.unk89 == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gBattleWork.step++;
     else if (gGameWork.unk86)
         gGameWork.unk86--;
@@ -622,16 +622,16 @@ void pushover_damage_init(void) {
         battle_set_damage_vs_armor(gBattleWork.target, 0, 1);
     else
         battle_set_damage_vs_armor(gBattleWork.target, 0, gBattleWork.amount);
-    set_display_digit_type(&gGameWork.unkEE, gBattleWork.appliedAmount, 1);
-    battle_number_popup_init_slot(&gGameWork.unkEE, gBattleWork.target, 0x21);
+    set_display_digit_type(&gGameWork.partAbility, gBattleWork.appliedAmount, 1);
+    battle_number_popup_init_slot(&gGameWork.partAbility, gBattleWork.target, 0x21);
     play_sound_effect(0x5B);
     gGameWork.unk84 = 0;
     gBattleWork.step++;
 }
 
 void pushover_damage_popup(void) {
-    battle_popup_update_slot(&gGameWork.unkEE, gBattleWork.target, 0x21);
-    if (++gGameWork.unk84, gGameWork.unk89 == 0 && (KEYS_LO(gRepeatKeys) & 1) && gGameWork.unk84 > 0x32)
+    battle_popup_update_slot(&gGameWork.partAbility, gBattleWork.target, 0x21);
+    if (++gGameWork.unk84, gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & 1) && gGameWork.unk84 > 0x32)
         gGameWork.unk84 = 0x78;
     if (gGameWork.unk84 == 0x78) {
         clear_battle_sprite_slot(gBattleWork.target * 4 + 0x21, 4);

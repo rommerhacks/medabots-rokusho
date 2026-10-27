@@ -83,7 +83,7 @@ void miss_popup_drop(void) {
 
 void miss_popup_wait(void) {
     gBattleWork.unk9C[1]++;
-    if (gGameWork.unk89 == 0 && (KEYS_LO(gRepeatKeys) & 1))
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & 1))
         gBattleWork.unk9C[1] = 60;
     if (gBattleWork.unk9C[1] == 60) {
         clear_battle_sprite_slot(3, 1);
@@ -348,16 +348,16 @@ void trap_hit_sprite_shrink(void) {
 }
 
 void trap_hit_damage_popup_init(void) {
-    set_display_digit_type(&gGameWork.unkEE, gBattleWork.appliedAmount, 1);
-    battle_number_popup_init_slot(&gGameWork.unkEE, gBattleWork.actor, 0x21);
+    set_display_digit_type(&gGameWork.partAbility, gBattleWork.appliedAmount, 1);
+    battle_number_popup_init_slot(&gGameWork.partAbility, gBattleWork.actor, 0x21);
     play_sound_effect(0x5B);
     gGameWork.unk84 = 0;
     gBattleWork.step++;
 }
 
 void trap_hit_damage_popup_wait(void) {
-    battle_popup_update_slot(&gGameWork.unkEE, gBattleWork.actor, 0x21);
-    if (++gGameWork.unk84, gGameWork.unk89 == 0 && (KEYS_LO(gRepeatKeys) & 1) && gGameWork.unk84 > 0x32)
+    battle_popup_update_slot(&gGameWork.partAbility, gBattleWork.actor, 0x21);
+    if (++gGameWork.unk84, gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & 1) && gGameWork.unk84 > 0x32)
         gGameWork.unk84 = 0x78;
     if (gGameWork.unk84 == 0x78) {
         clear_battle_sprite_slot(gBattleWork.actor * 4 + 0x21, 4);
@@ -367,8 +367,8 @@ void trap_hit_damage_popup_wait(void) {
 
 // Message 0x12: "Medapart <kind> received <n> damage".
 void trap_hit_damage_message(void) {
-    memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.damagePart], gGameWork.unk9E, 0xE);
-    divide_by_100000_b(gGameWork.unk9E + 0x14, gBattleWork.appliedAmount, 0x35);
+    memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.damagePart], gGameWork.textBuf, 0xE);
+    divide_by_100000_b(gGameWork.textBuf + 0x14, gBattleWork.appliedAmount, 0x35);
     gBattleWork.messageId = 0x12;
     gBattleWork.step++;
 }
@@ -892,7 +892,7 @@ void guard_shield_shrink(void) {
 void guard_shield_animate(void) {
     process_sprite_anim_commands(gUnk_083B5F80[0x1C], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
-        memcpy_bytes_0803F63C(gBattleBots[gBattleWork.guardBot - 1].medal.name, gGameWork.unk9E, 0xE);
+        memcpy_bytes_0803F63C(gBattleBots[gBattleWork.guardBot - 1].medal.name, gGameWork.textBuf, 0xE);
         gBattleWork.messageId = 0x16;
         clear_battle_sprite_slot(0x21, 1);
         gBattleWork.step++;
@@ -913,9 +913,9 @@ void action_announce_run(void) {
 
 void action_announce_prepare(void) {
     memcpy_bytes_0803F63C((void *)gUnk_083B6EC8[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2]],
-                          gGameWork.unk9E, 0xE);
+                          gGameWork.textBuf, 0xE);
     memcpy_bytes_0803F63C((void *)gUnk_083BE6E8[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]],
-                          gGameWork.unk9E + 0x14, 0xE);
+                          gGameWork.textBuf + 0x14, 0xE);
     gBattleWork.messageId = 0x17;
     gBattleWork.step++;
 }
@@ -955,22 +955,22 @@ void closeup_enter_wipe(void) {
 }
 
 void closeup_enter_save_vram(void) {
-    switch (gGameWork.unk139) {
+    switch (gGameWork.setupStep) {
     case 0:
         CpuFastSet((void *)0x06002800, (void *)0x02020800, 0x200);
         CpuFastSet((void *)0x0600C800, (void *)0x02021000, 0x200);
         CpuFastSet((void *)0x0600D000, (void *)0x02021800, 0x200);
         CpuFastSet((void *)0x0600D800, (void *)0x02022000, 0x200);
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 1:
         CpuFastSet(gSpriteEntries, (void *)0x02028000, 0x800);
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 2:
         gVBlankCallback = nullsub_08000840;
         clear_battle_sprite_slot(0, 0x80);
-        gGameWork.unk139 = 0;
+        gGameWork.setupStep = 0;
         gBattleWork.step++;
         break;
     }
@@ -979,7 +979,7 @@ void closeup_enter_save_vram(void) {
 void closeup_enter_setup_bgs(void) {
     u32 zero;
 
-    switch (gGameWork.unk139) {
+    switch (gGameWork.setupStep) {
     case 0:
         clear_bg_scroll();
         REG_DISPCNT &= 0xE0FF;
@@ -992,7 +992,7 @@ void closeup_enter_setup_bgs(void) {
         decompress_tileset_to_vram(gBattleWork.battlefield, 0);
         zero = 0;
         CpuFastSet(&zero, gSpriteEntries, 0x01000800);
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 1:
         REG_DISPCNT |= 0x1F40;
@@ -1006,7 +1006,7 @@ void closeup_enter_setup_bgs(void) {
         action_bg_set_side_scroll();
         gVBlankCallback = battle_bg_scroll_vblank;
         gGameWork.unk84 = 0;
-        gGameWork.unk139 = 0;
+        gGameWork.setupStep = 0;
         gBattleWork.step++;
         break;
     }
@@ -1231,14 +1231,14 @@ void attack_hit_damage_popup_init(void) {
         x = gBattleWork.unk154;
         y = gBattleWork.unk156;
     }
-    set_display_digit_type(&gGameWork.unkEE, gBattleWork.appliedAmount, 1);
-    damage_digits_spawn(&gGameWork.unkEE, 10, gBattleWork.targetPart, x, y);
+    set_display_digit_type(&gGameWork.partAbility, gBattleWork.appliedAmount, 1);
+    damage_digits_spawn(&gGameWork.partAbility, 10, gBattleWork.targetPart, x, y);
     play_sound_effect(0x5B);
     gBattleWork.step++;
 }
 
 void attack_damage_popup_wait(void) {
-    if (advance_sprite_group_anims(&gGameWork.unkEE, 10)) {
+    if (advance_sprite_group_anims(&gGameWork.partAbility, 10)) {
         gGameWork.unk86 = 0x3C;
         gBattleWork.step++;
     }
@@ -1528,8 +1528,8 @@ void attack_absorbed_heal_popup_init(void) {
         x = gBattleWork.unk154;
         y = gBattleWork.unk156;
     }
-    set_display_digit_type(&gGameWork.unkEE, gBattleWork.appliedAmount, 0);
-    damage_digits_spawn(&gGameWork.unkEE, 10, gBattleWork.targetPart, x, y);
+    set_display_digit_type(&gGameWork.partAbility, gBattleWork.appliedAmount, 0);
+    damage_digits_spawn(&gGameWork.partAbility, 10, gBattleWork.targetPart, x, y);
     play_sound_effect(0x5B);
     gBattleWork.step++;
 }
@@ -1816,7 +1816,7 @@ void closeup_exit_wipe(void) {
 }
 
 void closeup_exit_reload(void) {
-    switch (gGameWork.unk139) {
+    switch (gGameWork.setupStep) {
     case 0:
         gGameWork.unk96 = 0;
         gUnk_03000430 = 0;
@@ -1829,7 +1829,7 @@ void closeup_exit_reload(void) {
         REG_BG3CNT = 0x1B0B;
         if (battle_load_graphics_step(1)) {
             gGameWork.unk84 = 0;
-            gGameWork.unk139++;
+            gGameWork.setupStep++;
         }
         break;
     case 1:
@@ -1838,17 +1838,17 @@ void closeup_exit_reload(void) {
         iterate_bots_setup_battle_sprites();
         apply_battle_blend_effect_b();
         decompress_to_ewram_27000(gUnk_083B24A8[gBattleWork.battlefield * 5 + 1]);
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 2:
         CpuFastSet((void *)0x02021000, (void *)0x0600C800, 0x200);
         CpuFastSet((void *)0x02021800, (void *)0x0600D000, 0x200);
         CpuFastSet((void *)0x02022000, (void *)0x0600D800, 0x200);
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 3:
         CpuFastSet((void *)0x02028000, gSpriteEntries, 0x800);
-        gGameWork.unk139++;
+        gGameWork.setupStep++;
         break;
     case 4:
         load_all_bot_part_sprites();
@@ -1857,7 +1857,7 @@ void closeup_exit_reload(void) {
         gGameWork.unk84 = 0;
         gBattleWork.unk1AE = 0;
         gBattleWork.step++;
-        gGameWork.unk139 = 0;
+        gGameWork.setupStep = 0;
         break;
     }
 }
@@ -1932,7 +1932,7 @@ void bot_defeat_burst_wait(void) {
 }
 
 void bot_defeat_message(void) {
-    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.unk51].medal.name, gGameWork.unk9E, 0xE);
+    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.unk51].medal.name, gGameWork.textBuf, 0xE);
     gBattleWork.messageId = 0x14;
     gBattleWork.step++;
 }
@@ -2162,7 +2162,7 @@ void sacrifice_break_part(void) {
 }
 
 void sacrifice_message(void) {
-    memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.actorPart], gGameWork.unk9E, 0xE);
+    memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.actorPart], gGameWork.textBuf, 0xE);
     gBattleWork.messageId = 0x18;
     gBattleWork.step++;
 }

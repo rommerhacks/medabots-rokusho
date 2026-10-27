@@ -303,65 +303,65 @@ u8 pick_random_change_part(u32 a, u32 kind) {
     case 0:
         switch (kind) {
         case 0:
-            ret = gUnk_083CED08[gGameWork.unk8C & 0x7F];
+            ret = gUnk_083CED08[gGameWork.rngLast & 0x7F];
             break;
         case 1:
-            ret = gUnk_083CED88[gGameWork.unk8C & 0x7F];
+            ret = gUnk_083CED88[gGameWork.rngLast & 0x7F];
             break;
         case 2:
-            ret = gUnk_083CEE08[gGameWork.unk8C & 0x7F];
+            ret = gUnk_083CEE08[gGameWork.rngLast & 0x7F];
             break;
         }
         break;
     case 1:
         switch (kind) {
         case 0:
-            ret = gUnk_083CEE88[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CEE88[gGameWork.rngLast & 0x3F];
             break;
         case 1:
-            ret = gUnk_083CEEC8[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CEEC8[gGameWork.rngLast & 0x3F];
             break;
         case 2:
-            ret = gUnk_083CEF08[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CEF08[gGameWork.rngLast & 0x3F];
             break;
         }
         break;
     case 2:
         switch (kind) {
         case 0:
-            ret = gUnk_083CEF48[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CEF48[gGameWork.rngLast & 0x3F];
             break;
         case 1:
-            ret = gUnk_083CEF88[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CEF88[gGameWork.rngLast & 0x3F];
             break;
         case 2:
-            ret = gUnk_083CEFC8[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CEFC8[gGameWork.rngLast & 0x3F];
             break;
         }
         break;
     case 3:
         switch (kind) {
         case 0:
-            ret = gUnk_083CF008[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CF008[gGameWork.rngLast & 0x3F];
             break;
         case 1:
-            ret = gUnk_083CF048[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CF048[gGameWork.rngLast & 0x3F];
             break;
         case 2:
-            ret = gUnk_083CF088[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CF088[gGameWork.rngLast & 0x3F];
             break;
         }
         break;
     default:
         switch (kind) {
         case 0:
-            ret = gUnk_083CF0C8[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CF0C8[gGameWork.rngLast & 0x3F];
             break;
         case 1:
-            ret = gUnk_083CF108[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CF108[gGameWork.rngLast & 0x3F];
             break;
         case 2:
-            ret = gUnk_083CF148[gGameWork.unk8C & 0x3F];
+            ret = gUnk_083CF148[gGameWork.rngLast & 0x3F];
             break;
         }
         break;

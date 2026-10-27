@@ -4,7 +4,7 @@
 #include "global.h"
 
 void robattle_time_init(void) {
-    if (gGameWork.unk89 == 1) {
+    if (gGameWork.skipBotSetup == 1) {
         gBattleWork.timeLeft = 40;
         return;
     }

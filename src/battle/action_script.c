@@ -297,7 +297,7 @@ void script_op_announce_action(void) {
 }
 
 void script_op_closeup_enter(void) {
-    gGameWork.unk130 = 1;
+    gGameWork.inCloseup = 1;
     closeup_enter_run();
     if (gBattleWork.stepDone)
         battle_script_advance();
@@ -330,7 +330,7 @@ void script_op_skill_anim_run(void) {
     gBattleWork.stepDone = 0;
     battle_sequence_update();
     if (gBattleWork.stepDone) {
-        gGameWork.unk130 = 0;
+        gGameWork.inCloseup = 0;
         battle_script_advance();
     }
 }
@@ -365,7 +365,7 @@ void script_op_status_attack(void) {
 void script_op_closeup_exit(void) {
     closeup_exit_run();
     if (gBattleWork.stepDone) {
-        gGameWork.unk130 = 0;
+        gGameWork.inCloseup = 0;
         battle_script_advance();
     }
 }

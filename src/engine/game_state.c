@@ -36,7 +36,7 @@ void devtest_update(void) {
     if (KEYS_LO(gHeldKeys) & 0x10)
         gBg1Scroll.x--;
     if (KEYS_LO(gNewKeys) & 2)
-        gGameWork.unk88 ^= 1;
+        gGameWork.menuRowAnim ^= 1;
     if (KEYS_LO(gNewKeys) & 1) {
         gGameWork.unkE = 0;
         gGameSubState++;
@@ -57,7 +57,7 @@ void devtest_update(void) {
 }
 
 void load_overworld_column_and_advance(void) {
-    u8 r = message_portrait_anim_step(0, 1, 8, 4, gGameWork.unk88, gGameWork.unk85);
+    u8 r = message_portrait_anim_step(0, 1, 8, 4, gGameWork.menuRowAnim, gGameWork.unk85);
     if (r == 1)
         gGameSubState = r;
 }

@@ -133,7 +133,7 @@ void shop_build_sell_list(void) {
     row = kind * 240;
     i = 0;
     n = 0;
-    pd = (u8 *)0x0300052E;     // &gGameWork.unkEE (the symbol form does not match)
+    pd = (u8 *)0x0300052E;     // &gGameWork.partAbility (the symbol form does not match)
     price = (u32 *)0x02040004; // &((struct ShopSellEntry *)0x02040000)->price
     for (; i <= 0x77; i++) {
         if (gMedapartInventory[row + i * 2] > gMedapartInventory[row + i * 2 + 1]) {

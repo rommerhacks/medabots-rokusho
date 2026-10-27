@@ -7,7 +7,7 @@ static void medawatch_menu_load_icon(void);
 static void medawatch_menu_init_cursor(void);
 static void medawatch_scroll_bg3(void);
 
-// Game state 2: the Medawatch menu (Medabots / Medals / Medaparts, cursor gGameWork.unk8F).
+// Game state 2: the Medawatch menu (Medabots / Medals / Medaparts, cursor gGameWork.medawatchCursor).
 void medawatch_menu_update(void) {
     gMedawatchMenuHandlers[gGameSubState]();
 }
@@ -46,24 +46,24 @@ void medawatch_menu_handle_input(void) {
     medawatch_scroll_bg3();
     process_sprite_anim_commands(gUnk_083B5F80[0], 0);
     if (KEYS_LO(gRepeatKeys) & 0x40) {
-        if (gGameWork.unk8F == 0)
-            gGameWork.unk8F = 2;
+        if (gGameWork.medawatchCursor == 0)
+            gGameWork.medawatchCursor = 2;
         else
-            gGameWork.unk8F--;
+            gGameWork.medawatchCursor--;
         play_sound_effect(2);
         medawatch_menu_load_icon();
-        gSpriteEntries[0].unk2 = 0x88 - gGameWork.unk8F * 8;
-        gSpriteEntries[0].unk4 = gGameWork.unk8F * 24 + 32;
+        gSpriteEntries[0].unk2 = 0x88 - gGameWork.medawatchCursor * 8;
+        gSpriteEntries[0].unk4 = gGameWork.medawatchCursor * 24 + 32;
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
-        if (gGameWork.unk8F == 2)
-            gGameWork.unk8F = 0;
+        if (gGameWork.medawatchCursor == 2)
+            gGameWork.medawatchCursor = 0;
         else
-            gGameWork.unk8F++;
+            gGameWork.medawatchCursor++;
         play_sound_effect(2);
         medawatch_menu_load_icon();
-        gSpriteEntries[0].unk2 = 0x88 - gGameWork.unk8F * 8;
-        gSpriteEntries[0].unk4 = gGameWork.unk8F * 24 + 32;
+        gSpriteEntries[0].unk2 = 0x88 - gGameWork.medawatchCursor * 8;
+        gSpriteEntries[0].unk4 = gGameWork.medawatchCursor * 24 + 32;
     }
     if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
@@ -114,7 +114,7 @@ void medawatch_menu_select_fade(void) {
 // Saves the BG tiles at 0x06002800 and enters game state 3 (Medabots), 4 (Medals) or 5 (Medaparts).
 void medawatch_menu_run_choice(void) {
     DmaSet(3, 0x06002800, gUnk_02020800, 0x84000200);
-    switch (gGameWork.unk8F) {
+    switch (gGameWork.medawatchCursor) {
     case 0:
         mem_fill8((u8 *)&gGameWork + 0x50, 0x14, 0);
         gGameState = 3;
@@ -172,7 +172,7 @@ void medawatch_menu_return_done(void) {
 static void medawatch_menu_load_icon(void) {
     const u8 *src;
 
-    switch (gGameWork.unk8F) {
+    switch (gGameWork.medawatchCursor) {
     case 0:
         src = gUnk_084C1C24;
         break;
@@ -190,8 +190,8 @@ static void medawatch_menu_init_cursor(void) {
     lz_decompress_dispatch(gUnk_084C7174, (void *)0x06016C00);
     DmaSet(3, gUnk_084E2E58, 0x050003C0, 0x84000008);
     gSpriteEntries[0].unk0 = 0xC004;
-    gSpriteEntries[0].unk2 = 0x88 - gGameWork.unk8F * 8;
-    gSpriteEntries[0].unk4 = gGameWork.unk8F * 24 + 32;
+    gSpriteEntries[0].unk2 = 0x88 - gGameWork.medawatchCursor * 8;
+    gSpriteEntries[0].unk4 = gGameWork.medawatchCursor * 24 + 32;
     gSpriteEntries[0].unkA = 14;
     gSpriteEntries[0].unk1C = 0;
     gSpriteEntries[0].unkB = 0xFF;
