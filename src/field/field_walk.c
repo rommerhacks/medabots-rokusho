@@ -1,6 +1,6 @@
 // Field walking and scene changes: scene_state_dispatch fades out, switches to another game mode and
 // back (shops, menus, battles), battle_scene_state_dispatch runs a battle sequence inside the field, and
-// sub_08050F10 is the frame handler that walks the player, triggers NPC / map events and warps.
+// field_walk_update is the frame handler that walks the player, triggers NPC / map events and warps.
 // Talks to field/field_mode, field/field_update, field/script_sprites and the engine.
 #include "global.h"
 
@@ -37,7 +37,7 @@ void init_battle_sprites(void) {
         calculate_oam_affine_matrix(i);
 }
 
-void sub_08050C74(void) {
+void scene_state_reset(void) {
     gUnk_03006D20.unkB = 0;
 }
 
@@ -148,7 +148,7 @@ u32 scene_state_dispatch(u32 a, u32 b) {
     return ret;
 }
 
-void sub_08050F10(void) {
+void field_walk_update(void) {
     u32 done;
     u32 npc;
     u32 warp;
@@ -157,7 +157,7 @@ void sub_08050F10(void) {
     case 0:
         set_battle_state_cancel_flag();
         if (find_map_event_by_coords(gUnk_030057E0.unkC56, gUnk_030057E0.unkC57)) {
-            gUnk_030057E0.unkC58 = 16 / sub_080518F4(47);
+            gUnk_030057E0.unkC58 = 16 / sprite_walk_speed(47);
             field_set_player_facing(gUnk_03002C30[47].unk20);
             sub_080493D4(47, gUnk_03002C30[47].unk20);
             if (gUnk_030057E0.unkC76) {
@@ -268,8 +268,8 @@ void sub_08050F10(void) {
     update_entity_sprites_on_screen();
 }
 
-// guess: resets the field frame handler (sub_08050F10 runs a state machine on unk1)
-static void sub_0805136C(void) {
+// guess: resets the field frame handler (field_walk_update runs a state machine on unk1)
+static void field_walk_reset(void) {
     gUnk_03005310.unk0 = 1;
     gUnk_03005310.unk1 = 0;
 }

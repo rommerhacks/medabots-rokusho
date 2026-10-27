@@ -190,7 +190,7 @@ void sub_08065090(void) {
         r = 0;
     if (r != 0)
         return;
-    sub_08041C14(8, gFrameCounter, 12);
+    sprite_bob_y(8, gFrameCounter, 12);
     gUnk_03002C30[8].unk0 |= 0x4000;
     if (gUnk_03006F74->unk30 > 4) {
         if (gUnk_03006F74->unk2F != 0) {

@@ -3,7 +3,7 @@
 // yes / no choice); yes starts the intro through dispatch_by_index_0476e8, no fades back to state 3.
 #include "global.h"
 
-void sub_0805C85C(void) {
+void new_game_prompt_init(void) {
     u32 zero = 0;
 
     CpuFastSet(&zero, (void *)VRAM, 0x01006000);
@@ -26,7 +26,7 @@ void load_rotation_grid_and_advance(void) {
     }
 }
 
-void sub_0805C90C(void) {
+void new_game_prompt_poll_choice(void) {
     if (poll_choice_menu()) {
         if (gUnk_03000440.unk2A == 0)
             gGameSubState++;
@@ -35,7 +35,7 @@ void sub_0805C90C(void) {
     }
 }
 
-void sub_0805C940(void) {
+void new_game_prompt_start_intro(void) {
     if (game_state_execute_handler_a())
         dispatch_by_index_0476e8(10);
 }

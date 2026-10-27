@@ -3,7 +3,7 @@
 // two here (redraw the money / icons, fade out). Name is a guess.
 #include "global.h"
 
-void sub_080626A4(void) {
+void shop_return_init(void) {
     s32 i;
 
     battle_menu_highlight_icons(gUnk_03006F74->unk19, 8);

@@ -1091,7 +1091,7 @@ extern const u16 gUnk_080AC6F4[];        // default palette (sub_080482C0)
 extern const u16 gUnk_080AC794[];        // default palette (sub_080482C0)
 extern const u16 gUnk_080AC834[];        // default palette (sub_080482C0)
 extern const u16 gUnk_080AC8D4[];        // default palette (sub_080482C0)
-extern const Func gUnk_083D1F84[];       // by gGameState (sub_0804763C)
+extern const Func gUnk_083D1F84[];       // by gGameState (field_mode_dispatch)
 extern const u8
     *const gUnk_08413514[]; // per area id: tile ids, resolved through sub_080481C4 (resolve_tile_from_battle_state)
 extern const u8
@@ -1189,7 +1189,7 @@ struct FuncTable13 {
 };
 extern const struct FuncTable13 gUnk_080AFA6C; // link Medapart trade sub-states by gGameSubState (sub_080637D0)
 extern const s16 gSineTable[0x140];            // sin(i * 2pi / 256) * 0x100, 256 + 64 entries (cos(x) = [x + 0x40])
-extern const s8 gUnk_080AFB45[];               // game mode by gUnk_03006F74->unk5 (sub_0806641C)
+extern const s8 gUnk_080AFB45[];               // game mode by gUnk_03006F74->unk5 (link_menu_fade_out_exit)
 extern const struct FuncTable13
     gUnk_080AFB48;                // link menu sub-states by gGameSubState (dispatch_battle_menu_and_update_counters)
 extern const u8 gUnk_0848564F[];  // 0xFF-terminated message (setup_dialogue_script_from_rom)
@@ -1215,7 +1215,7 @@ extern const u8 gUnk_080AFB08[]; // message indices (battle_cutscene_dispatch)
 extern const u8 gUnk_080AFB0B[];
 extern const u8 gUnk_080AFB30[];  // message (handle_battle_menu_selection)
 extern const u8 gUnk_080AFB3F[];  // message index per cursor position (handle_battle_menu_selection)
-extern const u32 gUnk_087A88CC[]; // graphics (sub_0806454C)
+extern const u32 gUnk_087A88CC[]; // graphics (scroll_banner_init)
 extern const u8 gUnk_087A1084[];
 extern const u32 gUnk_087A92D4[];
 extern const u32 gUnk_087A046C[];

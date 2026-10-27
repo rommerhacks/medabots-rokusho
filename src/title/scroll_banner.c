@@ -2,7 +2,7 @@
 // scrolls BG2 behind it and fades in/out on A. No direct writer of state 19 was found; purpose unknown.
 #include "global.h"
 
-void sub_0806454C(void) {
+void scroll_banner_init(void) {
     u8 *src;
     u8 *dst;
     s32 i;

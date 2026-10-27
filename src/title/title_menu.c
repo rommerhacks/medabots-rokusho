@@ -307,7 +307,7 @@ void sub_0805C308(void) {
 // battle music gUnk_03000B94 with a preview); A / B leave the menu
 void sub_0805C428(void) {
     gUnk_03006F74->unk3A = sub_0805BB10(gUnk_03006F74->unk3A);
-    sub_08041C14(14, gFrameCounter, 32);
+    sprite_bob_y(14, gFrameCounter, 32);
     sub_0805BDC8(gFrameCounter & 0x1F);
     sub_0805BB64(gUnk_03006F74->unk5, 20 - gUnk_03006F74->unk2);
     if (gUnk_03006F74->unk2)

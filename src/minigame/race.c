@@ -196,7 +196,7 @@ void sub_08069158(void) {
     play_song(0);
     p = &gUnk_03005310;
     p->unk39 = gUnk_03006F94[0] == 1 ? 1 : 2;
-    sub_08047850(0);
+    field_return_from_scene(0);
 }
 
 static void sub_0806918C(void) {

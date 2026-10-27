@@ -162,7 +162,7 @@ void sub_0804A67C(void) {
 }
 
 void sub_0804A694(void) {
-    sub_08050F10();
+    field_walk_update();
 }
 
 void sub_0804A6A0(void) {
@@ -362,7 +362,7 @@ void sub_0804AB80(void) {
 void sub_0804ABC8(void) {
     s32 r;
     struct Unk_030057E0 *s;
-    r = sub_080518F4(47);
+    r = sprite_walk_speed(47);
     s = &gUnk_030057E0;
     s->unkC58 = 0x10 / r;
     field_set_player_facing(gUnk_03002C30[47].unk20);

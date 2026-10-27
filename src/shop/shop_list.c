@@ -1,5 +1,5 @@
 // Mode-2 state 12: the shop buy / sell list. shop_list_dispatch runs gUnk_08483E8C: list setup, cursor and
-// cart (shop_purchase_menu_handler), the transaction, then sub_08062638 starts a battle scene with the list
+// cart (shop_purchase_menu_handler), the transaction, then shop_list_fade_out_exit starts a battle scene with the list
 // id. The table continues into handlers in code_080628A8.c (0x08064C7C..).
 #include "global.h"
 
@@ -15,7 +15,7 @@ void shop_list_dispatch(void) {
     }
 }
 
-void sub_08061830(void) {
+void shop_list_reset_scroll(void) {
     reset_bg_scroll();
     gGameSubState++;
 }
@@ -137,7 +137,7 @@ void enable_obj_layer_and_load_palette(void) {
     gGameSubState++;
 }
 
-void sub_08061D30(void) {
+void shop_list_fade_in(void) {
     struct Unk_03000440 *s = &gUnk_03000440;
     u8 *n = &s->unk84;
 
@@ -164,7 +164,7 @@ void shop_purchase_menu_handler(void) {
     u8 idx;
     s8 i;
 
-    sub_08041C14(8, gFrameCounter, 4);
+    sprite_bob_y(8, gFrameCounter, 4);
     update_battle_sprite_priority_flags();
     if (KEYS_LO(gRepeatKeys) & 8) {
         if (gUnk_03006F74->unk20 == 0)
@@ -403,7 +403,7 @@ void shop_complete_transaction(void) {
     gGameSubState++;
 }
 
-void sub_080625EC(void) {
+void shop_list_confirm_choice(void) {
     if (game_state_execute_handler_a()) {
         if (gUnk_03000440.unk2A == 0) {
             clear_sprite_table_mask(0x61, 7);
@@ -416,7 +416,7 @@ void sub_080625EC(void) {
     }
 }
 
-void sub_08062638(void) {
+void shop_list_fade_out_exit(void) {
     struct Unk_03000440 *s = &gUnk_03000440;
     u8 *n = &s->unk84;
 

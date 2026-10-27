@@ -14,7 +14,7 @@ void setup_battle_sprite_terrain(u8 slot, u8 a, u8 b) {
     a = (a & 0xF0) >> 4;
     set_sprite_animation_state(slot, a);
     spr->unk2A = b;
-    spr->unk28 = 16 / sub_080518F4(slot);
+    spr->unk28 = 16 / sprite_walk_speed(slot);
     sub_080493D4(slot, sub_080502B4(slot, a));
 }
 
@@ -25,13 +25,13 @@ void sub_080500D8(u8 slot, u8 a, u8 b) {
     spr->unk27 = a & 0xF;
     spr->unk20 = (a & 0xF0) >> 4;
     spr->unk2A = b;
-    spr->unk28 = 16 / sub_080518F4(slot);
+    spr->unk28 = 16 / sprite_walk_speed(slot);
 }
 
 void advance_sprite_by_terrain_modifier(u8 slot) {
     s32 i;
 
-    for (i = 0; i < sub_080518F4(slot); i++)
+    for (i = 0; i < sprite_walk_speed(slot); i++)
         advance_sprite_animation_frame(slot);
 }
 
@@ -43,16 +43,16 @@ u32 update_battle_sprite_movement(u8 slot, u8 mode) {
     if (spr->unk28 != 0) {
         switch (spr->unk20) {
         case 0:
-            spr->unk10_8 -= sub_080518F4(slot);
+            spr->unk10_8 -= sprite_walk_speed(slot);
             break;
         case 1:
-            spr->unk10_8 += sub_080518F4(slot);
+            spr->unk10_8 += sprite_walk_speed(slot);
             break;
         case 2:
-            spr->unkC_8 -= sub_080518F4(slot);
+            spr->unkC_8 -= sprite_walk_speed(slot);
             break;
         case 3:
-            spr->unkC_8 += sub_080518F4(slot);
+            spr->unkC_8 += sprite_walk_speed(slot);
             break;
         }
         if (mode)
@@ -67,7 +67,7 @@ u32 update_battle_sprite_movement(u8 slot, u8 mode) {
                 sub_08047BA8(0x57);
                 break;
             }
-            gUnk_03002C30[slot].unk28 = 16 / sub_080518F4(slot);
+            gUnk_03002C30[slot].unk28 = 16 / sprite_walk_speed(slot);
             if (--gUnk_03002C30[slot].unk27 == 0)
                 done = 1;
         }
@@ -301,24 +301,26 @@ u32 sub_080509A0(void) {
         s->unk26++;
         break;
     case 1:
-        if (s->unk28 < 16 / sub_080518F4(slot) * 2) {
+        if (s->unk28 < 16 / sprite_walk_speed(slot) * 2) {
             switch (s->unk20) {
             case 0:
-                s->unk34 -= sub_080518F4(slot);
+                s->unk34 -= sprite_walk_speed(slot);
                 break;
             case 1:
-                s->unk34 += sub_080518F4(slot);
+                s->unk34 += sprite_walk_speed(slot);
                 break;
             case 2:
-                s->unkC_8 -= sub_080518F4(slot);
+                s->unkC_8 -= sprite_walk_speed(slot);
                 break;
             case 3:
-                s->unkC_8 += sub_080518F4(slot);
+                s->unkC_8 += sprite_walk_speed(slot);
                 break;
             }
-            gUnk_03002C30[slot].unk10_8 = gUnk_03002C30[slot].unk34 -
-                                          gUnk_083D69A0[0][gUnk_03002C30[slot].unk28 * (sub_080518F4(slot) << 2)] / 16;
-            gUnk_03002C30[slot].unk2C = gUnk_083D69A0[0][gUnk_03002C30[slot].unk28 * (sub_080518F4(slot) << 2)] / 16;
+            gUnk_03002C30[slot].unk10_8 =
+                gUnk_03002C30[slot].unk34 -
+                gUnk_083D69A0[0][gUnk_03002C30[slot].unk28 * (sprite_walk_speed(slot) << 2)] / 16;
+            gUnk_03002C30[slot].unk2C =
+                gUnk_083D69A0[0][gUnk_03002C30[slot].unk28 * (sprite_walk_speed(slot) << 2)] / 16;
             gUnk_03002C30[slot].unk28++;
             if (gUnk_03002C30[slot].unkB != 0xFF) {
                 if (gUnk_03002C30[slot].unk10_8 / 4 <= (gUnk_03002C30[slot].unk34 - 16) / 4)

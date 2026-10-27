@@ -155,13 +155,14 @@ void init_battle_field_setup(void) {
     }
 }
 
-s32 sub_080518F4(u8 idx) {
+// Pixels per frame for a walking sprite: its own speed factor times the area's (16 / speed = frames per tile).
+s32 sprite_walk_speed(u8 idx) {
     return gUnk_083D28C0[gUnk_03002C30[idx].unk2A] * gUnk_083D28C0[gUnk_03006D38.unk2];
 }
 
 void set_battle_state_cancel_flag(void) {
     gUnk_030057E0.unkC59 = 0xFF;
-    sub_08051E8C();
+    follower_clear_scroll_dir();
 }
 
 // One frame of a tile step (dir 0 up, 1 down, 2 left, 3 right): moves the player, scrolls the camera,
@@ -170,38 +171,38 @@ void field_player_step(u8 dir) {
     switch (dir) {
     case 0:
         if (gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A != 0) {
-            gUnk_030057E0.unkC54 -= sub_080518F4(47);
+            gUnk_030057E0.unkC54 -= sprite_walk_speed(47);
             advance_sprite_by_terrain_modifier(47);
             if (!sub_08052A18() && gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A < gUnk_030057E0.unk802 * 8 - 0x60 &&
                 gBg1Scroll.y != 0)
-                sub_08052AF8(-sub_080518F4(47));
+                sub_08052AF8(-sprite_walk_speed(47));
         }
         break;
     case 1:
         if (gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A + 16 < gUnk_030057E0.unk802 * 8) {
-            gUnk_030057E0.unkC54 += sub_080518F4(47);
+            gUnk_030057E0.unkC54 += sprite_walk_speed(47);
             advance_sprite_by_terrain_modifier(47);
             if (!sub_08052A18() && gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A + 16 > 0x50 &&
                 gBg1Scroll.y + 0xA0 < gUnk_030057E0.unk802 * 8)
-                sub_08052AF8(sub_080518F4(47));
+                sub_08052AF8(sprite_walk_speed(47));
         }
         break;
     case 2:
         if (gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 != 0) {
-            gUnk_030057E0.unkC52 -= sub_080518F4(47);
+            gUnk_030057E0.unkC52 -= sprite_walk_speed(47);
             advance_sprite_by_terrain_modifier(47);
             if (!sub_08052A04() && gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 < gUnk_030057E0.unk800 * 8 - 0x80 &&
                 gBg1Scroll.x != 0)
-                sub_08052A2C(-sub_080518F4(47));
+                sub_08052A2C(-sprite_walk_speed(47));
         }
         break;
     case 3:
         if (gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 + 16 < gUnk_030057E0.unk800 * 8) {
-            gUnk_030057E0.unkC52 += sub_080518F4(47);
+            gUnk_030057E0.unkC52 += sprite_walk_speed(47);
             advance_sprite_by_terrain_modifier(47);
             if (!sub_08052A04() && gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 + 16 > 0x80 &&
                 gBg1Scroll.x + 0xF0 < gUnk_030057E0.unk800 * 8)
-                sub_08052A2C(sub_080518F4(47));
+                sub_08052A2C(sprite_walk_speed(47));
         }
         break;
     }
@@ -282,7 +283,7 @@ void field_player_walk_input(void) {
                 update_battle_direction_indicator(3);
             }
             if (!field_player_at_map_edge(dir) && !check_tile_and_trigger_battle_action(dir)) {
-                gUnk_030057E0.unkC58 = 16 / sub_080518F4(0x2F);
+                gUnk_030057E0.unkC58 = 16 / sprite_walk_speed(0x2F);
                 field_player_step(gUnk_030057E0.unkC59);
                 update_battle_direction_indicator(3);
                 if (gUnk_030057E0.unkC5C == 2 || gUnk_030057E0.unkC5C == 9)
@@ -305,7 +306,8 @@ void load_battle_palette_via_dma(u32 toBuffer) {
     load_battle_terrain_data();
 }
 
-void sub_08051E8C(void) {
+// guess: unkC76 = a follower sprite is active; unkC75 = its pending camera scroll direction (0xFF none).
+void follower_clear_scroll_dir(void) {
     if (gUnk_030057E0.unkC76)
         gUnk_030057E0.unkC75 = 0xFF;
 }
@@ -320,7 +322,7 @@ void update_battle_direction_indicator(u8 flags) {
             gUnk_030057E0.unkC74 = 0;
         } else {
             if (flags & 2)
-                gUnk_030057E0.unkC74 = 16 / sub_080518F4(48);
+                gUnk_030057E0.unkC74 = 16 / sprite_walk_speed(48);
             if (gUnk_030057E0.unkC72 < gUnk_030057E0.unkC56)
                 gUnk_030057E0.unkC75 = 3;
             else
@@ -332,7 +334,7 @@ void update_battle_direction_indicator(u8 flags) {
         }
     } else {
         if (flags & 2)
-            gUnk_030057E0.unkC74 = 16 / sub_080518F4(48);
+            gUnk_030057E0.unkC74 = 16 / sprite_walk_speed(48);
         if (gUnk_030057E0.unkC73 < gUnk_030057E0.unkC57)
             gUnk_030057E0.unkC75 = 1;
         else
@@ -351,25 +353,25 @@ static void battle_camera_scroll_update(u8 dir) {
         switch (dir) {
         case 0:
             if (gUnk_030057E0.unkC70 - gUnk_030057E0.unkC4A != 0) {
-                gUnk_030057E0.unkC70 -= sub_080518F4(48);
+                gUnk_030057E0.unkC70 -= sprite_walk_speed(48);
                 advance_sprite_by_terrain_modifier(48);
             }
             break;
         case 1:
             if (gUnk_030057E0.unkC70 - gUnk_030057E0.unkC4A + 16 < gUnk_030057E0.unk802 * 8) {
-                gUnk_030057E0.unkC70 += sub_080518F4(48);
+                gUnk_030057E0.unkC70 += sprite_walk_speed(48);
                 advance_sprite_by_terrain_modifier(48);
             }
             break;
         case 2:
             if (gUnk_030057E0.unkC6E - gUnk_030057E0.unkC48 != 0) {
-                gUnk_030057E0.unkC6E -= sub_080518F4(48);
+                gUnk_030057E0.unkC6E -= sprite_walk_speed(48);
                 advance_sprite_by_terrain_modifier(48);
             }
             break;
         case 3:
             if (gUnk_030057E0.unkC6E - gUnk_030057E0.unkC48 + 16 < gUnk_030057E0.unk800 * 8) {
-                gUnk_030057E0.unkC6E += sub_080518F4(48);
+                gUnk_030057E0.unkC6E += sprite_walk_speed(48);
                 advance_sprite_by_terrain_modifier(48);
             }
             break;

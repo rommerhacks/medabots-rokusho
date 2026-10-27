@@ -1101,7 +1101,7 @@ static void sub_0804D9AC(u8 i) {
     gUnk_030057E0.unkC72 = sub_080526F0(gUnk_030057E0.unkC6E);
     gUnk_030057E0.unkC73 = sub_08052714(gUnk_030057E0.unkC70);
     gUnk_030057E0.unkC84 = gUnk_03002C30[48].unk2B;
-    sub_08051E8C();
+    follower_clear_scroll_dir();
     sub_080493D4(48, sub_080502B4(48, gUnk_03002C30[48].unk2B * 4 + gUnk_03002C30[48].unk21));
     init_battle_sprite_entry_08048818(90, 0xCC0C, 0x90, 0xE, 1);
     gUnk_03002C30[90].unk2 = gUnk_03002C30[48].unk2;

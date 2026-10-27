@@ -646,7 +646,7 @@ void sub_08011500(void) {
     gUnk_030057E0.unkC2E = 0;
     gUnk_030057E0.unkC2F = 0;
     gVBlankCallback = nullsub_08000840;
-    sub_0804765C(0);
+    field_resume(0);
 }
 
 // Sub-states 0x60-0x67: START on "Medapart was acquired" opens the won part's Medaparts detail page

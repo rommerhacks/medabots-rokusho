@@ -231,7 +231,7 @@ void sub_08061180(void) {
 }
 
 void sub_080611D0(void) {
-    sub_08041C14(8, gFrameCounter, 8);
+    sprite_bob_y(8, gFrameCounter, 8);
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         play_sound_effect(2);
         if (gUnk_03006F74->unk5 != 0)

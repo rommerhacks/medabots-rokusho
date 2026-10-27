@@ -504,7 +504,7 @@ void weekly_wait_curtains_closed(void) {
 // Sub-state 17: back to game mode 1.
 void weekly_exit(void) {
     play_song(0);
-    sub_08047850(3);
+    field_return_from_scene(3);
 }
 
 // Runs each sprite's effect (unk20 = gWeeklySpriteEffects index + 1) and counts its frames in unk1A.

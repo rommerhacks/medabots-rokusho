@@ -30,7 +30,7 @@ static bool32 blend_fade_step_0806E2F8(void) {
     return FALSE;
 }
 
-void sub_0806E340(void) {
+void scene_switch_after_blend_fade(void) {
     if (blend_fade_step_0806E2F8()) {
         gUnk_03001800_s.timer = 0;
         gGameMode = gUnk_03001800_s.nextMode;
@@ -134,7 +134,7 @@ void boot_logos_load_overlay(void) {
     gGameSubState = 3;
 }
 
-void sub_0806E780(void) {
+void boot_logos_hold_licensed_by(void) {
     if (gUnk_03001800_s.timer == 0) {
     } else if (gUnk_03001800_s.timer > 60) {
         gUnk_03001800_s.timer = 0;
@@ -145,7 +145,7 @@ void sub_0806E780(void) {
     gUnk_03001800_s.timer++;
 }
 
-void sub_0806E7B0(void) {
+void boot_logos_hold_natsume(void) {
     if (gUnk_03001800_s.timer == 0) {
         gUnk_03001800_s.unkC.b = 1;
     } else if (gUnk_03001800_s.timer > 60) {
@@ -156,7 +156,7 @@ void sub_0806E7B0(void) {
     gUnk_03001800_s.timer++;
 }
 
-void sub_0806E7E0(void) {
+void boot_logos_hold_overlay(void) {
     if (gUnk_03001800_s.timer == 0) {
         REG_DISPCNT &= 0xFEFF;
     } else if (gUnk_03001800_s.timer > 60) {

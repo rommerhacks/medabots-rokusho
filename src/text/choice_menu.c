@@ -1,6 +1,6 @@
 // Choice menu: open_choice_menu / poll_choice_menu run the yes/no prompt state table gUnk_083B2814 by
 // gUnk_03000440.unk29 (decompress the BG, slide the tile strip in, move the cursor sprite, slide out; the
-// last entry is sub_08041BF4). Then two sprite jitter helpers and game_state_execute_handler_a/b, which
+// last entry is choice_menu_finish). Then two sprite jitter helpers and game_state_execute_handler_a/b, which
 // run the text/message window tables gUnk_083B284C / gUnk_083B2864 by gUnk_03000440.unk1B. Shares the
 // window state gUnk_03000440 with text/message; used by menus, the save screen and battles.
 
@@ -170,7 +170,7 @@ void handle_battle_sprite_scroll_input(void) {
         gUnk_03000440.unk2A ^= 1;
         gUnk_03002C30[gUnk_03000440.unk2B].unk4 = gUnk_03000440.unk2A * 16 + 0x48;
     }
-    sub_08041C14(gUnk_03000440.unk2B, gUnk_03000440.unk84, gUnk_03000440.unk2C * 8 + 0x14);
+    sprite_bob_y(gUnk_03000440.unk2B, gUnk_03000440.unk84, gUnk_03000440.unk2C * 8 + 0x14);
     gUnk_03000440.unk84++;
     if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
@@ -210,12 +210,12 @@ void animate_battle_sprite_shrink(void) {
     }
 }
 
-void sub_08041BF4(void) {
+void choice_menu_finish(void) {
     gUnk_03000440.unk28 = (gUnk_03000440.unk2A << 4) + 1;
     gUnk_03000440.unk29++;
 }
 
-void sub_08041C14(u8 sprite, u8 frame, u16 y) {
+void sprite_bob_y(u8 sprite, u8 frame, u16 y) {
     switch ((frame & 0xC) >> 2) {
     case 1:
         gUnk_03002C30[sprite].unk2 = y + 1;
@@ -229,7 +229,7 @@ void sub_08041C14(u8 sprite, u8 frame, u16 y) {
     }
 }
 
-void sub_08041C5C(u8 sprite, u8 frame, u16 x) {
+void sprite_bob_x(u8 sprite, u8 frame, u16 x) {
     switch ((frame & 0xC) >> 2) {
     case 1:
         gUnk_03002C30[sprite].unk4 = x + 1;

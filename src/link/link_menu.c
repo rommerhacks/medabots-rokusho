@@ -38,7 +38,7 @@ void clear_vram_bg(void) {
     gUnk_03006F74->unk3A = 0;
     gUnk_03006F74->unk5 = 0;
     gUnk_03006F74->unk7A = -1;
-    if (sub_08074B68() != 0x18)
+    if (sound_current_song() != 0x18)
         play_song(0x18);
     gGameSubState++;
 }
@@ -154,7 +154,7 @@ void fade_state_dispatch(void) {
     }
 }
 
-void sub_080660AC(void) {
+void link_menu_fade_in(void) {
     if (blend_fade_step_08065598(gUnk_03006F74->unk50)) {
         gGameSubState++;
         text_window_init(1, 0, 1);
@@ -172,7 +172,7 @@ void handle_battle_menu_selection(void) {
         return;
     }
 
-    sub_08041C14(0, gFrameCounter, 0xC);
+    sprite_bob_y(0, gFrameCounter, 0xC);
     if (gUnk_03006F74->unk5 == 6)
         run_message(gUnk_080AFB30);
     else
@@ -262,7 +262,7 @@ void init_link_save_and_connect(void) {
     init_linking_mode();
 }
 
-void sub_0806641C(void) {
+void link_menu_fade_out_exit(void) {
     if (blend_fade_step_08065598(gUnk_03006F74->unk50)) {
         if (gUnk_03006F74->unk5 <= 2)
             init_game_mode(gUnk_080AFB45[gUnk_03006F74->unk5]);
@@ -302,7 +302,7 @@ void setup_dialogue_script_from_rom(void) {
     }
 }
 
-void sub_080664F8(void) {
+void link_menu_poll_yes_no(void) {
     if (poll_choice_menu()) {
         if (gUnk_03000440.unk2A == 0) {
             gGameSubState++;
@@ -319,7 +319,7 @@ void advance_substate_with_sound_ch1(void) {
     }
 }
 
-void sub_08066560(void) {
+void link_menu_wait_choice(void) {
     if (poll_choice_menu()) {
         gGameSubState++;
         sub_0803FB0C();

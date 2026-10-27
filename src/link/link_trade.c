@@ -261,7 +261,7 @@ void sub_08062E3C(void) {
     u32 zero;
     u32 z;
 
-    if (sub_08074B68() != 0x18)
+    if (sound_current_song() != 0x18)
         play_song(0x18);
     zero = z = 0;
     CpuFastSet(&zero, (void *)VRAM, 0x01006000);
@@ -552,7 +552,7 @@ void sub_0806384C(void) {
     dst = (u8 *)&gUnk_03006F74->unk230;
     for (i = 0; i < 0x40; i++)
         *dst++ = *src++;
-    if (sub_08074B68() != 0x18)
+    if (sound_current_song() != 0x18)
         play_song(0x18);
     zero = 0;
     CpuFastSet(&zero, (void *)VRAM, 0x01006000);

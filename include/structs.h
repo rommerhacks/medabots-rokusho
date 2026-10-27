@@ -1572,7 +1572,7 @@ struct Unk_03006F74 {
     s8 unk7C;     // link: both sides OK flag, 0 / -1 (fade_state_dispatch)
     s8 unk7D;     // length of the text at *unkAC (scene_text_scroll_step)
     u8 unk7E;     // rings: random rotation mode (update_scene_animation_frame)
-    u8 unk7F;     // sub_08074B68 result (sub_08065618); song played by battle_cutscene_dispatch
+    u8 unk7F;     // sound_current_song result (link_start_init); song played by battle_cutscene_dispatch
     s16 unk80[3]; // rings: rotation angles x / y / z
     s8 unk86[3];  // rings: rotation speeds, clamped to +-16
     u8 filler89;

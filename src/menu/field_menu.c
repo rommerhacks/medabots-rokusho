@@ -167,7 +167,7 @@ void field_menu_run_choice(void) {
         clear_battle_sprite_slot(0x28, 0x57);
         break;
     case 2:
-        sub_0804765C(1);
+        field_resume(1);
         break;
     default:
         gUnk_03000588 = 0;

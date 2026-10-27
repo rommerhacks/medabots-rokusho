@@ -1,10 +1,10 @@
-// Game mode 1 (field) entry: field RAM reset (sub_08047574), the mode-1 state dispatcher (gUnk_083D1F84),
+// Game mode 1 (field) entry: field RAM reset (field_clear_ram), the mode-1 state dispatcher (gUnk_083D1F84),
 // and the transitions out of field scripts into other modes and states (switch_game_mode: battle, shop,
 // title-mode screens, minigames). Called by the field, menu, shop and minigame modules.
 
 #include "global.h"
 
-static void sub_08047574(void) {
+static void field_clear_ram(void) {
     sub_080496C8((u8 *)&gUnk_03005310, 0x3C);
     sub_080496C8((u8 *)&gUnk_030057A0, 0x38);
     sub_080496C8((u8 *)&gUnk_03006D14, 4);
@@ -22,11 +22,12 @@ static void sub_08047574(void) {
     sub_080496C8((u8 *)&gUnk_030064A0, 0x874);
 }
 
-void sub_0804763C(void) {
+void field_mode_dispatch(void) {
     gUnk_083D1F84[gGameState]();
 }
 
-void sub_0804765C(u32 a) {
+// guess: back to the field after a battle (0: sub-state 5 or 13) or into field state 2 (1).
+void field_resume(u32 a) {
     switch (a) {
     case 0:
         gUnk_03005310.unk39 = gUnk_03000440.unk9C;
@@ -78,7 +79,7 @@ void dispatch_by_index_0476e8(u32 idx) {
         gUnk_03006D20.unkC = 8;
         break;
     case 10:
-        sub_08047574();
+        field_clear_ram();
         sub_080496C8((u8 *)&gUnk_030057E0, 0xCC0);
         gUnk_03000588 = 1;
         gGameMode = 1;
@@ -86,7 +87,7 @@ void dispatch_by_index_0476e8(u32 idx) {
         gGameSubState = 0;
         return;
     case 11:
-        sub_08047574();
+        field_clear_ram();
         gUnk_030057E0.unkC88 = 0;
         gUnk_030057E0.unkC89 = 0;
         gUnk_03000588 = 1;
@@ -105,7 +106,7 @@ void dispatch_by_index_0476e8(u32 idx) {
     gGameSubState = 5;
 }
 
-void sub_08047850(s32 mode) {
+void field_return_from_scene(s32 mode) {
     if (mode > 3)
         return;
     if (mode < 0)

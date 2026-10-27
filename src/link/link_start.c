@@ -3,8 +3,8 @@
 // (serial_link_init). Name is a guess.
 #include "global.h"
 
-void sub_08065618(void) {
-    gUnk_03006F74->unk7F = sub_08074B68();
+void link_start_init(void) {
+    gUnk_03006F74->unk7F = sound_current_song();
     text_window_init(1, 0, 0);
     gUnk_03006F74->unk8 = 0;
     gGameSubState++;
@@ -86,7 +86,7 @@ void battle_cutscene_dispatch(void) {
     }
 }
 
-void sub_08065894(void) {
+void link_start_show_messages(void) {
     if (run_message(gUnk_08485BD8[gUnk_03006F74->unk8 ? 7 : 6]) && KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(0xD);
         if ((s32)++gUnk_03006F74->unk8 > 1) {
@@ -98,7 +98,8 @@ void sub_08065894(void) {
     }
 }
 
-void sub_08065908(void) {
+// guess: sub-state 2, leaves after the first prompt (field result 8).
+void link_start_exit_declined(void) {
     if (game_state_execute_handler_a())
         dispatch_by_index_0476e8(8);
 }
@@ -178,7 +179,8 @@ void handle_battle_fade_transition(void) {
     }
 }
 
-void sub_08065B68(void) {
+// guess: the last sub-state, after the link session (field result 7).
+void link_start_exit_finished(void) {
     if (game_state_execute_handler_a())
         dispatch_by_index_0476e8(7);
 }

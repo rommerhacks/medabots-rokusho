@@ -1037,7 +1037,8 @@ static void sound_update_with_lock(u32 a) {
     sound_unlock();
 }
 
-u32 sub_08074B68(void) {
+// guess: the playing song id (unk72F) while any music track is active, else -1.
+u32 sound_current_song(void) {
     struct Unk_03007014 **pw = &gUnk_03007014;
 
     if ((*pw)->tracks[0].unk14 || (*pw)->tracks[1].unk14 || (&(*pw)->tracks[2])->unk14 || (&(*pw)->tracks[3])->unk14 ||

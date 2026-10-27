@@ -171,9 +171,9 @@ void sub_0804DEF4(void) {
             break;
         }
         gUnk_03002C30[46].unk2 = gUnk_03002C30[47].unk2;
-        if (gUnk_03002C30[47].unk28 < 16 / sub_080518F4(47) * 2) {
+        if (gUnk_03002C30[47].unk28 < 16 / sprite_walk_speed(47) * 2) {
             gUnk_03002C30[46].unk4 =
-                gUnk_03002C30[47].unk4 - gUnk_083D69A0[0][gUnk_03002C30[47].unk28 * (sub_080518F4(47) << 2)] / 16;
+                gUnk_03002C30[47].unk4 - gUnk_083D69A0[0][gUnk_03002C30[47].unk28 * (sprite_walk_speed(47) << 2)] / 16;
             gUnk_03002C30[47].unk28++;
             if (gUnk_03002C30[46].unk4 / 4 <= (gUnk_03002C30[47].unk4 - 16) / 4)
                 gUnk_03002C30[46].unkB = 0xFF;
@@ -220,7 +220,7 @@ void sub_0804E0E8(void) {
         gUnk_03002C30[47].unk28--;
         if (gUnk_03002C30[47].unk28 != 0)
             break;
-        gUnk_03002C30[47].unk28 = 16 / sub_080518F4(47);
+        gUnk_03002C30[47].unk28 = 16 / sprite_walk_speed(47);
         gUnk_03002C30[47].unk27--;
         if (gUnk_03002C30[47].unk27 != 0)
             break;
@@ -498,7 +498,7 @@ void sub_0804E878(void) {
 
     switch (s->unkC93) {
     case 0:
-        sub_08050C74();
+        scene_state_reset();
         s->unkC93++;
         break;
     case 1:
@@ -751,7 +751,7 @@ void map_script_update_give_medal(void) {
         break;
     case 2:
         if (scene_transition_step_08047C24(0, 0, 0, gUnk_0847E8C4[29])) {
-            sub_08050C74();
+            scene_state_reset();
             s->unkC93++;
         }
         break;
@@ -838,7 +838,7 @@ void sub_0804F0C4(void) {
 
     switch (s->unkC93) {
     case 0:
-        s->unkC8A = 16 / sub_080518F4(47);
+        s->unkC8A = 16 / sprite_walk_speed(47);
         sub_080500D8(47, (s->unkC94[0] << 4) | s->unkC94[1], 0);
         s->unkC93++;
         break;
@@ -856,41 +856,41 @@ static u32 sub_0804F13C(u8 dir) {
     switch (dir) {
     case 0:
         if (gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A != 0) {
-            gUnk_030057E0.unkC54 -= sub_080518F4(47);
+            gUnk_030057E0.unkC54 -= sprite_walk_speed(47);
             if (!sub_08052A18() && gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A < gUnk_030057E0.unk802 * 8 - 0x60 &&
                 gBg1Scroll.y != 0) {
-                sub_08052AF8(-sub_080518F4(47));
-                gUnk_03002C30[0].unk4 += sub_080518F4(47);
+                sub_08052AF8(-sprite_walk_speed(47));
+                gUnk_03002C30[0].unk4 += sprite_walk_speed(47);
             }
         }
         break;
     case 1:
         if (gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A + 16 < gUnk_030057E0.unk802 * 8) {
-            gUnk_030057E0.unkC54 += sub_080518F4(47);
+            gUnk_030057E0.unkC54 += sprite_walk_speed(47);
             if (!sub_08052A18() && gUnk_030057E0.unkC54 - gUnk_030057E0.unkC4A + 16 > 0x50 &&
                 gBg1Scroll.y + 0xA0 < gUnk_030057E0.unk802 * 8) {
-                sub_08052AF8(sub_080518F4(47));
-                gUnk_03002C30[0].unk4 -= sub_080518F4(47);
+                sub_08052AF8(sprite_walk_speed(47));
+                gUnk_03002C30[0].unk4 -= sprite_walk_speed(47);
             }
         }
         break;
     case 2:
         if (gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 != 0) {
-            gUnk_030057E0.unkC52 -= sub_080518F4(47);
+            gUnk_030057E0.unkC52 -= sprite_walk_speed(47);
             if (!sub_08052A04() && gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 < gUnk_030057E0.unk800 * 8 - 0x80 &&
                 gBg1Scroll.x != 0) {
-                sub_08052A2C(-sub_080518F4(47));
-                gUnk_03002C30[0].unk2 += sub_080518F4(47);
+                sub_08052A2C(-sprite_walk_speed(47));
+                gUnk_03002C30[0].unk2 += sprite_walk_speed(47);
             }
         }
         break;
     case 3:
         if (gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 + 16 < gUnk_030057E0.unk800 * 8) {
-            gUnk_030057E0.unkC52 += sub_080518F4(47);
+            gUnk_030057E0.unkC52 += sprite_walk_speed(47);
             if (!sub_08052A04() && gUnk_030057E0.unkC52 - gUnk_030057E0.unkC48 + 16 > 0x80 &&
                 gBg1Scroll.x + 0xF0 < gUnk_030057E0.unk800 * 8) {
-                sub_08052A2C(sub_080518F4(47));
-                gUnk_03002C30[0].unk2 -= sub_080518F4(47);
+                sub_08052A2C(sprite_walk_speed(47));
+                gUnk_03002C30[0].unk2 -= sprite_walk_speed(47);
             }
         }
         break;
@@ -995,7 +995,7 @@ void sub_0804F630(void) {
 
     switch (s->unkC93) {
     case 0:
-        sub_08050C74();
+        scene_state_reset();
         s->unkC93++;
         break;
     case 1:
@@ -1032,7 +1032,7 @@ void sub_0804F694(void) {
             map_script_command_done();
         break;
     case 1:
-        gUnk_03006D20.unk0 = 16 / sub_080518F4(47);
+        gUnk_03006D20.unk0 = 16 / sprite_walk_speed(47);
         sub_080500D8(47, (gUnk_030057E0.unkC94[0] << 4) | gUnk_030057E0.unkC94[1], 0);
         gUnk_030057E0.unkC93++;
         break;
@@ -1137,7 +1137,7 @@ void sub_0804F9D0(void) {
 
     switch (s->unkC93) {
     case 0:
-        sub_08050C74();
+        scene_state_reset();
         s->unkC93++;
         break;
     case 1:
@@ -1152,7 +1152,7 @@ void sub_0804FA10(void) {
 
     switch (s->unkC93) {
     case 0:
-        sub_08050C74();
+        scene_state_reset();
         s->unkC93++;
         break;
     case 1:
@@ -1167,7 +1167,7 @@ void sub_0804FA50(void) {
 
     switch (s->unkC93) {
     case 0:
-        sub_08050C74();
+        scene_state_reset();
         s->unkC93++;
         break;
     case 1:
@@ -1183,7 +1183,7 @@ void sub_0804FA90(void) {
 
     switch (s->unkC93) {
     case 0:
-        sub_08050C74();
+        scene_state_reset();
         s->unkC93++;
         break;
     case 1:
@@ -1208,7 +1208,7 @@ void sub_0804FAD0(void) {
             map_script_command_done();
         break;
     case 2:
-        sub_08050C74();
+        scene_state_reset();
         s->unkC93++;
         break;
     case 3:
@@ -1223,7 +1223,7 @@ void sub_0804FB40(void) {
 
     switch (s->unkC93) {
     case 0:
-        sub_08050C74();
+        scene_state_reset();
         s->unkC93++;
         break;
     case 1:
@@ -1241,7 +1241,7 @@ void sub_0804FB90(void) {
 
     switch (s->unkC93) {
     case 0:
-        sub_08050C74();
+        scene_state_reset();
         s->unkC93++;
         break;
     case 1:
@@ -1256,7 +1256,7 @@ void sub_0804FBD0(void) {
 
     switch (s->unkC93) {
     case 0:
-        sub_08050C74();
+        scene_state_reset();
         s->unkC93++;
         break;
     case 1:

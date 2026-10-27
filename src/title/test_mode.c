@@ -123,7 +123,7 @@ void update_fade_effect(void) {
 }
 
 void test_mode_update(void) {
-    sub_08041C14(0, gFrameCounter, 0x14);
+    sprite_bob_y(0, gFrameCounter, 0x14);
     if (gUnk_03006F74->unk48 != 0) {
         if (--gUnk_03006F74->unk48 == 0)
             play_sound_effect(2);

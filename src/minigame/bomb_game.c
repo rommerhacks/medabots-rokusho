@@ -196,7 +196,7 @@ void sub_0806BBA8(void) {
     REG_BLDY = 0x10;
     REG_DISPCNT &= 0x80FF;
     play_song(0);
-    sub_08047850(1);
+    field_return_from_scene(1);
 }
 
 u32 sub_0806BBDC(void) {

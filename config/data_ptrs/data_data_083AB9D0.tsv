@@ -30,7 +30,7 @@
 083ABCDC	sub_0807C784
 083ABD0C	gUnk_083ABCB8
 083ABE18	dispatch_game_state_handler_08002534
-083ABE1C	sub_0804763C
+083ABE1C	field_mode_dispatch
 083ABE20	dispatch_game_state_handler_0805BA94
 083ABE24	dispatch_game_mode_handler
 083ABE30	gUnk_080750E0+0xDA8
@@ -6282,7 +6282,7 @@
 083B2838	transition_draw_tile_strip
 083B283C	clear_and_copy_tilemap_rows
 083B2840	clear_tilemap_and_advance_state
-083B2844	sub_08041BF4
+083B2844	choice_menu_finish
 083B2848	nullsub_08000840
 083B284C	sub_08040994
 083B2850	sub_08040A00

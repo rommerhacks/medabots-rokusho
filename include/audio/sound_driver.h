@@ -33,6 +33,6 @@ void sub_080740D4(struct SoundTrack *track);
 u32 sound_is_paused(void);
 void sound_update_master_volume(void);
 u32 sub_08074FB8(void);
-u32 sub_08074B68(void);
+u32 sound_current_song(void);
 
 #endif // GUARD_AUDIO_SOUND_DRIVER_H

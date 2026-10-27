@@ -138,7 +138,7 @@ void item_menu_show_description(void) {
     u8 id;
     struct Unk_03006F74 *w;
     sub_0805CA28(gFrameCounter);
-    sub_08041C14(0x53, gFrameCounter, 0x54);
+    sprite_bob_y(0x53, gFrameCounter, 0x54);
     w = gUnk_03006F74;
     if (w->unk10) {
         struct ItemListEntry *l = (struct ItemListEntry *)0x02040000;
@@ -161,7 +161,7 @@ void sub_0805CE4C(void) {
     u8 n = 5;
     u8 cnt;
 
-    sub_08041C14(0x53, gFrameCounter, 0x54);
+    sprite_bob_y(0x53, gFrameCounter, 0x54);
     if ((gUnk_03006F74->unk10 - 1) / 5) {
         if ((gFrameCounter >> 4) & 1) {
             gUnk_03002C30[0x51].unk0 |= 0x4000;

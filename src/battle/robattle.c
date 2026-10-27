@@ -635,7 +635,7 @@ void sub_08013DE4(void) {
     status_blink_lr_button();
     status_update_portrait();
     status_draw_team_sprites();
-    sub_08041C14(8, gFrameCounter, status_cursor_x());
+    sprite_bob_y(8, gFrameCounter, status_cursor_x());
     scroll_bg3_diagonal();
     if (update_blend_effect())
         gGameSubState++;
@@ -649,7 +649,7 @@ void sub_08013E30(void) {
     case 0:
         status_blink_lr_button();
         status_draw_team_sprites();
-        sub_08041C14(8, gFrameCounter, status_cursor_x());
+        sprite_bob_y(8, gFrameCounter, status_cursor_x());
         status_select_input();
         if ((KEYS_HI(gNewKeys) & 1) && gUnk_03000440.unk3C == 0) {
             play_sound_effect(2);
@@ -697,7 +697,7 @@ void sub_08013FA8(void) {
     status_blink_lr_button();
     status_update_portrait();
     status_draw_team_sprites();
-    sub_08041C14(8, gFrameCounter, status_cursor_x());
+    sprite_bob_y(8, gFrameCounter, status_cursor_x());
     scroll_bg3_diagonal();
     if (update_blend_effect()) {
         gUnk_03000440.unk96 = 0;

@@ -15,7 +15,7 @@ CPP     := $(PREFIX)cpp
 
 AGBCC_DIR := tools/agbcc
 # pret agbcc with -fprologue-bugfix (no push {lr} in leaf functions that branch). old_agbcc also
-# builds most functions identically, but some (e.g. sub_080518F4) only match agbcc.
+# builds most functions identically, but some (e.g. sprite_walk_speed) only match agbcc.
 CC1       := $(AGBCC_DIR)/bin/agbcc
 
 ASFLAGS  := -mcpu=arm7tdmi -I include -I .

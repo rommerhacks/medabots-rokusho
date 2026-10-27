@@ -5,8 +5,8 @@
 
 void set_battle_state_cancel_flag(void);
 void init_battle_field_setup(void);
-void sub_08051E8C(void);
-s32 sub_080518F4(u8 idx);
+void follower_clear_scroll_dir(void);
+s32 sprite_walk_speed(u8 idx);
 void update_battle_direction_indicator(u8 arg);
 void load_battle_palette_via_dma(u32 toBuffer);
 void load_map_npc_sprites(); // takes one argument (update_battle_field_frame passes gUnk_030057E0.unkCBA)

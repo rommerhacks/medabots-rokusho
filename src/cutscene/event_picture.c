@@ -1,14 +1,14 @@
 // Mode-3 state 3: a full-screen picture with a message, entered from a field script (switch_game_mode case 0x12;
 // the picture index comes from map script command sub_0804D3B4). Returns to the field afterwards. Its
-// fade-and-switch steps sub_0806DFC4 / scene_complete_dma_and_restore_state are shared by the boot logos and
-// intro tables. Name is a guess.
+// fade-and-switch steps scene_switch_after_transition / scene_complete_dma_and_restore_state are shared by the boot
+// logos and intro tables. Name is a guess.
 #include "global.h"
 
 void dispatch_game_substate_handler_0806DFA4(void) {
     gUnk_08485F1C[gGameSubState]();
 }
 
-void sub_0806DFC4(void) {
+void scene_switch_after_transition(void) {
     if (scene_transition_step_080686F4()) {
         gGameMode = gUnk_03001800_s.nextMode;
         gGameState = gUnk_03001800_s.nextState;
@@ -27,7 +27,7 @@ void scene_complete_dma_and_restore_state(void) {
     }
 }
 
-void sub_0806E060(void) {
+void event_picture_init(void) {
     u32 zero = 0;
     DmaSet(3, &zero, VRAM, 0x85006000);
     zero = 0;
@@ -81,6 +81,6 @@ void dispatch_battle_event_script(void) {
     }
 }
 
-void sub_0806E26C(void) {
-    sub_08047850(2);
+void event_picture_return_to_field(void) {
+    field_return_from_scene(2);
 }
