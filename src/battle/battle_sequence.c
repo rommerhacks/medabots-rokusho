@@ -982,7 +982,7 @@ void battle_seq_cmd_armor_panel(void) {
     u8 mirrored;
 
     battle_seq_load_operands();
-    lz_decompress_dispatch(gUnk_084C4F00, (void *)0x06006400);
+    lz_decompress_dispatch(gGaugeFillTiles, (void *)0x06006400);
     lz_decompress_dispatch(gUnk_084882F4, (void *)0x06006520);
     lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06006600);
     lz_decompress_dispatch(gUnk_084C65C8, (void *)0x06006800);

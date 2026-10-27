@@ -324,7 +324,7 @@ void robattle_parts_menu_cancel(void) {
     save_restore_bg0_tilemap_region();
     save_restore_bg1_tilemap_region();
     if (++gGameWork.unk84 == 16) {
-        CpuFastSet(gUnk_084E2F38, (void *)0x05000340, 8);
+        CpuFastSet(gBattleObjPalette10, (void *)0x05000340, 8);
         gGameSubState = 0xB;
     }
 }
@@ -341,7 +341,7 @@ void robattle_parts_menu_confirm(void) {
         clear_battle_sprite_slot(0, 0x46);
         vram_fill_tilemap_rect(0x1E, 8, 0, 0xC, REG_BG0CNT, 0);
         vram_fill_tilemap_rect(0x1E, 8, 0, 0xC, REG_BG1CNT, 0);
-        CpuFastSet(gUnk_084E2F38, (void *)0x05000340, 8);
+        CpuFastSet(gBattleObjPalette10, (void *)0x05000340, 8);
         gGameSubState = 0xD;
     }
 }
@@ -412,7 +412,7 @@ void robattle_mf_menu_cancel(void) {
     save_restore_bg0_tilemap_region();
     mf_menu_slide_out_bg1();
     if (++gGameWork.unk84 == 16) {
-        CpuFastSet(gUnk_084E2F38, (void *)0x05000340, 8);
+        CpuFastSet(gBattleObjPalette10, (void *)0x05000340, 8);
         gGameSubState = 0xB;
     }
 }
@@ -429,7 +429,7 @@ void robattle_mf_menu_confirm(void) {
         clear_battle_sprite_slot(0, 0x46);
         vram_fill_tilemap_rect(0x1E, 8, 0, 0xC, REG_BG0CNT, 0);
         vram_fill_tilemap_rect(0x1E, 8, 0, 0xC, REG_BG1CNT, 0);
-        CpuFastSet(gUnk_084E2F38, (void *)0x05000340, 8);
+        CpuFastSet(gBattleObjPalette10, (void *)0x05000340, 8);
         gGameSubState = 0xD;
     }
 }

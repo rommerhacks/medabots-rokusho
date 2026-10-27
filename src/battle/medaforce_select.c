@@ -47,8 +47,8 @@ void command_ring_grow_icons(void) {
 }
 
 void mf_menu_load_frame(void) {
-    set_tilemap_and_decompress_bg(9, 0x15, gUnk_084888E4, REG_BG0CNT, 0x2A0);
-    set_tilemap_and_decompress_bg(0x12, 0x15, gUnk_08488920, REG_BG1CNT, 0x2B8);
+    set_tilemap_and_decompress_bg(9, 0x15, gMfMenuLeftPanelTilemap, REG_BG0CNT, 0x2A0);
+    set_tilemap_and_decompress_bg(0x12, 0x15, gMfMenuRightPanelTilemap, REG_BG1CNT, 0x2B8);
 }
 
 void mf_menu_slide_bg0(void) {

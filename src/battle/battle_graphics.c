@@ -7,45 +7,45 @@
 u32 battle_load_graphics_step(u32 direct) {
     switch (gGameWork.unk13A) {
     case 0:
-        lz_decompress_dispatch(gUnk_084C4F00, (void *)0x06004000);
-        lz_decompress_dispatch(gUnk_084C4F8C, (void *)0x06004140);
-        lz_decompress_dispatch(gUnk_084879F0, (void *)0x06004200);
+        lz_decompress_dispatch(gGaugeFillTiles, (void *)0x06004000);
+        lz_decompress_dispatch(gMedaforceLabelTiles, (void *)0x06004140);
+        lz_decompress_dispatch(gMedaforceGaugeFrameTiles, (void *)0x06004200);
         gGameWork.unk13A++;
         break;
     case 1:
-        lz_decompress_dispatch(gUnk_084C5080, (void *)0x06004300);
+        lz_decompress_dispatch(gMedaforceGaugeFrameEndTiles, (void *)0x06004300);
         lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06004400);
-        lz_decompress_dispatch(gUnk_08487A24, (void *)0x0600C000);
-        lz_decompress_dispatch(gUnk_084C5008, (void *)0x0600C600);
+        lz_decompress_dispatch(gBattlePillarTiles, (void *)0x0600C000);
+        lz_decompress_dispatch(gBattlePillarCapTiles, (void *)0x0600C600);
         gGameWork.unk13A++;
         break;
     case 2:
-        lz_decompress_dispatch(gUnk_08487E68, (void *)0x06004E00);
-        lz_decompress_dispatch(gUnk_08487F64, (void *)0x06005100);
-        lz_decompress_dispatch(gUnk_0848803C, (void *)0x06005400);
-        lz_decompress_dispatch(gUnk_08488114, (void *)0x06005700);
-        lz_decompress_dispatch(gUnk_084881EC, (void *)0x06005A00);
+        lz_decompress_dispatch(gRightBotPanelTiles, (void *)0x06004E00);
+        lz_decompress_dispatch(gPartsMenuLeftPanelTiles, (void *)0x06005100);
+        lz_decompress_dispatch(gMfMenuLeftPanelTiles, (void *)0x06005400);
+        lz_decompress_dispatch(gMfMenuRightPanelTiles, (void *)0x06005700);
+        lz_decompress_dispatch(gPartsMenuRightPanelTiles, (void *)0x06005A00);
         gGameWork.unk13A++;
         break;
     case 3:
-        lz_decompress_dispatch(gUnk_084C4BAC, (void *)0x0600C280);
-        lz_decompress_dispatch(gUnk_084C7634, (void *)0x06012000);
+        lz_decompress_dispatch(gBotActionIconTiles, (void *)0x0600C280);
+        lz_decompress_dispatch(gBattleUiSpriteTiles, (void *)0x06012000);
         lz_decompress_dispatch(gMissPopupTiles, (void *)0x06014E00);
-        lz_decompress_dispatch(gUnk_084C984C, (void *)0x06017F80);
+        lz_decompress_dispatch(gBotShadowTiles, (void *)0x06017F80);
         lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
         gGameWork.unk13A++;
         break;
     case 4:
-        lz_decompress_dispatch(gUnk_08487B80, (void *)0x06004600);
-        lz_decompress_dispatch(gUnk_08487C94, (void *)0x06004800);
-        lz_decompress_dispatch(gUnk_08487D6C, (void *)0x06004B00);
+        lz_decompress_dispatch(gActionSelectPanelTiles, (void *)0x06004600);
+        lz_decompress_dispatch(gActionSelectSidePanelTiles, (void *)0x06004800);
+        lz_decompress_dispatch(gLeftBotPanelTiles, (void *)0x06004B00);
         gGameWork.unk13A++;
         break;
     case 5:
         gGameWork.unk13A++;
         break;
     case 6:
-        lz_decompress_dispatch(gUnk_084C7FC0, (void *)0x06013000);
+        lz_decompress_dispatch(gBattleNumberSpriteTiles, (void *)0x06013000);
         lz_decompress_dispatch(gUnk_084E2950, (void *)0x06013C00);
         lz_decompress_dispatch(gUnk_084E2C18, (void *)0x06014200);
         gGameWork.unk13A++;
@@ -58,34 +58,34 @@ u32 battle_load_graphics_step(u32 direct) {
         if (direct == 0) {
             vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG0CNT, direct);
             decompress_sprite_to_vram_08043C08(gBattleWork.battlefield, 1);
-            CpuFastSet(gUnk_084C6A18, (void *)0x0202FB00, 8);
-            CpuFastSet(gUnk_08488AC4, (void *)0x0202FB40, 8);
-            CpuFastSet(gUnk_08488B04, (void *)0x0202FB60, 8);
-            CpuFastSet(gUnk_08488AE4, (void *)0x0202FB80, 8);
-            CpuFastSet(gUnk_084C6A38, (void *)0x0202FBA0, 8);
+            CpuFastSet(gBattleBgPalette8, (void *)0x0202FB00, 8);
+            CpuFastSet(gBattleBgPalette10, (void *)0x0202FB40, 8);
+            CpuFastSet(gBattleBgPalette11, (void *)0x0202FB60, 8);
+            CpuFastSet(gBattleBgPalette12, (void *)0x0202FB80, 8);
+            CpuFastSet(gBattleBgPalette13, (void *)0x0202FBA0, 8);
             CpuFastSet(gTargetLinePalette, (void *)0x0202F900, 8);
             CpuFastSet(gTargetArrowsPalette, (void *)0x0202F920, 8);
-            CpuFastSet(gUnk_084E2F38, (void *)0x0202F940, 8);
+            CpuFastSet(gBattleObjPalette10, (void *)0x0202F940, 8);
             CpuFastSet(gHealNumberPalette, (void *)0x0202F960, 16);
-            CpuFastSet(gUnk_0850DDB8, (void *)0x0202F9A0, 8);
-            CpuFastSet(gUnk_0850DDB8 + 0x20, (void *)0x0202F9C0, 8);
-            CpuFastSet(gUnk_0850DDB8 + 0x40, (void *)0x0202F9E0, 8);
-            CpuFastSet(gUnk_0850E0D8, (void *)0x0202F8A0, 8);
+            CpuFastSet(gBattleObjPalettes13, (void *)0x0202F9A0, 8);
+            CpuFastSet(gBattleObjPalettes13 + 0x20, (void *)0x0202F9C0, 8);
+            CpuFastSet(gBattleObjPalettes13 + 0x40, (void *)0x0202F9E0, 8);
+            CpuFastSet(gBattleObjPalette5, (void *)0x0202F8A0, 8);
         } else {
             decompress_sprite_to_vram_08043C08(gBattleWork.battlefield, 0);
-            CpuFastSet(gUnk_084C6A18, (void *)0x05000100, 8);
-            CpuFastSet(gUnk_08488AC4, (void *)0x05000140, 8);
-            CpuFastSet(gUnk_08488B04, (void *)0x05000160, 8);
-            CpuFastSet(gUnk_08488AE4, (void *)0x05000180, 8);
-            CpuFastSet(gUnk_084C6A38, (void *)0x050001A0, 8);
+            CpuFastSet(gBattleBgPalette8, (void *)0x05000100, 8);
+            CpuFastSet(gBattleBgPalette10, (void *)0x05000140, 8);
+            CpuFastSet(gBattleBgPalette11, (void *)0x05000160, 8);
+            CpuFastSet(gBattleBgPalette12, (void *)0x05000180, 8);
+            CpuFastSet(gBattleBgPalette13, (void *)0x050001A0, 8);
             CpuFastSet(gTargetLinePalette, (void *)0x05000300, 8);
             CpuFastSet(gTargetArrowsPalette, (void *)0x05000320, 8);
-            CpuFastSet(gUnk_084E2F38, (void *)0x05000340, 8);
+            CpuFastSet(gBattleObjPalette10, (void *)0x05000340, 8);
             CpuFastSet(gHealNumberPalette, (void *)0x05000360, 16);
-            CpuFastSet(gUnk_0850DDB8, (void *)0x050003A0, 8);
-            CpuFastSet(gUnk_0850DDB8 + 0x20, (void *)0x050003C0, 8);
-            CpuFastSet(gUnk_0850DDB8 + 0x40, (void *)0x050003E0, 8);
-            CpuFastSet(gUnk_0850E0D8, (void *)0x050002A0, 8);
+            CpuFastSet(gBattleObjPalettes13, (void *)0x050003A0, 8);
+            CpuFastSet(gBattleObjPalettes13 + 0x20, (void *)0x050003C0, 8);
+            CpuFastSet(gBattleObjPalettes13 + 0x40, (void *)0x050003E0, 8);
+            CpuFastSet(gBattleObjPalette5, (void *)0x050002A0, 8);
         }
         gGameWork.unk13A = 0;
         return 1;
@@ -102,7 +102,7 @@ u32 battle_message_print(u32 msg) {
     u32 done;
 
     if (gOptionSkipMessages == 0 || gGameWork.skipBotSetup == 1) {
-        done = run_message(gUnk_083C65C4[msg]);
+        done = run_message(gBattleMessages[msg]);
         if (done)
             gGameWork.endModeStep = 0;
         return done;
@@ -118,11 +118,11 @@ u32 battle_message_finish(void) {
 
 void draw_bot_panel_frame(u32 bot) {
     if (bot <= 2) {
-        set_tilemap_and_decompress_bg(0, 13, gUnk_08488830, REG_BG1CNT, 0x258);
-        set_tilemap_and_decompress_bg(0, 17, gUnk_08488744, REG_BG1CNT, 0x210);
+        set_tilemap_and_decompress_bg(0, 13, gLeftBotPanelTilemap, REG_BG1CNT, 0x258);
+        set_tilemap_and_decompress_bg(0, 17, gMedaforceGaugeFrameTilemap, REG_BG1CNT, 0x210);
     } else {
-        set_tilemap_and_decompress_bg(18, 13, gUnk_0848886C, REG_BG1CNT, 0x270);
-        set_tilemap_and_decompress_bg(20, 17, gUnk_08488744, REG_BG1CNT, 0x210);
+        set_tilemap_and_decompress_bg(18, 13, gRightBotPanelTilemap, REG_BG1CNT, 0x270);
+        set_tilemap_and_decompress_bg(20, 17, gMedaforceGaugeFrameTilemap, REG_BG1CNT, 0x210);
     }
 }
 
@@ -253,7 +253,7 @@ void mf_charge_sparkles_init(u32 bot) {
     u32 i;
     struct Vec16 p;
 
-    CpuFastSet(gUnk_084E3058, (void *)0x050002C0, 8);
+    CpuFastSet(gMfChargeSparklePalette, (void *)0x050002C0, 8);
     for (i = 0; i <= 7; i++) {
         clear_battle_sprite_slot(i + 0x21, 1);
         gSpriteEntries[0x21 + i].unk0 = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0x4204;

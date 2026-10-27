@@ -1066,8 +1066,8 @@ gUnk_083C4C60:
 gUnk_083C4C88:
 	.incbin "baserom.gba", 0x3C4C88, 0x193C
 
-	.global gUnk_083C65C4
-gUnk_083C65C4:
+	.global gBattleMessages
+gBattleMessages:
 	.incbin "baserom.gba", 0x3C65C4, 0x564
 
 	.global gActionScripts

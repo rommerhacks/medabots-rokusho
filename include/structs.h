@@ -662,7 +662,7 @@ struct BattleWork {
     u8 filler9B;
     u8 unk9C[5];   // cleared by battle_substeps_reset
     u8 unkA1[5];   // cleared by battle_message_reset
-    u8 messageId;  // battle message id (gUnk_083C65C4) shown by effect_step_show_message; also the next handler
+    u8 messageId;  // battle message id (gBattleMessages) shown by effect_step_show_message; also the next handler
     u8 actorPart;  // Robattle: part index (0-3) of the acting Medabot that unk11C is written back to
                    // (restore_changed_part)
     u8 actorSkill; // Robattle: skill id (data[1]) of the acting Medabot's chosen part (action_phase_resolve_command)

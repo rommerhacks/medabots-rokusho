@@ -37,7 +37,7 @@ void LZ77UnCompVram(const void *src, void *dst);
 // 0x5C team / 0x94 opponents
 // per-turn part flags
 // then clears unk118..
-// palette 6 from gUnk_084E3058
+// palette 6 from gMfChargeSparklePalette
 // can't use Medaforce)
 
 // Medal level, Propulsion)

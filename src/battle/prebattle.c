@@ -387,7 +387,7 @@ void afterbattle_show_part_acquired(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
-    if (run_message(gUnk_083C65C4[107])) {
+    if (run_message(gBattleMessages[107])) {
         if (gBattleWork.wonPartNew)
             gGameSubState++;
         else
@@ -472,7 +472,7 @@ void afterbattle_check_rubberobo_reward(void) {
 void afterbattle_give_rubberobo_medal(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (run_message(gUnk_083C65C4[118])) {
+    if (run_message(gBattleMessages[118])) {
         item_add_quantity(50, 1);
         gGameSubState++;
     }
@@ -490,7 +490,7 @@ void afterbattle_load_experience(void) {
 void afterbattle_show_experience(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (run_message(gUnk_083C65C4[109]))
+    if (run_message(gBattleMessages[109]))
         gGameSubState++;
 }
 
@@ -524,7 +524,7 @@ void afterbattle_level_up_next_bot(void) {
 void afterbattle_level_up_show_message(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (run_message(gUnk_083C65C4[119]))
+    if (run_message(gBattleMessages[119]))
         gGameSubState++;
 }
 
@@ -556,7 +556,7 @@ void afterbattle_medaforce_next_bot(void) {
 void afterbattle_medaforce_show_message(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (run_message(gUnk_083C65C4[120]))
+    if (run_message(gBattleMessages[120]))
         gGameSubState++;
 }
 
@@ -817,7 +817,7 @@ void afterbattle_part_detail_return(void) {
 void afterbattle_show_lost_message(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (run_message(gUnk_083C65C4[110])) {
+    if (run_message(gBattleMessages[110])) {
         gGameWork.endModeStep = 0;
         gGameSubState++;
     }
@@ -884,7 +884,7 @@ void battle_loss_show_part_taken(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
-    if (run_message(gUnk_083C65C4[108]) && (KEYS_LO(gNewKeys) & 3)) {
+    if (run_message(gBattleMessages[108]) && (KEYS_LO(gNewKeys) & 3)) {
         gVBlankOamMode = 0;
         play_sound_effect(13);
         gGameSubState++;
@@ -906,7 +906,7 @@ void battle_loss_check_team(void) {
 void battle_loss_show_no_medabots(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (run_message(gUnk_083C65C4[111]))
+    if (run_message(gBattleMessages[111]))
         gGameSubState = 0x72;
 }
 

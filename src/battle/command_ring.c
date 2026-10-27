@@ -297,8 +297,8 @@ void command_ring_close_scroll_down(void) {
 }
 
 void parts_menu_load_frame(void) {
-    set_tilemap_and_decompress_bg(9, 0x15, gUnk_084888A8, REG_BG0CNT, 0x288);
-    set_tilemap_and_decompress_bg(0x12, 0x15, gUnk_0848895C, REG_BG1CNT, 0x2D0);
+    set_tilemap_and_decompress_bg(9, 0x15, gPartsMenuLeftPanelTilemap, REG_BG0CNT, 0x288);
+    set_tilemap_and_decompress_bg(0x12, 0x15, gPartsMenuRightPanelTilemap, REG_BG1CNT, 0x2D0);
 }
 
 void parts_menu_slide_bg0(void) {

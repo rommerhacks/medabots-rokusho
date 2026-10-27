@@ -104,15 +104,15 @@ void setup_battle_bot_sprite_group(u32 rec, u32 x, u32 y) {
 }
 
 void load_battle_bg_layers(void) {
-    set_tilemap_and_decompress_bg(0, 13, gUnk_08488830, REG_BG1CNT, 0x258);
-    set_tilemap_and_decompress_bg(0, 17, gUnk_08488744, REG_BG1CNT, 0x210);
-    set_tilemap_and_decompress_bg(12, 15, gUnk_084887A4, REG_BG1CNT, 0x230);
-    set_tilemap_and_decompress_bg(20, 16, gUnk_084887F4, REG_BG1CNT, 0x240);
+    set_tilemap_and_decompress_bg(0, 13, gLeftBotPanelTilemap, REG_BG1CNT, 0x258);
+    set_tilemap_and_decompress_bg(0, 17, gMedaforceGaugeFrameTilemap, REG_BG1CNT, 0x210);
+    set_tilemap_and_decompress_bg(12, 15, gActionSelectPanelTilemap, REG_BG1CNT, 0x230);
+    set_tilemap_and_decompress_bg(20, 16, gActionSelectSidePanelTilemap, REG_BG1CNT, 0x240);
 }
 
 void decompress_two_bg1_layers(void) {
-    set_tilemap_and_decompress_bg(12, 21, gUnk_084887A4, REG_BG1CNT, 0x230);
-    set_tilemap_and_decompress_bg(20, 21, gUnk_084887F4, REG_BG1CNT, 0x240);
+    set_tilemap_and_decompress_bg(12, 21, gActionSelectPanelTilemap, REG_BG1CNT, 0x230);
+    set_tilemap_and_decompress_bg(20, 21, gActionSelectSidePanelTilemap, REG_BG1CNT, 0x240);
 }
 
 void render_bot_name_sprites(u32 rec) {

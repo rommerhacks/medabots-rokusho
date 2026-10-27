@@ -98,7 +98,7 @@ void init_battle_action_select_ui(u32 a) {
         clear_battle_sprite_slot(0, 1);
         clear_battle_sprite_slot(1, 2);
     } else {
-        set_tilemap_and_decompress_bg(0xC, 0xF, gUnk_084887A4, REG_BG1CNT, 0x230);
+        set_tilemap_and_decompress_bg(0xC, 0xF, gActionSelectPanelTilemap, REG_BG1CNT, 0x230);
         gSpriteEntries[0].unk0 = 0xC404;
         gSpriteEntries[0].unk1C = 0;
         gSpriteEntries[0].unkA = 0xA;

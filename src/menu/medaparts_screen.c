@@ -237,7 +237,7 @@ void medapart_detail_load_gfx(void) {
     lz_decompress_dispatch(gUnk_084C47A0, (void *)0x06007080);
     lz_decompress_dispatch(gUnk_084C4330, (void *)0x06007100);
     lz_decompress_dispatch(gUnk_084C47E0, (void *)0x06007200);
-    lz_decompress_dispatch(gUnk_084C4BAC, (void *)0x06007300);
+    lz_decompress_dispatch(gBotActionIconTiles, (void *)0x06007300);
     lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06007880);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF5A4, REG_BG0CNT, 0x200);

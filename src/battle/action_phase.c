@@ -158,7 +158,7 @@ void action_phase_goto_exit(void) {
 void action_phase_next_turn(void) {
     CpuFastSet(gTargetLinePalette, (void *)0x05000300, 8);
     CpuFastSet(gTargetArrowsPalette, (void *)0x05000320, 8);
-    CpuFastSet(gUnk_084E2F38, (void *)0x05000340, 8);
+    CpuFastSet(gBattleObjPalette10, (void *)0x05000340, 8);
     gGameState = 7;
     gGameSubState = 0x46;
 }
@@ -303,7 +303,7 @@ void action_phase_show_winner_message(void) {
         memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
     else
         memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.textBuf, 0x12);
-    if (run_message(gUnk_083C65C4[2]))
+    if (run_message(gBattleMessages[2]))
         gGameSubState++;
 }
 
@@ -343,7 +343,7 @@ void action_phase_show_time_up_message(void) {
         memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
     else
         memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.textBuf, 0x12);
-    if (run_message(gUnk_083C65C4[3]))
+    if (run_message(gBattleMessages[3]))
         gGameSubState++;
 }
 
