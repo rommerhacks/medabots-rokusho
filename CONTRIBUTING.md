@@ -13,6 +13,10 @@
   `include/functions.h` to `include/NEW.h`. `tools/scripts/make_static.py MODULE...` makes the functions
   nothing outside the module names `static` (it keeps the ones a data table points to). Run
   `make compare` after each step.
+* **Renaming:** `tools/scripts/rename.py OLD NEW [OLD NEW ...]` (or `-f pairs.txt`) renames functions,
+  globals, types or struct names whole-word in every tracked file, including `config/functions.tsv`, the
+  `config/data_ptrs/` tables and `symbols.ld`, so pointer tables keep resolving. Field renames
+  (`.unkC` -> `.scrollBg3`) are still done by hand.
 * **Every file starts with a comment:** what the module does, its entry points, which systems it talks to.
 * **Format and lint:** `make format` (clang-format with `config/clang-format.yml`; copy it to `.clang-format`
   for your editor, that name is git-ignored), `make format-check`, and `make lint` (modern
