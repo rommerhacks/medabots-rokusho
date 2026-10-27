@@ -187,7 +187,7 @@ struct MedabotsWeeklyWork {
     u8 filler10[4];
 };
 
-// One step of a sprite animation (gUnk_08485D5C).
+// One step of a sprite animation (gRaceSpriteAnims).
 struct SpriteAnimFrame {
     u16 frame;    // copied to the sprite's unk6
     s16 duration; // frames
@@ -390,7 +390,7 @@ struct SpriteEntry {
     u16 unk32;
     u16 unk34; // frame target unk1A counts up to (weekly_set_sprite_effect)
     u8 filler36[0x4];
-    u16 unk3A; // previous frame's unk1A (update_battle_bot_entry_animations)
+    u16 unk3A; // previous frame's unk1A (race_update_runners)
     u8 filler3C[0x4];
 };
 
@@ -491,7 +491,7 @@ struct OamData {
     u16 affineParam;
 };
 
-// A 3-byte ROM table copied to the stack as a whole (divide_by_3).
+// A 3-byte ROM table copied to the stack as a whole (race_refresh_runner_sprite).
 struct ByteTable3 {
     u8 b[3];
 };
@@ -1660,16 +1660,16 @@ struct SaveData {
     u8 filler1CB9[3];
 };
 
-// Race course backgrounds (init_battle_background_layers), by gUnk_03006FDC
-struct Unk_08486160 {
-    u8 unk0; // nonzero: fixed field gUnk_03006F84 = unk1 (else random, get_entity_speed_value)
-    u8 unk1;
-    s16 unk2; // encounter setup (gUnk_083C1A00) of the second racer (load_battle_sprite_graphics)
-    u8 unk4;  // decompress_indexed_asset set for the BG at 0x06004800
+// One Medaroad race (gRaces, by gRaceId): the field and the two rival teams.
+struct RaceInfo {
+    u8 fixedField;     // nonzero: the race runs on field; else a random one (race_pick_field)
+    u8 field;          // battlefield id
+    s16 rival1Setup;   // encounter setup (gUnk_083C1A00) of the second team
+    u8 rival1Portrait; // decompress_indexed_asset set for the second leader's portrait (0x06004800)
     u8 filler5[1];
-    s16 unk6; // encounter setup of the third racer
-    u8 unk8;  // ... for the BG at 0x06005000
-    u8 unk9;  // race intro message index: gUnk_084864E8[unk9], [unk9 + 1] (sub_08069F80)
+    s16 rival2Setup;   // encounter setup of the third team
+    u8 rival2Portrait; // ... third leader's portrait (0x06005000)
+    u8 rivalMessage;   // intro lines for the rivals: gRaceMessages[rivalMessage], [rivalMessage + 1]
     u8 fillerA[2];
 };
 

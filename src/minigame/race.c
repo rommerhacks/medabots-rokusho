@@ -1,205 +1,218 @@
-// Mode-3 state 4: the race minigame. race_dispatch_substate runs gRaceSubStates; the module loads the course
-// BGs and racer sprites, plays the commentary messages and animates the racers until all finish. The tail
-// (sprite_animation_dispatch, clear_sprite_entry) is a sprite animator other mode-3 scenes also call.
+// Mode-3 state 4: the Medaroad race. Three teams (the player's and two rivals from gRaces) run a relay of
+// three Medabots each; a runner's pace comes from its leg type on the field (gRaceLegDelays), and the player
+// speeds up the run animation by pressing A (the rivals tap on a rhythm). race_dispatch_substate runs
+// gRaceSubStates: field announcement, team select, team introductions, start signal, race, results.
+// Sprites with a motion (gSpriteEntries[].unk20) are driven by gRaceSpriteMotions; clear_sprite_entry is
+// shared with other scenes.
 #include "global.h"
 
-static void sub_0806918C(void);
-static void init_battle_bg_layer(void);
-static void init_battle_icon_positions(void);
-static bool32 sub_08069EF8(void);
-static bool32 sub_0806A230(void);
+static void race_clear_screen(void);
+static void race_load_field_bg(void);
+static void race_place_all_runners(void);
+static bool32 race_announce_field_step(void);
+static bool32 race_results_step(void);
 static bool32 race_check_all_finished(void);
-static void update_battle_bot_turn_order_tiles(void);
-static void update_battle_bot_death_animations(void);
-static void update_battle_bot_damage_animations(void);
-static void sub_0806B310(void);
-static void sprite_animation_dispatch(u8 sprite, u8 a, u8 b, u8 c);
+static void race_draw_rankings(void);
+static void race_update_next_runners(void);
+static void race_update_finished_runners(void);
+static void race_scroll_bg3(void);
+static void race_set_sprite_motion(u8 sprite, u8 motion, u8 arg, u8 arg2);
 
 void race_dispatch_substate(void) {
-    if (gUnk_03006F90 == 0)
-        sub_0806B310();
+    if (gRaceStaticBg == 0)
+        race_scroll_bg3();
     gRaceSubStates[gGameSubState]();
 }
 
-void sub_08068C6C(void) {
-    sub_0806918C();
+// Sub-state 0: load the field background and announce which field the race runs on.
+void race_init(void) {
+    race_clear_screen();
     play_song(0);
-    gUnk_03006FDC = gUnk_03006D38.unk0;
-    get_entity_speed_value();
-    load_battle_sprite_graphics();
-    load_bg_tilemaps_and_palette();
-    init_battle_bg_layer();
+    gRaceId = gUnk_03006D38.unk0;
+    race_pick_field();
+    race_load_character_sprites();
+    race_load_frame_bgs();
+    race_load_field_bg();
     play_song(0x13);
     setup_screen_transition_effect_080682CC(4, 1, 0);
     REG_DISPCNT |= 0x1E00;
-    gUnk_03006F88 = 0;
-    gUnk_03006F94[0] = 0;
-    gUnk_03006F94[1] = 0;
-    gUnk_03006F94[2] = 0;
-    gUnk_03006F8C[0] = 0;
-    gUnk_03006F8C[1] = 0;
-    gUnk_03006F8C[2] = 0;
-    gUnk_03006F80 = 3;
+    gRaceStep = 0;
+    gRaceFinishOrder[0] = 0;
+    gRaceFinishOrder[1] = 0;
+    gRaceFinishOrder[2] = 0;
+    gRaceRunner[0] = 0;
+    gRaceRunner[1] = 0;
+    gRaceRunner[2] = 0;
+    gRaceNextSubState = 3;
     gGameSubState = 1;
 }
 
-void sub_08068CF4(void) {
+// Sub-state 1: wait for the fade in, then go to gRaceNextSubState.
+void race_wait_fade_in(void) {
     if (scene_transition_step_080686F4())
-        gGameSubState = gUnk_03006F80;
+        gGameSubState = gRaceNextSubState;
 }
 
-void sub_08068D14(void) {
+// Sub-state 2: wait for the fade out, clear the sprites, then go to gRaceNextSubState.
+void race_wait_fade_out(void) {
     if (execute_scene_step()) {
         u32 zero = 0;
         DmaSet(3, &zero, gSpriteEntries, 0x85000800);
         gVBlankCallback = nullsub_08000840;
         REG_DISPCNT &= 0x80FF;
-        gGameSubState = gUnk_03006F80;
+        gGameSubState = gRaceNextSubState;
     }
 }
 
-void sub_08068D74(void) {
-    if (sub_08069EF8()) {
-        gUnk_03006F88 = 0;
-        gUnk_03006F80 = 4;
+void race_announce_field(void) {
+    if (race_announce_field_step()) {
+        gRaceStep = 0;
+        gRaceNextSubState = 4;
         gGameSubState = 2;
     }
 }
 
-void sub_08068DA0(void) {
+// Sub-state 4: the player picks the three Medabots that run (Medabots screen).
+void race_open_team_select(void) {
     REG_BLDCNT = 0xFF;
     REG_BLDY = 0xF;
     race_enter_team_select();
 }
 
-void sub_08068DBC(void) {
+// Sub-state 5: load the three teams' part ids and leg types (player's from gUnk_03001800, rivals' from their
+// encounter setups) and the leader portraits.
+void race_load_teams(void) {
     int i;
-    const u8 *p;
+    const u8 *setup;
 
-    sub_0806918C();
-    load_battle_sprite_graphics();
-    init_battle_background_layers();
-    load_bg_tilemaps_and_palette();
+    race_clear_screen();
+    race_load_character_sprites();
+    race_load_leader_portraits();
+    race_load_frame_bgs();
     play_song(0);
     for (i = 0; i < 3; i++) {
-        gUnk_03006FD0[0][i] = gUnk_03001800.unk8C[i];
-        gUnk_03006FA0[0][0][i] = gUnk_03001800.unk8F[i][0];
-        gUnk_03006FA0[0][1][i] = gUnk_03001800.unk8F[i][1];
-        gUnk_03006FA0[0][2][i] = gUnk_03001800.unk8F[i][2];
-        gUnk_03006FA0[0][3][i] = gUnk_03001800.unk8F[i][3];
-        decompress_sprite_to_vram_08042D94(gUnk_03006FA0[0][0][i], gUnk_03006FA0[0][1][i], gUnk_03006FA0[0][2][i],
-                                           gUnk_03006FA0[0][3][i], 2 - i);
+        gRaceLegTypes[0][i] = gUnk_03001800.unk8C[i];
+        gRaceRunnerParts[0][0][i] = gUnk_03001800.unk8F[i][0];
+        gRaceRunnerParts[0][1][i] = gUnk_03001800.unk8F[i][1];
+        gRaceRunnerParts[0][2][i] = gUnk_03001800.unk8F[i][2];
+        gRaceRunnerParts[0][3][i] = gUnk_03001800.unk8F[i][3];
+        decompress_sprite_to_vram_08042D94(gRaceRunnerParts[0][0][i], gRaceRunnerParts[0][1][i],
+                                           gRaceRunnerParts[0][2][i], gRaceRunnerParts[0][3][i], 2 - i);
     }
-    p = gUnk_083C1A00[gUnk_08486160[gUnk_03006FDC].unk2];
-    p += 4;
+    setup = gUnk_083C1A00[gRaces[gRaceId].rival1Setup];
+    setup += 4;
     for (i = 0; i < 3; i++) {
-        gUnk_03006FA0[1][0][i] = *p++;
-        gUnk_03006FA0[1][1][i] = *p++;
-        gUnk_03006FA0[1][2][i] = *p++;
-        gUnk_03006FA0[1][3][i] = *p;
-        p += 9;
-        gUnk_03006FD0[1][i] = gUnk_083B827C[gUnk_03006FA0[1][3][i] * 64 + 0x31] - 0x64;
-        decompress_sprite_to_vram_08042D94(gUnk_03006FA0[1][0][i], gUnk_03006FA0[1][1][i], gUnk_03006FA0[1][2][i],
-                                           gUnk_03006FA0[1][3][i], 5 - i);
+        gRaceRunnerParts[1][0][i] = *setup++;
+        gRaceRunnerParts[1][1][i] = *setup++;
+        gRaceRunnerParts[1][2][i] = *setup++;
+        gRaceRunnerParts[1][3][i] = *setup;
+        setup += 9;
+        gRaceLegTypes[1][i] = gUnk_083B827C[gRaceRunnerParts[1][3][i] * 64 + 0x31] - 0x64;
+        decompress_sprite_to_vram_08042D94(gRaceRunnerParts[1][0][i], gRaceRunnerParts[1][1][i],
+                                           gRaceRunnerParts[1][2][i], gRaceRunnerParts[1][3][i], 5 - i);
     }
-    p = gUnk_083C1A00[gUnk_08486160[gUnk_03006FDC].unk6];
-    p += 4;
+    setup = gUnk_083C1A00[gRaces[gRaceId].rival2Setup];
+    setup += 4;
     for (i = 0; i < 3; i++) {
-        gUnk_03006FA0[2][0][i] = *p++;
-        gUnk_03006FA0[2][1][i] = *p++;
-        gUnk_03006FA0[2][2][i] = *p++;
-        gUnk_03006FA0[2][3][i] = *p;
-        p += 9;
-        gUnk_03006FD0[2][i] = gUnk_083B827C[gUnk_03006FA0[2][3][i] * 64 + 0x31] - 0x64;
-        decompress_sprite_to_vram_08042D94(gUnk_03006FA0[2][0][i], gUnk_03006FA0[2][1][i], gUnk_03006FA0[2][2][i],
-                                           gUnk_03006FA0[2][3][i], 8 - i);
+        gRaceRunnerParts[2][0][i] = *setup++;
+        gRaceRunnerParts[2][1][i] = *setup++;
+        gRaceRunnerParts[2][2][i] = *setup++;
+        gRaceRunnerParts[2][3][i] = *setup;
+        setup += 9;
+        gRaceLegTypes[2][i] = gUnk_083B827C[gRaceRunnerParts[2][3][i] * 64 + 0x31] - 0x64;
+        decompress_sprite_to_vram_08042D94(gRaceRunnerParts[2][0][i], gRaceRunnerParts[2][1][i],
+                                           gRaceRunnerParts[2][2][i], gRaceRunnerParts[2][3][i], 8 - i);
     }
     play_song(0x13);
     setup_screen_transition_effect_080682CC(2, 2, 0);
     REG_DISPCNT |= 0x1E00;
-    gUnk_03006F80 = 6;
+    gRaceNextSubState = 6;
     gGameSubState = 1;
 }
 
-void sub_08068FD4(void) {
-    if (sub_08069F80()) {
-        gUnk_03006F88 = 0;
-        gUnk_03006F80 = 7;
+void race_introduce_teams(void) {
+    if (race_introduce_teams_step()) {
+        gRaceStep = 0;
+        gRaceNextSubState = 7;
         gGameSubState = 2;
     }
 }
 
-void sub_08069000(void) {
-    init_battle_field_screen();
-    init_battle_icon_positions();
-    init_battle_bg_layer1();
+// Sub-state 7: the track screen with all nine runners at their start positions.
+void race_init_track(void) {
+    race_load_track_screen();
+    race_place_all_runners();
+    race_load_track_status_bar();
     play_song(0);
     setup_screen_transition_effect_080682CC(4, 1, 0);
     play_song(0x17);
     REG_DISPCNT |= 0x1E00;
-    gUnk_03006F80 = 8;
+    gRaceNextSubState = 8;
     gGameSubState = 1;
 }
 
-void sub_0806904C(void) {
-    update_sprite_animations_tick_0806AF40();
-    update_sprite_animations_0806B334();
-    if (sub_0806A4C0()) {
-        gUnk_03006F88 = 0;
+// Sub-state 8: the start signal drops; the race begins when it rises.
+void race_start_signal(void) {
+    race_run_sprite_motions();
+    race_step_sprite_anims();
+    if (race_start_signal_step()) {
+        gRaceStep = 0;
         gGameSubState = 9;
     }
 }
 
 void race_update(void) {
-    update_battle_icon_rotation();
-    race_update_racer_anim_counters();
-    update_battle_bot_entry_animations();
-    update_battle_bot_death_animations();
-    update_battle_bot_damage_animations();
-    update_battle_bot_turn_order_tiles();
-    update_sprite_animations_tick_0806AF40();
-    update_sprite_animations_0806B334();
+    race_update_speeds();
+    race_advance_runners();
+    race_update_runners();
+    race_update_next_runners();
+    race_update_finished_runners();
+    race_draw_rankings();
+    race_run_sprite_motions();
+    race_step_sprite_anims();
     if (race_check_all_finished()) {
-        gUnk_03006F88 = 0;
-        gUnk_03006F80 = 10;
+        gRaceStep = 0;
+        gRaceNextSubState = 10;
         gGameSubState = 2;
     }
 }
 
-void sub_080690C4(void) {
-    sub_0806918C();
-    load_battle_sprite_graphics();
-    init_battle_background_layers();
-    load_bg_tilemaps_and_palette();
+// Sub-state 10: back to the portrait screen for the results.
+void race_init_results(void) {
+    race_clear_screen();
+    race_load_character_sprites();
+    race_load_leader_portraits();
+    race_load_frame_bgs();
     play_song(0);
     setup_screen_transition_effect_080682CC(2, 2, 0);
     play_song(0x13);
     REG_DISPCNT |= 0x1A00;
-    gUnk_03006F80 = 11;
+    gRaceNextSubState = 11;
     gGameSubState = 1;
 }
 
-void sub_08069114(void) {
-    if (sub_0806A230()) {
+void race_show_results(void) {
+    if (race_results_step()) {
         REG_BLDY = 0;
         REG_BLDCNT = 0xFF;
-        gUnk_03006F88 = 0;
+        gRaceStep = 0;
         sound_stop_all_with_fade_guard(0x20);
-        gUnk_03006F80 = 12;
+        gRaceNextSubState = 12;
         gGameSubState = 2;
     }
 }
 
-void sub_08069158(void) {
-    struct Unk_03005310 *p;
-    sub_0806918C();
+// Sub-state 12: back to the field; scene result 1 if the player's team won, else 2.
+void race_exit(void) {
+    struct Unk_03005310 *result;
+    race_clear_screen();
     play_song(0);
-    p = &gUnk_03005310;
-    p->sceneResult = gUnk_03006F94[0] == 1 ? 1 : 2;
+    result = &gUnk_03005310;
+    result->sceneResult = gRaceFinishOrder[0] == 1 ? 1 : 2;
     field_return_from_scene(0);
 }
 
-static void sub_0806918C(void) {
+static void race_clear_screen(void) {
     u32 zero = 0;
     DmaSet(3, &zero, 0x06000000, 0x85006000);
     REG_DISPCNT = 0x60;
@@ -215,33 +228,34 @@ static void sub_0806918C(void) {
     gBg3Scroll.y = 0;
 }
 
-void init_battle_background_layers(void) {
-    gUnk_03006F90 = 0;
+// The three team leaders' 64x64 portraits on BG2 (revealed row by row by race_reveal_portrait_row).
+void race_load_leader_portraits(void) {
+    gRaceStaticBg = 0;
     decompress_indexed_asset(0, 0, (void *)0x06004000, 9, 0);
-    decompress_indexed_asset(gUnk_08486160[gUnk_03006FDC].unk4, 0, (void *)0x06004800, 10, 0);
-    decompress_indexed_asset(gUnk_08486160[gUnk_03006FDC].unk8, 0, (void *)0x06005000, 11, 0);
+    decompress_indexed_asset(gRaces[gRaceId].rival1Portrait, 0, (void *)0x06004800, 10, 0);
+    decompress_indexed_asset(gRaces[gRaceId].rival2Portrait, 0, (void *)0x06005000, 11, 0);
     REG_BG2CNT = 0x1E02;
     gBg2Scroll.x = -24;
     gBg2Scroll.y = -96;
 }
 
-static void dma_copy_tilemap_strip(u8 n) {
+static void race_reveal_portrait_row(u8 row) {
     u16 buf[24];
     int i;
     for (i = 0; i <= 7; i++) {
-        buf[i] = n * 8 - 0x6E00 + i;
-        buf[i + 8] = n * 8 - 0x5DC0 + i;
-        buf[i + 16] = n * 8 - 0x4D80 + i;
+        buf[i] = row * 8 - 0x6E00 + i;
+        buf[i + 8] = row * 8 - 0x5DC0 + i;
+        buf[i + 16] = row * 8 - 0x4D80 + i;
     }
-    DmaSet(3, buf, n * 64 + 0x0600F000, 0x80000018);
-    gBg2Scroll.y = -((12 - n) * 8);
+    DmaSet(3, buf, row * 64 + 0x0600F000, 0x80000018);
+    gBg2Scroll.y = -((12 - row) * 8);
 }
 
-static void init_battle_bg_layer(void) {
-    gUnk_03006F90 = 1;
+static void race_load_field_bg(void) {
+    gRaceStaticBg = 1;
     REG_BG2CNT = 0x1E0A;
     REG_BG3CNT = 0x1F0B;
-    gUnk_03001800.unk38 = gUnk_03006F84;
+    gUnk_03001800.unk38 = gRaceField;
     decompress_tileset_to_vram(gUnk_03001800.unk38, 0);
     memcpy_bytes_0803F63C(gBattlefieldParams[gUnk_03001800.unk38], gUnk_03001800.unk39, 8);
     apply_battle_blend_effect_a();
@@ -253,11 +267,11 @@ static void init_battle_bg_layer(void) {
     gVBlankCallback = battle_bg_scroll_vblank;
 }
 
-void init_battle_field_screen(void) {
-    gUnk_03006F90 = 1;
+void race_load_track_screen(void) {
+    gRaceStaticBg = 1;
     REG_BG2CNT = 0x1E0A;
     REG_BG3CNT = 0x1F0B;
-    gUnk_03001800.unk38 = gUnk_03006F84;
+    gUnk_03001800.unk38 = gRaceField;
     decompress_sprite_to_vram_08043C08(gUnk_03001800.unk38, 0);
     load_battle_script_entry_b();
     apply_battle_blend_effect_b();
@@ -270,14 +284,14 @@ void init_battle_field_screen(void) {
     DmaSet(3, gUnk_087C5268, 0x05000120, 0x84000008);
     DmaSet(3, gUnk_087C5288, 0x05000140, 0x84000008);
     DmaSet(3, gUnk_087C52A8, 0x05000160, 0x84000008);
-    write_tilemap_tiles_dma(0, 2, 4);
-    write_tilemap_tiles_dma(0, 2, 7);
-    write_tilemap_tiles_dma(0, 2, 0xA);
-    write_tilemap_tiles_dma(1, 6, 3);
-    write_tilemap_tiles_dma(2, 0xE, 3);
-    write_tilemap_tiles_dma(3, 0x1A, 4);
-    write_tilemap_tiles_dma(3, 0x1A, 7);
-    write_tilemap_tiles_dma(3, 0x1A, 0xA);
+    race_draw_tile_block(0, 2, 4);
+    race_draw_tile_block(0, 2, 7);
+    race_draw_tile_block(0, 2, 0xA);
+    race_draw_tile_block(1, 6, 3);
+    race_draw_tile_block(2, 0xE, 3);
+    race_draw_tile_block(3, 0x1A, 4);
+    race_draw_tile_block(3, 0x1A, 7);
+    race_draw_tile_block(3, 0x1A, 0xA);
     gBg2Scroll.x = 0;
     gBg2Scroll.y = 0;
     gBg3Scroll.x = 0;
@@ -285,16 +299,16 @@ void init_battle_field_screen(void) {
     gVBlankCallback = battle_vblank_update_bg;
 }
 
-void init_battle_bg_layer1(void) {
+void race_load_track_status_bar(void) {
     vu16 zero = 0;
     DmaSet(3, &zero, 0x0600E800, 0x81000400);
     LZ77UnCompVram(gUnk_087C52C8, (void *)0x0600CD00);
     LZ77UnCompVram(gUnk_087C5518, (void *)0x0600D0A0);
     DmaSet(3, gUnk_087C55D0, 0x05000180, 0x84000008);
     DmaSet(3, gUnk_087C55F0, 0x050001A0, 0x84000008);
-    write_tilemap_tiles_dma(4, 1, 0xE);
-    write_tilemap_tiles_dma(4, 0xB, 0xE);
-    write_tilemap_tiles_dma(4, 0x15, 0xE);
+    race_draw_tile_block(4, 1, 0xE);
+    race_draw_tile_block(4, 0xB, 0xE);
+    race_draw_tile_block(4, 0x15, 0xE);
     REG_BG1CNT = 0x1D0D;
     sprite_entry_init(1, 0xC400, 0x6F, 8, 1);
     gSpriteEntries[1].unk2 = 0xF;
@@ -312,13 +326,15 @@ static inline u32 tilemap_addr(u32 base, u16 col, u16 row) {
     return row * 64 + base;
 }
 
-void write_tilemap_tiles_dma(u8 type, u8 x, u8 y) {
+// Draw tile block `block` at (x, y): 0-3 on BG1's map (track), 4-7 on BG3's (status bar; 5-7 the 1st-3rd
+// place marks).
+void race_draw_tile_block(u8 block, u8 x, u8 y) {
     u8 w[8];
     u8 h[8];
     u16 first[8];
     struct U16PtrArray8 lists;
     u16 pal[8];
-    const u16 *p;
+    const u16 *tile_ptr;
     int i, j;
     u16 tile;
 
@@ -328,22 +344,22 @@ void write_tilemap_tiles_dma(u8 type, u8 x, u8 y) {
     lists = gUnk_080AFF00;
     memcpy_optimized(pal, gUnk_080AFF20, 16);
 
-    type &= 7;
-    p = lists.v[type];
-    for (i = 0; i < h[type]; i++) {
-        for (j = 0; j < w[type]; j++) {
-            if (type > 4)
-                tile = i * 6 + j + first[type] + pal[type];
+    block &= 7;
+    tile_ptr = lists.v[block];
+    for (i = 0; i < h[block]; i++) {
+        for (j = 0; j < w[block]; j++) {
+            if (block > 4)
+                tile = i * 6 + j + first[block] + pal[block];
             else
-                tile = *p + first[type] + pal[type];
-            if (type <= 3)
+                tile = *tile_ptr + first[block] + pal[block];
+            if (block <= 3)
                 DmaSet(3, &tile, tilemap_addr(0x0600F800, x + j, i + y),
-                       0x80000001) else DmaSet(3, &tile, tilemap_addr(0x0600E800, x + j, i + y), 0x80000001) p++;
+                       0x80000001) else DmaSet(3, &tile, tilemap_addr(0x0600E800, x + j, i + y), 0x80000001) tile_ptr++;
         }
     }
 }
 
-void load_bg_tilemaps_and_palette(void) {
+void race_load_frame_bgs(void) {
     u16 buf[0x400];
     vu32 zero;
     int i;
@@ -363,57 +379,59 @@ void load_bg_tilemaps_and_palette(void) {
     REG_BG3CNT = 0x1F0F;
 }
 
-void load_battle_sprite_graphics(void) {
-    const u8 *e;
+void race_load_character_sprites(void) {
+    const u8 *setup;
     LZ77UnCompVram(gUnk_083F80F4[0x25], (void *)0x06012400);
     DmaSet(3, gUnk_083F8634[0x25], 0x05000200, 0x80000010);
     LZ77UnCompVram(gUnk_087AD4E4, (void *)0x06012E00);
     LZ77UnCompVram(gUnk_083F80F4[0], (void *)0x06015100);
     DmaSet(3, gUnk_083F8634[0], 0x05000300, 0x84000008);
-    e = gUnk_083C1A00[gUnk_08486160[gUnk_03006FDC].unk2];
-    LZ77UnCompVram(gUnk_083F80F4[e[0]], (void *)0x06015A00);
-    DmaSet(3, gUnk_083F8634[e[0]], 0x05000320, 0x84000008);
-    e = gUnk_083C1A00[gUnk_08486160[gUnk_03006FDC].unk6];
-    LZ77UnCompVram(gUnk_083F80F4[e[0]], (void *)0x06016300);
-    DmaSet(3, gUnk_083F8634[e[0]], 0x05000340, 0x84000008);
+    setup = gUnk_083C1A00[gRaces[gRaceId].rival1Setup];
+    LZ77UnCompVram(gUnk_083F80F4[setup[0]], (void *)0x06015A00);
+    DmaSet(3, gUnk_083F8634[setup[0]], 0x05000320, 0x84000008);
+    setup = gUnk_083C1A00[gRaces[gRaceId].rival2Setup];
+    LZ77UnCompVram(gUnk_083F80F4[setup[0]], (void *)0x06016300);
+    DmaSet(3, gUnk_083F8634[setup[0]], 0x05000340, 0x84000008);
     DmaSet(3, gUnk_0807C300, 0x050003A0, 0x84000008);
 }
 
-void divide_by_3(u8 idx, u8 b) {
+void race_refresh_runner_sprite(u8 idx, u8 anim) {
     u8 n = 3;
-    int k;
-    u8 q = idx / 3;
-    u8 r = idx % 3;
-    struct ByteTable3 t;
-    memcpy_optimized(&t, &gUnk_080AFF30, 3);
-    setup_battle_sprite_group(gUnk_03006FA0[q][0][r], gUnk_03006FA0[q][1][r], gUnk_03006FA0[q][2][r],
-                              gUnk_03006FA0[q][3][r], q * 3 - (k = r - 2), gUnk_08485CC4[q][r] - 3,
-                              gSpriteEntries[gUnk_08485CC4[q][r]].unk2, t.b[q], b, n, 5);
+    int k; // FAKEMATCH: holds runner - 2, the original computes it separately
+    u8 team = idx / 3;
+    u8 runner = idx % 3;
+    struct ByteTable3 params;
+    memcpy_optimized(&params, &gUnk_080AFF30, 3);
+    setup_battle_sprite_group(gRaceRunnerParts[team][0][runner], gRaceRunnerParts[team][1][runner],
+                              gRaceRunnerParts[team][2][runner], gRaceRunnerParts[team][3][runner],
+                              team * 3 - (k = runner - 2), gRaceRunnerSlots[team][runner] - 3,
+                              gSpriteEntries[gRaceRunnerSlots[team][runner]].unk2, params.b[team], anim, n, 5);
 }
 
-static void sub_08069A68(u8 idx, s16 x, s16 y, u8 h, u8 pal) {
-    int k;
-    u8 q = idx / 3;
-    u8 r = idx % 3;
-    init_battle_medabot_sprites(gUnk_03006FA0[q][0][r], gUnk_03006FA0[q][1][r], gUnk_03006FA0[q][2][r],
-                                gUnk_03006FA0[q][3][r], q * 3 - (k = r - 2), gUnk_08485CC4[q][r] - 3, x, y, h, 3, 5);
-    battle_sprite_group_set_anim(gUnk_08485CC4[q][r] - 3, pal);
+static void race_place_runner(u8 idx, s16 x, s16 y, u8 h, u8 anim) {
+    int k; // FAKEMATCH: holds runner - 2, the original computes it separately
+    u8 team = idx / 3;
+    u8 runner = idx % 3;
+    init_battle_medabot_sprites(gRaceRunnerParts[team][0][runner], gRaceRunnerParts[team][1][runner],
+                                gRaceRunnerParts[team][2][runner], gRaceRunnerParts[team][3][runner],
+                                team * 3 - (k = runner - 2), gRaceRunnerSlots[team][runner] - 3, x, y, h, 3, 5);
+    battle_sprite_group_set_anim(gRaceRunnerSlots[team][runner] - 3, anim);
 }
 
-static void init_battle_icon_positions(void) {
+static void race_place_all_runners(void) {
     int i;
 
-    sub_08069A68(0, 0x2C, 0x22, 0, 4);
-    sub_08069A68(1, -32, 0x22, 0, 4);
-    sub_08069A68(2, -32, 0x22, 0, 4);
+    race_place_runner(0, 0x2C, 0x22, 0, 4);
+    race_place_runner(1, -32, 0x22, 0, 4);
+    race_place_runner(2, -32, 0x22, 0, 4);
     i = 4;
-    sub_08069A68(3, 0x2C, 0x3A, 0, i);
+    race_place_runner(3, 0x2C, 0x3A, 0, i);
     i = 6;
-    sub_08069A68(4, -32, 0x3A, 0, 4);
-    sub_08069A68(5, -32, 0x3A, 0, 4);
-    sub_08069A68(i, 0x2C, 0x52, 0, 4);
-    sub_08069A68(7, -32, 0x52, 0, 4);
-    sub_08069A68(8, -32, 0x52, 0, 4);
+    race_place_runner(4, -32, 0x3A, 0, 4);
+    race_place_runner(5, -32, 0x3A, 0, 4);
+    race_place_runner(i, 0x2C, 0x52, 0, 4);
+    race_place_runner(7, -32, 0x52, 0, 4);
+    race_place_runner(8, -32, 0x52, 0, 4);
     // original passes i + 20 untruncated: compiled against an int prototype
     for (i = 0; i <= 8; i++)
         ((void (*)(int, int, int, int, int))sprite_entry_init)(i + 20, 0xCC00, 0x110, 0xD, 3);
@@ -428,12 +446,12 @@ static void init_battle_icon_positions(void) {
     DmaSet(3, gUnk_0850DEF8, 0x05000200, 0x84000040);
 }
 
-static void init_battle_sprite_small(void) {
+static void race_init_referee_sprite(void) {
     sprite_entry_init(0, 0xC004, 0x33, 0, 1);
     gSpriteEntries[0].unk2 = -16;
 }
 
-static void init_battle_sprite_medium(void) {
+static void race_init_pointer_sprite(void) {
     sprite_entry_init(1, 0xC404, 0x100, 1, 3);
     gSpriteEntries[1].unk2 = 0x28;
     gSpriteEntries[1].unk4 = 0x10;
@@ -441,7 +459,7 @@ static void init_battle_sprite_medium(void) {
     DmaSet(3, gUnk_0807C260, 0x05000220, 0x84000008);
 }
 
-static void init_battle_sprite_c400(void) {
+static void race_init_signal_sprite(void) {
     sprite_entry_init(0, 0xC400, 0x104, 0xC, 3);
     gSpriteEntries[0].unk2 = 0x78;
     gSpriteEntries[0].unk4 = -16;
@@ -450,7 +468,7 @@ static void init_battle_sprite_c400(void) {
     DmaSet(3, gUnk_0807C280 + 0x30, 0x05000360, 0x84000008);
 }
 
-static void init_battle_sprite_entry_1(void) {
+static void race_init_winner_sprite(void) {
     sprite_entry_init(1, 0xC808, 0x10B, 3, 3);
     gSpriteEntries[1].unk4 = 0x40;
     gSpriteEntries[1].unk1A = 0;
@@ -459,7 +477,7 @@ static void init_battle_sprite_entry_1(void) {
     REG_BLDALPHA = 0x10;
 }
 
-static void init_battle_sprite_large(void) {
+static void race_init_place_sprites(void) {
     sprite_entry_init(2, 0xCB20, 0x108, 2, 3);
     gSpriteEntries[2].unk4 = 0xC8;
     gSpriteEntries[2].unk8 = 0x88;
@@ -481,48 +499,50 @@ static void init_battle_sprite_large(void) {
     DmaSet(3, gUnk_0807C2A0, 0x05000240, 0x84000008);
 }
 
-void get_entity_speed_value(void) {
-    if (gUnk_08486160[gUnk_03006FDC].unk0 != 0)
-        gUnk_03006F84 = gUnk_08486160[gUnk_03006FDC].unk1;
+// The race's field, or a random one of the 11.
+void race_pick_field(void) {
+    if (gRaces[gRaceId].fixedField != 0)
+        gRaceField = gRaces[gRaceId].field;
     else
-        gUnk_03006F84 = gRandomBytes[(u8)gFrameCounter] % 11;
+        gRaceField = gRandomBytes[(u8)gFrameCounter] % 11;
 }
 
-static void sub_08069EE4(u8 *dst, u8 *src) {
+// Copy a 0xF9..0xFF-terminated name into the message argument buffer.
+static void race_set_message_name(u8 *dst, u8 *src) {
     do {
         *dst = *src;
         dst++;
     } while (*src++ <= 0xF8);
 }
 
-static bool32 sub_08069EF8(void) {
-    switch (gUnk_03006F88) {
+static bool32 race_announce_field_step(void) {
+    switch (gRaceStep) {
     case 0:
         text_window_init(1, 2, 0);
-        init_battle_sprite_small();
-        sprite_animation_dispatch(0, 1, 0x20, 0x58);
-        sub_08069EE4(gUnk_030004DE, (u8 *)gUnk_083BE9E8[gUnk_03006F84]);
-        gUnk_03006F88++;
+        race_init_referee_sprite();
+        race_set_sprite_motion(0, 1, 0x20, 0x58);
+        race_set_message_name(gUnk_030004DE, (u8 *)gUnk_083BE9E8[gRaceField]);
+        gRaceStep++;
         return FALSE;
     case 1:
-        if (run_message(gUnk_084864E8[0]) && gSpriteEntries[0].unk20 == 0)
+        if (run_message(gRaceMessages[0]) && gSpriteEntries[0].unk20 == 0)
             return TRUE;
         break;
     }
-    update_sprite_animations_tick_0806AF40();
-    update_sprite_animations_0806B334();
+    race_run_sprite_motions();
+    race_step_sprite_anims();
     return FALSE;
 }
 
-bool32 sub_08069F80(void) {
-    const u8 *e;
-    switch (gUnk_03006F88) {
+bool32 race_introduce_teams_step(void) {
+    const u8 *setup;
+    switch (gRaceStep) {
     case 0:
         text_window_init(1, 2, 0);
-        init_battle_sprite_small();
-        sprite_animation_dispatch(0, 1, 0x18, 0x58);
+        race_init_referee_sprite();
+        race_set_sprite_motion(0, 1, 0x18, 0x58);
         REG_DISPCNT |= 0x400;
-        gUnk_03006F88++;
+        gRaceStep++;
         return FALSE;
     case 6:
     case 7:
@@ -532,102 +552,102 @@ bool32 sub_08069F80(void) {
     case 11:
     case 12:
     case 13:
-        dma_copy_tilemap_strip(gUnk_03006F88 - 6);
+        race_reveal_portrait_row(gRaceStep - 6);
     case 1:
     case 2:
     case 3:
     case 4:
     case 5:
-        run_message(gUnk_084864E8[1]);
-        gUnk_03006F88++;
+        run_message(gRaceMessages[1]);
+        gRaceStep++;
         break;
     case 14:
-        if (run_message(gUnk_084864E8[1])) {
+        if (run_message(gRaceMessages[1])) {
             message_next();
-            init_battle_sprite_medium();
-            sprite_animation_dispatch(1, 4, 0, 0);
-            gUnk_03006F88++;
+            race_init_pointer_sprite();
+            race_set_sprite_motion(1, 4, 0, 0);
+            gRaceStep++;
         }
         break;
     case 15:
-        if (run_message(gUnk_084864E8[2])) {
+        if (run_message(gRaceMessages[2])) {
             message_next();
-            gUnk_03006F88++;
+            gRaceStep++;
         }
         break;
     case 16:
         if (gSpriteEntries[0].unk20 == 0)
-            gUnk_03006F88++;
+            gRaceStep++;
         break;
     case 17:
-        if (run_message(gUnk_084864E8[5])) {
+        if (run_message(gRaceMessages[5])) {
             message_next();
-            e = gUnk_083C1A00[gUnk_08486160[gUnk_03006FDC].unk2];
-            sub_08069EE4(gUnk_030004DE, (u8 *)gUnk_083C3F38[e[0]]);
-            sprite_animation_dispatch(0, 2, 0x40, 0);
+            setup = gUnk_083C1A00[gRaces[gRaceId].rival1Setup];
+            race_set_message_name(gUnk_030004DE, (u8 *)gUnk_083C3F38[setup[0]]);
+            race_set_sprite_motion(0, 2, 0x40, 0);
             gSpriteEntries[1].unk2 = 0x68;
-            gUnk_03006F88++;
+            gRaceStep++;
         }
         break;
     case 18:
-        if (run_message(gUnk_084864E8[3]) && gSpriteEntries[0].unk20 == 0) {
+        if (run_message(gRaceMessages[3]) && gSpriteEntries[0].unk20 == 0) {
             message_next();
-            gUnk_03006F88++;
+            gRaceStep++;
         }
         break;
     case 19:
-        if (run_message(gUnk_084864E8[gUnk_08486160[gUnk_03006FDC].unk9])) {
+        if (run_message(gRaceMessages[gRaces[gRaceId].rivalMessage])) {
             message_next();
-            e = gUnk_083C1A00[gUnk_08486160[gUnk_03006FDC].unk6];
-            sub_08069EE4(gUnk_030004DE, (u8 *)gUnk_083C3F38[e[0]]);
-            sprite_animation_dispatch(0, 2, 0x40, 0);
+            setup = gUnk_083C1A00[gRaces[gRaceId].rival2Setup];
+            race_set_message_name(gUnk_030004DE, (u8 *)gUnk_083C3F38[setup[0]]);
+            race_set_sprite_motion(0, 2, 0x40, 0);
             gSpriteEntries[1].unk2 = 0xA8;
-            gUnk_03006F88++;
+            gRaceStep++;
         }
         break;
     case 20:
-        if (run_message(gUnk_084864E8[4]) && gSpriteEntries[0].unk20 == 0) {
+        if (run_message(gRaceMessages[4]) && gSpriteEntries[0].unk20 == 0) {
             message_next();
-            gUnk_03006F88++;
+            gRaceStep++;
         }
         break;
     case 21:
-        if (run_message(gUnk_084864E8[gUnk_08486160[gUnk_03006FDC].unk9 + 1])) {
+        if (run_message(gRaceMessages[gRaces[gRaceId].rivalMessage + 1])) {
             message_next();
-            gUnk_03006F88++;
+            gRaceStep++;
         }
         break;
     case 22:
-        if (run_message(gUnk_084864E8[6]))
+        if (run_message(gRaceMessages[6]))
             return TRUE;
         break;
     }
-    update_sprite_animations_tick_0806AF40();
-    update_sprite_animations_0806B334();
+    race_run_sprite_motions();
+    race_step_sprite_anims();
     return FALSE;
 }
 
-static bool32 sub_0806A230(void) {
+static bool32 race_results_step(void) {
     const u8 *e;
-    switch (gUnk_03006F88) {
+    switch (gRaceStep) {
     case 0:
         text_window_init(1, 2, 0);
-        init_battle_sprite_small();
+        race_init_referee_sprite();
         play_sound_effect(0x15);
-        if (gUnk_03006F94[0] == 1) {
-            sprite_animation_dispatch(0, 1, 0x18, 0x58);
-            sub_08069EE4(gUnk_030004DE, gUnk_03002B74);
-        } else if (gUnk_03006F94[0] == 2) {
-            sprite_animation_dispatch(0, 1, 0x58, 0x58);
-            e = gUnk_083C1A00[gUnk_08486160[gUnk_03006FDC].unk2];
-            sub_08069EE4(gUnk_030004DE, (u8 *)gUnk_083C3F38[e[0]]);
-        } else if (gUnk_03006F94[0] == 3) {
-            sprite_animation_dispatch(0, 1, 0x98, 0x58);
-            e = gUnk_083C1A00[gUnk_08486160[gUnk_03006FDC].unk6];
-            sub_08069EE4(gUnk_030004DE, (u8 *)gUnk_083C3F38[e[0]]);
+        if (gRaceFinishOrder[0] == 1) {
+            race_set_sprite_motion(0, 1, 0x18, 0x58);
+            race_set_message_name(gUnk_030004DE, gUnk_03002B74);
+        } else if (gRaceFinishOrder[0] == 2) {
+            race_set_sprite_motion(0, 1, 0x58, 0x58);
+            e = gUnk_083C1A00[gRaces[gRaceId].rival1Setup];
+            race_set_message_name(gUnk_030004DE, (u8 *)gUnk_083C3F38[e[0]]);
+        } else if (gRaceFinishOrder[0] == 3) {
+            race_set_sprite_motion(0, 1, 0x98, 0x58);
+            e = gUnk_083C1A00[gRaces[gRaceId].rival2Setup];
+            race_set_message_name(gUnk_030004DE, (u8 *)gUnk_083C3F38[e[0]]);
         }
         REG_DISPCNT |= 0x400;
-        gUnk_03006F88++;
+        gRaceStep++;
         return FALSE;
     case 6:
     case 7:
@@ -637,61 +657,61 @@ static bool32 sub_0806A230(void) {
     case 11:
     case 12:
     case 13:
-        if (gUnk_03006F88 == 6) {
-            init_battle_sprite_large();
-            sprite_animation_dispatch(4, 7, 2, 0);
-            gSpriteEntries[4].unk2 = (gUnk_03006F94[2] - 1) * 64 + 0x38;
+        if (gRaceStep == 6) {
+            race_init_place_sprites();
+            race_set_sprite_motion(4, 7, 2, 0);
+            gSpriteEntries[4].unk2 = (gRaceFinishOrder[2] - 1) * 64 + 0x38;
             gSpriteEntries[4].unk4 = 0x18;
-            sprite_animation_dispatch(3, 7, 1, 0);
-            gSpriteEntries[3].unk2 = (gUnk_03006F94[1] - 1) * 64 + 0x38;
+            race_set_sprite_motion(3, 7, 1, 0);
+            gSpriteEntries[3].unk2 = (gRaceFinishOrder[1] - 1) * 64 + 0x38;
             gSpriteEntries[3].unk4 = 0x18;
-            sprite_animation_dispatch(2, 7, 0, 0);
-            gSpriteEntries[2].unk2 = (gUnk_03006F94[0] - 1) * 64 + 0x38;
+            race_set_sprite_motion(2, 7, 0, 0);
+            gSpriteEntries[2].unk2 = (gRaceFinishOrder[0] - 1) * 64 + 0x38;
             gSpriteEntries[2].unk4 = 0x18;
         }
-        dma_copy_tilemap_strip(gUnk_03006F88 - 6);
+        race_reveal_portrait_row(gRaceStep - 6);
     default:
-        run_message(gUnk_084864E8[0x1E]);
-        gUnk_03006F88++;
+        run_message(gRaceMessages[0x1E]);
+        gRaceStep++;
         break;
     case 0x96:
         play_sound_effect(0x16);
         REG_BLDCNT = 0x7F;
-        init_battle_sprite_entry_1();
-        sprite_animation_dispatch(1, 6, 0, 0);
-        gSpriteEntries[1].unk2 = (gUnk_03006F94[0] - 1) * 64 + 0x18;
+        race_init_winner_sprite();
+        race_set_sprite_motion(1, 6, 0, 0);
+        gSpriteEntries[1].unk2 = (gRaceFinishOrder[0] - 1) * 64 + 0x18;
         message_next();
-        gUnk_03006F88++;
+        gRaceStep++;
         break;
     case 0x97:
-        if (run_message(gUnk_084864E8[7]) && gSpriteEntries[1].unk20 == 0) {
+        if (run_message(gRaceMessages[7]) && gSpriteEntries[1].unk20 == 0) {
             message_next();
-            if (gUnk_03006F94[0] == 1)
-                gUnk_03006F88++;
+            if (gRaceFinishOrder[0] == 1)
+                gRaceStep++;
             else
-                gUnk_03006F88 += 2;
+                gRaceStep += 2;
         }
         break;
     case 0x98:
-        if (run_message(gUnk_084864E8[8]))
+        if (run_message(gRaceMessages[8]))
             return TRUE;
         break;
     case 0x99:
-        if (run_message(gUnk_084864E8[9]))
+        if (run_message(gRaceMessages[9]))
             return TRUE;
         break;
     }
-    update_sprite_animations_tick_0806AF40();
-    update_sprite_animations_0806B334();
+    race_run_sprite_motions();
+    race_step_sprite_anims();
     return FALSE;
 }
 
-bool32 sub_0806A4C0(void) {
-    switch (gUnk_03006F88) {
+bool32 race_start_signal_step(void) {
+    switch (gRaceStep) {
     case 0:
-        init_battle_sprite_c400();
-        sprite_animation_dispatch(0, 5, 0, 0);
-        gUnk_03006F88++;
+        race_init_signal_sprite();
+        race_set_sprite_motion(0, 5, 0, 0);
+        gRaceStep++;
         break;
     case 1:
         if (gSpriteEntries[0].unk1A == 0xB4) {
@@ -699,14 +719,14 @@ bool32 sub_0806A4C0(void) {
             battle_sprite_group_set_anim(0x26, 0xC);
             battle_sprite_group_set_anim(0x32, 0xC);
             battle_sprite_group_set_anim(0x3E, 0xC);
-            sprite_animation_dispatch(1, 0xA, 0, 0);
-            sprite_animation_dispatch(2, 0xA, 1, 0);
-            sprite_animation_dispatch(3, 0xA, 2, 0);
-            gUnk_03006FF8[0] = gUnk_03006FF8[1] = 0;
-            gUnk_03007000[0] = gUnk_03007000[1] = 0;
-            gUnk_03006FE0[0] = gUnk_03006FE0[1] = gUnk_03006FE0[2] = 0;
-            gUnk_03006FEC[0] = gUnk_03006FEC[1] = gUnk_03006FEC[2] = 0x20;
-            gUnk_03006FF0[0] = gUnk_03006FF0[1] = gUnk_03006FF0[2] = 0;
+            race_set_sprite_motion(1, 0xA, 0, 0);
+            race_set_sprite_motion(2, 0xA, 1, 0);
+            race_set_sprite_motion(3, 0xA, 2, 0);
+            gRaceRivalTapTimers[0] = gRaceRivalTapTimers[1] = 0;
+            gRaceRivalTaps[0] = gRaceRivalTaps[1] = 0;
+            gRaceStepTimers[0] = gRaceStepTimers[1] = gRaceStepTimers[2] = 0;
+            gRaceAnimDelay[0] = gRaceAnimDelay[1] = gRaceAnimDelay[2] = 0x20;
+            gRaceAnimTimers[0] = gRaceAnimTimers[1] = gRaceAnimTimers[2] = 0;
             return TRUE;
         }
         break;
@@ -714,94 +734,99 @@ bool32 sub_0806A4C0(void) {
     return FALSE;
 }
 
+// TRUE 240 frames after the last team finished.
 static bool32 race_check_all_finished(void) {
-    if (gUnk_03006F8C[0] > 2 && gUnk_03006F8C[1] > 2 && gUnk_03006F8C[2] > 2) {
-        if (++gUnk_03006F88 > 0xF0)
+    if (gRaceRunner[0] > 2 && gRaceRunner[1] > 2 && gRaceRunner[2] > 2) {
+        if (++gRaceStep > 0xF0)
             return TRUE;
     }
     return FALSE;
 }
 
-static void update_battle_bot_turn_order_tiles(void) {
+// The place mark under each team: final place once finished, else the current one (runner, then distance).
+static void race_draw_rankings(void) {
     int i, j, rank;
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03006F8C[i] > 2) {
-            if (gUnk_03006F94[0] == i + 1)
-                write_tilemap_tiles_dma(5, i * 10 + 5, 0xF);
-            else if (gUnk_03006F94[1] == i + 1)
-                write_tilemap_tiles_dma(6, i * 10 + 5, 0xF);
-            else if (gUnk_03006F94[2] == i + 1)
-                write_tilemap_tiles_dma(7, i * 10 + 5, 0xF);
+        if (gRaceRunner[i] > 2) {
+            if (gRaceFinishOrder[0] == i + 1)
+                race_draw_tile_block(5, i * 10 + 5, 0xF);
+            else if (gRaceFinishOrder[1] == i + 1)
+                race_draw_tile_block(6, i * 10 + 5, 0xF);
+            else if (gRaceFinishOrder[2] == i + 1)
+                race_draw_tile_block(7, i * 10 + 5, 0xF);
         } else {
             for (j = 0, rank = 5; j <= 2; j++) {
                 if (i != j) {
-                    if (gUnk_03006F8C[i] < gUnk_03006F8C[j])
+                    if (gRaceRunner[i] < gRaceRunner[j])
                         rank++;
-                    else if (gUnk_03006F8C[i] == gUnk_03006F8C[j]) {
-                        if (gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A ==
-                            gSpriteEntries[gUnk_08485CC4[j][gUnk_03006F8C[j]]].unk1A) {
+                    else if (gRaceRunner[i] == gRaceRunner[j]) {
+                        if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A ==
+                            gSpriteEntries[gRaceRunnerSlots[j][gRaceRunner[j]]].unk1A) {
                             if (j < i)
                                 rank++;
-                        } else if (gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A <
-                                   gSpriteEntries[gUnk_08485CC4[j][gUnk_03006F8C[j]]].unk1A)
+                        } else if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A <
+                                   gSpriteEntries[gRaceRunnerSlots[j][gRaceRunner[j]]].unk1A)
                             rank++;
                     }
                 }
             }
-            write_tilemap_tiles_dma(rank, i * 10 + 5, 0xF);
+            race_draw_tile_block(rank, i * 10 + 5, 0xF);
         }
     }
 }
 
-void update_battle_icon_rotation(void) {
+// A presses (the player) and the rivals' tapping rhythm lower the run animation delay; it recovers by 2
+// every 8 frames.
+void race_update_speeds(void) {
     int i, j;
-    if (gUnk_03006F8C[0] <= 2 && (*(u8 *)&gNewKeys & 1)) {
-        if ((u8)(gUnk_03006FEC[0] -= 4) < 4)
-            gUnk_03006FEC[0] = 4;
-        gSpriteEntries[gUnk_08485CC4[0][gUnk_03006F8C[0]]].unk1A += 3;
+    if (gRaceRunner[0] <= 2 && (*(u8 *)&gNewKeys & 1)) {
+        if ((u8)(gRaceAnimDelay[0] -= 4) < 4)
+            gRaceAnimDelay[0] = 4;
+        gSpriteEntries[gRaceRunnerSlots[0][gRaceRunner[0]]].unk1A += 3;
     }
     for (i = 1; i <= 2; i++) {
-        if (gUnk_03006F8C[i] <= 2) {
-            if ((((gJumpArcTable[0])[(gUnk_08485CCD[gUnk_03006F84 + (j = i - 1) * 11] + gUnk_03007000[i - 1]) & 0xFF] >>
+        if (gRaceRunner[i] <= 2) {
+            if ((((gJumpArcTable[0])[(gRaceRivalPace[gRaceField + (j = i - 1) * 11] + gRaceRivalTaps[i - 1]) & 0xFF] >>
                   5) &
                  7) +
                     6 <=
-                ++gUnk_03006FF8[i - 1]) {
-                if ((u8)(gUnk_03006FEC[i] -= 4) < 4)
-                    gUnk_03006FEC[i] = 4;
-                gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A += 3;
-                gUnk_03006FF8[i - 1] = 0;
-                gUnk_03007000[i - 1]++;
+                ++gRaceRivalTapTimers[i - 1]) {
+                if ((u8)(gRaceAnimDelay[i] -= 4) < 4)
+                    gRaceAnimDelay[i] = 4;
+                gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A += 3;
+                gRaceRivalTapTimers[i - 1] = 0;
+                gRaceRivalTaps[i - 1]++;
             }
         }
     }
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03006F8C[i] <= 2) {
-            if (gUnk_03006FEC[i] == 0x20) {
-                sprite_animation_dispatch(i + 1, 10, i, 0);
-                gUnk_03006FF0[i] = 0;
-            } else if (gUnk_03006FEC[i] <= gUnk_03006FF0[i]) {
+        if (gRaceRunner[i] <= 2) {
+            if (gRaceAnimDelay[i] == 0x20) {
+                race_set_sprite_motion(i + 1, 10, i, 0);
+                gRaceAnimTimers[i] = 0;
+            } else if (gRaceAnimDelay[i] <= gRaceAnimTimers[i]) {
                 gSpriteEntries[i + 1].unk27 += 2;
-                gUnk_03006FF0[i] = 0;
+                gRaceAnimTimers[i] = 0;
             } else
-                gUnk_03006FF0[i]++;
+                gRaceAnimTimers[i]++;
         }
     }
     if (!(gFrameCounter & 7)) {
         for (i = 0; i <= 2; i++) {
-            if ((u8)(gUnk_03006FEC[i] += 2) > 0x20)
-                gUnk_03006FEC[i] = 0x20;
+            if ((u8)(gRaceAnimDelay[i] += 2) > 0x20)
+                gRaceAnimDelay[i] = 0x20;
         }
     }
 }
 
-void race_update_racer_anim_counters(void) {
+// Each runner moves one step every gRaceLegDelays[field][leg type] frames.
+void race_advance_runners(void) {
     int i;
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03006F8C[i] <= 2) {
-            if (gUnk_08485CE3[gUnk_03006F84][gUnk_03006FD0[i][gUnk_03006F8C[i]]] <= ++gUnk_03006FE0[i]) {
-                gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A++;
-                gUnk_03006FE0[i] = 0;
+        if (gRaceRunner[i] <= 2) {
+            if (gRaceLegDelays[gRaceField][gRaceLegTypes[i][gRaceRunner[i]]] <= ++gRaceStepTimers[i]) {
+                gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A++;
+                gRaceStepTimers[i] = 0;
             }
         }
     }
@@ -814,66 +839,68 @@ static inline int add14(int x) {
     return x + 0x14;
 }
 
-void update_battle_bot_entry_animations(void) {
+// Move the running Medabots; at the end of the lap hand over to the next runner, or finish the team (the
+// first finisher gets confetti).
+void race_update_runners(void) {
     int i, k;
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03006F8C[i] > 2)
+        if (gRaceRunner[i] > 2)
             continue;
-        if (gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A > 0x2AF) {
-            battle_sprite_group_set_anim(gUnk_08485CC4[i][gUnk_03006F8C[i]] - 3, 4);
-            gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk2A = 1;
-            if (++gUnk_03006F8C[i] > 2) {
-                sprite_animation_dispatch(i + 1, 0, 0, 0);
-                if (gUnk_03006F94[0] == 0) {
-                    gUnk_03006F94[0] = i + 1;
+        if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A > 0x2AF) {
+            battle_sprite_group_set_anim(gRaceRunnerSlots[i][gRaceRunner[i]] - 3, 4);
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk2A = 1;
+            if (++gRaceRunner[i] > 2) {
+                race_set_sprite_motion(i + 1, 0, 0, 0);
+                if (gRaceFinishOrder[0] == 0) {
+                    gRaceFinishOrder[0] = i + 1;
                     for (k = 0; k <= 15; k++) {
-                        u8 r = gRandomBytes[(gFrameCounter + k) & 0xFF];
-                        r &= 3;
+                        u8 variant = gRandomBytes[(gFrameCounter + k) & 0xFF];
+                        variant &= 3;
                         // the original passes k + 4 untruncated: called without (or with an int-slot) prototype
-                        ((void (*)())sprite_entry_init)(k + 4, 0xC400, r + 0x10C, 0xB, 3);
+                        ((void (*)())sprite_entry_init)(k + 4, 0xC400, variant + 0x10C, 0xB, 3);
                         gSpriteEntries[k + 4].unkB = 0x64;
-                        sprite_animation_dispatch(k + 4, 8, r, (k * 16) & 0x7F);
+                        race_set_sprite_motion(k + 4, 8, variant, (k * 16) & 0x7F);
                     }
-                } else if (gUnk_03006F94[1] == 0)
-                    gUnk_03006F94[1] = i + 1;
-                else if (gUnk_03006F94[2] == 0)
-                    gUnk_03006F94[2] = i + 1;
+                } else if (gRaceFinishOrder[1] == 0)
+                    gRaceFinishOrder[1] = i + 1;
+                else if (gRaceFinishOrder[2] == 0)
+                    gRaceFinishOrder[2] = i + 1;
                 play_sound_effect(0x43);
                 continue;
             }
             play_sound_effect(0x44);
-            gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A = 0;
-            gUnk_03006FEC[i] = 0x20;
-            gUnk_03006FF0[i] = 0;
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A = 0;
+            gRaceAnimDelay[i] = 0x20;
+            gRaceAnimTimers[i] = 0;
         }
-        if (gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk3A <= 0x157 &&
-            gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A > 0x157) {
-            divide_by_3(i * 3 + gUnk_03006F8C[i], 1);
-            gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]] - 3].unkB -= 4;
-            gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]] - 2].unkB -= 4;
-            gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]] - 1].unkB -= 4;
-            gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unkB -= 4;
-            if (gUnk_03006F8C[i] <= 1)
-                gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1]].unk2A = 2;
+        if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk3A <= 0x157 &&
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A > 0x157) {
+            race_refresh_runner_sprite(i * 3 + gRaceRunner[i], 1);
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]] - 3].unkB -= 4;
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]] - 2].unkB -= 4;
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]] - 1].unkB -= 4;
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unkB -= 4;
+            if (gRaceRunner[i] <= 1)
+                gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2A = 2;
         }
-        if (gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A > 0x158)
-            gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk2 =
-                0xD8 - ((gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A - 0x158) >> 1);
+        if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A > 0x158)
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk2 =
+                0xD8 - ((gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A - 0x158) >> 1);
         else {
-            gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk2 =
-                (gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A >> 1) + 0x2C;
-            if (gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk3A <= 0x97 &&
-                gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A > 0x97 && gUnk_03006F8C[i] <= 1) {
-                gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1]].unk2A = 1;
-                battle_sprite_group_set_anim(gUnk_08485CC4[i][gUnk_03006F8C[i] + 1] - 3, 4);
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk2 =
+                (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A >> 1) + 0x2C;
+            if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk3A <= 0x97 &&
+                gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A > 0x97 && gRaceRunner[i] <= 1) {
+                gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2A = 1;
+                battle_sprite_group_set_anim(gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3, 4);
             }
         }
-        gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk3A =
-            gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A;
-        gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk1A++;
-        update_battle_sprite_orbiting_positions(gUnk_08485CC4[i][gUnk_03006F8C[i]] - 3, i * 3 - sub2(gUnk_03006F8C[i]),
+        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk3A =
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A;
+        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A++;
+        update_battle_sprite_orbiting_positions(gRaceRunnerSlots[i][gRaceRunner[i]] - 3, i * 3 - sub2(gRaceRunner[i]),
                                                 0);
-        gSpriteEntries[i * 3 + add14(gUnk_03006F8C[i])].unk2 = gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i]]].unk2;
+        gSpriteEntries[i * 3 + add14(gRaceRunner[i])].unk2 = gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk2;
     }
 }
 
@@ -882,82 +909,86 @@ static inline int sub1(int x) {
     return x - 1;
 }
 
-static void update_battle_bot_death_animations(void) {
+// The next runner of each team walks to the start line.
+static void race_update_next_runners(void) {
     int i, t;
     for (i = 0; i <= 2; i++) {
-        if (gUnk_03006F8C[i] > 1)
+        if (gRaceRunner[i] > 1)
             continue;
-        if (gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1]].unk2A == 1) {
-            update_battle_sprite_orbiting_positions(gUnk_08485CC4[i][gUnk_03006F8C[i] + 1] - 3,
-                                                    i * 3 - sub1(gUnk_03006F8C[i]), 0);
-            gSpriteEntries[gUnk_03006F8C[i] + i * 3 + 0x15].unk2 =
-                gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1]].unk2;
+        if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2A == 1) {
+            update_battle_sprite_orbiting_positions(gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3,
+                                                    i * 3 - sub1(gRaceRunner[i]), 0);
+            gSpriteEntries[gRaceRunner[i] + i * 3 + 0x15].unk2 =
+                gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2;
             if (gFrameCounter & 1) {
-                if (++gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1]].unk2 == 0x18) {
-                    gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1]].unk2A = 0;
+                if (++gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2 == 0x18) {
+                    gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2A = 0;
                     init_battle_medabot_sprites(
-                        gUnk_03006FA0[i][0][gUnk_03006F8C[i] + 1], gUnk_03006FA0[i][1][gUnk_03006F8C[i] + 1],
-                        gUnk_03006FA0[i][2][gUnk_03006F8C[i] + 1], gUnk_03006FA0[i][3][gUnk_03006F8C[i] + 1],
-                        i * 3 - (t = gUnk_03006F8C[i] - 1), gUnk_08485CC4[i][gUnk_03006F8C[i] + 1] - 3,
-                        gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1] - 3].unk2,
-                        gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1] - 3].unk4 + 3, 0, 3, 5);
-                    battle_sprite_group_set_anim(gUnk_08485CC4[i][gUnk_03006F8C[i] + 1] - 3, 8);
+                        gRaceRunnerParts[i][0][gRaceRunner[i] + 1], gRaceRunnerParts[i][1][gRaceRunner[i] + 1],
+                        gRaceRunnerParts[i][2][gRaceRunner[i] + 1], gRaceRunnerParts[i][3][gRaceRunner[i] + 1],
+                        i * 3 - (t = gRaceRunner[i] - 1), gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3,
+                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].unk2,
+                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].unk4 + 3, 0, 3, 5);
+                    battle_sprite_group_set_anim(gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3, 8);
                 }
             }
-        } else if (gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1]].unk2A == 2) {
-            update_battle_sprite_orbiting_positions(gUnk_08485CC4[i][gUnk_03006F8C[i] + 1] - 3,
-                                                    i * 3 - sub1(gUnk_03006F8C[i]), 0);
-            gSpriteEntries[gUnk_03006F8C[i] + i * 3 + 0x15].unk2 =
-                gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1]].unk2;
+        } else if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2A == 2) {
+            update_battle_sprite_orbiting_positions(gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3,
+                                                    i * 3 - sub1(gRaceRunner[i]), 0);
+            gSpriteEntries[gRaceRunner[i] + i * 3 + 0x15].unk2 =
+                gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2;
             if (gFrameCounter & 1) {
-                if (++gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1]].unk2 == 0x2C) {
-                    gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1]].unk2A = 0;
+                if (++gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2 == 0x2C) {
+                    gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2A = 0;
                     init_battle_medabot_sprites(
-                        gUnk_03006FA0[i][0][gUnk_03006F8C[i] + 1], gUnk_03006FA0[i][1][gUnk_03006F8C[i] + 1],
-                        gUnk_03006FA0[i][2][gUnk_03006F8C[i] + 1], gUnk_03006FA0[i][3][gUnk_03006F8C[i] + 1],
-                        i * 3 - (t = gUnk_03006F8C[i] - 1), gUnk_08485CC4[i][gUnk_03006F8C[i] + 1] - 3,
-                        gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1] - 3].unk2,
-                        gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] + 1] - 3].unk4 + 3, 0, 3, 5);
-                    battle_sprite_group_set_anim(gUnk_08485CC4[i][gUnk_03006F8C[i] + 1] - 3, 0xC);
+                        gRaceRunnerParts[i][0][gRaceRunner[i] + 1], gRaceRunnerParts[i][1][gRaceRunner[i] + 1],
+                        gRaceRunnerParts[i][2][gRaceRunner[i] + 1], gRaceRunnerParts[i][3][gRaceRunner[i] + 1],
+                        i * 3 - (t = gRaceRunner[i] - 1), gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3,
+                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].unk2,
+                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].unk4 + 3, 0, 3, 5);
+                    battle_sprite_group_set_anim(gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3, 0xC);
                 }
             }
         }
     }
 }
 
-static void update_battle_bot_damage_animations(void) {
+// A runner that handed over walks off the left edge.
+static void race_update_finished_runners(void) {
     int i, k;
     for (i = 0; i < 3; i++) {
-        if (gUnk_03006F8C[i] != 0) {
-            if (gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] - 1]].unk2A == 1) {
-                if (--gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] - 1]].unk2 <= -16)
-                    gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] - 1]].unk2A = 0;
-                update_battle_sprite_orbiting_positions(gUnk_08485CC4[i][gUnk_03006F8C[i] - 1] - 3,
-                                                        i * 3 - (k = gUnk_03006F8C[i] - 3), 0);
-                gSpriteEntries[gUnk_03006F8C[i] + i * 3 + 0x13].unk2 =
-                    gSpriteEntries[gUnk_08485CC4[i][gUnk_03006F8C[i] - 1]].unk2;
+        if (gRaceRunner[i] != 0) {
+            if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] - 1]].unk2A == 1) {
+                if (--gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] - 1]].unk2 <= -16)
+                    gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] - 1]].unk2A = 0;
+                update_battle_sprite_orbiting_positions(gRaceRunnerSlots[i][gRaceRunner[i] - 1] - 3,
+                                                        i * 3 - (k = gRaceRunner[i] - 3), 0);
+                gSpriteEntries[gRaceRunner[i] + i * 3 + 0x13].unk2 =
+                    gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] - 1]].unk2;
             }
         }
     }
 }
 
-void update_sprite_animations_tick_0806AF40(void) {
+// Run the motion of sprites 0-19; a motion that returns FALSE is stopped.
+void race_run_sprite_motions(void) {
     u8 i;
     for (i = 0; i <= 0x13; i++) {
         if (gSpriteEntries[i].unk20 != 0) {
-            if (gUnk_08485D30[gSpriteEntries[i].unk20 - 1](i))
+            if (gRaceSpriteMotions[gSpriteEntries[i].unk20 - 1](i))
                 gSpriteEntries[i].unk1A++;
             else if (gSpriteEntries[i].unk20 != 0)
-                sprite_animation_dispatch(i, 0, 0, 0);
+                race_set_sprite_motion(i, 0, 0, 0);
         }
     }
 }
 
-bool32 sub_0806AF9C(u8 sprite) {
+bool32 race_motion_none(u8 sprite) {
     return FALSE;
 }
 
-bool32 sub_0806AFA0(u8 sprite) {
+// Motion 1: the referee hops in, then walks right to x = unk22.
+bool32 race_motion_hop_in(u8 sprite) {
     if (gSpriteEntries[sprite].unk1A < 0x20) {
         gSpriteEntries[sprite].unk2++;
         gSpriteEntries[sprite].unk4 =
@@ -972,25 +1003,26 @@ bool32 sub_0806AFA0(u8 sprite) {
     return TRUE;
 }
 
-bool32 sub_0806B014(u8 sprite) {
+bool32 race_motion_move_right(u8 sprite) {
     gSpriteEntries[sprite].unk2 += 2;
     if (gSpriteEntries[sprite].unk22 < gSpriteEntries[sprite].unk1A)
         return FALSE;
     return TRUE;
 }
 
-bool32 sub_0806B03C(u8 sprite) {
+bool32 race_motion_move_left(u8 sprite) {
     gSpriteEntries[sprite].unk2 -= 2;
     if (gSpriteEntries[sprite].unk22 < gSpriteEntries[sprite].unk1A)
         return FALSE;
     return TRUE;
 }
 
-bool32 sub_0806B064(u8 sprite) {
+bool32 race_motion_hold(u8 sprite) {
     return TRUE;
 }
 
-bool32 sub_0806B068(u8 sprite) {
+// Motion 5: the start signal drops in, waits, rises and clears itself.
+bool32 race_motion_signal(u8 sprite) {
     if (gSpriteEntries[sprite].unk1A < 0x10)
         gSpriteEntries[sprite].unk4 += 2;
     if ((u16)(gSpriteEntries[sprite].unk1A - 0xD2) < 0x10)
@@ -1002,7 +1034,8 @@ bool32 sub_0806B068(u8 sprite) {
     return TRUE;
 }
 
-bool32 sub_0806B0B4(u8 sprite) {
+// Motion 6: alpha-blend in and out while rising (winner mark).
+bool32 race_motion_fade_rise(u8 sprite) {
     if (gSpriteEntries[sprite].unk1A < 0x10)
         REG_BLDALPHA = 0x1000 | gSpriteEntries[sprite].unk1A;
     else if (gSpriteEntries[sprite].unk1A < 0x20)
@@ -1016,7 +1049,8 @@ bool32 sub_0806B0B4(u8 sprite) {
     return TRUE;
 }
 
-bool32 sub_0806B124(u8 sprite) {
+// Motion 7: shrink and rotate (place marks).
+bool32 race_motion_shrink_spin(u8 sprite) {
     if (gSpriteEntries[sprite].unk1A & 1) {
         gSpriteEntries[sprite].unk8--;
         gSpriteEntries[sprite].unk9--;
@@ -1029,7 +1063,8 @@ bool32 sub_0806B124(u8 sprite) {
     return TRUE;
 }
 
-u32 update_sprite_position_sincos(u8 i) {
+// Motion 8: confetti flies out along angle unk23, then switches to motion 9.
+u32 race_motion_confetti_burst(u8 i) {
 #define S gSpriteEntries[i]
     S.unkC_8 += gJumpArcTable[0][(S.unk23 + 0x40) & 0xFF];
     S.unk10_8 += gJumpArcTable[0][S.unk23];
@@ -1048,7 +1083,8 @@ u32 update_sprite_position_sincos(u8 i) {
 #undef S
 }
 
-u32 sub_0806B244(u8 i) {
+// Motion 9: confetti flutters down and stops below the screen.
+u32 race_motion_confetti_fall(u8 i) {
 #define S gSpriteEntries[i]
     u32 phase = (S.unk1A + 0x10) & 0x3F;
 
@@ -1081,26 +1117,27 @@ u32 sub_0806B244(u8 i) {
 #undef S
 }
 
-u32 sub_0806B2F0(u8 i) {
+// Motion 10 (running Medabot icons): counts down unk27, holding the animation frame.
+u32 race_motion_slow_anim(u8 i) {
     if (gSpriteEntries[i].unk27)
         gSpriteEntries[i].unk27--;
     return 1;
 }
 
-static void sub_0806B310(void) {
+static void race_scroll_bg3(void) {
     if (gFrameCounter & 1) {
         gBg3Scroll.x--;
         gBg3Scroll.y++;
     }
 }
 
-void update_sprite_animations_0806B334(void) {
+void race_step_sprite_anims(void) {
     u8 i;
 
     for (i = 0; i < 20; i++) {
         struct SpriteEntry *s = &gSpriteEntries[i];
         if (s->unk21 != 0) {
-            const struct SpriteAnimFrame *tbl = gUnk_08485D5C;
+            const struct SpriteAnimFrame *tbl = gRaceSpriteAnims;
             if (tbl[s->unk21].duration <= s->unk27++) {
                 s->unk27 = 0;
                 s->unk21 = tbl[s->unk21].next;
@@ -1110,8 +1147,9 @@ void update_sprite_animations_0806B334(void) {
     }
 }
 
-static void sprite_animation_dispatch(u8 sprite, u8 type, u8 a, u8 b) {
-    if (type == 0) {
+// Start motion `motion` (0 stops it) on a sprite that has none; arg and arg2 depend on the motion.
+static void race_set_sprite_motion(u8 sprite, u8 motion, u8 arg, u8 arg2) {
+    if (motion == 0) {
         gSpriteEntries[sprite].unk20 = 0;
         gSpriteEntries[sprite].unk21 = 0;
         gSpriteEntries[sprite].unk22 = 0;
@@ -1121,68 +1159,68 @@ static void sprite_animation_dispatch(u8 sprite, u8 type, u8 a, u8 b) {
     }
     if (gSpriteEntries[sprite].unk20 != 0)
         return;
-    switch (type) {
+    switch (motion) {
     case 1:
         gSpriteEntries[sprite].unk20 = 1;
         gSpriteEntries[sprite].unk21 = 1;
-        gSpriteEntries[sprite].unk22 = a;
-        gSpriteEntries[sprite].unk23 = b;
+        gSpriteEntries[sprite].unk22 = arg;
+        gSpriteEntries[sprite].unk23 = arg2;
         gSpriteEntries[sprite].unk30 = 0x33;
-        gSpriteEntries[sprite].unk6 = gUnk_08485D5C[1].frame;
+        gSpriteEntries[sprite].unk6 = gRaceSpriteAnims[1].frame;
         break;
     case 2:
         gSpriteEntries[sprite].unk20 = 2;
         gSpriteEntries[sprite].unk21 = 3;
-        gSpriteEntries[sprite].unk22 = a >> 1;
+        gSpriteEntries[sprite].unk22 = arg >> 1;
         gSpriteEntries[sprite].unk30 = 0x33;
-        gSpriteEntries[sprite].unk6 = gUnk_08485D5C[3].frame;
+        gSpriteEntries[sprite].unk6 = gRaceSpriteAnims[3].frame;
         break;
     case 3:
         gSpriteEntries[sprite].unk20 = 3;
         gSpriteEntries[sprite].unk21 = 7;
-        gSpriteEntries[sprite].unk22 = a >> 1;
+        gSpriteEntries[sprite].unk22 = arg >> 1;
         gSpriteEntries[sprite].unk30 = 0x33;
-        gSpriteEntries[sprite].unk6 = gUnk_08485D5C[7].frame;
+        gSpriteEntries[sprite].unk6 = gRaceSpriteAnims[7].frame;
         break;
     case 4:
         gSpriteEntries[sprite].unk20 = 4;
         gSpriteEntries[sprite].unk21 = 0xB;
-        gSpriteEntries[sprite].unk22 = a;
+        gSpriteEntries[sprite].unk22 = arg;
         gSpriteEntries[sprite].unk30 = 0x100;
-        gSpriteEntries[sprite].unk6 = gUnk_08485D5C[0xB].frame;
+        gSpriteEntries[sprite].unk6 = gRaceSpriteAnims[0xB].frame;
         break;
     case 5:
         gSpriteEntries[sprite].unk20 = 5;
         gSpriteEntries[sprite].unk21 = 0xF;
-        gSpriteEntries[sprite].unk22 = a;
+        gSpriteEntries[sprite].unk22 = arg;
         gSpriteEntries[sprite].unk30 = 0x107;
-        gSpriteEntries[sprite].unk6 = gUnk_08485D5C[0xF].frame;
+        gSpriteEntries[sprite].unk6 = gRaceSpriteAnims[0xF].frame;
         break;
     case 6:
         gSpriteEntries[sprite].unk20 = 6;
         gSpriteEntries[sprite].unk21 = 0;
-        gSpriteEntries[sprite].unk22 = a;
+        gSpriteEntries[sprite].unk22 = arg;
         gSpriteEntries[sprite].unk30 = 0x10B;
         gSpriteEntries[sprite].unk6 = gSpriteEntries[sprite].unk30;
         break;
     case 7:
         gSpriteEntries[sprite].unk20 = 7;
         gSpriteEntries[sprite].unk21 = 0;
-        gSpriteEntries[sprite].unk30 = a + 0x108;
+        gSpriteEntries[sprite].unk30 = arg + 0x108;
         gSpriteEntries[sprite].unk6 = gSpriteEntries[sprite].unk30;
         break;
     case 8:
         gSpriteEntries[sprite].unk20 = 8;
         gSpriteEntries[sprite].unk21 = 0;
-        gSpriteEntries[sprite].unk23 = b;
-        gSpriteEntries[sprite].unk30 = a + 0x10C;
+        gSpriteEntries[sprite].unk23 = arg2;
+        gSpriteEntries[sprite].unk30 = arg + 0x10C;
         gSpriteEntries[sprite].unk6 = gSpriteEntries[sprite].unk30;
         break;
     case 10:
         gSpriteEntries[sprite].unk20 = 10;
-        gSpriteEntries[sprite].unk21 = a * 4 + 0x14;
+        gSpriteEntries[sprite].unk21 = arg * 4 + 0x14;
         gSpriteEntries[sprite].unk27 = 0;
-        gSpriteEntries[sprite].unk30 = a * 12 + 0x6F;
+        gSpriteEntries[sprite].unk30 = arg * 12 + 0x6F;
         gSpriteEntries[sprite].unk6 = gSpriteEntries[sprite].unk30;
         break;
     }

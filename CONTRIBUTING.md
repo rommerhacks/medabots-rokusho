@@ -510,12 +510,12 @@
 * `bool32` sprite / state handlers whose original falls through to `movs r0, #1` and branches to
   `movs r0, #0`: write the FALSE case first (`if (a < b) return FALSE; return TRUE;`, or
   `if (x > 0x8F) { ...; return FALSE; } return TRUE;`). The mirrored `if (a >= b) return TRUE;`
-  flips the branch (race sprite handlers sub_0806B014 .. sub_0806B124).
+  flips the branch (race sprite handlers race_motion_move_right .. race_motion_shrink_spin).
 * `ldr rB, =gSpriteEntries` **before** `lsls rI, sprite, #6`: index the global in every statement
   (`gSpriteEntries[sprite].unk2 += 2;`); a `struct SpriteEntry *s = &gSpriteEntries[sprite]` local
-  computes the shift first (sub_0806AFA0, update_sprite_animations_tick_0806AF40).
+  computes the shift first (race_motion_hop_in, race_run_sprite_motions).
 * `x = c ? 1 : 2;` into a struct field reached through a pointer local loads the pointer before the
-  test; an `if` with a temporary loads it after (sub_08069158).
+  test; an `if` with a temporary loads it after (race_exit).
 * A local array initializer that the original clears with `bl memset` (`custom_memset`) and then
   fills element by element: write **every** element, zeros included
   (`u16 pal[16] = {0, 0x6FFF, ..., 0, 0, 0}`). agbcc only takes the clear-then-store path when 3/4
@@ -527,10 +527,10 @@
   (text_scroll_lines).
 * A ROM table that the original reloads after unrelated stores (outgoing stack arguments, struct
   fields) is declared without `const`: agbcc keeps loads from `const` arrays live across stores and
-  CSEs them (gUnk_08485CC4, divide_by_3 / update_battle_bot_damage_animations).
+  CSEs them (gRaceRunnerSlots, race_refresh_runner_sprite / race_update_finished_runners).
 * A `u16`/`u32` zero on the stack whose address is taken *before* the zero is materialized
   (`add r1, sp, #4; movs r0, #0; strh r0, [r1]`): declare it `vu16` / `vu32`
-  (init_battle_bg_layer1, load_bg_tilemaps_and_palette).
+  (race_load_track_status_bar, race_load_frame_bgs).
 * `s->unk84++` through a struct pointer vs `(*n)++` through a `u8 *` local change where a following
   zero constant is materialized (text_scroll_fade_in).
 * Two values read from the same struct in one function where the original loads the struct base
@@ -538,15 +538,15 @@
   struct T *m = &b[gIdx];` (medal_transform_flash_in).
 * Unsolved: `x - (y - k)` computed as `subs r1, #k; subs r1, rX, r1` in the original; agbcc folds
   every spelling tried into `(x + k) - y` (`-((y - k) - x)`, casts to `u32`, `+ -k`)
-  (divide_by_3, sub_08069A68, update_battle_bot_damage_animations).
-  Possible fix (session 69): update_battle_bot_death_animations gets `i * 3 - (stage - 1)` right with a
+  (race_refresh_runner_sprite, race_place_runner, race_update_finished_runners).
+  Possible fix (session 69): race_update_next_runners gets `i * 3 - (stage - 1)` right with a
   `static inline int sub1(int x) { return x - 1; }` helper (`i * 3 - sub1(stage)`), or an assignment
   inside the argument (`i * 3 - (t = stage - 1)`). Try it on the three above.
 * A `static inline` helper also stops gcc hoisting a loop-invariant address out of a loop
-  (`base += col * 2; return row * 64 + base;`, write_tilemap_tiles_dma).
+  (`base += col * 2; return row * 64 + base;`, race_draw_tile_block).
 * An argument passed without truncation (`i + 20` with no `lsls/lsrs #24`) to a function whose
   prototype takes `u8`: the original saw an `int` / unprototyped declaration; call through a
-  `((void (*)())f)(...)` cast (update_battle_bot_entry_animations).
+  `((void (*)())f)(...)` cast (race_update_runners).
 * `for (i = 0; i < 5u; i++)` / `i < sizeof(arr)` (unsigned bound) gives `bls` instead of `ble`
   (text_scroll_init).
 * **agbcc pads every union (and struct) to a multiple of 4 bytes.** A `union { u16 h; u8 b; }` at

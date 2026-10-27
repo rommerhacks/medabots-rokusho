@@ -160,24 +160,24 @@ gUnk_08485C7C:
 gRaceSubStates:
 	.incbin "baserom.gba", 0x485C90, 0x34
 
-	.global gUnk_08485CC4
-gUnk_08485CC4:
+	.global gRaceRunnerSlots
+gRaceRunnerSlots:
 	.incbin "baserom.gba", 0x485CC4, 0x9
 
-	.global gUnk_08485CCD
-gUnk_08485CCD:
+	.global gRaceRivalPace
+gRaceRivalPace:
 	.incbin "baserom.gba", 0x485CCD, 0x16
 
-	.global gUnk_08485CE3
-gUnk_08485CE3:
+	.global gRaceLegDelays
+gRaceLegDelays:
 	.incbin "baserom.gba", 0x485CE3, 0x4D
 
-	.global gUnk_08485D30
-gUnk_08485D30:
+	.global gRaceSpriteMotions
+gRaceSpriteMotions:
 	.incbin "baserom.gba", 0x485D30, 0x2C
 
-	.global gUnk_08485D5C
-gUnk_08485D5C:
+	.global gRaceSpriteAnims
+gRaceSpriteAnims:
 	.incbin "baserom.gba", 0x485D5C, 0x100
 
 	.global gBombGameStates
@@ -264,12 +264,12 @@ gWeeklySpriteEffects:
 gWeeklyLectureSteps:
 	.incbin "baserom.gba", 0x486138, 0x28
 
-	.global gUnk_08486160
-gUnk_08486160:
+	.global gRaces
+gRaces:
 	.incbin "baserom.gba", 0x486160, 0x388
 
-	.global gUnk_084864E8
-gUnk_084864E8:
+	.global gRaceMessages
+gRaceMessages:
 	.incbin "baserom.gba", 0x4864E8, 0xA04
 
 	.global gUnk_08486EEC

@@ -1,35 +1,35 @@
 #ifndef GUARD_MINIGAME_RACE_H
 #define GUARD_MINIGAME_RACE_H
 
-// Mode-3 state 4: race minigame
+// Mode-3 state 4: the Medaroad race minigame (three teams of three Medabots run a relay; the player mashes A).
 
-void divide_by_3(u8 a, u8 b); // guess: refreshes racer a's 4-part sprite group at its current position (not a divide)
-void sub_08068DA0(void);
-void sub_08068CF4(void);
-void sub_08068D74(void);
-void sub_08068FD4(void);
-void sub_0806904C(void);
-void race_update_racer_anim_counters(
-    void); // per racer: gUnk_03006FE0[i] counts frames, steps the racer sprite's unk1A at the gUnk_08485CE3 delay
-bool32 sub_08069F80(void);
-bool32 sub_0806A4C0(void);
-void update_sprite_animations_tick_0806AF40(void);
-void update_sprite_animations_0806B334(void);
-void clear_sprite_entry(u8 sprite); // zeroes gSpriteEntries[sprite] (0x40 bytes)
-void init_battle_field_screen(void);
-void init_battle_bg_layer1(void);
-void write_tilemap_tiles_dma(u8 a, u8 b, u8 c);
-void load_battle_sprite_graphics(void);
-void init_battle_background_layers(void);
-void load_bg_tilemaps_and_palette(void);
-void update_battle_icon_rotation(void);
-void update_battle_bot_entry_animations(void);
 void race_dispatch_substate(void); // gRaceSubStates[gGameSubState]()
-void sub_08069000(void);
+void race_wait_fade_in(void);
+void race_announce_field(void);
+void race_open_team_select(void);
+void race_introduce_teams(void);
+void race_init_track(void);
+void race_start_signal(void);
 void race_update(void); // race sub-state 9: the race itself, every frame (runtime-checked)
-void sub_080690C4(void);
-void sub_08069114(void);
-void sub_08069158(void);
-void get_entity_speed_value(void);
+void race_init_results(void);
+void race_show_results(void);
+void race_exit(void);
+
+void race_load_leader_portraits(void);
+void race_load_track_screen(void);
+void race_load_track_status_bar(void);
+void race_draw_tile_block(u8 block, u8 x, u8 y);
+void race_load_frame_bgs(void);
+void race_load_character_sprites(void);
+void race_refresh_runner_sprite(u8 idx, u8 anim);
+void race_pick_field(void);
+bool32 race_introduce_teams_step(void);
+bool32 race_start_signal_step(void);
+void race_update_speeds(void);
+void race_advance_runners(void);
+void race_update_runners(void);
+void race_run_sprite_motions(void);
+void race_step_sprite_anims(void);
+void clear_sprite_entry(u8 sprite); // zeroes gSpriteEntries[sprite] (0x40 bytes)
 
 #endif // GUARD_MINIGAME_RACE_H
