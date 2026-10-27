@@ -8,7 +8,7 @@ the source are still unconfirmed.
 
 `AgbMain` (`src/engine/main.c`) sets up the hardware, interrupts, the sound engine and the serial link, then
 runs one iteration per VBlank: `read_keys`, the play-time counter, the link status, then the handler of the
-current **game mode**, `gUnk_083ABE18[gGameMode]`, then the OAM copy and the outgoing link packet.
+current **game mode**, `gGameModeHandlers[gGameMode]`, then the OAM copy and the outgoing link packet.
 
 The current screen is picked by three bytes:
 

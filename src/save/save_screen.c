@@ -237,7 +237,7 @@ void save_screen_show_failed(void) {
 }
 
 void init_linking_mode(void) {
-    gUnk_03005030 = 0;
+    gLinkMultiplayerActive = 0;
     serial_multiplayer_init();
     VBlankIntrWait();
     REG_BLDCNT = 0xFF;

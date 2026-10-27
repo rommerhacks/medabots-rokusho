@@ -16,8 +16,8 @@ void serial_link_init(void) {
     REG_SIOCNT |= 0x4003;
     zero = 0;
     CpuSet(&zero, &gSioLink, 0x05000036);
-    CpuSet(link_buffer_swap_arm, gUnk_03005250, 0x04000010);
-    CpuSet(serial_multiplayer_transfer_handler, gUnk_03005050, 0x04000048);
+    CpuSet(link_buffer_swap_arm, gLinkBufferSwapIwram, 0x04000010);
+    CpuSet(serial_multiplayer_transfer_handler, gSerialTransferHandlerIwram, 0x04000048);
     gSioLink.sendIdx = 6;
     gSioLink.recvIdx = 6;
     gSioLink.nextSend = &gSioLink.sendBuf[0];

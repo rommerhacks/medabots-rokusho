@@ -6,9 +6,9 @@
 // Eight sprites (spr[0..7]) bob on a sine wave around y = 80: sprite k uses phase t - (7 - k) * 0x80,
 // amplitude gMenuWork->shake_amplitude (counts down each call), speed shake_speed (counts up). Returns 1 once the
 // amplitude is 0. The divide by d (not a constant) keeps the __divsi3 call of the original.
-#define WAVE_X(a) (gUnk_080750E0[(a) & 0x3FF] / d * amp >> 3)
+#define WAVE_X(a) (gSineTableQ14[(a) & 0x3FF] / d * amp >> 3)
 #define SET_WAVE_Y(k, a)                                                                                               \
-    if (gUnk_080750E0[(a) & 0x3FF] < 0)                                                                                \
+    if (gSineTableQ14[(a) & 0x3FF] < 0)                                                                                \
         spr[k].unk4 = WAVE_X(a) + mid;                                                                                 \
     else                                                                                                               \
         spr[k].unk4 = mid - WAVE_X(a)
@@ -30,7 +30,7 @@ static u32 sprite_wave_bob8(struct SpriteEntry *spr) {
     ph[6] = ph[0] - 0x300;
     ph[7] = ph[0] - 0x380;
 
-    if (gUnk_080750E0[ph[7] & 0x3FF] < 0)
+    if (gSineTableQ14[ph[7] & 0x3FF] < 0)
         spr[0].unk4 = WAVE_X(ph[7]) + mid;
     else
         spr[0].unk4 = -WAVE_X(ph[7]) + mid;
@@ -146,7 +146,7 @@ void keys_update_from(u16 keys) {
 }
 
 static void link_poll_keys(void) {
-    if (gUnk_03005030 != 0) {
+    if (gLinkMultiplayerActive != 0) {
         if (gUnk_03000B90)
             keys_update_from(gUnk_03005010.unk8[0][0]);
         else {

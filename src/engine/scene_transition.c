@@ -1,10 +1,10 @@
-// Mode-3 dispatcher (gUnk_08485C48: boot logos, intro, race, bomb game, Medabots Weekly...) and the screen
+// Mode-3 dispatcher (gGameStateHandlers: boot logos, intro, race, bomb game, Medabots Weekly...) and the screen
 // transitions those scenes share: random tile-mosaic in / out effects and the fade / wipe step tables
-// gUnk_08485C68 (scene_transition_step_080686F4) and gUnk_08485C7C (execute_scene_step).
+// gSceneTransitionSteps (scene_transition_step_080686F4) and gSceneSteps (execute_scene_step).
 #include "global.h"
 
 void dispatch_game_mode_handler(void) {
-    gUnk_08485C48[gGameState]();
+    gGameStateHandlers[gGameState]();
 }
 
 void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c) {
@@ -13,9 +13,9 @@ void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c) {
     u16 pal[0x200];
     int i;
 
-    gUnk_03000000 = 0;
+    gSceneStepFrames = 0;
     gUnk_03000028 = c;
-    gUnk_03000004 = a;
+    gSceneStep = a;
     gUnk_03000005 = b;
     if (b == 0)
         gUnk_03000005 = 1;
@@ -67,9 +67,9 @@ void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c) {
     u16 map[0x280];
     int i;
 
-    gUnk_03000000 = b;
+    gSceneStepFrames = b;
     gUnk_03000028 = c;
-    gUnk_03000004 = a;
+    gSceneStep = a;
     gUnk_03000005 = b;
     if (b == 0)
         gUnk_03000005 = 1;
@@ -117,22 +117,22 @@ static void scene_restore_palette(void) {
 }
 
 bool32 scene_transition_step_080686F4(void) {
-    if (gUnk_08485C68[gUnk_03000004]()) {
-        gUnk_03000000 = 0;
-        if (gUnk_03000004 == 3)
+    if (gSceneTransitionSteps[gSceneStep]()) {
+        gSceneStepFrames = 0;
+        if (gSceneStep == 3)
             REG_DISPCNT &= 0xFEFF;
         return TRUE;
     }
-    gUnk_03000000++;
+    gSceneStepFrames++;
     return FALSE;
 }
 
 bool32 execute_scene_step(void) {
-    if (gUnk_08485C7C[gUnk_03000004]()) {
-        gUnk_03000000 = 0;
+    if (gSceneSteps[gSceneStep]()) {
+        gSceneStepFrames = 0;
         return TRUE;
     }
-    gUnk_03000000++;
+    gSceneStepFrames++;
     return FALSE;
 }
 
@@ -141,7 +141,7 @@ bool32 scene_step_none(void) {
 }
 
 bool32 scene_step_fade_in_bldy(void) {
-    s32 *c = &gUnk_03000000;
+    s32 *c = &gSceneStepFrames;
     u8 *np = &gUnk_03000005;
     u8 n = *np;
     s32 t = *c;
@@ -158,7 +158,7 @@ bool32 scene_step_wipe_clear_bg0(void) {
     u8 *np;
     s32 t;
     REG_DISPCNT |= 0x100;
-    c = &gUnk_03000000;
+    c = &gSceneStepFrames;
     np = &gUnk_03000005;
     {
         u8 n = *np;
@@ -178,7 +178,7 @@ bool32 scene_step_wipe_clear_bg0(void) {
 }
 
 bool32 scene_step_palette_fade_in(void) {
-    s32 *c = &gUnk_03000000;
+    s32 *c = &gSceneStepFrames;
     s32 n = gUnk_03000005;
     s32 m = n * 32;
     s32 t = *c;
@@ -199,7 +199,7 @@ bool32 scene_step_palette_fade_in(void) {
 }
 
 bool32 scene_step_fade_out_bldy(void) {
-    s32 *c = &gUnk_03000000;
+    s32 *c = &gSceneStepFrames;
     u8 *np = &gUnk_03000005;
     u8 n = *np;
     s32 t = *c;
@@ -214,7 +214,7 @@ bool32 scene_step_wipe_fill_bg0(void) {
     u16 fill = 0x1111;
     s32 *c;
     u8 *np;
-    c = &gUnk_03000000;
+    c = &gSceneStepFrames;
     if (*c == 0)
         REG_DISPCNT |= 0x100;
     np = &gUnk_03000005;
@@ -230,7 +230,7 @@ bool32 scene_step_wipe_fill_bg0(void) {
 }
 
 bool32 scene_step_palette_fade_out(void) {
-    s32 *c = &gUnk_03000000;
+    s32 *c = &gSceneStepFrames;
     s32 n = gUnk_03000005;
     s32 m = n * 32;
     s32 t = *c;

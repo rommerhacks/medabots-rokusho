@@ -101,7 +101,7 @@ void init_enemy_bot_medal(u8 i) {
         gBattleBots[i + 3].medal.rotation[k * 2 + 1] = gBattleWork.encounterBots[i].unk6[k] & 0xF;
     }
     for (k = 0; k <= 7; k++) {
-        v = gUnk_083AD200[gBattleBots[i + 3].medal.attribute * 8 + k];
+        v = gMedalAttributeBaseSkills[gBattleBots[i + 3].medal.attribute * 8 + k];
         lvl = gBattleBots[i + 3].medal.level >> 1;
         if (lvl)
             v *= lvl;
@@ -317,7 +317,7 @@ void battle_bot_select_medaforce(u32 rec, u32 part) {
 }
 
 void battle_ai_roll_part_order(void) {
-    memcpy_bytes_08041D04(gUnk_083AD2F0[rng_next_byte() & 0x1F], gBattleWork.unk64, 4);
+    memcpy_bytes_08041D04(gAiPartOrders[rng_next_byte() & 0x1F], gBattleWork.unk64, 4);
 }
 
 static u32 battle_part_unusable(u32 rec, u32 part) {

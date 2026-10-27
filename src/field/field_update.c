@@ -613,7 +613,7 @@ void load_room_graphics(void) {
     gFieldWork.unk806 = field_tilemap_header_word(gFieldWork.area_id, 1);
     clear_vram_bg2_tiles();
     memzero_bytes(gFieldWork.tile_map, 0x400);
-    memcpy_u8(gUnk_084045A8[gFieldWork.area_id], gFieldWork.tile_map,
+    memcpy_u8(gAreaCollisionMaps[gFieldWork.area_id], gFieldWork.tile_map,
               (gFieldWork.map_height >> 1) * (gFieldWork.map_width >> 1));
     tbl = (const void *const *)gUnk_083F92F4;
     if (area_gfx(tbl, gFieldWork.area_id * 3) != NULL && gUnk_083F8CF4[gFieldWork.area_id] != NULL) {

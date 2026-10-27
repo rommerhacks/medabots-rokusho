@@ -533,7 +533,7 @@ void prize_game_transfer_part(void) {
     else
         team_lose_equipped_part(gBattleWork.prizeMedal, (gBattleWork.prizeSlots + 0)[gBattleWork.prizeRow]);
     memcpy_bytes_08041D04(
-        (const void *)gUnk_083BB9CC[0][gBattleWork.prizePart * 4 + gBattleWork.prizeSlots[gBattleWork.prizeRow]],
+        (const void *)gMedapartNames[0][gBattleWork.prizePart * 4 + gBattleWork.prizeSlots[gBattleWork.prizeRow]],
         gGameWork.textBuf, 0xF);
     gGameSubState++;
 }
@@ -899,7 +899,7 @@ u32 link_error_check(void) {
 }
 
 void soft_reset_to_title(void) {
-    gUnk_03005030 = 0;
+    gLinkMultiplayerActive = 0;
     serial_multiplayer_init();
     VBlankIntrWait();
     REG_SOUNDCNT_X = 0;

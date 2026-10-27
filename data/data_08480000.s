@@ -104,8 +104,8 @@ gUnk_08483E8C:
 gMedalRenameStates:
 	.incbin "baserom.gba", 0x483EB4, 0x2C8
 
-	.global gUnk_0848417C
-gUnk_0848417C:
+	.global gSceneTextLineCounts
+gSceneTextLineCounts:
 	.incbin "baserom.gba", 0x48417C, 0x2C8
 
 	.global gItemNames
@@ -144,16 +144,16 @@ gUnk_08485788:
 gUnk_08485BD8:
 	.incbin "baserom.gba", 0x485BD8, 0x70
 
-	.global gUnk_08485C48
-gUnk_08485C48:
+	.global gGameStateHandlers
+gGameStateHandlers:
 	.incbin "baserom.gba", 0x485C48, 0x20
 
-	.global gUnk_08485C68
-gUnk_08485C68:
+	.global gSceneTransitionSteps
+gSceneTransitionSteps:
 	.incbin "baserom.gba", 0x485C68, 0x14
 
-	.global gUnk_08485C7C
-gUnk_08485C7C:
+	.global gSceneSteps
+gSceneSteps:
 	.incbin "baserom.gba", 0x485C7C, 0x14
 
 	.global gRaceSubStates
@@ -200,8 +200,8 @@ gTitleSpriteEffects:
 gTitleSpriteEffectPeriods:
 	.incbin "baserom.gba", 0x485F14, 0x8
 
-	.global gUnk_08485F1C
-gUnk_08485F1C:
+	.global gStoryIntroHandlers
+gStoryIntroHandlers:
 	.incbin "baserom.gba", 0x485F1C, 0x1C
 
 	.global gBootLogosSubStates
@@ -272,24 +272,24 @@ gRaces:
 gRaceMessages:
 	.incbin "baserom.gba", 0x4864E8, 0xA04
 
-	.global gUnk_08486EEC
-gUnk_08486EEC:
+	.global gStoryIntroTexts
+gStoryIntroTexts:
 	.incbin "baserom.gba", 0x486EEC, 0x3F0
 
 	.global gWeeklyMessages
 gWeeklyMessages:
 	.incbin "baserom.gba", 0x4872DC, 0x4C
 
-	.global gUnk_08487328
-gUnk_08487328:
+	.global gStoryIntroTiles
+gStoryIntroTiles:
 	.incbin "baserom.gba", 0x487328, 0x30
 
-	.global gUnk_08487358
-gUnk_08487358:
+	.global gStoryIntroTilemaps
+gStoryIntroTilemaps:
 	.incbin "baserom.gba", 0x487358, 0x30
 
-	.global gUnk_08487388
-gUnk_08487388:
+	.global gStoryIntroPalettes
+gStoryIntroPalettes:
 	.incbin "baserom.gba", 0x487388, 0x30
 
 	.global gSoundFifoAddrs

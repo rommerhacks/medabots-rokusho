@@ -1231,11 +1231,11 @@ static void medabot_detail_draw_medal_kind_name(void) {
     }
 }
 
-// Medapart names (gUnk_083BB9CC[part][kind]: head, right arm, left arm, legs) at rows 11-17 (runtime-checked).
+// Medapart names (gMedapartNames[part][kind]: head, right arm, left arm, legs) at rows 11-17 (runtime-checked).
 static void medabot_detail_draw_head_name(void) {
     clear_sprite_table_mask(0x1E, 14);
     if (gGameWork.shownHead < 120) {
-        memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gGameWork.shownHead * 4 + 0], gGameWork.textBuf, 15);
+        memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownHead * 4 + 0], gGameWork.textBuf, 15);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x1E, 0x12, 11, 10, 13, 1, 2);
     } else {
         fill_text_blank(gGameWork.textBuf, 13);
@@ -1264,7 +1264,7 @@ static void medabot_detail_draw_head_skill_icon(void) {
 static void medabot_detail_draw_rarm_name(void) {
     clear_sprite_table_mask(0x2C, 14);
     if (gGameWork.shownRightArm < 120) {
-        memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gGameWork.shownRightArm * 4 + 1], gGameWork.textBuf, 15);
+        memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownRightArm * 4 + 1], gGameWork.textBuf, 15);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x2C, 0x12, 13, 10, 13, 1, 2);
     } else {
         fill_text_blank(gGameWork.textBuf, 13);
@@ -1292,7 +1292,7 @@ static void medabot_detail_draw_rarm_skill_icon(void) {
 static void medabot_detail_draw_larm_name(void) {
     clear_sprite_table_mask(0x3A, 14);
     if (gGameWork.shownLeftArm < 120) {
-        memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gGameWork.shownLeftArm * 4 + 2], gGameWork.textBuf, 15);
+        memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownLeftArm * 4 + 2], gGameWork.textBuf, 15);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x3A, 0x12, 15, 10, 13, 1, 2);
     } else {
         fill_text_blank(gGameWork.textBuf, 13);
@@ -1320,7 +1320,7 @@ static void medabot_detail_draw_larm_skill_icon(void) {
 static void medabot_detail_draw_legs_name(void) {
     clear_sprite_table_mask(0x48, 14);
     if (gGameWork.shownLegs < 120) {
-        memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gGameWork.shownLegs * 4 + 3], gGameWork.textBuf, 15);
+        memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownLegs * 4 + 3], gGameWork.textBuf, 15);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x48, 0x12, 17, 10, 13, 1, 2);
     } else {
         fill_text_blank(gGameWork.textBuf, 13);

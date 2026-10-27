@@ -137,8 +137,8 @@ void title_screen_load_graphics(void) {
     REG_BG1CNT = 0xE03;
     REG_BG2CNT = 0x6F8A;
     LZ77UnCompVram(gUnk_087ADDDC, (void *)(VRAM + 0x10000));
-    DmaSet(3, gUnk_0807C320, PLTT + 0x200, 0x80000060);
-    DmaSet(3, gUnk_0807C320 + 0x60, &gSceneWork.unkC, 0x8000000E);
+    DmaSet(3, gTitleObjPalettes, PLTT + 0x200, 0x80000060);
+    DmaSet(3, gTitleObjPalettes + 0x60, &gSceneWork.unkC, 0x8000000E);
     setup_screen_transition_effect_080682CC(2, 1, 0);
     gSceneWork.nextSubState = 5;
     gGameSubState = 1;

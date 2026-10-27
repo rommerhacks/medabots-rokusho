@@ -129,7 +129,7 @@ struct SceneWork {
     u16 unk6;
     s32 timer;             // frame counter of the current step
     union {                // 4 bytes: agbcc pads unions to a word
-        u16 h;             // story intro: page (graphics gUnk_08487328 / text gUnk_08486EEC)
+        u16 h;             // story intro: page (graphics gStoryIntroTiles / text gStoryIntroTexts)
         u16 afterSubState; // opening intro: sub-state to run after the next silhouette / scan step
         u8 b;              // boot logos: nonzero once START may skip them (boot_logos_check_skip)
         s8 s[4];           // bomb minigame: roundBombs / dropInterval / bombsLeft (struct BombGameWork)
@@ -539,7 +539,7 @@ struct EncounterBot {
     u8 fillerB;
 };
 
-// BG scroll offsets: gBg0Scroll..gBg3Scroll, added to gUnk_03002C2C and written to BGxHOFS/VOFS by vblank_body.
+// BG scroll offsets: gBg0Scroll..gBg3Scroll, added to gBgScrollOffset and written to BGxHOFS/VOFS by vblank_body.
 struct Vec16 {
     s16 x;
     s16 y;
@@ -635,7 +635,7 @@ struct BattleWork {
     u8 targetSideFirst; // first record of the target side (battle_enemy_side_first_record, medaforce_side_bolt_calc)
     u8 aiCandidates[3]; // Robattle AI: candidate targets (record + 1, 0 = none; ai_target_attack)
     u8 unk64[4];        // filled by get_bot_part_effective_values (robattle_status_screen_init); AI part order from
-                        // gUnk_083AD2F0 (battle_ai_roll_part_order)
+                        // gAiPartOrders (battle_ai_roll_part_order)
     u8 filler68[0xC];
     u8 unk74[8]; // copied from gUnk_083C3B5C[battlefield] (load_battle_script_entry_b); [3] nonzero: [4] << 8 | [5] ->
                  // REG_BLDALPHA
@@ -914,7 +914,7 @@ struct FieldDebugWork {
     s8 sound_id;   // LV page: SE
 };
 
-// Per-area record list (gUnk_0840FAF4), ends at mask 0. A record applies when the player steps
+// Per-area record list (gAreaExits), ends at mask 0. A record applies when the player steps
 // from a neighbouring tile onto (x, y) in a direction whose bit is set in mask.
 struct MapExit {
     u8 x;

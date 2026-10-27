@@ -64,10 +64,10 @@ void medal_transform_init(void) {
     REG_BG1CNT = 0x1E05;
     REG_BG2CNT = 0x3D06;
     REG_BG3CNT = 0x1C07;
-    decompress_and_write_tilemap(gUnk_087A7F98, REG_BG1CNT);
-    decompress_and_write_tilemap(gUnk_087A80E8, REG_BG2CNT);
-    decompress_and_write_tilemap(gUnk_087A8324, REG_BG3CNT);
-    size = dma3_copy_or_decompress(gUnk_087A46F8, (void *)0x02030000);
+    decompress_and_write_tilemap(gMedalSceneBg1Tilemap, REG_BG1CNT);
+    decompress_and_write_tilemap(gMedalSceneBg2Tilemap, REG_BG2CNT);
+    decompress_and_write_tilemap(gMedalSceneBg3Tilemap, REG_BG3CNT);
+    size = dma3_copy_or_decompress(gMedalSceneBgTiles, (void *)0x02030000);
     CpuFastSet((void *)0x02030000, (void *)0x06004000, (size << 9) >> 11);
     size = 0x1800;
     gMenuWork->bg_tile_base = 0xC4;
@@ -87,7 +87,7 @@ void medal_transform_init(void) {
         d = (u16 *)(bg + 0x060002C8);
         *d = t + 3;
     }
-    CpuFastSet(gUnk_087A44F8, (void *)0x0202FA00, 0x80);
+    CpuFastSet(gMedalSceneObjPalettes, (void *)0x0202FA00, 0x80);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
     CpuFastSet(gUnk_084E2E98, (void *)0x0202F800, 8);

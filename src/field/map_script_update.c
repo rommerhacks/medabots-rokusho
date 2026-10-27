@@ -983,7 +983,7 @@ void map_script_update_reload_map(void) {
     memzero_bytes(gUnk_03005664 + 0xA8, 0x90);
     restore_script_sprites();
     memzero_bytes(gFieldWork.tile_map, 0x400);
-    memcpy_u8(gUnk_084045A8[gFieldWork.area_id], gFieldWork.tile_map,
+    memcpy_u8(gAreaCollisionMaps[gFieldWork.area_id], gFieldWork.tile_map,
               (gFieldWork.map_height >> 1) * (gFieldWork.map_width >> 1));
     gFieldWork.npc_load_mode = 1;
     load_map_npc_sprites();

@@ -440,24 +440,24 @@ gUnk_087A3E64:
 gUnk_087A40A0:
 	.incbin "baserom.gba", 0x7A40A0, 0x458
 
-	.global gUnk_087A44F8
-gUnk_087A44F8:
+	.global gMedalSceneObjPalettes
+gMedalSceneObjPalettes:
 	.incbin "baserom.gba", 0x7A44F8, 0x200
 
-	.global gUnk_087A46F8
-gUnk_087A46F8:
+	.global gMedalSceneBgTiles
+gMedalSceneBgTiles:
 	.incbin "baserom.gba", 0x7A46F8, 0x38A0
 
-	.global gUnk_087A7F98
-gUnk_087A7F98:
+	.global gMedalSceneBg1Tilemap
+gMedalSceneBg1Tilemap:
 	.incbin "baserom.gba", 0x7A7F98, 0x150
 
-	.global gUnk_087A80E8
-gUnk_087A80E8:
+	.global gMedalSceneBg2Tilemap
+gMedalSceneBg2Tilemap:
 	.incbin "baserom.gba", 0x7A80E8, 0x23C
 
-	.global gUnk_087A8324
-gUnk_087A8324:
+	.global gMedalSceneBg3Tilemap
+gMedalSceneBg3Tilemap:
 	.incbin "baserom.gba", 0x7A8324, 0x5A8
 
 	.global gUnk_087A88CC
@@ -468,12 +468,12 @@ gUnk_087A88CC:
 gUnk_087A92D4:
 	.incbin "baserom.gba", 0x7A92D4, 0xEC8
 
-	.global gUnk_087AA19C
-gUnk_087AA19C:
+	.global gBombGameObjTiles
+gBombGameObjTiles:
 	.incbin "baserom.gba", 0x7AA19C, 0x3348
 
-	.global gUnk_087AD4E4
-gUnk_087AD4E4:
+	.global gRaceObjTiles
+gRaceObjTiles:
 	.incbin "baserom.gba", 0x7AD4E4, 0x8F8
 
 	.global gUnk_087ADDDC
@@ -484,40 +484,40 @@ gUnk_087ADDDC:
 gUnk_087B1CEC:
 	.incbin "baserom.gba", 0x7B1CEC, 0xFE0
 
-	.global gUnk_087B2CCC
-gUnk_087B2CCC:
+	.global gRaceBgTiles
+gRaceBgTiles:
 	.incbin "baserom.gba", 0x7B2CCC, 0xA44
 
-	.global gUnk_087B3710
-gUnk_087B3710:
+	.global gRaceBg2Tilemap
+gRaceBg2Tilemap:
 	.incbin "baserom.gba", 0x7B3710, 0x13C
 
-	.global gUnk_087B384C
-gUnk_087B384C:
+	.global gRaceBg3Tilemap
+gRaceBg3Tilemap:
 	.incbin "baserom.gba", 0x7B384C, 0x2A4
 
-	.global gUnk_087B3AF0
-gUnk_087B3AF0:
+	.global gRaceBgPalette
+gRaceBgPalette:
 	.incbin "baserom.gba", 0x7B3AF0, 0x40
 
-	.global gUnk_087B3B30
-gUnk_087B3B30:
+	.global gBombGameBgTiles
+gBombGameBgTiles:
 	.incbin "baserom.gba", 0x7B3B30, 0x157C
 
-	.global gUnk_087B50AC
-gUnk_087B50AC:
+	.global gBombGameBgTilemap1
+gBombGameBgTilemap1:
 	.incbin "baserom.gba", 0x7B50AC, 0x168
 
-	.global gUnk_087B5214
-gUnk_087B5214:
+	.global gBombGameBgTilemap2
+gBombGameBgTilemap2:
 	.incbin "baserom.gba", 0x7B5214, 0xD0
 
-	.global gUnk_087B52E4
-gUnk_087B52E4:
+	.global gBombGameBgTilemap3
+gBombGameBgTilemap3:
 	.incbin "baserom.gba", 0x7B52E4, 0x238
 
-	.global gUnk_087B551C
-gUnk_087B551C:
+	.global gBombGameBgPalettes
+gBombGameBgPalettes:
 	.incbin "baserom.gba", 0x7B551C, 0xA0
 
 	.global gUnk_087B55BC
@@ -620,8 +620,8 @@ gUnk_087C4C5C:
 gUnk_087C4DFC:
 	.incbin "baserom.gba", 0x7C4DFC, 0xC0
 
-	.global gUnk_087C4EBC
-gUnk_087C4EBC:
+	.global gRaceFieldBgTiles
+gRaceFieldBgTiles:
 	.incbin "baserom.gba", 0x7C4EBC, 0x8C
 
 	.global gUnk_087C4F48
@@ -636,8 +636,8 @@ gUnk_087C4FDC:
 gUnk_087C51C0:
 	.incbin "baserom.gba", 0x7C51C0, 0x88
 
-	.global gUnk_087C5248
-gUnk_087C5248:
+	.global gRaceFieldBgPalettes
+gRaceFieldBgPalettes:
 	.incbin "baserom.gba", 0x7C5248, 0x20
 
 	.global gUnk_087C5268
@@ -652,16 +652,16 @@ gUnk_087C5288:
 gUnk_087C52A8:
 	.incbin "baserom.gba", 0x7C52A8, 0x20
 
-	.global gUnk_087C52C8
-gUnk_087C52C8:
+	.global gRaceStatusBarTiles
+gRaceStatusBarTiles:
 	.incbin "baserom.gba", 0x7C52C8, 0x250
 
-	.global gUnk_087C5518
-gUnk_087C5518:
+	.global gRaceStatusBarTiles2
+gRaceStatusBarTiles2:
 	.incbin "baserom.gba", 0x7C5518, 0xB8
 
-	.global gUnk_087C55D0
-gUnk_087C55D0:
+	.global gRaceStatusBarPalettes
+gRaceStatusBarPalettes:
 	.incbin "baserom.gba", 0x7C55D0, 0x20
 
 	.global gUnk_087C55F0
@@ -748,28 +748,28 @@ gUnk_087D424C:
 gUnk_087D4564:
 	.incbin "baserom.gba", 0x7D4564, 0x1D5E8
 
-	.global gUnk_087F1B4C
-gUnk_087F1B4C:
+	.global gLicensedByLogoTiles
+gLicensedByLogoTiles:
 	.incbin "baserom.gba", 0x7F1B4C, 0x300
 
-	.global gUnk_087F1E4C
-gUnk_087F1E4C:
+	.global gLicensedByLogoTilemap
+gLicensedByLogoTilemap:
 	.incbin "baserom.gba", 0x7F1E4C, 0xEC
 
-	.global gUnk_087F1F38
-gUnk_087F1F38:
+	.global gLicensedByLogoPalette
+gLicensedByLogoPalette:
 	.incbin "baserom.gba", 0x7F1F38, 0x20
 
-	.global gUnk_087F1F58
-gUnk_087F1F58:
+	.global gNatsumeLogoTiles
+gNatsumeLogoTiles:
 	.incbin "baserom.gba", 0x7F1F58, 0x700
 
-	.global gUnk_087F2658
-gUnk_087F2658:
+	.global gNatsumeLogoTilemap
+gNatsumeLogoTilemap:
 	.incbin "baserom.gba", 0x7F2658, 0x180
 
-	.global gUnk_087F27D8
-gUnk_087F27D8:
+	.global gNatsumeLogoPalette
+gNatsumeLogoPalette:
 	.incbin "baserom.gba", 0x7F27D8, 0x20
 
 	.global gUnk_087F27F8

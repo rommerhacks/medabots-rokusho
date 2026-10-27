@@ -46,7 +46,7 @@ void check_flag_and_fast_copy(void) {
     oamIdx = 0;
     for (i = 0; i < count; i++) {
         obj = &gSpriteEntries[sorted[i].idx];
-        gUnk_03005048 = -1;
+        gOamAffineZoomOverride = -1;
         switch (obj->unk0 & 0xC0) {
         case 0x80:
             px = obj->unkC_8 * 4;
@@ -57,7 +57,7 @@ void check_flag_and_fast_copy(void) {
             obj->unk2 = gUnk_03005040 + px;
             obj->unk4 = gUnk_0300504C + py;
             obj->unk8 = obj->unk9 = 0x8000 / w;
-            gUnk_03005048 = 0x700000 / w;
+            gOamAffineZoomOverride = 0x700000 / w;
             break;
         case 0xC0:
             break;
@@ -82,8 +82,8 @@ void check_flag_and_fast_copy(void) {
             break;
         }
         part = frameSet[obj->unk6 & 0xFF]->parts;
-        px = -gUnk_03002C2C.x + gUnk_03001794.x + obj->unk2;
-        py = -gUnk_03002C2C.y + gUnk_03001794.y + obj->unk4;
+        px = -gBgScrollOffset.x + gUnk_03001794.x + obj->unk2;
+        py = -gBgScrollOffset.y + gUnk_03001794.y + obj->unk4;
         if ((obj->unk0 & 0xC0) == 0x40) {
             if ((u32)(py + 32) > 256) {
                 obj->unk0 |= 2;
@@ -251,9 +251,9 @@ static void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags)
     u32 n = idx * 4;
     s32 cos, sin;
 
-    if (gUnk_03005048 == -1) {
-        cos = gUnk_080750E0[(angle & 0x3FF) + 0x100];
-        sin = gUnk_080750E0[angle & 0x3FF];
+    if (gOamAffineZoomOverride == -1) {
+        cos = gSineTableQ14[(angle & 0x3FF) + 0x100];
+        sin = gSineTableQ14[angle & 0x3FF];
         if (sx == 0)
             sx = 1;
         if (sy == 0)
@@ -273,21 +273,21 @@ static void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags)
             gOamBuffer[n + 2].affineParam = DivArm(sx, -sin);
         }
     } else {
-        cos = gUnk_080750E0[(angle & 0x3FF) + 0x100] << 8;
-        sin = gUnk_080750E0[angle & 0x3FF] << 8;
+        cos = gSineTableQ14[(angle & 0x3FF) + 0x100] << 8;
+        sin = gSineTableQ14[angle & 0x3FF] << 8;
         if (flags & 0x1000) {
-            gOamBuffer[n].affineParam = DivArm(gUnk_03005048, -cos);
-            gOamBuffer[n + 1].affineParam = DivArm(gUnk_03005048, -sin);
+            gOamBuffer[n].affineParam = DivArm(gOamAffineZoomOverride, -cos);
+            gOamBuffer[n + 1].affineParam = DivArm(gOamAffineZoomOverride, -sin);
         } else {
-            gOamBuffer[n].affineParam = DivArm(gUnk_03005048, cos);
-            gOamBuffer[n + 1].affineParam = DivArm(gUnk_03005048, sin);
+            gOamBuffer[n].affineParam = DivArm(gOamAffineZoomOverride, cos);
+            gOamBuffer[n + 1].affineParam = DivArm(gOamAffineZoomOverride, sin);
         }
         if (flags & 0x2000) {
-            gOamBuffer[n + 2].affineParam = DivArm(gUnk_03005048, sin);
-            gOamBuffer[n + 3].affineParam = DivArm(gUnk_03005048, -cos);
+            gOamBuffer[n + 2].affineParam = DivArm(gOamAffineZoomOverride, sin);
+            gOamBuffer[n + 3].affineParam = DivArm(gOamAffineZoomOverride, -cos);
         } else {
-            gOamBuffer[n + 3].affineParam = DivArm(gUnk_03005048, cos);
-            gOamBuffer[n + 2].affineParam = DivArm(gUnk_03005048, -sin);
+            gOamBuffer[n + 3].affineParam = DivArm(gOamAffineZoomOverride, cos);
+            gOamBuffer[n + 2].affineParam = DivArm(gOamAffineZoomOverride, -sin);
         }
     }
 }
@@ -295,7 +295,7 @@ static void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags)
 static void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags) {
     u32 n = idx * 4;
 
-    if (gUnk_03005048 == -1) {
+    if (gOamAffineZoomOverride == -1) {
         if (flags & 0x1000) {
             gOamBuffer[n].affineParam = -0x4000 / sx;
             gOamBuffer[n + 1].affineParam = 0;
@@ -312,17 +312,17 @@ static void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags) {
         }
     } else {
         if (flags & 0x1000) {
-            gOamBuffer[n].affineParam = -0x400000 / gUnk_03005048;
+            gOamBuffer[n].affineParam = -0x400000 / gOamAffineZoomOverride;
             gOamBuffer[n + 1].affineParam = 0;
         } else {
-            gOamBuffer[n].affineParam = 0x400000 / gUnk_03005048;
+            gOamBuffer[n].affineParam = 0x400000 / gOamAffineZoomOverride;
             gOamBuffer[n + 1].affineParam = 0;
         }
         if (flags & 0x2000) {
             gOamBuffer[n + 2].affineParam = 0;
-            gOamBuffer[n + 3].affineParam = -0x400000 / gUnk_03005048;
+            gOamBuffer[n + 3].affineParam = -0x400000 / gOamAffineZoomOverride;
         } else {
-            gOamBuffer[n + 3].affineParam = 0x400000 / gUnk_03005048;
+            gOamBuffer[n + 3].affineParam = 0x400000 / gOamAffineZoomOverride;
             gOamBuffer[n + 2].affineParam = 0;
         }
     }
@@ -335,8 +335,8 @@ struct RotateSrc {
 
 // Rotates (*x, *y) by p->angle (1024 steps per turn); the table is Q14 sin, cos at +0x100.
 static void rotate_vector_2d(s32 *x, s32 *y, struct RotateSrc *p) {
-    s32 c = gUnk_080750E0[(p->angle & 0x3FF) + 0x100];
-    s32 s = gUnk_080750E0[p->angle & 0x3FF];
+    s32 c = gSineTableQ14[(p->angle & 0x3FF) + 0x100];
+    s32 s = gSineTableQ14[p->angle & 0x3FF];
     s32 x0 = *x;
     s32 y0 = *y;
 

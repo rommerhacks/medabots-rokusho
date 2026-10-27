@@ -4,12 +4,12 @@
 gData_080750D8:
 	.incbin "baserom.gba", 0x750D8, 0x8
 
-	.global gUnk_080750E0
-gUnk_080750E0:
+	.global gSineTableQ14
+gSineTableQ14:
 	.incbin "baserom.gba", 0x750E0, 0x6FC0
 
-	.global gUnk_0807C0A0
-gUnk_0807C0A0:
+	.global gBombGameObjPalettes
+gBombGameObjPalettes:
 	.incbin "baserom.gba", 0x7C0A0, 0x1C0
 
 	.global gUnk_0807C260
@@ -32,8 +32,8 @@ gUnk_0807C2C0:
 gUnk_0807C300:
 	.incbin "baserom.gba", 0x7C300, 0x20
 
-	.global gUnk_0807C320
-gUnk_0807C320:
+	.global gTitleObjPalettes
+gTitleObjPalettes:
 	.incbin "baserom.gba", 0x7C320, 0x220
 
 	.global gUnk_0807C540

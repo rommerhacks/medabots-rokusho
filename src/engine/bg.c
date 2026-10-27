@@ -100,10 +100,10 @@ static void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map) {
 static void set_bg2_affine_transform(s32 scale, u32 angle, s32 cx, s32 cy, s32 sx, s32 sy) {
     s32 pa, pb, pc, pd, x, y;
 
-    pa = Div(gUnk_080750E0[(angle & 0x3FF) + 0x100] * 4, scale);
-    pb = Div(gUnk_080750E0[(angle & 0x3FF)] * 4, scale);
-    pc = Div(-gUnk_080750E0[(angle & 0x3FF)] * 4, scale);
-    pd = Div(gUnk_080750E0[(angle & 0x3FF) + 0x100] * 4, scale);
+    pa = Div(gSineTableQ14[(angle & 0x3FF) + 0x100] * 4, scale);
+    pb = Div(gSineTableQ14[(angle & 0x3FF)] * 4, scale);
+    pc = Div(-gSineTableQ14[(angle & 0x3FF)] * 4, scale);
+    pd = Div(gSineTableQ14[(angle & 0x3FF) + 0x100] * 4, scale);
     *(vu16 *)0x04000030 = pa;
     *(vu16 *)0x04000032 = pb;
     *(vu16 *)0x04000034 = pc;
@@ -123,7 +123,7 @@ struct BgAffineLine {
 };
 
 // MATCH: the line pointer uses its own counter j (for i, j; i++, j++) so its increment lands after i++.
-// Fills the back buffer (gUnk_02030A00 on odd frames, gDecompressBuffer on even) with 160
+// Fills the back buffer (gBg2AffineScanlineBuffer2 on odd frames, gDecompressBuffer on even) with 160
 // per-scanline BG2 affine sets whose zoom shrinks as 1 / (1 + line * step) (a perspective
 // "floor" effect, Mode-7 like), then arms hblank_dma0_bg2affine for the next vblank.
 
@@ -135,10 +135,10 @@ static void compute_bg_affine_scanline_params(s32 step, u32 angle, s32 unused, s
     if (!(gFrameCounter & 1))
         buf = (struct BgAffineLine *)gDecompressBuffer;
     else
-        buf = (struct BgAffineLine *)gUnk_02030A00;
+        buf = (struct BgAffineLine *)gBg2AffineScanlineBuffer2;
     for (i = 0, j = 0; i < 160; i++, j++) {
-        pa = DivArm(i * step + 1, gUnk_080750E0[(angle & 0x3FF) + 0x100] << 7);
-        t = DivArm(i * step + 1, gUnk_080750E0[angle & 0x3FF] << 7);
+        pa = DivArm(i * step + 1, gSineTableQ14[(angle & 0x3FF) + 0x100] << 7);
+        t = DivArm(i * step + 1, gSineTableQ14[angle & 0x3FF] << 7);
         pc = -t;
         pb = t * 3;
         pd = pa * 3;
@@ -167,7 +167,7 @@ static void hblank_dma0_bg2affine(void) {
     if (gFrameCounter & 1)
         src = (u16 *)gDecompressBuffer;
     else
-        src = (u16 *)gUnk_02030A00;
+        src = (u16 *)gBg2AffineScanlineBuffer2;
     dst[0] = src[0];
     dst[1] = src[1];
     dst[2] = src[2];

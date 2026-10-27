@@ -1087,7 +1087,7 @@ struct MapObject *map_object_find_by_id(u16 id) {
 
 static void map_object_remove(struct MapObject *obj) {
     u8 *raw = (u8 *)obj;
-    const u8 *tiles = gUnk_084045A8[gFieldWork.area_id];
+    const u8 *tiles = gAreaCollisionMaps[gFieldWork.area_id];
     set_tile_data(obj->x, obj->y, tiles[obj->y * (gFieldWork.map_width >> 1) + obj->x]);
     if (obj->unk4_6) {
         sprite_entry_clear(obj->unk4_0 + 49);

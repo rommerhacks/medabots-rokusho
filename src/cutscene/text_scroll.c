@@ -1,5 +1,5 @@
 // Mode-2 state 22, entered from a field script (switch_game_mode case 8). Sub-states gUnk_080AFEA8: three
-// pages of text lines (gUnk_080AFE9C / line counts gUnk_0848417C) scroll up over a 3-D hexagon ring
+// pages of text lines (gUnk_080AFE9C / line counts gSceneTextLineCounts) scroll up over a 3-D hexagon ring
 // (engine/rings_3d.c) with song 5, then everything fades to white and the field resumes. Purpose is a guess
 // (story text). Uses text/ and engine/ helpers only.
 #include "global.h"
@@ -209,7 +209,7 @@ void text_scroll_page_start(void) {
 void text_scroll_lines(void) {
     int lines;
     update_scene_animation_frame();
-    lines = gUnk_0848417C[gMenuWork->cursor];
+    lines = gSceneTextLineCounts[gMenuWork->cursor];
     if ((u16)gMenuWork->frame % 32 == 0) {
         if (lines > gMenuWork->frame / 32) {
             text_scroll_draw_line(*gMenuWork->scene_text, (gMenuWork->frame / 32 + 0x10) & 0x1F);

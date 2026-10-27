@@ -139,7 +139,7 @@ void multiplayer_battle_sync_update(void) {
             if (gUnk_03000B90 <= 1) {
                 gGameSubState++;
                 w->frame = zero;
-                gUnk_03005030 = -1;
+                gLinkMultiplayerActive = -1;
                 return;
             }
             message_next();

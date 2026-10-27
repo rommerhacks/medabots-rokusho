@@ -176,7 +176,7 @@ bool32 check_tile_and_trigger_battle_action(u8 dir) {
 
 s32 check_room_exit_at_position(void) {
     s32 ret = -1;
-    const struct MapExit *p = gUnk_0840FAF4[gFieldWork.area_id];
+    const struct MapExit *p = gAreaExits[gFieldWork.area_id];
     s32 blocked = 0;
     s32 x = gFieldWork.player_tile_x;
     s32 y = gFieldWork.player_tile_y;

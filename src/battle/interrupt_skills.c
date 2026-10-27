@@ -842,9 +842,9 @@ void change_transform_part(void) {
 // Copies the old and the new part names into the message buffer for the change message (unkA6 0x2F).
 void change_finish(void) {
     clear_battle_sprite_slot(0x21, 2);
-    memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gBattleWork.unk11C.unk17 * 4 + gBattleWork.actorPart],
+    memcpy_bytes_08041D04((const void *)gMedapartNames[0][gBattleWork.unk11C.unk17 * 4 + gBattleWork.actorPart],
                           gGameWork.textBuf, 0xF);
-    memcpy_bytes_08041D04((const void *)gUnk_083BB9CC[0][gBattleWork.unk11A * 4 + gBattleWork.actorPart],
+    memcpy_bytes_08041D04((const void *)gMedapartNames[0][gBattleWork.unk11A * 4 + gBattleWork.actorPart],
                           gGameWork.textBuf + 0x14, 0xF);
     gBattleWork.messageId = 0x2F;
     gBattleWork.step++;

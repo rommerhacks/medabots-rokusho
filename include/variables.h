@@ -24,12 +24,13 @@ extern u32 gGameState;
 extern u32 gGameSubState;
 extern struct SpriteEntry gSpriteEntries[];
 extern struct SioLink gSioLink;
-extern s32 gUnk_03005048;       // OAM affine zoom override (-1 = off)
-extern s16 gUnk_080750E0[];     // Q14 sine table, 1024 steps per turn (cos at +0x100); not const: callers reload it
-extern u8 gUnk_02030A00[];      // second half of the BG2 per-scanline affine double buffer (first: gDecompressBuffer)
-extern u32 gUnk_03005250[0x10]; // IWRAM copy of link_buffer_swap_arm
-extern u32 gUnk_03005050[0x48]; // IWRAM copy of serial_multiplayer_transfer_handler
-extern const Func gUnk_083ABE18[]; // game mode handlers (AgbMain)
+extern s32 gOamAffineZoomOverride; // OAM affine zoom override (-1 = off)
+extern s16 gSineTableQ14[];        // Q14 sine table, 1024 steps per turn (cos at +0x100); not const: callers reload it
+extern u8
+    gBg2AffineScanlineBuffer2[]; // second half of the BG2 per-scanline affine double buffer (first: gDecompressBuffer)
+extern u32 gLinkBufferSwapIwram[0x10];        // IWRAM copy of link_buffer_swap_arm
+extern u32 gSerialTransferHandlerIwram[0x48]; // IWRAM copy of serial_multiplayer_transfer_handler
+extern const Func gGameModeHandlers[];        // game mode handlers (AgbMain)
 extern struct Unk_03005350 gUnk_03005350;
 extern struct FieldDebugWork gFieldDebug;
 extern u8 *gMapScriptData; // current map script data (banked, see read_map_script_byte)
@@ -50,9 +51,9 @@ extern u16 *gFieldTilemapBuf;
 extern struct Unk_03006D38 gUnk_03006D38;
 extern u8 gUnk_03003810;
 extern struct Unk_03005010 gUnk_03005010;
-extern s8 gUnk_03005030;               // multiplayer link active (soft_reset)
-extern vu16 gUnk_03002B90;             // bit 0: vblank handler running
-extern s8 gUnk_03002410;               // frames since the main loop last ran (vblank_irq)
+extern s8 gLinkMultiplayerActive;      // multiplayer link active (soft_reset)
+extern vu16 gVBlankFlags;              // bit 0: vblank handler running
+extern s8 gFramesSinceMainLoop;        // frames since the main loop last ran (vblank_irq)
 extern Func gIntrTable[14];            // RAM copy of gIntrTableTemplate, used by irq_dispatch_arm
 extern u32 gIntrMain[0x200];           // RAM copy of irq_dispatch_arm (the IRQ vector)
 extern Func gVBlankCallback;           // called every vblank
@@ -61,16 +62,16 @@ extern Func gHBlankCallback;           // called by hblank_irq
 extern struct OamData gOamBuffer[128]; // copied to OAM in vblank_body
 extern struct SpriteWork *gSpriteWork;
 extern struct MedabotSpriteSlot *gMedabotSpriteSlots;
-extern u32 gVBlankOamMode;          // vblank_body OAM mode (0, 2)
-extern u8 gUnk_03000434;            // bit 0: vblank_body skips the BG scroll registers
-extern struct Vec16 gUnk_03002C2C;  // scroll added to every BG layer
-extern struct Vec16 gBg0Scroll;     // BG0 scroll
-extern u16 gTilemapBaseEntry;       // added to every tilemap entry by write_tilemap_to_vram_08000E94
-extern u8 gDecompressBuffer[];      // EWRAM buffer the tilemap loaders decompress into
-extern u16 gPaletteBackup[0x200];   // OBJ then BG palette (palette_backup_from_hardware)
-extern u16 gPaletteBackupBg[0x100]; // = gPaletteBackup + 0x100
-extern u16 gPaletteBuffer[0x200];   // OBJ then BG palette (palette_buffer_upload)
-extern u16 gPaletteBufferBg[0x100]; // = gPaletteBuffer + 0x100
+extern u32 gVBlankOamMode;           // vblank_body OAM mode (0, 2)
+extern u8 gVBlankBgFlags;            // bit 0: vblank_body skips the BG scroll registers
+extern struct Vec16 gBgScrollOffset; // scroll added to every BG layer
+extern struct Vec16 gBg0Scroll;      // BG0 scroll
+extern u16 gTilemapBaseEntry;        // added to every tilemap entry by write_tilemap_to_vram_08000E94
+extern u8 gDecompressBuffer[];       // EWRAM buffer the tilemap loaders decompress into
+extern u16 gPaletteBackup[0x200];    // OBJ then BG palette (palette_backup_from_hardware)
+extern u16 gPaletteBackupBg[0x100];  // = gPaletteBackup + 0x100
+extern u16 gPaletteBuffer[0x200];    // OBJ then BG palette (palette_buffer_upload)
+extern u16 gPaletteBufferBg[0x100];  // = gPaletteBuffer + 0x100
 extern u32 gRngCounter;
 extern u32 gRngValue;
 extern u32 gRngState;
@@ -108,13 +109,13 @@ extern const struct AreaWarp *const gAreaWarps[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
 extern void (*const gMapScriptUpdates[])(void);  // per-command update handlers, run each frame while cmd_busy is set
 extern const u8 gOppositeDirection[];            // indexed by the player's facing (gSpriteEntries[47].unk21)
-extern const u8 gUnk_083D28B0[];        // indexed by gFieldWork.player_form, passed to script_sprite_begin_walk
-extern const u8 *const gUnk_084045A8[]; // per area: tile map
+extern const u8 gUnk_083D28B0[];             // indexed by gFieldWork.player_form, passed to script_sprite_begin_walk
+extern const u8 *const gAreaCollisionMaps[]; // per area: tile map
 extern const struct AreaGfx gUnk_083F92F4[];
 extern const u8 gUnk_083D2903[];
 extern const u8 gUnk_083D29E6[];
-extern const u8 gUnk_085FA104[];                    // LZ77 sprite tiles
-extern const struct MapExit *const gUnk_0840FAF4[]; // per area: 8-byte map exit records, 0xFF-terminated
+extern const u8 gUnk_085FA104[];                 // LZ77 sprite tiles
+extern const struct MapExit *const gAreaExits[]; // per area: 8-byte map exit records, 0xFF-terminated
 extern const u16 gSoundPsgNoteFreqs[];
 extern const u16 gSoundFifoVolumeMasks[];
 extern const u8 gSoundFifoVolumeBits[][16];
@@ -131,126 +132,127 @@ extern const u8 gUnk_083B6158[][16]; // 16-byte records per Medal graphic index 
                                      // skill, byte 7 icon)
 extern const u8 gMedabotSpriteNodeDescs[]; // SpriteNodeDesc pointers of the Medabot sprite tree
 extern const u32 gUnk_083BA4D8[];
-extern const u8 gUnk_083AD200[];         // 8 bytes per Medal attribute: base skill levels (init_enemy_bot_medal)
-extern const u8 gUnk_083AD2F0[][4];      // 32 part orders (0xFF = end) tried by select_bot_battle_action
-extern const u32 gUnk_083BB9CC[][4];     // Medapart name pointers: [part id][kind: head, right arm, left arm, legs]
-extern const u32 gItemNames[];           // item name strings by item id (17 bytes, item lists)
-extern vu32 *const gSoundFifoAddrs[];    // REG_FIFO_A, REG_FIFO_B
-extern vu32 *const gSoundTimerRegs[];    // REG_TM0CNT, REG_TM1CNT (sample rate timers of FIFO A / B)
-extern const u8 gSoundFifoResetBits[];   // SOUNDCNT_H high byte: FIFO A / B reset
-extern const u16 gSoundFifoEnableBits[]; // SOUNDCNT_H: FIFO A / B left+right enable
+extern const u8 gMedalAttributeBaseSkills[]; // 8 bytes per Medal attribute: base skill levels (init_enemy_bot_medal)
+extern const u8 gAiPartOrders[][4];          // 32 part orders (0xFF = end) tried by select_bot_battle_action
+extern const u32 gMedapartNames[][4];        // Medapart name pointers: [part id][kind: head, right arm, left arm, legs]
+extern const u32 gItemNames[];               // item name strings by item id (17 bytes, item lists)
+extern vu32 *const gSoundFifoAddrs[];        // REG_FIFO_A, REG_FIFO_B
+extern vu32 *const gSoundTimerRegs[];        // REG_TM0CNT, REG_TM1CNT (sample rate timers of FIFO A / B)
+extern const u8 gSoundFifoResetBits[];       // SOUNDCNT_H high byte: FIFO A / B reset
+extern const u16 gSoundFifoEnableBits[];     // SOUNDCNT_H: FIFO A / B left+right enable
 extern vu16 *const gSoundFifoDmaCnt[];
 extern const struct SoundTrackConfig gSoundTrackConfigs[13];
-extern const u8 gSoundOutputMasks[4];   // SOUNDCNT_L high byte: clears the left/right enables of PSG channel i
-extern const u8 gSoundOutputBits[4][4]; // [channel][output: 0 off, 1, 2, 3 both] SOUNDCNT_L high byte bits //
-                                        // REG_DMA1CNT_H, REG_DMA2CNT_H
-extern u8 gCurrentMedalSlot;            // gMedals slot the Medal level-up / naming screens work on
-extern s32 gRaceStep;                   // step counter of the current race sub-state
-extern u8 gRaceRunner[];                // per team: runner on the track (0-2), 3 = team finished
-extern s32 gRaceNextSubState;           // sub-state to resume after a transition (code_08067160)
-extern u8 gRaceField;                   // battlefield the race runs on (race_pick_field)
-extern u8 gRaceStaticBg;                // 0: race_dispatch_substate scrolls BG3 diagonally
-extern u8 gRaceFinishOrder[3];          // team + 1 that finished 1st, 2nd, 3rd (0 = not yet)
-extern u8 gRaceRunnerParts[3][4][3];    // [team][head/right/left/legs][runner]: part ids for the runner sprites
-extern const Func gRaceSubStates[];     // race sub-states, by gGameSubState (race_dispatch_substate)
-extern u8 gRaceLegTypes[3][3];          // per team and runner: leg type - SKILL_LEGS_AIR (gRaceLegDelays column)
-extern s32 gRaceStepTimers[3];          // per team: frames since the runner last moved (race_advance_runners)
-extern const u8 gUnk_087B2CCC[];        // race BG tiles (LZ77, race_load_frame_bgs)
-extern const u8 gUnk_087B3710[];        // race BG2 tilemap (LZ77)
-extern const u8 gUnk_087B384C[];        // race BG3 tilemap (LZ77)
-extern const u16 gUnk_087B3AF0[];       // race BG palette
-extern const u8 gUnk_087A44F8[];        // Medal scene OBJ palettes (medal_transform_init)
-extern const u32 gUnk_087A46F8[];       // Medal scene BG tiles (dma3_copy_or_decompress)
-extern const u8 gUnk_087A7F98[];        // Medal scene BG1 tilemap (decompress_and_write_tilemap)
-extern const u8 gUnk_087A80E8[];        // BG2 tilemap
-extern const u8 gUnk_087A8324[];        // BG3 tilemap
-extern const u8 gUnk_087AD4E4[];        // race OBJ tiles (LZ77, race_load_character_sprites)
-extern const u8 gUnk_087C4EBC[];        // race field BG tiles (LZ77, race_load_track_screen)
+extern const u8 gSoundOutputMasks[4];     // SOUNDCNT_L high byte: clears the left/right enables of PSG channel i
+extern const u8 gSoundOutputBits[4][4];   // [channel][output: 0 off, 1, 2, 3 both] SOUNDCNT_L high byte bits //
+                                          // REG_DMA1CNT_H, REG_DMA2CNT_H
+extern u8 gCurrentMedalSlot;              // gMedals slot the Medal level-up / naming screens work on
+extern s32 gRaceStep;                     // step counter of the current race sub-state
+extern u8 gRaceRunner[];                  // per team: runner on the track (0-2), 3 = team finished
+extern s32 gRaceNextSubState;             // sub-state to resume after a transition (code_08067160)
+extern u8 gRaceField;                     // battlefield the race runs on (race_pick_field)
+extern u8 gRaceStaticBg;                  // 0: race_dispatch_substate scrolls BG3 diagonally
+extern u8 gRaceFinishOrder[3];            // team + 1 that finished 1st, 2nd, 3rd (0 = not yet)
+extern u8 gRaceRunnerParts[3][4][3];      // [team][head/right/left/legs][runner]: part ids for the runner sprites
+extern const Func gRaceSubStates[];       // race sub-states, by gGameSubState (race_dispatch_substate)
+extern u8 gRaceLegTypes[3][3];            // per team and runner: leg type - SKILL_LEGS_AIR (gRaceLegDelays column)
+extern s32 gRaceStepTimers[3];            // per team: frames since the runner last moved (race_advance_runners)
+extern const u8 gRaceBgTiles[];           // race BG tiles (LZ77, race_load_frame_bgs)
+extern const u8 gRaceBg2Tilemap[];        // race BG2 tilemap (LZ77)
+extern const u8 gRaceBg3Tilemap[];        // race BG3 tilemap (LZ77)
+extern const u16 gRaceBgPalette[];        // race BG palette
+extern const u8 gMedalSceneObjPalettes[]; // Medal scene OBJ palettes (medal_transform_init)
+extern const u32 gMedalSceneBgTiles[];    // Medal scene BG tiles (dma3_copy_or_decompress)
+extern const u8 gMedalSceneBg1Tilemap[];  // Medal scene BG1 tilemap (decompress_and_write_tilemap)
+extern const u8 gMedalSceneBg2Tilemap[];  // BG2 tilemap
+extern const u8 gMedalSceneBg3Tilemap[];  // BG3 tilemap
+extern const u8 gRaceObjTiles[];          // race OBJ tiles (LZ77, race_load_character_sprites)
+extern const u8 gRaceFieldBgTiles[];      // race field BG tiles (LZ77, race_load_track_screen)
 extern const u8 gUnk_087C4F48[];
 extern const u8 gUnk_087C4FDC[];
 extern const u8 gUnk_087C51C0[];
-extern const u16 gUnk_087C5248[]; // race field BG palettes
+extern const u16 gRaceFieldBgPalettes[]; // race field BG palettes
 extern const u16 gUnk_087C5268[];
 extern const u16 gUnk_087C5288[];
 extern const u16 gUnk_087C52A8[];
-extern const u8 gUnk_087C52C8[];  // race BG1 tiles (LZ77, race_load_track_status_bar)
-extern const u8 gUnk_087C5518[];  // race BG1 tiles, second part (LZ77)
-extern const u16 gUnk_087C55D0[]; // race BG1 palettes
+extern const u8 gRaceStatusBarTiles[];     // race BG1 tiles (LZ77, race_load_track_status_bar)
+extern const u8 gRaceStatusBarTiles2[];    // race BG1 tiles, second part (LZ77)
+extern const u16 gRaceStatusBarPalettes[]; // race BG1 palettes
 extern const u16 gUnk_087C55F0[];
-extern const u8 gUnk_0848417C[];   // scene text line counts by gMenuWork->cursor (text_scroll_lines)
-extern u8 gRaceAnimDelay[3];       // per team: run animation frame delay (0x20 slowest, A presses lower it)
-extern u8 gRaceAnimTimers[3];      // per team: frames since the run animation last stepped
-extern s32 gRaceRivalTapTimers[2]; // rival teams: frames since their last simulated A press
-extern s32 gRaceRivalTaps[2];      // rival teams: simulated A presses (phase into gRaceRivalPace)
-extern const Func gUnk_08485C48[]; // by gGameState (dispatch_game_mode_handler)
-extern const u8 gRaceRivalPace[];  // [rival * 11 + field]: phase of the rivals' tapping rhythm (race_update_speeds)
+extern const u8 gSceneTextLineCounts[]; // scene text line counts by gMenuWork->cursor (text_scroll_lines)
+extern u8 gRaceAnimDelay[3];            // per team: run animation frame delay (0x20 slowest, A presses lower it)
+extern u8 gRaceAnimTimers[3];           // per team: frames since the run animation last stepped
+extern s32 gRaceRivalTapTimers[2];      // rival teams: frames since their last simulated A press
+extern s32 gRaceRivalTaps[2];           // rival teams: simulated A presses (phase into gRaceRivalPace)
+extern const Func gGameStateHandlers[]; // by gGameState (dispatch_game_mode_handler)
+extern const u8 gRaceRivalPace[]; // [rival * 11 + field]: phase of the rivals' tapping rhythm (race_update_speeds)
 extern const struct ByteTable3
     gUnk_080AFF30;                   // 3 bytes copied to the stack, indexed by racer (race_refresh_runner_sprite)
 extern u8 gRaceRunnerSlots[3][3];    // [team][runner]: sprite slot of the runner (ROM; not const, the code reloads it
                                      // after stores)
 extern const u8 gRaceLegDelays[][7]; // [field][leg type]: frames per step of a runner
 extern bool32 (*const gRaceSpriteMotions[])(
-    u8);                  // race sprite animations, by gSpriteEntries[].unk20 - 1 (race_run_sprite_motions)
-extern u8 gRaceId;        // race (gRaces index), copied from gUnk_03006D38.unk0 by race_init
-extern s32 gUnk_03000000; // scene step frame counter, reset when a step finishes (execute_scene_step)
-extern u8 gUnk_03000004;  // scene step, gUnk_08485C7C index
-extern bool32 (*const gUnk_08485C7C[])(void); // scene steps (execute_scene_step)
-extern bool32 (*const gUnk_08485C68[])(void); // transition steps (scene_transition_step_080686F4)
-extern const u16 gUnk_0807C320[];    // title OBJ palettes (0x60 colours), then 0x1C bytes copied to gSceneWork + 0xC
-                                     // (title_screen_load_graphics)
-extern const Func gBombGameStates[]; // game mode 3 state 5 sub-states, by gGameSubState (bomb_game_dispatch)
+    u8);                     // race sprite animations, by gSpriteEntries[].unk20 - 1 (race_run_sprite_motions)
+extern u8 gRaceId;           // race (gRaces index), copied from gUnk_03006D38.unk0 by race_init
+extern s32 gSceneStepFrames; // scene step frame counter, reset when a step finishes (execute_scene_step)
+extern u8 gSceneStep;        // scene step, gSceneSteps index
+extern bool32 (*const gSceneSteps[])(void);           // scene steps (execute_scene_step)
+extern bool32 (*const gSceneTransitionSteps[])(void); // transition steps (scene_transition_step_080686F4)
+extern const u16 gTitleObjPalettes[]; // title OBJ palettes (0x60 colours), then 0x1C bytes copied to gSceneWork + 0xC
+                                      // (title_screen_load_graphics)
+extern const Func gBombGameStates[];  // game mode 3 state 5 sub-states, by gGameSubState (bomb_game_dispatch)
 extern const struct SpriteAnimFrame gRaceSpriteAnims[]; // sprite animation steps (race_step_sprite_anims)
-extern const u8 gUnk_087B3B30[];  // game mode 3 state 5 (bomb_game_load_graphics): compressed BG tiles
-extern const u8 gUnk_087B50AC[];  // compressed BG map (VRAM + 0x800)
-extern const u8 gUnk_087B5214[];  // compressed BG map (VRAM + 0x1000)
-extern const u8 gUnk_087B52E4[];  // compressed BG map (VRAM + 0x1800)
-extern const u16 gUnk_087B551C[]; // BG palettes (0x50 colours)
-extern const u8 gUnk_087AA19C[];  // compressed OBJ tiles
-extern const u16 gUnk_0807C0A0[]; // OBJ palettes (0xF0 colours)
-extern const s8 gHalfSineArc[];   // 64 steps of a half sine, 0..47..2: bounce / hop heights (bomb game, race)
+extern const u8 gBombGameBgTiles[];      // game mode 3 state 5 (bomb_game_load_graphics): compressed BG tiles
+extern const u8 gBombGameBgTilemap1[];   // compressed BG map (VRAM + 0x800)
+extern const u8 gBombGameBgTilemap2[];   // compressed BG map (VRAM + 0x1000)
+extern const u8 gBombGameBgTilemap3[];   // compressed BG map (VRAM + 0x1800)
+extern const u16 gBombGameBgPalettes[];  // BG palettes (0x50 colours)
+extern const u8 gBombGameObjTiles[];     // compressed OBJ tiles
+extern const u16 gBombGameObjPalettes[]; // OBJ palettes (0xF0 colours)
+extern const s8 gHalfSineArc[];          // 64 steps of a half sine, 0..47..2: bounce / hop heights (bomb game, race)
 extern const Func
     gTitleScreenStates[]; // game mode 3 state 2 (title screen) sub-states, by gGameSubState (title_screen_update)
 extern s32 (*const gTitleSpriteEffects[])(u8); // title sprite effects, by gSpriteEntries[].unk20 - 1: 0 = done, 0xFF =
                                                // hide (title_screen_update_sprite_effects)
 extern const u8 gTitleSpriteEffectPeriods[];   // title sprite effects: frame period, by unk20 - 1
-extern const Func gUnk_08485F1C[];             // game mode 3 state 3 (story intro) sub-states, by gGameSubState
+extern const Func gStoryIntroHandlers[];       // game mode 3 state 3 (story intro) sub-states, by gGameSubState
                                                // (dispatch_game_substate_handler_0806DFA4)
 extern const Func
     gBootLogosSubStates[]; // game mode 3 state 0 (boot logos) sub-states, by gGameSubState (boot_logos_update)
-extern const Func gIntroSubStates[];      // game mode 3 state 1 (the animated intro after the logos) sub-states, by
-                                          // gGameSubState (intro_update)
-extern const void *const gUnk_08486EEC[]; // story intro texts, by page gSceneWork.unkC.h (dispatch_battle_event_script)
-extern const void *const gUnk_08487328[]; // story intro compressed tiles (to 0x06008000), by page
-extern const void *const gUnk_08487358[]; // story intro compressed tilemaps (30x20), by page
-extern const void *const gUnk_08487388[]; // story intro palettes (0xE0 halfwords), by page
-extern const u8 gUnk_087F1B4C[];          // boot logo 1: compressed BG tiles (boot_logos_load_licensed_by)
-extern const u8 gUnk_087F1E4C[];          // boot logo 1: compressed 30x20 tilemap
-extern const u16 gUnk_087F1F38[];         // boot logo 1: palette (16 colours)
-extern const u8 gUnk_087F1F58[];          // boot logo 2: compressed BG tiles (boot_logos_load_natsume)
-extern const u8 gUnk_087F2658[];          // boot logo 2: compressed 30x20 tilemap
-extern const u16 gUnk_087F27D8[];         // boot logo 2: palette
-extern const u8 gUnk_087F27F8[];          // boot overlay: compressed BG tiles (boot_logos_load_overlay)
-extern const u8 gUnk_087F3070[];          // boot overlay: compressed 30x20 tilemap (palette 1)
-extern const u16 gUnk_087F3250[];         // boot overlay: palette 1
-extern const u8 gUnk_087ADDDC[];          // title (title_screen_load_graphics): compressed OBJ tiles
-extern const u8 gUnk_087B55BC[];          // title: compressed BG tiles
-extern const u8 gUnk_087B9B6C[];          // title: BG2 tiles (0x240 bytes, uncompressed)
-extern const u16 gUnk_087B9DAC[];         // title: BG palettes (0x60 colours)
-extern const u8 gUnk_087B9E6C[];          // title: compressed tilemap (to 0x06006800)
-extern const u8 gUnk_087BA0AC[];          // title: compressed tilemap (to 0x06007000)
-extern const u8 gUnk_087BA5EC[];          // title: BG2 affine tilemap (0x280 bytes)
-extern const u8 gUnk_087BA86C[];          // state 1 scene (intro_load_silhouette_scene): compressed BG tiles
-extern const u16 gUnk_087BDC10[];         // 256-colour BG palette
-extern const u8 gUnk_087BDE10[];          // compressed tilemap (to 0x06007000)
-extern const u8 gUnk_087BE18C[];          // compressed tilemap (to 0x06007800)
-extern const u8 gUnk_087BE494[];          // state 1 scene (intro_load_scan_screen): compressed BG tiles
-extern const u16 gUnk_087C09C0[];         // 256-colour BG palette
-extern const u8 gUnk_087C0BC0[];          // compressed tilemap (to 0x06007000)
-extern const u8 gUnk_087C0E0C[];          // compressed tilemap (to 0x06007800)
-extern const u8 gUnk_087C8368[];          // compressed tiles (to 0x06008020)
-extern const u16 gUnk_087C8818[];         // 16-colour palette
-extern const u8 gUnk_087C8838[];          // compressed 10x12 tilemap
-extern const u8 gUnk_087C88F4[];          // compressed tiles (intro_load_scan_screen)
+extern const Func gIntroSubStates[]; // game mode 3 state 1 (the animated intro after the logos) sub-states, by
+                                     // gGameSubState (intro_update)
+extern const void
+    *const gStoryIntroTexts[]; // story intro texts, by page gSceneWork.unkC.h (dispatch_battle_event_script)
+extern const void *const gStoryIntroTiles[];    // story intro compressed tiles (to 0x06008000), by page
+extern const void *const gStoryIntroTilemaps[]; // story intro compressed tilemaps (30x20), by page
+extern const void *const gStoryIntroPalettes[]; // story intro palettes (0xE0 halfwords), by page
+extern const u8 gLicensedByLogoTiles[];         // boot logo 1: compressed BG tiles (boot_logos_load_licensed_by)
+extern const u8 gLicensedByLogoTilemap[];       // boot logo 1: compressed 30x20 tilemap
+extern const u16 gLicensedByLogoPalette[];      // boot logo 1: palette (16 colours)
+extern const u8 gNatsumeLogoTiles[];            // boot logo 2: compressed BG tiles (boot_logos_load_natsume)
+extern const u8 gNatsumeLogoTilemap[];          // boot logo 2: compressed 30x20 tilemap
+extern const u16 gNatsumeLogoPalette[];         // boot logo 2: palette
+extern const u8 gUnk_087F27F8[];                // boot overlay: compressed BG tiles (boot_logos_load_overlay)
+extern const u8 gUnk_087F3070[];                // boot overlay: compressed 30x20 tilemap (palette 1)
+extern const u16 gUnk_087F3250[];               // boot overlay: palette 1
+extern const u8 gUnk_087ADDDC[];                // title (title_screen_load_graphics): compressed OBJ tiles
+extern const u8 gUnk_087B55BC[];                // title: compressed BG tiles
+extern const u8 gUnk_087B9B6C[];                // title: BG2 tiles (0x240 bytes, uncompressed)
+extern const u16 gUnk_087B9DAC[];               // title: BG palettes (0x60 colours)
+extern const u8 gUnk_087B9E6C[];                // title: compressed tilemap (to 0x06006800)
+extern const u8 gUnk_087BA0AC[];                // title: compressed tilemap (to 0x06007000)
+extern const u8 gUnk_087BA5EC[];                // title: BG2 affine tilemap (0x280 bytes)
+extern const u8 gUnk_087BA86C[];                // state 1 scene (intro_load_silhouette_scene): compressed BG tiles
+extern const u16 gUnk_087BDC10[];               // 256-colour BG palette
+extern const u8 gUnk_087BDE10[];                // compressed tilemap (to 0x06007000)
+extern const u8 gUnk_087BE18C[];                // compressed tilemap (to 0x06007800)
+extern const u8 gUnk_087BE494[];                // state 1 scene (intro_load_scan_screen): compressed BG tiles
+extern const u16 gUnk_087C09C0[];               // 256-colour BG palette
+extern const u8 gUnk_087C0BC0[];                // compressed tilemap (to 0x06007000)
+extern const u8 gUnk_087C0E0C[];                // compressed tilemap (to 0x06007800)
+extern const u8 gUnk_087C8368[];                // compressed tiles (to 0x06008020)
+extern const u16 gUnk_087C8818[];               // 16-colour palette
+extern const u8 gUnk_087C8838[];                // compressed 10x12 tilemap
+extern const u8 gUnk_087C88F4[];                // compressed tiles (intro_load_scan_screen)
 extern const u8 gUnk_087C8BD8[];
 extern const u8 gUnk_087C8C94[];
 extern const u8 gUnk_087C8CE4[];

@@ -73,8 +73,8 @@ void boot_logos_load_licensed_by(void) {
     u16 out[20 * 32];
     s32 i, j;
 
-    LZ77UnCompVram(gUnk_087F1B4C, (void *)VRAM);
-    LZ77UnCompVram(gUnk_087F1E4C, map);
+    LZ77UnCompVram(gLicensedByLogoTiles, (void *)VRAM);
+    LZ77UnCompVram(gLicensedByLogoTilemap, map);
     for (i = 0; i < 20; i++) {
         for (j = 0; j < 30; j++)
             out[i * 32 + j] = *(map[i] + j);
@@ -82,7 +82,7 @@ void boot_logos_load_licensed_by(void) {
         out[i * 32 + 31] = 0;
     }
     DmaSet(3, out, VRAM + 0x7800, 0x84000140);
-    DmaSet(3, gUnk_087F1F38, PLTT, 0x80000010);
+    DmaSet(3, gLicensedByLogoPalette, PLTT, 0x80000010);
     REG_BG0CNT = 0xF01;
     REG_DISPCNT |= 0x100;
     gSceneWork.nextSubState = 5;
@@ -94,8 +94,8 @@ void boot_logos_load_natsume(void) {
     u16 out[20 * 32];
     s32 i, j;
 
-    LZ77UnCompVram(gUnk_087F1F58, (void *)VRAM);
-    LZ77UnCompVram(gUnk_087F2658, map);
+    LZ77UnCompVram(gNatsumeLogoTiles, (void *)VRAM);
+    LZ77UnCompVram(gNatsumeLogoTilemap, map);
     for (i = 0; i < 20; i++) {
         for (j = 0; j < 30; j++)
             out[i * 32 + j] = *(map[i] + j);
@@ -103,7 +103,7 @@ void boot_logos_load_natsume(void) {
         out[i * 32 + 31] = 0;
     }
     DmaSet(3, out, VRAM + 0x7800, 0x84000140);
-    DmaSet(3, gUnk_087F27D8, PLTT, 0x80000010);
+    DmaSet(3, gNatsumeLogoPalette, PLTT, 0x80000010);
     gSceneWork.unk10.w = 0x34;
     REG_BG0CNT = 0xF02;
     REG_DISPCNT |= 0x100;

@@ -62,7 +62,7 @@ static void medapart_copy_name(u16 id, u8 second) {
     u8 *dst;
     u32 i;
 
-    src = (const u8 *)gUnk_083BB9CC[0][id];
+    src = (const u8 *)gMedapartNames[0][id];
     dst = gGameWork.textBuf;
     if (second)
         dst += 0x14;

@@ -122,7 +122,7 @@ void part_select_draw_part_name(void) {
     else if (k >= 0) {
         if (k <= 3)
             memcpy_bytes_08041D04(
-                (const void *)gUnk_083BB9CC[0][gBattleBots[gBattleWork.unk80].parts[k - 1].unk17 * 4 + k - 1],
+                (const void *)gMedapartNames[0][gBattleBots[gBattleWork.unk80].parts[k - 1].unk17 * 4 + k - 1],
                 gGameWork.textBuf, 15);
     }
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x1F, 10, 0x11, 10, 13, 0, 0);

@@ -326,7 +326,7 @@
 * Loops over sprite slots `gSpriteEntries[i + 0x21]` that compute `(i + 0x21) << 6` each time come from
   writing the index out in every statement; a `spr` pointer or `slot` local lets gcc fold `base + 0x840`
   (team_attack_turrets_spawn).
-* A 2D table read as `(a * 4 + b) * 4` is indexed flat, `tbl[0][a * 4 + b]` (gUnk_083BB9CC, change_finish).
+* A 2D table read as `(a * 4 + b) * 4` is indexed flat, `tbl[0][a * 4 + b]` (gMedapartNames, change_finish).
 * `v = 0; if (x) v = 1;` and `v = !x` order the zero differently: `if (!(f & 2)) v = 1; else v = 0;` gives
   `ands; movs v, #0; cmp; bne; movs v, #1` (medaforce_spiral_bolt_drain_armor).
 * Nested loops where the original reloads loop invariants inside the outer loop (and keeps `i + 1` in a

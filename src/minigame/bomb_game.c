@@ -71,16 +71,16 @@ void bomb_game_init(void) {
 void bomb_game_load_graphics(void) {
     s32 i;
 
-    LZ77UnCompVram(gUnk_087B3B30, (void *)(VRAM + 0x4000));
-    LZ77UnCompVram(gUnk_087B50AC, (void *)(VRAM + 0x800));
-    LZ77UnCompVram(gUnk_087B5214, (void *)(VRAM + 0x1000));
-    LZ77UnCompVram(gUnk_087B52E4, (void *)(VRAM + 0x1800));
-    DmaSet(3, gUnk_087B551C, PLTT, 0x80000050);
+    LZ77UnCompVram(gBombGameBgTiles, (void *)(VRAM + 0x4000));
+    LZ77UnCompVram(gBombGameBgTilemap1, (void *)(VRAM + 0x800));
+    LZ77UnCompVram(gBombGameBgTilemap2, (void *)(VRAM + 0x1000));
+    LZ77UnCompVram(gBombGameBgTilemap3, (void *)(VRAM + 0x1800));
+    DmaSet(3, gBombGameBgPalettes, PLTT, 0x80000050);
     REG_BG1CNT = 0x105;
     REG_BG2CNT = 0x206;
     REG_BG3CNT = 0x307;
-    LZ77UnCompVram(gUnk_087AA19C, (void *)(VRAM + 0x10000));
-    DmaSet(3, gUnk_0807C0A0, PLTT + 0x200, 0x800000F0);
+    LZ77UnCompVram(gBombGameObjTiles, (void *)(VRAM + 0x10000));
+    DmaSet(3, gBombGameObjPalettes, PLTT + 0x200, 0x800000F0);
 
     sprite_entry_init(BOMB_SPR_PLAYER, 0xCF20, 0, 0, 3);
     gSpriteEntries[BOMB_SPR_PLAYER].unk2 = 0x78;

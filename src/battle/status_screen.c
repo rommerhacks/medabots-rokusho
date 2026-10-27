@@ -153,7 +153,7 @@ void status_draw_part_names(void) {
     for (i = 0; i <= 3; i++) {
         memcpy_bytes_08041D04(
             (const void *)
-                gUnk_083BB9CC[0][gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].unk17 * 4 + i],
+                gMedapartNames[0][gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].unk17 * 4 + i],
             gGameWork.textBuf, 15);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x20 + i * 14, 0xD, 4 + i * 2, 10, 13, 1, 2);
     }

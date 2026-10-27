@@ -196,7 +196,7 @@ void render_battle_medapart_list(u32 mode) {
     for (i = 0; i < n; i++) {
         if (mode == 0) {
             if (gMenuWork->list_count > i) {
-                render_text_sprites_08040DB8((u8 *)gUnk_083BB9CC[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
+                render_text_sprites_08040DB8((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
                                              13, 1, 1);
                 draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, (REG_BG1CNT >> 8) & 0x1F);
                 gSpriteEntries[i + 0x6A].unk0 |= 0x4000;
@@ -209,7 +209,7 @@ void render_battle_medapart_list(u32 mode) {
                 break;
         } else {
             if (counts[i]) {
-                render_text_sprites_08040DB8((u8 *)gUnk_083BB9CC[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
+                render_text_sprites_08040DB8((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
                                              13, 1, 1);
                 draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, (REG_BG1CNT >> 8) & 0x1F);
                 gSpriteEntries[i + 0x6A].unk0 |= 0x4000;

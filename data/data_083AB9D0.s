@@ -71,8 +71,8 @@ gUnk_083ABCAC:
 gUnk_083ABCB8:
 	.incbin "baserom.gba", 0x3ABCB8, 0x160
 
-	.global gUnk_083ABE18
-gUnk_083ABE18:
+	.global gGameModeHandlers
+gGameModeHandlers:
 	.incbin "baserom.gba", 0x3ABE18, 0x18
 
 	.global gUnk_083ABE30
@@ -279,12 +279,12 @@ gRandomBotSlotStarts:
 gRobattleHandlers:
 	.incbin "baserom.gba", 0x3ACF00, 0x300
 
-	.global gUnk_083AD200
-gUnk_083AD200:
+	.global gMedalAttributeBaseSkills
+gMedalAttributeBaseSkills:
 	.incbin "baserom.gba", 0x3AD200, 0xF0
 
-	.global gUnk_083AD2F0
-gUnk_083AD2F0:
+	.global gAiPartOrders
+gAiPartOrders:
 	.incbin "baserom.gba", 0x3AD2F0, 0x80
 
 	.global gUnk_083AD370
@@ -974,8 +974,8 @@ gUnk_083B827C:
 gUnk_083BA4D8:
 	.incbin "baserom.gba", 0x3BA4D8, 0x14F4
 
-	.global gUnk_083BB9CC
-gUnk_083BB9CC:
+	.global gMedapartNames
+gMedapartNames:
 	.incbin "baserom.gba", 0x3BB9CC, 0x1EB8
 
 	.global gUnk_083BD884
@@ -1366,16 +1366,16 @@ gUnk_083F92F4:
 gUnk_083F9BF4:
 	.incbin "baserom.gba", 0x3F9BF4, 0xA9B4
 
-	.global gUnk_084045A8
-gUnk_084045A8:
+	.global gAreaCollisionMaps
+gAreaCollisionMaps:
 	.incbin "baserom.gba", 0x4045A8, 0x514C
 
 	.global gUnk_084096F4
 gUnk_084096F4:
 	.incbin "baserom.gba", 0x4096F4, 0x6400
 
-	.global gUnk_0840FAF4
-gUnk_0840FAF4:
+	.global gAreaExits
+gAreaExits:
 	.incbin "baserom.gba", 0x40FAF4, 0x2260
 
 	.global gRoomExitMessages

@@ -377,7 +377,7 @@ void afterbattle_load_part_name(void) {
     update_scroll_movement_a();
     setup_battle_result_sprite_animation();
     memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.wonPartKind], gGameWork.textBuf, 14);
-    tbl = gUnk_083BB9CC[0];
+    tbl = gMedapartNames[0];
     memcpy_bytes_0803F63C((const void *)tbl[gBattleWork.wonPartId * 4 + gBattleWork.wonPartKind],
                           gGameWork.textBuf + 20, 15);
     gGameSubState++;
@@ -785,7 +785,7 @@ void afterbattle_part_detail_restore_screen(void) {
     apply_battle_blend_effect_a();
     setup_battle_result_sprite_animation();
     memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.wonPartKind], gGameWork.textBuf, 14);
-    tbl = gUnk_083BB9CC[0];
+    tbl = gMedapartNames[0];
     memcpy_bytes_0803F63C((const void *)tbl[gBattleWork.wonPartId * 4 + gBattleWork.wonPartKind],
                           gGameWork.textBuf + 20, 15);
     gGameWork.unk84 = 0;

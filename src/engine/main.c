@@ -1,5 +1,5 @@
 // Boot and the main loop: AgbMain initialises the hardware, interrupts, sound and serial link, then runs one
-// frame per VBlank: read_keys, the gGameMode handler (gUnk_083ABE18: 0 menus/battle via engine/game_state.c,
+// frame per VBlank: read_keys, the gGameMode handler (gGameModeHandlers: 0 menus/battle via engine/game_state.c,
 // 1 field, 2 title, 3 boot/intro/minigames), the OAM build (engine/oam.c) and the link packet. The VBlank /
 // HBlank / sound DMA interrupt handlers and the soft reset (A+B+START+SELECT) live here too.
 
@@ -21,13 +21,13 @@ void AgbMain(void) {
     serial_link_init();
     sound_init(&gSoundWorkArea);
     *(u16 *)&gUnk_03001784 = 0;
-    gUnk_03005030 = 0;
-    gUnk_03002410 = 0;
+    gLinkMultiplayerActive = 0;
+    gFramesSinceMainLoop = 0;
     gUnk_03005010.unk1E = 0;
     gUnk_03005010.unk1D = 0;
     for (;;) {
         VBlankIntrWait();
-        gUnk_03002410 = 0;
+        gFramesSinceMainLoop = 0;
         read_keys();
         gFrameCounter++;
         if (gPlayTimeRunning && gPlayerRecord.playTime < 0x014996FF)
@@ -56,7 +56,7 @@ void AgbMain(void) {
             VBlankIntrWait();
             sound_init(&gSoundWorkArea);
             VBlankIntrWait();
-        } else if (gUnk_03005030) {
+        } else if (gLinkMultiplayerActive) {
             u32 other = 0;
 
             if (gUnk_03000B90 == 0)
@@ -68,7 +68,7 @@ void AgbMain(void) {
                 gGameSubState = 16;
             }
         }
-        gUnk_083ABE18[gGameMode]();
+        gGameModeHandlers[gGameMode]();
         check_flag_and_fast_copy();
         serial_prepare_send_packet(&gUnk_03005010.unk4);
     }
@@ -125,14 +125,14 @@ void sound_init(struct SoundWork *work) {
 }
 
 void vblank_irq(void) {
-    if (!(gUnk_03002B90 & 1)) {
-        gUnk_03002B90 |= 1;
+    if (!(gVBlankFlags & 1)) {
+        gVBlankFlags |= 1;
         vblank_body();
-        gUnk_03002B90 &= ~1;
+        gVBlankFlags &= ~1;
         if (gUnk_03005010.unk0 & 0x80)
             sio_vblank_start_frame();
         REG_IME = 0;
-        if (++gUnk_03002410 > 5 && gSioLink.sendPending) {
+        if (++gFramesSinceMainLoop > 5 && gSioLink.sendPending) {
             gUnk_03005010.unk1E = 0xFF;
             INTR_CHECK |= 0x80;
         }
@@ -144,15 +144,15 @@ void vblank_irq(void) {
 void vblank_body(void) {
     s32 i;
 
-    if (!(gUnk_03000434 & 1)) {
-        REG_BG0HOFS = gBg0Scroll.x + gUnk_03002C2C.x;
-        REG_BG0VOFS = gBg0Scroll.y + gUnk_03002C2C.y;
-        REG_BG1HOFS = gBg1Scroll.x + gUnk_03002C2C.x;
-        REG_BG1VOFS = gBg1Scroll.y + gUnk_03002C2C.y;
-        REG_BG2HOFS = gBg2Scroll.x + gUnk_03002C2C.x;
-        REG_BG2VOFS = gBg2Scroll.y + gUnk_03002C2C.y;
-        REG_BG3HOFS = gBg3Scroll.x + gUnk_03002C2C.x;
-        REG_BG3VOFS = gBg3Scroll.y + gUnk_03002C2C.y;
+    if (!(gVBlankBgFlags & 1)) {
+        REG_BG0HOFS = gBg0Scroll.x + gBgScrollOffset.x;
+        REG_BG0VOFS = gBg0Scroll.y + gBgScrollOffset.y;
+        REG_BG1HOFS = gBg1Scroll.x + gBgScrollOffset.x;
+        REG_BG1VOFS = gBg1Scroll.y + gBgScrollOffset.y;
+        REG_BG2HOFS = gBg2Scroll.x + gBgScrollOffset.x;
+        REG_BG2VOFS = gBg2Scroll.y + gBgScrollOffset.y;
+        REG_BG3HOFS = gBg3Scroll.x + gBgScrollOffset.x;
+        REG_BG3VOFS = gBg3Scroll.y + gBgScrollOffset.y;
     }
     if (gVBlankOamMode != 0) {
         if (gVBlankOamMode == 2) {
@@ -217,14 +217,14 @@ void read_keys(void) {
 void soft_reset(void) {
     u32 i;
 
-    if (gUnk_03005030) {
+    if (gLinkMultiplayerActive) {
         gUnk_03005010.unk4 = 0xFFFF;
         gUnk_03005010.unk6 = -1;
         for (i = 0; i < 8; i++) {
             serial_prepare_send_packet(&gUnk_03005010.unk4);
             VBlankIntrWait();
         }
-        gUnk_03005030 = 0;
+        gLinkMultiplayerActive = 0;
         serial_multiplayer_init();
     }
     VBlankIntrWait();

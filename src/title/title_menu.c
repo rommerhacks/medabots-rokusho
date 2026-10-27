@@ -10,7 +10,7 @@ void menu_mode_update(void) {
     gUnk_03005010.unk4 = gHeldKeys;
     gUnk_03005010.unk6 = 0;
     gMenuWork = (struct MenuWork *)&gBattleWork;
-    if (gUnk_03005030 != 0 && (*(u32 *)&gUnk_03005010.unk19[3] & 0x00FFFF00)) {
+    if (gLinkMultiplayerActive != 0 && (*(u32 *)&gUnk_03005010.unk19[3] & 0x00FFFF00)) {
         gGameMode = 0;
         gGameState = 10;
         gGameSubState = 0x10;

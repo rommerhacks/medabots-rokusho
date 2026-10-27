@@ -2,7 +2,7 @@
 // fills (numbers, strings), money, items, Medals, Medaparts and team (inventory/inventory), plus checks on the
 // player's team gTeamSlots (9 slots; unk0 == 3 = a complete Medabot) and the yes/no choice window
 // (text/choice_menu). Name tables: gMedalNames Medals, gUnk_083BA4D8 Medabots (by head part id),
-// gUnk_083BB9CC Medaparts, gItemNames items.
+// gMedapartNames Medaparts, gItemNames items.
 
 #include "global.h"
 
@@ -27,7 +27,7 @@ u32 medabot_name(u32 idx) {
 }
 
 u32 medapart_name(u32 a, u32 b) {
-    const u32 *t = (const u32 *)gUnk_083BB9CC;
+    const u32 *t = (const u32 *)gMedapartNames;
     return t[b * 4 + a];
 }
 
