@@ -122,7 +122,7 @@ static void battle_update_status_effect_sprite(u32 rec) {
 
 static void update_battle_status_effect_sprite(u32 rec) {
     if (gBattleBots[rec].stateFlags & 8) {
-        if (gBattleBots[rec].parts[gBattleBots[rec].lastAction - 1].unk11 == 0) {
+        if (gBattleBots[rec].parts[gBattleBots[rec].lastAction - 1].armor == 0) {
             disable_sprites(rec * 3 + 0x48, 1);
             return;
         }
@@ -174,7 +174,7 @@ static void update_battle_status_effect_sprite(u32 rec) {
         }
         battle_setup_part_sprite(rec, 2, 2, gSpriteEntries[rec * 4 + 0x5D].order + 4);
     } else if (gBattleBots[rec].stateFlags & 0x10) {
-        if (gBattleBots[rec].parts[gBattleBots[rec].lastAction - 1].unk11 == 0) {
+        if (gBattleBots[rec].parts[gBattleBots[rec].lastAction - 1].armor == 0) {
             disable_sprites(rec * 3 + 0x48, 1);
             return;
         }

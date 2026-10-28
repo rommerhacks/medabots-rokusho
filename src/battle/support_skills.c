@@ -372,9 +372,9 @@ void rapid_charge_hourglass_burst(void) {
     gBattleWork.step++;
 }
 
-// guess: unkBF makes the target run straight to the center / its side (action_queue.c).
+// guess: rapidCharge makes the target run straight to the center / its side (action_queue.c).
 void rapid_charge_apply(void) {
-    gBattleBots[gBattleWork.target].unkBF = 1;
+    gBattleBots[gBattleWork.target].rapidCharge = 1;
     gBattleWork.step++;
 }
 
@@ -649,7 +649,7 @@ void pushover_apply_head_damage(void) {
     u8 armor;
 
     reduce_bot_part_stat(gBattleWork.target, 0, gBattleWork.appliedAmount);
-    armor = gBattleBots[gBattleWork.target].parts[0].unk11;
+    armor = gBattleBots[gBattleWork.target].parts[0].armor;
     if (armor == 0) {
         add_bot_to_defeated_list(gBattleWork.target);
         gBattleWork.damagePart = armor;

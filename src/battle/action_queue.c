@@ -50,7 +50,7 @@ u32 battle_bot_at_front_line(u32 rec, u32 peek) {
                 reached = 1;
         }
         if (peek == 0 && reached)
-            battle_queue_add(rec, gBattleBots[rec].parts[3].unk12);
+            battle_queue_add(rec, gBattleBots[rec].parts[3].propulsion);
     }
     return reached;
 }
@@ -67,7 +67,7 @@ u32 battle_bot_at_home_line(u32 rec, u32 peek) {
                 reached = 1;
         }
         if (peek == 0 && reached)
-            battle_queue_add(rec, gBattleBots[rec].parts[3].unk12);
+            battle_queue_add(rec, gBattleBots[rec].parts[3].propulsion);
     }
     return reached;
 }
@@ -344,12 +344,12 @@ void battle_queue_pop(void) {
     gBattleWork.actionQueue[0][i * 2 + 1] = 0;
 }
 
-// guess: unkBF is set by a support skill (rapid_charge_apply); such Medabots keep moving in sub-state 0x4C.
+// guess: rapidCharge is set by a support skill (rapid_charge_apply); such Medabots keep moving in sub-state 0x4C.
 u32 any_bot_extra_move_pending(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].teamState && gBattleBots[i].unkBF)
+        if (gBattleBots[i].teamState && gBattleBots[i].rapidCharge)
             return 1;
     }
     return 0;

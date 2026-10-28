@@ -62,7 +62,7 @@ static void bot_move_delay_add_action(u32 rec) {
         bot_move_delay_add(rec, 12);
         return;
     }
-    if (gBattleBots[rec].parts[gBattleBots[rec].chosenAction - 1].unk11 == 0)
+    if (gBattleBots[rec].parts[gBattleBots[rec].chosenAction - 1].armor == 0)
         return;
     if (gBattleBots[rec].chosenAction == 1)
         bot_move_delay_add(rec, 6);
@@ -89,7 +89,7 @@ static void bot_move_delay_sub(u32 rec, u32 amount) {
 
 // +6 while the legs are broken.
 static void bot_move_delay_add_broken_legs(u32 rec) {
-    if (gBattleBots[rec].parts[3].unk11 == 0)
+    if (gBattleBots[rec].parts[3].armor == 0)
         bot_move_delay_add(rec, 6);
 }
 
@@ -114,7 +114,7 @@ static void bot_move_delay_sub_medal_level(u32 rec) {
 
 // - legs Propulsion / 20.
 void bot_move_delay_sub_propulsion(u32 rec) {
-    bot_move_delay_sub(rec, (u8)(gBattleBots[rec].parts[3].unk12 / 20));
+    bot_move_delay_sub(rec, (u8)(gBattleBots[rec].parts[3].propulsion / 20));
 }
 
 // - the status amount while sped up by Time (effect A 0x26 / 0x29).
@@ -128,7 +128,7 @@ static void bot_move_delay_sub_speed_parts(u32 rec) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[rec].parts[i].data[1] == 0x28 && gBattleBots[rec].parts[i].unk11 != 0)
+        if (gBattleBots[rec].parts[i].data[1] == 0x28 && gBattleBots[rec].parts[i].armor != 0)
             bot_move_delay_sub(rec, gBattleBots[rec].parts[i].data[6]);
     }
 }

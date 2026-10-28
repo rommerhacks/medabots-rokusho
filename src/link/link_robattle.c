@@ -875,7 +875,7 @@ void prize_game_pick_prize_part(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[base + pick].present != 0) {
             gBattleWork.prizeMedal = gBattleBots[base + pick].teamSlot;
-            gBattleWork.prizePart = gBattleBots[base + pick].parts[gBattleWork.prizeSlots[gBattleWork.prizeRow]].unk17;
+            gBattleWork.prizePart = gBattleBots[base + pick].parts[gBattleWork.prizeSlots[gBattleWork.prizeRow]].partId;
             return;
         }
         if (pick == 2)

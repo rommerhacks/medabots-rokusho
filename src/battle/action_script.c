@@ -92,9 +92,9 @@ void script_op_action_part_check(void) {
 
 // Opcode 0x06: no target yet -> the nearest enemy; no target part -> a random intact one; then loads both.
 void script_op_resolve_target(void) {
-    if (gBattleBots[gBattleWork.actor].unkE0 == 0)
+    if (gBattleBots[gBattleWork.actor].targetBot == 0)
         battle_target_nearest_enemy(gBattleWork.actor);
-    if (gBattleBots[gBattleWork.actor].unkE1 == 0)
+    if (gBattleBots[gBattleWork.actor].targetPart == 0)
         battle_pick_random_target_part(gBattleWork.actor);
     battle_load_action_target(gBattleWork.actor);
     battle_script_advance();
@@ -239,7 +239,7 @@ void script_op_calc_damage(void) {
         gBattleWork.amount += gBattleBots[gBattleWork.actor].rangedBonus;
     }
     if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2] == 1)
-        gBattleWork.amount += gBattleBots[gBattleWork.actor].parts[3].unk12 >> 1;
+        gBattleWork.amount += gBattleBots[gBattleWork.actor].parts[3].propulsion >> 1;
     type = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1];
     if (type == 4)
         goto skill;
@@ -247,7 +247,7 @@ void script_op_calc_damage(void) {
     skill:
         gBattleWork.amount += gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[6];
     }
-    if (gBattleBots[gBattleWork.actor].unkD6 & 1)
+    if (gBattleBots[gBattleWork.actor].formFlags & 1)
         gBattleWork.amount += gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[6];
     if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == 0x34 &&
         gBattleWork.traps[gBattleWork.otherSide].skill == 0x33)
@@ -281,7 +281,7 @@ void script_op_full_block_check(void) {
 // Opcode 0x17: guess: the target counters (unkB7 = 3) damage above its threshold (unkD8).
 void script_op_counter_check(void) {
     if ((gBattleBots[gBattleWork.target].stateFlags & 0x10) &&
-        gBattleBots[gBattleWork.target].parts[gBattleBots[gBattleWork.target].lastAction - 1].unk11 != 0 &&
+        gBattleBots[gBattleWork.target].parts[gBattleBots[gBattleWork.target].lastAction - 1].armor != 0 &&
         gBattleWork.hitResult == 0 && gBattleWork.amount > (s16)gBattleBots[gBattleWork.target].defence)
         gBattleWork.hitResult = 3;
     battle_script_advance();
@@ -590,7 +590,7 @@ void script_op_medaforce_spiral_bolt(void) {
 // Opcode 0x41: targets a random enemy and a random intact part of it.
 void script_op_target_random_enemy(void) {
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
-    gBattleBots[gBattleWork.actor].unkE0 = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
+    gBattleBots[gBattleWork.actor].targetBot = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
     battle_pick_random_target_part(gBattleWork.actor);
     battle_load_action_target(gBattleWork.actor);
     battle_script_advance();
@@ -608,7 +608,7 @@ void script_op_damage_add_shoot_parts(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[gBattleWork.actor].parts[i].unk11 != 0) {
+        if (gBattleBots[gBattleWork.actor].parts[i].armor != 0) {
             u32 type = gBattleBots[gBattleWork.actor].parts[i].data[2];
 
             if (type == 2)
@@ -645,7 +645,7 @@ void script_op_damage_from_armor_lost(void) {
 
     for (i = 0; i <= 3; i++)
         gBattleWork.amount +=
-            gBattleBots[gBattleWork.actor].parts[i].data[4] - gBattleBots[gBattleWork.actor].parts[i].unk11;
+            gBattleBots[gBattleWork.actor].parts[i].data[4] - gBattleBots[gBattleWork.actor].parts[i].armor;
     battle_script_advance();
 }
 
@@ -655,7 +655,7 @@ void script_op_target_self(void) {
     gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
     gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     gBattleWork.reactionFlags = 3;
-    gBattleBots[gBattleWork.actor].unkE0 = gBattleWork.actor + 1;
+    gBattleBots[gBattleWork.actor].targetBot = gBattleWork.actor + 1;
     gBattleWork.swapBot = gBattleWork.target;
     battle_load_action_target(gBattleWork.actor);
     gBattleWork.actorSideFlags ^= 2;
@@ -688,8 +688,8 @@ void script_op_damage_from_half_armor(void) {
     u32 i;
 
     for (i = 0; i <= 3; i++) {
-        gBattleWork.partDamage[i] = gBattleBots[gBattleWork.actor].parts[i].unk11 >> 1;
-        gBattleWork.amount += gBattleBots[gBattleWork.actor].parts[i].unk11 >> 1;
+        gBattleWork.partDamage[i] = gBattleBots[gBattleWork.actor].parts[i].armor >> 1;
+        gBattleWork.amount += gBattleBots[gBattleWork.actor].parts[i].armor >> 1;
     }
     battle_script_advance();
 }
@@ -702,7 +702,7 @@ void script_op_damage_from_broken_parts(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].present != 0) {
             for (j = 0; j <= 3; j++) {
-                if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].unk11 == 0)
+                if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].armor == 0)
                     gBattleWork.amount += 10;
             }
         }
@@ -717,11 +717,11 @@ void script_op_target_guarding_enemy(void) {
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
     t = battle_find_guarding_enemy(gBattleWork.targetSideFirst);
     if (t != 0xFF) {
-        gBattleBots[gBattleWork.actor].unkE0 = t + 1;
-        gBattleBots[gBattleWork.actor].unkE1 = gBattleBots[t].lastAction;
+        gBattleBots[gBattleWork.actor].targetBot = t + 1;
+        gBattleBots[gBattleWork.actor].targetPart = gBattleBots[t].lastAction;
     } else {
         gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
-        gBattleBots[gBattleWork.actor].unkE0 = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
+        gBattleBots[gBattleWork.actor].targetBot = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
         battle_pick_random_target_part(gBattleWork.actor);
         gBattleWork.blockResult = 2;
     }
@@ -731,7 +731,7 @@ void script_op_target_guarding_enemy(void) {
 
 // Opcode 0x4C: the damage is the target part's armor.
 void script_op_damage_equals_target_armor(void) {
-    gBattleWork.amount = gBattleBots[gBattleWork.target].parts[gBattleWork.targetPart].unk11;
+    gBattleWork.amount = gBattleBots[gBattleWork.target].parts[gBattleWork.targetPart].armor;
     battle_script_advance();
 }
 
@@ -750,10 +750,10 @@ void script_op_target_same_legs_enemy(void) {
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
     t = battle_find_enemy_same_legs(gBattleWork.targetSideFirst, gBattleWork.actor);
     if (t != 0xFF)
-        gBattleBots[gBattleWork.actor].unkE0 = t + 1;
+        gBattleBots[gBattleWork.actor].targetBot = t + 1;
     else {
         gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
-        gBattleBots[gBattleWork.actor].unkE0 = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
+        gBattleBots[gBattleWork.actor].targetBot = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
     }
     battle_pick_random_target_part(gBattleWork.actor);
     battle_load_action_target(gBattleWork.actor);

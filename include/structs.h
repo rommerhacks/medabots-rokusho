@@ -572,19 +572,21 @@ struct BattlePart {
     u8 data[0xD]; // part data record (load_part_data): [1] skill id (SKILL_*), [2] skill type (SKILL_TYPE_*),
                   // [4] max armor; data[0xA] summed as armor (accumulate_team_armor_stats)
     u8 fillerD;
-    u8 unkE;  // AI target record + 1, copied to the record's unkE0 / unkE1 when this part is chosen
-              // (battle_bot_select_part)
-    u8 unkF;  // AI target part + 1 (0 = whole Medabot, ai_clear_target_part)
-    u8 unk10; // head: copy of data[8], uses left (head_out_of_uses; Use Drain needs it nonzero)
-    u8 unk11; // current armor, starts as data[4] = max armor (Status screen, runtime-checked); 0 = broken
-              // (legs: data[4..9] copied to unk11..unk16)
-    u8 unk12; // legs: data[5] (Propulsion; bot_move_delay_sub_propulsion)
-    u8 unk13; // legs: data[6..9] (unk12..unk16 restored by bot_restore_leg_stats, halved by bot_halve_broken_leg_stats
-              // when broken)
-    u8 unk14;
-    u8 unk15;
-    u8 unk16;
-    u8 unk17; // part id
+    u8 aiTargetBot;  // AI target record + 1, copied to the record's targetBot / targetPart when this part is chosen
+                     // (battle_bot_select_part)
+    u8 aiTargetPart; // AI target part + 1 (0 = whole Medabot, ai_clear_target_part)
+    u8 headUses;     // head: copy of data[8], uses left (head_out_of_uses; Use Drain needs it nonzero)
+    u8 armor;        // current armor, starts as data[4] = max armor (Status screen, runtime-checked); 0 = broken
+    // Legs only: data[5..9] copied here, restored by bot_restore_leg_stats, halved by bot_halve_broken_leg_stats
+    // when the legs break. Names follow the Medabots leg stats (propulsion, mobility, defence, proximity, remoteness).
+    u8 propulsion; // movement speed (bot_move_delay_sub_propulsion), turn order (battle_queue_add), half added to
+                   // charge damage (script_op_calc_damage) and trap wear (trap_hit_wear)
+    u8 evasion;    // added to gBattleWork.evasion for a dodge check (battle_calculate_turn_speed)
+    u8 defence;    // added to gBattleWork.evasion for the "hit taken on the strongest part" check
+                   // (battle_process_speed_and_action)
+    u8 proximity;  // success bonus for melee skill types (calc_battle_action_speed)
+    u8 remoteness; // success bonus for ranged skill types (calc_battle_action_speed)
+    u8 partId;     // part id (battle_bots_load_parts)
 };
 
 // 8-byte entry of the sort buffer at 0x02023000, sorted by key then key2, largest first (sort_buffer_descending).
@@ -853,7 +855,8 @@ struct BattleBot {
                    // robattle_bot_ready_for_command; set = facing away, which Destroy needs: destroy_check, message
                    // 0x19)
     u8 fillerBE;
-    u8 unkBF;
+    u8 rapidCharge;    // set by Rapid Charge (rapid_charge_apply): the Medabot runs to a line in sub-state 0x4C
+                       // (robattle_bots_extra_move), cleared when it gets there
     u8 guardFlags;     // flags (bit 1: traps don't spring on this Medabot, trap_hit_check)
     u8 medaforceGauge; // Medaforce gauge, 0-80 (0x50: Medaforce ready, check_medaforce_availability; drawn as "MF
                        // nn/80", runtime-checked)
@@ -875,7 +878,8 @@ struct BattleBot {
     u8 effectShownFlags; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (robattle_effect_a_end_init ..
                          // robattle_effect_b_end_anim), bit 2 / bit 3 = numbers shown by robattle_effect_a_number_init
                          // / robattle_effect_b_number_init
-    u8 unkCF;            // flags: bits 0/1/2/3 set by medaforce_cancel_status_apply (by gBattleWork.unk51)
+    u8 statusGuardFlags; // flags: bits 0/1/2/3 set by medaforce_cancel_status_apply (by gBattleWork.unk51); guard
+                         // against status skill pairs 0xD/0xE, 0x11/0x12, 0x13/0x14, 0xF/0x10 (bot_has_status_guard)
     u8 powerBonus;       // added to gBattleWork.amount by script_op_calc_damage (Power Up)
     u8 ironWallBonus;    // raised by gBattleWork.amount up to 0xFF (medaforce_iron_wall_apply_defence, written as
                          // &powerBonus + 1 to match)
@@ -883,7 +887,9 @@ struct BattleBot {
     u8 meleeBonus;   // added to gBattleWork.amount for parts with data[2] 0 / 1 (script_op_calc_damage)
     u8 rangedBonus;  // added for data[2] 2 / 3 (script_op_calc_damage)
     u8 trapBonus;    // added to gBattleWork.amount for unk28[side].power (trap_apply; Formation Orders)
-    u8 unkD6;        // flags (bit 1: +10 damage, attack_hit_carry_over_retarget)
+    u8 formFlags;    // Medaforce "form" flags, set by medaforce_form_apply from medaforce[0] 4..9: bits 0/1/2 make
+                     // any skill count as skill pair 4/5, 6/7, 8/9 (bit 1 also carries leftover damage over, +10);
+                     // bits 3/4/5 are the matching guards (check_can_target_bot and friends)
     u8 moveSubpixel; // movement: sub-pixel accumulator, + (0x20 - moveDelay) per frame, 1/16 px (battle_bot_move)
     u16 defence;     // cleared, then raised by gBattleWork.amount up to 0xFF (defence_apply)
     u8 moveStep;     // movement: whole pixels moved this frame
@@ -893,8 +899,8 @@ struct BattleBot {
                         // serial link in link Robattles (robattle_link_exchange_commands)
     u8 lastAction;      // copy of chosenAction (battle_action_cleanup)
     u8 lastActionSkill; // skill of the part chosenAction (1-3), 0 otherwise (battle_action_cleanup)
-    u8 unkE0;
-    u8 unkE1;
+    u8 targetBot;       // chosen target record + 1 (0 = none; battle_load_action_target)
+    u8 targetPart;      // chosen target part + 1 (0 = pick one; battle_pick_random_target_part)
     u8 fillerE2[0x1E];
 };
 
@@ -906,7 +912,7 @@ struct TeamSlot {
     u8 rightArm;
     u8 leftArm;
     u8 legs;
-    u8 slotId; // own slot index (team_init_order); battle bots keep it at BattleBot.unk47
+    u8 slotId; // own slot index (team_init_order); battle bots keep it at BattleBot.teamSlot
 };
 
 // Field scratch state; mostly the debug screen (field/field_debug), which draws its pages as hex

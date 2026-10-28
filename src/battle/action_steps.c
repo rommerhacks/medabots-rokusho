@@ -11,10 +11,10 @@
 #include "global.h"
 #include "constants/sprites.h"
 
-// Hidden function (no callers): moves the record's target (unkE0, record + 1) to the same slot on the other side
+// Hidden function (no callers): moves the record's target (targetBot, record + 1) to the same slot on the other side
 // (gTargetSwapSideTable: 1-3 <-> 4-6, 0 stays 0).
 void bot_target_swap_side(u32 rec) {
-    gBattleBots[rec].unkE0 = gTargetSwapSideTable[gBattleBots[rec].unkE0];
+    gBattleBots[rec].targetBot = gTargetSwapSideTable[gBattleBots[rec].targetBot];
 }
 
 // The battle message runner: open the window, print message msg, finish; 1 when done.
@@ -235,7 +235,7 @@ void trap_hit_calc_damage(void) {
     s32 i;
 
     for (i = 3; i >= 0; i--) {
-        if (gBattleBots[gBattleWork.actor].parts[i].unk11) {
+        if (gBattleBots[gBattleWork.actor].parts[i].armor) {
             gBattleWork.damagePart = i;
             break;
         }
@@ -396,7 +396,7 @@ void trap_hit_check_part_broken(void) {
 }
 
 void trap_hit_check_head_broken(void) {
-    if (gBattleBots[gBattleWork.actor].parts[0].unk11 == 0) {
+    if (gBattleBots[gBattleWork.actor].parts[0].armor == 0) {
         add_bot_to_defeated_list(gBattleWork.actor);
         gBattleWork.step = 0x2F;
     } else {
@@ -503,13 +503,13 @@ void trap_hit_break_burst_wait(void) {
     }
 }
 
-// Wear the trap down: Grap / Shot Trap lose half the actor's leg stat (unk12) of durability, Attack Clr one use;
+// Wear the trap down: Grap / Shot Trap lose half the actor's propulsion of durability, Attack Clr one use;
 // used up -> the disarm animation.
 void trap_hit_wear(void) {
     u8 v;
 
     if (gBattleWork.unk51 != 2) {
-        v = gBattleBots[gBattleWork.actor].parts[3].unk12 >> 1;
+        v = gBattleBots[gBattleWork.actor].parts[3].propulsion >> 1;
         if (v >= gBattleWork.traps[gBattleWork.actorSide].durability) {
             gBattleWork.step++;
         } else {
@@ -640,7 +640,7 @@ void action_part_check_run(void) {
 }
 
 void action_part_check(void) {
-    if (gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].unk11) {
+    if (gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].armor) {
         gBattleWork.stepDone = 1;
         gBattleWork.stepResult = 0;
     } else {
@@ -662,7 +662,7 @@ void target_part_check_run(void) {
 }
 
 void target_part_check(void) {
-    if (gBattleBots[gBattleWork.target].parts[gBattleWork.targetPart].unk11) {
+    if (gBattleBots[gBattleWork.target].parts[gBattleWork.targetPart].armor) {
         gBattleWork.stepDone = 1;
         gBattleWork.stepResult = 0;
     } else {
@@ -741,7 +741,7 @@ void guard_find(void) {
             continue;
         if (gBattleBots[base + i].statusType == 0x2F)
             continue;
-        if (gBattleBots[base + i].parts[gBattleBots[base + i].lastAction - 1].unk11 == 0)
+        if (gBattleBots[base + i].parts[gBattleBots[base + i].lastAction - 1].armor == 0)
             continue;
         gBattleWork.guardBot = base + i + 1;
         gBattleWork.guardSkill = gBattleBots[base + i].lastActionSkill;
@@ -1341,7 +1341,7 @@ void attack_hit_break_redraw(void) {
 }
 
 void attack_hit_check_defeated(void) {
-    if (gBattleBots[gBattleWork.target].parts[0].unk11)
+    if (gBattleBots[gBattleWork.target].parts[0].armor)
         gBattleWork.step += 3;
     else {
         add_bot_to_defeated_list(gBattleWork.target);
@@ -1349,14 +1349,14 @@ void attack_hit_check_defeated(void) {
     }
 }
 
-// Leftover damage (unkCA) goes on to another part with actor unkD6 bit 1 or a piercing part (data[7]).
+// Leftover damage (unkCA) goes on to another part with actor formFlags bit 1 or a piercing part (data[7]).
 void attack_hit_check_carry_over(void) {
     if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == SKILL_DESTROY) {
         if (--gBattleWork.amount != 0) {
             gBattleWork.step = 0x20;
             return;
         }
-    } else if ((gBattleBots[gBattleWork.actor].unkD6 & 2 ||
+    } else if ((gBattleBots[gBattleWork.actor].formFlags & 2 ||
                 gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[7]) &&
                gBattleWork.overflowAmount != 0) {
         gBattleWork.step = 0x20;
@@ -1372,7 +1372,7 @@ void attack_hit_carry_over_retarget(void) {
     if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == SKILL_DESTROY)
         battle_set_damage_break_part(gBattleWork.target, gBattleWork.targetPart);
     else {
-        if (gBattleBots[gBattleWork.actor].unkD6 & 2)
+        if (gBattleBots[gBattleWork.actor].formFlags & 2)
             gBattleWork.overflowAmount += 10;
         battle_set_damage_vs_armor(gBattleWork.target, gBattleWork.targetPart, gBattleWork.overflowAmount);
     }
@@ -1575,7 +1575,7 @@ void attack_absorbed_check_carry_over(void) {
     u32 part;
     struct BattleWork *s;
 
-    if ((gBattleBots[(s = &gBattleWork)->actor].unkD6 & 2 || gBattleBots[s->actor].parts[s->actorPart].data[7]) &&
+    if ((gBattleBots[(s = &gBattleWork)->actor].formFlags & 2 || gBattleBots[s->actor].parts[s->actorPart].data[7]) &&
         s->overflowAmount && (part = find_most_damaged_part(s->target))) {
         part--;
         s->damagePart = part;
@@ -1609,7 +1609,7 @@ void status_attack_check(void) {
         s->step++;
     else if (s->blockResult & 4)
         s->step++;
-    else if (!gBattleBots[s->target].parts[0].unk11)
+    else if (!gBattleBots[s->target].parts[0].armor)
         s->step++;
     else if (!battle_bot_lacks_stability(s->target))
         s->step++;

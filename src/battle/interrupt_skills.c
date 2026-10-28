@@ -253,7 +253,7 @@ void use_drain_begin(void) {
     if (decrement_battle_timer_and_check_zero()) {
         gBattleWork.messageId = 0x1A;
         gBattleWork.step++;
-    } else if (gBattleBots[gBattleWork.target].parts[0].unk10 == 0) {
+    } else if (gBattleBots[gBattleWork.target].parts[0].headUses == 0) {
         gBattleWork.messageId = 0x34;
         gBattleWork.step++;
     } else {
@@ -357,14 +357,14 @@ void use_drain_bubble_shrink(void) {
     }
 }
 
-// Moves head uses (parts[0].unk10) from the target to the user, capped by the user's maximum (data[8]).
+// Moves head uses (parts[0].headUses) from the target to the user, capped by the user's maximum (data[8]).
 void use_drain_apply(void) {
     calc_head_uses_taken(gBattleWork.target, gBattleWork.amount);
     gBattleWork.unk51 = gBattleWork.appliedAmount;
-    subtract_u8_floored(&gBattleBots[gBattleWork.target].parts[0].unk10, gBattleWork.unk51);
+    subtract_u8_floored(&gBattleBots[gBattleWork.target].parts[0].headUses, gBattleWork.unk51);
     calc_head_uses_given(gBattleWork.actor, gBattleWork.unk51);
     gBattleWork.unk52 = gBattleWork.appliedAmount;
-    add_u8_capped(&gBattleBots[gBattleWork.actor].parts[0].unk10, gBattleWork.unk52,
+    add_u8_capped(&gBattleBots[gBattleWork.actor].parts[0].headUses, gBattleWork.unk52,
                   gBattleBots[gBattleWork.actor].parts[0].data[8]);
     gBattleWork.step++;
 }
@@ -840,7 +840,7 @@ void change_transform_part(void) {
     gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[7] = (&gGameWork.partAbility)[7];
     gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[0xC] = (&gGameWork.partAbility)[0xC];
     gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2] = 7;
-    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].unk17 = gBattleWork.changePartId;
+    gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].partId = gBattleWork.changePartId;
     ai_pick_bot_targets(gBattleWork.actor);
     battle_bot_select_part(gBattleWork.actor, gBattleWork.actorPart + 1);
     load_all_bot_part_sprites();
@@ -851,7 +851,7 @@ void change_transform_part(void) {
 // Copies the old and the new part names into the message buffer for the change message (unkA6 0x2F).
 void change_finish(void) {
     clear_battle_sprite_slot(0x21, 2);
-    memcpy_bytes_08041D04((const void *)gMedapartNames[0][gBattleWork.savedPart.unk17 * 4 + gBattleWork.actorPart],
+    memcpy_bytes_08041D04((const void *)gMedapartNames[0][gBattleWork.savedPart.partId * 4 + gBattleWork.actorPart],
                           gGameWork.textBuf, 0xF);
     memcpy_bytes_08041D04((const void *)gMedapartNames[0][gBattleWork.changePartId * 4 + gBattleWork.actorPart],
                           gGameWork.textBuf + 0x14, 0xF);

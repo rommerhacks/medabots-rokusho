@@ -25,12 +25,13 @@ void sprite_bob_step(
 u32 staggered_sprites_update(u32 slot, u32 n);
 void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n);
 void battle_calc_damage_split(u32 rec, u32 part,
-                              s32 amount); // appliedAmount = cappedAmount = min(amount, part data[4] - armor unk11)
+                              s32 amount); // appliedAmount = cappedAmount = min(amount, part data[4] - armor)
 u32 armor_heal_step(
     u16 *amount, u32 rec,
     u32 part); // moves one point from *amount (low byte) into the part's armor (max data[4]); 1 when done
-u32 bot_has_status_guard(u32 rec,
-                         u32 skill); // 1 if unkCF has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8),
+u32 bot_has_status_guard(
+    u32 rec,
+    u32 skill); // 1 if statusGuardFlags has the bit for Medaforce skill pair 0xD/0xE (1), 0xF/0x10 (8),
 u32 sprite_slide_x_step(u32 slot, u32 n);
 void battle_inflict_status(u32 rec, u32 skill, s32 a, u32 b);
 void reset_battle_bot_state(u32 rec);
@@ -38,7 +39,7 @@ void battle_set_damage_display(u32 rec, u32 part, s32 amount);
 void calc_head_uses_taken(
     u32 rec,
     s32 amount); // gBattleWork.appliedAmount / cappedAmount = min(amount, head unk10), overflowAmount = the rest
-void calc_head_uses_given(u32 rec, s32 amount); // same, clamped to head data[8] - unk10
+void calc_head_uses_given(u32 rec, s32 amount); // same, clamped to head data[8] - headUses
 u32 battle_find_enemy_same_legs(u32 base, u32 rec);
 u32 battle_find_guarding_enemy(u32 base); // record on side base, or 0xFF
 

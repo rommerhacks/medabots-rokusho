@@ -17,7 +17,7 @@ void battle_calc_attack_success(void) {
         gBattleWork.success += gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[5] << 4;
     if (check_bot_ability_type_shoot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target))
         gBattleWork.success += gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[5] << 4;
-    if (gBattleBots[gBattleWork.actor].unkD6 & 4)
+    if (gBattleBots[gBattleWork.actor].formFlags & 4)
         gBattleWork.success += gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[5];
     gBattleWork.success += gBattleWork.traps[gBattleWork.actorSide].unk0;
     success_add_strengthen_parts(gBattleWork.actor);
@@ -48,7 +48,7 @@ void battle_check_guard_or_cover(void) {
         }
     } else if (!(gBattleBots[gBattleWork.actor].guardFlags & 4) &&
                (gBattleBots[gBattleWork.target].stateFlags & 0x10) &&
-               gBattleBots[gBattleWork.target].parts[gBattleBots[gBattleWork.target].lastAction - 1].unk11) {
+               gBattleBots[gBattleWork.target].parts[gBattleBots[gBattleWork.target].lastAction - 1].armor) {
         gBattleBots[gBattleWork.target].hitFlags |= 0xC;
         gBattleWork.finalSuccess = gBattleWork.success;
         battle_set_action_target_part(gBattleWork.actor, gBattleBots[gBattleWork.target].lastAction);
@@ -110,7 +110,7 @@ static u32 battle_calculate_turn_speed(void) {
     gBattleWork.evasion = 0;
     if (!(gBattleBots[gBattleWork.target].hitFlags & 4)) {
         accumulate_battle_speed_value(gBattleWork.target);
-        gBattleWork.evasion += gBattleBots[gBattleWork.target].parts[3].unk13;
+        gBattleWork.evasion += gBattleBots[gBattleWork.target].parts[3].evasion;
         if (!(gBattleBots[gBattleWork.target].hitFlags & 8))
             subtract_s16_floored((s16 *)&gBattleWork.evasion, 8);
         if (battle_calculate_damage_modifier())
@@ -122,7 +122,7 @@ static u32 battle_calculate_turn_speed(void) {
                 return 0;
             if (type == 7)
                 return 0;
-            if (!(gBattleBots[gBattleWork.actor].unkD6 & 2)) {
+            if (!(gBattleBots[gBattleWork.actor].formFlags & 2)) {
                 gBattleBots[gBattleWork.target].hitFlags |= 0x10;
                 return 1;
             }
@@ -138,7 +138,7 @@ static void battle_process_speed_and_action(void) {
     gBattleWork.finalSuccess = gBattleWork.success;
     if (!(gBattleBots[gBattleWork.target].hitFlags & 8)) {
         accumulate_battle_speed_value(gBattleWork.target);
-        gBattleWork.evasion += gBattleBots[gBattleWork.target].parts[3].unk14;
+        gBattleWork.evasion += gBattleBots[gBattleWork.target].parts[3].defence;
         if (!(gBattleBots[gBattleWork.target].hitFlags & 4))
             subtract_s16_floored((s16 *)&gBattleWork.evasion, 8);
         if (!battle_calculate_damage_modifier() && (s16)gBattleWork.evasion > 0x1F) {
@@ -159,7 +159,7 @@ static u32 count_intact_parts(u32 rec) {
     u32 i;
 
     for (i = 0; i <= 3; i++)
-        if (gBattleBots[rec].parts[i].unk11)
+        if (gBattleBots[rec].parts[i].armor)
             n++;
     return n;
 }
@@ -170,7 +170,7 @@ static u32 battle_find_strongest_part(u32 rec) {
     u32 idx;
 
     for (i = 3; i != 0; i--) {
-        u8 a = gBattleBots[rec].parts[i].unk11;
+        u8 a = gBattleBots[rec].parts[i].armor;
         if (a && a > best) {
             idx = i;
             best = a;

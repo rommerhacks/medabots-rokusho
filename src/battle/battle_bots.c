@@ -54,21 +54,21 @@ void battle_bots_load_parts(u32 rec, u32 n) {
         gBattleBots[rec].present = 1;
         load_part_data(gBattleBots[rec].head, 0, &gGameWork.partAbility);
         memcpy_bytes_0803F63C(&gGameWork.partAbility, gBattleBots[rec].parts[0].data, 0xD);
-        gBattleBots[rec].parts[0].unk10 = gBattleBots[rec].parts[0].data[8];
-        gBattleBots[rec].parts[0].unk11 = gBattleBots[rec].parts[0].data[4];
-        gBattleBots[rec].parts[0].unk17 = gBattleBots[rec].head;
+        gBattleBots[rec].parts[0].headUses = gBattleBots[rec].parts[0].data[8];
+        gBattleBots[rec].parts[0].armor = gBattleBots[rec].parts[0].data[4];
+        gBattleBots[rec].parts[0].partId = gBattleBots[rec].head;
         load_part_data(gBattleBots[rec].rightArm, 1, &gGameWork.partAbility);
         memcpy_bytes_0803F63C(&gGameWork.partAbility, gBattleBots[rec].parts[1].data, 0xD);
-        gBattleBots[rec].parts[1].unk11 = gBattleBots[rec].parts[1].data[4];
-        gBattleBots[rec].parts[1].unk17 = gBattleBots[rec].rightArm;
+        gBattleBots[rec].parts[1].armor = gBattleBots[rec].parts[1].data[4];
+        gBattleBots[rec].parts[1].partId = gBattleBots[rec].rightArm;
         load_part_data(gBattleBots[rec].leftArm, 2, &gGameWork.partAbility);
         memcpy_bytes_0803F63C(&gGameWork.partAbility, gBattleBots[rec].parts[2].data, 0xD);
-        gBattleBots[rec].parts[2].unk11 = gBattleBots[rec].parts[2].data[4];
-        gBattleBots[rec].parts[2].unk17 = gBattleBots[rec].leftArm;
+        gBattleBots[rec].parts[2].armor = gBattleBots[rec].parts[2].data[4];
+        gBattleBots[rec].parts[2].partId = gBattleBots[rec].leftArm;
         load_part_data(gBattleBots[rec].legs, 3, &gGameWork.partAbility);
         memcpy_bytes_0803F63C(&gGameWork.partAbility, gBattleBots[rec].parts[3].data, 0xD);
-        memcpy_bytes_0803F63C(&gBattleBots[rec].parts[3].data[4], &gBattleBots[rec].parts[3].unk11, 6);
-        gBattleBots[rec].parts[3].unk17 = gBattleBots[rec].legs;
+        memcpy_bytes_0803F63C(&gBattleBots[rec].parts[3].data[4], &gBattleBots[rec].parts[3].armor, 6);
+        gBattleBots[rec].parts[3].partId = gBattleBots[rec].legs;
     }
 }
 
@@ -232,13 +232,13 @@ u32 part_blocked_by_effect(u32 rec, u32 part) {
 }
 
 static u32 head_out_of_uses(u32 rec, u32 part) {
-    if (part == 1 && gBattleBots[rec].parts[0].unk10 == 0)
+    if (part == 1 && gBattleBots[rec].parts[0].headUses == 0)
         return 1;
     return 0;
 }
 
 static u32 part_is_broken(u32 rec, u32 part) {
-    if (gBattleBots[rec].parts[part - 1].unk11 == 0)
+    if (gBattleBots[rec].parts[part - 1].armor == 0)
         return 1;
     return 0;
 }
@@ -260,8 +260,8 @@ void battle_bot_select_part(u32 rec, u32 part) {
     if (part == 0)
         return;
     if (part <= 3) {
-        gBattleBots[rec].unkE0 = gBattleBots[rec].parts[part - 1].unkE;
-        gBattleBots[rec].unkE1 = gBattleBots[rec].parts[part - 1].unkF;
+        gBattleBots[rec].targetBot = gBattleBots[rec].parts[part - 1].aiTargetBot;
+        gBattleBots[rec].targetPart = gBattleBots[rec].parts[part - 1].aiTargetPart;
     }
 }
 

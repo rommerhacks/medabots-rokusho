@@ -334,8 +334,8 @@ void battle_action_cleanup(u32 bot) {
     else
         gBattleBots[bot].lastActionSkill = gBattleBots[bot].parts[gBattleBots[bot].chosenAction - 1].data[1];
     for (i = 0; i <= 3; i++) {
-        gBattleBots[bot].parts[i].unkE = 0;
-        gBattleBots[bot].parts[i].unkF = 0;
+        gBattleBots[bot].parts[i].aiTargetBot = 0;
+        gBattleBots[bot].parts[i].aiTargetPart = 0;
     }
     zero = 0;
     CpuSet(&zero, gBattleWorkActionVars, 0x05000008);
@@ -343,7 +343,7 @@ void battle_action_cleanup(u32 bot) {
     CpuSet(&zero2, gBattleWorkActionVars + 8, 0x05000008);
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState && (gBattleBots[i].stateFlags & 0x18) &&
-            (u8)(gBattleBots[i].lastAction - 1) <= 2 && gBattleBots[i].parts[gBattleBots[i].lastAction - 1].unk11 == 0)
+            (u8)(gBattleBots[i].lastAction - 1) <= 2 && gBattleBots[i].parts[gBattleBots[i].lastAction - 1].armor == 0)
             gBattleBots[i].stateFlags &= 0xE7;
     }
     for (i = 0; i <= 5; i++) {
@@ -363,7 +363,7 @@ void restore_changed_part(u32 bot) {
         gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[6] = gBattleWork.savedPart.data[6];
         gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[7] = gBattleWork.savedPart.data[7];
         gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[0xC] = gBattleWork.savedPart.data[0xC];
-        gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].unk17 = gBattleWork.savedPart.unk17;
+        gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].partId = gBattleWork.savedPart.partId;
         load_all_bot_part_sprites();
         iterate_bots_setup_battle_sprites();
     }

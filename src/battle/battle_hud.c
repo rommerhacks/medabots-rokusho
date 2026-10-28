@@ -26,20 +26,20 @@ void draw_battle_bot_portraits(void) {
 }
 
 void get_bot_part_effective_values(u32 bot, u8 *out) {
-    if (gBattleBots[bot].parts[0].unk11)
-        *out++ = gBattleBots[bot].parts[0].unk17;
+    if (gBattleBots[bot].parts[0].armor)
+        *out++ = gBattleBots[bot].parts[0].partId;
     else
         *out++ = gBattleBots[bot].gender + 0x78;
-    if (gBattleBots[bot].parts[1].unk11)
-        *out++ = gBattleBots[bot].parts[1].unk17;
+    if (gBattleBots[bot].parts[1].armor)
+        *out++ = gBattleBots[bot].parts[1].partId;
     else
         *out++ = gBattleBots[bot].gender + 0x78;
-    if (gBattleBots[bot].parts[2].unk11)
-        *out++ = gBattleBots[bot].parts[2].unk17;
+    if (gBattleBots[bot].parts[2].armor)
+        *out++ = gBattleBots[bot].parts[2].partId;
     else
         *out++ = gBattleBots[bot].gender + 0x78;
-    if (gBattleBots[bot].parts[3].unk11)
-        *out = gBattleBots[bot].parts[3].unk17;
+    if (gBattleBots[bot].parts[3].armor)
+        *out = gBattleBots[bot].parts[3].partId;
     else
         *out = gBattleBots[bot].gender + 0x78;
 }

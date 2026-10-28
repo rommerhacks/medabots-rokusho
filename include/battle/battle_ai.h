@@ -16,6 +16,6 @@ u32 find_most_damaged_part(u32 rec);         // part (+ 1) with armor left that 
 u32 battle_bot_lacks_stability(u32 rec);     // 1 if no unbroken part has the Stability skill
 u32 bot_random_intact_part(
     u32 rec); // random part index of rec with armor left (from rng_random_slot, stepping by rng bit 0)
-u32 find_random_broken_part(u32 rec); // random part (+ 1) of rec with no armor left (unk11 == 0), 0 = none
+u32 find_random_broken_part(u32 rec); // random part (+ 1) of rec with no armor left (armor == 0), 0 = none
 
 #endif // GUARD_BATTLE_BATTLE_AI_H

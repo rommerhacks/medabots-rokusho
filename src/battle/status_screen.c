@@ -154,7 +154,7 @@ void status_draw_part_names(void) {
     for (i = 0; i <= 3; i++) {
         memcpy_bytes_08041D04(
             (const void *)
-                gMedapartNames[0][gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].unk17 * 4 + i],
+                gMedapartNames[0][gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].partId * 4 + i],
             gGameWork.textBuf, 15);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x20 + i * 14, 0xD, 4 + i * 2, 10, 13, 1, 2);
     }
@@ -164,7 +164,7 @@ void status_draw_part_ability_icons(void) {
     u32 i;
 
     for (i = 0; i <= 3; i++) {
-        load_part_data(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].unk17, i,
+        load_part_data(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].partId, i,
                        &gGameWork.partAbility);
         memcpy_bytes_08041D04(gMedalRecords[gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].medal.graphicId],
                               gGameWork.medalGfxRecord, 16);
@@ -175,14 +175,14 @@ void status_draw_part_ability_icons(void) {
     }
 }
 
-// Status screen ARMOR column: parts[i].unk11 (current) / data[4] (max), grey when broken (runtime-checked "35/35")
+// Status screen ARMOR column: parts[i].armor (current) / data[4] (max), grey when broken (runtime-checked "35/35")
 void status_draw_part_armor(void) {
     u32 i;
     u16 pal;
 
     for (i = 0; i <= 3; i++) {
-        pal = gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].unk11 ? 0xA000 : 0xB000;
-        draw_number_tall_bgcnt(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].unk11, 0x17,
+        pal = gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].armor ? 0xA000 : 0xB000;
+        draw_number_tall_bgcnt(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].armor, 0x17,
                                i * 2 + 4, 3, REG_BG1CNT, pal | 0x390);
         draw_tile_block(1, 2, 0x1A, i * 2 + 4, REG_BG1CNT, pal | 0x3A4);
         draw_number_tall_bgcnt(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].data[4], 0x1B,

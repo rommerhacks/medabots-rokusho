@@ -1069,7 +1069,7 @@ static s32 afterbattle_broken_part_chance(void) {
     s32 sum = 0;
     u32 i = 0, j, k;
     struct BattleBot *base = gBattleBots;
-    u8 *armor = &base->parts[0].unk11;
+    u8 *armor = &base->parts[0].armor;
     u8 *p;
 
 loop:
@@ -1133,7 +1133,7 @@ void battle_pick_random_bot_part(u32 first) {
         k = first + slot;
         if (gBattleBots[k].present) {
             gBattleWork.wonPartKind = rng_next_byte() & 3;
-            gBattleWork.wonPartId = gBattleBots[k].parts[gBattleWork.wonPartKind].unk17;
+            gBattleWork.wonPartId = gBattleBots[k].parts[gBattleWork.wonPartKind].partId;
             gBattleWork.lossBot = k;
             return;
         }
@@ -1262,13 +1262,13 @@ static void calc_medaforce_gauge_from_damage(void) {
 
     for (i = 0, score = 0; i <= 2; i++) {
         if (gBattleBots[i + 3].present) {
-            if (!gBattleBots[i + 3].parts[0].unk11)
+            if (!gBattleBots[i + 3].parts[0].armor)
                 score += 8;
-            if (!gBattleBots[i + 3].parts[1].unk11)
+            if (!gBattleBots[i + 3].parts[1].armor)
                 score += 16;
-            if (!gBattleBots[i + 3].parts[2].unk11)
+            if (!gBattleBots[i + 3].parts[2].armor)
                 score += 16;
-            if (!gBattleBots[i + 3].parts[3].unk11)
+            if (!gBattleBots[i + 3].parts[3].armor)
                 score += 16;
         }
     }

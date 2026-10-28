@@ -80,7 +80,7 @@ void action_phase_resolve_command(void) {
         return;
     }
     if (gBattleBots[gBattleWork.actor].chosenAction <= 3 &&
-        gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].unk11 == 0) {
+        gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].armor == 0) {
         gBattleWork.messageId = 5;
         gGameSubState = 0x20;
         return;
@@ -104,38 +104,38 @@ void action_phase_resolve_command(void) {
         return;
     }
     if (gBattleBots[gBattleWork.actor].chosenAction == 1 && gBattleWork.partChanged != 1) {
-        if (gBattleBots[gBattleWork.actor].parts[0].unk10 == 0) {
+        if (gBattleBots[gBattleWork.actor].parts[0].headUses == 0) {
             gBattleWork.messageId = 8;
             gGameSubState = 0x20;
             return;
         }
-        gBattleBots[gBattleWork.actor].parts[0].unk10--;
+        gBattleBots[gBattleWork.actor].parts[0].headUses--;
     }
-    if (gBattleBots[gBattleWork.actor].unkE0) {
+    if (gBattleBots[gBattleWork.actor].targetBot) {
         if (gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].data[1] == 0x21) {
-            if (gBattleBots[gBattleBots[gBattleWork.actor].unkE0 - 1].teamState) {
+            if (gBattleBots[gBattleBots[gBattleWork.actor].targetBot - 1].teamState) {
                 gBattleWork.messageId = 9;
                 gGameSubState = 0x20;
                 return;
             }
-        } else if (gBattleBots[gBattleBots[gBattleWork.actor].unkE0 - 1].teamState == 0) {
+        } else if (gBattleBots[gBattleBots[gBattleWork.actor].targetBot - 1].teamState == 0) {
             gBattleWork.messageId = 0xA;
             gGameSubState = 0x20;
             return;
         }
     }
-    if (gBattleBots[gBattleWork.actor].unkE1) {
+    if (gBattleBots[gBattleWork.actor].targetPart) {
         if (gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].data[1] == 0x20) {
-            if (gBattleBots[gBattleBots[gBattleWork.actor].unkE0 - 1]
-                    .parts[gBattleBots[gBattleWork.actor].unkE1 - 1]
-                    .unk11) {
+            if (gBattleBots[gBattleBots[gBattleWork.actor].targetBot - 1]
+                    .parts[gBattleBots[gBattleWork.actor].targetPart - 1]
+                    .armor) {
                 gBattleWork.messageId = 0xB;
                 gGameSubState = 0x20;
                 return;
             }
-        } else if (gBattleBots[gBattleBots[gBattleWork.actor].unkE0 - 1]
-                       .parts[gBattleBots[gBattleWork.actor].unkE1 - 1]
-                       .unk11 == 0) {
+        } else if (gBattleBots[gBattleBots[gBattleWork.actor].targetBot - 1]
+                       .parts[gBattleBots[gBattleWork.actor].targetPart - 1]
+                       .armor == 0) {
             gBattleWork.messageId = 0xC;
             gGameSubState = 0x20;
             return;
@@ -519,8 +519,8 @@ void action_phase_medaforce_name(void) {
 void action_phase_start_medaforce(void) {
     gBattleWork.skillGrowthOn = 1;
     gBattleWork.actorSkill = gBattleBots[gBattleWork.actor].medaforce[0] + 0x50;
-    gBattleBots[gBattleWork.actor].unkE0 = 0;
-    gBattleBots[gBattleWork.actor].unkE1 = 0;
+    gBattleBots[gBattleWork.actor].targetBot = 0;
+    gBattleBots[gBattleWork.actor].targetPart = 0;
     gGameState = 9;
     gGameSubState = 0;
 }

@@ -6,7 +6,7 @@
 #include "constants/sprites.h"
 
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount) {
-    s32 room = gBattleBots[rec].parts[part].data[4] - gBattleBots[rec].parts[part].unk11;
+    s32 room = gBattleBots[rec].parts[part].data[4] - gBattleBots[rec].parts[part].armor;
     if (room > amount) {
         gBattleWork.appliedAmount = amount;
         gBattleWork.cappedAmount = amount;
@@ -20,8 +20,8 @@ void battle_calc_damage_split(u32 rec, u32 part, s32 amount) {
 
 u32 armor_heal_step(u16 *amount, u32 rec, u32 part) {
     u8 *n = (u8 *)amount;
-    if (gBattleBots[rec].parts[part].unk11 != gBattleBots[rec].parts[part].data[4]) {
-        gBattleBots[rec].parts[part].unk11++;
+    if (gBattleBots[rec].parts[part].armor != gBattleBots[rec].parts[part].data[4]) {
+        gBattleBots[rec].parts[part].armor++;
         if (--*n != 0)
             return 0;
     }
@@ -30,19 +30,19 @@ u32 armor_heal_step(u16 *amount, u32 rec, u32 part) {
 
 u32 bot_has_status_guard(u32 rec, u32 skill) {
     if (skill - 0xd <= 1) {
-        if (gBattleBots[rec].unkCF & 1)
+        if (gBattleBots[rec].statusGuardFlags & 1)
             return 1;
         return 0;
     } else if (skill - 0xf <= 1) {
-        if (gBattleBots[rec].unkCF & 8)
+        if (gBattleBots[rec].statusGuardFlags & 8)
             return 1;
         return 0;
     } else if (skill - 0x11 <= 1) {
-        if (gBattleBots[rec].unkCF & 2)
+        if (gBattleBots[rec].statusGuardFlags & 2)
             return 1;
         return 0;
     } else if (skill - 0x13 <= 1) {
-        if (gBattleBots[rec].unkCF & 4)
+        if (gBattleBots[rec].statusGuardFlags & 4)
             return 1;
         return 0;
     }
@@ -99,7 +99,7 @@ void battle_inflict_status(u32 rec, u32 skill, s32 a, u32 b) {
 
 void reset_battle_bot_state(u32 rec) {
     gBattleBots[rec].teamState = 0;
-    gBattleBots[rec].parts[0].unk11 = 0;
+    gBattleBots[rec].parts[0].armor = 0;
     gBattleBots[rec].evasionBonus = 0;
     gBattleBots[rec].present = 2;
     gBattleBots[rec].hitFlags = 0;
@@ -154,8 +154,8 @@ u32 staggered_sprites_update(u32 slot, u32 n) {
 }
 
 void reaction_counter_begin(void) {
-    gBattleBots[gBattleWork.actor].unkE0 = gBattleWork.actor + 1;
-    gBattleBots[gBattleWork.actor].unkE1 = gBattleWork.actorPart + 1;
+    gBattleBots[gBattleWork.actor].targetBot = gBattleWork.actor + 1;
+    gBattleBots[gBattleWork.actor].targetPart = gBattleWork.actorPart + 1;
     if ((gBattleWork.swapPart = gBattleWork.targetPart) == 3)
         gBattleWork.swapPart = 0;
     gBattleWork.swapBot = gBattleWork.target;
@@ -181,8 +181,8 @@ void reaction_counter_begin(void) {
 
 // 1 if the part is broken or at full armor (nothing for a heal to restore).
 u32 part_broken_or_undamaged(u32 rec, u32 part) {
-    if (gBattleBots[rec].parts[part].unk11 != 0 &&
-        gBattleBots[rec].parts[part].unk11 != gBattleBots[rec].parts[part].data[4])
+    if (gBattleBots[rec].parts[part].armor != 0 &&
+        gBattleBots[rec].parts[part].armor != gBattleBots[rec].parts[part].data[4])
         return 0;
     return 1;
 }
@@ -242,7 +242,7 @@ void sprite_bob_step(u32 slot) {
 }
 
 void calc_head_uses_taken(u32 rec, s32 amount) {
-    s32 head = gBattleBots[rec].parts[0].unk10;
+    s32 head = gBattleBots[rec].parts[0].headUses;
     if (head > amount) {
         gBattleWork.appliedAmount = amount;
         gBattleWork.cappedAmount = amount;
@@ -255,7 +255,7 @@ void calc_head_uses_taken(u32 rec, s32 amount) {
 }
 
 void calc_head_uses_given(u32 rec, s32 amount) {
-    s32 room = gBattleBots[rec].parts[0].data[8] - gBattleBots[rec].parts[0].unk10;
+    s32 room = gBattleBots[rec].parts[0].data[8] - gBattleBots[rec].parts[0].headUses;
     if (room > amount) {
         gBattleWork.appliedAmount = amount;
         gBattleWork.cappedAmount = amount;
@@ -388,14 +388,14 @@ void medaforce_calc_damage(u32 rec) {
 // Medaforce hit list entry for one part: partDamage = damage it takes (capped at its armor), partBreaks = 1 if that
 // breaks it. No return statement: the original never sets r0 but is not void (`pop {r1}` epilogue).
 u32 hit_list_set_part_damage(u32 rec, u32 part, u32 amount) {
-    if (gBattleBots[rec].parts[part].unk11 == 0) {
+    if (gBattleBots[rec].parts[part].armor == 0) {
         gBattleWork.partDamage[part] = 0;
         gBattleWork.partBreaks[part] = 0;
-    } else if (gBattleBots[rec].parts[part].unk11 > amount) {
+    } else if (gBattleBots[rec].parts[part].armor > amount) {
         gBattleWork.partDamage[part] = amount;
         gBattleWork.partBreaks[part] = 0;
     } else {
-        gBattleWork.partDamage[part] = gBattleBots[rec].parts[part].unk11;
+        gBattleWork.partDamage[part] = gBattleBots[rec].parts[part].armor;
         gBattleWork.partBreaks[part] = 1;
     }
 }
@@ -409,7 +409,7 @@ u32 battle_find_guarding_enemy(u32 base) {
     for (j = 0; j <= 2; j++) {
         if (gBattleBots[base + i].teamState &&
             ((gBattleBots[base + i].stateFlags & 8) || (gBattleBots[base + i].stateFlags & 0x10)) &&
-            gBattleBots[base + i].parts[gBattleBots[base + i].lastAction - 1].unk11)
+            gBattleBots[base + i].parts[gBattleBots[base + i].lastAction - 1].armor)
             return base + i;
         if (dir) {
             if (++i > 2)

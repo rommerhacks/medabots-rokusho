@@ -8,7 +8,7 @@ u32 sprite_group_rise_step(u8 *buf, u32 slot);
 void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 b, s16 x, s16 y);
 void armor_panel_draw_icons(u32 side);
 void armor_panel_draw_frame(u32 side);
-void armor_panel_draw_bars(u32 side, u32 rec); // draws the 4 parts' armor (data[4] max, unk11 left) via armor_bar_draw
+void armor_panel_draw_bars(u32 side, u32 rec); // draws the 4 parts' armor (data[4] max, armor left) via armor_bar_draw
 void armor_panel_draw_numbers(u32 side, u32 rec);
 void battle_set_damage_break_part(u32 rec, u32 part);
 u32 effect_sprite_fly_to_part(u32 slot, u32 part);

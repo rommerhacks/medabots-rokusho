@@ -105,14 +105,14 @@ void battle_tick_status_effect(u32 rec) {
 }
 
 static inline u32 part_armor(u32 rec, u32 i) {
-    return gBattleBots[rec].parts[i].unk11;
+    return gBattleBots[rec].parts[i].armor;
 }
 
 // First part (1-4) that still works but is below its maximum armor (data[4]), 0 = none.
 static u32 find_damaged_part(u32 rec) {
     u32 i;
     for (i = 0; i <= 3; i++) {
-        if (gBattleBots[rec].parts[i].unk11 != 0)
+        if (gBattleBots[rec].parts[i].armor != 0)
             if (gBattleBots[rec].parts[i].data[4] != part_armor(rec, i))
                 return i + 1;
     }
@@ -121,15 +121,15 @@ static u32 find_damaged_part(u32 rec) {
 
 // Adds armor up to the part's maximum. Returns the amount applied, with the leftover in bits 8-15.
 static u32 add_part_stat_clamped(u32 rec, u32 part, s32 amount) {
-    u32 armor = gBattleBots[rec].parts[part].unk11;
+    u32 armor = gBattleBots[rec].parts[part].armor;
 
     armor += amount;
     if (armor > gBattleBots[rec].parts[part].data[4]) {
         armor -= gBattleBots[rec].parts[part].data[4];
-        gBattleBots[rec].parts[part].unk11 = gBattleBots[rec].parts[part].data[4];
+        gBattleBots[rec].parts[part].armor = gBattleBots[rec].parts[part].data[4];
         return (armor << 8) + (amount - armor);
     }
-    gBattleBots[rec].parts[part].unk11 = armor;
+    gBattleBots[rec].parts[part].armor = armor;
     return amount;
 }
 
@@ -138,7 +138,7 @@ static u32 find_last_part_with_armor(u32 rec) {
     u32 i;
 
     for (i = 0; i <= 3; i++) {
-        if (gBattleBots[rec].parts[3 - i].unk11)
+        if (gBattleBots[rec].parts[3 - i].armor)
             return i + 1;
     }
     return 0;
@@ -153,7 +153,7 @@ u32 find_burnable_part(u32 rec) {
     else
         part = gBattleBots[rec].statusPart;
     for (i = 0; i <= 3; i++) {
-        if (gBattleBots[rec].parts[part - 1].unk11 > 1)
+        if (gBattleBots[rec].parts[part - 1].armor > 1)
             return part;
         part--;
         if (part == 0)
@@ -164,15 +164,15 @@ u32 find_burnable_part(u32 rec) {
 
 // Unused: takes armor down to 0. Returns the amount taken, with the leftover in bits 8-15.
 static u32 subtract_part_armor_clamped(u32 rec, u32 part, s32 amount) {
-    u32 cur = gBattleBots[rec].parts[part].unk11;
+    u32 cur = gBattleBots[rec].parts[part].armor;
     s32 left = cur - amount;
     u32 ret;
 
     if (left >= 0) {
-        gBattleBots[rec].parts[part].unk11 = left;
+        gBattleBots[rec].parts[part].armor = left;
         ret = amount;
     } else {
-        gBattleBots[rec].parts[part].unk11 = 0;
+        gBattleBots[rec].parts[part].armor = 0;
         ret = ((amount - cur) << 8) + cur;
     }
     return ret;
@@ -180,15 +180,15 @@ static u32 subtract_part_armor_clamped(u32 rec, u32 part, s32 amount) {
 
 // Takes armor down to 1 (a burn never breaks the part). Returns the amount taken, leftover in bits 8-15.
 static u32 subtract_part_armor_keep_one(u32 rec, u32 part, s32 amount) {
-    u32 cur = gBattleBots[rec].parts[part].unk11;
+    u32 cur = gBattleBots[rec].parts[part].armor;
     u32 spare = cur - 1;
     u32 ret;
 
     if ((s32)(spare - amount) >= 0) {
-        gBattleBots[rec].parts[part].unk11 = cur - amount;
+        gBattleBots[rec].parts[part].armor = cur - amount;
         ret = amount;
     } else {
-        gBattleBots[rec].parts[part].unk11 = 1;
+        gBattleBots[rec].parts[part].armor = 1;
         ret = ((amount - spare) << 8) + spare;
     }
     return ret;

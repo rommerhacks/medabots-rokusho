@@ -149,7 +149,7 @@ void medaforce_spiral_bolt_break_burst_wait(void) {
 }
 
 void medaforce_spiral_bolt_check_defeated(void) {
-    if (gBattleBots[gBattleWork.target].parts[0].unk11 == 0)
+    if (gBattleBots[gBattleWork.target].parts[0].armor == 0)
         add_bot_to_defeated_list(gBattleWork.target);
     gBattleWork.step++;
 }
@@ -269,7 +269,7 @@ void medaforce_side_bolt_calc(void) {
     bots = gBattleBots;
     for (; i <= 2; i++) {
         u32 rec = gBattleWork.targetSideFirst + i;
-        if (bots[rec].teamState && bots[rec].parts[0].unk11) {
+        if (bots[rec].teamState && bots[rec].parts[0].armor) {
             gBattleWork.partBreaks[i] = get_random_battle_weight_entry(rec);
             battle_set_damage_vs_armor(gBattleWork.targetSideFirst + i, gBattleWork.partBreaks[i], gBattleWork.amount);
             gBattleWork.partBreaks[i] |= gBattleWork.partBroken << 7;
@@ -406,12 +406,12 @@ void medaforce_side_bolt_apply_damage(void) {
     u32 i;
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState &&
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11) {
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.partBreaks[i] & 0x7F].unk11 -=
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor) {
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.partBreaks[i] & 0x7F].armor -=
                 gBattleWork.partDamage[i];
             bot_halve_broken_leg_stats(gBattleWork.targetSideFirst + i);
             if ((gBattleWork.partBreaks[i] & 0x7F) == 0 &&
-                gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0)
+                gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0)
                 add_bot_to_defeated_list(gBattleWork.targetSideFirst + i);
         }
     }
@@ -680,22 +680,22 @@ void medaforce_form_shrink_out(void) {
 void medaforce_form_apply(void) {
     switch (gBattleBots[gBattleWork.actor].medaforce[0]) {
     case 4:
-        gBattleBots[gBattleWork.actor].unkD6 |= 1;
+        gBattleBots[gBattleWork.actor].formFlags |= 1;
         break;
     case 5:
-        gBattleBots[gBattleWork.actor].unkD6 |= 8;
+        gBattleBots[gBattleWork.actor].formFlags |= 8;
         break;
     case 6:
-        gBattleBots[gBattleWork.actor].unkD6 |= 2;
+        gBattleBots[gBattleWork.actor].formFlags |= 2;
         break;
     case 7:
-        gBattleBots[gBattleWork.actor].unkD6 |= 0x10;
+        gBattleBots[gBattleWork.actor].formFlags |= 0x10;
         break;
     case 8:
-        gBattleBots[gBattleWork.actor].unkD6 |= 4;
+        gBattleBots[gBattleWork.actor].formFlags |= 4;
         break;
     default:
-        gBattleBots[gBattleWork.actor].unkD6 |= 0x20;
+        gBattleBots[gBattleWork.actor].formFlags |= 0x20;
         break;
     }
     gBattleWork.step++;
@@ -952,7 +952,7 @@ void medaforce_inflict_status_apply(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState == 0)
             continue;
-        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0)
+        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0)
             continue;
         if (battle_bot_lacks_stability(gBattleWork.targetSideFirst + i) == 0)
             continue;
@@ -1241,7 +1241,7 @@ void medaforce_cancel_status_sparkle_spawn(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState == 0)
             continue;
-        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0)
+        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0)
             continue;
         gBattleWork.partBreaks[i] = 1;
         gSpriteEntries[0x21 + i].flags =
@@ -1281,7 +1281,7 @@ void medaforce_cancel_status_apply(void) {
             continue;
         switch (gBattleWork.unk51) {
         case 0:
-            gBattleBots[gBattleWork.targetSideFirst + i].unkCF |= 1;
+            gBattleBots[gBattleWork.targetSideFirst + i].statusGuardFlags |= 1;
             if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == 0xD)
                 goto call_0xD;
             if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != 0xE)
@@ -1290,7 +1290,7 @@ void medaforce_cancel_status_apply(void) {
             bot_clear_effects(gBattleWork.targetSideFirst + i, 1);
             break;
         case 1:
-            gBattleBots[gBattleWork.targetSideFirst + i].unkCF |= 8;
+            gBattleBots[gBattleWork.targetSideFirst + i].statusGuardFlags |= 8;
             if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == 0xF)
                 goto call_0xF;
             if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != 0x10)
@@ -1299,7 +1299,7 @@ void medaforce_cancel_status_apply(void) {
             bot_clear_effects(gBattleWork.targetSideFirst + i, 1);
             break;
         case 2:
-            gBattleBots[gBattleWork.targetSideFirst + i].unkCF |= 2;
+            gBattleBots[gBattleWork.targetSideFirst + i].statusGuardFlags |= 2;
             if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == 0x11)
                 goto call_0x11;
             if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != 0x12)
@@ -1308,7 +1308,7 @@ void medaforce_cancel_status_apply(void) {
             bot_clear_effects(gBattleWork.targetSideFirst + i, 1);
             break;
         case 3:
-            gBattleBots[gBattleWork.targetSideFirst + i].unkCF |= 4;
+            gBattleBots[gBattleWork.targetSideFirst + i].statusGuardFlags |= 4;
             if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == 0x13)
                 goto call_0x13;
             if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != 0x14)
@@ -1382,7 +1382,7 @@ void medaforce_status_restore_check_targets(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState == 0)
             continue;
-        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0)
+        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0)
             continue;
         if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == 0)
             continue;
@@ -1493,7 +1493,7 @@ void medaforce_total_recovery_check_targets(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState == 0)
             continue;
-        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0)
+        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0)
             continue;
         if (find_most_damaged_part(gBattleWork.targetSideFirst + i) == 0)
             continue;
@@ -1559,7 +1559,7 @@ void medaforce_total_recovery_apply_heal(void) {
                 goto next;
             gBattleWork.damagePart = r - 1;
             battle_calc_damage_split(gBattleWork.targetSideFirst + i, gBattleWork.damagePart, gBattleWork.amount);
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.damagePart].unk11 +=
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.damagePart].armor +=
                 gBattleWork.appliedAmount;
             gBattleWork.partDamage[i] += gBattleWork.appliedAmount;
             if (gBattleWork.overflowAmount == 0)
@@ -1671,7 +1671,7 @@ void medaforce_full_body_repair_check_targets(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState == 0)
             continue;
-        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0)
+        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0)
             continue;
         if (find_random_broken_part(gBattleWork.targetSideFirst + i) == 0)
             continue;
@@ -1697,7 +1697,7 @@ void medaforce_full_body_repair_apply_repair(void) {
                 goto next;
             gBattleWork.damagePart = r - 1;
             battle_set_damage_display(gBattleWork.targetSideFirst + i, gBattleWork.damagePart, gBattleWork.amount);
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.damagePart].unk11 +=
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.damagePart].armor +=
                 gBattleWork.appliedAmount;
             gBattleWork.partDamage[i] += gBattleWork.appliedAmount;
             bot_restore_leg_stats(gBattleWork.targetSideFirst + i);
@@ -1793,7 +1793,7 @@ void medaforce_full_body_up_orbs_spawn(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState == 0)
             continue;
-        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0)
+        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0)
             continue;
         memcpy_bytes_0803F63C(&gSpriteEntries[0x22], &gSpriteEntries[0x23 + i], 0x40);
         gSpriteEntries[0x23 + i].unk30 = gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5D].x;
@@ -1851,7 +1851,7 @@ void medaforce_full_body_up_apply_head_uses(void) {
         if (gBattleWork.partBreaks[i]) {
             calc_head_uses_given(gBattleWork.targetSideFirst + i, gBattleWork.amount);
             gBattleWork.partDamage[i] = gBattleWork.appliedAmount;
-            add_u8_capped(&gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk10, gBattleWork.partDamage[i],
+            add_u8_capped(&gBattleBots[gBattleWork.targetSideFirst + i].parts[0].headUses, gBattleWork.partDamage[i],
                           gBattleBots[gBattleWork.targetSideFirst + i].parts[0].data[8]);
         }
     }
@@ -1938,7 +1938,7 @@ void medaforce_full_body_rad_push_back_init(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState == 0)
             continue;
-        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0)
+        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0)
             continue;
         gBattleBots[gBattleWork.targetSideFirst + i].stateFlags |= 4;
         gBattleWork.partBreaks[i] = 1;
@@ -2177,7 +2177,7 @@ void medaforce_anti_terrain_check_targets(void) {
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState == 0 ||
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0 ||
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0 ||
             battle_bot_lacks_stability(gBattleWork.targetSideFirst + i) == 0)
             continue;
         if (gBattleBots[gBattleWork.actor].medaforce[0] == 0x1E) {
@@ -2376,7 +2376,7 @@ void medaforce_legs_stat_up_begin(void) {
     gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState != 0 &&
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 != 0)
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor != 0)
             gBattleWork.partBreaks[i] = 1;
     }
     switch (gBattleBots[gBattleWork.actor].medaforce[0]) {
@@ -2607,13 +2607,13 @@ void medaforce_mark_both_sides(void) {
     gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState != 0 &&
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 != 0)
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor != 0)
             gBattleWork.partBreaks[i] = 1;
     }
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState != 0 &&
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 != 0)
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor != 0)
             gBattleWork.partDamage[i] = 1;
     }
     gBattleWork.step++;
@@ -2861,7 +2861,7 @@ void medaforce_charge_check_targets(void) {
     gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState != 0 &&
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 != 0 &&
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor != 0 &&
             battle_bot_lacks_stability(gBattleWork.targetSideFirst + i) != 0) {
             gBattleWork.partBreaks[i] = 1;
             found = 1;
@@ -3004,7 +3004,7 @@ void medaforce_pushover_attack_begin(void) {
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState &&
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11)
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor)
             gBattleWork.partBreaks[i] = 1;
     }
     gBattleWork.step++;
@@ -3275,7 +3275,7 @@ void apply_battle_damage_to_team(void) {
         if (gBattleWork.partBreaks[i] == 0)
             continue;
         reduce_bot_part_stat(gBattleWork.targetSideFirst + i, 0, gBattleWork.partDamage[i]);
-        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0) {
+        if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0) {
             add_bot_to_defeated_list(gBattleWork.targetSideFirst + i);
             gBattleWork.partBreaks[i] = 0x80;
             defeated = 1;
@@ -3324,7 +3324,7 @@ void medaforce_useless_find_targets(void) {
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState &&
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 &&
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor &&
             battle_bot_lacks_stability(gBattleWork.targetSideFirst + i)) {
             gBattleWork.partBreaks[i] = (s8)bot_random_intact_part(gBattleWork.targetSideFirst + i) - 0x80;
             found = 1;
@@ -3625,7 +3625,7 @@ void medaforce_destroyer_find_targets(void) {
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState &&
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 &&
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor &&
             (gBattleBots[gBattleWork.targetSideFirst + i].stateFlags & 4)) {
             gBattleWork.partBreaks[i] = 1;
             found = 1;
@@ -3694,10 +3694,10 @@ void medaforce_destroyer_apply_damage(void) {
         battle_set_damage_vs_armor(gBattleWork.targetSideFirst + i, gBattleWork.partBreaks[i], 0xC8);
         gBattleWork.partBreaks[i] |= gBattleWork.partBroken << 7;
         gBattleWork.partDamage[i] = gBattleWork.appliedAmount;
-        gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.partBreaks[i] & 0x7F].unk11 -=
+        gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.partBreaks[i] & 0x7F].armor -=
             gBattleWork.partDamage[i];
         bot_halve_broken_leg_stats(gBattleWork.targetSideFirst + i);
-        if ((gBattleWork.partBreaks[i] & 0x7F) == 0 && gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0)
+        if ((gBattleWork.partBreaks[i] & 0x7F) == 0 && gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0)
             add_bot_to_defeated_list(gBattleWork.targetSideFirst + i);
     }
     gBattleWork.step++;
@@ -3769,7 +3769,7 @@ void medaforce_crazy_find_targets(void) {
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState &&
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11) {
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor) {
             gBattleWork.partBreaks[i] = 1;
             gBattleWork.partDamage[i] = gBattleBots[gBattleWork.targetSideFirst + i].medaforceGauge;
         }
@@ -3981,10 +3981,10 @@ void medaforce_crazy_apply_damage(void) {
                                    gBattleWork.partDamage[i]);
         gBattleWork.partBreaks[i] |= gBattleWork.partBroken << 7;
         gBattleWork.partDamage[i] = gBattleWork.appliedAmount;
-        gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.partBreaks[i] & 0x7F].unk11 -=
+        gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.partBreaks[i] & 0x7F].armor -=
             gBattleWork.partDamage[i];
         bot_halve_broken_leg_stats(gBattleWork.targetSideFirst + i);
-        if ((gBattleWork.partBreaks[i] & 0x7F) == 0 && gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11 == 0)
+        if ((gBattleWork.partBreaks[i] & 0x7F) == 0 && gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0)
             add_bot_to_defeated_list(gBattleWork.targetSideFirst + i);
     }
     gBattleWork.step++;
@@ -4003,7 +4003,7 @@ void medaforce_up_find_targets(void) {
     gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState &&
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11)
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor)
             gBattleWork.partBreaks[i] = 1;
     }
     gBattleWork.step++;
@@ -4316,9 +4316,9 @@ void medaforce_leg_crash_find_targets(void) {
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState &&
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].unk11) {
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor) {
             gBattleWork.partBreaks[i] = 1;
-            gBattleWork.partDamage[i] = gBattleBots[gBattleWork.targetSideFirst + i].parts[3].unk11;
+            gBattleWork.partDamage[i] = gBattleBots[gBattleWork.targetSideFirst + i].parts[3].armor;
         }
     }
     gBattleWork.step++;
@@ -4407,7 +4407,7 @@ void medaforce_leg_crash_apply_damage(void) {
             battle_set_damage_vs_armor(gBattleWork.targetSideFirst + i, 3, gBattleWork.partDamage[i]);
             gBattleWork.partBreaks[i] |= gBattleWork.partBroken << 7;
             gBattleWork.partDamage[i] = gBattleWork.appliedAmount;
-            gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.partBreaks[i] & 0x7F].unk11 -=
+            gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.partBreaks[i] & 0x7F].armor -=
                 gBattleWork.partDamage[i];
             bot_halve_broken_leg_stats(gBattleWork.targetSideFirst + i);
         }

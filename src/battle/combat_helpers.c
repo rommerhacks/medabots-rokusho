@@ -17,7 +17,7 @@ u32 bot_has_break_form_part(u32 rec) {
 }
 
 void battle_set_damage_vs_armor(u32 rec, u32 part, s32 amount) {
-    s32 armor = gBattleBots[rec].parts[part].unk11;
+    s32 armor = gBattleBots[rec].parts[part].armor;
     if (armor > amount) {
         gBattleWork.appliedAmount = amount;
         gBattleWork.cappedAmount = amount;
@@ -80,36 +80,36 @@ void update_target_cursor_position(u32 rec) {
 }
 
 void reduce_bot_part_stat(u32 rec, u32 part, s32 amount) {
-    if (gBattleBots[rec].parts[part].unk11 < amount)
-        gBattleBots[rec].parts[part].unk11 = 0;
+    if (gBattleBots[rec].parts[part].armor < amount)
+        gBattleBots[rec].parts[part].armor = 0;
     else
-        gBattleBots[rec].parts[part].unk11 -= amount;
+        gBattleBots[rec].parts[part].armor -= amount;
 }
 
 void bot_halve_broken_leg_stats(u32 rec) {
-    if (gBattleBots[rec].parts[3].unk11 == 0) {
-        gBattleBots[rec].parts[3].unk12 = gBattleBots[rec].parts[3].data[5] >> 1;
-        gBattleBots[rec].parts[3].unk13 = gBattleBots[rec].parts[3].data[6] >> 1;
-        gBattleBots[rec].parts[3].unk14 = gBattleBots[rec].parts[3].data[7] >> 1;
-        gBattleBots[rec].parts[3].unk15 = gBattleBots[rec].parts[3].data[8] >> 1;
-        gBattleBots[rec].parts[3].unk16 = gBattleBots[rec].parts[3].data[9] >> 1;
+    if (gBattleBots[rec].parts[3].armor == 0) {
+        gBattleBots[rec].parts[3].propulsion = gBattleBots[rec].parts[3].data[5] >> 1;
+        gBattleBots[rec].parts[3].evasion = gBattleBots[rec].parts[3].data[6] >> 1;
+        gBattleBots[rec].parts[3].defence = gBattleBots[rec].parts[3].data[7] >> 1;
+        gBattleBots[rec].parts[3].proximity = gBattleBots[rec].parts[3].data[8] >> 1;
+        gBattleBots[rec].parts[3].remoteness = gBattleBots[rec].parts[3].data[9] >> 1;
     }
 }
 
 // Undoes bot_halve_broken_leg_stats: reloads the leg stats from the part data while the legs have armor.
 void bot_restore_leg_stats(u32 rec) {
-    if (gBattleBots[rec].parts[3].unk11 != 0) {
-        gBattleBots[rec].parts[3].unk12 = gBattleBots[rec].parts[3].data[5];
-        gBattleBots[rec].parts[3].unk13 = gBattleBots[rec].parts[3].data[6];
-        gBattleBots[rec].parts[3].unk14 = gBattleBots[rec].parts[3].data[7];
-        gBattleBots[rec].parts[3].unk15 = gBattleBots[rec].parts[3].data[8];
-        gBattleBots[rec].parts[3].unk16 = gBattleBots[rec].parts[3].data[9];
+    if (gBattleBots[rec].parts[3].armor != 0) {
+        gBattleBots[rec].parts[3].propulsion = gBattleBots[rec].parts[3].data[5];
+        gBattleBots[rec].parts[3].evasion = gBattleBots[rec].parts[3].data[6];
+        gBattleBots[rec].parts[3].defence = gBattleBots[rec].parts[3].data[7];
+        gBattleBots[rec].parts[3].proximity = gBattleBots[rec].parts[3].data[8];
+        gBattleBots[rec].parts[3].remoteness = gBattleBots[rec].parts[3].data[9];
     }
 }
 
 void add_bot_to_defeated_list(u32 rec) {
     u32 i;
-    if (gBattleBots[rec].parts[0].unk11 == 0) {
+    if (gBattleBots[rec].parts[0].armor == 0) {
         for (i = 0; i <= 2; i++) {
             if (gBattleWork.defeatedQueue[i] == 0) {
                 gBattleWork.defeatedQueue[i] = rec + 1;
@@ -227,7 +227,7 @@ void battle_target_nearest_enemy(u32 rec) {
             }
         }
     }
-    gBattleBots[rec].unkE0 = best + 1;
+    gBattleBots[rec].targetBot = best + 1;
 }
 
 // get_random_battle_weight_entry inlined, with the "- 1" inside
@@ -235,13 +235,13 @@ static inline u32 pick_evasion_weight(u32 n) {
     return gRandomPartByIntactClass[bot_intact_parts_class(n - 1) * 8 + (rng_next_byte() & 7)];
 }
 
-// Picks a random intact part of the target (unkE1), weighted by gRandomPartByIntactClass per intact-part class.
+// Picks a random intact part of the target (targetPart), weighted by gRandomPartByIntactClass per intact-part class.
 void battle_pick_random_target_part(u32 rec) {
     struct BattleBot *base = gBattleBots;
     struct BattleBot *b = &base[rec];
 
-    if (b->unkE0 != 0)
-        b->unkE1 = pick_evasion_weight(b->unkE0) + 1;
+    if (b->targetBot != 0)
+        b->targetPart = pick_evasion_weight(b->targetBot) + 1;
 }
 
 u32 get_random_battle_weight_entry(u32 rec) {
@@ -250,17 +250,17 @@ u32 get_random_battle_weight_entry(u32 rec) {
 
 // Which of the arms and legs are intact, as 0-8 (right arm 1, left arm 3, legs 5): row of gRandomPartByIntactClass.
 u32 bot_intact_parts_class(u32 rec) {
-    u32 n = gBattleBots[rec].parts[1].unk11 != 0;
-    if (gBattleBots[rec].parts[2].unk11 != 0)
+    u32 n = gBattleBots[rec].parts[1].armor != 0;
+    if (gBattleBots[rec].parts[2].armor != 0)
         n += 3;
-    if (gBattleBots[rec].parts[3].unk11 != 0)
+    if (gBattleBots[rec].parts[3].armor != 0)
         n += 5;
     return n;
 }
 
 void battle_load_action_target(u32 rec) {
-    gBattleWork.target = gBattleBots[rec].unkE0 - 1;
-    gBattleWork.targetPart = gBattleBots[rec].unkE1 - 1;
+    gBattleWork.target = gBattleBots[rec].targetBot - 1;
+    gBattleWork.targetPart = gBattleBots[rec].targetPart - 1;
 }
 
 u32 move_sprite_toward_target(u32 slot) {
@@ -358,9 +358,9 @@ void calc_battle_action_speed(u32 rec, u32 part) {
     b->success += rng_next_byte() & 7;
     b->success += gBattleBots[rec].medal.skillLevel[gBattleBots[rec].parts[part].data[2]];
     if (skill_type_is_remote(gBattleBots[rec].parts[part].data[2]))
-        b->success += gBattleBots[rec].parts[3].unk16;
+        b->success += gBattleBots[rec].parts[3].remoteness;
     else
-        b->success += gBattleBots[rec].parts[3].unk15;
+        b->success += gBattleBots[rec].parts[3].proximity;
 }
 
 void apply_battle_bot_damage_reduction(u32 rec) {
@@ -390,17 +390,17 @@ u32 check_bot_ability_type_shoot(u32 rec, u32 part, u32 target) {
 void success_add_strengthen_parts(u32 rec) {
     u32 i;
     for (i = 0; i <= 2; i++)
-        if (gBattleBots[rec].parts[i].unk11 != 0 && gBattleBots[rec].parts[i].data[1] == 0x35)
+        if (gBattleBots[rec].parts[i].armor != 0 && gBattleBots[rec].parts[i].data[1] == 0x35)
             gBattleWork.success += gBattleBots[rec].parts[i].data[5];
 }
 
 void battle_set_action_target(u32 rec, u32 target) {
-    gBattleBots[rec].unkE0 = target;
+    gBattleBots[rec].targetBot = target;
     gBattleWork.target = target - 1;
 }
 
 void battle_set_action_target_part(u32 rec, u32 part) {
-    gBattleBots[rec].unkE1 = part;
+    gBattleBots[rec].targetPart = part;
     gBattleWork.targetPart = part - 1;
 }
 
@@ -408,27 +408,27 @@ void battle_set_action_target_part(u32 rec, u32 part) {
 static u32 bot_has_intact_part_with_skill(u32 rec, u32 skill) {
     u32 i;
     for (i = 0; i <= 3; i++)
-        if (gBattleBots[rec].parts[i].unk11 != 0 && gBattleBots[rec].parts[i].data[1] == skill)
+        if (gBattleBots[rec].parts[i].armor != 0 && gBattleBots[rec].parts[i].data[1] == skill)
             return 1;
     return 0;
 }
 
 u32 check_bot_can_shoot(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 4) <= 1 || (gBattleBots[rec].unkD6 & 1)) &&
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - 4) <= 1 || (gBattleBots[rec].formFlags & 1)) &&
         bot_has_intact_part_with_skill(target, 0x18))
         return 1;
     return 0;
 }
 
 u32 check_bot_can_support(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 6) <= 1 || (gBattleBots[rec].unkD6 & 2)) &&
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - 6) <= 1 || (gBattleBots[rec].formFlags & 2)) &&
         bot_has_intact_part_with_skill(target, 0x19))
         return 1;
     return 0;
 }
 
 u32 check_bot_can_use_shoot_part(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 8) <= 1 || (gBattleBots[rec].unkD6 & 4)) &&
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - 8) <= 1 || (gBattleBots[rec].formFlags & 4)) &&
         bot_has_intact_part_with_skill(target, 0x1A))
         return 1;
     return 0;
@@ -441,22 +441,22 @@ u32 check_bot_status_effect_4(u32 rec, u32 part, u32 target) {
 }
 
 u32 check_can_target_bot(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 4) <= 1 || (gBattleBots[rec].unkD6 & 1)) &&
-        (gBattleBots[target].unkD6 & 8))
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - 4) <= 1 || (gBattleBots[rec].formFlags & 1)) &&
+        (gBattleBots[target].formFlags & 8))
         return 1;
     return 0;
 }
 
 u32 check_battle_can_support_target(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 6) <= 1 || (gBattleBots[rec].unkD6 & 2)) &&
-        (gBattleBots[target].unkD6 & 0x10))
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - 6) <= 1 || (gBattleBots[rec].formFlags & 2)) &&
+        (gBattleBots[target].formFlags & 0x10))
         return 1;
     return 0;
 }
 
 u32 check_battle_can_special_target(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 8) <= 1 || (gBattleBots[rec].unkD6 & 4)) &&
-        (gBattleBots[target].unkD6 & 0x20))
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - 8) <= 1 || (gBattleBots[rec].formFlags & 4)) &&
+        (gBattleBots[target].formFlags & 0x20))
         return 1;
     return 0;
 }
@@ -464,7 +464,7 @@ u32 check_battle_can_special_target(u32 rec, u32 part, u32 target) {
 void damage_add_strengthen_parts(u32 rec) {
     u32 i;
     for (i = 0; i <= 2; i++)
-        if (gBattleBots[rec].parts[i].unk11 != 0 && gBattleBots[rec].parts[i].data[1] == 0x35)
+        if (gBattleBots[rec].parts[i].armor != 0 && gBattleBots[rec].parts[i].data[1] == 0x35)
             gBattleWork.amount += gBattleBots[rec].parts[i].data[6];
 }
 

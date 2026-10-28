@@ -78,7 +78,7 @@ void repair_run(void) {
 void repair_begin(void) {
     u32 r;
 
-    if (!gBattleBots[gBattleWork.target].parts[gBattleWork.targetPart].unk11) {
+    if (!gBattleBots[gBattleWork.target].parts[gBattleWork.targetPart].armor) {
         calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
         apply_battle_bot_damage_reduction(gBattleWork.actor);
         r = decrement_battle_timer_and_check_zero();
@@ -1114,7 +1114,7 @@ void reactivate_begin(void) {
     if (decrement_battle_timer_and_check_zero()) {
         gBattleWork.messageId = 0x1A;
         gBattleWork.step++;
-    } else if (gBattleBots[gBattleWork.target].parts[0].unk11) {
+    } else if (gBattleBots[gBattleWork.target].parts[0].armor) {
         gBattleWork.messageId = 9;
         gBattleWork.step++;
     } else {
@@ -1178,7 +1178,7 @@ void reactivate_ring_spawn(void) {
 void reactivate_apply(void) {
     gBattleBots[gBattleWork.target].teamState = 3;
     battle_calc_damage_split(gBattleWork.target, 0, gBattleWork.amount);
-    gBattleBots[gBattleWork.target].parts[0].unk11 = gBattleWork.appliedAmount;
+    gBattleBots[gBattleWork.target].parts[0].armor = gBattleWork.appliedAmount;
     gBattleBots[gBattleWork.target].present = 1;
     load_all_bot_part_sprites();
     iterate_bots_setup_battle_sprites();

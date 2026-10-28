@@ -918,7 +918,7 @@ void robattle_bot_ready_for_command(void) {
     }
 }
 
-// Sub-state 0x4C (guess): Medabots with unkBF set keep moving until one reaches a line.
+// Sub-state 0x4C (guess): Medabots with rapidCharge set keep moving until one reaches a line.
 void robattle_bots_extra_move(void) {
     u32 i;
 
@@ -928,7 +928,7 @@ void robattle_bots_extra_move(void) {
         struct BattleBot *rec = gBattleBots;
 
         rec += i;
-        if (rec->teamState && rec->unkBF) {
+        if (rec->teamState && rec->rapidCharge) {
             u32 a, b;
 
             rec->moveDelay = 8;
@@ -937,7 +937,7 @@ void robattle_bots_extra_move(void) {
             a = battle_bot_at_front_line(i, 1);
             b = battle_bot_at_home_line(i, 1);
             if (a || b) {
-                rec->unkBF = 0;
+                rec->rapidCharge = 0;
                 gGameSubState = 0x45;
                 return;
             }

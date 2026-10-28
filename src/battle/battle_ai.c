@@ -1,7 +1,7 @@
 // Robattle AI. For each part of a Medabot, ai_pick_bot_targets runs the target picker gAiTargetPickers[skill]
 // (indexed by the part's skill id; attacks, Anti-Air / Anti-Sea, Stability, Recovery, Repair, Reactivate, charge and
 // status skills) and the after-pick hook gAiAfterPick[skill] (ai_clear_target_part for skills that target a whole
-// Medabot). The chosen target record + 1 and part + 1 go to the part's unkE / unkF.
+// Medabot). The chosen target record + 1 and part + 1 go to the part's aiTargetBot / aiTargetPart.
 // Each picker narrows the candidates in passes: first the bots that suit the skill and have a part of the user's
 // Medal Aim skill type, then just the ones that suit the skill, then (usually) the Aim match alone, and last any
 // present bot. ai_action_unusable runs gAiActionChecks[skill], which set gBattleWork.unk51 when the skill
@@ -598,8 +598,8 @@ void ai_target_impair(void) {
 static void ai_clear_target(void) {
     gBattleWork.aiTarget = 0;
     gBattleWork.aiTargetPart = 0;
-    gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE = 0;
-    gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF = 0;
+    gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot = 0;
+    gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetPart = 0;
 }
 
 u32 battle_enemy_side_first_record(u32 rec) {
@@ -628,7 +628,7 @@ static u32 bot_has_part_of_skill_type(u32 rec, u32 type) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[rec].parts[i].unk11 && gBattleBots[rec].parts[i].data[2] == type)
+        if (gBattleBots[rec].parts[i].armor && gBattleBots[rec].parts[i].data[2] == type)
             return 1;
     }
     return 0;
@@ -698,7 +698,7 @@ u32 bot_random_intact_part(u32 rec) {
     i = rng_random_slot();
     dir = rng_next_byte() & 1;
     for (j = 0; j <= 2; j++) {
-        if (gBattleBots[rec].parts[i].unk11)
+        if (gBattleBots[rec].parts[i].armor)
             return i;
         if (dir) {
             if (++i > 2)
@@ -712,8 +712,8 @@ u32 bot_random_intact_part(u32 rec) {
 }
 
 static void ai_store_target(u32 rec, u32 part) {
-    gBattleBots[rec].parts[part].unkE = gBattleWork.aiTarget;
-    gBattleBots[rec].parts[part].unkF = gBattleWork.aiTargetPart;
+    gBattleBots[rec].parts[part].aiTargetBot = gBattleWork.aiTarget;
+    gBattleBots[rec].parts[part].aiTargetPart = gBattleWork.aiTargetPart;
 }
 
 u32 find_most_damaged_part(u32 rec) {
@@ -723,9 +723,9 @@ u32 find_most_damaged_part(u32 rec) {
     CpuFastSet(&zero, (void *)0x02023000, 0x01000080);
     for (i = 0; i <= 3; i++) {
         SORT_BUFFER[i].value = i;
-        if (gBattleBots[rec].parts[i].unk11 != 0 &&
-            gBattleBots[rec].parts[i].unk11 != gBattleBots[rec].parts[i].data[4])
-            SORT_BUFFER[i].key = gBattleBots[rec].parts[i].data[4] - gBattleBots[rec].parts[i].unk11;
+        if (gBattleBots[rec].parts[i].armor != 0 &&
+            gBattleBots[rec].parts[i].armor != gBattleBots[rec].parts[i].data[4])
+            SORT_BUFFER[i].key = gBattleBots[rec].parts[i].data[4] - gBattleBots[rec].parts[i].armor;
     }
     sort_buffer_descending(4);
     if (SORT_BUFFER[0].key != 0)
@@ -738,7 +738,7 @@ u32 battle_bot_lacks_stability(u32 rec) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleBots[rec].parts[i].unk11 && gBattleBots[rec].parts[i].data[1] == SKILL_STABILITY)
+        if (gBattleBots[rec].parts[i].armor && gBattleBots[rec].parts[i].data[1] == SKILL_STABILITY)
             return 0;
     }
     return 1;
@@ -764,7 +764,7 @@ u32 find_random_broken_part(u32 rec) {
     slot = rng_next_byte() & 3;
     dir = rng_next_byte() & 1;
     for (i = 0; i <= 3; i++) {
-        if (gBattleBots[rec].parts[slot].unk11 == 0)
+        if (gBattleBots[rec].parts[slot].armor == 0)
             return slot + 1;
         if (dir)
             slot = (slot + 1) & 3;
@@ -775,7 +775,7 @@ u32 find_random_broken_part(u32 rec) {
 }
 
 static u32 bot_head_has_uses(u32 rec) {
-    if (gBattleBots[rec].parts[0].unk10 != 0)
+    if (gBattleBots[rec].parts[0].headUses != 0)
         return 1;
     else
         return 0;
@@ -790,7 +790,7 @@ static u32 bot_has_medaforce_charge(u32 rec) {
 
 // gAiAfterPick: the skill targets the whole Medabot, not one part.
 void ai_clear_target_part(void) {
-    gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF = 0;
+    gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetPart = 0;
 }
 
 // 1 if the skill of rec's part (1-3) can't be used on its chosen target (gAiActionChecks).
@@ -810,7 +810,7 @@ void ai_check_break_form(void) {
 
 // Stability: needs a target with a negative status.
 void ai_check_stability(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1].statusType == 0)
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1].statusType == 0)
         gBattleWork.unk51 = 1;
 }
 
@@ -834,20 +834,20 @@ void ai_check_guard(void) {
 
 // Recovery: the target part must be damaged but not broken.
 void ai_check_recovery(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1]
-                .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF - 1]
-                .unk11 == 0 ||
-        gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1]
-                .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF - 1]
-                .unk11 == gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1]
-                              .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF - 1]
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1]
+                .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetPart - 1]
+                .armor == 0 ||
+        gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1]
+                .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetPart - 1]
+                .armor == gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1]
+                              .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetPart - 1]
                               .data[4])
         gBattleWork.unk51 = 1;
 }
 
 // AutoRecover, Boost Chrg: target without a positive status or Stability.
 void ai_check_buff(void) {
-    u32 rec = gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1;
+    u32 rec = gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1;
 
     if (gBattleBots[rec].buffType != 0 || battle_bot_lacks_stability(rec) == 0)
         gBattleWork.unk51 = 1;
@@ -855,41 +855,41 @@ void ai_check_buff(void) {
 
 // Drain Chrg, Impair, Confusion, No Escape, No Defense: target without a negative status or Stability.
 void ai_check_status(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1].statusType != 0)
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1].statusType != 0)
         gBattleWork.unk51 = 1;
-    if (battle_bot_lacks_stability(gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1) == 0)
+    if (battle_bot_lacks_stability(gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1) == 0)
         gBattleWork.unk51 = 1;
 }
 
 // Repair: the target part must be broken.
 void ai_check_repair(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1]
-            .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkF - 1]
-            .unk11 != 0)
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1]
+            .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetPart - 1]
+            .armor != 0)
         gBattleWork.unk51 = 1;
 }
 
 // Reactivate: the target must be out of action.
 void ai_check_reactivate(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1].present != 2)
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1].present != 2)
         gBattleWork.unk51 = 1;
 }
 
 // Rapid Chrg: not on the user itself.
 void ai_check_rapid_chrg(void) {
-    if (gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1 == gBattleWork.aiBot)
+    if (gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1 == gBattleWork.aiBot)
         gBattleWork.unk51 = 1;
 }
 
 // Use Drain: the target's head must have uses left.
 void ai_check_use_drain(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1].parts[0].unk10 == 0)
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1].parts[0].headUses == 0)
         gBattleWork.unk51 = 1;
 }
 
 // Forcedrain: the target must have Medaforce charge.
 void ai_check_forcedrain(void) {
-    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].unkE - 1].medaforceGauge == 0)
+    if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1].medaforceGauge == 0)
         gBattleWork.unk51 = 1;
 }
 
@@ -908,7 +908,7 @@ void ai_check_grap_trap(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState) {
             for (j = 0; j <= 2; j++) {
-                if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].unk11) {
+                if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].armor) {
                     if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].data[2] == SKILL_TYPE_STRIKE)
                         return;
                     if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].data[2] == SKILL_TYPE_BERSERK)
@@ -928,7 +928,7 @@ void ai_check_shot_trap(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState) {
             for (j = 0; j <= 2; j++) {
-                if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].unk11) {
+                if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].armor) {
                     if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].data[2] == SKILL_TYPE_SHOOT)
                         return;
                     if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].data[2] == SKILL_TYPE_AIM_SHOT)
@@ -948,7 +948,7 @@ void ai_check_team_form(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[gBattleWork.targetSideFirst + i].teamState) {
             for (j = 0; j <= 2; j++) {
-                if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].unk11 &&
+                if (gBattleBots[gBattleWork.targetSideFirst + i].parts[j].armor &&
                     gBattleBots[gBattleWork.targetSideFirst + i].parts[j].data[1] == SKILL_TEAM_ATTACK)
                     return;
             }
