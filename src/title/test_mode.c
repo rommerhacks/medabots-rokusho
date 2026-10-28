@@ -97,8 +97,8 @@ void test_mode_show_screen(void) {
     REG_DISPCNT |= 0x1000;
     gMenuWork->sound_test_song = 0;
     gMenuWork->sound_test_effect = 0;
-    draw_number(gMenuWork->sound_test_song, -2, 0x10, 4, 2, (REG_BG1CNT >> 8) & 0x1F);
-    draw_number(gMenuWork->sound_test_effect, -3, 0xF, 6, 2, (REG_BG1CNT >> 8) & 0x1F);
+    draw_number(gMenuWork->sound_test_song, -2, 0x10, 4, 2, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
+    draw_number(gMenuWork->sound_test_effect, -3, 0xF, 6, 2, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     gMenuWork->fade_level = 0x20;
     REG_BLDY = gMenuWork->fade_level >> 1;
     gGameSubState++;
@@ -183,14 +183,14 @@ void test_mode_update(void) {
                 gMenuWork->sound_test_song--;
             else
                 gMenuWork->sound_test_song = 0x33;
-            draw_number(gMenuWork->sound_test_song, -2, 0x10, 4, 2, (REG_BG1CNT >> 8) & 0x1F);
+            draw_number(gMenuWork->sound_test_song, -2, 0x10, 4, 2, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
         }
         if (KEYS_LO(gRepeatKeys) & 0x10) {
             if (gMenuWork->sound_test_song <= 0x32)
                 gMenuWork->sound_test_song++;
             else
                 gMenuWork->sound_test_song = 0;
-            draw_number(gMenuWork->sound_test_song, -2, 0x10, 4, 2, (REG_BG1CNT >> 8) & 0x1F);
+            draw_number(gMenuWork->sound_test_song, -2, 0x10, 4, 2, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
         }
         break;
     case 1:
@@ -199,14 +199,14 @@ void test_mode_update(void) {
                 gMenuWork->sound_test_effect--;
             else
                 gMenuWork->sound_test_effect = 0x75;
-            draw_number(gMenuWork->sound_test_effect, -3, 0xF, 6, 2, (REG_BG1CNT >> 8) & 0x1F);
+            draw_number(gMenuWork->sound_test_effect, -3, 0xF, 6, 2, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
         }
         if (KEYS_LO(gRepeatKeys) & 0x10) {
             if (gMenuWork->sound_test_effect <= 0x74)
                 gMenuWork->sound_test_effect++;
             else
                 gMenuWork->sound_test_effect = 0;
-            draw_number(gMenuWork->sound_test_effect, -3, 0xF, 6, 2, (REG_BG1CNT >> 8) & 0x1F);
+            draw_number(gMenuWork->sound_test_effect, -3, 0xF, 6, 2, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
         }
         break;
     }

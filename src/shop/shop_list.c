@@ -126,15 +126,15 @@ void enable_obj_layer_and_load_palette(void) {
     render_battle_medapart_list(gMenuWork->cursor);
     if (gMenuWork->list_count != 0) {
         u8 *buf = (u8 *)0x02023000;
-        draw_number_tall(buf[buf[0x78]], 2, 0x1B, 10, 6, (REG_BG1CNT >> 8) & 0x1F);
+        draw_number_tall(buf[buf[0x78]], 2, 0x1B, 10, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
         gSpriteEntries[8].flags |= SPRITE_FLAG_VISIBLE;
     }
     if (gMenuWork->list_count > 1)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 1], 2, 0x1B, 12, 6, (REG_BG1CNT >> 8) & 0x1F);
+        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 1], 2, 0x1B, 12, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     if (gMenuWork->list_count > 2)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 2], 2, 0x1B, 14, 6, (REG_BG1CNT >> 8) & 0x1F);
+        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 2], 2, 0x1B, 14, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     if (gMenuWork->list_count > 3)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 3], 2, 0x1B, 16, 6, (REG_BG1CNT >> 8) & 0x1F);
+        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 3], 2, 0x1B, 16, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     gGameSubState++;
 }
 
@@ -304,13 +304,13 @@ cursor:
 changed:
     play_sound_effect(2);
     if (gMenuWork->list_count != 0)
-        draw_number_tall(CART[CART[0x78]], 2, 0x1B, 0xA, 6, (REG_BG1CNT >> 8) & 0x1F);
+        draw_number_tall(CART[CART[0x78]], 2, 0x1B, 0xA, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     if (gMenuWork->list_count > 1)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 1], 2, 0x1B, 0xC, 6, (REG_BG1CNT >> 8) & 0x1F);
+        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 1], 2, 0x1B, 0xC, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     if (gMenuWork->list_count > 2)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 2], 2, 0x1B, 0xE, 6, (REG_BG1CNT >> 8) & 0x1F);
+        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 2], 2, 0x1B, 0xE, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     if (gMenuWork->list_count > 3)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 3], 2, 0x1B, 0x10, 6, (REG_BG1CNT >> 8) & 0x1F);
+        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 3], 2, 0x1B, 0x10, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     gMenuWork->total = 0;
     for (i = 0; i < 0x78; i++) {
         if (gMenuWork->cursor == 0)

@@ -71,6 +71,13 @@
 #define REG_BG1CNT (*(vu16 *)REG_ADDR_BG1CNT)
 #define REG_BG2CNT (*(vu16 *)REG_ADDR_BG2CNT)
 #define REG_BG3CNT (*(vu16 *)REG_ADDR_BG3CNT)
+
+// Screen (tilemap) block of a background, from its BGxCNT value: bits 8-12 pick one of 32 blocks of 0x800 bytes.
+#define BGCNT_SCREEN_BLOCK(cnt) (((cnt) >> 8) & 0x1F)
+// Byte offset of that block in VRAM.
+#define BGCNT_SCREEN_OFFSET(cnt) (BGCNT_SCREEN_BLOCK(cnt) * 0x800)
+// The background's tilemap, 32 entries per row.
+#define BG_TILEMAP(cnt) ((u16 *)(VRAM + BGCNT_SCREEN_OFFSET(cnt)))
 #define REG_BG2PA (*(vu16 *)REG_ADDR_BG2PA)
 #define REG_BG2X_L (*(vu16 *)REG_ADDR_BG2X_L)
 #define REG_BG2X_H (*(vu16 *)REG_ADDR_BG2X_H)

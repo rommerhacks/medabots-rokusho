@@ -74,8 +74,7 @@ void town_map_load_graphics(void) {
             style_menu = gMenuWork;
             style_menu->cursor_style = 1;
         } else {
-            *(u16 *)(((*bg3 >> 8) & 0x1F) * 0x800 + (VRAM + 0x248)) =
-                *(u16 *)(((*bg3 >> 8) & 0x1F) * 0x800 + (VRAM + 0x21E));
+            BG_TILEMAP(*bg3)[4 + 9 * 32] = BG_TILEMAP(*bg3)[15 + 8 * 32];
             style_menu = gMenuWork;
             style_menu->cursor_style = 0;
         }
@@ -84,14 +83,12 @@ void town_map_load_graphics(void) {
     case 0:
         for (i = 0; i <= 2; i++) {
             fill_zero = 0;
-            CpuSet((void *)&fill_zero, (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + 13 + (i + 10) * 32,
-                   0x01000005);
+            CpuSet((void *)&fill_zero, BG_TILEMAP(REG_BG2CNT) + 13 + (i + 10) * 32, 0x01000005);
         }
     case 1:
         for (i = 0; i <= 2; i++) {
             fill_zero = 0;
-            CpuSet((void *)&fill_zero, (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + 8 + (i + 4) * 32,
-                   0x01000005);
+            CpuSet((void *)&fill_zero, BG_TILEMAP(REG_BG2CNT) + 8 + (i + 4) * 32, 0x01000005);
         }
         break;
     }

@@ -5,7 +5,7 @@
 #include "global.h"
 
 void vram_fill_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 value) {
-    u16 *base = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32;
+    u16 *base = BG_TILEMAP(bgcnt) + x + y * 32;
     u32 i, j;
     for (i = 0; i < h; i++) {
         u16 *out = base + i * 32;
@@ -22,7 +22,7 @@ void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile) {
 
     if (x < 32) {
         if (y < 32) {
-            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32;
+            dst = BG_TILEMAP(bgcnt) + x + y * 32;
             rows = 32 - y;
             for (i = 0; i < h; i++) {
                 cols = 32 - x;
@@ -37,7 +37,7 @@ void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile) {
             }
         } else {
             y -= 32;
-            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32 + 0x800;
+            dst = BG_TILEMAP(bgcnt) + x + y * 32 + 0x800;
             for (i = 0; i < h; i++) {
                 cols = 32 - x;
                 out = dst + i * 32;
@@ -50,7 +50,7 @@ void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile) {
         }
     } else {
         if (y < 32) {
-            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + (x - 32) + y * 32 + 0x400;
+            dst = BG_TILEMAP(bgcnt) + (x - 32) + y * 32 + 0x400;
             rows = 32 - y;
             for (i = 0; i < h; i++) {
                 out = dst + i * 32;
@@ -61,7 +61,7 @@ void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 tile) {
             }
         } else {
             y -= 32;
-            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + (x - 32) + y * 32 + 0xC00;
+            dst = BG_TILEMAP(bgcnt) + (x - 32) + y * 32 + 0xC00;
             for (i = 0; i < h; i++) {
                 out = dst + i * 32;
                 for (j = 0; j < w; j++)
@@ -76,7 +76,7 @@ void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, 
     const u16 *in;
     u32 i, j;
     gTilemapBaseEntry = base;
-    dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32;
+    dst = BG_TILEMAP(bgcnt) + x + y * 32;
     in = src;
     for (i = 0; i < h; i++) {
         u16 *out = dst + i * 32;
@@ -96,7 +96,7 @@ void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src,
     in = src;
     if (x < 32) {
         if (y < 32) {
-            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32;
+            dst = BG_TILEMAP(bgcnt) + x + y * 32;
             rows = 32 - y;
             for (i = 0; i < h; i++) {
                 cols = 32 - x;
@@ -111,7 +111,7 @@ void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src,
             }
         } else {
             y -= 32;
-            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + x + y * 32 + 0x800;
+            dst = BG_TILEMAP(bgcnt) + x + y * 32 + 0x800;
             for (i = 0; i < h; i++) {
                 cols = 32 - x;
                 out = dst + (i << 5);
@@ -124,7 +124,7 @@ void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src,
         }
     } else {
         if (y < 32) {
-            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + (x - 32) + y * 32 + 0x400;
+            dst = BG_TILEMAP(bgcnt) + (x - 32) + y * 32 + 0x400;
             rows = 32 - y;
             for (i = 0; i < h; i++) {
                 out = dst + i * 32;
@@ -135,7 +135,7 @@ void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src,
             }
         } else {
             y -= 32;
-            dst = (u16 *)(VRAM + (((bgcnt >> 8) & 0x1F) << 11)) + (x - 32) + y * 32 + 0xC00;
+            dst = BG_TILEMAP(bgcnt) + (x - 32) + y * 32 + 0xC00;
             for (i = 0; i < h; i++) {
                 out = dst + i * 32;
                 for (j = 0; j < w; j++)

@@ -34,19 +34,19 @@ static void text_scroll_draw_bar(s32 len, s32 step) {
         buf[0] = *(u16 *)0x0600D8C0;
     else
         buf[0] = *(u16 *)0x0600D940;
-    CpuFastSet(buf, (void *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x06000400), 0x10);
+    CpuFastSet(buf, BG_TILEMAP(REG_BG0CNT) + 16 * 32, 0x10);
 }
 
 void text_scroll_shift_row(s32 row, s32 step) {
     u16 buf[32];
     u8 x = gTextScrollHeadingX[gMenuWork->cursor];
     if (step <= 14) {
-        CpuSet((u8 *)VRAM + ((REG_BG0CNT >> 8) & 0x1F) * 0x800 + x * 2 + 0x100, buf, (30 - x) & 0x1FFFFF);
-        CpuSet(buf, (u8 *)VRAM + ((REG_BG0CNT >> 8) & 0x1F) * 0x800 + (x + 1) * 2 + 0x100, (29 - x) & 0x1FFFFF);
+        CpuSet((u8 *)VRAM + BGCNT_SCREEN_OFFSET(REG_BG0CNT) + x * 2 + 0x100, buf, (30 - x) & 0x1FFFFF);
+        CpuSet(buf, (u8 *)VRAM + BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (x + 1) * 2 + 0x100, (29 - x) & 0x1FFFFF);
     } else {
         int i;
         u16 tile;
-        CpuFastSet((u8 *)VRAM + ((REG_BG1CNT >> 8) & 0x1F) * 0x800 + row * 64, buf, 0x10);
+        CpuFastSet((u8 *)VRAM + BGCNT_SCREEN_OFFSET(REG_BG1CNT) + row * 64, buf, 0x10);
         buf[31] = *(u16 *)0x0600DD3E | 0x800;
         tile = 0;
         for (i = 10; i < 30; i++) {
@@ -54,7 +54,7 @@ void text_scroll_shift_row(s32 row, s32 step) {
                 tile = buf[31];
             buf[i] = tile;
         }
-        CpuSet(buf + x, (u8 *)VRAM + ((REG_BG0CNT >> 8) & 0x1F) * 0x800 + x * 2 + 0x100, (30 - x) & 0x1FFFFF);
+        CpuSet(buf + x, (u8 *)VRAM + BGCNT_SCREEN_OFFSET(REG_BG0CNT) + x * 2 + 0x100, (30 - x) & 0x1FFFFF);
     }
 }
 
@@ -69,7 +69,7 @@ static void text_scroll_draw_line(const u8 *text, u8 row) {
         len++;
     }
     text--;
-    dst = &((u16 *)(((REG_BG1CNT >> 8) & 0x1F) * 0x800 + 0x06000000))[row * 32 + 29];
+    dst = &BG_TILEMAP(REG_BG1CNT)[row * 32 + 29];
     for (i = 0; i < 20; i++) {
         if (i < len) {
             ch = *text--;
@@ -88,8 +88,7 @@ static bool32 text_scroll_slide_in_heading(s32 col, s32 step) {
     if (step > 13)
         return TRUE;
     for (i = 0; i < 3; i++)
-        CpuSet(&((u16 *)0x0600D800)[(col * 3 + 4 + i) * 32],
-               &((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x06000000))[(i - step + 0x11) * 32], 0xD);
+        CpuSet(&((u16 *)0x0600D800)[(col * 3 + 4 + i) * 32], &BG_TILEMAP(REG_BG0CNT)[(i - step + 0x11) * 32], 0xD);
     return FALSE;
 }
 
@@ -100,8 +99,8 @@ static bool32 text_scroll_slide_out_heading(s32 step) {
     if (step > 3)
         return TRUE;
     for (i = 0; i < 3; i++)
-        CpuSet(&((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[((src_row = i + 4) - step) * 32],
-               &((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[((dst_row = i + 3) - step) * 32], 0xD);
+        CpuSet(&BG_TILEMAP(REG_BG0CNT)[((src_row = i + 4) - step) * 32],
+               &BG_TILEMAP(REG_BG0CNT)[((dst_row = i + 3) - step) * 32], 0xD);
     return FALSE;
 }
 
@@ -205,7 +204,7 @@ void text_scroll_page_start(void) {
             gMenuWork->text_len = text_line_glyph_count((u8 *)*work->scene_text);
         }
     } else
-        ((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[(menu->frame + 2) * 32] = *(u16 *)0x0600D8C0;
+        BG_TILEMAP(REG_BG0CNT)[(menu->frame + 2) * 32] = *(u16 *)0x0600D8C0;
 }
 
 void text_scroll_lines(void) {
@@ -254,7 +253,7 @@ void text_scroll_clear_bar(void) {
         menu->fade_step = 0;
         fade_out_music(0xC0);
     } else
-        ((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[(menu->frame + 2) * 32] = 0;
+        BG_TILEMAP(REG_BG0CNT)[(menu->frame + 2) * 32] = 0;
 }
 
 void text_scroll_fade_out(void) {

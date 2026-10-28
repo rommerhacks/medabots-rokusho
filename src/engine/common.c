@@ -118,7 +118,7 @@ void fill_text_blank(u8 *buf, u8 n) {
 
 void draw_tile_block(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 entry) {
     u32 i, j;
-    u16 *base = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
+    u16 *base = BG_TILEMAP(bgcnt) + x + y * 32;
 
     for (j = 0; j < h; j++) {
         u16 *dst = base + j * 32;
@@ -176,7 +176,7 @@ void draw_number_bgcnt(u32 n, u32 x, u32 y, u32 digits, u32 bgcnt, u32 tile) {
 
     start = 6 - count;
     started = 0;
-    dst = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
+    dst = BG_TILEMAP(bgcnt) + x + y * 32;
     for (i = start; i <= 5; i++) {
         if (i <= 4) {
             if (digit_buf[i] == 0) {
@@ -221,7 +221,7 @@ void draw_number_tall_bgcnt(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 b
 
     start = 6 - digits;
     flag = 0;
-    dst = (vu16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
+    dst = (vu16 *)(VRAM + BGCNT_SCREEN_OFFSET(bgcnt)) + x + y * 32;
     for (i = start; i < 6; i++) {
         if (i <= 4) {
             if (digit_buf[i] == 0) {
@@ -268,7 +268,7 @@ void draw_count_over_max(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt, u1
     max_ptr[0] = digit;
     digit = max - digit * 10;
     max_ptr[1] = digit;
-    dst = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800 + x * 2) + y * 32;
+    dst = (u16 *)(VRAM + BGCNT_SCREEN_OFFSET(bgcnt) + x * 2) + y * 32;
     for (i = 0; i < 2; i++) {
         if (cur_digits[i] == 0) {
             if (i == 1)
@@ -1039,7 +1039,7 @@ void battle_vblank_update_bg(void) {
 void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, void *dst) {
     u32 i, j;
     u16 *out = dst;
-    u16 *base = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
+    u16 *base = BG_TILEMAP(bgcnt) + x + y * 32;
 
     for (j = 0; j < h; j++) {
         u16 *vram = base + j * 32;
@@ -1051,7 +1051,7 @@ void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, void *dst) {
 void write_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, const void *src) {
     u32 i, j;
     const u16 *in = src;
-    u16 *base = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
+    u16 *base = BG_TILEMAP(bgcnt) + x + y * 32;
 
     for (j = 0; j < h; j++) {
         u16 *vram = base + j * 32;

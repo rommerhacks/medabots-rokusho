@@ -23,7 +23,7 @@ static void decompress_to_bg_scroll_buffer(const u8 *src, void *dst) {
 }
 
 void write_tilemap_to_vram_08000E94(u32 x, u32 y, struct Tilemap *map, u32 bgcnt) {
-    u16 *dst = (u16 *)((((bgcnt >> 8) & 0x1F) * 0x800) + VRAM) + x + y * 32;
+    u16 *dst = BG_TILEMAP(bgcnt) + x + y * 32;
     u16 *src = map->data;
     u16 *dst_row;
     u32 i, j;
@@ -41,7 +41,7 @@ void write_tilemap_to_vram_08000E94(u32 x, u32 y, struct Tilemap *map, u32 bgcnt
 
 void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt) {
     u32 shift = ((bgcnt & 0xC000) >> 14) + 3;
-    u8 *dst = (u8 *)((((bgcnt >> 8) & 0x1F) * 0x800) + VRAM) + x + (y << shift);
+    u8 *dst = (u8 *)(BGCNT_SCREEN_OFFSET(bgcnt) + VRAM) + x + (y << shift);
     u8 *src = (u8 *)map->data;
     u32 i;
     for (i = 0; i < map->height; i++) {

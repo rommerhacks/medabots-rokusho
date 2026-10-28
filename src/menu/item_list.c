@@ -202,7 +202,7 @@ void render_battle_medapart_list(u32 mode) {
             if (gMenuWork->list_count > i) {
                 render_text_sprites_08040DB8((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
                                              13, 1, 1);
-                draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, (REG_BG1CNT >> 8) & 0x1F);
+                draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
                 gSpriteEntries[i + 0x6A].flags |= SPRITE_FLAG_VISIBLE;
                 gSpriteEntries[i + 0x6A].frame = genders[i] + 0x1B;
                 gSpriteEntries[i + 0x6E].flags |= SPRITE_FLAG_VISIBLE;
@@ -215,7 +215,7 @@ void render_battle_medapart_list(u32 mode) {
             if (counts[i]) {
                 render_text_sprites_08040DB8((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
                                              13, 1, 1);
-                draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, (REG_BG1CNT >> 8) & 0x1F);
+                draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
                 gSpriteEntries[i + 0x6A].flags |= SPRITE_FLAG_VISIBLE;
                 gSpriteEntries[i + 0x6A].frame = genders[i] + 0x1B;
                 gSpriteEntries[i + 0x6E].flags |= SPRITE_FLAG_VISIBLE;

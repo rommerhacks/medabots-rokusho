@@ -14,15 +14,13 @@ void shop_highlight_part_type_icon(u32 sel, u32 frame) {
     u16 *top_row, *bottom_row;
     u16 pal;
 
-    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000152) = tile++;
-    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000154) = tile++;
-    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000192) = tile++;
-    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000194) = tile;
+    BG_TILEMAP(REG_BG2CNT)[9 + 5 * 32] = tile++;
+    BG_TILEMAP(REG_BG2CNT)[10 + 5 * 32] = tile++;
+    BG_TILEMAP(REG_BG2CNT)[9 + 6 * 32] = tile++;
+    BG_TILEMAP(REG_BG2CNT)[10 + 6 * 32] = tile;
     for (i = 0; i < 4; i++) {
-        top_row = (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + gShopPartTypeIconPos[i][0] +
-                  gShopPartTypeIconPos[i][1] * 32;
-        bottom_row = (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + gShopPartTypeIconPos[i][0] +
-                     (gShopPartTypeIconPos[i][1] + 1) * 32;
+        top_row = BG_TILEMAP(REG_BG2CNT) + gShopPartTypeIconPos[i][0] + gShopPartTypeIconPos[i][1] * 32;
+        bottom_row = BG_TILEMAP(REG_BG2CNT) + gShopPartTypeIconPos[i][0] + (gShopPartTypeIconPos[i][1] + 1) * 32;
         if (frame & 8)
             pal = (i == sel) ? 0x6000 : 0x5000;
         else

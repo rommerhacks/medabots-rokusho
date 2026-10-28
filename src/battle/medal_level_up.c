@@ -76,7 +76,7 @@ void medal_transform_init(void) {
     lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + 0x06000080));
     {
         u16 tile = 0x60C0;
-        u32 bg = ((REG_BG0CNT >> 8) & 0x1F) * 0x800;
+        u32 bg = BGCNT_SCREEN_OFFSET(REG_BG0CNT);
         u32 tile_addr = 0x06000286;
         u16 *tile_ptr;
         tile_ptr = (u16 *)(bg + tile_addr);
@@ -142,18 +142,18 @@ void medal_transform_draw_medal(void) {
     }
     render_text_sprites_08040DB8(gTextArgBuffer, 0x14, 5, 10, 10, 1, 1, 0);
     if (gMedals[gCurrentMedalSlot].level == 100) {
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029A) = (gMenuWork->bg_tile_base + 0x14) | 0x7000;
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DA) = (gMenuWork->bg_tile_base + 0x15) | 0x7000;
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029C) = (gMenuWork->bg_tile_base + 0x16) | 0x7000;
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DC) = (gMenuWork->bg_tile_base + 0x17) | 0x7000;
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x0600029A) = (gMenuWork->bg_tile_base + 0x14) | 0x7000;
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x060002DA) = (gMenuWork->bg_tile_base + 0x15) | 0x7000;
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x0600029C) = (gMenuWork->bg_tile_base + 0x16) | 0x7000;
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x060002DC) = (gMenuWork->bg_tile_base + 0x17) | 0x7000;
     } else {
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029A) =
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x0600029A) =
             (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level / 10u) * 2) | 0x7000;
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DA) =
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x060002DA) =
             (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level / 10u) * 2 + 1) | 0x7000;
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029C) =
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x0600029C) =
             (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level % 10u) * 2) | 0x7000;
-        *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DC) =
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x060002DC) =
             (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level % 10u) * 2 + 1) | 0x7000;
     }
     render_text_sprites_08040DB8(gMedals[gCurrentMedalSlot].name, 0x1E, 0x11, 10, 10, 2, 0, 0);

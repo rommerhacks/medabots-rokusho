@@ -32,7 +32,7 @@ void medal_rename_draw_list(u8 start) {
         render_text_sprites_08040DB8(gMenuWork->name_buf, i * 10 + 12, 6, i * 2 + 3, 10, 13, 1, 1);
         tile = gMenuWork->bg_tile_base + (gMedals[gMenuWork->medal_list[i + start]].graphicId * 4 + 1);
         tile |= 0x6000;
-        dst = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + (i * 2 + 3) * 32;
+        dst = BG_TILEMAP(REG_BG1CNT) + 3 + (i * 2 + 3) * 32;
         *dst = tile;
         dst++;
         *dst = tile + 1;

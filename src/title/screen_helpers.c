@@ -99,7 +99,7 @@ void decompress_and_write_tilemap(const void *src, u32 bgcnt) {
     w = *(u32 *)gDecompressBuffer;
     h = *(u32 *)0x02030004;
     data = (u16 *)(gDecompressBuffer + 0x10);
-    dst = (u16 *)(((bgcnt >> 8) & 0x1F) * 0x800 + VRAM);
+    dst = BG_TILEMAP(bgcnt);
     cols = (((bgcnt & 0xC000) >> 14) & 1) ? 64 : 32;
     for (y = 0; y < h; y++) {
         for (x = 0; x < cols; x++) {

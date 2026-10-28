@@ -90,20 +90,20 @@ void save_screen_draw_info(void) {
         if (gMedals[i].flags & 0x80)
             n++;
     }
-    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n, 2, 10, 4, 10, (REG_BG1CNT >> 8) & 0x1F);
+    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n, 2, 10, 4, 10, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     n = 0;
     for (i = 0; i < 480; i++) {
         if (gMedapartInventory[i * 2] != 0)
             n++;
     }
-    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n, 3, 9, 6, 11, (REG_BG1CNT >> 8) & 0x1F);
+    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n, 3, 9, 6, 11, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     n = gPlayerRecord.playTime / 3600;
-    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n / 60, 2, 7, 8, 12, (REG_BG1CNT >> 8) & 0x1F);
-    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n % 60, -2, 10, 8, 12, (REG_BG1CNT >> 8) & 0x1F);
+    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n / 60, 2, 7, 8, 12, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
+    ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n % 60, -2, 10, 8, 12, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(gPlayerRecord.robattleCounts[1], 4, 3, 11, 13,
-                                                          (REG_BG1CNT >> 8) & 0x1F);
+                                                          BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(gPlayerRecord.robattleCounts[0], 0, 8, 11, 13,
-                                                          (REG_BG1CNT >> 8) & 0x1F);
+                                                          BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
     render_text_sprites_08040DB8(gGameWork.textBuf, 1, 15, 9, 7, 15, 1, 0);
     render_text_sprites_08040DB8(gPlayerRecord.name, 13, 14, 4, 10, 13, 0, 0);

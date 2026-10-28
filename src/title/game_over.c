@@ -19,11 +19,11 @@ static void game_over_draw_wipe(s32 step) {
         u32 zero = 0;
 
         CpuFastSet(&zero, buf, 0x01000010);
-        CpuSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800 + (7 - step) * 2, buf, (step + 1) & 0x1FFFFF);
-        CpuSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x2C, &buf[0x1D - step], (step + 1) & 0x1FFFFF);
+        CpuSet((u8 *)VRAM + BGCNT_SCREEN_OFFSET(REG_BG2CNT) + (7 - step) * 2, buf, (step + 1) & 0x1FFFFF);
+        CpuSet((u8 *)VRAM + BGCNT_SCREEN_OFFSET(REG_BG2CNT) + 0x2C, &buf[0x1D - step], (step + 1) & 0x1FFFFF);
     } else {
         step -= 8;
-        CpuFastSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800, buf, 0x10);
+        CpuFastSet((u8 *)VRAM + BGCNT_SCREEN_OFFSET(REG_BG2CNT), buf, 0x10);
         dst = &buf[14];
         src = &buf[13 - step];
         for (i = 13; i >= 0; i--) {
@@ -44,7 +44,7 @@ static void game_over_draw_wipe(s32 step) {
         }
     }
     for (i = 0; i < 20; i++)
-        CpuFastSet(buf, (u8 *)VRAM + ((REG_BG1CNT >> 8) & 0x1F) * 0x800 + i * 0x40, 0x10);
+        CpuFastSet(buf, (u8 *)VRAM + BGCNT_SCREEN_OFFSET(REG_BG1CNT) + i * 0x40, 0x10);
 }
 
 void game_over_update(void) {

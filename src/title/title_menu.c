@@ -40,7 +40,7 @@ static void title_options_draw_row_sweep(u8 sel, u8 count) {
         x = 6;
         y = i * 3 + 10;
         for (j = 0; j <= 19; j++) {
-            u16 *tile = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + x + y * 32;
+            u16 *tile = BG_TILEMAP(REG_BG0CNT) + x + y * 32;
             u16 tile_bits = *tile & mask;
             u16 palette_bits;
             if (sel == i && j < count)
@@ -62,7 +62,7 @@ static void title_options_highlight_row(u8 sel) {
     u32 tile_bits, result;
 
     for (i = 0; i <= 2; i++) {
-        tile = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + 7 + (i * 3 + 10) * 32;
+        tile = BG_TILEMAP(REG_BG0CNT) + 7 + (i * 3 + 10) * 32;
         for (j = 0; j <= 10; j++) {
             tile_bits = *tile;
             tile_bits &= 0xFFF;
@@ -82,7 +82,7 @@ static void title_options_highlight_row(u8 sel) {
 static void title_options_dim_values(void) {
     s32 i, j;
     for (i = 0; i <= 2; i++) {
-        u16 *tile = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + 0x167 + i * 96;
+        u16 *tile = BG_TILEMAP(REG_BG0CNT) + 0x167 + i * 96;
         for (j = 0; j < 16; j++) {
             *tile = (*tile & 0xFFF) | 0x8000;
             tile++;
@@ -95,7 +95,7 @@ void title_options_draw_values(u8 sel) {
     s32 i, j, k;
     for (i = 0; i <= 2; i++) {
         for (j = 0; j <= 2; j++) {
-            u16 *tile = (u16 *)(VRAM + 0xE + (((REG_BG0CNT >> 8) & 0x1F) << 11) + (i * 3 + 11) * 64);
+            u16 *tile = (u16 *)(VRAM + 0xE + BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (i * 3 + 11) * 64);
             u16 mask = gTitleOptionValueMasks[i][j];
             for (k = 0; k < 16; k++) {
                 if (mask & 0x8000) {
@@ -238,7 +238,7 @@ void title_menu_load_save(void) {
             return;
         }
         for (i = 0; i <= 1; i++) {
-            tile = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + 9 + (i + 1) * 32;
+            tile = BG_TILEMAP(REG_BG0CNT) + 9 + (i + 1) * 32;
             for (j = 0; j < 12; j++)
                 *tile++ = 0;
         }

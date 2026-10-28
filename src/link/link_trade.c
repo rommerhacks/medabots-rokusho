@@ -546,7 +546,7 @@ void medapart_trade_update(void) {
     }
 }
 
-#define TM(cnt, i) (*(u16 *)(((((cnt) >> 8) & 0x1F) << 11) + (0x06000000 + (i) * 2)))
+#define TM(cnt, i) (*(u16 *)(BGCNT_SCREEN_OFFSET(cnt) + (0x06000000 + (i) * 2)))
 
 void medal_trade_init_screen(void) {
     u8 *src;
@@ -634,7 +634,7 @@ void medal_trade_init_screen(void) {
         CpuSet(gMedalIconTiles + medal * 0x80, (void *)(size + 0x06004000), 0x40);
         icon_tile16 = icon_tile;
         tile = icon_tile16 | 0x6000;
-        map = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + 8 * 32;
+        map = BG_TILEMAP(REG_BG1CNT) + 3 + 8 * 32;
         *map = tile;
         map++;
         *map = tile + 1;
@@ -749,8 +749,8 @@ void medal_trade_wait_message(void) {
     }
 }
 
-#define BG1(o) (*(u16 *)(VRAM + (o) + (((REG_BG1CNT >> 8) & 0x1F) << 11)))
-#define BG2(o) (*(u16 *)(VRAM + (o) + (((REG_BG2CNT >> 8) & 0x1F) << 11)))
+#define BG1(o) (*(u16 *)(VRAM + (o) + BGCNT_SCREEN_OFFSET(REG_BG1CNT)))
+#define BG2(o) (*(u16 *)(VRAM + (o) + BGCNT_SCREEN_OFFSET(REG_BG2CNT)))
 
 // Shrinks the Medal sprite to a sliver, then swaps in the received Medal (receiver) or hides it (giver).
 void medal_trade_flip_close(void) {
@@ -796,7 +796,7 @@ void medal_trade_flip_close(void) {
             u16 *dst;
             tile = gMenuWork->bg_tile_base - 4;
             tile |= 0x6000;
-            dst = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + 8 * 32;
+            dst = BG_TILEMAP(REG_BG1CNT) + 3 + 8 * 32;
             *dst = tile;
             dst++;
             *dst = tile + 1;

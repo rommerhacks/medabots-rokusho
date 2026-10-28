@@ -28,16 +28,16 @@ static void name_entry_draw_name_tiles(const u8 *name) {
     u8 char_idx, col, row;
     u32 scr;
 
-    top = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 0x65;
-    bot = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 0x85;
+    top = BG_TILEMAP(REG_BG1CNT) + 0x65;
+    bot = BG_TILEMAP(REG_BG1CNT) + 0x85;
     for (i = 0; i < 10; i++) {
         if (*name != 0) {
             char_idx = *name - 1;
-            scr = (REG_BG1CNT >> 8) & 0x1F;
+            scr = BGCNT_SCREEN_BLOCK(REG_BG1CNT);
             col = char_idx % 26;
             row = char_idx / 26;
             *top++ = *((u16 *)(VRAM + 0x204) + ((ato(scr, col) + row * 192) >> 1));
-            *bot++ = *((u16 *)(VRAM + 0x244) + ((ato((REG_BG1CNT >> 8) & 0x1F, col) + row * 192) >> 1));
+            *bot++ = *((u16 *)(VRAM + 0x244) + ((ato(BGCNT_SCREEN_BLOCK(REG_BG1CNT), col) + row * 192) >> 1));
         } else {
             *top++ = 0;
             *bot++ = 0;
@@ -136,7 +136,7 @@ void name_entry_init_graphics(void) {
     } else {
         tile = gMenuWork->bg_tile_base + ((gMedals[gCurrentMedalSlot].graphicId * 4) + 1);
         tile |= 0x6000;
-        base = ((REG_BG1CNT >> 8) & 0x1F) << 11;
+        base = BGCNT_SCREEN_OFFSET(REG_BG1CNT);
         map = (u16 *)(0x06000000 + base);
         tile_ptr = (u16 *)(base + 0x060000C4);
         *tile_ptr = tile;
