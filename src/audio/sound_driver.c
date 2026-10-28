@@ -7,8 +7,10 @@
 
 static void load_wave_pattern(u32 n);
 static void sound_mix_queue_stop(struct SoundMixChannel *ch);
-static void sound_mix_queue_note(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7);
-static void sound_mix_queue_at_rate(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7);
+static void sound_mix_queue_note(u32 track, struct SoundMixChannel *ch, u32 sample, u32 note, u32 volume, u32 length,
+                                 u8 pan, u8 pan_override);
+static void sound_mix_queue_at_rate(u32 track, struct SoundMixChannel *ch, u32 sample, u32 ratio, u32 volume,
+                                    u32 length, u8 pan, u8 pan_override);
 static void sound_mix_refill(struct SoundMixChannel *ch);
 static u8 sound_track_echo_note(struct SoundTrack *track);
 static void sound_track_link(struct SoundTrack *track);
@@ -137,33 +139,33 @@ static void sound_output_echo(struct SoundTrack *track, vu16 *cnt_, vu16 *freq_)
         track->echoNote = note;
         mode = &track->channelType;
         if (note != 0xFF) {
-            u16 f = sound_psg_note_freq(note) + track->detune;
+            u16 freq_bits = sound_psg_note_freq(note) + track->detune;
             u16 *vol;
-            u8 m;
+            u8 channel_type;
 
-            if ((s16)f < 0)
-                f = 0;
-            else if ((s16)f > 0x7FF)
-                f = 0x7FF;
-            m = *mode;
+            if ((s16)freq_bits < 0)
+                freq_bits = 0;
+            else if ((s16)freq_bits > 0x7FF)
+                freq_bits = 0x7FF;
+            channel_type = *mode;
             vol = &track->fadeVolume;
-            if (m == 2) {
-                vu16 tmp;
+            if (channel_type == 2) {
+                vu16 trigger;
 
                 *cnt = gSoundWaveVolumes[(*vol * 3) >> 12] << 8;
-                tmp = (*(vu16 *)0x04000084 & 4) ? 0 : 0x8000;
-                *freq = f | tmp;
+                trigger = (*(vu16 *)0x04000084 & 4) ? 0 : 0x8000;
+                *freq = freq_bits | trigger;
             } else {
                 *cnt = ((*vol * 3) & (s16)0xF000) | track->instrument;
-                *freq = f | 0x8000;
+                *freq = freq_bits | 0x8000;
             }
         } else {
-            u16 v;
+            u16 ctrl;
             if (*mode == 2)
-                v = 0;
+                ctrl = 0;
             else
-                v = track->instrument;
-            *cnt = v;
+                ctrl = track->instrument;
+            *cnt = ctrl;
             *freq |= 0x8000;
         }
     }
@@ -234,9 +236,9 @@ static void sound_output_direct(struct SoundTrack *track, struct SoundMixChannel
     u8 *flags;
 
     {
-        u16 v = (track->envVolume * track->fadeVolume) & (s16)0xF000;
+        u16 out_volume = (track->envVolume * track->fadeVolume) & (s16)0xF000;
         vol = &track->outVolume;
-        *vol = v;
+        *vol = out_volume;
     }
     flags = &track->dirty;
     if (*flags & 0x10) {
@@ -326,14 +328,14 @@ static void sound_start_fifo_dma(s32 n, u32 src) {
 
 static void sound_start_fifo(s32 n, u32 *src) {
     vu32 *fifo;
-    u32 *p;
+    u32 *word;
     s32 i;
 
     *(vu8 *)0x04000083 |= gSoundFifoResetBits[n - 1];
     fifo = gSoundFifoAddrs[n - 1];
-    p = src;
+    word = src;
     for (i = 7; i >= 0; i--)
-        *fifo = *p++;
+        *fifo = *word++;
     sound_start_fifo_dma(n, (u32)(src + 8));
 }
 
@@ -368,14 +370,14 @@ static u32 sound_semitone_ratio(s32 n) {
 }
 
 static u32 sound_finetune_ratio(s32 n) {
-    s32 q;
+    s32 semitones;
     s32 rem;
 
     if (n == 0)
         return 0;
-    q = n / 128;
-    rem = n - q * 128;
-    return (sound_semitone_ratio(q) * gSoundFinetuneRatios[rem]) >> 12;
+    semitones = n / 128;
+    rem = n - semitones * 128;
+    return (sound_semitone_ratio(semitones) * gSoundFinetuneRatios[rem]) >> 12;
 }
 
 static u32 sound_apply_finetune(u32 rate, u32 fine) {
@@ -439,20 +441,21 @@ static void sound_mix_play_from(struct SoundMixChannel *ch, u32 offset) {
     }
 }
 
-static void sound_mix_init(struct SoundMixChannel *ch, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7) {
-    ch->sample = a1;
-    ch->position = a2;
+static void sound_mix_init(struct SoundMixChannel *ch, u32 sample, u32 position, u32 note, u32 volume, u32 length,
+                           u8 pan, u8 pan_override) {
+    ch->sample = sample;
+    ch->position = position;
     ch->flags = 0;
     ch->rateOffset = 0;
-    ch->length = a5;
+    ch->length = length;
     ch->elapsed = 0;
     ch->pendingFrames = 0;
-    ch->note = a3;
-    ch->volume = a4;
+    ch->note = note;
+    ch->volume = volume;
     ch->rate = 0;
     ch->timerReload = 0;
-    ch->pan = a6;
-    ch->panOverride = a7;
+    ch->pan = pan;
+    ch->panOverride = pan_override;
 }
 
 static void sound_mix_stop(struct SoundMixChannel *ch) {
@@ -474,15 +477,16 @@ static void sound_mix_start_note(struct SoundMixChannel *ch) {
     sound_vibrato_start_direct((struct SoundTrack *)ch->track);
 }
 
-static void sound_mix_queue_note(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7) {
+static void sound_mix_queue_note(u32 track, struct SoundMixChannel *ch, u32 sample, u32 note, u32 volume, u32 length,
+                                 u8 pan, u8 pan_override) {
     ch->request = 0;
-    ch->track = a0;
-    ch->queuedSample = a2;
-    ch->queuedNote = a3;
-    ch->queuedVolume = a4;
-    ch->queuedLength = a5;
-    ch->queuedPan = a6;
-    ch->queuedPanOverride = a7;
+    ch->track = track;
+    ch->queuedSample = sample;
+    ch->queuedNote = note;
+    ch->queuedVolume = volume;
+    ch->queuedLength = length;
+    ch->queuedPan = pan;
+    ch->queuedPanOverride = pan_override;
     ch->request = 1;
 }
 
@@ -495,15 +499,16 @@ static void sound_mix_start_at_rate(struct SoundMixChannel *ch) {
     sound_vibrato_start_direct((struct SoundTrack *)ch->track);
 }
 
-static void sound_mix_queue_at_rate(u32 a0, struct SoundMixChannel *ch, u32 a2, u32 a3, u32 a4, u32 a5, u8 a6, u8 a7) {
+static void sound_mix_queue_at_rate(u32 track, struct SoundMixChannel *ch, u32 sample, u32 ratio, u32 volume,
+                                    u32 length, u8 pan, u8 pan_override) {
     ch->request = 0;
-    ch->track = a0;
-    ch->queuedSample = a2;
-    ch->queuedRatio = a3;
-    ch->queuedVolume = a4;
-    ch->queuedLength = a5;
-    ch->queuedPan = a6;
-    ch->queuedPanOverride = a7;
+    ch->track = track;
+    ch->queuedSample = sample;
+    ch->queuedRatio = ratio;
+    ch->queuedVolume = volume;
+    ch->queuedLength = length;
+    ch->queuedPan = pan;
+    ch->queuedPanOverride = pan_override;
     ch->request = 1;
 }
 
@@ -948,11 +953,11 @@ void sound_init_tracks(void) {
     for (i = 0, track = gSoundWork->tracks; i < 13; i++, track++) {
         const struct SoundTrackConfig *cfg = &gSoundTrackConfigs[i];
         register void *zero asm("r2") = NULL;
-        u8 *p = &track->dirty;
-        p[1] = i;
+        u8 *fields = &track->dirty;
+        fields[1] = i;
         track->onEnd = cfg->onEnd;
         track->tick = cfg->tick;
-        p[0x14] = cfg->channelType;
+        fields[0x14] = cfg->channelType;
         track->dirty |= 0x5F;
         track->next = zero;
         track->prev = zero;
@@ -969,7 +974,7 @@ void sound_set_song_table(struct SoundSongHeader **val) {
     gSoundWork->songs = val;
 }
 
-static void sound_start_song(u32 id, u32 arg) {
+static void sound_start_song(u32 id, u32 pan) {
     struct SoundWork *work = sound_get_work();
     struct SoundSongHeader *song = work->songs[id];
     u32 i;
@@ -993,7 +998,7 @@ loop:
 
         sound_track_start(track, seq[1]);
         track->priority = song->priority;
-        track->panOverride = arg;
+        track->panOverride = pan;
         seq++;
     }
     bit >>= 1;
@@ -1004,7 +1009,7 @@ loop:
     if (song->trackMask & 4) {
         sound_track_start(&work->tracks[12], work->tracks[9].seqPos);
         work->tracks[12].priority = song->priority;
-        work->tracks[12].panOverride = arg;
+        work->tracks[12].panOverride = pan;
     }
     work->songId = id;
 }
@@ -1015,9 +1020,9 @@ void play_song(u32 id) {
     sound_unlock();
 }
 
-static void play_song_panned(u32 id, u32 arg) {
+static void play_song_panned(u32 id, u32 pan) {
     sound_lock();
-    sound_start_song(id, arg);
+    sound_start_song(id, pan);
     sound_unlock();
 }
 
@@ -1038,9 +1043,9 @@ static void sound_set_music_pan(u32 val) {
     sound_track_set_music_pan(&work->tracks[12]);
 }
 
-static void set_music_pan(u32 a) {
+static void set_music_pan(u32 pan) {
     sound_lock();
-    sound_set_music_pan(a);
+    sound_set_music_pan(pan);
     sound_unlock();
 }
 
@@ -1058,7 +1063,7 @@ void sound_set_se_table(struct SoundSongHeader **val) {
     gSoundWork->soundEffects = val;
 }
 
-static void sound_start_se(u32 id, u32 arg) {
+static void sound_start_se(u32 id, u32 pan) {
     struct SoundWork *work = sound_get_work();
     struct SoundSongHeader *song = work->soundEffects[id];
     u32 i;
@@ -1076,7 +1081,7 @@ loop:
             sound_track_start(track, seq[1]);
             track->priority = song->priority;
             track->soundId = id;
-            track->panOverride = arg;
+            track->panOverride = pan;
         }
         seq++;
     }
@@ -1092,9 +1097,9 @@ void play_sound_effect(u32 id) {
     sound_unlock();
 }
 
-static void play_sound_effect_panned(u32 id, u32 arg) {
+static void play_sound_effect_panned(u32 id, u32 pan) {
     sound_lock();
-    sound_start_se(id, arg);
+    sound_start_se(id, pan);
     sound_unlock();
 }
 
@@ -1116,9 +1121,9 @@ static void sound_set_se_pan(u32 id, u32 val) {
     sound_track_set_se_pan(&work->tracks[11]);
 }
 
-static void set_sound_effect_pan(u32 a, u32 b) {
+static void set_sound_effect_pan(u32 id, u32 pan) {
     sound_lock();
-    sound_set_se_pan(a, b);
+    sound_set_se_pan(id, pan);
     sound_unlock();
 }
 
@@ -1133,26 +1138,26 @@ static s32 sound_track_se_id(u32 idx) {
     return ret;
 }
 
-static u32 sound_se_is_playing(s32 a) {
+static u32 sound_se_is_playing(s32 id) {
     u32 i;
-    const u32 *t;
+    const u32 *entry;
 
     for (i = 0; i < 6; i++) {
-        const u32 **pt = &t;
+        const u32 **entry_ptr = &entry;
 
-        t = gSoundEffectTracks;
-        t += i;
-        if (a == sound_track_se_id(**pt))
+        entry = gSoundEffectTracks;
+        entry += i;
+        if (id == sound_track_se_id(**entry_ptr))
             return TRUE;
     }
     return FALSE;
 }
 
-u32 is_sound_effect_playing(u32 a) {
+u32 is_sound_effect_playing(u32 id) {
     u32 ret;
 
     sound_lock();
-    ret = sound_se_is_playing(a);
+    ret = sound_se_is_playing(id);
     sound_unlock();
     return ret;
 }
@@ -1191,9 +1196,9 @@ static void sound_fade_out_music(u32 frames) {
     sound_fade_out_track(9);
 }
 
-void fade_out_music(u32 a) {
+void fade_out_music(u32 frames) {
     sound_lock();
-    sound_fade_out_music(a);
+    sound_fade_out_music(frames);
     sound_unlock();
 }
 
@@ -1207,17 +1212,17 @@ u32 is_music_fading(void) {
     return ret;
 }
 
-static void sound_get_master_volume(u32 *a, u32 *b) {
+static void sound_get_master_volume(u32 *left, u32 *right) {
     sound_lock();
-    *a = gSoundWork->volumeLeft;
-    *b = gSoundWork->volumeRight;
+    *left = gSoundWork->volumeLeft;
+    *right = gSoundWork->volumeRight;
     sound_unlock();
 }
 
-static void sound_set_master_volume(u32 a, u32 b) {
+static void sound_set_master_volume(u32 left, u32 right) {
     sound_lock();
-    gSoundWork->volumeLeft = a;
-    gSoundWork->volumeRight = b;
+    gSoundWork->volumeLeft = left;
+    gSoundWork->volumeRight = right;
     gSoundWork->flags |= 1;
     sound_unlock();
 }

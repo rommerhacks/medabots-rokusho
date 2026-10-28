@@ -79,9 +79,9 @@ void medal_remove_by_id(u8 id) {
 
     for (i = 0; i < 30; i++) {
         if ((gMedals[i].flags & 0x80) && gMedals[i].graphicId == id) {
-            u8 f = gMedals[i].flags & 0x1F;
+            u8 slot_order = gMedals[i].flags & 0x1F;
             mem_fill8((u8 *)&gMedals[i], 0x40, 0);
-            gMedals[i].flags = f;
+            gMedals[i].flags = slot_order;
             return;
         }
     }
@@ -92,9 +92,9 @@ void medal_add_from_buffer(const void *src) {
 
     for (i = 0; i < 30; i++) {
         if (!(gMedals[i].flags & 0x80)) {
-            u32 f = gMedals[i].flags & 0x1F;
+            u32 slot_order = gMedals[i].flags & 0x1F;
             memcpy_bytes_0803F63C(src, &gMedals[i], 0x40);
-            gMedals[i].flags = (gMedals[i].flags & 0x80) | f;
+            gMedals[i].flags = (gMedals[i].flags & 0x80) | slot_order;
             return;
         }
     }
@@ -103,54 +103,54 @@ void medal_add_from_buffer(const void *src) {
 // Level for a new Medal: halfway between the highest and the fourth-highest Medal levels.
 static u32 medal_new_level(void) {
     u32 zero = 0;
-    struct SortEntry *e = SORT_BUFFER;
-    struct MedalData *m;
+    struct SortEntry *entry = SORT_BUFFER;
+    struct MedalData *medal;
     u32 i;
 
-    CpuFastSet(&zero, e, 0x01000080);
-    for (i = 0, m = gMedals; i < 30; m++, e++, i++)
-        e->key = m->level;
+    CpuFastSet(&zero, entry, 0x01000080);
+    for (i = 0, medal = gMedals; i < 30; medal++, entry++, i++)
+        entry->key = medal->level;
     sort_buffer_descending(30);
     return (SORT_BUFFER[0].key - SORT_BUFFER[3].key) / 2 + SORT_BUFFER[3].key;
 }
 
-// How many of the thresholds a-d (0 = none) level reaches (0-4).
-u32 medal_tier_for_level(u8 level, u8 a, u8 b, u8 c, u8 d) {
-    if (d != 0 && level >= d)
+// How many of the thresholds tier1_level..tier4_level (0 = none) level reaches (0-4).
+u32 medal_tier_for_level(u8 level, u8 tier1_level, u8 tier2_level, u8 tier3_level, u8 tier4_level) {
+    if (tier4_level != 0 && level >= tier4_level)
         return 4;
-    if (c != 0 && level >= c)
+    if (tier3_level != 0 && level >= tier3_level)
         return 3;
-    if (b != 0 && level >= b)
+    if (tier2_level != 0 && level >= tier2_level)
         return 2;
-    if (a != 0 && level >= a)
+    if (tier1_level != 0 && level >= tier1_level)
         return 1;
     return 0;
 }
 
-u32 medapart_get_counts(u8 a, u8 b) {
-    u32 hi = gMedapartInventory[b * 240 + a * 2] << 8;
-    return gMedapartInventory[b * 240 + a * 2 + 1] | hi;
+u32 medapart_get_counts(u8 part_id, u8 kind) {
+    u32 hi = gMedapartInventory[kind * 240 + part_id * 2] << 8;
+    return gMedapartInventory[kind * 240 + part_id * 2 + 1] | hi;
 }
 
 void medapart_add_quantity(u8 id, u8 kind, u8 n) {
     u8 *inv = gMedapartInventory;
-    u8 *p = &inv[kind * 240 + id * 2];
-    s32 v = n + *p;
+    u8 *count_ptr = &inv[kind * 240 + id * 2];
+    s32 total = n + *count_ptr;
 
-    if (v > 99)
-        *p = 99;
+    if (total > 99)
+        *count_ptr = 99;
     else
-        *p = v;
+        *count_ptr = total;
 }
 
 void reduce_medapart_stat(u8 id, u8 kind, u8 n) {
     u8 *inv = gMedapartInventory;
-    u8 *p = &inv[kind * 240 + id * 2];
-    s32 v = *p - n;
+    u8 *count_ptr = &inv[kind * 240 + id * 2];
+    s32 remaining = *count_ptr - n;
 
-    if (v < 0)
-        v = 0;
-    *p = v;
+    if (remaining < 0)
+        remaining = 0;
+    *count_ptr = remaining;
 }
 
 void team_init_order(void) {
@@ -165,13 +165,13 @@ void team_lose_equipped_part(u8 slot_id, u8 kind) {
 
     for (i = 0; i < 9; i++) {
         if (gTeamSlots[i].slotId == slot_id) {
-            u8 *p = &gTeamSlots[i].head;
-            u8 old = p[kind];
+            u8 *parts = &gTeamSlots[i].head;
+            u8 old_part = parts[kind];
 
-            p[kind] = gTeamSlots[i].gender + 0x78;
+            parts[kind] = gTeamSlots[i].gender + 0x78;
             gTeamSlots[i].state = 2;
-            gMedapartInventory[kind * 240 + old * 2]--;
-            gMedapartInventory[kind * 240 + old * 2 + 1]--;
+            gMedapartInventory[kind * 240 + old_part * 2]--;
+            gMedapartInventory[kind * 240 + old_part * 2 + 1]--;
             return;
         }
     }
@@ -261,42 +261,42 @@ void item_remove_quantity(u8 id, u8 n) {
 // Bubble sort of the n SORT_BUFFER entries (struct SortEntry), ascending by key then key2.
 
 static void sort_buffer_ascending(u8 n) {
-    u16 t0, t1, t2, t3;
+    u16 tmp_key, tmp_key2, tmp_value, tmp_unk6;
     u32 j;
-    struct SortEntry *a, *b;
+    struct SortEntry *cur, *next;
 
     if (n <= 1)
         return;
     for (n--; n != 0; n--) {
         for (j = 0; j < n; j++) {
-            a = &SORT_BUFFER[j];
-            b = &SORT_BUFFER[j + 1];
-            if (a->key > b->key) {
-                t0 = a->key;
-                t1 = a->key2;
-                t2 = a->value;
-                t3 = a->unk6;
-                a->key = b->key;
-                a->key2 = b->key2;
-                a->value = b->value;
-                a->unk6 = b->unk6;
-                b->key = t0;
-                b->key2 = t1;
-                b->value = t2;
-                b->unk6 = t3;
-            } else if (a->key == b->key && a->key2 > b->key2) {
-                t0 = a->key;
-                t1 = a->key2;
-                t2 = a->value;
-                t3 = a->unk6;
-                a->key = b->key;
-                a->key2 = b->key2;
-                a->value = b->value;
-                a->unk6 = b->unk6;
-                b->key = t0;
-                b->key2 = t1;
-                b->value = t2;
-                b->unk6 = t3;
+            cur = &SORT_BUFFER[j];
+            next = &SORT_BUFFER[j + 1];
+            if (cur->key > next->key) {
+                tmp_key = cur->key;
+                tmp_key2 = cur->key2;
+                tmp_value = cur->value;
+                tmp_unk6 = cur->unk6;
+                cur->key = next->key;
+                cur->key2 = next->key2;
+                cur->value = next->value;
+                cur->unk6 = next->unk6;
+                next->key = tmp_key;
+                next->key2 = tmp_key2;
+                next->value = tmp_value;
+                next->unk6 = tmp_unk6;
+            } else if (cur->key == next->key && cur->key2 > next->key2) {
+                tmp_key = cur->key;
+                tmp_key2 = cur->key2;
+                tmp_value = cur->value;
+                tmp_unk6 = cur->unk6;
+                cur->key = next->key;
+                cur->key2 = next->key2;
+                cur->value = next->value;
+                cur->unk6 = next->unk6;
+                next->key = tmp_key;
+                next->key2 = tmp_key2;
+                next->value = tmp_value;
+                next->unk6 = tmp_unk6;
             }
         }
     }
@@ -305,42 +305,42 @@ static void sort_buffer_ascending(u8 n) {
 // Bubble sort of the n SORT_BUFFER entries (struct SortEntry), descending by key then key2.
 
 void sort_buffer_descending(u8 n) {
-    u16 t0, t1, t2, t3;
+    u16 tmp_key, tmp_key2, tmp_value, tmp_unk6;
     u32 j;
-    struct SortEntry *a, *b;
+    struct SortEntry *cur, *next;
 
     if (n <= 1)
         return;
     for (n--; n != 0; n--) {
         for (j = 0; j < n; j++) {
-            a = &SORT_BUFFER[j];
-            b = &SORT_BUFFER[j + 1];
-            if (a->key < b->key) {
-                t0 = a->key;
-                t1 = a->key2;
-                t2 = a->value;
-                t3 = a->unk6;
-                a->key = b->key;
-                a->key2 = b->key2;
-                a->value = b->value;
-                a->unk6 = b->unk6;
-                b->key = t0;
-                b->key2 = t1;
-                b->value = t2;
-                b->unk6 = t3;
-            } else if (a->key == b->key && a->key2 < b->key2) {
-                t0 = a->key;
-                t1 = a->key2;
-                t2 = a->value;
-                t3 = a->unk6;
-                a->key = b->key;
-                a->key2 = b->key2;
-                a->value = b->value;
-                a->unk6 = b->unk6;
-                b->key = t0;
-                b->key2 = t1;
-                b->value = t2;
-                b->unk6 = t3;
+            cur = &SORT_BUFFER[j];
+            next = &SORT_BUFFER[j + 1];
+            if (cur->key < next->key) {
+                tmp_key = cur->key;
+                tmp_key2 = cur->key2;
+                tmp_value = cur->value;
+                tmp_unk6 = cur->unk6;
+                cur->key = next->key;
+                cur->key2 = next->key2;
+                cur->value = next->value;
+                cur->unk6 = next->unk6;
+                next->key = tmp_key;
+                next->key2 = tmp_key2;
+                next->value = tmp_value;
+                next->unk6 = tmp_unk6;
+            } else if (cur->key == next->key && cur->key2 < next->key2) {
+                tmp_key = cur->key;
+                tmp_key2 = cur->key2;
+                tmp_value = cur->value;
+                tmp_unk6 = cur->unk6;
+                cur->key = next->key;
+                cur->key2 = next->key2;
+                cur->value = next->value;
+                cur->unk6 = next->unk6;
+                next->key = tmp_key;
+                next->key2 = tmp_key2;
+                next->value = tmp_value;
+                next->unk6 = tmp_unk6;
             }
         }
     }

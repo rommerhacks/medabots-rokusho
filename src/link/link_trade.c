@@ -10,29 +10,29 @@
 #include "global.h"
 #include "constants/sprites.h"
 
-static void medapart_trade_init_sprite_tree(u32 a) {
-    if (a == 0) {
+static void medapart_trade_init_sprite_tree(u32 side) {
+    if (side == 0) {
         struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
-        u8 *b;
-        u8 *c;
+        u8 *oams;
+        u8 *slots;
         u32 fill;
 
         mem_fill8((u8 *)obj, 0xD0, 0);
-        b = (u8 *)0x020260D0;
-        mem_fill8(b, 0x820, 0);
+        oams = (u8 *)0x020260D0;
+        mem_fill8(oams, 0x820, 0);
         mem_fill8((u8 *)0x020264E0, 0x820, 0);
-        c = (u8 *)0x020268F0;
-        mem_fill8(c, 0x60, 0);
+        slots = (u8 *)0x020268F0;
+        mem_fill8(slots, 0x60, 0);
         gVBlankOamMode = 2;
         gSpriteWork = (struct SpriteWork *)0x02024000;
-        fill = a;
+        fill = side;
         CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-        gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
+        gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slots;
         init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
-                         (struct SpriteNodeOam *)b);
-        obj->oams = (struct SpriteNodeOam *)b;
+                         (struct SpriteNodeOam *)oams);
+        obj->oams = (struct SpriteNodeOam *)oams;
         draw_medapart_sprite(gSpriteWork->oamBuf, obj, gMenuWork->own_part_id, gMenuWork->own_part_kind, 0x3C, 0x28,
-                             0xC7, a, 1);
+                             0xC7, side, 1);
     } else {
         struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
 
@@ -77,100 +77,100 @@ static void medapart_copy_name(u16 id, u8 second) {
 
 // Loads the Medal picture into OBJ VRAM and sets up the affine Medal sprite (hidden for the receiver).
 static void medal_trade_show_medal_sprite(u32 medal, u32 frame) {
-    struct SpriteEntry *s;
+    struct SpriteEntry *sprite;
     u8 zero;
 
     lz_decompress_dispatch(gMedalSpriteGfx[medal][frame], (void *)0x06010000);
-    s = gSpriteEntries;
+    sprite = gSpriteEntries;
     zero = 0;
-    s->flags = SPRITE_FLAG_ENABLED | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE |
-               SPRITE_FLAG_PART_PALETTE;
+    sprite->flags = SPRITE_FLAG_ENABLED | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE |
+                    SPRITE_FLAG_PART_PALETTE;
     if (gMenuWork->partner_chose == 0)
-        s->flags |= SPRITE_FLAG_VISIBLE;
-    s->x = 0xB8;
-    s->y = 0x38;
-    s->frame = 0x200;
-    s->palette = zero;
-    s->frame_table = zero;
-    s->order = 0x40;
-    s->scale_x = 0x40;
-    s->scale_y = 0x40;
+        sprite->flags |= SPRITE_FLAG_VISIBLE;
+    sprite->x = 0xB8;
+    sprite->y = 0x38;
+    sprite->frame = 0x200;
+    sprite->palette = zero;
+    sprite->frame_table = zero;
+    sprite->order = 0x40;
+    sprite->scale_x = 0x40;
+    sprite->scale_y = 0x40;
 }
 
 // The trade screen's BG tile animation (two tile rows): frame from unk3A, which counts down, so the frames speed up.
 static void trade_tiles_speed_up_two_rows(void) {
-    s32 v;
+    s32 anim_frame;
     s32 i;
-    u32 s;
-    u32 d;
-    s32 t;
-    s32 w;
+    u32 src_off;
+    u32 dst_off;
+    s32 other_frame;
+    s32 next_frame;
     u32 tiles;
 
     switch (gMenuWork->frame / 128) {
     case 0:
-        v = gMenuWork->frame >> 1;
+        anim_frame = gMenuWork->frame >> 1;
         break;
     case 1:
-        v = gMenuWork->frame >> 2;
+        anim_frame = gMenuWork->frame >> 2;
         break;
     case 2:
-        v = gMenuWork->frame >> 3;
+        anim_frame = gMenuWork->frame >> 3;
         break;
     case 3:
-        v = gMenuWork->frame >> 4;
+        anim_frame = gMenuWork->frame >> 4;
         break;
     default:
-        v = gMenuWork->frame >> 5;
+        anim_frame = gMenuWork->frame >> 5;
         break;
     }
-    v &= 3;
+    anim_frame &= 3;
     if (--gMenuWork->frame < 0)
         gMenuWork->frame = 0x3F;
     i = 0;
-    w = v + 2;
+    next_frame = anim_frame + 2;
     tiles = 0x0600D800;
-    d = 0x1C0;
-    s = v << 9;
+    dst_off = 0x1C0;
+    src_off = anim_frame << 9;
     for (; i < 8; i++) {
-        t = v;
-        CpuSet((void *)(s + tiles), (void *)(0x0600E804 + d), 0xC);
-        t = w & 3;
-        CpuSet((void *)((t * 8 + i) * 0x40 + tiles), (void *)(0x0600E820 + d), 0xC);
-        d += 0x40;
-        s += 0x40;
+        other_frame = anim_frame;
+        CpuSet((void *)(src_off + tiles), (void *)(0x0600E804 + dst_off), 0xC);
+        other_frame = next_frame & 3;
+        CpuSet((void *)((other_frame * 8 + i) * 0x40 + tiles), (void *)(0x0600E820 + dst_off), 0xC);
+        dst_off += 0x40;
+        src_off += 0x40;
     }
 }
 
 static void trade_tiles_speed_up(void) {
-    s32 v;
+    s32 anim_frame;
     s32 i;
     u8 *src;
     u8 *dst;
 
     switch (gMenuWork->frame / 128) {
     case 0:
-        v = gMenuWork->frame >> 1;
+        anim_frame = gMenuWork->frame >> 1;
         break;
     case 1:
-        v = gMenuWork->frame >> 2;
+        anim_frame = gMenuWork->frame >> 2;
         break;
     case 2:
-        v = gMenuWork->frame >> 3;
+        anim_frame = gMenuWork->frame >> 3;
         break;
     case 3:
-        v = gMenuWork->frame >> 4;
+        anim_frame = gMenuWork->frame >> 4;
         break;
     default:
-        v = gMenuWork->frame >> 5;
+        anim_frame = gMenuWork->frame >> 5;
         break;
     }
-    v &= 3;
+    anim_frame &= 3;
     if (--gMenuWork->frame < 0)
         gMenuWork->frame = 0x3F;
     dst = (u8 *)0x0600E9E2;
-    v <<= 9;
-    src = (u8 *)0x0600D800 + v;
+    anim_frame <<= 9;
+    src = (u8 *)0x0600D800 + anim_frame;
     for (i = 0; i < 8; i++) {
         CpuSet(src, dst, 0xC);
         dst += 0x40;
@@ -180,52 +180,52 @@ static void trade_tiles_speed_up(void) {
 
 // As trade_tiles_speed_up_two_rows, with the speed table reversed (slows down as unk3A counts down).
 static void trade_tiles_slow_down_two_rows(void) {
-    s32 v;
+    s32 anim_frame;
     s32 i;
-    u32 s;
-    u32 d;
-    s32 t;
-    s32 w;
+    u32 src_off;
+    u32 dst_off;
+    s32 other_frame;
+    s32 next_frame;
     u32 tiles;
 
     switch (gMenuWork->frame / 128) {
     case 0:
     case 1:
-        v = gMenuWork->frame >> 5;
+        anim_frame = gMenuWork->frame >> 5;
         break;
     case 2:
-        v = gMenuWork->frame >> 4;
+        anim_frame = gMenuWork->frame >> 4;
         break;
     case 3:
-        v = gMenuWork->frame >> 3;
+        anim_frame = gMenuWork->frame >> 3;
         break;
     case 4:
-        v = gMenuWork->frame >> 2;
+        anim_frame = gMenuWork->frame >> 2;
         break;
     default:
-        v = gMenuWork->frame >> 1;
+        anim_frame = gMenuWork->frame >> 1;
         break;
     }
-    v &= 3;
+    anim_frame &= 3;
     if (--gMenuWork->frame < 0)
         gMenuWork->frame = 0x3F;
     i = 0;
-    w = v + 2;
+    next_frame = anim_frame + 2;
     tiles = 0x0600D800;
-    d = 0x1C0;
-    s = v << 9;
+    dst_off = 0x1C0;
+    src_off = anim_frame << 9;
     for (; i < 8; i++) {
-        t = v;
-        CpuSet((void *)(s + tiles), (void *)(0x0600E804 + d), 0xC);
-        t = w & 3;
-        CpuSet((void *)((t * 8 + i) * 0x40 + tiles), (void *)(0x0600E820 + d), 0xC);
-        d += 0x40;
-        s += 0x40;
+        other_frame = anim_frame;
+        CpuSet((void *)(src_off + tiles), (void *)(0x0600E804 + dst_off), 0xC);
+        other_frame = next_frame & 3;
+        CpuSet((void *)((other_frame * 8 + i) * 0x40 + tiles), (void *)(0x0600E820 + dst_off), 0xC);
+        dst_off += 0x40;
+        src_off += 0x40;
     }
 }
 
 static void trade_tiles_slow_down(void) {
-    s32 v;
+    s32 anim_frame;
     s32 i;
     u8 *src;
     u8 *dst;
@@ -233,27 +233,27 @@ static void trade_tiles_slow_down(void) {
     switch (gMenuWork->frame / 128) {
     case 0:
     case 1:
-        v = gMenuWork->frame >> 5;
+        anim_frame = gMenuWork->frame >> 5;
         break;
     case 2:
-        v = gMenuWork->frame >> 4;
+        anim_frame = gMenuWork->frame >> 4;
         break;
     case 3:
-        v = gMenuWork->frame >> 3;
+        anim_frame = gMenuWork->frame >> 3;
         break;
     case 4:
-        v = gMenuWork->frame >> 2;
+        anim_frame = gMenuWork->frame >> 2;
         break;
     default:
-        v = gMenuWork->frame >> 1;
+        anim_frame = gMenuWork->frame >> 1;
         break;
     }
-    v &= 3;
+    anim_frame &= 3;
     if (--gMenuWork->frame < 0)
         gMenuWork->frame = 0x3F;
     dst = (u8 *)0x0600E9E2;
-    v <<= 9;
-    src = (u8 *)0x0600D800 + v;
+    anim_frame <<= 9;
+    src = (u8 *)0x0600D800 + anim_frame;
     for (i = 0; i < 8; i++) {
         CpuSet(src, dst, 0xC);
         dst += 0x40;
@@ -332,23 +332,23 @@ void medapart_trade_fade_in(void) {
 
 // Sends the own part and waits for both partners' part packets, then keeps the partner's.
 void medapart_trade_exchange_parts(void) {
-    struct LinkPackets *s;
+    struct LinkPackets *packets;
     struct MenuWork *w;
-    u16 a, b;
+    u16 packet0, packet1;
 
     run_message(gLinkMenuMessages[15]);
-    s = &gLinkPackets;
+    packets = &gLinkPackets;
     w = gMenuWork;
-    s->sendData = w->own_part_id | (w->own_part_kind << 8) | 0x4000;
-    a = s->recv[0][1];
-    b = s->recv[1][1];
-    if ((a & 0xC000) == 0x4000 && (b & 0xC000) == (a & 0xC000)) {
+    packets->sendData = w->own_part_id | (w->own_part_kind << 8) | 0x4000;
+    packet0 = packets->recv[0][1];
+    packet1 = packets->recv[1][1];
+    if ((packet0 & 0xC000) == 0x4000 && (packet1 & 0xC000) == (packet0 & 0xC000)) {
         if (gLinkPlayerId) {
-            w->partner_part_id = a & 0x7F;
-            gMenuWork->partner_part_kind = (a >> 8) & 3;
+            w->partner_part_id = packet0 & 0x7F;
+            gMenuWork->partner_part_kind = (packet0 >> 8) & 3;
         } else {
-            w->partner_part_id = b & 0x7F;
-            gMenuWork->partner_part_kind = (b >> 8) & 3;
+            w->partner_part_id = packet1 & 0x7F;
+            gMenuWork->partner_part_kind = (packet1 >> 8) & 3;
         }
         medapart_trade_init_sprite_tree(1);
         medapart_copy_name(gMenuWork->partner_part_id * 4 + gMenuWork->partner_part_kind, 1);
@@ -375,15 +375,15 @@ void medapart_trade_apply(void) {
 }
 
 void medapart_trade_flash_white(void) {
-    struct GameWork *g = &gGameWork;
-    u8 *t = &g->stepCounter;
+    struct GameWork *game = &gGameWork;
+    u8 *step = &game->stepCounter;
 
-    if (*t <= 0x40) {
-        obj_palettes_blend_masked_now(0x7FFF, *t >> 1, 0xFF);
-        (*t)++;
+    if (*step <= 0x40) {
+        obj_palettes_blend_masked_now(0x7FFF, *step >> 1, 0xFF);
+        (*step)++;
     } else {
         gMenuWork->ticks = 0;
-        *t = 0;
+        *step = 0;
         gGameSubState++;
     }
     load_medapart_sprite_animation(gMenuWork->own_part_id, gMenuWork->own_part_kind, 0);
@@ -395,7 +395,7 @@ void medapart_trade_crossfade_swap(void) {
     struct MenuWork *w = gMenuWork;
     s32 n;
     u16 zero;
-    vu16 v;
+    vu16 oam_fill;
 
     n = 16 - (s16)w->ticks++;
     if (n != 0) {
@@ -418,8 +418,8 @@ void medapart_trade_crossfade_swap(void) {
         medapart_trade_init_sprite_tree(1);
         gMenuWork->ticks = zero;
         gGameSubState++;
-        v = 0x200;
-        CpuSet((void *)&v, gSpriteWork->oamBuf, 0x01000200);
+        oam_fill = 0x200;
+        CpuSet((void *)&oam_fill, gSpriteWork->oamBuf, 0x01000200);
     }
     trade_tiles_speed_up_two_rows();
 }
@@ -427,17 +427,17 @@ void medapart_trade_crossfade_swap(void) {
 void medapart_trade_swap_palettes(void) {
     u8 buf[0x20];
     s32 i;
-    u16 *a, *b;
+    u16 *staged, *backup;
     u32 zero, one;
 
-    a = (u16 *)0x0202F880;
-    b = gPaletteBackup;
+    staged = (u16 *)0x0202F880;
+    backup = gPaletteBackup;
     for (i = 3; i >= 0; i--) {
-        CpuFastSet(b, buf, 8);
-        CpuFastSet(a, b, 8);
-        CpuFastSet(buf, a, 8);
-        a += 16;
-        b += 16;
+        CpuFastSet(backup, buf, 8);
+        CpuFastSet(staged, backup, 8);
+        CpuFastSet(buf, staged, 8);
+        staged += 16;
+        backup += 16;
     }
     gGameSubState++;
     gMenuWork->ticks = (zero = 0, one = 1);
@@ -473,16 +473,16 @@ void medapart_trade_blend_in(void) {
 }
 
 void medapart_trade_unflash(void) {
-    struct GameWork *g = &gGameWork;
-    u8 *t = &g->stepCounter;
+    struct GameWork *game = &gGameWork;
+    u8 *step = &game->stepCounter;
 
-    if (*t <= 0x40) {
-        obj_palettes_blend_masked_now(0x7FFF, 0x20 - (*t >> 1), 0xFF);
-        (*t)++;
+    if (*step <= 0x40) {
+        obj_palettes_blend_masked_now(0x7FFF, 0x20 - (*step >> 1), 0xFF);
+        (*step)++;
     } else {
         CpuFastSet(gPartTradeObjPalette, (void *)0x05000300, 8);
         CpuFastSet(gPartTradeObjPalette, gPaletteBackup + 0x80, 8);
-        *t = 0;
+        *step = 0;
         gGameSubState++;
         gMenuWork->frame = 0x280;
     }
@@ -533,13 +533,13 @@ void medapart_trade_fade_out(void) {
 
 // Link Medapart trade (state 16): runs sub-state gPartTradeStates[gGameSubState], scrolls BG3.
 void medapart_trade_update(void) {
-    struct FuncTable13 t = gPartTradeStates;
+    struct FuncTable13 states = gPartTradeStates;
 
     if (gVBlankOamMode == 2) {
-        u32 v = 0x200;
-        CpuFastSet(&v, gSpriteWork->oamBuf, 0x01000100);
+        u32 fill = 0x200;
+        CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
     }
-    t.f[gGameSubState]();
+    states.f[gGameSubState]();
     if (gFrameCounter & 1) {
         gBg3Scroll.x++;
         gBg3Scroll.y++;
@@ -556,7 +556,7 @@ void medal_trade_init_screen(void) {
     u32 size;
     struct MenuWork *w;
     struct MenuWork *w2;
-    s32 f;
+    s32 partner_chose;
     s32 j;
     vu16 *bg2, *bg3;
 
@@ -597,22 +597,22 @@ void medal_trade_init_screen(void) {
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     w = gMenuWork;
     w->frame = 0x280;
-    f = w->partner_chose;
-    if (f == 0) {
+    partner_chose = w->partner_chose;
+    if (partner_chose == 0) {
         u32 medal;
-        u32 t;
+        u32 icon_tile;
         u32 buf;
         const u8 *const *names;
         s32 lvl;
-        u16 e;
-        u16 tt;
-        u16 *p;
+        u16 tile;
+        u16 icon_tile16;
+        u16 *map;
 
         medal = w->trade_medal.graphicId;
         medal_trade_show_medal_sprite(medal, w->trade_medal.spriteVariant);
-        render_text_sprites_08040DB8(gMenuWork->trade_medal.name, 0x20, 4, 4, 0xA, 2, f, 1);
+        render_text_sprites_08040DB8(gMenuWork->trade_medal.name, 0x20, 4, 4, 0xA, 2, partner_chose, 1);
         j = 0;
-        t = size >> 5;
+        icon_tile = size >> 5;
         buf = (u32)gGameWork.textBuf;
         names = (const u8 *const *)gMedalNames;
         for (; j <= 9; j++)
@@ -632,16 +632,16 @@ void medal_trade_init_screen(void) {
             TM(REG_BG1CNT, 0x12E) = (gMenuWork->bg_tile_base + lvl % 10 * 2 + 1) | 0x7000;
         }
         CpuSet(gMedalIconTiles + medal * 0x80, (void *)(size + 0x06004000), 0x40);
-        tt = t;
-        e = tt | 0x6000;
-        p = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + 8 * 32;
-        *p = e;
-        p++;
-        *p = e + 1;
-        p += 31;
-        *p = e + 2;
-        p++;
-        *p = e + 3;
+        icon_tile16 = icon_tile;
+        tile = icon_tile16 | 0x6000;
+        map = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + 8 * 32;
+        *map = tile;
+        map++;
+        *map = tile + 1;
+        map += 31;
+        *map = tile + 2;
+        map++;
+        *map = tile + 3;
     } else {
         w->saved_tiles[0] = TM(*bg2, 0x10C);
         w->saved_tiles[1] = TM(*bg2, 0x10D);
@@ -692,21 +692,21 @@ static inline s16 link_packet_hi(u16 pkt) {
 // Receiver requests the Medal record byte by byte (0xFE00 | index); giver answers; 0xFF00 when all 0x40 arrived.
 void medal_trade_transfer(void) {
     u8 *buf;
-    u8 *p;
+    u8 *byte_ptr;
     u16 pkt;
     u8 n;
-    u16 v;
-    struct MenuWork *s;
+    u16 value;
+    struct MenuWork *menu;
 
     run_message(gLinkMenuMessages[25]);
-    s = gMenuWork;
-    buf = (u8 *)&s->trade_medal;
+    menu = gMenuWork;
+    buf = (u8 *)&menu->trade_medal;
     pkt = gLinkPackets.recv[gLinkPlayerId == 0][1];
-    if (s->partner_chose) {
-        n = s->counter;
-        p = buf + n;
+    if (menu->partner_chose) {
+        n = menu->counter;
+        byte_ptr = buf + n;
         if ((pkt & 0xF000) == 0xC000 && (n & 0xF) == ((pkt >> 8) & 0xF)) {
-            *p = pkt;
+            *byte_ptr = pkt;
             gMenuWork->counter++;
         }
         if (gMenuWork->counter > 0x3F)
@@ -714,13 +714,13 @@ void medal_trade_transfer(void) {
         else
             gLinkPackets.sendData = gMenuWork->counter | 0xFE00;
     } else {
-        u16 t = pkt & 0xFF00;
-        if (t == 0xFF00)
-            gLinkPackets.sendData = t;
-        if (t == 0xFE00) {
-            p = buf + (pkt & 0xFF);
-            v = *p;
-            gLinkPackets.sendData = v | link_packet_hi(pkt);
+        u16 cmd = pkt & 0xFF00;
+        if (cmd == 0xFF00)
+            gLinkPackets.sendData = cmd;
+        if (cmd == 0xFE00) {
+            byte_ptr = buf + (pkt & 0xFF);
+            value = *byte_ptr;
+            gLinkPackets.sendData = value | link_packet_hi(pkt);
         }
     }
     if (gLinkPackets.recv[0][1] == 0xFF00 && gLinkPackets.recv[1][1] == gLinkPackets.recv[0][1]) {
@@ -739,12 +739,12 @@ void medal_trade_skip_step(void) {
 
 void medal_trade_wait_message(void) {
     if (run_message(gLinkMenuMessages[25])) {
-        struct MenuWork *s;
+        struct MenuWork *menu;
         trade_tiles_speed_up();
-        s = gMenuWork;
-        if ((s16)--s->ticks < 0) {
+        menu = gMenuWork;
+        if ((s16)--menu->ticks < 0) {
             gGameSubState++;
-            s->ticks = 0;
+            menu->ticks = 0;
         }
     }
 }
@@ -754,23 +754,23 @@ void medal_trade_wait_message(void) {
 
 // Shrinks the Medal sprite to a sliver, then swaps in the received Medal (receiver) or hides it (giver).
 void medal_trade_flip_close(void) {
-    struct MenuWork *s;
-    s16 t;
+    struct MenuWork *menu;
+    s16 ticks;
     u8 lvl;
     s32 i;
 
     trade_tiles_speed_up();
-    s = gMenuWork;
-    t = ++s->ticks;
-    if (t > 0xF) {
+    menu = gMenuWork;
+    ticks = ++menu->ticks;
+    if (ticks > 0xF) {
         gGameSubState++;
-        if (s->partner_chose == 0) {
+        if (menu->partner_chose == 0) {
             gSpriteEntries[0].flags &= (u16)~SPRITE_FLAG_VISIBLE;
             return;
         }
         gSpriteEntries[0].flags |= SPRITE_FLAG_VISIBLE;
-        lvl = s->trade_medal.level;
-        render_text_sprites_08040DB8(s->trade_medal.name, 0x20, 4, 4, 10, 2, 0, 1);
+        lvl = menu->trade_medal.level;
+        render_text_sprites_08040DB8(menu->trade_medal.name, 0x20, 4, 4, 10, 2, 0, 1);
         for (i = 0; i <= 9; i++)
             gGameWork.textBuf[i] = ((const u8 *)gMedalNames[gMenuWork->trade_medal.graphicId])[i];
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 5, 8, 10, 1, 1, 1);
@@ -792,23 +792,23 @@ void medal_trade_flip_close(void) {
         CpuFastSet(gMedalIconTiles + gMenuWork->trade_medal.graphicId * 0x80,
                    (void *)(VRAM + 0x3F80 + gMenuWork->bg_tile_base * 32), 0x20);
         {
-            u16 v;
+            u16 tile;
             u16 *dst;
-            v = gMenuWork->bg_tile_base - 4;
-            v |= 0x6000;
+            tile = gMenuWork->bg_tile_base - 4;
+            tile |= 0x6000;
             dst = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + 8 * 32;
-            *dst = v;
+            *dst = tile;
             dst++;
-            *dst = v + 1;
+            *dst = tile + 1;
             dst += 31;
-            *dst = v + 2;
+            *dst = tile + 2;
             dst++;
-            *dst = v + 3;
+            *dst = tile + 3;
         }
         return;
     }
-    if (t <= 7)
-        gSpriteEntries[0].scale_x = 0x40 - (s16)s->ticks * 8;
+    if (ticks <= 7)
+        gSpriteEntries[0].scale_x = 0x40 - (s16)menu->ticks * 8;
     else
         gSpriteEntries[0].scale_x = 1;
     if ((s16)gMenuWork->ticks > 1) {
@@ -818,25 +818,25 @@ void medal_trade_flip_close(void) {
 }
 
 void medal_trade_flip_open(void) {
-    struct MenuWork *s;
-    s16 t;
+    struct MenuWork *menu;
+    s16 ticks;
 
     trade_tiles_speed_up();
-    s = gMenuWork;
-    t = --s->ticks;
-    if (t < 0) {
-        s->frame = 0x280;
+    menu = gMenuWork;
+    ticks = --menu->ticks;
+    if (ticks < 0) {
+        menu->frame = 0x280;
         gGameSubState++;
         return;
     }
-    if (t <= 7)
-        gSpriteEntries[0].scale_x = 0x40 - (s16)s->ticks * 8;
+    if (ticks <= 7)
+        gSpriteEntries[0].scale_x = 0x40 - (s16)menu->ticks * 8;
     else
         gSpriteEntries[0].scale_x = 1;
-    s = gMenuWork;
-    if ((s16)s->ticks > 1) {
-        gSpriteEntries[0].scale_y = (s16)s->ticks * 4 + 0x38;
-        gSpriteEntries[0].y = 0x38 - ((s16)s->ticks - 2) * 8;
+    menu = gMenuWork;
+    if ((s16)menu->ticks > 1) {
+        gSpriteEntries[0].scale_y = (s16)menu->ticks * 4 + 0x38;
+        gSpriteEntries[0].y = 0x38 - ((s16)menu->ticks - 2) * 8;
     }
 }
 
@@ -878,13 +878,13 @@ void medal_trade_fade_out(void) {
 
 // Link Medal trade (state 17): runs sub-state gMedalTradeStates[gGameSubState], scrolls BG3.
 void medal_trade_update(void) {
-    struct FuncTable12 t = gMedalTradeStates;
+    struct FuncTable12 states = gMedalTradeStates;
 
     if (gVBlankOamMode == 2) {
         u32 fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
     }
-    t.f[gGameSubState]();
+    states.f[gGameSubState]();
     if (gFrameCounter & 1) {
         gBg3Scroll.x++;
         gBg3Scroll.y++;

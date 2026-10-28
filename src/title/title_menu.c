@@ -21,13 +21,13 @@ void menu_mode_update(void) {
 }
 
 s16 title_menu_blend_step(s16 step) {
-    u16 a = step;
+    u16 clamped = step;
     s16 n;
 
-    if (a > 0xA0)
-        a = 0;
+    if (clamped > 0xA0)
+        clamped = 0;
     REG_BLDCNT = 0x844;
-    n = a;
+    n = clamped;
     REG_BLDALPHA = gTitleMenuBlendAlphas[n / 8] | 0x1000;
     REG_BLDY = 8;
     return n + 1;
@@ -40,14 +40,14 @@ static void title_options_draw_row_sweep(u8 sel, u8 count) {
         x = 6;
         y = i * 3 + 10;
         for (j = 0; j <= 19; j++) {
-            u16 *p = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + x + y * 32;
-            u16 v = *p & mask;
-            u16 c;
+            u16 *tile = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + x + y * 32;
+            u16 tile_bits = *tile & mask;
+            u16 palette_bits;
             if (sel == i && j < count)
-                c = 0x7000;
+                palette_bits = 0x7000;
             else
-                c = lo;
-            *p = v | c;
+                palette_bits = lo;
+            *tile = tile_bits | palette_bits;
             if (j <= 1)
                 y++;
             else
@@ -58,23 +58,23 @@ static void title_options_draw_row_sweep(u8 sel, u8 count) {
 
 static void title_options_highlight_row(u8 sel) {
     s32 i, j;
-    u16 *p;
-    u32 v, r;
+    u16 *tile;
+    u32 tile_bits, result;
 
     for (i = 0; i <= 2; i++) {
-        p = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + 7 + (i * 3 + 10) * 32;
+        tile = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + 7 + (i * 3 + 10) * 32;
         for (j = 0; j <= 10; j++) {
-            v = *p;
-            v &= 0xFFF;
+            tile_bits = *tile;
+            tile_bits &= 0xFFF;
             if (i == sel)
-                r = 0x7000 | v;
+                result = 0x7000 | tile_bits;
             else {
-                v |= 0x6000;
-                r = v << 16;
-                r >>= 16;
+                tile_bits |= 0x6000;
+                result = tile_bits << 16;
+                result >>= 16;
             }
-            *p = r;
-            p++;
+            *tile = result;
+            tile++;
         }
     }
 }
@@ -82,10 +82,10 @@ static void title_options_highlight_row(u8 sel) {
 static void title_options_dim_values(void) {
     s32 i, j;
     for (i = 0; i <= 2; i++) {
-        u16 *p = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + 0x167 + i * 96;
+        u16 *tile = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + 0x167 + i * 96;
         for (j = 0; j < 16; j++) {
-            *p = (*p & 0xFFF) | 0x8000;
-            p++;
+            *tile = (*tile & 0xFFF) | 0x8000;
+            tile++;
         }
     }
 }
@@ -95,18 +95,18 @@ void title_options_draw_values(u8 sel) {
     s32 i, j, k;
     for (i = 0; i <= 2; i++) {
         for (j = 0; j <= 2; j++) {
-            u16 *p = (u16 *)(VRAM + 0xE + (((REG_BG0CNT >> 8) & 0x1F) << 11) + (i * 3 + 11) * 64);
+            u16 *tile = (u16 *)(VRAM + 0xE + (((REG_BG0CNT >> 8) & 0x1F) << 11) + (i * 3 + 11) * 64);
             u16 mask = gTitleOptionValueMasks[i][j];
             for (k = 0; k < 16; k++) {
                 if (mask & 0x8000) {
-                    u16 v = *p & 0xFFF;
+                    u16 tile_bits = *tile & 0xFFF;
                     if (sel == i)
-                        *p = v | (cur[i] == j ? 0xA000 : 0x8000);
+                        *tile = tile_bits | (cur[i] == j ? 0xA000 : 0x8000);
                     else
-                        *p = v | (cur[i] == j ? 0x9000 : 0x8000);
+                        *tile = tile_bits | (cur[i] == j ? 0x9000 : 0x8000);
                 }
                 mask <<= 1;
-                p++;
+                tile++;
             }
         }
     }
@@ -118,18 +118,18 @@ static void title_options_pulse_palette(u8 step) {
     step = step > 15 ? step - 16 : 0;
     CpuSet((void *)0x0202FB00, buf, 0x04000010);
     for (i = 0; i < 16; i++) {
-        u16 c = buf[i];
-        u16 t = buf[i + 16];
-        s32 r = c & 0x1F;
-        s32 g = (c >> 5) & 0x1F;
-        s32 b = (c >> 10) & 0x1F;
-        s32 r2 = t & 0x1F;
-        s32 g2 = (t >> 5) & 0x1F;
-        s32 b2 = (t >> 10) & 0x1F;
-        r = (r - r2) * step / 32 + r2;
-        g = (g - g2) * step / 32 + g2;
-        b = (b - b2) * step / 32 + b2;
-        buf[i] = (b << 10) | (g << 5) | r;
+        u16 color = buf[i];
+        u16 target = buf[i + 16];
+        s32 red = color & 0x1F;
+        s32 green = (color >> 5) & 0x1F;
+        s32 blue = (color >> 10) & 0x1F;
+        s32 target_red = target & 0x1F;
+        s32 target_green = (target >> 5) & 0x1F;
+        s32 target_blue = (target >> 10) & 0x1F;
+        red = (red - target_red) * step / 32 + target_red;
+        green = (green - target_green) * step / 32 + target_green;
+        blue = (blue - target_blue) * step / 32 + target_blue;
+        buf[i] = (blue << 10) | (green << 5) | red;
     }
     CpuSet(buf, (void *)0x05000140, 0x04000008);
 }
@@ -141,18 +141,18 @@ static void title_menu_pulse_selected(u8 sel, u8 blend) {
         CpuSet((void *)(j * 0x40 + 0x0202FA00), buf, 0x04000010);
         if (j == sel) {
             for (i = 0; i < 16; i++) {
-                u16 c = buf[i];
-                u16 t = buf[i + 16];
-                s32 r = c & 0x1F;
-                s32 g = (c >> 5) & 0x1F;
-                s32 b = (c >> 10) & 0x1F;
-                s32 r2 = t & 0x1F;
-                s32 g2 = (t >> 5) & 0x1F;
-                s32 b2 = (t >> 10) & 0x1F;
-                r = (r - r2) * blend / 32 + r2;
-                g = (g - g2) * blend / 32 + g2;
-                b = (b - b2) * blend / 32 + b2;
-                buf[i] = (b << 10) | (g << 5) | r;
+                u16 color = buf[i];
+                u16 target = buf[i + 16];
+                s32 red = color & 0x1F;
+                s32 green = (color >> 5) & 0x1F;
+                s32 blue = (color >> 10) & 0x1F;
+                s32 target_red = target & 0x1F;
+                s32 target_green = (target >> 5) & 0x1F;
+                s32 target_blue = (target >> 10) & 0x1F;
+                red = (red - target_red) * blend / 32 + target_red;
+                green = (green - target_green) * blend / 32 + target_green;
+                blue = (blue - target_blue) * blend / 32 + target_blue;
+                buf[i] = (blue << 10) | (green << 5) | red;
             }
         }
         CpuSet(buf, (void *)(j * 0x40 + PLTT), 0x04000008);
@@ -181,23 +181,23 @@ void title_menu_reset(void) {
 
 void title_menu_load_graphics(void) {
     u32 size;
-    u16 v;
+    u16 bgcnt;
     vu16 *bg0, *bg1, *bg2, *bg3;
     u8 one;
 
     bg0 = &REG_BG0CNT;
     one = 1;
-    v = 0x1F04;
-    *bg0 = v;
+    bgcnt = 0x1F04;
+    *bg0 = bgcnt;
     bg1 = &REG_BG1CNT;
-    v -= 0xFF;
-    *bg1 = v;
+    bgcnt -= 0xFF;
+    *bg1 = bgcnt;
     bg2 = &REG_BG2CNT;
-    v = 0x3D06;
-    *bg2 = v;
+    bgcnt = 0x3D06;
+    *bg2 = bgcnt;
     bg3 = &REG_BG3CNT;
-    v -= 0xFF;
-    *bg3 = v;
+    bgcnt -= 0xFF;
+    *bg3 = bgcnt;
     decompress_and_write_tilemap(gTitleMenuBg0Tilemap, *bg0);
     decompress_and_write_tilemap(gTitleMenuBg1Tilemap, *bg1);
     decompress_and_write_tilemap(gTitleMenuBg2Tilemap, *bg2);
@@ -223,7 +223,7 @@ void title_menu_load_graphics(void) {
 
 void title_menu_load_save(void) {
     s32 ret, i, j;
-    u16 *p;
+    u16 *tile;
 
     REG_DISPCNT |= 0x100;
     REG_DISPCNT |= 0x200;
@@ -238,9 +238,9 @@ void title_menu_load_save(void) {
             return;
         }
         for (i = 0; i <= 1; i++) {
-            p = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + 9 + (i + 1) * 32;
+            tile = (u16 *)(VRAM + (((REG_BG0CNT >> 8) & 0x1F) << 11)) + 9 + (i + 1) * 32;
             for (j = 0; j < 12; j++)
-                *p++ = 0;
+                *tile++ = 0;
         }
         gMenuWork->cursor = 1;
         gMenuWork->first_entry = 1;
@@ -398,23 +398,23 @@ void title_options_input(void) {
 }
 
 void title_menu_confirm_flash(void) {
-    u8 *t = &gMenuWork->counter;
-    if (*t) {
-        u8 n = --*t;
-        if (n)
+    u8 *counter_ptr = &gMenuWork->counter;
+    if (*counter_ptr) {
+        u8 remaining = --*counter_ptr;
+        if (remaining)
             title_menu_pulse_selected(gMenuWork->cursor, ((gMenuWork->counter * 4) & 0x1F) <= 15 ? 0x20 : 0);
         else {
             palette_backup_from_hardware();
-            gGameWork.stepCounter = n;
+            gGameWork.stepCounter = remaining;
         }
     } else if (!is_sound_effect_playing(4)) {
-        struct GameWork *b = &gGameWork;
-        if (b->stepCounter <= 8) {
+        struct GameWork *work = &gGameWork;
+        if (work->stepCounter <= 8) {
             s32 w = 31;
-            s32 c = (w << 10) | (w << 5) | w;
-            bg_palettes_blend_masked_now(c, b->stepCounter * 4, 0xFFFF);
-            obj_palettes_blend_masked_now(c, b->stepCounter * 4, 0xFFFF);
-            b->stepCounter++;
+            s32 white = (w << 10) | (w << 5) | w;
+            bg_palettes_blend_masked_now(white, work->stepCounter * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(white, work->stepCounter * 4, 0xFFFF);
+            work->stepCounter++;
         } else {
             REG_DISPCNT &= 0xFDFF;
             switch (gMenuWork->cursor) {
