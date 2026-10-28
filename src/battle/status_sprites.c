@@ -2,6 +2,7 @@
 // battle_setup_part_sprite. Called from battle/robattle and the battle action modules.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void battle_update_status_effect_sprite(u32 rec);
 static void update_battle_status_effect_sprite(u32 rec);
@@ -192,12 +193,13 @@ static void battle_setup_part_sprite(u32 rec, u32 slot, u32 kind, u32 attr) {
     s16 v;
     s32 t;
 
-    gSpriteEntries[rec * 3 + 0x46 + slot].flags = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
+    gSpriteEntries[rec * 3 + 0x46 + slot].flags = SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) |
+                                                  SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[rec * 3 + 0x46 + slot].frame_table = 0;
     gSpriteEntries[rec * 3 + 0x46 + slot].palette = gGameWork.partSkillType + 0xB;
     gSpriteEntries[rec * 3 + 0x46 + slot].order = attr;
     gSpriteEntries[rec * 3 + 0x46 + slot].y = gSpriteEntries[rec * 4 + 0x5D].y + (s16)(gGameWork.partSkill - 4);
-    gSpriteEntries[rec * 3 + 0x46 + slot].flags &= ~0x1000;
+    gSpriteEntries[rec * 3 + 0x46 + slot].flags &= ~SPRITE_FLAG_HFLIP;
     switch (kind) {
     case 0:
         gSpriteEntries[rec * 3 + 0x46 + slot].unk23 = gBattleBots[rec].buffType;
@@ -215,7 +217,7 @@ static void battle_setup_part_sprite(u32 rec, u32 slot, u32 kind, u32 attr) {
     if (bot_sprite_is_flipped(rec)) {
         gSpriteEntries[rec * 3 + 0x46 + slot].x = gSpriteEntries[rec * 4 + 0x5D].x - off;
         if (gGameWork.partGender)
-            gSpriteEntries[rec * 3 + 0x46 + slot].flags |= 0x1000;
+            gSpriteEntries[rec * 3 + 0x46 + slot].flags |= SPRITE_FLAG_HFLIP;
     } else {
         gSpriteEntries[rec * 3 + 0x46 + slot].x = gSpriteEntries[rec * 4 + 0x5D].x + (t = (s16)off);
     }

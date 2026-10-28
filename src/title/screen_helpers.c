@@ -2,6 +2,7 @@
 // decompress_and_write_tilemap (used by nearly every mode-2 screen and the link scenes), tilemap tile /
 // palette offsets, init_multiplayer_id and small geometry helpers. Talks to engine/ and link/.
 #include "global.h"
+#include "constants/sprites.h"
 
 // Eight sprites (spr[0..7]) bob on a sine wave around y = 80: sprite k uses phase t - (7 - k) * 0x80,
 // amplitude gMenuWork->shake_amplitude (counts down each call), speed shake_speed (counts up). Returns 1 once the
@@ -76,17 +77,17 @@ none:
 void update_battle_sprite_priority_flags(void) {
     if (gMenuWork->list_count > 4) {
         if ((*(u8 *)0x02023078) == 0)
-            gSpriteEntries[104].flags &= 0xBFFF;
+            gSpriteEntries[104].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         else if (gFrameCounter & 8)
-            gSpriteEntries[104].flags |= 0x4000;
+            gSpriteEntries[104].flags |= SPRITE_FLAG_VISIBLE;
         else
-            gSpriteEntries[104].flags &= 0xBFFF;
+            gSpriteEntries[104].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         if ((*(u8 *)0x02023078) + 3 == gMenuWork->list_count - 1)
-            gSpriteEntries[105].flags &= 0xBFFF;
+            gSpriteEntries[105].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         else if (gFrameCounter & 8)
-            gSpriteEntries[105].flags |= 0x4000;
+            gSpriteEntries[105].flags |= SPRITE_FLAG_VISIBLE;
         else
-            gSpriteEntries[105].flags &= 0xBFFF;
+            gSpriteEntries[105].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     }
 }
 

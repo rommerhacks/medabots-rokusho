@@ -5,6 +5,7 @@
 // 9 START pressed, 10 skip the intro (START held, or gTitleSkipIntro set by the logos / intro / test mode),
 // 1-3 shared fade / exit helpers. Each sprite runs a per-frame effect from gTitleSpriteEffects (unk20).
 #include "global.h"
+#include "constants/sprites.h"
 
 static void title_sprite_start_effect(u8 effect, u8 sprite);
 
@@ -146,14 +147,14 @@ void title_screen_load_graphics(void) {
 
 void title_screen_show_logo(void) {
     if (gSceneWork.timer == 0) {
-        sprite_entry_init(0, 0xCC00, 0x224, 6, 3);
+        sprite_entry_init(0, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3), 0x224, 6, 3);
         gSpriteEntries[0].x = 0x78;
         gSpriteEntries[0].y = 0x3C;
         gSpriteEntries[0].order = 0x10;
         title_sprite_start_effect(1, 0);
         REG_DISPCNT |= 0x1000;
     } else if (gSceneWork.timer == 0x20) {
-        sprite_entry_init(1, 0xC400, 0x200, 0, 3);
+        sprite_entry_init(1, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x200, 0, 3);
         gSpriteEntries[1].x = 0x78;
         gSpriteEntries[1].y = 0x3C;
         gSpriteEntries[1].order = 0x20;
@@ -164,7 +165,7 @@ void title_screen_show_logo(void) {
         gSceneWork.timer = 0;
         setup_screen_transition_effect_080682CC(4, 4, 0x7FFF);
         clear_sprite_entry(1);
-        sprite_entry_init(0, 0xC400, 0x21B, 4, 3);
+        sprite_entry_init(0, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x21B, 4, 3);
         REG_DISPCNT |= 0x300;
         gGameSubState = 1;
     } else {
@@ -175,20 +176,20 @@ void title_screen_show_logo(void) {
 void title_screen_slide_in_sprites(void) {
     if (gSceneWork.timer == 0) {
         play_song(0);
-        sprite_entry_init(1, 0xC400, 0x211, 1, 3);
+        sprite_entry_init(1, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x211, 1, 3);
         gSpriteEntries[1].x = 0x118;
         gSpriteEntries[1].y = 0x55;
         gSpriteEntries[1].order = 0x20;
         title_sprite_start_effect(3, 1);
     }
     if (gSpriteEntries[1].unk20 == 0) {
-        sprite_entry_init(3, 0xC000, 0x213, 3, 3);
+        sprite_entry_init(3, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE, 0x213, 3, 3);
         gSpriteEntries[3].x = 0x12C;
         gSpriteEntries[3].y = 0x55;
         gSpriteEntries[3].order = 0x40;
         gSpriteEntries[3].unk32 = 0;
         title_sprite_start_effect(7, 3);
-        sprite_entry_init(4, 0xC400, 0x21C, 5, 3);
+        sprite_entry_init(4, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x21C, 5, 3);
         gSpriteEntries[4].x = 0x12C;
         gSpriteEntries[4].y = 0x3C;
         gSpriteEntries[4].order = 0x10;
@@ -227,7 +228,7 @@ void title_screen_start_wave(void) {
             }
         }
     } else if (gSceneWork.timer > 0x40) {
-        gSpriteEntries[2].flags &= ~0x200;
+        gSpriteEntries[2].flags &= ~SPRITE_FLAG_AFFINE;
         title_sprite_start_effect(5, 2);
         gSceneWork.timer = 0;
         gGameSubState = 8;
@@ -238,7 +239,8 @@ void title_screen_start_wave(void) {
             REG_BLDALPHA -= 0x100;
     }
     if (gSceneWork.timer == 0x39) {
-        sprite_entry_init(2, 0xC600, 0x212, 2, 3);
+        sprite_entry_init(2, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE, 0x212,
+                          2, 3);
         gSpriteEntries[2].x = 0x78;
         gSpriteEntries[2].y = 0x73;
         gSpriteEntries[2].scale_x = 0x40;
@@ -286,24 +288,24 @@ void title_screen_skip_intro(void) {
     setup_screen_transition_effect_080682CC(4, 2, 0x7FFF);
     REG_BLDY = 0;
     play_song(0);
-    sprite_entry_init(0, 0xC400, 0x21B, 4, 3);
+    sprite_entry_init(0, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x21B, 4, 3);
     REG_DISPCNT |= 0x300;
     gSpriteEntries[0].x = 0x78;
     gSpriteEntries[0].y = 0x3C;
     gSpriteEntries[0].order = 0x10;
     title_sprite_start_effect(0, 0);
-    sprite_entry_init(1, 0xC400, 0x211, 1, 3);
+    sprite_entry_init(1, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x211, 1, 3);
     gSpriteEntries[1].x = 0x78;
     gSpriteEntries[1].y = 0x55;
     gSpriteEntries[1].order = 0x20;
     title_sprite_start_effect(0, 1);
-    sprite_entry_init(3, 0xC000, 0x213, 3, 3);
+    sprite_entry_init(3, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE, 0x213, 3, 3);
     gSpriteEntries[3].x = 0x12C;
     gSpriteEntries[3].y = 0x55;
     gSpriteEntries[3].order = 0x40;
     gSpriteEntries[3].unk32 = 0x80;
     title_sprite_start_effect(7, 3);
-    sprite_entry_init(4, 0xC400, 0x21C, 5, 3);
+    sprite_entry_init(4, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x21C, 5, 3);
     gSpriteEntries[4].x = 0x12C;
     gSpriteEntries[4].y = 0x3C;
     gSpriteEntries[4].order = 0x10;

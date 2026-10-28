@@ -312,12 +312,12 @@ void blend_set_alpha_12_10(void) {
     *bldalpha = v;
 }
 
-void sprite_entry_init(u8 slot, u16 a, u32 frame, u8 c, u8 d) {
-    gSpriteEntries[slot].flags = a;
-    gSpriteEntries[slot].unk32 = a;
+void sprite_entry_init(u8 slot, u16 flags, u32 frame, u8 palette, u8 frame_table) {
+    gSpriteEntries[slot].flags = flags;
+    gSpriteEntries[slot].unk32 = flags;
     gSpriteEntries[slot].frame = frame;
-    gSpriteEntries[slot].palette = c;
-    gSpriteEntries[slot].frame_table = d;
+    gSpriteEntries[slot].palette = palette;
+    gSpriteEntries[slot].frame_table = frame_table;
 }
 
 void sprite_entry_clear(u8 slot) {

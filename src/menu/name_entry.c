@@ -3,6 +3,7 @@
 // 3 fade in, 4 letter grid input (name_entry_input), 5 wait for the sound, 6 fade out and store the name.
 // calc_text_pixel_width centres the name. Uses text/ and engine/.
 #include "global.h"
+#include "constants/sprites.h"
 
 void name_entry_animate_sprite(u16 a) {
     gSpriteEntries[20].frame = gNameEntrySpriteFrames[a & 3];
@@ -117,21 +118,21 @@ void name_entry_init_graphics(void) {
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     for (i = 0; i < 2; i++) {
-        gSpriteEntries[i].flags = 0xC000;
+        gSpriteEntries[i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
         gSpriteEntries[i].frame_table = 2;
         gSpriteEntries[i].palette = 0xE;
         gSpriteEntries[i].frame = 8;
     }
 
-    gSpriteEntries[0].flags |= 0x2000;
-    gSpriteEntries[20].flags = 0x8000;
+    gSpriteEntries[0].flags |= SPRITE_FLAG_VFLIP;
+    gSpriteEntries[20].flags = SPRITE_FLAG_ENABLED;
     gSpriteEntries[20].frame_table = 2;
     gSpriteEntries[20].x = 0x10;
     gSpriteEntries[20].y = 0x10;
     gSpriteEntries[20].palette = 0;
     gSpriteEntries[20].frame = 0x23;
     if (gNameEntryMode == 0) {
-        gSpriteEntries[20].flags |= 0x4000;
+        gSpriteEntries[20].flags |= SPRITE_FLAG_VISIBLE;
     } else {
         t = gMenuWork->bg_tile_base + ((gMedals[gCurrentMedalSlot].graphicId * 4) + 1);
         t |= 0x6000;
@@ -147,13 +148,13 @@ void name_entry_init_graphics(void) {
         *d = t + 3;
     }
     for (i = 0; i < 2; i++) {
-        gSpriteEntries[i + 2].flags = 0x8000;
+        gSpriteEntries[i + 2].flags = SPRITE_FLAG_ENABLED;
         gSpriteEntries[i + 2].frame_table = 2;
         gSpriteEntries[i + 2].palette = 0xE;
         gSpriteEntries[i + 2].frame = 5;
     }
 
-    gSpriteEntries[3].flags |= 0x1000;
+    gSpriteEntries[3].flags |= SPRITE_FLAG_HFLIP;
     gMenuWork->grid_col = 0;
     gMenuWork->grid_row = 0;
     gMenuWork->step = 0;
@@ -161,7 +162,7 @@ void name_entry_init_graphics(void) {
     gSpriteEntries[0].y = mul16(gMenuWork->grid_row) + half4(gMenuWork->step);
     gSpriteEntries[1].x = y;
     gSpriteEntries[1].y = mul16(gMenuWork->grid_row) - half8(gMenuWork->step);
-    gSpriteEntries[4].flags = 0xC000;
+    gSpriteEntries[4].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[4].frame_table = 2;
     gSpriteEntries[4].palette = 0xE;
     gSpriteEntries[4].frame = 0x26;
@@ -225,7 +226,7 @@ void name_entry_load_name(void) {
         register const u8(*tb)[2] asm("r4");
         for (i = gMenuWork->name_len; i <= 9; i++) {
             tb = gFontWidths;
-            gSpriteEntries[i + 5].flags = 0xC000;
+            gSpriteEntries[i + 5].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
             gSpriteEntries[i + 5].frame_table = 0;
             gSpriteEntries[i + 5].palette = 0xD;
             gSpriteEntries[i + 5].frame = 0x42;
@@ -339,8 +340,8 @@ void name_entry_input(void) {
         gSpriteEntries[1].y = gSpriteEntries[0].y;
         gSpriteEntries[0].frame = 5;
         gSpriteEntries[1].frame = 5;
-        gSpriteEntries[0].flags &= 0xDFFF;
-        gSpriteEntries[1].flags |= 0x1000;
+        gSpriteEntries[0].flags &= (u16)~SPRITE_FLAG_VFLIP;
+        gSpriteEntries[1].flags |= SPRITE_FLAG_HFLIP;
     } else {
         gSpriteEntries[0].x = gMenuWork->grid_col * 8 + 0x14;
         gSpriteEntries[0].y = gMenuWork->grid_row * 24 + (t = (s32)gMenuWork->step / 2 + 0x40);
@@ -348,8 +349,8 @@ void name_entry_input(void) {
         gSpriteEntries[1].y = gMenuWork->grid_row * 24 - (t = (s32)gMenuWork->step / 2 - 0x50);
         gSpriteEntries[0].frame = 8;
         gSpriteEntries[1].frame = 8;
-        gSpriteEntries[0].flags |= 0x2000;
-        gSpriteEntries[1].flags &= 0xEFFF;
+        gSpriteEntries[0].flags |= SPRITE_FLAG_VFLIP;
+        gSpriteEntries[1].flags &= (u16)~SPRITE_FLAG_HFLIP;
     }
 
     if (KEYS_LO(gNewKeys) & 8) {
@@ -364,7 +365,7 @@ void name_entry_input(void) {
             gMenuWork->name_buf[gMenuWork->name_len] = 0;
             gMenuWork->name_len++;
             if (gMenuWork->name_len == 10) {
-                gSpriteEntries[4].flags &= 0xBFFF;
+                gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
                 disable_sprites(5, 10);
                 render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
                 goto start;
@@ -380,7 +381,7 @@ void name_entry_input(void) {
             case 0:
                 goto space;
             case 2:
-                gSpriteEntries[4].flags &= 0xBFFF;
+                gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
                 blank = 1;
                 for (i = 0; (u32)i < 16 && gMenuWork->name_buf[i] != 0xFE; i++) {
                     if (gMenuWork->name_buf[i] != 0) {
@@ -402,7 +403,7 @@ void name_entry_input(void) {
             gMenuWork->name_buf[gMenuWork->name_len] = gMenuWork->grid_row * 26 + gMenuWork->grid_col + 1;
             gMenuWork->name_len++;
             if (gMenuWork->name_len == 10) {
-                gSpriteEntries[4].flags &= 0xBFFF;
+                gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
                 disable_sprites(5, 10);
                 render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
                 goto start;
@@ -424,7 +425,7 @@ void name_entry_input(void) {
         }
         disable_sprites(5, 10);
         render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
-        gSpriteEntries[4].flags |= 0x4000;
+        gSpriteEntries[4].flags |= SPRITE_FLAG_VISIBLE;
     } else
         return;
 
@@ -435,7 +436,7 @@ void name_entry_input(void) {
         register const u8(*tb)[2] asm("r4");
         for (i = gMenuWork->name_len; i <= 9; i++) {
             tb = gFontWidths;
-            gSpriteEntries[i + 5].flags = 0xC000;
+            gSpriteEntries[i + 5].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
             gSpriteEntries[i + 5].frame_table = 0;
             gSpriteEntries[i + 5].palette = 0xD;
             gSpriteEntries[i + 5].frame = 0x42;

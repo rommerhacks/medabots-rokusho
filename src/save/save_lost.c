@@ -2,6 +2,7 @@
 // runs gSaveLostStates: load the screen, fade in, wait for A, fade out, then save_lost_erase_and_restart
 // zeroes EEPROM block 0 and goes to the title screen.
 #include "global.h"
+#include "constants/sprites.h"
 
 // Cycles sprite 0 through its 8 frames (gSaveLostSpriteFrames), one every 8 frames.
 void save_lost_animate_sprite(void) {
@@ -51,7 +52,7 @@ void save_lost_load_graphics(void) {
     CpuFastSet(gSaveLostBgPalette, (void *)PLTT, 0x38);
     CpuFastSet(gSaveLostSpritePalette, (void *)(PLTT + 0x200), 8);
     lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
-    gSpriteEntries[0].flags = 0xC000;
+    gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[0].frame_table = 2;
     gSpriteEntries[0].palette = 0;
     gSpriteEntries[0].frame = 0x112;

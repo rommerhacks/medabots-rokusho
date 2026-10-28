@@ -4,6 +4,7 @@
 // 12 "Failed to save.", 9-11 leave and fade out back to the field. init_linking_mode (end of the file) switches to mode
 // 3 for the link scenes.
 #include "global.h"
+#include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
@@ -69,7 +70,7 @@ void save_screen_load_graphics(void) {
     lz_decompress_dispatch(gMenuDigitTilesLz, vram_at(size));
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
-    gSpriteEntries[0].flags = 0xC000;
+    gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[0].frame_table = 2;
     gSpriteEntries[0].palette = 0;
     gSpriteEntries[0].frame = 0x23;

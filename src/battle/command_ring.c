@@ -2,6 +2,7 @@
 // the input, pulses the selected icon and animates the battle sprites meanwhile. Called from battle/robattle.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void command_ring_init_icon_hidden(u32 a);
 static u32 command_ring_rotate_icon(u32 i, u32 dir);
@@ -23,7 +24,8 @@ void command_ring_init_icon(u32 i) {
     struct Vec16 p;
 
     clear_battle_sprite_slot(i, 1);
-    gSpriteEntries[i].flags = 0xC604;
+    gSpriteEntries[i].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     k = i - gBattleWork.ringSlot;
     if (k > 5)
         k += 6;
@@ -57,7 +59,8 @@ static void command_ring_init_icon_hidden(u32 i) {
     struct Vec16 p;
 
     clear_battle_sprite_slot(i, 1);
-    gSpriteEntries[i].flags = 0xC604;
+    gSpriteEntries[i].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     k = i - gBattleWork.ringSlot;
     if (k > 5)
         k += 6;
@@ -93,7 +96,7 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir) {
     u32 n;
     struct Vec16 p;
 
-    gSpriteEntries[i].flags &= ~0x20;
+    gSpriteEntries[i].flags &= ~SPRITE_FLAG_DOUBLE_SIZE;
     if (dir == 0)
         n = gCommandRingNextSlotRight[gBattleWork.ringSlot];
     else
@@ -153,7 +156,7 @@ void command_ring_input(void) {
 
 void command_ring_pulse_selected(void) {
     if (gBattleWork.ringTurning == 0) {
-        gSpriteEntries[gBattleWork.ringSlot].flags |= 0x20;
+        gSpriteEntries[gBattleWork.ringSlot].flags |= SPRITE_FLAG_DOUBLE_SIZE;
         gSpriteEntries[gBattleWork.ringSlot].unk22++;
         if (gSpriteEntries[gBattleWork.ringSlot].unk22 & 8) {
             gSpriteEntries[gBattleWork.ringSlot].scale_y = 0x50;
@@ -174,7 +177,8 @@ void bot_pointer_line_init(u32 kind) {
 
     clear_battle_sprite_slot(60, 10);
     for (i = 0; i < (u32)count; i++) {
-        gSpriteEntries[60 + i].flags = 0xC404;
+        gSpriteEntries[60 + i].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[60 + i].frame_table = 0;
         gSpriteEntries[60 + i].x = x;
         gSpriteEntries[60 + i].y = y;
@@ -189,7 +193,7 @@ void bot_pointer_line_init(u32 kind) {
         gSpriteEntries[60 + i].unk21 = 0;
         gSpriteEntries[60 + i].unk22 = i & 3;
         if (kind > 2)
-            gSpriteEntries[60 + i].flags |= 0x1000;
+            gSpriteEntries[60 + i].flags |= SPRITE_FLAG_HFLIP;
     }
 }
 
@@ -249,7 +253,7 @@ void bot_pointer_line_animate(u32 kind) {
 }
 
 void command_ring_flash_selected(void) {
-    gSpriteEntries[gBattleWork.ringSlot].flags |= 0x20;
+    gSpriteEntries[gBattleWork.ringSlot].flags |= SPRITE_FLAG_DOUBLE_SIZE;
     gSpriteEntries[gBattleWork.ringSlot].unk22++;
     if (gSpriteEntries[gBattleWork.ringSlot].unk22 & 4) {
         gSpriteEntries[gBattleWork.ringSlot].scale_y = 0x60;

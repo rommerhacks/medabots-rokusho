@@ -5,6 +5,7 @@
 // window state gGameWork with text/message; used by menus, the save screen and battles.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 void reset_bg_scroll(void) {
     gBg0Scroll.x = 0;
@@ -140,7 +141,8 @@ void copy_transition_tiles_to_bg2(void) {
 }
 
 void battle_sprite_setup_cursor(void) {
-    gSpriteEntries[gGameWork.scrollSpriteSlot].flags = 0xD204;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_HFLIP | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[gGameWork.scrollSpriteSlot].x = gGameWork.transTileX * 8 + 0x14;
     gSpriteEntries[gGameWork.scrollSpriteSlot].y = gGameWork.transTileY * 8 + gGameWork.unk2A * 16 + 0x10;
     gSpriteEntries[gGameWork.scrollSpriteSlot].frame = 0x307;
@@ -191,12 +193,12 @@ void handle_battle_sprite_scroll_input(void) {
 void update_sprite_hflip_by_animation_phase(void) {
     if (gGameWork.unk84 != 0x1E) {
         if (gGameWork.unk84 & 4)
-            gSpriteEntries[gGameWork.scrollSpriteSlot].flags &= 0xBFFF;
+            gSpriteEntries[gGameWork.scrollSpriteSlot].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         else
-            gSpriteEntries[gGameWork.scrollSpriteSlot].flags |= 0x4000;
+            gSpriteEntries[gGameWork.scrollSpriteSlot].flags |= SPRITE_FLAG_VISIBLE;
         gGameWork.unk84++;
     } else {
-        gSpriteEntries[gGameWork.scrollSpriteSlot].flags |= 0x4000;
+        gSpriteEntries[gGameWork.scrollSpriteSlot].flags |= SPRITE_FLAG_VISIBLE;
         gGameWork.choiceState++;
     }
 }

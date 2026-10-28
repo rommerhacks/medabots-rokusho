@@ -6,6 +6,7 @@
 // from the ROM strings): map / player form, EVENT flags, PLAYER position, MAP_EFFECT, KWG, KOMA (sprite
 // preview), MESS (message viewer), sound test.
 #include "global.h"
+#include "constants/sprites.h"
 
 static void field_debug_enter_page(u32 idx);
 static void field_debug_cycle_event_value(u32 idx, s32 max);
@@ -650,19 +651,22 @@ static void field_debug_draw_decimal3(u8 *value, s32 x, s32 y) {
     ones = *value - hundreds * 100 - tens * 10;
 
     DmaSet(3, &gFieldDebugFont[(hundreds + '0') * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
-    sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
+    sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
+                      gFieldDebug.next_sprite + 0x99, 14, 1);
     gSpriteEntries[gFieldDebug.next_sprite].x = x;
     gSpriteEntries[gFieldDebug.next_sprite].y = y;
     gFieldDebug.next_sprite++;
 
     DmaSet(3, &gFieldDebugFont[(tens + '0') * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
-    sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
+    sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
+                      gFieldDebug.next_sprite + 0x99, 14, 1);
     gSpriteEntries[gFieldDebug.next_sprite].x = x + 8;
     gSpriteEntries[gFieldDebug.next_sprite].y = y;
     gFieldDebug.next_sprite++;
 
     DmaSet(3, &gFieldDebugFont[(ones + '0') * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
-    sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
+    sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
+                      gFieldDebug.next_sprite + 0x99, 14, 1);
     gSpriteEntries[gFieldDebug.next_sprite].x = x + 16;
     gSpriteEntries[gFieldDebug.next_sprite].y = y;
     gFieldDebug.next_sprite++;
@@ -698,13 +702,15 @@ static void field_debug_draw_hex(u32 value, s32 bits, s32 x, s32 y) {
         lo = b - hi * 16;
 
         DmaSet(3, &gFieldDebugFont[hex[hi] * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
-        sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
+        sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
+                          gFieldDebug.next_sprite + 0x99, 14, 1);
         gSpriteEntries[gFieldDebug.next_sprite].x = x + i * 16;
         gSpriteEntries[gFieldDebug.next_sprite].y = y;
         gFieldDebug.next_sprite++;
 
         DmaSet(3, &gFieldDebugFont[hex[lo] * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
-        sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
+        sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
+                          gFieldDebug.next_sprite + 0x99, 14, 1);
         gSpriteEntries[gFieldDebug.next_sprite].x = x + i * 16 + 8;
         gSpriteEntries[gFieldDebug.next_sprite].y = y;
         gFieldDebug.next_sprite++;
@@ -716,7 +722,8 @@ void field_debug_draw_label(const u8 *digits, s32 count, s32 x, s32 y) {
 
     for (i = 0; i < count; i++) {
         DmaSet(3, &gFieldDebugFont[*digits * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
-        sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
+        sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
+                          gFieldDebug.next_sprite + 0x99, 14, 1);
         gSpriteEntries[gFieldDebug.next_sprite].x = x;
         gSpriteEntries[gFieldDebug.next_sprite].y = y;
         x += 8;
@@ -733,9 +740,11 @@ static inline void init_field_sprite(u8 row, u8 col) {
     gSpriteEntries[slot].unk30 = gFieldDebug.unk20;
     gSpriteEntries[slot].pos_x = gFieldPlayerX + (col * 32 - 48);
     gSpriteEntries[slot].pos_y = gFieldPlayerY + (16 - row * 32);
-    gSpriteEntries[slot].flags = 0xC804;
+    gSpriteEntries[slot].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[slot].unk2E = 1;
-    gSpriteEntries[j].flags = 0xCC0C;
+    gSpriteEntries[j].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[slot].x = gSpriteEntries[slot].pos_x - (u16)gBg1Scroll.x;
     gSpriteEntries[slot].y = gSpriteEntries[slot].pos_y - (u16)gBg1Scroll.y;
     gSpriteEntries[j].x = gSpriteEntries[slot].x;
@@ -765,7 +774,9 @@ void field_debug_draw_sprite_preview(void) {
         sprite_entry_clear(j);
         gSpriteEntries[slot].unk30 = gFieldDebug.unk20;
         if (gSpriteSheetPreviewKinds[gFieldDebug.unk20] == 3) {
-            sprite_entry_init(slot, 0xC804, sprite_code_anim_index(0), sprite_code_kind(0), 1);
+            sprite_entry_init(slot,
+                              SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE,
+                              sprite_code_anim_index(0), sprite_code_kind(0), 1);
             gSpriteEntries[slot].unk2B = sprite_code_kind(0);
             gSpriteEntries[slot].pos_x = gFieldPlayerX - 0x30;
             gSpriteEntries[slot].pos_y = gFieldPlayerY + 0x30;
@@ -775,7 +786,8 @@ void field_debug_draw_sprite_preview(void) {
         }
         gSpriteEntries[j].flags = zero;
         if (gSpriteSheetHasShadow[gFieldDebug.unk20] != 0) {
-            gSpriteEntries[j].flags = 0xCC0C;
+            gSpriteEntries[j].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) |
+                                      SPRITE_OBJ_MODE(1) | SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[j].x = gSpriteEntries[slot].x;
             gSpriteEntries[j].y = gSpriteEntries[slot].y + (s16)(gSpriteEntries[slot].unk2C - 5);
         }

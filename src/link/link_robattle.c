@@ -14,6 +14,7 @@
 // single-GBA harness: names come from the code and the decoded messages.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void link_robattle_draw_partner_name(void);
 static void link_robattle_draw_battlefield_name(void);
@@ -697,7 +698,7 @@ static void prize_game_draw_slots(void) {
 
 static void prize_game_init_ball(void) {
     clear_battle_sprite_slot(2, 1);
-    gSpriteEntries[2].flags = 0xC400;
+    gSpriteEntries[2].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1);
     gSpriteEntries[2].x = 0x68;
     gSpriteEntries[2].y = 0x78;
     gSpriteEntries[2].frame = 0x8506;
@@ -707,7 +708,7 @@ static void prize_game_init_ball(void) {
 
 static void prize_game_init_launcher(void) {
     clear_battle_sprite_slot(3, 1);
-    gSpriteEntries[3].flags = 0xC400;
+    gSpriteEntries[3].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1);
     gSpriteEntries[3].x = 0x78;
     gSpriteEntries[3].y = 0x7C;
     gSpriteEntries[3].frame = 0x8504;
@@ -717,7 +718,7 @@ static void prize_game_init_launcher(void) {
 
 static void prize_game_init_row_marker(void) {
     clear_battle_sprite_slot(4, 1);
-    gSpriteEntries[4].flags = 0xC400;
+    gSpriteEntries[4].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1);
     gSpriteEntries[4].x = 0x9A;
     gSpriteEntries[4].y = 0x58;
     gSpriteEntries[4].frame_table = 0;

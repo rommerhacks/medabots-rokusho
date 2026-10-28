@@ -3,6 +3,7 @@
 // behind the player. Called from the field frame handler (field/field_walk) and the field sub-states
 // (field/field_update); uses field/map_objects for collision, events and exits.
 #include "global.h"
+#include "constants/sprites.h"
 
 static void follower_step(u8 dir);
 
@@ -88,12 +89,17 @@ void load_map_npc_sprites(s32 mode) {
                     u8 slot = count + 49;
                     u32 f = anim * 12;
                     u8 a = anim;
-                    sprite_entry_init(slot, 0xC804, f, a, 1);
+                    sprite_entry_init(
+                        slot, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE,
+                        f, a, 1);
                     gFieldWork.objects[n].unk4_6 = 1;
                     gSpriteEntries[count + 49].unk30 = area_sprite_sheet_id(a);
                     sprite_set_blend_from_kind(count + 49);
                     if (gSpriteSheetHasShadow[gSpriteEntries[count + 49].unk30])
-                        sprite_entry_init(count + 91, 0xCC0C, 0x90, 14, 1);
+                        sprite_entry_init(count + 91,
+                                          SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) |
+                                              SPRITE_OBJ_MODE(1) | SPRITE_FLAG_PART_PALETTE,
+                                          0x90, 14, 1);
                 } break;
                 }
                 gFieldWork.objects[n].unk4_0 = count;
@@ -137,18 +143,23 @@ void init_battle_field_setup(void) {
     load_battle_terrain_data();
     gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
     gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
-    sprite_entry_init(47, 0xC804, 3, 0, 1);
+    sprite_entry_init(47, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE, 3,
+                      0, 1);
     field_set_player_facing(gFieldWork.player_facing);
     follower_turn_toward_player(3);
     gSpriteEntries[47].order = 0x40;
     LZ77UnCompVram(gShadowTilesLz, (void *)0x06017FC0);
-    sprite_entry_init(89, 0xCC0C, 0x90, 14, 1);
+    sprite_entry_init(89,
+                      SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) |
+                          SPRITE_FLAG_PART_PALETTE,
+                      0x90, 14, 1);
     gSpriteEntries[89].pos_x = gFieldWork.player_x;
     gSpriteEntries[89].pos_y = gFieldWork.player_y - 5;
     gSpriteEntries[89].x = gSpriteEntries[47].x;
     gSpriteEntries[89].y = gSpriteEntries[47].y - 5;
     if (gFieldWork.player_visible) {
-        gSpriteEntries[47].flags = 0xC804;
+        gSpriteEntries[47].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
     } else {
         gSpriteEntries[47].flags = 0;
         gSpriteEntries[89].flags = 0;

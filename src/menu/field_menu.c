@@ -2,6 +2,7 @@
 // display, its open / close animations and the return from the sub-screens.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void field_menu_init_cursor(void);
 
@@ -253,7 +254,7 @@ void field_menu_return_expand(void) {
 static void field_menu_init_cursor(void) {
     lz_decompress_dispatch(gFieldMenuCursorTiles, (void *)0x06016C00);
     DmaSet(3, gCursorArrowPalette, 0x050003C0, 0x84000008);
-    gSpriteEntries[0].flags = 0xC004;
+    gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0].x = 0x88;
     gSpriteEntries[0].y = gGameWork.fieldMenuCursor * 16 + 8;
     gSpriteEntries[0].palette = 14;

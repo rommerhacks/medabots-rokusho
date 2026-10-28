@@ -3,6 +3,7 @@
 // (engine/rings_3d.c) with song 5, then everything fades to white and the field resumes. Purpose is a guess
 // (story text). Uses text/ and engine/ helpers only.
 #include "global.h"
+#include "constants/sprites.h"
 
 // Line length, 0 for a one-character line.
 static int text_line_glyph_count(u8 *s) {
@@ -144,7 +145,7 @@ void text_scroll_init(void) {
     }
     gMenuWork->ticks = 0;
     for (i = 0; i < 0x48; i++) {
-        gSpriteEntries[i + 1].flags = 0xC800;
+        gSpriteEntries[i + 1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2);
         gSpriteEntries[i + 1].frame_table = 2;
         gSpriteEntries[i + 1].palette = i / 18;
         gSpriteEntries[i + 1].frame = 0x116;

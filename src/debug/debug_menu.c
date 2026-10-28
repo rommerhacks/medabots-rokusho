@@ -3,6 +3,7 @@
 // Face, Medal picture, random Robattle, Battle, Sound test and Motion viewer.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 void debug_menu_update(void) {
     gDebugMenuHandlers[gGameSubState]();
@@ -627,7 +628,7 @@ void debug_mdlpic_input(void) {
     } else if (KEYS_LO(gNewKeys) & 1) {
         DmaSet(3, gCommonObjPalette, 0x050003E0, 0x84000008);
         lz_decompress_dispatch(gMedalSpriteGfx[gGameWork.debugValues[0]][gGameWork.debugValues[1]], (void *)0x06010000);
-        gSpriteEntries[0].flags = 0xC004;
+        gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[0].x = 0x40;
         gSpriteEntries[0].y = 0x50;
         gSpriteEntries[0].frame = 0x200;

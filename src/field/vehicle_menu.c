@@ -5,6 +5,7 @@
 // used. The menu state lives in gFieldScriptWork after the choice menu fields. Icons are drawn
 // with gVehicleIconPalette when usable, else dimmed (gVehicleIconDimPalette, *IconDimTiles).
 #include "global.h"
+#include "constants/sprites.h"
 
 static u32 vehicle_check_usable(s32 vehicle);
 static void vehicle_menu_move_cursor(s32 count);
@@ -100,7 +101,7 @@ void vehicle_menu_slide_in(void) {
                                       gFieldScriptWork.slideStep, 10, 0x20, 0x20, 0, 0);
         vehicle_menu_place_icons(0);
     } else {
-        sprite_entry_init(0x7F, 0xC004, 0x307, 0xC, 0);
+        sprite_entry_init(0x7F, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE, 0x307, 0xC, 0);
         vehicle_menu_update_cursor();
         gFieldScriptWork.cursor = 0;
         message_steps_reset();
@@ -280,7 +281,7 @@ void vehicle_menu_reload(void) {
 
 void vehicle_menu_wait_fade_in(void) {
     if (run_blend_fade_transition(0)) {
-        sprite_entry_init(0x7F, 0xC004, 0x307, 0xC, 0);
+        sprite_entry_init(0x7F, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE, 0x307, 0xC, 0);
         vehicle_menu_update_cursor();
         gGameSubState = 2;
     }
@@ -564,19 +565,23 @@ static void vehicle_menu_update_cursor(void) {
 static void vehicle_menu_place_icons(s32 slide_out) {
     s32 base_x;
 
-    sprite_entry_init(0x20, 0xC004, 0x91, vehicle_check_usable(0) == 0 ? 0xC : 0xD, 1);
+    sprite_entry_init(0x20, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE, 0x91,
+                      vehicle_check_usable(0) == 0 ? 0xC : 0xD, 1);
     gSpriteEntries[0x20].x = (0x10 - gFieldScriptWork.slideStep) * 8 + (base_x = slide_out * 8 + 0x90);
     gSpriteEntries[0x20].y = 0x18;
     gSpriteEntries[0x20].order |= 0xFF;
-    sprite_entry_init(0x21, 0xC004, 0x92, vehicle_check_usable(1) == 0 ? 0xC : 0xD, 1);
+    sprite_entry_init(0x21, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE, 0x92,
+                      vehicle_check_usable(1) == 0 ? 0xC : 0xD, 1);
     gSpriteEntries[0x21].x = (0x10 - gFieldScriptWork.slideStep) * 8 + base_x;
     gSpriteEntries[0x21].y = 0x28;
     gSpriteEntries[0x21].order |= 0xFF;
-    sprite_entry_init(0x22, 0xC004, 0x93, vehicle_check_usable(2) == 0 ? 0xC : 0xD, 1);
+    sprite_entry_init(0x22, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE, 0x93,
+                      vehicle_check_usable(2) == 0 ? 0xC : 0xD, 1);
     gSpriteEntries[0x22].x = (0x10 - gFieldScriptWork.slideStep) * 8 + base_x;
     gSpriteEntries[0x22].y = 0x38;
     gSpriteEntries[0x22].order |= 0xFF;
-    sprite_entry_init(0x23, 0xC004, 0x94, vehicle_check_usable(3) == 0 ? 0xC : 0xD, 1);
+    sprite_entry_init(0x23, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE, 0x94,
+                      vehicle_check_usable(3) == 0 ? 0xC : 0xD, 1);
     gSpriteEntries[0x23].x = (0x10 - gFieldScriptWork.slideStep) * 8 + base_x;
     gSpriteEntries[0x23].y = 0x48;
     gSpriteEntries[0x23].order |= 0xFF;

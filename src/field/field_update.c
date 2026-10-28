@@ -13,6 +13,7 @@
 // field/area_graphics and the engine.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static u32 field_effect_sequence_done(void);
 
@@ -122,11 +123,13 @@ void new_game_init(void) {
     gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
     gFieldWork.player_form = 0;
     gFieldWork.player_visible = 1;
-    sprite_entry_init(0x2F, 0xC804, 3, 0, 1);
+    sprite_entry_init(0x2F, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE,
+                      3, 0, 1);
     update_bg_scroll_offsets_a();
     if (gFieldWork.follower_active) {
-        sprite_entry_init(0x30, 0xC804, gFieldWork.follower_sprite_set * 12 + gFieldWork.follower_facing,
-                          gFieldWork.follower_sprite_set, 1);
+        sprite_entry_init(
+            0x30, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE,
+            gFieldWork.follower_sprite_set * 12 + gFieldWork.follower_facing, gFieldWork.follower_sprite_set, 1);
         gFieldWork.follower_x = 0x50 - gFieldWork.map_origin_x;
         gFieldWork.follower_y = 0x60 - gFieldWork.map_origin_y;
     }

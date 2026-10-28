@@ -2,6 +2,7 @@
 // shop_highlight_part_type_icon (4-icon menu highlight) and shop_copy_text_with_portrait are shared with
 // shop_list.c and shop_return.c.
 #include "global.h"
+#include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
@@ -131,28 +132,28 @@ void shop_menu_init(void) {
     zero = 0;
     CpuFastSet(&zero, (void *)0x0600DA80, 0x01000080);
     clear_battle_sprite_slot(0, 0x80);
-    gSpriteEntries[8].flags = 0x8004;
+    gSpriteEntries[8].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[8].frame_table = 0;
     gSpriteEntries[8].palette = 0xE;
     gSpriteEntries[8].frame = 0x307;
     gSpriteEntries[8].x = 8;
     gSpriteEntries[8].y = gMenuWork->cursor * 24 + 0x20;
-    gSpriteEntries[8].flags |= 0x1200;
+    gSpriteEntries[8].flags |= SPRITE_FLAG_HFLIP | SPRITE_FLAG_AFFINE;
     gSpriteEntries[8].scale_x = 0x40;
     gSpriteEntries[8].scale_y = 0x40;
-    gSpriteEntries[7].flags = 0xC000;
+    gSpriteEntries[7].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[7].frame_table = 2;
     gSpriteEntries[7].palette = 1;
     gSpriteEntries[7].frame = 0x1A;
     gSpriteEntries[7].x = 0x98;
     gSpriteEntries[7].y = 0;
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[i + 12].flags = 0x8000;
+        gSpriteEntries[i + 12].flags = SPRITE_FLAG_ENABLED;
         gSpriteEntries[i + 12].frame_table = 2;
         gSpriteEntries[i + 12].palette = 0;
     }
-    gSpriteEntries[13].flags |= 0x1000;
-    gSpriteEntries[15].flags |= 0x2000;
+    gSpriteEntries[13].flags |= SPRITE_FLAG_HFLIP;
+    gSpriteEntries[15].flags |= SPRITE_FLAG_VFLIP;
     gSpriteEntries[13].frame = 5;
     gSpriteEntries[14].frame = 5;
     gSpriteEntries[12].frame = 8;
@@ -215,7 +216,7 @@ void shop_menu_fade_in(void) {
             (*n)++;
         } else {
             gMenuWork->timer = 0;
-            gSpriteEntries[8].flags |= 0x4000;
+            gSpriteEntries[8].flags |= SPRITE_FLAG_VISIBLE;
             text_window_init(1, 0, 0);
             gMenuWork->timer = 0;
             gMenuWork->fade_level = 0;
@@ -229,7 +230,7 @@ void shop_menu_greeting(void) {
 
     shop_copy_text_with_portrait(buf, gShopGreetingText);
     if (run_message(buf)) {
-        gSpriteEntries[8].flags |= 0x4000;
+        gSpriteEntries[8].flags |= SPRITE_FLAG_VISIBLE;
         gGameSubState++;
     }
 }
@@ -310,14 +311,14 @@ void shop_menu_open_part_types(void) {
         gSpriteEntries[8].scale_x -= 4;
         gSpriteEntries[8].scale_y -= 4;
     } else {
-        gSpriteEntries[8].flags &= 0xBFFF;
+        gSpriteEntries[8].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     }
     if (t <= 16) {
         REG_BLDALPHA = (t << 8) | (16 - t);
     } else {
         REG_BLDALPHA = 0x1000;
         REG_DISPCNT &= 0xFDFF;
-        gSpriteEntries[8].flags &= 0xBFFF;
+        gSpriteEntries[8].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         message_next();
         gGameSubState++;
     }
@@ -338,9 +339,9 @@ void shop_menu_choose_part_type(void) {
 
     for (i = 0; i < 4; i++) {
         if ((gFrameCounter >> 3) & 1)
-            gSpriteEntries[12 + i].flags |= 0x4000;
+            gSpriteEntries[12 + i].flags |= SPRITE_FLAG_VISIBLE;
         else if (gMenuWork->part_kind == i)
-            gSpriteEntries[12 + gMenuWork->part_kind].flags &= 0xBFFF;
+            gSpriteEntries[12 + gMenuWork->part_kind].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     }
     if (KEYS_LO(gNewKeys) & 0x40) {
         play_sound_effect(2);
@@ -367,7 +368,7 @@ void shop_menu_choose_part_type(void) {
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         for (i = 0; i < 4; i++)
-            gSpriteEntries[12 + i].flags |= 0x4000;
+            gSpriteEntries[12 + i].flags |= SPRITE_FLAG_VISIBLE;
         if (gMenuWork->part_kind == 4) {
         back:
             gGameSubState = 0xB;
@@ -379,9 +380,9 @@ void shop_menu_choose_part_type(void) {
     } else if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
         for (i = 0; i < 4; i++)
-            gSpriteEntries[12 + i].flags &= 0xBFFF;
+            gSpriteEntries[12 + i].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         REG_DISPCNT |= 0x200;
-        gSpriteEntries[8].flags |= 0x4000;
+        gSpriteEntries[8].flags |= SPRITE_FLAG_VISIBLE;
         gMenuWork->timer = 0x10;
         goto back;
     }
@@ -429,7 +430,7 @@ void shop_menu_fade_out_to_list(void) {
         (*n)++;
     } else {
         for (i = 0; i < 4; i++)
-            gSpriteEntries[12 + i].flags &= 0xBFFF;
+            gSpriteEntries[12 + i].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         gMenuWork->returning = 1;
         gMenuWork->list_cursor = 0;
         *(u8 *)0x02023078 = 0;

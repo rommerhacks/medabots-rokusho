@@ -2,6 +2,7 @@
 // dispatch_substate_handler runs gShopSubStates, which mixes shop_menu.c and shop_list.c sub-states with the
 // two here (redraw the money / icons, fade out). Name is a guess.
 #include "global.h"
+#include "constants/sprites.h"
 
 void shop_return_init(void) {
     s32 i;
@@ -9,7 +10,7 @@ void shop_return_init(void) {
     shop_highlight_part_type_icon(gMenuWork->part_kind, 8);
     clear_battle_sprite_slot(0, 0x80);
     for (i = 0; i < 4; i++)
-        gSpriteEntries[12 + i].flags &= 0xBFFF;
+        gSpriteEntries[12 + i].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F800, 8);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
@@ -23,7 +24,7 @@ void shop_return_init(void) {
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
-    gSpriteEntries[7].flags = 0xC000;
+    gSpriteEntries[7].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[7].frame_table = 2;
     gSpriteEntries[7].palette = 1;
     gSpriteEntries[7].frame = 0x1A;

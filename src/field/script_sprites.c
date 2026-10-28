@@ -3,6 +3,7 @@
 // (save_script_sprites / restore_script_sprites), and map_script_command_done. Talks to the engine
 // sprite code and field/map_script.
 #include "global.h"
+#include "constants/sprites.h"
 
 static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y);
 
@@ -125,7 +126,8 @@ static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y) {
     u8 anim;
 
     sprite_entry_clear(slot);
-    sprite_entry_init(slot, 0xC804, sprite_code_anim_index(part), sprite_code_kind(part), 1);
+    sprite_entry_init(slot, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE,
+                      sprite_code_anim_index(part), sprite_code_kind(part), 1);
     anim = sprite_code_kind(part);
     spr = &gSpriteEntries[slot];
     spr->unk2B = anim;
@@ -138,7 +140,10 @@ static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y) {
     spr->unk30 = tile;
     sprite_set_blend_from_kind(slot);
     if (gSpriteSheetHasShadow[tile]) {
-        sprite_entry_init(idx + 0x79, 0xCC0C, 0x90, 0xE, 1);
+        sprite_entry_init(idx + 0x79,
+                          SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) |
+                              SPRITE_FLAG_PART_PALETTE,
+                          0x90, 0xE, 1);
         gSpriteEntries[idx + 0x79].pos_x = spr->pos_x;
         gSpriteEntries[idx + 0x79].pos_y = spr->pos_y - 5;
     }
@@ -194,7 +199,7 @@ void restore_script_sprites(void) {
 u32 find_free_script_sprite_slot(void) {
     s32 i;
     for (i = 0; i < 6; i++) {
-        if (!(gSpriteEntries[i + 79].flags & 0x4000) && !gSpriteEntries[i + 79].unk2E)
+        if (!(gSpriteEntries[i + 79].flags & SPRITE_FLAG_VISIBLE) && !gSpriteEntries[i + 79].unk2E)
             break;
     }
     if (i == 6)

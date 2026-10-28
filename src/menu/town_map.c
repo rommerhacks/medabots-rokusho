@@ -1,6 +1,7 @@
 // Mode-2 state 10: the Town Map. town_map_dispatch runs gTownMapStates (graphics, then cursor states that
 // call town_map_update_cursor / town_map_animate_tiles, the two helpers at the top of the file).
 #include "global.h"
+#include "constants/sprites.h"
 
 void town_map_update_cursor(void) {
     u8 row = gMenuWork->cursor_style;
@@ -101,14 +102,14 @@ void town_map_load_graphics(void) {
     lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
     CpuFastSet(gTownMapObjPalettes, (void *)(PLTT + 0x200), 0x18);
     gMenuWork->town_map_place = gAreaTownMapPlace[gFieldWork.area_id];
-    gSpriteEntries[0].flags = 0xC000;
+    gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[0].frame_table = 2;
     gSpriteEntries[0].y = 0x3C;
     p = gMenuWork;
     gSpriteEntries[0].palette = p->cursor_style;
     gSpriteEntries[0].frame = 0x10D;
     gSpriteEntries[0].unk1A = 0;
-    gSpriteEntries[1].flags = 0xC000;
+    gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[1].frame_table = 2;
     gSpriteEntries[1].x = gTownMapPlacePositions[0][p->town_map_place * 2] * 8;
     gSpriteEntries[1].y = gTownMapPlacePositions[0][p->town_map_place * 2 + 1] * 8;

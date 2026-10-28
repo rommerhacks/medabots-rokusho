@@ -4,6 +4,7 @@
 // opcode order. Talks to field/map_script, field/script_sprites, field/field_walk, text/message and
 // field/script_helpers.
 #include "global.h"
+#include "constants/sprites.h"
 
 static void map_script_load_warp_area(void);
 static void map_script_actor_spawn_walk_step(void);
@@ -146,7 +147,8 @@ void map_script_update_player_jump(void) {
         memcpy_u8(&gSpriteEntries[47], &gSpriteEntries[46], 0x40);
         gFieldWork.player_visible = 0;
         field_set_player_sprite_visible(0);
-        gSpriteEntries[89].flags = 0xCC0C;
+        gSpriteEntries[89].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) |
+                                   SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[48].flags = 0;
         gSpriteEntries[47].unk28 = 0;
         gFieldWork.script_field_update = 1;

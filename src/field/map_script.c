@@ -5,6 +5,7 @@
 // NPCs, flags, messages, sounds, battles) through field/script_helpers, text/message and the engine.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static s32 map_object_index_by_id(u16 id);
 static void map_object_remove(struct MapObject *obj);
@@ -1112,7 +1113,10 @@ static void follower_attach(u8 i) {
     gFieldWork.follower_sprite_set = gSpriteEntries[48].unk2B;
     follower_clear_scroll_dir();
     sprite_anim_start(48, sprite_walk_anim_id(48, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk21));
-    sprite_entry_init(90, 0xCC0C, 0x90, 0xE, 1);
+    sprite_entry_init(90,
+                      SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) |
+                          SPRITE_FLAG_PART_PALETTE,
+                      0x90, 0xE, 1);
     gSpriteEntries[90].x = gSpriteEntries[48].x;
     gSpriteEntries[90].y = gSpriteEntries[48].y - 5;
     gSpriteEntries[90].pos_x = gSpriteEntries[48].pos_x;

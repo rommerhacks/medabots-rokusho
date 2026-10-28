@@ -4,6 +4,7 @@
 
 #include "global.h"
 #include "keys.h"
+#include "constants/sprites.h"
 
 static inline u32 sub1(u32 x) {
     return x - 1;
@@ -99,21 +100,24 @@ void init_battle_action_select_ui(u32 a) {
         clear_battle_sprite_slot(1, 2);
     } else {
         set_tilemap_and_decompress_bg(0xC, 0xF, gActionSelectPanelTilemap, REG_BG1CNT, 0x230);
-        gSpriteEntries[0].flags = 0xC404;
+        gSpriteEntries[0].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[0].frame_table = 0;
         gSpriteEntries[0].palette = 0xA;
         gSpriteEntries[0].order = 0x40;
         gSpriteEntries[0].x = 0x78;
         gSpriteEntries[0].y = 0x84;
         gSpriteEntries[0].frame = 0x623;
-        gSpriteEntries[1].flags = 0xC404;
+        gSpriteEntries[1].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[1].frame_table = 0;
         gSpriteEntries[1].palette = 0xA;
         gSpriteEntries[1].order = 0x40;
         gSpriteEntries[1].x = 0x70;
         gSpriteEntries[1].y = 0x90;
         gSpriteEntries[1].frame = (u8)(gBattleWork.timeLeft / 10) + 0x624;
-        gSpriteEntries[2].flags = 0xC404;
+        gSpriteEntries[2].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[2].frame_table = 0;
         gSpriteEntries[2].palette = 0xA;
         gSpriteEntries[2].order = 0x40;

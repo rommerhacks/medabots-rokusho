@@ -3,6 +3,7 @@
 // nibble-packed event flags in gEventFlags (event_flag_clear..event_counter_get). Used by field/player_walk,
 // field/field_walk, field/field_update and the map script commands.
 #include "global.h"
+#include "constants/sprites.h"
 
 void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj) {
     set_sprite_animation_state(idx, state);
@@ -269,7 +270,8 @@ void update_entity_sprites_on_screen(void) {
                     gSpriteEntries[i + 49].x = gSpriteEntries[i + 49].pos_x - gBg1Scroll.x;
                     gSpriteEntries[i + 49].y = gSpriteEntries[i + 49].pos_y - gBg1Scroll.y;
                     if (gSpriteSheetHasShadow[gSpriteEntries[i + 49].unk30]) {
-                        gSpriteEntries[i + 91].flags = 0xCC0C;
+                        gSpriteEntries[i + 91].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) |
+                                                       SPRITE_OBJ_MODE(1) | SPRITE_FLAG_PART_PALETTE;
                         gSpriteEntries[i + 91].x = gSpriteEntries[i + 49].x;
                         gSpriteEntries[i + 91].y = gSpriteEntries[i + 49].y + (s16)(gSpriteEntries[i + 49].unk2C - 5);
                     } else {
@@ -405,8 +407,10 @@ static void field_hide_player_sprite(void) {
 // Shows or hides the player sprite (entry 47) and its shadow (entry 89).
 void field_set_player_sprite_visible(u8 on) {
     if (on) {
-        gSpriteEntries[47].flags = 0xC804;
-        gSpriteEntries[89].flags = 0xCC0C;
+        gSpriteEntries[47].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
+        gSpriteEntries[89].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) |
+                                   SPRITE_FLAG_PART_PALETTE;
     } else {
         gSpriteEntries[47].flags = on;
         gSpriteEntries[89].flags = on;
@@ -532,7 +536,8 @@ void field_warp_to_area(void) {
 // Recreates the follower sprite (48) and its shadow (90) after an area or screen reload.
 void follower_respawn(void) {
     if (gFieldWork.follower_active) {
-        sprite_entry_init(48, 0xC804, gFieldWork.follower_sprite_set * 12 + gFieldWork.follower_facing,
+        sprite_entry_init(48, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE,
+                          gFieldWork.follower_sprite_set * 12 + gFieldWork.follower_facing,
                           gFieldWork.follower_sprite_set, 1);
         gSpriteEntries[48].order = 0x40;
         gSpriteEntries[48].unk2B = gFieldWork.follower_sprite_set;
@@ -542,7 +547,10 @@ void follower_respawn(void) {
         gFieldWork.follower_tile_y = field_pixel_y_to_tile(gFieldWork.follower_y);
         gSpriteEntries[48].unk30 = area_sprite_sheet_id(gSpriteEntries[48].unk2B);
         sprite_set_blend_from_kind(48);
-        sprite_entry_init(90, 0xCC0C, 0x90, 14, 1);
+        sprite_entry_init(90,
+                          SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) |
+                              SPRITE_FLAG_PART_PALETTE,
+                          0x90, 14, 1);
         gSpriteEntries[90].pos_x = gFieldWork.follower_x;
         gSpriteEntries[90].pos_y = gFieldWork.follower_y - 5;
         gSpriteEntries[90].x = gSpriteEntries[48].x;

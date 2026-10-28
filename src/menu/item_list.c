@@ -2,6 +2,7 @@
 // item inventory into a list buffer, Medapart icons and page numbers, the shop sell list, swapping entries.
 // Its callers are in the mode-2 screens; uses engine/ sprite and tilemap helpers.
 #include "global.h"
+#include "constants/sprites.h"
 
 static void clear_item_list_map_run(s32 x, s32 y, s32 n);
 
@@ -91,7 +92,7 @@ void update_battle_medapart_icons(void) {
             draw_number_2digits_tall(counts[i], 0x18, i * 2 + 3);
             *((u16 *)0x0600F02E + ((i * 2 + 3) << 5)) = t0;
             *((u16 *)0x0600F02E + ((i * 2 + 4) << 5)) = t1;
-            gSpriteEntries[i + 0x55].flags |= 0x4000;
+            gSpriteEntries[i + 0x55].flags |= SPRITE_FLAG_VISIBLE;
             gSpriteEntries[i + 0x55].frame = item_is_usable(ids[i]) ? 0x21 : 0x22;
         } else {
             u16 *map = (u16 *)0x0600F02E;
@@ -108,7 +109,7 @@ void update_battle_medapart_icons(void) {
             *p = 0;
             p = map + 2 + ((i * 2 + 4) << 5);
             *p = 0;
-            gSpriteEntries[i + 0x55].flags &= ~0x4000;
+            gSpriteEntries[i + 0x55].flags &= ~SPRITE_FLAG_VISIBLE;
         }
     }
     item_menu_draw_page_numbers();
@@ -202,9 +203,9 @@ void render_battle_medapart_list(u32 mode) {
                 render_text_sprites_08040DB8((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
                                              13, 1, 1);
                 draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, (REG_BG1CNT >> 8) & 0x1F);
-                gSpriteEntries[i + 0x6A].flags |= 0x4000;
+                gSpriteEntries[i + 0x6A].flags |= SPRITE_FLAG_VISIBLE;
                 gSpriteEntries[i + 0x6A].frame = genders[i] + 0x1B;
-                gSpriteEntries[i + 0x6E].flags |= 0x4000;
+                gSpriteEntries[i + 0x6E].flags |= SPRITE_FLAG_VISIBLE;
                 load_battle_sprite_tiles(ids[i], kind, i);
                 divide_by_10000(gTextArgBuffer, prices[i]);
                 render_text_sprites_08040DB8(gTextArgBuffer, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
@@ -215,9 +216,9 @@ void render_battle_medapart_list(u32 mode) {
                 render_text_sprites_08040DB8((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
                                              13, 1, 1);
                 draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, (REG_BG1CNT >> 8) & 0x1F);
-                gSpriteEntries[i + 0x6A].flags |= 0x4000;
+                gSpriteEntries[i + 0x6A].flags |= SPRITE_FLAG_VISIBLE;
                 gSpriteEntries[i + 0x6A].frame = genders[i] + 0x1B;
-                gSpriteEntries[i + 0x6E].flags |= 0x4000;
+                gSpriteEntries[i + 0x6E].flags |= SPRITE_FLAG_VISIBLE;
                 load_battle_sprite_tiles(ids[i], kind, i);
                 divide_by_10000(gTextArgBuffer, prices[i]);
                 render_text_sprites_08040DB8(gTextArgBuffer, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
@@ -251,9 +252,9 @@ void item_menu_update_swap_marker(struct SpriteEntry *attr) {
     struct MenuWork *w = gMenuWork;
     if (w->swap_pending) {
         if (w->swap_from >= w->list_top && w->swap_from < w->list_top + 5)
-            attr->flags |= 0x4000;
+            attr->flags |= SPRITE_FLAG_VISIBLE;
         else
-            attr->flags &= 0xBFFF;
+            attr->flags &= (u16)~SPRITE_FLAG_VISIBLE;
     }
 }
 

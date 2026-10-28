@@ -6,6 +6,7 @@
 // Sub-states (gBombGameStates): 0 init, 1 graphics, 2 fade in, 3 round intro, 4 pick lanes, 5 play, 6 cleared,
 // 7 game over, 8 fade out, 9 back to the field. Runtime-checked in scenario 14_arcade.
 #include "global.h"
+#include "constants/sprites.h"
 
 // gSpriteEntries slots
 #define BOMB_SPR_BANNER 0        // round intro countdown, CONGRATULATIONS / GAME OVER
@@ -82,7 +83,10 @@ void bomb_game_load_graphics(void) {
     LZ77UnCompVram(gBombGameObjTiles, (void *)(VRAM + 0x10000));
     DmaSet(3, gBombGameObjPalettes, PLTT + 0x200, 0x800000F0);
 
-    sprite_entry_init(BOMB_SPR_PLAYER, 0xCF20, 0, 0, 3);
+    sprite_entry_init(BOMB_SPR_PLAYER,
+                      SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_FLAG_AFFINE |
+                          SPRITE_FLAG_ROTATE | SPRITE_FLAG_DOUBLE_SIZE,
+                      0, 0, 3);
     gSpriteEntries[BOMB_SPR_PLAYER].x = 0x78;
     gSpriteEntries[BOMB_SPR_PLAYER].y = 0x80;
     gSpriteEntries[BOMB_SPR_PLAYER].scale_x = 0x40;
@@ -92,37 +96,39 @@ void bomb_game_load_graphics(void) {
     gSpriteEntries[BOMB_SPR_PLAYER].unk20 = 3;
     gSpriteEntries[BOMB_SPR_PLAYER].unk21 = 0;
 
-    sprite_entry_init(BOMB_SPR_THROWER, 0xCC00, 7, 1, 3);
+    sprite_entry_init(BOMB_SPR_THROWER, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3), 7, 1, 3);
     gSpriteEntries[BOMB_SPR_THROWER].x = 0x78;
     gSpriteEntries[BOMB_SPR_THROWER].y = 0x10;
-    sprite_entry_init(BOMB_SPR_HELD_BOMB, 0xCC00, 0x10, 2, 3);
+    sprite_entry_init(BOMB_SPR_HELD_BOMB, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3), 0x10, 2, 3);
     gSpriteEntries[BOMB_SPR_HELD_BOMB].y = 0xC8;
-    sprite_entry_init(BOMB_SPR_BOMB_ICON, 0xC400, 0x10, 2, 3);
+    sprite_entry_init(BOMB_SPR_BOMB_ICON, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x10, 2, 3);
     gSpriteEntries[BOMB_SPR_BOMB_ICON].x = 0x10;
     gSpriteEntries[BOMB_SPR_BOMB_ICON].y = 0x30;
     for (i = 0; i < 2; i++) {
-        sprite_entry_init(BOMB_SPR_COUNT_DIGITS + i, 0xC400, 0x21, 8, 3);
+        sprite_entry_init(BOMB_SPR_COUNT_DIGITS + i, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1),
+                          0x21, 8, 3);
         gSpriteEntries[BOMB_SPR_COUNT_DIGITS + i].x = 0x18 + i * 16;
         gSpriteEntries[BOMB_SPR_COUNT_DIGITS + i].y = 0x28;
     }
-    sprite_entry_init(BOMB_SPR_BASE, 0xC800, 0x2B, 9, 3);
+    sprite_entry_init(BOMB_SPR_BASE, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2), 0x2B, 9, 3);
     gSpriteEntries[BOMB_SPR_BASE].x = 0x78;
     gSpriteEntries[BOMB_SPR_BASE].y = 0x98;
     for (i = 0; i < 3; i++) {
-        sprite_entry_init(BOMB_SPR_LIVES + i, 0xC400, 0x18, 5, 3);
+        sprite_entry_init(BOMB_SPR_LIVES + i, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x18, 5,
+                          3);
         gSpriteEntries[BOMB_SPR_LIVES + i].x = 8 + i * 16;
         gSpriteEntries[BOMB_SPR_LIVES + i].y = 0x78;
     }
-    sprite_entry_init(BOMB_SPR_HELP_BOT, 0xC400, 0x1E, 7, 3);
+    sprite_entry_init(BOMB_SPR_HELP_BOT, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x1E, 7, 3);
     gSpriteEntries[BOMB_SPR_HELP_BOT].x = 0xB8;
     gSpriteEntries[BOMB_SPR_HELP_BOT].y = 0x68;
-    sprite_entry_init(BOMB_SPR_HELP_L, 0xC400, 0x1A, 6, 3);
+    sprite_entry_init(BOMB_SPR_HELP_L, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x1A, 6, 3);
     gSpriteEntries[BOMB_SPR_HELP_L].x = 0xB8;
     gSpriteEntries[BOMB_SPR_HELP_L].y = 0x58;
-    sprite_entry_init(BOMB_SPR_HELP_R, 0xC400, 0x1C, 6, 3);
+    sprite_entry_init(BOMB_SPR_HELP_R, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x1C, 6, 3);
     gSpriteEntries[BOMB_SPR_HELP_R].x = 0xD8;
     gSpriteEntries[BOMB_SPR_HELP_R].y = 0x58;
-    sprite_entry_init(BOMB_SPR_HELP_ARROW, 0xC400, 0x19, 6, 3);
+    sprite_entry_init(BOMB_SPR_HELP_ARROW, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x19, 6, 3);
     gSpriteEntries[BOMB_SPR_HELP_ARROW].x = 0xB8;
     gSpriteEntries[BOMB_SPR_HELP_ARROW].y = 0xC8;
     REG_DISPCNT |= 0x1E00;
@@ -231,7 +237,9 @@ void bomb_game_exit_state(void) {
 u32 bomb_game_round_intro(void) {
     switch (gSpriteEntries[BOMB_SPR_BANNER].unk20) {
     case 0:
-        sprite_entry_init(BOMB_SPR_BANNER, 0xCA00, 0x2E, 10, 3);
+        sprite_entry_init(BOMB_SPR_BANNER,
+                          SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE, 0x2E, 10,
+                          3);
         gSpriteEntries[BOMB_SPR_BANNER].x = 0x78;
         gSpriteEntries[BOMB_SPR_BANNER].y = 0x50;
         gSpriteEntries[BOMB_SPR_BANNER].unk1A = 0;
@@ -258,7 +266,10 @@ u32 bomb_game_round_intro(void) {
         break;
     case 3:
         if (gBombGameWork.roundBombs == gBombGameWork.bombsLeft) {
-            sprite_entry_init(BOMB_SPR_BANNER, 0xCA08, 0x2F, 11, 3);
+            sprite_entry_init(BOMB_SPR_BANNER,
+                              SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE |
+                                  SPRITE_OBJ_MODE(1),
+                              0x2F, 11, 3);
             gSpriteEntries[BOMB_SPR_BANNER].x = 0x78;
             gSpriteEntries[BOMB_SPR_BANNER].y = 0x50;
             gSpriteEntries[BOMB_SPR_BANNER].scale_x = 0;
@@ -488,7 +499,10 @@ static void bomb_game_update_bombs(void) {
                         gSpriteEntries[BOMB_SPR_HELP_ARROW].unk21 = 0;
                         gSpriteEntries[BOMB_SPR_HELP_ARROW].y = 0xC8;
                         gSpriteEntries[BOMB_SPR_HELP_ARROW].unk1A = 0;
-                        sprite_entry_init(BOMB_SPR_SHADOW, 0xCC08, 0x12, 2, 3);
+                        sprite_entry_init(BOMB_SPR_SHADOW,
+                                          SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) |
+                                              SPRITE_OBJ_MODE(1),
+                                          0x12, 2, 3);
                         gSpriteEntries[BOMB_SPR_SHADOW].x = gSpriteEntries[BOMB_SPR_PLAYER].x;
                         gSpriteEntries[BOMB_SPR_SHADOW].y = gSpriteEntries[BOMB_SPR_PLAYER].y + 0xC;
                     }
@@ -498,7 +512,8 @@ static void bomb_game_update_bombs(void) {
                         if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk21 == 1)
                             gSpriteEntries[BOMB_SPR_BOMBS + i].unk21 = gBombGameWork.bombsLeft & 2;
                         gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 = 2;
-                        sprite_entry_init(BOMB_SPR_HIT_SPARK, 0xC400, 0x17, 4, 3);
+                        sprite_entry_init(BOMB_SPR_HIT_SPARK,
+                                          SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x17, 4, 3);
                         gSpriteEntries[BOMB_SPR_HIT_SPARK].x = gSpriteEntries[BOMB_SPR_BOMBS + i].x;
                         gSpriteEntries[BOMB_SPR_HIT_SPARK].y =
                             gSpriteEntries[BOMB_SPR_BOMBS + i].y -
@@ -617,13 +632,15 @@ static bool32 bomb_game_clear_banner(void) {
 
     switch (s->unk20) {
     case 0:
-        sprite_entry_init(BOMB_SPR_BANNER, 0xC000, 0x33, 0xC, 3);
+        sprite_entry_init(BOMB_SPR_BANNER, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE, 0x33, 0xC, 3);
         s->x = 0x78;
         s->y = 0x50;
         s->unk1A = 0;
         s->unk20++;
         gSpriteEntries[BOMB_SPR_PLAYER].frame = 0;
-        sprite_entry_init(BOMB_SPR_SHADOW, 0xCC08, 0x12, 2, 3);
+        sprite_entry_init(BOMB_SPR_SHADOW,
+                          SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1), 0x12, 2,
+                          3);
         gSpriteEntries[BOMB_SPR_SHADOW].x = gSpriteEntries[BOMB_SPR_PLAYER].x;
         gSpriteEntries[BOMB_SPR_SHADOW].y = gSpriteEntries[BOMB_SPR_PLAYER].y + 10;
         break;
@@ -646,18 +663,23 @@ static u32 bomb_game_over_banner(void) {
 
     switch (gSpriteEntries[BOMB_SPR_BANNER].unk20) {
     case 0:
-        sprite_entry_init(BOMB_SPR_BANNER, 0xC000, 0x34, 0xD, 3);
+        sprite_entry_init(BOMB_SPR_BANNER, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE, 0x34, 0xD, 3);
         gSpriteEntries[BOMB_SPR_BANNER].x = 0x78;
         gSpriteEntries[BOMB_SPR_BANNER].y = -0x10;
         gSpriteEntries[BOMB_SPR_BANNER].unk1A = 0;
         gSpriteEntries[BOMB_SPR_BANNER].unk21 = 1;
         gSpriteEntries[BOMB_SPR_BANNER].unk20++;
         if (gBombGameWork.bombsLeft > 0x23) {
-            sprite_entry_init(BOMB_SPR_BOMBS + 6, 0xC800, 0x10, 2, 3);
-            sprite_entry_init(BOMB_SPR_BOMB_SHADOWS + 6, 0xCC08, 0x12, 2, 3);
+            sprite_entry_init(BOMB_SPR_BOMBS + 6, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2), 0x10,
+                              2, 3);
+            sprite_entry_init(BOMB_SPR_BOMB_SHADOWS + 6,
+                              SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1), 0x12,
+                              2, 3);
             gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + 6].y = 0x1E;
         } else if (gBombGameWork.bombsLeft > 0) {
-            sprite_entry_init(BOMB_SPR_SHADOW, 0xCC08, 0x12, 2, 3);
+            sprite_entry_init(BOMB_SPR_SHADOW,
+                              SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1), 0x12,
+                              2, 3);
             gSpriteEntries[BOMB_SPR_SHADOW].x = gSpriteEntries[BOMB_SPR_THROWER].x;
             gSpriteEntries[BOMB_SPR_SHADOW].y = gSpriteEntries[BOMB_SPR_THROWER].y + 8;
         }
@@ -684,8 +706,11 @@ static u32 bomb_game_over_banner(void) {
             return 1;
         }
         if (++gSpriteEntries[BOMB_SPR_BANNER].unk1A == 0x20) {
-            sprite_entry_init(BOMB_SPR_BOMBS + 7, 0xC800, 0x10, 2, 3);
-            sprite_entry_init(BOMB_SPR_BOMB_SHADOWS + 7, 0xCC08, 0x12, 2, 3);
+            sprite_entry_init(BOMB_SPR_BOMBS + 7, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2), 0x10,
+                              2, 3);
+            sprite_entry_init(BOMB_SPR_BOMB_SHADOWS + 7,
+                              SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1), 0x12,
+                              2, 3);
             gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + 7].y = 0x1E;
         }
         break;
@@ -955,9 +980,9 @@ static void bomb_game_over_effects(void) {
 
 // Shows bombsLeft in the two BOMB counter digits.
 void bomb_game_draw_bomb_count(void) {
-    u16 attr = 0xC400;
-    sprite_entry_init(BOMB_SPR_COUNT_DIGITS, attr, (s8)(gBombGameWork.bombsLeft / 10) + 0x21, 8, 3);
-    sprite_entry_init(BOMB_SPR_COUNT_DIGITS + 1, attr, (s8)(gBombGameWork.bombsLeft % 10) + 0x21, 8, 3);
+    u16 flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1);
+    sprite_entry_init(BOMB_SPR_COUNT_DIGITS, flags, (s8)(gBombGameWork.bombsLeft / 10) + 0x21, 8, 3);
+    sprite_entry_init(BOMB_SPR_COUNT_DIGITS + 1, flags, (s8)(gBombGameWork.bombsLeft % 10) + 0x21, 8, 3);
 }
 
 // Shows one LIFE icon per life left (the player sprite's unk20); the others are moved off screen.

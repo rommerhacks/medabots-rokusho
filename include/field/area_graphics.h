@@ -9,7 +9,7 @@ void area_load_bg_palettes(void);
 void animate_area_bg_tiles(void);
 u32 area_sprite_sheet_id(u32 arg);
 void sprite_set_blend_from_kind(u8 idx);
-void sprite_entry_init(u8 idx, u16 attr, u32 frame, u8 a3, u8 a4);
+void sprite_entry_init(u8 slot, u16 flags, u32 frame, u8 palette, u8 frame_table);
 void area_load_sprite_sheets(void);
 void area_load_sprite_palettes_now(void);
 void area_load_sprite_palettes(void);

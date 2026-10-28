@@ -4,6 +4,7 @@
 // effects of the battle field, tilemap rect copies, scene setup and init_game_mode.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void scanline_scroll_vblank(void);
 
@@ -354,11 +355,12 @@ void decompress_sprite_to_vram_08042D94(u32 a, u32 b, u32 c, u32 d, u32 slot) {
 void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile, u32 sprite, u32 x, u32 y, u32 flip,
                                  u32 prio, u32 pal) {
     clear_battle_sprite_slot(sprite, 4);
-    gSpriteEntries[sprite].flags = 0xC004 | (prio << 10);
+    gSpriteEntries[sprite].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE | SPRITE_PRIORITY(prio);
     if (flip)
-        gSpriteEntries[sprite].flags |= 0x1000;
+        gSpriteEntries[sprite].flags |= SPRITE_FLAG_HFLIP;
     else
-        gSpriteEntries[sprite].flags &= 0xEFFF;
+        gSpriteEntries[sprite].flags &= (u16)~SPRITE_FLAG_HFLIP;
     gSpriteEntries[sprite].x = x;
     gSpriteEntries[sprite].y = y - 4;
     gSpriteEntries[sprite].frame = tile * 8 + 0x500;
@@ -366,13 +368,14 @@ void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 til
     gSpriteEntries[sprite].frame_table = 0;
     gSpriteEntries[sprite].order = pal + 2;
 
-    gSpriteEntries[sprite + 1].flags = 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 1].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE | (prio << 10);
     if (flip) {
-        gSpriteEntries[sprite + 1].flags |= 0x1000;
+        gSpriteEntries[sprite + 1].flags |= SPRITE_FLAG_HFLIP;
         gSpriteEntries[sprite + 1].frame = tile * 8 + 0x502;
         gSpriteEntries[sprite + 1].order = pal;
     } else {
-        gSpriteEntries[sprite + 1].flags &= 0xEFFF;
+        gSpriteEntries[sprite + 1].flags &= (u16)~SPRITE_FLAG_HFLIP;
         gSpriteEntries[sprite + 1].frame = tile * 8 + 0x501;
         gSpriteEntries[sprite + 1].order = pal + 3;
     }
@@ -384,13 +387,14 @@ void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 til
     gSpriteEntries[sprite + 1].scale_y = 0x40;
     gSpriteEntries[sprite + 1].angle = 0;
 
-    gSpriteEntries[sprite + 2].flags = 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 2].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE | (prio << 10);
     if (flip) {
-        gSpriteEntries[sprite + 2].flags |= 0x1000;
+        gSpriteEntries[sprite + 2].flags |= SPRITE_FLAG_HFLIP;
         gSpriteEntries[sprite + 2].frame = tile * 8 + 0x503;
         gSpriteEntries[sprite + 2].order = pal + 3;
     } else {
-        gSpriteEntries[sprite + 2].flags &= 0xEFFF;
+        gSpriteEntries[sprite + 2].flags &= (u16)~SPRITE_FLAG_HFLIP;
         gSpriteEntries[sprite + 2].frame = tile * 8 + 0x504;
         gSpriteEntries[sprite + 2].order = pal;
     }
@@ -402,11 +406,12 @@ void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 til
     gSpriteEntries[sprite + 2].scale_y = 0x40;
     gSpriteEntries[sprite + 2].angle = 0;
 
-    gSpriteEntries[sprite + 3].flags = 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 3].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE | (prio << 10);
     if (flip)
-        gSpriteEntries[sprite + 3].flags |= 0x1000;
+        gSpriteEntries[sprite + 3].flags |= SPRITE_FLAG_HFLIP;
     else
-        gSpriteEntries[sprite + 3].flags &= 0xEFFF;
+        gSpriteEntries[sprite + 3].flags &= (u16)~SPRITE_FLAG_HFLIP;
     gSpriteEntries[sprite + 3].x = x;
     gSpriteEntries[sprite + 3].y = y + 4;
     gSpriteEntries[sprite + 3].frame = tile * 8 + 0x505;
@@ -417,11 +422,11 @@ void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 til
 
 void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile, u32 sprite, u32 x, u32 y, u32 flip,
                                u32 prio, u32 pal) {
-    gSpriteEntries[sprite].flags |= 0xC004 | (prio << 10);
+    gSpriteEntries[sprite].flags |= SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE | (prio << 10);
     if (flip)
-        gSpriteEntries[sprite].flags |= 0x1000;
+        gSpriteEntries[sprite].flags |= SPRITE_FLAG_HFLIP;
     else
-        gSpriteEntries[sprite].flags &= 0xEFFF;
+        gSpriteEntries[sprite].flags &= (u16)~SPRITE_FLAG_HFLIP;
     gSpriteEntries[sprite].x = x;
     gSpriteEntries[sprite].y = y - 4;
     gSpriteEntries[sprite].frame = tile * 8 + 0x500;
@@ -429,13 +434,14 @@ void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile,
     gSpriteEntries[sprite].frame_table = 0;
     gSpriteEntries[sprite].order = pal + 2;
 
-    gSpriteEntries[sprite + 1].flags |= 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 1].flags |=
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE | (prio << 10);
     if (flip) {
-        gSpriteEntries[sprite + 1].flags |= 0x1000;
+        gSpriteEntries[sprite + 1].flags |= SPRITE_FLAG_HFLIP;
         gSpriteEntries[sprite + 1].frame = tile * 8 + 0x502;
         gSpriteEntries[sprite + 1].order = pal;
     } else {
-        gSpriteEntries[sprite + 1].flags &= 0xEFFF;
+        gSpriteEntries[sprite + 1].flags &= (u16)~SPRITE_FLAG_HFLIP;
         gSpriteEntries[sprite + 1].frame = tile * 8 + 0x501;
         gSpriteEntries[sprite + 1].order = pal + 3;
     }
@@ -444,13 +450,14 @@ void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile,
     gSpriteEntries[sprite + 1].palette = gMedabotSpritePalettes[rarm];
     gSpriteEntries[sprite + 1].frame_table = 0;
 
-    gSpriteEntries[sprite + 2].flags |= 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 2].flags |=
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE | (prio << 10);
     if (flip) {
-        gSpriteEntries[sprite + 2].flags |= 0x1000;
+        gSpriteEntries[sprite + 2].flags |= SPRITE_FLAG_HFLIP;
         gSpriteEntries[sprite + 2].frame = tile * 8 + 0x503;
         gSpriteEntries[sprite + 2].order = pal + 3;
     } else {
-        gSpriteEntries[sprite + 2].flags &= 0xEFFF;
+        gSpriteEntries[sprite + 2].flags &= (u16)~SPRITE_FLAG_HFLIP;
         gSpriteEntries[sprite + 2].frame = tile * 8 + 0x504;
         gSpriteEntries[sprite + 2].order = pal;
     }
@@ -459,11 +466,12 @@ void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile,
     gSpriteEntries[sprite + 2].palette = gMedabotSpritePalettes[larm];
     gSpriteEntries[sprite + 2].frame_table = 0;
 
-    gSpriteEntries[sprite + 3].flags |= 0xC004 | (prio << 10);
+    gSpriteEntries[sprite + 3].flags |=
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE | (prio << 10);
     if (flip)
-        gSpriteEntries[sprite + 3].flags |= 0x1000;
+        gSpriteEntries[sprite + 3].flags |= SPRITE_FLAG_HFLIP;
     else
-        gSpriteEntries[sprite + 3].flags &= 0xEFFF;
+        gSpriteEntries[sprite + 3].flags &= (u16)~SPRITE_FLAG_HFLIP;
     gSpriteEntries[sprite + 3].x = x;
     gSpriteEntries[sprite + 3].y = y + 4;
     gSpriteEntries[sprite + 3].frame = tile * 8 + 0x505;
@@ -475,8 +483,8 @@ void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile,
 void battle_sprite_group_set_anim(u32 sprite, u32 anim) {
     u32 i;
 
-    gSpriteEntries[sprite + 1].flags |= 0x200;
-    gSpriteEntries[sprite + 2].flags |= 0x200;
+    gSpriteEntries[sprite + 1].flags |= SPRITE_FLAG_AFFINE;
+    gSpriteEntries[sprite + 2].flags |= SPRITE_FLAG_AFFINE;
     for (i = 0; i < 16; i++)
         ;
     gSpriteEntries[sprite].unk24 = anim;

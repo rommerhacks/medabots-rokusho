@@ -1,9 +1,9 @@
 #ifndef GUARD_CONSTANTS_SPRITES_H
 #define GUARD_CONSTANTS_SPRITES_H
 
-// SpriteEntry.flags bits, from how check_flag_and_fast_copy reads them.
+// SpriteEntry.flags bits, from how build_sprite_oam reads them.
 #define SPRITE_FLAG_MOSAIC 0x0001        // OAM attribute 0 mosaic bit
-#define SPRITE_FLAG_OFFSCREEN 0x0002     // set by check_flag_and_fast_copy: world-mode sprite outside the screen
+#define SPRITE_FLAG_OFFSCREEN 0x0002     // set by build_sprite_oam: world-mode sprite outside the screen
 #define SPRITE_FLAG_PART_PALETTE 0x0004  // frame parts with palette bits in their tile keep that palette
 #define SPRITE_FLAG_OBJ_MODE_MASK 0x0018 // OAM attribute 0 OBJ mode (semi-transparent / window), << 7
 #define SPRITE_FLAG_DOUBLE_SIZE 0x0020   // affine double-size area
@@ -18,7 +18,10 @@
 #define SPRITE_FLAG_HFLIP 0x1000
 #define SPRITE_FLAG_VFLIP 0x2000
 #define SPRITE_FLAG_VISIBLE 0x4000 // drawn into OAM
-#define SPRITE_FLAG_ENABLED 0x8000 // processed (sorted, positioned) by check_flag_and_fast_copy
+#define SPRITE_FLAG_ENABLED 0x8000 // processed (sorted, positioned) by build_sprite_oam
+
+#define SPRITE_OBJ_MODE(mode) ((mode) << 3)  // 1 semi-transparent, 2 OBJ window
+#define SPRITE_PRIORITY(prio) ((prio) << 10) // OAM priority 0 (front) to 3
 
 #define SPRITE_SCALE_ONE 0x40 // scale_x / scale_y of an unscaled sprite
 

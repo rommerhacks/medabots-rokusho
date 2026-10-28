@@ -1,4 +1,5 @@
 #include "global.h"
+#include "constants/sprites.h"
 
 // Battle state 8, the action phase, every frame: unless waiting on the serial link, runs the gActionPhaseSteps
 // step for gGameSubState. Sub-states (runtime-checked in the battle scenario):
@@ -40,7 +41,7 @@ void action_phase_load_gfx(void) {
 
 // Turn cursor (sprite 3) above the acting Medabot.
 void action_phase_cursor_init(void) {
-    gSpriteEntries[3].flags = 0xC004;
+    gSpriteEntries[3].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[3].frame_table = 0;
     gSpriteEntries[3].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
     gSpriteEntries[3].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
@@ -250,7 +251,8 @@ void action_phase_end_check(void) {
 void action_phase_win_banner_init(void) {
     lz_decompress_dispatch(gBattleBannerTilesLz, (void *)0x06014800);
     CpuFastSet(gBattleBannerPalette, (void *)0x050003E0, 8);
-    gSpriteEntries[0x21].flags = 0xC624;
+    gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
+                                 SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].x = 0x78;
     gSpriteEntries[0x21].y = 0x40;
@@ -324,7 +326,8 @@ void action_phase_time_check(void) {
 void action_phase_time_up_banner_init(void) {
     lz_decompress_dispatch(gBattleBannerTilesLz, (void *)0x06014800);
     CpuFastSet(gBattleBannerPalette, (void *)0x050003E0, 8);
-    gSpriteEntries[0x21].flags = 0xC624;
+    gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
+                                 SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].x = 0x78;
     gSpriteEntries[0x21].y = 0x40;
@@ -386,7 +389,8 @@ void action_phase_exit(void) {
 // Medal skill level-up popup above the acting Medabot (sprite 0x21), then the skill type (0x22) and level.
 void action_phase_level_up_init(void) {
     lz_decompress_dispatch(gSkillLevelUpTilesLz, (void *)0x06014800);
-    gSpriteEntries[0x21].flags = 0xC404;
+    gSpriteEntries[0x21].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
     gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
@@ -404,7 +408,8 @@ void action_phase_level_up_anim(void) {
 }
 
 void action_phase_level_up_skill_init(void) {
-    gSpriteEntries[0x22].flags = 0xC404;
+    gSpriteEntries[0x22].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x22].frame_table = 0;
     gSpriteEntries[0x22].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x - 0x10;
     gSpriteEntries[0x22].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y + 4;
@@ -470,14 +475,16 @@ void action_phase_medaforce_check(void) {
 void action_phase_medaforce_anim_init(void) {
     target_panels_show(0);
     CpuFastSet(gMedaforceActivatePalette, (void *)0x050002E0, 8);
-    gSpriteEntries[0x21].flags = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
+    gSpriteEntries[0x21].flags = SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) | SPRITE_FLAG_ENABLED |
+                                 SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
     gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].palette = 7;
     gSpriteEntries[0x21].order = 0x81;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x4D], 0x21);
-    gSpriteEntries[0x22].flags = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
+    gSpriteEntries[0x22].flags = SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) | SPRITE_FLAG_ENABLED |
+                                 SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x22].frame_table = 0;
     gSpriteEntries[0x22].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
     gSpriteEntries[0x22].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;

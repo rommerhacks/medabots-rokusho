@@ -5,6 +5,7 @@
 // effect variant (sprite frames, sound). Called from battle/medaforce_effects.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 void particle_slide_lead_sprite(void) {
     if (!(gBattleWork.actorSideFlags & 2))
@@ -46,7 +47,8 @@ static void particle_spawn_trail_a(u32 src) {
         slot = find_next_free_sprite_slot(src + 1, 0x14);
         clear_battle_sprite_slot(slot, 1);
         particle = &base[slot];
-        particle->flags = 0xC604;
+        particle->flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
+                          SPRITE_FLAG_PART_PALETTE;
         particle->frame_table = 0;
         particle->x = (orbiter->x + gParticleTrailOffsets[(rng_next_byte() & 3) * 2]) & 0x1FF;
         particle->y = (orbiter->y + gParticleTrailOffsets[(rng_next_byte() & 3) * 2 + 1]) & 0xFF;
@@ -105,7 +107,8 @@ void particle_spawn_trail_b(u32 src) {
         slot = find_next_free_sprite_slot(src + 1, 0x14);
         clear_battle_sprite_slot(slot, 1);
         particle = &base[slot];
-        particle->flags = 0xC604;
+        particle->flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
+                          SPRITE_FLAG_PART_PALETTE;
         particle->frame_table = 0;
         particle->x = (orbiter->x + gParticleTrailOffsets[(rng_next_byte() & 3) * 2]) & 0x1FF;
         particle->y = (orbiter->y + gParticleTrailOffsets[(rng_next_byte() & 3) * 2 + 1]) & 0xFF;
@@ -411,7 +414,8 @@ void particle_spark_emitter(void) {
         clear_battle_sprite_slot(slot, 1);
         base = gSpriteEntries;
         particle = &base[slot];
-        particle->flags = 0xC604;
+        particle->flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
+                          SPRITE_FLAG_PART_PALETTE;
         particle->frame_table = 0;
         particle->x = 0x78;
         particle->y = 0x78;
@@ -541,7 +545,8 @@ void particle_sweep_across(void) {
             gBattleWork.unkD6[gGameWork.runningSpriteSlot - 0x21] != 0 &&
             gSpriteEntries[gGameWork.runningSpriteSlot].unk28 == 0) {
             play_sound_effect(0x54);
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].flags = 0xC404;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].flags =
+                SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].frame_table = 0;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].x =
                 gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x;
@@ -561,7 +566,9 @@ void particle_sweep_across(void) {
             gBattleWork.unkD6[gGameWork.runningSpriteSlot - 0x21] != 0 &&
             gSpriteEntries[gGameWork.runningSpriteSlot].unk28 == 0) {
             play_sound_effect(0x54);
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].flags = 0xD404;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE |
+                                                                    SPRITE_FLAG_HFLIP | SPRITE_PRIORITY(1) |
+                                                                    SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].frame_table = 0;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].x =
                 gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x;

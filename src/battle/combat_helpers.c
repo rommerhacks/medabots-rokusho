@@ -3,6 +3,7 @@
 // evasion weights, and the part / ability checks the AI (battle/action_calc) uses (check_bot_can_*).
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static u32 check_sprite_in_range(u32 slot);
 
@@ -182,7 +183,7 @@ void bg3_shake_step(u32 a) {
 }
 
 u32 sprite_hop_step(u32 slot) {
-    if ((gSpriteEntries[slot].flags & 0x8000) && gSpriteEntries[slot].unk23 != 0x20) {
+    if ((gSpriteEntries[slot].flags & SPRITE_FLAG_ENABLED) && gSpriteEntries[slot].unk23 != 0x20) {
         gSpriteEntries[slot].y = (gSpriteEntries[slot].y + gSpriteHopOffsets[gSpriteEntries[slot].unk23]) & 0xFF;
         gSpriteEntries[slot].unk23++;
         return 0;
@@ -191,13 +192,13 @@ u32 sprite_hop_step(u32 slot) {
 }
 
 static void battle_sprite_blink_update(u32 slot, u8 *counter, u8 *n) {
-    gSpriteEntries[slot].flags |= 0x8000;
+    gSpriteEntries[slot].flags |= SPRITE_FLAG_ENABLED;
     if (*n == 0) {
         if (++*counter & 1)
-            gSpriteEntries[slot].flags &= 0x7FFF;
+            gSpriteEntries[slot].flags &= (u16)~SPRITE_FLAG_ENABLED;
     } else if (*counter == *n) {
         *counter = 0;
-        gSpriteEntries[slot].flags &= 0x7FFF;
+        gSpriteEntries[slot].flags &= (u16)~SPRITE_FLAG_ENABLED;
         (*n)--;
     } else {
         (*counter)++;
@@ -293,13 +294,13 @@ static u32 check_sprite_in_range(u32 slot) {
 
 // Turns on the affine flag (0x200, see build_oam) at scale 0x40 (1.0) on both axes.
 void sprite_enable_affine_unit_scale(u32 slot) {
-    gSpriteEntries[slot].flags |= 0x200;
+    gSpriteEntries[slot].flags |= SPRITE_FLAG_AFFINE;
     gSpriteEntries[slot].scale_x = 0x40;
     gSpriteEntries[slot].scale_y = 0x40;
 }
 
 void sprite_disable_affine(u32 slot) {
-    gSpriteEntries[slot].flags &= ~0x200;
+    gSpriteEntries[slot].flags &= ~SPRITE_FLAG_AFFINE;
 }
 
 void check_sprite_overlap_and_adjust(u32 a, u32 b) {

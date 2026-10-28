@@ -3,6 +3,7 @@
 // race (also over the link). Opens the Medals (game state 4) and Medaparts (5) info screens.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void medabots_scroll_bg3(void);
 static void medabots_screen_init_cursor_icons(void);
@@ -845,16 +846,20 @@ static void medabots_scroll_bg3(void) {
 }
 
 static void medabots_screen_init_cursor_icons(void) {
-    gSpriteEntries[0].flags = 0xC604;
+    gSpriteEntries[0].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0].unk23 = 0;
     medabots_screen_orbit_cursor_icon(0);
-    gSpriteEntries[1].flags = 0xC604;
+    gSpriteEntries[1].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[1].unk23 = 0x10;
     medabots_screen_orbit_cursor_icon(1);
-    gSpriteEntries[2].flags = 0xC604;
+    gSpriteEntries[2].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[2].unk23 = 0x20;
     medabots_screen_orbit_cursor_icon(2);
-    gSpriteEntries[3].flags = 0xC604;
+    gSpriteEntries[3].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[3].unk23 = 0x30;
     medabots_screen_orbit_cursor_icon(3);
 }
@@ -1067,16 +1072,20 @@ static u32 medabots_screen_cursor_input(void) {
 }
 
 static void medabots_screen_start_reorder_orbit(void) {
-    gSpriteEntries[4].flags = 0xC604;
+    gSpriteEntries[4].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[4].unk23 = 0;
     medabots_screen_orbit_reorder_icon(4);
-    gSpriteEntries[5].flags = 0xC604;
+    gSpriteEntries[5].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[5].unk23 = 0x10;
     medabots_screen_orbit_reorder_icon(5);
-    gSpriteEntries[6].flags = 0xC604;
+    gSpriteEntries[6].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[6].unk23 = 0x20;
     medabots_screen_orbit_reorder_icon(6);
-    gSpriteEntries[7].flags = 0xC604;
+    gSpriteEntries[7].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[7].unk23 = 0x30;
     medabots_screen_orbit_reorder_icon(7);
 }
@@ -1104,25 +1113,25 @@ static void medabots_screen_orbit_reorder_icon(u32 i) {
 static void medabots_screen_update_reorder_icons(void) {
     if (gGameWork.reorderPick & 0x80) {
         if (gFrameCounter & 1) {
-            gSpriteEntries[4].flags |= 0x4000;
-            gSpriteEntries[5].flags |= 0x4000;
-            gSpriteEntries[6].flags |= 0x4000;
-            gSpriteEntries[7].flags |= 0x4000;
+            gSpriteEntries[4].flags |= SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[5].flags |= SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[6].flags |= SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[7].flags |= SPRITE_FLAG_VISIBLE;
         } else {
-            gSpriteEntries[4].flags &= 0xBFFF;
-            gSpriteEntries[5].flags &= 0xBFFF;
-            gSpriteEntries[6].flags &= 0xBFFF;
-            gSpriteEntries[7].flags &= 0xBFFF;
+            gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[5].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[6].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[7].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         }
         medabots_screen_orbit_reorder_icon(4);
         medabots_screen_orbit_reorder_icon(5);
         medabots_screen_orbit_reorder_icon(6);
         medabots_screen_orbit_reorder_icon(7);
     } else {
-        gSpriteEntries[4].flags &= 0xBFFF;
-        gSpriteEntries[5].flags &= 0xBFFF;
-        gSpriteEntries[6].flags &= 0xBFFF;
-        gSpriteEntries[7].flags &= 0xBFFF;
+        gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[5].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[6].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[7].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     }
 }
 
@@ -1406,14 +1415,14 @@ static void medabot_detail_place_icon(void) {
 }
 
 static void medabot_detail_place_row_arrows(void) {
-    gSpriteEntries[1].flags = 0xC804;
+    gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[1].x = 0x6C;
     gSpriteEntries[1].y = gGameWork.detailRow * 16 + 0x50;
     gSpriteEntries[1].frame = 0x302;
     gSpriteEntries[1].palette = 14;
     gSpriteEntries[1].frame_table = 0;
     gSpriteEntries[1].order = 0x40;
-    gSpriteEntries[2].flags = 0xC804;
+    gSpriteEntries[2].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[2].x = 0xE4;
     gSpriteEntries[2].y = gGameWork.detailRow * 16 + 0x50;
     gSpriteEntries[2].frame = 0x303;
@@ -1424,11 +1433,11 @@ static void medabot_detail_place_row_arrows(void) {
 
 static void medabot_detail_blink_row_arrows(void) {
     if (gFrameCounter & 8) {
-        gSpriteEntries[1].flags &= 0xBFFF;
-        gSpriteEntries[2].flags &= 0xBFFF;
+        gSpriteEntries[1].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[2].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     } else {
-        gSpriteEntries[1].flags |= 0x4000;
-        gSpriteEntries[2].flags |= 0x4000;
+        gSpriteEntries[1].flags |= SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[2].flags |= SPRITE_FLAG_VISIBLE;
     }
 }
 
@@ -1873,7 +1882,7 @@ static void team_select_draw_pick_markers(void) {
     case 2:
         for (i = 0; i < 3; i++) {
             if (gBattleWork.teamPicks[i]) {
-                gSpriteEntries[i + 4].flags = 0xC004;
+                gSpriteEntries[i + 4].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
                 gSpriteEntries[i + 4].x = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2];
                 gSpriteEntries[i + 4].y = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2 + 1];
                 gSpriteEntries[i + 4].frame = i + 0x401;
@@ -1888,7 +1897,7 @@ static void team_select_draw_pick_markers(void) {
     case 3:
         for (i = 0; i < 3; i++) {
             if (gBattleWork.teamPicks[i]) {
-                gSpriteEntries[i + 4].flags = 0xC004;
+                gSpriteEntries[i + 4].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
                 gSpriteEntries[i + 4].x = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2];
                 gSpriteEntries[i + 4].y = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2 + 1];
                 gSpriteEntries[i + 4].frame = i + 0x404;
@@ -2023,12 +2032,12 @@ static void team_select_blink_pick_markers(void) {
     if (gGameWork.timer & 4) {
         for (i = 0; i <= 2; i++) {
             if (gBattleWork.teamPicks[i])
-                gSpriteEntries[i + 4].flags &= 0xBFFF;
+                gSpriteEntries[i + 4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         }
     } else {
         for (i = 0; i <= 2; i++) {
             if (gBattleWork.teamPicks[i])
-                gSpriteEntries[i + 4].flags |= 0x4000;
+                gSpriteEntries[i + 4].flags |= SPRITE_FLAG_VISIBLE;
         }
     }
     gGameWork.timer++;

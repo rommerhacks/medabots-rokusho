@@ -3,6 +3,7 @@
 // (0x20 - delay) / 16 px between its home line and the front line. Called from battle/robattle.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void bot_calc_move_delay(u32 rec);
 static void bot_move_delay_add_action(u32 rec);
@@ -211,7 +212,7 @@ u32 battle_bot_move_reverse(u32 rec) {
 
 // Sets the Medabot's walk animation from its speed: anim script (0x20 - moveDelay) / 2 + 1.
 void bot_update_walk_anim(u32 rec) {
-    if (gSpriteEntries[rec * 4 + 0x5B].flags & 0x200) {
+    if (gSpriteEntries[rec * 4 + 0x5B].flags & SPRITE_FLAG_AFFINE) {
         gSpriteEntries[rec * 4 + 0x5D].unk24 = ((s32)(0x20 - gBattleBots[rec].moveDelay) >> 1) + 1;
         update_battle_sprite_orbiting_positions(rec * 4 + 0x5A, rec, bot_sprite_is_flipped(rec));
     } else {

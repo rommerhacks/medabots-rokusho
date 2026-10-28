@@ -3,6 +3,7 @@
 // game_over_update runs the sub-states gGameOverStates: 0 reset, 1 graphics, 2-3 fade in, 4 Ikki falls,
 // 5 the logo drops and bounces (A when done), 7 wipe out, 6 fade out back to the boot logos.
 #include "global.h"
+#include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
@@ -102,7 +103,7 @@ void game_over_load_graphics(void) {
     CpuFastSet(gGameOverBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gGameOverObjPalettes, (void *)(PLTT + 0x200), 0x10);
     lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
-    gSpriteEntries[0].flags = 0x8A20;
+    gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
     gSpriteEntries[0].frame_table = 2;
     gSpriteEntries[0].x = 0x78;
     gSpriteEntries[0].y = -0x20;
@@ -111,7 +112,7 @@ void game_over_load_graphics(void) {
     gSpriteEntries[0].scale_x = 0x80;
     gSpriteEntries[0].scale_y = 0x80;
     gSpriteEntries[0].angle = zero16;
-    gSpriteEntries[1].flags = 0x8220;
+    gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
     gSpriteEntries[1].frame_table = 2;
     gSpriteEntries[1].x = 0x78;
     gSpriteEntries[1].y = -0x40;
@@ -141,7 +142,7 @@ void game_over_fade_in(void) {
         REG_BLDY = p->fade_level-- >> 1;
     } else {
         p->timer = 0;
-        gSpriteEntries[1].flags |= 0x4000;
+        gSpriteEntries[1].flags |= SPRITE_FLAG_VISIBLE;
         gSpriteEntries[1].unk1A = 0;
         gGameSubState++;
     }
@@ -195,7 +196,7 @@ void game_over_logo_drop(void) {
             p->frame++;
         t = gMenuWork->frame - 9;
         if (t == 0)
-            gSpriteEntries[0].flags |= 0x4000;
+            gSpriteEntries[0].flags |= SPRITE_FLAG_VISIBLE;
         if (t <= 0x13) {
             s32 q = (t << 6) / 20;
 
@@ -224,7 +225,8 @@ void game_over_logo_drop(void) {
         gSpriteEntries[1].unk1A = 0;
     gSpriteEntries[1].frame = gGameOverIkkiFrames[gSpriteEntries[1].unk1A / 6];
     if ((KEYS_LO(gNewKeys) & 1) && done) {
-        gSpriteEntries[1].flags = 0xCA20;
+        gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE |
+                                  SPRITE_FLAG_DOUBLE_SIZE;
         gMenuWork->frame = 0;
         gGameSubState += 2;
     }

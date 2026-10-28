@@ -3,6 +3,7 @@
 // (the divide_by_* digit splitters) as sprites. Used by the menus, battle and field.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 // Message step: fills the 104 window tiles at VRAM 0x280 with colour 1 (the window background).
 void message_fill_window_tiles(void) {
@@ -43,12 +44,12 @@ void process_sprite_anim_commands(const u8 *cmds, u8 slot) {
         op = cmds[gSpriteEntries[slot].unk21];
         switch (op) {
         case 0xFB:
-            gSpriteEntries[0].flags &= 0xBFFF;
+            gSpriteEntries[0].flags &= (u16)~SPRITE_FLAG_VISIBLE;
             gSpriteEntries[slot].unk20 = cmds[gSpriteEntries[slot].unk21 + 1];
             gSpriteEntries[slot].unk21 += 3;
             return;
         case 0xFC:
-            gSpriteEntries[0].flags |= 0x4000;
+            gSpriteEntries[0].flags |= SPRITE_FLAG_VISIBLE;
             gSpriteEntries[slot].unk21 += 3;
             break;
         case 0xFD:
@@ -84,13 +85,13 @@ void clear_battle_sprite_slot(u8 a, u8 b) {
 void disable_sprites(u8 first, u8 count) {
     u32 i;
     for (i = 0; i < count; i++)
-        gSpriteEntries[first + i].flags &= 0x7FFF;
+        gSpriteEntries[first + i].flags &= (u16)~SPRITE_FLAG_ENABLED;
 }
 
 void enable_sprites(u8 first, u8 count) {
     u32 i;
     for (i = 0; i < count; i++)
-        gSpriteEntries[first + i].flags |= 0x8000;
+        gSpriteEntries[first + i].flags |= SPRITE_FLAG_ENABLED;
 }
 
 u32 find_next_free_sprite_slot(u8 first, u8 count) {
@@ -146,7 +147,8 @@ void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
     }
     for (i = 0; str[i] != 0xFE; i++) {
         if (str[i] != 0) {
-            gSpriteEntries[slot + i].flags = (prio << 10) | 0xC004;
+            gSpriteEntries[slot + i].flags =
+                SPRITE_PRIORITY(prio) | SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[slot + i].x = x;
             gSpriteEntries[slot + i].y = y;
             gSpriteEntries[slot + i].palette = pal;
@@ -199,7 +201,8 @@ void render_text_sprites_08040EE4(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
     }
     for (i = 0; str[i] != 0xFE; i++) {
         if (str[i] != 0) {
-            gSpriteEntries[slot + i].flags = (prio << 10) | 0xC004;
+            gSpriteEntries[slot + i].flags =
+                SPRITE_PRIORITY(prio) | SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[slot + i].x = x;
             gSpriteEntries[slot + i].y = y;
             gSpriteEntries[slot + i].palette = pal;
@@ -251,7 +254,8 @@ void render_text_string_to_sprites(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 
     }
     for (i = 0; str[i] != 0xFE; i++) {
         if (str[i] != 0) {
-            gSpriteEntries[slot + i].flags = (prio << 10) | 0xC004;
+            gSpriteEntries[slot + i].flags =
+                SPRITE_PRIORITY(prio) | SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[slot + i].x = x;
             gSpriteEntries[slot + i].y = y;
             gSpriteEntries[slot + i].palette = pal;

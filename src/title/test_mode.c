@@ -2,6 +2,7 @@
 // test_mode_dispatch runs gTestModeStates: graphics, fades, test_mode_update (menu input, sound test), then the
 // erase-save steps (test_mode_erase_save retries save_dispatch(2) through save/save_data.c).
 #include "global.h"
+#include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
@@ -57,7 +58,7 @@ void test_mode_load_graphics(void) {
     CpuFastSet(gMenuDigitPalette, (void *)(PLTT + 0x1C0), 8);
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     CpuFastSet(gCursorArrowPalette, (void *)(PLTT + 0x3C0), 8);
-    gSpriteEntries[0].flags = 0x8000;
+    gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED;
     gSpriteEntries[0].frame_table = 2;
     gSpriteEntries[0].palette = 0xE;
     gSpriteEntries[0].frame = 6;
@@ -65,23 +66,23 @@ void test_mode_load_graphics(void) {
     gSpriteEntries[0].x = 0x14;
     gSpriteEntries[0].y = gMenuWork->cursor * 16 + 0x20;
     for (i = 0; i <= 1; i++) {
-        gSpriteEntries[i + 1].flags = 0x8000;
+        gSpriteEntries[i + 1].flags = SPRITE_FLAG_ENABLED;
         gSpriteEntries[i + 1].frame_table = 2;
         gSpriteEntries[i + 1].palette = 0xE;
         gSpriteEntries[i + 1].frame = 5;
     }
-    gSpriteEntries[1].flags |= 0x1000;
+    gSpriteEntries[1].flags |= SPRITE_FLAG_HFLIP;
     gSpriteEntries[1].x = 0x78;
     gSpriteEntries[1].y = 0x20;
     gSpriteEntries[2].x = 0x90;
     gSpriteEntries[2].y = 0x20;
     for (i = 0; i <= 1; i++) {
-        gSpriteEntries[i + 3].flags = 0x8000;
+        gSpriteEntries[i + 3].flags = SPRITE_FLAG_ENABLED;
         gSpriteEntries[i + 3].frame_table = 2;
         gSpriteEntries[i + 3].palette = 0xE;
         gSpriteEntries[i + 3].frame = 5;
     }
-    gSpriteEntries[3].flags |= 0x1000;
+    gSpriteEntries[3].flags |= SPRITE_FLAG_HFLIP;
     gSpriteEntries[3].x = 0x78;
     gSpriteEntries[3].y = 0x30;
     gSpriteEntries[4].x = 0x90;
@@ -116,8 +117,8 @@ void test_mode_fade_in(void) {
         gMenuWork->unk49 = 0;
         gMenuWork->pending_sound = 0;
         gMenuWork->sound_delay = 0;
-        gSpriteEntries[0].flags |= 0x4000;
-        gSpriteEntries[1].flags |= 0x4000;
+        gSpriteEntries[0].flags |= SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[1].flags |= SPRITE_FLAG_VISIBLE;
         gGameSubState++;
     }
 }
@@ -148,31 +149,31 @@ void test_mode_update(void) {
     switch (gMenuWork->cursor) {
     case 0:
         if (gFrameCounter & 8) {
-            gSpriteEntries[1].flags |= 0x4000;
-            gSpriteEntries[2].flags |= 0x4000;
+            gSpriteEntries[1].flags |= SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[2].flags |= SPRITE_FLAG_VISIBLE;
         } else {
-            gSpriteEntries[1].flags &= 0xBFFF;
-            gSpriteEntries[2].flags &= 0xBFFF;
+            gSpriteEntries[1].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[2].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         }
-        gSpriteEntries[3].flags &= 0xBFFF;
-        gSpriteEntries[4].flags &= 0xBFFF;
+        gSpriteEntries[3].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         break;
     case 1:
-        gSpriteEntries[1].flags &= 0xBFFF;
-        gSpriteEntries[2].flags &= 0xBFFF;
+        gSpriteEntries[1].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[2].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         if (gFrameCounter & 8) {
-            gSpriteEntries[3].flags |= 0x4000;
-            gSpriteEntries[4].flags |= 0x4000;
+            gSpriteEntries[3].flags |= SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[4].flags |= SPRITE_FLAG_VISIBLE;
         } else {
-            gSpriteEntries[3].flags &= 0xBFFF;
-            gSpriteEntries[4].flags &= 0xBFFF;
+            gSpriteEntries[3].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         }
         break;
     default:
-        gSpriteEntries[1].flags &= 0xBFFF;
-        gSpriteEntries[2].flags &= 0xBFFF;
-        gSpriteEntries[3].flags &= 0xBFFF;
-        gSpriteEntries[4].flags &= 0xBFFF;
+        gSpriteEntries[1].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[2].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[3].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         break;
     }
     switch (gMenuWork->cursor) {
@@ -246,11 +247,11 @@ void test_mode_update(void) {
     play_song(0);
     gMenuWork->fade_level = 0;
     gGameSubState = 5;
-    gSpriteEntries[0].flags &= 0xBFFF;
-    gSpriteEntries[1].flags &= 0xBFFF;
-    gSpriteEntries[2].flags &= 0xBFFF;
-    gSpriteEntries[3].flags &= 0xBFFF;
-    gSpriteEntries[4].flags &= 0xBFFF;
+    gSpriteEntries[0].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+    gSpriteEntries[1].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+    gSpriteEntries[2].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+    gSpriteEntries[3].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+    gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
 }
 
 void test_mode_fade_out_exit(void) {

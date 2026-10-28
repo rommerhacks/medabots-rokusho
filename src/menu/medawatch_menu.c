@@ -2,6 +2,7 @@
 // Medaparts (5).
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void medawatch_menu_load_icon(void);
 static void medawatch_menu_init_cursor(void);
@@ -189,7 +190,7 @@ static void medawatch_menu_load_icon(void) {
 static void medawatch_menu_init_cursor(void) {
     lz_decompress_dispatch(gFieldMenuCursorTiles, (void *)0x06016C00);
     DmaSet(3, gCursorArrowPalette, 0x050003C0, 0x84000008);
-    gSpriteEntries[0].flags = 0xC004;
+    gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0].x = 0x88 - gGameWork.medawatchCursor * 8;
     gSpriteEntries[0].y = gGameWork.medawatchCursor * 24 + 32;
     gSpriteEntries[0].palette = 14;

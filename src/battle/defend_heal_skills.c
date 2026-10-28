@@ -7,6 +7,7 @@
 // the last step sets unkA6 (the result message) and unkB5. The skill id is part data[1].
 
 #include "global.h"
+#include "constants/sprites.h"
 
 void recovery_run(void) {
     gBattleWork.stepDone = 0;
@@ -194,7 +195,8 @@ void trap_begin(void) {
 void skill_cast_hop_spawn(void) {
     lz_decompress_dispatch(gSkillCastHopTiles, (void *)0x06015800);
     CpuFastSet(gSkillCastHopPalette, (void *)0x050002E0, 8);
-    gSpriteEntries[0x21].flags = 0xC604;
+    gSpriteEntries[0x21].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].x = gSpriteEntries[0x5D + gBattleWork.actor * 4].x;
     gSpriteEntries[0x21].y = gSpriteEntries[0x5D + gBattleWork.actor * 4].y - 4;
@@ -213,7 +215,7 @@ void skill_cast_hop_spawn(void) {
 void skill_cast_hop(void) {
     sprite_hop_step(0x21);
     if (gSpriteEntries[0x21].unk27 == 0x20) {
-        gSpriteEntries[0x21].flags &= ~0x200;
+        gSpriteEntries[0x21].flags &= ~SPRITE_FLAG_AFFINE;
         gSpriteEntries[0x21].angle = 0;
         gBattleWork.step++;
         return;
@@ -270,11 +272,11 @@ void trap_sprite_spawn(void) {
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x38], 0x21);
         break;
     }
-    gSpriteEntries[0x21].flags |= 0x220;
+    gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
     gSpriteEntries[0x21].scale_y = 0x40;
     gSpriteEntries[0x21].scale_x = 8;
     if (gBattleWork.actorSideFlags & 1) {
-        gSpriteEntries[0x21].flags |= 0x1000;
+        gSpriteEntries[0x21].flags |= SPRITE_FLAG_HFLIP;
         gSpriteEntries[0x21].x--;
     }
     gBattleWork.step++;
@@ -536,7 +538,7 @@ void break_form_sprite_spawn(void) {
     CpuFastSet(gBreakFormPalette, (void *)0x050002E0, 8);
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x39], 0x21);
     if (gBattleWork.actorSideFlags & 1)
-        gSpriteEntries[0x21].flags |= 0x1000;
+        gSpriteEntries[0x21].flags |= SPRITE_FLAG_HFLIP;
     gBattleWork.step++;
 }
 
@@ -698,8 +700,8 @@ void stability_sprite_spawn(void) {
     lz_decompress_dispatch(gStabilitySparkleTiles, (void *)0x06014800);
     CpuFastSet(gStabilitySparklePalette, (void *)0x050002E0, 8);
     if (gBattleWork.actorSideFlags & 1)
-        gSpriteEntries[0x21].flags |= 0x1000;
-    gSpriteEntries[0x21].flags |= 0x200;
+        gSpriteEntries[0x21].flags |= SPRITE_FLAG_HFLIP;
+    gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE;
     gSpriteEntries[0x21].scale_x = 0x40;
     gSpriteEntries[0x21].scale_y = 0x40;
     gSpriteEntries[0x21].angle = 0;
@@ -717,7 +719,7 @@ void stability_sprite_fly(void) {
     else
         gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle + 0x40) & 0x3FF;
     if (move_sprite_toward_target(0x21)) {
-        gSpriteEntries[0x21].flags &= ~0x200;
+        gSpriteEntries[0x21].flags &= ~SPRITE_FLAG_AFFINE;
         gSpriteEntries[0x21].angle = 0;
         gBattleWork.step++;
     }
@@ -729,7 +731,8 @@ void stability_apply(void) {
     gBattleBots[gBattleWork.target].statusPart = 0;
     gBattleBots[gBattleWork.target].statusTimer = 0;
     gBattleBots[gBattleWork.target].statusAmount = 0;
-    gSpriteEntries[gBattleWork.target * 3 + 0x47].flags |= 0x8220;
+    gSpriteEntries[gBattleWork.target * 3 + 0x47].flags |=
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
     gSpriteEntries[gBattleWork.target * 3 + 0x47].scale_y = 0x40;
     gSpriteEntries[gBattleWork.target * 3 + 0x47].scale_x = 0x40;
     play_sound_effect(0x37);
@@ -738,7 +741,7 @@ void stability_apply(void) {
 
 void stability_status_icon_fade(void) {
     if (gSpriteEntries[gBattleWork.target * 3 + 0x47].scale_x != 4) {
-        gSpriteEntries[gBattleWork.target * 3 + 0x47].flags |= 0x8000;
+        gSpriteEntries[gBattleWork.target * 3 + 0x47].flags |= SPRITE_FLAG_ENABLED;
         gSpriteEntries[gBattleWork.target * 3 + 0x47].scale_y += 4;
         gSpriteEntries[gBattleWork.target * 3 + 0x47].scale_x -= 4;
     }
@@ -778,7 +781,8 @@ void force_bind_orbs_spawn(void) {
     lz_decompress_dispatch(gForceBindOrbTilesLz, (void *)0x06014800);
     CpuFastSet(gForceBindOrbPalette, (void *)0x050002E0, 8);
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[0x21 + i].flags = 0xC604;
+        gSpriteEntries[0x21 + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) |
+                                         SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[0x21 + i].frame_table = 0;
         gSpriteEntries[0x21 + i].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
         gSpriteEntries[0x21 + i].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
@@ -880,7 +884,8 @@ void defence_shields_spawn(void) {
         CpuFastSet(gHalfBlockShieldPalette, (void *)0x050002E0, 8);
         break;
     }
-    gSpriteEntries[0x21].flags = 0xC624;
+    gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
+                                 SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x - 0x20;
     gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
@@ -892,7 +897,8 @@ void defence_shields_spawn(void) {
     gSpriteEntries[0x21].unk2C = 0;
     gSpriteEntries[0x21].unk2D = 0;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x1C], 0x21);
-    gSpriteEntries[0x22].flags = 0xC624;
+    gSpriteEntries[0x22].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
+                                 SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x22].frame_table = 0;
     gSpriteEntries[0x22].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x + 0x20;
     gSpriteEntries[0x22].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
@@ -981,7 +987,7 @@ void autorecover_begin(void) {
 void autorecover_orb_spawn(void) {
     lz_decompress_dispatch(gAutorecoverOrbTilesLz, (void *)0x06014800);
     CpuFastSet(gAutorecoverOrbPalettes, (void *)0x050002C0, 0x10);
-    gSpriteEntries[0x21].flags |= 0x200;
+    gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE;
     gSpriteEntries[0x21].scale_x = 0x40;
     gSpriteEntries[0x21].scale_y = 0x40;
     gSpriteEntries[0x21].palette = 6;
@@ -1022,7 +1028,8 @@ void autorecover_ring_spawn(void) {
     u32 i;
     struct Coords16 v;
 
-    gSpriteEntries[0x25].flags = 0xC604;
+    gSpriteEntries[0x25].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x25].frame_table = 0;
     gSpriteEntries[0x25].x = gSpriteEntries[gBattleWork.target * 4 + 0x5D].x;
     gSpriteEntries[0x25].y = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
@@ -1032,7 +1039,8 @@ void autorecover_ring_spawn(void) {
     gSpriteEntries[0x25].order = 0xF0;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x3F], 0x25);
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[0x21 + i].flags = 0xC604;
+        gSpriteEntries[0x21 + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) |
+                                         SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
         v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].x,
                                         gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4);
         gSpriteEntries[0x21 + i].x = v.x;
@@ -1119,7 +1127,7 @@ void reactivate_begin(void) {
 void reactivate_orb_spawn(void) {
     lz_decompress_dispatch(gReactivateOrbTilesLz, (void *)0x06014800);
     CpuFastSet(gReactivateOrbPalettes, (void *)0x050002C0, 0x10);
-    gSpriteEntries[0x21].flags |= 0x200;
+    gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE;
     gSpriteEntries[0x21].scale_x = 0x40;
     gSpriteEntries[0x21].scale_y = 0x40;
     gSpriteEntries[0x21].palette = 6;
@@ -1135,7 +1143,8 @@ void reactivate_ring_spawn(void) {
     u32 i;
     struct Coords16 v;
 
-    gSpriteEntries[0x25].flags = 0xC604;
+    gSpriteEntries[0x25].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x25].frame_table = 0;
     gSpriteEntries[0x25].x = gSpriteEntries[gBattleWork.target * 4 + 0x5D].x;
     gSpriteEntries[0x25].y = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
@@ -1145,7 +1154,8 @@ void reactivate_ring_spawn(void) {
     gSpriteEntries[0x25].order = 0xF0;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x3F], 0x25);
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[0x21 + i].flags = 0xC604;
+        gSpriteEntries[0x21 + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) |
+                                         SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
         v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].x,
                                         gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4);
         gSpriteEntries[0x21 + i].x = v.x;

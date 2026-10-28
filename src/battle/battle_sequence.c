@@ -12,6 +12,7 @@
 // clear_sprites, actor_home, end.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void battle_sprite_rotate_angles(u32 dir, u32 delta);
 
@@ -426,7 +427,8 @@ void battle_seq_cmd_spawn_effect(void) {
         }
     }
     clear_battle_sprite_slot(slot, 1);
-    gSpriteEntries[slot].flags = (gBattleWork.seqOperands[6] << 10) | 0x4004;
+    gSpriteEntries[slot].flags =
+        SPRITE_PRIORITY(gBattleWork.seqOperands[6]) | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[slot].frame_table = 0;
     gSpriteEntries[slot].palette = 0xE;
     gSpriteEntries[slot].order = 0x80;
@@ -441,7 +443,7 @@ void battle_seq_cmd_spawn_effect(void) {
         gSpriteEntries[slot].x = gBattleWork.seqOperands[1];
         gSpriteEntries[slot].unk25 = gBattleWork.seqOperands[3];
     } else {
-        gSpriteEntries[slot].flags |= 0x1000;
+        gSpriteEntries[slot].flags |= SPRITE_FLAG_HFLIP;
         gSpriteEntries[slot].x = 0xF0 - gBattleWork.seqOperands[1];
         gSpriteEntries[slot].unk25 = (0x20 - (u8)gBattleWork.seqOperands[3]) & 0x1F;
     }
@@ -672,9 +674,9 @@ void battle_seq_cmd_sprite_motion(void) {
 void battle_seq_cmd_sprite_flip(void) {
     battle_seq_load_operands();
     if (gBattleWork.seqOperands[1] != 0)
-        gSpriteEntries[gBattleWork.seqOperands[0]].flags ^= 0x1000;
+        gSpriteEntries[gBattleWork.seqOperands[0]].flags ^= SPRITE_FLAG_HFLIP;
     if (gBattleWork.seqOperands[2] != 0)
-        gSpriteEntries[gBattleWork.seqOperands[0]].flags ^= 0x2000;
+        gSpriteEntries[gBattleWork.seqOperands[0]].flags ^= SPRITE_FLAG_VFLIP;
     battle_seq_advance();
 }
 
@@ -736,7 +738,8 @@ void battle_seq_cmd_spawn_effect_wave(void) {
         }
     }
     clear_battle_sprite_slot(slot, 1);
-    gSpriteEntries[slot].flags = (gBattleWork.seqOperands[6] << 10) | 0x4004;
+    gSpriteEntries[slot].flags =
+        SPRITE_PRIORITY(gBattleWork.seqOperands[6]) | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[slot].frame_table = 0;
     gSpriteEntries[slot].palette = 0xE;
     gSpriteEntries[slot].order = 0x80;
@@ -751,7 +754,7 @@ void battle_seq_cmd_spawn_effect_wave(void) {
         gSpriteEntries[slot].x = gBattleWork.seqOperands[1];
         gSpriteEntries[slot].unk25 = gBattleWork.seqOperands[3];
     } else {
-        gSpriteEntries[slot].flags |= 0x1000;
+        gSpriteEntries[slot].flags |= SPRITE_FLAG_HFLIP;
         gSpriteEntries[slot].x = 0xF0 - gBattleWork.seqOperands[1];
         gSpriteEntries[slot].unk25 = (0x20 - (u8)gBattleWork.seqOperands[3]) & 0x1F;
     }
@@ -811,7 +814,8 @@ void battle_seq_cmd_spawn_orbit(void) {
         gSpriteEntries[0xA].unk25 = (0x20 - (u8)gBattleWork.seqOperands[3]) & 0x1F;
     }
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[i + 0xB].flags = (gBattleWork.seqOperands[6] << 10) | 0x4004;
+        gSpriteEntries[i + 0xB].flags =
+            SPRITE_PRIORITY(gBattleWork.seqOperands[6]) | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[i + 0xB].frame_table = 0;
         gSpriteEntries[i + 0xB].palette = 0xE;
         gSpriteEntries[i + 0xB].order = 0x80;
@@ -841,7 +845,7 @@ void battle_seq_cmd_spawn_effect_set(void) {
     f = &b->actorSideFlags;
     tbl = gBattleSeqEffectSetPos;
     do {
-        gSpriteEntries[i + 0xA].flags = 0xC004;
+        gSpriteEntries[i + 0xA].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[i + 0xA].frame_table = 0;
         gSpriteEntries[i + 0xA].y = tbl->y;
         gSpriteEntries[i + 0xA].palette = 0xE;
@@ -884,7 +888,8 @@ void battle_seq_cmd_spawn_effect_tiles(void) {
         }
     }
     clear_battle_sprite_slot(slot, 1);
-    gSpriteEntries[slot].flags = (gBattleWork.seqOperands[6] << 10) | 0x4004;
+    gSpriteEntries[slot].flags =
+        SPRITE_PRIORITY(gBattleWork.seqOperands[6]) | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[slot].frame_table = 0;
     gSpriteEntries[slot].palette = 0xE;
     gSpriteEntries[slot].order = 0x80;
@@ -899,7 +904,7 @@ void battle_seq_cmd_spawn_effect_tiles(void) {
         gSpriteEntries[slot].x = gBattleWork.seqOperands[1];
         gSpriteEntries[slot].unk25 = gBattleWork.seqOperands[3];
     } else {
-        gSpriteEntries[slot].flags |= 0x1000;
+        gSpriteEntries[slot].flags |= SPRITE_FLAG_HFLIP;
         gSpriteEntries[slot].x = 0xF0 - gBattleWork.seqOperands[1];
         gSpriteEntries[slot].unk25 = (0x20 - (u8)gBattleWork.seqOperands[3]) & 0x1F;
     }
@@ -935,7 +940,7 @@ void battle_seq_cmd_load_effect_gfx_at(void) {
 // Opcode 0x34: makes a sprite affine and shrinks or grows it.
 void battle_seq_cmd_scale_sprite(void) {
     battle_seq_load_operands();
-    gSpriteEntries[gBattleWork.seqOperands[0]].flags |= 0x200;
+    gSpriteEntries[gBattleWork.seqOperands[0]].flags |= SPRITE_FLAG_AFFINE;
     gSpriteEntries[gBattleWork.seqOperands[0]].scale_x = gBattleWork.seqOperands[4];
     gSpriteEntries[gBattleWork.seqOperands[0]].scale_y = gBattleWork.seqOperands[5];
     gSpriteEntries[gBattleWork.seqOperands[0]].angle = 0;
@@ -955,7 +960,8 @@ void battle_seq_cmd_spawn_ring(void) {
 
     battle_seq_load_operands();
     for (i = 0; i < 8; i++) {
-        gSpriteEntries[i + 0xB].flags = 0xC604;
+        gSpriteEntries[i + 0xB].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) |
+                                        SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[i + 0xB].frame_table = 0;
         v = calc_polar_to_screen_coords(i * 32, gBattleWork.seqOperands[3],
                                         gSpriteEntries[gBattleWork.seqOperands[0]].x,
@@ -1423,7 +1429,7 @@ void battle_seq_spr_effect(void) {
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2C != 0) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C--;
     } else {
-        gSpriteEntries[gGameWork.runningSpriteSlot].flags |= 0x8000;
+        gSpriteEntries[gGameWork.runningSpriteSlot].flags |= SPRITE_FLAG_ENABLED;
         process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                      gGameWork.runningSpriteSlot);
     }
@@ -1438,7 +1444,7 @@ void battle_seq_spr_effect_wave(void) {
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2C != 0) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C--;
     } else {
-        gSpriteEntries[gGameWork.runningSpriteSlot].flags |= 0x8000;
+        gSpriteEntries[gGameWork.runningSpriteSlot].flags |= SPRITE_FLAG_ENABLED;
         process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                      gGameWork.runningSpriteSlot);
     }
@@ -1458,7 +1464,7 @@ void battle_seq_spr_effect_tiles(void) {
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2C != 0) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C--;
     } else {
-        gSpriteEntries[gGameWork.runningSpriteSlot].flags |= 0x8000;
+        gSpriteEntries[gGameWork.runningSpriteSlot].flags |= SPRITE_FLAG_ENABLED;
         process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                      gGameWork.runningSpriteSlot);
         tile_anim_run_dup(gBattleSeqTileAnims[gSpriteEntries[gGameWork.runningSpriteSlot].unk2E], 0);
@@ -1609,7 +1615,7 @@ void battle_seq_spr_trail(void) {
     }
     gSpriteEntries[gGameWork.runningSpriteSlot].unk28 = 0;
     n = find_next_free_sprite_slot(0xE, 0x10);
-    gSpriteEntries[n].flags = 0xC404;
+    gSpriteEntries[n].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[n].frame_table = 0;
     if (!(gBattleWork.actorSideFlags & 2))
         gSpriteEntries[n].x = (gSpriteEntries[gSpriteEntries[gGameWork.runningSpriteSlot].unk2E].x +
@@ -1694,7 +1700,7 @@ void battle_seq_spr_orbit(void) {
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2C != 0)
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C--;
     else {
-        gSpriteEntries[gGameWork.runningSpriteSlot].flags |= 0x8000;
+        gSpriteEntries[gGameWork.runningSpriteSlot].flags |= SPRITE_FLAG_ENABLED;
         process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D],
                                      gGameWork.runningSpriteSlot);
     }

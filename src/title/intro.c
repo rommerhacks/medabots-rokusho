@@ -5,6 +5,7 @@
 // intro_update runs it; intro_check_skip lets START jump to the title screen.
 // The [1] entries of the gIntro* graphics tables are the Rokusho version's (index 0 presumably Metabee's).
 #include "global.h"
+#include "constants/sprites.h"
 
 static bool32 intro_eyes_fade_in_step(void);
 static bool32 intro_mosaic_fade_in_step(void);
@@ -141,7 +142,7 @@ void intro_load_silhouette_scene(void) {
     REG_BG0CNT = 0x1E08;
     REG_BG2CNT = 0x1F0A;
     DmaSet(3, gIntroObjPals[1], PLTT + 0x200, 0x80000050);
-    sprite_entry_init(0, 0xC000, 0x40D, 4, 3);
+    sprite_entry_init(0, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE, 0x40D, 4, 3);
     gSpriteEntries[0].x = 0x98;
     gSpriteEntries[0].y = 0x40;
     setup_screen_transition_effect_080682CC(2, 1, 0);
@@ -174,10 +175,10 @@ void intro_load_scan_screen(void) {
     REG_BG2CNT = 0xE02;
     REG_BG3CNT = 0xF03;
     setup_screen_transition_effect_080682CC(4, 1, 0);
-    sprite_entry_init(9, 0xC800, 0x404, 1, 3);
+    sprite_entry_init(9, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2), 0x404, 1, 3);
     gSpriteEntries[9].x = 8;
     gSpriteEntries[9].y = 0xA0;
-    sprite_entry_init(10, 0xC800, 0x405, 1, 3);
+    sprite_entry_init(10, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2), 0x405, 1, 3);
     gSpriteEntries[10].x = zero;
     gSpriteEntries[10].y = 0x90;
     for (i = 0; i <= 2; i++) {
@@ -249,7 +250,8 @@ void intro_scan_arms_state(void) {
     if (gSceneWork.timer < half) {
         switch (gSceneWork.timer) {
         case 0:
-            sprite_entry_init(1, 0xCA00, 0x409, 3, 3);
+            sprite_entry_init(1, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE,
+                              0x409, 3, 3);
             gSpriteEntries[1].x = 0x50;
             gSpriteEntries[1].y = 0x38;
             gSpriteEntries[1].scale_x = 2;
@@ -264,7 +266,8 @@ void intro_scan_arms_state(void) {
                 gSceneWork.timer++;
             break;
         case 2:
-            sprite_entry_init(2, 0xC600, 0x406, 2, 3);
+            sprite_entry_init(2, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE,
+                              0x406, 2, 3);
             gSpriteEntries[2].x = 0xB8;
             gSpriteEntries[2].y = 0x70;
             gSpriteEntries[2].scale_x = 2;
@@ -379,7 +382,8 @@ void intro_scan_legs_head_state(void) {
     if (gSceneWork.timer < half) {
         switch (gSceneWork.timer) {
         case 0:
-            sprite_entry_init(1, 0xCA00, 0x40B, 3, 3);
+            sprite_entry_init(1, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE,
+                              0x40B, 3, 3);
             gSpriteEntries[1].x = 0x50;
             gSpriteEntries[1].y = 0x38;
             gSpriteEntries[1].scale_x = 2;
@@ -394,7 +398,8 @@ void intro_scan_legs_head_state(void) {
                 gSceneWork.timer++;
             break;
         case 2:
-            sprite_entry_init(2, 0xC600, 0x406, 2, 3);
+            sprite_entry_init(2, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE,
+                              0x406, 2, 3);
             gSpriteEntries[2].x = 0xB8;
             gSpriteEntries[2].y = 0x70;
             gSpriteEntries[2].scale_x = 2;

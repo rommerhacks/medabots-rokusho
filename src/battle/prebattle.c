@@ -6,6 +6,7 @@
 // (battle/robattle) and back to the field (game mode 1).
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void load_encounter_into_battle_setup(void);
 static void prebattle_draw_opponent_name(void);
@@ -402,7 +403,8 @@ void afterbattle_load_new_part_sprite(void) {
     setup_battle_result_sprite();
     lz_decompress_dispatch(gNewPartSpriteTiles, (void *)0x06012400);
     DmaSet(3, gResultSpritePalettes, 0x05000340, 0x84000008);
-    gSpriteEntries[1].flags = 0xC624;
+    gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
+                              SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[1].frame_table = 0;
     gSpriteEntries[1].x = 0xC0;
     gSpriteEntries[1].y = 0x60;
@@ -432,7 +434,7 @@ void afterbattle_load_part_icon_sprite(void) {
     afterbattle_pulse_new_sprite();
     lz_decompress_dispatch(gPartIconSpriteTiles, (void *)0x06016C00);
     DmaSet(3, gPartIconSpritePalette, 0x05000360, 0x84000008);
-    gSpriteEntries[2].flags = 0xC404;
+    gSpriteEntries[2].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[2].frame_table = 0;
     gSpriteEntries[2].x = 8;
     gSpriteEntries[2].y = 0x50;
@@ -1035,7 +1037,8 @@ void draw_opponent_leg_type_icons(void) {
 // Shows sprite 0 when the player owns a Rubberobo Medal (item 50) outside debug battles.
 static void prebattle_init_rubberobo_sprite(void) {
     if (!gGameWork.unk132 && get_item_quantity_by_id(50) && !gFieldWork.fixed_battle) {
-        gSpriteEntries[0].flags = 0xC404;
+        gSpriteEntries[0].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[0].x = 8;
         gSpriteEntries[0].y = 0x50;
         gSpriteEntries[0].palette = 11;

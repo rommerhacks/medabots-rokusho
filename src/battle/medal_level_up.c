@@ -3,6 +3,7 @@
 // to mode 0 state 6 (after-battle). Messages 0x11/0x12: "Wow!!! <Medal>!!! It's transformed into a new shape!",
 // so this is the Medal transformation that follows a level-up (new variant unk8 of the Medal sprite).
 #include "global.h"
+#include "constants/sprites.h"
 
 void start_medal_transform(u8 slot) {
     gCurrentMedalSlot = slot;
@@ -34,7 +35,7 @@ static void medal_transform_update_sparkles(void) {
             s->flags &= ~8;
         } else {
             if (--s->unk1A <= 0xF)
-                s->flags |= 8;
+                s->flags |= SPRITE_OBJ_MODE(1);
             s->pos_x += ((s8 *)s)[0xC] * 4;
             s->pos_y += ((s8 *)s)[0x10] * 4;
             s->x = s->pos_x >> 8;
@@ -96,7 +97,8 @@ void medal_transform_init(void) {
     CpuFastSet(pal, (void *)0x0202F860, 8);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     for (i = 0; i < 16; i++) {
-        gSpriteEntries[i + 1].flags = 0xCA00;
+        gSpriteEntries[i + 1].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE;
         gSpriteEntries[i + 1].x = 0x78;
         gSpriteEntries[i + 1].y = 0x28;
         gSpriteEntries[i + 1].frame_table = 2;
@@ -123,7 +125,8 @@ void medal_transform_draw_medal(void) {
     lz_decompress_dispatch(gMedalSpriteGfx[id][fr], (void *)0x06010000);
     s = gSpriteEntries;
     zero = 0;
-    s->flags = 0xCA04;
+    s->flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     s->x = 0x78;
     s->y = 0x28;
     s->frame = 0x200;

@@ -3,6 +3,7 @@
 // (battle_number_popup_*). Called from battle/robattle and the battle action modules.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 // Queues every Medabot standing on its front or home line (link player 1 queues the opponents first);
 // returns 1 if any did.
@@ -113,7 +114,8 @@ void battle_number_popup_init(u8 *buf, u32 rec) {
             gSpriteEntries[rec * 4 + 10 + i].unk21 = 0xFF;
             return;
         }
-        gSpriteEntries[rec * 4 + 10 + i].flags = 0xC224;
+        gSpriteEntries[rec * 4 + 10 + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE |
+                                                 SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[rec * 4 + 10 + i].frame_table = 0;
         gSpriteEntries[rec * 4 + 10 + i].y = gSpriteEntries[rec * 4 + 0x5D].y + 4;
         gSpriteEntries[rec * 4 + 10 + i].order = 0x90;
@@ -207,7 +209,8 @@ void battle_number_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
     for (i = 0; i <= 4; i++) {
         if (buf[i] == 0xFE)
             return;
-        gSpriteEntries[rec * 4 + slot + i].flags = 0xC224;
+        gSpriteEntries[rec * 4 + slot + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE |
+                                                   SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[rec * 4 + slot + i].frame_table = 0;
         gSpriteEntries[rec * 4 + slot + i].y = gSpriteEntries[rec * 4 + 0x5D].y + 4;
         gSpriteEntries[rec * 4 + slot + i].order = 0x90;
@@ -240,7 +243,8 @@ void battle_text_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
     for (i = 0; i <= 4; i++) {
         if (buf[i] == 0xFE)
             return;
-        gSpriteEntries[rec * 4 + slot + i].flags = 0xC224;
+        gSpriteEntries[rec * 4 + slot + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE |
+                                                   SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[rec * 4 + slot + i].frame_table = 0;
         gSpriteEntries[rec * 4 + slot + i].y = gSpriteEntries[rec * 4 + 0x5D].y + 4;
         gSpriteEntries[rec * 4 + slot + i].order = 0x90;
@@ -273,7 +277,8 @@ void battle_text_popup_init_at(u8 *buf, u32 rec, u32 slot, u32 x, u32 y) {
     for (i = 0; i <= 4; i++) {
         if (buf[i] == 0xFE)
             return;
-        gSpriteEntries[slot + rec * 4 + i].flags = 0xC224;
+        gSpriteEntries[slot + rec * 4 + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE |
+                                                   SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[slot + rec * 4 + i].frame_table = 0;
         gSpriteEntries[slot + rec * 4 + i].y = y;
         gSpriteEntries[slot + rec * 4 + i].x = x + i * 8;

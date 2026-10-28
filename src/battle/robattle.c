@@ -6,6 +6,7 @@
 // logic), battle_hud, command_ring, part_select and status_screen; the action scripts run in game states 8-9.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 // Game state 7 = Robattle (gGameStateHandlers_083AC148[7]); sub-states in gRobattleHandlers.
 void robattle_update(void) {
@@ -744,7 +745,8 @@ void robattle_start_banner_init(void) {
 void robattle_start_banner(void) {
     switch (gGameWork.unk84) {
     case 0:
-        gSpriteEntries[3].flags = 0xC005;
+        gSpriteEntries[3].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE | SPRITE_FLAG_MOSAIC;
         gSpriteEntries[3].frame_table = 0;
         gSpriteEntries[3].x = 0x78;
         gSpriteEntries[3].y = 0x38;
@@ -761,7 +763,8 @@ void robattle_start_banner(void) {
         gSpriteEntries[3].unk20--;
         REG_MOSAIC = (gSpriteEntries[3].unk20 << 12) + (gSpriteEntries[3].unk20 << 8);
         if (gSpriteEntries[3].unk20 == 0) {
-            gSpriteEntries[4].flags = 0xC224;
+            gSpriteEntries[4].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE |
+                                      SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[4].frame_table = 0;
             gSpriteEntries[4].x = 0x78;
             gSpriteEntries[4].y = 0x48;
@@ -950,7 +953,7 @@ void robattle_effect_a_end_init(void) {
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 1)) {
-            gSpriteEntries[0x46 + i * 3].flags |= 0x8220;
+            gSpriteEntries[0x46 + i * 3].flags |= SPRITE_FLAG_ENABLED | SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
             gSpriteEntries[0x46 + i * 3].scale_y = 0x40;
             gSpriteEntries[0x46 + i * 3].scale_x = 0x40;
         }
@@ -965,7 +968,7 @@ void robattle_effect_a_end_anim(void) {
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 1)) {
-            gSpriteEntries[0x46 + i * 3].flags |= 0x8000;
+            gSpriteEntries[0x46 + i * 3].flags |= SPRITE_FLAG_ENABLED;
             gSpriteEntries[0x46 + i * 3].scale_y += 4;
             if ((gSpriteEntries[0x46 + i * 3].scale_x -= 4) == 4) {
                 gBattleWork.resultFlags &= ~2;
@@ -985,7 +988,7 @@ void robattle_effect_b_end_init(void) {
     iterate_bots_setup_battle_sprites();
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 2)) {
-            gSpriteEntries[0x47 + i * 3].flags |= 0x8220;
+            gSpriteEntries[0x47 + i * 3].flags |= SPRITE_FLAG_ENABLED | SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
             gSpriteEntries[0x47 + i * 3].scale_y = 0x40;
             gSpriteEntries[0x47 + i * 3].scale_x = 0x40;
         }
@@ -1000,7 +1003,7 @@ void robattle_effect_b_end_anim(void) {
     update_all_battle_status_sprites();
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 2)) {
-            gSpriteEntries[0x47 + i * 3].flags |= 0x8000;
+            gSpriteEntries[0x47 + i * 3].flags |= SPRITE_FLAG_ENABLED;
             gSpriteEntries[0x47 + i * 3].scale_y += 4;
             if ((gSpriteEntries[0x47 + i * 3].scale_x -= 4) == 4) {
                 gBattleWork.resultFlags &= ~4;

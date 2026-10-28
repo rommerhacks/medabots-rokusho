@@ -2,6 +2,7 @@
 // field/field_mode (case 5) and when the link trade scenes end: the link menu hub with its own save + connect
 // step and yes/no confirmation. Name is a guess.
 #include "global.h"
+#include "constants/sprites.h"
 
 void clear_vram_bg(void) {
     u32 zero;
@@ -24,7 +25,7 @@ void clear_vram_bg(void) {
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     CpuFastSet(gBlackObjPalettes, (void *)0x05000200, 8);
-    gSpriteEntries[0].flags = 0x8000;
+    gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED;
     gSpriteEntries[0].frame_table = 2;
     gSpriteEntries[0].palette = 0xE;
     gSpriteEntries[0].frame = 6;
@@ -158,7 +159,7 @@ void link_menu_fade_in(void) {
     if (blend_fade_step_08065598(gMenuWork->blend)) {
         gGameSubState++;
         text_window_init(1, 0, 1);
-        gSpriteEntries[0].flags |= 0x4000;
+        gSpriteEntries[0].flags |= SPRITE_FLAG_VISIBLE;
     }
 }
 

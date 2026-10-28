@@ -4,6 +4,7 @@
 //   map (item 0), 13-14 close the message and fade out wearing a disguise (item_menu_fade_out_use_item is in
 //   save/save_screen.c). Lists are drawn by menu/item_list.c; uses text/ messages and engine/ sprites.
 #include "global.h"
+#include "constants/sprites.h"
 
 void item_menu_update(void) {
     gItemMenuStates[gGameSubState]();
@@ -19,11 +20,11 @@ static void item_menu_blink_swap_marker(u32 a) {
     if (w->swap_pending) {
         if (w->swap_from >= w->list_top && w->swap_from < w->list_top + 5) {
             if (a & 1)
-                gSpriteEntries[84].flags &= 0xBFFF;
+                gSpriteEntries[84].flags &= (u16)~SPRITE_FLAG_VISIBLE;
             else
-                gSpriteEntries[84].flags |= 0x4000;
+                gSpriteEntries[84].flags |= SPRITE_FLAG_VISIBLE;
         } else
-            gSpriteEntries[84].flags &= 0xBFFF;
+            gSpriteEntries[84].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     }
 }
 
@@ -63,22 +64,22 @@ void item_menu_load_graphics(void) {
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     for (i = 0; i <= 1; i++) {
-        gSpriteEntries[i + 0x51].flags = 0x8000;
+        gSpriteEntries[i + 0x51].flags = SPRITE_FLAG_ENABLED;
         gSpriteEntries[i + 0x51].frame_table = 2;
         gSpriteEntries[i + 0x51].x = i * 40 + 0x18;
         gSpriteEntries[i + 0x51].y = 0x18;
         gSpriteEntries[i + 0x51].palette = 0;
         gSpriteEntries[i + 0x51].frame = 5;
     }
-    gSpriteEntries[0x51].flags |= 0x1000;
+    gSpriteEntries[0x51].flags |= SPRITE_FLAG_HFLIP;
     for (i = 0; i <= 1; i++) {
-        gSpriteEntries[i + 0x53].flags = 0x8000;
+        gSpriteEntries[i + 0x53].flags = SPRITE_FLAG_ENABLED;
         gSpriteEntries[i + 0x53].frame_table = 2;
         gSpriteEntries[i + 0x53].palette = 0;
         gSpriteEntries[i + 0x53].frame = 6;
     }
     for (i = 0; i <= 4; i++) {
-        gSpriteEntries[i + 0x55].flags = 0x8000;
+        gSpriteEntries[i + 0x55].flags = SPRITE_FLAG_ENABLED;
         gSpriteEntries[i + 0x55].frame_table = 2;
         gSpriteEntries[i + 0x55].palette = 0xE;
         gSpriteEntries[i + 0x55].frame = 7;
@@ -99,13 +100,13 @@ void item_menu_init(void) {
     unpack_item_inventory_to_buffer();
     update_battle_medapart_icons();
     if (gMenuWork->item_count) {
-        gSpriteEntries[0x53].flags |= 0x4000;
+        gSpriteEntries[0x53].flags |= SPRITE_FLAG_VISIBLE;
         item_menu_set_cursor_pos(&gSpriteEntries[0x53]);
     }
     w = gMenuWork;
     if ((w->item_count - 1) / 5) {
-        gSpriteEntries[0x51].flags |= 0x4000;
-        gSpriteEntries[0x52].flags |= 0x4000;
+        gSpriteEntries[0x51].flags |= SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[0x52].flags |= SPRITE_FLAG_VISIBLE;
     }
     w->swap_pending = 0;
     CpuFastSet(gGradientPaletteYellow, gPaletteBackup, 0x80);
@@ -167,11 +168,11 @@ void item_menu_handle_input(void) {
     sprite_bob_x(0x53, gFrameCounter, 0x54);
     if ((gMenuWork->item_count - 1) / 5) {
         if ((gFrameCounter >> 4) & 1) {
-            gSpriteEntries[0x51].flags |= 0x4000;
-            gSpriteEntries[0x52].flags |= 0x4000;
+            gSpriteEntries[0x51].flags |= SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[0x52].flags |= SPRITE_FLAG_VISIBLE;
         } else {
-            gSpriteEntries[0x51].flags &= 0xBFFF;
-            gSpriteEntries[0x52].flags &= 0xBFFF;
+            gSpriteEntries[0x51].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[0x52].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         }
     }
 
@@ -226,13 +227,13 @@ other:
     if (w2->swap_pending) {
         item_menu_blink_swap_marker(gFrameCounter);
         if (KEYS_LO(gNewKeys) & 2) {
-            gSpriteEntries[0x54].flags &= 0xBFFF;
+            gSpriteEntries[0x54].flags &= (u16)~SPRITE_FLAG_VISIBLE;
             gMenuWork->swap_pending = 0;
             goto moved;
         }
         if (!(KEYS_LO(gNewKeys) & 5))
             return;
-        gSpriteEntries[0x54].flags &= 0xBFFF;
+        gSpriteEntries[0x54].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         gMenuWork->swap_pending = 0;
         swap_inventory_items();
         unpack_item_inventory_to_buffer();
@@ -259,8 +260,8 @@ other:
         case 4:
             message_next();
             play_sound_effect(6);
-            gSpriteEntries[0x51].flags &= 0xBFFF;
-            gSpriteEntries[0x52].flags &= 0xBFFF;
+            gSpriteEntries[0x51].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[0x52].flags &= (u16)~SPRITE_FLAG_VISIBLE;
             gGameSubState = 9;
             return;
         case 1:
@@ -324,7 +325,7 @@ moved:
 void item_menu_start_swap(void) {
     struct MenuWork **pw = &gMenuWork;
     item_menu_set_cursor_pos(&gSpriteEntries[0x54]);
-    gSpriteEntries[0x54].flags |= 0x4000;
+    gSpriteEntries[0x54].flags |= SPRITE_FLAG_VISIBLE;
     gSpriteEntries[0x54].x++;
     gSpriteEntries[0x54].y++;
     (*pw)->swap_pending = 1;

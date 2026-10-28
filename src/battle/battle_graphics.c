@@ -3,6 +3,7 @@
 // Called from battle/robattle and battle/action_steps.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 u32 battle_load_graphics_step(u32 direct) {
     switch (gGameWork.unk13A) {
@@ -140,7 +141,8 @@ void target_arrows_init(u32 bot) {
 
     clear_battle_sprite_slot(0x78, 8);
     for (i = 0; i <= 7; i++) {
-        gSpriteEntries[0x78 + i].flags = 0xC404;
+        gSpriteEntries[0x78 + i].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[0x78 + i].frame_table = 0;
         gSpriteEntries[0x78 + i].y = 0x78;
         gSpriteEntries[0x78 + i].palette = 9;
@@ -153,10 +155,10 @@ void target_arrows_init(u32 bot) {
         gSpriteEntries[0x78 + i].unk21 = 0;
         gSpriteEntries[0x78 + i].unk22 = i & 3;
         if (bot <= 2) {
-            gSpriteEntries[0x78 + i].flags |= 0x1000;
+            gSpriteEntries[0x78 + i].flags |= SPRITE_FLAG_HFLIP;
             gSpriteEntries[0x78 + i].x = 0x5C;
         } else {
-            gSpriteEntries[0x78 + i].flags &= ~0x1000;
+            gSpriteEntries[0x78 + i].flags &= ~SPRITE_FLAG_HFLIP;
             gSpriteEntries[0x78 + i].x = 0x94;
         }
     }
@@ -256,7 +258,8 @@ void mf_charge_sparkles_init(u32 bot) {
     CpuFastSet(gMfChargeSparklePalette, (void *)0x050002C0, 8);
     for (i = 0; i <= 7; i++) {
         clear_battle_sprite_slot(i + 0x21, 1);
-        gSpriteEntries[0x21 + i].flags = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0x4204;
+        gSpriteEntries[0x21 + i].flags = SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) | SPRITE_FLAG_VISIBLE |
+                                         SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[0x21 + i].frame_table = 0;
         gSpriteEntries[0x21 + i].palette = 6;
         gSpriteEntries[0x21 + i].order = 0x81;
@@ -285,7 +288,7 @@ u32 mf_charge_sparkles_update(u32 bot) {
             done++;
             continue;
         }
-        gSpriteEntries[0x21 + i].flags |= 0x8000;
+        gSpriteEntries[0x21 + i].flags |= SPRITE_FLAG_ENABLED;
         gSpriteEntries[0x21 + i].unk28++;
         gSpriteEntries[0x21 + i].unk20 -= 8;
         if ((gSpriteEntries[0x21 + i].unk28 & 7) == 0)

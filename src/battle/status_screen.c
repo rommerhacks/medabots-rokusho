@@ -3,6 +3,7 @@
 // Called from battle/robattle.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void status_switch_side(void);
 
@@ -69,14 +70,14 @@ static void setup_bot_battle_sprites_08017A7C(u32 rec, u32 x, u32 y) {
     get_bot_part_effective_values(rec, gBattleWork.unk64);
     setup_battle_sprite_group(gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
                               rec, k * 4, x, y, side, 2, k * 4);
-    gSpriteEntries[k * 4 + 1].flags &= 0xFDFF;
-    gSpriteEntries[k * 4 + 2].flags &= 0xFDFF;
+    gSpriteEntries[k * 4 + 1].flags &= (u16)~SPRITE_FLAG_AFFINE;
+    gSpriteEntries[k * 4 + 2].flags &= (u16)~SPRITE_FLAG_AFFINE;
 }
 
 void status_init_cursor(void) {
     u32 x, y, i;
 
-    gSpriteEntries[8].flags = 0xC404;
+    gSpriteEntries[8].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[8].frame_table = 0;
     gSpriteEntries[8].palette = 0xE;
     gSpriteEntries[8].order = 0xC0;

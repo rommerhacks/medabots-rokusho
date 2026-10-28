@@ -4,6 +4,7 @@
 // at Medal level 10 / 30 / 60 ("Unmastered" before that). Called from battle/robattle.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void mf_menu_draw_cost_bar(u32 a);
 
@@ -74,7 +75,7 @@ void mf_menu_init_cursor(void) {
 }
 
 void mf_menu_init_center_icon(void) {
-    gSpriteEntries[0].flags = 0xC404;
+    gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0].frame_table = 0;
     gSpriteEntries[0].x = 0x78;
     gSpriteEntries[0].y = 0x78;
@@ -84,7 +85,7 @@ void mf_menu_init_center_icon(void) {
 }
 
 void mf_menu_init_charge_icon(u32 a) {
-    gSpriteEntries[1].flags = 0xC404;
+    gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[1].frame_table = 0;
     gSpriteEntries[1].x = 0x78;
     gSpriteEntries[1].y = 0x84;
@@ -94,7 +95,7 @@ void mf_menu_init_charge_icon(u32 a) {
 }
 
 void mf_menu_init_top_icon(u32 a) {
-    gSpriteEntries[2].flags = 0xC404;
+    gSpriteEntries[2].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[2].frame_table = 0;
     gSpriteEntries[2].x = 0x78;
     gSpriteEntries[2].y = 0x6C;
@@ -104,7 +105,7 @@ void mf_menu_init_top_icon(u32 a) {
 }
 
 void mf_menu_init_left_icon(u32 a) {
-    gSpriteEntries[3].flags = 0xC404;
+    gSpriteEntries[3].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[3].frame_table = 0;
     gSpriteEntries[3].x = 0x6C;
     gSpriteEntries[3].y = 0x78;
@@ -114,7 +115,7 @@ void mf_menu_init_left_icon(u32 a) {
 }
 
 void mf_menu_init_right_icon(u32 a) {
-    gSpriteEntries[4].flags = 0xC404;
+    gSpriteEntries[4].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[4].frame_table = 0;
     gSpriteEntries[4].x = 0x84;
     gSpriteEntries[4].y = 0x78;

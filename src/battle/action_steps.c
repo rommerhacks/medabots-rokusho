@@ -9,6 +9,7 @@
 // Called from the battle action state code (state 8) and the action script commands (state 9).
 
 #include "global.h"
+#include "constants/sprites.h"
 
 // Hidden function (no callers): moves the record's target (unkE0, record + 1) to the same slot on the other side
 // (gTargetSwapSideTable: 1-3 <-> 4-6, 0 stays 0).
@@ -60,7 +61,7 @@ void miss_popup_load(void) {
 }
 
 void miss_popup_spawn(void) {
-    gSpriteEntries[3].flags = 0xC004;
+    gSpriteEntries[3].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[3].frame_table = 0;
     gSpriteEntries[3].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
     gSpriteEntries[3].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 12;
@@ -267,12 +268,15 @@ void trap_hit_load_graphics(void) {
 }
 
 void trap_hit_sprite_spawn(void) {
-    gSpriteEntries[0x21].flags = ((gBattleWork.battlefieldParams[3] + 2) << 10) | -0x3DFC;
+    gSpriteEntries[0x21].flags =
+        SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) |
+        // FAKEMATCH: the constant is a negative s16 in the original (literal pool value)
+        (s16)(SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE);
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].palette = 6;
     gSpriteEntries[0x21].scale_y = 0x40;
     if (gBattleWork.actorSide == 0) {
-        gSpriteEntries[0x21].flags |= 0x1000;
+        gSpriteEntries[0x21].flags |= SPRITE_FLAG_HFLIP;
         gSpriteEntries[0x21].x = 0x68;
     } else
         gSpriteEntries[0x21].x = 0x88;
@@ -460,7 +464,7 @@ void trap_hit_break_cursor_wait(void) {
 void trap_hit_break_burst_init(void) {
     lz_decompress_dispatch(gHitSparksTiles, (void *)0x06014800);
     CpuFastSet(gHitSparksPalette, (void *)0x050002E0, 8);
-    gSpriteEntries[0x21].flags = 0xC004;
+    gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].x = gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.damagePart].x;
     gSpriteEntries[0x21].y = gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.damagePart].y;
@@ -539,7 +543,10 @@ void trap_disarm_load_graphics(void) {
 }
 
 void trap_disarm_sprite_spawn(void) {
-    gSpriteEntries[0x21].flags = ((gBattleWork.battlefieldParams[3] + 2) << 10) | -0x3DFC;
+    gSpriteEntries[0x21].flags =
+        SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) |
+        // FAKEMATCH: the constant is a negative s16 in the original (literal pool value)
+        (s16)(SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE);
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].palette = 6;
     gSpriteEntries[0x21].scale_y = 0x40;
@@ -547,7 +554,7 @@ void trap_disarm_sprite_spawn(void) {
     gSpriteEntries[0x21].order = 0xF0;
     gSpriteEntries[0x21].y = 0x3C;
     if (gBattleWork.actorSide == 0) {
-        gSpriteEntries[0x21].flags |= 0x1000;
+        gSpriteEntries[0x21].flags |= SPRITE_FLAG_HFLIP;
         gSpriteEntries[0x21].x = 0x68;
     } else
         gSpriteEntries[0x21].x = 0x88;
@@ -681,7 +688,7 @@ void action_flash_load_palette(void) {
 
 void action_flash_spawn(void) {
     clear_battle_sprite_slot(9, 1);
-    gSpriteEntries[9].flags = 0xC404;
+    gSpriteEntries[9].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[9].frame_table = 0;
     gSpriteEntries[9].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
     gSpriteEntries[9].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
@@ -867,7 +874,8 @@ void guard_shield_spawn(void) {
         return;
     }
     clear_battle_sprite_slot(0x21, 1);
-    gSpriteEntries[0x21].flags = 0xC624;
+    gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
+                                 SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.guardBot * 4 + 0x59].x;
     gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.guardBot * 4 + 0x59].y - 4;
@@ -1101,7 +1109,8 @@ void attack_hit_check_critical(void) {
 void attack_hit_critical_spawn(void) {
     lz_decompress_dispatch(gCriticalHitTiles, (void *)0x06010000);
     CpuFastSet(gCriticalHitPalette, (void *)0x050003C0, 8);
-    gSpriteEntries[10].flags = 0xC404;
+    gSpriteEntries[10].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[10].frame_table = 0;
     gSpriteEntries[10].palette = 0xE;
     gSpriteEntries[10].order = 0x80;
@@ -1167,7 +1176,8 @@ void attack_hit_part_marker_spawn(void) {
         }
         play_sound_effect(6);
     }
-    gSpriteEntries[10].flags = 0xC404;
+    gSpriteEntries[10].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[10].frame_table = 0;
     gSpriteEntries[10].palette = 0xE;
     gSpriteEntries[10].order = 0x80;
@@ -1380,7 +1390,8 @@ void attack_carry_marker_spawn(void) {
         gSpriteEntries[10].frame = 0x1500;
         play_sound_effect(0x2A);
     }
-    gSpriteEntries[10].flags = 0xC404;
+    gSpriteEntries[10].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[10].frame_table = 0;
     gSpriteEntries[10].palette = 0xE;
     gSpriteEntries[10].order = 0x80;
@@ -1409,7 +1420,8 @@ void attack_hit_goto_sparks(void) {
 void attack_miss_sprite_spawn(void) {
     lz_decompress_dispatch(gAttackMissTiles, (void *)0x06010000);
     CpuFastSet(gAttackMissPalette, (void *)0x050003C0, 8);
-    gSpriteEntries[10].flags = 0xC404;
+    gSpriteEntries[10].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[10].frame_table = 0;
     gSpriteEntries[10].palette = 0xE;
     gSpriteEntries[10].order = 0x80;
@@ -1442,7 +1454,8 @@ void attack_miss_sprite_drop(void) {
 void attack_nullified_sprite_spawn(void) {
     lz_decompress_dispatch(gAttackNullifiedTiles, (void *)0x06010000);
     CpuFastSet(gAttackNullifiedPalette, (void *)0x050003C0, 8);
-    gSpriteEntries[10].flags = 0xC404;
+    gSpriteEntries[10].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[10].frame_table = 0;
     gSpriteEntries[10].palette = 0xE;
     gSpriteEntries[10].order = 0x80;
@@ -1463,7 +1476,8 @@ void attack_nullified_sprite_spawn(void) {
 void attack_absorbed_sprite_spawn(void) {
     lz_decompress_dispatch(gAttackAbsorbedTiles, (void *)0x06010000);
     CpuFastSet(gAttackAbsorbedPalette, (void *)0x050003C0, 8);
-    gSpriteEntries[10].flags = 0xC404;
+    gSpriteEntries[10].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[10].frame_table = 0;
     gSpriteEntries[10].palette = 0xE;
     gSpriteEntries[10].order = 0x80;
@@ -1658,7 +1672,8 @@ void status_attack_flash_spawn(void) {
         x = gBattleWork.unk154;
         y = gBattleWork.unk156;
     }
-    gSpriteEntries[10].flags = 0xC624;
+    gSpriteEntries[10].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
+                               SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[10].frame_table = 0;
     gSpriteEntries[10].x = x;
     gSpriteEntries[10].y = y;
@@ -1686,7 +1701,8 @@ void status_attack_flash_spawn(void) {
         CpuFastSet(gFireEffectPalette, (void *)0x050003A0, 8);
         break;
     }
-    gSpriteEntries[11].flags = 0xC404;
+    gSpriteEntries[11].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[11].frame_table = 0;
     gSpriteEntries[11].x = x;
     gSpriteEntries[11].y = y;
@@ -1741,14 +1757,16 @@ void status_attack_icons_spawn(void) {
     }
     sx = x;
     sy = y;
-    gSpriteEntries[10].flags = 0xC404;
+    gSpriteEntries[10].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[10].frame_table = 0;
     gSpriteEntries[10].x = sx - 0x10;
     gSpriteEntries[10].y = sy - 8;
     gSpriteEntries[10].palette = 0xE;
     gSpriteEntries[10].order = 0x80;
     gSpriteEntries[10].frame = 0x1700;
-    gSpriteEntries[11].flags = 0xC404;
+    gSpriteEntries[11].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[11].frame_table = 0;
     gSpriteEntries[11].x = sx + 0x10;
     gSpriteEntries[11].y = sy + 8;
@@ -1911,7 +1929,7 @@ void bot_defeat_ring_wait(void) {
 void bot_defeat_burst_init(void) {
     lz_decompress_dispatch(gHitSparksTiles, (void *)0x06014800);
     CpuFastSet(gHitSparksPalette, (void *)0x050002E0, 8);
-    gSpriteEntries[0x21].flags = 0xC004;
+    gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.unk51 * 4 + 0x5D].x;
     gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.unk51 * 4 + 0x5D].y - 4;
@@ -1972,7 +1990,8 @@ void reaction_rise_spawn(void) {
         x = gBattleWork.unk154;
         y = gBattleWork.unk156;
     }
-    gSpriteEntries[10].flags = 0xC404;
+    gSpriteEntries[10].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[10].frame_table = 0;
     gSpriteEntries[10].x = x;
     gSpriteEntries[10].y = y;
@@ -1981,7 +2000,8 @@ void reaction_rise_spawn(void) {
     gSpriteEntries[10].frame = 0x1300;
     gSpriteEntries[10].unk2B = 0;
     gSpriteEntries[10].unk2C = 0;
-    gSpriteEntries[11].flags = 0xC404;
+    gSpriteEntries[11].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[11].frame_table = 0;
     gSpriteEntries[11].x = x;
     gSpriteEntries[11].y = y;
@@ -2060,7 +2080,8 @@ void reaction_nullify_init(void) {
         x = gBattleWork.unk154;
         y = gBattleWork.unk156;
     }
-    gSpriteEntries[10].flags = 0xC404;
+    gSpriteEntries[10].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[10].frame_table = 0;
     gSpriteEntries[10].x = x;
     gSpriteEntries[10].y = y;
@@ -2092,7 +2113,8 @@ void reaction_absorb_init(void) {
         x = gBattleWork.unk154;
         y = gBattleWork.unk156;
     }
-    gSpriteEntries[10].flags = 0xC404;
+    gSpriteEntries[10].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[10].frame_table = 0;
     gSpriteEntries[10].x = x;
     gSpriteEntries[10].y = y;
@@ -2134,7 +2156,7 @@ void sacrifice_ring_wait(void) {
 void sacrifice_burst_init(void) {
     lz_decompress_dispatch(gHitSparksTiles, (void *)0x06014800);
     CpuFastSet(gHitSparksPalette, (void *)0x050002E0, 8);
-    gSpriteEntries[0x21].flags = 0xC004;
+    gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
     gSpriteEntries[0x21].x = gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.actorPart].x;
     gSpriteEntries[0x21].y = gSpriteEntries[0x5A + gBattleWork.actor * 4 + gBattleWork.actorPart].y;

@@ -8,6 +8,7 @@
 // gMenuWork here: own_part_id / own_part_kind and the partner's, frame the tile animation counter,
 // ticks the timeout, trade_medal the traded Medal record.
 #include "global.h"
+#include "constants/sprites.h"
 
 static void medapart_trade_init_sprite_tree(u32 a) {
     if (a == 0) {
@@ -82,9 +83,10 @@ static void medal_trade_show_medal_sprite(u32 medal, u32 frame) {
     lz_decompress_dispatch(gMedalSpriteGfx[medal][frame], (void *)0x06010000);
     s = gSpriteEntries;
     zero = 0;
-    s->flags = 0x8A24;
+    s->flags = SPRITE_FLAG_ENABLED | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE |
+               SPRITE_FLAG_PART_PALETTE;
     if (gMenuWork->partner_chose == 0)
-        s->flags |= 0x4000;
+        s->flags |= SPRITE_FLAG_VISIBLE;
     s->x = 0xB8;
     s->y = 0x38;
     s->frame = 0x200;
@@ -302,7 +304,7 @@ void medapart_trade_init_screen(void) {
     load_medapart_sprite_animation(gMenuWork->own_part_id, gMenuWork->own_part_kind, 0);
     trade_tiles_speed_up_two_rows();
     init_blend_effect(gMenuWork->blend, 0x10, 0, -1, 0xC0);
-    gSpriteEntries[0x21].flags = 0x8000;
+    gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED;
     gSpriteEntries[0x21].frame_table = 2;
     gSpriteEntries[0x21].x = 0x28;
     gSpriteEntries[0x21].y = 0x40;
@@ -494,7 +496,7 @@ void medapart_trade_scroll_in(void) {
     load_medapart_sprite_animation(gMenuWork->partner_part_id, gMenuWork->partner_part_kind, 1);
     trade_tiles_slow_down_two_rows();
     if (gMenuWork->frame == 0) {
-        gSpriteEntries[0x21].flags = 0xC000;
+        gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
         gSpriteEntries[0x21].frame_table = 2;
         gSpriteEntries[0x21].x = 0x28;
         gSpriteEntries[0x21].y = 0x40;
@@ -763,10 +765,10 @@ void medal_trade_flip_close(void) {
     if (t > 0xF) {
         gGameSubState++;
         if (s->partner_chose == 0) {
-            gSpriteEntries[0].flags &= 0xBFFF;
+            gSpriteEntries[0].flags &= (u16)~SPRITE_FLAG_VISIBLE;
             return;
         }
-        gSpriteEntries[0].flags |= 0x4000;
+        gSpriteEntries[0].flags |= SPRITE_FLAG_VISIBLE;
         lvl = s->trade_medal.level;
         render_text_sprites_08040DB8(s->trade_medal.name, 0x20, 4, 4, 10, 2, 0, 1);
         for (i = 0; i <= 9; i++)

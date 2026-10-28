@@ -2,6 +2,7 @@
 // cart (shop_purchase_menu_handler), the transaction, then shop_list_fade_out_exit starts a battle scene with the list
 // id. The table continues into handlers in code_080628A8.c (0x08064C7C..).
 #include "global.h"
+#include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
     return (void *)(0x06004000 + off);
@@ -27,37 +28,37 @@ void shop_list_init(void) {
     REG_BG1CNT = 0x1B05;
     REG_BG2CNT = 0x1A06;
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
-    gSpriteEntries[8].flags = 0x8400;
+    gSpriteEntries[8].flags = SPRITE_FLAG_ENABLED | SPRITE_PRIORITY(1);
     gSpriteEntries[8].frame_table = 2;
     gSpriteEntries[8].palette = 2;
     gSpriteEntries[8].frame = 6;
     for (i = 0; i < 2; i++) {
-        gSpriteEntries[11 + i].flags = 0x8000;
+        gSpriteEntries[11 + i].flags = SPRITE_FLAG_ENABLED;
         gSpriteEntries[11 + i].frame_table = 2;
         gSpriteEntries[11 + i].palette = 2;
         gSpriteEntries[11 + i].frame = 5;
         gSpriteEntries[11 + i].x = i * 24 + 0xD0;
         gSpriteEntries[11 + i].y = gMenuWork->list_cursor * 16 + 0x54;
     }
-    gSpriteEntries[11].flags |= 0x1000;
+    gSpriteEntries[11].flags |= SPRITE_FLAG_HFLIP;
     for (i = 0; i < 2; i++) {
-        gSpriteEntries[0x68 + i].flags = 0x8400;
+        gSpriteEntries[0x68 + i].flags = SPRITE_FLAG_ENABLED | SPRITE_PRIORITY(1);
         gSpriteEntries[0x68 + i].frame_table = 2;
         gSpriteEntries[0x68 + i].palette = 2;
         gSpriteEntries[0x68 + i].frame = 8;
         gSpriteEntries[0x68 + i].x = 0x1C;
         gSpriteEntries[0x68 + i].y = i ? 0x95 : 0x44;
     }
-    gSpriteEntries[0x69].flags |= 0x2000;
+    gSpriteEntries[0x69].flags |= SPRITE_FLAG_VFLIP;
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[0x6A + i].flags = 0x8400;
+        gSpriteEntries[0x6A + i].flags = SPRITE_FLAG_ENABLED | SPRITE_PRIORITY(1);
         gSpriteEntries[0x6A + i].frame_table = 2;
         gSpriteEntries[0x6A + i].palette = 3;
         gSpriteEntries[0x6A + i].x = 0x78;
         gSpriteEntries[0x6A + i].y = i * 16 + 0x50;
     }
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[0x6E + i].flags = 0x8400;
+        gSpriteEntries[0x6E + i].flags = SPRITE_FLAG_ENABLED | SPRITE_PRIORITY(1);
         gSpriteEntries[0x6E + i].frame_table = 2;
         gSpriteEntries[0x6E + i].palette = 3;
         gSpriteEntries[0x6E + i].frame = i + 0x1D;
@@ -126,7 +127,7 @@ void enable_obj_layer_and_load_palette(void) {
     if (gMenuWork->list_count != 0) {
         u8 *buf = (u8 *)0x02023000;
         draw_number_tall(buf[buf[0x78]], 2, 0x1B, 10, 6, (REG_BG1CNT >> 8) & 0x1F);
-        gSpriteEntries[8].flags |= 0x4000;
+        gSpriteEntries[8].flags |= SPRITE_FLAG_VISIBLE;
     }
     if (gMenuWork->list_count > 1)
         draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 1], 2, 0x1B, 12, 6, (REG_BG1CNT >> 8) & 0x1F);
@@ -177,7 +178,7 @@ void shop_purchase_menu_handler(void) {
     if (gMenuWork->cursor == 0) {
         if (gFrameCounter & 8) {
             if (CART[gMenuWork->list_cursor] != 0)
-                gSpriteEntries[11].flags |= 0x4000;
+                gSpriteEntries[11].flags |= SPRITE_FLAG_VISIBLE;
             {
                 u32 *m = &gPlayerRecord.money;
                 u32 sum = CART[0];
@@ -191,11 +192,11 @@ void shop_purchase_menu_handler(void) {
                 p++;
                 sum += *(u32 *)((u8 *)p + off);
                 if (*m >= sum && ((struct ShopSellEntry *)(p - 1))[k].count + CART[k] <= 0x62)
-                    gSpriteEntries[12].flags |= 0x4000;
+                    gSpriteEntries[12].flags |= SPRITE_FLAG_VISIBLE;
             }
         } else {
-            gSpriteEntries[11].flags &= 0xBFFF;
-            gSpriteEntries[12].flags &= 0xBFFF;
+            gSpriteEntries[11].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[12].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         }
     } else {
         if (gFrameCounter & 8) {
@@ -203,12 +204,12 @@ void shop_purchase_menu_handler(void) {
 
             idx = gMenuWork->list_cursor + CART[0x78];
             if (CART[idx] != 0)
-                gSpriteEntries[11].flags |= 0x4000;
+                gSpriteEntries[11].flags |= SPRITE_FLAG_VISIBLE;
             if (l[idx].count > CART[idx])
-                gSpriteEntries[12].flags |= 0x4000;
+                gSpriteEntries[12].flags |= SPRITE_FLAG_VISIBLE;
         } else {
-            gSpriteEntries[11].flags &= 0xBFFF;
-            gSpriteEntries[12].flags &= 0xBFFF;
+            gSpriteEntries[11].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[12].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         }
     }
 
@@ -278,7 +279,7 @@ void shop_purchase_menu_handler(void) {
         }
         play_sound_effect(4);
         for (i = 0; i <= 1; i++)
-            gSpriteEntries[11 + i].flags &= 0xBFFF;
+            gSpriteEntries[11 + i].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         open_choice_menu(1, 0x16, 7);
         text_window_init(1, 0, 0);
         gGameSubState = 6;
@@ -344,14 +345,14 @@ void transition_fade_to_battle(void) {
 
         REG_DISPCNT &= 0xFDFF;
         for (i = 0; i < 2; i++)
-            gSpriteEntries[11 + i].flags &= 0xBFFF;
+            gSpriteEntries[11 + i].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         for (i = 0; i < 2; i++)
-            gSpriteEntries[0x68 + i].flags &= 0xBFFF;
+            gSpriteEntries[0x68 + i].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         for (i = 0; i < 4; i++)
-            gSpriteEntries[0x6A + i].flags &= 0xBFFF;
+            gSpriteEntries[0x6A + i].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         for (i = 0; i < 4; i++)
-            gSpriteEntries[0x6E + i].flags &= 0xBFFF;
-        gSpriteEntries[8].flags &= 0xBFFF;
+            gSpriteEntries[0x6E + i].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[8].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         REG_BLDALPHA = 0x1000;
         REG_BG1CNT = 0x1E05;
         REG_BG2CNT = 0x1D06;

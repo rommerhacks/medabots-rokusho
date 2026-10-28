@@ -5,6 +5,7 @@
 // Rows: 0 Continue (hidden when there is no save: unk4 = first selectable row), 1 New Game, 2 Options.
 // Options rows: gOptionTimeLimit, gOptionSkipMessages, gOptionBattleMusic (saved in SaveData.flags).
 #include "global.h"
+#include "constants/sprites.h"
 
 void menu_mode_update(void) {
     gLinkPackets.sendKeys = gHeldKeys;
@@ -209,7 +210,7 @@ void title_menu_load_graphics(void) {
     CpuFastSet(gTitleMenuBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 0x80);
     CpuFastSet(gCursorArrowPalette, (void *)(PLTT + 0x200), 0x80);
-    gSpriteEntries[14].flags = 0x8000;
+    gSpriteEntries[14].flags = SPRITE_FLAG_ENABLED;
     gSpriteEntries[14].order = one;
     gSpriteEntries[14].frame_table = 2;
     gSpriteEntries[14].palette = 0;
@@ -296,7 +297,7 @@ void title_menu_input(void) {
             title_options_draw_values(gMenuWork->cursor);
             title_menu_pulse_selected(3, 0);
             gSpriteEntries[14].y = gMenuWork->cursor * 24 + 0x50;
-            gSpriteEntries[14].flags |= 0x4000;
+            gSpriteEntries[14].flags |= SPRITE_FLAG_VISIBLE;
             gGameSubState++;
         } else {
             gMenuWork->counter = 45;
@@ -382,7 +383,7 @@ void title_options_input(void) {
             play_song(1);
             play_sound_effect(4);
             gMenuWork->cursor = 2;
-            gSpriteEntries[14].flags &= 0xBFFF;
+            gSpriteEntries[14].flags &= (u16)~SPRITE_FLAG_VISIBLE;
             gGameSubState--;
             title_options_highlight_row(3);
             title_options_draw_row_sweep(3, 0);

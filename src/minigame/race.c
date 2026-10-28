@@ -5,6 +5,7 @@
 // Sprites with a motion (gSpriteEntries[].unk20) are driven by gRaceSpriteMotions; clear_sprite_entry is
 // shared with other scenes.
 #include "global.h"
+#include "constants/sprites.h"
 
 static void race_clear_screen(void);
 static void race_load_field_bg(void);
@@ -310,13 +311,13 @@ void race_load_track_status_bar(void) {
     race_draw_tile_block(4, 0xB, 0xE);
     race_draw_tile_block(4, 0x15, 0xE);
     REG_BG1CNT = 0x1D0D;
-    sprite_entry_init(1, 0xC400, 0x6F, 8, 1);
+    sprite_entry_init(1, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x6F, 8, 1);
     gSpriteEntries[1].x = 0xF;
     gSpriteEntries[1].y = 0x7F;
-    sprite_entry_init(2, 0xC400, 0x7B, 9, 1);
+    sprite_entry_init(2, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x7B, 9, 1);
     gSpriteEntries[2].x = 0x5F;
     gSpriteEntries[2].y = 0x7F;
-    sprite_entry_init(3, 0xC400, 0x87, 10, 1);
+    sprite_entry_init(3, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x87, 10, 1);
     gSpriteEntries[3].x = 0xAF;
     gSpriteEntries[3].y = 0x7F;
 }
@@ -447,12 +448,13 @@ static void race_place_all_runners(void) {
 }
 
 static void race_init_referee_sprite(void) {
-    sprite_entry_init(0, 0xC004, 0x33, 0, 1);
+    sprite_entry_init(0, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE, 0x33, 0, 1);
     gSpriteEntries[0].x = -16;
 }
 
 static void race_init_pointer_sprite(void) {
-    sprite_entry_init(1, 0xC404, 0x100, 1, 3);
+    sprite_entry_init(1, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE,
+                      0x100, 1, 3);
     gSpriteEntries[1].x = 0x28;
     gSpriteEntries[1].y = 0x10;
     gSpriteEntries[1].unk1A = 0;
@@ -460,7 +462,7 @@ static void race_init_pointer_sprite(void) {
 }
 
 static void race_init_signal_sprite(void) {
-    sprite_entry_init(0, 0xC400, 0x104, 0xC, 3);
+    sprite_entry_init(0, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x104, 0xC, 3);
     gSpriteEntries[0].x = 0x78;
     gSpriteEntries[0].y = -16;
     gSpriteEntries[0].unk1A = 0;
@@ -469,7 +471,8 @@ static void race_init_signal_sprite(void) {
 }
 
 static void race_init_winner_sprite(void) {
-    sprite_entry_init(1, 0xC808, 0x10B, 3, 3);
+    sprite_entry_init(1, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_OBJ_MODE(1), 0x10B, 3,
+                      3);
     gSpriteEntries[1].y = 0x40;
     gSpriteEntries[1].unk1A = 0;
     DmaSet(3, gRaceWinnerObjPalette, 0x05000260, 0x84000008);
@@ -478,19 +481,28 @@ static void race_init_winner_sprite(void) {
 }
 
 static void race_init_place_sprites(void) {
-    sprite_entry_init(2, 0xCB20, 0x108, 2, 3);
+    sprite_entry_init(2,
+                      SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE |
+                          SPRITE_FLAG_ROTATE | SPRITE_FLAG_DOUBLE_SIZE,
+                      0x108, 2, 3);
     gSpriteEntries[2].y = 0xC8;
     gSpriteEntries[2].scale_x = 0x88;
     gSpriteEntries[2].scale_y = 0x88;
     gSpriteEntries[2].angle = 0;
     gSpriteEntries[2].unk1A = 0;
-    sprite_entry_init(3, 0xCB20, 0x109, 2, 3);
+    sprite_entry_init(3,
+                      SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE |
+                          SPRITE_FLAG_ROTATE | SPRITE_FLAG_DOUBLE_SIZE,
+                      0x109, 2, 3);
     gSpriteEntries[3].y = 0xC8;
     gSpriteEntries[3].scale_x = 0x88;
     gSpriteEntries[3].scale_y = 0x88;
     gSpriteEntries[3].angle = 0;
     gSpriteEntries[3].unk1A = 0;
-    sprite_entry_init(4, 0xCB20, 0x10A, 2, 3);
+    sprite_entry_init(4,
+                      SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE |
+                          SPRITE_FLAG_ROTATE | SPRITE_FLAG_DOUBLE_SIZE,
+                      0x10A, 2, 3);
     gSpriteEntries[4].y = 0xC8;
     gSpriteEntries[4].scale_x = 0x88;
     gSpriteEntries[4].scale_y = 0x88;
@@ -1107,9 +1119,9 @@ u32 race_motion_confetti_fall(u8 i) {
         }
     }
     if (S.unk1A & 8)
-        S.flags |= 0x1000;
+        S.flags |= SPRITE_FLAG_HFLIP;
     else
-        S.flags &= 0xEFFF;
+        S.flags &= (u16)~SPRITE_FLAG_HFLIP;
     return 1;
 #undef S
 }

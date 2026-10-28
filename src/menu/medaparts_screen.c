@@ -4,6 +4,7 @@
 // and the text renderer.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void medaparts_scroll_bg(void);
 static void medaparts_list_set_cursor_from_part(void);
@@ -585,8 +586,8 @@ void medaparts_help_exit(void) {
 void medapart_trade_choice_open(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    gSpriteEntries[1].flags &= 0xBFFF;
-    gSpriteEntries[2].flags &= 0xBFFF;
+    gSpriteEntries[1].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+    gSpriteEntries[2].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     set_tilemap_and_decompress_bg(18, 5, gTradeChoiceWindowTilemap, REG_BG0CNT, 0x380);
     gGameWork.tradeChoice = 0;
     medapart_trade_init_choice_cursor();
@@ -729,14 +730,14 @@ static void medaparts_list_draw_part_icons(void) {
 }
 
 static void medaparts_list_init_page_arrows(void) {
-    gSpriteEntries[1].flags = 0xC804;
+    gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[1].x = 0x4C;
     gSpriteEntries[1].y = 0x18;
     gSpriteEntries[1].frame = 0x302;
     gSpriteEntries[1].palette = 14;
     gSpriteEntries[1].frame_table = 0;
     gSpriteEntries[1].order = 0x80;
-    gSpriteEntries[2].flags = 0xC804;
+    gSpriteEntries[2].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[2].x = 0x8C;
     gSpriteEntries[2].y = 0x18;
     gSpriteEntries[2].frame = 0x303;
@@ -747,16 +748,16 @@ static void medaparts_list_init_page_arrows(void) {
 
 static void medaparts_list_blink_page_arrows(void) {
     if (gFrameCounter & 8) {
-        gSpriteEntries[1].flags &= 0xBFFF;
-        gSpriteEntries[2].flags &= 0xBFFF;
+        gSpriteEntries[1].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[2].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     } else {
-        gSpriteEntries[1].flags |= 0x4000;
-        gSpriteEntries[2].flags |= 0x4000;
+        gSpriteEntries[1].flags |= SPRITE_FLAG_VISIBLE;
+        gSpriteEntries[2].flags |= SPRITE_FLAG_VISIBLE;
     }
 }
 
 static void medaparts_list_init_cursor(void) {
-    gSpriteEntries[3].flags = 0xC804;
+    gSpriteEntries[3].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[3].x = 0x50;
     gSpriteEntries[3].y = gGameWork.medalRow * 16 + 0x30;
     gSpriteEntries[3].frame = 0x307;
@@ -1096,14 +1097,16 @@ void count_compatible_medaparts(void) {
 
 static void medapart_detail_init_arrows(void) {
     if (gGameWork.freeMedalCount > 1) {
-        gSpriteEntries[1].flags = 0xC804;
+        gSpriteEntries[1].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[1].x = 0x0C;
         gSpriteEntries[1].y = 0x28;
         gSpriteEntries[1].frame = 0x302;
         gSpriteEntries[1].palette = 14;
         gSpriteEntries[1].frame_table = 0;
         gSpriteEntries[1].order = 0x80;
-        gSpriteEntries[2].flags = 0xC804;
+        gSpriteEntries[2].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[2].x = 0x54;
         gSpriteEntries[2].y = 0x28;
         gSpriteEntries[2].frame = 0x303;
@@ -1116,11 +1119,11 @@ static void medapart_detail_init_arrows(void) {
 static void medapart_detail_blink_arrows(void) {
     if (gGameWork.freeMedalCount > 1) {
         if (gFrameCounter & 8) {
-            gSpriteEntries[1].flags &= 0xBFFF;
-            gSpriteEntries[2].flags &= 0xBFFF;
+            gSpriteEntries[1].flags &= (u16)~SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[2].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         } else {
-            gSpriteEntries[1].flags |= 0x4000;
-            gSpriteEntries[2].flags |= 0x4000;
+            gSpriteEntries[1].flags |= SPRITE_FLAG_VISIBLE;
+            gSpriteEntries[2].flags |= SPRITE_FLAG_VISIBLE;
         }
     }
 }
@@ -1192,7 +1195,7 @@ static void medaparts_help_init_cursor(void) {
     const u8 *rec = gHelpCursorLayouts[gGameWork.helpFromPage];
 
     gGameWork.helpPageCount = rec[0];
-    gSpriteEntries[6].flags = 0xC004;
+    gSpriteEntries[6].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[6].x = rec[(gGameWork.helpPage + 1) << 1] * 8;
     gSpriteEntries[6].y = rec[((gGameWork.helpPage + 1) << 1) + 1] * 8;
     gSpriteEntries[6].frame = 0x308;
@@ -1210,7 +1213,8 @@ static void medaparts_help_move_cursor(void) {
 }
 
 static void medapart_trade_init_choice_cursor(void) {
-    gSpriteEntries[4].flags = 0xD204;
+    gSpriteEntries[4].flags =
+        SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_HFLIP | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[4].x = 0xA8;
     gSpriteEntries[4].y = gGameWork.tradeChoice * 16 + 0x38;
     gSpriteEntries[4].frame = 0x307;
@@ -1253,12 +1257,12 @@ u32 medapart_trade_choice_close_step(void) {
 void medapart_trade_choice_blink_step(void) {
     if (gSpriteEntries[4].unk27 != 30) {
         if (gSpriteEntries[4].unk27 & 4)
-            gSpriteEntries[4].flags &= 0xBFFF;
+            gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         else
-            gSpriteEntries[4].flags |= 0x4000;
+            gSpriteEntries[4].flags |= SPRITE_FLAG_VISIBLE;
         gSpriteEntries[4].unk27++;
     } else {
-        gSpriteEntries[4].flags |= 0x4000;
+        gSpriteEntries[4].flags |= SPRITE_FLAG_VISIBLE;
         gSpriteEntries[4].unk29++;
     }
 }

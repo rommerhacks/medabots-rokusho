@@ -527,7 +527,7 @@ u32 field_effect_run(void) {
                     if (E[i].unk1C0.active) {
                         if (E[i].unk1C0.start <= E[i].unk1C0.timer) {
                             for (k = 0; k < E[i].unk210; k++)
-                                gSpriteEntries[E[i].unk2DC[k]].flags |= 0x4000;
+                                gSpriteEntries[E[i].unk2DC[k]].flags |= SPRITE_FLAG_VISIBLE;
                             E[i].unk1C0.timer++;
                             if (E[i].unk1C0.end != 0xFFFF && E[i].unk1C0.timer >= E[i].unk1C0.end) {
                                 for (k = 0; k < E[i].unk210; k++)
@@ -542,10 +542,10 @@ u32 field_effect_run(void) {
                         if (E[i].unk1D0.start <= E[i].unk1D0.timer) {
                             if (!(E[i].unk1D0.timer & 1)) {
                                 for (k = 0; k < E[i].unk210; k++)
-                                    gSpriteEntries[E[i].unk2DC[k]].flags &= ~0x4000;
+                                    gSpriteEntries[E[i].unk2DC[k]].flags &= ~SPRITE_FLAG_VISIBLE;
                             } else {
                                 for (k = 0; k < E[i].unk210; k++)
-                                    gSpriteEntries[E[i].unk2DC[k]].flags |= 0x4000;
+                                    gSpriteEntries[E[i].unk2DC[k]].flags |= SPRITE_FLAG_VISIBLE;
                             }
                             E[i].unk1D0.timer++;
                             if (E[i].unk1D0.end != 0xFFFF && E[i].unk1D0.timer >= E[i].unk1D0.end)
@@ -1070,7 +1070,7 @@ u32 field_effect_run(void) {
             gFieldWork.npc_load_mode = 1;
             area_load_graphics();
             area_load_encounter_rate();
-            gSpriteEntries[89].flags &= ~0x4000;
+            gSpriteEntries[89].flags &= ~SPRITE_FLAG_VISIBLE;
             break;
         case 133: // guess: set unk214..unk220
             S.pc++;
@@ -1168,6 +1168,7 @@ u32 field_effect_run(void) {
 }
 
 #include "keys.h"
+#include "constants/sprites.h"
 
 static void field_effect_update_sprite_depth(void) {
     struct FieldEffectState *b = &gFieldEffect;
@@ -1184,11 +1185,11 @@ static void field_effect_update_sprite_depth(void) {
                 d = s->pos_z;
                 if (d > gFieldEffect.base_camera_dist) {
                     s->order = gFieldEffect.unk218;
-                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags &= 0xF3FF;
+                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags &= (u16)~SPRITE_FLAG_PRIORITY_MASK;
                     gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags |= gFieldEffect.unk220;
                 } else {
                     s->order = gFieldEffect.unk214 + (gFieldEffect.base_camera_dist - d);
-                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags &= 0xF3FF;
+                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags &= (u16)~SPRITE_FLAG_PRIORITY_MASK;
                     gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags |= gFieldEffect.unk21C;
                 }
             }

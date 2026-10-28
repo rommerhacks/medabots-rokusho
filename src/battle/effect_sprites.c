@@ -3,6 +3,7 @@
 // offset tables gPartFlyStepsHead..gSpriteHopYSteps, and the OAM / animation-frame helpers used by every skill module.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 static void armor_bar_draw(u32 x, u32 y, u32 w, u32 max, u32 cur);
 
@@ -101,7 +102,7 @@ u32 effect_sprite_fly_to_part(u32 slot, u32 part) {
     struct SpriteEntry *s = &base[slot];
     u8 *frame;
 
-    if (!(s->flags & 0x8000) || *(frame = &s->unk23) == 0x10)
+    if (!(s->flags & SPRITE_FLAG_ENABLED) || *(frame = &s->unk23) == 0x10)
         return 1;
     switch (part) {
     case 0:
@@ -133,7 +134,7 @@ void hit_sparks_spawn(u32 slot, u32 part, s16 x, s16 y) {
 
     clear_battle_sprite_slot(slot, 4);
     for (i = 0; i <= 3; i++) {
-        gSpriteEntries[slot + i].flags = 0x4404;
+        gSpriteEntries[slot + i].flags = SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[slot + i].frame_table = 0;
         gSpriteEntries[slot + i].palette = 0xE;
         gSpriteEntries[slot + i].order = 0x80;
@@ -158,7 +159,7 @@ u32 hit_sparks_update(u32 slot) {
     for (i = 0; i <= 3; i++) {
         if (gSpriteEntries[slot + i].flags != 0) {
             if (gSpriteEntries[slot + i].unk2C == 0) {
-                gSpriteEntries[slot + i].flags |= 0x8004;
+                gSpriteEntries[slot + i].flags |= SPRITE_FLAG_ENABLED | SPRITE_FLAG_PART_PALETTE;
                 gSpriteEntries[slot + i].palette = 0xE;
                 process_sprite_anim_commands(gBattleSpriteAnimScripts[29], n = slot + i);
                 if (gSpriteEntries[slot + i].unk22 == 0xFF)
@@ -181,7 +182,8 @@ void damage_digits_spawn(u8 *digits, u32 slot, u32 part, s16 x, s16 y) {
     for (; i <= 4; i++) {
         if (digits[i] == 0xFE)
             return;
-        gSpriteEntries[slot + i].flags = 0xC624;
+        gSpriteEntries[slot + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) |
+                                         SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[slot + i].frame_table = 0;
         t = x;
         t += gPartSpriteOffsets[part << 1];
@@ -216,7 +218,8 @@ void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 part, s16 x, s16 y) 
     for (; i <= 4; i++) {
         if (buf[i] == 0xFE)
             return;
-        gSpriteEntries[slot + i].flags = 0xC404;
+        gSpriteEntries[slot + i].flags =
+            SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[slot + i].frame_table = 0;
         t = x;
         t += gPartSpriteOffsets[part << 1];
@@ -244,7 +247,7 @@ void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 part, s16 x, s16 y) 
 
 u32 advance_sprite_anim_frame(u32 sprite, u32 b) {
     s32 f;
-    if (!(gSpriteEntries[sprite].flags & 0x8000) || gSpriteEntries[sprite].unk23 == 0x10)
+    if (!(gSpriteEntries[sprite].flags & SPRITE_FLAG_ENABLED) || gSpriteEntries[sprite].unk23 == 0x10)
         return 1;
     gSpriteEntries[sprite].y = (gSpriteEntries[sprite].y + gSpriteHopYSteps[gSpriteEntries[sprite].unk23]) & 0xFF;
     f = gSpriteEntries[sprite].unk23 + 1;
@@ -319,7 +322,7 @@ void effect_sprite_spawn_at_part(u32 slot, u32 part, s16 x, s16 y, u32 n) {
     clear_battle_sprite_slot(slot, 1);
     base = gSpriteEntries;
     s = &base[slot];
-    s->flags = 0xC404;
+    s->flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     s->frame_table = 0;
     s->palette = 0xE;
     s->order = 0x80;

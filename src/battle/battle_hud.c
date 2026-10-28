@@ -2,6 +2,7 @@
 // panels and the Medaforce gauge (bar and value). Called from battle/robattle and the battle menus.
 
 #include "global.h"
+#include "constants/sprites.h"
 
 void load_bg3_tilemap_08488764(void) {
     set_tilemap_and_decompress_bg(14, 3, gBattleBg3TilemapLz, REG_BG3CNT, 0x200);
@@ -97,8 +98,8 @@ void setup_battle_bot_sprite_group(u32 rec, u32 x, u32 y) {
     flip = bot_sprite_is_flipped(rec);
     setup_battle_sprite_group(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip,
                               gBattleWork.battlefieldParams[3] + 2, rec * 4 + 0x5A);
-    gSpriteEntries[rec * 4 + 0x5B].flags &= 0xFDFF;
-    gSpriteEntries[rec * 4 + 0x5C].flags &= 0xFDFF;
+    gSpriteEntries[rec * 4 + 0x5B].flags &= (u16)~SPRITE_FLAG_AFFINE;
+    gSpriteEntries[rec * 4 + 0x5C].flags &= (u16)~SPRITE_FLAG_AFFINE;
     gSpriteEntries[rec * 4 + 0x5B].angle = 0;
     gSpriteEntries[rec * 4 + 0x5C].angle = 0;
 }
