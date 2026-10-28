@@ -77,15 +77,15 @@ void reset_bot_status_and_init_palette_transfers(u32 rec) {
     gBattleBots[rec].hitFlags = 0;
     gBattleBots[rec].stateFlags &= 0xE5;
     z0 = 0;
-    CpuSet(&z0, gUnk_030018A8, 0x05000008);
+    CpuSet(&z0, gBattleWorkActionVars, 0x05000008);
     z1 = 0;
-    CpuSet(&z1, gUnk_030018A8 + 8, 0x05000008);
+    CpuSet(&z1, gBattleWorkActionVars + 8, 0x05000008);
     z2 = 0;
-    CpuSet(&z2, gUnk_030018A8 + 16, 0x05000004);
+    CpuSet(&z2, gBattleWorkActionVars + 16, 0x05000004);
     z3 = 0;
-    CpuSet(&z3, gUnk_030018A8 + 20, 0x05000008);
+    CpuSet(&z3, gBattleWorkActionVars + 20, 0x05000008);
     z4 = 0;
-    CpuSet(&z4, gUnk_030018A8 + 47, 0x05000001);
+    CpuSet(&z4, gBattleWorkActionVars + 47, 0x05000001);
 }
 
 // unkF8 = first record of the acting Medabot's side (0 team, 3 opponents).

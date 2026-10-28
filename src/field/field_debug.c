@@ -528,7 +528,7 @@ static void field_debug_draw_page(u32 mode) {
             advance_sprite_animation_frame(0x32);
             advance_sprite_animation_frame(0x33);
             advance_sprite_animation_frame(0x34);
-            if (gUnk_083D2C3D[gFieldDebug.unk20] == 3)
+            if (gSpriteSheetPreviewKinds[gFieldDebug.unk20] == 3)
                 advance_sprite_animation_frame(0x39);
         }
         break;
@@ -731,8 +731,8 @@ static inline void init_field_sprite(u8 row, u8 col) {
     u8 j = slot + 42;
 
     gSpriteEntries[slot].unk30 = gFieldDebug.unk20;
-    gSpriteEntries[slot].unkC_8 = gUnk_03006432 + (col * 32 - 48);
-    gSpriteEntries[slot].unk10_8 = gUnk_03006434 + (16 - row * 32);
+    gSpriteEntries[slot].unkC_8 = gFieldPlayerX + (col * 32 - 48);
+    gSpriteEntries[slot].unk10_8 = gFieldPlayerY + (16 - row * 32);
     gSpriteEntries[slot].unk0 = 0xC804;
     gSpriteEntries[slot].unk2E = 1;
     gSpriteEntries[j].unk0 = 0xCC0C;
@@ -764,11 +764,11 @@ void field_debug_draw_sprite_preview(void) {
         sprite_entry_clear(slot);
         sprite_entry_clear(j);
         gSpriteEntries[slot].unk30 = gFieldDebug.unk20;
-        if (gUnk_083D2C3D[gFieldDebug.unk20] == 3) {
+        if (gSpriteSheetPreviewKinds[gFieldDebug.unk20] == 3) {
             sprite_entry_init(slot, 0xC804, sprite_code_anim_index(0), sprite_code_kind(0), 1);
             gSpriteEntries[slot].unk2B = sprite_code_kind(0);
-            gSpriteEntries[slot].unkC_8 = gUnk_03006432 - 0x30;
-            gSpriteEntries[slot].unk10_8 = gUnk_03006434 + 0x30;
+            gSpriteEntries[slot].unkC_8 = gFieldPlayerX - 0x30;
+            gSpriteEntries[slot].unk10_8 = gFieldPlayerY + 0x30;
             gEntityStates[slot].active = 0xFFFF;
             gSpriteEntries[slot].unk2C = zero = 0;
             sprite_anim_start(slot, 0x60);

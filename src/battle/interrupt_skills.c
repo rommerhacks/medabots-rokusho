@@ -6,7 +6,7 @@
 //   0x3A Forcedrain (50), 0x3B / 0x3C TeamAttack (52: a Shoot script with the Team Form check and the turret
 //   animation inserted), 0x3D clears the queued action (script_op_clear_queued_action, in action_script.c),
 //   0x3E CntrAttk (54), 0x3F Change, ItrpChange, AttkChange, DEF Change, HealChange (55-59).
-// Skill names from the in-game skill list and help texts (text after gUnk_083BE4D4); effects match a
+// Skill names from the in-game skill list and help texts (text at 0x083BE4D4); effects match a
 // public FAQ's skill table. Steps 1-3 of each table are the shared time-out steps and 4-7 the shared
 // "small Medabot tosses something" steps of battle/action_steps.
 // Statuses set on the target: unkC9 = skill id (0x2B Impair, 0x2C Confusion, 0x2E / 0x2F No Escape /

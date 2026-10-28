@@ -59,8 +59,8 @@ s32 resolve_sprite_sheet_id(s32 t) {
     else if (t <= 0xCF)
         ;
     else if (t <= 0xFE) {
-        const u8 *tbl = gUnk_08414394[t - 0xD0];
-        t = tbl[gFieldWork.unkC38[t - 0xD0]];
+        const u8 *tbl = gSpriteSheetVariantTables[t - 0xD0];
+        t = tbl[gFieldWork.sheet_variants[t - 0xD0]];
     } else
         t = 0xFF;
     if (t != 0xFF && t > 0xBF)
@@ -276,9 +276,9 @@ void fill_sprite_palettes(s32 arg) {
     }
 }
 
-// guess: sprite unkB (0xFF / 0 / 0x40) from the kind table gUnk_083D2ADD by sprite unk30.
+// guess: sprite unkB (0xFF / 0 / 0x40) from the kind table gSpriteSheetBlendKinds by sprite unk30.
 void sprite_set_blend_from_kind(u8 idx) {
-    u8 v = gUnk_083D2ADD[gSpriteEntries[idx].unk30];
+    u8 v = gSpriteSheetBlendKinds[gSpriteEntries[idx].unk30];
 
     if (v == 2)
         gSpriteEntries[idx].unkB = 0xFF;

@@ -335,9 +335,9 @@ void battle_action_cleanup(u32 bot) {
         gBattleBots[bot].parts[i].unkF = 0;
     }
     zero = 0;
-    CpuSet(&zero, gUnk_030018A8, 0x05000008);
+    CpuSet(&zero, gBattleWorkActionVars, 0x05000008);
     zero2 = 0;
-    CpuSet(&zero2, gUnk_030018A8 + 8, 0x05000008);
+    CpuSet(&zero2, gBattleWorkActionVars + 8, 0x05000008);
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState && (gBattleBots[i].stateFlags & 0x18) &&
             (u8)(gBattleBots[i].lastAction - 1) <= 2 && gBattleBots[i].parts[gBattleBots[i].lastAction - 1].unk11 == 0)

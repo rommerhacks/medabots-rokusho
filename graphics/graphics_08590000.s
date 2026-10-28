@@ -40,8 +40,8 @@ gMapSpriteSheet48Tiles:
 gFieldSharedSpritePalette:
 	.incbin "baserom.gba", 0x5FA0E4, 0x20
 
-	.global gUnk_085FA104
-gUnk_085FA104:
+	.global gShadowTilesLz
+gShadowTilesLz:
 	.incbin "baserom.gba", 0x5FA104, 0x40
 
 	.global gVehicleMenuNameTiles

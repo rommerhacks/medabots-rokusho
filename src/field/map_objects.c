@@ -96,9 +96,9 @@ u32 map_cursor_move_and_check_event(void) {
                 break;
             }
             if ((obj->unk2 & 0xF000) == 0) {
-                u8 *d = &gUnk_03003810;
+                u8 *d = &gSpriteEntries[47].unk20;
                 u8 slot = obj->unk4_0 + 49;
-                const u8 *t = gUnk_083D2903;
+                const u8 *t = gNpcFacingTowardPlayer;
                 set_sprite_anim_and_store(slot, t[*d], obj);
             }
         }

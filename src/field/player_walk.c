@@ -141,7 +141,7 @@ void init_battle_field_setup(void) {
     field_set_player_facing(gFieldWork.player_facing);
     follower_turn_toward_player(3);
     gSpriteEntries[47].unkB = 0x40;
-    LZ77UnCompVram(gUnk_085FA104, (void *)0x06017FC0);
+    LZ77UnCompVram(gShadowTilesLz, (void *)0x06017FC0);
     sprite_entry_init(89, 0xCC0C, 0x90, 14, 1);
     gSpriteEntries[89].unkC_8 = gFieldWork.player_x;
     gSpriteEntries[89].unk10_8 = gFieldWork.player_y - 5;
@@ -224,11 +224,12 @@ void field_player_step(u8 dir) {
     }
 }
 
-static u8 handle_battle_movement_input(u8 dir) {
-    u32 tile = gUnk_0847E948[gFieldWork.player_tile_y * (gFieldWork.map_width >> 1) + gFieldWork.player_tile_x] - 1;
+// Area 0x53 only: tiles that reverse or rotate the D-pad.
+static u8 area53_remap_dpad(u8 dir) {
+    u32 tile = gArea53DpadTiles[gFieldWork.player_tile_y * (gFieldWork.map_width >> 1) + gFieldWork.player_tile_x] - 1;
 
     if (tile <= 3)
-        dir = gUnk_083D28C3[tile][dir];
+        dir = gDpadRemaps[tile][dir];
     return dir;
 }
 
@@ -257,7 +258,7 @@ void field_player_walk_input(void) {
         if (any) {
             input = (gHeldKeyBits.down << 3) | (gHeldKeyBits.up << 2) | (gHeldKeyBits.left << 1) | gHeldKeyBits.right;
             if (gFieldWork.script_running == 0 && gFieldWork.area_id == 0x53)
-                input = handle_battle_movement_input(input);
+                input = area53_remap_dpad(input);
             switch (input) {
             case 4:
                 dir = zero;

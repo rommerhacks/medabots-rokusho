@@ -9,7 +9,7 @@ void dispatch_game_state_handler_08002534(void) {
 }
 
 void dispatch_game_substate_handler_08002554(void) {
-    gUnk_083AC248[gGameSubState]();
+    gDevTestStates[gGameSubState]();
 }
 
 // Sub-state 0: shows BG1 over the screen.

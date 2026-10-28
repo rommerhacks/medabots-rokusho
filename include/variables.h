@@ -50,7 +50,6 @@ extern struct Vec16 gBg3Scroll; // BG3 scroll
 extern u8 *gEventFlags;         // two 4-bit entries per byte (bit 3 / bit 7: flag, bits 0-2 / 4-6: count)
 extern u16 *gFieldTilemapBuf;
 extern struct FieldSceneParams gFieldSceneParams;
-extern u8 gUnk_03003810;
 extern struct LinkPackets gLinkPackets;
 extern s8 gLinkMultiplayerActive;      // multiplayer link active (soft_reset)
 extern vu16 gVBlankFlags;              // bit 0: vblank handler running
@@ -103,19 +102,20 @@ extern const u8 gEventPictureSongs[];      // 4 per event picture: stop song?, s
 extern const u16 *const gFieldSpritePalettes[]; // 16-colour OBJ palette per map sprite sheet id (NULL: none)
 extern const u8 gFormTileActions[][8];   // field tile actions per player form (copied to gFieldWork.tile_actions)
 extern const u8 gSpriteSheetHasShadow[]; // per map sprite sheet id: give the sprite a shadow (sprite 0x90)
-extern const u8 gUnk_083D28C3[][16];
+extern const u8 gDpadRemaps[][16];       // D-pad bits remapped by an area 0x53 tile (1 same, 2 reversed, 3 / 4 rotated)
 extern const u8 gAreaMapSizes[][2];
-extern const u8 gUnk_0847E948[];
+extern const u8 gArea53DpadTiles[]; // area 0x53, per tile: 1-4 = the gDpadRemaps row + 1 (area53_remap_dpad)
 extern const struct AreaWarp *const gAreaWarps[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
 extern void (*const gMapScriptUpdates[])(void);  // per-command update handlers, run each frame while cmd_busy is set
 extern const u8 gOppositeDirection[];            // indexed by the player's facing (gSpriteEntries[47].unk21)
-extern const u8 gUnk_083D28B0[];             // indexed by gFieldWork.player_form, passed to script_sprite_begin_walk
-extern const u8 *const gAreaCollisionMaps[]; // per area: tile map
+extern const u8 gPlayerFormScriptSpeedIds[];     // walk speed id by gFieldWork.player_form for scripted player walks
+                                                 // (gPlayerFormSpeedIds but form 9 walks normally)
+extern const u8 *const gAreaCollisionMaps[];     // per area: tile map
 extern const struct AreaGfx gAreaBgTilemaps[];
-extern const u8 gUnk_083D2903[];
-extern const u8 gWarpSoundEffects[]; // sound played when stepping on a warp, by gFieldSceneParams.warp_sound
-extern const u8 gUnk_085FA104[];     // LZ77 sprite tiles
+extern const u8 gNpcFacingTowardPlayer[]; // NPC facing by the player's (gSpriteEntries[47].unk20): the opposite one
+extern const u8 gWarpSoundEffects[];      // sound played when stepping on a warp, by gFieldSceneParams.warp_sound
+extern const u8 gShadowTilesLz[];         // the player's shadow (sprite 89), LZ77 OBJ tiles at 0x06017FC0
 extern const struct MapExit *const gAreaExits[]; // per area: 8-byte map exit records, 0xFF-terminated
 extern const u16 gSoundPsgNoteFreqs[];
 extern const u16 gSoundFifoVolumeMasks[];
@@ -296,7 +296,7 @@ extern const s16 gJumpArcTable[][8];              // jump arc: [n][0] / 16 = spr
 extern const u8 gScriptPlayerForms[];     // map script terrain/palette id -> player_form/saved_player_form/unkC28
                                           // (map_script_update_set_player_form)
 extern struct PlayerRecord gPlayerRecord; // gMoney is its first field
-extern const Func gUnk_083AC248[];        // game state 0 sub-state handlers (guess: debug map viewer)
+extern const Func gDevTestStates[];       // game state 0 (developer test screen) sub-state handlers
 extern const Func gFieldMenuHandlers[];   // game state 1 (field pause menu) sub-state handlers
 extern const void
     *const gMenuMessages[]; // menu messages: debug menu (0-3), Medals screen hints / help (4-15), pre-battle (20-21)
@@ -722,7 +722,8 @@ extern const u8 gRightBotPanelTilemap[]; // right (opponent side) Medabot panel 
 extern u8 gOptionSkipMessages; // Robattle: nonzero skips the message windows unless gGameWork.skipBotSetup == 1
                                // (battle_message_open..battle_message_finish)
 extern const u8 gMfChargeSparklePalette[]; // 32-byte OBJ palette, copied to OBJ palette 6 (mf_charge_sparkles_init)
-extern u32 gUnk_030018A8[16];              // cleared in two 32-byte halves by battle_action_cleanup
+extern u32 gBattleWorkActionVars[16];      // = (u8 *)&gBattleWork + 0xA8: the per-action fields, cleared as words
+                                           // (battle_action_cleanup, reset_bot_status_and_init_palette_transfers)
 extern const u8 gGaugeFillTiles[];         // 9 tiles: an 8-px bar segment filled 0..8. guess: gauge fill steps
 extern const u8
     gArmorPanelDecorTilesLz[]; // compressed BG tiles, 6 small frame pieces (attack_hit_load_graphics). guess
@@ -1004,10 +1005,10 @@ extern const Func gBattleSeqCommands[]; // battle sequence commands, by battle_s
 extern const Func gParticleShotHandlers[]; // shot states by sprite unk29 (particle_run_shot_handlers)
 extern u16 gPartSpriteOffsets[]; // x, y offset pairs by part (effect_sprite_spawn_at_part); not const: hit_sparks_spawn
                                  // reloads it per iteration
-extern const u8 gDiceRollValues[]; // 16 values, two random picks summed into gBattleWork.dice1 / unk189
-                                   // (script_op_roll_dice_damage)
-extern u8 gUnk_03003470[]; // IWRAM buffer; script_op_guard_restore copies 4 x 0x40 bytes from +0xE40 + (rec * 0x100) to
-                           // its start
+extern const u8 gDiceRollValues[];  // 16 values, two random picks summed into gBattleWork.dice1 / unk189
+                                    // (script_op_roll_dice_damage)
+extern u8 gGuardSpriteEntryBytes[]; // = (u8 *)&gSpriteEntries[33]: script_op_guard_restore copies the guarding
+                                    // Medabot's 4 saved part sprites (entries 90 + 4 * rec) back over 33-36
 extern const u8
     gActionScriptOperandCounts[];    // Robattle action script: operand count per command byte (battle_script_advance)
 extern const u8 gSpriteHopOffsets[]; // 32 y offsets added to a sprite's unk4 by sprite_hop_step
@@ -1150,11 +1151,11 @@ extern struct PartSpriteLayer gRightArmPartLayer;
 extern struct PartSpriteLayer gLeftArmPartLayer;
 extern struct PartSpriteLayer gHeadPartLayer;
 extern struct PartSpriteLayer gLegPartLayer;
-extern const u8 gUnk_083D2ADD[]; // per animation id (gSpriteEntries[].unk30): 2 -> unkB = 0xFF, 1 -> 0, else 0x40
-                                 // (sprite_set_blend_from_kind)
-extern const u8 *const
-    gUnk_08414394[]; // tile tables by id - 0xD0, indexed by gFieldWork.unkC38[id - 0xD0] (resolve_sprite_sheet_id)
-extern u8 *gAreaAnimTileSrc;               // animated tile source for the area (animate_area_bg_tiles)
+extern const u8 gSpriteSheetBlendKinds[]; // per sprite sheet id (gSpriteEntries[].unk30): 2 -> unkB = 0xFF, 1 -> 0,
+                                          // else 0x40 (sprite_set_blend_from_kind)
+extern const u8 *const gSpriteSheetVariantTables[]; // sheet ids by id - 0xD0, indexed by gFieldWork.sheet_variants[id -
+                                                    // 0xD0] (resolve_sprite_sheet_id)
+extern u8 *gAreaAnimTileSrc;                        // animated tile source for the area (animate_area_bg_tiles)
 extern const u8 *const gAreaTileAnims[];   // per area id: tile animation [0] tiles per frame, [2] enabled, [3..] frame
                                            // list ending 0xFF (animate_area_bg_tiles)
 extern const u16 *const gAreaBgPalettes[]; // per area id: 0xD0-color palette for 0x0202FA00, NULL = default set from
@@ -1171,7 +1172,7 @@ extern const u8 *const
 extern const u8 *const
     gFieldSpriteTiles[]; // per sprite sheet id: LZ77 OBJ tiles, NULL entries fall back to 1 (area_load_sprite_sheets)
 extern const u16 gFieldSharedSpritePalette[]; // palette copied to 0x0202F9C0 (area_load_sprite_palettes)
-extern u32 gUnk_0300534C;
+extern u32 gFieldUnusedWord;                  // cleared by field_clear_ram, never used otherwise
 extern struct AffineParam gAffineParams[32];
 extern struct BattleEntity3D *gFieldEffectEntities;
 extern const s32 *const *const
@@ -1420,7 +1421,8 @@ extern const u16 gVehicleIconDimPalette[];
 extern u16 *gFieldDebugEventValues[];
 extern u16 *gFieldDebugMessageValues[];
 extern u8 **gFieldDebugPageValues[];
-extern const u8 gUnk_083D2C3D[];
+extern const u8 gSpriteSheetPreviewKinds[]; // per sprite sheet id; 3: the field debug preview adds the player
+                                            // sprite (slot 57) beside it. guess: rideable / carried sheets
 // Field debug screen labels: NUL-terminated ASCII, drawn glyph by glyph from gFieldDebugFont
 extern const u8 gFieldDebugLabelMd[];
 extern const u8 gFieldDebugLabelMp[];
@@ -1519,8 +1521,8 @@ extern const void *gFieldEffectObjTiles[];    // battle sequence sprite graphics
 extern const void *gFieldEffectObjPalettes[]; // battle sequence sprite palettes (opcode 27)
 extern const u8 gTownMapWarpAreas[];          // area id by town map place (field effect 0x12 = town map travel)
 extern const u8 gTownMapWarpPositions[];      // 4 per town map place: [2], [3] = arrival x, y in tiles
-extern const u8 gUnk_083D2AD8;
-extern const u8 gUnk_083D2AD9[];
+extern const u8 gTeleportWarpArea;            // field effect 0xE (teleport): destination area
+extern const u8 gTeleportWarpPosition[];      // [2] / [3]: its tile x / y
 extern u32 gPoseAnimIds[][7];      // [pose][gLegPartPoseSets[legs]]: keyframe animation id (medabot_pose_anim_step)
 extern u8 gLegPartPoseSets[];      // per legs part id: pose set column of gPoseAnimIds
 extern u8 *gPoseKeyframeEnds[];    // per animation: end frame of each keyframe, 0-terminated
@@ -1547,7 +1549,8 @@ extern struct SpriteFrame *const *const gSpriteFrameSets3[];
 extern const struct MapNpcRecord *const gAreaNpcRecords[];
 extern u8 gListWorkBuffer[];  // shared work buffer; the shop list keeps the cart there (quantity per sell-list entry)
 extern const u8 gShopStock[]; // 4 Medapart ids per shop (gShopId * 4 + i); 0xFF ends
-extern u16 gUnk_03006432;     // guess: battle field grid origin x (field_debug_draw_sprite_preview)
-extern u16 gUnk_03006434;     // guess: battle field grid origin y
 
-#endif // GUARD_VARIABLES_H
+extern u16 gFieldPlayerX; // FAKEMATCH: = gFieldWork.player_x; field_debug only matches with a separate symbol (the
+                          // literal is loaded on its own)
+extern u16 gFieldPlayerY; // FAKEMATCH: = gFieldWork.player_y, same
+#endif                    // GUARD_VARIABLES_H

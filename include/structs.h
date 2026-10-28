@@ -1007,13 +1007,13 @@ struct FieldWork {
     u8 song;         // song playing (0xFF: the script override in script_song)
     u8 script_song;  // song set by a map script (field_update_music event 3)
     u8 unkC32;
-    u8 medawatch_enabled; // Medawatch menu enabled (B opens the field menu only if set; field debug "CM")
-    u8 bg_anim_enabled;   // area BG tile animation enabled (animate_area_bg_tiles)
-    u8 bg_anim_frame;     // its frame index
-    u8 bg_anim_timer;     // frames until the next one (2: every 3rd frame; runtime-checked)
-    u8 rng_seed;          // random seed
-    u8 unkC38[0x10];
-    u16 map_origin_x; // screen offset of a map smaller than the screen (field_load_area_tiles)
+    u8 medawatch_enabled;    // Medawatch menu enabled (B opens the field menu only if set; field debug "CM")
+    u8 bg_anim_enabled;      // area BG tile animation enabled (animate_area_bg_tiles)
+    u8 bg_anim_frame;        // its frame index
+    u8 bg_anim_timer;        // frames until the next one (2: every 3rd frame; runtime-checked)
+    u8 rng_seed;             // random seed
+    u8 sheet_variants[0x10]; // variant picked for sprite sheet ids 0xD0+ (map_script_cmd_set_area_sprite_sheet)
+    u16 map_origin_x;        // screen offset of a map smaller than the screen (field_load_area_tiles)
     u16 map_origin_y;
     u8 unkC4C;
     u8 unkC4D;          // field debug page 0 "MF"

@@ -95,8 +95,8 @@ gSpriteFrameSets3:
 gGameStateHandlers_083AC148:
 	.incbin "baserom.gba", 0x3AC148, 0x100
 
-	.global gUnk_083AC248
-gUnk_083AC248:
+	.global gDevTestStates
+gDevTestStates:
 	.incbin "baserom.gba", 0x3AC248, 0x3C
 
 	.global gFieldMenuHandlers
@@ -1210,20 +1210,20 @@ gOppositeDirection:
 gMapScriptUpdates:
 	.incbin "baserom.gba", 0x3D24B0, 0x400
 
-	.global gUnk_083D28B0
-gUnk_083D28B0:
+	.global gPlayerFormScriptSpeedIds
+gPlayerFormScriptSpeedIds:
 	.incbin "baserom.gba", 0x3D28B0, 0x10
 
 	.global gWalkSpeedFactors
 gWalkSpeedFactors:
 	.incbin "baserom.gba", 0x3D28C0, 0x3
 
-	.global gUnk_083D28C3
-gUnk_083D28C3:
+	.global gDpadRemaps
+gDpadRemaps:
 	.incbin "baserom.gba", 0x3D28C3, 0x40
 
-	.global gUnk_083D2903
-gUnk_083D2903:
+	.global gNpcFacingTowardPlayer
+gNpcFacingTowardPlayer:
 	.incbin "baserom.gba", 0x3D2903, 0x5
 
 	.global gPlayerFormSpeedIds
@@ -1262,24 +1262,24 @@ gTownMapWarpAreas:
 gTownMapWarpPositions:
 	.incbin "baserom.gba", 0x3D2AB4, 0x24
 
-	.global gUnk_083D2AD8
-gUnk_083D2AD8:
+	.global gTeleportWarpArea
+gTeleportWarpArea:
 	.incbin "baserom.gba", 0x3D2AD8, 0x1
 
-	.global gUnk_083D2AD9
-gUnk_083D2AD9:
+	.global gTeleportWarpPosition
+gTeleportWarpPosition:
 	.incbin "baserom.gba", 0x3D2AD9, 0x4
 
-	.global gUnk_083D2ADD
-gUnk_083D2ADD:
+	.global gSpriteSheetBlendKinds
+gSpriteSheetBlendKinds:
 	.incbin "baserom.gba", 0x3D2ADD, 0xB0
 
 	.global gSpriteSheetHasShadow
 gSpriteSheetHasShadow:
 	.incbin "baserom.gba", 0x3D2B8D, 0xB0
 
-	.global gUnk_083D2C3D
-gUnk_083D2C3D:
+	.global gSpriteSheetPreviewKinds
+gSpriteSheetPreviewKinds:
 	.incbin "baserom.gba", 0x3D2C3D, 0x173
 
 	.global gFieldEffectModels
@@ -1394,8 +1394,8 @@ gAreaWarps:
 gAreaSpriteSheetIds:
 	.incbin "baserom.gba", 0x413514, 0xE80
 
-	.global gUnk_08414394
-gUnk_08414394:
+	.global gSpriteSheetVariantTables
+gSpriteSheetVariantTables:
 	.incbin "baserom.gba", 0x414394, 0x5D4
 
 	.global gTextTable
@@ -1410,8 +1410,8 @@ gTextBankTables:
 gScriptItemMessages:
 	.incbin "baserom.gba", 0x47E8C4, 0x84
 
-	.global gUnk_0847E948
-gUnk_0847E948:
+	.global gArea53DpadTiles
+gArea53DpadTiles:
 	.incbin "baserom.gba", 0x47E948, 0x238
 
 	.global gAreaSongs

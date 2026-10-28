@@ -175,7 +175,8 @@ void map_script_cmd_player_walk(void) {
     gSpriteEntries[47].unk26 = 0;
     gSpriteEntries[47].unk27 = 0;
     gFieldWork.script_field_update = 1;
-    script_sprite_begin_walk(47, gFieldWork.cmd_args[gSpriteEntries[47].unk26], gUnk_083D28B0[gFieldWork.player_form]);
+    script_sprite_begin_walk(47, gFieldWork.cmd_args[gSpriteEntries[47].unk26],
+                             gPlayerFormScriptSpeedIds[gFieldWork.player_form]);
     field_set_player_facing(gSpriteEntries[47].unk20);
     gFieldWork.cmd_busy = 1;
 }
@@ -658,7 +659,7 @@ void map_script_cmd_set_area_sprite_sheet(void) {
     read_map_script_bytes(2);
     if (gFieldWork.cmd_args[0] != 0)
         gFieldWork.cmd_args[0]--;
-    gFieldWork.unkC38[gFieldWork.cmd_args[0]] = gFieldWork.cmd_args[1];
+    gFieldWork.sheet_variants[gFieldWork.cmd_args[0]] = gFieldWork.cmd_args[1];
     area_load_sprite_sheets();
     switch (gBlendEffect.type) {
     case 1:

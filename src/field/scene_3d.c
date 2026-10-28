@@ -1056,9 +1056,9 @@ u32 field_effect_run(void) {
                 field_center_camera_on_player();
                 field_update_music(0xC, 0);
             } else if (S.effect_id == 0xE) {
-                S.area_id = gUnk_083D2AD8;
-                S.pos_x = gUnk_083D2AD9[2] << 4;
-                S.pos_y = gUnk_083D2AD9[3] << 4;
+                S.area_id = gTeleportWarpArea;
+                S.pos_x = gTeleportWarpPosition[2] << 4;
+                S.pos_y = gTeleportWarpPosition[3] << 4;
                 gFieldWork.player_x = S.pos_x;
                 gFieldWork.player_y = S.pos_y;
                 gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
