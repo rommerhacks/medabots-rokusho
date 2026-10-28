@@ -598,8 +598,8 @@ static void clear_vram_bg2_tiles(void) {
 
 // gAreaBgTilemaps indexed as a flat pointer array (three LZ77 tilemaps per area: unk0, unk4, unk8);
 // the index has to reach the load unfolded ((area * 3 + 1) << 2), hence the helper.
-static inline const void *area_gfx(const void *const *t, u32 i) {
-    return t[i];
+static inline const void *area_gfx(const void *const *table, u32 i) {
+    return table[i];
 }
 
 // Sets BG1-3 control, loads the area's tile map and its three BG layers (or blank tiles and a fill

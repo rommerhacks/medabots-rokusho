@@ -4,8 +4,8 @@
 
 #include "global.h"
 
-static inline void flush_pal(const void *s) {
-    CpuFastSet(s, (void *)PLTT, 0x80);
+static inline void flush_pal(const void *src) {
+    CpuFastSet(src, (void *)PLTT, 0x80);
 }
 
 void bg_palettes_blend_masked_now(u16 color, u32 amount, u16 mask) {
@@ -83,8 +83,8 @@ static void obj_palettes_blend_masked(u16 color, u32 amount, u16 mask) {
     gVBlankOnceCallback = palette_buffer_upload;
 }
 
-static inline void flush_obj_pal(const void *s) {
-    CpuFastSet(s, (void *)OBJ_PLTT, 0x80);
+static inline void flush_obj_pal(const void *src) {
+    CpuFastSet(src, (void *)OBJ_PLTT, 0x80);
 }
 void obj_palettes_blend_masked_now(u16 color, u32 amount, u16 mask) {
     u32 i, j;

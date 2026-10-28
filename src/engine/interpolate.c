@@ -4,16 +4,16 @@
 #include "global.h"
 
 // Keeps `x + k` as one term (C's `p - (x - 0x10000)` gets folded to `(p + 0x10000) - x`).
-static inline s32 wrap(s32 v, s32 k) {
-    return v + k;
+static inline s32 wrap(s32 value, s32 k) {
+    return value + k;
 }
 
-s32 interpolate_entity_positions(struct InterpEnt *e, s16 *pos, s8 *off, u8 *tbl, u8 unused, u8 frame, u8 idx,
+s32 interpolate_entity_positions(struct InterpEnt *ents, s16 *pos, s8 *off, u8 *tbl, u8 unused, u8 frame, u8 idx,
                                  s32 count, s32 stride) {
     s32 done = 0;
     u8 end;
-    struct InterpCand c[3];
-    s32 rem, i, p;
+    struct InterpCand cands[3];
+    s32 rem, i, delta;
 
     pos += idx;
     off += idx * 2;
@@ -22,40 +22,40 @@ s32 interpolate_entity_positions(struct InterpEnt *e, s16 *pos, s8 *off, u8 *tbl
         for (i = 1; i < count; i++, pos += stride, off += stride * 2) {
             if (frame < end) {
                 rem = end - frame;
-                p = *pos;
-                c[0].val = p - e[i].unkC;
-                c[1].val = p - wrap(e[i].unkC, -0x10000);
-                c[2].val = p - wrap(e[i].unkC, 0x10000);
-                c[0].abs = c[0].val;
-                c[1].abs = c[1].val;
-                c[2].abs = c[2].val;
-                if (c[0].abs < 0)
-                    c[0].abs = -c[0].abs;
-                if (c[1].abs < 0)
-                    c[1].abs = -c[1].abs;
-                if (c[2].abs < 0)
-                    c[2].abs = -c[2].abs;
-                if (c[0].abs > c[1].abs) {
-                    if (c[1].abs > c[2].abs)
-                        p = c[2].val;
+                delta = *pos;
+                cands[0].val = delta - ents[i].unkC;
+                cands[1].val = delta - wrap(ents[i].unkC, -0x10000);
+                cands[2].val = delta - wrap(ents[i].unkC, 0x10000);
+                cands[0].abs = cands[0].val;
+                cands[1].abs = cands[1].val;
+                cands[2].abs = cands[2].val;
+                if (cands[0].abs < 0)
+                    cands[0].abs = -cands[0].abs;
+                if (cands[1].abs < 0)
+                    cands[1].abs = -cands[1].abs;
+                if (cands[2].abs < 0)
+                    cands[2].abs = -cands[2].abs;
+                if (cands[0].abs > cands[1].abs) {
+                    if (cands[1].abs > cands[2].abs)
+                        delta = cands[2].val;
                     else
-                        p = c[1].val;
+                        delta = cands[1].val;
                 } else {
-                    if (c[0].abs > c[2].abs)
-                        p = c[2].val;
+                    if (cands[0].abs > cands[2].abs)
+                        delta = cands[2].val;
                     else
-                        p = c[0].val;
+                        delta = cands[0].val;
                 }
-                e[i].unkC += Div(p, rem);
+                ents[i].unkC += Div(delta, rem);
                 if (off != NULL) {
-                    e[i].unk8 += Div((off[0] << 8) - e[i].unk8, rem);
-                    e[i].unkA += Div((off[1] << 8) - e[i].unkA, rem);
+                    ents[i].unk8 += Div((off[0] << 8) - ents[i].unk8, rem);
+                    ents[i].unkA += Div((off[1] << 8) - ents[i].unkA, rem);
                 }
             } else {
-                e[i].unkC = *pos;
+                ents[i].unkC = *pos;
                 if (off != NULL) {
-                    e[i].unk8 = off[0] << 8;
-                    e[i].unkA = off[1] << 8;
+                    ents[i].unk8 = off[0] << 8;
+                    ents[i].unkA = off[1] << 8;
                 }
                 done++;
             }

@@ -57,13 +57,13 @@ void devtest_update(void) {
 }
 
 void load_overworld_column_and_advance(void) {
-    u8 r = message_portrait_anim_step(0, 1, 8, 4, gGameWork.menuRowAnim, gGameWork.repeatCounter);
-    if (r == 1)
-        gGameSubState = r;
+    u8 done = message_portrait_anim_step(0, 1, 8, 4, gGameWork.menuRowAnim, gGameWork.repeatCounter);
+    if (done == 1)
+        gGameSubState = done;
 }
 
 void init_save_prompt_text(void) {
-    u8 r;
+    u8 done;
 
     gPlayerRecord.name[0] = 0x17;
     gPlayerRecord.name[1] = 0x29;
@@ -75,9 +75,9 @@ void init_save_prompt_text(void) {
     gPlayerRecord.name[7] = 0x2D;
     gPlayerRecord.name[8] = 0x2E;
     gPlayerRecord.name[9] = 0xFE;
-    r = run_message(gMenuMessages[0]);
-    if (r == 1)
-        gGameSubState = r;
+    done = run_message(gMenuMessages[0]);
+    if (done == 1)
+        gGameSubState = done;
 }
 
 void devtest_message_then_choice(void) {

@@ -25,16 +25,16 @@ static void decompress_to_bg_scroll_buffer(const u8 *src, void *dst) {
 void write_tilemap_to_vram_08000E94(u32 x, u32 y, struct Tilemap *map, u32 bgcnt) {
     u16 *dst = (u16 *)((((bgcnt >> 8) & 0x1F) * 0x800) + VRAM) + x + y * 32;
     u16 *src = map->data;
-    u16 *d;
+    u16 *dst_row;
     u32 i, j;
 
     if (((bgcnt & 0xC000) >> 14) & 1) {
         copy_tilemap_with_offset_08000F78(dst, map);
     } else {
         for (i = 0; i < map->height; i++) {
-            d = dst + (i << 5);
+            dst_row = dst + (i << 5);
             for (j = 0; j < map->width; j++)
-                *d++ = *src++ + gTilemapBaseEntry;
+                *dst_row++ = *src++ + gTilemapBaseEntry;
         }
     }
 }
@@ -53,7 +53,7 @@ void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt) {
 static void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map) {
     s32 w, hh;
     s32 i, j;
-    u16 *s, *d;
+    u16 *src_row, *dst_row;
 
     w = map->width;
     if (w > 32)
@@ -68,29 +68,29 @@ static void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map) {
     do {
         if (i >= hh)
             break;
-        s = &map->data[map->width * i];
-        d = dst + i * 32;
+        src_row = &map->data[map->width * i];
+        dst_row = dst + i * 32;
         i++;
         for (j = 0; j < w; j++)
-            *d++ = *s++ + gTilemapBaseEntry;
+            *dst_row++ = *src_row++ + gTilemapBaseEntry;
     } while (1);
     for (i = 0; i < hh; i++) {
-        s = &map->data[i * map->width + 32];
-        d = dst + 0x400 + i * 32;
+        src_row = &map->data[i * map->width + 32];
+        dst_row = dst + 0x400 + i * 32;
         for (j = 32; j < map->width; j++)
-            d[j - 32] = s[j - 32] + gTilemapBaseEntry;
+            dst_row[j - 32] = src_row[j - 32] + gTilemapBaseEntry;
     }
     for (i = 32; i < map->height; i++) {
-        s = &map->data[map->width * i];
-        d = dst + 0x400 + i * 32;
+        src_row = &map->data[map->width * i];
+        dst_row = dst + 0x400 + i * 32;
         for (j = 0; j < w; j++)
-            *d++ = *s++ + gTilemapBaseEntry;
+            *dst_row++ = *src_row++ + gTilemapBaseEntry;
     }
     for (i = 32; i < map->height; i++) {
-        s = &map->data[i * map->width + 32];
-        d = dst + 0x800 + i * 32;
+        src_row = &map->data[i * map->width + 32];
+        dst_row = dst + 0x800 + i * 32;
         for (j = 32; j < map->width; j++)
-            d[j - 32] = s[j - 32] + gTilemapBaseEntry;
+            dst_row[j - 32] = src_row[j - 32] + gTilemapBaseEntry;
     }
 }
 
@@ -130,7 +130,7 @@ struct BgAffineLine {
 static void compute_bg_affine_scanline_params(s32 step, u32 angle, s32 unused, s32 cx, s32 cy, s32 sx, s32 sy) {
     struct BgAffineLine *buf;
     s32 i, j;
-    s32 pa, pb, pc, pd, x, y, t;
+    s32 pa, pb, pc, pd, x, y, sin_scaled;
 
     if (!(gFrameCounter & 1))
         buf = (struct BgAffineLine *)gDecompressBuffer;
@@ -138,9 +138,9 @@ static void compute_bg_affine_scanline_params(s32 step, u32 angle, s32 unused, s
         buf = (struct BgAffineLine *)gBg2AffineScanlineBuffer2;
     for (i = 0, j = 0; i < 160; i++, j++) {
         pa = DivArm(i * step + 1, gSineTableQ14[(angle & 0x3FF) + 0x100] << 7);
-        t = DivArm(i * step + 1, gSineTableQ14[angle & 0x3FF] << 7);
-        pc = -t;
-        pb = t * 3;
+        sin_scaled = DivArm(i * step + 1, gSineTableQ14[angle & 0x3FF] << 7);
+        pc = -sin_scaled;
+        pb = sin_scaled * 3;
         pd = pa * 3;
         buf[j].pa = pa;
         buf[j].pb = pb;

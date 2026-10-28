@@ -41,33 +41,33 @@ void scene_state_reset(void) {
     gScriptCmdWork.transition_step = 0;
 }
 
-u32 scene_state_dispatch(u32 a, u32 b) {
+u32 scene_state_dispatch(u32 mode, u32 mode_param) {
     u32 zero;
     u32 ret = 0;
 
     switch (gScriptCmdWork.transition_step) {
     case 0:
-        if (a != 0x20) {
+        if (mode != 0x20) {
             s32 n;
-            if (a == 0x12)
+            if (mode == 0x12)
                 field_update_music(0x17, 0);
             n = 8;
-            if (a == 8)
+            if (mode == 8)
                 n = 0xFF;
             setup_palette_fade_to_color_with_obj(0, 0.0f, 32.0f, n);
         }
         gScriptCmdWork.transition_step++;
         break;
     case 1:
-        if (a == 0x20) {
+        if (mode == 0x20) {
             save_script_sprites();
-            switch_game_mode(0x20, b);
+            switch_game_mode(0x20, mode_param);
             gScriptCmdWork.transition_step++;
         } else if (run_blend_fade_transition(0)) {
-            if (a == 0x12)
+            if (mode == 0x12)
                 field_update_music(0x18, 0);
             save_script_sprites();
-            switch_game_mode(a, b);
+            switch_game_mode(mode, mode_param);
             gScriptCmdWork.transition_step++;
         }
         break;
@@ -83,21 +83,21 @@ u32 scene_state_dispatch(u32 a, u32 b) {
         clear_vram_tiles_1000();
         restore_script_sprites();
         REG_DISPCNT = 0x1E40;
-        if (a == 0x10 || a == 0x20)
+        if (mode == 0x10 || mode == 0x20)
             gFieldWork.npc_load_mode = 2;
         else
             gFieldWork.npc_load_mode = 1;
         area_load_graphics();
         field_center_camera_on_player();
         blend_set_alpha_12_10();
-        if (a == 0x13) {
+        if (mode == 0x13) {
             field_effect_start(0x93, gFieldEffect.pos_x, gFieldEffect.pos_y, 0);
             while (!field_effect_run_and_restore())
                 ;
         }
-        if (a != 8)
+        if (mode != 8)
             setup_palette_fade_to_color(0, 32.0f, 0.0f, 8.0f);
-        switch (a) {
+        switch (mode) {
         case 0x20:
             field_update_music(0xD, 0);
             break;
@@ -141,7 +141,7 @@ u32 scene_state_dispatch(u32 a, u32 b) {
         gScriptCmdWork.transition_step++;
         break;
     case 4:
-        if (a == 8 || run_blend_fade_transition(0))
+        if (mode == 8 || run_blend_fade_transition(0))
             ret = 1;
         break;
     }

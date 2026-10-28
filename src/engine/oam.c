@@ -335,14 +335,14 @@ static void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags) {
 }
 
 // Rotates (*x, *y) by p->angle (1024 steps per turn); the table is Q14 sin, cos at +0x100.
-static void rotate_vector_2d(s32 *x, s32 *y, struct SpriteEntry *p) {
-    s32 c = gSineTableQ14[(p->angle & 0x3FF) + 0x100];
-    s32 s = gSineTableQ14[p->angle & 0x3FF];
-    s32 x0 = *x;
-    s32 y0 = *y;
+static void rotate_vector_2d(s32 *x, s32 *y, struct SpriteEntry *sprite) {
+    s32 cos_val = gSineTableQ14[(sprite->angle & 0x3FF) + 0x100];
+    s32 sin_val = gSineTableQ14[sprite->angle & 0x3FF];
+    s32 orig_x = *x;
+    s32 orig_y = *y;
 
-    *x = (x0 * c - y0 * s) / 0x4000;
-    *y = (x0 * s + y0 * c) / 0x4000;
+    *x = (orig_x * cos_val - orig_y * sin_val) / 0x4000;
+    *y = (orig_x * sin_val + orig_y * cos_val) / 0x4000;
 }
 
 void shell_sort_by_second_byte(struct ObjSortEntry *arr, u16 n) {
@@ -350,8 +350,8 @@ void shell_sort_by_second_byte(struct ObjSortEntry *arr, u16 n) {
     u16 i;
     u16 j;
     u32 swapped;
-    u16 t;
-    struct ObjSortEntry *b, *a;
+    u16 saved;
+    struct ObjSortEntry *right, *left;
     gap = n;
     if (gap <= 1)
         return;
@@ -363,13 +363,13 @@ outer:
     i = 0;
 loop:
     j = (u16)(i + gap);
-    a = (struct ObjSortEntry *)(i * 4 + (u32)arr);
-    b = (struct ObjSortEntry *)(j * 4 + (u32)arr);
-    if (a->key < b->key) {
-        t = *(u16 *)a;
-        *(u16 *)a = *(u16 *)b;
-        swapped = t;
-        *(u16 *)b = swapped;
+    left = (struct ObjSortEntry *)(i * 4 + (u32)arr);
+    right = (struct ObjSortEntry *)(j * 4 + (u32)arr);
+    if (left->key < right->key) {
+        saved = *(u16 *)left;
+        *(u16 *)left = *(u16 *)right;
+        swapped = saved;
+        *(u16 *)right = swapped;
         swapped = 1;
     }
     if (j + 1 < n) {

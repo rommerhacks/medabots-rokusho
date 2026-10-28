@@ -392,13 +392,13 @@ void map_script_cmd_actor_glide(void) {
 // guess: opcode 0x2E, skip ahead by arg2 if every owned copy of Medapart (arg0, arg1) is in use (owned count, high
 // byte of field_medapart_counts, minus the low byte).
 void map_script_cmd_jump_if_no_spare_medapart(void) {
-    u16 r;
-    s16 d;
+    u16 counts;
+    s16 spare;
     gFieldWork.branch_base = gFieldWork.script_pos;
     read_map_script_bytes(3);
-    r = field_medapart_counts(gFieldWork.cmd_args[0], gFieldWork.cmd_args[1]);
-    d = ((r & 0xFF00) >> 8) - (r & 0xFF);
-    if (d == 0)
+    counts = field_medapart_counts(gFieldWork.cmd_args[0], gFieldWork.cmd_args[1]);
+    spare = ((counts & 0xFF00) >> 8) - (counts & 0xFF);
+    if (spare == 0)
         gFieldWork.script_pos = gFieldWork.branch_base + gFieldWork.cmd_args[2];
 }
 
@@ -597,12 +597,12 @@ void map_script_cmd_jump_unless_has_items(void) {
 }
 
 void map_script_cmd_jump_unless_part_equipped(void) {
-    u32 r;
+    u32 legs_value;
     gFieldWork.branch_base = gFieldWork.script_pos;
     read_map_script_bytes(3);
-    r = team_equipped_part_legs_value(gFieldWork.cmd_args[0], gFieldWork.cmd_args[1]);
-    if (r != -1)
-        gFieldWork.equipped_legs_value = r;
+    legs_value = team_equipped_part_legs_value(gFieldWork.cmd_args[0], gFieldWork.cmd_args[1]);
+    if (legs_value != -1)
+        gFieldWork.equipped_legs_value = legs_value;
     else
         gFieldWork.script_pos = gFieldWork.branch_base + gFieldWork.cmd_args[2];
 }
@@ -631,13 +631,13 @@ void map_script_cmd_jump_if_lost(void) {
 }
 
 void map_script_cmd_jump_if_affinity_below(void) {
-    struct FieldWork *s = &gFieldWork;
-    s->branch_base = s->script_pos;
+    struct FieldWork *field = &gFieldWork;
+    field->branch_base = field->script_pos;
     read_map_script_bytes(3);
-    if (s->cmd_args[0] == 0) {
-        if (s->affinity_ar >= s->cmd_args[1])
+    if (field->cmd_args[0] == 0) {
+        if (field->affinity_ar >= field->cmd_args[1])
             return;
-    } else if (s->affinity_ka >= s->cmd_args[1])
+    } else if (field->affinity_ka >= field->cmd_args[1])
         return;
     gFieldWork.script_pos = gFieldWork.branch_base + gFieldWork.cmd_args[2];
 }
@@ -1016,11 +1016,11 @@ void map_script_cmd_set_bg_tile_anim(void) {
 
 // Opcodes 0x85-0x87: queue map object 4-frame open (1) / close (2) animations (guess: doors), then run them.
 void map_script_cmd_anim_queue_begin(void) {
-    struct FieldScriptWork *v = &gFieldScriptWork;
-    v->queue_len = 0;
-    memzero_bytes(v->queue_timer, 8);
-    memzero_bytes(v->queue_pos, 8);
-    memzero_bytes(v->queue[0], 64);
+    struct FieldScriptWork *script = &gFieldScriptWork;
+    script->queue_len = 0;
+    memzero_bytes(script->queue_timer, 8);
+    memzero_bytes(script->queue_pos, 8);
+    memzero_bytes(script->queue[0], 64);
 }
 
 void map_script_cmd_anim_queue_add(void) {
@@ -1137,8 +1137,8 @@ void script_object_free_slot(u8 i) {
     gFieldWork.script_object_slots[i] = 0;
 }
 
-void script_object_set_slot(u8 i, u8 v) {
-    gFieldWork.script_object_slots[i] = v + 1;
+void script_object_set_slot(u8 i, u8 slot) {
+    gFieldWork.script_object_slots[i] = slot + 1;
 }
 
 u32 script_object_slot(u8 i) {

@@ -18,14 +18,14 @@ void memcpy_bytes_0803F63C(const void *src, void *dst, u32 n) {
     }
 }
 
-void memswap(void *a, void *b, u32 n) {
+void memswap(void *lhs, void *rhs, u32 n) {
     u32 i;
-    u8 t;
+    u8 byte;
     for (i = 0; i < n; i++) {
-        t = *(u8 *)a;
-        *(u8 *)a = *(u8 *)b;
-        a = (u8 *)a + 1;
-        *(u8 *)b = t;
-        b = (u8 *)b + 1;
+        byte = *(u8 *)lhs;
+        *(u8 *)lhs = *(u8 *)rhs;
+        lhs = (u8 *)lhs + 1;
+        *(u8 *)rhs = byte;
+        rhs = (u8 *)rhs + 1;
     }
 }

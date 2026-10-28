@@ -97,10 +97,10 @@ u32 map_cursor_move_and_check_event(void) {
                 break;
             }
             if ((obj->event & 0xF000) == 0) {
-                u8 *d = &gSpriteEntries[47].unk20;
+                u8 *facing = &gSpriteEntries[47].unk20;
                 u8 slot = obj->sprite_slot + 49;
-                const u8 *t = gNpcFacingTowardPlayer;
-                set_sprite_anim_and_store(slot, t[*d], obj);
+                const u8 *facing_table = gNpcFacingTowardPlayer;
+                set_sprite_anim_and_store(slot, facing_table[*facing], obj);
             }
         }
         obj++;
@@ -177,7 +177,7 @@ bool32 check_tile_and_trigger_battle_action(u8 dir) {
 
 s32 check_room_exit_at_position(void) {
     s32 ret = -1;
-    const struct MapExit *p = gAreaExits[gFieldWork.area_id];
+    const struct MapExit *exits = gAreaExits[gFieldWork.area_id];
     s32 blocked = 0;
     s32 x = gFieldWork.player_tile_x;
     s32 y = gFieldWork.player_tile_y;
@@ -214,9 +214,9 @@ s32 check_room_exit_at_position(void) {
     if (blocked == -1)
         return blocked;
 
-    for (i = 0; p[i].mask != 0; i++) {
-        if (p[i].x == x && p[i].y == y && (ret = p[i].value) != 0) {
-            mask = p[i].mask;
+    for (i = 0; exits[i].mask != 0; i++) {
+        if (exits[i].x == x && exits[i].y == y && (ret = exits[i].value) != 0) {
+            mask = exits[i].mask;
             switch (gSpriteEntries[47].unk20) {
             case 0:
                 if (!(mask & 2))

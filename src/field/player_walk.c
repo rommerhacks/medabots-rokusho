@@ -18,7 +18,7 @@ void load_map_npc_sprites(s32 mode) {
     u32 anim;
     s32 skip;
     s32 i;
-    const struct MapNpcRecord *e;
+    const struct MapNpcRecord *rec;
 
     obj = gFieldWork.objects;
     memzero_bytes((u8 *)saved, sizeof(saved));
@@ -28,12 +28,12 @@ void load_map_npc_sprites(s32 mode) {
     n = 0;
     j = 0;
     for (k = 0; k < 32; k++) {
-        for (e = gAreaNpcRecords[gFieldWork.area_id]; e->x != 0xFF; e++) {
-            if (!((e->phase_mask >> gFieldWork.story_phase) & 1))
+        for (rec = gAreaNpcRecords[gFieldWork.area_id]; rec->x != 0xFF; rec++) {
+            if (!((rec->phase_mask >> gFieldWork.story_phase) & 1))
                 continue;
-            if (e->load_order != k)
+            if (rec->load_order != k)
                 continue;
-            if (event_flag_get(e->event & 0xFFF))
+            if (event_flag_get(rec->event & 0xFFF))
                 continue;
             skip = 0;
             found = 0;
@@ -44,7 +44,7 @@ void load_map_npc_sprites(s32 mode) {
             if (mode >= 0)
                 if (mode <= 2) {
                     for (j = 0; j < 64; j++) {
-                        if ((e->event & 0xFFF) == (saved[j].event & 0xFFF))
+                        if ((rec->event & 0xFFF) == (saved[j].event & 0xFFF))
                             found = 1;
                         if (found)
                             break;
@@ -66,34 +66,34 @@ void load_map_npc_sprites(s32 mode) {
             if (skip)
                 goto next;
         place:
-            anim = e->anim >> 4;
-            gFieldWork.objects[n].x = e->x;
-            gFieldWork.objects[n].y = e->y;
-            gFieldWork.objects[n].event = e->event;
-            switch (e->event >> 12) {
+            anim = rec->anim >> 4;
+            gFieldWork.objects[n].x = rec->x;
+            gFieldWork.objects[n].y = rec->y;
+            gFieldWork.objects[n].event = rec->event;
+            switch (rec->event >> 12) {
             case 0:
             case 4:
             case 6:
-                gFieldWork.tile_map[e->y * (gFieldWork.map_width >> 1) + e->x] = 7;
+                gFieldWork.tile_map[rec->y * (gFieldWork.map_width >> 1) + rec->x] = 7;
                 break;
             }
             gFieldWork.objects[n].present = 1;
-            if (e->anim == 0xFF)
+            if (rec->anim == 0xFF)
                 goto next;
             if (count < 30) {
-                switch (e->event >> 12) {
+                switch (rec->event >> 12) {
                 case 0:
                 case 2:
                 case 4:
                 case 6: {
                     u8 slot = count + 49;
-                    u32 f = anim * 12;
-                    u8 a = anim;
+                    u32 frame_base = anim * 12;
+                    u8 sheet_anim = anim;
                     sprite_entry_init(
                         slot, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE,
-                        f, a, 1);
+                        frame_base, sheet_anim, 1);
                     gFieldWork.objects[n].has_sprite = 1;
-                    gSpriteEntries[count + 49].unk30 = area_sprite_sheet_id(a);
+                    gSpriteEntries[count + 49].unk30 = area_sprite_sheet_id(sheet_anim);
                     sprite_set_blend_from_kind(count + 49);
                     if (gSpriteSheetHasShadow[gSpriteEntries[count + 49].unk30])
                         sprite_entry_init(count + 91,
@@ -103,13 +103,13 @@ void load_map_npc_sprites(s32 mode) {
                 } break;
                 }
                 gFieldWork.objects[n].sprite_slot = count;
-                anim = e->anim >> 4;
-                gEntityStates[count + 49].active = e->event & 0xFFF;
+                anim = rec->anim >> 4;
+                gEntityStates[count + 49].active = rec->event & 0xFFF;
                 gSpriteEntries[count + 49].unk2B = anim;
-                gSpriteEntries[count + 49].pos_x = e->x * 16 + gFieldWork.map_origin_x;
-                gSpriteEntries[count + 49].pos_y = e->y * 16 + gFieldWork.map_origin_y;
-                set_sprite_anim_and_store(count + 49, e->anim & 0xF, &gFieldWork.objects[n]);
-                sprite_anim_start(count + 49, anim * 4 + (e->anim & 0xF));
+                gSpriteEntries[count + 49].pos_x = rec->x * 16 + gFieldWork.map_origin_x;
+                gSpriteEntries[count + 49].pos_y = rec->y * 16 + gFieldWork.map_origin_y;
+                set_sprite_anim_and_store(count + 49, rec->anim & 0xF, &gFieldWork.objects[n]);
+                sprite_anim_start(count + 49, anim * 4 + (rec->anim & 0xF));
                 if (mode != 0 && found) {
                     set_sprite_anim_and_store(count + 49, saved[j].anim_state, &gFieldWork.objects[n]);
                     sprite_anim_start(count + 49, saved[j].anim_state + anim * 4);

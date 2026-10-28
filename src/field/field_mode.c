@@ -27,8 +27,8 @@ void field_mode_dispatch(void) {
 }
 
 // guess: back to the field after a battle (0: sub-state 5 or 13) or into field state 2 (1).
-void field_resume(u32 a) {
-    switch (a) {
+void field_resume(u32 mode) {
+    switch (mode) {
     case 0:
         gFieldState.sceneResult = gGameWork.battleResult;
         if (gFieldWork.script_running != 0) {
@@ -117,8 +117,8 @@ void field_return_from_scene(s32 mode) {
 }
 
 // Runtime: id 4 when leaving the shop (07_shop, from dispatch_and_increment_state).
-void switch_game_mode(u32 a, u32 b) {
-    switch (a) {
+void switch_game_mode(u32 mode, u32 shop_id) {
+    switch (mode) {
     case 0x20:
         gFieldWork.fixed_battle = 1;
         gGameMode = 0;
@@ -170,7 +170,7 @@ void switch_game_mode(u32 a, u32 b) {
         gGameSubState = 0;
         break;
     case 3:
-        gShopId = b;
+        gShopId = shop_id;
         gGameMode = 2;
         gGameState = 0xB;
         gGameSubState = 0;

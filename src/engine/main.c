@@ -88,29 +88,29 @@ void irq_init(void) {
 }
 
 void hw_reset_init(void) {
-    u32 a, b, c;
+    u32 ewram_fill, iwram_fill, pltt_fill;
 
     REG_IME = 0;
-    a = 0;
-    CpuFastSet(&a, (void *)EWRAM, 0x01010000);
-    b = 0;
-    CpuFastSet(&b, (void *)IWRAM, 0x01001F40);
+    ewram_fill = 0;
+    CpuFastSet(&ewram_fill, (void *)EWRAM, 0x01010000);
+    iwram_fill = 0;
+    CpuFastSet(&iwram_fill, (void *)IWRAM, 0x01001F40);
     clear_oam();
-    c = 0;
-    CpuFastSet(&c, (void *)PLTT, 0x01000100);
+    pltt_fill = 0;
+    CpuFastSet(&pltt_fill, (void *)PLTT, 0x01000100);
     *(u16 *)PLTT = 0x7FFF;
 }
 
 void clear_oam(void) {
-    vu32 a, b;
+    vu32 hidden_y, zero;
     s32 i;
 
-    a = 0xA0;
-    CpuFastSet((void *)&a, (void *)OAM, 0x01000100);
+    hidden_y = 0xA0;
+    CpuFastSet((void *)&hidden_y, (void *)OAM, 0x01000100);
     for (i = 0; i < 128; i++)
         gOamBuffer[i].attr0 = 0xA0;
-    b = 0;
-    CpuFastSet((void *)&b, (void *)VRAM, 0x01006000);
+    zero = 0;
+    CpuFastSet((void *)&zero, (void *)VRAM, 0x01006000);
 }
 
 void sound_init(struct SoundWork *work) {
