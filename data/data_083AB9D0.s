@@ -323,12 +323,12 @@ gUnk_083AD3B0:
 gUnk_083AD3B3:
 	.incbin "baserom.gba", 0x3AD3B3, 0x20
 
-	.global gUnk_083AD3D3
-gUnk_083AD3D3:
+	.global gRandomBotOrder
+gRandomBotOrder:
 	.incbin "baserom.gba", 0x3AD3D3, 0x20
 
-	.global gUnk_083AD3F3
-gUnk_083AD3F3:
+	.global gLinkBotRecordSwap
+gLinkBotRecordSwap:
 	.incbin "baserom.gba", 0x3AD3F3, 0x6
 
 	.global gTargetSwapSideTable

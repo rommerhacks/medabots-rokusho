@@ -106,10 +106,10 @@ void medal_rename_load_graphics(void) {
     bg3 = &REG_BG3CNT;
     v -= 0xFF;
     *bg3 = v;
-    decompress_and_write_tilemap(gUnk_0879A634, *bg1);
-    decompress_and_write_tilemap(gUnk_0879A78C, *bg2);
-    decompress_and_write_tilemap(gUnk_0879A8BC, *bg3);
-    size = dma3_copy_or_decompress(gUnk_08799D98, gDecompressBuffer);
+    decompress_and_write_tilemap(gMedalRenameBg1Tilemap, *bg1);
+    decompress_and_write_tilemap(gMedalRenameBg2Tilemap, *bg2);
+    decompress_and_write_tilemap(gMedalRenameBg3Tilemap, *bg3);
+    size = dma3_copy_or_decompress(gMedalRenameBgTiles, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     zero = 0;
@@ -160,8 +160,8 @@ void medal_rename_load_palettes(void) {
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 8);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     CpuFastSet(gGradientPaletteGold, (void *)0x0202F9A0, 8);
-    CpuFastSet(gUnk_08799B98, gPaletteBackupBg, 0x80);
-    CpuFastSet(gUnk_080AFAE8, (void *)0x0202F940, 8);
+    CpuFastSet(gMedalRenameBgPalettes, gPaletteBackupBg, 0x80);
+    CpuFastSet(gMedalRenameObjPalette, (void *)0x0202F940, 8);
     gGameWork.unk84 = 0;
     gGameSubState++;
 }

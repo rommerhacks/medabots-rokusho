@@ -328,16 +328,16 @@ gSineTable:
 gSpriteAnimGfx:
 	.incbin "baserom.gba", 0xAE9FC, 0xC00
 
-	.global gUnk_080AF5FC
-gUnk_080AF5FC:
+	.global gTownMapNeighbours
+gTownMapNeighbours:
 	.incbin "baserom.gba", 0xAF5FC, 0x78
 
-	.global gUnk_080AF674
-gUnk_080AF674:
+	.global gTownMapNeighboursAlt
+gTownMapNeighboursAlt:
 	.incbin "baserom.gba", 0xAF674, 0x78
 
-	.global gUnk_080AF6EC
-gUnk_080AF6EC:
+	.global gMultiplayerIdUnusedBytes
+gMultiplayerIdUnusedBytes:
 	.incbin "baserom.gba", 0xAF6EC, 0x4
 
 	.global gTitleMenuBlendAlphas
@@ -352,24 +352,24 @@ gTitleOptionValueMasks:
 gBattleMusicOptionSongs:
 	.incbin "baserom.gba", 0xAF752, 0x3
 
-	.global gUnk_080AF755
-gUnk_080AF755:
+	.global gNewGamePromptMessage
+gNewGamePromptMessage:
 	.incbin "baserom.gba", 0xAF755, 0x53
 
-	.global gUnk_080AF7A8
-gUnk_080AF7A8:
+	.global gNewGamePromptStates
+gNewGamePromptStates:
 	.incbin "baserom.gba", 0xAF7A8, 0x18
 
-	.global gUnk_080AF7C0
-gUnk_080AF7C0:
+	.global gItemMenuObjPalette
+gItemMenuObjPalette:
 	.incbin "baserom.gba", 0xAF7C0, 0x20
 
 	.global gSaveScreenSpriteFrames
 gSaveScreenSpriteFrames:
 	.incbin "baserom.gba", 0xAF7E0, 0x8
 
-	.global gUnk_080AF7E8
-gUnk_080AF7E8:
+	.global gSaveScreenObjPalette
+gSaveScreenObjPalette:
 	.incbin "baserom.gba", 0xAF7E8, 0x20
 
 	.global gNameEntrySpriteFrames
@@ -392,8 +392,8 @@ gSoundTestSongs:
 gSoundTestEffects:
 	.incbin "baserom.gba", 0xAF888, 0x78
 
-	.global gUnk_080AF900
-gUnk_080AF900:
+	.global gGameOverObjPalettes
+gGameOverObjPalettes:
 	.incbin "baserom.gba", 0xAF900, 0x42
 
 	.global gGameOverIkkiFrames
@@ -448,16 +448,16 @@ gPartTradeStates:
 gMedalTradeStates:
 	.incbin "baserom.gba", 0xAFAA0, 0x30
 
-	.global gUnk_080AFAD0
-gUnk_080AFAD0:
+	.global gScrollBannerStates
+gScrollBannerStates:
 	.incbin "baserom.gba", 0xAFAD0, 0x10
 
 	.global gUnk_080AFAE0
 gUnk_080AFAE0:
 	.incbin "baserom.gba", 0xAFAE0, 0x8
 
-	.global gUnk_080AFAE8
-gUnk_080AFAE8:
+	.global gMedalRenameObjPalette
+gMedalRenameObjPalette:
 	.incbin "baserom.gba", 0xAFAE8, 0x20
 
 	.global gLinkIntroMessageIds

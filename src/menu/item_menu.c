@@ -54,10 +54,10 @@ void item_menu_load_graphics(void) {
     bg3 = &REG_BG3CNT;
     v = 0x3D07;
     *bg3 = v;
-    decompress_and_write_tilemap(gUnk_0878C484, *bg1);
-    decompress_and_write_tilemap(gUnk_0878C5B4, *bg2);
-    decompress_and_write_tilemap(gUnk_0878C750, *bg3);
-    size = dma3_copy_or_decompress(gUnk_0878B078, gDecompressBuffer);
+    decompress_and_write_tilemap(gItemMenuBg1Tilemap, *bg1);
+    decompress_and_write_tilemap(gItemMenuBg2Tilemap, *bg2);
+    decompress_and_write_tilemap(gItemMenuBg3Tilemap, *bg3);
+    size = dma3_copy_or_decompress(gItemMenuBgTiles, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     lz_decompress_dispatch(gMenuDigitTilesLz, vram_at(size));
     gMenuWork->bg_tile_base = (size >> 5) - 1;
@@ -110,8 +110,8 @@ void item_menu_init(void) {
     w->swap_pending = 0;
     CpuFastSet(gGradientPaletteYellow, gPaletteBackup, 0x80);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 8);
-    CpuFastSet(gUnk_080AF7C0, (void *)0x0202F9C0, 8);
-    CpuFastSet(gUnk_0878AE78, gPaletteBackupBg, 0x80);
+    CpuFastSet(gItemMenuObjPalette, (void *)0x0202F9C0, 8);
+    CpuFastSet(gItemMenuBgPalettes, gPaletteBackupBg, 0x80);
     zero = 0;
     CpuFastSet(&zero, (void *)(PLTT + 0x1A0), 0x01000008);
     gGameWork.unk84 = 0;

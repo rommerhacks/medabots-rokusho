@@ -56,7 +56,7 @@ u32 town_map_move_cursor(void) {
     struct MenuWork *w = *pw;
     u8 old = w->town_map_place;
     u32 off = old * 4 + gFieldWork.unkC32 * 40;
-    const u8 *tbl = w->cursor_style ? gUnk_080AF674 : gUnk_080AF5FC;
+    const u8 *tbl = w->cursor_style ? gTownMapNeighboursAlt : gTownMapNeighbours;
     if (*(u8 *)&gNewKeys & 0x20)
         w->town_map_place = tbl[off];
     else if (*(u8 *)&gNewKeys & 0x10)
@@ -132,7 +132,7 @@ void tilemap_offset_tiles_and_palette(u32 tiles, u32 palette, u32 blk) {
 
 void init_multiplayer_id(void) {
     u8 buf[4];
-    memcpy_optimized(buf, gUnk_080AF6EC, 4);
+    memcpy_optimized(buf, gMultiplayerIdUnusedBytes, 4);
     gLinkPlayerId = (*(vu32 *)0x04000128 << 26) >> 30;
 }
 

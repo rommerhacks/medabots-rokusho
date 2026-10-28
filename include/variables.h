@@ -620,11 +620,11 @@ extern const void
 extern const Func gSaveScreenStates[15]; // save screen states, by gGameSubState (save_screen_update): 6 stops the
                                          // music, 7 writes the save, 8 / 12 show the result
 
-extern const u8 gUnk_0878DE10[];      // save screen BG1 tilemap (LZ77, decompress_and_write_tilemap)
-extern const u8 gUnk_0878DFE0[];      // save screen BG2 tilemap
-extern const u8 gUnk_0878E104[];      // save screen BG3 tilemap
-extern const u32 gUnk_0878CC64[];     // save screen BG tiles (dma3_copy_or_decompress)
-extern const u8 gTownMapBg1Tilemap[]; // town map BG1-BG3 tilemaps
+extern const u8 gSaveScreenBg1Tilemap[]; // save screen BG1 tilemap (LZ77, decompress_and_write_tilemap)
+extern const u8 gSaveScreenBg2Tilemap[]; // save screen BG2 tilemap
+extern const u8 gSaveScreenBg3Tilemap[]; // save screen BG3 tilemap
+extern const u32 gSaveScreenBgTiles[];   // save screen BG tiles (dma3_copy_or_decompress)
+extern const u8 gTownMapBg1Tilemap[];    // town map BG1-BG3 tilemaps
 extern const u8 gTownMapBg2Tilemap[];
 extern const u8 gTownMapBg3Tilemap[];
 extern const u32 gTownMapBgTiles[];      // town map BG tiles (dma3_copy_or_decompress)
@@ -642,11 +642,11 @@ extern const u8
 
 extern const Func gTitleMenuStates[]; // state handlers by gGameSubState (title_menu_update)
 
-extern const u8 gUnk_0878FBB4[];           // title menu BG0 tilemap (LZ77, decompress_and_write_tilemap)
-extern const u8 gUnk_0878FD84[];           // title menu BG1 tilemap
-extern const u8 gUnk_0878FFC8[];           // title menu BG2 tilemap
-extern const u8 gUnk_08790128[];           // title menu BG3 tilemap
-extern const u32 gUnk_0878E5F4[];          // title menu BG tiles (dma3_copy_or_decompress)
+extern const u8 gTitleMenuBg0Tilemap[];    // title menu BG0 tilemap (LZ77, decompress_and_write_tilemap)
+extern const u8 gTitleMenuBg1Tilemap[];    // title menu BG1 tilemap
+extern const u8 gTitleMenuBg2Tilemap[];    // title menu BG2 tilemap
+extern const u8 gTitleMenuBg3Tilemap[];    // title menu BG3 tilemap
+extern const u32 gTitleMenuBgTiles[];      // title menu BG tiles (dma3_copy_or_decompress)
 extern const u8 gSaveLostBg0Tilemap[];     // BG0 tilemap (LZ77, save_lost_load_graphics)
 extern const u8 gSaveLostBg1Tilemap[];     // BG1 tilemap (LZ77, save_lost_load_graphics)
 extern const u8 gSaveLostBg3Tilemap[];     // BG3 tilemap (LZ77, save_lost_load_graphics)
@@ -662,24 +662,25 @@ extern const u8 gShopMenuBg2Tilemap[];    // BG2 tilemap (LZ77, shop_menu_load_g
 extern const u8 gShopMenuBg3Tilemap[];    // BG3 tilemap (LZ77, shop_menu_load_graphics)
 extern const u32 gShopMenuBgTiles[];      // BG tiles (dma3_copy_or_decompress, shop_menu_load_graphics)
 extern const u32 gShopMenuBgTiles2[];     // BG tiles (dma3_copy_or_decompress, shop_menu_load_graphics)
-extern const u8 gUnk_087962E8[];          // BG0 tilemap (LZ77, game_over_load_graphics)
-extern const u8 gUnk_08796474[];          // BG2 tilemap (LZ77, game_over_load_graphics)
-extern const u8 gUnk_08796598[];          // BG3 tilemap (LZ77, game_over_load_graphics)
-extern const u32 gUnk_0879579C[];         // BG tiles (dma3_copy_or_decompress, game_over_load_graphics)
-extern const u16 gUnk_0879559C[];         // BG palette (game_over_load_graphics)
-extern const u16 gUnk_080AF900[];         // OBJ palettes 0-1 (game_over_load_graphics)
+extern const u8 gGameOverBg0Tilemap[];    // BG0 tilemap (LZ77, game_over_load_graphics)
+extern const u8 gGameOverBg2Tilemap[];    // BG2 tilemap (LZ77, game_over_load_graphics)
+extern const u8 gGameOverBg3Tilemap[];    // BG3 tilemap (LZ77, game_over_load_graphics)
+extern const u32 gGameOverBgTiles[];      // BG tiles (dma3_copy_or_decompress, game_over_load_graphics)
+extern const u16 gGameOverBgPalette[];    // BG palette (game_over_load_graphics)
+extern const u16 gGameOverObjPalettes[];  // OBJ palettes 0-1 (game_over_load_graphics)
 extern const u16 gGameOverIkkiFrames[];   // sprite 1 animation frames, by unk1A / 6 (game_over_logo_drop)
 extern const s8 gGameOverLogoBounce[];    // sprite 0 y offsets, 13 steps (game_over_logo_drop)
-extern const u16 gUnk_0878E3F4[];         // title menu BG palette (0x100 colors)
+extern const u16 gTitleMenuBgPalette[];   // title menu BG palette (0x100 colors)
 extern u8 gOptionTimeLimit;               // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
 extern u8 gOptionBattleMusic;             // index into gUnk_083AD3B0 (battle music)
 extern const u8 gUnk_083AD3B0[];          // battle song ids (select_battle_music)
 // Per leg type (skill id - 100), 11 bytes: one per battlefield (gBattleWork.battlefield); added to moveDelay
 // (bot_move_delay_add_terrain).
 extern const u8 gTerrainMoveDelays[];
-extern const s8 gUnk_083AD3B3[]; // 32 y steps of the number pop-up over a Medabot (battle_number_popup_update)
-extern const u8 gUnk_083AD3D3[]; // 32 random record orders (find_next_active_bot)
-extern const u8 gUnk_083AD3F3[]; // record remap when gLinkPlayerId is set in a link Robattle (find_next_active_bot)
+extern const s8 gUnk_083AD3B3[];   // 32 y steps of the number pop-up over a Medabot (battle_number_popup_update)
+extern const u8 gRandomBotOrder[]; // 32 random record orders (find_next_active_bot)
+extern const u8
+    gLinkBotRecordSwap[]; // record remap when gLinkPlayerId is set in a link Robattle (find_next_active_bot)
 extern const u8 gTargetSwapSideTable[]; // record + 1 -> same slot on the other side (bot_target_swap_side)
 extern const struct GfxListEntry *const gUnk_083CE480[]; // graphics lists (decompress_indexed_graphics_to_ewram)
 extern const void *const gUnk_083B2584[];                // pairs: compressed tiles [i * 2], palette [i * 2 + 1]
@@ -1176,24 +1177,25 @@ extern const float gSinTableF32[256]; // sin(i * 2pi / 256) as floats ([64] = 1.
 extern const Func gItemMenuStates[];  // field menu Item screen states, by gGameSubState (item_menu_update)
 extern const Func gNameEntryStates[]; // 7 name entry sub-states, by gGameSubState (name_entry_screen_update)
 extern const u8
-    *const gItemDescriptions[];  // item description messages by item id (runtime: item 1 Skirt -> "Transform Goods No.1
-                                 // / A frilly mini-skirt."); 0x3F with an empty list (item_menu_show_description)
-extern const u8 gUnk_080AF755[]; // 0x53-byte message copied to the stack (load_rotation_grid_and_advance)
-extern const Func gMenuModeStates[];      // by gGameState (menu_mode_update)
-extern const u8 gUnk_080AF6EC[];          // 4 bytes copied to an unused local (init_multiplayer_id)
-extern const u8 gUnk_080AF5FC[];          // per gFieldWork.unkC32: 10 x 4 next-entry bytes (right, left, up, down) by
+    *const gItemDescriptions[]; // item description messages by item id (runtime: item 1 Skirt -> "Transform Goods No.1
+                                // / A frilly mini-skirt."); 0x3F with an empty list (item_menu_show_description)
+extern const u8
+    gNewGamePromptMessage[]; // "start a new game? saved data will be erased" text (new_game_prompt_show_message)
+extern const Func gMenuModeStates[];         // by gGameState (menu_mode_update)
+extern const u8 gMultiplayerIdUnusedBytes[]; // 4 bytes copied to an unused local (init_multiplayer_id)
+extern const u8 gTownMapNeighbours[];     // per gFieldWork.unkC32: 10 x 4 next-entry bytes (right, left, up, down) by
                                           // gMenuWork->town_map_place (town_map_move_cursor)
-extern const u8 gUnk_080AF674[];          // same, used when gMenuWork->cursor_style is set (town_map_move_cursor)
+extern const u8 gTownMapNeighboursAlt[];  // same, used when gMenuWork->cursor_style is set (town_map_move_cursor)
 extern const u8 gMedabotSpritePalettes[]; // per Medabot (gMedabotPartSpriteTiles index): sprite palette - 4
                                           // (load_battle_sprite_tiles)
 extern const u16 gTitleOptionValueMasks[3][3]; // 3 x 3 tile masks (bit 15 first) of the title option rows
                                                // (title_options_draw_values)
-extern const u8 gUnk_0878C484[];               // field menu item list BG1 tilemap (LZ77, item_menu_load_graphics)
-extern const u8 gUnk_0878C5B4[];               // field menu item list BG2 tilemap (LZ77, item_menu_load_graphics)
-extern const u8 gUnk_0878C750[];               // field menu item list BG3 tilemap (LZ77, item_menu_load_graphics)
-extern const u32 gUnk_0878B078[];   // field menu item list BG tiles (dma3_copy_or_decompress, item_menu_load_graphics)
-extern const u16 gUnk_080AF7C0[16]; // OBJ palette 14 of the field menu item list (item_menu_init)
-extern const u16 gUnk_0878AE78[0x100]; // BG palettes of the field menu item list (item_menu_init)
+extern const u8 gItemMenuBg1Tilemap[];         // field menu item list BG1 tilemap (LZ77, item_menu_load_graphics)
+extern const u8 gItemMenuBg2Tilemap[];         // field menu item list BG2 tilemap (LZ77, item_menu_load_graphics)
+extern const u8 gItemMenuBg3Tilemap[];         // field menu item list BG3 tilemap (LZ77, item_menu_load_graphics)
+extern const u32 gItemMenuBgTiles[]; // field menu item list BG tiles (dma3_copy_or_decompress, item_menu_load_graphics)
+extern const u16 gItemMenuObjPalette[16];    // OBJ palette 14 of the field menu item list (item_menu_init)
+extern const u16 gItemMenuBgPalettes[0x100]; // BG palettes of the field menu item list (item_menu_init)
 // code_0805EE6C
 extern const u8 gSaveLostSpriteFrames[8];      // sprite 0 frame offsets (save_lost_animate_sprite)
 extern const u8 gShopkeeperPortraitSets[];     // 0xFB portrait set by gShopId (shop_copy_text_with_portrait)
@@ -1266,12 +1268,12 @@ extern const struct FuncTable13
     gLinkMenuStates; // link menu sub-states by gGameSubState (dispatch_battle_menu_and_update_counters)
 extern const u8
     gLinkSavePromptMessage[]; // guess: yes/no question before saving and linking (setup_dialogue_script_from_rom)
-extern const u8 gLinkMenuBg1Tilemap[];   // link menu BG1-3 tilemaps, tiles at 0x06004000, BG palette (clear_vram_bg)
-extern const u8 gUnk_0879A634[];         // Medal list BG1 tilemap (medal_rename_load_graphics)
-extern const u8 gUnk_0879A78C[];         // Medal list BG2 tilemap (medal_rename_load_graphics)
-extern const u8 gUnk_0879A8BC[];         // Medal list BG3 tilemap (medal_rename_load_graphics)
-extern const u32 gUnk_08799D98[];        // Medal list BG tiles, compressed (medal_rename_load_graphics)
-extern const u8 gMedalTradeBg1Tilemap[]; // BG1 tilemap (medal_trade_init_screen)
+extern const u8 gLinkMenuBg1Tilemap[];    // link menu BG1-3 tilemaps, tiles at 0x06004000, BG palette (clear_vram_bg)
+extern const u8 gMedalRenameBg1Tilemap[]; // Medal list BG1 tilemap (medal_rename_load_graphics)
+extern const u8 gMedalRenameBg2Tilemap[]; // Medal list BG2 tilemap (medal_rename_load_graphics)
+extern const u8 gMedalRenameBg3Tilemap[]; // Medal list BG3 tilemap (medal_rename_load_graphics)
+extern const u32 gMedalRenameBgTiles[];   // Medal list BG tiles, compressed (medal_rename_load_graphics)
+extern const u8 gMedalTradeBg1Tilemap[];  // BG1 tilemap (medal_trade_init_screen)
 extern const u8 gMedalTradeAnimFramesTilemap[]; // 4 frames (0x200 bytes each) at screen 27, copied into BG2 to animate
 extern const u8 gMedalTradeBg3Tilemap[];        // BG3 tilemap (medal_trade_init_screen)
 extern const u8 gMedalTradeBg2Tilemap[];        // BG2 tilemap at screen 29 (medal_trade_init_screen)
@@ -1283,17 +1285,17 @@ extern const u32 gLinkMenuBgTiles[];
 extern const u16 gLinkMenuBgPalette[];
 extern const u16
     gMenuDigitPalette[]; // guess: palette for gMenuDigitTilesLz (BG pal 1 next to it in clear_vram_bg2_tilemap)
-extern const u16 gUnk_08799B98[];
-extern const u16 gUnk_080AFAE8[];
+extern const u16 gMedalRenameBgPalettes[];
+extern const u16 gMedalRenameObjPalette[];
 extern const u8 gLinkIntroMessageIds[]; // message indices (battle_cutscene_dispatch)
 extern const u8 gLinkStartMessageIds[];
 extern const u8 gLinkAnswersDifferMessage[]; // cursor 6: the two players answered the yes/no prompt differently
 extern const u8 gLinkMenuHelpMessageIds[];   // message index per cursor position (handle_battle_menu_selection)
-extern const u32 gUnk_087A88CC[];            // graphics (scroll_banner_init)
-extern const u8 gUnk_087A1084[];
-extern const u32 gUnk_087A92D4[];
-extern const u32 gUnk_087A046C[];
-extern const u16 gUnk_087A034C[];
+extern const u32 gScrollBannerStripTiles[];  // graphics (scroll_banner_init)
+extern const u8 gScrollBannerBg3Tilemap[];
+extern const u32 gScrollBannerBgTiles[];
+extern const u32 gScrollBannerBgTiles2[];
+extern const u16 gScrollBannerBgPalette[];
 struct FuncTable2 {
     Func f[2];
 };
@@ -1307,9 +1309,9 @@ struct FuncTable12 {
     Func f[12];
 };
 extern const struct FuncTable12
-    gMedalTradeStates;                        // link Medal exchange sub-states by gGameSubState (medal_trade_update)
-extern const struct FuncTable4 gUnk_080AFAD0; // sub-states by gGameSubState (scene_dispatch_and_tick)
-extern const struct FuncTable2 gUnk_080AFAE0; // sub-states by gGameSubState (link_medal_sync_update)
+    gMedalTradeStates; // link Medal exchange sub-states by gGameSubState (medal_trade_update)
+extern const struct FuncTable4 gScrollBannerStates; // sub-states by gGameSubState (scene_dispatch_and_tick)
+extern const struct FuncTable2 gUnk_080AFAE0;       // sub-states by gGameSubState (link_medal_sync_update)
 struct FuncTable8 {
     Func f[8];
 };
@@ -1346,15 +1348,15 @@ extern const u16 gMapSpriteSheet40Palette[];
 extern const u16 gMapSpriteSheet37Palette[];
 extern const u16 gWeeklyObjPalettes[];       // 16 OBJ palettes of the studio and lecture sprites
 extern const u16 gWeeklyLectureBgPalettes[]; // 6 BG palettes of the lecture corner
-extern const u8 gUnk_087C8E00[];             // LZ77 BG tiles (intro_load_art_unused)
-extern const u8 gUnk_087CC7BC[];             // LZ77 30x20 tilemap (intro_load_art_unused)
-extern const u16 gUnk_087CCAEC[];            // BG palette, 256 colours (intro_load_art_unused)
-extern const u8 gUnk_087CCCEC[];             // LZ77 BG tiles (intro_load_versus_art)
-extern const u8 gUnk_087D0954[];             // LZ77 30x20 tilemap (intro_load_versus_art)
-extern const u16 gUnk_087D0C80[];            // BG palette, 256 colours (intro_load_versus_art)
-extern const u8 gUnk_087D0E80[];             // LZ77 BG tiles (intro_load_closeup_art)
-extern const u8 gUnk_087D424C[];             // LZ77 30x20 tilemap (intro_load_closeup_art)
-extern const u16 gUnk_087D4564[];            // BG palette, 256 colours (intro_load_closeup_art)
+extern const u8 gIntroUnusedArtTilesLz[];    // LZ77 BG tiles (intro_load_art_unused)
+extern const u8 gIntroUnusedArtTilemapLz[];  // LZ77 30x20 tilemap (intro_load_art_unused)
+extern const u16 gIntroUnusedArtPalette[];   // BG palette, 256 colours (intro_load_art_unused)
+extern const u8 gIntroVersusArtTilesLz[];    // LZ77 BG tiles (intro_load_versus_art)
+extern const u8 gIntroVersusArtTilemapLz[];  // LZ77 30x20 tilemap (intro_load_versus_art)
+extern const u16 gIntroVersusArtPalette[];   // BG palette, 256 colours (intro_load_versus_art)
+extern const u8 gIntroCloseupArtTilesLz[];   // LZ77 BG tiles (intro_load_closeup_art)
+extern const u8 gIntroCloseupArtTilemapLz[]; // LZ77 30x20 tilemap (intro_load_closeup_art)
+extern const u16 gIntroCloseupArtPalette[];  // BG palette, 256 colours (intro_load_closeup_art)
 extern s32 (*const gIntroSpriteActions[])(
     u8); // sprite actions, by gSpriteEntries[].unk20 - 1: 0 = done, 0xFF = clear (intro_update_sprite_actions)
 extern const u8 gIntroSpriteActionPeriods[]; // sprite actions: frame period, by unk20 - 1
@@ -1484,23 +1486,22 @@ extern const u8 gFieldDebugFont[];
 extern const u8 gFieldDebugHexDigits[];
 
 // code_0805AB40 (session 91)
-extern const struct FuncTable6
-    gUnk_080AF7A8; // sub-states by gGameSubState (dispatch_rotation_menu_substate; guess: title options screen)
+extern const struct FuncTable6 gNewGamePromptStates; // sub-states by gGameSubState (new_game_prompt_update)
 extern const u8 gItemUsable[];             // per item id: 1 if usable from the item menu (town map 0 and the disguises)
 extern const u8 gBattleMusicOptionSongs[]; // song per battle music option (title_options_input preview)
-extern const u16 gUnk_0878CA64[];
-extern const u16 gUnk_080AF7E8[];
+extern const u16 gSaveScreenBgPalettes[];
+extern const u16 gSaveScreenObjPalette[];
 
 // code_0805EE6C (session 94)
 extern const u8 gSoundTestSongs[];
 extern const u8 gSoundTestEffects[];
 extern const u16 gShopListObjPalette[]; // OBJ palette 3 of the shop list
 extern const u16 gShopListBgPalettes[]; // 16 BG palettes of the shop list
-extern const u8 gUnk_08791694[];
-extern const u8 gUnk_087917F4[];
-extern const u8 gUnk_087919C4[];
-extern const u32 gUnk_08790600[];
-extern const u16 gUnk_08790400[];
+extern const u8 gTestModeBg1Tilemap[];
+extern const u8 gTestModeBg2Tilemap[];
+extern const u8 gTestModeBg3Tilemap[];
+extern const u32 gTestModeBgTiles[];
+extern const u16 gTestModeBgPalette[];
 extern const u16 gSpriteMotionSteps[]; // per-step (x, y) offsets for update_sprite_animation_position
 extern const u8 gPartTradeBg1Tilemap[];
 extern const u8 gPartTradeAnimFramesTilemap[]; // 4 frames at screen 27, copied into BG2 to animate

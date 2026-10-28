@@ -112,9 +112,9 @@ u32 find_next_active_bot(u32 rec) {
     u32 r;
 
     for (i = 0; i <= 5; i++) {
-        r = gUnk_083AD3D3[k];
+        r = gRandomBotOrder[k];
         if (gGameWork.skipBotSetup == 1 && gLinkPlayerId)
-            r = gUnk_083AD3F3[r];
+            r = gLinkBotRecordSwap[r];
         if (gBattleBots[r].teamState && rec != r)
             return r;
         k = (k + 1) & 0x1F;

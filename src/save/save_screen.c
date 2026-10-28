@@ -61,10 +61,10 @@ void save_screen_load_graphics(void) {
     bg3 = &REG_BG3CNT;
     v = 0x3C07;
     *bg3 = v;
-    decompress_and_write_tilemap(gUnk_0878DE10, *bg1);
-    decompress_and_write_tilemap(gUnk_0878DFE0, *bg2);
-    decompress_and_write_tilemap(gUnk_0878E104, *bg3);
-    size = dma3_copy_or_decompress(gUnk_0878CC64, gDecompressBuffer);
+    decompress_and_write_tilemap(gSaveScreenBg1Tilemap, *bg1);
+    decompress_and_write_tilemap(gSaveScreenBg2Tilemap, *bg2);
+    decompress_and_write_tilemap(gSaveScreenBg3Tilemap, *bg3);
+    size = dma3_copy_or_decompress(gSaveScreenBgTiles, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     lz_decompress_dispatch(gMenuDigitTilesLz, vram_at(size));
     gMenuWork->bg_tile_base = (size >> 5) - 1;
@@ -107,10 +107,10 @@ void save_screen_draw_info(void) {
     render_text_sprites_08040DB8(gGameWork.textBuf, 1, 15, 9, 7, 15, 1, 0);
     render_text_sprites_08040DB8(gPlayerRecord.name, 13, 14, 4, 10, 13, 0, 0);
     open_choice_menu(1, 0x16, 7);
-    CpuFastSet(gUnk_0878CA64, gPaletteBackupBg, 0x80);
+    CpuFastSet(gSaveScreenBgPalettes, gPaletteBackupBg, 0x80);
     CpuFastSet(gGradientPaletteYellow, (void *)0x0202F9A0, 8);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
-    CpuFastSet(gUnk_080AF7E8, gPaletteBackup, 8);
+    CpuFastSet(gSaveScreenObjPalette, gPaletteBackup, 8);
     gGameWork.unk84 = 0;
     gGameSubState++;
 }

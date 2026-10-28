@@ -62,11 +62,11 @@
 080AF5A0	gVehicleIconBlankTiles+0x167A18
 080AF5B0	gVehicleIconBlankTiles+0x167B54
 080AF7A8	new_game_prompt_init
-080AF7AC	load_rotation_grid_and_advance
+080AF7AC	new_game_prompt_show_message
 080AF7B0	new_game_prompt_poll_choice
 080AF7B4	new_game_prompt_start_intro
-080AF7B8	advance_substate_with_fade
-080AF7BC	fade_step_and_transition_to_mode3
+080AF7B8	new_game_prompt_fade_out
+080AF7BC	new_game_prompt_return_to_title
 080AFA20	shop_menu_load_graphics
 080AFA24	shop_menu_init
 080AFA28	shop_return_init

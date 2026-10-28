@@ -797,8 +797,8 @@ void intro_load_art_unused(void) {
     vu32 zero;
     s32 i, j;
 
-    LZ77UnCompVram(gUnk_087C8E00, (void *)VRAM);
-    LZ77UnCompVram(gUnk_087CC7BC, src);
+    LZ77UnCompVram(gIntroUnusedArtTilesLz, (void *)VRAM);
+    LZ77UnCompVram(gIntroUnusedArtTilemapLz, src);
     zero = 0;
     DmaSet(3, &zero, VRAM + 0x7800, 0x85000200);
     for (i = 0; i < 20; i++) {
@@ -807,7 +807,7 @@ void intro_load_art_unused(void) {
         dst[i * 32 + 30] = dst[i * 32 + 31] = 0;
     }
     DmaSet(3, dst, VRAM + 0x7800, 0x80000280);
-    DmaSet(3, gUnk_087CCAEC, PLTT, 0x80000100);
+    DmaSet(3, gIntroUnusedArtPalette, PLTT, 0x80000100);
     REG_BG0CNT = 0xFC0;
     REG_DISPCNT |= 0x100;
 }
@@ -818,8 +818,8 @@ void intro_load_versus_art(void) {
     vu32 zero;
     s32 i, j;
 
-    LZ77UnCompVram(gUnk_087CCCEC, (void *)VRAM);
-    LZ77UnCompVram(gUnk_087D0954, src);
+    LZ77UnCompVram(gIntroVersusArtTilesLz, (void *)VRAM);
+    LZ77UnCompVram(gIntroVersusArtTilemapLz, src);
     zero = 0;
     DmaSet(3, &zero, VRAM + 0x7800, 0x85000200);
     for (i = 0; i < 20; i++) {
@@ -828,7 +828,7 @@ void intro_load_versus_art(void) {
         dst[i * 32 + 30] = dst[i * 32 + 31] = 0;
     }
     DmaSet(3, dst, VRAM + 0x7800, 0x80000280);
-    DmaSet(3, gUnk_087D0C80, PLTT, 0x80000100);
+    DmaSet(3, gIntroVersusArtPalette, PLTT, 0x80000100);
     REG_BG0CNT = 0xFC0;
     REG_DISPCNT |= 0x100;
 }
@@ -839,8 +839,8 @@ void intro_load_closeup_art(void) {
     vu32 zero;
     s32 i, j;
 
-    LZ77UnCompVram(gUnk_087D0E80, (void *)VRAM);
-    LZ77UnCompVram(gUnk_087D424C, src);
+    LZ77UnCompVram(gIntroCloseupArtTilesLz, (void *)VRAM);
+    LZ77UnCompVram(gIntroCloseupArtTilemapLz, src);
     zero = 0;
     DmaSet(3, &zero, VRAM + 0x7800, 0x85000200);
     for (i = 0; i < 20; i++) {
@@ -849,7 +849,7 @@ void intro_load_closeup_art(void) {
         dst[i * 32 + 30] = dst[i * 32 + 31] = 0;
     }
     DmaSet(3, dst, VRAM + 0x7800, 0x80000280);
-    DmaSet(3, gUnk_087D4564, PLTT, 0x80000100);
+    DmaSet(3, gIntroCloseupArtPalette, PLTT, 0x80000100);
     REG_BG0CNT = 0xF80;
     REG_DISPCNT |= 0x100;
 }

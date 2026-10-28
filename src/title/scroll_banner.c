@@ -1,4 +1,4 @@
-// Mode-2 state 19 (scene_dispatch_and_tick, sub-states gUnk_080AFAD0): loads a background strip into a window,
+// Mode-2 state 19 (scene_dispatch_and_tick, sub-states gScrollBannerStates): loads a background strip into a window,
 // scrolls BG2 behind it and fades in/out on A. No direct writer of state 19 was found; purpose unknown.
 #include "global.h"
 
@@ -14,7 +14,7 @@ void scroll_banner_init(void) {
     REG_DISPCNT = 0x2060;
     REG_BG2CNT = 0xDB06;
     REG_BG3CNT = 0x1F07;
-    dma3_copy_or_decompress(gUnk_087A88CC, gDecompressBuffer);
+    dma3_copy_or_decompress(gScrollBannerStripTiles, gDecompressBuffer);
     dst = (u8 *)0x0600D800;
     src = gDecompressBuffer;
     for (i = 31; i >= 0; i--) {
@@ -40,13 +40,13 @@ void scroll_banner_init(void) {
         dst += 0x40;
         src += 0x80;
     }
-    decompress_and_write_tilemap(gUnk_087A1084, REG_BG3CNT);
-    size = dma3_copy_or_decompress(gUnk_087A92D4, gDecompressBuffer);
+    decompress_and_write_tilemap(gScrollBannerBg3Tilemap, REG_BG3CNT);
+    size = dma3_copy_or_decompress(gScrollBannerBgTiles, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
-    size2 = dma3_copy_or_decompress(gUnk_087A046C, gDecompressBuffer);
+    size2 = dma3_copy_or_decompress(gScrollBannerBgTiles2, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, (void *)(size + 0x06004000), size2);
     tilemap_offset_tiles_and_palette(size >> 5, 0, 0x1F);
-    CpuFastSet(gUnk_087A034C, (void *)PLTT, 0x48);
+    CpuFastSet(gScrollBannerBgPalette, (void *)PLTT, 0x48);
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
     REG_WIN0H = 0xF0;
@@ -101,7 +101,7 @@ void scene_fade_and_scroll_camera(void) {
 }
 
 void scene_dispatch_and_tick(void) {
-    struct FuncTable4 t = gUnk_080AFAD0;
+    struct FuncTable4 t = gScrollBannerStates;
 
     t.f[gGameSubState]();
     if (gFrameCounter & 1)

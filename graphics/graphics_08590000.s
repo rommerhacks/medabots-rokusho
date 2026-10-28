@@ -144,88 +144,88 @@ gTownMapBg2Tilemap:
 gTownMapBg3Tilemap:
 	.incbin "baserom.gba", 0x78AA0C, 0x46C
 
-	.global gUnk_0878AE78
-gUnk_0878AE78:
+	.global gItemMenuBgPalettes
+gItemMenuBgPalettes:
 	.incbin "baserom.gba", 0x78AE78, 0x200
 
-	.global gUnk_0878B078
-gUnk_0878B078:
+	.global gItemMenuBgTiles
+gItemMenuBgTiles:
 	.incbin "baserom.gba", 0x78B078, 0x140C
 
-	.global gUnk_0878C484
-gUnk_0878C484:
+	.global gItemMenuBg1Tilemap
+gItemMenuBg1Tilemap:
 	.incbin "baserom.gba", 0x78C484, 0x130
 
-	.global gUnk_0878C5B4
-gUnk_0878C5B4:
+	.global gItemMenuBg2Tilemap
+gItemMenuBg2Tilemap:
 	.incbin "baserom.gba", 0x78C5B4, 0x19C
 
-	.global gUnk_0878C750
-gUnk_0878C750:
+	.global gItemMenuBg3Tilemap
+gItemMenuBg3Tilemap:
 	.incbin "baserom.gba", 0x78C750, 0x314
 
-	.global gUnk_0878CA64
-gUnk_0878CA64:
+	.global gSaveScreenBgPalettes
+gSaveScreenBgPalettes:
 	.incbin "baserom.gba", 0x78CA64, 0x200
 
-	.global gUnk_0878CC64
-gUnk_0878CC64:
+	.global gSaveScreenBgTiles
+gSaveScreenBgTiles:
 	.incbin "baserom.gba", 0x78CC64, 0x11AC
 
-	.global gUnk_0878DE10
-gUnk_0878DE10:
+	.global gSaveScreenBg1Tilemap
+gSaveScreenBg1Tilemap:
 	.incbin "baserom.gba", 0x78DE10, 0x1D0
 
-	.global gUnk_0878DFE0
-gUnk_0878DFE0:
+	.global gSaveScreenBg2Tilemap
+gSaveScreenBg2Tilemap:
 	.incbin "baserom.gba", 0x78DFE0, 0x124
 
-	.global gUnk_0878E104
-gUnk_0878E104:
+	.global gSaveScreenBg3Tilemap
+gSaveScreenBg3Tilemap:
 	.incbin "baserom.gba", 0x78E104, 0x2F0
 
-	.global gUnk_0878E3F4
-gUnk_0878E3F4:
+	.global gTitleMenuBgPalette
+gTitleMenuBgPalette:
 	.incbin "baserom.gba", 0x78E3F4, 0x200
 
-	.global gUnk_0878E5F4
-gUnk_0878E5F4:
+	.global gTitleMenuBgTiles
+gTitleMenuBgTiles:
 	.incbin "baserom.gba", 0x78E5F4, 0x15C0
 
-	.global gUnk_0878FBB4
-gUnk_0878FBB4:
+	.global gTitleMenuBg0Tilemap
+gTitleMenuBg0Tilemap:
 	.incbin "baserom.gba", 0x78FBB4, 0x1D0
 
-	.global gUnk_0878FD84
-gUnk_0878FD84:
+	.global gTitleMenuBg1Tilemap
+gTitleMenuBg1Tilemap:
 	.incbin "baserom.gba", 0x78FD84, 0x244
 
-	.global gUnk_0878FFC8
-gUnk_0878FFC8:
+	.global gTitleMenuBg2Tilemap
+gTitleMenuBg2Tilemap:
 	.incbin "baserom.gba", 0x78FFC8, 0x160
 
-	.global gUnk_08790128
-gUnk_08790128:
+	.global gTitleMenuBg3Tilemap
+gTitleMenuBg3Tilemap:
 	.incbin "baserom.gba", 0x790128, 0x2D8
 
-	.global gUnk_08790400
-gUnk_08790400:
+	.global gTestModeBgPalette
+gTestModeBgPalette:
 	.incbin "baserom.gba", 0x790400, 0x200
 
-	.global gUnk_08790600
-gUnk_08790600:
+	.global gTestModeBgTiles
+gTestModeBgTiles:
 	.incbin "baserom.gba", 0x790600, 0x1094
 
-	.global gUnk_08791694
-gUnk_08791694:
+	.global gTestModeBg1Tilemap
+gTestModeBg1Tilemap:
 	.incbin "baserom.gba", 0x791694, 0x160
 
-	.global gUnk_087917F4
-gUnk_087917F4:
+	.global gTestModeBg2Tilemap
+gTestModeBg2Tilemap:
 	.incbin "baserom.gba", 0x7917F4, 0x1D0
 
-	.global gUnk_087919C4
-gUnk_087919C4:
+	.global gTestModeBg3Tilemap
+gTestModeBg3Tilemap:
 	.incbin "baserom.gba", 0x7919C4, 0x2E4
 
 	.global gSaveLostBgPalette
@@ -268,24 +268,24 @@ gNameEntryBg2Tilemap:
 gNameEntryBg3Tilemap:
 	.incbin "baserom.gba", 0x795418, 0x184
 
-	.global gUnk_0879559C
-gUnk_0879559C:
+	.global gGameOverBgPalette
+gGameOverBgPalette:
 	.incbin "baserom.gba", 0x79559C, 0x200
 
-	.global gUnk_0879579C
-gUnk_0879579C:
+	.global gGameOverBgTiles
+gGameOverBgTiles:
 	.incbin "baserom.gba", 0x79579C, 0xB4C
 
-	.global gUnk_087962E8
-gUnk_087962E8:
+	.global gGameOverBg0Tilemap
+gGameOverBg0Tilemap:
 	.incbin "baserom.gba", 0x7962E8, 0x18C
 
-	.global gUnk_08796474
-gUnk_08796474:
+	.global gGameOverBg2Tilemap
+gGameOverBg2Tilemap:
 	.incbin "baserom.gba", 0x796474, 0x124
 
-	.global gUnk_08796598
-gUnk_08796598:
+	.global gGameOverBg3Tilemap
+gGameOverBg3Tilemap:
 	.incbin "baserom.gba", 0x796598, 0x184
 
 	.global gShopMenuBgPalettes
@@ -324,24 +324,24 @@ gShopMenuPanelTilemap1:
 gShopMenuPanelTilemap2:
 	.incbin "baserom.gba", 0x7999EC, 0x1AC
 
-	.global gUnk_08799B98
-gUnk_08799B98:
+	.global gMedalRenameBgPalettes
+gMedalRenameBgPalettes:
 	.incbin "baserom.gba", 0x799B98, 0x200
 
-	.global gUnk_08799D98
-gUnk_08799D98:
+	.global gMedalRenameBgTiles
+gMedalRenameBgTiles:
 	.incbin "baserom.gba", 0x799D98, 0x89C
 
-	.global gUnk_0879A634
-gUnk_0879A634:
+	.global gMedalRenameBg1Tilemap
+gMedalRenameBg1Tilemap:
 	.incbin "baserom.gba", 0x79A634, 0x158
 
-	.global gUnk_0879A78C
-gUnk_0879A78C:
+	.global gMedalRenameBg2Tilemap
+gMedalRenameBg2Tilemap:
 	.incbin "baserom.gba", 0x79A78C, 0x130
 
-	.global gUnk_0879A8BC
-gUnk_0879A8BC:
+	.global gMedalRenameBg3Tilemap
+gMedalRenameBg3Tilemap:
 	.incbin "baserom.gba", 0x79A8BC, 0x184
 
 	.global gLinkMenuBgPalette
@@ -408,16 +408,16 @@ gMedalTradeBg2Tilemap:
 gMedalTradeBg3Tilemap:
 	.incbin "baserom.gba", 0x7A0050, 0x2FC
 
-	.global gUnk_087A034C
-gUnk_087A034C:
+	.global gScrollBannerBgPalette
+gScrollBannerBgPalette:
 	.incbin "baserom.gba", 0x7A034C, 0x120
 
-	.global gUnk_087A046C
-gUnk_087A046C:
+	.global gScrollBannerBgTiles2
+gScrollBannerBgTiles2:
 	.incbin "baserom.gba", 0x7A046C, 0xC18
 
-	.global gUnk_087A1084
-gUnk_087A1084:
+	.global gScrollBannerBg3Tilemap
+gScrollBannerBg3Tilemap:
 	.incbin "baserom.gba", 0x7A1084, 0x32C
 
 	.global gTextScrollBgPalettes
@@ -460,12 +460,12 @@ gMedalSceneBg2Tilemap:
 gMedalSceneBg3Tilemap:
 	.incbin "baserom.gba", 0x7A8324, 0x5A8
 
-	.global gUnk_087A88CC
-gUnk_087A88CC:
+	.global gScrollBannerStripTiles
+gScrollBannerStripTiles:
 	.incbin "baserom.gba", 0x7A88CC, 0xA08
 
-	.global gUnk_087A92D4
-gUnk_087A92D4:
+	.global gScrollBannerBgTiles
+gScrollBannerBgTiles:
 	.incbin "baserom.gba", 0x7A92D4, 0xEC8
 
 	.global gBombGameObjTiles
@@ -712,40 +712,40 @@ gIntroScanBgPalette0:
 gIntroScanTextGlyphs:
 	.incbin "baserom.gba", 0x7C8D54, 0xAC
 
-	.global gUnk_087C8E00
-gUnk_087C8E00:
+	.global gIntroUnusedArtTilesLz
+gIntroUnusedArtTilesLz:
 	.incbin "baserom.gba", 0x7C8E00, 0x39BC
 
-	.global gUnk_087CC7BC
-gUnk_087CC7BC:
+	.global gIntroUnusedArtTilemapLz
+gIntroUnusedArtTilemapLz:
 	.incbin "baserom.gba", 0x7CC7BC, 0x330
 
-	.global gUnk_087CCAEC
-gUnk_087CCAEC:
+	.global gIntroUnusedArtPalette
+gIntroUnusedArtPalette:
 	.incbin "baserom.gba", 0x7CCAEC, 0x200
 
-	.global gUnk_087CCCEC
-gUnk_087CCCEC:
+	.global gIntroVersusArtTilesLz
+gIntroVersusArtTilesLz:
 	.incbin "baserom.gba", 0x7CCCEC, 0x3C68
 
-	.global gUnk_087D0954
-gUnk_087D0954:
+	.global gIntroVersusArtTilemapLz
+gIntroVersusArtTilemapLz:
 	.incbin "baserom.gba", 0x7D0954, 0x32C
 
-	.global gUnk_087D0C80
-gUnk_087D0C80:
+	.global gIntroVersusArtPalette
+gIntroVersusArtPalette:
 	.incbin "baserom.gba", 0x7D0C80, 0x200
 
-	.global gUnk_087D0E80
-gUnk_087D0E80:
+	.global gIntroCloseupArtTilesLz
+gIntroCloseupArtTilesLz:
 	.incbin "baserom.gba", 0x7D0E80, 0x33CC
 
-	.global gUnk_087D424C
-gUnk_087D424C:
+	.global gIntroCloseupArtTilemapLz
+gIntroCloseupArtTilemapLz:
 	.incbin "baserom.gba", 0x7D424C, 0x318
 
-	.global gUnk_087D4564
-gUnk_087D4564:
+	.global gIntroCloseupArtPalette
+gIntroCloseupArtPalette:
 	.incbin "baserom.gba", 0x7D4564, 0x1D5E8
 
 	.global gLicensedByLogoTiles
