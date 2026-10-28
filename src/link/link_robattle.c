@@ -75,16 +75,16 @@ void link_robattle_delay(void) {
 }
 
 void link_robattle_send_seed(void) {
-    if (gUnk_03000B90 == 0) {
+    if (gLinkPlayerId == 0) {
         gGameWork.rngIndex = gFrameCounter;
-        gUnk_03005010.unk6 = gGameWork.rngIndex + 0x8000;
+        gLinkPackets.sendData = gGameWork.rngIndex + 0x8000;
     }
     gGameSubState++;
 }
 
 void link_robattle_receive_seed(void) {
-    if (gUnk_03000B90 != 0) {
-        u16 seed = gUnk_03005010.unk8[0][1];
+    if (gLinkPlayerId != 0) {
+        u16 seed = gLinkPackets.recv[0][1];
         if (!(seed & 0x8000))
             return;
         gGameWork.rngIndex = seed;
@@ -355,11 +355,11 @@ void prize_game_gauge_input(void) {
         if (!(*(u8 *)&gNewKeys & 1))
             return;
         play_sound_effect(4);
-        gUnk_03005010.unk6 = gBattleWork.prizePower + 0x8000;
+        gLinkPackets.sendData = gBattleWork.prizePower + 0x8000;
         gGameWork.unk86 = 0;
         gGameSubState++;
     } else {
-        pkt = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
+        pkt = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
         if (!(pkt & 0x8000))
             return;
         play_sound_effect(4);
@@ -375,7 +375,7 @@ void prize_game_gauge_blink(void) {
 
     prize_game_scroll_bg3();
     if (gGameWork.unk9C == 1) {
-        gUnk_03005010.unk6 = gBattleWork.prizePower + 0x8000;
+        gLinkPackets.sendData = gBattleWork.prizePower + 0x8000;
         prize_game_blink_gauge();
         frames = ++gGameWork.unk86;
     } else {
@@ -610,16 +610,16 @@ void link_error_reset(void) {
 }
 
 void link_robattle_exchange_names(void) {
-    struct Unk_03005010 *link = &gUnk_03005010;
+    struct LinkPackets *link = &gLinkPackets;
     u16 packet;
     s16 flag;
-    link->unk6 = gPlayerRecord.name[gBattleWork.unk51] + (flag = ((gBattleWork.unk1AF << 8) & 0x100) + 0x8000);
+    link->sendData = gPlayerRecord.name[gBattleWork.unk51] + (flag = ((gBattleWork.unk1AF << 8) & 0x100) + 0x8000);
     gGameWork.unk86++;
     if (!(gGameWork.unk86 & 1)) {
         gBattleWork.unk1AF ^= 1;
         gBattleWork.unk51++;
     }
-    packet = link->unk8[gUnk_03000B90 ^ 1][1];
+    packet = link->recv[gLinkPlayerId ^ 1][1];
     if (packet & 0x8000) {
         if ((u16)(packet & 0x100) >> 8 != gBattleWork.unk1B0) {
             gBattleWork.unk1B0 ^= 1;
@@ -642,12 +642,12 @@ void link_robattle_goto_name_exchange(void) {
 
 void link_clear_send_word(void) {
     if (gGameWork.skipBotSetup == 1)
-        gUnk_03005010.unk6 = 0;
+        gLinkPackets.sendData = 0;
 }
 
 u32 link_sync_both_ready(void) {
-    gUnk_03005010.unk6 = 0xFFFE;
-    if (gUnk_03005010.unk8[0][1] == 0xFFFE && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1])
+    gLinkPackets.sendData = 0xFFFE;
+    if (gLinkPackets.recv[0][1] == 0xFFFE && gLinkPackets.recv[1][1] == gLinkPackets.recv[0][1])
         return 1;
     return 0;
 }
@@ -887,7 +887,7 @@ u32 link_error_check(void) {
     if (gGameWork.skipBotSetup == 1 && (((struct {
                                             u8 f[0x1C];
                                             u32 x;
-                                        } *)&gUnk_03005010)
+                                        } *)&gLinkPackets)
                                             ->x &
                                         0xFFFF00)) {
         gGameMode = 0;

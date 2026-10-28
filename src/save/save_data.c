@@ -19,7 +19,7 @@ s32 save_dispatch(s32 mode) {
     REG_IME = 1;
     switch (mode) {
     case 0: {
-        register u8 *p asm("r0") = (u8 *)&gUnk_03001784;
+        register u8 *p asm("r0") = (u8 *)&gSaveStatus;
         *p |= 1;
     }
         serialize_save_data((struct SaveData *)buf);
@@ -30,7 +30,7 @@ s32 save_dispatch(s32 mode) {
         load_save_data((struct SaveData *)buf);
         break;
     case 2:
-        gUnk_03001784.unk0_0 = 0;
+        gSaveStatus.saveExists = 0;
         for (i = 0; i < 16; i++)
             gDecompressBuffer[i] = gSaveMagicErased[i];
         ret = write_save_to_eeprom((u16 *)0x02030000, 0);
@@ -86,7 +86,7 @@ void load_save_data(struct SaveData *save) {
     gOptionTimeLimit = save->flags & 3;
     gOptionSkipMessages = (save->flags >> 2) & 1;
     gOptionBattleMusic = (save->flags >> 3) & 3;
-    gUnk_03001784.unk0_1 = (save->flags >> 5) & 1;
+    gSaveStatus.linkIntroSeen = (save->flags >> 5) & 1;
 }
 
 void serialize_save_data(struct SaveData *save) {
@@ -110,7 +110,7 @@ void serialize_save_data(struct SaveData *save) {
     CpuSet(gItemInventory, save->items, 0x40);
     CpuSet(&gFieldWork, save->field, 0x660);
     save->flags =
-        gOptionTimeLimit | (gOptionSkipMessages << 2) | (gOptionBattleMusic << 3) | (gUnk_03001784.unk0_1 << 5);
+        gOptionTimeLimit | (gOptionSkipMessages << 2) | (gOptionBattleMusic << 3) | (gSaveStatus.linkIntroSeen << 5);
     save->checksum = 0;
     sum = 0;
     p = (u8 *)save;

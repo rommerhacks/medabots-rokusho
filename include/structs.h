@@ -466,19 +466,19 @@ struct SioCnt {
     u16 data;
 };
 
-// Serial (multiplayer link) state at 0x03005010.
-struct Unk_03005010 {
-    u32 unk0; // per-player "packet received" bits (serial_link_init_and_status)
-    u16 unk4; // send packet (serial_prepare_send_packet)
-    s16 unk6;
-    u16 unk8[4][2]; // received packets, one per player
+// Per-frame link packet exchange (main loop: serial_link_init_and_status fills recv, serial_prepare_send_packet
+// sends sendKeys + sendData). Each packet is { keys, data }; data carries the menus' 0xFFxx / 0xFExx commands.
+struct LinkPackets {
+    u32 status;     // bits 0-3: packet received from player i; 0x80 parent; bits 8-11 connected players
+    u16 sendKeys;   // word 0 of the packet we send (held keys in menus)
+    s16 sendData;   // word 1: command / value for the other side
+    u16 recv[4][2]; // received packets, [player][0 keys, 1 data]
     u8 filler18;
-    s8 unk19[4]; // per-player timeouts
-    u8 unk1D;
-    u8 unk1E;
+    s8 recvTimeouts[4]; // frames since player i's last packet (dropped after 10)
+    u8 playerJoined;    // 0xFF on the frame a player connects
+    u8 linkLost;        // 0xFF on the frame a player drops or the send stalls
 };
 
-// Decompressed tilemap (write_tilemap_to_vram_08000E94, load_tilemap_rows_to_vram).
 struct Tilemap {
     u32 width;
     u32 height;
@@ -1658,9 +1658,10 @@ struct ShopSellEntry {
 };
 
 // Game flags byte at 0x03001784
-struct Unk_03001784 {
-    u32 unk0_0 : 1; // save_screen_poll_save_choice: next game state 13 instead of 6
-    u32 unk0_1 : 1; // saved in SaveData.flags bit 5
+// Save / first-time flags kept in IWRAM (cleared at boot).
+struct SaveStatus {
+    u32 saveExists : 1;    // a save was loaded or written (save_dispatch); save screen and link start ask to overwrite
+    u32 linkIntroSeen : 1; // link start's 3 intro messages were shown; saved in SaveData.flags bit 5
     u32 unk0_2 : 30;
 };
 
@@ -1676,7 +1677,7 @@ struct SaveData {
     u8 fillerFF6[2];
     u8 field[0xCC0]; // gFieldWork
     u8 flags;        // bits 0-1 gOptionTimeLimit, bit 2 gOptionSkipMessages, bits 3-4 gOptionBattleMusic, bit 5
-                     // gUnk_03001784.unk0_1
+                     // gSaveStatus.linkIntroSeen
     u8 filler1CB9[3];
 };
 

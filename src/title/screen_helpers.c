@@ -133,7 +133,7 @@ void tilemap_offset_tiles_and_palette(u32 tiles, u32 palette, u32 blk) {
 void init_multiplayer_id(void) {
     u8 buf[4];
     memcpy_optimized(buf, gUnk_080AF6EC, 4);
-    gUnk_03000B90 = (*(vu32 *)0x04000128 << 26) >> 30;
+    gLinkPlayerId = (*(vu32 *)0x04000128 << 26) >> 30;
 }
 
 // guess: link play uses a key word received over the link; new / released keys from it (no callers).
@@ -147,12 +147,12 @@ void keys_update_from(u16 keys) {
 
 static void link_poll_keys(void) {
     if (gLinkMultiplayerActive != 0) {
-        if (gUnk_03000B90)
-            keys_update_from(gUnk_03005010.unk8[0][0]);
+        if (gLinkPlayerId)
+            keys_update_from(gLinkPackets.recv[0][0]);
         else {
-            register struct Unk_03005010 *p asm("r0") = &gUnk_03005010;
-            p->unk4 = gHeldKeys;
-            keys_update_from(p->unk8[0][0]);
+            register struct LinkPackets *p asm("r0") = &gLinkPackets;
+            p->sendKeys = gHeldKeys;
+            keys_update_from(p->recv[0][0]);
         }
     }
 }

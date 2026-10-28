@@ -432,20 +432,20 @@ gShopkeeperPortraitSets:
 gUnk_080AFA20:
 	.incbin "baserom.gba", 0xAFA20, 0x1C
 
-	.global gUnk_080AFA3C
-gUnk_080AFA3C:
+	.global gPartTradeSpritePositions
+gPartTradeSpritePositions:
 	.incbin "baserom.gba", 0xAFA3C, 0x10
 
-	.global gUnk_080AFA4C
-gUnk_080AFA4C:
+	.global gPartTradeObjPalette
+gPartTradeObjPalette:
 	.incbin "baserom.gba", 0xAFA4C, 0x20
 
-	.global gUnk_080AFA6C
-gUnk_080AFA6C:
+	.global gPartTradeStates
+gPartTradeStates:
 	.incbin "baserom.gba", 0xAFA6C, 0x34
 
-	.global gUnk_080AFAA0
-gUnk_080AFAA0:
+	.global gMedalTradeStates
+gMedalTradeStates:
 	.incbin "baserom.gba", 0xAFAA0, 0x30
 
 	.global gUnk_080AFAD0
@@ -460,32 +460,32 @@ gUnk_080AFAE0:
 gUnk_080AFAE8:
 	.incbin "baserom.gba", 0xAFAE8, 0x20
 
-	.global gUnk_080AFB08
-gUnk_080AFB08:
+	.global gLinkIntroMessageIds
+gLinkIntroMessageIds:
 	.incbin "baserom.gba", 0xAFB08, 0x3
 
-	.global gUnk_080AFB0B
-gUnk_080AFB0B:
+	.global gLinkStartMessageIds
+gLinkStartMessageIds:
 	.incbin "baserom.gba", 0xAFB0B, 0x5
 
-	.global gUnk_080AFB10
-gUnk_080AFB10:
+	.global gLinkStartStates
+gLinkStartStates:
 	.incbin "baserom.gba", 0xAFB10, 0x20
 
-	.global gUnk_080AFB30
-gUnk_080AFB30:
+	.global gLinkAnswersDifferMessage
+gLinkAnswersDifferMessage:
 	.incbin "baserom.gba", 0xAFB30, 0xF
 
-	.global gUnk_080AFB3F
-gUnk_080AFB3F:
+	.global gLinkMenuHelpMessageIds
+gLinkMenuHelpMessageIds:
 	.incbin "baserom.gba", 0xAFB3F, 0x6
 
-	.global gUnk_080AFB45
-gUnk_080AFB45:
+	.global gLinkMenuGameModes
+gLinkMenuGameModes:
 	.incbin "baserom.gba", 0xAFB45, 0x3
 
-	.global gUnk_080AFB48
-gUnk_080AFB48:
+	.global gLinkMenuStates
+gLinkMenuStates:
 	.incbin "baserom.gba", 0xAFB48, 0x34E
 
 	.global gUnk_080AFE96

@@ -1088,7 +1088,7 @@ void robattle_effect_b_number_update(void) {
 }
 
 // Robattle handlers 0x90-0x99 and 0xA0-0xAF: exchange each side's chosen parts (action) over the
-// serial link (gUnk_03005010), guess: link Robattle (only when gGameWork.skipBotSetup = 1).
+// serial link (gLinkPackets), guess: link Robattle (only when gGameWork.skipBotSetup = 1).
 void robattle_link_message_open(void) {
     text_window_init(1, 0, 0);
     gGameSubState++;
@@ -1101,7 +1101,7 @@ void robattle_link_message_show(void) {
 
 void robattle_link_sync(void) {
     if (link_sync_both_ready()) {
-        gUnk_03005010.unk6 = 0;
+        gLinkPackets.sendData = 0;
         gGameWork.unk86 = 0;
         gGameSubState++;
     }
@@ -1131,7 +1131,7 @@ void robattle_link_exchange_commands(void) {
     s16 flag;
 
     if (gBattleWork.unk51 != 3) {
-        gUnk_03005010.unk6 =
+        gLinkPackets.sendData =
             gBattleBots[gBattleWork.unk51].chosenAction + (flag = ((gBattleWork.unk1AF << 8) & 0x100) + 0x8000);
         gGameWork.unk86++;
         if (!(gGameWork.unk86 & 1)) {
@@ -1140,7 +1140,7 @@ void robattle_link_exchange_commands(void) {
         }
     }
     if (gBattleWork.unk53 != 3) {
-        r = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
+        r = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
         if ((r & 0x8000) && ((u16)(r & 0x100) >> 8) != gBattleWork.unk1B0) {
             gBattleWork.unk1B0 ^= 1;
             gBattleBots[gBattleWork.unk53 + 3].chosenAction = r;
@@ -1156,7 +1156,7 @@ void robattle_link_exchange_commands(void) {
 }
 
 void robattle_link_apply_opponent_parts(void) {
-    gUnk_03005010.unk6 = 0;
+    gLinkPackets.sendData = 0;
     battle_bot_select_part(3, gBattleBots[3].chosenAction);
     battle_bot_select_part(4, gBattleBots[4].chosenAction);
     battle_bot_select_part(5, gBattleBots[5].chosenAction);
@@ -1186,12 +1186,12 @@ void robattle_link_exchange_bot_command(void) {
     u16 r;
 
     if (gBattleWork.actor <= 2) {
-        gUnk_03005010.unk6 = gBattleBots[gBattleWork.actor].chosenAction + 0x8000;
+        gLinkPackets.sendData = gBattleBots[gBattleWork.actor].chosenAction + 0x8000;
         if (gBattleWork.unk1AF)
             goto next;
         gBattleWork.unk1AF = 1;
     } else {
-        r = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
+        r = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
         if (r & 0x8000) {
             gBattleBots[gBattleWork.actor].chosenAction = r;
         next:
@@ -1217,14 +1217,14 @@ void robattle_link_apply_bot_medaforce(void) {
 }
 
 void robattle_link_resume_turn(void) {
-    gUnk_03005010.unk6 = 0;
+    gLinkPackets.sendData = 0;
     gGameSubState = 0x45;
 }
 
 void robattle_link_sync_counted(void) {
     gGameWork.unk86++;
     if (link_sync_both_ready()) {
-        gUnk_03005010.unk6 = 0;
+        gLinkPackets.sendData = 0;
         gGameSubState++;
     }
 }

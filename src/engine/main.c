@@ -20,11 +20,11 @@ void AgbMain(void) {
     gGameSubState = 0;
     serial_link_init();
     sound_init(&gSoundWorkArea);
-    *(u16 *)&gUnk_03001784 = 0;
+    *(u16 *)&gSaveStatus = 0;
     gLinkMultiplayerActive = 0;
     gFramesSinceMainLoop = 0;
-    gUnk_03005010.unk1E = 0;
-    gUnk_03005010.unk1D = 0;
+    gLinkPackets.linkLost = 0;
+    gLinkPackets.playerJoined = 0;
     for (;;) {
         VBlankIntrWait();
         gFramesSinceMainLoop = 0;
@@ -33,23 +33,23 @@ void AgbMain(void) {
         if (gPlayTimeRunning && gPlayerRecord.playTime < 0x014996FF)
             gPlayerRecord.playTime++;
         prevConnected = gSioLink.connected;
-        gUnk_03005010.unk1D = 0;
-        gUnk_03005010.unk1E = 0;
-        gUnk_03005010.unk0 = serial_link_init_and_status((u32 *)gUnk_03005010.unk8);
+        gLinkPackets.playerJoined = 0;
+        gLinkPackets.linkLost = 0;
+        gLinkPackets.status = serial_link_init_and_status((u32 *)gLinkPackets.recv);
         for (i = 0; i < 4; i++) {
-            if (gUnk_03005010.unk0 & (1 << i)) {
-                gUnk_03005010.unk19[i] = 0;
+            if (gLinkPackets.status & (1 << i)) {
+                gLinkPackets.recvTimeouts[i] = 0;
                 if (!((prevConnected >> i) & 1)) {
                     gSioLink.connected |= 1 << i;
-                    gUnk_03005010.unk1D |= 0xFF;
+                    gLinkPackets.playerJoined |= 0xFF;
                 }
-            } else if (gUnk_03005010.unk19[i] > 10) {
+            } else if (gLinkPackets.recvTimeouts[i] > 10) {
                 if ((gSioLink.connected >> i) & 1)
-                    gUnk_03005010.unk1E |= 0xFF;
+                    gLinkPackets.linkLost |= 0xFF;
                 gSioLink.connected &= ~(1 << i);
-                gUnk_03005010.unk19[i] = 0;
+                gLinkPackets.recvTimeouts[i] = 0;
             } else {
-                gUnk_03005010.unk19[i]++;
+                gLinkPackets.recvTimeouts[i]++;
             }
         }
         if (check_soft_reset()) {
@@ -59,10 +59,9 @@ void AgbMain(void) {
         } else if (gLinkMultiplayerActive) {
             u32 other = 0;
 
-            if (gUnk_03000B90 == 0)
+            if (gLinkPlayerId == 0)
                 other = 1;
-            if (gUnk_03005010.unk8[other][0] == 0xFFFF &&
-                gUnk_03005010.unk8[other][1] == gUnk_03005010.unk8[other][0]) {
+            if (gLinkPackets.recv[other][0] == 0xFFFF && gLinkPackets.recv[other][1] == gLinkPackets.recv[other][0]) {
                 gGameMode = 0;
                 gGameState = 10;
                 gGameSubState = 16;
@@ -70,7 +69,7 @@ void AgbMain(void) {
         }
         gGameModeHandlers[gGameMode]();
         check_flag_and_fast_copy();
-        serial_prepare_send_packet(&gUnk_03005010.unk4);
+        serial_prepare_send_packet(&gLinkPackets.sendKeys);
     }
 }
 
@@ -129,11 +128,11 @@ void vblank_irq(void) {
         gVBlankFlags |= 1;
         vblank_body();
         gVBlankFlags &= ~1;
-        if (gUnk_03005010.unk0 & 0x80)
+        if (gLinkPackets.status & 0x80)
             sio_vblank_start_frame();
         REG_IME = 0;
         if (++gFramesSinceMainLoop > 5 && gSioLink.sendPending) {
-            gUnk_03005010.unk1E = 0xFF;
+            gLinkPackets.linkLost = 0xFF;
             INTR_CHECK |= 0x80;
         }
         INTR_CHECK |= 1;
@@ -218,10 +217,10 @@ void soft_reset(void) {
     u32 i;
 
     if (gLinkMultiplayerActive) {
-        gUnk_03005010.unk4 = 0xFFFF;
-        gUnk_03005010.unk6 = -1;
+        gLinkPackets.sendKeys = 0xFFFF;
+        gLinkPackets.sendData = -1;
         for (i = 0; i < 8; i++) {
-            serial_prepare_send_packet(&gUnk_03005010.unk4);
+            serial_prepare_send_packet(&gLinkPackets.sendKeys);
             VBlankIntrWait();
         }
         gLinkMultiplayerActive = 0;

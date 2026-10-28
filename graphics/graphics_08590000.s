@@ -344,68 +344,68 @@ gUnk_0879A78C:
 gUnk_0879A8BC:
 	.incbin "baserom.gba", 0x79A8BC, 0x184
 
-	.global gUnk_0879AA40
-gUnk_0879AA40:
+	.global gLinkMenuBgPalette
+gLinkMenuBgPalette:
 	.incbin "baserom.gba", 0x79AA40, 0x200
 
-	.global gUnk_0879AC40
-gUnk_0879AC40:
+	.global gLinkMenuBgTiles
+gLinkMenuBgTiles:
 	.incbin "baserom.gba", 0x79AC40, 0x142C
 
-	.global gUnk_0879C06C
-gUnk_0879C06C:
+	.global gLinkMenuBg1Tilemap
+gLinkMenuBg1Tilemap:
 	.incbin "baserom.gba", 0x79C06C, 0x1F4
 
-	.global gUnk_0879C260
-gUnk_0879C260:
+	.global gLinkMenuBg2Tilemap
+gLinkMenuBg2Tilemap:
 	.incbin "baserom.gba", 0x79C260, 0x140
 
-	.global gUnk_0879C3A0
-gUnk_0879C3A0:
+	.global gLinkMenuBg3Tilemap
+gLinkMenuBg3Tilemap:
 	.incbin "baserom.gba", 0x79C3A0, 0x2FC
 
-	.global gUnk_0879C69C
-gUnk_0879C69C:
+	.global gPartTradeBgPalette
+gPartTradeBgPalette:
 	.incbin "baserom.gba", 0x79C69C, 0x200
 
-	.global gUnk_0879C89C
-gUnk_0879C89C:
+	.global gPartTradeBgTiles
+gPartTradeBgTiles:
 	.incbin "baserom.gba", 0x79C89C, 0x1530
 
-	.global gUnk_0879DDCC
-gUnk_0879DDCC:
+	.global gPartTradeBg1Tilemap
+gPartTradeBg1Tilemap:
 	.incbin "baserom.gba", 0x79DDCC, 0x178
 
-	.global gUnk_0879DF44
-gUnk_0879DF44:
+	.global gPartTradeAnimFramesTilemap
+gPartTradeAnimFramesTilemap:
 	.incbin "baserom.gba", 0x79DF44, 0x298
 
-	.global gUnk_0879E1DC
-gUnk_0879E1DC:
+	.global gPartTradeBg3Tilemap
+gPartTradeBg3Tilemap:
 	.incbin "baserom.gba", 0x79E1DC, 0x2FC
 
-	.global gUnk_0879E4D8
-gUnk_0879E4D8:
+	.global gMedalTradeBgPalettes
+gMedalTradeBgPalettes:
 	.incbin "baserom.gba", 0x79E4D8, 0x140
 
-	.global gUnk_0879E618
-gUnk_0879E618:
+	.global gMedalTradeBgTiles
+gMedalTradeBgTiles:
 	.incbin "baserom.gba", 0x79E618, 0x14F8
 
-	.global gUnk_0879FB10
-gUnk_0879FB10:
+	.global gMedalTradeAnimFramesTilemap
+gMedalTradeAnimFramesTilemap:
 	.incbin "baserom.gba", 0x79FB10, 0x2B0
 
-	.global gUnk_0879FDC0
-gUnk_0879FDC0:
+	.global gMedalTradeBg1Tilemap
+gMedalTradeBg1Tilemap:
 	.incbin "baserom.gba", 0x79FDC0, 0x13C
 
-	.global gUnk_0879FEFC
-gUnk_0879FEFC:
+	.global gMedalTradeBg2Tilemap
+gMedalTradeBg2Tilemap:
 	.incbin "baserom.gba", 0x79FEFC, 0x154
 
-	.global gUnk_087A0050
-gUnk_087A0050:
+	.global gMedalTradeBg3Tilemap
+gMedalTradeBg3Tilemap:
 	.incbin "baserom.gba", 0x7A0050, 0x2FC
 
 	.global gUnk_087A034C

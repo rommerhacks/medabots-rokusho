@@ -1,4 +1,4 @@
-// Mode-2 state 21 (dispatch_battle_cutscene_substate, sub-states gUnk_080AFB10), entered from field/field_mode
+// Mode-2 state 21 (dispatch_battle_cutscene_substate, sub-states gLinkStartStates), entered from field/field_mode
 // (case 4): message and yes/no prompts, saves the game (save_dispatch) and starts the serial link
 // (serial_link_init). Name is a guess.
 #include "global.h"
@@ -17,14 +17,15 @@ void battle_cutscene_dispatch(void) {
 
     t = gMenuWork->timer++;
     r = 0;
-    if (!(*(u8 *)&gUnk_03001784 & 2)) {
-        if (run_message(gUnk_08485BD8[gUnk_080AFB08[gMenuWork->step]]) && KEYS_LO(gNewKeys) & 1) {
+    // FAKEMATCH: byte access to gSaveStatus (bit 1 linkIntroSeen, bit 0 saveExists); the bitfield loads a word
+    if (!(*(u8 *)&gSaveStatus & 2)) {
+        if (run_message(gLinkMenuMessages[gLinkIntroMessageIds[gMenuWork->step]]) && KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
             if (++gMenuWork->step > 2) {
                 gGameWork.unk84 = r;
                 gGameWork.endModeStep = r;
                 gGameSubState++;
-                *(u8 *)&gUnk_03001784 |= 2;
+                *(u8 *)&gSaveStatus |= 2;
             } else
                 message_next();
         }
@@ -32,7 +33,7 @@ void battle_cutscene_dispatch(void) {
     }
     switch (gMenuWork->step) {
     case 0:
-        if (run_message(gUnk_08485BD8[gUnk_080AFB0B[gMenuWork->step]]) && KEYS_LO(gNewKeys) & 1) {
+        if (run_message(gLinkMenuMessages[gLinkStartMessageIds[gMenuWork->step]]) && KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
             gMenuWork->step++;
             message_next();
@@ -42,9 +43,9 @@ void battle_cutscene_dispatch(void) {
     case 1:
     case 2:
     case 3:
-        if (run_message(gUnk_08485BD8[gUnk_080AFB0B[gMenuWork->step]]) && poll_choice_menu()) {
+        if (run_message(gLinkMenuMessages[gLinkStartMessageIds[gMenuWork->step]]) && poll_choice_menu()) {
             if (gGameWork.unk2A == 0) {
-                if (*(u8 *)&gUnk_03001784 & 1) {
+                if (*(u8 *)&gSaveStatus & 1) {
                     if (++gMenuWork->step <= 3)
                         open_choice_menu(1, 0, 7);
                 } else {
@@ -61,7 +62,7 @@ void battle_cutscene_dispatch(void) {
         }
         break;
     case 4:
-        if (run_message(gUnk_08485BD8[gUnk_080AFB0B[gMenuWork->step]])) {
+        if (run_message(gLinkMenuMessages[gLinkStartMessageIds[gMenuWork->step]])) {
             play_song(0);
             play_sound_effect(0);
             eeprom_setup_timer_irq();
@@ -87,7 +88,7 @@ void battle_cutscene_dispatch(void) {
 }
 
 void link_start_show_messages(void) {
-    if (run_message(gUnk_08485BD8[gMenuWork->step ? 7 : 6]) && KEYS_LO(gNewKeys) & 1) {
+    if (run_message(gLinkMenuMessages[gMenuWork->step ? 7 : 6]) && KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(0xD);
         if ((s32)++gMenuWork->step > 1) {
             gGameWork.unk84 = 0;
@@ -105,7 +106,7 @@ void link_start_exit_declined(void) {
 }
 
 void fade_transition_and_input_check(void) {
-    if (run_message(gUnk_08485BD8[gMenuWork->step ? 5 : 4])) {
+    if (run_message(gLinkMenuMessages[gMenuWork->step ? 5 : 4])) {
         struct MenuWork *w = gMenuWork;
         if (w->step == 0) {
             gGameSubState++;
@@ -123,20 +124,20 @@ void multiplayer_battle_sync_update(void) {
     struct MenuWork *w;
     u8 *ready;
     u32 zero;
-    struct Unk_03005010 *link;
+    struct LinkPackets *link;
 
-    if (!(gUnk_03005010.unk0 & 0xF00) && !(gFrameCounter & 0xF))
+    if (!(gLinkPackets.status & 0xF00) && !(gFrameCounter & 0xF))
         serial_link_init();
     sio_start_transfers();
     init_multiplayer_id();
-    link = &gUnk_03005010;
+    link = &gLinkPackets;
     w = gMenuWork;
     ready = &w->unk49;
-    link->unk6 = *ready | 0xFF00;
+    link->sendData = *ready | 0xFF00;
     zero = 0;
-    if (link->unk8[gUnk_03000B90][1] == 0xFF01) {
-        if (link->unk8[gUnk_03000B90 == 0][1] == 0xFF01) {
-            if (gUnk_03000B90 <= 1) {
+    if (link->recv[gLinkPlayerId][1] == 0xFF01) {
+        if (link->recv[gLinkPlayerId == 0][1] == 0xFF01) {
+            if (gLinkPlayerId <= 1) {
                 gGameSubState++;
                 w->frame = zero;
                 gLinkMultiplayerActive = -1;
@@ -145,10 +146,10 @@ void multiplayer_battle_sync_update(void) {
             message_next();
             gMenuWork->step = 1;
             gGameSubState--;
-            link->unk6 = zero;
+            link->sendData = zero;
         }
-    } else if ((link->unk0 & 3) == 3 && (u16)(link->unk8[gUnk_03000B90 == 0][1] + 0x100) <= 1) {
-        link->unk6 = 0xFF01;
+    } else if ((link->status & 3) == 3 && (u16)(link->recv[gLinkPlayerId == 0][1] + 0x100) <= 1) {
+        link->sendData = 0xFF01;
         *ready = 1;
         return;
     }
@@ -156,21 +157,21 @@ void multiplayer_battle_sync_update(void) {
         message_next();
         gMenuWork->step = 1;
         gGameSubState--;
-        gUnk_03005010.unk6 = 0;
+        gLinkPackets.sendData = 0;
     } else if (gMenuWork->frame > 0x10C) {
-        if (gUnk_03005010.unk8[gUnk_03000B90 == 0][1] == 0xFF00)
+        if (gLinkPackets.recv[gLinkPlayerId == 0][1] == 0xFF00)
             gMenuWork->frame = 0;
         else
-            gUnk_03005010.unk6 = 0;
+            gLinkPackets.sendData = 0;
     }
 }
 
 void handle_battle_fade_transition(void) {
-    if (gUnk_03000B90 > 1) {
+    if (gLinkPlayerId > 1) {
         message_next();
         gMenuWork->step = 1;
         gGameSubState -= 2;
-    } else if (gUnk_03005010.unk0 & (1 << gUnk_03000B90)) {
+    } else if (gLinkPackets.status & (1 << gLinkPlayerId)) {
         gGameSubState++;
     } else {
         message_next();
@@ -186,6 +187,6 @@ void link_start_exit_finished(void) {
 }
 
 void dispatch_battle_cutscene_substate(void) {
-    struct FuncTable8 t = gUnk_080AFB10;
+    struct FuncTable8 t = gLinkStartStates;
     t.f[gGameSubState]();
 }

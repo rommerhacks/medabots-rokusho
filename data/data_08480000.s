@@ -132,16 +132,16 @@ gShopBuyPartTypeText:
 gShopSellPartTypeText:
 	.incbin "baserom.gba", 0x485580, 0xCF
 
-	.global gUnk_0848564F
-gUnk_0848564F:
+	.global gLinkSavePromptMessage
+gLinkSavePromptMessage:
 	.incbin "baserom.gba", 0x48564F, 0x139
 
 	.global gUnk_08485788
 gUnk_08485788:
 	.incbin "baserom.gba", 0x485788, 0x450
 
-	.global gUnk_08485BD8
-gUnk_08485BD8:
+	.global gLinkMenuMessages
+gLinkMenuMessages:
 	.incbin "baserom.gba", 0x485BD8, 0x70
 
 	.global gGameStateHandlers

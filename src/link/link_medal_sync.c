@@ -28,7 +28,7 @@ void link_medal_sync_exchange(void) {
     u32 m;
     s32 i;
 
-    pkt = gUnk_03005010.unk8[gUnk_03000B90 == 0][1];
+    pkt = gLinkPackets.recv[gLinkPlayerId == 0][1];
     s = gMenuWork;
     if (!s->partner_chose) {
         if ((pkt & 0xFC00) == 0xF400) {
@@ -36,22 +36,22 @@ void link_medal_sync_exchange(void) {
             s->total |= (pkt & 0xFF) << (m * 8);
             s->counter |= 1 << m;
         }
-        gUnk_03005010.unk6 = gMenuWork->counter | 0xFC00;
+        gLinkPackets.sendData = gMenuWork->counter | 0xFC00;
     } else if ((pkt & 0xFF00) == 0xFC00) {
         if (pkt == 0xFC0F)
-            gUnk_03005010.unk6 = pkt;
+            gLinkPackets.sendData = pkt;
         else {
             m = s->total;
             for (i = 0; i <= 3; i++) {
                 if (!((pkt >> i) & 1)) {
-                    gUnk_03005010.unk6 = (m & 0xFF) | (i << 8 | 0xF400);
+                    gLinkPackets.sendData = (m & 0xFF) | (i << 8 | 0xF400);
                     break;
                 }
                 m >>= 8;
             }
         }
     }
-    if (gUnk_03005010.unk8[0][1] == 0xFC0F && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1]) {
+    if (gLinkPackets.recv[0][1] == 0xFC0F && gLinkPackets.recv[1][1] == gLinkPackets.recv[0][1]) {
         if (gMenuWork->partner_chose) {
             gGameState = 0x11;
             gGameSubState = 0;
@@ -69,8 +69,8 @@ void link_medal_sync_update(void) {
 }
 
 void link_handshake_update(void) {
-    gUnk_03005010.unk6 = 0xFEDF;
-    if (gUnk_03005010.unk8[0][1] == 0xFEDF && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1]) {
+    gLinkPackets.sendData = 0xFEDF;
+    if (gLinkPackets.recv[0][1] == 0xFEDF && gLinkPackets.recv[1][1] == gLinkPackets.recv[0][1]) {
         gGameState = 0x14;
         gGameSubState = 0;
     }

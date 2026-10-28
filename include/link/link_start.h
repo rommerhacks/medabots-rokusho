@@ -3,6 +3,6 @@
 
 // Mode-2 state 21: save and connect prompt before a link session
 
-void dispatch_battle_cutscene_substate(void); // gUnk_080AFB10[gGameSubState]()
+void dispatch_battle_cutscene_substate(void); // gLinkStartStates[gGameSubState]()
 
 #endif // GUARD_LINK_LINK_START_H

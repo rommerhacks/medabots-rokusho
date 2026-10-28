@@ -140,14 +140,14 @@ void save_screen_poll_save_choice(void) {
     if (poll_choice_menu()) {
         message_next();
         if (gGameWork.unk2A == 0)
-            gGameSubState = (*(u8 *)&gUnk_03001784 & 1) ? 13 : 6;
+            gGameSubState = (*(u8 *)&gSaveStatus & 1) ? 13 : 6;
         else
             gGameSubState = 9;
     }
 }
 
 void save_screen_ask_overwrite(void) {
-    if (run_message(gUnk_08485BD8[18])) {
+    if (run_message(gLinkMenuMessages[18])) {
         open_choice_menu(1, 0x16, 7);
         gGameSubState++;
     }

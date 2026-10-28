@@ -131,7 +131,7 @@ void init_opponent_bot_slots(void) {
 void battle_pick_all_ai_targets(void) {
     u32 i;
 
-    if (gGameWork.skipBotSetup != 1 || gUnk_03000B90 == 0) {
+    if (gGameWork.skipBotSetup != 1 || gLinkPlayerId == 0) {
         for (i = 0; i <= 5; i++) {
             if (gBattleBots[i].teamState)
                 ai_pick_bot_targets(i);

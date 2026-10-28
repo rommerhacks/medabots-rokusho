@@ -674,7 +674,7 @@ void team_select_link_wait_ready(void) {
     medabots_scroll_bg3();
     medabots_screen_draw_bot_sprite();
     if (link_sync_both_ready()) {
-        gUnk_03005010.unk6 = 0;
+        gLinkPackets.sendData = 0;
         gGameWork.unk86 = 0;
         gGameSubState++;
     }
@@ -705,7 +705,7 @@ void team_select_link_exchange_init(void) {
         (*timer)++;
 }
 
-// guess: sends 3 x 0x48 bytes from gBattleBots and receives into gUnk_03000890 over the link, one
+// guess: sends 3 x 0x48 bytes from gBattleBots and receives into gLinkPartnerBotData over the link, one
 // byte per packet (bit 15 = valid, bit 8 = toggle), summing the received bytes in unk1A8. Near miss:
 // scratch/sub_08004AF8_nearmiss.c (one literal load order and an orrs/adds for the 0x8000 header).
 
@@ -719,7 +719,7 @@ void team_select_link_exchange_bots(void) {
     s = &gBattleWork;
     if (s->unk51 != 3) {
         src = (u8 *)&gBattleBots[s->unk51];
-        gUnk_03005010.unk6 = src[s->unk52] + (flag = ((s->unk1AF << 8) & 0x100) + 0x8000);
+        gLinkPackets.sendData = src[s->unk52] + (flag = ((s->unk1AF << 8) & 0x100) + 0x8000);
         if (++gGameWork.unk86 == 4) {
             gGameWork.unk86 = 0;
             s->unk1AF ^= 1;
@@ -730,11 +730,11 @@ void team_select_link_exchange_bots(void) {
         }
     }
     if (gBattleWork.unk53 != 3) {
-        u16 v = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
+        u16 v = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
 
         if ((v & 0x8000) && (u16)(v & 0x100) >> 8 != gBattleWork.unk1B0) {
             gBattleWork.unk1B0 ^= 1;
-            ((struct LinkRow256 *)gUnk_03000890)[gBattleWork.unk53].b[gBattleWork.unk54] = v;
+            ((struct LinkRow256 *)gLinkPartnerBotData)[gBattleWork.unk53].b[gBattleWork.unk54] = v;
             gBattleWork.unk1A8 = (gBattleWork.unk1A8 + (v & 0xFF)) & 0x7FFF;
             if (++gBattleWork.unk54 == 0x48) {
                 gBattleWork.unk53++;
@@ -776,15 +776,15 @@ void team_select_link_compare_checksums(void) {
     if (gBattleWork.unk51 < 2) {
         switch (gBattleWork.unk51) {
         case 0:
-            gUnk_03005010.unk6 = 0x8000 + gBattleWork.unk1A6;
+            gLinkPackets.sendData = 0x8000 + gBattleWork.unk1A6;
             break;
         case 1:
-            gUnk_03005010.unk6 = 0x8000 + gBattleWork.unk1A8;
+            gLinkPackets.sendData = 0x8000 + gBattleWork.unk1A8;
             break;
         }
         gBattleWork.unk51++;
     }
-    v = gUnk_03005010.unk8[gUnk_03000B90 ^ 1][1];
+    v = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
     if (v & 0x8000) {
         switch (gBattleWork.unk52) {
         case 0:
@@ -804,7 +804,7 @@ void team_select_link_compare_checksums(void) {
 }
 
 void team_select_link_done_start(void) {
-    gUnk_03005010.unk6 = 0;
+    gLinkPackets.sendData = 0;
     medabots_scroll_bg3();
     medabots_screen_draw_bot_sprite();
     team_select_link_load_opponents();

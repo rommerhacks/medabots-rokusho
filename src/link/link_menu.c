@@ -1,4 +1,4 @@
-// Mode-2 state 20 (dispatch_battle_menu_and_update_counters, sub-states gUnk_080AFB48), entered from
+// Mode-2 state 20 (dispatch_battle_menu_and_update_counters, sub-states gLinkMenuStates), entered from
 // field/field_mode (case 5) and when the link trade scenes end: the link menu hub with its own save + connect
 // step and yes/no confirmation. Name is a guess.
 #include "global.h"
@@ -15,12 +15,12 @@ void clear_vram_bg(void) {
     REG_BG1CNT = 0x1E05;
     REG_BG2CNT = 0x1D06;
     REG_BG3CNT = 0x3C07;
-    decompress_and_write_tilemap(gUnk_0879C06C, REG_BG1CNT);
-    decompress_and_write_tilemap(gUnk_0879C260, REG_BG2CNT);
-    decompress_and_write_tilemap(gUnk_0879C3A0, REG_BG3CNT);
-    size = dma3_copy_or_decompress(gUnk_0879AC40, gDecompressBuffer);
+    decompress_and_write_tilemap(gLinkMenuBg1Tilemap, REG_BG1CNT);
+    decompress_and_write_tilemap(gLinkMenuBg2Tilemap, REG_BG2CNT);
+    decompress_and_write_tilemap(gLinkMenuBg3Tilemap, REG_BG3CNT);
+    size = dma3_copy_or_decompress(gLinkMenuBgTiles, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
-    CpuFastSet(gUnk_0879AA40, (void *)PLTT, 0x80);
+    CpuFastSet(gLinkMenuBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
     CpuFastSet(gUnk_0850DEB8, (void *)0x05000200, 8);
@@ -45,109 +45,109 @@ void clear_vram_bg(void) {
 
 void fade_state_dispatch(void) {
 
-    if (gUnk_03000B90 != 0) {
+    if (gLinkPlayerId != 0) {
         switch (gMenuWork->frame) {
         case 0:
             if ((s32)count_assembled_medabots() <= 1) {
                 gMenuWork->link_battle_ok = 0;
-                gUnk_03005010.unk6 = 0xFF02;
+                gLinkPackets.sendData = 0xFF02;
             } else {
                 gMenuWork->link_battle_ok = -1;
-                gUnk_03005010.unk6 = 0xFF03;
+                gLinkPackets.sendData = 0xFF03;
             }
-            if (gUnk_03005010.unk8[0][1] == 0xFF04)
+            if (gLinkPackets.recv[0][1] == 0xFF04)
                 gMenuWork->frame++;
             break;
         case 1:
-            gUnk_03005010.unk6 = 0xFF05;
-            if (gUnk_03005010.unk8[0][1] == 0xFF02 || gUnk_03005010.unk8[0][1] == 0xFF03) {
-                gMenuWork->link_battle_ok = gUnk_03005010.unk8[0][1] != 0xFF02;
-                gUnk_03005010.unk6 = 0xFF04;
+            gLinkPackets.sendData = 0xFF05;
+            if (gLinkPackets.recv[0][1] == 0xFF02 || gLinkPackets.recv[0][1] == 0xFF03) {
+                gMenuWork->link_battle_ok = gLinkPackets.recv[0][1] != 0xFF02;
+                gLinkPackets.sendData = 0xFF04;
             }
-            if (gUnk_03005010.unk8[0][1] == 0xFF05)
+            if (gLinkPackets.recv[0][1] == 0xFF05)
                 gMenuWork->frame++;
             break;
         case 2:
-            gUnk_03005010.unk6 = 0xFF06;
-            if (gUnk_03005010.unk8[0][1] == 0xFF06)
+            gLinkPackets.sendData = 0xFF06;
+            if (gLinkPackets.recv[0][1] == 0xFF06)
                 gMenuWork->frame++;
             break;
         case 3:
             if (medaparts_all_equipped()) {
                 gMenuWork->link_trade_ok = 0;
-                gUnk_03005010.unk6 = 0xFF02;
+                gLinkPackets.sendData = 0xFF02;
             } else {
                 gMenuWork->link_trade_ok = -1;
-                gUnk_03005010.unk6 = 0xFF03;
+                gLinkPackets.sendData = 0xFF03;
             }
-            if (gUnk_03005010.unk8[0][1] == 0xFF04)
+            if (gLinkPackets.recv[0][1] == 0xFF04)
                 gMenuWork->frame++;
             break;
         case 4:
-            gUnk_03005010.unk6 = 0xFF05;
-            if (gUnk_03005010.unk8[0][1] == 0xFF02 || gUnk_03005010.unk8[0][1] == 0xFF03) {
-                gMenuWork->link_trade_ok = gUnk_03005010.unk8[0][1] != 0xFF02;
-                gUnk_03005010.unk6 = 0xFF04;
+            gLinkPackets.sendData = 0xFF05;
+            if (gLinkPackets.recv[0][1] == 0xFF02 || gLinkPackets.recv[0][1] == 0xFF03) {
+                gMenuWork->link_trade_ok = gLinkPackets.recv[0][1] != 0xFF02;
+                gLinkPackets.sendData = 0xFF04;
             }
-            if (gUnk_03005010.unk8[0][1] == 0xFF05)
+            if (gLinkPackets.recv[0][1] == 0xFF05)
                 gMenuWork->frame++;
             break;
         case 5:
-            gUnk_03005010.unk6 = 0xFF06;
-            if (gUnk_03005010.unk8[0][1] == 0xFF06)
+            gLinkPackets.sendData = 0xFF06;
+            if (gLinkPackets.recv[0][1] == 0xFF06)
                 gGameSubState++;
             break;
         }
     } else {
         switch (gMenuWork->frame) {
         case 0:
-            if (gUnk_03005010.unk8[1][1] == 0xFF02 || gUnk_03005010.unk8[1][1] == 0xFF03) {
-                gMenuWork->link_battle_ok = gUnk_03005010.unk8[1][1] != 0xFF02;
-                gUnk_03005010.unk6 = 0xFF04;
+            if (gLinkPackets.recv[1][1] == 0xFF02 || gLinkPackets.recv[1][1] == 0xFF03) {
+                gMenuWork->link_battle_ok = gLinkPackets.recv[1][1] != 0xFF02;
+                gLinkPackets.sendData = 0xFF04;
             }
-            if (gUnk_03005010.unk8[1][1] == 0xFF05)
+            if (gLinkPackets.recv[1][1] == 0xFF05)
                 gMenuWork->frame++;
             break;
         case 1:
             if (gMenuWork->link_battle_ok == 0 || (s32)count_assembled_medabots() <= 1) {
-                gUnk_03005010.unk6 = 0xFF02;
+                gLinkPackets.sendData = 0xFF02;
                 gMenuWork->link_battle_ok = 0;
             } else {
-                gUnk_03005010.unk6 = 0xFF03;
+                gLinkPackets.sendData = 0xFF03;
             }
-            if (gUnk_03005010.unk8[1][1] == 0xFF04)
+            if (gLinkPackets.recv[1][1] == 0xFF04)
                 gMenuWork->frame++;
             break;
         case 2:
-            gUnk_03005010.unk6 = 0xFF05;
-            if (gUnk_03005010.unk8[0][1] == 0xFF05 && gUnk_03005010.unk8[1][1] == 0xFF06)
-                gUnk_03005010.unk6 = gUnk_03005010.unk8[1][1];
-            if (gUnk_03005010.unk8[0][1] == 0xFF06)
+            gLinkPackets.sendData = 0xFF05;
+            if (gLinkPackets.recv[0][1] == 0xFF05 && gLinkPackets.recv[1][1] == 0xFF06)
+                gLinkPackets.sendData = gLinkPackets.recv[1][1];
+            if (gLinkPackets.recv[0][1] == 0xFF06)
                 gMenuWork->frame++;
             break;
         case 3:
-            if (gUnk_03005010.unk8[1][1] == 0xFF02 || gUnk_03005010.unk8[1][1] == 0xFF03) {
-                gMenuWork->link_trade_ok = gUnk_03005010.unk8[1][1] != 0xFF02;
-                gUnk_03005010.unk6 = 0xFF04;
+            if (gLinkPackets.recv[1][1] == 0xFF02 || gLinkPackets.recv[1][1] == 0xFF03) {
+                gMenuWork->link_trade_ok = gLinkPackets.recv[1][1] != 0xFF02;
+                gLinkPackets.sendData = 0xFF04;
             }
-            if (gUnk_03005010.unk8[1][1] == 0xFF05)
+            if (gLinkPackets.recv[1][1] == 0xFF05)
                 gMenuWork->frame++;
             break;
         case 4:
             if (gMenuWork->link_trade_ok == 0 || medaparts_all_equipped()) {
-                gUnk_03005010.unk6 = 0xFF02;
+                gLinkPackets.sendData = 0xFF02;
                 gMenuWork->link_trade_ok = 0;
             } else {
-                gUnk_03005010.unk6 = 0xFF03;
+                gLinkPackets.sendData = 0xFF03;
             }
-            if (gUnk_03005010.unk8[1][1] == 0xFF04)
+            if (gLinkPackets.recv[1][1] == 0xFF04)
                 gMenuWork->frame++;
             break;
         case 5:
-            gUnk_03005010.unk6 = 0xFF05;
-            if (gUnk_03005010.unk8[0][1] == 0xFF05 && gUnk_03005010.unk8[1][1] == 0xFF06)
-                gUnk_03005010.unk6 = gUnk_03005010.unk8[1][1];
-            if (gUnk_03005010.unk8[0][1] == 0xFF06)
+            gLinkPackets.sendData = 0xFF05;
+            if (gLinkPackets.recv[0][1] == 0xFF05 && gLinkPackets.recv[1][1] == 0xFF06)
+                gLinkPackets.sendData = gLinkPackets.recv[1][1];
+            if (gLinkPackets.recv[0][1] == 0xFF06)
                 gGameSubState++;
             break;
         }
@@ -163,8 +163,8 @@ void link_menu_fade_in(void) {
 }
 
 void handle_battle_menu_selection(void) {
-    if ((gUnk_03005010.unk8[gUnk_03000B90 == 0][1] & 0xFF00) == 0xEF00) {
-        gMenuWork->cursor = gUnk_03005010.unk8[gUnk_03000B90 == 0][1];
+    if ((gLinkPackets.recv[gLinkPlayerId == 0][1] & 0xFF00) == 0xEF00) {
+        gMenuWork->cursor = gLinkPackets.recv[gLinkPlayerId == 0][1];
         gMenuWork->partner_chose = 1;
         gGameSubState++;
         play_sound_effect(4);
@@ -174,9 +174,9 @@ void handle_battle_menu_selection(void) {
 
     sprite_bob_y(0, gFrameCounter, 0xC);
     if (gMenuWork->cursor == 6)
-        run_message(gUnk_080AFB30);
+        run_message(gLinkAnswersDifferMessage);
     else
-        run_message(gUnk_08485BD8[gUnk_080AFB3F[gMenuWork->cursor]]);
+        run_message(gLinkMenuMessages[gLinkMenuHelpMessageIds[gMenuWork->cursor]]);
 
     if (gMenuWork->cursor > 4) {
         if (KEYS_LO(gRepeatKeys) & 0xC1) {
@@ -206,7 +206,7 @@ void handle_battle_menu_selection(void) {
             play_sound_effect(6);
         } else {
             gMenuWork->partner_chose = 0;
-            gUnk_03005010.unk6 = gMenuWork->cursor | 0xEF00;
+            gLinkPackets.sendData = gMenuWork->cursor | 0xEF00;
             gGameSubState++;
             play_sound_effect(4);
         }
@@ -217,19 +217,19 @@ void update_fade_transition_state_080662CC(void) {
     struct MenuWork *p = gMenuWork;
 
     if (p->partner_chose != 0) {
-        gUnk_03005010.unk6 = 0xFE0F;
-    } else if (gUnk_03000B90 != 0) {
-        if ((gUnk_03005010.unk8[0][1] & 0xFF00) == 0xEF00) {
-            p->cursor = gUnk_03005010.unk8[0][1];
+        gLinkPackets.sendData = 0xFE0F;
+    } else if (gLinkPlayerId != 0) {
+        if ((gLinkPackets.recv[0][1] & 0xFF00) == 0xEF00) {
+            p->cursor = gLinkPackets.recv[0][1];
             gMenuWork->partner_chose = 1;
-        } else if (gUnk_03005010.unk8[0][1] == 0xFE0F) {
-            gUnk_03005010.unk6 = 0xFE0F;
+        } else if (gLinkPackets.recv[0][1] == 0xFE0F) {
+            gLinkPackets.sendData = 0xFE0F;
         }
     } else {
         p->partner_chose = 0;
-        gUnk_03005010.unk6 = gMenuWork->cursor | 0xEF00;
+        gLinkPackets.sendData = gMenuWork->cursor | 0xEF00;
     }
-    if (gUnk_03005010.unk8[1][1] == 0xFE0F) {
+    if (gLinkPackets.recv[1][1] == 0xFE0F) {
         if (gMenuWork->cursor == 4) {
             gGameSubState = 8;
             message_next();
@@ -265,7 +265,7 @@ void init_link_save_and_connect(void) {
 void link_menu_fade_out_exit(void) {
     if (blend_fade_step_08065598(gMenuWork->blend)) {
         if (gMenuWork->cursor <= 2)
-            init_game_mode(gUnk_080AFB45[gMenuWork->cursor]);
+            init_game_mode(gLinkMenuGameModes[gMenuWork->cursor]);
         else {
             gGameState = 0x1B;
             gGameSubState = 0;
@@ -287,7 +287,7 @@ void setup_dialogue_script_from_rom(void) {
     d = &p->message_buf[3];
     *d = 0;
     d = &p->message_buf[4];
-    s = gUnk_0848564F;
+    s = gLinkSavePromptMessage;
     while ((*d = *s) != 0xFF) {
         d++;
         s++;
@@ -313,7 +313,7 @@ void link_menu_poll_yes_no(void) {
 }
 
 void advance_substate_with_sound_ch1(void) {
-    if (run_message(gUnk_08485BD8[18])) {
+    if (run_message(gLinkMenuMessages[18])) {
         open_choice_menu(1, 0x16, 7);
         gGameSubState++;
     }
@@ -327,7 +327,7 @@ void link_menu_wait_choice(void) {
 }
 
 void menu_yes_no_confirmation_handler(void) {
-    const u8 *s = gUnk_08485BD8[15];
+    const u8 *s = gLinkMenuMessages[15];
     struct MenuWork *p = gMenuWork;
     u8 *d;
     s32 i;
@@ -352,11 +352,11 @@ void menu_yes_no_confirmation_handler(void) {
     d[i] = s[i];
     if (run_message(gMenuWork->message_buf)) {
         if (gGameWork.unk2A == 0)
-            gUnk_03005010.unk6 = 0xFF00;
+            gLinkPackets.sendData = 0xFF00;
         else
-            gUnk_03005010.unk6 = 0xFF01;
-        a = gUnk_03005010.unk8[0][1];
-        b = gUnk_03005010.unk8[1][1];
+            gLinkPackets.sendData = 0xFF01;
+        a = gLinkPackets.recv[0][1];
+        b = gLinkPackets.recv[1][1];
         if ((a & 0xFF00) == 0xFF00 && (b & 0xFF00) == 0xFF00) {
             message_next();
             if (a == b) {
@@ -372,7 +372,7 @@ void menu_yes_no_confirmation_handler(void) {
 }
 
 void dispatch_battle_menu_and_update_counters(void) {
-    struct FuncTable13 t = gUnk_080AFB48;
+    struct FuncTable13 t = gLinkMenuStates;
     t.f[gGameSubState]();
     if (gFrameCounter & 1) {
         gBg3Scroll.x++;

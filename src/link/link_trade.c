@@ -1,9 +1,9 @@
 // Link trade scenes (mode 2). State 16 (medapart_trade_update): both players swap one Medapart; each side sends
-// its part as a 0x4000-tagged packet through gUnk_03005010, then reduce_medapart_stat / medapart_add_quantity apply
+// its part as a 0x4000-tagged packet through gLinkPackets, then reduce_medapart_stat / medapart_add_quantity apply
 // the swap. State 17 (medal_trade_update): the player who chose the link menu entry (unk7A == 0) gives a Medal; its
 // 0x40-byte record is sent one byte per packet (0xC000 | index << 8 | byte) and the receiver adds it with
-// medal_add_from_buffer while the giver removes it. Their sub-state tables gUnk_080AFA6C (13) and gUnk_080AFAA0 (12)
-// are adjacent in ROM. Entered from link_enter_medapart_trade / link_enter_medal_trade; both end in link_menu
+// medal_add_from_buffer while the giver removes it. Their sub-state tables gPartTradeStates (13) and gMedalTradeStates
+// (12) are adjacent in ROM. Entered from link_enter_medapart_trade / link_enter_medal_trade; both end in link_menu
 // (state 20). Not runnable in the single-GBA harness: names come from the code.
 // gMenuWork here: own_part_id / own_part_kind and the partner's, frame the tile animation counter,
 // ticks the timeout, trade_medal the traded Medal record.
@@ -48,8 +48,8 @@ void load_medapart_sprite_animation(u8 id, u8 kind, u32 which) {
     u8 x, y;
 
     obj->oams = (struct SpriteNodeOam *)(0x020260D0 + which * 0x410);
-    x = gUnk_080AFA3C[which][kind][0];
-    y = gUnk_080AFA3C[which][kind][1];
+    x = gPartTradeSpritePositions[which][kind][0];
+    y = gPartTradeSpritePositions[which][kind][1];
     if (which)
         draw_medapart_sprite(gSpriteWork->oamBuf, obj, id, kind, y, x, 0xC7, 4, 6);
     else
@@ -282,15 +282,15 @@ void medapart_trade_init_screen(void) {
     REG_BG1CNT = 0x1E05;
     REG_BG2CNT = 0x1B06;
     REG_BG3CNT = 0x3C07;
-    decompress_and_write_tilemap(gUnk_0879DDCC, REG_BG1CNT);
-    decompress_and_write_tilemap(gUnk_0879DF44, REG_BG2CNT);
-    decompress_and_write_tilemap(gUnk_0879E1DC, REG_BG3CNT);
+    decompress_and_write_tilemap(gPartTradeBg1Tilemap, REG_BG1CNT);
+    decompress_and_write_tilemap(gPartTradeAnimFramesTilemap, REG_BG2CNT);
+    decompress_and_write_tilemap(gPartTradeBg3Tilemap, REG_BG3CNT);
     REG_BG2CNT = 0x1D06;
-    size = dma3_copy_or_decompress(gUnk_0879C89C, gDecompressBuffer);
+    size = dma3_copy_or_decompress(gPartTradeBgTiles, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
     lz_decompress_dispatch(gUnk_08784CB0, (void *)(0x06004000 + size));
     gMenuWork->bg_tile_base = size / 32 - 1;
-    CpuFastSet(gUnk_0879C69C, (void *)PLTT, 0x80);
+    CpuFastSet(gPartTradeBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gUnk_0850DD78, (void *)(PLTT + 0x3A0), 8);
     CpuFastSet(gUnk_0850DD78, &gPaletteBackup[0xD0], 8);
     lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
@@ -330,18 +330,18 @@ void medapart_trade_fade_in(void) {
 
 // Sends the own part and waits for both partners' part packets, then keeps the partner's.
 void medapart_trade_exchange_parts(void) {
-    struct Unk_03005010 *s;
+    struct LinkPackets *s;
     struct MenuWork *w;
     u16 a, b;
 
-    run_message(gUnk_08485BD8[15]);
-    s = &gUnk_03005010;
+    run_message(gLinkMenuMessages[15]);
+    s = &gLinkPackets;
     w = gMenuWork;
-    s->unk6 = w->own_part_id | (w->own_part_kind << 8) | 0x4000;
-    a = s->unk8[0][1];
-    b = s->unk8[1][1];
+    s->sendData = w->own_part_id | (w->own_part_kind << 8) | 0x4000;
+    a = s->recv[0][1];
+    b = s->recv[1][1];
     if ((a & 0xC000) == 0x4000 && (b & 0xC000) == (a & 0xC000)) {
-        if (gUnk_03000B90) {
+        if (gLinkPlayerId) {
             w->partner_part_id = a & 0x7F;
             gMenuWork->partner_part_kind = (a >> 8) & 3;
         } else {
@@ -358,7 +358,7 @@ void medapart_trade_exchange_parts(void) {
 }
 
 void medapart_trade_apply(void) {
-    run_message(gUnk_08485BD8[19]);
+    run_message(gLinkMenuMessages[19]);
     trade_tiles_speed_up_two_rows();
     load_medapart_sprite_animation(gMenuWork->own_part_id, gMenuWork->own_part_kind, 0);
     load_medapart_sprite_animation(gMenuWork->partner_part_id, gMenuWork->partner_part_kind, 1);
@@ -478,8 +478,8 @@ void medapart_trade_unflash(void) {
         obj_palettes_blend_masked_now(0x7FFF, 0x20 - (*t >> 1), 0xFF);
         (*t)++;
     } else {
-        CpuFastSet(gUnk_080AFA4C, (void *)0x05000300, 8);
-        CpuFastSet(gUnk_080AFA4C, gPaletteBackup + 0x80, 8);
+        CpuFastSet(gPartTradeObjPalette, (void *)0x05000300, 8);
+        CpuFastSet(gPartTradeObjPalette, gPaletteBackup + 0x80, 8);
         *t = 0;
         gGameSubState++;
         gMenuWork->frame = 0x280;
@@ -508,11 +508,11 @@ void medapart_trade_scroll_in(void) {
 void medapart_trade_wait_confirm(void) {
     load_medapart_sprite_animation(gMenuWork->own_part_id, gMenuWork->own_part_kind, 0);
     load_medapart_sprite_animation(gMenuWork->partner_part_id, gMenuWork->partner_part_kind, 1);
-    if (run_message(gUnk_08485BD8[gMenuWork->own_part_kind + 0x14]) && (KEYS_LO(gNewKeys) & 1)) {
-        gUnk_03005010.unk6 = 0xFF07;
+    if (run_message(gLinkMenuMessages[gMenuWork->own_part_kind + 0x14]) && (KEYS_LO(gNewKeys) & 1)) {
+        gLinkPackets.sendData = 0xFF07;
         play_sound_effect(0xD);
     }
-    if (gUnk_03005010.unk8[0][1] == 0xFF07 || gUnk_03005010.unk8[1][1] == 0xFF07) {
+    if (gLinkPackets.recv[0][1] == 0xFF07 || gLinkPackets.recv[1][1] == 0xFF07) {
         init_blend_effect(gMenuWork->blend, 0, 0, 1, 0xC0);
         gGameSubState++;
     }
@@ -529,9 +529,9 @@ void medapart_trade_fade_out(void) {
     }
 }
 
-// Link Medapart trade (state 16): runs sub-state gUnk_080AFA6C[gGameSubState], scrolls BG3.
+// Link Medapart trade (state 16): runs sub-state gPartTradeStates[gGameSubState], scrolls BG3.
 void medapart_trade_update(void) {
-    struct FuncTable13 t = gUnk_080AFA6C;
+    struct FuncTable13 t = gPartTradeStates;
 
     if (gVBlankOamMode == 2) {
         u32 v = 0x200;
@@ -576,17 +576,17 @@ void medal_trade_init_screen(void) {
     *bg2 = 0x1B06;
     bg3 = &REG_BG3CNT;
     *bg3 = 0x3C07;
-    decompress_and_write_tilemap(gUnk_0879FDC0, REG_BG1CNT);
-    decompress_and_write_tilemap(gUnk_0879FB10, *bg2);
-    decompress_and_write_tilemap(gUnk_087A0050, *bg3);
+    decompress_and_write_tilemap(gMedalTradeBg1Tilemap, REG_BG1CNT);
+    decompress_and_write_tilemap(gMedalTradeAnimFramesTilemap, *bg2);
+    decompress_and_write_tilemap(gMedalTradeBg3Tilemap, *bg3);
     *bg2 = 0x1D06;
-    decompress_and_write_tilemap(gUnk_0879FEFC, *bg2);
-    size = dma3_copy_or_decompress(gUnk_0879E618, (void *)0x02030000);
+    decompress_and_write_tilemap(gMedalTradeBg2Tilemap, *bg2);
+    size = dma3_copy_or_decompress(gMedalTradeBgTiles, (void *)0x02030000);
     CpuCopy16((void *)0x02030000, (void *)0x06004000, size);
     lz_decompress_dispatch(gUnk_08784CB0, (void *)(size + 0x06004000));
     gMenuWork->bg_tile_base = (size >> 5) + 4;
     lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + 0x06004080));
-    CpuFastSet(gUnk_0879E4D8, (void *)PLTT, 0x50);
+    CpuFastSet(gMedalTradeBgPalettes, (void *)PLTT, 0x50);
     CpuFastSet(gUnk_0850DD18 + 0x30, (void *)0x050003A0, 8);
     CpuFastSet(gUnk_0850DD18 + 0x30, (void *)0x0202F9A0, 8);
     CpuFastSet(gUnk_084E2E98, (void *)0x05000200, 8);
@@ -671,16 +671,16 @@ void medal_trade_fade_in(void) {
 // Both sides send 0xFDEF until they see each other; 0xFEDF from the partner aborts to state 26.
 void medal_trade_handshake(void) {
     if (gMenuWork->partner_chose)
-        run_message(gUnk_08485BD8[24]);
-    if (gUnk_03005010.unk8[gUnk_03000B90 == 0][1] == 0xFEDF)
+        run_message(gLinkMenuMessages[24]);
+    if (gLinkPackets.recv[gLinkPlayerId == 0][1] == 0xFEDF)
         gGameState = 0x1A;
-    else if (gUnk_03005010.unk8[0][1] == 0xFDEF && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1]) {
+    else if (gLinkPackets.recv[0][1] == 0xFDEF && gLinkPackets.recv[1][1] == gLinkPackets.recv[0][1]) {
         gGameSubState++;
         gMenuWork->counter = 0;
         if (gMenuWork->partner_chose)
             text_window_init(1, 0, 1);
     } else
-        gUnk_03005010.unk6 = 0xFDEF;
+        gLinkPackets.sendData = 0xFDEF;
 }
 
 static inline s16 link_packet_hi(u16 pkt) {
@@ -696,10 +696,10 @@ void medal_trade_transfer(void) {
     u16 v;
     struct MenuWork *s;
 
-    run_message(gUnk_08485BD8[25]);
+    run_message(gLinkMenuMessages[25]);
     s = gMenuWork;
     buf = (u8 *)&s->trade_medal;
-    pkt = gUnk_03005010.unk8[gUnk_03000B90 == 0][1];
+    pkt = gLinkPackets.recv[gLinkPlayerId == 0][1];
     if (s->partner_chose) {
         n = s->counter;
         p = buf + n;
@@ -708,20 +708,20 @@ void medal_trade_transfer(void) {
             gMenuWork->counter++;
         }
         if (gMenuWork->counter > 0x3F)
-            gUnk_03005010.unk6 = 0xFF00;
+            gLinkPackets.sendData = 0xFF00;
         else
-            gUnk_03005010.unk6 = gMenuWork->counter | 0xFE00;
+            gLinkPackets.sendData = gMenuWork->counter | 0xFE00;
     } else {
         u16 t = pkt & 0xFF00;
         if (t == 0xFF00)
-            gUnk_03005010.unk6 = t;
+            gLinkPackets.sendData = t;
         if (t == 0xFE00) {
             p = buf + (pkt & 0xFF);
             v = *p;
-            gUnk_03005010.unk6 = v | link_packet_hi(pkt);
+            gLinkPackets.sendData = v | link_packet_hi(pkt);
         }
     }
-    if (gUnk_03005010.unk8[0][1] == 0xFF00 && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1]) {
+    if (gLinkPackets.recv[0][1] == 0xFF00 && gLinkPackets.recv[1][1] == gLinkPackets.recv[0][1]) {
         if (gMenuWork->partner_chose) {
             medal_add_from_buffer(buf);
             medal_trade_show_medal_sprite(buf[1], buf[8]);
@@ -736,7 +736,7 @@ void medal_trade_skip_step(void) {
 }
 
 void medal_trade_wait_message(void) {
-    if (run_message(gUnk_08485BD8[25])) {
+    if (run_message(gLinkMenuMessages[25])) {
         struct MenuWork *s;
         trade_tiles_speed_up();
         s = gMenuWork;
@@ -848,19 +848,19 @@ void medal_trade_scroll_in(void) {
 }
 
 void medal_trade_wait_confirm(void) {
-    if (run_message(gUnk_08485BD8[gMenuWork->partner_chose ? 26 : 27])) {
+    if (run_message(gLinkMenuMessages[gMenuWork->partner_chose ? 26 : 27])) {
         if (KEYS_LO(gRepeatKeys) & 1) {
             play_sound_effect(0xD);
             gGameSubState++;
-        } else if (gUnk_03005010.unk8[gUnk_03000B90 == 0][1] == 0xFEFF)
+        } else if (gLinkPackets.recv[gLinkPlayerId == 0][1] == 0xFEFF)
             gGameSubState++;
     }
 }
 
 void medal_trade_sync_done(void) {
-    if (run_message(gUnk_08485BD8[gMenuWork->partner_chose ? 26 : 27])) {
-        gUnk_03005010.unk6 = 0xFEFF;
-        if (gUnk_03005010.unk8[0][1] == 0xFEFF && gUnk_03005010.unk8[1][1] == gUnk_03005010.unk8[0][1]) {
+    if (run_message(gLinkMenuMessages[gMenuWork->partner_chose ? 26 : 27])) {
+        gLinkPackets.sendData = 0xFEFF;
+        if (gLinkPackets.recv[0][1] == 0xFEFF && gLinkPackets.recv[1][1] == gLinkPackets.recv[0][1]) {
             gGameSubState++;
             init_blend_effect(gMenuWork->blend, 0, 0, 1, 0xC0);
         }
@@ -874,9 +874,9 @@ void medal_trade_fade_out(void) {
     }
 }
 
-// Link Medal trade (state 17): runs sub-state gUnk_080AFAA0[gGameSubState], scrolls BG3.
+// Link Medal trade (state 17): runs sub-state gMedalTradeStates[gGameSubState], scrolls BG3.
 void medal_trade_update(void) {
-    struct FuncTable12 t = gUnk_080AFAA0;
+    struct FuncTable12 t = gMedalTradeStates;
 
     if (gVBlankOamMode == 2) {
         u32 fill = 0x200;

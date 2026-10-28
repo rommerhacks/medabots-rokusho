@@ -7,10 +7,10 @@
 #include "global.h"
 
 void menu_mode_update(void) {
-    gUnk_03005010.unk4 = gHeldKeys;
-    gUnk_03005010.unk6 = 0;
+    gLinkPackets.sendKeys = gHeldKeys;
+    gLinkPackets.sendData = 0;
     gMenuWork = (struct MenuWork *)&gBattleWork;
-    if (gLinkMultiplayerActive != 0 && (*(u32 *)&gUnk_03005010.unk19[3] & 0x00FFFF00)) {
+    if (gLinkMultiplayerActive != 0 && (*(u32 *)&gLinkPackets.recvTimeouts[3] & 0x00FFFF00)) {
         gGameMode = 0;
         gGameState = 10;
         gGameSubState = 0x10;
@@ -228,7 +228,7 @@ void title_menu_load_save(void) {
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
-    gUnk_03001784.unk0_0 = 0;
+    gSaveStatus.saveExists = 0;
     ret = load_save_with_retries();
     if (ret != 0) {
         if (ret < 0) {
@@ -249,7 +249,7 @@ void title_menu_load_save(void) {
     } else {
         gMenuWork->cursor = ret;
         gMenuWork->first_entry = ret;
-        gUnk_03001784.unk0_0 = 1;
+        gSaveStatus.saveExists = 1;
     }
     title_menu_pulse_selected(gMenuWork->cursor, gFrameCounter & 0x1F);
     title_options_draw_values(3);
@@ -418,11 +418,11 @@ void title_menu_confirm_flash(void) {
             REG_DISPCNT &= 0xFDFF;
             switch (gMenuWork->cursor) {
             case 0:
-                gUnk_03001784.unk0_0 = 1;
+                gSaveStatus.saveExists = 1;
                 gGameSubState = 8;
                 break;
             case 1:
-                gUnk_03001784.unk0_1 = 0;
+                gSaveStatus.linkIntroSeen = 0;
                 gGameSubState = 7;
                 break;
             }
