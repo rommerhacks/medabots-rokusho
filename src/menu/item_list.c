@@ -86,8 +86,8 @@ void update_battle_medapart_icons(void) {
     t1 = *(u16 *)0x0600F12E;
     for (i = 0; i < n; i++) {
         if (counts[i]) {
-            memcpy_bytes_0803F63C((void *)gItemNames[ids[i]], gUnk_030004DE, 0x11);
-            render_text_sprites_08040DB8(gUnk_030004DE, i * 15, 0xC, i * 2 + 3, 7, 8, 1, 2);
+            memcpy_bytes_0803F63C((void *)gItemNames[ids[i]], gTextArgBuffer, 0x11);
+            render_text_sprites_08040DB8(gTextArgBuffer, i * 15, 0xC, i * 2 + 3, 7, 8, 1, 2);
             draw_number_2digits_tall(counts[i], 0x18, i * 2 + 3);
             *((u16 *)0x0600F02E + ((i * 2 + 3) << 5)) = t0;
             *((u16 *)0x0600F02E + ((i * 2 + 4) << 5)) = t1;
@@ -206,8 +206,8 @@ void render_battle_medapart_list(u32 mode) {
                 gSpriteEntries[i + 0x6A].unk6 = genders[i] + 0x1B;
                 gSpriteEntries[i + 0x6E].unk0 |= 0x4000;
                 load_battle_sprite_tiles(ids[i], kind, i);
-                divide_by_10000(gUnk_030004DE, prices[i]);
-                render_text_sprites_08040DB8(gUnk_030004DE, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
+                divide_by_10000(gTextArgBuffer, prices[i]);
+                render_text_sprites_08040DB8(gTextArgBuffer, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
             } else
                 break;
         } else {
@@ -219,14 +219,14 @@ void render_battle_medapart_list(u32 mode) {
                 gSpriteEntries[i + 0x6A].unk6 = genders[i] + 0x1B;
                 gSpriteEntries[i + 0x6E].unk0 |= 0x4000;
                 load_battle_sprite_tiles(ids[i], kind, i);
-                divide_by_10000(gUnk_030004DE, prices[i]);
-                render_text_sprites_08040DB8(gUnk_030004DE, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
+                divide_by_10000(gTextArgBuffer, prices[i]);
+                render_text_sprites_08040DB8(gTextArgBuffer, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
             } else
                 break;
         }
     }
-    divide_by_10000(gUnk_030004DE, gMenuWork->total);
-    render_text_sprites_08040DB8(gUnk_030004DE, 0x61, 0x13, 5, 7, 12, 2, 0);
+    divide_by_10000(gTextArgBuffer, gMenuWork->total);
+    render_text_sprites_08040DB8(gTextArgBuffer, 0x61, 0x13, 5, 7, 12, 2, 0);
 }
 
 static void clear_item_list_map_run(s32 x, s32 y, s32 n) {

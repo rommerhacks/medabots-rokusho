@@ -292,7 +292,7 @@ void update_entity_sprites_on_screen(void) {
 
 // Decompresses the area's tiles and centres maps smaller than the screen (15 x 10 tiles).
 void field_load_area_tiles(u8 area) {
-    LZ77UnCompVram(gUnk_083F92F4[area].unk0, gFieldTilemapBuf);
+    LZ77UnCompVram(gAreaBgTilemaps[area].unk0, gFieldTilemapBuf);
     if (area_map_size(gFieldWork.area_id, 0) >> 1 <= 14)
         gFieldWork.map_origin_x = (15 - (area_map_size(area, 0) >> 1)) * 8;
     else

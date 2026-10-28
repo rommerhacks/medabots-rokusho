@@ -133,11 +133,11 @@ void medal_transform_draw_medal(void) {
     s->unk8 = 0x40;
     s->unk9 = 0x40;
     for (i = 0; i < 16; i++) {
-        gUnk_030004DE[i] = ((const u8 *)gMedalNames[gMedals[gCurrentMedalSlot].graphicId])[i];
-        if (gUnk_030004DE[i] == 0xFE)
+        gTextArgBuffer[i] = ((const u8 *)gMedalNames[gMedals[gCurrentMedalSlot].graphicId])[i];
+        if (gTextArgBuffer[i] == 0xFE)
             break;
     }
-    render_text_sprites_08040DB8(gUnk_030004DE, 0x14, 5, 10, 10, 1, 1, 0);
+    render_text_sprites_08040DB8(gTextArgBuffer, 0x14, 5, 10, 10, 1, 1, 0);
     if (gMedals[gCurrentMedalSlot].level == 100) {
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x0600029A) = (gMenuWork->bg_tile_base + 0x14) | 0x7000;
         *(u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + 0x060002DA) = (gMenuWork->bg_tile_base + 0x15) | 0x7000;

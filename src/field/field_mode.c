@@ -8,7 +8,7 @@ static void field_clear_ram(void) {
     memzero_bytes((u8 *)&gFieldState, 0x3C);
     memzero_bytes((u8 *)&gFieldDebug, 0x38);
     memzero_bytes((u8 *)&gFieldTilemapBuf, 4);
-    memzero_bytes((u8 *)&gUnk_030057DC, 4);
+    memzero_bytes((u8 *)&gAreaAnimTileSrc, 4);
     memzero_bytes((u8 *)&gUnk_0300534C, 4);
     memzero_bytes((u8 *)gEntityStates, 0x200);
     memzero_bytes((u8 *)gAffineParams, 0x200);

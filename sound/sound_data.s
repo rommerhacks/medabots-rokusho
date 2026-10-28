@@ -268,52 +268,52 @@ gFieldDebugLabelPnt:
 gFieldDebugHexDigits:
 	.incbin "baserom.gba", 0xAC5A4, 0x10
 
-	.global gUnk_080AC5B4
-gUnk_080AC5B4:
+	.global gFallbackAreaPalette0
+gFallbackAreaPalette0:
 	.incbin "baserom.gba", 0xAC5B4, 0x20
 
-	.global gUnk_080AC5D4
-gUnk_080AC5D4:
+	.global gFallbackAreaTiles0
+gFallbackAreaTiles0:
 	.incbin "baserom.gba", 0xAC5D4, 0x80
 
-	.global gUnk_080AC654
-gUnk_080AC654:
+	.global gFallbackAreaPalette1
+gFallbackAreaPalette1:
 	.incbin "baserom.gba", 0xAC654, 0x20
 
-	.global gUnk_080AC674
-gUnk_080AC674:
+	.global gFallbackAreaTiles1
+gFallbackAreaTiles1:
 	.incbin "baserom.gba", 0xAC674, 0x80
 
-	.global gUnk_080AC6F4
-gUnk_080AC6F4:
+	.global gFallbackAreaPalette2
+gFallbackAreaPalette2:
 	.incbin "baserom.gba", 0xAC6F4, 0x20
 
-	.global gUnk_080AC714
-gUnk_080AC714:
+	.global gFallbackAreaTiles2
+gFallbackAreaTiles2:
 	.incbin "baserom.gba", 0xAC714, 0x80
 
-	.global gUnk_080AC794
-gUnk_080AC794:
+	.global gFallbackAreaPalette3
+gFallbackAreaPalette3:
 	.incbin "baserom.gba", 0xAC794, 0x20
 
-	.global gUnk_080AC7B4
-gUnk_080AC7B4:
+	.global gFallbackAreaTiles3
+gFallbackAreaTiles3:
 	.incbin "baserom.gba", 0xAC7B4, 0x80
 
-	.global gUnk_080AC834
-gUnk_080AC834:
+	.global gFallbackAreaPalette4
+gFallbackAreaPalette4:
 	.incbin "baserom.gba", 0xAC834, 0x20
 
-	.global gUnk_080AC854
-gUnk_080AC854:
+	.global gFallbackAreaTiles4
+gFallbackAreaTiles4:
 	.incbin "baserom.gba", 0xAC854, 0x80
 
-	.global gUnk_080AC8D4
-gUnk_080AC8D4:
+	.global gFallbackAreaPalette5
+gFallbackAreaPalette5:
 	.incbin "baserom.gba", 0xAC8D4, 0x20
 
-	.global gUnk_080AC8F4
-gUnk_080AC8F4:
+	.global gFallbackAreaTiles5
+gFallbackAreaTiles5:
 	.incbin "baserom.gba", 0xAC8F4, 0x288
 
 	.global gFieldDebugFont
@@ -504,28 +504,28 @@ gUnk_080AFEA8:
 gUnk_080AFEC4:
 	.incbin "baserom.gba", 0xAFEC4, 0x1C
 
-	.global gUnk_080AFEE0
-gUnk_080AFEE0:
+	.global gRaceTileBlockWidths
+gRaceTileBlockWidths:
 	.incbin "baserom.gba", 0xAFEE0, 0x8
 
-	.global gUnk_080AFEE8
-gUnk_080AFEE8:
+	.global gRaceTileBlockHeights
+gRaceTileBlockHeights:
 	.incbin "baserom.gba", 0xAFEE8, 0x8
 
-	.global gUnk_080AFEF0
-gUnk_080AFEF0:
+	.global gRaceTileBlockFirstTiles
+gRaceTileBlockFirstTiles:
 	.incbin "baserom.gba", 0xAFEF0, 0x10
 
-	.global gUnk_080AFF00
-gUnk_080AFF00:
+	.global gRaceTileBlockLists
+gRaceTileBlockLists:
 	.incbin "baserom.gba", 0xAFF00, 0x20
 
-	.global gUnk_080AFF20
-gUnk_080AFF20:
+	.global gRaceTileBlockPalettes
+gRaceTileBlockPalettes:
 	.incbin "baserom.gba", 0xAFF20, 0x10
 
-	.global gUnk_080AFF30
-gUnk_080AFF30:
+	.global gRaceTeamSpriteParams
+gRaceTeamSpriteParams:
 	.incbin "baserom.gba", 0xAFF30, 0x4
 
 	.global gBombGameDebrisTimes

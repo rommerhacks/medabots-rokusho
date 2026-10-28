@@ -138,8 +138,8 @@ void medal_rename_load_graphics(void) {
     gSpriteEntries[7].unk6 = 0x1A;
     gSpriteEntries[7].unk2 = 0x98;
     gSpriteEntries[7].unk4 = z2;
-    divide_by_10000(gUnk_030004DE, gMoney);
-    render_text_sprites_08040DB8(gUnk_030004DE, 0, 0x15, 1, 7, 0xF, 1, z2);
+    divide_by_10000(gTextArgBuffer, gMoney);
+    render_text_sprites_08040DB8(gTextArgBuffer, 0, 0x15, 1, 7, 0xF, 1, z2);
     gGameSubState++;
 }
 

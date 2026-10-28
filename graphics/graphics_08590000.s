@@ -104,8 +104,8 @@ gPeriscopeIconDimTiles:
 gVehicleIconBlankTiles:
 	.incbin "baserom.gba", 0x5FAA98, 0x16A218
 
-	.global gUnk_08764CB0
-gUnk_08764CB0:
+	.global gMapScripts
+gMapScripts:
 	.incbin "baserom.gba", 0x764CB0, 0x20000
 
 	.global gUnk_08784CB0
@@ -624,32 +624,32 @@ gUnk_087C4DFC:
 gRaceFieldBgTiles:
 	.incbin "baserom.gba", 0x7C4EBC, 0x8C
 
-	.global gUnk_087C4F48
-gUnk_087C4F48:
+	.global gRaceFieldBgTiles2
+gRaceFieldBgTiles2:
 	.incbin "baserom.gba", 0x7C4F48, 0x94
 
-	.global gUnk_087C4FDC
-gUnk_087C4FDC:
+	.global gRaceFieldBgTiles3
+gRaceFieldBgTiles3:
 	.incbin "baserom.gba", 0x7C4FDC, 0x1E4
 
-	.global gUnk_087C51C0
-gUnk_087C51C0:
+	.global gRaceFieldBgTiles4
+gRaceFieldBgTiles4:
 	.incbin "baserom.gba", 0x7C51C0, 0x88
 
 	.global gRaceFieldBgPalettes
 gRaceFieldBgPalettes:
 	.incbin "baserom.gba", 0x7C5248, 0x20
 
-	.global gUnk_087C5268
-gUnk_087C5268:
+	.global gRaceFieldBgPalettes2
+gRaceFieldBgPalettes2:
 	.incbin "baserom.gba", 0x7C5268, 0x20
 
-	.global gUnk_087C5288
-gUnk_087C5288:
+	.global gRaceFieldBgPalettes3
+gRaceFieldBgPalettes3:
 	.incbin "baserom.gba", 0x7C5288, 0x20
 
-	.global gUnk_087C52A8
-gUnk_087C52A8:
+	.global gRaceFieldBgPalettes4
+gRaceFieldBgPalettes4:
 	.incbin "baserom.gba", 0x7C52A8, 0x20
 
 	.global gRaceStatusBarTiles
@@ -664,8 +664,8 @@ gRaceStatusBarTiles2:
 gRaceStatusBarPalettes:
 	.incbin "baserom.gba", 0x7C55D0, 0x20
 
-	.global gUnk_087C55F0
-gUnk_087C55F0:
+	.global gRaceStatusBarPalettes2
+gRaceStatusBarPalettes2:
 	.incbin "baserom.gba", 0x7C55F0, 0x2D78
 
 	.global gIntroSilhouetteBg2Tiles

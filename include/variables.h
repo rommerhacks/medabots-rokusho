@@ -112,7 +112,7 @@ extern void (*const gMapScriptUpdates[])(void);  // per-command update handlers,
 extern const u8 gOppositeDirection[];            // indexed by the player's facing (gSpriteEntries[47].unk21)
 extern const u8 gUnk_083D28B0[];             // indexed by gFieldWork.player_form, passed to script_sprite_begin_walk
 extern const u8 *const gAreaCollisionMaps[]; // per area: tile map
-extern const struct AreaGfx gUnk_083F92F4[];
+extern const struct AreaGfx gAreaBgTilemaps[];
 extern const u8 gUnk_083D2903[];
 extern const u8 gWarpSoundEffects[]; // sound played when stepping on a warp, by gFieldSceneParams.warp_sound
 extern const u8 gUnk_085FA104[];     // LZ77 sprite tiles
@@ -169,26 +169,26 @@ extern const u8 gMedalSceneBg2Tilemap[];  // BG2 tilemap
 extern const u8 gMedalSceneBg3Tilemap[];  // BG3 tilemap
 extern const u8 gRaceObjTiles[];          // race OBJ tiles (LZ77, race_load_character_sprites)
 extern const u8 gRaceFieldBgTiles[];      // race field BG tiles (LZ77, race_load_track_screen)
-extern const u8 gUnk_087C4F48[];
-extern const u8 gUnk_087C4FDC[];
-extern const u8 gUnk_087C51C0[];
-extern const u16 gRaceFieldBgPalettes[]; // race field BG palettes
-extern const u16 gUnk_087C5268[];
-extern const u16 gUnk_087C5288[];
-extern const u16 gUnk_087C52A8[];
-extern const u8 gRaceStatusBarTiles[];     // race BG1 tiles (LZ77, race_load_track_status_bar)
-extern const u8 gRaceStatusBarTiles2[];    // race BG1 tiles, second part (LZ77)
-extern const u16 gRaceStatusBarPalettes[]; // race BG1 palettes
-extern const u16 gUnk_087C55F0[];
-extern const u8 gSceneTextLineCounts[]; // scene text line counts by gMenuWork->cursor (text_scroll_lines)
-extern u8 gRaceAnimDelay[3];            // per team: run animation frame delay (0x20 slowest, A presses lower it)
-extern u8 gRaceAnimTimers[3];           // per team: frames since the run animation last stepped
-extern s32 gRaceRivalTapTimers[2];      // rival teams: frames since their last simulated A press
-extern s32 gRaceRivalTaps[2];           // rival teams: simulated A presses (phase into gRaceRivalPace)
-extern const Func gGameStateHandlers[]; // by gGameState (dispatch_game_mode_handler)
+extern const u8 gRaceFieldBgTiles2[];     // race field BG tiles, parts 2-4 (LZ77, race_load_track_screen)
+extern const u8 gRaceFieldBgTiles3[];
+extern const u8 gRaceFieldBgTiles4[];
+extern const u16 gRaceFieldBgPalettes[];  // race field BG palettes
+extern const u16 gRaceFieldBgPalettes2[]; // race field BG palettes 9-11
+extern const u16 gRaceFieldBgPalettes3[];
+extern const u16 gRaceFieldBgPalettes4[];
+extern const u8 gRaceStatusBarTiles[];      // race BG1 tiles (LZ77, race_load_track_status_bar)
+extern const u8 gRaceStatusBarTiles2[];     // race BG1 tiles, second part (LZ77)
+extern const u16 gRaceStatusBarPalettes[];  // race BG1 palettes
+extern const u16 gRaceStatusBarPalettes2[]; // race BG1 palette 13
+extern const u8 gSceneTextLineCounts[];     // scene text line counts by gMenuWork->cursor (text_scroll_lines)
+extern u8 gRaceAnimDelay[3];                // per team: run animation frame delay (0x20 slowest, A presses lower it)
+extern u8 gRaceAnimTimers[3];               // per team: frames since the run animation last stepped
+extern s32 gRaceRivalTapTimers[2];          // rival teams: frames since their last simulated A press
+extern s32 gRaceRivalTaps[2];               // rival teams: simulated A presses (phase into gRaceRivalPace)
+extern const Func gGameStateHandlers[];     // by gGameState (dispatch_game_mode_handler)
 extern const u8 gRaceRivalPace[]; // [rival * 11 + field]: phase of the rivals' tapping rhythm (race_update_speeds)
-extern const struct ByteTable3
-    gUnk_080AFF30;                   // 3 bytes copied to the stack, indexed by racer (race_refresh_runner_sprite)
+extern const struct ByteTable3 gRaceTeamSpriteParams; // guess: per team sprite parameter; 3 bytes copied to the stack,
+                                                      // indexed by racer (race_refresh_runner_sprite)
 extern u8 gRaceRunnerSlots[3][3];    // [team][runner]: sprite slot of the runner (ROM; not const, the code reloads it
                                      // after stores)
 extern const u8 gRaceLegDelays[][7]; // [field][leg type]: frames per step of a runner
@@ -274,16 +274,16 @@ extern u16 *gTransitionSourcePalette;              // palette fade source palett
 extern u16 gTitleBg2PaTable[160];                  // title BG2 per-scanline values: BG2PA (title_screen_hblank, HBlank)
 extern u16 gTitleBg2XLowTable[160];                // BG2X_L per scanline
 extern u16 gTitleBg2XHighTable[160];               // BG2X_H per scanline
-extern u16 gTitleBg2ScrollX; // title BG2 scroll counter, += 0x80 per frame (title_screen_build_wave_tables)
-extern u8 gUnk_030004DE[];
-extern const u8 gRandomBytes[];           // random bytes, indexed by the low byte of gFrameCounter
-extern const void *const gRaceMessages[]; // referee lines of the race
-extern const struct RaceInfo gRaces[];    // by gRaceId
-extern const u16 gUnk_0807C260[];         // OBJ palettes (inside the 0x080750D8 data blob)
-extern const u16 gUnk_0807C280[];
-extern const u16 gUnk_0807C2A0[];
-extern const u16 gUnk_0807C2C0[];
-extern const u16 gUnk_0807C300[];
+extern u16 gTitleBg2ScrollX;    // title BG2 scroll counter, += 0x80 per frame (title_screen_build_wave_tables)
+extern u8 gTextArgBuffer[];     // scratch text: a name for a message argument, or a number rendered as text
+extern const u8 gRandomBytes[]; // random bytes, indexed by the low byte of gFrameCounter
+extern const void *const gRaceMessages[];  // referee lines of the race
+extern const struct RaceInfo gRaces[];     // by gRaceId
+extern const u16 gRacePointerObjPalette[]; // OBJ palettes (inside the 0x080750D8 data blob)
+extern const u16 gRaceSignalObjPalettes[]; // OBJ palettes 12 and 11 (+0x30 entries) of the start signal
+extern const u16 gRacePlaceObjPalette[];
+extern const u16 gRaceWinnerObjPalette[];
+extern const u16 gRaceRunnerObjPalette[]; // guess: OBJ palette 13 of the race runners (race_load_character_sprites)
 extern u8 gNameEntryMode; // 0 player name, 1 new Medal (default name), 2 rename a Medal gMedals[gCurrentMedalSlot]
 extern u8
     gNpcSpriteEntryBytes[]; // = (u8 *)&gSpriteEntries[49] (map object sprites), cleared by map_script_update_reload_map
@@ -1132,23 +1132,23 @@ extern struct PartSpriteLayer gLegPartLayer;
 extern const u8 gUnk_083D2ADD[]; // per animation id (gSpriteEntries[].unk30): 2 -> unkB = 0xFF, 1 -> 0, else 0x40
                                  // (sprite_set_blend_from_kind)
 extern const u8 *const
-    gUnk_08414394[];      // tile tables by id - 0xD0, indexed by gFieldWork.unkC38[id - 0xD0] (resolve_sprite_sheet_id)
-extern u8 *gUnk_030057DC; // animated tile source for the area (animate_area_bg_tiles)
-extern const u8 *const gUnk_084096F4[];  // per area id: tile animation [0] tiles per frame, [2] enabled, [3..] frame
-                                         // list ending 0xFF (animate_area_bg_tiles)
-extern const u16 *const gUnk_083F9BF4[]; // per area id: 0xD0-color palette for 0x0202FA00, NULL = default set from
-                                         // gUnk_080AC5B4 (area_load_bg_palettes)
-extern const u16 gUnk_080AC5B4[];        // default palette (area_load_bg_palettes)
-extern const u16 gUnk_080AC654[];        // default palette (area_load_bg_palettes)
-extern const u16 gUnk_080AC6F4[];        // default palette (area_load_bg_palettes)
-extern const u16 gUnk_080AC794[];        // default palette (area_load_bg_palettes)
-extern const u16 gUnk_080AC834[];        // default palette (area_load_bg_palettes)
-extern const u16 gUnk_080AC8D4[];        // default palette (area_load_bg_palettes)
-extern const Func gUnk_083D1F84[];       // by gGameState (field_mode_dispatch)
-extern const u8
-    *const gUnk_08413514[]; // per area id: tile ids, resolved through resolve_sprite_sheet_id (area_sprite_sheet_id)
-extern const u8
-    *const gUnk_083F80F4[];       // compressed OBJ tile sets, NULL entries fall back to 1 (area_load_sprite_sheets)
+    gUnk_08414394[]; // tile tables by id - 0xD0, indexed by gFieldWork.unkC38[id - 0xD0] (resolve_sprite_sheet_id)
+extern u8 *gAreaAnimTileSrc;               // animated tile source for the area (animate_area_bg_tiles)
+extern const u8 *const gAreaTileAnims[];   // per area id: tile animation [0] tiles per frame, [2] enabled, [3..] frame
+                                           // list ending 0xFF (animate_area_bg_tiles)
+extern const u16 *const gAreaBgPalettes[]; // per area id: 0xD0-color palette for 0x0202FA00, NULL = default set from
+                                           // gFallbackAreaPalette0 (area_load_bg_palettes)
+extern const u16 gFallbackAreaPalette0[];  // fallback BG palette (area_load_bg_palettes)
+extern const u16 gFallbackAreaPalette1[];  // fallback BG palette (area_load_bg_palettes)
+extern const u16 gFallbackAreaPalette2[];  // fallback BG palette (area_load_bg_palettes)
+extern const u16 gFallbackAreaPalette3[];  // fallback BG palette (area_load_bg_palettes)
+extern const u16 gFallbackAreaPalette4[];  // fallback BG palette (area_load_bg_palettes)
+extern const u16 gFallbackAreaPalette5[];  // fallback BG palette (area_load_bg_palettes)
+extern const Func gUnk_083D1F84[];         // by gGameState (field_mode_dispatch)
+extern const u8 *const
+    gAreaSpriteSheetIds[]; // per area id: tile ids, resolved through resolve_sprite_sheet_id (area_sprite_sheet_id)
+extern const u8 *const
+    gFieldSpriteTiles[]; // per sprite sheet id: LZ77 OBJ tiles, NULL entries fall back to 1 (area_load_sprite_sheets)
 extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (area_load_sprite_palettes)
 extern u32 gUnk_0300534C;
 extern struct AffineParam gAffineParams[32];
@@ -1223,17 +1223,17 @@ extern const u8 gUnk_080AFE96[]; // first tilemap column by gMenuWork->cursor (t
 struct U16PtrArray8 {
     const u16 *v[8];
 };
-extern const u8 gUnk_080AFEE0[8];               // guess: tile block widths by type (race_draw_tile_block)
-extern const u8 gUnk_080AFEE8[8];               // guess: tile block heights by type (race_draw_tile_block)
-extern const u16 gUnk_080AFEF0[8];              // first tile by type (race_draw_tile_block)
-extern const struct U16PtrArray8 gUnk_080AFF00; // tile index lists by type (race_draw_tile_block)
-extern const u16 gUnk_080AFF20[8];              // palette bits by type (race_draw_tile_block)
-extern const u8 gUnk_087A3CFC[];                // race scene BG0 tilemap (decompress_and_write_tilemap)
-extern const u8 gUnk_087A3E64[];                // race scene BG2 tilemap (decompress_and_write_tilemap)
-extern const u8 gUnk_087A40A0[];                // race scene BG3 tilemap (decompress_and_write_tilemap)
-extern const u32 gUnk_087A1410[];               // race scene BG tiles (dma3_copy_or_decompress)
-extern const u8 gUnk_087A13B0[];                // race scene BG palettes (0x60 bytes to 0x0202FA00)
-extern const u8 gBlackObjPalettes[];            // OBJ palette (0x20 bytes to 0x05000200)
+extern const u8 gRaceTileBlockWidths[8];              // guess: tile block widths by type (race_draw_tile_block)
+extern const u8 gRaceTileBlockHeights[8];             // guess: tile block heights by type (race_draw_tile_block)
+extern const u16 gRaceTileBlockFirstTiles[8];         // first tile by type (race_draw_tile_block)
+extern const struct U16PtrArray8 gRaceTileBlockLists; // tile index lists by type (race_draw_tile_block)
+extern const u16 gRaceTileBlockPalettes[8];           // palette bits by type (race_draw_tile_block)
+extern const u8 gUnk_087A3CFC[];                      // race scene BG0 tilemap (decompress_and_write_tilemap)
+extern const u8 gUnk_087A3E64[];                      // race scene BG2 tilemap (decompress_and_write_tilemap)
+extern const u8 gUnk_087A40A0[];                      // race scene BG3 tilemap (decompress_and_write_tilemap)
+extern const u32 gUnk_087A1410[];                     // race scene BG tiles (dma3_copy_or_decompress)
+extern const u8 gUnk_087A13B0[];                      // race scene BG palettes (0x60 bytes to 0x0202FA00)
+extern const u8 gBlackObjPalettes[];                  // OBJ palette (0x20 bytes to 0x05000200)
 struct PtrTable3 {
     const u8 *const *p[3];
 };
@@ -1364,18 +1364,17 @@ extern u32 (*const gWeeklyLectureSteps[])(
     void); // Medabots Lecture steps by gSceneWork.unk10.lecture.state (weekly_lecture_run_step); 1 = done
 extern const struct SpriteAnimCmd *const gSpriteAnimScripts[];
 extern const struct SpriteAnimGfx gSpriteAnimGfx[];
-extern const u8 gUnk_08764CB0[];
+extern const u8 gMapScripts[]; // banked map script data, the base of gMapScriptData (read_map_script_byte)
 extern const Func gFieldSubStates[];
 extern const void *const gRoomExitMessages[];
-extern const u8 *gUnk_03005590;
-extern const void *const gUnk_083F8CF4[];
-extern const void *const gUnk_083F8FF4[];
-extern const u8 gUnk_080AC5D4[];
-extern const u8 gUnk_080AC674[];
-extern const u8 gUnk_080AC714[];
-extern const u8 gUnk_080AC7B4[];
-extern const u8 gUnk_080AC854[];
-extern const u8 gUnk_080AC8F4[];
+extern const void *const gAreaBgTiles[];     // per area id: LZ77 BG tiles for 0x06009000 (load_room_graphics)
+extern const void *const gAreaAnimBgTiles[]; // per area id: LZ77 animated tile frames for gAreaAnimTileSrc
+extern const u8 gFallbackAreaTiles0[];       // BG tiles for areas with no graphics (follow gFallbackAreaPalette0..5)
+extern const u8 gFallbackAreaTiles1[];
+extern const u8 gFallbackAreaTiles2[];
+extern const u8 gFallbackAreaTiles3[];
+extern const u8 gFallbackAreaTiles4[];
+extern const u8 gFallbackAreaTiles5[];
 extern const u8 gAreaTypes[]; // per area_id; type 0xA forbids the town map and Wings of Wind (guess: indoor/past)
 extern const u8 gVehicleMenuCursorRows[];
 extern const u8 gVehicleMenuNameTiles[];

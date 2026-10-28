@@ -1520,7 +1520,7 @@ struct AreaWarp {
     u8 destY;
 };
 
-// Per-area graphics record (gUnk_083F92F4, indexed by area id).
+// Per-area graphics record (gAreaBgTilemaps, indexed by area id).
 struct AreaGfx {
     const void *unk0; // LZ77 BG tilemaps, decompressed to gFieldTilemapBuf (layers to 0x06003000 / 5000 / 7000)
     const void *unk4;

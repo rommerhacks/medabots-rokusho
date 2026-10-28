@@ -12,24 +12,24 @@ gSineTableQ14:
 gBombGameObjPalettes:
 	.incbin "baserom.gba", 0x7C0A0, 0x1C0
 
-	.global gUnk_0807C260
-gUnk_0807C260:
+	.global gRacePointerObjPalette
+gRacePointerObjPalette:
 	.incbin "baserom.gba", 0x7C260, 0x20
 
-	.global gUnk_0807C280
-gUnk_0807C280:
+	.global gRaceSignalObjPalettes
+gRaceSignalObjPalettes:
 	.incbin "baserom.gba", 0x7C280, 0x20
 
-	.global gUnk_0807C2A0
-gUnk_0807C2A0:
+	.global gRacePlaceObjPalette
+gRacePlaceObjPalette:
 	.incbin "baserom.gba", 0x7C2A0, 0x20
 
-	.global gUnk_0807C2C0
-gUnk_0807C2C0:
+	.global gRaceWinnerObjPalette
+gRaceWinnerObjPalette:
 	.incbin "baserom.gba", 0x7C2C0, 0x40
 
-	.global gUnk_0807C300
-gUnk_0807C300:
+	.global gRaceRunnerObjPalette
+gRaceRunnerObjPalette:
 	.incbin "baserom.gba", 0x7C300, 0x20
 
 	.global gTitleObjPalettes

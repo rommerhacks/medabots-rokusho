@@ -82,11 +82,11 @@ void new_game_init(void) {
     REG_BG2CNT = 0xEA0A;
     REG_BG3CNT = 0xEE0B;
     REG_DISPCNT = 0x1E40;
-    gMapScriptData = (u8 *)gUnk_08764CB0;
+    gMapScriptData = (u8 *)gMapScripts;
     gEventFlags = (u8 *)&gFieldWork;
     gFieldEffectEntities = (struct BattleEntity3D *)0x02039000;
     gFieldTilemapBuf = (u16 *)0x02030000;
-    gUnk_030057DC = (u8 *)0x02038000;
+    gAreaAnimTileSrc = (u8 *)0x02038000;
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gEntityStates, 0x200);
     zero = 0;
@@ -222,11 +222,11 @@ void field_continue_load(void) {
     clear_vram_tiles_1000();
     gFieldState.step = 0;
     restore_script_sprites();
-    gUnk_03005590 = gUnk_08764CB0;
+    gMapScriptData = (u8 *)gMapScripts;
     gEventFlags = (u8 *)&gFieldWork;
     gFieldEffectEntities = (struct BattleEntity3D *)0x02039000;
     gFieldTilemapBuf = (u16 *)0x02030000;
-    gUnk_030057DC = (u8 *)0x02038000;
+    gAreaAnimTileSrc = (u8 *)0x02038000;
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
     memzero_bytes((u8 *)gEntityStates, 0x200);
     zero = 0;
@@ -521,7 +521,7 @@ void field_debug_reload_area(void) {
     s32 x, y;
 
     if (run_blend_fade_transition(0x7FFF)) {
-        gMapScriptData = (u8 *)gUnk_08764CB0;
+        gMapScriptData = (u8 *)gMapScripts;
         if (gFieldDebug.page == 0)
             gFieldWork.area_id = gFieldDebug.area_id;
         field_load_area_tiles(gFieldWork.area_id);
@@ -593,7 +593,7 @@ static void clear_vram_bg2_tiles(void) {
     memset_bytes((u8 *)(VRAM + 0x3000), 0x6000, 0x80);
 }
 
-// gUnk_083F92F4 indexed as a flat pointer array (three LZ77 tilemaps per area: unk0, unk4, unk8);
+// gAreaBgTilemaps indexed as a flat pointer array (three LZ77 tilemaps per area: unk0, unk4, unk8);
 // the index has to reach the load unfolded ((area * 3 + 1) << 2), hence the helper.
 static inline const void *area_gfx(const void *const *t, u32 i) {
     return t[i];
@@ -615,9 +615,9 @@ void load_room_graphics(void) {
     memzero_bytes(gFieldWork.tile_map, 0x400);
     memcpy_u8(gAreaCollisionMaps[gFieldWork.area_id], gFieldWork.tile_map,
               (gFieldWork.map_height >> 1) * (gFieldWork.map_width >> 1));
-    tbl = (const void *const *)gUnk_083F92F4;
-    if (area_gfx(tbl, gFieldWork.area_id * 3) != NULL && gUnk_083F8CF4[gFieldWork.area_id] != NULL) {
-        LZ77UnCompVram(gUnk_083F8CF4[gFieldWork.area_id], (void *)0x06009000);
+    tbl = (const void *const *)gAreaBgTilemaps;
+    if (area_gfx(tbl, gFieldWork.area_id * 3) != NULL && gAreaBgTiles[gFieldWork.area_id] != NULL) {
+        LZ77UnCompVram(gAreaBgTiles[gFieldWork.area_id], (void *)0x06009000);
         LZ77UnCompVram(area_gfx(tbl, gFieldWork.area_id * 3), gFieldTilemapBuf);
         copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)0x06003000, gFieldWork.unk806,
                                           gFieldWork.unk804, 0x40, 0x40, 0x80);
@@ -627,19 +627,19 @@ void load_room_graphics(void) {
         LZ77UnCompVram(area_gfx(tbl, gFieldWork.area_id * 3 + 2), gFieldTilemapBuf);
         copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)0x06007000, gFieldWork.unk806,
                                           gFieldWork.unk804, 0x40, 0x40, 0x80);
-        if (gUnk_083F8FF4[gFieldWork.area_id] != NULL)
-            LZ77UnCompVram(gUnk_083F8FF4[gFieldWork.area_id], gUnk_030057DC);
+        if (gAreaAnimBgTiles[gFieldWork.area_id] != NULL)
+            LZ77UnCompVram(gAreaAnimBgTiles[gFieldWork.area_id], gAreaAnimTileSrc);
     } else {
         memzero_bytes((u8 *)0x06009000, 0x80);
-        DmaSet(3, gUnk_080AC5D4, 0x06009080, 0x80000040);
-        DmaSet(3, gUnk_080AC674, 0x06009100, 0x80000040);
-        DmaSet(3, gUnk_080AC714, 0x06009180, 0x80000040);
-        DmaSet(3, gUnk_080AC7B4, 0x06009200, 0x80000040);
-        DmaSet(3, gUnk_080AC5D4, 0x06009280, 0x80000040);
-        DmaSet(3, gUnk_080AC5D4, 0x06009300, 0x80000040);
-        DmaSet(3, gUnk_080AC5D4, 0x06009380, 0x80000040);
-        DmaSet(3, gUnk_080AC854, 0x06009400, 0x80000040);
-        DmaSet(3, gUnk_080AC8F4, 0x06009480, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles0, 0x06009080, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles1, 0x06009100, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles2, 0x06009180, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles3, 0x06009200, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles0, 0x06009280, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles0, 0x06009300, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles0, 0x06009380, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles4, 0x06009400, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles5, 0x06009480, 0x80000040);
         memset_bytes((u8 *)gFieldTilemapBuf, gFieldWork.map_height * gFieldWork.map_width, 8);
         copy_tiles_to_bg_tilemap(gFieldTilemapBuf, (void *)0x06003000, gFieldWork.map_height, gFieldWork.map_width,
                                  0x40, 0x40, gFieldWork.map_origin_y / 8, gFieldWork.map_origin_x / 8, 0x80);

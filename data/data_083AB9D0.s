@@ -1338,8 +1338,8 @@ gSpriteAnimScripts:
 gRandomBytes:
 	.incbin "baserom.gba", 0x3F7FF4, 0x100
 
-	.global gUnk_083F80F4
-gUnk_083F80F4:
+	.global gFieldSpriteTiles
+gFieldSpriteTiles:
 	.incbin "baserom.gba", 0x3F80F4, 0x540
 
 	.global gFieldSpritePalettes
@@ -1350,28 +1350,28 @@ gFieldSpritePalettes:
 gAreaMapSizes:
 	.incbin "baserom.gba", 0x3F8B74, 0x180
 
-	.global gUnk_083F8CF4
-gUnk_083F8CF4:
+	.global gAreaBgTiles
+gAreaBgTiles:
 	.incbin "baserom.gba", 0x3F8CF4, 0x300
 
-	.global gUnk_083F8FF4
-gUnk_083F8FF4:
+	.global gAreaAnimBgTiles
+gAreaAnimBgTiles:
 	.incbin "baserom.gba", 0x3F8FF4, 0x300
 
-	.global gUnk_083F92F4
-gUnk_083F92F4:
+	.global gAreaBgTilemaps
+gAreaBgTilemaps:
 	.incbin "baserom.gba", 0x3F92F4, 0x900
 
-	.global gUnk_083F9BF4
-gUnk_083F9BF4:
+	.global gAreaBgPalettes
+gAreaBgPalettes:
 	.incbin "baserom.gba", 0x3F9BF4, 0xA9B4
 
 	.global gAreaCollisionMaps
 gAreaCollisionMaps:
 	.incbin "baserom.gba", 0x4045A8, 0x514C
 
-	.global gUnk_084096F4
-gUnk_084096F4:
+	.global gAreaTileAnims
+gAreaTileAnims:
 	.incbin "baserom.gba", 0x4096F4, 0x6400
 
 	.global gAreaExits
@@ -1386,8 +1386,8 @@ gRoomExitMessages:
 gAreaWarps:
 	.incbin "baserom.gba", 0x413114, 0x400
 
-	.global gUnk_08413514
-gUnk_08413514:
+	.global gAreaSpriteSheetIds
+gAreaSpriteSheetIds:
 	.incbin "baserom.gba", 0x413514, 0xE80
 
 	.global gUnk_08414394
