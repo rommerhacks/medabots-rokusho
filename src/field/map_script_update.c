@@ -21,24 +21,24 @@ void map_script_update_none(void) {}
 // Opcode 1 update: shows message (C94[1] << 8 | C94[2]) of text bank C94[0] (runtime: bank 2, id 1
 // is the lab intro "Good afternoon!"), finishes once the text window closes.
 void map_script_update_message(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
     const u32 *const *tbl;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         message_steps_reset();
-        gFieldDebug.text_bank = s->cmd_args[0] - 2;
-        gFieldDebug.text_id = (s->cmd_args[1] << 8) | s->cmd_args[2];
+        gFieldDebug.text_bank = work->cmd_args[0] - 2;
+        gFieldDebug.text_id = (work->cmd_args[1] << 8) | work->cmd_args[2];
         if (map_script_always_zero())
             map_script_command_done();
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
-        if (s->cmd_args[0] < 2)
+        if (work->cmd_args[0] < 2)
             tbl = (const u32 *const *)gTextTable;
         else
-            tbl = gTextBankTables[s->cmd_args[0] - 2];
-        if (message_step_run(0, 0, 0, tbl[(s->cmd_args[1] << 8) | s->cmd_args[2]]))
+            tbl = gTextBankTables[work->cmd_args[0] - 2];
+        if (message_step_run(0, 0, 0, tbl[(work->cmd_args[1] << 8) | work->cmd_args[2]]))
             map_script_command_done();
         break;
     }
@@ -316,13 +316,13 @@ void map_script_update_actor_spawn_walk_2(void) {
 }
 
 static void map_script_actor_spawn_walk_step(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
-        spawn_script_sprite(s->cmd_args[0], s->cmd_args[1], s->cmd_args[2], s->cmd_args[3]);
-        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[4], 0);
-        s->cmd_step++;
+        spawn_script_sprite(work->cmd_args[0], work->cmd_args[1], work->cmd_args[2], work->cmd_args[3]);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, work->cmd_args[4], 0);
+        work->cmd_step++;
         break;
     case 1:
         if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 1))
@@ -340,12 +340,12 @@ void map_script_update_actor_walk_2(void) {
 }
 
 static void map_script_actor_walk_step(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
-        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[1], 0);
-        s->cmd_step++;
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, work->cmd_args[1], 0);
+        work->cmd_step++;
         break;
     case 1:
         if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 1))
@@ -416,13 +416,13 @@ static void map_script_all_actors_move_step(u8 speed, u8 mode) {
 }
 
 void map_script_update_actor_spawn_glide(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
-        spawn_script_sprite(s->cmd_args[0], s->cmd_args[1], s->cmd_args[2], s->cmd_args[3]);
-        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[4], 0);
-        s->cmd_step++;
+        spawn_script_sprite(work->cmd_args[0], work->cmd_args[1], work->cmd_args[2], work->cmd_args[3]);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, work->cmd_args[4], 0);
+        work->cmd_step++;
         break;
     case 1:
         if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 0))
@@ -432,12 +432,12 @@ void map_script_update_actor_spawn_glide(void) {
 }
 
 void map_script_update_actor_glide(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
-        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[1], 0);
-        s->cmd_step++;
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, work->cmd_args[1], 0);
+        work->cmd_step++;
         break;
     case 1:
         if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 0))
@@ -453,20 +453,20 @@ void map_script_update_switch_event_counter(void) {}
 void map_script_update_jump(void) {}
 
 void map_script_update_yes_no(void) {
-    struct FieldWork *s = &gFieldWork;
-    u32 r;
+    struct FieldWork *work = &gFieldWork;
+    u32 choice;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         yes_no_menu_open(0);
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
-        r = yes_no_menu_poll();
-        if (r) {
-            if (r & 0xF0)
-                s->script_pos = s->branch_base + s->cmd_args[0];
-            s->cmd_step++;
+        choice = yes_no_menu_poll();
+        if (choice) {
+            if (choice & 0xF0)
+                work->script_pos = work->branch_base + work->cmd_args[0];
+            work->cmd_step++;
         }
         break;
     case 2:
@@ -477,19 +477,19 @@ void map_script_update_yes_no(void) {
 }
 
 void map_script_update_yes_no_keep_window(void) {
-    struct FieldWork *s = &gFieldWork;
-    u32 r;
+    struct FieldWork *work = &gFieldWork;
+    u32 choice;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         yes_no_menu_open(1);
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
-        r = yes_no_menu_poll();
-        if (r) {
-            if (r & 0xF0)
-                s->script_pos = s->branch_base + s->cmd_args[0];
+        choice = yes_no_menu_poll();
+        if (choice) {
+            if (choice & 0xF0)
+                work->script_pos = work->branch_base + work->cmd_args[0];
             map_script_command_done();
         }
         break;
@@ -498,20 +498,20 @@ void map_script_update_yes_no_keep_window(void) {
 
 // Opcode 0x33: start Robattle (battle id unkC2A) and keep its result (1 won, 2 lost) in sceneResult.
 void map_script_update_robattle(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         scene_state_reset();
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
         if (scene_state_dispatch(0x20, 0)) {
-            u32 v = s->robattle_result;
-            if (v == 1)
-                gFieldState.sceneResult = v;
-            else if (v == 2)
-                gFieldState.sceneResult = v;
+            u32 battle_result = work->robattle_result;
+            if (battle_result == 1)
+                gFieldState.sceneResult = battle_result;
+            else if (battle_result == 2)
+                gFieldState.sceneResult = battle_result;
             map_script_command_done();
         }
         break;
@@ -525,25 +525,25 @@ static void map_script_update_unused_stub_2(void) {}
 
 // Opcode 0x36: give arg1 of item arg0 (capped at 99) and show the text.
 void map_script_update_give_item(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
     s32 have;
     s32 n;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         message_steps_reset();
-        have = field_item_quantity(s->cmd_args[0]);
+        have = field_item_quantity(work->cmd_args[0]);
         if (have == 99) {
             field_play_sound_effect(6);
-            copy_string_to_text_buffer(0, item_name(s->cmd_args[0]));
-            s->cmd_step = 1;
+            copy_string_to_text_buffer(0, item_name(work->cmd_args[0]));
+            work->cmd_step = 1;
             break;
         }
         field_play_sound_effect(14);
-        if (s->cmd_args[1] + have > 99)
+        if (work->cmd_args[1] + have > 99)
             n = 99 - have;
         else
-            n = s->cmd_args[1];
+            n = work->cmd_args[1];
         field_give_item(gFieldWork.cmd_args[0], n);
         copy_string_to_text_buffer(0, item_name(gFieldWork.cmd_args[0]));
         format_number_to_text_buffer(1, n);
@@ -562,33 +562,33 @@ void map_script_update_give_item(void) {
 
 // Opcode 0x37: take arg1 of item arg0 and show the text.
 void map_script_update_take_item(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
     s32 have;
     s32 n;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         message_steps_reset();
-        have = field_item_quantity(s->cmd_args[0]);
+        have = field_item_quantity(work->cmd_args[0]);
         if (have == 0) {
             field_play_sound_effect(6);
-            copy_string_to_text_buffer(0, item_name(s->cmd_args[0]));
-            s->cmd_step = 1;
+            copy_string_to_text_buffer(0, item_name(work->cmd_args[0]));
+            work->cmd_step = 1;
             break;
         }
         field_play_sound_effect(5);
-        if (have - s->cmd_args[1] < 0)
+        if (have - work->cmd_args[1] < 0)
             n = have;
         else
-            n = s->cmd_args[1];
-        field_take_item(s->cmd_args[0], n);
-        copy_string_to_text_buffer(0, item_name(s->cmd_args[0]));
+            n = work->cmd_args[1];
+        field_take_item(work->cmd_args[0], n);
+        copy_string_to_text_buffer(0, item_name(work->cmd_args[0]));
         format_number_to_text_buffer(1, n);
-        have = field_item_quantity(s->cmd_args[0]);
+        have = field_item_quantity(work->cmd_args[0]);
         if (have == 0)
-            s->cmd_step = 3;
+            work->cmd_step = 3;
         else
-            s->cmd_step = 2;
+            work->cmd_step = 2;
         break;
     case 1:
         if (message_step_run(0, 0, 0, gScriptItemMessages[2]))
@@ -607,25 +607,25 @@ void map_script_update_take_item(void) {
 
 // Opcode 0x38: give arg2 of Medapart (arg0, arg1), capped at 99 (medapart_add_quantity), then show the text.
 void map_script_update_give_medapart(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
     s32 have;
     s32 n;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         message_steps_reset();
-        have = (s32)(field_medapart_counts(s->cmd_args[0], s->cmd_args[1]) & 0xFF00) >> 8;
+        have = (s32)(field_medapart_counts(work->cmd_args[0], work->cmd_args[1]) & 0xFF00) >> 8;
         if (have == 99) {
             field_play_sound_effect(6);
-            copy_string_to_text_buffer(0, medapart_name(s->cmd_args[1], s->cmd_args[0]));
-            s->cmd_step = 1;
+            copy_string_to_text_buffer(0, medapart_name(work->cmd_args[1], work->cmd_args[0]));
+            work->cmd_step = 1;
             break;
         }
         field_play_sound_effect(14);
-        if (s->cmd_args[2] + have > 99)
+        if (work->cmd_args[2] + have > 99)
             n = 99 - have;
         else
-            n = s->cmd_args[2];
+            n = work->cmd_args[2];
         field_give_medapart(gFieldWork.cmd_args[0], gFieldWork.cmd_args[1], n);
         copy_string_to_text_buffer(0, medapart_name(gFieldWork.cmd_args[1], gFieldWork.cmd_args[0]));
         format_number_to_text_buffer(1, n);
@@ -636,7 +636,7 @@ void map_script_update_give_medapart(void) {
             map_script_command_done();
         break;
     case 2:
-        if (message_step_run(0, 0, 0, gScriptItemMessages[s->cmd_args[1] + 6]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[work->cmd_args[1] + 6]))
             map_script_command_done();
         break;
     }
@@ -644,44 +644,44 @@ void map_script_update_give_medapart(void) {
 
 // Opcode 0x39: take arg2 of Medapart (arg0, arg1) and show the text.
 void map_script_update_take_medapart(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
     s32 have;
     s32 n;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         message_steps_reset();
-        have = (s32)(field_medapart_counts(s->cmd_args[0], s->cmd_args[1]) & 0xFF00) >> 8;
+        have = (s32)(field_medapart_counts(work->cmd_args[0], work->cmd_args[1]) & 0xFF00) >> 8;
         if (have == 0) {
             field_play_sound_effect(6);
-            copy_string_to_text_buffer(0, medapart_name(s->cmd_args[1], s->cmd_args[0]));
-            s->cmd_step = 1;
+            copy_string_to_text_buffer(0, medapart_name(work->cmd_args[1], work->cmd_args[0]));
+            work->cmd_step = 1;
             break;
         }
         field_play_sound_effect(5);
-        if (have - s->cmd_args[2] < 0)
+        if (have - work->cmd_args[2] < 0)
             n = have;
         else
-            n = s->cmd_args[2];
-        field_take_medapart(s->cmd_args[0], s->cmd_args[1], n);
-        copy_string_to_text_buffer(0, medapart_name(s->cmd_args[1], s->cmd_args[0]));
+            n = work->cmd_args[2];
+        field_take_medapart(work->cmd_args[0], work->cmd_args[1], n);
+        copy_string_to_text_buffer(0, medapart_name(work->cmd_args[1], work->cmd_args[0]));
         format_number_to_text_buffer(1, n);
-        have = field_medapart_counts(s->cmd_args[0], s->cmd_args[1]) & 0xFF00;
+        have = field_medapart_counts(work->cmd_args[0], work->cmd_args[1]) & 0xFF00;
         if (have == 0)
-            s->cmd_step = 3;
+            work->cmd_step = 3;
         else
-            s->cmd_step = 2;
+            work->cmd_step = 2;
         break;
     case 1:
-        if (message_step_run(0, 0, 0, gScriptItemMessages[s->cmd_args[1] + 14]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[work->cmd_args[1] + 14]))
             map_script_command_done();
         break;
     case 2:
-        if (message_step_run(0, 0, 0, gScriptItemMessages[s->cmd_args[1] + 18]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[work->cmd_args[1] + 18]))
             map_script_command_done();
         break;
     case 3:
-        if (message_step_run(0, 0, 0, gScriptItemMessages[s->cmd_args[1] + 18]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[work->cmd_args[1] + 18]))
             map_script_command_done();
         break;
     }
@@ -689,17 +689,17 @@ void map_script_update_take_medapart(void) {
 
 // Opcode 0x3A: add the 16-bit argument * 10 to gMoney and show the "got money" text (runtime: +5000 in the intro).
 void map_script_update_give_money(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
     u32 n;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         message_steps_reset();
-        n = ((s->cmd_args[0] << 8) | s->cmd_args[1]) * 10;
+        n = ((work->cmd_args[0] << 8) | work->cmd_args[1]) * 10;
         field_play_sound_effect(7);
         add_money(n);
         format_money_to_text_buffer(0, n);
-        s->cmd_step = 1;
+        work->cmd_step = 1;
         break;
     case 1:
         if (message_step_run(0, 0, 0, gScriptItemMessages[26]))
@@ -710,14 +710,14 @@ void map_script_update_give_money(void) {
 
 // Opcode 0x3B: subtract the 16-bit argument * 10 from gMoney, at most what is left (runtime: -4980 buying Rokusho).
 void map_script_update_take_money(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
     s32 n;
     s32 money;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         message_steps_reset();
-        n = ((s->cmd_args[0] << 8) | s->cmd_args[1]) * 10;
+        n = ((work->cmd_args[0] << 8) | work->cmd_args[1]) * 10;
         field_play_sound_effect(5);
         money = get_money();
         if (money - n <= 0)
@@ -725,7 +725,7 @@ void map_script_update_take_money(void) {
         field_play_sound_effect(5);
         subtract_money(n);
         format_money_to_text_buffer(0, n);
-        s->cmd_step = 1;
+        work->cmd_step = 1;
         break;
     case 1:
         if (message_step_run(0, 0, 0, gScriptItemMessages[27]))
@@ -736,19 +736,19 @@ void map_script_update_take_money(void) {
 
 // Opcode 0x3C: give medal arg0 unless already owned (find_medal_slot_by_id), then run scene 1.
 void map_script_update_give_medal(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         message_steps_reset();
         field_play_sound_effect(14);
-        copy_string_to_text_buffer(0, medal_name(s->cmd_args[0]));
-        if (field_find_medal_slot(s->cmd_args[0])) {
-            s->cmd_step = 1;
+        copy_string_to_text_buffer(0, medal_name(work->cmd_args[0]));
+        if (field_find_medal_slot(work->cmd_args[0])) {
+            work->cmd_step = 1;
             break;
         }
-        gCurrentMedalSlot = field_give_medal(s->cmd_args[0]);
-        s->cmd_step = 2;
+        gCurrentMedalSlot = field_give_medal(work->cmd_args[0]);
+        work->cmd_step = 2;
         break;
     case 1:
         if (message_step_run(0, 0, 0, gScriptItemMessages[28]))
@@ -757,11 +757,11 @@ void map_script_update_give_medal(void) {
     case 2:
         if (message_step_run(0, 0, 0, gScriptItemMessages[29])) {
             scene_state_reset();
-            s->cmd_step++;
+            work->cmd_step++;
         }
         break;
     case 3:
-        if (scene_state_dispatch(1, s->cmd_args[0]))
+        if (scene_state_dispatch(1, work->cmd_args[0]))
             map_script_command_done();
         break;
     }
@@ -769,25 +769,25 @@ void map_script_update_give_medal(void) {
 
 // Opcode 0x3D: add Tinpet arg0 to the team unless it is full, then show its text (runs in walkthrough 01).
 void map_script_update_give_tinpet(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         message_steps_reset();
         field_play_sound_effect(14);
         if (field_team_is_full()) {
-            s->cmd_step = 1;
+            work->cmd_step = 1;
             break;
         }
-        field_team_add_tinpet(s->cmd_args[0]);
-        s->cmd_step = 2;
+        field_team_add_tinpet(work->cmd_args[0]);
+        work->cmd_step = 2;
         break;
     case 1:
         if (message_step_run(0, 0, 0, gScriptItemMessages[30]))
             map_script_command_done();
         break;
     case 2:
-        if (message_step_run(0, 0, 0, gScriptItemMessages[s->cmd_args[0] + 31]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[work->cmd_args[0] + 31]))
             map_script_command_done();
         break;
     }
@@ -795,23 +795,23 @@ void map_script_update_give_tinpet(void) {
 
 // Opcode 0x40: flash the screen white arg0 times.
 void map_script_update_flash_white(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         setup_palette_fade_to_color_with_obj(0x7FFF, 0.0f, 32.0f, 8.0f);
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
         if (run_blend_fade_transition(0x7FFF)) {
             setup_palette_fade_to_color(0x7FFF, 32.0f, 0.0f, 8.0f);
-            s->cmd_step++;
+            work->cmd_step++;
         }
         break;
     case 2:
         if (run_blend_fade_transition(0x7FFF)) {
-            if (--s->cmd_args[0] != 0)
-                s->cmd_step = 0;
+            if (--work->cmd_args[0] != 0)
+                work->cmd_step = 0;
             else
                 map_script_command_done();
         }
@@ -840,16 +840,16 @@ void map_script_update_all_actors_blink(void) {
 
 // Opcode 0x42 (its command is a nullsub, so this never runs).
 void map_script_update_player_slide(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
-        s->script_pos = 16 / sprite_walk_speed(47);
-        script_sprite_begin_slide(47, (s->cmd_args[0] << 4) | s->cmd_args[1], 0);
-        s->cmd_step++;
+        work->script_pos = 16 / sprite_walk_speed(47);
+        script_sprite_begin_slide(47, (work->cmd_args[0] << 4) | work->cmd_args[1], 0);
+        work->cmd_step++;
         break;
     case 1:
-        if (map_script_player_slide_step(s->cmd_args[0]))
+        if (map_script_player_slide_step(work->cmd_args[0]))
             map_script_command_done();
         break;
     }
@@ -998,15 +998,15 @@ void map_script_update_unused_57(void) {}
 void map_script_update_unused_58(void) {}
 
 void map_script_update_open_shop(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         scene_state_reset();
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
-        if (scene_state_dispatch(3, s->cmd_args[0]))
+        if (scene_state_dispatch(3, work->cmd_args[0]))
             map_script_command_done();
         break;
     }
@@ -1079,13 +1079,13 @@ static void map_script_update_unused_stub_3(void) {}
 void map_script_update_unused_6a(void) {}
 
 void map_script_update_actor_spawn_walk_fast(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
-        spawn_script_sprite(s->cmd_args[0], s->cmd_args[1], s->cmd_args[2], s->cmd_args[3]);
-        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[4], 1);
-        s->cmd_step++;
+        spawn_script_sprite(work->cmd_args[0], work->cmd_args[1], work->cmd_args[2], work->cmd_args[3]);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, work->cmd_args[4], 1);
+        work->cmd_step++;
         break;
     case 1:
         if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 1))
@@ -1095,12 +1095,12 @@ void map_script_update_actor_spawn_walk_fast(void) {
 }
 
 void map_script_update_actor_walk_fast(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
-        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[1], 1);
-        s->cmd_step++;
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, work->cmd_args[1], 1);
+        work->cmd_step++;
         break;
     case 1:
         if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 1))
@@ -1110,13 +1110,13 @@ void map_script_update_actor_walk_fast(void) {
 }
 
 void map_script_update_actor_spawn_glide_fast(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
-        spawn_script_sprite(s->cmd_args[0], s->cmd_args[1], s->cmd_args[2], s->cmd_args[3]);
-        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[4], 1);
-        s->cmd_step++;
+        spawn_script_sprite(work->cmd_args[0], work->cmd_args[1], work->cmd_args[2], work->cmd_args[3]);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, work->cmd_args[4], 1);
+        work->cmd_step++;
         break;
     case 1:
         if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 0))
@@ -1126,12 +1126,12 @@ void map_script_update_actor_spawn_glide_fast(void) {
 }
 
 void map_script_update_actor_glide_fast(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
-        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[1], 1);
-        s->cmd_step++;
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, work->cmd_args[1], 1);
+        work->cmd_step++;
         break;
     case 1:
         if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 0))
@@ -1141,12 +1141,12 @@ void map_script_update_actor_glide_fast(void) {
 }
 
 void map_script_update_medabots_weekly(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         scene_state_reset();
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
         if (scene_state_dispatch(0x13, 0))
@@ -1156,12 +1156,12 @@ void map_script_update_medabots_weekly(void) {
 }
 
 void map_script_update_enter_player_name(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         scene_state_reset();
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
         if (scene_state_dispatch(0, 0))
@@ -1171,12 +1171,12 @@ void map_script_update_enter_player_name(void) {
 }
 
 void map_script_update_rename_medal(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         scene_state_reset();
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
         if (scene_state_dispatch(2, 0))
@@ -1187,12 +1187,12 @@ void map_script_update_rename_medal(void) {
 
 // Opcode 0x73: the scrolling text screen (switch_game_mode 8, mode 2 state 22).
 void map_script_update_text_scroll(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         scene_state_reset();
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
         if (scene_state_dispatch(8, 0))
@@ -1202,22 +1202,22 @@ void map_script_update_text_scroll(void) {
 }
 
 void map_script_update_link_start(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         switch_game_mode(4, 0);
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
         if (gScriptCmdWork.mode_result == 7)
-            s->cmd_step = 2;
+            work->cmd_step = 2;
         else
             map_script_command_done();
         break;
     case 2:
         scene_state_reset();
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 3:
         if (scene_state_dispatch(5, 0))
@@ -1227,12 +1227,12 @@ void map_script_update_link_start(void) {
 }
 
 void map_script_update_race(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         scene_state_reset();
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
         if (scene_state_dispatch(0x10, 0)) {
@@ -1245,12 +1245,12 @@ void map_script_update_race(void) {
 }
 
 void map_script_update_event_picture(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         scene_state_reset();
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
         if (scene_state_dispatch(0x12, 0))
@@ -1260,12 +1260,12 @@ void map_script_update_event_picture(void) {
 }
 
 void map_script_update_bomb_game(void) {
-    struct FieldWork *s = &gFieldWork;
+    struct FieldWork *work = &gFieldWork;
 
-    switch (s->cmd_step) {
+    switch (work->cmd_step) {
     case 0:
         scene_state_reset();
-        s->cmd_step++;
+        work->cmd_step++;
         break;
     case 1:
         if (scene_state_dispatch(0x11, 0)) {
@@ -1294,7 +1294,7 @@ void map_script_update_follower_to_actor(void) {
 void map_script_update_move_queue_run(void) {
     s32 done = 0;
     s32 i;
-    u8 b;
+    u8 speed;
 
     for (i = 0; i < gFieldScriptWork.queue_len; i++) {
         if (gFieldScriptWork.queue_pos[i] > 1)
@@ -1316,10 +1316,10 @@ void map_script_update_move_queue_run(void) {
                 switch (gFieldScriptWork.queue[i][gFieldScriptWork.queue_pos[i] * 4]) {
                 case 3:
                 default:
-                    b = 0;
+                    speed = 0;
                     break;
                 case 4:
-                    b = 1;
+                    speed = 1;
                     break;
                 }
                 switch (gFieldScriptWork.queue_walk_step[i]) {
@@ -1327,7 +1327,7 @@ void map_script_update_move_queue_run(void) {
                     gFieldScriptWork.queue_sprite[i] =
                         script_object_slot(gFieldScriptWork.queue[i][gFieldScriptWork.queue_pos[i] * 4 + 1]) + 79;
                     script_sprite_begin_walk(gFieldScriptWork.queue_sprite[i],
-                                             gFieldScriptWork.queue[i][gFieldScriptWork.queue_pos[i] * 4 + 2], b);
+                                             gFieldScriptWork.queue[i][gFieldScriptWork.queue_pos[i] * 4 + 2], speed);
                     gFieldScriptWork.queue_walk_step[i]++;
                     break;
                 case 1:

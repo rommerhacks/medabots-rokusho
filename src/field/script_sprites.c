@@ -8,26 +8,26 @@
 static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y);
 
 // Starts a scripted walk: code low nibble = steps, high nibble = direction (also the walk animation).
-void script_sprite_begin_walk(u8 slot, u8 a, u8 b) {
+void script_sprite_begin_walk(u8 slot, u8 code, u8 speed_id) {
     struct SpriteEntry *base = gSpriteEntries;
     struct SpriteEntry *spr = &base[slot];
 
-    spr->unk27 = a & 0xF;
-    a = (a & 0xF0) >> 4;
-    set_sprite_animation_state(slot, a);
-    spr->unk2A = b;
+    spr->unk27 = code & 0xF;
+    code = (code & 0xF0) >> 4;
+    set_sprite_animation_state(slot, code);
+    spr->unk2A = speed_id;
     spr->unk28 = 16 / sprite_walk_speed(slot);
-    sprite_anim_start(slot, sprite_walk_anim_id(slot, a));
+    sprite_anim_start(slot, sprite_walk_anim_id(slot, code));
 }
 
 // Same, but the facing / animation stay as they are (the sprite slides).
-void script_sprite_begin_slide(u8 slot, u8 a, u8 b) {
+void script_sprite_begin_slide(u8 slot, u8 code, u8 speed_id) {
     struct SpriteEntry *base = gSpriteEntries;
     struct SpriteEntry *spr = &base[slot];
 
-    spr->unk27 = a & 0xF;
-    spr->unk20 = (a & 0xF0) >> 4;
-    spr->unk2A = b;
+    spr->unk27 = code & 0xF;
+    spr->unk20 = (code & 0xF0) >> 4;
+    spr->unk2A = speed_id;
     spr->unk28 = 16 / sprite_walk_speed(slot);
 }
 
@@ -86,24 +86,24 @@ void map_script_command_done(void) {
 }
 
 // Map script sprite codes: high nibble = graphics kind, low 2 bits = direction (4 directions x 3 frames).
-u8 sprite_code_kind(u8 a) {
-    return a >> 4;
+u8 sprite_code_kind(u8 code) {
+    return code >> 4;
 }
 
-static u8 sprite_code_direction(u8 a) {
-    return a & 3;
+static u8 sprite_code_direction(u8 code) {
+    return code & 3;
 }
 
-u8 sprite_code_anim_index(u8 a) {
-    return sprite_code_kind(a) * 12 + sprite_code_direction(a) * 3;
+u8 sprite_code_anim_index(u8 code) {
+    return sprite_code_kind(code) * 12 + sprite_code_direction(code) * 3;
 }
 
-u8 sprite_walk_anim_id(u8 slot, u8 v) {
-    return v + gSpriteEntries[slot].unk2B * 4;
+u8 sprite_walk_anim_id(u8 slot, u8 direction) {
+    return direction + gSpriteEntries[slot].unk2B * 4;
 }
 
-static u8 script_object_anim_index(u8 id, u8 a) {
-    return gSpriteEntries[script_object_slot(id) + 79].unk2B * 12 + a * 3;
+static u8 script_object_anim_index(u8 id, u8 direction) {
+    return gSpriteEntries[script_object_slot(id) + 79].unk2B * 12 + direction * 3;
 }
 
 // Map script opcodes: sprite slot flags & 0xF (+0x4F), graphics id, tile x / y; bit 0x40 = 5 px lower.
@@ -149,12 +149,12 @@ static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y) {
     }
 }
 
-// Removes script object (arg & 0xF) and its overlay; if arg & 0xF0, plays the area sound when it stands on an
+// Removes script object (code & 0xF) and its overlay; if code & 0xF0, plays the area sound when it stands on an
 // event tile (as spawn_script_sprite does).
-void despawn_script_sprite(u8 arg) {
-    u32 id = arg & 0xF;
+void despawn_script_sprite(u8 code) {
+    u32 id = code & 0xF;
 
-    if (arg & 0xF0) {
+    if (code & 0xF0) {
         u8 x = field_pixel_x_to_tile(gSpriteEntries[script_object_slot(id) + 79].pos_x);
         u8 y = field_pixel_y_to_tile(gSpriteEntries[script_object_slot(id) + 79].pos_y);
 
@@ -222,9 +222,9 @@ void script_object_set_blend(u8 i, u32 val) {
 
 // OAM priority (bits 10-11) of a sprite entry.
 void sprite_set_priority(u32 idx, u32 val) {
-    u32 v = (gSpriteEntries[idx].unk32 & 0xF3FF) | (val << 10);
-    gSpriteEntries[idx].flags = v;
-    gSpriteEntries[idx].unk32 = v;
+    u32 flags = (gSpriteEntries[idx].unk32 & 0xF3FF) | (val << 10);
+    gSpriteEntries[idx].flags = flags;
+    gSpriteEntries[idx].unk32 = flags;
 }
 
 void script_object_set_priority(u8 i, u8 val) {
@@ -308,32 +308,32 @@ u32 script_sprite_jump_step(void) {
     u32 ret = 0;
     u8 slot = gScriptCmdWork.sprite_slot;
     struct SpriteEntry *base = gSpriteEntries;
-    struct SpriteEntry *s = &base[slot];
+    struct SpriteEntry *spr = &base[slot];
 
-    switch (s->unk26) {
+    switch (spr->unk26) {
     case 0:
-        s->unk28 = 0;
-        s->unk2A = 0;
-        s->unk20 = gFieldWork.cmd_args[1];
+        spr->unk28 = 0;
+        spr->unk2A = 0;
+        spr->unk20 = gFieldWork.cmd_args[1];
         sprite_anim_start(slot, sprite_walk_anim_id(slot, gFieldWork.cmd_args[1]));
-        s->unk34 = s->pos_y;
+        spr->unk34 = spr->pos_y;
         field_play_sound_effect(0x70);
-        s->unk26++;
+        spr->unk26++;
         break;
     case 1:
-        if (s->unk28 < 16 / sprite_walk_speed(slot) * 2) {
-            switch (s->unk20) {
+        if (spr->unk28 < 16 / sprite_walk_speed(slot) * 2) {
+            switch (spr->unk20) {
             case 0:
-                s->unk34 -= sprite_walk_speed(slot);
+                spr->unk34 -= sprite_walk_speed(slot);
                 break;
             case 1:
-                s->unk34 += sprite_walk_speed(slot);
+                spr->unk34 += sprite_walk_speed(slot);
                 break;
             case 2:
-                s->pos_x -= sprite_walk_speed(slot);
+                spr->pos_x -= sprite_walk_speed(slot);
                 break;
             case 3:
-                s->pos_x += sprite_walk_speed(slot);
+                spr->pos_x += sprite_walk_speed(slot);
                 break;
             }
             gSpriteEntries[slot].pos_y =
@@ -350,8 +350,8 @@ u32 script_sprite_jump_step(void) {
             }
         } else {
             sprite_set_blend_from_kind(slot);
-            s->pos_y = s->unk34;
-            s->unk2C = 0;
+            spr->pos_y = spr->unk34;
+            spr->unk2C = 0;
             ret = 1;
         }
         break;

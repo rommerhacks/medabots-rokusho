@@ -48,53 +48,53 @@ void animate_area_bg_tiles(void) {
 }
 
 // Sheet id 0 = the default for gFieldWork.player_form, 0xD0-0xFE = a variant picked by state, 0xFF = end.
-s32 resolve_sprite_sheet_id(s32 t) {
-    s32 u;
-    if (t == 0)
-        t = gPlayerFormSpriteSheets[gFieldWork.player_form];
-    else if (t <= 0xAF)
+s32 resolve_sprite_sheet_id(s32 sheet_id) {
+    s32 gender_base;
+    if (sheet_id == 0)
+        sheet_id = gPlayerFormSpriteSheets[gFieldWork.player_form];
+    else if (sheet_id <= 0xAF)
         ;
-    else if (t <= 0xBF)
+    else if (sheet_id <= 0xBF)
         ;
-    else if (t <= 0xCF)
+    else if (sheet_id <= 0xCF)
         ;
-    else if (t <= 0xFE) {
-        const u8 *tbl = gSpriteSheetVariantTables[t - 0xD0];
-        t = tbl[gFieldWork.sheet_variants[t - 0xD0]];
+    else if (sheet_id <= 0xFE) {
+        const u8 *tbl = gSpriteSheetVariantTables[sheet_id - 0xD0];
+        sheet_id = tbl[gFieldWork.sheet_variants[sheet_id - 0xD0]];
     } else
-        t = 0xFF;
-    if (t != 0xFF && t > 0xBF)
-        t = (t - 0xC0) * 2 + (u = gFieldSceneParams.bot_gender + 0x28);
-    return t;
+        sheet_id = 0xFF;
+    if (sheet_id != 0xFF && sheet_id > 0xBF)
+        sheet_id = (sheet_id - 0xC0) * 2 + (gender_base = gFieldSceneParams.bot_gender + 0x28);
+    return sheet_id;
 }
 
 void area_load_sprite_sheets(void) {
     s32 i = 0;
     u8 *dst = (u8 *)0x06010000;
-    u32 t;
+    u32 sheet_id;
 
-    while ((t = area_sprite_sheet_id(i)) != 0xFF) {
-        if (gFieldSpriteTiles[t] == NULL)
-            t = 1;
-        LZ77UnCompVram(gFieldSpriteTiles[t], dst);
+    while ((sheet_id = area_sprite_sheet_id(i)) != 0xFF) {
+        if (gFieldSpriteTiles[sheet_id] == NULL)
+            sheet_id = 1;
+        LZ77UnCompVram(gFieldSpriteTiles[sheet_id], dst);
         dst += 0x900;
         i++;
     }
 }
 
 // Loads one sheet into all 12 sheet slots.
-void fill_sprite_sheets(s32 arg) {
+void fill_sprite_sheets(s32 sheet_code) {
     s32 i;
     u8 *dst;
     const u8 *const *tbl;
-    s32 t = resolve_sprite_sheet_id(arg);
+    s32 sheet_id = resolve_sprite_sheet_id(sheet_code);
 
     tbl = gFieldSpriteTiles;
     dst = (u8 *)0x06010000;
     for (i = 11; i >= 0; i--) {
-        if (tbl[t] == NULL)
-            t = 1;
-        LZ77UnCompVram(tbl[t], dst);
+        if (tbl[sheet_id] == NULL)
+            sheet_id = 1;
+        LZ77UnCompVram(tbl[sheet_id], dst);
         dst += 0x900;
     }
 }
@@ -236,53 +236,53 @@ u32 field_update_music(u32 event, u32 song) {
 
 #undef area_song_id
 
-u32 area_sprite_sheet_id(u32 arg) {
-    return resolve_sprite_sheet_id(gAreaSpriteSheetIds[gFieldWork.area_id][arg]);
+u32 area_sprite_sheet_id(u32 slot) {
+    return resolve_sprite_sheet_id(gAreaSpriteSheetIds[gFieldWork.area_id][slot]);
 }
 
 void area_load_sprite_palettes_now(void) {
     s32 i;
-    u32 t;
+    u32 sheet_id;
 
-    for (i = 0; (t = area_sprite_sheet_id(i)) != 0xFF; i++) {
-        t = area_sprite_sheet_id(i);
-        if (gFieldSpritePalettes[t] == NULL)
-            t = 1;
-        DmaSet(3, gFieldSpritePalettes[t], 0x05000200 + i * 0x20, 0x84000008);
+    for (i = 0; (sheet_id = area_sprite_sheet_id(i)) != 0xFF; i++) {
+        sheet_id = area_sprite_sheet_id(i);
+        if (gFieldSpritePalettes[sheet_id] == NULL)
+            sheet_id = 1;
+        DmaSet(3, gFieldSpritePalettes[sheet_id], 0x05000200 + i * 0x20, 0x84000008);
     }
 }
 
 void area_load_sprite_palettes(void) {
     s32 i;
-    u32 t;
+    u32 sheet_id;
 
-    for (i = 0; (t = area_sprite_sheet_id(i)) != 0xFF; i++) {
-        t = area_sprite_sheet_id(i);
-        if (gFieldSpritePalettes[t] == NULL)
-            t = 1;
-        DmaSet(3, gFieldSpritePalettes[t], 0x0202F800 + i * 0x20, 0x84000008);
+    for (i = 0; (sheet_id = area_sprite_sheet_id(i)) != 0xFF; i++) {
+        sheet_id = area_sprite_sheet_id(i);
+        if (gFieldSpritePalettes[sheet_id] == NULL)
+            sheet_id = 1;
+        DmaSet(3, gFieldSpritePalettes[sheet_id], 0x0202F800 + i * 0x20, 0x84000008);
     }
     DmaSet(3, gFieldSharedSpritePalette, 0x0202F9C0, 0x84000008);
 }
 
-void fill_sprite_palettes(s32 arg) {
+void fill_sprite_palettes(s32 sheet_code) {
     s32 i = 0;
-    s32 t = resolve_sprite_sheet_id(arg);
+    s32 sheet_id = resolve_sprite_sheet_id(sheet_code);
 
     for (; i <= 11; i++) {
-        if (gFieldSpritePalettes[t] == NULL)
-            t = 1;
-        DmaSet(3, gFieldSpritePalettes[t], 0x05000200 + i * 0x20, 0x84000008);
+        if (gFieldSpritePalettes[sheet_id] == NULL)
+            sheet_id = 1;
+        DmaSet(3, gFieldSpritePalettes[sheet_id], 0x05000200 + i * 0x20, 0x84000008);
     }
 }
 
 // guess: sprite unkB (0xFF / 0 / 0x40) from the kind table gSpriteSheetBlendKinds by sprite unk30.
 void sprite_set_blend_from_kind(u8 idx) {
-    u8 v = gSpriteSheetBlendKinds[gSpriteEntries[idx].unk30];
+    u8 blend_kind = gSpriteSheetBlendKinds[gSpriteEntries[idx].unk30];
 
-    if (v == 2)
+    if (blend_kind == 2)
         gSpriteEntries[idx].order = 0xFF;
-    else if (v == 1)
+    else if (blend_kind == 1)
         gSpriteEntries[idx].order = 0;
     else
         gSpriteEntries[idx].order = 0x40;
@@ -290,26 +290,26 @@ void sprite_set_blend_from_kind(u8 idx) {
 
 static void blend_set_alpha_12_8(void) {
     vu16 *bldalpha;
-    u16 v;
+    u16 value;
 
     REG_BLDCNT = 0x1F41;
     gBlendEffect.eva_level = 12.0f;
     gBlendEffect.evb_level = 8.0f;
     bldalpha = &REG_BLDALPHA;
-    v = 0x80C;
-    *bldalpha = v;
+    value = 0x80C;
+    *bldalpha = value;
 }
 
 void blend_set_alpha_12_10(void) {
     vu16 *bldalpha;
-    u16 v;
+    u16 value;
 
     REG_BLDCNT = 0xF40;
     gBlendEffect.eva_level = 12.0f;
     gBlendEffect.evb_level = 10.0f;
     bldalpha = &REG_BLDALPHA;
-    v = 0xA0C;
-    *bldalpha = v;
+    value = 0xA0C;
+    *bldalpha = value;
 }
 
 void sprite_entry_init(u8 slot, u16 flags, u32 frame, u8 palette, u8 frame_table) {

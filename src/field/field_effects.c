@@ -9,8 +9,8 @@ static void apply_blend_coefficients(void);
 
 // One tile of 2x2 metatile `id` (copy_tiles_to_bg_tilemap); yoff / xoff are passed but unused.
 void build_bg_tile_entry(u16 *dst, u16 id, u16 base, u16 y, u16 x, u16 yoff, u16 xoff) {
-    u16 t = x + y * 2;
-    *dst = (t + (id + 1) * 4) | (base + (id << 12));
+    u16 tile_offset = x + y * 2;
+    *dst = (tile_offset + (id + 1) * 4) | (base + (id << 12));
 }
 
 // Not called directly (hidden in the tail of build_bg_tile_entry).
@@ -57,7 +57,7 @@ void copy_tilemap_region(u16 *src, u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 add
     s32 pitch;
     s32 i, j;
     u16 *row;
-    u16 v;
+    u16 entry;
 
     switch (mode) {
     case 0:
@@ -71,8 +71,8 @@ void copy_tilemap_region(u16 *src, u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 add
     for (i = 0; i < h; i++) {
         row = dst;
         for (j = 0; j < w; j++) {
-            v = *src;
-            *dst = ((v & 0x3FF) + add) | ((v & 0xC00) | (pal << 12));
+            entry = *src;
+            *dst = ((entry & 0x3FF) + add) | ((entry & 0xC00) | (pal << 12));
             dst++;
             src++;
         }
@@ -131,13 +131,13 @@ void clear_entity_state(u8 slot) {
 void calculate_oam_affine_matrix(u8 i) {
     const s16 *sine = gSineTable;
     struct AffineParam *base = gAffineParams;
-    struct AffineParam *p = &base[i];
-    s32 a;
+    struct AffineParam *param = &base[i];
+    s32 angle;
 
-    p->pa = fixed_point_multiply(sine[a = p->angle + 0x40], divide_by_65536(p->scaleX));
-    p->pb = fixed_point_multiply(sine[p->angle], divide_by_65536(p->scaleX));
-    p->pc = fixed_point_multiply(-sine[p->angle], divide_by_65536(p->scaleY));
-    p->pd = fixed_point_multiply(sine[a = p->angle + 0x40], divide_by_65536(p->scaleY));
+    param->pa = fixed_point_multiply(sine[angle = param->angle + 0x40], divide_by_65536(param->scaleX));
+    param->pb = fixed_point_multiply(sine[param->angle], divide_by_65536(param->scaleX));
+    param->pc = fixed_point_multiply(-sine[param->angle], divide_by_65536(param->scaleY));
+    param->pd = fixed_point_multiply(sine[angle = param->angle + 0x40], divide_by_65536(param->scaleY));
 }
 
 // Starts animation script `anim_id` (gSpriteAnimScripts) on sprite `slot` from its first frame.
@@ -148,24 +148,24 @@ void sprite_anim_start(u8 slot, u8 anim_id) {
 }
 
 void advance_sprite_animation_frame(u8 idx) {
-    const struct SpriteAnimCmd *c;
-    u16 cmd, arg, duration, frame;
+    const struct SpriteAnimCmd *anim_script;
+    u16 cmd, operand, duration, frame;
     const struct SpriteAnimGfx *gfx;
 
-    c = gSpriteAnimScripts[gSpriteEntries[idx].unk24];
-    cmd = c[gSpriteEntries[idx].unk22].cmd;
-    arg = c[gSpriteEntries[idx].unk22].arg;
-    duration = c[gSpriteEntries[idx].unk22].duration;
-    frame = c[gSpriteEntries[idx].unk22].frame;
+    anim_script = gSpriteAnimScripts[gSpriteEntries[idx].unk24];
+    cmd = anim_script[gSpriteEntries[idx].unk22].cmd;
+    operand = anim_script[gSpriteEntries[idx].unk22].arg;
+    duration = anim_script[gSpriteEntries[idx].unk22].duration;
+    frame = anim_script[gSpriteEntries[idx].unk22].frame;
 
     switch (cmd) {
     case 0xFFFD:
         gSpriteEntries[idx].unk22++;
-        field_play_sound_effect(arg);
+        field_play_sound_effect(operand);
         advance_sprite_animation_frame(idx);
         break;
     case 0xFFFE:
-        gSpriteEntries[idx].unk22 = arg;
+        gSpriteEntries[idx].unk22 = operand;
         gSpriteEntries[idx].unk23 = 0;
         advance_sprite_animation_frame(idx);
         break;
@@ -181,7 +181,7 @@ void advance_sprite_animation_frame(u8 idx) {
         break;
     case 0xFFFC:
         if (gSpriteEntries[idx].unk23 == 0) {
-            gfx = &gSpriteAnimGfx[arg];
+            gfx = &gSpriteAnimGfx[operand];
             if (gfx->unk0 == 0)
                 LZ77UnCompVram(gfx->src, gfx->dst);
         }
@@ -295,22 +295,22 @@ static s32 count_byte_differences(const u8 *lhs, const u8 *rhs, s32 n) {
 }
 
 // Not called directly (hidden in the tail of count_byte_differences at 0x0804971C).
-static s32 sum_bytes(const u8 *p, s32 n) {
+static s32 sum_bytes(const u8 *bytes, s32 n) {
     s32 sum = 0;
     s32 i;
 
     for (i = 0; i < n; i++)
-        sum += *p++;
+        sum += *bytes++;
     return sum;
 }
 
 u8 field_random(u8 n) {
     const u8 *tbl = gRandomBytes;
-    u8 r;
+    u8 value;
 
-    r = tbl[(gFieldWork.rng_seed + gFieldState.frame_counter) & 0xFF];
-    gFieldWork.rng_seed = r;
-    return Mod(r, n);
+    value = tbl[(gFieldWork.rng_seed + gFieldState.frame_counter) & 0xFF];
+    gFieldWork.rng_seed = value;
+    return Mod(value, n);
 }
 
 void memcpy_u8(const void *src, void *dst, u32 n) {
@@ -550,7 +550,7 @@ void field_obj_palettes_blend_masked(u16 color, u32 amount, u16 mask) {
 // Sorts arr[left..right] in ascending order (quicksort, pivot arr[left]).
 static void quicksort_u8_array(u8 *arr, s16 left, s16 right) {
     s32 i, j;
-    u8 tmp;
+    u8 swap;
 
     if (left < right) {
         i = left + 1;
@@ -564,15 +564,15 @@ static void quicksort_u8_array(u8 *arr, s16 left, s16 right) {
                     break;
             if (i >= j)
                 break;
-            tmp = arr[j];
+            swap = arr[j];
             arr[j] = arr[i];
-            arr[i] = tmp;
+            arr[i] = swap;
             i++;
             j--;
         }
-        tmp = arr[j];
+        swap = arr[j];
         arr[j] = arr[left];
-        arr[left] = tmp;
+        arr[left] = swap;
         quicksort_u8_array(arr, left, j - 1);
         quicksort_u8_array(arr, j + 1, right);
     }
@@ -582,7 +582,7 @@ static void quicksort_u8_array(u8 *arr, s16 left, s16 right) {
 // guess: sorts u16 entries by their low byte, ascending
 static void quicksort_u16_low_byte_ascending(u16 *arr, s16 left, s16 right) {
     s32 i, j;
-    u16 tmp;
+    u16 swap;
 
     if (left < right) {
         i = left + 1;
@@ -596,15 +596,15 @@ static void quicksort_u16_low_byte_ascending(u16 *arr, s16 left, s16 right) {
                     break;
             if (i >= j)
                 break;
-            tmp = arr[j];
+            swap = arr[j];
             arr[j] = arr[i];
-            arr[i] = tmp;
+            arr[i] = swap;
             i++;
             j--;
         }
-        tmp = arr[j];
+        swap = arr[j];
         arr[j] = arr[left];
-        arr[left] = tmp;
+        arr[left] = swap;
         quicksort_u16_low_byte_ascending(arr, left, j - 1);
         quicksort_u16_low_byte_ascending(arr, j + 1, right);
     }
@@ -614,7 +614,7 @@ static void quicksort_u16_low_byte_ascending(u16 *arr, s16 left, s16 right) {
 // guess: sorts u16 entries by their low byte, descending
 static void quicksort_u16_low_byte_descending(u16 *arr, s16 left, s16 right) {
     s32 i, j;
-    u16 tmp;
+    u16 swap;
 
     if (left < right) {
         i = left + 1;
@@ -628,15 +628,15 @@ static void quicksort_u16_low_byte_descending(u16 *arr, s16 left, s16 right) {
                     break;
             if (i >= j)
                 break;
-            tmp = arr[j];
+            swap = arr[j];
             arr[j] = arr[i];
-            arr[i] = tmp;
+            arr[i] = swap;
             i++;
             j--;
         }
-        tmp = arr[j];
+        swap = arr[j];
         arr[j] = arr[left];
-        arr[left] = tmp;
+        arr[left] = swap;
         quicksort_u16_low_byte_descending(arr, left, j - 1);
         quicksort_u16_low_byte_descending(arr, j + 1, right);
     }

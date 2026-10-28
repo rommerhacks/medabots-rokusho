@@ -6,19 +6,20 @@
 // field/field_walk.
 #include "global.h"
 
-static void compute_plane_from_points(float *x, float *y, float *z, float *a, float *b, float *c, float *d);
+static void compute_plane_from_points(float *x, float *y, float *z, float *normal_x, float *normal_y, float *normal_z,
+                                      float *plane_dist);
 static void get_state_position_xyz(float *x, float *y, float *z);
 static void field_effect_init_viewport(void);
 static void field_effect_init_viewport_centered(void);
-static void affine_set_destination_and_compute_transform(float x0, float x1, float y0, float y1);
-static void affine_set_source_and_compute_transform(float x0, float x1, float y0, float y1);
+static void affine_set_destination_and_compute_transform(float x_min, float x_max, float y_min, float y_max);
+static void affine_set_source_and_compute_transform(float x_min, float x_max, float y_min, float y_max);
 static void field_effect_project_object(float *x, float *y, float *z);
 static void field_effect_project_origin(float x, float y, float z);
-static void field_effect_view_to_screen_origin(float a, float b);
+static void field_effect_view_to_screen_origin(float view_x, float view_y);
 static void field_effect_project_sprite(float x, float y, float z);
 static void compute_3d_transform_vectors(float x, float y, float z, float *outX, float *outY, float *outZ);
-static void get_state_float_as_int(float a, float b, s32 *x, s32 *y);
-static void field_effect_place_sprite(float a, float b);
+static void get_state_float_as_int(float view_x, float view_y, s32 *x, s32 *y);
+static void field_effect_place_sprite(float view_x, float view_y);
 static void field_effect_update_sprite_depth(void);
 
 static float float_default_to_one_if_zero(float x) {
@@ -43,7 +44,7 @@ static double compute_sqrt_scaled(double x) {
     return (u16)Sqrt((s32)x << 3) >> 3;
 }
 
-void field_effect_start(u32 flags, u32 x, u32 y, u32 d) {
+void field_effect_start(u32 flags, u32 x, u32 y, u32 area_id) {
     s32 i;
 
     affine_params_reset();
@@ -57,7 +58,7 @@ void field_effect_start(u32 flags, u32 x, u32 y, u32 d) {
     }
     gFieldEffect.pos_x = x;
     gFieldEffect.pos_y = y;
-    gFieldEffect.area_id = d;
+    gFieldEffect.area_id = area_id;
 }
 
 void field_effect_reset_view(void) {
@@ -68,13 +69,13 @@ void field_effect_reset_view(void) {
 }
 
 static void compute_distance_to_state_position(float *xs, float *ys, float *zs) {
-    float a, b, c, d;
+    float normal_x, normal_y, normal_z, plane_dist;
     float px, py, pz;
     float x, y, z;
     float dx, dy, dz;
     float dist;
 
-    compute_plane_from_points(xs, ys, zs, &a, &b, &c, &d);
+    compute_plane_from_points(xs, ys, zs, &normal_x, &normal_y, &normal_z, &plane_dist);
     x = *xs;
     y = *ys;
     z = *zs;
@@ -94,8 +95,9 @@ static void compute_distance_to_state_position(float *xs, float *ys, float *zs) 
 }
 
 // x, y, z: the three points' coordinates (x[i], y[i], z[i] = point i).
-// Outputs the plane through them: normal (a, b, c) scaled to integers, and d.
-static void compute_plane_from_points(float *x, float *y, float *z, float *a, float *b, float *c, float *d) {
+// Outputs the plane through them: normal (normal_x, normal_y, normal_z) scaled to integers, and plane_dist.
+static void compute_plane_from_points(float *x, float *y, float *z, float *normal_x, float *normal_y, float *normal_z,
+                                      float *plane_dist) {
     float nx, ny, nz, len;
 
     nx = y[0] * (z[1] - z[2]) + y[1] * (z[2] - z[0]) + y[2] * (z[0] - z[1]);
@@ -108,10 +110,10 @@ static void compute_plane_from_points(float *x, float *y, float *z, float *a, fl
     nx = Div(nx, len);
     ny = Div(ny, len);
     nz = Div(nz, len);
-    *a = nx;
-    *b = ny;
-    *c = nz;
-    *d = -(nx * x[0] + ny * y[0] + nz * z[0]);
+    *normal_x = nx;
+    *normal_y = ny;
+    *normal_z = nz;
+    *plane_dist = -(nx * x[0] + ny * y[0] + nz * z[0]);
 }
 
 static void get_state_position_xyz(float *x, float *y, float *z) {
@@ -138,39 +140,39 @@ static void field_effect_init_viewport_centered(void) {
     gFieldEffect.screen_y = zero;
 }
 
-static void affine_set_destination_and_compute_transform(float x0, float x1, float y0, float y1) {
-    gFieldEffect.dst_x0 = x0;
-    gFieldEffect.dst_x1 = x1;
-    gFieldEffect.dst_y0 = y0;
-    gFieldEffect.dst_y1 = y1;
-    gFieldEffect.scale_x = (gFieldEffect.src_x1 - gFieldEffect.src_x0) / (x1 - x0);
-    gFieldEffect.scale_y = (gFieldEffect.src_y1 - gFieldEffect.src_y0) / (y1 - y0);
-    gFieldEffect.offset_x = (x1 * gFieldEffect.src_x0 - x0 * gFieldEffect.src_x1) / (x1 - x0);
-    gFieldEffect.offset_y = (y1 * gFieldEffect.src_y0 - y0 * gFieldEffect.src_y1) / (y1 - y0);
+static void affine_set_destination_and_compute_transform(float x_min, float x_max, float y_min, float y_max) {
+    gFieldEffect.dst_x0 = x_min;
+    gFieldEffect.dst_x1 = x_max;
+    gFieldEffect.dst_y0 = y_min;
+    gFieldEffect.dst_y1 = y_max;
+    gFieldEffect.scale_x = (gFieldEffect.src_x1 - gFieldEffect.src_x0) / (x_max - x_min);
+    gFieldEffect.scale_y = (gFieldEffect.src_y1 - gFieldEffect.src_y0) / (y_max - y_min);
+    gFieldEffect.offset_x = (x_max * gFieldEffect.src_x0 - x_min * gFieldEffect.src_x1) / (x_max - x_min);
+    gFieldEffect.offset_y = (y_max * gFieldEffect.src_y0 - y_min * gFieldEffect.src_y1) / (y_max - y_min);
 }
 
-static void affine_set_source_and_compute_transform(float x0, float x1, float y0, float y1) {
-    gFieldEffect.src_x0 = x0;
-    gFieldEffect.src_x1 = x1;
-    gFieldEffect.src_y0 = y0;
-    gFieldEffect.src_y1 = y1;
-    gFieldEffect.scale_x = (x1 - x0) / (gFieldEffect.dst_x1 - gFieldEffect.dst_x0);
-    gFieldEffect.scale_y = (y1 - y0) / (gFieldEffect.dst_y1 - gFieldEffect.dst_y0);
+static void affine_set_source_and_compute_transform(float x_min, float x_max, float y_min, float y_max) {
+    gFieldEffect.src_x0 = x_min;
+    gFieldEffect.src_x1 = x_max;
+    gFieldEffect.src_y0 = y_min;
+    gFieldEffect.src_y1 = y_max;
+    gFieldEffect.scale_x = (x_max - x_min) / (gFieldEffect.dst_x1 - gFieldEffect.dst_x0);
+    gFieldEffect.scale_y = (y_max - y_min) / (gFieldEffect.dst_y1 - gFieldEffect.dst_y0);
     gFieldEffect.offset_x =
-        (gFieldEffect.dst_x1 * x0 - gFieldEffect.dst_x0 * x1) / (gFieldEffect.dst_x1 - gFieldEffect.dst_x0);
+        (gFieldEffect.dst_x1 * x_min - gFieldEffect.dst_x0 * x_max) / (gFieldEffect.dst_x1 - gFieldEffect.dst_x0);
     gFieldEffect.offset_y =
-        (gFieldEffect.dst_y1 * y0 - gFieldEffect.dst_y0 * y1) / (gFieldEffect.dst_y1 - gFieldEffect.dst_y0);
+        (gFieldEffect.dst_y1 * y_min - gFieldEffect.dst_y0 * y_max) / (gFieldEffect.dst_y1 - gFieldEffect.dst_y0);
 }
 
-void set_state_float_field(float a, float b, float c, float d) {
+void set_state_float_field(float yaw, float pitch, float dist, float scale) {
     float x, y, z, len;
 
-    gFieldEffect.camera_dist = c;
-    gFieldEffect.projection_scale = d;
-    gFieldEffect.cos_yaw = gCosTableF32[(s32)a & 0xFF];
-    gFieldEffect.sin_yaw = gSinTableF32[(s32)a & 0xFF];
-    gFieldEffect.cos_pitch = gCosTableF32[(s32)b & 0xFF];
-    gFieldEffect.sin_pitch = gSinTableF32[(s32)b & 0xFF];
+    gFieldEffect.camera_dist = dist;
+    gFieldEffect.projection_scale = scale;
+    gFieldEffect.cos_yaw = gCosTableF32[(s32)yaw & 0xFF];
+    gFieldEffect.sin_yaw = gSinTableF32[(s32)yaw & 0xFF];
+    gFieldEffect.cos_pitch = gCosTableF32[(s32)pitch & 0xFF];
+    gFieldEffect.sin_pitch = gSinTableF32[(s32)pitch & 0xFF];
     x = gFieldEffect.cos_pitch * gFieldEffect.cos_yaw;
     y = gFieldEffect.cos_pitch * gFieldEffect.sin_yaw;
     z = gFieldEffect.sin_pitch;
@@ -180,42 +182,42 @@ void set_state_float_field(float a, float b, float c, float d) {
     x = Div(x, len);
     y = Div(y, len);
     z = Div(z, len);
-    gFieldEffect.camera_x = c * x;
-    gFieldEffect.camera_y = c * y;
-    gFieldEffect.camera_z = c * z;
+    gFieldEffect.camera_x = dist * x;
+    gFieldEffect.camera_y = dist * y;
+    gFieldEffect.camera_z = dist * z;
 }
 
 static void field_effect_project_object(float *x, float *y, float *z) {
-    float a, b, c;
+    float px, py, pz;
     s32 i;
 
-    a = x[0];
-    b = y[0];
-    c = z[0];
-    field_effect_project_origin(a, b, c);
+    px = x[0];
+    py = y[0];
+    pz = z[0];
+    field_effect_project_origin(px, py, pz);
     for (i = 1; i < gFieldEffect.part_count; i++) {
-        a = x[i];
-        b = y[i];
-        c = z[i];
+        px = x[i];
+        py = y[i];
+        pz = z[i];
         gFieldEffectEntities[gFieldEffect.cur_entity].cur_part = i;
-        field_effect_project_sprite(a, b, c);
+        field_effect_project_sprite(px, py, pz);
     }
-    a = x[0];
-    b = y[0];
-    c = z[0];
+    px = x[0];
+    py = y[0];
+    pz = z[0];
     gFieldEffectEntities[gFieldEffect.cur_entity].cur_part = 0;
-    field_effect_project_sprite(a, b, c);
+    field_effect_project_sprite(px, py, pz);
 }
 
-static void field_effect_project_origin(float a, float b, float c) {
+static void field_effect_project_origin(float px, float py, float pz) {
     float x, y, z;
 
-    compute_3d_transform_vectors(a, b, c, &x, &y, &z);
+    compute_3d_transform_vectors(px, py, pz, &x, &y, &z);
     field_effect_view_to_screen_origin(x, y);
 }
 
-static void field_effect_view_to_screen_origin(float a, float b) {
-    get_state_float_as_int(a, b, &gFieldEffect.screen_x, &gFieldEffect.screen_y);
+static void field_effect_view_to_screen_origin(float view_x, float view_y) {
+    get_state_float_as_int(view_x, view_y, &gFieldEffect.screen_x, &gFieldEffect.screen_y);
 }
 
 static void field_effect_project_sprite(float x, float y, float z) {
@@ -231,29 +233,29 @@ static void field_effect_project_sprite(float x, float y, float z) {
 }
 
 static void compute_3d_transform_vectors(float x, float y, float z, float *outX, float *outY, float *outZ) {
-    float rx, ry, rz, d;
+    float rx, ry, rz, depth;
 
     rx = x * gFieldEffect.cos_yaw + y * gFieldEffect.sin_yaw;
     ry = -x * gFieldEffect.sin_yaw + y * gFieldEffect.cos_yaw;
     rz = z * gFieldEffect.cos_pitch - rx * gFieldEffect.sin_pitch;
-    d = gFieldEffect.camera_dist - (rx * gFieldEffect.cos_pitch + z * gFieldEffect.sin_pitch);
-    if (d == 0.0f)
-        d = 1.0f;
-    rx = gFieldEffect.projection_scale / d;
+    depth = gFieldEffect.camera_dist - (rx * gFieldEffect.cos_pitch + z * gFieldEffect.sin_pitch);
+    if (depth == 0.0f)
+        depth = 1.0f;
+    rx = gFieldEffect.projection_scale / depth;
     *outX = ry * rx;
     *outY = rz * rx;
-    *outZ = d;
+    *outZ = depth;
 }
 
-static void get_state_float_as_int(float a, float b, s32 *x, s32 *y) {
-    *x = (s32)gFieldEffect.scale_x * (s32)a + (s32)gFieldEffect.offset_x + gFieldEffect.viewport_cx;
-    *y = gFieldEffect.viewport_cy - ((s32)gFieldEffect.scale_y * (s32)b + (s32)gFieldEffect.offset_y);
+static void get_state_float_as_int(float view_x, float view_y, s32 *x, s32 *y) {
+    *x = (s32)gFieldEffect.scale_x * (s32)view_x + (s32)gFieldEffect.offset_x + gFieldEffect.viewport_cx;
+    *y = gFieldEffect.viewport_cy - ((s32)gFieldEffect.scale_y * (s32)view_y + (s32)gFieldEffect.offset_y);
 }
 
 #define CUR_ENTITY gFieldEffectEntities[gFieldEffect.cur_entity]
 
-static void field_effect_place_sprite(float a, float b) {
-    get_state_float_as_int(a, b, &gFieldEffect.screen_x, &gFieldEffect.screen_y);
+static void field_effect_place_sprite(float view_x, float view_y) {
+    get_state_float_as_int(view_x, view_y, &gFieldEffect.screen_x, &gFieldEffect.screen_y);
     gSpriteEntries[CUR_ENTITY.part_sprite[CUR_ENTITY.cur_part]].x =
         gFieldEffect.screen_x + CUR_ENTITY.part_x[CUR_ENTITY.cur_part];
     gSpriteEntries[CUR_ENTITY.part_sprite[CUR_ENTITY.cur_part]].y =
@@ -292,8 +294,8 @@ static void init_affine_transform_viewport(s32 x, s32 y) {
 
 void field_effect_project_objects(void) {
     s32 i, j;
-    const s32 *p;
-    const s32 *q;
+    const s32 *model;
+    const s32 *cursor;
 
     gFieldEffect.viewport_w = 240;
     gFieldEffect.viewport_h = 160;
@@ -309,14 +311,14 @@ void field_effect_project_objects(void) {
             continue;
         if (gFieldEffectEntities[i].unk1C4 < gFieldEffectEntities[i].unk1C8)
             continue;
-        p = gFieldEffectModels[gFieldEffect.effect_id][i];
-        q = p;
-        gFieldEffect.part_count = *q++;
+        model = gFieldEffectModels[gFieldEffect.effect_id][i];
+        cursor = model;
+        gFieldEffect.part_count = *cursor++;
         for (j = 0; j < 4; j++) {
-            gFieldEffect.model_x[j] = q[0];
-            gFieldEffect.model_y[j] = q[4];
-            gFieldEffect.model_z[j] = q[8];
-            q++;
+            gFieldEffect.model_x[j] = cursor[0];
+            gFieldEffect.model_y[j] = cursor[4];
+            gFieldEffect.model_z[j] = cursor[8];
+            cursor++;
         }
         set_state_float_field(gFieldEffect.base_yaw + gFieldEffectEntities[i].yaw,
                               gFieldEffect.base_pitch + gFieldEffectEntities[i].pitch, gFieldEffect.base_camera_dist,
@@ -329,7 +331,7 @@ void field_effect_project_objects(void) {
             gFieldEffect.point_z[j] =
                 gFieldEffect.model_z[j] * gFieldEffectEntities[i].scale_z + gFieldEffectEntities[i].z;
         }
-        gFieldEffect.unk98 = p[1];
+        gFieldEffect.unk98 = model[1];
         gFieldEffect.cur_entity = i;
         compute_distance_to_state_position(gFieldEffect.point_x, gFieldEffect.point_y, gFieldEffect.point_z);
     }
@@ -348,7 +350,7 @@ u32 field_effect_run(void) {
     s32 i;
     s32 done;
     s32 cnt;
-    s32 tmp;
+    s32 track_end;
     struct AnimInterp *anim;
     struct SeqTrack *trk;
     struct SeqOsc *osc;
@@ -357,11 +359,11 @@ u32 field_effect_run(void) {
     s32 n;
     s32 flag;
     s32 part;
-    s32 v, a, b;
-    s32 d;
+    s32 trigger_flags, relative_mode, relative_track;
+    s32 depth;
     const s32 *model;
     u16 color;
-    s32 r, g, bl;
+    s32 red, green, blue;
 
     S.running = 1;
     S.effect_id = S.flags & 0x3F;
@@ -577,13 +579,13 @@ u32 field_effect_run(void) {
             for (i = 0; i < 16; i++) {
                 if (E[i].state != 0 && (E[i].affine_scale_x.type | E[i].affine_scale_y.type) == 0) {
                     for (k = 0; k < 4; k++) {
-                        d = gSpriteEntries[E[i].part_sprite[k]].pos_z;
-                        if (d > S.base_camera_dist) {
-                            gAffineParams[i * 4 + k].scaleX = 0x101 - d / S.base_camera_dist;
+                        depth = gSpriteEntries[E[i].part_sprite[k]].pos_z;
+                        if (depth > S.base_camera_dist) {
+                            gAffineParams[i * 4 + k].scaleX = 0x101 - depth / S.base_camera_dist;
                             gAffineParams[i * 4 + k].scaleY =
                                 0x101 - gSpriteEntries[E[i].part_sprite[k]].pos_z / S.base_camera_dist;
                         } else {
-                            gAffineParams[i * 4 + k].scaleX = S.base_camera_dist / d + 0xFF;
+                            gAffineParams[i * 4 + k].scaleX = S.base_camera_dist / depth + 0xFF;
                             gAffineParams[i * 4 + k].scaleY =
                                 S.base_camera_dist / gSpriteEntries[E[i].part_sprite[k]].pos_z + 0xFF;
                         }
@@ -623,16 +625,16 @@ u32 field_effect_run(void) {
                         break;
                     case 4:
                         blend_effect_update();
-                        r = S.blend_level * S.blend_step - 1;
-                        g = r;
-                        bl = r;
-                        if (r < S.blend_r)
-                            r = S.blend_r;
-                        if (g < S.blend_g)
-                            g = S.blend_g;
-                        if (bl < S.blend_b)
-                            bl = S.blend_b;
-                        color = bl << 10 | g << 5 | r;
+                        red = S.blend_level * S.blend_step - 1;
+                        green = red;
+                        blue = red;
+                        if (red < S.blend_r)
+                            red = S.blend_r;
+                        if (green < S.blend_g)
+                            green = S.blend_g;
+                        if (blue < S.blend_b)
+                            blue = S.blend_b;
+                        color = blue << 10 | green << 5 | red;
                         field_bg_palettes_blend_masked(color, S.blend_level * S.blend_step, S.bg_blend_mask);
                         field_obj_palettes_blend_masked(color, S.blend_level * S.blend_step, S.obj_blend_mask);
                         if (S.blend_level != 0)
@@ -961,21 +963,21 @@ u32 field_effect_run(void) {
             S.saved_entity[S.call_depth] = script[S.pc++];
             k = S.saved_entity[S.call_depth];
             E[S.cur_entity].trigger_entity[k] = k;
-            v = script[S.pc++];
-            E[S.cur_entity].has_triggers = v & 0xFF;
+            trigger_flags = script[S.pc++];
+            E[S.cur_entity].has_triggers = trigger_flags & 0xFF;
             E[S.cur_entity].trigger_time[k] = script[S.pc++];
             E[S.cur_entity].trigger_script[k] = (s32 *)script[S.pc++];
             E[k].parent = S.cur_entity;
-            if ((v & 0xFF00) != 0x100)
+            if ((trigger_flags & 0xFF00) != 0x100)
                 break;
-            a = script[S.pc++];
-            b = script[S.pc++];
-            if (a != 1)
+            relative_mode = script[S.pc++];
+            relative_track = script[S.pc++];
+            if (relative_mode != 1)
                 break;
             old = E[S.cur_entity].trigger_time[k];
-            if (b == 0)
-                tmp = E[S.cur_entity].z.end;
-            E[S.cur_entity].trigger_time[k] = tmp - old;
+            if (relative_track == 0)
+                track_end = E[S.cur_entity].z.end;
+            E[S.cur_entity].trigger_time[k] = track_end - old;
             break;
         }
         case 128: // guess: fade from white (with OBJ)
@@ -1143,11 +1145,11 @@ u32 field_effect_run(void) {
             S.pc = 0;
             S.running = 0;
             if ((S.flags & 0x3F) != 0xD && (S.flags & 0x3F) != 0x16) {
-                s32 q;
+                s32 slot;
 
                 affine_params_reset();
-                for (q = 0; q < 32; q++)
-                    calculate_oam_affine_matrix(q);
+                for (slot = 0; slot < 32; slot++)
+                    calculate_oam_affine_matrix(slot);
             }
             if (S.effect_id == 0xE || S.effect_id == 0x12) {
                 gFieldWork.player_facing = 1;
@@ -1172,24 +1174,24 @@ u32 field_effect_run(void) {
 #include "constants/sprites.h"
 
 static void field_effect_update_sprite_depth(void) {
-    struct FieldEffectState *b = &gFieldEffect;
+    struct FieldEffectState *effect = &gFieldEffect;
     s32 i, j;
-    s32 d;
-    struct SpriteEntry *s;
+    s32 depth;
+    struct SpriteEntry *sprite;
 
-    if (b->unkF0 != 0) {
+    if (effect->unkF0 != 0) {
         for (i = 0; i <= 15; i++) {
             for (j = 0; j <= 3; j++) {
                 struct SpriteEntry *spr = gSpriteEntries;
 
-                s = &spr[gFieldEffectEntities[i].part_sprite[j]];
-                d = s->pos_z;
-                if (d > gFieldEffect.base_camera_dist) {
-                    s->order = gFieldEffect.far_order;
+                sprite = &spr[gFieldEffectEntities[i].part_sprite[j]];
+                depth = sprite->pos_z;
+                if (depth > gFieldEffect.base_camera_dist) {
+                    sprite->order = gFieldEffect.far_order;
                     gSpriteEntries[gFieldEffectEntities[i].part_sprite[j]].flags &= (u16)~SPRITE_FLAG_PRIORITY_MASK;
                     gSpriteEntries[gFieldEffectEntities[i].part_sprite[j]].flags |= gFieldEffect.far_priority;
                 } else {
-                    s->order = gFieldEffect.near_order_base + (gFieldEffect.base_camera_dist - d);
+                    sprite->order = gFieldEffect.near_order_base + (gFieldEffect.base_camera_dist - depth);
                     gSpriteEntries[gFieldEffectEntities[i].part_sprite[j]].flags &= (u16)~SPRITE_FLAG_PRIORITY_MASK;
                     gSpriteEntries[gFieldEffectEntities[i].part_sprite[j]].flags |= gFieldEffect.near_priority;
                 }
@@ -1198,192 +1200,195 @@ static void field_effect_update_sprite_depth(void) {
     }
 }
 
-void anim_interp_init(struct AnimInterp *p, s32 *a) {
+void anim_interp_init(struct AnimInterp *anim, s32 *params) {
     s32 mode;
     float x, phase;
 
-    p->mode = mode = a[0];
-    p->unk10 = a[1] / 256;
-    p->phase = a[2];
-    p->unk18 = a[3] * (1.0f / 256);
-    p->frame = a[4];
-    p->start = a[5];
-    p->end = a[6];
-    p->unk28 = a[7];
-    p->unk2C = a[8];
-    p->unk30 = a[9];
-    p->unk34 = a[10];
-    p->unk38 = a[11];
-    p->unk3C = a[12] * (1.0f / 256);
-    p->unk40 = a[13] * (1.0f / 256);
-    p->unk44 = a[14];
+    anim->mode = mode = params[0];
+    anim->unk10 = params[1] / 256;
+    anim->phase = params[2];
+    anim->unk18 = params[3] * (1.0f / 256);
+    anim->frame = params[4];
+    anim->start = params[5];
+    anim->end = params[6];
+    anim->unk28 = params[7];
+    anim->unk2C = params[8];
+    anim->unk30 = params[9];
+    anim->unk34 = params[10];
+    anim->unk38 = params[11];
+    anim->unk3C = params[12] * (1.0f / 256);
+    anim->unk40 = params[13] * (1.0f / 256);
+    anim->unk44 = params[14];
     if (mode > 1)
-        p->base = p->value;
+        anim->base = anim->value;
 
-    switch (p->mode) {
+    switch (anim->mode) {
     case 0x10:
-        p->unk2C = x = p->unk34 / float_default_to_one_if_zero(float_abs_if_negative(p->unk3C));
-        p->end = p->start + x;
-        if (p->unk44 != 0)
-            p->value = p->value - float_sign(p->unk3C) * float_abs_if_negative(p->unk34);
+        anim->unk2C = x = anim->unk34 / float_default_to_one_if_zero(float_abs_if_negative(anim->unk3C));
+        anim->end = anim->start + x;
+        if (anim->unk44 != 0)
+            anim->value = anim->value - float_sign(anim->unk3C) * float_abs_if_negative(anim->unk34);
         break;
     case 0x11:
-        p->end = p->start + p->unk28;
-        p->unk34 = p->unk3C * p->unk2C;
-        if (p->unk44 != 0)
-            p->value = p->value - float_sign(p->unk3C) * float_abs_if_negative(p->unk34);
+        anim->end = anim->start + anim->unk28;
+        anim->unk34 = anim->unk3C * anim->unk2C;
+        if (anim->unk44 != 0)
+            anim->value = anim->value - float_sign(anim->unk3C) * float_abs_if_negative(anim->unk34);
         break;
     case 0x12: {
         float sum;
         s32 n;
 
-        p->unk3C = p->unk34 * (1.0f / 64);
-        phase = p->phase;
+        anim->unk3C = anim->unk34 * (1.0f / 64);
+        phase = anim->phase;
         sum = 0.0f;
         n = 0;
         for (;;) {
-            if (p->unk3C == 0.0f)
+            if (anim->unk3C == 0.0f)
                 break;
-            phase = phase + p->unk3C;
+            phase = phase + anim->unk3C;
             if (phase >= 64.0f)
                 phase = 64.0f;
-            sum = sum + p->unk40 * (gSineTable[(s32)(phase + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256);
-            if (float_abs_if_negative(sum) >= p->unk34)
+            sum = sum + anim->unk40 * (gSineTable[(s32)(phase + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256);
+            if (float_abs_if_negative(sum) >= anim->unk34)
                 break;
             n++;
         }
-        p->unk2C = n;
-        p->unk30 = x = p->unk38 / float_default_to_one_if_zero(float_abs_if_negative(p->unk40));
-        p->end = p->start + p->unk2C + x;
-        p->unk38 = p->unk38 + (p->unk34 - float_abs_if_negative(sum));
-        if (p->unk44 != 0)
-            p->value =
-                p->value - float_sign(p->unk40) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+        anim->unk2C = n;
+        anim->unk30 = x = anim->unk38 / float_default_to_one_if_zero(float_abs_if_negative(anim->unk40));
+        anim->end = anim->start + anim->unk2C + x;
+        anim->unk38 = anim->unk38 + (anim->unk34 - float_abs_if_negative(sum));
+        if (anim->unk44 != 0)
+            anim->value = anim->value - float_sign(anim->unk40) *
+                                            (float_abs_if_negative(anim->unk34) + float_abs_if_negative(anim->unk38));
         break;
     }
     case 0x13: {
         float step;
 
-        p->end = p->start + p->unk28;
-        p->unk30 = p->unk28 - p->unk2C;
-        p->unk3C = step = 64.0f / float_default_to_one_if_zero(p->unk2C);
-        p->unk38 = p->unk40 * p->unk30;
-        phase = p->phase;
-        p->unk34 = 0.0f;
+        anim->end = anim->start + anim->unk28;
+        anim->unk30 = anim->unk28 - anim->unk2C;
+        anim->unk3C = step = 64.0f / float_default_to_one_if_zero(anim->unk2C);
+        anim->unk38 = anim->unk40 * anim->unk30;
+        phase = anim->phase;
+        anim->unk34 = 0.0f;
         for (;;) {
             if (step == 0.0f)
                 break;
             phase = phase + step;
-            p->unk34 = p->unk34 + p->unk40 * (gSineTable[(s32)(phase + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256);
+            anim->unk34 =
+                anim->unk34 + anim->unk40 * (gSineTable[(s32)(phase + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256);
             if (phase >= 64.0f)
                 break;
         }
-        if (p->unk44 != 0)
-            p->value =
-                p->value - float_sign(p->unk40) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+        if (anim->unk44 != 0)
+            anim->value = anim->value - float_sign(anim->unk40) *
+                                            (float_abs_if_negative(anim->unk34) + float_abs_if_negative(anim->unk38));
         break;
     }
     case 0x14: {
         float sum;
         s32 n;
 
-        p->unk40 = 64.0f / p->unk38;
-        phase = p->phase;
+        anim->unk40 = 64.0f / anim->unk38;
+        phase = anim->phase;
         sum = 0.0f;
         n = 0;
         for (;;) {
-            phase = phase + p->unk40;
+            phase = phase + anim->unk40;
             if (phase >= 64.0f)
                 phase = 64.0f;
-            sum = sum + p->unk3C * gSineTable[((s32)phase & 0xFF) + 0x40] * (1.0f / 256);
+            sum = sum + anim->unk3C * gSineTable[((s32)phase & 0xFF) + 0x40] * (1.0f / 256);
             if (phase == 64.0f)
                 break;
             n++;
         }
-        p->unk30 = n;
-        p->unk34 = p->unk34 + (p->unk38 - float_abs_if_negative(sum));
-        p->unk38 = float_abs_if_negative(sum);
-        p->unk2C = x = p->unk34 / float_default_to_one_if_zero(float_abs_if_negative(p->unk3C));
-        p->end = p->start + x + p->unk30;
-        if (p->unk44 != 0)
-            p->value =
-                p->value - float_sign(p->unk3C) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+        anim->unk30 = n;
+        anim->unk34 = anim->unk34 + (anim->unk38 - float_abs_if_negative(sum));
+        anim->unk38 = float_abs_if_negative(sum);
+        anim->unk2C = x = anim->unk34 / float_default_to_one_if_zero(float_abs_if_negative(anim->unk3C));
+        anim->end = anim->start + x + anim->unk30;
+        if (anim->unk44 != 0)
+            anim->value = anim->value - float_sign(anim->unk3C) *
+                                            (float_abs_if_negative(anim->unk34) + float_abs_if_negative(anim->unk38));
         break;
     }
     case 0x15: {
 
-        p->end = p->start + p->unk28;
-        p->unk34 = p->unk3C * (p->unk2C = p->unk28 - p->unk30);
-        p->unk40 = 64.0f / float_default_to_one_if_zero(p->unk30);
-        phase = p->phase;
-        p->unk38 = 0.0f;
+        anim->end = anim->start + anim->unk28;
+        anim->unk34 = anim->unk3C * (anim->unk2C = anim->unk28 - anim->unk30);
+        anim->unk40 = 64.0f / float_default_to_one_if_zero(anim->unk30);
+        phase = anim->phase;
+        anim->unk38 = 0.0f;
         for (;;) {
-            phase = phase + p->unk40;
-            p->unk38 = p->unk38 + p->unk3C * gSineTable[((s32)phase & 0xFF) + 0x40] * (1.0f / 256);
+            phase = phase + anim->unk40;
+            anim->unk38 = anim->unk38 + anim->unk3C * gSineTable[((s32)phase & 0xFF) + 0x40] * (1.0f / 256);
             if (phase >= 64.0f)
                 break;
         }
-        if (p->unk44 != 0)
-            p->value =
-                p->value - float_sign(p->unk3C) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+        if (anim->unk44 != 0)
+            anim->value = anim->value - float_sign(anim->unk3C) *
+                                            (float_abs_if_negative(anim->unk34) + float_abs_if_negative(anim->unk38));
         break;
     }
     case 0x17:
-        p->end = p->start + p->unk28;
-        p->value = p->base + p->unk40 * gSineTable[(s32)p->unk2C & 0xFF];
-        p->phase = p->unk2C;
+        anim->end = anim->start + anim->unk28;
+        anim->value = anim->base + anim->unk40 * gSineTable[(s32)anim->unk2C & 0xFF];
+        anim->phase = anim->unk2C;
         break;
     }
 }
 
-u32 animation_interpolation_step(struct AnimInterp *p) {
+u32 animation_interpolation_step(struct AnimInterp *anim) {
     u32 ret = 0;
     s32 one = 1;
-    float s;
+    float scale;
 
-    if (p->mode != 0) {
-        if (p->start <= p->frame) {
-            switch (p->mode) {
+    if (anim->mode != 0) {
+        if (anim->start <= anim->frame) {
+            switch (anim->mode) {
             case 0x10:
             case 0x11:
-                if (p->frame < p->start + p->unk2C)
-                    p->value = p->value + p->unk3C;
+                if (anim->frame < anim->start + anim->unk2C)
+                    anim->value = anim->value + anim->unk3C;
                 break;
             case 0x12:
             case 0x13:
-                if (p->frame < p->start + p->unk2C) {
-                    s = one;
-                    p->phase = p->phase + p->unk3C * s;
-                    if (p->phase >= 64.0f)
-                        p->phase = 64.0f;
-                    p->value =
-                        p->value + p->unk40 * (gSineTable[(s32)(p->phase + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256) * s;
+                if (anim->frame < anim->start + anim->unk2C) {
+                    scale = one;
+                    anim->phase = anim->phase + anim->unk3C * scale;
+                    if (anim->phase >= 64.0f)
+                        anim->phase = 64.0f;
+                    anim->value = anim->value + anim->unk40 *
+                                                    (gSineTable[(s32)(anim->phase + 192.0f) & 0xFF] + 256.0f) *
+                                                    (1.0f / 256) * scale;
                 } else
-                    p->value = p->value + p->unk40;
+                    anim->value = anim->value + anim->unk40;
                 break;
             case 0x14:
             case 0x15:
-                if (p->frame < p->start + p->unk2C)
-                    p->value = p->value + p->unk3C;
+                if (anim->frame < anim->start + anim->unk2C)
+                    anim->value = anim->value + anim->unk3C;
                 else {
-                    p->phase = p->phase + p->unk40;
-                    if (p->phase >= 64.0f)
-                        p->phase = 64.0f;
-                    p->value = p->value + p->unk3C * gSineTable[((s32)p->phase & 0xFF) + 0x40] * (1.0f / 256) * one;
+                    anim->phase = anim->phase + anim->unk40;
+                    if (anim->phase >= 64.0f)
+                        anim->phase = 64.0f;
+                    anim->value =
+                        anim->value + anim->unk3C * gSineTable[((s32)anim->phase & 0xFF) + 0x40] * (1.0f / 256) * one;
                 }
                 break;
             case 0x17:
-                p->phase = p->phase + p->unk3C;
-                p->value = p->base + p->unk40 * gSineTable[(s32)p->phase & 0xFF] * one;
+                anim->phase = anim->phase + anim->unk3C;
+                anim->value = anim->base + anim->unk40 * gSineTable[(s32)anim->phase & 0xFF] * one;
                 break;
             }
-            p->frame = p->frame + 1.0f;
-            if (p->end != 0xFFFF && p->frame >= p->end) {
-                p->mode = 0;
+            anim->frame = anim->frame + 1.0f;
+            if (anim->end != 0xFFFF && anim->frame >= anim->end) {
+                anim->mode = 0;
                 ret = 1;
             }
         } else
-            p->frame = p->frame + 1.0f;
+            anim->frame = anim->frame + 1.0f;
     }
     return ret;
 }

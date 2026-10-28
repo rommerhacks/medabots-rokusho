@@ -14,8 +14,8 @@ void field_play_song(u32 id) {
     play_song(id);
 }
 
-void field_stop_songs(u32 a) {
-    fade_out_music(a);
+void field_stop_songs(u32 frames) {
+    fade_out_music(frames);
 }
 
 u32 medal_name(u32 idx) {
@@ -26,9 +26,9 @@ u32 medabot_name(u32 idx) {
     return gMedabotNames[idx];
 }
 
-u32 medapart_name(u32 a, u32 b) {
-    const u32 *t = (const u32 *)gMedapartNames;
-    return t[b * 4 + a];
+u32 medapart_name(u32 kind, u32 part_id) {
+    const u32 *names = (const u32 *)gMedapartNames;
+    return names[part_id * 4 + kind];
 }
 
 // Resets the message_step_run state before a multi-message script step.
@@ -42,13 +42,13 @@ void message_steps_reset(void) {
 
 // One step of a script message: opens the window for the first message, continues it for later ones;
 // returns 1 when the message is done.
-u32 message_step_run(u8 a, u8 b, u8 c, const void *text) {
+u32 message_step_run(u8 keep_palettes, u8 portrait_mode, u8 no_frame, const void *text) {
     u32 ret = 0;
 
     switch (gFieldScriptWork.message_step) {
     case 0:
         if (gFieldScriptWork.message_count == 0)
-            text_window_init(a, b, c);
+            text_window_init(keep_palettes, portrait_mode, no_frame);
         else
             message_next();
         gFieldScriptWork.message_step++;
@@ -66,33 +66,33 @@ u32 message_step_run(u8 a, u8 b, u8 c, const void *text) {
 
 void format_number_to_text_buffer(u32 slot, u32 n) {
     u8 buf[12];
-    struct TextBufTable4 t = gTextBufferPtrs;
-    u8 *d = t.p[slot];
+    struct TextBufTable4 bufs = gTextBufferPtrs;
+    u8 *dst = bufs.p[slot];
     s32 len = count_decimal_digits(n);
     s32 i;
 
     for (i = 0; i < len; i++)
         buf[i] = truncate_to_digit_count(n, len - 1 - i) + 0x35;
-    memcpy_u8(buf, d, len);
-    d[len] = 0xFE;
+    memcpy_u8(buf, dst, len);
+    dst[len] = 0xFE;
 }
 
 void copy_string_to_text_buffer(u32 slot, u32 str) {
-    u8 *s = (u8 *)str;
-    struct TextBufTable4 t = gTextBufferPtrs;
-    u8 *d = t.p[slot];
+    u8 *src = (u8 *)str;
+    struct TextBufTable4 bufs = gTextBufferPtrs;
+    u8 *dst = bufs.p[slot];
     s32 i;
 
-    for (i = 0; i < 16 && *s != 0xFE; i++)
-        *d++ = *s++;
-    *d = 0xFE;
+    for (i = 0; i < 16 && *src != 0xFE; i++)
+        *dst++ = *src++;
+    *dst = 0xFE;
 }
 
 // Formats the money amount n into text buffer slot (used by the give / take money script steps).
 void format_money_to_text_buffer(u32 slot, u32 n) {
     u8 buf[12];
-    struct TextBufTable4 t = gTextBufferPtrs;
-    divide_by_10000_b(t.p[slot], n);
+    struct TextBufTable4 bufs = gTextBufferPtrs;
+    divide_by_10000_b(bufs.p[slot], n);
 }
 
 u32 get_money(void) {
@@ -118,8 +118,8 @@ u32 field_item_quantity(u8 id) {
     return get_item_quantity_by_id(id);
 }
 
-u32 field_medapart_counts(u8 a, u8 b) {
-    return medapart_get_counts(a, b);
+u32 field_medapart_counts(u8 part_id, u8 kind) {
+    return medapart_get_counts(part_id, kind);
 }
 
 u32 field_find_medal_slot(u8 id) {
@@ -138,12 +138,12 @@ void field_take_item(u8 id, u8 n) {
     item_remove_quantity(id, n);
 }
 
-void field_give_medapart(u8 a, u8 b, u8 n) {
-    medapart_add_quantity(a, b, n);
+void field_give_medapart(u8 part_id, u8 kind, u8 n) {
+    medapart_add_quantity(part_id, kind, n);
 }
 
-void field_take_medapart(u8 a, u8 b, u8 n) {
-    reduce_medapart_stat(a, b, n);
+void field_take_medapart(u8 part_id, u8 kind, u8 n) {
+    reduce_medapart_stat(part_id, kind, n);
 }
 
 u32 field_give_medal(u8 id) {
@@ -165,90 +165,90 @@ void message_reset_hook(void) {}
 // (load_part_data) and stores the bot's unk1 in gFieldSceneParams.bot_gender; else -1.
 u32 team_equipped_part_legs_value(u8 id, u8 which) {
     u8 buf[16];
-    s32 v;
+    s32 legs_value;
     s32 match = team_has_part_equipped(id, which);
 
     if (match) {
         u32 found = 0;
         s32 i;
-        struct TeamSlot *p;
+        struct TeamSlot *slot;
 
-        for (i = 0, p = gTeamSlots; i <= 8; i++) {
-            if (p->state == 3) {
+        for (i = 0, slot = gTeamSlots; i <= 8; i++) {
+            if (slot->state == 3) {
                 switch (which) {
                 case 0:
-                    if (p->head == id)
+                    if (slot->head == id)
                         found = 1;
                     break;
                 case 1:
-                    if (p->rightArm == id)
+                    if (slot->rightArm == id)
                         found = 1;
                     break;
                 case 2:
-                    if (p->leftArm == id)
+                    if (slot->leftArm == id)
                         found = 1;
                     break;
                 case 3:
-                    if (p->legs == id)
+                    if (slot->legs == id)
                         found = 1;
                     break;
                 }
             }
             if (found)
                 break;
-            p++;
+            slot++;
         }
         load_part_data(gTeamSlots[i].legs, 3, buf);
-        v = buf[1] - 100;
+        legs_value = buf[1] - 100;
         gFieldSceneParams.bot_gender = gTeamSlots[i].gender;
     }
     if (match)
-        return v;
+        return legs_value;
     return -1;
 }
 
 u32 team_has_part_equipped(u8 id, u8 which) {
     u32 found = 0;
     s32 i;
-    struct TeamSlot *p;
+    struct TeamSlot *slot;
 
-    for (i = 0, p = gTeamSlots; i <= 8; i++) {
-        if (p->state == 3) {
+    for (i = 0, slot = gTeamSlots; i <= 8; i++) {
+        if (slot->state == 3) {
             switch (which) {
             case 0:
-                if (p->head == id)
+                if (slot->head == id)
                     found = 1;
                 break;
             case 1:
-                if (p->rightArm == id)
+                if (slot->rightArm == id)
                     found = 1;
                 break;
             case 2:
-                if (p->leftArm == id)
+                if (slot->leftArm == id)
                     found = 1;
                 break;
             case 3:
-                if (p->legs == id)
+                if (slot->legs == id)
                     found = 1;
                 break;
             }
         }
         if (found)
             break;
-        p++;
+        slot++;
     }
     return found;
 }
 
 s32 team_count_complete_bots(void) {
     s32 n = 0;
-    struct TeamSlot *p = gTeamSlots;
+    struct TeamSlot *slot = gTeamSlots;
     s32 i;
 
     for (i = 8; i >= 0; i--) {
-        if (p->state == 3)
+        if (slot->state == 3)
             n++;
-        p++;
+        slot++;
     }
     return n;
 }
@@ -257,14 +257,14 @@ s32 team_count_complete_bots(void) {
 u32 team_has_full_part_set(u8 id) {
     u32 found = 0;
     s32 i;
-    struct TeamSlot *p;
+    struct TeamSlot *slot;
 
-    for (i = 0, p = gTeamSlots; i <= 8; i++) {
-        if (p->state == 3 && p->head == id && p->rightArm == id && p->leftArm == id && p->legs == id)
+    for (i = 0, slot = gTeamSlots; i <= 8; i++) {
+        if (slot->state == 3 && slot->head == id && slot->rightArm == id && slot->leftArm == id && slot->legs == id)
             found = 1;
         if (found)
             break;
-        p++;
+        slot++;
     }
     return found;
 }
@@ -278,8 +278,8 @@ void yes_no_menu_open(u32 mode) {
 
 u32 yes_no_menu_poll(void) {
     u32 ret = 0;
-    struct FieldScriptWork *m = &gFieldScriptWork;
-    u8 *step = &m->choice_step;
+    struct FieldScriptWork *work = &gFieldScriptWork;
+    u8 *step = &work->choice_step;
 
     switch (*step) {
     case 1:
@@ -298,10 +298,10 @@ u32 yes_no_menu_poll(void) {
 
 // Bytes 2 / 3 of the current area's gAreaBattleSettings record: whether the Landmotor car (0) / the Femjet flight (1)
 // may be used here (vehicle_check_usable; check_and_update_battlefield_palette drops the car form when 0).
-u32 area_allows_vehicle(u32 arg) {
+u32 area_allows_vehicle(u32 vehicle) {
     u32 ret = 0;
 
-    switch (arg) {
+    switch (vehicle) {
     case 0:
         ret = gAreaBattleSettings[0][gFieldWork.area_id * 8 + 2];
         break;

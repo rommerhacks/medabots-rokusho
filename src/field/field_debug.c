@@ -48,16 +48,16 @@ static void field_debug_enter_page(u32 idx) {
 }
 
 // EVENT page: re-read the flag / counter when the event number changes, write them back otherwise.
-static void field_debug_apply_event_value(u32 a, s32 b) {
-    switch (a) {
+static void field_debug_apply_event_value(u32 page, s32 row) {
+    switch (page) {
     case 0:
         break;
     case 1:
-        if (b == 0) {
+        if (row == 0) {
             gFieldDebug.event_flag = event_flag_get(gFieldDebug.event_id);
             gFieldDebug.event_counter = event_counter_get(gFieldDebug.event_id);
-        } else if (b < 0) {
-        } else if (b <= 2) {
+        } else if (row < 0) {
+        } else if (row <= 2) {
             event_flag_write(gFieldDebug.event_id, gFieldDebug.event_flag);
             event_counter_set(gFieldDebug.event_id, gFieldDebug.event_counter);
         }
@@ -154,7 +154,7 @@ void field_debug_update_page(u32 mode) {
         break;
     case 6:
         if (gFieldDebug.showing == 0) {
-            const u32 *const *p;
+            const u32 *const *entry;
             s32 n;
 
             field_debug_cycle_row(3);
@@ -169,15 +169,15 @@ void field_debug_update_page(u32 mode) {
                 field_debug_cycle_message_value(2, 2);
                 break;
             }
-            p = (const u32 *const *)gTextBankTables[gFieldDebug.preview_sprite_set];
+            entry = (const u32 *const *)gTextBankTables[gFieldDebug.preview_sprite_set];
             n = 0;
-            if (*p != 0) {
+            if (*entry != 0) {
                 do {
-                    p++;
+                    entry++;
                     n++;
                     if (n > 0xFFF)
                         break;
-                } while (*p != 0);
+                } while (*entry != 0);
             }
             gFieldDebug.text_count = n;
             if (gFieldDebug.text_id >= (u16)n)
@@ -286,91 +286,91 @@ void field_debug_cycle_row(s32 max) {
 
 static void field_debug_cycle_event_value(u32 idx, s32 max) {
     u8 left;
-    u16 *p;
+    u16 *value_ptr;
     s32 step = 1;
 
     if (KEYS_HI(gHeldKeys) & 1)
         step = 0x10;
 
     if ((left = KEYS_LO(gRepeatKeys) & 0x20)) {
-        p = gFieldDebugEventValues[idx];
-        if ((u16)(*p -= step) == 0xFFFF)
-            *p = max - 1;
+        value_ptr = gFieldDebugEventValues[idx];
+        if ((u16)(*value_ptr -= step) == 0xFFFF)
+            *value_ptr = max - 1;
         field_debug_apply_event_value(gFieldDebug.page, gFieldDebug.rows[gFieldDebug.page]);
     } else if (KEYS_LO(gRepeatKeys) & 0x10) {
-        p = gFieldDebugEventValues[idx];
-        *p += step;
-        if (*p >= max)
-            *p = left;
+        value_ptr = gFieldDebugEventValues[idx];
+        *value_ptr += step;
+        if (*value_ptr >= max)
+            *value_ptr = left;
         field_debug_apply_event_value(gFieldDebug.page, gFieldDebug.rows[gFieldDebug.page]);
     }
 }
 
 static void field_debug_cycle_message_value(u32 idx, s32 max) {
-    s32 v;
-    u16 *p;
+    s32 value;
+    u16 *value_ptr;
     s32 step = 1;
 
     if (KEYS_HI(gHeldKeys) & 1)
         step = 0x10;
 
     if (KEYS_LO(gRepeatKeys) & 0x20) {
-        p = gFieldDebugMessageValues[idx];
-        v = *p;
-        v -= step;
-        if (v == -1)
-            v = max - 1;
-        *p = v;
+        value_ptr = gFieldDebugMessageValues[idx];
+        value = *value_ptr;
+        value -= step;
+        if (value == -1)
+            value = max - 1;
+        *value_ptr = value;
     } else if (KEYS_LO(gRepeatKeys) & 0x10) {
-        p = gFieldDebugMessageValues[idx];
-        v = *p;
-        v += step;
-        if (v >= max)
-            v = 0;
-        *p = v;
+        value_ptr = gFieldDebugMessageValues[idx];
+        value = *value_ptr;
+        value += step;
+        if (value >= max)
+            value = 0;
+        *value_ptr = value;
     }
 }
 
 static void field_debug_cycle_sound_value(u32 idx, s32 max) {
     u8 left;
-    u8 *p;
+    u8 *value_ptr;
 
     if ((left = KEYS_LO(gRepeatKeys) & 0x20)) {
-        p = gFieldDebugSoundValues[idx];
-        if ((s8)-- * p == -1)
-            *p = max - 1;
+        value_ptr = gFieldDebugSoundValues[idx];
+        if ((s8)-- * value_ptr == -1)
+            *value_ptr = max - 1;
     } else if (KEYS_LO(gRepeatKeys) & 0x10) {
-        p = gFieldDebugSoundValues[idx];
-        (*p)++;
-        if (*p >= max)
-            *p = left;
+        value_ptr = gFieldDebugSoundValues[idx];
+        (*value_ptr)++;
+        if (*value_ptr >= max)
+            *value_ptr = left;
     }
 }
 
 static void field_debug_cycle_page_value(u32 idx, u32 sub, s32 max) {
     u8 changed = 0;
-    s32 v;
+    s32 value;
     u8 **row;
 
     if (KEYS_LO(gRepeatKeys) & 0x20) {
-        u8 *p;
+        u8 *value_ptr;
         row = gFieldDebugPageValues[idx];
-        p = row[sub];
-        v = *p;
-        v -= 1;
-        if (v == -1)
-            v = max - 1;
-        *p = v;
+        value_ptr = row[sub];
+        value = *value_ptr;
+        value -= 1;
+        if (value == -1)
+            value = max - 1;
+        *value_ptr = value;
         changed = 1;
     } else if (KEYS_LO(gRepeatKeys) & 0x10) {
-        u8 *p;
+        u8 *value_ptr;
         row = gFieldDebugPageValues[idx];
-        p = row[sub];
-        v = *p;
-        v += 1;
-        if (v >= max)
-            v = 0;
-        *p = v;
+        value_ptr = row[sub];
+        value = *value_ptr;
+        value += 1;
+        if (value >= max)
+            value = 0;
+        *value_ptr = value;
         changed = 1;
     }
     if (changed && idx == 5)
@@ -571,17 +571,17 @@ static void field_debug_draw_page(u32 mode) {
 }
 
 void field_debug_draw_value_blink(s8 key, s32 value, u8 width, u8 x, u8 y) {
-    struct FieldDebugWork *s = &gFieldDebug;
+    struct FieldDebugWork *dbg = &gFieldDebug;
 
-    if (key != s->rows[s->page]) {
+    if (key != dbg->rows[dbg->page]) {
         field_debug_draw_hex(value, width, x, y);
-    } else if (s->frame & 0x10) {
+    } else if (dbg->frame & 0x10) {
         s32 i;
         for (i = 0; i < width >> 3; i++) {
-            sprite_entry_clear(s->next_sprite);
-            s->next_sprite++;
-            sprite_entry_clear(s->next_sprite);
-            s->next_sprite++;
+            sprite_entry_clear(dbg->next_sprite);
+            dbg->next_sprite++;
+            sprite_entry_clear(dbg->next_sprite);
+            dbg->next_sprite++;
         }
     } else {
         field_debug_draw_hex(value, width, x, y);
@@ -675,31 +675,31 @@ static void field_debug_draw_decimal3(u8 *value, s32 x, s32 y) {
 static void field_debug_draw_hex(u32 value, s32 bits, s32 x, s32 y) {
     u8 hex[16];
     s32 i;
-    u8 b;
+    u8 byte;
     u8 hi, lo;
 
     memcpy_optimized(hex, gFieldDebugHexDigits, 16);
     for (i = 0; i < bits / 8; i++) {
         if (bits / 8 == 4) {
             if (i == 0)
-                b = value >> 24;
+                byte = value >> 24;
             if (i == 1)
-                b = (value & 0xFF0000) >> 16;
+                byte = (value & 0xFF0000) >> 16;
             if (i == 2)
-                b = (value & 0xFF00) >> 8;
+                byte = (value & 0xFF00) >> 8;
             if (i == 3)
-                b = value;
+                byte = value;
         } else if (bits / 8 == 2) {
             if (i == 0)
-                b = (value & 0xFF00) >> 8;
+                byte = (value & 0xFF00) >> 8;
             if (i == 1)
-                b = value;
+                byte = value;
         } else if (bits / 8 == 1) {
             if (i == 0)
-                b = value;
+                byte = value;
         }
-        hi = b >> 4;
-        lo = b - hi * 16;
+        hi = byte >> 4;
+        lo = byte - hi * 16;
 
         DmaSet(3, &gFieldDebugFont[hex[hi] * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
         sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
