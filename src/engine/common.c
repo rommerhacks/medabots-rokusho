@@ -12,11 +12,11 @@ static void scanline_scroll_vblank(void);
 // set.
 s32 rng_next_byte(void) {
     if (gGameWork.skipBotSetup == 0) {
-        u16 s = gGameWork.rngSeed + gGameWork.rngLast;
+        u16 state = gGameWork.rngSeed + gGameWork.rngLast;
 
-        s += 0x87 + (((gFrameCounter << 4) + (gFrameCounter >> 4) + 1) >> 1);
-        gGameWork.rngSeed = ((s & 0xFF) << 8) | (((s & 0xFF00) >> 8) ^ (s & 0xFF));
-        gGameWork.rngLast = ((s & 0xFF00) >> 8) ^ s;
+        state += 0x87 + (((gFrameCounter << 4) + (gFrameCounter >> 4) + 1) >> 1);
+        gGameWork.rngSeed = ((state & 0xFF) << 8) | (((state & 0xFF00) >> 8) ^ (state & 0xFF));
+        gGameWork.rngLast = ((state & 0xFF00) >> 8) ^ state;
         return gGameWork.rngLast;
     } else {
         gGameWork.rngIndex++;
@@ -121,75 +121,75 @@ void draw_tile_block(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 entry) {
     u16 *base = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
 
     for (j = 0; j < h; j++) {
-        u16 *p = base + j * 32;
+        u16 *dst = base + j * 32;
         for (i = 0; i < w; i++)
-            *p++ = entry++;
+            *dst++ = entry++;
     }
 }
 
 void fill_tilemap_pair_or_divide(u8 value, u8 x, u8 y, u32 bgcnt, u16 tile) {
-    u8 d[3];
-    u8 r;
+    u8 digits[3];
+    u8 remainder;
 
     if (value == 0xFF) {
         draw_tile_block(1, 2, x, y, bgcnt, tile + 0x18);
         draw_tile_block(1, 2, x + 1, y, bgcnt, tile + 0x18);
     } else {
-        d[0] = value / 100;
-        r = value - (u8)(value / 100) * 100;
-        d[1] = r / 10;
-        d[2] = r - (u8)(r / 10) * 10;
-        if (d[0] != 0) {
+        digits[0] = value / 100;
+        remainder = value - (u8)(value / 100) * 100;
+        digits[1] = remainder / 10;
+        digits[2] = remainder - (u8)(remainder / 10) * 10;
+        if (digits[0] != 0) {
             draw_tile_block(1, 2, x, y, bgcnt, tile + 0x14);
             draw_tile_block(1, 2, x + 1, y, bgcnt, tile + 0x16);
-        } else if (d[1] != 0) {
-            draw_tile_block(1, 2, x, y, bgcnt, tile + d[1] * 2);
-            draw_tile_block(1, 2, x + 1, y, bgcnt, tile + d[2] * 2);
+        } else if (digits[1] != 0) {
+            draw_tile_block(1, 2, x, y, bgcnt, tile + digits[1] * 2);
+            draw_tile_block(1, 2, x + 1, y, bgcnt, tile + digits[2] * 2);
         } else {
             vram_fill_tilemap_rect(1, 2, x, y, bgcnt, 0);
-            draw_tile_block(1, 2, x + 1, y, bgcnt, tile + d[2] * 2);
+            draw_tile_block(1, 2, x + 1, y, bgcnt, tile + digits[2] * 2);
         }
     }
 }
 
 // Draws the last `digits` decimal digits of n as tiles (tile + digit); leading zeros blank, the last digit always.
 void draw_number_bgcnt(u32 n, u32 x, u32 y, u32 digits, u32 bgcnt, u32 tile) {
-    u8 d[6];
-    u32 r;
+    u8 digit_buf[6];
+    u32 remainder;
     u32 i;
     u8 start, started;
     u16 *dst;
     u8 count = digits;
-    u16 t = tile;
+    u16 base_tile = tile;
 
-    d[0] = n / 100000;
-    r = n - n / 100000 * 100000;
-    d[1] = r / 10000;
-    r = r - n / 10000 * 10000;
-    d[2] = r / 1000;
-    r = r - r / 1000 * 1000;
-    d[3] = r / 100;
-    r = r - r / 100 * 100;
-    d[4] = r / 10;
-    r = r - r / 10 * 10;
-    d[5] = r;
+    digit_buf[0] = n / 100000;
+    remainder = n - n / 100000 * 100000;
+    digit_buf[1] = remainder / 10000;
+    remainder = remainder - n / 10000 * 10000;
+    digit_buf[2] = remainder / 1000;
+    remainder = remainder - remainder / 1000 * 1000;
+    digit_buf[3] = remainder / 100;
+    remainder = remainder - remainder / 100 * 100;
+    digit_buf[4] = remainder / 10;
+    remainder = remainder - remainder / 10 * 10;
+    digit_buf[5] = remainder;
 
     start = 6 - count;
     started = 0;
     dst = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
     for (i = start; i <= 5; i++) {
         if (i <= 4) {
-            if (d[i] == 0) {
+            if (digit_buf[i] == 0) {
                 if (started)
-                    *dst++ = t + d[i];
+                    *dst++ = base_tile + digit_buf[i];
                 else
                     *dst++ = 0;
             } else {
-                *dst++ = t + d[i];
+                *dst++ = base_tile + digit_buf[i];
                 started = 1;
             }
         } else {
-            *dst++ = t + d[i];
+            *dst++ = base_tile + digit_buf[i];
         }
     }
 }
@@ -200,34 +200,34 @@ static inline u32 lower_digit_tile(s16 base, u32 digit) {
 
 // draw_number_bgcnt with 2-row digits: top tile base + digit * 2, bottom tile one row below.
 void draw_number_tall_bgcnt(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 base) {
-    u8 d[6];
+    u8 digit_buf[6];
     u32 rem;
     u32 i;
     u8 start;
     u32 flag;
     vu16 *dst;
 
-    d[0] = value / 100000;
+    digit_buf[0] = value / 100000;
     rem = value - value / 100000 * 100000;
-    d[1] = rem / 10000;
+    digit_buf[1] = rem / 10000;
     rem -= value / 10000 * 10000;
-    d[2] = rem / 1000;
+    digit_buf[2] = rem / 1000;
     rem -= rem / 1000 * 1000;
-    d[3] = rem / 100;
+    digit_buf[3] = rem / 100;
     rem -= rem / 100 * 100;
-    d[4] = rem / 10;
+    digit_buf[4] = rem / 10;
     rem -= rem / 10 * 10;
-    d[5] = rem;
+    digit_buf[5] = rem;
 
     start = 6 - digits;
     flag = 0;
     dst = (vu16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
     for (i = start; i < 6; i++) {
         if (i <= 4) {
-            if (d[i] == 0) {
+            if (digit_buf[i] == 0) {
                 if (flag) {
-                    *dst = base + d[i] * 2;
-                    dst[32] = lower_digit_tile(base, d[i]);
+                    *dst = base + digit_buf[i] * 2;
+                    dst[32] = lower_digit_tile(base, digit_buf[i]);
                     *dst++;
                 } else {
                     *dst = 0;
@@ -235,14 +235,14 @@ void draw_number_tall_bgcnt(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 b
                     *dst++;
                 }
             } else {
-                *dst = base + d[i] * 2;
-                dst[32] = lower_digit_tile(base, d[i]);
+                *dst = base + digit_buf[i] * 2;
+                dst[32] = lower_digit_tile(base, digit_buf[i]);
                 *dst++;
                 flag = 1;
             }
         } else {
-            *dst = base + d[i] * 2;
-            dst[32] = lower_digit_tile(base, d[i]);
+            *dst = base + digit_buf[i] * 2;
+            dst[32] = lower_digit_tile(base, digit_buf[i]);
             *dst++;
         }
     }
@@ -250,47 +250,47 @@ void draw_number_tall_bgcnt(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt, u16 b
 
 // "cur<tile>max" with 1-2 digits each (a leading 0 is skipped).
 void draw_count_over_max(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt, u16 tile2) {
-    u8 a[2];
-    u8 b[2];
+    u8 cur_digits[2];
+    u8 max_digits[2];
     u16 *dst;
     u32 i;
-    u32 q;
-    u8 *p;
-    u8 *pa;
+    u32 digit;
+    u8 *max_ptr;
+    u8 *cur_ptr;
 
-    pa = a;
-    q = cur / 10;
-    pa[0] = q;
-    q = cur - q * 10;
-    a[1] = q;
-    p = b;
-    q = max / 10;
-    p[0] = q;
-    q = max - q * 10;
-    p[1] = q;
+    cur_ptr = cur_digits;
+    digit = cur / 10;
+    cur_ptr[0] = digit;
+    digit = cur - digit * 10;
+    cur_digits[1] = digit;
+    max_ptr = max_digits;
+    digit = max / 10;
+    max_ptr[0] = digit;
+    digit = max - digit * 10;
+    max_ptr[1] = digit;
     dst = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800 + x * 2) + y * 32;
     for (i = 0; i < 2; i++) {
-        if (a[i] == 0) {
+        if (cur_digits[i] == 0) {
             if (i == 1)
-                *dst++ = tile2 + a[i];
+                *dst++ = tile2 + cur_digits[i];
         } else
-            *dst++ = tile2 + a[i];
+            *dst++ = tile2 + cur_digits[i];
     }
     *dst++ = tile;
     for (i = 0; i < 2; i++) {
-        if (b[i] == 0) {
+        if (max_digits[i] == 0) {
             if (i == 1)
-                *dst++ = tile2 + b[i];
+                *dst++ = tile2 + max_digits[i];
         } else
-            *dst++ = tile2 + b[i];
+            *dst++ = tile2 + max_digits[i];
     }
 }
 
 void load_part_data(u32 part, u32 kind, u8 *dst) {
     u32 i;
-    u8 *d = dst;
+    u8 *out = dst;
     for (i = 0; i < 16; i++)
-        *d++ = gMedapartData[part * 64 + kind * 16 + i];
+        *out++ = gMedapartData[part * 64 + kind * 16 + i];
 }
 
 // Skill types 0, 1, 4, 5 are proximity, 2, 3, 6, 7 remote (gMenuMessages messages 17 / 18: "Proximity
@@ -312,43 +312,44 @@ u32 skill_type_is_remote(u32 type) {
 }
 
 struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x, s32 y) {
-    struct Coords16 r;
+    struct Coords16 result;
 
     x += (u32)(gCosTableQ8[angle] * (radius / 256.0f));
     y += (u32)(gJumpArcTable[0][angle] * (radius / 256.0f));
-    r.x = x & 0x1FF;
-    r.y = y & 0xFF;
-    return r;
+    result.x = x & 0x1FF;
+    result.y = y & 0xFF;
+    return result;
 }
 
-struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32 cy, u32 a, u32 b) {
-    struct Vec16 r;
+struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32 cy, u32 inset_y, u32 inset_x) {
+    struct Vec16 result;
 
-    if (radius < a)
-        a = radius;
-    if (radius < b)
-        b = radius;
-    cx += (u32)(gCosTableQ8[angle] * ((radius - b) / 256.0f));
-    cy += (u32)(gJumpArcTable[0][angle] * ((radius - a) / 256.0f));
-    r.x = cx & 0x1FF;
-    r.y = cy & 0xFF;
-    return r;
+    if (radius < inset_y)
+        inset_y = radius;
+    if (radius < inset_x)
+        inset_x = radius;
+    cx += (u32)(gCosTableQ8[angle] * ((radius - inset_x) / 256.0f));
+    cy += (u32)(gJumpArcTable[0][angle] * ((radius - inset_y) / 256.0f));
+    result.x = cx & 0x1FF;
+    result.y = cy & 0xFF;
+    return result;
 }
 
 // Decompresses 6 sprite tile chunks (0x80 bytes each in VRAM) into OBJ tile slot `slot` (0x400 bytes):
-// chunk 0 from Medabot a, 1-2 from b, 3-4 from c, 5 from d (gMedabotPartSpriteTiles has 6 pointers per Medabot).
+// chunk 0 from part id head, 1-2 from right_arm, 3-4 from left_arm, 5 from legs (gMedabotPartSpriteTiles has 6
+// pointers per Medabot).
 // The index is written as (n << 2) + (n << 1): `n * 6` compiles to (n * 3) << 1.
-void decompress_sprite_to_vram_08042D94(u32 a, u32 b, u32 c, u32 d, u32 slot) {
-    lz_decompress_dispatch(gMedabotPartSpriteTiles[(a << 2) + (a << 1)], (void *)(VRAM + 0x10000 + slot * 0x400));
-    lz_decompress_dispatch(gMedabotPartSpriteTiles[(b << 2) + (b << 1) + 1],
+void decompress_sprite_to_vram_08042D94(u32 head, u32 right_arm, u32 left_arm, u32 legs, u32 slot) {
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(head << 2) + (head << 1)], (void *)(VRAM + 0x10000 + slot * 0x400));
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(right_arm << 2) + (right_arm << 1) + 1],
                            (void *)(VRAM + 0x10000 + 0x80 + slot * 0x400));
-    lz_decompress_dispatch(gMedabotPartSpriteTiles[(b << 2) + (b << 1) + 2],
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(right_arm << 2) + (right_arm << 1) + 2],
                            (void *)(VRAM + 0x10000 + 0x100 + slot * 0x400));
-    lz_decompress_dispatch(gMedabotPartSpriteTiles[(c << 2) + (c << 1) + 3],
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(left_arm << 2) + (left_arm << 1) + 3],
                            (void *)(VRAM + 0x10000 + 0x180 + slot * 0x400));
-    lz_decompress_dispatch(gMedabotPartSpriteTiles[(c << 2) + (c << 1) + 4],
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(left_arm << 2) + (left_arm << 1) + 4],
                            (void *)(VRAM + 0x10000 + 0x200 + slot * 0x400));
-    lz_decompress_dispatch(gMedabotPartSpriteTiles[(d << 2) + (d << 1) + 5],
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(legs << 2) + (legs << 1) + 5],
                            (void *)(VRAM + 0x10000 + 0x280 + slot * 0x400));
 }
 
@@ -493,10 +494,10 @@ void battle_sprite_group_set_anim(u32 sprite, u32 anim) {
     gSpriteEntries[sprite + 3].unk24 = anim;
 }
 
-void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c) {
-    struct Coords16 v;
-    u32 t;
-    u8 a;
+void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 unused) {
+    struct Coords16 pos;
+    u32 phase;
+    u8 progress;
 
     gSpriteEntries[sprite].x = gSpriteEntries[sprite + 3].x;
     gSpriteEntries[sprite + 3].unk26 += gSpriteEntries[sprite + 3].unk24;
@@ -507,75 +508,75 @@ void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c) {
     }
 
     gSpriteEntries[sprite + 1].unk26 += gSpriteEntries[sprite + 1].unk24;
-    a = gSpriteEntries[sprite + 1].unk26;
-    t = a >> 1;
-    if (a > 0x3F) {
-        t = 0x20;
+    progress = gSpriteEntries[sprite + 1].unk26;
+    phase = progress >> 1;
+    if (progress > 0x3F) {
+        phase = 0x20;
         gSpriteEntries[sprite + 1].unk26 -= 0x40;
     }
     switch (gSpriteEntries[sprite + 1].unk21) {
     case 0:
-        gSpriteEntries[sprite + 1].angle = t * 4;
-        v = calc_polar_to_screen_coords(t + 0x60, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
-        gSpriteEntries[sprite + 1].x = v.x - 5;
-        gSpriteEntries[sprite + 1].y = v.y - 3;
+        gSpriteEntries[sprite + 1].angle = phase * 4;
+        pos = calc_polar_to_screen_coords(phase + 0x60, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
+        gSpriteEntries[sprite + 1].x = pos.x - 5;
+        gSpriteEntries[sprite + 1].y = pos.y - 3;
         break;
     case 1:
-        gSpriteEntries[sprite + 1].angle = 0x80 - t * 4;
-        v = calc_polar_to_screen_coords(0x80 - t, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
-        gSpriteEntries[sprite + 1].x = v.x - 5;
-        gSpriteEntries[sprite + 1].y = v.y - 3;
+        gSpriteEntries[sprite + 1].angle = 0x80 - phase * 4;
+        pos = calc_polar_to_screen_coords(0x80 - phase, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
+        gSpriteEntries[sprite + 1].x = pos.x - 5;
+        gSpriteEntries[sprite + 1].y = pos.y - 3;
         break;
     case 2:
-        gSpriteEntries[sprite + 1].angle = 0x400 - t * 4;
-        v = calc_polar_to_screen_coords(0x60 - t, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
-        gSpriteEntries[sprite + 1].x = v.x - 5;
-        gSpriteEntries[sprite + 1].y = v.y - 3;
+        gSpriteEntries[sprite + 1].angle = 0x400 - phase * 4;
+        pos = calc_polar_to_screen_coords(0x60 - phase, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
+        gSpriteEntries[sprite + 1].x = pos.x - 5;
+        gSpriteEntries[sprite + 1].y = pos.y - 3;
         break;
     case 3:
-        gSpriteEntries[sprite + 1].angle = t * 4 + 0x380;
-        v = calc_polar_to_screen_coords(t + 0x40, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
-        gSpriteEntries[sprite + 1].x = v.x - 5;
-        gSpriteEntries[sprite + 1].y = v.y - 3;
+        gSpriteEntries[sprite + 1].angle = phase * 4 + 0x380;
+        pos = calc_polar_to_screen_coords(phase + 0x40, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
+        gSpriteEntries[sprite + 1].x = pos.x - 5;
+        gSpriteEntries[sprite + 1].y = pos.y - 3;
         break;
     }
-    if (t == 0x20)
+    if (phase == 0x20)
         gSpriteEntries[sprite + 1].unk21 = (gSpriteEntries[sprite + 1].unk21 + 1) & 3;
 
     gSpriteEntries[sprite + 2].unk26 += gSpriteEntries[sprite + 2].unk24;
-    a = gSpriteEntries[sprite + 2].unk26;
-    t = a >> 1;
-    if (a > 0x3F) {
-        t = 0x20;
+    progress = gSpriteEntries[sprite + 2].unk26;
+    phase = progress >> 1;
+    if (progress > 0x3F) {
+        phase = 0x20;
         gSpriteEntries[sprite + 2].unk26 -= 0x40;
     }
     switch (gSpriteEntries[sprite + 2].unk21) {
     case 2:
-        gSpriteEntries[sprite + 2].angle = t * 4;
-        v = calc_polar_to_screen_coords(t + 0x20, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
-        gSpriteEntries[sprite + 2].x = v.x + 5;
-        gSpriteEntries[sprite + 2].y = v.y - 3;
+        gSpriteEntries[sprite + 2].angle = phase * 4;
+        pos = calc_polar_to_screen_coords(phase + 0x20, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
+        gSpriteEntries[sprite + 2].x = pos.x + 5;
+        gSpriteEntries[sprite + 2].y = pos.y - 3;
         break;
     case 3:
-        gSpriteEntries[sprite + 2].angle = 0x80 - t * 4;
-        v = calc_polar_to_screen_coords(0x40 - t, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
-        gSpriteEntries[sprite + 2].x = v.x + 5;
-        gSpriteEntries[sprite + 2].y = v.y - 3;
+        gSpriteEntries[sprite + 2].angle = 0x80 - phase * 4;
+        pos = calc_polar_to_screen_coords(0x40 - phase, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
+        gSpriteEntries[sprite + 2].x = pos.x + 5;
+        gSpriteEntries[sprite + 2].y = pos.y - 3;
         break;
     case 0:
-        gSpriteEntries[sprite + 2].angle = 0x400 - t * 4;
-        v = calc_polar_to_screen_coords(0x20 - t, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
-        gSpriteEntries[sprite + 2].x = v.x + 5;
-        gSpriteEntries[sprite + 2].y = v.y - 3;
+        gSpriteEntries[sprite + 2].angle = 0x400 - phase * 4;
+        pos = calc_polar_to_screen_coords(0x20 - phase, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
+        gSpriteEntries[sprite + 2].x = pos.x + 5;
+        gSpriteEntries[sprite + 2].y = pos.y - 3;
         break;
     case 1:
-        gSpriteEntries[sprite + 2].angle = t * 4 + 0x380;
-        v = calc_polar_to_screen_coords(t, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
-        gSpriteEntries[sprite + 2].x = v.x + 5;
-        gSpriteEntries[sprite + 2].y = v.y - 3;
+        gSpriteEntries[sprite + 2].angle = phase * 4 + 0x380;
+        pos = calc_polar_to_screen_coords(phase, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
+        gSpriteEntries[sprite + 2].x = pos.x + 5;
+        gSpriteEntries[sprite + 2].y = pos.y - 3;
         break;
     }
-    if (t == 0x20)
+    if (phase == 0x20)
         gSpriteEntries[sprite + 2].unk21 = (gSpriteEntries[sprite + 2].unk21 + 1) & 3;
 
     if (gLegWalkFrames[gSpriteEntries[sprite + 3].unk21]) {
@@ -592,12 +593,12 @@ void modify_medapart_quantity(u32 id, u32 kind, u32 byte, u32 subtract, u32 n) {
         gMedapartInventory[kind * 240 + id * 2 + byte] -= n;
     } else {
         u8 *inv = gMedapartInventory;
-        u8 *p = &inv[kind * 240 + id * 2 + byte];
-        u32 v = *p + n;
+        u8 *qty_ptr = &inv[kind * 240 + id * 2 + byte];
+        u32 qty = *qty_ptr + n;
 
-        if (v > 99)
-            v = 99;
-        *p = v;
+        if (qty > 99)
+            qty = 99;
+        *qty_ptr = qty;
     }
 }
 
@@ -844,19 +845,19 @@ void clear_bg_scroll(void) {
 
 void update_scroll_movement_a(void) {
     vu8 *acc;
-    u32 t;
+    u32 step;
 
     if (gBattleWork.battlefieldParams[0] == 0)
         return;
     acc = &gBattleWork.battlefieldParams[6];
     *acc = *(vu8 *)&gBattleWork.battlefieldParams[2] + *acc;
-    if ((t = *acc >> 2) == 0)
+    if ((step = *acc >> 2) == 0)
         return;
-    gBattleWork.battlefieldParams[7] = t;
+    gBattleWork.battlefieldParams[7] = step;
     {
-        u32 v = *acc;
+        u32 acc_val = *acc;
         register u32 mask asm("r1") = 3; // pinned: the original loads the byte into r0, the mask into r1
-        *acc = v & mask;
+        *acc = acc_val & mask;
     }
     if (gBattleWork.battlefieldParams[1] & 1) {
         switch (gBattleWork.battlefieldParams[0]) {
@@ -920,19 +921,19 @@ void load_battle_script_entry_b(void) {
 
 static void update_scroll_movement_b(void) {
     vu8 *acc;
-    u32 t;
+    u32 step;
 
     if (gBattleWork.battlefieldEffect[0] == 0)
         return;
     acc = &gBattleWork.battlefieldEffect[6];
     *acc = *(vu8 *)&gBattleWork.battlefieldEffect[2] + *acc;
-    if ((t = *acc >> 2) == 0)
+    if ((step = *acc >> 2) == 0)
         return;
-    gBattleWork.battlefieldEffect[7] = t;
+    gBattleWork.battlefieldEffect[7] = step;
     {
-        u32 v = *acc;
+        u32 acc_val = *acc;
         register u32 mask asm("r1") = 3; // pinned: the original loads the byte into r0, the mask into r1
-        *acc = v & mask;
+        *acc = acc_val & mask;
     }
     if (gBattleWork.battlefieldEffect[1] & 1) {
         switch (gBattleWork.battlefieldEffect[0]) {
@@ -1036,25 +1037,25 @@ void battle_vblank_update_bg(void) {
 
 void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, void *dst) {
     u32 i, j;
-    u16 *d = dst;
+    u16 *out = dst;
     u16 *base = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
 
     for (j = 0; j < h; j++) {
-        u16 *p = base + j * 32;
+        u16 *vram = base + j * 32;
         for (i = 0; i < w; i++)
-            *d++ = *p++;
+            *out++ = *vram++;
     }
 }
 
 void write_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, const void *src) {
     u32 i, j;
-    const u16 *s = src;
+    const u16 *in = src;
     u16 *base = (u16 *)(VRAM + ((bgcnt >> 8) & 0x1F) * 0x800) + x + y * 32;
 
     for (j = 0; j < h; j++) {
-        u16 *p = base + j * 32;
+        u16 *vram = base + j * 32;
         for (i = 0; i < w; i++)
-            *p++ = *s++;
+            *vram++ = *in++;
     }
 }
 
@@ -1063,12 +1064,12 @@ void decompress_to_ewram_27000(const u8 *src) {
 }
 
 void race_enter_team_select(void) {
-    u32 a = 0;
-    u32 b;
+    u32 zero_obj = 0;
+    u32 zero_bg;
 
-    CpuFastSet(&a, (void *)OBJ_PLTT, 0x01000080);
-    b = 0;
-    CpuFastSet(&b, (void *)PLTT, 0x01000080);
+    CpuFastSet(&zero_obj, (void *)OBJ_PLTT, 0x01000080);
+    zero_bg = 0;
+    CpuFastSet(&zero_bg, (void *)PLTT, 0x01000080);
     mem_fill8(&gGameWork.medabotsMode, 0x14, 0);
     gGameWork.medabotsMode = 3;
     gBattleWork.teamPicks[0] = 0;
@@ -1102,7 +1103,7 @@ void update_sprite_animation_position(u32 slot) {
 u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty) {
     s32 sx, sy;
     float dx, dy;
-    s32 r;
+    s32 ratio;
 
     if (x <= tx) {
         sx = 0;
@@ -1128,17 +1129,17 @@ u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty) {
             if (dx == dy)
                 return 0xC;
             if (dx > dy) {
-                r = (dx + dy * 0.5f) / dy;
-                if (r > 4) {
-                    r = (gFrameCounter & 3) ? 4 : 3;
+                ratio = (dx + dy * 0.5f) / dy;
+                if (ratio > 4) {
+                    ratio = (gFrameCounter & 3) ? 4 : 3;
                 }
-                return 0xC - r;
+                return 0xC - ratio;
             } else {
-                r = (dy + dx * 0.5f) / dx;
-                if (r > 4) {
-                    r = (gFrameCounter & 3) ? 4 : 3;
+                ratio = (dy + dx * 0.5f) / dx;
+                if (ratio > 4) {
+                    ratio = (gFrameCounter & 3) ? 4 : 3;
                 }
-                return r + 0xC;
+                return ratio + 0xC;
             }
         } else if (sy == 1) {
             if (dx == 0)
@@ -1148,17 +1149,17 @@ u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty) {
             if (dx == dy)
                 return 4;
             if (dx > dy) {
-                r = (dx + dy * 0.5f) / dy;
-                if (r > 4) {
-                    r = (gFrameCounter & 3) ? 4 : 3;
+                ratio = (dx + dy * 0.5f) / dy;
+                if (ratio > 4) {
+                    ratio = (gFrameCounter & 3) ? 4 : 3;
                 }
-                return r + 4;
+                return ratio + 4;
             } else {
-                r = (dy + dx * 0.5f) / dx;
-                if (r > 4) {
-                    r = (gFrameCounter & 3) ? 4 : 3;
+                ratio = (dy + dx * 0.5f) / dx;
+                if (ratio > 4) {
+                    ratio = (gFrameCounter & 3) ? 4 : 3;
                 }
-                return 4 - r;
+                return 4 - ratio;
             }
         }
     }
@@ -1171,17 +1172,17 @@ u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty) {
             if (dx == dy)
                 return 0x1C;
             if (dx > dy) {
-                r = (dx + dy * 0.5f) / dy;
-                if (r > 4) {
-                    r = (gFrameCounter & 3) ? 4 : 3;
+                ratio = (dx + dy * 0.5f) / dy;
+                if (ratio > 4) {
+                    ratio = (gFrameCounter & 3) ? 4 : 3;
                 }
-                return 0x1C - r;
+                return 0x1C - ratio;
             } else {
-                r = (dy + dx * 0.5f) / dx;
-                if (r > 4) {
-                    r = (gFrameCounter & 3) ? 4 : 3;
+                ratio = (dy + dx * 0.5f) / dx;
+                if (ratio > 4) {
+                    ratio = (gFrameCounter & 3) ? 4 : 3;
                 }
-                return r + 0x1C;
+                return ratio + 0x1C;
             }
         } else if (sy == 0) {
             if (dx == 0)
@@ -1191,17 +1192,17 @@ u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty) {
             if (dx == dy)
                 return 0x14;
             if (dx > dy) {
-                r = (dx + dy * 0.5f) / dy;
-                if (r > 4) {
-                    r = (gFrameCounter & 3) ? 4 : 3;
+                ratio = (dx + dy * 0.5f) / dy;
+                if (ratio > 4) {
+                    ratio = (gFrameCounter & 3) ? 4 : 3;
                 }
-                return r + 0x14;
+                return ratio + 0x14;
             } else {
-                r = (dy + dx * 0.5f) / dx;
-                if (r > 4) {
-                    r = (gFrameCounter & 3) ? 4 : 3;
+                ratio = (dy + dx * 0.5f) / dx;
+                if (ratio > 4) {
+                    ratio = (gFrameCounter & 3) ? 4 : 3;
                 }
-                return 0x14 - r;
+                return 0x14 - ratio;
             }
         }
     }
@@ -1209,65 +1210,65 @@ u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty) {
 
 void init_scene_buffers_080445F4(void) {
     struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
-    u8 *b;
-    u8 *c;
+    u8 *node_oams;
+    u8 *slots;
     u32 fill;
     u32 fill2;
 
     mem_fill8((u8 *)obj, 0xD0, 0);
-    b = (u8 *)0x020260D0;
-    mem_fill8(b, 0x820, 0);
-    c = (u8 *)0x020268F0;
-    mem_fill8(c, 0x60, 0);
+    node_oams = (u8 *)0x020260D0;
+    mem_fill8(node_oams, 0x820, 0);
+    slots = (u8 *)0x020268F0;
+    mem_fill8(slots, 0x60, 0);
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
+    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slots;
     fill2 = 0x200;
     CpuFastSet(&fill2, gSpriteWork->oamBuf, 0x01000100);
     gSpriteWork->oamCount = 0;
     gSpriteWork->affineIdx = 0;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
-                     (struct SpriteNodeOam *)b);
+                     (struct SpriteNodeOam *)node_oams);
 }
 
 // K&R definitions: the callers were compiled without a prototype (promoted int arguments), and the
 // callee narrows its parameters itself. A prototype with u8 / u16 parameters changes the callers.
-void setup_scene_with_bg_and_sprites(slot, head, rarm, larm, legs, y, x, f, g, h, i, j) u32 slot;
+void setup_scene_with_bg_and_sprites(slot, head, rarm, larm, legs, y, x, depth, pal, bank, step, side) u32 slot;
 u8 head, rarm, larm, legs;
 u16 y, x;
-u32 f;
-u8 g, h, i, j;
+u32 depth;
+u8 pal, bank, step, side;
 {
     u32 flags;
     u32 fill;
 
-    switch (f) {
+    switch (depth) {
     case 0:
-        f = 100;
+        depth = 100;
         break;
     case 1:
-        f = 200;
+        depth = 200;
         break;
     case 2:
-        f = 300;
+        depth = 300;
         break;
     case 3:
-        f = 400;
+        depth = 400;
         break;
     }
-    if (h == 0)
-        h = 1;
+    if (bank == 0)
+        bank = 1;
     else
-        h = 2;
+        bank = 2;
     flags = 0;
-    if (i == 1)
+    if (step == 1)
         flags = 4;
     ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
     setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, head, rarm, larm, legs, (s16)x,
-                               (s16)y, f, g, h | flags, j);
-    if (i == 2) {
+                               (s16)y, depth, pal, bank | flags, side);
+    if (step == 2) {
         fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
         gSpriteWork->oamCount = 0;
@@ -1277,40 +1278,40 @@ u8 g, h, i, j;
 
 // Draws a Medabot sprite (sprite tree slot `slot`) from its four part ids at (x, y); used by the battle close-ups,
 // the status screen and the Medabots screen.
-void draw_medabot_sprite(slot, head, rarm, larm, legs, y, x, f, g, h, i, j, base) u32 slot;
+void draw_medabot_sprite(slot, head, rarm, larm, legs, y, x, depth, pal, bank, step, side, base) u32 slot;
 u8 head, rarm, larm, legs;
 u16 y, x;
-u32 f;
-u8 g, h, i, j, base;
+u32 depth;
+u8 pal, bank, step, side, base;
 {
     u32 flags;
     u32 fill;
 
-    switch (f) {
+    switch (depth) {
     case 0:
-        f = base + 100;
+        depth = base + 100;
         break;
     case 1:
-        f = base + 200;
+        depth = base + 200;
         break;
     case 2:
-        f = base + 300;
+        depth = base + 300;
         break;
     case 3:
-        f = base + 400;
+        depth = base + 400;
         break;
     }
-    if (h == 0)
-        h = 1;
+    if (bank == 0)
+        bank = 1;
     else
-        h = 2;
+        bank = 2;
     flags = 0;
-    if (i == 1)
+    if (step == 1)
         flags = 4;
     ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
     setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, head, rarm, larm, legs, (s16)x,
-                               (s16)y, f, g, h | flags, j);
-    if (i == 2) {
+                               (s16)y, depth, pal, bank | flags, side);
+    if (step == 2) {
         fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
         gSpriteWork->oamCount = 0;
@@ -1318,35 +1319,35 @@ u8 g, h, i, j, base;
     }
 }
 
-void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i) {
+void setup_sprite_animation_entry(u32 slot, u8 id, u8 kind, u16 y, u16 x, u32 depth, u8 pal, u8 bank, u8 step) {
     u32 flags;
     u32 fill;
 
-    switch (f) {
+    switch (depth) {
     case 0:
-        f = 100;
+        depth = 100;
         break;
     case 1:
-        f = 200;
+        depth = 200;
         break;
     case 2:
-        f = 300;
+        depth = 300;
         break;
     case 3:
-        f = 400;
+        depth = 400;
         break;
     }
-    if (h == 0)
-        h = 1;
+    if (bank == 0)
+        bank = 1;
     else
-        h = 2;
+        bank = 2;
     flags = 0;
-    if (i == 1)
+    if (step == 1)
         flags = 4;
-    ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + a * 0x410);
-    draw_medapart_sprite(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, id, kind, (s16)x, (s16)y, f, g,
-                         h | flags);
-    if (i == 2) {
+    ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
+    draw_medapart_sprite(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, id, kind, (s16)x, (s16)y, depth, pal,
+                         bank | flags);
+    if (step == 2) {
         fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
         gSpriteWork->oamCount = 0;
@@ -1354,7 +1355,7 @@ void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8
     }
 }
 
-u32 medabot_pose_anim_step(u32 a0, u32 a1, u32 a2) {
+u32 medabot_pose_anim_step(u32 slot, u32 anim, u32 legs) {
     u32 n;
     u8 *cnt;
     u8 *pos;
@@ -1363,28 +1364,29 @@ u32 medabot_pose_anim_step(u32 a0, u32 a1, u32 a2) {
     register struct SpriteTree *obj asm("r1"); // pinned: the original loads 0x02026000 before 0x020260CE
     // `done` is deliberately uninitialized: the original reads ip when *pos >= n
 
-    a1 = gPoseAnimIds[a1][gLegPartPoseSets[a2]];
+    anim = gPoseAnimIds[anim][gLegPartPoseSets[legs]];
     n = 0;
-    if (gPoseKeyframeEnds[a1][0] != 0) {
+    if (gPoseKeyframeEnds[anim][0] != 0) {
         do {
             n++;
             if (n > 0xFE)
                 break;
-        } while (gPoseKeyframeEnds[a1][n] != 0);
+        } while (gPoseKeyframeEnds[anim][n] != 0);
     }
-    cnt = (u8 *)0x020260CC + a0;
+    cnt = (u8 *)0x020260CC + slot;
     {
         // (*cnt)++ with the zero set between the add and the store
-        u8 c = *cnt + 1;
+        u8 new_cnt = *cnt + 1;
         zero = 0;
-        *cnt = c;
+        *cnt = new_cnt;
     }
     obj = (struct SpriteTree *)0x02026000;
-    pos = (u8 *)0x020260CE + a0;
+    pos = (u8 *)0x020260CE + slot;
     if (*pos < n) {
-        obj->oams = (struct SpriteNodeOam *)(0x020260D0 + a0 * 0x410);
-        done = interpolate_entity_positions((struct InterpEnt *)obj->oams, gPoseKeyframeAngles[a1],
-                                            gPoseKeyframeOffsets[a1], gPoseKeyframeEnds[a1], a1, *cnt, *pos, 0x40, n);
+        obj->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
+        done = interpolate_entity_positions((struct InterpEnt *)obj->oams, gPoseKeyframeAngles[anim],
+                                            gPoseKeyframeOffsets[anim], gPoseKeyframeEnds[anim], anim, *cnt, *pos, 0x40,
+                                            n);
     }
     if (done) {
         if (++(*pos) >= n) {

@@ -6,8 +6,8 @@
 #include "global.h"
 
 // guess: enters one of the link scenes (game mode 2, states 26 / 17 / 16 / 20) from the menus
-void goto_link_scene(u32 a) {
-    switch (a) {
+void goto_link_scene(u32 scene) {
+    switch (scene) {
     case 0:
         link_enter_handshake();
         break;
@@ -236,14 +236,14 @@ struct SpriteAnchorFull {
 
 u32 setup_oam_sprite_entries(struct OamData *oams, void *tiles, void *pal, const struct SpriteDesc *desc,
                              const struct SpriteAnchor *anchor, u8 palNum, u16 tile) {
-    const struct SpriteDesc8 *d;
+    const struct SpriteDesc8 *desc8;
     u16 dims[2];
     u32 n;
     u8 i, j;
 
 #define DESC ((const struct SpriteDesc8 *)desc)
 #define oam ((struct OamFull *)oams)
-#define a ((const struct SpriteAnchorFull *)anchor)
+#define ANCHOR ((const struct SpriteAnchorFull *)anchor)
     n = oam_shape_size_dims(DESC->shape << 14, DESC->size << 30);
     dims[0] = n >> 16;
     dims[1] = n;
@@ -252,26 +252,26 @@ u32 setup_oam_sprite_entries(struct OamData *oams, void *tiles, void *pal, const
         n >>= 1;
     n = n * DESC->w * DESC->h;
     // the copy (assigned here, not at the top) puts the hoisted desc word in the matching spill slot
-    d = DESC;
-    decompress_and_load_sprite_tiles(tiles, d->shape << 14, DESC->size << 30, d->w, DESC->h, DESC->bpp, tile, n,
+    desc8 = DESC;
+    decompress_and_load_sprite_tiles(tiles, desc8->shape << 14, DESC->size << 30, desc8->w, DESC->h, DESC->bpp, tile, n,
                                      (u8 *)0x02030000, 1);
 #undef DESC
     if (pal != NULL)
         CpuSet(pal, (void *)(0x05000200 + palNum * 32), 0x10);
     n = (dims[0] >> 3) * (dims[1] >> 3);
-    for (i = 0; i < d->w; i++) {
-        for (j = 0; j < d->h; j++) {
-            oam->y = a->y + dims[0] * i;
-            oam->affineMode = a->affineMode;
-            oam->objMode = a->objMode;
+    for (i = 0; i < desc8->w; i++) {
+        for (j = 0; j < desc8->h; j++) {
+            oam->y = ANCHOR->y + dims[0] * i;
+            oam->affineMode = ANCHOR->affineMode;
+            oam->objMode = ANCHOR->objMode;
             oam->mosaic = 0;
-            oam->bpp = d->bpp;
-            oam->shape = d->shape;
-            oam->x = a->x + dims[1] * j;
+            oam->bpp = desc8->bpp;
+            oam->shape = desc8->shape;
+            oam->x = ANCHOR->x + dims[1] * j;
             oam->matrixNum = 0;
             oam->hFlip = 0;
             oam->vFlip = 0;
-            oam->size = d->size;
+            oam->size = desc8->size;
             oam->tileNum = tile;
             oam->priority = 0;
             oam->paletteNum = palNum;
@@ -281,17 +281,17 @@ u32 setup_oam_sprite_entries(struct OamData *oams, void *tiles, void *pal, const
     }
     return tile;
 #undef oam
-#undef a
+#undef ANCHOR
 }
 
-u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *b, void *c,
-                             const struct SpriteDesc *desc, const struct SpriteAnchor *e, u8 f, u16 g) {
+u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *tiles, void *pal,
+                             const struct SpriteDesc *desc, const struct SpriteAnchor *anchor, u8 pal_num, u16 tile) {
     obj->oams = oams;
-    obj->unk4 = e;
+    obj->unk4 = anchor;
     obj->w = desc->w;
     obj->h = desc->h;
-    obj->depth = e->unk6;
-    return setup_oam_sprite_entries(oams, b, c, desc, e, f, g);
+    obj->depth = anchor->unk6;
+    return setup_oam_sprite_entries(oams, tiles, pal, desc, anchor, pal_num, tile);
 }
 
 static void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 y, s16 x, s16 depth) {
@@ -312,8 +312,8 @@ static void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 y, s16 
         for (j = 0; j < obj->h; j++) {
             oam->y = y;
             {
-                s32 t = x;
-                oam->x = t;
+                s32 pos_x = x;
+                oam->x = pos_x;
             }
             x += dims[1];
             oam++;
@@ -326,34 +326,34 @@ static void set_oam_sprite_tile_positions(struct SpriteOamList *obj, s16 y, s16 
 static void setup_sprite_from_oam_descriptor(const u32 *src, const struct SpriteDesc *desc, u16 tile, u32 useCpu) {
     u16 dims[2];
     u32 n;
-    const struct SpriteDesc8 *d = (const struct SpriteDesc8 *)desc;
+    const struct SpriteDesc8 *desc8 = (const struct SpriteDesc8 *)desc;
 
-    n = oam_shape_size_dims(d->shape << 14, d->size << 30);
+    n = oam_shape_size_dims(desc8->shape << 14, desc8->size << 30);
     dims[0] = n >> 16;
     dims[1] = n;
     n = dims[0] * dims[1];
-    if (d->bpp == 0)
+    if (desc8->bpp == 0)
         n >>= 1;
-    n = n * d->w * d->h;
-    decompress_and_load_sprite_tiles(src, d->shape << 14, d->size << 30, d->w, d->h, d->bpp, tile, n, (u8 *)0x02030000,
-                                     useCpu);
+    n = n * desc8->w * desc8->h;
+    decompress_and_load_sprite_tiles(src, desc8->shape << 14, desc8->size << 30, desc8->w, desc8->h, desc8->bpp, tile,
+                                     n, (u8 *)0x02030000, useCpu);
 }
 
 static u16 binary_search_sorted_table(struct SortEntry *arr, u16 n, u16 key) {
     u16 lo, hi, mid = 0;
-    s16 v;
+    s16 depth;
 
     if (n != 0) {
         lo = 0;
         hi = n - 1;
         mid = (lo + hi) >> 1;
         while (mid != lo && mid != hi) {
-            v = arr[mid].unk6;
-            if (v == (s16)key)
+            depth = arr[mid].unk6;
+            if (depth == (s16)key)
                 break;
-            if (v < (s16)key)
+            if (depth < (s16)key)
                 lo = mid;
-            if (v > (s16)key)
+            if (depth > (s16)key)
                 hi = mid;
             mid = (lo + hi) >> 1;
         }
@@ -366,11 +366,11 @@ static u16 binary_search_sorted_table(struct SortEntry *arr, u16 n, u16 key) {
 static struct OamFull *sorted_array_insert_shift(struct OamFull *arr, u16 n, u16 shift, s16 key) {
     struct OamFull *dst;
     s32 k;
-    u16 m;
+    u16 count;
 
-    m = n;
-    n = m - 1;
-    if (m != 0) {
+    count = n;
+    n = count - 1;
+    if (count != 0) {
         dst = &arr[n + shift];
         arr = &arr[n];
         k = key;
@@ -501,11 +501,11 @@ static u16 batch_copy_oam_entries_sorted(struct SpriteOamBatch *batch, struct Oa
 
     for (i = 0; i < count; i++) {
         for (j = i + 1; j < count; j++) {
-            struct SpriteOamList *a = batch->lists[i];
-            struct SpriteOamList *b = batch->lists[j];
-            if (a->depth > b->depth) {
-                batch->lists[i] = b;
-                batch->lists[j] = a;
+            struct SpriteOamList *first = batch->lists[i];
+            struct SpriteOamList *second = batch->lists[j];
+            if (first->depth > second->depth) {
+                batch->lists[i] = second;
+                batch->lists[j] = first;
             }
         }
         n += copy_oam_entries_with_priority(batch->lists[i], dst, n, end);
@@ -524,17 +524,17 @@ struct DepthEntry {
 // Sorts arr[lo..n) by depth (exchange sort).
 static void sort_depth_entries(struct DepthEntry *arr, u16 lo, u16 n) {
     s32 i, j;
-    struct DepthEntry *p, *q;
+    struct DepthEntry *cur, *other;
 
     if (n > lo) {
-        p = &arr[lo];
-        for (i = lo; i < n - 1; p++, i++) {
-            q = p;
-            for (j = i; j < n; q++, j++) {
-                if (p->depth > q->depth) {
-                    struct DepthEntry t = *p;
-                    *p = *q;
-                    *q = t;
+        cur = &arr[lo];
+        for (i = lo; i < n - 1; cur++, i++) {
+            other = cur;
+            for (j = i; j < n; other++, j++) {
+                if (cur->depth > other->depth) {
+                    struct DepthEntry swap = *cur;
+                    *cur = *other;
+                    *other = swap;
                 }
             }
         }
@@ -569,23 +569,23 @@ static u32 sprite_pos_on_screen(s32 y, s32 x) {
     return ret;
 }
 
-static u16 copy_sprite_oam_with_vflip(void *a, void *b, u16 c, u32 unused, s8 d, u8 f) {
-    return copy_sprite_oam_entries(a, b, c, d, 0x80, f);
+static u16 copy_sprite_oam_with_vflip(void *list, void *dst, u16 slot, u32 unused, s8 pal, u8 flip) {
+    return copy_sprite_oam_entries(list, dst, slot, pal, 0x80, flip);
 }
 
 // Repositions a sprite object's OAM tiles: mode 0 absolute, 1 relative to its current position, 2 relative to
 // its anchor.
-void move_sprite_object(struct SpriteOamList *obj, s16 a, s16 b, s32 mode) {
+void move_sprite_object(struct SpriteOamList *obj, s16 y, s16 x, s32 mode) {
     if (mode != 0) {
         if (mode == 1) {
-            a += ((struct OamBits *)obj->oams)->y;
-            b += ((struct OamBits *)obj->oams)->x;
+            y += ((struct OamBits *)obj->oams)->y;
+            x += ((struct OamBits *)obj->oams)->x;
         } else {
-            a += (s16)obj->unk4->unk4;
-            b += (s16)obj->unk4->unk2;
+            y += (s16)obj->unk4->unk4;
+            x += (s16)obj->unk4->unk2;
         }
     }
-    set_oam_sprite_tile_positions(obj, a, b, obj->depth);
+    set_oam_sprite_tile_positions(obj, y, x, obj->depth);
 }
 
 static u16 render_sprite_if_visible(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal,
@@ -627,7 +627,7 @@ static u16 render_sprite_if_visible_scaled(struct SpriteOamList *list, void *dst
 // The same plus a rotation matrix (ObjAffineSet, scale 0x100, rotation -angle).
 u16 render_sprite_if_visible_rotated(struct SpriteOamList *list, void *dst, u16 slot, s16 y, s16 x, u16 depth, u8 pal,
                                      u16 angle, u16 *affine, u32 k) {
-    struct ObjAffineDstData d;
+    struct ObjAffineDstData affine_dst;
     u16 n = slot;
 
     if (sprite_pos_on_screen(y, x)) {
@@ -636,16 +636,16 @@ u16 render_sprite_if_visible_rotated(struct SpriteOamList *list, void *dst, u16 
         if (affine != NULL) {
             struct ObjAffineSrcData src = {0x100, 0x100, 0x10000 - angle};
 
-            d = gAffineIdentityRotated;
-            ObjAffineSet(&src, &d, 1, 2);
+            affine_dst = gAffineIdentityRotated;
+            ObjAffineSet(&src, &affine_dst, 1, 2);
             k *= 4;
-            affine[k] = d.pa;
+            affine[k] = affine_dst.pa;
             k++;
-            affine[k] = d.pb;
+            affine[k] = affine_dst.pb;
             k++;
-            affine[k] = d.pc;
+            affine[k] = affine_dst.pc;
             k++;
-            affine[k] = d.pd;
+            affine[k] = affine_dst.pd;
         }
     }
     return n;
@@ -704,14 +704,14 @@ u32 load_sprite_tree_recursive(struct SpriteNodeDesc **nodes, struct SpriteTileR
 
     if (list != NULL) {
         for (i = 0; list[i].node != 0; i++) {
-            struct SpriteTileRef v = list[i];
+            struct SpriteTileRef ref = list[i];
 
-            if ((u8)key == v.node) {
-                frame = (v.frame + (alt & v.alt)) << 1;
+            if ((u8)key == ref.node) {
+                frame = (ref.frame + (alt & ref.alt)) << 1;
                 if (gGameWork.noAffineSprites)
                     affine = 0;
                 else
-                    affine = v.affine;
+                    affine = ref.affine;
                 size = 1;
                 if (i == 0 && desc->frames[frame + 1] != NULL) {
                     size = 0x20;
@@ -856,21 +856,21 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
     s16 z;
     struct SpriteNodeDesc *desc = obj->nodes[node];
     struct SpriteNodeOam *oam = &obj->oams[node];
-    struct ObjAffineDstData d = gAffineIdentity;
+    struct ObjAffineDstData affine_dst = gAffineIdentity;
     struct ObjAffineSrcData src = {0x100, 0x100, -angle};
     s32 offx, offy;
     s32 dx, dy;
     u32 vis;
     u32 found;
     s32 i;
-    struct OamFull *e;
+    struct OamFull *entry;
 
     if (flip) {
-        u8 m = gMirroredPartNode[node];
-        desc = obj->nodes[m];
-        rot = obj->oams[m].unkC;
-        offx = obj->oams[m].unk8;
-        offy = obj->oams[m].unkA;
+        u8 mirror_node = gMirroredPartNode[node];
+        desc = obj->nodes[mirror_node];
+        rot = obj->oams[mirror_node].unkC;
+        offx = obj->oams[mirror_node].unk8;
+        offy = obj->oams[mirror_node].unkA;
     } else {
         rot = oam->unkC;
         offx = oam->unk8;
@@ -881,14 +881,14 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
         z = 0;
     dx = desc->unkC + (offx >> 8);
     dy = desc->unkD + (offy >> 8);
-    ObjAffineSet(&src, &d, 1, 2);
+    ObjAffineSet(&src, &affine_dst, 1, 2);
     if (flip)
         src.rotation = -src.rotation;
-    y += d.pb * dy + d.pd * dx;
+    y += affine_dst.pb * dy + affine_dst.pd * dx;
     if (flip)
-        x -= d.pa * dy + d.pc * dx;
+        x -= affine_dst.pa * dy + affine_dst.pc * dx;
     else
-        x += d.pa * dy + d.pc * dx;
+        x += affine_dst.pa * dy + affine_dst.pc * dx;
 
     if (gGameWork.noAffineSprites)
         vis = 0;
@@ -898,13 +898,13 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
         s32 key = node;
         found = 0;
         for (i = 0; list[i].node != 0; i++) {
-            struct SpriteTileRef v = list[i];
+            struct SpriteTileRef ref = list[i];
 
-            if ((u8)key == v.node) {
+            if ((u8)key == ref.node) {
                 if (gGameWork.noAffineSprites)
                     vis = 0;
                 else
-                    vis = v.affine;
+                    vis = ref.affine;
                 found = 1;
                 break;
             }
@@ -917,22 +917,22 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
                 src.rotation += rot;
             else
                 src.rotation -= rot;
-            ObjAffineSet(&src, &d, 1, 2);
+            ObjAffineSet(&src, &affine_dst, 1, 2);
             oam->oam.matrixNum = ((struct SpriteWork *)obj->unk0)->affineIdx & 7;
             oam->oam.hFlip = (u8)(((struct SpriteWork *)obj->unk0)->affineIdx & 8) >> 3;
             oam->oam.vFlip = (u8)(((struct SpriteWork *)obj->unk0)->affineIdx & 0x10) >> 4;
             dx = ((struct SpriteWork *)obj->unk0)->affineIdx * 4;
             if (flip) {
-                d.pa = -d.pa;
-                d.pb = -d.pb;
+                affine_dst.pa = -affine_dst.pa;
+                affine_dst.pb = -affine_dst.pb;
             }
-            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = d.pa;
+            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = affine_dst.pa;
             dx++;
-            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = d.pb;
+            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = affine_dst.pb;
             dx++;
-            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = d.pc;
+            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = affine_dst.pc;
             dx++;
-            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = d.pd;
+            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = affine_dst.pd;
             if (++((struct SpriteWork *)obj->unk0)->affineIdx > 0x1F)
                 ((struct SpriteWork *)obj->unk0)->affineIdx = 0;
         }
@@ -942,8 +942,8 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
             dx = desc->unk4 - offx;
             dy = desc->unk8 - offy;
 
-            offx = y - (d.pb * dy + d.pd * dx + (offx << 8));
-            offy = x - (d.pa * dy + d.pc * dx + (offy << 8));
+            offx = y - (affine_dst.pb * dy + affine_dst.pd * dx + (offx << 8));
+            offy = x - (affine_dst.pa * dy + affine_dst.pc * dx + (offy << 8));
         } else {
             offx = y - (desc->unk4 << 8);
             if (flip)
@@ -953,21 +953,21 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
         }
         while ((s8)gSpriteWork->oamCount < 0)
             ;
-        e = sorted_array_insert_shift((struct OamFull *)gSpriteWork->oamBuf, gSpriteWork->oamCount++, 1, z);
-        *e = oam->oam;
-        e->affineParam = z;
+        entry = sorted_array_insert_shift((struct OamFull *)gSpriteWork->oamBuf, gSpriteWork->oamCount++, 1, z);
+        *entry = oam->oam;
+        entry->affineParam = z;
         if (!vis && flip)
-            e->hFlip = 1;
-        e->y = offx >> 8;
-        e->x = (offy >> 8) & 0x3FF;
+            entry->hFlip = 1;
+        entry->y = offx >> 8;
+        entry->x = (offy >> 8) & 0x3FF;
         if (depth > 0x17B)
-            e->priority = 3;
+            entry->priority = 3;
         else if (depth > 0x117)
-            e->priority = 2;
+            entry->priority = 2;
         else if (depth > 0xB3)
-            e->priority = 1;
+            entry->priority = 1;
         else
-            e->priority = 0;
+            entry->priority = 0;
     }
     if (obj->nodes[node]->child) {
         if (!vis)
@@ -984,26 +984,26 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
 void draw_medapart_sprite(struct OamData *oam, struct SpriteTree *obj, u32 id, u32 kind, u32 x, u32 y, u32 tile,
                           u32 pal, u32 mode) {
     struct SpriteTileRef *list = NULL;
-    u16 t;
+    u16 vram_tile;
     u32 slot = -(mode & 2) >> 31;
     u32 i;
 
     switch ((s32)kind) {
     case 0:
         list = gHeadPartSpriteNodes[id];
-        t = 0x140;
+        vram_tile = 0x140;
         break;
     case 1:
         list = gRightArmPartSpriteNodes[id];
-        t = 0x1A0;
+        vram_tile = 0x1A0;
         break;
     case 2:
         list = gLeftArmPartSpriteNodes[id];
-        t = 0x1E0;
+        vram_tile = 0x1E0;
         break;
     case 3:
         list = gLegPartSpriteNodes[id];
-        t = 0x220;
+        vram_tile = 0x220;
         break;
     }
 
@@ -1012,8 +1012,8 @@ void draw_medapart_sprite(struct OamData *oam, struct SpriteTree *obj, u32 id, u
         gMedabotSpriteSlots[slot].side = slot;
     } else if (gMedabotSpriteSlots[slot].flags & 2) {
         if (mode & 2)
-            t += 0x160;
-        load_sprite_tree_recursive(obj->nodes, list, list->node, pal, obj->oams, &t, slot);
+            vram_tile += 0x160;
+        load_sprite_tree_recursive(obj->nodes, list, list->node, pal, obj->oams, &vram_tile, slot);
         if (slot) {
             switch (kind) {
             case 1:
@@ -1168,16 +1168,16 @@ void medabot_sprite_slots_update(void) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        u32 v = gMedabotSpriteSlots[i].flags;
-        if (v & 1) {
-            v &= ~1;
-            v |= 2;
-            gMedabotSpriteSlots[i].flags = v;
-        } else if (!(v & 2)) {
-            if (v & 8) {
-                if (v & 4) {
-                    v &= ~4;
-                    gMedabotSpriteSlots[i].flags = v;
+        u32 flags = gMedabotSpriteSlots[i].flags;
+        if (flags & 1) {
+            flags &= ~1;
+            flags |= 2;
+            gMedabotSpriteSlots[i].flags = flags;
+        } else if (!(flags & 2)) {
+            if (flags & 8) {
+                if (flags & 4) {
+                    flags &= ~4;
+                    gMedabotSpriteSlots[i].flags = flags;
                 }
             }
         }
@@ -1190,7 +1190,7 @@ static void load_medabot_part_sprite_tree(u32 unused0, struct SpriteTree *obj, s
                                           u32 side, u32 alt) {
     u16 tile;
     u16 base;
-    struct SpriteTileRef *e;
+    struct SpriteTileRef *arm_nodes;
     s32 i;
 
     base = 0;
@@ -1198,15 +1198,17 @@ static void load_medabot_part_sprite_tree(u32 unused0, struct SpriteTree *obj, s
         base = 0x160;
     switch (kind) {
     case 0: {
-        struct SpriteTileRef *t;
+        struct SpriteTileRef *part_nodes;
 
         tile = base + 0x140;
-        load_sprite_tree_recursive(obj->nodes, t = gHeadPartSpriteNodes[idx], t->node, pal, obj->oams, &tile, alt);
+        load_sprite_tree_recursive(obj->nodes, part_nodes = gHeadPartSpriteNodes[idx], part_nodes->node, pal, obj->oams,
+                                   &tile, alt);
         break;
     }
     case 1:
         tile = base + 0x1A0;
-        load_sprite_tree_recursive(obj->nodes, e = gRightArmPartSpriteNodes[idx], e->node, pal, obj->oams, &tile, alt);
+        load_sprite_tree_recursive(obj->nodes, arm_nodes = gRightArmPartSpriteNodes[idx], arm_nodes->node, pal,
+                                   obj->oams, &tile, alt);
         if (alt) {
             for (i = 0; gRightArmPartSpriteNodes[idx][i].node; i++) {
                 if (!gRightArmPartSpriteNodes[idx][i].alt)
@@ -1218,7 +1220,8 @@ static void load_medabot_part_sprite_tree(u32 unused0, struct SpriteTree *obj, s
         break;
     case 2:
         tile = base + 0x1E0;
-        load_sprite_tree_recursive(obj->nodes, e = gLeftArmPartSpriteNodes[idx], e->node, pal, obj->oams, &tile, alt);
+        load_sprite_tree_recursive(obj->nodes, arm_nodes = gLeftArmPartSpriteNodes[idx], arm_nodes->node, pal,
+                                   obj->oams, &tile, alt);
         if (alt) {
             for (i = 0; gLeftArmPartSpriteNodes[idx][i].node; i++) {
                 if (!gLeftArmPartSpriteNodes[idx][i].alt)
@@ -1229,10 +1232,11 @@ static void load_medabot_part_sprite_tree(u32 unused0, struct SpriteTree *obj, s
         }
         break;
     case 3: {
-        struct SpriteTileRef *t;
+        struct SpriteTileRef *part_nodes;
 
         tile = base + 0x220;
-        load_sprite_tree_recursive(obj->nodes, t = gLegPartSpriteNodes[idx], t->node, pal, obj->oams, &tile, alt);
+        load_sprite_tree_recursive(obj->nodes, part_nodes = gLegPartSpriteNodes[idx], part_nodes->node, pal, obj->oams,
+                                   &tile, alt);
         break;
     }
     }

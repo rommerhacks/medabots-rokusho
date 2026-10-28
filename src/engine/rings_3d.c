@@ -2,71 +2,71 @@
 // sprites (ring_points_place_on_*, update_scene_animation_frame) drawn by the scenes in code_08067160.c.
 #include "global.h"
 
-static void compute_difference_div3(s32 *a, s32 *b, s32 *c, s32 *d) {
-    s32 x, y, t;
+static void compute_difference_div3(s32 *start, s32 *end, s32 *third_pt, s32 *two_thirds_pt) {
+    s32 x, y, end_coord;
 
-    t = b[0];
-    x = a[0];
-    c[0] = (t - x) / 3 + x;
-    t = b[1];
-    y = a[1];
-    c[1] = (t - y) / 3 + y;
-    d[0] = (b[0] - x) * 2 / 3 + x;
-    d[1] = (b[1] - y) * 2 / 3 + y;
+    end_coord = end[0];
+    x = start[0];
+    third_pt[0] = (end_coord - x) / 3 + x;
+    end_coord = end[1];
+    y = start[1];
+    third_pt[1] = (end_coord - y) / 3 + y;
+    two_thirds_pt[0] = (end[0] - x) * 2 / 3 + x;
+    two_thirds_pt[1] = (end[1] - y) * 2 / 3 + y;
 }
 
-void ring_points_place_on_hexagon(u32 r) {
+void ring_points_place_on_hexagon(u32 radius) {
     s32 pts[7][2];
     s32 out[18][2];
     s32 m1[2];
     s32 m2[2];
-    s32 *p;
-    s32 *q;
-    s32 *o;
+    s32 *vertex;
+    s32 *next;
+    s32 *dst;
     s32 i;
-    s32 a;
+    s32 angle;
 
-    q = pts[0];
+    next = pts[0];
     for (i = 0; i <= 5; i++) {
-        a = (i << 8) / 6;
-        *q++ = gSineTable[a] * r;
-        *q++ = gSineTable[a + 0x40] * r;
+        angle = (i << 8) / 6;
+        *next++ = gSineTable[angle] * radius;
+        *next++ = gSineTable[angle + 0x40] * radius;
     }
-    *q++ = pts[0][0];
-    *q = pts[0][1];
+    *next++ = pts[0][0];
+    *next = pts[0][1];
 
-    p = pts[0];
-    q = pts[1];
-    o = out[0];
+    vertex = pts[0];
+    next = pts[1];
+    dst = out[0];
     for (i = 0; i <= 5; i++) {
-        compute_difference_div3(p, q, m1, m2);
-        *o++ = *p++;
-        *o++ = *p++;
-        *o++ = m1[0];
-        *o++ = m1[1];
-        *o++ = m2[0];
-        *o++ = m2[1];
-        q += 2;
+        compute_difference_div3(vertex, next, m1, m2);
+        *dst++ = *vertex++;
+        *dst++ = *vertex++;
+        *dst++ = m1[0];
+        *dst++ = m1[1];
+        *dst++ = m2[0];
+        *dst++ = m2[1];
+        next += 2;
     }
 
-    o = out[0];
+    dst = out[0];
     for (i = 0; i <= 17; i++) {
-        gMenuWork->ring_points[i].unk2 = *o++ >> 8;
-        gMenuWork->ring_points[i].unk4 = *o++ >> 8;
+        gMenuWork->ring_points[i].unk2 = *dst++ >> 8;
+        gMenuWork->ring_points[i].unk4 = *dst++ >> 8;
         gMenuWork->ring_points[i].unk6 = 0x1E;
     }
 }
 
-static u8 u8_difference_divide(u8 a, u8 b, u8 n) {
-    s32 d = (a - b) / n;
+static u8 u8_difference_divide(u8 target, u8 current, u8 n) {
+    s32 step = (target - current) / n;
 
-    if (d != 0)
-        return b + d;
-    if (a == b)
-        return b;
-    if (a <= b)
-        return b - 1;
-    return b + 1;
+    if (step != 0)
+        return current + step;
+    if (target == current)
+        return current;
+    if (target <= current)
+        return current - 1;
+    return current + 1;
 }
 
 static void copy_block_64bytes(s32 dst[4][4], s32 src[4][4]) {
@@ -78,91 +78,91 @@ static void copy_block_64bytes(s32 dst[4][4], s32 src[4][4]) {
 }
 
 void matrix_set_identity(void) {
-    s32 m[4][4];
+    s32 mat[4][4];
 
-    custom_memset(m, 0, sizeof(m));
-    m[0][0] = 0x100;
-    m[1][1] = 0x100;
-    m[2][2] = 0x100;
-    m[3][3] = 0x100;
-    copy_block_64bytes(gMenuWork->matrix, m);
+    custom_memset(mat, 0, sizeof(mat));
+    mat[0][0] = 0x100;
+    mat[1][1] = 0x100;
+    mat[2][2] = 0x100;
+    mat[3][3] = 0x100;
+    copy_block_64bytes(gMenuWork->matrix, mat);
 }
 
-static void matrix_multiply_4x4_fixed(s32 dst[4][4], s32 a[4][4], s32 b[4][4]) {
+static void matrix_multiply_4x4_fixed(s32 dst[4][4], s32 lhs[4][4], s32 rhs[4][4]) {
     s32 i, j, k;
 
     for (i = 0; i <= 3; i++)
         for (j = 0; j <= 3; j++) {
             dst[i][j] = 0;
             for (k = 0; k <= 3; k++)
-                dst[i][j] += (a[i][k] * b[k][j]) >> 8;
+                dst[i][j] += (lhs[i][k] * rhs[k][j]) >> 8;
         }
 }
 
-static void matrix_scale(s32 s) {
-    s32 m[4][4];
-    s32 t[4][4];
+static void matrix_scale(s32 scale) {
+    s32 scale_mat[4][4];
+    s32 result[4][4];
 
-    custom_memset(m, 0, sizeof(m));
-    m[0][0] = s;
-    m[1][1] = s;
-    m[2][2] = s;
-    m[3][3] = 0x100;
-    matrix_multiply_4x4_fixed(t, m, gMenuWork->matrix);
-    copy_block_64bytes(gMenuWork->matrix, t);
+    custom_memset(scale_mat, 0, sizeof(scale_mat));
+    scale_mat[0][0] = scale;
+    scale_mat[1][1] = scale;
+    scale_mat[2][2] = scale;
+    scale_mat[3][3] = 0x100;
+    matrix_multiply_4x4_fixed(result, scale_mat, gMenuWork->matrix);
+    copy_block_64bytes(gMenuWork->matrix, result);
 }
 
 static void matrix_translate(s32 x, s32 y, s32 z) {
-    s32 m[4][4];
-    s32 t[4][4];
+    s32 trans_mat[4][4];
+    s32 result[4][4];
 
-    custom_memset(m, 0, sizeof(m));
-    m[0][0] = 0x100;
-    m[1][1] = 0x100;
-    m[2][2] = 0x100;
-    m[3][0] = x;
-    m[3][1] = y;
-    m[3][2] = z;
-    m[3][3] = 0x100;
-    matrix_multiply_4x4_fixed(t, gMenuWork->matrix, m);
-    copy_block_64bytes(gMenuWork->matrix, t);
+    custom_memset(trans_mat, 0, sizeof(trans_mat));
+    trans_mat[0][0] = 0x100;
+    trans_mat[1][1] = 0x100;
+    trans_mat[2][2] = 0x100;
+    trans_mat[3][0] = x;
+    trans_mat[3][1] = y;
+    trans_mat[3][2] = z;
+    trans_mat[3][3] = 0x100;
+    matrix_multiply_4x4_fixed(result, gMenuWork->matrix, trans_mat);
+    copy_block_64bytes(gMenuWork->matrix, result);
 }
 
-void matrix_rotate_xyz(s32 a, s32 b, s32 c) {
+void matrix_rotate_xyz(s32 angle_x, s32 angle_y, s32 angle_z) {
     s32 rx[4][4] = {
         {0x100, 0, 0, 0},
-        {0, gSineTable[a + 0x40], gSineTable[a], 0},
-        {0, -gSineTable[a], gSineTable[a + 0x40], 0},
+        {0, gSineTable[angle_x + 0x40], gSineTable[angle_x], 0},
+        {0, -gSineTable[angle_x], gSineTable[angle_x + 0x40], 0},
         {0, 0, 0, 0x100},
     };
     s32 ry[4][4] = {
-        {gSineTable[b + 0x40], 0, -gSineTable[b], 0},
+        {gSineTable[angle_y + 0x40], 0, -gSineTable[angle_y], 0},
         {0, 0x100, 0, 0},
-        {gSineTable[b], 0, gSineTable[b + 0x40], 0},
+        {gSineTable[angle_y], 0, gSineTable[angle_y + 0x40], 0},
         {0, 0, 0, 0x100},
     };
     s32 rz[4][4] = {
-        {gSineTable[c + 0x40], gSineTable[c], 0, 0},
-        {-gSineTable[c], gSineTable[c + 0x40], 0, 0},
+        {gSineTable[angle_z + 0x40], gSineTable[angle_z], 0, 0},
+        {-gSineTable[angle_z], gSineTable[angle_z + 0x40], 0, 0},
         {0, 0, 0x100, 0},
         {0, 0, 0, 0x100},
     };
-    s32 t1[4][4];
-    s32 t2[4][4];
+    s32 rotated_x[4][4];
+    s32 rotated_xy[4][4];
 
-    matrix_multiply_4x4_fixed(t1, rx, gMenuWork->matrix);
-    matrix_multiply_4x4_fixed(t2, ry, t1);
-    matrix_multiply_4x4_fixed(gMenuWork->matrix, rz, t2);
+    matrix_multiply_4x4_fixed(rotated_x, rx, gMenuWork->matrix);
+    matrix_multiply_4x4_fixed(rotated_xy, ry, rotated_x);
+    matrix_multiply_4x4_fixed(gMenuWork->matrix, rz, rotated_xy);
 }
 
 void ring_points_place_on_circle(u16 phase) {
     s32 i;
 
     for (i = 0; i <= 17; i++) {
-        s32 r = gMenuWork->ring_points[i].unk0;
+        s32 radius = gMenuWork->ring_points[i].unk0;
         u32 idx = ((i << 8) / 18 + phase) & 0xFF;
 
-        gMenuWork->ring_points[i].unk8 = (r * gSineTable[idx]) >> 8;
+        gMenuWork->ring_points[i].unk8 = (radius * gSineTable[idx]) >> 8;
         gMenuWork->ring_points[i].unkA = (gMenuWork->ring_points[i].unk0 * gSineTable[idx + 0x40]) >> 8;
     }
 }
@@ -171,28 +171,28 @@ static void ring_points_place_on_circle_b(u16 phase) {
     s32 i;
 
     for (i = 0; i <= 17; i++) {
-        s32 r = gMenuWork->ring_points[i].unk0;
+        s32 radius = gMenuWork->ring_points[i].unk0;
         u32 idx = ((i << 8) / 18 + phase) & 0xFF;
 
-        gMenuWork->ring_points[i].unk8 = (r * gSineTable[idx]) >> 8;
+        gMenuWork->ring_points[i].unk8 = (radius * gSineTable[idx]) >> 8;
         gMenuWork->ring_points[i].unkA = (gMenuWork->ring_points[i].unk0 * gSineTable[idx + 0x40]) >> 8;
     }
 }
 
-static inline s32 half(u8 d) {
-    return d >> 1;
+static inline s32 half(u8 value) {
+    return value >> 1;
 }
-static inline s32 quarter20(u8 c) {
-    return (c >> 2) - 0x14;
+static inline s32 quarter20(u8 value) {
+    return (value >> 2) - 0x14;
 }
 
-static inline void rings_set_radius(u8 *p, u8 *q) {
-    u32 a = *p, b = *q;
-    u8 c = a, d = b;
-    if (c < d)
-        ring_points_place_on_hexagon((c >> 2) + 0x14);
+static inline void rings_set_radius(u8 *counter_ptr, u8 *midpoint_ptr) {
+    u32 counter_word = *counter_ptr, midpoint_word = *midpoint_ptr;
+    u8 counter = counter_word, midpoint = midpoint_word;
+    if (counter < midpoint)
+        ring_points_place_on_hexagon((counter >> 2) + 0x14);
     else
-        ring_points_place_on_hexagon(half(d) - quarter20(c));
+        ring_points_place_on_hexagon(half(midpoint) - quarter20(counter));
 }
 
 // Four rings of 18 sprites rotated in 3-D (matrix_rotate_xyz) around drifting centres
@@ -247,9 +247,9 @@ void update_scene_animation_frame(void) {
     matrix_set_identity();
     gMenuWork->ticks++;
     if ((gMenuWork->ticks & 0xFF) == 0) {
-        s32 r = rng_next_byte() & 0xFF;
-        gMenuWork->ring_center_x[0] = gSineTable[r] * 5 >> 5;
-        gMenuWork->ring_center_y[0] = gSineTable[r + 0x40] * 5 >> 5;
+        s32 angle = rng_next_byte() & 0xFF;
+        gMenuWork->ring_center_x[0] = gSineTable[angle] * 5 >> 5;
+        gMenuWork->ring_center_y[0] = gSineTable[angle + 0x40] * 5 >> 5;
         gMenuWork->ring_center_x[0] += 0x78;
         gMenuWork->ring_center_y[0] += 0x50;
     }
@@ -291,10 +291,10 @@ void update_scene_animation_frame(void) {
         gMenuWork->ring_speeds[2] = 16;
 
     {
-        struct MenuWork *v = gMenuWork;
-        v->ring_angles[0] += v->ring_speeds[0];
-        v->ring_angles[1] += v->ring_speeds[1];
-        v->ring_angles[2] += v->ring_speeds[2];
+        struct MenuWork *work = gMenuWork;
+        work->ring_angles[0] += work->ring_speeds[0];
+        work->ring_angles[1] += work->ring_speeds[1];
+        work->ring_angles[2] += work->ring_speeds[2];
     }
 
     for (i = 0; i <= 0x47; i = n) {
@@ -320,9 +320,9 @@ void update_scene_animation_frame(void) {
         x >>= 8;
         y >>= 8;
         {
-            struct SpriteEntry *b = gSpriteEntries;
+            struct SpriteEntry *sprites = gSpriteEntries;
             n = i + 1;
-            spr = &b[n];
+            spr = &sprites[n];
         }
         k = i / 18 + 1;
         spr->x = w->ring_center_x[k] + x;

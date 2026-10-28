@@ -14,19 +14,19 @@ void message_fill_window_tiles(void) {
 }
 
 void battle_sprite_anim_init(const void *cmds, u8 slot) {
-    const u8 *p;
+    const u8 *cmd;
     u8 i;
     gSpriteEntries[slot].unk20 = 0;
     gSpriteEntries[slot].unk21 = 0;
     gSpriteEntries[slot].unk22 = 0;
     i = 0;
 loop:
-    p = (const u8 *)cmds + i;
-    if (*p > 0xFA) {
+    cmd = (const u8 *)cmds + i;
+    if (*cmd > 0xFA) {
         i += 3;
         goto loop;
     }
-    gSpriteEntries[slot].frame = (p[1] << 8) + p[2];
+    gSpriteEntries[slot].frame = (cmd[1] << 8) + cmd[2];
 }
 
 void process_sprite_anim_commands(const u8 *cmds, u8 slot) {
@@ -72,13 +72,13 @@ void process_sprite_anim_commands(const u8 *cmds, u8 slot) {
     } while (run);
 }
 
-void clear_battle_sprite_slot(u8 a, u8 b) {
+void clear_battle_sprite_slot(u8 first, u8 count) {
     u32 i;
     u32 zero;
 
-    for (i = 0; i < b; i++) {
+    for (i = 0; i < count; i++) {
         zero = 0;
-        CpuFastSet(&zero, &gSpriteEntries[a + i], 0x01000010);
+        CpuFastSet(&zero, &gSpriteEntries[first + i], 0x01000010);
     }
 }
 
@@ -268,19 +268,19 @@ void render_text_string_to_sprites(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 
 }
 
 void divide_by_10000(u8 *out, u32 n) {
-    u8 d[5];
-    vu32 r;
+    u8 digits[5];
+    vu32 remainder;
     u8 i, j, k, started;
 
-    d[0] = n / 10000;
-    r = n - n / 10000 * 10000;
-    d[1] = r / 1000;
-    r = r - r / 1000 * 1000;
-    d[2] = r / 100;
-    r = r - r / 100 * 100;
-    d[3] = r / 10;
-    r = r - r / 10 * 10;
-    d[4] = r;
+    digits[0] = n / 10000;
+    remainder = n - n / 10000 * 10000;
+    digits[1] = remainder / 1000;
+    remainder = remainder - remainder / 1000 * 1000;
+    digits[2] = remainder / 100;
+    remainder = remainder - remainder / 100 * 100;
+    digits[3] = remainder / 10;
+    remainder = remainder - remainder / 10 * 10;
+    digits[4] = remainder;
 
     j = 0;
     started = 0;
@@ -294,21 +294,21 @@ void divide_by_10000(u8 *out, u32 n) {
             k++;
         } else {
             if (i <= 2) {
-                if (d[j] == 0) {
+                if (digits[j] == 0) {
                     if (started) {
-                        out[k] = d[j] + 0x35;
+                        out[k] = digits[j] + 0x35;
                         k++;
                         j++;
                     } else
                         j++;
                 } else {
-                    out[k] = d[j] + 0x35;
+                    out[k] = digits[j] + 0x35;
                     started = 1;
                     k++;
                     j++;
                 }
             } else {
-                out[k] = d[j] + 0x35;
+                out[k] = digits[j] + 0x35;
                 k++;
                 j++;
             }
@@ -321,19 +321,19 @@ void divide_by_10000(u8 *out, u32 n) {
 }
 
 void divide_by_10000_b(u8 *out, u32 n) {
-    u8 d[5];
-    vu32 r;
+    u8 digits[5];
+    vu32 remainder;
     u8 i, j, k, started;
 
-    d[0] = n / 10000;
-    r = n - n / 10000 * 10000;
-    d[1] = r / 1000;
-    r = r - r / 1000 * 1000;
-    d[2] = r / 100;
-    r = r - r / 100 * 100;
-    d[3] = r / 10;
-    r = r - r / 10 * 10;
-    d[4] = r;
+    digits[0] = n / 10000;
+    remainder = n - n / 10000 * 10000;
+    digits[1] = remainder / 1000;
+    remainder = remainder - remainder / 1000 * 1000;
+    digits[2] = remainder / 100;
+    remainder = remainder - remainder / 100 * 100;
+    digits[3] = remainder / 10;
+    remainder = remainder - remainder / 10 * 10;
+    digits[4] = remainder;
 
     j = 0;
     started = 0;
@@ -345,21 +345,21 @@ void divide_by_10000_b(u8 *out, u32 n) {
             k++;
         } else {
             if (i <= 2) {
-                if (d[j] == 0) {
+                if (digits[j] == 0) {
                     if (started) {
-                        out[k] = d[j] + 0x35;
+                        out[k] = digits[j] + 0x35;
                         k++;
                         j++;
                     } else
                         j++;
                 } else {
-                    out[k] = d[j] + 0x35;
+                    out[k] = digits[j] + 0x35;
                     started = 1;
                     k++;
                     j++;
                 }
             } else {
-                out[k] = d[j] + 0x35;
+                out[k] = digits[j] + 0x35;
                 k++;
                 j++;
             }
@@ -372,23 +372,23 @@ void divide_by_10000_b(u8 *out, u32 n) {
 }
 
 void divide_by_100000_08041370(u8 *out, u32 n) {
-    u8 d[6];
-    vu32 r;
+    u8 digits[6];
+    vu32 remainder;
     u8 i, k, started;
 
-    d[0] = n / 100000;
-    r = n - n / 100000 * 100000;
-    d[1] = r / 10000;
-    r = r - n / 10000 * 10000;
-    d[2] = r / 1000;
-    r = r - r / 1000 * 1000;
-    d[3] = r / 100;
-    r = r - r / 100 * 100;
-    d[4] = r / 10;
-    r = r - r / 10 * 10;
-    d[5] = r;
+    digits[0] = n / 100000;
+    remainder = n - n / 100000 * 100000;
+    digits[1] = remainder / 10000;
+    remainder = remainder - n / 10000 * 10000;
+    digits[2] = remainder / 1000;
+    remainder = remainder - remainder / 1000 * 1000;
+    digits[3] = remainder / 100;
+    remainder = remainder - remainder / 100 * 100;
+    digits[4] = remainder / 10;
+    remainder = remainder - remainder / 10 * 10;
+    digits[5] = remainder;
 
-    if (d[0] != 0) {
+    if (digits[0] != 0) {
         out[0] = 5;
         out[1] = 0x12;
         out[2] = 0x12;
@@ -402,18 +402,18 @@ void divide_by_100000_08041370(u8 *out, u32 n) {
     k = 0;
     for (i = 0; i < 6; i++) {
         if (i <= 4) {
-            if (d[i] == 0) {
+            if (digits[i] == 0) {
                 if (started) {
-                    out[k] = d[i] + 0x35;
+                    out[k] = digits[i] + 0x35;
                     k++;
                 }
             } else {
-                out[k] = d[i] + 0x35;
+                out[k] = digits[i] + 0x35;
                 started = 1;
                 k++;
             }
         } else {
-            out[k] = d[i] + 0x35;
+            out[k] = digits[i] + 0x35;
             k++;
         }
     }
@@ -421,23 +421,23 @@ void divide_by_100000_08041370(u8 *out, u32 n) {
 }
 
 void divide_by_100000_b(u8 *buf, u32 value, u32 tile) {
-    u8 d[6];
-    vu32 r;
+    u8 digits[6];
+    vu32 remainder;
     u8 i, k, started;
 
-    d[0] = value / 100000;
-    r = value - value / 100000 * 100000;
-    d[1] = r / 10000;
-    r = r - value / 10000 * 10000;
-    d[2] = r / 1000;
-    r = r - r / 1000 * 1000;
-    d[3] = r / 100;
-    r = r - r / 100 * 100;
-    d[4] = r / 10;
-    r = r - r / 10 * 10;
-    d[5] = r;
+    digits[0] = value / 100000;
+    remainder = value - value / 100000 * 100000;
+    digits[1] = remainder / 10000;
+    remainder = remainder - value / 10000 * 10000;
+    digits[2] = remainder / 1000;
+    remainder = remainder - remainder / 1000 * 1000;
+    digits[3] = remainder / 100;
+    remainder = remainder - remainder / 100 * 100;
+    digits[4] = remainder / 10;
+    remainder = remainder - remainder / 10 * 10;
+    digits[5] = remainder;
 
-    if (d[0] != 0) {
+    if (digits[0] != 0) {
         buf[0] = 5;
         buf[1] = 0x12;
         buf[2] = 0x12;
@@ -451,18 +451,18 @@ void divide_by_100000_b(u8 *buf, u32 value, u32 tile) {
     k = 0;
     for (i = 0; i <= 5; i++) {
         if (i <= 4) {
-            if (d[i] == 0) {
+            if (digits[i] == 0) {
                 if (started) {
-                    buf[k] = d[i] + tile;
+                    buf[k] = digits[i] + tile;
                     k++;
                 }
             } else {
-                buf[k] = d[i] + tile;
+                buf[k] = digits[i] + tile;
                 started = 1;
                 k++;
             }
         } else {
-            buf[k] = d[i] + tile;
+            buf[k] = digits[i] + tile;
             k++;
         }
     }

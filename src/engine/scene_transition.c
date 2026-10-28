@@ -7,19 +7,19 @@ void dispatch_game_mode_handler(void) {
     gGameStateHandlers[gGameState]();
 }
 
-void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c) {
+void setup_screen_transition_effect_080682CC(u8 step, u8 frames_per_level, u16 fade_color) {
     u8 tiles[0x80];
     u16 map[0x280];
     u16 pal[0x200];
     int i;
 
     gSceneStepFrames = 0;
-    gTransitionFadeColor = c;
-    gSceneStep = a;
-    gTransitionFramesPerLevel = b;
-    if (b == 0)
+    gTransitionFadeColor = fade_color;
+    gSceneStep = step;
+    gTransitionFramesPerLevel = frames_per_level;
+    if (frames_per_level == 0)
         gTransitionFramesPerLevel = 1;
-    switch (a) {
+    switch (step) {
     case 1:
         REG_BLDCNT = 0xBF;
         REG_BLDY = 0x10;
@@ -47,33 +47,33 @@ void setup_screen_transition_effect_080682CC(u8 a, u8 b, u16 c) {
         }
         for (i = 0; i < 15; i++) {
             int j = gRandomBytes[(gFrameCounter + i) & 0xFF] % (16 - i) + i;
-            u16 tmp = gTransitionWipeRows[i];
+            u16 swap = gTransitionWipeRows[i];
             gTransitionWipeRows[i] = gTransitionWipeRows[j];
-            gTransitionWipeRows[j] = tmp;
+            gTransitionWipeRows[j] = swap;
         }
         break;
     case 4:
         gTransitionSourcePalette = gPaletteBackup;
         DmaSet(3, PLTT, gPaletteBackup, 0x80000200);
         for (i = 0; i < 0x200; i++)
-            pal[i] = c;
+            pal[i] = fade_color;
         DmaSet(3, pal, PLTT, 0x84000100);
         break;
     }
 }
 
-void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c) {
+void setup_screen_transition_effect_080684F0(u8 step, u8 frames_per_level, u16 fade_color) {
     u8 tiles[0x80];
     u16 map[0x280];
     int i;
 
-    gSceneStepFrames = b;
-    gTransitionFadeColor = c;
-    gSceneStep = a;
-    gTransitionFramesPerLevel = b;
-    if (b == 0)
+    gSceneStepFrames = frames_per_level;
+    gTransitionFadeColor = fade_color;
+    gSceneStep = step;
+    gTransitionFramesPerLevel = frames_per_level;
+    if (frames_per_level == 0)
         gTransitionFramesPerLevel = 1;
-    switch (a) {
+    switch (step) {
     case 1:
         REG_BLDCNT = 0xBF;
         break;
@@ -98,9 +98,9 @@ void setup_screen_transition_effect_080684F0(u8 a, u8 b, u16 c) {
         }
         for (i = 0; i < 15; i++) {
             int j = gRandomBytes[(gFrameCounter + i) & 0xFF] % (16 - i) + i;
-            u16 tmp = gTransitionWipeRows[i];
+            u16 swap = gTransitionWipeRows[i];
             gTransitionWipeRows[i] = gTransitionWipeRows[j];
-            gTransitionWipeRows[j] = tmp;
+            gTransitionWipeRows[j] = swap;
         }
         break;
     case 4:
@@ -141,36 +141,36 @@ bool32 scene_step_none(void) {
 }
 
 bool32 scene_step_fade_in_bldy(void) {
-    s32 *c = &gSceneStepFrames;
+    s32 *frames_ptr = &gSceneStepFrames;
     u8 *np = &gTransitionFramesPerLevel;
     u8 n = *np;
-    s32 t = *c;
-    if (t % n == 0)
-        REG_BLDY = 16 - t / n;
-    if (*c == *np * 16)
+    s32 frame = *frames_ptr;
+    if (frame % n == 0)
+        REG_BLDY = 16 - frame / n;
+    if (*frames_ptr == *np * 16)
         return TRUE;
     return FALSE;
 }
 
 bool32 scene_step_wipe_clear_bg0(void) {
     u16 zero = 0;
-    s32 *c;
+    s32 *frames_ptr;
     u8 *np;
-    s32 t;
+    s32 frame;
     REG_DISPCNT |= 0x100;
-    c = &gSceneStepFrames;
+    frames_ptr = &gSceneStepFrames;
     np = &gTransitionFramesPerLevel;
     {
         u8 n = *np;
-        t = *c;
-        if (t % n == 0) {
-            DmaSet(3, &zero, gTransitionWipeRows[t / *np] + 0x0600C000, 0x80000001);
-            DmaSet(3, &zero, gTransitionWipeRows[t / *np] + 0x0600C004, 0x80000001);
-            DmaSet(3, &zero, gTransitionWipeRows[t / *np] + 0x0600C008, 0x80000001);
-            DmaSet(3, &zero, gTransitionWipeRows[t / *np] + 0x0600C00C, 0x80000001);
+        frame = *frames_ptr;
+        if (frame % n == 0) {
+            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + 0x0600C000, 0x80000001);
+            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + 0x0600C004, 0x80000001);
+            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + 0x0600C008, 0x80000001);
+            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + 0x0600C00C, 0x80000001);
         }
     }
-    if (*c == *np * 16) {
+    if (*frames_ptr == *np * 16) {
         REG_DISPCNT &= 0xFEFF;
         return TRUE;
     }
@@ -178,15 +178,15 @@ bool32 scene_step_wipe_clear_bg0(void) {
 }
 
 bool32 scene_step_palette_fade_in(void) {
-    s32 *c = &gSceneStepFrames;
+    s32 *frames_ptr = &gSceneStepFrames;
     s32 n = gTransitionFramesPerLevel;
-    s32 m = n * 32;
-    s32 t = *c;
-    if (t == m)
+    s32 end_frame = n * 32;
+    s32 frame = *frames_ptr;
+    if (frame == end_frame)
         return TRUE;
-    if (t % n == 0) {
+    if (frame % n == 0) {
         int i, k, inv;
-        k = t / n;
+        k = frame / n;
         inv = 0x20 - k;
         for (i = 0; i < 0x200; i++) {
             gPaletteBuffer[i] =
@@ -200,47 +200,47 @@ bool32 scene_step_palette_fade_in(void) {
 }
 
 bool32 scene_step_fade_out_bldy(void) {
-    s32 *c = &gSceneStepFrames;
+    s32 *frames_ptr = &gSceneStepFrames;
     u8 *np = &gTransitionFramesPerLevel;
     u8 n = *np;
-    s32 t = *c;
-    if (t % n == 0)
-        REG_BLDY = t / n;
-    if (*c == *np * 16)
+    s32 frame = *frames_ptr;
+    if (frame % n == 0)
+        REG_BLDY = frame / n;
+    if (*frames_ptr == *np * 16)
         return TRUE;
     return FALSE;
 }
 
 bool32 scene_step_wipe_fill_bg0(void) {
     u16 fill = 0x1111;
-    s32 *c;
+    s32 *frames_ptr;
     u8 *np;
-    c = &gSceneStepFrames;
-    if (*c == 0)
+    frames_ptr = &gSceneStepFrames;
+    if (*frames_ptr == 0)
         REG_DISPCNT |= 0x100;
     np = &gTransitionFramesPerLevel;
-    if (*c % *np == 0) {
-        DmaSet(3, &fill, gTransitionWipeRows[*c / *np] + 0x0600C000, 0x80000001);
-        DmaSet(3, &fill, gTransitionWipeRows[*c / *np] + 0x0600C004, 0x80000001);
-        DmaSet(3, &fill, gTransitionWipeRows[*c / *np] + 0x0600C008, 0x80000001);
-        DmaSet(3, &fill, gTransitionWipeRows[*c / *np] + 0x0600C00C, 0x80000001);
+    if (*frames_ptr % *np == 0) {
+        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + 0x0600C000, 0x80000001);
+        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + 0x0600C004, 0x80000001);
+        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + 0x0600C008, 0x80000001);
+        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + 0x0600C00C, 0x80000001);
     }
-    if (*c == *np * 16)
+    if (*frames_ptr == *np * 16)
         return TRUE;
     return FALSE;
 }
 
 bool32 scene_step_palette_fade_out(void) {
-    s32 *c = &gSceneStepFrames;
+    s32 *frames_ptr = &gSceneStepFrames;
     s32 n = gTransitionFramesPerLevel;
-    s32 m = n * 32;
-    s32 t = *c;
-    if (t == m)
+    s32 end_frame = n * 32;
+    s32 frame = *frames_ptr;
+    if (frame == end_frame)
         return TRUE;
-    if (t % n == 0) {
+    if (frame % n == 0) {
         int i, k, inv;
         u16 *dst;
-        k = t / n;
+        k = frame / n;
         inv = 0x20 - k;
         if (k <= 0) {
             DmaSet(3, PLTT, gTransitionSourcePalette, 0x84000100);
