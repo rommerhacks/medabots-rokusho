@@ -20,7 +20,7 @@ void draw_bot_status_panel(u32 bot);
 void target_arrows_init(u32 bot);
 u32 target_arrows_slide(u32 bot);
 void target_arrows_animate(u32 bot);
-// Clear the step state of target_panels_show / miss_popup_run (unk9C) and of battle_message_show (unkA1).
+// Clear the step state of target_panels_show / miss_popup_run (substep) and of battle_message_show (messageStep).
 void battle_substeps_reset(void);
 void battle_message_reset(void);
 void clear_battle_ui_tilemaps(void);
@@ -35,7 +35,7 @@ u32 mf_charge_sparkles_update(u32 bot);
 // End of a Medabot's action: unkDE / unkDF = chosen part and its skill, clears the per-turn part and defence
 // state, then restore_changed_part.
 void battle_action_cleanup(u32 bot);
-// Writes the part saved by a Change skill (gBattleWork.unk11C, flag unk118) back into the acting Medabot's
+// Writes the part saved by a Change skill (gBattleWork.savedPart, flag partChanged) back into the acting Medabot's
 // part unkA7 and reloads the part sprites.
 void restore_changed_part(u32 bot);
 

@@ -915,70 +915,70 @@ void battle_bg_scroll_vblank(void) {
 }
 
 void load_battle_script_entry_b(void) {
-    memcpy_bytes_0803F63C(gBattlefieldEffectParams[gBattleWork.battlefield], gBattleWork.unk74, 8);
+    memcpy_bytes_0803F63C(gBattlefieldEffectParams[gBattleWork.battlefield], gBattleWork.battlefieldEffect, 8);
 }
 
 static void update_scroll_movement_b(void) {
     vu8 *acc;
     u32 t;
 
-    if (gBattleWork.unk74[0] == 0)
+    if (gBattleWork.battlefieldEffect[0] == 0)
         return;
-    acc = &gBattleWork.unk74[6];
-    *acc = *(vu8 *)&gBattleWork.unk74[2] + *acc;
+    acc = &gBattleWork.battlefieldEffect[6];
+    *acc = *(vu8 *)&gBattleWork.battlefieldEffect[2] + *acc;
     if ((t = *acc >> 2) == 0)
         return;
-    gBattleWork.unk74[7] = t;
+    gBattleWork.battlefieldEffect[7] = t;
     {
         u32 v = *acc;
         register u32 mask asm("r1") = 3; // pinned: the original loads the byte into r0, the mask into r1
         *acc = v & mask;
     }
-    if (gBattleWork.unk74[1] & 1) {
-        switch (gBattleWork.unk74[0]) {
+    if (gBattleWork.battlefieldEffect[1] & 1) {
+        switch (gBattleWork.battlefieldEffect[0]) {
         case 1:
-            gBg2Scroll.y += gBattleWork.unk74[7];
+            gBg2Scroll.y += gBattleWork.battlefieldEffect[7];
             break;
         case 2:
-            gBg3Scroll.y += gBattleWork.unk74[7];
+            gBg3Scroll.y += gBattleWork.battlefieldEffect[7];
             break;
         }
     }
-    if (gBattleWork.unk74[1] & 2) {
-        switch (gBattleWork.unk74[0]) {
+    if (gBattleWork.battlefieldEffect[1] & 2) {
+        switch (gBattleWork.battlefieldEffect[0]) {
         case 1:
-            gBg2Scroll.y -= gBattleWork.unk74[7];
+            gBg2Scroll.y -= gBattleWork.battlefieldEffect[7];
             break;
         case 2:
-            gBg3Scroll.y -= gBattleWork.unk74[7];
+            gBg3Scroll.y -= gBattleWork.battlefieldEffect[7];
             break;
         }
     }
-    if (gBattleWork.unk74[1] & 4) {
-        switch (gBattleWork.unk74[0]) {
+    if (gBattleWork.battlefieldEffect[1] & 4) {
+        switch (gBattleWork.battlefieldEffect[0]) {
         case 1:
-            gBg2Scroll.x += gBattleWork.unk74[7];
+            gBg2Scroll.x += gBattleWork.battlefieldEffect[7];
             break;
         case 2:
-            gBg3Scroll.x += gBattleWork.unk74[7];
+            gBg3Scroll.x += gBattleWork.battlefieldEffect[7];
             break;
         }
     }
-    if (gBattleWork.unk74[1] & 8) {
-        switch (gBattleWork.unk74[0]) {
+    if (gBattleWork.battlefieldEffect[1] & 8) {
+        switch (gBattleWork.battlefieldEffect[0]) {
         case 1:
-            gBg2Scroll.x -= gBattleWork.unk74[7];
+            gBg2Scroll.x -= gBattleWork.battlefieldEffect[7];
             break;
         case 2:
-            gBg3Scroll.x -= gBattleWork.unk74[7];
+            gBg3Scroll.x -= gBattleWork.battlefieldEffect[7];
             break;
         }
     }
 }
 
 void apply_battle_blend_effect_b(void) {
-    if (gBattleWork.unk74[3]) {
-        REG_BLDALPHA = (gBattleWork.unk74[4] << 8) | gBattleWork.unk74[5];
+    if (gBattleWork.battlefieldEffect[3]) {
+        REG_BLDALPHA = (gBattleWork.battlefieldEffect[4] << 8) | gBattleWork.battlefieldEffect[5];
         REG_BLDY = 0;
         REG_BLDCNT = 0x1844;
     } else

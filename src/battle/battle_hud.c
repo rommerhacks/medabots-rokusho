@@ -45,7 +45,7 @@ void get_bot_part_effective_values(u32 bot, u8 *out) {
 }
 
 void load_bot_part_sprite(u32 rec) {
-    u8 *p = gBattleWork.unk64;
+    u8 *p = gBattleWork.partIds;
     get_bot_part_effective_values(rec, p);
     decompress_sprite_to_vram_08042D94(p[0], p[1], p[2], p[3], rec);
 }
@@ -71,7 +71,7 @@ u32 bot_sprite_is_flipped(u32 rec) {
 }
 
 static void init_battle_bot_sprite(u32 rec, u32 x, u32 y) {
-    u8 *p = gBattleWork.unk64;
+    u8 *p = gBattleWork.partIds;
     u32 flip;
     get_bot_part_effective_values(rec, p);
     flip = bot_sprite_is_flipped(rec);
@@ -92,7 +92,7 @@ void setup_all_battle_bot_sprite_positions(void) {
 }
 
 void setup_battle_bot_sprite_group(u32 rec, u32 x, u32 y) {
-    u8 *p = gBattleWork.unk64;
+    u8 *p = gBattleWork.partIds;
     u32 flip;
     get_bot_part_effective_values(rec, p);
     flip = bot_sprite_is_flipped(rec);

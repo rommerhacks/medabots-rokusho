@@ -1907,9 +1907,9 @@ static void medal_skill_redraw(void) {
 void medal_rotation_store_to_battle_bot(void) {
     u32 i;
 
-    gBattleBots[gBattleWork.unk80].medal.rotationLen = gMedals[gGameWork.shownId].rotationLen;
+    gBattleBots[gBattleWork.commandBot].medal.rotationLen = gMedals[gGameWork.shownId].rotationLen;
     for (i = 0; i < 8; i++)
-        gBattleBots[gBattleWork.unk80].medal.rotation[i] = gMedals[gGameWork.shownId].rotation[i];
+        gBattleBots[gBattleWork.commandBot].medal.rotation[i] = gMedals[gGameWork.shownId].rotation[i];
 }
 
 static void increment_medal_level_on_input(void) {

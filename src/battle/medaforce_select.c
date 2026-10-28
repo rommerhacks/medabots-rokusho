@@ -68,12 +68,12 @@ void mf_menu_slide_bg1(void) {
 
 // guess: starts on the slot of the Medaforce used last (action).
 void mf_menu_init_cursor(void) {
-    u32 v = gBattleBots[gBattleWork.unk80].chosenAction;
+    u32 v = gBattleBots[gBattleWork.commandBot].chosenAction;
     if (v <= 3)
         v = 0;
     else
         v -= 5;
-    gBattleWork.unk82 = v;
+    gBattleWork.partCursor = v;
 }
 
 void mf_menu_init_center_icon(void) {
@@ -129,29 +129,29 @@ void mf_menu_init_right_icon(u32 a) {
 // Name box of the selected slot: "Charge MF" for slot 0, else the Medaforce name, blank while unlearned.
 void mf_menu_draw_medaforce_name(void) {
     disable_sprites(0x14, 16);
-    switch (gBattleWork.unk82) {
+    switch (gBattleWork.partCursor) {
     case 0:
         memcpy_bytes_08041D04(gBattleMenuTexts[3], gGameWork.textBuf, 14);
         break;
     case 1:
-        if (gBattleBots[gBattleWork.unk80].medal.level > 9) {
-            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
+        if (gBattleBots[gBattleWork.commandBot].medal.level > 9) {
+            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.commandBot].medal.graphicId * 3,
                                   &gGameWork.partAbility, 3);
             memcpy_bytes_0803F63C((const void *)gMedaforceNames[gGameWork.partAbility], gGameWork.textBuf, 17);
         } else
             fill_text_blank(gGameWork.textBuf, 13);
         break;
     case 2:
-        if (gBattleBots[gBattleWork.unk80].medal.level > 29) {
-            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
+        if (gBattleBots[gBattleWork.commandBot].medal.level > 29) {
+            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.commandBot].medal.graphicId * 3,
                                   &gGameWork.partAbility, 3);
             memcpy_bytes_0803F63C((const void *)gMedaforceNames[gGameWork.partSkill], gGameWork.textBuf, 17);
         } else
             fill_text_blank(gGameWork.textBuf, 13);
         break;
     case 3:
-        if (gBattleBots[gBattleWork.unk80].medal.level > 59) {
-            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
+        if (gBattleBots[gBattleWork.commandBot].medal.level > 59) {
+            memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.commandBot].medal.graphicId * 3,
                                   &gGameWork.partAbility, 3);
             memcpy_bytes_0803F63C((const void *)gMedaforceNames[gGameWork.partSkillType], gGameWork.textBuf, 17);
         } else
@@ -168,17 +168,17 @@ void mf_menu_draw_status(u32 a) {
     u8 blank = 0;
 
     disable_sprites(0x24, 13);
-    switch (gBattleWork.unk82) {
+    switch (gBattleWork.partCursor) {
     case 0:
         fill_text_blank(gGameWork.textBuf, 13);
         blank = 1;
         break;
     case 1:
 
-        if (gBattleBots[gBattleWork.unk80].medal.level > 9) {
+        if (gBattleBots[gBattleWork.commandBot].medal.level > 9) {
             if (gBattleWork.medaforceBlocked == 0) {
-                if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50) {
-                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
+                if (gBattleBots[gBattleWork.commandBot].medaforceGauge == 0x50) {
+                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.commandBot].medal.graphicId * 3,
                                           &gGameWork.partAbility, 3);
                     memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partAbility * 6, gGameWork.medalGfxRecord, 6);
                     memcpy_bytes_0803F63C((const void *)gSkillTypeNames[gGameWork.medalGfxRecord[1]], gGameWork.textBuf,
@@ -199,10 +199,10 @@ void mf_menu_draw_status(u32 a) {
         break;
     case 2:
 
-        if (gBattleBots[gBattleWork.unk80].medal.level > 29) {
+        if (gBattleBots[gBattleWork.commandBot].medal.level > 29) {
             if (gBattleWork.medaforceBlocked == 0) {
-                if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50) {
-                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
+                if (gBattleBots[gBattleWork.commandBot].medaforceGauge == 0x50) {
+                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.commandBot].medal.graphicId * 3,
                                           &gGameWork.partAbility, 3);
                     memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partSkill * 6, gGameWork.medalGfxRecord, 6);
                     memcpy_bytes_0803F63C((const void *)gSkillTypeNames[gGameWork.medalGfxRecord[1]], gGameWork.textBuf,
@@ -223,10 +223,10 @@ void mf_menu_draw_status(u32 a) {
         break;
     case 3:
 
-        if (gBattleBots[gBattleWork.unk80].medal.level > 59) {
+        if (gBattleBots[gBattleWork.commandBot].medal.level > 59) {
             if (gBattleWork.medaforceBlocked == 0) {
-                if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50) {
-                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
+                if (gBattleBots[gBattleWork.commandBot].medaforceGauge == 0x50) {
+                    memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.commandBot].medal.graphicId * 3,
                                           &gGameWork.partAbility, 3);
                     memcpy_bytes_08041D04(gMedaforceRecords + gGameWork.partSkillType * 6, gGameWork.medalGfxRecord, 6);
                     memcpy_bytes_0803F63C((const void *)gSkillTypeNames[gGameWork.medalGfxRecord[1]], gGameWork.textBuf,
@@ -258,19 +258,19 @@ void mf_menu_draw_status(u32 a) {
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x24, 0x13, 0xE, 10, 14, 0, 0);
 }
 
-// D-pad picks the slot (gBattleWork.unk82), like part_select_input.
+// D-pad picks the slot (gBattleWork.partCursor), like part_select_input.
 void mf_menu_input(void) {
-    u8 old = gBattleWork.unk82;
+    u8 old = gBattleWork.partCursor;
 
     if (KEYS_LO(gNewKeys) & 0x40)
-        gBattleWork.unk82 = 1;
+        gBattleWork.partCursor = 1;
     if (KEYS_LO(gNewKeys) & 0x80)
-        gBattleWork.unk82 = 0;
+        gBattleWork.partCursor = 0;
     if (KEYS_LO(gNewKeys) & 0x20)
-        gBattleWork.unk82 = 2;
+        gBattleWork.partCursor = 2;
     if (KEYS_LO(gNewKeys) & 0x10)
-        gBattleWork.unk82 = 3;
-    if (gBattleWork.unk82 != old) {
+        gBattleWork.partCursor = 3;
+    if (gBattleWork.partCursor != old) {
         play_sound_effect(2);
         mf_menu_init_top_icon(1);
         mf_menu_init_left_icon(1);
@@ -282,7 +282,7 @@ void mf_menu_input(void) {
 }
 
 void mf_menu_blink_selected_icon(void) {
-    switch (gBattleWork.unk82) {
+    switch (gBattleWork.partCursor) {
     case 0:
         if (gGameWork.stepCounter & 8)
             mf_menu_init_charge_icon(1);
@@ -319,9 +319,9 @@ static void mf_menu_draw_cost_bar(u32 a) {
     int k;
 
     if (a == 0) {
-        memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.unk80].medal.graphicId * 3,
+        memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.commandBot].medal.graphicId * 3,
                               &gGameWork.partAbility, 3);
-        k = gBattleWork.unk82 - 1;
+        k = gBattleWork.partCursor - 1;
         memcpy_bytes_08041D04(gMedaforceRecords + (&gGameWork.partAbility)[k] * 6, gGameWork.medalGfxRecord, 6);
         n = gGameWork.medalGfxRecord[2] / 10;
         for (j = 0; j < 8 - n; j++) {
@@ -337,31 +337,31 @@ static void mf_menu_draw_cost_bar(u32 a) {
         }
         vram_fill_tilemap_rect(5, 1, 4, 0x12, REG_BG1CNT, 0);
         draw_number_bgcnt(gGameWork.medalGfxRecord[2], 4, 0x12, 2, REG_BG1CNT, 0xD220);
-        draw_battle_panel_left_b(gBattleWork.unk80);
+        draw_battle_panel_left_b(gBattleWork.commandBot);
     } else {
         vram_fill_tilemap_rect(8, 1, 1, 0x11, REG_BG0CNT, i);
-        draw_medaforce_gauge_value(gBattleWork.unk80);
-        if (gBattleBots[gBattleWork.unk80].medaforceGauge != 0x50)
-            draw_battle_panel_left_a(gBattleWork.unk80);
+        draw_medaforce_gauge_value(gBattleWork.commandBot);
+        if (gBattleBots[gBattleWork.commandBot].medaforceGauge != 0x50)
+            draw_battle_panel_left_a(gBattleWork.commandBot);
     }
 }
 
 // The Medabot's panel blinks while its Medaforce gauge is full (80).
 void mf_gauge_full_blink_panel(void) {
-    if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50) {
-        gBattleWork.unk85++;
-        if (gBattleWork.unk85 & 8)
-            draw_battle_panel_left_b(gBattleWork.unk80);
+    if (gBattleBots[gBattleWork.commandBot].medaforceGauge == 0x50) {
+        gBattleWork.gaugeBlinkTimer++;
+        if (gBattleWork.gaugeBlinkTimer & 8)
+            draw_battle_panel_left_b(gBattleWork.commandBot);
         else
-            draw_battle_panel_left_a(gBattleWork.unk80);
+            draw_battle_panel_left_a(gBattleWork.commandBot);
     }
 }
 
 void mf_gauge_draw_panel(void) {
-    if (gBattleBots[gBattleWork.unk80].medaforceGauge == 0x50)
-        draw_battle_panel_left_b(gBattleWork.unk80);
+    if (gBattleBots[gBattleWork.commandBot].medaforceGauge == 0x50)
+        draw_battle_panel_left_b(gBattleWork.commandBot);
     else
-        draw_battle_panel_left_a(gBattleWork.unk80);
+        draw_battle_panel_left_a(gBattleWork.commandBot);
 }
 
 void mf_menu_slide_out_bg1(void) {

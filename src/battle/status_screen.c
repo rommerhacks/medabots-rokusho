@@ -26,9 +26,9 @@ static void status_draw_bot_sprite(u32 rec, u32 x, u32 y) {
         k = 1;
     else
         return;
-    get_bot_part_effective_values(rec, gBattleWork.unk64);
-    init_battle_medabot_sprites(gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                                rec, k * 4, x, y, side, 2, k * 4);
+    get_bot_part_effective_values(rec, gBattleWork.partIds);
+    init_battle_medabot_sprites(gBattleWork.partIds[0], gBattleWork.partIds[1], gBattleWork.partIds[2],
+                                gBattleWork.partIds[3], rec, k * 4, x, y, side, 2, k * 4);
 }
 
 void position_battle_team_cursors(u32 first, u32 flag) {
@@ -67,9 +67,9 @@ static void setup_bot_battle_sprites_08017A7C(u32 rec, u32 x, u32 y) {
         k = 1;
     else
         return;
-    get_bot_part_effective_values(rec, gBattleWork.unk64);
-    setup_battle_sprite_group(gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                              rec, k * 4, x, y, side, 2, k * 4);
+    get_bot_part_effective_values(rec, gBattleWork.partIds);
+    setup_battle_sprite_group(gBattleWork.partIds[0], gBattleWork.partIds[1], gBattleWork.partIds[2],
+                              gBattleWork.partIds[3], rec, k * 4, x, y, side, 2, k * 4);
     gSpriteEntries[k * 4 + 1].flags &= (u16)~SPRITE_FLAG_AFFINE;
     gSpriteEntries[k * 4 + 2].flags &= (u16)~SPRITE_FLAG_AFFINE;
 }
@@ -358,8 +358,9 @@ void status_select_input(void) {
         status_draw_part_names();
         status_draw_part_ability_icons();
         status_draw_part_armor();
-        get_bot_part_effective_values(gGameWork.shownId + gGameWork.openedFrom * 3, gBattleWork.unk64);
-        set_portrait_parts(gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3]);
+        get_bot_part_effective_values(gGameWork.shownId + gGameWork.openedFrom * 3, gBattleWork.partIds);
+        set_portrait_parts(gBattleWork.partIds[0], gBattleWork.partIds[1], gBattleWork.partIds[2],
+                           gBattleWork.partIds[3]);
         status_reset_portrait();
         position_battle_team_cursors(gGameWork.openedFrom * 3, 0);
         battle_sprite_group_set_anim(0, 8);

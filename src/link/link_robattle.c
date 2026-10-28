@@ -98,13 +98,13 @@ void link_robattle_start_name_exchange(void) {
     gBattleWork.unk51 = 0;
     gBattleWork.unk52 = 0;
     gBattleWork.unk53 = 0;
-    gBattleWork.unk54 = 0;
-    gBattleWork.unk1A6 = 0;
-    gBattleWork.unk1A8 = 0;
-    gBattleWork.unk1AA = 0;
-    gBattleWork.unk1AC = 0;
-    gBattleWork.unk1AF = 0;
-    gBattleWork.unk1B0 = 1;
+    gBattleWork.linkRecvPos = 0;
+    gBattleWork.linkSentSum = 0;
+    gBattleWork.linkRecvSum = 0;
+    gBattleWork.linkPartnerSentSum = 0;
+    gBattleWork.linkPartnerRecvSum = 0;
+    gBattleWork.linkSendToggle = 0;
+    gBattleWork.linkRecvToggle = 1;
     gGameWork.stepTimer = 0;
     gGameSubState = 0x50;
 }
@@ -614,16 +614,17 @@ void link_robattle_exchange_names(void) {
     struct LinkPackets *link = &gLinkPackets;
     u16 packet;
     s16 flag;
-    link->sendData = gPlayerRecord.name[gBattleWork.unk51] + (flag = ((gBattleWork.unk1AF << 8) & 0x100) + 0x8000);
+    link->sendData =
+        gPlayerRecord.name[gBattleWork.unk51] + (flag = ((gBattleWork.linkSendToggle << 8) & 0x100) + 0x8000);
     gGameWork.stepTimer++;
     if (!(gGameWork.stepTimer & 1)) {
-        gBattleWork.unk1AF ^= 1;
+        gBattleWork.linkSendToggle ^= 1;
         gBattleWork.unk51++;
     }
     packet = link->recv[gLinkPlayerId ^ 1][1];
     if (packet & 0x8000) {
-        if ((u16)(packet & 0x100) >> 8 != gBattleWork.unk1B0) {
-            gBattleWork.unk1B0 ^= 1;
+        if ((u16)(packet & 0x100) >> 8 != gBattleWork.linkRecvToggle) {
+            gBattleWork.linkRecvToggle ^= 1;
             gBattleWork.partnerName[gBattleWork.unk52] = packet;
             if (++gBattleWork.unk52 > 10) {
                 gGameWork.stepTimer = 0;

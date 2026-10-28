@@ -634,11 +634,11 @@ void team_select_exit_race(void) {
     gVBlankOamMode = 0;
     for (i = 0; i <= 2; i++) {
         load_part_data(gTeamSlots[gBattleWork.teamPicks[i] & 0xF].legs, 3, &gGameWork.partAbility);
-        gBattleWork.unk8C[i] = gGameWork.partSkill - 100;
-        gBattleWork.unk8F[i][0] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].head;
-        gBattleWork.unk8F[i][1] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].rightArm;
-        gBattleWork.unk8F[i][2] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].leftArm;
-        gBattleWork.unk8F[i][3] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].legs;
+        gBattleWork.raceLegTypes[i] = gGameWork.partSkill - 100;
+        gBattleWork.raceParts[i][0] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].head;
+        gBattleWork.raceParts[i][1] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].rightArm;
+        gBattleWork.raceParts[i][2] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].leftArm;
+        gBattleWork.raceParts[i][3] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].legs;
     }
     gGameMode = 3;
     gGameState = 4;
@@ -693,13 +693,13 @@ void team_select_link_exchange_init(void) {
         gBattleWork.unk51 = 0;
         gBattleWork.unk52 = 0;
         gBattleWork.unk53 = 0;
-        gBattleWork.unk54 = 0;
-        gBattleWork.unk1A6 = 0;
-        gBattleWork.unk1A8 = 0;
-        gBattleWork.unk1AA = 0;
-        gBattleWork.unk1AC = 0;
-        gBattleWork.unk1AF = 0;
-        gBattleWork.unk1B0 = 1;
+        gBattleWork.linkRecvPos = 0;
+        gBattleWork.linkSentSum = 0;
+        gBattleWork.linkRecvSum = 0;
+        gBattleWork.linkPartnerSentSum = 0;
+        gBattleWork.linkPartnerRecvSum = 0;
+        gBattleWork.linkSendToggle = 0;
+        gBattleWork.linkRecvToggle = 1;
         *timer = 0;
         gGameSubState++;
     } else
@@ -707,7 +707,7 @@ void team_select_link_exchange_init(void) {
 }
 
 // guess: sends 3 x 0x48 bytes from gBattleBots and receives into gLinkPartnerBotData over the link, one
-// byte per packet (bit 15 = valid, bit 8 = toggle), summing the received bytes in unk1A8. Near miss:
+// byte per packet (bit 15 = valid, bit 8 = toggle), summing the received bytes in linkRecvSum. Near miss:
 // scratch/sub_08004AF8_nearmiss.c (one literal load order and an orrs/adds for the 0x8000 header).
 
 void team_select_link_exchange_bots(void) {
@@ -720,10 +720,10 @@ void team_select_link_exchange_bots(void) {
     s = &gBattleWork;
     if (s->unk51 != 3) {
         src = (u8 *)&gBattleBots[s->unk51];
-        gLinkPackets.sendData = src[s->unk52] + (flag = ((s->unk1AF << 8) & 0x100) + 0x8000);
+        gLinkPackets.sendData = src[s->unk52] + (flag = ((s->linkSendToggle << 8) & 0x100) + 0x8000);
         if (++gGameWork.stepTimer == 4) {
             gGameWork.stepTimer = 0;
-            s->unk1AF ^= 1;
+            s->linkSendToggle ^= 1;
             if (++s->unk52 == 0x48) {
                 s->unk51++;
                 s->unk52 = 0;
@@ -733,13 +733,13 @@ void team_select_link_exchange_bots(void) {
     if (gBattleWork.unk53 != 3) {
         u16 v = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
 
-        if ((v & 0x8000) && (u16)(v & 0x100) >> 8 != gBattleWork.unk1B0) {
-            gBattleWork.unk1B0 ^= 1;
-            ((struct LinkRow256 *)gLinkPartnerBotData)[gBattleWork.unk53].b[gBattleWork.unk54] = v;
-            gBattleWork.unk1A8 = (gBattleWork.unk1A8 + (v & 0xFF)) & 0x7FFF;
-            if (++gBattleWork.unk54 == 0x48) {
+        if ((v & 0x8000) && (u16)(v & 0x100) >> 8 != gBattleWork.linkRecvToggle) {
+            gBattleWork.linkRecvToggle ^= 1;
+            ((struct LinkRow256 *)gLinkPartnerBotData)[gBattleWork.unk53].b[gBattleWork.linkRecvPos] = v;
+            gBattleWork.linkRecvSum = (gBattleWork.linkRecvSum + (v & 0xFF)) & 0x7FFF;
+            if (++gBattleWork.linkRecvPos == 0x48) {
                 gBattleWork.unk53++;
-                gBattleWork.unk54 = 0;
+                gBattleWork.linkRecvPos = 0;
             }
         }
     }
@@ -762,7 +762,7 @@ void team_select_link_checksum_init(void) {
         gBattleWork.unk51 = 0;
         gBattleWork.unk52 = 0;
         gBattleWork.unk53 = 0;
-        gBattleWork.unk54 = 0;
+        gBattleWork.linkRecvPos = 0;
         *timer = 0;
         gGameSubState++;
     } else
@@ -777,10 +777,10 @@ void team_select_link_compare_checksums(void) {
     if (gBattleWork.unk51 < 2) {
         switch (gBattleWork.unk51) {
         case 0:
-            gLinkPackets.sendData = 0x8000 + gBattleWork.unk1A6;
+            gLinkPackets.sendData = 0x8000 + gBattleWork.linkSentSum;
             break;
         case 1:
-            gLinkPackets.sendData = 0x8000 + gBattleWork.unk1A8;
+            gLinkPackets.sendData = 0x8000 + gBattleWork.linkRecvSum;
             break;
         }
         gBattleWork.unk51++;
@@ -789,14 +789,15 @@ void team_select_link_compare_checksums(void) {
     if (v & 0x8000) {
         switch (gBattleWork.unk52) {
         case 0:
-            gBattleWork.unk1AA = v & 0x7FFF;
+            gBattleWork.linkPartnerSentSum = v & 0x7FFF;
             break;
         case 1:
-            gBattleWork.unk1AC = v & 0x7FFF;
+            gBattleWork.linkPartnerRecvSum = v & 0x7FFF;
             break;
         }
         if (++gBattleWork.unk52 == 2) {
-            if (gBattleWork.unk1A6 == gBattleWork.unk1AC && gBattleWork.unk1A8 == gBattleWork.unk1AA)
+            if (gBattleWork.linkSentSum == gBattleWork.linkPartnerRecvSum &&
+                gBattleWork.linkRecvSum == gBattleWork.linkPartnerSentSum)
                 gGameSubState++;
             else
                 gGameSubState = 50;
@@ -2055,7 +2056,7 @@ static void team_select_link_load_opponents(void) {
 
     for (i = 0; i <= 2; i++) {
         if (gBattleBots[i + 3].teamState)
-            gBattleWork.unk5B++;
+            gBattleWork.loadedOpponents++;
     }
-    battle_bots_load_parts(3, gBattleWork.unk5B);
+    battle_bots_load_parts(3, gBattleWork.loadedOpponents);
 }

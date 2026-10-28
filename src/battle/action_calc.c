@@ -34,33 +34,33 @@ void battle_calc_attack_success(void) {
     subtract_s16_floored(&gBattleWork.success, gBattleBots[gBattleWork.target].evasionBonus);
 }
 
-// guess: a guarding teammate (unkDE) or the target's cover part (unkBD bit 4) takes the hit: unkAB = 1.
+// guess: a guarding teammate (unkDE) or the target's cover part (unkBD bit 4) takes the hit: stepResult = 1.
 void battle_check_guard_or_cover(void) {
     gBattleBots[gBattleWork.target].hitFlags &= 3;
     gBattleBots[gBattleWork.target].stateFlags |= 2;
     if (gBattleWork.guardBot) {
         gBattleBots[gBattleWork.target].hitFlags |= 0xC;
-        gBattleWork.unkF2 = gBattleWork.success;
-        gBattleWork.unkAB = 1;
+        gBattleWork.finalSuccess = gBattleWork.success;
+        gBattleWork.stepResult = 1;
         if ((gBattleBots[gBattleWork.target].guardFlags & 1) && (rng_next_byte() & 1)) {
-            gBattleWork.unkF6 = 1;
+            gBattleWork.reactionFlags = 1;
             gBattleWork.hitResult = 3;
         }
     } else if (!(gBattleBots[gBattleWork.actor].guardFlags & 4) &&
                (gBattleBots[gBattleWork.target].stateFlags & 0x10) &&
                gBattleBots[gBattleWork.target].parts[gBattleBots[gBattleWork.target].lastAction - 1].unk11) {
         gBattleBots[gBattleWork.target].hitFlags |= 0xC;
-        gBattleWork.unkF2 = gBattleWork.success;
+        gBattleWork.finalSuccess = gBattleWork.success;
         battle_set_action_target_part(gBattleWork.actor, gBattleBots[gBattleWork.target].lastAction);
-        gBattleWork.unkF6 = 1;
-        gBattleWork.unkAB = 1;
+        gBattleWork.reactionFlags = 1;
+        gBattleWork.stepResult = 1;
     } else {
-        gBattleWork.unkAB = 0;
+        gBattleWork.stepResult = 0;
     }
 }
 
 void battle_begin_action_phase(void) {
-    gBattleWork.unkEE = 0;
+    gBattleWork.evasion = 0;
     if ((gBattleBots[gBattleWork.target].hitFlags & 4) && (gBattleBots[gBattleWork.target].hitFlags & 8))
         battle_calculate_damage_modifier();
     else if (!battle_calculate_turn_speed())
@@ -71,52 +71,52 @@ static u32 battle_calculate_damage_modifier(void) {
     u8 type;
 
     if (check_bot_ability_type_strike(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
-        if (battle_check_damage_threshold(gBattleWork.unkEE))
+        if (battle_check_damage_threshold(gBattleWork.evasion))
             return 1;
         return 0;
     }
     if (check_bot_ability_type_shoot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
-        if (battle_check_damage_threshold(gBattleWork.unkEE))
+        if (battle_check_damage_threshold(gBattleWork.evasion))
             return 1;
         return 0;
     }
     type = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2];
     if (type == 3) {
-        if (battle_check_damage_threshold(gBattleWork.unkEE * 2))
+        if (battle_check_damage_threshold(gBattleWork.evasion * 2))
             return 1;
         return 0;
     }
     if (type == 0) {
-        if (battle_check_damage_threshold(gBattleWork.unkEE * 4))
+        if (battle_check_damage_threshold(gBattleWork.evasion * 4))
             return 1;
         return 0;
     }
-    if (battle_check_damage_threshold(gBattleWork.unkEE * 8))
+    if (battle_check_damage_threshold(gBattleWork.evasion * 8))
         return 1;
     return 0;
 }
 
 u32 battle_check_damage_threshold(s16 v) {
     if (gBattleWork.success > v) {
-        gBattleWork.unkEE = 0;
+        gBattleWork.evasion = 0;
         gBattleBots[gBattleWork.target].hitFlags |= 0x4C;
-        gBattleWork.unkF2 = gBattleWork.success;
+        gBattleWork.finalSuccess = gBattleWork.success;
         return 1;
     }
     return 0;
 }
 
 static u32 battle_calculate_turn_speed(void) {
-    gBattleWork.unkEE = 0;
+    gBattleWork.evasion = 0;
     if (!(gBattleBots[gBattleWork.target].hitFlags & 4)) {
         accumulate_battle_speed_value(gBattleWork.target);
-        gBattleWork.unkEE += gBattleBots[gBattleWork.target].parts[3].unk13;
+        gBattleWork.evasion += gBattleBots[gBattleWork.target].parts[3].unk13;
         if (!(gBattleBots[gBattleWork.target].hitFlags & 8))
-            subtract_s16_floored((s16 *)&gBattleWork.unkEE, 8);
+            subtract_s16_floored((s16 *)&gBattleWork.evasion, 8);
         if (battle_calculate_damage_modifier())
             return 1;
-        subtract_s16_floored(&gBattleWork.success, (s16)gBattleWork.unkEE);
-        if ((gBattleWork.unkF2 = gBattleWork.success) == 0) {
+        subtract_s16_floored(&gBattleWork.success, (s16)gBattleWork.evasion);
+        if ((gBattleWork.finalSuccess = gBattleWork.success) == 0) {
             u8 type = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1];
             if (type == 6)
                 return 0;
@@ -134,16 +134,16 @@ static u32 battle_calculate_turn_speed(void) {
 static void battle_process_speed_and_action(void) {
     u32 part;
 
-    gBattleWork.unkEE = 0;
-    gBattleWork.unkF2 = gBattleWork.success;
+    gBattleWork.evasion = 0;
+    gBattleWork.finalSuccess = gBattleWork.success;
     if (!(gBattleBots[gBattleWork.target].hitFlags & 8)) {
         accumulate_battle_speed_value(gBattleWork.target);
-        gBattleWork.unkEE += gBattleBots[gBattleWork.target].parts[3].unk14;
+        gBattleWork.evasion += gBattleBots[gBattleWork.target].parts[3].unk14;
         if (!(gBattleBots[gBattleWork.target].hitFlags & 4))
-            subtract_s16_floored((s16 *)&gBattleWork.unkEE, 8);
-        if (!battle_calculate_damage_modifier() && (s16)gBattleWork.unkEE > 0x1F) {
-            subtract_s16_floored(&gBattleWork.success, (s16)gBattleWork.unkEE);
-            gBattleWork.unkF2 = gBattleWork.success;
+            subtract_s16_floored((s16 *)&gBattleWork.evasion, 8);
+        if (!battle_calculate_damage_modifier() && (s16)gBattleWork.evasion > 0x1F) {
+            subtract_s16_floored(&gBattleWork.success, (s16)gBattleWork.evasion);
+            gBattleWork.finalSuccess = gBattleWork.success;
             gBattleBots[gBattleWork.target].hitFlags |= 0x20;
             if (count_intact_parts(gBattleWork.target) == 1)
                 part = 1;
@@ -182,67 +182,67 @@ static u32 battle_find_strongest_part(u32 rec) {
 void battle_check_dodged(void) {
     u8 f = gBattleBots[gBattleWork.target].hitFlags & 0x10;
     if (f) {
-        gBattleWork.unkAB = 1;
+        gBattleWork.stepResult = 1;
         gBattleWork.hitResult = 1;
     } else {
-        gBattleWork.unkAB = f;
+        gBattleWork.stepResult = f;
     }
 }
 
 void battle_check_nullified(void) {
     if (check_bot_can_shoot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 2;
-        gBattleWork.unkBE = 2;
+        gBattleWork.nullifyReason = 2;
     } else if (check_bot_can_support(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 2;
-        gBattleWork.unkBE = 3;
+        gBattleWork.nullifyReason = 3;
     } else if (check_bot_can_use_shoot_part(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 2;
-        gBattleWork.unkBE = 4;
+        gBattleWork.nullifyReason = 4;
     } else if (check_bot_status_effect_4(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 2;
-        gBattleWork.unkBE = 6;
+        gBattleWork.nullifyReason = 6;
     }
 }
 
 void select_ai_action_type(void) {
     if (check_bot_can_shoot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 2;
-        gBattleWork.unkBE = 2;
+        gBattleWork.nullifyReason = 2;
     } else if (check_bot_can_support(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 2;
-        gBattleWork.unkBE = 3;
+        gBattleWork.nullifyReason = 3;
     } else if (check_bot_can_use_shoot_part(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 2;
-        gBattleWork.unkBE = 4;
+        gBattleWork.nullifyReason = 4;
     } else if (check_bot_status_effect_4(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 2;
-        gBattleWork.unkBE = 6;
+        gBattleWork.nullifyReason = 6;
     }
 }
 
 void battle_check_absorbed(void) {
     if (check_can_target_bot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 4;
-        gBattleWork.unkBF = 2;
+        gBattleWork.absorbReason = 2;
     } else if (check_battle_can_support_target(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 4;
-        gBattleWork.unkBF = 3;
+        gBattleWork.absorbReason = 3;
     } else if (check_battle_can_special_target(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 4;
-        gBattleWork.unkBF = 4;
+        gBattleWork.absorbReason = 4;
     }
 }
 
 void determine_battle_target_mode(void) {
     if (check_can_target_bot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 4;
-        gBattleWork.unkBF = 2;
+        gBattleWork.absorbReason = 2;
     } else if (check_battle_can_support_target(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 4;
-        gBattleWork.unkBF = 3;
+        gBattleWork.absorbReason = 3;
     } else if (check_battle_can_special_target(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 4;
-        gBattleWork.unkBF = 4;
+        gBattleWork.absorbReason = 4;
     }
 }

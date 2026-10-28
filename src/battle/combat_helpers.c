@@ -20,12 +20,12 @@ void battle_set_damage_vs_armor(u32 rec, u32 part, s32 amount) {
     s32 armor = gBattleBots[rec].parts[part].unk11;
     if (armor > amount) {
         gBattleWork.appliedAmount = amount;
-        gBattleWork.unkCC = amount;
+        gBattleWork.cappedAmount = amount;
         gBattleWork.overflowAmount = 0;
         gBattleWork.partBroken = 0;
     } else {
         gBattleWork.appliedAmount = armor;
-        gBattleWork.unkCC = armor;
+        gBattleWork.cappedAmount = armor;
         gBattleWork.overflowAmount = amount - armor;
         gBattleWork.partBroken = 1;
     }
@@ -111,8 +111,8 @@ void add_bot_to_defeated_list(u32 rec) {
     u32 i;
     if (gBattleBots[rec].parts[0].unk11 == 0) {
         for (i = 0; i <= 2; i++) {
-            if (gBattleWork.unkE0[i] == 0) {
-                gBattleWork.unkE0[i] = rec + 1;
+            if (gBattleWork.defeatedQueue[i] == 0) {
+                gBattleWork.defeatedQueue[i] = rec + 1;
                 return;
             }
         }
@@ -370,9 +370,9 @@ void apply_battle_bot_damage_reduction(u32 rec) {
 
 void accumulate_battle_speed_value(u32 rec) {
     struct BattleWork *b = &gBattleWork;
-    b->unkEE += gBattleBots[rec].medal.level;
-    b->unkEE += calc_bot_matching_part_power(rec);
-    b->unkEE += rng_next_byte() & 7;
+    b->evasion += gBattleBots[rec].medal.level;
+    b->evasion += calc_bot_matching_part_power(rec);
+    b->evasion += rng_next_byte() & 7;
 }
 
 u32 check_bot_ability_type_strike(u32 rec, u32 part, u32 target) {

@@ -92,11 +92,11 @@ void race_load_teams(void) {
     race_load_frame_bgs();
     play_song(0);
     for (i = 0; i < 3; i++) {
-        gRaceLegTypes[0][i] = gBattleWork.unk8C[i];
-        gRaceRunnerParts[0][0][i] = gBattleWork.unk8F[i][0];
-        gRaceRunnerParts[0][1][i] = gBattleWork.unk8F[i][1];
-        gRaceRunnerParts[0][2][i] = gBattleWork.unk8F[i][2];
-        gRaceRunnerParts[0][3][i] = gBattleWork.unk8F[i][3];
+        gRaceLegTypes[0][i] = gBattleWork.raceLegTypes[i];
+        gRaceRunnerParts[0][0][i] = gBattleWork.raceParts[i][0];
+        gRaceRunnerParts[0][1][i] = gBattleWork.raceParts[i][1];
+        gRaceRunnerParts[0][2][i] = gBattleWork.raceParts[i][2];
+        gRaceRunnerParts[0][3][i] = gBattleWork.raceParts[i][3];
         decompress_sprite_to_vram_08042D94(gRaceRunnerParts[0][0][i], gRaceRunnerParts[0][1][i],
                                            gRaceRunnerParts[0][2][i], gRaceRunnerParts[0][3][i], 2 - i);
     }

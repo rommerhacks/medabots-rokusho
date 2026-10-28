@@ -9,11 +9,11 @@ void battle_calc_damage_split(u32 rec, u32 part, s32 amount) {
     s32 room = gBattleBots[rec].parts[part].data[4] - gBattleBots[rec].parts[part].unk11;
     if (room > amount) {
         gBattleWork.appliedAmount = amount;
-        gBattleWork.unkCC = amount;
+        gBattleWork.cappedAmount = amount;
         gBattleWork.overflowAmount = 0;
     } else {
         gBattleWork.appliedAmount = room;
-        gBattleWork.unkCC = room;
+        gBattleWork.cappedAmount = room;
         gBattleWork.overflowAmount = amount - room;
     }
 }
@@ -156,24 +156,24 @@ u32 staggered_sprites_update(u32 slot, u32 n) {
 void reaction_counter_begin(void) {
     gBattleBots[gBattleWork.actor].unkE0 = gBattleWork.actor + 1;
     gBattleBots[gBattleWork.actor].unkE1 = gBattleWork.actorPart + 1;
-    if ((gBattleWork.unk162 = gBattleWork.targetPart) == 3)
-        gBattleWork.unk162 = 0;
-    gBattleWork.unk161 = gBattleWork.target;
+    if ((gBattleWork.swapPart = gBattleWork.targetPart) == 3)
+        gBattleWork.swapPart = 0;
+    gBattleWork.swapBot = gBattleWork.target;
     battle_load_action_target(gBattleWork.actor);
     gBattleWork.actorSideFlags ^= 2;
     gBattleWork.hitResult = 0;
-    gBattleWork.unkF6 = 2;
+    gBattleWork.reactionFlags = 2;
     if (!(gBattleWork.actorSideFlags & 2))
-        gBattleWork.unk114[0] = 0;
+        gBattleWork.closeupPoseBase[0] = 0;
     else {
-        gBattleWork.unk114[0] = 0x28;
-        gBattleWork.unkFF |= 1;
+        gBattleWork.closeupPoseBase[0] = 0x28;
+        gBattleWork.closeupRedraw |= 1;
     }
     if (!(gBattleWork.actorSideFlags & 2)) {
-        gBattleWork.unk114[1] = 0x28;
-        gBattleWork.unkFF |= 2;
+        gBattleWork.closeupPoseBase[1] = 0x28;
+        gBattleWork.closeupRedraw |= 2;
     } else
-        gBattleWork.unk114[1] = 0;
+        gBattleWork.closeupPoseBase[1] = 0;
     gBattleWork.blockResult = 0;
     select_ai_action_type();
     determine_battle_target_mode();
@@ -206,11 +206,11 @@ void calc_battle_stat_ratio(u32 rec, u32 part) {
 void battle_set_damage_display(u32 rec, u32 part, s32 amount) {
     if (gBattleBots[rec].parts[part].data[4] >= amount) {
         gBattleWork.appliedAmount = amount;
-        gBattleWork.unkCC = amount;
+        gBattleWork.cappedAmount = amount;
         gBattleWork.overflowAmount = 0;
     } else {
         gBattleWork.appliedAmount = gBattleBots[rec].parts[part].data[4];
-        gBattleWork.unkCC = gBattleBots[rec].parts[part].data[4];
+        gBattleWork.cappedAmount = gBattleBots[rec].parts[part].data[4];
         gBattleWork.overflowAmount = amount - gBattleBots[rec].parts[part].data[4];
     }
 }
@@ -245,11 +245,11 @@ void calc_head_uses_taken(u32 rec, s32 amount) {
     s32 head = gBattleBots[rec].parts[0].unk10;
     if (head > amount) {
         gBattleWork.appliedAmount = amount;
-        gBattleWork.unkCC = amount;
+        gBattleWork.cappedAmount = amount;
         gBattleWork.overflowAmount = 0;
     } else {
         gBattleWork.appliedAmount = head;
-        gBattleWork.unkCC = head;
+        gBattleWork.cappedAmount = head;
         gBattleWork.overflowAmount = amount - head;
     }
 }
@@ -258,11 +258,11 @@ void calc_head_uses_given(u32 rec, s32 amount) {
     s32 room = gBattleBots[rec].parts[0].data[8] - gBattleBots[rec].parts[0].unk10;
     if (room > amount) {
         gBattleWork.appliedAmount = amount;
-        gBattleWork.unkCC = amount;
+        gBattleWork.cappedAmount = amount;
         gBattleWork.overflowAmount = 0;
     } else {
         gBattleWork.appliedAmount = room;
-        gBattleWork.unkCC = room;
+        gBattleWork.cappedAmount = room;
         gBattleWork.overflowAmount = amount - room;
     }
 }
@@ -270,12 +270,12 @@ void calc_head_uses_given(u32 rec, s32 amount) {
 void calc_drain_amount(u32 a, u32 b) {
     if (a > b) {
         gBattleWork.appliedAmount = b;
-        gBattleWork.unkCC = b;
+        gBattleWork.cappedAmount = b;
         gBattleWork.overflowAmount = 0;
         gBattleWork.partBroken = 0;
     } else {
         gBattleWork.appliedAmount = a;
-        gBattleWork.unkCC = a;
+        gBattleWork.cappedAmount = a;
         gBattleWork.overflowAmount = b - a;
         gBattleWork.partBroken = 1;
     }
@@ -285,12 +285,12 @@ void calc_fill_amount(u32 a, u32 max, u32 b) {
     u32 room = max - a;
     if (room > b) {
         gBattleWork.appliedAmount = b;
-        gBattleWork.unkCC = b;
+        gBattleWork.cappedAmount = b;
         gBattleWork.overflowAmount = 0;
         gBattleWork.partBroken = 0;
     } else {
         gBattleWork.appliedAmount = room;
-        gBattleWork.unkCC = room;
+        gBattleWork.cappedAmount = room;
         gBattleWork.overflowAmount = b - room;
         gBattleWork.partBroken = 1;
     }
@@ -385,18 +385,18 @@ void medaforce_calc_damage(u32 rec) {
         gBattleWork.amount = 1;
 }
 
-// Medaforce hit list entry for one part: unkD6 = damage it takes (capped at its armor), unkD2 = 1 if that breaks it.
-// No return statement: the original never sets r0 but is not void (`pop {r1}` epilogue).
+// Medaforce hit list entry for one part: partDamage = damage it takes (capped at its armor), partBreaks = 1 if that
+// breaks it. No return statement: the original never sets r0 but is not void (`pop {r1}` epilogue).
 u32 hit_list_set_part_damage(u32 rec, u32 part, u32 amount) {
     if (gBattleBots[rec].parts[part].unk11 == 0) {
-        gBattleWork.unkD6[part] = 0;
-        gBattleWork.unkD2[part] = 0;
+        gBattleWork.partDamage[part] = 0;
+        gBattleWork.partBreaks[part] = 0;
     } else if (gBattleBots[rec].parts[part].unk11 > amount) {
-        gBattleWork.unkD6[part] = amount;
-        gBattleWork.unkD2[part] = 0;
+        gBattleWork.partDamage[part] = amount;
+        gBattleWork.partBreaks[part] = 0;
     } else {
-        gBattleWork.unkD6[part] = gBattleBots[rec].parts[part].unk11;
-        gBattleWork.unkD2[part] = 1;
+        gBattleWork.partDamage[part] = gBattleBots[rec].parts[part].unk11;
+        gBattleWork.partBreaks[part] = 1;
     }
 }
 

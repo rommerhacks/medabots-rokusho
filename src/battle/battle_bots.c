@@ -22,7 +22,7 @@ void count_active_battle_bots(void) {
             n++;
     }
     gBattleWork.teamCount = n;
-    gBattleWork.unk5B = gBattleWork.opponentCount;
+    gBattleWork.loadedOpponents = gBattleWork.opponentCount;
 }
 
 void battle_setup_team_bots(void) {
@@ -75,10 +75,10 @@ void battle_bots_load_parts(u32 rec, u32 n) {
 void init_opponent_bots(void) {
     u32 i;
 
-    for (i = 0; i < gBattleWork.unk5B; i++)
+    for (i = 0; i < gBattleWork.loadedOpponents; i++)
         init_enemy_bot_medal(i);
     init_opponent_bot_slots();
-    battle_bots_load_parts(3, gBattleWork.unk5B);
+    battle_bots_load_parts(3, gBattleWork.loadedOpponents);
 }
 
 void init_enemy_bot_medal(u8 i) {
@@ -116,7 +116,7 @@ void init_enemy_bot_medal(u8 i) {
 void init_opponent_bot_slots(void) {
     u32 i;
 
-    for (i = 0; i < gBattleWork.unk5B; i++) {
+    for (i = 0; i < gBattleWork.loadedOpponents; i++) {
         gBattleBots[i + 3].teamState = 3;
         load_part_data(gBattleWork.encounterBots[i].parts[0], 0, &gGameWork.partAbility);
         gBattleBots[i + 3].gender = (&gGameWork.partAbility)[3];
@@ -212,12 +212,12 @@ void select_bot_battle_action(u32 rec) {
         return;
     battle_ai_roll_part_order();
     for (i = 0; i <= 3; i++) {
-        if (gBattleWork.unk64[i] == 0xFF) {
+        if (gBattleWork.partIds[i] == 0xFF) {
             battle_bot_select_part(rec, 0);
             return;
         }
-        if (!battle_part_unusable(rec, gBattleWork.unk64[i])) {
-            battle_bot_select_part(rec, gBattleWork.unk64[i]);
+        if (!battle_part_unusable(rec, gBattleWork.partIds[i])) {
+            battle_bot_select_part(rec, gBattleWork.partIds[i]);
             return;
         }
     }
@@ -317,7 +317,7 @@ void battle_bot_select_medaforce(u32 rec, u32 part) {
 }
 
 void battle_ai_roll_part_order(void) {
-    memcpy_bytes_08041D04(gAiPartOrders[rng_next_byte() & 0x1F], gBattleWork.unk64, 4);
+    memcpy_bytes_08041D04(gAiPartOrders[rng_next_byte() & 0x1F], gBattleWork.partIds, 4);
 }
 
 static u32 battle_part_unusable(u32 rec, u32 part) {

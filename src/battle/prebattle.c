@@ -460,11 +460,11 @@ void afterbattle_part_details_input(void) {
     }
 }
 
-// Some opponents (encounter setup unk1) also hand over a Rubberobo Medal (item 50) after the battle.
+// Some opponents (gBattleWork.rubberoboReward) also hand over a Rubberobo Medal (item 50) after the battle.
 void afterbattle_check_rubberobo_reward(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (gBattleWork.unk1) {
+    if (gBattleWork.rubberoboReward) {
         message_next();
         gGameSubState++;
     } else
@@ -504,18 +504,19 @@ void afterbattle_start_medal_level_up(void) {
     gGameSubState++;
 }
 
-// guess: 0x43-0x45 announce, bot by bot (unk186 = team slot), each Medal that levelled up (unk16E[i][0] = Medal id
-// + 1); 0x47-0x49 then announce learned Medaforces (unk16E[i][6], name index [7]) and 0x4B-0x50 play the Medal
-// transform for bots with unk16E[i][1] set.
+// guess: 0x43-0x45 announce, bot by bot (resultsMember = team slot), each Medal that levelled up (memberResults[i][0] =
+// Medal id
+// + 1); 0x47-0x49 then announce learned Medaforces (memberResults[i][6], name index [7]) and 0x4B-0x50 play the Medal
+// transform for bots with memberResults[i][1] set.
 void afterbattle_level_up_next_bot(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     if (gBattleWork.resultsMember == 3) {
         gBattleWork.resultsMember = 0;
         gGameSubState = 0x47;
-    } else if (gBattleWork.unk16E[gBattleWork.resultsMember][0]) {
+    } else if (gBattleWork.memberResults[gBattleWork.resultsMember][0]) {
         message_next();
-        memcpy_bytes_0803F63C((const void *)gMedalNames[gBattleWork.unk16E[gBattleWork.resultsMember][0] - 1],
+        memcpy_bytes_0803F63C((const void *)gMedalNames[gBattleWork.memberResults[gBattleWork.resultsMember][0] - 1],
                               gGameWork.textBuf, 11);
         play_song(16);
         gGameSubState++;
@@ -543,11 +544,11 @@ void afterbattle_medaforce_next_bot(void) {
     if (gBattleWork.resultsMember == 3) {
         gBattleWork.resultsMember = 0;
         gGameSubState = 0x4B;
-    } else if (gBattleWork.unk16E[gBattleWork.resultsMember][6]) {
+    } else if (gBattleWork.memberResults[gBattleWork.resultsMember][6]) {
         message_next();
-        memcpy_bytes_0803F63C((const void *)gMedalNames[gBattleWork.unk16E[gBattleWork.resultsMember][0] - 1],
+        memcpy_bytes_0803F63C((const void *)gMedalNames[gBattleWork.memberResults[gBattleWork.resultsMember][0] - 1],
                               gGameWork.textBuf, 11);
-        memcpy_bytes_0803F63C((const void *)gMedaforceNames[gBattleWork.unk16E[gBattleWork.resultsMember][7]],
+        memcpy_bytes_0803F63C((const void *)gMedaforceNames[gBattleWork.memberResults[gBattleWork.resultsMember][7]],
                               gGameWork.textBuf + 20, 17);
         play_song(16);
         gGameSubState++;
@@ -575,7 +576,7 @@ void afterbattle_transform_next_bot(void) {
     if (gBattleWork.resultsMember == 3) {
         gBattleWork.resultsMember = 0;
         gGameSubState = 0x58;
-    } else if (gBattleWork.unk16E[gBattleWork.resultsMember][1])
+    } else if (gBattleWork.memberResults[gBattleWork.resultsMember][1])
         gGameSubState++;
     else
         gBattleWork.resultsMember++;
@@ -615,11 +616,11 @@ void afterbattle_start_medal_transform(void) {
     DmaSet(3, &zero, 0x05000200, 0x85000080);
     zero = 0;
     DmaSet(3, &zero, 0x05000000, 0x85000080);
-    gGameWork.levelUpMedalSlot = find_medal_slot_by_id(gBattleWork.unk16E[gBattleWork.resultsMember][0] - 1) - 1;
-    gGameWork.transformOldMedal = gBattleWork.unk16E[gBattleWork.resultsMember][2];
-    gGameWork.transformOldVariant = gBattleWork.unk16E[gBattleWork.resultsMember][3];
-    gGameWork.transformNewMedal = gBattleWork.unk16E[gBattleWork.resultsMember][4];
-    gGameWork.transformNewVariant = gBattleWork.unk16E[gBattleWork.resultsMember][5];
+    gGameWork.levelUpMedalSlot = find_medal_slot_by_id(gBattleWork.memberResults[gBattleWork.resultsMember][0] - 1) - 1;
+    gGameWork.transformOldMedal = gBattleWork.memberResults[gBattleWork.resultsMember][2];
+    gGameWork.transformOldVariant = gBattleWork.memberResults[gBattleWork.resultsMember][3];
+    gGameWork.transformNewMedal = gBattleWork.memberResults[gBattleWork.resultsMember][4];
+    gGameWork.transformNewVariant = gBattleWork.memberResults[gBattleWork.resultsMember][5];
     start_medal_transform(gGameWork.levelUpMedalSlot);
     gBattleWork.resultsMember++;
 }
@@ -628,7 +629,7 @@ void afterbattle_transform_advance(void) {
     if (gBattleWork.resultsMember == 3) {
         gBattleWork.resultsMember = 0;
         gGameSubState = 0x5B;
-    } else if (gBattleWork.unk16E[gBattleWork.resultsMember][1])
+    } else if (gBattleWork.memberResults[gBattleWork.resultsMember][1])
         gGameSubState = 0x4E;
     else
         gBattleWork.resultsMember++;
@@ -1300,7 +1301,7 @@ static void battle_check_medal_level_up(void) {
     u32 variant;
     u32 slot;
 
-    mem_fill8(&gBattleWork.unk16E[0][0], 0x18, 0);
+    mem_fill8(&gBattleWork.memberResults[0][0], 0x18, 0);
     for (i = 0; i <= 2; i++) {
         if (!gBattleBots[i].present)
             continue;
@@ -1317,30 +1318,30 @@ static void battle_check_medal_level_up(void) {
         }
         medal->level++;
         medal->nextLevelExp = (medal->level + 1) * 100;
-        gBattleWork.unk16E[i][0] = medal->graphicId + 1;
+        gBattleWork.memberResults[i][0] = medal->graphicId + 1;
         memcpy_bytes_08041D04(gMedalRecords[medal->graphicId], &gGameWork.partAbility, 16);
         variant = medal_tier_for_level(medal->level, (&gGameWork.partAbility)[3], (&gGameWork.partAbility)[4],
                                        (&gGameWork.partAbility)[5], (&gGameWork.partAbility)[6]);
         if (variant != medal->spriteVariant) {
-            gBattleWork.unk16E[i][1] = 1;
-            gBattleWork.unk16E[i][2] = medal->graphicId;
-            gBattleWork.unk16E[i][3] = medal->spriteVariant;
-            gBattleWork.unk16E[i][4] = medal->graphicId;
-            gBattleWork.unk16E[i][5] = variant;
+            gBattleWork.memberResults[i][1] = 1;
+            gBattleWork.memberResults[i][2] = medal->graphicId;
+            gBattleWork.memberResults[i][3] = medal->spriteVariant;
+            gBattleWork.memberResults[i][4] = medal->graphicId;
+            gBattleWork.memberResults[i][5] = variant;
             medal->spriteVariant = variant;
         }
         memcpy_bytes_08041D04(&gMedalMedaforceIds[medal->graphicId * 3], &gGameWork.partAbility, 3);
         if (medal->level == 10) {
-            gBattleWork.unk16E[i][6] = 1;
-            gBattleWork.unk16E[i][7] = (&gGameWork.partAbility)[0];
+            gBattleWork.memberResults[i][6] = 1;
+            gBattleWork.memberResults[i][7] = (&gGameWork.partAbility)[0];
         }
         if (medal->level == 30) {
-            gBattleWork.unk16E[i][6] = 1;
-            gBattleWork.unk16E[i][7] = (&gGameWork.partAbility)[1];
+            gBattleWork.memberResults[i][6] = 1;
+            gBattleWork.memberResults[i][7] = (&gGameWork.partAbility)[1];
         }
         if (medal->level == 60) {
-            gBattleWork.unk16E[i][6] = 1;
-            gBattleWork.unk16E[i][7] = (&gGameWork.partAbility)[2];
+            gBattleWork.memberResults[i][6] = 1;
+            gBattleWork.memberResults[i][7] = (&gGameWork.partAbility)[2];
         }
     }
 }

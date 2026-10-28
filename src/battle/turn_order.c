@@ -124,49 +124,49 @@ u32 find_next_active_bot(u32 rec) {
 }
 
 void determine_battle_part_action_priority(void) {
-    gBattleWork.unk15C[0] = 0;
-    gBattleWork.unk15C[1] = 0;
-    gBattleWork.unk15C[2] = 0;
+    gBattleWork.partBlockReason[0] = 0;
+    gBattleWork.partBlockReason[1] = 0;
+    gBattleWork.partBlockReason[2] = 0;
 
-    if (gBattleBots[gBattleWork.unk80].parts[0].unk10 == 0)
-        gBattleWork.unk15C[0] = 4;
-    if (part_skill_is_passive(gBattleWork.unk80, 0))
-        gBattleWork.unk15C[0] = 3;
-    if (gBattleBots[gBattleWork.unk80].statusType == 0x2B && gBattleBots[gBattleWork.unk80].statusPart == 1)
-        gBattleWork.unk15C[0] = 2;
+    if (gBattleBots[gBattleWork.commandBot].parts[0].unk10 == 0)
+        gBattleWork.partBlockReason[0] = 4;
+    if (part_skill_is_passive(gBattleWork.commandBot, 0))
+        gBattleWork.partBlockReason[0] = 3;
+    if (gBattleBots[gBattleWork.commandBot].statusType == 0x2B && gBattleBots[gBattleWork.commandBot].statusPart == 1)
+        gBattleWork.partBlockReason[0] = 2;
 
-    if (part_skill_is_passive(gBattleWork.unk80, 1))
-        gBattleWork.unk15C[1] = 3;
-    if (gBattleBots[gBattleWork.unk80].statusType == 0x2B && gBattleBots[gBattleWork.unk80].statusPart == 2)
-        gBattleWork.unk15C[1] = 2;
-    if (gBattleBots[gBattleWork.unk80].parts[1].unk11 == 0)
-        gBattleWork.unk15C[1] = 1;
+    if (part_skill_is_passive(gBattleWork.commandBot, 1))
+        gBattleWork.partBlockReason[1] = 3;
+    if (gBattleBots[gBattleWork.commandBot].statusType == 0x2B && gBattleBots[gBattleWork.commandBot].statusPart == 2)
+        gBattleWork.partBlockReason[1] = 2;
+    if (gBattleBots[gBattleWork.commandBot].parts[1].unk11 == 0)
+        gBattleWork.partBlockReason[1] = 1;
 
-    if (part_skill_is_passive(gBattleWork.unk80, 2))
-        gBattleWork.unk15C[2] = 3;
-    if (gBattleBots[gBattleWork.unk80].statusType == 0x2B && gBattleBots[gBattleWork.unk80].statusPart == 3)
-        gBattleWork.unk15C[2] = 2;
-    if (gBattleBots[gBattleWork.unk80].parts[2].unk11 == 0)
-        gBattleWork.unk15C[2] = 1;
+    if (part_skill_is_passive(gBattleWork.commandBot, 2))
+        gBattleWork.partBlockReason[2] = 3;
+    if (gBattleBots[gBattleWork.commandBot].statusType == 0x2B && gBattleBots[gBattleWork.commandBot].statusPart == 3)
+        gBattleWork.partBlockReason[2] = 2;
+    if (gBattleBots[gBattleWork.commandBot].parts[2].unk11 == 0)
+        gBattleWork.partBlockReason[2] = 1;
 }
 
 // Sprite 9 marks the target of the selected part (parts[].unkE = target record + 1, unkF = target part);
 // target_marker_update pulses that part sprite's scale, target_marker_hide restores it.
 void target_marker_show(void) {
     clear_battle_sprite_slot(9, 1);
-    if (gBattleWork.unk82 != 0 && gBattleWork.unk15C[gBattleWork.unk82 - 1] == 0 &&
-        gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkE) {
+    if (gBattleWork.partCursor != 0 && gBattleWork.partBlockReason[gBattleWork.partCursor - 1] == 0 &&
+        gBattleBots[gBattleWork.commandBot].parts[gBattleWork.partCursor - 1].unkE) {
         gSpriteEntries[9].flags =
             SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[9].frame_table = 0;
         gSpriteEntries[9].y =
-            gSpriteEntries[gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkE * 4 + 0x59].y - 4;
+            gSpriteEntries[gBattleBots[gBattleWork.commandBot].parts[gBattleWork.partCursor - 1].unkE * 4 + 0x59].y - 4;
         gSpriteEntries[9].x =
-            gSpriteEntries[gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkE * 4 + 0x59].x;
+            gSpriteEntries[gBattleBots[gBattleWork.commandBot].parts[gBattleWork.partCursor - 1].unkE * 4 + 0x59].x;
         gSpriteEntries[9].palette = 6;
         gSpriteEntries[9].order = 0xF0;
-        gSpriteEntries[9].unk24 = gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkF;
-        gSpriteEntries[9].unk25 = gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkE;
+        gSpriteEntries[9].unk24 = gBattleBots[gBattleWork.commandBot].parts[gBattleWork.partCursor - 1].unkF;
+        gSpriteEntries[9].unk25 = gBattleBots[gBattleWork.commandBot].parts[gBattleWork.partCursor - 1].unkE;
         gSpriteEntries[9].unk26 = 0;
         gSpriteEntries[9].unk27 = 0;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[24], 9);
@@ -204,12 +204,12 @@ void target_marker_hide(void) {
         if (gSpriteEntries[9].unk24) {
             gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_x = 0x40;
             gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_y = 0x40;
-            if (gBattleWork.unk80 == gSpriteEntries[9].unk25 - 1) {
+            if (gBattleWork.commandBot == gSpriteEntries[9].unk25 - 1) {
                 if ((u8)(gSpriteEntries[9].unk24 - 2) <= 1)
-                    gSpriteEntries[gBattleWork.unk80 * 4 + gSpriteEntries[9].unk24 + 0x59].flags &=
+                    gSpriteEntries[gBattleWork.commandBot * 4 + gSpriteEntries[9].unk24 + 0x59].flags &=
                         (u16)~SPRITE_FLAG_DOUBLE_SIZE;
                 else
-                    gSpriteEntries[gBattleWork.unk80 * 4 + gSpriteEntries[9].unk24 + 0x59].flags &=
+                    gSpriteEntries[gBattleWork.commandBot * 4 + gSpriteEntries[9].unk24 + 0x59].flags &=
                         (u16) ~(SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE);
             }
         }

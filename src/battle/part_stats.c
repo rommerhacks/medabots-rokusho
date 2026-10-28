@@ -43,13 +43,13 @@ void battle_tick_buff_effect(u32 rec) {
     if (gBattleBots[rec].buffType != 0x1F)
         return;
     gBattleWork.effectAmountLeft = gBattleBots[rec].buffAmount;
-    gBattleWork.unk86 = 0;
+    gBattleWork.effectAmountTotal = 0;
     done = 0;
     for (i = 0; i <= 3; i++) {
         part = find_damaged_part(rec);
         if (part != 0) {
             result = add_part_stat_clamped(rec, part - 1, gBattleWork.effectAmountLeft);
-            gBattleWork.unk86 += result;
+            gBattleWork.effectAmountTotal += result;
             gBattleWork.effectAmountLeft = (result & 0xFF00) >> 8;
             done = 1;
             if (gBattleWork.effectAmountLeft == 0)
@@ -58,7 +58,7 @@ void battle_tick_buff_effect(u32 rec) {
             break;
     }
     if (done) {
-        gBattleBots[rec].buffNumber = gBattleWork.unk86;
+        gBattleBots[rec].buffNumber = gBattleWork.effectAmountTotal;
         gBattleBots[rec].effectShownFlags |= 4;
         gBattleWork.resultFlags |= 8;
     }
@@ -83,13 +83,13 @@ void battle_tick_status_effect(u32 rec) {
     if ((u8)(gBattleBots[rec].statusType - 0x13) > 1)
         return;
     gBattleWork.effectAmountLeft = gBattleBots[rec].statusAmount;
-    gBattleWork.unk86 = 0;
+    gBattleWork.effectAmountTotal = 0;
     done = 0;
     for (i = 0; i <= 3; i++) {
         part = find_burnable_part(rec);
         if (part != 0) {
             result = subtract_part_armor_keep_one(rec, part - 1, gBattleWork.effectAmountLeft);
-            gBattleWork.unk86 += result;
+            gBattleWork.effectAmountTotal += result;
             gBattleWork.effectAmountLeft = (result & 0xFF00) >> 8;
             done = 1;
             if (gBattleWork.effectAmountLeft == 0)
@@ -98,7 +98,7 @@ void battle_tick_status_effect(u32 rec) {
             break;
     }
     if (done) {
-        gBattleBots[rec].statusNumber = gBattleWork.unk86;
+        gBattleBots[rec].statusNumber = gBattleWork.effectAmountTotal;
         gBattleBots[rec].effectShownFlags |= 8;
         gBattleWork.resultFlags |= 0x10;
     }

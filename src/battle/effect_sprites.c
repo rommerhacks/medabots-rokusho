@@ -293,7 +293,7 @@ done:
 
 void battle_set_damage_break_part(u32 rec, u32 part) {
     gBattleWork.appliedAmount = gBattleBots[rec].parts[part].unk11;
-    gBattleWork.unkCC = gBattleBots[rec].parts[part].unk11;
+    gBattleWork.cappedAmount = gBattleBots[rec].parts[part].unk11;
     gBattleWork.partBroken = 1;
 }
 

@@ -374,8 +374,8 @@ void particle_spin_back_90(void) {
 void medaforce_clear_hit_list(void) {
     u32 i;
     for (i = 0; i <= 2; i++) {
-        gBattleWork.unkD2[i] = 0;
-        gBattleWork.unkD6[i] = 0;
+        gBattleWork.partBreaks[i] = 0;
+        gBattleWork.partDamage[i] = 0;
     }
 }
 
@@ -534,7 +534,7 @@ u32 particle_run_sweep_handlers(void) {
     return done;
 }
 
-// Sweep state 1: moves 4 px a frame across the screen; passing a Medabot that takes damage (unkD6) plays a
+// Sweep state 1: moves 4 px a frame across the screen; passing a Medabot that takes damage (partDamage) plays a
 // hit sound and starts a hit sprite 3 slots on. Freed after 41 frames.
 void particle_sweep_across(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x6D], gGameWork.runningSpriteSlot);
@@ -542,7 +542,7 @@ void particle_sweep_across(void) {
         gSpriteEntries[gGameWork.runningSpriteSlot].x = (gSpriteEntries[gGameWork.runningSpriteSlot].x + 4) & 0x1FF;
         if (gSpriteEntries[gGameWork.runningSpriteSlot].x >
                 gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x &&
-            gBattleWork.unkD6[gGameWork.runningSpriteSlot - 0x21] != 0 &&
+            gBattleWork.partDamage[gGameWork.runningSpriteSlot - 0x21] != 0 &&
             gSpriteEntries[gGameWork.runningSpriteSlot].unk28 == 0) {
             play_sound_effect(0x54);
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].flags =
@@ -563,7 +563,7 @@ void particle_sweep_across(void) {
         gSpriteEntries[gGameWork.runningSpriteSlot].x = (gSpriteEntries[gGameWork.runningSpriteSlot].x - 4) & 0x1FF;
         if (gSpriteEntries[gGameWork.runningSpriteSlot].x <
                 gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x &&
-            gBattleWork.unkD6[gGameWork.runningSpriteSlot - 0x21] != 0 &&
+            gBattleWork.partDamage[gGameWork.runningSpriteSlot - 0x21] != 0 &&
             gSpriteEntries[gGameWork.runningSpriteSlot].unk28 == 0) {
             play_sound_effect(0x54);
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE |

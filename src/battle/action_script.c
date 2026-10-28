@@ -14,7 +14,7 @@ void battle_run_action_script(void) {
 
             CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
         }
-        if (gBattleWork.unk1AE == 0)
+        if (gBattleWork.closeupWipeDone == 0)
             update_all_battle_status_sprites();
         do {
             gBattleWork.runNextStep = 0;
@@ -56,7 +56,7 @@ void script_op_skip_to_label(void) {
     gBattleWork.runNextStep = 1;
 }
 
-// Opcode 0x03: skips forward to the command byte equal to operand [unkAB] (the last check's 0-2 result).
+// Opcode 0x03: skips forward to the command byte equal to operand [stepResult] (the last check's 0-2 result).
 void script_op_branch_on_result(void) {
     vu8 found = 0;
     struct BattleWork *s;
@@ -69,7 +69,7 @@ void script_op_branch_on_result(void) {
         tbl = gActionScripts;
         s = &gBattleWork;
         script = tbl[s->actorSkill];
-        if (s->scriptOperands[s->unkAB] == script[s->scriptOffset]) {
+        if (s->scriptOperands[s->stepResult] == script[s->scriptOffset]) {
             battle_script_advance();
             found = 1;
         } else
@@ -160,7 +160,7 @@ void script_op_calc_success(void) {
     battle_script_advance();
 }
 
-// Opcode 0x0D: a guarding teammate or a cover part takes the attack (unkAB = 1).
+// Opcode 0x0D: a guarding teammate or a cover part takes the attack (stepResult = 1).
 void script_op_guard_check(void) {
     battle_check_guard_or_cover();
     battle_script_advance();
@@ -188,33 +188,33 @@ void script_op_set_target_no_dodge_flags(void) {
     battle_script_advance();
 }
 
-// Opcode 0x0F: success (unkE8) against the target's evasion (unkEE).
+// Opcode 0x0F: success against the target's evasion (evasion).
 void script_op_evasion_check(void) {
     battle_begin_action_phase();
     battle_script_advance();
 }
 
-// Opcode 0x10: unkAB = 1, unkB7 = 1 (missed) when the target dodged.
+// Opcode 0x10: stepResult = 1, hitResult = 1 (missed) when the target dodged.
 void script_op_dodge_check(void) {
     battle_check_dodged();
     battle_script_advance();
 }
 
-// Opcode 0x11: unkB8 = 2 (nullified) when the target is immune (unkBE says why).
+// Opcode 0x11: blockResult = 2 (nullified) when the target is immune (nullifyReason says why).
 void script_op_nullify_check(void) {
     battle_check_nullified();
     battle_script_advance();
 }
 
-// Opcode 0x12: unkB8 = 4 (absorbed) when the target absorbs the attack (unkBF says why).
+// Opcode 0x12: blockResult = 4 (absorbed) when the target absorbs the attack (absorbReason says why).
 void script_op_absorb_check(void) {
     battle_check_absorbed();
     battle_script_advance();
 }
 
-// Opcode 0x13: unkEA = success / 4, added to the damage by script_op_calc_damage.
+// Opcode 0x13: successBonus = success / 4, added to the damage by script_op_calc_damage.
 void script_op_success_bonus(void) {
-    gBattleWork.unkEA = gBattleWork.success >> 2;
+    gBattleWork.successBonus = gBattleWork.success >> 2;
     battle_script_advance();
 }
 
@@ -223,7 +223,7 @@ void script_op_calc_damage(void) {
     u32 type;
 
     gBattleWork.amount = 0;
-    gBattleWork.amount = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[6] + gBattleWork.unkEA;
+    gBattleWork.amount = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[6] + gBattleWork.successBonus;
     gBattleWork.amount += gBattleBots[gBattleWork.actor].powerBonus;
     type = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2];
     if (type == 0)
@@ -264,7 +264,7 @@ void script_op_half_block_check(void) {
     if (gBattleWork.guardBot != 0 && gBattleWork.guardSkill == 0x1D && gBattleWork.blockResult == 0 &&
         gBattleWork.amount < (s16)gBattleBots[gBattleWork.target].defence) {
         gBattleWork.blockResult = 2;
-        gBattleWork.unkBE = 1;
+        gBattleWork.nullifyReason = 1;
     }
     battle_script_advance();
 }
@@ -273,7 +273,7 @@ void script_op_half_block_check(void) {
 void script_op_full_block_check(void) {
     if (gBattleWork.guardBot != 0 && gBattleWork.guardSkill == 0x1C && gBattleWork.blockResult == 0) {
         gBattleWork.blockResult = 2;
-        gBattleWork.unkBE = 5;
+        gBattleWork.nullifyReason = 5;
     }
     battle_script_advance();
 }
@@ -329,8 +329,8 @@ void script_op_skill_anim_start(void) {
 
 void script_op_skill_anim_run(void) {
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     gBattleWork.stepDone = 0;
     battle_sequence_update();
     if (gBattleWork.stepDone) {
@@ -341,8 +341,8 @@ void script_op_skill_anim_run(void) {
 
 void script_op_set_damage(void) {
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     gBattleWork.damagePart = gBattleWork.targetPart;
     battle_set_damage_vs_armor(gBattleWork.target, gBattleWork.damagePart, gBattleWork.amount);
     battle_script_advance();
@@ -350,8 +350,8 @@ void script_op_set_damage(void) {
 
 void script_op_attack_hit(void) {
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     attack_hit_run();
     if (gBattleWork.stepDone)
         battle_script_advance();
@@ -359,8 +359,8 @@ void script_op_attack_hit(void) {
 
 void script_op_status_attack(void) {
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     status_attack_run();
     if (gBattleWork.stepDone)
         battle_script_advance();
@@ -382,8 +382,8 @@ void script_op_bot_defeat(void) {
 
 void script_op_reaction(void) {
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     reaction_run();
     if (gBattleWork.stepDone)
         battle_script_advance();
@@ -409,8 +409,8 @@ void script_op_recovery(void) {
 
 void script_op_recovery_heal(void) {
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     recovery_heal_run();
     if (gBattleWork.stepDone)
         battle_script_advance();
@@ -424,8 +424,8 @@ void script_op_repair(void) {
 
 void script_op_repair_apply(void) {
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     repair_apply_run();
     if (gBattleWork.stepDone)
         battle_script_advance();
@@ -568,7 +568,7 @@ void script_op_counter_attack(void) {
 void script_op_change(void) {
     change_run();
     if (gBattleWork.stepDone) {
-        if (gBattleWork.unkAB == 1)
+        if (gBattleWork.stepResult == 1)
             battle_script_advance();
         else {
             gGameState = 8;
@@ -580,8 +580,8 @@ void script_op_change(void) {
 // Opcode 0x40: Spiral Bolt (Medaforce 0), damage to all four parts of the target.
 void script_op_medaforce_spiral_bolt(void) {
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     medaforce_spiral_bolt_run();
     if (gBattleWork.stepDone)
         battle_script_advance();
@@ -626,8 +626,8 @@ void script_op_damage_add_shoot_parts(void) {
 // Unbreakable Will, Structureless, Dice Attack, Type Crash).
 void script_op_medaforce_hit(void) {
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     medaforce_hit_run();
     if (gBattleWork.stepDone)
         battle_script_advance();
@@ -649,46 +649,46 @@ void script_op_damage_from_armor_lost(void) {
     battle_script_advance();
 }
 
-// Opcode 0x47: guess: the actor targets itself (old target in unk161) and the close-up sides swap.
+// Opcode 0x47: guess: the actor targets itself (old target in swapBot) and the close-up sides swap.
 void script_op_target_self(void) {
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
-    gBattleWork.unkF6 = 3;
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
+    gBattleWork.reactionFlags = 3;
     gBattleBots[gBattleWork.actor].unkE0 = gBattleWork.actor + 1;
-    gBattleWork.unk161 = gBattleWork.target;
+    gBattleWork.swapBot = gBattleWork.target;
     battle_load_action_target(gBattleWork.actor);
     gBattleWork.actorSideFlags ^= 2;
     if (!(gBattleWork.actorSideFlags & 2))
-        gBattleWork.unk114[0] = 0;
+        gBattleWork.closeupPoseBase[0] = 0;
     else {
-        gBattleWork.unk114[0] = 0x28;
-        gBattleWork.unkFF |= 1;
+        gBattleWork.closeupPoseBase[0] = 0x28;
+        gBattleWork.closeupRedraw |= 1;
     }
     if (!(gBattleWork.actorSideFlags & 2)) {
-        gBattleWork.unk114[1] = 0x28;
-        gBattleWork.unkFF |= 2;
+        gBattleWork.closeupPoseBase[1] = 0x28;
+        gBattleWork.closeupRedraw |= 2;
     } else
-        gBattleWork.unk114[1] = 0;
+        gBattleWork.closeupPoseBase[1] = 0;
     battle_script_advance();
 }
 
 // Opcode 0x48: Life Drain (Medaforce 0x14) heals the actor's most damaged part.
 void script_op_medaforce_life_drain_heal(void) {
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     medaforce_life_drain_heal_run();
     if (gBattleWork.stepDone)
         battle_script_advance();
 }
 
-// Opcode 0x49: half of each of the actor's part armors (kept in unkD6[]) is added to the damage.
+// Opcode 0x49: half of each of the actor's part armors (kept in partDamage[]) is added to the damage.
 void script_op_damage_from_half_armor(void) {
     u32 i;
 
     for (i = 0; i <= 3; i++) {
-        gBattleWork.unkD6[i] = gBattleBots[gBattleWork.actor].parts[i].unk11 >> 1;
+        gBattleWork.partDamage[i] = gBattleBots[gBattleWork.actor].parts[i].unk11 >> 1;
         gBattleWork.amount += gBattleBots[gBattleWork.actor].parts[i].unk11 >> 1;
     }
     battle_script_advance();

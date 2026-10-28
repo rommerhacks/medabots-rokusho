@@ -19,10 +19,10 @@ void bot_target_swap_side(u32 rec) {
 
 // The battle message runner: open the window, print message msg, finish; 1 when done.
 u32 battle_message_show(u32 msg) {
-    gBattleWork.unkA1[1] = msg;
-    gBattleMessageSteps[gBattleWork.unkA1[0]]();
-    if (gBattleWork.unkA1[0] == 3) {
-        gBattleWork.unkA1[0] = 0;
+    gBattleWork.messageStep[1] = msg;
+    gBattleMessageSteps[gBattleWork.messageStep[0]]();
+    if (gBattleWork.messageStep[0] == 3) {
+        gBattleWork.messageStep[0] = 0;
         return 1;
     }
     return 0;
@@ -30,25 +30,25 @@ u32 battle_message_show(u32 msg) {
 
 void battle_message_step_open(void) {
     battle_message_open();
-    gBattleWork.unkA1[0]++;
+    gBattleWork.messageStep[0]++;
 }
 
 void battle_message_step_print(void) {
-    if (battle_message_print(gBattleWork.unkA1[1]))
-        gBattleWork.unkA1[0]++;
+    if (battle_message_print(gBattleWork.messageStep[1]))
+        gBattleWork.messageStep[0]++;
 }
 
 void battle_message_step_finish(void) {
     if (battle_message_finish())
-        gBattleWork.unkA1[0]++;
+        gBattleWork.messageStep[0]++;
 }
 
 // The "MISS!!" popup (seen at runtime in the battle scenario): load its graphics, spawn it above the acting
 // Medabot, let it drop 4 px, hold it 60 frames (A skips); 1 when done.
 u32 miss_popup_run(void) {
-    gMissPopupSteps[gBattleWork.unk9C[0]]();
-    if (gBattleWork.unk9C[0] == 4) {
-        gBattleWork.unk9C[0] = 0;
+    gMissPopupSteps[gBattleWork.substep[0]]();
+    if (gBattleWork.substep[0] == 4) {
+        gBattleWork.substep[0] = 0;
         return 1;
     }
     return 0;
@@ -57,7 +57,7 @@ u32 miss_popup_run(void) {
 void miss_popup_load(void) {
     lz_decompress_dispatch(gMissPopupTiles, (void *)0x06014E00);
     CpuFastSet(gMissPopupPalette, (void *)0x050002C0, 8);
-    gBattleWork.unk9C[0]++;
+    gBattleWork.substep[0]++;
 }
 
 void miss_popup_spawn(void) {
@@ -69,35 +69,35 @@ void miss_popup_spawn(void) {
     gSpriteEntries[3].frame = 0xA11;
     gSpriteEntries[3].order = 0x81;
     play_sound_effect(0x2F);
-    gBattleWork.unk9C[0]++;
+    gBattleWork.substep[0]++;
 }
 
 void miss_popup_drop(void) {
     if (gFrameCounter & 1) {
         gSpriteEntries[3].y++;
         if (gSpriteEntries[3].y == gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y + 4) {
-            gBattleWork.unk9C[1] = 0;
-            gBattleWork.unk9C[0]++;
+            gBattleWork.substep[1] = 0;
+            gBattleWork.substep[0]++;
         }
     }
 }
 
 void miss_popup_wait(void) {
-    gBattleWork.unk9C[1]++;
+    gBattleWork.substep[1]++;
     if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & 1))
-        gBattleWork.unk9C[1] = 60;
-    if (gBattleWork.unk9C[1] == 60) {
+        gBattleWork.substep[1] = 60;
+    if (gBattleWork.substep[1] == 60) {
         clear_battle_sprite_slot(3, 1);
-        gBattleWork.unk9C[0]++;
+        gBattleWork.substep[0]++;
     }
 }
 
 // Shows who acts on whom: a pointer line from the acting Medabot (unk87) and its panel; with show_target != 0
 // the arrows then run to the target's (unk88) panel. 1 once the panels are up (the last step idles).
 u32 target_panels_show(u32 show_target) {
-    gBattleWork.unk9C[1] = show_target;
-    gTargetPanelSteps[gBattleWork.unk9C[0]]();
-    if (gBattleWork.unk9C[2] != 0)
+    gBattleWork.substep[1] = show_target;
+    gTargetPanelSteps[gBattleWork.substep[0]]();
+    if (gBattleWork.substep[2] != 0)
         return 1;
     return 0;
 }
@@ -105,29 +105,29 @@ u32 target_panels_show(u32 show_target) {
 void target_panels_line_init(void) {
     CpuFastSet(gTargetLinePalette, (void *)0x05000300, 8);
     bot_pointer_line_init(gBattleWork.actor);
-    gBattleWork.unk9C[0]++;
+    gBattleWork.substep[0]++;
 }
 
 void target_panels_line_extend(void) {
     if (bot_pointer_line_extend(gBattleWork.actor))
-        gBattleWork.unk9C[0]++;
+        gBattleWork.substep[0]++;
 }
 
 void target_panels_actor_frame(void) {
     bot_pointer_line_animate(gBattleWork.actor);
     draw_bot_panel_frame(gBattleWork.actor);
-    gBattleWork.unk9C[0]++;
+    gBattleWork.substep[0]++;
 }
 
 void target_panels_actor_panel(void) {
     bot_pointer_line_animate(gBattleWork.actor);
     render_bot_name_sprites(gBattleWork.actor);
     draw_bot_status_panel(gBattleWork.actor);
-    if (gBattleWork.unk9C[1] == 0) {
-        gBattleWork.unk9C[2] = 1;
-        gBattleWork.unk9C[0]++;
+    if (gBattleWork.substep[1] == 0) {
+        gBattleWork.substep[2] = 1;
+        gBattleWork.substep[0]++;
     } else
-        gBattleWork.unk9C[0] = 5;
+        gBattleWork.substep[0] = 5;
 }
 
 void target_panels_idle(void) {
@@ -138,20 +138,20 @@ void target_panels_arrows_init(void) {
     CpuFastSet(gTargetArrowsPalette, (void *)0x05000320, 8);
     bot_pointer_line_animate(gBattleWork.actor);
     target_arrows_init(gBattleWork.actor);
-    gBattleWork.unk9C[0]++;
+    gBattleWork.substep[0]++;
 }
 
 void target_panels_arrows_slide(void) {
     bot_pointer_line_animate(gBattleWork.actor);
     if (target_arrows_slide(gBattleWork.actor))
-        gBattleWork.unk9C[0]++;
+        gBattleWork.substep[0]++;
 }
 
 void target_panels_target_frame(void) {
     bot_pointer_line_animate(gBattleWork.actor);
     target_arrows_animate(gBattleWork.actor);
     draw_bot_panel_frame(gBattleWork.target);
-    gBattleWork.unk9C[0]++;
+    gBattleWork.substep[0]++;
 }
 
 void target_panels_target_panel(void) {
@@ -159,8 +159,8 @@ void target_panels_target_panel(void) {
     target_arrows_animate(gBattleWork.actor);
     render_bot_name_sprites(gBattleWork.target);
     draw_bot_status_panel(gBattleWork.target);
-    gBattleWork.unk9C[2] = 1;
-    gBattleWork.unk9C[0]++;
+    gBattleWork.substep[2] = 1;
+    gBattleWork.substep[0]++;
 }
 
 void target_panels_arrows_idle(void) {
@@ -169,7 +169,7 @@ void target_panels_arrows_idle(void) {
 }
 
 // Script opcode 0x04: a trap (Grap Trap / Shot Trap / Attack Clr) laid on the acting Medabot's side by the other side
-// (trap_apply, unk28[side]) springs on it. unkAB = 0 the action goes on, 1 it was stopped (Attack Clr), 2 the
+// (trap_apply, unk28[side]) springs on it. stepResult = 0 the action goes on, 1 it was stopped (Attack Clr), 2 the
 // actor's head broke.
 void trap_hit_run(void) {
     gBattleWork.stepDone = 0;
@@ -619,21 +619,21 @@ void trap_disarm_clear(void) {
 
 void trap_hit_end_continue(void) {
     gBattleWork.stepDone = 1;
-    gBattleWork.unkAB = 0;
+    gBattleWork.stepResult = 0;
 }
 
 void trap_hit_end_stopped(void) {
     gBattleWork.stepDone = 1;
-    gBattleWork.unkAB = 1;
+    gBattleWork.stepResult = 1;
 }
 
 void trap_hit_end_defeated(void) {
     gBattleWork.stepDone = 1;
-    gBattleWork.unkAB = 2;
+    gBattleWork.stepResult = 2;
 }
 
 // Script opcode 0x05: is the acting Medabot's chosen part still intact? If not, message 5 "The Medapart for that
-// action is broken" and unkAB = 1.
+// action is broken" and stepResult = 1.
 void action_part_check_run(void) {
     gBattleWork.stepDone = 0;
     gActionPartCheckSteps[gBattleWork.step]();
@@ -642,7 +642,7 @@ void action_part_check_run(void) {
 void action_part_check(void) {
     if (gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].unk11) {
         gBattleWork.stepDone = 1;
-        gBattleWork.unkAB = 0;
+        gBattleWork.stepResult = 0;
     } else {
         gBattleWork.messageId = 5;
         gBattleWork.step++;
@@ -651,11 +651,11 @@ void action_part_check(void) {
 
 void action_part_check_end_broken(void) {
     gBattleWork.stepDone = 1;
-    gBattleWork.unkAB = 1;
+    gBattleWork.stepResult = 1;
 }
 
 // Script opcode 0x07: is the targeted part still intact? If not, message 0xC "The target Medapart is broken" and
-// unkAB = 1.
+// stepResult = 1.
 void target_part_check_run(void) {
     gBattleWork.stepDone = 0;
     gTargetPartCheckSteps[gBattleWork.step]();
@@ -664,7 +664,7 @@ void target_part_check_run(void) {
 void target_part_check(void) {
     if (gBattleBots[gBattleWork.target].parts[gBattleWork.targetPart].unk11) {
         gBattleWork.stepDone = 1;
-        gBattleWork.unkAB = 0;
+        gBattleWork.stepResult = 0;
     } else {
         gBattleWork.messageId = 0xC;
         gBattleWork.step++;
@@ -673,7 +673,7 @@ void target_part_check(void) {
 
 void target_part_check_end_broken(void) {
     gBattleWork.stepDone = 1;
-    gBattleWork.unkAB = 1;
+    gBattleWork.stepResult = 1;
 }
 
 // guess: script opcode 0x08, a small effect (animation 0x1B) that flies from the actor to the target.
@@ -776,9 +776,9 @@ void guard_sprite_copy(void) {
     memcpy_bytes_0803F63C(&gSpriteEntries[(gBattleWork.guardBot - 1) * 4 + 0x5C], &gSpriteEntries[0x23], 0x40);
     memcpy_bytes_0803F63C(&gSpriteEntries[(gBattleWork.guardBot - 1) * 4 + 0x5D], &gSpriteEntries[0x24], 0x40);
     disable_sprites(0x21, 4);
-    get_bot_part_effective_values(gBattleWork.guardBot - 1, gBattleWork.unk64);
+    get_bot_part_effective_values(gBattleWork.guardBot - 1, gBattleWork.partIds);
     setup_battle_sprite_group(
-        gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
+        gBattleWork.partIds[0], gBattleWork.partIds[1], gBattleWork.partIds[2], gBattleWork.partIds[3],
         gBattleWork.guardBot - 1, gBattleWork.guardBot * 4 + 0x56, gSpriteEntries[gBattleWork.guardBot * 4 + 0x59].x,
         gSpriteEntries[gBattleWork.guardBot * 4 + 0x59].y - 4, (gBattleWork.actorSideFlags & 1) ^ 1,
         gBattleWork.battlefieldParams[3] + 2, gBattleWork.guardBot * 4 + 0x56);
@@ -850,9 +850,9 @@ void guard_move_in(void) {
         update_battle_sprite_orbiting_positions((gBattleWork.guardBot - 1) * 4 + 0x5A, gBattleWork.guardBot - 1,
                                                 (gBattleWork.actorSideFlags & 1) ^ 1);
         play_sound_effect(0x41);
-        get_bot_part_effective_values(gBattleWork.guardBot - 1, gBattleWork.unk64);
-        setup_battle_sprite_group(gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2],
-                                  gBattleWork.unk64[3], gBattleWork.guardBot - 1, gBattleWork.guardBot * 4 + 0x56,
+        get_bot_part_effective_values(gBattleWork.guardBot - 1, gBattleWork.partIds);
+        setup_battle_sprite_group(gBattleWork.partIds[0], gBattleWork.partIds[1], gBattleWork.partIds[2],
+                                  gBattleWork.partIds[3], gBattleWork.guardBot - 1, gBattleWork.guardBot * 4 + 0x56,
                                   gSpriteEntries[gBattleWork.guardBot * 4 + 0x59].x,
                                   gSpriteEntries[gBattleWork.guardBot * 4 + 0x59].y - 4,
                                   (gBattleWork.actorSideFlags & 1) ^ 1, gBattleWork.battlefieldParams[3] + 2,
@@ -956,7 +956,7 @@ void closeup_enter_wipe(void) {
     write_tilemap_rect(0x1E, 1, 0, gGameWork.stepCounter, gUiTilemapsNamed.blank_row, REG_BG0CNT, 0);
     write_tilemap_rect(0x1E, 1, 0, 0x13 - gGameWork.stepCounter, gUiTilemapsNamed.blank_row, REG_BG0CNT, 0);
     if (gGameWork.stepCounter == 9) {
-        gBattleWork.unk1AE = 1;
+        gBattleWork.closeupWipeDone = 1;
         gBattleWork.step++;
     } else {
         gGameWork.stepCounter++;
@@ -1118,11 +1118,11 @@ void attack_hit_critical_spawn(void) {
     gSpriteEntries[10].frame = 0x1F00;
     gSpriteEntries[10].unk23 = 0;
     if (!(gBattleWork.actorSideFlags & 2)) {
-        gSpriteEntries[10].x = gBattleWork.unk158;
-        gSpriteEntries[10].y = gBattleWork.unk15A;
+        gSpriteEntries[10].x = gBattleWork.closeupRightX;
+        gSpriteEntries[10].y = gBattleWork.closeupRightY;
     } else {
-        gSpriteEntries[10].x = gBattleWork.unk154;
-        gSpriteEntries[10].y = gBattleWork.unk156;
+        gSpriteEntries[10].x = gBattleWork.closeupLeftX;
+        gSpriteEntries[10].y = gBattleWork.closeupLeftY;
     }
     play_sound_effect(0x72);
     gBattleWork.step++;
@@ -1185,16 +1185,16 @@ void attack_hit_part_marker_spawn(void) {
     gSpriteEntries[10].unk23 = 0;
     if (!(gBattleWork.actorSideFlags & 2)) {
         if (gBattleWork.targetPart == 2)
-            gSpriteEntries[10].x = gBattleWork.unk158 - 0x10;
+            gSpriteEntries[10].x = gBattleWork.closeupRightX - 0x10;
         else
-            gSpriteEntries[10].x = gBattleWork.unk158;
-        gSpriteEntries[10].y = gBattleWork.unk15A;
+            gSpriteEntries[10].x = gBattleWork.closeupRightX;
+        gSpriteEntries[10].y = gBattleWork.closeupRightY;
     } else {
         if (gBattleWork.targetPart == 1)
-            gSpriteEntries[10].x = gBattleWork.unk154 + 0x10;
+            gSpriteEntries[10].x = gBattleWork.closeupLeftX + 0x10;
         else
-            gSpriteEntries[10].x = gBattleWork.unk154;
-        gSpriteEntries[10].y = gBattleWork.unk156;
+            gSpriteEntries[10].x = gBattleWork.closeupLeftX;
+        gSpriteEntries[10].y = gBattleWork.closeupLeftY;
     }
     gBattleWork.step++;
 }
@@ -1212,11 +1212,11 @@ void attack_hit_sparks_spawn(void) {
     lz_decompress_dispatch(gHitSparksTiles, (void *)0x06010800);
     CpuFastSet(gHitSparksPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
-        x = gBattleWork.unk158;
-        y = gBattleWork.unk15A;
+        x = gBattleWork.closeupRightX;
+        y = gBattleWork.closeupRightY;
     } else {
-        x = gBattleWork.unk154;
-        y = gBattleWork.unk156;
+        x = gBattleWork.closeupLeftX;
+        y = gBattleWork.closeupLeftY;
     }
     hit_sparks_spawn(10, gBattleWork.targetPart, x, y);
     gBattleWork.step++;
@@ -1236,11 +1236,11 @@ void attack_hit_damage_popup_init(void) {
     lz_decompress_dispatch(gDamageNumberTiles, (void *)0x06010000);
     CpuFastSet(gDamageNumberPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
-        x = gBattleWork.unk158;
-        y = gBattleWork.unk15A;
+        x = gBattleWork.closeupRightX;
+        y = gBattleWork.closeupRightY;
     } else {
-        x = gBattleWork.unk154;
-        y = gBattleWork.unk156;
+        x = gBattleWork.closeupLeftX;
+        y = gBattleWork.closeupLeftY;
     }
     set_display_digit_type(&gGameWork.partAbility, gBattleWork.appliedAmount, 1);
     damage_digits_spawn(&gGameWork.partAbility, 10, gBattleWork.targetPart, x, y);
@@ -1306,11 +1306,11 @@ void attack_hit_break_burst_init(void) {
     lz_decompress_dispatch(gPartBreakBurstTiles, (void *)0x06010800);
     CpuFastSet(gPartBreakBurstPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
-        x = gBattleWork.unk158;
-        y = gBattleWork.unk15A;
+        x = gBattleWork.closeupRightX;
+        y = gBattleWork.closeupRightY;
     } else {
-        x = gBattleWork.unk154;
-        y = gBattleWork.unk156;
+        x = gBattleWork.closeupLeftX;
+        y = gBattleWork.closeupLeftY;
     }
     gGameWork.stepTimer = 0;
     effect_sprite_spawn_at_part(10, gBattleWork.targetPart, x, y, 0x1E);
@@ -1399,16 +1399,16 @@ void attack_carry_marker_spawn(void) {
     gSpriteEntries[10].unk23 = 0;
     if (!(gBattleWork.actorSideFlags & 2)) {
         if (gBattleWork.targetPart == 2)
-            gSpriteEntries[10].x = gBattleWork.unk158 - 0x10;
+            gSpriteEntries[10].x = gBattleWork.closeupRightX - 0x10;
         else
-            gSpriteEntries[10].x = gBattleWork.unk158;
-        gSpriteEntries[10].y = gBattleWork.unk15A;
+            gSpriteEntries[10].x = gBattleWork.closeupRightX;
+        gSpriteEntries[10].y = gBattleWork.closeupRightY;
     } else {
         if (gBattleWork.targetPart == 1)
-            gSpriteEntries[10].x = gBattleWork.unk154 + 0x10;
+            gSpriteEntries[10].x = gBattleWork.closeupLeftX + 0x10;
         else
-            gSpriteEntries[10].x = gBattleWork.unk154;
-        gSpriteEntries[10].y = gBattleWork.unk156;
+            gSpriteEntries[10].x = gBattleWork.closeupLeftX;
+        gSpriteEntries[10].y = gBattleWork.closeupLeftY;
     }
     gBattleWork.step++;
 }
@@ -1429,13 +1429,13 @@ void attack_miss_sprite_spawn(void) {
     gSpriteEntries[10].frame = 0x1400;
     gSpriteEntries[10].unk23 = 0;
     if (!(gBattleWork.actorSideFlags & 2)) {
-        gSpriteEntries[10].x = gBattleWork.unk158;
-        gSpriteEntries[10].y = gBattleWork.unk15A - 0x10;
-        gSpriteEntries[10].unk30 = gBattleWork.unk15A;
+        gSpriteEntries[10].x = gBattleWork.closeupRightX;
+        gSpriteEntries[10].y = gBattleWork.closeupRightY - 0x10;
+        gSpriteEntries[10].unk30 = gBattleWork.closeupRightY;
     } else {
-        gSpriteEntries[10].x = gBattleWork.unk154;
-        gSpriteEntries[10].y = gBattleWork.unk156 - 0x10;
-        gSpriteEntries[10].unk30 = gBattleWork.unk156;
+        gSpriteEntries[10].x = gBattleWork.closeupLeftX;
+        gSpriteEntries[10].y = gBattleWork.closeupLeftY - 0x10;
+        gSpriteEntries[10].unk30 = gBattleWork.closeupLeftY;
     }
     play_sound_effect(0x2F);
     gBattleWork.step++;
@@ -1463,11 +1463,11 @@ void attack_nullified_sprite_spawn(void) {
     gSpriteEntries[10].frame = 0x2000;
     gSpriteEntries[10].unk23 = 0;
     if (!(gBattleWork.actorSideFlags & 2)) {
-        gSpriteEntries[10].x = gBattleWork.unk158;
-        gSpriteEntries[10].y = gBattleWork.unk15A;
+        gSpriteEntries[10].x = gBattleWork.closeupRightX;
+        gSpriteEntries[10].y = gBattleWork.closeupRightY;
     } else {
-        gSpriteEntries[10].x = gBattleWork.unk154;
-        gSpriteEntries[10].y = gBattleWork.unk156;
+        gSpriteEntries[10].x = gBattleWork.closeupLeftX;
+        gSpriteEntries[10].y = gBattleWork.closeupLeftY;
     }
     play_sound_effect(0x2A);
     gBattleWork.step++;
@@ -1485,11 +1485,11 @@ void attack_absorbed_sprite_spawn(void) {
     gSpriteEntries[10].frame = 0x2E00;
     gSpriteEntries[10].unk23 = 0;
     if (!(gBattleWork.actorSideFlags & 2)) {
-        gSpriteEntries[10].x = gBattleWork.unk158;
-        gSpriteEntries[10].y = gBattleWork.unk15A;
+        gSpriteEntries[10].x = gBattleWork.closeupRightX;
+        gSpriteEntries[10].y = gBattleWork.closeupRightY;
     } else {
-        gSpriteEntries[10].x = gBattleWork.unk154;
-        gSpriteEntries[10].y = gBattleWork.unk156;
+        gSpriteEntries[10].x = gBattleWork.closeupLeftX;
+        gSpriteEntries[10].y = gBattleWork.closeupLeftY;
     }
     play_sound_effect(0x2A);
     gBattleWork.step++;
@@ -1512,11 +1512,11 @@ void attack_absorbed_sparkle_init(void) {
     lz_decompress_dispatch(gAbsorbSparkleTiles, (void *)0x06010800);
     CpuFastSet(gAbsorbSparklePalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
-        x = gBattleWork.unk158;
-        y = gBattleWork.unk15A;
+        x = gBattleWork.closeupRightX;
+        y = gBattleWork.closeupRightY;
     } else {
-        x = gBattleWork.unk154;
-        y = gBattleWork.unk156;
+        x = gBattleWork.closeupLeftX;
+        y = gBattleWork.closeupLeftY;
     }
     effect_sprite_spawn_at_part(10, gBattleWork.targetPart, x, y, 0x20);
     gBattleWork.step++;
@@ -1537,11 +1537,11 @@ void attack_absorbed_heal_popup_init(void) {
     lz_decompress_dispatch(gDamageNumberTiles, (void *)0x06010000);
     CpuFastSet(gHealNumberPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
-        x = gBattleWork.unk158;
-        y = gBattleWork.unk15A;
+        x = gBattleWork.closeupRightX;
+        y = gBattleWork.closeupRightY;
     } else {
-        x = gBattleWork.unk154;
-        y = gBattleWork.unk156;
+        x = gBattleWork.closeupLeftX;
+        y = gBattleWork.closeupLeftY;
     }
     set_display_digit_type(&gGameWork.partAbility, gBattleWork.appliedAmount, 0);
     damage_digits_spawn(&gGameWork.partAbility, 10, gBattleWork.targetPart, x, y);
@@ -1667,11 +1667,11 @@ void status_attack_flash_spawn(void) {
     lz_decompress_dispatch(gStatusFlashTiles, (void *)0x06010000);
     CpuFastSet(gStatusFlashPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
-        x = gBattleWork.unk158;
-        y = gBattleWork.unk15A;
+        x = gBattleWork.closeupRightX;
+        y = gBattleWork.closeupRightY;
     } else {
-        x = gBattleWork.unk154;
-        y = gBattleWork.unk156;
+        x = gBattleWork.closeupLeftX;
+        y = gBattleWork.closeupLeftY;
     }
     gSpriteEntries[10].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
                                SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
@@ -1732,11 +1732,11 @@ void status_attack_icons_spawn(void) {
     s16 sx, sy;
 
     if (!(gBattleWork.actorSideFlags & 2)) {
-        x = gBattleWork.unk158 - 4;
-        y = gBattleWork.unk15A;
+        x = gBattleWork.closeupRightX - 4;
+        y = gBattleWork.closeupRightY;
     } else {
-        x = gBattleWork.unk154 + 4;
-        y = gBattleWork.unk156;
+        x = gBattleWork.closeupLeftX + 4;
+        y = gBattleWork.closeupLeftY;
     }
     switch (gBattleWork.unk51) {
     case 0:
@@ -1804,8 +1804,8 @@ void closeup_exit_init(void) {
     u32 fill;
 
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     gGameWork.stepCounter = 0;
     zero = 0;
     CpuFastSet(&zero, (void *)0x05000120, 0x01000008);
@@ -1818,8 +1818,8 @@ void closeup_exit_wipe(void) {
     u32 v;
 
     init_battle_scene_backgrounds();
-    gBattleWork.unk15F = closeup_left_pose_step();
-    gBattleWork.unk160 = closeup_right_pose_step();
+    gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
+    gBattleWork.closeupRightPoseDone = closeup_right_pose_step();
     write_tilemap_rect(0x1E, 1, 0, gGameWork.stepCounter, gUiTilemapsNamed.blank_row, REG_BG0CNT, 0);
     write_tilemap_rect(0x1E, 1, 0, 0x13 - gGameWork.stepCounter, gUiTilemapsNamed.blank_row, REG_BG0CNT, 0);
     if (gGameWork.stepCounter == 9) {
@@ -1874,7 +1874,7 @@ void closeup_exit_reload(void) {
         iterate_bots_setup_battle_sprites();
         gVBlankCallback = battle_vblank_update_bg;
         gGameWork.stepCounter = 0;
-        gBattleWork.unk1AE = 0;
+        gBattleWork.closeupWipeDone = 0;
         gBattleWork.step++;
         gGameWork.setupStep = 0;
         break;
@@ -1890,8 +1890,8 @@ void closeup_exit_unwipe(void) {
         gGameWork.stepCounter++;
 }
 
-// Opcode 0x21 (gBotDefeatSteps): for each Medabot waiting in unkE0 (add_bot_to_defeated_list), a ring and a burst
-// over it, remove its sprites and show message 0x14 "<Medal>'s function ceased".
+// Opcode 0x21 (gBotDefeatSteps): for each Medabot waiting in defeatedQueue (add_bot_to_defeated_list), a ring and a
+// burst over it, remove its sprites and show message 0x14 "<Medal>'s function ceased".
 void bot_defeat_run(void) {
     gBattleWork.stepDone = 0;
     gBotDefeatSteps[gBattleWork.step]();
@@ -1901,9 +1901,9 @@ void bot_defeat_find(void) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gBattleWork.unkE0[i]) {
-            gBattleWork.unk51 = gBattleWork.unkE0[i] - 1;
-            gBattleWork.unkE0[i] = 0;
+        if (gBattleWork.defeatedQueue[i]) {
+            gBattleWork.unk51 = gBattleWork.defeatedQueue[i] - 1;
+            gBattleWork.defeatedQueue[i] = 0;
             load_all_bot_part_sprites();
             iterate_bots_setup_battle_sprites();
             reset_battle_bot_state(gBattleWork.unk51);
@@ -1960,19 +1960,20 @@ void bot_defeat_next(void) {
     gBattleWork.step = 0;
 }
 
-// Opcode 0x22 (gReactionSteps). guess: the target's prepared reaction (unkF6 bit 0, set by battle_check_guard_or_cover
-// for a guard or a readied part): a sprite rises; with unkB7 == 3 it turns into a counter (reaction_counter_begin swaps
-// the sides), else it drops back with a nullify or absorb effect. Runtime: runs first in each attack, skipped there.
+// Opcode 0x22 (gReactionSteps). guess: the target's prepared reaction (reactionFlags bit 0, set by
+// battle_check_guard_or_cover for a guard or a readied part): a sprite rises; with unkB7 == 3 it turns into a counter
+// (reaction_counter_begin swaps the sides), else it drops back with a nullify or absorb effect. Runtime: runs first in
+// each attack, skipped there.
 void reaction_run(void) {
     gBattleWork.stepDone = 0;
     gReactionSteps[gBattleWork.step]();
 }
 
 void reaction_check(void) {
-    if (gBattleWork.unkF6 & 1) {
+    if (gBattleWork.reactionFlags & 1) {
         gBattleWork.step = 2;
     } else {
-        gBattleWork.unkAB = 0;
+        gBattleWork.stepResult = 0;
         gBattleWork.step++;
     }
 }
@@ -1985,11 +1986,11 @@ void reaction_rise_spawn(void) {
     lz_decompress_dispatch(gReactionRiseFxTiles, (void *)0x06010800);
     CpuFastSet(gReactionRiseFxPalette, (void *)0x050003A0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
-        x = gBattleWork.unk158;
-        y = gBattleWork.unk15A;
+        x = gBattleWork.closeupRightX;
+        y = gBattleWork.closeupRightY;
     } else {
-        x = gBattleWork.unk154;
-        y = gBattleWork.unk156;
+        x = gBattleWork.closeupLeftX;
+        y = gBattleWork.closeupLeftY;
     }
     gSpriteEntries[10].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
@@ -2032,7 +2033,7 @@ void reaction_check_counter(void) {
     if (gBattleWork.hitResult == 3) {
         reaction_counter_begin();
         clear_battle_sprite_slot(10, 1);
-        gBattleWork.unkAB = 1;
+        gBattleWork.stepResult = 1;
         gBattleWork.step++;
     } else {
         gBattleWork.step = 6;
@@ -2051,7 +2052,7 @@ void reaction_drop_init(void) {
 void reaction_drop(void) {
     if (gSpriteEntries[10].unk2B == 0x28) {
         gGameWork.stepTimer = 0x3C;
-        gBattleWork.unkAB = 0;
+        gBattleWork.stepResult = 0;
         gBattleWork.step++;
     } else {
         gSpriteEntries[10].unk2C++;
@@ -2075,11 +2076,11 @@ void reaction_nullify_init(void) {
     lz_decompress_dispatch(gReactionNullifyTiles, (void *)0x06010800);
     CpuFastSet(gReactionNullifyPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
-        x = gBattleWork.unk158;
-        y = gBattleWork.unk15A;
+        x = gBattleWork.closeupRightX;
+        y = gBattleWork.closeupRightY;
     } else {
-        x = gBattleWork.unk154;
-        y = gBattleWork.unk156;
+        x = gBattleWork.closeupLeftX;
+        y = gBattleWork.closeupLeftY;
     }
     gSpriteEntries[10].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
@@ -2108,11 +2109,11 @@ void reaction_absorb_init(void) {
     lz_decompress_dispatch(gReactionAbsorbTiles, (void *)0x06010800);
     CpuFastSet(gReactionAbsorbPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
-        x = gBattleWork.unk158;
-        y = gBattleWork.unk15A;
+        x = gBattleWork.closeupRightX;
+        y = gBattleWork.closeupRightY;
     } else {
-        x = gBattleWork.unk154;
-        y = gBattleWork.unk156;
+        x = gBattleWork.closeupLeftX;
+        y = gBattleWork.closeupLeftY;
     }
     gSpriteEntries[10].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
@@ -2200,10 +2201,10 @@ void destroy_check_run(void) {
 void destroy_check(void) {
     if (gBattleBots[gBattleWork.target].stateFlags & 4) {
         gBattleWork.step++;
-        gBattleWork.unkAB = 0;
+        gBattleWork.stepResult = 0;
     } else {
         gBattleWork.messageId = 0x19;
         gBattleWork.step = 2;
-        gBattleWork.unkAB = 1;
+        gBattleWork.stepResult = 1;
     }
 }

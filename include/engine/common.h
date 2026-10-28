@@ -59,8 +59,8 @@ void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8
 void load_battle_script_entry_b(void);
 void apply_battle_blend_effect_b(void);
 void decompress_to_ewram_27000(const u8 *src);
-void battle_vblank_update_bg(
-    void); // battle gVBlankCallback: BG scroll movement (unk74) + battlefield tile animation (runtime-checked)
+void battle_vblank_update_bg(void); // battle gVBlankCallback: BG scroll movement (battlefieldEffect) + battlefield tile
+                                    // animation (runtime-checked)
 void read_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt,
                             void *dst); // w x h tiles at (x, y) of the BG map selected by bgcnt
 void write_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, const void *src);

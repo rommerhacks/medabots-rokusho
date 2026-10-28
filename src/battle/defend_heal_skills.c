@@ -24,17 +24,17 @@ void recovery_begin(void) {
         if (r) {
             gBattleWork.messageId = 0x1A;
             gBattleWork.step = 2;
-            gBattleWork.unkAB = 1;
+            gBattleWork.stepResult = 1;
         } else {
             calc_battle_stat_ratio(gBattleWork.actor, gBattleWork.actorPart);
             side_add_action_point();
             gBattleWork.step++;
-            gBattleWork.unkAB = r;
+            gBattleWork.stepResult = r;
         }
     } else {
         gBattleWork.messageId = 0x26;
         gBattleWork.step = 2;
-        gBattleWork.unkAB = 1;
+        gBattleWork.stepResult = 1;
     }
 }
 
@@ -85,17 +85,17 @@ void repair_begin(void) {
         if (r) {
             gBattleWork.messageId = 0x1A;
             gBattleWork.step = 2;
-            gBattleWork.unkAB = 1;
+            gBattleWork.stepResult = 1;
         } else {
             calc_battle_stat_ratio(gBattleWork.actor, gBattleWork.actorPart);
             side_add_action_point();
             gBattleWork.step++;
-            gBattleWork.unkAB = r;
+            gBattleWork.stepResult = r;
         }
     } else {
         gBattleWork.messageId = 0x27;
         gBattleWork.step = 2;
-        gBattleWork.unkAB = 1;
+        gBattleWork.stepResult = 1;
     }
 }
 
@@ -132,20 +132,20 @@ void repair_redraw_bot(void) {
     armor_heal_step(&gBattleWork.appliedAmount, gBattleWork.target, gBattleWork.targetPart);
     if (gBattleWork.actorSideFlags & 2) {
         get_active_bot_part_index_and_load_values(0);
-        draw_medabot_sprite(0, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.battlefieldParams[3] + 2, 4,
-                            0, 2, 0, gBattleWork.unk114[0]);
-        draw_medabot_sprite(0, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk154, (s16)gBattleWork.unk156, gBattleWork.battlefieldParams[3] + 2, 4,
-                            0, 1, 0, gBattleWork.unk114[0]);
+        draw_medabot_sprite(0, gBattleWork.partIds[0], gBattleWork.partIds[1], gBattleWork.partIds[2],
+                            gBattleWork.partIds[3], (s16)gBattleWork.closeupLeftX, (s16)gBattleWork.closeupLeftY,
+                            gBattleWork.battlefieldParams[3] + 2, 4, 0, 2, 0, gBattleWork.closeupPoseBase[0]);
+        draw_medabot_sprite(0, gBattleWork.partIds[0], gBattleWork.partIds[1], gBattleWork.partIds[2],
+                            gBattleWork.partIds[3], (s16)gBattleWork.closeupLeftX, (s16)gBattleWork.closeupLeftY,
+                            gBattleWork.battlefieldParams[3] + 2, 4, 0, 1, 0, gBattleWork.closeupPoseBase[0]);
     } else {
         get_active_bot_part_index_and_load_values(1);
-        draw_medabot_sprite(1, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.battlefieldParams[3] + 2, 8,
-                            1, 2, 1, gBattleWork.unk114[1]);
-        draw_medabot_sprite(1, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
-                            (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.battlefieldParams[3] + 2, 8,
-                            1, 1, 1, gBattleWork.unk114[1]);
+        draw_medabot_sprite(1, gBattleWork.partIds[0], gBattleWork.partIds[1], gBattleWork.partIds[2],
+                            gBattleWork.partIds[3], (s16)gBattleWork.closeupRightX, (s16)gBattleWork.closeupRightY,
+                            gBattleWork.battlefieldParams[3] + 2, 8, 1, 2, 1, gBattleWork.closeupPoseBase[1]);
+        draw_medabot_sprite(1, gBattleWork.partIds[0], gBattleWork.partIds[1], gBattleWork.partIds[2],
+                            gBattleWork.partIds[3], (s16)gBattleWork.closeupRightX, (s16)gBattleWork.closeupRightY,
+                            gBattleWork.battlefieldParams[3] + 2, 8, 1, 1, 1, gBattleWork.closeupPoseBase[1]);
     }
     gBattleWork.step++;
 }

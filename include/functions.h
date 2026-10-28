@@ -36,7 +36,7 @@ void LZ77UnCompVram(const void *src, void *dst);
 // direct = palettes straight to PLTT
 // 0x5C team / 0x94 opponents
 // per-turn part flags
-// then clears unk118..
+// then clears partChanged..
 // palette 6 from gMfChargeSparklePalette
 // can't use Medaforce)
 

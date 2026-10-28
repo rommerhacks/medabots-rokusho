@@ -103,7 +103,7 @@ void action_phase_resolve_command(void) {
         gGameSubState = 0x20;
         return;
     }
-    if (gBattleBots[gBattleWork.actor].chosenAction == 1 && gBattleWork.unk118 != 1) {
+    if (gBattleBots[gBattleWork.actor].chosenAction == 1 && gBattleWork.partChanged != 1) {
         if (gBattleBots[gBattleWork.actor].parts[0].unk10 == 0) {
             gBattleWork.messageId = 8;
             gGameSubState = 0x20;
