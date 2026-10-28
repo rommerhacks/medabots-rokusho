@@ -1,7 +1,7 @@
-// Choice menu: open_choice_menu / poll_choice_menu run the yes/no prompt state table gUnk_083B2814 by
+// Choice menu: open_choice_menu / poll_choice_menu run the yes/no prompt state table gChoiceMenuStates by
 // gGameWork.choiceState (decompress the BG, slide the tile strip in, move the cursor sprite, slide out; the
 // last entry is choice_menu_finish). Then two sprite jitter helpers and game_state_execute_handler_a/b, which
-// run the text/message window tables gUnk_083B284C / gUnk_083B2864 by gGameWork.endModeStep. Shares the
+// run the text/message window tables gMessageCloseSteps / gMessageCloseQuickSteps by gGameWork.endModeStep. Shares the
 // window state gGameWork with text/message; used by menus, the save screen and battles.
 
 #include "global.h"
@@ -34,16 +34,16 @@ static void init_window_params(u8 a, u8 b, u8 c, u8 d) {
 }
 
 u32 poll_choice_menu(void) {
-    gUnk_083B2814[gGameWork.choiceState]();
+    gChoiceMenuStates[gGameWork.choiceState]();
     return gGameWork.unk28;
 }
 
 void decompress_bg_tilemap_to_vram(void) {
-    lz_decompress_dispatch(gUnk_084878EC, (void *)(VRAM + 0x2600));
-    lz_decompress_dispatch(gUnk_0848796C, (void *)(VRAM + 0x26E0));
+    lz_decompress_dispatch(gChoiceMenuFrameTiles, (void *)(VRAM + 0x2600));
+    lz_decompress_dispatch(gChoiceMenuLabelTiles, (void *)(VRAM + 0x26E0));
     lz_decompress_dispatch(gCursorArrowTiles, (void *)(VRAM + 0x17E00));
-    set_tilemap_and_decompress_bg(0, 0x15, gUnk_084886D0, REG_BG0CNT, 0x130);
-    set_tilemap_and_decompress_bg(2, 0x16, gUnk_08488718, REG_BG0CNT, 0x137);
+    set_tilemap_and_decompress_bg(0, 0x15, gChoiceMenuFrameTilemap, REG_BG0CNT, 0x130);
+    set_tilemap_and_decompress_bg(2, 0x16, gChoiceMenuLabelTilemap, REG_BG0CNT, 0x137);
     CpuFastSet(gCursorArrowPalette, (void *)(PLTT + 0x3C0), 8);
     gGameWork.choiceState++;
 }
@@ -245,7 +245,7 @@ void sprite_bob_x(u8 sprite, u8 frame, u16 x) {
 
 u32 game_state_execute_handler_a(void) {
     gGameWork.msgState = 0;
-    gUnk_083B284C[gGameWork.endModeStep]();
+    gMessageCloseSteps[gGameWork.endModeStep]();
     if (gGameWork.msgState > 7)
         return 1;
     return 0;
@@ -253,7 +253,7 @@ u32 game_state_execute_handler_a(void) {
 
 u32 game_state_execute_handler_b(void) {
     gGameWork.msgState = 0;
-    gUnk_083B2864[gGameWork.endModeStep]();
+    gMessageCloseQuickSteps[gGameWork.endModeStep]();
     if (gGameWork.msgState > 7)
         return 1;
     return 0;

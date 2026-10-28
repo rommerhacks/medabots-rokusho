@@ -79,8 +79,9 @@ void vehicle_menu_load_gfx(void) {
 
     DmaCopy32(3, gVehicleIconPalette, OBJ_PLTT + 0x180, 32) DmaCopy32(3, gVehicleIconDimPalette, OBJ_PLTT + 0x1A0, 32)
         decompress_bg_tiles_to_vram_bg();
-    DmaCopy32(3, gTextWindowObjPalette, PLTT + 0x1C0, 32) lz_decompress_dispatch(gUnk_084878EC, (void *)0x06002600);
-    lz_decompress_dispatch(gUnk_0848796C, (void *)0x060026E0);
+    DmaCopy32(3, gTextWindowObjPalette, PLTT + 0x1C0, 32)
+        lz_decompress_dispatch(gChoiceMenuFrameTiles, (void *)0x06002600);
+    lz_decompress_dispatch(gChoiceMenuLabelTiles, (void *)0x060026E0);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     DmaCopy32(3, gCursorArrowPalette, OBJ_PLTT + 0x1C0, 32) gFieldScriptWork.unk66 = 0;
     gFieldScriptWork.frame = 0;
@@ -263,11 +264,11 @@ void vehicle_menu_reload(void) {
         break;
     }
 
-    lz_decompress_dispatch(gUnk_084873D0, (void *)0x06000020);
-    lz_decompress_dispatch(gUnk_084C31BC, (void *)0x06001780);
+    lz_decompress_dispatch(gMessageWindowTiles, (void *)0x06000020);
+    lz_decompress_dispatch(gMessageWindowIconTiles, (void *)0x06001780);
     DmaCopy32(3, gMenuBgPalette, 0x0202FBE0, 32) DmaCopy32(3, gTextWindowObjPalette, 0x0202FBC0, 32)
-        lz_decompress_dispatch(gUnk_084878EC, (void *)0x06002600);
-    lz_decompress_dispatch(gUnk_0848796C, (void *)0x060026E0);
+        lz_decompress_dispatch(gChoiceMenuFrameTiles, (void *)0x06002600);
+    lz_decompress_dispatch(gChoiceMenuLabelTiles, (void *)0x060026E0);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     DmaCopy32(3, gCursorArrowPalette, 0x0202F9C0, 32)
         copy_tilemap_rect_with_offset(gFieldScriptWork.savedBg, (u16 *)0x06002800, 0, 0, 0x1E, 0x14, 0x20, 0x20, 0, 0);

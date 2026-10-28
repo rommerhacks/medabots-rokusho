@@ -627,14 +627,14 @@ extern const u32 gUnk_0878CC64[];     // save screen BG tiles (dma3_copy_or_deco
 extern const u8 gTownMapBg1Tilemap[]; // town map BG1-BG3 tilemaps
 extern const u8 gTownMapBg2Tilemap[];
 extern const u8 gTownMapBg3Tilemap[];
-extern const u32 gTownMapBgTiles[];    // town map BG tiles (dma3_copy_or_decompress)
-extern const u8 gTownMapBgPalettes[];  // 14 BG palettes
-extern const u8 gTownMapObjPalettes[]; // 3 OBJ palettes
-extern const u8 gAreaTownMapPlace[];   // town map place by area id (gFieldWork.area_id, town_map_load_graphics)
-extern const u32 gTownMapAnimTiles[];  // animated BG tile frames, 480 bytes each (town_map_animate_tiles)
-extern const u8 *gDefaultPlayerName;   // -> "Ikki" (stored in the tail of gNameEntryStates), name entry mode 0
-extern const u16 gUnk_080AF810[];      // name entry OBJ palette (name_entry_load_name)
-extern const u16 gUnk_08793428[];      // name entry BG palettes (name_entry_load_name)
+extern const u32 gTownMapBgTiles[];      // town map BG tiles (dma3_copy_or_decompress)
+extern const u8 gTownMapBgPalettes[];    // 14 BG palettes
+extern const u8 gTownMapObjPalettes[];   // 3 OBJ palettes
+extern const u8 gAreaTownMapPlace[];     // town map place by area id (gFieldWork.area_id, town_map_load_graphics)
+extern const u32 gTownMapAnimTiles[];    // animated BG tile frames, 480 bytes each (town_map_animate_tiles)
+extern const u8 *gDefaultPlayerName;     // -> "Ikki" (stored in the tail of gNameEntryStates), name entry mode 0
+extern const u16 gNameEntryObjPalette[]; // name entry OBJ palette (name_entry_load_name)
+extern const u16 gNameEntryBgPalettes[]; // name entry BG palettes (name_entry_load_name)
 extern const u8
     gMenuDigitTilesLz[]; // digit tiles loaded after a menu's BG tiles (draw_number uses bg_tile_base + 0x16; LZ77)
 extern const u8
@@ -655,25 +655,25 @@ extern const u16 gSaveLostBgPalette[];     // BG palette (save_lost_load_graphic
 extern const u16 gSaveLostSpritePalette[]; // OBJ palette 0 (save_lost_load_graphics)
 extern const u8
     gCommonObjTilesLz[]; // OBJ tiles shared by town map, save lost, game over, Medal level-up, text scroll (LZ77)
-extern const u8 gUnk_08799838[];        // BG1 tilemap (LZ77, shop_menu_load_graphics)
-extern const u8 gUnk_087999EC[];        // BG2 tilemap (LZ77, shop_menu_load_graphics)
-extern const u8 gUnk_08798608[];        // BG1 tilemap (LZ77, shop_menu_load_graphics)
-extern const u8 gUnk_08798824[];        // BG2 tilemap (LZ77, shop_menu_load_graphics)
-extern const u8 gUnk_08798A34[];        // BG3 tilemap (LZ77, shop_menu_load_graphics)
-extern const u32 gUnk_0879691C[];       // BG tiles (dma3_copy_or_decompress, shop_menu_load_graphics)
-extern const u32 gUnk_08798F2C[];       // BG tiles (dma3_copy_or_decompress, shop_menu_load_graphics)
-extern const u8 gUnk_087962E8[];        // BG0 tilemap (LZ77, game_over_load_graphics)
-extern const u8 gUnk_08796474[];        // BG2 tilemap (LZ77, game_over_load_graphics)
-extern const u8 gUnk_08796598[];        // BG3 tilemap (LZ77, game_over_load_graphics)
-extern const u32 gUnk_0879579C[];       // BG tiles (dma3_copy_or_decompress, game_over_load_graphics)
-extern const u16 gUnk_0879559C[];       // BG palette (game_over_load_graphics)
-extern const u16 gUnk_080AF900[];       // OBJ palettes 0-1 (game_over_load_graphics)
-extern const u16 gGameOverIkkiFrames[]; // sprite 1 animation frames, by unk1A / 6 (game_over_logo_drop)
-extern const s8 gGameOverLogoBounce[];  // sprite 0 y offsets, 13 steps (game_over_logo_drop)
-extern const u16 gUnk_0878E3F4[];       // title menu BG palette (0x100 colors)
-extern u8 gOptionTimeLimit;             // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
-extern u8 gOptionBattleMusic;           // index into gUnk_083AD3B0 (battle music)
-extern const u8 gUnk_083AD3B0[];        // battle song ids (select_battle_music)
+extern const u8 gShopMenuPanelTilemap1[]; // BG1 tilemap (LZ77, shop_menu_load_graphics)
+extern const u8 gShopMenuPanelTilemap2[]; // BG2 tilemap (LZ77, shop_menu_load_graphics)
+extern const u8 gShopMenuBg1Tilemap[];    // BG1 tilemap (LZ77, shop_menu_load_graphics)
+extern const u8 gShopMenuBg2Tilemap[];    // BG2 tilemap (LZ77, shop_menu_load_graphics)
+extern const u8 gShopMenuBg3Tilemap[];    // BG3 tilemap (LZ77, shop_menu_load_graphics)
+extern const u32 gShopMenuBgTiles[];      // BG tiles (dma3_copy_or_decompress, shop_menu_load_graphics)
+extern const u32 gShopMenuBgTiles2[];     // BG tiles (dma3_copy_or_decompress, shop_menu_load_graphics)
+extern const u8 gUnk_087962E8[];          // BG0 tilemap (LZ77, game_over_load_graphics)
+extern const u8 gUnk_08796474[];          // BG2 tilemap (LZ77, game_over_load_graphics)
+extern const u8 gUnk_08796598[];          // BG3 tilemap (LZ77, game_over_load_graphics)
+extern const u32 gUnk_0879579C[];         // BG tiles (dma3_copy_or_decompress, game_over_load_graphics)
+extern const u16 gUnk_0879559C[];         // BG palette (game_over_load_graphics)
+extern const u16 gUnk_080AF900[];         // OBJ palettes 0-1 (game_over_load_graphics)
+extern const u16 gGameOverIkkiFrames[];   // sprite 1 animation frames, by unk1A / 6 (game_over_logo_drop)
+extern const s8 gGameOverLogoBounce[];    // sprite 0 y offsets, 13 steps (game_over_logo_drop)
+extern const u16 gUnk_0878E3F4[];         // title menu BG palette (0x100 colors)
+extern u8 gOptionTimeLimit;               // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
+extern u8 gOptionBattleMusic;             // index into gUnk_083AD3B0 (battle music)
+extern const u8 gUnk_083AD3B0[];          // battle song ids (select_battle_music)
 // Per leg type (skill id - 100), 11 bytes: one per battlefield (gBattleWork.battlefield); added to moveDelay
 // (bot_move_delay_add_terrain).
 extern const u8 gTerrainMoveDelays[];
@@ -918,23 +918,24 @@ extern const u8 gBuffSpriteParams[][4];
 // status / action sprite params, 4 bytes each, by status kind (battle_setup_part_sprite reads them)
 extern const u8 gStatusSpriteParams[][4];
 extern const u16 gStaggeredSpriteOffsets[]; // (x, y) per sprite of the staggered burst (staggered_sprites_spawn)
-extern const u8 *const gUnk_083AFD08[][9];  // LZ assets by set and index (decompress_indexed_asset)
-extern const u16 *const gUnk_083B15C8[];    // palettes by asset set (decompress_indexed_asset)
-extern const u16 gTextWindowObjPalette[];   // text window OBJ palette (text_window_init)
-extern const u8 gUnk_08488540[];            // LZ text window graphics (text/message)
-extern const u8 gUnk_084C31BC[];            // LZ text window graphics (text/message)
-extern const u8 gUnk_084873D0[];            // LZ text window graphics (text/message)
-extern const u16 gUnk_0850EF58[];           // OBJ palettes (link Robattle screen, prize_game_load)
-extern const u16 gUnk_084F39A0[];           // BG palettes (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084F21E8[];            // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084F0D9C[];            // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084F0194[];            // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084EF668[];            // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084E20F8[];            // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084C68E0[];            // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084C66B8[];            // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084EDEF0[];            // LZ graphics (link Robattle screen, prize_game_load)
-extern const s16 gBattleSeqWaveOffsets[];   // y offsets by sprite unk23 (0-31; battle_seq_spr_effect_wave)
+extern const u8 *const
+    gPortraitTiles[][9]; // message window portraits: LZ tiles by character and expression (message_portrait_anim_step)
+extern const u16 *const gPortraitPalettes[]; // one palette per portrait character (decompress_indexed_asset)
+extern const u16 gTextWindowObjPalette[];    // text window OBJ palette (text_window_init)
+extern const u8 gMessageWindowTilemap[];     // LZ text window graphics (text/message)
+extern const u8 gMessageWindowIconTiles[];   // guess: 2-tile LZ icon at BG tile 0xBC, loaded with the text window
+extern const u8 gMessageWindowTiles[];       // LZ text window graphics (text/message)
+extern const u16 gPrizeGameObjPalettes[];    // OBJ palettes (link Robattle screen, prize_game_load)
+extern const u16 gPrizeGameBgPalettes[];     // BG palettes (link Robattle screen, prize_game_load)
+extern const u8 gPrizeGameBg3Tilemap[];      // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gPrizeGameBg2Tilemap[];      // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gPrizeGameBg1Tilemap[];      // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gPrizeGameBg0Tilemap[];      // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gPrizeGameObjTiles[];        // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gPrizeGameBgTiles3[];        // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gPrizeGameBgTiles2[];        // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gPrizeGameBgTiles[];         // LZ graphics (link Robattle screen, prize_game_load)
+extern const s16 gBattleSeqWaveOffsets[];    // y offsets by sprite unk23 (0-31; battle_seq_spr_effect_wave)
 extern const u8
     gBattleBg3ParallaxShift[]; // BG3 parallax shift by battlefield gBattleWork.battlefield (battle_seq_spr_actor_dash)
 extern const Func gBattleSeqSpriteHandlers[]; // sprite handlers by unk29, slots 1-0x27 (battle_sequence_update_sprites)
@@ -1112,22 +1113,26 @@ extern const u8 gAltFontWidths[][2];    // alternate font widths, used after a 0
 extern const u8 gAltFontGlyphs[];       // alternate font glyphs, 64 bytes per character
 extern const u8 gFontWidths[][2];       // message font: per character code, [0] width in pixels
 extern const Func
-    gLinkRobattleHandlers[];     // link Robattle game state: sub-state handlers by gGameSubState (link_robattle_update)
-extern const u8 gUnk_08487524[]; // compressed tiles, message window frame style 3 (message_close_window_frame)
-extern const u8 gUnk_084885A8[]; // compressed tilemap, message window frame style 3 (message_close_window_frame)
-extern const u8 gUnk_08487630[]; // compressed tiles, message window frame style 2 (message_close_window_frame)
-extern const u8 gUnk_08488600[]; // compressed tilemap, message window frame style 2 (message_close_window_frame)
+    gLinkRobattleHandlers[]; // link Robattle game state: sub-state handlers by gGameSubState (link_robattle_update)
 extern const u8
-    gBattlefieldEffectParams[][8]; // per battlefield, copied to gBattleWork.unk74 (load_battle_script_entry_b)
-extern const Func gUnk_083B2814[]; // choice menu states by gGameWork.choiceState (poll_choice_menu)
-extern const Func gUnk_083B284C[]; // by gGameWork.endModeStep (game_state_execute_handler_a)
-extern const Func gUnk_083B2864[]; // by gGameWork.endModeStep (game_state_execute_handler_b)
+    gMessageWindowOpenTiles2[]; // compressed tiles, message window frame style 3 (message_close_window_frame)
+extern const u8
+    gMessageWindowOpenTilemap2[]; // compressed tilemap, message window frame style 3 (message_close_window_frame)
+extern const u8
+    gMessageWindowOpenTiles1[]; // compressed tiles, message window frame style 2 (message_close_window_frame)
+extern const u8
+    gMessageWindowOpenTilemap1[]; // compressed tilemap, message window frame style 2 (message_close_window_frame)
+extern const u8
+    gBattlefieldEffectParams[][8];      // per battlefield, copied to gBattleWork.unk74 (load_battle_script_entry_b)
+extern const Func gChoiceMenuStates[];  // choice menu states by gGameWork.choiceState (poll_choice_menu)
+extern const Func gMessageCloseSteps[]; // by gGameWork.endModeStep (game_state_execute_handler_a)
+extern const Func gMessageCloseQuickSteps[];   // by gGameWork.endModeStep (game_state_execute_handler_b)
 extern const u8 *const gBattlefieldTilesets[]; // 4 compressed pointers per battlefield: tiles, BG palette, BG2 / BG3
                                                // tilemaps (decompress_tileset_to_vram)
-extern const u8 gUnk_084878EC[];               // compressed tiles (decompress_bg_tilemap_to_vram)
-extern const u8 gUnk_0848796C[];               // compressed tiles
-extern const u8 gUnk_084886D0[];               // compressed tilemap
-extern const u8 gUnk_08488718[];               // compressed tilemap
+extern const u8 gChoiceMenuFrameTiles[];       // compressed tiles (decompress_bg_tilemap_to_vram)
+extern const u8 gChoiceMenuLabelTiles[];       // guess: yes/no labels of the choice menu, compressed tiles
+extern const u8 gChoiceMenuFrameTilemap[];     // compressed tilemap
+extern const u8 gChoiceMenuLabelTilemap[];     // compressed tilemap
 extern const u8
     gBattlefieldAnimTileCounts[];         // per battlefield: animation tile count / 8 (advance_battle_animation_frame)
 extern const u8 gBattlefieldAnimFrames[]; // [battlefield][0x80]: animation tile block per frame, 0xFF = loop
@@ -1211,16 +1216,16 @@ extern const Func gShopMenuStates[];           // sub-state handlers (shop_menu_
 extern const u16 gGameOverIkkiFramesExit[];    // sprite 1 animation frames by unk1A / 6 (game_over_wipe_out)
 extern u8 gTitleSkipIntro;
 extern const u8 gPartTradeSpritePositions[][4][2]; // x, y by [which][kind] (load_medapart_sprite_animation)
-extern const u16 gUnk_08488AA4[];                  // OBJ palette 1 (shop_menu_show_layers)
-extern const u16 gUnk_0879671C[];                  // BG palettes (shop_menu_show_layers)
+extern const u16 gShopObjPalette[];                // OBJ palette 1 (shop_menu_show_layers)
+extern const u16 gShopMenuBgPalettes[];            // BG palettes (shop_menu_show_layers)
 extern const u8 gShopPartTypeIconPos[4][2];        // icon x, y in BG2 tiles (shop_highlight_part_type_icon)
 // A function table that the code copies to the stack before indexing it (agbcc emits ldm / stm for
 // the struct copy), like a local initialized array whose initializer lives in ROM.
 struct FuncTable7 {
     Func f[7];
 };
-extern const struct FuncTable7 gUnk_080AFA20; // sub-state handlers by gGameSubState (dispatch_substate_handler)
-extern const struct FuncTable7 gUnk_080AFEA8; // sub-state handlers by gGameSubState (text_scroll_update)
+extern const struct FuncTable7 gUnk_080AFA20;     // sub-state handlers by gGameSubState (dispatch_substate_handler)
+extern const struct FuncTable7 gTextScrollStates; // sub-state handlers by gGameSubState (text_scroll_update)
 struct TextBufTable4 {
     u8 *p[4];
 };
@@ -1229,8 +1234,8 @@ extern const struct ObjAffineDstData
 extern const struct ObjAffineDstData gAffineIdentity; // identity affine matrix (render_sprite_node_recursive)
 extern const u8 gMirroredPartNode[]; // mirrored sprite node index per node (render_sprite_node_recursive)
 extern const struct TextBufTable4
-    gUnk_080ABBFC;               // the 4 text buffers 0x030004DE + 0x14 * n (copy_string_to_text_buffer)
-extern const u8 gUnk_080AFE96[]; // first tilemap column by gMenuWork->cursor (text_scroll_shift_row)
+    gUnk_080ABBFC;                     // the 4 text buffers 0x030004DE + 0x14 * n (copy_string_to_text_buffer)
+extern const u8 gTextScrollHeadingX[]; // first tilemap column by gMenuWork->cursor (text_scroll_shift_row)
 struct U16PtrArray8 {
     const u16 *v[8];
 };
@@ -1239,17 +1244,17 @@ extern const u8 gRaceTileBlockHeights[8];             // guess: tile block heigh
 extern const u16 gRaceTileBlockFirstTiles[8];         // first tile by type (race_draw_tile_block)
 extern const struct U16PtrArray8 gRaceTileBlockLists; // tile index lists by type (race_draw_tile_block)
 extern const u16 gRaceTileBlockPalettes[8];           // palette bits by type (race_draw_tile_block)
-extern const u8 gUnk_087A3CFC[];                      // race scene BG0 tilemap (decompress_and_write_tilemap)
-extern const u8 gUnk_087A3E64[];                      // race scene BG2 tilemap (decompress_and_write_tilemap)
-extern const u8 gUnk_087A40A0[];                      // race scene BG3 tilemap (decompress_and_write_tilemap)
-extern const u32 gUnk_087A1410[];                     // race scene BG tiles (dma3_copy_or_decompress)
-extern const u8 gUnk_087A13B0[];                      // race scene BG palettes (0x60 bytes to 0x0202FA00)
+extern const u8 gTextScrollBg0Tilemap[];              // race scene BG0 tilemap (decompress_and_write_tilemap)
+extern const u8 gTextScrollBg2Tilemap[];              // race scene BG2 tilemap (decompress_and_write_tilemap)
+extern const u8 gTextScrollBg3Tilemap[];              // race scene BG3 tilemap (decompress_and_write_tilemap)
+extern const u32 gTextScrollBgTiles[];                // race scene BG tiles (dma3_copy_or_decompress)
+extern const u8 gTextScrollBgPalettes[];              // race scene BG palettes (0x60 bytes to 0x0202FA00)
 extern const u8 gBlackObjPalettes[];                  // OBJ palette (0x20 bytes to 0x05000200)
 struct PtrTable3 {
     const u8 *const *p[3];
 };
-extern const struct PtrTable3 gUnk_080AFE9C; // scene texts by gMenuWork->cursor (text_scroll_page_start)
-extern const u16 gPartTradeObjPalette[16];   // OBJ palette for the link Medapart trade scene (medapart_trade_fade_in)
+extern const struct PtrTable3 gTextScrollPages; // scene texts by gMenuWork->cursor (text_scroll_page_start)
+extern const u16 gPartTradeObjPalette[16]; // OBJ palette for the link Medapart trade scene (medapart_trade_fade_in)
 struct FuncTable13 {
     Func f[13];
 };
@@ -1276,7 +1281,8 @@ extern const u8 gLinkMenuBg2Tilemap[];
 extern const u8 gLinkMenuBg3Tilemap[];
 extern const u32 gLinkMenuBgTiles[];
 extern const u16 gLinkMenuBgPalette[];
-extern const u16 gUnk_08483AA0[]; // medal_rename_load_palettes
+extern const u16
+    gMenuDigitPalette[]; // guess: palette for gMenuDigitTilesLz (BG pal 1 next to it in clear_vram_bg2_tilemap)
 extern const u16 gUnk_08799B98[];
 extern const u16 gUnk_080AFAE8[];
 extern const u8 gLinkIntroMessageIds[]; // message indices (battle_cutscene_dispatch)
@@ -1515,11 +1521,11 @@ extern u8 gLegPartPoseSets[];      // per legs part id: pose set column of gPose
 extern u8 *gPoseKeyframeEnds[];    // per animation: end frame of each keyframe, 0-terminated
 extern s16 *gPoseKeyframeAngles[]; // per animation: 0x40 joint angles per keyframe (wrap at 0x10000)
 extern s8 *gPoseKeyframeOffsets[]; // per animation: 0x40 (x, y) joint offsets per keyframe
-extern const u8 gUnk_08794E6C[];   // name entry screen tilemaps (name_entry_init_graphics)
-extern const u8 gUnk_0879514C[];
-extern const u8 gUnk_08795418[];
-extern const u32 gUnk_08793628[]; // name entry screen tiles
-extern const u8 gUnk_080AF850[];  // name entry: bottom-row button column -> letter-row column
+extern const u8 gNameEntryBg1Tilemap[]; // name entry screen tilemaps (name_entry_init_graphics)
+extern const u8 gNameEntryBg2Tilemap[];
+extern const u8 gNameEntryBg3Tilemap[];
+extern const u32 gNameEntryBgTiles[];    // name entry screen tiles
+extern const u8 gNameEntryColumnRemap[]; // name entry: bottom-row button column -> letter-row column
 
 extern u8 gOamBuildFlags; // bit 0: skip one OAM rebuild, bit 1: don't sort sprites
 // perspective sprites (SpriteEntry.unk0 & 0xC0 == 0x80): screen = center + (pos + offset) * 4 / depth

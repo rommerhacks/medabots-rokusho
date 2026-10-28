@@ -54,7 +54,7 @@ void test_mode_load_graphics(void) {
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     zero = 0;
     CpuFastSet(gUnk_08790400, (void *)PLTT, 0x80);
-    CpuFastSet(gUnk_08483AA0, (void *)(PLTT + 0x1C0), 8);
+    CpuFastSet(gMenuDigitPalette, (void *)(PLTT + 0x1C0), 8);
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     CpuFastSet(gCursorArrowPalette, (void *)(PLTT + 0x3C0), 8);
     gSpriteEntries[0].unk0 = 0x8000;

@@ -90,11 +90,11 @@ void shop_menu_load_graphics(void) {
     bg1 = &REG_BG1CNT;
     v = 0x1B05;
     *bg1 = v;
-    decompress_and_write_tilemap(gUnk_08799838, *bg1);
+    decompress_and_write_tilemap(gShopMenuPanelTilemap1, *bg1);
     bg2 = &REG_BG2CNT;
     v = 0x1A06;
     *bg2 = v;
-    decompress_and_write_tilemap(gUnk_087999EC, *bg2);
+    decompress_and_write_tilemap(gShopMenuPanelTilemap2, *bg2);
     v = 0x1E05;
     *bg1 = v;
     v -= 0xFF;
@@ -102,10 +102,10 @@ void shop_menu_load_graphics(void) {
     bg3 = &REG_BG3CNT;
     v -= 0xFF;
     *bg3 = v;
-    decompress_and_write_tilemap(gUnk_08798608, *bg1);
-    decompress_and_write_tilemap(gUnk_08798824, *bg2);
-    decompress_and_write_tilemap(gUnk_08798A34, *bg3);
-    size = dma3_copy_or_decompress(gUnk_0879691C, gDecompressBuffer);
+    decompress_and_write_tilemap(gShopMenuBg1Tilemap, *bg1);
+    decompress_and_write_tilemap(gShopMenuBg2Tilemap, *bg2);
+    decompress_and_write_tilemap(gShopMenuBg3Tilemap, *bg3);
+    size = dma3_copy_or_decompress(gShopMenuBgTiles, gDecompressBuffer);
     off = 0x4000;
     CpuCopy16(gDecompressBuffer, (void *)(off + vram), size);
     n = lz_decompress_dispatch(gPartSlotIconTiles, vram_at(size));
@@ -113,7 +113,7 @@ void shop_menu_load_graphics(void) {
     size += n;
     tilemap_offset_tiles_and_palette(size >> 5, 0, 0x1B);
     tilemap_offset_tiles_and_palette(size >> 5, 0, 0x1A);
-    n = dma3_copy_or_decompress(gUnk_08798F2C, gDecompressBuffer);
+    n = dma3_copy_or_decompress(gShopMenuBgTiles2, gDecompressBuffer);
     dst = vram_at(size);
     CpuCopy16(gDecompressBuffer, dst, n);
     gMenuWork->bg_tile_base = ((size + n) >> 5) - 1;
@@ -178,8 +178,8 @@ void shop_menu_show_layers(void) {
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F800, 8);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
-    CpuFastSet(gUnk_08488AA4, (void *)0x0202F820, 8);
-    CpuFastSet(gUnk_0879671C, (void *)0x0202FA00, 0x80);
+    CpuFastSet(gShopObjPalette, (void *)0x0202F820, 8);
+    CpuFastSet(gShopMenuBgPalettes, (void *)0x0202FA00, 0x80);
     gGameWork.unk84 = 0;
     gGameSubState++;
 }

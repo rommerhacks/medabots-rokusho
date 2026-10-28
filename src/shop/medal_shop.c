@@ -156,7 +156,7 @@ void medal_rename_load_palettes(void) {
             ;
     } else
         medal_rename_draw_list(gMenuWork->medal_list_cursor);
-    CpuFastSet(gUnk_08483AA0, (void *)0x0202FA20, 8);
+    CpuFastSet(gMenuDigitPalette, (void *)0x0202FA20, 8);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 8);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     CpuFastSet(gGradientPaletteGold, (void *)0x0202F9A0, 8);

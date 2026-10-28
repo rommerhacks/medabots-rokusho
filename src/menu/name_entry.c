@@ -103,10 +103,10 @@ void name_entry_init_graphics(void) {
     bg3 = &REG_BG3CNT;
     v -= 0xFF;
     *bg3 = v;
-    decompress_and_write_tilemap(gUnk_08794E6C, *bg1);
-    decompress_and_write_tilemap(gUnk_0879514C, *(*pbg2));
-    decompress_and_write_tilemap(gUnk_08795418, *bg3);
-    size = dma3_copy_or_decompress(gUnk_08793628, gDecompressBuffer);
+    decompress_and_write_tilemap(gNameEntryBg1Tilemap, *bg1);
+    decompress_and_write_tilemap(gNameEntryBg2Tilemap, *(*pbg2));
+    decompress_and_write_tilemap(gNameEntryBg3Tilemap, *bg3);
+    size = dma3_copy_or_decompress(gNameEntryBgTiles, gDecompressBuffer);
     CpuSet(gDecompressBuffer, vram_at2(0), (size / 2) & 0x1FFFFF);
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     CpuSet(gMedalIconTiles, vram_at2(size), (0x1000 / 2) & 0x1FFFFF);
@@ -235,11 +235,11 @@ void name_entry_load_name(void) {
             x += tb[0x43][0];
         }
     }
-    CpuFastSet(gUnk_08483AA0, (void *)0x0202FA20, 8);
+    CpuFastSet(gMenuDigitPalette, (void *)0x0202FA20, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9A0, 8);
-    CpuFastSet(gUnk_080AF810, gPaletteBackup, 8);
-    CpuFastSet(gUnk_08793428, gPaletteBackupBg, 0x80);
+    CpuFastSet(gNameEntryObjPalette, gPaletteBackup, 8);
+    CpuFastSet(gNameEntryBgPalettes, gPaletteBackupBg, 0x80);
     gGameWork.unk84 = 0;
     gGameSubState++;
 }
@@ -311,14 +311,14 @@ void name_entry_input(void) {
         } else {
             gMenuWork->grid_row--;
             if (gMenuWork->grid_row == 2)
-                gMenuWork->grid_col = gUnk_080AF850[gMenuWork->grid_col];
+                gMenuWork->grid_col = gNameEntryColumnRemap[gMenuWork->grid_col];
         }
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
         play_sound_effect(2);
         if (gMenuWork->grid_row == 3) {
             gMenuWork->grid_row = 0;
-            gMenuWork->grid_col = gUnk_080AF850[gMenuWork->grid_col];
+            gMenuWork->grid_col = gNameEntryColumnRemap[gMenuWork->grid_col];
         } else {
             gMenuWork->grid_row++;
             if (gMenuWork->grid_row == 3) {

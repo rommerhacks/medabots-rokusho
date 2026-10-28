@@ -13,8 +13,8 @@ void shop_return_init(void) {
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F800, 8);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
-    CpuFastSet(gUnk_08488AA4, (void *)0x0202F820, 8);
-    CpuFastSet(gUnk_0879671C, (void *)0x0202FA00, 0x80);
+    CpuFastSet(gShopObjPalette, (void *)0x0202F820, 8);
+    CpuFastSet(gShopMenuBgPalettes, (void *)0x0202FA00, 0x80);
     gGameWork.unk84 = 0;
     gMenuWork->returning = 1;
     gGameSubState++;

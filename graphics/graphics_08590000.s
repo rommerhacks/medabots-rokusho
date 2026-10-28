@@ -248,24 +248,24 @@ gSaveLostBg1Tilemap:
 gSaveLostBg3Tilemap:
 	.incbin "baserom.gba", 0x792FC4, 0x464
 
-	.global gUnk_08793428
-gUnk_08793428:
+	.global gNameEntryBgPalettes
+gNameEntryBgPalettes:
 	.incbin "baserom.gba", 0x793428, 0x200
 
-	.global gUnk_08793628
-gUnk_08793628:
+	.global gNameEntryBgTiles
+gNameEntryBgTiles:
 	.incbin "baserom.gba", 0x793628, 0x1844
 
-	.global gUnk_08794E6C
-gUnk_08794E6C:
+	.global gNameEntryBg1Tilemap
+gNameEntryBg1Tilemap:
 	.incbin "baserom.gba", 0x794E6C, 0x2E0
 
-	.global gUnk_0879514C
-gUnk_0879514C:
+	.global gNameEntryBg2Tilemap
+gNameEntryBg2Tilemap:
 	.incbin "baserom.gba", 0x79514C, 0x2CC
 
-	.global gUnk_08795418
-gUnk_08795418:
+	.global gNameEntryBg3Tilemap
+gNameEntryBg3Tilemap:
 	.incbin "baserom.gba", 0x795418, 0x184
 
 	.global gUnk_0879559C
@@ -288,40 +288,40 @@ gUnk_08796474:
 gUnk_08796598:
 	.incbin "baserom.gba", 0x796598, 0x184
 
-	.global gUnk_0879671C
-gUnk_0879671C:
+	.global gShopMenuBgPalettes
+gShopMenuBgPalettes:
 	.incbin "baserom.gba", 0x79671C, 0x200
 
-	.global gUnk_0879691C
-gUnk_0879691C:
+	.global gShopMenuBgTiles
+gShopMenuBgTiles:
 	.incbin "baserom.gba", 0x79691C, 0x1CEC
 
-	.global gUnk_08798608
-gUnk_08798608:
+	.global gShopMenuBg1Tilemap
+gShopMenuBg1Tilemap:
 	.incbin "baserom.gba", 0x798608, 0x21C
 
-	.global gUnk_08798824
-gUnk_08798824:
+	.global gShopMenuBg2Tilemap
+gShopMenuBg2Tilemap:
 	.incbin "baserom.gba", 0x798824, 0x210
 
-	.global gUnk_08798A34
-gUnk_08798A34:
+	.global gShopMenuBg3Tilemap
+gShopMenuBg3Tilemap:
 	.incbin "baserom.gba", 0x798A34, 0x2F8
 
 	.global gShopListBgPalettes
 gShopListBgPalettes:
 	.incbin "baserom.gba", 0x798D2C, 0x200
 
-	.global gUnk_08798F2C
-gUnk_08798F2C:
+	.global gShopMenuBgTiles2
+gShopMenuBgTiles2:
 	.incbin "baserom.gba", 0x798F2C, 0x90C
 
-	.global gUnk_08799838
-gUnk_08799838:
+	.global gShopMenuPanelTilemap1
+gShopMenuPanelTilemap1:
 	.incbin "baserom.gba", 0x799838, 0x1B4
 
-	.global gUnk_087999EC
-gUnk_087999EC:
+	.global gShopMenuPanelTilemap2
+gShopMenuPanelTilemap2:
 	.incbin "baserom.gba", 0x7999EC, 0x1AC
 
 	.global gUnk_08799B98
@@ -420,24 +420,24 @@ gUnk_087A046C:
 gUnk_087A1084:
 	.incbin "baserom.gba", 0x7A1084, 0x32C
 
-	.global gUnk_087A13B0
-gUnk_087A13B0:
+	.global gTextScrollBgPalettes
+gTextScrollBgPalettes:
 	.incbin "baserom.gba", 0x7A13B0, 0x60
 
-	.global gUnk_087A1410
-gUnk_087A1410:
+	.global gTextScrollBgTiles
+gTextScrollBgTiles:
 	.incbin "baserom.gba", 0x7A1410, 0x28EC
 
-	.global gUnk_087A3CFC
-gUnk_087A3CFC:
+	.global gTextScrollBg0Tilemap
+gTextScrollBg0Tilemap:
 	.incbin "baserom.gba", 0x7A3CFC, 0x168
 
-	.global gUnk_087A3E64
-gUnk_087A3E64:
+	.global gTextScrollBg2Tilemap
+gTextScrollBg2Tilemap:
 	.incbin "baserom.gba", 0x7A3E64, 0x23C
 
-	.global gUnk_087A40A0
-gUnk_087A40A0:
+	.global gTextScrollBg3Tilemap
+gTextScrollBg3Tilemap:
 	.incbin "baserom.gba", 0x7A40A0, 0x458
 
 	.global gMedalSceneObjPalettes

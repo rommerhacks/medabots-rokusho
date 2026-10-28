@@ -803,12 +803,12 @@ gPrizeGameSlotSets:
 gPrizeGameBotPicks:
 	.incbin "baserom.gba", 0x3AFCF8, 0x10
 
-	.global gUnk_083AFD08
-gUnk_083AFD08:
+	.global gPortraitTiles
+gPortraitTiles:
 	.incbin "baserom.gba", 0x3AFD08, 0x18C0
 
-	.global gUnk_083B15C8
-gUnk_083B15C8:
+	.global gPortraitPalettes
+gPortraitPalettes:
 	.incbin "baserom.gba", 0x3B15C8, 0x2C0
 
 	.global gMedabotPartSpriteTiles
@@ -855,16 +855,16 @@ gMessageEndWaitClearSteps:
 gMessageEndKeepSteps:
 	.incbin "baserom.gba", 0x3B2810, 0x4
 
-	.global gUnk_083B2814
-gUnk_083B2814:
+	.global gChoiceMenuStates
+gChoiceMenuStates:
 	.incbin "baserom.gba", 0x3B2814, 0x38
 
-	.global gUnk_083B284C
-gUnk_083B284C:
+	.global gMessageCloseSteps
+gMessageCloseSteps:
 	.incbin "baserom.gba", 0x3B284C, 0x18
 
-	.global gUnk_083B2864
-gUnk_083B2864:
+	.global gMessageCloseQuickSteps
+gMessageCloseQuickSteps:
 	.incbin "baserom.gba", 0x3B2864, 0x8
 
 	.global gReplayRandomBytes

@@ -376,12 +376,12 @@ gUnk_080AF7E8:
 gNameEntrySpriteFrames:
 	.incbin "baserom.gba", 0xAF808, 0x8
 
-	.global gUnk_080AF810
-gUnk_080AF810:
+	.global gNameEntryObjPalette
+gNameEntryObjPalette:
 	.incbin "baserom.gba", 0xAF810, 0x40
 
-	.global gUnk_080AF850
-gUnk_080AF850:
+	.global gNameEntryColumnRemap
+gNameEntryColumnRemap:
 	.incbin "baserom.gba", 0xAF850, 0x4
 
 	.global gSoundTestSongs
@@ -488,16 +488,16 @@ gLinkMenuGameModes:
 gLinkMenuStates:
 	.incbin "baserom.gba", 0xAFB48, 0x34E
 
-	.global gUnk_080AFE96
-gUnk_080AFE96:
+	.global gTextScrollHeadingX
+gTextScrollHeadingX:
 	.incbin "baserom.gba", 0xAFE96, 0x6
 
-	.global gUnk_080AFE9C
-gUnk_080AFE9C:
+	.global gTextScrollPages
+gTextScrollPages:
 	.incbin "baserom.gba", 0xAFE9C, 0xC
 
-	.global gUnk_080AFEA8
-gUnk_080AFEA8:
+	.global gTextScrollStates
+gTextScrollStates:
 	.incbin "baserom.gba", 0xAFEA8, 0x1C
 
 	.global gUnk_080AFEC4

@@ -146,8 +146,8 @@ void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src,
 }
 
 void decompress_bg_tiles_to_vram_bg(void) {
-    lz_decompress_dispatch(gUnk_084873D0, (void *)0x06000020);
-    lz_decompress_dispatch(gUnk_084C31BC, (void *)0x06001780);
+    lz_decompress_dispatch(gMessageWindowTiles, (void *)0x06000020);
+    lz_decompress_dispatch(gMessageWindowIconTiles, (void *)0x06001780);
     CpuFastSet(gMenuBgPalette, (void *)(PLTT + 0x1E0), 8);
 }
 
@@ -158,22 +158,22 @@ void setup_bg0_display_layer(void) {
     r = &REG_BG0CNT;
     v = 0x500;
     *r = v;
-    set_tilemap_and_decompress_bg(0, 0xD, gUnk_08488540, REG_BG0CNT, 1);
+    set_tilemap_and_decompress_bg(0, 0xD, gMessageWindowTilemap, REG_BG0CNT, 1);
 }
 
 void decompress_indexed_asset(u32 set, u32 idx, void *dst, u32 pal, u32 toBuffer) {
-    lz_decompress_dispatch(gUnk_083AFD08[set][idx], dst);
+    lz_decompress_dispatch(gPortraitTiles[set][idx], dst);
     if (toBuffer)
-        CpuFastSet(gUnk_083B15C8[set], (void *)(0x0202FA00 + pal * 32), 8);
+        CpuFastSet(gPortraitPalettes[set], (void *)(0x0202FA00 + pal * 32), 8);
     else
-        CpuFastSet(gUnk_083B15C8[set], (void *)(PLTT + pal * 32), 8);
+        CpuFastSet(gPortraitPalettes[set], (void *)(PLTT + pal * 32), 8);
 }
 
 void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c) {
     REG_DISPCNT |= 0x100;
     REG_BG0CNT = 0x500;
-    lz_decompress_dispatch(gUnk_083AFD08[a][b], (void *)0x06000F80);
-    CpuFastSet(gUnk_083B15C8[a], (void *)0x050001A0, 8);
+    lz_decompress_dispatch(gPortraitTiles[a][b], (void *)0x06000F80);
+    CpuFastSet(gPortraitPalettes[a], (void *)0x050001A0, 8);
     write_tilemap_rect(8, 8, x, y, gUiTilemaps[c * 9 + 8], REG_BG0CNT, 0);
 }
 
@@ -188,7 +188,7 @@ static inline s32 sub8(u32 v) {
 
 // One frame of the message window portrait animation (8x8 tiles on BG0): frame gGameWork.unkE of
 // tilemap set anim (9 frames, gUiTilemaps[anim * 9 ..]), played backwards when reverse is set; loads
-// portrait set/idx (gUnk_083AFD08, as load_bg0_tilemap) first. Returns 1 after the last frame.
+// portrait set/idx (gPortraitTiles, as load_bg0_tilemap) first. Returns 1 after the last frame.
 // Runtime: message_clear_text_area calls it 9 frames in a row with (0, 4, 3, 5, ...) on the new game prompt.
 u32 message_portrait_anim_step(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 reverse) {
     u8 ids[2];
@@ -199,8 +199,8 @@ u32 message_portrait_anim_step(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 rev
     if (gGameWork.unkE == 0) {
         REG_DISPCNT |= 0x100;
         REG_BG0CNT = 0x500;
-        lz_decompress_dispatch(gUnk_083AFD08[set][idx], (void *)0x06000F80);
-        CpuFastSet(gUnk_083B15C8[set], (void *)0x050001A0, 8);
+        lz_decompress_dispatch(gPortraitTiles[set][idx], (void *)0x06000F80);
+        CpuFastSet(gPortraitPalettes[set], (void *)0x050001A0, 8);
     }
     if (reverse == 0)
         write_tilemap_rect(8, 8, x, y, gUiTilemaps[anim * 9 + gGameWork.unkE], REG_BG0CNT, 0);

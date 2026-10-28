@@ -17,7 +17,7 @@ static void clear_vram_bg2_tilemap(void) {
 
     CpuFastSet(&zero, (void *)0x06008000, 0x01001000);
     lz_decompress_dispatch(gMenuDigitTilesLz, (void *)0x06008020);
-    CpuFastSet(gUnk_08483AA0, (void *)0x05000020, 8);
+    CpuFastSet(gMenuDigitPalette, (void *)0x05000020, 8);
     bg2 = &REG_BG2CNT;
     v = 0x1608;
     *bg2 = v;

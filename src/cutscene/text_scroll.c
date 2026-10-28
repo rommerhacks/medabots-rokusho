@@ -1,5 +1,5 @@
-// Mode-2 state 22, entered from a field script (switch_game_mode case 8). Sub-states gUnk_080AFEA8: three
-// pages of text lines (gUnk_080AFE9C / line counts gSceneTextLineCounts) scroll up over a 3-D hexagon ring
+// Mode-2 state 22, entered from a field script (switch_game_mode case 8). Sub-states gTextScrollStates: three
+// pages of text lines (gTextScrollPages / line counts gSceneTextLineCounts) scroll up over a 3-D hexagon ring
 // (engine/rings_3d.c) with song 5, then everything fades to white and the field resumes. Purpose is a guess
 // (story text). Uses text/ and engine/ helpers only.
 #include "global.h"
@@ -38,7 +38,7 @@ static void text_scroll_draw_bar(s32 len, s32 step) {
 
 void text_scroll_shift_row(s32 row, s32 step) {
     u16 buf[32];
-    u8 x = gUnk_080AFE96[gMenuWork->cursor];
+    u8 x = gTextScrollHeadingX[gMenuWork->cursor];
     if (step <= 14) {
         CpuSet((u8 *)VRAM + ((REG_BG0CNT >> 8) & 0x1F) * 0x800 + x * 2 + 0x100, buf, (30 - x) & 0x1FFFFF);
         CpuSet(buf, (u8 *)VRAM + ((REG_BG0CNT >> 8) & 0x1F) * 0x800 + (x + 1) * 2 + 0x100, (29 - x) & 0x1FFFFF);
@@ -119,16 +119,16 @@ void text_scroll_init(void) {
     reset_bg_scroll();
     REG_DISPCNT = 0x6060;
     REG_BG0CNT = 0x1B04;
-    decompress_and_write_tilemap(gUnk_087A3CFC, REG_BG0CNT);
+    decompress_and_write_tilemap(gTextScrollBg0Tilemap, REG_BG0CNT);
     REG_BG0CNT = 0x1F04;
     REG_BG1CNT = 0x1E05;
     REG_BG2CNT = 0x3D06;
     REG_BG3CNT = 0x1C07;
-    decompress_and_write_tilemap(gUnk_087A3E64, REG_BG2CNT);
-    decompress_and_write_tilemap(gUnk_087A40A0, REG_BG3CNT);
-    size = dma3_copy_or_decompress(gUnk_087A1410, (void *)0x02030000);
+    decompress_and_write_tilemap(gTextScrollBg2Tilemap, REG_BG2CNT);
+    decompress_and_write_tilemap(gTextScrollBg3Tilemap, REG_BG3CNT);
+    size = dma3_copy_or_decompress(gTextScrollBgTiles, (void *)0x02030000);
     CpuFastSet((void *)0x02030000, (void *)0x06004000, (size << 9) >> 11);
-    CpuFastSet(gUnk_087A13B0, (void *)0x0202FA00, 0x18);
+    CpuFastSet(gTextScrollBgPalettes, (void *)0x0202FA00, 0x18);
     CpuFastSet(pal, (void *)0x0202F800, 0x20);
     lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
     CpuFastSet(gBlackObjPalettes, (void *)0x05000200, 8);
@@ -190,7 +190,7 @@ void text_scroll_fade_in(void) {
 }
 
 void text_scroll_page_start(void) {
-    struct PtrTable3 t = gUnk_080AFE9C;
+    struct PtrTable3 t = gTextScrollPages;
     struct MenuWork *s;
     update_scene_animation_frame();
     s = gMenuWork;
@@ -268,7 +268,7 @@ void text_scroll_fade_out(void) {
 }
 
 void text_scroll_update(void) {
-    struct FuncTable7 t = gUnk_080AFEA8;
+    struct FuncTable7 t = gTextScrollStates;
     t.f[gGameSubState]();
     gBg2Scroll.y--;
 }

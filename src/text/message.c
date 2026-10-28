@@ -94,18 +94,18 @@ void message_show_window(void) {
 void message_open_window_frame(void) {
     switch (gGameWork.frameAnimStep) {
     case 0:
-        lz_decompress_dispatch(gUnk_08487630, (void *)(VRAM + 0x20));
-        set_tilemap_and_decompress_bg(0, 0xD, gUnk_08488600, REG_BG0CNT, 1);
+        lz_decompress_dispatch(gMessageWindowOpenTiles1, (void *)(VRAM + 0x20));
+        set_tilemap_and_decompress_bg(0, 0xD, gMessageWindowOpenTilemap1, REG_BG0CNT, 1);
         gGameWork.frameAnimStep++;
         break;
     case 1:
-        lz_decompress_dispatch(gUnk_08487524, (void *)(VRAM + 0x20));
-        set_tilemap_and_decompress_bg(0, 0xD, gUnk_084885A8, REG_BG0CNT, 1);
+        lz_decompress_dispatch(gMessageWindowOpenTiles2, (void *)(VRAM + 0x20));
+        set_tilemap_and_decompress_bg(0, 0xD, gMessageWindowOpenTilemap2, REG_BG0CNT, 1);
         gGameWork.frameAnimStep++;
         break;
     case 2:
-        lz_decompress_dispatch(gUnk_084873D0, (void *)(VRAM + 0x20));
-        set_tilemap_and_decompress_bg(0, 0xD, gUnk_08488540, REG_BG0CNT, 1);
+        lz_decompress_dispatch(gMessageWindowTiles, (void *)(VRAM + 0x20));
+        set_tilemap_and_decompress_bg(0, 0xD, gMessageWindowTilemap, REG_BG0CNT, 1);
         gGameWork.frameAnimStep++;
         break;
     default:
@@ -640,13 +640,13 @@ void message_close_check_frame(void) {
 void message_close_window_frame(void) {
     switch (gGameWork.frameAnimStep) {
     case 3:
-        lz_decompress_dispatch(gUnk_08487524, (void *)(VRAM + 0x20));
-        set_tilemap_and_decompress_bg(0, 0xD, gUnk_084885A8, REG_BG0CNT, 1);
+        lz_decompress_dispatch(gMessageWindowOpenTiles2, (void *)(VRAM + 0x20));
+        set_tilemap_and_decompress_bg(0, 0xD, gMessageWindowOpenTilemap2, REG_BG0CNT, 1);
         gGameWork.frameAnimStep--;
         break;
     case 2:
-        lz_decompress_dispatch(gUnk_08487630, (void *)(VRAM + 0x20));
-        set_tilemap_and_decompress_bg(0, 0xD, gUnk_08488600, REG_BG0CNT, 1);
+        lz_decompress_dispatch(gMessageWindowOpenTiles1, (void *)(VRAM + 0x20));
+        set_tilemap_and_decompress_bg(0, 0xD, gMessageWindowOpenTilemap1, REG_BG0CNT, 1);
         gGameWork.frameAnimStep--;
         break;
     case 1:

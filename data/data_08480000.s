@@ -8,8 +8,8 @@ gData_08480000:
 gUnk_084837A0:
 	.incbin "baserom.gba", 0x4837A0, 0x300
 
-	.global gUnk_08483AA0
-gUnk_08483AA0:
+	.global gMenuDigitPalette
+gMenuDigitPalette:
 	.incbin "baserom.gba", 0x483AA0, 0x20
 
 	.global gItemUsable
@@ -304,16 +304,16 @@ gSoundTimerRegs:
 gSoundFifoDmaCnt:
 	.incbin "baserom.gba", 0x4873C8, 0x8
 
-	.global gUnk_084873D0
-gUnk_084873D0:
+	.global gMessageWindowTiles
+gMessageWindowTiles:
 	.incbin "baserom.gba", 0x4873D0, 0x154
 
-	.global gUnk_08487524
-gUnk_08487524:
+	.global gMessageWindowOpenTiles2
+gMessageWindowOpenTiles2:
 	.incbin "baserom.gba", 0x487524, 0x10C
 
-	.global gUnk_08487630
-gUnk_08487630:
+	.global gMessageWindowOpenTiles1
+gMessageWindowOpenTiles1:
 	.incbin "baserom.gba", 0x487630, 0xD8
 
 	.global gMoneyWindowTiles
@@ -324,12 +324,12 @@ gMoneyWindowTiles:
 gMoneyWindowHalfTiles:
 	.incbin "baserom.gba", 0x487814, 0xD8
 
-	.global gUnk_084878EC
-gUnk_084878EC:
+	.global gChoiceMenuFrameTiles
+gChoiceMenuFrameTiles:
 	.incbin "baserom.gba", 0x4878EC, 0x80
 
-	.global gUnk_0848796C
-gUnk_0848796C:
+	.global gChoiceMenuLabelTiles
+gChoiceMenuLabelTiles:
 	.incbin "baserom.gba", 0x48796C, 0x84
 
 	.global gMedaforceGaugeFrameTiles
@@ -380,16 +380,16 @@ gUnk_084882F4:
 gTradeChoiceWindowTiles:
 	.incbin "baserom.gba", 0x48833C, 0x204
 
-	.global gUnk_08488540
-gUnk_08488540:
+	.global gMessageWindowTilemap
+gMessageWindowTilemap:
 	.incbin "baserom.gba", 0x488540, 0x68
 
-	.global gUnk_084885A8
-gUnk_084885A8:
+	.global gMessageWindowOpenTilemap2
+gMessageWindowOpenTilemap2:
 	.incbin "baserom.gba", 0x4885A8, 0x58
 
-	.global gUnk_08488600
-gUnk_08488600:
+	.global gMessageWindowOpenTilemap1
+gMessageWindowOpenTilemap1:
 	.incbin "baserom.gba", 0x488600, 0x44
 
 	.global gMoneyWindowTilemap
@@ -400,12 +400,12 @@ gMoneyWindowTilemap:
 gMoneyWindowHalfTilemap:
 	.incbin "baserom.gba", 0x488690, 0x40
 
-	.global gUnk_084886D0
-gUnk_084886D0:
+	.global gChoiceMenuFrameTilemap
+gChoiceMenuFrameTilemap:
 	.incbin "baserom.gba", 0x4886D0, 0x48
 
-	.global gUnk_08488718
-gUnk_08488718:
+	.global gChoiceMenuLabelTilemap
+gChoiceMenuLabelTilemap:
 	.incbin "baserom.gba", 0x488718, 0x2C
 
 	.global gMedaforceGaugeFrameTilemap
@@ -460,8 +460,8 @@ gTradeChoiceWindowTilemap:
 gMenuBgPalette:
 	.incbin "baserom.gba", 0x488A84, 0x20
 
-	.global gUnk_08488AA4
-gUnk_08488AA4:
+	.global gShopObjPalette
+gShopObjPalette:
 	.incbin "baserom.gba", 0x488AA4, 0x20
 
 	.global gBattleBgPalette10
@@ -528,8 +528,8 @@ gMedalIconTiles:
 gMedalIconBlankTiles:
 	.incbin "baserom.gba", 0x4C30BC, 0x100
 
-	.global gUnk_084C31BC
-gUnk_084C31BC:
+	.global gMessageWindowIconTiles
+gMessageWindowIconTiles:
 	.incbin "baserom.gba", 0x4C31BC, 0x4C
 
 	.global gSmallDigitTiles
@@ -636,12 +636,12 @@ gAltFontGlyphs:
 gUnk_084C65C8:
 	.incbin "baserom.gba", 0x4C65C8, 0xF0
 
-	.global gUnk_084C66B8
-gUnk_084C66B8:
+	.global gPrizeGameBgTiles2
+gPrizeGameBgTiles2:
 	.incbin "baserom.gba", 0x4C66B8, 0x228
 
-	.global gUnk_084C68E0
-gUnk_084C68E0:
+	.global gPrizeGameBgTiles3
+gPrizeGameBgTiles3:
 	.incbin "baserom.gba", 0x4C68E0, 0x8C
 
 	.global gPrebattleWipeTiles
@@ -1088,8 +1088,8 @@ gMedaforceProtectorTiles:
 gMedaforceAntiProtectionTiles:
 	.incbin "baserom.gba", 0x4E1EA4, 0x254
 
-	.global gUnk_084E20F8
-gUnk_084E20F8:
+	.global gPrizeGameObjTiles
+gPrizeGameObjTiles:
 	.incbin "baserom.gba", 0x4E20F8, 0x858
 
 	.global gUnk_084E2950
@@ -1232,8 +1232,8 @@ gMedapartDetailBgTiles:
 gStatusScreenBgTilesLz:
 	.incbin "baserom.gba", 0x4ED4C4, 0xA2C
 
-	.global gUnk_084EDEF0
-gUnk_084EDEF0:
+	.global gPrizeGameBgTiles
+gPrizeGameBgTiles:
 	.incbin "baserom.gba", 0x4EDEF0, 0x13E8
 
 	.global gMedabotsBg0Tilemap
@@ -1276,8 +1276,8 @@ gMedapartDetailBg0Tilemap:
 gStatusScreenBg0Tilemap:
 	.incbin "baserom.gba", 0x4EF5DC, 0x8C
 
-	.global gUnk_084EF668
-gUnk_084EF668:
+	.global gPrizeGameBg0Tilemap
+gPrizeGameBg0Tilemap:
 	.incbin "baserom.gba", 0x4EF668, 0x38
 
 	.global gMedawatchBg1Tilemap
@@ -1328,8 +1328,8 @@ gMedapartDetailBg1Tilemap:
 gStatusScreenBg1Tilemap:
 	.incbin "baserom.gba", 0x4F0128, 0x6C
 
-	.global gUnk_084F0194
-gUnk_084F0194:
+	.global gPrizeGameBg1Tilemap
+gPrizeGameBg1Tilemap:
 	.incbin "baserom.gba", 0x4F0194, 0xA8
 
 	.global gMedawatchBg2Tilemap
@@ -1376,8 +1376,8 @@ gMedapartDetailBg2Tilemap:
 gStatusScreenBg2Tilemap:
 	.incbin "baserom.gba", 0x4F0D24, 0x78
 
-	.global gUnk_084F0D9C
-gUnk_084F0D9C:
+	.global gPrizeGameBg2Tilemap
+gPrizeGameBg2Tilemap:
 	.incbin "baserom.gba", 0x4F0D9C, 0x190
 
 	.global gMedawatchBg3Tilemap
@@ -1424,8 +1424,8 @@ gMedapartDetailBg3Tilemap:
 gStatusScreenBg3Tilemap:
 	.incbin "baserom.gba", 0x4F205C, 0x18C
 
-	.global gUnk_084F21E8
-gUnk_084F21E8:
+	.global gPrizeGameBg3Tilemap
+gPrizeGameBg3Tilemap:
 	.incbin "baserom.gba", 0x4F21E8, 0x2F8
 
 	.global gMedawatchBgPalettes
@@ -1476,8 +1476,8 @@ gMedapartDetailBgPalette:
 gStatusScreenBgPalettes:
 	.incbin "baserom.gba", 0x4F37E0, 0x1C0
 
-	.global gUnk_084F39A0
-gUnk_084F39A0:
+	.global gPrizeGameBgPalettes
+gPrizeGameBgPalettes:
 	.incbin "baserom.gba", 0x4F39A0, 0x1A358
 
 	.global gGradientPaletteYellow
@@ -1864,6 +1864,6 @@ gMedaforceLegCrashPalette:
 gMedaforceProtectorPalettes:
 	.incbin "baserom.gba", 0x50EF18, 0x40
 
-	.global gUnk_0850EF58
-gUnk_0850EF58:
+	.global gPrizeGameObjPalettes
+gPrizeGameObjPalettes:
 	.incbin "baserom.gba", 0x50EF58, 0x810A8
