@@ -14,34 +14,34 @@ void start_medal_transform(u8 slot) {
 
 static void medal_transform_update_sparkles(void) {
     int i, j, k;
-    u16 t;
-    struct SpriteEntry *s;
+    u16 life;
+    struct SpriteEntry *sprite;
     for (i = 0; i < 16; i = j) {
         struct SpriteEntry *base = gSpriteEntries;
         k = i + 1;
-        s = &base[k];
-        t = s->unk1A;
+        sprite = &base[k];
+        life = sprite->unk1A;
         j = k;
-        if (t == 0) {
-            s->x = 0x78;
-            s->y = 0x28;
-            s->pos_x = s->x << 8;
-            s->pos_y = s->y << 8;
-            s->pos_x_frac = rng_next_byte();
-            s->pos_y_frac = rng_next_byte();
-            s->unk1A = 0x3F;
-            s->scale_x = 0;
-            s->scale_y = 0;
-            s->flags &= ~8;
+        if (life == 0) {
+            sprite->x = 0x78;
+            sprite->y = 0x28;
+            sprite->pos_x = sprite->x << 8;
+            sprite->pos_y = sprite->y << 8;
+            sprite->pos_x_frac = rng_next_byte();
+            sprite->pos_y_frac = rng_next_byte();
+            sprite->unk1A = 0x3F;
+            sprite->scale_x = 0;
+            sprite->scale_y = 0;
+            sprite->flags &= ~8;
         } else {
-            if (--s->unk1A <= 0xF)
-                s->flags |= SPRITE_OBJ_MODE(1);
-            s->pos_x += ((s8 *)s)[0xC] * 4;
-            s->pos_y += ((s8 *)s)[0x10] * 4;
-            s->x = s->pos_x >> 8;
-            s->y = s->pos_y >> 8;
-            s->scale_x = 0x40 - (u8)s->unk1A;
-            s->scale_y = 0x40 - (u8)s->unk1A;
+            if (--sprite->unk1A <= 0xF)
+                sprite->flags |= SPRITE_OBJ_MODE(1);
+            sprite->pos_x += ((s8 *)sprite)[0xC] * 4;
+            sprite->pos_y += ((s8 *)sprite)[0x10] * 4;
+            sprite->x = sprite->pos_x >> 8;
+            sprite->y = sprite->pos_y >> 8;
+            sprite->scale_x = 0x40 - (u8)sprite->unk1A;
+            sprite->scale_y = 0x40 - (u8)sprite->unk1A;
         }
     }
     REG_BLDCNT = 0xC40;
@@ -75,18 +75,18 @@ void medal_transform_init(void) {
     CpuFastSet(gMedalIconTiles + gMedals[slot].graphicId * 0x80, vram + size, 0x20);
     lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + 0x06000080));
     {
-        u16 t = 0x60C0;
+        u16 tile = 0x60C0;
         u32 bg = ((REG_BG0CNT >> 8) & 0x1F) * 0x800;
-        u32 a = 0x06000286;
-        u16 *d;
-        d = (u16 *)(bg + a);
-        *d = t;
-        d = (u16 *)(bg + (a + 2));
-        *d = t + 1;
-        d = (u16 *)(bg + 0x060002C6);
-        *d = t + 2;
-        d = (u16 *)(bg + 0x060002C8);
-        *d = t + 3;
+        u32 tile_addr = 0x06000286;
+        u16 *tile_ptr;
+        tile_ptr = (u16 *)(bg + tile_addr);
+        *tile_ptr = tile;
+        tile_ptr = (u16 *)(bg + (tile_addr + 2));
+        *tile_ptr = tile + 1;
+        tile_ptr = (u16 *)(bg + 0x060002C6);
+        *tile_ptr = tile + 2;
+        tile_ptr = (u16 *)(bg + 0x060002C8);
+        *tile_ptr = tile + 3;
     }
     CpuFastSet(gMedalSceneObjPalettes, (void *)0x0202FA00, 0x80);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
@@ -115,7 +115,7 @@ void medal_transform_init(void) {
 }
 
 void medal_transform_draw_medal(void) {
-    struct SpriteEntry *s;
+    struct SpriteEntry *sprite;
     u8 zero;
     int i;
     int id, fr;
@@ -123,18 +123,18 @@ void medal_transform_draw_medal(void) {
     id = gMedals[gCurrentMedalSlot].graphicId;
     fr = gMedals[gCurrentMedalSlot].spriteVariant - 1;
     lz_decompress_dispatch(gMedalSpriteGfx[id][fr], (void *)0x06010000);
-    s = gSpriteEntries;
+    sprite = gSpriteEntries;
     zero = 0;
-    s->flags =
+    sprite->flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
-    s->x = 0x78;
-    s->y = 0x28;
-    s->frame = 0x200;
-    s->palette = zero;
-    s->frame_table = zero;
-    s->order = 0x40;
-    s->scale_x = 0x40;
-    s->scale_y = 0x40;
+    sprite->x = 0x78;
+    sprite->y = 0x28;
+    sprite->frame = 0x200;
+    sprite->palette = zero;
+    sprite->frame_table = zero;
+    sprite->order = 0x40;
+    sprite->scale_x = 0x40;
+    sprite->scale_y = 0x40;
     for (i = 0; i < 16; i++) {
         gTextArgBuffer[i] = ((const u8 *)gMedalNames[gMedals[gCurrentMedalSlot].graphicId])[i];
         if (gTextArgBuffer[i] == 0xFE)
@@ -172,11 +172,11 @@ void medal_transform_draw_medal(void) {
 }
 
 void medal_transform_fade_in(void) {
-    struct GameWork *s;
+    struct GameWork *game;
     u8 *n;
     medal_transform_update_sparkles();
-    s = &gGameWork;
-    n = &s->stepCounter;
+    game = &gGameWork;
+    n = &game->stepCounter;
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, 0x20 - *n * 4, 0xFFFF);
         obj_palettes_blend_masked_now(0, 0x20 - *n * 4, 0xFFFF);
@@ -190,16 +190,16 @@ void medal_transform_fade_in(void) {
 void medal_transform_flash_in(void) {
     medal_transform_update_sparkles();
     if (run_message(gSystemMessages[0x11])) {
-        int t = (s16)gMenuWork->frame++;
-        if (t > 0x77) {
-            t -= 0x78;
-            if (t <= 0x80)
-                obj_palettes_blend_masked_now(0x7FFF, t >> 2, 1);
+        int elapsed = (s16)gMenuWork->frame++;
+        if (elapsed > 0x77) {
+            elapsed -= 0x78;
+            if (elapsed <= 0x80)
+                obj_palettes_blend_masked_now(0x7FFF, elapsed >> 2, 1);
             else {
-                struct MedalData *b = gMedals;
-                struct MedalData *m = &b[gCurrentMedalSlot];
-                u8 id = m->graphicId;
-                lz_decompress_dispatch(gMedalSpriteGfx[id][m->spriteVariant], (void *)0x06010000);
+                struct MedalData *medals = gMedals;
+                struct MedalData *medal = &medals[gCurrentMedalSlot];
+                u8 id = medal->graphicId;
+                lz_decompress_dispatch(gMedalSpriteGfx[id][medal->spriteVariant], (void *)0x06010000);
                 gMenuWork->frame = 0;
                 gGameSubState++;
             }
@@ -208,13 +208,13 @@ void medal_transform_flash_in(void) {
 }
 
 void medal_transform_flash_out(void) {
-    int t;
+    int elapsed;
     medal_transform_update_sparkles();
-    t = (s16)gMenuWork->frame++;
-    if (t > 0x3B) {
-        t -= 0x3C;
-        if (t <= 0x80)
-            obj_palettes_blend_masked_now(0x7FFF, 0x20 - (t >> 2), 1);
+    elapsed = (s16)gMenuWork->frame++;
+    if (elapsed > 0x3B) {
+        elapsed -= 0x3C;
+        if (elapsed <= 0x80)
+            obj_palettes_blend_masked_now(0x7FFF, 0x20 - (elapsed >> 2), 1);
         else {
             message_next();
             gGameSubState++;
@@ -239,7 +239,7 @@ void medal_transform_exit(void) {
 }
 
 void medal_transform_update(void) {
-    struct FuncTable7 t = gMedalLevelUpSubStates;
-    t.f[gGameSubState]();
+    struct FuncTable7 states = gMedalLevelUpSubStates;
+    states.f[gGameSubState]();
     gBg2Scroll.y++;
 }

@@ -218,9 +218,9 @@ void medaforce_life_drain_heal_run(void) {
 }
 
 void medaforce_life_drain_heal_find_part(void) {
-    u32 r = find_most_damaged_part(gBattleWork.actor);
-    if (r) {
-        gBattleWork.targetPart = gBattleWork.damagePart = r - 1;
+    u32 part = find_most_damaged_part(gBattleWork.actor);
+    if (part) {
+        gBattleWork.targetPart = gBattleWork.damagePart = part - 1;
         gBattleWork.step = 2;
     } else {
         gBattleWork.step++;
@@ -234,16 +234,16 @@ void medaforce_life_drain_heal_calc(void) {
 }
 
 void medaforce_life_drain_heal_carry_over(void) {
-    u32 r;
-    struct BattleWork *g = &gBattleWork;
-    if (g->overflowAmount && (r = find_most_damaged_part(g->target))) {
-        r--;
-        g->damagePart = r;
-        g->targetPart = r;
-        battle_calc_damage_split(g->actor, g->damagePart, g->overflowAmount);
-        g->step = 0x10;
+    u32 part;
+    struct BattleWork *work = &gBattleWork;
+    if (work->overflowAmount && (part = find_most_damaged_part(work->target))) {
+        part--;
+        work->damagePart = part;
+        work->targetPart = part;
+        battle_calc_damage_split(work->actor, work->damagePart, work->overflowAmount);
+        work->step = 0x10;
     } else {
-        g->step++;
+        work->step++;
     }
 }
 
@@ -491,13 +491,13 @@ void decompress_sprite_tiles_to_vram_obj_4800_alt(void) {
 }
 
 void medaforce_team_break_burst_wait(void) {
-    u32 r = 0;
+    u32 done = 0;
     u32 i;
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] & 0x80)
-            r = staggered_sprites_update(i * 4 + 0x21, 4);
+            done = staggered_sprites_update(i * 4 + 0x21, 4);
     }
-    if (r)
+    if (done)
         gBattleWork.step++;
 }
 
@@ -1548,16 +1548,16 @@ void medaforce_team_heal_sparkle_wait(void) {
 
 void medaforce_total_recovery_apply_heal(void) {
     u32 i, j;
-    u32 r;
+    u32 part;
 
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
             continue;
         for (j = 0; j <= 3; j++) {
-            r = find_most_damaged_part(gBattleWork.targetSideFirst + i);
-            if (r == 0)
+            part = find_most_damaged_part(gBattleWork.targetSideFirst + i);
+            if (part == 0)
                 goto next;
-            gBattleWork.damagePart = r - 1;
+            gBattleWork.damagePart = part - 1;
             battle_calc_damage_split(gBattleWork.targetSideFirst + i, gBattleWork.damagePart, gBattleWork.amount);
             gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.damagePart].armor +=
                 gBattleWork.appliedAmount;
@@ -1686,16 +1686,16 @@ void medaforce_full_body_repair_check_targets(void) {
 
 void medaforce_full_body_repair_apply_repair(void) {
     u32 i, j;
-    u32 r;
+    u32 broken_part;
 
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
             continue;
         for (j = 0; j <= 3; j++) {
-            r = find_random_broken_part(gBattleWork.targetSideFirst + i);
-            if (r == 0)
+            broken_part = find_random_broken_part(gBattleWork.targetSideFirst + i);
+            if (broken_part == 0)
                 goto next;
-            gBattleWork.damagePart = r - 1;
+            gBattleWork.damagePart = broken_part - 1;
             battle_set_damage_display(gBattleWork.targetSideFirst + i, gBattleWork.damagePart, gBattleWork.amount);
             gBattleBots[gBattleWork.targetSideFirst + i].parts[gBattleWork.damagePart].armor +=
                 gBattleWork.appliedAmount;
@@ -2580,7 +2580,7 @@ void medaforce_spy_game_beam_spawn(void) {
 }
 
 void medaforce_spy_game_beam_spin(void) {
-    u32 v;
+    u32 angle;
 
     if (gGameWork.stepCounter <= 2) {
         if (gGameWork.stepTimer == 0) {
@@ -2592,9 +2592,9 @@ void medaforce_spy_game_beam_spin(void) {
     }
     if (gSpriteEntries[0x21].angle == 0)
         gSpriteEntries[0x21].unk2E++;
-    v = (u16)(gSpriteEntries[0x21].unk2E * 16 + gSpriteEntries[0x21].angle) & 0x3FF;
-    gSpriteEntries[0x21].angle = v;
-    if (gSpriteEntries[0x21].unk2E == 5 && v == 0) {
+    angle = (u16)(gSpriteEntries[0x21].unk2E * 16 + gSpriteEntries[0x21].angle) & 0x3FF;
+    gSpriteEntries[0x21].angle = angle;
+    if (gSpriteEntries[0x21].unk2E == 5 && angle == 0) {
         clear_battle_sprite_slot(0x21, 1);
         gBattleWork.step++;
     }
@@ -3381,7 +3381,7 @@ void medaforce_useless_orbs_fly(void) {
     }
     if (done == count) {
         struct SpriteEntry *spr;
-        s16 *p;
+        s16 *pos;
 
         for (i = 0, spr = gSpriteEntries; i <= 2; i++) {
             if (gBattleWork.partBreaks[i] == 0)
@@ -3390,9 +3390,9 @@ void medaforce_useless_orbs_fly(void) {
             gSpriteEntries[0x24 + i].flags =
                 SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
             spr[0x24 + i].frame_table = 0;
-            p = &gSpriteEntries[0x21 + i].x;
-            gSpriteEntries[0x24 + i].x = p[0];
-            spr[0x24 + i].y = p[1];
+            pos = &gSpriteEntries[0x21 + i].x;
+            gSpriteEntries[0x24 + i].x = pos[0];
+            spr[0x24 + i].y = pos[1];
             spr[0x24 + i].palette = 7;
             spr[0x24 + i].order = 0xE0;
             spr[0x24 + i].angle = 0;

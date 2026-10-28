@@ -15,38 +15,38 @@ static inline u32 sub1(u32 x) {
 void count_bot_skill_use(u32 rec) {
     u8 k;
     struct BattleBot *base;
-    struct BattleBot *r;
+    struct BattleBot *bot;
     u32 off;
 
     if (rec > 2)
         return;
     base = gBattleBots;
     off = rec << 8;
-    r = (struct BattleBot *)((u8 *)base + off);
-    if (r->chosenAction == 0)
+    bot = (struct BattleBot *)((u8 *)base + off);
+    if (bot->chosenAction == 0)
         return;
-    if (r->chosenAction <= 3) {
-        k = *(u8 *)(sub1(r->chosenAction) * 24 + off + (u32)base + 0x4A);
+    if (bot->chosenAction <= 3) {
+        k = *(u8 *)(sub1(bot->chosenAction) * 24 + off + (u32)base + 0x4A);
     } else {
-        switch (r->chosenAction - 4) {
+        switch (bot->chosenAction - 4) {
         case 0:
-            if (r->medal.level <= 9)
+            if (bot->medal.level <= 9)
                 return;
-            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.graphicId * 3], &gGameWork.partAbility, 3);
+            memcpy_bytes_08041D04(&gMedalMedaforceIds[bot->medal.graphicId * 3], &gGameWork.partAbility, 3);
             memcpy_bytes_08041D04(&gMedaforceRecords[(&gGameWork.partAbility)[0] * 6], gGameWork.medalGfxRecord, 6);
             k = gGameWork.medalGfxRecord[1];
             break;
         case 1:
-            if (r->medal.level <= 29)
+            if (bot->medal.level <= 29)
                 return;
-            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.graphicId * 3], &gGameWork.partAbility, 3);
+            memcpy_bytes_08041D04(&gMedalMedaforceIds[bot->medal.graphicId * 3], &gGameWork.partAbility, 3);
             memcpy_bytes_08041D04(&gMedaforceRecords[(&gGameWork.partAbility)[1] * 6], gGameWork.medalGfxRecord, 6);
             k = gGameWork.medalGfxRecord[1];
             break;
         case 2:
-            if (r->medal.level <= 59)
+            if (bot->medal.level <= 59)
                 return;
-            memcpy_bytes_08041D04(&gMedalMedaforceIds[r->medal.graphicId * 3], &gGameWork.partAbility, 3);
+            memcpy_bytes_08041D04(&gMedalMedaforceIds[bot->medal.graphicId * 3], &gGameWork.partAbility, 3);
             memcpy_bytes_08041D04(&gMedaforceRecords[(&gGameWork.partAbility)[2] * 6], gGameWork.medalGfxRecord, 6);
             k = gGameWork.medalGfxRecord[1];
             break;
@@ -55,10 +55,11 @@ void count_bot_skill_use(u32 rec) {
         }
     }
     {
-        u32 t = k + off;
-        register u32 q asm("r0") = (u32)base->skillUseCount;
-        t += q;
-        (*(u8 *)t)++;
+        u32 counter_addr = k + off;
+        // FAKEMATCH: pins the skillUseCount base address to r0
+        register u32 counts_base asm("r0") = (u32)base->skillUseCount;
+        counter_addr += counts_base;
+        (*(u8 *)counter_addr)++;
     }
 }
 
@@ -93,8 +94,8 @@ void select_battle_music(void) {
         play_song(gBattleSongs[gOptionBattleMusic]);
 }
 
-void init_battle_action_select_ui(u32 a) {
-    if (a != 0) {
+void init_battle_action_select_ui(u32 hide) {
+    if (hide != 0) {
         vram_fill_tilemap_rect(6, 5, 0xC, 0xF, REG_BG1CNT, 0);
         clear_battle_sprite_slot(0, 1);
         clear_battle_sprite_slot(1, 2);

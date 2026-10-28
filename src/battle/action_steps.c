@@ -181,52 +181,52 @@ void trap_hit_run(void) {
 // (medaforce_effects). unkA6 = the "Caught in a ..."
 // message. Bit 1 of the actor's unkC0, or a part with skill 0x15 (combat_helpers), keeps it out.
 void trap_hit_check(void) {
-    struct BattleWork *b;
-    u32 r;
+    struct BattleWork *battle;
+    u32 break_part;
     u32 type;
     u32 k;
 
-    if (gBattleBots[(b = &gBattleWork)->actor].guardFlags & 2)
+    if (gBattleBots[(battle = &gBattleWork)->actor].guardFlags & 2)
         goto fail;
-    r = bot_has_break_form_part(b->actor);
-    if (r != 0)
+    break_part = bot_has_break_form_part(battle->actor);
+    if (break_part != 0)
         goto fail;
-    type = b->traps[b->actorSide].skill;
+    type = battle->traps[battle->actorSide].skill;
     if (type == 0xA) {
-        k = gBattleBots[b->actor].parts[gBattleBots[b->actor].chosenAction - 1].data[2];
+        k = gBattleBots[battle->actor].parts[gBattleBots[battle->actor].chosenAction - 1].data[2];
         if (k == 0)
             goto okA;
         if (k != 1)
             goto fail;
     okA:
-        b->messageId = 0xE;
-        b->unk51 = r;
-        b->step++;
+        battle->messageId = 0xE;
+        battle->unk51 = break_part;
+        battle->step++;
     } else if (type == 0xB) {
-        k = gBattleBots[b->actor].parts[gBattleBots[b->actor].chosenAction - 1].data[2];
+        k = gBattleBots[battle->actor].parts[gBattleBots[battle->actor].chosenAction - 1].data[2];
         if (k == 2)
             goto okB;
         if (k != 3)
             goto fail;
     okB:
-        b->messageId = 0xF;
-        b->unk51 = 1;
-        b->step++;
+        battle->messageId = 0xF;
+        battle->unk51 = 1;
+        battle->step++;
     } else if (type == 0xC) {
-        if (gBattleBots[b->actor].parts[gBattleBots[b->actor].chosenAction - 1].data[2] > 3)
+        if (gBattleBots[battle->actor].parts[gBattleBots[battle->actor].chosenAction - 1].data[2] > 3)
             goto fail;
-        b->messageId = 0x10;
-        b->unk51 = 2;
-        b->step++;
+        battle->messageId = 0x10;
+        battle->unk51 = 2;
+        battle->step++;
     } else if (type == 0x5A) {
-        if (gBattleBots[b->actor].parts[gBattleBots[b->actor].chosenAction - 1].data[2] > 3)
+        if (gBattleBots[battle->actor].parts[gBattleBots[battle->actor].chosenAction - 1].data[2] > 3)
             goto fail;
-        b->messageId = 0x11;
-        b->unk51 = 3;
-        b->step++;
+        battle->messageId = 0x11;
+        battle->unk51 = 3;
+        battle->step++;
     } else {
     fail:
-        b->step = 0x2D;
+        battle->step = 0x2D;
     }
 }
 
@@ -506,14 +506,14 @@ void trap_hit_break_burst_wait(void) {
 // Wear the trap down: Grap / Shot Trap lose half the actor's propulsion of durability, Attack Clr one use;
 // used up -> the disarm animation.
 void trap_hit_wear(void) {
-    u8 v;
+    u8 wear;
 
     if (gBattleWork.unk51 != 2) {
-        v = gBattleBots[gBattleWork.actor].parts[3].propulsion >> 1;
-        if (v >= gBattleWork.traps[gBattleWork.actorSide].durability) {
+        wear = gBattleBots[gBattleWork.actor].parts[3].propulsion >> 1;
+        if (wear >= gBattleWork.traps[gBattleWork.actorSide].durability) {
             gBattleWork.step++;
         } else {
-            gBattleWork.traps[gBattleWork.actorSide].durability -= v;
+            gBattleWork.traps[gBattleWork.actorSide].durability -= wear;
             gBattleWork.step = 0x2D;
         }
     } else {
@@ -1573,17 +1573,18 @@ void attack_absorbed_heal_armor(void) {
 
 void attack_absorbed_check_carry_over(void) {
     u32 part;
-    struct BattleWork *s;
+    struct BattleWork *battle;
 
-    if ((gBattleBots[(s = &gBattleWork)->actor].formFlags & 2 || gBattleBots[s->actor].parts[s->actorPart].data[7]) &&
-        s->overflowAmount && (part = find_most_damaged_part(s->target))) {
+    if ((gBattleBots[(battle = &gBattleWork)->actor].formFlags & 2 ||
+         gBattleBots[battle->actor].parts[battle->actorPart].data[7]) &&
+        battle->overflowAmount && (part = find_most_damaged_part(battle->target))) {
         part--;
-        s->damagePart = part;
-        s->targetPart = part;
-        battle_calc_damage_split(s->target, s->damagePart, s->overflowAmount);
-        s->step = 0x4A;
+        battle->damagePart = part;
+        battle->targetPart = part;
+        battle_calc_damage_split(battle->target, battle->damagePart, battle->overflowAmount);
+        battle->step = 0x4A;
     } else {
-        s->step++;
+        battle->step++;
     }
 }
 
@@ -1600,30 +1601,30 @@ void status_attack_run(void) {
 }
 
 void status_attack_check(void) {
-    struct BattleWork *s = &gBattleWork;
+    struct BattleWork *battle = &gBattleWork;
     u8 skill;
 
-    if (s->hitResult & 1)
-        s->step++;
-    else if (s->blockResult & 2)
-        s->step++;
-    else if (s->blockResult & 4)
-        s->step++;
-    else if (!gBattleBots[s->target].parts[0].armor)
-        s->step++;
-    else if (!battle_bot_lacks_stability(s->target))
-        s->step++;
-    else if (bot_has_status_guard(s->target, gBattleBots[s->actor].parts[s->actorPart].data[1]))
-        s->step++;
+    if (battle->hitResult & 1)
+        battle->step++;
+    else if (battle->blockResult & 2)
+        battle->step++;
+    else if (battle->blockResult & 4)
+        battle->step++;
+    else if (!gBattleBots[battle->target].parts[0].armor)
+        battle->step++;
+    else if (!battle_bot_lacks_stability(battle->target))
+        battle->step++;
+    else if (bot_has_status_guard(battle->target, gBattleBots[battle->actor].parts[battle->actorPart].data[1]))
+        battle->step++;
     else {
-        skill = gBattleBots[s->actor].parts[s->actorPart].data[1];
+        skill = gBattleBots[battle->actor].parts[battle->actorPart].data[1];
         if (skill == 0xD)
             goto s0;
         if (skill != 0xE)
             goto c1;
     s0:
-        s->unk51 = 0;
-        s->step = 2;
+        battle->unk51 = 0;
+        battle->step = 2;
         return;
     c1:
         if (skill == 0xF)
@@ -1631,8 +1632,8 @@ void status_attack_check(void) {
         if (skill != 0x10)
             goto c2;
     s1:
-        s->unk51 = 1;
-        s->step = 2;
+        battle->unk51 = 1;
+        battle->step = 2;
         return;
     c2:
         if (skill == 0x11)
@@ -1640,8 +1641,8 @@ void status_attack_check(void) {
         if (skill != 0x12)
             goto c3;
     s2:
-        s->unk51 = 2;
-        s->step = 2;
+        battle->unk51 = 2;
+        battle->step = 2;
         return;
     c3:
         if (skill == 0x13)
@@ -1649,11 +1650,11 @@ void status_attack_check(void) {
         if (skill != 0x14)
             goto nx;
     s3:
-        s->unk51 = 3;
-        s->step = 2;
+        battle->unk51 = 3;
+        battle->step = 2;
         return;
     nx:
-        s->step++;
+        battle->step++;
     }
 }
 
@@ -1815,7 +1816,7 @@ void closeup_exit_init(void) {
 }
 
 void closeup_exit_wipe(void) {
-    u32 v;
+    u32 oam_fill;
 
     init_battle_scene_backgrounds();
     gBattleWork.closeupLeftPoseDone = closeup_left_pose_step();
@@ -1823,8 +1824,8 @@ void closeup_exit_wipe(void) {
     write_tilemap_rect(0x1E, 1, 0, gGameWork.stepCounter, gUiTilemapsNamed.blank_row, REG_BG0CNT, 0);
     write_tilemap_rect(0x1E, 1, 0, 0x13 - gGameWork.stepCounter, gUiTilemapsNamed.blank_row, REG_BG0CNT, 0);
     if (gGameWork.stepCounter == 9) {
-        v = 0x200;
-        CpuFastSet(&v, gSpriteWork->oamBuf, 0x01000100);
+        oam_fill = 0x200;
+        CpuFastSet(&oam_fill, gSpriteWork->oamBuf, 0x01000100);
         gSpriteWork->oamCount = 0;
         gSpriteWork->affineIdx = 0;
         gVBlankCallback = empty_callback;

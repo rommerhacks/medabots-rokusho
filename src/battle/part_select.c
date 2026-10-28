@@ -15,44 +15,44 @@ void part_select_init_center_icon(void) {
     gSpriteEntries[0].frame = gPartSelectCenterFrames[gBattleWork.partCursor] + 0x600;
 }
 
-void part_select_init_head_icon(u32 a) {
+void part_select_init_head_icon(u32 lit) {
     gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[1].frame_table = 0;
     gSpriteEntries[1].x = 0x78;
     gSpriteEntries[1].y = 0x6C;
     gSpriteEntries[1].palette = 0xA;
     gSpriteEntries[1].order = 0xC0;
-    gSpriteEntries[1].frame = a * 4 + 0x604;
+    gSpriteEntries[1].frame = lit * 4 + 0x604;
 }
 
-void part_select_init_right_arm_icon(u32 a) {
+void part_select_init_right_arm_icon(u32 lit) {
     gSpriteEntries[2].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[2].frame_table = 0;
     gSpriteEntries[2].x = 0x6C;
     gSpriteEntries[2].y = 0x78;
     gSpriteEntries[2].palette = 0xA;
     gSpriteEntries[2].order = 0xC0;
-    gSpriteEntries[2].frame = a * 4 + 0x605;
+    gSpriteEntries[2].frame = lit * 4 + 0x605;
 }
 
-void part_select_init_left_arm_icon(u32 a) {
+void part_select_init_left_arm_icon(u32 lit) {
     gSpriteEntries[3].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[3].frame_table = 0;
     gSpriteEntries[3].x = 0x84;
     gSpriteEntries[3].y = 0x78;
     gSpriteEntries[3].palette = 0xA;
     gSpriteEntries[3].order = 0xC0;
-    gSpriteEntries[3].frame = a * 4 + 0x606;
+    gSpriteEntries[3].frame = lit * 4 + 0x606;
 }
 
-void part_select_init_bottom_icon(u32 a) {
+void part_select_init_bottom_icon(u32 lit) {
     gSpriteEntries[4].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[4].frame_table = 0;
     gSpriteEntries[4].x = 0x78;
     gSpriteEntries[4].y = 0x84;
     gSpriteEntries[4].palette = 0xA;
     gSpriteEntries[4].order = 0xC0;
-    gSpriteEntries[4].frame = a * 4 + 0x607;
+    gSpriteEntries[4].frame = lit * 4 + 0x607;
 }
 
 void part_select_blink_selected_icon(void) {
@@ -205,10 +205,10 @@ void part_select_draw_skill_name(void) {
 }
 
 void part_select_init_cursor(void) {
-    u8 v = gBattleBots[gBattleWork.commandBot].chosenAction;
-    if (v > 3)
-        v = 0;
-    gBattleWork.partCursor = v;
+    u8 cursor = gBattleBots[gBattleWork.commandBot].chosenAction;
+    if (cursor > 3)
+        cursor = 0;
+    gBattleWork.partCursor = cursor;
 }
 
 void part_select_draw_head_uses(void) {

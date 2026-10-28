@@ -96,8 +96,8 @@ static u32 battle_calculate_damage_modifier(void) {
     return 0;
 }
 
-u32 battle_check_damage_threshold(s16 v) {
-    if (gBattleWork.success > v) {
+u32 battle_check_damage_threshold(s16 threshold) {
+    if (gBattleWork.success > threshold) {
         gBattleWork.evasion = 0;
         gBattleBots[gBattleWork.target].hitFlags |= 0x4C;
         gBattleWork.finalSuccess = gBattleWork.success;
@@ -170,22 +170,22 @@ static u32 battle_find_strongest_part(u32 rec) {
     u32 idx;
 
     for (i = 3; i != 0; i--) {
-        u8 a = gBattleBots[rec].parts[i].armor;
-        if (a && a > best) {
+        u8 armor = gBattleBots[rec].parts[i].armor;
+        if (armor && armor > best) {
             idx = i;
-            best = a;
+            best = armor;
         }
     }
     return idx + 1;
 }
 
 void battle_check_dodged(void) {
-    u8 f = gBattleBots[gBattleWork.target].hitFlags & 0x10;
-    if (f) {
+    u8 dodged = gBattleBots[gBattleWork.target].hitFlags & 0x10;
+    if (dodged) {
         gBattleWork.stepResult = 1;
         gBattleWork.hitResult = 1;
     } else {
-        gBattleWork.stepResult = f;
+        gBattleWork.stepResult = dodged;
     }
 }
 

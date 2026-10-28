@@ -21,7 +21,7 @@ void command_ring_init_icons(void) {
 
 void command_ring_init_icon(u32 i) {
     u32 k;
-    struct Vec16 p;
+    struct Vec16 pos;
 
     clear_battle_sprite_slot(i, 1);
     gSpriteEntries[i].flags =
@@ -29,13 +29,13 @@ void command_ring_init_icon(u32 i) {
     k = i - gBattleWork.ringSlot;
     if (k > 5)
         k += 6;
-    p = compute_polar_to_screen_position(gCommandRingIconAngles[k], 24, 120, 128, 8, 0);
-    gSpriteEntries[i].x = p.x;
-    gSpriteEntries[i].y = p.y;
+    pos = compute_polar_to_screen_position(gCommandRingIconAngles[k], 24, 120, 128, 8, 0);
+    gSpriteEntries[i].x = pos.x;
+    gSpriteEntries[i].y = pos.y;
     gSpriteEntries[i].frame = i + 0x60C;
-    if (p.y > 0x87)
+    if (pos.y > 0x87)
         gSpriteEntries[i].palette = 8;
-    else if (p.y > 0x77)
+    else if (pos.y > 0x77)
         gSpriteEntries[i].palette = 9;
     else
         gSpriteEntries[i].palette = 10;
@@ -56,7 +56,7 @@ void command_ring_init_icons_hidden(void) {
 
 static void command_ring_init_icon_hidden(u32 i) {
     u32 k;
-    struct Vec16 p;
+    struct Vec16 pos;
 
     clear_battle_sprite_slot(i, 1);
     gSpriteEntries[i].flags =
@@ -64,13 +64,13 @@ static void command_ring_init_icon_hidden(u32 i) {
     k = i - gBattleWork.ringSlot;
     if (k > 5)
         k += 6;
-    p = compute_polar_to_screen_position(gCommandRingIconAngles[k], 24, 120, 128, 8, 0);
-    gSpriteEntries[i].x = p.x;
-    gSpriteEntries[i].y = p.y;
+    pos = compute_polar_to_screen_position(gCommandRingIconAngles[k], 24, 120, 128, 8, 0);
+    gSpriteEntries[i].x = pos.x;
+    gSpriteEntries[i].y = pos.y;
     gSpriteEntries[i].frame = i + 0x60C;
-    if (p.y > 0x87)
+    if (pos.y > 0x87)
         gSpriteEntries[i].palette = 8;
-    else if (p.y > 0x77)
+    else if (pos.y > 0x77)
         gSpriteEntries[i].palette = 9;
     else
         gSpriteEntries[i].palette = 10;
@@ -94,7 +94,7 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir) {
     u32 done = 0;
     u32 k;
     u32 n;
-    struct Vec16 p;
+    struct Vec16 pos;
 
     gSpriteEntries[i].flags &= ~SPRITE_FLAG_DOUBLE_SIZE;
     if (dir == 0)
@@ -115,13 +115,13 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir) {
         gSpriteEntries[i].unk21 = 0;
         gSpriteEntries[i].unk22 = 0;
     }
-    p = compute_polar_to_screen_position(gSpriteEntries[i].unk20, 24, 120, 128, 8, 0);
-    gSpriteEntries[i].x = p.x;
-    gSpriteEntries[i].y = p.y;
+    pos = compute_polar_to_screen_position(gSpriteEntries[i].unk20, 24, 120, 128, 8, 0);
+    gSpriteEntries[i].x = pos.x;
+    gSpriteEntries[i].y = pos.y;
     gSpriteEntries[i].frame = i + 0x60C;
-    if (p.y > 0x87)
+    if (pos.y > 0x87)
         gSpriteEntries[i].palette = 8;
-    else if (p.y > 0x7B)
+    else if (pos.y > 0x7B)
         gSpriteEntries[i].palette = 9;
     else
         gSpriteEntries[i].palette = 10;
@@ -274,12 +274,12 @@ void command_ring_shrink_icons(void) {
         if (gSpriteEntries[i].scale_y == 1)
             disable_sprites(i, 1);
         else {
-            s32 v = gSpriteEntries[i].scale_y - 8;
-            if (v <= 0) {
+            s32 scale = gSpriteEntries[i].scale_y - 8;
+            if (scale <= 0) {
                 gSpriteEntries[i].scale_y = 1;
                 gSpriteEntries[i].scale_x = 1;
             } else {
-                gSpriteEntries[i].scale_y = v;
+                gSpriteEntries[i].scale_y = scale;
                 gSpriteEntries[i].scale_x -= 8;
             }
         }

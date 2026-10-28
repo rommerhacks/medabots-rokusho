@@ -292,7 +292,7 @@ void robattle_parts_menu_slide_in(void) {
 
 // Sub-state 0x12: Medapart select input (part_select). B -> 0x13 (back to the ring), A -> 0x15.
 void robattle_parts_menu_input(void) {
-    u8 b;
+    u8 cancel_pressed;
 
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.commandBot);
@@ -302,7 +302,7 @@ void robattle_parts_menu_input(void) {
     part_select_blink_selected_icon();
     part_select_input();
     part_select_blink_status();
-    if ((b = KEYS_LO(gNewKeys) & 2)) {
+    if ((cancel_pressed = KEYS_LO(gNewKeys) & 2)) {
         play_sound_effect(5);
         clear_battle_sprite_slot(0, 6);
         target_marker_hide();
@@ -382,7 +382,7 @@ void robattle_mf_menu_slide_in(void) {
 }
 
 void robattle_mf_menu_input(void) {
-    u8 b;
+    u8 cancel_pressed;
 
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.commandBot);
@@ -391,7 +391,7 @@ void robattle_mf_menu_input(void) {
     mf_menu_blink_selected_icon();
     mf_menu_input();
     mf_menu_draw_status(1);
-    if ((b = KEYS_LO(gNewKeys) & 2)) {
+    if ((cancel_pressed = KEYS_LO(gNewKeys) & 2)) {
         play_sound_effect(5);
         vram_fill_tilemap_rect(8, 1, 1, 0x11, REG_BG0CNT, 0);
         draw_medaforce_gauge_value(gBattleWork.commandBot);
@@ -929,14 +929,14 @@ void robattle_bots_extra_move(void) {
 
         rec += i;
         if (rec->teamState && rec->rapidCharge) {
-            u32 a, b;
+            u32 at_front, at_home;
 
             rec->moveDelay = 8;
             battle_bot_move(i);
             bot_update_walk_anim(i);
-            a = battle_bot_at_front_line(i, 1);
-            b = battle_bot_at_home_line(i, 1);
-            if (a || b) {
+            at_front = battle_bot_at_front_line(i, 1);
+            at_home = battle_bot_at_home_line(i, 1);
+            if (at_front || at_home) {
                 rec->rapidCharge = 0;
                 gGameSubState = 0x45;
                 return;
@@ -1131,7 +1131,7 @@ void robattle_link_exchange_init(void) {
 }
 
 void robattle_link_exchange_commands(void) {
-    u16 r;
+    u16 packet;
     s16 flag;
 
     if (gBattleWork.unk51 != 3) {
@@ -1144,10 +1144,10 @@ void robattle_link_exchange_commands(void) {
         }
     }
     if (gBattleWork.unk53 != 3) {
-        r = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
-        if ((r & 0x8000) && ((u16)(r & 0x100) >> 8) != gBattleWork.linkRecvToggle) {
+        packet = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
+        if ((packet & 0x8000) && ((u16)(packet & 0x100) >> 8) != gBattleWork.linkRecvToggle) {
             gBattleWork.linkRecvToggle ^= 1;
-            gBattleBots[gBattleWork.unk53 + 3].chosenAction = r;
+            gBattleBots[gBattleWork.unk53 + 3].chosenAction = packet;
             gBattleWork.unk53++;
         }
     }
@@ -1187,7 +1187,7 @@ void robattle_link_start_banner(void) {
 }
 
 void robattle_link_exchange_bot_command(void) {
-    u16 r;
+    u16 packet;
 
     if (gBattleWork.actor <= 2) {
         gLinkPackets.sendData = gBattleBots[gBattleWork.actor].chosenAction + 0x8000;
@@ -1195,9 +1195,9 @@ void robattle_link_exchange_bot_command(void) {
             goto next;
         gBattleWork.linkSendToggle = 1;
     } else {
-        r = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
-        if (r & 0x8000) {
-            gBattleBots[gBattleWork.actor].chosenAction = r;
+        packet = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
+        if (packet & 0x8000) {
+            gBattleBots[gBattleWork.actor].chosenAction = packet;
         next:
             gGameSubState++;
         }

@@ -253,7 +253,7 @@ u32 medaforce_gauge_drain_step(u32 bot) {
 
 void mf_charge_sparkles_init(u32 bot) {
     u32 i;
-    struct Vec16 p;
+    struct Vec16 pos;
 
     CpuFastSet(gMfChargeSparklePalette, (void *)0x050002C0, 8);
     for (i = 0; i <= 7; i++) {
@@ -269,10 +269,10 @@ void mf_charge_sparkles_init(u32 bot) {
         gSpriteEntries[0x21 + i].unk28 = 0;
         gSpriteEntries[0x21 + i].unk27 = i * 4;
         gSpriteEntries[0x21 + i].unk26 = 0;
-        p = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].unk20, 16, gSpriteEntries[bot * 4 + 0x5D].x,
-                                             gSpriteEntries[0x21 + i].unk21, 8, 0);
-        gSpriteEntries[0x21 + i].x = p.x;
-        gSpriteEntries[0x21 + i].y = p.y;
+        pos = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].unk20, 16, gSpriteEntries[bot * 4 + 0x5D].x,
+                                               gSpriteEntries[0x21 + i].unk21, 8, 0);
+        gSpriteEntries[0x21 + i].x = pos.x;
+        gSpriteEntries[0x21 + i].y = pos.y;
         gSpriteEntries[0x21 + i].scale_x = 4;
         gSpriteEntries[0x21 + i].scale_y = 4;
     }
@@ -281,7 +281,7 @@ void mf_charge_sparkles_init(u32 bot) {
 u32 mf_charge_sparkles_update(u32 bot) {
     u32 i;
     u32 done = 0;
-    struct Vec16 p;
+    struct Vec16 pos;
 
     for (i = 0; i <= 7; i++) {
         if (gSpriteEntries[0x21 + i].flags == 0) {
@@ -293,10 +293,10 @@ u32 mf_charge_sparkles_update(u32 bot) {
         gSpriteEntries[0x21 + i].unk20 -= 8;
         if ((gSpriteEntries[0x21 + i].unk28 & 7) == 0)
             gSpriteEntries[0x21 + i].unk21--;
-        p = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].unk20, gSpriteEntries[0x21 + i].unk26 + 16,
-                                             gSpriteEntries[bot * 4 + 0x5D].x, gSpriteEntries[0x21 + i].unk21, 8, 0);
-        gSpriteEntries[0x21 + i].x = p.x;
-        gSpriteEntries[0x21 + i].y = p.y;
+        pos = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].unk20, gSpriteEntries[0x21 + i].unk26 + 16,
+                                               gSpriteEntries[bot * 4 + 0x5D].x, gSpriteEntries[0x21 + i].unk21, 8, 0);
+        gSpriteEntries[0x21 + i].x = pos.x;
+        gSpriteEntries[0x21 + i].y = pos.y;
         if (gSpriteEntries[0x21 + i].unk20 > 0x80)
             gSpriteEntries[0x21 + i].order = bot * 4 + 0x59;
         else

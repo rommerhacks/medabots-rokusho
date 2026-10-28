@@ -121,17 +121,17 @@ void add_bot_to_defeated_list(u32 rec) {
 
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y) {
     struct SpriteEntry *base = gSpriteEntries;
-    struct SpriteEntry *s = &base[slot];
+    struct SpriteEntry *sprite = &base[slot];
     u32 step;
     u32 pos;
 
-    s->unk25 += gSpriteSpeedSteps[s->unk30];
-    step = s->unk25;
-    s->unk25 = step % 4;
-    pos = ((step >> 2) + (u16)s->y) & 0xFF;
-    s->y = pos;
+    sprite->unk25 += gSpriteSpeedSteps[sprite->unk30];
+    step = sprite->unk25;
+    sprite->unk25 = step % 4;
+    pos = ((step >> 2) + (u16)sprite->y) & 0xFF;
+    sprite->y = pos;
     if ((s32)pos >= x && (s32)pos <= y) {
-        s->y = x;
+        sprite->y = x;
         return 1;
     }
     gSpriteEntries[slot].unk30 += gSpriteEntries[slot].unk24;
@@ -140,19 +140,19 @@ u32 sprite_move_toward_target(u32 slot, s16 x, s16 y) {
     return 0;
 }
 
-u32 update_sprite_deceleration(u32 slot, s16 a, s16 b) {
+u32 update_sprite_deceleration(u32 slot, s16 min_y, s16 max_y) {
     struct SpriteEntry *base = gSpriteEntries;
-    struct SpriteEntry *s = &base[slot];
-    u8 *frac = &s->unk25;
+    struct SpriteEntry *sprite = &base[slot];
+    u8 *frac = &sprite->unk25;
     u32 step;
     u32 pos;
-    *frac = *frac + gSpriteSpeedSteps[0xFF - s->unk30];
+    *frac = *frac + gSpriteSpeedSteps[0xFF - sprite->unk30];
     step = *frac;
     *frac &= 3;
-    pos = (u16)s->y - (step >> 2);
-    s->y = pos;
-    if (s->y >= a && s->y <= b) {
-        s->y = b;
+    pos = (u16)sprite->y - (step >> 2);
+    sprite->y = pos;
+    if (sprite->y >= min_y && sprite->y <= max_y) {
+        sprite->y = max_y;
         return 1;
     }
     gSpriteEntries[slot].unk30 += gSpriteEntries[slot].unk24;
@@ -175,8 +175,8 @@ void sprite_shake_x_step(u32 slot, u32 frame, u32 y) {
     }
 }
 
-void bg3_shake_step(u32 a) {
-    if (a & 2)
+void bg3_shake_step(u32 frame) {
+    if (frame & 2)
         gBg3Scroll.y = 2;
     else
         gBg3Scroll.y = 0;
@@ -238,10 +238,10 @@ static inline u32 pick_evasion_weight(u32 n) {
 // Picks a random intact part of the target (targetPart), weighted by gRandomPartByIntactClass per intact-part class.
 void battle_pick_random_target_part(u32 rec) {
     struct BattleBot *base = gBattleBots;
-    struct BattleBot *b = &base[rec];
+    struct BattleBot *bot = &base[rec];
 
-    if (b->targetBot != 0)
-        b->targetPart = pick_evasion_weight(b->targetBot) + 1;
+    if (bot->targetBot != 0)
+        bot->targetPart = pick_evasion_weight(bot->targetBot) + 1;
 }
 
 u32 get_random_battle_weight_entry(u32 rec) {
@@ -303,20 +303,20 @@ void sprite_disable_affine(u32 slot) {
     gSpriteEntries[slot].flags &= ~SPRITE_FLAG_AFFINE;
 }
 
-void check_sprite_overlap_and_adjust(u32 a, u32 b) {
+void check_sprite_overlap_and_adjust(u32 anchor_slot, u32 target_slot) {
     struct SpriteEntry *base = gSpriteEntries;
-    struct SpriteEntry *sa = &base[a];
+    struct SpriteEntry *sa = &base[anchor_slot];
     struct SpriteEntry *sb;
     s32 y = sa->y;
 
-    if ((u32)y > 0x9F || y + 8 <= (sb = &base[b])->y - 0x20)
-        disable_sprites(b, 1);
+    if ((u32)y > 0x9F || y + 8 <= (sb = &base[target_slot])->y - 0x20)
+        disable_sprites(target_slot, 1);
     else {
-        s32 d;
-        enable_sprites(b, 1);
-        d = (u8)sb->y - 8;
-        sb->scale_x = 0x40 - (d - (u8)sa->y) * 2;
-        sb->scale_y = 0x40 - (d - (u8)sa->y) * 2;
+        s32 top;
+        enable_sprites(target_slot, 1);
+        top = (u8)sb->y - 8;
+        sb->scale_x = 0x40 - (top - (u8)sa->y) * 2;
+        sb->scale_y = 0x40 - (top - (u8)sa->y) * 2;
     }
 }
 
@@ -352,15 +352,15 @@ u32 calc_bot_matching_part_power(u32 rec) {
 }
 
 void calc_battle_action_speed(u32 rec, u32 part) {
-    struct BattleWork *b = &gBattleWork;
-    b->success += gBattleBots[rec].parts[part].data[5];
-    b->success += calc_bot_matching_part_power(rec);
-    b->success += rng_next_byte() & 7;
-    b->success += gBattleBots[rec].medal.skillLevel[gBattleBots[rec].parts[part].data[2]];
+    struct BattleWork *battle = &gBattleWork;
+    battle->success += gBattleBots[rec].parts[part].data[5];
+    battle->success += calc_bot_matching_part_power(rec);
+    battle->success += rng_next_byte() & 7;
+    battle->success += gBattleBots[rec].medal.skillLevel[gBattleBots[rec].parts[part].data[2]];
     if (skill_type_is_remote(gBattleBots[rec].parts[part].data[2]))
-        b->success += gBattleBots[rec].parts[3].remoteness;
+        battle->success += gBattleBots[rec].parts[3].remoteness;
     else
-        b->success += gBattleBots[rec].parts[3].proximity;
+        battle->success += gBattleBots[rec].parts[3].proximity;
 }
 
 void apply_battle_bot_damage_reduction(u32 rec) {
@@ -369,10 +369,10 @@ void apply_battle_bot_damage_reduction(u32 rec) {
 }
 
 void accumulate_battle_speed_value(u32 rec) {
-    struct BattleWork *b = &gBattleWork;
-    b->evasion += gBattleBots[rec].medal.level;
-    b->evasion += calc_bot_matching_part_power(rec);
-    b->evasion += rng_next_byte() & 7;
+    struct BattleWork *battle = &gBattleWork;
+    battle->evasion += gBattleBots[rec].medal.level;
+    battle->evasion += calc_bot_matching_part_power(rec);
+    battle->evasion += rng_next_byte() & 7;
 }
 
 u32 check_bot_ability_type_strike(u32 rec, u32 part, u32 target) {
@@ -469,28 +469,28 @@ void damage_add_strengthen_parts(u32 rec) {
 }
 
 void damage_add_small_random(void) {
-    struct BattleWork *b = &gBattleWork;
-    if (b->amount <= 2)
-        b->amount += rng_next_byte() & 3;
+    struct BattleWork *battle = &gBattleWork;
+    if (battle->amount <= 2)
+        battle->amount += rng_next_byte() & 3;
 }
 
 // guess: data[0xC] is a per-part damage divisor (multi-hit parts?); the result is at least 1.
 void damage_divide_by_part_divisor(u32 rec, u32 part) {
-    struct BattleWork *b = &gBattleWork;
-    b->amount = b->amount / gBattleBots[rec].parts[part].data[0xC];
-    if (b->amount == 0)
-        b->amount = 1;
+    struct BattleWork *battle = &gBattleWork;
+    battle->amount = battle->amount / gBattleBots[rec].parts[part].data[0xC];
+    if (battle->amount == 0)
+        battle->amount = 1;
 }
 
 // Scrolls BG2/BG3 to x 0x110 when the actor is an opponent (unkF8 bit 0), else to 0: the action close-up
 // background faces the acting side.
 void action_bg_set_side_scroll(void) {
-    u32 t = gBattleWork.actorSideFlags & 1;
-    if (t) {
+    u32 right_side = gBattleWork.actorSideFlags & 1;
+    if (right_side) {
         gBg2Scroll.x = 0x110;
         gBg3Scroll.x = 0x110;
     } else {
-        gBg2Scroll.x = t;
-        gBg3Scroll.x = t;
+        gBg2Scroll.x = right_side;
+        gBg3Scroll.x = right_side;
     }
 }

@@ -83,7 +83,7 @@ void init_opponent_bots(void) {
 
 void init_enemy_bot_medal(u8 i) {
     u32 k;
-    u32 v;
+    u32 skill_level;
     u32 lvl;
 
     memcpy_bytes_08041D04(gMedalRecords[gBattleWork.encounterBots[i].unk4], &gGameWork.partAbility, 16);
@@ -101,15 +101,15 @@ void init_enemy_bot_medal(u8 i) {
         gBattleBots[i + 3].medal.rotation[k * 2 + 1] = gBattleWork.encounterBots[i].unk6[k] & 0xF;
     }
     for (k = 0; k <= 7; k++) {
-        v = gMedalAttributeBaseSkills[gBattleBots[i + 3].medal.attribute * 8 + k];
+        skill_level = gMedalAttributeBaseSkills[gBattleBots[i + 3].medal.attribute * 8 + k];
         lvl = gBattleBots[i + 3].medal.level >> 1;
         if (lvl)
-            v *= lvl;
-        if (v == 0)
-            v = 1;
-        else if (v > 100)
-            v = 100;
-        gBattleBots[i + 3].medal.skillLevel[k] = v;
+            skill_level *= lvl;
+        if (skill_level == 0)
+            skill_level = 1;
+        else if (skill_level > 100)
+            skill_level = 100;
+        gBattleBots[i + 3].medal.skillLevel[k] = skill_level;
     }
 }
 
@@ -244,13 +244,13 @@ static u32 part_is_broken(u32 rec, u32 part) {
 }
 
 // Side index (0 team, 1 opponents) of record a, or of the opposite side when b is nonzero.
-u32 bot_side_index(u32 a, u32 b) {
-    if (b == 0) {
-        if (a <= 2)
+u32 bot_side_index(u32 rec, u32 opposite) {
+    if (opposite == 0) {
+        if (rec <= 2)
             return 0;
         return 1;
     }
-    if (a <= 2)
+    if (rec <= 2)
         return 1;
     return 0;
 }

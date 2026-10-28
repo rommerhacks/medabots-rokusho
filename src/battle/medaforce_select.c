@@ -68,12 +68,12 @@ void mf_menu_slide_bg1(void) {
 
 // guess: starts on the slot of the Medaforce used last (action).
 void mf_menu_init_cursor(void) {
-    u32 v = gBattleBots[gBattleWork.commandBot].chosenAction;
-    if (v <= 3)
-        v = 0;
+    u32 action = gBattleBots[gBattleWork.commandBot].chosenAction;
+    if (action <= 3)
+        action = 0;
     else
-        v -= 5;
-    gBattleWork.partCursor = v;
+        action -= 5;
+    gBattleWork.partCursor = action;
 }
 
 void mf_menu_init_center_icon(void) {
@@ -86,44 +86,44 @@ void mf_menu_init_center_icon(void) {
     gSpriteEntries[0].frame = 0x61A;
 }
 
-void mf_menu_init_charge_icon(u32 a) {
+void mf_menu_init_charge_icon(u32 highlighted) {
     gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[1].frame_table = 0;
     gSpriteEntries[1].x = 0x78;
     gSpriteEntries[1].y = 0x84;
     gSpriteEntries[1].palette = 0xA;
     gSpriteEntries[1].order = 0xC0;
-    gSpriteEntries[1].frame = a * 4 + 0x61E;
+    gSpriteEntries[1].frame = highlighted * 4 + 0x61E;
 }
 
-void mf_menu_init_top_icon(u32 a) {
+void mf_menu_init_top_icon(u32 highlighted) {
     gSpriteEntries[2].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[2].frame_table = 0;
     gSpriteEntries[2].x = 0x78;
     gSpriteEntries[2].y = 0x6C;
     gSpriteEntries[2].palette = 0xA;
     gSpriteEntries[2].order = 0xC0;
-    gSpriteEntries[2].frame = a * 4 + 0x61B;
+    gSpriteEntries[2].frame = highlighted * 4 + 0x61B;
 }
 
-void mf_menu_init_left_icon(u32 a) {
+void mf_menu_init_left_icon(u32 highlighted) {
     gSpriteEntries[3].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[3].frame_table = 0;
     gSpriteEntries[3].x = 0x6C;
     gSpriteEntries[3].y = 0x78;
     gSpriteEntries[3].palette = 0xA;
     gSpriteEntries[3].order = 0xC0;
-    gSpriteEntries[3].frame = a * 4 + 0x61C;
+    gSpriteEntries[3].frame = highlighted * 4 + 0x61C;
 }
 
-void mf_menu_init_right_icon(u32 a) {
+void mf_menu_init_right_icon(u32 highlighted) {
     gSpriteEntries[4].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[4].frame_table = 0;
     gSpriteEntries[4].x = 0x84;
     gSpriteEntries[4].y = 0x78;
     gSpriteEntries[4].palette = 0xA;
     gSpriteEntries[4].order = 0xC0;
-    gSpriteEntries[4].frame = a * 4 + 0x61D;
+    gSpriteEntries[4].frame = highlighted * 4 + 0x61D;
 }
 
 // Name box of the selected slot: "Charge MF" for slot 0, else the Medaforce name, blank while unlearned.
@@ -163,7 +163,7 @@ void mf_menu_draw_medaforce_name(void) {
 
 // Message box of the selected slot: the Medaforce's skill type, or "Unmastered" (Medal level too low) /
 // "Unusable" (Medaforce blocked) / "MF low" (gauge not full); error messages blink when a != 0.
-void mf_menu_draw_status(u32 a) {
+void mf_menu_draw_status(u32 blink_errors) {
     u8 err = 0;
     u8 blank = 0;
 
@@ -248,7 +248,7 @@ void mf_menu_draw_status(u32 a) {
     }
     if (err == 1 || blank == 1)
         mf_menu_draw_cost_bar(1);
-    if (a) {
+    if (blink_errors) {
         if (err) {
             if (!(gGameWork.stepCounter & 8))
                 render_text_sprites_08040DB8(gGameWork.textBuf, 0x24, 0x13, 0xE, 10, 14, 0, 0);
@@ -312,13 +312,13 @@ void mf_menu_blink_selected_icon(void) {
 
 // Cost bar of the selected Medaforce: 8-tile bar at BG0 (1..8, 17), lit tiles = unk10E[2] / 10, and the number;
 // a != 0 puts the gauge back.
-static void mf_menu_draw_cost_bar(u32 a) {
+static void mf_menu_draw_cost_bar(u32 clear) {
     u32 i = 0;
     u32 j;
     u8 n;
     int k;
 
-    if (a == 0) {
+    if (clear == 0) {
         memcpy_bytes_08041D04(gMedalMedaforceIds + gBattleBots[gBattleWork.commandBot].medal.graphicId * 3,
                               &gGameWork.partAbility, 3);
         k = gBattleWork.partCursor - 1;

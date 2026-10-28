@@ -67,11 +67,11 @@ void prebattle_mosaic_shrink_init(void) {
 }
 
 void prebattle_mosaic_shrink(void) {
-    u32 v = gGameWork.stepCounter - 2;
+    u32 mosaic_size = gGameWork.stepCounter - 2;
 
-    gGameWork.stepCounter = v;
+    gGameWork.stepCounter = mosaic_size;
     REG_MOSAIC = gGameWork.stepCounter + (gGameWork.stepCounter << 4);
-    if ((u8)v == 0)
+    if ((u8)mosaic_size == 0)
         gGameSubState = 5;
 }
 
@@ -233,13 +233,13 @@ void prebattle_rubberobo_ask(void) {
 }
 
 void prebattle_rubberobo_choice(void) {
-    u32 r;
+    u32 choice;
 
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    r = poll_choice_menu();
-    if (r) {
-        if ((r >> 4) == 0) {
+    choice = poll_choice_menu();
+    if (choice) {
+        if ((choice >> 4) == 0) {
             message_next();
             gGameSubState++;
         } else
@@ -694,47 +694,47 @@ void afterbattle_part_detail_save_screen(void) {
 // Guess: START on "Medapart was acquired": open the Medaparts detail page (game state 5 sub 0x10) of the
 // won part (gBattleWork.wonPartKind = part kind, unk169 = part id).
 void afterbattle_part_detail_open_screen(void) {
-    struct GameWork *g;
-    struct BattleWork *b;
+    struct GameWork *game;
+    struct BattleWork *battle;
     u8 kind;
 
     clear_bg_scroll();
     clear_battle_sprite_slot(0, 0x80);
-    g = &gGameWork;
-    g->noAffineSprites = 0;
+    game = &gGameWork;
+    game->noAffineSprites = 0;
     gVBlankOamMode = 0;
-    b = &gBattleWork;
-    kind = b->wonPartKind;
+    battle = &gBattleWork;
+    kind = battle->wonPartKind;
     switch (kind) {
     case 0:
-        mem_fill8(&g->openedFrom, 0x14, 0);
-        g->openedFrom = 2;
-        g->shownId = b->wonPartId;
-        g->partSlot = kind;
+        mem_fill8(&game->openedFrom, 0x14, 0);
+        game->openedFrom = 2;
+        game->shownId = battle->wonPartId;
+        game->partSlot = kind;
         gGameState = 5;
         gGameSubState = 0x10;
         break;
     case 1:
-        mem_fill8(&g->openedFrom, 0x14, 0);
-        g->openedFrom = 2;
-        g->shownId = b->wonPartId;
-        g->partSlot = kind;
+        mem_fill8(&game->openedFrom, 0x14, 0);
+        game->openedFrom = 2;
+        game->shownId = battle->wonPartId;
+        game->partSlot = kind;
         gGameState = 5;
         gGameSubState = 0x10;
         break;
     case 2:
-        mem_fill8(&g->openedFrom, 0x14, 0);
-        g->openedFrom = 2;
-        g->shownId = b->wonPartId;
-        g->partSlot = kind;
+        mem_fill8(&game->openedFrom, 0x14, 0);
+        game->openedFrom = 2;
+        game->shownId = battle->wonPartId;
+        game->partSlot = kind;
         gGameState = 5;
         gGameSubState = 0x10;
         break;
     case 3:
-        mem_fill8(&g->openedFrom, 0x14, 0);
-        g->openedFrom = 2;
-        g->shownId = b->wonPartId;
-        g->partSlot = kind;
+        mem_fill8(&game->openedFrom, 0x14, 0);
+        game->openedFrom = 2;
+        game->shownId = battle->wonPartId;
+        game->partSlot = kind;
         gGameState = 5;
         gGameSubState = 0x10;
         break;
@@ -931,21 +931,21 @@ void load_area_battlefield(void) {
 void setup_random_encounter_enemies(void) {
     struct FieldWork *st;
     u8 flag;
-    u32 r;
+    u32 roll;
     u8 id;
     u32 i;
-    u8 a, b, c, d;
+    u8 head_id, rarm_id, larm_id, legs_id;
 
     flag = gFieldWork.fixed_battle;
     st = &gFieldWork;
     if (!flag) {
         memcpy_bytes_08041D04(gAreaRandomEncounters[st->area_id], &gGameWork.partAbility, 4);
-        r = rng_percent();
-        if (r < 40)
+        roll = rng_percent();
+        if (roll < 40)
             id = (&gGameWork.partAbility)[0];
-        else if (r < 70)
+        else if (roll < 70)
             id = (&gGameWork.partAbility)[1];
-        else if (r < 90)
+        else if (roll < 90)
             id = (&gGameWork.partAbility)[2];
         else
             id = (&gGameWork.partAbility)[3];
@@ -954,33 +954,37 @@ void setup_random_encounter_enemies(void) {
     memcpy_bytes_08041D04(gEncounterSetups[st->battle_id], &gBattleWork, 0x28);
     if (!gBattleWork.fixedParts) {
         for (i = 0; i < 3; i++) {
-            a = random_pick_weighted4(gBattleWork.encounterBots[i].parts[0], gBattleWork.encounterBots[i].parts[1],
+            head_id =
+                random_pick_weighted4(gBattleWork.encounterBots[i].parts[0], gBattleWork.encounterBots[i].parts[1],
                                       gBattleWork.encounterBots[i].parts[2], gBattleWork.encounterBots[i].parts[3]);
-            b = random_pick_weighted4(gBattleWork.encounterBots[i].parts[0], gBattleWork.encounterBots[i].parts[1],
+            rarm_id =
+                random_pick_weighted4(gBattleWork.encounterBots[i].parts[0], gBattleWork.encounterBots[i].parts[1],
                                       gBattleWork.encounterBots[i].parts[2], gBattleWork.encounterBots[i].parts[3]);
-            c = random_pick_weighted4(gBattleWork.encounterBots[i].parts[0], gBattleWork.encounterBots[i].parts[1],
+            larm_id =
+                random_pick_weighted4(gBattleWork.encounterBots[i].parts[0], gBattleWork.encounterBots[i].parts[1],
                                       gBattleWork.encounterBots[i].parts[2], gBattleWork.encounterBots[i].parts[3]);
-            d = random_pick_weighted4(gBattleWork.encounterBots[i].parts[0], gBattleWork.encounterBots[i].parts[1],
+            legs_id =
+                random_pick_weighted4(gBattleWork.encounterBots[i].parts[0], gBattleWork.encounterBots[i].parts[1],
                                       gBattleWork.encounterBots[i].parts[2], gBattleWork.encounterBots[i].parts[3]);
-            gBattleWork.encounterBots[i].parts[0] = a;
-            gBattleWork.encounterBots[i].parts[1] = b;
-            gBattleWork.encounterBots[i].parts[2] = c;
-            gBattleWork.encounterBots[i].parts[3] = d;
+            gBattleWork.encounterBots[i].parts[0] = head_id;
+            gBattleWork.encounterBots[i].parts[1] = rarm_id;
+            gBattleWork.encounterBots[i].parts[2] = larm_id;
+            gBattleWork.encounterBots[i].parts[3] = legs_id;
         }
     }
 }
 
 // Returns a, b, c or d with 40/30/20/10% probability.
-u32 random_pick_weighted4(u32 a, u32 b, u32 c, u32 d) {
-    u32 r = rng_percent();
+u32 random_pick_weighted4(u32 common, u32 uncommon, u32 rare, u32 very_rare) {
+    u32 roll = rng_percent();
 
-    if (r < 40)
-        return a;
-    if (r < 70)
-        return b;
-    if (r < 90)
-        return c;
-    return d;
+    if (roll < 40)
+        return common;
+    if (roll < 70)
+        return uncommon;
+    if (roll < 90)
+        return rare;
+    return very_rare;
 }
 
 static void prebattle_draw_opponent_name(void) {
@@ -1070,7 +1074,7 @@ static s32 afterbattle_broken_part_chance(void) {
     u32 i = 0, j, k;
     struct BattleBot *base = gBattleBots;
     u8 *armor = &base->parts[0].armor;
-    u8 *p;
+    u8 *part_armor;
 
 loop:
     k = (i + 3) << 8;
@@ -1078,11 +1082,11 @@ loop:
         goto end;
     j = 1;
     i++;
-    p = (u8 *)(k + (u32)armor) + 0x18;
+    part_armor = (u8 *)(k + (u32)armor) + 0x18;
 inner:
-    if (!*p)
+    if (!*part_armor)
         sum += 10;
-    p += 0x18;
+    part_armor += 0x18;
     j++;
     if (j <= 3)
         goto inner;
@@ -1096,7 +1100,7 @@ end:
 // when found.
 u32 afterbattle_pick_unowned_part(void) {
     u32 slot, n, j, part, k;
-    u8 *p;
+    u8 *part_id;
     struct BattleBot *bb;
 
     slot = gRandomBotSlotStarts[rng_next_byte() & 0xF];
@@ -1105,10 +1109,10 @@ u32 afterbattle_pick_unowned_part(void) {
         if (base[k = slot + 3].present) {
             part = rng_next_byte() & 3;
             for (j = 0, bb = base; j < 4; j++) {
-                p = (u8 *)(part * 24 + ((slot + 3) << 8) + (u32)bb) + 0x5F;
-                if (!medapart_get_counts(*p, part)) {
+                part_id = (u8 *)(part * 24 + ((slot + 3) << 8) + (u32)bb) + 0x5F;
+                if (!medapart_get_counts(*part_id, part)) {
                     gBattleWork.wonPartKind = part;
-                    gBattleWork.wonPartId = *p;
+                    gBattleWork.wonPartId = *part_id;
                     return 1;
                 }
                 part = (part + 1) & 3;
@@ -1298,7 +1302,7 @@ void accumulate_team_armor_stats(void) {
 static void battle_check_medal_level_up(void) {
     u32 i;
     struct MedalData *medal;
-    u32 variant;
+    u32 tier;
     u32 slot;
 
     mem_fill8(&gBattleWork.memberResults[0][0], 0x18, 0);
@@ -1320,15 +1324,15 @@ static void battle_check_medal_level_up(void) {
         medal->nextLevelExp = (medal->level + 1) * 100;
         gBattleWork.memberResults[i][0] = medal->graphicId + 1;
         memcpy_bytes_08041D04(gMedalRecords[medal->graphicId], &gGameWork.partAbility, 16);
-        variant = medal_tier_for_level(medal->level, (&gGameWork.partAbility)[3], (&gGameWork.partAbility)[4],
-                                       (&gGameWork.partAbility)[5], (&gGameWork.partAbility)[6]);
-        if (variant != medal->spriteVariant) {
+        tier = medal_tier_for_level(medal->level, (&gGameWork.partAbility)[3], (&gGameWork.partAbility)[4],
+                                    (&gGameWork.partAbility)[5], (&gGameWork.partAbility)[6]);
+        if (tier != medal->spriteVariant) {
             gBattleWork.memberResults[i][1] = 1;
             gBattleWork.memberResults[i][2] = medal->graphicId;
             gBattleWork.memberResults[i][3] = medal->spriteVariant;
             gBattleWork.memberResults[i][4] = medal->graphicId;
-            gBattleWork.memberResults[i][5] = variant;
-            medal->spriteVariant = variant;
+            gBattleWork.memberResults[i][5] = tier;
+            medal->spriteVariant = tier;
         }
         memcpy_bytes_08041D04(&gMedalMedaforceIds[medal->graphicId * 3], &gGameWork.partAbility, 3);
         if (medal->level == 10) {

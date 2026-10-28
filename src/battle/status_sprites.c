@@ -190,8 +190,8 @@ static void update_battle_status_effect_sprite(u32 rec) {
 
 static void battle_setup_part_sprite(u32 rec, u32 slot, u32 kind, u32 attr) {
     u16 off;
-    s16 v;
-    s32 t;
+    s16 raw_off;
+    s32 signed_off; // FAKEMATCH: assigned inside the x expression to force the s16 sign-extension
 
     gSpriteEntries[rec * 3 + 0x46 + slot].flags = SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) |
                                                   SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
@@ -211,14 +211,14 @@ static void battle_setup_part_sprite(u32 rec, u32 slot, u32 kind, u32 attr) {
         gSpriteEntries[rec * 3 + 0x46 + slot].unk23 = gBattleBots[rec].lastActionSkill;
         break;
     }
-    off = v = gGameWork.partAbility;
-    if (v & 0x80)
-        off = v - 0x100;
+    off = raw_off = gGameWork.partAbility;
+    if (raw_off & 0x80)
+        off = raw_off - 0x100;
     if (bot_sprite_is_flipped(rec)) {
         gSpriteEntries[rec * 3 + 0x46 + slot].x = gSpriteEntries[rec * 4 + 0x5D].x - off;
         if (gGameWork.partGender)
             gSpriteEntries[rec * 3 + 0x46 + slot].flags |= SPRITE_FLAG_HFLIP;
     } else {
-        gSpriteEntries[rec * 3 + 0x46 + slot].x = gSpriteEntries[rec * 4 + 0x5D].x + (t = (s16)off);
+        gSpriteEntries[rec * 3 + 0x46 + slot].x = gSpriteEntries[rec * 4 + 0x5D].x + (signed_off = (s16)off);
     }
 }

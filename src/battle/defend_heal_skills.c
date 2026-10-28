@@ -15,13 +15,13 @@ void recovery_run(void) {
 }
 
 void recovery_begin(void) {
-    u32 r;
+    u32 timed_out;
 
     if (!part_broken_or_undamaged(gBattleWork.target, gBattleWork.targetPart)) {
         calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
         apply_battle_bot_damage_reduction(gBattleWork.actor);
-        r = decrement_battle_timer_and_check_zero();
-        if (r) {
+        timed_out = decrement_battle_timer_and_check_zero();
+        if (timed_out) {
             gBattleWork.messageId = 0x1A;
             gBattleWork.step = 2;
             gBattleWork.stepResult = 1;
@@ -29,7 +29,7 @@ void recovery_begin(void) {
             calc_battle_stat_ratio(gBattleWork.actor, gBattleWork.actorPart);
             side_add_action_point();
             gBattleWork.step++;
-            gBattleWork.stepResult = r;
+            gBattleWork.stepResult = timed_out;
         }
     } else {
         gBattleWork.messageId = 0x26;
@@ -52,17 +52,17 @@ void recovery_heal_apply(void) {
 
 void recovery_heal_spread(void) {
     u32 part;
-    struct BattleWork *s;
+    struct BattleWork *battle;
 
-    if (gBattleBots[gBattleWork.actor].parts[(s = &gBattleWork)->actorPart].data[7] && s->overflowAmount &&
-        (part = find_most_damaged_part(s->target))) {
+    if (gBattleBots[gBattleWork.actor].parts[(battle = &gBattleWork)->actorPart].data[7] && battle->overflowAmount &&
+        (part = find_most_damaged_part(battle->target))) {
         part--;
-        s->damagePart = part;
-        s->targetPart = part;
-        battle_calc_damage_split(s->target, s->damagePart, s->overflowAmount);
-        s->step = 0xE;
+        battle->damagePart = part;
+        battle->targetPart = part;
+        battle_calc_damage_split(battle->target, battle->damagePart, battle->overflowAmount);
+        battle->step = 0xE;
     } else {
-        s->step++;
+        battle->step++;
     }
 }
 
@@ -76,13 +76,13 @@ void repair_run(void) {
 }
 
 void repair_begin(void) {
-    u32 r;
+    u32 timed_out;
 
     if (!gBattleBots[gBattleWork.target].parts[gBattleWork.targetPart].armor) {
         calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
         apply_battle_bot_damage_reduction(gBattleWork.actor);
-        r = decrement_battle_timer_and_check_zero();
-        if (r) {
+        timed_out = decrement_battle_timer_and_check_zero();
+        if (timed_out) {
             gBattleWork.messageId = 0x1A;
             gBattleWork.step = 2;
             gBattleWork.stepResult = 1;
@@ -90,7 +90,7 @@ void repair_begin(void) {
             calc_battle_stat_ratio(gBattleWork.actor, gBattleWork.actorPart);
             side_add_action_point();
             gBattleWork.step++;
-            gBattleWork.stepResult = r;
+            gBattleWork.stepResult = timed_out;
         }
     } else {
         gBattleWork.messageId = 0x27;
@@ -113,18 +113,18 @@ void repair_apply(void) {
 
 void repair_spread(void) {
     u32 part;
-    struct BattleWork *s = &gBattleWork;
+    struct BattleWork *battle = &gBattleWork;
 
-    bot_restore_leg_stats(s->target);
-    if (gBattleBots[s->actor].parts[s->actorPart].data[7] && s->overflowAmount &&
-        (part = find_random_broken_part(s->target))) {
+    bot_restore_leg_stats(battle->target);
+    if (gBattleBots[battle->actor].parts[battle->actorPart].data[7] && battle->overflowAmount &&
+        (part = find_random_broken_part(battle->target))) {
         part--;
-        s->damagePart = part;
-        s->targetPart = part;
-        battle_set_damage_display(s->target, s->damagePart, s->overflowAmount);
-        s->step = 0xF;
+        battle->damagePart = part;
+        battle->targetPart = part;
+        battle_set_damage_display(battle->target, battle->damagePart, battle->overflowAmount);
+        battle->step = 0xF;
     } else {
-        s->step++;
+        battle->step++;
     }
 }
 
@@ -160,12 +160,12 @@ void trap_run(void) {
 }
 
 void trap_begin(void) {
-    u32 r;
+    u32 timed_out;
 
     calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
     apply_battle_bot_damage_reduction(gBattleWork.actor);
-    r = decrement_battle_timer_and_check_zero();
-    if (r) {
+    timed_out = decrement_battle_timer_and_check_zero();
+    if (timed_out) {
         gBattleWork.messageId = 0x1A;
         gBattleWork.step++;
         return;
@@ -174,7 +174,7 @@ void trap_begin(void) {
     side_add_action_point();
     switch (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]) {
     case 0xA:
-        gBattleWork.unk51 = r;
+        gBattleWork.unk51 = timed_out;
         break;
     case 0xB:
         gBattleWork.unk51 = 1;
@@ -463,8 +463,8 @@ void team_form_split(void) {
 }
 
 void team_form_move(void) {
-    u32 r = move_sprite_toward_target(0x21);
-    u32 n = (r | -r) >> 31;
+    u32 first_arrived = move_sprite_toward_target(0x21);
+    u32 n = (first_arrived | -first_arrived) >> 31;
     if (move_sprite_toward_target(0x22))
         n++;
     if (move_sprite_toward_target(0x23))
@@ -581,13 +581,13 @@ void break_form_split(void) {
 }
 
 void break_form_move(void) {
-    u32 r, n;
+    u32 first_arrived, n;
 
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3B], 0x21);
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3B], 0x22);
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3B], 0x23);
-    r = move_sprite_toward_target(0x21);
-    n = (r | -r) >> 31;
+    first_arrived = move_sprite_toward_target(0x21);
+    n = (first_arrived | -first_arrived) >> 31;
     if (move_sprite_toward_target(0x22))
         n++;
     if (move_sprite_toward_target(0x23))
@@ -801,15 +801,15 @@ void force_bind_orbs_spawn(void) {
 
 void force_bind_orbs_spin(void) {
     u32 i;
-    struct Coords16 v;
+    struct Coords16 pos;
 
     for (i = 0; i < 4; i++) {
         process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3D], 0x21 + i);
-        v = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
-                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x,
-                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4);
-        gSpriteEntries[0x21 + i].x = v.x;
-        gSpriteEntries[0x21 + i].y = v.y;
+        pos = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
+                                          gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x,
+                                          gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4);
+        gSpriteEntries[0x21 + i].x = pos.x;
+        gSpriteEntries[0x21 + i].y = pos.y;
         gSpriteEntries[0x21 + i].unk2C += 4;
         gSpriteEntries[0x21 + i].unk2D++;
         if (!(gSpriteEntries[0x21 + i].unk2D & 3))
@@ -843,19 +843,19 @@ void defence_run(void) {
 }
 
 void defence_begin(void) {
-    u32 r;
+    u32 timed_out;
 
     calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
     apply_battle_bot_damage_reduction(gBattleWork.actor);
-    r = decrement_battle_timer_and_check_zero();
-    if (r) {
+    timed_out = decrement_battle_timer_and_check_zero();
+    if (timed_out) {
         gBattleWork.messageId = 0x1A;
         gBattleWork.step++;
     } else {
         side_add_action_point();
         switch (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]) {
         case 0x1B:
-            gBattleWork.unk51 = r;
+            gBattleWork.unk51 = timed_out;
             break;
         case 0x1C:
             gBattleWork.unk51 = 1;
@@ -916,14 +916,14 @@ void defence_shields_spawn(void) {
 
 void defence_shields_spin(void) {
     u32 i;
-    struct Coords16 v;
+    struct Coords16 pos;
 
     for (i = 0; i < 2; i++) {
-        v = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
-                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x,
-                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4);
-        gSpriteEntries[0x21 + i].x = v.x;
-        gSpriteEntries[0x21 + i].y = v.y;
+        pos = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
+                                          gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x,
+                                          gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4);
+        gSpriteEntries[0x21 + i].x = pos.x;
+        gSpriteEntries[0x21 + i].y = pos.y;
         gSpriteEntries[0x21 + i].unk2C += 8;
         gSpriteEntries[0x21 + i].unk2D++;
         if (!(gSpriteEntries[0x21 + i].unk2D & 3))
@@ -1026,7 +1026,7 @@ void heal_orb_shrink(void) {
 
 void autorecover_ring_spawn(void) {
     u32 i;
-    struct Coords16 v;
+    struct Coords16 pos;
 
     gSpriteEntries[0x25].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
@@ -1041,10 +1041,10 @@ void autorecover_ring_spawn(void) {
     for (i = 0; i < 4; i++) {
         gSpriteEntries[0x21 + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) |
                                          SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
-        v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].x,
-                                        gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4);
-        gSpriteEntries[0x21 + i].x = v.x;
-        gSpriteEntries[0x21 + i].y = v.y;
+        pos = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].x,
+                                          gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4);
+        gSpriteEntries[0x21 + i].x = pos.x;
+        gSpriteEntries[0x21 + i].y = pos.y;
         gSpriteEntries[0x21 + i].frame_table = 0;
         gSpriteEntries[0x21 + i].palette = 7;
         gSpriteEntries[0x21 + i].order = 0xF0;
@@ -1061,17 +1061,17 @@ void autorecover_ring_spawn(void) {
 
 void heal_ring_spin(void) {
     u32 i;
-    struct Coords16 v;
+    struct Coords16 pos;
     u32 n;
 
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3F], 0x25);
     for (i = 0; i < 5; i++) {
         if (i < 4) {
-            v = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
-                                            gSpriteEntries[gBattleWork.target * 4 + 0x5D].x,
-                                            gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4);
-            gSpriteEntries[0x21 + i].x = v.x;
-            gSpriteEntries[0x21 + i].y = v.y;
+            pos = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
+                                              gSpriteEntries[gBattleWork.target * 4 + 0x5D].x,
+                                              gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4);
+            gSpriteEntries[0x21 + i].x = pos.x;
+            gSpriteEntries[0x21 + i].y = pos.y;
             gSpriteEntries[0x21 + i].unk2C += 4;
         }
         n = gSpriteEntries[0x21 + i].unk2D + 1;
@@ -1141,7 +1141,7 @@ void reactivate_orb_spawn(void) {
 
 void reactivate_ring_spawn(void) {
     u32 i;
-    struct Coords16 v;
+    struct Coords16 pos;
 
     gSpriteEntries[0x25].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
@@ -1156,10 +1156,10 @@ void reactivate_ring_spawn(void) {
     for (i = 0; i < 4; i++) {
         gSpriteEntries[0x21 + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) |
                                          SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
-        v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].x,
-                                        gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4);
-        gSpriteEntries[0x21 + i].x = v.x;
-        gSpriteEntries[0x21 + i].y = v.y;
+        pos = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].x,
+                                          gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4);
+        gSpriteEntries[0x21 + i].x = pos.x;
+        gSpriteEntries[0x21 + i].y = pos.y;
         gSpriteEntries[0x21 + i].frame_table = 0;
         gSpriteEntries[0x21 + i].palette = 7;
         gSpriteEntries[0x21 + i].order = 0xF0;

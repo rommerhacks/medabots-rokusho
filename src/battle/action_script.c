@@ -37,7 +37,7 @@ void script_op_end_action(void) {
 // Opcode 0x02: skips forward to the next command byte equal to operand 0.
 void script_op_skip_to_label(void) {
     vu8 found = 0;
-    struct BattleWork *s;
+    struct BattleWork *battle;
     const u8 *const *tbl;
     const u8 *script;
 
@@ -45,9 +45,9 @@ void script_op_skip_to_label(void) {
     battle_script_advance();
     while (!found) {
         tbl = gActionScripts;
-        s = &gBattleWork;
-        script = tbl[s->actorSkill];
-        if (s->scriptOperands[0] == script[s->scriptOffset]) {
+        battle = &gBattleWork;
+        script = tbl[battle->actorSkill];
+        if (battle->scriptOperands[0] == script[battle->scriptOffset]) {
             battle_script_advance();
             found = 1;
         } else
@@ -59,7 +59,7 @@ void script_op_skip_to_label(void) {
 // Opcode 0x03: skips forward to the command byte equal to operand [stepResult] (the last check's 0-2 result).
 void script_op_branch_on_result(void) {
     vu8 found = 0;
-    struct BattleWork *s;
+    struct BattleWork *battle;
     const u8 *const *tbl;
     const u8 *script;
 
@@ -67,9 +67,9 @@ void script_op_branch_on_result(void) {
     battle_script_advance();
     while (!found) {
         tbl = gActionScripts;
-        s = &gBattleWork;
-        script = tbl[s->actorSkill];
-        if (s->scriptOperands[s->stepResult] == script[s->scriptOffset]) {
+        battle = &gBattleWork;
+        script = tbl[battle->actorSkill];
+        if (battle->scriptOperands[battle->stepResult] == script[battle->scriptOffset]) {
             battle_script_advance();
             found = 1;
         } else
@@ -712,13 +712,13 @@ void script_op_damage_from_broken_parts(void) {
 
 // Opcode 0x4B: targets a guarding enemy's guard part; none: a random enemy, nullified (unkB8 = 2).
 void script_op_target_guarding_enemy(void) {
-    u32 t;
+    u32 target;
 
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
-    t = battle_find_guarding_enemy(gBattleWork.targetSideFirst);
-    if (t != 0xFF) {
-        gBattleBots[gBattleWork.actor].targetBot = t + 1;
-        gBattleBots[gBattleWork.actor].targetPart = gBattleBots[t].lastAction;
+    target = battle_find_guarding_enemy(gBattleWork.targetSideFirst);
+    if (target != 0xFF) {
+        gBattleBots[gBattleWork.actor].targetBot = target + 1;
+        gBattleBots[gBattleWork.actor].targetPart = gBattleBots[target].lastAction;
     } else {
         gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
         gBattleBots[gBattleWork.actor].targetBot = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
@@ -745,12 +745,12 @@ void script_op_roll_dice_damage(void) {
 
 // Opcode 0x4E: targets a random enemy with the actor's leg type, else any random enemy.
 void script_op_target_same_legs_enemy(void) {
-    u32 t;
+    u32 target;
 
     gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
-    t = battle_find_enemy_same_legs(gBattleWork.targetSideFirst, gBattleWork.actor);
-    if (t != 0xFF)
-        gBattleBots[gBattleWork.actor].targetBot = t + 1;
+    target = battle_find_enemy_same_legs(gBattleWork.targetSideFirst, gBattleWork.actor);
+    if (target != 0xFF)
+        gBattleBots[gBattleWork.actor].targetBot = target + 1;
     else {
         gBattleWork.targetSideFirst = battle_enemy_side_first_record(gBattleWork.actor);
         gBattleBots[gBattleWork.actor].targetBot = select_random_battle_target(gBattleWork.targetSideFirst) + 1;
@@ -971,16 +971,16 @@ void battle_script_load_operands(void) {
 }
 
 void battle_script_advance(void) {
-    struct BattleWork *b = &gBattleWork;
+    struct BattleWork *battle = &gBattleWork;
     const u8 *script;
     const u8 *len;
     u16 *pc;
     s32 n;
 
-    b->step = 0;
-    script = gActionScripts[b->actorSkill];
+    battle->step = 0;
+    script = gActionScripts[battle->actorSkill];
     len = gActionScriptOperandCounts;
-    pc = &b->scriptOffset;
+    pc = &battle->scriptOffset;
     n = *pc;
     *pc = n + 1 + len[script[n]];
 }

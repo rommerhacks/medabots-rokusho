@@ -547,7 +547,7 @@ void pushover_target_hop_init(void) {
 }
 
 void pushover_target_hop(void) {
-    u32 r;
+    u32 landed;
 
     if (gSpriteEntries[0x21].flags & SPRITE_FLAG_ENABLED) {
         if (advance_sprite_anim_frame(0x21, 0))
@@ -563,7 +563,7 @@ void pushover_target_hop(void) {
     sprite_hop_step(gBattleWork.target * 4 + 0x5A);
     sprite_hop_step(gBattleWork.target * 4 + 0x5B);
     sprite_hop_step(gBattleWork.target * 4 + 0x5C);
-    r = sprite_hop_step(gBattleWork.target * 4 + 0x5D);
+    landed = sprite_hop_step(gBattleWork.target * 4 + 0x5D);
     if (gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk23 == 0x10) {
         gSpriteEntries[gBattleWork.target * 4 + 0x5A].y += 8;
         gSpriteEntries[gBattleWork.target * 4 + 0x5B].y -= 8;
@@ -575,7 +575,7 @@ void pushover_target_hop(void) {
         gSpriteEntries[gBattleWork.target * 4 + 0x5D].flags |= SPRITE_FLAG_VFLIP;
     }
     check_sprite_overlap_and_adjust(gBattleWork.target * 4 + 0x5D, gBattleWork.target + 0x72);
-    if (r) {
+    if (landed) {
         sprite_disable_affine(gBattleWork.target + 0x72);
         play_sound_effect(0x41);
         gBattleWork.step++;

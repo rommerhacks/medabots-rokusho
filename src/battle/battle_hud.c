@@ -45,9 +45,9 @@ void get_bot_part_effective_values(u32 bot, u8 *out) {
 }
 
 void load_bot_part_sprite(u32 rec) {
-    u8 *p = gBattleWork.partIds;
-    get_bot_part_effective_values(rec, p);
-    decompress_sprite_to_vram_08042D94(p[0], p[1], p[2], p[3], rec);
+    u8 *part_ids = gBattleWork.partIds;
+    get_bot_part_effective_values(rec, part_ids);
+    decompress_sprite_to_vram_08042D94(part_ids[0], part_ids[1], part_ids[2], part_ids[3], rec);
 }
 
 void load_all_bot_part_sprites(void) {
@@ -71,11 +71,11 @@ u32 bot_sprite_is_flipped(u32 rec) {
 }
 
 static void init_battle_bot_sprite(u32 rec, u32 x, u32 y) {
-    u8 *p = gBattleWork.partIds;
+    u8 *part_ids = gBattleWork.partIds;
     u32 flip;
-    get_bot_part_effective_values(rec, p);
+    get_bot_part_effective_values(rec, part_ids);
     flip = bot_sprite_is_flipped(rec);
-    init_battle_medabot_sprites(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip,
+    init_battle_medabot_sprites(part_ids[0], part_ids[1], part_ids[2], part_ids[3], rec, rec * 4 + 0x5A, x, y, flip,
                                 gBattleWork.battlefieldParams[3] + 2, rec * 4 + 0x5A);
 }
 
@@ -92,11 +92,11 @@ void setup_all_battle_bot_sprite_positions(void) {
 }
 
 void setup_battle_bot_sprite_group(u32 rec, u32 x, u32 y) {
-    u8 *p = gBattleWork.partIds;
+    u8 *part_ids = gBattleWork.partIds;
     u32 flip;
-    get_bot_part_effective_values(rec, p);
+    get_bot_part_effective_values(rec, part_ids);
     flip = bot_sprite_is_flipped(rec);
-    setup_battle_sprite_group(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip,
+    setup_battle_sprite_group(part_ids[0], part_ids[1], part_ids[2], part_ids[3], rec, rec * 4 + 0x5A, x, y, flip,
                               gBattleWork.battlefieldParams[3] + 2, rec * 4 + 0x5A);
     gSpriteEntries[rec * 4 + 0x5B].flags &= (u16)~SPRITE_FLAG_AFFINE;
     gSpriteEntries[rec * 4 + 0x5C].flags &= (u16)~SPRITE_FLAG_AFFINE;
@@ -183,10 +183,10 @@ void draw_medaforce_gauge_bar(u32 rec) {
     }
 }
 
-u32 scale_to_bar_fill(u32 a, u32 b, u32 c) {
-    u32 v = (float)a / (float)b * (float)c;
-    u32 ret = ((v >> 3) << 16) | (v & 7);
-    if (c != 0 && ret == 0)
+u32 scale_to_bar_fill(u32 value, u32 max, u32 bar_len) {
+    u32 scaled = (float)value / (float)max * (float)bar_len;
+    u32 ret = ((scaled >> 3) << 16) | (scaled & 7);
+    if (bar_len != 0 && ret == 0)
         ret = 1;
     return ret;
 }

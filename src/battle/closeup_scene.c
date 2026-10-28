@@ -120,35 +120,35 @@ void get_active_bot_part_index_and_load_values(u32 side) {
 u32 closeup_reset_text_states(passthrough)
 u32 passthrough; // FAKEMATCH: returned unchanged to keep r0 live
 {
-    struct BattleWork *b = &gBattleWork;
-    b->closeupLeftPose = 0x29;
-    b->closeupRightPose = 0x29;
+    struct BattleWork *battle = &gBattleWork;
+    battle->closeupLeftPose = 0x29;
+    battle->closeupRightPose = 0x29;
     return passthrough;
 }
 
 u32 closeup_left_pose_step(void) {
-    struct BattleWork *b = &gBattleWork;
-    u8 *state = &b->closeupLeftPose;
+    struct BattleWork *battle = &gBattleWork;
+    u8 *state = &battle->closeupLeftPose;
     u32 done;
-    if (!(*state & 0x80) && !(b->closeupRedraw & 1)) {
+    if (!(*state & 0x80) && !(battle->closeupRedraw & 1)) {
         get_active_bot_part_index_and_load_values(0);
-        done = medabot_pose_anim_step(0, *state, b->partIds[3]);
+        done = medabot_pose_anim_step(0, *state, battle->partIds[3]);
         if (done)
-            b->closeupLeftPose |= 0x80;
+            battle->closeupLeftPose |= 0x80;
         return done;
     }
     return 1;
 }
 
 u32 closeup_right_pose_step(void) {
-    struct BattleWork *b = &gBattleWork;
-    u8 *state = &b->closeupRightPose;
+    struct BattleWork *battle = &gBattleWork;
+    u8 *state = &battle->closeupRightPose;
     u32 done;
-    if (!(*state & 0x80) && !(b->closeupRedraw & 2)) {
+    if (!(*state & 0x80) && !(battle->closeupRedraw & 2)) {
         get_active_bot_part_index_and_load_values(1);
-        done = medabot_pose_anim_step(1, *state, b->partIds[3]);
+        done = medabot_pose_anim_step(1, *state, battle->partIds[3]);
         if (done)
-            b->closeupRightPose |= 0x80;
+            battle->closeupRightPose |= 0x80;
         return done;
     }
     return 1;
@@ -162,13 +162,13 @@ void side_add_action_point(void) {
 // The Medabot in unk88 gains 20 Medaforce (40 with unkC0 bit 3), up to the full 80.
 void charge_target_medaforce(void) {
     u32 add;
-    u32 v;
+    u32 gauge;
     if (gBattleBots[gBattleWork.target].guardFlags & 8)
         add = 0x28;
     else
         add = 0x14;
-    v = gBattleBots[gBattleWork.target].medaforceGauge + add;
-    if (v > 0x4F)
-        v = 0x50;
-    gBattleBots[gBattleWork.target].medaforceGauge = v;
+    gauge = gBattleBots[gBattleWork.target].medaforceGauge + add;
+    if (gauge > 0x4F)
+        gauge = 0x50;
+    gBattleBots[gBattleWork.target].medaforceGauge = gauge;
 }

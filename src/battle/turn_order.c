@@ -110,14 +110,14 @@ void select_next_bot_and_action(u32 rec) {
 u32 find_next_active_bot(u32 rec) {
     u32 k = rng_next_byte() & 0x1F;
     u32 i;
-    u32 r;
+    u32 bot;
 
     for (i = 0; i <= 5; i++) {
-        r = gRandomBotOrder[k];
+        bot = gRandomBotOrder[k];
         if (gGameWork.skipBotSetup == 1 && gLinkPlayerId)
-            r = gLinkBotRecordSwap[r];
-        if (gBattleBots[r].teamState && rec != r)
-            return r;
+            bot = gLinkBotRecordSwap[bot];
+        if (gBattleBots[bot].teamState && rec != bot)
+            return bot;
         k = (k + 1) & 0x1F;
     }
     return 0;

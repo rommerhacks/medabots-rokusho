@@ -60,40 +60,40 @@ u32 sprite_slide_x_step(u32 slot, u32 n) {
     return 0;
 }
 
-u32 clamp_1_99(u32 a) {
-    if (a > 99)
-        a = 99;
-    else if (a == 0)
-        a = 1;
-    return a;
+u32 clamp_1_99(u32 value) {
+    if (value > 99)
+        value = 99;
+    else if (value == 0)
+        value = 1;
+    return value;
 }
 
-void battle_inflict_status(u32 rec, u32 skill, s32 a, u32 b) {
+void battle_inflict_status(u32 rec, u32 skill, s32 duration, u32 power) {
     if (skill - 0xD <= 1) {
         gBattleBots[rec].statusType = skill;
         gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
-        gBattleBots[rec].statusTimer = clamp_1_99(a);
-        gBattleBots[rec].statusAmount = clamp_1_99(b * 2);
+        gBattleBots[rec].statusTimer = clamp_1_99(duration);
+        gBattleBots[rec].statusAmount = clamp_1_99(power * 2);
     } else if (skill - 0xF <= 1) {
         gBattleBots[rec].statusType = skill;
         gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
-        gBattleBots[rec].statusTimer = clamp_1_99(b >> 3);
+        gBattleBots[rec].statusTimer = clamp_1_99(power >> 3);
         gBattleBots[rec].statusAmount = 0;
     } else if (skill - 0x11 <= 1) {
         gBattleBots[rec].statusType = skill;
         gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
-        gBattleBots[rec].statusTimer = clamp_1_99(a);
-        gBattleBots[rec].statusAmount = clamp_1_99(b >> 2);
+        gBattleBots[rec].statusTimer = clamp_1_99(duration);
+        gBattleBots[rec].statusAmount = clamp_1_99(power >> 2);
     } else if (skill - 0x13 <= 1) {
         gBattleBots[rec].statusType = skill;
         gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
-        gBattleBots[rec].statusTimer = clamp_1_99(a);
-        gBattleBots[rec].statusAmount = clamp_1_99(b >> 1);
+        gBattleBots[rec].statusTimer = clamp_1_99(duration);
+        gBattleBots[rec].statusAmount = clamp_1_99(power >> 1);
     } else {
         gBattleBots[rec].statusType = skill;
         gBattleBots[rec].statusPart = gBattleWork.targetPart;
-        gBattleBots[rec].statusTimer = clamp_1_99(a);
-        gBattleBots[rec].statusAmount = clamp_1_99(b);
+        gBattleBots[rec].statusTimer = clamp_1_99(duration);
+        gBattleBots[rec].statusAmount = clamp_1_99(power);
     }
 }
 
@@ -111,8 +111,8 @@ void reset_battle_bot_state(u32 rec) {
 
 void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n) {
     u32 i;
-    s32 t1;
-    s32 t2;
+    s32 pos_x;
+    s32 pos_y;
     clear_battle_sprite_slot(slot, n);
     for (i = 0; i < n; i++) {
         gSpriteEntries[slot + i].flags = SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
@@ -120,10 +120,10 @@ void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n) {
         gSpriteEntries[slot + i].palette = 7;
         gSpriteEntries[slot + i].order = 0xF0;
         gSpriteEntries[slot + i].unk2C = i * 8;
-        t1 = gStaggeredSpriteOffsets[i * 2] + x;
-        gSpriteEntries[slot + i].x = t1 & 0x1FF;
-        t2 = gStaggeredSpriteOffsets[i * 2 + 1] + y;
-        gSpriteEntries[slot + i].y = t2 & 0xFF;
+        pos_x = gStaggeredSpriteOffsets[i * 2] + x;
+        gSpriteEntries[slot + i].x = pos_x & 0x1FF;
+        pos_y = gStaggeredSpriteOffsets[i * 2 + 1] + y;
+        gSpriteEntries[slot + i].y = pos_y & 0xFF;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[36], slot + i);
     }
 }
@@ -131,7 +131,7 @@ void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n) {
 u32 staggered_sprites_update(u32 slot, u32 n) {
     u32 done = 1;
     u32 i;
-    u8 s;
+    u8 sprite_slot;
     const void **anim;
 
     for (i = 0; i < n; i++) {
@@ -142,9 +142,9 @@ u32 staggered_sprites_update(u32 slot, u32 n) {
                 done = 0;
             } else {
                 gSpriteEntries[slot + i].flags |= SPRITE_FLAG_ENABLED;
-                process_sprite_anim_commands(*anim, s = slot + i);
+                process_sprite_anim_commands(*anim, sprite_slot = slot + i);
                 if (gSpriteEntries[slot + i].unk22 == 0xFF)
-                    clear_battle_sprite_slot(s, 1);
+                    clear_battle_sprite_slot(sprite_slot, 1);
                 else
                     done = 0;
             }
@@ -195,12 +195,12 @@ u32 decrement_battle_timer_and_check_zero(void) {
 }
 
 void calc_battle_stat_ratio(u32 rec, u32 part) {
-    struct BattleWork *b = &gBattleWork;
-    b->amount = b->success >> 2;
-    b->amount += gBattleBots[rec].parts[part].data[6];
-    b->amount = b->amount / gBattleBots[rec].parts[part].data[0xC];
-    if (b->amount == 0)
-        b->amount = 1;
+    struct BattleWork *work = &gBattleWork;
+    work->amount = work->success >> 2;
+    work->amount += gBattleBots[rec].parts[part].data[6];
+    work->amount = work->amount / gBattleBots[rec].parts[part].data[0xC];
+    if (work->amount == 0)
+        work->amount = 1;
 }
 
 void battle_set_damage_display(u32 rec, u32 part, s32 amount) {
@@ -267,40 +267,40 @@ void calc_head_uses_given(u32 rec, s32 amount) {
     }
 }
 
-void calc_drain_amount(u32 a, u32 b) {
-    if (a > b) {
-        gBattleWork.appliedAmount = b;
-        gBattleWork.cappedAmount = b;
+void calc_drain_amount(u32 current, u32 amount) {
+    if (current > amount) {
+        gBattleWork.appliedAmount = amount;
+        gBattleWork.cappedAmount = amount;
         gBattleWork.overflowAmount = 0;
         gBattleWork.partBroken = 0;
     } else {
-        gBattleWork.appliedAmount = a;
-        gBattleWork.cappedAmount = a;
-        gBattleWork.overflowAmount = b - a;
+        gBattleWork.appliedAmount = current;
+        gBattleWork.cappedAmount = current;
+        gBattleWork.overflowAmount = amount - current;
         gBattleWork.partBroken = 1;
     }
 }
 
-void calc_fill_amount(u32 a, u32 max, u32 b) {
-    u32 room = max - a;
-    if (room > b) {
-        gBattleWork.appliedAmount = b;
-        gBattleWork.cappedAmount = b;
+void calc_fill_amount(u32 current, u32 max, u32 amount) {
+    u32 room = max - current;
+    if (room > amount) {
+        gBattleWork.appliedAmount = amount;
+        gBattleWork.cappedAmount = amount;
         gBattleWork.overflowAmount = 0;
         gBattleWork.partBroken = 0;
     } else {
         gBattleWork.appliedAmount = room;
         gBattleWork.cappedAmount = room;
-        gBattleWork.overflowAmount = b - room;
+        gBattleWork.overflowAmount = amount - room;
         gBattleWork.partBroken = 1;
     }
 }
 
-u8 pick_random_change_part(u32 a, u32 kind) {
+u8 pick_random_change_part(u32 change_skill, u32 kind) {
     u8 ret = 0;
 
     rng_next_byte();
-    switch (a) {
+    switch (change_skill) {
     case 0:
         switch (kind) {
         case 0:

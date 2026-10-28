@@ -104,8 +104,8 @@ void status_draw_bot_name(void) {
                                      10, 15, 0, 0);
 }
 
-static void status_draw_lr_button(u32 a) {
-    if (a == 0) {
+static void status_draw_lr_button(u32 hidden) {
+    if (hidden == 0) {
         if (gGameWork.openedFrom == 0)
             draw_tile_block(2, 2, 0x1A, 0x11, REG_BG0CNT, 0x8304);
         else
@@ -190,33 +190,33 @@ void status_draw_part_armor(void) {
     }
 }
 
-void set_portrait_parts(u8 a, u8 b, u8 c, u8 d) {
-    gGameWork.shownHead = a;
-    gGameWork.shownRightArm = b;
-    gGameWork.shownLeftArm = c;
-    gGameWork.shownLegs = d;
+void set_portrait_parts(u8 head, u8 right_arm, u8 left_arm, u8 legs) {
+    gGameWork.shownHead = head;
+    gGameWork.shownRightArm = right_arm;
+    gGameWork.shownLeftArm = left_arm;
+    gGameWork.shownLegs = legs;
 }
 
 void status_init_portrait(void) {
     struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
-    u8 *b;
-    u8 *c;
+    u8 *oam_buf;
+    u8 *slots;
     u32 fill;
 
     mem_fill8((u8 *)obj, 0xD0, 0);
-    b = (u8 *)0x020260D0;
-    mem_fill8(b, 0x800, 0);
-    c = (u8 *)0x020268D0;
-    mem_fill8(c, 0x60, 0);
+    oam_buf = (u8 *)0x020260D0;
+    mem_fill8(oam_buf, 0x800, 0);
+    slots = (u8 *)0x020268D0;
+    mem_fill8(slots, 0x60, 0);
     gGameWork.noAffineSprites = 1;
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
+    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slots;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
-                     (struct SpriteNodeOam *)b);
-    obj->oams = (struct SpriteNodeOam *)b;
+                     (struct SpriteNodeOam *)oam_buf);
+    obj->oams = (struct SpriteNodeOam *)oam_buf;
     setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gGameWork.shownHead, gGameWork.shownRightArm,
                                gGameWork.shownLeftArm, gGameWork.shownLegs, 0x28, 0x28, 0x1C2, 8, 1, 0);
 }
