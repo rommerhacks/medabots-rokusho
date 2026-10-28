@@ -23,31 +23,31 @@ void link_medal_sync_init(void) {
 }
 
 void link_medal_sync_exchange(void) {
-    struct MenuWork *s;
+    struct MenuWork *menu;
     s32 pkt;
-    u32 m;
+    u32 chunk; // the received byte index, then the remaining packed total (one variable in the original)
     s32 i;
 
     pkt = gLinkPackets.recv[gLinkPlayerId == 0][1];
-    s = gMenuWork;
-    if (!s->partner_chose) {
+    menu = gMenuWork;
+    if (!menu->partner_chose) {
         if ((pkt & 0xFC00) == 0xF400) {
-            m = ((u32)pkt >> 8) & 3;
-            s->total |= (pkt & 0xFF) << (m * 8);
-            s->counter |= 1 << m;
+            chunk = ((u32)pkt >> 8) & 3;
+            menu->total |= (pkt & 0xFF) << (chunk * 8);
+            menu->counter |= 1 << chunk;
         }
         gLinkPackets.sendData = gMenuWork->counter | 0xFC00;
     } else if ((pkt & 0xFF00) == 0xFC00) {
         if (pkt == 0xFC0F)
             gLinkPackets.sendData = pkt;
         else {
-            m = s->total;
+            chunk = menu->total;
             for (i = 0; i <= 3; i++) {
                 if (!((pkt >> i) & 1)) {
-                    gLinkPackets.sendData = (m & 0xFF) | (i << 8 | 0xF400);
+                    gLinkPackets.sendData = (chunk & 0xFF) | (i << 8 | 0xF400);
                     break;
                 }
-                m >>= 8;
+                chunk >>= 8;
             }
         }
     }
@@ -63,9 +63,9 @@ void link_medal_sync_exchange(void) {
 }
 
 void link_medal_sync_update(void) {
-    struct FuncTable2 t = gLinkMedalSyncSubStates;
+    struct FuncTable2 states = gLinkMedalSyncSubStates;
 
-    t.f[gGameSubState]();
+    states.f[gGameSubState]();
 }
 
 void link_handshake_update(void) {

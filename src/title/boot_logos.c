@@ -20,10 +20,10 @@ void boot_logos_update(void) {
 
 static bool32 blend_fade_step_0806E2F8(void) {
     if ((gSceneWork.timer & 3) == 0) {
-        u8 a = 16 - (gSceneWork.timer >> 2);
-        u8 b = 16 - a;
-        REG_BLDALPHA = (b << 8) | a;
-        if (b == 16)
+        u8 eva = 16 - (gSceneWork.timer >> 2);
+        u8 evb = 16 - eva;
+        REG_BLDALPHA = (evb << 8) | eva;
+        if (evb == 16)
             return TRUE;
     }
     gSceneWork.timer++;

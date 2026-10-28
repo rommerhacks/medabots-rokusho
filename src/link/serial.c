@@ -152,17 +152,17 @@ void serial_multiplayer_transfer_handler(void) {
     *(unsigned long long *)recv = *(unsigned long long *)REG_ADDR_SIOMULTI0;
     gSioLink.error = ((struct SioMultiCnt *)REG_ADDR_SIOCNT)->error;
     if (recv[0] == 0xFEFE && gSioLink.recvIdx > 3) {
-        u16(*p)[6];
-        struct SioPacket *q;
+        u16(*old_recv)[6];
+        struct SioPacket *old_send;
 
         gSioLink.recvIdx = -1;
-        p = gSioLink.lastRecv;
+        old_recv = gSioLink.lastRecv;
         gSioLink.lastRecv = gSioLink.curRecv;
-        gSioLink.curRecv = p;
+        gSioLink.curRecv = old_recv;
         if (gSioLink.sendPending) {
-            q = gSioLink.curSend;
+            old_send = gSioLink.curSend;
             gSioLink.curSend = gSioLink.nextSend;
-            gSioLink.nextSend = q;
+            gSioLink.nextSend = old_send;
             gSioLink.sendPending = 0;
             gSioLink.sendIdx = 0;
         }

@@ -19,8 +19,9 @@ s32 save_dispatch(s32 mode) {
     REG_IME = 1;
     switch (mode) {
     case 0: {
-        register u8 *p asm("r0") = (u8 *)&gSaveStatus;
-        *p |= 1;
+        // FAKEMATCH: pins the gSaveStatus pointer to r0
+        register u8 *status_ptr asm("r0") = (u8 *)&gSaveStatus;
+        *status_ptr |= 1;
     }
         serialize_save_data((struct SaveData *)buf);
         ret = write_save_to_eeprom((u16 *)0x02030000, 0);
@@ -46,19 +47,20 @@ u16 eeprom_setup_timer_irq(void) {
 
 s32 load_save_with_retries(void) {
     s32 i, ret;
-    u8 *p;
+    u8 *name_ptr;
     u8 fe;
-    register s32 r asm("r1");
-    if ((r = is_sound_effect_playing(4)) != 0)
-        return r;
+    // FAKEMATCH: pins the sound-busy result to r1
+    register s32 sfx_busy asm("r1");
+    if ((sfx_busy = is_sound_effect_playing(4)) != 0)
+        return sfx_busy;
     play_song(0);
     play_sound_effect(0);
-    p = (u8 *)&gPlayerRecord;
+    name_ptr = (u8 *)&gPlayerRecord;
     fe = 0xFE;
     i = 15;
-    p += 19;
+    name_ptr += 19;
     for (; i >= 0; i--)
-        *p-- = fe;
+        *name_ptr-- = fe;
     for (i = 0; i <= 3; i++) {
         ret = save_dispatch(1);
         if (ret == 0)
@@ -92,7 +94,7 @@ void load_save_data(struct SaveData *save) {
 void serialize_save_data(struct SaveData *save) {
     s32 i;
     u16 sum;
-    u8 *p;
+    u8 *bytes;
     struct MedalData *medal;
 
     for (i = 0; i < 16; i++)
@@ -113,44 +115,44 @@ void serialize_save_data(struct SaveData *save) {
         gOptionTimeLimit | (gOptionSkipMessages << 2) | (gOptionBattleMusic << 3) | (gSaveStatus.linkIntroSeen << 5);
     save->checksum = 0;
     sum = 0;
-    p = (u8 *)save;
+    bytes = (u8 *)save;
     for (i = 0; i < sizeof(struct SaveData); i++)
-        sum += *p++;
+        sum += *bytes++;
     save->checksum = sum;
 }
 
 s32 validate_save_data(struct SaveData *save) {
     u16 buf[4];
-    u16 *p;
+    u16 *dst;
     s32 i;
     s32 n;
-    u8 *b;
+    u8 *bytes;
     u16 sum;
-    u32 tmp; // the empty-name flag, then the stored checksum (one variable in the original)
+    u32 check_value; // the empty-name flag, then the stored checksum (one variable in the original)
 
     n = 920;
-    p = (u16 *)save;
+    dst = (u16 *)save;
     for (i = 0; i < n; i++) {
         ReadEepromDword(i, buf);
-        *p++ = buf[0];
-        *p++ = buf[1];
-        *p++ = buf[2];
-        *p++ = buf[3];
+        *dst++ = buf[0];
+        *dst++ = buf[1];
+        *dst++ = buf[2];
+        *dst++ = buf[3];
     }
     for (i = 0; i < 16; i++) {
         if (gSaveMagic[i] != save->magic[i])
             return 1;
     }
-    tmp = TRUE;
+    check_value = TRUE;
     for (i = 0; i < 16; i++) {
         if (save->unk10.name[i] == 0xFE)
             break;
         if (save->unk10.name[i] != 0) {
-            tmp = FALSE;
+            check_value = FALSE;
             break;
         }
     }
-    if (tmp)
+    if (check_value)
         return -1;
     if (save->unk10.money > 99999)
         return -1;
@@ -164,13 +166,13 @@ s32 validate_save_data(struct SaveData *save) {
         return -1;
     if (((save->flags >> 3) & 3) > 2)
         return -1;
-    tmp = save->checksum;
+    check_value = save->checksum;
     save->checksum = 0;
     sum = 0;
-    b = (u8 *)save;
+    bytes = (u8 *)save;
     for (i = 0; i < sizeof(struct SaveData); i++)
-        sum += *b++;
-    if (sum != tmp)
+        sum += *bytes++;
+    if (sum != check_value)
         return -1;
     return 0;
 }

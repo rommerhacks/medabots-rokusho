@@ -11,19 +11,19 @@ void link_start_init(void) {
 }
 
 void battle_cutscene_dispatch(void) {
-    u8 t;
-    u16 r;
+    u8 elapsed;
+    u16 save_err;
     s8 i;
 
-    t = gMenuWork->timer++;
-    r = 0;
+    elapsed = gMenuWork->timer++;
+    save_err = 0;
     // FAKEMATCH: byte access to gSaveStatus (bit 1 linkIntroSeen, bit 0 saveExists); the bitfield loads a word
     if (!(*(u8 *)&gSaveStatus & 2)) {
         if (run_message(gLinkMenuMessages[gLinkIntroMessageIds[gMenuWork->step]]) && KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
             if (++gMenuWork->step > 2) {
-                gGameWork.stepCounter = r;
-                gGameWork.endModeStep = r;
+                gGameWork.stepCounter = save_err;
+                gGameWork.endModeStep = save_err;
                 gGameSubState++;
                 *(u8 *)&gSaveStatus |= 2;
             } else
@@ -71,14 +71,14 @@ void battle_cutscene_dispatch(void) {
         }
         break;
     case 5:
-        if (t > 0x1D && !is_sound_effect_playing(4)) {
+        if (elapsed > 0x1D && !is_sound_effect_playing(4)) {
             for (i = 0; i < 4; i++) {
-                r = save_dispatch(0);
-                if (r == 0)
+                save_err = save_dispatch(0);
+                if (save_err == 0)
                     break;
             }
             play_song(gMenuWork->saved_song);
-            gMenuWork->step = r;
+            gMenuWork->step = save_err;
             gGameSubState += 3;
             message_next();
             serial_link_init();
@@ -187,6 +187,6 @@ void link_start_exit_finished(void) {
 }
 
 void dispatch_battle_cutscene_substate(void) {
-    struct FuncTable8 t = gLinkStartStates;
-    t.f[gGameSubState]();
+    struct FuncTable8 states = gLinkStartStates;
+    states.f[gGameSubState]();
 }

@@ -13,11 +13,11 @@ static inline void *vram_at(u32 off) {
 // Item menu state 14 (the last entry of gItemMenuStates): fade out and return to the field, which applies
 // the disguise set in gFieldWork.player_form.
 void item_menu_fade_out_use_item(void) {
-    struct GameWork *b = &gGameWork;
-    if (b->stepCounter <= 8) {
-        bg_palettes_blend_masked_now(0, b->stepCounter * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, b->stepCounter * 4, 0xFFFF);
-        b->stepCounter++;
+    struct GameWork *game = &gGameWork;
+    if (game->stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, game->stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, game->stepCounter * 4, 0xFFFF);
+        game->stepCounter++;
     } else {
         u32 zero;
         REG_DISPCNT &= 0xFDFF;
@@ -27,8 +27,8 @@ void item_menu_fade_out_use_item(void) {
     }
 }
 
-void save_screen_animate_sprite(u16 a) {
-    gSpriteEntries[0].frame = gSaveScreenSpriteFrames[a & 3];
+void save_screen_animate_sprite(u16 frame_idx) {
+    gSpriteEntries[0].frame = gSaveScreenSpriteFrames[frame_idx & 3];
 }
 
 void save_screen_update(void) {
@@ -50,18 +50,18 @@ void save_screen_clear(void) {
 
 void save_screen_load_graphics(void) {
     u32 size;
-    u16 v;
+    u16 bgcnt;
     vu16 *bg1, *bg2, *bg3;
 
     bg1 = &REG_BG1CNT;
-    v = 0x1E05;
-    *bg1 = v;
+    bgcnt = 0x1E05;
+    *bg1 = bgcnt;
     bg2 = &REG_BG2CNT;
-    v -= 0xFF;
-    *bg2 = v;
+    bgcnt -= 0xFF;
+    *bg2 = bgcnt;
     bg3 = &REG_BG3CNT;
-    v = 0x3C07;
-    *bg3 = v;
+    bgcnt = 0x3C07;
+    *bg3 = bgcnt;
     decompress_and_write_tilemap(gSaveScreenBg1Tilemap, *bg1);
     decompress_and_write_tilemap(gSaveScreenBg2Tilemap, *bg2);
     decompress_and_write_tilemap(gSaveScreenBg3Tilemap, *bg3);
@@ -175,11 +175,11 @@ void save_screen_show_saving(void) {
 }
 
 void save_screen_write_save(void) {
-    u8 t = gMenuWork->timer++;
+    u8 elapsed = gMenuWork->timer++;
     u16 err = 0;
     s8 i;
 
-    if (t > 29 && !is_sound_effect_playing(4)) {
+    if (elapsed > 29 && !is_sound_effect_playing(4)) {
         for (i = 0; i <= 3; i++) {
             err = save_dispatch(0);
             if (err == 0)
@@ -199,8 +199,8 @@ void save_screen_write_save(void) {
 }
 
 void save_screen_show_saved(void) {
-    u8 t = gMenuWork->timer++;
-    if (run_message(gSystemMessages[11]) && t > 60)
+    u8 elapsed = gMenuWork->timer++;
+    if (run_message(gSystemMessages[11]) && elapsed > 60)
         gGameSubState++;
 }
 
@@ -232,8 +232,8 @@ void save_screen_fade_out(void) {
 }
 
 void save_screen_show_failed(void) {
-    u8 t = gMenuWork->timer++;
-    if (run_message(gSystemMessages[12]) && t > 60)
+    u8 elapsed = gMenuWork->timer++;
+    if (run_message(gSystemMessages[12]) && elapsed > 60)
         gGameSubState = 9;
 }
 

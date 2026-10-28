@@ -22,7 +22,7 @@ void debug_menu_init(void) {
 }
 
 void debug_menu_select_input(void) {
-    u8 b;
+    u8 b_pressed;
 
     if (KEYS_LO(gNewKeys) & 0x10) {
         if (gGameWork.debugCursor == 10)
@@ -42,16 +42,16 @@ void debug_menu_select_input(void) {
         memcpy_bytes_0803F63C(gDebugMenuLabels[gGameWork.debugCursor], gGameWork.textBuf, 8);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0, 1, 0, 8, 15, 1, 0);
     }
-    if ((b = KEYS_LO(gNewKeys) & 2))
+    if ((b_pressed = KEYS_LO(gNewKeys) & 2))
         gGameSubState++;
     else if (KEYS_LO(gNewKeys) & 1) {
         memcpy_bytes_0803F63C(gDebugMenuLabels[gGameWork.debugCursor], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0, 1, 0, 8, 15, 1, b);
-        gGameWork.debugSubState = b;
-        gGameWork.debugRow = b;
-        gGameWork.debugValues[0] = b;
-        gGameWork.debugValues[1] = b;
-        gGameWork.debugValues[2] = b;
+        render_text_sprites_08040DB8(gGameWork.textBuf, 0, 1, 0, 8, 15, 1, b_pressed);
+        gGameWork.debugSubState = b_pressed;
+        gGameWork.debugRow = b_pressed;
+        gGameWork.debugValues[0] = b_pressed;
+        gGameWork.debugValues[1] = b_pressed;
+        gGameWork.debugValues[2] = b_pressed;
         gGameSubState = 3;
     }
 }
@@ -150,7 +150,7 @@ void debug_medal_update(void) {
 }
 
 void debug_medal_input(void) {
-    u8 b;
+    u8 b_pressed;
     u8 slot;
 
     if (KEYS_LO(gNewKeys) & 0x40) {
@@ -224,7 +224,7 @@ void debug_medal_input(void) {
     clear_battle_sprite_slot(0x26, 3);
     divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[2]);
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x26, 8, 6, 3, 15, 1, 0);
-    if ((b = KEYS_LO(gNewKeys) & 2)) {
+    if ((b_pressed = KEYS_LO(gNewKeys) & 2)) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & 1) {
@@ -241,7 +241,7 @@ void debug_medal_input(void) {
                 medal_remove_by_id(gGameWork.debugValues[gGameWork.debugRow]);
             break;
         default:
-            for (gGameWork.debugValues[2] = b; gGameWork.debugValues[2] < 30; gGameWork.debugValues[2]++) {
+            for (gGameWork.debugValues[2] = b_pressed; gGameWork.debugValues[2] < 30; gGameWork.debugValues[2]++) {
                 if (!find_medal_slot_by_id(gGameWork.debugValues[2])) {
                     slot = medal_add_by_id(gGameWork.debugValues[2]);
                     memcpy_bytes_0803F63C((void *)gMedalNames[gGameWork.debugValues[2]], gMedals[slot].name, 11);
@@ -257,7 +257,7 @@ void debug_parts_update(void) {
 }
 
 void debug_parts_input(void) {
-    u8 b;
+    u8 b_pressed;
 
     if (KEYS_LO(gNewKeys) & 0x40) {
         if (gGameWork.debugRow == 0)
@@ -330,7 +330,7 @@ void debug_parts_input(void) {
     clear_battle_sprite_slot(0x26, 3);
     divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[2]);
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x26, 8, 6, 3, 15, 1, 0);
-    if ((b = KEYS_LO(gNewKeys) & 2)) {
+    if ((b_pressed = KEYS_LO(gNewKeys) & 2)) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & 1) {
@@ -352,7 +352,7 @@ void debug_parts_input(void) {
             }
             break;
         default:
-            for (gGameWork.debugValues[2] = b; gGameWork.debugValues[2] < 0x78; gGameWork.debugValues[2]++) {
+            for (gGameWork.debugValues[2] = b_pressed; gGameWork.debugValues[2] < 0x78; gGameWork.debugValues[2]++) {
                 medapart_add_quantity(gGameWork.debugValues[2], 0, 1);
                 medapart_add_quantity(gGameWork.debugValues[2], 1, 1);
                 medapart_add_quantity(gGameWork.debugValues[2], 2, 1);
@@ -393,7 +393,7 @@ void debug_item_update(void) {
 }
 
 void debug_item_input(void) {
-    u8 b;
+    u8 b_pressed;
 
     if (KEYS_LO(gNewKeys) & 0x40) {
         if (gGameWork.debugRow == 0)
@@ -466,7 +466,7 @@ void debug_item_input(void) {
     clear_battle_sprite_slot(0x26, 3);
     divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[2]);
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x26, 8, 6, 3, 15, 1, 0);
-    if ((b = KEYS_LO(gNewKeys) & 2)) {
+    if ((b_pressed = KEYS_LO(gNewKeys) & 2)) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & 1) {
@@ -480,7 +480,7 @@ void debug_item_input(void) {
                 item_remove_quantity(gGameWork.debugValues[1], 1);
             break;
         default:
-            for (gGameWork.debugValues[2] = b; gGameWork.debugValues[2] < 0x3F; gGameWork.debugValues[2]++)
+            for (gGameWork.debugValues[2] = b_pressed; gGameWork.debugValues[2] < 0x3F; gGameWork.debugValues[2]++)
                 item_add_quantity(gGameWork.debugValues[2], 1);
             break;
         }
@@ -492,7 +492,7 @@ void debug_face_update(void) {
 }
 
 void debug_face_input(void) {
-    u8 b;
+    u8 b_pressed;
 
     if (KEY_BITS(gNewKeys).up | KEY_BITS(gNewKeys).down)
         gGameWork.debugRow ^= 1;
@@ -550,13 +550,13 @@ void debug_face_input(void) {
     clear_battle_sprite_slot(0x23, 3);
     divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[1]);
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
-    if ((b = KEYS_LO(gNewKeys) & 2)) {
+    if ((b_pressed = KEYS_LO(gNewKeys) & 2)) {
         vram_fill_tilemap_rect(0x11, 8, 0, 7, REG_BG0CNT, 0);
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & 1) {
         load_bg0_tilemap(gGameWork.debugValues[0], gGameWork.debugValues[1], 0, 7, 1);
-        load_bg0_tilemap(gGameWork.debugValues[0], gGameWork.debugValues[1], 9, 7, b);
+        load_bg0_tilemap(gGameWork.debugValues[0], gGameWork.debugValues[1], 9, 7, b_pressed);
     }
 }
 
@@ -665,7 +665,7 @@ void debug_battle_update(void) {
 }
 
 void debug_battle_input(void) {
-    u8 b;
+    u8 b_pressed;
 
     if (gFrameCounter & 4)
         clear_battle_sprite_slot(8, 8);
@@ -680,17 +680,17 @@ void debug_battle_input(void) {
     clear_battle_sprite_slot(0x20, 3);
     divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[gGameWork.debugRow]);
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
-    if ((b = KEYS_LO(gNewKeys) & 2)) {
+    if ((b_pressed = KEYS_LO(gNewKeys) & 2)) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & 1) {
         clear_battle_sprite_slot(8, 0x21);
-        gFieldWork.battle_flags = b;
-        gFieldWork.story_battle = b;
+        gFieldWork.battle_flags = b_pressed;
+        gFieldWork.story_battle = b_pressed;
         gFieldWork.fixed_battle = 1;
         gFieldWork.battle_id = gGameWork.debugValues[gGameWork.debugRow];
         gGameState = 6;
-        gGameSubState = b;
+        gGameSubState = b_pressed;
     }
 }
 
@@ -788,7 +788,7 @@ void debug_motion_load(void) {
 
 void debug_motion_input(void) {
     vu32 fill;
-    u8 b;
+    u8 select_held;
 
     fill = 0x200;
     DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
@@ -815,7 +815,7 @@ void debug_motion_input(void) {
         else
             gGameWork.debugMotion++;
         gGameWork.debugSubState--;
-    } else if ((b = KEYS_LO(gRepeatKeys) & 4)) {
+    } else if ((select_held = KEYS_LO(gRepeatKeys) & 4)) {
         if (gGameWork.debugMotion == 0)
             gGameWork.debugMotion = 0x79;
         else
@@ -823,7 +823,7 @@ void debug_motion_input(void) {
         gGameWork.debugSubState--;
     } else if (KEYS_LO(gNewKeys) & 2) {
         clear_battle_sprite_slot(8, 0x21);
-        gVBlankOamMode = b;
+        gVBlankOamMode = select_held;
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & 1)
         gGameWork.debugSubState++;

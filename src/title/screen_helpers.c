@@ -7,7 +7,7 @@
 // Eight sprites (spr[0..7]) bob on a sine wave around y = 80: sprite k uses phase t - (7 - k) * 0x80,
 // amplitude gMenuWork->shake_amplitude (counts down each call), speed shake_speed (counts up). Returns 1 once the
 // amplitude is 0. The divide by d (not a constant) keeps the __divsi3 call of the original.
-#define WAVE_X(a) (gSineTableQ14[(a) & 0x3FF] / d * amp >> 3)
+#define WAVE_X(a) (gSineTableQ14[(a) & 0x3FF] / divisor * amp >> 3)
 #define SET_WAVE_Y(k, a)                                                                                               \
     if (gSineTableQ14[(a) & 0x3FF] < 0)                                                                                \
         spr[k].y = WAVE_X(a) + mid;                                                                                    \
@@ -16,7 +16,7 @@
 
 static u32 sprite_wave_bob8(struct SpriteEntry *spr) {
     u32 done = 0;
-    s32 d = 0x400;
+    s32 divisor = 0x400;
     s32 mid = 80;
     u8 amp = gMenuWork->shake_amplitude;
     u8 speed = gMenuWork->shake_speed;
@@ -115,19 +115,19 @@ void tilemap_offset_tiles_and_palette(u32 tiles, u32 palette, u32 blk) {
     // pinned so pal << 12 stays inside the loop (the original recomputes it every tile)
     register u32 pal asm("r6") = (u8)palette;
     u8 block = blk;
-    u16 *p = (u16 *)(VRAM + block * 0x800);
+    u16 *tile_ptr = (u16 *)(VRAM + block * 0x800);
     s32 i;
 
     for (i = 0; i < 0x400; i++) {
         u32 h;
-        u32 x = *p;
-        u32 t = (((x & 0x3FF) + add) & 0x3FF) | (x & 0xFC00);
+        u32 x = *tile_ptr;
+        u32 tile = (((x & 0x3FF) + add) & 0x3FF) | (x & 0xFC00);
         s32 mask = 0xF000;
 
         x = pal;
-        h = (t & mask) + (x << 12);
-        *p = (t & 0xFFF) | h;
-        p++;
+        h = (tile & mask) + (x << 12);
+        *tile_ptr = (tile & 0xFFF) | h;
+        tile_ptr++;
     }
 }
 
@@ -151,15 +151,15 @@ static void link_poll_keys(void) {
         if (gLinkPlayerId)
             keys_update_from(gLinkPackets.recv[0][0]);
         else {
-            register struct LinkPackets *p asm("r0") = &gLinkPackets;
-            p->sendKeys = gHeldKeys;
-            keys_update_from(p->recv[0][0]);
+            register struct LinkPackets *packets asm("r0") = &gLinkPackets;
+            packets->sendKeys = gHeldKeys;
+            keys_update_from(packets->recv[0][0]);
         }
     }
 }
 
-static u16 point_distance(s16 x1, s16 y1, s16 x2, s16 y2) {
-    s32 dx = x2 - x1;
-    s32 dy = y2 - y1;
+static u16 point_distance(s16 from_x, s16 from_y, s16 to_x, s16 to_y) {
+    s32 dx = to_x - from_x;
+    s32 dy = to_y - from_y;
     return Sqrt(dx * dx + dy * dy);
 }

@@ -99,11 +99,11 @@ static void sound_env_start_attack(struct SoundTrack *track) {
 }
 
 static void sound_env_key_on(struct SoundTrack *track) {
-    u32 r = sound_env_check_release(track);
+    u32 releasing = sound_env_check_release(track);
 
-    if (r == 0) {
+    if (releasing == 0) {
         track->envCounter = 1;
-        track->envStep = r;
+        track->envStep = releasing;
         track->envPhase = 1;
     }
 }
@@ -118,11 +118,11 @@ static void sound_env_tick_attack(struct SoundTrack *track) {
         sound_env_start_decay(track);
     } else {
         u8 *vol = &track->envVolume;
-        s32 v = track->envStep + *vol;
+        s32 volume = track->envStep + *vol;
 
-        if (v > 15)
-            v = 15;
-        *vol = v;
+        if (volume > 15)
+            volume = 15;
+        *vol = volume;
         track->dirty |= 2;
     }
 }
@@ -132,11 +132,11 @@ static void sound_env_tick_decay(struct SoundTrack *track) {
         sound_env_start_sustain(track);
     } else {
         u8 *vol = &track->envVolume;
-        s32 v = track->envStep + *vol;
+        s32 volume = track->envStep + *vol;
 
-        if (v < 0)
-            v = 0;
-        *vol = v;
+        if (volume < 0)
+            volume = 0;
+        *vol = volume;
         track->dirty |= 2;
     }
 }
@@ -179,11 +179,11 @@ static void sound_vibrato_start_psg(struct SoundTrack *track) {
 
 void sound_vibrato_start_direct(struct SoundTrack *track) {
     u8 *depth = &track->vibratoDepth;
-    u8 d = *depth;
+    u8 depth_value = *depth;
     u8 *delay = &track->vibratoWait;
     u8 *count = &track->vibratoCounter;
 
-    if (d == 0) {
+    if (depth_value == 0) {
         *delay = 0;
         *count = 0;
         track->vibratoStep = 0;
@@ -196,9 +196,9 @@ void sound_vibrato_start_direct(struct SoundTrack *track) {
         if (track->channelType != 4)
             ch = &gSoundWork->fifoB;
         {
-            u8 v = track->vibratoDelay;
+            u8 start_delay = track->vibratoDelay;
             acc = 0;
-            *delay = v;
+            *delay = start_delay;
         }
         *count = track->vibratoPeriod >> 1;
         diff = sound_set_pitch_offset(ch, track->note + 2) - sound_set_pitch_offset(ch, track->note);
@@ -228,10 +228,10 @@ static void sound_track_tick_fade(struct SoundTrack *track) {
     s16 *delta = &track->fadeStep;
 
     if (track->fadeStep != 0) {
-        u32 t = track->fadeFrames;
+        u32 frames_left = track->fadeFrames;
         u16 *cur = &track->fadeVolume;
 
-        if (t != 0 && (track->fadeFrames = t - 1) != 0) {
+        if (frames_left != 0 && (track->fadeFrames = frames_left - 1) != 0) {
             *cur += track->fadeStep;
             if (track->outVolume != ((track->envVolume * *cur) & 0xF000))
                 track->dirty |= 2;
@@ -247,10 +247,10 @@ static void sound_track_tick_fade(struct SoundTrack *track) {
 }
 
 static u32 sound_seq_read_u32(struct SoundTrack *track) {
-    u8 *p = track->seqPos;
-    u32 val = p[0] + (p[1] << 8) + (p[2] << 16) + (p[3] << 24);
+    u8 *pos = track->seqPos;
+    u32 val = pos[0] + (pos[1] << 8) + (pos[2] << 16) + (pos[3] << 24);
 
-    track->seqPos = p + 4;
+    track->seqPos = pos + 4;
     return val;
 }
 
@@ -700,7 +700,7 @@ static inline u8 track_note_mode(struct SoundTrack *track) {
 void sound_engine_update(void) {
     struct SoundTrack *track = gSoundWork->activeTracks;
     struct SoundTrack *next;
-    struct SoundTrack *t;
+    struct SoundTrack *override;
 
     if (track != NULL) {
         do {
@@ -730,45 +730,45 @@ void sound_engine_update(void) {
         register struct SoundWork **wp asm("r0") = &gSoundWork;
         track = (*wp)->tracks;
     }
-    t = &track[4];
-    if (t->seqPos != NULL)
-        sound_output_sq1(t);
+    override = &track[4];
+    if (override->seqPos != NULL)
+        sound_output_sq1(override);
     else if (sound_is_paused() == 0)
         sound_output_sq1(&track[0]);
 
-    t = &track[5];
-    if (t->seqPos != NULL)
-        sound_output_sq2(t);
+    override = &track[5];
+    if (override->seqPos != NULL)
+        sound_output_sq2(override);
     else if (sound_is_paused() == 0)
         sound_output_sq2(&track[1]);
 
-    t = &track[6];
-    if (t->seqPos != NULL)
-        sound_output_wave(t);
+    override = &track[6];
+    if (override->seqPos != NULL)
+        sound_output_wave(override);
     else if (sound_is_paused() == 0)
         sound_output_wave(&track[2]);
 
-    t = &track[7];
-    if (t->seqPos != NULL)
-        sound_output_noise(t);
+    override = &track[7];
+    if (override->seqPos != NULL)
+        sound_output_noise(override);
     else if (sound_is_paused() == 0) {
-        t = &track[12];
-        if (t->seqPos != NULL && track_ptr(&track[9]) != NULL && track_note_mode(&track[9]) == 2 &&
+        override = &track[12];
+        if (override->seqPos != NULL && track_ptr(&track[9]) != NULL && track_note_mode(&track[9]) == 2 &&
             track_ptr(&track[11]) != NULL)
-            sound_output_noise(t);
+            sound_output_noise(override);
         else
             sound_output_noise(&track[3]);
     }
 
-    t = &track[10];
-    if (t->seqPos != NULL)
-        sound_output_fifo_a(t);
+    override = &track[10];
+    if (override->seqPos != NULL)
+        sound_output_fifo_a(override);
     else if (sound_is_paused() == 0)
         sound_output_fifo_a(&track[8]);
 
-    t = &track[11];
-    if (t->seqPos != NULL)
-        sound_output_fifo_b(t);
+    override = &track[11];
+    if (override->seqPos != NULL)
+        sound_output_fifo_b(override);
     else if (sound_is_paused() == 0)
         sound_output_fifo_b(&track[9]);
 

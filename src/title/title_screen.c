@@ -36,7 +36,7 @@ static inline s32 sub_counter(void) {
 void title_screen_build_wave_tables(void) {
     s32 i;
     s32 x;
-    s32 c;
+    s32 center_x;
 
     gTitleBg2ScrollX += 0x80;
     for (i = 0; i < 32; i++) {
@@ -49,8 +49,8 @@ void title_screen_build_wave_tables(void) {
         gTitleBg2XHighTable[i] = 0;
     }
     for (; i < 160; i++) {
-        c = gTitleBg2ScrollX + 0x7800;
-        x = c - mul120(gTitleBg2PaTable[i]);
+        center_x = gTitleBg2ScrollX + 0x7800;
+        x = center_x - mul120(gTitleBg2PaTable[i]);
         gTitleBg2XLowTable[i] = x;
         gTitleBg2XHighTable[i] = x >> 16;
     }
@@ -344,30 +344,30 @@ void title_screen_update_sprite_effects(void) {
 bool32 title_effect_palette_fade_in(u8 idx) {
     u8 n;
     struct SpriteEntry *base = gSpriteEntries;
-    struct SpriteEntry *p = &base[idx];
-    u8 c = p->unk22;
+    struct SpriteEntry *entry = &base[idx];
+    u8 fade_step = entry->unk22;
 
-    if (p->unk22 > 0x1E)
+    if (entry->unk22 > 0x1E)
         return FALSE;
-    if (p->unk22 == 0 || p->unk22 == 0x1E) {
+    if (entry->unk22 == 0 || entry->unk22 == 0x1E) {
         vu32 zero = 0;
         DmaSet(3, &zero, PLTT + 0x2C0, 0x85000000 | (0x20 / 4));
-    } else if (p->unk22 <= 0xE) {
-        n = c * 2;
+    } else if (entry->unk22 <= 0xE) {
+        n = fade_step * 2;
         {
             vu32 zero = 0;
             DmaSet(3, &zero, PLTT + 0x2C0, 0x85000000 | ((0x20 - n) / 4));
         }
         DmaSet(3, (u16 *)&gSceneWork.unkC, PLTT + 0x2E0 - n, 0x80000000 | (n / 2));
-    } else if (p->unk22 == 0xF) {
+    } else if (entry->unk22 == 0xF) {
         DmaSet(3, (u16 *)&gSceneWork.unkC, PLTT + 0x2C0, 0x80000000 | (0x1C / 2));
     } else {
-        n = (0x1E - c) * 2;
+        n = (0x1E - fade_step) * 2;
         {
             vu32 zero = 0;
             DmaSet(3, &zero, PLTT + 0x2C0 + n, 0x85000000 | ((0x20 - n) / 4));
         }
-        DmaSet(3, &((u16 *)&gSceneWork.unkC)[p->unk22 - 15], PLTT + 0x2C0, 0x80000000 | (n / 2));
+        DmaSet(3, &((u16 *)&gSceneWork.unkC)[entry->unk22 - 15], PLTT + 0x2C0, 0x80000000 | (n / 2));
     }
     gSpriteEntries[idx].unk22++;
     return TRUE;

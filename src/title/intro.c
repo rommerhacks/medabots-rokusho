@@ -20,8 +20,8 @@ static void intro_sprite_set_action(u8 action, u8 i, u8 y);
 
 static void intro_draw_rokusho_pose(void) {
     if (gVBlankOamMode == 2) {
-        u32 v = 0x200;
-        DmaSet(3, &v, gSpriteWork->oamBuf, 0x85000100);
+        u32 oam_fill = 0x200;
+        DmaSet(3, &oam_fill, gSpriteWork->oamBuf, 0x85000100);
         setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x70, 0x50, gVBlankOamMode, 0xC, 0, 1, 0);
         medabot_pose_anim_step(0, 0x2D, 0x2A);
     }

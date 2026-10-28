@@ -628,15 +628,15 @@ void bomb_game_player_blown_up(void) {
 // CONGRATULATIONS banner; returns 1 after about 4 seconds or A / START.
 static bool32 bomb_game_clear_banner(void) {
     u8 buf[0x20]; // unused, but the original reserves the stack space
-    struct SpriteEntry *s = gSpriteEntries;
+    struct SpriteEntry *banner = gSpriteEntries;
 
-    switch (s->unk20) {
+    switch (banner->unk20) {
     case 0:
         sprite_entry_init(BOMB_SPR_BANNER, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE, 0x33, 0xC, 3);
-        s->x = 0x78;
-        s->y = 0x50;
-        s->unk1A = 0;
-        s->unk20++;
+        banner->x = 0x78;
+        banner->y = 0x50;
+        banner->unk1A = 0;
+        banner->unk20++;
         gSpriteEntries[BOMB_SPR_PLAYER].frame = 0;
         sprite_entry_init(BOMB_SPR_SHADOW,
                           SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1), 0x12, 2,
@@ -645,10 +645,10 @@ static bool32 bomb_game_clear_banner(void) {
         gSpriteEntries[BOMB_SPR_SHADOW].y = gSpriteEntries[BOMB_SPR_PLAYER].y + 10;
         break;
     case 1:
-        s->unk1A++;
-        if (s->unk1A % 8 == 0)
+        banner->unk1A++;
+        if (banner->unk1A % 8 == 0)
             gSpriteEntries[BOMB_SPR_THROWER].y -= 2;
-        if (s->unk1A > 0xEB || (KEYS_LO(gNewKeys) & 9)) {
+        if (banner->unk1A > 0xEB || (KEYS_LO(gNewKeys) & 9)) {
             clear_sprite_entry(BOMB_SPR_BANNER);
             return 1;
         }

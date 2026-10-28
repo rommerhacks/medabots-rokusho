@@ -56,6 +56,6 @@ void new_game_prompt_return_to_title(void) {
 
 // Runs the prompt's sub-states: init, message, choice, then start the intro or fade back to the title menu.
 void new_game_prompt_update(void) {
-    struct FuncTable6 t = gNewGamePromptStates;
-    t.f[gGameSubState]();
+    struct FuncTable6 states = gNewGamePromptStates;
+    states.f[gGameSubState]();
 }

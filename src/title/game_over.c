@@ -11,8 +11,8 @@ static inline void *vram_at(u32 off) {
 
 static void game_over_draw_wipe(s32 step) {
     u16 buf[0x20];
-    u16 *d;
-    u16 *s;
+    u16 *dst;
+    u16 *src;
     s32 i;
 
     if (step < 8) {
@@ -24,23 +24,23 @@ static void game_over_draw_wipe(s32 step) {
     } else {
         step -= 8;
         CpuFastSet((u8 *)VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800, buf, 0x10);
-        d = &buf[14];
-        s = &buf[13 - step];
+        dst = &buf[14];
+        src = &buf[13 - step];
         for (i = 13; i >= 0; i--) {
             if (i <= step)
-                *d = buf[0];
+                *dst = buf[0];
             else
-                *d = *s--;
-            d--;
+                *dst = *src--;
+            dst--;
         }
-        d = &buf[15];
-        s = &buf[16 + step];
+        dst = &buf[15];
+        src = &buf[16 + step];
         for (i = 13; i >= 0; i--) {
             if (i <= step)
-                *d = buf[29];
+                *dst = buf[29];
             else
-                *d = *s++;
-            d++;
+                *dst = *src++;
+            dst++;
         }
     }
     for (i = 0; i < 20; i++)
@@ -72,7 +72,7 @@ void game_over_reset(void) {
 
 void game_over_load_graphics(void) {
     vu16 *bg0, *bg1, *bg2, *bg3;
-    u16 v;
+    u16 bgcnt;
     u32 size;
     u8 one;
     u8 zero8;
@@ -80,17 +80,17 @@ void game_over_load_graphics(void) {
 
     bg0 = &REG_BG0CNT;
     one = 1;
-    v = 0x1F04;
-    *bg0 = v;
+    bgcnt = 0x1F04;
+    *bg0 = bgcnt;
     bg1 = &REG_BG1CNT;
-    v -= 0xFF;
-    *bg1 = v;
+    bgcnt -= 0xFF;
+    *bg1 = bgcnt;
     bg2 = &REG_BG2CNT;
-    v -= 0xFF;
-    *bg2 = v;
+    bgcnt -= 0xFF;
+    *bg2 = bgcnt;
     bg3 = &REG_BG3CNT;
-    v = 0x3C07;
-    *bg3 = v;
+    bgcnt = 0x3C07;
+    *bg3 = bgcnt;
     decompress_and_write_tilemap(gGameOverBg0Tilemap, *bg0);
     decompress_and_write_tilemap(gGameOverBg2Tilemap, *bg2);
     decompress_and_write_tilemap(gGameOverBg3Tilemap, *bg3);
@@ -136,12 +136,12 @@ void game_over_show_screen(void) {
 }
 
 void game_over_fade_in(void) {
-    struct MenuWork *p = gMenuWork;
+    struct MenuWork *menu = gMenuWork;
 
-    if (p->fade_level != 0) {
-        REG_BLDY = p->fade_level-- >> 1;
+    if (menu->fade_level != 0) {
+        REG_BLDY = menu->fade_level-- >> 1;
     } else {
-        p->timer = 0;
+        menu->timer = 0;
         gSpriteEntries[1].flags |= SPRITE_FLAG_VISIBLE;
         gSpriteEntries[1].unk1A = 0;
         gGameSubState++;
@@ -149,27 +149,27 @@ void game_over_fade_in(void) {
 }
 
 void game_over_ikki_fall(void) {
-    struct SpriteEntry *s = gSpriteEntries;
-    u32 c = s[1].unk1A;
+    struct SpriteEntry *sprites = gSpriteEntries;
+    u32 fall_frame = sprites[1].unk1A;
     u16 zero;
 
-    s[1].frame = (c & 4) ? 0x109 : 0x10A;
+    sprites[1].frame = (fall_frame & 4) ? 0x109 : 0x10A;
     zero = 0;
-    c = (u16)c;
-    if ((u16)c < 0x78) {
-        s[1].y = (s32)(s[1].unk1A * 0xA8) / 0x78 - 0x40;
-        s[1].scale_x = -0x80 - (s32)(s[1].unk1A * 64) / 0x78;
-        s[1].scale_y = -0x80 - (s32)(s[1].unk1A * 64) / 0x78;
-        s[1].angle = (c & 0x3F) * 16 + 0x340;
-        s[1].unk1A = c + 1;
+    fall_frame = (u16)fall_frame;
+    if ((u16)fall_frame < 0x78) {
+        sprites[1].y = (s32)(sprites[1].unk1A * 0xA8) / 0x78 - 0x40;
+        sprites[1].scale_x = -0x80 - (s32)(sprites[1].unk1A * 64) / 0x78;
+        sprites[1].scale_y = -0x80 - (s32)(sprites[1].unk1A * 64) / 0x78;
+        sprites[1].angle = (fall_frame & 0x3F) * 16 + 0x340;
+        sprites[1].unk1A = fall_frame + 1;
     } else {
         REG_DISPCNT |= 0x100;
-        s[1].frame = 0x10B;
-        s[1].scale_x = 0x40;
-        s[1].scale_y = 0x40;
-        s[1].y = 0x68;
-        s[1].angle = zero;
-        s[1].unk1A = zero;
+        sprites[1].frame = 0x10B;
+        sprites[1].scale_x = 0x40;
+        sprites[1].scale_y = 0x40;
+        sprites[1].y = 0x68;
+        sprites[1].angle = zero;
+        sprites[1].unk1A = zero;
         gMenuWork->frame = zero;
         gGameSubState++;
     }
@@ -177,12 +177,12 @@ void game_over_ikki_fall(void) {
 
 void game_over_logo_drop(void) {
     u32 done = 0;
-    struct MenuWork *p = gMenuWork;
-    u16 t;
+    struct MenuWork *menu = gMenuWork;
+    u16 phase_frame;
     u16 y;
 
-    if (p->frame <= 7) {
-        if (++p->frame == 4) {
+    if (menu->frame <= 7) {
+        if (++menu->frame == 4) {
             REG_DISPCNT &= 0xFEFF;
             REG_DISPCNT |= 0x200;
             play_sound_effect(0x17);
@@ -192,29 +192,29 @@ void game_over_logo_drop(void) {
         else
             gSpriteEntries[1].y++;
     } else {
-        if ((u16)p->frame <= 0x31)
-            p->frame++;
-        t = gMenuWork->frame - 9;
-        if (t == 0)
+        if ((u16)menu->frame <= 0x31)
+            menu->frame++;
+        phase_frame = gMenuWork->frame - 9;
+        if (phase_frame == 0)
             gSpriteEntries[0].flags |= SPRITE_FLAG_VISIBLE;
-        if (t <= 0x13) {
-            s32 q = (t << 6) / 20;
+        if (phase_frame <= 0x13) {
+            s32 grow = (phase_frame << 6) / 20;
 
-            y = q - 0x20;
-            gSpriteEntries[0].scale_y = gSpriteEntries[0].scale_x = -0x80 - q;
+            y = grow - 0x20;
+            gSpriteEntries[0].scale_y = gSpriteEntries[0].scale_x = -0x80 - grow;
         } else {
-            t -= 0x14;
-            if (t == 0) {
+            phase_frame -= 0x14;
+            if (phase_frame == 0) {
                 gSpriteEntries[0].scale_x = 0x40;
                 gSpriteEntries[0].scale_y = 0x40;
             }
-            if (t <= 0xC)
-                y = gGameOverLogoBounce[t] + 0x20;
+            if (phase_frame <= 0xC)
+                y = gGameOverLogoBounce[phase_frame] + 0x20;
             else {
                 y = 0x20;
-                t -= 0xD;
-                if (t <= 7)
-                    game_over_draw_wipe(t);
+                phase_frame -= 0xD;
+                if (phase_frame <= 7)
+                    game_over_draw_wipe(phase_frame);
                 else
                     done = 1;
             }
@@ -245,16 +245,16 @@ void game_over_fade_out_exit(void) {
 }
 
 void game_over_wipe_out(void) {
-    struct MenuWork *p = gMenuWork;
+    struct MenuWork *menu = gMenuWork;
 
-    p->frame++;
-    game_over_draw_wipe(p->frame + 8);
+    menu->frame++;
+    game_over_draw_wipe(menu->frame + 8);
     if (++gSpriteEntries[1].unk1A > 0x47)
         gSpriteEntries[1].unk1A = 0;
     gSpriteEntries[1].frame = gGameOverIkkiFramesExit[(u16)(gSpriteEntries[1].unk1A / 6)];
-    p = gMenuWork;
-    if (p->frame > 13) {
-        p->fade_level = 0;
+    menu = gMenuWork;
+    if (menu->frame > 13) {
+        menu->fade_level = 0;
         gGameSubState--;
     }
 }

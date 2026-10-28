@@ -32,20 +32,20 @@ void test_mode_reset(void) {
 
 void test_mode_load_graphics(void) {
     vu16 *bg1, *bg2, *bg3;
-    u16 v;
+    u16 bgcnt;
     u32 size;
     u8 zero;
     u8 i;
 
     bg1 = &REG_BG1CNT;
-    v = 0x1E05;
-    *bg1 = v;
+    bgcnt = 0x1E05;
+    *bg1 = bgcnt;
     bg2 = &REG_BG2CNT;
-    v -= 0xFF;
-    *bg2 = v;
+    bgcnt -= 0xFF;
+    *bg2 = bgcnt;
     bg3 = &REG_BG3CNT;
-    v = 0x3C07;
-    *bg3 = v;
+    bgcnt = 0x3C07;
+    *bg3 = bgcnt;
     decompress_and_write_tilemap(gTestModeBg1Tilemap, *bg1);
     decompress_and_write_tilemap(gTestModeBg2Tilemap, *bg2);
     decompress_and_write_tilemap(gTestModeBg3Tilemap, *bg3);
@@ -105,13 +105,13 @@ void test_mode_show_screen(void) {
 }
 
 void test_mode_fade_in(void) {
-    struct MenuWork *p = gMenuWork;
+    struct MenuWork *menu = gMenuWork;
 
-    if (p->fade_level != 0) {
-        REG_BLDY = p->fade_level-- >> 1;
+    if (menu->fade_level != 0) {
+        REG_BLDY = menu->fade_level-- >> 1;
     } else {
-        p->timer = 0;
-        p->fade_level = 0;
+        menu->timer = 0;
+        menu->fade_level = 0;
         gMenuWork->returning = 0;
         gMenuWork->counter = 0;
         gMenuWork->unk49 = 0;
@@ -308,11 +308,11 @@ void test_mode_erase_start(void) {
 }
 
 void test_mode_erase_save(void) {
-    u8 t = gMenuWork->timer++;
+    u8 elapsed = gMenuWork->timer++;
     u16 err = 0;
     s8 i;
 
-    if (t > 29 && !is_sound_effect_playing(4)) {
+    if (elapsed > 29 && !is_sound_effect_playing(4)) {
         for (i = 0; i <= 3; i++) {
             err = save_dispatch(2);
             if (err == 0)

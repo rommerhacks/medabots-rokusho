@@ -6,15 +6,15 @@
 #include "constants/sprites.h"
 
 // Line length, 0 for a one-character line.
-static int text_line_glyph_count(u8 *s) {
+static int text_line_glyph_count(u8 *text) {
     int n = 0;
-    int r;
-    while (s[n] != 0)
+    int count;
+    while (text[n] != 0)
         n++;
-    r = 0;
+    count = 0;
     if (n != 1)
-        r = n;
-    return r;
+        count = n;
+    return count;
 }
 
 static void text_scroll_draw_bar(s32 len, s32 step) {
@@ -45,38 +45,38 @@ void text_scroll_shift_row(s32 row, s32 step) {
         CpuSet(buf, (u8 *)VRAM + ((REG_BG0CNT >> 8) & 0x1F) * 0x800 + (x + 1) * 2 + 0x100, (29 - x) & 0x1FFFFF);
     } else {
         int i;
-        u16 t;
+        u16 tile;
         CpuFastSet((u8 *)VRAM + ((REG_BG1CNT >> 8) & 0x1F) * 0x800 + row * 64, buf, 0x10);
         buf[31] = *(u16 *)0x0600DD3E | 0x800;
-        t = 0;
+        tile = 0;
         for (i = 10; i < 30; i++) {
             if (buf[i] != 0)
-                t = buf[31];
-            buf[i] = t;
+                tile = buf[31];
+            buf[i] = tile;
         }
         CpuSet(buf + x, (u8 *)VRAM + ((REG_BG0CNT >> 8) & 0x1F) * 0x800 + x * 2 + 0x100, (30 - x) & 0x1FFFFF);
     }
 }
 
-static void text_scroll_draw_line(const u8 *s, u8 row) {
+static void text_scroll_draw_line(const u8 *text, u8 row) {
     int len;
     u16 *dst;
     int i;
-    int c;
+    int ch;
     len = 0;
-    while (*s != 0) {
-        s++;
+    while (*text != 0) {
+        text++;
         len++;
     }
-    s--;
+    text--;
     dst = &((u16 *)(((REG_BG1CNT >> 8) & 0x1F) * 0x800 + 0x06000000))[row * 32 + 29];
     for (i = 0; i < 20; i++) {
         if (i < len) {
-            c = *s--;
-            if (c == ' ')
+            ch = *text--;
+            if (ch == ' ')
                 *dst-- = 0;
             else
-                *dst-- = ((u16 *)0x0600DD00)[c -= 0x41];
+                *dst-- = ((u16 *)0x0600DD00)[ch -= 0x41];
         } else {
             *dst-- = 0;
         }
@@ -95,12 +95,13 @@ static bool32 text_scroll_slide_in_heading(s32 col, s32 step) {
 
 static bool32 text_scroll_slide_out_heading(s32 step) {
     int i;
-    int a, b;
+    // FAKEMATCH: row indices assigned inline in the CpuSet arguments only to shape codegen
+    int src_row, dst_row;
     if (step > 3)
         return TRUE;
     for (i = 0; i < 3; i++)
-        CpuSet(&((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[((a = i + 4) - step) * 32],
-               &((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[((b = i + 3) - step) * 32], 0xD);
+        CpuSet(&((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[((src_row = i + 4) - step) * 32],
+               &((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[((dst_row = i + 3) - step) * 32], 0xD);
     return FALSE;
 }
 
@@ -138,10 +139,10 @@ void text_scroll_init(void) {
         gMenuWork->ring_center_y[i] = 0x50;
     }
     for (i = 0; i < sizeof(gMenuWork->ring_rot_x) / sizeof(gMenuWork->ring_rot_x[0]); i++) {
-        struct MenuWork *p = gMenuWork;
-        p->ring_rot_x[i] = 0;
-        p->ring_rot_y[i] = 0;
-        p->ring_rot_z[i] = 0;
+        struct MenuWork *menu = gMenuWork;
+        menu->ring_rot_x[i] = 0;
+        menu->ring_rot_y[i] = 0;
+        menu->ring_rot_z[i] = 0;
     }
     gMenuWork->ticks = 0;
     for (i = 0; i < 0x48; i++) {
@@ -176,35 +177,35 @@ void text_scroll_init(void) {
 }
 
 void text_scroll_fade_in(void) {
-    struct GameWork *s;
+    struct GameWork *game;
     u8 *n;
     update_scene_animation_frame();
-    s = &gGameWork;
-    n = &s->stepCounter;
+    game = &gGameWork;
+    n = &game->stepCounter;
     if (*n <= 0x40) {
         bg_palettes_blend_masked_now(0, 0x20 - (*n / 2), 0xFFFF);
         obj_palettes_blend_masked_now(0, 0x20 - (*n / 2), 0xFFFF);
-        s->stepCounter++;
+        game->stepCounter++;
         gMenuWork->cursor = 0;
     } else
         gGameSubState++;
 }
 
 void text_scroll_page_start(void) {
-    struct PtrTable3 t = gTextScrollPages;
-    struct MenuWork *s;
+    struct PtrTable3 pages = gTextScrollPages;
+    struct MenuWork *menu;
     update_scene_animation_frame();
-    s = gMenuWork;
-    if (++s->frame > 0xD) {
-        if (text_scroll_slide_in_heading(s->cursor, s->frame - 0xE)) {
-            struct MenuWork *u = gMenuWork;
-            u->scene_text = t.p[u->cursor];
-            u->frame = 0;
+    menu = gMenuWork;
+    if (++menu->frame > 0xD) {
+        if (text_scroll_slide_in_heading(menu->cursor, menu->frame - 0xE)) {
+            struct MenuWork *work = gMenuWork;
+            work->scene_text = pages.p[work->cursor];
+            work->frame = 0;
             gGameSubState++;
-            gMenuWork->text_len = text_line_glyph_count((u8 *)*u->scene_text);
+            gMenuWork->text_len = text_line_glyph_count((u8 *)*work->scene_text);
         }
     } else
-        ((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[(s->frame + 2) * 32] = *(u16 *)0x0600D8C0;
+        ((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[(menu->frame + 2) * 32] = *(u16 *)0x0600D8C0;
 }
 
 void text_scroll_lines(void) {
@@ -245,15 +246,15 @@ void text_scroll_page_end(void) {
 }
 
 void text_scroll_clear_bar(void) {
-    struct MenuWork *s;
+    struct MenuWork *menu;
     update_scene_animation_frame();
-    s = gMenuWork;
-    if (++s->frame > 0xE) {
+    menu = gMenuWork;
+    if (++menu->frame > 0xE) {
         gGameSubState++;
-        s->fade_step = 0;
+        menu->fade_step = 0;
         fade_out_music(0xC0);
     } else
-        ((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[(s->frame + 2) * 32] = 0;
+        ((u16 *)(((REG_BG0CNT >> 8) & 0x1F) * 0x800 + VRAM))[(menu->frame + 2) * 32] = 0;
 }
 
 void text_scroll_fade_out(void) {
@@ -269,7 +270,7 @@ void text_scroll_fade_out(void) {
 }
 
 void text_scroll_update(void) {
-    struct FuncTable7 t = gTextScrollStates;
-    t.f[gGameSubState]();
+    struct FuncTable7 states = gTextScrollStates;
+    states.f[gGameSubState]();
     gBg2Scroll.y--;
 }

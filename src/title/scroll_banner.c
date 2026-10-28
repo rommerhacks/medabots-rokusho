@@ -60,50 +60,50 @@ void scroll_banner_init(void) {
 }
 
 void scene_scroll_with_fade(void) {
-    struct MenuWork *s;
-    struct Vec16 *b;
+    struct MenuWork *menu;
+    struct Vec16 *scroll;
 
     if (blend_fade_step_08065598(gMenuWork->blend))
         gGameSubState++;
-    b = &gBg2Scroll;
-    s = gMenuWork;
-    b->y = (u32)(s->frame * 16 + 0x1B8) % 512;
-    b->x = (s16)(s->frame & 0x20) ? 0x100 : 0;
-    s->frame++;
+    scroll = &gBg2Scroll;
+    menu = gMenuWork;
+    scroll->y = (u32)(menu->frame * 16 + 0x1B8) % 512;
+    scroll->x = (s16)(menu->frame & 0x20) ? 0x100 : 0;
+    menu->frame++;
 }
 
 void update_scroll_animation_step(void) {
-    struct MenuWork *s;
-    struct Vec16 *b;
+    struct MenuWork *menu;
+    struct Vec16 *scroll;
 
-    b = &gBg2Scroll;
-    s = gMenuWork;
-    b->y = (u32)(s->frame * 16 + 0x1B8) % 512;
-    b->x = (s16)(s->frame & 0x20) ? 0x100 : 0;
-    s->frame++;
+    scroll = &gBg2Scroll;
+    menu = gMenuWork;
+    scroll->y = (u32)(menu->frame * 16 + 0x1B8) % 512;
+    scroll->x = (s16)(menu->frame & 0x20) ? 0x100 : 0;
+    menu->frame++;
     if (KEYS_LO(gRepeatKeys) & 1) {
-        init_blend_effect(s->blend, 0, 0, 1, 0xC0);
+        init_blend_effect(menu->blend, 0, 0, 1, 0xC0);
         gGameSubState++;
     }
 }
 
 void scene_fade_and_scroll_camera(void) {
-    struct MenuWork *s;
-    struct Vec16 *b;
+    struct MenuWork *menu;
+    struct Vec16 *scroll;
 
     if (blend_fade_step_08065598(gMenuWork->blend))
         gGameSubState = 0;
-    b = &gBg2Scroll;
-    s = gMenuWork;
-    b->y = (u32)(s->frame * 16 + 0x1B8) % 512;
-    b->x = (s16)(s->frame & 0x20) ? 0x100 : 0;
-    s->frame++;
+    scroll = &gBg2Scroll;
+    menu = gMenuWork;
+    scroll->y = (u32)(menu->frame * 16 + 0x1B8) % 512;
+    scroll->x = (s16)(menu->frame & 0x20) ? 0x100 : 0;
+    menu->frame++;
 }
 
 void scene_dispatch_and_tick(void) {
-    struct FuncTable4 t = gScrollBannerStates;
+    struct FuncTable4 states = gScrollBannerStates;
 
-    t.f[gGameSubState]();
+    states.f[gGameSubState]();
     if (gFrameCounter & 1)
         gBg3Scroll.x++;
 }

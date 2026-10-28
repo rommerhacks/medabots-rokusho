@@ -215,19 +215,19 @@ void handle_battle_menu_selection(void) {
 }
 
 void update_fade_transition_state_080662CC(void) {
-    struct MenuWork *p = gMenuWork;
+    struct MenuWork *menu = gMenuWork;
 
-    if (p->partner_chose != 0) {
+    if (menu->partner_chose != 0) {
         gLinkPackets.sendData = 0xFE0F;
     } else if (gLinkPlayerId != 0) {
         if ((gLinkPackets.recv[0][1] & 0xFF00) == 0xEF00) {
-            p->cursor = gLinkPackets.recv[0][1];
+            menu->cursor = gLinkPackets.recv[0][1];
             gMenuWork->partner_chose = 1;
         } else if (gLinkPackets.recv[0][1] == 0xFE0F) {
             gLinkPackets.sendData = 0xFE0F;
         }
     } else {
-        p->partner_chose = 0;
+        menu->partner_chose = 0;
         gLinkPackets.sendData = gMenuWork->cursor | 0xEF00;
     }
     if (gLinkPackets.recv[1][1] == 0xFE0F) {
@@ -275,28 +275,28 @@ void link_menu_fade_out_exit(void) {
 }
 
 void setup_dialogue_script_from_rom(void) {
-    struct MenuWork *p = gMenuWork;
-    u8 *d;
-    const u8 *s;
+    struct MenuWork *menu = gMenuWork;
+    u8 *dst;
+    const u8 *src;
 
-    d = &p->message_buf[0];
-    *d = 0xFB;
-    d = &p->message_buf[1];
-    *d = 1;
-    d = &p->message_buf[2];
-    *d = 0xC;
-    d = &p->message_buf[3];
-    *d = 0;
-    d = &p->message_buf[4];
-    s = gLinkSavePromptMessage;
-    while ((*d = *s) != 0xFF) {
-        d++;
-        s++;
+    dst = &menu->message_buf[0];
+    *dst = 0xFB;
+    dst = &menu->message_buf[1];
+    *dst = 1;
+    dst = &menu->message_buf[2];
+    *dst = 0xC;
+    dst = &menu->message_buf[3];
+    *dst = 0;
+    dst = &menu->message_buf[4];
+    src = gLinkSavePromptMessage;
+    while ((*dst = *src) != 0xFF) {
+        dst++;
+        src++;
     }
-    *d = 0xFF;
-    d[1] = 4;
-    d = gMenuWork->message_buf;
-    if (run_message(d)) {
+    *dst = 0xFF;
+    dst[1] = 4;
+    dst = gMenuWork->message_buf;
+    if (run_message(dst)) {
         message_next();
         open_choice_menu(1, 0x16, 7);
         gGameSubState++;
@@ -328,42 +328,42 @@ void link_menu_wait_choice(void) {
 }
 
 void menu_yes_no_confirmation_handler(void) {
-    const u8 *s = gLinkMenuMessages[15];
-    struct MenuWork *p = gMenuWork;
-    u8 *d;
+    const u8 *src = gLinkMenuMessages[15];
+    struct MenuWork *menu = gMenuWork;
+    u8 *dst;
     s32 i;
-    u16 a, b;
+    u16 reply_p1, reply_p2;
 
-    d = &p->message_buf[0];
-    *d = 0xFB;
-    d = &p->message_buf[1];
-    *d = 0;
-    d = &p->message_buf[2];
-    *d = 0xC;
-    d = &p->message_buf[3];
-    *d = 0;
-    d = &p->message_buf[4];
+    dst = &menu->message_buf[0];
+    *dst = 0xFB;
+    dst = &menu->message_buf[1];
+    *dst = 0;
+    dst = &menu->message_buf[2];
+    *dst = 0xC;
+    dst = &menu->message_buf[3];
+    *dst = 0;
+    dst = &menu->message_buf[4];
     i = 0;
     do {
-        d[i] = s[i];
+        dst[i] = src[i];
         i++;
-    } while (d[i] != 0xFF);
-    d[i] = s[i];
+    } while (dst[i] != 0xFF);
+    dst[i] = src[i];
     i++;
-    d[i] = s[i];
+    dst[i] = src[i];
     if (run_message(gMenuWork->message_buf)) {
         if (gGameWork.choiceCursor == 0)
             gLinkPackets.sendData = 0xFF00;
         else
             gLinkPackets.sendData = 0xFF01;
-        a = gLinkPackets.recv[0][1];
-        b = gLinkPackets.recv[1][1];
-        if ((a & 0xFF00) == 0xFF00 && (b & 0xFF00) == 0xFF00) {
+        reply_p1 = gLinkPackets.recv[0][1];
+        reply_p2 = gLinkPackets.recv[1][1];
+        if ((reply_p1 & 0xFF00) == 0xFF00 && (reply_p2 & 0xFF00) == 0xFF00) {
             message_next();
-            if (a == b) {
+            if (reply_p1 == reply_p2) {
                 init_blend_effect(gMenuWork->blend, 0, 0, 1, 0xC0);
                 gGameSubState = 5;
-                gMenuWork->pending_sound = a != 0xFF00;
+                gMenuWork->pending_sound = reply_p1 != 0xFF00;
             } else {
                 gGameSubState = 3;
                 gMenuWork->cursor = 6;
@@ -373,8 +373,8 @@ void menu_yes_no_confirmation_handler(void) {
 }
 
 void dispatch_battle_menu_and_update_counters(void) {
-    struct FuncTable13 t = gLinkMenuStates;
-    t.f[gGameSubState]();
+    struct FuncTable13 states = gLinkMenuStates;
+    states.f[gGameSubState]();
     if (gFrameCounter & 1) {
         gBg3Scroll.x++;
         gBg3Scroll.y++;
