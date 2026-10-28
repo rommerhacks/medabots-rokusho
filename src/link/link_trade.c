@@ -601,7 +601,7 @@ void medal_trade_init_screen(void) {
     if (partner_chose == 0) {
         u32 medal;
         u32 icon_tile;
-        u32 buf;
+        u32 buf; // FAKEMATCH: an integer, not a u8 pointer: a typed pointer changes the codegen
         const u8 *const *names;
         s32 lvl;
         u16 tile;

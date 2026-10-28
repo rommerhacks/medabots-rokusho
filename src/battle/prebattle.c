@@ -1079,7 +1079,7 @@ static s32 afterbattle_broken_part_chance(void) {
 
 loop:
     k = (i + 3) << 8;
-    if (!*((u8 *)base + 0xBA + k))
+    if (!*(&base->present + k))
         goto end;
     j = 1;
     i++;
