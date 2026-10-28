@@ -8,9 +8,9 @@
 
 void particle_slide_lead_sprite(void) {
     if (!(gBattleWork.actorSideFlags & 2))
-        gSpriteEntries[0x21].unk2 = (gSpriteEntries[0x21].unk2 + 4) & 0x1FF;
+        gSpriteEntries[0x21].x = (gSpriteEntries[0x21].x + 4) & 0x1FF;
     else
-        gSpriteEntries[0x21].unk2 = (gSpriteEntries[0x21].unk2 - 4) & 0x1FF;
+        gSpriteEntries[0x21].x = (gSpriteEntries[0x21].x - 4) & 0x1FF;
 }
 
 // Every 16 (variant 0) or 8 frames of the orbiting sprite src, drops a trail particle next to it.
@@ -46,25 +46,25 @@ static void particle_spawn_trail_a(u32 src) {
         slot = find_next_free_sprite_slot(src + 1, 0x14);
         clear_battle_sprite_slot(slot, 1);
         particle = &base[slot];
-        particle->unk0 = 0xC604;
-        particle->unk1C = 0;
-        particle->unk2 = (orbiter->unk2 + gParticleTrailOffsets[(rng_next_byte() & 3) * 2]) & 0x1FF;
-        particle->unk4 = (orbiter->unk4 + gParticleTrailOffsets[(rng_next_byte() & 3) * 2 + 1]) & 0xFF;
-        particle->unk8 = 0x40;
-        particle->unk9 = 0x40;
-        particle->unkA = 6;
-        particle->unkB = 0xE0;
+        particle->flags = 0xC604;
+        particle->frame_table = 0;
+        particle->x = (orbiter->x + gParticleTrailOffsets[(rng_next_byte() & 3) * 2]) & 0x1FF;
+        particle->y = (orbiter->y + gParticleTrailOffsets[(rng_next_byte() & 3) * 2 + 1]) & 0xFF;
+        particle->scale_x = 0x40;
+        particle->scale_y = 0x40;
+        particle->palette = 6;
+        particle->order = 0xE0;
         switch (gBattleWork.unk51) {
         case 0:
-            gSpriteEntries[slot].unk6 = (rng_next_byte() & 3) + 0x6B01;
+            gSpriteEntries[slot].frame = (rng_next_byte() & 3) + 0x6B01;
             gSpriteEntries[slot].unk29 = 0x10;
             break;
         case 1:
-            gSpriteEntries[slot].unk6 = 0x6C01;
+            gSpriteEntries[slot].frame = 0x6C01;
             gSpriteEntries[slot].unk29 = 0x14;
             break;
         case 2:
-            gSpriteEntries[slot].unk6 = 0x6D01;
+            gSpriteEntries[slot].frame = 0x6D01;
             gSpriteEntries[slot].unk29 = 0x18;
             break;
         case 3:
@@ -72,7 +72,7 @@ static void particle_spawn_trail_a(u32 src) {
             gSpriteEntries[slot].unk29 = 0x1C;
             break;
         case 4:
-            gSpriteEntries[slot].unk6 = 0x7001;
+            gSpriteEntries[slot].frame = 0x7001;
             gSpriteEntries[slot].unk29 = 0x20;
             break;
         case 5:
@@ -105,25 +105,25 @@ void particle_spawn_trail_b(u32 src) {
         slot = find_next_free_sprite_slot(src + 1, 0x14);
         clear_battle_sprite_slot(slot, 1);
         particle = &base[slot];
-        particle->unk0 = 0xC604;
-        particle->unk1C = 0;
-        particle->unk2 = (orbiter->unk2 + gParticleTrailOffsets[(rng_next_byte() & 3) * 2]) & 0x1FF;
-        particle->unk4 = (orbiter->unk4 + gParticleTrailOffsets[(rng_next_byte() & 3) * 2 + 1]) & 0xFF;
-        particle->unk8 = 0x40;
-        particle->unk9 = 0x40;
-        particle->unkA = 6;
-        particle->unkB = 0xE0;
+        particle->flags = 0xC604;
+        particle->frame_table = 0;
+        particle->x = (orbiter->x + gParticleTrailOffsets[(rng_next_byte() & 3) * 2]) & 0x1FF;
+        particle->y = (orbiter->y + gParticleTrailOffsets[(rng_next_byte() & 3) * 2 + 1]) & 0xFF;
+        particle->scale_x = 0x40;
+        particle->scale_y = 0x40;
+        particle->palette = 6;
+        particle->order = 0xE0;
         switch (gBattleWork.unk51) {
         case 0:
-            particle->unk6 = 0x7201;
+            particle->frame = 0x7201;
             particle->unk29 = 0x30;
             break;
         case 1:
-            particle->unk6 = 0x7302;
+            particle->frame = 0x7302;
             particle->unk29 = 0x34;
             break;
         case 2:
-            particle->unk6 = 0x7402;
+            particle->frame = 0x7402;
             particle->unk29 = 0x34;
             break;
         }
@@ -149,11 +149,10 @@ u32 particle_run_orbit_handlers(void) {
 void particle_descend_into_view(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[gGameWork.runningSpriteSlot].unk2E],
                                  gGameWork.runningSpriteSlot);
-    if (gSpriteEntries[gGameWork.runningSpriteSlot].unk4 == 0x14)
+    if (gSpriteEntries[gGameWork.runningSpriteSlot].y == 0x14)
         gSpriteEntries[gGameWork.runningSpriteSlot].unk29++;
     else
-        gSpriteEntries[gGameWork.runningSpriteSlot].unk4 =
-            (gSpriteEntries[gGameWork.runningSpriteSlot].unk4 + 1) & 0xFF;
+        gSpriteEntries[gGameWork.runningSpriteSlot].y = (gSpriteEntries[gGameWork.runningSpriteSlot].y + 1) & 0xFF;
 }
 
 // Orbit state 2: circles the point (0xB8 or 0x38, 0x34) for 255 frames (angle unk2C, pulsing radius unk2B),
@@ -192,21 +191,21 @@ void particle_orbit_a(void) {
         gParticleOrbitRadiusSteps[(gSpriteEntries[gGameWork.runningSpriteSlot].unk2D & 0x1F) * 2];
     if (!(gBattleWork.actorSideFlags & 1)) {
         if (gBattleWork.unk51 != 3)
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
-                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 - 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].angle =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].angle - 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C--;
         pos = calc_polar_to_screen_coords(gSpriteEntries[gGameWork.runningSpriteSlot].unk2C,
                                           gSpriteEntries[gGameWork.runningSpriteSlot].unk2B, 0xB8, 0x34);
     } else {
         if (gBattleWork.unk51 != 3)
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
-                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 + 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].angle =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].angle + 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C++;
         pos = calc_polar_to_screen_coords(gSpriteEntries[gGameWork.runningSpriteSlot].unk2C,
                                           gSpriteEntries[gGameWork.runningSpriteSlot].unk2B, 0x38, 0x34);
     }
-    gSpriteEntries[gGameWork.runningSpriteSlot].unk2 = pos.x;
-    gSpriteEntries[gGameWork.runningSpriteSlot].unk4 = pos.y;
+    gSpriteEntries[gGameWork.runningSpriteSlot].x = pos.x;
+    gSpriteEntries[gGameWork.runningSpriteSlot].y = pos.y;
     particle_spawn_trail_a(gGameWork.runningSpriteSlot);
     gSpriteEntries[gGameWork.runningSpriteSlot].unk2D++;
 }
@@ -238,31 +237,31 @@ void particle_orbit_b(void) {
         gParticleOrbitRadiusSteps[(gSpriteEntries[gGameWork.runningSpriteSlot].unk2D & 0x1F) * 2];
     if (gBattleWork.actorSideFlags & 1) {
         if (gBattleWork.unk51 == 0)
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
-                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 - 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].angle =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].angle - 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C--;
         pos = calc_polar_to_screen_coords(gSpriteEntries[gGameWork.runningSpriteSlot].unk2C,
                                           gSpriteEntries[gGameWork.runningSpriteSlot].unk2B, 0xB8, 0x34);
     } else {
         if (gBattleWork.unk51 == 0)
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
-                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 + 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].angle =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].angle + 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2C++;
         pos = calc_polar_to_screen_coords(gSpriteEntries[gGameWork.runningSpriteSlot].unk2C,
                                           gSpriteEntries[gGameWork.runningSpriteSlot].unk2B, 0x38, 0x34);
     }
-    gSpriteEntries[gGameWork.runningSpriteSlot].unk2 = pos.x;
-    gSpriteEntries[gGameWork.runningSpriteSlot].unk4 = pos.y;
+    gSpriteEntries[gGameWork.runningSpriteSlot].x = pos.x;
+    gSpriteEntries[gGameWork.runningSpriteSlot].y = pos.y;
     particle_spawn_trail_b(gGameWork.runningSpriteSlot);
     gSpriteEntries[gGameWork.runningSpriteSlot].unk2D++;
 }
 
 void particle_shrink_by_4(void) {
-    if (gSpriteEntries[gGameWork.runningSpriteSlot].unk8 == 4) {
+    if (gSpriteEntries[gGameWork.runningSpriteSlot].scale_x == 4) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk29++;
     } else {
-        gSpriteEntries[gGameWork.runningSpriteSlot].unk8 -= 4;
-        gSpriteEntries[gGameWork.runningSpriteSlot].unk9 -= 4;
+        gSpriteEntries[gGameWork.runningSpriteSlot].scale_x -= 4;
+        gSpriteEntries[gGameWork.runningSpriteSlot].scale_y -= 4;
     }
 }
 
@@ -275,11 +274,11 @@ void particle_wait_90(void) {
 }
 
 void particle_shrink_by_8(void) {
-    if (gSpriteEntries[gGameWork.runningSpriteSlot].unk8 == 8) {
+    if (gSpriteEntries[gGameWork.runningSpriteSlot].scale_x == 8) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk29++;
     } else {
-        gSpriteEntries[gGameWork.runningSpriteSlot].unk8 -= 8;
-        gSpriteEntries[gGameWork.runningSpriteSlot].unk9 -= 8;
+        gSpriteEntries[gGameWork.runningSpriteSlot].scale_x -= 8;
+        gSpriteEntries[gGameWork.runningSpriteSlot].scale_y -= 8;
     }
 }
 
@@ -300,12 +299,12 @@ void particle_sway_down(void) {
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2D == 0x46) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk29++;
     } else {
-        gSpriteEntries[gGameWork.runningSpriteSlot].unk2 =
-            (gSpriteEntries[gGameWork.runningSpriteSlot].unk2 +
+        gSpriteEntries[gGameWork.runningSpriteSlot].x =
+            (gSpriteEntries[gGameWork.runningSpriteSlot].x +
              gParticleSwayOffsets[gSpriteEntries[gGameWork.runningSpriteSlot].unk2D & 0xF]) &
             0x1FF;
         if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2D & 1)
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk4++;
+            gSpriteEntries[gGameWork.runningSpriteSlot].y++;
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2D++;
     }
 }
@@ -317,7 +316,7 @@ void particle_float_up(void) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk29++;
     else {
         if (!(gSpriteEntries[gGameWork.runningSpriteSlot].unk2D & 7))
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk4--;
+            gSpriteEntries[gGameWork.runningSpriteSlot].y--;
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2D++;
     }
 }
@@ -328,11 +327,11 @@ void particle_spin_35(void) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk29++;
     } else {
         if (!(gBattleWork.actorSideFlags & 1))
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
-                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 - 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].angle =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].angle - 0x10) & 0x3FF;
         else
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
-                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 + 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].angle =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].angle + 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2D++;
     }
 }
@@ -343,13 +342,13 @@ void particle_spin_down(void) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk29++;
     } else {
         if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2D & 1)
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk4++;
+            gSpriteEntries[gGameWork.runningSpriteSlot].y++;
         if (!(gBattleWork.actorSideFlags & 1))
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
-                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 - 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].angle =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].angle - 0x10) & 0x3FF;
         else
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
-                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 + 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].angle =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].angle + 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2D++;
     }
 }
@@ -360,11 +359,11 @@ void particle_spin_back_90(void) {
         gSpriteEntries[gGameWork.runningSpriteSlot].unk29++;
     } else {
         if (gBattleWork.actorSideFlags & 1)
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
-                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 - 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].angle =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].angle - 0x10) & 0x3FF;
         else
-            gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
-                (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 + 0x10) & 0x3FF;
+            gSpriteEntries[gGameWork.runningSpriteSlot].angle =
+                (gSpriteEntries[gGameWork.runningSpriteSlot].angle + 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.runningSpriteSlot].unk2D++;
     }
 }
@@ -412,39 +411,38 @@ void particle_spark_emitter(void) {
         clear_battle_sprite_slot(slot, 1);
         base = gSpriteEntries;
         particle = &base[slot];
-        particle->unk0 = 0xC604;
-        particle->unk1C = 0;
-        particle->unk2 = 0x78;
-        particle->unk4 = 0x78;
-        particle->unk8 = 0x40;
-        particle->unk9 = 0x40;
-        particle->unk18 = roll;
-        particle->unkA = 6;
-        particle->unkB = 0xF0;
-        particle->unk6 = 0x7706;
+        particle->flags = 0xC604;
+        particle->frame_table = 0;
+        particle->x = 0x78;
+        particle->y = 0x78;
+        particle->scale_x = 0x40;
+        particle->scale_y = 0x40;
+        particle->angle = roll;
+        particle->palette = 6;
+        particle->order = 0xF0;
+        particle->frame = 0x7706;
         particle->unk29 = 2;
         particle->unk24 = 3;
         particle->unk23 = 0;
         roll = rng_next_byte() & 3;
         if (!(gBattleWork.actorSideFlags & 1)) {
-            particle->unk2 = (base[gGameWork.runningSpriteSlot].unk2 + gParticleSparkOffsets[roll << 1]) & 0x1FF;
-            particle->unk4 = (base[gGameWork.runningSpriteSlot].unk4 + gParticleSparkOffsets[roll * 2 + 1]) & 0xFF;
-            particle->unk30 = base[gGameWork.runningSpriteSlot].unk2 + 0x10;
-            particle->unk32 = base[gGameWork.runningSpriteSlot].unk4 + 4;
+            particle->x = (base[gGameWork.runningSpriteSlot].x + gParticleSparkOffsets[roll << 1]) & 0x1FF;
+            particle->y = (base[gGameWork.runningSpriteSlot].y + gParticleSparkOffsets[roll * 2 + 1]) & 0xFF;
+            particle->unk30 = base[gGameWork.runningSpriteSlot].x + 0x10;
+            particle->unk32 = base[gGameWork.runningSpriteSlot].y + 4;
         } else {
-            particle->unk2 =
-                (0xF0 - (base[gGameWork.runningSpriteSlot].unk2 + gParticleSparkOffsets[roll << 1])) & 0x1FF;
-            particle->unk4 = (base[gGameWork.runningSpriteSlot].unk4 + gParticleSparkOffsets[roll * 2 + 1]) & 0xFF;
-            particle->unk30 = base[gGameWork.runningSpriteSlot].unk2 - 0x10;
-            particle->unk32 = base[gGameWork.runningSpriteSlot].unk4 + 6;
+            particle->x = (0xF0 - (base[gGameWork.runningSpriteSlot].x + gParticleSparkOffsets[roll << 1])) & 0x1FF;
+            particle->y = (base[gGameWork.runningSpriteSlot].y + gParticleSparkOffsets[roll * 2 + 1]) & 0xFF;
+            particle->unk30 = base[gGameWork.runningSpriteSlot].x - 0x10;
+            particle->unk32 = base[gGameWork.runningSpriteSlot].y + 6;
         }
     }
 }
 
 // Spark state 2: spins and flies to its target, then disappears.
 void particle_spark_fly(void) {
-    gSpriteEntries[gGameWork.runningSpriteSlot].unk18 =
-        (gSpriteEntries[gGameWork.runningSpriteSlot].unk18 + 0x10) & 0x3FF;
+    gSpriteEntries[gGameWork.runningSpriteSlot].angle =
+        (gSpriteEntries[gGameWork.runningSpriteSlot].angle + 0x10) & 0x3FF;
     if (move_sprite_toward_target(gGameWork.runningSpriteSlot))
         clear_battle_sprite_slot(gGameWork.runningSpriteSlot, 1);
 }
@@ -480,13 +478,13 @@ u32 particle_run_shot_handlers(void) {
 void particle_shot_fly(void) {
     if (move_sprite_toward_target(gGameWork.runningSpriteSlot)) {
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x6B], gGameWork.runningSpriteSlot);
-        gSpriteEntries[gGameWork.runningSpriteSlot].unkA = 6;
+        gSpriteEntries[gGameWork.runningSpriteSlot].palette = 6;
         gSpriteEntries[gGameWork.runningSpriteSlot].unk28 = 0;
         gSpriteEntries[gGameWork.runningSpriteSlot].unk29++;
         memcpy_bytes_0803F63C(&gSpriteEntries[gGameWork.runningSpriteSlot],
                               &gSpriteEntries[gGameWork.runningSpriteSlot + 3], 0x40);
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x6C], gGameWork.runningSpriteSlot + 3);
-        gSpriteEntries[gGameWork.runningSpriteSlot + 3].unkB =
+        gSpriteEntries[gGameWork.runningSpriteSlot + 3].order =
             (gGameWork.runningSpriteSlot + (gBattleWork.targetSideFirst + 0xDF)) * 4 + 0x59;
         gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk29 = 3;
     }
@@ -496,15 +494,15 @@ void particle_shot_fly(void) {
 void particle_shot_shake_target(void) {
     gSpriteEntries[gGameWork.runningSpriteSlot].unk28++;
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk28 & 2)
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))) * 4 + 0x5D].unk4 =
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))) * 4 + 0x5D].y =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].y + 2;
     else
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))) * 4 + 0x5D].unk4 =
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))) * 4 + 0x5D].y =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].y + 4;
     target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)));
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x6B], gGameWork.runningSpriteSlot);
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk22 == 0xFF) {
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))) * 4 + 0x5D].unk4 =
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))) * 4 + 0x5D].y =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].y + 4;
         target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)));
         clear_battle_sprite_slot(gGameWork.runningSpriteSlot, 1);
@@ -537,44 +535,40 @@ u32 particle_run_sweep_handlers(void) {
 void particle_sweep_across(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x6D], gGameWork.runningSpriteSlot);
     if (!(gBattleWork.actorSideFlags & 1)) {
-        gSpriteEntries[gGameWork.runningSpriteSlot].unk2 =
-            (gSpriteEntries[gGameWork.runningSpriteSlot].unk2 + 4) & 0x1FF;
-        if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2 >
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].unk2 &&
+        gSpriteEntries[gGameWork.runningSpriteSlot].x = (gSpriteEntries[gGameWork.runningSpriteSlot].x + 4) & 0x1FF;
+        if (gSpriteEntries[gGameWork.runningSpriteSlot].x >
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x &&
             gBattleWork.unkD6[gGameWork.runningSpriteSlot - 0x21] != 0 &&
             gSpriteEntries[gGameWork.runningSpriteSlot].unk28 == 0) {
             play_sound_effect(0x54);
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk0 = 0xC404;
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk1C = 0;
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk2 =
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].unk2;
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk4 =
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].unk4 -
-                4;
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unkA = 6;
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unkB = 0xF1;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].flags = 0xC404;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].frame_table = 0;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].x =
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].y =
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].y - 4;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].palette = 6;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].order = 0xF1;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk29 = 2;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk28 = 0;
             battle_sprite_anim_init(gBattleSpriteAnimScripts[0x6E], gGameWork.runningSpriteSlot + 3);
             gSpriteEntries[gGameWork.runningSpriteSlot].unk28 = 1;
         }
     } else {
-        gSpriteEntries[gGameWork.runningSpriteSlot].unk2 =
-            (gSpriteEntries[gGameWork.runningSpriteSlot].unk2 - 4) & 0x1FF;
-        if (gSpriteEntries[gGameWork.runningSpriteSlot].unk2 <
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].unk2 &&
+        gSpriteEntries[gGameWork.runningSpriteSlot].x = (gSpriteEntries[gGameWork.runningSpriteSlot].x - 4) & 0x1FF;
+        if (gSpriteEntries[gGameWork.runningSpriteSlot].x <
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x &&
             gBattleWork.unkD6[gGameWork.runningSpriteSlot - 0x21] != 0 &&
             gSpriteEntries[gGameWork.runningSpriteSlot].unk28 == 0) {
             play_sound_effect(0x54);
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk0 = 0xD404;
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk1C = 0;
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk2 =
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].unk2;
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk4 =
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].unk4 -
-                4;
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unkA = 6;
-            gSpriteEntries[gGameWork.runningSpriteSlot + 3].unkB = 0xF1;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].flags = 0xD404;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].frame_table = 0;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].x =
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].y =
+                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].y - 4;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].palette = 6;
+            gSpriteEntries[gGameWork.runningSpriteSlot + 3].order = 0xF1;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk29 = 2;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].unk28 = 0;
             battle_sprite_anim_init(gBattleSpriteAnimScripts[0x6E], gGameWork.runningSpriteSlot + 3);
@@ -591,15 +585,15 @@ void particle_sweep_across(void) {
 void particle_sweep_shake_target(void) {
     gSpriteEntries[gGameWork.runningSpriteSlot].unk28++;
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk28 & 2)
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))) * 4 + 0x5D].unk2 =
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))) * 4 + 0x5D].x =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))].x + 2;
     else
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))) * 4 + 0x5D].unk2 =
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))) * 4 + 0x5D].x =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))].x - 2;
     target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24)));
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x6E], gGameWork.runningSpriteSlot);
     if (gSpriteEntries[gGameWork.runningSpriteSlot].unk22 == 0xFF) {
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))) * 4 + 0x5D].unk2 =
+        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))) * 4 + 0x5D].x =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))].x;
         target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24)));
         clear_battle_sprite_slot(gGameWork.runningSpriteSlot, 1);

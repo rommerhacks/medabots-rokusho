@@ -5,7 +5,7 @@
 #include "global.h"
 
 void name_entry_animate_sprite(u16 a) {
-    gSpriteEntries[20].unk6 = gNameEntrySpriteFrames[a & 3];
+    gSpriteEntries[20].frame = gNameEntrySpriteFrames[a & 3];
 }
 
 static s32 calc_text_pixel_width(const u8 *s) {
@@ -117,21 +117,21 @@ void name_entry_init_graphics(void) {
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     for (i = 0; i < 2; i++) {
-        gSpriteEntries[i].unk0 = 0xC000;
-        gSpriteEntries[i].unk1C = 2;
-        gSpriteEntries[i].unkA = 0xE;
-        gSpriteEntries[i].unk6 = 8;
+        gSpriteEntries[i].flags = 0xC000;
+        gSpriteEntries[i].frame_table = 2;
+        gSpriteEntries[i].palette = 0xE;
+        gSpriteEntries[i].frame = 8;
     }
 
-    gSpriteEntries[0].unk0 |= 0x2000;
-    gSpriteEntries[20].unk0 = 0x8000;
-    gSpriteEntries[20].unk1C = 2;
-    gSpriteEntries[20].unk2 = 0x10;
-    gSpriteEntries[20].unk4 = 0x10;
-    gSpriteEntries[20].unkA = 0;
-    gSpriteEntries[20].unk6 = 0x23;
+    gSpriteEntries[0].flags |= 0x2000;
+    gSpriteEntries[20].flags = 0x8000;
+    gSpriteEntries[20].frame_table = 2;
+    gSpriteEntries[20].x = 0x10;
+    gSpriteEntries[20].y = 0x10;
+    gSpriteEntries[20].palette = 0;
+    gSpriteEntries[20].frame = 0x23;
     if (gNameEntryMode == 0) {
-        gSpriteEntries[20].unk0 |= 0x4000;
+        gSpriteEntries[20].flags |= 0x4000;
     } else {
         t = gMenuWork->bg_tile_base + ((gMedals[gCurrentMedalSlot].graphicId * 4) + 1);
         t |= 0x6000;
@@ -147,24 +147,24 @@ void name_entry_init_graphics(void) {
         *d = t + 3;
     }
     for (i = 0; i < 2; i++) {
-        gSpriteEntries[i + 2].unk0 = 0x8000;
-        gSpriteEntries[i + 2].unk1C = 2;
-        gSpriteEntries[i + 2].unkA = 0xE;
-        gSpriteEntries[i + 2].unk6 = 5;
+        gSpriteEntries[i + 2].flags = 0x8000;
+        gSpriteEntries[i + 2].frame_table = 2;
+        gSpriteEntries[i + 2].palette = 0xE;
+        gSpriteEntries[i + 2].frame = 5;
     }
 
-    gSpriteEntries[3].unk0 |= 0x1000;
+    gSpriteEntries[3].flags |= 0x1000;
     gMenuWork->grid_col = 0;
     gMenuWork->grid_row = 0;
     gMenuWork->step = 0;
-    gSpriteEntries[0].unk2 = (y = (gMenuWork->grid_col * 8) + 0x14);
-    gSpriteEntries[0].unk4 = mul16(gMenuWork->grid_row) + half4(gMenuWork->step);
-    gSpriteEntries[1].unk2 = y;
-    gSpriteEntries[1].unk4 = mul16(gMenuWork->grid_row) - half8(gMenuWork->step);
-    gSpriteEntries[4].unk0 = 0xC000;
-    gSpriteEntries[4].unk1C = 2;
-    gSpriteEntries[4].unkA = 0xE;
-    gSpriteEntries[4].unk6 = 0x26;
+    gSpriteEntries[0].x = (y = (gMenuWork->grid_col * 8) + 0x14);
+    gSpriteEntries[0].y = mul16(gMenuWork->grid_row) + half4(gMenuWork->step);
+    gSpriteEntries[1].x = y;
+    gSpriteEntries[1].y = mul16(gMenuWork->grid_row) - half8(gMenuWork->step);
+    gSpriteEntries[4].flags = 0xC000;
+    gSpriteEntries[4].frame_table = 2;
+    gSpriteEntries[4].palette = 0xE;
+    gSpriteEntries[4].frame = 0x26;
     gGameSubState++;
 }
 
@@ -180,7 +180,7 @@ void name_entry_load_name(void) {
     REG_DISPCNT |= 0x1000;
     for (i = 0; i < 16; i++)
         gMenuWork->name_buf[i] = 0xFE;
-    clear_sprite_table_mask(5, 10);
+    disable_sprites(5, 10);
     switch (gNameEntryMode) {
     case 0:
         for (i = 0; i < 16; i++) {
@@ -217,21 +217,21 @@ void name_entry_load_name(void) {
         break;
     }
     CpuSet(gMenuWork->name_buf, gMenuWork->name_buf + 0x10, 8);
-    gSpriteEntries[4].unk2 = calc_text_pixel_width(gMenuWork->name_buf) + 0x28;
-    gSpriteEntries[4].unk4 = 0x1B;
+    gSpriteEntries[4].x = calc_text_pixel_width(gMenuWork->name_buf) + 0x28;
+    gSpriteEntries[4].y = 0x1B;
     render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
-    x = gSpriteEntries[4].unk2 + 2;
+    x = gSpriteEntries[4].x + 2;
     {
         register const u8(*tb)[2] asm("r4");
         for (i = gMenuWork->name_len; i <= 9; i++) {
             tb = gFontWidths;
-            gSpriteEntries[i + 5].unk0 = 0xC000;
-            gSpriteEntries[i + 5].unk1C = 0;
-            gSpriteEntries[i + 5].unkA = 0xD;
-            gSpriteEntries[i + 5].unk6 = 0x42;
-            gSpriteEntries[i + 5].unk2 = x;
-            gSpriteEntries[i + 5].unk4 = 0x1C;
-            gSpriteEntries[i + 5].unkB = 0xFF;
+            gSpriteEntries[i + 5].flags = 0xC000;
+            gSpriteEntries[i + 5].frame_table = 0;
+            gSpriteEntries[i + 5].palette = 0xD;
+            gSpriteEntries[i + 5].frame = 0x42;
+            gSpriteEntries[i + 5].x = x;
+            gSpriteEntries[i + 5].y = 0x1C;
+            gSpriteEntries[i + 5].order = 0xFF;
             x += tb[0x43][0];
         }
     }
@@ -266,7 +266,7 @@ void name_entry_input(void) {
     u8 col;
     s32 t;
 
-    gSpriteEntries[4].unk6 = ((gFrameCounter / 6) & 3) + 0x26;
+    gSpriteEntries[4].frame = ((gFrameCounter / 6) & 3) + 0x26;
     if (gMenuWork->returning) {
         if (gMenuWork->timer++ < 8)
             gMenuWork->step++;
@@ -333,23 +333,23 @@ void name_entry_input(void) {
     }
 
     if (gMenuWork->grid_row == 3) {
-        gSpriteEntries[0].unk2 = gMenuWork->grid_col * 64 - (t = (s32)gMenuWork->step / 2 - 0x18);
-        gSpriteEntries[0].unk4 = 0x8C;
-        gSpriteEntries[1].unk2 = gMenuWork->grid_col * 64 + (t = (s32)gMenuWork->step / 2 + 0x58);
-        gSpriteEntries[1].unk4 = gSpriteEntries[0].unk4;
-        gSpriteEntries[0].unk6 = 5;
-        gSpriteEntries[1].unk6 = 5;
-        gSpriteEntries[0].unk0 &= 0xDFFF;
-        gSpriteEntries[1].unk0 |= 0x1000;
+        gSpriteEntries[0].x = gMenuWork->grid_col * 64 - (t = (s32)gMenuWork->step / 2 - 0x18);
+        gSpriteEntries[0].y = 0x8C;
+        gSpriteEntries[1].x = gMenuWork->grid_col * 64 + (t = (s32)gMenuWork->step / 2 + 0x58);
+        gSpriteEntries[1].y = gSpriteEntries[0].y;
+        gSpriteEntries[0].frame = 5;
+        gSpriteEntries[1].frame = 5;
+        gSpriteEntries[0].flags &= 0xDFFF;
+        gSpriteEntries[1].flags |= 0x1000;
     } else {
-        gSpriteEntries[0].unk2 = gMenuWork->grid_col * 8 + 0x14;
-        gSpriteEntries[0].unk4 = gMenuWork->grid_row * 24 + (t = (s32)gMenuWork->step / 2 + 0x40);
-        gSpriteEntries[1].unk2 = gSpriteEntries[0].unk2;
-        gSpriteEntries[1].unk4 = gMenuWork->grid_row * 24 - (t = (s32)gMenuWork->step / 2 - 0x50);
-        gSpriteEntries[0].unk6 = 8;
-        gSpriteEntries[1].unk6 = 8;
-        gSpriteEntries[0].unk0 |= 0x2000;
-        gSpriteEntries[1].unk0 &= 0xEFFF;
+        gSpriteEntries[0].x = gMenuWork->grid_col * 8 + 0x14;
+        gSpriteEntries[0].y = gMenuWork->grid_row * 24 + (t = (s32)gMenuWork->step / 2 + 0x40);
+        gSpriteEntries[1].x = gSpriteEntries[0].x;
+        gSpriteEntries[1].y = gMenuWork->grid_row * 24 - (t = (s32)gMenuWork->step / 2 - 0x50);
+        gSpriteEntries[0].frame = 8;
+        gSpriteEntries[1].frame = 8;
+        gSpriteEntries[0].flags |= 0x2000;
+        gSpriteEntries[1].flags &= 0xEFFF;
     }
 
     if (KEYS_LO(gNewKeys) & 8) {
@@ -364,8 +364,8 @@ void name_entry_input(void) {
             gMenuWork->name_buf[gMenuWork->name_len] = 0;
             gMenuWork->name_len++;
             if (gMenuWork->name_len == 10) {
-                gSpriteEntries[4].unk0 &= 0xBFFF;
-                clear_sprite_table_mask(5, 10);
+                gSpriteEntries[4].flags &= 0xBFFF;
+                disable_sprites(5, 10);
                 render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
                 goto start;
             }
@@ -380,7 +380,7 @@ void name_entry_input(void) {
             case 0:
                 goto space;
             case 2:
-                gSpriteEntries[4].unk0 &= 0xBFFF;
+                gSpriteEntries[4].flags &= 0xBFFF;
                 blank = 1;
                 for (i = 0; (u32)i < 16 && gMenuWork->name_buf[i] != 0xFE; i++) {
                     if (gMenuWork->name_buf[i] != 0) {
@@ -390,7 +390,7 @@ void name_entry_input(void) {
                 }
                 if (blank)
                     CpuSet(gMenuWork->name_buf + 0x10, gMenuWork->name_buf, 8);
-                clear_sprite_table_mask(5, 10);
+                disable_sprites(5, 10);
                 render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
                 play_sound_effect(7);
                 gGameSubState++;
@@ -402,15 +402,15 @@ void name_entry_input(void) {
             gMenuWork->name_buf[gMenuWork->name_len] = gMenuWork->grid_row * 26 + gMenuWork->grid_col + 1;
             gMenuWork->name_len++;
             if (gMenuWork->name_len == 10) {
-                gSpriteEntries[4].unk0 &= 0xBFFF;
-                clear_sprite_table_mask(5, 10);
+                gSpriteEntries[4].flags &= 0xBFFF;
+                disable_sprites(5, 10);
                 render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
                 goto start;
             }
         } else
             play_sound_effect(6);
     redraw:
-        clear_sprite_table_mask(5, 10);
+        disable_sprites(5, 10);
         render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
     } else if (gNewKeys & 0x202) {
     back:
@@ -422,26 +422,26 @@ void name_entry_input(void) {
             gMenuWork->name_len = 0;
             gMenuWork->name_buf[gMenuWork->name_len] = 0xFE;
         }
-        clear_sprite_table_mask(5, 10);
+        disable_sprites(5, 10);
         render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
-        gSpriteEntries[4].unk0 |= 0x4000;
+        gSpriteEntries[4].flags |= 0x4000;
     } else
         return;
 
-    gSpriteEntries[4].unk2 = calc_text_pixel_width(gMenuWork->name_buf) + 0x28;
-    gSpriteEntries[4].unk4 = 0x1B;
-    x = gSpriteEntries[4].unk2 + 2;
+    gSpriteEntries[4].x = calc_text_pixel_width(gMenuWork->name_buf) + 0x28;
+    gSpriteEntries[4].y = 0x1B;
+    x = gSpriteEntries[4].x + 2;
     {
         register const u8(*tb)[2] asm("r4");
         for (i = gMenuWork->name_len; i <= 9; i++) {
             tb = gFontWidths;
-            gSpriteEntries[i + 5].unk0 = 0xC000;
-            gSpriteEntries[i + 5].unk1C = 0;
-            gSpriteEntries[i + 5].unkA = 0xD;
-            gSpriteEntries[i + 5].unk6 = 0x42;
-            gSpriteEntries[i + 5].unk2 = x;
-            gSpriteEntries[i + 5].unk4 = 0x1C;
-            gSpriteEntries[i + 5].unkB = 0xFF;
+            gSpriteEntries[i + 5].flags = 0xC000;
+            gSpriteEntries[i + 5].frame_table = 0;
+            gSpriteEntries[i + 5].palette = 0xD;
+            gSpriteEntries[i + 5].frame = 0x42;
+            gSpriteEntries[i + 5].x = x;
+            gSpriteEntries[i + 5].y = 0x1C;
+            gSpriteEntries[i + 5].order = 0xFF;
             x += tb[0x43][0];
             tb = gFontWidths;
         }

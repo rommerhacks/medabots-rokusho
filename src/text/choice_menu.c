@@ -140,25 +140,25 @@ void copy_transition_tiles_to_bg2(void) {
 }
 
 void battle_sprite_setup_cursor(void) {
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unk0 = 0xD204;
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unk2 = gGameWork.transTileX * 8 + 0x14;
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unk4 = gGameWork.transTileY * 8 + gGameWork.unk2A * 16 + 0x10;
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unk6 = 0x307;
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unkA = 0xE;
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unk1C = 0;
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unk8 = 1;
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unk9 = 1;
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unkB = 0xFF;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].flags = 0xD204;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].x = gGameWork.transTileX * 8 + 0x14;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].y = gGameWork.transTileY * 8 + gGameWork.unk2A * 16 + 0x10;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].frame = 0x307;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].palette = 0xE;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].frame_table = 0;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].scale_x = 1;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].scale_y = 1;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].order = 0xFF;
     gGameWork.unk84 = 1;
     gGameWork.choiceState++;
 }
 
 void advance_sprite_scroll_animation(void) {
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unk8 += 8;
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unk9 += 8;
-    if (gSpriteEntries[gGameWork.scrollSpriteSlot].unk8 >= 0x40) {
-        gSpriteEntries[gGameWork.scrollSpriteSlot].unk8 = 0x40;
-        gSpriteEntries[gGameWork.scrollSpriteSlot].unk9 = 0x40;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].scale_x += 8;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].scale_y += 8;
+    if (gSpriteEntries[gGameWork.scrollSpriteSlot].scale_x >= 0x40) {
+        gSpriteEntries[gGameWork.scrollSpriteSlot].scale_x = 0x40;
+        gSpriteEntries[gGameWork.scrollSpriteSlot].scale_y = 0x40;
         gGameWork.choiceState++;
     }
     gGameWork.unk84 = 0;
@@ -168,21 +168,21 @@ void handle_battle_sprite_scroll_input(void) {
     if (KEYS_LO(gNewKeys) & 0xC0) {
         play_sound_effect(2);
         gGameWork.unk2A ^= 1;
-        gSpriteEntries[gGameWork.scrollSpriteSlot].unk4 = gGameWork.unk2A * 16 + 0x48;
+        gSpriteEntries[gGameWork.scrollSpriteSlot].y = gGameWork.unk2A * 16 + 0x48;
     }
-    sprite_bob_y(gGameWork.scrollSpriteSlot, gGameWork.unk84, gGameWork.transTileX * 8 + 0x14);
+    sprite_bob_x(gGameWork.scrollSpriteSlot, gGameWork.unk84, gGameWork.transTileX * 8 + 0x14);
     gGameWork.unk84++;
     if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
         gGameWork.unk2A = 1;
-        gSpriteEntries[gGameWork.scrollSpriteSlot].unk2 = gGameWork.transTileX * 8 + 0x14;
-        gSpriteEntries[gGameWork.scrollSpriteSlot].unk4 = gGameWork.unk2A * 16 + 0x48;
+        gSpriteEntries[gGameWork.scrollSpriteSlot].x = gGameWork.transTileX * 8 + 0x14;
+        gSpriteEntries[gGameWork.scrollSpriteSlot].y = gGameWork.unk2A * 16 + 0x48;
         gGameWork.unk84 = 0;
         gGameWork.choiceState++;
     }
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
-        gSpriteEntries[gGameWork.scrollSpriteSlot].unk2 = gGameWork.transTileX * 8 + 0x14;
+        gSpriteEntries[gGameWork.scrollSpriteSlot].x = gGameWork.transTileX * 8 + 0x14;
         gGameWork.unk84 = 0;
         gGameWork.choiceState++;
     }
@@ -191,20 +191,20 @@ void handle_battle_sprite_scroll_input(void) {
 void update_sprite_hflip_by_animation_phase(void) {
     if (gGameWork.unk84 != 0x1E) {
         if (gGameWork.unk84 & 4)
-            gSpriteEntries[gGameWork.scrollSpriteSlot].unk0 &= 0xBFFF;
+            gSpriteEntries[gGameWork.scrollSpriteSlot].flags &= 0xBFFF;
         else
-            gSpriteEntries[gGameWork.scrollSpriteSlot].unk0 |= 0x4000;
+            gSpriteEntries[gGameWork.scrollSpriteSlot].flags |= 0x4000;
         gGameWork.unk84++;
     } else {
-        gSpriteEntries[gGameWork.scrollSpriteSlot].unk0 |= 0x4000;
+        gSpriteEntries[gGameWork.scrollSpriteSlot].flags |= 0x4000;
         gGameWork.choiceState++;
     }
 }
 
 void animate_battle_sprite_shrink(void) {
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unk8 -= 8;
-    gSpriteEntries[gGameWork.scrollSpriteSlot].unk9 -= 8;
-    if (gSpriteEntries[gGameWork.scrollSpriteSlot].unk8 == 0) {
+    gSpriteEntries[gGameWork.scrollSpriteSlot].scale_x -= 8;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].scale_y -= 8;
+    if (gSpriteEntries[gGameWork.scrollSpriteSlot].scale_x == 0) {
         clear_battle_sprite_slot(gGameWork.scrollSpriteSlot, 1);
         gGameWork.choiceState++;
     }
@@ -215,30 +215,30 @@ void choice_menu_finish(void) {
     gGameWork.choiceState++;
 }
 
-void sprite_bob_y(u8 sprite, u8 frame, u16 y) {
+void sprite_bob_x(u8 sprite, u8 frame, u16 x) {
     switch ((frame & 0xC) >> 2) {
     case 1:
-        gSpriteEntries[sprite].unk2 = y + 1;
+        gSpriteEntries[sprite].x = x + 1;
         break;
     case 3:
-        gSpriteEntries[sprite].unk2 = y - 1;
+        gSpriteEntries[sprite].x = x - 1;
         break;
     default:
-        gSpriteEntries[sprite].unk2 = y;
+        gSpriteEntries[sprite].x = x;
         break;
     }
 }
 
-void sprite_bob_x(u8 sprite, u8 frame, u16 x) {
+void sprite_bob_y(u8 sprite, u8 frame, u16 y) {
     switch ((frame & 0xC) >> 2) {
     case 1:
-        gSpriteEntries[sprite].unk4 = x + 1;
+        gSpriteEntries[sprite].y = y + 1;
         break;
     case 3:
-        gSpriteEntries[sprite].unk4 = x - 1;
+        gSpriteEntries[sprite].y = y - 1;
         break;
     default:
-        gSpriteEntries[sprite].unk4 = x;
+        gSpriteEntries[sprite].y = y;
         break;
     }
 }

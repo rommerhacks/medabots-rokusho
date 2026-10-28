@@ -105,7 +105,7 @@ void medaparts_list_load_gfx(void) {
 void medaparts_list_fade_in(void) {
     medaparts_scroll_bg();
     medaparts_list_blink_page_arrows();
-    sprite_bob_y(3, gFrameCounter, 0x50);
+    sprite_bob_x(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
     if (gGameWork.medalPage == 1) {
         if (gGameWork.unk84 <= 8) {
@@ -125,7 +125,7 @@ void medaparts_list_fade_in(void) {
 void medaparts_list_open_text_window(void) {
     medaparts_scroll_bg();
     medaparts_list_blink_page_arrows();
-    sprite_bob_y(3, gFrameCounter, 0x50);
+    sprite_bob_x(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
     text_window_init(1, 2, 0);
     gGameSubState++;
@@ -134,7 +134,7 @@ void medaparts_list_open_text_window(void) {
 void medaparts_list_show_hint(void) {
     medaparts_scroll_bg();
     medaparts_list_blink_page_arrows();
-    sprite_bob_y(3, gFrameCounter, 0x50);
+    sprite_bob_x(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
     if (run_message(gMenuMessages[16]))
         gGameSubState++;
@@ -143,7 +143,7 @@ void medaparts_list_show_hint(void) {
 void medaparts_list_handle_input(void) {
     medaparts_scroll_bg();
     medaparts_list_blink_page_arrows();
-    sprite_bob_y(3, gFrameCounter, 0x50);
+    sprite_bob_x(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
     if (medaparts_list_row_input())
         return;
@@ -176,7 +176,7 @@ void medaparts_list_start_fade_out(void) {
     CpuFastSet(gSpriteFontPalette, (void *)0x050003E0, 8);
     medaparts_scroll_bg();
     medaparts_list_blink_page_arrows();
-    sprite_bob_y(3, gFrameCounter, 0x50);
+    sprite_bob_x(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
     gGameSubState++;
 }
@@ -184,7 +184,7 @@ void medaparts_list_start_fade_out(void) {
 void medaparts_list_wait_fade(void) {
     medaparts_scroll_bg();
     medaparts_list_blink_page_arrows();
-    sprite_bob_y(3, gFrameCounter, 0x50);
+    sprite_bob_x(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
     if (update_blend_effect())
         gGameSubState++;
@@ -200,7 +200,7 @@ void medaparts_list_exit(void) {
 void medaparts_list_open_detail(void) {
     medaparts_scroll_bg();
     medaparts_list_blink_page_arrows();
-    sprite_bob_y(3, gFrameCounter, 0x50);
+    sprite_bob_x(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
     palette_backup_from_hardware();
     gGameWork.unk84 = 0;
@@ -210,7 +210,7 @@ void medaparts_list_open_detail(void) {
 void medaparts_list_detail_fade_out(void) {
     medaparts_scroll_bg();
     medaparts_list_blink_page_arrows();
-    sprite_bob_y(3, gFrameCounter, 0x50);
+    sprite_bob_x(3, gFrameCounter, 0x50);
     load_medapart_sprite_by_slot();
     if (gGameWork.unk84 <= 8) {
         bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
@@ -427,7 +427,7 @@ void medapart_detail_exit(void) {
 void medaparts_help_load(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    clear_sprite_table_mask(1, 5);
+    disable_sprites(1, 5);
     CpuFastSet(gHelpCursorPalette, (void *)0x050003C0, 8);
     medaparts_help_init_cursor();
     message_next();
@@ -571,7 +571,7 @@ void medaparts_help_show_text(void) {
 void medaparts_help_exit(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    clear_sprite_table_mask(6, 1);
+    disable_sprites(6, 1);
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     message_next();
     medapart_detail_init_arrows();
@@ -585,8 +585,8 @@ void medaparts_help_exit(void) {
 void medapart_trade_choice_open(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    gSpriteEntries[1].unk0 &= 0xBFFF;
-    gSpriteEntries[2].unk0 &= 0xBFFF;
+    gSpriteEntries[1].flags &= 0xBFFF;
+    gSpriteEntries[2].flags &= 0xBFFF;
     set_tilemap_and_decompress_bg(18, 5, gTradeChoiceWindowTilemap, REG_BG0CNT, 0x380);
     gGameWork.tradeChoice = 0;
     medapart_trade_init_choice_cursor();
@@ -598,7 +598,7 @@ void medapart_trade_choice_input(void) {
 
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
-    sprite_bob_y(4, gFrameCounter, 0xA8);
+    sprite_bob_x(4, gFrameCounter, 0xA8);
     medapart_trade_choice_cursor_input();
     if (KEYS_LO(gNewKeys) & 1) {
         if (gGameWork.tradeChoice == 1) {
@@ -623,7 +623,7 @@ void medapart_trade_choice_close(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
     if (medapart_trade_choice_close_step()) {
-        clear_sprite_table_mask(4, 1);
+        disable_sprites(4, 1);
         gGameSubState++;
     }
 }
@@ -672,7 +672,7 @@ static void medaparts_list_draw_names(void) {
     u32 i;
     u32 page;
 
-    clear_sprite_table_mask(10, 60);
+    disable_sprites(10, 60);
     for (i = 0; i < 4; i++) {
         if (gMedapartInventory[gGameWork.partSlot * 240 + (page = gGameWork.unk3F * 4) * 2 + i * 2]) {
             memcpy_bytes_08041D04((void *)gMedapartNames[0][(page + i) * 4 + gGameWork.partSlot], gGameWork.textBuf,
@@ -729,40 +729,40 @@ static void medaparts_list_draw_part_icons(void) {
 }
 
 static void medaparts_list_init_page_arrows(void) {
-    gSpriteEntries[1].unk0 = 0xC804;
-    gSpriteEntries[1].unk2 = 0x4C;
-    gSpriteEntries[1].unk4 = 0x18;
-    gSpriteEntries[1].unk6 = 0x302;
-    gSpriteEntries[1].unkA = 14;
-    gSpriteEntries[1].unk1C = 0;
-    gSpriteEntries[1].unkB = 0x80;
-    gSpriteEntries[2].unk0 = 0xC804;
-    gSpriteEntries[2].unk2 = 0x8C;
-    gSpriteEntries[2].unk4 = 0x18;
-    gSpriteEntries[2].unk6 = 0x303;
-    gSpriteEntries[2].unkA = 14;
-    gSpriteEntries[2].unk1C = 0;
-    gSpriteEntries[2].unkB = 0x80;
+    gSpriteEntries[1].flags = 0xC804;
+    gSpriteEntries[1].x = 0x4C;
+    gSpriteEntries[1].y = 0x18;
+    gSpriteEntries[1].frame = 0x302;
+    gSpriteEntries[1].palette = 14;
+    gSpriteEntries[1].frame_table = 0;
+    gSpriteEntries[1].order = 0x80;
+    gSpriteEntries[2].flags = 0xC804;
+    gSpriteEntries[2].x = 0x8C;
+    gSpriteEntries[2].y = 0x18;
+    gSpriteEntries[2].frame = 0x303;
+    gSpriteEntries[2].palette = 14;
+    gSpriteEntries[2].frame_table = 0;
+    gSpriteEntries[2].order = 0x80;
 }
 
 static void medaparts_list_blink_page_arrows(void) {
     if (gFrameCounter & 8) {
-        gSpriteEntries[1].unk0 &= 0xBFFF;
-        gSpriteEntries[2].unk0 &= 0xBFFF;
+        gSpriteEntries[1].flags &= 0xBFFF;
+        gSpriteEntries[2].flags &= 0xBFFF;
     } else {
-        gSpriteEntries[1].unk0 |= 0x4000;
-        gSpriteEntries[2].unk0 |= 0x4000;
+        gSpriteEntries[1].flags |= 0x4000;
+        gSpriteEntries[2].flags |= 0x4000;
     }
 }
 
 static void medaparts_list_init_cursor(void) {
-    gSpriteEntries[3].unk0 = 0xC804;
-    gSpriteEntries[3].unk2 = 0x50;
-    gSpriteEntries[3].unk4 = gGameWork.medalRow * 16 + 0x30;
-    gSpriteEntries[3].unk6 = 0x307;
-    gSpriteEntries[3].unkA = 14;
-    gSpriteEntries[3].unk1C = 0;
-    gSpriteEntries[3].unkB = 0x81;
+    gSpriteEntries[3].flags = 0xC804;
+    gSpriteEntries[3].x = 0x50;
+    gSpriteEntries[3].y = gGameWork.medalRow * 16 + 0x30;
+    gSpriteEntries[3].frame = 0x307;
+    gSpriteEntries[3].palette = 14;
+    gSpriteEntries[3].frame_table = 0;
+    gSpriteEntries[3].order = 0x81;
 }
 
 static u32 medaparts_list_row_input(void) {
@@ -976,7 +976,7 @@ s32 medapart_detail_skill_help_index(void) {
 }
 
 void medapart_detail_draw_skill(void) {
-    clear_sprite_table_mask(10, 15);
+    disable_sprites(10, 15);
     if (gGameWork.partSkill < 100) {
         memcpy_bytes_0803F63C((void *)gSkillTypeNames[gGameWork.partSkillType], gGameWork.textBuf, 14);
         render_text_sprites_08040DB8(gGameWork.textBuf, 10, 1, 9, 10, 12, 0, 1);
@@ -987,7 +987,7 @@ void medapart_detail_draw_skill(void) {
 }
 
 static void medapart_detail_draw_ability(void) {
-    clear_sprite_table_mask(25, 15);
+    disable_sprites(25, 15);
     memcpy_bytes_0803F63C((void *)gAttributeNames[gGameWork.partAbility], gGameWork.textBuf, 14);
     render_text_sprites_08040DB8(gGameWork.textBuf, 25, 2, 11, 8, 12, 0, 1);
 }
@@ -1000,7 +1000,7 @@ static void medapart_detail_draw_skill_icon(void) {
 }
 
 static void medapart_detail_draw_name(void) {
-    clear_sprite_table_mask(40, 15);
+    disable_sprites(40, 15);
     memcpy_bytes_08041D04((void *)gMedapartNames[0][gGameWork.shownId * 4 + gGameWork.partSlot], gGameWork.textBuf, 15);
     render_text_sprites_08040DB8(gGameWork.textBuf, 40, 11, 3, 10, 13, 0, 1);
 }
@@ -1096,31 +1096,31 @@ void count_compatible_medaparts(void) {
 
 static void medapart_detail_init_arrows(void) {
     if (gGameWork.freeMedalCount > 1) {
-        gSpriteEntries[1].unk0 = 0xC804;
-        gSpriteEntries[1].unk2 = 0x0C;
-        gSpriteEntries[1].unk4 = 0x28;
-        gSpriteEntries[1].unk6 = 0x302;
-        gSpriteEntries[1].unkA = 14;
-        gSpriteEntries[1].unk1C = 0;
-        gSpriteEntries[1].unkB = 0x80;
-        gSpriteEntries[2].unk0 = 0xC804;
-        gSpriteEntries[2].unk2 = 0x54;
-        gSpriteEntries[2].unk4 = 0x28;
-        gSpriteEntries[2].unk6 = 0x303;
-        gSpriteEntries[2].unkA = 14;
-        gSpriteEntries[2].unk1C = 0;
-        gSpriteEntries[2].unkB = 0x80;
+        gSpriteEntries[1].flags = 0xC804;
+        gSpriteEntries[1].x = 0x0C;
+        gSpriteEntries[1].y = 0x28;
+        gSpriteEntries[1].frame = 0x302;
+        gSpriteEntries[1].palette = 14;
+        gSpriteEntries[1].frame_table = 0;
+        gSpriteEntries[1].order = 0x80;
+        gSpriteEntries[2].flags = 0xC804;
+        gSpriteEntries[2].x = 0x54;
+        gSpriteEntries[2].y = 0x28;
+        gSpriteEntries[2].frame = 0x303;
+        gSpriteEntries[2].palette = 14;
+        gSpriteEntries[2].frame_table = 0;
+        gSpriteEntries[2].order = 0x80;
     }
 }
 
 static void medapart_detail_blink_arrows(void) {
     if (gGameWork.freeMedalCount > 1) {
         if (gFrameCounter & 8) {
-            gSpriteEntries[1].unk0 &= 0xBFFF;
-            gSpriteEntries[2].unk0 &= 0xBFFF;
+            gSpriteEntries[1].flags &= 0xBFFF;
+            gSpriteEntries[2].flags &= 0xBFFF;
         } else {
-            gSpriteEntries[1].unk0 |= 0x4000;
-            gSpriteEntries[2].unk0 |= 0x4000;
+            gSpriteEntries[1].flags |= 0x4000;
+            gSpriteEntries[2].flags |= 0x4000;
         }
     }
 }
@@ -1192,35 +1192,35 @@ static void medaparts_help_init_cursor(void) {
     const u8 *rec = gHelpCursorLayouts[gGameWork.helpFromPage];
 
     gGameWork.helpPageCount = rec[0];
-    gSpriteEntries[6].unk0 = 0xC004;
-    gSpriteEntries[6].unk2 = rec[(gGameWork.helpPage + 1) << 1] * 8;
-    gSpriteEntries[6].unk4 = rec[((gGameWork.helpPage + 1) << 1) + 1] * 8;
-    gSpriteEntries[6].unk6 = 0x308;
-    gSpriteEntries[6].unkA = 14;
-    gSpriteEntries[6].unk1C = 0;
-    gSpriteEntries[6].unkB = 0xC1;
+    gSpriteEntries[6].flags = 0xC004;
+    gSpriteEntries[6].x = rec[(gGameWork.helpPage + 1) << 1] * 8;
+    gSpriteEntries[6].y = rec[((gGameWork.helpPage + 1) << 1) + 1] * 8;
+    gSpriteEntries[6].frame = 0x308;
+    gSpriteEntries[6].palette = 14;
+    gSpriteEntries[6].frame_table = 0;
+    gSpriteEntries[6].order = 0xC1;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[3], 6);
 }
 
 static void medaparts_help_move_cursor(void) {
     const u8 *rec = gHelpCursorLayouts[gGameWork.helpFromPage];
 
-    gSpriteEntries[6].unk2 = rec[(gGameWork.helpPage + 1) << 1] * 8;
-    gSpriteEntries[6].unk4 = rec[((gGameWork.helpPage + 1) << 1) + 1] * 8;
+    gSpriteEntries[6].x = rec[(gGameWork.helpPage + 1) << 1] * 8;
+    gSpriteEntries[6].y = rec[((gGameWork.helpPage + 1) << 1) + 1] * 8;
 }
 
 static void medapart_trade_init_choice_cursor(void) {
-    gSpriteEntries[4].unk0 = 0xD204;
-    gSpriteEntries[4].unk2 = 0xA8;
-    gSpriteEntries[4].unk4 = gGameWork.tradeChoice * 16 + 0x38;
-    gSpriteEntries[4].unk6 = 0x307;
-    gSpriteEntries[4].unkA = 14;
-    gSpriteEntries[4].unk8 = 0x40;
-    gSpriteEntries[4].unk9 = 0x40;
-    gSpriteEntries[4].unk1C = 0;
+    gSpriteEntries[4].flags = 0xD204;
+    gSpriteEntries[4].x = 0xA8;
+    gSpriteEntries[4].y = gGameWork.tradeChoice * 16 + 0x38;
+    gSpriteEntries[4].frame = 0x307;
+    gSpriteEntries[4].palette = 14;
+    gSpriteEntries[4].scale_x = 0x40;
+    gSpriteEntries[4].scale_y = 0x40;
+    gSpriteEntries[4].frame_table = 0;
     gSpriteEntries[4].unk29 = 0;
     gSpriteEntries[4].unk27 = 0;
-    gSpriteEntries[4].unkB = 0xC1;
+    gSpriteEntries[4].order = 0xC1;
 }
 
 static void medapart_trade_choice_cursor_input(void) {
@@ -1238,7 +1238,7 @@ static void medapart_trade_choice_cursor_input(void) {
     }
     if (KEYS_LO(gRepeatKeys) & 0xC0) {
         play_sound_effect(2);
-        gSpriteEntries[4].unk4 = gGameWork.tradeChoice * 16 + 0x38;
+        gSpriteEntries[4].y = gGameWork.tradeChoice * 16 + 0x38;
     }
 }
 
@@ -1253,21 +1253,21 @@ u32 medapart_trade_choice_close_step(void) {
 void medapart_trade_choice_blink_step(void) {
     if (gSpriteEntries[4].unk27 != 30) {
         if (gSpriteEntries[4].unk27 & 4)
-            gSpriteEntries[4].unk0 &= 0xBFFF;
+            gSpriteEntries[4].flags &= 0xBFFF;
         else
-            gSpriteEntries[4].unk0 |= 0x4000;
+            gSpriteEntries[4].flags |= 0x4000;
         gSpriteEntries[4].unk27++;
     } else {
-        gSpriteEntries[4].unk0 |= 0x4000;
+        gSpriteEntries[4].flags |= 0x4000;
         gSpriteEntries[4].unk29++;
     }
 }
 
 void medapart_trade_choice_shrink_step(void) {
-    gSpriteEntries[4].unk8 -= 8;
-    gSpriteEntries[4].unk9 -= 8;
-    if (gSpriteEntries[4].unk8 == 0) {
-        clear_sprite_table_mask(4, 1);
+    gSpriteEntries[4].scale_x -= 8;
+    gSpriteEntries[4].scale_y -= 8;
+    if (gSpriteEntries[4].scale_x == 0) {
+        disable_sprites(4, 1);
         gSpriteEntries[4].unk29++;
     }
 }

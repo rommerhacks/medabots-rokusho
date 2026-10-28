@@ -155,14 +155,14 @@ void target_marker_show(void) {
     clear_battle_sprite_slot(9, 1);
     if (gBattleWork.unk82 != 0 && gBattleWork.unk15C[gBattleWork.unk82 - 1] == 0 &&
         gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkE) {
-        gSpriteEntries[9].unk0 = 0xC404;
-        gSpriteEntries[9].unk1C = 0;
-        gSpriteEntries[9].unk4 =
-            gSpriteEntries[gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkE * 4 + 0x59].unk4 - 4;
-        gSpriteEntries[9].unk2 =
-            gSpriteEntries[gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkE * 4 + 0x59].unk2;
-        gSpriteEntries[9].unkA = 6;
-        gSpriteEntries[9].unkB = 0xF0;
+        gSpriteEntries[9].flags = 0xC404;
+        gSpriteEntries[9].frame_table = 0;
+        gSpriteEntries[9].y =
+            gSpriteEntries[gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkE * 4 + 0x59].y - 4;
+        gSpriteEntries[9].x =
+            gSpriteEntries[gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkE * 4 + 0x59].x;
+        gSpriteEntries[9].palette = 6;
+        gSpriteEntries[9].order = 0xF0;
         gSpriteEntries[9].unk24 = gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkF;
         gSpriteEntries[9].unk25 = gBattleBots[gBattleWork.unk80].parts[gBattleWork.unk82 - 1].unkE;
         gSpriteEntries[9].unk26 = 0;
@@ -172,20 +172,20 @@ void target_marker_show(void) {
 }
 
 void target_marker_update(void) {
-    if (gSpriteEntries[9].unk0 & 0x8000) {
+    if (gSpriteEntries[9].flags & 0x8000) {
         process_sprite_anim_commands(gBattleSpriteAnimScripts[24], 9);
         if (gSpriteEntries[9].unk24) {
             gSpriteEntries[9].unk27++;
-            gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].unk0 |= 0x220;
+            gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].flags |= 0x220;
             if (gSpriteEntries[9].unk26 == 0) {
-                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].unk8 =
+                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_x =
                     gSpriteEntries[9].unk27 * 2 + 0x40;
-                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].unk9 =
+                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_y =
                     gSpriteEntries[9].unk27 * 2 + 0x40;
             } else {
-                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].unk8 =
+                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_x =
                     0x60 - gSpriteEntries[9].unk27 * 2;
-                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].unk9 =
+                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_y =
                     0x60 - gSpriteEntries[9].unk27 * 2;
             }
             if (gSpriteEntries[9].unk27 > 0x10) {
@@ -197,15 +197,15 @@ void target_marker_update(void) {
 }
 
 void target_marker_hide(void) {
-    if (gSpriteEntries[9].unk0 & 0x8000) {
+    if (gSpriteEntries[9].flags & 0x8000) {
         if (gSpriteEntries[9].unk24) {
-            gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].unk8 = 0x40;
-            gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].unk9 = 0x40;
+            gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_x = 0x40;
+            gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_y = 0x40;
             if (gBattleWork.unk80 == gSpriteEntries[9].unk25 - 1) {
                 if ((u8)(gSpriteEntries[9].unk24 - 2) <= 1)
-                    gSpriteEntries[gBattleWork.unk80 * 4 + gSpriteEntries[9].unk24 + 0x59].unk0 &= 0xFFDF;
+                    gSpriteEntries[gBattleWork.unk80 * 4 + gSpriteEntries[9].unk24 + 0x59].flags &= 0xFFDF;
                 else
-                    gSpriteEntries[gBattleWork.unk80 * 4 + gSpriteEntries[9].unk24 + 0x59].unk0 &= 0xFDDF;
+                    gSpriteEntries[gBattleWork.unk80 * 4 + gSpriteEntries[9].unk24 + 0x59].flags &= 0xFDDF;
             }
         }
         clear_battle_sprite_slot(9, 1);

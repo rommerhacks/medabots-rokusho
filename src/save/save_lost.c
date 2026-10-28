@@ -7,7 +7,7 @@
 void save_lost_animate_sprite(void) {
     if (++gSpriteEntries[0].unk1A > 0x3F)
         gSpriteEntries[0].unk1A = 0;
-    gSpriteEntries[0].unk6 = gSaveLostSpriteFrames[(gSpriteEntries[0].unk1A >> 3) & 7] + 0x100;
+    gSpriteEntries[0].frame = gSaveLostSpriteFrames[(gSpriteEntries[0].unk1A >> 3) & 7] + 0x100;
 }
 
 void save_lost_dispatch(void) {
@@ -51,12 +51,12 @@ void save_lost_load_graphics(void) {
     CpuFastSet(gSaveLostBgPalette, (void *)PLTT, 0x38);
     CpuFastSet(gSaveLostSpritePalette, (void *)(PLTT + 0x200), 8);
     lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
-    gSpriteEntries[0].unk0 = 0xC000;
-    gSpriteEntries[0].unk1C = 2;
-    gSpriteEntries[0].unkA = 0;
-    gSpriteEntries[0].unk6 = 0x112;
-    gSpriteEntries[0].unk2 = 0x70;
-    gSpriteEntries[0].unk4 = 0x18;
+    gSpriteEntries[0].flags = 0xC000;
+    gSpriteEntries[0].frame_table = 2;
+    gSpriteEntries[0].palette = 0;
+    gSpriteEntries[0].frame = 0x112;
+    gSpriteEntries[0].x = 0x70;
+    gSpriteEntries[0].y = 0x18;
     gSpriteEntries[0].unk1A = 0;
     gGameSubState++;
 }

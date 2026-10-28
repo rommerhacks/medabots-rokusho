@@ -99,26 +99,26 @@ void init_battle_action_select_ui(u32 a) {
         clear_battle_sprite_slot(1, 2);
     } else {
         set_tilemap_and_decompress_bg(0xC, 0xF, gActionSelectPanelTilemap, REG_BG1CNT, 0x230);
-        gSpriteEntries[0].unk0 = 0xC404;
-        gSpriteEntries[0].unk1C = 0;
-        gSpriteEntries[0].unkA = 0xA;
-        gSpriteEntries[0].unkB = 0x40;
-        gSpriteEntries[0].unk2 = 0x78;
-        gSpriteEntries[0].unk4 = 0x84;
-        gSpriteEntries[0].unk6 = 0x623;
-        gSpriteEntries[1].unk0 = 0xC404;
-        gSpriteEntries[1].unk1C = 0;
-        gSpriteEntries[1].unkA = 0xA;
-        gSpriteEntries[1].unkB = 0x40;
-        gSpriteEntries[1].unk2 = 0x70;
-        gSpriteEntries[1].unk4 = 0x90;
-        gSpriteEntries[1].unk6 = (u8)(gBattleWork.timeLeft / 10) + 0x624;
-        gSpriteEntries[2].unk0 = 0xC404;
-        gSpriteEntries[2].unk1C = 0;
-        gSpriteEntries[2].unkA = 0xA;
-        gSpriteEntries[2].unkB = 0x40;
-        gSpriteEntries[2].unk2 = 0x80;
-        gSpriteEntries[2].unk4 = 0x90;
-        gSpriteEntries[2].unk6 = (u8)(gBattleWork.timeLeft % 10) + 0x624;
+        gSpriteEntries[0].flags = 0xC404;
+        gSpriteEntries[0].frame_table = 0;
+        gSpriteEntries[0].palette = 0xA;
+        gSpriteEntries[0].order = 0x40;
+        gSpriteEntries[0].x = 0x78;
+        gSpriteEntries[0].y = 0x84;
+        gSpriteEntries[0].frame = 0x623;
+        gSpriteEntries[1].flags = 0xC404;
+        gSpriteEntries[1].frame_table = 0;
+        gSpriteEntries[1].palette = 0xA;
+        gSpriteEntries[1].order = 0x40;
+        gSpriteEntries[1].x = 0x70;
+        gSpriteEntries[1].y = 0x90;
+        gSpriteEntries[1].frame = (u8)(gBattleWork.timeLeft / 10) + 0x624;
+        gSpriteEntries[2].flags = 0xC404;
+        gSpriteEntries[2].frame_table = 0;
+        gSpriteEntries[2].palette = 0xA;
+        gSpriteEntries[2].order = 0x40;
+        gSpriteEntries[2].x = 0x80;
+        gSpriteEntries[2].y = 0x90;
+        gSpriteEntries[2].frame = (u8)(gBattleWork.timeLeft % 10) + 0x624;
     }
 }

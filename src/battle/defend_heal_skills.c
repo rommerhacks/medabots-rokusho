@@ -194,16 +194,16 @@ void trap_begin(void) {
 void skill_cast_hop_spawn(void) {
     lz_decompress_dispatch(gSkillCastHopTiles, (void *)0x06015800);
     CpuFastSet(gSkillCastHopPalette, (void *)0x050002E0, 8);
-    gSpriteEntries[0x21].unk0 = 0xC604;
-    gSpriteEntries[0x21].unk1C = 0;
-    gSpriteEntries[0x21].unk2 = gSpriteEntries[0x5D + gBattleWork.actor * 4].unk2;
-    gSpriteEntries[0x21].unk4 = gSpriteEntries[0x5D + gBattleWork.actor * 4].unk4 - 4;
-    gSpriteEntries[0x21].unkA = 7;
-    gSpriteEntries[0x21].unkB = 0xF0;
-    gSpriteEntries[0x21].unk8 = 0x40;
-    gSpriteEntries[0x21].unk9 = 0x40;
-    gSpriteEntries[0x21].unk18 = 0;
-    gSpriteEntries[0x21].unk6 = 0x4100;
+    gSpriteEntries[0x21].flags = 0xC604;
+    gSpriteEntries[0x21].frame_table = 0;
+    gSpriteEntries[0x21].x = gSpriteEntries[0x5D + gBattleWork.actor * 4].x;
+    gSpriteEntries[0x21].y = gSpriteEntries[0x5D + gBattleWork.actor * 4].y - 4;
+    gSpriteEntries[0x21].palette = 7;
+    gSpriteEntries[0x21].order = 0xF0;
+    gSpriteEntries[0x21].scale_x = 0x40;
+    gSpriteEntries[0x21].scale_y = 0x40;
+    gSpriteEntries[0x21].angle = 0;
+    gSpriteEntries[0x21].frame = 0x4100;
     gSpriteEntries[0x21].unk23 = 0;
     gSpriteEntries[0x21].unk27 = 0;
     play_sound_effect(0x29);
@@ -213,20 +213,20 @@ void skill_cast_hop_spawn(void) {
 void skill_cast_hop(void) {
     sprite_hop_step(0x21);
     if (gSpriteEntries[0x21].unk27 == 0x20) {
-        gSpriteEntries[0x21].unk0 &= ~0x200;
-        gSpriteEntries[0x21].unk18 = 0;
+        gSpriteEntries[0x21].flags &= ~0x200;
+        gSpriteEntries[0x21].angle = 0;
         gBattleWork.step++;
         return;
     }
     if (!(gBattleWork.actorSideFlags & 1))
-        gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x20) & 0x3FF;
+        gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle + 0x20) & 0x3FF;
     else
-        gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 - 0x20) & 0x3FF;
+        gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle - 0x20) & 0x3FF;
     if (!(gSpriteEntries[0x21].unk27 & 1)) {
         if (!(gBattleWork.actorSideFlags & 1))
-            gSpriteEntries[0x21].unk2++;
+            gSpriteEntries[0x21].x++;
         else
-            gSpriteEntries[0x21].unk2--;
+            gSpriteEntries[0x21].x--;
     }
     gSpriteEntries[0x21].unk27++;
 }
@@ -249,20 +249,20 @@ void trap_sprite_spawn(void) {
     case 0:
         lz_decompress_dispatch(gGrapTrapTiles, (void *)0x06014800);
         CpuFastSet(gGrapTrapPalette, (void *)0x050002E0, 8);
-        gSpriteEntries[0x21].unk4 = 0x3C;
+        gSpriteEntries[0x21].y = 0x3C;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x19], 0x21);
         break;
     case 1:
         lz_decompress_dispatch(gShotTrapTiles, (void *)0x06014800);
         CpuFastSet(gShotTrapPalette, (void *)0x050002E0, 8);
-        gSpriteEntries[0x21].unk4 = 0x3C;
+        gSpriteEntries[0x21].y = 0x3C;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x1A], 0x21);
         break;
     case 2:
         lz_decompress_dispatch(gAttackClrTrapTiles, (void *)0x06014800);
         CpuFastSet(gAttackClrTrapPalette, (void *)0x050002E0, 8);
-        gSpriteEntries[0x21].unk4 = 0x3C;
-        gSpriteEntries[0x21].unk6 = 0xD00;
+        gSpriteEntries[0x21].y = 0x3C;
+        gSpriteEntries[0x21].frame = 0xD00;
         break;
     case 3:
         lz_decompress_dispatch(gTeamAttackTurretTilesLz, (void *)0x06014800);
@@ -270,18 +270,18 @@ void trap_sprite_spawn(void) {
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x38], 0x21);
         break;
     }
-    gSpriteEntries[0x21].unk0 |= 0x220;
-    gSpriteEntries[0x21].unk9 = 0x40;
-    gSpriteEntries[0x21].unk8 = 8;
+    gSpriteEntries[0x21].flags |= 0x220;
+    gSpriteEntries[0x21].scale_y = 0x40;
+    gSpriteEntries[0x21].scale_x = 8;
     if (gBattleWork.actorSideFlags & 1) {
-        gSpriteEntries[0x21].unk0 |= 0x1000;
-        gSpriteEntries[0x21].unk2--;
+        gSpriteEntries[0x21].flags |= 0x1000;
+        gSpriteEntries[0x21].x--;
     }
     gBattleWork.step++;
 }
 
 void trap_sprite_grow(void) {
-    if ((gSpriteEntries[0x21].unk8 += 8) == 0x40) {
+    if ((gSpriteEntries[0x21].scale_x += 8) == 0x40) {
         if (gBattleWork.unk51 == 3)
             gGameWork.unk86 = 1;
         else
@@ -316,9 +316,9 @@ void trap_sprite_slide(void) {
         return;
     }
     if (!(gBattleWork.actorSideFlags & 1))
-        gSpriteEntries[0x21].unk2++;
+        gSpriteEntries[0x21].x++;
     else
-        gSpriteEntries[0x21].unk2--;
+        gSpriteEntries[0x21].x--;
     gSpriteEntries[0x21].unk27++;
 }
 
@@ -347,18 +347,18 @@ void trap_sprite_pulse(void) {
         return;
     }
     if (gSpriteEntries[0x21].unk27 < 8)
-        gSpriteEntries[0x21].unk8 += 8;
+        gSpriteEntries[0x21].scale_x += 8;
     else
-        gSpriteEntries[0x21].unk8 -= 8;
+        gSpriteEntries[0x21].scale_x -= 8;
     gSpriteEntries[0x21].unk27++;
 }
 
 void trap_sprite_shrink(void) {
-    if (gSpriteEntries[0x21].unk8 == 8) {
+    if (gSpriteEntries[0x21].scale_x == 8) {
         clear_battle_sprite_slot(0x21, 1);
         gBattleWork.step++;
     } else {
-        gSpriteEntries[0x21].unk8 -= 8;
+        gSpriteEntries[0x21].scale_x -= 8;
     }
 }
 
@@ -489,25 +489,25 @@ void team_form_pulse(void) {
         return;
     }
     if (gSpriteEntries[0x21].unk27 < 8) {
-        gSpriteEntries[0x21].unk8 += 8;
-        gSpriteEntries[0x22].unk8 += 8;
-        gSpriteEntries[0x23].unk8 += 8;
+        gSpriteEntries[0x21].scale_x += 8;
+        gSpriteEntries[0x22].scale_x += 8;
+        gSpriteEntries[0x23].scale_x += 8;
     } else {
-        gSpriteEntries[0x21].unk8 -= 8;
-        gSpriteEntries[0x22].unk8 -= 8;
-        gSpriteEntries[0x23].unk8 -= 8;
+        gSpriteEntries[0x21].scale_x -= 8;
+        gSpriteEntries[0x22].scale_x -= 8;
+        gSpriteEntries[0x23].scale_x -= 8;
     }
     gSpriteEntries[0x21].unk27++;
 }
 
 void team_form_shrink(void) {
-    if (gSpriteEntries[0x21].unk8 == 8) {
+    if (gSpriteEntries[0x21].scale_x == 8) {
         clear_battle_sprite_slot(0x21, 3);
         gBattleWork.step++;
     } else {
-        gSpriteEntries[0x21].unk8 -= 8;
-        gSpriteEntries[0x22].unk8 -= 8;
-        gSpriteEntries[0x23].unk8 -= 8;
+        gSpriteEntries[0x21].scale_x -= 8;
+        gSpriteEntries[0x22].scale_x -= 8;
+        gSpriteEntries[0x23].scale_x -= 8;
     }
 }
 
@@ -536,7 +536,7 @@ void break_form_sprite_spawn(void) {
     CpuFastSet(gBreakFormPalette, (void *)0x050002E0, 8);
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x39], 0x21);
     if (gBattleWork.actorSideFlags & 1)
-        gSpriteEntries[0x21].unk0 |= 0x1000;
+        gSpriteEntries[0x21].flags |= 0x1000;
     gBattleWork.step++;
 }
 
@@ -603,7 +603,7 @@ void break_form_hit_wait(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3A], 0x22);
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3A], 0x23);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
-        clear_sprite_table_mask(0x21, 3);
+        disable_sprites(0x21, 3);
         gGameWork.unk86 = 0x3C;
         gBattleWork.step++;
     }
@@ -617,7 +617,7 @@ void break_form_shatter_init(void) {
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x23], 0x21);
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x23], 0x22);
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x23], 0x23);
-    set_sprite_hidden_flags(0x21, 3);
+    enable_sprites(0x21, 3);
     for (i = 0; i < 6; i++) {
         if (gBattleBots[i].teamState) {
             gSpriteEntries[0x5A + i * 4].unk23 = 0;
@@ -698,13 +698,13 @@ void stability_sprite_spawn(void) {
     lz_decompress_dispatch(gStabilitySparkleTiles, (void *)0x06014800);
     CpuFastSet(gStabilitySparklePalette, (void *)0x050002E0, 8);
     if (gBattleWork.actorSideFlags & 1)
-        gSpriteEntries[0x21].unk0 |= 0x1000;
-    gSpriteEntries[0x21].unk0 |= 0x200;
-    gSpriteEntries[0x21].unk8 = 0x40;
-    gSpriteEntries[0x21].unk9 = 0x40;
-    gSpriteEntries[0x21].unk18 = 0;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
+        gSpriteEntries[0x21].flags |= 0x1000;
+    gSpriteEntries[0x21].flags |= 0x200;
+    gSpriteEntries[0x21].scale_x = 0x40;
+    gSpriteEntries[0x21].scale_y = 0x40;
+    gSpriteEntries[0x21].angle = 0;
+    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].x;
+    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].unk24 = 6;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x3C], 0x21);
     gGameWork.unk86 = 0x3C;
@@ -713,12 +713,12 @@ void stability_sprite_spawn(void) {
 
 void stability_sprite_fly(void) {
     if (!(gBattleWork.actorSideFlags & 1))
-        gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 - 0x40) & 0x3FF;
+        gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle - 0x40) & 0x3FF;
     else
-        gSpriteEntries[0x21].unk18 = (gSpriteEntries[0x21].unk18 + 0x40) & 0x3FF;
+        gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle + 0x40) & 0x3FF;
     if (move_sprite_toward_target(0x21)) {
-        gSpriteEntries[0x21].unk0 &= ~0x200;
-        gSpriteEntries[0x21].unk18 = 0;
+        gSpriteEntries[0x21].flags &= ~0x200;
+        gSpriteEntries[0x21].angle = 0;
         gBattleWork.step++;
     }
 }
@@ -729,18 +729,18 @@ void stability_apply(void) {
     gBattleBots[gBattleWork.target].statusPart = 0;
     gBattleBots[gBattleWork.target].statusTimer = 0;
     gBattleBots[gBattleWork.target].statusAmount = 0;
-    gSpriteEntries[gBattleWork.target * 3 + 0x47].unk0 |= 0x8220;
-    gSpriteEntries[gBattleWork.target * 3 + 0x47].unk9 = 0x40;
-    gSpriteEntries[gBattleWork.target * 3 + 0x47].unk8 = 0x40;
+    gSpriteEntries[gBattleWork.target * 3 + 0x47].flags |= 0x8220;
+    gSpriteEntries[gBattleWork.target * 3 + 0x47].scale_y = 0x40;
+    gSpriteEntries[gBattleWork.target * 3 + 0x47].scale_x = 0x40;
     play_sound_effect(0x37);
     gBattleWork.step++;
 }
 
 void stability_status_icon_fade(void) {
-    if (gSpriteEntries[gBattleWork.target * 3 + 0x47].unk8 != 4) {
-        gSpriteEntries[gBattleWork.target * 3 + 0x47].unk0 |= 0x8000;
-        gSpriteEntries[gBattleWork.target * 3 + 0x47].unk9 += 4;
-        gSpriteEntries[gBattleWork.target * 3 + 0x47].unk8 -= 4;
+    if (gSpriteEntries[gBattleWork.target * 3 + 0x47].scale_x != 4) {
+        gSpriteEntries[gBattleWork.target * 3 + 0x47].flags |= 0x8000;
+        gSpriteEntries[gBattleWork.target * 3 + 0x47].scale_y += 4;
+        gSpriteEntries[gBattleWork.target * 3 + 0x47].scale_x -= 4;
     }
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3C], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
@@ -778,14 +778,14 @@ void force_bind_orbs_spawn(void) {
     lz_decompress_dispatch(gForceBindOrbTilesLz, (void *)0x06014800);
     CpuFastSet(gForceBindOrbPalette, (void *)0x050002E0, 8);
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[0x21 + i].unk0 = 0xC604;
-        gSpriteEntries[0x21 + i].unk1C = 0;
-        gSpriteEntries[0x21 + i].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
-        gSpriteEntries[0x21 + i].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
-        gSpriteEntries[0x21 + i].unkA = 7;
-        gSpriteEntries[0x21 + i].unkB = 0xF0;
-        gSpriteEntries[0x21 + i].unk8 = 0x40;
-        gSpriteEntries[0x21 + i].unk9 = 0x40;
+        gSpriteEntries[0x21 + i].flags = 0xC604;
+        gSpriteEntries[0x21 + i].frame_table = 0;
+        gSpriteEntries[0x21 + i].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
+        gSpriteEntries[0x21 + i].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
+        gSpriteEntries[0x21 + i].palette = 7;
+        gSpriteEntries[0x21 + i].order = 0xF0;
+        gSpriteEntries[0x21 + i].scale_x = 0x40;
+        gSpriteEntries[0x21 + i].scale_y = 0x40;
         gSpriteEntries[0x21 + i].unk2B = 0;
         gSpriteEntries[0x21 + i].unk2C = i << 6;
         gSpriteEntries[0x21 + i].unk2D = 0;
@@ -802,20 +802,20 @@ void force_bind_orbs_spin(void) {
     for (i = 0; i < 4; i++) {
         process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3D], 0x21 + i);
         v = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
-                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2,
-                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4);
-        gSpriteEntries[0x21 + i].unk2 = v.x;
-        gSpriteEntries[0x21 + i].unk4 = v.y;
+                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x,
+                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4);
+        gSpriteEntries[0x21 + i].x = v.x;
+        gSpriteEntries[0x21 + i].y = v.y;
         gSpriteEntries[0x21 + i].unk2C += 4;
         gSpriteEntries[0x21 + i].unk2D++;
         if (!(gSpriteEntries[0x21 + i].unk2D & 3))
             gSpriteEntries[0x21 + i].unk2B++;
         if (gSpriteEntries[0x21 + i].unk2D > 0xB4) {
-            gSpriteEntries[0x21 + i].unk8 -= 4;
-            gSpriteEntries[0x21 + i].unk9 -= 4;
+            gSpriteEntries[0x21 + i].scale_x -= 4;
+            gSpriteEntries[0x21 + i].scale_y -= 4;
         }
     }
-    if (gSpriteEntries[0x21].unk9 == 4) {
+    if (gSpriteEntries[0x21].scale_y == 4) {
         clear_battle_sprite_slot(0x21, 4);
         gBattleWork.step++;
     }
@@ -880,26 +880,26 @@ void defence_shields_spawn(void) {
         CpuFastSet(gHalfBlockShieldPalette, (void *)0x050002E0, 8);
         break;
     }
-    gSpriteEntries[0x21].unk0 = 0xC624;
-    gSpriteEntries[0x21].unk1C = 0;
-    gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2 - 0x20;
-    gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
-    gSpriteEntries[0x21].unkA = 7;
-    gSpriteEntries[0x21].unkB = 0xF0;
-    gSpriteEntries[0x21].unk8 = 0x80;
-    gSpriteEntries[0x21].unk9 = 0x80;
+    gSpriteEntries[0x21].flags = 0xC624;
+    gSpriteEntries[0x21].frame_table = 0;
+    gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x - 0x20;
+    gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
+    gSpriteEntries[0x21].palette = 7;
+    gSpriteEntries[0x21].order = 0xF0;
+    gSpriteEntries[0x21].scale_x = 0x80;
+    gSpriteEntries[0x21].scale_y = 0x80;
     gSpriteEntries[0x21].unk2B = 0x1C;
     gSpriteEntries[0x21].unk2C = 0;
     gSpriteEntries[0x21].unk2D = 0;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x1C], 0x21);
-    gSpriteEntries[0x22].unk0 = 0xC624;
-    gSpriteEntries[0x22].unk1C = 0;
-    gSpriteEntries[0x22].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2 + 0x20;
-    gSpriteEntries[0x22].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
-    gSpriteEntries[0x22].unkA = 7;
-    gSpriteEntries[0x22].unkB = 0xF0;
-    gSpriteEntries[0x22].unk8 = 0x80;
-    gSpriteEntries[0x22].unk9 = 0x80;
+    gSpriteEntries[0x22].flags = 0xC624;
+    gSpriteEntries[0x22].frame_table = 0;
+    gSpriteEntries[0x22].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x + 0x20;
+    gSpriteEntries[0x22].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
+    gSpriteEntries[0x22].palette = 7;
+    gSpriteEntries[0x22].order = 0xF0;
+    gSpriteEntries[0x22].scale_x = 0x80;
+    gSpriteEntries[0x22].scale_y = 0x80;
     gSpriteEntries[0x22].unk2B = 0x1C;
     gSpriteEntries[0x22].unk2C = 0x80;
     gSpriteEntries[0x22].unk2D = 0;
@@ -914,17 +914,17 @@ void defence_shields_spin(void) {
 
     for (i = 0; i < 2; i++) {
         v = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
-                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2,
-                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4);
-        gSpriteEntries[0x21 + i].unk2 = v.x;
-        gSpriteEntries[0x21 + i].unk4 = v.y;
+                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x,
+                                        gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4);
+        gSpriteEntries[0x21 + i].x = v.x;
+        gSpriteEntries[0x21 + i].y = v.y;
         gSpriteEntries[0x21 + i].unk2C += 8;
         gSpriteEntries[0x21 + i].unk2D++;
         if (!(gSpriteEntries[0x21 + i].unk2D & 3))
             gSpriteEntries[0x21 + i].unk2B--;
-        if (gSpriteEntries[0x21 + i].unk8 != 0x40) {
-            gSpriteEntries[0x21 + i].unk8--;
-            gSpriteEntries[0x21 + i].unk9--;
+        if (gSpriteEntries[0x21 + i].scale_x != 0x40) {
+            gSpriteEntries[0x21 + i].scale_x--;
+            gSpriteEntries[0x21 + i].scale_y--;
         }
     }
     if (gSpriteEntries[0x21].unk2B == 0) {
@@ -981,12 +981,12 @@ void autorecover_begin(void) {
 void autorecover_orb_spawn(void) {
     lz_decompress_dispatch(gAutorecoverOrbTilesLz, (void *)0x06014800);
     CpuFastSet(gAutorecoverOrbPalettes, (void *)0x050002C0, 0x10);
-    gSpriteEntries[0x21].unk0 |= 0x200;
-    gSpriteEntries[0x21].unk8 = 0x40;
-    gSpriteEntries[0x21].unk9 = 0x40;
-    gSpriteEntries[0x21].unkA = 6;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x21].flags |= 0x200;
+    gSpriteEntries[0x21].scale_x = 0x40;
+    gSpriteEntries[0x21].scale_y = 0x40;
+    gSpriteEntries[0x21].palette = 6;
+    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].x;
+    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].unk24 = 6;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x3E], 0x21);
     gGameWork.unk86 = 0x3C;
@@ -1011,38 +1011,38 @@ void heal_orb_fly(void) {
 
 void heal_orb_shrink(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3E], 0x21);
-    if (gSpriteEntries[0x21].unk8 == 8) {
+    if (gSpriteEntries[0x21].scale_x == 8) {
         clear_battle_sprite_slot(0x21, 1);
         gBattleWork.step++;
     } else
-        gSpriteEntries[0x21].unk8 -= 8;
+        gSpriteEntries[0x21].scale_x -= 8;
 }
 
 void autorecover_ring_spawn(void) {
     u32 i;
     struct Coords16 v;
 
-    gSpriteEntries[0x25].unk0 = 0xC604;
-    gSpriteEntries[0x25].unk1C = 0;
-    gSpriteEntries[0x25].unk2 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2;
-    gSpriteEntries[0x25].unk4 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
-    gSpriteEntries[0x25].unkA = 7;
-    gSpriteEntries[0x25].unk8 = 0x40;
-    gSpriteEntries[0x25].unk9 = 0x40;
-    gSpriteEntries[0x25].unkB = 0xF0;
+    gSpriteEntries[0x25].flags = 0xC604;
+    gSpriteEntries[0x25].frame_table = 0;
+    gSpriteEntries[0x25].x = gSpriteEntries[gBattleWork.target * 4 + 0x5D].x;
+    gSpriteEntries[0x25].y = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
+    gSpriteEntries[0x25].palette = 7;
+    gSpriteEntries[0x25].scale_x = 0x40;
+    gSpriteEntries[0x25].scale_y = 0x40;
+    gSpriteEntries[0x25].order = 0xF0;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x3F], 0x25);
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[0x21 + i].unk0 = 0xC604;
-        v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2,
-                                        gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4);
-        gSpriteEntries[0x21 + i].unk2 = v.x;
-        gSpriteEntries[0x21 + i].unk4 = v.y;
-        gSpriteEntries[0x21 + i].unk1C = 0;
-        gSpriteEntries[0x21 + i].unkA = 7;
-        gSpriteEntries[0x21 + i].unkB = 0xF0;
-        gSpriteEntries[0x21 + i].unk6 = 0x4604;
-        gSpriteEntries[0x21 + i].unk8 = 0x40;
-        gSpriteEntries[0x21 + i].unk9 = 0x40;
+        gSpriteEntries[0x21 + i].flags = 0xC604;
+        v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].x,
+                                        gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4);
+        gSpriteEntries[0x21 + i].x = v.x;
+        gSpriteEntries[0x21 + i].y = v.y;
+        gSpriteEntries[0x21 + i].frame_table = 0;
+        gSpriteEntries[0x21 + i].palette = 7;
+        gSpriteEntries[0x21 + i].order = 0xF0;
+        gSpriteEntries[0x21 + i].frame = 0x4604;
+        gSpriteEntries[0x21 + i].scale_x = 0x40;
+        gSpriteEntries[0x21 + i].scale_y = 0x40;
         gSpriteEntries[0x21 + i].unk2B = 0x10;
         gSpriteEntries[0x21 + i].unk2C = i << 6;
         gSpriteEntries[0x21 + i].unk2D = 0;
@@ -1060,10 +1060,10 @@ void heal_ring_spin(void) {
     for (i = 0; i < 5; i++) {
         if (i < 4) {
             v = calc_polar_to_screen_coords(gSpriteEntries[0x21 + i].unk2C, gSpriteEntries[0x21 + i].unk2B,
-                                            gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2,
-                                            gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4);
-            gSpriteEntries[0x21 + i].unk2 = v.x;
-            gSpriteEntries[0x21 + i].unk4 = v.y;
+                                            gSpriteEntries[gBattleWork.target * 4 + 0x5D].x,
+                                            gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4);
+            gSpriteEntries[0x21 + i].x = v.x;
+            gSpriteEntries[0x21 + i].y = v.y;
             gSpriteEntries[0x21 + i].unk2C += 4;
         }
         n = gSpriteEntries[0x21 + i].unk2D + 1;
@@ -1071,11 +1071,11 @@ void heal_ring_spin(void) {
         if (gSpriteEntries[0x21 + i].unk2D > 0x5A) {
             if (n & 1)
                 gSpriteEntries[0x21 + i].unk2B++;
-            gSpriteEntries[0x21 + i].unk8 -= 2;
-            gSpriteEntries[0x21 + i].unk9 -= 2;
+            gSpriteEntries[0x21 + i].scale_x -= 2;
+            gSpriteEntries[0x21 + i].scale_y -= 2;
         }
     }
-    if (gSpriteEntries[0x21].unk9 == 4) {
+    if (gSpriteEntries[0x21].scale_y == 4) {
         clear_battle_sprite_slot(0x21, 5);
         gBattleWork.step++;
     }
@@ -1119,12 +1119,12 @@ void reactivate_begin(void) {
 void reactivate_orb_spawn(void) {
     lz_decompress_dispatch(gReactivateOrbTilesLz, (void *)0x06014800);
     CpuFastSet(gReactivateOrbPalettes, (void *)0x050002C0, 0x10);
-    gSpriteEntries[0x21].unk0 |= 0x200;
-    gSpriteEntries[0x21].unk8 = 0x40;
-    gSpriteEntries[0x21].unk9 = 0x40;
-    gSpriteEntries[0x21].unkA = 6;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
+    gSpriteEntries[0x21].flags |= 0x200;
+    gSpriteEntries[0x21].scale_x = 0x40;
+    gSpriteEntries[0x21].scale_y = 0x40;
+    gSpriteEntries[0x21].palette = 6;
+    gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].x;
+    gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].unk24 = 6;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x3E], 0x21);
     gGameWork.unk86 = 0x3C;
@@ -1135,27 +1135,27 @@ void reactivate_ring_spawn(void) {
     u32 i;
     struct Coords16 v;
 
-    gSpriteEntries[0x25].unk0 = 0xC604;
-    gSpriteEntries[0x25].unk1C = 0;
-    gSpriteEntries[0x25].unk2 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2;
-    gSpriteEntries[0x25].unk4 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4;
-    gSpriteEntries[0x25].unkA = 7;
-    gSpriteEntries[0x25].unk8 = 0x40;
-    gSpriteEntries[0x25].unk9 = 0x40;
-    gSpriteEntries[0x25].unkB = 0xF0;
+    gSpriteEntries[0x25].flags = 0xC604;
+    gSpriteEntries[0x25].frame_table = 0;
+    gSpriteEntries[0x25].x = gSpriteEntries[gBattleWork.target * 4 + 0x5D].x;
+    gSpriteEntries[0x25].y = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
+    gSpriteEntries[0x25].palette = 7;
+    gSpriteEntries[0x25].scale_x = 0x40;
+    gSpriteEntries[0x25].scale_y = 0x40;
+    gSpriteEntries[0x25].order = 0xF0;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x3F], 0x25);
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[0x21 + i].unk0 = 0xC604;
-        v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk2,
-                                        gSpriteEntries[gBattleWork.target * 4 + 0x5D].unk4 - 4);
-        gSpriteEntries[0x21 + i].unk2 = v.x;
-        gSpriteEntries[0x21 + i].unk4 = v.y;
-        gSpriteEntries[0x21 + i].unk1C = 0;
-        gSpriteEntries[0x21 + i].unkA = 7;
-        gSpriteEntries[0x21 + i].unkB = 0xF0;
-        gSpriteEntries[0x21 + i].unk6 = 0x4604;
-        gSpriteEntries[0x21 + i].unk8 = 0x40;
-        gSpriteEntries[0x21 + i].unk9 = 0x40;
+        gSpriteEntries[0x21 + i].flags = 0xC604;
+        v = calc_polar_to_screen_coords(i << 6, 0x10, gSpriteEntries[gBattleWork.target * 4 + 0x5D].x,
+                                        gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4);
+        gSpriteEntries[0x21 + i].x = v.x;
+        gSpriteEntries[0x21 + i].y = v.y;
+        gSpriteEntries[0x21 + i].frame_table = 0;
+        gSpriteEntries[0x21 + i].palette = 7;
+        gSpriteEntries[0x21 + i].order = 0xF0;
+        gSpriteEntries[0x21 + i].frame = 0x4604;
+        gSpriteEntries[0x21 + i].scale_x = 0x40;
+        gSpriteEntries[0x21 + i].scale_y = 0x40;
         gSpriteEntries[0x21 + i].unk2B = 0x10;
         gSpriteEntries[0x21 + i].unk2C = i << 6;
         gSpriteEntries[0x21 + i].unk2D = 0;

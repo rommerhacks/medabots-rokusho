@@ -154,7 +154,7 @@ void map_script_cmd_set_player_facing(void) {
 }
 
 void map_script_cmd_player_hop(void) {
-    gFieldWork.cmd_args[0] = gSpriteEntries[47].unk4;
+    gFieldWork.cmd_args[0] = gSpriteEntries[47].y;
     gSpriteEntries[47].unk26 = 0;
     gSpriteEntries[47].unk28 = 0;
     field_play_sound_effect(0x70);
@@ -264,7 +264,7 @@ void map_script_cmd_self_set_anim(void) {
 void map_script_cmd_self_hop(void) {
     if ((gFieldWork.objects[gFieldWork.script_object].unk2 & 0xFFF) == gFieldWork.script_id) {
         gScriptCmdWork.sprite_slot = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
-        gScriptCmdWork.hop_base_y = gSpriteEntries[gScriptCmdWork.sprite_slot].unk10_8;
+        gScriptCmdWork.hop_base_y = gSpriteEntries[gScriptCmdWork.sprite_slot].pos_y;
         gSpriteEntries[gScriptCmdWork.sprite_slot].unk28 = 0;
         field_play_sound_effect(0x70);
         gFieldWork.cmd_busy = 1;
@@ -350,7 +350,7 @@ void map_script_cmd_actor_anim(void) {
 void map_script_cmd_actor_hop(void) {
     gFieldWork.cmd_args[0] = read_map_script_byte();
     gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
-    gScriptCmdWork.hop_base_y = gSpriteEntries[gScriptCmdWork.sprite_slot].unk10_8;
+    gScriptCmdWork.hop_base_y = gSpriteEntries[gScriptCmdWork.sprite_slot].pos_y;
     gSpriteEntries[gScriptCmdWork.sprite_slot].unk28 = 0;
     field_play_sound_effect(0x70);
     gFieldWork.cmd_busy = 1;
@@ -1105,18 +1105,18 @@ static void follower_attach(u8 i) {
     memcpy_u8(&gSpriteEntries[i], &gSpriteEntries[48], 0x40);
     memcpy_u8(&gEntityStates[i], &gEntityStates[48], 4);
     gFieldWork.follower_active = 1;
-    gFieldWork.follower_x = gSpriteEntries[48].unk2 + gBg1Scroll.x;
-    gFieldWork.follower_y = gSpriteEntries[48].unk4 + gBg1Scroll.y;
+    gFieldWork.follower_x = gSpriteEntries[48].x + gBg1Scroll.x;
+    gFieldWork.follower_y = gSpriteEntries[48].y + gBg1Scroll.y;
     gFieldWork.follower_tile_x = field_pixel_x_to_tile(gFieldWork.follower_x);
     gFieldWork.follower_tile_y = field_pixel_y_to_tile(gFieldWork.follower_y);
     gFieldWork.follower_sprite_set = gSpriteEntries[48].unk2B;
     follower_clear_scroll_dir();
     sprite_anim_start(48, sprite_walk_anim_id(48, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk21));
     sprite_entry_init(90, 0xCC0C, 0x90, 0xE, 1);
-    gSpriteEntries[90].unk2 = gSpriteEntries[48].unk2;
-    gSpriteEntries[90].unk4 = gSpriteEntries[48].unk4 - 5;
-    gSpriteEntries[90].unkC_8 = gSpriteEntries[48].unkC_8;
-    gSpriteEntries[90].unk10_8 = gSpriteEntries[48].unk10_8 - 5;
+    gSpriteEntries[90].x = gSpriteEntries[48].x;
+    gSpriteEntries[90].y = gSpriteEntries[48].y - 5;
+    gSpriteEntries[90].pos_x = gSpriteEntries[48].pos_x;
+    gSpriteEntries[90].pos_y = gSpriteEntries[48].pos_y - 5;
     follower_turn_toward_player(1);
     gFieldWork.savedUseBlockFlags = gFieldWork.useBlockFlags;
     gFieldWork.useBlockFlags = 0xDF;

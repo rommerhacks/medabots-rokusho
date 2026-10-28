@@ -325,7 +325,7 @@ void update_scene_animation_frame(void) {
             spr = &b[n];
         }
         k = i / 18 + 1;
-        spr->unk2 = w->ring_center_x[k] + x;
-        spr->unk4 = w->ring_center_y[k] + y;
+        spr->x = w->ring_center_x[k] + x;
+        spr->y = w->ring_center_y[k] + y;
     }
 }

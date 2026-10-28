@@ -68,7 +68,7 @@ void AgbMain(void) {
             }
         }
         gGameModeHandlers[gGameMode]();
-        check_flag_and_fast_copy();
+        build_sprite_oam();
         serial_prepare_send_packet(&gLinkPackets.sendKeys);
     }
 }

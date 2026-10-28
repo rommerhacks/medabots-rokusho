@@ -226,7 +226,7 @@ static void field_effect_project_sprite(float x, float y, float z) {
     field_effect_place_sprite(sx, sy);
     sprites = gSpriteEntries;
     sprites[gFieldEffectEntities[gFieldEffect.cur_entity].unk2DC[gFieldEffectEntities[gFieldEffect.cur_entity].unk20C]]
-        .unk14_8 = depth;
+        .pos_z = depth;
 }
 
 static void compute_3d_transform_vectors(float x, float y, float z, float *outX, float *outY, float *outZ) {
@@ -253,9 +253,9 @@ static void get_state_float_as_int(float a, float b, s32 *x, s32 *y) {
 
 static void field_effect_place_sprite(float a, float b) {
     get_state_float_as_int(a, b, &gFieldEffect.screen_x, &gFieldEffect.screen_y);
-    gSpriteEntries[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].unk2 =
+    gSpriteEntries[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].x =
         gFieldEffect.screen_x + CUR_ENTITY.unk2E0[CUR_ENTITY.unk20C];
-    gSpriteEntries[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].unk4 =
+    gSpriteEntries[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].y =
         gFieldEffect.screen_y + CUR_ENTITY.unk2E8[CUR_ENTITY.unk20C];
     if (CUR_ENTITY.unk1EC && (u8)gFieldEffect.screen_y >= CUR_ENTITY.unk1F0 &&
         (u8)gFieldEffect.screen_y <= CUR_ENTITY.unk1F4) {
@@ -527,7 +527,7 @@ u32 field_effect_run(void) {
                     if (E[i].unk1C0.active) {
                         if (E[i].unk1C0.start <= E[i].unk1C0.timer) {
                             for (k = 0; k < E[i].unk210; k++)
-                                gSpriteEntries[E[i].unk2DC[k]].unk0 |= 0x4000;
+                                gSpriteEntries[E[i].unk2DC[k]].flags |= 0x4000;
                             E[i].unk1C0.timer++;
                             if (E[i].unk1C0.end != 0xFFFF && E[i].unk1C0.timer >= E[i].unk1C0.end) {
                                 for (k = 0; k < E[i].unk210; k++)
@@ -542,10 +542,10 @@ u32 field_effect_run(void) {
                         if (E[i].unk1D0.start <= E[i].unk1D0.timer) {
                             if (!(E[i].unk1D0.timer & 1)) {
                                 for (k = 0; k < E[i].unk210; k++)
-                                    gSpriteEntries[E[i].unk2DC[k]].unk0 &= ~0x4000;
+                                    gSpriteEntries[E[i].unk2DC[k]].flags &= ~0x4000;
                             } else {
                                 for (k = 0; k < E[i].unk210; k++)
-                                    gSpriteEntries[E[i].unk2DC[k]].unk0 |= 0x4000;
+                                    gSpriteEntries[E[i].unk2DC[k]].flags |= 0x4000;
                             }
                             E[i].unk1D0.timer++;
                             if (E[i].unk1D0.end != 0xFFFF && E[i].unk1D0.timer >= E[i].unk1D0.end)
@@ -576,15 +576,15 @@ u32 field_effect_run(void) {
             for (i = 0; i < 16; i++) {
                 if (E[i].unk0 != 0 && (E[i].unk118.type | E[i].unk13C.type) == 0) {
                     for (k = 0; k < 4; k++) {
-                        d = gSpriteEntries[E[i].unk2DC[k]].unk14_8;
+                        d = gSpriteEntries[E[i].unk2DC[k]].pos_z;
                         if (d > S.base_camera_dist) {
                             gAffineParams[i * 4 + k].scaleX = 0x101 - d / S.base_camera_dist;
                             gAffineParams[i * 4 + k].scaleY =
-                                0x101 - gSpriteEntries[E[i].unk2DC[k]].unk14_8 / S.base_camera_dist;
+                                0x101 - gSpriteEntries[E[i].unk2DC[k]].pos_z / S.base_camera_dist;
                         } else {
                             gAffineParams[i * 4 + k].scaleX = S.base_camera_dist / d + 0xFF;
                             gAffineParams[i * 4 + k].scaleY =
-                                S.base_camera_dist / gSpriteEntries[E[i].unk2DC[k]].unk14_8 + 0xFF;
+                                S.base_camera_dist / gSpriteEntries[E[i].unk2DC[k]].pos_z + 0xFF;
                         }
                     }
                 }
@@ -870,8 +870,8 @@ u32 field_effect_run(void) {
                 DmaSet(3, gFieldEffectObjPalettes[S.effect_id], 0x050003A0,
                        0x84000008) else DmaSet(3, gFieldEffectObjPalettes[S.effect_id], 0x0202F9A0, 0x84000008)
                     sprite_entry_init(E[n].unk2DC[part], x, (u16)y, 0xD, 1);
-            gSpriteEntries[E[n].unk2DC[part]].unk0 |= attr;
-            gSpriteEntries[E[n].unk2DC[part]].filler1D[0] = n * 4 + part;
+            gSpriteEntries[E[n].unk2DC[part]].flags |= attr;
+            gSpriteEntries[E[n].unk2DC[part]].affine_idx = n * 4 + part;
             break;
         case 134: // guess: set a sprite part (slot, offsets, attributes)
             S.pc++;
@@ -881,8 +881,8 @@ u32 field_effect_run(void) {
             E[n].unk2DC[part] = script[S.pc++];
             E[n].unk2E0[part] = script[S.pc++];
             E[n].unk2E8[part] = script[S.pc++];
-            gSpriteEntries[E[n].unk2DC[part]].unk0 = script[S.pc++];
-            gSpriteEntries[E[n].unk2DC[part]].filler1D[0] = n * 4 + part;
+            gSpriteEntries[E[n].unk2DC[part]].flags = script[S.pc++];
+            gSpriteEntries[E[n].unk2DC[part]].affine_idx = n * 4 + part;
             break;
         case 28: // guess: hide timer, then free the sprites
             S.pc++;
@@ -1070,7 +1070,7 @@ u32 field_effect_run(void) {
             gFieldWork.npc_load_mode = 1;
             area_load_graphics();
             area_load_encounter_rate();
-            gSpriteEntries[89].unk0 &= ~0x4000;
+            gSpriteEntries[89].flags &= ~0x4000;
             break;
         case 133: // guess: set unk214..unk220
             S.pc++;
@@ -1181,15 +1181,15 @@ static void field_effect_update_sprite_depth(void) {
                 struct SpriteEntry *spr = gSpriteEntries;
 
                 s = &spr[gFieldEffectEntities[i].unk2DC[j]];
-                d = s->unk14_8;
+                d = s->pos_z;
                 if (d > gFieldEffect.base_camera_dist) {
-                    s->unkB = gFieldEffect.unk218;
-                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].unk0 &= 0xF3FF;
-                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].unk0 |= gFieldEffect.unk220;
+                    s->order = gFieldEffect.unk218;
+                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags &= 0xF3FF;
+                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags |= gFieldEffect.unk220;
                 } else {
-                    s->unkB = gFieldEffect.unk214 + (gFieldEffect.base_camera_dist - d);
-                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].unk0 &= 0xF3FF;
-                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].unk0 |= gFieldEffect.unk21C;
+                    s->order = gFieldEffect.unk214 + (gFieldEffect.base_camera_dist - d);
+                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags &= 0xF3FF;
+                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags |= gFieldEffect.unk21C;
                 }
             }
         }

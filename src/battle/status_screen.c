@@ -69,32 +69,32 @@ static void setup_bot_battle_sprites_08017A7C(u32 rec, u32 x, u32 y) {
     get_bot_part_effective_values(rec, gBattleWork.unk64);
     setup_battle_sprite_group(gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
                               rec, k * 4, x, y, side, 2, k * 4);
-    gSpriteEntries[k * 4 + 1].unk0 &= 0xFDFF;
-    gSpriteEntries[k * 4 + 2].unk0 &= 0xFDFF;
+    gSpriteEntries[k * 4 + 1].flags &= 0xFDFF;
+    gSpriteEntries[k * 4 + 2].flags &= 0xFDFF;
 }
 
 void status_init_cursor(void) {
     u32 x, y, i;
 
-    gSpriteEntries[8].unk0 = 0xC404;
-    gSpriteEntries[8].unk1C = 0;
-    gSpriteEntries[8].unkA = 0xE;
-    gSpriteEntries[8].unkB = 0xC0;
+    gSpriteEntries[8].flags = 0xC404;
+    gSpriteEntries[8].frame_table = 0;
+    gSpriteEntries[8].palette = 0xE;
+    gSpriteEntries[8].order = 0xC0;
     x = gTeamBotScreenPositions[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
     y = gTeamBotScreenPositions[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2 + 1];
     if (gGameWork.openedFrom == 0) {
-        gSpriteEntries[8].unk2 = x + 16;
-        gSpriteEntries[8].unk4 = y;
-        gSpriteEntries[8].unk6 = 0x306;
+        gSpriteEntries[8].x = x + 16;
+        gSpriteEntries[8].y = y;
+        gSpriteEntries[8].frame = 0x306;
     } else {
-        gSpriteEntries[8].unk2 = x - 16;
-        gSpriteEntries[8].unk4 = y;
-        gSpriteEntries[8].unk6 = 0x307;
+        gSpriteEntries[8].x = x - 16;
+        gSpriteEntries[8].y = y;
+        gSpriteEntries[8].frame = 0x307;
     }
 }
 
 void status_draw_bot_name(void) {
-    clear_sprite_table_mask(9, 13);
+    disable_sprites(9, 13);
     if (gGameWork.openedFrom == 0)
         render_text_sprites_08040DB8(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].medal.name, 9, 0x11, 0xE,
                                      10, 15, 0, 0);
@@ -139,7 +139,7 @@ void status_load_medal_icon(void) {
 }
 
 void status_draw_medal_name(void) {
-    clear_sprite_table_mask(0x16, 10);
+    disable_sprites(0x16, 10);
     memcpy_bytes_0803F63C(
         (const void *)gMedalNames[gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].medal.graphicId],
         gGameWork.textBuf, 11);
@@ -149,7 +149,7 @@ void status_draw_medal_name(void) {
 void status_draw_part_names(void) {
     u32 i;
 
-    clear_sprite_table_mask(0x20, 0x38);
+    disable_sprites(0x20, 0x38);
     for (i = 0; i <= 3; i++) {
         memcpy_bytes_08041D04(
             (const void *)
@@ -273,10 +273,10 @@ void status_draw_team_sprites(void) {
     u32 i, rec;
     struct BattleBot *recs;
 
-    clear_sprite_table_mask(4, 1);
-    clear_sprite_table_mask(5, 1);
-    clear_sprite_table_mask(6, 1);
-    clear_sprite_table_mask(7, 1);
+    disable_sprites(4, 1);
+    disable_sprites(5, 1);
+    disable_sprites(6, 1);
+    disable_sprites(7, 1);
     for (i = 0, recs = gBattleBots; i <= 2; i++) {
         rec = gGameWork.openedFrom * 3 + i;
         if (recs[rec].teamState && i != gGameWork.shownId)
@@ -379,10 +379,10 @@ u32 status_side_change_scroll_out(void) {
     u32 i, rec, x;
     struct BattleBot *recs;
 
-    clear_sprite_table_mask(4, 1);
-    clear_sprite_table_mask(5, 1);
-    clear_sprite_table_mask(6, 1);
-    clear_sprite_table_mask(7, 1);
+    disable_sprites(4, 1);
+    disable_sprites(5, 1);
+    disable_sprites(6, 1);
+    disable_sprites(7, 1);
     if (gGameWork.openedFrom == 0) {
         for (i = 0, recs = gBattleBots; i <= 2; i++) {
             rec = gGameWork.openedFrom * 3 + i;
@@ -392,7 +392,7 @@ u32 status_side_change_scroll_out(void) {
             }
         }
         for (i = 0; i <= 12; i++)
-            gSpriteEntries[9 + i].unk2 -= 8;
+            gSpriteEntries[9 + i].x -= 8;
         read_vram_tilemap_rect(13, 6, 16 - gGameWork.medalRow, 13, REG_BG0CNT, (void *)0x02020000);
         write_vram_tilemap_rect(13, 6, 15 - gGameWork.medalRow, 13, REG_BG0CNT, (void *)0x02020000);
     } else {
@@ -405,7 +405,7 @@ u32 status_side_change_scroll_out(void) {
             }
         }
         for (i = 0; i <= 12; i++)
-            gSpriteEntries[9 + i].unk2 += 8;
+            gSpriteEntries[9 + i].x += 8;
         read_vram_tilemap_rect(13, 6, gGameWork.medalRow + 1, 13, REG_BG0CNT, (void *)0x02020000);
         write_vram_tilemap_rect(13, 6, gGameWork.medalRow + 2, 13, REG_BG0CNT, (void *)0x02020000);
     }
@@ -426,10 +426,10 @@ u32 status_side_change_scroll_in(void) {
     u32 i, rec, x;
     struct BattleBot *recs;
 
-    clear_sprite_table_mask(4, 1);
-    clear_sprite_table_mask(5, 1);
-    clear_sprite_table_mask(6, 1);
-    clear_sprite_table_mask(7, 1);
+    disable_sprites(4, 1);
+    disable_sprites(5, 1);
+    disable_sprites(6, 1);
+    disable_sprites(7, 1);
     if (gGameWork.openedFrom == 0) {
         for (i = 0, recs = gBattleBots; i <= 2; i++) {
             rec = gGameWork.openedFrom * 3 + i;

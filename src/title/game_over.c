@@ -102,24 +102,24 @@ void game_over_load_graphics(void) {
     CpuFastSet(gGameOverBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gGameOverObjPalettes, (void *)(PLTT + 0x200), 0x10);
     lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
-    gSpriteEntries[0].unk0 = 0x8A20;
-    gSpriteEntries[0].unk1C = 2;
-    gSpriteEntries[0].unk2 = 0x78;
-    gSpriteEntries[0].unk4 = -0x20;
-    gSpriteEntries[0].unkA = zero8;
-    gSpriteEntries[0].unk6 = 0x108;
-    gSpriteEntries[0].unk8 = 0x80;
-    gSpriteEntries[0].unk9 = 0x80;
-    gSpriteEntries[0].unk18 = zero16;
-    gSpriteEntries[1].unk0 = 0x8220;
-    gSpriteEntries[1].unk1C = 2;
-    gSpriteEntries[1].unk2 = 0x78;
-    gSpriteEntries[1].unk4 = -0x40;
-    gSpriteEntries[1].unkA = one;
-    gSpriteEntries[1].unk6 = 0x109;
-    gSpriteEntries[1].unk8 = 0x80;
-    gSpriteEntries[1].unk9 = 0x80;
-    gSpriteEntries[1].unk18 = zero16;
+    gSpriteEntries[0].flags = 0x8A20;
+    gSpriteEntries[0].frame_table = 2;
+    gSpriteEntries[0].x = 0x78;
+    gSpriteEntries[0].y = -0x20;
+    gSpriteEntries[0].palette = zero8;
+    gSpriteEntries[0].frame = 0x108;
+    gSpriteEntries[0].scale_x = 0x80;
+    gSpriteEntries[0].scale_y = 0x80;
+    gSpriteEntries[0].angle = zero16;
+    gSpriteEntries[1].flags = 0x8220;
+    gSpriteEntries[1].frame_table = 2;
+    gSpriteEntries[1].x = 0x78;
+    gSpriteEntries[1].y = -0x40;
+    gSpriteEntries[1].palette = one;
+    gSpriteEntries[1].frame = 0x109;
+    gSpriteEntries[1].scale_x = 0x80;
+    gSpriteEntries[1].scale_y = 0x80;
+    gSpriteEntries[1].angle = zero16;
     gMenuWork->timer = zero16;
     gMenuWork->shake_amplitude = 0x3C;
     gMenuWork->shake_speed = zero8;
@@ -141,7 +141,7 @@ void game_over_fade_in(void) {
         REG_BLDY = p->fade_level-- >> 1;
     } else {
         p->timer = 0;
-        gSpriteEntries[1].unk0 |= 0x4000;
+        gSpriteEntries[1].flags |= 0x4000;
         gSpriteEntries[1].unk1A = 0;
         gGameSubState++;
     }
@@ -152,22 +152,22 @@ void game_over_ikki_fall(void) {
     u32 c = s[1].unk1A;
     u16 zero;
 
-    s[1].unk6 = (c & 4) ? 0x109 : 0x10A;
+    s[1].frame = (c & 4) ? 0x109 : 0x10A;
     zero = 0;
     c = (u16)c;
     if ((u16)c < 0x78) {
-        s[1].unk4 = (s32)(s[1].unk1A * 0xA8) / 0x78 - 0x40;
-        s[1].unk8 = -0x80 - (s32)(s[1].unk1A * 64) / 0x78;
-        s[1].unk9 = -0x80 - (s32)(s[1].unk1A * 64) / 0x78;
-        s[1].unk18 = (c & 0x3F) * 16 + 0x340;
+        s[1].y = (s32)(s[1].unk1A * 0xA8) / 0x78 - 0x40;
+        s[1].scale_x = -0x80 - (s32)(s[1].unk1A * 64) / 0x78;
+        s[1].scale_y = -0x80 - (s32)(s[1].unk1A * 64) / 0x78;
+        s[1].angle = (c & 0x3F) * 16 + 0x340;
         s[1].unk1A = c + 1;
     } else {
         REG_DISPCNT |= 0x100;
-        s[1].unk6 = 0x10B;
-        s[1].unk8 = 0x40;
-        s[1].unk9 = 0x40;
-        s[1].unk4 = 0x68;
-        s[1].unk18 = zero;
+        s[1].frame = 0x10B;
+        s[1].scale_x = 0x40;
+        s[1].scale_y = 0x40;
+        s[1].y = 0x68;
+        s[1].angle = zero;
         s[1].unk1A = zero;
         gMenuWork->frame = zero;
         gGameSubState++;
@@ -187,25 +187,25 @@ void game_over_logo_drop(void) {
             play_sound_effect(0x17);
         }
         if (gMenuWork->frame <= 3)
-            gSpriteEntries[1].unk4--;
+            gSpriteEntries[1].y--;
         else
-            gSpriteEntries[1].unk4++;
+            gSpriteEntries[1].y++;
     } else {
         if ((u16)p->frame <= 0x31)
             p->frame++;
         t = gMenuWork->frame - 9;
         if (t == 0)
-            gSpriteEntries[0].unk0 |= 0x4000;
+            gSpriteEntries[0].flags |= 0x4000;
         if (t <= 0x13) {
             s32 q = (t << 6) / 20;
 
             y = q - 0x20;
-            gSpriteEntries[0].unk9 = gSpriteEntries[0].unk8 = -0x80 - q;
+            gSpriteEntries[0].scale_y = gSpriteEntries[0].scale_x = -0x80 - q;
         } else {
             t -= 0x14;
             if (t == 0) {
-                gSpriteEntries[0].unk8 = 0x40;
-                gSpriteEntries[0].unk9 = 0x40;
+                gSpriteEntries[0].scale_x = 0x40;
+                gSpriteEntries[0].scale_y = 0x40;
             }
             if (t <= 0xC)
                 y = gGameOverLogoBounce[t] + 0x20;
@@ -218,13 +218,13 @@ void game_over_logo_drop(void) {
                     done = 1;
             }
         }
-        gSpriteEntries[0].unk4 = y;
+        gSpriteEntries[0].y = y;
     }
     if (++gSpriteEntries[1].unk1A > 0x47)
         gSpriteEntries[1].unk1A = 0;
-    gSpriteEntries[1].unk6 = gGameOverIkkiFrames[gSpriteEntries[1].unk1A / 6];
+    gSpriteEntries[1].frame = gGameOverIkkiFrames[gSpriteEntries[1].unk1A / 6];
     if ((KEYS_LO(gNewKeys) & 1) && done) {
-        gSpriteEntries[1].unk0 = 0xCA20;
+        gSpriteEntries[1].flags = 0xCA20;
         gMenuWork->frame = 0;
         gGameSubState += 2;
     }
@@ -249,7 +249,7 @@ void game_over_wipe_out(void) {
     game_over_draw_wipe(p->frame + 8);
     if (++gSpriteEntries[1].unk1A > 0x47)
         gSpriteEntries[1].unk1A = 0;
-    gSpriteEntries[1].unk6 = gGameOverIkkiFramesExit[(u16)(gSpriteEntries[1].unk1A / 6)];
+    gSpriteEntries[1].frame = gGameOverIkkiFramesExit[(u16)(gSpriteEntries[1].unk1A / 6)];
     p = gMenuWork;
     if (p->frame > 13) {
         p->fade_level = 0;

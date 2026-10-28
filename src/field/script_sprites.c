@@ -46,16 +46,16 @@ u32 script_sprite_update_walk(u8 slot, u8 mode) {
     if (spr->unk28 != 0) {
         switch (spr->unk20) {
         case 0:
-            spr->unk10_8 -= sprite_walk_speed(slot);
+            spr->pos_y -= sprite_walk_speed(slot);
             break;
         case 1:
-            spr->unk10_8 += sprite_walk_speed(slot);
+            spr->pos_y += sprite_walk_speed(slot);
             break;
         case 2:
-            spr->unkC_8 -= sprite_walk_speed(slot);
+            spr->pos_x -= sprite_walk_speed(slot);
             break;
         case 3:
-            spr->unkC_8 += sprite_walk_speed(slot);
+            spr->pos_x += sprite_walk_speed(slot);
             break;
         }
         if (mode)
@@ -114,7 +114,7 @@ void spawn_script_sprite(u8 flags, u8 part, u8 x, u8 y) {
     script_object_set_slot(idx, find_free_script_sprite_slot());
     init_script_sprite(script_object_slot(idx), part, x, y);
     if (flags & 0x40)
-        gSpriteEntries[script_object_slot(idx) + 0x4F].unk10_8 += 5;
+        gSpriteEntries[script_object_slot(idx) + 0x4F].pos_y += 5;
 }
 
 // Sets up script sprite idx + 0x4F at tile (x, y), plus an overlay sprite at idx + 0x79 on some tiles.
@@ -130,8 +130,8 @@ static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y) {
     spr = &gSpriteEntries[slot];
     spr->unk2B = anim;
     spr->unk20 = sprite_code_direction(part);
-    spr->unkC_8 = x * 16 + gFieldWork.map_origin_x;
-    spr->unk10_8 = y * 16 + gFieldWork.map_origin_y;
+    spr->pos_x = x * 16 + gFieldWork.map_origin_x;
+    spr->pos_y = y * 16 + gFieldWork.map_origin_y;
     gEntityStates[slot].active = 0xFFFF;
     spr->unk2C = 0;
     tile = area_sprite_sheet_id(spr->unk2B);
@@ -139,8 +139,8 @@ static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y) {
     sprite_set_blend_from_kind(slot);
     if (gSpriteSheetHasShadow[tile]) {
         sprite_entry_init(idx + 0x79, 0xCC0C, 0x90, 0xE, 1);
-        gSpriteEntries[idx + 0x79].unkC_8 = spr->unkC_8;
-        gSpriteEntries[idx + 0x79].unk10_8 = spr->unk10_8 - 5;
+        gSpriteEntries[idx + 0x79].pos_x = spr->pos_x;
+        gSpriteEntries[idx + 0x79].pos_y = spr->pos_y - 5;
     }
 }
 
@@ -150,8 +150,8 @@ void despawn_script_sprite(u8 arg) {
     u32 id = arg & 0xF;
 
     if (arg & 0xF0) {
-        u8 x = field_pixel_x_to_tile(gSpriteEntries[script_object_slot(id) + 79].unkC_8);
-        u8 y = field_pixel_y_to_tile(gSpriteEntries[script_object_slot(id) + 79].unk10_8);
+        u8 x = field_pixel_x_to_tile(gSpriteEntries[script_object_slot(id) + 79].pos_x);
+        u8 y = field_pixel_y_to_tile(gSpriteEntries[script_object_slot(id) + 79].pos_y);
 
         if (find_map_event_by_coords(x, y) && gFieldSceneParams.warp_sound)
             field_play_sound_effect(gWarpSoundEffects[gFieldSceneParams.warp_sound]);
@@ -168,8 +168,8 @@ void save_script_sprites(void) {
     memzero_bytes((u8 *)gFieldWork.sprite_snapshot, sizeof(gFieldWork.sprite_snapshot));
     for (i = 0; i <= 5; i++) {
         if (gEntityStates[i + 79].active) {
-            gFieldWork.sprite_snapshot[i].x = field_pixel_x_to_tile(gSpriteEntries[i + 79].unkC_8);
-            gFieldWork.sprite_snapshot[i].y = field_pixel_y_to_tile(gSpriteEntries[i + 79].unk10_8);
+            gFieldWork.sprite_snapshot[i].x = field_pixel_x_to_tile(gSpriteEntries[i + 79].pos_x);
+            gFieldWork.sprite_snapshot[i].y = field_pixel_y_to_tile(gSpriteEntries[i + 79].pos_y);
             gFieldWork.sprite_snapshot[i].anim =
                 ((gSpriteEntries[i + 79].unk2B & 0xF) << 4) | (gSpriteEntries[i + 79].unk20 & 3);
             gFieldWork.sprite_snapshot[i].id = i;
@@ -194,7 +194,7 @@ void restore_script_sprites(void) {
 u32 find_free_script_sprite_slot(void) {
     s32 i;
     for (i = 0; i < 6; i++) {
-        if (!(gSpriteEntries[i + 79].unk0 & 0x4000) && !gSpriteEntries[i + 79].unk2E)
+        if (!(gSpriteEntries[i + 79].flags & 0x4000) && !gSpriteEntries[i + 79].unk2E)
             break;
     }
     if (i == 6)
@@ -204,21 +204,21 @@ u32 find_free_script_sprite_slot(void) {
 
 void script_object_set_direction(u8 id, u8 state) {
     gSpriteEntries[script_object_slot(id) + 79].unk20 = state;
-    gSpriteEntries[script_object_slot(id) + 79].unk6 = script_object_anim_index(id, state);
+    gSpriteEntries[script_object_slot(id) + 79].frame = script_object_anim_index(id, state);
 }
 
 void sprite_set_blend(u32 idx, u8 val) {
-    gSpriteEntries[idx].unkB = val;
+    gSpriteEntries[idx].order = val;
 }
 
 void script_object_set_blend(u8 i, u32 val) {
-    gSpriteEntries[script_object_slot(i) + 79].unkB = val;
+    gSpriteEntries[script_object_slot(i) + 79].order = val;
 }
 
 // OAM priority (bits 10-11) of a sprite entry.
 void sprite_set_priority(u32 idx, u32 val) {
     u32 v = (gSpriteEntries[idx].unk32 & 0xF3FF) | (val << 10);
-    gSpriteEntries[idx].unk0 = v;
+    gSpriteEntries[idx].flags = v;
     gSpriteEntries[idx].unk32 = v;
 }
 
@@ -239,15 +239,15 @@ u32 script_sprite_blink_step(u8 slot) {
         }
         if (gScriptCmdWork.blink_phase & 1) {
             gSpriteEntries[slot].unk2D = 1;
-            gSpriteEntries[slot].unk0 = 0;
+            gSpriteEntries[slot].flags = 0;
         } else {
             gSpriteEntries[slot].unk2D = 0;
-            gSpriteEntries[slot].unk0 = gSpriteEntries[slot].unk32;
+            gSpriteEntries[slot].flags = gSpriteEntries[slot].unk32;
         }
         gScriptCmdWork.counter--;
     } else {
         gSpriteEntries[slot].unk2D = 0;
-        gSpriteEntries[slot].unk0 = gSpriteEntries[slot].unk32;
+        gSpriteEntries[slot].flags = gSpriteEntries[slot].unk32;
         ret = 1;
     }
     return ret;
@@ -280,18 +280,18 @@ u32 script_sprite_hop_step(void) {
     u32 ret = 0;
 
     if (gSpriteEntries[gScriptCmdWork.sprite_slot].unk28 < 16) {
-        gSpriteEntries[gScriptCmdWork.sprite_slot].unk10_8 =
+        gSpriteEntries[gScriptCmdWork.sprite_slot].pos_y =
             gScriptCmdWork.hop_base_y - gJumpArcTable[gSpriteEntries[gScriptCmdWork.sprite_slot].unk28][0] / 16;
         gSpriteEntries[gScriptCmdWork.sprite_slot].unk2C =
             gJumpArcTable[gSpriteEntries[gScriptCmdWork.sprite_slot].unk28][0] / 16;
         gSpriteEntries[gScriptCmdWork.sprite_slot].unk28++;
-        if (gSpriteEntries[gScriptCmdWork.sprite_slot].unk10_8 / 4 <= (gScriptCmdWork.hop_base_y - 16) / 4)
-            gSpriteEntries[gScriptCmdWork.sprite_slot].unkB = 0xFF;
+        if (gSpriteEntries[gScriptCmdWork.sprite_slot].pos_y / 4 <= (gScriptCmdWork.hop_base_y - 16) / 4)
+            gSpriteEntries[gScriptCmdWork.sprite_slot].order = 0xFF;
         else
             sprite_set_blend_from_kind(gScriptCmdWork.sprite_slot);
     } else {
         sprite_set_blend_from_kind(gScriptCmdWork.sprite_slot);
-        gSpriteEntries[gScriptCmdWork.sprite_slot].unk10_8 = gScriptCmdWork.hop_base_y;
+        gSpriteEntries[gScriptCmdWork.sprite_slot].pos_y = gScriptCmdWork.hop_base_y;
         gSpriteEntries[gScriptCmdWork.sprite_slot].unk2C = 0;
         ret = 1;
     }
@@ -311,7 +311,7 @@ u32 script_sprite_jump_step(void) {
         s->unk2A = 0;
         s->unk20 = gFieldWork.cmd_args[1];
         sprite_anim_start(slot, sprite_walk_anim_id(slot, gFieldWork.cmd_args[1]));
-        s->unk34 = s->unk10_8;
+        s->unk34 = s->pos_y;
         field_play_sound_effect(0x70);
         s->unk26++;
         break;
@@ -325,27 +325,27 @@ u32 script_sprite_jump_step(void) {
                 s->unk34 += sprite_walk_speed(slot);
                 break;
             case 2:
-                s->unkC_8 -= sprite_walk_speed(slot);
+                s->pos_x -= sprite_walk_speed(slot);
                 break;
             case 3:
-                s->unkC_8 += sprite_walk_speed(slot);
+                s->pos_x += sprite_walk_speed(slot);
                 break;
             }
-            gSpriteEntries[slot].unk10_8 =
+            gSpriteEntries[slot].pos_y =
                 gSpriteEntries[slot].unk34 -
                 gJumpArcTable[0][gSpriteEntries[slot].unk28 * (sprite_walk_speed(slot) << 2)] / 16;
             gSpriteEntries[slot].unk2C =
                 gJumpArcTable[0][gSpriteEntries[slot].unk28 * (sprite_walk_speed(slot) << 2)] / 16;
             gSpriteEntries[slot].unk28++;
-            if (gSpriteEntries[slot].unkB != 0xFF) {
-                if (gSpriteEntries[slot].unk10_8 / 4 <= (gSpriteEntries[slot].unk34 - 16) / 4)
-                    gSpriteEntries[slot].unkB = 0xFE;
+            if (gSpriteEntries[slot].order != 0xFF) {
+                if (gSpriteEntries[slot].pos_y / 4 <= (gSpriteEntries[slot].unk34 - 16) / 4)
+                    gSpriteEntries[slot].order = 0xFE;
                 else
                     sprite_set_blend_from_kind(slot);
             }
         } else {
             sprite_set_blend_from_kind(slot);
-            s->unk10_8 = s->unk34;
+            s->pos_y = s->unk34;
             s->unk2C = 0;
             ret = 1;
         }

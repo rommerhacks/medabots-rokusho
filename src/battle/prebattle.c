@@ -402,15 +402,15 @@ void afterbattle_load_new_part_sprite(void) {
     setup_battle_result_sprite();
     lz_decompress_dispatch(gNewPartSpriteTiles, (void *)0x06012400);
     DmaSet(3, gResultSpritePalettes, 0x05000340, 0x84000008);
-    gSpriteEntries[1].unk0 = 0xC624;
-    gSpriteEntries[1].unk1C = 0;
-    gSpriteEntries[1].unk2 = 0xC0;
-    gSpriteEntries[1].unk4 = 0x60;
-    gSpriteEntries[1].unkA = 10;
-    gSpriteEntries[1].unkB = 0xC0;
-    gSpriteEntries[1].unk6 = 0x5900;
-    gSpriteEntries[1].unk9 = 0x40;
-    gSpriteEntries[1].unk8 = 0x40;
+    gSpriteEntries[1].flags = 0xC624;
+    gSpriteEntries[1].frame_table = 0;
+    gSpriteEntries[1].x = 0xC0;
+    gSpriteEntries[1].y = 0x60;
+    gSpriteEntries[1].palette = 10;
+    gSpriteEntries[1].order = 0xC0;
+    gSpriteEntries[1].frame = 0x5900;
+    gSpriteEntries[1].scale_y = 0x40;
+    gSpriteEntries[1].scale_x = 0x40;
     gSpriteEntries[1].unk23 = 0;
     gSpriteEntries[1].unk28 = 0;
     play_sound_effect(0x2A);
@@ -432,13 +432,13 @@ void afterbattle_load_part_icon_sprite(void) {
     afterbattle_pulse_new_sprite();
     lz_decompress_dispatch(gPartIconSpriteTiles, (void *)0x06016C00);
     DmaSet(3, gPartIconSpritePalette, 0x05000360, 0x84000008);
-    gSpriteEntries[2].unk0 = 0xC404;
-    gSpriteEntries[2].unk1C = 0;
-    gSpriteEntries[2].unk2 = 8;
-    gSpriteEntries[2].unk4 = 0x50;
-    gSpriteEntries[2].unkA = 11;
-    gSpriteEntries[2].unkB = 0xC0;
-    gSpriteEntries[2].unk6 = 0x5A00;
+    gSpriteEntries[2].flags = 0xC404;
+    gSpriteEntries[2].frame_table = 0;
+    gSpriteEntries[2].x = 8;
+    gSpriteEntries[2].y = 0x50;
+    gSpriteEntries[2].palette = 11;
+    gSpriteEntries[2].order = 0xC0;
+    gSpriteEntries[2].frame = 0x5A00;
     gGameSubState++;
 }
 
@@ -1035,12 +1035,12 @@ void draw_opponent_leg_type_icons(void) {
 // Shows sprite 0 when the player owns a Rubberobo Medal (item 50) outside debug battles.
 static void prebattle_init_rubberobo_sprite(void) {
     if (!gGameWork.unk132 && get_item_quantity_by_id(50) && !gFieldWork.fixed_battle) {
-        gSpriteEntries[0].unk0 = 0xC404;
-        gSpriteEntries[0].unk2 = 8;
-        gSpriteEntries[0].unk4 = 0x50;
-        gSpriteEntries[0].unkA = 11;
-        gSpriteEntries[0].unkB = 0xC0;
-        gSpriteEntries[0].unk6 = 0x700;
+        gSpriteEntries[0].flags = 0xC404;
+        gSpriteEntries[0].x = 8;
+        gSpriteEntries[0].y = 0x50;
+        gSpriteEntries[0].palette = 11;
+        gSpriteEntries[0].order = 0xC0;
+        gSpriteEntries[0].frame = 0x700;
     }
 }
 
@@ -1166,10 +1166,10 @@ static void setup_battle_result_sprite(void) {
 static void afterbattle_pulse_new_sprite(void) {
     if (gBattleWork.wonPartNew) {
         if (!gSpriteEntries[1].unk28) {
-            if ((u8)(gSpriteEntries[1].unk9 += 2) == 0x80)
+            if ((u8)(gSpriteEntries[1].scale_y += 2) == 0x80)
                 gSpriteEntries[1].unk28 = 1;
         } else {
-            if ((u8)(gSpriteEntries[1].unk9 -= 2) == 0x40)
+            if ((u8)(gSpriteEntries[1].scale_y -= 2) == 0x40)
                 gSpriteEntries[1].unk28 = 0;
         }
     }

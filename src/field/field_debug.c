@@ -651,20 +651,20 @@ static void field_debug_draw_decimal3(u8 *value, s32 x, s32 y) {
 
     DmaSet(3, &gFieldDebugFont[(hundreds + '0') * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
     sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
-    gSpriteEntries[gFieldDebug.next_sprite].unk2 = x;
-    gSpriteEntries[gFieldDebug.next_sprite].unk4 = y;
+    gSpriteEntries[gFieldDebug.next_sprite].x = x;
+    gSpriteEntries[gFieldDebug.next_sprite].y = y;
     gFieldDebug.next_sprite++;
 
     DmaSet(3, &gFieldDebugFont[(tens + '0') * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
     sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
-    gSpriteEntries[gFieldDebug.next_sprite].unk2 = x + 8;
-    gSpriteEntries[gFieldDebug.next_sprite].unk4 = y;
+    gSpriteEntries[gFieldDebug.next_sprite].x = x + 8;
+    gSpriteEntries[gFieldDebug.next_sprite].y = y;
     gFieldDebug.next_sprite++;
 
     DmaSet(3, &gFieldDebugFont[(ones + '0') * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
     sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
-    gSpriteEntries[gFieldDebug.next_sprite].unk2 = x + 16;
-    gSpriteEntries[gFieldDebug.next_sprite].unk4 = y;
+    gSpriteEntries[gFieldDebug.next_sprite].x = x + 16;
+    gSpriteEntries[gFieldDebug.next_sprite].y = y;
     gFieldDebug.next_sprite++;
 }
 
@@ -699,14 +699,14 @@ static void field_debug_draw_hex(u32 value, s32 bits, s32 x, s32 y) {
 
         DmaSet(3, &gFieldDebugFont[hex[hi] * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
         sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
-        gSpriteEntries[gFieldDebug.next_sprite].unk2 = x + i * 16;
-        gSpriteEntries[gFieldDebug.next_sprite].unk4 = y;
+        gSpriteEntries[gFieldDebug.next_sprite].x = x + i * 16;
+        gSpriteEntries[gFieldDebug.next_sprite].y = y;
         gFieldDebug.next_sprite++;
 
         DmaSet(3, &gFieldDebugFont[hex[lo] * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
         sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
-        gSpriteEntries[gFieldDebug.next_sprite].unk2 = x + i * 16 + 8;
-        gSpriteEntries[gFieldDebug.next_sprite].unk4 = y;
+        gSpriteEntries[gFieldDebug.next_sprite].x = x + i * 16 + 8;
+        gSpriteEntries[gFieldDebug.next_sprite].y = y;
         gFieldDebug.next_sprite++;
     }
 }
@@ -717,8 +717,8 @@ void field_debug_draw_label(const u8 *digits, s32 count, s32 x, s32 y) {
     for (i = 0; i < count; i++) {
         DmaSet(3, &gFieldDebugFont[*digits * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
         sprite_entry_init(gFieldDebug.next_sprite, 0xC004, gFieldDebug.next_sprite + 0x99, 14, 1);
-        gSpriteEntries[gFieldDebug.next_sprite].unk2 = x;
-        gSpriteEntries[gFieldDebug.next_sprite].unk4 = y;
+        gSpriteEntries[gFieldDebug.next_sprite].x = x;
+        gSpriteEntries[gFieldDebug.next_sprite].y = y;
         x += 8;
         gFieldDebug.next_sprite++;
         digits++;
@@ -731,16 +731,16 @@ static inline void init_field_sprite(u8 row, u8 col) {
     u8 j = slot + 42;
 
     gSpriteEntries[slot].unk30 = gFieldDebug.unk20;
-    gSpriteEntries[slot].unkC_8 = gFieldPlayerX + (col * 32 - 48);
-    gSpriteEntries[slot].unk10_8 = gFieldPlayerY + (16 - row * 32);
-    gSpriteEntries[slot].unk0 = 0xC804;
+    gSpriteEntries[slot].pos_x = gFieldPlayerX + (col * 32 - 48);
+    gSpriteEntries[slot].pos_y = gFieldPlayerY + (16 - row * 32);
+    gSpriteEntries[slot].flags = 0xC804;
     gSpriteEntries[slot].unk2E = 1;
-    gSpriteEntries[j].unk0 = 0xCC0C;
-    gSpriteEntries[slot].unk2 = gSpriteEntries[slot].unkC_8 - (u16)gBg1Scroll.x;
-    gSpriteEntries[slot].unk4 = gSpriteEntries[slot].unk10_8 - (u16)gBg1Scroll.y;
-    gSpriteEntries[j].unk2 = gSpriteEntries[slot].unk2;
-    gSpriteEntries[j].unk4 = gSpriteEntries[slot].unk4 + (s16)(gSpriteEntries[slot].unk2C - 5);
-    gSpriteEntries[slot].unk6 = row * 48 + col * 15;
+    gSpriteEntries[j].flags = 0xCC0C;
+    gSpriteEntries[slot].x = gSpriteEntries[slot].pos_x - (u16)gBg1Scroll.x;
+    gSpriteEntries[slot].y = gSpriteEntries[slot].pos_y - (u16)gBg1Scroll.y;
+    gSpriteEntries[j].x = gSpriteEntries[slot].x;
+    gSpriteEntries[j].y = gSpriteEntries[slot].y + (s16)(gSpriteEntries[slot].unk2C - 5);
+    gSpriteEntries[slot].frame = row * 48 + col * 15;
     sprite_anim_start(slot, 4 + row * 16 + col * 5);
 }
 
@@ -767,17 +767,17 @@ void field_debug_draw_sprite_preview(void) {
         if (gSpriteSheetPreviewKinds[gFieldDebug.unk20] == 3) {
             sprite_entry_init(slot, 0xC804, sprite_code_anim_index(0), sprite_code_kind(0), 1);
             gSpriteEntries[slot].unk2B = sprite_code_kind(0);
-            gSpriteEntries[slot].unkC_8 = gFieldPlayerX - 0x30;
-            gSpriteEntries[slot].unk10_8 = gFieldPlayerY + 0x30;
+            gSpriteEntries[slot].pos_x = gFieldPlayerX - 0x30;
+            gSpriteEntries[slot].pos_y = gFieldPlayerY + 0x30;
             gEntityStates[slot].active = 0xFFFF;
             gSpriteEntries[slot].unk2C = zero = 0;
             sprite_anim_start(slot, 0x60);
         }
-        gSpriteEntries[j].unk0 = zero;
+        gSpriteEntries[j].flags = zero;
         if (gSpriteSheetHasShadow[gFieldDebug.unk20] != 0) {
-            gSpriteEntries[j].unk0 = 0xCC0C;
-            gSpriteEntries[j].unk2 = gSpriteEntries[slot].unk2;
-            gSpriteEntries[j].unk4 = gSpriteEntries[slot].unk4 + (s16)(gSpriteEntries[slot].unk2C - 5);
+            gSpriteEntries[j].flags = 0xCC0C;
+            gSpriteEntries[j].x = gSpriteEntries[slot].x;
+            gSpriteEntries[j].y = gSpriteEntries[slot].y + (s16)(gSpriteEntries[slot].unk2C - 5);
         }
     }
 }

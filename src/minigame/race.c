@@ -311,14 +311,14 @@ void race_load_track_status_bar(void) {
     race_draw_tile_block(4, 0x15, 0xE);
     REG_BG1CNT = 0x1D0D;
     sprite_entry_init(1, 0xC400, 0x6F, 8, 1);
-    gSpriteEntries[1].unk2 = 0xF;
-    gSpriteEntries[1].unk4 = 0x7F;
+    gSpriteEntries[1].x = 0xF;
+    gSpriteEntries[1].y = 0x7F;
     sprite_entry_init(2, 0xC400, 0x7B, 9, 1);
-    gSpriteEntries[2].unk2 = 0x5F;
-    gSpriteEntries[2].unk4 = 0x7F;
+    gSpriteEntries[2].x = 0x5F;
+    gSpriteEntries[2].y = 0x7F;
     sprite_entry_init(3, 0xC400, 0x87, 10, 1);
-    gSpriteEntries[3].unk2 = 0xAF;
-    gSpriteEntries[3].unk4 = 0x7F;
+    gSpriteEntries[3].x = 0xAF;
+    gSpriteEntries[3].y = 0x7F;
 }
 
 static inline u32 tilemap_addr(u32 base, u16 col, u16 row) {
@@ -405,7 +405,7 @@ void race_refresh_runner_sprite(u8 idx, u8 anim) {
     setup_battle_sprite_group(gRaceRunnerParts[team][0][runner], gRaceRunnerParts[team][1][runner],
                               gRaceRunnerParts[team][2][runner], gRaceRunnerParts[team][3][runner],
                               team * 3 - (k = runner - 2), gRaceRunnerSlots[team][runner] - 3,
-                              gSpriteEntries[gRaceRunnerSlots[team][runner]].unk2, params.b[team], anim, n, 5);
+                              gSpriteEntries[gRaceRunnerSlots[team][runner]].x, params.b[team], anim, n, 5);
 }
 
 static void race_place_runner(u8 idx, s16 x, s16 y, u8 h, u8 anim) {
@@ -436,33 +436,33 @@ static void race_place_all_runners(void) {
     for (i = 0; i <= 8; i++)
         ((void (*)(int, int, int, int, int))sprite_entry_init)(i + 20, 0xCC00, 0x110, 0xD, 3);
     for (i = 0; i <= 2; i++) {
-        gSpriteEntries[20 + i * 3].unk2 = 0x2C;
-        gSpriteEntries[21 + i * 3].unk2 = -32;
-        gSpriteEntries[22 + i * 3].unk2 = -32;
-        gSpriteEntries[20 + i].unk4 = 0x2D;
-        gSpriteEntries[23 + i].unk4 = 0x45;
-        gSpriteEntries[26 + i].unk4 = 0x5D;
+        gSpriteEntries[20 + i * 3].x = 0x2C;
+        gSpriteEntries[21 + i * 3].x = -32;
+        gSpriteEntries[22 + i * 3].x = -32;
+        gSpriteEntries[20 + i].y = 0x2D;
+        gSpriteEntries[23 + i].y = 0x45;
+        gSpriteEntries[26 + i].y = 0x5D;
     }
     DmaSet(3, gMenuObjPalettes, 0x05000200, 0x84000040);
 }
 
 static void race_init_referee_sprite(void) {
     sprite_entry_init(0, 0xC004, 0x33, 0, 1);
-    gSpriteEntries[0].unk2 = -16;
+    gSpriteEntries[0].x = -16;
 }
 
 static void race_init_pointer_sprite(void) {
     sprite_entry_init(1, 0xC404, 0x100, 1, 3);
-    gSpriteEntries[1].unk2 = 0x28;
-    gSpriteEntries[1].unk4 = 0x10;
+    gSpriteEntries[1].x = 0x28;
+    gSpriteEntries[1].y = 0x10;
     gSpriteEntries[1].unk1A = 0;
     DmaSet(3, gRacePointerObjPalette, 0x05000220, 0x84000008);
 }
 
 static void race_init_signal_sprite(void) {
     sprite_entry_init(0, 0xC400, 0x104, 0xC, 3);
-    gSpriteEntries[0].unk2 = 0x78;
-    gSpriteEntries[0].unk4 = -16;
+    gSpriteEntries[0].x = 0x78;
+    gSpriteEntries[0].y = -16;
     gSpriteEntries[0].unk1A = 0;
     DmaSet(3, gRaceSignalObjPalettes, 0x05000380, 0x84000008);
     DmaSet(3, gRaceSignalObjPalettes + 0x30, 0x05000360, 0x84000008);
@@ -470,7 +470,7 @@ static void race_init_signal_sprite(void) {
 
 static void race_init_winner_sprite(void) {
     sprite_entry_init(1, 0xC808, 0x10B, 3, 3);
-    gSpriteEntries[1].unk4 = 0x40;
+    gSpriteEntries[1].y = 0x40;
     gSpriteEntries[1].unk1A = 0;
     DmaSet(3, gRaceWinnerObjPalette, 0x05000260, 0x84000008);
     REG_BLDCNT = 0xC40;
@@ -479,22 +479,22 @@ static void race_init_winner_sprite(void) {
 
 static void race_init_place_sprites(void) {
     sprite_entry_init(2, 0xCB20, 0x108, 2, 3);
-    gSpriteEntries[2].unk4 = 0xC8;
-    gSpriteEntries[2].unk8 = 0x88;
-    gSpriteEntries[2].unk9 = 0x88;
-    gSpriteEntries[2].unk18 = 0;
+    gSpriteEntries[2].y = 0xC8;
+    gSpriteEntries[2].scale_x = 0x88;
+    gSpriteEntries[2].scale_y = 0x88;
+    gSpriteEntries[2].angle = 0;
     gSpriteEntries[2].unk1A = 0;
     sprite_entry_init(3, 0xCB20, 0x109, 2, 3);
-    gSpriteEntries[3].unk4 = 0xC8;
-    gSpriteEntries[3].unk8 = 0x88;
-    gSpriteEntries[3].unk9 = 0x88;
-    gSpriteEntries[3].unk18 = 0;
+    gSpriteEntries[3].y = 0xC8;
+    gSpriteEntries[3].scale_x = 0x88;
+    gSpriteEntries[3].scale_y = 0x88;
+    gSpriteEntries[3].angle = 0;
     gSpriteEntries[3].unk1A = 0;
     sprite_entry_init(4, 0xCB20, 0x10A, 2, 3);
-    gSpriteEntries[4].unk4 = 0xC8;
-    gSpriteEntries[4].unk8 = 0x88;
-    gSpriteEntries[4].unk9 = 0x88;
-    gSpriteEntries[4].unk18 = 0;
+    gSpriteEntries[4].y = 0xC8;
+    gSpriteEntries[4].scale_x = 0x88;
+    gSpriteEntries[4].scale_y = 0x88;
+    gSpriteEntries[4].angle = 0;
     gSpriteEntries[4].unk1A = 0;
     DmaSet(3, gRacePlaceObjPalette, 0x05000240, 0x84000008);
 }
@@ -585,7 +585,7 @@ bool32 race_introduce_teams_step(void) {
             setup = gEncounterSetups[gRaces[gRaceId].rival1Setup];
             race_set_message_name(gTextArgBuffer, (u8 *)gOpponentNames[setup[0]]);
             race_set_sprite_motion(0, 2, 0x40, 0);
-            gSpriteEntries[1].unk2 = 0x68;
+            gSpriteEntries[1].x = 0x68;
             gRaceStep++;
         }
         break;
@@ -601,7 +601,7 @@ bool32 race_introduce_teams_step(void) {
             setup = gEncounterSetups[gRaces[gRaceId].rival2Setup];
             race_set_message_name(gTextArgBuffer, (u8 *)gOpponentNames[setup[0]]);
             race_set_sprite_motion(0, 2, 0x40, 0);
-            gSpriteEntries[1].unk2 = 0xA8;
+            gSpriteEntries[1].x = 0xA8;
             gRaceStep++;
         }
         break;
@@ -660,14 +660,14 @@ static bool32 race_results_step(void) {
         if (gRaceStep == 6) {
             race_init_place_sprites();
             race_set_sprite_motion(4, 7, 2, 0);
-            gSpriteEntries[4].unk2 = (gRaceFinishOrder[2] - 1) * 64 + 0x38;
-            gSpriteEntries[4].unk4 = 0x18;
+            gSpriteEntries[4].x = (gRaceFinishOrder[2] - 1) * 64 + 0x38;
+            gSpriteEntries[4].y = 0x18;
             race_set_sprite_motion(3, 7, 1, 0);
-            gSpriteEntries[3].unk2 = (gRaceFinishOrder[1] - 1) * 64 + 0x38;
-            gSpriteEntries[3].unk4 = 0x18;
+            gSpriteEntries[3].x = (gRaceFinishOrder[1] - 1) * 64 + 0x38;
+            gSpriteEntries[3].y = 0x18;
             race_set_sprite_motion(2, 7, 0, 0);
-            gSpriteEntries[2].unk2 = (gRaceFinishOrder[0] - 1) * 64 + 0x38;
-            gSpriteEntries[2].unk4 = 0x18;
+            gSpriteEntries[2].x = (gRaceFinishOrder[0] - 1) * 64 + 0x38;
+            gSpriteEntries[2].y = 0x18;
         }
         race_reveal_portrait_row(gRaceStep - 6);
     default:
@@ -679,7 +679,7 @@ static bool32 race_results_step(void) {
         REG_BLDCNT = 0x7F;
         race_init_winner_sprite();
         race_set_sprite_motion(1, 6, 0, 0);
-        gSpriteEntries[1].unk2 = (gRaceFinishOrder[0] - 1) * 64 + 0x18;
+        gSpriteEntries[1].x = (gRaceFinishOrder[0] - 1) * 64 + 0x18;
         message_next();
         gRaceStep++;
         break;
@@ -858,7 +858,7 @@ void race_update_runners(void) {
                         variant &= 3;
                         // the original passes k + 4 untruncated: called without (or with an int-slot) prototype
                         ((void (*)())sprite_entry_init)(k + 4, 0xC400, variant + 0x10C, 0xB, 3);
-                        gSpriteEntries[k + 4].unkB = 0x64;
+                        gSpriteEntries[k + 4].order = 0x64;
                         race_set_sprite_motion(k + 4, 8, variant, (k * 16) & 0x7F);
                     }
                 } else if (gRaceFinishOrder[1] == 0)
@@ -876,18 +876,18 @@ void race_update_runners(void) {
         if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk3A <= 0x157 &&
             gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A > 0x157) {
             race_refresh_runner_sprite(i * 3 + gRaceRunner[i], 1);
-            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]] - 3].unkB -= 4;
-            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]] - 2].unkB -= 4;
-            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]] - 1].unkB -= 4;
-            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unkB -= 4;
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]] - 3].order -= 4;
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]] - 2].order -= 4;
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]] - 1].order -= 4;
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].order -= 4;
             if (gRaceRunner[i] <= 1)
                 gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2A = 2;
         }
         if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A > 0x158)
-            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk2 =
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].x =
                 0xD8 - ((gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A - 0x158) >> 1);
         else {
-            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk2 =
+            gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].x =
                 (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A >> 1) + 0x2C;
             if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk3A <= 0x97 &&
                 gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A > 0x97 && gRaceRunner[i] <= 1) {
@@ -900,7 +900,7 @@ void race_update_runners(void) {
         gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk1A++;
         update_battle_sprite_orbiting_positions(gRaceRunnerSlots[i][gRaceRunner[i]] - 3, i * 3 - sub2(gRaceRunner[i]),
                                                 0);
-        gSpriteEntries[i * 3 + add14(gRaceRunner[i])].unk2 = gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].unk2;
+        gSpriteEntries[i * 3 + add14(gRaceRunner[i])].x = gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i]]].x;
     }
 }
 
@@ -918,34 +918,32 @@ static void race_update_next_runners(void) {
         if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2A == 1) {
             update_battle_sprite_orbiting_positions(gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3,
                                                     i * 3 - sub1(gRaceRunner[i]), 0);
-            gSpriteEntries[gRaceRunner[i] + i * 3 + 0x15].unk2 =
-                gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2;
+            gSpriteEntries[gRaceRunner[i] + i * 3 + 0x15].x = gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].x;
             if (gFrameCounter & 1) {
-                if (++gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2 == 0x18) {
+                if (++gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].x == 0x18) {
                     gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2A = 0;
                     init_battle_medabot_sprites(
                         gRaceRunnerParts[i][0][gRaceRunner[i] + 1], gRaceRunnerParts[i][1][gRaceRunner[i] + 1],
                         gRaceRunnerParts[i][2][gRaceRunner[i] + 1], gRaceRunnerParts[i][3][gRaceRunner[i] + 1],
                         i * 3 - (t = gRaceRunner[i] - 1), gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3,
-                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].unk2,
-                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].unk4 + 3, 0, 3, 5);
+                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].x,
+                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].y + 3, 0, 3, 5);
                     battle_sprite_group_set_anim(gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3, 8);
                 }
             }
         } else if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2A == 2) {
             update_battle_sprite_orbiting_positions(gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3,
                                                     i * 3 - sub1(gRaceRunner[i]), 0);
-            gSpriteEntries[gRaceRunner[i] + i * 3 + 0x15].unk2 =
-                gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2;
+            gSpriteEntries[gRaceRunner[i] + i * 3 + 0x15].x = gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].x;
             if (gFrameCounter & 1) {
-                if (++gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2 == 0x2C) {
+                if (++gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].x == 0x2C) {
                     gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1]].unk2A = 0;
                     init_battle_medabot_sprites(
                         gRaceRunnerParts[i][0][gRaceRunner[i] + 1], gRaceRunnerParts[i][1][gRaceRunner[i] + 1],
                         gRaceRunnerParts[i][2][gRaceRunner[i] + 1], gRaceRunnerParts[i][3][gRaceRunner[i] + 1],
                         i * 3 - (t = gRaceRunner[i] - 1), gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3,
-                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].unk2,
-                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].unk4 + 3, 0, 3, 5);
+                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].x,
+                        gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3].y + 3, 0, 3, 5);
                     battle_sprite_group_set_anim(gRaceRunnerSlots[i][gRaceRunner[i] + 1] - 3, 0xC);
                 }
             }
@@ -959,12 +957,12 @@ static void race_update_finished_runners(void) {
     for (i = 0; i < 3; i++) {
         if (gRaceRunner[i] != 0) {
             if (gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] - 1]].unk2A == 1) {
-                if (--gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] - 1]].unk2 <= -16)
+                if (--gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] - 1]].x <= -16)
                     gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] - 1]].unk2A = 0;
                 update_battle_sprite_orbiting_positions(gRaceRunnerSlots[i][gRaceRunner[i] - 1] - 3,
                                                         i * 3 - (k = gRaceRunner[i] - 3), 0);
-                gSpriteEntries[gRaceRunner[i] + i * 3 + 0x13].unk2 =
-                    gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] - 1]].unk2;
+                gSpriteEntries[gRaceRunner[i] + i * 3 + 0x13].x =
+                    gSpriteEntries[gRaceRunnerSlots[i][gRaceRunner[i] - 1]].x;
             }
         }
     }
@@ -990,28 +988,27 @@ bool32 race_motion_none(u8 sprite) {
 // Motion 1: the referee hops in, then walks right to x = unk22.
 bool32 race_motion_hop_in(u8 sprite) {
     if (gSpriteEntries[sprite].unk1A < 0x20) {
-        gSpriteEntries[sprite].unk2++;
-        gSpriteEntries[sprite].unk4 =
-            gSpriteEntries[sprite].unk23 + 3 - gHalfSineArc[gSpriteEntries[sprite].unk1A + 0x20];
+        gSpriteEntries[sprite].x++;
+        gSpriteEntries[sprite].y = gSpriteEntries[sprite].unk23 + 3 - gHalfSineArc[gSpriteEntries[sprite].unk1A + 0x20];
     } else if (gSpriteEntries[sprite].unk1A < 0x30) {
-        gSpriteEntries[sprite].unk4 = gSpriteEntries[sprite].unk23 + 3;
+        gSpriteEntries[sprite].y = gSpriteEntries[sprite].unk23 + 3;
     } else {
-        gSpriteEntries[sprite].unk2 += 2;
+        gSpriteEntries[sprite].x += 2;
     }
-    if (gSpriteEntries[sprite].unk22 <= gSpriteEntries[sprite].unk2)
+    if (gSpriteEntries[sprite].unk22 <= gSpriteEntries[sprite].x)
         return FALSE;
     return TRUE;
 }
 
 bool32 race_motion_move_right(u8 sprite) {
-    gSpriteEntries[sprite].unk2 += 2;
+    gSpriteEntries[sprite].x += 2;
     if (gSpriteEntries[sprite].unk22 < gSpriteEntries[sprite].unk1A)
         return FALSE;
     return TRUE;
 }
 
 bool32 race_motion_move_left(u8 sprite) {
-    gSpriteEntries[sprite].unk2 -= 2;
+    gSpriteEntries[sprite].x -= 2;
     if (gSpriteEntries[sprite].unk22 < gSpriteEntries[sprite].unk1A)
         return FALSE;
     return TRUE;
@@ -1024,9 +1021,9 @@ bool32 race_motion_hold(u8 sprite) {
 // Motion 5: the start signal drops in, waits, rises and clears itself.
 bool32 race_motion_signal(u8 sprite) {
     if (gSpriteEntries[sprite].unk1A < 0x10)
-        gSpriteEntries[sprite].unk4 += 2;
+        gSpriteEntries[sprite].y += 2;
     if ((u16)(gSpriteEntries[sprite].unk1A - 0xD2) < 0x10)
-        gSpriteEntries[sprite].unk4 -= 2;
+        gSpriteEntries[sprite].y -= 2;
     if (gSpriteEntries[sprite].unk1A > 0xE1) {
         clear_sprite_entry(sprite);
         return FALSE;
@@ -1041,7 +1038,7 @@ bool32 race_motion_fade_rise(u8 sprite) {
     else if (gSpriteEntries[sprite].unk1A < 0x20)
         REG_BLDALPHA = ((0x20 - gSpriteEntries[sprite].unk1A) << 8) | 0x10;
     if (gSpriteEntries[sprite].unk1A & 1)
-        gSpriteEntries[sprite].unk4--;
+        gSpriteEntries[sprite].y--;
     if (gSpriteEntries[sprite].unk1A > 0x3F) {
         REG_BLDCNT = 0;
         return FALSE;
@@ -1052,12 +1049,12 @@ bool32 race_motion_fade_rise(u8 sprite) {
 // Motion 7: shrink and rotate (place marks).
 bool32 race_motion_shrink_spin(u8 sprite) {
     if (gSpriteEntries[sprite].unk1A & 1) {
-        gSpriteEntries[sprite].unk8--;
-        gSpriteEntries[sprite].unk9--;
+        gSpriteEntries[sprite].scale_x--;
+        gSpriteEntries[sprite].scale_y--;
     }
-    gSpriteEntries[sprite].unk18 += 0x40;
+    gSpriteEntries[sprite].angle += 0x40;
     if (gSpriteEntries[sprite].unk1A > 0x8F) {
-        gSpriteEntries[sprite].unk18 = 0;
+        gSpriteEntries[sprite].angle = 0;
         return FALSE;
     }
     return TRUE;
@@ -1066,14 +1063,14 @@ bool32 race_motion_shrink_spin(u8 sprite) {
 // Motion 8: confetti flies out along angle unk23, then switches to motion 9.
 u32 race_motion_confetti_burst(u8 i) {
 #define S gSpriteEntries[i]
-    S.unkC_8 += gJumpArcTable[0][(S.unk23 + 0x40) & 0xFF];
-    S.unk10_8 += gJumpArcTable[0][S.unk23];
+    S.pos_x += gJumpArcTable[0][(S.unk23 + 0x40) & 0xFF];
+    S.pos_y += gJumpArcTable[0][S.unk23];
     if (i > 11) {
-        S.unk2 = S.unkC_8 / 256 + 0x20;
-        S.unk4 = 0x10 - S.unk10_8 / 256;
+        S.x = S.pos_x / 256 + 0x20;
+        S.y = 0x10 - S.pos_y / 256;
     } else {
-        S.unk2 = S.unkC_8 / 128 + 0x20;
-        S.unk4 = 0x10 - S.unk10_8 / 128;
+        S.x = S.pos_x / 128 + 0x20;
+        S.y = 0x10 - S.pos_y / 128;
     }
     if (S.unk1A > 8) {
         S.unk1A = gRandomBytes[(gFrameCounter + i) & 0xFF] >> 3;
@@ -1088,31 +1085,31 @@ u32 race_motion_confetti_fall(u8 i) {
 #define S gSpriteEntries[i]
     u32 phase = (S.unk1A + 0x10) & 0x3F;
 
-    if (S.unk4 > 0x60) {
-        S.unk4 = 0xC8;
+    if (S.y > 0x60) {
+        S.y = 0xC8;
         return 0;
     }
     if (S.unk1A & 1)
-        S.unk4++;
+        S.y++;
     if (phase & 0x10) {
         if (S.unk1A & 1) {
             if (i & 1)
-                S.unk2++;
+                S.x++;
             else
-                S.unk2--;
+                S.x--;
         }
     } else {
         if (S.unk1A & 1) {
             if (i & 1)
-                S.unk2--;
+                S.x--;
             else
-                S.unk2++;
+                S.x++;
         }
     }
     if (S.unk1A & 8)
-        S.unk0 |= 0x1000;
+        S.flags |= 0x1000;
     else
-        S.unk0 &= 0xEFFF;
+        S.flags &= 0xEFFF;
     return 1;
 #undef S
 }
@@ -1141,7 +1138,7 @@ void race_step_sprite_anims(void) {
             if (tbl[s->unk21].duration <= s->unk27++) {
                 s->unk27 = 0;
                 s->unk21 = tbl[s->unk21].next;
-                s->unk6 = tbl[s->unk21].frame;
+                s->frame = tbl[s->unk21].frame;
             }
         }
     }
@@ -1153,7 +1150,7 @@ static void race_set_sprite_motion(u8 sprite, u8 motion, u8 arg, u8 arg2) {
         gSpriteEntries[sprite].unk20 = 0;
         gSpriteEntries[sprite].unk21 = 0;
         gSpriteEntries[sprite].unk22 = 0;
-        gSpriteEntries[sprite].unk6 = gSpriteEntries[sprite].unk30;
+        gSpriteEntries[sprite].frame = gSpriteEntries[sprite].unk30;
         gSpriteEntries[sprite].unk1A = 0;
         return;
     }
@@ -1166,62 +1163,62 @@ static void race_set_sprite_motion(u8 sprite, u8 motion, u8 arg, u8 arg2) {
         gSpriteEntries[sprite].unk22 = arg;
         gSpriteEntries[sprite].unk23 = arg2;
         gSpriteEntries[sprite].unk30 = 0x33;
-        gSpriteEntries[sprite].unk6 = gRaceSpriteAnims[1].frame;
+        gSpriteEntries[sprite].frame = gRaceSpriteAnims[1].frame;
         break;
     case 2:
         gSpriteEntries[sprite].unk20 = 2;
         gSpriteEntries[sprite].unk21 = 3;
         gSpriteEntries[sprite].unk22 = arg >> 1;
         gSpriteEntries[sprite].unk30 = 0x33;
-        gSpriteEntries[sprite].unk6 = gRaceSpriteAnims[3].frame;
+        gSpriteEntries[sprite].frame = gRaceSpriteAnims[3].frame;
         break;
     case 3:
         gSpriteEntries[sprite].unk20 = 3;
         gSpriteEntries[sprite].unk21 = 7;
         gSpriteEntries[sprite].unk22 = arg >> 1;
         gSpriteEntries[sprite].unk30 = 0x33;
-        gSpriteEntries[sprite].unk6 = gRaceSpriteAnims[7].frame;
+        gSpriteEntries[sprite].frame = gRaceSpriteAnims[7].frame;
         break;
     case 4:
         gSpriteEntries[sprite].unk20 = 4;
         gSpriteEntries[sprite].unk21 = 0xB;
         gSpriteEntries[sprite].unk22 = arg;
         gSpriteEntries[sprite].unk30 = 0x100;
-        gSpriteEntries[sprite].unk6 = gRaceSpriteAnims[0xB].frame;
+        gSpriteEntries[sprite].frame = gRaceSpriteAnims[0xB].frame;
         break;
     case 5:
         gSpriteEntries[sprite].unk20 = 5;
         gSpriteEntries[sprite].unk21 = 0xF;
         gSpriteEntries[sprite].unk22 = arg;
         gSpriteEntries[sprite].unk30 = 0x107;
-        gSpriteEntries[sprite].unk6 = gRaceSpriteAnims[0xF].frame;
+        gSpriteEntries[sprite].frame = gRaceSpriteAnims[0xF].frame;
         break;
     case 6:
         gSpriteEntries[sprite].unk20 = 6;
         gSpriteEntries[sprite].unk21 = 0;
         gSpriteEntries[sprite].unk22 = arg;
         gSpriteEntries[sprite].unk30 = 0x10B;
-        gSpriteEntries[sprite].unk6 = gSpriteEntries[sprite].unk30;
+        gSpriteEntries[sprite].frame = gSpriteEntries[sprite].unk30;
         break;
     case 7:
         gSpriteEntries[sprite].unk20 = 7;
         gSpriteEntries[sprite].unk21 = 0;
         gSpriteEntries[sprite].unk30 = arg + 0x108;
-        gSpriteEntries[sprite].unk6 = gSpriteEntries[sprite].unk30;
+        gSpriteEntries[sprite].frame = gSpriteEntries[sprite].unk30;
         break;
     case 8:
         gSpriteEntries[sprite].unk20 = 8;
         gSpriteEntries[sprite].unk21 = 0;
         gSpriteEntries[sprite].unk23 = arg2;
         gSpriteEntries[sprite].unk30 = arg + 0x10C;
-        gSpriteEntries[sprite].unk6 = gSpriteEntries[sprite].unk30;
+        gSpriteEntries[sprite].frame = gSpriteEntries[sprite].unk30;
         break;
     case 10:
         gSpriteEntries[sprite].unk20 = 10;
         gSpriteEntries[sprite].unk21 = arg * 4 + 0x14;
         gSpriteEntries[sprite].unk27 = 0;
         gSpriteEntries[sprite].unk30 = arg * 12 + 0x6F;
-        gSpriteEntries[sprite].unk6 = gSpriteEntries[sprite].unk30;
+        gSpriteEntries[sprite].frame = gSpriteEntries[sprite].unk30;
         break;
     }
     gSpriteEntries[sprite].unk1A = 0;

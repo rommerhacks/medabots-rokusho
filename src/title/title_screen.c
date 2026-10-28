@@ -147,16 +147,16 @@ void title_screen_load_graphics(void) {
 void title_screen_show_logo(void) {
     if (gSceneWork.timer == 0) {
         sprite_entry_init(0, 0xCC00, 0x224, 6, 3);
-        gSpriteEntries[0].unk2 = 0x78;
-        gSpriteEntries[0].unk4 = 0x3C;
-        gSpriteEntries[0].unkB = 0x10;
+        gSpriteEntries[0].x = 0x78;
+        gSpriteEntries[0].y = 0x3C;
+        gSpriteEntries[0].order = 0x10;
         title_sprite_start_effect(1, 0);
         REG_DISPCNT |= 0x1000;
     } else if (gSceneWork.timer == 0x20) {
         sprite_entry_init(1, 0xC400, 0x200, 0, 3);
-        gSpriteEntries[1].unk2 = 0x78;
-        gSpriteEntries[1].unk4 = 0x3C;
-        gSpriteEntries[1].unkB = 0x20;
+        gSpriteEntries[1].x = 0x78;
+        gSpriteEntries[1].y = 0x3C;
+        gSpriteEntries[1].order = 0x20;
         title_sprite_start_effect(2, 1);
     }
     if (gSpriteEntries[0].unk20 == 0) {
@@ -176,22 +176,22 @@ void title_screen_slide_in_sprites(void) {
     if (gSceneWork.timer == 0) {
         play_song(0);
         sprite_entry_init(1, 0xC400, 0x211, 1, 3);
-        gSpriteEntries[1].unk2 = 0x118;
-        gSpriteEntries[1].unk4 = 0x55;
-        gSpriteEntries[1].unkB = 0x20;
+        gSpriteEntries[1].x = 0x118;
+        gSpriteEntries[1].y = 0x55;
+        gSpriteEntries[1].order = 0x20;
         title_sprite_start_effect(3, 1);
     }
     if (gSpriteEntries[1].unk20 == 0) {
         sprite_entry_init(3, 0xC000, 0x213, 3, 3);
-        gSpriteEntries[3].unk2 = 0x12C;
-        gSpriteEntries[3].unk4 = 0x55;
-        gSpriteEntries[3].unkB = 0x40;
+        gSpriteEntries[3].x = 0x12C;
+        gSpriteEntries[3].y = 0x55;
+        gSpriteEntries[3].order = 0x40;
         gSpriteEntries[3].unk32 = 0;
         title_sprite_start_effect(7, 3);
         sprite_entry_init(4, 0xC400, 0x21C, 5, 3);
-        gSpriteEntries[4].unk2 = 0x12C;
-        gSpriteEntries[4].unk4 = 0x3C;
-        gSpriteEntries[4].unkB = 0x10;
+        gSpriteEntries[4].x = 0x12C;
+        gSpriteEntries[4].y = 0x3C;
+        gSpriteEntries[4].order = 0x10;
         gSpriteEntries[4].unk32 = 0;
         title_sprite_start_effect(8, 4);
         gSceneWork.timer = 0;
@@ -227,7 +227,7 @@ void title_screen_start_wave(void) {
             }
         }
     } else if (gSceneWork.timer > 0x40) {
-        gSpriteEntries[2].unk0 &= ~0x200;
+        gSpriteEntries[2].flags &= ~0x200;
         title_sprite_start_effect(5, 2);
         gSceneWork.timer = 0;
         gGameSubState = 8;
@@ -239,10 +239,10 @@ void title_screen_start_wave(void) {
     }
     if (gSceneWork.timer == 0x39) {
         sprite_entry_init(2, 0xC600, 0x212, 2, 3);
-        gSpriteEntries[2].unk2 = 0x78;
-        gSpriteEntries[2].unk4 = 0x73;
-        gSpriteEntries[2].unk8 = 0x40;
-        gSpriteEntries[2].unk9 = 8;
+        gSpriteEntries[2].x = 0x78;
+        gSpriteEntries[2].y = 0x73;
+        gSpriteEntries[2].scale_x = 0x40;
+        gSpriteEntries[2].scale_y = 8;
         title_sprite_start_effect(4, 2);
     }
     gSceneWork.timer++;
@@ -288,25 +288,25 @@ void title_screen_skip_intro(void) {
     play_song(0);
     sprite_entry_init(0, 0xC400, 0x21B, 4, 3);
     REG_DISPCNT |= 0x300;
-    gSpriteEntries[0].unk2 = 0x78;
-    gSpriteEntries[0].unk4 = 0x3C;
-    gSpriteEntries[0].unkB = 0x10;
+    gSpriteEntries[0].x = 0x78;
+    gSpriteEntries[0].y = 0x3C;
+    gSpriteEntries[0].order = 0x10;
     title_sprite_start_effect(0, 0);
     sprite_entry_init(1, 0xC400, 0x211, 1, 3);
-    gSpriteEntries[1].unk2 = 0x78;
-    gSpriteEntries[1].unk4 = 0x55;
-    gSpriteEntries[1].unkB = 0x20;
+    gSpriteEntries[1].x = 0x78;
+    gSpriteEntries[1].y = 0x55;
+    gSpriteEntries[1].order = 0x20;
     title_sprite_start_effect(0, 1);
     sprite_entry_init(3, 0xC000, 0x213, 3, 3);
-    gSpriteEntries[3].unk2 = 0x12C;
-    gSpriteEntries[3].unk4 = 0x55;
-    gSpriteEntries[3].unkB = 0x40;
+    gSpriteEntries[3].x = 0x12C;
+    gSpriteEntries[3].y = 0x55;
+    gSpriteEntries[3].order = 0x40;
     gSpriteEntries[3].unk32 = 0x80;
     title_sprite_start_effect(7, 3);
     sprite_entry_init(4, 0xC400, 0x21C, 5, 3);
-    gSpriteEntries[4].unk2 = 0x12C;
-    gSpriteEntries[4].unk4 = 0x3C;
-    gSpriteEntries[4].unkB = 0x10;
+    gSpriteEntries[4].x = 0x12C;
+    gSpriteEntries[4].y = 0x3C;
+    gSpriteEntries[4].order = 0x10;
     gSpriteEntries[4].unk32 = 0x80;
     title_sprite_start_effect(8, 4);
     REG_DISPCNT |= 0x1300;
@@ -375,28 +375,28 @@ bool32 title_effect_animate_frames(u8 i) {
     if (gSpriteEntries[i].unk22 > 15)
         return FALSE;
     if (gSpriteEntries[i].unk22 != 0)
-        gSpriteEntries[i].unk6++;
+        gSpriteEntries[i].frame++;
     gSpriteEntries[i].unk22++;
     return TRUE;
 }
 
 bool32 title_effect_slide_left(u8 i) {
-    if ((gSpriteEntries[i].unk2 -= 8) <= 0x78)
+    if ((gSpriteEntries[i].x -= 8) <= 0x78)
         return FALSE;
     return TRUE;
 }
 
 bool32 title_effect_grow(u8 i) {
-    if ((gSpriteEntries[i].unk9 += 8) > 0x3F)
+    if ((gSpriteEntries[i].scale_y += 8) > 0x3F)
         return FALSE;
     return TRUE;
 }
 
 bool32 title_effect_blink(u8 i) {
     if (gSpriteEntries[i].unk22 & 1)
-        gSpriteEntries[i].unk4 = 0x73;
+        gSpriteEntries[i].y = 0x73;
     else
-        gSpriteEntries[i].unk4 = 0xC8;
+        gSpriteEntries[i].y = 0xC8;
     gSpriteEntries[i].unk22++;
     return TRUE;
 }
@@ -404,18 +404,18 @@ bool32 title_effect_blink(u8 i) {
 bool32 title_effect_glint(u8 i) {
     if (gSpriteEntries[i].unk32 < gSpriteEntries[i].unk1A) {
         if (gSpriteEntries[i].unk22 > 7) {
-            gSpriteEntries[i].unk2 = 300;
+            gSpriteEntries[i].x = 300;
             gSpriteEntries[i].unk22 = 0;
             gSpriteEntries[i].unk32 = (rng_next(0) & 0x1FF) + 0x20;
-            gSpriteEntries[i].unk6 = gSpriteEntries[i].unk30;
+            gSpriteEntries[i].frame = gSpriteEntries[i].unk30;
             gSpriteEntries[i].unk1A = 0;
         } else if (gGameSubState == 9 && gSpriteEntries[i].unk22 == 0) {
             gSpriteEntries[i].unk32 |= 0xFFFF;
             gSpriteEntries[i].unk1A = 0;
         } else if (++gSpriteEntries[i].unk22 != 1) {
-            gSpriteEntries[i].unk6++;
+            gSpriteEntries[i].frame++;
         } else {
-            gSpriteEntries[i].unk2 = 0x78;
+            gSpriteEntries[i].x = 0x78;
         }
     }
     return TRUE;
@@ -425,6 +425,6 @@ bool32 title_effect_glint(u8 i) {
 static void title_sprite_start_effect(u8 effect, u8 sprite) {
     gSpriteEntries[sprite].unk20 = effect;
     gSpriteEntries[sprite].unk22 = 0;
-    gSpriteEntries[sprite].unk30 = gSpriteEntries[sprite].unk6;
+    gSpriteEntries[sprite].unk30 = gSpriteEntries[sprite].frame;
     gSpriteEntries[sprite].unk1A = 0;
 }

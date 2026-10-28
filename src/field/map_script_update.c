@@ -116,10 +116,10 @@ void map_script_update_player_hop(void) {
     switch (gSpriteEntries[47].unk26) {
     case 0:
         if (gSpriteEntries[47].unk28 < 16) {
-            gSpriteEntries[47].unk4 = gFieldWork.cmd_args[0] - gJumpArcTable[gSpriteEntries[47].unk28][0] / 16;
+            gSpriteEntries[47].y = gFieldWork.cmd_args[0] - gJumpArcTable[gSpriteEntries[47].unk28][0] / 16;
             gSpriteEntries[47].unk28++;
-            if (gSpriteEntries[47].unk4 / 4 <= (gFieldWork.cmd_args[0] - 16) / 4)
-                gSpriteEntries[47].unkB = 0xFF;
+            if (gSpriteEntries[47].y / 4 <= (gFieldWork.cmd_args[0] - 16) / 4)
+                gSpriteEntries[47].order = 0xFF;
             else
                 sprite_set_blend_from_kind(47);
         } else {
@@ -129,7 +129,7 @@ void map_script_update_player_hop(void) {
         break;
     case 1:
         sprite_set_blend_from_kind(47);
-        gSpriteEntries[47].unk4 = gFieldWork.cmd_args[0];
+        gSpriteEntries[47].y = gFieldWork.cmd_args[0];
         map_script_command_done();
         break;
     }
@@ -146,8 +146,8 @@ void map_script_update_player_jump(void) {
         memcpy_u8(&gSpriteEntries[47], &gSpriteEntries[46], 0x40);
         gFieldWork.player_visible = 0;
         field_set_player_sprite_visible(0);
-        gSpriteEntries[89].unk0 = 0xCC0C;
-        gSpriteEntries[48].unk0 = 0;
+        gSpriteEntries[89].flags = 0xCC0C;
+        gSpriteEntries[48].flags = 0;
         gSpriteEntries[47].unk28 = 0;
         gFieldWork.script_field_update = 1;
         clear_input_keys();
@@ -170,13 +170,13 @@ void map_script_update_player_jump(void) {
             KEYS_LO(gHeldKeys) |= 0x10;
             break;
         }
-        gSpriteEntries[46].unk2 = gSpriteEntries[47].unk2;
+        gSpriteEntries[46].x = gSpriteEntries[47].x;
         if (gSpriteEntries[47].unk28 < 16 / sprite_walk_speed(47) * 2) {
-            gSpriteEntries[46].unk4 = gSpriteEntries[47].unk4 -
-                                      gJumpArcTable[0][gSpriteEntries[47].unk28 * (sprite_walk_speed(47) << 2)] / 16;
+            gSpriteEntries[46].y =
+                gSpriteEntries[47].y - gJumpArcTable[0][gSpriteEntries[47].unk28 * (sprite_walk_speed(47) << 2)] / 16;
             gSpriteEntries[47].unk28++;
-            if (gSpriteEntries[46].unk4 / 4 <= (gSpriteEntries[47].unk4 - 16) / 4)
-                gSpriteEntries[46].unkB = 0xFF;
+            if (gSpriteEntries[46].y / 4 <= (gSpriteEntries[47].y - 16) / 4)
+                gSpriteEntries[46].order = 0xFF;
             else
                 sprite_set_blend_from_kind(46);
         } else {
@@ -864,7 +864,7 @@ static u32 map_script_player_slide_step(u8 dir) {
             if (!field_map_origin_y() &&
                 gFieldWork.player_y - gFieldWork.map_origin_y < gFieldWork.map_height * 8 - 0x60 && gBg1Scroll.y != 0) {
                 field_scroll_bg_y(-sprite_walk_speed(47));
-                gSpriteEntries[0].unk4 += sprite_walk_speed(47);
+                gSpriteEntries[0].y += sprite_walk_speed(47);
             }
         }
         break;
@@ -874,7 +874,7 @@ static u32 map_script_player_slide_step(u8 dir) {
             if (!field_map_origin_y() && gFieldWork.player_y - gFieldWork.map_origin_y + 16 > 0x50 &&
                 gBg1Scroll.y + 0xA0 < gFieldWork.map_height * 8) {
                 field_scroll_bg_y(sprite_walk_speed(47));
-                gSpriteEntries[0].unk4 -= sprite_walk_speed(47);
+                gSpriteEntries[0].y -= sprite_walk_speed(47);
             }
         }
         break;
@@ -884,7 +884,7 @@ static u32 map_script_player_slide_step(u8 dir) {
             if (!field_map_origin_x() &&
                 gFieldWork.player_x - gFieldWork.map_origin_x < gFieldWork.map_width * 8 - 0x80 && gBg1Scroll.x != 0) {
                 field_scroll_bg_x(-sprite_walk_speed(47));
-                gSpriteEntries[0].unk2 += sprite_walk_speed(47);
+                gSpriteEntries[0].x += sprite_walk_speed(47);
             }
         }
         break;
@@ -894,7 +894,7 @@ static u32 map_script_player_slide_step(u8 dir) {
             if (!field_map_origin_x() && gFieldWork.player_x - gFieldWork.map_origin_x + 16 > 0x80 &&
                 gBg1Scroll.x + 0xF0 < gFieldWork.map_width * 8) {
                 field_scroll_bg_x(sprite_walk_speed(47));
-                gSpriteEntries[0].unk2 -= sprite_walk_speed(47);
+                gSpriteEntries[0].x -= sprite_walk_speed(47);
             }
         }
         break;
@@ -1281,8 +1281,8 @@ void map_script_update_all_actors_slide(void) {
 
 // Opcode 0x7F: end the follower: copy sprite 48 and its shadow back to map object arg0.
 void map_script_update_follower_to_actor(void) {
-    gSpriteEntries[48].unkC_8 = gFieldWork.follower_x;
-    gSpriteEntries[48].unk10_8 = gFieldWork.follower_y;
+    gSpriteEntries[48].pos_x = gFieldWork.follower_x;
+    gSpriteEntries[48].pos_y = gFieldWork.follower_y;
     memcpy_u8(&gSpriteEntries[48], &gSpriteEntries[gFieldWork.cmd_args[0] + 79], 0x40);
     gEntityStates[gFieldWork.cmd_args[0] + 79].active = 0xFFFF;
     memcpy_u8(&gSpriteEntries[90], &gSpriteEntries[gFieldWork.cmd_args[0] + 121], 0x40);

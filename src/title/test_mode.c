@@ -57,35 +57,35 @@ void test_mode_load_graphics(void) {
     CpuFastSet(gMenuDigitPalette, (void *)(PLTT + 0x1C0), 8);
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     CpuFastSet(gCursorArrowPalette, (void *)(PLTT + 0x3C0), 8);
-    gSpriteEntries[0].unk0 = 0x8000;
-    gSpriteEntries[0].unk1C = 2;
-    gSpriteEntries[0].unkA = 0xE;
-    gSpriteEntries[0].unk6 = 6;
+    gSpriteEntries[0].flags = 0x8000;
+    gSpriteEntries[0].frame_table = 2;
+    gSpriteEntries[0].palette = 0xE;
+    gSpriteEntries[0].frame = 6;
     gMenuWork->cursor = zero;
-    gSpriteEntries[0].unk2 = 0x14;
-    gSpriteEntries[0].unk4 = gMenuWork->cursor * 16 + 0x20;
+    gSpriteEntries[0].x = 0x14;
+    gSpriteEntries[0].y = gMenuWork->cursor * 16 + 0x20;
     for (i = 0; i <= 1; i++) {
-        gSpriteEntries[i + 1].unk0 = 0x8000;
-        gSpriteEntries[i + 1].unk1C = 2;
-        gSpriteEntries[i + 1].unkA = 0xE;
-        gSpriteEntries[i + 1].unk6 = 5;
+        gSpriteEntries[i + 1].flags = 0x8000;
+        gSpriteEntries[i + 1].frame_table = 2;
+        gSpriteEntries[i + 1].palette = 0xE;
+        gSpriteEntries[i + 1].frame = 5;
     }
-    gSpriteEntries[1].unk0 |= 0x1000;
-    gSpriteEntries[1].unk2 = 0x78;
-    gSpriteEntries[1].unk4 = 0x20;
-    gSpriteEntries[2].unk2 = 0x90;
-    gSpriteEntries[2].unk4 = 0x20;
+    gSpriteEntries[1].flags |= 0x1000;
+    gSpriteEntries[1].x = 0x78;
+    gSpriteEntries[1].y = 0x20;
+    gSpriteEntries[2].x = 0x90;
+    gSpriteEntries[2].y = 0x20;
     for (i = 0; i <= 1; i++) {
-        gSpriteEntries[i + 3].unk0 = 0x8000;
-        gSpriteEntries[i + 3].unk1C = 2;
-        gSpriteEntries[i + 3].unkA = 0xE;
-        gSpriteEntries[i + 3].unk6 = 5;
+        gSpriteEntries[i + 3].flags = 0x8000;
+        gSpriteEntries[i + 3].frame_table = 2;
+        gSpriteEntries[i + 3].palette = 0xE;
+        gSpriteEntries[i + 3].frame = 5;
     }
-    gSpriteEntries[3].unk0 |= 0x1000;
-    gSpriteEntries[3].unk2 = 0x78;
-    gSpriteEntries[3].unk4 = 0x30;
-    gSpriteEntries[4].unk2 = 0x90;
-    gSpriteEntries[4].unk4 = 0x30;
+    gSpriteEntries[3].flags |= 0x1000;
+    gSpriteEntries[3].x = 0x78;
+    gSpriteEntries[3].y = 0x30;
+    gSpriteEntries[4].x = 0x90;
+    gSpriteEntries[4].y = 0x30;
     gGameSubState++;
 }
 
@@ -116,14 +116,14 @@ void test_mode_fade_in(void) {
         gMenuWork->unk49 = 0;
         gMenuWork->pending_sound = 0;
         gMenuWork->sound_delay = 0;
-        gSpriteEntries[0].unk0 |= 0x4000;
-        gSpriteEntries[1].unk0 |= 0x4000;
+        gSpriteEntries[0].flags |= 0x4000;
+        gSpriteEntries[1].flags |= 0x4000;
         gGameSubState++;
     }
 }
 
 void test_mode_update(void) {
-    sprite_bob_y(0, gFrameCounter, 0x14);
+    sprite_bob_x(0, gFrameCounter, 0x14);
     if (gMenuWork->counter != 0) {
         if (--gMenuWork->counter == 0)
             play_sound_effect(2);
@@ -144,35 +144,35 @@ void test_mode_update(void) {
         play_song(0);
         gMenuWork->counter = 2;
     }
-    gSpriteEntries[0].unk4 = gMenuWork->cursor * 16 + 0x20;
+    gSpriteEntries[0].y = gMenuWork->cursor * 16 + 0x20;
     switch (gMenuWork->cursor) {
     case 0:
         if (gFrameCounter & 8) {
-            gSpriteEntries[1].unk0 |= 0x4000;
-            gSpriteEntries[2].unk0 |= 0x4000;
+            gSpriteEntries[1].flags |= 0x4000;
+            gSpriteEntries[2].flags |= 0x4000;
         } else {
-            gSpriteEntries[1].unk0 &= 0xBFFF;
-            gSpriteEntries[2].unk0 &= 0xBFFF;
+            gSpriteEntries[1].flags &= 0xBFFF;
+            gSpriteEntries[2].flags &= 0xBFFF;
         }
-        gSpriteEntries[3].unk0 &= 0xBFFF;
-        gSpriteEntries[4].unk0 &= 0xBFFF;
+        gSpriteEntries[3].flags &= 0xBFFF;
+        gSpriteEntries[4].flags &= 0xBFFF;
         break;
     case 1:
-        gSpriteEntries[1].unk0 &= 0xBFFF;
-        gSpriteEntries[2].unk0 &= 0xBFFF;
+        gSpriteEntries[1].flags &= 0xBFFF;
+        gSpriteEntries[2].flags &= 0xBFFF;
         if (gFrameCounter & 8) {
-            gSpriteEntries[3].unk0 |= 0x4000;
-            gSpriteEntries[4].unk0 |= 0x4000;
+            gSpriteEntries[3].flags |= 0x4000;
+            gSpriteEntries[4].flags |= 0x4000;
         } else {
-            gSpriteEntries[3].unk0 &= 0xBFFF;
-            gSpriteEntries[4].unk0 &= 0xBFFF;
+            gSpriteEntries[3].flags &= 0xBFFF;
+            gSpriteEntries[4].flags &= 0xBFFF;
         }
         break;
     default:
-        gSpriteEntries[1].unk0 &= 0xBFFF;
-        gSpriteEntries[2].unk0 &= 0xBFFF;
-        gSpriteEntries[3].unk0 &= 0xBFFF;
-        gSpriteEntries[4].unk0 &= 0xBFFF;
+        gSpriteEntries[1].flags &= 0xBFFF;
+        gSpriteEntries[2].flags &= 0xBFFF;
+        gSpriteEntries[3].flags &= 0xBFFF;
+        gSpriteEntries[4].flags &= 0xBFFF;
         break;
     }
     switch (gMenuWork->cursor) {
@@ -246,11 +246,11 @@ void test_mode_update(void) {
     play_song(0);
     gMenuWork->fade_level = 0;
     gGameSubState = 5;
-    gSpriteEntries[0].unk0 &= 0xBFFF;
-    gSpriteEntries[1].unk0 &= 0xBFFF;
-    gSpriteEntries[2].unk0 &= 0xBFFF;
-    gSpriteEntries[3].unk0 &= 0xBFFF;
-    gSpriteEntries[4].unk0 &= 0xBFFF;
+    gSpriteEntries[0].flags &= 0xBFFF;
+    gSpriteEntries[1].flags &= 0xBFFF;
+    gSpriteEntries[2].flags &= 0xBFFF;
+    gSpriteEntries[3].flags &= 0xBFFF;
+    gSpriteEntries[4].flags &= 0xBFFF;
 }
 
 void test_mode_fade_out_exit(void) {

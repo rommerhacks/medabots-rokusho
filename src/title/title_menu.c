@@ -209,13 +209,13 @@ void title_menu_load_graphics(void) {
     CpuFastSet(gTitleMenuBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 0x80);
     CpuFastSet(gCursorArrowPalette, (void *)(PLTT + 0x200), 0x80);
-    gSpriteEntries[14].unk0 = 0x8000;
-    gSpriteEntries[14].unkB = one;
-    gSpriteEntries[14].unk1C = 2;
-    gSpriteEntries[14].unkA = 0;
-    gSpriteEntries[14].unk6 = 6;
-    gSpriteEntries[14].unk2 = 0x20;
-    gSpriteEntries[14].unk4 = 0x50;
+    gSpriteEntries[14].flags = 0x8000;
+    gSpriteEntries[14].order = one;
+    gSpriteEntries[14].frame_table = 2;
+    gSpriteEntries[14].palette = 0;
+    gSpriteEntries[14].frame = 6;
+    gSpriteEntries[14].x = 0x20;
+    gSpriteEntries[14].y = 0x50;
     gMenuWork->cursor = 0;
     gGameSubState++;
 }
@@ -295,8 +295,8 @@ void title_menu_input(void) {
             title_options_highlight_row(gMenuWork->cursor);
             title_options_draw_values(gMenuWork->cursor);
             title_menu_pulse_selected(3, 0);
-            gSpriteEntries[14].unk4 = gMenuWork->cursor * 24 + 0x50;
-            gSpriteEntries[14].unk0 |= 0x4000;
+            gSpriteEntries[14].y = gMenuWork->cursor * 24 + 0x50;
+            gSpriteEntries[14].flags |= 0x4000;
             gGameSubState++;
         } else {
             gMenuWork->counter = 45;
@@ -309,7 +309,7 @@ void title_menu_input(void) {
 // battle music gOptionBattleMusic with a preview); A / B leave the menu
 void title_options_input(void) {
     gMenuWork->frame = title_menu_blend_step(gMenuWork->frame);
-    sprite_bob_y(14, gFrameCounter, 32);
+    sprite_bob_x(14, gFrameCounter, 32);
     title_options_pulse_palette(gFrameCounter & 0x1F);
     title_options_draw_row_sweep(gMenuWork->cursor, 20 - gMenuWork->timer);
     if (gMenuWork->timer)
@@ -382,7 +382,7 @@ void title_options_input(void) {
             play_song(1);
             play_sound_effect(4);
             gMenuWork->cursor = 2;
-            gSpriteEntries[14].unk0 &= 0xBFFF;
+            gSpriteEntries[14].flags &= 0xBFFF;
             gGameSubState--;
             title_options_highlight_row(3);
             title_options_draw_row_sweep(3, 0);
@@ -392,8 +392,8 @@ void title_options_input(void) {
     }
     title_options_highlight_row(gMenuWork->cursor);
     title_options_draw_values(gMenuWork->cursor);
-    gSpriteEntries[14].unk2 = 32;
-    gSpriteEntries[14].unk4 = gMenuWork->cursor * 24 + 0x50;
+    gSpriteEntries[14].x = 32;
+    gSpriteEntries[14].y = gMenuWork->cursor * 24 + 0x50;
 }
 
 void title_menu_confirm_flash(void) {

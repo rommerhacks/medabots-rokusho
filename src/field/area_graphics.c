@@ -281,11 +281,11 @@ void sprite_set_blend_from_kind(u8 idx) {
     u8 v = gSpriteSheetBlendKinds[gSpriteEntries[idx].unk30];
 
     if (v == 2)
-        gSpriteEntries[idx].unkB = 0xFF;
+        gSpriteEntries[idx].order = 0xFF;
     else if (v == 1)
-        gSpriteEntries[idx].unkB = 0;
+        gSpriteEntries[idx].order = 0;
     else
-        gSpriteEntries[idx].unkB = 0x40;
+        gSpriteEntries[idx].order = 0x40;
 }
 
 static void blend_set_alpha_12_8(void) {
@@ -313,11 +313,11 @@ void blend_set_alpha_12_10(void) {
 }
 
 void sprite_entry_init(u8 slot, u16 a, u32 frame, u8 c, u8 d) {
-    gSpriteEntries[slot].unk0 = a;
+    gSpriteEntries[slot].flags = a;
     gSpriteEntries[slot].unk32 = a;
-    gSpriteEntries[slot].unk6 = frame;
-    gSpriteEntries[slot].unkA = c;
-    gSpriteEntries[slot].unk1C = d;
+    gSpriteEntries[slot].frame = frame;
+    gSpriteEntries[slot].palette = c;
+    gSpriteEntries[slot].frame_table = d;
 }
 
 void sprite_entry_clear(u8 slot) {

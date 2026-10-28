@@ -97,10 +97,10 @@ void setup_battle_bot_sprite_group(u32 rec, u32 x, u32 y) {
     flip = bot_sprite_is_flipped(rec);
     setup_battle_sprite_group(p[0], p[1], p[2], p[3], rec, rec * 4 + 0x5A, x, y, flip,
                               gBattleWork.battlefieldParams[3] + 2, rec * 4 + 0x5A);
-    gSpriteEntries[rec * 4 + 0x5B].unk0 &= 0xFDFF;
-    gSpriteEntries[rec * 4 + 0x5C].unk0 &= 0xFDFF;
-    gSpriteEntries[rec * 4 + 0x5B].unk18 = 0;
-    gSpriteEntries[rec * 4 + 0x5C].unk18 = 0;
+    gSpriteEntries[rec * 4 + 0x5B].flags &= 0xFDFF;
+    gSpriteEntries[rec * 4 + 0x5C].flags &= 0xFDFF;
+    gSpriteEntries[rec * 4 + 0x5B].angle = 0;
+    gSpriteEntries[rec * 4 + 0x5C].angle = 0;
 }
 
 void load_battle_bg_layers(void) {
@@ -117,10 +117,10 @@ void decompress_two_bg1_layers(void) {
 
 void render_bot_name_sprites(u32 rec) {
     if (rec <= 2) {
-        clear_sprite_table_mask(10, 10);
+        disable_sprites(10, 10);
         render_text_sprites_08040DB8(gBattleBots[rec].medal.name, 10, 1, 14, 10, 15, 0, 1);
     } else {
-        clear_sprite_table_mask(20, 13);
+        disable_sprites(20, 13);
         render_text_sprites_08040DB8(gBattleBots[rec].medal.name, 20, 19, 14, 10, 15, 0, 1);
     }
 }

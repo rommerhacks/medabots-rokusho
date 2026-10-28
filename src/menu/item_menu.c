@@ -19,11 +19,11 @@ static void item_menu_blink_swap_marker(u32 a) {
     if (w->swap_pending) {
         if (w->swap_from >= w->list_top && w->swap_from < w->list_top + 5) {
             if (a & 1)
-                gSpriteEntries[84].unk0 &= 0xBFFF;
+                gSpriteEntries[84].flags &= 0xBFFF;
             else
-                gSpriteEntries[84].unk0 |= 0x4000;
+                gSpriteEntries[84].flags |= 0x4000;
         } else
-            gSpriteEntries[84].unk0 &= 0xBFFF;
+            gSpriteEntries[84].flags &= 0xBFFF;
     }
 }
 
@@ -63,27 +63,27 @@ void item_menu_load_graphics(void) {
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     for (i = 0; i <= 1; i++) {
-        gSpriteEntries[i + 0x51].unk0 = 0x8000;
-        gSpriteEntries[i + 0x51].unk1C = 2;
-        gSpriteEntries[i + 0x51].unk2 = i * 40 + 0x18;
-        gSpriteEntries[i + 0x51].unk4 = 0x18;
-        gSpriteEntries[i + 0x51].unkA = 0;
-        gSpriteEntries[i + 0x51].unk6 = 5;
+        gSpriteEntries[i + 0x51].flags = 0x8000;
+        gSpriteEntries[i + 0x51].frame_table = 2;
+        gSpriteEntries[i + 0x51].x = i * 40 + 0x18;
+        gSpriteEntries[i + 0x51].y = 0x18;
+        gSpriteEntries[i + 0x51].palette = 0;
+        gSpriteEntries[i + 0x51].frame = 5;
     }
-    gSpriteEntries[0x51].unk0 |= 0x1000;
+    gSpriteEntries[0x51].flags |= 0x1000;
     for (i = 0; i <= 1; i++) {
-        gSpriteEntries[i + 0x53].unk0 = 0x8000;
-        gSpriteEntries[i + 0x53].unk1C = 2;
-        gSpriteEntries[i + 0x53].unkA = 0;
-        gSpriteEntries[i + 0x53].unk6 = 6;
+        gSpriteEntries[i + 0x53].flags = 0x8000;
+        gSpriteEntries[i + 0x53].frame_table = 2;
+        gSpriteEntries[i + 0x53].palette = 0;
+        gSpriteEntries[i + 0x53].frame = 6;
     }
     for (i = 0; i <= 4; i++) {
-        gSpriteEntries[i + 0x55].unk0 = 0x8000;
-        gSpriteEntries[i + 0x55].unk1C = 2;
-        gSpriteEntries[i + 0x55].unkA = 0xE;
-        gSpriteEntries[i + 0x55].unk6 = 7;
-        gSpriteEntries[i + 0x55].unk2 = 0xE0;
-        gSpriteEntries[i + 0x55].unk4 = i * 16 + 0x20;
+        gSpriteEntries[i + 0x55].flags = 0x8000;
+        gSpriteEntries[i + 0x55].frame_table = 2;
+        gSpriteEntries[i + 0x55].palette = 0xE;
+        gSpriteEntries[i + 0x55].frame = 7;
+        gSpriteEntries[i + 0x55].x = 0xE0;
+        gSpriteEntries[i + 0x55].y = i * 16 + 0x20;
     }
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     gGameSubState++;
@@ -99,13 +99,13 @@ void item_menu_init(void) {
     unpack_item_inventory_to_buffer();
     update_battle_medapart_icons();
     if (gMenuWork->item_count) {
-        gSpriteEntries[0x53].unk0 |= 0x4000;
+        gSpriteEntries[0x53].flags |= 0x4000;
         item_menu_set_cursor_pos(&gSpriteEntries[0x53]);
     }
     w = gMenuWork;
     if ((w->item_count - 1) / 5) {
-        gSpriteEntries[0x51].unk0 |= 0x4000;
-        gSpriteEntries[0x52].unk0 |= 0x4000;
+        gSpriteEntries[0x51].flags |= 0x4000;
+        gSpriteEntries[0x52].flags |= 0x4000;
     }
     w->swap_pending = 0;
     CpuFastSet(gGradientPaletteYellow, gPaletteBackup, 0x80);
@@ -141,7 +141,7 @@ void item_menu_show_description(void) {
     u8 id;
     struct MenuWork *w;
     item_menu_blink_swap_marker(gFrameCounter);
-    sprite_bob_y(0x53, gFrameCounter, 0x54);
+    sprite_bob_x(0x53, gFrameCounter, 0x54);
     w = gMenuWork;
     if (w->item_count) {
         struct ItemListEntry *l = (struct ItemListEntry *)0x02040000;
@@ -164,14 +164,14 @@ void item_menu_handle_input(void) {
     u8 n = 5;
     u8 cnt;
 
-    sprite_bob_y(0x53, gFrameCounter, 0x54);
+    sprite_bob_x(0x53, gFrameCounter, 0x54);
     if ((gMenuWork->item_count - 1) / 5) {
         if ((gFrameCounter >> 4) & 1) {
-            gSpriteEntries[0x51].unk0 |= 0x4000;
-            gSpriteEntries[0x52].unk0 |= 0x4000;
+            gSpriteEntries[0x51].flags |= 0x4000;
+            gSpriteEntries[0x52].flags |= 0x4000;
         } else {
-            gSpriteEntries[0x51].unk0 &= 0xBFFF;
-            gSpriteEntries[0x52].unk0 &= 0xBFFF;
+            gSpriteEntries[0x51].flags &= 0xBFFF;
+            gSpriteEntries[0x52].flags &= 0xBFFF;
         }
     }
 
@@ -226,13 +226,13 @@ other:
     if (w2->swap_pending) {
         item_menu_blink_swap_marker(gFrameCounter);
         if (KEYS_LO(gNewKeys) & 2) {
-            gSpriteEntries[0x54].unk0 &= 0xBFFF;
+            gSpriteEntries[0x54].flags &= 0xBFFF;
             gMenuWork->swap_pending = 0;
             goto moved;
         }
         if (!(KEYS_LO(gNewKeys) & 5))
             return;
-        gSpriteEntries[0x54].unk0 &= 0xBFFF;
+        gSpriteEntries[0x54].flags &= 0xBFFF;
         gMenuWork->swap_pending = 0;
         swap_inventory_items();
         unpack_item_inventory_to_buffer();
@@ -259,8 +259,8 @@ other:
         case 4:
             message_next();
             play_sound_effect(6);
-            gSpriteEntries[0x51].unk0 &= 0xBFFF;
-            gSpriteEntries[0x52].unk0 &= 0xBFFF;
+            gSpriteEntries[0x51].flags &= 0xBFFF;
+            gSpriteEntries[0x52].flags &= 0xBFFF;
             gGameSubState = 9;
             return;
         case 1:
@@ -324,9 +324,9 @@ moved:
 void item_menu_start_swap(void) {
     struct MenuWork **pw = &gMenuWork;
     item_menu_set_cursor_pos(&gSpriteEntries[0x54]);
-    gSpriteEntries[0x54].unk0 |= 0x4000;
-    gSpriteEntries[0x54].unk2++;
-    gSpriteEntries[0x54].unk4++;
+    gSpriteEntries[0x54].flags |= 0x4000;
+    gSpriteEntries[0x54].x++;
+    gSpriteEntries[0x54].y++;
     (*pw)->swap_pending = 1;
     (*pw)->swap_from = (*pw)->item_cursor;
 }

@@ -627,13 +627,13 @@ void debug_mdlpic_input(void) {
     } else if (KEYS_LO(gNewKeys) & 1) {
         DmaSet(3, gCommonObjPalette, 0x050003E0, 0x84000008);
         lz_decompress_dispatch(gMedalSpriteGfx[gGameWork.debugValues[0]][gGameWork.debugValues[1]], (void *)0x06010000);
-        gSpriteEntries[0].unk0 = 0xC004;
-        gSpriteEntries[0].unk2 = 0x40;
-        gSpriteEntries[0].unk4 = 0x50;
-        gSpriteEntries[0].unk6 = 0x200;
-        gSpriteEntries[0].unkA = 15;
-        gSpriteEntries[0].unk1C = 0;
-        gSpriteEntries[0].unkB = 0xC0;
+        gSpriteEntries[0].flags = 0xC004;
+        gSpriteEntries[0].x = 0x40;
+        gSpriteEntries[0].y = 0x50;
+        gSpriteEntries[0].frame = 0x200;
+        gSpriteEntries[0].palette = 15;
+        gSpriteEntries[0].frame_table = 0;
+        gSpriteEntries[0].order = 0xC0;
     }
 }
 

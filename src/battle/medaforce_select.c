@@ -37,11 +37,11 @@ void scroll_tilemap_window(void) {
 void command_ring_grow_icons(void) {
     u32 i;
     for (i = 0; i < 6; i++) {
-        gSpriteEntries[i].unk9 += 8;
-        gSpriteEntries[i].unk8 += 8;
-        if (gSpriteEntries[i].unk9 > 0x40 - (0x90 - gSpriteEntries[i].unk4) / 2) {
-            gSpriteEntries[i].unk9 = 0x40 - (0x90 - gSpriteEntries[i].unk4) / 2;
-            gSpriteEntries[i].unk8 = 0x40 - (0x90 - gSpriteEntries[i].unk4) / 2;
+        gSpriteEntries[i].scale_y += 8;
+        gSpriteEntries[i].scale_x += 8;
+        if (gSpriteEntries[i].scale_y > 0x40 - (0x90 - gSpriteEntries[i].y) / 2) {
+            gSpriteEntries[i].scale_y = 0x40 - (0x90 - gSpriteEntries[i].y) / 2;
+            gSpriteEntries[i].scale_x = 0x40 - (0x90 - gSpriteEntries[i].y) / 2;
         }
     }
 }
@@ -74,58 +74,58 @@ void mf_menu_init_cursor(void) {
 }
 
 void mf_menu_init_center_icon(void) {
-    gSpriteEntries[0].unk0 = 0xC404;
-    gSpriteEntries[0].unk1C = 0;
-    gSpriteEntries[0].unk2 = 0x78;
-    gSpriteEntries[0].unk4 = 0x78;
-    gSpriteEntries[0].unkA = 0xA;
-    gSpriteEntries[0].unkB = 0xC0;
-    gSpriteEntries[0].unk6 = 0x61A;
+    gSpriteEntries[0].flags = 0xC404;
+    gSpriteEntries[0].frame_table = 0;
+    gSpriteEntries[0].x = 0x78;
+    gSpriteEntries[0].y = 0x78;
+    gSpriteEntries[0].palette = 0xA;
+    gSpriteEntries[0].order = 0xC0;
+    gSpriteEntries[0].frame = 0x61A;
 }
 
 void mf_menu_init_charge_icon(u32 a) {
-    gSpriteEntries[1].unk0 = 0xC404;
-    gSpriteEntries[1].unk1C = 0;
-    gSpriteEntries[1].unk2 = 0x78;
-    gSpriteEntries[1].unk4 = 0x84;
-    gSpriteEntries[1].unkA = 0xA;
-    gSpriteEntries[1].unkB = 0xC0;
-    gSpriteEntries[1].unk6 = a * 4 + 0x61E;
+    gSpriteEntries[1].flags = 0xC404;
+    gSpriteEntries[1].frame_table = 0;
+    gSpriteEntries[1].x = 0x78;
+    gSpriteEntries[1].y = 0x84;
+    gSpriteEntries[1].palette = 0xA;
+    gSpriteEntries[1].order = 0xC0;
+    gSpriteEntries[1].frame = a * 4 + 0x61E;
 }
 
 void mf_menu_init_top_icon(u32 a) {
-    gSpriteEntries[2].unk0 = 0xC404;
-    gSpriteEntries[2].unk1C = 0;
-    gSpriteEntries[2].unk2 = 0x78;
-    gSpriteEntries[2].unk4 = 0x6C;
-    gSpriteEntries[2].unkA = 0xA;
-    gSpriteEntries[2].unkB = 0xC0;
-    gSpriteEntries[2].unk6 = a * 4 + 0x61B;
+    gSpriteEntries[2].flags = 0xC404;
+    gSpriteEntries[2].frame_table = 0;
+    gSpriteEntries[2].x = 0x78;
+    gSpriteEntries[2].y = 0x6C;
+    gSpriteEntries[2].palette = 0xA;
+    gSpriteEntries[2].order = 0xC0;
+    gSpriteEntries[2].frame = a * 4 + 0x61B;
 }
 
 void mf_menu_init_left_icon(u32 a) {
-    gSpriteEntries[3].unk0 = 0xC404;
-    gSpriteEntries[3].unk1C = 0;
-    gSpriteEntries[3].unk2 = 0x6C;
-    gSpriteEntries[3].unk4 = 0x78;
-    gSpriteEntries[3].unkA = 0xA;
-    gSpriteEntries[3].unkB = 0xC0;
-    gSpriteEntries[3].unk6 = a * 4 + 0x61C;
+    gSpriteEntries[3].flags = 0xC404;
+    gSpriteEntries[3].frame_table = 0;
+    gSpriteEntries[3].x = 0x6C;
+    gSpriteEntries[3].y = 0x78;
+    gSpriteEntries[3].palette = 0xA;
+    gSpriteEntries[3].order = 0xC0;
+    gSpriteEntries[3].frame = a * 4 + 0x61C;
 }
 
 void mf_menu_init_right_icon(u32 a) {
-    gSpriteEntries[4].unk0 = 0xC404;
-    gSpriteEntries[4].unk1C = 0;
-    gSpriteEntries[4].unk2 = 0x84;
-    gSpriteEntries[4].unk4 = 0x78;
-    gSpriteEntries[4].unkA = 0xA;
-    gSpriteEntries[4].unkB = 0xC0;
-    gSpriteEntries[4].unk6 = a * 4 + 0x61D;
+    gSpriteEntries[4].flags = 0xC404;
+    gSpriteEntries[4].frame_table = 0;
+    gSpriteEntries[4].x = 0x84;
+    gSpriteEntries[4].y = 0x78;
+    gSpriteEntries[4].palette = 0xA;
+    gSpriteEntries[4].order = 0xC0;
+    gSpriteEntries[4].frame = a * 4 + 0x61D;
 }
 
 // Name box of the selected slot: "Charge MF" for slot 0, else the Medaforce name, blank while unlearned.
 void mf_menu_draw_medaforce_name(void) {
-    clear_sprite_table_mask(0x14, 16);
+    disable_sprites(0x14, 16);
     switch (gBattleWork.unk82) {
     case 0:
         memcpy_bytes_08041D04(gBattleMenuTexts[3], gGameWork.textBuf, 14);
@@ -164,7 +164,7 @@ void mf_menu_draw_status(u32 a) {
     u8 err = 0;
     u8 blank = 0;
 
-    clear_sprite_table_mask(0x24, 13);
+    disable_sprites(0x24, 13);
     switch (gBattleWork.unk82) {
     case 0:
         fill_text_blank(gGameWork.textBuf, 13);

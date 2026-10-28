@@ -129,7 +129,7 @@ void script_op_guard_restore(void) {
         memcpy_bytes_0803F63C(gGuardSpriteEntryBytes + 0xC0,
                               gGuardSpriteEntryBytes + 0xF00 + ((gBattleWork.guardBot - 1) << 8), 0x40);
         clear_battle_sprite_slot(0x21, 4);
-        set_sprite_hidden_flags(gBattleWork.guardBot * 4 + 0x56, 4);
+        enable_sprites(gBattleWork.guardBot * 4 + 0x56, 4);
         init_battle_sprite_entry_0801BC04(gBattleWork.guardBot - 1);
         gBattleWork.guardBot = 0;
         load_all_bot_part_sprites();

@@ -257,34 +257,33 @@ void update_entity_sprites_on_screen(void) {
     for (i = 0; i < 36; i++) {
         if (gEntityStates[i + 49].active != 0) {
             visible = 0;
-            if (gBg1Scroll.y < gSpriteEntries[i + 49].unk10_8 - gFieldWork.map_origin_y + 16 &&
-                gSpriteEntries[i + 49].unk10_8 - gFieldWork.map_origin_y < gBg1Scroll.y + 0xA8 &&
-                gBg1Scroll.x < gSpriteEntries[i + 49].unkC_8 - gFieldWork.map_origin_x + 16 &&
-                gSpriteEntries[i + 49].unkC_8 - gFieldWork.map_origin_x < gBg1Scroll.x + 0xF0)
+            if (gBg1Scroll.y < gSpriteEntries[i + 49].pos_y - gFieldWork.map_origin_y + 16 &&
+                gSpriteEntries[i + 49].pos_y - gFieldWork.map_origin_y < gBg1Scroll.y + 0xA8 &&
+                gBg1Scroll.x < gSpriteEntries[i + 49].pos_x - gFieldWork.map_origin_x + 16 &&
+                gSpriteEntries[i + 49].pos_x - gFieldWork.map_origin_x < gBg1Scroll.x + 0xF0)
                 visible = 1;
             if (visible) {
                 if (gSpriteEntries[i + 49].unk2D != 1) {
-                    gSpriteEntries[i + 49].unk0 = gSpriteEntries[i + 49].unk32;
+                    gSpriteEntries[i + 49].flags = gSpriteEntries[i + 49].unk32;
                     gSpriteEntries[i + 49].unk2E = 1;
-                    gSpriteEntries[i + 49].unk2 = gSpriteEntries[i + 49].unkC_8 - gBg1Scroll.x;
-                    gSpriteEntries[i + 49].unk4 = gSpriteEntries[i + 49].unk10_8 - gBg1Scroll.y;
+                    gSpriteEntries[i + 49].x = gSpriteEntries[i + 49].pos_x - gBg1Scroll.x;
+                    gSpriteEntries[i + 49].y = gSpriteEntries[i + 49].pos_y - gBg1Scroll.y;
                     if (gSpriteSheetHasShadow[gSpriteEntries[i + 49].unk30]) {
-                        gSpriteEntries[i + 91].unk0 = 0xCC0C;
-                        gSpriteEntries[i + 91].unk2 = gSpriteEntries[i + 49].unk2;
-                        gSpriteEntries[i + 91].unk4 =
-                            gSpriteEntries[i + 49].unk4 + (s16)(gSpriteEntries[i + 49].unk2C - 5);
+                        gSpriteEntries[i + 91].flags = 0xCC0C;
+                        gSpriteEntries[i + 91].x = gSpriteEntries[i + 49].x;
+                        gSpriteEntries[i + 91].y = gSpriteEntries[i + 49].y + (s16)(gSpriteEntries[i + 49].unk2C - 5);
                     } else {
-                        gSpriteEntries[i + 91].unk0 = 0;
+                        gSpriteEntries[i + 91].flags = 0;
                     }
                 } else {
-                    gSpriteEntries[i + 49].unk0 = 0;
+                    gSpriteEntries[i + 49].flags = 0;
                     gSpriteEntries[i + 49].unk2E = 0;
-                    gSpriteEntries[i + 91].unk0 = 0;
+                    gSpriteEntries[i + 91].flags = 0;
                 }
             } else {
-                gSpriteEntries[i + 49].unk0 = 0;
+                gSpriteEntries[i + 49].flags = 0;
                 gSpriteEntries[i + 49].unk2E = 0;
-                gSpriteEntries[i + 91].unk0 = 0;
+                gSpriteEntries[i + 91].flags = 0;
             }
         }
     }
@@ -392,25 +391,25 @@ void field_scroll_bg_y(s16 dy) {
 }
 
 void update_bg_scroll_offsets_a(void) {
-    gSpriteEntries[47].unk2 = gFieldWork.player_x - gBg1Scroll.x;
-    gSpriteEntries[47].unk4 = gFieldWork.player_y - gBg1Scroll.y;
-    gSpriteEntries[89].unk2 = gSpriteEntries[47].unk2;
-    gSpriteEntries[89].unk4 = gSpriteEntries[47].unk4 - 5;
+    gSpriteEntries[47].x = gFieldWork.player_x - gBg1Scroll.x;
+    gSpriteEntries[47].y = gFieldWork.player_y - gBg1Scroll.y;
+    gSpriteEntries[89].x = gSpriteEntries[47].x;
+    gSpriteEntries[89].y = gSpriteEntries[47].y - 5;
 }
 
 static void field_hide_player_sprite(void) {
-    gSpriteEntries[47].unk0 = 0;
-    gSpriteEntries[89].unk0 = 0;
+    gSpriteEntries[47].flags = 0;
+    gSpriteEntries[89].flags = 0;
 }
 
 // Shows or hides the player sprite (entry 47) and its shadow (entry 89).
 void field_set_player_sprite_visible(u8 on) {
     if (on) {
-        gSpriteEntries[47].unk0 = 0xC804;
-        gSpriteEntries[89].unk0 = 0xCC0C;
+        gSpriteEntries[47].flags = 0xC804;
+        gSpriteEntries[89].flags = 0xCC0C;
     } else {
-        gSpriteEntries[47].unk0 = on;
-        gSpriteEntries[89].unk0 = on;
+        gSpriteEntries[47].flags = on;
+        gSpriteEntries[89].flags = on;
     }
 }
 
@@ -472,16 +471,16 @@ void set_sprite_animation_state(u8 idx, u8 state) {
     gSpriteEntries[idx].unk21 = state;
     switch (state) {
     case 0:
-        gSpriteEntries[idx].unk6 = gSpriteEntries[idx].unk2B * 12;
+        gSpriteEntries[idx].frame = gSpriteEntries[idx].unk2B * 12;
         break;
     case 1:
-        gSpriteEntries[idx].unk6 = gSpriteEntries[idx].unk2B * 12 + 3;
+        gSpriteEntries[idx].frame = gSpriteEntries[idx].unk2B * 12 + 3;
         break;
     case 2:
-        gSpriteEntries[idx].unk6 = gSpriteEntries[idx].unk2B * 12 + 6;
+        gSpriteEntries[idx].frame = gSpriteEntries[idx].unk2B * 12 + 6;
         break;
     case 3:
-        gSpriteEntries[idx].unk6 = gSpriteEntries[idx].unk2B * 12 + 9;
+        gSpriteEntries[idx].frame = gSpriteEntries[idx].unk2B * 12 + 9;
         break;
     }
 }
@@ -535,7 +534,7 @@ void follower_respawn(void) {
     if (gFieldWork.follower_active) {
         sprite_entry_init(48, 0xC804, gFieldWork.follower_sprite_set * 12 + gFieldWork.follower_facing,
                           gFieldWork.follower_sprite_set, 1);
-        gSpriteEntries[48].unkB = 0x40;
+        gSpriteEntries[48].order = 0x40;
         gSpriteEntries[48].unk2B = gFieldWork.follower_sprite_set;
         follower_set_facing(gFieldWork.follower_facing);
         sprite_anim_start(48, sprite_walk_anim_id(48, gFieldWork.follower_facing));
@@ -544,10 +543,10 @@ void follower_respawn(void) {
         gSpriteEntries[48].unk30 = area_sprite_sheet_id(gSpriteEntries[48].unk2B);
         sprite_set_blend_from_kind(48);
         sprite_entry_init(90, 0xCC0C, 0x90, 14, 1);
-        gSpriteEntries[90].unkC_8 = gFieldWork.follower_x;
-        gSpriteEntries[90].unk10_8 = gFieldWork.follower_y - 5;
-        gSpriteEntries[90].unk2 = gSpriteEntries[48].unk2;
-        gSpriteEntries[90].unk4 = gSpriteEntries[48].unk4 - 5;
+        gSpriteEntries[90].pos_x = gFieldWork.follower_x;
+        gSpriteEntries[90].pos_y = gFieldWork.follower_y - 5;
+        gSpriteEntries[90].x = gSpriteEntries[48].x;
+        gSpriteEntries[90].y = gSpriteEntries[48].y - 5;
     }
 }
 
@@ -562,10 +561,10 @@ void follower_snap_to_player(void) {
 }
 
 void follower_update_screen_pos(void) {
-    gSpriteEntries[48].unk2 = gFieldWork.follower_x - gBg1Scroll.x;
-    gSpriteEntries[48].unk4 = gFieldWork.follower_y - gBg1Scroll.y;
-    gSpriteEntries[90].unk2 = gSpriteEntries[48].unk2;
-    gSpriteEntries[90].unk4 = gSpriteEntries[48].unk4 - 5;
+    gSpriteEntries[48].x = gFieldWork.follower_x - gBg1Scroll.x;
+    gSpriteEntries[48].y = gFieldWork.follower_y - gBg1Scroll.y;
+    gSpriteEntries[90].x = gSpriteEntries[48].x;
+    gSpriteEntries[90].y = gSpriteEntries[48].y - 5;
 }
 
 void event_flag_clear(u16 id) {

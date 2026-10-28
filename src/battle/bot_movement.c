@@ -144,27 +144,27 @@ void battle_bot_move(u32 rec) {
     gBattleBots[rec].moveSubpixel %= 16;
     if (rec <= 2) {
         if (!(gBattleBots[rec].stateFlags & 4)) {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gBattleBots[rec].moveStep > 0x68)
-                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x68;
+            if (gSpriteEntries[rec * 4 + 0x5D].x + gBattleBots[rec].moveStep > 0x68)
+                gSpriteEntries[rec * 4 + 0x5D].x = 0x68;
             else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 += gBattleBots[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].x += gBattleBots[rec].moveStep;
         } else {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gBattleBots[rec].moveStep < 0x28)
-                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x28;
+            if (gSpriteEntries[rec * 4 + 0x5D].x - gBattleBots[rec].moveStep < 0x28)
+                gSpriteEntries[rec * 4 + 0x5D].x = 0x28;
             else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gBattleBots[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].x -= gBattleBots[rec].moveStep;
         }
     } else {
         if (!(gBattleBots[rec].stateFlags & 4)) {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gBattleBots[rec].moveStep < 0x88)
-                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x88;
+            if (gSpriteEntries[rec * 4 + 0x5D].x - gBattleBots[rec].moveStep < 0x88)
+                gSpriteEntries[rec * 4 + 0x5D].x = 0x88;
             else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gBattleBots[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].x -= gBattleBots[rec].moveStep;
         } else {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gBattleBots[rec].moveStep > 0xC8)
-                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0xC8;
+            if (gSpriteEntries[rec * 4 + 0x5D].x + gBattleBots[rec].moveStep > 0xC8)
+                gSpriteEntries[rec * 4 + 0x5D].x = 0xC8;
             else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 += gBattleBots[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].x += gBattleBots[rec].moveStep;
         }
     }
 }
@@ -179,31 +179,31 @@ u32 battle_bot_move_reverse(u32 rec) {
     gBattleBots[rec].moveSubpixel %= 16;
     if (rec <= 2) {
         if (gBattleBots[rec].stateFlags & 4) {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gBattleBots[rec].moveStep > 0x68) {
-                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x68;
+            if (gSpriteEntries[rec * 4 + 0x5D].x + gBattleBots[rec].moveStep > 0x68) {
+                gSpriteEntries[rec * 4 + 0x5D].x = 0x68;
                 done = 1;
             } else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 += gBattleBots[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].x += gBattleBots[rec].moveStep;
         } else {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gBattleBots[rec].moveStep < 0x28) {
-                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x28;
+            if (gSpriteEntries[rec * 4 + 0x5D].x - gBattleBots[rec].moveStep < 0x28) {
+                gSpriteEntries[rec * 4 + 0x5D].x = 0x28;
                 done = 1;
             } else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gBattleBots[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].x -= gBattleBots[rec].moveStep;
         }
     } else {
         if (gBattleBots[rec].stateFlags & 4) {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 - gBattleBots[rec].moveStep < 0x88) {
-                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0x88;
+            if (gSpriteEntries[rec * 4 + 0x5D].x - gBattleBots[rec].moveStep < 0x88) {
+                gSpriteEntries[rec * 4 + 0x5D].x = 0x88;
                 done = 1;
             } else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 -= gBattleBots[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].x -= gBattleBots[rec].moveStep;
         } else {
-            if (gSpriteEntries[rec * 4 + 0x5D].unk2 + gBattleBots[rec].moveStep > 0xC8) {
-                gSpriteEntries[rec * 4 + 0x5D].unk2 = 0xC8;
+            if (gSpriteEntries[rec * 4 + 0x5D].x + gBattleBots[rec].moveStep > 0xC8) {
+                gSpriteEntries[rec * 4 + 0x5D].x = 0xC8;
                 done = 1;
             } else
-                gSpriteEntries[rec * 4 + 0x5D].unk2 += gBattleBots[rec].moveStep;
+                gSpriteEntries[rec * 4 + 0x5D].x += gBattleBots[rec].moveStep;
         }
     }
     return done;
@@ -211,7 +211,7 @@ u32 battle_bot_move_reverse(u32 rec) {
 
 // Sets the Medabot's walk animation from its speed: anim script (0x20 - moveDelay) / 2 + 1.
 void bot_update_walk_anim(u32 rec) {
-    if (gSpriteEntries[rec * 4 + 0x5B].unk0 & 0x200) {
+    if (gSpriteEntries[rec * 4 + 0x5B].flags & 0x200) {
         gSpriteEntries[rec * 4 + 0x5D].unk24 = ((s32)(0x20 - gBattleBots[rec].moveDelay) >> 1) + 1;
         update_battle_sprite_orbiting_positions(rec * 4 + 0x5A, rec, bot_sprite_is_flipped(rec));
     } else {

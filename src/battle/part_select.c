@@ -5,53 +5,53 @@
 #include "global.h"
 
 void part_select_init_center_icon(void) {
-    gSpriteEntries[0].unk0 = 0xC404;
-    gSpriteEntries[0].unk1C = 0;
-    gSpriteEntries[0].unk2 = 0x78;
-    gSpriteEntries[0].unk4 = 0x78;
-    gSpriteEntries[0].unkA = 0xA;
-    gSpriteEntries[0].unkB = 0xC0;
-    gSpriteEntries[0].unk6 = gPartSelectCenterFrames[gBattleWork.unk82] + 0x600;
+    gSpriteEntries[0].flags = 0xC404;
+    gSpriteEntries[0].frame_table = 0;
+    gSpriteEntries[0].x = 0x78;
+    gSpriteEntries[0].y = 0x78;
+    gSpriteEntries[0].palette = 0xA;
+    gSpriteEntries[0].order = 0xC0;
+    gSpriteEntries[0].frame = gPartSelectCenterFrames[gBattleWork.unk82] + 0x600;
 }
 
 void part_select_init_head_icon(u32 a) {
-    gSpriteEntries[1].unk0 = 0xC404;
-    gSpriteEntries[1].unk1C = 0;
-    gSpriteEntries[1].unk2 = 0x78;
-    gSpriteEntries[1].unk4 = 0x6C;
-    gSpriteEntries[1].unkA = 0xA;
-    gSpriteEntries[1].unkB = 0xC0;
-    gSpriteEntries[1].unk6 = a * 4 + 0x604;
+    gSpriteEntries[1].flags = 0xC404;
+    gSpriteEntries[1].frame_table = 0;
+    gSpriteEntries[1].x = 0x78;
+    gSpriteEntries[1].y = 0x6C;
+    gSpriteEntries[1].palette = 0xA;
+    gSpriteEntries[1].order = 0xC0;
+    gSpriteEntries[1].frame = a * 4 + 0x604;
 }
 
 void part_select_init_right_arm_icon(u32 a) {
-    gSpriteEntries[2].unk0 = 0xC404;
-    gSpriteEntries[2].unk1C = 0;
-    gSpriteEntries[2].unk2 = 0x6C;
-    gSpriteEntries[2].unk4 = 0x78;
-    gSpriteEntries[2].unkA = 0xA;
-    gSpriteEntries[2].unkB = 0xC0;
-    gSpriteEntries[2].unk6 = a * 4 + 0x605;
+    gSpriteEntries[2].flags = 0xC404;
+    gSpriteEntries[2].frame_table = 0;
+    gSpriteEntries[2].x = 0x6C;
+    gSpriteEntries[2].y = 0x78;
+    gSpriteEntries[2].palette = 0xA;
+    gSpriteEntries[2].order = 0xC0;
+    gSpriteEntries[2].frame = a * 4 + 0x605;
 }
 
 void part_select_init_left_arm_icon(u32 a) {
-    gSpriteEntries[3].unk0 = 0xC404;
-    gSpriteEntries[3].unk1C = 0;
-    gSpriteEntries[3].unk2 = 0x84;
-    gSpriteEntries[3].unk4 = 0x78;
-    gSpriteEntries[3].unkA = 0xA;
-    gSpriteEntries[3].unkB = 0xC0;
-    gSpriteEntries[3].unk6 = a * 4 + 0x606;
+    gSpriteEntries[3].flags = 0xC404;
+    gSpriteEntries[3].frame_table = 0;
+    gSpriteEntries[3].x = 0x84;
+    gSpriteEntries[3].y = 0x78;
+    gSpriteEntries[3].palette = 0xA;
+    gSpriteEntries[3].order = 0xC0;
+    gSpriteEntries[3].frame = a * 4 + 0x606;
 }
 
 void part_select_init_bottom_icon(u32 a) {
-    gSpriteEntries[4].unk0 = 0xC404;
-    gSpriteEntries[4].unk1C = 0;
-    gSpriteEntries[4].unk2 = 0x78;
-    gSpriteEntries[4].unk4 = 0x84;
-    gSpriteEntries[4].unkA = 0xA;
-    gSpriteEntries[4].unkB = 0xC0;
-    gSpriteEntries[4].unk6 = a * 4 + 0x607;
+    gSpriteEntries[4].flags = 0xC404;
+    gSpriteEntries[4].frame_table = 0;
+    gSpriteEntries[4].x = 0x78;
+    gSpriteEntries[4].y = 0x84;
+    gSpriteEntries[4].palette = 0xA;
+    gSpriteEntries[4].order = 0xC0;
+    gSpriteEntries[4].frame = a * 4 + 0x607;
 }
 
 void part_select_blink_selected_icon(void) {
@@ -115,7 +115,7 @@ void part_select_input(void) {
 void part_select_draw_part_name(void) {
     s32 k;
 
-    clear_sprite_table_mask(0x1F, 14);
+    disable_sprites(0x1F, 14);
     k = gBattleWork.unk82;
     if (k == 0)
         memcpy_bytes_08041D04(gBattleMenuTexts[3], gGameWork.textBuf, 14);
@@ -131,7 +131,7 @@ void part_select_draw_part_name(void) {
 void part_select_draw_skill_type(void) {
     s32 k;
 
-    clear_sprite_table_mask(0x2D, 13);
+    disable_sprites(0x2D, 13);
     k = gBattleWork.unk82;
     if (k == 0)
         fill_text_blank(gGameWork.textBuf, 13);
@@ -181,7 +181,7 @@ void part_select_blink_status(void) {
     }
     if (show) {
         if (gGameWork.unk84 & 8)
-            clear_sprite_table_mask(0x2D, 13);
+            disable_sprites(0x2D, 13);
         else
             render_text_sprites_08040DB8(gGameWork.textBuf, 0x2D, 0x13, 0xE, 10, 14, 0, 0);
     }
@@ -190,7 +190,7 @@ void part_select_blink_status(void) {
 void part_select_draw_skill_name(void) {
     s32 k;
 
-    clear_sprite_table_mask(0x14, 11);
+    disable_sprites(0x14, 11);
     k = gBattleWork.unk82;
     if (k == 0)
         fill_text_blank(gGameWork.textBuf, 10);

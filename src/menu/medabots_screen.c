@@ -561,7 +561,7 @@ void team_select_done_start(void) {
     medabots_scroll_bg3();
     medabots_screen_place_team_icons();
     medabots_screen_draw_bot_sprite();
-    clear_sprite_table_mask(0, 4);
+    disable_sprites(0, 4);
     gGameWork.timer = 0;
     gGameSubState++;
 }
@@ -845,16 +845,16 @@ static void medabots_scroll_bg3(void) {
 }
 
 static void medabots_screen_init_cursor_icons(void) {
-    gSpriteEntries[0].unk0 = 0xC604;
+    gSpriteEntries[0].flags = 0xC604;
     gSpriteEntries[0].unk23 = 0;
     medabots_screen_orbit_cursor_icon(0);
-    gSpriteEntries[1].unk0 = 0xC604;
+    gSpriteEntries[1].flags = 0xC604;
     gSpriteEntries[1].unk23 = 0x10;
     medabots_screen_orbit_cursor_icon(1);
-    gSpriteEntries[2].unk0 = 0xC604;
+    gSpriteEntries[2].flags = 0xC604;
     gSpriteEntries[2].unk23 = 0x20;
     medabots_screen_orbit_cursor_icon(2);
-    gSpriteEntries[3].unk0 = 0xC604;
+    gSpriteEntries[3].flags = 0xC604;
     gSpriteEntries[3].unk23 = 0x30;
     medabots_screen_orbit_cursor_icon(3);
 }
@@ -864,18 +864,18 @@ static void medabots_screen_orbit_cursor_icon(u32 i) {
     u32 cy = gMedabotsCursorOrbitCenters[gGameWork.medabotsCursor * 2 + 1];
     struct Vec16 p = compute_polar_to_screen_position(((gSpriteEntries[i].unk23 + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
 
-    gSpriteEntries[i].unk2 = p.x;
-    gSpriteEntries[i].unk4 = p.y;
-    gSpriteEntries[i].unk6 = 0x400;
-    gSpriteEntries[i].unkA = 12;
-    gSpriteEntries[i].unk1C = 0;
-    gSpriteEntries[i].unk9 = 0x40 - (cy + 8 - gSpriteEntries[i].unk4) * 3;
-    gSpriteEntries[i].unk8 = 0x60 - (cy + 8 - gSpriteEntries[i].unk4) * 3;
-    if (cy > gSpriteEntries[i].unk4)
-        gSpriteEntries[i].unkB = gMedabotsSlotSpritePriorities[gGameWork.medabotsCursor] - 1;
+    gSpriteEntries[i].x = p.x;
+    gSpriteEntries[i].y = p.y;
+    gSpriteEntries[i].frame = 0x400;
+    gSpriteEntries[i].palette = 12;
+    gSpriteEntries[i].frame_table = 0;
+    gSpriteEntries[i].scale_y = 0x40 - (cy + 8 - gSpriteEntries[i].y) * 3;
+    gSpriteEntries[i].scale_x = 0x60 - (cy + 8 - gSpriteEntries[i].y) * 3;
+    if (cy > gSpriteEntries[i].y)
+        gSpriteEntries[i].order = gMedabotsSlotSpritePriorities[gGameWork.medabotsCursor] - 1;
     else
-        gSpriteEntries[i].unkB = gMedabotsSlotSpritePriorities[gGameWork.medabotsCursor] + 4;
-    gSpriteEntries[i].unk18 = gSpriteEntries[i].unk23 << 4;
+        gSpriteEntries[i].order = gMedabotsSlotSpritePriorities[gGameWork.medabotsCursor] + 4;
+    gSpriteEntries[i].angle = gSpriteEntries[i].unk23 << 4;
     gSpriteEntries[i].unk23 = (gSpriteEntries[i].unk23 + 1) & 0x3F;
 }
 
@@ -903,7 +903,7 @@ static void medabots_screen_place_team_icons(void) {
                                         gMedabotsSlotPositions[i * 2 + 1], gGameWork.detailBot, 1,
                                         gMedabotsSlotSpritePriorities[i]);
         else
-            clear_sprite_table_mask(10 + i * 4, 4);
+            disable_sprites(10 + i * 4, 4);
     }
 }
 
@@ -927,7 +927,7 @@ static void medabots_screen_draw_legs_type_icons(void) {
 
 // The selected Medabot's Medal nickname (Medal record unkA) as text sprites, or blanks.
 static void medabots_screen_draw_medal_nickname(void) {
-    clear_sprite_table_mask(0x32, 10);
+    disable_sprites(0x32, 10);
     if (gTeamSlots[gGameWork.medabotsCursor].state > 1)
         render_text_sprites_08040DB8((u8 *)0x03000BAA +
                                          find_medal_slot_by_id(gTeamSlots[gGameWork.medabotsCursor].medal) * 64,
@@ -940,7 +940,7 @@ static void medabots_screen_draw_medal_nickname(void) {
 
 // The selected Medabot's Medal kind name (gMedalNames), or blanks.
 static void medabots_screen_draw_medal_kind_name(void) {
-    clear_sprite_table_mask(0x3C, 10);
+    disable_sprites(0x3C, 10);
     if (gTeamSlots[gGameWork.medabotsCursor].state > 1) {
         memcpy_bytes_0803F63C((const void *)gMedalNames[gTeamSlots[gGameWork.medabotsCursor].medal], gGameWork.textBuf,
                               11);
@@ -1067,16 +1067,16 @@ static u32 medabots_screen_cursor_input(void) {
 }
 
 static void medabots_screen_start_reorder_orbit(void) {
-    gSpriteEntries[4].unk0 = 0xC604;
+    gSpriteEntries[4].flags = 0xC604;
     gSpriteEntries[4].unk23 = 0;
     medabots_screen_orbit_reorder_icon(4);
-    gSpriteEntries[5].unk0 = 0xC604;
+    gSpriteEntries[5].flags = 0xC604;
     gSpriteEntries[5].unk23 = 0x10;
     medabots_screen_orbit_reorder_icon(5);
-    gSpriteEntries[6].unk0 = 0xC604;
+    gSpriteEntries[6].flags = 0xC604;
     gSpriteEntries[6].unk23 = 0x20;
     medabots_screen_orbit_reorder_icon(6);
-    gSpriteEntries[7].unk0 = 0xC604;
+    gSpriteEntries[7].flags = 0xC604;
     gSpriteEntries[7].unk23 = 0x30;
     medabots_screen_orbit_reorder_icon(7);
 }
@@ -1086,43 +1086,43 @@ static void medabots_screen_orbit_reorder_icon(u32 i) {
     u32 cy = gMedabotsCursorOrbitCenters[(gGameWork.reorderPick & 0x7F) * 2 + 1] - 4;
     struct Vec16 p = compute_polar_to_screen_position(((gSpriteEntries[i].unk23 + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
 
-    gSpriteEntries[i].unk2 = p.x;
-    gSpriteEntries[i].unk4 = p.y;
-    gSpriteEntries[i].unk6 = 0x400;
-    gSpriteEntries[i].unkA = 12;
-    gSpriteEntries[i].unk1C = 0;
-    gSpriteEntries[i].unk9 = 0x40 - (cy + 8 - gSpriteEntries[i].unk4) * 3;
-    gSpriteEntries[i].unk8 = 0x60 - (cy + 8 - gSpriteEntries[i].unk4) * 3;
-    if (cy > gSpriteEntries[i].unk4)
-        gSpriteEntries[i].unkB = gMedabotsSlotSpritePriorities[gGameWork.reorderPick & 0x7F] - 1;
+    gSpriteEntries[i].x = p.x;
+    gSpriteEntries[i].y = p.y;
+    gSpriteEntries[i].frame = 0x400;
+    gSpriteEntries[i].palette = 12;
+    gSpriteEntries[i].frame_table = 0;
+    gSpriteEntries[i].scale_y = 0x40 - (cy + 8 - gSpriteEntries[i].y) * 3;
+    gSpriteEntries[i].scale_x = 0x60 - (cy + 8 - gSpriteEntries[i].y) * 3;
+    if (cy > gSpriteEntries[i].y)
+        gSpriteEntries[i].order = gMedabotsSlotSpritePriorities[gGameWork.reorderPick & 0x7F] - 1;
     else
-        gSpriteEntries[i].unkB = gMedabotsSlotSpritePriorities[gGameWork.reorderPick & 0x7F] + 4;
-    gSpriteEntries[i].unk18 = gSpriteEntries[i].unk23 << 4;
+        gSpriteEntries[i].order = gMedabotsSlotSpritePriorities[gGameWork.reorderPick & 0x7F] + 4;
+    gSpriteEntries[i].angle = gSpriteEntries[i].unk23 << 4;
     gSpriteEntries[i].unk23 = (gSpriteEntries[i].unk23 - 1) & 0x3F;
 }
 
 static void medabots_screen_update_reorder_icons(void) {
     if (gGameWork.reorderPick & 0x80) {
         if (gFrameCounter & 1) {
-            gSpriteEntries[4].unk0 |= 0x4000;
-            gSpriteEntries[5].unk0 |= 0x4000;
-            gSpriteEntries[6].unk0 |= 0x4000;
-            gSpriteEntries[7].unk0 |= 0x4000;
+            gSpriteEntries[4].flags |= 0x4000;
+            gSpriteEntries[5].flags |= 0x4000;
+            gSpriteEntries[6].flags |= 0x4000;
+            gSpriteEntries[7].flags |= 0x4000;
         } else {
-            gSpriteEntries[4].unk0 &= 0xBFFF;
-            gSpriteEntries[5].unk0 &= 0xBFFF;
-            gSpriteEntries[6].unk0 &= 0xBFFF;
-            gSpriteEntries[7].unk0 &= 0xBFFF;
+            gSpriteEntries[4].flags &= 0xBFFF;
+            gSpriteEntries[5].flags &= 0xBFFF;
+            gSpriteEntries[6].flags &= 0xBFFF;
+            gSpriteEntries[7].flags &= 0xBFFF;
         }
         medabots_screen_orbit_reorder_icon(4);
         medabots_screen_orbit_reorder_icon(5);
         medabots_screen_orbit_reorder_icon(6);
         medabots_screen_orbit_reorder_icon(7);
     } else {
-        gSpriteEntries[4].unk0 &= 0xBFFF;
-        gSpriteEntries[5].unk0 &= 0xBFFF;
-        gSpriteEntries[6].unk0 &= 0xBFFF;
-        gSpriteEntries[7].unk0 &= 0xBFFF;
+        gSpriteEntries[4].flags &= 0xBFFF;
+        gSpriteEntries[5].flags &= 0xBFFF;
+        gSpriteEntries[6].flags &= 0xBFFF;
+        gSpriteEntries[7].flags &= 0xBFFF;
     }
 }
 
@@ -1198,7 +1198,7 @@ static void medabot_detail_take_apart(void) {
 }
 
 static void medabot_detail_draw_medal_nickname(void) {
-    clear_sprite_table_mask(10, 10);
+    disable_sprites(10, 10);
     if (gGameWork.shownMedal < 30)
         render_text_sprites_08040DB8(gMedals[gGameWork.shownMedal].name, 10, 1, 13, 10, 15, 0, 2);
     else {
@@ -1223,7 +1223,7 @@ static void medabot_detail_draw_medal_level(void) {
 }
 
 static void medabot_detail_draw_medal_kind_name(void) {
-    clear_sprite_table_mask(0x14, 10);
+    disable_sprites(0x14, 10);
     if (gGameWork.shownMedal < 30) {
         memcpy_bytes_0803F63C((const void *)gMedalNames[gMedals[gGameWork.shownMedal].graphicId], gGameWork.textBuf,
                               11);
@@ -1236,7 +1236,7 @@ static void medabot_detail_draw_medal_kind_name(void) {
 
 // Medapart names (gMedapartNames[part][kind]: head, right arm, left arm, legs) at rows 11-17 (runtime-checked).
 static void medabot_detail_draw_head_name(void) {
-    clear_sprite_table_mask(0x1E, 14);
+    disable_sprites(0x1E, 14);
     if (gGameWork.shownHead < 120) {
         memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownHead * 4 + 0], gGameWork.textBuf, 15);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x1E, 0x12, 11, 10, 13, 1, 2);
@@ -1265,7 +1265,7 @@ static void medabot_detail_draw_head_skill_icon(void) {
 }
 
 static void medabot_detail_draw_rarm_name(void) {
-    clear_sprite_table_mask(0x2C, 14);
+    disable_sprites(0x2C, 14);
     if (gGameWork.shownRightArm < 120) {
         memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownRightArm * 4 + 1], gGameWork.textBuf, 15);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x2C, 0x12, 13, 10, 13, 1, 2);
@@ -1293,7 +1293,7 @@ static void medabot_detail_draw_rarm_skill_icon(void) {
 }
 
 static void medabot_detail_draw_larm_name(void) {
-    clear_sprite_table_mask(0x3A, 14);
+    disable_sprites(0x3A, 14);
     if (gGameWork.shownLeftArm < 120) {
         memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownLeftArm * 4 + 2], gGameWork.textBuf, 15);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x3A, 0x12, 15, 10, 13, 1, 2);
@@ -1321,7 +1321,7 @@ static void medabot_detail_draw_larm_skill_icon(void) {
 }
 
 static void medabot_detail_draw_legs_name(void) {
-    clear_sprite_table_mask(0x48, 14);
+    disable_sprites(0x48, 14);
     if (gGameWork.shownLegs < 120) {
         memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownLegs * 4 + 3], gGameWork.textBuf, 15);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0x48, 0x12, 17, 10, 13, 1, 2);
@@ -1406,29 +1406,29 @@ static void medabot_detail_place_icon(void) {
 }
 
 static void medabot_detail_place_row_arrows(void) {
-    gSpriteEntries[1].unk0 = 0xC804;
-    gSpriteEntries[1].unk2 = 0x6C;
-    gSpriteEntries[1].unk4 = gGameWork.detailRow * 16 + 0x50;
-    gSpriteEntries[1].unk6 = 0x302;
-    gSpriteEntries[1].unkA = 14;
-    gSpriteEntries[1].unk1C = 0;
-    gSpriteEntries[1].unkB = 0x40;
-    gSpriteEntries[2].unk0 = 0xC804;
-    gSpriteEntries[2].unk2 = 0xE4;
-    gSpriteEntries[2].unk4 = gGameWork.detailRow * 16 + 0x50;
-    gSpriteEntries[2].unk6 = 0x303;
-    gSpriteEntries[2].unkA = 14;
-    gSpriteEntries[2].unk1C = 0;
-    gSpriteEntries[2].unkB = 0x40;
+    gSpriteEntries[1].flags = 0xC804;
+    gSpriteEntries[1].x = 0x6C;
+    gSpriteEntries[1].y = gGameWork.detailRow * 16 + 0x50;
+    gSpriteEntries[1].frame = 0x302;
+    gSpriteEntries[1].palette = 14;
+    gSpriteEntries[1].frame_table = 0;
+    gSpriteEntries[1].order = 0x40;
+    gSpriteEntries[2].flags = 0xC804;
+    gSpriteEntries[2].x = 0xE4;
+    gSpriteEntries[2].y = gGameWork.detailRow * 16 + 0x50;
+    gSpriteEntries[2].frame = 0x303;
+    gSpriteEntries[2].palette = 14;
+    gSpriteEntries[2].frame_table = 0;
+    gSpriteEntries[2].order = 0x40;
 }
 
 static void medabot_detail_blink_row_arrows(void) {
     if (gFrameCounter & 8) {
-        gSpriteEntries[1].unk0 &= 0xBFFF;
-        gSpriteEntries[2].unk0 &= 0xBFFF;
+        gSpriteEntries[1].flags &= 0xBFFF;
+        gSpriteEntries[2].flags &= 0xBFFF;
     } else {
-        gSpriteEntries[1].unk0 |= 0x4000;
-        gSpriteEntries[2].unk0 |= 0x4000;
+        gSpriteEntries[1].flags |= 0x4000;
+        gSpriteEntries[2].flags |= 0x4000;
     }
 }
 
@@ -1873,30 +1873,30 @@ static void team_select_draw_pick_markers(void) {
     case 2:
         for (i = 0; i < 3; i++) {
             if (gBattleWork.teamPicks[i]) {
-                gSpriteEntries[i + 4].unk0 = 0xC004;
-                gSpriteEntries[i + 4].unk2 = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2];
-                gSpriteEntries[i + 4].unk4 = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2 + 1];
-                gSpriteEntries[i + 4].unk6 = i + 0x401;
-                gSpriteEntries[i + 4].unkA = 15;
-                gSpriteEntries[i + 4].unk1C = 0;
-                gSpriteEntries[i + 4].unkB = 0xC0;
+                gSpriteEntries[i + 4].flags = 0xC004;
+                gSpriteEntries[i + 4].x = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2];
+                gSpriteEntries[i + 4].y = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2 + 1];
+                gSpriteEntries[i + 4].frame = i + 0x401;
+                gSpriteEntries[i + 4].palette = 15;
+                gSpriteEntries[i + 4].frame_table = 0;
+                gSpriteEntries[i + 4].order = 0xC0;
             } else {
-                clear_sprite_table_mask(i + 4, 1);
+                disable_sprites(i + 4, 1);
             }
         }
         break;
     case 3:
         for (i = 0; i < 3; i++) {
             if (gBattleWork.teamPicks[i]) {
-                gSpriteEntries[i + 4].unk0 = 0xC004;
-                gSpriteEntries[i + 4].unk2 = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2];
-                gSpriteEntries[i + 4].unk4 = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2 + 1];
-                gSpriteEntries[i + 4].unk6 = i + 0x404;
-                gSpriteEntries[i + 4].unkA = 15;
-                gSpriteEntries[i + 4].unk1C = 0;
-                gSpriteEntries[i + 4].unkB = 0xC0;
+                gSpriteEntries[i + 4].flags = 0xC004;
+                gSpriteEntries[i + 4].x = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2];
+                gSpriteEntries[i + 4].y = gMedabotsSlotPositions[(gBattleWork.teamPicks[i] & 0xF) * 2 + 1];
+                gSpriteEntries[i + 4].frame = i + 0x404;
+                gSpriteEntries[i + 4].palette = 15;
+                gSpriteEntries[i + 4].frame_table = 0;
+                gSpriteEntries[i + 4].order = 0xC0;
             } else {
-                clear_sprite_table_mask(i + 4, 1);
+                disable_sprites(i + 4, 1);
             }
         }
         break;
@@ -2023,12 +2023,12 @@ static void team_select_blink_pick_markers(void) {
     if (gGameWork.timer & 4) {
         for (i = 0; i <= 2; i++) {
             if (gBattleWork.teamPicks[i])
-                gSpriteEntries[i + 4].unk0 &= 0xBFFF;
+                gSpriteEntries[i + 4].flags &= 0xBFFF;
         }
     } else {
         for (i = 0; i <= 2; i++) {
             if (gBattleWork.teamPicks[i])
-                gSpriteEntries[i + 4].unk0 |= 0x4000;
+                gSpriteEntries[i + 4].flags |= 0x4000;
         }
     }
     gGameWork.timer++;

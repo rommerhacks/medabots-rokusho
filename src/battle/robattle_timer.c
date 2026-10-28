@@ -30,6 +30,6 @@ void robattle_time_tick(void) {
 }
 
 void robattle_time_draw(void) {
-    gSpriteEntries[1].unk6 = (u8)(gBattleWork.timeLeft / 10) + 0x624;
-    gSpriteEntries[2].unk6 = (u8)(gBattleWork.timeLeft % 10) + 0x624;
+    gSpriteEntries[1].frame = (u8)(gBattleWork.timeLeft / 10) + 0x624;
+    gSpriteEntries[2].frame = (u8)(gBattleWork.timeLeft % 10) + 0x624;
 }

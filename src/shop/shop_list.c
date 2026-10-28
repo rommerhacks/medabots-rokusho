@@ -27,47 +27,47 @@ void shop_list_init(void) {
     REG_BG1CNT = 0x1B05;
     REG_BG2CNT = 0x1A06;
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
-    gSpriteEntries[8].unk0 = 0x8400;
-    gSpriteEntries[8].unk1C = 2;
-    gSpriteEntries[8].unkA = 2;
-    gSpriteEntries[8].unk6 = 6;
+    gSpriteEntries[8].flags = 0x8400;
+    gSpriteEntries[8].frame_table = 2;
+    gSpriteEntries[8].palette = 2;
+    gSpriteEntries[8].frame = 6;
     for (i = 0; i < 2; i++) {
-        gSpriteEntries[11 + i].unk0 = 0x8000;
-        gSpriteEntries[11 + i].unk1C = 2;
-        gSpriteEntries[11 + i].unkA = 2;
-        gSpriteEntries[11 + i].unk6 = 5;
-        gSpriteEntries[11 + i].unk2 = i * 24 + 0xD0;
-        gSpriteEntries[11 + i].unk4 = gMenuWork->list_cursor * 16 + 0x54;
+        gSpriteEntries[11 + i].flags = 0x8000;
+        gSpriteEntries[11 + i].frame_table = 2;
+        gSpriteEntries[11 + i].palette = 2;
+        gSpriteEntries[11 + i].frame = 5;
+        gSpriteEntries[11 + i].x = i * 24 + 0xD0;
+        gSpriteEntries[11 + i].y = gMenuWork->list_cursor * 16 + 0x54;
     }
-    gSpriteEntries[11].unk0 |= 0x1000;
+    gSpriteEntries[11].flags |= 0x1000;
     for (i = 0; i < 2; i++) {
-        gSpriteEntries[0x68 + i].unk0 = 0x8400;
-        gSpriteEntries[0x68 + i].unk1C = 2;
-        gSpriteEntries[0x68 + i].unkA = 2;
-        gSpriteEntries[0x68 + i].unk6 = 8;
-        gSpriteEntries[0x68 + i].unk2 = 0x1C;
-        gSpriteEntries[0x68 + i].unk4 = i ? 0x95 : 0x44;
+        gSpriteEntries[0x68 + i].flags = 0x8400;
+        gSpriteEntries[0x68 + i].frame_table = 2;
+        gSpriteEntries[0x68 + i].palette = 2;
+        gSpriteEntries[0x68 + i].frame = 8;
+        gSpriteEntries[0x68 + i].x = 0x1C;
+        gSpriteEntries[0x68 + i].y = i ? 0x95 : 0x44;
     }
-    gSpriteEntries[0x69].unk0 |= 0x2000;
+    gSpriteEntries[0x69].flags |= 0x2000;
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[0x6A + i].unk0 = 0x8400;
-        gSpriteEntries[0x6A + i].unk1C = 2;
-        gSpriteEntries[0x6A + i].unkA = 3;
-        gSpriteEntries[0x6A + i].unk2 = 0x78;
-        gSpriteEntries[0x6A + i].unk4 = i * 16 + 0x50;
+        gSpriteEntries[0x6A + i].flags = 0x8400;
+        gSpriteEntries[0x6A + i].frame_table = 2;
+        gSpriteEntries[0x6A + i].palette = 3;
+        gSpriteEntries[0x6A + i].x = 0x78;
+        gSpriteEntries[0x6A + i].y = i * 16 + 0x50;
     }
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[0x6E + i].unk0 = 0x8400;
-        gSpriteEntries[0x6E + i].unk1C = 2;
-        gSpriteEntries[0x6E + i].unkA = 3;
-        gSpriteEntries[0x6E + i].unk6 = i + 0x1D;
-        gSpriteEntries[0x6E + i].unk2 = 0x90;
-        gSpriteEntries[0x6E + i].unk4 = i * 16 + 0x50;
+        gSpriteEntries[0x6E + i].flags = 0x8400;
+        gSpriteEntries[0x6E + i].frame_table = 2;
+        gSpriteEntries[0x6E + i].palette = 3;
+        gSpriteEntries[0x6E + i].frame = i + 0x1D;
+        gSpriteEntries[0x6E + i].x = 0x90;
+        gSpriteEntries[0x6E + i].y = i * 16 + 0x50;
     }
     REG_BLDALPHA = 0x10;
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
-    gSpriteEntries[8].unk2 = 8;
-    gSpriteEntries[8].unk4 = gMenuWork->list_cursor * 16 + 0x54;
+    gSpriteEntries[8].x = 8;
+    gSpriteEntries[8].y = gMenuWork->list_cursor * 16 + 0x54;
     if (gMenuWork->cursor == 1) {
         shop_build_sell_list();
     } else {
@@ -126,7 +126,7 @@ void enable_obj_layer_and_load_palette(void) {
     if (gMenuWork->list_count != 0) {
         u8 *buf = (u8 *)0x02023000;
         draw_number_tall(buf[buf[0x78]], 2, 0x1B, 10, 6, (REG_BG1CNT >> 8) & 0x1F);
-        gSpriteEntries[8].unk0 |= 0x4000;
+        gSpriteEntries[8].flags |= 0x4000;
     }
     if (gMenuWork->list_count > 1)
         draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 1], 2, 0x1B, 12, 6, (REG_BG1CNT >> 8) & 0x1F);
@@ -164,7 +164,7 @@ void shop_purchase_menu_handler(void) {
     u8 idx;
     s8 i;
 
-    sprite_bob_y(8, gFrameCounter, 4);
+    sprite_bob_x(8, gFrameCounter, 4);
     update_battle_sprite_priority_flags();
     if (KEYS_LO(gRepeatKeys) & 8) {
         if (gMenuWork->list_count == 0)
@@ -177,7 +177,7 @@ void shop_purchase_menu_handler(void) {
     if (gMenuWork->cursor == 0) {
         if (gFrameCounter & 8) {
             if (CART[gMenuWork->list_cursor] != 0)
-                gSpriteEntries[11].unk0 |= 0x4000;
+                gSpriteEntries[11].flags |= 0x4000;
             {
                 u32 *m = &gPlayerRecord.money;
                 u32 sum = CART[0];
@@ -191,11 +191,11 @@ void shop_purchase_menu_handler(void) {
                 p++;
                 sum += *(u32 *)((u8 *)p + off);
                 if (*m >= sum && ((struct ShopSellEntry *)(p - 1))[k].count + CART[k] <= 0x62)
-                    gSpriteEntries[12].unk0 |= 0x4000;
+                    gSpriteEntries[12].flags |= 0x4000;
             }
         } else {
-            gSpriteEntries[11].unk0 &= 0xBFFF;
-            gSpriteEntries[12].unk0 &= 0xBFFF;
+            gSpriteEntries[11].flags &= 0xBFFF;
+            gSpriteEntries[12].flags &= 0xBFFF;
         }
     } else {
         if (gFrameCounter & 8) {
@@ -203,12 +203,12 @@ void shop_purchase_menu_handler(void) {
 
             idx = gMenuWork->list_cursor + CART[0x78];
             if (CART[idx] != 0)
-                gSpriteEntries[11].unk0 |= 0x4000;
+                gSpriteEntries[11].flags |= 0x4000;
             if (l[idx].count > CART[idx])
-                gSpriteEntries[12].unk0 |= 0x4000;
+                gSpriteEntries[12].flags |= 0x4000;
         } else {
-            gSpriteEntries[11].unk0 &= 0xBFFF;
-            gSpriteEntries[12].unk0 &= 0xBFFF;
+            gSpriteEntries[11].flags &= 0xBFFF;
+            gSpriteEntries[12].flags &= 0xBFFF;
         }
     }
 
@@ -278,7 +278,7 @@ void shop_purchase_menu_handler(void) {
         }
         play_sound_effect(4);
         for (i = 0; i <= 1; i++)
-            gSpriteEntries[11 + i].unk0 &= 0xBFFF;
+            gSpriteEntries[11 + i].flags &= 0xBFFF;
         open_choice_menu(1, 0x16, 7);
         text_window_init(1, 0, 0);
         gGameSubState = 6;
@@ -286,18 +286,18 @@ void shop_purchase_menu_handler(void) {
     }
     if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
-        clear_sprite_table_mask(0x61, 7);
-        clear_sprite_table_mask(0xD, 0x34);
-        clear_sprite_table_mask(0x45, 0x1C);
+        disable_sprites(0x61, 7);
+        disable_sprites(0xD, 0x34);
+        disable_sprites(0x45, 0x1C);
         gGameWork.unk84 = 0;
         gGameSubState++;
     }
     return;
 
 cursor:
-    gSpriteEntries[8].unk4 = gMenuWork->list_cursor * 16 + 0x54;
-    gSpriteEntries[11].unk4 = gMenuWork->list_cursor * 16 + 0x54;
-    gSpriteEntries[12].unk4 = gMenuWork->list_cursor * 16 + 0x54;
+    gSpriteEntries[8].y = gMenuWork->list_cursor * 16 + 0x54;
+    gSpriteEntries[11].y = gMenuWork->list_cursor * 16 + 0x54;
+    gSpriteEntries[12].y = gMenuWork->list_cursor * 16 + 0x54;
     return;
 
 changed:
@@ -319,7 +319,7 @@ changed:
     }
     if (gMenuWork->total > 99999)
         gMenuWork->total = 99999;
-    clear_sprite_table_mask(0x61, 7);
+    disable_sprites(0x61, 7);
     divide_by_10000(gGameWork.textBuf, gMenuWork->total);
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x61, 0x13, 5, 7, 0xC, 2, 0);
 }
@@ -344,14 +344,14 @@ void transition_fade_to_battle(void) {
 
         REG_DISPCNT &= 0xFDFF;
         for (i = 0; i < 2; i++)
-            gSpriteEntries[11 + i].unk0 &= 0xBFFF;
+            gSpriteEntries[11 + i].flags &= 0xBFFF;
         for (i = 0; i < 2; i++)
-            gSpriteEntries[0x68 + i].unk0 &= 0xBFFF;
+            gSpriteEntries[0x68 + i].flags &= 0xBFFF;
         for (i = 0; i < 4; i++)
-            gSpriteEntries[0x6A + i].unk0 &= 0xBFFF;
+            gSpriteEntries[0x6A + i].flags &= 0xBFFF;
         for (i = 0; i < 4; i++)
-            gSpriteEntries[0x6E + i].unk0 &= 0xBFFF;
-        gSpriteEntries[8].unk0 &= 0xBFFF;
+            gSpriteEntries[0x6E + i].flags &= 0xBFFF;
+        gSpriteEntries[8].flags &= 0xBFFF;
         REG_BLDALPHA = 0x1000;
         REG_BG1CNT = 0x1E05;
         REG_BG2CNT = 0x1D06;
@@ -395,7 +395,7 @@ void shop_complete_transaction(void) {
                 *p -= ((u8 *)0x02023000)[i];
             }
         }
-        clear_sprite_table_mask(0, 7);
+        disable_sprites(0, 7);
         divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0, 0x15, 1, 7, 0xF, 1, 0);
         gGameWork.unk84 = 0;
@@ -406,9 +406,9 @@ void shop_complete_transaction(void) {
 void shop_list_confirm_choice(void) {
     if (game_state_execute_handler_a()) {
         if (gGameWork.unk2A == 0) {
-            clear_sprite_table_mask(0x61, 7);
-            clear_sprite_table_mask(0xD, 0x34);
-            clear_sprite_table_mask(0x45, 0x1C);
+            disable_sprites(0x61, 7);
+            disable_sprites(0xD, 0x34);
+            disable_sprites(0x45, 0x1C);
             gGameSubState = 5;
         } else {
             gGameSubState = 4;

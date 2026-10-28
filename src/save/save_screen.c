@@ -27,7 +27,7 @@ void item_menu_fade_out_use_item(void) {
 }
 
 void save_screen_animate_sprite(u16 a) {
-    gSpriteEntries[0].unk6 = gSaveScreenSpriteFrames[a & 3];
+    gSpriteEntries[0].frame = gSaveScreenSpriteFrames[a & 3];
 }
 
 void save_screen_update(void) {
@@ -69,12 +69,12 @@ void save_screen_load_graphics(void) {
     lz_decompress_dispatch(gMenuDigitTilesLz, vram_at(size));
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
-    gSpriteEntries[0].unk0 = 0xC000;
-    gSpriteEntries[0].unk1C = 2;
-    gSpriteEntries[0].unkA = 0;
-    gSpriteEntries[0].unk6 = 0x23;
-    gSpriteEntries[0].unk2 = 0xD0;
-    gSpriteEntries[0].unk4 = 0x18;
+    gSpriteEntries[0].flags = 0xC000;
+    gSpriteEntries[0].frame_table = 2;
+    gSpriteEntries[0].palette = 0;
+    gSpriteEntries[0].frame = 0x23;
+    gSpriteEntries[0].x = 0xD0;
+    gSpriteEntries[0].y = 0x18;
     gGameSubState++;
 }
 

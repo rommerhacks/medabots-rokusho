@@ -57,12 +57,12 @@ void field_menu_handle_input(void) {
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         play_sound_effect(2);
         gGameWork.fieldMenuCursor = (gGameWork.fieldMenuCursor - 1) & 3;
-        gSpriteEntries[0].unk4 = gGameWork.fieldMenuCursor * 16 + 8;
+        gSpriteEntries[0].y = gGameWork.fieldMenuCursor * 16 + 8;
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
         play_sound_effect(2);
         gGameWork.fieldMenuCursor = (gGameWork.fieldMenuCursor + 1) & 3;
-        gSpriteEntries[0].unk4 = gGameWork.fieldMenuCursor * 16 + 8;
+        gSpriteEntries[0].y = gGameWork.fieldMenuCursor * 16 + 8;
     }
     if (KEYS_LO(gNewKeys) & 2) {
         fade_out_music(0x10);
@@ -253,11 +253,11 @@ void field_menu_return_expand(void) {
 static void field_menu_init_cursor(void) {
     lz_decompress_dispatch(gFieldMenuCursorTiles, (void *)0x06016C00);
     DmaSet(3, gCursorArrowPalette, 0x050003C0, 0x84000008);
-    gSpriteEntries[0].unk0 = 0xC004;
-    gSpriteEntries[0].unk2 = 0x88;
-    gSpriteEntries[0].unk4 = gGameWork.fieldMenuCursor * 16 + 8;
-    gSpriteEntries[0].unkA = 14;
-    gSpriteEntries[0].unk1C = 0;
-    gSpriteEntries[0].unkB = 0xFF;
+    gSpriteEntries[0].flags = 0xC004;
+    gSpriteEntries[0].x = 0x88;
+    gSpriteEntries[0].y = gGameWork.fieldMenuCursor * 16 + 8;
+    gSpriteEntries[0].palette = 14;
+    gSpriteEntries[0].frame_table = 0;
+    gSpriteEntries[0].order = 0xFF;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0], 0);
 }

@@ -561,16 +561,16 @@ void update_battle_entity_status_chars(void) {
 
     if (gFieldWork.unkC4C) {
         for (i = 0x2E; i <= 0x7F; i++) {
-            if (gSpriteEntries[i].unkB == 0xFF)
-                gSpriteEntries[i].unkB = 0xFF;
-            else if (gSpriteEntries[i].unkB != 0)
-                gSpriteEntries[i].unkB = (gSpriteEntries[i].unk4 + 0x10) / 4 + 0x40;
+            if (gSpriteEntries[i].order == 0xFF)
+                gSpriteEntries[i].order = 0xFF;
+            else if (gSpriteEntries[i].order != 0)
+                gSpriteEntries[i].order = (gSpriteEntries[i].y + 0x10) / 4 + 0x40;
             else
-                gSpriteEntries[i].unkB = 0;
+                gSpriteEntries[i].order = 0;
             if (i == 0x30 && gFieldWork.follower_y == gFieldWork.player_y)
-                gSpriteEntries[48].unkB = gSpriteEntries[47].unkB - 1;
+                gSpriteEntries[48].order = gSpriteEntries[47].order - 1;
             if (i == 0x59 && gFieldWork.follower_y == gFieldWork.player_y)
-                gSpriteEntries[0x59].unkB = gSpriteEntries[48].unkB - 1;
+                gSpriteEntries[0x59].order = gSpriteEntries[48].order - 1;
         }
     }
 }

@@ -142,8 +142,8 @@ void intro_load_silhouette_scene(void) {
     REG_BG2CNT = 0x1F0A;
     DmaSet(3, gIntroObjPals[1], PLTT + 0x200, 0x80000050);
     sprite_entry_init(0, 0xC000, 0x40D, 4, 3);
-    gSpriteEntries[0].unk2 = 0x98;
-    gSpriteEntries[0].unk4 = 0x40;
+    gSpriteEntries[0].x = 0x98;
+    gSpriteEntries[0].y = 0x40;
     setup_screen_transition_effect_080682CC(2, 1, 0);
     gVBlankOamMode = 0;
     gSceneWork.nextSubState = gSceneWork.unkC.afterSubState;
@@ -175,21 +175,21 @@ void intro_load_scan_screen(void) {
     REG_BG3CNT = 0xF03;
     setup_screen_transition_effect_080682CC(4, 1, 0);
     sprite_entry_init(9, 0xC800, 0x404, 1, 3);
-    gSpriteEntries[9].unk2 = 8;
-    gSpriteEntries[9].unk4 = 0xA0;
+    gSpriteEntries[9].x = 8;
+    gSpriteEntries[9].y = 0xA0;
     sprite_entry_init(10, 0xC800, 0x405, 1, 3);
-    gSpriteEntries[10].unk2 = zero;
-    gSpriteEntries[10].unk4 = 0x90;
+    gSpriteEntries[10].x = zero;
+    gSpriteEntries[10].y = 0x90;
     for (i = 0; i <= 2; i++) {
         ((void (*)())sprite_entry_init)(i + 11, 0xC400, i + 0x400, 0, 3);
-        gSpriteEntries[i + 11].unk2 = 0xC0;
-        gSpriteEntries[i + 11].unk4 = 0xC8;
+        gSpriteEntries[i + 11].x = 0xC0;
+        gSpriteEntries[i + 11].y = 0xC8;
     }
     for (i = 0; i <= 5; i++) {
         ((void (*)())sprite_entry_init)(i + 3, 0xC400, 0x408, 2, 3);
-        gSpriteEntries[i + 3].unk2 = i * 8 + 0xA0;
-        gSpriteEntries[i + 3].unk4 = 0xC8;
-        gSpriteEntries[i + 3].unkB = 0x20;
+        gSpriteEntries[i + 3].x = i * 8 + 0xA0;
+        gSpriteEntries[i + 3].y = 0xC8;
+        gSpriteEntries[i + 3].order = 0x20;
     }
     intro_clear_part_name();
     intro_clear_scan_text();
@@ -250,10 +250,10 @@ void intro_scan_arms_state(void) {
         switch (gSceneWork.timer) {
         case 0:
             sprite_entry_init(1, 0xCA00, 0x409, 3, 3);
-            gSpriteEntries[1].unk2 = 0x50;
-            gSpriteEntries[1].unk4 = 0x38;
-            gSpriteEntries[1].unk8 = 2;
-            gSpriteEntries[1].unk9 = 2;
+            gSpriteEntries[1].x = 0x50;
+            gSpriteEntries[1].y = 0x38;
+            gSpriteEntries[1].scale_x = 2;
+            gSpriteEntries[1].scale_y = 2;
             intro_sprite_set_action(1, 1, 0);
             intro_sprite_set_action(4, 9, 0);
             intro_sprite_set_action(5, 10, 0);
@@ -265,10 +265,10 @@ void intro_scan_arms_state(void) {
             break;
         case 2:
             sprite_entry_init(2, 0xC600, 0x406, 2, 3);
-            gSpriteEntries[2].unk2 = 0xB8;
-            gSpriteEntries[2].unk4 = 0x70;
-            gSpriteEntries[2].unk8 = 2;
-            gSpriteEntries[2].unk9 = 2;
+            gSpriteEntries[2].x = 0xB8;
+            gSpriteEntries[2].y = 0x70;
+            gSpriteEntries[2].scale_x = 2;
+            gSpriteEntries[2].scale_y = 2;
             intro_sprite_set_action(2, 2, 0);
             gSceneWork.timer++;
             break;
@@ -297,22 +297,22 @@ void intro_scan_arms_state(void) {
         intro_clear_part_name();
         intro_clear_scan_text();
         intro_clear_pointer_lines();
-        gSpriteEntries[1].unk4 = 0xC8;
-        gSpriteEntries[2].unk4 = 0xC8;
+        gSpriteEntries[1].y = 0xC8;
+        gSpriteEntries[2].y = 0xC8;
         for (i = 0; i < 3; i++)
-            gSpriteEntries[i + 11].unk4 = 0xC8;
+            gSpriteEntries[i + 11].y = 0xC8;
         for (i = 0; i < 6; i++) {
             intro_sprite_set_action(0, i + 3, 0);
-            gSpriteEntries[i + 3].unk4 = 0xC8;
+            gSpriteEntries[i + 3].y = 0xC8;
         }
         gSceneWork.timer++;
     } else {
         switch (gSceneWork.timer) {
         case 0xC5:
-            gSpriteEntries[1].unk6 = 0x40A;
-            gSpriteEntries[1].unk4 = 0x38;
-            gSpriteEntries[1].unk8 = 2;
-            gSpriteEntries[1].unk9 = 2;
+            gSpriteEntries[1].frame = 0x40A;
+            gSpriteEntries[1].y = 0x38;
+            gSpriteEntries[1].scale_x = 2;
+            gSpriteEntries[1].scale_y = 2;
             intro_sprite_set_action(1, 1, 0);
             gSceneWork.timer++;
             break;
@@ -321,10 +321,10 @@ void intro_scan_arms_state(void) {
                 gSceneWork.timer++;
             break;
         case 0xC7:
-            gSpriteEntries[2].unk6 = 0x407;
-            gSpriteEntries[2].unk4 = 0x70;
-            gSpriteEntries[2].unk8 = 2;
-            gSpriteEntries[2].unk9 = 2;
+            gSpriteEntries[2].frame = 0x407;
+            gSpriteEntries[2].y = 0x70;
+            gSpriteEntries[2].scale_x = 2;
+            gSpriteEntries[2].scale_y = 2;
             intro_sprite_set_action(2, 2, 0);
             gSceneWork.timer++;
             break;
@@ -380,10 +380,10 @@ void intro_scan_legs_head_state(void) {
         switch (gSceneWork.timer) {
         case 0:
             sprite_entry_init(1, 0xCA00, 0x40B, 3, 3);
-            gSpriteEntries[1].unk2 = 0x50;
-            gSpriteEntries[1].unk4 = 0x38;
-            gSpriteEntries[1].unk8 = 2;
-            gSpriteEntries[1].unk9 = 2;
+            gSpriteEntries[1].x = 0x50;
+            gSpriteEntries[1].y = 0x38;
+            gSpriteEntries[1].scale_x = 2;
+            gSpriteEntries[1].scale_y = 2;
             intro_sprite_set_action(1, 1, 0);
             intro_sprite_set_action(4, 9, 0);
             intro_sprite_set_action(5, 10, 0);
@@ -395,10 +395,10 @@ void intro_scan_legs_head_state(void) {
             break;
         case 2:
             sprite_entry_init(2, 0xC600, 0x406, 2, 3);
-            gSpriteEntries[2].unk2 = 0xB8;
-            gSpriteEntries[2].unk4 = 0x70;
-            gSpriteEntries[2].unk8 = 2;
-            gSpriteEntries[2].unk9 = 2;
+            gSpriteEntries[2].x = 0xB8;
+            gSpriteEntries[2].y = 0x70;
+            gSpriteEntries[2].scale_x = 2;
+            gSpriteEntries[2].scale_y = 2;
             intro_sprite_set_action(2, 2, 0);
             gSceneWork.timer++;
             break;
@@ -427,22 +427,22 @@ void intro_scan_legs_head_state(void) {
         intro_clear_part_name();
         intro_clear_scan_text();
         intro_clear_pointer_lines();
-        gSpriteEntries[1].unk4 = 200;
-        gSpriteEntries[2].unk4 = 200;
+        gSpriteEntries[1].y = 200;
+        gSpriteEntries[2].y = 200;
         for (i = 0; i < 3; i++)
-            gSpriteEntries[i + 11].unk4 = 200;
+            gSpriteEntries[i + 11].y = 200;
         for (i = 0; i < 6; i++) {
             intro_sprite_set_action(0, i + 3, 0);
-            gSpriteEntries[i + 3].unk4 = 200;
+            gSpriteEntries[i + 3].y = 200;
         }
         gSceneWork.timer++;
     } else {
         switch (gSceneWork.timer) {
         case 0xC5:
-            gSpriteEntries[1].unk6 = 0x40C;
-            gSpriteEntries[1].unk4 = 0x38;
-            gSpriteEntries[1].unk8 = 2;
-            gSpriteEntries[1].unk9 = 2;
+            gSpriteEntries[1].frame = 0x40C;
+            gSpriteEntries[1].y = 0x38;
+            gSpriteEntries[1].scale_x = 2;
+            gSpriteEntries[1].scale_y = 2;
             intro_sprite_set_action(1, 1, 0);
             gSceneWork.timer++;
             break;
@@ -451,10 +451,10 @@ void intro_scan_legs_head_state(void) {
                 gSceneWork.timer++;
             break;
         case 0xC7:
-            gSpriteEntries[2].unk6 = 0x407;
-            gSpriteEntries[2].unk4 = 0x70;
-            gSpriteEntries[2].unk8 = 2;
-            gSpriteEntries[2].unk9 = 2;
+            gSpriteEntries[2].frame = 0x407;
+            gSpriteEntries[2].y = 0x70;
+            gSpriteEntries[2].scale_x = 2;
+            gSpriteEntries[2].scale_y = 2;
             intro_sprite_set_action(2, 2, 0);
             gSceneWork.timer++;
             break;
@@ -698,7 +698,7 @@ u32 intro_draw_pointer_line(u8 part) {
     if (gSceneWork.lineIdx > 2)
         return 1;
     if (ROW_ENT(2) <= ROW_ENT(0) + gSceneWork.lineStep) {
-        gSpriteEntries[gSceneWork.lineIdx + 11].unk4 = ROW_ENT(3) * 8;
+        gSpriteEntries[gSceneWork.lineIdx + 11].y = ROW_ENT(3) * 8;
         gSceneWork.lineStep = 0;
         gSceneWork.lineIdx++;
         return 0;
@@ -707,13 +707,13 @@ u32 intro_draw_pointer_line(u8 part) {
         if (ROW_ENT(3) + gSceneWork.lineStep < ROW_ENT(1)) {
             slot = gSceneWork.lineIdx * 2 + (gSceneWork.lineStep + first_slot);
             ((void (*)())sprite_entry_init)(slot, 0xC400, 0x403, 0, 3);
-            gSpriteEntries[slot].unk2 = (ROW_ENT(0) + gSceneWork.lineStep) * 8;
-            gSpriteEntries[slot].unk4 = (ROW_ENT(1) - gSceneWork.lineStep) * 8 - 4;
+            gSpriteEntries[slot].x = (ROW_ENT(0) + gSceneWork.lineStep) * 8;
+            gSpriteEntries[slot].y = (ROW_ENT(1) - gSceneWork.lineStep) * 8 - 4;
         } else if (ROW_ENT(1) + gSceneWork.lineStep < ROW_ENT(3)) {
             slot = gSceneWork.lineIdx * 2 + (gSceneWork.lineStep + first_slot);
             ((void (*)())sprite_entry_init)(slot, 0xE400, 0x403, 0, 3);
-            gSpriteEntries[slot].unk2 = (ROW_ENT(0) + gSceneWork.lineStep) * 8;
-            gSpriteEntries[slot].unk4 = (ROW_ENT(1) + gSceneWork.lineStep) * 8 + 12;
+            gSpriteEntries[slot].x = (ROW_ENT(0) + gSceneWork.lineStep) * 8;
+            gSpriteEntries[slot].y = (ROW_ENT(1) + gSceneWork.lineStep) * 8 + 12;
         } else {
             pos = gSceneWork.lineStep + (ROW_ENT(0) + ROW_ENT(3) * 32);
             DmaSet(3, &tile, (u16 *)0x0600F800 + pos, 0x80000001);
@@ -769,7 +769,7 @@ static void intro_clear_pointer_lines(void) {
     fill = 0;
     DmaSet(3, &fill, 0x0600F800, 0x850000A0);
     for (i = 0; i < 6; i++)
-        gSpriteEntries[i + 0xE].unk4 = 0xC8;
+        gSpriteEntries[i + 0xE].y = 0xC8;
 }
 
 static bool32 intro_silhouette_step(void) {
@@ -880,28 +880,28 @@ void intro_update_sprite_actions(void) {
 }
 
 s32 intro_action_open_unk9_first(u8 i) {
-    if (gSpriteEntries[i].unk8 > 0x3F && gSpriteEntries[i].unk9 > 0x3F)
+    if (gSpriteEntries[i].scale_x > 0x3F && gSpriteEntries[i].scale_y > 0x3F)
         return 0;
-    if (gSpriteEntries[i].unk9 <= 0x3F) {
-        if ((gSpriteEntries[i].unk9 += 8) > 0x40)
-            gSpriteEntries[i].unk9 = 0x40;
+    if (gSpriteEntries[i].scale_y <= 0x3F) {
+        if ((gSpriteEntries[i].scale_y += 8) > 0x40)
+            gSpriteEntries[i].scale_y = 0x40;
     } else {
-        if ((gSpriteEntries[i].unk8 += 8) > 0x40)
-            gSpriteEntries[i].unk8 = 0x40;
+        if ((gSpriteEntries[i].scale_x += 8) > 0x40)
+            gSpriteEntries[i].scale_x = 0x40;
     }
     gSpriteEntries[i].unk21++;
     return 1;
 }
 
 s32 intro_action_open_unk8_first(u8 i) {
-    if (gSpriteEntries[i].unk8 > 0x3F && gSpriteEntries[i].unk9 > 0x3F)
+    if (gSpriteEntries[i].scale_x > 0x3F && gSpriteEntries[i].scale_y > 0x3F)
         return 0;
-    if (gSpriteEntries[i].unk8 <= 0x3F) {
-        if ((gSpriteEntries[i].unk8 += 8) > 0x40)
-            gSpriteEntries[i].unk8 = 0x40;
+    if (gSpriteEntries[i].scale_x <= 0x3F) {
+        if ((gSpriteEntries[i].scale_x += 8) > 0x40)
+            gSpriteEntries[i].scale_x = 0x40;
     } else {
-        if ((gSpriteEntries[i].unk9 += 8) > 0x40)
-            gSpriteEntries[i].unk9 = 0x40;
+        if ((gSpriteEntries[i].scale_y += 8) > 0x40)
+            gSpriteEntries[i].scale_y = 0x40;
     }
     gSpriteEntries[i].unk21++;
     return 1;
@@ -909,9 +909,9 @@ s32 intro_action_open_unk8_first(u8 i) {
 
 s32 intro_action_bob(u8 i) {
     if (i & 1)
-        gSpriteEntries[i].unk4 = gSpriteEntries[i].unk23 - gIntroBobOffsets[gSpriteEntries[i].unk21 & 0x3F];
+        gSpriteEntries[i].y = gSpriteEntries[i].unk23 - gIntroBobOffsets[gSpriteEntries[i].unk21 & 0x3F];
     else
-        gSpriteEntries[i].unk4 = gSpriteEntries[i].unk23 + gIntroBobOffsets[gSpriteEntries[i].unk21 & 0x3F];
+        gSpriteEntries[i].y = gSpriteEntries[i].unk23 + gIntroBobOffsets[gSpriteEntries[i].unk21 & 0x3F];
     gSpriteEntries[i].unk21 += 1 + gSpriteEntries[i].unk22;
     return 1;
 }
@@ -919,11 +919,11 @@ s32 intro_action_bob(u8 i) {
 s32 intro_action_scan_up(u8 i) {
     if (gSpriteEntries[i].unk21 < 0x48) {
         gSpriteEntries[i].unk21++;
-    } else if (gSpriteEntries[i].unk4 < -0x50) {
-        gSpriteEntries[i].unk4 = 0xA0;
+    } else if (gSpriteEntries[i].y < -0x50) {
+        gSpriteEntries[i].y = 0xA0;
         gSpriteEntries[i].unk21 = 0;
     } else {
-        gSpriteEntries[i].unk4 -= 4;
+        gSpriteEntries[i].y -= 4;
     }
     return 1;
 }
@@ -931,11 +931,11 @@ s32 intro_action_scan_up(u8 i) {
 s32 intro_action_scan_right(u8 i) {
     if (gSpriteEntries[i].unk21 < 0x48) {
         gSpriteEntries[i].unk21++;
-    } else if (gSpriteEntries[i].unk2 > 0x168) {
-        gSpriteEntries[i].unk2 = 0;
+    } else if (gSpriteEntries[i].x > 0x168) {
+        gSpriteEntries[i].x = 0;
         gSpriteEntries[i].unk21 = 0;
     } else {
-        gSpriteEntries[i].unk2 += 6;
+        gSpriteEntries[i].x += 6;
     }
     return 1;
 }
@@ -950,6 +950,6 @@ static void intro_sprite_set_action(u8 action, u8 i, u8 y) {
         sprite->unk22 = rng_next(0) & 3;
         sprite->unk23 = y - 4;
     }
-    sprite->unk30 = sprite->unk6;
+    sprite->unk30 = sprite->frame;
     sprite->unk1A = 0;
 }

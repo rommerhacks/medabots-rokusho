@@ -10,8 +10,8 @@ void copy_battle_entity_positions(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        gBattleWork.botPositions[i].x = gSpriteEntries[0x5D + i * 4].unk2;
-        gBattleWork.botPositions[i].y = gSpriteEntries[0x5D + i * 4].unk4 - 4;
+        gBattleWork.botPositions[i].x = gSpriteEntries[0x5D + i * 4].x;
+        gBattleWork.botPositions[i].y = gSpriteEntries[0x5D + i * 4].y - 4;
     }
 }
 
@@ -22,18 +22,18 @@ void init_battle_bot_sprites(void) {
         if (gBattleBots[i].teamState)
             init_battle_sprite_entry_0801BC04(i);
         else
-            clear_sprite_table_mask(0x72 + i, 1);
+            disable_sprites(0x72 + i, 1);
     }
 }
 
 void init_battle_sprite_entry_0801BC04(u32 rec) {
-    gSpriteEntries[rec + 0x72].unk0 = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
-    gSpriteEntries[rec + 0x72].unk1C = 0;
-    gSpriteEntries[rec + 0x72].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2;
-    gSpriteEntries[rec + 0x72].unk4 = gSpriteEntries[rec * 4 + 0x5D].unk4 + 8;
-    gSpriteEntries[rec + 0x72].unkA = 5;
-    gSpriteEntries[rec + 0x72].unkB = 1;
-    gSpriteEntries[rec + 0x72].unk6 = 0xF00;
+    gSpriteEntries[rec + 0x72].flags = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
+    gSpriteEntries[rec + 0x72].frame_table = 0;
+    gSpriteEntries[rec + 0x72].x = gSpriteEntries[rec * 4 + 0x5D].x;
+    gSpriteEntries[rec + 0x72].y = gSpriteEntries[rec * 4 + 0x5D].y + 8;
+    gSpriteEntries[rec + 0x72].palette = 5;
+    gSpriteEntries[rec + 0x72].order = 1;
+    gSpriteEntries[rec + 0x72].frame = 0xF00;
 }
 
 void decompress_indexed_graphics_to_ewram(u32 list) {

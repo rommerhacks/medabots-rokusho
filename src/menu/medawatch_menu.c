@@ -52,8 +52,8 @@ void medawatch_menu_handle_input(void) {
             gGameWork.medawatchCursor--;
         play_sound_effect(2);
         medawatch_menu_load_icon();
-        gSpriteEntries[0].unk2 = 0x88 - gGameWork.medawatchCursor * 8;
-        gSpriteEntries[0].unk4 = gGameWork.medawatchCursor * 24 + 32;
+        gSpriteEntries[0].x = 0x88 - gGameWork.medawatchCursor * 8;
+        gSpriteEntries[0].y = gGameWork.medawatchCursor * 24 + 32;
     }
     if (KEYS_LO(gRepeatKeys) & 0x80) {
         if (gGameWork.medawatchCursor == 2)
@@ -62,8 +62,8 @@ void medawatch_menu_handle_input(void) {
             gGameWork.medawatchCursor++;
         play_sound_effect(2);
         medawatch_menu_load_icon();
-        gSpriteEntries[0].unk2 = 0x88 - gGameWork.medawatchCursor * 8;
-        gSpriteEntries[0].unk4 = gGameWork.medawatchCursor * 24 + 32;
+        gSpriteEntries[0].x = 0x88 - gGameWork.medawatchCursor * 8;
+        gSpriteEntries[0].y = gGameWork.medawatchCursor * 24 + 32;
     }
     if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
@@ -189,12 +189,12 @@ static void medawatch_menu_load_icon(void) {
 static void medawatch_menu_init_cursor(void) {
     lz_decompress_dispatch(gFieldMenuCursorTiles, (void *)0x06016C00);
     DmaSet(3, gCursorArrowPalette, 0x050003C0, 0x84000008);
-    gSpriteEntries[0].unk0 = 0xC004;
-    gSpriteEntries[0].unk2 = 0x88 - gGameWork.medawatchCursor * 8;
-    gSpriteEntries[0].unk4 = gGameWork.medawatchCursor * 24 + 32;
-    gSpriteEntries[0].unkA = 14;
-    gSpriteEntries[0].unk1C = 0;
-    gSpriteEntries[0].unkB = 0xFF;
+    gSpriteEntries[0].flags = 0xC004;
+    gSpriteEntries[0].x = 0x88 - gGameWork.medawatchCursor * 8;
+    gSpriteEntries[0].y = gGameWork.medawatchCursor * 24 + 32;
+    gSpriteEntries[0].palette = 14;
+    gSpriteEntries[0].frame_table = 0;
+    gSpriteEntries[0].order = 0xFF;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0], 0);
 }
 

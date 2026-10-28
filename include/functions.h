@@ -58,7 +58,6 @@ void ObjAffineSet(struct ObjAffineSrcData *src, void *dest, s32 count, s32 offse
 // screen (guess: name entry)
 
 struct ObjSortEntry;
-struct RotateSrc;
 
 // numbers of a 32x32 screen block, sets palette pal
 void LZ77UnCompWram(const void *src, void *dst);

@@ -144,10 +144,10 @@ void text_scroll_init(void) {
     }
     gMenuWork->ticks = 0;
     for (i = 0; i < 0x48; i++) {
-        gSpriteEntries[i + 1].unk0 = 0xC800;
-        gSpriteEntries[i + 1].unk1C = 2;
-        gSpriteEntries[i + 1].unkA = i / 18;
-        gSpriteEntries[i + 1].unk6 = 0x116;
+        gSpriteEntries[i + 1].flags = 0xC800;
+        gSpriteEntries[i + 1].frame_table = 2;
+        gSpriteEntries[i + 1].palette = i / 18;
+        gSpriteEntries[i + 1].frame = 0x116;
     }
     matrix_set_identity();
     ring_points_place_on_hexagon(0x32);

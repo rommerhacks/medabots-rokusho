@@ -25,7 +25,7 @@ loop:
         i += 3;
         goto loop;
     }
-    gSpriteEntries[slot].unk6 = (p[1] << 8) + p[2];
+    gSpriteEntries[slot].frame = (p[1] << 8) + p[2];
 }
 
 void process_sprite_anim_commands(const u8 *cmds, u8 slot) {
@@ -43,12 +43,12 @@ void process_sprite_anim_commands(const u8 *cmds, u8 slot) {
         op = cmds[gSpriteEntries[slot].unk21];
         switch (op) {
         case 0xFB:
-            gSpriteEntries[0].unk0 &= 0xBFFF;
+            gSpriteEntries[0].flags &= 0xBFFF;
             gSpriteEntries[slot].unk20 = cmds[gSpriteEntries[slot].unk21 + 1];
             gSpriteEntries[slot].unk21 += 3;
             return;
         case 0xFC:
-            gSpriteEntries[0].unk0 |= 0x4000;
+            gSpriteEntries[0].flags |= 0x4000;
             gSpriteEntries[slot].unk21 += 3;
             break;
         case 0xFD:
@@ -63,7 +63,7 @@ void process_sprite_anim_commands(const u8 *cmds, u8 slot) {
             return;
         default:
             gSpriteEntries[slot].unk20 = op;
-            gSpriteEntries[slot].unk6 =
+            gSpriteEntries[slot].frame =
                 (cmds[gSpriteEntries[slot].unk21 + 1] << 8) + cmds[gSpriteEntries[slot].unk21 + 2];
             gSpriteEntries[slot].unk21 += 3;
             break;
@@ -81,16 +81,16 @@ void clear_battle_sprite_slot(u8 a, u8 b) {
     }
 }
 
-void clear_sprite_table_mask(u8 first, u8 count) {
+void disable_sprites(u8 first, u8 count) {
     u32 i;
     for (i = 0; i < count; i++)
-        gSpriteEntries[first + i].unk0 &= 0x7FFF;
+        gSpriteEntries[first + i].flags &= 0x7FFF;
 }
 
-void set_sprite_hidden_flags(u8 first, u8 count) {
+void enable_sprites(u8 first, u8 count) {
     u32 i;
     for (i = 0; i < count; i++)
-        gSpriteEntries[first + i].unk0 |= 0x8000;
+        gSpriteEntries[first + i].flags |= 0x8000;
 }
 
 u32 find_next_free_sprite_slot(u8 first, u8 count) {
@@ -100,7 +100,7 @@ u32 find_next_free_sprite_slot(u8 first, u8 count) {
         slot = first + i;
         if (slot == 0x80)
             return first;
-        if (gSpriteEntries[slot].unk0 == 0)
+        if (gSpriteEntries[slot].flags == 0)
             return slot;
     }
     return first;
@@ -146,13 +146,13 @@ void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
     }
     for (i = 0; str[i] != 0xFE; i++) {
         if (str[i] != 0) {
-            gSpriteEntries[slot + i].unk0 = (prio << 10) | 0xC004;
-            gSpriteEntries[slot + i].unk2 = x;
-            gSpriteEntries[slot + i].unk4 = y;
-            gSpriteEntries[slot + i].unkA = pal;
-            gSpriteEntries[slot + i].unk1C = 0;
-            gSpriteEntries[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
-            gSpriteEntries[slot + i].unk6 = str[i] - 1;
+            gSpriteEntries[slot + i].flags = (prio << 10) | 0xC004;
+            gSpriteEntries[slot + i].x = x;
+            gSpriteEntries[slot + i].y = y;
+            gSpriteEntries[slot + i].palette = pal;
+            gSpriteEntries[slot + i].frame_table = 0;
+            gSpriteEntries[slot + i].order = ((3 & ~prio) << 6) + 0x3F;
+            gSpriteEntries[slot + i].frame = str[i] - 1;
         }
         x += gFontWidths[str[i]][0];
     }
@@ -199,13 +199,13 @@ void render_text_sprites_08040EE4(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
     }
     for (i = 0; str[i] != 0xFE; i++) {
         if (str[i] != 0) {
-            gSpriteEntries[slot + i].unk0 = (prio << 10) | 0xC004;
-            gSpriteEntries[slot + i].unk2 = x;
-            gSpriteEntries[slot + i].unk4 = y;
-            gSpriteEntries[slot + i].unkA = pal;
-            gSpriteEntries[slot + i].unk1C = 0;
-            gSpriteEntries[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
-            gSpriteEntries[slot + i].unk6 = str[i] - 1;
+            gSpriteEntries[slot + i].flags = (prio << 10) | 0xC004;
+            gSpriteEntries[slot + i].x = x;
+            gSpriteEntries[slot + i].y = y;
+            gSpriteEntries[slot + i].palette = pal;
+            gSpriteEntries[slot + i].frame_table = 0;
+            gSpriteEntries[slot + i].order = ((3 & ~prio) << 6) + 0x3F;
+            gSpriteEntries[slot + i].frame = str[i] - 1;
         }
         x += gFontWidths[str[i]][0];
     }
@@ -251,13 +251,13 @@ void render_text_string_to_sprites(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 
     }
     for (i = 0; str[i] != 0xFE; i++) {
         if (str[i] != 0) {
-            gSpriteEntries[slot + i].unk0 = (prio << 10) | 0xC004;
-            gSpriteEntries[slot + i].unk2 = x;
-            gSpriteEntries[slot + i].unk4 = y;
-            gSpriteEntries[slot + i].unkA = pal;
-            gSpriteEntries[slot + i].unk1C = 0;
-            gSpriteEntries[slot + i].unkB = ((3 & ~prio) << 6) + 0x3F;
-            gSpriteEntries[slot + i].unk6 = str[i] + 0x85FF;
+            gSpriteEntries[slot + i].flags = (prio << 10) | 0xC004;
+            gSpriteEntries[slot + i].x = x;
+            gSpriteEntries[slot + i].y = y;
+            gSpriteEntries[slot + i].palette = pal;
+            gSpriteEntries[slot + i].frame_table = 0;
+            gSpriteEntries[slot + i].order = ((3 & ~prio) << 6) + 0x3F;
+            gSpriteEntries[slot + i].frame = str[i] + 0x85FF;
         }
         x += gFontWidths[str[i]][0];
     }

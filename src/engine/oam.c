@@ -1,4 +1,4 @@
-// Sprite-to-OAM builder: check_flag_and_fast_copy (once a frame from AgbMain) turns the sprite table into OAM
+// Sprite-to-OAM builder: build_sprite_oam (once a frame from AgbMain) turns the sprite table into OAM
 // entries from the frame tables, sorted by priority (shell_sort_by_second_byte), with affine matrices from
 // set_oam_affine_params / compute_scaled_value / rotate_vector_2d.
 
@@ -6,9 +6,9 @@
 
 static void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags);
 static void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags);
-static void rotate_vector_2d(s32 *x, s32 *y, struct RotateSrc *p);
+static void rotate_vector_2d(s32 *x, s32 *y, struct SpriteEntry *p);
 
-void check_flag_and_fast_copy(void) {
+void build_sprite_oam(void) {
     struct ObjSortEntry sorted[128];
     s32 zero;
     s32 x, y;
@@ -28,9 +28,9 @@ void check_flag_and_fast_copy(void) {
     obj = gSpriteEntries;
     count = 0;
     for (i = 0; i < 128; i++, obj++) {
-        if (obj->unk0 & 0x8000) {
+        if (obj->flags & SPRITE_FLAG_ENABLED) {
             sorted[count].idx = i;
-            sorted[count].key = obj->unkB;
+            sorted[count].key = obj->order;
             count++;
         }
     }
@@ -47,77 +47,77 @@ void check_flag_and_fast_copy(void) {
     for (i = 0; i < count; i++) {
         obj = &gSpriteEntries[sorted[i].idx];
         gOamAffineZoomOverride = -1;
-        switch (obj->unk0 & 0xC0) {
-        case 0x80:
-            px = obj->unkC_8 * 4;
-            py = (obj->unk10_8 + gSpritePerspOffsetY) * 4;
-            w = (obj->unk14_8 + 0x3000) / 64;
+        switch (obj->flags & SPRITE_POS_MASK) {
+        case SPRITE_POS_PERSPECTIVE:
+            px = obj->pos_x * 4;
+            py = (obj->pos_y + gSpritePerspOffsetY) * 4;
+            w = (obj->pos_z + 0x3000) / 64;
             px = px / w;
             py = py / w;
-            obj->unk2 = gSpritePerspCenterX + px;
-            obj->unk4 = gSpritePerspCenterY + py;
-            obj->unk8 = obj->unk9 = 0x8000 / w;
+            obj->x = gSpritePerspCenterX + px;
+            obj->y = gSpritePerspCenterY + py;
+            obj->scale_x = obj->scale_y = 0x8000 / w;
             gOamAffineZoomOverride = 0x700000 / w;
             break;
-        case 0xC0:
+        case SPRITE_POS_SHARED_AFFINE:
             break;
-        case 0x40:
-            obj->unk2 = (obj->unkC_8 >> 8) - gSpriteCameraPos.x;
-            obj->unk4 = ((obj->unk10_8 + obj->unk14_8) >> 8) - gSpriteCameraPos.y;
+        case SPRITE_POS_WORLD:
+            obj->x = (obj->pos_x >> 8) - gSpriteCameraPos.x;
+            obj->y = ((obj->pos_y + obj->pos_z) >> 8) - gSpriteCameraPos.y;
             break;
         }
-        switch (obj->unk1C & 0xF) {
+        switch (obj->frame_table & 0xF) {
         case 1:
-            frameSet = gSpriteFrameSets1[obj->unk6 >> 8];
+            frameSet = gSpriteFrameSets1[obj->frame >> 8];
             break;
         case 2:
-            frameSet = gMenuSpriteFrameSets[obj->unk6 >> 8];
+            frameSet = gMenuSpriteFrameSets[obj->frame >> 8];
             break;
         case 3:
-            frameSet = gSpriteFrameSets3[obj->unk6 >> 8];
+            frameSet = gSpriteFrameSets3[obj->frame >> 8];
             break;
         case 0:
         default:
-            frameSet = gSpriteFrameSets[obj->unk6 >> 8];
+            frameSet = gSpriteFrameSets[obj->frame >> 8];
             break;
         }
-        part = frameSet[obj->unk6 & 0xFF]->parts;
-        px = -gBgScrollOffset.x + gSpriteScreenOffset.x + obj->unk2;
-        py = -gBgScrollOffset.y + gSpriteScreenOffset.y + obj->unk4;
-        if ((obj->unk0 & 0xC0) == 0x40) {
+        part = frameSet[obj->frame & 0xFF]->parts;
+        px = -gBgScrollOffset.x + gSpriteScreenOffset.x + obj->x;
+        py = -gBgScrollOffset.y + gSpriteScreenOffset.y + obj->y;
+        if ((obj->flags & SPRITE_POS_MASK) == SPRITE_POS_WORLD) {
             if ((u32)(py + 32) > 256) {
-                obj->unk0 |= 2;
+                obj->flags |= SPRITE_FLAG_OFFSCREEN;
                 continue;
             }
             if ((u32)(px + 32) > 336) {
-                obj->unk0 |= 2;
+                obj->flags |= SPRITE_FLAG_OFFSCREEN;
                 continue;
             }
-            obj->unk0 &= ~2;
+            obj->flags &= ~SPRITE_FLAG_OFFSCREEN;
         }
-        if (!(obj->unk0 & 0x4000))
+        if (!(obj->flags & SPRITE_FLAG_VISIBLE))
             continue;
-        if (obj->unk0 & 0x200) {
-            if ((obj->unk0 & 0xC0) != 0xC0) {
+        if (obj->flags & SPRITE_FLAG_AFFINE) {
+            if ((obj->flags & SPRITE_POS_MASK) != SPRITE_POS_SHARED_AFFINE) {
                 if (affIdx < 32) {
-                    if (obj->unk18)
-                        set_oam_affine_params(affIdx, obj->unk18, obj->unk8, obj->unk9, obj->unk0);
+                    if (obj->angle)
+                        set_oam_affine_params(affIdx, obj->angle, obj->scale_x, obj->scale_y, obj->flags);
                     else
-                        compute_scaled_value(affIdx, obj->unk8, obj->unk9, obj->unk0);
-                    dbl = (obj->unk0 & 0x20) ? 0x300 : 0x100;
+                        compute_scaled_value(affIdx, obj->scale_x, obj->scale_y, obj->flags);
+                    dbl = (obj->flags & SPRITE_FLAG_DOUBLE_SIZE) ? 0x300 : 0x100;
                     affBits = affIdx << 9;
                     affIdx++;
                 }
             } else {
-                dbl = (obj->unk0 & 0x20) ? 0x300 : 0x100;
-                affBits = obj->filler1D[0] << 9; // unk1D: shared affine matrix index
+                dbl = (obj->flags & SPRITE_FLAG_DOUBLE_SIZE) ? 0x300 : 0x100;
+                affBits = obj->affine_idx << 9;
             }
         } else {
             dbl = 0;
             affBits = 0;
         }
 
-        for (j = 0; j < frameSet[obj->unk6 & 0xFF]->count; j++) {
+        for (j = 0; j < frameSet[obj->frame & 0xFF]->count; j++) {
             oam = gOamBuffer;
             h = *(u16 *)part & 0xC0C0;
             switch (h) {
@@ -164,73 +164,79 @@ void check_flag_and_fast_copy(void) {
                 h = 32;
                 break;
             }
-            if (obj->unk0 & 0x200) {
-                if ((obj->unk0 & 0xC0) != 0xC0) {
+            if (obj->flags & SPRITE_FLAG_AFFINE) {
+                if ((obj->flags & SPRITE_POS_MASK) != SPRITE_POS_SHARED_AFFINE) {
                     x = part->x + w;
                     y = part->y + h;
-                    if (obj->unk0 & 0x20) {
+                    if (obj->flags & SPRITE_FLAG_DOUBLE_SIZE) {
                         w = -w * 2;
                         h = -h * 2;
                     } else {
                         w = -w;
                         h = -h;
                     }
-                    if (obj->unk0 & 0x1000)
-                        x = -x - (obj->unk8 - 0x40) * x / 64;
+                    if (obj->flags & SPRITE_FLAG_HFLIP)
+                        x = -x - (obj->scale_x - SPRITE_SCALE_ONE) * x / 64;
                     else
-                        x = x + (obj->unk8 - 0x40) * x / 64;
-                    if (obj->unk0 & 0x2000)
-                        y = -y - (obj->unk9 - 0x40) * y / 64;
+                        x = x + (obj->scale_x - SPRITE_SCALE_ONE) * x / 64;
+                    if (obj->flags & SPRITE_FLAG_VFLIP)
+                        y = -y - (obj->scale_y - SPRITE_SCALE_ONE) * y / 64;
                     else
-                        y = y + (obj->unk9 - 0x40) * y / 64;
-                    if (obj->unk0 & 0x100)
-                        rotate_vector_2d(&x, &y, (struct RotateSrc *)obj);
+                        y = y + (obj->scale_y - SPRITE_SCALE_ONE) * y / 64;
+                    if (obj->flags & SPRITE_FLAG_ROTATE)
+                        rotate_vector_2d(&x, &y, obj);
                     w = w + px + x;
                     h = h + py + y;
-                    oam[oamIdx].attr0 =
-                        (h & 0xFF) | (part->shape << 8) | dbl | ((obj->unk0 & 0x18) << 7) | ((obj->unk0 & 1) << 12);
+                    oam[oamIdx].attr0 = (h & 0xFF) | (part->shape << 8) | dbl |
+                                        ((obj->flags & SPRITE_FLAG_OBJ_MODE_MASK) << 7) |
+                                        ((obj->flags & SPRITE_FLAG_MOSAIC) << 12);
                     oam[oamIdx].attr1 = (w & 0x1FF) | ((part->size & 0xC0) << 8) | affBits;
                 } else {
-                    if (obj->unk0 & 0x20) {
+                    if (obj->flags & SPRITE_FLAG_DOUBLE_SIZE) {
                         w = part->x;
                         h = part->y;
                     } else {
                         w = 0;
                         h = 0;
                     }
-                    if (obj->unk0 & 0x1000)
+                    if (obj->flags & SPRITE_FLAG_HFLIP)
                         w = -part->x - w + px - w;
                     else
                         w = w + (part->x + px);
-                    if (obj->unk0 & 0x2000)
+                    if (obj->flags & SPRITE_FLAG_VFLIP)
                         h = -part->y - h + py - h;
                     else
                         h = h + (part->y + py);
-                    oam[oamIdx].attr0 =
-                        (h & 0xFF) | (part->shape << 8) | dbl | ((obj->unk0 & 0x18) << 7) | ((obj->unk0 & 1) << 12);
-                    oam[oamIdx].attr1 = ((w & 0x1FF) | (part->size << 8) | affBits) ^ (obj->unk0 & 0x3000);
+                    oam[oamIdx].attr0 = (h & 0xFF) | (part->shape << 8) | dbl |
+                                        ((obj->flags & SPRITE_FLAG_OBJ_MODE_MASK) << 7) |
+                                        ((obj->flags & SPRITE_FLAG_MOSAIC) << 12);
+                    oam[oamIdx].attr1 = ((w & 0x1FF) | (part->size << 8) | affBits) ^
+                                        (obj->flags & (SPRITE_FLAG_HFLIP | SPRITE_FLAG_VFLIP));
                 }
             } else {
-                if (obj->unk0 & 0x1000)
+                if (obj->flags & SPRITE_FLAG_HFLIP)
                     w = -part->x - w + px - w;
                 else
                     w = px + part->x;
-                if (obj->unk0 & 0x2000)
+                if (obj->flags & SPRITE_FLAG_VFLIP)
                     h = -part->y - h + py - h;
                 else
                     h = py + part->y;
-                oam[oamIdx].attr0 =
-                    (h & 0xFF) | (part->shape << 8) | dbl | ((obj->unk0 & 0x18) << 7) | ((obj->unk0 & 1) << 12);
-                oam[oamIdx].attr1 = ((w & 0x1FF) | (part->size << 8)) ^ (obj->unk0 & 0x3000);
+                oam[oamIdx].attr0 = (h & 0xFF) | (part->shape << 8) | dbl |
+                                    ((obj->flags & SPRITE_FLAG_OBJ_MODE_MASK) << 7) |
+                                    ((obj->flags & SPRITE_FLAG_MOSAIC) << 12);
+                oam[oamIdx].attr1 =
+                    ((w & 0x1FF) | (part->size << 8)) ^ (obj->flags & (SPRITE_FLAG_HFLIP | SPRITE_FLAG_VFLIP));
             }
-            if (obj->unk0 & 4) {
+            if (obj->flags & SPRITE_FLAG_PART_PALETTE) {
                 if (part->tile & 0xF000)
-                    ((u16 *)gOamBuffer)[oamIdx * 4 + 2] = (obj->unk0 & 0xC00) | part->tile;
+                    ((u16 *)gOamBuffer)[oamIdx * 4 + 2] = (obj->flags & SPRITE_FLAG_PRIORITY_MASK) | part->tile;
                 else
                     ((u16 *)gOamBuffer)[oamIdx * 4 + 2] =
-                        (part->tile & 0xFFF) | (obj->unkA << 12) | (obj->unk0 & 0xC00);
+                        (part->tile & 0xFFF) | (obj->palette << 12) | (obj->flags & SPRITE_FLAG_PRIORITY_MASK);
             } else {
-                ((u16 *)gOamBuffer)[oamIdx * 4 + 2] = ((obj->unkA << 12) + part->tile) | (obj->unk0 & 0xC00);
+                ((u16 *)gOamBuffer)[oamIdx * 4 + 2] =
+                    ((obj->palette << 12) + part->tile) | (obj->flags & SPRITE_FLAG_PRIORITY_MASK);
             }
 
             oamIdx++;
@@ -258,14 +264,14 @@ static void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags)
             sx = 1;
         if (sy == 0)
             sy = 1;
-        if (flags & 0x1000) {
+        if (flags & SPRITE_FLAG_HFLIP) {
             gOamBuffer[n].affineParam = DivArm(sx, -cos);
             gOamBuffer[n + 1].affineParam = DivArm(sy, -sin);
         } else {
             gOamBuffer[n].affineParam = DivArm(sx, cos);
             gOamBuffer[n + 1].affineParam = DivArm(sy, sin);
         }
-        if (flags & 0x2000) {
+        if (flags & SPRITE_FLAG_VFLIP) {
             gOamBuffer[n + 2].affineParam = DivArm(sx, sin);
             gOamBuffer[n + 3].affineParam = DivArm(sy, -cos);
         } else {
@@ -275,14 +281,14 @@ static void set_oam_affine_params(u32 idx, u32 angle, s32 sx, s32 sy, u32 flags)
     } else {
         cos = gSineTableQ14[(angle & 0x3FF) + 0x100] << 8;
         sin = gSineTableQ14[angle & 0x3FF] << 8;
-        if (flags & 0x1000) {
+        if (flags & SPRITE_FLAG_HFLIP) {
             gOamBuffer[n].affineParam = DivArm(gOamAffineZoomOverride, -cos);
             gOamBuffer[n + 1].affineParam = DivArm(gOamAffineZoomOverride, -sin);
         } else {
             gOamBuffer[n].affineParam = DivArm(gOamAffineZoomOverride, cos);
             gOamBuffer[n + 1].affineParam = DivArm(gOamAffineZoomOverride, sin);
         }
-        if (flags & 0x2000) {
+        if (flags & SPRITE_FLAG_VFLIP) {
             gOamBuffer[n + 2].affineParam = DivArm(gOamAffineZoomOverride, sin);
             gOamBuffer[n + 3].affineParam = DivArm(gOamAffineZoomOverride, -cos);
         } else {
@@ -296,14 +302,14 @@ static void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags) {
     u32 n = idx * 4;
 
     if (gOamAffineZoomOverride == -1) {
-        if (flags & 0x1000) {
+        if (flags & SPRITE_FLAG_HFLIP) {
             gOamBuffer[n].affineParam = -0x4000 / sx;
             gOamBuffer[n + 1].affineParam = 0;
         } else {
             gOamBuffer[n].affineParam = 0x4000 / sx;
             gOamBuffer[n + 1].affineParam = 0;
         }
-        if (flags & 0x2000) {
+        if (flags & SPRITE_FLAG_VFLIP) {
             gOamBuffer[n + 2].affineParam = 0;
             gOamBuffer[n + 3].affineParam = -0x4000 / sy;
         } else {
@@ -311,14 +317,14 @@ static void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags) {
             gOamBuffer[n + 2].affineParam = 0;
         }
     } else {
-        if (flags & 0x1000) {
+        if (flags & SPRITE_FLAG_HFLIP) {
             gOamBuffer[n].affineParam = -0x400000 / gOamAffineZoomOverride;
             gOamBuffer[n + 1].affineParam = 0;
         } else {
             gOamBuffer[n].affineParam = 0x400000 / gOamAffineZoomOverride;
             gOamBuffer[n + 1].affineParam = 0;
         }
-        if (flags & 0x2000) {
+        if (flags & SPRITE_FLAG_VFLIP) {
             gOamBuffer[n + 2].affineParam = 0;
             gOamBuffer[n + 3].affineParam = -0x400000 / gOamAffineZoomOverride;
         } else {
@@ -328,13 +334,8 @@ static void compute_scaled_value(u32 idx, s32 sx, s32 sy, u32 flags) {
     }
 }
 
-struct RotateSrc {
-    u8 filler0[0x18];
-    u16 angle;
-};
-
 // Rotates (*x, *y) by p->angle (1024 steps per turn); the table is Q14 sin, cos at +0x100.
-static void rotate_vector_2d(s32 *x, s32 *y, struct RotateSrc *p) {
+static void rotate_vector_2d(s32 *x, s32 *y, struct SpriteEntry *p) {
     s32 c = gSineTableQ14[(p->angle & 0x3FF) + 0x100];
     s32 s = gSineTableQ14[p->angle & 0x3FF];
     s32 x0 = *x;

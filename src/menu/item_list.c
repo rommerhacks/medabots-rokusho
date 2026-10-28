@@ -78,7 +78,7 @@ void update_battle_medapart_icons(void) {
         counts[i] = l[gMenuWork->list_top + i].count;
     }
     for (i = 0; i < n; i++) {
-        clear_sprite_table_mask(i * 16, 0x10);
+        disable_sprites(i * 16, 0x10);
         clear_item_list_map_run(0x18, i * 2 + 3, 3);
         clear_item_list_map_run(0x18, i * 2 + 4, 3);
     }
@@ -91,8 +91,8 @@ void update_battle_medapart_icons(void) {
             draw_number_2digits_tall(counts[i], 0x18, i * 2 + 3);
             *((u16 *)0x0600F02E + ((i * 2 + 3) << 5)) = t0;
             *((u16 *)0x0600F02E + ((i * 2 + 4) << 5)) = t1;
-            gSpriteEntries[i + 0x55].unk0 |= 0x4000;
-            gSpriteEntries[i + 0x55].unk6 = item_is_usable(ids[i]) ? 0x21 : 0x22;
+            gSpriteEntries[i + 0x55].flags |= 0x4000;
+            gSpriteEntries[i + 0x55].frame = item_is_usable(ids[i]) ? 0x21 : 0x22;
         } else {
             u16 *map = (u16 *)0x0600F02E;
             u16 *p;
@@ -108,15 +108,15 @@ void update_battle_medapart_icons(void) {
             *p = 0;
             p = map + 2 + ((i * 2 + 4) << 5);
             *p = 0;
-            gSpriteEntries[i + 0x55].unk0 &= ~0x4000;
+            gSpriteEntries[i + 0x55].flags &= ~0x4000;
         }
     }
     item_menu_draw_page_numbers();
 }
 
 void item_menu_set_cursor_pos(struct SpriteEntry *sprite) {
-    sprite->unk2 = 0x54;
-    sprite->unk4 = (u8)(gMenuWork->item_cursor % 5) * 16 + 0x1C;
+    sprite->x = 0x54;
+    sprite->y = (u8)(gMenuWork->item_cursor % 5) * 16 + 0x1C;
 }
 
 void shop_build_sell_list(void) {
@@ -167,7 +167,7 @@ void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot) {
                                (void *)(slot * 0x80 + 0x06013340));
         break;
     }
-    gSpriteEntries[slot + 0x6E].unkA = gMedabotSpritePalettes[id] + 4;
+    gSpriteEntries[slot + 0x6E].palette = gMedabotSpritePalettes[id] + 4;
 }
 
 void render_battle_medapart_list(u32 mode) {
@@ -191,10 +191,10 @@ void render_battle_medapart_list(u32 mode) {
         first++;
     }
     for (i = 0; i < n; i++) {
-        clear_sprite_table_mask(i * 14 + 13, 14);
+        disable_sprites(i * 14 + 13, 14);
         clear_item_list_map_run(0xC, i * 2 + 10, 3);
         clear_item_list_map_run(0xC, i * 2 + 11, 3);
-        clear_sprite_table_mask(i * 7 + 0x45, 7);
+        disable_sprites(i * 7 + 0x45, 7);
     }
     for (i = 0; i < n; i++) {
         if (mode == 0) {
@@ -202,9 +202,9 @@ void render_battle_medapart_list(u32 mode) {
                 render_text_sprites_08040DB8((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
                                              13, 1, 1);
                 draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, (REG_BG1CNT >> 8) & 0x1F);
-                gSpriteEntries[i + 0x6A].unk0 |= 0x4000;
-                gSpriteEntries[i + 0x6A].unk6 = genders[i] + 0x1B;
-                gSpriteEntries[i + 0x6E].unk0 |= 0x4000;
+                gSpriteEntries[i + 0x6A].flags |= 0x4000;
+                gSpriteEntries[i + 0x6A].frame = genders[i] + 0x1B;
+                gSpriteEntries[i + 0x6E].flags |= 0x4000;
                 load_battle_sprite_tiles(ids[i], kind, i);
                 divide_by_10000(gTextArgBuffer, prices[i]);
                 render_text_sprites_08040DB8(gTextArgBuffer, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
@@ -215,9 +215,9 @@ void render_battle_medapart_list(u32 mode) {
                 render_text_sprites_08040DB8((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
                                              13, 1, 1);
                 draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, (REG_BG1CNT >> 8) & 0x1F);
-                gSpriteEntries[i + 0x6A].unk0 |= 0x4000;
-                gSpriteEntries[i + 0x6A].unk6 = genders[i] + 0x1B;
-                gSpriteEntries[i + 0x6E].unk0 |= 0x4000;
+                gSpriteEntries[i + 0x6A].flags |= 0x4000;
+                gSpriteEntries[i + 0x6A].frame = genders[i] + 0x1B;
+                gSpriteEntries[i + 0x6E].flags |= 0x4000;
                 load_battle_sprite_tiles(ids[i], kind, i);
                 divide_by_10000(gTextArgBuffer, prices[i]);
                 render_text_sprites_08040DB8(gTextArgBuffer, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
@@ -251,9 +251,9 @@ void item_menu_update_swap_marker(struct SpriteEntry *attr) {
     struct MenuWork *w = gMenuWork;
     if (w->swap_pending) {
         if (w->swap_from >= w->list_top && w->swap_from < w->list_top + 5)
-            attr->unk0 |= 0x4000;
+            attr->flags |= 0x4000;
         else
-            attr->unk0 &= 0xBFFF;
+            attr->flags &= 0xBFFF;
     }
 }
 

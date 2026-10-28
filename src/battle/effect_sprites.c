@@ -101,7 +101,7 @@ u32 effect_sprite_fly_to_part(u32 slot, u32 part) {
     struct SpriteEntry *s = &base[slot];
     u8 *frame;
 
-    if (!(s->unk0 & 0x8000) || *(frame = &s->unk23) == 0x10)
+    if (!(s->flags & 0x8000) || *(frame = &s->unk23) == 0x10)
         return 1;
     switch (part) {
     case 0:
@@ -121,8 +121,8 @@ u32 effect_sprite_fly_to_part(u32 slot, u32 part) {
         dy = gPartFlyStepsLegs[*frame * 2 + 1];
         break;
     }
-    gSpriteEntries[slot].unk2 = (dx + gSpriteEntries[slot].unk2) & 0x1FF;
-    gSpriteEntries[slot].unk4 = (dy + gSpriteEntries[slot].unk4) & 0xFF;
+    gSpriteEntries[slot].x = (dx + gSpriteEntries[slot].x) & 0x1FF;
+    gSpriteEntries[slot].y = (dy + gSpriteEntries[slot].y) & 0xFF;
     gSpriteEntries[slot].unk23++;
     return 0;
 }
@@ -133,19 +133,19 @@ void hit_sparks_spawn(u32 slot, u32 part, s16 x, s16 y) {
 
     clear_battle_sprite_slot(slot, 4);
     for (i = 0; i <= 3; i++) {
-        gSpriteEntries[slot + i].unk0 = 0x4404;
-        gSpriteEntries[slot + i].unk1C = 0;
-        gSpriteEntries[slot + i].unkA = 0xE;
-        gSpriteEntries[slot + i].unkB = 0x80;
+        gSpriteEntries[slot + i].flags = 0x4404;
+        gSpriteEntries[slot + i].frame_table = 0;
+        gSpriteEntries[slot + i].palette = 0xE;
+        gSpriteEntries[slot + i].order = 0x80;
         gSpriteEntries[slot + i].unk2C = i * 8;
         u = gPartSpriteOffsets[part << 1] + x;
         t = gHitSparkOffsets[i * 2];
         t += u;
-        gSpriteEntries[slot + i].unk2 = t & 0x1FF;
+        gSpriteEntries[slot + i].x = t & 0x1FF;
         u = gPartSpriteOffsets[part * 2 + 1] + y;
         t = gHitSparkOffsets[i * 2 + 1];
         t += u;
-        gSpriteEntries[slot + i].unk4 = t & 0xFF;
+        gSpriteEntries[slot + i].y = t & 0xFF;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[29], slot + i);
     }
 }
@@ -156,10 +156,10 @@ u32 hit_sparks_update(u32 slot) {
     u8 n;
 
     for (i = 0; i <= 3; i++) {
-        if (gSpriteEntries[slot + i].unk0 != 0) {
+        if (gSpriteEntries[slot + i].flags != 0) {
             if (gSpriteEntries[slot + i].unk2C == 0) {
-                gSpriteEntries[slot + i].unk0 |= 0x8004;
-                gSpriteEntries[slot + i].unkA = 0xE;
+                gSpriteEntries[slot + i].flags |= 0x8004;
+                gSpriteEntries[slot + i].palette = 0xE;
                 process_sprite_anim_commands(gBattleSpriteAnimScripts[29], n = slot + i);
                 if (gSpriteEntries[slot + i].unk22 == 0xFF)
                     clear_battle_sprite_slot(n, 1);
@@ -181,29 +181,29 @@ void damage_digits_spawn(u8 *digits, u32 slot, u32 part, s16 x, s16 y) {
     for (; i <= 4; i++) {
         if (digits[i] == 0xFE)
             return;
-        gSpriteEntries[slot + i].unk0 = 0xC624;
-        gSpriteEntries[slot + i].unk1C = 0;
+        gSpriteEntries[slot + i].flags = 0xC624;
+        gSpriteEntries[slot + i].frame_table = 0;
         t = x;
         t += gPartSpriteOffsets[part << 1];
-        gSpriteEntries[slot + i].unk2 = t & 0x1FF;
+        gSpriteEntries[slot + i].x = t & 0x1FF;
         u = y;
         u += gPartSpriteOffsets[part * 2 + 1];
-        gSpriteEntries[slot + i].unk4 = u & 0xFF;
-        gSpriteEntries[slot + i].unkB = 0x80;
-        gSpriteEntries[slot + i].unk6 = digits[i] + 0x2D00;
+        gSpriteEntries[slot + i].y = u & 0xFF;
+        gSpriteEntries[slot + i].order = 0x80;
+        gSpriteEntries[slot + i].frame = digits[i] + 0x2D00;
         gSpriteEntries[slot + i].unk23 = 0;
-        gSpriteEntries[slot + i].unk9 = 0x40;
-        gSpriteEntries[slot + i].unk8 = 0x40;
-        gSpriteEntries[slot + i].unkA = 0xE;
+        gSpriteEntries[slot + i].scale_y = 0x40;
+        gSpriteEntries[slot + i].scale_x = 0x40;
+        gSpriteEntries[slot + i].palette = 0xE;
         switch (digits[6]) {
         case 2:
-            gSpriteEntries[slot + i].unk2 = 0xFFFC + gSpriteEntries[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].x = 0xFFFC + gSpriteEntries[slot + i].x + i * 8;
             break;
         case 3:
-            gSpriteEntries[slot + i].unk2 = 0xFFF8 + gSpriteEntries[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].x = 0xFFF8 + gSpriteEntries[slot + i].x + i * 8;
             break;
         case 4:
-            gSpriteEntries[slot + i].unk2 = 0xFFF4 + gSpriteEntries[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].x = 0xFFF4 + gSpriteEntries[slot + i].x + i * 8;
             break;
         }
     }
@@ -216,27 +216,27 @@ void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 part, s16 x, s16 y) 
     for (; i <= 4; i++) {
         if (buf[i] == 0xFE)
             return;
-        gSpriteEntries[slot + i].unk0 = 0xC404;
-        gSpriteEntries[slot + i].unk1C = 0;
+        gSpriteEntries[slot + i].flags = 0xC404;
+        gSpriteEntries[slot + i].frame_table = 0;
         t = x;
         t += gPartSpriteOffsets[part << 1];
-        gSpriteEntries[slot + i].unk2 = t & 0x1FF;
+        gSpriteEntries[slot + i].x = t & 0x1FF;
         u = y;
         u += gPartSpriteOffsets[part * 2 + 1];
-        gSpriteEntries[slot + i].unk4 = u & 0xFF;
-        gSpriteEntries[slot + i].unkB = 0x80;
-        gSpriteEntries[slot + i].unk6 = buf[i] + 0x2D00;
+        gSpriteEntries[slot + i].y = u & 0xFF;
+        gSpriteEntries[slot + i].order = 0x80;
+        gSpriteEntries[slot + i].frame = buf[i] + 0x2D00;
         gSpriteEntries[slot + i].unk23 = 0;
-        gSpriteEntries[slot + i].unkA = 0xE;
+        gSpriteEntries[slot + i].palette = 0xE;
         switch (buf[6]) {
         case 2:
-            gSpriteEntries[slot + i].unk2 = 0xFFFC + gSpriteEntries[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].x = 0xFFFC + gSpriteEntries[slot + i].x + i * 8;
             break;
         case 3:
-            gSpriteEntries[slot + i].unk2 = 0xFFF8 + gSpriteEntries[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].x = 0xFFF8 + gSpriteEntries[slot + i].x + i * 8;
             break;
         case 4:
-            gSpriteEntries[slot + i].unk2 = 0xFFF4 + gSpriteEntries[slot + i].unk2 + i * 8;
+            gSpriteEntries[slot + i].x = 0xFFF4 + gSpriteEntries[slot + i].x + i * 8;
             break;
         }
     }
@@ -244,13 +244,13 @@ void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 part, s16 x, s16 y) 
 
 u32 advance_sprite_anim_frame(u32 sprite, u32 b) {
     s32 f;
-    if (!(gSpriteEntries[sprite].unk0 & 0x8000) || gSpriteEntries[sprite].unk23 == 0x10)
+    if (!(gSpriteEntries[sprite].flags & 0x8000) || gSpriteEntries[sprite].unk23 == 0x10)
         return 1;
-    gSpriteEntries[sprite].unk4 = (gSpriteEntries[sprite].unk4 + gSpriteHopYSteps[gSpriteEntries[sprite].unk23]) & 0xFF;
+    gSpriteEntries[sprite].y = (gSpriteEntries[sprite].y + gSpriteHopYSteps[gSpriteEntries[sprite].unk23]) & 0xFF;
     f = gSpriteEntries[sprite].unk23 + 1;
     gSpriteEntries[sprite].unk23 = f;
     if (b)
-        gSpriteEntries[sprite].unk9 = f * 4 + 0x40;
+        gSpriteEntries[sprite].scale_y = f * 4 + 0x40;
     return 0;
 }
 
@@ -319,13 +319,13 @@ void effect_sprite_spawn_at_part(u32 slot, u32 part, s16 x, s16 y, u32 n) {
     clear_battle_sprite_slot(slot, 1);
     base = gSpriteEntries;
     s = &base[slot];
-    s->unk0 = 0xC404;
-    s->unk1C = 0;
-    s->unkA = 0xE;
-    s->unkB = 0x80;
+    s->flags = 0xC404;
+    s->frame_table = 0;
+    s->palette = 0xE;
+    s->order = 0x80;
     t1 = gPartSpriteOffsets[part << 1] + x;
-    s->unk2 = t1 & 0x1FF;
+    s->x = t1 & 0x1FF;
     t2 = gPartSpriteOffsets[part * 2 + 1] + y;
-    s->unk4 = t2 & 0xFF;
+    s->y = t2 & 0xFF;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[n], slot);
 }

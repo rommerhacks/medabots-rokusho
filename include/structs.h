@@ -356,25 +356,28 @@ struct GameWork {
     u8 unk13A;
 };
 
+// One of the 128 hardware sprite objects (gSpriteEntries); build_sprite_oam turns the enabled ones into OAM
+// each frame. Bytes 0x1A and 0x20-0x3F are per-module work space (animation counters, angles, timers...).
 struct SpriteEntry {
-    u16 unk0;
-    s16 unk2;
-    s16 unk4;
-    u16 unk6; // animation frame
-    u8 unk8;
-    u8 unk9;
-    u8 unkA;
-    u8 unkB;
-    u32 unkC_0 : 8;  // x, 24.8 fixed point: fraction
-    s32 unkC_8 : 24; // integer part
-    u32 unk10_0 : 8; // y, 24.8 fixed point
-    s32 unk10_8 : 24;
-    u32 unk14_0 : 8; // z / depth, 24.8 fixed point
-    s32 unk14_8 : 24;
-    u16 unk18;
+    u16 flags;          // SPRITE_FLAG_*: enabled, visible, flips, OBJ priority (bits 10-11), affine, position mode
+    s16 x;              // screen x (written by build_sprite_oam in the world / perspective position modes)
+    s16 y;              // screen y
+    u16 frame;          // frame set (high byte) and frame (low byte) in the frame_table tables
+    u8 scale_x;         // affine scale, 0x40 = 1.0
+    u8 scale_y;         // affine scale, 0x40 = 1.0
+    u8 palette;         // OBJ palette (attribute 2 bits 12-15)
+    u8 order;           // draw order: entries are sorted by it, lowest first
+    u32 pos_x_frac : 8; // world x, 24.8 fixed point: fraction
+    s32 pos_x : 24;     // integer part
+    u32 pos_y_frac : 8; // world y, 24.8 fixed point
+    s32 pos_y : 24;
+    u32 pos_z_frac : 8; // world z / depth, 24.8 fixed point
+    s32 pos_z : 24;
+    u16 angle; // affine rotation, 1024 steps per turn
     u16 unk1A;
-    u8 unk1C;
-    u8 filler1D[0x3];
+    u8 frame_table; // low nibble: 0 gSpriteFrameSets, 1 gSpriteFrameSets1, 2 gMenuSpriteFrameSets, 3 gSpriteFrameSets3
+    u8 affine_idx;  // shared affine matrix (SPRITE_POS_SHARED_AFFINE mode)
+    u8 filler1E[0x2];
     u8 unk20; // animation state (0-3)
     u8 unk21;
     u8 unk22; // position in the animation script (advance_sprite_animation_frame)
@@ -390,7 +393,7 @@ struct SpriteEntry {
     u8 unk2C;
     u8 unk2D;
     u8 unk2E; // on screen
-    u8 unk2F;
+    u8 unk2F; // field: added to the frames of animation command 0xFFFA (advance_sprite_animation_frame)
     u16 unk30;
     u16 unk32;
     u16 unk34; // frame target unk1A counts up to (weekly_set_sprite_effect)
@@ -1840,7 +1843,7 @@ struct LinkRow256 {
     u8 b[256];
 };
 
-// One OAM part of a sprite frame (frame tables gSpriteFrameSets etc., read by check_flag_and_fast_copy).
+// One OAM part of a sprite frame (frame tables gSpriteFrameSets etc., read by build_sprite_oam).
 struct SpritePart {
     u8 shape;
     u8 size;

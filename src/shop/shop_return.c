@@ -9,7 +9,7 @@ void shop_return_init(void) {
     shop_highlight_part_type_icon(gMenuWork->part_kind, 8);
     clear_battle_sprite_slot(0, 0x80);
     for (i = 0; i < 4; i++)
-        gSpriteEntries[12 + i].unk0 &= 0xBFFF;
+        gSpriteEntries[12 + i].flags &= 0xBFFF;
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F800, 8);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
@@ -23,12 +23,12 @@ void shop_return_init(void) {
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
-    gSpriteEntries[7].unk0 = 0xC000;
-    gSpriteEntries[7].unk1C = 2;
-    gSpriteEntries[7].unkA = 1;
-    gSpriteEntries[7].unk6 = 0x1A;
-    gSpriteEntries[7].unk2 = 0x98;
-    gSpriteEntries[7].unk4 = 0;
+    gSpriteEntries[7].flags = 0xC000;
+    gSpriteEntries[7].frame_table = 2;
+    gSpriteEntries[7].palette = 1;
+    gSpriteEntries[7].frame = 0x1A;
+    gSpriteEntries[7].x = 0x98;
+    gSpriteEntries[7].y = 0;
     divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
     render_text_sprites_08040DB8(gGameWork.textBuf, 0, 0x15, 1, 7, 0xF, 1, 0);
 }

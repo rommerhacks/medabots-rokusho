@@ -34,28 +34,28 @@ void set_target_sprite_position(u32 rec, u32 dir, u32 axis) {
     if (axis == 0) {
         switch ((dir & 6) >> 1) {
         case 1:
-            gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.botPositions[rec].x + 1;
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y;
+            gSpriteEntries[rec * 4 + 0x5D].x = gBattleWork.botPositions[rec].x + 1;
+            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y;
             break;
         case 3:
-            gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.botPositions[rec].x - 1;
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y;
+            gSpriteEntries[rec * 4 + 0x5D].x = gBattleWork.botPositions[rec].x - 1;
+            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y;
             break;
         default:
-            gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.botPositions[rec].x;
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y;
+            gSpriteEntries[rec * 4 + 0x5D].x = gBattleWork.botPositions[rec].x;
+            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y;
             break;
         }
     } else {
         switch ((dir & 6) >> 1) {
         case 1:
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y - 2;
+            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y - 2;
             break;
         case 3:
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y;
+            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y;
             break;
         default:
-            gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y - 1;
+            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y - 1;
             break;
         }
     }
@@ -64,17 +64,17 @@ void set_target_sprite_position(u32 rec, u32 dir, u32 axis) {
 
 // Places the three marker sprites above, left of and right of the target cursor sprite (rec * 4 + 0x5D).
 void target_cursor_place_markers(u32 rec) {
-    gSpriteEntries[rec * 4 + 0x5A].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2;
-    gSpriteEntries[rec * 4 + 0x5A].unk4 = gSpriteEntries[rec * 4 + 0x5D].unk4 - 8;
-    gSpriteEntries[rec * 4 + 0x5B].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 - 8;
-    gSpriteEntries[rec * 4 + 0x5B].unk4 = gSpriteEntries[rec * 4 + 0x5D].unk4;
-    gSpriteEntries[rec * 4 + 0x5C].unk2 = gSpriteEntries[rec * 4 + 0x5D].unk2 + 8;
-    gSpriteEntries[rec * 4 + 0x5C].unk4 = gSpriteEntries[rec * 4 + 0x5D].unk4;
+    gSpriteEntries[rec * 4 + 0x5A].x = gSpriteEntries[rec * 4 + 0x5D].x;
+    gSpriteEntries[rec * 4 + 0x5A].y = gSpriteEntries[rec * 4 + 0x5D].y - 8;
+    gSpriteEntries[rec * 4 + 0x5B].x = gSpriteEntries[rec * 4 + 0x5D].x - 8;
+    gSpriteEntries[rec * 4 + 0x5B].y = gSpriteEntries[rec * 4 + 0x5D].y;
+    gSpriteEntries[rec * 4 + 0x5C].x = gSpriteEntries[rec * 4 + 0x5D].x + 8;
+    gSpriteEntries[rec * 4 + 0x5C].y = gSpriteEntries[rec * 4 + 0x5D].y;
 }
 
 void update_target_cursor_position(u32 rec) {
-    gSpriteEntries[rec * 4 + 0x5D].unk2 = gBattleWork.botPositions[rec].x;
-    gSpriteEntries[rec * 4 + 0x5D].unk4 = gBattleWork.botPositions[rec].y + 4;
+    gSpriteEntries[rec * 4 + 0x5D].x = gBattleWork.botPositions[rec].x;
+    gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y + 4;
     target_cursor_place_markers(rec);
 }
 
@@ -127,10 +127,10 @@ u32 sprite_move_toward_target(u32 slot, s16 x, s16 y) {
     s->unk25 += gSpriteSpeedSteps[s->unk30];
     step = s->unk25;
     s->unk25 = step % 4;
-    pos = ((step >> 2) + (u16)s->unk4) & 0xFF;
-    s->unk4 = pos;
+    pos = ((step >> 2) + (u16)s->y) & 0xFF;
+    s->y = pos;
     if ((s32)pos >= x && (s32)pos <= y) {
-        s->unk4 = x;
+        s->y = x;
         return 1;
     }
     gSpriteEntries[slot].unk30 += gSpriteEntries[slot].unk24;
@@ -148,10 +148,10 @@ u32 update_sprite_deceleration(u32 slot, s16 a, s16 b) {
     *frac = *frac + gSpriteSpeedSteps[0xFF - s->unk30];
     step = *frac;
     *frac &= 3;
-    pos = (u16)s->unk4 - (step >> 2);
-    s->unk4 = pos;
-    if (s->unk4 >= a && s->unk4 <= b) {
-        s->unk4 = b;
+    pos = (u16)s->y - (step >> 2);
+    s->y = pos;
+    if (s->y >= a && s->y <= b) {
+        s->y = b;
         return 1;
     }
     gSpriteEntries[slot].unk30 += gSpriteEntries[slot].unk24;
@@ -163,13 +163,13 @@ u32 update_sprite_deceleration(u32 slot, s16 a, s16 b) {
 void sprite_shake_x_step(u32 slot, u32 frame, u32 y) {
     switch ((frame & 6) >> 1) {
     case 1:
-        gSpriteEntries[slot].unk2 = y + 1;
+        gSpriteEntries[slot].x = y + 1;
         break;
     case 3:
-        gSpriteEntries[slot].unk2 = y - 1;
+        gSpriteEntries[slot].x = y - 1;
         break;
     default:
-        gSpriteEntries[slot].unk2 = y;
+        gSpriteEntries[slot].x = y;
         break;
     }
 }
@@ -182,8 +182,8 @@ void bg3_shake_step(u32 a) {
 }
 
 u32 sprite_hop_step(u32 slot) {
-    if ((gSpriteEntries[slot].unk0 & 0x8000) && gSpriteEntries[slot].unk23 != 0x20) {
-        gSpriteEntries[slot].unk4 = (gSpriteEntries[slot].unk4 + gSpriteHopOffsets[gSpriteEntries[slot].unk23]) & 0xFF;
+    if ((gSpriteEntries[slot].flags & 0x8000) && gSpriteEntries[slot].unk23 != 0x20) {
+        gSpriteEntries[slot].y = (gSpriteEntries[slot].y + gSpriteHopOffsets[gSpriteEntries[slot].unk23]) & 0xFF;
         gSpriteEntries[slot].unk23++;
         return 0;
     }
@@ -191,13 +191,13 @@ u32 sprite_hop_step(u32 slot) {
 }
 
 static void battle_sprite_blink_update(u32 slot, u8 *counter, u8 *n) {
-    gSpriteEntries[slot].unk0 |= 0x8000;
+    gSpriteEntries[slot].flags |= 0x8000;
     if (*n == 0) {
         if (++*counter & 1)
-            gSpriteEntries[slot].unk0 &= 0x7FFF;
+            gSpriteEntries[slot].flags &= 0x7FFF;
     } else if (*counter == *n) {
         *counter = 0;
-        gSpriteEntries[slot].unk0 &= 0x7FFF;
+        gSpriteEntries[slot].flags &= 0x7FFF;
         (*n)--;
     } else {
         (*counter)++;
@@ -212,16 +212,16 @@ void battle_target_nearest_enemy(u32 rec) {
     if (rec <= 2) {
         best_x = 0xFF;
         for (i = 5, best = 5; i > 2; i--) {
-            if (gBattleBots[i].teamState != 0 && gSpriteEntries[i * 4 + 0x5D].unk2 < best_x) {
-                best_x = gSpriteEntries[i * 4 + 0x5D].unk2;
+            if (gBattleBots[i].teamState != 0 && gSpriteEntries[i * 4 + 0x5D].x < best_x) {
+                best_x = gSpriteEntries[i * 4 + 0x5D].x;
                 best = i;
             }
         }
     } else {
         best_x = 0;
         for (i = 2, best = 2; i >= 0; i--) {
-            if (gBattleBots[i].teamState != 0 && gSpriteEntries[i * 4 + 0x5D].unk2 > best_x) {
-                best_x = gSpriteEntries[i * 4 + 0x5D].unk2;
+            if (gBattleBots[i].teamState != 0 && gSpriteEntries[i * 4 + 0x5D].x > best_x) {
+                best_x = gSpriteEntries[i * 4 + 0x5D].x;
                 best = i;
             }
         }
@@ -265,16 +265,15 @@ void battle_load_action_target(u32 rec) {
 u32 move_sprite_toward_target(u32 slot) {
     u32 ret;
 
-    if (gSpriteEntries[slot].unk2 == gSpriteEntries[slot].unk30 &&
-        gSpriteEntries[slot].unk4 == gSpriteEntries[slot].unk32)
+    if (gSpriteEntries[slot].x == gSpriteEntries[slot].unk30 && gSpriteEntries[slot].y == gSpriteEntries[slot].unk32)
         ret = 1;
     else {
-        gSpriteEntries[slot].unk25 = calculate_direction_index(gSpriteEntries[slot].unk2, gSpriteEntries[slot].unk4,
+        gSpriteEntries[slot].unk25 = calculate_direction_index(gSpriteEntries[slot].x, gSpriteEntries[slot].y,
                                                                gSpriteEntries[slot].unk30, gSpriteEntries[slot].unk32);
         update_sprite_animation_position(slot);
         if (check_sprite_in_range(slot)) {
-            gSpriteEntries[slot].unk2 = gSpriteEntries[slot].unk30;
-            gSpriteEntries[slot].unk4 = gSpriteEntries[slot].unk32;
+            gSpriteEntries[slot].x = gSpriteEntries[slot].unk30;
+            gSpriteEntries[slot].y = gSpriteEntries[slot].unk32;
             ret = 1;
         } else
             ret = 0;
@@ -283,8 +282,8 @@ u32 move_sprite_toward_target(u32 slot) {
 }
 
 static u32 check_sprite_in_range(u32 slot) {
-    s32 y = gSpriteEntries[slot].unk2;
-    s32 x = gSpriteEntries[slot].unk4;
+    s32 y = gSpriteEntries[slot].x;
+    s32 x = gSpriteEntries[slot].y;
     u16 tx = gSpriteEntries[slot].unk30;
     u16 ty = gSpriteEntries[slot].unk32;
     if (ty - 2 <= x && ty + 2 >= x && tx - 2 <= y && tx + 2 >= y)
@@ -294,29 +293,29 @@ static u32 check_sprite_in_range(u32 slot) {
 
 // Turns on the affine flag (0x200, see build_oam) at scale 0x40 (1.0) on both axes.
 void sprite_enable_affine_unit_scale(u32 slot) {
-    gSpriteEntries[slot].unk0 |= 0x200;
-    gSpriteEntries[slot].unk8 = 0x40;
-    gSpriteEntries[slot].unk9 = 0x40;
+    gSpriteEntries[slot].flags |= 0x200;
+    gSpriteEntries[slot].scale_x = 0x40;
+    gSpriteEntries[slot].scale_y = 0x40;
 }
 
 void sprite_disable_affine(u32 slot) {
-    gSpriteEntries[slot].unk0 &= ~0x200;
+    gSpriteEntries[slot].flags &= ~0x200;
 }
 
 void check_sprite_overlap_and_adjust(u32 a, u32 b) {
     struct SpriteEntry *base = gSpriteEntries;
     struct SpriteEntry *sa = &base[a];
     struct SpriteEntry *sb;
-    s32 y = sa->unk4;
+    s32 y = sa->y;
 
-    if ((u32)y > 0x9F || y + 8 <= (sb = &base[b])->unk4 - 0x20)
-        clear_sprite_table_mask(b, 1);
+    if ((u32)y > 0x9F || y + 8 <= (sb = &base[b])->y - 0x20)
+        disable_sprites(b, 1);
     else {
         s32 d;
-        set_sprite_hidden_flags(b, 1);
-        d = (u8)sb->unk4 - 8;
-        sb->unk8 = 0x40 - (d - (u8)sa->unk4) * 2;
-        sb->unk9 = 0x40 - (d - (u8)sa->unk4) * 2;
+        enable_sprites(b, 1);
+        d = (u8)sb->y - 8;
+        sb->scale_x = 0x40 - (d - (u8)sa->y) * 2;
+        sb->scale_y = 0x40 - (d - (u8)sa->y) * 2;
     }
 }
 

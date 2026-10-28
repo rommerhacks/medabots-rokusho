@@ -100,8 +100,8 @@ void load_map_npc_sprites(s32 mode) {
                 anim = e->unk4 >> 4;
                 gEntityStates[count + 49].active = e->unk2 & 0xFFF;
                 gSpriteEntries[count + 49].unk2B = anim;
-                gSpriteEntries[count + 49].unkC_8 = e->x * 16 + gFieldWork.map_origin_x;
-                gSpriteEntries[count + 49].unk10_8 = e->y * 16 + gFieldWork.map_origin_y;
+                gSpriteEntries[count + 49].pos_x = e->x * 16 + gFieldWork.map_origin_x;
+                gSpriteEntries[count + 49].pos_y = e->y * 16 + gFieldWork.map_origin_y;
                 set_sprite_anim_and_store(count + 49, e->unk4 & 0xF, &gFieldWork.objects[n]);
                 sprite_anim_start(count + 49, anim * 4 + (e->unk4 & 0xF));
                 if (mode != 0 && found) {
@@ -109,10 +109,10 @@ void load_map_npc_sprites(s32 mode) {
                     sprite_anim_start(count + 49, saved[j].unk5 + anim * 4);
                 }
                 gSpriteEntries[count + 49].unk2C = 0;
-                gSpriteEntries[count + 91].unkC_8 = gSpriteEntries[count + 49].unkC_8;
-                gSpriteEntries[count + 91].unk10_8 = gSpriteEntries[count + 49].unk10_8 - 5;
-                gSpriteEntries[count + 91].unk2 = gSpriteEntries[count + 49].unk2;
-                gSpriteEntries[count + 91].unk4 = gSpriteEntries[count + 49].unk4 - 5;
+                gSpriteEntries[count + 91].pos_x = gSpriteEntries[count + 49].pos_x;
+                gSpriteEntries[count + 91].pos_y = gSpriteEntries[count + 49].pos_y - 5;
+                gSpriteEntries[count + 91].x = gSpriteEntries[count + 49].x;
+                gSpriteEntries[count + 91].y = gSpriteEntries[count + 49].y - 5;
             }
             count++;
         next:
@@ -140,18 +140,18 @@ void init_battle_field_setup(void) {
     sprite_entry_init(47, 0xC804, 3, 0, 1);
     field_set_player_facing(gFieldWork.player_facing);
     follower_turn_toward_player(3);
-    gSpriteEntries[47].unkB = 0x40;
+    gSpriteEntries[47].order = 0x40;
     LZ77UnCompVram(gShadowTilesLz, (void *)0x06017FC0);
     sprite_entry_init(89, 0xCC0C, 0x90, 14, 1);
-    gSpriteEntries[89].unkC_8 = gFieldWork.player_x;
-    gSpriteEntries[89].unk10_8 = gFieldWork.player_y - 5;
-    gSpriteEntries[89].unk2 = gSpriteEntries[47].unk2;
-    gSpriteEntries[89].unk4 = gSpriteEntries[47].unk4 - 5;
+    gSpriteEntries[89].pos_x = gFieldWork.player_x;
+    gSpriteEntries[89].pos_y = gFieldWork.player_y - 5;
+    gSpriteEntries[89].x = gSpriteEntries[47].x;
+    gSpriteEntries[89].y = gSpriteEntries[47].y - 5;
     if (gFieldWork.player_visible) {
-        gSpriteEntries[47].unk0 = 0xC804;
+        gSpriteEntries[47].flags = 0xC804;
     } else {
-        gSpriteEntries[47].unk0 = 0;
-        gSpriteEntries[89].unk0 = 0;
+        gSpriteEntries[47].flags = 0;
+        gSpriteEntries[89].flags = 0;
     }
 }
 

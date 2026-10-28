@@ -22,25 +22,25 @@ static void medal_transform_update_sparkles(void) {
         t = s->unk1A;
         j = k;
         if (t == 0) {
-            s->unk2 = 0x78;
-            s->unk4 = 0x28;
-            s->unkC_8 = s->unk2 << 8;
-            s->unk10_8 = s->unk4 << 8;
-            s->unkC_0 = rng_next_byte();
-            s->unk10_0 = rng_next_byte();
+            s->x = 0x78;
+            s->y = 0x28;
+            s->pos_x = s->x << 8;
+            s->pos_y = s->y << 8;
+            s->pos_x_frac = rng_next_byte();
+            s->pos_y_frac = rng_next_byte();
             s->unk1A = 0x3F;
-            s->unk8 = 0;
-            s->unk9 = 0;
-            s->unk0 &= ~8;
+            s->scale_x = 0;
+            s->scale_y = 0;
+            s->flags &= ~8;
         } else {
             if (--s->unk1A <= 0xF)
-                s->unk0 |= 8;
-            s->unkC_8 += ((s8 *)s)[0xC] * 4;
-            s->unk10_8 += ((s8 *)s)[0x10] * 4;
-            s->unk2 = s->unkC_8 >> 8;
-            s->unk4 = s->unk10_8 >> 8;
-            s->unk8 = 0x40 - (u8)s->unk1A;
-            s->unk9 = 0x40 - (u8)s->unk1A;
+                s->flags |= 8;
+            s->pos_x += ((s8 *)s)[0xC] * 4;
+            s->pos_y += ((s8 *)s)[0x10] * 4;
+            s->x = s->pos_x >> 8;
+            s->y = s->pos_y >> 8;
+            s->scale_x = 0x40 - (u8)s->unk1A;
+            s->scale_y = 0x40 - (u8)s->unk1A;
         }
     }
     REG_BLDCNT = 0xC40;
@@ -96,14 +96,14 @@ void medal_transform_init(void) {
     CpuFastSet(pal, (void *)0x0202F860, 8);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     for (i = 0; i < 16; i++) {
-        gSpriteEntries[i + 1].unk0 = 0xCA00;
-        gSpriteEntries[i + 1].unk2 = 0x78;
-        gSpriteEntries[i + 1].unk4 = 0x28;
-        gSpriteEntries[i + 1].unk1C = 2;
-        gSpriteEntries[i + 1].unkA = 3;
-        gSpriteEntries[i + 1].unk6 = 0x117;
-        gSpriteEntries[i + 1].unk8 = 0x40;
-        gSpriteEntries[i + 1].unk9 = 0x40;
+        gSpriteEntries[i + 1].flags = 0xCA00;
+        gSpriteEntries[i + 1].x = 0x78;
+        gSpriteEntries[i + 1].y = 0x28;
+        gSpriteEntries[i + 1].frame_table = 2;
+        gSpriteEntries[i + 1].palette = 3;
+        gSpriteEntries[i + 1].frame = 0x117;
+        gSpriteEntries[i + 1].scale_x = 0x40;
+        gSpriteEntries[i + 1].scale_y = 0x40;
         gSpriteEntries[i + 1].unk1A = (i & 3) << 4;
     }
     REG_BLDCNT = 0xC40;
@@ -123,15 +123,15 @@ void medal_transform_draw_medal(void) {
     lz_decompress_dispatch(gMedalSpriteGfx[id][fr], (void *)0x06010000);
     s = gSpriteEntries;
     zero = 0;
-    s->unk0 = 0xCA04;
-    s->unk2 = 0x78;
-    s->unk4 = 0x28;
-    s->unk6 = 0x200;
-    s->unkA = zero;
-    s->unk1C = zero;
-    s->unkB = 0x40;
-    s->unk8 = 0x40;
-    s->unk9 = 0x40;
+    s->flags = 0xCA04;
+    s->x = 0x78;
+    s->y = 0x28;
+    s->frame = 0x200;
+    s->palette = zero;
+    s->frame_table = zero;
+    s->order = 0x40;
+    s->scale_x = 0x40;
+    s->scale_y = 0x40;
     for (i = 0; i < 16; i++) {
         gTextArgBuffer[i] = ((const u8 *)gMedalNames[gMedals[gCurrentMedalSlot].graphicId])[i];
         if (gTextArgBuffer[i] == 0xFE)

@@ -131,40 +131,40 @@ void shop_menu_init(void) {
     zero = 0;
     CpuFastSet(&zero, (void *)0x0600DA80, 0x01000080);
     clear_battle_sprite_slot(0, 0x80);
-    gSpriteEntries[8].unk0 = 0x8004;
-    gSpriteEntries[8].unk1C = 0;
-    gSpriteEntries[8].unkA = 0xE;
-    gSpriteEntries[8].unk6 = 0x307;
-    gSpriteEntries[8].unk2 = 8;
-    gSpriteEntries[8].unk4 = gMenuWork->cursor * 24 + 0x20;
-    gSpriteEntries[8].unk0 |= 0x1200;
-    gSpriteEntries[8].unk8 = 0x40;
-    gSpriteEntries[8].unk9 = 0x40;
-    gSpriteEntries[7].unk0 = 0xC000;
-    gSpriteEntries[7].unk1C = 2;
-    gSpriteEntries[7].unkA = 1;
-    gSpriteEntries[7].unk6 = 0x1A;
-    gSpriteEntries[7].unk2 = 0x98;
-    gSpriteEntries[7].unk4 = 0;
+    gSpriteEntries[8].flags = 0x8004;
+    gSpriteEntries[8].frame_table = 0;
+    gSpriteEntries[8].palette = 0xE;
+    gSpriteEntries[8].frame = 0x307;
+    gSpriteEntries[8].x = 8;
+    gSpriteEntries[8].y = gMenuWork->cursor * 24 + 0x20;
+    gSpriteEntries[8].flags |= 0x1200;
+    gSpriteEntries[8].scale_x = 0x40;
+    gSpriteEntries[8].scale_y = 0x40;
+    gSpriteEntries[7].flags = 0xC000;
+    gSpriteEntries[7].frame_table = 2;
+    gSpriteEntries[7].palette = 1;
+    gSpriteEntries[7].frame = 0x1A;
+    gSpriteEntries[7].x = 0x98;
+    gSpriteEntries[7].y = 0;
     for (i = 0; i < 4; i++) {
-        gSpriteEntries[i + 12].unk0 = 0x8000;
-        gSpriteEntries[i + 12].unk1C = 2;
-        gSpriteEntries[i + 12].unkA = 0;
+        gSpriteEntries[i + 12].flags = 0x8000;
+        gSpriteEntries[i + 12].frame_table = 2;
+        gSpriteEntries[i + 12].palette = 0;
     }
-    gSpriteEntries[13].unk0 |= 0x1000;
-    gSpriteEntries[15].unk0 |= 0x2000;
-    gSpriteEntries[13].unk6 = 5;
-    gSpriteEntries[14].unk6 = 5;
-    gSpriteEntries[12].unk6 = 8;
-    gSpriteEntries[15].unk6 = 8;
-    gSpriteEntries[13].unk2 = 0x48;
-    gSpriteEntries[13].unk4 = 0x2C;
-    gSpriteEntries[14].unk2 = 0x58;
-    gSpriteEntries[14].unk4 = 0x2C;
-    gSpriteEntries[12].unk2 = 0x50;
-    gSpriteEntries[12].unk4 = 0x22;
-    gSpriteEntries[15].unk2 = 0x50;
-    gSpriteEntries[15].unk4 = 0x3E;
+    gSpriteEntries[13].flags |= 0x1000;
+    gSpriteEntries[15].flags |= 0x2000;
+    gSpriteEntries[13].frame = 5;
+    gSpriteEntries[14].frame = 5;
+    gSpriteEntries[12].frame = 8;
+    gSpriteEntries[15].frame = 8;
+    gSpriteEntries[13].x = 0x48;
+    gSpriteEntries[13].y = 0x2C;
+    gSpriteEntries[14].x = 0x58;
+    gSpriteEntries[14].y = 0x2C;
+    gSpriteEntries[12].x = 0x50;
+    gSpriteEntries[12].y = 0x22;
+    gSpriteEntries[15].x = 0x50;
+    gSpriteEntries[15].y = 0x3E;
     divide_by_10000(gTextArgBuffer, gPlayerRecord.money);
     render_text_sprites_08040DB8(gTextArgBuffer, 0, 0x15, 1, 7, 0xF, 1, 0);
     gGameSubState++;
@@ -215,7 +215,7 @@ void shop_menu_fade_in(void) {
             (*n)++;
         } else {
             gMenuWork->timer = 0;
-            gSpriteEntries[8].unk0 |= 0x4000;
+            gSpriteEntries[8].flags |= 0x4000;
             text_window_init(1, 0, 0);
             gMenuWork->timer = 0;
             gMenuWork->fade_level = 0;
@@ -229,14 +229,14 @@ void shop_menu_greeting(void) {
 
     shop_copy_text_with_portrait(buf, gShopGreetingText);
     if (run_message(buf)) {
-        gSpriteEntries[8].unk0 |= 0x4000;
+        gSpriteEntries[8].flags |= 0x4000;
         gGameSubState++;
     }
 }
 
 // State 5: Buy / Sell / Exit cursor (unk5 = 0 / 1 / 2). Buy and Sell -> 8, Exit or B -> 6.
 void shop_menu_choose_action(void) {
-    sprite_bob_y(8, gFrameCounter, 8);
+    sprite_bob_x(8, gFrameCounter, 8);
     if (KEYS_LO(gRepeatKeys) & 0x40) {
         play_sound_effect(2);
         if (gMenuWork->cursor != 0)
@@ -251,7 +251,7 @@ void shop_menu_choose_action(void) {
         else
             gMenuWork->cursor = 0;
     }
-    gSpriteEntries[8].unk4 = gMenuWork->cursor * 24 + 0x20;
+    gSpriteEntries[8].y = gMenuWork->cursor * 24 + 0x20;
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         switch (gMenuWork->cursor) {
@@ -306,18 +306,18 @@ void shop_menu_fade_out_exit(void) {
 void shop_menu_open_part_types(void) {
     u8 t = gMenuWork->timer++;
 
-    if (gSpriteEntries[8].unk8 > 4) {
-        gSpriteEntries[8].unk8 -= 4;
-        gSpriteEntries[8].unk9 -= 4;
+    if (gSpriteEntries[8].scale_x > 4) {
+        gSpriteEntries[8].scale_x -= 4;
+        gSpriteEntries[8].scale_y -= 4;
     } else {
-        gSpriteEntries[8].unk0 &= 0xBFFF;
+        gSpriteEntries[8].flags &= 0xBFFF;
     }
     if (t <= 16) {
         REG_BLDALPHA = (t << 8) | (16 - t);
     } else {
         REG_BLDALPHA = 0x1000;
         REG_DISPCNT &= 0xFDFF;
-        gSpriteEntries[8].unk0 &= 0xBFFF;
+        gSpriteEntries[8].flags &= 0xBFFF;
         message_next();
         gGameSubState++;
     }
@@ -338,9 +338,9 @@ void shop_menu_choose_part_type(void) {
 
     for (i = 0; i < 4; i++) {
         if ((gFrameCounter >> 3) & 1)
-            gSpriteEntries[12 + i].unk0 |= 0x4000;
+            gSpriteEntries[12 + i].flags |= 0x4000;
         else if (gMenuWork->part_kind == i)
-            gSpriteEntries[12 + gMenuWork->part_kind].unk0 &= 0xBFFF;
+            gSpriteEntries[12 + gMenuWork->part_kind].flags &= 0xBFFF;
     }
     if (KEYS_LO(gNewKeys) & 0x40) {
         play_sound_effect(2);
@@ -367,7 +367,7 @@ void shop_menu_choose_part_type(void) {
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         for (i = 0; i < 4; i++)
-            gSpriteEntries[12 + i].unk0 |= 0x4000;
+            gSpriteEntries[12 + i].flags |= 0x4000;
         if (gMenuWork->part_kind == 4) {
         back:
             gGameSubState = 0xB;
@@ -379,9 +379,9 @@ void shop_menu_choose_part_type(void) {
     } else if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
         for (i = 0; i < 4; i++)
-            gSpriteEntries[12 + i].unk0 &= 0xBFFF;
+            gSpriteEntries[12 + i].flags &= 0xBFFF;
         REG_DISPCNT |= 0x200;
-        gSpriteEntries[8].unk0 |= 0x4000;
+        gSpriteEntries[8].flags |= 0x4000;
         gMenuWork->timer = 0x10;
         goto back;
     }
@@ -390,11 +390,11 @@ void shop_menu_choose_part_type(void) {
 void shop_menu_close_part_types(void) {
     u8 t = gMenuWork->timer--;
 
-    if (gSpriteEntries[8].unk8 < 0x40) {
-        gSpriteEntries[8].unk8 += 4;
-        gSpriteEntries[8].unk9 += 4;
+    if (gSpriteEntries[8].scale_x < 0x40) {
+        gSpriteEntries[8].scale_x += 4;
+        gSpriteEntries[8].scale_y += 4;
     } else {
-        gSpriteEntries[8].unk9 = 0x40;
+        gSpriteEntries[8].scale_y = 0x40;
     }
     if (t != 0) {
         REG_BLDALPHA = (t << 8) | (16 - t);
@@ -429,7 +429,7 @@ void shop_menu_fade_out_to_list(void) {
         (*n)++;
     } else {
         for (i = 0; i < 4; i++)
-            gSpriteEntries[12 + i].unk0 &= 0xBFFF;
+            gSpriteEntries[12 + i].flags &= 0xBFFF;
         gMenuWork->returning = 1;
         gMenuWork->list_cursor = 0;
         *(u8 *)0x02023078 = 0;

@@ -82,17 +82,17 @@ static void medal_trade_show_medal_sprite(u32 medal, u32 frame) {
     lz_decompress_dispatch(gMedalSpriteGfx[medal][frame], (void *)0x06010000);
     s = gSpriteEntries;
     zero = 0;
-    s->unk0 = 0x8A24;
+    s->flags = 0x8A24;
     if (gMenuWork->partner_chose == 0)
-        s->unk0 |= 0x4000;
-    s->unk2 = 0xB8;
-    s->unk4 = 0x38;
-    s->unk6 = 0x200;
-    s->unkA = zero;
-    s->unk1C = zero;
-    s->unkB = 0x40;
-    s->unk8 = 0x40;
-    s->unk9 = 0x40;
+        s->flags |= 0x4000;
+    s->x = 0xB8;
+    s->y = 0x38;
+    s->frame = 0x200;
+    s->palette = zero;
+    s->frame_table = zero;
+    s->order = 0x40;
+    s->scale_x = 0x40;
+    s->scale_y = 0x40;
 }
 
 // The trade screen's BG tile animation (two tile rows): frame from unk3A, which counts down, so the frames speed up.
@@ -302,12 +302,12 @@ void medapart_trade_init_screen(void) {
     load_medapart_sprite_animation(gMenuWork->own_part_id, gMenuWork->own_part_kind, 0);
     trade_tiles_speed_up_two_rows();
     init_blend_effect(gMenuWork->blend, 0x10, 0, -1, 0xC0);
-    gSpriteEntries[0x21].unk0 = 0x8000;
-    gSpriteEntries[0x21].unk1C = 2;
-    gSpriteEntries[0x21].unk2 = 0x28;
-    gSpriteEntries[0x21].unk4 = 0x40;
-    gSpriteEntries[0x21].unkA = 8;
-    gSpriteEntries[0x21].unk6 = 0x2A;
+    gSpriteEntries[0x21].flags = 0x8000;
+    gSpriteEntries[0x21].frame_table = 2;
+    gSpriteEntries[0x21].x = 0x28;
+    gSpriteEntries[0x21].y = 0x40;
+    gSpriteEntries[0x21].palette = 8;
+    gSpriteEntries[0x21].frame = 0x2A;
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
@@ -494,12 +494,12 @@ void medapart_trade_scroll_in(void) {
     load_medapart_sprite_animation(gMenuWork->partner_part_id, gMenuWork->partner_part_kind, 1);
     trade_tiles_slow_down_two_rows();
     if (gMenuWork->frame == 0) {
-        gSpriteEntries[0x21].unk0 = 0xC000;
-        gSpriteEntries[0x21].unk1C = 2;
-        gSpriteEntries[0x21].unk2 = 0x28;
-        gSpriteEntries[0x21].unk4 = 0x40;
-        gSpriteEntries[0x21].unkA = 8;
-        gSpriteEntries[0x21].unk6 = 0x2A;
+        gSpriteEntries[0x21].flags = 0xC000;
+        gSpriteEntries[0x21].frame_table = 2;
+        gSpriteEntries[0x21].x = 0x28;
+        gSpriteEntries[0x21].y = 0x40;
+        gSpriteEntries[0x21].palette = 8;
+        gSpriteEntries[0x21].frame = 0x2A;
         text_window_init(1, 0, 1);
         gGameSubState++;
     }
@@ -763,10 +763,10 @@ void medal_trade_flip_close(void) {
     if (t > 0xF) {
         gGameSubState++;
         if (s->partner_chose == 0) {
-            gSpriteEntries[0].unk0 &= 0xBFFF;
+            gSpriteEntries[0].flags &= 0xBFFF;
             return;
         }
-        gSpriteEntries[0].unk0 |= 0x4000;
+        gSpriteEntries[0].flags |= 0x4000;
         lvl = s->trade_medal.level;
         render_text_sprites_08040DB8(s->trade_medal.name, 0x20, 4, 4, 10, 2, 0, 1);
         for (i = 0; i <= 9; i++)
@@ -806,12 +806,12 @@ void medal_trade_flip_close(void) {
         return;
     }
     if (t <= 7)
-        gSpriteEntries[0].unk8 = 0x40 - (s16)s->ticks * 8;
+        gSpriteEntries[0].scale_x = 0x40 - (s16)s->ticks * 8;
     else
-        gSpriteEntries[0].unk8 = 1;
+        gSpriteEntries[0].scale_x = 1;
     if ((s16)gMenuWork->ticks > 1) {
-        gSpriteEntries[0].unk9 = (s16)gMenuWork->ticks * 4 + 0x38;
-        gSpriteEntries[0].unk4 = 0x38 - ((s16)gMenuWork->ticks - 2) * 8;
+        gSpriteEntries[0].scale_y = (s16)gMenuWork->ticks * 4 + 0x38;
+        gSpriteEntries[0].y = 0x38 - ((s16)gMenuWork->ticks - 2) * 8;
     }
 }
 
@@ -828,13 +828,13 @@ void medal_trade_flip_open(void) {
         return;
     }
     if (t <= 7)
-        gSpriteEntries[0].unk8 = 0x40 - (s16)s->ticks * 8;
+        gSpriteEntries[0].scale_x = 0x40 - (s16)s->ticks * 8;
     else
-        gSpriteEntries[0].unk8 = 1;
+        gSpriteEntries[0].scale_x = 1;
     s = gMenuWork;
     if ((s16)s->ticks > 1) {
-        gSpriteEntries[0].unk9 = (s16)s->ticks * 4 + 0x38;
-        gSpriteEntries[0].unk4 = 0x38 - ((s16)s->ticks - 2) * 8;
+        gSpriteEntries[0].scale_y = (s16)s->ticks * 4 + 0x38;
+        gSpriteEntries[0].y = 0x38 - ((s16)s->ticks - 2) * 8;
     }
 }
 

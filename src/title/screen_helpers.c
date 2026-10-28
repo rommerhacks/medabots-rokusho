@@ -9,9 +9,9 @@
 #define WAVE_X(a) (gSineTableQ14[(a) & 0x3FF] / d * amp >> 3)
 #define SET_WAVE_Y(k, a)                                                                                               \
     if (gSineTableQ14[(a) & 0x3FF] < 0)                                                                                \
-        spr[k].unk4 = WAVE_X(a) + mid;                                                                                 \
+        spr[k].y = WAVE_X(a) + mid;                                                                                    \
     else                                                                                                               \
-        spr[k].unk4 = mid - WAVE_X(a)
+        spr[k].y = mid - WAVE_X(a)
 
 static u32 sprite_wave_bob8(struct SpriteEntry *spr) {
     u32 done = 0;
@@ -31,9 +31,9 @@ static u32 sprite_wave_bob8(struct SpriteEntry *spr) {
     ph[7] = ph[0] - 0x380;
 
     if (gSineTableQ14[ph[7] & 0x3FF] < 0)
-        spr[0].unk4 = WAVE_X(ph[7]) + mid;
+        spr[0].y = WAVE_X(ph[7]) + mid;
     else
-        spr[0].unk4 = -WAVE_X(ph[7]) + mid;
+        spr[0].y = -WAVE_X(ph[7]) + mid;
     SET_WAVE_Y(1, ph[6]);
     SET_WAVE_Y(2, ph[5]);
     SET_WAVE_Y(3, ph[4]);
@@ -76,17 +76,17 @@ none:
 void update_battle_sprite_priority_flags(void) {
     if (gMenuWork->list_count > 4) {
         if ((*(u8 *)0x02023078) == 0)
-            gSpriteEntries[104].unk0 &= 0xBFFF;
+            gSpriteEntries[104].flags &= 0xBFFF;
         else if (gFrameCounter & 8)
-            gSpriteEntries[104].unk0 |= 0x4000;
+            gSpriteEntries[104].flags |= 0x4000;
         else
-            gSpriteEntries[104].unk0 &= 0xBFFF;
+            gSpriteEntries[104].flags &= 0xBFFF;
         if ((*(u8 *)0x02023078) + 3 == gMenuWork->list_count - 1)
-            gSpriteEntries[105].unk0 &= 0xBFFF;
+            gSpriteEntries[105].flags &= 0xBFFF;
         else if (gFrameCounter & 8)
-            gSpriteEntries[105].unk0 |= 0x4000;
+            gSpriteEntries[105].flags |= 0x4000;
         else
-            gSpriteEntries[105].unk0 &= 0xBFFF;
+            gSpriteEntries[105].flags &= 0xBFFF;
     }
 }
 

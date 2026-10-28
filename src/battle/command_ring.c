@@ -7,7 +7,7 @@ static void command_ring_init_icon_hidden(u32 a);
 static u32 command_ring_rotate_icon(u32 i, u32 dir);
 
 void command_ring_draw_name(void) {
-    clear_sprite_table_mask(30, 11);
+    disable_sprites(30, 11);
     memcpy_bytes_08041D04(gCommandRingNames[gBattleWork.ringSlot], gGameWork.textBuf, 12);
     render_text_sprites_08040DB8(gGameWork.textBuf, 30, 21, 17, 8, 14, 0, 1);
 }
@@ -23,24 +23,24 @@ void command_ring_init_icon(u32 i) {
     struct Vec16 p;
 
     clear_battle_sprite_slot(i, 1);
-    gSpriteEntries[i].unk0 = 0xC604;
+    gSpriteEntries[i].flags = 0xC604;
     k = i - gBattleWork.ringSlot;
     if (k > 5)
         k += 6;
     p = compute_polar_to_screen_position(gCommandRingIconAngles[k], 24, 120, 128, 8, 0);
-    gSpriteEntries[i].unk2 = p.x;
-    gSpriteEntries[i].unk4 = p.y;
-    gSpriteEntries[i].unk6 = i + 0x60C;
+    gSpriteEntries[i].x = p.x;
+    gSpriteEntries[i].y = p.y;
+    gSpriteEntries[i].frame = i + 0x60C;
     if (p.y > 0x87)
-        gSpriteEntries[i].unkA = 8;
+        gSpriteEntries[i].palette = 8;
     else if (p.y > 0x77)
-        gSpriteEntries[i].unkA = 9;
+        gSpriteEntries[i].palette = 9;
     else
-        gSpriteEntries[i].unkA = 10;
-    gSpriteEntries[i].unk1C = 0;
-    gSpriteEntries[i].unk9 = 0x40 - (0x90 - gSpriteEntries[i].unk4) / 2;
-    gSpriteEntries[i].unk8 = 0x40 - (0x90 - gSpriteEntries[i].unk4) / 2;
-    gSpriteEntries[i].unkB = gSpriteEntries[i].unk4 - 0x70;
+        gSpriteEntries[i].palette = 10;
+    gSpriteEntries[i].frame_table = 0;
+    gSpriteEntries[i].scale_y = 0x40 - (0x90 - gSpriteEntries[i].y) / 2;
+    gSpriteEntries[i].scale_x = 0x40 - (0x90 - gSpriteEntries[i].y) / 2;
+    gSpriteEntries[i].order = gSpriteEntries[i].y - 0x70;
     gSpriteEntries[i].unk20 = gCommandRingIconAngles[k];
     gSpriteEntries[i].unk21 = 0;
     gSpriteEntries[i].unk22 = 0;
@@ -57,24 +57,24 @@ static void command_ring_init_icon_hidden(u32 i) {
     struct Vec16 p;
 
     clear_battle_sprite_slot(i, 1);
-    gSpriteEntries[i].unk0 = 0xC604;
+    gSpriteEntries[i].flags = 0xC604;
     k = i - gBattleWork.ringSlot;
     if (k > 5)
         k += 6;
     p = compute_polar_to_screen_position(gCommandRingIconAngles[k], 24, 120, 128, 8, 0);
-    gSpriteEntries[i].unk2 = p.x;
-    gSpriteEntries[i].unk4 = p.y;
-    gSpriteEntries[i].unk6 = i + 0x60C;
+    gSpriteEntries[i].x = p.x;
+    gSpriteEntries[i].y = p.y;
+    gSpriteEntries[i].frame = i + 0x60C;
     if (p.y > 0x87)
-        gSpriteEntries[i].unkA = 8;
+        gSpriteEntries[i].palette = 8;
     else if (p.y > 0x77)
-        gSpriteEntries[i].unkA = 9;
+        gSpriteEntries[i].palette = 9;
     else
-        gSpriteEntries[i].unkA = 10;
-    gSpriteEntries[i].unk1C = 0;
-    gSpriteEntries[i].unk9 = 1;
-    gSpriteEntries[i].unk8 = 1;
-    gSpriteEntries[i].unkB = gSpriteEntries[i].unk4 - 0x70;
+        gSpriteEntries[i].palette = 10;
+    gSpriteEntries[i].frame_table = 0;
+    gSpriteEntries[i].scale_y = 1;
+    gSpriteEntries[i].scale_x = 1;
+    gSpriteEntries[i].order = gSpriteEntries[i].y - 0x70;
     gSpriteEntries[i].unk20 = gCommandRingIconAngles[k];
     gSpriteEntries[i].unk21 = 0;
     gSpriteEntries[i].unk22 = 0;
@@ -93,7 +93,7 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir) {
     u32 n;
     struct Vec16 p;
 
-    gSpriteEntries[i].unk0 &= ~0x20;
+    gSpriteEntries[i].flags &= ~0x20;
     if (dir == 0)
         n = gCommandRingNextSlotRight[gBattleWork.ringSlot];
     else
@@ -113,19 +113,19 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir) {
         gSpriteEntries[i].unk22 = 0;
     }
     p = compute_polar_to_screen_position(gSpriteEntries[i].unk20, 24, 120, 128, 8, 0);
-    gSpriteEntries[i].unk2 = p.x;
-    gSpriteEntries[i].unk4 = p.y;
-    gSpriteEntries[i].unk6 = i + 0x60C;
+    gSpriteEntries[i].x = p.x;
+    gSpriteEntries[i].y = p.y;
+    gSpriteEntries[i].frame = i + 0x60C;
     if (p.y > 0x87)
-        gSpriteEntries[i].unkA = 8;
+        gSpriteEntries[i].palette = 8;
     else if (p.y > 0x7B)
-        gSpriteEntries[i].unkA = 9;
+        gSpriteEntries[i].palette = 9;
     else
-        gSpriteEntries[i].unkA = 10;
-    gSpriteEntries[i].unk1C = 0;
-    gSpriteEntries[i].unk9 = 0x40 - (0x90 - gSpriteEntries[i].unk4) / 2;
-    gSpriteEntries[i].unk8 = 0x40 - (0x90 - gSpriteEntries[i].unk4) / 2;
-    gSpriteEntries[i].unkB = gSpriteEntries[i].unk4 - 0x70;
+        gSpriteEntries[i].palette = 10;
+    gSpriteEntries[i].frame_table = 0;
+    gSpriteEntries[i].scale_y = 0x40 - (0x90 - gSpriteEntries[i].y) / 2;
+    gSpriteEntries[i].scale_x = 0x40 - (0x90 - gSpriteEntries[i].y) / 2;
+    gSpriteEntries[i].order = gSpriteEntries[i].y - 0x70;
     return done;
 }
 
@@ -153,14 +153,14 @@ void command_ring_input(void) {
 
 void command_ring_pulse_selected(void) {
     if (gBattleWork.ringTurning == 0) {
-        gSpriteEntries[gBattleWork.ringSlot].unk0 |= 0x20;
+        gSpriteEntries[gBattleWork.ringSlot].flags |= 0x20;
         gSpriteEntries[gBattleWork.ringSlot].unk22++;
         if (gSpriteEntries[gBattleWork.ringSlot].unk22 & 8) {
-            gSpriteEntries[gBattleWork.ringSlot].unk9 = 0x50;
-            gSpriteEntries[gBattleWork.ringSlot].unk8 = 0x50;
+            gSpriteEntries[gBattleWork.ringSlot].scale_y = 0x50;
+            gSpriteEntries[gBattleWork.ringSlot].scale_x = 0x50;
         } else {
-            gSpriteEntries[gBattleWork.ringSlot].unk9 = 0x40;
-            gSpriteEntries[gBattleWork.ringSlot].unk8 = 0x40;
+            gSpriteEntries[gBattleWork.ringSlot].scale_y = 0x40;
+            gSpriteEntries[gBattleWork.ringSlot].scale_x = 0x40;
         }
     }
 }
@@ -174,13 +174,13 @@ void bot_pointer_line_init(u32 kind) {
 
     clear_battle_sprite_slot(60, 10);
     for (i = 0; i < (u32)count; i++) {
-        gSpriteEntries[60 + i].unk0 = 0xC404;
-        gSpriteEntries[60 + i].unk1C = 0;
-        gSpriteEntries[60 + i].unk2 = x;
-        gSpriteEntries[60 + i].unk4 = y;
-        gSpriteEntries[60 + i].unkA = 8;
-        gSpriteEntries[60 + i].unkB = 0x80;
-        gSpriteEntries[60 + i].unk6 = (i & 3) + 0x616;
+        gSpriteEntries[60 + i].flags = 0xC404;
+        gSpriteEntries[60 + i].frame_table = 0;
+        gSpriteEntries[60 + i].x = x;
+        gSpriteEntries[60 + i].y = y;
+        gSpriteEntries[60 + i].palette = 8;
+        gSpriteEntries[60 + i].order = 0x80;
+        gSpriteEntries[60 + i].frame = (i & 3) + 0x616;
         gSpriteEntries[60 + i].unk25 = speed;
         gSpriteEntries[60 + i].unk26 = count - 1 - i;
         gSpriteEntries[60 + i].unk24 = 0;
@@ -189,7 +189,7 @@ void bot_pointer_line_init(u32 kind) {
         gSpriteEntries[60 + i].unk21 = 0;
         gSpriteEntries[60 + i].unk22 = i & 3;
         if (kind > 2)
-            gSpriteEntries[60 + i].unk0 |= 0x1000;
+            gSpriteEntries[60 + i].flags |= 0x1000;
     }
 }
 
@@ -206,7 +206,7 @@ u32 bot_pointer_line_extend(u32 kind) {
             base = 0x16;
         gSpriteEntries[60 + i].unk21++;
         if ((gSpriteEntries[60 + i].unk21 & 3) == 0) {
-            gSpriteEntries[60 + i].unk6 =
+            gSpriteEntries[60 + i].frame =
                 base + ((gSpriteEntries[60 + i].unk22 = (gSpriteEntries[60 + i].unk22 + 1) & 3) | 0x600);
         }
         if (gSpriteEntries[60 + i].unk26 != gSpriteEntries[60 + i].unk24) {
@@ -216,11 +216,11 @@ u32 bot_pointer_line_extend(u32 kind) {
             else {
                 if (gSpriteEntries[60 + i].unk24 == 0) {
                     if (gSpriteEntries[60 + i].unk25)
-                        gSpriteEntries[60 + i].unk2 += 4;
+                        gSpriteEntries[60 + i].x += 4;
                     else
-                        gSpriteEntries[60 + i].unk2 -= 4;
+                        gSpriteEntries[60 + i].x -= 4;
                 } else
-                    gSpriteEntries[60 + i].unk4 += 4;
+                    gSpriteEntries[60 + i].y += 4;
                 gSpriteEntries[60 + i].unk28++;
                 if ((gSpriteEntries[60 + i].unk28 & 1) == 0)
                     gSpriteEntries[60 + i].unk24++;
@@ -242,21 +242,21 @@ void bot_pointer_line_animate(u32 kind) {
             base = 0x16;
         gSpriteEntries[60 + i].unk21++;
         if ((gSpriteEntries[60 + i].unk21 & 3) == 0) {
-            gSpriteEntries[60 + i].unk6 =
+            gSpriteEntries[60 + i].frame =
                 base + ((gSpriteEntries[60 + i].unk22 = (gSpriteEntries[60 + i].unk22 + 1) & 3) | 0x600);
         }
     }
 }
 
 void command_ring_flash_selected(void) {
-    gSpriteEntries[gBattleWork.ringSlot].unk0 |= 0x20;
+    gSpriteEntries[gBattleWork.ringSlot].flags |= 0x20;
     gSpriteEntries[gBattleWork.ringSlot].unk22++;
     if (gSpriteEntries[gBattleWork.ringSlot].unk22 & 4) {
-        gSpriteEntries[gBattleWork.ringSlot].unk9 = 0x60;
-        gSpriteEntries[gBattleWork.ringSlot].unk8 = 0x60;
+        gSpriteEntries[gBattleWork.ringSlot].scale_y = 0x60;
+        gSpriteEntries[gBattleWork.ringSlot].scale_x = 0x60;
     } else {
-        gSpriteEntries[gBattleWork.ringSlot].unk9 = 0x40;
-        gSpriteEntries[gBattleWork.ringSlot].unk8 = 0x40;
+        gSpriteEntries[gBattleWork.ringSlot].scale_y = 0x40;
+        gSpriteEntries[gBattleWork.ringSlot].scale_x = 0x40;
     }
 }
 
@@ -267,16 +267,16 @@ void command_ring_goto_selected(void) {
 void command_ring_shrink_icons(void) {
     u32 i;
     for (i = 0; i < 6; i++) {
-        if (gSpriteEntries[i].unk9 == 1)
-            clear_sprite_table_mask(i, 1);
+        if (gSpriteEntries[i].scale_y == 1)
+            disable_sprites(i, 1);
         else {
-            s32 v = gSpriteEntries[i].unk9 - 8;
+            s32 v = gSpriteEntries[i].scale_y - 8;
             if (v <= 0) {
-                gSpriteEntries[i].unk9 = 1;
-                gSpriteEntries[i].unk8 = 1;
+                gSpriteEntries[i].scale_y = 1;
+                gSpriteEntries[i].scale_x = 1;
             } else {
-                gSpriteEntries[i].unk9 = v;
-                gSpriteEntries[i].unk8 -= 8;
+                gSpriteEntries[i].scale_y = v;
+                gSpriteEntries[i].scale_x -= 8;
             }
         }
     }

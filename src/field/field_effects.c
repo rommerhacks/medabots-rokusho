@@ -171,7 +171,7 @@ void advance_sprite_animation_frame(u8 idx) {
         break;
     case 0xFFFA:
         if (gSpriteEntries[idx].unk23 < duration) {
-            gSpriteEntries[idx].unk6 = frame + gSpriteEntries[idx].unk2F;
+            gSpriteEntries[idx].frame = frame + gSpriteEntries[idx].unk2F;
             gSpriteEntries[idx].unk23++;
             if (gSpriteEntries[idx].unk23 >= duration) {
                 gSpriteEntries[idx].unk23 = 0;
@@ -187,7 +187,7 @@ void advance_sprite_animation_frame(u8 idx) {
         }
     default:
         if (gSpriteEntries[idx].unk23 < duration) {
-            gSpriteEntries[idx].unk6 = frame;
+            gSpriteEntries[idx].frame = frame;
             gSpriteEntries[idx].unk23++;
             if (gSpriteEntries[idx].unk23 >= duration) {
                 gSpriteEntries[idx].unk23 = 0;
@@ -229,24 +229,24 @@ static u32 affine_debug_input(void) {
             gAffineParams[0].angle = (gAffineParams[0].angle + 0xFF) & 0xFF;
     } else {
         if (KEYS_LO(gHeldKeys) & 0x40) {
-            gSpriteEntries[0].unk4 -= 2;
-            if (gSpriteEntries[0].unk4 < -80)
-                gSpriteEntries[0].unk4 = -80;
+            gSpriteEntries[0].y -= 2;
+            if (gSpriteEntries[0].y < -80)
+                gSpriteEntries[0].y = -80;
         }
         if (KEYS_LO(gHeldKeys) & 0x80) {
-            gSpriteEntries[0].unk4 += 2;
-            if (gSpriteEntries[0].unk4 > 80)
-                gSpriteEntries[0].unk4 = 80;
+            gSpriteEntries[0].y += 2;
+            if (gSpriteEntries[0].y > 80)
+                gSpriteEntries[0].y = 80;
         }
         if (KEYS_LO(gHeldKeys) & 0x10) {
-            gSpriteEntries[0].unk2 += 2;
-            if (gSpriteEntries[0].unk2 > 120)
-                gSpriteEntries[0].unk2 = 120;
+            gSpriteEntries[0].x += 2;
+            if (gSpriteEntries[0].x > 120)
+                gSpriteEntries[0].x = 120;
         }
         if (KEYS_LO(gHeldKeys) & 0x20) {
-            gSpriteEntries[0].unk2 -= 2;
-            if (gSpriteEntries[0].unk2 < -120)
-                gSpriteEntries[0].unk2 = -120;
+            gSpriteEntries[0].x -= 2;
+            if (gSpriteEntries[0].x < -120)
+                gSpriteEntries[0].x = -120;
         }
         if (KEYS_HI(gNewKeys) & 1) {
             if (gFieldState.affine_debug_level <= 14)

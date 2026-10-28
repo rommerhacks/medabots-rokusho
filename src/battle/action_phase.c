@@ -40,12 +40,12 @@ void action_phase_load_gfx(void) {
 
 // Turn cursor (sprite 3) above the acting Medabot.
 void action_phase_cursor_init(void) {
-    gSpriteEntries[3].unk0 = 0xC004;
-    gSpriteEntries[3].unk1C = 0;
-    gSpriteEntries[3].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
-    gSpriteEntries[3].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
-    gSpriteEntries[3].unkA = 6;
-    gSpriteEntries[3].unkB = 0x81;
+    gSpriteEntries[3].flags = 0xC004;
+    gSpriteEntries[3].frame_table = 0;
+    gSpriteEntries[3].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
+    gSpriteEntries[3].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
+    gSpriteEntries[3].palette = 6;
+    gSpriteEntries[3].order = 0x81;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x15], 3);
     play_sound_effect(7);
     gGameSubState++;
@@ -250,47 +250,47 @@ void action_phase_end_check(void) {
 void action_phase_win_banner_init(void) {
     lz_decompress_dispatch(gBattleBannerTilesLz, (void *)0x06014800);
     CpuFastSet(gBattleBannerPalette, (void *)0x050003E0, 8);
-    gSpriteEntries[0x21].unk0 = 0xC624;
-    gSpriteEntries[0x21].unk1C = 0;
-    gSpriteEntries[0x21].unk2 = 0x78;
-    gSpriteEntries[0x21].unk4 = 0x40;
-    gSpriteEntries[0x21].unkA = 0xF;
-    gSpriteEntries[0x21].unkB = 0xC0;
-    gSpriteEntries[0x21].unk6 = 0x902;
-    gSpriteEntries[0x21].unk9 = 0x80;
-    gSpriteEntries[0x21].unk8 = 0x40;
+    gSpriteEntries[0x21].flags = 0xC624;
+    gSpriteEntries[0x21].frame_table = 0;
+    gSpriteEntries[0x21].x = 0x78;
+    gSpriteEntries[0x21].y = 0x40;
+    gSpriteEntries[0x21].palette = 0xF;
+    gSpriteEntries[0x21].order = 0xC0;
+    gSpriteEntries[0x21].frame = 0x902;
+    gSpriteEntries[0x21].scale_y = 0x80;
+    gSpriteEntries[0x21].scale_x = 0x40;
     gGameSubState++;
 }
 
 void action_phase_banner_zoom_in(void) {
-    if (gSpriteEntries[0x21].unk9 == 0x40) {
+    if (gSpriteEntries[0x21].scale_y == 0x40) {
         gGameWork.unk86 = 0;
         gGameSubState++;
     } else
-        gSpriteEntries[0x21].unk9 -= 8;
+        gSpriteEntries[0x21].scale_y -= 8;
 }
 
 void action_phase_win_banner_hold(void) {
     if (gGameWork.unk86 == 0x5A) {
-        if (gSpriteEntries[0x21].unk9 == 8) {
+        if (gSpriteEntries[0x21].scale_y == 8) {
             play_song(0x1C);
             clear_battle_sprite_slot(0x21, 1);
             text_window_init(1, 2, 0);
             gGameSubState++;
         } else
-            gSpriteEntries[0x21].unk9 -= 8;
+            gSpriteEntries[0x21].scale_y -= 8;
     } else
         gGameWork.unk86++;
 }
 
 void action_phase_time_up_banner_hold(void) {
     if (gGameWork.unk86 == 0x5A) {
-        if (gSpriteEntries[0x21].unk9 == 8) {
+        if (gSpriteEntries[0x21].scale_y == 8) {
             clear_battle_sprite_slot(0x21, 1);
             text_window_init(1, 2, 0);
             gGameSubState++;
         } else
-            gSpriteEntries[0x21].unk9 -= 8;
+            gSpriteEntries[0x21].scale_y -= 8;
     } else
         gGameWork.unk86++;
 }
@@ -324,15 +324,15 @@ void action_phase_time_check(void) {
 void action_phase_time_up_banner_init(void) {
     lz_decompress_dispatch(gBattleBannerTilesLz, (void *)0x06014800);
     CpuFastSet(gBattleBannerPalette, (void *)0x050003E0, 8);
-    gSpriteEntries[0x21].unk0 = 0xC624;
-    gSpriteEntries[0x21].unk1C = 0;
-    gSpriteEntries[0x21].unk2 = 0x78;
-    gSpriteEntries[0x21].unk4 = 0x40;
-    gSpriteEntries[0x21].unkA = 0xF;
-    gSpriteEntries[0x21].unkB = 0xC0;
-    gSpriteEntries[0x21].unk6 = 0x903;
-    gSpriteEntries[0x21].unk9 = 0x80;
-    gSpriteEntries[0x21].unk8 = 0x40;
+    gSpriteEntries[0x21].flags = 0xC624;
+    gSpriteEntries[0x21].frame_table = 0;
+    gSpriteEntries[0x21].x = 0x78;
+    gSpriteEntries[0x21].y = 0x40;
+    gSpriteEntries[0x21].palette = 0xF;
+    gSpriteEntries[0x21].order = 0xC0;
+    gSpriteEntries[0x21].frame = 0x903;
+    gSpriteEntries[0x21].scale_y = 0x80;
+    gSpriteEntries[0x21].scale_x = 0x40;
     gGameSubState++;
 }
 
@@ -386,13 +386,13 @@ void action_phase_exit(void) {
 // Medal skill level-up popup above the acting Medabot (sprite 0x21), then the skill type (0x22) and level.
 void action_phase_level_up_init(void) {
     lz_decompress_dispatch(gSkillLevelUpTilesLz, (void *)0x06014800);
-    gSpriteEntries[0x21].unk0 = 0xC404;
-    gSpriteEntries[0x21].unk1C = 0;
-    gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
-    gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
-    gSpriteEntries[0x21].unkA = 0xC;
-    gSpriteEntries[0x21].unkB = 0x80;
-    gSpriteEntries[0x21].unk6 = 0x5800;
+    gSpriteEntries[0x21].flags = 0xC404;
+    gSpriteEntries[0x21].frame_table = 0;
+    gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
+    gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
+    gSpriteEntries[0x21].palette = 0xC;
+    gSpriteEntries[0x21].order = 0x80;
+    gSpriteEntries[0x21].frame = 0x5800;
     gSpriteEntries[0x21].unk23 = 0;
     play_sound_effect(0x2A);
     gGameSubState++;
@@ -404,13 +404,13 @@ void action_phase_level_up_anim(void) {
 }
 
 void action_phase_level_up_skill_init(void) {
-    gSpriteEntries[0x22].unk0 = 0xC404;
-    gSpriteEntries[0x22].unk1C = 0;
-    gSpriteEntries[0x22].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2 - 0x10;
-    gSpriteEntries[0x22].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 + 4;
-    gSpriteEntries[0x22].unkA = gLevelUpSkillPalettes[gBattleWork.levelUpSkill];
-    gSpriteEntries[0x22].unkB = 0x80;
-    gSpriteEntries[0x22].unk6 = 0x5801 + gBattleWork.levelUpSkill;
+    gSpriteEntries[0x22].flags = 0xC404;
+    gSpriteEntries[0x22].frame_table = 0;
+    gSpriteEntries[0x22].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x - 0x10;
+    gSpriteEntries[0x22].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y + 4;
+    gSpriteEntries[0x22].palette = gLevelUpSkillPalettes[gBattleWork.levelUpSkill];
+    gSpriteEntries[0x22].order = 0x80;
+    gSpriteEntries[0x22].frame = 0x5801 + gBattleWork.levelUpSkill;
     gSpriteEntries[0x22].unk23 = 0;
     play_sound_effect(0x2A);
     gGameSubState++;
@@ -425,8 +425,8 @@ void action_phase_level_up_digits_init(void) {
     lz_decompress_dispatch(gBattlePopupDigitTiles, (void *)0x06017E00);
     set_display_digit_type(&gGameWork.partAbility, gBattleWork.levelUpLevel, 2);
     battle_text_popup_init_at(&gGameWork.partAbility, gBattleWork.actor, 0x23,
-                              gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2 + 0x18,
-                              gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 + 4);
+                              gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x + 0x18,
+                              gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y + 4);
     gGameWork.unk84 = 0;
     gGameSubState++;
 }
@@ -470,19 +470,19 @@ void action_phase_medaforce_check(void) {
 void action_phase_medaforce_anim_init(void) {
     target_panels_show(0);
     CpuFastSet(gMedaforceActivatePalette, (void *)0x050002E0, 8);
-    gSpriteEntries[0x21].unk0 = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
-    gSpriteEntries[0x21].unk1C = 0;
-    gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
-    gSpriteEntries[0x21].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
-    gSpriteEntries[0x21].unkA = 7;
-    gSpriteEntries[0x21].unkB = 0x81;
+    gSpriteEntries[0x21].flags = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
+    gSpriteEntries[0x21].frame_table = 0;
+    gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
+    gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
+    gSpriteEntries[0x21].palette = 7;
+    gSpriteEntries[0x21].order = 0x81;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x4D], 0x21);
-    gSpriteEntries[0x22].unk0 = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
-    gSpriteEntries[0x22].unk1C = 0;
-    gSpriteEntries[0x22].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;
-    gSpriteEntries[0x22].unk4 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk4 - 4;
-    gSpriteEntries[0x22].unkA = 7;
-    gSpriteEntries[0x22].unkB = gBattleWork.actor * 4 + 0x59;
+    gSpriteEntries[0x22].flags = ((gBattleWork.battlefieldParams[3] + 2) << 10) | 0xC004;
+    gSpriteEntries[0x22].frame_table = 0;
+    gSpriteEntries[0x22].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
+    gSpriteEntries[0x22].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
+    gSpriteEntries[0x22].palette = 7;
+    gSpriteEntries[0x22].order = gBattleWork.actor * 4 + 0x59;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x4E], 0x22);
     gBattleWork.unk51 = gBattleBots[gBattleWork.actor].medaforce[2];
     gGameSubState++;

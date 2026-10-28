@@ -404,7 +404,7 @@ void prize_game_launch_anim(void) {
     prize_game_scroll_bg3();
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x75 - gBattleWork.prizeRow], 4);
     if (gSpriteEntries[4].unk22 == 0xFF) {
-        gSpriteEntries[3].unk6 = 0x8505;
+        gSpriteEntries[3].frame = 0x8505;
         play_sound_effect(0x54);
         gGameSubState++;
     }
@@ -697,31 +697,31 @@ static void prize_game_draw_slots(void) {
 
 static void prize_game_init_ball(void) {
     clear_battle_sprite_slot(2, 1);
-    gSpriteEntries[2].unk0 = 0xC400;
-    gSpriteEntries[2].unk2 = 0x68;
-    gSpriteEntries[2].unk4 = 0x78;
-    gSpriteEntries[2].unk6 = 0x8506;
-    gSpriteEntries[2].unk1C = 0;
-    gSpriteEntries[2].unkB = 0x82;
+    gSpriteEntries[2].flags = 0xC400;
+    gSpriteEntries[2].x = 0x68;
+    gSpriteEntries[2].y = 0x78;
+    gSpriteEntries[2].frame = 0x8506;
+    gSpriteEntries[2].frame_table = 0;
+    gSpriteEntries[2].order = 0x82;
 }
 
 static void prize_game_init_launcher(void) {
     clear_battle_sprite_slot(3, 1);
-    gSpriteEntries[3].unk0 = 0xC400;
-    gSpriteEntries[3].unk2 = 0x78;
-    gSpriteEntries[3].unk4 = 0x7C;
-    gSpriteEntries[3].unk6 = 0x8504;
-    gSpriteEntries[3].unk1C = 0;
-    gSpriteEntries[3].unkB = 0x81;
+    gSpriteEntries[3].flags = 0xC400;
+    gSpriteEntries[3].x = 0x78;
+    gSpriteEntries[3].y = 0x7C;
+    gSpriteEntries[3].frame = 0x8504;
+    gSpriteEntries[3].frame_table = 0;
+    gSpriteEntries[3].order = 0x81;
 }
 
 static void prize_game_init_row_marker(void) {
     clear_battle_sprite_slot(4, 1);
-    gSpriteEntries[4].unk0 = 0xC400;
-    gSpriteEntries[4].unk2 = 0x9A;
-    gSpriteEntries[4].unk4 = 0x58;
-    gSpriteEntries[4].unk1C = 0;
-    gSpriteEntries[4].unkB = 0x80;
+    gSpriteEntries[4].flags = 0xC400;
+    gSpriteEntries[4].x = 0x9A;
+    gSpriteEntries[4].y = 0x58;
+    gSpriteEntries[4].frame_table = 0;
+    gSpriteEntries[4].order = 0x80;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x70], 4);
 }
 
@@ -811,15 +811,15 @@ static void prize_game_move_ball(void) {
     u32 step = sub_pos >> 2;
     gSpriteEntries[2].unk20 = sub_pos & 3;
     if (gSpriteEntries[2].unk25 == 0)
-        gSpriteEntries[2].unk4 = (gSpriteEntries[2].unk4 - step) & 0xFF;
+        gSpriteEntries[2].y = (gSpriteEntries[2].y - step) & 0xFF;
     else
-        gSpriteEntries[2].unk4 = (gSpriteEntries[2].unk4 + step) & 0xFF;
+        gSpriteEntries[2].y = (gSpriteEntries[2].y + step) & 0xFF;
 }
 
 static u32 prize_game_ball_rise(void) {
     prize_game_move_ball();
-    if (gSpriteEntries[2].unk4 <= gBattleWork.prizePeakY) {
-        gSpriteEntries[2].unk4 = gBattleWork.prizePeakY;
+    if (gSpriteEntries[2].y <= gBattleWork.prizePeakY) {
+        gSpriteEntries[2].y = gBattleWork.prizePeakY;
         return 1;
     }
     gSpriteEntries[2].unk27++;
@@ -842,11 +842,11 @@ static u32 prize_game_ball_fall(void) {
     u32 landed;
 
     prize_game_move_ball();
-    if (gSpriteEntries[2].unk4 < gBattleWork.prizeLandY) {
+    if (gSpriteEntries[2].y < gBattleWork.prizeLandY) {
         gSpriteEntries[2].unk24++;
         landed = 0;
     } else {
-        gSpriteEntries[2].unk4 = gBattleWork.prizeLandY;
+        gSpriteEntries[2].y = gBattleWork.prizeLandY;
         landed = 1;
     }
     return landed;

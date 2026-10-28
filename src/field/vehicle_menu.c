@@ -550,14 +550,14 @@ static void vehicle_menu_update_cursor(void) {
 
     if (menu->frame & 8)
         wobble = -wobble;
-    gSpriteEntries[0x7F].unk2 = menu->cursorX * 8 + 8 + wobble;
-    gSpriteEntries[0x7F].unk4 = menu->cursorY * 8 + 8;
-    gSpriteEntries[0x7F].unk6 = 0x307;
-    gSpriteEntries[0x7F].unkA = 0xE;
-    gSpriteEntries[0x7F].unk1C = 0;
-    gSpriteEntries[0x7F].unk8 = 1;
-    gSpriteEntries[0x7F].unk9 = 1;
-    gSpriteEntries[0x7F].unkB = 0xFF;
+    gSpriteEntries[0x7F].x = menu->cursorX * 8 + 8 + wobble;
+    gSpriteEntries[0x7F].y = menu->cursorY * 8 + 8;
+    gSpriteEntries[0x7F].frame = 0x307;
+    gSpriteEntries[0x7F].palette = 0xE;
+    gSpriteEntries[0x7F].frame_table = 0;
+    gSpriteEntries[0x7F].scale_x = 1;
+    gSpriteEntries[0x7F].scale_y = 1;
+    gSpriteEntries[0x7F].order = 0xFF;
 }
 
 // Icon sprites 0x20-0x23, palette 0xC when usable else 0xD, following the window as it slides.
@@ -565,21 +565,21 @@ static void vehicle_menu_place_icons(s32 slide_out) {
     s32 base_x;
 
     sprite_entry_init(0x20, 0xC004, 0x91, vehicle_check_usable(0) == 0 ? 0xC : 0xD, 1);
-    gSpriteEntries[0x20].unk2 = (0x10 - gFieldScriptWork.slideStep) * 8 + (base_x = slide_out * 8 + 0x90);
-    gSpriteEntries[0x20].unk4 = 0x18;
-    gSpriteEntries[0x20].unkB |= 0xFF;
+    gSpriteEntries[0x20].x = (0x10 - gFieldScriptWork.slideStep) * 8 + (base_x = slide_out * 8 + 0x90);
+    gSpriteEntries[0x20].y = 0x18;
+    gSpriteEntries[0x20].order |= 0xFF;
     sprite_entry_init(0x21, 0xC004, 0x92, vehicle_check_usable(1) == 0 ? 0xC : 0xD, 1);
-    gSpriteEntries[0x21].unk2 = (0x10 - gFieldScriptWork.slideStep) * 8 + base_x;
-    gSpriteEntries[0x21].unk4 = 0x28;
-    gSpriteEntries[0x21].unkB |= 0xFF;
+    gSpriteEntries[0x21].x = (0x10 - gFieldScriptWork.slideStep) * 8 + base_x;
+    gSpriteEntries[0x21].y = 0x28;
+    gSpriteEntries[0x21].order |= 0xFF;
     sprite_entry_init(0x22, 0xC004, 0x93, vehicle_check_usable(2) == 0 ? 0xC : 0xD, 1);
-    gSpriteEntries[0x22].unk2 = (0x10 - gFieldScriptWork.slideStep) * 8 + base_x;
-    gSpriteEntries[0x22].unk4 = 0x38;
-    gSpriteEntries[0x22].unkB |= 0xFF;
+    gSpriteEntries[0x22].x = (0x10 - gFieldScriptWork.slideStep) * 8 + base_x;
+    gSpriteEntries[0x22].y = 0x38;
+    gSpriteEntries[0x22].order |= 0xFF;
     sprite_entry_init(0x23, 0xC004, 0x94, vehicle_check_usable(3) == 0 ? 0xC : 0xD, 1);
-    gSpriteEntries[0x23].unk2 = (0x10 - gFieldScriptWork.slideStep) * 8 + base_x;
-    gSpriteEntries[0x23].unk4 = 0x48;
-    gSpriteEntries[0x23].unkB |= 0xFF;
+    gSpriteEntries[0x23].x = (0x10 - gFieldScriptWork.slideStep) * 8 + base_x;
+    gSpriteEntries[0x23].y = 0x48;
+    gSpriteEntries[0x23].order |= 0xFF;
 }
 
 // Blanks the name of an entry whose item the player lacks.

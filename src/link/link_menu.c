@@ -24,12 +24,12 @@ void clear_vram_bg(void) {
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     CpuFastSet(gBlackObjPalettes, (void *)0x05000200, 8);
-    gSpriteEntries[0].unk0 = 0x8000;
-    gSpriteEntries[0].unk1C = 2;
-    gSpriteEntries[0].unkA = 0xE;
-    gSpriteEntries[0].unk6 = 6;
-    gSpriteEntries[0].unk2 = 0xC;
-    gSpriteEntries[0].unk4 = 0x1C;
+    gSpriteEntries[0].flags = 0x8000;
+    gSpriteEntries[0].frame_table = 2;
+    gSpriteEntries[0].palette = 0xE;
+    gSpriteEntries[0].frame = 6;
+    gSpriteEntries[0].x = 0xC;
+    gSpriteEntries[0].y = 0x1C;
     init_blend_effect(gMenuWork->blend, 0x10, 0, -1, 0xC0);
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
@@ -158,7 +158,7 @@ void link_menu_fade_in(void) {
     if (blend_fade_step_08065598(gMenuWork->blend)) {
         gGameSubState++;
         text_window_init(1, 0, 1);
-        gSpriteEntries[0].unk0 |= 0x4000;
+        gSpriteEntries[0].flags |= 0x4000;
     }
 }
 
@@ -168,11 +168,11 @@ void handle_battle_menu_selection(void) {
         gMenuWork->partner_chose = 1;
         gGameSubState++;
         play_sound_effect(4);
-        gSpriteEntries[0].unk4 = gMenuWork->cursor * 16 + 0x1C;
+        gSpriteEntries[0].y = gMenuWork->cursor * 16 + 0x1C;
         return;
     }
 
-    sprite_bob_y(0, gFrameCounter, 0xC);
+    sprite_bob_x(0, gFrameCounter, 0xC);
     if (gMenuWork->cursor == 6)
         run_message(gLinkAnswersDifferMessage);
     else
@@ -196,7 +196,7 @@ void handle_battle_menu_selection(void) {
         message_next();
         play_sound_effect(2);
     }
-    gSpriteEntries[0].unk4 = gMenuWork->cursor * 16 + 0x1C;
+    gSpriteEntries[0].y = gMenuWork->cursor * 16 + 0x1C;
     if (KEYS_LO(gRepeatKeys) & 1) {
         if (gMenuWork->cursor == 1 && gMenuWork->link_battle_ok == 0) {
             gMenuWork->cursor = 5;

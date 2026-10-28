@@ -49,12 +49,12 @@ u32 bot_has_status_guard(u32 rec, u32 skill) {
 }
 
 u32 sprite_slide_x_step(u32 slot, u32 n) {
-    if (!(gSpriteEntries[slot].unk0 & 0x8000) || gSpriteEntries[slot].unk23 == 0x10)
+    if (!(gSpriteEntries[slot].flags & 0x8000) || gSpriteEntries[slot].unk23 == 0x10)
         return 1;
     if (n == 0)
-        gSpriteEntries[slot].unk2 = gSpriteEntries[slot].unk2 + gSpriteSlideXSteps[gSpriteEntries[slot].unk23];
+        gSpriteEntries[slot].x = gSpriteEntries[slot].x + gSpriteSlideXSteps[gSpriteEntries[slot].unk23];
     else
-        gSpriteEntries[slot].unk2 = gSpriteEntries[slot].unk2 - gSpriteSlideXSteps[gSpriteEntries[slot].unk23];
+        gSpriteEntries[slot].x = gSpriteEntries[slot].x - gSpriteSlideXSteps[gSpriteEntries[slot].unk23];
     gSpriteEntries[slot].unk23++;
     return 0;
 }
@@ -114,15 +114,15 @@ void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n) {
     s32 t2;
     clear_battle_sprite_slot(slot, n);
     for (i = 0; i < n; i++) {
-        gSpriteEntries[slot + i].unk0 = 0x4004;
-        gSpriteEntries[slot + i].unk1C = 0;
-        gSpriteEntries[slot + i].unkA = 7;
-        gSpriteEntries[slot + i].unkB = 0xF0;
+        gSpriteEntries[slot + i].flags = 0x4004;
+        gSpriteEntries[slot + i].frame_table = 0;
+        gSpriteEntries[slot + i].palette = 7;
+        gSpriteEntries[slot + i].order = 0xF0;
         gSpriteEntries[slot + i].unk2C = i * 8;
         t1 = gStaggeredSpriteOffsets[i * 2] + x;
-        gSpriteEntries[slot + i].unk2 = t1 & 0x1FF;
+        gSpriteEntries[slot + i].x = t1 & 0x1FF;
         t2 = gStaggeredSpriteOffsets[i * 2 + 1] + y;
-        gSpriteEntries[slot + i].unk4 = t2 & 0xFF;
+        gSpriteEntries[slot + i].y = t2 & 0xFF;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[36], slot + i);
     }
 }
@@ -135,12 +135,12 @@ u32 staggered_sprites_update(u32 slot, u32 n) {
 
     for (i = 0; i < n; i++) {
         anim = gStaggeredSpriteAnimScripts;
-        if (gSpriteEntries[slot + i].unk0 != 0) {
+        if (gSpriteEntries[slot + i].flags != 0) {
             if (gSpriteEntries[slot + i].unk2C != 0) {
                 gSpriteEntries[slot + i].unk2C--;
                 done = 0;
             } else {
-                gSpriteEntries[slot + i].unk0 |= 0x8000;
+                gSpriteEntries[slot + i].flags |= 0x8000;
                 process_sprite_anim_commands(*anim, s = slot + i);
                 if (gSpriteEntries[slot + i].unk22 == 0xFF)
                     clear_battle_sprite_slot(s, 1);
@@ -216,27 +216,27 @@ void battle_set_damage_display(u32 rec, u32 part, s32 amount) {
 
 void battle_bot_sprites_blink(u32 rec, u32 frame, u32 mask) {
     if (frame & mask) {
-        gSpriteEntries[rec * 4 + 0x5A].unk0 |= 0x8000;
-        gSpriteEntries[rec * 4 + 0x5B].unk0 |= 0x8000;
-        gSpriteEntries[rec * 4 + 0x5C].unk0 |= 0x8000;
-        gSpriteEntries[rec * 4 + 0x5D].unk0 |= 0x8000;
+        gSpriteEntries[rec * 4 + 0x5A].flags |= 0x8000;
+        gSpriteEntries[rec * 4 + 0x5B].flags |= 0x8000;
+        gSpriteEntries[rec * 4 + 0x5C].flags |= 0x8000;
+        gSpriteEntries[rec * 4 + 0x5D].flags |= 0x8000;
     } else {
-        gSpriteEntries[rec * 4 + 0x5A].unk0 &= 0x7FFF;
-        gSpriteEntries[rec * 4 + 0x5B].unk0 &= 0x7FFF;
-        gSpriteEntries[rec * 4 + 0x5C].unk0 &= 0x7FFF;
-        gSpriteEntries[rec * 4 + 0x5D].unk0 &= 0x7FFF;
+        gSpriteEntries[rec * 4 + 0x5A].flags &= 0x7FFF;
+        gSpriteEntries[rec * 4 + 0x5B].flags &= 0x7FFF;
+        gSpriteEntries[rec * 4 + 0x5C].flags &= 0x7FFF;
+        gSpriteEntries[rec * 4 + 0x5D].flags &= 0x7FFF;
     }
 }
 
 void battle_bot_sprites_show(u32 rec) {
-    gSpriteEntries[rec * 4 + 0x5A].unk0 |= 0x8000;
-    gSpriteEntries[rec * 4 + 0x5B].unk0 |= 0x8000;
-    gSpriteEntries[rec * 4 + 0x5C].unk0 |= 0x8000;
-    gSpriteEntries[rec * 4 + 0x5D].unk0 |= 0x8000;
+    gSpriteEntries[rec * 4 + 0x5A].flags |= 0x8000;
+    gSpriteEntries[rec * 4 + 0x5B].flags |= 0x8000;
+    gSpriteEntries[rec * 4 + 0x5C].flags |= 0x8000;
+    gSpriteEntries[rec * 4 + 0x5D].flags |= 0x8000;
 }
 
 void sprite_bob_step(u32 slot) {
-    gSpriteEntries[slot].unk4 = (gSpriteEntries[slot].unk4 + gSpriteBobYSteps[gSpriteEntries[slot].unk23]) & 0xFF;
+    gSpriteEntries[slot].y = (gSpriteEntries[slot].y + gSpriteBobYSteps[gSpriteEntries[slot].unk23]) & 0xFF;
     gSpriteEntries[slot].unk23 = (gSpriteEntries[slot].unk23 + 1) & 31;
 }
 
