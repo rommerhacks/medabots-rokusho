@@ -1164,16 +1164,16 @@ struct OamBits {
 // Interpolated value stepped once per frame (anim_interp_init sets it up, animation_interpolation_step
 // runs it; modes 0x10-0x17).
 struct AnimInterp {
-    float unk0; // current value
-    float unk4; // base value
+    float value;
+    float base; // value before the move (modes > 1)
     u8 filler8[4];
-    s32 unkC; // mode, 0 = idle
+    s32 mode; // 0 = idle; 0x10-0x14 (anim_interp_init) pick the curve
     float unk10;
-    float unk14; // phase (sine table index)
+    float phase; // sine table index
     float unk18;
-    float unk1C; // frame counter
-    s32 unk20;   // start frame
-    s32 unk24;   // end frame, 0xFFFF = none
+    float frame; // frame counter
+    s32 start;   // frame the move starts
+    s32 end;     // frame it ends, 0xFFFF = none
     float unk28;
     float unk2C;
     float unk30;
@@ -1403,63 +1403,63 @@ struct FieldEffectState {
     u16 bg_blend_mask; // palette colour masks (run_blend_fade_transition)
     u16 obj_blend_mask;
     u8 filler20E[0x6];
-    s32 unk214;
-    s32 unk218;
-    s32 unk21C;
-    s32 unk220;
+    s32 near_order_base;
+    s32 far_order;
+    s32 near_priority;
+    s32 far_priority;
 };
 
 // 3-D entity, 0x300 bytes; gFieldEffectEntities points to an array of them (0x02039000, 16 entries).
-struct BattleEntity3D {
-    s32 unk0; // state (2 = left its range)
+struct FieldEffectEntity {
+    s32 state; // 0 = free, 2 = left its range (counts as finished); SeqEntity.state
     s32 unk4;
     s32 unk8;
     u8 fillerC[0x4];
-    float unk10; // x
+    float x; // SeqEntity.x.value
     u8 filler14[0x8];
-    s32 unk1C;
+    s32 x_mode; // SeqEntity.x.mode: cleared to stop the move
     u8 filler20[0x38];
-    float unk58; // y
+    float y; // SeqEntity.y.value
     u8 filler5C[0x8];
-    s32 unk64;
+    s32 y_mode;
     u8 filler68[0x38];
-    float unkA0; // depth (z)
+    float z; // depth; SeqEntity.z.value
     u8 fillerA4[0x8];
-    s32 unkAC;
+    s32 z_mode;
     u8 fillerB0[0x48];
-    float unkF8; // yaw / pitch offsets
+    float yaw; // yaw / pitch offsets added to the camera (SeqEntity.yaw.value)
     u8 fillerFC[0x14];
-    float unk110;
+    float pitch;
     u8 filler114[0x50];
-    float unk164; // x / y / z scale
+    float scale_x; // model x / y / z scale (SeqEntity.scale_x.value ...)
     u8 filler168[0x14];
-    float unk17C;
+    float scale_y;
     u8 filler180[0x14];
-    float unk194;
+    float scale_z;
     u8 filler198[0x28];
     s32 unk1C0;
     s32 unk1C4;
     s32 unk1C8;
     u8 filler1CC[0x14];
-    s32 unk1E0; // x range check enabled
-    u16 unk1E4; // x min
+    s32 x_check; // leave when screen x is in [x_min, x_max]
+    u16 x_min;
     u8 filler1E6[2];
-    u16 unk1E8; // x max
+    u16 x_max;
     u8 filler1EA[2];
-    s32 unk1EC; // y range check enabled
-    u8 unk1F0;  // y min
+    s32 y_check; // leave when screen y is in [y_min, y_max]
+    u8 y_min;
     u8 filler1F1[3];
-    u8 unk1F4; // y max
+    u8 y_max;
     u8 filler1F5[3];
-    s32 unk1F8; // depth range check enabled
-    s32 unk1FC; // depth min
-    s32 unk200; // depth max
+    s32 z_check; // leave when depth <= z_min or >= z_max
+    s32 z_min;
+    s32 z_max;
     u8 filler204[8];
-    s32 unk20C; // current part
+    s32 cur_part; // part being projected
     u8 filler210[0xCC];
-    u8 unk2DC[4];  // sprite slot per part
-    u16 unk2E0[4]; // x offset per part
-    u8 unk2E8[4];  // y offset per part
+    u8 part_sprite[4]; // gSpriteEntries slot per part
+    u16 part_x[4];     // screen x offset per part
+    u8 part_y[4];      // screen y offset per part
     u8 filler2EC[0x14];
 };
 
@@ -1747,46 +1747,46 @@ struct SeqTimer {
 };
 
 struct SeqEntity {
-    s32 unk0;                // state
-    s32 unk4;                // timer
-    s32 unk8;                // start
-    s32 unkC;                // end
-    struct AnimInterp unk10; // x
-    struct AnimInterp unk58; // y
-    struct AnimInterp unkA0; // z
-    struct SeqTrack unkE8;
-    struct SeqTrack unk100;
-    struct SeqOsc unk118;
-    struct SeqOsc unk13C;
-    struct SeqRamp unk160;
-    struct SeqRamp unk178;
-    struct SeqRamp unk190;
-    struct SeqRamp unk1A8;
-    struct SeqTimer unk1C0; // hide, then free the sprites
-    struct SeqTimer unk1D0; // blink
-    s32 unk1E0;
-    s32 unk1E4;
-    s32 unk1E8;
-    s32 unk1EC;
-    s32 unk1F0;
-    s32 unk1F4;
-    s32 unk1F8;
-    s32 unk1FC;
-    s32 unk200;
-    s32 unk204; // palette
-    s32 unk208; // animate sprites
-    s32 unk20C;
-    s32 unk210;      // part count
-    s32 unk214;      // parent entity
-    s32 unk218;      // has triggers
-    s32 unk21C[16];  // trigger time
-    s32 unk25C[16];  // trigger entity
-    s32 *unk29C[16]; // trigger script
-    u8 unk2DC[4];
-    u16 unk2E0[4];
-    u8 unk2E8[4];
-    struct SeqTimer unk2EC;
-    u32 unk2FC;
+    s32 state; // 0 = free, else active; 2 = left its range
+    s32 timer; // frames since it was set up
+    s32 start; // tracks step once timer >= start
+    s32 end;   // timer at which it is finished, 0xFFFF = never
+    struct AnimInterp x;
+    struct AnimInterp y;
+    struct AnimInterp z;
+    struct SeqTrack yaw;
+    struct SeqTrack pitch;
+    struct SeqOsc affine_scale_x;
+    struct SeqOsc affine_scale_y;
+    struct SeqRamp scale_x;
+    struct SeqRamp scale_y;
+    struct SeqRamp scale_z;
+    struct SeqRamp affine_angle;
+    struct SeqTimer hide_timer; // hide, then free the sprites
+    struct SeqTimer blink_timer;
+    s32 x_check; // leave its range: see FieldEffectEntity
+    s32 x_min;
+    s32 x_max;
+    s32 y_check;
+    s32 y_min;
+    s32 y_max;
+    s32 z_check;
+    s32 z_min;
+    s32 z_max;
+    s32 anim_id; // sprite_anim_start animation
+    s32 animate; // advance the part sprites' animation each frame
+    s32 cur_part;
+    s32 part_count;
+    s32 parent;
+    s32 has_triggers; // trigger k runs trigger_script[k] on trigger_entity[k] at timer >= trigger_time[k]
+    s32 trigger_time[16];
+    s32 trigger_entity[16];
+    s32 *trigger_script[16];
+    u8 part_sprite[4];
+    u16 part_x[4];
+    u8 part_y[4];
+    struct SeqTimer sound_timer; // plays sound_id every frame while active
+    u32 sound_id;
 };
 
 struct SeqState {
@@ -1813,22 +1813,22 @@ struct SeqState {
     s32 area_id;
     u8 filler1E4[0x10];
     s32 fade_mode; // fade mode
-    s32 unk1F8;
+    s32 blend_step;
     s32 fade_timer; // fade timer
-    s32 unk200;
-    s32 unk204;
-    u8 unk208;
+    s32 fade_start;
+    s32 fade_end;
+    u8 blend_level;
     u8 filler209;
     u16 bg_blend_mask;
     u16 obj_blend_mask;
-    u8 unk20E;
-    u8 unk20F;
-    u8 unk210;
+    u8 blend_r;
+    u8 blend_g;
+    u8 blend_b;
     u8 filler211[3];
-    s32 unk214;
-    s32 unk218;
-    s32 unk21C;
-    s32 unk220;
+    s32 near_order_base;
+    s32 far_order;
+    s32 near_priority;
+    s32 far_priority;
     s32 unk224;
     s32 unk228;
     s32 unk22C;

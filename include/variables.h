@@ -1174,7 +1174,7 @@ extern const u8 *const
 extern const u16 gFieldSharedSpritePalette[]; // palette copied to 0x0202F9C0 (area_load_sprite_palettes)
 extern u32 gFieldUnusedWord;                  // cleared by field_clear_ram, never used otherwise
 extern struct AffineParam gAffineParams[32];
-extern struct BattleEntity3D *gFieldEffectEntities;
+extern struct FieldEffectEntity *gFieldEffectEntities;
 extern const s32 *const *const
     gFieldEffectModels[]; // per model set, per entity: s32 count, x[4], y[4], z[4] (field_effect_project_objects)
 extern const float gCosTableF32[256]; // cos(i * 2pi / 256) as floats (set_state_float_field; [0] = 1.0)

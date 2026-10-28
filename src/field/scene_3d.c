@@ -197,13 +197,13 @@ static void field_effect_project_object(float *x, float *y, float *z) {
         a = x[i];
         b = y[i];
         c = z[i];
-        gFieldEffectEntities[gFieldEffect.cur_entity].unk20C = i;
+        gFieldEffectEntities[gFieldEffect.cur_entity].cur_part = i;
         field_effect_project_sprite(a, b, c);
     }
     a = x[0];
     b = y[0];
     c = z[0];
-    gFieldEffectEntities[gFieldEffect.cur_entity].unk20C = 0;
+    gFieldEffectEntities[gFieldEffect.cur_entity].cur_part = 0;
     field_effect_project_sprite(a, b, c);
 }
 
@@ -225,7 +225,8 @@ static void field_effect_project_sprite(float x, float y, float z) {
     compute_3d_transform_vectors(x, y, z, &sx, &sy, &depth);
     field_effect_place_sprite(sx, sy);
     sprites = gSpriteEntries;
-    sprites[gFieldEffectEntities[gFieldEffect.cur_entity].unk2DC[gFieldEffectEntities[gFieldEffect.cur_entity].unk20C]]
+    sprites[gFieldEffectEntities[gFieldEffect.cur_entity]
+                .part_sprite[gFieldEffectEntities[gFieldEffect.cur_entity].cur_part]]
         .pos_z = depth;
 }
 
@@ -253,29 +254,29 @@ static void get_state_float_as_int(float a, float b, s32 *x, s32 *y) {
 
 static void field_effect_place_sprite(float a, float b) {
     get_state_float_as_int(a, b, &gFieldEffect.screen_x, &gFieldEffect.screen_y);
-    gSpriteEntries[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].x =
-        gFieldEffect.screen_x + CUR_ENTITY.unk2E0[CUR_ENTITY.unk20C];
-    gSpriteEntries[CUR_ENTITY.unk2DC[CUR_ENTITY.unk20C]].y =
-        gFieldEffect.screen_y + CUR_ENTITY.unk2E8[CUR_ENTITY.unk20C];
-    if (CUR_ENTITY.unk1EC && (u8)gFieldEffect.screen_y >= CUR_ENTITY.unk1F0 &&
-        (u8)gFieldEffect.screen_y <= CUR_ENTITY.unk1F4) {
-        CUR_ENTITY.unk0 = 2;
-        CUR_ENTITY.unkAC = 0;
+    gSpriteEntries[CUR_ENTITY.part_sprite[CUR_ENTITY.cur_part]].x =
+        gFieldEffect.screen_x + CUR_ENTITY.part_x[CUR_ENTITY.cur_part];
+    gSpriteEntries[CUR_ENTITY.part_sprite[CUR_ENTITY.cur_part]].y =
+        gFieldEffect.screen_y + CUR_ENTITY.part_y[CUR_ENTITY.cur_part];
+    if (CUR_ENTITY.y_check && (u8)gFieldEffect.screen_y >= CUR_ENTITY.y_min &&
+        (u8)gFieldEffect.screen_y <= CUR_ENTITY.y_max) {
+        CUR_ENTITY.state = 2;
+        CUR_ENTITY.z_mode = 0;
     }
-    if (CUR_ENTITY.unk1E0 && (s32)(gFieldEffect.screen_x & 0x1FF) >= CUR_ENTITY.unk1E4 &&
-        (s32)(gFieldEffect.screen_x & 0x1FF) <= CUR_ENTITY.unk1E8) {
-        CUR_ENTITY.unk0 = 2;
-        CUR_ENTITY.unk64 = 0;
-        CUR_ENTITY.unk1C = 0;
+    if (CUR_ENTITY.x_check && (s32)(gFieldEffect.screen_x & 0x1FF) >= CUR_ENTITY.x_min &&
+        (s32)(gFieldEffect.screen_x & 0x1FF) <= CUR_ENTITY.x_max) {
+        CUR_ENTITY.state = 2;
+        CUR_ENTITY.y_mode = 0;
+        CUR_ENTITY.x_mode = 0;
     }
-    if (CUR_ENTITY.unk1F8) {
-        if (CUR_ENTITY.unkA0 <= CUR_ENTITY.unk1FC) {
-            CUR_ENTITY.unk0 = 2;
-            CUR_ENTITY.unkAC = 0;
+    if (CUR_ENTITY.z_check) {
+        if (CUR_ENTITY.z <= CUR_ENTITY.z_min) {
+            CUR_ENTITY.state = 2;
+            CUR_ENTITY.z_mode = 0;
         }
-        if (CUR_ENTITY.unkA0 >= CUR_ENTITY.unk200) {
-            CUR_ENTITY.unk0 = 2;
-            CUR_ENTITY.unkAC = 0;
+        if (CUR_ENTITY.z >= CUR_ENTITY.z_max) {
+            CUR_ENTITY.state = 2;
+            CUR_ENTITY.z_mode = 0;
         }
     }
 }
@@ -300,7 +301,7 @@ void field_effect_project_objects(void) {
     affine_set_source_and_compute_transform(-120.5f, 120.5f, -80.5f, 80.5f);
     init_affine_transform_viewport(gFieldEffect.origin[0], gFieldEffect.origin[1]);
     for (i = 0; i < 16; i++) {
-        if (gFieldEffectEntities[i].unk0 == 0)
+        if (gFieldEffectEntities[i].state == 0)
             continue;
         if (gFieldEffectEntities[i].unk4 < gFieldEffectEntities[i].unk8)
             continue;
@@ -317,16 +318,16 @@ void field_effect_project_objects(void) {
             gFieldEffect.model_z[j] = q[8];
             q++;
         }
-        set_state_float_field(gFieldEffect.base_yaw + gFieldEffectEntities[i].unkF8,
-                              gFieldEffect.base_pitch + gFieldEffectEntities[i].unk110, gFieldEffect.base_camera_dist,
+        set_state_float_field(gFieldEffect.base_yaw + gFieldEffectEntities[i].yaw,
+                              gFieldEffect.base_pitch + gFieldEffectEntities[i].pitch, gFieldEffect.base_camera_dist,
                               gFieldEffect.projection_scale);
         for (j = 0; j < 4; j++) {
             gFieldEffect.point_x[j] =
-                gFieldEffect.model_x[j] * gFieldEffectEntities[i].unk164 + gFieldEffectEntities[i].unk10;
+                gFieldEffect.model_x[j] * gFieldEffectEntities[i].scale_x + gFieldEffectEntities[i].x;
             gFieldEffect.point_y[j] =
-                gFieldEffect.model_y[j] * gFieldEffectEntities[i].unk17C + gFieldEffectEntities[i].unk58;
+                gFieldEffect.model_y[j] * gFieldEffectEntities[i].scale_y + gFieldEffectEntities[i].y;
             gFieldEffect.point_z[j] =
-                gFieldEffect.model_z[j] * gFieldEffectEntities[i].unk194 + gFieldEffectEntities[i].unkA0;
+                gFieldEffect.model_z[j] * gFieldEffectEntities[i].scale_z + gFieldEffectEntities[i].z;
         }
         gFieldEffect.unk98 = p[1];
         gFieldEffect.cur_entity = i;
@@ -377,15 +378,15 @@ u32 field_effect_run(void) {
             S.projection_scale = script[S.pc++];
             S.base_yaw = script[S.pc++];
             S.base_pitch = script[S.pc++];
-            S.unk214 = 0x80;
-            S.unk218 = 0;
-            S.unk21C = 0x400;
-            S.unk220 = 0x800;
+            S.near_order_base = 0x80;
+            S.far_order = 0;
+            S.near_priority = 0x400;
+            S.far_priority = 0x800;
             field_effect_reset_view();
             for (i = 0; i < 16; i++) {
-                E[i].unk160.value = 1.0f;
-                E[i].unk178.value = 1.0f;
-                E[i].unk190.value = 1.0f;
+                E[i].scale_x.value = 1.0f;
+                E[i].scale_y.value = 1.0f;
+                E[i].scale_z.value = 1.0f;
             }
             break;
         case 2: // guess: run one frame: fire entity triggers, step all tracks, fade; advance when an entity finished
@@ -393,22 +394,22 @@ u32 field_effect_run(void) {
             flag = 0;
             cnt = 0;
             for (i = 0; i < 16; i++) {
-                if (E[i].unk0 != 0 && E[i].unk218 != 0) {
+                if (E[i].state != 0 && E[i].has_triggers != 0) {
                     for (k = 0; k < 16; k++) {
-                        if (E[i].unk29C[k] != 0) {
+                        if (E[i].trigger_script[k] != 0) {
                             cnt++;
-                            if (E[i].unk4 >= E[i].unk21C[k]) {
-                                S.cur_entity = E[i].unk25C[k];
-                                E[S.cur_entity].unk10.unk0 = E[i].unk10.unk0;
-                                E[S.cur_entity].unk58.unk0 = E[i].unk58.unk0;
-                                E[S.cur_entity].unkA0.unk0 = E[i].unkA0.unk0;
+                            if (E[i].timer >= E[i].trigger_time[k]) {
+                                S.cur_entity = E[i].trigger_entity[k];
+                                E[S.cur_entity].x.value = E[i].x.value;
+                                E[S.cur_entity].y.value = E[i].y.value;
+                                E[S.cur_entity].z.value = E[i].z.value;
                                 S.saved_script[S.call_depth] = script;
-                                script = E[i].unk29C[k];
+                                script = E[i].trigger_script[k];
                                 S.saved_pc[S.call_depth] = S.pc;
                                 S.call_depth++;
                                 S.pc = 0;
                                 S.opcode = script[0];
-                                E[i].unk29C[k] = 0;
+                                E[i].trigger_script[k] = 0;
                                 flag = 1;
                             }
                             if (flag)
@@ -418,29 +419,29 @@ u32 field_effect_run(void) {
                             break;
                     }
                     if (cnt == 0)
-                        E[i].unk218 = 0;
+                        E[i].has_triggers = 0;
                 }
             }
             if (flag)
                 break;
             for (i = 0; i < 16; i++) {
-                if (E[i].unk0 == 0)
+                if (E[i].state == 0)
                     continue;
-                if (E[i].unk8 <= E[i].unk4) {
+                if (E[i].start <= E[i].timer) {
                     for (k = 0; k < 3; k++) {
                         if (k == 0)
-                            anim = &E[i].unk10;
+                            anim = &E[i].x;
                         else if (k == 1)
-                            anim = &E[i].unk58;
+                            anim = &E[i].y;
                         else if (k == 2)
-                            anim = &E[i].unkA0;
+                            anim = &E[i].z;
                         animation_interpolation_step(anim);
                     }
                     for (k = 0; k < 2; k++) {
                         if (k == 0)
-                            trk = &E[i].unkE8;
+                            trk = &E[i].yaw;
                         else if (k == 1)
-                            trk = &E[i].unk100;
+                            trk = &E[i].pitch;
                         if (trk->active) {
                             if (trk->start <= trk->timer) {
                                 trk->value = trk->value + trk->step;
@@ -453,9 +454,9 @@ u32 field_effect_run(void) {
                     }
                     for (j = 0; j < 2; j++) {
                         if (j == 0)
-                            osc = &E[i].unk118;
+                            osc = &E[i].affine_scale_x;
                         else if (j == 1)
-                            osc = &E[i].unk13C;
+                            osc = &E[i].affine_scale_y;
                         if (osc->type != 0) {
                             if (osc->start <= osc->timer) {
                                 if (osc->type == 1) {
@@ -494,11 +495,11 @@ u32 field_effect_run(void) {
                     }
                     for (k = 0; k < 3; k++) {
                         if (k == 0)
-                            ramp = &E[i].unk160;
+                            ramp = &E[i].scale_x;
                         else if (k == 1)
-                            ramp = &E[i].unk178;
+                            ramp = &E[i].scale_y;
                         else if (k == 2)
-                            ramp = &E[i].unk190;
+                            ramp = &E[i].scale_z;
                         if (ramp->active) {
                             if (ramp->start <= ramp->timer) {
                                 ramp->value = ramp->value + ramp->step;
@@ -509,89 +510,89 @@ u32 field_effect_run(void) {
                                 ramp->timer++;
                         }
                     }
-                    if (E[i].unk1A8.active) {
-                        if (E[i].unk1A8.start <= E[i].unk1A8.timer) {
-                            E[i].unk1A8.value = E[i].unk1A8.value + E[i].unk1A8.step;
+                    if (E[i].affine_angle.active) {
+                        if (E[i].affine_angle.start <= E[i].affine_angle.timer) {
+                            E[i].affine_angle.value = E[i].affine_angle.value + E[i].affine_angle.step;
                             for (k = 0; k < 4; k++)
-                                gAffineParams[i * 4 + k].angle = (s32)E[i].unk1A8.value & 0xFF;
-                            E[i].unk1A8.timer++;
-                            if (E[i].unk1A8.end != 0xFFFF && E[i].unk1A8.timer >= E[i].unk1A8.end)
-                                E[i].unk1A8.active = 0;
+                                gAffineParams[i * 4 + k].angle = (s32)E[i].affine_angle.value & 0xFF;
+                            E[i].affine_angle.timer++;
+                            if (E[i].affine_angle.end != 0xFFFF && E[i].affine_angle.timer >= E[i].affine_angle.end)
+                                E[i].affine_angle.active = 0;
                         } else
-                            E[i].unk1A8.timer++;
+                            E[i].affine_angle.timer++;
                     }
-                    if (E[i].unk208) {
-                        for (k = 0; k < E[i].unk210; k++)
-                            advance_sprite_animation_frame(E[i].unk2DC[k]);
+                    if (E[i].animate) {
+                        for (k = 0; k < E[i].part_count; k++)
+                            advance_sprite_animation_frame(E[i].part_sprite[k]);
                     }
-                    if (E[i].unk1C0.active) {
-                        if (E[i].unk1C0.start <= E[i].unk1C0.timer) {
-                            for (k = 0; k < E[i].unk210; k++)
-                                gSpriteEntries[E[i].unk2DC[k]].flags |= SPRITE_FLAG_VISIBLE;
-                            E[i].unk1C0.timer++;
-                            if (E[i].unk1C0.end != 0xFFFF && E[i].unk1C0.timer >= E[i].unk1C0.end) {
-                                for (k = 0; k < E[i].unk210; k++)
-                                    sprite_entry_clear(E[i].unk2DC[k]);
-                                E[i].unk1C0.active = 0;
-                                E[i].unk208 = 0;
+                    if (E[i].hide_timer.active) {
+                        if (E[i].hide_timer.start <= E[i].hide_timer.timer) {
+                            for (k = 0; k < E[i].part_count; k++)
+                                gSpriteEntries[E[i].part_sprite[k]].flags |= SPRITE_FLAG_VISIBLE;
+                            E[i].hide_timer.timer++;
+                            if (E[i].hide_timer.end != 0xFFFF && E[i].hide_timer.timer >= E[i].hide_timer.end) {
+                                for (k = 0; k < E[i].part_count; k++)
+                                    sprite_entry_clear(E[i].part_sprite[k]);
+                                E[i].hide_timer.active = 0;
+                                E[i].animate = 0;
                             }
                         } else
-                            E[i].unk1C0.timer++;
+                            E[i].hide_timer.timer++;
                     }
-                    if (E[i].unk1D0.active) {
-                        if (E[i].unk1D0.start <= E[i].unk1D0.timer) {
-                            if (!(E[i].unk1D0.timer & 1)) {
-                                for (k = 0; k < E[i].unk210; k++)
-                                    gSpriteEntries[E[i].unk2DC[k]].flags &= ~SPRITE_FLAG_VISIBLE;
+                    if (E[i].blink_timer.active) {
+                        if (E[i].blink_timer.start <= E[i].blink_timer.timer) {
+                            if (!(E[i].blink_timer.timer & 1)) {
+                                for (k = 0; k < E[i].part_count; k++)
+                                    gSpriteEntries[E[i].part_sprite[k]].flags &= ~SPRITE_FLAG_VISIBLE;
                             } else {
-                                for (k = 0; k < E[i].unk210; k++)
-                                    gSpriteEntries[E[i].unk2DC[k]].flags |= SPRITE_FLAG_VISIBLE;
+                                for (k = 0; k < E[i].part_count; k++)
+                                    gSpriteEntries[E[i].part_sprite[k]].flags |= SPRITE_FLAG_VISIBLE;
                             }
-                            E[i].unk1D0.timer++;
-                            if (E[i].unk1D0.end != 0xFFFF && E[i].unk1D0.timer >= E[i].unk1D0.end)
-                                E[i].unk1D0.active = 0;
+                            E[i].blink_timer.timer++;
+                            if (E[i].blink_timer.end != 0xFFFF && E[i].blink_timer.timer >= E[i].blink_timer.end)
+                                E[i].blink_timer.active = 0;
                         } else
-                            E[i].unk1D0.timer++;
+                            E[i].blink_timer.timer++;
                     }
-                    if (E[i].unk2EC.active) {
-                        if (E[i].unk2EC.start <= E[i].unk2EC.timer) {
-                            field_play_sound_effect(E[i].unk2FC);
-                            E[i].unk2EC.timer++;
-                            if (E[i].unk2EC.end != 0xFFFF && E[i].unk2EC.timer >= E[i].unk2EC.end)
-                                E[i].unk2EC.active = 0;
+                    if (E[i].sound_timer.active) {
+                        if (E[i].sound_timer.start <= E[i].sound_timer.timer) {
+                            field_play_sound_effect(E[i].sound_id);
+                            E[i].sound_timer.timer++;
+                            if (E[i].sound_timer.end != 0xFFFF && E[i].sound_timer.timer >= E[i].sound_timer.end)
+                                E[i].sound_timer.active = 0;
                         } else
-                            E[i].unk2EC.timer++;
+                            E[i].sound_timer.timer++;
                     }
-                    E[i].unk4++;
-                    if (E[i].unkC != 0xFFFF && E[i].unk4 >= E[i].unkC)
+                    E[i].timer++;
+                    if (E[i].end != 0xFFFF && E[i].timer >= E[i].end)
                         done++;
                 } else
-                    E[i].unk4++;
+                    E[i].timer++;
             }
             field_effect_project_objects();
             for (i = 0; i < 16; i++) {
-                if (E[i].unk0 == 2)
+                if (E[i].state == 2)
                     done++;
             }
             for (i = 0; i < 16; i++) {
-                if (E[i].unk0 != 0 && (E[i].unk118.type | E[i].unk13C.type) == 0) {
+                if (E[i].state != 0 && (E[i].affine_scale_x.type | E[i].affine_scale_y.type) == 0) {
                     for (k = 0; k < 4; k++) {
-                        d = gSpriteEntries[E[i].unk2DC[k]].pos_z;
+                        d = gSpriteEntries[E[i].part_sprite[k]].pos_z;
                         if (d > S.base_camera_dist) {
                             gAffineParams[i * 4 + k].scaleX = 0x101 - d / S.base_camera_dist;
                             gAffineParams[i * 4 + k].scaleY =
-                                0x101 - gSpriteEntries[E[i].unk2DC[k]].pos_z / S.base_camera_dist;
+                                0x101 - gSpriteEntries[E[i].part_sprite[k]].pos_z / S.base_camera_dist;
                         } else {
                             gAffineParams[i * 4 + k].scaleX = S.base_camera_dist / d + 0xFF;
                             gAffineParams[i * 4 + k].scaleY =
-                                S.base_camera_dist / gSpriteEntries[E[i].unk2DC[k]].pos_z + 0xFF;
+                                S.base_camera_dist / gSpriteEntries[E[i].part_sprite[k]].pos_z + 0xFF;
                         }
                     }
                 }
             }
             field_effect_update_sprite_depth();
             if (S.fade_mode != 0) {
-                if (S.unk200 <= S.fade_timer) {
+                if (S.fade_start <= S.fade_timer) {
                     S.fade_timer++;
                     switch (S.fade_mode) {
                     case 1:
@@ -608,12 +609,12 @@ u32 field_effect_run(void) {
                         break;
                     case 3:
                         blend_effect_update();
-                        field_bg_palettes_blend_masked(S.unk210 << 10 | S.unk20F << 5 | S.unk20E, S.unk208 * S.unk1F8,
-                                                       S.bg_blend_mask);
-                        field_obj_palettes_blend_masked(S.unk210 << 10 | S.unk20F << 5 | S.unk20E, S.unk208 * S.unk1F8,
-                                                        S.obj_blend_mask);
-                        if (S.unk208 < 0x20 / S.unk1F8)
-                            S.unk208++;
+                        field_bg_palettes_blend_masked(S.blend_b << 10 | S.blend_g << 5 | S.blend_r,
+                                                       S.blend_level * S.blend_step, S.bg_blend_mask);
+                        field_obj_palettes_blend_masked(S.blend_b << 10 | S.blend_g << 5 | S.blend_r,
+                                                        S.blend_level * S.blend_step, S.obj_blend_mask);
+                        if (S.blend_level < 0x20 / S.blend_step)
+                            S.blend_level++;
                         else {
                             gVBlankCallback = empty_callback;
                             S.fade_mode = 0;
@@ -622,20 +623,20 @@ u32 field_effect_run(void) {
                         break;
                     case 4:
                         blend_effect_update();
-                        r = S.unk208 * S.unk1F8 - 1;
+                        r = S.blend_level * S.blend_step - 1;
                         g = r;
                         bl = r;
-                        if (r < S.unk20E)
-                            r = S.unk20E;
-                        if (g < S.unk20F)
-                            g = S.unk20F;
-                        if (bl < S.unk210)
-                            bl = S.unk210;
+                        if (r < S.blend_r)
+                            r = S.blend_r;
+                        if (g < S.blend_g)
+                            g = S.blend_g;
+                        if (bl < S.blend_b)
+                            bl = S.blend_b;
                         color = bl << 10 | g << 5 | r;
-                        field_bg_palettes_blend_masked(color, S.unk208 * S.unk1F8, S.bg_blend_mask);
-                        field_obj_palettes_blend_masked(color, S.unk208 * S.unk1F8, S.obj_blend_mask);
-                        if (S.unk208 != 0)
-                            S.unk208--;
+                        field_bg_palettes_blend_masked(color, S.blend_level * S.blend_step, S.bg_blend_mask);
+                        field_obj_palettes_blend_masked(color, S.blend_level * S.blend_step, S.obj_blend_mask);
+                        if (S.blend_level != 0)
+                            S.blend_level--;
                         else {
                             gVBlankCallback = empty_callback;
                             S.fade_mode = 0;
@@ -643,7 +644,7 @@ u32 field_effect_run(void) {
                         }
                         break;
                     }
-                    if (S.unk204 != 0xFFFF && S.fade_timer >= S.unk204) {
+                    if (S.fade_end != 0xFFFF && S.fade_timer >= S.fade_end) {
                         gVBlankCallback = empty_callback;
                         S.fade_mode = 0;
                         done++;
@@ -662,10 +663,10 @@ u32 field_effect_run(void) {
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk0 = script[S.pc++];
-            E[n].unk4 = script[S.pc++];
-            E[n].unk8 = script[S.pc++];
-            E[n].unkC = script[S.pc++];
+            E[n].state = script[S.pc++];
+            E[n].timer = script[S.pc++];
+            E[n].start = script[S.pc++];
+            E[n].end = script[S.pc++];
             break;
         case 5: // guess: skip one argument
             S.pc++;
@@ -676,79 +677,79 @@ u32 field_effect_run(void) {
             S.pc++;
             n = S.cur_entity;
             if (script[S.pc++] == 0)
-                E[n].unk10.unk0 = script[S.pc++];
+                E[n].x.value = script[S.pc++];
             else
-                E[n].unk10.unk0 = script[S.pc++] + E[E[n].unk214].unk10.unk0;
+                E[n].x.value = script[S.pc++] + E[E[n].parent].x.value;
             break;
         case 7: // guess: set y (absolute or relative to the parent entity)
             S.pc++;
             S.pc++;
             n = S.cur_entity;
             if (script[S.pc++] == 0)
-                E[n].unk58.unk0 = script[S.pc++];
+                E[n].y.value = script[S.pc++];
             else
-                E[n].unk58.unk0 = script[S.pc++] + E[E[n].unk214].unk58.unk0;
+                E[n].y.value = script[S.pc++] + E[E[n].parent].y.value;
             break;
         case 8: // guess: set z (absolute or relative to the parent entity)
             S.pc++;
             S.pc++;
             n = S.cur_entity;
             if (script[S.pc++] == 0)
-                E[n].unkA0.unk0 = script[S.pc++];
+                E[n].z.value = script[S.pc++];
             else
-                E[n].unkA0.unk0 = script[S.pc++] + E[E[n].unk214].unkA0.unk0;
+                E[n].z.value = script[S.pc++] + E[E[n].parent].z.value;
             break;
         case 9: // guess: set yaw
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unkE8.value = script[S.pc++];
+            E[n].yaw.value = script[S.pc++];
             break;
         case 10: // guess: set pitch
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk100.value = script[S.pc++];
+            E[n].pitch.value = script[S.pc++];
             break;
         case 11: // guess: set affine x-scale oscillator type/value
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk118.type = script[S.pc++];
-            E[n].unk118.value = script[S.pc++];
-            if (E[n].unk118.type == 0)
+            E[n].affine_scale_x.type = script[S.pc++];
+            E[n].affine_scale_x.value = script[S.pc++];
+            if (E[n].affine_scale_x.type == 0)
                 break;
             for (k = 0; k < 4; k++)
-                gAffineParams[n * 4 + k].scaleX = E[n].unk118.value;
+                gAffineParams[n * 4 + k].scaleX = E[n].affine_scale_x.value;
             break;
         case 12: // guess: set affine y-scale oscillator type/value
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk13C.type = script[S.pc++];
-            E[n].unk13C.value = script[S.pc++];
-            if (E[n].unk13C.type == 0)
+            E[n].affine_scale_y.type = script[S.pc++];
+            E[n].affine_scale_y.value = script[S.pc++];
+            if (E[n].affine_scale_y.type == 0)
                 break;
             for (k = 0; k < 4; k++)
-                gAffineParams[n * 4 + k].scaleY = E[n].unk13C.value;
+                gAffineParams[n * 4 + k].scaleY = E[n].affine_scale_y.value;
             break;
         case 13: // guess: set 3-D scale x
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk160.value = script[S.pc++];
+            E[n].scale_x.value = script[S.pc++];
             break;
         case 14: // guess: set 3-D scale y
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk178.value = script[S.pc++];
+            E[n].scale_y.value = script[S.pc++];
             break;
         case 15: // guess: set 3-D scale z
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk190.value = script[S.pc++];
+            E[n].scale_z.value = script[S.pc++];
             break;
         case 16: // guess: set up x/y/z interpolation (16 words)
         case 17:
@@ -757,11 +758,11 @@ u32 field_effect_run(void) {
             S.pc++;
             n = S.cur_entity;
             if (S.opcode == 0x10)
-                anim = &E[n].unk10;
+                anim = &E[n].x;
             else if (S.opcode == 0x11)
-                anim = &E[n].unk58;
+                anim = &E[n].y;
             else if (S.opcode == 0x12)
-                anim = &E[n].unkA0;
+                anim = &E[n].z;
             memcpy_u8(&script[S.pc], buf, 0x40);
             S.pc += 0x10;
             anim_interp_init(anim, buf);
@@ -770,85 +771,85 @@ u32 field_effect_run(void) {
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk160.active = script[S.pc++];
-            E[n].unk160.step = script[S.pc++] / 10.0f;
-            E[n].unk160.timer = script[S.pc++];
-            E[n].unk160.start = script[S.pc++];
-            E[n].unk160.end = script[S.pc++];
+            E[n].scale_x.active = script[S.pc++];
+            E[n].scale_x.step = script[S.pc++] / 10.0f;
+            E[n].scale_x.timer = script[S.pc++];
+            E[n].scale_x.start = script[S.pc++];
+            E[n].scale_x.end = script[S.pc++];
             break;
         case 24: // guess: 3-D scale y ramp
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk178.active = script[S.pc++];
-            E[n].unk178.step = script[S.pc++] / 10.0f;
-            E[n].unk178.timer = script[S.pc++];
-            E[n].unk178.start = script[S.pc++];
-            E[n].unk178.end = script[S.pc++];
+            E[n].scale_y.active = script[S.pc++];
+            E[n].scale_y.step = script[S.pc++] / 10.0f;
+            E[n].scale_y.timer = script[S.pc++];
+            E[n].scale_y.start = script[S.pc++];
+            E[n].scale_y.end = script[S.pc++];
             break;
         case 25: // guess: 3-D scale z ramp
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk190.active = script[S.pc++];
-            E[n].unk190.step = script[S.pc++] / 10.0f;
-            E[n].unk190.timer = script[S.pc++];
-            E[n].unk190.start = script[S.pc++];
-            E[n].unk190.end = script[S.pc++];
+            E[n].scale_z.active = script[S.pc++];
+            E[n].scale_z.step = script[S.pc++] / 10.0f;
+            E[n].scale_z.timer = script[S.pc++];
+            E[n].scale_z.start = script[S.pc++];
+            E[n].scale_z.end = script[S.pc++];
             break;
         case 19: // guess: yaw track
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unkE8.active = script[S.pc++];
-            E[n].unkE8.step = script[S.pc++] * 0.125f;
-            E[n].unkE8.timer = script[S.pc++];
-            E[n].unkE8.start = script[S.pc++];
-            E[n].unkE8.end = script[S.pc++];
+            E[n].yaw.active = script[S.pc++];
+            E[n].yaw.step = script[S.pc++] * 0.125f;
+            E[n].yaw.timer = script[S.pc++];
+            E[n].yaw.start = script[S.pc++];
+            E[n].yaw.end = script[S.pc++];
             break;
         case 20: // guess: pitch track
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk100.active = script[S.pc++];
-            E[n].unk100.step = script[S.pc++] * 0.125f;
-            E[n].unk100.timer = script[S.pc++];
-            E[n].unk100.start = script[S.pc++];
-            E[n].unk100.end = script[S.pc++];
+            E[n].pitch.active = script[S.pc++];
+            E[n].pitch.step = script[S.pc++] * 0.125f;
+            E[n].pitch.timer = script[S.pc++];
+            E[n].pitch.start = script[S.pc++];
+            E[n].pitch.end = script[S.pc++];
             break;
         case 21: // guess: affine x-scale oscillator
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk118.type = script[S.pc++];
-            E[n].unk118.amp = script[S.pc++] * 0.125f;
-            E[n].unk118.angle = script[S.pc++];
-            E[n].unk118.angleStep = script[S.pc++];
-            E[n].unk118.timer = script[S.pc++];
-            E[n].unk118.start = script[S.pc++];
-            E[n].unk118.end = script[S.pc++];
+            E[n].affine_scale_x.type = script[S.pc++];
+            E[n].affine_scale_x.amp = script[S.pc++] * 0.125f;
+            E[n].affine_scale_x.angle = script[S.pc++];
+            E[n].affine_scale_x.angleStep = script[S.pc++];
+            E[n].affine_scale_x.timer = script[S.pc++];
+            E[n].affine_scale_x.start = script[S.pc++];
+            E[n].affine_scale_x.end = script[S.pc++];
             break;
         case 22: // guess: affine y-scale oscillator
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk13C.type = script[S.pc++];
-            E[n].unk13C.amp = script[S.pc++] * 0.125f;
-            E[n].unk13C.angle = script[S.pc++];
-            E[n].unk13C.angleStep = script[S.pc++];
-            E[n].unk13C.timer = script[S.pc++];
-            E[n].unk13C.start = script[S.pc++];
-            E[n].unk13C.end = script[S.pc++];
+            E[n].affine_scale_y.type = script[S.pc++];
+            E[n].affine_scale_y.amp = script[S.pc++] * 0.125f;
+            E[n].affine_scale_y.angle = script[S.pc++];
+            E[n].affine_scale_y.angleStep = script[S.pc++];
+            E[n].affine_scale_y.timer = script[S.pc++];
+            E[n].affine_scale_y.start = script[S.pc++];
+            E[n].affine_scale_y.end = script[S.pc++];
             break;
         case 26: // guess: affine angle ramp
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk1A8.active = script[S.pc++];
-            E[n].unk1A8.step = script[S.pc++] * 0.125f;
-            E[n].unk1A8.timer = script[S.pc++];
-            E[n].unk1A8.start = script[S.pc++];
-            E[n].unk1A8.end = script[S.pc++];
+            E[n].affine_angle.active = script[S.pc++];
+            E[n].affine_angle.step = script[S.pc++] * 0.125f;
+            E[n].affine_angle.timer = script[S.pc++];
+            E[n].affine_angle.start = script[S.pc++];
+            E[n].affine_angle.end = script[S.pc++];
             break;
         case 27: // guess: create a sprite part (gfx + palette from the script set)
             S.pc++;
@@ -859,81 +860,81 @@ u32 field_effect_run(void) {
             y = script[S.pc++];
             attr = script[S.pc++];
             model = gFieldEffectModels[S.effect_id][n];
-            E[n].unk210 = *model;
+            E[n].part_count = *model;
             if (part >= *model)
                 break;
-            E[n].unk2DC[part] = n * 4 + part;
-            E[n].unk2E0[part] = 0;
-            E[n].unk2E8[part] = 0;
+            E[n].part_sprite[part] = n * 4 + part;
+            E[n].part_x[part] = 0;
+            E[n].part_y[part] = 0;
             LZ77UnCompVram(gFieldEffectObjTiles[S.effect_id], (void *)0x06016C00);
             if (!(S.flags & 0x80))
                 DmaSet(3, gFieldEffectObjPalettes[S.effect_id], 0x050003A0,
                        0x84000008) else DmaSet(3, gFieldEffectObjPalettes[S.effect_id], 0x0202F9A0, 0x84000008)
-                    sprite_entry_init(E[n].unk2DC[part], x, (u16)y, 0xD, 1);
-            gSpriteEntries[E[n].unk2DC[part]].flags |= attr;
-            gSpriteEntries[E[n].unk2DC[part]].affine_idx = n * 4 + part;
+                    sprite_entry_init(E[n].part_sprite[part], x, (u16)y, 0xD, 1);
+            gSpriteEntries[E[n].part_sprite[part]].flags |= attr;
+            gSpriteEntries[E[n].part_sprite[part]].affine_idx = n * 4 + part;
             break;
         case 134: // guess: set a sprite part (slot, offsets, attributes)
             S.pc++;
             S.pc++;
             n = S.cur_entity;
             part = script[S.pc++];
-            E[n].unk2DC[part] = script[S.pc++];
-            E[n].unk2E0[part] = script[S.pc++];
-            E[n].unk2E8[part] = script[S.pc++];
-            gSpriteEntries[E[n].unk2DC[part]].flags = script[S.pc++];
-            gSpriteEntries[E[n].unk2DC[part]].affine_idx = n * 4 + part;
+            E[n].part_sprite[part] = script[S.pc++];
+            E[n].part_x[part] = script[S.pc++];
+            E[n].part_y[part] = script[S.pc++];
+            gSpriteEntries[E[n].part_sprite[part]].flags = script[S.pc++];
+            gSpriteEntries[E[n].part_sprite[part]].affine_idx = n * 4 + part;
             break;
         case 28: // guess: hide timer, then free the sprites
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk1C0.active = script[S.pc++];
-            E[n].unk1C0.timer = script[S.pc++];
-            E[n].unk1C0.start = script[S.pc++];
-            E[n].unk1C0.end = script[S.pc++];
+            E[n].hide_timer.active = script[S.pc++];
+            E[n].hide_timer.timer = script[S.pc++];
+            E[n].hide_timer.start = script[S.pc++];
+            E[n].hide_timer.end = script[S.pc++];
             break;
         case 29: // guess: animate sprites flag + palette
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk208 = script[S.pc++];
-            E[n].unk204 = script[S.pc++];
+            E[n].animate = script[S.pc++];
+            E[n].anim_id = script[S.pc++];
             for (k = 0; k < 4; k++)
-                sprite_anim_start(E[n].unk2DC[k], E[n].unk204);
+                sprite_anim_start(E[n].part_sprite[k], E[n].anim_id);
             break;
         case 30: // guess: blink timer
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk1D0.active = script[S.pc++];
-            E[n].unk1D0.timer = script[S.pc++];
-            E[n].unk1D0.start = script[S.pc++];
-            E[n].unk1D0.end = script[S.pc++];
+            E[n].blink_timer.active = script[S.pc++];
+            E[n].blink_timer.timer = script[S.pc++];
+            E[n].blink_timer.start = script[S.pc++];
+            E[n].blink_timer.end = script[S.pc++];
             break;
         case 31: // guess: x range check
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk1E0 = script[S.pc++];
-            E[n].unk1E4 = script[S.pc++];
-            E[n].unk1E8 = script[S.pc++];
+            E[n].x_check = script[S.pc++];
+            E[n].x_min = script[S.pc++];
+            E[n].x_max = script[S.pc++];
             break;
         case 32: // guess: y range check
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk1EC = script[S.pc++];
-            E[n].unk1F0 = script[S.pc++];
-            E[n].unk1F4 = script[S.pc++];
+            E[n].y_check = script[S.pc++];
+            E[n].y_min = script[S.pc++];
+            E[n].y_max = script[S.pc++];
             break;
         case 33: // guess: depth range check
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk1F8 = script[S.pc++];
-            E[n].unk1FC = script[S.pc++];
-            E[n].unk200 = script[S.pc++];
+            E[n].z_check = script[S.pc++];
+            E[n].z_min = script[S.pc++];
+            E[n].z_max = script[S.pc++];
             break;
         case 34: // guess: call: select entity, run a sub-script
             S.pc++;
@@ -959,76 +960,76 @@ u32 field_effect_run(void) {
             S.pc++;
             S.saved_entity[S.call_depth] = script[S.pc++];
             k = S.saved_entity[S.call_depth];
-            E[S.cur_entity].unk25C[k] = k;
+            E[S.cur_entity].trigger_entity[k] = k;
             v = script[S.pc++];
-            E[S.cur_entity].unk218 = v & 0xFF;
-            E[S.cur_entity].unk21C[k] = script[S.pc++];
-            E[S.cur_entity].unk29C[k] = (s32 *)script[S.pc++];
-            E[k].unk214 = S.cur_entity;
+            E[S.cur_entity].has_triggers = v & 0xFF;
+            E[S.cur_entity].trigger_time[k] = script[S.pc++];
+            E[S.cur_entity].trigger_script[k] = (s32 *)script[S.pc++];
+            E[k].parent = S.cur_entity;
             if ((v & 0xFF00) != 0x100)
                 break;
             a = script[S.pc++];
             b = script[S.pc++];
             if (a != 1)
                 break;
-            old = E[S.cur_entity].unk21C[k];
+            old = E[S.cur_entity].trigger_time[k];
             if (b == 0)
-                tmp = E[S.cur_entity].unkA0.unk24;
-            E[S.cur_entity].unk21C[k] = tmp - old;
+                tmp = E[S.cur_entity].z.end;
+            E[S.cur_entity].trigger_time[k] = tmp - old;
             break;
         }
         case 128: // guess: fade from white (with OBJ)
             S.pc++;
             S.fade_timer = script[S.pc++];
-            S.unk200 = script[S.pc++];
-            S.unk204 = script[S.pc++];
+            S.fade_start = script[S.pc++];
+            S.fade_end = script[S.pc++];
             setup_palette_fade_to_color_with_obj(0x7FFF, 0.0f, 32.0f, 8.0f);
             S.fade_mode = 1;
             break;
         case 129: // guess: fade to white
             S.pc++;
             S.fade_timer = script[S.pc++];
-            S.unk200 = script[S.pc++];
-            S.unk204 = script[S.pc++];
+            S.fade_start = script[S.pc++];
+            S.fade_end = script[S.pc++];
             setup_palette_fade_to_color(0x7FFF, 32.0f, 0.0f, 8.0f);
             S.fade_mode = 2;
             break;
         case 130: // guess: palette blend in
             S.pc++;
-            S.unk208 = script[S.pc++];
+            S.blend_level = script[S.pc++];
             S.bg_blend_mask = script[S.pc++];
             S.obj_blend_mask = script[S.pc++];
-            S.unk20E = script[S.pc++];
-            S.unk20F = script[S.pc++];
-            S.unk210 = script[S.pc++];
-            S.unk1F8 = script[S.pc++];
+            S.blend_r = script[S.pc++];
+            S.blend_g = script[S.pc++];
+            S.blend_b = script[S.pc++];
+            S.blend_step = script[S.pc++];
             S.fade_timer = script[S.pc++];
-            S.unk200 = script[S.pc++];
-            S.unk204 = script[S.pc++];
+            S.fade_start = script[S.pc++];
+            S.fade_end = script[S.pc++];
             S.fade_mode = 3;
             field_palette_backup();
             setup_blend_effect(0x40, 0x2F00, 6, 8, 8, 8, 0xD, 0xB, 0);
             break;
         case 131: // guess: palette blend out
             S.pc++;
-            S.unk208 = script[S.pc++];
+            S.blend_level = script[S.pc++];
             S.bg_blend_mask = script[S.pc++];
             S.obj_blend_mask = script[S.pc++];
-            S.unk20E = script[S.pc++];
-            S.unk20F = script[S.pc++];
-            S.unk210 = script[S.pc++];
-            S.unk1F8 = script[S.pc++];
+            S.blend_r = script[S.pc++];
+            S.blend_g = script[S.pc++];
+            S.blend_b = script[S.pc++];
+            S.blend_step = script[S.pc++];
             S.fade_timer = script[S.pc++];
-            S.unk200 = script[S.pc++];
-            S.unk204 = script[S.pc++];
+            S.fade_start = script[S.pc++];
+            S.fade_end = script[S.pc++];
             S.fade_mode = 4;
-            if (S.unk208 != 0) {
-                if (S.unk208 == 0x10) {
+            if (S.blend_level != 0) {
+                if (S.blend_level == 0x10) {
                     field_palettes_blend_to_color(0x7FFF, 0x20);
                     gBlendEffect.fade_amount = 32.0f;
                     gBlendEffect.fade_end = 0.0f;
                     setup_blend_effect(0x40, 0x2F00, 5, 8, 8, 8, 0xE, 0xC, 0);
-                } else if (S.unk208 == 8)
+                } else if (S.blend_level == 8)
                     setup_blend_effect(0x40, 0x2F00, 6, 8, 8, 8, 0xC, 0xA, 0);
             } else
                 setup_blend_effect(0x40, 0x2F00, 4, 8, 8, 8, 0x10, 0x10, 0);
@@ -1072,12 +1073,12 @@ u32 field_effect_run(void) {
             area_load_encounter_rate();
             gSpriteEntries[89].flags &= ~SPRITE_FLAG_VISIBLE;
             break;
-        case 133: // guess: set unk214..unk220
+        case 133: // guess: set the depth sort orders / OBJ priorities (field_effect_update_sprite_depth)
             S.pc++;
-            S.unk214 = script[S.pc++];
-            S.unk218 = script[S.pc++];
-            S.unk21C = script[S.pc++];
-            S.unk220 = script[S.pc++];
+            S.near_order_base = script[S.pc++];
+            S.far_order = script[S.pc++];
+            S.near_priority = script[S.pc++];
+            S.far_priority = script[S.pc++];
             break;
         case 135: // guess: set unk224..unk23C
             S.pc++;
@@ -1098,16 +1099,16 @@ u32 field_effect_run(void) {
             dst = script[S.pc++];
             switch (script[S.pc++]) {
             case 0:
-                E[dst].unkA0.unk0 = E[src].unkA0.unk0;
+                E[dst].z.value = E[src].z.value;
                 break;
             case 1:
-                E[dst].unkC = E[src].unkA0.unk24;
+                E[dst].end = E[src].z.end;
                 break;
             case 2:
-                E[dst].unkC = E[src].unk58.unk24;
+                E[dst].end = E[src].y.end;
                 break;
             case 3:
-                E[dst].unkC = E[src].unk10.unk24;
+                E[dst].end = E[src].x.end;
                 break;
             }
             break;
@@ -1116,11 +1117,11 @@ u32 field_effect_run(void) {
             S.pc++;
             S.pc++;
             n = S.cur_entity;
-            E[n].unk2EC.active = script[S.pc++];
-            E[n].unk2EC.timer = script[S.pc++];
-            E[n].unk2EC.start = script[S.pc++];
-            E[n].unk2EC.end = script[S.pc++];
-            E[n].unk2FC = script[S.pc++];
+            E[n].sound_timer.active = script[S.pc++];
+            E[n].sound_timer.timer = script[S.pc++];
+            E[n].sound_timer.start = script[S.pc++];
+            E[n].sound_timer.end = script[S.pc++];
+            E[n].sound_id = script[S.pc++];
             break;
         case 136: // guess: set gFieldWork.unkC4C and refresh the status chars
             S.pc++;
@@ -1181,16 +1182,16 @@ static void field_effect_update_sprite_depth(void) {
             for (j = 0; j <= 3; j++) {
                 struct SpriteEntry *spr = gSpriteEntries;
 
-                s = &spr[gFieldEffectEntities[i].unk2DC[j]];
+                s = &spr[gFieldEffectEntities[i].part_sprite[j]];
                 d = s->pos_z;
                 if (d > gFieldEffect.base_camera_dist) {
-                    s->order = gFieldEffect.unk218;
-                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags &= (u16)~SPRITE_FLAG_PRIORITY_MASK;
-                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags |= gFieldEffect.unk220;
+                    s->order = gFieldEffect.far_order;
+                    gSpriteEntries[gFieldEffectEntities[i].part_sprite[j]].flags &= (u16)~SPRITE_FLAG_PRIORITY_MASK;
+                    gSpriteEntries[gFieldEffectEntities[i].part_sprite[j]].flags |= gFieldEffect.far_priority;
                 } else {
-                    s->order = gFieldEffect.unk214 + (gFieldEffect.base_camera_dist - d);
-                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags &= (u16)~SPRITE_FLAG_PRIORITY_MASK;
-                    gSpriteEntries[gFieldEffectEntities[i].unk2DC[j]].flags |= gFieldEffect.unk21C;
+                    s->order = gFieldEffect.near_order_base + (gFieldEffect.base_camera_dist - d);
+                    gSpriteEntries[gFieldEffectEntities[i].part_sprite[j]].flags &= (u16)~SPRITE_FLAG_PRIORITY_MASK;
+                    gSpriteEntries[gFieldEffectEntities[i].part_sprite[j]].flags |= gFieldEffect.near_priority;
                 }
             }
         }
@@ -1201,13 +1202,13 @@ void anim_interp_init(struct AnimInterp *p, s32 *a) {
     s32 mode;
     float x, phase;
 
-    p->unkC = mode = a[0];
+    p->mode = mode = a[0];
     p->unk10 = a[1] / 256;
-    p->unk14 = a[2];
+    p->phase = a[2];
     p->unk18 = a[3] * (1.0f / 256);
-    p->unk1C = a[4];
-    p->unk20 = a[5];
-    p->unk24 = a[6];
+    p->frame = a[4];
+    p->start = a[5];
+    p->end = a[6];
     p->unk28 = a[7];
     p->unk2C = a[8];
     p->unk30 = a[9];
@@ -1217,27 +1218,27 @@ void anim_interp_init(struct AnimInterp *p, s32 *a) {
     p->unk40 = a[13] * (1.0f / 256);
     p->unk44 = a[14];
     if (mode > 1)
-        p->unk4 = p->unk0;
+        p->base = p->value;
 
-    switch (p->unkC) {
+    switch (p->mode) {
     case 0x10:
         p->unk2C = x = p->unk34 / float_default_to_one_if_zero(float_abs_if_negative(p->unk3C));
-        p->unk24 = p->unk20 + x;
+        p->end = p->start + x;
         if (p->unk44 != 0)
-            p->unk0 = p->unk0 - float_sign(p->unk3C) * float_abs_if_negative(p->unk34);
+            p->value = p->value - float_sign(p->unk3C) * float_abs_if_negative(p->unk34);
         break;
     case 0x11:
-        p->unk24 = p->unk20 + p->unk28;
+        p->end = p->start + p->unk28;
         p->unk34 = p->unk3C * p->unk2C;
         if (p->unk44 != 0)
-            p->unk0 = p->unk0 - float_sign(p->unk3C) * float_abs_if_negative(p->unk34);
+            p->value = p->value - float_sign(p->unk3C) * float_abs_if_negative(p->unk34);
         break;
     case 0x12: {
         float sum;
         s32 n;
 
         p->unk3C = p->unk34 * (1.0f / 64);
-        phase = p->unk14;
+        phase = p->phase;
         sum = 0.0f;
         n = 0;
         for (;;) {
@@ -1253,21 +1254,21 @@ void anim_interp_init(struct AnimInterp *p, s32 *a) {
         }
         p->unk2C = n;
         p->unk30 = x = p->unk38 / float_default_to_one_if_zero(float_abs_if_negative(p->unk40));
-        p->unk24 = p->unk20 + p->unk2C + x;
+        p->end = p->start + p->unk2C + x;
         p->unk38 = p->unk38 + (p->unk34 - float_abs_if_negative(sum));
         if (p->unk44 != 0)
-            p->unk0 =
-                p->unk0 - float_sign(p->unk40) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+            p->value =
+                p->value - float_sign(p->unk40) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
         break;
     }
     case 0x13: {
         float step;
 
-        p->unk24 = p->unk20 + p->unk28;
+        p->end = p->start + p->unk28;
         p->unk30 = p->unk28 - p->unk2C;
         p->unk3C = step = 64.0f / float_default_to_one_if_zero(p->unk2C);
         p->unk38 = p->unk40 * p->unk30;
-        phase = p->unk14;
+        phase = p->phase;
         p->unk34 = 0.0f;
         for (;;) {
             if (step == 0.0f)
@@ -1278,8 +1279,8 @@ void anim_interp_init(struct AnimInterp *p, s32 *a) {
                 break;
         }
         if (p->unk44 != 0)
-            p->unk0 =
-                p->unk0 - float_sign(p->unk40) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+            p->value =
+                p->value - float_sign(p->unk40) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
         break;
     }
     case 0x14: {
@@ -1287,7 +1288,7 @@ void anim_interp_init(struct AnimInterp *p, s32 *a) {
         s32 n;
 
         p->unk40 = 64.0f / p->unk38;
-        phase = p->unk14;
+        phase = p->phase;
         sum = 0.0f;
         n = 0;
         for (;;) {
@@ -1303,18 +1304,18 @@ void anim_interp_init(struct AnimInterp *p, s32 *a) {
         p->unk34 = p->unk34 + (p->unk38 - float_abs_if_negative(sum));
         p->unk38 = float_abs_if_negative(sum);
         p->unk2C = x = p->unk34 / float_default_to_one_if_zero(float_abs_if_negative(p->unk3C));
-        p->unk24 = p->unk20 + x + p->unk30;
+        p->end = p->start + x + p->unk30;
         if (p->unk44 != 0)
-            p->unk0 =
-                p->unk0 - float_sign(p->unk3C) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+            p->value =
+                p->value - float_sign(p->unk3C) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
         break;
     }
     case 0x15: {
 
-        p->unk24 = p->unk20 + p->unk28;
+        p->end = p->start + p->unk28;
         p->unk34 = p->unk3C * (p->unk2C = p->unk28 - p->unk30);
         p->unk40 = 64.0f / float_default_to_one_if_zero(p->unk30);
-        phase = p->unk14;
+        phase = p->phase;
         p->unk38 = 0.0f;
         for (;;) {
             phase = phase + p->unk40;
@@ -1323,14 +1324,14 @@ void anim_interp_init(struct AnimInterp *p, s32 *a) {
                 break;
         }
         if (p->unk44 != 0)
-            p->unk0 =
-                p->unk0 - float_sign(p->unk3C) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
+            p->value =
+                p->value - float_sign(p->unk3C) * (float_abs_if_negative(p->unk34) + float_abs_if_negative(p->unk38));
         break;
     }
     case 0x17:
-        p->unk24 = p->unk20 + p->unk28;
-        p->unk0 = p->unk4 + p->unk40 * gSineTable[(s32)p->unk2C & 0xFF];
-        p->unk14 = p->unk2C;
+        p->end = p->start + p->unk28;
+        p->value = p->base + p->unk40 * gSineTable[(s32)p->unk2C & 0xFF];
+        p->phase = p->unk2C;
         break;
     }
 }
@@ -1340,49 +1341,49 @@ u32 animation_interpolation_step(struct AnimInterp *p) {
     s32 one = 1;
     float s;
 
-    if (p->unkC != 0) {
-        if (p->unk20 <= p->unk1C) {
-            switch (p->unkC) {
+    if (p->mode != 0) {
+        if (p->start <= p->frame) {
+            switch (p->mode) {
             case 0x10:
             case 0x11:
-                if (p->unk1C < p->unk20 + p->unk2C)
-                    p->unk0 = p->unk0 + p->unk3C;
+                if (p->frame < p->start + p->unk2C)
+                    p->value = p->value + p->unk3C;
                 break;
             case 0x12:
             case 0x13:
-                if (p->unk1C < p->unk20 + p->unk2C) {
+                if (p->frame < p->start + p->unk2C) {
                     s = one;
-                    p->unk14 = p->unk14 + p->unk3C * s;
-                    if (p->unk14 >= 64.0f)
-                        p->unk14 = 64.0f;
-                    p->unk0 =
-                        p->unk0 + p->unk40 * (gSineTable[(s32)(p->unk14 + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256) * s;
+                    p->phase = p->phase + p->unk3C * s;
+                    if (p->phase >= 64.0f)
+                        p->phase = 64.0f;
+                    p->value =
+                        p->value + p->unk40 * (gSineTable[(s32)(p->phase + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256) * s;
                 } else
-                    p->unk0 = p->unk0 + p->unk40;
+                    p->value = p->value + p->unk40;
                 break;
             case 0x14:
             case 0x15:
-                if (p->unk1C < p->unk20 + p->unk2C)
-                    p->unk0 = p->unk0 + p->unk3C;
+                if (p->frame < p->start + p->unk2C)
+                    p->value = p->value + p->unk3C;
                 else {
-                    p->unk14 = p->unk14 + p->unk40;
-                    if (p->unk14 >= 64.0f)
-                        p->unk14 = 64.0f;
-                    p->unk0 = p->unk0 + p->unk3C * gSineTable[((s32)p->unk14 & 0xFF) + 0x40] * (1.0f / 256) * one;
+                    p->phase = p->phase + p->unk40;
+                    if (p->phase >= 64.0f)
+                        p->phase = 64.0f;
+                    p->value = p->value + p->unk3C * gSineTable[((s32)p->phase & 0xFF) + 0x40] * (1.0f / 256) * one;
                 }
                 break;
             case 0x17:
-                p->unk14 = p->unk14 + p->unk3C;
-                p->unk0 = p->unk4 + p->unk40 * gSineTable[(s32)p->unk14 & 0xFF] * one;
+                p->phase = p->phase + p->unk3C;
+                p->value = p->base + p->unk40 * gSineTable[(s32)p->phase & 0xFF] * one;
                 break;
             }
-            p->unk1C = p->unk1C + 1.0f;
-            if (p->unk24 != 0xFFFF && p->unk1C >= p->unk24) {
-                p->unkC = 0;
+            p->frame = p->frame + 1.0f;
+            if (p->end != 0xFFFF && p->frame >= p->end) {
+                p->mode = 0;
                 ret = 1;
             }
         } else
-            p->unk1C = p->unk1C + 1.0f;
+            p->frame = p->frame + 1.0f;
     }
     return ret;
 }
