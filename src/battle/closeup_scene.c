@@ -156,7 +156,7 @@ u32 closeup_right_pose_step(void) {
 
 // guess: per-side tally of successful actions, compared when TIME runs out (robattle_judge_time_up).
 void side_add_action_point(void) {
-    gBattleWork.traps[gBattleWork.actorSide].unk1++;
+    gBattleWork.traps[gBattleWork.actorSide].actionPoints++;
 }
 
 // The Medabot in unk88 gains 20 Medaforce (40 with unkC0 bit 3), up to the full 80.

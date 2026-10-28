@@ -51,9 +51,9 @@ void ring_points_place_on_hexagon(u32 radius) {
 
     dst = out[0];
     for (i = 0; i <= 17; i++) {
-        gMenuWork->ring_points[i].unk2 = *dst++ >> 8;
-        gMenuWork->ring_points[i].unk4 = *dst++ >> 8;
-        gMenuWork->ring_points[i].unk6 = 0x1E;
+        gMenuWork->ring_points[i].x = *dst++ >> 8;
+        gMenuWork->ring_points[i].y = *dst++ >> 8;
+        gMenuWork->ring_points[i].z = 0x1E;
     }
 }
 
@@ -159,11 +159,11 @@ void ring_points_place_on_circle(u16 phase) {
     s32 i;
 
     for (i = 0; i <= 17; i++) {
-        s32 radius = gMenuWork->ring_points[i].unk0;
+        s32 radius = gMenuWork->ring_points[i].radius;
         u32 idx = ((i << 8) / 18 + phase) & 0xFF;
 
-        gMenuWork->ring_points[i].unk8 = (radius * gSineTable[idx]) >> 8;
-        gMenuWork->ring_points[i].unkA = (gMenuWork->ring_points[i].unk0 * gSineTable[idx + 0x40]) >> 8;
+        gMenuWork->ring_points[i].sinOffset = (radius * gSineTable[idx]) >> 8;
+        gMenuWork->ring_points[i].cosOffset = (gMenuWork->ring_points[i].radius * gSineTable[idx + 0x40]) >> 8;
     }
 }
 
@@ -171,11 +171,11 @@ static void ring_points_place_on_circle_b(u16 phase) {
     s32 i;
 
     for (i = 0; i <= 17; i++) {
-        s32 radius = gMenuWork->ring_points[i].unk0;
+        s32 radius = gMenuWork->ring_points[i].radius;
         u32 idx = ((i << 8) / 18 + phase) & 0xFF;
 
-        gMenuWork->ring_points[i].unk8 = (radius * gSineTable[idx]) >> 8;
-        gMenuWork->ring_points[i].unkA = (gMenuWork->ring_points[i].unk0 * gSineTable[idx + 0x40]) >> 8;
+        gMenuWork->ring_points[i].sinOffset = (radius * gSineTable[idx]) >> 8;
+        gMenuWork->ring_points[i].cosOffset = (gMenuWork->ring_points[i].radius * gSineTable[idx + 0x40]) >> 8;
     }
 }
 
@@ -312,9 +312,9 @@ void update_scene_animation_frame(void) {
                               ((s16)gMenuWork->ring_rot_z[i / 18] >> 4) & 0xFF);
         }
         w = gMenuWork;
-        px = w->ring_points[j].unk2;
-        py = w->ring_points[j].unk4;
-        pz = w->ring_points[j].unk6;
+        px = w->ring_points[j].x;
+        py = w->ring_points[j].y;
+        pz = w->ring_points[j].z;
         x = px * w->matrix[0][0] + py * w->matrix[1][0] + pz * w->matrix[2][0] + w->matrix[3][0];
         y = px * w->matrix[0][2] + py * w->matrix[1][2] + pz * w->matrix[2][2] + w->matrix[3][2];
         x >>= 8;

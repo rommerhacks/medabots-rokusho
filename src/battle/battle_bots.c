@@ -86,19 +86,19 @@ void init_enemy_bot_medal(u8 i) {
     u32 skill_level;
     u32 lvl;
 
-    memcpy_bytes_08041D04(gMedalRecords[gBattleWork.encounterBots[i].unk4], &gGameWork.partAbility, 16);
+    memcpy_bytes_08041D04(gMedalRecords[gBattleWork.encounterBots[i].medal], &gGameWork.partAbility, 16);
     gBattleBots[i + 3].medal.flags = 0x80;
     gBattleBots[i + 3].medal.graphicId = (&gGameWork.partAbility)[0];
     gBattleBots[i + 3].medal.attribute = (&gGameWork.partAbility)[1];
-    gBattleBots[i + 3].medal.level = gBattleWork.encounterBots[i].unk5;
+    gBattleBots[i + 3].medal.level = gBattleWork.encounterBots[i].medalLevel;
     gBattleBots[i + 3].medal.aimSkillType = (&gGameWork.partAbility)[2];
     gBattleBots[i + 3].medal.compatibility = (&gGameWork.partAbility)[7];
-    gBattleBots[i + 3].medal.rotationLen = gBattleWork.encounterBots[i].unkA;
+    gBattleBots[i + 3].medal.rotationLen = gBattleWork.encounterBots[i].rotationLen;
     memcpy_bytes_08041D04((const void *)gMedabotNames[gBattleWork.encounterBots[i].parts[0]],
                           gBattleBots[i + 3].medal.name, 0xE);
     for (k = 0; k <= 3; k++) {
-        gBattleBots[i + 3].medal.rotation[k * 2] = gBattleWork.encounterBots[i].unk6[k] >> 4;
-        gBattleBots[i + 3].medal.rotation[k * 2 + 1] = gBattleWork.encounterBots[i].unk6[k] & 0xF;
+        gBattleBots[i + 3].medal.rotation[k * 2] = gBattleWork.encounterBots[i].rotation[k] >> 4;
+        gBattleBots[i + 3].medal.rotation[k * 2 + 1] = gBattleWork.encounterBots[i].rotation[k] & 0xF;
     }
     for (k = 0; k <= 7; k++) {
         skill_level = gMedalAttributeBaseSkills[gBattleBots[i + 3].medal.attribute * 8 + k];

@@ -1211,130 +1211,135 @@ void anim_interp_init(struct AnimInterp *anim, s32 *params) {
     anim->frame = params[4];
     anim->start = params[5];
     anim->end = params[6];
-    anim->unk28 = params[7];
-    anim->unk2C = params[8];
-    anim->unk30 = params[9];
-    anim->unk34 = params[10];
-    anim->unk38 = params[11];
-    anim->unk3C = params[12] * (1.0f / 256);
-    anim->unk40 = params[13] * (1.0f / 256);
-    anim->unk44 = params[14];
+    anim->duration = params[7];
+    anim->firstFrames = params[8];
+    anim->secondFrames = params[9];
+    anim->firstDistance = params[10];
+    anim->secondDistance = params[11];
+    anim->firstSpeed = params[12] * (1.0f / 256);
+    anim->secondSpeed = params[13] * (1.0f / 256);
+    anim->endAtStart = params[14];
     if (mode > 1)
         anim->base = anim->value;
 
     switch (anim->mode) {
     case 0x10:
-        anim->unk2C = x = anim->unk34 / float_default_to_one_if_zero(float_abs_if_negative(anim->unk3C));
+        anim->firstFrames = x =
+            anim->firstDistance / float_default_to_one_if_zero(float_abs_if_negative(anim->firstSpeed));
         anim->end = anim->start + x;
-        if (anim->unk44 != 0)
-            anim->value = anim->value - float_sign(anim->unk3C) * float_abs_if_negative(anim->unk34);
+        if (anim->endAtStart != 0)
+            anim->value = anim->value - float_sign(anim->firstSpeed) * float_abs_if_negative(anim->firstDistance);
         break;
     case 0x11:
-        anim->end = anim->start + anim->unk28;
-        anim->unk34 = anim->unk3C * anim->unk2C;
-        if (anim->unk44 != 0)
-            anim->value = anim->value - float_sign(anim->unk3C) * float_abs_if_negative(anim->unk34);
+        anim->end = anim->start + anim->duration;
+        anim->firstDistance = anim->firstSpeed * anim->firstFrames;
+        if (anim->endAtStart != 0)
+            anim->value = anim->value - float_sign(anim->firstSpeed) * float_abs_if_negative(anim->firstDistance);
         break;
     case 0x12: {
         float sum;
         s32 n;
 
-        anim->unk3C = anim->unk34 * (1.0f / 64);
+        anim->firstSpeed = anim->firstDistance * (1.0f / 64);
         phase = anim->phase;
         sum = 0.0f;
         n = 0;
         for (;;) {
-            if (anim->unk3C == 0.0f)
+            if (anim->firstSpeed == 0.0f)
                 break;
-            phase = phase + anim->unk3C;
+            phase = phase + anim->firstSpeed;
             if (phase >= 64.0f)
                 phase = 64.0f;
-            sum = sum + anim->unk40 * (gSineTable[(s32)(phase + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256);
-            if (float_abs_if_negative(sum) >= anim->unk34)
+            sum = sum + anim->secondSpeed * (gSineTable[(s32)(phase + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256);
+            if (float_abs_if_negative(sum) >= anim->firstDistance)
                 break;
             n++;
         }
-        anim->unk2C = n;
-        anim->unk30 = x = anim->unk38 / float_default_to_one_if_zero(float_abs_if_negative(anim->unk40));
-        anim->end = anim->start + anim->unk2C + x;
-        anim->unk38 = anim->unk38 + (anim->unk34 - float_abs_if_negative(sum));
-        if (anim->unk44 != 0)
-            anim->value = anim->value - float_sign(anim->unk40) *
-                                            (float_abs_if_negative(anim->unk34) + float_abs_if_negative(anim->unk38));
+        anim->firstFrames = n;
+        anim->secondFrames = x =
+            anim->secondDistance / float_default_to_one_if_zero(float_abs_if_negative(anim->secondSpeed));
+        anim->end = anim->start + anim->firstFrames + x;
+        anim->secondDistance = anim->secondDistance + (anim->firstDistance - float_abs_if_negative(sum));
+        if (anim->endAtStart != 0)
+            anim->value = anim->value - float_sign(anim->secondSpeed) * (float_abs_if_negative(anim->firstDistance) +
+                                                                         float_abs_if_negative(anim->secondDistance));
         break;
     }
     case 0x13: {
         float step;
 
-        anim->end = anim->start + anim->unk28;
-        anim->unk30 = anim->unk28 - anim->unk2C;
-        anim->unk3C = step = 64.0f / float_default_to_one_if_zero(anim->unk2C);
-        anim->unk38 = anim->unk40 * anim->unk30;
+        anim->end = anim->start + anim->duration;
+        anim->secondFrames = anim->duration - anim->firstFrames;
+        anim->firstSpeed = step = 64.0f / float_default_to_one_if_zero(anim->firstFrames);
+        anim->secondDistance = anim->secondSpeed * anim->secondFrames;
         phase = anim->phase;
-        anim->unk34 = 0.0f;
+        anim->firstDistance = 0.0f;
         for (;;) {
             if (step == 0.0f)
                 break;
             phase = phase + step;
-            anim->unk34 =
-                anim->unk34 + anim->unk40 * (gSineTable[(s32)(phase + 192.0f) & 0xFF] + 256.0f) * (1.0f / 256);
+            anim->firstDistance = anim->firstDistance + anim->secondSpeed *
+                                                            (gSineTable[(s32)(phase + 192.0f) & 0xFF] + 256.0f) *
+                                                            (1.0f / 256);
             if (phase >= 64.0f)
                 break;
         }
-        if (anim->unk44 != 0)
-            anim->value = anim->value - float_sign(anim->unk40) *
-                                            (float_abs_if_negative(anim->unk34) + float_abs_if_negative(anim->unk38));
+        if (anim->endAtStart != 0)
+            anim->value = anim->value - float_sign(anim->secondSpeed) * (float_abs_if_negative(anim->firstDistance) +
+                                                                         float_abs_if_negative(anim->secondDistance));
         break;
     }
     case 0x14: {
         float sum;
         s32 n;
 
-        anim->unk40 = 64.0f / anim->unk38;
+        anim->secondSpeed = 64.0f / anim->secondDistance;
         phase = anim->phase;
         sum = 0.0f;
         n = 0;
         for (;;) {
-            phase = phase + anim->unk40;
+            phase = phase + anim->secondSpeed;
             if (phase >= 64.0f)
                 phase = 64.0f;
-            sum = sum + anim->unk3C * gSineTable[((s32)phase & 0xFF) + 0x40] * (1.0f / 256);
+            sum = sum + anim->firstSpeed * gSineTable[((s32)phase & 0xFF) + 0x40] * (1.0f / 256);
             if (phase == 64.0f)
                 break;
             n++;
         }
-        anim->unk30 = n;
-        anim->unk34 = anim->unk34 + (anim->unk38 - float_abs_if_negative(sum));
-        anim->unk38 = float_abs_if_negative(sum);
-        anim->unk2C = x = anim->unk34 / float_default_to_one_if_zero(float_abs_if_negative(anim->unk3C));
-        anim->end = anim->start + x + anim->unk30;
-        if (anim->unk44 != 0)
-            anim->value = anim->value - float_sign(anim->unk3C) *
-                                            (float_abs_if_negative(anim->unk34) + float_abs_if_negative(anim->unk38));
+        anim->secondFrames = n;
+        anim->firstDistance = anim->firstDistance + (anim->secondDistance - float_abs_if_negative(sum));
+        anim->secondDistance = float_abs_if_negative(sum);
+        anim->firstFrames = x =
+            anim->firstDistance / float_default_to_one_if_zero(float_abs_if_negative(anim->firstSpeed));
+        anim->end = anim->start + x + anim->secondFrames;
+        if (anim->endAtStart != 0)
+            anim->value = anim->value - float_sign(anim->firstSpeed) * (float_abs_if_negative(anim->firstDistance) +
+                                                                        float_abs_if_negative(anim->secondDistance));
         break;
     }
     case 0x15: {
 
-        anim->end = anim->start + anim->unk28;
-        anim->unk34 = anim->unk3C * (anim->unk2C = anim->unk28 - anim->unk30);
-        anim->unk40 = 64.0f / float_default_to_one_if_zero(anim->unk30);
+        anim->end = anim->start + anim->duration;
+        anim->firstDistance = anim->firstSpeed * (anim->firstFrames = anim->duration - anim->secondFrames);
+        anim->secondSpeed = 64.0f / float_default_to_one_if_zero(anim->secondFrames);
         phase = anim->phase;
-        anim->unk38 = 0.0f;
+        anim->secondDistance = 0.0f;
         for (;;) {
-            phase = phase + anim->unk40;
-            anim->unk38 = anim->unk38 + anim->unk3C * gSineTable[((s32)phase & 0xFF) + 0x40] * (1.0f / 256);
+            phase = phase + anim->secondSpeed;
+            anim->secondDistance =
+                anim->secondDistance + anim->firstSpeed * gSineTable[((s32)phase & 0xFF) + 0x40] * (1.0f / 256);
             if (phase >= 64.0f)
                 break;
         }
-        if (anim->unk44 != 0)
-            anim->value = anim->value - float_sign(anim->unk3C) *
-                                            (float_abs_if_negative(anim->unk34) + float_abs_if_negative(anim->unk38));
+        if (anim->endAtStart != 0)
+            anim->value = anim->value - float_sign(anim->firstSpeed) * (float_abs_if_negative(anim->firstDistance) +
+                                                                        float_abs_if_negative(anim->secondDistance));
         break;
     }
     case 0x17:
-        anim->end = anim->start + anim->unk28;
-        anim->value = anim->base + anim->unk40 * gSineTable[(s32)anim->unk2C & 0xFF];
-        anim->phase = anim->unk2C;
+        anim->end = anim->start + anim->duration;
+        anim->value = anim->base + anim->secondSpeed * gSineTable[(s32)anim->firstFrames & 0xFF];
+        anim->phase = anim->firstFrames;
         break;
     }
 }
@@ -1349,37 +1354,37 @@ u32 animation_interpolation_step(struct AnimInterp *anim) {
             switch (anim->mode) {
             case 0x10:
             case 0x11:
-                if (anim->frame < anim->start + anim->unk2C)
-                    anim->value = anim->value + anim->unk3C;
+                if (anim->frame < anim->start + anim->firstFrames)
+                    anim->value = anim->value + anim->firstSpeed;
                 break;
             case 0x12:
             case 0x13:
-                if (anim->frame < anim->start + anim->unk2C) {
+                if (anim->frame < anim->start + anim->firstFrames) {
                     scale = one;
-                    anim->phase = anim->phase + anim->unk3C * scale;
+                    anim->phase = anim->phase + anim->firstSpeed * scale;
                     if (anim->phase >= 64.0f)
                         anim->phase = 64.0f;
-                    anim->value = anim->value + anim->unk40 *
+                    anim->value = anim->value + anim->secondSpeed *
                                                     (gSineTable[(s32)(anim->phase + 192.0f) & 0xFF] + 256.0f) *
                                                     (1.0f / 256) * scale;
                 } else
-                    anim->value = anim->value + anim->unk40;
+                    anim->value = anim->value + anim->secondSpeed;
                 break;
             case 0x14:
             case 0x15:
-                if (anim->frame < anim->start + anim->unk2C)
-                    anim->value = anim->value + anim->unk3C;
+                if (anim->frame < anim->start + anim->firstFrames)
+                    anim->value = anim->value + anim->firstSpeed;
                 else {
-                    anim->phase = anim->phase + anim->unk40;
+                    anim->phase = anim->phase + anim->secondSpeed;
                     if (anim->phase >= 64.0f)
                         anim->phase = 64.0f;
-                    anim->value =
-                        anim->value + anim->unk3C * gSineTable[((s32)anim->phase & 0xFF) + 0x40] * (1.0f / 256) * one;
+                    anim->value = anim->value +
+                                  anim->firstSpeed * gSineTable[((s32)anim->phase & 0xFF) + 0x40] * (1.0f / 256) * one;
                 }
                 break;
             case 0x17:
-                anim->phase = anim->phase + anim->unk3C;
-                anim->value = anim->base + anim->unk40 * gSineTable[(s32)anim->phase & 0xFF] * one;
+                anim->phase = anim->phase + anim->firstSpeed;
+                anim->value = anim->base + anim->secondSpeed * gSineTable[(s32)anim->phase & 0xFF] * one;
                 break;
             }
             anim->frame = anim->frame + 1.0f;

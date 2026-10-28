@@ -19,7 +19,7 @@ void battle_calc_attack_success(void) {
         gBattleWork.success += gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[5] << 4;
     if (gBattleBots[gBattleWork.actor].formFlags & 4)
         gBattleWork.success += gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[5];
-    gBattleWork.success += gBattleWork.traps[gBattleWork.actorSide].unk0;
+    gBattleWork.success += gBattleWork.traps[gBattleWork.actorSide].successBonus;
     success_add_strengthen_parts(gBattleWork.actor);
     if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == 8)
         goto add;

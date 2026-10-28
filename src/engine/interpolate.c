@@ -23,9 +23,9 @@ s32 interpolate_entity_positions(struct InterpEnt *ents, s16 *pos, s8 *off, u8 *
             if (frame < end) {
                 rem = end - frame;
                 delta = *pos;
-                cands[0].val = delta - ents[i].unkC;
-                cands[1].val = delta - wrap(ents[i].unkC, -0x10000);
-                cands[2].val = delta - wrap(ents[i].unkC, 0x10000);
+                cands[0].val = delta - ents[i].angle;
+                cands[1].val = delta - wrap(ents[i].angle, -0x10000);
+                cands[2].val = delta - wrap(ents[i].angle, 0x10000);
                 cands[0].abs = cands[0].val;
                 cands[1].abs = cands[1].val;
                 cands[2].abs = cands[2].val;
@@ -46,16 +46,16 @@ s32 interpolate_entity_positions(struct InterpEnt *ents, s16 *pos, s8 *off, u8 *
                     else
                         delta = cands[0].val;
                 }
-                ents[i].unkC += Div(delta, rem);
+                ents[i].angle += Div(delta, rem);
                 if (off != NULL) {
-                    ents[i].unk8 += Div((off[0] << 8) - ents[i].unk8, rem);
-                    ents[i].unkA += Div((off[1] << 8) - ents[i].unkA, rem);
+                    ents[i].offsetX += Div((off[0] << 8) - ents[i].offsetX, rem);
+                    ents[i].offsetY += Div((off[1] << 8) - ents[i].offsetY, rem);
                 }
             } else {
-                ents[i].unkC = *pos;
+                ents[i].angle = *pos;
                 if (off != NULL) {
-                    ents[i].unk8 = off[0] << 8;
-                    ents[i].unkA = off[1] << 8;
+                    ents[i].offsetX = off[0] << 8;
+                    ents[i].offsetY = off[1] << 8;
                 }
                 done++;
             }

@@ -2701,8 +2701,8 @@ void medaforce_spy_game_arrows_shrink(void) {
 }
 
 void medaforce_spy_game_apply_bonus(void) {
-    add_u8_capped(&gBattleWork.traps[gBattleWork.actorSide].unk0, gBattleWork.amount, 0xA0);
-    subtract_u8_floored(&gBattleWork.traps[gBattleWork.otherSide].unk0, gBattleWork.amount);
+    add_u8_capped(&gBattleWork.traps[gBattleWork.actorSide].successBonus, gBattleWork.amount, 0xA0);
+    subtract_u8_floored(&gBattleWork.traps[gBattleWork.otherSide].successBonus, gBattleWork.amount);
     gBattleWork.step++;
 }
 

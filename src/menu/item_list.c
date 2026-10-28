@@ -142,7 +142,7 @@ void shop_build_sell_list(void) {
             entry->id = i;
             entry->count = gMedapartInventory[row + i * 2] - gMedapartInventory[row + i * 2 + 1];
             load_part_data(i, kind, pd);
-            entry->unk3 = pd[3];
+            entry->gender = pd[3];
             price[n * 2] = pd[0xB] * 100;
             n++;
         }
@@ -185,7 +185,7 @@ void render_battle_medapart_list(u32 mode) {
     for (i = 0; i < n; i++) {
         ids[i] = ((struct ShopSellEntry *)0x02040000)[first].id;
         counts[i] = ((struct ShopSellEntry *)0x02040000)[first].count;
-        genders[i] = ((struct ShopSellEntry *)0x02040000)[first].unk3;
+        genders[i] = ((struct ShopSellEntry *)0x02040000)[first].gender;
         prices[i] = ((struct ShopSellEntry *)0x02040000)[first].price;
         if (mode)
             prices[i] /= 2;

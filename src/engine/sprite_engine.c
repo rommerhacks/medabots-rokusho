@@ -287,10 +287,10 @@ u32 setup_oam_sprite_entries(struct OamData *oams, void *tiles, void *pal, const
 u32 init_sprite_object_entry(struct SpriteOamList *obj, struct OamData *oams, void *tiles, void *pal,
                              const struct SpriteDesc *desc, const struct SpriteAnchor *anchor, u8 pal_num, u16 tile) {
     obj->oams = oams;
-    obj->unk4 = anchor;
+    obj->anchor = anchor;
     obj->w = desc->w;
     obj->h = desc->h;
-    obj->depth = anchor->unk6;
+    obj->depth = anchor->depth;
     return setup_oam_sprite_entries(oams, tiles, pal, desc, anchor, pal_num, tile);
 }
 
@@ -348,7 +348,7 @@ static u16 binary_search_sorted_table(struct SortEntry *arr, u16 n, u16 key) {
         hi = n - 1;
         mid = (lo + hi) >> 1;
         while (mid != lo && mid != hi) {
-            depth = arr[mid].unk6;
+            depth = arr[mid].value2;
             if (depth == (s16)key)
                 break;
             if (depth < (s16)key)
@@ -357,7 +357,7 @@ static u16 binary_search_sorted_table(struct SortEntry *arr, u16 n, u16 key) {
                 hi = mid;
             mid = (lo + hi) >> 1;
         }
-        while (mid < n && (s16)arr[mid].unk6 <= (s16)key)
+        while (mid < n && (s16)arr[mid].value2 <= (s16)key)
             mid++;
     }
     return mid;
@@ -581,8 +581,8 @@ void move_sprite_object(struct SpriteOamList *obj, s16 y, s16 x, s32 mode) {
             y += ((struct OamBits *)obj->oams)->y;
             x += ((struct OamBits *)obj->oams)->x;
         } else {
-            y += (s16)obj->unk4->unk4;
-            x += (s16)obj->unk4->unk2;
+            y += (s16)obj->anchor->offsetY;
+            x += (s16)obj->anchor->offsetX;
         }
     }
     set_oam_sprite_tile_positions(obj, y, x, obj->depth);
@@ -843,8 +843,8 @@ u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct O
         for (src = gLegPartSpriteNodes[legs]; src->node;)
             *dst++ = *src++;
     render_sprite_node_recursive(&obj.o, buf, 1, x << 8, y << 8, depth, 0, alt);
-    CpuSet(((struct SpriteWork *)obj.o.unk0)->oamBuf, oam, gSpriteWork->oamCount << 2);
-    CpuSet(((struct SpriteWork *)obj.o.unk0)->affineBuf, affine, 0x80);
+    CpuSet(((struct SpriteWork *)obj.o.spriteWork)->oamBuf, oam, gSpriteWork->oamCount << 2);
+    CpuSet(((struct SpriteWork *)obj.o.spriteWork)->affineBuf, affine, 0x80);
     return gSpriteWork->oamCount;
 }
 
@@ -868,19 +868,19 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
     if (flip) {
         u8 mirror_node = gMirroredPartNode[node];
         desc = obj->nodes[mirror_node];
-        rot = obj->oams[mirror_node].unkC;
-        offx = obj->oams[mirror_node].unk8;
-        offy = obj->oams[mirror_node].unkA;
+        rot = obj->oams[mirror_node].rotation;
+        offx = obj->oams[mirror_node].offsetX;
+        offy = obj->oams[mirror_node].offsetY;
     } else {
-        rot = oam->unkC;
-        offx = oam->unk8;
-        offy = oam->unkA;
+        rot = oam->rotation;
+        offx = oam->offsetX;
+        offy = oam->offsetY;
     }
-    z = depth + desc->unkE;
+    z = depth + desc->depthOffset;
     if (z < 0)
         z = 0;
-    dx = desc->unkC + (offx >> 8);
-    dy = desc->unkD + (offy >> 8);
+    dx = desc->jointX + (offx >> 8);
+    dy = desc->jointY + (offy >> 8);
     ObjAffineSet(&src, &affine_dst, 1, 2);
     if (flip)
         src.rotation = -src.rotation;
@@ -918,38 +918,38 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
             else
                 src.rotation -= rot;
             ObjAffineSet(&src, &affine_dst, 1, 2);
-            oam->oam.matrixNum = ((struct SpriteWork *)obj->unk0)->affineIdx & 7;
-            oam->oam.hFlip = (u8)(((struct SpriteWork *)obj->unk0)->affineIdx & 8) >> 3;
-            oam->oam.vFlip = (u8)(((struct SpriteWork *)obj->unk0)->affineIdx & 0x10) >> 4;
-            dx = ((struct SpriteWork *)obj->unk0)->affineIdx * 4;
+            oam->oam.matrixNum = ((struct SpriteWork *)obj->spriteWork)->affineIdx & 7;
+            oam->oam.hFlip = (u8)(((struct SpriteWork *)obj->spriteWork)->affineIdx & 8) >> 3;
+            oam->oam.vFlip = (u8)(((struct SpriteWork *)obj->spriteWork)->affineIdx & 0x10) >> 4;
+            dx = ((struct SpriteWork *)obj->spriteWork)->affineIdx * 4;
             if (flip) {
                 affine_dst.pa = -affine_dst.pa;
                 affine_dst.pb = -affine_dst.pb;
             }
-            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = affine_dst.pa;
+            ((struct SpriteWork *)obj->spriteWork)->affineBuf[dx] = affine_dst.pa;
             dx++;
-            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = affine_dst.pb;
+            ((struct SpriteWork *)obj->spriteWork)->affineBuf[dx] = affine_dst.pb;
             dx++;
-            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = affine_dst.pc;
+            ((struct SpriteWork *)obj->spriteWork)->affineBuf[dx] = affine_dst.pc;
             dx++;
-            ((struct SpriteWork *)obj->unk0)->affineBuf[dx] = affine_dst.pd;
-            if (++((struct SpriteWork *)obj->unk0)->affineIdx > 0x1F)
-                ((struct SpriteWork *)obj->unk0)->affineIdx = 0;
+            ((struct SpriteWork *)obj->spriteWork)->affineBuf[dx] = affine_dst.pd;
+            if (++((struct SpriteWork *)obj->spriteWork)->affineIdx > 0x1F)
+                ((struct SpriteWork *)obj->spriteWork)->affineIdx = 0;
         }
         if (vis) {
             offx = desc->width >> 1;
             offy = desc->height >> 1;
-            dx = desc->unk4 - offx;
-            dy = desc->unk8 - offy;
+            dx = desc->pivotX - offx;
+            dy = desc->pivotY - offy;
 
             offx = y - (affine_dst.pb * dy + affine_dst.pd * dx + (offx << 8));
             offy = x - (affine_dst.pa * dy + affine_dst.pc * dx + (offy << 8));
         } else {
-            offx = y - (desc->unk4 << 8);
+            offx = y - (desc->pivotX << 8);
             if (flip)
-                offy = x - ((desc->height - desc->unk8) << 8);
+                offy = x - ((desc->height - desc->pivotY) << 8);
             else
-                offy = x - (desc->unk8 << 8);
+                offy = x - (desc->pivotY << 8);
         }
         while ((s8)gSpriteWork->oamCount < 0)
             ;
@@ -1038,8 +1038,8 @@ void draw_medapart_sprite(struct OamData *oam, struct SpriteTree *obj, u32 id, u
         gMedabotSpriteSlots[slot].flags |= 4;
         gMedabotSpriteSlots[slot].flags |= 8;
     } else if (gMedabotSpriteSlots[slot].flags & 8) {
-        x -= obj->nodes[list->node]->unkC;
-        y -= obj->nodes[list->node]->unkD;
+        x -= obj->nodes[list->node]->jointX;
+        y -= obj->nodes[list->node]->jointY;
         render_sprite_node_recursive(obj, list, list->node, x << 8, y << 8, tile, 0, slot);
     }
 }
@@ -1244,7 +1244,7 @@ static void load_medabot_part_sprite_tree(u32 unused0, struct SpriteTree *obj, s
 
 // Binds a sprite tree to its work buffer, node descriptors and per-node OAM, with no OAM entries yet.
 void init_sprite_tree(struct SpriteTree *obj, u8 *buf, struct SpriteNodeDesc **nodes, struct SpriteNodeOam *oams) {
-    obj->unk0 = buf;
+    obj->spriteWork = buf;
     obj->nodes = nodes;
     obj->oams = oams;
     buf[0x1094] = 0;

@@ -87,7 +87,7 @@ void shop_list_init(void) {
                 list[i].id = *stock;
                 list[i].count = gMedapartInventory[list[i].id * 2 + gMenuWork->part_kind * 240];
                 load_part_data(list[i].id, gMenuWork->part_kind, &gGameWork.partAbility);
-                list[i].unk3 = (&gGameWork.partAbility)[3];
+                list[i].gender = (&gGameWork.partAbility)[3];
                 prices[i * 2] = (&gGameWork.partAbility)[0xB] * 100;
             } else {
                 break;

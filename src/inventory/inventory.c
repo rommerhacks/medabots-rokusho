@@ -261,7 +261,7 @@ void item_remove_quantity(u8 id, u8 n) {
 // Bubble sort of the n SORT_BUFFER entries (struct SortEntry), ascending by key then key2.
 
 static void sort_buffer_ascending(u8 n) {
-    u16 tmp_key, tmp_key2, tmp_value, tmp_unk6;
+    u16 tmp_key, tmp_key2, tmp_value, tmp_value2;
     u32 j;
     struct SortEntry *cur, *next;
 
@@ -275,28 +275,28 @@ static void sort_buffer_ascending(u8 n) {
                 tmp_key = cur->key;
                 tmp_key2 = cur->key2;
                 tmp_value = cur->value;
-                tmp_unk6 = cur->unk6;
+                tmp_value2 = cur->value2;
                 cur->key = next->key;
                 cur->key2 = next->key2;
                 cur->value = next->value;
-                cur->unk6 = next->unk6;
+                cur->value2 = next->value2;
                 next->key = tmp_key;
                 next->key2 = tmp_key2;
                 next->value = tmp_value;
-                next->unk6 = tmp_unk6;
+                next->value2 = tmp_value2;
             } else if (cur->key == next->key && cur->key2 > next->key2) {
                 tmp_key = cur->key;
                 tmp_key2 = cur->key2;
                 tmp_value = cur->value;
-                tmp_unk6 = cur->unk6;
+                tmp_value2 = cur->value2;
                 cur->key = next->key;
                 cur->key2 = next->key2;
                 cur->value = next->value;
-                cur->unk6 = next->unk6;
+                cur->value2 = next->value2;
                 next->key = tmp_key;
                 next->key2 = tmp_key2;
                 next->value = tmp_value;
-                next->unk6 = tmp_unk6;
+                next->value2 = tmp_value2;
             }
         }
     }
@@ -305,7 +305,7 @@ static void sort_buffer_ascending(u8 n) {
 // Bubble sort of the n SORT_BUFFER entries (struct SortEntry), descending by key then key2.
 
 void sort_buffer_descending(u8 n) {
-    u16 tmp_key, tmp_key2, tmp_value, tmp_unk6;
+    u16 tmp_key, tmp_key2, tmp_value, tmp_value2;
     u32 j;
     struct SortEntry *cur, *next;
 
@@ -319,28 +319,28 @@ void sort_buffer_descending(u8 n) {
                 tmp_key = cur->key;
                 tmp_key2 = cur->key2;
                 tmp_value = cur->value;
-                tmp_unk6 = cur->unk6;
+                tmp_value2 = cur->value2;
                 cur->key = next->key;
                 cur->key2 = next->key2;
                 cur->value = next->value;
-                cur->unk6 = next->unk6;
+                cur->value2 = next->value2;
                 next->key = tmp_key;
                 next->key2 = tmp_key2;
                 next->value = tmp_value;
-                next->unk6 = tmp_unk6;
+                next->value2 = tmp_value2;
             } else if (cur->key == next->key && cur->key2 < next->key2) {
                 tmp_key = cur->key;
                 tmp_key2 = cur->key2;
                 tmp_value = cur->value;
-                tmp_unk6 = cur->unk6;
+                tmp_value2 = cur->value2;
                 cur->key = next->key;
                 cur->key2 = next->key2;
                 cur->value = next->value;
-                cur->unk6 = next->unk6;
+                cur->value2 = next->value2;
                 next->key = tmp_key;
                 next->key2 = tmp_key2;
                 next->value = tmp_value;
-                next->unk6 = tmp_unk6;
+                next->value2 = tmp_value2;
             }
         }
     }

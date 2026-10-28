@@ -39,7 +39,7 @@ void event_picture_init(void) {
     REG_DISPCNT = 0x60;
     gSceneWork.nextMode = 3;
     gSceneWork.nextState = 3;
-    gSceneWork.unkC.h = gFieldSceneParams.event_picture_id;
+    gSceneWork.param.h = gFieldSceneParams.event_picture_id;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;
@@ -56,8 +56,8 @@ void battle_init_tilemap_and_palette(void) {
     u16 out[20 * 32];
     s32 i, j;
 
-    LZ77UnCompVram(gStoryIntroTiles[gSceneWork.unkC.h], (void *)(VRAM + 0x8000));
-    LZ77UnCompVram(gStoryIntroTilemaps[gSceneWork.unkC.h], map);
+    LZ77UnCompVram(gStoryIntroTiles[gSceneWork.param.h], (void *)(VRAM + 0x8000));
+    LZ77UnCompVram(gStoryIntroTilemaps[gSceneWork.param.h], map);
     for (i = 0; i < 20; i++) {
         for (j = 0; j < 30; j++)
             out[i * 32 + j] = map[i][j];
@@ -65,7 +65,7 @@ void battle_init_tilemap_and_palette(void) {
         out[i * 32 + 31] = 0;
     }
     DmaSet(3, out, VRAM + 0x7800, 0x84000140);
-    DmaSet(3, gStoryIntroPalettes[gSceneWork.unkC.h], PLTT, 0x800000E0);
+    DmaSet(3, gStoryIntroPalettes[gSceneWork.param.h], PLTT, 0x800000E0);
     REG_BG1CNT = 0xF8B;
     setup_screen_transition_effect_080682CC(2, 1, 0);
     text_window_init(1, 2, 0);
@@ -75,7 +75,7 @@ void battle_init_tilemap_and_palette(void) {
 }
 
 void dispatch_battle_event_script(void) {
-    if (run_message(gStoryIntroTexts[gSceneWork.unkC.h])) {
+    if (run_message(gStoryIntroTexts[gSceneWork.param.h])) {
         gSceneWork.nextSubState = 5;
         gGameSubState = 2;
     }

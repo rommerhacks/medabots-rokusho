@@ -182,7 +182,7 @@ void advance_sprite_animation_frame(u8 idx) {
     case 0xFFFC:
         if (gSpriteEntries[idx].unk23 == 0) {
             gfx = &gSpriteAnimGfx[operand];
-            if (gfx->unk0 == 0)
+            if (gfx->noDecompress == 0)
                 LZ77UnCompVram(gfx->src, gfx->dst);
         }
     default:

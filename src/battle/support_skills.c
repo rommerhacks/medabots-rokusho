@@ -142,7 +142,7 @@ void scout_arrows_shrink(void) {
 
 // Raises the side bonus unk28[side].unk0 by unkEC (up to 0xA0): Scout raises Power and success for the team.
 void scout_apply_bonus(void) {
-    add_u8_capped(&gBattleWork.traps[gBattleWork.actorSide].unk0, gBattleWork.amount, 0xA0);
+    add_u8_capped(&gBattleWork.traps[gBattleWork.actorSide].successBonus, gBattleWork.amount, 0xA0);
     gBattleWork.step++;
 }
 

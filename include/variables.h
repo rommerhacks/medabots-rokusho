@@ -223,7 +223,7 @@ extern const Func
 extern const Func gIntroSubStates[]; // game mode 3 state 1 (the animated intro after the logos) sub-states, by
                                      // gGameSubState (intro_update)
 extern const void
-    *const gStoryIntroTexts[]; // story intro texts, by page gSceneWork.unkC.h (dispatch_battle_event_script)
+    *const gStoryIntroTexts[]; // story intro texts, by page gSceneWork.param.h (dispatch_battle_event_script)
 extern const void *const gStoryIntroTiles[];       // story intro compressed tiles (to 0x06008000), by page
 extern const void *const gStoryIntroTilemaps[];    // story intro compressed tilemaps (30x20), by page
 extern const void *const gStoryIntroPalettes[];    // story intro palettes (0xE0 halfwords), by page
@@ -1386,7 +1386,7 @@ extern u16
 extern const u8 gWeeklyLectureSfxScript[13]; // weekly_lecture_run_pose script: pairs (0, n) = wait n frames, (1, id) =
                                              // play_sound_effect(id)
 extern u32 (*const gWeeklyLectureSteps[])(
-    void); // Medabots Lecture steps by gSceneWork.unk10.lecture.state (weekly_lecture_run_step); 1 = done
+    void); // Medabots Lecture steps by gSceneWork.progress.lecture.state (weekly_lecture_run_step); 1 = done
 extern const struct SpriteAnimCmd *const gSpriteAnimScripts[];
 extern const struct SpriteAnimGfx gSpriteAnimGfx[];
 extern const u8 gMapScripts[]; // banked map script data, the base of gMapScriptData (read_map_script_byte)

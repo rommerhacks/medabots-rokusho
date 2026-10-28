@@ -7,37 +7,37 @@ void init_blend_effect(void *state, u8 level, u8 delay, s8 step, u16 mode) {
     u16 zero = 0;
     vu16 *reg;
     blend->mode = mode;
-    blend->unk2 = level;
-    blend->unk3 = delay;
-    blend->unk5 = step;
+    blend->level = level;
+    blend->delay = delay;
+    blend->step = step;
     REG_BLDCNT = mode | 0x3F;
     reg = &REG_BLDALPHA;
     *reg = zero;
     reg++;
-    *reg = blend->unk2;
+    *reg = blend->level;
 }
 
 u32 blend_fade_step_08065598(void *state) {
     struct BlendEffect *blend = state;
     u32 done = 0;
-    if (blend->unk5 == 0) {
+    if (blend->step == 0) {
         done = 1;
     } else {
         REG_BLDCNT = blend->mode | 0x3F;
         REG_BLDALPHA = done;
-        REG_BLDY = blend->unk2;
-        if (++blend->unk4 >= blend->unk3) {
-            blend->unk4 = 0;
-            if (blend->unk5 > 0 && blend->unk2 > 0xF) {
-                blend->unk5 = 0;
+        REG_BLDY = blend->level;
+        if (++blend->counter >= blend->delay) {
+            blend->counter = 0;
+            if (blend->step > 0 && blend->level > 0xF) {
+                blend->step = 0;
                 done = 1;
             }
-            if (blend->unk5 < 0 && blend->unk2 == 0) {
-                blend->unk5 = 0;
+            if (blend->step < 0 && blend->level == 0) {
+                blend->step = 0;
                 done = 1;
             }
             if (done == 0)
-                blend->unk2 += blend->unk5;
+                blend->level += blend->step;
         }
     }
     return done;

@@ -53,9 +53,9 @@ void bomb_game_init(void) {
     gSceneWork.nextMode = 3;
     gSceneWork.nextState = 5;
     gSceneWork.timer = 0;
-    gSceneWork.unkC.s[1] = 12; // dropInterval
-    gSceneWork.unkC.s[0] = 50; // roundBombs
-    gSceneWork.unkC.s[2] = 0;  // bombsLeft
+    gSceneWork.param.s[1] = 12; // dropInterval
+    gSceneWork.param.s[0] = 50; // roundBombs
+    gSceneWork.param.s[2] = 0;  // bombsLeft
     play_song(0);
     setup_screen_transition_effect_080682CC(3, 2, 0);
     gBg0Scroll.x = 0;

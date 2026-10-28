@@ -128,14 +128,14 @@ struct SceneWork {
     u16 nextMode; // gGameMode / gGameState / gGameSubState to go to when the scene ends
     u16 nextState;
     u16 nextSubState;
-    u16 unk6;
-    s32 timer;             // frame counter of the current step
-    union {                // 4 bytes: agbcc pads unions to a word
-        u16 h;             // story intro: page (graphics gStoryIntroTiles / text gStoryIntroTexts)
+    u16 stepFrames; // frames per step: mosaic fade-in step (intro), wait before leaving (title_screen_wait_then_exit)
+    s32 timer;      // frame counter of the current step
+    union {         // 4 bytes: agbcc pads unions to a word
+        u16 h;      // story intro: page (graphics gStoryIntroTiles / text gStoryIntroTexts)
         u16 afterSubState; // opening intro: sub-state to run after the next silhouette / scan step
         u8 b;              // boot logos: nonzero once START may skip them (boot_logos_check_skip)
         s8 s[4];           // bomb minigame: roundBombs / dropInterval / bombsLeft (struct BombGameWork)
-    } unkC;
+    } param;
     union {
         s32 w; // countdown: play_song(3) when it reaches 0
         struct {
@@ -144,27 +144,27 @@ struct SceneWork {
             u8 pos;   // script position (weekly_lecture_run_pose)
             u8 pad;
         } lecture;
-    } unk10;
+    } progress;
     u8 filler14[0x1A];
     // The rest is the opening intro's Medapart scan screen (title/intro.c).
     u8 scanTextLen; // glyphs typed into the 10x4 scan text box (intro_type_scan_text)
-    u8 unk2F;
+    u8 filler2F;
     u16 scanTextGlyphs[0x50]; // scan text glyphs, decompressed by intro_load_scan_sprites
     u8 partNameLen;           // letters typed of the part name (intro_type_part_name)
-    u8 unkD1;
+    u8 fillerD1;
     u16 partNameTiles[13]; // part name tile row, DMA'd to 0x0600FC44
     u8 lineStep;           // tile step of the pointer line being drawn (intro_draw_pointer_line)
     u8 lineIdx;            // pointer line being drawn (0-2)
     s8 flashAlpha;         // BLDALPHA fade of the lightning flash (intro_flash_state)
-    u8 unkEF;
+    u8 fillerEF;
     u16 frameCounter; // counter readouts in the top right (intro_draw_counters)
     u16 noiseCounter;
-    u16 unkF4; // guess: Rokusho pose scroll/scale values (only intro_init / intro_rokusho_pose_state)
-    u16 unkF6;
+    u16 poseCounterUp;   // guess: Rokusho pose scroll / scale values; +0x10 a frame, never read in C
+    u16 poseCounterDown; // -0x10 a frame (intro_rokusho_pose_state), never read in C
 };
 
 // 0x03001800 while game mode 3 state 5 (gBombGameStates, the bomb minigame) is active; the same RAM as
-// gBattleWork (bomb_game_init sets the first three counters through SceneWork.unkC).
+// gBattleWork (bomb_game_init sets the first three counters through SceneWork.param).
 struct BombGameWork {
     u8 filler0[8];
     s32 timer;          // frames since the round started; bombs drop when it passes nextDropTime
@@ -180,8 +180,8 @@ struct BombGameWork {
 // 0x03001800 during game mode 3 state 6, the "Medabots Weekly" TV show (medabots_weekly_update); the same RAM
 // as gBattleWork.
 struct MedabotsWeeklyWork {
-    u16 unk0; // next mode? (cf. SceneWork.nextMode)
-    u16 unk2; // next state?
+    u16 nextMode; // same as SceneWork.nextMode
+    u16 nextState;
     u8 filler4[8];
     u8 scrollBg3;  // nonzero: scroll BG3 every other frame (weekly_scroll_bg3)
     u8 animTiles;  // nonzero: animate BG tiles (weekly_update_studio)
@@ -541,10 +541,10 @@ struct SpriteWork {
 // Opponent Medabot in an encounter setup (gBattleWork.encounterBots).
 struct EncounterBot {
     u8 parts[4]; // head, right arm, left arm, legs part ids
-    u8 unk4;     // Medal (gMedalRecords record; init_enemy_bot_medal)
-    u8 unk5;     // Medal level
-    u8 unk6[4];  // two 4-bit Medal record unk18 entries per byte
-    u8 unkA;     // Medal record unk9
+    u8 medal;    // Medal (gMedalRecords record; init_enemy_bot_medal)
+    u8 medalLevel;
+    u8 rotation[4]; // MedalData.rotation, two 4-bit entries per byte (high nibble first)
+    u8 rotationLen; // MedalData.rotationLen
     u8 fillerB;
 };
 
@@ -594,20 +594,21 @@ struct SortEntry {
     u16 key;
     u16 key2;
     u16 value;
-    u16 unk6;
+    u16 value2; // carried along by the sorts; sprite depth for binary_search_sorted_table
 };
 // The game indexes it through the constant address (a symbol doesn't match find_most_damaged_part).
 #define SORT_BUFFER ((struct SortEntry *)0x02023000)
 
 // Per-side record at gBattleWork.traps (0 team, 1 opponents).
 struct BattleSideTrap {
-    u8 unk0;
-    u8 unk1;       // compared between the sides when TIME runs out with a tie (robattle_judge_time_up)
-    u8 active;     // a trap / Team Form is laid on this side (trap_apply)
-    u8 skill;      // its skill id: 0xA Grap Trap, 0xB Shot Trap, 0xC Attack Clr, 0x33 Team Form, 0x5A Medaforce trap
-    u8 durability; // traps: worn down by the caught Medabot's legs (trap_hit_wear); Attack Clr: uses left;
-                   // Team Form: added to the attack power (action_calc)
-    u8 power;      // trap: damage dealt when it springs (trap_hit_calc_damage)
+    u8 successBonus; // added to the attack success (battle_calc_attack_success); raised by Scout / Spy Game, max 0xA0
+    u8 actionPoints; // +1 per action (side_add_action_point); compared between the sides when TIME runs out with a tie
+                     // (robattle_judge_time_up)
+    u8 active;       // a trap / Team Form is laid on this side (trap_apply)
+    u8 skill;        // its skill id: 0xA Grap Trap, 0xB Shot Trap, 0xC Attack Clr, 0x33 Team Form, 0x5A Medaforce trap
+    u8 durability;   // traps: worn down by the caught Medabot's legs (trap_hit_wear); Attack Clr: uses left;
+                     // Team Form: added to the attack power (action_calc)
+    u8 power;        // trap: damage dealt when it springs (trap_hit_calc_damage)
     u8 unk6;
     u8 unk7;
 };
@@ -1155,7 +1156,7 @@ struct SpriteAnimCmd {
 };
 
 struct SpriteAnimGfx {
-    u8 unk0;
+    u8 noDecompress; // nonzero: animation command 0xFFFC skips the LZ77 copy (advance_sprite_animation_frame)
     u8 filler1[3];
     const void *src;
     void *dst;
@@ -1190,21 +1191,22 @@ struct AnimInterp {
     float value;
     float base; // value before the move (modes > 1)
     u8 filler8[4];
-    s32 mode; // 0 = idle; 0x10-0x14 (anim_interp_init) pick the curve
-    float unk10;
-    float phase; // sine table index
-    float unk18;
-    float frame; // frame counter
-    s32 start;   // frame the move starts
-    s32 end;     // frame it ends, 0xFFFF = none
-    float unk28;
-    float unk2C;
-    float unk30;
-    float unk34;
-    float unk38;
-    float unk3C;
-    float unk40;
-    u32 unk44;
+    s32 mode;             // 0 = idle; 0x10-0x14 (anim_interp_init) pick the curve
+    float unk10;          // params[1] / 256, never read in C
+    float phase;          // sine table index
+    float unk18;          // params[3] / 256, never read in C
+    float frame;          // frame counter
+    s32 start;            // frame the move starts
+    s32 end;              // frame it ends, 0xFFFF = none
+    float duration;       // frames of the whole move (modes 0x11 / 0x13 / 0x15 / 0x17)
+    float firstFrames;    // frames of the first part (linear, or the sine ease-in)
+    float secondFrames;   // frames of the second part
+    float firstDistance;  // distance covered by the first part
+    float secondDistance; // distance covered by the second part
+    float firstSpeed;     // value (or phase) change per frame in the first part; mode 0x17: phase step
+    float secondSpeed;    // per frame in the second part; mode 0x17: sine amplitude
+    u32 endAtStart;       // nonzero: value is first moved back by the whole distance, so the move ends where it
+                          // started
 };
 
 // BG text-mode tilemap entry.
@@ -1217,15 +1219,15 @@ struct BgTileEntry {
 
 struct SpriteAnchor {
     u8 filler0[2];
-    u16 unk2; // y / x offsets (move_sprite_object)
-    u16 unk4;
-    s8 unk6; // initial depth (init_sprite_object_entry)
+    u16 offsetX; // anchor offsets (move_sprite_object mode 2)
+    u16 offsetY;
+    s8 depth; // initial depth (init_sprite_object_entry)
 };
 
 // OAM entry list of a sprite object (copy_oam_entries_with_priority, init_sprite_object_entry).
 struct SpriteOamList {
     struct OamData *oams;
-    const struct SpriteAnchor *unk4;
+    const struct SpriteAnchor *anchor;
     u16 depth; // > 300 / 200 / 100: OAM priority 3 / 2 / 1
     u8 w;
     u8 h;
@@ -1267,14 +1269,14 @@ struct ObjAffineDstData {
 // Sprite node descriptor: one node (body part piece) of a sprite tree; OAM attributes (init_oam_sprite_entry).
 struct SpriteNodeDesc {
     const u32 **frames; // per frame two entries: OBJ tiles (dma3_copy_or_decompress), palette (or NULL)
-    s32 unk4;
-    s32 unk8;
-    s8 unkC;
-    s8 unkD;
-    s8 unkE;
-    u8 sibling;    // next sibling node (0 = none)
-    u8 child;      // first child node (0 = none)
-    u8 paletteNum; // added to the palette argument
+    s32 pivotX;         // rotation pivot inside the node's graphics (render_sprite_node_recursive)
+    s32 pivotY;
+    s8 jointX; // offset from the parent node's joint
+    s8 jointY;
+    s8 depthOffset; // added to the tree's depth
+    u8 sibling;     // next sibling node (0 = none)
+    u8 child;       // first child node (0 = none)
+    u8 paletteNum;  // added to the palette argument
     u8 width;
     u8 height;
     u8 wDiv : 4; // width / height dividers (> 1: divide)
@@ -1298,9 +1300,9 @@ struct SpriteTileRef {
 // Per-node OAM entry and transform of a sprite tree (16 bytes).
 struct SpriteNodeOam {
     struct OamFull oam;
-    s16 unk8;
-    s16 unkA;
-    u16 unkC;
+    s16 offsetX; // 8.8 offset from the joint, stepped by interpolate_entity_positions
+    s16 offsetY;
+    u16 rotation; // node rotation (wraps at 0x10000)
     u16 unkE;
 };
 
@@ -1310,12 +1312,12 @@ struct SpriteOamBatch {
     u16 count;
 };
 
-// 16-byte record stepped by interpolate_entity_positions (unkC: angle-like, wraps at 0x10000).
+// 16-byte record stepped by interpolate_entity_positions: the layout of struct SpriteNodeOam.
 struct InterpEnt {
     u8 filler0[8];
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
+    s16 offsetX; // 8.8 fixed point
+    s16 offsetY;
+    s16 angle; // wraps at 0x10000 (shortest way round)
     u8 fillerE[2];
 };
 
@@ -1548,14 +1550,14 @@ struct AreaWarp {
 
 // Per-area graphics record (gAreaBgTilemaps, indexed by area id).
 struct AreaGfx {
-    const void *unk0; // LZ77 BG tilemaps, decompressed to gFieldTilemapBuf (layers to 0x06003000 / 5000 / 7000)
+    const void *tilemaps; // LZ77 BG tilemaps, decompressed to gFieldTilemapBuf (layers to 0x06003000 / 5000 / 7000)
     const void *unk4;
     const void *unk8;
 };
 
 // Sprite tree object (at 0x02026000): node descriptors, per-node OAM and the per-side part layers.
 struct SpriteTree {
-    u8 *unk0; // gSpriteWork record
+    u8 *spriteWork; // its struct SpriteWork record
     struct SpriteNodeDesc **nodes;
     struct SpriteNodeOam *oams;
     struct PartSpriteLayer layers[2][4]; // part layers saved per side (setup_medabot_part_sprites)
@@ -1581,12 +1583,12 @@ struct MedabotSpriteSlot {
 
 // One of 18 points placed on a hexagon (ring_points_place_on_hexagon) or a circle (ring_points_place_on_circle)
 struct RingPoint {
-    s16 unk0; // radius
-    s16 unk2; // x
-    s16 unk4; // y
-    s16 unk6;
-    s16 unk8; // radius * sin
-    s16 unkA; // radius * cos
+    s16 radius; // radius
+    s16 x;      // x
+    s16 y;      // y
+    s16 z;
+    s16 sinOffset; // radius * sin
+    s16 cosOffset; // radius * cos
     u8 fillerC[4];
 };
 
@@ -1670,11 +1672,11 @@ struct MenuWork {
 
 // BLDY fade state (init_blend_effect / blend_fade_step_08065598; MenuWork.blend)
 struct BlendEffect {
-    u16 mode; // BLDCNT effect bits (| 0x3F)
-    u8 unk2;  // BLDY level
-    u8 unk3;  // frames per step
-    u8 unk4;  // frame counter
-    s8 unk5;  // level change per step
+    u16 mode;   // BLDCNT effect bits (| 0x3F)
+    u8 level;   // BLDY level
+    u8 delay;   // frames per step
+    u8 counter; // frame counter
+    s8 step;    // level change per step
 };
 
 // Item list built at 0x02040000 (an EWRAM mirror) by unpack_item_inventory_to_buffer, one per inventory slot
@@ -1687,7 +1689,7 @@ struct ItemListEntry {
 struct ShopSellEntry {
     u16 id;    // Medapart id
     u8 count;  // owned - equipped (MEDAPART_INV bytes 0 - 1)
-    u8 unk3;   // part data byte 3 (gender)
+    u8 gender; // part data byte 3
     u32 price; // part data byte 0xB * 100
 };
 

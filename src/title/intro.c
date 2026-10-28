@@ -112,11 +112,11 @@ void intro_init(void) {
     gBg2Scroll.y = 0;
     gBg3Scroll.x = 0;
     gBg3Scroll.y = 0;
-    gSceneWork.unkC.afterSubState = 11;
+    gSceneWork.param.afterSubState = 11;
     gSceneWork.nextSubState = 11;
-    gSceneWork.unk6 = 1;
-    gSceneWork.unkF4 = 0x7C0;
-    gSceneWork.unkF6 = 0x100;
+    gSceneWork.stepFrames = 1;
+    gSceneWork.poseCounterUp = 0x7C0;
+    gSceneWork.poseCounterDown = 0x100;
     gTitleSkipIntro = 0;
     gGameSubState = 8;
 }
@@ -147,7 +147,7 @@ void intro_load_silhouette_scene(void) {
     gSpriteEntries[0].y = 0x40;
     setup_screen_transition_effect_080682CC(2, 1, 0);
     gVBlankOamMode = 0;
-    gSceneWork.nextSubState = gSceneWork.unkC.afterSubState;
+    gSceneWork.nextSubState = gSceneWork.param.afterSubState;
     gGameSubState = 3;
 }
 
@@ -199,7 +199,7 @@ void intro_load_scan_screen(void) {
     REG_DISPCNT |= 0x1E00;
     REG_BLDCNT = 0x1844;
     REG_BLDALPHA = 0x80B;
-    gSceneWork.nextSubState = gSceneWork.unkC.afterSubState;
+    gSceneWork.nextSubState = gSceneWork.param.afterSubState;
     gGameSubState = 1;
 }
 
@@ -226,10 +226,10 @@ void intro_load_rokusho_sprite(void) {
 void intro_load_versus_scene(void) {
     intro_load_versus_art();
     REG_MOSAIC = 0xFF;
-    gSceneWork.unk6 = 6;
+    gSceneWork.stepFrames = 6;
     gBg0Scroll.y = 0xFFE4;
     DmaSet(3, gIntroObjPals[1], PLTT + 0x200, 0x80000050);
-    gSceneWork.nextSubState = gSceneWork.unkC.afterSubState;
+    gSceneWork.nextSubState = gSceneWork.param.afterSubState;
     gGameSubState = 4;
 }
 
@@ -237,7 +237,7 @@ void intro_silhouette_first_state(void) {
     if (intro_silhouette_step()) {
         gSceneWork.timer = 0;
         gSceneWork.nextSubState = 7;
-        gSceneWork.unkC.afterSubState = 12;
+        gSceneWork.param.afterSubState = 12;
     }
 }
 
@@ -358,7 +358,7 @@ void intro_scan_arms_state(void) {
     if (half * 2 <= gSceneWork.timer) {
         gSceneWork.timer = 0;
         gSceneWork.nextSubState = 6;
-        gSceneWork.unkC.afterSubState = 13;
+        gSceneWork.param.afterSubState = 13;
         gGameSubState = 2;
     }
 }
@@ -369,7 +369,7 @@ void intro_silhouette_second_state(void) {
         intro_clear_scan_text();
         gSceneWork.timer = 0;
         gSceneWork.nextSubState = 7;
-        gSceneWork.unkC.afterSubState = 0xE;
+        gSceneWork.param.afterSubState = 0xE;
     }
 }
 
@@ -496,12 +496,12 @@ void intro_scan_legs_head_state(void) {
 
 // Sub-state 15: Rokusho's sprite is shown (intro_draw_rokusho_pose) for ~60 frames.
 void intro_rokusho_pose_state(void) {
-    gSceneWork.unkF4 += 0x10;
-    gSceneWork.unkF6 -= 0x10;
+    gSceneWork.poseCounterUp += 0x10;
+    gSceneWork.poseCounterDown -= 0x10;
     if (gSceneWork.timer++ > 0x3A) {
         gSceneWork.timer = 0;
         gSceneWork.nextSubState = 6;
-        gSceneWork.unkC.afterSubState = 0x10;
+        gSceneWork.param.afterSubState = 0x10;
         gGameSubState = 2;
     }
 }
@@ -510,7 +510,7 @@ void intro_silhouette_third_state(void) {
     if (intro_silhouette_step()) {
         gSceneWork.timer = 0;
         gSceneWork.nextSubState = 0xA;
-        gSceneWork.unkC.afterSubState = 0x11;
+        gSceneWork.param.afterSubState = 0x11;
     }
 }
 
@@ -595,7 +595,7 @@ static bool32 intro_eyes_fade_in_step(void) {
 }
 
 static bool32 intro_mosaic_fade_in_step(void) {
-    u16 step = gSceneWork.unk6;
+    u16 step = gSceneWork.stepFrames;
     s32 frame = gSceneWork.timer;
     u8 level;
 

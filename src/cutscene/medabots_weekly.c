@@ -54,8 +54,8 @@ void medabots_weekly_init(void) {
     DmaSet(3, &zero, &gMedabotsWeekly, 0x85000005);
     play_song(0);
     REG_DISPCNT = 0x60;
-    gMedabotsWeekly.unk0 = 3;
-    gMedabotsWeekly.unk2 = 6;
+    gMedabotsWeekly.nextMode = 3;
+    gMedabotsWeekly.nextState = 6;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;
@@ -784,12 +784,12 @@ void weekly_set_sprite_effect(u8 effect, u8 sprite, u16 duration) {
 
 // Runs the current lecture step; nonzero once it is done.
 u32 weekly_lecture_run_step(void) {
-    return gWeeklyLectureSteps[gSceneWork.unk10.lecture.state]();
+    return gWeeklyLectureSteps[gSceneWork.progress.lecture.state]();
 }
 
 // Lecture step 4: nothing to show.
 u32 weekly_lecture_skip_step(void) {
-    gSceneWork.unk10.lecture.state++;
+    gSceneWork.progress.lecture.state++;
     return 1;
 }
 
@@ -807,7 +807,7 @@ u32 weekly_lecture_attach_head(void) {
         clear_sprite_entry(6);
         play_sound_effect(0x54);
         sprites[2].unk1A = 0;
-        gSceneWork.unk10.lecture.state++;
+        gSceneWork.progress.lecture.state++;
         return 1;
     } else
         sprites[1].x = sprites[2].x -= 4;
@@ -831,7 +831,7 @@ u32 weekly_lecture_attach_arm_from_left(void) {
         clear_sprite_entry(7);
         play_sound_effect(0x54);
         *wait = 0;
-        gSceneWork.unk10.lecture.state++;
+        gSceneWork.progress.lecture.state++;
         return 1;
     } else
         *x += 4;
@@ -855,7 +855,7 @@ u32 weekly_lecture_attach_arm_from_right(void) {
         clear_sprite_entry(8);
         play_sound_effect(0x54);
         *wait = 0;
-        gSceneWork.unk10.lecture.state++;
+        gSceneWork.progress.lecture.state++;
         return 1;
     } else
         *x -= 4;
@@ -885,7 +885,7 @@ u32 weekly_lecture_attach_legs(void) {
             *priority = 0x21;
             *wait = zero;
         }
-        gSceneWork.unk10.lecture.state++;
+        gSceneWork.progress.lecture.state++;
         return 1;
     } else
         *x -= 4;
@@ -903,9 +903,9 @@ u32 weekly_lecture_drop_medal(void) {
     if (gSpriteEntries[0].y > 0x3F) {
         play_sound_effect(7);
         gWeeklyFlashPalette = gPaletteBackupBg;
-        gSceneWork.unk10.lecture.step = 0;
+        gSceneWork.progress.lecture.step = 0;
         DmaSet(3, OBJ_PLTT, gPaletteBackupBg, 0x84000080);
-        gSceneWork.unk10.lecture.state++;
+        gSceneWork.progress.lecture.state++;
     }
     return 0;
 }
@@ -917,17 +917,17 @@ u32 weekly_lecture_flash(void) {
     s32 i;
     u16 *dst = gPaletteBufferBg;
 
-    if (gSceneWork.unk10.lecture.step > 0x40) {
+    if (gSceneWork.progress.lecture.step > 0x40) {
         play_sound_effect(10);
-        gSceneWork.unk10.lecture.state++;
+        gSceneWork.progress.lecture.state++;
     } else {
-        if (gSceneWork.unk10.lecture.step < 0x20)
-            fade = 0x20 - gSceneWork.unk10.lecture.step;
+        if (gSceneWork.progress.lecture.step < 0x20)
+            fade = 0x20 - gSceneWork.progress.lecture.step;
         else
-            fade = gSceneWork.unk10.lecture.step - 0x20;
-        if (gSceneWork.unk10.lecture.step == 0x20)
+            fade = gSceneWork.progress.lecture.step - 0x20;
+        if (gSceneWork.progress.lecture.step == 0x20)
             clear_sprite_entry(0);
-        if (gSceneWork.unk10.lecture.step == 0x14)
+        if (gSceneWork.progress.lecture.step == 0x14)
             play_sound_effect(0x51);
         white = 0x20 - fade;
         for (i = 0; i <= 0xFF; i++) {
@@ -938,7 +938,7 @@ u32 weekly_lecture_flash(void) {
         DmaSet(3, dst, OBJ_PLTT, 0x84000080);
     }
     if (gFrameCounter & 1)
-        gSceneWork.unk10.lecture.step++;
+        gSceneWork.progress.lecture.step++;
     return 0;
 }
 
@@ -957,7 +957,7 @@ u32 weekly_lecture_show_medabot(void) {
         fill = 0x200;
         DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
         setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, 0, 0, 0);
-        gSceneWork.unk10.lecture.state++;
+        gSceneWork.progress.lecture.state++;
     }
     return 0;
 }
@@ -970,8 +970,8 @@ u32 weekly_lecture_start_pose(void) {
     DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
     setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, 0, 1, 0);
     medabot_pose_anim_step(0, 0x2D, 0);
-    gSceneWork.unk10.lecture.state++;
-    gSceneWork.unk10.lecture.step = 0;
+    gSceneWork.progress.lecture.state++;
+    gSceneWork.progress.lecture.step = 0;
     return 0;
 }
 
@@ -996,23 +996,23 @@ u32 weekly_lecture_run_pose(void) {
     fill = 0x200;
     DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
     setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, none, 1, none);
-    switch (script[gSceneWork.unk10.lecture.pos]) {
+    switch (script[gSceneWork.progress.lecture.pos]) {
     case 0:
-        if (script[gSceneWork.unk10.lecture.pos + 1] >= gSceneWork.unk10.lecture.step++)
+        if (script[gSceneWork.progress.lecture.pos + 1] >= gSceneWork.progress.lecture.step++)
             break;
-        gSceneWork.unk10.lecture.pos += 2;
-        gSceneWork.unk10.lecture.step = zero;
+        gSceneWork.progress.lecture.pos += 2;
+        gSceneWork.progress.lecture.step = zero;
         break;
     case 1:
-        play_sound_effect(script[gSceneWork.unk10.lecture.pos + 1]);
-        gSceneWork.unk10.lecture.pos += 2;
-        gSceneWork.unk10.lecture.step = zero;
+        play_sound_effect(script[gSceneWork.progress.lecture.pos + 1]);
+        gSceneWork.progress.lecture.pos += 2;
+        gSceneWork.progress.lecture.step = zero;
         break;
     case 2:
         break;
     }
     if (medabot_pose_anim_step(0, 0x2D, 0) != 0) {
-        gSceneWork.unk10.lecture.state = 0;
+        gSceneWork.progress.lecture.state = 0;
         return 1;
     }
     return 0;
