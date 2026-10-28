@@ -107,7 +107,7 @@ void race_load_teams(void) {
         gRaceRunnerParts[1][2][i] = *setup++;
         gRaceRunnerParts[1][3][i] = *setup;
         setup += 9;
-        gRaceLegTypes[1][i] = gUnk_083B827C[gRaceRunnerParts[1][3][i] * 64 + 0x31] - 0x64;
+        gRaceLegTypes[1][i] = gMedapartData[gRaceRunnerParts[1][3][i] * 64 + 0x31] - 0x64;
         decompress_sprite_to_vram_08042D94(gRaceRunnerParts[1][0][i], gRaceRunnerParts[1][1][i],
                                            gRaceRunnerParts[1][2][i], gRaceRunnerParts[1][3][i], 5 - i);
     }
@@ -119,7 +119,7 @@ void race_load_teams(void) {
         gRaceRunnerParts[2][2][i] = *setup++;
         gRaceRunnerParts[2][3][i] = *setup;
         setup += 9;
-        gRaceLegTypes[2][i] = gUnk_083B827C[gRaceRunnerParts[2][3][i] * 64 + 0x31] - 0x64;
+        gRaceLegTypes[2][i] = gMedapartData[gRaceRunnerParts[2][3][i] * 64 + 0x31] - 0x64;
         decompress_sprite_to_vram_08042D94(gRaceRunnerParts[2][0][i], gRaceRunnerParts[2][1][i],
                                            gRaceRunnerParts[2][2][i], gRaceRunnerParts[2][3][i], 8 - i);
     }
@@ -259,7 +259,7 @@ static void race_load_field_bg(void) {
     decompress_tileset_to_vram(gBattleWork.battlefield, 0);
     memcpy_bytes_0803F63C(gBattlefieldParams[gBattleWork.battlefield], gBattleWork.battlefieldParams, 8);
     apply_battle_blend_effect_a();
-    decompress_to_ewram_27000(gUnk_083B23F8[gBattleWork.battlefield * 5 + 1]);
+    decompress_to_ewram_27000(gBattlefieldTilesets[gBattleWork.battlefield * 5 + 1]);
     gBg2Scroll.x = 0;
     gBg2Scroll.y = 0;
     gBg3Scroll.x = 0;

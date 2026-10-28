@@ -171,7 +171,7 @@
   one branch of modify_medapart_quantity).
 * `(&s->unk3)[k]` for a run of byte fields: take `u8 *p = &gArr[i].unk3;` then `p[k]`
   (team_lose_equipped_part). A 4-D table index `(a - 1) * 256 + b * 8 + c * 2` is a flat 1-D index in the
-  original (gUnk_083C6DF8), and a 3-D `[part][kind][i]` table was `[part * 64 + kind * 16 + i]`
+  original (gSpriteMotionSteps), and a 3-D `[part][kind][i]` table was `[part * 64 + kind * 16 + i]`
   with a `u8 *d = dst` copy (load_part_data).
 * Block order: when the original's fall-through is the second arm of your `if`, swap the arms
   (`if (x == 0) {...} else {...}`, `if (n != 0x1E)`), also for `return a > b ? 1 : 0` written as

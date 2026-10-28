@@ -4,7 +4,7 @@
 // Shared helpers for menus and battles
 
 void lz_decompress(const u8 *src, void *dst); // wrapper of lz_decompress_dispatch
-u32 resolve_area_sprite_set(u8 set);          // guess: 0 = the current area's default (gUnk_083B2970[player_form])
+u32 resolve_area_sprite_set(u8 set); // guess: 0 = the current area's default (gPlayerFormSpriteSets[player_form])
 void draw_number_tall_bgcnt(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt,
                             u16 base); // last `digits` digits of value as 2-row tiles (base + d * 2 / + 1)
 u32 skill_type_is_remote(u32 type);    // 1 for skill types 2, 3, 6, 7 ("Remote Medaparts"), 0 for proximity

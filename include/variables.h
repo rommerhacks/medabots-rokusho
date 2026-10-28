@@ -382,10 +382,13 @@ extern u8
 #define MEDAPART_INV(kind, page, row, byte) gMedapartInventory[(kind) * 240 + (page) * 8 + (row) * 2 + (byte)]
 extern u8
     gItemInventory[64][2]; // item inventory (runtime-checked): [0] 0x80 | item id, [1] count (get_item_quantity_by_id)
-extern const u8 gUnk_083B296C[]; // 4 per-phase y bob flags (update_battle_sprite_orbiting_positions)
-extern const u8 gUnk_083B2970[]; // indexed by gFieldWork.player_form (resolve_area_sprite_set)
-extern const u8 gUnk_083B827C[]; // 16 bytes per Medapart (part id * 64 + kind * 16), copied by load_part_data
-extern const u8 gUnk_083B286C[]; // random bytes, indexed by gGameWork.rngIndex when unk89 is set (rng_next_byte)
+extern const u8
+    gLegWalkFrames[]; // 4 walk phases: legs tile offset, nonzero = body bobs (update_battle_sprite_orbiting_positions)
+extern const u8 gPlayerFormSpriteSets[]; // indexed by gFieldWork.player_form (resolve_area_sprite_set)
+extern const u8
+    gMedapartData[]; // 16 bytes per part kind (head / arms / legs), 64 per part id; copied by load_part_data
+extern const u8
+    gReplayRandomBytes[]; // fixed random bytes, indexed by gGameWork.rngIndex when skipBotSetup is set (rng_next_byte)
 extern const u8
     gMedapartsListBgTiles[]; // Medaparts list screen (medaparts_list_load_gfx; runtime: VRAM dump of the list)
 extern const u8 gMedapartTypeLabelTiles[]; // HEAD / RIGHT ARM / LEFT ARM / LEGS title labels of the Medaparts list
@@ -599,9 +602,9 @@ extern const u32 gTitleMenuBlendAlphas[];   // BLDALPHA values by fade step / 8 
 extern const u16 gSaveScreenSpriteFrames[]; // sprite 0 tile by (frame >> 3) & 3 (save_screen_animate_sprite)
 extern const u16 gNameEntrySpriteFrames[];  // sprite 20 tile by (frame >> 3) & 3 (name_entry_animate_sprite)
 
-extern u8 gUnk_02023078;                   // first visible list entry (update_battle_sprite_priority_flags)
-extern struct Vec16 gUnk_02023200[160][4]; // per-scanline BG0-3 scroll, even frames (start_scanline_wave_scroll)
-extern struct Vec16 gUnk_02023C00[160][4]; // per-scanline BG0-3 scroll, odd frames (start_scanline_wave_scroll)
+extern u8 gUnk_02023078;                         // first visible list entry (update_battle_sprite_priority_flags)
+extern struct Vec16 gScanlineScrollEven[160][4]; // per-scanline BG0-3 scroll, even frames (start_scanline_wave_scroll)
+extern struct Vec16 gScanlineScrollOdd[160][4];  // per-scanline BG0-3 scroll, odd frames (start_scanline_wave_scroll)
 
 extern struct SaveStatus gSaveStatus;
 extern const u8 gSaveMagic[17]; // save file signature (serialize_save_data, validate_save_data)
@@ -1103,23 +1106,25 @@ extern const u8 gUnk_08487524[]; // compressed tiles, message window frame style
 extern const u8 gUnk_084885A8[]; // compressed tilemap, message window frame style 3 (message_close_window_frame)
 extern const u8 gUnk_08487630[]; // compressed tiles, message window frame style 2 (message_close_window_frame)
 extern const u8 gUnk_08488600[]; // compressed tilemap, message window frame style 2 (message_close_window_frame)
-extern const u8 gUnk_083C3B5C[][8];     // per battlefield, copied to gBattleWork.unk74 (load_battle_script_entry_b)
-extern const Func gUnk_083B2814[];      // choice menu states by gGameWork.choiceState (poll_choice_menu)
-extern const Func gUnk_083B284C[];      // by gGameWork.endModeStep (game_state_execute_handler_a)
-extern const Func gUnk_083B2864[];      // by gGameWork.endModeStep (game_state_execute_handler_b)
-extern const u8 *const gUnk_083B23F8[]; // 4 compressed graphics pointers per entry: tiles, BG palette, BG2 / BG3
-                                        // tilemaps (decompress_tileset_to_vram)
-extern const u8 gUnk_084878EC[];        // compressed tiles (decompress_bg_tilemap_to_vram)
-extern const u8 gUnk_0848796C[];        // compressed tiles
-extern const u8 gUnk_084886D0[];        // compressed tilemap
-extern const u8 gUnk_08488718[];        // compressed tilemap
-extern const u8 gUnk_083C40B8[];        // per battlefield: animation tile count / 8 (advance_battle_animation_frame)
-extern const u8 gUnk_083C40C3[];        // [battlefield][0x80]: animation tile block per frame, 0xFF = loop
 extern const u8
-    *const gUnk_083B1888[];       // 6 compressed sprite tile pointers per Medabot (decompress_sprite_to_vram_08042D94)
-extern const s16 gUnk_083D6BA0[]; // per angle 0-0xFF: cosine-like factor x256 (calc_polar_to_screen_coords x;
-                                  // gJumpArcTable is the y factor)
-extern const u8 gUnk_0847EB80[];  // per area id (gFieldWork.area_id), used unless song == 0xFF (area_song_id)
+    gBattlefieldEffectParams[][8]; // per battlefield, copied to gBattleWork.unk74 (load_battle_script_entry_b)
+extern const Func gUnk_083B2814[]; // choice menu states by gGameWork.choiceState (poll_choice_menu)
+extern const Func gUnk_083B284C[]; // by gGameWork.endModeStep (game_state_execute_handler_a)
+extern const Func gUnk_083B2864[]; // by gGameWork.endModeStep (game_state_execute_handler_b)
+extern const u8 *const gBattlefieldTilesets[]; // 4 compressed pointers per battlefield: tiles, BG palette, BG2 / BG3
+                                               // tilemaps (decompress_tileset_to_vram)
+extern const u8 gUnk_084878EC[];               // compressed tiles (decompress_bg_tilemap_to_vram)
+extern const u8 gUnk_0848796C[];               // compressed tiles
+extern const u8 gUnk_084886D0[];               // compressed tilemap
+extern const u8 gUnk_08488718[];               // compressed tilemap
+extern const u8
+    gBattlefieldAnimTileCounts[];         // per battlefield: animation tile count / 8 (advance_battle_animation_frame)
+extern const u8 gBattlefieldAnimFrames[]; // [battlefield][0x80]: animation tile block per frame, 0xFF = loop
+extern const u8 *const
+    gMedabotPartSpriteTiles[];   // 6 compressed sprite tile pointers per Medabot (decompress_sprite_to_vram_08042D94)
+extern const s16 gCosTableQ8[];  // cosine x256 per angle 0-0xFF (calc_polar_to_screen_coords x;
+                                 // gJumpArcTable is the y factor)
+extern const u8 gUnk_0847EB80[]; // per area id (gFieldWork.area_id), used unless song == 0xFF (area_song_id)
 extern struct PartSpriteLayer gRightArmPartLayer;
 extern struct PartSpriteLayer gLeftArmPartLayer;
 extern struct PartSpriteLayer gHeadPartLayer;
@@ -1158,12 +1163,13 @@ extern const u8
     *const gItemDescriptions[];  // item description messages by item id (runtime: item 1 Skirt -> "Transform Goods No.1
                                  // / A frilly mini-skirt."); 0x3F with an empty list (item_menu_show_description)
 extern const u8 gUnk_080AF755[]; // 0x53-byte message copied to the stack (load_rotation_grid_and_advance)
-extern const Func gMenuModeStates[]; // by gGameState (menu_mode_update)
-extern const u8 gUnk_080AF6EC[];     // 4 bytes copied to an unused local (init_multiplayer_id)
-extern const u8 gUnk_080AF5FC[];     // per gFieldWork.unkC32: 10 x 4 next-entry bytes (right, left, up, down) by
-                                     // gMenuWork->town_map_place (town_map_move_cursor)
-extern const u8 gUnk_080AF674[];     // same, used when gMenuWork->cursor_style is set (town_map_move_cursor)
-extern const u8 gUnk_083BEA14[];     // per Medabot (gUnk_083B1888 index): sprite palette - 4 (load_battle_sprite_tiles)
+extern const Func gMenuModeStates[];      // by gGameState (menu_mode_update)
+extern const u8 gUnk_080AF6EC[];          // 4 bytes copied to an unused local (init_multiplayer_id)
+extern const u8 gUnk_080AF5FC[];          // per gFieldWork.unkC32: 10 x 4 next-entry bytes (right, left, up, down) by
+                                          // gMenuWork->town_map_place (town_map_move_cursor)
+extern const u8 gUnk_080AF674[];          // same, used when gMenuWork->cursor_style is set (town_map_move_cursor)
+extern const u8 gMedabotSpritePalettes[]; // per Medabot (gMedabotPartSpriteTiles index): sprite palette - 4
+                                          // (load_battle_sprite_tiles)
 extern const u16 gTitleOptionValueMasks[3][3]; // 3 x 3 tile masks (bit 15 first) of the title option rows
                                                // (title_options_draw_values)
 extern const u8 gUnk_0878C484[];               // field menu item list BG1 tilemap (LZ77, item_menu_load_graphics)
@@ -1478,7 +1484,7 @@ extern const u8 gUnk_087917F4[];
 extern const u8 gUnk_087919C4[];
 extern const u32 gUnk_08790600[];
 extern const u16 gUnk_08790400[];
-extern const u16 gUnk_083C6DF8[]; // per-step (x, y) offsets for update_sprite_animation_position
+extern const u16 gSpriteMotionSteps[]; // per-step (x, y) offsets for update_sprite_animation_position
 extern const u8 gPartTradeBg1Tilemap[];
 extern const u8 gPartTradeAnimFramesTilemap[]; // 4 frames at screen 27, copied into BG2 to animate
 extern const u8 gPartTradeBg3Tilemap[];
@@ -1493,12 +1499,12 @@ extern const u8 gTownMapWarpAreas[];          // area id by town map place (fiel
 extern const u8 gTownMapWarpPositions[];      // 4 per town map place: [2], [3] = arrival x, y in tiles
 extern const u8 gUnk_083D2AD8;
 extern const u8 gUnk_083D2AD9[];
-extern u32 gUnk_0807E77C[][7];
-extern u8 gUnk_083CABF8[];
-extern u8 *gUnk_083D1E98[];
-extern s16 *gUnk_083D1CC0[];
-extern s8 *gUnk_083D1DAC[];
-extern const u8 gUnk_08794E6C[]; // name entry screen tilemaps (name_entry_init_graphics)
+extern u32 gPoseAnimIds[][7];      // [pose][gLegPartPoseSets[legs]]: keyframe animation id (medabot_pose_anim_step)
+extern u8 gLegPartPoseSets[];      // per legs part id: pose set column of gPoseAnimIds
+extern u8 *gPoseKeyframeEnds[];    // per animation: end frame of each keyframe, 0-terminated
+extern s16 *gPoseKeyframeAngles[]; // per animation: 0x40 joint angles per keyframe (wrap at 0x10000)
+extern s8 *gPoseKeyframeOffsets[]; // per animation: 0x40 (x, y) joint offsets per keyframe
+extern const u8 gUnk_08794E6C[];   // name entry screen tilemaps (name_entry_init_graphics)
 extern const u8 gUnk_0879514C[];
 extern const u8 gUnk_08795418[];
 extern const u32 gUnk_08793628[]; // name entry screen tiles

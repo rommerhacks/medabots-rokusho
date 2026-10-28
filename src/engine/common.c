@@ -7,7 +7,8 @@
 
 static void scanline_scroll_vblank(void);
 
-// Second RNG (0-255): mixes the frame counter into a 16-bit state, or replays gUnk_083B286C when unk89 is set.
+// Second RNG (0-255): mixes the frame counter into a 16-bit state, or replays gReplayRandomBytes when skipBotSetup is
+// set.
 s32 rng_next_byte(void) {
     if (gGameWork.skipBotSetup == 0) {
         u16 s = gGameWork.rngSeed + gGameWork.rngLast;
@@ -18,7 +19,7 @@ s32 rng_next_byte(void) {
         return gGameWork.rngLast;
     } else {
         gGameWork.rngIndex++;
-        gGameWork.rngLast = gUnk_083B286C[gGameWork.rngIndex];
+        gGameWork.rngLast = gReplayRandomBytes[gGameWork.rngIndex];
         return gGameWork.rngLast;
     }
 }
@@ -288,7 +289,7 @@ void load_part_data(u32 part, u32 kind, u8 *dst) {
     u32 i;
     u8 *d = dst;
     for (i = 0; i < 16; i++)
-        *d++ = gUnk_083B827C[part * 64 + kind * 16 + i];
+        *d++ = gMedapartData[part * 64 + kind * 16 + i];
 }
 
 // Skill types 0, 1, 4, 5 are proximity, 2, 3, 6, 7 remote (gMenuMessages messages 17 / 18: "Proximity
@@ -312,7 +313,7 @@ u32 skill_type_is_remote(u32 type) {
 struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x, s32 y) {
     struct Coords16 r;
 
-    x += (u32)(gUnk_083D6BA0[angle] * (radius / 256.0f));
+    x += (u32)(gCosTableQ8[angle] * (radius / 256.0f));
     y += (u32)(gJumpArcTable[0][angle] * (radius / 256.0f));
     r.x = x & 0x1FF;
     r.y = y & 0xFF;
@@ -326,7 +327,7 @@ struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32
         a = radius;
     if (radius < b)
         b = radius;
-    cx += (u32)(gUnk_083D6BA0[angle] * ((radius - b) / 256.0f));
+    cx += (u32)(gCosTableQ8[angle] * ((radius - b) / 256.0f));
     cy += (u32)(gJumpArcTable[0][angle] * ((radius - a) / 256.0f));
     r.x = cx & 0x1FF;
     r.y = cy & 0xFF;
@@ -334,15 +335,20 @@ struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32
 }
 
 // Decompresses 6 sprite tile chunks (0x80 bytes each in VRAM) into OBJ tile slot `slot` (0x400 bytes):
-// chunk 0 from Medabot a, 1-2 from b, 3-4 from c, 5 from d (gUnk_083B1888 has 6 pointers per Medabot).
+// chunk 0 from Medabot a, 1-2 from b, 3-4 from c, 5 from d (gMedabotPartSpriteTiles has 6 pointers per Medabot).
 // The index is written as (n << 2) + (n << 1): `n * 6` compiles to (n * 3) << 1.
 void decompress_sprite_to_vram_08042D94(u32 a, u32 b, u32 c, u32 d, u32 slot) {
-    lz_decompress_dispatch(gUnk_083B1888[(a << 2) + (a << 1)], (void *)(VRAM + 0x10000 + slot * 0x400));
-    lz_decompress_dispatch(gUnk_083B1888[(b << 2) + (b << 1) + 1], (void *)(VRAM + 0x10000 + 0x80 + slot * 0x400));
-    lz_decompress_dispatch(gUnk_083B1888[(b << 2) + (b << 1) + 2], (void *)(VRAM + 0x10000 + 0x100 + slot * 0x400));
-    lz_decompress_dispatch(gUnk_083B1888[(c << 2) + (c << 1) + 3], (void *)(VRAM + 0x10000 + 0x180 + slot * 0x400));
-    lz_decompress_dispatch(gUnk_083B1888[(c << 2) + (c << 1) + 4], (void *)(VRAM + 0x10000 + 0x200 + slot * 0x400));
-    lz_decompress_dispatch(gUnk_083B1888[(d << 2) + (d << 1) + 5], (void *)(VRAM + 0x10000 + 0x280 + slot * 0x400));
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(a << 2) + (a << 1)], (void *)(VRAM + 0x10000 + slot * 0x400));
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(b << 2) + (b << 1) + 1],
+                           (void *)(VRAM + 0x10000 + 0x80 + slot * 0x400));
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(b << 2) + (b << 1) + 2],
+                           (void *)(VRAM + 0x10000 + 0x100 + slot * 0x400));
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(c << 2) + (c << 1) + 3],
+                           (void *)(VRAM + 0x10000 + 0x180 + slot * 0x400));
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(c << 2) + (c << 1) + 4],
+                           (void *)(VRAM + 0x10000 + 0x200 + slot * 0x400));
+    lz_decompress_dispatch(gMedabotPartSpriteTiles[(d << 2) + (d << 1) + 5],
+                           (void *)(VRAM + 0x10000 + 0x280 + slot * 0x400));
 }
 
 void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile, u32 sprite, u32 x, u32 y, u32 flip,
@@ -356,7 +362,7 @@ void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 til
     gSpriteEntries[sprite].unk2 = x;
     gSpriteEntries[sprite].unk4 = y - 4;
     gSpriteEntries[sprite].unk6 = tile * 8 + 0x500;
-    gSpriteEntries[sprite].unkA = gUnk_083BEA14[head];
+    gSpriteEntries[sprite].unkA = gMedabotSpritePalettes[head];
     gSpriteEntries[sprite].unk1C = 0;
     gSpriteEntries[sprite].unkB = pal + 2;
 
@@ -372,7 +378,7 @@ void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 til
     }
     gSpriteEntries[sprite + 1].unk2 = x - 8;
     gSpriteEntries[sprite + 1].unk4 = y + 4;
-    gSpriteEntries[sprite + 1].unkA = gUnk_083BEA14[rarm];
+    gSpriteEntries[sprite + 1].unkA = gMedabotSpritePalettes[rarm];
     gSpriteEntries[sprite + 1].unk1C = 0;
     gSpriteEntries[sprite + 1].unk8 = 0x40;
     gSpriteEntries[sprite + 1].unk9 = 0x40;
@@ -390,7 +396,7 @@ void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 til
     }
     gSpriteEntries[sprite + 2].unk2 = x + 8;
     gSpriteEntries[sprite + 2].unk4 = y + 4;
-    gSpriteEntries[sprite + 2].unkA = gUnk_083BEA14[larm];
+    gSpriteEntries[sprite + 2].unkA = gMedabotSpritePalettes[larm];
     gSpriteEntries[sprite + 2].unk1C = 0;
     gSpriteEntries[sprite + 2].unk8 = 0x40;
     gSpriteEntries[sprite + 2].unk9 = 0x40;
@@ -404,7 +410,7 @@ void init_battle_medabot_sprites(u32 head, u32 rarm, u32 larm, u32 legs, u32 til
     gSpriteEntries[sprite + 3].unk2 = x;
     gSpriteEntries[sprite + 3].unk4 = y + 4;
     gSpriteEntries[sprite + 3].unk6 = tile * 8 + 0x505;
-    gSpriteEntries[sprite + 3].unkA = gUnk_083BEA14[legs];
+    gSpriteEntries[sprite + 3].unkA = gMedabotSpritePalettes[legs];
     gSpriteEntries[sprite + 3].unk1C = 0;
     gSpriteEntries[sprite + 3].unkB = pal + 1;
 }
@@ -419,7 +425,7 @@ void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile,
     gSpriteEntries[sprite].unk2 = x;
     gSpriteEntries[sprite].unk4 = y - 4;
     gSpriteEntries[sprite].unk6 = tile * 8 + 0x500;
-    gSpriteEntries[sprite].unkA = gUnk_083BEA14[head];
+    gSpriteEntries[sprite].unkA = gMedabotSpritePalettes[head];
     gSpriteEntries[sprite].unk1C = 0;
     gSpriteEntries[sprite].unkB = pal + 2;
 
@@ -435,7 +441,7 @@ void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile,
     }
     gSpriteEntries[sprite + 1].unk2 = x - 8;
     gSpriteEntries[sprite + 1].unk4 = y + 4;
-    gSpriteEntries[sprite + 1].unkA = gUnk_083BEA14[rarm];
+    gSpriteEntries[sprite + 1].unkA = gMedabotSpritePalettes[rarm];
     gSpriteEntries[sprite + 1].unk1C = 0;
 
     gSpriteEntries[sprite + 2].unk0 |= 0xC004 | (prio << 10);
@@ -450,7 +456,7 @@ void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile,
     }
     gSpriteEntries[sprite + 2].unk2 = x + 8;
     gSpriteEntries[sprite + 2].unk4 = y + 4;
-    gSpriteEntries[sprite + 2].unkA = gUnk_083BEA14[larm];
+    gSpriteEntries[sprite + 2].unkA = gMedabotSpritePalettes[larm];
     gSpriteEntries[sprite + 2].unk1C = 0;
 
     gSpriteEntries[sprite + 3].unk0 |= 0xC004 | (prio << 10);
@@ -461,7 +467,7 @@ void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile,
     gSpriteEntries[sprite + 3].unk2 = x;
     gSpriteEntries[sprite + 3].unk4 = y + 4;
     gSpriteEntries[sprite + 3].unk6 = tile * 8 + 0x505;
-    gSpriteEntries[sprite + 3].unkA = gUnk_083BEA14[legs];
+    gSpriteEntries[sprite + 3].unkA = gMedabotSpritePalettes[legs];
     gSpriteEntries[sprite + 3].unk1C = 0;
     gSpriteEntries[sprite + 3].unkB = pal + 1;
 }
@@ -489,7 +495,7 @@ void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c) {
     if (gSpriteEntries[sprite + 3].unk26 > 0x3F) {
         gSpriteEntries[sprite + 3].unk26 -= 0x40;
         gSpriteEntries[sprite + 3].unk21 = (gSpriteEntries[sprite + 3].unk21 + 1) & 3;
-        gSpriteEntries[sprite + 3].unk6 = idx * 8 + 0x505 + gUnk_083B296C[gSpriteEntries[sprite + 3].unk21];
+        gSpriteEntries[sprite + 3].unk6 = idx * 8 + 0x505 + gLegWalkFrames[gSpriteEntries[sprite + 3].unk21];
     }
 
     gSpriteEntries[sprite + 1].unk26 += gSpriteEntries[sprite + 1].unk24;
@@ -564,7 +570,7 @@ void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 c) {
     if (t == 0x20)
         gSpriteEntries[sprite + 2].unk21 = (gSpriteEntries[sprite + 2].unk21 + 1) & 3;
 
-    if (gUnk_083B296C[gSpriteEntries[sprite + 3].unk21]) {
+    if (gLegWalkFrames[gSpriteEntries[sprite + 3].unk21]) {
         gSpriteEntries[sprite].unk4 = gSpriteEntries[sprite + 3].unk4 - 7;
         gSpriteEntries[sprite + 1].unk4++;
         gSpriteEntries[sprite + 2].unk4++;
@@ -727,7 +733,7 @@ void start_scanline_wave_scroll(u32 phase, s32 amplitude, u32 lines) {
     u32 idx;
     struct Vec16(*buf)[4];
 
-    buf = !(gFrameCounter & 1) ? gUnk_02023200 : gUnk_02023C00;
+    buf = !(gFrameCounter & 1) ? gScanlineScrollEven : gScanlineScrollOdd;
     for (i = 0; i < 160; i++) {
         if (i < lines) {
             if ((i & 3) == 0) {
@@ -764,9 +770,9 @@ static void scanline_scroll_vblank(void) {
     u16 *src;
 
     if (!(gFrameCounter & 1))
-        src = (u16 *)gUnk_02023200;
+        src = (u16 *)gScanlineScrollEven;
     else
-        src = (u16 *)gUnk_02023C00;
+        src = (u16 *)gScanlineScrollOdd;
     *(vu16 *)0x04000010 = src[0];
     *(vu16 *)0x04000012 = src[1];
     *(vu16 *)0x04000014 = src[2];
@@ -788,18 +794,18 @@ static void stop_scanline_wave_scroll(void) {
     gVBlankOnceCallback = empty_callback;
 }
 
-// Tileset idx (4 pointers per entry in gUnk_083B23F8): tiles -> VRAM 0x06008000, BG2 / BG3 tilemaps,
+// Tileset idx (4 pointers per entry in gBattlefieldTilesets): tiles -> VRAM 0x06008000, BG2 / BG3 tilemaps,
 // BG palette -> gPaletteBackupBg (backup != 0) or straight to PLTT.
 void decompress_tileset_to_vram(u32 idx, u32 backup) {
     u32 i;
 
-    lz_decompress_dispatch(gUnk_083B23F8[i = idx * 4], (void *)(VRAM + 0x8000));
-    set_tilemap_and_decompress_bg(0, 0, gUnk_083B23F8[i + 2], REG_BG2CNT, 0);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_083B23F8[i + 3], REG_BG3CNT, 0);
+    lz_decompress_dispatch(gBattlefieldTilesets[i = idx * 4], (void *)(VRAM + 0x8000));
+    set_tilemap_and_decompress_bg(0, 0, gBattlefieldTilesets[i + 2], REG_BG2CNT, 0);
+    set_tilemap_and_decompress_bg(0, 0, gBattlefieldTilesets[i + 3], REG_BG3CNT, 0);
     if (backup)
-        CpuFastSet(gUnk_083B23F8[i + 1], gPaletteBackupBg, 0x40);
+        CpuFastSet(gBattlefieldTilesets[i + 1], gPaletteBackupBg, 0x40);
     else
-        CpuFastSet(gUnk_083B23F8[i + 1], (void *)PLTT, 0x40);
+        CpuFastSet(gBattlefieldTilesets[i + 1], (void *)PLTT, 0x40);
 }
 
 void decompress_sprite_to_vram_08043C08(u32 idx, u32 backup) {
@@ -901,7 +907,7 @@ void battle_bg_scroll_vblank(void) {
 }
 
 void load_battle_script_entry_b(void) {
-    memcpy_bytes_0803F63C(gUnk_083C3B5C[gBattleWork.battlefield], gBattleWork.unk74, 8);
+    memcpy_bytes_0803F63C(gBattlefieldEffectParams[gBattleWork.battlefield], gBattleWork.unk74, 8);
 }
 
 static void update_scroll_movement_b(void) {
@@ -975,11 +981,12 @@ void advance_battle_animation_frame(u32 field) {
     if (++gBattleWork.fieldAnimTick > 2) {
         gBattleWork.fieldAnimTick = 0;
         gBattleWork.fieldAnimFrame = (gBattleWork.fieldAnimFrame + 1) & 0x7F;
-        memcpy_bytes_08041D04(&gUnk_083C40B8[field], &gBattleWork.fieldAnimTiles, 1);
-        memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128 + gBattleWork.fieldAnimFrame], &gBattleWork.fieldAnimBlock, 1);
+        memcpy_bytes_08041D04(&gBattlefieldAnimTileCounts[field], &gBattleWork.fieldAnimTiles, 1);
+        memcpy_bytes_08041D04(&gBattlefieldAnimFrames[field * 128 + gBattleWork.fieldAnimFrame],
+                              &gBattleWork.fieldAnimBlock, 1);
         if (gBattleWork.fieldAnimBlock == 0xFF) {
             gBattleWork.fieldAnimFrame = 0;
-            memcpy_bytes_08041D04(&gUnk_083C40C3[field * 128], &gBattleWork.fieldAnimBlock, 1);
+            memcpy_bytes_08041D04(&gBattlefieldAnimFrames[field * 128], &gBattleWork.fieldAnimBlock, 1);
         }
         CpuSet((void *)(0x02027000 + gBattleWork.fieldAnimTiles * gBattleWork.fieldAnimBlock * 32),
                (void *)(VRAM + 0x8020), (gBattleWork.fieldAnimTiles * 8) | 0x04000000);
@@ -1065,20 +1072,20 @@ void race_enter_team_select(void) {
 }
 
 // Sprite slot: while unk24 (table, 1-based) is set, add the (x, y) step for frame unk27 & 3 of row unk25
-// from gUnk_083C6DF8 to unk4 (wrapped to 0xFF) and unk2 (wrapped to 0x1FF), then advance unk27.
+// from gSpriteMotionSteps to unk4 (wrapped to 0xFF) and unk2 (wrapped to 0x1FF), then advance unk27.
 void update_sprite_animation_position(u32 slot) {
     s32 mask = 0x1FF;
 
     if (gSpriteEntries[slot].unk24 != 0) {
         gSpriteEntries[slot].unk4 =
             (gSpriteEntries[slot].unk4 +
-             gUnk_083C6DF8[(gSpriteEntries[slot].unk24 - 1) * 256 + gSpriteEntries[slot].unk25 * 8 +
-                           (gSpriteEntries[slot].unk27 & 3) * 2]) &
+             gSpriteMotionSteps[(gSpriteEntries[slot].unk24 - 1) * 256 + gSpriteEntries[slot].unk25 * 8 +
+                                (gSpriteEntries[slot].unk27 & 3) * 2]) &
             0xFF;
         gSpriteEntries[slot].unk2 =
             (gSpriteEntries[slot].unk2 +
-             gUnk_083C6DF8[(gSpriteEntries[slot].unk24 - 1) * 256 + gSpriteEntries[slot].unk25 * 8 +
-                           (gSpriteEntries[slot].unk27 & 3) * 2 + 1]) &
+             gSpriteMotionSteps[(gSpriteEntries[slot].unk24 - 1) * 256 + gSpriteEntries[slot].unk25 * 8 +
+                                (gSpriteEntries[slot].unk27 & 3) * 2 + 1]) &
             mask;
         gSpriteEntries[slot].unk27++;
     }
@@ -1348,14 +1355,14 @@ u32 medabot_pose_anim_step(u32 a0, u32 a1, u32 a2) {
     register struct SpriteTree *obj asm("r1"); // pinned: the original loads 0x02026000 before 0x020260CE
     // `done` is deliberately uninitialized: the original reads ip when *pos >= n
 
-    a1 = gUnk_0807E77C[a1][gUnk_083CABF8[a2]];
+    a1 = gPoseAnimIds[a1][gLegPartPoseSets[a2]];
     n = 0;
-    if (gUnk_083D1E98[a1][0] != 0) {
+    if (gPoseKeyframeEnds[a1][0] != 0) {
         do {
             n++;
             if (n > 0xFE)
                 break;
-        } while (gUnk_083D1E98[a1][n] != 0);
+        } while (gPoseKeyframeEnds[a1][n] != 0);
     }
     cnt = (u8 *)0x020260CC + a0;
     {
@@ -1368,8 +1375,8 @@ u32 medabot_pose_anim_step(u32 a0, u32 a1, u32 a2) {
     pos = (u8 *)0x020260CE + a0;
     if (*pos < n) {
         obj->oams = (struct SpriteNodeOam *)(0x020260D0 + a0 * 0x410);
-        done = interpolate_entity_positions((struct InterpEnt *)obj->oams, gUnk_083D1CC0[a1], gUnk_083D1DAC[a1],
-                                            gUnk_083D1E98[a1], a1, *cnt, *pos, 0x40, n);
+        done = interpolate_entity_positions((struct InterpEnt *)obj->oams, gPoseKeyframeAngles[a1],
+                                            gPoseKeyframeOffsets[a1], gPoseKeyframeEnds[a1], a1, *cnt, *pos, 0x40, n);
     }
     if (done) {
         if (++(*pos) >= n) {
@@ -1389,7 +1396,7 @@ void lz_decompress(const u8 *src, void *dst) {
 // guess: message sprite set, 0 = the current area's default (gFieldWork.player_form is the area palette id).
 u32 resolve_area_sprite_set(u8 set) {
     if (set == 0)
-        return gUnk_083B2970[gFieldWork.player_form];
+        return gPlayerFormSpriteSets[gFieldWork.player_form];
     return set;
 }
 

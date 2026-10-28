@@ -152,19 +152,22 @@ void shop_build_sell_list(void) {
 void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot) {
     switch (kind) {
     case 0:
-        lz_decompress_dispatch(gUnk_083B1888[((id << 2) + (id << 1))], (void *)(slot * 0x80 + 0x06013340));
+        lz_decompress_dispatch(gMedabotPartSpriteTiles[((id << 2) + (id << 1))], (void *)(slot * 0x80 + 0x06013340));
         break;
     case 1:
-        lz_decompress_dispatch(gUnk_083B1888[((id << 2) + (id << 1)) + 1], (void *)(slot * 0x80 + 0x06013340));
+        lz_decompress_dispatch(gMedabotPartSpriteTiles[((id << 2) + (id << 1)) + 1],
+                               (void *)(slot * 0x80 + 0x06013340));
         break;
     case 2:
-        lz_decompress_dispatch(gUnk_083B1888[((id << 2) + (id << 1)) + 3], (void *)(slot * 0x80 + 0x06013340));
+        lz_decompress_dispatch(gMedabotPartSpriteTiles[((id << 2) + (id << 1)) + 3],
+                               (void *)(slot * 0x80 + 0x06013340));
         break;
     case 3:
-        lz_decompress_dispatch(gUnk_083B1888[((id << 2) + (id << 1)) + 5], (void *)(slot * 0x80 + 0x06013340));
+        lz_decompress_dispatch(gMedabotPartSpriteTiles[((id << 2) + (id << 1)) + 5],
+                               (void *)(slot * 0x80 + 0x06013340));
         break;
     }
-    gSpriteEntries[slot + 0x6E].unkA = gUnk_083BEA14[id] + 4;
+    gSpriteEntries[slot + 0x6E].unkA = gMedabotSpritePalettes[id] + 4;
 }
 
 void render_battle_medapart_list(u32 mode) {

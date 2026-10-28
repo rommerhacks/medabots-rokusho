@@ -640,12 +640,12 @@ struct BattleWork {
     u8 unk64[4];        // filled by get_bot_part_effective_values (robattle_status_screen_init); AI part order from
                         // gAiPartOrders (battle_ai_roll_part_order)
     u8 filler68[0xC];
-    u8 unk74[8]; // copied from gUnk_083C3B5C[battlefield] (load_battle_script_entry_b); [3] nonzero: [4] << 8 | [5] ->
-                 // REG_BLDALPHA
+    u8 unk74[8]; // copied from gBattlefieldEffectParams[battlefield] (load_battle_script_entry_b); [3] nonzero: [4] <<
+                 // 8 | [5] -> REG_BLDALPHA
     u8 fieldAnimFrame; // battlefield animation frame, 0-0x7F (advance_battle_animation_frame)
     u8 fieldAnimTick;  // battlefield animation tick, 0-2
-    u8 fieldAnimTiles; // battlefield animation tile count / 8 (gUnk_083C40B8)
-    u8 fieldAnimBlock; // battlefield animation tile block (gUnk_083C40C3), 0xFF ends the loop
+    u8 fieldAnimTiles; // battlefield animation tile count / 8 (gBattlefieldAnimTileCounts)
+    u8 fieldAnimBlock; // battlefield animation tile block (gBattlefieldAnimFrames), 0xFF ends the loop
     u8 unk80;    // index of a 256-byte record in gBattleBots (medal_rotation_store_to_battle_bot copies Medal rotation
                  // data there)
     u8 ringSlot; // Robattle: selected command ring slot 0-5 (name gUnk_083C466C[ringSlot], runtime-checked)

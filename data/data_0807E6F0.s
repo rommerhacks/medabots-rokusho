@@ -11,8 +11,8 @@ gIntrTableTemplate:
 gRngTable:
 	.incbin "baserom.gba", 0x7E728, 0x54
 
-	.global gUnk_0807E77C
-gUnk_0807E77C:
+	.global gPoseAnimIds
+gPoseAnimIds:
 	.incbin "baserom.gba", 0x7E77C, 0x524
 
 	.global gHeadPartLayerTemplate

@@ -811,12 +811,12 @@ gUnk_083AFD08:
 gUnk_083B15C8:
 	.incbin "baserom.gba", 0x3B15C8, 0x2C0
 
-	.global gUnk_083B1888
-gUnk_083B1888:
+	.global gMedabotPartSpriteTiles
+gMedabotPartSpriteTiles:
 	.incbin "baserom.gba", 0x3B1888, 0xB70
 
-	.global gUnk_083B23F8
-gUnk_083B23F8:
+	.global gBattlefieldTilesets
+gBattlefieldTilesets:
 	.incbin "baserom.gba", 0x3B23F8, 0xB0
 
 	.global gBattlefieldGraphics
@@ -867,16 +867,16 @@ gUnk_083B284C:
 gUnk_083B2864:
 	.incbin "baserom.gba", 0x3B2864, 0x8
 
-	.global gUnk_083B286C
-gUnk_083B286C:
+	.global gReplayRandomBytes
+gReplayRandomBytes:
 	.incbin "baserom.gba", 0x3B286C, 0x100
 
-	.global gUnk_083B296C
-gUnk_083B296C:
+	.global gLegWalkFrames
+gLegWalkFrames:
 	.incbin "baserom.gba", 0x3B296C, 0x4
 
-	.global gUnk_083B2970
-gUnk_083B2970:
+	.global gPlayerFormSpriteSets
+gPlayerFormSpriteSets:
 	.incbin "baserom.gba", 0x3B2970, 0x2170
 
 	.global gUiTilemaps
@@ -966,8 +966,8 @@ gMedaforceSkillHelpMessages:
 gRotationActionMessages:
 	.incbin "baserom.gba", 0x3B825C, 0x20
 
-	.global gUnk_083B827C
-gUnk_083B827C:
+	.global gMedapartData
+gMedapartData:
 	.incbin "baserom.gba", 0x3B827C, 0x225C
 
 	.global gUnk_083BA4D8
@@ -1002,8 +1002,8 @@ gLegTypeNames:
 gBattlefieldNames:
 	.incbin "baserom.gba", 0x3BE9E8, 0x2C
 
-	.global gUnk_083BEA14
-gUnk_083BEA14:
+	.global gMedabotSpritePalettes
+gMedabotSpritePalettes:
 	.incbin "baserom.gba", 0x3BEA14, 0x7C
 
 	.global gAreaBattleSettings
@@ -1030,20 +1030,20 @@ gOpponentAfterBattleMessages:
 gBattlefieldParams:
 	.incbin "baserom.gba", 0x3C3B04, 0x58
 
-	.global gUnk_083C3B5C
-gUnk_083C3B5C:
+	.global gBattlefieldEffectParams
+gBattlefieldEffectParams:
 	.incbin "baserom.gba", 0x3C3B5C, 0x3DC
 
 	.global gOpponentNames
 gOpponentNames:
 	.incbin "baserom.gba", 0x3C3F38, 0x180
 
-	.global gUnk_083C40B8
-gUnk_083C40B8:
+	.global gBattlefieldAnimTileCounts
+gBattlefieldAnimTileCounts:
 	.incbin "baserom.gba", 0x3C40B8, 0xB
 
-	.global gUnk_083C40C3
-gUnk_083C40C3:
+	.global gBattlefieldAnimFrames
+gBattlefieldAnimFrames:
 	.incbin "baserom.gba", 0x3C40C3, 0x5A9
 
 	.global gUnk_083C466C
@@ -1082,12 +1082,12 @@ gActionScriptOperandCounts:
 gPartKindNames:
 	.incbin "baserom.gba", 0x3C6DE8, 0x10
 
-	.global gUnk_083C6DF8
-gUnk_083C6DF8:
+	.global gSpriteMotionSteps
+gSpriteMotionSteps:
 	.incbin "baserom.gba", 0x3C6DF8, 0x3E00
 
-	.global gUnk_083CABF8
-gUnk_083CABF8:
+	.global gLegPartPoseSets
+gLegPartPoseSets:
 	.incbin "baserom.gba", 0x3CABF8, 0x33EC
 
 	.global gBattleSeqScripts
@@ -1174,16 +1174,16 @@ gLinkMessages:
 gMedabotSpriteNodeDescs:
 	.incbin "baserom.gba", 0x3D1BF8, 0xC8
 
-	.global gUnk_083D1CC0
-gUnk_083D1CC0:
+	.global gPoseKeyframeAngles
+gPoseKeyframeAngles:
 	.incbin "baserom.gba", 0x3D1CC0, 0xEC
 
-	.global gUnk_083D1DAC
-gUnk_083D1DAC:
+	.global gPoseKeyframeOffsets
+gPoseKeyframeOffsets:
 	.incbin "baserom.gba", 0x3D1DAC, 0xEC
 
-	.global gUnk_083D1E98
-gUnk_083D1E98:
+	.global gPoseKeyframeEnds
+gPoseKeyframeEnds:
 	.incbin "baserom.gba", 0x3D1E98, 0xEC
 
 	.global gUnk_083D1F84
@@ -1318,8 +1318,8 @@ gFieldDebugPageValues:
 gJumpArcTable:
 	.incbin "baserom.gba", 0x3D69A0, 0x200
 
-	.global gUnk_083D6BA0
-gUnk_083D6BA0:
+	.global gCosTableQ8
+gCosTableQ8:
 	.incbin "baserom.gba", 0x3D6BA0, 0x300
 
 	.global gCosTableF32
