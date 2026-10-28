@@ -21,7 +21,7 @@ void battle_bot_sprites_blink(
     u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
 void battle_bot_sprites_show(u32 rec); // sets bit 15 of unk0 on the bot's 4 part sprites
 void sprite_bob_step(
-    u32 slot); // y (unk4) += gUnk_083AF4E0[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
+    u32 slot); // y (unk4) += gSpriteBobYSteps[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
 u32 staggered_sprites_update(u32 slot, u32 n);
 void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n);
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount); // unkC8 = unkCC = min(amount, part data[4] - armor unk11)

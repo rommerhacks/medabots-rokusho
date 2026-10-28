@@ -4,36 +4,36 @@
 gData_08590000:
 	.incbin "baserom.gba", 0x590000, 0x50A38
 
-	.global gUnk_085E0A38
-gUnk_085E0A38:
+	.global gMapSpriteSheet37Palette
+gMapSpriteSheet37Palette:
 	.incbin "baserom.gba", 0x5E0A38, 0x20
 
-	.global gUnk_085E0A58
-gUnk_085E0A58:
+	.global gMapSpriteSheet37Tiles
+gMapSpriteSheet37Tiles:
 	.incbin "baserom.gba", 0x5E0A58, 0xF94
 
-	.global gUnk_085E19EC
-gUnk_085E19EC:
+	.global gMapSpriteSheet40Palette
+gMapSpriteSheet40Palette:
 	.incbin "baserom.gba", 0x5E19EC, 0x20
 
-	.global gUnk_085E1A0C
-gUnk_085E1A0C:
+	.global gMapSpriteSheet40Tiles
+gMapSpriteSheet40Tiles:
 	.incbin "baserom.gba", 0x5E1A0C, 0x1894
 
-	.global gUnk_085E32A0
-gUnk_085E32A0:
+	.global gMapSpriteSheet46Palette
+gMapSpriteSheet46Palette:
 	.incbin "baserom.gba", 0x5E32A0, 0x20
 
-	.global gUnk_085E32C0
-gUnk_085E32C0:
+	.global gMapSpriteSheet46Tiles
+gMapSpriteSheet46Tiles:
 	.incbin "baserom.gba", 0x5E32C0, 0x7E8
 
-	.global gUnk_085E3AA8
-gUnk_085E3AA8:
+	.global gMapSpriteSheet48Palette
+gMapSpriteSheet48Palette:
 	.incbin "baserom.gba", 0x5E3AA8, 0x20
 
-	.global gUnk_085E3AC8
-gUnk_085E3AC8:
+	.global gMapSpriteSheet48Tiles
+gMapSpriteSheet48Tiles:
 	.incbin "baserom.gba", 0x5E3AC8, 0x1661C
 
 	.global gUnk_085FA0E4
@@ -480,8 +480,8 @@ gRaceObjTiles:
 gTitleObjTiles:
 	.incbin "baserom.gba", 0x7ADDDC, 0x3F10
 
-	.global gUnk_087B1CEC
-gUnk_087B1CEC:
+	.global gWeeklyObjTiles
+gWeeklyObjTiles:
 	.incbin "baserom.gba", 0x7B1CEC, 0xFE0
 
 	.global gRaceBgTiles
@@ -576,48 +576,48 @@ gIntroScanBg2Tilemap:
 gIntroScanBg3Tilemap:
 	.incbin "baserom.gba", 0x7C0E0C, 0x3B8
 
-	.global gUnk_087C11C4
-gUnk_087C11C4:
+	.global gWeeklyStudioBgTiles
+gWeeklyStudioBgTiles:
 	.incbin "baserom.gba", 0x7C11C4, 0x13D4
 
-	.global gUnk_087C2598
-gUnk_087C2598:
+	.global gWeeklyLectureBgTiles
+gWeeklyLectureBgTiles:
 	.incbin "baserom.gba", 0x7C2598, 0x1390
 
-	.global gUnk_087C3928
-gUnk_087C3928:
+	.global gWeeklyStudioBg1Tilemap
+gWeeklyStudioBg1Tilemap:
 	.incbin "baserom.gba", 0x7C3928, 0x1CC
 
-	.global gUnk_087C3AF4
-gUnk_087C3AF4:
+	.global gWeeklyStudioBg2Tilemap
+gWeeklyStudioBg2Tilemap:
 	.incbin "baserom.gba", 0x7C3AF4, 0x24C
 
-	.global gUnk_087C3D40
-gUnk_087C3D40:
+	.global gWeeklyStudioBg3Tilemap
+gWeeklyStudioBg3Tilemap:
 	.incbin "baserom.gba", 0x7C3D40, 0x370
 
-	.global gUnk_087C40B0
-gUnk_087C40B0:
+	.global gWeeklyLectureBg1Tilemap
+gWeeklyLectureBg1Tilemap:
 	.incbin "baserom.gba", 0x7C40B0, 0x160
 
-	.global gUnk_087C4210
-gUnk_087C4210:
+	.global gWeeklyLectureBg2Tilemap
+gWeeklyLectureBg2Tilemap:
 	.incbin "baserom.gba", 0x7C4210, 0x288
 
-	.global gUnk_087C4498
-gUnk_087C4498:
+	.global gWeeklyLectureBg3Tilemap
+gWeeklyLectureBg3Tilemap:
 	.incbin "baserom.gba", 0x7C4498, 0x384
 
-	.global gUnk_087C481C
-gUnk_087C481C:
+	.global gWeeklyAnimTilesLz
+gWeeklyAnimTilesLz:
 	.incbin "baserom.gba", 0x7C481C, 0x440
 
-	.global gUnk_087C4C5C
-gUnk_087C4C5C:
+	.global gWeeklyStudioBgPalettes
+gWeeklyStudioBgPalettes:
 	.incbin "baserom.gba", 0x7C4C5C, 0x1A0
 
-	.global gUnk_087C4DFC
-gUnk_087C4DFC:
+	.global gWeeklyLectureBgPalettes
+gWeeklyLectureBgPalettes:
 	.incbin "baserom.gba", 0x7C4DFC, 0xC0
 
 	.global gRaceFieldBgTiles

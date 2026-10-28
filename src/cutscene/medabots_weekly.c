@@ -72,15 +72,15 @@ void medabots_weekly_init(void) {
 void weekly_load_studio(void) {
     s32 i;
 
-    LZ77UnCompVram(gUnk_087C11C4, (void *)0x06004000);
-    LZ77UnCompVram(gUnk_087C2598, (void *)0x06008000);
-    LZ77UnCompVram(gUnk_087C3928, (void *)0x06006800);
-    LZ77UnCompVram(gUnk_087C3AF4, (void *)0x06007000);
-    LZ77UnCompVram(gUnk_087C3D40, (void *)0x06007800);
-    LZ77UnCompVram(gUnk_087C40B0, (void *)0x0600A800);
-    LZ77UnCompVram(gUnk_087C4210, (void *)0x0600B000);
-    LZ77UnCompVram(gUnk_087C4498, (void *)0x0600B800);
-    LZ77UnCompVram(gUnk_087B1CEC, (void *)0x06010000);
+    LZ77UnCompVram(gWeeklyStudioBgTiles, (void *)0x06004000);
+    LZ77UnCompVram(gWeeklyLectureBgTiles, (void *)0x06008000);
+    LZ77UnCompVram(gWeeklyStudioBg1Tilemap, (void *)0x06006800);
+    LZ77UnCompVram(gWeeklyStudioBg2Tilemap, (void *)0x06007000);
+    LZ77UnCompVram(gWeeklyStudioBg3Tilemap, (void *)0x06007800);
+    LZ77UnCompVram(gWeeklyLectureBg1Tilemap, (void *)0x0600A800);
+    LZ77UnCompVram(gWeeklyLectureBg2Tilemap, (void *)0x0600B000);
+    LZ77UnCompVram(gWeeklyLectureBg3Tilemap, (void *)0x0600B800);
+    LZ77UnCompVram(gWeeklyObjTiles, (void *)0x06010000);
 
     for (i = 0; i <= 10; i++) {
         sprite_entry_init(i, 0xC800, 0x50E, 4, 3);
@@ -123,18 +123,18 @@ void weekly_load_studio(void) {
 
 // Sub-state 4: studio palettes and BG layers, starts the tile animation and fades in.
 void weekly_show_studio(void) {
-    LZ77UnCompVram(gUnk_087C481C, (void *)0x02031000);
-    DmaSet(3, gUnk_087C4C5C, PLTT, 0x84000068);
-    LZ77UnCompVram(gUnk_085E3AC8, (void *)0x06011B00);
-    LZ77UnCompVram(gUnk_085E32C0, (void *)0x06012400);
-    LZ77UnCompVram(gUnk_085E1A0C, (void *)0x06012D00);
-    LZ77UnCompVram(gUnk_085E0A58, (void *)0x06013600);
-    DmaSet(3, gUnk_085E3AA8, PLTT + 0x200, 0x80000010);
-    DmaSet(3, gUnk_085E32A0, PLTT + 0x220, 0x80000010);
-    DmaSet(3, gUnk_085E19EC, PLTT + 0x240, 0x80000010);
-    DmaSet(3, gUnk_085E0A38, PLTT + 0x260, 0x80000010);
-    DmaSet(3, &gUnk_0807C540[0xF0], PLTT + 0x3C0, 0x80000010);
-    DmaSet(3, &gUnk_0807C540[0xD0], PLTT + 0x280, 0x80000010);
+    LZ77UnCompVram(gWeeklyAnimTilesLz, (void *)0x02031000);
+    DmaSet(3, gWeeklyStudioBgPalettes, PLTT, 0x84000068);
+    LZ77UnCompVram(gMapSpriteSheet48Tiles, (void *)0x06011B00);
+    LZ77UnCompVram(gMapSpriteSheet46Tiles, (void *)0x06012400);
+    LZ77UnCompVram(gMapSpriteSheet40Tiles, (void *)0x06012D00);
+    LZ77UnCompVram(gMapSpriteSheet37Tiles, (void *)0x06013600);
+    DmaSet(3, gMapSpriteSheet48Palette, PLTT + 0x200, 0x80000010);
+    DmaSet(3, gMapSpriteSheet46Palette, PLTT + 0x220, 0x80000010);
+    DmaSet(3, gMapSpriteSheet40Palette, PLTT + 0x240, 0x80000010);
+    DmaSet(3, gMapSpriteSheet37Palette, PLTT + 0x260, 0x80000010);
+    DmaSet(3, &gWeeklyObjPalettes[0xF0], PLTT + 0x3C0, 0x80000010);
+    DmaSet(3, &gWeeklyObjPalettes[0xD0], PLTT + 0x280, 0x80000010);
     REG_BG1CNT = 0xD05;
     REG_BG2CNT = 0xE06;
     REG_BG3CNT = 0xF07;
@@ -152,11 +152,11 @@ void weekly_show_studio(void) {
 // Sub-state 5: "Medabots Lecture" palettes and BG layers; the bare Medabot (sprites 6-9) and the new parts
 // (2-5, above the screen); fades in.
 void weekly_show_lecture(void) {
-    DmaSet(3, gUnk_087C4DFC, PLTT, 0x84000030);
-    DmaSet(3, &gUnk_0807C540[0xE0], PLTT + 0x200, 0x80000010);
-    DmaSet(3, &gUnk_0807C540[0xC0], PLTT + 0x220, 0x80000010);
-    DmaSet(3, &gUnk_0807C540[0x80], PLTT + 0x300, 0x80000040);
-    DmaSet(3, &gUnk_0807C540[0], PLTT + 0x380, 0x80000040);
+    DmaSet(3, gWeeklyLectureBgPalettes, PLTT, 0x84000030);
+    DmaSet(3, &gWeeklyObjPalettes[0xE0], PLTT + 0x200, 0x80000010);
+    DmaSet(3, &gWeeklyObjPalettes[0xC0], PLTT + 0x220, 0x80000010);
+    DmaSet(3, &gWeeklyObjPalettes[0x80], PLTT + 0x300, 0x80000040);
+    DmaSet(3, &gWeeklyObjPalettes[0], PLTT + 0x380, 0x80000040);
     REG_BG1CNT = 0x1509;
     REG_BG2CNT = 0x160A;
     REG_BG3CNT = 0x170B;
@@ -361,7 +361,7 @@ void weekly_lecture(void) {
     case 21:
         if (run_message(gWeeklyMessages[(gSceneWork.timer >> 2) + 8])) {
             message_next();
-            run_message(gUnk_08486114);
+            run_message(gMessageWaitKeyKeep);
             gSceneWork.timer++;
         }
         break;

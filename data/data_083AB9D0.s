@@ -711,16 +711,16 @@ gUnk_083AF490:
 gUnk_083AF4A0:
 	.incbin "baserom.gba", 0x3AF4A0, 0x10
 
-	.global gUnk_083AF4B0
-gUnk_083AF4B0:
+	.global gSpriteSlideXSteps
+gSpriteSlideXSteps:
 	.incbin "baserom.gba", 0x3AF4B0, 0x10
 
-	.global gUnk_083AF4C0
-gUnk_083AF4C0:
+	.global gStaggeredSpriteOffsets
+gStaggeredSpriteOffsets:
 	.incbin "baserom.gba", 0x3AF4C0, 0x20
 
-	.global gUnk_083AF4E0
-gUnk_083AF4E0:
+	.global gSpriteBobYSteps
+gSpriteBobYSteps:
 	.incbin "baserom.gba", 0x3AF4E0, 0x40
 
 	.global gParticleTrailOffsets
@@ -902,8 +902,8 @@ gMenuMessages:
 gBattleSpriteAnimScripts:
 	.incbin "baserom.gba", 0x3B5F80, 0x90
 
-	.global gUnk_083B6010
-gUnk_083B6010:
+	.global gStaggeredSpriteAnimScripts
+gStaggeredSpriteAnimScripts:
 	.incbin "baserom.gba", 0x3B6010, 0x148
 
 	.global gMedalRecords
@@ -1106,65 +1106,69 @@ gUnk_083CE480:
 gBattleSeqTileAnims:
 	.incbin "baserom.gba", 0x3CEC74, 0x94
 
-	.global gUnk_083CED08
-gUnk_083CED08:
+	.global gChangeHeadPartIds
+gChangeHeadPartIds:
 	.incbin "baserom.gba", 0x3CED08, 0x80
 
-	.global gUnk_083CED88
-gUnk_083CED88:
+	.global gChangeRightArmPartIds
+gChangeRightArmPartIds:
 	.incbin "baserom.gba", 0x3CED88, 0x80
 
-	.global gUnk_083CEE08
-gUnk_083CEE08:
+	.global gChangeLeftArmPartIds
+gChangeLeftArmPartIds:
 	.incbin "baserom.gba", 0x3CEE08, 0x80
 
-	.global gUnk_083CEE88
-gUnk_083CEE88:
+	.global gItrpChangeHeadPartIds
+gItrpChangeHeadPartIds:
 	.incbin "baserom.gba", 0x3CEE88, 0x40
 
-	.global gUnk_083CEEC8
-gUnk_083CEEC8:
+	.global gItrpChangeRightArmPartIds
+gItrpChangeRightArmPartIds:
 	.incbin "baserom.gba", 0x3CEEC8, 0x40
 
-	.global gUnk_083CEF08
-gUnk_083CEF08:
+	.global gItrpChangeLeftArmPartIds
+gItrpChangeLeftArmPartIds:
 	.incbin "baserom.gba", 0x3CEF08, 0x40
 
-	.global gUnk_083CEF48
-gUnk_083CEF48:
+	.global gAttackChangeHeadPartIds
+gAttackChangeHeadPartIds:
 	.incbin "baserom.gba", 0x3CEF48, 0x40
 
-	.global gUnk_083CEF88
-gUnk_083CEF88:
+	.global gAttackChangeRightArmPartIds
+gAttackChangeRightArmPartIds:
 	.incbin "baserom.gba", 0x3CEF88, 0x40
 
-	.global gUnk_083CEFC8
-gUnk_083CEFC8:
+	.global gAttackChangeLeftArmPartIds
+gAttackChangeLeftArmPartIds:
 	.incbin "baserom.gba", 0x3CEFC8, 0x40
 
-	.global gUnk_083CF008
-gUnk_083CF008:
+	.global gDefenseChangeHeadPartIds
+gDefenseChangeHeadPartIds:
 	.incbin "baserom.gba", 0x3CF008, 0x40
 
-	.global gUnk_083CF048
-gUnk_083CF048:
+	.global gDefenseChangeRightArmPartIds
+gDefenseChangeRightArmPartIds:
 	.incbin "baserom.gba", 0x3CF048, 0x40
 
-	.global gUnk_083CF088
-gUnk_083CF088:
+	.global gDefenseChangeLeftArmPartIds
+gDefenseChangeLeftArmPartIds:
 	.incbin "baserom.gba", 0x3CF088, 0x40
 
-	.global gUnk_083CF0C8
-gUnk_083CF0C8:
+	.global gHealChangeHeadPartIds
+gHealChangeHeadPartIds:
 	.incbin "baserom.gba", 0x3CF0C8, 0x40
 
-	.global gUnk_083CF108
-gUnk_083CF108:
+	.global gHealChangeRightArmPartIds
+gHealChangeRightArmPartIds:
 	.incbin "baserom.gba", 0x3CF108, 0x40
 
-	.global gUnk_083CF148
-gUnk_083CF148:
-	.incbin "baserom.gba", 0x3CF148, 0x268
+	.global gHealChangeLeftArmPartIds
+gHealChangeLeftArmPartIds:
+	.incbin "baserom.gba", 0x3CF148, 0x40
+
+	.global gUnk_083CF188
+gUnk_083CF188:
+	.incbin "baserom.gba", 0x3CF188, 0x228
 
 	.global gLinkMessages
 gLinkMessages:

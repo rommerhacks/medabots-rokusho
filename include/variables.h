@@ -907,26 +907,26 @@ extern const u8 gBattlePillarTiles[];               // BG3 0x0600C000: the colum
 extern const u8 gMedaforceGaugeFrameEndTiles[];     // VRAM 0x06004300 (tile 0x218). guess: gauge frame end
 extern const u8 gMedaforceGaugeFrameTiles[];        // VRAM 0x06004200 (tile 0x210)
 extern const u8 gMedaforceLabelTiles[];             // "MF>" label, two colors (VRAM 0x06004140)
-extern const u8 gUnk_083C4C88[][4];        // bot status sprite OAM attribute sets (battle_bot_status_sprite_update)
-extern const u8 gUnk_083C4C60[][4];        // status sprite OAM attribute sets, 4 bytes each (code_08018900)
-extern const u16 gUnk_083AF4C0[];          // battle cursor sprite data (staggered_sprites_spawn)
-extern const u8 *const gUnk_083AFD08[][9]; // LZ assets by set and index (decompress_indexed_asset)
-extern const u16 *const gUnk_083B15C8[];   // palettes by asset set (decompress_indexed_asset)
-extern const u16 gTextWindowObjPalette[];  // text window OBJ palette (text_window_init)
-extern const u8 gUnk_08488540[];           // LZ text window graphics (text/message)
-extern const u8 gUnk_084C31BC[];           // LZ text window graphics (text/message)
-extern const u8 gUnk_084873D0[];           // LZ text window graphics (text/message)
-extern const u16 gUnk_0850EF58[];          // OBJ palettes (link Robattle screen, prize_game_load)
-extern const u16 gUnk_084F39A0[];          // BG palettes (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084F21E8[];           // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084F0D9C[];           // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084F0194[];           // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084EF668[];           // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084E20F8[];           // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084C68E0[];           // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084C66B8[];           // LZ graphics (link Robattle screen, prize_game_load)
-extern const u8 gUnk_084EDEF0[];           // LZ graphics (link Robattle screen, prize_game_load)
-extern const s16 gBattleSeqWaveOffsets[];  // y offsets by sprite unk23 (0-31; battle_seq_spr_effect_wave)
+extern const u8 gUnk_083C4C88[][4];         // bot status sprite OAM attribute sets (battle_bot_status_sprite_update)
+extern const u8 gUnk_083C4C60[][4];         // status sprite OAM attribute sets, 4 bytes each (code_08018900)
+extern const u16 gStaggeredSpriteOffsets[]; // (x, y) per sprite of the staggered burst (staggered_sprites_spawn)
+extern const u8 *const gUnk_083AFD08[][9];  // LZ assets by set and index (decompress_indexed_asset)
+extern const u16 *const gUnk_083B15C8[];    // palettes by asset set (decompress_indexed_asset)
+extern const u16 gTextWindowObjPalette[];   // text window OBJ palette (text_window_init)
+extern const u8 gUnk_08488540[];            // LZ text window graphics (text/message)
+extern const u8 gUnk_084C31BC[];            // LZ text window graphics (text/message)
+extern const u8 gUnk_084873D0[];            // LZ text window graphics (text/message)
+extern const u16 gUnk_0850EF58[];           // OBJ palettes (link Robattle screen, prize_game_load)
+extern const u16 gUnk_084F39A0[];           // BG palettes (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084F21E8[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084F0D9C[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084F0194[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084EF668[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084E20F8[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084C68E0[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084C66B8[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const u8 gUnk_084EDEF0[];            // LZ graphics (link Robattle screen, prize_game_load)
+extern const s16 gBattleSeqWaveOffsets[];   // y offsets by sprite unk23 (0-31; battle_seq_spr_effect_wave)
 extern const u8
     gBattleBg3ParallaxShift[]; // BG3 parallax shift by battlefield gBattleWork.battlefield (battle_seq_spr_actor_dash)
 extern const Func gBattleSeqSpriteHandlers[]; // sprite handlers by unk29, slots 1-0x27 (battle_sequence_update_sprites)
@@ -936,23 +936,26 @@ extern const struct Unk_083AF94C gBattleSeqEffectSetPos[]; // 4 sprite positions
 extern const Func gParticleSweepHandlers[]; // sweep particle states by sprite unk29 (particle_run_sweep_handlers)
 extern const u16 gParticleTrailOffsets[];   // 4 (x, y) trail offsets, x and y picked by separate rng & 3 rolls
 extern const u16 gParticleSparkOffsets[];   // 4 (x, y) spark offsets from the emitter, picked by rng & 3
-extern const u8 gUnk_083CED08[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CED88[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEE08[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEE88[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEEC8[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEF08[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEF48[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEF88[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CEFC8[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF008[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF048[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF088[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF0C8[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF108[];            // random part ids (pick_random_change_part)
-extern const u8 gUnk_083CF148[];            // random part ids (pick_random_change_part)
-extern const void *gUnk_083B6010[];         // sprite animation commands (staggered_sprites_update)
-extern const u16 gUnk_083AF490[];           // x, y offset pairs per sprite of a 4-sprite group (hit_sparks_spawn)
+extern const u8 gChangeHeadPartIds[]; // Change family (actor part data[1] - 0x37 = 0-4: Change, ItrpChange, AttkChange,
+// DEF Change, HealChange): 128 (Change) or 64 random part ids per acting part (head, right arm, left arm) that
+// pick_random_change_part draws from
+extern const u8 gChangeRightArmPartIds[];
+extern const u8 gChangeLeftArmPartIds[];
+extern const u8 gItrpChangeHeadPartIds[];
+extern const u8 gItrpChangeRightArmPartIds[];
+extern const u8 gItrpChangeLeftArmPartIds[];
+extern const u8 gAttackChangeHeadPartIds[];
+extern const u8 gAttackChangeRightArmPartIds[];
+extern const u8 gAttackChangeLeftArmPartIds[];
+extern const u8 gDefenseChangeHeadPartIds[];
+extern const u8 gDefenseChangeRightArmPartIds[];
+extern const u8 gDefenseChangeLeftArmPartIds[];
+extern const u8 gHealChangeHeadPartIds[];
+extern const u8 gHealChangeRightArmPartIds[];
+extern const u8 gHealChangeLeftArmPartIds[];
+extern const void
+    *gStaggeredSpriteAnimScripts[]; // [0]: animation script every staggered sprite runs (staggered_sprites_update)
+extern const u16 gUnk_083AF490[];   // x, y offset pairs per sprite of a 4-sprite group (hit_sparks_spawn)
 extern const u16
     gUnk_083AF440[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
 extern const u16
@@ -961,11 +964,11 @@ extern const u16
     gUnk_083AF3C0[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
 extern const u16
     gUnk_083AF380[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
-extern const u16 gUnk_083AF4E0[]; // 32 y offsets added to a sprite's unk4 by sprite_bob_step
-extern const u8 gUnk_083AF4A0[];  // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
-extern const u8 gUnk_083AF4B0[];  // 16 x offsets added to / subtracted from a sprite's unk2 by sprite_slide_x_step
-extern const u8 gUnk_083AF210[];  // 256 speed steps (quarter pixels) by a sprite's unk30 (sprite_move_toward_target,
-                                  // update_sprite_deceleration)
+extern const u16 gSpriteBobYSteps[];  // 32 y offsets added to a sprite's unk4 by sprite_bob_step
+extern const u8 gUnk_083AF4A0[];      // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
+extern const u8 gSpriteSlideXSteps[]; // 16 x offsets added to / subtracted from a sprite's unk2 by sprite_slide_x_step
+extern const u8 gUnk_083AF210[]; // 256 speed steps (quarter pixels) by a sprite's unk30 (sprite_move_toward_target,
+                                 // update_sprite_deceleration)
 extern const u16 gParticleSwayOffsets[];     // 16 x steps by a sprite's unk2D & 15 (particle_sway_down)
 extern const u8 gParticleOrbitRadiusSteps[]; // orbit radius steps (+1 / -1, byte pairs) by a sprite's unk2D & 31
 extern const u8 gUnk_083AF330[];             // 8 entries per bot_intact_parts_class result, one picked at random
@@ -1307,36 +1310,37 @@ extern const struct S32Array3
     gBombGameDebrisTimes;              // {0x50, 0x40, 0x20}: bomb minigame debris intervals (bomb_game_player_blown_up)
 extern const u8 gBombGameBannerEva[8]; // bomb minigame BLDALPHA EVA steps (bomb_game_animate_round_banner)
 extern const u8 gBombGameBannerEvb[8]; // bomb minigame BLDALPHA EVB steps (bomb_game_animate_round_banner)
-extern const u8 gUnk_087C11C4[];
-extern const u8 gUnk_087C2598[];
-extern const u8 gUnk_087C3928[];
-extern const u8 gUnk_087C3AF4[];
-extern const u8 gUnk_087C3D40[];
-extern const u8 gUnk_087C40B0[];
-extern const u8 gUnk_087C4210[];
-extern const u8 gUnk_087C4498[];
-extern const u8 gUnk_087B1CEC[];
-extern const u8 gUnk_087C481C[];
-extern const u8 gUnk_087C4C5C[];
-extern const u8 gUnk_085E3AC8[];
-extern const u8 gUnk_085E32C0[];
-extern const u8 gUnk_085E1A0C[];
-extern const u8 gUnk_085E0A58[];
-extern const u16 gUnk_085E3AA8[];
-extern const u16 gUnk_085E32A0[];
-extern const u16 gUnk_085E19EC[];
-extern const u16 gUnk_085E0A38[];
-extern const u16 gUnk_0807C540[]; // 16-colour palettes (same table as weekly_show_lecture)
-extern const u16 gUnk_087C4DFC[];
-extern const u8 gUnk_087C8E00[];  // LZ77 BG tiles (intro_load_art_unused)
-extern const u8 gUnk_087CC7BC[];  // LZ77 30x20 tilemap (intro_load_art_unused)
-extern const u16 gUnk_087CCAEC[]; // BG palette, 256 colours (intro_load_art_unused)
-extern const u8 gUnk_087CCCEC[];  // LZ77 BG tiles (intro_load_versus_art)
-extern const u8 gUnk_087D0954[];  // LZ77 30x20 tilemap (intro_load_versus_art)
-extern const u16 gUnk_087D0C80[]; // BG palette, 256 colours (intro_load_versus_art)
-extern const u8 gUnk_087D0E80[];  // LZ77 BG tiles (intro_load_closeup_art)
-extern const u8 gUnk_087D424C[];  // LZ77 30x20 tilemap (intro_load_closeup_art)
-extern const u16 gUnk_087D4564[]; // BG palette, 256 colours (intro_load_closeup_art)
+extern const u8 gWeeklyStudioBgTiles[];    // LZ77, studio BG tiles (char base 1)
+extern const u8 gWeeklyLectureBgTiles[];   // LZ77, "Medabots Lecture" BG tiles (char base 2)
+extern const u8 gWeeklyStudioBg1Tilemap[]; // LZ77, studio BG1-3 tilemaps (screen bases 0xD-0xF)
+extern const u8 gWeeklyStudioBg2Tilemap[];
+extern const u8 gWeeklyStudioBg3Tilemap[];
+extern const u8 gWeeklyLectureBg1Tilemap[]; // LZ77, lecture BG1-3 tilemaps (screen bases 0x15-0x17)
+extern const u8 gWeeklyLectureBg2Tilemap[];
+extern const u8 gWeeklyLectureBg3Tilemap[];
+extern const u8 gWeeklyObjTiles[];         // LZ77, curtain and Medabot OBJ tiles (OBJ VRAM 0x10000)
+extern const u8 gWeeklyAnimTilesLz[];      // LZ77, unpacked to gWeeklyAnimTiles (weekly_show_studio)
+extern const u8 gWeeklyStudioBgPalettes[]; // 13 BG palettes of the studio
+extern const u8 gMapSpriteSheet48Tiles[];  // LZ77 map sprite sheets 48 / 46 / 40 / 37 (gFieldSpriteTiles), the four
+                                           // Weekly characters
+extern const u8 gMapSpriteSheet46Tiles[];
+extern const u8 gMapSpriteSheet40Tiles[];
+extern const u8 gMapSpriteSheet37Tiles[];
+extern const u16 gMapSpriteSheet48Palette[]; // their palettes (gFieldSpritePalettes 48 / 46 / 40 / 37)
+extern const u16 gMapSpriteSheet46Palette[];
+extern const u16 gMapSpriteSheet40Palette[];
+extern const u16 gMapSpriteSheet37Palette[];
+extern const u16 gWeeklyObjPalettes[];       // 16 OBJ palettes of the studio and lecture sprites
+extern const u16 gWeeklyLectureBgPalettes[]; // 6 BG palettes of the lecture corner
+extern const u8 gUnk_087C8E00[];             // LZ77 BG tiles (intro_load_art_unused)
+extern const u8 gUnk_087CC7BC[];             // LZ77 30x20 tilemap (intro_load_art_unused)
+extern const u16 gUnk_087CCAEC[];            // BG palette, 256 colours (intro_load_art_unused)
+extern const u8 gUnk_087CCCEC[];             // LZ77 BG tiles (intro_load_versus_art)
+extern const u8 gUnk_087D0954[];             // LZ77 30x20 tilemap (intro_load_versus_art)
+extern const u16 gUnk_087D0C80[];            // BG palette, 256 colours (intro_load_versus_art)
+extern const u8 gUnk_087D0E80[];             // LZ77 BG tiles (intro_load_closeup_art)
+extern const u8 gUnk_087D424C[];             // LZ77 30x20 tilemap (intro_load_closeup_art)
+extern const u16 gUnk_087D4564[];            // BG palette, 256 colours (intro_load_closeup_art)
 extern s32 (*const gIntroSpriteActions[])(
     u8); // sprite actions, by gSpriteEntries[].unk20 - 1: 0 = done, 0xFF = clear (intro_update_sprite_actions)
 extern const u8 gIntroSpriteActionPeriods[]; // sprite actions: frame period, by unk20 - 1
@@ -1349,8 +1353,8 @@ extern const Func
 extern s32 (*const gWeeklySpriteEffects[])(u8);
 extern const s8 gWeeklyCurtainOpenTimes[8];
 extern const void *const gWeeklyMessages[];
-extern const u8 gUnk_08486114[];
-extern const u8 gIntroPointerLines[]; // 12 bytes per scan part, from +0x30: 3 lines (lineIdx) of x, y, end x, end row
+extern const u8 gMessageWaitKeyKeep[]; // empty message: 0xFF end mode 2 (wait for A / B, keep the window)
+extern const u8 gIntroPointerLines[];  // 12 bytes per scan part, from +0x30: 3 lines (lineIdx) of x, y, end x, end row
 extern const u8 *const
     gIntroScanStrings[]; // intro scan screen strings; [part + 4] are the part names typed by intro_type_part_name
 extern const s8 gWeeklyCurtainCloseTimes[12]; // 12 frame counts (unk1A values) at which weekly_fx_right_curtain_close /

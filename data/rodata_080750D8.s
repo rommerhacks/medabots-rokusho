@@ -36,6 +36,6 @@ gRaceRunnerObjPalette:
 gTitleObjPalettes:
 	.incbin "baserom.gba", 0x7C320, 0x220
 
-	.global gUnk_0807C540
-gUnk_0807C540:
+	.global gWeeklyObjPalettes
+gWeeklyObjPalettes:
 	.incbin "baserom.gba", 0x7C540, 0x200

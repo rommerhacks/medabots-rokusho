@@ -52,9 +52,9 @@ u32 sprite_slide_x_step(u32 slot, u32 n) {
     if (!(gSpriteEntries[slot].unk0 & 0x8000) || gSpriteEntries[slot].unk23 == 0x10)
         return 1;
     if (n == 0)
-        gSpriteEntries[slot].unk2 = gSpriteEntries[slot].unk2 + gUnk_083AF4B0[gSpriteEntries[slot].unk23];
+        gSpriteEntries[slot].unk2 = gSpriteEntries[slot].unk2 + gSpriteSlideXSteps[gSpriteEntries[slot].unk23];
     else
-        gSpriteEntries[slot].unk2 = gSpriteEntries[slot].unk2 - gUnk_083AF4B0[gSpriteEntries[slot].unk23];
+        gSpriteEntries[slot].unk2 = gSpriteEntries[slot].unk2 - gSpriteSlideXSteps[gSpriteEntries[slot].unk23];
     gSpriteEntries[slot].unk23++;
     return 0;
 }
@@ -119,9 +119,9 @@ void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n) {
         gSpriteEntries[slot + i].unkA = 7;
         gSpriteEntries[slot + i].unkB = 0xF0;
         gSpriteEntries[slot + i].unk2C = i * 8;
-        t1 = gUnk_083AF4C0[i * 2] + x;
+        t1 = gStaggeredSpriteOffsets[i * 2] + x;
         gSpriteEntries[slot + i].unk2 = t1 & 0x1FF;
-        t2 = gUnk_083AF4C0[i * 2 + 1] + y;
+        t2 = gStaggeredSpriteOffsets[i * 2 + 1] + y;
         gSpriteEntries[slot + i].unk4 = t2 & 0xFF;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[36], slot + i);
     }
@@ -134,7 +134,7 @@ u32 staggered_sprites_update(u32 slot, u32 n) {
     const void **anim;
 
     for (i = 0; i < n; i++) {
-        anim = gUnk_083B6010;
+        anim = gStaggeredSpriteAnimScripts;
         if (gSpriteEntries[slot + i].unk0 != 0) {
             if (gSpriteEntries[slot + i].unk2C != 0) {
                 gSpriteEntries[slot + i].unk2C--;
@@ -236,7 +236,7 @@ void battle_bot_sprites_show(u32 rec) {
 }
 
 void sprite_bob_step(u32 slot) {
-    gSpriteEntries[slot].unk4 = (gSpriteEntries[slot].unk4 + gUnk_083AF4E0[gSpriteEntries[slot].unk23]) & 0xFF;
+    gSpriteEntries[slot].unk4 = (gSpriteEntries[slot].unk4 + gSpriteBobYSteps[gSpriteEntries[slot].unk23]) & 0xFF;
     gSpriteEntries[slot].unk23 = (gSpriteEntries[slot].unk23 + 1) & 31;
 }
 
@@ -303,65 +303,65 @@ u8 pick_random_change_part(u32 a, u32 kind) {
     case 0:
         switch (kind) {
         case 0:
-            ret = gUnk_083CED08[gGameWork.rngLast & 0x7F];
+            ret = gChangeHeadPartIds[gGameWork.rngLast & 0x7F];
             break;
         case 1:
-            ret = gUnk_083CED88[gGameWork.rngLast & 0x7F];
+            ret = gChangeRightArmPartIds[gGameWork.rngLast & 0x7F];
             break;
         case 2:
-            ret = gUnk_083CEE08[gGameWork.rngLast & 0x7F];
+            ret = gChangeLeftArmPartIds[gGameWork.rngLast & 0x7F];
             break;
         }
         break;
     case 1:
         switch (kind) {
         case 0:
-            ret = gUnk_083CEE88[gGameWork.rngLast & 0x3F];
+            ret = gItrpChangeHeadPartIds[gGameWork.rngLast & 0x3F];
             break;
         case 1:
-            ret = gUnk_083CEEC8[gGameWork.rngLast & 0x3F];
+            ret = gItrpChangeRightArmPartIds[gGameWork.rngLast & 0x3F];
             break;
         case 2:
-            ret = gUnk_083CEF08[gGameWork.rngLast & 0x3F];
+            ret = gItrpChangeLeftArmPartIds[gGameWork.rngLast & 0x3F];
             break;
         }
         break;
     case 2:
         switch (kind) {
         case 0:
-            ret = gUnk_083CEF48[gGameWork.rngLast & 0x3F];
+            ret = gAttackChangeHeadPartIds[gGameWork.rngLast & 0x3F];
             break;
         case 1:
-            ret = gUnk_083CEF88[gGameWork.rngLast & 0x3F];
+            ret = gAttackChangeRightArmPartIds[gGameWork.rngLast & 0x3F];
             break;
         case 2:
-            ret = gUnk_083CEFC8[gGameWork.rngLast & 0x3F];
+            ret = gAttackChangeLeftArmPartIds[gGameWork.rngLast & 0x3F];
             break;
         }
         break;
     case 3:
         switch (kind) {
         case 0:
-            ret = gUnk_083CF008[gGameWork.rngLast & 0x3F];
+            ret = gDefenseChangeHeadPartIds[gGameWork.rngLast & 0x3F];
             break;
         case 1:
-            ret = gUnk_083CF048[gGameWork.rngLast & 0x3F];
+            ret = gDefenseChangeRightArmPartIds[gGameWork.rngLast & 0x3F];
             break;
         case 2:
-            ret = gUnk_083CF088[gGameWork.rngLast & 0x3F];
+            ret = gDefenseChangeLeftArmPartIds[gGameWork.rngLast & 0x3F];
             break;
         }
         break;
     default:
         switch (kind) {
         case 0:
-            ret = gUnk_083CF0C8[gGameWork.rngLast & 0x3F];
+            ret = gHealChangeHeadPartIds[gGameWork.rngLast & 0x3F];
             break;
         case 1:
-            ret = gUnk_083CF108[gGameWork.rngLast & 0x3F];
+            ret = gHealChangeRightArmPartIds[gGameWork.rngLast & 0x3F];
             break;
         case 2:
-            ret = gUnk_083CF148[gGameWork.rngLast & 0x3F];
+            ret = gHealChangeLeftArmPartIds[gGameWork.rngLast & 0x3F];
             break;
         }
         break;

@@ -252,8 +252,8 @@ gIntroSpriteActionPeriods:
 gMedabotsWeeklySubStates:
 	.incbin "baserom.gba", 0x4860C8, 0x4C
 
-	.global gUnk_08486114
-gUnk_08486114:
+	.global gMessageWaitKeyKeep
+gMessageWaitKeyKeep:
 	.incbin "baserom.gba", 0x486114, 0x4
 
 	.global gWeeklySpriteEffects
