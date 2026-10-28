@@ -3,7 +3,7 @@
 
 // Message window: open/close, text printing, glyph rendering, commands
 
-void text_window_init(u8 a, u8 b, u32 c);
+void text_window_init(u8 keep_palettes, u8 portrait_mode, u32 no_frame);
 void message_next(void); // start the next message in an open window (run_message state 4: clear, then print)
 u32 run_message(const void *msg);
 void message_print_step(void);     // run_message state 5, every frame: text control bytes 0xF7-0xFF, else one glyph

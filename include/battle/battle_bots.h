@@ -3,7 +3,7 @@
 
 // Battle Medabots: team setup from the save, opponents, per-turn action and part selection (AI)
 
-void battle_bots_load_parts(u32 a, u32 n);
+void battle_bots_load_parts(u32 rec, u32 n);
 void clear_battle_bot_array(void);
 void count_active_battle_bots(void);
 void battle_setup_team_bots(void);
@@ -23,6 +23,6 @@ u32 part_blocked_by_effect(u32 rec,
 u32 check_medaforce_availability(
     u32 rec, u32 slot, u32 random); // 0 = Medaforce slot chosen (battle_bot_select_medaforce), 1 = not available
 void battle_ai_roll_part_order(void);
-u32 bot_side_index(u32 rec, u32 other); // side of rec (0 team, 1 opponents), or the other side when other is 1
+u32 bot_side_index(u32 rec, u32 opposite); // side of rec (0 team, 1 opponents), or the other side when opposite is 1
 
 #endif // GUARD_BATTLE_BATTLE_BOTS_H

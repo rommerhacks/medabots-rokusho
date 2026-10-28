@@ -224,7 +224,7 @@ struct GfxListEntry {
 };
 
 struct GameWork {
-    u8 msgKeepPalettes; // message window: 0 = dim the palettes while open (text_window_init args a, b, c)
+    u8 msgKeepPalettes; // message window: 0 = dim the palettes while open (text_window_init keep_palettes)
     u8 portraitMode;    // portrait mode: 0 = animated, 1 = static, 2 = none
     u8 noWindowFrame;   // 1 = no window frame
     u8 filler3;

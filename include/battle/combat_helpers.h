@@ -8,7 +8,7 @@ void target_cursor_place_markers(u32 rec);
 u32 bot_intact_parts_class(u32 rec);
 u32 calc_bot_matching_part_power(u32 rec);
 void accumulate_battle_speed_value(u32 rec);
-u32 get_random_battle_weight_entry(u32 idx);
+u32 get_random_battle_weight_entry(u32 rec);
 void calc_battle_action_speed(u32 rec, u32 part);
 void apply_battle_bot_damage_reduction(u32 rec);
 u32 check_bot_ability_type_strike(u32 rec, u32 part, u32 target);
@@ -27,8 +27,8 @@ void add_bot_to_defeated_list(u32 rec);
 u32 sprite_hop_step(u32 slot);
 u32 move_sprite_toward_target(u32 slot);
 void sprite_enable_affine_unit_scale(u32 slot);
-u32 update_sprite_deceleration(u32 slot, s16 a, s16 b);
-void check_sprite_overlap_and_adjust(u32 slot, u32 b);
+u32 update_sprite_deceleration(u32 slot, s16 min_y, s16 max_y);
+void check_sprite_overlap_and_adjust(u32 anchor_slot, u32 target_slot);
 void sprite_disable_affine(u32 slot);
 void action_bg_set_side_scroll(void);
 void battle_set_action_target(
@@ -42,7 +42,7 @@ void bg3_shake_step(u32 frame);
 void sprite_shake_x_step(u32 slot, u32 frame, u32 y);     // sprite unk2 = y, +1 / -1 on frames 2-3 / 6-7 of 8
 void reduce_bot_part_stat(u32 rec, u32 part, s32 amount); // part armor (armor) -= amount, not below 0
 void bot_halve_broken_leg_stats(u32 rec);
-void set_target_sprite_position(u32 rec, u32 frame, u32 flag);
+void set_target_sprite_position(u32 rec, u32 dir, u32 axis);
 void update_target_cursor_position(u32 rec);
 void battle_pick_random_target_part(u32 rec);
 void battle_load_action_target(u32 rec);
@@ -51,7 +51,7 @@ void add_u8_capped(u8 *val, u32 amount, u32 max); // *val = min(*val + amount, m
 void subtract_u8_floored(u8 *val, s32 amount);    // *val = max(*val - amount, 0)
 void damage_add_small_random(void);
 void damage_divide_by_part_divisor(u32 rec, u32 part);
-void subtract_s16_floored(s16 *amount, s32 sub); // *amount -= sub, not below 0
+void subtract_s16_floored(s16 *val, s32 amount); // *val -= amount, not below 0
 void damage_add_strengthen_parts(u32 rec);
 
 #endif // GUARD_BATTLE_COMBAT_HELPERS_H

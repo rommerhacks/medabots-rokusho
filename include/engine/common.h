@@ -10,38 +10,39 @@ void draw_number_tall_bgcnt(u32 value, u32 x, u32 y, u8 digits, u32 bgcnt,
 u32 skill_type_is_remote(u32 type);    // 1 for skill types 2, 3, 6, 7 ("Remote Medaparts"), 0 for proximity
 s32 rng_next_byte(void);
 void load_part_data(u32 part, u32 kind, u8 *dst);
-struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32 cy, u32 a, u32 b);
+struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32 cy, u32 inset_y, u32 inset_x);
 u32 find_medabot_slot_by_medal(u8 medal); // team slot (gTeamSlots) holding Medal id `medal`, or 0xFF
-void decompress_sprite_to_vram_08042D94(u32 a, u32 b, u32 c, u32 d, u32 slot);
+void decompress_sprite_to_vram_08042D94(u32 head, u32 right_arm, u32 left_arm, u32 legs, u32 slot);
 void init_battle_medabot_sprites(
-    u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j,
-    u32 k); // creates the 4 part sprites of a Medabot (head, arms, legs) at sprite..sprite+3
-void setup_battle_sprite_group(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j,
-                               u32 k); // refreshes the 4 part sprites set up by init_battle_medabot_sprites
+    u32 head, u32 rarm, u32 larm, u32 legs, u32 tile, u32 sprite, u32 x, u32 y, u32 flip, u32 prio,
+    u32 pal); // creates the 4 part sprites of a Medabot (head, arms, legs) at sprite..sprite+3
+void setup_battle_sprite_group(u32 head, u32 rarm, u32 larm, u32 legs, u32 tile, u32 sprite, u32 x, u32 y, u32 flip,
+                               u32 prio, u32 pal); // refreshes the 4 part sprites set up by init_battle_medabot_sprites
 u32 find_next_free_medal(
     vu32 medal,
     vu32 backward); // previous or next owned Medal not in a Medabot (gMedals bit 7 set, bit 6 clear), 30 if none
-u32 find_next_available_medapart_slot(u32 part, u32 kind, u32 backward,
-                                      u32 d); // next / previous owned Medapart id of gender d; d + 0x78 if none
+u32 find_next_available_medapart_slot(
+    u32 part, u32 kind, u32 backward,
+    u32 gender); // next / previous owned Medapart id of the gender; gender + 0x78 if none
 void init_scene_buffers_080445F4(void);
 void setup_scene_with_bg_and_sprites(); // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8
 void draw_medabot_sprite();             // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8
-u32 medabot_pose_anim_step(u32 a0, u32 a1, u32 a2);
+u32 medabot_pose_anim_step(u32 slot, u32 anim, u32 legs);
 u32 medabot_detail_is_full_set(void); // 1 if gGameWork.shownHead-9B (the four shown Medaparts) are all the same set
 u32 count_assembled_medabots(void);   // team slots (gTeamSlots) with state 3
 void battle_sprite_group_set_anim(u32 sprite, u32 anim); // sets anim script unk24 on the 4 sprites from sprite
 void update_battle_sprite_orbiting_positions(
     u32 sprite, u32 idx,
-    u32 c); // guess: idle animation of a part-sprite Medabot (legs anchor, arms swing on a circle, head bobs)
+    u32 unused); // guess: idle animation of a part-sprite Medabot (legs anchor, arms swing on a circle, head bobs)
 u32 validate_medapart_stats(u8 medal, u8 head, u8 rarm, u8 larm, u8 legs);
 void modify_medapart_quantity(u32 id, u32 kind, u32 byte, u32 subtract,
                               u32 n); // byte 0 or 1 of the Medapart (id, kind): -= n, or += n capped at 99
 void fill_tilemap_pair_or_divide(
     u8 value, u8 x, u8 y, u32 bgcnt,
-    u16 entry); // guess: draws a 2-digit number with 1x2 tiles (0xFF: blank, >= 100: fixed tiles)
+    u16 tile); // guess: draws a 2-digit number with 1x2 tiles (0xFF: blank, >= 100: fixed tiles)
 void draw_tilemap_with_offset(u32 id, u32 x, u32 y, u32 bgcnt, u16 flags);
 void clear_bg_scroll(void);
-void decompress_tileset_to_vram(u32 id, u32 arg);
+void decompress_tileset_to_vram(u32 idx, u32 backup);
 void apply_battle_blend_effect_a(void);
 void update_scroll_movement_a(void);
 void give_starter_medabot(void); // team slot 0: Medal 0 with the four 0x2A parts
@@ -55,7 +56,7 @@ void return_to_field(void); // field sub-state 7: restore script sprites, resume
 void set_blend_effect_mode(u8 mode, u16 targets, u16 speed);
 u32 update_blend_effect(void); // 1 once the effect set up by set_blend_effect_mode is done
 s32 rng_percent(void);         // random 0-100
-void setup_sprite_animation_entry(u32 a, u8 id, u8 kind, u16 y, u16 x, u32 f, u8 g, u8 h, u8 i);
+void setup_sprite_animation_entry(u32 slot, u8 id, u8 kind, u16 y, u16 x, u32 depth, u8 pal, u8 bank, u8 step);
 void load_battle_script_entry_b(void);
 void apply_battle_blend_effect_b(void);
 void decompress_to_ewram_27000(const u8 *src);

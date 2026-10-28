@@ -13,9 +13,9 @@ void part_select_draw_head_uses(void);
 void part_select_blink_selected_icon(void);
 void part_select_input(void);
 void part_select_blink_status(void);
-void part_select_init_head_icon(u32 a);
-void part_select_init_right_arm_icon(u32 a);
-void part_select_init_left_arm_icon(u32 a);
-void part_select_init_bottom_icon(u32 a);
+void part_select_init_head_icon(u32 lit);
+void part_select_init_right_arm_icon(u32 lit);
+void part_select_init_left_arm_icon(u32 lit);
+void part_select_init_bottom_icon(u32 lit);
 
 #endif // GUARD_BATTLE_PART_SELECT_H

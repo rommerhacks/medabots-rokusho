@@ -5,10 +5,10 @@
 // u8 sort
 
 void memzero_bytes(u8 *dst, u32 size);
-u32 run_blend_fade_transition(u16 a);
+u32 run_blend_fade_transition(u16 color);
 void game_substate_advance(void);
-void setup_palette_fade_to_color(u16 color, float a, float b, float c);
-void setup_palette_fade_to_color_with_obj(u16 color, float a, float b, float c);
+void setup_palette_fade_to_color(u16 color, float start, float end, float steps);
+void setup_palette_fade_to_color_with_obj(u16 color, float start, float end, float steps);
 void sprite_anim_start(u8 slot, u8 anim_id);
 void advance_sprite_animation_frame(u8 idx);
 u8 field_random(u8 n); // returns 0..n-1
@@ -20,8 +20,8 @@ void setup_blend_effect(u8 mode, u16 bldcnt, u8 type, u8 eva_frames, u8 evb_fram
 u32 blend_effect_update(void);
 void clear_entity_state(u8 slot);
 void memset_bytes(u8 *dst, u32 n, u8 val);
-void field_bg_palettes_blend_masked(u16 a, u32 b, u16 c);
-void field_obj_palettes_blend_masked(u16 a, u32 b, u16 c);
+void field_bg_palettes_blend_masked(u16 color, u32 amount, u16 mask);
+void field_obj_palettes_blend_masked(u16 color, u32 amount, u16 mask);
 void field_palette_backup(void);
 void build_bg_tile_entry(u16 *dst, u16 id, u16 base, u16 y, u16 x, u16 yoff, u16 xoff);
 void copy_tilemap_rect_with_offset(u16 *src, u16 *dst, s32 y, s32 x, s32 w, s32 h, s32 unused6, s32 unused7, s32 add,

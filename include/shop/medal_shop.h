@@ -3,6 +3,6 @@
 
 // Mode-2 state 18: Medal list shop screen
 
-void medal_rename_draw_list(u8 first);
+void medal_rename_draw_list(u8 start);
 
 #endif // GUARD_SHOP_MEDAL_SHOP_H

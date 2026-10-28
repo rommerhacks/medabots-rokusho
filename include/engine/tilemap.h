@@ -5,7 +5,7 @@
 
 void tilemap_fill_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt,
                        u16 tile); // fills a rectangle of the BG map at bgcnt's screen base
-void load_bg0_tilemap(u32 a, u32 b, u32 x, u32 y, u32 c);
+void load_bg0_tilemap(u32 set, u32 idx, u32 x, u32 y, u32 anim);
 void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base);
 void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base);
 void vram_fill_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, u16 value);

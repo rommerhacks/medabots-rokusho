@@ -3,7 +3,7 @@
 
 // Robattle status screen: team sprites, Medal and part info, portraits, side change
 
-void position_battle_team_cursors(u32 a, u32 b);
+void position_battle_team_cursors(u32 first, u32 flag);
 void status_init_cursor(void);
 void status_draw_bot_name(void);
 void status_draw_row_icons(void);
@@ -12,7 +12,7 @@ void status_draw_medal_name(void);
 void status_draw_part_names(void);
 void status_draw_part_ability_icons(void);
 void status_draw_part_armor(void);
-void set_portrait_parts(u8 a, u8 b, u8 c, u8 d);
+void set_portrait_parts(u8 head, u8 right_arm, u8 left_arm, u8 legs);
 void status_init_portrait(void);
 void status_draw_team_sprites(void);
 void status_next_other_slot(void);

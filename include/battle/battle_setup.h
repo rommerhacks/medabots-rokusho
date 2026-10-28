@@ -5,7 +5,7 @@
 
 void fill_opponent_medaforce_for_battle_type(void);
 void count_bot_skill_use(u32 rec); // guess: counts the chosen action's skill type in the record's unkB0
-void init_battle_action_select_ui(u32 a);
+void init_battle_action_select_ui(u32 hide);
 void count_team_skill_uses(void);
 void select_battle_music(void);
 

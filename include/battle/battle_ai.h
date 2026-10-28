@@ -3,7 +3,7 @@
 
 // Battle AI: per-ability target selection (gAiTargetPickers) and action usability checks (gAiActionChecks).
 
-u32 ai_random_target_part(u32 rec); // part index to aim at, weighted by rec's intact parts
+u32 ai_random_target_part(u32 idx); // part index to aim at, weighted by the bot's intact parts
 void ai_pick_bot_targets(u32 rec);  // AI target for each of rec's three action parts
 u32 rng_random_slot(void);          // random 0-2
 void ai_pick_part_target(void);

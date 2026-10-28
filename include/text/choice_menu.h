@@ -4,7 +4,7 @@
 // Choice menu (yes/no prompt) states, sprite jitter helpers and the message window runners
 
 u32 game_state_execute_handler_a(void);
-void open_choice_menu(u8 a, u8 b, u8 c);
+void open_choice_menu(u8 cursor, u8 tile_x, u8 tile_y);
 u32 poll_choice_menu(void);
 void sprite_bob_x(u8 sprite, u8 frame,
                   u16 x); // sets gSpriteEntries[sprite].x to x, x + 1 or x - 1 by frame (cursor bob)

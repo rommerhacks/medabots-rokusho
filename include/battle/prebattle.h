@@ -9,7 +9,7 @@ void battlefield_load_params(void);
 void calculate_battle_score_summary(void);
 void accumulate_team_armor_stats(void);
 void battle_pick_random_bot_part(u32 first);
-u32 random_pick_weighted4(u32 a, u32 b, u32 c, u32 d);
+u32 random_pick_weighted4(u32 common, u32 uncommon, u32 rare, u32 very_rare);
 void load_area_battlefield(void);
 void setup_random_encounter_enemies(void);
 u32 afterbattle_pick_unowned_part(void);

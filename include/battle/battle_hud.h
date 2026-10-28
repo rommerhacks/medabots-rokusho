@@ -7,7 +7,8 @@ void load_battle_bg_layers(void);
 void render_bot_name_sprites(u32 rec);
 void draw_battle_panel_left_a(u32 rec);
 void draw_battle_panel_left_b(u32 rec);
-u32 scale_to_bar_fill(u32 a, u32 b, u32 c); // (float)a / b * c, packed: full 8-pixel tiles << 16 | remaining pixels
+u32 scale_to_bar_fill(u32 value, u32 max,
+                      u32 bar_len); // (float)value / max * bar_len, packed: full 8-pixel tiles << 16 | remaining pixels
 void draw_medaforce_gauge_bar(u32 rec);
 void draw_medaforce_gauge_value(u32 rec);
 void load_bg3_tilemap_08488764(void);

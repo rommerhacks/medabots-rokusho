@@ -3,9 +3,9 @@
 
 // Effect sprites: OAM entries and animation frames for action effects.
 
-u32 advance_sprite_anim_frame(u32 sprite, u32 b);
+u32 advance_sprite_anim_frame(u32 sprite, u32 stretch);
 u32 sprite_group_rise_step(u8 *buf, u32 slot);
-void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 b, s16 x, s16 y);
+void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 part, s16 x, s16 y);
 void armor_panel_draw_icons(u32 side);
 void armor_panel_draw_frame(u32 side);
 void armor_panel_draw_bars(u32 side, u32 rec); // draws the 4 parts' armor (data[4] max, armor left) via armor_bar_draw

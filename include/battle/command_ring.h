@@ -3,10 +3,10 @@
 
 // Robattle command ring: icons, rotation, input
 
-void command_ring_init_icon(u32 a);
-void bot_pointer_line_animate(u32 idx);
-void bot_pointer_line_init(u32 rec);
-u32 bot_pointer_line_extend(u32 rec);
+void command_ring_init_icon(u32 i);
+void bot_pointer_line_animate(u32 kind);
+void bot_pointer_line_init(u32 kind);
+u32 bot_pointer_line_extend(u32 kind);
 void command_ring_draw_name(void);
 void command_ring_init_icons(void);
 void command_ring_input(void);
