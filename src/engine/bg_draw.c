@@ -16,7 +16,7 @@ static void clear_vram_bg2_tilemap(void) {
     u16 v;
 
     CpuFastSet(&zero, (void *)0x06008000, 0x01001000);
-    lz_decompress_dispatch(gUnk_08784CB0, (void *)0x06008020);
+    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)0x06008020);
     CpuFastSet(gUnk_08483AA0, (void *)0x05000020, 8);
     bg2 = &REG_BG2CNT;
     v = 0x1608;
@@ -30,7 +30,7 @@ static void clear_vram_bg1_tilemap(void) {
     u16 v;
 
     CpuFastSet(&zero, (void *)0x06004000, 0x01001000);
-    lz_decompress_dispatch(gUnk_08784CB0, (void *)0x06004020);
+    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)0x06004020);
     bg1 = &REG_BG1CNT;
     v = 0x1E04;
     *bg1 = v;

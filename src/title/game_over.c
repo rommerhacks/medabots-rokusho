@@ -95,13 +95,13 @@ void game_over_load_graphics(void) {
     decompress_and_write_tilemap(gUnk_08796598, *bg3);
     size = dma3_copy_or_decompress(gUnk_0879579C, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
-    lz_decompress_dispatch(gUnk_08784CB0, vram_at(size));
+    lz_decompress_dispatch(gMenuDigitTilesLz, vram_at(size));
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     zero8 = 0;
     zero16 = 0;
     CpuFastSet(gUnk_0879559C, (void *)PLTT, 0x80);
     CpuFastSet(gUnk_080AF900, (void *)(PLTT + 0x200), 0x10);
-    lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
+    lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
     gSpriteEntries[0].unk0 = 0x8A20;
     gSpriteEntries[0].unk1C = 2;
     gSpriteEntries[0].unk2 = 0x78;

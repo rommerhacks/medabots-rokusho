@@ -108,40 +108,40 @@ gVehicleIconBlankTiles:
 gMapScripts:
 	.incbin "baserom.gba", 0x764CB0, 0x20000
 
-	.global gUnk_08784CB0
-gUnk_08784CB0:
+	.global gMenuDigitTilesLz
+gMenuDigitTilesLz:
 	.incbin "baserom.gba", 0x784CB0, 0xF4
 
 	.global gMenuObjTilesLz
 gMenuObjTilesLz:
 	.incbin "baserom.gba", 0x784DA4, 0x1190
 
-	.global gUnk_08785F34
-gUnk_08785F34:
+	.global gCommonObjTilesLz
+gCommonObjTilesLz:
 	.incbin "baserom.gba", 0x785F34, 0x12B0
 
-	.global gUnk_087871E4
-gUnk_087871E4:
+	.global gTownMapBgPalettes
+gTownMapBgPalettes:
 	.incbin "baserom.gba", 0x7871E4, 0x1C0
 
-	.global gUnk_087873A4
-gUnk_087873A4:
+	.global gTownMapAnimTiles
+gTownMapAnimTiles:
 	.incbin "baserom.gba", 0x7873A4, 0x420
 
-	.global gUnk_087877C4
-gUnk_087877C4:
+	.global gTownMapBgTiles
+gTownMapBgTiles:
 	.incbin "baserom.gba", 0x7877C4, 0x3080
 
-	.global gUnk_0878A844
-gUnk_0878A844:
+	.global gTownMapBg1Tilemap
+gTownMapBg1Tilemap:
 	.incbin "baserom.gba", 0x78A844, 0xD4
 
-	.global gUnk_0878A918
-gUnk_0878A918:
+	.global gTownMapBg2Tilemap
+gTownMapBg2Tilemap:
 	.incbin "baserom.gba", 0x78A918, 0xF4
 
-	.global gUnk_0878AA0C
-gUnk_0878AA0C:
+	.global gTownMapBg3Tilemap
+gTownMapBg3Tilemap:
 	.incbin "baserom.gba", 0x78AA0C, 0x46C
 
 	.global gUnk_0878AE78

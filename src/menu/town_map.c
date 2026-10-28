@@ -10,10 +10,10 @@ void town_map_update_cursor(void) {
         gSpriteEntries[0].unk1A = 0;
     t = (const u8 *)gTownMapPlacePositions;
     gSpriteEntries[0].unk2 =
-        t[gMenuWork->town_map_place * 2] * 8 + gUnk_08483DD4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
-    gSpriteEntries[0].unk4 =
-        t[(u16)(gMenuWork->town_map_place * 2 + 1)] * 8 + gUnk_08483DE4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
-    gSpriteEntries[0].unk6 = gUnk_08483DF4[row][(gSpriteEntries[0].unk1A >> 3) & 3];
+        t[gMenuWork->town_map_place * 2] * 8 + gTownMapCursorOffsetX[row][(gSpriteEntries[0].unk1A >> 3) & 3];
+    gSpriteEntries[0].unk4 = t[(u16)(gMenuWork->town_map_place * 2 + 1)] * 8 +
+                             gTownMapCursorOffsetY[row][(gSpriteEntries[0].unk1A >> 3) & 3];
+    gSpriteEntries[0].unk6 = gTownMapCursorFrames[row][(gSpriteEntries[0].unk1A >> 3) & 3];
 }
 
 void town_map_animate_tiles(void) {
@@ -23,7 +23,7 @@ void town_map_animate_tiles(void) {
         gMenuWork->frame = 0;
     t = gMenuWork->frame;
     if ((s16)(t % 10) == 0)
-        CpuSet(gDecompressBuffer + (gUnk_08483E04[(s16)(t / 10)] + 1) * 480, (void *)0x06004020, 0xF0);
+        CpuSet(gDecompressBuffer + (gTownMapAnimFrameOrder[(s16)(t / 10)] + 1) * 480, (void *)0x06004020, 0xF0);
 }
 
 void town_map_dispatch(void) {
@@ -64,9 +64,9 @@ void town_map_load_graphics(void) {
     bg3 = &REG_BG3CNT;
     v -= 0xFF;
     *bg3 = v;
-    decompress_and_write_tilemap(gUnk_0878A844, *bg1);
-    decompress_and_write_tilemap(gUnk_0878A918, *bg2);
-    decompress_and_write_tilemap(gUnk_0878AA0C, *bg3);
+    decompress_and_write_tilemap(gTownMapBg1Tilemap, *bg1);
+    decompress_and_write_tilemap(gTownMapBg2Tilemap, *bg2);
+    decompress_and_write_tilemap(gTownMapBg3Tilemap, *bg3);
     {
         struct MenuWork *q;
         if (gGameState == 0x17) {
@@ -93,13 +93,13 @@ void town_map_load_graphics(void) {
         break;
     }
     off = cb << 14;
-    size = dma3_copy_or_decompress(gUnk_087877C4, gDecompressBuffer);
+    size = dma3_copy_or_decompress(gTownMapBgTiles, gDecompressBuffer);
     CpuFastSet(gDecompressBuffer, (void *)(VRAM + off), (size / 4) & 0x1FFFFF);
-    lz_decompress_dispatch(gUnk_08784CB0, (void *)(VRAM + off + size));
+    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)(VRAM + off + size));
     gMenuWork->bg_tile_base = size / 32 - 1;
-    CpuFastSet(gUnk_087871E4, (void *)PLTT, 0x70);
-    lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
-    CpuFastSet(gUnk_080AF9A8, (void *)(PLTT + 0x200), 0x18);
+    CpuFastSet(gTownMapBgPalettes, (void *)PLTT, 0x70);
+    lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
+    CpuFastSet(gTownMapObjPalettes, (void *)(PLTT + 0x200), 0x18);
     gMenuWork->town_map_place = gAreaTownMapPlace[gFieldWork.area_id];
     gSpriteEntries[0].unk0 = 0xC000;
     gSpriteEntries[0].unk1C = 2;
@@ -116,7 +116,7 @@ void town_map_load_graphics(void) {
     gSpriteEntries[1].unk6 = 0x10E;
     gSpriteEntries[0].unk2 = gTownMapPlacePositions[0][p->town_map_place * 2] * 8;
     gSpriteEntries[0].unk4 = gTownMapPlacePositions[0][p->town_map_place * 2 + 1] * 8;
-    dma3_copy_or_decompress(gUnk_087873A4, (void *)0x020301E0);
+    dma3_copy_or_decompress(gTownMapAnimTiles, (void *)0x020301E0);
     gGameSubState++;
 }
 

@@ -89,7 +89,7 @@ void medal_transform_init(void) {
     }
     CpuFastSet(gMedalSceneObjPalettes, (void *)0x0202FA00, 0x80);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
-    lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
+    lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
     CpuFastSet(gUnk_084E2E98, (void *)0x0202F800, 8);
     CpuFastSet(gGradientPaletteOlive, (void *)0x0202F820, 8);
     CpuFastSet(gGradientPaletteOlive - 0x20, (void *)0x0202F840, 8);

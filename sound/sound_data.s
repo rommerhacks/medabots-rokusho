@@ -416,8 +416,8 @@ gSaveLostSpriteFrames:
 gSaveLostSpritePalette:
 	.incbin "baserom.gba", 0xAF988, 0x20
 
-	.global gUnk_080AF9A8
-gUnk_080AF9A8:
+	.global gTownMapObjPalettes
+gTownMapObjPalettes:
 	.incbin "baserom.gba", 0xAF9A8, 0x60
 
 	.global gShopPartTypeIconPos

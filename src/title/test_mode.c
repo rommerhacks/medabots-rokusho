@@ -50,7 +50,7 @@ void test_mode_load_graphics(void) {
     decompress_and_write_tilemap(gUnk_087919C4, *bg3);
     size = dma3_copy_or_decompress(gUnk_08790600, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
-    lz_decompress_dispatch(gUnk_08784CB0, vram_at(size));
+    lz_decompress_dispatch(gMenuDigitTilesLz, vram_at(size));
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     zero = 0;
     CpuFastSet(gUnk_08790400, (void *)PLTT, 0x80);

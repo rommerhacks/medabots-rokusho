@@ -18,12 +18,12 @@ void medawatch_menu_load_gfx(void) {
     REG_BG1CNT = 0x1805;
     REG_BG2CNT = 0x1906;
     REG_BG3CNT = 0x1A07;
-    lz_decompress_dispatch(gUnk_084E30D8, (void *)0x06004000);
+    lz_decompress_dispatch(gMedawatchBgTilesLz, (void *)0x06004000);
     medawatch_menu_load_icon();
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EF6A0, REG_BG1CNT, 0);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F023C, REG_BG2CNT, 0);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F0F2C, REG_BG3CNT, 0);
-    DmaSet(3, gUnk_084F24E0, 0x0202FA00, 0x84000060);
+    set_tilemap_and_decompress_bg(0, 0, gMedawatchBg1Tilemap, REG_BG1CNT, 0);
+    set_tilemap_and_decompress_bg(0, 0, gMedawatchBg2Tilemap, REG_BG2CNT, 0);
+    set_tilemap_and_decompress_bg(0, 0, gMedawatchBg3Tilemap, REG_BG3CNT, 0);
+    DmaSet(3, gMedawatchBgPalettes, 0x0202FA00, 0x84000060);
     write_tilemap_rect(4, 4, 5, 9, gUiTilemaps[0x48], REG_BG1CNT, 0);
     REG_DISPCNT |= 0x1F60;
     gGameWork.unk84 = 0;
@@ -141,13 +141,13 @@ void medawatch_menu_return_init(void) {
     REG_BG1CNT = 0x1805;
     REG_BG2CNT = 0x1906;
     REG_BG3CNT = 0x1A07;
-    lz_decompress_dispatch(gUnk_084E30D8, (void *)0x06004000);
+    lz_decompress_dispatch(gMedawatchBgTilesLz, (void *)0x06004000);
     medawatch_menu_load_icon();
     DmaSet(3, gBgTileBackup, 0x06002800, 0x84000200);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EF6A0, REG_BG1CNT, 0);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F023C, REG_BG2CNT, 0);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084F0F2C, REG_BG3CNT, 0);
-    DmaSet(3, gUnk_084F24E0, 0x05000000, 0x84000060);
+    set_tilemap_and_decompress_bg(0, 0, gMedawatchBg1Tilemap, REG_BG1CNT, 0);
+    set_tilemap_and_decompress_bg(0, 0, gMedawatchBg2Tilemap, REG_BG2CNT, 0);
+    set_tilemap_and_decompress_bg(0, 0, gMedawatchBg3Tilemap, REG_BG3CNT, 0);
+    DmaSet(3, gMedawatchBgPalettes, 0x05000000, 0x84000060);
     write_tilemap_rect(4, 4, 5, 9, gUiTilemaps[0x48], REG_BG1CNT, 0);
     REG_DISPCNT |= 0x1F60;
     set_blend_effect_mode(5, 0x3F, 0x20);
@@ -174,13 +174,13 @@ static void medawatch_menu_load_icon(void) {
 
     switch (gGameWork.medawatchCursor) {
     case 0:
-        src = gUnk_084C1C24;
+        src = gMedawatchIconMedabotsTiles;
         break;
     case 1:
-        src = gUnk_084C1E04;
+        src = gMedawatchIconMedalsTiles;
         break;
     default:
-        src = gUnk_084C1FD4;
+        src = gMedawatchIconMedapartsTiles;
         break;
     }
     lz_decompress_dispatch(src, (void *)0x06007E00);

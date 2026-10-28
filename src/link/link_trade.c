@@ -288,7 +288,7 @@ void medapart_trade_init_screen(void) {
     REG_BG2CNT = 0x1D06;
     size = dma3_copy_or_decompress(gPartTradeBgTiles, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
-    lz_decompress_dispatch(gUnk_08784CB0, (void *)(0x06004000 + size));
+    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)(0x06004000 + size));
     gMenuWork->bg_tile_base = size / 32 - 1;
     CpuFastSet(gPartTradeBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gGradientPaletteCyan, (void *)(PLTT + 0x3A0), 8);
@@ -583,7 +583,7 @@ void medal_trade_init_screen(void) {
     decompress_and_write_tilemap(gMedalTradeBg2Tilemap, *bg2);
     size = dma3_copy_or_decompress(gMedalTradeBgTiles, (void *)0x02030000);
     CpuCopy16((void *)0x02030000, (void *)0x06004000, size);
-    lz_decompress_dispatch(gUnk_08784CB0, (void *)(size + 0x06004000));
+    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)(size + 0x06004000));
     gMenuWork->bg_tile_base = (size >> 5) + 4;
     lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + 0x06004080));
     CpuFastSet(gMedalTradeBgPalettes, (void *)PLTT, 0x50);

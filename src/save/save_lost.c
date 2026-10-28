@@ -50,7 +50,7 @@ void save_lost_load_graphics(void) {
     gMenuWork->bg_tile_base = size / 32 - 1;
     CpuFastSet(gSaveLostBgPalette, (void *)PLTT, 0x38);
     CpuFastSet(gSaveLostSpritePalette, (void *)(PLTT + 0x200), 8);
-    lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
+    lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
     gSpriteEntries[0].unk0 = 0xC000;
     gSpriteEntries[0].unk1C = 2;
     gSpriteEntries[0].unkA = 0;

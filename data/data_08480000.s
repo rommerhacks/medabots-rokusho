@@ -72,20 +72,20 @@ gTownMapStates:
 gTownMapPlacePositions:
 	.incbin "baserom.gba", 0x483DC0, 0x14
 
-	.global gUnk_08483DD4
-gUnk_08483DD4:
+	.global gTownMapCursorOffsetX
+gTownMapCursorOffsetX:
 	.incbin "baserom.gba", 0x483DD4, 0x10
 
-	.global gUnk_08483DE4
-gUnk_08483DE4:
+	.global gTownMapCursorOffsetY
+gTownMapCursorOffsetY:
 	.incbin "baserom.gba", 0x483DE4, 0x10
 
-	.global gUnk_08483DF4
-gUnk_08483DF4:
+	.global gTownMapCursorFrames
+gTownMapCursorFrames:
 	.incbin "baserom.gba", 0x483DF4, 0x10
 
-	.global gUnk_08483E04
-gUnk_08483E04:
+	.global gTownMapAnimFrameOrder
+gTownMapAnimFrameOrder:
 	.incbin "baserom.gba", 0x483E04, 0xC
 
 	.global gShopMenuStates
@@ -508,16 +508,16 @@ gFieldMenuSaveLabelTiles:
 gMenuSlideLineTile:
 	.incbin "baserom.gba", 0x4C1C14, 0x10
 
-	.global gUnk_084C1C24
-gUnk_084C1C24:
+	.global gMedawatchIconMedabotsTiles
+gMedawatchIconMedabotsTiles:
 	.incbin "baserom.gba", 0x4C1C24, 0x1E0
 
-	.global gUnk_084C1E04
-gUnk_084C1E04:
+	.global gMedawatchIconMedalsTiles
+gMedawatchIconMedalsTiles:
 	.incbin "baserom.gba", 0x4C1E04, 0x1D0
 
-	.global gUnk_084C1FD4
-gUnk_084C1FD4:
+	.global gMedawatchIconMedapartsTiles
+gMedawatchIconMedapartsTiles:
 	.incbin "baserom.gba", 0x4C1FD4, 0x1E8
 
 	.global gMedalIconTiles
@@ -620,12 +620,12 @@ gBattlePillarCapTiles:
 gMedaforceGaugeFrameEndTiles:
 	.incbin "baserom.gba", 0x4C5080, 0x3C
 
-	.global gUnk_084C50BC
-gUnk_084C50BC:
+	.global gSlashTiles
+gSlashTiles:
 	.incbin "baserom.gba", 0x4C50BC, 0x1C
 
-	.global gUnk_084C50D8
-gUnk_084C50D8:
+	.global gStatusScreenCornerTiles
+gStatusScreenCornerTiles:
 	.incbin "baserom.gba", 0x4C50D8, 0xB0
 
 	.global gAltFontGlyphs
@@ -708,8 +708,8 @@ gPrebattleObjTiles:
 gBattleNumberSpriteTiles:
 	.incbin "baserom.gba", 0x4C7FC0, 0x524
 
-	.global gUnk_084C84E4
-gUnk_084C84E4:
+	.global gBattleBannerTilesLz
+gBattleBannerTilesLz:
 	.incbin "baserom.gba", 0x4C84E4, 0x5E0
 
 	.global gMissPopupTiles
@@ -1136,12 +1136,12 @@ gTargetArrowsPalette:
 gBattleObjPalette10:
 	.incbin "baserom.gba", 0x4E2F38, 0x20
 
-	.global gUnk_084E2F58
-gUnk_084E2F58:
+	.global gPartsMenuObjPalette
+gPartsMenuObjPalette:
 	.incbin "baserom.gba", 0x4E2F58, 0x20
 
-	.global gUnk_084E2F78
-gUnk_084E2F78:
+	.global gMfMenuObjPalette
+gMfMenuObjPalette:
 	.incbin "baserom.gba", 0x4E2F78, 0x20
 
 	.global gPartIconSpritePalette
@@ -1152,8 +1152,8 @@ gPartIconSpritePalette:
 gPrebattleObjPalette:
 	.incbin "baserom.gba", 0x4E2FB8, 0x20
 
-	.global gUnk_084E2FD8
-gUnk_084E2FD8:
+	.global gBattleBannerPalette
+gBattleBannerPalette:
 	.incbin "baserom.gba", 0x4E2FD8, 0x20
 
 	.global gUnk_084E2FF8
@@ -1184,8 +1184,8 @@ gUnk_084E3098:
 gEffectCommonPalette:
 	.incbin "baserom.gba", 0x4E30B8, 0x20
 
-	.global gUnk_084E30D8
-gUnk_084E30D8:
+	.global gMedawatchBgTilesLz
+gMedawatchBgTilesLz:
 	.incbin "baserom.gba", 0x4E30D8, 0x2578
 
 	.global gMedabotsBgTiles
@@ -1228,8 +1228,8 @@ gMedapartsListBgTiles:
 gMedapartDetailBgTiles:
 	.incbin "baserom.gba", 0x4ECB3C, 0x988
 
-	.global gUnk_084ED4C4
-gUnk_084ED4C4:
+	.global gStatusScreenBgTilesLz
+gStatusScreenBgTilesLz:
 	.incbin "baserom.gba", 0x4ED4C4, 0xA2C
 
 	.global gUnk_084EDEF0
@@ -1272,16 +1272,16 @@ gMedapartsListBg0Tilemap:
 gMedapartDetailBg0Tilemap:
 	.incbin "baserom.gba", 0x4EF5A4, 0x38
 
-	.global gUnk_084EF5DC
-gUnk_084EF5DC:
+	.global gStatusScreenBg0Tilemap
+gStatusScreenBg0Tilemap:
 	.incbin "baserom.gba", 0x4EF5DC, 0x8C
 
 	.global gUnk_084EF668
 gUnk_084EF668:
 	.incbin "baserom.gba", 0x4EF668, 0x38
 
-	.global gUnk_084EF6A0
-gUnk_084EF6A0:
+	.global gMedawatchBg1Tilemap
+gMedawatchBg1Tilemap:
 	.incbin "baserom.gba", 0x4EF6A0, 0x2BC
 
 	.global gMedabotsBg1Tilemap
@@ -1324,16 +1324,16 @@ gMedapartsListBg1Tilemap:
 gMedapartDetailBg1Tilemap:
 	.incbin "baserom.gba", 0x4F0068, 0xC0
 
-	.global gUnk_084F0128
-gUnk_084F0128:
+	.global gStatusScreenBg1Tilemap
+gStatusScreenBg1Tilemap:
 	.incbin "baserom.gba", 0x4F0128, 0x6C
 
 	.global gUnk_084F0194
 gUnk_084F0194:
 	.incbin "baserom.gba", 0x4F0194, 0xA8
 
-	.global gUnk_084F023C
-gUnk_084F023C:
+	.global gMedawatchBg2Tilemap
+gMedawatchBg2Tilemap:
 	.incbin "baserom.gba", 0x4F023C, 0x7C
 
 	.global gMedabotsBg2Tilemap
@@ -1372,16 +1372,16 @@ gMedapartsListBg2Tilemap:
 gMedapartDetailBg2Tilemap:
 	.incbin "baserom.gba", 0x4F0CA4, 0x80
 
-	.global gUnk_084F0D24
-gUnk_084F0D24:
+	.global gStatusScreenBg2Tilemap
+gStatusScreenBg2Tilemap:
 	.incbin "baserom.gba", 0x4F0D24, 0x78
 
 	.global gUnk_084F0D9C
 gUnk_084F0D9C:
 	.incbin "baserom.gba", 0x4F0D9C, 0x190
 
-	.global gUnk_084F0F2C
-gUnk_084F0F2C:
+	.global gMedawatchBg3Tilemap
+gMedawatchBg3Tilemap:
 	.incbin "baserom.gba", 0x4F0F2C, 0x300
 
 	.global gMedabotsBg3Tilemap
@@ -1420,16 +1420,16 @@ gMedapartsListBg3Tilemap:
 gMedapartDetailBg3Tilemap:
 	.incbin "baserom.gba", 0x4F1EC8, 0x194
 
-	.global gUnk_084F205C
-gUnk_084F205C:
+	.global gStatusScreenBg3Tilemap
+gStatusScreenBg3Tilemap:
 	.incbin "baserom.gba", 0x4F205C, 0x18C
 
 	.global gUnk_084F21E8
 gUnk_084F21E8:
 	.incbin "baserom.gba", 0x4F21E8, 0x2F8
 
-	.global gUnk_084F24E0
-gUnk_084F24E0:
+	.global gMedawatchBgPalettes
+gMedawatchBgPalettes:
 	.incbin "baserom.gba", 0x4F24E0, 0x1A0
 
 	.global gMedabotsBgPalette
@@ -1472,8 +1472,8 @@ gMedapartsListBgPalette:
 gMedapartDetailBgPalette:
 	.incbin "baserom.gba", 0x4F3620, 0x1C0
 
-	.global gUnk_084F37E0
-gUnk_084F37E0:
+	.global gStatusScreenBgPalettes
+gStatusScreenBgPalettes:
 	.incbin "baserom.gba", 0x4F37E0, 0x1C0
 
 	.global gUnk_084F39A0

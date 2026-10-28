@@ -248,8 +248,8 @@ void action_phase_end_check(void) {
 
 // End banner (sprite 0x21, tile 0x902) zooming in at the screen centre.
 void action_phase_win_banner_init(void) {
-    lz_decompress_dispatch(gUnk_084C84E4, (void *)0x06014800);
-    CpuFastSet(gUnk_084E2FD8, (void *)0x050003E0, 8);
+    lz_decompress_dispatch(gBattleBannerTilesLz, (void *)0x06014800);
+    CpuFastSet(gBattleBannerPalette, (void *)0x050003E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC624;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = 0x78;
@@ -322,8 +322,8 @@ void action_phase_time_check(void) {
 }
 
 void action_phase_time_up_banner_init(void) {
-    lz_decompress_dispatch(gUnk_084C84E4, (void *)0x06014800);
-    CpuFastSet(gUnk_084E2FD8, (void *)0x050003E0, 8);
+    lz_decompress_dispatch(gBattleBannerTilesLz, (void *)0x06014800);
+    CpuFastSet(gBattleBannerPalette, (void *)0x050003E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC624;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = 0x78;

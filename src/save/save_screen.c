@@ -66,7 +66,7 @@ void save_screen_load_graphics(void) {
     decompress_and_write_tilemap(gUnk_0878E104, *bg3);
     size = dma3_copy_or_decompress(gUnk_0878CC64, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
-    lz_decompress_dispatch(gUnk_08784CB0, vram_at(size));
+    lz_decompress_dispatch(gMenuDigitTilesLz, vram_at(size));
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     gSpriteEntries[0].unk0 = 0xC000;
