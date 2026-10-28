@@ -1380,8 +1380,8 @@ void map_script_update_anim_queue_run(void) {
             if (++gFieldScriptWork.queue_timer[i] > 5) {
                 id = (gFieldScriptWork.queue[i][1] << 8) | gFieldScriptWork.queue[i][2];
                 obj = map_object_find_by_id(id);
-                if (obj != NULL && obj->unk4_6) {
-                    set_sprite_anim_and_store(obj->unk4_0 + 49, gFieldScriptWork.queue_pos[i], obj);
+                if (obj != NULL && obj->has_sprite) {
+                    set_sprite_anim_and_store(obj->sprite_slot + 49, gFieldScriptWork.queue_pos[i], obj);
                     if (gFieldScriptWork.queue_pos[i] == 0 && gFieldScriptWork.queue[i][3] == 1 &&
                         find_map_event_by_coords(obj->x, obj->y) && gFieldSceneParams.warp_sound)
                         field_play_sound_effect(gWarpSoundEffects[gFieldSceneParams.warp_sound]);
@@ -1389,7 +1389,7 @@ void map_script_update_anim_queue_run(void) {
                 gFieldScriptWork.queue_pos[i]++;
                 gFieldScriptWork.queue_timer[i] = 0;
                 if (gFieldScriptWork.queue_pos[i] > 3) {
-                    gSpriteEntries[obj->unk4_0 + 49].unk24 = 0xFF;
+                    gSpriteEntries[obj->sprite_slot + 49].unk24 = 0xFF;
                     done = 1;
                 }
             }
@@ -1398,15 +1398,16 @@ void map_script_update_anim_queue_run(void) {
             if (++gFieldScriptWork.queue_timer[i] > 5) {
                 id = (gFieldScriptWork.queue[i][1] << 8) | gFieldScriptWork.queue[i][2];
                 obj = map_object_find_by_id(id);
-                if (obj != NULL && obj->unk4_6)
-                    set_sprite_anim_and_store(obj->unk4_0 + 49, 3 - gFieldScriptWork.queue_pos[i], obj);
+                if (obj != NULL && obj->has_sprite)
+                    set_sprite_anim_and_store(obj->sprite_slot + 49, 3 - gFieldScriptWork.queue_pos[i], obj);
                 gFieldScriptWork.queue_pos[i]++;
                 gFieldScriptWork.queue_timer[i] = 0;
                 if (gFieldScriptWork.queue_pos[i] > 3) {
-                    gSpriteEntries[obj->unk4_0 + 49].unk24 = 0xFF;
-                    gSpriteEntries[obj->unk4_0 + 49].unk20 = 0;
-                    sprite_anim_start(obj->unk4_0 + 49,
-                                      sprite_walk_anim_id(obj->unk4_0 + 49, gSpriteEntries[obj->unk4_0 + 49].unk20));
+                    gSpriteEntries[obj->sprite_slot + 49].unk24 = 0xFF;
+                    gSpriteEntries[obj->sprite_slot + 49].unk20 = 0;
+                    sprite_anim_start(
+                        obj->sprite_slot + 49,
+                        sprite_walk_anim_id(obj->sprite_slot + 49, gSpriteEntries[obj->sprite_slot + 49].unk20));
                     done = 1;
                 }
             }

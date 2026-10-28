@@ -1188,11 +1188,11 @@ extern const u8
     gNewGamePromptMessage[]; // "start a new game? saved data will be erased" text (new_game_prompt_show_message)
 extern const Func gMenuModeStates[];         // by gGameState (menu_mode_update)
 extern const u8 gMultiplayerIdUnusedBytes[]; // 4 bytes copied to an unused local (init_multiplayer_id)
-extern const u8 gTownMapNeighbours[];     // per gFieldWork.unkC32: 10 x 4 next-entry bytes (right, left, up, down) by
-                                          // gMenuWork->town_map_place (town_map_move_cursor)
-extern const u8 gTownMapNeighboursAlt[];  // same, used when gMenuWork->cursor_style is set (town_map_move_cursor)
-extern const u8 gMedabotSpritePalettes[]; // per Medabot (gMedabotPartSpriteTiles index): sprite palette - 4
-                                          // (load_battle_sprite_tiles)
+extern const u8 gTownMapNeighbours[]; // per gFieldWork.town_map_phase: 10 x 4 next-entry bytes (right, left, up, down)
+                                      // by gMenuWork->town_map_place (town_map_move_cursor)
+extern const u8 gTownMapNeighboursAlt[];       // same, used when gMenuWork->cursor_style is set (town_map_move_cursor)
+extern const u8 gMedabotSpritePalettes[];      // per Medabot (gMedabotPartSpriteTiles index): sprite palette - 4
+                                               // (load_battle_sprite_tiles)
 extern const u16 gTitleOptionValueMasks[3][3]; // 3 x 3 tile masks (bit 15 first) of the title option rows
                                                // (title_options_draw_values)
 extern const u8 gItemMenuBg1Tilemap[];         // field menu item list BG1 tilemap (LZ77, item_menu_load_graphics)

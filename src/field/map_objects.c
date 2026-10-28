@@ -7,7 +7,7 @@
 
 void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj) {
     set_sprite_animation_state(idx, state);
-    obj->unk5 = state;
+    obj->anim_state = state;
 }
 
 void update_npc_random_animation(void) {
@@ -15,8 +15,8 @@ void update_npc_random_animation(void) {
 
     if ((gFieldState.frame_counter & 3) == 0) {
         obj += field_random(64);
-        if (obj->unk4_7 && (obj->unk2 >> 12) == 0)
-            set_sprite_anim_and_store(obj->unk4_0 + 49, field_random(4), obj);
+        if (obj->present && (obj->event >> 12) == 0)
+            set_sprite_anim_and_store(obj->sprite_slot + 49, field_random(4), obj);
     }
 }
 
@@ -35,8 +35,8 @@ void update_npc_sprite_animations(void) {
             active = 1;
         }
     check:
-        if (active && (obj->unk2 >> 12) == 6) {
-            s32 idx = obj->unk4_0 + 49;
+        if (active && (obj->event >> 12) == 6) {
+            s32 idx = obj->sprite_slot + 49;
             if (gSpriteEntries[idx].unk24 != 0xFF)
                 advance_sprite_animation_frame(idx);
         }
@@ -83,12 +83,12 @@ u32 map_cursor_move_and_check_event(void) {
     found = 0;
     for (i = 0; i < 64; i++) {
         if (obj->x == x && obj->y == y) {
-            switch ((obj->unk2 & 0xF000) >> 12) {
+            switch ((obj->event & 0xF000) >> 12) {
             case 0:
             case 4:
             case 6:
                 gFieldWork.script_running = 1;
-                gFieldWork.last_script_id = gFieldWork.script_id = obj->unk2 & 0xFFF;
+                gFieldWork.last_script_id = gFieldWork.script_id = obj->event & 0xFFF;
                 gFieldWork.cmd_busy = 0;
                 gFieldWork.script_pos = 0;
                 gFieldWork.script_object = i;
@@ -96,9 +96,9 @@ u32 map_cursor_move_and_check_event(void) {
                 found = 1;
                 break;
             }
-            if ((obj->unk2 & 0xF000) == 0) {
+            if ((obj->event & 0xF000) == 0) {
                 u8 *d = &gSpriteEntries[47].unk20;
-                u8 slot = obj->unk4_0 + 49;
+                u8 slot = obj->sprite_slot + 49;
                 const u8 *t = gNpcFacingTowardPlayer;
                 set_sprite_anim_and_store(slot, t[*d], obj);
             }
@@ -117,9 +117,9 @@ u32 find_npc_event_match(void) {
 
     for (i = 0; i < 64; i++) {
         if (obj->x == gFieldWork.player_tile_x) {
-            if (obj->y == gFieldWork.player_tile_y && (obj->unk2 & 0xF000) >> 12 == 8) {
+            if (obj->y == gFieldWork.player_tile_y && (obj->event & 0xF000) >> 12 == 8) {
                 gFieldWork.script_running = 1;
-                gFieldWork.last_script_id = gFieldWork.script_id = obj->unk2 & 0xFFF;
+                gFieldWork.last_script_id = gFieldWork.script_id = obj->event & 0xFFF;
                 gFieldWork.cmd_busy = 0;
                 gFieldWork.script_pos = 0;
                 gFieldWork.script_object = i;

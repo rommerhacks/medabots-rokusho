@@ -169,7 +169,7 @@ void field_debug_update_page(u32 mode) {
                 field_debug_cycle_message_value(2, 2);
                 break;
             }
-            p = (const u32 *const *)gTextBankTables[gFieldDebug.unk20];
+            p = (const u32 *const *)gTextBankTables[gFieldDebug.preview_sprite_set];
             n = 0;
             if (*p != 0) {
                 do {
@@ -227,7 +227,7 @@ void field_debug_update_page(u32 mode) {
     if (KEYS_LO(gRepeatKeys) & 1) {
         switch (gFieldDebug.page) {
         case 3:
-            gFieldDebug.unk10 = 0;
+            gFieldDebug.labels_drawn = 0;
             field_debug_clear_sprites();
             field_effect_start(gFieldDebug.effect_id, gFieldWork.player_x, gFieldWork.player_y, 0);
             if (gFieldDebug.effect_id == 0xE)
@@ -248,7 +248,7 @@ void field_debug_update_page(u32 mode) {
         case 5:
             break;
         case 4:
-            play_sound_effect(gFieldDebug.unk0);
+            play_sound_effect(gFieldDebug.test_sound);
             break;
         case 6:
             if (gFieldDebug.showing == 0) {
@@ -440,10 +440,10 @@ static void field_debug_draw_page(u32 mode) {
             break;
         }
         field_debug_draw_label(gFieldDebugLabelMf, 2, 0x30, 0x30);
-        field_debug_draw_value_blink(2, gFieldWork.unkC4D, 8, 0x50, 0x30);
+        field_debug_draw_value_blink(2, gFieldWork.debug_mf, 8, 0x50, 0x30);
         field_debug_draw_label(gFieldDebugLabelEf, 2, 0x30, 0x38);
-        field_debug_draw_value_blink(3, gFieldWork.unkCB7, 8, 0x50, 0x38);
-        switch (gFieldWork.unkCB7) {
+        field_debug_draw_value_blink(3, gFieldWork.debug_ef, 8, 0x50, 0x38);
+        switch (gFieldWork.debug_ef) {
         case 0:
             field_debug_draw_label(gFieldDebugLabelEe, 2, 0x70, 0x38);
             break;
@@ -488,23 +488,23 @@ static void field_debug_draw_page(u32 mode) {
     case 4:
         field_debug_draw_label(gFieldDebugLabelKwg, 3, 0x68, 0x18);
         field_debug_draw_label(gFieldDebugLabelDc, 2, 0x30, 0x20);
-        field_debug_draw_value_blink(0, gFieldDebug.unk11, 8, 0x50, 0x20);
+        field_debug_draw_value_blink(0, gFieldDebug.debug_dc, 8, 0x50, 0x20);
         field_debug_draw_label(gFieldDebugLabelMl, 2, 0x30, 0x28);
         field_debug_draw_value_blink(1, gFieldSceneParams.area_speed_id, 8, 0x50, 0x28);
         field_debug_draw_label(gFieldDebugLabelBt, 2, 0x30, 0x30);
-        field_debug_draw_value_blink(2, gFieldWork.unkC4E, 8, 0x50, 0x30);
-        if (gFieldWork.unkC4E & 1)
+        field_debug_draw_value_blink(2, gFieldWork.debug_bt_flags, 8, 0x50, 0x30);
+        if (gFieldWork.debug_bt_flags & 1)
             field_debug_draw_label(gFieldDebugLabelR, 1, 0x70, 0x30);
         else
             field_debug_draw_label(gFieldDebugLabelBlank, 1, 0x70, 0x30);
-        if (gFieldWork.unkC4E & 2)
+        if (gFieldWork.debug_bt_flags & 2)
             field_debug_draw_label(gFieldDebugLabelE, 1, 0x90, 0x30);
         else
             field_debug_draw_label(gFieldDebugLabelBlank, 1, 0x90, 0x30);
         field_debug_draw_label(gFieldDebugLabelSk, 2, 0x30, 0x38);
-        field_debug_draw_value_blink(3, gFieldWork.unkCB8, 8, 0x50, 0x38);
+        field_debug_draw_value_blink(3, gFieldWork.debug_sk, 8, 0x50, 0x38);
         field_debug_draw_label(gFieldDebugLabelSp, 2, 0x30, 0x40);
-        field_debug_draw_value_blink(4, gFieldWork.unkCB9, 8, 0x50, 0x40);
+        field_debug_draw_value_blink(4, gFieldWork.debug_sp, 8, 0x50, 0x40);
         field_debug_draw_label(gFieldDebugLabelX, 1, 0x70, 0x40);
         field_debug_draw_label(gFieldDebugLabelWl, 2, 0x30, 0x48);
         field_debug_draw_value_blink(5, gFieldWork.robattle_result, 8, 0x50, 0x48);
@@ -523,13 +523,13 @@ static void field_debug_draw_page(u32 mode) {
     case 5:
         field_debug_draw_label(gFieldDebugLabelKoma, 4, 0x68, 0x18);
         field_debug_draw_label(gFieldDebugLabelKno, 3, 0x30, 0x20);
-        field_debug_draw_value_blink(0, gFieldDebug.unk20, 16, 0x50, 0x20);
+        field_debug_draw_value_blink(0, gFieldDebug.preview_sprite_set, 16, 0x50, 0x20);
         if (gFieldDebug.showing != 0) {
             advance_sprite_animation_frame(0x31);
             advance_sprite_animation_frame(0x32);
             advance_sprite_animation_frame(0x33);
             advance_sprite_animation_frame(0x34);
-            if (gSpriteSheetPreviewKinds[gFieldDebug.unk20] == 3)
+            if (gSpriteSheetPreviewKinds[gFieldDebug.preview_sprite_set] == 3)
                 advance_sprite_animation_frame(0x39);
         }
         break;
@@ -620,8 +620,8 @@ static void field_debug_clear_sprites(void) {
 }
 
 void field_debug_close(void) {
-    if (gFieldDebug.unk11 == 0) {
-        gFieldDebug.unk10 = 0;
+    if (gFieldDebug.debug_dc == 0) {
+        gFieldDebug.labels_drawn = 0;
         field_debug_clear_sprites();
     }
     gFieldDebug.frame = 0;
@@ -737,7 +737,7 @@ static inline void init_field_sprite(u8 row, u8 col) {
     u8 slot = 49 + row * 4 + col;
     u8 j = slot + 42;
 
-    gSpriteEntries[slot].unk30 = gFieldDebug.unk20;
+    gSpriteEntries[slot].unk30 = gFieldDebug.preview_sprite_set;
     gSpriteEntries[slot].pos_x = gFieldPlayerX + (col * 32 - 48);
     gSpriteEntries[slot].pos_y = gFieldPlayerY + (16 - row * 32);
     gSpriteEntries[slot].flags =
@@ -756,8 +756,8 @@ static inline void init_field_sprite(u8 row, u8 col) {
 void field_debug_draw_sprite_preview(void) {
     s16 zero; // FAKEMATCH: only set inside the first if, read after it (uninitialised on the other path)
 
-    fill_sprite_sheets(gFieldDebug.unk20);
-    fill_sprite_palettes(gFieldDebug.unk20);
+    fill_sprite_sheets(gFieldDebug.preview_sprite_set);
+    fill_sprite_palettes(gFieldDebug.preview_sprite_set);
     init_field_sprite(0, 0);
     init_field_sprite(0, 1);
     init_field_sprite(0, 2);
@@ -772,8 +772,8 @@ void field_debug_draw_sprite_preview(void) {
 
         sprite_entry_clear(slot);
         sprite_entry_clear(j);
-        gSpriteEntries[slot].unk30 = gFieldDebug.unk20;
-        if (gSpriteSheetPreviewKinds[gFieldDebug.unk20] == 3) {
+        gSpriteEntries[slot].unk30 = gFieldDebug.preview_sprite_set;
+        if (gSpriteSheetPreviewKinds[gFieldDebug.preview_sprite_set] == 3) {
             sprite_entry_init(slot,
                               SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE,
                               sprite_code_anim_index(0), sprite_code_kind(0), 1);
@@ -785,7 +785,7 @@ void field_debug_draw_sprite_preview(void) {
             sprite_anim_start(slot, 0x60);
         }
         gSpriteEntries[j].flags = zero;
-        if (gSpriteSheetHasShadow[gFieldDebug.unk20] != 0) {
+        if (gSpriteSheetHasShadow[gFieldDebug.preview_sprite_set] != 0) {
             gSpriteEntries[j].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) |
                                       SPRITE_OBJ_MODE(1) | SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[j].x = gSpriteEntries[slot].x;

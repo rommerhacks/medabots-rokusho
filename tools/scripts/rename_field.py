@@ -56,7 +56,7 @@ def rename_in_definition(struct, old, new):
 
 def fix_errors(renames):
     srcs = sorted(glob.glob("src/**/*.c", recursive=True))
-    pat = re.compile(r"^(.*?):(\d+):(\d+): error: '(?:struct|union) (\w+)'.*? has no member named '(\w+)'")
+    pat = re.compile(r"^(.*?):(\d+):(\d+): error: '(?:const )?(?:struct|union) (\w+)'.*? has no member named '(\w+)'")
     for _ in range(50):
         fixes = collections.defaultdict(set)
         for src in srcs:

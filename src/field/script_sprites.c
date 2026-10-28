@@ -178,7 +178,7 @@ void save_script_sprites(void) {
             gFieldWork.sprite_snapshot[i].anim =
                 ((gSpriteEntries[i + 79].unk2B & 0xF) << 4) | (gSpriteEntries[i + 79].unk20 & 3);
             gFieldWork.sprite_snapshot[i].id = i;
-            gFieldWork.sprite_snapshot[i].unk2_6 = gSpriteEntries[i + 79].unk2D;
+            gFieldWork.sprite_snapshot[i].blink_hidden = gSpriteEntries[i + 79].unk2D;
             gFieldWork.sprite_snapshot[i].active = 1;
         }
     }
@@ -189,7 +189,7 @@ void restore_script_sprites(void) {
     s32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gFieldWork.sprite_snapshot[i].active && !gFieldWork.sprite_snapshot[i].unk2_6)
+        if (gFieldWork.sprite_snapshot[i].active && !gFieldWork.sprite_snapshot[i].blink_hidden)
             init_script_sprite(i, gFieldWork.sprite_snapshot[i].anim, gFieldWork.sprite_snapshot[i].x,
                                gFieldWork.sprite_snapshot[i].y);
     }

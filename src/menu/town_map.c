@@ -80,7 +80,7 @@ void town_map_load_graphics(void) {
             q->cursor_style = 0;
         }
     }
-    switch (gFieldWork.unkC32) {
+    switch (gFieldWork.town_map_phase) {
     case 0:
         for (i = 0; i <= 2; i++) {
             tmp = 0;

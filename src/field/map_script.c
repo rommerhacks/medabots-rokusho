@@ -65,7 +65,7 @@ void map_script_cmd_end(void) {
     gFieldWork.script_pos = 0;
     gFieldWork.script_id = 0;
     gFieldWork.script_field_update = 0;
-    gFieldWork.unkC60 = 0;
+    gFieldWork.equipped_legs_value = 0;
     gFieldSceneParams.bot_gender = 0;
     gFieldState.unk38 = 0;
     memzero_bytes(gFieldWork.script_object_slots, 16);
@@ -134,12 +134,12 @@ void map_script_cmd_warp_hidden(void) {
     map_script_read_warp();
 }
 
-// Reads a warp target from the script: area, unk7FC, unk7FD, player tile x/y. The player keeps
+// Reads a warp target from the script: area, two unused bytes, player tile x/y. The player keeps
 // facing the same way; field_warp_to_area then loads the area.
 static void map_script_read_warp(void) {
     gFieldWork.area_id = read_map_script_byte();
-    gFieldWork.unk7FC = read_map_script_byte();
-    gFieldWork.unk7FD = read_map_script_byte();
+    gFieldWork.warp_unused0 = read_map_script_byte();
+    gFieldWork.warp_unused1 = read_map_script_byte();
     gFieldWork.player_tile_x = read_map_script_byte();
     gFieldWork.player_tile_y = read_map_script_byte();
     gFieldWork.player_facing = gSpriteEntries[47].unk20;
@@ -198,15 +198,15 @@ void map_script_cmd_set_event_flag(void) {
 }
 
 void map_script_cmd_remove_self(void) {
-    if ((gFieldWork.objects[gFieldWork.script_object].unk2 & 0xFFF) - gFieldWork.script_id == 0)
+    if ((gFieldWork.objects[gFieldWork.script_object].event & 0xFFF) - gFieldWork.script_id == 0)
         map_object_remove(&gFieldWork.objects[gFieldWork.script_object]);
 }
 
 void map_script_cmd_hide_self(void) {
-    gFieldWork.objects[gFieldWork.script_object].unk4_7 = 0;
-    if (gFieldWork.objects[gFieldWork.script_object].unk4_6) {
-        sprite_entry_clear(gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49);
-        sprite_entry_clear(gFieldWork.objects[gFieldWork.script_object].unk4_0 + 91);
+    gFieldWork.objects[gFieldWork.script_object].present = 0;
+    if (gFieldWork.objects[gFieldWork.script_object].has_sprite) {
+        sprite_entry_clear(gFieldWork.objects[gFieldWork.script_object].sprite_slot + 49);
+        sprite_entry_clear(gFieldWork.objects[gFieldWork.script_object].sprite_slot + 91);
     }
 }
 
@@ -240,7 +240,7 @@ void map_script_cmd_select_object(void) {
 
 void map_script_cmd_self_anim(void) {
     read_map_script_bytes(2);
-    gScriptCmdWork.sprite_slot = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
+    gScriptCmdWork.sprite_slot = gFieldWork.objects[gFieldWork.script_object].sprite_slot + 49;
     set_sprite_anim_and_store(gScriptCmdWork.sprite_slot, gFieldWork.cmd_args[0] & 0xF,
                               &gFieldWork.objects[gFieldWork.script_object]);
     gScriptCmdWork.counter = 0;
@@ -249,22 +249,22 @@ void map_script_cmd_self_anim(void) {
 }
 
 void map_script_cmd_self_face_player(void) {
-    if ((gFieldWork.objects[gFieldWork.script_object].unk2 & 0xFFF) == gFieldWork.script_id)
-        set_sprite_anim_and_store(gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49,
+    if ((gFieldWork.objects[gFieldWork.script_object].event & 0xFFF) == gFieldWork.script_id)
+        set_sprite_anim_and_store(gFieldWork.objects[gFieldWork.script_object].sprite_slot + 49,
                                   gOppositeDirection[gSpriteEntries[47].unk21],
                                   &gFieldWork.objects[gFieldWork.script_object]);
 }
 
 void map_script_cmd_self_set_anim(void) {
     gFieldWork.cmd_args[0] = read_map_script_byte();
-    if ((gFieldWork.objects[gFieldWork.script_object].unk2 & 0xFFF) == gFieldWork.script_id)
-        set_sprite_anim_and_store(gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49, gFieldWork.cmd_args[0],
+    if ((gFieldWork.objects[gFieldWork.script_object].event & 0xFFF) == gFieldWork.script_id)
+        set_sprite_anim_and_store(gFieldWork.objects[gFieldWork.script_object].sprite_slot + 49, gFieldWork.cmd_args[0],
                                   &gFieldWork.objects[gFieldWork.script_object]);
 }
 
 void map_script_cmd_self_hop(void) {
-    if ((gFieldWork.objects[gFieldWork.script_object].unk2 & 0xFFF) == gFieldWork.script_id) {
-        gScriptCmdWork.sprite_slot = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
+    if ((gFieldWork.objects[gFieldWork.script_object].event & 0xFFF) == gFieldWork.script_id) {
+        gScriptCmdWork.sprite_slot = gFieldWork.objects[gFieldWork.script_object].sprite_slot + 49;
         gScriptCmdWork.hop_base_y = gSpriteEntries[gScriptCmdWork.sprite_slot].pos_y;
         gSpriteEntries[gScriptCmdWork.sprite_slot].unk28 = 0;
         field_play_sound_effect(0x70);
@@ -274,8 +274,8 @@ void map_script_cmd_self_hop(void) {
 
 void map_script_cmd_self_blink(void) {
     gFieldWork.cmd_args[0] = read_map_script_byte();
-    if ((gFieldWork.objects[gFieldWork.script_object].unk2 & 0xFFF) == gFieldWork.script_id) {
-        gScriptCmdWork.sprite_slot = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
+    if ((gFieldWork.objects[gFieldWork.script_object].event & 0xFFF) == gFieldWork.script_id) {
+        gScriptCmdWork.sprite_slot = gFieldWork.objects[gFieldWork.script_object].sprite_slot + 49;
         gScriptCmdWork.counter = gFieldWork.cmd_args[0];
         gScriptCmdWork.blink_phase = 0;
         gScriptCmdWork.timer = 8;
@@ -419,14 +419,14 @@ void map_script_cmd_jump(void) {
 void map_script_cmd_yes_no(void) {
     gFieldWork.branch_base = gFieldWork.script_pos;
     gFieldWork.cmd_args[0] = read_map_script_byte();
-    gFieldWork.unkCB5 = 0;
+    gFieldWork.yes_no_keep_window = 0;
     gFieldWork.cmd_busy = 1;
 }
 
 void map_script_cmd_yes_no_keep_window(void) {
     gFieldWork.branch_base = gFieldWork.script_pos;
     gFieldWork.cmd_args[0] = read_map_script_byte();
-    gFieldWork.unkCB5 = 1;
+    gFieldWork.yes_no_keep_window = 1;
     gFieldWork.cmd_busy = 1;
 }
 
@@ -442,8 +442,8 @@ void map_script_cmd_object_set_anim(void) {
     struct MapObject *obj;
     read_map_script_bytes(3);
     obj = map_object_find_by_id((gFieldWork.cmd_args[0] << 8) | gFieldWork.cmd_args[1]);
-    if (obj != NULL && obj->unk4_6)
-        set_sprite_anim_and_store(obj->unk4_0 + 49, gFieldWork.cmd_args[2], obj);
+    if (obj != NULL && obj->has_sprite)
+        set_sprite_anim_and_store(obj->sprite_slot + 49, gFieldWork.cmd_args[2], obj);
 }
 
 void map_script_cmd_all_actors_set_facing(void) {
@@ -602,7 +602,7 @@ void map_script_cmd_jump_unless_part_equipped(void) {
     read_map_script_bytes(3);
     r = team_equipped_part_legs_value(gFieldWork.cmd_args[0], gFieldWork.cmd_args[1]);
     if (r != -1)
-        gFieldWork.unkC60 = r;
+        gFieldWork.equipped_legs_value = r;
     else
         gFieldWork.script_pos = gFieldWork.branch_base + gFieldWork.cmd_args[2];
 }
@@ -645,7 +645,7 @@ void map_script_cmd_jump_if_affinity_below(void) {
 void map_script_cmd_jump_unless_part_value(void) {
     gFieldWork.branch_base = gFieldWork.script_pos;
     read_map_script_bytes(2);
-    if (gFieldWork.cmd_args[0] - 70 != gFieldWork.unkC60)
+    if (gFieldWork.cmd_args[0] - 70 != gFieldWork.equipped_legs_value)
         gFieldWork.script_pos = gFieldWork.branch_base + gFieldWork.cmd_args[1];
 }
 
@@ -759,9 +759,9 @@ void map_script_cmd_follower_attach(void) {
         if (id != 0) {
             obj = map_object_find_by_id(id);
             if (obj != NULL)
-                follower_attach(obj->unk4_0 + 49);
+                follower_attach(obj->sprite_slot + 49);
         } else {
-            follower_attach(gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49);
+            follower_attach(gFieldWork.objects[gFieldWork.script_object].sprite_slot + 49);
         }
         break;
     }
@@ -804,7 +804,7 @@ void map_script_cmd_clear_self_tile(void) {
     struct MapObject *obj;
     read_map_script_bytes(2);
     obj = &gFieldWork.objects[gFieldWork.script_object];
-    if ((obj->unk2 & 0xFFF) == ((gFieldWork.cmd_args[0] << 8) | gFieldWork.cmd_args[1]))
+    if ((obj->event & 0xFFF) == ((gFieldWork.cmd_args[0] << 8) | gFieldWork.cmd_args[1]))
         set_tile_data(obj->x, obj->y, 0);
 }
 
@@ -927,9 +927,9 @@ void map_script_cmd_jump_unless_has_medapart(void) {
 
 void map_script_cmd_unused_7c(void) {}
 
-// guess: opcode 0x7D, which Town Map variant to draw (unkC32, read by town_map.c).
+// guess: opcode 0x7D, which Town Map variant to draw (town_map_phase, read by town_map.c).
 void map_script_cmd_set_town_map_phase(void) {
-    gFieldWork.unkC32 = read_map_script_byte();
+    gFieldWork.town_map_phase = read_map_script_byte();
 }
 
 void map_script_cmd_all_actors_slide(void) {
@@ -982,8 +982,8 @@ void map_script_cmd_set_sprite_blend_priority(void) {
             else
                 sprite_set_blend(47, gFieldWork.cmd_args[1]);
         } else if (gFieldWork.cmd_args[0] & 0x20) {
-            if ((gFieldWork.objects[gFieldWork.script_object].unk2 & 0xFFF) == gFieldWork.script_id) {
-                slot = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
+            if ((gFieldWork.objects[gFieldWork.script_object].event & 0xFFF) == gFieldWork.script_id) {
+                slot = gFieldWork.objects[gFieldWork.script_object].sprite_slot + 49;
                 if (gFieldWork.cmd_args[1] == 0)
                     sprite_set_blend_from_kind(slot);
                 else
@@ -999,8 +999,8 @@ void map_script_cmd_set_sprite_blend_priority(void) {
         if (gFieldWork.cmd_args[0] & 0x40) {
             sprite_set_priority(47, gFieldWork.cmd_args[1]);
         } else if (gFieldWork.cmd_args[0] & 0x20) {
-            if ((gFieldWork.objects[gFieldWork.script_object].unk2 & 0xFFF) == gFieldWork.script_id) {
-                slot = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
+            if ((gFieldWork.objects[gFieldWork.script_object].event & 0xFFF) == gFieldWork.script_id) {
+                slot = gFieldWork.objects[gFieldWork.script_object].sprite_slot + 49;
                 sprite_set_priority(slot, gFieldWork.cmd_args[1]);
             }
         } else {
@@ -1072,7 +1072,7 @@ void read_map_script_bytes(u8 n) {
 static s32 map_object_index_by_id(u16 id) {
     s32 i;
     for (i = 0; i < 64; i++)
-        if ((gFieldWork.objects[i].unk2 & 0xFFF) == id)
+        if ((gFieldWork.objects[i].event & 0xFFF) == id)
             return i;
     if (i == 64)
         return -1;
@@ -1081,7 +1081,7 @@ static s32 map_object_index_by_id(u16 id) {
 struct MapObject *map_object_find_by_id(u16 id) {
     s32 i;
     for (i = 0; i < 64; i++)
-        if ((gFieldWork.objects[i].unk2 & 0xFFF) == id)
+        if ((gFieldWork.objects[i].event & 0xFFF) == id)
             return &gFieldWork.objects[i];
     if (i == 64)
         return NULL;
@@ -1091,9 +1091,9 @@ static void map_object_remove(struct MapObject *obj) {
     u8 *raw = (u8 *)obj;
     const u8 *tiles = gAreaCollisionMaps[gFieldWork.area_id];
     set_tile_data(obj->x, obj->y, tiles[obj->y * (gFieldWork.map_width >> 1) + obj->x]);
-    if (obj->unk4_6) {
-        sprite_entry_clear(obj->unk4_0 + 49);
-        sprite_entry_clear(obj->unk4_0 + 91);
+    if (obj->has_sprite) {
+        sprite_entry_clear(obj->sprite_slot + 49);
+        sprite_entry_clear(obj->sprite_slot + 91);
     }
     memzero_bytes(raw, 8);
 }

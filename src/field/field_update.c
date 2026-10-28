@@ -55,7 +55,7 @@ void field_update(void) {
     animate_area_bg_tiles();
     for (i = 0; i < 32; i++)
         calculate_oam_affine_matrix(i);
-    update_battle_entity_status_chars();
+    field_sort_sprites_by_depth();
     copy_affine((u8 *)gAffineParams);
 }
 
@@ -110,11 +110,11 @@ void new_game_init(void) {
     gBg2Scroll.y = 0;
     gBg3Scroll.x = 0;
     gBg3Scroll.y = 0;
-    memzero_bytes(&gFieldWork.unk7FC, 0x454);
+    memzero_bytes(&gFieldWork.warp_unused0, 0x454);
     gFieldWork.npc_load_mode = 0;
     gFieldWork.area_id = 0x17;
-    gFieldWork.unk7FC = 0xE;
-    gFieldWork.unk7FD = 7;
+    gFieldWork.warp_unused0 = 0xE;
+    gFieldWork.warp_unused1 = 7;
     gFieldWork.player_x = gFieldWork.map_origin_x + 0x120;
     gFieldWork.player_y = gFieldWork.map_origin_y + 0xD0;
     gFieldWork.player_facing = 0;
@@ -219,7 +219,7 @@ void field_continue_load(void) {
     gFieldWork.script_pos = 0;
     gFieldWork.script_id = 0;
     gFieldWork.script_field_update = 0;
-    gFieldWork.unkC60 = 0;
+    gFieldWork.equipped_legs_value = 0;
     gFieldState.unk38 = 0;
     memzero_bytes((u8 *)&gScriptCmdWork, 16);
     clear_vram_tiles_1000();
@@ -448,7 +448,7 @@ void field_map_warp_run_effect(void) {
             follower_set_facing(gSpriteEntries[47].unk20);
             sprite_anim_start(0x30, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
         }
-        update_battle_entity_status_chars();
+        field_sort_sprites_by_depth();
         gGameSubState = 5;
     }
 }
@@ -483,7 +483,7 @@ void field_teleport_run_effect(void) {
             follower_set_facing(gSpriteEntries[47].unk20);
             sprite_anim_start(0x30, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
         }
-        update_battle_entity_status_chars();
+        field_sort_sprites_by_depth();
         gGameSubState = 5;
     }
 }
@@ -499,8 +499,8 @@ static void field_update_unused_stub_5(void) {}
 void field_debug_open(void) {
     struct FieldDebugWork *debug = &gFieldDebug;
 
-    if (debug->unk11 == 0) {
-        debug->unk10 = 1;
+    if (debug->debug_dc == 0) {
+        debug->labels_drawn = 1;
         field_debug_init_page(0);
     }
     game_substate_advance();
@@ -559,10 +559,10 @@ static void field_mark_warp_tiles(void) {
         gFieldWork.tile_map[warps[i].y * (gFieldWork.map_width >> 1) + warps[i].x] = 2;
 }
 
-void update_battle_entity_status_chars(void) {
+void field_sort_sprites_by_depth(void) {
     s32 i;
 
-    if (gFieldWork.unkC4C) {
+    if (gFieldWork.depth_sort_enabled) {
         for (i = 0x2E; i <= 0x7F; i++) {
             if (gSpriteEntries[i].order == 0xFF)
                 gSpriteEntries[i].order = 0xFF;
@@ -612,8 +612,8 @@ void load_room_graphics(void) {
     field_load_area_tiles(gFieldWork.area_id);
     gFieldWork.map_width = area_map_size(gFieldWork.area_id, 0);
     gFieldWork.map_height = area_map_size(gFieldWork.area_id, 1);
-    gFieldWork.unk804 = field_tilemap_header_word(gFieldWork.area_id, 0);
-    gFieldWork.unk806 = field_tilemap_header_word(gFieldWork.area_id, 1);
+    gFieldWork.bg_map_width = field_tilemap_header_word(gFieldWork.area_id, 0);
+    gFieldWork.bg_map_height = field_tilemap_header_word(gFieldWork.area_id, 1);
     clear_vram_bg2_tiles();
     memzero_bytes(gFieldWork.tile_map, 0x400);
     memcpy_u8(gAreaCollisionMaps[gFieldWork.area_id], gFieldWork.tile_map,
@@ -622,14 +622,14 @@ void load_room_graphics(void) {
     if (area_gfx(tbl, gFieldWork.area_id * 3) != NULL && gAreaBgTiles[gFieldWork.area_id] != NULL) {
         LZ77UnCompVram(gAreaBgTiles[gFieldWork.area_id], (void *)0x06009000);
         LZ77UnCompVram(area_gfx(tbl, gFieldWork.area_id * 3), gFieldTilemapBuf);
-        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)0x06003000, gFieldWork.unk806,
-                                          gFieldWork.unk804, 0x40, 0x40, 0x80);
+        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)0x06003000, gFieldWork.bg_map_height,
+                                          gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
         LZ77UnCompVram(area_gfx(tbl, gFieldWork.area_id * 3 + 1), gFieldTilemapBuf);
-        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)0x06005000, gFieldWork.unk806,
-                                          gFieldWork.unk804, 0x40, 0x40, 0x80);
+        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)0x06005000, gFieldWork.bg_map_height,
+                                          gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
         LZ77UnCompVram(area_gfx(tbl, gFieldWork.area_id * 3 + 2), gFieldTilemapBuf);
-        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)0x06007000, gFieldWork.unk806,
-                                          gFieldWork.unk804, 0x40, 0x40, 0x80);
+        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)0x06007000, gFieldWork.bg_map_height,
+                                          gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
         if (gAreaAnimBgTiles[gFieldWork.area_id] != NULL)
             LZ77UnCompVram(gAreaAnimBgTiles[gFieldWork.area_id], gAreaAnimTileSrc);
     } else {

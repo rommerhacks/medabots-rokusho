@@ -1123,10 +1123,10 @@ u32 field_effect_run(void) {
             E[n].sound_timer.end = script[S.pc++];
             E[n].sound_id = script[S.pc++];
             break;
-        case 136: // guess: set gFieldWork.unkC4C and refresh the status chars
+        case 136: // set gFieldWork.depth_sort_enabled and re-sort the sprites
             S.pc++;
-            gFieldWork.unkC4C = script[S.pc++];
-            update_battle_entity_status_chars();
+            gFieldWork.depth_sort_enabled = script[S.pc++];
+            field_sort_sprites_by_depth();
             break;
         default:
             S.opcode = 0;
@@ -1159,7 +1159,7 @@ u32 field_effect_run(void) {
                     follower_set_facing(gSpriteEntries[47].unk20);
                     sprite_anim_start(0x30, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
                 }
-                update_battle_entity_status_chars();
+                field_sort_sprites_by_depth();
             }
             if (S.opcode == 4)
                 break;

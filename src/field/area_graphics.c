@@ -24,8 +24,8 @@ void area_load_graphics(void) {
     follower_respawn();
     follower_update_screen_pos();
     area_load_sprite_sheets();
-    gFieldWork.unkC4C = 1;
-    update_battle_entity_status_chars();
+    gFieldWork.depth_sort_enabled = 1;
+    field_sort_sprites_by_depth();
 }
 
 void animate_area_bg_tiles(void) {

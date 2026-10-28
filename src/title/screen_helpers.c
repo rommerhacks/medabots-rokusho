@@ -56,7 +56,7 @@ u32 town_map_move_cursor(void) {
     struct MenuWork **pw = &gMenuWork;
     struct MenuWork *w = *pw;
     u8 old = w->town_map_place;
-    u32 off = old * 4 + gFieldWork.unkC32 * 40;
+    u32 off = old * 4 + gFieldWork.town_map_phase * 40;
     const u8 *tbl = w->cursor_style ? gTownMapNeighboursAlt : gTownMapNeighbours;
     if (*(u8 *)&gNewKeys & 0x20)
         w->town_map_place = tbl[off];
