@@ -84,7 +84,7 @@ void new_game_init(void) {
     REG_DISPCNT = 0x1E40;
     gMapScriptData = (u8 *)gUnk_08764CB0;
     gEventFlags = (u8 *)&gFieldWork;
-    gUnk_03006D30 = (struct BattleEntity3D *)0x02039000;
+    gFieldEffectEntities = (struct BattleEntity3D *)0x02039000;
     gFieldTilemapBuf = (u16 *)0x02030000;
     gUnk_030057DC = (u8 *)0x02038000;
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
@@ -224,7 +224,7 @@ void field_continue_load(void) {
     restore_script_sprites();
     gUnk_03005590 = gUnk_08764CB0;
     gEventFlags = (u8 *)&gFieldWork;
-    gUnk_03006D30 = (struct BattleEntity3D *)0x02039000;
+    gFieldEffectEntities = (struct BattleEntity3D *)0x02039000;
     gFieldTilemapBuf = (u16 *)0x02030000;
     gUnk_030057DC = (u8 *)0x02038000;
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);

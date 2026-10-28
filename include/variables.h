@@ -32,7 +32,7 @@ extern u8
 extern u32 gLinkBufferSwapIwram[0x10];        // IWRAM copy of link_buffer_swap_arm
 extern u32 gSerialTransferHandlerIwram[0x48]; // IWRAM copy of serial_multiplayer_transfer_handler
 extern const Func gGameModeHandlers[];        // game mode handlers (AgbMain)
-extern struct Unk_03005350 gUnk_03005350;
+extern struct FieldEffectState gFieldEffect;
 extern struct FieldDebugWork gFieldDebug;
 extern u8 *gMapScriptData; // current map script data (banked, see read_map_script_byte)
 extern struct FieldWork gFieldWork;
@@ -1145,13 +1145,13 @@ extern const u8
 extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (area_load_sprite_palettes)
 extern u32 gUnk_0300534C;
 extern struct AffineParam gAffineParams[32];
-extern struct BattleEntity3D *gUnk_03006D30;
-extern const s32 *const
-    *const gUnk_083D2DB0[]; // per model set, per entity: s32 count, x[4], y[4], z[4] (field_effect_project_objects)
-extern const float gUnk_083D6EA0[256]; // guess: sine, angle 0-255 (set_state_float_field)
-extern const float gUnk_083D72A0[256]; // guess: cosine
-extern const Func gItemMenuStates[];   // field menu Item screen states, by gGameSubState (item_menu_update)
-extern const Func gNameEntryStates[];  // 7 name entry sub-states, by gGameSubState (name_entry_screen_update)
+extern struct BattleEntity3D *gFieldEffectEntities;
+extern const s32 *const *const
+    gFieldEffectModels[]; // per model set, per entity: s32 count, x[4], y[4], z[4] (field_effect_project_objects)
+extern const float gCosTableF32[256]; // cos(i * 2pi / 256) as floats (set_state_float_field; [0] = 1.0)
+extern const float gSinTableF32[256]; // sin(i * 2pi / 256) as floats ([64] = 1.0)
+extern const Func gItemMenuStates[];  // field menu Item screen states, by gGameSubState (item_menu_update)
+extern const Func gNameEntryStates[]; // 7 name entry sub-states, by gGameSubState (name_entry_screen_update)
 extern const u8
     *const gItemDescriptions[];  // item description messages by item id (runtime: item 1 Skirt -> "Transform Goods No.1
                                  // / A frilly mini-skirt."); 0x3F with an empty list (item_menu_show_description)
@@ -1484,9 +1484,9 @@ extern const u32 gPartTradeBgTiles[];
 extern const u8 gPartTradeBgPalette[];
 extern const u8 gGradientPaletteCyan[];
 
-extern s32 *gUnk_083D5D84[];        // field effect scripts, picked by gUnk_03005350.unk1D4 & 0x3F (field_effect_run)
-extern const void *gUnk_0847ECC0[]; // battle sequence sprite graphics (opcode 27)
-extern const void *gUnk_0847EC40[]; // battle sequence sprite palettes (opcode 27)
+extern s32 *gFieldEffectScripts[]; // field effect scripts, picked by gFieldEffect.flags & 0x3F (field_effect_run)
+extern const void *gFieldEffectObjTiles[];    // battle sequence sprite graphics (opcode 27)
+extern const void *gFieldEffectObjPalettes[]; // battle sequence sprite palettes (opcode 27)
 extern const u8 gUnk_083D2AAB[];
 extern const u8 gUnk_083D2AB4[];
 extern const u8 gUnk_083D2AD8;

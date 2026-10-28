@@ -5,13 +5,13 @@
 #include "global.h"
 
 u32 field_effect_run_and_restore(void) {
-    if ((gUnk_03005350.unk1D4 & 0x3F) == 0xD || (gUnk_03005350.unk1D4 & 0x3F) == 0x16) {
+    if ((gFieldEffect.flags & 0x3F) == 0xD || (gFieldEffect.flags & 0x3F) == 0x16) {
         gFieldWork.player_visible = 0;
         field_set_player_sprite_visible(0);
         update_bg_scroll_offsets_a();
     }
     if (field_effect_run() == 4) {
-        switch (gUnk_03005350.unk1D4 & 0x3F) {
+        switch (gFieldEffect.flags & 0x3F) {
         case 0:
         case 13:
         case 15:
@@ -91,7 +91,7 @@ u32 scene_state_dispatch(u32 a, u32 b) {
         field_center_camera_on_player();
         blend_set_alpha_12_10();
         if (a == 0x13) {
-            field_effect_start(0x93, gUnk_03005350.unk1D8, gUnk_03005350.unk1DC, 0);
+            field_effect_start(0x93, gFieldEffect.pos_x, gFieldEffect.pos_y, 0);
             while (!field_effect_run_and_restore())
                 ;
         }

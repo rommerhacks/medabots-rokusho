@@ -1029,7 +1029,7 @@ void map_script_update_field_effect(void) {
 
     switch (gFieldWork.cmd_step) {
     case 0:
-        kind = gUnk_03005350.unk1D4 & 0x3F;
+        kind = gFieldEffect.flags & 0x3F;
         if (kind == 0xD || kind == 0x16) {
             if (field_effect_run_and_restore())
                 gFieldWork.cmd_step++;
@@ -1042,7 +1042,7 @@ void map_script_update_field_effect(void) {
         gFieldWork.cmd_step++;
         break;
     case 2:
-        if ((gUnk_03005350.unk1D4 & 0x3F) == 0xD)
+        if ((gFieldEffect.flags & 0x3F) == 0xD)
             gFieldWork.player_facing = 2;
         else
             gFieldWork.player_facing = 3;

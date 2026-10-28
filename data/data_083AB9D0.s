@@ -1278,12 +1278,12 @@ gSpriteSheetHasShadow:
 gUnk_083D2C3D:
 	.incbin "baserom.gba", 0x3D2C3D, 0x173
 
-	.global gUnk_083D2DB0
-gUnk_083D2DB0:
+	.global gFieldEffectModels
+gFieldEffectModels:
 	.incbin "baserom.gba", 0x3D2DB0, 0x2FD4
 
-	.global gUnk_083D5D84
-gUnk_083D5D84:
+	.global gFieldEffectScripts
+gFieldEffectScripts:
 	.incbin "baserom.gba", 0x3D5D84, 0x84
 
 	.global gVehicleMenuStates
@@ -1322,12 +1322,12 @@ gJumpArcTable:
 gUnk_083D6BA0:
 	.incbin "baserom.gba", 0x3D6BA0, 0x300
 
-	.global gUnk_083D6EA0
-gUnk_083D6EA0:
+	.global gCosTableF32
+gCosTableF32:
 	.incbin "baserom.gba", 0x3D6EA0, 0x400
 
-	.global gUnk_083D72A0
-gUnk_083D72A0:
+	.global gSinTableF32
+gSinTableF32:
 	.incbin "baserom.gba", 0x3D72A0, 0x20954
 
 	.global gSpriteAnimScripts
@@ -1414,10 +1414,10 @@ gUnk_0847E948:
 gUnk_0847EB80:
 	.incbin "baserom.gba", 0x47EB80, 0xC0
 
-	.global gUnk_0847EC40
-gUnk_0847EC40:
+	.global gFieldEffectObjPalettes
+gFieldEffectObjPalettes:
 	.incbin "baserom.gba", 0x47EC40, 0x80
 
-	.global gUnk_0847ECC0
-gUnk_0847ECC0:
+	.global gFieldEffectObjTiles
+gFieldEffectObjTiles:
 	.incbin "baserom.gba", 0x47ECC0, 0x1340

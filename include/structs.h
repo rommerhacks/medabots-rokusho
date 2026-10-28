@@ -1338,59 +1338,61 @@ struct Unk_03006D38 {
     u8 unk6;
 };
 
-struct Unk_03005350 {
-    s32 unk0;    // viewport width (240)
-    s32 unk4;    // viewport height (160)
-    s32 unk8;    // viewport centre x
-    s32 unkC;    // viewport centre y
-    float unk10; // destination range x0, x1, y0, y1
-    float unk14;
-    float unk18;
-    float unk1C;
-    float unk20; // source range x0, x1, y0, y1
-    float unk24;
-    float unk28;
-    float unk2C;
-    float unk30; // x / y scale of the destination -> source map
-    float unk34;
-    float unk38; // x / y offset
-    float unk3C;
-    float unk40; // camera position x, y, z (set_state_float_field)
-    float unk44;
-    float unk48;
-    float unk4C; // camera distance
-    float unk50; // sin / cos of the yaw angle
-    float unk54;
-    float unk58; // sin / cos of the pitch angle
-    float unk5C;
-    float unk60[4]; // projected points x, y, z (field_effect_project_objects)
-    float unk70[4];
-    float unk80[4];
-    float unk90; // yaw / pitch base angles
-    float unk94;
+// Field effect state (gFieldEffect, 0x240 bytes, cleared by field_effect_start); field_effect_run views the
+// same memory as struct SeqState.
+struct FieldEffectState {
+    s32 viewport_w; // 240
+    s32 viewport_h; // 160
+    s32 viewport_cx;
+    s32 viewport_cy;
+    float dst_x0; // destination range x0, x1, y0, y1
+    float dst_x1;
+    float dst_y0;
+    float dst_y1;
+    float src_x0; // source range x0, x1, y0, y1
+    float src_x1;
+    float src_y0;
+    float src_y1;
+    float scale_x; // x / y scale of the destination -> source map
+    float scale_y;
+    float offset_x; // x / y offset
+    float offset_y;
+    float camera_x; // camera position x, y, z (set_state_float_field)
+    float camera_y;
+    float camera_z;
+    float camera_dist;
+    float cos_yaw; // from gCosTableF32 / gSinTableF32
+    float sin_yaw;
+    float cos_pitch;
+    float sin_pitch;
+    float point_x[4]; // projected points x, y, z (field_effect_project_objects)
+    float point_y[4];
+    float point_z[4];
+    float base_yaw; // script yaw / pitch, plus each entity's offsets
+    float base_pitch;
     float unk98;
-    s32 unk9C;       // camera distance
-    s32 unkA0;       // projection scale
-    double unkA4[2]; // camera origin x, y (field_effect_reset_view)
-    s32 unkB4;       // projected screen x, y
-    s32 unkB8;
+    s32 base_camera_dist; // also the depth at which sprites have scale 1
+    s32 projection_scale;
+    double origin[2]; // camera origin x, y (field_effect_reset_view)
+    s32 screen_x;     // projected screen x, y
+    s32 screen_y;
     u8 fillerBC[0x4];
-    s32 unkC0[4]; // model points x, y, z (from gUnk_083D2DB0)
-    s32 unkD0[4];
-    s32 unkE0[4];
+    s32 model_x[4]; // model points x, y, z (from gFieldEffectModels)
+    s32 model_y[4];
+    s32 model_z[4];
     s32 unkF0;
     u8 fillerF4[0x4];
-    s32 unkF8; // model set index into gUnk_083D2DB0
+    s32 effect_id; // flags & 0x3F: script and model set (gFieldEffectModels) index
     u8 fillerFC[0xD0];
-    s32 unk1CC; // current entity (index into gUnk_03006D30)
-    s32 unk1D0; // part count of the current entity
-    u32 unk1D4; // flags
-    s32 unk1D8; // x, y, d (field_effect_start)
-    s32 unk1DC;
-    u32 unk1E0;
+    s32 cur_entity; // current entity (index into gFieldEffectEntities)
+    s32 part_count; // part count of the current entity
+    u32 flags;      // effect id (0x3F), 0x40 = at the player
+    s32 pos_x;      // field_effect_start arguments; warps: destination x, y (gFieldWork.player_x units) and area
+    s32 pos_y;
+    u32 area_id;
     u8 filler1E4[0x26];
-    u16 unk20A; // palette colour masks (run_blend_fade_transition)
-    u16 unk20C;
+    u16 bg_blend_mask; // palette colour masks (run_blend_fade_transition)
+    u16 obj_blend_mask;
     u8 filler20E[0x6];
     s32 unk214;
     s32 unk218;
@@ -1398,7 +1400,7 @@ struct Unk_03005350 {
     s32 unk220;
 };
 
-// 3-D entity, 0x300 bytes; gUnk_03006D30 points to an array of them (0x02039000, 16 entries).
+// 3-D entity, 0x300 bytes; gFieldEffectEntities points to an array of them (0x02039000, 16 entries).
 struct BattleEntity3D {
     s32 unk0; // state (2 = left its range)
     s32 unk4;
@@ -1780,36 +1782,36 @@ struct SeqEntity {
 
 struct SeqState {
     u8 filler0[0x90];
-    float unk90;
-    float unk94;
+    float base_yaw;
+    float base_pitch;
     float unk98;
-    s32 unk9C;
-    s32 unkA0;
+    s32 base_camera_dist;
+    s32 projection_scale;
     u8 fillerA4[0x4C];
-    s32 unkF0;       // running
-    s32 unkF4;       // opcode
-    s32 unkF8;       // script index
-    s32 unkFC;       // pc
-    s32 unk100[16];  // saved pc
-    s32 unk140;      // call depth
-    s32 *unk144[16]; // saved script
-    s32 unk184;      // current entity
-    s32 unk188[16];  // saved entity
+    s32 running;           // running
+    s32 opcode;            // opcode
+    s32 effect_id;         // script index
+    s32 pc;                // pc
+    s32 saved_pc[16];      // saved pc
+    s32 call_depth;        // call depth
+    s32 *saved_script[16]; // saved script
+    s32 cur_entity;        // current entity
+    s32 saved_entity[16];  // saved entity
     u8 filler1C8[0xC];
-    u32 unk1D4;
-    s32 unk1D8;
-    s32 unk1DC;
-    s32 unk1E0;
+    u32 flags;
+    s32 pos_x;
+    s32 pos_y;
+    s32 area_id;
     u8 filler1E4[0x10];
-    s32 unk1F4; // fade mode
+    s32 fade_mode; // fade mode
     s32 unk1F8;
-    s32 unk1FC; // fade timer
+    s32 fade_timer; // fade timer
     s32 unk200;
     s32 unk204;
     u8 unk208;
     u8 filler209;
-    u16 unk20A;
-    u16 unk20C;
+    u16 bg_blend_mask;
+    u16 obj_blend_mask;
     u8 unk20E;
     u8 unk20F;
     u8 unk210;

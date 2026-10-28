@@ -17,8 +17,8 @@ static void field_clear_ram(void) {
     memzero_bytes((u8 *)&gUnk_03006D20, 0x10);
     memzero_bytes((u8 *)&gEventFlags, 4);
     memzero_bytes((u8 *)&gMapScriptData, 4);
-    memzero_bytes((u8 *)&gUnk_03005350, 0x240);
-    memzero_bytes((u8 *)&gUnk_03006D30, 4);
+    memzero_bytes((u8 *)&gFieldEffect, 0x240);
+    memzero_bytes((u8 *)&gFieldEffectEntities, 4);
     memzero_bytes((u8 *)&gFieldScriptWork, 0x874);
 }
 

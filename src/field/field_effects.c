@@ -522,10 +522,10 @@ u32 run_blend_fade_transition(u16 color) {
     u32 done = 0;
 
     blend_effect_update();
-    gUnk_03005350.unk20A = 0xFFFF;
-    gUnk_03005350.unk20C = 0xBFFF;
-    field_bg_palettes_blend_masked(color, gBlendEffect.fade_amount, gUnk_03005350.unk20A);
-    field_obj_palettes_blend_masked(color, gBlendEffect.fade_amount, gUnk_03005350.unk20C);
+    gFieldEffect.bg_blend_mask = 0xFFFF;
+    gFieldEffect.obj_blend_mask = 0xBFFF;
+    field_bg_palettes_blend_masked(color, gBlendEffect.fade_amount, gFieldEffect.bg_blend_mask);
+    field_obj_palettes_blend_masked(color, gBlendEffect.fade_amount, gFieldEffect.obj_blend_mask);
     gBlendEffect.fade_amount -= gBlendEffect.fade_step;
     if (gBlendEffect.fade_step > 0.0f) {
         if (gBlendEffect.fade_amount < gBlendEffect.fade_end) {
