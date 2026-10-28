@@ -75,20 +75,20 @@ gUnk_083ABCB8:
 gGameModeHandlers:
 	.incbin "baserom.gba", 0x3ABE18, 0x18
 
-	.global gUnk_083ABE30
-gUnk_083ABE30:
+	.global gSpriteFrameSets
+gSpriteFrameSets:
 	.incbin "baserom.gba", 0x3ABE30, 0x258
 
-	.global gUnk_083AC088
-gUnk_083AC088:
+	.global gSpriteFrameSets1
+gSpriteFrameSets1:
 	.incbin "baserom.gba", 0x3AC088, 0x40
 
-	.global gUnk_083AC0C8
-gUnk_083AC0C8:
+	.global gMenuSpriteFrameSets
+gMenuSpriteFrameSets:
 	.incbin "baserom.gba", 0x3AC0C8, 0x40
 
-	.global gUnk_083AC108
-gUnk_083AC108:
+	.global gSpriteFrameSets3
+gSpriteFrameSets3:
 	.incbin "baserom.gba", 0x3AC108, 0x40
 
 	.global gGameStateHandlers_083AC148
@@ -287,28 +287,28 @@ gMedalAttributeBaseSkills:
 gAiPartOrders:
 	.incbin "baserom.gba", 0x3AD2F0, 0x80
 
-	.global gUnk_083AD370
-gUnk_083AD370:
+	.global gCommandRingIconAngles
+gCommandRingIconAngles:
 	.incbin "baserom.gba", 0x3AD370, 0x6
 
-	.global gUnk_083AD376
-gUnk_083AD376:
+	.global gCommandRingNextSlotRight
+gCommandRingNextSlotRight:
 	.incbin "baserom.gba", 0x3AD376, 0x6
 
-	.global gUnk_083AD37C
-gUnk_083AD37C:
+	.global gCommandRingNextSlotLeft
+gCommandRingNextSlotLeft:
 	.incbin "baserom.gba", 0x3AD37C, 0x6
 
-	.global gUnk_083AD382
-gUnk_083AD382:
+	.global gBotPointerLineParams
+gBotPointerLineParams:
 	.incbin "baserom.gba", 0x3AD382, 0x18
 
-	.global gUnk_083AD39A
-gUnk_083AD39A:
+	.global gCommandRingSubStates
+gCommandRingSubStates:
 	.incbin "baserom.gba", 0x3AD39A, 0x6
 
-	.global gUnk_083AD3A0
-gUnk_083AD3A0:
+	.global gPartSelectCenterFrames
+gPartSelectCenterFrames:
 	.incbin "baserom.gba", 0x3AD3A0, 0x4
 
 	.global gTeamBotScreenPositions
@@ -1046,8 +1046,8 @@ gBattlefieldAnimTileCounts:
 gBattlefieldAnimFrames:
 	.incbin "baserom.gba", 0x3C40C3, 0x5A9
 
-	.global gUnk_083C466C
-gUnk_083C466C:
+	.global gCommandRingNames
+gCommandRingNames:
 	.incbin "baserom.gba", 0x3C466C, 0x3A4
 
 	.global gBattleMenuTexts
@@ -1058,12 +1058,12 @@ gBattleMenuTexts:
 gTerrainMoveDelays:
 	.incbin "baserom.gba", 0x3C4C10, 0x50
 
-	.global gUnk_083C4C60
-gUnk_083C4C60:
+	.global gStatusSpriteParams
+gStatusSpriteParams:
 	.incbin "baserom.gba", 0x3C4C60, 0x28
 
-	.global gUnk_083C4C88
-gUnk_083C4C88:
+	.global gBuffSpriteParams
+gBuffSpriteParams:
 	.incbin "baserom.gba", 0x3C4C88, 0x193C
 
 	.global gBattleMessages

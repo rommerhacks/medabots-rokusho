@@ -1,6 +1,6 @@
 // Game state 7: the Robattle itself. robattle_update runs the sub-state machine in gRobattleHandlers:
 // 0x00-0x02 setup and fade-in, 0x03-0x0E command ring (the six ring commands, decoded from their name
-// text gUnk_083C466C, jump to gUnk_083AD39A: Medaparts 0x10, MF 0x18, Status 0x20, Aim 0x28, Rotation 0x30,
+// text gCommandRingNames, jump to gCommandRingSubStates: Medaparts 0x10, MF 0x18, Status 0x20, Aim 0x28, Rotation 0x30,
 // Auto 0x38), 0x3C-0x3D screen restore after a full-screen menu, 0x40-0x42 start banner, 0x44-0x4C the turn
 // loop, 0x60-0x79 timed effect ends / numbers, 0x90-0xAF link Robattle command exchange. Calls into battle_bots (turn
 // logic), battle_hud, command_ring, part_select and status_screen; the action scripts run in game states 8-9.

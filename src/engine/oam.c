@@ -19,8 +19,8 @@ void check_flag_and_fast_copy(void) {
     struct SpritePart *part;
     struct OamData *oam;
 
-    if (gUnk_03000438 & 1) {
-        gUnk_03000438 = 0;
+    if (gOamBuildFlags & 1) {
+        gOamBuildFlags = 0;
         return;
     }
     zero = 0;
@@ -34,10 +34,10 @@ void check_flag_and_fast_copy(void) {
             count++;
         }
     }
-    if (!(gUnk_03000438 & 2))
+    if (!(gOamBuildFlags & 2))
         shell_sort_by_second_byte(sorted, count);
     else
-        gUnk_03000438 = 0;
+        gOamBuildFlags = 0;
 
     if (gVBlankOamMode == 2)
         affIdx = 22;
@@ -50,40 +50,40 @@ void check_flag_and_fast_copy(void) {
         switch (obj->unk0 & 0xC0) {
         case 0x80:
             px = obj->unkC_8 * 4;
-            py = (obj->unk10_8 + gUnk_03005044) * 4;
+            py = (obj->unk10_8 + gSpritePerspOffsetY) * 4;
             w = (obj->unk14_8 + 0x3000) / 64;
             px = px / w;
             py = py / w;
-            obj->unk2 = gUnk_03005040 + px;
-            obj->unk4 = gUnk_0300504C + py;
+            obj->unk2 = gSpritePerspCenterX + px;
+            obj->unk4 = gSpritePerspCenterY + py;
             obj->unk8 = obj->unk9 = 0x8000 / w;
             gOamAffineZoomOverride = 0x700000 / w;
             break;
         case 0xC0:
             break;
         case 0x40:
-            obj->unk2 = (obj->unkC_8 >> 8) - gUnk_03002C24.x;
-            obj->unk4 = ((obj->unk10_8 + obj->unk14_8) >> 8) - gUnk_03002C24.y;
+            obj->unk2 = (obj->unkC_8 >> 8) - gSpriteCameraPos.x;
+            obj->unk4 = ((obj->unk10_8 + obj->unk14_8) >> 8) - gSpriteCameraPos.y;
             break;
         }
         switch (obj->unk1C & 0xF) {
         case 1:
-            frameSet = gUnk_083AC088[obj->unk6 >> 8];
+            frameSet = gSpriteFrameSets1[obj->unk6 >> 8];
             break;
         case 2:
-            frameSet = gUnk_083AC0C8[obj->unk6 >> 8];
+            frameSet = gMenuSpriteFrameSets[obj->unk6 >> 8];
             break;
         case 3:
-            frameSet = gUnk_083AC108[obj->unk6 >> 8];
+            frameSet = gSpriteFrameSets3[obj->unk6 >> 8];
             break;
         case 0:
         default:
-            frameSet = gUnk_083ABE30[obj->unk6 >> 8];
+            frameSet = gSpriteFrameSets[obj->unk6 >> 8];
             break;
         }
         part = frameSet[obj->unk6 & 0xFF]->parts;
-        px = -gBgScrollOffset.x + gUnk_03001794.x + obj->unk2;
-        py = -gBgScrollOffset.y + gUnk_03001794.y + obj->unk4;
+        px = -gBgScrollOffset.x + gSpriteScreenOffset.x + obj->unk2;
+        py = -gBgScrollOffset.y + gSpriteScreenOffset.y + obj->unk4;
         if ((obj->unk0 & 0xC0) == 0x40) {
             if ((u32)(py + 32) > 256) {
                 obj->unk0 |= 2;

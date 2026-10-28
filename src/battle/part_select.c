@@ -11,7 +11,7 @@ void part_select_init_center_icon(void) {
     gSpriteEntries[0].unk4 = 0x78;
     gSpriteEntries[0].unkA = 0xA;
     gSpriteEntries[0].unkB = 0xC0;
-    gSpriteEntries[0].unk6 = gUnk_083AD3A0[gBattleWork.unk82] + 0x600;
+    gSpriteEntries[0].unk6 = gPartSelectCenterFrames[gBattleWork.unk82] + 0x600;
 }
 
 void part_select_init_head_icon(u32 a) {

@@ -648,7 +648,7 @@ struct BattleWork {
     u8 fieldAnimBlock; // battlefield animation tile block (gBattlefieldAnimFrames), 0xFF ends the loop
     u8 unk80;    // index of a 256-byte record in gBattleBots (medal_rotation_store_to_battle_bot copies Medal rotation
                  // data there)
-    u8 ringSlot; // Robattle: selected command ring slot 0-5 (name gUnk_083C466C[ringSlot], runtime-checked)
+    u8 ringSlot; // Robattle: selected command ring slot 0-5 (name gCommandRingNames[ringSlot], runtime-checked)
     u8 unk82;
     u8 ringTurning; // Robattle: command ring turning, 1 right / 2 left (command_ring_input); nonzero blocks
                     // robattle_command_input
@@ -1840,7 +1840,7 @@ struct LinkRow256 {
     u8 b[256];
 };
 
-// One OAM part of a sprite frame (frame tables gUnk_083ABE30 etc., read by check_flag_and_fast_copy).
+// One OAM part of a sprite frame (frame tables gSpriteFrameSets etc., read by check_flag_and_fast_copy).
 struct SpritePart {
     u8 shape;
     u8 size;

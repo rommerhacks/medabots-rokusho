@@ -265,8 +265,8 @@ void trap_sprite_spawn(void) {
         gSpriteEntries[0x21].unk6 = 0xD00;
         break;
     case 3:
-        lz_decompress_dispatch(gUnk_084D513C, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E678, (void *)0x050002E0, 8);
+        lz_decompress_dispatch(gTeamAttackTurretTilesLz, (void *)0x06014800);
+        CpuFastSet(gTeamAttackTurretPalette, (void *)0x050002E0, 8);
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x38], 0x21);
         break;
     }

@@ -174,8 +174,8 @@ void confusion_begin(void) {
 }
 
 void confusion_ball_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D6780, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E878, (void *)0x050002C0, 0x10);
+    lz_decompress_dispatch(gConfusionBallTilesLz, (void *)0x06014800);
+    CpuFastSet(gConfusionBallPalettes, (void *)0x050002C0, 0x10);
     if (gBattleWork.actorSideFlags & 1)
         gSpriteEntries[0x21].unk0 |= 0x1000;
     gSpriteEntries[0x21].unk0 |= 0x220;
@@ -262,8 +262,8 @@ void use_drain_begin(void) {
 }
 
 void use_drain_bubble_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D6AAC, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E8B8, (void *)0x050002C0, 0x10);
+    lz_decompress_dispatch(gDrainBubbleTilesLz, (void *)0x06014800);
+    CpuFastSet(gDrainBubblePalettes, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].unk0 |= 0x220;
     gSpriteEntries[0x21].unk8 = 0x40;
     gSpriteEntries[0x21].unk9 = 0x40;
@@ -419,11 +419,11 @@ void no_escape_defense_begin(void) {
 // Ability 46 (0x2E) shows the running-person icon, 47 the shield icon.
 void no_escape_defense_icon_load(void) {
     if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == 0x2E) {
-        lz_decompress_dispatch(gUnk_084D6CC4, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E8F8, (void *)0x050002E0, 0x10);
+        lz_decompress_dispatch(gNoEscapeIconTilesLz, (void *)0x06014800);
+        CpuFastSet(gNoEscapeIconPalette, (void *)0x050002E0, 0x10);
     } else {
-        lz_decompress_dispatch(gUnk_084D6E20, (void *)0x06014800);
-        CpuFastSet(gUnk_0850E918, (void *)0x050002E0, 0x10);
+        lz_decompress_dispatch(gDefenseIconTilesLz, (void *)0x06014800);
+        CpuFastSet(gDefenseIconPalette, (void *)0x050002E0, 0x10);
     }
     gSpriteEntries[0x21].unk0 |= 0x220;
     gSpriteEntries[0x21].unk8 = 0x40;
@@ -622,8 +622,8 @@ void team_attack_turrets_run(void) {
 void team_attack_turrets_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gUnk_084D513C, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E678, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gTeamAttackTurretTilesLz, (void *)0x06014800);
+    CpuFastSet(gTeamAttackTurretPalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         gSpriteEntries[i + 0x21].unk0 = 0xC404;
         gSpriteEntries[i + 0x21].unk1C = 0;
@@ -681,8 +681,8 @@ void counter_attack_begin(void) {
 }
 
 void counter_attack_ball_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D71D8, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E978, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gCounterAttackBallTilesLz, (void *)0x06014800);
+    CpuFastSet(gCounterAttackBallPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 = 0xC624;
     if (gBattleWork.actorSideFlags & 1)
         gSpriteEntries[0x21].unk0 |= 0x1000;
@@ -782,8 +782,8 @@ void change_begin(void) {
 }
 
 void change_effect_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D7528, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E998, (void *)0x050002C0, 0x10);
+    lz_decompress_dispatch(gChangeEffectTilesLz, (void *)0x06014800);
+    CpuFastSet(gChangeEffectPalettes, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].unk0 = 0xC404;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = gSpriteEntries[0x5D + gBattleWork.actor * 4].unk2;

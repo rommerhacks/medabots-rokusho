@@ -864,8 +864,8 @@ gAttackAbsorbedTiles:
 gSkillCastHopTiles:
 	.incbin "baserom.gba", 0x4D50DC, 0x60
 
-	.global gUnk_084D513C
-gUnk_084D513C:
+	.global gTeamAttackTurretTilesLz
+gTeamAttackTurretTilesLz:
 	.incbin "baserom.gba", 0x4D513C, 0x380
 
 	.global gUnk_084D54BC
@@ -916,36 +916,36 @@ gPushoverBananaTiles:
 gImpairPortraitTiles:
 	.incbin "baserom.gba", 0x4D651C, 0x264
 
-	.global gUnk_084D6780
-gUnk_084D6780:
+	.global gConfusionBallTilesLz
+gConfusionBallTilesLz:
 	.incbin "baserom.gba", 0x4D6780, 0x32C
 
-	.global gUnk_084D6AAC
-gUnk_084D6AAC:
+	.global gDrainBubbleTilesLz
+gDrainBubbleTilesLz:
 	.incbin "baserom.gba", 0x4D6AAC, 0x150
 
 	.global gBattlePopupDigitTiles
 gBattlePopupDigitTiles:
 	.incbin "baserom.gba", 0x4D6BFC, 0xC8
 
-	.global gUnk_084D6CC4
-gUnk_084D6CC4:
+	.global gNoEscapeIconTilesLz
+gNoEscapeIconTilesLz:
 	.incbin "baserom.gba", 0x4D6CC4, 0x15C
 
-	.global gUnk_084D6E20
-gUnk_084D6E20:
+	.global gDefenseIconTilesLz
+gDefenseIconTilesLz:
 	.incbin "baserom.gba", 0x4D6E20, 0x168
 
 	.global gForcedrainGlassTiles
 gForcedrainGlassTiles:
 	.incbin "baserom.gba", 0x4D6F88, 0x250
 
-	.global gUnk_084D71D8
-gUnk_084D71D8:
+	.global gCounterAttackBallTilesLz
+gCounterAttackBallTilesLz:
 	.incbin "baserom.gba", 0x4D71D8, 0x350
 
-	.global gUnk_084D7528
-gUnk_084D7528:
+	.global gChangeEffectTilesLz
+gChangeEffectTilesLz:
 	.incbin "baserom.gba", 0x4D7528, 0x444
 
 	.global gUnk_084D796C
@@ -1664,8 +1664,8 @@ gAttackAbsorbedPalette:
 gSkillCastHopPalette:
 	.incbin "baserom.gba", 0x50E658, 0x20
 
-	.global gUnk_0850E678
-gUnk_0850E678:
+	.global gTeamAttackTurretPalette
+gTeamAttackTurretPalette:
 	.incbin "baserom.gba", 0x50E678, 0x20
 
 	.global gUnk_0850E698
@@ -1716,32 +1716,32 @@ gPushoverBananaPalette:
 gImpairPortraitPalette:
 	.incbin "baserom.gba", 0x50E858, 0x20
 
-	.global gUnk_0850E878
-gUnk_0850E878:
+	.global gConfusionBallPalettes
+gConfusionBallPalettes:
 	.incbin "baserom.gba", 0x50E878, 0x40
 
-	.global gUnk_0850E8B8
-gUnk_0850E8B8:
+	.global gDrainBubblePalettes
+gDrainBubblePalettes:
 	.incbin "baserom.gba", 0x50E8B8, 0x40
 
-	.global gUnk_0850E8F8
-gUnk_0850E8F8:
+	.global gNoEscapeIconPalette
+gNoEscapeIconPalette:
 	.incbin "baserom.gba", 0x50E8F8, 0x20
 
-	.global gUnk_0850E918
-gUnk_0850E918:
+	.global gDefenseIconPalette
+gDefenseIconPalette:
 	.incbin "baserom.gba", 0x50E918, 0x20
 
 	.global gForcedrainGlassPalettes
 gForcedrainGlassPalettes:
 	.incbin "baserom.gba", 0x50E938, 0x40
 
-	.global gUnk_0850E978
-gUnk_0850E978:
+	.global gCounterAttackBallPalette
+gCounterAttackBallPalette:
 	.incbin "baserom.gba", 0x50E978, 0x20
 
-	.global gUnk_0850E998
-gUnk_0850E998:
+	.global gChangeEffectPalettes
+gChangeEffectPalettes:
 	.incbin "baserom.gba", 0x50E998, 0x40
 
 	.global gResultSpritePalettes
