@@ -9,28 +9,29 @@
 static void mf_menu_draw_cost_bar(u32 a);
 
 void save_restore_bg1_tilemap_region(void) {
-    if (gGameWork.unk84 < 12) {
+    if (gGameWork.stepCounter < 12) {
         read_vram_tilemap_rect(0xD, 7, 0x11, 0xD, REG_BG1CNT, gBgTileBackupHigh);
         write_vram_tilemap_rect(0xD, 7, 0x12, 0xD, REG_BG1CNT, gBgTileBackupHigh);
     }
 }
 
 void save_restore_bg0_tilemap_region(void) {
-    if (gGameWork.unk84 < 4) {
+    if (gGameWork.stepCounter < 4) {
         read_vram_tilemap_rect(0xC, 5, 9, 0xF, REG_BG0CNT, gBgTileBackup);
         write_vram_tilemap_rect(0xC, 5, 9, 0x10, REG_BG0CNT, gBgTileBackup);
     }
 }
 
 void draw_partial_bg1_column(void) {
-    if (gGameWork.unk84 <= 4)
-        write_vram_tilemap_rect(6, 5, 0xC, 0x13 - gGameWork.unk84, REG_BG1CNT, gBgTileBackup);
+    if (gGameWork.stepCounter <= 4)
+        write_vram_tilemap_rect(6, 5, 0xC, 0x13 - gGameWork.stepCounter, REG_BG1CNT, gBgTileBackup);
 }
 
 void scroll_tilemap_window(void) {
-    if (gGameWork.unk84 <= 9) {
-        read_vram_tilemap_rect(gGameWork.unk84 + 1, 4, 0x14, 0x15, REG_BG1CNT, gBgTileBackupHigh);
-        write_vram_tilemap_rect(gGameWork.unk84 + 1, 4, 0x1D - gGameWork.unk84, 0x10, REG_BG1CNT, gBgTileBackupHigh);
+    if (gGameWork.stepCounter <= 9) {
+        read_vram_tilemap_rect(gGameWork.stepCounter + 1, 4, 0x14, 0x15, REG_BG1CNT, gBgTileBackupHigh);
+        write_vram_tilemap_rect(gGameWork.stepCounter + 1, 4, 0x1D - gGameWork.stepCounter, 0x10, REG_BG1CNT,
+                                gBgTileBackupHigh);
     }
 }
 
@@ -53,14 +54,15 @@ void mf_menu_load_frame(void) {
 }
 
 void mf_menu_slide_bg0(void) {
-    if (gGameWork.unk84 < 4)
-        write_vram_tilemap_rect(0xC, 4, 9, 0x13 - gGameWork.unk84, REG_BG0CNT, gBgTileBackup);
+    if (gGameWork.stepCounter < 4)
+        write_vram_tilemap_rect(0xC, 4, 9, 0x13 - gGameWork.stepCounter, REG_BG0CNT, gBgTileBackup);
 }
 
 void mf_menu_slide_bg1(void) {
-    if (gGameWork.unk84 < 12) {
-        read_vram_tilemap_rect(gGameWork.unk84 + 1, 4, 0x12, 0x15, REG_BG1CNT, gBgTileBackupHigh);
-        write_vram_tilemap_rect(gGameWork.unk84 + 1, 4, 0x1D - gGameWork.unk84, 0xD, REG_BG1CNT, gBgTileBackupHigh);
+    if (gGameWork.stepCounter < 12) {
+        read_vram_tilemap_rect(gGameWork.stepCounter + 1, 4, 0x12, 0x15, REG_BG1CNT, gBgTileBackupHigh);
+        write_vram_tilemap_rect(gGameWork.stepCounter + 1, 4, 0x1D - gGameWork.stepCounter, 0xD, REG_BG1CNT,
+                                gBgTileBackupHigh);
     }
 }
 
@@ -248,7 +250,7 @@ void mf_menu_draw_status(u32 a) {
         mf_menu_draw_cost_bar(1);
     if (a) {
         if (err) {
-            if (!(gGameWork.unk84 & 8))
+            if (!(gGameWork.stepCounter & 8))
                 render_text_sprites_08040DB8(gGameWork.textBuf, 0x24, 0x13, 0xE, 10, 14, 0, 0);
         } else
             render_text_sprites_08040DB8(gGameWork.textBuf, 0x24, 0x13, 0xE, 10, 14, 0, 0);
@@ -282,25 +284,25 @@ void mf_menu_input(void) {
 void mf_menu_blink_selected_icon(void) {
     switch (gBattleWork.unk82) {
     case 0:
-        if (gGameWork.unk84 & 8)
+        if (gGameWork.stepCounter & 8)
             mf_menu_init_charge_icon(1);
         else
             mf_menu_init_charge_icon(0);
         break;
     case 1:
-        if (gGameWork.unk84 & 8)
+        if (gGameWork.stepCounter & 8)
             mf_menu_init_top_icon(1);
         else
             mf_menu_init_top_icon(0);
         break;
     case 2:
-        if (gGameWork.unk84 & 8)
+        if (gGameWork.stepCounter & 8)
             mf_menu_init_left_icon(1);
         else
             mf_menu_init_left_icon(0);
         break;
     case 3:
-        if (gGameWork.unk84 & 8)
+        if (gGameWork.stepCounter & 8)
             mf_menu_init_right_icon(1);
         else
             mf_menu_init_right_icon(0);
@@ -327,7 +329,7 @@ static void mf_menu_draw_cost_bar(u32 a) {
             i++;
         }
         for (j = i; j <= 7; j++) {
-            if (!(gGameWork.unk84 & 4))
+            if (!(gGameWork.stepCounter & 4))
                 draw_tile_block(1, 1, i + 1, 0x11, REG_BG0CNT, 0xB208);
             else
                 draw_tile_block(1, 1, i + 1, 0x11, REG_BG0CNT, 0xC208);
@@ -363,7 +365,7 @@ void mf_gauge_draw_panel(void) {
 }
 
 void mf_menu_slide_out_bg1(void) {
-    if (gGameWork.unk84 <= 11) {
+    if (gGameWork.stepCounter <= 11) {
         read_vram_tilemap_rect(13, 4, 0x11, 13, REG_BG1CNT, gBgTileBackupHigh);
         write_vram_tilemap_rect(13, 4, 0x12, 13, REG_BG1CNT, gBgTileBackupHigh);
     }

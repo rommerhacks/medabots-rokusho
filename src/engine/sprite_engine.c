@@ -708,7 +708,7 @@ u32 load_sprite_tree_recursive(struct SpriteNodeDesc **nodes, struct SpriteTileR
 
             if ((u8)key == v.node) {
                 frame = (v.frame + (alt & v.alt)) << 1;
-                if (gGameWork.unk96)
+                if (gGameWork.noAffineSprites)
                     affine = 0;
                 else
                     affine = v.affine;
@@ -730,7 +730,7 @@ u32 load_sprite_tree_recursive(struct SpriteNodeDesc **nodes, struct SpriteTileR
             CpuCopy16((void *)0x02030800, (void *)(0x06010000 + *tile * 32), size);
         obj = &oams[node];
         *tile += init_oam_sprite_entry(&obj->oam, desc, pal, *tile);
-        if (gGameWork.unk96)
+        if (gGameWork.noAffineSprites)
             obj->oam.affineMode = 0;
         else
             obj->oam.affineMode = affine;
@@ -890,7 +890,7 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
     else
         x += d.pa * dy + d.pc * dx;
 
-    if (gGameWork.unk96)
+    if (gGameWork.noAffineSprites)
         vis = 0;
     else
         vis = 1;
@@ -901,7 +901,7 @@ void render_sprite_node_recursive(struct SpriteTree *obj, struct SpriteTileRef *
             struct SpriteTileRef v = list[i];
 
             if ((u8)key == v.node) {
-                if (gGameWork.unk96)
+                if (gGameWork.noAffineSprites)
                     vis = 0;
                 else
                     vis = v.affine;

@@ -746,15 +746,15 @@ void start_scanline_wave_scroll(u32 phase, s32 amplitude, u32 lines) {
         if (i < lines) {
             if ((i & 3) == 0) {
                 idx = (i + phase) & 0xFF;
-                gGameWork.unk86 = (u32)(gJumpArcTable[0][idx] * (amplitude / 512.0f));
+                gGameWork.stepTimer = (u32)(gJumpArcTable[0][idx] * (amplitude / 512.0f));
             }
-            buf[i][0].x = gGameWork.unk86 + (gBg0Scroll.x + gBgScrollOffset.x);
+            buf[i][0].x = gGameWork.stepTimer + (gBg0Scroll.x + gBgScrollOffset.x);
             buf[i][0].y = gBg0Scroll.y + gBgScrollOffset.y;
-            buf[i][1].x = gGameWork.unk86 + (gBg1Scroll.x + gBgScrollOffset.x);
+            buf[i][1].x = gGameWork.stepTimer + (gBg1Scroll.x + gBgScrollOffset.x);
             buf[i][1].y = gBg1Scroll.y + gBgScrollOffset.y;
-            buf[i][2].x = gGameWork.unk86 + (gBg2Scroll.x + gBgScrollOffset.x);
+            buf[i][2].x = gGameWork.stepTimer + (gBg2Scroll.x + gBgScrollOffset.x);
             buf[i][2].y = gBg2Scroll.y + gBgScrollOffset.y;
-            buf[i][3].x = gGameWork.unk86 + (gBg3Scroll.x + gBgScrollOffset.x);
+            buf[i][3].x = gGameWork.stepTimer + (gBg3Scroll.x + gBgScrollOffset.x);
             buf[i][3].y = gBg3Scroll.y + gBgScrollOffset.y;
         } else {
             buf[i][0].x = gBg0Scroll.x + gBgScrollOffset.x;
@@ -1426,7 +1426,7 @@ void give_starter_medabot(void) {
 void init_battle_scene(u32 mode, u32 id) {
     clear_bg_scroll();
     clear_battle_sprite_slot(0, 0x80);
-    gGameWork.unk96 = 0;
+    gGameWork.noAffineSprites = 0;
     gVBlankOamMode = 0;
     mem_fill8(&gGameWork.openedFrom, 0x14, 0);
     gGameWork.openedFrom = 3;

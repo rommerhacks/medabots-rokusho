@@ -230,32 +230,32 @@ struct GameWork {
     u8 filler3;
     u8 msgState; // message handler state (run_message)
     u8 filler5[0x3];
-    const u8 *msgText; // current message (run_message)
-    u16 msgPos;        // read position in msgText
-    u8 unkE;
-    u8 portraitSide;   // portrait: shown animation / side (0 = right)
-    s8 portraitSet;    // portrait: sprite set (-1 = none)
-    s8 portraitIndex;  // portrait: index
-    u8 portraitShown;  // 1 = a portrait is shown
-    u8 msgStopPrint;   // 1 = stop printing this frame (message_print_step)
-    u8 penX;           // text pen x in pixels
-    u8 wordPixelsLeft; // pixels left in the current word
-    u8 composePixels;  // pixels filled in gTextComposeTile
-    u8 textLine;       // text line 0-1
-    u8 wordFits;       // 1 = the current word has been measured and fits
-    u8 lineFull;       // 1 = line full, 2 = page full (wait for A / B)
-    u8 msgWait;        // wait counter (0xF7 / 0xFA codes)
-    u8 endModeStep;    // end mode step
-    u8 dimLevel;       // palette dim level 0-9
+    const u8 *msgText;    // current message (run_message)
+    u16 msgPos;           // read position in msgText
+    u8 portraitAnimFrame; // portrait open / close animation frame 0-8 (message_portrait_anim_step)
+    u8 portraitSide;      // portrait: shown animation / side (0 = right)
+    s8 portraitSet;       // portrait: sprite set (-1 = none)
+    s8 portraitIndex;     // portrait: index
+    u8 portraitShown;     // 1 = a portrait is shown
+    u8 msgStopPrint;      // 1 = stop printing this frame (message_print_step)
+    u8 penX;              // text pen x in pixels
+    u8 wordPixelsLeft;    // pixels left in the current word
+    u8 composePixels;     // pixels filled in gTextComposeTile
+    u8 textLine;          // text line 0-1
+    u8 wordFits;          // 1 = the current word has been measured and fits
+    u8 lineFull;          // 1 = line full, 2 = page full (wait for A / B)
+    u8 msgWait;           // wait counter (0xF7 / 0xFA codes)
+    u8 endModeStep;       // end mode step
+    u8 dimLevel;          // palette dim level 0-9
     u8 filler1D[0x3];
-    u8 *varText;      // string being drawn (message name / number buffers, message_print_var_step)
-    u8 varPos;        // read position in varText
-    u8 cursorBlink;   // page cursor blink timer
-    u8 frameAnimStep; // window frame animation step
-    u8 altFont;       // 1 = alternate font (0xF8 code)
-    u8 unk28;
-    u8 choiceState; // choice menu state (poll_choice_menu)
-    u8 unk2A;
+    u8 *varText;         // string being drawn (message name / number buffers, message_print_var_step)
+    u8 varPos;           // read position in varText
+    u8 cursorBlink;      // page cursor blink timer
+    u8 frameAnimStep;    // window frame animation step
+    u8 altFont;          // 1 = alternate font (0xF8 code)
+    u8 choiceResult;     // choice menu result: (choiceCursor << 4) + 1 once A is pressed, 0 while open
+    u8 choiceState;      // choice menu state (poll_choice_menu)
+    u8 choiceCursor;     // choice menu cursor: 0 = first (yes) row
     u8 scrollSpriteSlot; // sprite slot (advance_sprite_scroll_animation)
     u8 transTileX;       // tilemap x (copy_transition_tiles_to_bg2)
     u8 transTileY;       // tilemap y
@@ -273,16 +273,18 @@ struct GameWork {
                        // (medabot_detail_open_info), 2/4 others; Robattle status screen: side shown (shownId: member)
     u8 shownId;        // Medal / Medapart id to show
     u8 partSlot;       // Medapart slot 0-3
-    u8 unk3F;          // Medals list: tab (6 Medals per tab)
+    u8 listTab;        // Medals list / Medaparts list: tab (6 entries per tab); robattle / prebattle: a step counter
     u8 medalRow;       // Medals list: row
     u8 freeMedalCount; // count of owned, unequipped Medals (count_unequipped_medals)
     u8 medalPage;      // Medal pages: 0 Ability, 1 Medaforce, 2 Rotation, 3 Skill (L/R, runtime-checked)
     u8 helpFromPage;   // Medal pages: help opened from 0 Ability, 1 Medaforce
     u8 helpPage;       // Medals help: page cursor
     u8 helpPageCount;  // Medals help: page count
-    u8 unk46;
+    u8 pageCursor;     // Medal pages: row / slot cursor (Medaforce entry, Rotation slot; | 0x80 while editing);
+                       // Robattle status screen: highlighted member
     u8 filler47;
-    u16 unk48;            // Medal record varText/unk28 index 0-7 (medal_skill_debug_edit_input)
+    u16 subCounter;       // pre-battle wipe column counter; Medals: skill debug row 0-7 (medal_skill_debug_edit_input),
+                          // Medal transform frame counter
     u8 tradeChoice;       // Medals: choice from medal_trade_choice_input (0 A, 2 B)
     u8 medalsSongStarted; // Medals screen: song 7 started (when opened with openedFrom == 4)
     u8 filler4C[0x4];
@@ -301,9 +303,10 @@ struct GameWork {
     u8 detailBot; // Medabot detail: which Medabot is shown, L/R toggle (runtime-checked)
     u8 filler5F[0x5];
     struct TileAnim tileAnims[4];
-    u8 unk84; // field menu: animation frame counter
-    u8 unk85;
-    u16 unk86;          // link exchange frame counter; also the current wave x offset of start_scanline_wave_scroll
+    u8 stepCounter;     // general per-step frame / animation counter (mosaic level, blend level, menu row, tile row...)
+    u8 repeatCounter;   // pre-battle mosaic repeat count; portrait test: reverse the animation
+    u16 stepTimer;      // general step timer: waits (60 frames...) counted down or up; link exchange frame
+                        // counter; the current wave x offset of start_scanline_wave_scroll
     u8 menuRowAnim;     // field menu: row animation counter
     u8 skipBotSetup;    // Robattle: 1 skips the bot setup in robattle_setup_bots
     u16 rngSeed;        // rng seed (rng_next_byte)
@@ -313,16 +316,16 @@ struct GameWork {
     u8 medawatchCursor; // Medawatch menu cursor (0..2)
     u8 blendMode;       // blend effect mode 1-6 (set_blend_effect_mode): odd fades the blend in, even out
     u8 filler91;
-    u16 blendSpeed;    // blend effect speed, added to blendProgress every frame
-    u16 blendProgress; // blend effect progress (done at 0x100)
-    u8 unk96;
+    u16 blendSpeed;     // blend effect speed, added to blendProgress every frame
+    u16 blendProgress;  // blend effect progress (done at 0x100)
+    u8 noAffineSprites; // set: the Medabot sprite builder (sprite_engine) turns affine mode off for the parts
     u8 shownMedal; // shown Medabot: Medal slot (0x1E none), then shownHead-9B its four Medaparts (>= 120 none); the
                    // detail screen's edit copy (medabot_detail_take_apart / assign_medal_to_team_slot)
     u8 shownHead;
     u8 shownRightArm;
     u8 shownLeftArm;
     u8 shownLegs;
-    u8 unk9C; // game state 6: 1 picks song 14 and counts gRobattleCounts[1] (guess: battle won)
+    u8 battleResult; // Robattle result: 0 undecided, 1 won (song 14, counts gRobattleCounts[1]), 2 lost
     u8 filler9D;
     u8 textBuf[0x50]; // digit buffer (divide_by_10000); also four 0x14-byte name buffers for messages
                       // (message_print_var_step)
@@ -330,12 +333,12 @@ struct GameWork {
     u8 partSkill;     // skill id; >= 100: leg type (gLegTypeNames[partSkill - 100])
     u8 partSkillType; // skill type (gSkillTypeNames name)
     u8 partGender;    // gender: 0 male, 1 female (matched against gTeamSlots[].portraitMode)
-    u8 unkF2;         // stats: head Armor, Success, Power, (F5 power icon flag), Uses; legs Armor, Propulsion,
-    u8 unkF3;         // Evasion, Defense, Proximity, Remoteness (runtime-checked on the detail page)
-    u8 unkF4;
-    u8 unkF5;
-    u8 unkF6;
-    u8 unkF7;
+    u8 partStat0;     // stats: head Armor, Success, Power, (partStat3 power icon flag), Uses; legs Armor, Propulsion,
+    u8 partStat1;     // Evasion, Defense, Proximity, Remoteness (runtime-checked on the detail page). Medal record:
+    u8 partStat2;     // partStat0-2 tier thresholds (medal_tier_for_level), partStat3 compatibility,
+    u8 partStat3;     // partStat4 / partStat5 / fillerF8[0] skill level step per 10 levels (medal_add_by_id)
+    u8 partStat4;
+    u8 partStat5;
     u8 fillerF8[0x16];
     u8 medalGfxRecord[0x10]; // 16-byte record from gMedalRecords (per Medal graphic index)
     u8 filler11E[0x10];
@@ -345,15 +348,15 @@ struct GameWork {
     u8 inCloseup;         // Robattle: set to 1 around the action script commands script_op_closeup_enter ..
                           // script_op_closeup_exit
     u8 skipOamHigh;       // set: vblank_body skips the OAM 88-127 upload in mode 2
-    u8 unk132;
-    u8 levelUpMedalSlot; // after-battle Medal level-up: Medal slot (find_medal_slot_by_id - 1)
-    u8 unk134;
-    u8 unk135;
-    u8 unk136;
-    u8 unk137;
+    u8 battleOver;        // set when the Robattle is left (action_phase_exit), cleared when an encounter loads
+    u8 levelUpMedalSlot;  // after-battle Medal level-up: Medal slot (find_medal_slot_by_id - 1)
+    u8 transformOldMedal; // Medal transform after a level-up: old graphic / sprite variant, new ones
+    u8 transformOldVariant;
+    u8 transformNewMedal;
+    u8 transformNewVariant;
     u8 prizeGamePending; // nonzero: link_robattle_check_prize_game jumps to sub-state 0x30
     u8 setupStep;        // game state 3 setup step (medabots_screen_load_gfx); Robattle setup step
-    u8 unk13A;
+    u8 gfxLoadStep;      // battle_load_graphics_step: step 0-8
 };
 
 // One of the 128 hardware sprite objects (gSpriteEntries); build_sprite_oam turns the enabled ones into OAM
@@ -764,7 +767,7 @@ struct BattleWork {
     u16 score;          // battle score (calculate_battle_score_summary), then experience points
     // After-battle result per team member (u8 array: a struct would be 4-byte aligned):
     // [0] Medal id + 1, 0 = none (name from gMedalNames), [1] nonzero: Medal level-up screen,
-    // [2]-[5] copied to gGameWork.unk134-137, [6] nonzero: [7] = Medaforce id (gMedaforceNames)
+    // [2]-[5] copied to gGameWork.transformOldMedal-137, [6] nonzero: [7] = Medaforce id (gMedaforceNames)
     u8 unk16E[3][8];
     u8 resultsMember; // after-battle screen: team member being shown (0-2, 3 = done)
     u8 lossBot;       // gBattleBots record index (battle_loss_take_part)

@@ -278,7 +278,7 @@ void test_mode_erase_choice(void) {
     if (poll_choice_menu()) {
         gMenuWork->timer = 0;
         message_next();
-        if (gGameWork.unk2A == 0)
+        if (gGameWork.choiceCursor == 0)
             gGameSubState = 9;
         else
             gGameSubState++;

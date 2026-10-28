@@ -115,7 +115,7 @@ void item_menu_init(void) {
     CpuFastSet(gItemMenuBgPalettes, gPaletteBackupBg, 0x80);
     zero = 0;
     CpuFastSet(&zero, (void *)(PLTT + 0x1A0), 0x01000008);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
@@ -125,13 +125,13 @@ void item_menu_init(void) {
 
 void item_menu_fade_in(void) {
     struct GameWork *b = &gGameWork;
-    if (b->unk84 <= 8) {
+    if (b->stepCounter <= 8) {
         if (gMenuWork->returning == 0)
-            bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0x3FFF);
+            bg_palettes_blend_masked_now(0, 0x20 - b->stepCounter * 4, 0x3FFF);
         else
-            bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 0x20 - gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+            bg_palettes_blend_masked_now(0, 0x20 - b->stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else {
         text_window_init(1, 2, 0);
         gGameSubState++;
@@ -296,7 +296,7 @@ other:
                 dispatch_by_index_0476e8(4);
                 return;
             }
-            gGameWork.unk84 = 0;
+            gGameWork.stepCounter = 0;
             gGameSubState = 0xD;
             return;
         case 0:
@@ -308,7 +308,7 @@ other:
     cancel:
         play_sound_effect(5);
         palette_backup_from_hardware();
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState = 7;
     }
     return;
@@ -339,10 +339,10 @@ void item_menu_close_message(void) {
 
 void item_menu_fade_out_exit(void) {
     struct GameWork *b = &gGameWork;
-    if (b->unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, b->unk84 * 4, 0x3FFF);
-        obj_palettes_blend_masked_now(0, b->unk84 * 4, 0xFFFF);
-        b->unk84++;
+    if (b->stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, b->stepCounter * 4, 0x3FFF);
+        obj_palettes_blend_masked_now(0, b->stepCounter * 4, 0xFFFF);
+        b->stepCounter++;
     } else {
         REG_DISPCNT &= 0xFDFF;
         REG_DISPCNT &= 0xFBFF;

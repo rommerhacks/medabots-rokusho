@@ -122,7 +122,7 @@ void enable_obj_layer_and_load_palette(void) {
     CpuFastSet(gGradientPaletteOlive - 0x30, (void *)0x0202F980, 8);
     CpuFastSet(gMenuObjPalettes, (void *)0x0202F880, 0x40);
     CpuFastSet(gShopListBgPalettes, (void *)0x0202FA00, 0x80);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     render_battle_medapart_list(gMenuWork->cursor);
     if (gMenuWork->list_count != 0) {
         u8 *buf = (u8 *)0x02023000;
@@ -140,7 +140,7 @@ void enable_obj_layer_and_load_palette(void) {
 
 void shop_list_fade_in(void) {
     struct GameWork *s = &gGameWork;
-    u8 *n = &s->unk84;
+    u8 *n = &s->stepCounter;
 
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, 32 - *n * 4, 0xFFFE);
@@ -171,7 +171,7 @@ void shop_purchase_menu_handler(void) {
         if (gMenuWork->list_count == 0)
             goto fail;
         play_sound_effect(4);
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState = 9;
         return;
     }
@@ -290,7 +290,7 @@ void shop_purchase_menu_handler(void) {
         disable_sprites(0x61, 7);
         disable_sprites(0xD, 0x34);
         disable_sprites(0x45, 0x1C);
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     }
     return;
@@ -327,7 +327,7 @@ changed:
 
 void transition_fade_to_battle(void) {
     struct GameWork *s = &gGameWork;
-    u8 *n = &s->unk84;
+    u8 *n = &s->stepCounter;
 
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, *n * 4, 0xFFFE);
@@ -371,9 +371,9 @@ void shop_complete_transaction(void) {
 
     if (!poll_choice_menu())
         return;
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameWork.endModeStep = 0;
-    if (gGameWork.unk2A == 0) {
+    if (gGameWork.choiceCursor == 0) {
         if (gMenuWork->cursor == 0) {
             gPlayerRecord.money -= gMenuWork->total;
             for (i = 0; i < 120; i++) {
@@ -399,14 +399,14 @@ void shop_complete_transaction(void) {
         disable_sprites(0, 7);
         divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
         render_text_sprites_08040DB8(gGameWork.textBuf, 0, 0x15, 1, 7, 0xF, 1, 0);
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
     }
     gGameSubState++;
 }
 
 void shop_list_confirm_choice(void) {
     if (game_state_execute_handler_a()) {
-        if (gGameWork.unk2A == 0) {
+        if (gGameWork.choiceCursor == 0) {
             disable_sprites(0x61, 7);
             disable_sprites(0xD, 0x34);
             disable_sprites(0x45, 0x1C);
@@ -419,7 +419,7 @@ void shop_list_confirm_choice(void) {
 
 void shop_list_fade_out_exit(void) {
     struct GameWork *s = &gGameWork;
-    u8 *n = &s->unk84;
+    u8 *n = &s->stepCounter;
 
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, *n * 4, 0xFFFF);

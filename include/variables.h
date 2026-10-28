@@ -524,8 +524,8 @@ extern const u8
     gMedalSkillShineTiles[];        // tiles, 5 rows of 0x100 bytes, 0x20 per Medals tab (medal_skill_load_shine_frame)
 extern const u32 gMedaforceNames[]; // Medaforce names, indexed by Medaforce id
 extern const u32 gLegTypeNames[];   // Medapart skill names for ids >= 100 (medapart_detail_draw_skill)
-extern u16 gRobattleCounts[2]; // gPlayerRecord.robattleCounts: [0] fought, [1] won (gGameWork.unk9C == 1); capped at
-                               // 9999 (runtime-checked; guess: Robattles fought / won)
+extern u16 gRobattleCounts[2];      // gPlayerRecord.robattleCounts: [0] fought, [1] won (gGameWork.battleResult == 1);
+                                    // capped at 9999 (runtime-checked; guess: Robattles fought / won)
 extern const void *const gOpponentAfterBattleMessages[]; // after-battle opponent lines, by gBattleWork.encounterMessage
 extern const void *const gBattleMessages[]; // battle message pointers (after-battle screen uses 107, 109, 118)
 extern const u8 *const gPartKindNames[];    // Medapart kind names, by kind
@@ -1028,7 +1028,7 @@ extern const u8 gLevelUpSkillPalettes[]; // sprite 0x22 palette bits (unkA) by t
 extern const u8 gSkillLevelUpTilesLz[];  // compressed OBJ tiles at 0x06014800: Medal skill level-up popup
                                          // (action_phase_level_up_init)
 extern u8 gLinkPartnerName[]; // = gBattleWork.partnerName: link partner's player name (link_robattle_exchange_names)
-extern u8 gPlayerName[];      // gPlayerRecord.name; copied for message 2 when gGameWork.unk9C == 1
+extern u8 gPlayerName[];      // gPlayerRecord.name; copied for message 2 when gGameWork.battleResult == 1
                               // (action_phase_show_winner_message; guess: player name)
 extern const u8 gActionPhaseObjPalette[];           // OBJ palette 6 (action_phase_load_gfx)
 extern const Func gActionPhaseSteps[];              // by gGameSubState (battle_action_state_update)

@@ -22,7 +22,7 @@ static void status_draw_bot_sprite(u32 rec, u32 x, u32 y) {
     }
     if (slot == gGameWork.shownId)
         k = 0;
-    else if (slot == gGameWork.unk46)
+    else if (slot == gGameWork.pageCursor)
         k = 1;
     else
         return;
@@ -63,7 +63,7 @@ static void setup_bot_battle_sprites_08017A7C(u32 rec, u32 x, u32 y) {
     }
     if (slot == gGameWork.shownId)
         k = 0;
-    else if (slot == gGameWork.unk46)
+    else if (slot == gGameWork.pageCursor)
         k = 1;
     else
         return;
@@ -119,8 +119,8 @@ static void status_draw_lr_button(u32 a) {
 }
 
 void status_blink_lr_button(void) {
-    gGameWork.unk86++;
-    if (gGameWork.unk86 & 8)
+    gGameWork.stepTimer++;
+    if (gGameWork.stepTimer & 8)
         status_draw_lr_button(0);
     else
         status_draw_lr_button(1);
@@ -208,7 +208,7 @@ void status_init_portrait(void) {
     mem_fill8(b, 0x800, 0);
     c = (u8 *)0x020268D0;
     mem_fill8(c, 0x60, 0);
-    gGameWork.unk96 = 1;
+    gGameWork.noAffineSprites = 1;
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
@@ -258,15 +258,15 @@ void scroll_bg3_diagonal(void) {
 
 // Status screen: advance unk46 to the next Medabot slot (0-2), skipping the selected one
 void status_next_other_slot(void) {
-    if (gGameWork.unk46 == 2)
-        gGameWork.unk46 = 0;
+    if (gGameWork.pageCursor == 2)
+        gGameWork.pageCursor = 0;
     else
-        gGameWork.unk46++;
-    if (gGameWork.shownId == gGameWork.unk46) {
+        gGameWork.pageCursor++;
+    if (gGameWork.shownId == gGameWork.pageCursor) {
         if (gGameWork.shownId == 2)
-            gGameWork.unk46 = 0;
+            gGameWork.pageCursor = 0;
         else
-            gGameWork.unk46++;
+            gGameWork.pageCursor++;
     }
 }
 

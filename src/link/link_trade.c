@@ -365,7 +365,7 @@ void medapart_trade_apply(void) {
     load_medapart_sprite_animation(gMenuWork->own_part_id, gMenuWork->own_part_kind, 0);
     load_medapart_sprite_animation(gMenuWork->partner_part_id, gMenuWork->partner_part_kind, 1);
     if ((s16)--gMenuWork->ticks < 0) {
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
         reduce_medapart_stat(gMenuWork->own_part_id, gMenuWork->own_part_kind, 1);
         medapart_add_quantity(gMenuWork->partner_part_id, gMenuWork->partner_part_kind, 1);
@@ -376,7 +376,7 @@ void medapart_trade_apply(void) {
 
 void medapart_trade_flash_white(void) {
     struct GameWork *g = &gGameWork;
-    u8 *t = &g->unk84;
+    u8 *t = &g->stepCounter;
 
     if (*t <= 0x40) {
         obj_palettes_blend_masked_now(0x7FFF, *t >> 1, 0xFF);
@@ -464,7 +464,7 @@ void medapart_trade_blend_in(void) {
         REG_BLDALPHA = ((16 - n) << 8) | n;
         REG_BLDY = 8;
         w->ticks = 0;
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     }
     load_medapart_sprite_animation(gMenuWork->own_part_id, gMenuWork->own_part_kind, 0);
@@ -474,7 +474,7 @@ void medapart_trade_blend_in(void) {
 
 void medapart_trade_unflash(void) {
     struct GameWork *g = &gGameWork;
-    u8 *t = &g->unk84;
+    u8 *t = &g->stepCounter;
 
     if (*t <= 0x40) {
         obj_palettes_blend_masked_now(0x7FFF, 0x20 - (*t >> 1), 0xFF);

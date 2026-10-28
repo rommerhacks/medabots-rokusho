@@ -22,7 +22,7 @@ void battle_cutscene_dispatch(void) {
         if (run_message(gLinkMenuMessages[gLinkIntroMessageIds[gMenuWork->step]]) && KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
             if (++gMenuWork->step > 2) {
-                gGameWork.unk84 = r;
+                gGameWork.stepCounter = r;
                 gGameWork.endModeStep = r;
                 gGameSubState++;
                 *(u8 *)&gSaveStatus |= 2;
@@ -44,7 +44,7 @@ void battle_cutscene_dispatch(void) {
     case 2:
     case 3:
         if (run_message(gLinkMenuMessages[gLinkStartMessageIds[gMenuWork->step]]) && poll_choice_menu()) {
-            if (gGameWork.unk2A == 0) {
+            if (gGameWork.choiceCursor == 0) {
                 if (*(u8 *)&gSaveStatus & 1) {
                     if (++gMenuWork->step <= 3)
                         open_choice_menu(1, 0, 7);
@@ -91,7 +91,7 @@ void link_start_show_messages(void) {
     if (run_message(gLinkMenuMessages[gMenuWork->step ? 7 : 6]) && KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(0xD);
         if ((s32)++gMenuWork->step > 1) {
-            gGameWork.unk84 = 0;
+            gGameWork.stepCounter = 0;
             gGameWork.endModeStep = 0;
             gGameSubState--;
         } else
@@ -113,7 +113,7 @@ void fade_transition_and_input_check(void) {
             w->frame = w->step;
         } else if (KEYS_LO(gNewKeys) & 1) {
             play_sound_effect(0xD);
-            gGameWork.unk84 = 0;
+            gGameWork.stepCounter = 0;
             gGameWork.endModeStep = 0;
             gGameSubState -= 2;
         }

@@ -405,16 +405,16 @@ void title_menu_confirm_flash(void) {
             title_menu_pulse_selected(gMenuWork->cursor, ((gMenuWork->counter * 4) & 0x1F) <= 15 ? 0x20 : 0);
         else {
             palette_backup_from_hardware();
-            gGameWork.unk84 = n;
+            gGameWork.stepCounter = n;
         }
     } else if (!is_sound_effect_playing(4)) {
         struct GameWork *b = &gGameWork;
-        if (b->unk84 <= 8) {
+        if (b->stepCounter <= 8) {
             s32 w = 31;
             s32 c = (w << 10) | (w << 5) | w;
-            bg_palettes_blend_masked_now(c, b->unk84 * 4, 0xFFFF);
-            obj_palettes_blend_masked_now(c, b->unk84 * 4, 0xFFFF);
-            b->unk84++;
+            bg_palettes_blend_masked_now(c, b->stepCounter * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(c, b->stepCounter * 4, 0xFFFF);
+            b->stepCounter++;
         } else {
             REG_DISPCNT &= 0xFDFF;
             switch (gMenuWork->cursor) {

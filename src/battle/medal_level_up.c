@@ -168,7 +168,7 @@ void medal_transform_draw_medal(void) {
     gMenuWork->sound_delay = 0;
     gMenuWork->cursor = 0;
     gGameSubState++;
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
 }
 
 void medal_transform_fade_in(void) {
@@ -176,7 +176,7 @@ void medal_transform_fade_in(void) {
     u8 *n;
     medal_transform_update_sparkles();
     s = &gGameWork;
-    n = &s->unk84;
+    n = &s->stepCounter;
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, 0x20 - *n * 4, 0xFFFF);
         obj_palettes_blend_masked_now(0, 0x20 - *n * 4, 0xFFFF);

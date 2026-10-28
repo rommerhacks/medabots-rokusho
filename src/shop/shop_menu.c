@@ -181,7 +181,7 @@ void shop_menu_show_layers(void) {
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
     CpuFastSet(gShopObjPalette, (void *)0x0202F820, 8);
     CpuFastSet(gShopMenuBgPalettes, (void *)0x0202FA00, 0x80);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -193,7 +193,7 @@ void shop_menu_fade_in(void) {
 
         shop_highlight_part_type_icon(gMenuWork->part_kind, 8);
         s = &gGameWork;
-        n = &s->unk84;
+        n = &s->stepCounter;
         if (*n <= 8) {
             bg_palettes_blend_masked_now(0, 0x20 - *n * 4, 0x7FFE);
             obj_palettes_blend_masked_now(0, 0x20 - *n * 4, 0x7FFD);
@@ -208,7 +208,7 @@ void shop_menu_fade_in(void) {
         }
     } else {
         struct GameWork *s = &gGameWork;
-        u8 *n = &s->unk84;
+        u8 *n = &s->stepCounter;
 
         if (*n <= 8) {
             bg_palettes_blend_masked_now(0, 0x20 - *n * 4, 0xFFFF);
@@ -270,7 +270,7 @@ void shop_menu_choose_action(void) {
             break;
         case 2:
         cancel:
-            gGameWork.unk84 = 0;
+            gGameWork.stepCounter = 0;
             gGameSubState = 6;
             break;
         }
@@ -282,14 +282,14 @@ void shop_menu_choose_action(void) {
 
 void shop_menu_close_message(void) {
     if (game_state_execute_handler_a()) {
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     }
 }
 
 void shop_menu_fade_out_exit(void) {
     struct GameWork *s = &gGameWork;
-    u8 *n = &s->unk84;
+    u8 *n = &s->stepCounter;
 
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, *n * 4, 0xFFFF);
@@ -373,7 +373,7 @@ void shop_menu_choose_part_type(void) {
         back:
             gGameSubState = 0xB;
         } else {
-            gGameWork.unk84 = 0;
+            gGameWork.stepCounter = 0;
             gMenuWork->counter = 0x2D;
             gGameSubState = 0xC;
         }
@@ -414,14 +414,14 @@ void shop_menu_part_type_chosen(void) {
     if (*t != 0)
         (*t)--;
     else if (game_state_execute_handler_a()) {
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     }
 }
 
 void shop_menu_fade_out_to_list(void) {
     struct GameWork *s = &gGameWork;
-    u8 *n = &s->unk84;
+    u8 *n = &s->stepCounter;
     s32 i;
 
     if (*n <= 8) {

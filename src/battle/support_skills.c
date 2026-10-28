@@ -38,17 +38,17 @@ void scout_load_graphics(void) {
 
 void scout_darken_init(void) {
     palette_backup_from_hardware();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gBattleWork.step++;
 }
 
 void scout_darken(void) {
-    bg_palettes_blend_masked_now(0x1084, gGameWork.unk84, 0xFFFF);
-    obj_palettes_blend_masked_now(0x1084, gGameWork.unk84, 0xFF00);
-    if (gGameWork.unk84 == 0x10)
+    bg_palettes_blend_masked_now(0x1084, gGameWork.stepCounter, 0xFFFF);
+    obj_palettes_blend_masked_now(0x1084, gGameWork.stepCounter, 0xFF00);
+    if (gGameWork.stepCounter == 0x10)
         gBattleWork.step++;
     else
-        gGameWork.unk84++;
+        gGameWork.stepCounter++;
 }
 
 void scout_beam_spawn(void) {
@@ -79,12 +79,12 @@ void scout_beam_spin(void) {
 }
 
 void scout_brighten(void) {
-    bg_palettes_blend_masked_now(0x1084, gGameWork.unk84, 0xFFFF);
-    obj_palettes_blend_masked_now(0x1084, gGameWork.unk84, 0xFF00);
-    if (gGameWork.unk84 == 0)
+    bg_palettes_blend_masked_now(0x1084, gGameWork.stepCounter, 0xFFFF);
+    obj_palettes_blend_masked_now(0x1084, gGameWork.stepCounter, 0xFF00);
+    if (gGameWork.stepCounter == 0)
         gBattleWork.step++;
     else
-        gGameWork.unk84--;
+        gGameWork.stepCounter--;
 }
 
 void scout_arrows_spawn(void) {
@@ -105,7 +105,7 @@ void scout_arrows_spawn(void) {
             gSpriteEntries[0x21 + i].frame = 0x4801;
         }
     }
-    gGameWork.unk86 = 0;
+    gGameWork.stepTimer = 0;
     play_sound_effect(0x2E);
     gBattleWork.step++;
 }
@@ -113,11 +113,11 @@ void scout_arrows_spawn(void) {
 void scout_arrows_rise(void) {
     u32 i;
 
-    if (gGameWork.unk86 == 0x14) {
-        gGameWork.unk86 = 0x3C;
+    if (gGameWork.stepTimer == 0x14) {
+        gGameWork.stepTimer = 0x3C;
         gBattleWork.step++;
     } else {
-        gGameWork.unk86++;
+        gGameWork.stepTimer++;
         for (i = 0; i < 3; i++) {
             if (gSpriteEntries[0x21 + i].flags & SPRITE_FLAG_ENABLED)
                 gSpriteEntries[0x21 + i].y--;
@@ -187,7 +187,7 @@ void conceal_dome_spawn(void) {
 void conceal_dome_open_wait(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x40], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
-        gGameWork.unk86 = 0x3C;
+        gGameWork.stepTimer = 0x3C;
         gBattleWork.step++;
     }
 }
@@ -195,29 +195,29 @@ void conceal_dome_open_wait(void) {
 void conceal_dome_close_init(void) {
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x41], 0x21);
     play_sound_effect(0x4D);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gBattleWork.step++;
 }
 
 void conceal_dome_close(void) {
-    gGameWork.unk84++;
-    battle_bot_sprites_blink(gBattleWork.actor, gGameWork.unk84, 2);
+    gGameWork.stepCounter++;
+    battle_bot_sprites_blink(gBattleWork.actor, gGameWork.stepCounter, 2);
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x41], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         clear_battle_sprite_slot(0x21, 1);
-        gGameWork.unk86 = 0x3C;
+        gGameWork.stepTimer = 0x3C;
         gBattleWork.step++;
     }
 }
 
 void conceal_blink_wait(void) {
-    gGameWork.unk84++;
-    battle_bot_sprites_blink(gBattleWork.actor, gGameWork.unk84, 2);
+    gGameWork.stepCounter++;
+    battle_bot_sprites_blink(gBattleWork.actor, gGameWork.stepCounter, 2);
     if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1)) {
         battle_bot_sprites_show(gBattleWork.actor);
         gBattleWork.step++;
-    } else if (gGameWork.unk86)
-        gGameWork.unk86--;
+    } else if (gGameWork.stepTimer)
+        gGameWork.stepTimer--;
     else {
         battle_bot_sprites_show(gBattleWork.actor);
         gBattleWork.step++;
@@ -266,24 +266,24 @@ void boost_charge_hourglass_spawn(void) {
     gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].x;
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].unk24 = 6;
-    gGameWork.unk84 = 0x42;
+    gGameWork.stepCounter = 0x42;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x42], 0x21);
-    gGameWork.unk86 = 0x3C;
+    gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
 
 void charge_hourglass_hold(void) {
-    process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.stepCounter], 0x21);
     if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gBattleWork.step++;
-    else if (gGameWork.unk86)
-        gGameWork.unk86--;
+    else if (gGameWork.stepTimer)
+        gGameWork.stepTimer--;
     else
         gBattleWork.step++;
 }
 
 void charge_hourglass_fly(void) {
-    process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.stepCounter], 0x21);
     if (!(gBattleWork.actorSideFlags & 1))
         gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle - 0x40) & 0x3FF;
     else
@@ -295,14 +295,14 @@ void charge_hourglass_fly(void) {
 }
 
 void boost_charge_hourglass_burst(void) {
-    gGameWork.unk84 = 0x43;
+    gGameWork.stepCounter = 0x43;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x43], 0x21);
     play_sound_effect(0x4E);
     gBattleWork.step++;
 }
 
 void charge_hourglass_anim_wait(void) {
-    process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.stepCounter], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF)
         gBattleWork.step++;
 }
@@ -359,14 +359,14 @@ void rapid_charge_hourglass_spawn(void) {
     gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].x;
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].unk24 = 6;
-    gGameWork.unk84 = 0x45;
-    battle_sprite_anim_init(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
-    gGameWork.unk86 = 0x3C;
+    gGameWork.stepCounter = 0x45;
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gGameWork.stepCounter], 0x21);
+    gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
 
 void rapid_charge_hourglass_burst(void) {
-    gGameWork.unk84 = 0x46;
+    gGameWork.stepCounter = 0x46;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x46], 0x21);
     play_sound_effect(0x4E);
     gBattleWork.step++;
@@ -417,14 +417,14 @@ void drain_charge_hourglass_spawn(void) {
     gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].x;
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].unk24 = 6;
-    gGameWork.unk84 = 0x42;
-    battle_sprite_anim_init(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
-    gGameWork.unk86 = 0x3C;
+    gGameWork.stepCounter = 0x42;
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gGameWork.stepCounter], 0x21);
+    gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
 
 void drain_charge_hourglass_drain(void) {
-    gGameWork.unk84 = 0x44;
+    gGameWork.stepCounter = 0x44;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x44], 0x21);
     play_sound_effect(0x4E);
     gBattleWork.step++;
@@ -447,9 +447,9 @@ void drain_charge_hourglass_return(void) {
     gSpriteEntries[0x21].unk30 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].unk24 = 6;
-    gGameWork.unk84 = 0x42;
-    battle_sprite_anim_init(gBattleSpriteAnimScripts[gGameWork.unk84], 0x21);
-    gGameWork.unk86 = 0x3C;
+    gGameWork.stepCounter = 0x42;
+    battle_sprite_anim_init(gBattleSpriteAnimScripts[gGameWork.stepCounter], 0x21);
+    gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
 
@@ -463,7 +463,7 @@ void drain_charge_hourglass_grow(void) {
 }
 
 void drain_charge_hourglass_burst(void) {
-    gGameWork.unk84 = 0x43;
+    gGameWork.stepCounter = 0x43;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x43], 0x21);
     play_sound_effect(0x4E);
     gBattleWork.step++;
@@ -521,7 +521,7 @@ void pushover_banana_spawn(void) {
     gSpriteEntries[0x21].unk24 = 6;
     if (gBattleWork.actorSideFlags & 1)
         gSpriteEntries[0x21].flags |= SPRITE_FLAG_HFLIP;
-    gGameWork.unk86 = 0x3C;
+    gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
 
@@ -597,7 +597,7 @@ void pushover_burst_spawn(void) {
         gSpriteEntries[0x26 + i].unk25 = gBurstSpriteDirections[i];
         gSpriteEntries[0x26 + i].frame = 0x4D01;
     }
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gBattleWork.step++;
 }
 
@@ -606,7 +606,7 @@ void pushover_burst(void) {
 
     for (i = 0; i < 4; i++)
         update_sprite_animation_position(0x26 + i);
-    if (gGameWork.unk84 == 0x10) {
+    if (gGameWork.stepCounter == 0x10) {
         clear_battle_sprite_slot(0x26, 4);
         memcpy_bytes_0803F63C(&gSpriteEntries[0x22], &gSpriteEntries[gBattleWork.target * 4 + 0x5A], 0x40);
         memcpy_bytes_0803F63C(&gSpriteEntries[0x23], &gSpriteEntries[gBattleWork.target * 4 + 0x5B], 0x40);
@@ -619,7 +619,7 @@ void pushover_burst(void) {
         clear_battle_sprite_slot(0x21, 4);
         gBattleWork.step++;
     } else
-        gGameWork.unk84++;
+        gGameWork.stepCounter++;
 }
 
 void pushover_damage_init(void) {
@@ -630,15 +630,16 @@ void pushover_damage_init(void) {
     set_display_digit_type(&gGameWork.partAbility, gBattleWork.appliedAmount, 1);
     battle_number_popup_init_slot(&gGameWork.partAbility, gBattleWork.target, 0x21);
     play_sound_effect(0x5B);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gBattleWork.step++;
 }
 
 void pushover_damage_popup(void) {
     battle_popup_update_slot(&gGameWork.partAbility, gBattleWork.target, 0x21);
-    if (++gGameWork.unk84, gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & 1) && gGameWork.unk84 > 0x32)
-        gGameWork.unk84 = 0x78;
-    if (gGameWork.unk84 == 0x78) {
+    if (++gGameWork.stepCounter,
+        gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & 1) && gGameWork.stepCounter > 0x32)
+        gGameWork.stepCounter = 0x78;
+    if (gGameWork.stepCounter == 0x78) {
         clear_battle_sprite_slot(gBattleWork.target * 4 + 0x21, 4);
         gBattleWork.step++;
     }

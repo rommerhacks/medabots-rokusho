@@ -27,16 +27,16 @@ void medawatch_menu_load_gfx(void) {
     DmaSet(3, gMedawatchBgPalettes, 0x0202FA00, 0x84000060);
     write_tilemap_rect(4, 4, 5, 9, gUiTilemaps[0x48], REG_BG1CNT, 0);
     REG_DISPCNT |= 0x1F60;
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void medawatch_menu_fade_in(void) {
     medawatch_scroll_bg3();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0x1FFF);
-        obj_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 4, 0x1FFF);
+        obj_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else {
         medawatch_menu_init_cursor();
         gGameSubState++;
@@ -74,7 +74,7 @@ void medawatch_menu_handle_input(void) {
         play_sound_effect(4);
         battle_sprite_anim_init(gBattleSpriteAnimScripts[1], 0);
         set_blend_effect_mode(6, 0x3F, 0x20);
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState = 8;
     }
 }
@@ -83,17 +83,17 @@ void medawatch_menu_exit_start(void) {
     medawatch_scroll_bg3();
     clear_battle_sprite_slot(0, 1);
     palette_backup_from_hardware();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     fade_out_music(8);
     gGameSubState++;
 }
 
 void medawatch_menu_exit_fade(void) {
     medawatch_scroll_bg3();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0x1FFF);
-        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0x1FFF);
+        obj_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else {
         gGameSubState++;
     }
@@ -152,7 +152,7 @@ void medawatch_menu_return_init(void) {
     write_tilemap_rect(4, 4, 5, 9, gUiTilemaps[0x48], REG_BG1CNT, 0);
     REG_DISPCNT |= 0x1F60;
     set_blend_effect_mode(5, 0x3F, 0x20);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 

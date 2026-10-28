@@ -14,10 +14,10 @@ static inline void *vram_at(u32 off) {
 // the disguise set in gFieldWork.player_form.
 void item_menu_fade_out_use_item(void) {
     struct GameWork *b = &gGameWork;
-    if (b->unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, b->unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, b->unk84 * 4, 0xFFFF);
-        b->unk84++;
+    if (b->stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, b->stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, b->stepCounter * 4, 0xFFFF);
+        b->stepCounter++;
     } else {
         u32 zero;
         REG_DISPCNT &= 0xFDFF;
@@ -112,15 +112,15 @@ void save_screen_draw_info(void) {
     CpuFastSet(gGradientPaletteYellow, (void *)0x0202F9A0, 8);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     CpuFastSet(gSaveScreenObjPalette, gPaletteBackup, 8);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void save_screen_fade_in(void) {
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0x3FFF);
-        obj_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xFFFF);
-        if (++gGameWork.unk84 == 1) {
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 4, 0x3FFF);
+        obj_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 4, 0xFFFF);
+        if (++gGameWork.stepCounter == 1) {
             REG_DISPCNT |= 0x200;
             REG_DISPCNT |= 0x400;
             REG_DISPCNT |= 0x800;
@@ -140,7 +140,7 @@ void save_screen_ask_save(void) {
 void save_screen_poll_save_choice(void) {
     if (poll_choice_menu()) {
         message_next();
-        if (gGameWork.unk2A == 0)
+        if (gGameWork.choiceCursor == 0)
             gGameSubState = (*(u8 *)&gSaveStatus & 1) ? 13 : 6;
         else
             gGameSubState = 9;
@@ -157,7 +157,7 @@ void save_screen_ask_overwrite(void) {
 void save_screen_poll_overwrite_choice(void) {
     if (poll_choice_menu()) {
         message_next();
-        if (gGameWork.unk2A == 0)
+        if (gGameWork.choiceCursor == 0)
             gGameSubState = 6;
         else
             gGameSubState = 9;
@@ -207,7 +207,7 @@ void save_screen_show_saved(void) {
 void save_screen_exit_begin(void) {
     message_next();
     palette_backup_from_hardware();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -217,10 +217,10 @@ void save_screen_exit_wait(void) {
 }
 
 void save_screen_fade_out(void) {
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0x3FFF);
-        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0x3FFF);
+        obj_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else {
         REG_DISPCNT &= 0xFDFF;
         REG_DISPCNT &= 0xFBFF;

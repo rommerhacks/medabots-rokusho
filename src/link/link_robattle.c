@@ -6,7 +6,7 @@
 //   0x10-0x18  link error: "A link error has occurred", soft reset to the title
 //   0x20-0x2D  after the battle: "That was a great Robattle!", "Checking connection", then the prize game if
 //              gGameWork.prizeGamePending is set, else back to the link menu
-//   0x30-0x4B  prize game: the winner (gGameWork.unk9C == 1) stops a power gauge with A ("Get Medaparts by
+//   0x30-0x4B  prize game: the winner (gGameWork.battleResult == 1) stops a power gauge with A ("Get Medaparts by
 //              pressing A Button with a good timing"); a ball flies up and lands on one of 6 rows
 //              (prizeSlots); a part row moves that part from the loser to the winner ("You got / lost the
 //              Medapart"), a miss row gives nothing ("Sorry! You missed!" / "Lucky! You didn't lose any").
@@ -54,24 +54,24 @@ void link_robattle_init(void) {
     u32 zero = 0;
 
     CpuFastSet(&zero, &gBattleWork, 0x01000100);
-    gGameWork.unk86 = 0;
-    gGameWork.unk84 = 0;
+    gGameWork.stepTimer = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void link_robattle_wait_sync(void) {
     if (link_sync_both_ready()) {
-        gGameWork.unk86 = 0;
+        gGameWork.stepTimer = 0;
         gGameSubState++;
     }
 }
 
 void link_robattle_delay(void) {
-    if (gGameWork.unk86 == 8) {
-        gGameWork.unk86 = 0;
+    if (gGameWork.stepTimer == 8) {
+        gGameWork.stepTimer = 0;
         gGameSubState++;
     } else {
-        gGameWork.unk86++;
+        gGameWork.stepTimer++;
     }
 }
 
@@ -94,7 +94,7 @@ void link_robattle_receive_seed(void) {
 }
 
 void link_robattle_start_name_exchange(void) {
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gBattleWork.unk51 = 0;
     gBattleWork.unk52 = 0;
     gBattleWork.unk53 = 0;
@@ -105,7 +105,7 @@ void link_robattle_start_name_exchange(void) {
     gBattleWork.unk1AC = 0;
     gBattleWork.unk1AF = 0;
     gBattleWork.unk1B0 = 1;
-    gGameWork.unk86 = 0;
+    gGameWork.stepTimer = 0;
     gGameSubState = 0x50;
 }
 
@@ -150,16 +150,16 @@ void link_robattle_screen_load(void) {
     link_robattle_load_battlefield_info();
     apply_battle_blend_effect_a();
     play_song(8);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void link_robattle_fade_in(void) {
     update_scroll_movement_a();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 0x20 - gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 0x20 - gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, 0x20 - gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else
         gGameSubState++;
 }
@@ -179,26 +179,26 @@ void link_robattle_intro_message(void) {
 void link_robattle_backup_palettes(void) {
     update_scroll_movement_a();
     palette_backup_from_hardware();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void link_robattle_fade_out(void) {
     update_scroll_movement_a();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else
         gGameSubState++;
 }
 
 void link_robattle_fade_out_dup(void) {
     update_scroll_movement_a();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else
         gGameSubState++;
 }
@@ -219,7 +219,7 @@ void link_robattle_start_battle(void) {
 }
 
 void link_robattle_play_result_song(void) {
-    if (gGameWork.unk9C == 1)
+    if (gGameWork.battleResult == 1)
         play_song(14);
     else
         play_song(15);
@@ -252,18 +252,18 @@ void link_robattle_checking_connection(void) {
 void link_robattle_outro_wait_sync(void) {
     update_scroll_movement_a();
     if (link_sync_both_ready()) {
-        gGameWork.unk86 = 0;
+        gGameWork.stepTimer = 0;
         gGameSubState++;
     }
 }
 
 void link_robattle_outro_delay(void) {
     update_scroll_movement_a();
-    if (gGameWork.unk86 == 8) {
-        gGameWork.unk86 = 0;
+    if (gGameWork.stepTimer == 8) {
+        gGameWork.stepTimer = 0;
         gGameSubState++;
     } else {
-        gGameWork.unk86++;
+        gGameWork.stepTimer++;
     }
 }
 
@@ -342,7 +342,7 @@ void prize_game_open_text_window(void) {
 
 void prize_game_intro_message(void) {
     prize_game_scroll_bg3();
-    if (run_message(gGameWork.unk9C == 1 ? gLinkMessages[2] : gLinkMessages[3]))
+    if (run_message(gGameWork.battleResult == 1 ? gLinkMessages[2] : gLinkMessages[3]))
         gGameSubState++;
 }
 
@@ -350,14 +350,14 @@ void prize_game_gauge_input(void) {
     u16 pkt;
 
     prize_game_scroll_bg3();
-    if (gGameWork.unk9C == 1) {
+    if (gGameWork.battleResult == 1) {
         prize_game_gauge_step();
         prize_game_draw_gauge();
         if (!(*(u8 *)&gNewKeys & 1))
             return;
         play_sound_effect(4);
         gLinkPackets.sendData = gBattleWork.prizePower + 0x8000;
-        gGameWork.unk86 = 0;
+        gGameWork.stepTimer = 0;
         gGameSubState++;
     } else {
         pkt = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
@@ -366,7 +366,7 @@ void prize_game_gauge_input(void) {
         play_sound_effect(4);
         gBattleWork.prizePower = pkt;
         gGameWork.endModeStep = 0;
-        gGameWork.unk86 = 0;
+        gGameWork.stepTimer = 0;
         gGameSubState++;
     }
 }
@@ -375,16 +375,16 @@ void prize_game_gauge_blink(void) {
     u16 frames;
 
     prize_game_scroll_bg3();
-    if (gGameWork.unk9C == 1) {
+    if (gGameWork.battleResult == 1) {
         gLinkPackets.sendData = gBattleWork.prizePower + 0x8000;
         prize_game_blink_gauge();
-        frames = ++gGameWork.unk86;
+        frames = ++gGameWork.stepTimer;
     } else {
         prize_game_blink_gauge();
-        gGameWork.unk86++;
+        gGameWork.stepTimer++;
         if (!game_state_execute_handler_a())
             return;
-        frames = gGameWork.unk86;
+        frames = gGameWork.stepTimer;
     }
     if (frames == 0x3C) {
         play_sound_effect(0x39);
@@ -424,7 +424,7 @@ void prize_game_ball_fall_step(void) {
     prize_game_scroll_bg3();
     if (prize_game_ball_fall()) {
         play_sound_effect(0x2A);
-        gGameWork.unk86 = 0;
+        gGameWork.stepTimer = 0;
         gGameSubState++;
     }
 }
@@ -432,16 +432,16 @@ void prize_game_ball_fall_step(void) {
 void prize_game_result_blink(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    if (gGameWork.unk86 == 0x78)
+    if (gGameWork.stepTimer == 0x78)
         gGameSubState++;
     else
-        gGameWork.unk86++;
+        gGameWork.stepTimer++;
 }
 
 void prize_game_check_miss(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
+    gGameWork.stepTimer++;
     if (gBattleWork.prizeSlots[gBattleWork.prizeRow] == 4)
         gGameSubState++;
     else
@@ -451,7 +451,7 @@ void prize_game_check_miss(void) {
 void prize_game_reopen_text_window(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
+    gGameWork.stepTimer++;
     text_window_init(1, 0, 0);
     gGameSubState++;
 }
@@ -459,8 +459,8 @@ void prize_game_reopen_text_window(void) {
 void prize_game_miss_message(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
-    if (run_message(gGameWork.unk9C == 1 ? gLinkMessages[4] : gLinkMessages[5])) {
+    gGameWork.stepTimer++;
+    if (run_message(gGameWork.battleResult == 1 ? gLinkMessages[4] : gLinkMessages[5])) {
         text_window_init(1, 0, 0);
         gGameSubState++;
     }
@@ -469,7 +469,7 @@ void prize_game_miss_message(void) {
 void prize_game_checking_connection(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
+    gGameWork.stepTimer++;
     if (run_message(gLinkMessages[1]))
         gGameSubState++;
 }
@@ -477,9 +477,9 @@ void prize_game_checking_connection(void) {
 void prize_game_wait_sync(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
+    gGameWork.stepTimer++;
     if (link_sync_both_ready()) {
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     }
 }
@@ -487,18 +487,18 @@ void prize_game_wait_sync(void) {
 void prize_game_delay(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
-    if (gGameWork.unk84 == 4) {
-        gGameWork.unk84 = 0;
+    gGameWork.stepTimer++;
+    if (gGameWork.stepCounter == 4) {
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     } else
-        gGameWork.unk84++;
+        gGameWork.stepCounter++;
 }
 
 void prize_game_fade_music(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
+    gGameWork.stepTimer++;
     fade_out_music(8);
     gGameSubState++;
 }
@@ -506,20 +506,20 @@ void prize_game_fade_music(void) {
 void prize_game_backup_palettes(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
+    gGameWork.stepTimer++;
     palette_backup_from_hardware();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void prize_game_fade_out(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    gGameWork.stepTimer++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else
         gGameSubState++;
 }
@@ -527,9 +527,9 @@ void prize_game_fade_out(void) {
 void prize_game_transfer_part(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
+    gGameWork.stepTimer++;
     prize_game_pick_prize_part();
-    if (gGameWork.unk9C == 1)
+    if (gGameWork.battleResult == 1)
         medapart_add_quantity(gBattleWork.prizePart, (gBattleWork.prizeSlots + 0)[gBattleWork.prizeRow], 1);
     else
         team_lose_equipped_part(gBattleWork.prizeMedal, (gBattleWork.prizeSlots + 0)[gBattleWork.prizeRow]);
@@ -542,8 +542,8 @@ void prize_game_transfer_part(void) {
 void prize_game_part_message(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
-    if (run_message(gGameWork.unk9C == 1 ? gLinkMessages[6] : gLinkMessages[7])) {
+    gGameWork.stepTimer++;
+    if (run_message(gGameWork.battleResult == 1 ? gLinkMessages[6] : gLinkMessages[7])) {
         text_window_init(1, 0, 0);
         gGameSubState++;
     }
@@ -552,7 +552,7 @@ void prize_game_part_message(void) {
 void prize_game_goto_checking(void) {
     prize_game_scroll_bg3();
     prize_game_blink_landing_slot();
-    gGameWork.unk86++;
+    gGameWork.stepTimer++;
     gGameSubState = 0x3E;
 }
 
@@ -615,8 +615,8 @@ void link_robattle_exchange_names(void) {
     u16 packet;
     s16 flag;
     link->sendData = gPlayerRecord.name[gBattleWork.unk51] + (flag = ((gBattleWork.unk1AF << 8) & 0x100) + 0x8000);
-    gGameWork.unk86++;
-    if (!(gGameWork.unk86 & 1)) {
+    gGameWork.stepTimer++;
+    if (!(gGameWork.stepTimer & 1)) {
         gBattleWork.unk1AF ^= 1;
         gBattleWork.unk51++;
     }
@@ -626,7 +626,7 @@ void link_robattle_exchange_names(void) {
             gBattleWork.unk1B0 ^= 1;
             gBattleWork.partnerName[gBattleWork.unk52] = packet;
             if (++gBattleWork.unk52 > 10) {
-                gGameWork.unk86 = 0;
+                gGameWork.stepTimer = 0;
                 gGameSubState++;
             }
         }
@@ -761,7 +761,7 @@ static void prize_game_clear_gauge(void) {
 }
 
 static void prize_game_blink_gauge(void) {
-    if (gGameWork.unk86 & 4)
+    if (gGameWork.stepTimer & 4)
         prize_game_draw_gauge();
     else
         prize_game_clear_gauge();
@@ -854,7 +854,7 @@ static u32 prize_game_ball_fall(void) {
 }
 
 static void prize_game_blink_landing_slot(void) {
-    if (gGameWork.unk86 & 4)
+    if (gGameWork.stepTimer & 4)
         draw_tile_block(7, 2, 4, gBattleWork.prizeRow * 2 + 2, REG_BG1CNT,
                         gBattleWork.prizeSlots[gBattleWork.prizeRow] * 14 + 0x3380);
     else
@@ -866,7 +866,7 @@ void prize_game_pick_prize_part(void) {
     u32 base;
     u32 pick, i;
 
-    if (gGameWork.unk9C == 1)
+    if (gGameWork.battleResult == 1)
         base = 3;
     else
         base = 0;

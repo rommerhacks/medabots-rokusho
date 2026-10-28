@@ -241,16 +241,16 @@ void name_entry_load_name(void) {
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9A0, 8);
     CpuFastSet(gNameEntryObjPalette, gPaletteBackup, 8);
     CpuFastSet(gNameEntryBgPalettes, gPaletteBackupBg, 0x80);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void name_entry_fade_in(void) {
     struct GameWork *b = &gGameWork;
-    if (b->unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 0x20 - b->unk84 * 4, 0xFFFF);
-        b->unk84++;
+    if (b->stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, 0x20 - b->stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - b->stepCounter * 4, 0xFFFF);
+        b->stepCounter++;
     } else {
         gMenuWork->timer = 0;
         gMenuWork->returning = 0;
@@ -452,14 +452,14 @@ void name_entry_input(void) {
 void name_entry_wait_sound(void) {
     u32 r = is_sound_effect_playing(7);
     if (r == 0) {
-        gGameWork.unk84 = r;
+        gGameWork.stepCounter = r;
         gGameSubState++;
     }
 }
 
 void name_entry_fade_out_store_name(void) {
     struct GameWork *s = &gGameWork;
-    u8 *n = &s->unk84;
+    u8 *n = &s->stepCounter;
 
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, *n * 4, 0xFFFF);

@@ -58,25 +58,25 @@ void part_select_init_bottom_icon(u32 a) {
 void part_select_blink_selected_icon(void) {
     switch (gBattleWork.unk82) {
     case 0:
-        if (gGameWork.unk84 & 8)
+        if (gGameWork.stepCounter & 8)
             part_select_init_bottom_icon(1);
         else
             part_select_init_bottom_icon(0);
         break;
     case 1:
-        if (gGameWork.unk84 & 8)
+        if (gGameWork.stepCounter & 8)
             part_select_init_head_icon(1);
         else
             part_select_init_head_icon(0);
         break;
     case 2:
-        if (gGameWork.unk84 & 8)
+        if (gGameWork.stepCounter & 8)
             part_select_init_right_arm_icon(1);
         else
             part_select_init_right_arm_icon(0);
         break;
     case 3:
-        if (gGameWork.unk84 & 8)
+        if (gGameWork.stepCounter & 8)
             part_select_init_left_arm_icon(1);
         else
             part_select_init_left_arm_icon(0);
@@ -181,7 +181,7 @@ void part_select_blink_status(void) {
         }
     }
     if (show) {
-        if (gGameWork.unk84 & 8)
+        if (gGameWork.stepCounter & 8)
             disable_sprites(0x2D, 13);
         else
             render_text_sprites_08040DB8(gGameWork.textBuf, 0x2D, 0x13, 0xE, 10, 14, 0, 0);

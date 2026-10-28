@@ -255,7 +255,7 @@ static void message_cmd_portrait(void) {
                         return;
                 } else
                     vram_fill_tilemap_rect(8, 8, x, 5, REG_BG0CNT, n = 0);
-                p->unkE = n;
+                p->portraitAnimFrame = n;
                 p->portraitShown = n;
             }
             return;
@@ -279,7 +279,7 @@ static void message_cmd_portrait(void) {
         }
         if ((r = message_portrait_anim_step(set, idx, x, 5, anim, m)) != 1)
             return;
-        s->unkE = m;
+        s->portraitAnimFrame = m;
         s->portraitShown = r;
         s->portraitSide = anim;
         s->portraitSet = set;
@@ -621,7 +621,7 @@ void message_close_portrait(void) {
                 return;
         } else
             vram_fill_tilemap_rect(8, 8, x, 5, REG_BG0CNT, m = 0);
-        p->unkE = m;
+        p->portraitAnimFrame = m;
         p->portraitShown = m;
     }
     p->endModeStep++;

@@ -23,7 +23,7 @@ void robattle_update(void) {
 
 void robattle_setup_bots(void) {
     gGameWork.setupStep = 0;
-    gGameWork.unk13A = 0;
+    gGameWork.gfxLoadStep = 0;
     if (gGameWork.skipBotSetup != 1) {
         clear_battle_bot_array();
         count_active_battle_bots();
@@ -52,7 +52,7 @@ void robattle_load_scene(void) {
             gGameWork.setupStep++;
         break;
     case 1:
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         fill = 0;
         CpuFastSet(&fill, gSpriteEntries, 0x01000800);
         REG_DISPCNT |= 0x1F40;
@@ -75,10 +75,10 @@ void robattle_load_scene(void) {
 }
 
 void robattle_fade_in_from_white(void) {
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 0x20 - gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 0x20 - gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, 0x20 - gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else
         gGameSubState++;
 }
@@ -137,7 +137,7 @@ void robattle_command_input(void) {
         }
         play_sound_effect(4);
         mf_gauge_draw_panel();
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     } else if (KEYS_LO(gNewKeys) & 2) {
         if (gBattleWork.unk84 == 0 && gBattleWork.unk80 != 0) {
@@ -161,9 +161,9 @@ void robattle_command_chosen_flash(void) {
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
     command_ring_flash_selected();
-    if (++gGameWork.unk84 == 20) {
+    if (++gGameWork.stepCounter == 20) {
         clear_battle_sprite_slot(0x1E, 0xB);
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     }
 }
@@ -176,7 +176,7 @@ void robattle_command_ring_close(void) {
     command_ring_shrink_icons();
     command_ring_close_scroll_right();
     command_ring_close_scroll_down();
-    if (++gGameWork.unk84 == 16)
+    if (++gGameWork.stepCounter == 16)
         command_ring_goto_selected();
 }
 
@@ -188,7 +188,7 @@ void robattle_command_ring_reopen(void) {
     decompress_two_bg1_layers();
     command_ring_init_icons_hidden();
     read_vram_tilemap_rect(6, 5, 0xC, 0x15, REG_BG1CNT, gBgTileBackup);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -199,7 +199,7 @@ void robattle_command_ring_reopen_anim(void) {
     draw_partial_bg1_column();
     scroll_tilemap_window();
     command_ring_grow_icons();
-    if (++gGameWork.unk84 == 10) {
+    if (++gGameWork.stepCounter == 10) {
         command_ring_draw_name();
         gGameSubState = 7;
     }
@@ -263,7 +263,7 @@ void robattle_parts_menu_open(void) {
     parts_menu_load_frame();
     determine_battle_part_action_priority();
     read_vram_tilemap_rect(0xC, 4, 9, 0x15, REG_BG0CNT, gBgTileBackup);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -273,7 +273,7 @@ void robattle_parts_menu_slide_in(void) {
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
     parts_menu_slide_bg0();
     parts_menu_slide_bg1();
-    if (++gGameWork.unk84 == 16) {
+    if (++gGameWork.stepCounter == 16) {
         part_select_init_cursor();
         part_select_init_center_icon();
         part_select_init_head_icon(1);
@@ -285,7 +285,7 @@ void robattle_parts_menu_slide_in(void) {
         part_select_draw_skill_name();
         part_select_draw_head_uses();
         target_marker_show();
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     }
 }
@@ -298,7 +298,7 @@ void robattle_parts_menu_input(void) {
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
     target_marker_update();
-    gGameWork.unk84++;
+    gGameWork.stepCounter++;
     part_select_blink_selected_icon();
     part_select_input();
     part_select_blink_status();
@@ -308,12 +308,12 @@ void robattle_parts_menu_input(void) {
         target_marker_hide();
         clear_battle_sprite_slot(0x14, 0x26);
         vram_fill_tilemap_rect(7, 1, 0xE, 0xC, REG_BG0CNT, 0);
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     } else if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         target_marker_hide();
-        gGameWork.unk86 = 0;
+        gGameWork.stepTimer = 0;
         gGameSubState = 0x15;
     }
 }
@@ -324,7 +324,7 @@ void robattle_parts_menu_cancel(void) {
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
     save_restore_bg0_tilemap_region();
     save_restore_bg1_tilemap_region();
-    if (++gGameWork.unk84 == 16) {
+    if (++gGameWork.stepCounter == 16) {
         CpuFastSet(gBattleObjPalette10, (void *)0x05000340, 8);
         gGameSubState = 0xB;
     }
@@ -334,11 +334,11 @@ void robattle_parts_menu_confirm(void) {
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
-    gGameWork.unk84++;
-    gGameWork.unk84++;
+    gGameWork.stepCounter++;
+    gGameWork.stepCounter++;
     part_select_blink_selected_icon();
     part_select_blink_status();
-    if (++gGameWork.unk86 == 16) {
+    if (++gGameWork.stepTimer == 16) {
         clear_battle_sprite_slot(0, 0x46);
         vram_fill_tilemap_rect(0x1E, 8, 0, 0xC, REG_BG0CNT, 0);
         vram_fill_tilemap_rect(0x1E, 8, 0, 0xC, REG_BG1CNT, 0);
@@ -357,7 +357,7 @@ void robattle_mf_menu_open(void) {
     clear_battle_sprite_slot(0x1E, 0xB);
     mf_menu_load_frame();
     read_vram_tilemap_rect(0xC, 4, 9, 0x15, REG_BG0CNT, gBgTileBackup);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -367,7 +367,7 @@ void robattle_mf_menu_slide_in(void) {
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
     mf_menu_slide_bg0();
     mf_menu_slide_bg1();
-    if (++gGameWork.unk84 == 16) {
+    if (++gGameWork.stepCounter == 16) {
         mf_menu_init_cursor();
         mf_menu_init_center_icon();
         mf_menu_init_top_icon(1);
@@ -376,7 +376,7 @@ void robattle_mf_menu_slide_in(void) {
         mf_menu_init_charge_icon(1);
         mf_menu_draw_medaforce_name();
         mf_menu_draw_status(0);
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     }
 }
@@ -387,7 +387,7 @@ void robattle_mf_menu_input(void) {
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
-    gGameWork.unk84++;
+    gGameWork.stepCounter++;
     mf_menu_blink_selected_icon();
     mf_menu_input();
     mf_menu_draw_status(1);
@@ -397,11 +397,11 @@ void robattle_mf_menu_input(void) {
         draw_medaforce_gauge_value(gBattleWork.unk80);
         clear_battle_sprite_slot(0, 5);
         clear_battle_sprite_slot(0x14, 0x24);
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     } else if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
-        gGameWork.unk86 = 0;
+        gGameWork.stepTimer = 0;
         gGameSubState = 0x1D;
     }
 }
@@ -412,7 +412,7 @@ void robattle_mf_menu_cancel(void) {
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
     save_restore_bg0_tilemap_region();
     mf_menu_slide_out_bg1();
-    if (++gGameWork.unk84 == 16) {
+    if (++gGameWork.stepCounter == 16) {
         CpuFastSet(gBattleObjPalette10, (void *)0x05000340, 8);
         gGameSubState = 0xB;
     }
@@ -422,11 +422,11 @@ void robattle_mf_menu_confirm(void) {
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
-    gGameWork.unk84++;
-    gGameWork.unk84++;
+    gGameWork.stepCounter++;
+    gGameWork.stepCounter++;
     mf_menu_blink_selected_icon();
     mf_menu_draw_status(1);
-    if (++gGameWork.unk86 == 16) {
+    if (++gGameWork.stepTimer == 16) {
         clear_battle_sprite_slot(0, 0x46);
         vram_fill_tilemap_rect(0x1E, 8, 0, 0xC, REG_BG0CNT, 0);
         vram_fill_tilemap_rect(0x1E, 8, 0, 0xC, REG_BG1CNT, 0);
@@ -468,7 +468,7 @@ void robattle_fade_to_white_init(void) {
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
     palette_backup_from_hardware();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -476,10 +476,10 @@ void robattle_fade_to_white(void) {
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else {
         gGameSubState++;
     }
@@ -515,7 +515,7 @@ void robattle_restore_screen(void) {
 
     switch (gGameWork.setupStep) {
     case 0:
-        gGameWork.unk96 = 0;
+        gGameWork.noAffineSprites = 0;
         gVBlankOamMode = 0;
         clear_bg_scroll();
         load_battle_script_entry_b();
@@ -525,7 +525,7 @@ void robattle_restore_screen(void) {
         REG_BG2CNT = 0x1A0A;
         REG_BG3CNT = 0x1B0B;
         if (battle_load_graphics_step(0)) {
-            gGameWork.unk84 = 0;
+            gGameWork.stepCounter = 0;
             gGameWork.setupStep++;
         }
         break;
@@ -565,10 +565,10 @@ void robattle_return_fade_in(void) {
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.unk80);
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 0x20 - gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 0x20 - gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, 0x20 - gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else {
         gGameSubState = 0xB;
     }
@@ -627,7 +627,7 @@ void robattle_status_screen_init(void) {
     CpuFastSet(&fill, gSpriteEntries, 0x01000800);
     REG_DISPCNT |= 0x1F40;
     mem_fill8(&gGameWork.openedFrom, 0x14, 0);
-    gGameWork.unk46 = 1;
+    gGameWork.pageCursor = 1;
     position_battle_team_cursors(0, 0);
     status_init_cursor();
     status_draw_bot_name();
@@ -662,7 +662,7 @@ void robattle_status_screen_input(void) {
     status_next_other_slot();
     status_update_portrait();
     scroll_bg3_diagonal();
-    switch (gGameWork.unk3F) {
+    switch (gGameWork.listTab) {
     case 0:
         status_blink_lr_button();
         status_draw_team_sprites();
@@ -672,12 +672,12 @@ void robattle_status_screen_input(void) {
             play_sound_effect(2);
             status_begin_side_change();
             gGameWork.medalRow = 0;
-            gGameWork.unk3F++;
+            gGameWork.listTab++;
         } else if ((KEYS_HI(gNewKeys) & 2) && gGameWork.openedFrom == 1) {
             play_sound_effect(2);
             status_begin_side_change();
             gGameWork.medalRow = 0;
-            gGameWork.unk3F++;
+            gGameWork.listTab++;
         } else if (KEYS_LO(gNewKeys) & 2) {
             play_sound_effect(5);
             set_blend_effect_mode(6, 0x3F, 0x20);
@@ -687,12 +687,12 @@ void robattle_status_screen_input(void) {
     case 1:
         if (status_side_change_scroll_out()) {
             gGameWork.medalRow = 0;
-            gGameWork.unk3F++;
+            gGameWork.listTab++;
         }
         break;
     case 2:
         if (status_side_change_scroll_in())
-            gGameWork.unk3F++;
+            gGameWork.listTab++;
         break;
     case 3:
         get_bot_part_effective_values(gGameWork.shownId + gGameWork.openedFrom * 3, gBattleWork.unk64);
@@ -701,7 +701,7 @@ void robattle_status_screen_input(void) {
         battle_sprite_group_set_anim(0, 8);
         draw_tile_block(2, 2, 0xB, 2, REG_BG1CNT, 0x63C0);
         status_reset_portrait();
-        gGameWork.unk3F = 0;
+        gGameWork.listTab = 0;
         break;
     }
 }
@@ -716,7 +716,7 @@ void robattle_status_screen_fade_out(void) {
     sprite_bob_x(8, gFrameCounter, status_cursor_x());
     scroll_bg3_diagonal();
     if (update_blend_effect()) {
-        gGameWork.unk96 = 0;
+        gGameWork.noAffineSprites = 0;
         gVBlankOamMode = 0;
         fill1 = 0x200;
         CpuFastSet(&fill1, gSpriteWork->oamBuf, 0x01000100);
@@ -736,14 +736,14 @@ void robattle_start_banner_init(void) {
     CpuFastSet(gBattleBannerPalette, (void *)0x050003E0, 8);
     fade_out_music(8);
     play_sound_effect(0x6E);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 // Robattle sub-state 0x41: "MEDABOTS" (sprite 3) mosaics in, then "ROBATTLE" (sprite 4) stretches in;
 // after 60 frames -> 0x42 (runtime-checked from battle_start.ss0).
 void robattle_start_banner(void) {
-    switch (gGameWork.unk84) {
+    switch (gGameWork.stepCounter) {
     case 0:
         gSpriteEntries[3].flags =
             SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE | SPRITE_FLAG_MOSAIC;
@@ -755,7 +755,7 @@ void robattle_start_banner(void) {
         gSpriteEntries[3].frame = 0x900;
         gSpriteEntries[3].unk20 = 8;
         REG_MOSAIC = (gSpriteEntries[3].unk20 << 12) + (gSpriteEntries[3].unk20 << 8);
-        gGameWork.unk84++;
+        gGameWork.stepCounter++;
         break;
     case 1:
         if (gFrameCounter & 1)
@@ -773,21 +773,21 @@ void robattle_start_banner(void) {
             gSpriteEntries[4].frame = 0x901;
             gSpriteEntries[4].scale_y = 8;
             gSpriteEntries[4].scale_x = 0x40;
-            gGameWork.unk84++;
+            gGameWork.stepCounter++;
         }
         break;
     case 2:
         if ((gSpriteEntries[4].scale_y += 8) == 0x60)
-            gGameWork.unk84++;
+            gGameWork.stepCounter++;
         break;
     case 3:
         if ((gSpriteEntries[4].scale_y -= 8) == 0x40) {
-            gGameWork.unk84++;
-            gGameWork.unk86 = 0;
+            gGameWork.stepCounter++;
+            gGameWork.stepTimer = 0;
         }
         break;
     default:
-        if (++gGameWork.unk86 == 0x3C) {
+        if (++gGameWork.stepTimer == 0x3C) {
             clear_battle_sprite_slot(3, 2);
             CpuFastSet(gGradientPaletteOrange, (void *)0x050003E0, 8);
             gGameSubState++;
@@ -1030,7 +1030,7 @@ void robattle_effect_a_number_init(void) {
         }
     }
     play_sound_effect(0x5B);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -1042,7 +1042,7 @@ void robattle_effect_a_number_update(void) {
         if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 4))
             battle_number_popup_update(i);
     }
-    if (++gGameWork.unk84 == 90) {
+    if (++gGameWork.stepCounter == 90) {
         for (i = 0; i <= 5; i++) {
             if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 4)) {
                 gBattleBots[i].effectShownFlags &= ~4;
@@ -1066,7 +1066,7 @@ void robattle_effect_b_number_init(void) {
         }
     }
     play_sound_effect(0x5B);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -1078,7 +1078,7 @@ void robattle_effect_b_number_update(void) {
         if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 8))
             battle_number_popup_update(i);
     }
-    if (++gGameWork.unk84 == 90) {
+    if (++gGameWork.stepCounter == 90) {
         for (i = 0; i <= 5; i++) {
             if (gBattleBots[i].teamState && (gBattleBots[i].effectShownFlags & 8)) {
                 gBattleBots[i].effectShownFlags &= ~8;
@@ -1105,16 +1105,16 @@ void robattle_link_message_show(void) {
 void robattle_link_sync(void) {
     if (link_sync_both_ready()) {
         gLinkPackets.sendData = 0;
-        gGameWork.unk86 = 0;
+        gGameWork.stepTimer = 0;
         gGameSubState++;
     }
 }
 
 void robattle_link_delay(void) {
-    if (gGameWork.unk86 == 16)
+    if (gGameWork.stepTimer == 16)
         gGameSubState++;
     else
-        gGameWork.unk86++;
+        gGameWork.stepTimer++;
 }
 
 void robattle_link_exchange_init(void) {
@@ -1125,7 +1125,7 @@ void robattle_link_exchange_init(void) {
     gBattleWork.unk1A6 = 0;
     gBattleWork.unk1AF = 0;
     gBattleWork.unk1B0 = 1;
-    gGameWork.unk86 = 0;
+    gGameWork.stepTimer = 0;
     gGameSubState++;
 }
 
@@ -1136,8 +1136,8 @@ void robattle_link_exchange_commands(void) {
     if (gBattleWork.unk51 != 3) {
         gLinkPackets.sendData =
             gBattleBots[gBattleWork.unk51].chosenAction + (flag = ((gBattleWork.unk1AF << 8) & 0x100) + 0x8000);
-        gGameWork.unk86++;
-        if (!(gGameWork.unk86 & 1)) {
+        gGameWork.stepTimer++;
+        if (!(gGameWork.stepTimer & 1)) {
             gBattleWork.unk1AF ^= 1;
             gBattleWork.unk51++;
         }
@@ -1153,7 +1153,7 @@ void robattle_link_exchange_commands(void) {
     if (gBattleWork.unk51 == 3) {
         if (gBattleWork.unk53 == 3) {
             gGameSubState++;
-            gGameWork.unk86 = 0;
+            gGameWork.stepTimer = 0;
         }
     }
 }
@@ -1225,7 +1225,7 @@ void robattle_link_resume_turn(void) {
 }
 
 void robattle_link_sync_counted(void) {
-    gGameWork.unk86++;
+    gGameWork.stepTimer++;
     if (link_sync_both_ready()) {
         gLinkPackets.sendData = 0;
         gGameSubState++;
@@ -1233,8 +1233,8 @@ void robattle_link_sync_counted(void) {
 }
 
 void robattle_link_sync_delay(void) {
-    if (gGameWork.unk86)
-        gGameWork.unk86--;
+    if (gGameWork.stepTimer)
+        gGameWork.stepTimer--;
     else
         gGameSubState++;
 }

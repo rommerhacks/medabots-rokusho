@@ -117,7 +117,7 @@ void medabots_screen_load_gfx(void) {
             CpuFastSet(gGradientPaletteGold + 0x10, (void *)0x0202F9C0, 8);
             CpuFastSet(gMedabotsCursorObjPalette, (void *)0x0202F980, 8);
             CpuFastSet(gTeamRoleLabelObjPalette, (void *)0x0202F9E0, 8);
-            gGameWork.unk84 = 0;
+            gGameWork.stepCounter = 0;
         } else {
             CpuFastSet(gMedabotsBgPalette, (void *)0x05000000, 0x60);
             CpuFastSet(gMenuObjPalettes, (void *)0x05000200, 0x40);
@@ -136,7 +136,7 @@ void medabots_screen_load_gfx(void) {
     case 2:
         if (gGameWork.enteredFromSubmenu == 1)
             medabots_screen_draw_bot_sprite();
-        gGameWork.unk96 = 1;
+        gGameWork.noAffineSprites = 1;
         medabots_screen_load_team_icon_gfx();
         medabots_screen_place_team_icons();
         medabots_screen_init_cursor_icons();
@@ -174,11 +174,11 @@ void medabots_screen_fade_in(void) {
     s = &gGameWork;
     flag = &s->enteredFromSubmenu;
     if (*flag == 1) {
-        if (s->unk84 > 8)
+        if (s->stepCounter > 8)
             goto done;
-        bg_palettes_blend_masked_now(0, 32 - s->unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 32 - s->unk84 * 4, 0xF0FF);
-        s->unk84++;
+        bg_palettes_blend_masked_now(0, 32 - s->stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 32 - s->stepCounter * 4, 0xF0FF);
+        s->stepCounter++;
     } else if (update_blend_effect()) {
     done:
         *flag = 0;
@@ -215,7 +215,7 @@ void medabots_screen_exit_start(void) {
     medabots_screen_draw_bot_sprite();
     medabots_screen_animate_invalid_bot();
     set_blend_effect_mode(6, 0x3F, 0x20);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -234,7 +234,7 @@ void medabots_screen_exit_fade(void) {
 void medabots_screen_return_to_medawatch(void) {
     CpuFastSet(gSpriteFontPalette, (void *)0x050003E0, 8);
     clear_battle_sprite_slot(0, 0x80);
-    gGameWork.unk96 = 0;
+    gGameWork.noAffineSprites = 0;
     gVBlankOamMode = 0;
     gGameState = 2;
     gGameSubState = 16;
@@ -252,7 +252,7 @@ void medabots_screen_open_detail_start(void) {
     medabots_screen_update_reorder_icons();
     medabots_screen_animate_invalid_bot();
     palette_backup_from_hardware();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -265,10 +265,10 @@ void medabots_screen_open_detail_fade(void) {
     medabots_screen_draw_bot_sprite();
     medabots_screen_update_reorder_icons();
     medabots_screen_animate_invalid_bot();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xF0FF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xF0FF);
+        gGameWork.stepCounter++;
     } else {
         gGameSubState = 16;
     }
@@ -331,7 +331,7 @@ void medabot_detail_load_gfx(void) {
         CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
         gGameWork.detailRow = 0;
         medabot_detail_take_apart();
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
     } else {
         CpuFastSet(gMedabotBuildBgPalette, (void *)0x05000000, 0x70);
         CpuFastSet(gMenuObjPalettes, (void *)0x05000200, 0x40);
@@ -346,7 +346,7 @@ void medabot_detail_load_gfx(void) {
     REG_DISPCNT |= 0x1F40;
     REG_DISPCNT &= 0xFFDF;
     gGameWork.detailInvalid = 0;
-    gGameWork.unk96 = 1;
+    gGameWork.noAffineSprites = 1;
     medabot_detail_draw_row_icon_0(0);
     medabot_detail_draw_row_icon_1(0);
     medabot_detail_draw_row_icon_2(0);
@@ -371,7 +371,7 @@ void medabot_detail_load_gfx(void) {
     medabot_detail_place_row_arrows();
     if (gGameWork.enteredFromSubmenu)
         medabot_detail_init_bot_sprite();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -393,7 +393,7 @@ void medabot_detail_fade_in(void) {
     st = &gGameWork;
     done = &st->enteredFromSubmenu;
     if (*done == 0) {
-        frame = &st->unk84;
+        frame = &st->stepCounter;
         if (*frame > 8)
             goto finish;
         bg_palettes_blend_masked_now(0, 32 - *frame * 4, 0xFFFF);
@@ -452,7 +452,7 @@ void medabot_detail_exit_start(void) {
     v = st->medabotsMode;
     if (v == 0) {
         palette_backup_from_hardware();
-        st->unk84 = v;
+        st->stepCounter = v;
     } else
         set_blend_effect_mode(6, 0x3F, 0x20);
     gGameSubState++;
@@ -468,7 +468,7 @@ void medabot_detail_exit_fade(void) {
     medabot_detail_update_invalid_bot();
     medabot_detail_animate_invalid_bot();
     if (gGameWork.medabotsMode == 0) {
-        frame = &gGameWork.unk84;
+        frame = &gGameWork.stepCounter;
         if (*frame > 8)
             goto finish;
         bg_palettes_blend_masked_now(0, *frame * 4, 0xFFFF);
@@ -510,7 +510,7 @@ void medabot_detail_open_info_fade(void) {
 
 void medabot_detail_open_info(void) {
     clear_battle_sprite_slot(0, 0x80);
-    gGameWork.unk96 = 0;
+    gGameWork.noAffineSprites = 0;
     gVBlankOamMode = 0;
     switch (gGameWork.detailRow) {
     case 0:
@@ -576,7 +576,7 @@ void team_select_battle_wait(void) {
             gGameSubState = 48;
         else {
             palette_backup_from_hardware();
-            gGameWork.unk84 = 0;
+            gGameWork.stepCounter = 0;
             gGameSubState++;
         }
     }
@@ -590,7 +590,7 @@ void team_select_battle_fade_out(void) {
     medabots_screen_draw_bot_sprite();
     team_select_blink_pick_markers();
     st = &gGameWork;
-    frame = &st->unk84;
+    frame = &st->stepCounter;
     if (*frame <= 32) {
         bg_palettes_blend_masked_now(0, *frame, 0xFFFF);
         obj_palettes_blend_masked_now(0, *frame, 0xFFFF);
@@ -601,7 +601,7 @@ void team_select_battle_fade_out(void) {
 
 void team_select_exit_battle(void) {
     clear_battle_sprite_slot(0, 0x80);
-    gGameWork.unk96 = 0;
+    gGameWork.noAffineSprites = 0;
     gVBlankOamMode = 0;
     gGameState = 7;
     gGameSubState = 0;
@@ -630,7 +630,7 @@ void team_select_exit_race(void) {
     s32 i;
 
     clear_battle_sprite_slot(0, 0x80);
-    gGameWork.unk96 = 0;
+    gGameWork.noAffineSprites = 0;
     gVBlankOamMode = 0;
     for (i = 0; i <= 2; i++) {
         load_part_data(gTeamSlots[gBattleWork.teamPicks[i] & 0xF].legs, 3, &gGameWork.partAbility);
@@ -676,7 +676,7 @@ void team_select_link_wait_ready(void) {
     medabots_screen_draw_bot_sprite();
     if (link_sync_both_ready()) {
         gLinkPackets.sendData = 0;
-        gGameWork.unk86 = 0;
+        gGameWork.stepTimer = 0;
         gGameSubState++;
     }
 }
@@ -688,7 +688,7 @@ void team_select_link_exchange_init(void) {
     medabots_scroll_bg3();
     medabots_screen_draw_bot_sprite();
     st = &gGameWork;
-    timer = &st->unk86;
+    timer = &st->stepTimer;
     if (*timer == 24) {
         gBattleWork.unk51 = 0;
         gBattleWork.unk52 = 0;
@@ -721,8 +721,8 @@ void team_select_link_exchange_bots(void) {
     if (s->unk51 != 3) {
         src = (u8 *)&gBattleBots[s->unk51];
         gLinkPackets.sendData = src[s->unk52] + (flag = ((s->unk1AF << 8) & 0x100) + 0x8000);
-        if (++gGameWork.unk86 == 4) {
-            gGameWork.unk86 = 0;
+        if (++gGameWork.stepTimer == 4) {
+            gGameWork.stepTimer = 0;
             s->unk1AF ^= 1;
             if (++s->unk52 == 0x48) {
                 s->unk51++;
@@ -746,7 +746,7 @@ void team_select_link_exchange_bots(void) {
     if (gBattleWork.unk51 == 3)
         if (gBattleWork.unk53 == 3) {
             gGameSubState = 58;
-            gGameWork.unk86 = 0;
+            gGameWork.stepTimer = 0;
         }
 }
 
@@ -757,7 +757,7 @@ void team_select_link_checksum_init(void) {
     medabots_scroll_bg3();
     medabots_screen_draw_bot_sprite();
     st = &gGameWork;
-    timer = &st->unk86;
+    timer = &st->stepTimer;
     if (*timer == 16) {
         gBattleWork.unk51 = 0;
         gBattleWork.unk52 = 0;
@@ -810,7 +810,7 @@ void team_select_link_done_start(void) {
     medabots_screen_draw_bot_sprite();
     team_select_link_load_opponents();
     palette_backup_from_hardware();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -821,7 +821,7 @@ void team_select_link_fade_out(void) {
     medabots_scroll_bg3();
     medabots_screen_draw_bot_sprite();
     st = &gGameWork;
-    frame = &st->unk84;
+    frame = &st->stepCounter;
     if (*frame <= 32) {
         bg_palettes_blend_masked_now(0, *frame, 0xFFFF);
         obj_palettes_blend_masked_now(0, *frame, 0xFFFF);
@@ -832,7 +832,7 @@ void team_select_link_fade_out(void) {
 
 void team_select_link_exit_battle(void) {
     clear_battle_sprite_slot(0, 0x80);
-    gGameWork.unk96 = 0;
+    gGameWork.noAffineSprites = 0;
     gVBlankOamMode = 0;
     gGameState = 7;
     gGameSubState = 0;

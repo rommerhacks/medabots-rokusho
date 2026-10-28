@@ -20,7 +20,7 @@ void devtest_init(void) {
     REG_DISPCNT = 0x1260;
     priority = 9; // the low bits have to go through a variable to load 0x5E09 straight into r0
     REG_BG1CNT = priority | 0x5E00;
-    gGameWork.unk85 = 1;
+    gGameWork.repeatCounter = 1;
     gGameSubState++;
 }
 
@@ -38,9 +38,9 @@ void devtest_update(void) {
     if (KEYS_LO(gNewKeys) & 2)
         gGameWork.menuRowAnim ^= 1;
     if (KEYS_LO(gNewKeys) & 1) {
-        gGameWork.unkE = 0;
+        gGameWork.portraitAnimFrame = 0;
         gGameSubState++;
-        gGameWork.unk85 ^= 1;
+        gGameWork.repeatCounter ^= 1;
     }
     if (KEYS_LO(gNewKeys) & 2) {
         gGameState = 1;
@@ -57,7 +57,7 @@ void devtest_update(void) {
 }
 
 void load_overworld_column_and_advance(void) {
-    u8 r = message_portrait_anim_step(0, 1, 8, 4, gGameWork.menuRowAnim, gGameWork.unk85);
+    u8 r = message_portrait_anim_step(0, 1, 8, 4, gGameWork.menuRowAnim, gGameWork.repeatCounter);
     if (r == 1)
         gGameSubState = r;
 }
@@ -98,7 +98,7 @@ void devtest_wait_choice(void) {
 void devtest_show_choice_result(void) {
     const void *msg;
 
-    if (gGameWork.unk28 & 0xF0)
+    if (gGameWork.choiceResult & 0xF0)
         msg = gMenuMessages[3];
     else
         msg = gMenuMessages[2];

@@ -6,19 +6,19 @@
 #include "constants/sprites.h"
 
 u32 battle_load_graphics_step(u32 direct) {
-    switch (gGameWork.unk13A) {
+    switch (gGameWork.gfxLoadStep) {
     case 0:
         lz_decompress_dispatch(gGaugeFillTiles, (void *)0x06004000);
         lz_decompress_dispatch(gMedaforceLabelTiles, (void *)0x06004140);
         lz_decompress_dispatch(gMedaforceGaugeFrameTiles, (void *)0x06004200);
-        gGameWork.unk13A++;
+        gGameWork.gfxLoadStep++;
         break;
     case 1:
         lz_decompress_dispatch(gMedaforceGaugeFrameEndTiles, (void *)0x06004300);
         lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06004400);
         lz_decompress_dispatch(gBattlePillarTiles, (void *)0x0600C000);
         lz_decompress_dispatch(gBattlePillarCapTiles, (void *)0x0600C600);
-        gGameWork.unk13A++;
+        gGameWork.gfxLoadStep++;
         break;
     case 2:
         lz_decompress_dispatch(gRightBotPanelTiles, (void *)0x06004E00);
@@ -26,7 +26,7 @@ u32 battle_load_graphics_step(u32 direct) {
         lz_decompress_dispatch(gMfMenuLeftPanelTiles, (void *)0x06005400);
         lz_decompress_dispatch(gMfMenuRightPanelTiles, (void *)0x06005700);
         lz_decompress_dispatch(gPartsMenuRightPanelTiles, (void *)0x06005A00);
-        gGameWork.unk13A++;
+        gGameWork.gfxLoadStep++;
         break;
     case 3:
         lz_decompress_dispatch(gBotActionIconTiles, (void *)0x0600C280);
@@ -34,26 +34,26 @@ u32 battle_load_graphics_step(u32 direct) {
         lz_decompress_dispatch(gMissPopupTiles, (void *)0x06014E00);
         lz_decompress_dispatch(gBotShadowTiles, (void *)0x06017F80);
         lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
-        gGameWork.unk13A++;
+        gGameWork.gfxLoadStep++;
         break;
     case 4:
         lz_decompress_dispatch(gActionSelectPanelTiles, (void *)0x06004600);
         lz_decompress_dispatch(gActionSelectSidePanelTiles, (void *)0x06004800);
         lz_decompress_dispatch(gLeftBotPanelTiles, (void *)0x06004B00);
-        gGameWork.unk13A++;
+        gGameWork.gfxLoadStep++;
         break;
     case 5:
-        gGameWork.unk13A++;
+        gGameWork.gfxLoadStep++;
         break;
     case 6:
         lz_decompress_dispatch(gBattleNumberSpriteTiles, (void *)0x06013000);
         lz_decompress_dispatch(gBattleMarkerTilesLz, (void *)0x06013C00);
         lz_decompress_dispatch(gBattleMarkerAltTilesLz, (void *)0x06014200);
-        gGameWork.unk13A++;
+        gGameWork.gfxLoadStep++;
         break;
     case 7:
         vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG1CNT, 0);
-        gGameWork.unk13A++;
+        gGameWork.gfxLoadStep++;
         break;
     case 8:
         if (direct == 0) {
@@ -88,7 +88,7 @@ u32 battle_load_graphics_step(u32 direct) {
             CpuFastSet(gBattleObjPalettes13 + 0x40, (void *)0x050003E0, 8);
             CpuFastSet(gBattleObjPalette5, (void *)0x050002A0, 8);
         }
-        gGameWork.unk13A = 0;
+        gGameWork.gfxLoadStep = 0;
         return 1;
     }
     return 0;

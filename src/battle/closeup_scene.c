@@ -43,9 +43,9 @@ static u32 closeup_x_on_screen(u32 x) {
 
 void init_battle_scene_backgrounds(void) {
     if (gBattleWork.unkFF & 1)
-        gGameWork.unk96 = 1;
+        gGameWork.noAffineSprites = 1;
     else
-        gGameWork.unk96 = 0;
+        gGameWork.noAffineSprites = 0;
     if (closeup_x_on_screen((s16)gBattleWork.unk154)) {
         get_active_bot_part_index_and_load_values(0);
         draw_medabot_sprite(0, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
@@ -53,23 +53,23 @@ void init_battle_scene_backgrounds(void) {
                             0, 1, 0, gBattleWork.unk114[0]);
     }
     if (gBattleWork.unkFF & 2)
-        gGameWork.unk96 = 1;
+        gGameWork.noAffineSprites = 1;
     else
-        gGameWork.unk96 = 0;
+        gGameWork.noAffineSprites = 0;
     if (closeup_x_on_screen((s16)gBattleWork.unk158)) {
         get_active_bot_part_index_and_load_values(1);
         draw_medabot_sprite(1, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
                             (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.battlefieldParams[3] + 2, 8,
                             1, 1, 1, gBattleWork.unk114[1]);
     }
-    gGameWork.unk96 = 0;
+    gGameWork.noAffineSprites = 0;
 }
 
 void setup_battle_medapart_scenes(void) {
     if (gBattleWork.unkFF & 1)
-        gGameWork.unk96 = 1;
+        gGameWork.noAffineSprites = 1;
     else
-        gGameWork.unk96 = 0;
+        gGameWork.noAffineSprites = 0;
     if (closeup_x_on_screen((s16)gBattleWork.unk154)) {
         get_active_bot_part_index_and_load_values(0);
         draw_medabot_sprite(0, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
@@ -80,9 +80,9 @@ void setup_battle_medapart_scenes(void) {
                             0, 1, 0, gBattleWork.unk114[0]);
     }
     if (gBattleWork.unkFF & 2)
-        gGameWork.unk96 = 1;
+        gGameWork.noAffineSprites = 1;
     else
-        gGameWork.unk96 = 0;
+        gGameWork.noAffineSprites = 0;
     if (closeup_x_on_screen((s16)gBattleWork.unk158)) {
         get_active_bot_part_index_and_load_values(1);
         draw_medabot_sprite(1, gBattleWork.unk64[0], gBattleWork.unk64[1], gBattleWork.unk64[2], gBattleWork.unk64[3],
@@ -92,7 +92,7 @@ void setup_battle_medapart_scenes(void) {
                             (s16)gBattleWork.unk158, (s16)gBattleWork.unk15A, gBattleWork.battlefieldParams[3] + 2, 8,
                             1, 1, 1, gBattleWork.unk114[1]);
     }
-    gGameWork.unk96 = 0;
+    gGameWork.noAffineSprites = 0;
 }
 
 void get_active_bot_part_index_and_load_values(u32 side) {

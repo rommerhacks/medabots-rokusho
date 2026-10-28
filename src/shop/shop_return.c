@@ -16,7 +16,7 @@ void shop_return_init(void) {
     CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
     CpuFastSet(gShopObjPalette, (void *)0x0202F820, 8);
     CpuFastSet(gShopMenuBgPalettes, (void *)0x0202FA00, 0x80);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gMenuWork->returning = 1;
     gGameSubState++;
     REG_DISPCNT |= 0x100;
@@ -36,7 +36,7 @@ void shop_return_init(void) {
 
 void fade_out_transition_step(void) {
     struct GameWork *s = &gGameWork;
-    u8 *n = &s->unk84;
+    u8 *n = &s->stepCounter;
 
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, 32 - *n * 4, 0xFFFF);

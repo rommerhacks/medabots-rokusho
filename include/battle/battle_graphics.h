@@ -3,7 +3,7 @@
 
 // Battle graphics loading, message windows, Medabot panels, UI tilemaps, Medaforce gauge
 
-// One LZ graphics load per call (step gGameWork.unk13A 0-8); returns 1 when done. direct = 0 stages the
+// One LZ graphics load per call (step gGameWork.gfxLoadStep 0-8); returns 1 when done. direct = 0 stages the
 // palettes in the EWRAM buffer instead of palette RAM.
 u32 battle_load_graphics_step(u32 direct);
 // Battle message window: open, print message msg (gBattleMessages), finish (close). With gOptionSkipMessages set they

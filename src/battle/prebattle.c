@@ -45,43 +45,43 @@ void prebattle_mosaic_start(void) {
     REG_BG2CNT |= 0x40;
     REG_BG3CNT |= 0x40;
     play_song(8);
-    gGameWork.unk85 = 0;
+    gGameWork.repeatCounter = 0;
     gGameSubState++;
 }
 
 void prebattle_mosaic_grow_init(void) {
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void prebattle_mosaic_grow(void) {
-    REG_MOSAIC = gGameWork.unk84 + (gGameWork.unk84 << 4);
-    gGameWork.unk84 += 2;
-    if (gGameWork.unk84 == 16)
+    REG_MOSAIC = gGameWork.stepCounter + (gGameWork.stepCounter << 4);
+    gGameWork.stepCounter += 2;
+    if (gGameWork.stepCounter == 16)
         gGameSubState = 5;
 }
 
 void prebattle_mosaic_shrink_init(void) {
-    gGameWork.unk84 = 16;
+    gGameWork.stepCounter = 16;
     gGameSubState++;
 }
 
 void prebattle_mosaic_shrink(void) {
-    u32 v = gGameWork.unk84 - 2;
+    u32 v = gGameWork.stepCounter - 2;
 
-    gGameWork.unk84 = v;
-    REG_MOSAIC = gGameWork.unk84 + (gGameWork.unk84 << 4);
+    gGameWork.stepCounter = v;
+    REG_MOSAIC = gGameWork.stepCounter + (gGameWork.stepCounter << 4);
     if ((u8)v == 0)
         gGameSubState = 5;
 }
 
 void prebattle_mosaic_repeat(void) {
-    if (gGameWork.unk85 <= 2) {
-        if (gGameWork.unk85 & 1)
+    if (gGameWork.repeatCounter <= 2) {
+        if (gGameWork.repeatCounter & 1)
             gGameSubState = 1;
         else
             gGameSubState = 3;
-        gGameWork.unk85++;
+        gGameWork.repeatCounter++;
     } else
         gGameSubState++;
 }
@@ -93,28 +93,28 @@ void prebattle_wipe_init(void) {
     gBg0Scroll.y = 0;
     lz_decompress_dispatch(gPrebattleWipeTiles, (void *)0x06002600);
     DmaSet(3, gPrebattleWipePalette, 0x050001A0, 0x84000008);
-    gGameWork.unk3F = 0;
-    gGameWork.unk48 = 0;
-    gGameWork.unk84 = 0;
+    gGameWork.listTab = 0;
+    gGameWork.subCounter = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void prebattle_wipe(void) {
     s32 start, i;
 
-    if (gGameWork.unk48 <= 4)
+    if (gGameWork.subCounter <= 4)
         start = 0;
     else
-        start = gGameWork.unk48 - 4;
-    for (i = start; i <= gGameWork.unk48; i++) {
+        start = gGameWork.subCounter - 4;
+    for (i = start; i <= gGameWork.subCounter; i++) {
         if (i <= 14)
-            vram_fill_tilemap_rect(1, 20, i, 0, REG_BG0CNT, gGameWork.unk48 - i - 0x2ED0);
+            vram_fill_tilemap_rect(1, 20, i, 0, REG_BG0CNT, gGameWork.subCounter - i - 0x2ED0);
     }
-    for (i = start; i <= gGameWork.unk48; i++) {
+    for (i = start; i <= gGameWork.subCounter; i++) {
         if (i <= 14)
-            vram_fill_tilemap_rect(1, 20, 29 - i, 0, REG_BG0CNT, gGameWork.unk48 - i - 0x2ED0);
+            vram_fill_tilemap_rect(1, 20, 29 - i, 0, REG_BG0CNT, gGameWork.subCounter - i - 0x2ED0);
     }
-    if (++gGameWork.unk48 > 19)
+    if (++gGameWork.subCounter > 19)
         gGameSubState++;
 }
 
@@ -122,7 +122,7 @@ void prebattle_load_encounter(void) {
     u32 zero0, zero1;
 
     load_encounter_into_battle_setup();
-    gGameWork.unk132 = 0;
+    gGameWork.battleOver = 0;
     zero0 = 0;
     CpuFastSet(&zero0, (void *)0x05000200, 0x01000080);
     zero1 = 0;
@@ -167,7 +167,7 @@ void prebattle_load_gfx(void) {
     prebattle_init_rubberobo_sprite();
     battlefield_load_params();
     apply_battle_blend_effect_a();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -175,10 +175,10 @@ void prebattle_load_gfx(void) {
 void prebattle_fade_in(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else
         gGameSubState++;
 }
@@ -194,8 +194,8 @@ void prebattle_show_opponent_line(void) {
     update_scroll_movement_a();
     if (run_message(gOpponentPreBattleMessages[gBattleWork.encounterMessage])) {
         update_all_battle_sprite_orbits();
-        gGameWork.unk84 = 8;
-        gGameWork.unk85 = 8;
+        gGameWork.stepCounter = 8;
+        gGameWork.repeatCounter = 8;
         gGameSubState++;
     }
     update_all_battle_sprite_orbits();
@@ -261,17 +261,17 @@ void prebattle_fade_out_init(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     palette_backup_from_hardware();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void prebattle_fade_out(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else
         gGameSubState++;
 }
@@ -288,18 +288,18 @@ void prebattle_rubberobo_load_field(void) {
     area_load_graphics();
     blend_set_alpha_12_10();
     setup_blend_effect(0x40, 0x2F00, 5, 16, 16, 16, 12, 10, 0);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 // Rubberobo Medal used (runtime-checked: "You avoided the Robattle!", then back in the field): fade the field
 // back in and skip the battle.
 void prebattle_rubberobo_return_to_field(void) {
-    if (gGameWork.unk84 <= 16) {
+    if (gGameWork.stepCounter <= 16) {
         blend_effect_update();
-        bg_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 2, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 2, 0xFFFF);
-        gGameWork.unk84++;
+        bg_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 2, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 2, 0xFFFF);
+        gGameWork.stepCounter++;
     } else {
         gVBlankCallback = empty_callback;
         return_to_field();
@@ -319,7 +319,7 @@ void prebattle_open_team_select(void) {
 // 64-65 experience, 66+ Medal level-ups and Medaforces per team member (unk186)
 void afterbattle_count_battle(void) {
     inc_u16_saturating(&gRobattleCounts[0], 9999);
-    if (gGameWork.unk9C == 1) {
+    if (gGameWork.battleResult == 1) {
         inc_u16_saturating(&gRobattleCounts[1], 9999);
         play_song(14);
     } else
@@ -329,7 +329,7 @@ void afterbattle_count_battle(void) {
 
 void afterbattle_check_won(void) {
     update_scroll_movement_a();
-    if (gGameWork.unk9C == 1)
+    if (gGameWork.battleResult == 1)
         gGameSubState++;
     else
         gGameSubState = 0x70;
@@ -585,17 +585,17 @@ void afterbattle_fade_out_init(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     palette_backup_from_hardware();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void afterbattle_fade_out(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else
         gGameSubState++;
 }
@@ -616,10 +616,10 @@ void afterbattle_start_medal_transform(void) {
     zero = 0;
     DmaSet(3, &zero, 0x05000000, 0x85000080);
     gGameWork.levelUpMedalSlot = find_medal_slot_by_id(gBattleWork.unk16E[gBattleWork.resultsMember][0] - 1) - 1;
-    gGameWork.unk134 = gBattleWork.unk16E[gBattleWork.resultsMember][2];
-    gGameWork.unk135 = gBattleWork.unk16E[gBattleWork.resultsMember][3];
-    gGameWork.unk136 = gBattleWork.unk16E[gBattleWork.resultsMember][4];
-    gGameWork.unk137 = gBattleWork.unk16E[gBattleWork.resultsMember][5];
+    gGameWork.transformOldMedal = gBattleWork.unk16E[gBattleWork.resultsMember][2];
+    gGameWork.transformOldVariant = gBattleWork.unk16E[gBattleWork.resultsMember][3];
+    gGameWork.transformNewMedal = gBattleWork.unk16E[gBattleWork.resultsMember][4];
+    gGameWork.transformNewVariant = gBattleWork.unk16E[gBattleWork.resultsMember][5];
     start_medal_transform(gGameWork.levelUpMedalSlot);
     gBattleWork.resultsMember++;
 }
@@ -664,7 +664,7 @@ void afterbattle_part_detail_init_fade(void) {
     setup_battle_result_sprite();
     afterbattle_pulse_new_sprite();
     palette_backup_from_hardware();
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -673,10 +673,10 @@ void afterbattle_part_detail_fade_out(void) {
     update_scroll_movement_a();
     setup_battle_result_sprite();
     afterbattle_pulse_new_sprite();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else
         gGameSubState++;
 }
@@ -700,7 +700,7 @@ void afterbattle_part_detail_open_screen(void) {
     clear_bg_scroll();
     clear_battle_sprite_slot(0, 0x80);
     g = &gGameWork;
-    g->unk96 = 0;
+    g->noAffineSprites = 0;
     gVBlankOamMode = 0;
     b = &gBattleWork;
     kind = b->wonPartKind;
@@ -790,7 +790,7 @@ void afterbattle_part_detail_restore_screen(void) {
     tbl = gMedapartNames[0];
     memcpy_bytes_0803F63C((const void *)tbl[gBattleWork.wonPartId * 4 + gBattleWork.wonPartKind],
                           gGameWork.textBuf + 20, 15);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -799,10 +799,10 @@ void afterbattle_part_detail_fade_in(void) {
     update_scroll_movement_a();
     setup_battle_result_sprite();
     afterbattle_pulse_new_sprite();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else
         gGameSubState++;
 }
@@ -841,10 +841,10 @@ void afterbattle_lost_check_story_battle(void) {
 void afterbattle_fade_to_white(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (gGameWork.unk84 <= 8) {
-        bg_palettes_blend_masked_now(0x7FFF, gGameWork.unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0x7FFF, gGameWork.unk84 * 4, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0x7FFF, gGameWork.stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0x7FFF, gGameWork.stepCounter * 4, 0xFFFF);
+        gGameWork.stepCounter++;
     } else
         gGameSubState++;
 }
@@ -1036,7 +1036,7 @@ void draw_opponent_leg_type_icons(void) {
 
 // Shows sprite 0 when the player owns a Rubberobo Medal (item 50) outside debug battles.
 static void prebattle_init_rubberobo_sprite(void) {
-    if (!gGameWork.unk132 && get_item_quantity_by_id(50) && !gFieldWork.fixed_battle) {
+    if (!gGameWork.battleOver && get_item_quantity_by_id(50) && !gFieldWork.fixed_battle) {
         gSpriteEntries[0].flags =
             SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[0].x = 8;

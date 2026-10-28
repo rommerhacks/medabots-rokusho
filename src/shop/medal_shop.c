@@ -163,16 +163,16 @@ void medal_rename_load_palettes(void) {
     CpuFastSet(gGradientPaletteGold, (void *)0x0202F9A0, 8);
     CpuFastSet(gMedalRenameBgPalettes, gPaletteBackupBg, 0x80);
     CpuFastSet(gMedalRenameObjPalette, (void *)0x0202F940, 8);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void medal_rename_fade_in(void) {
     struct GameWork *s = &gGameWork;
-    if (s->unk84 <= 8) {
-        bg_palettes_blend_masked_now(0, 32 - s->unk84 * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 32 - s->unk84 * 4, 0xFFFF);
-        s->unk84++;
+    if (s->stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, 32 - s->stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 32 - s->stepCounter * 4, 0xFFFF);
+        s->stepCounter++;
     } else {
         gMenuWork->message_pending = 0;
         text_window_init(1, 0, 0);
@@ -257,7 +257,7 @@ void medal_rename_select_medal(void) {
             play_sound_effect(5);
             gSpriteEntries[8].flags &= (u16)~SPRITE_FLAG_VISIBLE;
             gGameWork.endModeStep = 0;
-            gGameWork.unk84 = 0;
+            gGameWork.stepCounter = 0;
             gGameSubState = 7;
         }
         return;
@@ -269,10 +269,10 @@ void medal_rename_select_medal(void) {
 void medal_rename_fade_to_name_entry(void) {
     if (game_state_execute_handler_a()) {
         struct GameWork *s = &gGameWork;
-        if (s->unk84 <= 8) {
-            bg_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
-            obj_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
-            s->unk84++;
+        if (s->stepCounter <= 8) {
+            bg_palettes_blend_masked_now(0, s->stepCounter * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, s->stepCounter * 4, 0xFFFF);
+            s->stepCounter++;
         } else {
             REG_DISPCNT &= ~0x200;
             gGameState = 6;
@@ -284,10 +284,10 @@ void medal_rename_fade_to_name_entry(void) {
 void medal_rename_fade_to_field(void) {
     if (game_state_execute_handler_a()) {
         struct GameWork *s = &gGameWork;
-        if (s->unk84 <= 8) {
-            bg_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
-            obj_palettes_blend_masked_now(0, s->unk84 * 4, 0xFFFF);
-            s->unk84++;
+        if (s->stepCounter <= 8) {
+            bg_palettes_blend_masked_now(0, s->stepCounter * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, s->stepCounter * 4, 0xFFFF);
+            s->stepCounter++;
         } else {
             REG_DISPCNT &= ~0x200;
             clear_battle_sprite_slot(0, 0x80);
@@ -334,7 +334,7 @@ void medal_rename_confirm_payment(void) {
         } else {
             gMoney -= 100;
             gCurrentMedalSlot = gMenuWork->medal_list[gMenuWork->medal_list_top + gMenuWork->medal_list_cursor];
-            gGameWork.unk84 = c;
+            gGameWork.stepCounter = c;
             gGameSubState = 6;
         }
     }

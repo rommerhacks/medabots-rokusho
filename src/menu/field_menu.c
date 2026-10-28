@@ -23,28 +23,28 @@ void field_menu_load_gfx(void) {
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     DmaSet(3, gSpriteFontPalette, 0x050003E0, 0x80000010);
     play_song(6);
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void field_menu_open_anim(void) {
-    if (gGameWork.unk84 <= 12)
-        write_tilemap_rect(12, 2, 18, 1, gUiTilemaps[gGameWork.unk84 + 0x13], REG_BG0CNT, 0);
-    if ((u8)(gGameWork.unk84 - 2) <= 12)
-        write_tilemap_rect(12, 2, 18, 3, gUiTilemaps[gGameWork.unk84 + 0x1E], REG_BG0CNT, 0);
-    if ((u8)(gGameWork.unk84 - 4) <= 12)
-        write_tilemap_rect(12, 2, 18, 5, gUiTilemaps[gGameWork.unk84 + 0x29], REG_BG0CNT, 0);
-    if ((u8)(gGameWork.unk84 - 6) <= 12)
-        write_tilemap_rect(12, 2, 18, 7, gUiTilemaps[gGameWork.unk84 + 0x34], REG_BG0CNT, 0);
-    if (gGameWork.unk84 == 10) {
+    if (gGameWork.stepCounter <= 12)
+        write_tilemap_rect(12, 2, 18, 1, gUiTilemaps[gGameWork.stepCounter + 0x13], REG_BG0CNT, 0);
+    if ((u8)(gGameWork.stepCounter - 2) <= 12)
+        write_tilemap_rect(12, 2, 18, 3, gUiTilemaps[gGameWork.stepCounter + 0x1E], REG_BG0CNT, 0);
+    if ((u8)(gGameWork.stepCounter - 4) <= 12)
+        write_tilemap_rect(12, 2, 18, 5, gUiTilemaps[gGameWork.stepCounter + 0x29], REG_BG0CNT, 0);
+    if ((u8)(gGameWork.stepCounter - 6) <= 12)
+        write_tilemap_rect(12, 2, 18, 7, gUiTilemaps[gGameWork.stepCounter + 0x34], REG_BG0CNT, 0);
+    if (gGameWork.stepCounter == 10) {
         lz_decompress_dispatch(gMoneyWindowHalfTiles, (void *)0x06002400);
         set_tilemap_and_decompress_bg(0x15, 9, gMoneyWindowHalfTilemap, REG_BG0CNT, 0x120);
     }
-    if (gGameWork.unk84 == 12) {
+    if (gGameWork.stepCounter == 12) {
         lz_decompress_dispatch(gMoneyWindowTiles, (void *)0x06002400);
         set_tilemap_and_decompress_bg(0x15, 9, gMoneyWindowTilemap, REG_BG0CNT, 0x120);
     }
-    if (++gGameWork.unk84 > 18) {
+    if (++gGameWork.stepCounter > 18) {
         divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
         render_text_sprites_08040DB8(gGameWork.textBuf, 10, 0x17, 10, 5, 15, 2, 0);
         gGameWork.fieldMenuCursor = 0;
@@ -70,7 +70,7 @@ void field_menu_handle_input(void) {
         play_sound_effect(5);
         clear_battle_sprite_slot(0, 1);
         clear_battle_sprite_slot(10, 7);
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState = 3;
     } else if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
@@ -79,21 +79,21 @@ void field_menu_handle_input(void) {
 }
 
 void field_menu_close_anim(void) {
-    if (gGameWork.unk84 <= 12)
-        write_tilemap_rect(12, 2, 18, 1, gUiTilemaps[0x1F - gGameWork.unk84], REG_BG0CNT, 0);
-    if ((u8)(gGameWork.unk84 - 2) <= 12)
-        write_tilemap_rect(12, 2, 18, 3, gUiTilemaps[0x2E - gGameWork.unk84], REG_BG0CNT, 0);
-    if ((u8)(gGameWork.unk84 - 4) <= 12)
-        write_tilemap_rect(12, 2, 18, 5, gUiTilemaps[0x3D - gGameWork.unk84], REG_BG0CNT, 0);
-    if ((u8)(gGameWork.unk84 - 6) <= 12)
-        write_tilemap_rect(12, 2, 18, 7, gUiTilemaps[0x4C - gGameWork.unk84], REG_BG0CNT, 0);
-    if (gGameWork.unk84 == 10) {
+    if (gGameWork.stepCounter <= 12)
+        write_tilemap_rect(12, 2, 18, 1, gUiTilemaps[0x1F - gGameWork.stepCounter], REG_BG0CNT, 0);
+    if ((u8)(gGameWork.stepCounter - 2) <= 12)
+        write_tilemap_rect(12, 2, 18, 3, gUiTilemaps[0x2E - gGameWork.stepCounter], REG_BG0CNT, 0);
+    if ((u8)(gGameWork.stepCounter - 4) <= 12)
+        write_tilemap_rect(12, 2, 18, 5, gUiTilemaps[0x3D - gGameWork.stepCounter], REG_BG0CNT, 0);
+    if ((u8)(gGameWork.stepCounter - 6) <= 12)
+        write_tilemap_rect(12, 2, 18, 7, gUiTilemaps[0x4C - gGameWork.stepCounter], REG_BG0CNT, 0);
+    if (gGameWork.stepCounter == 10) {
         lz_decompress_dispatch(gMoneyWindowHalfTiles, (void *)0x06002400);
         set_tilemap_and_decompress_bg(0x15, 9, gMoneyWindowHalfTilemap, REG_BG0CNT, 0x120);
     }
-    if (gGameWork.unk84 == 12)
+    if (gGameWork.stepCounter == 12)
         vram_fill_tilemap_rect(9, 4, 0x15, 9, REG_BG0CNT, 0);
-    if (++gGameWork.unk84 > 18)
+    if (++gGameWork.stepCounter > 18)
         return_to_field();
 }
 
@@ -131,7 +131,7 @@ void field_menu_select_collapse(void) {
     if (--gGameWork.menuRowAnim == 0) {
         lz_decompress_dispatch(gMenuSlideLineTile, (void *)0x060017E0);
         palette_backup_from_hardware();
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         if (gGameWork.fieldMenuCursor == 0)
             fade_out_music(0x10);
         gGameSubState++;
@@ -139,10 +139,10 @@ void field_menu_select_collapse(void) {
 }
 
 void field_menu_select_slide(void) {
-    if (gGameWork.fieldMenuCursor != 2 && gGameWork.unk84 <= 16) {
-        bg_palettes_blend_masked_now(0, gGameWork.unk84 * 2, 0x1FFF);
-        obj_palettes_blend_masked_now(0, gGameWork.unk84 * 2, 0xFFFF);
-        gGameWork.unk84++;
+    if (gGameWork.fieldMenuCursor != 2 && gGameWork.stepCounter <= 16) {
+        bg_palettes_blend_masked_now(0, gGameWork.stepCounter * 2, 0x1FFF);
+        obj_palettes_blend_masked_now(0, gGameWork.stepCounter * 2, 0xFFFF);
+        gGameWork.stepCounter++;
     }
     write_tilemap_rect(12, 2, 18 - gGameWork.menuRowAnim, 0, gUiTilemaps[gGameWork.fieldMenuCursor * 13 + 0x1F],
                        REG_BG0CNT, 0);
@@ -191,16 +191,16 @@ void field_menu_return_init(void) {
         REG_DISPCNT |= 0xF60;
     }
     gGameWork.menuRowAnim = 18;
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
 void field_menu_return_slide(void) {
-    if (gGameWork.fieldMenuCursor != 2 && gGameWork.unk84 <= 16) {
+    if (gGameWork.fieldMenuCursor != 2 && gGameWork.stepCounter <= 16) {
         blend_effect_update();
-        bg_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 2, 0x1FFF);
-        obj_palettes_blend_masked_now(0, 32 - gGameWork.unk84 * 2, 0xFFFF);
-        gGameWork.unk84++;
+        bg_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 2, 0x1FFF);
+        obj_palettes_blend_masked_now(0, 32 - gGameWork.stepCounter * 2, 0xFFFF);
+        gGameWork.stepCounter++;
     }
     gGameWork.menuRowAnim--;
     write_tilemap_rect(12, 2, 18 - gGameWork.menuRowAnim, 0, gUiTilemaps[gGameWork.fieldMenuCursor * 13 + 0x1F],
@@ -209,16 +209,16 @@ void field_menu_return_slide(void) {
     if (gGameWork.menuRowAnim == 0) {
         gVBlankCallback = empty_callback;
         gGameWork.menuRowAnim = gGameWork.fieldMenuCursor * 2 + 1;
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameSubState++;
     }
 }
 
 void field_menu_return_expand(void) {
-    write_tilemap_rect(12, 2, 18, gGameWork.unk84 + 1, gUiTilemaps[gGameWork.fieldMenuCursor * 13 + 0x1F], REG_BG0CNT,
-                       0);
-    vram_fill_tilemap_rect(12, 1, 18, gGameWork.unk84, REG_BG0CNT, 0);
-    if (gGameWork.unk84 + 1 == gGameWork.menuRowAnim) {
+    write_tilemap_rect(12, 2, 18, gGameWork.stepCounter + 1, gUiTilemaps[gGameWork.fieldMenuCursor * 13 + 0x1F],
+                       REG_BG0CNT, 0);
+    vram_fill_tilemap_rect(12, 1, 18, gGameWork.stepCounter, REG_BG0CNT, 0);
+    if (gGameWork.stepCounter + 1 == gGameWork.menuRowAnim) {
         switch (gGameWork.fieldMenuCursor) {
         case 0:
             write_tilemap_rect(12, 2, 18, 3, gUiTilemaps[0x2C], REG_BG0CNT, 0);
@@ -247,7 +247,7 @@ void field_menu_return_expand(void) {
         field_menu_init_cursor();
         gGameSubState = 2;
     } else {
-        gGameWork.unk84++;
+        gGameWork.stepCounter++;
     }
 }
 

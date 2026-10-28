@@ -402,14 +402,14 @@ void particle_run_spark_handlers(void) {
     }
 }
 
-// Spark state 1: every 8 frames (gGameWork.unk86) launches a spark from near the emitter toward a point
+// Spark state 1: every 8 frames (gGameWork.stepTimer) launches a spark from near the emitter toward a point
 // just in front of it.
 void particle_spark_emitter(void) {
     u32 roll, slot;
     struct SpriteEntry *particle;
     struct SpriteEntry *base;
 
-    if ((roll = gGameWork.unk86 & 7) == 0) {
+    if ((roll = gGameWork.stepTimer & 7) == 0) {
         slot = find_next_free_sprite_slot(gGameWork.runningSpriteSlot + 1, 10);
         clear_battle_sprite_slot(slot, 1);
         base = gSpriteEntries;

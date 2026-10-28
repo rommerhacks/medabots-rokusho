@@ -31,19 +31,19 @@ u32 medal_add_by_id(u8 id) {
             gMedals[i].graphicId = id;
             gMedals[i].attribute = gGameWork.partSkill;
             gMedals[i].aimSkillType = gGameWork.partSkillType;
-            gMedals[i].compatibility = gGameWork.unkF5;
+            gMedals[i].compatibility = gGameWork.partStat3;
             gMedals[i].level = medal_new_level();
-            gMedals[i].spriteVariant = medal_tier_for_level(gMedals[i].level, gGameWork.partGender, gGameWork.unkF2,
-                                                            gGameWork.unkF3, gGameWork.unkF4);
+            gMedals[i].spriteVariant = medal_tier_for_level(gMedals[i].level, gGameWork.partGender, gGameWork.partStat0,
+                                                            gGameWork.partStat1, gGameWork.partStat2);
             gMedals[i].nextLevelExp = (gMedals[i].level + 1) * 100;
-            if ((u8)(gMedals[i].level / 10) * gGameWork.unkF6 + gGameWork.unkF6 > 100)
+            if ((u8)(gMedals[i].level / 10) * gGameWork.partStat4 + gGameWork.partStat4 > 100)
                 gMedals[i].skillLevel[0] = 100;
             else
-                gMedals[i].skillLevel[0] = gGameWork.unkF6 + gGameWork.unkF6 * (gMedals[i].level / 10);
-            if ((u8)(gMedals[i].level / 10) * gGameWork.unkF7 + gGameWork.unkF7 > 100)
+                gMedals[i].skillLevel[0] = gGameWork.partStat4 + gGameWork.partStat4 * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.partStat5 + gGameWork.partStat5 > 100)
                 gMedals[i].skillLevel[1] = 100;
             else
-                gMedals[i].skillLevel[1] = gGameWork.unkF7 + gGameWork.unkF7 * (gMedals[i].level / 10);
+                gMedals[i].skillLevel[1] = gGameWork.partStat5 + gGameWork.partStat5 * (gMedals[i].level / 10);
             if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[0] + gGameWork.fillerF8[0] > 100)
                 gMedals[i].skillLevel[2] = 100;
             else

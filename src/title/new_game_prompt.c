@@ -28,7 +28,7 @@ void new_game_prompt_show_message(void) {
 
 void new_game_prompt_poll_choice(void) {
     if (poll_choice_menu()) {
-        if (gGameWork.unk2A == 0)
+        if (gGameWork.choiceCursor == 0)
             gGameSubState++;
         else
             gGameSubState += 2;

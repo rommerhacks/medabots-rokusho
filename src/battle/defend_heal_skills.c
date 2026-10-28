@@ -285,18 +285,18 @@ void trap_sprite_spawn(void) {
 void trap_sprite_grow(void) {
     if ((gSpriteEntries[0x21].scale_x += 8) == 0x40) {
         if (gBattleWork.unk51 == 3)
-            gGameWork.unk86 = 1;
+            gGameWork.stepTimer = 1;
         else
-            gGameWork.unk86 = 0x3C;
+            gGameWork.stepTimer = 0x3C;
         gBattleWork.step++;
     }
 }
 
 void trap_sprite_hold(void) {
-    gGameWork.unk86--;
+    gGameWork.stepTimer--;
     if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
-        gGameWork.unk86 = 0;
-    if (gGameWork.unk86 == 0) {
+        gGameWork.stepTimer = 0;
+    if (gGameWork.stepTimer == 0) {
         switch (gBattleWork.unk51) {
         case 0:
         case 1:
@@ -433,7 +433,7 @@ void trap_sprite_fly(void) {
 void team_form_anim_wait(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x38], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
-        gGameWork.unk86 = 0x3C;
+        gGameWork.stepTimer = 0x3C;
         gBattleWork.step++;
     }
 }
@@ -441,10 +441,10 @@ void team_form_anim_wait(void) {
 void team_form_split(void) {
     struct SpriteEntry *spr;
 
-    gGameWork.unk86--;
+    gGameWork.stepTimer--;
     if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
-        gGameWork.unk86 = 0;
-    if (gGameWork.unk86 == 0) {
+        gGameWork.stepTimer = 0;
+    if (gGameWork.stepTimer == 0) {
         spr = &gSpriteEntries[0x21];
         memcpy_bytes_0803F63C(spr, spr + 1, 0x40);
         memcpy_bytes_0803F63C(spr, spr + 2, 0x40);
@@ -546,17 +546,17 @@ void break_form_anim_wait(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x39], 0x21);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x3B], 0x21);
-        gGameWork.unk86 = 0x3C;
+        gGameWork.stepTimer = 0x3C;
         gBattleWork.step++;
     }
 }
 
 void break_form_hold(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3B], 0x21);
-    gGameWork.unk86--;
+    gGameWork.stepTimer--;
     if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
-        gGameWork.unk86 = 0;
-    if (gGameWork.unk86 == 0)
+        gGameWork.stepTimer = 0;
+    if (gGameWork.stepTimer == 0)
         gBattleWork.step++;
 }
 
@@ -606,7 +606,7 @@ void break_form_hit_wait(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3A], 0x23);
     if (gSpriteEntries[0x21].unk22 == 0xFF) {
         disable_sprites(0x21, 3);
-        gGameWork.unk86 = 0x3C;
+        gGameWork.stepTimer = 0x3C;
         gBattleWork.step++;
     }
 }
@@ -628,15 +628,15 @@ void break_form_shatter_init(void) {
             gSpriteEntries[0x5D + i * 4].unk23 = 0;
         }
     }
-    gGameWork.unk86 = 0;
+    gGameWork.stepTimer = 0;
     gBattleWork.step++;
 }
 
 void break_form_shatter(void) {
     u32 i;
 
-    gGameWork.unk86++;
-    bg3_shake_step(gGameWork.unk86);
+    gGameWork.stepTimer++;
+    bg3_shake_step(gGameWork.stepTimer);
     for (i = 0; i < 6; i++) {
         if (gBattleBots[i].teamState) {
             advance_sprite_anim_frame(0x5A + i * 4, 0);
@@ -709,7 +709,7 @@ void stability_sprite_spawn(void) {
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].unk24 = 6;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x3C], 0x21);
-    gGameWork.unk86 = 0x3C;
+    gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
 
@@ -995,7 +995,7 @@ void autorecover_orb_spawn(void) {
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].unk24 = 6;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x3E], 0x21);
-    gGameWork.unk86 = 0x3C;
+    gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
 
@@ -1003,8 +1003,8 @@ void heal_orb_hold(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3E], 0x21);
     if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gBattleWork.step++;
-    else if (gGameWork.unk86)
-        gGameWork.unk86--;
+    else if (gGameWork.stepTimer)
+        gGameWork.stepTimer--;
     else
         gBattleWork.step++;
 }
@@ -1135,7 +1135,7 @@ void reactivate_orb_spawn(void) {
     gSpriteEntries[0x21].unk32 = gSpriteEntries[gBattleWork.target * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].unk24 = 6;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x3E], 0x21);
-    gGameWork.unk86 = 0x3C;
+    gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
 

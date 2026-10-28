@@ -171,7 +171,7 @@ void text_scroll_init(void) {
     gMenuWork->unk49 = 0;
     gMenuWork->pending_sound = 0;
     gMenuWork->sound_delay = 0;
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
     gGameSubState++;
 }
 
@@ -180,11 +180,11 @@ void text_scroll_fade_in(void) {
     u8 *n;
     update_scene_animation_frame();
     s = &gGameWork;
-    n = &s->unk84;
+    n = &s->stepCounter;
     if (*n <= 0x40) {
         bg_palettes_blend_masked_now(0, 0x20 - (*n / 2), 0xFFFF);
         obj_palettes_blend_masked_now(0, 0x20 - (*n / 2), 0xFFFF);
-        s->unk84++;
+        s->stepCounter++;
         gMenuWork->cursor = 0;
     } else
         gGameSubState++;

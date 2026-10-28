@@ -305,7 +305,7 @@ void setup_dialogue_script_from_rom(void) {
 
 void link_menu_poll_yes_no(void) {
     if (poll_choice_menu()) {
-        if (gGameWork.unk2A == 0) {
+        if (gGameWork.choiceCursor == 0) {
             gGameSubState++;
             message_next();
         } else
@@ -352,7 +352,7 @@ void menu_yes_no_confirmation_handler(void) {
     i++;
     d[i] = s[i];
     if (run_message(gMenuWork->message_buf)) {
-        if (gGameWork.unk2A == 0)
+        if (gGameWork.choiceCursor == 0)
             gLinkPackets.sendData = 0xFF00;
         else
             gLinkPackets.sendData = 0xFF01;

@@ -19,16 +19,16 @@ void reset_bg_scroll(void) {
 }
 
 void open_choice_menu(u8 a, u8 b, u8 c) {
-    mem_fill8(&gGameWork.unk28, 8, 0);
-    gGameWork.unk2A = a;
+    mem_fill8(&gGameWork.choiceResult, 8, 0);
+    gGameWork.choiceCursor = a;
     gGameWork.scrollSpriteSlot = 0x7F;
     gGameWork.transTileX = b;
     gGameWork.transTileY = c;
 }
 
 static void init_window_params(u8 a, u8 b, u8 c, u8 d) {
-    mem_fill8(&gGameWork.unk28, 8, 0);
-    gGameWork.unk2A = a;
+    mem_fill8(&gGameWork.choiceResult, 8, 0);
+    gGameWork.choiceCursor = a;
     gGameWork.scrollSpriteSlot = d;
     gGameWork.transTileX = b;
     gGameWork.transTileY = c;
@@ -36,7 +36,7 @@ static void init_window_params(u8 a, u8 b, u8 c, u8 d) {
 
 u32 poll_choice_menu(void) {
     gChoiceMenuStates[gGameWork.choiceState]();
-    return gGameWork.unk28;
+    return gGameWork.choiceResult;
 }
 
 void decompress_bg_tilemap_to_vram(void) {
@@ -144,14 +144,14 @@ void battle_sprite_setup_cursor(void) {
     gSpriteEntries[gGameWork.scrollSpriteSlot].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_HFLIP | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[gGameWork.scrollSpriteSlot].x = gGameWork.transTileX * 8 + 0x14;
-    gSpriteEntries[gGameWork.scrollSpriteSlot].y = gGameWork.transTileY * 8 + gGameWork.unk2A * 16 + 0x10;
+    gSpriteEntries[gGameWork.scrollSpriteSlot].y = gGameWork.transTileY * 8 + gGameWork.choiceCursor * 16 + 0x10;
     gSpriteEntries[gGameWork.scrollSpriteSlot].frame = 0x307;
     gSpriteEntries[gGameWork.scrollSpriteSlot].palette = 0xE;
     gSpriteEntries[gGameWork.scrollSpriteSlot].frame_table = 0;
     gSpriteEntries[gGameWork.scrollSpriteSlot].scale_x = 1;
     gSpriteEntries[gGameWork.scrollSpriteSlot].scale_y = 1;
     gSpriteEntries[gGameWork.scrollSpriteSlot].order = 0xFF;
-    gGameWork.unk84 = 1;
+    gGameWork.stepCounter = 1;
     gGameWork.choiceState++;
 }
 
@@ -163,40 +163,40 @@ void advance_sprite_scroll_animation(void) {
         gSpriteEntries[gGameWork.scrollSpriteSlot].scale_y = 0x40;
         gGameWork.choiceState++;
     }
-    gGameWork.unk84 = 0;
+    gGameWork.stepCounter = 0;
 }
 
 void handle_battle_sprite_scroll_input(void) {
     if (KEYS_LO(gNewKeys) & 0xC0) {
         play_sound_effect(2);
-        gGameWork.unk2A ^= 1;
-        gSpriteEntries[gGameWork.scrollSpriteSlot].y = gGameWork.unk2A * 16 + 0x48;
+        gGameWork.choiceCursor ^= 1;
+        gSpriteEntries[gGameWork.scrollSpriteSlot].y = gGameWork.choiceCursor * 16 + 0x48;
     }
-    sprite_bob_x(gGameWork.scrollSpriteSlot, gGameWork.unk84, gGameWork.transTileX * 8 + 0x14);
-    gGameWork.unk84++;
+    sprite_bob_x(gGameWork.scrollSpriteSlot, gGameWork.stepCounter, gGameWork.transTileX * 8 + 0x14);
+    gGameWork.stepCounter++;
     if (KEYS_LO(gNewKeys) & 2) {
         play_sound_effect(5);
-        gGameWork.unk2A = 1;
+        gGameWork.choiceCursor = 1;
         gSpriteEntries[gGameWork.scrollSpriteSlot].x = gGameWork.transTileX * 8 + 0x14;
-        gSpriteEntries[gGameWork.scrollSpriteSlot].y = gGameWork.unk2A * 16 + 0x48;
-        gGameWork.unk84 = 0;
+        gSpriteEntries[gGameWork.scrollSpriteSlot].y = gGameWork.choiceCursor * 16 + 0x48;
+        gGameWork.stepCounter = 0;
         gGameWork.choiceState++;
     }
     if (KEYS_LO(gNewKeys) & 1) {
         play_sound_effect(4);
         gSpriteEntries[gGameWork.scrollSpriteSlot].x = gGameWork.transTileX * 8 + 0x14;
-        gGameWork.unk84 = 0;
+        gGameWork.stepCounter = 0;
         gGameWork.choiceState++;
     }
 }
 
 void update_sprite_hflip_by_animation_phase(void) {
-    if (gGameWork.unk84 != 0x1E) {
-        if (gGameWork.unk84 & 4)
+    if (gGameWork.stepCounter != 0x1E) {
+        if (gGameWork.stepCounter & 4)
             gSpriteEntries[gGameWork.scrollSpriteSlot].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         else
             gSpriteEntries[gGameWork.scrollSpriteSlot].flags |= SPRITE_FLAG_VISIBLE;
-        gGameWork.unk84++;
+        gGameWork.stepCounter++;
     } else {
         gSpriteEntries[gGameWork.scrollSpriteSlot].flags |= SPRITE_FLAG_VISIBLE;
         gGameWork.choiceState++;
@@ -213,7 +213,7 @@ void animate_battle_sprite_shrink(void) {
 }
 
 void choice_menu_finish(void) {
-    gGameWork.unk28 = (gGameWork.unk2A << 4) + 1;
+    gGameWork.choiceResult = (gGameWork.choiceCursor << 4) + 1;
     gGameWork.choiceState++;
 }
 
