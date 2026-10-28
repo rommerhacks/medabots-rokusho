@@ -17,14 +17,28 @@
 #define BOMB_SPR_HELP_L 17       // HOW TO PLAY panel: L button
 #define BOMB_SPR_HELP_R 18       // HOW TO PLAY panel: R button
 #define BOMB_SPR_HELP_ARROW 19   // HOW TO PLAY panel: arrow over the button for the lowest bomb
-#define BOMB_SPR_PLAYER 30       // unk20 lives, unk21 blown up, unk22 blown to the right
+#define BOMB_SPR_PLAYER 30       // the player's Medabot
 #define BOMB_SPR_HELD_BOMB 31    // the bomb in the thrower's hands
-#define BOMB_SPR_THROWER 32      // unk20 throw state, unk21 lane of the next bomb
+#define BOMB_SPR_THROWER 32      // the bomb thrower
 #define BOMB_SPR_SHADOW 33       // shadow under the player or thrower when they leave the ground
-#define BOMB_SPR_BOMBS 40        // 40-47: unk20 1 rolling / 2 batted away / 3 exploding, unk21 lane
+#define BOMB_SPR_BOMBS 40        // 40-47: the bombs
 #define BOMB_SPR_BOMB_SHADOWS 48 // 48-55
 #define BOMB_SPR_HIT_SPARK 56    // flash where a bomb was batted
 #define BOMB_SPR_BASE 57         // the SELECT CORPS base at the bottom
+
+// gSpriteEntries work[] indices
+#define BOMB_SPR_BANNER_STEP 0x0      // banner: step of the round intro / CONGRATULATIONS / GAME OVER sequence
+#define BOMB_SPR_BANNER_BOUNCE 0x1    // banner: GAME OVER bounce number (divides the bounce height)
+#define BOMB_SPR_PLAYER_LIVES 0x0     // player: lives left
+#define BOMB_SPR_PLAYER_HIT 0x1       // player: 1 while blown up by a bomb
+#define BOMB_SPR_PLAYER_HIT_RIGHT 0x2 // player: blown to the right (else left)
+#define BOMB_SPR_THROW_STATE 0x0      // thrower: throw state
+#define BOMB_SPR_THROW_LANE 0x1       // thrower: lane of the next bomb
+#define BOMB_SPR_BOMB_STATE 0x0       // bombs: 0 free, 1 rolling, 2 batted away, 3 exploding
+#define BOMB_SPR_BOMB_LANE 0x1        // bombs: lane 0-2; batted away: 0 flies left, else right
+#define BOMB_SPR_ARROW_STATE 0x0      // HOW TO PLAY arrow: state of the bomb it points at, 0 = none
+#define BOMB_SPR_ARROW_LANE 0x1       // HOW TO PLAY arrow: lane of that bomb
+#define BOMB_SPR_SPARK_ACTIVE 0x0     // hit spark: 1 while shown
 
 static void bomb_game_update_hint_arrow(void);
 static void bomb_game_update_thrower(void);
@@ -93,8 +107,8 @@ void bomb_game_load_graphics(void) {
     gSpriteEntries[BOMB_SPR_PLAYER].scale_y = 0x40;
     gSpriteEntries[BOMB_SPR_PLAYER].angle = 0;
     gBombGameWork.playerPos = 0;
-    gSpriteEntries[BOMB_SPR_PLAYER].unk20 = 3;
-    gSpriteEntries[BOMB_SPR_PLAYER].unk21 = 0;
+    gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_LIVES] = 3;
+    gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] = 0;
 
     sprite_entry_init(BOMB_SPR_THROWER, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3), 7, 1, 3);
     gSpriteEntries[BOMB_SPR_THROWER].x = 0x78;
@@ -177,7 +191,7 @@ void bomb_game_pick_lanes_state(void) {
 
 // Sub-state 5: one frame of play.
 void bomb_game_play_state(void) {
-    if (gSpriteEntries[BOMB_SPR_PLAYER].unk21 == 0) {
+    if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] == 0) {
         bomb_game_move_player();
         bomb_game_drop_bombs();
         bomb_game_update_hint_arrow();
@@ -235,33 +249,33 @@ void bomb_game_exit_state(void) {
 // The round intro on the banner sprite: title zoom (A / START skips), the BOMB counter counting up to roundBombs,
 // a 3-2-1 countdown and the start signal. Returns 1 when play starts. A lost life re-enters at step 3.
 u32 bomb_game_round_intro(void) {
-    switch (gSpriteEntries[BOMB_SPR_BANNER].unk20) {
+    switch (gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP]) {
     case 0:
         sprite_entry_init(BOMB_SPR_BANNER,
                           SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE, 0x2E, 10,
                           3);
         gSpriteEntries[BOMB_SPR_BANNER].x = 0x78;
         gSpriteEntries[BOMB_SPR_BANNER].y = 0x50;
-        gSpriteEntries[BOMB_SPR_BANNER].unk1A = 0;
+        gSpriteEntries[BOMB_SPR_BANNER].timer = 0;
         gSpriteEntries[BOMB_SPR_BANNER].scale_x = 4;
         gSpriteEntries[BOMB_SPR_BANNER].scale_y = 4;
-        gSpriteEntries[BOMB_SPR_BANNER].unk20++;
+        gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP]++;
         break;
     case 1:
-        if (gSpriteEntries[BOMB_SPR_BANNER].unk1A < 0x18) {
-            gSpriteEntries[BOMB_SPR_BANNER].unk1A++;
-        } else if (++gSpriteEntries[BOMB_SPR_BANNER].unk1A > 0xB4 || (KEYS_LO(gNewKeys) & 9)) {
-            gSpriteEntries[BOMB_SPR_BANNER].unk1A = 0;
-            gSpriteEntries[BOMB_SPR_BANNER].unk20++;
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer < 0x18) {
+            gSpriteEntries[BOMB_SPR_BANNER].timer++;
+        } else if (++gSpriteEntries[BOMB_SPR_BANNER].timer > 0xB4 || (KEYS_LO(gNewKeys) & 9)) {
+            gSpriteEntries[BOMB_SPR_BANNER].timer = 0;
+            gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP]++;
         }
         break;
     case 2:
-        if (gSpriteEntries[BOMB_SPR_BANNER].unk1A < 0x18) {
-            gSpriteEntries[BOMB_SPR_BANNER].unk1A++;
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer < 0x18) {
+            gSpriteEntries[BOMB_SPR_BANNER].timer++;
         } else {
-            gSpriteEntries[BOMB_SPR_BANNER].unk1A = 0;
+            gSpriteEntries[BOMB_SPR_BANNER].timer = 0;
             gSpriteEntries[BOMB_SPR_BANNER].y = 0xC8;
-            gSpriteEntries[BOMB_SPR_BANNER].unk20++;
+            gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP]++;
         }
         break;
     case 3:
@@ -274,8 +288,8 @@ u32 bomb_game_round_intro(void) {
             gSpriteEntries[BOMB_SPR_BANNER].y = 0x50;
             gSpriteEntries[BOMB_SPR_BANNER].scale_x = 0;
             gSpriteEntries[BOMB_SPR_BANNER].scale_y = 0x60;
-            gSpriteEntries[BOMB_SPR_BANNER].unk1A = 0;
-            gSpriteEntries[BOMB_SPR_BANNER].unk20++;
+            gSpriteEntries[BOMB_SPR_BANNER].timer = 0;
+            gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP]++;
             REG_BLDCNT = 0x840;
             REG_BLDALPHA = 0x10;
         } else {
@@ -285,18 +299,18 @@ u32 bomb_game_round_intro(void) {
     case 4:
     case 5:
     case 6:
-        if (gSpriteEntries[BOMB_SPR_BANNER].unk1A == 0)
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer == 0)
             play_sound_effect(0x18);
-        if (++gSpriteEntries[BOMB_SPR_BANNER].unk1A > 0x3C) {
+        if (++gSpriteEntries[BOMB_SPR_BANNER].timer > 0x3C) {
             gSpriteEntries[BOMB_SPR_BANNER].frame++;
-            gSpriteEntries[BOMB_SPR_BANNER].unk1A = 0;
-            gSpriteEntries[BOMB_SPR_BANNER].unk20++;
+            gSpriteEntries[BOMB_SPR_BANNER].timer = 0;
+            gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP]++;
         }
         break;
     case 7:
-        if (gSpriteEntries[BOMB_SPR_BANNER].unk1A == 0)
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer == 0)
             play_sound_effect(7);
-        if (++gSpriteEntries[BOMB_SPR_BANNER].unk1A > 0x1E) {
+        if (++gSpriteEntries[BOMB_SPR_BANNER].timer > 0x1E) {
             clear_sprite_entry(BOMB_SPR_BANNER);
             gBombGameWork.timer = 0;
             gBombGameWork.nextDropTime = gBombGameWork.roundBombs + gBombGameWork.dropInterval;
@@ -314,18 +328,21 @@ static void bomb_game_update_hint_arrow(void) {
     s32 i;
     s32 lowest_y;
 
-    if (gSpriteEntries[BOMB_SPR_HELP_ARROW].unk20 == 0) {
+    if (gSpriteEntries[BOMB_SPR_HELP_ARROW].work[BOMB_SPR_ARROW_STATE] == 0) {
         lowest_y = 0;
         for (i = 0; i < 8; i++) {
-            if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 == 1 && lowest_y < gSpriteEntries[BOMB_SPR_BOMBS + i].y) {
+            if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == 1 &&
+                lowest_y < gSpriteEntries[BOMB_SPR_BOMBS + i].y) {
                 lowest_y = gSpriteEntries[BOMB_SPR_BOMBS + i].y;
-                gSpriteEntries[BOMB_SPR_HELP_ARROW].unk20 = gSpriteEntries[BOMB_SPR_BOMBS + i].unk20;
-                gSpriteEntries[BOMB_SPR_HELP_ARROW].unk21 = gSpriteEntries[BOMB_SPR_BOMBS + i].unk21;
-                gSpriteEntries[BOMB_SPR_HELP_ARROW].unk1A = 0;
+                gSpriteEntries[BOMB_SPR_HELP_ARROW].work[BOMB_SPR_ARROW_STATE] =
+                    gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE];
+                gSpriteEntries[BOMB_SPR_HELP_ARROW].work[BOMB_SPR_ARROW_LANE] =
+                    gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE];
+                gSpriteEntries[BOMB_SPR_HELP_ARROW].timer = 0;
             }
         }
     } else {
-        switch (gSpriteEntries[BOMB_SPR_HELP_ARROW].unk21) {
+        switch (gSpriteEntries[BOMB_SPR_HELP_ARROW].work[BOMB_SPR_ARROW_LANE]) {
         case 0:
             gSpriteEntries[BOMB_SPR_HELP_ARROW].x = 0xB8;
             break;
@@ -336,8 +353,8 @@ static void bomb_game_update_hint_arrow(void) {
             gSpriteEntries[BOMB_SPR_HELP_ARROW].x = 0xD8;
             break;
         }
-        gSpriteEntries[BOMB_SPR_HELP_ARROW].y = (gSpriteEntries[BOMB_SPR_HELP_ARROW].unk1A & 4) ? 0x47 : 0x49;
-        gSpriteEntries[BOMB_SPR_HELP_ARROW].unk1A++;
+        gSpriteEntries[BOMB_SPR_HELP_ARROW].y = (gSpriteEntries[BOMB_SPR_HELP_ARROW].timer & 4) ? 0x47 : 0x49;
+        gSpriteEntries[BOMB_SPR_HELP_ARROW].timer++;
     }
 }
 
@@ -362,34 +379,34 @@ void bomb_game_move_player(void) {
 
 // The thrower steps toward the next bomb's lane and swings; the held bomb follows the hands.
 static void bomb_game_update_thrower(void) {
-    switch (gSpriteEntries[BOMB_SPR_THROWER].unk20) {
+    switch (gSpriteEntries[BOMB_SPR_THROWER].work[BOMB_SPR_THROW_STATE]) {
     case 0:
         break;
     case 3:
-        if (++gSpriteEntries[BOMB_SPR_THROWER].unk1A == 20) {
-            gSpriteEntries[BOMB_SPR_THROWER].unk20 = 0;
-            gSpriteEntries[BOMB_SPR_THROWER].unk21 = 0;
-            gSpriteEntries[BOMB_SPR_THROWER].unk1A = 0;
+        if (++gSpriteEntries[BOMB_SPR_THROWER].timer == 20) {
+            gSpriteEntries[BOMB_SPR_THROWER].work[BOMB_SPR_THROW_STATE] = 0;
+            gSpriteEntries[BOMB_SPR_THROWER].work[BOMB_SPR_THROW_LANE] = 0;
+            gSpriteEntries[BOMB_SPR_THROWER].timer = 0;
             gSpriteEntries[BOMB_SPR_HELD_BOMB].y = 0xC8;
         }
         break;
     case 1:
-        if (gSpriteEntries[BOMB_SPR_PLAYER].unk21 == 0) {
+        if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] == 0) {
             gSpriteEntries[BOMB_SPR_HELD_BOMB].x = gSpriteEntries[BOMB_SPR_THROWER].x;
             gSpriteEntries[BOMB_SPR_HELD_BOMB].y = 0x18;
         } else {
-            gSpriteEntries[BOMB_SPR_THROWER].unk20 = 3;
+            gSpriteEntries[BOMB_SPR_THROWER].work[BOMB_SPR_THROW_STATE] = 3;
         }
         break;
     case 2:
-        if (gSpriteEntries[BOMB_SPR_THROWER].unk1A++ <= 7) {
-            switch (gSpriteEntries[BOMB_SPR_THROWER].unk21) {
+        if (gSpriteEntries[BOMB_SPR_THROWER].timer++ <= 7) {
+            switch (gSpriteEntries[BOMB_SPR_THROWER].work[BOMB_SPR_THROW_LANE]) {
             case 0:
                 gSpriteEntries[BOMB_SPR_THROWER].x -= 2;
                 if (gSpriteEntries[BOMB_SPR_THROWER].x < 0x6C)
                     gSpriteEntries[BOMB_SPR_THROWER].x = 0x6C;
                 gSpriteEntries[BOMB_SPR_HELD_BOMB].x =
-                    gSpriteEntries[BOMB_SPR_THROWER].x - gSpriteEntries[BOMB_SPR_THROWER].unk1A - 2;
+                    gSpriteEntries[BOMB_SPR_THROWER].x - gSpriteEntries[BOMB_SPR_THROWER].timer - 2;
                 break;
             case 1:
                 if (gSpriteEntries[BOMB_SPR_THROWER].x < 0x78) {
@@ -406,12 +423,12 @@ static void bomb_game_update_thrower(void) {
                 if (gSpriteEntries[BOMB_SPR_THROWER].x > 0x84)
                     gSpriteEntries[BOMB_SPR_THROWER].x = 0x84;
                 gSpriteEntries[BOMB_SPR_HELD_BOMB].x =
-                    gSpriteEntries[BOMB_SPR_THROWER].x + gSpriteEntries[BOMB_SPR_THROWER].unk1A + 2;
+                    gSpriteEntries[BOMB_SPR_THROWER].x + gSpriteEntries[BOMB_SPR_THROWER].timer + 2;
                 break;
             }
-            gSpriteEntries[BOMB_SPR_HELD_BOMB].y = gSpriteEntries[BOMB_SPR_THROWER].unk1A <= 3 ? 0x12 : 10;
+            gSpriteEntries[BOMB_SPR_HELD_BOMB].y = gSpriteEntries[BOMB_SPR_THROWER].timer <= 3 ? 0x12 : 10;
         } else {
-            gSpriteEntries[BOMB_SPR_THROWER].unk20 = 3;
+            gSpriteEntries[BOMB_SPR_THROWER].work[BOMB_SPR_THROW_STATE] = 3;
         }
         break;
     }
@@ -426,15 +443,17 @@ void bomb_game_drop_bombs(void) {
 
     if (gBombGameWork.bombsLeft != 0 && gBombGameWork.nextDropTime - 0x12 < gBombGameWork.timer &&
         gBombGameWork.timer < gBombGameWork.nextDropTime - 9) {
-        gSpriteEntries[BOMB_SPR_THROWER].unk20 = (gBombGameWork.nextDropTime - 10 == gBombGameWork.timer) ? 2 : 1;
-        gSpriteEntries[BOMB_SPR_THROWER].unk21 = gBombGameWork.bombLanes[gBombGameWork.bombsLeft - 1];
-        gSpriteEntries[BOMB_SPR_THROWER].unk1A = 0;
+        gSpriteEntries[BOMB_SPR_THROWER].work[BOMB_SPR_THROW_STATE] =
+            (gBombGameWork.nextDropTime - 10 == gBombGameWork.timer) ? 2 : 1;
+        gSpriteEntries[BOMB_SPR_THROWER].work[BOMB_SPR_THROW_LANE] =
+            gBombGameWork.bombLanes[gBombGameWork.bombsLeft - 1];
+        gSpriteEntries[BOMB_SPR_THROWER].timer = 0;
     }
     work = &gBombGameWork;
     if (work->nextDropTime < work->timer) {
         if (work->bombsLeft == 0) {
             for (i = 0; i < 8; i++) {
-                if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 != 0)
+                if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] != 0)
                     return;
             }
             play_song(0);
@@ -446,13 +465,14 @@ void bomb_game_drop_bombs(void) {
         bomb_game_draw_bomb_count();
         work->nextDropTime += work->bombsLeft * work->bombsLeft / 50 + work->dropInterval;
         for (i = 0; i < 8; i++) {
-            if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 == 0) {
+            if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == 0) {
                 ((void (*)())sprite_entry_init)(BOMB_SPR_BOMBS + i, 0xC800, 0x10, 2, 3);
                 gSpriteEntries[BOMB_SPR_BOMBS + i].x = gSpriteEntries[BOMB_SPR_THROWER].x;
                 gSpriteEntries[BOMB_SPR_BOMBS + i].y = 0xC;
-                gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A = 0;
-                gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 = 1;
-                gSpriteEntries[BOMB_SPR_BOMBS + i].unk21 = gBombGameWork.bombLanes[gBombGameWork.bombsLeft];
+                gSpriteEntries[BOMB_SPR_BOMBS + i].timer = 0;
+                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 1;
+                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] =
+                    gBombGameWork.bombLanes[gBombGameWork.bombsLeft];
                 shadow = BOMB_SPR_BOMB_SHADOWS + i;
                 ((void (*)())sprite_entry_init)(shadow, 0xCC08, 0x12, 2, 3);
                 gSpriteEntries[shadow].x = gSpriteEntries[BOMB_SPR_BOMBS + i].x;
@@ -472,33 +492,35 @@ static void bomb_game_update_bombs(void) {
     s32 i;
 
     for (i = 0; i < 8; i++) {
-        switch (gSpriteEntries[BOMB_SPR_BOMBS + i].unk20) {
+        switch (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE]) {
         case 0:
             break;
         case 1:
-            gSpriteEntries[BOMB_SPR_BOMBS + i].x = (gSpriteEntries[BOMB_SPR_BOMBS + i].unk21 - 1) *
-                                                       ((gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A >> 2) + 0x18) +
+            gSpriteEntries[BOMB_SPR_BOMBS + i].x = (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] - 1) *
+                                                       ((gSpriteEntries[BOMB_SPR_BOMBS + i].timer >> 2) + 0x18) +
                                                    0x78;
-            gSpriteEntries[BOMB_SPR_BOMBS + i].y = gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A * 2 + 0xC;
+            gSpriteEntries[BOMB_SPR_BOMBS + i].y = gSpriteEntries[BOMB_SPR_BOMBS + i].timer * 2 + 0xC;
             gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].x = gSpriteEntries[BOMB_SPR_BOMBS + i].x;
             gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].y = gSpriteEntries[BOMB_SPR_BOMBS + i].y + 4;
-            if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A > 0x38) {
-                if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A > 0x3F) {
-                    gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 = 3;
-                    gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A = 0;
+            if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer > 0x38) {
+                if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer > 0x3F) {
+                    gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 3;
+                    gSpriteEntries[BOMB_SPR_BOMBS + i].timer = 0;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].y = 0x90;
                     gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].y = 0xC8;
-                    if (gSpriteEntries[BOMB_SPR_PLAYER].unk21 == 0) {
-                        gSpriteEntries[BOMB_SPR_PLAYER].unk21 = 1;
-                        gSpriteEntries[BOMB_SPR_PLAYER].unk1A = 0;
+                    if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] == 0) {
+                        gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] = 1;
+                        gSpriteEntries[BOMB_SPR_PLAYER].timer = 0;
                         if ((s8)(gBombGameWork.playerPos / 5) == 0)
-                            gSpriteEntries[BOMB_SPR_PLAYER].unk22 = gSpriteEntries[BOMB_SPR_BOMBS + i].unk21 != 2;
+                            gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT_RIGHT] =
+                                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] != 2;
                         else
-                            gSpriteEntries[BOMB_SPR_PLAYER].unk22 = gBombGameWork.playerPos > 0;
-                        gSpriteEntries[BOMB_SPR_HELP_ARROW].unk20 = 0;
-                        gSpriteEntries[BOMB_SPR_HELP_ARROW].unk21 = 0;
+                            gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT_RIGHT] =
+                                gBombGameWork.playerPos > 0;
+                        gSpriteEntries[BOMB_SPR_HELP_ARROW].work[BOMB_SPR_ARROW_STATE] = 0;
+                        gSpriteEntries[BOMB_SPR_HELP_ARROW].work[BOMB_SPR_ARROW_LANE] = 0;
                         gSpriteEntries[BOMB_SPR_HELP_ARROW].y = 0xC8;
-                        gSpriteEntries[BOMB_SPR_HELP_ARROW].unk1A = 0;
+                        gSpriteEntries[BOMB_SPR_HELP_ARROW].timer = 0;
                         sprite_entry_init(BOMB_SPR_SHADOW,
                                           SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) |
                                               SPRITE_OBJ_MODE(1),
@@ -507,48 +529,49 @@ static void bomb_game_update_bombs(void) {
                         gSpriteEntries[BOMB_SPR_SHADOW].y = gSpriteEntries[BOMB_SPR_PLAYER].y + 0xC;
                     }
                     play_sound_effect(0x3B);
-                } else if (gSpriteEntries[BOMB_SPR_PLAYER].unk21 == 0) {
-                    if ((s8)(gBombGameWork.playerPos / 5) + 1 == gSpriteEntries[BOMB_SPR_BOMBS + i].unk21) {
-                        if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk21 == 1)
-                            gSpriteEntries[BOMB_SPR_BOMBS + i].unk21 = gBombGameWork.bombsLeft & 2;
-                        gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 = 2;
+                } else if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] == 0) {
+                    if ((s8)(gBombGameWork.playerPos / 5) + 1 ==
+                        gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE]) {
+                        if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] == 1)
+                            gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] = gBombGameWork.bombsLeft & 2;
+                        gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 2;
                         sprite_entry_init(BOMB_SPR_HIT_SPARK,
                                           SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x17, 4, 3);
                         gSpriteEntries[BOMB_SPR_HIT_SPARK].x = gSpriteEntries[BOMB_SPR_BOMBS + i].x;
                         gSpriteEntries[BOMB_SPR_HIT_SPARK].y =
                             gSpriteEntries[BOMB_SPR_BOMBS + i].y -
-                            gHalfSineArc[gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A & 0x3F];
-                        gSpriteEntries[BOMB_SPR_HIT_SPARK].unk20 = 1;
-                        gSpriteEntries[BOMB_SPR_HIT_SPARK].unk1A = 0;
-                        gSpriteEntries[BOMB_SPR_HELP_ARROW].unk20 = 0;
+                            gHalfSineArc[gSpriteEntries[BOMB_SPR_BOMBS + i].timer & 0x3F];
+                        gSpriteEntries[BOMB_SPR_HIT_SPARK].work[BOMB_SPR_SPARK_ACTIVE] = 1;
+                        gSpriteEntries[BOMB_SPR_HIT_SPARK].timer = 0;
+                        gSpriteEntries[BOMB_SPR_HELP_ARROW].work[BOMB_SPR_ARROW_STATE] = 0;
                         play_sound_effect(0x68);
                     }
                 }
             }
-            gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A++;
+            gSpriteEntries[BOMB_SPR_BOMBS + i].timer++;
             break;
         case 2:
-            if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk21 == 0)
+            if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] == 0)
                 gSpriteEntries[BOMB_SPR_BOMBS + i].x -= 4;
             else
                 gSpriteEntries[BOMB_SPR_BOMBS + i].x += 4;
-            gSpriteEntries[BOMB_SPR_BOMBS + i].y = gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A * 2 + 0xC;
+            gSpriteEntries[BOMB_SPR_BOMBS + i].y = gSpriteEntries[BOMB_SPR_BOMBS + i].timer * 2 + 0xC;
             gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].x = gSpriteEntries[BOMB_SPR_BOMBS + i].x;
             gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].y = gSpriteEntries[BOMB_SPR_BOMBS + i].y + 4;
-            if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A < 0x28) {
-                gSpriteEntries[BOMB_SPR_BOMBS + i].unk21 = 0;
-                gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 = 0;
+            if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer < 0x28) {
+                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] = 0;
+                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 0;
                 gSpriteEntries[BOMB_SPR_BOMBS + i].y = 0xC8;
                 gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].y = 0xC8;
             }
-            gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A--;
+            gSpriteEntries[BOMB_SPR_BOMBS + i].timer--;
             break;
         case 3:
-            if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A == 0)
+            if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer == 0)
                 ((void (*)())sprite_entry_init)(BOMB_SPR_BOMBS + i, 0xC400, 0x13, 3, 3);
-            else if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A > 0xF)
+            else if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer > 0xF)
                 clear_sprite_entry(BOMB_SPR_BOMBS + i);
-            gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A++;
+            gSpriteEntries[BOMB_SPR_BOMBS + i].timer++;
             break;
         }
     }
@@ -556,7 +579,8 @@ static void bomb_game_update_bombs(void) {
 
 // Removes the hit spark after 3 frames.
 static void bomb_game_update_hit_spark(void) {
-    if (gSpriteEntries[BOMB_SPR_HIT_SPARK].unk20 == 1 && ++gSpriteEntries[BOMB_SPR_HIT_SPARK].unk1A > 2)
+    if (gSpriteEntries[BOMB_SPR_HIT_SPARK].work[BOMB_SPR_SPARK_ACTIVE] == 1 &&
+        ++gSpriteEntries[BOMB_SPR_HIT_SPARK].timer > 2)
         clear_sprite_entry(BOMB_SPR_HIT_SPARK);
 }
 
@@ -567,50 +591,51 @@ void bomb_game_player_blown_up(void) {
     s32 i;
 
     debris_times = gBombGameDebrisTimes;
-    if (gSpriteEntries[BOMB_SPR_PLAYER].unk1A < 0x50) {
-        if (gSpriteEntries[BOMB_SPR_PLAYER].unk1A <= debris_times.v[gSpriteEntries[BOMB_SPR_PLAYER].unk20 - 1] &&
-            (gSpriteEntries[BOMB_SPR_PLAYER].unk1A & 7) == 0) {
+    if (gSpriteEntries[BOMB_SPR_PLAYER].timer < 0x50) {
+        if (gSpriteEntries[BOMB_SPR_PLAYER].timer <=
+                debris_times.v[gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_LIVES] - 1] &&
+            (gSpriteEntries[BOMB_SPR_PLAYER].timer & 7) == 0) {
             for (i = 0; i < 8; i++) {
-                if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 == 0) {
-                    gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 = 3;
+                if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == 0) {
+                    gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 3;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].x = (gRandomBytes[(gFrameCounter + i) & 0xFF] & 0x3F) + 0x58;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].y = 0x90;
-                    gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A = 0;
-                    if (gSpriteEntries[BOMB_SPR_PLAYER].unk1A % 16 == 0)
+                    gSpriteEntries[BOMB_SPR_BOMBS + i].timer = 0;
+                    if (gSpriteEntries[BOMB_SPR_PLAYER].timer % 16 == 0)
                         play_sound_effect(0x3B);
                     break;
                 }
             }
         }
-        if (gSpriteEntries[BOMB_SPR_PLAYER].unk22)
+        if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT_RIGHT])
             gSpriteEntries[BOMB_SPR_PLAYER].x += 2;
         else
             gSpriteEntries[BOMB_SPR_PLAYER].x -= 2;
         gSpriteEntries[BOMB_SPR_PLAYER].y -= 2;
-        gSpriteEntries[BOMB_SPR_PLAYER].unk1A++;
+        gSpriteEntries[BOMB_SPR_PLAYER].timer++;
     } else {
-        gSpriteEntries[BOMB_SPR_PLAYER].unk20--;
+        gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_LIVES]--;
         bomb_game_draw_lives();
-        if (gSpriteEntries[BOMB_SPR_PLAYER].unk20 != 0) {
+        if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_LIVES] != 0) {
             u16 zero;
 
             gGameSubState = 3;
-            gSpriteEntries[BOMB_SPR_BANNER].unk20 = 3;
-            gSpriteEntries[BOMB_SPR_PLAYER].unk21 = 0;
+            gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP] = 3;
+            gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] = 0;
             gSpriteEntries[BOMB_SPR_PLAYER].frame = 0;
             gSpriteEntries[BOMB_SPR_PLAYER].angle = 0;
             gSpriteEntries[BOMB_SPR_PLAYER].x = 0x78;
             gSpriteEntries[BOMB_SPR_PLAYER].y = 0x80;
             gSpriteEntries[BOMB_SPR_PLAYER].scale_x = 0x40;
             gSpriteEntries[BOMB_SPR_PLAYER].scale_y = 0x40;
-            gSpriteEntries[BOMB_SPR_PLAYER].unk22 = 0;
+            gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT_RIGHT] = 0;
             gBombGameWork.playerPos = 0;
             gSpriteEntries[BOMB_SPR_THROWER].frame = 7;
             gSpriteEntries[BOMB_SPR_THROWER].x = 0x78;
             gSpriteEntries[BOMB_SPR_THROWER].y = 0x10;
-            gSpriteEntries[BOMB_SPR_THROWER].unk1A = 0;
+            gSpriteEntries[BOMB_SPR_THROWER].timer = 0;
             zero = 0;
-            DmaSet(3, &zero, &gSpriteEntries[BOMB_SPR_THROWER].unk20, 0x81000008);
+            DmaSet(3, &zero, &gSpriteEntries[BOMB_SPR_THROWER].work[BOMB_SPR_THROW_STATE], 0x81000008);
             gBombGameWork.roundBombs = gBombGameWork.bombsLeft + 10;
             if (gBombGameWork.roundBombs > 0x32)
                 gBombGameWork.roundBombs = 0x32;
@@ -630,13 +655,13 @@ static bool32 bomb_game_clear_banner(void) {
     u8 buf[0x20]; // unused, but the original reserves the stack space
     struct SpriteEntry *banner = gSpriteEntries;
 
-    switch (banner->unk20) {
+    switch (banner->work[BOMB_SPR_BANNER_STEP]) {
     case 0:
         sprite_entry_init(BOMB_SPR_BANNER, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE, 0x33, 0xC, 3);
         banner->x = 0x78;
         banner->y = 0x50;
-        banner->unk1A = 0;
-        banner->unk20++;
+        banner->timer = 0;
+        banner->work[BOMB_SPR_BANNER_STEP]++;
         gSpriteEntries[BOMB_SPR_PLAYER].frame = 0;
         sprite_entry_init(BOMB_SPR_SHADOW,
                           SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1), 0x12, 2,
@@ -645,10 +670,10 @@ static bool32 bomb_game_clear_banner(void) {
         gSpriteEntries[BOMB_SPR_SHADOW].y = gSpriteEntries[BOMB_SPR_PLAYER].y + 10;
         break;
     case 1:
-        banner->unk1A++;
-        if (banner->unk1A % 8 == 0)
+        banner->timer++;
+        if (banner->timer % 8 == 0)
             gSpriteEntries[BOMB_SPR_THROWER].y -= 2;
-        if (banner->unk1A > 0xEB || (KEYS_LO(gNewKeys) & 9)) {
+        if (banner->timer > 0xEB || (KEYS_LO(gNewKeys) & 9)) {
             clear_sprite_entry(BOMB_SPR_BANNER);
             return 1;
         }
@@ -661,14 +686,14 @@ static bool32 bomb_game_clear_banner(void) {
 static u32 bomb_game_over_banner(void) {
     s32 i;
 
-    switch (gSpriteEntries[BOMB_SPR_BANNER].unk20) {
+    switch (gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP]) {
     case 0:
         sprite_entry_init(BOMB_SPR_BANNER, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE, 0x34, 0xD, 3);
         gSpriteEntries[BOMB_SPR_BANNER].x = 0x78;
         gSpriteEntries[BOMB_SPR_BANNER].y = -0x10;
-        gSpriteEntries[BOMB_SPR_BANNER].unk1A = 0;
-        gSpriteEntries[BOMB_SPR_BANNER].unk21 = 1;
-        gSpriteEntries[BOMB_SPR_BANNER].unk20++;
+        gSpriteEntries[BOMB_SPR_BANNER].timer = 0;
+        gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_BOUNCE] = 1;
+        gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP]++;
         if (gBombGameWork.bombsLeft > 0x23) {
             sprite_entry_init(BOMB_SPR_BOMBS + 6, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2), 0x10,
                               2, 3);
@@ -685,27 +710,27 @@ static u32 bomb_game_over_banner(void) {
         }
         break;
     case 1:
-        if (gSpriteEntries[BOMB_SPR_BANNER].unk1A <= 0x90 && !(gSpriteEntries[BOMB_SPR_BANNER].unk1A % 4)) {
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer <= 0x90 && !(gSpriteEntries[BOMB_SPR_BANNER].timer % 4)) {
             for (i = 0; i <= 5; i++) {
-                if (gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 == 0) {
-                    gSpriteEntries[BOMB_SPR_BOMBS + i].unk20 = 3;
+                if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == 0) {
+                    gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 3;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].x = (gRandomBytes[(gFrameCounter + i) & 0xFF] & 0x3F) + 0x58;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].y = gSpriteEntries[BOMB_SPR_BASE].y - 0x10;
-                    gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A = 0;
-                    if (!(gSpriteEntries[BOMB_SPR_BANNER].unk1A % 16))
+                    gSpriteEntries[BOMB_SPR_BOMBS + i].timer = 0;
+                    if (!(gSpriteEntries[BOMB_SPR_BANNER].timer % 16))
                         play_sound_effect(0x3D);
                     break;
                 }
             }
-            gSpriteEntries[BOMB_SPR_BASE].x = (gSpriteEntries[BOMB_SPR_BANNER].unk1A & 4) ? 0x7A : 0x76;
+            gSpriteEntries[BOMB_SPR_BASE].x = (gSpriteEntries[BOMB_SPR_BANNER].timer & 4) ? 0x7A : 0x76;
             gSpriteEntries[BOMB_SPR_BASE].y++;
         }
-        if (gSpriteEntries[BOMB_SPR_BANNER].unk1A > 0xEB || (KEYS_LO(gNewKeys) & 9)) {
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer > 0xEB || (KEYS_LO(gNewKeys) & 9)) {
             clear_sprite_entry(BOMB_SPR_BANNER);
             clear_sprite_entry(BOMB_SPR_BASE);
             return 1;
         }
-        if (++gSpriteEntries[BOMB_SPR_BANNER].unk1A == 0x20) {
+        if (++gSpriteEntries[BOMB_SPR_BANNER].timer == 0x20) {
             sprite_entry_init(BOMB_SPR_BOMBS + 7, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2), 0x10,
                               2, 3);
             sprite_entry_init(BOMB_SPR_BOMB_SHADOWS + 7,
@@ -726,10 +751,10 @@ void bomb_game_animate_round_banner(void) {
     memcpy(alpha_a, gBombGameBannerEva, 8);
     memcpy(alpha_b, gBombGameBannerEvb, 8);
 
-    switch (gSpriteEntries[BOMB_SPR_BANNER].unk20) {
+    switch (gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP]) {
     case 1:
-        if (gSpriteEntries[BOMB_SPR_BANNER].unk1A <= 0x17) {
-            if (gSpriteEntries[BOMB_SPR_BANNER].unk1A <= 0xF) {
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer <= 0x17) {
+            if (gSpriteEntries[BOMB_SPR_BANNER].timer <= 0xF) {
                 gSpriteEntries[BOMB_SPR_BANNER].scale_x += 4;
                 if (gSpriteEntries[BOMB_SPR_BANNER].scale_x > 0x40)
                     gSpriteEntries[BOMB_SPR_BANNER].scale_x = 0x40;
@@ -741,8 +766,8 @@ void bomb_game_animate_round_banner(void) {
         }
         break;
     case 2:
-        if (gSpriteEntries[BOMB_SPR_BANNER].unk1A <= 0x17) {
-            if (gSpriteEntries[BOMB_SPR_BANNER].unk1A <= 7) {
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer <= 0x17) {
+            if (gSpriteEntries[BOMB_SPR_BANNER].timer <= 7) {
                 gSpriteEntries[BOMB_SPR_BANNER].scale_y -= 8;
                 if (gSpriteEntries[BOMB_SPR_BANNER].scale_y < 4)
                     gSpriteEntries[BOMB_SPR_BANNER].scale_y = 4;
@@ -759,12 +784,12 @@ void bomb_game_animate_round_banner(void) {
     case 4:
     case 5:
     case 6:
-        if (gSpriteEntries[BOMB_SPR_BANNER].unk1A <= 8) {
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer <= 8) {
             if (((gSpriteEntries[BOMB_SPR_BANNER].scale_x += 8) & 0xFF) > 0x40)
                 gSpriteEntries[BOMB_SPR_BANNER].scale_x = 0x40;
             if (((gSpriteEntries[BOMB_SPR_BANNER].scale_y -= 4) & 0xFF) < 0x40)
                 gSpriteEntries[BOMB_SPR_BANNER].scale_y = 0x40;
-        } else if (gSpriteEntries[BOMB_SPR_BANNER].unk1A > 0x33) {
+        } else if (gSpriteEntries[BOMB_SPR_BANNER].timer > 0x33) {
             if (gSpriteEntries[BOMB_SPR_BANNER].scale_x > 8)
                 gSpriteEntries[BOMB_SPR_BANNER].scale_x -= 8;
             gSpriteEntries[BOMB_SPR_BANNER].scale_y += 4;
@@ -773,14 +798,14 @@ void bomb_game_animate_round_banner(void) {
         }
         break;
     case 7:
-        if (gSpriteEntries[BOMB_SPR_BANNER].unk1A <= 8) {
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer <= 8) {
             if (((gSpriteEntries[BOMB_SPR_BANNER].scale_x += 8) & 0xFF) > 0x40)
                 gSpriteEntries[BOMB_SPR_BANNER].scale_x = 0x40;
             if (((gSpriteEntries[BOMB_SPR_BANNER].scale_y -= 4) & 0xFF) < 0x40)
                 gSpriteEntries[BOMB_SPR_BANNER].scale_y = 0x40;
-        } else if (gSpriteEntries[BOMB_SPR_BANNER].unk1A > 0x15) {
-            REG_BLDALPHA = (alpha_b[gSpriteEntries[BOMB_SPR_BANNER].unk1A - 0x16] << 8) |
-                           alpha_a[gSpriteEntries[BOMB_SPR_BANNER].unk1A - 0x16];
+        } else if (gSpriteEntries[BOMB_SPR_BANNER].timer > 0x15) {
+            REG_BLDALPHA = (alpha_b[gSpriteEntries[BOMB_SPR_BANNER].timer - 0x16] << 8) |
+                           alpha_a[gSpriteEntries[BOMB_SPR_BANNER].timer - 0x16];
         }
         break;
     }
@@ -788,10 +813,10 @@ void bomb_game_animate_round_banner(void) {
 
 // HOW TO PLAY panel: flashes the button to press for the lowest bomb and shows the matching pose.
 static void bomb_game_animate_help_panel(void) {
-    if (gSpriteEntries[BOMB_SPR_HELP_ARROW].unk20 != 0) {
-        switch (gSpriteEntries[BOMB_SPR_HELP_ARROW].unk21) {
+    if (gSpriteEntries[BOMB_SPR_HELP_ARROW].work[BOMB_SPR_ARROW_STATE] != 0) {
+        switch (gSpriteEntries[BOMB_SPR_HELP_ARROW].work[BOMB_SPR_ARROW_LANE]) {
         case 0:
-            gSpriteEntries[BOMB_SPR_HELP_L].frame = (gSpriteEntries[BOMB_SPR_HELP_ARROW].unk1A & 4) ? 0x1A : 0x1B;
+            gSpriteEntries[BOMB_SPR_HELP_L].frame = (gSpriteEntries[BOMB_SPR_HELP_ARROW].timer & 4) ? 0x1A : 0x1B;
             gSpriteEntries[BOMB_SPR_HELP_R].frame = 0x1C;
             gSpriteEntries[BOMB_SPR_HELP_BOT].frame = 0x1F;
             break;
@@ -802,7 +827,7 @@ static void bomb_game_animate_help_panel(void) {
             break;
         case 2:
             gSpriteEntries[BOMB_SPR_HELP_L].frame = 0x1A;
-            gSpriteEntries[BOMB_SPR_HELP_R].frame = (gSpriteEntries[BOMB_SPR_HELP_ARROW].unk1A & 4) ? 0x1C : 0x1D;
+            gSpriteEntries[BOMB_SPR_HELP_R].frame = (gSpriteEntries[BOMB_SPR_HELP_ARROW].timer & 4) ? 0x1C : 0x1D;
             gSpriteEntries[BOMB_SPR_HELP_BOT].frame = 0x20;
             break;
         }
@@ -824,38 +849,38 @@ static void bomb_game_animate_player(void) {
     else
         gSpriteEntries[BOMB_SPR_PLAYER].frame = 0;
 
-    if (gSpriteEntries[BOMB_SPR_PLAYER].unk21 != 0) {
-        gSpriteEntries[BOMB_SPR_PLAYER].frame = (gSpriteEntries[BOMB_SPR_PLAYER].unk1A & 8) ? 5 : 6;
-        if (gSpriteEntries[BOMB_SPR_PLAYER].unk22 != 0)
+    if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] != 0) {
+        gSpriteEntries[BOMB_SPR_PLAYER].frame = (gSpriteEntries[BOMB_SPR_PLAYER].timer & 8) ? 5 : 6;
+        if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT_RIGHT] != 0)
             gSpriteEntries[BOMB_SPR_PLAYER].angle += 0x20;
         else
             gSpriteEntries[BOMB_SPR_PLAYER].angle -= 0x20;
         gSpriteEntries[BOMB_SPR_SHADOW].x = gSpriteEntries[BOMB_SPR_PLAYER].x;
         gSpriteEntries[BOMB_SPR_SHADOW].y =
-            gSpriteEntries[BOMB_SPR_PLAYER].y + ((u32)gSpriteEntries[BOMB_SPR_PLAYER].unk1A / 10 + 0xC);
-        if (gSpriteEntries[BOMB_SPR_PLAYER].unk1A < 0x20) {
-            gSpriteEntries[BOMB_SPR_PLAYER].scale_x = (gHalfSineArc[gSpriteEntries[BOMB_SPR_PLAYER].unk1A] >> 1) + 0x40;
-            gSpriteEntries[BOMB_SPR_PLAYER].scale_y = (gHalfSineArc[gSpriteEntries[BOMB_SPR_PLAYER].unk1A] >> 1) + 0x40;
-        } else if (gSpriteEntries[BOMB_SPR_PLAYER].unk20 == 3) {
-            gSpriteEntries[BOMB_SPR_BASE].frame = (gSpriteEntries[BOMB_SPR_PLAYER].unk1A & 4) ? 0x2B : 0x2C;
-        } else if (gSpriteEntries[BOMB_SPR_PLAYER].unk20 == 2) {
-            gSpriteEntries[BOMB_SPR_BASE].frame = (gSpriteEntries[BOMB_SPR_PLAYER].unk1A & 4) ? 0x2C : 0x2D;
+            gSpriteEntries[BOMB_SPR_PLAYER].y + ((u32)gSpriteEntries[BOMB_SPR_PLAYER].timer / 10 + 0xC);
+        if (gSpriteEntries[BOMB_SPR_PLAYER].timer < 0x20) {
+            gSpriteEntries[BOMB_SPR_PLAYER].scale_x = (gHalfSineArc[gSpriteEntries[BOMB_SPR_PLAYER].timer] >> 1) + 0x40;
+            gSpriteEntries[BOMB_SPR_PLAYER].scale_y = (gHalfSineArc[gSpriteEntries[BOMB_SPR_PLAYER].timer] >> 1) + 0x40;
+        } else if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_LIVES] == 3) {
+            gSpriteEntries[BOMB_SPR_BASE].frame = (gSpriteEntries[BOMB_SPR_PLAYER].timer & 4) ? 0x2B : 0x2C;
+        } else if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_LIVES] == 2) {
+            gSpriteEntries[BOMB_SPR_BASE].frame = (gSpriteEntries[BOMB_SPR_PLAYER].timer & 4) ? 0x2C : 0x2D;
         }
     }
 }
 
 // Thrower frame for the current throw.
 static void bomb_game_animate_thrower(void) {
-    s32 step = gSpriteEntries[BOMB_SPR_THROWER].unk1A;
+    s32 step = gSpriteEntries[BOMB_SPR_THROWER].timer;
 
     if (step != 0) {
-        if (gSpriteEntries[BOMB_SPR_PLAYER].unk21 != 0) {
+        if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] != 0) {
             gSpriteEntries[BOMB_SPR_THROWER].frame = 8;
             gSpriteEntries[BOMB_SPR_HELD_BOMB].y = 0x12;
         } else if (step <= 3) {
             gSpriteEntries[BOMB_SPR_THROWER].frame = 8;
         } else {
-            switch (gSpriteEntries[BOMB_SPR_THROWER].unk21) {
+            switch (gSpriteEntries[BOMB_SPR_THROWER].work[BOMB_SPR_THROW_LANE]) {
             case 0:
                 gSpriteEntries[BOMB_SPR_THROWER].frame = step <= 7 ? 0xA : 0xB;
                 break;
@@ -877,14 +902,14 @@ void bomb_game_animate_bombs(void) {
     s32 i;
 
     for (i = 0; i < 8; i++) {
-        switch (gSpriteEntries[BOMB_SPR_BOMBS + i].unk20) {
+        switch (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE]) {
         case 1:
         case 2:
-            gSpriteEntries[BOMB_SPR_BOMBS + i].frame = (gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A & 8) ? 0x10 : 0x11;
-            gSpriteEntries[BOMB_SPR_BOMBS + i].y -= gHalfSineArc[gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A & 0x3F];
+            gSpriteEntries[BOMB_SPR_BOMBS + i].frame = (gSpriteEntries[BOMB_SPR_BOMBS + i].timer & 8) ? 0x10 : 0x11;
+            gSpriteEntries[BOMB_SPR_BOMBS + i].y -= gHalfSineArc[gSpriteEntries[BOMB_SPR_BOMBS + i].timer & 0x3F];
             break;
         case 3:
-            gSpriteEntries[BOMB_SPR_BOMBS + i].frame = (gSpriteEntries[BOMB_SPR_BOMBS + i].unk1A - 1) / 4 + 0x13;
+            gSpriteEntries[BOMB_SPR_BOMBS + i].frame = (gSpriteEntries[BOMB_SPR_BOMBS + i].timer - 1) / 4 + 0x13;
             break;
         }
     }
@@ -894,9 +919,9 @@ void bomb_game_animate_bombs(void) {
 static void bomb_game_clear_effects(void) {
     u16 buf[16];
 
-    if (gSpriteEntries[BOMB_SPR_BANNER].unk20 == 1) {
-        if (!(gSpriteEntries[BOMB_SPR_BANNER].unk1A % 8)) {
-            if (gSpriteEntries[BOMB_SPR_BANNER].unk1A & 0x20) {
+    if (gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP] == 1) {
+        if (!(gSpriteEntries[BOMB_SPR_BANNER].timer % 8)) {
+            if (gSpriteEntries[BOMB_SPR_BANNER].timer & 0x20) {
                 DmaSet(3, 0x05000380, buf, 0x80000010);
                 DmaSet(3, buf + 1, 0x05000384, 0x8000000B);
                 DmaSet(3, buf + 4, 0x05000382, 0x80000001);
@@ -910,20 +935,20 @@ static void bomb_game_clear_effects(void) {
                 DmaSet(3, buf + 9, 0x05000398, 0x80000001);
             }
         }
-        if (gSpriteEntries[BOMB_SPR_BANNER].unk1A & 0x10)
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer & 0x10)
             gSpriteEntries[BOMB_SPR_PLAYER].y =
-                0x80 - (gHalfSineArc[(gSpriteEntries[BOMB_SPR_BANNER].unk1A & 0xF) * 4] >> 2);
-        gSpriteEntries[BOMB_SPR_THROWER].frame = (gSpriteEntries[BOMB_SPR_BANNER].unk1A & 8) ? 0xE : 0xF;
+                0x80 - (gHalfSineArc[(gSpriteEntries[BOMB_SPR_BANNER].timer & 0xF) * 4] >> 2);
+        gSpriteEntries[BOMB_SPR_THROWER].frame = (gSpriteEntries[BOMB_SPR_BANNER].timer & 8) ? 0xE : 0xF;
     }
 }
 
 // GAME OVER: the banner drops and bounces; the thrower juggles two bombs if more than 35 were left, hops if any
 // were, and laughs otherwise.
 static void bomb_game_over_effects(void) {
-    s32 step = gSpriteEntries[BOMB_SPR_BANNER].unk1A;
+    s32 step = gSpriteEntries[BOMB_SPR_BANNER].timer;
     s32 phase;
 
-    if (gSpriteEntries[BOMB_SPR_BANNER].unk20 != 1)
+    if (gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP] != 1)
         return;
 
     if (step > 0x2F) {
@@ -932,8 +957,9 @@ static void bomb_game_over_effects(void) {
         } else if (step <= 0x5F) {
             phase = step & 0xF;
             if (phase == 0)
-                gSpriteEntries[BOMB_SPR_BANNER].unk21++;
-            gSpriteEntries[BOMB_SPR_BANNER].y = 0x50 - gHalfSineArc[phase * 4] / gSpriteEntries[BOMB_SPR_BANNER].unk21;
+                gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_BOUNCE]++;
+            gSpriteEntries[BOMB_SPR_BANNER].y =
+                0x50 - gHalfSineArc[phase * 4] / gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_BOUNCE];
         }
     }
 
@@ -985,12 +1011,12 @@ void bomb_game_draw_bomb_count(void) {
     sprite_entry_init(BOMB_SPR_COUNT_DIGITS + 1, flags, (s8)(gBombGameWork.bombsLeft % 10) + 0x21, 8, 3);
 }
 
-// Shows one LIFE icon per life left (the player sprite's unk20); the others are moved off screen.
+// Shows one LIFE icon per life left (the player sprite's work[BOMB_SPR_PLAYER_LIVES]); the others are moved off screen.
 void bomb_game_draw_lives(void) {
     s32 i;
     for (i = 0; i < 3; i++) {
         s16 y = 0xC8;
-        if (i < gSpriteEntries[BOMB_SPR_PLAYER].unk20)
+        if (i < gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_LIVES])
             y = 0x78;
         gSpriteEntries[BOMB_SPR_LIVES + i].y = y;
     }

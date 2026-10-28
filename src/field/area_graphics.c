@@ -4,6 +4,7 @@
 // the field modules, the field / pre-battle menus and the mode-3 scenes.
 
 #include "global.h"
+#include "constants/field_sprites.h"
 
 void area_load_graphics(void) {
     gBg1Scroll.x = gFieldState.saved_bg1_x;
@@ -276,9 +277,10 @@ void fill_sprite_palettes(s32 sheet_code) {
     }
 }
 
-// guess: sprite unkB (0xFF / 0 / 0x40) from the kind table gSpriteSheetBlendKinds by sprite unk30.
+// Sets the sprite draw order (0xFF / 0 / 0x40) from its sheet's blend kind,
+// gSpriteSheetBlendKinds[work16[FIELD_SPR_SHEET]].
 void sprite_set_blend_from_kind(u8 idx) {
-    u8 blend_kind = gSpriteSheetBlendKinds[gSpriteEntries[idx].unk30];
+    u8 blend_kind = gSpriteSheetBlendKinds[gSpriteEntries[idx].work16[FIELD_SPR_SHEET]];
 
     if (blend_kind == 2)
         gSpriteEntries[idx].order = 0xFF;
@@ -314,7 +316,7 @@ void blend_set_alpha_12_10(void) {
 
 void sprite_entry_init(u8 slot, u16 flags, u32 frame, u8 palette, u8 frame_table) {
     gSpriteEntries[slot].flags = flags;
-    gSpriteEntries[slot].unk32 = flags;
+    gSpriteEntries[slot].work16[FIELD_SPR_FLAGS] = flags;
     gSpriteEntries[slot].frame = frame;
     gSpriteEntries[slot].palette = palette;
     gSpriteEntries[slot].frame_table = frame_table;

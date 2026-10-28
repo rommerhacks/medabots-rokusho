@@ -3,6 +3,7 @@
 // nibble-packed event flags in gEventFlags (event_flag_clear..event_counter_get). Used by field/player_walk,
 // field/field_walk, field/field_update and the map script commands.
 #include "global.h"
+#include "constants/field_sprites.h"
 #include "constants/sprites.h"
 
 void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj) {
@@ -37,7 +38,7 @@ void update_npc_sprite_animations(void) {
     check:
         if (active && (obj->event >> 12) == 6) {
             s32 idx = obj->sprite_slot + 49;
-            if (gSpriteEntries[idx].unk24 != 0xFF)
+            if (gSpriteEntries[idx].work[SPR_ANIM_SCRIPT] != 0xFF)
                 advance_sprite_animation_frame(idx);
         }
     }
@@ -51,7 +52,7 @@ u32 map_cursor_move_and_check_event(void) {
     u8 found;
     s32 i;
 
-    switch (gSpriteEntries[47].unk20) {
+    switch (gSpriteEntries[47].work[FIELD_SPR_FACING]) {
     case 0:
         if ((u8)y == 0)
             blocked = 1;
@@ -92,12 +93,12 @@ u32 map_cursor_move_and_check_event(void) {
                 gFieldWork.cmd_busy = 0;
                 gFieldWork.script_pos = 0;
                 gFieldWork.script_object = i;
-                gSpriteEntries[47].unk25 = 1;
+                gSpriteEntries[47].work[FIELD_SPR_SCRIPT_FLAG] = 1;
                 found = 1;
                 break;
             }
             if ((obj->event & 0xF000) == 0) {
-                u8 *facing = &gSpriteEntries[47].unk20;
+                u8 *facing = &gSpriteEntries[47].work[FIELD_SPR_FACING];
                 u8 slot = obj->sprite_slot + 49;
                 const u8 *facing_table = gNpcFacingTowardPlayer;
                 set_sprite_anim_and_store(slot, facing_table[*facing], obj);
@@ -123,7 +124,7 @@ u32 find_npc_event_match(void) {
                 gFieldWork.cmd_busy = 0;
                 gFieldWork.script_pos = 0;
                 gFieldWork.script_object = i;
-                gSpriteEntries[47].unk25 = 1;
+                gSpriteEntries[47].work[FIELD_SPR_SCRIPT_FLAG] = 1;
                 found = 1;
             }
         }
@@ -185,7 +186,7 @@ s32 check_room_exit_at_position(void) {
     s32 i;
 
     // step one tile in the facing direction (0 up, 1 down, 2 left, 3 right)
-    switch (gSpriteEntries[47].unk20) {
+    switch (gSpriteEntries[47].work[FIELD_SPR_FACING]) {
     case 0:
         if ((u8)y == 0)
             blocked = -1;
@@ -217,7 +218,7 @@ s32 check_room_exit_at_position(void) {
     for (i = 0; exits[i].mask != 0; i++) {
         if (exits[i].x == x && exits[i].y == y && (ret = exits[i].value) != 0) {
             mask = exits[i].mask;
-            switch (gSpriteEntries[47].unk20) {
+            switch (gSpriteEntries[47].work[FIELD_SPR_FACING]) {
             case 0:
                 if (!(mask & 2))
                     ret = -1;
@@ -264,27 +265,28 @@ void update_entity_sprites_on_screen(void) {
                 gSpriteEntries[i + 49].pos_x - gFieldWork.map_origin_x < gBg1Scroll.x + 0xF0)
                 visible = 1;
             if (visible) {
-                if (gSpriteEntries[i + 49].unk2D != 1) {
-                    gSpriteEntries[i + 49].flags = gSpriteEntries[i + 49].unk32;
-                    gSpriteEntries[i + 49].unk2E = 1;
+                if (gSpriteEntries[i + 49].work[FIELD_SPR_BLINK_HIDDEN] != 1) {
+                    gSpriteEntries[i + 49].flags = gSpriteEntries[i + 49].work16[FIELD_SPR_FLAGS];
+                    gSpriteEntries[i + 49].work[FIELD_SPR_ON_SCREEN] = 1;
                     gSpriteEntries[i + 49].x = gSpriteEntries[i + 49].pos_x - gBg1Scroll.x;
                     gSpriteEntries[i + 49].y = gSpriteEntries[i + 49].pos_y - gBg1Scroll.y;
-                    if (gSpriteSheetHasShadow[gSpriteEntries[i + 49].unk30]) {
+                    if (gSpriteSheetHasShadow[gSpriteEntries[i + 49].work16[FIELD_SPR_SHEET]]) {
                         gSpriteEntries[i + 91].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) |
                                                        SPRITE_OBJ_MODE(1) | SPRITE_FLAG_PART_PALETTE;
                         gSpriteEntries[i + 91].x = gSpriteEntries[i + 49].x;
-                        gSpriteEntries[i + 91].y = gSpriteEntries[i + 49].y + (s16)(gSpriteEntries[i + 49].unk2C - 5);
+                        gSpriteEntries[i + 91].y =
+                            gSpriteEntries[i + 49].y + (s16)(gSpriteEntries[i + 49].work[FIELD_SPR_HEIGHT] - 5);
                     } else {
                         gSpriteEntries[i + 91].flags = 0;
                     }
                 } else {
                     gSpriteEntries[i + 49].flags = 0;
-                    gSpriteEntries[i + 49].unk2E = 0;
+                    gSpriteEntries[i + 49].work[FIELD_SPR_ON_SCREEN] = 0;
                     gSpriteEntries[i + 91].flags = 0;
                 }
             } else {
                 gSpriteEntries[i + 49].flags = 0;
-                gSpriteEntries[i + 49].unk2E = 0;
+                gSpriteEntries[i + 49].work[FIELD_SPR_ON_SCREEN] = 0;
                 gSpriteEntries[i + 91].flags = 0;
             }
         }
@@ -471,20 +473,20 @@ bool32 field_player_at_map_edge(u8 dir) {
 }
 
 void set_sprite_animation_state(u8 idx, u8 state) {
-    gSpriteEntries[idx].unk20 = state;
-    gSpriteEntries[idx].unk21 = state;
+    gSpriteEntries[idx].work[FIELD_SPR_FACING] = state;
+    gSpriteEntries[idx].work[FIELD_SPR_ANIM_FACING] = state;
     switch (state) {
     case 0:
-        gSpriteEntries[idx].frame = gSpriteEntries[idx].unk2B * 12;
+        gSpriteEntries[idx].frame = gSpriteEntries[idx].work[FIELD_SPR_ANIM_SET] * 12;
         break;
     case 1:
-        gSpriteEntries[idx].frame = gSpriteEntries[idx].unk2B * 12 + 3;
+        gSpriteEntries[idx].frame = gSpriteEntries[idx].work[FIELD_SPR_ANIM_SET] * 12 + 3;
         break;
     case 2:
-        gSpriteEntries[idx].frame = gSpriteEntries[idx].unk2B * 12 + 6;
+        gSpriteEntries[idx].frame = gSpriteEntries[idx].work[FIELD_SPR_ANIM_SET] * 12 + 6;
         break;
     case 3:
-        gSpriteEntries[idx].frame = gSpriteEntries[idx].unk2B * 12 + 9;
+        gSpriteEntries[idx].frame = gSpriteEntries[idx].work[FIELD_SPR_ANIM_SET] * 12 + 9;
         break;
     }
 }
@@ -540,12 +542,12 @@ void follower_respawn(void) {
                           gFieldWork.follower_sprite_set * 12 + gFieldWork.follower_facing,
                           gFieldWork.follower_sprite_set, 1);
         gSpriteEntries[48].order = 0x40;
-        gSpriteEntries[48].unk2B = gFieldWork.follower_sprite_set;
+        gSpriteEntries[48].work[FIELD_SPR_ANIM_SET] = gFieldWork.follower_sprite_set;
         follower_set_facing(gFieldWork.follower_facing);
         sprite_anim_start(48, sprite_walk_anim_id(48, gFieldWork.follower_facing));
         gFieldWork.follower_tile_x = field_pixel_x_to_tile(gFieldWork.follower_x);
         gFieldWork.follower_tile_y = field_pixel_y_to_tile(gFieldWork.follower_y);
-        gSpriteEntries[48].unk30 = area_sprite_sheet_id(gSpriteEntries[48].unk2B);
+        gSpriteEntries[48].work16[FIELD_SPR_SHEET] = area_sprite_sheet_id(gSpriteEntries[48].work[FIELD_SPR_ANIM_SET]);
         sprite_set_blend_from_kind(48);
         sprite_entry_init(90,
                           SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) |
@@ -564,7 +566,7 @@ void follower_snap_to_player(void) {
         gFieldWork.follower_y = gFieldWork.player_y;
         gFieldWork.follower_tile_x = field_pixel_x_to_tile(gFieldWork.follower_x);
         gFieldWork.follower_tile_y = field_pixel_y_to_tile(gFieldWork.follower_y);
-        follower_set_facing(gSpriteEntries[47].unk20);
+        follower_set_facing(gSpriteEntries[47].work[FIELD_SPR_FACING]);
     }
 }
 
@@ -650,5 +652,5 @@ u32 event_counter_get(u16 id) {
 
 void load_battle_terrain_data(void) {
     memcpy_u8(gFormTileActions[gFieldWork.loaded_form], gFieldWork.tile_actions, 8);
-    gSpriteEntries[47].unk2A = gPlayerFormSpeedIds[gFieldWork.player_form];
+    gSpriteEntries[47].work[FIELD_SPR_SPEED] = gPlayerFormSpeedIds[gFieldWork.player_form];
 }

@@ -6,6 +6,7 @@
 // from the ROM strings): map / player form, EVENT flags, PLAYER position, MAP_EFFECT, KWG, KOMA (sprite
 // preview), MESS (message viewer), sound test.
 #include "global.h"
+#include "constants/field_sprites.h"
 #include "constants/sprites.h"
 
 static void field_debug_enter_page(u32 idx);
@@ -737,18 +738,18 @@ static inline void init_field_sprite(u8 row, u8 col) {
     u8 slot = 49 + row * 4 + col;
     u8 j = slot + 42;
 
-    gSpriteEntries[slot].unk30 = gFieldDebug.preview_sprite_set;
+    gSpriteEntries[slot].work16[FIELD_SPR_SHEET] = gFieldDebug.preview_sprite_set;
     gSpriteEntries[slot].pos_x = gFieldPlayerX + (col * 32 - 48);
     gSpriteEntries[slot].pos_y = gFieldPlayerY + (16 - row * 32);
     gSpriteEntries[slot].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
-    gSpriteEntries[slot].unk2E = 1;
+    gSpriteEntries[slot].work[FIELD_SPR_ON_SCREEN] = 1;
     gSpriteEntries[j].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[slot].x = gSpriteEntries[slot].pos_x - (u16)gBg1Scroll.x;
     gSpriteEntries[slot].y = gSpriteEntries[slot].pos_y - (u16)gBg1Scroll.y;
     gSpriteEntries[j].x = gSpriteEntries[slot].x;
-    gSpriteEntries[j].y = gSpriteEntries[slot].y + (s16)(gSpriteEntries[slot].unk2C - 5);
+    gSpriteEntries[j].y = gSpriteEntries[slot].y + (s16)(gSpriteEntries[slot].work[FIELD_SPR_HEIGHT] - 5);
     gSpriteEntries[slot].frame = row * 48 + col * 15;
     sprite_anim_start(slot, 4 + row * 16 + col * 5);
 }
@@ -772,16 +773,16 @@ void field_debug_draw_sprite_preview(void) {
 
         sprite_entry_clear(slot);
         sprite_entry_clear(j);
-        gSpriteEntries[slot].unk30 = gFieldDebug.preview_sprite_set;
+        gSpriteEntries[slot].work16[FIELD_SPR_SHEET] = gFieldDebug.preview_sprite_set;
         if (gSpriteSheetPreviewKinds[gFieldDebug.preview_sprite_set] == 3) {
             sprite_entry_init(slot,
                               SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE,
                               sprite_code_anim_index(0), sprite_code_kind(0), 1);
-            gSpriteEntries[slot].unk2B = sprite_code_kind(0);
+            gSpriteEntries[slot].work[FIELD_SPR_ANIM_SET] = sprite_code_kind(0);
             gSpriteEntries[slot].pos_x = gFieldPlayerX - 0x30;
             gSpriteEntries[slot].pos_y = gFieldPlayerY + 0x30;
             gEntityStates[slot].active = 0xFFFF;
-            gSpriteEntries[slot].unk2C = zero = 0;
+            gSpriteEntries[slot].work[FIELD_SPR_HEIGHT] = zero = 0;
             sprite_anim_start(slot, 0x60);
         }
         gSpriteEntries[j].flags = zero;
@@ -789,7 +790,7 @@ void field_debug_draw_sprite_preview(void) {
             gSpriteEntries[j].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) |
                                       SPRITE_OBJ_MODE(1) | SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[j].x = gSpriteEntries[slot].x;
-            gSpriteEntries[j].y = gSpriteEntries[slot].y + (s16)(gSpriteEntries[slot].unk2C - 5);
+            gSpriteEntries[j].y = gSpriteEntries[slot].y + (s16)(gSpriteEntries[slot].work[FIELD_SPR_HEIGHT] - 5);
         }
     }
 }

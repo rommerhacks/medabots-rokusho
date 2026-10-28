@@ -13,6 +13,7 @@
 // No Defense), unkCA = Impair's part kind + 1, unkCB / unkCC = durations (clamp_1_99).
 
 #include "global.h"
+#include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
 void impair_run(void) {
@@ -44,9 +45,9 @@ void impair_portrait_spawn(void) {
     gSpriteEntries[0x21].scale_y = 0x40;
     gSpriteEntries[0x21].angle = 0;
     gSpriteEntries[0x21].frame = 0x4E00;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[0x5D + gBattleWork.target * 4].x;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
-    gSpriteEntries[0x21].unk24 = 6;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_X] = gSpriteEntries[0x5D + gBattleWork.target * 4].x;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_Y] = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
+    gSpriteEntries[0x21].work[SPR_MOTION_TABLE] = 6;
     gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
@@ -61,7 +62,7 @@ void impair_part_icon_spawn(void) {
     gSpriteEntries[0x22].y = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
     gSpriteEntries[0x22].palette = 7;
     gSpriteEntries[0x22].order = 0xE0;
-    gSpriteEntries[0x22].unk23 = 0;
+    gSpriteEntries[0x22].work[FX_SPR_STEP] = 0;
     switch (gBattleWork.targetPart) {
     case 1:
         gSpriteEntries[0x22].frame = 0x4E02;
@@ -186,9 +187,9 @@ void confusion_ball_spawn(void) {
     gSpriteEntries[0x21].angle = 0;
     gSpriteEntries[0x21].palette = 6;
     gSpriteEntries[0x21].frame = 0x4F00;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[0x5D + gBattleWork.target * 4].x;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
-    gSpriteEntries[0x21].unk24 = 6;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_X] = gSpriteEntries[0x5D + gBattleWork.target * 4].x;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_Y] = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
+    gSpriteEntries[0x21].work[SPR_MOTION_TABLE] = 6;
     gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
@@ -272,10 +273,10 @@ void use_drain_bubble_spawn(void) {
     gSpriteEntries[0x21].angle = 0;
     gSpriteEntries[0x21].palette = 6;
     gSpriteEntries[0x21].frame = 0x5000;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[0x5D + gBattleWork.target * 4].x;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
-    gSpriteEntries[0x21].unk24 = 3;
-    gSpriteEntries[0x21].unk23 = 0;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_X] = gSpriteEntries[0x5D + gBattleWork.target * 4].x;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_Y] = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
+    gSpriteEntries[0x21].work[SPR_MOTION_TABLE] = 3;
+    gSpriteEntries[0x21].work[FX_SPR_STEP] = 0;
     gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
@@ -308,12 +309,12 @@ void use_drain_drop_spawn(void) {
     gSpriteEntries[0x22].palette = 7;
     gSpriteEntries[0x22].order = 0xE0;
     gSpriteEntries[0x22].frame = 0x5001;
-    gSpriteEntries[0x22].unk30 = gSpriteEntries[0x5D + gBattleWork.actor * 4].x;
-    gSpriteEntries[0x22].unk32 = gSpriteEntries[0x5D + gBattleWork.actor * 4].y - 4;
-    gSpriteEntries[0x22].unk24 = 3;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[0x5D + gBattleWork.actor * 4].x;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[0x5D + gBattleWork.actor * 4].y - 4;
-    gSpriteEntries[0x21].unk24 = 3;
+    gSpriteEntries[0x22].work16[FX_SPR_TARGET_X] = gSpriteEntries[0x5D + gBattleWork.actor * 4].x;
+    gSpriteEntries[0x22].work16[FX_SPR_TARGET_Y] = gSpriteEntries[0x5D + gBattleWork.actor * 4].y - 4;
+    gSpriteEntries[0x22].work[SPR_MOTION_TABLE] = 3;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_X] = gSpriteEntries[0x5D + gBattleWork.actor * 4].x;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_Y] = gSpriteEntries[0x5D + gBattleWork.actor * 4].y - 4;
+    gSpriteEntries[0x21].work[SPR_MOTION_TABLE] = 3;
     play_sound_effect(0x6F);
     gBattleWork.step++;
 }
@@ -435,9 +436,9 @@ void no_escape_defense_icon_load(void) {
     gSpriteEntries[0x21].angle = 0;
     gSpriteEntries[0x21].palette = 7;
     gSpriteEntries[0x21].frame = 0x5200;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[0x5D + gBattleWork.target * 4].x;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
-    gSpriteEntries[0x21].unk24 = 6;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_X] = gSpriteEntries[0x5D + gBattleWork.target * 4].x;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_Y] = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
+    gSpriteEntries[0x21].work[SPR_MOTION_TABLE] = 6;
     gGameWork.stepTimer = 0x3C;
     gBattleWork.step++;
 }
@@ -451,7 +452,7 @@ void no_escape_defense_icon_spawn(void) {
     gSpriteEntries[0x22].y = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
     gSpriteEntries[0x22].palette = 7;
     gSpriteEntries[0x22].order = 0xE0;
-    gSpriteEntries[0x22].unk23 = 0;
+    gSpriteEntries[0x22].work[FX_SPR_STEP] = 0;
     gSpriteEntries[0x22].frame = 0x5201;
     play_sound_effect(0x6A);
     gBattleWork.step++;
@@ -506,10 +507,10 @@ void forcedrain_glass_spawn(void) {
     gSpriteEntries[0x21].scale_y = 0x40;
     gSpriteEntries[0x21].angle = 0;
     gSpriteEntries[0x21].palette = 7;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[0x5D + gBattleWork.target * 4].x;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
-    gSpriteEntries[0x21].unk24 = 6;
-    gSpriteEntries[0x21].unk23 = 0;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_X] = gSpriteEntries[0x5D + gBattleWork.target * 4].x;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_Y] = gSpriteEntries[0x5D + gBattleWork.target * 4].y - 4;
+    gSpriteEntries[0x21].work[SPR_MOTION_TABLE] = 6;
+    gSpriteEntries[0x21].work[FX_SPR_STEP] = 0;
     gGameWork.stepCounter = 0x48;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[gGameWork.stepCounter], 0x21);
     gGameWork.stepTimer = 0x3C;
@@ -549,7 +550,7 @@ void forcedrain_gauge_drain(void) {
     target_panels_show(0);
     done = medaforce_gauge_drain_step(gBattleWork.actor);
     process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.stepCounter], 0x21);
-    if (gSpriteEntries[0x21].unk22 == 0xFF)
+    if (gSpriteEntries[0x21].work[SPR_CMD_STATE] == SPR_CMD_ENDED)
         done++;
     if (done == 2) {
         clear_battle_ui_tilemaps();
@@ -566,10 +567,10 @@ void forcedrain_glass_return(void) {
     gSpriteEntries[0x21].scale_y = 0x40;
     gSpriteEntries[0x21].angle = 0;
     gSpriteEntries[0x21].palette = 7;
-    gSpriteEntries[0x21].unk30 = gSpriteEntries[0x5D + gBattleWork.actor * 4].x;
-    gSpriteEntries[0x21].unk32 = gSpriteEntries[0x5D + gBattleWork.actor * 4].y - 4;
-    gSpriteEntries[0x21].unk24 = 6;
-    gSpriteEntries[0x21].unk23 = 0;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_X] = gSpriteEntries[0x5D + gBattleWork.actor * 4].x;
+    gSpriteEntries[0x21].work16[FX_SPR_TARGET_Y] = gSpriteEntries[0x5D + gBattleWork.actor * 4].y - 4;
+    gSpriteEntries[0x21].work[SPR_MOTION_TABLE] = 6;
+    gSpriteEntries[0x21].work[FX_SPR_STEP] = 0;
     gBattleWork.step++;
 }
 
@@ -654,7 +655,7 @@ void team_attack_turrets_anim(void) {
 
     for (i = 0; i <= 2; i++) {
         process_sprite_anim_commands(gBattleSpriteAnimScripts[0x38], i + 0x21);
-        if (gSpriteEntries[i + 0x21].unk22 == 0xFF)
+        if (gSpriteEntries[i + 0x21].work[SPR_CMD_STATE] == SPR_CMD_ENDED)
             done = 1;
     }
     if (done) {
@@ -702,14 +703,14 @@ void counter_attack_ball_spawn(void) {
     gSpriteEntries[0x21].palette = 7;
     gSpriteEntries[0x21].order = 0xF0;
     gSpriteEntries[0x21].frame = 0x616;
-    gSpriteEntries[0x21].unk23 = 0;
+    gSpriteEntries[0x21].work[FX_SPR_STEP] = 0;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x4A], 0x21);
     gBattleWork.step++;
 }
 
 void counter_attack_glove_show(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x4A], 0x21);
-    if (gSpriteEntries[0x21].unk22 == 0xFF) {
+    if (gSpriteEntries[0x21].work[SPR_CMD_STATE] == SPR_CMD_ENDED) {
         gSpriteEntries[0x21].scale_x = 0x80;
         gSpriteEntries[0x21].scale_y = 0x80;
         gSpriteEntries[0x21].frame = 0x5604;

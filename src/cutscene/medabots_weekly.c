@@ -8,6 +8,16 @@
 #include "global.h"
 #include "constants/sprites.h"
 
+// gSpriteEntries work[] / work16[] indices
+#define WEEKLY_SPR_EFFECT 0x0       // gWeeklySpriteEffects index + 1, 0 = none
+#define WEEKLY_SPR_EFFECT_STEP 0x1  // curtain effects: steps taken (gWeeklyCurtainOpenTimes / CloseTimes index)
+#define WEEKLY_SPR_CYCLE_STEP 0x1   // cycle anim (sprites 0x16-0x19): gCycleAnimFrameOffsets index, 0-3
+#define WEEKLY_SPR_NEXT_STRIP 0x2   // curtain strips: the next strip's sprite, 0xFF = the last one (0 once it is done)
+#define WEEKLY_SPR_CYCLE_PERIOD 0x3 // cycle anim: frames per frame step, 0 = stopped
+#define WEEKLY_SPR_BASE_FRAME 0     // work16: cycle anim base frame
+#define WEEKLY_SPR_CYCLE_TIMER 1    // work16: cycle anim frame counter
+#define WEEKLY_SPR_DURATION 2       // work16: frames the effect runs (walk / jump effects)
+
 // Scrolls BG3 down one line every other frame (gMedabotsWeekly.scrollBg3, the lecture backdrop).
 void weekly_scroll_bg3(void) {
     if (gFrameCounter & 1)
@@ -88,15 +98,15 @@ void weekly_load_studio(void) {
         gSpriteEntries[i].x = i * 8 + 0x78;
         gSpriteEntries[i].y = 0;
         gSpriteEntries[i].order = i + 0x40;
-        gSpriteEntries[i].unk22 = i + 1;
+        gSpriteEntries[i].work[WEEKLY_SPR_NEXT_STRIP] = i + 1;
         sprite_entry_init(i + 11, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2), 0x50E, 4, 3);
         gSpriteEntries[i + 11].x = 0x70 - i * 8;
         gSpriteEntries[i + 11].y = 0;
         gSpriteEntries[i + 11].order = i + 0x40;
-        gSpriteEntries[i + 11].unk22 = i + 12;
+        gSpriteEntries[i + 11].work[WEEKLY_SPR_NEXT_STRIP] = i + 12;
     }
-    gSpriteEntries[10].unk22 = 0xFF;
-    gSpriteEntries[21].unk22 = 0xFF;
+    gSpriteEntries[10].work[WEEKLY_SPR_NEXT_STRIP] = 0xFF;
+    gSpriteEntries[21].work[WEEKLY_SPR_NEXT_STRIP] = 0xFF;
 
     for (i = 0; i <= 3; i++) {
         sprite_entry_init(i + 22, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3), 0, i, 1);
@@ -219,7 +229,7 @@ void weekly_open_curtains(void) {
 
 // Sub-state 7: once the curtains are open, characters 22 and 23 walk on from both sides.
 void weekly_enter_pair(void) {
-    if (gSpriteEntries[10].unk22 == 0) {
+    if (gSpriteEntries[10].work[WEEKLY_SPR_NEXT_STRIP] == 0) {
         sprite_cycle_anim_start(0x16, 0x2D, 8);
         sprite_cycle_anim_start(0x17, 0x36, 8);
         weekly_set_sprite_effect(5, 0x16, 0x48);
@@ -230,7 +240,7 @@ void weekly_enter_pair(void) {
 
 // Sub-state 8: character 24 jumps on stage.
 void weekly_enter_jumper(void) {
-    if (gSpriteEntries[22].unk20 == 0) {
+    if (gSpriteEntries[22].work[WEEKLY_SPR_EFFECT] == 0) {
         sprite_cycle_anim_stop(0x16, 0x27);
         sprite_cycle_anim_stop(0x17, 0x33);
         sprite_cycle_anim_start(0x18, 0x45, 8);
@@ -241,7 +251,7 @@ void weekly_enter_jumper(void) {
 
 // Sub-state 9: character 25 walks on.
 void weekly_enter_host(void) {
-    if (gSpriteEntries[24].unk20 == 0) {
+    if (gSpriteEntries[24].work[WEEKLY_SPR_EFFECT] == 0) {
         sprite_cycle_anim_start(0x18, 0x3F, 0xC);
         sprite_cycle_anim_start(0x19, 0x4E, 8);
         weekly_set_sprite_effect(6, 0x19, 0x60);
@@ -251,7 +261,7 @@ void weekly_enter_host(void) {
 
 // Sub-state 10: waits for character 25 to arrive.
 void weekly_wait_host(void) {
-    if (gSpriteEntries[25].unk20 == 0) {
+    if (gSpriteEntries[25].work[WEEKLY_SPR_EFFECT] == 0) {
         sprite_cycle_anim_stop(0x19, 0x4B);
         gGameSubState++;
     }
@@ -383,7 +393,7 @@ void weekly_lecture(void) {
         gSpriteEntries[0].x = 0x42;
         gSpriteEntries[0].y = -8;
         gSpriteEntries[0].order = 0x40;
-        gSpriteEntries[0].unk1A = 0;
+        gSpriteEntries[0].timer = 0;
         gSceneWork.timer++;
         break;
     case 3:
@@ -415,12 +425,12 @@ void weekly_back_to_studio(void) {
     gSpriteEntries[0].x = 0xD4;
     gSpriteEntries[0].y = 0;
     gSpriteEntries[0].order = 0x4A;
-    gSpriteEntries[10].unk22 = 0xFF;
+    gSpriteEntries[10].work[WEEKLY_SPR_NEXT_STRIP] = 0xFF;
     sprite_entry_init(0xB, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3), 0x50E, 4, 3);
     gSpriteEntries[11].x = 0x14;
     gSpriteEntries[11].y = 0;
     gSpriteEntries[11].order = 0x4A;
-    gSpriteEntries[21].unk22 = 0xFF;
+    gSpriteEntries[21].work[WEEKLY_SPR_NEXT_STRIP] = 0xFF;
     for (i = 0; i < 4; i++) {
         sprite_entry_init(i + 0x16, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3),
                           (u16)(i * 12 + 0x27), i, 1);
@@ -498,7 +508,7 @@ void weekly_closing_talk(void) {
 
 // Sub-state 16: once the curtains are closed, fades the music out and leaves (sub-state 17).
 void weekly_wait_curtains_closed(void) {
-    if (gSpriteEntries[10].unk22 == 0) {
+    if (gSpriteEntries[10].work[WEEKLY_SPR_NEXT_STRIP] == 0) {
         fade_out_music(0x20);
         gSceneWork.nextSubState = 0x11;
         gGameSubState = 2;
@@ -511,18 +521,19 @@ void weekly_exit(void) {
     field_return_from_scene(3);
 }
 
-// Runs each sprite's effect (unk20 = gWeeklySpriteEffects index + 1) and counts its frames in unk1A.
+// Runs each sprite's effect (work[WEEKLY_SPR_EFFECT] = gWeeklySpriteEffects index + 1) and counts its frames in
+// timer.
 // Effects return 1 to go on, 0 when done, 0xFF to delete the sprite.
 void weekly_run_sprite_effects(void) {
     u8 i;
 
     for (i = 0; i < 0x1A; i++) {
-        if (gSpriteEntries[i].unk20 != 0) {
-            gSpriteEntries[i].unk1A++;
-            switch (gWeeklySpriteEffects[gSpriteEntries[i].unk20 - 1](i)) {
+        if (gSpriteEntries[i].work[WEEKLY_SPR_EFFECT] != 0) {
+            gSpriteEntries[i].timer++;
+            switch (gWeeklySpriteEffects[gSpriteEntries[i].work[WEEKLY_SPR_EFFECT] - 1](i)) {
             case 0:
-                gSpriteEntries[i].unk20 = 0;
-                gSpriteEntries[i].unk21 = 0;
+                gSpriteEntries[i].work[WEEKLY_SPR_EFFECT] = 0;
+                gSpriteEntries[i].work[WEEKLY_SPR_EFFECT_STEP] = 0;
                 break;
             case 1:
                 break;
@@ -543,14 +554,15 @@ void sprite_cycle_anim_update(void) {
     memcpy_optimized(frame_offsets, gCycleAnimFrameOffsets, 4);
     for (j = 0, mask = 1; j <= 3; j++, mask <<= 1) {
         if (gWeeklyCycleAnimMask & mask) {
-            s32 phase = gSpriteEntries[j + 0x16].unk32 % gSpriteEntries[j + 0x16].unk23;
+            s32 phase = gSpriteEntries[j + 0x16].work16[WEEKLY_SPR_CYCLE_TIMER] %
+                        gSpriteEntries[j + 0x16].work[WEEKLY_SPR_CYCLE_PERIOD];
             if (phase == 0) {
-                if (++gSpriteEntries[j + 0x16].unk21 > 3)
-                    gSpriteEntries[j + 0x16].unk21 = phase;
-                gSpriteEntries[j + 0x16].frame =
-                    gSpriteEntries[j + 0x16].unk30 + frame_offsets[gSpriteEntries[j + 0x16].unk21];
+                if (++gSpriteEntries[j + 0x16].work[WEEKLY_SPR_CYCLE_STEP] > 3)
+                    gSpriteEntries[j + 0x16].work[WEEKLY_SPR_CYCLE_STEP] = phase;
+                gSpriteEntries[j + 0x16].frame = gSpriteEntries[j + 0x16].work16[WEEKLY_SPR_BASE_FRAME] +
+                                                 frame_offsets[gSpriteEntries[j + 0x16].work[WEEKLY_SPR_CYCLE_STEP]];
             }
-            gSpriteEntries[j + 0x16].unk32++;
+            gSpriteEntries[j + 0x16].work16[WEEKLY_SPR_CYCLE_TIMER]++;
         }
     }
 }
@@ -559,8 +571,8 @@ void sprite_cycle_anim_start(u8 sprite, u16 frame, u8 period) {
     u8 mask = 1 << (sprite - 0x16);
 
     gWeeklyCycleAnimMask |= mask;
-    gSpriteEntries[sprite].unk23 = period;
-    gSpriteEntries[sprite].unk30 = frame;
+    gSpriteEntries[sprite].work[WEEKLY_SPR_CYCLE_PERIOD] = period;
+    gSpriteEntries[sprite].work16[WEEKLY_SPR_BASE_FRAME] = frame;
     gSpriteEntries[sprite].frame = frame;
 }
 
@@ -568,12 +580,12 @@ void sprite_cycle_anim_stop(u8 sprite, u16 frame) {
     u8 mask = 1 << (sprite - 0x16);
 
     gWeeklyCycleAnimMask &= ~mask;
-    gSpriteEntries[sprite].unk23 = 0;
+    gSpriteEntries[sprite].work[WEEKLY_SPR_CYCLE_PERIOD] = 0;
     gSpriteEntries[sprite].frame = frame;
 }
 
-// Effect 1: a right-curtain strip slides right (gWeeklyCurtainOpenTimes) and starts the next strip (unk22)
-// halfway; deleted off screen.
+// Effect 1: a right-curtain strip slides right (gWeeklyCurtainOpenTimes) and starts the next strip
+// (work[WEEKLY_SPR_NEXT_STRIP]) halfway; deleted off screen.
 u32 weekly_fx_right_curtain_open(u8 sprite) {
     s8 step_times[8];
     struct SpriteEntry *curtain;
@@ -582,16 +594,17 @@ u32 weekly_fx_right_curtain_open(u8 sprite) {
     memcpy_optimized(step_times, gWeeklyCurtainOpenTimes, 8);
     sprites = gSpriteEntries;
     curtain = &sprites[sprite];
-    if (curtain->unk21 < 8) {
-        if (curtain->unk1A == step_times[curtain->unk21]) {
+    if (curtain->work[WEEKLY_SPR_EFFECT_STEP] < 8) {
+        if (curtain->timer == step_times[curtain->work[WEEKLY_SPR_EFFECT_STEP]]) {
             curtain->x++;
-            curtain->unk21++;
+            curtain->work[WEEKLY_SPR_EFFECT_STEP]++;
         }
     } else {
         curtain->x++;
     }
-    if (gSpriteEntries[sprite].unk21 == 4 && gSpriteEntries[sprite].unk22 != 0xFF)
-        weekly_set_sprite_effect(1, gSpriteEntries[sprite].unk22, 0);
+    if (gSpriteEntries[sprite].work[WEEKLY_SPR_EFFECT_STEP] == 4 &&
+        gSpriteEntries[sprite].work[WEEKLY_SPR_NEXT_STRIP] != 0xFF)
+        weekly_set_sprite_effect(1, gSpriteEntries[sprite].work[WEEKLY_SPR_NEXT_STRIP], 0);
     if (gSpriteEntries[sprite].x == 0xC9)
         gSpriteEntries[sprite].flags = (gSpriteEntries[sprite].flags & (u16)~SPRITE_PRIORITY(2)) | SPRITE_PRIORITY(3);
     else if (gSpriteEntries[sprite].x > 0xCF)
@@ -608,16 +621,17 @@ u32 weekly_fx_left_curtain_open(u8 sprite) {
     memcpy_optimized(step_times, gWeeklyCurtainOpenTimes, 8);
     sprites = gSpriteEntries;
     curtain = &sprites[sprite];
-    if (curtain->unk21 < 8) {
-        if (curtain->unk1A == step_times[curtain->unk21]) {
+    if (curtain->work[WEEKLY_SPR_EFFECT_STEP] < 8) {
+        if (curtain->timer == step_times[curtain->work[WEEKLY_SPR_EFFECT_STEP]]) {
             curtain->x--;
-            curtain->unk21++;
+            curtain->work[WEEKLY_SPR_EFFECT_STEP]++;
         }
     } else {
         curtain->x--;
     }
-    if (gSpriteEntries[sprite].unk21 == 4 && gSpriteEntries[sprite].unk22 != 0xFF)
-        weekly_set_sprite_effect(2, gSpriteEntries[sprite].unk22, 0);
+    if (gSpriteEntries[sprite].work[WEEKLY_SPR_EFFECT_STEP] == 4 &&
+        gSpriteEntries[sprite].work[WEEKLY_SPR_NEXT_STRIP] != 0xFF)
+        weekly_set_sprite_effect(2, gSpriteEntries[sprite].work[WEEKLY_SPR_NEXT_STRIP], 0);
     if (gSpriteEntries[sprite].x == 0x1F)
         gSpriteEntries[sprite].flags = (gSpriteEntries[sprite].flags & (u16)~SPRITE_PRIORITY(2)) | SPRITE_PRIORITY(3);
     else if (gSpriteEntries[sprite].x < 0x19)
@@ -636,10 +650,10 @@ u32 weekly_fx_right_curtain_close(u8 sprite) {
     memcpy_optimized(step_times, gWeeklyCurtainCloseTimes, 12);
     sprites = gSpriteEntries;
     curtain = &sprites[sprite];
-    if (curtain->unk21 <= 11) {
-        if (curtain->unk1A == step_times[curtain->unk21]) {
+    if (curtain->work[WEEKLY_SPR_EFFECT_STEP] <= 11) {
+        if (curtain->timer == step_times[curtain->work[WEEKLY_SPR_EFFECT_STEP]]) {
             curtain->x--;
-            if (++curtain->unk21 == 8 && curtain->unk22 != 0xFF) {
+            if (++curtain->work[WEEKLY_SPR_EFFECT_STEP] == 8 && curtain->work[WEEKLY_SPR_NEXT_STRIP] != 0xFF) {
                 if (sprite == 0) {
                     sprite_entry_init(1, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3), 0x50E, 4, 3);
                     next = 1;
@@ -660,8 +674,8 @@ u32 weekly_fx_right_curtain_close(u8 sprite) {
             sprites[0].flags = (sprites[0].flags & (u16)~SPRITE_FLAG_PRIORITY_MASK) | SPRITE_PRIORITY(2);
             sprites[1].flags = (sprites[1].flags & (u16)~SPRITE_FLAG_PRIORITY_MASK) | SPRITE_PRIORITY(2);
         }
-        if (curtain->unk22 == 0xFF)
-            curtain->unk22 = 0;
+        if (curtain->work[WEEKLY_SPR_NEXT_STRIP] == 0xFF)
+            curtain->work[WEEKLY_SPR_NEXT_STRIP] = 0;
         return 0;
     }
     return 1;
@@ -678,10 +692,10 @@ u32 weekly_fx_left_curtain_close(u8 sprite) {
     memcpy_optimized(step_times, gWeeklyCurtainCloseTimes, 12);
     sprites = gSpriteEntries;
     curtain = &sprites[sprite];
-    if (curtain->unk21 <= 11) {
-        if (curtain->unk1A == step_times[curtain->unk21]) {
+    if (curtain->work[WEEKLY_SPR_EFFECT_STEP] <= 11) {
+        if (curtain->timer == step_times[curtain->work[WEEKLY_SPR_EFFECT_STEP]]) {
             curtain->x++;
-            if (++curtain->unk21 == 8 && curtain->unk22 != 0xFF) {
+            if (++curtain->work[WEEKLY_SPR_EFFECT_STEP] == 8 && curtain->work[WEEKLY_SPR_NEXT_STRIP] != 0xFF) {
                 if (sprite == 11) {
                     sprite_entry_init(12, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3), 0x50E, 4, 3);
                     next = 12;
@@ -702,8 +716,8 @@ u32 weekly_fx_left_curtain_close(u8 sprite) {
             curtain->flags = (curtain->flags & (u16)~SPRITE_FLAG_PRIORITY_MASK) | SPRITE_PRIORITY(2);
             sprites[12].flags = (sprites[12].flags & (u16)~SPRITE_FLAG_PRIORITY_MASK) | SPRITE_PRIORITY(2);
         }
-        if (curtain->unk22 != 0xFF)
-            curtain->unk22 = 0;
+        if (curtain->work[WEEKLY_SPR_NEXT_STRIP] != 0xFF)
+            curtain->work[WEEKLY_SPR_NEXT_STRIP] = 0;
         return 0;
     }
     return 1;
@@ -717,10 +731,10 @@ u32 weekly_fx_walk_right(u8 sprite) {
 
     actor->x++;
     sprites[(u16)(sprite + 4)].x = actor->x;
-    if (actor->unk34 <= actor->unk1A) {
+    if (actor->work16[WEEKLY_SPR_DURATION] <= actor->timer) {
         frame = actor->frame / 12;
         frame = frame * 12;
-        actor->frame = actor->unk30 = frame + 3;
+        actor->frame = actor->work16[WEEKLY_SPR_BASE_FRAME] = frame + 3;
         weekly_set_sprite_effect(8, sprite, 0);
     }
     return 1;
@@ -734,10 +748,10 @@ u32 weekly_fx_walk_left(u8 sprite) {
 
     actor->x--;
     sprites[(u16)(sprite + 4)].x = actor->x;
-    if (actor->unk34 <= actor->unk1A) {
+    if (actor->work16[WEEKLY_SPR_DURATION] <= actor->timer) {
         frame = actor->frame / 12;
         frame = frame * 12;
-        actor->frame = actor->unk30 = frame + 3;
+        actor->frame = actor->work16[WEEKLY_SPR_BASE_FRAME] = frame + 3;
         weekly_set_sprite_effect(8, sprite, 0);
     }
     return 1;
@@ -750,10 +764,10 @@ u32 weekly_fx_jump_in(u8 sprite) {
 
     actor->x++;
     sprites[(u16)(sprite + 4)].x = actor->x;
-    actor->y = 0x32 - (gSineTable[actor->unk1A >> 1] >> 4);
+    actor->y = 0x32 - (gSineTable[actor->timer >> 1] >> 4);
     if (actor->x == 0x20)
         actor->flags = (actor->flags & (u16)~SPRITE_FLAG_PRIORITY_MASK) | SPRITE_PRIORITY(2);
-    if (actor->unk34 <= actor->unk1A) {
+    if (actor->work16[WEEKLY_SPR_DURATION] <= actor->timer) {
         actor->flags = (actor->flags & (u16)~SPRITE_PRIORITY(2)) | SPRITE_PRIORITY(3);
         return 0;
     }
@@ -767,7 +781,7 @@ u32 weekly_fx_step_down(u8 sprite) {
 
     actor->y++;
     sprites[(u16)(sprite + 4)].y++;
-    if (actor->unk1A > 7)
+    if (actor->timer > 7)
         return 0;
     return 1;
 }
@@ -776,10 +790,10 @@ void weekly_set_sprite_effect(u8 effect, u8 sprite, u16 duration) {
     struct SpriteEntry *sprites = gSpriteEntries;
     struct SpriteEntry *entry = &sprites[sprite];
 
-    entry->unk20 = effect;
-    entry->unk21 = 0;
-    entry->unk34 = duration;
-    entry->unk1A = 0;
+    entry->work[WEEKLY_SPR_EFFECT] = effect;
+    entry->work[WEEKLY_SPR_EFFECT_STEP] = 0;
+    entry->work16[WEEKLY_SPR_DURATION] = duration;
+    entry->timer = 0;
 }
 
 // Runs the current lecture step; nonzero once it is done.
@@ -801,12 +815,12 @@ u32 weekly_lecture_attach_head(void) {
         sprites[1].y = sprites[2].y += 2;
     else if (sprites[2].y <= 0x41)
         sprites[1].y = sprites[2].y += 1;
-    else if (sprites[2].unk1A <= 0x1F)
-        sprites[2].unk1A++;
+    else if (sprites[2].timer <= 0x1F)
+        sprites[2].timer++;
     else if (sprites[2].x <= 0x40) {
         clear_sprite_entry(6);
         play_sound_effect(0x54);
-        sprites[2].unk1A = 0;
+        sprites[2].timer = 0;
         gSceneWork.progress.lecture.state++;
         return 1;
     } else
@@ -825,7 +839,7 @@ u32 weekly_lecture_attach_arm_from_left(void) {
         *y += 2;
     else if (*y <= 0x39)
         *y += 1;
-    else if (*(wait = &sprites[3].unk1A) <= 0x1F)
+    else if (*(wait = &sprites[3].timer) <= 0x1F)
         (*wait)++;
     else if (*(x = &sprites[3].x) > 0x37) {
         clear_sprite_entry(7);
@@ -849,7 +863,7 @@ u32 weekly_lecture_attach_arm_from_right(void) {
         *y += 2;
     else if (*y <= 0x39)
         *y += 1;
-    else if (*(wait = &sprites[4].unk1A) <= 0x1F)
+    else if (*(wait = &sprites[4].timer) <= 0x1F)
         (*wait)++;
     else if (*(x = &sprites[4].x) <= 0x44) {
         clear_sprite_entry(8);
@@ -873,7 +887,7 @@ u32 weekly_lecture_attach_legs(void) {
         *y += 2;
     else if (*y <= 0x41)
         *y += 1;
-    else if (*(wait = &sprites[5].unk1A) <= 0x1F)
+    else if (*(wait = &sprites[5].timer) <= 0x1F)
         (*wait)++;
     else if (*(x = &sprites[5].x) <= 0x40) {
         clear_sprite_entry(9);
@@ -895,11 +909,11 @@ u32 weekly_lecture_attach_legs(void) {
 // Lecture step 5 ("the finishing touch"): the Medal (sprite 0) falls into the Medabot; backs up the OBJ
 // palettes for the flash.
 u32 weekly_lecture_drop_medal(void) {
-    if (gSpriteEntries[0].unk1A++ & 1) {
+    if (gSpriteEntries[0].timer++ & 1) {
         if (++gSpriteEntries[0].y == 0)
             play_sound_effect(0x59);
     }
-    gSpriteEntries[0].frame = ((gSpriteEntries[0].unk1A >> 2) & 3) + 0x50F;
+    gSpriteEntries[0].frame = ((gSpriteEntries[0].timer >> 2) & 3) + 0x50F;
     if (gSpriteEntries[0].y > 0x3F) {
         play_sound_effect(7);
         gWeeklyFlashPalette = gPaletteBackupBg;
@@ -947,11 +961,11 @@ u32 weekly_lecture_show_medabot(void) {
     struct SpriteEntry *sprites = gSpriteEntries;
     vu32 fill;
 
-    if (sprites[1].unk1A & 4)
+    if (sprites[1].timer & 4)
         sprites[1].y = 0xC8;
     else
         sprites[1].y = 0x42;
-    if (sprites[1].unk1A++ > 0x1F) {
+    if (sprites[1].timer++ > 0x1F) {
         clear_sprite_entry(1);
         init_scene_buffers_080445F4();
         fill = 0x200;

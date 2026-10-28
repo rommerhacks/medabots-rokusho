@@ -6,6 +6,7 @@
 // (battle/robattle) and back to the field (game mode 1).
 
 #include "global.h"
+#include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
 static void load_encounter_into_battle_setup(void);
@@ -413,8 +414,8 @@ void afterbattle_load_new_part_sprite(void) {
     gSpriteEntries[1].frame = 0x5900;
     gSpriteEntries[1].scale_y = 0x40;
     gSpriteEntries[1].scale_x = 0x40;
-    gSpriteEntries[1].unk23 = 0;
-    gSpriteEntries[1].unk28 = 0;
+    gSpriteEntries[1].work[FX_SPR_STEP] = 0;
+    gSpriteEntries[1].work[NEW_SPR_SHRINK] = 0;
     play_sound_effect(0x2A);
     gGameSubState++;
 }
@@ -1170,15 +1171,15 @@ static void setup_battle_result_sprite(void) {
     }
 }
 
-// Pulses the "NEW" sprite (sprite 1, unk9 between 0x40 and 0x80) while the won part is a new one.
+// Pulses the "NEW" sprite (sprite 1, scale_y between 0x40 and 0x80) while the won part is a new one.
 static void afterbattle_pulse_new_sprite(void) {
     if (gBattleWork.wonPartNew) {
-        if (!gSpriteEntries[1].unk28) {
+        if (!gSpriteEntries[1].work[NEW_SPR_SHRINK]) {
             if ((u8)(gSpriteEntries[1].scale_y += 2) == 0x80)
-                gSpriteEntries[1].unk28 = 1;
+                gSpriteEntries[1].work[NEW_SPR_SHRINK] = 1;
         } else {
             if ((u8)(gSpriteEntries[1].scale_y -= 2) == 0x40)
-                gSpriteEntries[1].unk28 = 0;
+                gSpriteEntries[1].work[NEW_SPR_SHRINK] = 0;
         }
     }
 }

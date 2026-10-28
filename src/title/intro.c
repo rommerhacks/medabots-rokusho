@@ -7,6 +7,13 @@
 #include "global.h"
 #include "constants/sprites.h"
 
+// gSpriteEntries work[] / work16[] indices
+#define INTRO_SPR_ACTION 0x0    // gIntroSpriteActions index + 1, 0 = none
+#define INTRO_SPR_STEP 0x1      // the action's step counter (bob: wave phase)
+#define INTRO_SPR_BOB_SPEED 0x2 // bob: extra phase added each step (random 0-3)
+#define INTRO_SPR_BASE_Y 0x3    // bob: y the wave is centred on
+#define INTRO_SPR_START_FRAME 0 // work16: frame when the action started
+
 static bool32 intro_eyes_fade_in_step(void);
 static bool32 intro_mosaic_fade_in_step(void);
 static void copy_tilemap_rect_to_vram(const u16 *src, u8 bg, u8 w, u8 h, u8 x, u8 y, u16 tile, u8 pal);
@@ -262,7 +269,7 @@ void intro_scan_arms_state(void) {
             gSceneWork.timer++;
             break;
         case 1:
-            if (gSpriteEntries[1].unk20 == 0)
+            if (gSpriteEntries[1].work[INTRO_SPR_ACTION] == 0)
                 gSceneWork.timer++;
             break;
         case 2:
@@ -276,7 +283,7 @@ void intro_scan_arms_state(void) {
             gSceneWork.timer++;
             break;
         case 3:
-            if (gSpriteEntries[2].unk20 == 0) {
+            if (gSpriteEntries[2].work[INTRO_SPR_ACTION] == 0) {
                 intro_sprite_set_action(3, 3, 0x70);
                 intro_sprite_set_action(3, 4, 0x68);
                 intro_sprite_set_action(3, 5, 0x68);
@@ -320,7 +327,7 @@ void intro_scan_arms_state(void) {
             gSceneWork.timer++;
             break;
         case 0xC6:
-            if (gSpriteEntries[1].unk20 == 0)
+            if (gSpriteEntries[1].work[INTRO_SPR_ACTION] == 0)
                 gSceneWork.timer++;
             break;
         case 0xC7:
@@ -332,7 +339,7 @@ void intro_scan_arms_state(void) {
             gSceneWork.timer++;
             break;
         case 0xC8:
-            if (gSpriteEntries[2].unk20 == 0) {
+            if (gSpriteEntries[2].work[INTRO_SPR_ACTION] == 0) {
                 intro_sprite_set_action(3, 3, 0x78);
                 intro_sprite_set_action(3, 4, 0x70);
                 intro_sprite_set_action(3, 5, 0x78);
@@ -394,7 +401,7 @@ void intro_scan_legs_head_state(void) {
             gSceneWork.timer++;
             break;
         case 1:
-            if (gSpriteEntries[1].unk20 == 0)
+            if (gSpriteEntries[1].work[INTRO_SPR_ACTION] == 0)
                 gSceneWork.timer++;
             break;
         case 2:
@@ -408,7 +415,7 @@ void intro_scan_legs_head_state(void) {
             gSceneWork.timer++;
             break;
         case 3:
-            if (gSpriteEntries[2].unk20 == 0) {
+            if (gSpriteEntries[2].work[INTRO_SPR_ACTION] == 0) {
                 intro_sprite_set_action(3, 3, 0x70);
                 intro_sprite_set_action(3, 4, 0x68);
                 intro_sprite_set_action(3, 5, 0x68);
@@ -452,7 +459,7 @@ void intro_scan_legs_head_state(void) {
             gSceneWork.timer++;
             break;
         case 0xC6:
-            if (gSpriteEntries[1].unk20 == 0)
+            if (gSpriteEntries[1].work[INTRO_SPR_ACTION] == 0)
                 gSceneWork.timer++;
             break;
         case 0xC7:
@@ -464,7 +471,7 @@ void intro_scan_legs_head_state(void) {
             gSceneWork.timer++;
             break;
         case 0xC8:
-            if (gSpriteEntries[2].unk20 == 0) {
+            if (gSpriteEntries[2].work[INTRO_SPR_ACTION] == 0) {
                 intro_sprite_set_action(3, 3, 0x78);
                 intro_sprite_set_action(3, 4, 0x70);
                 intro_sprite_set_action(3, 5, 0x78);
@@ -866,12 +873,12 @@ void intro_update_sprite_actions(void) {
         struct SpriteEntry *base = gSpriteEntries;
         struct SpriteEntry *sprite = &base[i];
 
-        if (sprite->unk20 != 0) {
-            if (++sprite->unk1A % gIntroSpriteActionPeriods[sprite->unk20 - 1] == 0) {
-                switch (gIntroSpriteActions[sprite->unk20 - 1](i)) {
+        if (sprite->work[INTRO_SPR_ACTION] != 0) {
+            if (++sprite->timer % gIntroSpriteActionPeriods[sprite->work[INTRO_SPR_ACTION] - 1] == 0) {
+                switch (gIntroSpriteActions[sprite->work[INTRO_SPR_ACTION] - 1](i)) {
                 case 0:
-                    sprite->unk20 = 0;
-                    sprite->unk21 = 0;
+                    sprite->work[INTRO_SPR_ACTION] = 0;
+                    sprite->work[INTRO_SPR_STEP] = 0;
                     break;
                 case 1:
                     break;
@@ -884,7 +891,7 @@ void intro_update_sprite_actions(void) {
     }
 }
 
-s32 intro_action_open_unk9_first(u8 i) {
+s32 intro_action_grow_height_first(u8 i) {
     if (gSpriteEntries[i].scale_x > 0x3F && gSpriteEntries[i].scale_y > 0x3F)
         return 0;
     if (gSpriteEntries[i].scale_y <= 0x3F) {
@@ -894,11 +901,11 @@ s32 intro_action_open_unk9_first(u8 i) {
         if ((gSpriteEntries[i].scale_x += 8) > 0x40)
             gSpriteEntries[i].scale_x = 0x40;
     }
-    gSpriteEntries[i].unk21++;
+    gSpriteEntries[i].work[INTRO_SPR_STEP]++;
     return 1;
 }
 
-s32 intro_action_open_unk8_first(u8 i) {
+s32 intro_action_grow_width_first(u8 i) {
     if (gSpriteEntries[i].scale_x > 0x3F && gSpriteEntries[i].scale_y > 0x3F)
         return 0;
     if (gSpriteEntries[i].scale_x <= 0x3F) {
@@ -908,25 +915,27 @@ s32 intro_action_open_unk8_first(u8 i) {
         if ((gSpriteEntries[i].scale_y += 8) > 0x40)
             gSpriteEntries[i].scale_y = 0x40;
     }
-    gSpriteEntries[i].unk21++;
+    gSpriteEntries[i].work[INTRO_SPR_STEP]++;
     return 1;
 }
 
 s32 intro_action_bob(u8 i) {
     if (i & 1)
-        gSpriteEntries[i].y = gSpriteEntries[i].unk23 - gIntroBobOffsets[gSpriteEntries[i].unk21 & 0x3F];
+        gSpriteEntries[i].y =
+            gSpriteEntries[i].work[INTRO_SPR_BASE_Y] - gIntroBobOffsets[gSpriteEntries[i].work[INTRO_SPR_STEP] & 0x3F];
     else
-        gSpriteEntries[i].y = gSpriteEntries[i].unk23 + gIntroBobOffsets[gSpriteEntries[i].unk21 & 0x3F];
-    gSpriteEntries[i].unk21 += 1 + gSpriteEntries[i].unk22;
+        gSpriteEntries[i].y =
+            gSpriteEntries[i].work[INTRO_SPR_BASE_Y] + gIntroBobOffsets[gSpriteEntries[i].work[INTRO_SPR_STEP] & 0x3F];
+    gSpriteEntries[i].work[INTRO_SPR_STEP] += 1 + gSpriteEntries[i].work[INTRO_SPR_BOB_SPEED];
     return 1;
 }
 
 s32 intro_action_scan_up(u8 i) {
-    if (gSpriteEntries[i].unk21 < 0x48) {
-        gSpriteEntries[i].unk21++;
+    if (gSpriteEntries[i].work[INTRO_SPR_STEP] < 0x48) {
+        gSpriteEntries[i].work[INTRO_SPR_STEP]++;
     } else if (gSpriteEntries[i].y < -0x50) {
         gSpriteEntries[i].y = 0xA0;
-        gSpriteEntries[i].unk21 = 0;
+        gSpriteEntries[i].work[INTRO_SPR_STEP] = 0;
     } else {
         gSpriteEntries[i].y -= 4;
     }
@@ -934,11 +943,11 @@ s32 intro_action_scan_up(u8 i) {
 }
 
 s32 intro_action_scan_right(u8 i) {
-    if (gSpriteEntries[i].unk21 < 0x48) {
-        gSpriteEntries[i].unk21++;
+    if (gSpriteEntries[i].work[INTRO_SPR_STEP] < 0x48) {
+        gSpriteEntries[i].work[INTRO_SPR_STEP]++;
     } else if (gSpriteEntries[i].x > 0x168) {
         gSpriteEntries[i].x = 0;
-        gSpriteEntries[i].unk21 = 0;
+        gSpriteEntries[i].work[INTRO_SPR_STEP] = 0;
     } else {
         gSpriteEntries[i].x += 6;
     }
@@ -949,12 +958,12 @@ static void intro_sprite_set_action(u8 action, u8 i, u8 y) {
     struct SpriteEntry *base = gSpriteEntries;
     struct SpriteEntry *sprite = &base[i];
 
-    sprite->unk20 = action;
-    sprite->unk21 = 0;
+    sprite->work[INTRO_SPR_ACTION] = action;
+    sprite->work[INTRO_SPR_STEP] = 0;
     if (y != 0) {
-        sprite->unk22 = rng_next(0) & 3;
-        sprite->unk23 = y - 4;
+        sprite->work[INTRO_SPR_BOB_SPEED] = rng_next(0) & 3;
+        sprite->work[INTRO_SPR_BASE_Y] = y - 4;
     }
-    sprite->unk30 = sprite->frame;
-    sprite->unk1A = 0;
+    sprite->work16[INTRO_SPR_START_FRAME] = sprite->frame;
+    sprite->timer = 0;
 }

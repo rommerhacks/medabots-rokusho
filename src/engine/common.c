@@ -488,10 +488,10 @@ void battle_sprite_group_set_anim(u32 sprite, u32 anim) {
     gSpriteEntries[sprite + 2].flags |= SPRITE_FLAG_AFFINE;
     for (i = 0; i < 16; i++)
         ;
-    gSpriteEntries[sprite].unk24 = anim;
-    gSpriteEntries[sprite + 1].unk24 = anim;
-    gSpriteEntries[sprite + 2].unk24 = anim;
-    gSpriteEntries[sprite + 3].unk24 = anim;
+    gSpriteEntries[sprite].work[SPR_WALK_SPEED] = anim;
+    gSpriteEntries[sprite + 1].work[SPR_WALK_SPEED] = anim;
+    gSpriteEntries[sprite + 2].work[SPR_WALK_SPEED] = anim;
+    gSpriteEntries[sprite + 3].work[SPR_WALK_SPEED] = anim;
 }
 
 void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 unused) {
@@ -500,21 +500,22 @@ void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 unused) {
     u8 progress;
 
     gSpriteEntries[sprite].x = gSpriteEntries[sprite + 3].x;
-    gSpriteEntries[sprite + 3].unk26 += gSpriteEntries[sprite + 3].unk24;
-    if (gSpriteEntries[sprite + 3].unk26 > 0x3F) {
-        gSpriteEntries[sprite + 3].unk26 -= 0x40;
-        gSpriteEntries[sprite + 3].unk21 = (gSpriteEntries[sprite + 3].unk21 + 1) & 3;
-        gSpriteEntries[sprite + 3].frame = idx * 8 + 0x505 + gLegWalkFrames[gSpriteEntries[sprite + 3].unk21];
+    gSpriteEntries[sprite + 3].work[SPR_WALK_PHASE] += gSpriteEntries[sprite + 3].work[SPR_WALK_SPEED];
+    if (gSpriteEntries[sprite + 3].work[SPR_WALK_PHASE] > 0x3F) {
+        gSpriteEntries[sprite + 3].work[SPR_WALK_PHASE] -= 0x40;
+        gSpriteEntries[sprite + 3].work[SPR_WALK_STEP] = (gSpriteEntries[sprite + 3].work[SPR_WALK_STEP] + 1) & 3;
+        gSpriteEntries[sprite + 3].frame =
+            idx * 8 + 0x505 + gLegWalkFrames[gSpriteEntries[sprite + 3].work[SPR_WALK_STEP]];
     }
 
-    gSpriteEntries[sprite + 1].unk26 += gSpriteEntries[sprite + 1].unk24;
-    progress = gSpriteEntries[sprite + 1].unk26;
+    gSpriteEntries[sprite + 1].work[SPR_WALK_PHASE] += gSpriteEntries[sprite + 1].work[SPR_WALK_SPEED];
+    progress = gSpriteEntries[sprite + 1].work[SPR_WALK_PHASE];
     phase = progress >> 1;
     if (progress > 0x3F) {
         phase = 0x20;
-        gSpriteEntries[sprite + 1].unk26 -= 0x40;
+        gSpriteEntries[sprite + 1].work[SPR_WALK_PHASE] -= 0x40;
     }
-    switch (gSpriteEntries[sprite + 1].unk21) {
+    switch (gSpriteEntries[sprite + 1].work[SPR_WALK_STEP]) {
     case 0:
         gSpriteEntries[sprite + 1].angle = phase * 4;
         pos = calc_polar_to_screen_coords(phase + 0x60, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
@@ -541,16 +542,16 @@ void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 unused) {
         break;
     }
     if (phase == 0x20)
-        gSpriteEntries[sprite + 1].unk21 = (gSpriteEntries[sprite + 1].unk21 + 1) & 3;
+        gSpriteEntries[sprite + 1].work[SPR_WALK_STEP] = (gSpriteEntries[sprite + 1].work[SPR_WALK_STEP] + 1) & 3;
 
-    gSpriteEntries[sprite + 2].unk26 += gSpriteEntries[sprite + 2].unk24;
-    progress = gSpriteEntries[sprite + 2].unk26;
+    gSpriteEntries[sprite + 2].work[SPR_WALK_PHASE] += gSpriteEntries[sprite + 2].work[SPR_WALK_SPEED];
+    progress = gSpriteEntries[sprite + 2].work[SPR_WALK_PHASE];
     phase = progress >> 1;
     if (progress > 0x3F) {
         phase = 0x20;
-        gSpriteEntries[sprite + 2].unk26 -= 0x40;
+        gSpriteEntries[sprite + 2].work[SPR_WALK_PHASE] -= 0x40;
     }
-    switch (gSpriteEntries[sprite + 2].unk21) {
+    switch (gSpriteEntries[sprite + 2].work[SPR_WALK_STEP]) {
     case 2:
         gSpriteEntries[sprite + 2].angle = phase * 4;
         pos = calc_polar_to_screen_coords(phase + 0x20, 5, gSpriteEntries[sprite + 3].x, gSpriteEntries[sprite + 3].y);
@@ -577,9 +578,9 @@ void update_battle_sprite_orbiting_positions(u32 sprite, u32 idx, u32 unused) {
         break;
     }
     if (phase == 0x20)
-        gSpriteEntries[sprite + 2].unk21 = (gSpriteEntries[sprite + 2].unk21 + 1) & 3;
+        gSpriteEntries[sprite + 2].work[SPR_WALK_STEP] = (gSpriteEntries[sprite + 2].work[SPR_WALK_STEP] + 1) & 3;
 
-    if (gLegWalkFrames[gSpriteEntries[sprite + 3].unk21]) {
+    if (gLegWalkFrames[gSpriteEntries[sprite + 3].work[SPR_WALK_STEP]]) {
         gSpriteEntries[sprite].y = gSpriteEntries[sprite + 3].y - 7;
         gSpriteEntries[sprite + 1].y++;
         gSpriteEntries[sprite + 2].y++;
@@ -1080,23 +1081,23 @@ void race_enter_team_select(void) {
     gGameSubState = 0;
 }
 
-// Sprite slot: while unk24 (table, 1-based) is set, add the (x, y) step for frame unk27 & 3 of row unk25
-// from gSpriteMotionSteps to unk4 (wrapped to 0xFF) and unk2 (wrapped to 0x1FF), then advance unk27.
+// Sprite slot: while its motion table (1-based) is set, add the (x, y) step for the current step of its row
+// from gSpriteMotionSteps to y (wrapped to 0xFF) and x (wrapped to 0x1FF), then advance the step.
 void update_sprite_animation_position(u32 slot) {
     s32 mask = 0x1FF;
 
-    if (gSpriteEntries[slot].unk24 != 0) {
+    if (gSpriteEntries[slot].work[SPR_MOTION_TABLE] != 0) {
         gSpriteEntries[slot].y =
-            (gSpriteEntries[slot].y +
-             gSpriteMotionSteps[(gSpriteEntries[slot].unk24 - 1) * 256 + gSpriteEntries[slot].unk25 * 8 +
-                                (gSpriteEntries[slot].unk27 & 3) * 2]) &
+            (gSpriteEntries[slot].y + gSpriteMotionSteps[(gSpriteEntries[slot].work[SPR_MOTION_TABLE] - 1) * 256 +
+                                                         gSpriteEntries[slot].work[SPR_MOTION_ROW] * 8 +
+                                                         (gSpriteEntries[slot].work[SPR_MOTION_STEP] & 3) * 2]) &
             0xFF;
         gSpriteEntries[slot].x =
-            (gSpriteEntries[slot].x +
-             gSpriteMotionSteps[(gSpriteEntries[slot].unk24 - 1) * 256 + gSpriteEntries[slot].unk25 * 8 +
-                                (gSpriteEntries[slot].unk27 & 3) * 2 + 1]) &
+            (gSpriteEntries[slot].x + gSpriteMotionSteps[(gSpriteEntries[slot].work[SPR_MOTION_TABLE] - 1) * 256 +
+                                                         gSpriteEntries[slot].work[SPR_MOTION_ROW] * 8 +
+                                                         (gSpriteEntries[slot].work[SPR_MOTION_STEP] & 3) * 2 + 1]) &
             mask;
-        gSpriteEntries[slot].unk27++;
+        gSpriteEntries[slot].work[SPR_MOTION_STEP]++;
     }
 }
 

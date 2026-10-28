@@ -16,9 +16,9 @@ void message_fill_window_tiles(void) {
 void battle_sprite_anim_init(const void *cmds, u8 slot) {
     const u8 *cmd;
     u8 i;
-    gSpriteEntries[slot].unk20 = 0;
-    gSpriteEntries[slot].unk21 = 0;
-    gSpriteEntries[slot].unk22 = 0;
+    gSpriteEntries[slot].work[SPR_CMD_WAIT] = 0;
+    gSpriteEntries[slot].work[SPR_CMD_POS] = 0;
+    gSpriteEntries[slot].work[SPR_CMD_STATE] = 0;
     i = 0;
 loop:
     cmd = (const u8 *)cmds + i;
@@ -33,40 +33,40 @@ void process_sprite_anim_commands(const u8 *cmds, u8 slot) {
     u32 run;
     u8 op;
 
-    if (gSpriteEntries[slot].unk22 == 0xFF)
+    if (gSpriteEntries[slot].work[SPR_CMD_STATE] == SPR_CMD_ENDED)
         return;
     run = 1;
     do {
-        if (gSpriteEntries[slot].unk20 != 0) {
-            gSpriteEntries[slot].unk20--;
+        if (gSpriteEntries[slot].work[SPR_CMD_WAIT] != 0) {
+            gSpriteEntries[slot].work[SPR_CMD_WAIT]--;
             return;
         }
-        op = cmds[gSpriteEntries[slot].unk21];
+        op = cmds[gSpriteEntries[slot].work[SPR_CMD_POS]];
         switch (op) {
         case 0xFB:
             gSpriteEntries[0].flags &= (u16)~SPRITE_FLAG_VISIBLE;
-            gSpriteEntries[slot].unk20 = cmds[gSpriteEntries[slot].unk21 + 1];
-            gSpriteEntries[slot].unk21 += 3;
+            gSpriteEntries[slot].work[SPR_CMD_WAIT] = cmds[gSpriteEntries[slot].work[SPR_CMD_POS] + 1];
+            gSpriteEntries[slot].work[SPR_CMD_POS] += 3;
             return;
         case 0xFC:
             gSpriteEntries[0].flags |= SPRITE_FLAG_VISIBLE;
-            gSpriteEntries[slot].unk21 += 3;
+            gSpriteEntries[slot].work[SPR_CMD_POS] += 3;
             break;
         case 0xFD:
-            play_sound_effect(cmds[gSpriteEntries[slot].unk21 + 1]);
-            gSpriteEntries[slot].unk21 += 3;
+            play_sound_effect(cmds[gSpriteEntries[slot].work[SPR_CMD_POS] + 1]);
+            gSpriteEntries[slot].work[SPR_CMD_POS] += 3;
             break;
         case 0xFE:
-            gSpriteEntries[slot].unk21 = cmds[gSpriteEntries[slot].unk21 + 1] * 3;
+            gSpriteEntries[slot].work[SPR_CMD_POS] = cmds[gSpriteEntries[slot].work[SPR_CMD_POS] + 1] * 3;
             break;
         case 0xFF:
-            gSpriteEntries[slot].unk22 = 0xFF;
+            gSpriteEntries[slot].work[SPR_CMD_STATE] = SPR_CMD_ENDED;
             return;
         default:
-            gSpriteEntries[slot].unk20 = op;
-            gSpriteEntries[slot].frame =
-                (cmds[gSpriteEntries[slot].unk21 + 1] << 8) + cmds[gSpriteEntries[slot].unk21 + 2];
-            gSpriteEntries[slot].unk21 += 3;
+            gSpriteEntries[slot].work[SPR_CMD_WAIT] = op;
+            gSpriteEntries[slot].frame = (cmds[gSpriteEntries[slot].work[SPR_CMD_POS] + 1] << 8) +
+                                         cmds[gSpriteEntries[slot].work[SPR_CMD_POS] + 2];
+            gSpriteEntries[slot].work[SPR_CMD_POS] += 3;
             break;
         }
     } while (run);

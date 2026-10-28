@@ -4,7 +4,7 @@
 // Medaforce effect particles (sprite slots 0x21-0x3B): spawners and the per-sprite state handler tables
 // (gParticleOrbitHandlers, gParticleSparkHandlers, gParticleShotHandlers, gParticleSweepHandlers).
 
-// Each runner steps every particle slot through its table by sprite unk29; 1 once all slots are idle.
+// Each runner steps every particle slot through its table by sprite work[PARTICLE_STATE]; 1 once all slots are idle.
 u32 particle_run_orbit_handlers(void);
 u32 particle_run_shot_handlers(void);
 u32 particle_run_sweep_handlers(void);

@@ -3,6 +3,7 @@
 // field_walk_update is the frame handler that walks the player, triggers NPC / map events and warps.
 // Talks to field/field_mode, field/field_update, field/script_sprites and the engine.
 #include "global.h"
+#include "constants/field_sprites.h"
 
 u32 field_effect_run_and_restore(void) {
     if ((gFieldEffect.flags & 0x3F) == 0xD || (gFieldEffect.flags & 0x3F) == 0x16) {
@@ -158,13 +159,14 @@ void field_walk_update(void) {
         set_battle_state_cancel_flag();
         if (find_map_event_by_coords(gFieldWork.player_tile_x, gFieldWork.player_tile_y)) {
             gFieldWork.player_step_frames = 16 / sprite_walk_speed(47);
-            field_set_player_facing(gSpriteEntries[47].unk20);
-            sprite_anim_start(47, gSpriteEntries[47].unk20);
+            field_set_player_facing(gSpriteEntries[47].work[FIELD_SPR_FACING]);
+            sprite_anim_start(47, gSpriteEntries[47].work[FIELD_SPR_FACING]);
             if (gFieldWork.follower_active) {
                 gFieldWork.follower_x = gFieldWork.player_x;
                 gFieldWork.follower_y = gFieldWork.player_y;
-                follower_set_facing(gSpriteEntries[47].unk20);
-                sprite_anim_start(48, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
+                follower_set_facing(gSpriteEntries[47].work[FIELD_SPR_FACING]);
+                sprite_anim_start(48, gSpriteEntries[48].work[FIELD_SPR_ANIM_SET] * 4 +
+                                          gSpriteEntries[48].work[FIELD_SPR_FACING]);
             }
             follower_turn_toward_player(3);
             gFieldState.step = 1;
@@ -175,7 +177,7 @@ void field_walk_update(void) {
         }
         break;
     case 1:
-        field_player_step(gSpriteEntries[47].unk20);
+        field_player_step(gSpriteEntries[47].work[FIELD_SPR_FACING]);
         if (gFieldWork.player_step_frames == 0) {
             if (gFieldSceneParams.warp_sound == 4)
                 field_play_sound_effect(0);
@@ -200,10 +202,10 @@ void field_walk_update(void) {
                 }
                 if (!npc && !warp) {
                     if (KEYS_LO(gHeldKeys) & 1) {
-                        gSpriteEntries[47].unk2A = 1;
-                        gSpriteEntries[48].unk2A = 1;
+                        gSpriteEntries[47].work[FIELD_SPR_SPEED] = 1;
+                        gSpriteEntries[48].work[FIELD_SPR_SPEED] = 1;
                     } else {
-                        gSpriteEntries[48].unk2A = gSpriteEntries[47].unk2A =
+                        gSpriteEntries[48].work[FIELD_SPR_SPEED] = gSpriteEntries[47].work[FIELD_SPR_SPEED] =
                             gPlayerFormSpeedIds[gFieldWork.player_form];
                     }
                     if (KEYS_LO(gNewKeys) & 1) {
@@ -229,9 +231,9 @@ void field_walk_update(void) {
                             gFieldState.saved_bg3_y = gBg3Scroll.y;
                             gBg0Scroll.x = 0;
                             gBg0Scroll.y = 0;
-                            gFieldWork.player_facing = gSpriteEntries[47].unk20;
-                            gFieldWork.follower_facing = gSpriteEntries[48].unk20;
-                            gFieldWork.follower_sprite_set = gSpriteEntries[48].unk2B;
+                            gFieldWork.player_facing = gSpriteEntries[47].work[FIELD_SPR_FACING];
+                            gFieldWork.follower_facing = gSpriteEntries[48].work[FIELD_SPR_FACING];
+                            gFieldWork.follower_sprite_set = gSpriteEntries[48].work[FIELD_SPR_ANIM_SET];
                             save_script_sprites();
                             gFieldWork.npc_load_mode = 2;
                             done = 1;
@@ -247,8 +249,8 @@ void field_walk_update(void) {
                 field_play_sound_effect(0x74);
             field_player_walk_input();
         } else {
-            field_set_player_facing(gSpriteEntries[47].unk20);
-            follower_set_facing(gSpriteEntries[48].unk20);
+            field_set_player_facing(gSpriteEntries[47].work[FIELD_SPR_FACING]);
+            follower_set_facing(gSpriteEntries[48].work[FIELD_SPR_FACING]);
         }
         break;
     case 3:

@@ -3,6 +3,7 @@
 // offset tables gPartFlyStepsHead..gSpriteHopYSteps, and the OAM / animation-frame helpers used by every skill module.
 
 #include "global.h"
+#include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
 static void armor_bar_draw(u32 x, u32 y, u32 w, u32 max, u32 cur);
@@ -102,7 +103,7 @@ u32 effect_sprite_fly_to_part(u32 slot, u32 part) {
     struct SpriteEntry *sprite = &base[slot];
     u8 *frame;
 
-    if (!(sprite->flags & SPRITE_FLAG_ENABLED) || *(frame = &sprite->unk23) == 0x10)
+    if (!(sprite->flags & SPRITE_FLAG_ENABLED) || *(frame = &sprite->work[FX_SPR_STEP]) == 0x10)
         return 1;
     switch (part) {
     case 0:
@@ -124,7 +125,7 @@ u32 effect_sprite_fly_to_part(u32 slot, u32 part) {
     }
     gSpriteEntries[slot].x = (dx + gSpriteEntries[slot].x) & 0x1FF;
     gSpriteEntries[slot].y = (dy + gSpriteEntries[slot].y) & 0xFF;
-    gSpriteEntries[slot].unk23++;
+    gSpriteEntries[slot].work[FX_SPR_STEP]++;
     return 0;
 }
 
@@ -138,7 +139,7 @@ void hit_sparks_spawn(u32 slot, u32 part, s16 x, s16 y) {
         gSpriteEntries[slot + i].frame_table = 0;
         gSpriteEntries[slot + i].palette = 0xE;
         gSpriteEntries[slot + i].order = 0x80;
-        gSpriteEntries[slot + i].unk2C = i * 8;
+        gSpriteEntries[slot + i].work[FX_SPR_DELAY] = i * 8;
         part_pos = gPartSpriteOffsets[part << 1] + x;
         spark_pos = gHitSparkOffsets[i * 2];
         spark_pos += part_pos;
@@ -158,16 +159,16 @@ u32 hit_sparks_update(u32 slot) {
 
     for (i = 0; i <= 3; i++) {
         if (gSpriteEntries[slot + i].flags != 0) {
-            if (gSpriteEntries[slot + i].unk2C == 0) {
+            if (gSpriteEntries[slot + i].work[FX_SPR_DELAY] == 0) {
                 gSpriteEntries[slot + i].flags |= SPRITE_FLAG_ENABLED | SPRITE_FLAG_PART_PALETTE;
                 gSpriteEntries[slot + i].palette = 0xE;
                 process_sprite_anim_commands(gBattleSpriteAnimScripts[29], n = slot + i);
-                if (gSpriteEntries[slot + i].unk22 == 0xFF)
+                if (gSpriteEntries[slot + i].work[SPR_CMD_STATE] == SPR_CMD_ENDED)
                     clear_battle_sprite_slot(n, 1);
                 else
                     done = 0;
             } else {
-                gSpriteEntries[slot + i].unk2C--;
+                gSpriteEntries[slot + i].work[FX_SPR_DELAY]--;
                 done = 0;
             }
         }
@@ -193,7 +194,7 @@ void damage_digits_spawn(u8 *digits, u32 slot, u32 part, s16 x, s16 y) {
         gSpriteEntries[slot + i].y = pos_y & 0xFF;
         gSpriteEntries[slot + i].order = 0x80;
         gSpriteEntries[slot + i].frame = digits[i] + 0x2D00;
-        gSpriteEntries[slot + i].unk23 = 0;
+        gSpriteEntries[slot + i].work[FX_SPR_STEP] = 0;
         gSpriteEntries[slot + i].scale_y = 0x40;
         gSpriteEntries[slot + i].scale_x = 0x40;
         gSpriteEntries[slot + i].palette = 0xE;
@@ -229,7 +230,7 @@ void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 part, s16 x, s16 y) 
         gSpriteEntries[slot + i].y = pos_y & 0xFF;
         gSpriteEntries[slot + i].order = 0x80;
         gSpriteEntries[slot + i].frame = buf[i] + 0x2D00;
-        gSpriteEntries[slot + i].unk23 = 0;
+        gSpriteEntries[slot + i].work[FX_SPR_STEP] = 0;
         gSpriteEntries[slot + i].palette = 0xE;
         switch (buf[6]) {
         case 2:
@@ -247,11 +248,12 @@ void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 part, s16 x, s16 y) 
 
 u32 advance_sprite_anim_frame(u32 sprite, u32 stretch) {
     s32 frame;
-    if (!(gSpriteEntries[sprite].flags & SPRITE_FLAG_ENABLED) || gSpriteEntries[sprite].unk23 == 0x10)
+    if (!(gSpriteEntries[sprite].flags & SPRITE_FLAG_ENABLED) || gSpriteEntries[sprite].work[FX_SPR_STEP] == 0x10)
         return 1;
-    gSpriteEntries[sprite].y = (gSpriteEntries[sprite].y + gSpriteHopYSteps[gSpriteEntries[sprite].unk23]) & 0xFF;
-    frame = gSpriteEntries[sprite].unk23 + 1;
-    gSpriteEntries[sprite].unk23 = frame;
+    gSpriteEntries[sprite].y =
+        (gSpriteEntries[sprite].y + gSpriteHopYSteps[gSpriteEntries[sprite].work[FX_SPR_STEP]]) & 0xFF;
+    frame = gSpriteEntries[sprite].work[FX_SPR_STEP] + 1;
+    gSpriteEntries[sprite].work[FX_SPR_STEP] = frame;
     if (stretch)
         gSpriteEntries[sprite].scale_y = frame * 4 + 0x40;
     return 0;

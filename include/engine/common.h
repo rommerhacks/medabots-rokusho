@@ -69,7 +69,7 @@ void draw_count_over_max(u32 cur, u32 max, u32 x, u32 y, u32 tile, u32 bgcnt,
 void update_sprite_animation_position(u32 slot);
 u32 calculate_direction_index(
     s32 x, s32 y, s32 tx,
-    s32 ty); // direction from (x, y) to (tx, ty), stored in sprite unk25 (move_sprite_toward_target)
+    s32 ty); // direction from (x, y) to (tx, ty), stored in sprite work[SPR_MOTION_ROW] (move_sprite_toward_target)
 struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x,
                                             s32 y); // returned in memory (hidden pointer in r0)
 void battle_bg_scroll_vblank(void);                 // gVBlankCallback: BG2/BG3 scroll movement (unk39)

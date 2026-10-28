@@ -213,7 +213,7 @@ u32 battle_bot_move_reverse(u32 rec) {
 // Sets the Medabot's walk animation from its speed: anim script (0x20 - moveDelay) / 2 + 1.
 void bot_update_walk_anim(u32 rec) {
     if (gSpriteEntries[rec * 4 + 0x5B].flags & SPRITE_FLAG_AFFINE) {
-        gSpriteEntries[rec * 4 + 0x5D].unk24 = ((s32)(0x20 - gBattleBots[rec].moveDelay) >> 1) + 1;
+        gSpriteEntries[rec * 4 + 0x5D].work[SPR_WALK_SPEED] = ((s32)(0x20 - gBattleBots[rec].moveDelay) >> 1) + 1;
         update_battle_sprite_orbiting_positions(rec * 4 + 0x5A, rec, bot_sprite_is_flipped(rec));
     } else {
         battle_sprite_group_set_anim(rec * 4 + 0x5A, ((s32)(0x20 - gBattleBots[rec].moveDelay) >> 1) + 1);

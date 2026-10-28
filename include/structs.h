@@ -376,33 +376,16 @@ struct SpriteEntry {
     s32 pos_y : 24;
     u32 pos_z_frac : 8; // world z / depth, 24.8 fixed point
     s32 pos_z : 24;
-    u16 angle; // affine rotation, 1024 steps per turn
-    u16 unk1A;
+    u16 angle;      // affine rotation, 1024 steps per turn
+    u16 timer;      // general frame counter of the module that owns the sprite (animation steps, effect phases)
     u8 frame_table; // low nibble: 0 gSpriteFrameSets, 1 gSpriteFrameSets1, 2 gMenuSpriteFrameSets, 3 gSpriteFrameSets3
     u8 affine_idx;  // shared affine matrix (SPRITE_POS_SHARED_AFFINE mode)
     u8 filler1E[0x2];
-    u8 unk20; // animation state (0-3)
-    u8 unk21;
-    u8 unk22; // position in the animation script (advance_sprite_animation_frame)
-    u8 unk23; // frames shown of the current script frame
-    u8 unk24; // animation script id, gSpriteAnimScripts (sprite_anim_start)
-    u8 unk25;
-    u8 unk26;
-    u8 unk27;
-    u8 unk28;
-    u8 unk29;
-    u8 unk2A;
-    u8 unk2B; // animation set
-    u8 unk2C;
-    u8 unk2D;
-    u8 unk2E; // on screen
-    u8 unk2F; // field: added to the frames of animation command 0xFFFA (advance_sprite_animation_frame)
-    u16 unk30;
-    u16 unk32;
-    u16 unk34; // frame target unk1A counts up to (weekly_set_sprite_effect)
-    u8 filler36[0x4];
-    u16 unk3A; // previous frame's unk1A (race_update_runners)
-    u8 filler3C[0x4];
+    // Work space (0x20-0x3F), like pret's sprite->data[]: each module gives the indices its own meaning with
+    // named index constants: the shared engine ones in constants/sprites.h, the rest in constants/*_sprites.h or
+    // at the top of the module.
+    u8 work[0x10];
+    u16 work16[8];
 };
 
 // Per-sprite entity state (gEntityStates, one per gSpriteEntries slot, 0x200 bytes).
@@ -999,9 +982,10 @@ struct ScriptSpriteSave {
     u8 y;
     u8 id : 5;
     u8 unk2_5 : 1;
-    u8 blink_hidden : 1; // blinked off (gSpriteEntries.unk2D): not re-created by restore_script_sprites
+    u8 blink_hidden : 1; // blinked off (gSpriteEntries[].work[FIELD_SPR_BLINK_HIDDEN]): not re-created by
+                         // restore_script_sprites
     u8 active : 1;
-    u8 anim; // (unk2B & 0xF) << 4 | facing
+    u8 anim; // (work[FIELD_SPR_ANIM_SET] & 0xF) << 4 | facing
 };
 
 // Field state, gFieldWork (0x030057E0): the area, the player and the follower, the map script runner
@@ -1076,7 +1060,7 @@ struct FieldWork {
     u8 follower_active;
     u8 fillerC77[0xC];
     u8 follower_facing;
-    u8 follower_sprite_set; // its sprite set (gSpriteEntries.unk2B)
+    u8 follower_sprite_set; // its sprite set (gSpriteEntries[48].work[FIELD_SPR_ANIM_SET])
     u8 fillerC85[0x3];
     u8 script_running;            // a map script runs (the field update steps it instead of reading input)
     u8 cmd_busy;                  // the current map script command still runs its gMapScriptUpdates handler

@@ -3,6 +3,7 @@
 // Called from battle/robattle and battle/action_steps.
 
 #include "global.h"
+#include "constants/battle_seq_sprites.h"
 #include "constants/sprites.h"
 
 u32 battle_load_graphics_step(u32 direct) {
@@ -148,12 +149,12 @@ void target_arrows_init(u32 bot) {
         gSpriteEntries[0x78 + i].palette = 9;
         gSpriteEntries[0x78 + i].order = 0x80;
         gSpriteEntries[0x78 + i].frame = (i & 3) + 0x616;
-        gSpriteEntries[0x78 + i].unk24 = 0;
-        gSpriteEntries[0x78 + i].unk26 = 7 - i;
-        gSpriteEntries[0x78 + i].unk28 = 0;
-        gSpriteEntries[0x78 + i].unk27 = i * 2;
-        gSpriteEntries[0x78 + i].unk21 = 0;
-        gSpriteEntries[0x78 + i].unk22 = i & 3;
+        gSpriteEntries[0x78 + i].work[TARGET_ARROW_STEPS] = 0;
+        gSpriteEntries[0x78 + i].work[TARGET_ARROW_DISTANCE] = 7 - i;
+        gSpriteEntries[0x78 + i].work[TARGET_ARROW_MOVE_FRAME] = 0;
+        gSpriteEntries[0x78 + i].work[TARGET_ARROW_DELAY] = i * 2;
+        gSpriteEntries[0x78 + i].work[TARGET_ARROW_ANIM_TIMER] = 0;
+        gSpriteEntries[0x78 + i].work[TARGET_ARROW_ANIM_FRAME] = i & 3;
         if (bot <= 2) {
             gSpriteEntries[0x78 + i].flags |= SPRITE_FLAG_HFLIP;
             gSpriteEntries[0x78 + i].x = 0x5C;
@@ -170,21 +171,21 @@ u32 target_arrows_slide(u32 bot) {
     u32 i;
 
     for (i = 0; i <= 7; i++) {
-        S.unk21++;
-        if ((S.unk21 & 3) == 0)
-            S.frame = (S.unk22 = (S.unk22 + 1) & 3) + 0x616;
-        if (S.unk26 != S.unk24) {
+        S.work[TARGET_ARROW_ANIM_TIMER]++;
+        if ((S.work[TARGET_ARROW_ANIM_TIMER] & 3) == 0)
+            S.frame = (S.work[TARGET_ARROW_ANIM_FRAME] = (S.work[TARGET_ARROW_ANIM_FRAME] + 1) & 3) + 0x616;
+        if (S.work[TARGET_ARROW_DISTANCE] != S.work[TARGET_ARROW_STEPS]) {
             done = 0;
-            if (S.unk27 != 0)
-                S.unk27--;
+            if (S.work[TARGET_ARROW_DELAY] != 0)
+                S.work[TARGET_ARROW_DELAY]--;
             else {
                 if (bot <= 2)
                     S.x += 4;
                 else
                     S.x -= 4;
-                S.unk28++;
-                if ((S.unk28 & 1) == 0)
-                    S.unk24++;
+                S.work[TARGET_ARROW_MOVE_FRAME]++;
+                if ((S.work[TARGET_ARROW_MOVE_FRAME] & 1) == 0)
+                    S.work[TARGET_ARROW_STEPS]++;
             }
         }
     }
@@ -196,10 +197,11 @@ void target_arrows_animate(u32 bot) {
     u32 i;
 
     for (i = 0; i <= 7; i++) {
-        gSpriteEntries[0x78 + i].unk21++;
-        if ((gSpriteEntries[0x78 + i].unk21 & 3) == 0)
-            gSpriteEntries[0x78 + i].frame =
-                (gSpriteEntries[0x78 + i].unk22 = (gSpriteEntries[0x78 + i].unk22 + 1) & 3) + 0x616;
+        gSpriteEntries[0x78 + i].work[TARGET_ARROW_ANIM_TIMER]++;
+        if ((gSpriteEntries[0x78 + i].work[TARGET_ARROW_ANIM_TIMER] & 3) == 0)
+            gSpriteEntries[0x78 + i].frame = (gSpriteEntries[0x78 + i].work[TARGET_ARROW_ANIM_FRAME] =
+                                                  (gSpriteEntries[0x78 + i].work[TARGET_ARROW_ANIM_FRAME] + 1) & 3) +
+                                             0x616;
     }
 }
 
@@ -264,13 +266,14 @@ void mf_charge_sparkles_init(u32 bot) {
         gSpriteEntries[0x21 + i].palette = 6;
         gSpriteEntries[0x21 + i].order = 0x81;
         gSpriteEntries[0x21 + i].frame = 0xA10;
-        gSpriteEntries[0x21 + i].unk20 = i << 5;
-        gSpriteEntries[0x21 + i].unk21 = gSpriteEntries[bot * 4 + 0x5D].y;
-        gSpriteEntries[0x21 + i].unk28 = 0;
-        gSpriteEntries[0x21 + i].unk27 = i * 4;
-        gSpriteEntries[0x21 + i].unk26 = 0;
-        pos = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].unk20, 16, gSpriteEntries[bot * 4 + 0x5D].x,
-                                               gSpriteEntries[0x21 + i].unk21, 8, 0);
+        gSpriteEntries[0x21 + i].work[MF_SPARKLE_ANGLE] = i << 5;
+        gSpriteEntries[0x21 + i].work[MF_SPARKLE_Y] = gSpriteEntries[bot * 4 + 0x5D].y;
+        gSpriteEntries[0x21 + i].work[MF_SPARKLE_FRAME] = 0;
+        gSpriteEntries[0x21 + i].work[MF_SPARKLE_PARAM] = i * 4;
+        gSpriteEntries[0x21 + i].work[MF_SPARKLE_RADIUS_ADD] = 0;
+        pos = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].work[MF_SPARKLE_ANGLE], 16,
+                                               gSpriteEntries[bot * 4 + 0x5D].x,
+                                               gSpriteEntries[0x21 + i].work[MF_SPARKLE_Y], 8, 0);
         gSpriteEntries[0x21 + i].x = pos.x;
         gSpriteEntries[0x21 + i].y = pos.y;
         gSpriteEntries[0x21 + i].scale_x = 4;
@@ -289,30 +292,31 @@ u32 mf_charge_sparkles_update(u32 bot) {
             continue;
         }
         gSpriteEntries[0x21 + i].flags |= SPRITE_FLAG_ENABLED;
-        gSpriteEntries[0x21 + i].unk28++;
-        gSpriteEntries[0x21 + i].unk20 -= 8;
-        if ((gSpriteEntries[0x21 + i].unk28 & 7) == 0)
-            gSpriteEntries[0x21 + i].unk21--;
-        pos = compute_polar_to_screen_position(gSpriteEntries[0x21 + i].unk20, gSpriteEntries[0x21 + i].unk26 + 16,
-                                               gSpriteEntries[bot * 4 + 0x5D].x, gSpriteEntries[0x21 + i].unk21, 8, 0);
+        gSpriteEntries[0x21 + i].work[MF_SPARKLE_FRAME]++;
+        gSpriteEntries[0x21 + i].work[MF_SPARKLE_ANGLE] -= 8;
+        if ((gSpriteEntries[0x21 + i].work[MF_SPARKLE_FRAME] & 7) == 0)
+            gSpriteEntries[0x21 + i].work[MF_SPARKLE_Y]--;
+        pos = compute_polar_to_screen_position(
+            gSpriteEntries[0x21 + i].work[MF_SPARKLE_ANGLE], gSpriteEntries[0x21 + i].work[MF_SPARKLE_RADIUS_ADD] + 16,
+            gSpriteEntries[bot * 4 + 0x5D].x, gSpriteEntries[0x21 + i].work[MF_SPARKLE_Y], 8, 0);
         gSpriteEntries[0x21 + i].x = pos.x;
         gSpriteEntries[0x21 + i].y = pos.y;
-        if (gSpriteEntries[0x21 + i].unk20 > 0x80)
+        if (gSpriteEntries[0x21 + i].work[MF_SPARKLE_ANGLE] > 0x80)
             gSpriteEntries[0x21 + i].order = bot * 4 + 0x59;
         else
             gSpriteEntries[0x21 + i].order = 0x81;
-        if (gSpriteEntries[0x21 + i].unk21 > gSpriteEntries[bot * 4 + 0x5D].y - 8 &&
+        if (gSpriteEntries[0x21 + i].work[MF_SPARKLE_Y] > gSpriteEntries[bot * 4 + 0x5D].y - 8 &&
             gSpriteEntries[0x21 + i].scale_x != 0x40) {
             gSpriteEntries[0x21 + i].scale_x += 4;
             gSpriteEntries[0x21 + i].scale_y += 4;
         }
-        if (gSpriteEntries[0x21 + i].unk21 < gSpriteEntries[bot * 4 + 0x5D].y - 12 &&
+        if (gSpriteEntries[0x21 + i].work[MF_SPARKLE_Y] < gSpriteEntries[bot * 4 + 0x5D].y - 12 &&
             gSpriteEntries[0x21 + i].scale_x != 4) {
             gSpriteEntries[0x21 + i].scale_x -= 4;
             gSpriteEntries[0x21 + i].scale_y -= 4;
         }
-        if (gSpriteEntries[0x21 + i].unk20 == 0xC0 &&
-            gSpriteEntries[0x21 + i].unk21 < gSpriteEntries[bot * 4 + 0x5D].y - 16)
+        if (gSpriteEntries[0x21 + i].work[MF_SPARKLE_ANGLE] == 0xC0 &&
+            gSpriteEntries[0x21 + i].work[MF_SPARKLE_Y] < gSpriteEntries[bot * 4 + 0x5D].y - 16)
             clear_battle_sprite_slot(0x21 + i, 1);
     }
     if (done == 8)

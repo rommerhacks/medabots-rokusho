@@ -20,7 +20,7 @@ static void medal_transform_update_sparkles(void) {
         struct SpriteEntry *base = gSpriteEntries;
         k = i + 1;
         sprite = &base[k];
-        life = sprite->unk1A;
+        life = sprite->timer;
         j = k;
         if (life == 0) {
             sprite->x = 0x78;
@@ -29,19 +29,19 @@ static void medal_transform_update_sparkles(void) {
             sprite->pos_y = sprite->y << 8;
             sprite->pos_x_frac = rng_next_byte();
             sprite->pos_y_frac = rng_next_byte();
-            sprite->unk1A = 0x3F;
+            sprite->timer = 0x3F;
             sprite->scale_x = 0;
             sprite->scale_y = 0;
             sprite->flags &= ~8;
         } else {
-            if (--sprite->unk1A <= 0xF)
+            if (--sprite->timer <= 0xF)
                 sprite->flags |= SPRITE_OBJ_MODE(1);
             sprite->pos_x += ((s8 *)sprite)[0xC] * 4;
             sprite->pos_y += ((s8 *)sprite)[0x10] * 4;
             sprite->x = sprite->pos_x >> 8;
             sprite->y = sprite->pos_y >> 8;
-            sprite->scale_x = 0x40 - (u8)sprite->unk1A;
-            sprite->scale_y = 0x40 - (u8)sprite->unk1A;
+            sprite->scale_x = 0x40 - (u8)sprite->timer;
+            sprite->scale_y = 0x40 - (u8)sprite->timer;
         }
     }
     REG_BLDCNT = 0xC40;
@@ -106,7 +106,7 @@ void medal_transform_init(void) {
         gSpriteEntries[i + 1].frame = 0x117;
         gSpriteEntries[i + 1].scale_x = 0x40;
         gSpriteEntries[i + 1].scale_y = 0x40;
-        gSpriteEntries[i + 1].unk1A = (i & 3) << 4;
+        gSpriteEntries[i + 1].timer = (i & 3) << 4;
     }
     REG_BLDCNT = 0xC40;
     REG_BLDALPHA = 0x1010;

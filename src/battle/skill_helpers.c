@@ -3,6 +3,7 @@
 // stat ratios, and random target selection.
 
 #include "global.h"
+#include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
 void battle_calc_damage_split(u32 rec, u32 part, s32 amount) {
@@ -50,13 +51,13 @@ u32 bot_has_status_guard(u32 rec, u32 skill) {
 }
 
 u32 sprite_slide_x_step(u32 slot, u32 n) {
-    if (!(gSpriteEntries[slot].flags & SPRITE_FLAG_ENABLED) || gSpriteEntries[slot].unk23 == 0x10)
+    if (!(gSpriteEntries[slot].flags & SPRITE_FLAG_ENABLED) || gSpriteEntries[slot].work[FX_SPR_STEP] == 0x10)
         return 1;
     if (n == 0)
-        gSpriteEntries[slot].x = gSpriteEntries[slot].x + gSpriteSlideXSteps[gSpriteEntries[slot].unk23];
+        gSpriteEntries[slot].x = gSpriteEntries[slot].x + gSpriteSlideXSteps[gSpriteEntries[slot].work[FX_SPR_STEP]];
     else
-        gSpriteEntries[slot].x = gSpriteEntries[slot].x - gSpriteSlideXSteps[gSpriteEntries[slot].unk23];
-    gSpriteEntries[slot].unk23++;
+        gSpriteEntries[slot].x = gSpriteEntries[slot].x - gSpriteSlideXSteps[gSpriteEntries[slot].work[FX_SPR_STEP]];
+    gSpriteEntries[slot].work[FX_SPR_STEP]++;
     return 0;
 }
 
@@ -119,7 +120,7 @@ void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n) {
         gSpriteEntries[slot + i].frame_table = 0;
         gSpriteEntries[slot + i].palette = 7;
         gSpriteEntries[slot + i].order = 0xF0;
-        gSpriteEntries[slot + i].unk2C = i * 8;
+        gSpriteEntries[slot + i].work[FX_SPR_DELAY] = i * 8;
         pos_x = gStaggeredSpriteOffsets[i * 2] + x;
         gSpriteEntries[slot + i].x = pos_x & 0x1FF;
         pos_y = gStaggeredSpriteOffsets[i * 2 + 1] + y;
@@ -137,13 +138,13 @@ u32 staggered_sprites_update(u32 slot, u32 n) {
     for (i = 0; i < n; i++) {
         anim = gStaggeredSpriteAnimScripts;
         if (gSpriteEntries[slot + i].flags != 0) {
-            if (gSpriteEntries[slot + i].unk2C != 0) {
-                gSpriteEntries[slot + i].unk2C--;
+            if (gSpriteEntries[slot + i].work[FX_SPR_DELAY] != 0) {
+                gSpriteEntries[slot + i].work[FX_SPR_DELAY]--;
                 done = 0;
             } else {
                 gSpriteEntries[slot + i].flags |= SPRITE_FLAG_ENABLED;
                 process_sprite_anim_commands(*anim, sprite_slot = slot + i);
-                if (gSpriteEntries[slot + i].unk22 == 0xFF)
+                if (gSpriteEntries[slot + i].work[SPR_CMD_STATE] == SPR_CMD_ENDED)
                     clear_battle_sprite_slot(sprite_slot, 1);
                 else
                     done = 0;
@@ -237,8 +238,8 @@ void battle_bot_sprites_show(u32 rec) {
 }
 
 void sprite_bob_step(u32 slot) {
-    gSpriteEntries[slot].y = (gSpriteEntries[slot].y + gSpriteBobYSteps[gSpriteEntries[slot].unk23]) & 0xFF;
-    gSpriteEntries[slot].unk23 = (gSpriteEntries[slot].unk23 + 1) & 31;
+    gSpriteEntries[slot].y = (gSpriteEntries[slot].y + gSpriteBobYSteps[gSpriteEntries[slot].work[FX_SPR_STEP]]) & 0xFF;
+    gSpriteEntries[slot].work[FX_SPR_STEP] = (gSpriteEntries[slot].work[FX_SPR_STEP] + 1) & 31;
 }
 
 void calc_head_uses_taken(u32 rec, s32 amount) {

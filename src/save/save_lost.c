@@ -6,9 +6,9 @@
 
 // Cycles sprite 0 through its 8 frames (gSaveLostSpriteFrames), one every 8 frames.
 void save_lost_animate_sprite(void) {
-    if (++gSpriteEntries[0].unk1A > 0x3F)
-        gSpriteEntries[0].unk1A = 0;
-    gSpriteEntries[0].frame = gSaveLostSpriteFrames[(gSpriteEntries[0].unk1A >> 3) & 7] + 0x100;
+    if (++gSpriteEntries[0].timer > 0x3F)
+        gSpriteEntries[0].timer = 0;
+    gSpriteEntries[0].frame = gSaveLostSpriteFrames[(gSpriteEntries[0].timer >> 3) & 7] + 0x100;
 }
 
 void save_lost_dispatch(void) {
@@ -58,7 +58,7 @@ void save_lost_load_graphics(void) {
     gSpriteEntries[0].frame = 0x112;
     gSpriteEntries[0].x = 0x70;
     gSpriteEntries[0].y = 0x18;
-    gSpriteEntries[0].unk1A = 0;
+    gSpriteEntries[0].timer = 0;
     gGameSubState++;
 }
 

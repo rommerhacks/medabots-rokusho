@@ -3,6 +3,7 @@
 // (battle_number_popup_*). Called from battle/robattle and the battle action modules.
 
 #include "global.h"
+#include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
 // Queues every Medabot standing on its front or home line (link player 1 queues the opponents first);
@@ -111,7 +112,7 @@ void battle_number_popup_init(u8 *buf, u32 rec) {
 
     for (i = 0; i <= 2; i++) {
         if (buf[i] == 0xFE) {
-            gSpriteEntries[rec * 4 + 10 + i].unk21 = 0xFF;
+            gSpriteEntries[rec * 4 + 10 + i].work[POPUP_SPR_STEP] = 0xFF;
             return;
         }
         gSpriteEntries[rec * 4 + 10 + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE |
@@ -120,8 +121,8 @@ void battle_number_popup_init(u8 *buf, u32 rec) {
         gSpriteEntries[rec * 4 + 10 + i].y = gSpriteEntries[rec * 4 + 0x5D].y + 4;
         gSpriteEntries[rec * 4 + 10 + i].order = 0x90;
         gSpriteEntries[rec * 4 + 10 + i].frame = buf[i] + 0x800;
-        gSpriteEntries[rec * 4 + 10 + i].unk20 = i * 4;
-        gSpriteEntries[rec * 4 + 10 + i].unk21 = 0;
+        gSpriteEntries[rec * 4 + 10 + i].work[POPUP_SPR_DELAY] = i * 4;
+        gSpriteEntries[rec * 4 + 10 + i].work[POPUP_SPR_STEP] = 0;
         gSpriteEntries[rec * 4 + 10 + i].scale_y = 0x40;
         gSpriteEntries[rec * 4 + 10 + i].scale_x = 0x40;
         gSpriteEntries[rec * 4 + 10 + i].palette = buf[0] + 1;
@@ -146,15 +147,16 @@ void battle_number_popup_update(u32 rec) {
     u32 i;
 
     for (i = 0; i <= 2; i++) {
-        if (gSpriteEntries[rec * 4 + 10 + i].unk21 == 0xFF)
+        if (gSpriteEntries[rec * 4 + 10 + i].work[POPUP_SPR_STEP] == 0xFF)
             return;
-        if (gSpriteEntries[rec * 4 + 10 + i].unk21 <= 0x1F) {
-            if (gSpriteEntries[rec * 4 + 10 + i].unk20 == 0) {
-                gSpriteEntries[rec * 4 + 10 + i].y += gNumberPopupYSteps[gSpriteEntries[rec * 4 + 10 + i].unk21];
+        if (gSpriteEntries[rec * 4 + 10 + i].work[POPUP_SPR_STEP] <= 0x1F) {
+            if (gSpriteEntries[rec * 4 + 10 + i].work[POPUP_SPR_DELAY] == 0) {
+                gSpriteEntries[rec * 4 + 10 + i].y +=
+                    gNumberPopupYSteps[gSpriteEntries[rec * 4 + 10 + i].work[POPUP_SPR_STEP]];
                 gSpriteEntries[rec * 4 + 10 + i].scale_y += 2;
-                gSpriteEntries[rec * 4 + 10 + i].unk21++;
+                gSpriteEntries[rec * 4 + 10 + i].work[POPUP_SPR_STEP]++;
             } else
-                gSpriteEntries[rec * 4 + 10 + i].unk20--;
+                gSpriteEntries[rec * 4 + 10 + i].work[POPUP_SPR_DELAY]--;
         }
     }
 }
@@ -215,8 +217,8 @@ void battle_number_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
         gSpriteEntries[rec * 4 + slot + i].y = gSpriteEntries[rec * 4 + 0x5D].y + 4;
         gSpriteEntries[rec * 4 + slot + i].order = 0x90;
         gSpriteEntries[rec * 4 + slot + i].frame = buf[i] + 0x800;
-        gSpriteEntries[rec * 4 + slot + i].unk20 = i * 4;
-        gSpriteEntries[rec * 4 + slot + i].unk21 = 0;
+        gSpriteEntries[rec * 4 + slot + i].work[POPUP_SPR_DELAY] = i * 4;
+        gSpriteEntries[rec * 4 + slot + i].work[POPUP_SPR_STEP] = 0;
         gSpriteEntries[rec * 4 + slot + i].scale_y = 0x40;
         gSpriteEntries[rec * 4 + slot + i].scale_x = 0x40;
         gSpriteEntries[rec * 4 + slot + i].palette = buf[0] + 1;
@@ -249,8 +251,8 @@ void battle_text_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
         gSpriteEntries[rec * 4 + slot + i].y = gSpriteEntries[rec * 4 + 0x5D].y + 4;
         gSpriteEntries[rec * 4 + slot + i].order = 0x90;
         gSpriteEntries[rec * 4 + slot + i].frame = buf[i] + 0x5100;
-        gSpriteEntries[rec * 4 + slot + i].unk20 = i * 4;
-        gSpriteEntries[rec * 4 + slot + i].unk21 = 0;
+        gSpriteEntries[rec * 4 + slot + i].work[POPUP_SPR_DELAY] = i * 4;
+        gSpriteEntries[rec * 4 + slot + i].work[POPUP_SPR_STEP] = 0;
         gSpriteEntries[rec * 4 + slot + i].scale_y = 0x40;
         gSpriteEntries[rec * 4 + slot + i].scale_x = 0x40;
         gSpriteEntries[rec * 4 + slot + i].palette = 0xC;
@@ -284,8 +286,8 @@ void battle_text_popup_init_at(u8 *buf, u32 rec, u32 slot, u32 x, u32 y) {
         gSpriteEntries[slot + rec * 4 + i].x = x + i * 8;
         gSpriteEntries[slot + rec * 4 + i].order = 0x90;
         gSpriteEntries[slot + rec * 4 + i].frame = buf[i] + 0x5100;
-        gSpriteEntries[slot + rec * 4 + i].unk20 = i * 4;
-        gSpriteEntries[slot + rec * 4 + i].unk21 = 0;
+        gSpriteEntries[slot + rec * 4 + i].work[POPUP_SPR_DELAY] = i * 4;
+        gSpriteEntries[slot + rec * 4 + i].work[POPUP_SPR_STEP] = 0;
         gSpriteEntries[slot + rec * 4 + i].scale_y = 0x40;
         gSpriteEntries[slot + rec * 4 + i].scale_x = 0x40;
         gSpriteEntries[slot + rec * 4 + i].palette = 0xC;
@@ -298,13 +300,14 @@ void battle_popup_update_slot(u8 *buf, u32 rec, u32 slot) {
     for (i = 0; i <= 4; i++) {
         if (buf[i] == 0xFE)
             return;
-        if (gSpriteEntries[slot + rec * 4 + i].unk21 <= 0x1F) {
-            if (gSpriteEntries[slot + rec * 4 + i].unk20 == 0) {
-                gSpriteEntries[slot + rec * 4 + i].y += gNumberPopupYSteps[gSpriteEntries[slot + rec * 4 + i].unk21];
+        if (gSpriteEntries[slot + rec * 4 + i].work[POPUP_SPR_STEP] <= 0x1F) {
+            if (gSpriteEntries[slot + rec * 4 + i].work[POPUP_SPR_DELAY] == 0) {
+                gSpriteEntries[slot + rec * 4 + i].y +=
+                    gNumberPopupYSteps[gSpriteEntries[slot + rec * 4 + i].work[POPUP_SPR_STEP]];
                 gSpriteEntries[slot + rec * 4 + i].scale_y += 2;
-                gSpriteEntries[slot + rec * 4 + i].unk21++;
+                gSpriteEntries[slot + rec * 4 + i].work[POPUP_SPR_STEP]++;
             } else
-                gSpriteEntries[slot + rec * 4 + i].unk20--;
+                gSpriteEntries[slot + rec * 4 + i].work[POPUP_SPR_DELAY]--;
         }
     }
 }

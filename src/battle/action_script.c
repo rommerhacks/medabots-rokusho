@@ -4,6 +4,7 @@
 // Ends with the script reader (battle_script_read_byte / load_operands / advance).
 
 #include "global.h"
+#include "constants/battle_seq_sprites.h"
 
 // Runs the acting Medabot's action script (gActionScripts[gBattleWork.actorSkill]): commands < 0x80 go to
 // gActionScriptCommands, others are skipped; a command sets unk163 to run the next one in the same frame.
@@ -322,8 +323,8 @@ void script_op_skill_anim_start(void) {
         gBattleWork.animSkill = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1];
     else
         gBattleWork.animSkill = gBattleBots[gBattleWork.actor].medaforce[0] + 0x50;
-    gSpriteEntries[1].unk29 = 1;
-    gSpriteEntries[2].unk29 = 1;
+    gSpriteEntries[1].work[SEQ_SPR_STATE] = 1;
+    gSpriteEntries[2].work[SEQ_SPR_STATE] = 1;
     battle_script_advance();
 }
 

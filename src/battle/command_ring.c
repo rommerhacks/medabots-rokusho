@@ -2,6 +2,7 @@
 // the input, pulses the selected icon and animates the battle sprites meanwhile. Called from battle/robattle.
 
 #include "global.h"
+#include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
 static void command_ring_init_icon_hidden(u32 a);
@@ -43,9 +44,9 @@ void command_ring_init_icon(u32 i) {
     gSpriteEntries[i].scale_y = 0x40 - (0x90 - gSpriteEntries[i].y) / 2;
     gSpriteEntries[i].scale_x = 0x40 - (0x90 - gSpriteEntries[i].y) / 2;
     gSpriteEntries[i].order = gSpriteEntries[i].y - 0x70;
-    gSpriteEntries[i].unk20 = gCommandRingIconAngles[k];
-    gSpriteEntries[i].unk21 = 0;
-    gSpriteEntries[i].unk22 = 0;
+    gSpriteEntries[i].work[RING_SPR_ANGLE] = gCommandRingIconAngles[k];
+    gSpriteEntries[i].work[RING_SPR_ROTATE] = 0;
+    gSpriteEntries[i].work[RING_SPR_BLINK] = 0;
 }
 
 void command_ring_init_icons_hidden(void) {
@@ -78,9 +79,9 @@ static void command_ring_init_icon_hidden(u32 i) {
     gSpriteEntries[i].scale_y = 1;
     gSpriteEntries[i].scale_x = 1;
     gSpriteEntries[i].order = gSpriteEntries[i].y - 0x70;
-    gSpriteEntries[i].unk20 = gCommandRingIconAngles[k];
-    gSpriteEntries[i].unk21 = 0;
-    gSpriteEntries[i].unk22 = 0;
+    gSpriteEntries[i].work[RING_SPR_ANGLE] = gCommandRingIconAngles[k];
+    gSpriteEntries[i].work[RING_SPR_ROTATE] = 0;
+    gSpriteEntries[i].work[RING_SPR_BLINK] = 0;
 }
 
 static u32 command_ring_rotate_step(u32 dir) {
@@ -105,17 +106,17 @@ static u32 command_ring_rotate_icon(u32 i, u32 dir) {
     if (k > 5)
         k += 6;
     if (dir == 0)
-        gSpriteEntries[i].unk20 += 6;
+        gSpriteEntries[i].work[RING_SPR_ANGLE] += 6;
     else
-        gSpriteEntries[i].unk20 -= 6;
-    gSpriteEntries[i].unk21++;
-    if (gSpriteEntries[i].unk21 == 7) {
+        gSpriteEntries[i].work[RING_SPR_ANGLE] -= 6;
+    gSpriteEntries[i].work[RING_SPR_ROTATE]++;
+    if (gSpriteEntries[i].work[RING_SPR_ROTATE] == 7) {
         done = 1;
-        gSpriteEntries[i].unk20 = gCommandRingIconAngles[k];
-        gSpriteEntries[i].unk21 = 0;
-        gSpriteEntries[i].unk22 = 0;
+        gSpriteEntries[i].work[RING_SPR_ANGLE] = gCommandRingIconAngles[k];
+        gSpriteEntries[i].work[RING_SPR_ROTATE] = 0;
+        gSpriteEntries[i].work[RING_SPR_BLINK] = 0;
     }
-    pos = compute_polar_to_screen_position(gSpriteEntries[i].unk20, 24, 120, 128, 8, 0);
+    pos = compute_polar_to_screen_position(gSpriteEntries[i].work[RING_SPR_ANGLE], 24, 120, 128, 8, 0);
     gSpriteEntries[i].x = pos.x;
     gSpriteEntries[i].y = pos.y;
     gSpriteEntries[i].frame = i + 0x60C;
@@ -157,8 +158,8 @@ void command_ring_input(void) {
 void command_ring_pulse_selected(void) {
     if (gBattleWork.ringTurning == 0) {
         gSpriteEntries[gBattleWork.ringSlot].flags |= SPRITE_FLAG_DOUBLE_SIZE;
-        gSpriteEntries[gBattleWork.ringSlot].unk22++;
-        if (gSpriteEntries[gBattleWork.ringSlot].unk22 & 8) {
+        gSpriteEntries[gBattleWork.ringSlot].work[RING_SPR_BLINK]++;
+        if (gSpriteEntries[gBattleWork.ringSlot].work[RING_SPR_BLINK] & 8) {
             gSpriteEntries[gBattleWork.ringSlot].scale_y = 0x50;
             gSpriteEntries[gBattleWork.ringSlot].scale_x = 0x50;
         } else {
@@ -185,13 +186,13 @@ void bot_pointer_line_init(u32 kind) {
         gSpriteEntries[60 + i].palette = 8;
         gSpriteEntries[60 + i].order = 0x80;
         gSpriteEntries[60 + i].frame = (i & 3) + 0x616;
-        gSpriteEntries[60 + i].unk25 = speed;
-        gSpriteEntries[60 + i].unk26 = count - 1 - i;
-        gSpriteEntries[60 + i].unk24 = 0;
-        gSpriteEntries[60 + i].unk27 = i * 2;
-        gSpriteEntries[60 + i].unk28 = 0;
-        gSpriteEntries[60 + i].unk21 = 0;
-        gSpriteEntries[60 + i].unk22 = i & 3;
+        gSpriteEntries[60 + i].work[POINTER_SPR_RIGHT] = speed;
+        gSpriteEntries[60 + i].work[POINTER_SPR_LENGTH] = count - 1 - i;
+        gSpriteEntries[60 + i].work[POINTER_SPR_SEGMENT] = 0;
+        gSpriteEntries[60 + i].work[POINTER_SPR_DELAY] = i * 2;
+        gSpriteEntries[60 + i].work[POINTER_SPR_MOVES] = 0;
+        gSpriteEntries[60 + i].work[POINTER_SPR_ANIM_TIMER] = 0;
+        gSpriteEntries[60 + i].work[POINTER_SPR_ANIM_FRAME] = i & 3;
         if (kind > 2)
             gSpriteEntries[60 + i].flags |= SPRITE_FLAG_HFLIP;
     }
@@ -204,30 +205,31 @@ u32 bot_pointer_line_extend(u32 kind) {
 
     for (i = 0; i < count; i++) {
         u32 base;
-        if (gSpriteEntries[60 + i].unk24)
+        if (gSpriteEntries[60 + i].work[POINTER_SPR_SEGMENT])
             base = 0x12;
         else
             base = 0x16;
-        gSpriteEntries[60 + i].unk21++;
-        if ((gSpriteEntries[60 + i].unk21 & 3) == 0) {
-            gSpriteEntries[60 + i].frame =
-                base + ((gSpriteEntries[60 + i].unk22 = (gSpriteEntries[60 + i].unk22 + 1) & 3) | 0x600);
+        gSpriteEntries[60 + i].work[POINTER_SPR_ANIM_TIMER]++;
+        if ((gSpriteEntries[60 + i].work[POINTER_SPR_ANIM_TIMER] & 3) == 0) {
+            gSpriteEntries[60 + i].frame = base + ((gSpriteEntries[60 + i].work[POINTER_SPR_ANIM_FRAME] =
+                                                        (gSpriteEntries[60 + i].work[POINTER_SPR_ANIM_FRAME] + 1) & 3) |
+                                                   0x600);
         }
-        if (gSpriteEntries[60 + i].unk26 != gSpriteEntries[60 + i].unk24) {
+        if (gSpriteEntries[60 + i].work[POINTER_SPR_LENGTH] != gSpriteEntries[60 + i].work[POINTER_SPR_SEGMENT]) {
             done = 0;
-            if (gSpriteEntries[60 + i].unk27)
-                gSpriteEntries[60 + i].unk27--;
+            if (gSpriteEntries[60 + i].work[POINTER_SPR_DELAY])
+                gSpriteEntries[60 + i].work[POINTER_SPR_DELAY]--;
             else {
-                if (gSpriteEntries[60 + i].unk24 == 0) {
-                    if (gSpriteEntries[60 + i].unk25)
+                if (gSpriteEntries[60 + i].work[POINTER_SPR_SEGMENT] == 0) {
+                    if (gSpriteEntries[60 + i].work[POINTER_SPR_RIGHT])
                         gSpriteEntries[60 + i].x += 4;
                     else
                         gSpriteEntries[60 + i].x -= 4;
                 } else
                     gSpriteEntries[60 + i].y += 4;
-                gSpriteEntries[60 + i].unk28++;
-                if ((gSpriteEntries[60 + i].unk28 & 1) == 0)
-                    gSpriteEntries[60 + i].unk24++;
+                gSpriteEntries[60 + i].work[POINTER_SPR_MOVES]++;
+                if ((gSpriteEntries[60 + i].work[POINTER_SPR_MOVES] & 1) == 0)
+                    gSpriteEntries[60 + i].work[POINTER_SPR_SEGMENT]++;
             }
         }
     }
@@ -240,22 +242,23 @@ void bot_pointer_line_animate(u32 kind) {
 
     for (i = 0; i < count; i++) {
         u32 base;
-        if (gSpriteEntries[60 + i].unk24)
+        if (gSpriteEntries[60 + i].work[POINTER_SPR_SEGMENT])
             base = 0x12;
         else
             base = 0x16;
-        gSpriteEntries[60 + i].unk21++;
-        if ((gSpriteEntries[60 + i].unk21 & 3) == 0) {
-            gSpriteEntries[60 + i].frame =
-                base + ((gSpriteEntries[60 + i].unk22 = (gSpriteEntries[60 + i].unk22 + 1) & 3) | 0x600);
+        gSpriteEntries[60 + i].work[POINTER_SPR_ANIM_TIMER]++;
+        if ((gSpriteEntries[60 + i].work[POINTER_SPR_ANIM_TIMER] & 3) == 0) {
+            gSpriteEntries[60 + i].frame = base + ((gSpriteEntries[60 + i].work[POINTER_SPR_ANIM_FRAME] =
+                                                        (gSpriteEntries[60 + i].work[POINTER_SPR_ANIM_FRAME] + 1) & 3) |
+                                                   0x600);
         }
     }
 }
 
 void command_ring_flash_selected(void) {
     gSpriteEntries[gBattleWork.ringSlot].flags |= SPRITE_FLAG_DOUBLE_SIZE;
-    gSpriteEntries[gBattleWork.ringSlot].unk22++;
-    if (gSpriteEntries[gBattleWork.ringSlot].unk22 & 4) {
+    gSpriteEntries[gBattleWork.ringSlot].work[RING_SPR_BLINK]++;
+    if (gSpriteEntries[gBattleWork.ringSlot].work[RING_SPR_BLINK] & 4) {
         gSpriteEntries[gBattleWork.ringSlot].scale_y = 0x60;
         gSpriteEntries[gBattleWork.ringSlot].scale_x = 0x60;
     } else {

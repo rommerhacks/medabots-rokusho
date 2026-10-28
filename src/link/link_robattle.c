@@ -14,6 +14,7 @@
 // single-GBA harness: names come from the code and the decoded messages.
 
 #include "global.h"
+#include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
 static void link_robattle_draw_partner_name(void);
@@ -404,7 +405,7 @@ void prize_game_launch(void) {
 void prize_game_launch_anim(void) {
     prize_game_scroll_bg3();
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x75 - gBattleWork.prizeRow], 4);
-    if (gSpriteEntries[4].unk22 == 0xFF) {
+    if (gSpriteEntries[4].work[SPR_CMD_STATE] == SPR_CMD_ENDED) {
         gSpriteEntries[3].frame = 0x8505;
         play_sound_effect(0x54);
         gGameSubState++;
@@ -803,16 +804,16 @@ static void prize_game_set_landing_row(void) {
 }
 
 static void prize_game_launch_ball(void) {
-    gSpriteEntries[2].unk24 = (gBattleWork.prizePower >> 2) + 4;
-    gSpriteEntries[2].unk25 = 0;
+    gSpriteEntries[2].work[PRIZE_SPR_SPEED] = (gBattleWork.prizePower >> 2) + 4;
+    gSpriteEntries[2].work[PRIZE_SPR_FALLING] = 0;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x75 - gBattleWork.prizeRow], 4);
 }
 
 static void prize_game_move_ball(void) {
-    u32 sub_pos = gSpriteEntries[2].unk24 + gSpriteEntries[2].unk20;
+    u32 sub_pos = gSpriteEntries[2].work[PRIZE_SPR_SPEED] + gSpriteEntries[2].work[PRIZE_SPR_FRAC];
     u32 step = sub_pos >> 2;
-    gSpriteEntries[2].unk20 = sub_pos & 3;
-    if (gSpriteEntries[2].unk25 == 0)
+    gSpriteEntries[2].work[PRIZE_SPR_FRAC] = sub_pos & 3;
+    if (gSpriteEntries[2].work[PRIZE_SPR_FALLING] == 0)
         gSpriteEntries[2].y = (gSpriteEntries[2].y - step) & 0xFF;
     else
         gSpriteEntries[2].y = (gSpriteEntries[2].y + step) & 0xFF;
@@ -824,9 +825,9 @@ static u32 prize_game_ball_rise(void) {
         gSpriteEntries[2].y = gBattleWork.prizePeakY;
         return 1;
     }
-    gSpriteEntries[2].unk27++;
-    if (!(gSpriteEntries[2].unk27 & 3) && gSpriteEntries[2].unk24 != 1)
-        gSpriteEntries[2].unk24--;
+    gSpriteEntries[2].work[PRIZE_SPR_FRAMES]++;
+    if (!(gSpriteEntries[2].work[PRIZE_SPR_FRAMES] & 3) && gSpriteEntries[2].work[PRIZE_SPR_SPEED] != 1)
+        gSpriteEntries[2].work[PRIZE_SPR_SPEED]--;
     return 0;
 }
 
@@ -836,8 +837,8 @@ static void prize_game_full_power_sfx(void) {
 }
 
 static void prize_game_ball_start_fall(void) {
-    gSpriteEntries[2].unk24 = 0;
-    gSpriteEntries[2].unk25 = 1;
+    gSpriteEntries[2].work[PRIZE_SPR_SPEED] = 0;
+    gSpriteEntries[2].work[PRIZE_SPR_FALLING] = 1;
 }
 
 static u32 prize_game_ball_fall(void) {
@@ -845,7 +846,7 @@ static u32 prize_game_ball_fall(void) {
 
     prize_game_move_ball();
     if (gSpriteEntries[2].y < gBattleWork.prizeLandY) {
-        gSpriteEntries[2].unk24++;
+        gSpriteEntries[2].work[PRIZE_SPR_SPEED]++;
         landed = 0;
     } else {
         gSpriteEntries[2].y = gBattleWork.prizeLandY;

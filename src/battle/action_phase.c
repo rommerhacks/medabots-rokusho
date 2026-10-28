@@ -1,4 +1,5 @@
 #include "global.h"
+#include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
 // Battle state 8, the action phase, every frame: unless waiting on the serial link, runs the gActionPhaseSteps
@@ -54,7 +55,7 @@ void action_phase_cursor_init(void) {
 
 void action_phase_cursor_anim(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x15], 3);
-    if (gSpriteEntries[3].unk22 == 0xFF) {
+    if (gSpriteEntries[3].work[SPR_CMD_STATE] == SPR_CMD_ENDED) {
         clear_battle_sprite_slot(3, 1);
         gGameSubState++;
     }
@@ -397,7 +398,7 @@ void action_phase_level_up_init(void) {
     gSpriteEntries[0x21].palette = 0xC;
     gSpriteEntries[0x21].order = 0x80;
     gSpriteEntries[0x21].frame = 0x5800;
-    gSpriteEntries[0x21].unk23 = 0;
+    gSpriteEntries[0x21].work[FX_SPR_STEP] = 0;
     play_sound_effect(0x2A);
     gGameSubState++;
 }
@@ -416,7 +417,7 @@ void action_phase_level_up_skill_init(void) {
     gSpriteEntries[0x22].palette = gLevelUpSkillPalettes[gBattleWork.levelUpSkill];
     gSpriteEntries[0x22].order = 0x80;
     gSpriteEntries[0x22].frame = 0x5801 + gBattleWork.levelUpSkill;
-    gSpriteEntries[0x22].unk23 = 0;
+    gSpriteEntries[0x22].work[FX_SPR_STEP] = 0;
     play_sound_effect(0x2A);
     gGameSubState++;
 }
@@ -500,7 +501,7 @@ void action_phase_medaforce_anim(void) {
     medaforce_gauge_drain_step(gBattleWork.actor);
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x4D], 0x21);
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x4E], 0x22);
-    if (gSpriteEntries[0x21].unk22 == 0xFF) {
+    if (gSpriteEntries[0x21].work[SPR_CMD_STATE] == SPR_CMD_ENDED) {
         clear_battle_ui_tilemaps();
         battle_substeps_reset();
         clear_battle_sprite_slot(0x21, 2);

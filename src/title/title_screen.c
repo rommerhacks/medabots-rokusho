@@ -3,9 +3,16 @@
 // (mode 2 state 7); after a timeout it loops back to the boot logos (mode 3 state 0).
 // Sub-states: 0 reset, 4 graphics, 5 logo, 6 sprites slide in, 7 wave + PRESS START, 8 wait for START,
 // 9 START pressed, 10 skip the intro (START held, or gTitleSkipIntro set by the logos / intro / test mode),
-// 1-3 shared fade / exit helpers. Each sprite runs a per-frame effect from gTitleSpriteEffects (unk20).
+// 1-3 shared fade / exit helpers. Each sprite runs a per-frame effect from gTitleSpriteEffects
+// (work[TITLE_SPR_EFFECT]).
 #include "global.h"
 #include "constants/sprites.h"
+
+// gSpriteEntries work[] / work16[] indices
+#define TITLE_SPR_EFFECT 0x0    // gTitleSpriteEffects index + 1, 0 = none
+#define TITLE_SPR_STEP 0x2      // the effect's step counter
+#define TITLE_SPR_START_FRAME 0 // work16: frame when the effect started
+#define TITLE_SPR_GLINT_WAIT 1  // work16, glint effect: frames until the next glint (0xFFFF = none)
 
 static void title_sprite_start_effect(u8 effect, u8 sprite);
 
@@ -160,7 +167,7 @@ void title_screen_show_logo(void) {
         gSpriteEntries[1].order = 0x20;
         title_sprite_start_effect(2, 1);
     }
-    if (gSpriteEntries[0].unk20 == 0) {
+    if (gSpriteEntries[0].work[TITLE_SPR_EFFECT] == 0) {
         gSceneWork.nextSubState = 6;
         gSceneWork.timer = 0;
         setup_screen_transition_effect_080682CC(4, 4, 0x7FFF);
@@ -182,18 +189,18 @@ void title_screen_slide_in_sprites(void) {
         gSpriteEntries[1].order = 0x20;
         title_sprite_start_effect(3, 1);
     }
-    if (gSpriteEntries[1].unk20 == 0) {
+    if (gSpriteEntries[1].work[TITLE_SPR_EFFECT] == 0) {
         sprite_entry_init(3, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE, 0x213, 3, 3);
         gSpriteEntries[3].x = 0x12C;
         gSpriteEntries[3].y = 0x55;
         gSpriteEntries[3].order = 0x40;
-        gSpriteEntries[3].unk32 = 0;
+        gSpriteEntries[3].work16[TITLE_SPR_GLINT_WAIT] = 0;
         title_sprite_start_effect(7, 3);
         sprite_entry_init(4, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x21C, 5, 3);
         gSpriteEntries[4].x = 0x12C;
         gSpriteEntries[4].y = 0x3C;
         gSpriteEntries[4].order = 0x10;
-        gSpriteEntries[4].unk32 = 0;
+        gSpriteEntries[4].work16[TITLE_SPR_GLINT_WAIT] = 0;
         title_sprite_start_effect(8, 4);
         gSceneWork.timer = 0;
         gGameSubState = 7;
@@ -303,13 +310,13 @@ void title_screen_skip_intro(void) {
     gSpriteEntries[3].x = 0x12C;
     gSpriteEntries[3].y = 0x55;
     gSpriteEntries[3].order = 0x40;
-    gSpriteEntries[3].unk32 = 0x80;
+    gSpriteEntries[3].work16[TITLE_SPR_GLINT_WAIT] = 0x80;
     title_sprite_start_effect(7, 3);
     sprite_entry_init(4, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x21C, 5, 3);
     gSpriteEntries[4].x = 0x12C;
     gSpriteEntries[4].y = 0x3C;
     gSpriteEntries[4].order = 0x10;
-    gSpriteEntries[4].unk32 = 0x80;
+    gSpriteEntries[4].work16[TITLE_SPR_GLINT_WAIT] = 0x80;
     title_sprite_start_effect(8, 4);
     REG_DISPCNT |= 0x1300;
     gSceneWork.nextSubState = 7;
@@ -321,12 +328,13 @@ void title_screen_update_sprite_effects(void) {
     u8 i;
 
     for (i = 0; i < 5; i++) {
-        if (gSpriteEntries[i].unk20 != 0) {
-            if (++gSpriteEntries[i].unk1A % gTitleSpriteEffectPeriods[gSpriteEntries[i].unk20 - 1] == 0) {
-                switch (gTitleSpriteEffects[gSpriteEntries[i].unk20 - 1](i)) {
+        if (gSpriteEntries[i].work[TITLE_SPR_EFFECT] != 0) {
+            if (++gSpriteEntries[i].timer % gTitleSpriteEffectPeriods[gSpriteEntries[i].work[TITLE_SPR_EFFECT] - 1] ==
+                0) {
+                switch (gTitleSpriteEffects[gSpriteEntries[i].work[TITLE_SPR_EFFECT] - 1](i)) {
                 case 0:
-                    gSpriteEntries[i].unk20 = 0;
-                    gSpriteEntries[i].unk22 = 0;
+                    gSpriteEntries[i].work[TITLE_SPR_EFFECT] = 0;
+                    gSpriteEntries[i].work[TITLE_SPR_STEP] = 0;
                     break;
                 case 1:
                     break;
@@ -340,26 +348,26 @@ void title_screen_update_sprite_effects(void) {
 }
 
 // Title sprite palette fade-in: copies the title palette (gSceneWork.param, u16[14]) into
-// OBJ palette 6 step by step (unk22 = step 0..0x1E).
+// OBJ palette 6 step by step (work[TITLE_SPR_STEP] = step 0..0x1E).
 bool32 title_effect_palette_fade_in(u8 idx) {
     u8 n;
     struct SpriteEntry *base = gSpriteEntries;
     struct SpriteEntry *entry = &base[idx];
-    u8 fade_step = entry->unk22;
+    u8 fade_step = entry->work[TITLE_SPR_STEP];
 
-    if (entry->unk22 > 0x1E)
+    if (entry->work[TITLE_SPR_STEP] > 0x1E)
         return FALSE;
-    if (entry->unk22 == 0 || entry->unk22 == 0x1E) {
+    if (entry->work[TITLE_SPR_STEP] == 0 || entry->work[TITLE_SPR_STEP] == 0x1E) {
         vu32 zero = 0;
         DmaSet(3, &zero, PLTT + 0x2C0, 0x85000000 | (0x20 / 4));
-    } else if (entry->unk22 <= 0xE) {
+    } else if (entry->work[TITLE_SPR_STEP] <= 0xE) {
         n = fade_step * 2;
         {
             vu32 zero = 0;
             DmaSet(3, &zero, PLTT + 0x2C0, 0x85000000 | ((0x20 - n) / 4));
         }
         DmaSet(3, (u16 *)&gSceneWork.param, PLTT + 0x2E0 - n, 0x80000000 | (n / 2));
-    } else if (entry->unk22 == 0xF) {
+    } else if (entry->work[TITLE_SPR_STEP] == 0xF) {
         DmaSet(3, (u16 *)&gSceneWork.param, PLTT + 0x2C0, 0x80000000 | (0x1C / 2));
     } else {
         n = (0x1E - fade_step) * 2;
@@ -367,18 +375,18 @@ bool32 title_effect_palette_fade_in(u8 idx) {
             vu32 zero = 0;
             DmaSet(3, &zero, PLTT + 0x2C0 + n, 0x85000000 | ((0x20 - n) / 4));
         }
-        DmaSet(3, &((u16 *)&gSceneWork.param)[entry->unk22 - 15], PLTT + 0x2C0, 0x80000000 | (n / 2));
+        DmaSet(3, &((u16 *)&gSceneWork.param)[entry->work[TITLE_SPR_STEP] - 15], PLTT + 0x2C0, 0x80000000 | (n / 2));
     }
-    gSpriteEntries[idx].unk22++;
+    gSpriteEntries[idx].work[TITLE_SPR_STEP]++;
     return TRUE;
 }
 
 bool32 title_effect_animate_frames(u8 i) {
-    if (gSpriteEntries[i].unk22 > 15)
+    if (gSpriteEntries[i].work[TITLE_SPR_STEP] > 15)
         return FALSE;
-    if (gSpriteEntries[i].unk22 != 0)
+    if (gSpriteEntries[i].work[TITLE_SPR_STEP] != 0)
         gSpriteEntries[i].frame++;
-    gSpriteEntries[i].unk22++;
+    gSpriteEntries[i].work[TITLE_SPR_STEP]++;
     return TRUE;
 }
 
@@ -395,26 +403,26 @@ bool32 title_effect_grow(u8 i) {
 }
 
 bool32 title_effect_blink(u8 i) {
-    if (gSpriteEntries[i].unk22 & 1)
+    if (gSpriteEntries[i].work[TITLE_SPR_STEP] & 1)
         gSpriteEntries[i].y = 0x73;
     else
         gSpriteEntries[i].y = 0xC8;
-    gSpriteEntries[i].unk22++;
+    gSpriteEntries[i].work[TITLE_SPR_STEP]++;
     return TRUE;
 }
 
 bool32 title_effect_glint(u8 i) {
-    if (gSpriteEntries[i].unk32 < gSpriteEntries[i].unk1A) {
-        if (gSpriteEntries[i].unk22 > 7) {
+    if (gSpriteEntries[i].work16[TITLE_SPR_GLINT_WAIT] < gSpriteEntries[i].timer) {
+        if (gSpriteEntries[i].work[TITLE_SPR_STEP] > 7) {
             gSpriteEntries[i].x = 300;
-            gSpriteEntries[i].unk22 = 0;
-            gSpriteEntries[i].unk32 = (rng_next(0) & 0x1FF) + 0x20;
-            gSpriteEntries[i].frame = gSpriteEntries[i].unk30;
-            gSpriteEntries[i].unk1A = 0;
-        } else if (gGameSubState == 9 && gSpriteEntries[i].unk22 == 0) {
-            gSpriteEntries[i].unk32 |= 0xFFFF;
-            gSpriteEntries[i].unk1A = 0;
-        } else if (++gSpriteEntries[i].unk22 != 1) {
+            gSpriteEntries[i].work[TITLE_SPR_STEP] = 0;
+            gSpriteEntries[i].work16[TITLE_SPR_GLINT_WAIT] = (rng_next(0) & 0x1FF) + 0x20;
+            gSpriteEntries[i].frame = gSpriteEntries[i].work16[TITLE_SPR_START_FRAME];
+            gSpriteEntries[i].timer = 0;
+        } else if (gGameSubState == 9 && gSpriteEntries[i].work[TITLE_SPR_STEP] == 0) {
+            gSpriteEntries[i].work16[TITLE_SPR_GLINT_WAIT] |= 0xFFFF;
+            gSpriteEntries[i].timer = 0;
+        } else if (++gSpriteEntries[i].work[TITLE_SPR_STEP] != 1) {
             gSpriteEntries[i].frame++;
         } else {
             gSpriteEntries[i].x = 0x78;
@@ -425,8 +433,8 @@ bool32 title_effect_glint(u8 i) {
 
 // Starts effect `effect` (1-based index into gTitleSpriteEffects) on title sprite `sprite`.
 static void title_sprite_start_effect(u8 effect, u8 sprite) {
-    gSpriteEntries[sprite].unk20 = effect;
-    gSpriteEntries[sprite].unk22 = 0;
-    gSpriteEntries[sprite].unk30 = gSpriteEntries[sprite].frame;
-    gSpriteEntries[sprite].unk1A = 0;
+    gSpriteEntries[sprite].work[TITLE_SPR_EFFECT] = effect;
+    gSpriteEntries[sprite].work[TITLE_SPR_STEP] = 0;
+    gSpriteEntries[sprite].work16[TITLE_SPR_START_FRAME] = gSpriteEntries[sprite].frame;
+    gSpriteEntries[sprite].timer = 0;
 }

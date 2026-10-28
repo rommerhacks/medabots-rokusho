@@ -13,6 +13,7 @@
 // field/area_graphics and the engine.
 
 #include "global.h"
+#include "constants/field_sprites.h"
 #include "constants/sprites.h"
 
 static u32 field_effect_sequence_done(void);
@@ -387,13 +388,14 @@ void field_form_resume_walk(void) {
     speed = sprite_walk_speed(47);
     field = &gFieldWork;
     field->player_step_frames = 0x10 / speed;
-    field_set_player_facing(gSpriteEntries[47].unk20);
-    sprite_anim_start(47, gSpriteEntries[47].unk20);
+    field_set_player_facing(gSpriteEntries[47].work[FIELD_SPR_FACING]);
+    sprite_anim_start(47, gSpriteEntries[47].work[FIELD_SPR_FACING]);
     if (field->follower_active) {
         field->follower_x = field->player_x;
         field->follower_y = field->player_y;
-        follower_set_facing(gSpriteEntries[47].unk20);
-        sprite_anim_start(48, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
+        follower_set_facing(gSpriteEntries[47].work[FIELD_SPR_FACING]);
+        sprite_anim_start(48,
+                          gSpriteEntries[48].work[FIELD_SPR_ANIM_SET] * 4 + gSpriteEntries[48].work[FIELD_SPR_FACING]);
     }
     follower_turn_toward_player(1);
     field_play_sound_effect(0x57);
@@ -445,8 +447,9 @@ void field_map_warp_run_effect(void) {
         if (gFieldWork.follower_active) {
             gFieldWork.follower_x = gFieldWork.player_x;
             gFieldWork.follower_y = gFieldWork.player_y;
-            follower_set_facing(gSpriteEntries[47].unk20);
-            sprite_anim_start(0x30, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
+            follower_set_facing(gSpriteEntries[47].work[FIELD_SPR_FACING]);
+            sprite_anim_start(0x30, gSpriteEntries[48].work[FIELD_SPR_ANIM_SET] * 4 +
+                                        gSpriteEntries[48].work[FIELD_SPR_FACING]);
         }
         field_sort_sprites_by_depth();
         gGameSubState = 5;
@@ -480,8 +483,9 @@ void field_teleport_run_effect(void) {
         if (gFieldWork.follower_active) {
             gFieldWork.follower_x = gFieldWork.player_x;
             gFieldWork.follower_y = gFieldWork.player_y;
-            follower_set_facing(gSpriteEntries[47].unk20);
-            sprite_anim_start(0x30, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
+            follower_set_facing(gSpriteEntries[47].work[FIELD_SPR_FACING]);
+            sprite_anim_start(0x30, gSpriteEntries[48].work[FIELD_SPR_ANIM_SET] * 4 +
+                                        gSpriteEntries[48].work[FIELD_SPR_FACING]);
         }
         field_sort_sprites_by_depth();
         gGameSubState = 5;

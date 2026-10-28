@@ -3,6 +3,7 @@
 // behind the player. Called from the field frame handler (field/field_walk) and the field sub-states
 // (field/field_update); uses field/map_objects for collision, events and exits.
 #include "global.h"
+#include "constants/field_sprites.h"
 #include "constants/sprites.h"
 
 static void follower_step(u8 dir);
@@ -93,9 +94,9 @@ void load_map_npc_sprites(s32 mode) {
                         slot, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE,
                         frame_base, sheet_anim, 1);
                     gFieldWork.objects[n].has_sprite = 1;
-                    gSpriteEntries[count + 49].unk30 = area_sprite_sheet_id(sheet_anim);
+                    gSpriteEntries[count + 49].work16[FIELD_SPR_SHEET] = area_sprite_sheet_id(sheet_anim);
                     sprite_set_blend_from_kind(count + 49);
-                    if (gSpriteSheetHasShadow[gSpriteEntries[count + 49].unk30])
+                    if (gSpriteSheetHasShadow[gSpriteEntries[count + 49].work16[FIELD_SPR_SHEET]])
                         sprite_entry_init(count + 91,
                                           SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) |
                                               SPRITE_OBJ_MODE(1) | SPRITE_FLAG_PART_PALETTE,
@@ -105,7 +106,7 @@ void load_map_npc_sprites(s32 mode) {
                 gFieldWork.objects[n].sprite_slot = count;
                 anim = rec->anim >> 4;
                 gEntityStates[count + 49].active = rec->event & 0xFFF;
-                gSpriteEntries[count + 49].unk2B = anim;
+                gSpriteEntries[count + 49].work[FIELD_SPR_ANIM_SET] = anim;
                 gSpriteEntries[count + 49].pos_x = rec->x * 16 + gFieldWork.map_origin_x;
                 gSpriteEntries[count + 49].pos_y = rec->y * 16 + gFieldWork.map_origin_y;
                 set_sprite_anim_and_store(count + 49, rec->anim & 0xF, &gFieldWork.objects[n]);
@@ -114,7 +115,7 @@ void load_map_npc_sprites(s32 mode) {
                     set_sprite_anim_and_store(count + 49, saved[j].anim_state, &gFieldWork.objects[n]);
                     sprite_anim_start(count + 49, saved[j].anim_state + anim * 4);
                 }
-                gSpriteEntries[count + 49].unk2C = 0;
+                gSpriteEntries[count + 49].work[FIELD_SPR_HEIGHT] = 0;
                 gSpriteEntries[count + 91].pos_x = gSpriteEntries[count + 49].pos_x;
                 gSpriteEntries[count + 91].pos_y = gSpriteEntries[count + 49].pos_y - 5;
                 gSpriteEntries[count + 91].x = gSpriteEntries[count + 49].x;
@@ -168,7 +169,8 @@ void init_battle_field_setup(void) {
 
 // Pixels per frame for a walking sprite: its own speed factor times the area's (16 / speed = frames per tile).
 s32 sprite_walk_speed(u8 idx) {
-    return gWalkSpeedFactors[gSpriteEntries[idx].unk2A] * gWalkSpeedFactors[gFieldSceneParams.area_speed_id];
+    return gWalkSpeedFactors[gSpriteEntries[idx].work[FIELD_SPR_SPEED]] *
+           gWalkSpeedFactors[gFieldSceneParams.area_speed_id];
 }
 
 void set_battle_state_cancel_flag(void) {
@@ -218,7 +220,7 @@ void field_player_step(u8 dir) {
         break;
     }
     if (--gFieldWork.player_step_frames == 0) {
-        gSpriteEntries[47].unk2A = gPlayerFormSpeedIds[gFieldWork.player_form];
+        gSpriteEntries[47].work[FIELD_SPR_SPEED] = gPlayerFormSpeedIds[gFieldWork.player_form];
         gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
         gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
         if (gFieldWork.script_running == 0 && !find_npc_event_match()) {
@@ -356,7 +358,7 @@ void follower_turn_toward_player(u8 flags) {
             sprite_anim_start(48, sprite_walk_anim_id(48, gFieldWork.follower_move_dir));
         }
     }
-    gSpriteEntries[48].unk2A = gSpriteEntries[47].unk2A;
+    gSpriteEntries[48].work[FIELD_SPR_SPEED] = gSpriteEntries[47].work[FIELD_SPR_SPEED];
 }
 
 // One frame of the follower's step in dir (see follower_turn_toward_player).
@@ -389,7 +391,7 @@ static void follower_step(u8 dir) {
             break;
         }
         if (--gFieldWork.follower_step_frames == 0) {
-            gSpriteEntries[48].unk2A = gSpriteEntries[47].unk2A;
+            gSpriteEntries[48].work[FIELD_SPR_SPEED] = gSpriteEntries[47].work[FIELD_SPR_SPEED];
             gFieldWork.follower_tile_x = field_pixel_x_to_tile(gFieldWork.follower_x);
             gFieldWork.follower_tile_y = field_pixel_y_to_tile(gFieldWork.follower_y);
         }

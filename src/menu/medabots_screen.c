@@ -5,6 +5,9 @@
 #include "global.h"
 #include "constants/sprites.h"
 
+// gSpriteEntries work[] indices
+#define MEDABOTS_SPR_ORBIT_ANGLE 0x3 // cursor icons 0-3: angle around the selected slot, 0-0x3F
+
 static void medabots_scroll_bg3(void);
 static void medabots_screen_init_cursor_icons(void);
 static void medabots_screen_orbit_cursor_icon(u32 i);
@@ -849,26 +852,27 @@ static void medabots_scroll_bg3(void) {
 static void medabots_screen_init_cursor_icons(void) {
     gSpriteEntries[0].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
-    gSpriteEntries[0].unk23 = 0;
+    gSpriteEntries[0].work[MEDABOTS_SPR_ORBIT_ANGLE] = 0;
     medabots_screen_orbit_cursor_icon(0);
     gSpriteEntries[1].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
-    gSpriteEntries[1].unk23 = 0x10;
+    gSpriteEntries[1].work[MEDABOTS_SPR_ORBIT_ANGLE] = 0x10;
     medabots_screen_orbit_cursor_icon(1);
     gSpriteEntries[2].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
-    gSpriteEntries[2].unk23 = 0x20;
+    gSpriteEntries[2].work[MEDABOTS_SPR_ORBIT_ANGLE] = 0x20;
     medabots_screen_orbit_cursor_icon(2);
     gSpriteEntries[3].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
-    gSpriteEntries[3].unk23 = 0x30;
+    gSpriteEntries[3].work[MEDABOTS_SPR_ORBIT_ANGLE] = 0x30;
     medabots_screen_orbit_cursor_icon(3);
 }
 
 static void medabots_screen_orbit_cursor_icon(u32 i) {
     u32 cx = gMedabotsCursorOrbitCenters[gGameWork.medabotsCursor * 2];
     u32 cy = gMedabotsCursorOrbitCenters[gGameWork.medabotsCursor * 2 + 1];
-    struct Vec16 pos = compute_polar_to_screen_position(((gSpriteEntries[i].unk23 + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
+    struct Vec16 pos = compute_polar_to_screen_position(
+        ((gSpriteEntries[i].work[MEDABOTS_SPR_ORBIT_ANGLE] + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
 
     gSpriteEntries[i].x = pos.x;
     gSpriteEntries[i].y = pos.y;
@@ -881,8 +885,8 @@ static void medabots_screen_orbit_cursor_icon(u32 i) {
         gSpriteEntries[i].order = gMedabotsSlotSpritePriorities[gGameWork.medabotsCursor] - 1;
     else
         gSpriteEntries[i].order = gMedabotsSlotSpritePriorities[gGameWork.medabotsCursor] + 4;
-    gSpriteEntries[i].angle = gSpriteEntries[i].unk23 << 4;
-    gSpriteEntries[i].unk23 = (gSpriteEntries[i].unk23 + 1) & 0x3F;
+    gSpriteEntries[i].angle = gSpriteEntries[i].work[MEDABOTS_SPR_ORBIT_ANGLE] << 4;
+    gSpriteEntries[i].work[MEDABOTS_SPR_ORBIT_ANGLE] = (gSpriteEntries[i].work[MEDABOTS_SPR_ORBIT_ANGLE] + 1) & 0x3F;
 }
 
 static void medabots_screen_load_team_icon_gfx(void) {
@@ -1075,26 +1079,27 @@ static u32 medabots_screen_cursor_input(void) {
 static void medabots_screen_start_reorder_orbit(void) {
     gSpriteEntries[4].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
-    gSpriteEntries[4].unk23 = 0;
+    gSpriteEntries[4].work[MEDABOTS_SPR_ORBIT_ANGLE] = 0;
     medabots_screen_orbit_reorder_icon(4);
     gSpriteEntries[5].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
-    gSpriteEntries[5].unk23 = 0x10;
+    gSpriteEntries[5].work[MEDABOTS_SPR_ORBIT_ANGLE] = 0x10;
     medabots_screen_orbit_reorder_icon(5);
     gSpriteEntries[6].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
-    gSpriteEntries[6].unk23 = 0x20;
+    gSpriteEntries[6].work[MEDABOTS_SPR_ORBIT_ANGLE] = 0x20;
     medabots_screen_orbit_reorder_icon(6);
     gSpriteEntries[7].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
-    gSpriteEntries[7].unk23 = 0x30;
+    gSpriteEntries[7].work[MEDABOTS_SPR_ORBIT_ANGLE] = 0x30;
     medabots_screen_orbit_reorder_icon(7);
 }
 
 static void medabots_screen_orbit_reorder_icon(u32 i) {
     u32 cx = gMedabotsCursorOrbitCenters[(gGameWork.reorderPick & 0x7F) * 2];
     u32 cy = gMedabotsCursorOrbitCenters[(gGameWork.reorderPick & 0x7F) * 2 + 1] - 4;
-    struct Vec16 pos = compute_polar_to_screen_position(((gSpriteEntries[i].unk23 + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
+    struct Vec16 pos = compute_polar_to_screen_position(
+        ((gSpriteEntries[i].work[MEDABOTS_SPR_ORBIT_ANGLE] + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
 
     gSpriteEntries[i].x = pos.x;
     gSpriteEntries[i].y = pos.y;
@@ -1107,8 +1112,8 @@ static void medabots_screen_orbit_reorder_icon(u32 i) {
         gSpriteEntries[i].order = gMedabotsSlotSpritePriorities[gGameWork.reorderPick & 0x7F] - 1;
     else
         gSpriteEntries[i].order = gMedabotsSlotSpritePriorities[gGameWork.reorderPick & 0x7F] + 4;
-    gSpriteEntries[i].angle = gSpriteEntries[i].unk23 << 4;
-    gSpriteEntries[i].unk23 = (gSpriteEntries[i].unk23 - 1) & 0x3F;
+    gSpriteEntries[i].angle = gSpriteEntries[i].work[MEDABOTS_SPR_ORBIT_ANGLE] << 4;
+    gSpriteEntries[i].work[MEDABOTS_SPR_ORBIT_ANGLE] = (gSpriteEntries[i].work[MEDABOTS_SPR_ORBIT_ANGLE] - 1) & 0x3F;
 }
 
 static void medabots_screen_update_reorder_icons(void) {

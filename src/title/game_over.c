@@ -143,25 +143,25 @@ void game_over_fade_in(void) {
     } else {
         menu->timer = 0;
         gSpriteEntries[1].flags |= SPRITE_FLAG_VISIBLE;
-        gSpriteEntries[1].unk1A = 0;
+        gSpriteEntries[1].timer = 0;
         gGameSubState++;
     }
 }
 
 void game_over_ikki_fall(void) {
     struct SpriteEntry *sprites = gSpriteEntries;
-    u32 fall_frame = sprites[1].unk1A;
+    u32 fall_frame = sprites[1].timer;
     u16 zero;
 
     sprites[1].frame = (fall_frame & 4) ? 0x109 : 0x10A;
     zero = 0;
     fall_frame = (u16)fall_frame;
     if ((u16)fall_frame < 0x78) {
-        sprites[1].y = (s32)(sprites[1].unk1A * 0xA8) / 0x78 - 0x40;
-        sprites[1].scale_x = -0x80 - (s32)(sprites[1].unk1A * 64) / 0x78;
-        sprites[1].scale_y = -0x80 - (s32)(sprites[1].unk1A * 64) / 0x78;
+        sprites[1].y = (s32)(sprites[1].timer * 0xA8) / 0x78 - 0x40;
+        sprites[1].scale_x = -0x80 - (s32)(sprites[1].timer * 64) / 0x78;
+        sprites[1].scale_y = -0x80 - (s32)(sprites[1].timer * 64) / 0x78;
         sprites[1].angle = (fall_frame & 0x3F) * 16 + 0x340;
-        sprites[1].unk1A = fall_frame + 1;
+        sprites[1].timer = fall_frame + 1;
     } else {
         REG_DISPCNT |= 0x100;
         sprites[1].frame = 0x10B;
@@ -169,7 +169,7 @@ void game_over_ikki_fall(void) {
         sprites[1].scale_y = 0x40;
         sprites[1].y = 0x68;
         sprites[1].angle = zero;
-        sprites[1].unk1A = zero;
+        sprites[1].timer = zero;
         gMenuWork->frame = zero;
         gGameSubState++;
     }
@@ -221,9 +221,9 @@ void game_over_logo_drop(void) {
         }
         gSpriteEntries[0].y = y;
     }
-    if (++gSpriteEntries[1].unk1A > 0x47)
-        gSpriteEntries[1].unk1A = 0;
-    gSpriteEntries[1].frame = gGameOverIkkiFrames[gSpriteEntries[1].unk1A / 6];
+    if (++gSpriteEntries[1].timer > 0x47)
+        gSpriteEntries[1].timer = 0;
+    gSpriteEntries[1].frame = gGameOverIkkiFrames[gSpriteEntries[1].timer / 6];
     if ((KEYS_LO(gNewKeys) & 1) && done) {
         gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE |
                                   SPRITE_FLAG_DOUBLE_SIZE;
@@ -249,9 +249,9 @@ void game_over_wipe_out(void) {
 
     menu->frame++;
     game_over_draw_wipe(menu->frame + 8);
-    if (++gSpriteEntries[1].unk1A > 0x47)
-        gSpriteEntries[1].unk1A = 0;
-    gSpriteEntries[1].frame = gGameOverIkkiFramesExit[(u16)(gSpriteEntries[1].unk1A / 6)];
+    if (++gSpriteEntries[1].timer > 0x47)
+        gSpriteEntries[1].timer = 0;
+    gSpriteEntries[1].frame = gGameOverIkkiFramesExit[(u16)(gSpriteEntries[1].timer / 6)];
     menu = gMenuWork;
     if (menu->frame > 13) {
         menu->fade_level = 0;

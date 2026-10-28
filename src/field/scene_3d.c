@@ -5,6 +5,7 @@
 // interpolated tracks at the end of the file. Started by field/field_update, field/map_script and
 // field/field_walk.
 #include "global.h"
+#include "constants/field_sprites.h"
 
 static void compute_plane_from_points(float *x, float *y, float *z, float *normal_x, float *normal_y, float *normal_z,
                                       float *plane_dist);
@@ -1158,8 +1159,9 @@ u32 field_effect_run(void) {
                 update_bg_scroll_offsets_a();
                 field_set_player_facing(gFieldWork.player_facing);
                 if (gFieldWork.follower_active) {
-                    follower_set_facing(gSpriteEntries[47].unk20);
-                    sprite_anim_start(0x30, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
+                    follower_set_facing(gSpriteEntries[47].work[FIELD_SPR_FACING]);
+                    sprite_anim_start(0x30, gSpriteEntries[48].work[FIELD_SPR_ANIM_SET] * 4 +
+                                                gSpriteEntries[48].work[FIELD_SPR_FACING]);
                 }
                 field_sort_sprites_by_depth();
             }

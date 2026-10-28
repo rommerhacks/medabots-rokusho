@@ -2,6 +2,7 @@
 // find_next_active_bot, determine_battle_part_action_priority. Called from the battle action state code.
 
 #include "global.h"
+#include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
 // unkBA == 2: set by reset_battle_bot_state when a Medabot stops functioning.
@@ -168,10 +169,12 @@ void target_marker_show(void) {
                 .x;
         gSpriteEntries[9].palette = 6;
         gSpriteEntries[9].order = 0xF0;
-        gSpriteEntries[9].unk24 = gBattleBots[gBattleWork.commandBot].parts[gBattleWork.partCursor - 1].aiTargetPart;
-        gSpriteEntries[9].unk25 = gBattleBots[gBattleWork.commandBot].parts[gBattleWork.partCursor - 1].aiTargetBot;
-        gSpriteEntries[9].unk26 = 0;
-        gSpriteEntries[9].unk27 = 0;
+        gSpriteEntries[9].work[MARKER_SPR_PART] =
+            gBattleBots[gBattleWork.commandBot].parts[gBattleWork.partCursor - 1].aiTargetPart;
+        gSpriteEntries[9].work[MARKER_SPR_BOT] =
+            gBattleBots[gBattleWork.commandBot].parts[gBattleWork.partCursor - 1].aiTargetBot;
+        gSpriteEntries[9].work[MARKER_SPR_SHRINK] = 0;
+        gSpriteEntries[9].work[MARKER_SPR_FRAMES] = 0;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[24], 9);
     }
 }
@@ -179,24 +182,29 @@ void target_marker_show(void) {
 void target_marker_update(void) {
     if (gSpriteEntries[9].flags & SPRITE_FLAG_ENABLED) {
         process_sprite_anim_commands(gBattleSpriteAnimScripts[24], 9);
-        if (gSpriteEntries[9].unk24) {
-            gSpriteEntries[9].unk27++;
-            gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].flags |=
-                SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
-            if (gSpriteEntries[9].unk26 == 0) {
-                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_x =
-                    gSpriteEntries[9].unk27 * 2 + 0x40;
-                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_y =
-                    gSpriteEntries[9].unk27 * 2 + 0x40;
+        if (gSpriteEntries[9].work[MARKER_SPR_PART]) {
+            gSpriteEntries[9].work[MARKER_SPR_FRAMES]++;
+            gSpriteEntries[(gSpriteEntries[9].work[MARKER_SPR_BOT] - 1) * 4 + gSpriteEntries[9].work[MARKER_SPR_PART] +
+                           0x59]
+                .flags |= SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
+            if (gSpriteEntries[9].work[MARKER_SPR_SHRINK] == 0) {
+                gSpriteEntries[(gSpriteEntries[9].work[MARKER_SPR_BOT] - 1) * 4 +
+                               gSpriteEntries[9].work[MARKER_SPR_PART] + 0x59]
+                    .scale_x = gSpriteEntries[9].work[MARKER_SPR_FRAMES] * 2 + 0x40;
+                gSpriteEntries[(gSpriteEntries[9].work[MARKER_SPR_BOT] - 1) * 4 +
+                               gSpriteEntries[9].work[MARKER_SPR_PART] + 0x59]
+                    .scale_y = gSpriteEntries[9].work[MARKER_SPR_FRAMES] * 2 + 0x40;
             } else {
-                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_x =
-                    0x60 - gSpriteEntries[9].unk27 * 2;
-                gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_y =
-                    0x60 - gSpriteEntries[9].unk27 * 2;
+                gSpriteEntries[(gSpriteEntries[9].work[MARKER_SPR_BOT] - 1) * 4 +
+                               gSpriteEntries[9].work[MARKER_SPR_PART] + 0x59]
+                    .scale_x = 0x60 - gSpriteEntries[9].work[MARKER_SPR_FRAMES] * 2;
+                gSpriteEntries[(gSpriteEntries[9].work[MARKER_SPR_BOT] - 1) * 4 +
+                               gSpriteEntries[9].work[MARKER_SPR_PART] + 0x59]
+                    .scale_y = 0x60 - gSpriteEntries[9].work[MARKER_SPR_FRAMES] * 2;
             }
-            if (gSpriteEntries[9].unk27 > 0x10) {
-                gSpriteEntries[9].unk26 ^= 1;
-                gSpriteEntries[9].unk27 = 0;
+            if (gSpriteEntries[9].work[MARKER_SPR_FRAMES] > 0x10) {
+                gSpriteEntries[9].work[MARKER_SPR_SHRINK] ^= 1;
+                gSpriteEntries[9].work[MARKER_SPR_FRAMES] = 0;
             }
         }
     }
@@ -204,15 +212,19 @@ void target_marker_update(void) {
 
 void target_marker_hide(void) {
     if (gSpriteEntries[9].flags & SPRITE_FLAG_ENABLED) {
-        if (gSpriteEntries[9].unk24) {
-            gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_x = 0x40;
-            gSpriteEntries[(gSpriteEntries[9].unk25 - 1) * 4 + gSpriteEntries[9].unk24 + 0x59].scale_y = 0x40;
-            if (gBattleWork.commandBot == gSpriteEntries[9].unk25 - 1) {
-                if ((u8)(gSpriteEntries[9].unk24 - 2) <= 1)
-                    gSpriteEntries[gBattleWork.commandBot * 4 + gSpriteEntries[9].unk24 + 0x59].flags &=
+        if (gSpriteEntries[9].work[MARKER_SPR_PART]) {
+            gSpriteEntries[(gSpriteEntries[9].work[MARKER_SPR_BOT] - 1) * 4 + gSpriteEntries[9].work[MARKER_SPR_PART] +
+                           0x59]
+                .scale_x = 0x40;
+            gSpriteEntries[(gSpriteEntries[9].work[MARKER_SPR_BOT] - 1) * 4 + gSpriteEntries[9].work[MARKER_SPR_PART] +
+                           0x59]
+                .scale_y = 0x40;
+            if (gBattleWork.commandBot == gSpriteEntries[9].work[MARKER_SPR_BOT] - 1) {
+                if ((u8)(gSpriteEntries[9].work[MARKER_SPR_PART] - 2) <= 1)
+                    gSpriteEntries[gBattleWork.commandBot * 4 + gSpriteEntries[9].work[MARKER_SPR_PART] + 0x59].flags &=
                         (u16)~SPRITE_FLAG_DOUBLE_SIZE;
                 else
-                    gSpriteEntries[gBattleWork.commandBot * 4 + gSpriteEntries[9].unk24 + 0x59].flags &=
+                    gSpriteEntries[gBattleWork.commandBot * 4 + gSpriteEntries[9].work[MARKER_SPR_PART] + 0x59].flags &=
                         (u16) ~(SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE);
             }
         }

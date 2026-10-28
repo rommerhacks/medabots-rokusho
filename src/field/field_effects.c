@@ -142,9 +142,9 @@ void calculate_oam_affine_matrix(u8 i) {
 
 // Starts animation script `anim_id` (gSpriteAnimScripts) on sprite `slot` from its first frame.
 void sprite_anim_start(u8 slot, u8 anim_id) {
-    gSpriteEntries[slot].unk24 = anim_id;
-    gSpriteEntries[slot].unk23 = 0;
-    gSpriteEntries[slot].unk22 = 0;
+    gSpriteEntries[slot].work[SPR_ANIM_SCRIPT] = anim_id;
+    gSpriteEntries[slot].work[SPR_ANIM_FRAMES] = 0;
+    gSpriteEntries[slot].work[SPR_ANIM_POS] = 0;
 }
 
 void advance_sprite_animation_frame(u8 idx) {
@@ -152,46 +152,46 @@ void advance_sprite_animation_frame(u8 idx) {
     u16 cmd, operand, duration, frame;
     const struct SpriteAnimGfx *gfx;
 
-    anim_script = gSpriteAnimScripts[gSpriteEntries[idx].unk24];
-    cmd = anim_script[gSpriteEntries[idx].unk22].cmd;
-    operand = anim_script[gSpriteEntries[idx].unk22].arg;
-    duration = anim_script[gSpriteEntries[idx].unk22].duration;
-    frame = anim_script[gSpriteEntries[idx].unk22].frame;
+    anim_script = gSpriteAnimScripts[gSpriteEntries[idx].work[SPR_ANIM_SCRIPT]];
+    cmd = anim_script[gSpriteEntries[idx].work[SPR_ANIM_POS]].cmd;
+    operand = anim_script[gSpriteEntries[idx].work[SPR_ANIM_POS]].arg;
+    duration = anim_script[gSpriteEntries[idx].work[SPR_ANIM_POS]].duration;
+    frame = anim_script[gSpriteEntries[idx].work[SPR_ANIM_POS]].frame;
 
     switch (cmd) {
     case 0xFFFD:
-        gSpriteEntries[idx].unk22++;
+        gSpriteEntries[idx].work[SPR_ANIM_POS]++;
         field_play_sound_effect(operand);
         advance_sprite_animation_frame(idx);
         break;
     case 0xFFFE:
-        gSpriteEntries[idx].unk22 = operand;
-        gSpriteEntries[idx].unk23 = 0;
+        gSpriteEntries[idx].work[SPR_ANIM_POS] = operand;
+        gSpriteEntries[idx].work[SPR_ANIM_FRAMES] = 0;
         advance_sprite_animation_frame(idx);
         break;
     case 0xFFFA:
-        if (gSpriteEntries[idx].unk23 < duration) {
-            gSpriteEntries[idx].frame = frame + gSpriteEntries[idx].unk2F;
-            gSpriteEntries[idx].unk23++;
-            if (gSpriteEntries[idx].unk23 >= duration) {
-                gSpriteEntries[idx].unk23 = 0;
-                gSpriteEntries[idx].unk22++;
+        if (gSpriteEntries[idx].work[SPR_ANIM_FRAMES] < duration) {
+            gSpriteEntries[idx].frame = frame + gSpriteEntries[idx].work[SPR_ANIM_FRAME_OFFSET];
+            gSpriteEntries[idx].work[SPR_ANIM_FRAMES]++;
+            if (gSpriteEntries[idx].work[SPR_ANIM_FRAMES] >= duration) {
+                gSpriteEntries[idx].work[SPR_ANIM_FRAMES] = 0;
+                gSpriteEntries[idx].work[SPR_ANIM_POS]++;
             }
         }
         break;
     case 0xFFFC:
-        if (gSpriteEntries[idx].unk23 == 0) {
+        if (gSpriteEntries[idx].work[SPR_ANIM_FRAMES] == 0) {
             gfx = &gSpriteAnimGfx[operand];
             if (gfx->noDecompress == 0)
                 LZ77UnCompVram(gfx->src, gfx->dst);
         }
     default:
-        if (gSpriteEntries[idx].unk23 < duration) {
+        if (gSpriteEntries[idx].work[SPR_ANIM_FRAMES] < duration) {
             gSpriteEntries[idx].frame = frame;
-            gSpriteEntries[idx].unk23++;
-            if (gSpriteEntries[idx].unk23 >= duration) {
-                gSpriteEntries[idx].unk23 = 0;
-                gSpriteEntries[idx].unk22++;
+            gSpriteEntries[idx].work[SPR_ANIM_FRAMES]++;
+            if (gSpriteEntries[idx].work[SPR_ANIM_FRAMES] >= duration) {
+                gSpriteEntries[idx].work[SPR_ANIM_FRAMES] = 0;
+                gSpriteEntries[idx].work[SPR_ANIM_POS]++;
             }
         }
         break;

@@ -824,8 +824,8 @@
 08486040	gIntroObjPals+0x3E
 08486044	gIntroObjPals+0x4A
 08486048	gIntroObjPals+0x30
-084860AC	intro_action_open_unk9_first
-084860B0	intro_action_open_unk8_first
+084860AC	intro_action_grow_height_first
+084860B0	intro_action_grow_width_first
 084860B4	intro_action_bob
 084860B8	intro_action_scan_up
 084860BC	intro_action_scan_right

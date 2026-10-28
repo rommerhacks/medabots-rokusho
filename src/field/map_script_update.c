@@ -4,6 +4,7 @@
 // opcode order. Talks to field/map_script, field/script_sprites, field/field_walk, text/message and
 // field/script_helpers.
 #include "global.h"
+#include "constants/field_sprites.h"
 #include "constants/sprites.h"
 
 static void map_script_load_warp_area(void);
@@ -106,7 +107,7 @@ static void map_script_load_warp_area(void) {
     gFieldWork.player_y = gFieldWork.player_tile_y * 16 + gFieldWork.map_origin_y;
     init_battle_field_setup();
     update_bg_scroll_offsets_a();
-    gSpriteEntries[47].unk25 = 1;
+    gSpriteEntries[47].work[FIELD_SPR_SCRIPT_FLAG] = 1;
     field_set_player_facing(gFieldWork.player_facing);
     follower_snap_to_player();
     area_load_sprite_sheets();
@@ -114,18 +115,19 @@ static void map_script_load_warp_area(void) {
 }
 
 void map_script_update_player_hop(void) {
-    switch (gSpriteEntries[47].unk26) {
+    switch (gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP]) {
     case 0:
-        if (gSpriteEntries[47].unk28 < 16) {
-            gSpriteEntries[47].y = gFieldWork.cmd_args[0] - gJumpArcTable[gSpriteEntries[47].unk28][0] / 16;
-            gSpriteEntries[47].unk28++;
+        if (gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] < 16) {
+            gSpriteEntries[47].y =
+                gFieldWork.cmd_args[0] - gJumpArcTable[gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER]][0] / 16;
+            gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER]++;
             if (gSpriteEntries[47].y / 4 <= (gFieldWork.cmd_args[0] - 16) / 4)
                 gSpriteEntries[47].order = 0xFF;
             else
                 sprite_set_blend_from_kind(47);
         } else {
-            gSpriteEntries[47].unk26 = 1;
-            gSpriteEntries[47].unk28 = 0;
+            gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP] = 1;
+            gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] = 0;
         }
         break;
     case 1:
@@ -150,7 +152,7 @@ void map_script_update_player_jump(void) {
         gSpriteEntries[89].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) |
                                    SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[48].flags = 0;
-        gSpriteEntries[47].unk28 = 0;
+        gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] = 0;
         gFieldWork.script_field_update = 1;
         clear_input_keys();
         field_play_sound_effect(0x70);
@@ -173,17 +175,18 @@ void map_script_update_player_jump(void) {
             break;
         }
         gSpriteEntries[46].x = gSpriteEntries[47].x;
-        if (gSpriteEntries[47].unk28 < 16 / sprite_walk_speed(47) * 2) {
+        if (gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] < 16 / sprite_walk_speed(47) * 2) {
             gSpriteEntries[46].y =
-                gSpriteEntries[47].y - gJumpArcTable[0][gSpriteEntries[47].unk28 * (sprite_walk_speed(47) << 2)] / 16;
-            gSpriteEntries[47].unk28++;
+                gSpriteEntries[47].y -
+                gJumpArcTable[0][gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] * (sprite_walk_speed(47) << 2)] / 16;
+            gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER]++;
             if (gSpriteEntries[46].y / 4 <= (gSpriteEntries[47].y - 16) / 4)
                 gSpriteEntries[46].order = 0xFF;
             else
                 sprite_set_blend_from_kind(46);
         } else {
-            gSpriteEntries[47].unk26++;
-            gSpriteEntries[47].unk28 = 0;
+            gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP]++;
+            gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] = 0;
             memcpy_u8(gFieldWork.saved_tile_actions, gFieldWork.tile_actions, 8);
             sprite_entry_clear(46);
             gFieldWork.player_visible = 1;
@@ -199,13 +202,13 @@ void map_script_update_player_walk(void) {
     switch (gFieldWork.cmd_step) {
     case 0:
         clear_input_keys();
-        if (gFieldWork.cmd_args[gSpriteEntries[47].unk26] == 0xFF) {
+        if (gFieldWork.cmd_args[gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP]] == 0xFF) {
             gFieldWork.cmd_step++;
             break;
         }
-        if (gSpriteEntries[47].unk28 == 0)
+        if (gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] == 0)
             break;
-        switch ((gFieldWork.cmd_args[gSpriteEntries[47].unk26] & 0xF0) >> 4) {
+        switch ((gFieldWork.cmd_args[gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP]] & 0xF0) >> 4) {
         case 0:
             KEYS_LO(gHeldKeys) |= 0x40;
             break;
@@ -219,12 +222,12 @@ void map_script_update_player_walk(void) {
             KEYS_LO(gHeldKeys) |= 0x10;
             break;
         }
-        gSpriteEntries[47].unk28--;
-        if (gSpriteEntries[47].unk28 != 0)
+        gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER]--;
+        if (gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] != 0)
             break;
-        gSpriteEntries[47].unk28 = 16 / sprite_walk_speed(47);
-        gSpriteEntries[47].unk27--;
-        if (gSpriteEntries[47].unk27 != 0)
+        gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] = 16 / sprite_walk_speed(47);
+        gSpriteEntries[47].work[FIELD_SPR_STEPS_LEFT]--;
+        if (gSpriteEntries[47].work[FIELD_SPR_STEPS_LEFT] != 0)
             break;
         gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
         gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
@@ -232,17 +235,18 @@ void map_script_update_player_walk(void) {
             gFieldWork.follower_tile_x = field_pixel_x_to_tile(gFieldWork.follower_x);
             gFieldWork.follower_tile_y = field_pixel_y_to_tile(gFieldWork.follower_y);
         }
-        gSpriteEntries[47].unk26++;
-        if (gSpriteEntries[47].unk26 > 3) {
+        gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP]++;
+        if (gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP] > 3) {
             gFieldWork.cmd_step++;
             break;
         }
-        if (gFieldWork.cmd_args[gSpriteEntries[47].unk26] == 0xFF) {
+        if (gFieldWork.cmd_args[gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP]] == 0xFF) {
             gFieldWork.cmd_step++;
             break;
         }
-        script_sprite_begin_walk(47, gFieldWork.cmd_args[gSpriteEntries[47].unk26], gSpriteEntries[47].unk2A);
-        switch (gFieldWork.cmd_args[gSpriteEntries[47].unk26] >> 4) {
+        script_sprite_begin_walk(47, gFieldWork.cmd_args[gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP]],
+                                 gSpriteEntries[47].work[FIELD_SPR_SPEED]);
+        switch (gFieldWork.cmd_args[gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP]] >> 4) {
         case 0:
             KEYS_LO(gHeldKeys) |= 0x40;
             break;
@@ -1050,7 +1054,7 @@ void map_script_update_field_effect(void) {
             gFieldWork.player_facing = 3;
         if (map_script_player_slide_step(gFieldWork.player_facing)) {
             gFieldWork.player_visible = 1;
-            gSpriteEntries[47].unk2A = gPlayerFormSpeedIds[gFieldWork.player_form];
+            gSpriteEntries[47].work[FIELD_SPR_SPEED] = gPlayerFormSpeedIds[gFieldWork.player_form];
             gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
             gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
             field_center_camera_on_player();
@@ -1389,7 +1393,7 @@ void map_script_update_anim_queue_run(void) {
                 gFieldScriptWork.queue_pos[i]++;
                 gFieldScriptWork.queue_timer[i] = 0;
                 if (gFieldScriptWork.queue_pos[i] > 3) {
-                    gSpriteEntries[obj->sprite_slot + 49].unk24 = 0xFF;
+                    gSpriteEntries[obj->sprite_slot + 49].work[SPR_ANIM_SCRIPT] = 0xFF;
                     done = 1;
                 }
             }
@@ -1403,11 +1407,12 @@ void map_script_update_anim_queue_run(void) {
                 gFieldScriptWork.queue_pos[i]++;
                 gFieldScriptWork.queue_timer[i] = 0;
                 if (gFieldScriptWork.queue_pos[i] > 3) {
-                    gSpriteEntries[obj->sprite_slot + 49].unk24 = 0xFF;
-                    gSpriteEntries[obj->sprite_slot + 49].unk20 = 0;
+                    gSpriteEntries[obj->sprite_slot + 49].work[SPR_ANIM_SCRIPT] = 0xFF;
+                    gSpriteEntries[obj->sprite_slot + 49].work[FIELD_SPR_FACING] = 0;
                     sprite_anim_start(
                         obj->sprite_slot + 49,
-                        sprite_walk_anim_id(obj->sprite_slot + 49, gSpriteEntries[obj->sprite_slot + 49].unk20));
+                        sprite_walk_anim_id(obj->sprite_slot + 49,
+                                            gSpriteEntries[obj->sprite_slot + 49].work[FIELD_SPR_FACING]));
                     done = 1;
                 }
             }

@@ -18,10 +18,10 @@ void calc_drain_amount(u32 a, u32 b);         // unkC8 = min(a, b) taken out of 
 void calc_fill_amount(u32 a, u32 max, u32 b); // unkC8 = min(b, max - a) (add clamp)
 void battle_bot_sprites_blink(
     u32 rec, u32 frame,
-    u32 mask); // frame & mask != 0: sets bit 15 of unk0 on the bot's 4 part sprites (0x5A + rec * 4..)
-void battle_bot_sprites_show(u32 rec); // sets bit 15 of unk0 on the bot's 4 part sprites
-void sprite_bob_step(
-    u32 slot); // y (unk4) += gSpriteBobYSteps[unk23] (& 0xFF), unk23 = (unk23 + 1) & 31 (guess: bob a sprite)
+    u32 mask); // frame & mask != 0: sets SPRITE_FLAG_ENABLED on the bot's 4 part sprites (0x5A + rec * 4..)
+void battle_bot_sprites_show(u32 rec); // sets SPRITE_FLAG_ENABLED on the bot's 4 part sprites
+void sprite_bob_step(u32 slot); // y += gSpriteBobYSteps[work[FX_SPR_STEP]] (& 0xFF), work[FX_SPR_STEP] = (+ 1) & 31
+                                // (guess: bob a sprite)
 u32 staggered_sprites_update(u32 slot, u32 n);
 void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n);
 void battle_calc_damage_split(u32 rec, u32 part,

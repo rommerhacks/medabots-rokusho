@@ -25,4 +25,25 @@
 
 #define SPRITE_SCALE_ONE 0x40 // scale_x / scale_y of an unscaled sprite
 
+// SpriteEntry.work[] indices with the same meaning in every module that uses the shared engine code.
+// Animation command streams (battle_sprite_anim_init / process_sprite_anim_commands, opcodes 0xFB-0xFF):
+#define SPR_CMD_WAIT 0x0  // frames left on the current frame
+#define SPR_CMD_POS 0x1   // byte offset of the next 3-byte command
+#define SPR_CMD_STATE 0x2 // SPR_CMD_ENDED once the end command (0xFF) ran
+#define SPR_CMD_ENDED 0xFF
+// Animation scripts (sprite_anim_start / advance_sprite_animation_frame, gSpriteAnimScripts):
+#define SPR_ANIM_POS 0x2          // index of the current script command
+#define SPR_ANIM_FRAMES 0x3       // frames the current command has been shown
+#define SPR_ANIM_SCRIPT 0x4       // script id
+#define SPR_ANIM_FRAME_OFFSET 0xF // added to the frame of command 0xFFFA
+// Step motions (update_sprite_animation_position, gSpriteMotionSteps):
+#define SPR_MOTION_TABLE 0x4 // 1-based table, 0 = no motion
+#define SPR_MOTION_ROW 0x5
+#define SPR_MOTION_STEP 0x7 // & 3 = step in the row
+// Battle Medabot sprite groups walking in place (battle_sprite_group_set_anim,
+// update_battle_sprite_orbiting_positions): body, arms, legs.
+#define SPR_WALK_STEP 0x1  // 0-3: step of the walk cycle
+#define SPR_WALK_SPEED 0x4 // added to SPR_WALK_PHASE every frame
+#define SPR_WALK_PHASE 0x6 // 0-0x3F, the step advances when it wraps
+
 #endif // GUARD_CONSTANTS_SPRITES_H

@@ -6,6 +6,7 @@
 // logic), battle_hud, command_ring, part_select and status_screen; the action scripts run in game states 8-9.
 
 #include "global.h"
+#include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
 // Game state 7 = Robattle (gGameStateHandlers_083AC148[7]); sub-states in gRobattleHandlers.
@@ -754,16 +755,18 @@ void robattle_start_banner(void) {
         gSpriteEntries[3].palette = 0xF;
         gSpriteEntries[3].order = 0xC0;
         gSpriteEntries[3].frame = 0x900;
-        gSpriteEntries[3].unk20 = 8;
-        REG_MOSAIC = (gSpriteEntries[3].unk20 << 12) + (gSpriteEntries[3].unk20 << 8);
+        gSpriteEntries[3].work[BANNER_SPR_MOSAIC] = 8;
+        REG_MOSAIC =
+            (gSpriteEntries[3].work[BANNER_SPR_MOSAIC] << 12) + (gSpriteEntries[3].work[BANNER_SPR_MOSAIC] << 8);
         gGameWork.stepCounter++;
         break;
     case 1:
         if (gFrameCounter & 1)
             break;
-        gSpriteEntries[3].unk20--;
-        REG_MOSAIC = (gSpriteEntries[3].unk20 << 12) + (gSpriteEntries[3].unk20 << 8);
-        if (gSpriteEntries[3].unk20 == 0) {
+        gSpriteEntries[3].work[BANNER_SPR_MOSAIC]--;
+        REG_MOSAIC =
+            (gSpriteEntries[3].work[BANNER_SPR_MOSAIC] << 12) + (gSpriteEntries[3].work[BANNER_SPR_MOSAIC] << 8);
+        if (gSpriteEntries[3].work[BANNER_SPR_MOSAIC] == 0) {
             gSpriteEntries[4].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE |
                                       SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[4].frame_table = 0;

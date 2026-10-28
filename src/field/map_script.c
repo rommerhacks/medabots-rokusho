@@ -5,6 +5,7 @@
 // NPCs, flags, messages, sounds, battles) through field/script_helpers, text/message and the engine.
 
 #include "global.h"
+#include "constants/field_sprites.h"
 #include "constants/sprites.h"
 
 static s32 map_object_index_by_id(u16 id);
@@ -70,7 +71,7 @@ void map_script_cmd_end(void) {
     gFieldState.unk38 = 0;
     memzero_bytes(gFieldWork.script_object_slots, 16);
     memzero_bytes((u8 *)&gScriptCmdWork, 16);
-    gSpriteEntries[47].unk25 = 1;
+    gSpriteEntries[47].work[FIELD_SPR_SCRIPT_FLAG] = 1;
     set_battle_state_cancel_flag();
 }
 
@@ -142,22 +143,22 @@ static void map_script_read_warp(void) {
     gFieldWork.warp_unused1 = read_map_script_byte();
     gFieldWork.player_tile_x = read_map_script_byte();
     gFieldWork.player_tile_y = read_map_script_byte();
-    gFieldWork.player_facing = gSpriteEntries[47].unk20;
+    gFieldWork.player_facing = gSpriteEntries[47].work[FIELD_SPR_FACING];
     gFieldWork.cmd_busy = 1;
 }
 
 void map_script_cmd_set_player_facing(void) {
     gFieldWork.cmd_args[0] = read_map_script_byte();
-    gSpriteEntries[47].unk21 = gFieldWork.cmd_args[0];
-    sprite_anim_start(47, gSpriteEntries[47].unk21);
-    gSpriteEntries[47].unk20 = gSpriteEntries[47].unk21;
+    gSpriteEntries[47].work[FIELD_SPR_ANIM_FACING] = gFieldWork.cmd_args[0];
+    sprite_anim_start(47, gSpriteEntries[47].work[FIELD_SPR_ANIM_FACING]);
+    gSpriteEntries[47].work[FIELD_SPR_FACING] = gSpriteEntries[47].work[FIELD_SPR_ANIM_FACING];
     field_set_player_facing(gFieldWork.cmd_args[0]);
 }
 
 void map_script_cmd_player_hop(void) {
     gFieldWork.cmd_args[0] = gSpriteEntries[47].y;
-    gSpriteEntries[47].unk26 = 0;
-    gSpriteEntries[47].unk28 = 0;
+    gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP] = 0;
+    gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] = 0;
     field_play_sound_effect(0x70);
     gFieldWork.cmd_busy = 1;
 }
@@ -172,13 +173,13 @@ void map_script_cmd_player_walk(void) {
     *(u8 *)&gHeldKeys = 0; // drops the held buttons (A, B, D-pad...)
     memcpy_u8(gFieldWork.tile_actions, gFieldWork.script_tile_actions, 8);
     memzero_bytes(gFieldWork.tile_actions, 8);
-    gSpriteEntries[47].unk28 = 0;
-    gSpriteEntries[47].unk26 = 0;
-    gSpriteEntries[47].unk27 = 0;
+    gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] = 0;
+    gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP] = 0;
+    gSpriteEntries[47].work[FIELD_SPR_STEPS_LEFT] = 0;
     gFieldWork.script_field_update = 1;
-    script_sprite_begin_walk(47, gFieldWork.cmd_args[gSpriteEntries[47].unk26],
+    script_sprite_begin_walk(47, gFieldWork.cmd_args[gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP]],
                              gPlayerFormScriptSpeedIds[gFieldWork.player_form]);
-    field_set_player_facing(gSpriteEntries[47].unk20);
+    field_set_player_facing(gSpriteEntries[47].work[FIELD_SPR_FACING]);
     gFieldWork.cmd_busy = 1;
 }
 
@@ -251,7 +252,7 @@ void map_script_cmd_self_anim(void) {
 void map_script_cmd_self_face_player(void) {
     if ((gFieldWork.objects[gFieldWork.script_object].event & 0xFFF) == gFieldWork.script_id)
         set_sprite_anim_and_store(gFieldWork.objects[gFieldWork.script_object].sprite_slot + 49,
-                                  gOppositeDirection[gSpriteEntries[47].unk21],
+                                  gOppositeDirection[gSpriteEntries[47].work[FIELD_SPR_ANIM_FACING]],
                                   &gFieldWork.objects[gFieldWork.script_object]);
 }
 
@@ -266,7 +267,7 @@ void map_script_cmd_self_hop(void) {
     if ((gFieldWork.objects[gFieldWork.script_object].event & 0xFFF) == gFieldWork.script_id) {
         gScriptCmdWork.sprite_slot = gFieldWork.objects[gFieldWork.script_object].sprite_slot + 49;
         gScriptCmdWork.hop_base_y = gSpriteEntries[gScriptCmdWork.sprite_slot].pos_y;
-        gSpriteEntries[gScriptCmdWork.sprite_slot].unk28 = 0;
+        gSpriteEntries[gScriptCmdWork.sprite_slot].work[FIELD_SPR_STEP_TIMER] = 0;
         field_play_sound_effect(0x70);
         gFieldWork.cmd_busy = 1;
     }
@@ -352,7 +353,7 @@ void map_script_cmd_actor_hop(void) {
     gFieldWork.cmd_args[0] = read_map_script_byte();
     gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
     gScriptCmdWork.hop_base_y = gSpriteEntries[gScriptCmdWork.sprite_slot].pos_y;
-    gSpriteEntries[gScriptCmdWork.sprite_slot].unk28 = 0;
+    gSpriteEntries[gScriptCmdWork.sprite_slot].work[FIELD_SPR_STEP_TIMER] = 0;
     field_play_sound_effect(0x70);
     gFieldWork.cmd_busy = 1;
 }
@@ -537,10 +538,10 @@ void map_script_cmd_all_actors_blink(void) {
     gFieldWork.cmd_args[0] = read_map_script_byte();
     for (i = 0; i <= 3; i++) {
         if (script_object_slot(i) != -1 && gEntityStates[script_object_slot(i) + 79].active != 0) {
-            gSpriteEntries[script_object_slot(i) + 79].unk26 = gFieldWork.cmd_args[0];
-            gSpriteEntries[script_object_slot(i) + 79].unk27 = 0;
-            gSpriteEntries[script_object_slot(i) + 79].unk28 = 8;
-            gSpriteEntries[script_object_slot(i) + 79].unk29 = 8;
+            gSpriteEntries[script_object_slot(i) + 79].work[FIELD_SPR_SCRIPT_STEP] = gFieldWork.cmd_args[0];
+            gSpriteEntries[script_object_slot(i) + 79].work[FIELD_SPR_STEPS_LEFT] = 0;
+            gSpriteEntries[script_object_slot(i) + 79].work[FIELD_SPR_STEP_TIMER] = 8;
+            gSpriteEntries[script_object_slot(i) + 79].work[FIELD_SPR_BLINK_PARAM] = 8;
         }
     }
     gFieldWork.cmd_busy = 1;
@@ -582,7 +583,7 @@ void map_script_cmd_restore_area_song(void) {
 void map_script_cmd_jump_unless_player_facing(void) {
     gFieldWork.branch_base = gFieldWork.script_pos;
     read_map_script_bytes(2);
-    if (gFieldWork.cmd_args[0] != gSpriteEntries[47].unk21)
+    if (gFieldWork.cmd_args[0] != gSpriteEntries[47].work[FIELD_SPR_ANIM_FACING])
         gFieldWork.script_pos = gFieldWork.branch_base + gFieldWork.cmd_args[1];
 }
 
@@ -699,9 +700,10 @@ void map_script_cmd_open_shop(void) {
 
 void map_script_cmd_set_follower_facing(void) {
     gFieldWork.cmd_args[0] = read_map_script_byte();
-    gSpriteEntries[48].unk21 = gFieldWork.cmd_args[0];
-    gSpriteEntries[48].unk20 = gFieldWork.cmd_args[0];
-    sprite_anim_start(48, sprite_walk_anim_id(48, gFieldWork.cmd_args[0] + gSpriteEntries[48].unk2B * 4));
+    gSpriteEntries[48].work[FIELD_SPR_ANIM_FACING] = gFieldWork.cmd_args[0];
+    gSpriteEntries[48].work[FIELD_SPR_FACING] = gFieldWork.cmd_args[0];
+    sprite_anim_start(
+        48, sprite_walk_anim_id(48, gFieldWork.cmd_args[0] + gSpriteEntries[48].work[FIELD_SPR_ANIM_SET] * 4));
     follower_set_facing(gFieldWork.cmd_args[0]);
 }
 
@@ -791,7 +793,7 @@ void map_script_cmd_unused_65(void) {}
 void map_script_cmd_actor_jump(void) {
     read_map_script_bytes(2);
     gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
-    gSpriteEntries[gScriptCmdWork.sprite_slot].unk26 = 0;
+    gSpriteEntries[gScriptCmdWork.sprite_slot].work[FIELD_SPR_SCRIPT_STEP] = 0;
     gFieldWork.cmd_busy = 1;
 }
 
@@ -1110,9 +1112,10 @@ static void follower_attach(u8 i) {
     gFieldWork.follower_y = gSpriteEntries[48].y + gBg1Scroll.y;
     gFieldWork.follower_tile_x = field_pixel_x_to_tile(gFieldWork.follower_x);
     gFieldWork.follower_tile_y = field_pixel_y_to_tile(gFieldWork.follower_y);
-    gFieldWork.follower_sprite_set = gSpriteEntries[48].unk2B;
+    gFieldWork.follower_sprite_set = gSpriteEntries[48].work[FIELD_SPR_ANIM_SET];
     follower_clear_scroll_dir();
-    sprite_anim_start(48, sprite_walk_anim_id(48, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk21));
+    sprite_anim_start(48, sprite_walk_anim_id(48, gSpriteEntries[48].work[FIELD_SPR_ANIM_SET] * 4 +
+                                                      gSpriteEntries[48].work[FIELD_SPR_ANIM_FACING]));
     sprite_entry_init(90,
                       SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) |
                           SPRITE_FLAG_PART_PALETTE,

@@ -6,6 +6,10 @@
 #include "global.h"
 #include "constants/sprites.h"
 
+// gSpriteEntries work[] indices
+#define MEDAPARTS_SPR_BLINK_TIMER 0x7 // trade choice cursor (sprite 4): blink frames, 0-30
+#define MEDAPARTS_SPR_CLOSE_STEP 0x9  // trade choice cursor: gMedapartTradeChoiceCloseSteps index
+
 static void medaparts_scroll_bg(void);
 static void medaparts_list_set_cursor_from_part(void);
 static void medaparts_list_draw_names(void);
@@ -1222,8 +1226,8 @@ static void medapart_trade_init_choice_cursor(void) {
     gSpriteEntries[4].scale_x = 0x40;
     gSpriteEntries[4].scale_y = 0x40;
     gSpriteEntries[4].frame_table = 0;
-    gSpriteEntries[4].unk29 = 0;
-    gSpriteEntries[4].unk27 = 0;
+    gSpriteEntries[4].work[MEDAPARTS_SPR_CLOSE_STEP] = 0;
+    gSpriteEntries[4].work[MEDAPARTS_SPR_BLINK_TIMER] = 0;
     gSpriteEntries[4].order = 0xC1;
 }
 
@@ -1248,22 +1252,22 @@ static void medapart_trade_choice_cursor_input(void) {
 
 // The choice window's close animation (blink, shrink, clear), one step per frame; 1 when done.
 u32 medapart_trade_choice_close_step(void) {
-    gMedapartTradeChoiceCloseSteps[gSpriteEntries[4].unk29]();
-    if (gSpriteEntries[4].unk29 == 3)
+    gMedapartTradeChoiceCloseSteps[gSpriteEntries[4].work[MEDAPARTS_SPR_CLOSE_STEP]]();
+    if (gSpriteEntries[4].work[MEDAPARTS_SPR_CLOSE_STEP] == 3)
         return 1;
     return 0;
 }
 
 void medapart_trade_choice_blink_step(void) {
-    if (gSpriteEntries[4].unk27 != 30) {
-        if (gSpriteEntries[4].unk27 & 4)
+    if (gSpriteEntries[4].work[MEDAPARTS_SPR_BLINK_TIMER] != 30) {
+        if (gSpriteEntries[4].work[MEDAPARTS_SPR_BLINK_TIMER] & 4)
             gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         else
             gSpriteEntries[4].flags |= SPRITE_FLAG_VISIBLE;
-        gSpriteEntries[4].unk27++;
+        gSpriteEntries[4].work[MEDAPARTS_SPR_BLINK_TIMER]++;
     } else {
         gSpriteEntries[4].flags |= SPRITE_FLAG_VISIBLE;
-        gSpriteEntries[4].unk29++;
+        gSpriteEntries[4].work[MEDAPARTS_SPR_CLOSE_STEP]++;
     }
 }
 
@@ -1272,11 +1276,11 @@ void medapart_trade_choice_shrink_step(void) {
     gSpriteEntries[4].scale_y -= 8;
     if (gSpriteEntries[4].scale_x == 0) {
         disable_sprites(4, 1);
-        gSpriteEntries[4].unk29++;
+        gSpriteEntries[4].work[MEDAPARTS_SPR_CLOSE_STEP]++;
     }
 }
 
 void medapart_trade_choice_clear_step(void) {
     vram_fill_tilemap_rect(12, 8, 18, 5, REG_BG0CNT, 0);
-    gSpriteEntries[4].unk29++;
+    gSpriteEntries[4].work[MEDAPARTS_SPR_CLOSE_STEP]++;
 }

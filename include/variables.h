@@ -108,12 +108,13 @@ extern const u8 gArea53DpadTiles[]; // area 0x53, per tile: 1-4 = the gDpadRemap
 extern const struct AreaWarp *const gAreaWarps[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
 extern void (*const gMapScriptUpdates[])(void);  // per-command update handlers, run each frame while cmd_busy is set
-extern const u8 gOppositeDirection[];            // indexed by the player's facing (gSpriteEntries[47].unk21)
-extern const u8 gPlayerFormScriptSpeedIds[];     // walk speed id by gFieldWork.player_form for scripted player walks
-                                                 // (gPlayerFormSpeedIds but form 9 walks normally)
-extern const u8 *const gAreaCollisionMaps[];     // per area: tile map
+extern const u8 gOppositeDirection[]; // indexed by the player's facing (gSpriteEntries[47].work[FIELD_SPR_ANIM_FACING])
+extern const u8 gPlayerFormScriptSpeedIds[]; // walk speed id by gFieldWork.player_form for scripted player walks
+                                             // (gPlayerFormSpeedIds but form 9 walks normally)
+extern const u8 *const gAreaCollisionMaps[]; // per area: tile map
 extern const struct AreaGfx gAreaBgTilemaps[];
-extern const u8 gNpcFacingTowardPlayer[]; // NPC facing by the player's (gSpriteEntries[47].unk20): the opposite one
+extern const u8 gNpcFacingTowardPlayer[]; // NPC facing by the player's (gSpriteEntries[47].work[FIELD_SPR_FACING]): the
+                                          // opposite one
 extern const u8 gWarpSoundEffects[];      // sound played when stepping on a warp, by gFieldSceneParams.warp_sound
 extern const u8 gShadowTilesLz[];         // the player's shadow (sprite 89), LZ77 OBJ tiles at 0x06017FC0
 extern const struct MapExit *const gAreaExits[]; // per area: 8-byte map exit records, 0xFF-terminated
@@ -193,11 +194,11 @@ extern u8 gRaceRunnerSlots[3][3];    // [team][runner]: sprite slot of the runne
                                      // after stores)
 extern const u8 gRaceLegDelays[][7]; // [field][leg type]: frames per step of a runner
 extern bool32 (*const gRaceSpriteMotions[])(
-    u8);                     // race sprite animations, by gSpriteEntries[].unk20 - 1 (race_run_sprite_motions)
-extern u8 gRaceId;           // race (gRaces index), copied from gFieldSceneParams.race_id by race_init
-extern s32 gSceneStepFrames; // scene step frame counter, reset when a step finishes (execute_scene_step)
-extern u8 gSceneStep;        // scene step, gSceneSteps index
-extern bool32 (*const gSceneSteps[])(void);           // scene steps (execute_scene_step)
+    u8);           // race sprite animations, by gSpriteEntries[].work[RACE_SPR_MOTION] - 1 (race_run_sprite_motions)
+extern u8 gRaceId; // race (gRaces index), copied from gFieldSceneParams.race_id by race_init
+extern s32 gSceneStepFrames;                // scene step frame counter, reset when a step finishes (execute_scene_step)
+extern u8 gSceneStep;                       // scene step, gSceneSteps index
+extern bool32 (*const gSceneSteps[])(void); // scene steps (execute_scene_step)
 extern bool32 (*const gSceneTransitionSteps[])(void); // transition steps (scene_transition_step_080686F4)
 extern const u16 gTitleObjPalettes[]; // title OBJ palettes (0x60 colours), then 0x1C bytes copied to gSceneWork + 0xC
                                       // (title_screen_load_graphics)
@@ -213,9 +214,9 @@ extern const u16 gBombGameObjPalettes[]; // OBJ palettes (0xF0 colours)
 extern const s8 gHalfSineArc[];          // 64 steps of a half sine, 0..47..2: bounce / hop heights (bomb game, race)
 extern const Func
     gTitleScreenStates[]; // game mode 3 state 2 (title screen) sub-states, by gGameSubState (title_screen_update)
-extern s32 (*const gTitleSpriteEffects[])(u8); // title sprite effects, by gSpriteEntries[].unk20 - 1: 0 = done, 0xFF =
-                                               // hide (title_screen_update_sprite_effects)
-extern const u8 gTitleSpriteEffectPeriods[];   // title sprite effects: frame period, by unk20 - 1
+extern s32 (*const gTitleSpriteEffects[])(u8); // title sprite effects, by gSpriteEntries[].work[TITLE_SPR_EFFECT] - 1:
+                                               // 0 = done, 0xFF = hide (title_screen_update_sprite_effects)
+extern const u8 gTitleSpriteEffectPeriods[];   // title sprite effects: frame period, by work[TITLE_SPR_EFFECT] - 1
 extern const Func gStoryIntroHandlers[];       // game mode 3 state 3 (story intro) sub-states, by gGameSubState
                                                // (dispatch_game_substate_handler_0806DFA4)
 extern const Func
@@ -360,7 +361,8 @@ extern u8 gBgTileBackup[];    // BG tile backup (0x800 bytes of VRAM 0x06002800 
 extern const Func gMedabotsScreenHandlers[];        // game state 3 sub-state handlers
 extern const Func gMedalsScreenHandlers[];          // game state 4 (Medals screen) sub-state handlers
 extern const Func gMedapartsScreenHandlers[];       // game state 5 (Medaparts screen) sub-state handlers
-extern const Func gMedapartTradeChoiceCloseSteps[]; // sprite 4 sub-state handlers, by gSpriteEntries[4].unk29
+extern const Func gMedapartTradeChoiceCloseSteps[]; // sprite 4 sub-state handlers, by
+                                                    // gSpriteEntries[4].work[MEDAPARTS_SPR_CLOSE_STEP]
                                                     // (medapart_trade_choice_close_step)
 extern const Func gPrebattleScreenHandlers[];       // game state 6 ("Get ready to Robattle") sub-state handlers
 extern const u8 gPrebattleWipeTiles[];
@@ -491,13 +493,14 @@ extern const u32 gSkillTypeNames[];           // skill type names (Shoot, Strike
 extern const u8 *const gHelpCursorLayouts[];  // Medals / Medaparts help cursor layouts: count, then (x, y) tile pairs
                                               // (medals_help_init_cursor)
 extern const u16 gMedalSkillDebugCursorPos[]; // (y, x) pairs per Medal skill row 0-7 (medal_skill_debug_init_cursor)
-extern const Func gMedalTradeChoiceCloseSteps[]; // sprite 7 sub-state handlers, by gSpriteEntries[7].unk29
-                                                 // (medal_trade_choice_close_step)
-extern const Func gDebugMenuHandlers[];          // game state 63 sub-state handlers (debug_menu_update)
-extern const Func gDebugMenuEntryHandlers[];     // game state 63: one handler per menu entry (debug_menu_run_entry)
-extern const Func gDebugProcessHandlers[];       // game state 63 entry 0 sub-state handlers (debug_process_update)
-extern const Func gDebugMedalHandlers[];         // entry 1 (debug_medal_update)
-extern const Func gDebugPartsHandlers[];         // entry 2 (debug_parts_update)
+extern const Func
+    gMedalTradeChoiceCloseSteps[];      // sprite 7 sub-state handlers, by gSpriteEntries[7].work[MEDALS_SPR_CLOSE_STEP]
+                                        // (medal_trade_choice_close_step)
+extern const Func gDebugMenuHandlers[]; // game state 63 sub-state handlers (debug_menu_update)
+extern const Func gDebugMenuEntryHandlers[];  // game state 63: one handler per menu entry (debug_menu_run_entry)
+extern const Func gDebugProcessHandlers[];    // game state 63 entry 0 sub-state handlers (debug_process_update)
+extern const Func gDebugMedalHandlers[];      // entry 1 (debug_medal_update)
+extern const Func gDebugPartsHandlers[];      // entry 2 (debug_parts_update)
 extern const u8 *const gDebugMenuLabels[];    // game state 63 menu labels, 11 x 8 bytes: Process, Medal, Parts, Tinpet,
                                               // Item, Face, Mdlpic, Rnd.tk, Battle, Sound, Motion
 extern const u8 *const gDebugProcessLabels[]; // game state 63 "Process" field labels "User", "Func.no", "S.func"
@@ -668,7 +671,7 @@ extern const u8 gGameOverBg3Tilemap[];    // BG3 tilemap (LZ77, game_over_load_g
 extern const u32 gGameOverBgTiles[];      // BG tiles (dma3_copy_or_decompress, game_over_load_graphics)
 extern const u16 gGameOverBgPalette[];    // BG palette (game_over_load_graphics)
 extern const u16 gGameOverObjPalettes[];  // OBJ palettes 0-1 (game_over_load_graphics)
-extern const u16 gGameOverIkkiFrames[];   // sprite 1 animation frames, by unk1A / 6 (game_over_logo_drop)
+extern const u16 gGameOverIkkiFrames[];   // sprite 1 animation frames, by timer / 6 (game_over_logo_drop)
 extern const s8 gGameOverLogoBounce[];    // sprite 0 y offsets, 13 steps (game_over_logo_drop)
 extern const u16 gTitleMenuBgPalette[];   // title menu BG palette (0x100 colors)
 extern u8 gOptionTimeLimit;               // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
@@ -834,35 +837,36 @@ extern const u8 gDrainChargeHourglassPalette[]; // OBJ palette 7 (drain_charge_h
 extern const Func gPushoverSteps[];             // by gBattleWork.step (pushover_run)
 extern const u8 gPushoverBananaTiles[];         // compressed tiles (battle skill effects)
 extern const u8 gPushoverBananaPalette[];       // 32-byte OBJ palette (battle skill effects)
-extern const u8 gBurstSpriteDirections[];       // 4 bytes, sprite unk25 for slots 0x26-0x29 (pushover_burst_spawn)
-extern const Func gImpairSteps[];               // by gBattleWork.step (impair_run)
-extern const u8 gImpairPortraitTiles[];         // compressed tiles (battle skill effects)
-extern const u8 gImpairPortraitPalette[];       // 32-byte OBJ palette (battle skill effects)
-extern const u8 gConfusionBallTilesLz[];        // compressed tiles (interrupt skill effect)
-extern const u8 gConfusionBallPalettes[];       // 64-byte OBJ palettes (interrupt skill effect)
-extern const Func gConfusionSteps[];            // by gBattleWork.step (confusion_run)
-extern const Func gUseDrainSteps[];             // by gBattleWork.step (use_drain_run)
-extern const u8 gDrainBubbleTilesLz[];          // compressed tiles (interrupt skill effect)
-extern const u8 gDrainBubblePalettes[];         // 64-byte OBJ palettes (interrupt skill effect)
-extern const u8 gBattlePopupDigitTiles[];       // compressed tiles (battle skill effects)
-extern const Func gNoEscapeDefenseSteps[];      // by gBattleWork.step (no_escape_defense_run)
-extern const u8 gNoEscapeIconTilesLz[];         // compressed tiles (interrupt skill effect)
-extern const u8 gNoEscapeIconPalette[];         // 32-byte OBJ palette (interrupt skill effect)
-extern const u8 gDefenseIconTilesLz[];          // compressed tiles (interrupt skill effect)
-extern const u8 gDefenseIconPalette[];          // 32-byte OBJ palette (interrupt skill effect)
-extern const Func gForcedrainSteps[];           // by gBattleWork.step (forcedrain_run)
-extern const u8 gForcedrainGlassTiles[];        // compressed tiles (battle skill effects)
-extern const u8 gForcedrainGlassPalettes[];     // 32-byte OBJ palette (battle skill effects)
-extern const Func gTeamAttackCheckSteps[];      // by gBattleWork.step (team_attack_check_run)
-extern const Func gTeamAttackTurretSteps[];     // by gBattleWork.step (team_attack_turrets_run)
-extern const Func gCounterAttackSteps[];        // by gBattleWork.step (counter_attack_run)
-extern const u8 gCounterAttackBallTilesLz[];    // compressed tiles (interrupt skill effect)
-extern const u8 gCounterAttackBallPalette[];    // 32-byte OBJ palette (interrupt skill effect)
-extern const Func gChangeSteps[];               // by gBattleWork.step (change_run)
-extern const u8 gChangeEffectTilesLz[];         // compressed tiles (interrupt skill effect)
-extern const u8 gChangeEffectPalettes[];        // 64-byte OBJ palettes (interrupt skill effect)
-extern const Func gMedaforceSpiralBoltSteps[];  // by gBattleWork.step (medaforce_spiral_bolt_run)
-extern const Func gMedaforceHitSteps[];         // by gBattleWork.step (medaforce_hit_run)
+extern const u8
+    gBurstSpriteDirections[];     // 4 bytes, sprite work[SPR_MOTION_ROW] for slots 0x26-0x29 (pushover_burst_spawn)
+extern const Func gImpairSteps[]; // by gBattleWork.step (impair_run)
+extern const u8 gImpairPortraitTiles[];             // compressed tiles (battle skill effects)
+extern const u8 gImpairPortraitPalette[];           // 32-byte OBJ palette (battle skill effects)
+extern const u8 gConfusionBallTilesLz[];            // compressed tiles (interrupt skill effect)
+extern const u8 gConfusionBallPalettes[];           // 64-byte OBJ palettes (interrupt skill effect)
+extern const Func gConfusionSteps[];                // by gBattleWork.step (confusion_run)
+extern const Func gUseDrainSteps[];                 // by gBattleWork.step (use_drain_run)
+extern const u8 gDrainBubbleTilesLz[];              // compressed tiles (interrupt skill effect)
+extern const u8 gDrainBubblePalettes[];             // 64-byte OBJ palettes (interrupt skill effect)
+extern const u8 gBattlePopupDigitTiles[];           // compressed tiles (battle skill effects)
+extern const Func gNoEscapeDefenseSteps[];          // by gBattleWork.step (no_escape_defense_run)
+extern const u8 gNoEscapeIconTilesLz[];             // compressed tiles (interrupt skill effect)
+extern const u8 gNoEscapeIconPalette[];             // 32-byte OBJ palette (interrupt skill effect)
+extern const u8 gDefenseIconTilesLz[];              // compressed tiles (interrupt skill effect)
+extern const u8 gDefenseIconPalette[];              // 32-byte OBJ palette (interrupt skill effect)
+extern const Func gForcedrainSteps[];               // by gBattleWork.step (forcedrain_run)
+extern const u8 gForcedrainGlassTiles[];            // compressed tiles (battle skill effects)
+extern const u8 gForcedrainGlassPalettes[];         // 32-byte OBJ palette (battle skill effects)
+extern const Func gTeamAttackCheckSteps[];          // by gBattleWork.step (team_attack_check_run)
+extern const Func gTeamAttackTurretSteps[];         // by gBattleWork.step (team_attack_turrets_run)
+extern const Func gCounterAttackSteps[];            // by gBattleWork.step (counter_attack_run)
+extern const u8 gCounterAttackBallTilesLz[];        // compressed tiles (interrupt skill effect)
+extern const u8 gCounterAttackBallPalette[];        // 32-byte OBJ palette (interrupt skill effect)
+extern const Func gChangeSteps[];                   // by gBattleWork.step (change_run)
+extern const u8 gChangeEffectTilesLz[];             // compressed tiles (interrupt skill effect)
+extern const u8 gChangeEffectPalettes[];            // 64-byte OBJ palettes (interrupt skill effect)
+extern const Func gMedaforceSpiralBoltSteps[];      // by gBattleWork.step (medaforce_spiral_bolt_run)
+extern const Func gMedaforceHitSteps[];             // by gBattleWork.step (medaforce_hit_run)
 extern const Func gMedaforceLifeDrainHealSteps[];   // by gBattleWork.step (medaforce_life_drain_heal_run)
 extern const Func gMedaforceSideBoltSteps[];        // by gBattleWork.step (medaforce_side_bolt_run)
 extern const u8 gMedaforceSideBoltTiles[];          // compressed tiles (battle/medaforce_effects)
@@ -940,16 +944,19 @@ extern const u8 gPrizeGameObjTiles[];        // LZ graphics (link Robattle scree
 extern const u8 gPrizeGameBgTiles3[];        // LZ graphics (link Robattle screen, prize_game_load)
 extern const u8 gPrizeGameBgTiles2[];        // LZ graphics (link Robattle screen, prize_game_load)
 extern const u8 gPrizeGameBgTiles[];         // LZ graphics (link Robattle screen, prize_game_load)
-extern const s16 gBattleSeqWaveOffsets[];    // y offsets by sprite unk23 (0-31; battle_seq_spr_effect_wave)
+extern const s16
+    gBattleSeqWaveOffsets[]; // y offsets by sprite work[SEQ_EFFECT_WAVE_STEP] (0-31; battle_seq_spr_effect_wave)
 extern const u8
     gBattleBg3ParallaxShift[]; // BG3 parallax shift by battlefield gBattleWork.battlefield (battle_seq_spr_actor_dash)
-extern const Func gBattleSeqSpriteHandlers[]; // sprite handlers by unk29, slots 1-0x27 (battle_sequence_update_sprites)
-extern const u8 *const gBattleSeqEwramGfx[];  // pairs: compressed OBJ tiles (lz_decompress to 0x02000000), OBJ palette
-                                              // 14 (battle_seq_cmd_load_effect_gfx_ewram)
+extern const Func
+    gBattleSeqSpriteHandlers[]; // sprite handlers by work[SEQ_SPR_STATE], slots 1-0x27 (battle_sequence_update_sprites)
+extern const u8 *const gBattleSeqEwramGfx[]; // pairs: compressed OBJ tiles (lz_decompress to 0x02000000), OBJ palette
+                                             // 14 (battle_seq_cmd_load_effect_gfx_ewram)
 extern const struct Unk_083AF94C gBattleSeqEffectSetPos[]; // 4 sprite positions (battle_seq_cmd_spawn_effect_set)
-extern const Func gParticleSweepHandlers[]; // sweep particle states by sprite unk29 (particle_run_sweep_handlers)
-extern const u16 gParticleTrailOffsets[];   // 4 (x, y) trail offsets, x and y picked by separate rng & 3 rolls
-extern const u16 gParticleSparkOffsets[];   // 4 (x, y) spark offsets from the emitter, picked by rng & 3
+extern const Func
+    gParticleSweepHandlers[]; // sweep particle states by sprite work[PARTICLE_STATE] (particle_run_sweep_handlers)
+extern const u16 gParticleTrailOffsets[]; // 4 (x, y) trail offsets, x and y picked by separate rng & 3 rolls
+extern const u16 gParticleSparkOffsets[]; // 4 (x, y) spark offsets from the emitter, picked by rng & 3
 extern const u8 gChangeHeadPartIds[]; // Change family (actor part data[1] - 0x37 = 0-4: Change, ItrpChange, AttkChange,
 // DEF Change, HealChange): 128 (Change) or 64 random part ids per acting part (head, right arm, left arm) that
 // pick_random_change_part draws from
@@ -968,41 +975,43 @@ extern const u8 gHealChangeHeadPartIds[];
 extern const u8 gHealChangeRightArmPartIds[];
 extern const u8 gHealChangeLeftArmPartIds[];
 extern const void
-    *gStaggeredSpriteAnimScripts[];  // [0]: animation script every staggered sprite runs (staggered_sprites_update)
-extern const u16 gHitSparkOffsets[]; // x, y offset pairs per sprite of a 4-sprite group (hit_sparks_spawn)
-extern const u16
-    gPartFlyStepsLegs[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
-extern const u16 gPartFlyStepsLeftArm[];  // (dx, dy) s16 pairs by sprite unk23, added to the sprite position
-                                          // (effect_sprite_fly_to_part)
-extern const u16 gPartFlyStepsRightArm[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position
-                                          // (effect_sprite_fly_to_part)
-extern const u16
-    gPartFlyStepsHead[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
-extern const u16 gSpriteBobYSteps[];  // 32 y offsets added to a sprite's unk4 by sprite_bob_step
-extern const u8 gSpriteHopYSteps[];   // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
-extern const u8 gSpriteSlideXSteps[]; // 16 x offsets added to / subtracted from a sprite's unk2 by sprite_slide_x_step
-extern const u8 gSpriteSpeedSteps[]; // 256 speed steps (quarter pixels) by a sprite's unk30 (sprite_move_toward_target,
-                                     // update_sprite_deceleration)
-extern const u16 gParticleSwayOffsets[];     // 16 x steps by a sprite's unk2D & 15 (particle_sway_down)
-extern const u8 gParticleOrbitRadiusSteps[]; // orbit radius steps (+1 / -1, byte pairs) by a sprite's unk2D & 31
-extern const u8 gRandomPartByIntactClass[];  // 8 entries per bot_intact_parts_class result, one picked at random
-                                             // (get_random_battle_weight_entry)
-extern const u8 gArmorPanelFrameTilemap[];   // compressed tilemap (armor_panel_draw_frame)
-extern u8 gEffectSpriteSlot;                 // sprite slot whose handler is running (= gGameWork.runningSpriteSlot)
+    *gStaggeredSpriteAnimScripts[];      // [0]: animation script every staggered sprite runs (staggered_sprites_update)
+extern const u16 gHitSparkOffsets[];     // x, y offset pairs per sprite of a 4-sprite group (hit_sparks_spawn)
+extern const u16 gPartFlyStepsLegs[];    // (dx, dy) s16 pairs by sprite work[FX_SPR_STEP], added to the sprite position
+                                         // (effect_sprite_fly_to_part)
+extern const u16 gPartFlyStepsLeftArm[]; // (dx, dy) s16 pairs by sprite work[FX_SPR_STEP], added to the sprite position
+                                         // (effect_sprite_fly_to_part)
+extern const u16 gPartFlyStepsRightArm[]; // (dx, dy) s16 pairs by sprite work[FX_SPR_STEP], added to the sprite
+                                          // position (effect_sprite_fly_to_part)
+extern const u16 gPartFlyStepsHead[];    // (dx, dy) s16 pairs by sprite work[FX_SPR_STEP], added to the sprite position
+                                         // (effect_sprite_fly_to_part)
+extern const u16 gSpriteBobYSteps[];     // 32 y offsets added to a sprite's y by sprite_bob_step
+extern const u8 gSpriteHopYSteps[];      // 16 y offsets added to a sprite's y by advance_sprite_anim_frame
+extern const u8 gSpriteSlideXSteps[];    // 16 x offsets added to / subtracted from a sprite's x by sprite_slide_x_step
+extern const u8 gSpriteSpeedSteps[];     // 256 speed steps (quarter pixels) by work16[FX_FALL_SPEED]
+                                         // (sprite_move_toward_target, update_sprite_deceleration)
+extern const u16 gParticleSwayOffsets[]; // 16 x steps by a sprite's work[PARTICLE_TIMER] & 15 (particle_sway_down)
+extern const u8
+    gParticleOrbitRadiusSteps[]; // orbit radius steps (+1 / -1, byte pairs) by a sprite's work[PARTICLE_TIMER] & 31
+extern const u8 gRandomPartByIntactClass[]; // 8 entries per bot_intact_parts_class result, one picked at random
+                                            // (get_random_battle_weight_entry)
+extern const u8 gArmorPanelFrameTilemap[];  // compressed tilemap (armor_panel_draw_frame)
+extern u8 gEffectSpriteSlot;                // sprite slot whose handler is running (= gGameWork.runningSpriteSlot)
+extern const Func gParticleSparkHandlers[]; // spark states by sprite work[PARTICLE_STATE] (particle_run_spark_handlers,
+                                            // slots 0x2B-0x3B)
 extern const Func
-    gParticleSparkHandlers[]; // spark states by sprite unk29 (particle_run_spark_handlers, slots 0x2B-0x3B)
-extern const Func gParticleOrbitHandlers[]; // orbit / trail states by sprite unk29 (particle_run_orbit_handlers)
+    gParticleOrbitHandlers[]; // orbit / trail states by sprite work[PARTICLE_STATE] (particle_run_orbit_handlers)
 extern const s16
     *const gBattleSeqScripts[]; // battle sequence scripts, by gBattleWork.animSkill (battle_seq_load_operands)
-extern const u8 gBattleSeqOperandCounts[]; // operand count per battle sequence command (battle_seq_advance)
-extern const u16
-    *const gBattleSeqTileAnims[]; // x, y passed to tile_anim_init, by sprite 4 unk2B (battle_seq_cmd_bg_effect)
+extern const u8 gBattleSeqOperandCounts[];       // operand count per battle sequence command (battle_seq_advance)
+extern const u16 *const gBattleSeqTileAnims[];   // x, y passed to tile_anim_init, by sprite 4 work[SEQ_BG_TILE_ANIM]
+                                                 // (battle_seq_cmd_bg_effect)
 extern const u8 *const gBattleSeqLegSoundSets[]; // by sequence operand: 4 animation sets, by legs data[1] - 0x64 (3
                                                  // when gBattleWork.partIds[3] > 0x77; battle_seq_cmd_leg_sound)
 extern const u8
     *const gBattleSeqEffectGfx[];       // pairs: compressed OBJ tiles, OBJ palette 14 (battle_seq_cmd_load_effect_gfx)
 extern const Func gBattleSeqCommands[]; // battle sequence commands, by battle_seq_peek() (battle_sequence_run_command)
-extern const Func gParticleShotHandlers[]; // shot states by sprite unk29 (particle_run_shot_handlers)
+extern const Func gParticleShotHandlers[]; // shot states by sprite work[PARTICLE_STATE] (particle_run_shot_handlers)
 extern u16 gPartSpriteOffsets[]; // x, y offset pairs by part (effect_sprite_spawn_at_part); not const: hit_sparks_spawn
                                  // reloads it per iteration
 extern const u8 gDiceRollValues[];  // 16 values, two random picks summed into gBattleWork.dice1 / unk189
@@ -1047,25 +1056,25 @@ extern const u8 gMedaforceActivatePalette[];        // 32-byte OBJ palette (batt
 extern const u8 gMedaforceCrazyShotPalette[];       // 32-byte OBJ palette (battle/medaforce_effects)
 extern const u8 gMedaforceCrazyShotTiles[];         // compressed tiles (battle/medaforce_effects)
 extern const Func gMedaforceCrazySteps[];           // by gBattleWork.step (medaforce_crazy_run)
-extern const u8 gDestroyerSwingFrames[];      // pairs (sprite unk25 frame or 0xFF end, wait frames) by sprite unk23
-                                              // (medaforce_destroyer_swing)
-extern const u8 gMedaforceDestroyerPalette[]; // 32-byte OBJ palette (battle/medaforce_effects)
-extern const u8 gMedaforceDestroyerTiles[];   // compressed tiles (battle/medaforce_effects)
-extern const Func gMedaforceDestroyerSteps[]; // by gBattleWork.step (medaforce_destroyer_run)
-extern const u8 gMedaforceUselessPalette[];   // 32-byte OBJ palette (battle/medaforce_effects)
-extern const u8 gMedaforceUselessTiles[];     // compressed tiles (battle/medaforce_effects)
-extern const Func gMedaforceUselessSteps[];   // by gBattleWork.step (medaforce_useless_run)
-extern const Func gMedaforcePushoverAttackSteps[];       // by gBattleWork.step (medaforce_pushover_attack_run)
-extern const u8 gMedaforceChargeTiles[];                 // compressed tiles (battle/medaforce_effects)
-extern const u8 gMedaforceChargePalette[];               // 32-byte OBJ palette (battle/medaforce_effects)
-extern const Func gMedaforceChargeSteps[];               // by gBattleWork.step (medaforce_charge_run)
-extern const Func gMedaforceHideNSeekSteps[];            // by gBattleWork.step (medaforce_hide_n_seek_run)
-extern const u8 gSpyGameBeamSpinFrames[];                // frame counts (medaforce_spy_game_beam_spin)
-extern const Func gMedaforceSpyGameSteps[];              // by gBattleWork.step (medaforce_spy_game_run)
-extern const u8 gMedaforceUpArrowTiles[];                // compressed tiles (battle/medaforce_effects)
-extern const u8 gMedaforceUpArrowPalettes[];             // 64-byte OBJ palettes (battle/medaforce_effects)
-extern const Func gMedaforceLegsStatUpSteps[];           // by gBattleWork.step (medaforce_legs_stat_up_run)
-extern const u8 gMedaforceAntiTerrainBoltTiles[];        // compressed tiles (battle/medaforce_effects)
+extern const u8 gDestroyerSwingFrames[];           // pairs (work[SPR_MOTION_ROW] direction or 0xFF end, wait frames) by
+                                                   // work[FX_SWING_POS] (medaforce_destroyer_swing)
+extern const u8 gMedaforceDestroyerPalette[];      // 32-byte OBJ palette (battle/medaforce_effects)
+extern const u8 gMedaforceDestroyerTiles[];        // compressed tiles (battle/medaforce_effects)
+extern const Func gMedaforceDestroyerSteps[];      // by gBattleWork.step (medaforce_destroyer_run)
+extern const u8 gMedaforceUselessPalette[];        // 32-byte OBJ palette (battle/medaforce_effects)
+extern const u8 gMedaforceUselessTiles[];          // compressed tiles (battle/medaforce_effects)
+extern const Func gMedaforceUselessSteps[];        // by gBattleWork.step (medaforce_useless_run)
+extern const Func gMedaforcePushoverAttackSteps[]; // by gBattleWork.step (medaforce_pushover_attack_run)
+extern const u8 gMedaforceChargeTiles[];           // compressed tiles (battle/medaforce_effects)
+extern const u8 gMedaforceChargePalette[];         // 32-byte OBJ palette (battle/medaforce_effects)
+extern const Func gMedaforceChargeSteps[];         // by gBattleWork.step (medaforce_charge_run)
+extern const Func gMedaforceHideNSeekSteps[];      // by gBattleWork.step (medaforce_hide_n_seek_run)
+extern const u8 gSpyGameBeamSpinFrames[];          // frame counts (medaforce_spy_game_beam_spin)
+extern const Func gMedaforceSpyGameSteps[];        // by gBattleWork.step (medaforce_spy_game_run)
+extern const u8 gMedaforceUpArrowTiles[];          // compressed tiles (battle/medaforce_effects)
+extern const u8 gMedaforceUpArrowPalettes[];       // 64-byte OBJ palettes (battle/medaforce_effects)
+extern const Func gMedaforceLegsStatUpSteps[];     // by gBattleWork.step (medaforce_legs_stat_up_run)
+extern const u8 gMedaforceAntiTerrainBoltTiles[];  // compressed tiles (battle/medaforce_effects)
 extern const u8 gMedaforceAntiTerrainBoltPalettes[];     // 64-byte OBJ palettes (battle/medaforce_effects)
 extern const Func gMedaforceAntiTerrainSteps[];          // by gBattleWork.step (medaforce_anti_terrain_run)
 extern const u8 gMedaforceAntiTerrainBeamTiles[];        // compressed tiles (battle/medaforce_effects)
@@ -1151,8 +1160,8 @@ extern struct PartSpriteLayer gRightArmPartLayer;
 extern struct PartSpriteLayer gLeftArmPartLayer;
 extern struct PartSpriteLayer gHeadPartLayer;
 extern struct PartSpriteLayer gLegPartLayer;
-extern const u8 gSpriteSheetBlendKinds[]; // per sprite sheet id (gSpriteEntries[].unk30): 2 -> unkB = 0xFF, 1 -> 0,
-                                          // else 0x40 (sprite_set_blend_from_kind)
+extern const u8 gSpriteSheetBlendKinds[]; // per sprite sheet id (gSpriteEntries[].work16[FIELD_SPR_SHEET]): 2 -> order
+                                          // = 0xFF, 1 -> 0, else 0x40 (sprite_set_blend_from_kind)
 extern const u8 *const gSpriteSheetVariantTables[]; // sheet ids by id - 0xD0, indexed by gFieldWork.sheet_variants[id -
                                                     // 0xD0] (resolve_sprite_sheet_id)
 extern u8 *gAreaAnimTileSrc;                        // animated tile source for the area (animate_area_bg_tiles)
@@ -1220,7 +1229,7 @@ extern const u16 gTownMapCursorFrames[][4];    // cursor tile numbers [cursor_st
 extern const u8 gTownMapAnimFrameOrder[];      // gTownMapAnimTiles frame by gMenuWork->frame / 10
 extern const u8 gShopGreetingText[];           // message text (shop_menu_greeting)
 extern const Func gShopMenuStates[];           // sub-state handlers (shop_menu_dispatch)
-extern const u16 gGameOverIkkiFramesExit[];    // sprite 1 animation frames by unk1A / 6 (game_over_wipe_out)
+extern const u16 gGameOverIkkiFramesExit[];    // sprite 1 animation frames by timer / 6 (game_over_wipe_out)
 extern u8 gTitleSkipIntro;
 extern const u8 gPartTradeSpritePositions[][4][2]; // x, y by [which][kind] (load_medapart_sprite_animation)
 extern const u16 gShopObjPalette[];                // OBJ palette 1 (shop_menu_show_layers)
@@ -1351,23 +1360,24 @@ extern const u16 gMapSpriteSheet48Palette[]; // their palettes (gFieldSpritePale
 extern const u16 gMapSpriteSheet46Palette[];
 extern const u16 gMapSpriteSheet40Palette[];
 extern const u16 gMapSpriteSheet37Palette[];
-extern const u16 gWeeklyObjPalettes[];       // 16 OBJ palettes of the studio and lecture sprites
-extern const u16 gWeeklyLectureBgPalettes[]; // 6 BG palettes of the lecture corner
-extern const u8 gIntroUnusedArtTilesLz[];    // LZ77 BG tiles (intro_load_art_unused)
-extern const u8 gIntroUnusedArtTilemapLz[];  // LZ77 30x20 tilemap (intro_load_art_unused)
-extern const u16 gIntroUnusedArtPalette[];   // BG palette, 256 colours (intro_load_art_unused)
-extern const u8 gIntroVersusArtTilesLz[];    // LZ77 BG tiles (intro_load_versus_art)
-extern const u8 gIntroVersusArtTilemapLz[];  // LZ77 30x20 tilemap (intro_load_versus_art)
-extern const u16 gIntroVersusArtPalette[];   // BG palette, 256 colours (intro_load_versus_art)
-extern const u8 gIntroCloseupArtTilesLz[];   // LZ77 BG tiles (intro_load_closeup_art)
-extern const u8 gIntroCloseupArtTilemapLz[]; // LZ77 30x20 tilemap (intro_load_closeup_art)
-extern const u16 gIntroCloseupArtPalette[];  // BG palette, 256 colours (intro_load_closeup_art)
-extern s32 (*const gIntroSpriteActions[])(
-    u8); // sprite actions, by gSpriteEntries[].unk20 - 1: 0 = done, 0xFF = clear (intro_update_sprite_actions)
-extern const u8 gIntroSpriteActionPeriods[]; // sprite actions: frame period, by unk20 - 1
-extern const s8 gIntroBobOffsets[]; // 64-entry wave offsets, by gSpriteEntries[].unk21 & 0x3F (intro_action_bob)
-extern u8 gWeeklyAnimTiles[];       // animated BG tiles: 6 frames of 0x280 bytes, 0x100 copied (weekly_update_studio)
-extern u8 gWeeklyAnimTiles2[];      // animated BG tiles: 6 frames of 0x280 bytes, 0x180 copied (weekly_update_studio)
+extern const u16 gWeeklyObjPalettes[];         // 16 OBJ palettes of the studio and lecture sprites
+extern const u16 gWeeklyLectureBgPalettes[];   // 6 BG palettes of the lecture corner
+extern const u8 gIntroUnusedArtTilesLz[];      // LZ77 BG tiles (intro_load_art_unused)
+extern const u8 gIntroUnusedArtTilemapLz[];    // LZ77 30x20 tilemap (intro_load_art_unused)
+extern const u16 gIntroUnusedArtPalette[];     // BG palette, 256 colours (intro_load_art_unused)
+extern const u8 gIntroVersusArtTilesLz[];      // LZ77 BG tiles (intro_load_versus_art)
+extern const u8 gIntroVersusArtTilemapLz[];    // LZ77 30x20 tilemap (intro_load_versus_art)
+extern const u16 gIntroVersusArtPalette[];     // BG palette, 256 colours (intro_load_versus_art)
+extern const u8 gIntroCloseupArtTilesLz[];     // LZ77 BG tiles (intro_load_closeup_art)
+extern const u8 gIntroCloseupArtTilemapLz[];   // LZ77 30x20 tilemap (intro_load_closeup_art)
+extern const u16 gIntroCloseupArtPalette[];    // BG palette, 256 colours (intro_load_closeup_art)
+extern s32 (*const gIntroSpriteActions[])(u8); // sprite actions, by gSpriteEntries[].work[INTRO_SPR_ACTION] - 1: 0 =
+                                               // done, 0xFF = clear (intro_update_sprite_actions)
+extern const u8 gIntroSpriteActionPeriods[];   // sprite actions: frame period, by work[INTRO_SPR_ACTION] - 1
+extern const s8
+    gIntroBobOffsets[]; // 64-entry wave offsets, by gSpriteEntries[].work[INTRO_SPR_STEP] & 0x3F (intro_action_bob)
+extern u8 gWeeklyAnimTiles[];  // animated BG tiles: 6 frames of 0x280 bytes, 0x100 copied (weekly_update_studio)
+extern u8 gWeeklyAnimTiles2[]; // animated BG tiles: 6 frames of 0x280 bytes, 0x180 copied (weekly_update_studio)
 extern u8 gWeeklyCycleAnimMask;
 extern const Func
     gMedabotsWeeklySubStates[]; // sub-states by gGameSubState (medabots_weekly_update); [0] = medabots_weekly_init
@@ -1378,7 +1388,7 @@ extern const u8 gMessageWaitKeyKeep[]; // empty message: 0xFF end mode 2 (wait f
 extern const u8 gIntroPointerLines[];  // 12 bytes per scan part, from +0x30: 3 lines (lineIdx) of x, y, end x, end row
 extern const u8 *const
     gIntroScanStrings[]; // intro scan screen strings; [part + 4] are the part names typed by intro_type_part_name
-extern const s8 gWeeklyCurtainCloseTimes[12]; // 12 frame counts (unk1A values) at which weekly_fx_right_curtain_close /
+extern const s8 gWeeklyCurtainCloseTimes[12]; // 12 frame counts (timer values) at which weekly_fx_right_curtain_close /
                                               // weekly_fx_left_curtain_close step
 extern const u8 gCycleAnimFrameOffsets[];     // sprite_cycle_anim_update table
 extern u16

@@ -7,14 +7,14 @@ void town_map_update_cursor(void) {
     u8 row = gMenuWork->cursor_style;
     const u8 *place_pos;
 
-    if (++gSpriteEntries[0].unk1A > 0x60)
-        gSpriteEntries[0].unk1A = 0;
+    if (++gSpriteEntries[0].timer > 0x60)
+        gSpriteEntries[0].timer = 0;
     place_pos = (const u8 *)gTownMapPlacePositions;
     gSpriteEntries[0].x =
-        place_pos[gMenuWork->town_map_place * 2] * 8 + gTownMapCursorOffsetX[row][(gSpriteEntries[0].unk1A >> 3) & 3];
+        place_pos[gMenuWork->town_map_place * 2] * 8 + gTownMapCursorOffsetX[row][(gSpriteEntries[0].timer >> 3) & 3];
     gSpriteEntries[0].y = place_pos[(u16)(gMenuWork->town_map_place * 2 + 1)] * 8 +
-                          gTownMapCursorOffsetY[row][(gSpriteEntries[0].unk1A >> 3) & 3];
-    gSpriteEntries[0].frame = gTownMapCursorFrames[row][(gSpriteEntries[0].unk1A >> 3) & 3];
+                          gTownMapCursorOffsetY[row][(gSpriteEntries[0].timer >> 3) & 3];
+    gSpriteEntries[0].frame = gTownMapCursorFrames[row][(gSpriteEntries[0].timer >> 3) & 3];
 }
 
 void town_map_animate_tiles(void) {
@@ -110,7 +110,7 @@ void town_map_load_graphics(void) {
     menu = gMenuWork;
     gSpriteEntries[0].palette = menu->cursor_style;
     gSpriteEntries[0].frame = 0x10D;
-    gSpriteEntries[0].unk1A = 0;
+    gSpriteEntries[0].timer = 0;
     gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[1].frame_table = 2;
     gSpriteEntries[1].x = gTownMapPlacePositions[0][menu->town_map_place * 2] * 8;

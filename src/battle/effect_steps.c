@@ -76,6 +76,6 @@ void effect_step_end(void) {
 
 void effect_step_play_anim(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.stepCounter], 0x21);
-    if (gSpriteEntries[0x21].unk22 == 0xFF)
+    if (gSpriteEntries[0x21].work[SPR_CMD_STATE] == SPR_CMD_ENDED)
         gBattleWork.step++;
 }

@@ -3,6 +3,7 @@
 // evasion weights, and the part / ability checks the AI (battle/action_calc) uses (check_bot_can_*).
 
 #include "global.h"
+#include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
 static u32 check_sprite_in_range(u32 slot);
@@ -125,28 +126,28 @@ u32 sprite_move_toward_target(u32 slot, s16 x, s16 y) {
     u32 step;
     u32 pos;
 
-    sprite->unk25 += gSpriteSpeedSteps[sprite->unk30];
-    step = sprite->unk25;
-    sprite->unk25 = step % 4;
+    sprite->work[FX_FALL_FRAC] += gSpriteSpeedSteps[sprite->work16[FX_FALL_SPEED]];
+    step = sprite->work[FX_FALL_FRAC];
+    sprite->work[FX_FALL_FRAC] = step % 4;
     pos = ((step >> 2) + (u16)sprite->y) & 0xFF;
     sprite->y = pos;
     if ((s32)pos >= x && (s32)pos <= y) {
         sprite->y = x;
         return 1;
     }
-    gSpriteEntries[slot].unk30 += gSpriteEntries[slot].unk24;
-    if (gSpriteEntries[slot].unk30 > 0xFF)
-        gSpriteEntries[slot].unk30 = 0xFF;
+    gSpriteEntries[slot].work16[FX_FALL_SPEED] += gSpriteEntries[slot].work[FX_FALL_ACCEL];
+    if (gSpriteEntries[slot].work16[FX_FALL_SPEED] > 0xFF)
+        gSpriteEntries[slot].work16[FX_FALL_SPEED] = 0xFF;
     return 0;
 }
 
 u32 update_sprite_deceleration(u32 slot, s16 min_y, s16 max_y) {
     struct SpriteEntry *base = gSpriteEntries;
     struct SpriteEntry *sprite = &base[slot];
-    u8 *frac = &sprite->unk25;
+    u8 *frac = &sprite->work[FX_FALL_FRAC];
     u32 step;
     u32 pos;
-    *frac = *frac + gSpriteSpeedSteps[0xFF - sprite->unk30];
+    *frac = *frac + gSpriteSpeedSteps[0xFF - sprite->work16[FX_FALL_SPEED]];
     step = *frac;
     *frac &= 3;
     pos = (u16)sprite->y - (step >> 2);
@@ -155,9 +156,9 @@ u32 update_sprite_deceleration(u32 slot, s16 min_y, s16 max_y) {
         sprite->y = max_y;
         return 1;
     }
-    gSpriteEntries[slot].unk30 += gSpriteEntries[slot].unk24;
-    if (gSpriteEntries[slot].unk30 > 0xFF)
-        gSpriteEntries[slot].unk30 = 0xFF;
+    gSpriteEntries[slot].work16[FX_FALL_SPEED] += gSpriteEntries[slot].work[FX_FALL_ACCEL];
+    if (gSpriteEntries[slot].work16[FX_FALL_SPEED] > 0xFF)
+        gSpriteEntries[slot].work16[FX_FALL_SPEED] = 0xFF;
     return 0;
 }
 
@@ -183,9 +184,10 @@ void bg3_shake_step(u32 frame) {
 }
 
 u32 sprite_hop_step(u32 slot) {
-    if ((gSpriteEntries[slot].flags & SPRITE_FLAG_ENABLED) && gSpriteEntries[slot].unk23 != 0x20) {
-        gSpriteEntries[slot].y = (gSpriteEntries[slot].y + gSpriteHopOffsets[gSpriteEntries[slot].unk23]) & 0xFF;
-        gSpriteEntries[slot].unk23++;
+    if ((gSpriteEntries[slot].flags & SPRITE_FLAG_ENABLED) && gSpriteEntries[slot].work[FX_SPR_STEP] != 0x20) {
+        gSpriteEntries[slot].y =
+            (gSpriteEntries[slot].y + gSpriteHopOffsets[gSpriteEntries[slot].work[FX_SPR_STEP]]) & 0xFF;
+        gSpriteEntries[slot].work[FX_SPR_STEP]++;
         return 0;
     }
     return 1;
@@ -266,15 +268,17 @@ void battle_load_action_target(u32 rec) {
 u32 move_sprite_toward_target(u32 slot) {
     u32 ret;
 
-    if (gSpriteEntries[slot].x == gSpriteEntries[slot].unk30 && gSpriteEntries[slot].y == gSpriteEntries[slot].unk32)
+    if (gSpriteEntries[slot].x == gSpriteEntries[slot].work16[FX_SPR_TARGET_X] &&
+        gSpriteEntries[slot].y == gSpriteEntries[slot].work16[FX_SPR_TARGET_Y])
         ret = 1;
     else {
-        gSpriteEntries[slot].unk25 = calculate_direction_index(gSpriteEntries[slot].x, gSpriteEntries[slot].y,
-                                                               gSpriteEntries[slot].unk30, gSpriteEntries[slot].unk32);
+        gSpriteEntries[slot].work[SPR_MOTION_ROW] = calculate_direction_index(
+            gSpriteEntries[slot].x, gSpriteEntries[slot].y, gSpriteEntries[slot].work16[FX_SPR_TARGET_X],
+            gSpriteEntries[slot].work16[FX_SPR_TARGET_Y]);
         update_sprite_animation_position(slot);
         if (check_sprite_in_range(slot)) {
-            gSpriteEntries[slot].x = gSpriteEntries[slot].unk30;
-            gSpriteEntries[slot].y = gSpriteEntries[slot].unk32;
+            gSpriteEntries[slot].x = gSpriteEntries[slot].work16[FX_SPR_TARGET_X];
+            gSpriteEntries[slot].y = gSpriteEntries[slot].work16[FX_SPR_TARGET_Y];
             ret = 1;
         } else
             ret = 0;
@@ -285,8 +289,8 @@ u32 move_sprite_toward_target(u32 slot) {
 static u32 check_sprite_in_range(u32 slot) {
     s32 y = gSpriteEntries[slot].x;
     s32 x = gSpriteEntries[slot].y;
-    u16 tx = gSpriteEntries[slot].unk30;
-    u16 ty = gSpriteEntries[slot].unk32;
+    u16 tx = gSpriteEntries[slot].work16[FX_SPR_TARGET_X];
+    u16 ty = gSpriteEntries[slot].work16[FX_SPR_TARGET_Y];
     if (ty - 2 <= x && ty + 2 >= x && tx - 2 <= y && tx + 2 >= y)
         return 1;
     return 0;

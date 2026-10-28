@@ -4,6 +4,10 @@
 #include "global.h"
 #include "constants/sprites.h"
 
+// gSpriteEntries work[] indices
+#define MEDALS_SPR_BLINK_TIMER 0x7 // trade choice cursor (sprite 7): blink frames, 0-30
+#define MEDALS_SPR_CLOSE_STEP 0x9  // trade choice cursor: gMedalTradeChoiceCloseSteps index
+
 static void medals_scroll_bg(void);
 static void medals_list_set_cursor_from_medal(void);
 static void count_owned_medals(void);
@@ -1954,8 +1958,8 @@ static void medal_trade_init_choice_cursor(void) {
     gSpriteEntries[7].scale_x = 0x40;
     gSpriteEntries[7].scale_y = 0x40;
     gSpriteEntries[7].frame_table = 0;
-    gSpriteEntries[7].unk29 = 0;
-    gSpriteEntries[7].unk27 = 0;
+    gSpriteEntries[7].work[MEDALS_SPR_CLOSE_STEP] = 0;
+    gSpriteEntries[7].work[MEDALS_SPR_BLINK_TIMER] = 0;
     gSpriteEntries[7].order = 0xC1;
 }
 
@@ -1979,22 +1983,22 @@ static void medal_trade_choice_cursor_input(void) {
 }
 
 u32 medal_trade_choice_close_step(void) {
-    gMedalTradeChoiceCloseSteps[gSpriteEntries[7].unk29]();
-    if (gSpriteEntries[7].unk29 == 3)
+    gMedalTradeChoiceCloseSteps[gSpriteEntries[7].work[MEDALS_SPR_CLOSE_STEP]]();
+    if (gSpriteEntries[7].work[MEDALS_SPR_CLOSE_STEP] == 3)
         return 1;
     return 0;
 }
 
 void medal_trade_choice_blink_step(void) {
-    if (gSpriteEntries[7].unk27 != 30) {
-        if (gSpriteEntries[7].unk27 & 4)
+    if (gSpriteEntries[7].work[MEDALS_SPR_BLINK_TIMER] != 30) {
+        if (gSpriteEntries[7].work[MEDALS_SPR_BLINK_TIMER] & 4)
             gSpriteEntries[7].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         else
             gSpriteEntries[7].flags |= SPRITE_FLAG_VISIBLE;
-        gSpriteEntries[7].unk27++;
+        gSpriteEntries[7].work[MEDALS_SPR_BLINK_TIMER]++;
     } else {
         gSpriteEntries[7].flags |= SPRITE_FLAG_VISIBLE;
-        gSpriteEntries[7].unk29++;
+        gSpriteEntries[7].work[MEDALS_SPR_CLOSE_STEP]++;
     }
 }
 
@@ -2003,11 +2007,11 @@ void medal_trade_choice_shrink_step(void) {
     gSpriteEntries[7].scale_y -= 8;
     if (gSpriteEntries[7].scale_x == 0) {
         disable_sprites(7, 1);
-        gSpriteEntries[7].unk29++;
+        gSpriteEntries[7].work[MEDALS_SPR_CLOSE_STEP]++;
     }
 }
 
 void medal_trade_choice_clear_step(void) {
     vram_fill_tilemap_rect(12, 8, 18, 12, REG_BG0CNT, 0);
-    gSpriteEntries[7].unk29++;
+    gSpriteEntries[7].work[MEDALS_SPR_CLOSE_STEP]++;
 }
