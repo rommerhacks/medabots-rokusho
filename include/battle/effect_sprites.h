@@ -21,6 +21,6 @@ u32 armor_drain_step(u16 *amount, u32 rec,
 void armor_panel_clear(u32 side);
 void effect_sprite_spawn_at_part(
     u32 slot, u32 part, s16 x, s16 y,
-    u32 n); // inits battle sprite slot at (x, y) + gUnk_083AF480[part] with animation gBattleSpriteAnimScripts[n]
+    u32 n); // inits battle sprite slot at (x, y) + gPartSpriteOffsets[part] with animation gBattleSpriteAnimScripts[n]
 
 #endif // GUARD_BATTLE_EFFECT_SPRITES_H

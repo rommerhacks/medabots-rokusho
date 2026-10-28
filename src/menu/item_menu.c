@@ -61,7 +61,7 @@ void item_menu_load_graphics(void) {
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     lz_decompress_dispatch(gUnk_08784CB0, vram_at(size));
     gMenuWork->bg_tile_base = (size >> 5) - 1;
-    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     for (i = 0; i <= 1; i++) {
         gSpriteEntries[i + 0x51].unk0 = 0x8000;
         gSpriteEntries[i + 0x51].unk1C = 2;
@@ -352,9 +352,9 @@ void item_menu_fade_out_exit(void) {
     }
 }
 
-// item_get_use_result 2-4: the item can't be used here (message 8 of gUnk_08485788).
+// item_get_use_result 2-4: the item can't be used here (message 8 of gSystemMessages).
 void item_menu_show_cannot_use(void) {
-    if (run_message(gUnk_08485788[8]))
+    if (run_message(gSystemMessages[8]))
         gGameSubState++;
 }
 

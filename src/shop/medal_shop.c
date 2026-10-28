@@ -1,7 +1,7 @@
 // Mode-2 state 18 (medal_rename_main): the screen before name entry. For the player name and a new Medal
 // (gNameEntryMode 0 / 1) it goes straight to name entry (state 6); for mode 2 it is the Medal rename service:
 // "Do you want to change a Medal name?", pick an owned Medal, pay 100, then rename it in name entry.
-// Its sub-state table gMedalRenameStates directly follows the shop list's (gUnk_08483E8C, shop/shop_list.c).
+// Its sub-state table gMedalRenameStates directly follows the shop list's (gShopListHandlers, shop/shop_list.c).
 #include "global.h"
 
 static inline void *vram_at(u32 off) {
@@ -114,7 +114,7 @@ void medal_rename_load_graphics(void) {
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     zero = 0;
     CpuFastSet(gMedalIconTiles, vram_at(size), 0x400);
-    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     gSpriteEntries[8].unk0 = 0x8000;
     gSpriteEntries[8].unk1C = 2;
@@ -189,7 +189,7 @@ void medal_rename_select_medal(void) {
             gMenuWork->message_pending = 0;
             text_window_init(1, 0, 0);
         }
-    } else if (run_message(gUnk_08485788[13]))
+    } else if (run_message(gSystemMessages[13]))
         r = 0;
     if (r != 0)
         return;
@@ -302,7 +302,7 @@ void medal_rename_no_money(void) {
             gMenuWork->message_pending = 0;
             text_window_init(1, 0, 0);
         }
-    } else if (run_message(gUnk_08485788[15]))
+    } else if (run_message(gSystemMessages[15]))
         r = 0;
     if (r == 0 && KEYS_LO(gNewKeys) & 3) {
         message_next();
@@ -319,7 +319,7 @@ void medal_rename_confirm_payment(void) {
             gMenuWork->message_pending = 0;
             text_window_init(1, 0, 0);
         }
-    } else if (run_message(gUnk_08485788[14]))
+    } else if (run_message(gSystemMessages[14]))
         r = 0;
     if (r == 0 && (r = poll_choice_menu()) != 0) {
         u32 c = r & 0xF0;

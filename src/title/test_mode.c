@@ -55,7 +55,7 @@ void test_mode_load_graphics(void) {
     zero = 0;
     CpuFastSet(gUnk_08790400, (void *)PLTT, 0x80);
     CpuFastSet(gUnk_08483AA0, (void *)(PLTT + 0x1C0), 8);
-    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     CpuFastSet(gCursorArrowPalette, (void *)(PLTT + 0x3C0), 8);
     gSpriteEntries[0].unk0 = 0x8000;
     gSpriteEntries[0].unk1C = 2;
@@ -269,7 +269,7 @@ void test_mode_fade_out_exit(void) {
 }
 
 void test_mode_erase_prompt(void) {
-    if (run_message(gUnk_08485788[3]))
+    if (run_message(gSystemMessages[3]))
         gGameSubState++;
 }
 
@@ -285,7 +285,7 @@ void test_mode_erase_choice(void) {
 }
 
 void test_mode_erase_caution(void) {
-    if (run_message(gUnk_08485788[16])) {
+    if (run_message(gSystemMessages[16])) {
         if (gMenuWork->timer++ > 60)
             gGameSubState = 13;
     }
@@ -297,7 +297,7 @@ void test_mode_close_message(void) {
 }
 
 void test_mode_erase_start(void) {
-    if (run_message(gUnk_08485788[4])) {
+    if (run_message(gSystemMessages[4])) {
         play_song(0);
         play_sound_effect(0);
         eeprom_setup_timer_irq();
@@ -330,14 +330,14 @@ void test_mode_erase_save(void) {
 }
 
 void test_mode_erase_done(void) {
-    if (run_message(gUnk_08485788[5])) {
+    if (run_message(gSystemMessages[5])) {
         if (gMenuWork->timer++ > 60)
             gGameSubState = 8;
     }
 }
 
 void test_mode_erase_failed(void) {
-    if (run_message(gUnk_08485788[6])) {
+    if (run_message(gSystemMessages[6])) {
         if (gMenuWork->timer++ > 60)
             gGameSubState = 8;
     }

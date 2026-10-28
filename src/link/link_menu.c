@@ -22,7 +22,7 @@ void clear_vram_bg(void) {
     CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
     CpuFastSet(gLinkMenuBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
-    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     CpuFastSet(gBlackObjPalettes, (void *)0x05000200, 8);
     gSpriteEntries[0].unk0 = 0x8000;
     gSpriteEntries[0].unk1C = 2;

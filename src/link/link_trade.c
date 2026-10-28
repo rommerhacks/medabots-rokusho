@@ -293,7 +293,7 @@ void medapart_trade_init_screen(void) {
     CpuFastSet(gPartTradeBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gGradientPaletteCyan, (void *)(PLTT + 0x3A0), 8);
     CpuFastSet(gGradientPaletteCyan, &gPaletteBackup[0xD0], 8);
-    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06011E00);
     gMenuWork->frame = 0x280;
     medapart_copy_name(gMenuWork->own_part_id * 4 + gMenuWork->own_part_kind, 0);

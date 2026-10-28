@@ -96,8 +96,8 @@ gShopMenuStates:
 gShopStock:
 	.incbin "baserom.gba", 0x483E50, 0x3C
 
-	.global gUnk_08483E8C
-gUnk_08483E8C:
+	.global gShopListHandlers
+gShopListHandlers:
 	.incbin "baserom.gba", 0x483E8C, 0x28
 
 	.global gMedalRenameStates
@@ -136,8 +136,8 @@ gShopSellPartTypeText:
 gLinkSavePromptMessage:
 	.incbin "baserom.gba", 0x48564F, 0x139
 
-	.global gUnk_08485788
-gUnk_08485788:
+	.global gSystemMessages
+gSystemMessages:
 	.incbin "baserom.gba", 0x485788, 0x450
 
 	.global gLinkMenuMessages
@@ -448,8 +448,8 @@ gMfMenuRightPanelTilemap:
 gPartsMenuRightPanelTilemap:
 	.incbin "baserom.gba", 0x48895C, 0x58
 
-	.global gUnk_084889B4
-gUnk_084889B4:
+	.global gArmorPanelFrameTilemap
+gArmorPanelFrameTilemap:
 	.incbin "baserom.gba", 0x4889B4, 0x44
 
 	.global gTradeChoiceWindowTilemap
@@ -652,8 +652,8 @@ gPrebattleWipeTiles:
 gTextWindowObjPalette:
 	.incbin "baserom.gba", 0x4C6998, 0x20
 
-	.global gUnk_084C69B8
-gUnk_084C69B8:
+	.global gShopListObjPalette
+gShopListObjPalette:
 	.incbin "baserom.gba", 0x4C69B8, 0x20
 
 	.global gLegTypePedestalPalette

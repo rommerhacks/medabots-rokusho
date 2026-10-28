@@ -596,13 +596,14 @@ extern const u8 gMfMenuLeftPanelTilemap[];     // Medaforce menu, left panel (BG
 extern const u8 gMfMenuRightPanelTilemap[];    // Medaforce menu, right panel (BG1)
 extern u8 gBgTileBackupHigh[];                 // BG tile backup, second half (see gBgTileBackup)
 extern const u8 gUnk_083AD39A[];               // Robattle sub-state per command ring slot (command_ring_goto_selected)
-extern const u8 gUnk_083AD3A4[]; // battle bot screen positions (x, y) per record 0-5 (position_battle_team_cursors)
+extern const u8
+    gTeamBotScreenPositions[]; // battle bot screen positions (x, y) per record 0-5 (position_battle_team_cursors)
 
 extern const u32 gTitleMenuBlendAlphas[];   // BLDALPHA values by fade step / 8 (title_menu_blend_step)
 extern const u16 gSaveScreenSpriteFrames[]; // sprite 0 tile by (frame >> 3) & 3 (save_screen_animate_sprite)
 extern const u16 gNameEntrySpriteFrames[];  // sprite 20 tile by (frame >> 3) & 3 (name_entry_animate_sprite)
 
-extern u8 gUnk_02023078;                         // first visible list entry (update_battle_sprite_priority_flags)
+extern u8 gListScrollTop;                        // first visible list entry (update_battle_sprite_priority_flags)
 extern struct Vec16 gScanlineScrollEven[160][4]; // per-scanline BG0-3 scroll, even frames (start_scanline_wave_scroll)
 extern struct Vec16 gScanlineScrollOdd[160][4];  // per-scanline BG0-3 scroll, odd frames (start_scanline_wave_scroll)
 
@@ -611,7 +612,8 @@ extern const u8 gSaveMagic[17]; // save file signature (serialize_save_data, val
 extern const u8
     gSaveMagicErased[17]; // written by save_dispatch(2) instead of gSaveMagic, so validate_save_data rejects the save
 
-extern const void *const gUnk_08485788[]; // save screen messages
+extern const void
+    *const gSystemMessages[]; // shared menu messages: test mode, shop, save screen, Medal rename, Medal level-up
 extern const void
     *const gLinkMenuMessages[]; // link menu / link start / link trade messages (save_screen_ask_overwrite uses 18)
 extern const Func gSaveScreenStates[15]; // save screen states, by gGameSubState (save_screen_update): 6 stops the
@@ -633,7 +635,8 @@ extern const u8 *gDefaultPlayerName; // -> "Ikki" (stored in the tail of gNameEn
 extern const u16 gUnk_080AF810[];    // name entry OBJ palette (name_entry_load_name)
 extern const u16 gUnk_08793428[];    // name entry BG palettes (name_entry_load_name)
 extern const u8 gUnk_08784CB0[];     // save screen BG tiles, after gUnk_0878CC64 (LZ77)
-extern const u8 gUnk_08784DA4[];     // save screen OBJ tiles (LZ77)
+extern const u8
+    gMenuObjTilesLz[]; // OBJ tiles shared by the menus (save, shop, item, name entry, link, title, test mode; LZ77)
 
 extern const Func gTitleMenuStates[]; // state handlers by gGameSubState (title_menu_update)
 
@@ -954,18 +957,18 @@ extern const u8 gHealChangeHeadPartIds[];
 extern const u8 gHealChangeRightArmPartIds[];
 extern const u8 gHealChangeLeftArmPartIds[];
 extern const void
-    *gStaggeredSpriteAnimScripts[]; // [0]: animation script every staggered sprite runs (staggered_sprites_update)
-extern const u16 gUnk_083AF490[];   // x, y offset pairs per sprite of a 4-sprite group (hit_sparks_spawn)
+    *gStaggeredSpriteAnimScripts[];  // [0]: animation script every staggered sprite runs (staggered_sprites_update)
+extern const u16 gHitSparkOffsets[]; // x, y offset pairs per sprite of a 4-sprite group (hit_sparks_spawn)
 extern const u16
-    gUnk_083AF440[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
+    gPartFlyStepsLegs[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
+extern const u16 gPartFlyStepsLeftArm[];  // (dx, dy) s16 pairs by sprite unk23, added to the sprite position
+                                          // (effect_sprite_fly_to_part)
+extern const u16 gPartFlyStepsRightArm[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position
+                                          // (effect_sprite_fly_to_part)
 extern const u16
-    gUnk_083AF400[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
-extern const u16
-    gUnk_083AF3C0[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
-extern const u16
-    gUnk_083AF380[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
+    gPartFlyStepsHead[]; // (dx, dy) s16 pairs by sprite unk23, added to the sprite position (effect_sprite_fly_to_part)
 extern const u16 gSpriteBobYSteps[];  // 32 y offsets added to a sprite's unk4 by sprite_bob_step
-extern const u8 gUnk_083AF4A0[];      // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
+extern const u8 gSpriteHopYSteps[];   // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
 extern const u8 gSpriteSlideXSteps[]; // 16 x offsets added to / subtracted from a sprite's unk2 by sprite_slide_x_step
 extern const u8 gUnk_083AF210[]; // 256 speed steps (quarter pixels) by a sprite's unk30 (sprite_move_toward_target,
                                  // update_sprite_deceleration)
@@ -973,7 +976,7 @@ extern const u16 gParticleSwayOffsets[];     // 16 x steps by a sprite's unk2D &
 extern const u8 gParticleOrbitRadiusSteps[]; // orbit radius steps (+1 / -1, byte pairs) by a sprite's unk2D & 31
 extern const u8 gUnk_083AF330[];             // 8 entries per bot_intact_parts_class result, one picked at random
                                              // (get_random_battle_weight_entry)
-extern const u8 gUnk_084889B4[];             // compressed tilemap (armor_panel_draw_frame)
+extern const u8 gArmorPanelFrameTilemap[];   // compressed tilemap (armor_panel_draw_frame)
 extern u8 gEffectSpriteSlot;                 // sprite slot whose handler is running (= gGameWork.runningSpriteSlot)
 extern const Func
     gParticleSparkHandlers[]; // spark states by sprite unk29 (particle_run_spark_handlers, slots 0x2B-0x3B)
@@ -989,7 +992,7 @@ extern const u8
     *const gBattleSeqEffectGfx[];       // pairs: compressed OBJ tiles, OBJ palette 14 (battle_seq_cmd_load_effect_gfx)
 extern const Func gBattleSeqCommands[]; // battle sequence commands, by battle_seq_peek() (battle_sequence_run_command)
 extern const Func gParticleShotHandlers[]; // shot states by sprite unk29 (particle_run_shot_handlers)
-extern u16 gUnk_083AF480[];      // x, y offset pairs by part (effect_sprite_spawn_at_part); not const: hit_sparks_spawn
+extern u16 gPartSpriteOffsets[]; // x, y offset pairs by part (effect_sprite_spawn_at_part); not const: hit_sparks_spawn
                                  // reloads it per iteration
 extern const u8 gUnk_083AF200[]; // 16 values, two random picks summed into gBattleWork.dice1 / unk189
                                  // (script_op_roll_dice_damage)
@@ -1189,7 +1192,7 @@ extern const Func gTownMapStates[];            // sub-state handlers (town_map_d
 extern const Func gGameOverStates[];           // sub-state handlers (game_over_update)
 extern const Func gSaveLostStates[];           // sub-state handlers (save_lost_dispatch)
 extern const Func gTestModeStates[];           // sub-state handlers (test_mode_dispatch)
-extern const Func gUnk_08483E8C[];             // sub-state handlers (shop_list_dispatch)
+extern const Func gShopListHandlers[];         // sub-state handlers (shop_list_dispatch)
 extern const void *const gTownMapPlaceNames[]; // messages by gMenuWork->town_map_place (town_map_show_place_name)
 extern const u8 gShopSellPartTypeText[];       // message text (shop_menu_part_type_prompt, gMenuWork->cursor set)
 extern const u8 gShopBuyPartTypeText[];        // message text (shop_menu_part_type_prompt, gMenuWork->cursor clear)
@@ -1480,8 +1483,8 @@ extern const u16 gUnk_080AF7E8[];
 // code_0805EE6C (session 94)
 extern const u8 gSoundTestSongs[];
 extern const u8 gSoundTestEffects[];
-extern const u16 gUnk_084C69B8[];
-extern const u16 gUnk_08798D2C[];
+extern const u16 gShopListObjPalette[]; // OBJ palette 3 of the shop list
+extern const u16 gShopListBgPalettes[]; // 16 BG palettes of the shop list
 extern const u8 gUnk_08791694[];
 extern const u8 gUnk_087917F4[];
 extern const u8 gUnk_087919C4[];
@@ -1524,7 +1527,7 @@ extern struct SpriteFrame *const *const gUnk_083AC088[];
 extern struct SpriteFrame *const *const gUnk_083AC0C8[];
 extern struct SpriteFrame *const *const gUnk_083AC108[];
 extern const struct MapNpcRecord *const gUnk_084837A0[];
-extern u8 gUnk_02023000[];    // shop cart: quantity per sell-list entry; [0x78] = first visible entry
+extern u8 gListWorkBuffer[];  // shared work buffer; the shop list keeps the cart there (quantity per sell-list entry)
 extern const u8 gShopStock[]; // 4 Medapart ids per shop (gShopId * 4 + i); 0xFF ends
 extern u16 gUnk_03006432;     // guess: battle field grid origin x (field_debug_draw_sprite_preview)
 extern u16 gUnk_03006434;     // guess: battle field grid origin y

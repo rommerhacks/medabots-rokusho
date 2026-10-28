@@ -112,8 +112,8 @@ gMapScripts:
 gUnk_08784CB0:
 	.incbin "baserom.gba", 0x784CB0, 0xF4
 
-	.global gUnk_08784DA4
-gUnk_08784DA4:
+	.global gMenuObjTilesLz
+gMenuObjTilesLz:
 	.incbin "baserom.gba", 0x784DA4, 0x1190
 
 	.global gUnk_08785F34
@@ -308,8 +308,8 @@ gUnk_08798824:
 gUnk_08798A34:
 	.incbin "baserom.gba", 0x798A34, 0x2F8
 
-	.global gUnk_08798D2C
-gUnk_08798D2C:
+	.global gShopListBgPalettes
+gShopListBgPalettes:
 	.incbin "baserom.gba", 0x798D2C, 0x200
 
 	.global gUnk_08798F2C

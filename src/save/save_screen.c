@@ -68,7 +68,7 @@ void save_screen_load_graphics(void) {
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     lz_decompress_dispatch(gUnk_08784CB0, vram_at(size));
     gMenuWork->bg_tile_base = (size >> 5) - 1;
-    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     gSpriteEntries[0].unk0 = 0xC000;
     gSpriteEntries[0].unk1C = 2;
     gSpriteEntries[0].unkA = 0;
@@ -132,7 +132,7 @@ void save_screen_fade_in(void) {
 }
 
 void save_screen_ask_save(void) {
-    if (run_message(gUnk_08485788[9]))
+    if (run_message(gSystemMessages[9]))
         gGameSubState++;
 }
 
@@ -164,7 +164,7 @@ void save_screen_poll_overwrite_choice(void) {
 }
 
 void save_screen_show_saving(void) {
-    if (run_message(gUnk_08485788[10])) {
+    if (run_message(gSystemMessages[10])) {
         play_song(0);
         play_sound_effect(0);
         eeprom_setup_timer_irq();
@@ -199,7 +199,7 @@ void save_screen_write_save(void) {
 
 void save_screen_show_saved(void) {
     u8 t = gMenuWork->timer++;
-    if (run_message(gUnk_08485788[11]) && t > 60)
+    if (run_message(gSystemMessages[11]) && t > 60)
         gGameSubState++;
 }
 
@@ -232,7 +232,7 @@ void save_screen_fade_out(void) {
 
 void save_screen_show_failed(void) {
     u8 t = gMenuWork->timer++;
-    if (run_message(gUnk_08485788[12]) && t > 60)
+    if (run_message(gSystemMessages[12]) && t > 60)
         gGameSubState = 9;
 }
 

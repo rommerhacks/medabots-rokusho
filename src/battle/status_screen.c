@@ -36,8 +36,8 @@ void position_battle_team_cursors(u32 first, u32 flag) {
 
     for (i = 0; i < 3; i++) {
         if (gBattleBots[first + i].teamState) {
-            x = gUnk_083AD3A4[(first + i) * 2];
-            y = gUnk_083AD3A4[(first + i) * 2 + 1];
+            x = gTeamBotScreenPositions[(first + i) * 2];
+            y = gTeamBotScreenPositions[(first + i) * 2 + 1];
             if (first + i <= 2) {
                 if (flag)
                     x -= 0x68;
@@ -80,8 +80,8 @@ void status_init_cursor(void) {
     gSpriteEntries[8].unk1C = 0;
     gSpriteEntries[8].unkA = 0xE;
     gSpriteEntries[8].unkB = 0xC0;
-    x = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
-    y = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2 + 1];
+    x = gTeamBotScreenPositions[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
+    y = gTeamBotScreenPositions[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2 + 1];
     if (gGameWork.openedFrom == 0) {
         gSpriteEntries[8].unk2 = x + 16;
         gSpriteEntries[8].unk4 = y;
@@ -240,7 +240,7 @@ void status_update_portrait(void) {
 }
 
 u32 status_cursor_x(void) {
-    u8 x = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
+    u8 x = gTeamBotScreenPositions[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
 
     if (gGameWork.openedFrom == 0)
         return x + 16;
@@ -280,7 +280,7 @@ void status_draw_team_sprites(void) {
     for (i = 0, recs = gBattleBots; i <= 2; i++) {
         rec = gGameWork.openedFrom * 3 + i;
         if (recs[rec].teamState && i != gGameWork.shownId)
-            status_draw_bot_sprite(rec, gUnk_083AD3A4[rec * 2], gUnk_083AD3A4[rec * 2 + 1]);
+            status_draw_bot_sprite(rec, gTeamBotScreenPositions[rec * 2], gTeamBotScreenPositions[rec * 2 + 1]);
     }
     update_battle_sprite_orbiting_positions(0, gGameWork.shownId + gGameWork.openedFrom * 3, gGameWork.openedFrom);
 }
@@ -291,8 +291,8 @@ void status_select_input(void) {
     s32 slot;
     u32 base;
 
-    x = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
-    y = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2 + 1];
+    x = gTeamBotScreenPositions[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
+    y = gTeamBotScreenPositions[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2 + 1];
     slot = gGameWork.shownId;
     base = gGameWork.openedFrom * 3;
     if (gGameWork.openedFrom == 0) {
@@ -367,8 +367,8 @@ void status_select_input(void) {
 }
 
 void status_begin_side_change(void) {
-    u32 x = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
-    u32 y = gUnk_083AD3A4[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2 + 1];
+    u32 x = gTeamBotScreenPositions[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2];
+    u32 y = gTeamBotScreenPositions[(gGameWork.shownId + gGameWork.openedFrom * 3) * 2 + 1];
 
     setup_bot_battle_sprites_08017A7C(gGameWork.shownId + gGameWork.openedFrom * 3, x, y);
     clear_battle_sprite_slot(8, 1);
@@ -387,8 +387,8 @@ u32 status_side_change_scroll_out(void) {
         for (i = 0, recs = gBattleBots; i <= 2; i++) {
             rec = gGameWork.openedFrom * 3 + i;
             if (recs[rec].teamState) {
-                x = gUnk_083AD3A4[rec * 2] - gGameWork.medalRow * 8;
-                status_draw_bot_sprite(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
+                x = gTeamBotScreenPositions[rec * 2] - gGameWork.medalRow * 8;
+                status_draw_bot_sprite(rec, x, gTeamBotScreenPositions[rec * 2 + 1]);
             }
         }
         for (i = 0; i <= 12; i++)
@@ -400,8 +400,8 @@ u32 status_side_change_scroll_out(void) {
             rec = gGameWork.openedFrom * 3 + i;
             if (recs[rec].teamState) {
                 register u32 k asm("r0") = rec * 2;
-                x = gUnk_083AD3A4[k] + gGameWork.medalRow * 8;
-                status_draw_bot_sprite(rec, x, gUnk_083AD3A4[k + 1]);
+                x = gTeamBotScreenPositions[k] + gGameWork.medalRow * 8;
+                status_draw_bot_sprite(rec, x, gTeamBotScreenPositions[k + 1]);
             }
         }
         for (i = 0; i <= 12; i++)
@@ -434,16 +434,16 @@ u32 status_side_change_scroll_in(void) {
         for (i = 0, recs = gBattleBots; i <= 2; i++) {
             rec = gGameWork.openedFrom * 3 + i;
             if (recs[rec].teamState) {
-                x = gUnk_083AD3A4[rec * 2] - (13 - gGameWork.medalRow) * 8;
-                status_draw_bot_sprite(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
+                x = gTeamBotScreenPositions[rec * 2] - (13 - gGameWork.medalRow) * 8;
+                status_draw_bot_sprite(rec, x, gTeamBotScreenPositions[rec * 2 + 1]);
             }
         }
     } else {
         for (i = 0, recs = gBattleBots; i <= 2; i++) {
             rec = gGameWork.openedFrom * 3 + i;
             if (recs[rec].teamState) {
-                x = gUnk_083AD3A4[rec * 2] + (13 - gGameWork.medalRow) * 8;
-                status_draw_bot_sprite(rec, x, gUnk_083AD3A4[rec * 2 + 1]);
+                x = gTeamBotScreenPositions[rec * 2] + (13 - gGameWork.medalRow) * 8;
+                status_draw_bot_sprite(rec, x, gTeamBotScreenPositions[rec * 2 + 1]);
             }
         }
     }

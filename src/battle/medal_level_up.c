@@ -186,7 +186,7 @@ void medal_transform_fade_in(void) {
 
 void medal_transform_flash_in(void) {
     medal_transform_update_sparkles();
-    if (run_message(gUnk_08485788[0x11])) {
+    if (run_message(gSystemMessages[0x11])) {
         int t = (s16)gMenuWork->frame++;
         if (t > 0x77) {
             t -= 0x78;
@@ -221,7 +221,7 @@ void medal_transform_flash_out(void) {
 
 void medal_transform_wait_confirm(void) {
     medal_transform_update_sparkles();
-    if (run_message(gUnk_08485788[0x12]) && (*(u8 *)&gNewKeys & 1)) {
+    if (run_message(gSystemMessages[0x12]) && (*(u8 *)&gNewKeys & 1)) {
         init_blend_effect(gMenuWork->blend, 0, 0, 1, 0xC0);
         gGameSubState++;
     }

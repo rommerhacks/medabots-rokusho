@@ -118,7 +118,7 @@ void shop_menu_load_graphics(void) {
     CpuCopy16(gDecompressBuffer, dst, n);
     gMenuWork->bg_tile_base = ((size + n) >> 5) - 1;
     lz_decompress_dispatch(gUnk_08784CB0, dst += n);
-    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     gGameSubState++;

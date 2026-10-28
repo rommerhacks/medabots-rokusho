@@ -19,7 +19,7 @@ void item_add_quantity(
 void item_remove_quantity(u8 id, u8 n); // guess: take n of item id
 u32 get_item_quantity_by_id(u8 id);
 void team_lose_equipped_part(u8 slot_id, u8 kind);
-void sort_buffer_descending(u8 n); // sorts gUnk_02023000[0..n-1] by key, key2, largest first
+void sort_buffer_descending(u8 n); // sorts gListWorkBuffer[0..n-1] by key, key2, largest first
 void medal_add_from_buffer(const void *src);
 void medal_list_init_order(void);
 void team_init_order(void);

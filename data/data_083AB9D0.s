@@ -311,8 +311,8 @@ gUnk_083AD39A:
 gUnk_083AD3A0:
 	.incbin "baserom.gba", 0x3AD3A0, 0x4
 
-	.global gUnk_083AD3A4
-gUnk_083AD3A4:
+	.global gTeamBotScreenPositions
+gTeamBotScreenPositions:
 	.incbin "baserom.gba", 0x3AD3A4, 0xC
 
 	.global gUnk_083AD3B0
@@ -683,32 +683,32 @@ gSpriteHopOffsets:
 gUnk_083AF330:
 	.incbin "baserom.gba", 0x3AF330, 0x50
 
-	.global gUnk_083AF380
-gUnk_083AF380:
+	.global gPartFlyStepsHead
+gPartFlyStepsHead:
 	.incbin "baserom.gba", 0x3AF380, 0x40
 
-	.global gUnk_083AF3C0
-gUnk_083AF3C0:
+	.global gPartFlyStepsRightArm
+gPartFlyStepsRightArm:
 	.incbin "baserom.gba", 0x3AF3C0, 0x40
 
-	.global gUnk_083AF400
-gUnk_083AF400:
+	.global gPartFlyStepsLeftArm
+gPartFlyStepsLeftArm:
 	.incbin "baserom.gba", 0x3AF400, 0x40
 
-	.global gUnk_083AF440
-gUnk_083AF440:
+	.global gPartFlyStepsLegs
+gPartFlyStepsLegs:
 	.incbin "baserom.gba", 0x3AF440, 0x40
 
-	.global gUnk_083AF480
-gUnk_083AF480:
+	.global gPartSpriteOffsets
+gPartSpriteOffsets:
 	.incbin "baserom.gba", 0x3AF480, 0x10
 
-	.global gUnk_083AF490
-gUnk_083AF490:
+	.global gHitSparkOffsets
+gHitSparkOffsets:
 	.incbin "baserom.gba", 0x3AF490, 0x10
 
-	.global gUnk_083AF4A0
-gUnk_083AF4A0:
+	.global gSpriteHopYSteps
+gSpriteHopYSteps:
 	.incbin "baserom.gba", 0x3AF4A0, 0x10
 
 	.global gSpriteSlideXSteps

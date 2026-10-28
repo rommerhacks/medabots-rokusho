@@ -1,6 +1,6 @@
 // Sprites and tilemap windows for action effects: the target's armor panel on BG1 (part icons, bars, current / max
 // armor numbers: armor_panel_*), armor drain per frame, hit sparks and damage digits placed at a part through the
-// offset tables gUnk_083AF380..gUnk_083AF4A0, and the OAM / animation-frame helpers used by every skill module.
+// offset tables gPartFlyStepsHead..gSpriteHopYSteps, and the OAM / animation-frame helpers used by every skill module.
 
 #include "global.h"
 
@@ -20,7 +20,7 @@ void armor_panel_draw_frame(u32 side) {
     u32 x = 4;
     if (side == 0)
         x = 0x12;
-    set_tilemap_and_decompress_bg(x, 0, gUnk_084889B4, REG_BG1CNT, 0x329);
+    set_tilemap_and_decompress_bg(x, 0, gArmorPanelFrameTilemap, REG_BG1CNT, 0x329);
 }
 
 void armor_panel_draw_bars(u32 side, u32 rec) {
@@ -105,20 +105,20 @@ u32 effect_sprite_fly_to_part(u32 slot, u32 part) {
         return 1;
     switch (part) {
     case 0:
-        dx = gUnk_083AF380[*frame << 1];
-        dy = gUnk_083AF380[*frame * 2 + 1];
+        dx = gPartFlyStepsHead[*frame << 1];
+        dy = gPartFlyStepsHead[*frame * 2 + 1];
         break;
     case 1:
-        dx = gUnk_083AF3C0[*frame << 1];
-        dy = gUnk_083AF3C0[*frame * 2 + 1];
+        dx = gPartFlyStepsRightArm[*frame << 1];
+        dy = gPartFlyStepsRightArm[*frame * 2 + 1];
         break;
     case 2:
-        dx = gUnk_083AF400[*frame << 1];
-        dy = gUnk_083AF400[*frame * 2 + 1];
+        dx = gPartFlyStepsLeftArm[*frame << 1];
+        dy = gPartFlyStepsLeftArm[*frame * 2 + 1];
         break;
     case 3:
-        dx = gUnk_083AF440[*frame << 1];
-        dy = gUnk_083AF440[*frame * 2 + 1];
+        dx = gPartFlyStepsLegs[*frame << 1];
+        dy = gPartFlyStepsLegs[*frame * 2 + 1];
         break;
     }
     gSpriteEntries[slot].unk2 = (dx + gSpriteEntries[slot].unk2) & 0x1FF;
@@ -138,12 +138,12 @@ void hit_sparks_spawn(u32 slot, u32 part, s16 x, s16 y) {
         gSpriteEntries[slot + i].unkA = 0xE;
         gSpriteEntries[slot + i].unkB = 0x80;
         gSpriteEntries[slot + i].unk2C = i * 8;
-        u = gUnk_083AF480[part << 1] + x;
-        t = gUnk_083AF490[i * 2];
+        u = gPartSpriteOffsets[part << 1] + x;
+        t = gHitSparkOffsets[i * 2];
         t += u;
         gSpriteEntries[slot + i].unk2 = t & 0x1FF;
-        u = gUnk_083AF480[part * 2 + 1] + y;
-        t = gUnk_083AF490[i * 2 + 1];
+        u = gPartSpriteOffsets[part * 2 + 1] + y;
+        t = gHitSparkOffsets[i * 2 + 1];
         t += u;
         gSpriteEntries[slot + i].unk4 = t & 0xFF;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[29], slot + i);
@@ -184,10 +184,10 @@ void damage_digits_spawn(u8 *digits, u32 slot, u32 part, s16 x, s16 y) {
         gSpriteEntries[slot + i].unk0 = 0xC624;
         gSpriteEntries[slot + i].unk1C = 0;
         t = x;
-        t += gUnk_083AF480[part << 1];
+        t += gPartSpriteOffsets[part << 1];
         gSpriteEntries[slot + i].unk2 = t & 0x1FF;
         u = y;
-        u += gUnk_083AF480[part * 2 + 1];
+        u += gPartSpriteOffsets[part * 2 + 1];
         gSpriteEntries[slot + i].unk4 = u & 0xFF;
         gSpriteEntries[slot + i].unkB = 0x80;
         gSpriteEntries[slot + i].unk6 = digits[i] + 0x2D00;
@@ -219,10 +219,10 @@ void setup_battle_sprite_oam_entries(u8 *buf, u32 slot, u32 part, s16 x, s16 y) 
         gSpriteEntries[slot + i].unk0 = 0xC404;
         gSpriteEntries[slot + i].unk1C = 0;
         t = x;
-        t += gUnk_083AF480[part << 1];
+        t += gPartSpriteOffsets[part << 1];
         gSpriteEntries[slot + i].unk2 = t & 0x1FF;
         u = y;
-        u += gUnk_083AF480[part * 2 + 1];
+        u += gPartSpriteOffsets[part * 2 + 1];
         gSpriteEntries[slot + i].unk4 = u & 0xFF;
         gSpriteEntries[slot + i].unkB = 0x80;
         gSpriteEntries[slot + i].unk6 = buf[i] + 0x2D00;
@@ -246,7 +246,7 @@ u32 advance_sprite_anim_frame(u32 sprite, u32 b) {
     s32 f;
     if (!(gSpriteEntries[sprite].unk0 & 0x8000) || gSpriteEntries[sprite].unk23 == 0x10)
         return 1;
-    gSpriteEntries[sprite].unk4 = (gSpriteEntries[sprite].unk4 + gUnk_083AF4A0[gSpriteEntries[sprite].unk23]) & 0xFF;
+    gSpriteEntries[sprite].unk4 = (gSpriteEntries[sprite].unk4 + gSpriteHopYSteps[gSpriteEntries[sprite].unk23]) & 0xFF;
     f = gSpriteEntries[sprite].unk23 + 1;
     gSpriteEntries[sprite].unk23 = f;
     if (b)
@@ -323,9 +323,9 @@ void effect_sprite_spawn_at_part(u32 slot, u32 part, s16 x, s16 y, u32 n) {
     s->unk1C = 0;
     s->unkA = 0xE;
     s->unkB = 0x80;
-    t1 = gUnk_083AF480[part << 1] + x;
+    t1 = gPartSpriteOffsets[part << 1] + x;
     s->unk2 = t1 & 0x1FF;
-    t2 = gUnk_083AF480[part * 2 + 1] + y;
+    t2 = gPartSpriteOffsets[part * 2 + 1] + y;
     s->unk4 = t2 & 0xFF;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[n], slot);
 }

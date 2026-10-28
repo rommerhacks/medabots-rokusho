@@ -204,7 +204,7 @@ void title_menu_load_graphics(void) {
     size = dma3_copy_or_decompress(gUnk_0878E5F4, gDecompressBuffer);
     CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
     gMenuWork->bg_tile_base = (size >> 5) - 1;
-    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     CpuFastSet(gUnk_0878E3F4, gPaletteBackupBg, 0x80);
     CpuFastSet(gUnk_0878E3F4, (void *)PLTT, 0x80);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 0x80);

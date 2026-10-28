@@ -180,7 +180,7 @@ void render_battle_medapart_list(u32 mode) {
     s32 i;
     s32 first;
 
-    first = gUnk_02023078;
+    first = gListScrollTop;
     for (i = 0; i < n; i++) {
         ids[i] = ((struct ShopSellEntry *)0x02040000)[first].id;
         counts[i] = ((struct ShopSellEntry *)0x02040000)[first].count;

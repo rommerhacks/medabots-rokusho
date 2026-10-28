@@ -114,7 +114,7 @@ void name_entry_init_graphics(void) {
     CpuFastSet(&zero, (void *)0x05000000, 0x01000080);
     zero2 = 0;
     CpuFastSet(&zero2, (void *)0x05000200, 0x01000080);
-    lz_decompress_dispatch(gUnk_08784DA4, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     for (i = 0; i < 2; i++) {
         gSpriteEntries[i].unk0 = 0xC000;
