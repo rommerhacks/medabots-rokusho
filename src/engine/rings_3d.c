@@ -204,10 +204,10 @@ void update_scene_animation_frame(void) {
         gMenuWork->counter = rng_next_byte();
         if (gMenuWork->counter == 0)
             gMenuWork->counter++;
-        gMenuWork->unk49 = gMenuWork->counter >> 1;
+        gMenuWork->aux = gMenuWork->counter >> 1;
     } else {
         gMenuWork->counter--;
-        rings_set_radius(&gMenuWork->counter, &gMenuWork->unk49);
+        rings_set_radius(&gMenuWork->counter, &gMenuWork->aux);
     }
 
     gMenuWork->ring_rot_x[0] =

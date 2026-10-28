@@ -163,7 +163,7 @@ void medal_transform_draw_medal(void) {
     REG_DISPCNT |= 0x1000;
     gMenuWork->frame = 0;
     gMenuWork->counter = 0;
-    gMenuWork->unk49 = 0;
+    gMenuWork->aux = 0;
     gMenuWork->pending_sound = 0;
     gMenuWork->sound_delay = 0;
     gMenuWork->cursor = 0;

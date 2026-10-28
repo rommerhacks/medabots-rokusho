@@ -1545,7 +1545,7 @@ extern const u32 gNameEntryBgTiles[];    // name entry screen tiles
 extern const u8 gNameEntryColumnRemap[]; // name entry: bottom-row button column -> letter-row column
 
 extern u8 gOamBuildFlags; // bit 0: skip one OAM rebuild, bit 1: don't sort sprites
-// perspective sprites (SpriteEntry.unk0 & 0xC0 == 0x80): screen = center + (pos + offset) * 4 / depth
+// perspective sprites (SpriteEntry.flags & 0xC0 == 0x80): screen = center + (pos + offset) * 4 / depth
 extern s32 gSpritePerspCenterX;
 extern s32 gSpritePerspOffsetY;
 extern s32 gSpritePerspCenterY;

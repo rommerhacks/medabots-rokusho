@@ -3,7 +3,7 @@
 
 // Structures that are not understood yet. Fields are named by offset.
 
-// Sound sequence track (sound_seq.c), 0x74 bytes; unk14 is the read pointer into the sequence data.
+// Sound sequence track (sound_seq.c), 0x74 bytes; seqPos is the read pointer into the sequence data.
 struct SoundTrack {
     struct SoundTrack *prev; // circular list of active tracks at gSoundWork->activeTracks
     struct SoundTrack *next;
@@ -66,7 +66,7 @@ struct SoundTrack {
     u8 filler71[0x3];
 };
 
-// Header of a Direct Sound sample (pointed to by SoundMixChannel.unk0).
+// Header of a Direct Sound sample (pointed to by SoundMixChannel.sample).
 struct SoundSampleHeader {
     u32 length;  // in bytes
     u16 rate;    // playback rate at baseNote
@@ -192,7 +192,7 @@ struct MedabotsWeeklyWork {
 
 // One step of a sprite animation (gRaceSpriteAnims).
 struct SpriteAnimFrame {
-    u16 frame;    // copied to the sprite's unk6
+    u16 frame;    // copied to the sprite's frame
     s16 duration; // frames
     u8 next;      // index of the next step
     u8 filler5[3];
@@ -332,7 +332,7 @@ struct GameWork {
     u8 partAbility;   // start of a 16-byte part data record (load_part_data): ability (gAttributeNames name)
     u8 partSkill;     // skill id; >= 100: leg type (gLegTypeNames[partSkill - 100])
     u8 partSkillType; // skill type (gSkillTypeNames name)
-    u8 partGender;    // gender: 0 male, 1 female (matched against gTeamSlots[].portraitMode)
+    u8 partGender;    // gender: 0 male, 1 female (matched against gTeamSlots[].gender)
     u8 partStat0;     // stats: head Armor, Success, Power, (partStat3 power icon flag), Uses; legs Armor, Propulsion,
     u8 partStat1;     // Evasion, Defense, Proximity, Remoteness (runtime-checked on the detail page). Medal record:
     u8 partStat2;     // partStat0-2 tier thresholds (medal_tier_for_level), partStat3 compatibility,
@@ -391,7 +391,7 @@ struct SpriteEntry {
 // Per-sprite entity state (gEntityStates, one per gSpriteEntries slot, 0x200 bytes).
 struct EntityState {
     u16 active; // non-zero (0xFFFF) while the slot holds a field entity; drawn by update_entity_sprites_on_screen
-    u16 unk2;
+    u16 unused2;
 };
 
 // One link packet as sent / checked (12 bytes): 4 halfwords sum to 0xFFFF when intact.
@@ -436,10 +436,10 @@ struct SioMultiCnt {
     u32 id : 2;
     u32 error : 1;
     u32 enable : 1;
-    u32 unk8 : 4;
+    u32 unused8 : 4; // not used in multi-player mode
     u32 mode : 2;
     u32 irq : 1;
-    u32 unk15 : 1;
+    u32 unused15 : 1;
     u32 data : 16;
 };
 
@@ -451,10 +451,10 @@ struct SioCnt {
     u16 id : 2;
     u16 error : 1;
     u16 enable : 1;
-    u16 unk8 : 4;
+    u16 unused8 : 4;
     u16 mode : 2;
     u16 irq : 1;
-    u16 unk15 : 1;
+    u16 unused15 : 1;
     u16 data;
 };
 
@@ -474,8 +474,8 @@ struct LinkPackets {
 struct Tilemap {
     u32 width;
     u32 height;
-    u32 unk8;
-    u32 unkC;
+    u32 unused8; // header words never read in C
+    u32 unusedC;
     u16 data[0];
 };
 
@@ -492,7 +492,7 @@ struct ByteTable3 {
 };
 
 // Bitfield view of gGameWork.penX (text pen x): the text tile flush code tests the pixel offset in
-// the current 8-pixel tile through it, which reloads unk14 (message_new_line and friends).
+// the current 8-pixel tile through it, which reloads the byte at +0x14 (message_new_line and friends).
 struct TextColBits {
     u8 filler0[0x14];
     u8 col : 3;
@@ -502,10 +502,10 @@ struct TextColBits {
 // Struct view of the gUiTilemaps tilemap pointer table: the Robattle screen wipes read entry 0x69 as a
 // field (base + 0x1A4, reloaded after each call: closeup_enter_wipe, closeup_exit_wipe).
 struct UiTilemapTable {
-    const void *unk0[0x49];
+    const void *entries0[0x49];  // only reached by index through gUiTilemaps
     const void *more_cursor_off; // message "more text" cursor, blink off (message_wait_next_page)
     const void *more_cursor_on;  // message cursor, blink on
-    const void *unk12C[0x1E];
+    const void *entries12C[0x1E];
     const void *blank_row; // blank tilemap row
 };
 
@@ -778,7 +778,7 @@ struct BattleWork {
     u8 prizePeakY;          // ball's highest y (0x68 - prizePower, at least 12)
     u8 prizeRow;            // landing row 0-5 (prizePower >> 4, reversed)
     u8 prizeLandY;          // ball's landing y (prizeRow * 16 + 0x18)
-    u8 prizeMedal;          // losing bot's record unk47 (prize_game_pick_prize_part)
+    u8 prizeMedal;          // losing bot's teamSlot (prize_game_pick_prize_part)
     u8 prizePart;           // part id taken from it
     u16 linkSentSum;        // link exchange: checksum of the sent bytes (never summed in C, stays 0), compared with
                             // linkPartnerRecvSum
@@ -870,7 +870,7 @@ struct BattleBot {
     u8 unkD2;
     u8 meleeBonus;   // added to gBattleWork.amount for parts with data[2] 0 / 1 (script_op_calc_damage)
     u8 rangedBonus;  // added for data[2] 2 / 3 (script_op_calc_damage)
-    u8 trapBonus;    // added to gBattleWork.amount for unk28[side].power (trap_apply; Formation Orders)
+    u8 trapBonus;    // added to gBattleWork.amount for traps[side].power (trap_apply; Formation Orders)
     u8 formFlags;    // Medaforce "form" flags, set by medaforce_form_apply from medaforce[0] 4..9: bits 0/1/2 make
                      // any skill count as skill pair 4/5, 6/7, 8/9 (bit 1 also carries leftover damage over, +10);
                      // bits 3/4/5 are the matching guards (check_can_target_bot and friends)
@@ -890,7 +890,7 @@ struct BattleBot {
 
 struct TeamSlot {
     u8 state;  // 0 empty, 1 bare Tinpet (team_add_tinpet), 2 has a Medal, 3 assembled (count_assembled_medabots)
-    u8 gender; // Tinpet gender, 0 male / 1 female (team_add_tinpet; Medapart gender unkF1 must match)
+    u8 gender; // Tinpet gender, 0 male / 1 female (team_add_tinpet; Medapart gender gGameWork.partGender must match)
     u8 medal;  // Medal id (0x1E none)
     u8 head;   // Medapart ids (validate_medapart_stats); a bare Tinpet part is 0x78 + gender
     u8 rightArm;
@@ -1149,12 +1149,12 @@ struct SpriteAnimGfx {
 
 // Sprite descriptor word (setup_oam_sprite_entries, init_sprite_object_entry).
 struct SpriteDesc {
-    u32 unk0_0 : 4;
-    u32 shape : 2; // OAM shape / size bits (oam_shape_size_dims)
+    u32 unused0 : 4; // bits 0-3 / 16-31 never read in C
+    u32 shape : 2;   // OAM shape / size bits (oam_shape_size_dims)
     u32 size : 2;
     u32 w : 4; // OAM entries per row / column (guess)
     u32 h : 4;
-    u32 unk0_16 : 16;
+    u32 unused16 : 16;
 };
 
 // Bitfield view of struct OamData.
@@ -1278,7 +1278,7 @@ struct SpriteTileRef {
     u32 frame : 8;
     u32 affine : 1; // draw with an affine matrix
     u32 alt : 1;    // frame + 1 on the alternate side; skipped by the tile copy loops
-    u32 unk0_16 : 16;
+    u32 unused16 : 16;
 };
 
 // Per-node OAM entry and transform of a sprite tree (16 bytes).
@@ -1287,7 +1287,7 @@ struct SpriteNodeOam {
     s16 offsetX; // 8.8 offset from the joint, stepped by interpolate_entity_positions
     s16 offsetY;
     u16 rotation; // node rotation (wraps at 0x10000)
-    u16 unkE;
+    u16 unusedE;
 };
 
 // A list of OAM entry lists (batch_copy_oam_entries).
@@ -1388,7 +1388,7 @@ struct FieldEffectState {
     float point_z[4];
     float base_yaw; // script yaw / pitch, plus each entity's offsets
     float base_pitch;
-    float unk98;
+    float model_word1;    // model[1] of the current entity, never read in C
     s32 base_camera_dist; // also the depth at which sprites have scale 1
     s32 projection_scale;
     double origin[2]; // camera origin x, y (field_effect_reset_view)
@@ -1398,7 +1398,7 @@ struct FieldEffectState {
     s32 model_x[4]; // model points x, y, z (from gFieldEffectModels)
     s32 model_y[4];
     s32 model_z[4];
-    s32 unkF0;
+    s32 depth_sort_enabled; // field_effect_update_sprite_depth runs; never set in C
     u8 fillerF4[0x4];
     s32 effect_id; // flags & 0x3F: script and model set (gFieldEffectModels) index
     u8 fillerFC[0xD0];
@@ -1421,8 +1421,8 @@ struct FieldEffectState {
 // 3-D entity, 0x300 bytes; gFieldEffectEntities points to an array of them (0x02039000, 16 entries).
 struct FieldEffectEntity {
     s32 state; // 0 = free, 2 = left its range (counts as finished); SeqEntity.state
-    s32 unk4;
-    s32 unk8;
+    s32 timer;
+    s32 start;
     u8 fillerC[0x4];
     float x; // SeqEntity.x.value
     u8 filler14[0x8];
@@ -1446,9 +1446,9 @@ struct FieldEffectEntity {
     u8 filler180[0x14];
     float scale_z;
     u8 filler198[0x28];
-    s32 unk1C0;
-    s32 unk1C4;
-    s32 unk1C8;
+    s32 hide_active;
+    s32 hide_timer;
+    s32 hide_start;
     u8 filler1CC[0x14];
     s32 x_check; // leave when screen x is in [x_min, x_max]
     u16 x_min;
@@ -1494,7 +1494,7 @@ struct SoundTrackConfig {
 struct SoundSongHeader {
     u16 trackMask; // bit 11 - i set: track i is used (0x800 = track 0)
     u8 priority;   // copied to SoundTrack.priority
-    u8 unk3;
+    u8 unused3;
     u8 *tracks[1]; // one sequence pointer per set bit, in track order
 };
 
@@ -1502,7 +1502,7 @@ struct SoundSongHeader {
 struct SoundWork {
     struct SoundTrack tracks[13];
     struct SoundTrack *activeTracks;
-    u32 unk5E8;
+    u32 unused5E8;
     u8 echoBuffers[3][0x34]; // SoundTrack.echoBuffer (0x30 notes + write index)
     struct SoundSongHeader **songs;
     struct SoundSongHeader **soundEffects;
@@ -1525,9 +1525,9 @@ struct AreaWarp {
     u8 x;
     u8 y;
     u8 area;
-    u8 dir; // low 3 bits: facing after the warp
-    u8 unk4;
-    u8 unk5;
+    u8 dir;     // low 3 bits: facing after the warp
+    u8 unused4; // never read in C
+    u8 unused5;
     u8 destX;
     u8 destY;
 };
@@ -1535,8 +1535,8 @@ struct AreaWarp {
 // Per-area graphics record (gAreaBgTilemaps, indexed by area id).
 struct AreaGfx {
     const void *tilemaps; // LZ77 BG tilemaps, decompressed to gFieldTilemapBuf (layers to 0x06003000 / 5000 / 7000)
-    const void *unk4;
-    const void *unk8;
+    const void *unused4;  // never read in C
+    const void *unused8;
 };
 
 // Sprite tree object (at 0x02026000): node descriptors, per-node OAM and the per-side part layers.
@@ -1580,12 +1580,12 @@ struct RingPoint {
 // and uses the fields it needs, so several fields have one meaning per screen (noted where it differs).
 struct MenuWork {
     u8 fade_level; // BLDY fade 0-32 (title / test mode / game over / Save Lost), 0-8 (item menu, town map)
-    u8 unk1;
+    u8 filler1;
     u16 timer;      // frame counter of the current sub-state; name entry: cursor blink frames
     u8 first_entry; // title menu: first selectable entry (1 without a valid save)
     u8 cursor;      // menu cursor (title menu 0-2, shop, link menu, test mode); text scroll: page
     u8 returning;   // 1: back from a sub-screen (item / shop menus); name entry: cursor blink direction
-    u8 unk7;
+    u8 filler7;
     u32 step;        // link start: message step; name entry: cursor bounce offset
     u8 item_cursor;  // Item screen: cursor item index (page = item_cursor / 5)
     u8 grid_col;     // name entry: letter column (row 3: Space / Back / End)
@@ -1623,7 +1623,7 @@ struct MenuWork {
     s16 fade_step;      // text scroll: fade-out step (0-192)
     u16 saved_tiles[4]; // link trade: BG2 tilemap entries restored under the Medal icon
     u8 counter;         // per-screen counter (blink timer, ring radius, link Medal mask, key repeat delay)
-    u8 unk49;           // rings: second radius; test mode: cancel sound flag
+    u8 aux;             // rings: second radius; test mode: cancel sound flag
     u8 pending_sound;   // test mode: sound effect to play once sound_delay runs out
     u8 sound_delay;
     u8 message_pending; // message pending (medal_rename_no_money)
@@ -1682,13 +1682,13 @@ struct ShopSellEntry {
 struct SaveStatus {
     u32 saveExists : 1;    // a save was loaded or written (save_dispatch); save screen and link start ask to overwrite
     u32 linkIntroSeen : 1; // link start's 3 intro messages were shown; saved in SaveData.flags bit 5
-    u32 unk0_2 : 30;
+    u32 unused2 : 30;
 };
 
 // Battery save image (0x1CBC bytes), built by serialize_save_data and read back by load_save_data
 struct SaveData {
     u8 magic[16];                // copied from gSaveMagic
-    struct PlayerRecord unk10;   // gPlayerRecord (money, name, ...)
+    struct PlayerRecord player;  // gPlayerRecord (money, name, ...)
     struct MedalData medals[30]; // gMedals
     u16 medaparts[4 * 120 * 2];  // gMedapartInventory, one byte per halfword
     struct TeamSlot team[9];     // gTeamSlots
@@ -1735,7 +1735,7 @@ struct SeqOsc {
     s32 start;
     s32 end;
     float angleStep;
-    u32 unk20;
+    u32 unused20;
 };
 
 // Linear ramp (entity +0x160 / +0x178 / +0x190 3-D scale x/y/z, +0x1A8 affine angle).
@@ -1802,7 +1802,7 @@ struct SeqState {
     u8 filler0[0x90];
     float base_yaw;
     float base_pitch;
-    float unk98;
+    float model_word1;
     s32 base_camera_dist;
     s32 projection_scale;
     u8 fillerA4[0x4C];
@@ -1838,13 +1838,7 @@ struct SeqState {
     s32 far_order;
     s32 near_priority;
     s32 far_priority;
-    s32 unk224;
-    s32 unk228;
-    s32 unk22C;
-    s32 unk230;
-    s32 unk234;
-    s32 unk238;
-    s32 unk23C;
+    s32 op135_params[7]; // set by script opcode 135, never read in C
 };
 
 /* One 256-byte row of the link exchange buffers (0x03000590 / 0x03000890). */

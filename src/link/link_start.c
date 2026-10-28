@@ -132,7 +132,7 @@ void multiplayer_battle_sync_update(void) {
     init_multiplayer_id();
     link = &gLinkPackets;
     w = gMenuWork;
-    ready = &w->unk49;
+    ready = &w->aux;
     link->sendData = *ready | 0xFF00;
     zero = 0;
     if (link->recv[gLinkPlayerId][1] == 0xFF01) {

@@ -306,11 +306,11 @@ void field_effect_project_objects(void) {
     for (i = 0; i < 16; i++) {
         if (gFieldEffectEntities[i].state == 0)
             continue;
-        if (gFieldEffectEntities[i].unk4 < gFieldEffectEntities[i].unk8)
+        if (gFieldEffectEntities[i].timer < gFieldEffectEntities[i].start)
             continue;
-        if (gFieldEffectEntities[i].unk1C0 == 0)
+        if (gFieldEffectEntities[i].hide_active == 0)
             continue;
-        if (gFieldEffectEntities[i].unk1C4 < gFieldEffectEntities[i].unk1C8)
+        if (gFieldEffectEntities[i].hide_timer < gFieldEffectEntities[i].hide_start)
             continue;
         model = gFieldEffectModels[gFieldEffect.effect_id][i];
         cursor = model;
@@ -332,7 +332,7 @@ void field_effect_project_objects(void) {
             gFieldEffect.point_z[j] =
                 gFieldEffect.model_z[j] * gFieldEffectEntities[i].scale_z + gFieldEffectEntities[i].z;
         }
-        gFieldEffect.unk98 = model[1];
+        gFieldEffect.model_word1 = model[1];
         gFieldEffect.cur_entity = i;
         compute_distance_to_state_position(gFieldEffect.point_x, gFieldEffect.point_y, gFieldEffect.point_z);
     }
@@ -1083,15 +1083,15 @@ u32 field_effect_run(void) {
             S.near_priority = script[S.pc++];
             S.far_priority = script[S.pc++];
             break;
-        case 135: // guess: set unk224..unk23C
+        case 135: // guess: set op135_params (never read)
             S.pc++;
-            S.unk224 = script[S.pc++];
-            S.unk228 = script[S.pc++];
-            S.unk22C = script[S.pc++];
-            S.unk230 = script[S.pc++];
-            S.unk234 = script[S.pc++];
-            S.unk238 = script[S.pc++];
-            S.unk23C = script[S.pc++];
+            S.op135_params[0] = script[S.pc++];
+            S.op135_params[1] = script[S.pc++];
+            S.op135_params[2] = script[S.pc++];
+            S.op135_params[3] = script[S.pc++];
+            S.op135_params[4] = script[S.pc++];
+            S.op135_params[5] = script[S.pc++];
+            S.op135_params[6] = script[S.pc++];
             break;
         case 137: // guess: copy z / end frames between entities
         {
@@ -1181,7 +1181,7 @@ static void field_effect_update_sprite_depth(void) {
     s32 depth;
     struct SpriteEntry *sprite;
 
-    if (effect->unkF0 != 0) {
+    if (effect->depth_sort_enabled != 0) {
         for (i = 0; i <= 15; i++) {
             for (j = 0; j <= 3; j++) {
                 struct SpriteEntry *spr = gSpriteEntries;

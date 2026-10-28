@@ -169,7 +169,7 @@ void text_scroll_init(void) {
     REG_BLDY = 8;
     gMenuWork->frame = 0;
     gMenuWork->counter = 0;
-    gMenuWork->unk49 = 0;
+    gMenuWork->aux = 0;
     gMenuWork->pending_sound = 0;
     gMenuWork->sound_delay = 0;
     gGameWork.stepCounter = 0;

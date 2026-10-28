@@ -15,7 +15,7 @@ void link_medal_sync_init(void) {
             mask |= 1 << gMedals[i].graphicId;
     }
     gMenuWork->counter = 0;
-    gMenuWork->unk49 = 0;
+    gMenuWork->aux = 0;
     gMenuWork->pending_sound = 0;
     gMenuWork->sound_delay = 0;
     gMenuWork->total = gMenuWork->partner_chose ? mask : 0;

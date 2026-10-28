@@ -114,7 +114,7 @@ void test_mode_fade_in(void) {
         menu->fade_level = 0;
         gMenuWork->returning = 0;
         gMenuWork->counter = 0;
-        gMenuWork->unk49 = 0;
+        gMenuWork->aux = 0;
         gMenuWork->pending_sound = 0;
         gMenuWork->sound_delay = 0;
         gSpriteEntries[0].flags |= SPRITE_FLAG_VISIBLE;
@@ -234,13 +234,13 @@ void test_mode_update(void) {
             gGameSubState = 6;
             return;
         case 3:
-            gMenuWork->unk49 = 0;
+            gMenuWork->aux = 0;
             break;
         default:
             return;
         }
     } else if (KEYS_LO(gNewKeys) & 2) {
-        gMenuWork->unk49 = 1;
+        gMenuWork->aux = 1;
     } else {
         return;
     }
@@ -256,7 +256,7 @@ void test_mode_update(void) {
 
 void test_mode_fade_out_exit(void) {
     if (gMenuWork->fade_level == 1)
-        play_sound_effect(gMenuWork->unk49 ? 5 : 4);
+        play_sound_effect(gMenuWork->aux ? 5 : 4);
     if (gMenuWork->fade_level != 32) {
         gMenuWork->fade_level++;
         REG_BLDY = gMenuWork->fade_level >> 1;
