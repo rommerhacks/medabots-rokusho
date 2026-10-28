@@ -98,7 +98,7 @@ void load_map_npc_sprites(s32 mode) {
                 }
                 gFieldWork.objects[n].unk4_0 = count;
                 anim = e->unk4 >> 4;
-                gUnk_030055A0[count + 49].unk0 = e->unk2 & 0xFFF;
+                gEntityStates[count + 49].active = e->unk2 & 0xFFF;
                 gSpriteEntries[count + 49].unk2B = anim;
                 gSpriteEntries[count + 49].unkC_8 = e->x * 16 + gFieldWork.map_origin_x;
                 gSpriteEntries[count + 49].unk10_8 = e->y * 16 + gFieldWork.map_origin_y;
@@ -157,7 +157,7 @@ void init_battle_field_setup(void) {
 
 // Pixels per frame for a walking sprite: its own speed factor times the area's (16 / speed = frames per tile).
 s32 sprite_walk_speed(u8 idx) {
-    return gUnk_083D28C0[gSpriteEntries[idx].unk2A] * gUnk_083D28C0[gUnk_03006D38.unk2];
+    return gWalkSpeedFactors[gSpriteEntries[idx].unk2A] * gWalkSpeedFactors[gFieldSceneParams.area_speed_id];
 }
 
 void set_battle_state_cancel_flag(void) {
@@ -207,14 +207,14 @@ void field_player_step(u8 dir) {
         break;
     }
     if (--gFieldWork.player_step_frames == 0) {
-        gSpriteEntries[47].unk2A = gUnk_083D2908[gFieldWork.player_form];
+        gSpriteEntries[47].unk2A = gPlayerFormSpeedIds[gFieldWork.player_form];
         gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
         gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
         if (gFieldWork.script_running == 0 && !find_npc_event_match()) {
             if (find_map_event_by_coords(gFieldWork.player_tile_x, gFieldWork.player_tile_y)) {
-                gUnk_03005310.unk1 = 3;
-                if (gUnk_03006D38.unk3)
-                    field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
+                gFieldState.step = 3;
+                if (gFieldSceneParams.warp_sound)
+                    field_play_sound_effect(gWarpSoundEffects[gFieldSceneParams.warp_sound]);
                 setup_palette_fade_to_color_with_obj(0x7FFF, 0.0f, 32.0f, 8.0f);
             } else if (gFieldWork.player_form != 1 && check_random_encounter()) {
                 save_script_sprites();

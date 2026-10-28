@@ -160,7 +160,7 @@ void item_menu_handle_input(void) {
     struct MenuWork *w2;
     struct MenuWork *w3;
     struct ItemListEntry *list;
-    struct Unk_03006D38 *sel;
+    struct FieldSceneParams *sel;
     u8 n = 5;
     u8 cnt;
 
@@ -250,9 +250,9 @@ other:
     if (KEYS_LO(gNewKeys) & 1) {
         if (w3->item_count == 0)
             goto cancel;
-        sel = &gUnk_03006D38;
+        sel = &gFieldSceneParams;
         list = ITEM_LIST;
-        sel->unk4 = list[w3->item_cursor].id;
+        sel->selected_item = list[w3->item_cursor].id;
         switch ((s32)item_get_use_result(list[w3->item_cursor].id)) {
         case 2:
         case 3:

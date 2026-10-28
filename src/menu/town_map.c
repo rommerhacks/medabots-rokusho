@@ -209,7 +209,7 @@ void town_map_fade_out_exit(void) {
             gGameState = 4;
             gGameSubState = 0;
         } else if (gMenuWork->counter) {
-            gUnk_03006D38.unk5 = gMenuWork->town_map_place;
+            gFieldSceneParams.town_map_place = gMenuWork->town_map_place;
             dispatch_by_index_0476e8(5);
         } else {
             dispatch_by_index_0476e8(6);

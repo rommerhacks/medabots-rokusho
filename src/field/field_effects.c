@@ -114,8 +114,8 @@ void copy_tilemap_rect_with_offset(u16 *src, u16 *dst, s32 y, s32 x, s32 w, s32 
 
 void affine_params_reset(void) {
     s32 i;
-    gUnk_03005310.unk18 = 0;
-    gUnk_03005310.unk1A = 0;
+    gFieldState.affine_debug_flag = 0;
+    gFieldState.affine_debug_level = 0;
     for (i = 0; i < 32; i++) {
         gAffineParams[i].scaleX = 0x100;
         gAffineParams[i].scaleY = 0x100;
@@ -124,7 +124,7 @@ void affine_params_reset(void) {
 }
 
 void clear_entity_state(u8 slot) {
-    memzero_bytes((u8 *)&gUnk_030055A0[slot], 4);
+    memzero_bytes((u8 *)&gEntityStates[slot], 4);
     memzero_bytes((u8 *)&gSpriteEntries[slot], 0x40);
 }
 
@@ -201,11 +201,11 @@ void advance_sprite_animation_frame(u8 idx) {
 }
 
 // Not called directly (hidden in the tail of advance_sprite_animation_frame).
-// guess: debug editor for affine entry 0 / sprite 0 position: A toggles unk18, SELECT + D-pad
-// scales and rotates, D-pad moves, R/L change unk1A, START resets the affine params.
+// guess: debug editor for affine entry 0 / sprite 0 position: A toggles affine_debug_flag, SELECT + D-pad
+// scales and rotates, D-pad moves, R/L change affine_debug_level, START resets the affine params.
 static u32 affine_debug_input(void) {
     if (KEYS_LO(gNewKeys) & 1)
-        gUnk_03005310.unk18 ^= 1;
+        gFieldState.affine_debug_flag ^= 1;
     if (KEYS_LO(gHeldKeys) & 4) {
         if (KEYS_LO(gHeldKeys) & 0x40) {
             gAffineParams[0].scaleY += 16;
@@ -249,12 +249,12 @@ static u32 affine_debug_input(void) {
                 gSpriteEntries[0].unk2 = -120;
         }
         if (KEYS_HI(gNewKeys) & 1) {
-            if (gUnk_03005310.unk1A <= 14)
-                gUnk_03005310.unk1A++;
+            if (gFieldState.affine_debug_level <= 14)
+                gFieldState.affine_debug_level++;
         }
         if (KEYS_HI(gNewKeys) & 2) {
-            if (gUnk_03005310.unk1A != 0)
-                gUnk_03005310.unk1A--;
+            if (gFieldState.affine_debug_level != 0)
+                gFieldState.affine_debug_level--;
         }
     }
     if (KEYS_LO(gNewKeys) & 8)
@@ -308,7 +308,7 @@ u8 field_random(u8 n) {
     const u8 *tbl = gRandomBytes;
     u8 r;
 
-    r = tbl[(gFieldWork.rng_seed + gUnk_03005310.unk4) & 0xFF];
+    r = tbl[(gFieldWork.rng_seed + gFieldState.frame_counter) & 0xFF];
     gFieldWork.rng_seed = r;
     return Mod(r, n);
 }

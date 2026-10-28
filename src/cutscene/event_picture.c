@@ -39,7 +39,7 @@ void event_picture_init(void) {
     REG_DISPCNT = 0x60;
     gSceneWork.nextMode = 3;
     gSceneWork.nextState = 3;
-    gSceneWork.unkC.h = gUnk_03006D38.unk1;
+    gSceneWork.unkC.h = gFieldSceneParams.event_picture_id;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;

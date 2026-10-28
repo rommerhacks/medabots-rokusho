@@ -38,7 +38,7 @@ static inline void copy_affine(u8 *base) {
 void field_update(void) {
     s32 i;
 
-    gUnk_03005310.unk4++;
+    gFieldState.frame_counter++;
     if (gFieldWork.script_running) {
         if (gFieldWork.cmd_busy)
             map_script_update_command();
@@ -71,7 +71,7 @@ void new_game_init(void) {
     memzero_bytes((u8 *)gBattleBots, 0x600);
     clear_oam();
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
-    memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+    memzero_bytes((u8 *)gEntityStates, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     medal_list_init_order();
@@ -88,19 +88,19 @@ void new_game_init(void) {
     gFieldTilemapBuf = (u16 *)0x02030000;
     gUnk_030057DC = (u8 *)0x02038000;
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
-    memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+    memzero_bytes((u8 *)gEntityStates, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     affine_params_reset();
     bg2_affine_reset();
-    gUnk_03005310.unk1C = 0;
-    gUnk_03005310.unk24 = 0;
-    gUnk_03005310.unk1E = 0;
-    gUnk_03005310.unk26 = 0;
-    gUnk_03005310.unk20 = 0;
-    gUnk_03005310.unk28 = 0;
-    gUnk_03005310.unk22 = 0;
-    gUnk_03005310.unk2A = 0;
+    gFieldState.saved_bg0_x = 0;
+    gFieldState.saved_bg0_y = 0;
+    gFieldState.saved_bg1_x = 0;
+    gFieldState.saved_bg1_y = 0;
+    gFieldState.saved_bg2_x = 0;
+    gFieldState.saved_bg2_y = 0;
+    gFieldState.saved_bg3_x = 0;
+    gFieldState.saved_bg3_y = 0;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;
@@ -130,7 +130,7 @@ void new_game_init(void) {
         gFieldWork.follower_x = 0x50 - gFieldWork.map_origin_x;
         gFieldWork.follower_y = 0x60 - gFieldWork.map_origin_y;
     }
-    gUnk_03005310.unk1 = 0;
+    gFieldState.step = 0;
     REG_BLDCNT = 0;
     REG_BLDY = 0;
     blend_set_alpha_12_10();
@@ -143,7 +143,7 @@ void new_game_init(void) {
 void field_room_enter_reset(void) {
     u32 zero;
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
-    memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+    memzero_bytes((u8 *)gEntityStates, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     affine_params_reset();
@@ -184,7 +184,7 @@ void field_resume_after_menu(void) {
     clear_vram_tiles_1000();
     restore_script_sprites();
     field_update_music(5, 0);
-    gUnk_03005310.unk1 = 0;
+    gFieldState.step = 0;
     gGameSubState = 5;
 }
 
@@ -205,7 +205,7 @@ void field_continue_load(void) {
     u32 zero;
     clear_oam();
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
-    memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+    memzero_bytes((u8 *)gEntityStates, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     memzero_bytes((u8 *)&gGameWork, 0x13C);
@@ -217,10 +217,10 @@ void field_continue_load(void) {
     gFieldWork.script_id = 0;
     gFieldWork.script_field_update = 0;
     gFieldWork.unkC60 = 0;
-    gUnk_03005310.unk38 = 0;
-    memzero_bytes((u8 *)&gUnk_03006D20, 16);
+    gFieldState.unk38 = 0;
+    memzero_bytes((u8 *)&gScriptCmdWork, 16);
     clear_vram_tiles_1000();
-    gUnk_03005310.unk1 = 0;
+    gFieldState.step = 0;
     restore_script_sprites();
     gUnk_03005590 = gUnk_08764CB0;
     gEventFlags = (u8 *)&gFieldWork;
@@ -228,7 +228,7 @@ void field_continue_load(void) {
     gFieldTilemapBuf = (u16 *)0x02030000;
     gUnk_030057DC = (u8 *)0x02038000;
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
-    memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+    memzero_bytes((u8 *)gEntityStates, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     REG_BLDCNT = 0;
@@ -246,7 +246,7 @@ void field_continue_load(void) {
 
 void field_continue_fade_in(void) {
     if (run_blend_fade_transition(0x7FFF)) {
-        gUnk_03005310.unk1 = 0;
+        gFieldState.step = 0;
         init_battle_field_setup();
         update_bg_scroll_offsets_a();
         field_set_player_facing(gFieldWork.player_facing);
@@ -258,14 +258,14 @@ void field_continue_fade_in(void) {
 void field_battle_return_load(void) {
     u32 zero;
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
-    memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+    memzero_bytes((u8 *)gEntityStates, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     zero = 0;
     DmaSet(3, &zero, PLTT, 0x85000100);
     REG_BLDCNT = 0;
     REG_BLDY = 0;
-    gUnk_03005310.unk1 = 0;
+    gFieldState.step = 0;
     restore_script_sprites();
     REG_DISPCNT = 0x1E40;
     gFieldWork.npc_load_mode = 2;
@@ -280,7 +280,7 @@ void field_battle_return_load(void) {
 
 void field_battle_return_fade_in(void) {
     if (run_blend_fade_transition(0)) {
-        gUnk_03005310.unk1 = 0;
+        gFieldState.step = 0;
         init_battle_field_setup();
         update_bg_scroll_offsets_a();
         field_set_player_facing(gFieldWork.player_facing);
@@ -302,7 +302,7 @@ void field_disguise_update(void) {
 void field_disguise_reload(void) {
     u32 zero;
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
-    memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+    memzero_bytes((u8 *)gEntityStates, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     clear_vram_tiles_1000();
@@ -325,7 +325,7 @@ void field_disguise_wait(void) {
 
 // Not called directly (hidden in the tail of field_disguise_wait).
 void field_disguise_done(void) {
-    gUnk_03005310.unk1 = 0;
+    gFieldState.step = 0;
     gGameSubState = 5;
 }
 
@@ -357,7 +357,7 @@ void field_form1_toggle(void) {
 
 // Not called directly (hidden in the tail of field_form1_toggle).
 void field_form1_done(void) {
-    gUnk_03005310.unk1 = 0;
+    gFieldState.step = 0;
     gGameSubState = 5;
 }
 
@@ -394,7 +394,7 @@ void field_form_resume_walk(void) {
     }
     follower_turn_toward_player(1);
     field_play_sound_effect(0x57);
-    gUnk_03005310.unk1 = 1;
+    gFieldState.step = 1;
     gGameSubState = 5;
 }
 
@@ -408,7 +408,7 @@ void field_map_warp_load(void) {
     vu32 zero;
 
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
-    memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+    memzero_bytes((u8 *)gEntityStates, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     clear_vram_tiles_1000();
@@ -435,7 +435,7 @@ void field_map_warp_run_effect(void) {
         gFieldWork.player_form = gFieldWork.saved_player_form;
         load_battle_palette_via_dma(0);
         gFieldWork.player_facing = 1;
-        gUnk_03005310.unk1 = 0;
+        gFieldState.step = 0;
         init_battle_field_setup();
         update_bg_scroll_offsets_a();
         field_set_player_facing(gFieldWork.player_facing);
@@ -470,7 +470,7 @@ void field_teleport_run_effect(void) {
         gFieldWork.player_form = gFieldWork.saved_player_form;
         load_battle_palette_via_dma(0);
         gFieldWork.player_facing = 1;
-        gUnk_03005310.unk1 = 0;
+        gFieldState.step = 0;
         init_battle_field_setup();
         update_bg_scroll_offsets_a();
         field_set_player_facing(gFieldWork.player_facing);

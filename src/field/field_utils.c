@@ -77,18 +77,18 @@ u32 item_get_use_result(u32 a) {
     return r;
 }
 
-// Dead code (nothing calls it): BG2 affine matrix for gUnk_03005310 (guess).
+// Dead code (nothing calls it): BG2 affine matrix in gFieldState (guess).
 static void bg2_affine_update_matrix(void) {
     const s16 *sine = gSineTable;
-    struct Unk_03005310 *p = &gUnk_03005310;
+    struct FieldState *p = &gFieldState;
     s32 a;
 
-    p->unk8 = fixed_point_multiply(sine[a = p->unk36 + 0x40], divide_by_65536(p->unk32));
-    p->unkA = fixed_point_multiply(sine[p->unk36], divide_by_65536(p->unk32));
-    p->unkC = fixed_point_multiply(-sine[p->unk36], divide_by_65536(p->unk34));
-    p->unkE = fixed_point_multiply(sine[a = p->unk36 + 0x40], divide_by_65536(p->unk34));
-    p->unk10 = (120 - p->unk2C) * 256 - p->unk8 * 120 - p->unkA * 80;
-    p->unk14 = (120 - p->unk2E) * 256 - p->unkC * 120 - p->unkE * 80;
+    p->bg2_pa = fixed_point_multiply(sine[a = p->bg2_angle + 0x40], divide_by_65536(p->bg2_scale_x));
+    p->bg2_pb = fixed_point_multiply(sine[p->bg2_angle], divide_by_65536(p->bg2_scale_x));
+    p->bg2_pc = fixed_point_multiply(-sine[p->bg2_angle], divide_by_65536(p->bg2_scale_y));
+    p->bg2_pd = fixed_point_multiply(sine[a = p->bg2_angle + 0x40], divide_by_65536(p->bg2_scale_y));
+    p->bg2_x = (120 - p->bg2_center_x) * 256 - p->bg2_pa * 120 - p->bg2_pb * 80;
+    p->bg2_y = (120 - p->bg2_center_y) * 256 - p->bg2_pc * 120 - p->bg2_pd * 80;
 }
 
 s16 fixed_point_multiply(s16 a, s16 b) {
@@ -108,20 +108,20 @@ s16 divide_by_65536(s16 a) {
 }
 
 void bg2_affine_reset(void) {
-    struct Unk_03005310 *p = &gUnk_03005310;
+    struct FieldState *p = &gFieldState;
 
-    p->unk10 = 0;
-    p->unk14 = 0;
-    p->unk8 = 0x100;
-    p->unkA = 0;
-    p->unkC = 0;
-    p->unkE = 0x100;
+    p->bg2_x = 0;
+    p->bg2_y = 0;
+    p->bg2_pa = 0x100;
+    p->bg2_pb = 0;
+    p->bg2_pc = 0;
+    p->bg2_pd = 0x100;
     p->unk30 = 0;
-    p->unk32 = 0x100;
-    p->unk34 = 0x100;
-    p->unk36 = 0;
-    p->unk2C = 0;
-    p->unk2E = 0;
+    p->bg2_scale_x = 0x100;
+    p->bg2_scale_y = 0x100;
+    p->bg2_angle = 0;
+    p->bg2_center_x = 0;
+    p->bg2_center_y = 0;
 }
 
 // Not called directly (hidden in the tail of bg2_affine_reset). Guess: debug, B + D-pad scrolls BG1-3,
@@ -129,30 +129,30 @@ void bg2_affine_reset(void) {
 void debug_bg_scroll_input(void) {
     if (KEYS_LO(gHeldKeys) & 2) {
         if (KEYS_LO(gHeldKeys) & 0x40) {
-            gUnk_03005310.unk26 -= 4;
-            gUnk_03005310.unk28 -= 4;
-            gUnk_03005310.unk2A -= 4;
+            gFieldState.saved_bg1_y -= 4;
+            gFieldState.saved_bg2_y -= 4;
+            gFieldState.saved_bg3_y -= 4;
         }
         if (KEYS_LO(gHeldKeys) & 0x80) {
-            gUnk_03005310.unk26 += 4;
-            gUnk_03005310.unk28 += 4;
-            gUnk_03005310.unk2A += 4;
+            gFieldState.saved_bg1_y += 4;
+            gFieldState.saved_bg2_y += 4;
+            gFieldState.saved_bg3_y += 4;
         }
         if (KEYS_LO(gHeldKeys) & 0x20) {
-            gUnk_03005310.unk1E -= 4;
-            gUnk_03005310.unk20 -= 4;
-            gUnk_03005310.unk22 -= 4;
+            gFieldState.saved_bg1_x -= 4;
+            gFieldState.saved_bg2_x -= 4;
+            gFieldState.saved_bg3_x -= 4;
         }
         if (KEYS_LO(gHeldKeys) & 0x10) {
-            gUnk_03005310.unk1E += 4;
-            gUnk_03005310.unk20 += 4;
-            gUnk_03005310.unk22 += 4;
+            gFieldState.saved_bg1_x += 4;
+            gFieldState.saved_bg2_x += 4;
+            gFieldState.saved_bg3_x += 4;
         }
     }
     if (KEYS_LO(gHeldKeys) & 0x10)
-        gUnk_03005310.unk36 = ++gUnk_03005310.unk36 & 0xFF;
+        gFieldState.bg2_angle = ++gFieldState.bg2_angle & 0xFF;
     if (KEYS_LO(gHeldKeys) & 0x20)
-        gUnk_03005310.unk36 = (gUnk_03005310.unk36 + 0xFF) & 0xFF;
+        gFieldState.bg2_angle = (gFieldState.bg2_angle + 0xFF) & 0xFF;
 }
 
 // Not called directly (hidden in the tail of bg2_affine_reset).

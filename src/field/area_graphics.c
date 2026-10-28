@@ -6,12 +6,12 @@
 #include "global.h"
 
 void area_load_graphics(void) {
-    gBg1Scroll.x = gUnk_03005310.unk1E;
-    gBg1Scroll.y = gUnk_03005310.unk26;
-    gBg2Scroll.x = gUnk_03005310.unk20;
-    gBg2Scroll.y = gUnk_03005310.unk28;
-    gBg3Scroll.x = gUnk_03005310.unk22;
-    gBg3Scroll.y = gUnk_03005310.unk2A;
+    gBg1Scroll.x = gFieldState.saved_bg1_x;
+    gBg1Scroll.y = gFieldState.saved_bg1_y;
+    gBg2Scroll.x = gFieldState.saved_bg2_x;
+    gBg2Scroll.y = gFieldState.saved_bg2_y;
+    gBg3Scroll.x = gFieldState.saved_bg3_x;
+    gBg3Scroll.y = gFieldState.saved_bg3_y;
     area_load_bg_palettes();
     area_load_sprite_palettes();
     load_room_graphics();
@@ -64,7 +64,7 @@ s32 resolve_sprite_sheet_id(s32 t) {
     } else
         t = 0xFF;
     if (t != 0xFF && t > 0xBF)
-        t = (t - 0xC0) * 2 + (u = gUnk_03006D38.unk6 + 0x28);
+        t = (t - 0xC0) * 2 + (u = gFieldSceneParams.bot_gender + 0x28);
     return t;
 }
 
@@ -207,20 +207,20 @@ u32 field_update_music(u32 event, u32 song) {
             field_play_song(gFieldWork.script_song);
         break;
     case 23:
-        if (gUnk_083D29B6[gUnk_03006D38.unk1 * 4])
+        if (gEventPictureSongs[gFieldSceneParams.event_picture_id * 4])
             field_stop_songs(0x1E);
         break;
     case 24:
-        if (gUnk_083D29B6[gUnk_03006D38.unk1 * 4]) {
-            table_song = gUnk_083D29B6[gUnk_03006D38.unk1 * 4 + 1];
+        if (gEventPictureSongs[gFieldSceneParams.event_picture_id * 4]) {
+            table_song = gEventPictureSongs[gFieldSceneParams.event_picture_id * 4 + 1];
             gFieldWork.song = table_song;
             field_play_song(table_song);
         }
         break;
     case 25:
-        switch (gUnk_083D29B6[gUnk_03006D38.unk1 * 4 + 2]) {
+        switch (gEventPictureSongs[gFieldSceneParams.event_picture_id * 4 + 2]) {
         case 1:
-            table_song = gUnk_083D29B6[gUnk_03006D38.unk1 * 4 + 3];
+            table_song = gEventPictureSongs[gFieldSceneParams.event_picture_id * 4 + 3];
             gFieldWork.song = table_song;
             field_play_song(table_song);
             break;

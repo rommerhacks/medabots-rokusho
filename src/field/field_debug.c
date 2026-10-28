@@ -489,7 +489,7 @@ static void field_debug_draw_page(u32 mode) {
         field_debug_draw_label(gFieldDebugLabelDc, 2, 0x30, 0x20);
         field_debug_draw_value_blink(0, gFieldDebug.unk11, 8, 0x50, 0x20);
         field_debug_draw_label(gFieldDebugLabelMl, 2, 0x30, 0x28);
-        field_debug_draw_value_blink(1, gUnk_03006D38.unk2, 8, 0x50, 0x28);
+        field_debug_draw_value_blink(1, gFieldSceneParams.area_speed_id, 8, 0x50, 0x28);
         field_debug_draw_label(gFieldDebugLabelBt, 2, 0x30, 0x30);
         field_debug_draw_value_blink(2, gFieldWork.unkC4E, 8, 0x50, 0x30);
         if (gFieldWork.unkC4E & 1)
@@ -627,11 +627,11 @@ void field_debug_close(void) {
     switch (gFieldDebug.page) {
     case 0:
     case 2:
-        gUnk_03005310.unk1 = 0;
+        gFieldState.step = 0;
         gGameSubState = 0x33;
         break;
     case 1:
-        gUnk_03005310.unk1 = 0;
+        gFieldState.step = 0;
         gGameSubState = 0x33;
         break;
     default:
@@ -769,7 +769,7 @@ void field_debug_draw_sprite_preview(void) {
             gSpriteEntries[slot].unk2B = sprite_code_kind(0);
             gSpriteEntries[slot].unkC_8 = gUnk_03006432 - 0x30;
             gSpriteEntries[slot].unk10_8 = gUnk_03006434 + 0x30;
-            gUnk_030055A0[slot].unk0 = 0xFFFF;
+            gEntityStates[slot].active = 0xFFFF;
             gSpriteEntries[slot].unk2C = zero = 0;
             sprite_anim_start(slot, 0x60);
         }

@@ -1210,8 +1210,8 @@ gMapScriptUpdates:
 gUnk_083D28B0:
 	.incbin "baserom.gba", 0x3D28B0, 0x10
 
-	.global gUnk_083D28C0
-gUnk_083D28C0:
+	.global gWalkSpeedFactors
+gWalkSpeedFactors:
 	.incbin "baserom.gba", 0x3D28C0, 0x3
 
 	.global gUnk_083D28C3
@@ -1222,40 +1222,40 @@ gUnk_083D28C3:
 gUnk_083D2903:
 	.incbin "baserom.gba", 0x3D2903, 0x5
 
-	.global gUnk_083D2908
-gUnk_083D2908:
+	.global gPlayerFormSpeedIds
+gPlayerFormSpeedIds:
 	.incbin "baserom.gba", 0x3D2908, 0x10
 
 	.global gUnk_083D2918
 gUnk_083D2918:
 	.incbin "baserom.gba", 0x3D2918, 0x80
 
-	.global gUnk_083D2998
-gUnk_083D2998:
+	.global gScriptPlayerForms
+gScriptPlayerForms:
 	.incbin "baserom.gba", 0x3D2998, 0xE
 
 	.global gPlayerFormSpriteSheets
 gPlayerFormSpriteSheets:
 	.incbin "baserom.gba", 0x3D29A6, 0x10
 
-	.global gUnk_083D29B6
-gUnk_083D29B6:
+	.global gEventPictureSongs
+gEventPictureSongs:
 	.incbin "baserom.gba", 0x3D29B6, 0x30
 
-	.global gUnk_083D29E6
-gUnk_083D29E6:
+	.global gWarpSoundEffects
+gWarpSoundEffects:
 	.incbin "baserom.gba", 0x3D29E6, 0x5
 
 	.global gAreaTypes
 gAreaTypes:
 	.incbin "baserom.gba", 0x3D29EB, 0xC0
 
-	.global gUnk_083D2AAB
-gUnk_083D2AAB:
+	.global gTownMapWarpAreas
+gTownMapWarpAreas:
 	.incbin "baserom.gba", 0x3D2AAB, 0x9
 
-	.global gUnk_083D2AB4
-gUnk_083D2AB4:
+	.global gTownMapWarpPositions
+gTownMapWarpPositions:
 	.incbin "baserom.gba", 0x3D2AB4, 0x24
 
 	.global gUnk_083D2AD8
@@ -1402,8 +1402,8 @@ gTextTable:
 gTextBankTables:
 	.incbin "baserom.gba", 0x47E45C, 0x468
 
-	.global gUnk_0847E8C4
-gUnk_0847E8C4:
+	.global gScriptItemMessages
+gScriptItemMessages:
 	.incbin "baserom.gba", 0x47E8C4, 0x84
 
 	.global gUnk_0847E948

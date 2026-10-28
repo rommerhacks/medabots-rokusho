@@ -37,19 +37,19 @@ extern struct FieldDebugWork gFieldDebug;
 extern u8 *gMapScriptData; // current map script data (banked, see read_map_script_byte)
 extern struct FieldWork gFieldWork;
 extern struct FieldScriptWork gFieldScriptWork;
-extern struct Unk_03006D20 gUnk_03006D20;
+extern struct ScriptCmdWork gScriptCmdWork;
 extern struct SoundWork *gSoundWork;
 extern struct SoundWork gSoundWorkArea; // sound work area (soft_reset_to_title passes it to sound_init)
 extern struct Vec16 gBg1Scroll;         // BG1 scroll (field: map camera)
-extern struct Unk_03005310 gUnk_03005310;
+extern struct FieldState gFieldState;
 extern struct BlendEffectState gBlendEffect;
 extern struct MenuWork *gMenuWork;
-extern struct Unk_030055A0 gUnk_030055A0[];
+extern struct EntityState gEntityStates[];
 extern struct Vec16 gBg2Scroll; // BG2 scroll
 extern struct Vec16 gBg3Scroll; // BG3 scroll
 extern u8 *gEventFlags;         // two 4-bit entries per byte (bit 3 / bit 7: flag, bits 0-2 / 4-6: count)
 extern u16 *gFieldTilemapBuf;
-extern struct Unk_03006D38 gUnk_03006D38;
+extern struct FieldSceneParams gFieldSceneParams;
 extern u8 gUnk_03003810;
 extern struct LinkPackets gLinkPackets;
 extern s8 gLinkMultiplayerActive;      // multiplayer link active (soft_reset)
@@ -94,12 +94,12 @@ extern struct SpriteTileRef gLegPartSpriteNodes[][8];
 extern struct SoundSongHeader *gSongTable[];        // song table (sound_init)
 extern struct SoundSongHeader *gSoundEffectTable[]; // sound effect table (sound_init)
 extern struct SoundDrumKit gDrumKit;
-extern const u8 gInstrumentSamples[]; // sample pointers by SoundTrack.instrument
-extern const u8 gDrumSamples[];       // sample pointers by drum index
-extern const u8 gUnk_083D28C0[];
-extern const u8 gUnk_083D2908[];
+extern const u8 gInstrumentSamples[];  // sample pointers by SoundTrack.instrument
+extern const u8 gDrumSamples[];        // sample pointers by drum index
+extern const u8 gWalkSpeedFactors[];   // [0] 1, [1] 2: walk speed = factor[sprite] * factor[area] (sprite_walk_speed)
+extern const u8 gPlayerFormSpeedIds[]; // player_form -> gWalkSpeedFactors index of sprites 47 / 48
 extern const u8 gPlayerFormSpriteSheets[]; // player form -> map sprite sheet id (its palette in gFieldSpritePalettes)
-extern const u8 gUnk_083D29B6[];
+extern const u8 gEventPictureSongs[];      // 4 per event picture: stop song?, song, after-mode (1 = play), song after
 extern const u16 *const gFieldSpritePalettes[]; // 16-colour OBJ palette per map sprite sheet id (NULL: none)
 extern const u8 gUnk_083D2918[][8];
 extern const u8 gSpriteSheetHasShadow[]; // per map sprite sheet id: give the sprite a shadow (sprite 0x90)
@@ -114,8 +114,8 @@ extern const u8 gUnk_083D28B0[];             // indexed by gFieldWork.player_for
 extern const u8 *const gAreaCollisionMaps[]; // per area: tile map
 extern const struct AreaGfx gUnk_083F92F4[];
 extern const u8 gUnk_083D2903[];
-extern const u8 gUnk_083D29E6[];
-extern const u8 gUnk_085FA104[];                 // LZ77 sprite tiles
+extern const u8 gWarpSoundEffects[]; // sound played when stepping on a warp, by gFieldSceneParams.warp_sound
+extern const u8 gUnk_085FA104[];     // LZ77 sprite tiles
 extern const struct MapExit *const gAreaExits[]; // per area: 8-byte map exit records, 0xFF-terminated
 extern const u16 gSoundPsgNoteFreqs[];
 extern const u16 gSoundFifoVolumeMasks[];
@@ -194,7 +194,7 @@ extern u8 gRaceRunnerSlots[3][3];    // [team][runner]: sprite slot of the runne
 extern const u8 gRaceLegDelays[][7]; // [field][leg type]: frames per step of a runner
 extern bool32 (*const gRaceSpriteMotions[])(
     u8);                     // race sprite animations, by gSpriteEntries[].unk20 - 1 (race_run_sprite_motions)
-extern u8 gRaceId;           // race (gRaces index), copied from gUnk_03006D38.unk0 by race_init
+extern u8 gRaceId;           // race (gRaces index), copied from gFieldSceneParams.race_id by race_init
 extern s32 gSceneStepFrames; // scene step frame counter, reset when a step finishes (execute_scene_step)
 extern u8 gSceneStep;        // scene step, gSceneSteps index
 extern bool32 (*const gSceneSteps[])(void);           // scene steps (execute_scene_step)
@@ -285,13 +285,15 @@ extern const u16 gUnk_0807C2A0[];
 extern const u16 gUnk_0807C2C0[];
 extern const u16 gUnk_0807C300[];
 extern u8 gNameEntryMode; // 0 player name, 1 new Medal (default name), 2 rename a Medal gMedals[gCurrentMedalSlot]
-extern u8 gUnk_03003870[];
-extern u8 gUnk_03005664[];
-extern const void *const gUnk_0847E8C4[];         // text pointers (guess)
+extern u8
+    gNpcSpriteEntryBytes[]; // = (u8 *)&gSpriteEntries[49] (map object sprites), cleared by map_script_update_reload_map
+extern u8 gNpcEntityStateBytes[]; // = (u8 *)&gEntityStates[49]
+extern const void
+    *const gScriptItemMessages[]; // got / gave item, Medapart, money, Medal, Tinpet messages (map_script_update_give_*)
 extern const u32 *const gTextTable[];             // text pointers, banks 0-1 (guess)
 extern const u32 *const *const gTextBankTables[]; // text pointer tables, bank 2+ (guess)
 extern const s16 gJumpArcTable[][8];              // jump arc: [n][0] / 16 = sprite y offset at frame n (hops / jumps)
-extern const u8 gUnk_083D2998[];          // map script terrain/palette id -> player_form/saved_player_form/unkC28
+extern const u8 gScriptPlayerForms[];     // map script terrain/palette id -> player_form/saved_player_form/unkC28
                                           // (map_script_update_set_player_form)
 extern struct PlayerRecord gPlayerRecord; // gMoney is its first field
 extern const Func gUnk_083AC248[];        // game state 0 sub-state handlers (guess: debug map viewer)
@@ -1487,8 +1489,8 @@ extern const u8 gGradientPaletteCyan[];
 extern s32 *gFieldEffectScripts[]; // field effect scripts, picked by gFieldEffect.flags & 0x3F (field_effect_run)
 extern const void *gFieldEffectObjTiles[];    // battle sequence sprite graphics (opcode 27)
 extern const void *gFieldEffectObjPalettes[]; // battle sequence sprite palettes (opcode 27)
-extern const u8 gUnk_083D2AAB[];
-extern const u8 gUnk_083D2AB4[];
+extern const u8 gTownMapWarpAreas[];          // area id by town map place (field effect 0x12 = town map travel)
+extern const u8 gTownMapWarpPositions[];      // 4 per town map place: [2], [3] = arrival x, y in tiles
 extern const u8 gUnk_083D2AD8;
 extern const u8 gUnk_083D2AD9[];
 extern u32 gUnk_0807E77C[][7];

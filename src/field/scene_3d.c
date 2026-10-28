@@ -1037,17 +1037,17 @@ u32 field_effect_run(void) {
             S.pc++;
             save_script_sprites();
             memzero_bytes((u8 *)gSpriteEntries, 0x2000);
-            memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+            memzero_bytes((u8 *)gEntityStates, 0x200);
             zero = 0;
             DmaSet(3, &zero, OAM, 0x85000100);
             restore_script_sprites();
             if (S.effect_id == 0x12) {
-                if (gUnk_03006D38.unk5 <= 8)
-                    S.area_id = gUnk_083D2AAB[gUnk_03006D38.unk5];
+                if (gFieldSceneParams.town_map_place <= 8)
+                    S.area_id = gTownMapWarpAreas[gFieldSceneParams.town_map_place];
                 else
                     S.area_id = 0;
-                S.pos_x = gUnk_083D2AB4[gUnk_03006D38.unk5 * 4 + 2] << 4;
-                S.pos_y = gUnk_083D2AB4[gUnk_03006D38.unk5 * 4 + 3] << 4;
+                S.pos_x = gTownMapWarpPositions[gFieldSceneParams.town_map_place * 4 + 2] << 4;
+                S.pos_y = gTownMapWarpPositions[gFieldSceneParams.town_map_place * 4 + 3] << 4;
                 gFieldWork.player_x = S.pos_x;
                 gFieldWork.player_y = S.pos_y;
                 gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);

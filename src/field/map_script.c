@@ -65,10 +65,10 @@ void map_script_cmd_end(void) {
     gFieldWork.script_id = 0;
     gFieldWork.script_field_update = 0;
     gFieldWork.unkC60 = 0;
-    gUnk_03006D38.unk6 = 0;
-    gUnk_03005310.unk38 = 0;
+    gFieldSceneParams.bot_gender = 0;
+    gFieldState.unk38 = 0;
     memzero_bytes(gFieldWork.script_object_slots, 16);
-    memzero_bytes((u8 *)&gUnk_03006D20, 16);
+    memzero_bytes((u8 *)&gScriptCmdWork, 16);
     gSpriteEntries[47].unk25 = 1;
     set_battle_state_cancel_flag();
 }
@@ -238,11 +238,11 @@ void map_script_cmd_select_object(void) {
 
 void map_script_cmd_self_anim(void) {
     read_map_script_bytes(2);
-    gUnk_03006D20.unkA = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
-    set_sprite_anim_and_store(gUnk_03006D20.unkA, gFieldWork.cmd_args[0] & 0xF,
+    gScriptCmdWork.sprite_slot = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
+    set_sprite_anim_and_store(gScriptCmdWork.sprite_slot, gFieldWork.cmd_args[0] & 0xF,
                               &gFieldWork.objects[gFieldWork.script_object]);
-    gUnk_03006D20.unk0 = 0;
-    gUnk_03006D20.unk2 = gFieldWork.cmd_args[1];
+    gScriptCmdWork.counter = 0;
+    gScriptCmdWork.timer = gFieldWork.cmd_args[1];
     gFieldWork.cmd_busy = 1;
 }
 
@@ -262,9 +262,9 @@ void map_script_cmd_self_set_anim(void) {
 
 void map_script_cmd_self_hop(void) {
     if ((gFieldWork.objects[gFieldWork.script_object].unk2 & 0xFFF) == gFieldWork.script_id) {
-        gUnk_03006D20.unkA = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
-        gUnk_03006D20.unk8 = gSpriteEntries[gUnk_03006D20.unkA].unk10_8;
-        gSpriteEntries[gUnk_03006D20.unkA].unk28 = 0;
+        gScriptCmdWork.sprite_slot = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
+        gScriptCmdWork.hop_base_y = gSpriteEntries[gScriptCmdWork.sprite_slot].unk10_8;
+        gSpriteEntries[gScriptCmdWork.sprite_slot].unk28 = 0;
         field_play_sound_effect(0x70);
         gFieldWork.cmd_busy = 1;
     }
@@ -273,11 +273,11 @@ void map_script_cmd_self_hop(void) {
 void map_script_cmd_self_blink(void) {
     gFieldWork.cmd_args[0] = read_map_script_byte();
     if ((gFieldWork.objects[gFieldWork.script_object].unk2 & 0xFFF) == gFieldWork.script_id) {
-        gUnk_03006D20.unkA = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
-        gUnk_03006D20.unk0 = gFieldWork.cmd_args[0];
-        gUnk_03006D20.unk1 = 0;
-        gUnk_03006D20.unk2 = 8;
-        gUnk_03006D20.unk3 = 8;
+        gScriptCmdWork.sprite_slot = gFieldWork.objects[gFieldWork.script_object].unk4_0 + 49;
+        gScriptCmdWork.counter = gFieldWork.cmd_args[0];
+        gScriptCmdWork.blink_phase = 0;
+        gScriptCmdWork.timer = 8;
+        gScriptCmdWork.timer_reload = 8;
         gFieldWork.cmd_busy = 1;
     }
 }
@@ -287,7 +287,7 @@ void map_script_cmd_actor_spawn_walk(void) {
     read_map_script_bytes(5);
     id = gFieldWork.cmd_args[0];
     script_object_set_slot(id, find_free_script_sprite_slot());
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
     gFieldWork.cmd_busy = 1;
 }
 
@@ -296,7 +296,7 @@ void map_script_cmd_actor_spawn_walk_2(void) {
     read_map_script_bytes(5);
     id = gFieldWork.cmd_args[0];
     script_object_set_slot(id, find_free_script_sprite_slot());
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
     gFieldWork.cmd_busy = 1;
 }
 
@@ -312,13 +312,13 @@ void map_script_cmd_actor_set_facing(void) {
 
 void map_script_cmd_actor_walk(void) {
     read_map_script_bytes(2);
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
     gFieldWork.cmd_busy = 1;
 }
 
 void map_script_cmd_actor_walk_2(void) {
     read_map_script_bytes(2);
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
     gFieldWork.cmd_busy = 1;
 }
 
@@ -329,28 +329,28 @@ void map_script_cmd_actor_despawn(void) {
 
 void map_script_cmd_actor_blink(void) {
     read_map_script_bytes(2);
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
-    gUnk_03006D20.unk0 = gFieldWork.cmd_args[1];
-    gUnk_03006D20.unk1 = 0;
-    gUnk_03006D20.unk2 = 8;
-    gUnk_03006D20.unk3 = 8;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.counter = gFieldWork.cmd_args[1];
+    gScriptCmdWork.blink_phase = 0;
+    gScriptCmdWork.timer = 8;
+    gScriptCmdWork.timer_reload = 8;
     gFieldWork.cmd_busy = 1;
 }
 
 void map_script_cmd_actor_anim(void) {
     read_map_script_bytes(3);
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
-    set_sprite_animation_state(gUnk_03006D20.unkA, gFieldWork.cmd_args[1] & 0xF);
-    gUnk_03006D20.unk0 = 0;
-    gUnk_03006D20.unk2 = gFieldWork.cmd_args[2];
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    set_sprite_animation_state(gScriptCmdWork.sprite_slot, gFieldWork.cmd_args[1] & 0xF);
+    gScriptCmdWork.counter = 0;
+    gScriptCmdWork.timer = gFieldWork.cmd_args[2];
     gFieldWork.cmd_busy = 1;
 }
 
 void map_script_cmd_actor_hop(void) {
     gFieldWork.cmd_args[0] = read_map_script_byte();
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
-    gUnk_03006D20.unk8 = gSpriteEntries[gUnk_03006D20.unkA].unk10_8;
-    gSpriteEntries[gUnk_03006D20.unkA].unk28 = 0;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.hop_base_y = gSpriteEntries[gScriptCmdWork.sprite_slot].unk10_8;
+    gSpriteEntries[gScriptCmdWork.sprite_slot].unk28 = 0;
     field_play_sound_effect(0x70);
     gFieldWork.cmd_busy = 1;
 }
@@ -370,7 +370,7 @@ void map_script_cmd_actor_spawn_glide(void) {
     read_map_script_bytes(5);
     id = gFieldWork.cmd_args[0];
     script_object_set_slot(id, find_free_script_sprite_slot());
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
     gFieldWork.cmd_busy = 1;
 }
 
@@ -383,7 +383,7 @@ void map_script_cmd_set_locket_block(void) {
 
 void map_script_cmd_actor_glide(void) {
     read_map_script_bytes(2);
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
     gFieldWork.cmd_busy = 1;
 }
 
@@ -448,7 +448,7 @@ void map_script_cmd_all_actors_set_facing(void) {
     s32 i;
     gFieldWork.cmd_args[0] = read_map_script_byte();
     for (i = 0; i <= 3; i++) {
-        if (script_object_slot(i) != -1 && gUnk_030055A0[script_object_slot(i) + 79].unk0 != 0)
+        if (script_object_slot(i) != -1 && gEntityStates[script_object_slot(i) + 79].active != 0)
             set_sprite_animation_state(script_object_slot(i) + 79, gFieldWork.cmd_args[0]);
     }
 }
@@ -534,7 +534,7 @@ void map_script_cmd_all_actors_blink(void) {
     s32 i;
     gFieldWork.cmd_args[0] = read_map_script_byte();
     for (i = 0; i <= 3; i++) {
-        if (script_object_slot(i) != -1 && gUnk_030055A0[script_object_slot(i) + 79].unk0 != 0) {
+        if (script_object_slot(i) != -1 && gEntityStates[script_object_slot(i) + 79].active != 0) {
             gSpriteEntries[script_object_slot(i) + 79].unk26 = gFieldWork.cmd_args[0];
             gSpriteEntries[script_object_slot(i) + 79].unk27 = 0;
             gSpriteEntries[script_object_slot(i) + 79].unk28 = 8;
@@ -624,7 +624,7 @@ void map_script_cmd_jump_if_money_below(void) {
 void map_script_cmd_jump_if_lost(void) {
     gFieldWork.branch_base = gFieldWork.script_pos;
     read_map_script_bytes(1);
-    if (gUnk_03005310.sceneResult == 2)
+    if (gFieldState.sceneResult == 2)
         gFieldWork.script_pos = gFieldWork.branch_base + gFieldWork.cmd_args[0];
 }
 
@@ -788,8 +788,8 @@ void map_script_cmd_unused_65(void) {}
 
 void map_script_cmd_actor_jump(void) {
     read_map_script_bytes(2);
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
-    gSpriteEntries[gUnk_03006D20.unkA].unk26 = 0;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gSpriteEntries[gScriptCmdWork.sprite_slot].unk26 = 0;
     gFieldWork.cmd_busy = 1;
 }
 
@@ -838,26 +838,26 @@ void map_script_cmd_set_story_phase(void) {
 void map_script_cmd_actor_spawn_walk_fast(void) {
     read_map_script_bytes(5);
     script_object_set_slot(gFieldWork.cmd_args[0], find_free_script_sprite_slot());
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
     gFieldWork.cmd_busy = 1;
 }
 
 void map_script_cmd_actor_walk_fast(void) {
     read_map_script_bytes(2);
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
     gFieldWork.cmd_busy = 1;
 }
 
 void map_script_cmd_actor_spawn_glide_fast(void) {
     read_map_script_bytes(5);
     script_object_set_slot(gFieldWork.cmd_args[0], find_free_script_sprite_slot());
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
     gFieldWork.cmd_busy = 1;
 }
 
 void map_script_cmd_actor_glide_fast(void) {
     read_map_script_bytes(2);
-    gUnk_03006D20.unkA = script_object_slot(gFieldWork.cmd_args[0]) + 79;
+    gScriptCmdWork.sprite_slot = script_object_slot(gFieldWork.cmd_args[0]) + 79;
     gFieldWork.cmd_busy = 1;
 }
 
@@ -899,7 +899,7 @@ void map_script_cmd_unused_77(void) {}
 void map_script_cmd_race(void) {
     gFieldWork.branch_base = gFieldWork.script_pos;
     read_map_script_bytes(2);
-    gUnk_03006D38.unk0 = gFieldWork.cmd_args[0];
+    gFieldSceneParams.race_id = gFieldWork.cmd_args[0];
     if (team_count_complete_bots() > 2)
         gFieldWork.cmd_busy = 1;
     else
@@ -907,7 +907,7 @@ void map_script_cmd_race(void) {
 }
 
 void map_script_cmd_event_picture(void) {
-    gUnk_03006D38.unk1 = read_map_script_byte();
+    gFieldSceneParams.event_picture_id = read_map_script_byte();
     gFieldWork.cmd_busy = 1;
 }
 
@@ -1102,7 +1102,7 @@ static void follower_attach(u8 i) {
     sprite_entry_clear(48);
     sprite_entry_clear(90);
     memcpy_u8(&gSpriteEntries[i], &gSpriteEntries[48], 0x40);
-    memcpy_u8(&gUnk_030055A0[i], &gUnk_030055A0[48], 4);
+    memcpy_u8(&gEntityStates[i], &gEntityStates[48], 4);
     gFieldWork.follower_active = 1;
     gFieldWork.follower_x = gSpriteEntries[48].unk2 + gBg1Scroll.x;
     gFieldWork.follower_y = gSpriteEntries[48].unk4 + gBg1Scroll.y;

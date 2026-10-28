@@ -12,7 +12,7 @@ void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj) {
 void update_npc_random_animation(void) {
     struct MapObject *obj = gFieldWork.objects;
 
-    if ((gUnk_03005310.unk4 & 3) == 0) {
+    if ((gFieldState.frame_counter & 3) == 0) {
         obj += field_random(64);
         if (obj->unk4_7 && (obj->unk2 >> 12) == 0)
             set_sprite_anim_and_store(obj->unk4_0 + 49, field_random(4), obj);
@@ -255,7 +255,7 @@ void update_entity_sprites_on_screen(void) {
     u8 visible;
 
     for (i = 0; i < 36; i++) {
-        if (gUnk_030055A0[i + 49].unk0 != 0) {
+        if (gEntityStates[i + 49].active != 0) {
             visible = 0;
             if (gBg1Scroll.y < gSpriteEntries[i + 49].unk10_8 - gFieldWork.map_origin_y + 16 &&
                 gSpriteEntries[i + 49].unk10_8 - gFieldWork.map_origin_y < gBg1Scroll.y + 0xA8 &&
@@ -421,7 +421,7 @@ void check_and_update_battlefield_palette(void) {
     }
 }
 
-// Returns 1 if a warp of the current area sits at (x, y); stores its high dir nibble in gUnk_03006D38.unk3.
+// Returns 1 if a warp of the current area sits at (x, y); stores its high dir nibble in gFieldSceneParams.warp_sound.
 u32 find_map_event_by_coords(u32 x, u32 y) {
     u32 found = 0;
     const struct AreaWarp *w = gAreaWarps[gFieldWork.area_id];
@@ -434,7 +434,7 @@ u32 find_map_event_by_coords(u32 x, u32 y) {
         if (wx == x && wy == y) {
             found = 1;
             dir = w[i].dir;
-            gUnk_03006D38.unk3 = (dir & 0xF0) >> 4;
+            gFieldSceneParams.warp_sound = (dir & 0xF0) >> 4;
         }
     }
     return found;
@@ -643,5 +643,5 @@ u32 event_counter_get(u16 id) {
 
 void load_battle_terrain_data(void) {
     memcpy_u8(gUnk_083D2918[gFieldWork.loaded_form], gFieldWork.tile_actions, 8);
-    gSpriteEntries[47].unk2A = gUnk_083D2908[gFieldWork.player_form];
+    gSpriteEntries[47].unk2A = gPlayerFormSpeedIds[gFieldWork.player_form];
 }

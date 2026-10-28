@@ -267,8 +267,8 @@ void map_script_update_set_player_form(void) {
     u8 obj;
     u32 i;
 
-    gFieldWork.saved_player_form = gFieldWork.player_form = gUnk_083D2998[gFieldWork.cmd_args[0]];
-    gFieldWork.loaded_form = gUnk_083D2998[gFieldWork.cmd_args[0]];
+    gFieldWork.saved_player_form = gFieldWork.player_form = gScriptPlayerForms[gFieldWork.cmd_args[0]];
+    gFieldWork.loaded_form = gScriptPlayerForms[gFieldWork.cmd_args[0]];
     load_battle_terrain_data();
     area_load_sprite_sheets();
     switch (gBlendEffect.type) {
@@ -301,7 +301,7 @@ void map_script_update_self_hop(void) {
 }
 
 void map_script_update_self_blink(void) {
-    if (script_sprite_blink_step(gUnk_03006D20.unkA))
+    if (script_sprite_blink_step(gScriptCmdWork.sprite_slot))
         map_script_command_done();
 }
 
@@ -319,11 +319,11 @@ static void map_script_actor_spawn_walk_step(void) {
     switch (s->cmd_step) {
     case 0:
         spawn_script_sprite(s->cmd_args[0], s->cmd_args[1], s->cmd_args[2], s->cmd_args[3]);
-        script_sprite_begin_walk(gUnk_03006D20.unkA, s->cmd_args[4], 0);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[4], 0);
         s->cmd_step++;
         break;
     case 1:
-        if (script_sprite_update_walk(gUnk_03006D20.unkA, 1))
+        if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 1))
             map_script_command_done();
         break;
     }
@@ -342,18 +342,18 @@ static void map_script_actor_walk_step(void) {
 
     switch (s->cmd_step) {
     case 0:
-        script_sprite_begin_walk(gUnk_03006D20.unkA, s->cmd_args[1], 0);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[1], 0);
         s->cmd_step++;
         break;
     case 1:
-        if (script_sprite_update_walk(gUnk_03006D20.unkA, 1))
+        if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 1))
             map_script_command_done();
         break;
     }
 }
 
 void map_script_update_actor_blink(void) {
-    if (script_sprite_blink_step(gUnk_03006D20.unkA))
+    if (script_sprite_blink_step(gScriptCmdWork.sprite_slot))
         map_script_command_done();
 }
 
@@ -385,7 +385,7 @@ static void map_script_all_actors_move_step(u8 speed, u8 mode) {
     switch (gFieldWork.cmd_step) {
     case 0:
         for (i = 0; i <= 3; i++) {
-            if (script_object_slot(i) != -1 && gUnk_030055A0[script_object_slot(i) + 79].unk0 != 0) {
+            if (script_object_slot(i) != -1 && gEntityStates[script_object_slot(i) + 79].active != 0) {
                 if (mode == 1)
                     script_sprite_begin_walk(script_object_slot(i) + 79, gFieldWork.cmd_args[0], speed);
                 else
@@ -398,7 +398,7 @@ static void map_script_all_actors_move_step(u8 speed, u8 mode) {
         for (i = 0; i <= 3; i++) {
             slot = script_object_slot(i);
             if (slot != -1) {
-                if (gUnk_030055A0[slot + 79].unk0 != 0)
+                if (gEntityStates[slot + 79].active != 0)
                     done += script_sprite_update_walk(slot + 79, mode);
                 else
                     done++;
@@ -419,11 +419,11 @@ void map_script_update_actor_spawn_glide(void) {
     switch (s->cmd_step) {
     case 0:
         spawn_script_sprite(s->cmd_args[0], s->cmd_args[1], s->cmd_args[2], s->cmd_args[3]);
-        script_sprite_begin_walk(gUnk_03006D20.unkA, s->cmd_args[4], 0);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[4], 0);
         s->cmd_step++;
         break;
     case 1:
-        if (script_sprite_update_walk(gUnk_03006D20.unkA, 0))
+        if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 0))
             map_script_command_done();
         break;
     }
@@ -434,11 +434,11 @@ void map_script_update_actor_glide(void) {
 
     switch (s->cmd_step) {
     case 0:
-        script_sprite_begin_walk(gUnk_03006D20.unkA, s->cmd_args[1], 0);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[1], 0);
         s->cmd_step++;
         break;
     case 1:
-        if (script_sprite_update_walk(gUnk_03006D20.unkA, 0))
+        if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 0))
             map_script_command_done();
         break;
     }
@@ -507,9 +507,9 @@ void map_script_update_robattle(void) {
         if (scene_state_dispatch(0x20, 0)) {
             u32 v = s->robattle_result;
             if (v == 1)
-                gUnk_03005310.sceneResult = v;
+                gFieldState.sceneResult = v;
             else if (v == 2)
-                gUnk_03005310.sceneResult = v;
+                gFieldState.sceneResult = v;
             map_script_command_done();
         }
         break;
@@ -548,11 +548,11 @@ void map_script_update_give_item(void) {
         gFieldWork.cmd_step = 2;
         break;
     case 1:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[0]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[0]))
             map_script_command_done();
         break;
     case 2:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[1]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[1]))
             map_script_command_done();
         break;
     }
@@ -589,15 +589,15 @@ void map_script_update_take_item(void) {
             s->cmd_step = 2;
         break;
     case 1:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[2]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[2]))
             map_script_command_done();
         break;
     case 2:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[3]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[3]))
             map_script_command_done();
         break;
     case 3:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[4]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[4]))
             map_script_command_done();
         break;
     }
@@ -630,11 +630,11 @@ void map_script_update_give_medapart(void) {
         gFieldWork.cmd_step = 2;
         break;
     case 1:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[5]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[5]))
             map_script_command_done();
         break;
     case 2:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[s->cmd_args[1] + 6]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[s->cmd_args[1] + 6]))
             map_script_command_done();
         break;
     }
@@ -671,15 +671,15 @@ void map_script_update_take_medapart(void) {
             s->cmd_step = 2;
         break;
     case 1:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[s->cmd_args[1] + 14]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[s->cmd_args[1] + 14]))
             map_script_command_done();
         break;
     case 2:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[s->cmd_args[1] + 18]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[s->cmd_args[1] + 18]))
             map_script_command_done();
         break;
     case 3:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[s->cmd_args[1] + 18]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[s->cmd_args[1] + 18]))
             map_script_command_done();
         break;
     }
@@ -700,7 +700,7 @@ void map_script_update_give_money(void) {
         s->cmd_step = 1;
         break;
     case 1:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[26]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[26]))
             map_script_command_done();
         break;
     }
@@ -726,7 +726,7 @@ void map_script_update_take_money(void) {
         s->cmd_step = 1;
         break;
     case 1:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[27]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[27]))
             map_script_command_done();
         break;
     }
@@ -749,11 +749,11 @@ void map_script_update_give_medal(void) {
         s->cmd_step = 2;
         break;
     case 1:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[28]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[28]))
             map_script_command_done();
         break;
     case 2:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[29])) {
+        if (message_step_run(0, 0, 0, gScriptItemMessages[29])) {
             scene_state_reset();
             s->cmd_step++;
         }
@@ -781,11 +781,11 @@ void map_script_update_give_tinpet(void) {
         s->cmd_step = 2;
         break;
     case 1:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[30]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[30]))
             map_script_command_done();
         break;
     case 2:
-        if (message_step_run(0, 0, 0, gUnk_0847E8C4[s->cmd_args[0] + 31]))
+        if (message_step_run(0, 0, 0, gScriptItemMessages[s->cmd_args[0] + 31]))
             map_script_command_done();
         break;
     }
@@ -824,7 +824,7 @@ void map_script_update_all_actors_blink(void) {
 
     for (i = 0; i <= 3; i++) {
         if (script_object_slot(i) != -1) {
-            if (gUnk_030055A0[script_object_slot(i) + 79].unk0 != 0)
+            if (gEntityStates[script_object_slot(i) + 79].active != 0)
                 done += script_sprite_blink_step(script_object_slot(i) + 79);
             else
                 empty++;
@@ -899,9 +899,9 @@ static u32 map_script_player_slide_step(u8 dir) {
         }
         break;
     }
-    gUnk_03006D20.unk0--;
+    gScriptCmdWork.counter--;
     ret = 0;
-    if (gUnk_03006D20.unk0 == 0) {
+    if (gScriptCmdWork.counter == 0) {
         gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
         gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
         ret = 1;
@@ -920,9 +920,9 @@ void map_script_update_shake_screen(void) {
     switch (gFieldWork.cmd_step) {
     case 0:
         if (gFieldWork.cmd_args[0] == 0)
-            gUnk_03005310.unk1E = gBg1Scroll.x;
+            gFieldState.saved_bg1_x = gBg1Scroll.x;
         else
-            gUnk_03005310.unk26 = gBg1Scroll.y;
+            gFieldState.saved_bg1_y = gBg1Scroll.y;
         gFieldWork.cmd_args[2] = 0;
         gFieldWork.cmd_args[4] = gFieldWork.cmd_args[1];
         gFieldWork.cmd_step++;
@@ -936,15 +936,15 @@ void map_script_update_shake_screen(void) {
             if (gFieldWork.cmd_args[0] == 0) {
                 off = gJumpArcTable[0][idx] / (128 - ((phase = n & 3) + 1) * 16);
                 if (phase <= 1)
-                    field_set_bg_scroll_x(gUnk_03005310.unk1E - off);
+                    field_set_bg_scroll_x(gFieldState.saved_bg1_x - off);
                 else
-                    field_set_bg_scroll_x(off + gUnk_03005310.unk1E);
+                    field_set_bg_scroll_x(off + gFieldState.saved_bg1_x);
             } else {
                 off = gJumpArcTable[0][idx] / (128 - ((phase = n & 3) + 1) * 16);
                 if (phase <= 1)
-                    field_set_bg_scroll_y(gUnk_03005310.unk26 - off);
+                    field_set_bg_scroll_y(gFieldState.saved_bg1_y - off);
                 else
-                    field_set_bg_scroll_y(off + gUnk_03005310.unk26);
+                    field_set_bg_scroll_y(off + gFieldState.saved_bg1_y);
             }
             update_bg_scroll_offsets_a();
             if (gFieldWork.follower_active)
@@ -952,9 +952,9 @@ void map_script_update_shake_screen(void) {
             gFieldWork.cmd_args[2]++;
         } else {
             if (gFieldWork.cmd_args[0] == 0)
-                field_set_bg_scroll_x(gUnk_03005310.unk1E);
+                field_set_bg_scroll_x(gFieldState.saved_bg1_x);
             else
-                field_set_bg_scroll_y(gUnk_03005310.unk26);
+                field_set_bg_scroll_y(gFieldState.saved_bg1_y);
             update_bg_scroll_offsets_a();
             if (gFieldWork.follower_active)
                 follower_update_screen_pos();
@@ -977,10 +977,10 @@ void map_script_update_unused_55(void) {}
 // Opcode 0x56: reload the map (clears tile buffers, recopies the collision map, reloads NPC sprites).
 void map_script_update_reload_map(void) {
     save_script_sprites();
-    memzero_bytes(gUnk_03003870, 0x900);
-    memzero_bytes(gUnk_03003870 + 0xA80, 0x900);
-    memzero_bytes(gUnk_03005664, 0x90);
-    memzero_bytes(gUnk_03005664 + 0xA8, 0x90);
+    memzero_bytes(gNpcSpriteEntryBytes, 0x900);
+    memzero_bytes(gNpcSpriteEntryBytes + 0xA80, 0x900);
+    memzero_bytes(gNpcEntityStateBytes, 0x90);
+    memzero_bytes(gNpcEntityStateBytes + 0xA8, 0x90);
     restore_script_sprites();
     memzero_bytes(gFieldWork.tile_map, 0x400);
     memcpy_u8(gAreaCollisionMaps[gFieldWork.area_id], gFieldWork.tile_map,
@@ -1037,7 +1037,7 @@ void map_script_update_field_effect(void) {
             map_script_command_done();
         break;
     case 1:
-        gUnk_03006D20.unk0 = 16 / sprite_walk_speed(47);
+        gScriptCmdWork.counter = 16 / sprite_walk_speed(47);
         script_sprite_begin_slide(47, (gFieldWork.cmd_args[0] << 4) | gFieldWork.cmd_args[1], 0);
         gFieldWork.cmd_step++;
         break;
@@ -1048,7 +1048,7 @@ void map_script_update_field_effect(void) {
             gFieldWork.player_facing = 3;
         if (map_script_player_slide_step(gFieldWork.player_facing)) {
             gFieldWork.player_visible = 1;
-            gSpriteEntries[47].unk2A = gUnk_083D2908[gFieldWork.player_form];
+            gSpriteEntries[47].unk2A = gPlayerFormSpeedIds[gFieldWork.player_form];
             gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
             gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
             field_center_camera_on_player();
@@ -1082,11 +1082,11 @@ void map_script_update_actor_spawn_walk_fast(void) {
     switch (s->cmd_step) {
     case 0:
         spawn_script_sprite(s->cmd_args[0], s->cmd_args[1], s->cmd_args[2], s->cmd_args[3]);
-        script_sprite_begin_walk(gUnk_03006D20.unkA, s->cmd_args[4], 1);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[4], 1);
         s->cmd_step++;
         break;
     case 1:
-        if (script_sprite_update_walk(gUnk_03006D20.unkA, 1))
+        if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 1))
             map_script_command_done();
         break;
     }
@@ -1097,11 +1097,11 @@ void map_script_update_actor_walk_fast(void) {
 
     switch (s->cmd_step) {
     case 0:
-        script_sprite_begin_walk(gUnk_03006D20.unkA, s->cmd_args[1], 1);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[1], 1);
         s->cmd_step++;
         break;
     case 1:
-        if (script_sprite_update_walk(gUnk_03006D20.unkA, 1))
+        if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 1))
             map_script_command_done();
         break;
     }
@@ -1113,11 +1113,11 @@ void map_script_update_actor_spawn_glide_fast(void) {
     switch (s->cmd_step) {
     case 0:
         spawn_script_sprite(s->cmd_args[0], s->cmd_args[1], s->cmd_args[2], s->cmd_args[3]);
-        script_sprite_begin_walk(gUnk_03006D20.unkA, s->cmd_args[4], 1);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[4], 1);
         s->cmd_step++;
         break;
     case 1:
-        if (script_sprite_update_walk(gUnk_03006D20.unkA, 0))
+        if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 0))
             map_script_command_done();
         break;
     }
@@ -1128,11 +1128,11 @@ void map_script_update_actor_glide_fast(void) {
 
     switch (s->cmd_step) {
     case 0:
-        script_sprite_begin_walk(gUnk_03006D20.unkA, s->cmd_args[1], 1);
+        script_sprite_begin_walk(gScriptCmdWork.sprite_slot, s->cmd_args[1], 1);
         s->cmd_step++;
         break;
     case 1:
-        if (script_sprite_update_walk(gUnk_03006D20.unkA, 0))
+        if (script_sprite_update_walk(gScriptCmdWork.sprite_slot, 0))
             map_script_command_done();
         break;
     }
@@ -1208,7 +1208,7 @@ void map_script_update_link_start(void) {
         s->cmd_step++;
         break;
     case 1:
-        if (gUnk_03006D20.unkC == 7)
+        if (gScriptCmdWork.mode_result == 7)
             s->cmd_step = 2;
         else
             map_script_command_done();
@@ -1235,7 +1235,7 @@ void map_script_update_race(void) {
     case 1:
         if (scene_state_dispatch(0x10, 0)) {
             if (map_script_always_zero())
-                gUnk_03005310.sceneResult = 1;
+                gFieldState.sceneResult = 1;
             map_script_command_done();
         }
         break;
@@ -1268,7 +1268,7 @@ void map_script_update_bomb_game(void) {
     case 1:
         if (scene_state_dispatch(0x11, 0)) {
             if (map_script_always_zero())
-                gUnk_03005310.sceneResult = 1;
+                gFieldState.sceneResult = 1;
             map_script_command_done();
         }
         break;
@@ -1284,7 +1284,7 @@ void map_script_update_follower_to_actor(void) {
     gSpriteEntries[48].unkC_8 = gFieldWork.follower_x;
     gSpriteEntries[48].unk10_8 = gFieldWork.follower_y;
     memcpy_u8(&gSpriteEntries[48], &gSpriteEntries[gFieldWork.cmd_args[0] + 79], 0x40);
-    gUnk_030055A0[gFieldWork.cmd_args[0] + 79].unk0 = 0xFFFF;
+    gEntityStates[gFieldWork.cmd_args[0] + 79].active = 0xFFFF;
     memcpy_u8(&gSpriteEntries[90], &gSpriteEntries[gFieldWork.cmd_args[0] + 121], 0x40);
     map_script_command_done();
 }
@@ -1381,8 +1381,8 @@ void map_script_update_anim_queue_run(void) {
                 if (obj != NULL && obj->unk4_6) {
                     set_sprite_anim_and_store(obj->unk4_0 + 49, gFieldScriptWork.queue_pos[i], obj);
                     if (gFieldScriptWork.queue_pos[i] == 0 && gFieldScriptWork.queue[i][3] == 1 &&
-                        find_map_event_by_coords(obj->x, obj->y) && gUnk_03006D38.unk3)
-                        field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
+                        find_map_event_by_coords(obj->x, obj->y) && gFieldSceneParams.warp_sound)
+                        field_play_sound_effect(gWarpSoundEffects[gFieldSceneParams.warp_sound]);
                 }
                 gFieldScriptWork.queue_pos[i]++;
                 gFieldScriptWork.queue_timer[i] = 0;

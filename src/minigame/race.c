@@ -28,7 +28,7 @@ void race_dispatch_substate(void) {
 void race_init(void) {
     race_clear_screen();
     play_song(0);
-    gRaceId = gUnk_03006D38.unk0;
+    gRaceId = gFieldSceneParams.race_id;
     race_pick_field();
     race_load_character_sprites();
     race_load_frame_bgs();
@@ -204,10 +204,10 @@ void race_show_results(void) {
 
 // Sub-state 12: back to the field; scene result 1 if the player's team won, else 2.
 void race_exit(void) {
-    struct Unk_03005310 *result;
+    struct FieldState *result;
     race_clear_screen();
     play_song(0);
-    result = &gUnk_03005310;
+    result = &gFieldState;
     result->sceneResult = gRaceFinishOrder[0] == 1 ? 1 : 2;
     field_return_from_scene(0);
 }

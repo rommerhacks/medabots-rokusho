@@ -18,7 +18,7 @@ gHeldKeys           = 0x03002B64;
 gKeyRepeatTimer     = 0x03002418;
 gMoney       = 0x03002B70;
 gPlayerRecord       = 0x03002B70;
-gUnk_03006D20       = 0x03006D20;
+gScriptCmdWork       = 0x03006D20;
 gGameWork       = 0x03000440;
 gPlayTimeRunning       = 0x03000588;
 gSpriteEntries       = 0x03002C30;
@@ -75,21 +75,21 @@ gLinkPlayerId       = 0x03000B90;
 gOptionBattleMusic       = 0x03000B94;
 gOptionTimeLimit       = 0x03001788;
 gBg1Scroll       = 0x03004C30;
-gUnk_03005310       = 0x03005310;
+gFieldState       = 0x03005310;
 gBlendEffect       = 0x03006F40;
 gMenuWork       = 0x03006F74;
-gUnk_030055A0       = 0x030055A0;
+gEntityStates       = 0x030055A0;
 gBg2Scroll       = 0x0300057C;
 gBg3Scroll       = 0x03001C04;
 gEventFlags       = 0x030057D8;
 gFieldTilemapBuf       = 0x03006D14;
-gUnk_03006D38       = 0x03006D38;
+gFieldSceneParams       = 0x03006D38;
 gUnk_03003810       = 0x03003810;
 
 /* ===== ROM data ===== */
 gCurrentMedalSlot    = 0x030017EC;
-gUnk_03003870    = 0x03003870;
-gUnk_03005664    = 0x03005664;
+gNpcSpriteEntryBytes    = 0x03003870;
+gNpcEntityStateBytes    = 0x03005664;
 
 /* code_0800025C: debug state 0, field menu (game state 1) */
 gLinkTradeData       = 0x03002B68;

@@ -109,8 +109,8 @@ static u8 script_object_anim_index(u8 id, u8 a) {
 void spawn_script_sprite(u8 flags, u8 part, u8 x, u8 y) {
     u32 idx = flags & 0xF;
 
-    if ((flags & 0xF0) && find_map_event_by_coords(x, y) && gUnk_03006D38.unk3)
-        field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
+    if ((flags & 0xF0) && find_map_event_by_coords(x, y) && gFieldSceneParams.warp_sound)
+        field_play_sound_effect(gWarpSoundEffects[gFieldSceneParams.warp_sound]);
     script_object_set_slot(idx, find_free_script_sprite_slot());
     init_script_sprite(script_object_slot(idx), part, x, y);
     if (flags & 0x40)
@@ -132,7 +132,7 @@ static void init_script_sprite(u8 idx, u8 part, u8 x, u8 y) {
     spr->unk20 = sprite_code_direction(part);
     spr->unkC_8 = x * 16 + gFieldWork.map_origin_x;
     spr->unk10_8 = y * 16 + gFieldWork.map_origin_y;
-    gUnk_030055A0[slot].unk0 = 0xFFFF;
+    gEntityStates[slot].active = 0xFFFF;
     spr->unk2C = 0;
     tile = area_sprite_sheet_id(spr->unk2B);
     spr->unk30 = tile;
@@ -153,8 +153,8 @@ void despawn_script_sprite(u8 arg) {
         u8 x = field_pixel_x_to_tile(gSpriteEntries[script_object_slot(id) + 79].unkC_8);
         u8 y = field_pixel_y_to_tile(gSpriteEntries[script_object_slot(id) + 79].unk10_8);
 
-        if (find_map_event_by_coords(x, y) && gUnk_03006D38.unk3)
-            field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
+        if (find_map_event_by_coords(x, y) && gFieldSceneParams.warp_sound)
+            field_play_sound_effect(gWarpSoundEffects[gFieldSceneParams.warp_sound]);
     }
     sprite_entry_clear(script_object_slot(id) + 79);
     sprite_entry_clear(script_object_slot(id) + 121);
@@ -167,7 +167,7 @@ void save_script_sprites(void) {
 
     memzero_bytes((u8 *)gFieldWork.sprite_snapshot, sizeof(gFieldWork.sprite_snapshot));
     for (i = 0; i <= 5; i++) {
-        if (gUnk_030055A0[i + 79].unk0) {
+        if (gEntityStates[i + 79].active) {
             gFieldWork.sprite_snapshot[i].x = field_pixel_x_to_tile(gSpriteEntries[i + 79].unkC_8);
             gFieldWork.sprite_snapshot[i].y = field_pixel_y_to_tile(gSpriteEntries[i + 79].unk10_8);
             gFieldWork.sprite_snapshot[i].anim =
@@ -226,25 +226,25 @@ void script_object_set_priority(u8 i, u8 val) {
     sprite_set_priority(script_object_slot(i) + 79, val);
 }
 
-// Blinks the sprite for gUnk_03006D20.unk0 frames, toggling every unk3 frames; returns 1 when done.
+// Blinks the sprite for gScriptCmdWork.counter frames, toggling every timer_reload frames; returns 1 when done.
 u32 script_sprite_blink_step(u8 slot) {
     u32 ret = 0;
 
-    if (gUnk_03006D20.unk0) {
-        if (gUnk_03006D20.unk2)
-            gUnk_03006D20.unk2--;
+    if (gScriptCmdWork.counter) {
+        if (gScriptCmdWork.timer)
+            gScriptCmdWork.timer--;
         else {
-            gUnk_03006D20.unk1++;
-            gUnk_03006D20.unk2 = gUnk_03006D20.unk3;
+            gScriptCmdWork.blink_phase++;
+            gScriptCmdWork.timer = gScriptCmdWork.timer_reload;
         }
-        if (gUnk_03006D20.unk1 & 1) {
+        if (gScriptCmdWork.blink_phase & 1) {
             gSpriteEntries[slot].unk2D = 1;
             gSpriteEntries[slot].unk0 = 0;
         } else {
             gSpriteEntries[slot].unk2D = 0;
             gSpriteEntries[slot].unk0 = gSpriteEntries[slot].unk32;
         }
-        gUnk_03006D20.unk0--;
+        gScriptCmdWork.counter--;
     } else {
         gSpriteEntries[slot].unk2D = 0;
         gSpriteEntries[slot].unk0 = gSpriteEntries[slot].unk32;
@@ -253,20 +253,21 @@ u32 script_sprite_blink_step(u8 slot) {
     return ret;
 }
 
-// Plays the walk animation of sprite gUnk_03006D20.unkA in place for unk2 frames; returns 1 when done.
+// Plays the walk animation of sprite gScriptCmdWork.sprite_slot in place for timer frames; returns 1 when done.
 u32 script_sprite_anim_step(void) {
     u32 ret = 0;
 
-    switch (gUnk_03006D20.unk0) {
+    switch (gScriptCmdWork.counter) {
     case 0:
-        sprite_anim_start(gUnk_03006D20.unkA,
-                          sprite_walk_anim_id(gUnk_03006D20.unkA, gSpriteEntries[gUnk_03006D20.unkA].unk20));
-        gUnk_03006D20.unk0++;
+        sprite_anim_start(
+            gScriptCmdWork.sprite_slot,
+            sprite_walk_anim_id(gScriptCmdWork.sprite_slot, gSpriteEntries[gScriptCmdWork.sprite_slot].unk20));
+        gScriptCmdWork.counter++;
         break;
     case 1:
-        if (gUnk_03006D20.unk2) {
-            advance_sprite_animation_frame(gUnk_03006D20.unkA);
-            gUnk_03006D20.unk2--;
+        if (gScriptCmdWork.timer) {
+            advance_sprite_animation_frame(gScriptCmdWork.sprite_slot);
+            gScriptCmdWork.timer--;
         } else
             ret = 1;
         break;
@@ -274,32 +275,33 @@ u32 script_sprite_anim_step(void) {
     return ret;
 }
 
-// Hops sprite gUnk_03006D20.unkA in place along gJumpArcTable (16 frames); returns 1 when landed.
+// Hops sprite gScriptCmdWork.sprite_slot in place along gJumpArcTable (16 frames); returns 1 when landed.
 u32 script_sprite_hop_step(void) {
     u32 ret = 0;
 
-    if (gSpriteEntries[gUnk_03006D20.unkA].unk28 < 16) {
-        gSpriteEntries[gUnk_03006D20.unkA].unk10_8 =
-            gUnk_03006D20.unk8 - gJumpArcTable[gSpriteEntries[gUnk_03006D20.unkA].unk28][0] / 16;
-        gSpriteEntries[gUnk_03006D20.unkA].unk2C = gJumpArcTable[gSpriteEntries[gUnk_03006D20.unkA].unk28][0] / 16;
-        gSpriteEntries[gUnk_03006D20.unkA].unk28++;
-        if (gSpriteEntries[gUnk_03006D20.unkA].unk10_8 / 4 <= (gUnk_03006D20.unk8 - 16) / 4)
-            gSpriteEntries[gUnk_03006D20.unkA].unkB = 0xFF;
+    if (gSpriteEntries[gScriptCmdWork.sprite_slot].unk28 < 16) {
+        gSpriteEntries[gScriptCmdWork.sprite_slot].unk10_8 =
+            gScriptCmdWork.hop_base_y - gJumpArcTable[gSpriteEntries[gScriptCmdWork.sprite_slot].unk28][0] / 16;
+        gSpriteEntries[gScriptCmdWork.sprite_slot].unk2C =
+            gJumpArcTable[gSpriteEntries[gScriptCmdWork.sprite_slot].unk28][0] / 16;
+        gSpriteEntries[gScriptCmdWork.sprite_slot].unk28++;
+        if (gSpriteEntries[gScriptCmdWork.sprite_slot].unk10_8 / 4 <= (gScriptCmdWork.hop_base_y - 16) / 4)
+            gSpriteEntries[gScriptCmdWork.sprite_slot].unkB = 0xFF;
         else
-            sprite_set_blend_from_kind(gUnk_03006D20.unkA);
+            sprite_set_blend_from_kind(gScriptCmdWork.sprite_slot);
     } else {
-        sprite_set_blend_from_kind(gUnk_03006D20.unkA);
-        gSpriteEntries[gUnk_03006D20.unkA].unk10_8 = gUnk_03006D20.unk8;
-        gSpriteEntries[gUnk_03006D20.unkA].unk2C = 0;
+        sprite_set_blend_from_kind(gScriptCmdWork.sprite_slot);
+        gSpriteEntries[gScriptCmdWork.sprite_slot].unk10_8 = gScriptCmdWork.hop_base_y;
+        gSpriteEntries[gScriptCmdWork.sprite_slot].unk2C = 0;
         ret = 1;
     }
     return ret;
 }
 
-// Jumps sprite gUnk_03006D20.unkA two tiles in the script's direction (jump sound 0x70); returns 1 when landed.
+// Jumps sprite gScriptCmdWork.sprite_slot two tiles in the script's direction (jump sound 0x70); returns 1 when landed.
 u32 script_sprite_jump_step(void) {
     u32 ret = 0;
-    u8 slot = gUnk_03006D20.unkA;
+    u8 slot = gScriptCmdWork.sprite_slot;
     struct SpriteEntry *base = gSpriteEntries;
     struct SpriteEntry *s = &base[slot];
 

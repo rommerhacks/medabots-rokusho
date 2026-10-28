@@ -2,7 +2,7 @@
 // arcade game). A thrower at the top rolls bombs down three lanes; R / L shift the player Medabot at the bottom
 // (BombGameWork.playerPos) to bat each bomb aside as it arrives. A bomb that reaches the bottom blows the
 // player up and costs one of 3 lives; the round then restarts with 10 more bombs (at most 50) dropped more slowly.
-// Batting all of them shows CONGRATULATIONS (gUnk_03005310.sceneResult 1); losing every life shows GAME OVER (2).
+// Batting all of them shows CONGRATULATIONS (gFieldState.sceneResult 1); losing every life shows GAME OVER (2).
 // Sub-states (gBombGameStates): 0 init, 1 graphics, 2 fade in, 3 round intro, 4 pick lanes, 5 play, 6 cleared,
 // 7 game over, 8 fade out, 9 back to the field. Runtime-checked in scenario 14_arcade.
 #include "global.h"
@@ -192,7 +192,7 @@ void bomb_game_play_state(void) {
 void bomb_game_clear_state(void) {
     bomb_game_clear_effects();
     if (bomb_game_clear_banner()) {
-        gUnk_03005310.sceneResult = 1;
+        gFieldState.sceneResult = 1;
         fade_out_music(0x30);
         gGameSubState = 8;
     }
@@ -204,7 +204,7 @@ void bomb_game_over_state(void) {
     bomb_game_over_effects();
     bomb_game_animate_bombs();
     if (bomb_game_over_banner()) {
-        gUnk_03005310.sceneResult = 2;
+        gFieldState.sceneResult = 2;
         fade_out_music(0x30);
         gGameSubState = 8;
     }

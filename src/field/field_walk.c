@@ -38,14 +38,14 @@ void init_battle_sprites(void) {
 }
 
 void scene_state_reset(void) {
-    gUnk_03006D20.unkB = 0;
+    gScriptCmdWork.transition_step = 0;
 }
 
 u32 scene_state_dispatch(u32 a, u32 b) {
     u32 zero;
     u32 ret = 0;
 
-    switch (gUnk_03006D20.unkB) {
+    switch (gScriptCmdWork.transition_step) {
     case 0:
         if (a != 0x20) {
             s32 n;
@@ -56,24 +56,24 @@ u32 scene_state_dispatch(u32 a, u32 b) {
                 n = 0xFF;
             setup_palette_fade_to_color_with_obj(0, 0.0f, 32.0f, n);
         }
-        gUnk_03006D20.unkB++;
+        gScriptCmdWork.transition_step++;
         break;
     case 1:
         if (a == 0x20) {
             save_script_sprites();
             switch_game_mode(0x20, b);
-            gUnk_03006D20.unkB++;
+            gScriptCmdWork.transition_step++;
         } else if (run_blend_fade_transition(0)) {
             if (a == 0x12)
                 field_update_music(0x18, 0);
             save_script_sprites();
             switch_game_mode(a, b);
-            gUnk_03006D20.unkB++;
+            gScriptCmdWork.transition_step++;
         }
         break;
     case 2:
         memzero_bytes((u8 *)gSpriteEntries, 0x2000);
-        memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+        memzero_bytes((u8 *)gEntityStates, 0x200);
         zero = 0;
         DmaSet(3, &zero, OAM, 0x85000100);
         zero = 0;
@@ -135,10 +135,10 @@ u32 scene_state_dispatch(u32 a, u32 b) {
             field_update_music(0xF, 0);
             break;
         }
-        gUnk_03006D20.unkB++;
+        gScriptCmdWork.transition_step++;
         break;
     case 3:
-        gUnk_03006D20.unkB++;
+        gScriptCmdWork.transition_step++;
         break;
     case 4:
         if (a == 8 || run_blend_fade_transition(0))
@@ -153,7 +153,7 @@ void field_walk_update(void) {
     u32 npc;
     u32 warp;
 
-    switch (gUnk_03005310.unk1) {
+    switch (gFieldState.step) {
     case 0:
         set_battle_state_cancel_flag();
         if (find_map_event_by_coords(gFieldWork.player_tile_x, gFieldWork.player_tile_y)) {
@@ -167,19 +167,19 @@ void field_walk_update(void) {
                 sprite_anim_start(48, gSpriteEntries[48].unk2B * 4 + gSpriteEntries[48].unk20);
             }
             follower_turn_toward_player(3);
-            gUnk_03005310.unk1 = 1;
+            gFieldState.step = 1;
         } else {
-            if (gUnk_03006D38.unk3 == 4)
+            if (gFieldSceneParams.warp_sound == 4)
                 field_play_sound_effect(0);
-            gUnk_03005310.unk1 = 2;
+            gFieldState.step = 2;
         }
         break;
     case 1:
         field_player_step(gSpriteEntries[47].unk20);
         if (gFieldWork.player_step_frames == 0) {
-            if (gUnk_03006D38.unk3 == 4)
+            if (gFieldSceneParams.warp_sound == 4)
                 field_play_sound_effect(0);
-            gUnk_03005310.unk1++;
+            gFieldState.step++;
         }
         break;
     case 2:
@@ -192,9 +192,9 @@ void field_walk_update(void) {
                 npc = 1;
             } else {
                 if (find_map_event_by_coords(gFieldWork.player_tile_x, gFieldWork.player_tile_y)) {
-                    gUnk_03005310.unk1 = 3;
-                    if (gUnk_03006D38.unk3)
-                        field_play_sound_effect(gUnk_083D29E6[gUnk_03006D38.unk3]);
+                    gFieldState.step = 3;
+                    if (gFieldSceneParams.warp_sound)
+                        field_play_sound_effect(gWarpSoundEffects[gFieldSceneParams.warp_sound]);
                     setup_palette_fade_to_color_with_obj(0x7FFF, 0.0f, 32.0f, 8.0f);
                     warp = 1;
                 }
@@ -203,7 +203,8 @@ void field_walk_update(void) {
                         gSpriteEntries[47].unk2A = 1;
                         gSpriteEntries[48].unk2A = 1;
                     } else {
-                        gSpriteEntries[48].unk2A = gSpriteEntries[47].unk2A = gUnk_083D2908[gFieldWork.player_form];
+                        gSpriteEntries[48].unk2A = gSpriteEntries[47].unk2A =
+                            gPlayerFormSpeedIds[gFieldWork.player_form];
                     }
                     if (KEYS_LO(gNewKeys) & 1) {
                         if (map_cursor_move_and_check_event())
@@ -218,14 +219,14 @@ void field_walk_update(void) {
                             gGameMode = 0;
                             gGameState = 1;
                             gGameSubState = 0;
-                            gUnk_03005310.unk1C = gBg0Scroll.x;
-                            gUnk_03005310.unk24 = gBg0Scroll.y;
-                            gUnk_03005310.unk1E = gBg1Scroll.x;
-                            gUnk_03005310.unk26 = gBg1Scroll.y;
-                            gUnk_03005310.unk20 = gBg2Scroll.x;
-                            gUnk_03005310.unk28 = gBg2Scroll.y;
-                            gUnk_03005310.unk22 = gBg3Scroll.x;
-                            gUnk_03005310.unk2A = gBg3Scroll.y;
+                            gFieldState.saved_bg0_x = gBg0Scroll.x;
+                            gFieldState.saved_bg0_y = gBg0Scroll.y;
+                            gFieldState.saved_bg1_x = gBg1Scroll.x;
+                            gFieldState.saved_bg1_y = gBg1Scroll.y;
+                            gFieldState.saved_bg2_x = gBg2Scroll.x;
+                            gFieldState.saved_bg2_y = gBg2Scroll.y;
+                            gFieldState.saved_bg3_x = gBg3Scroll.x;
+                            gFieldState.saved_bg3_y = gBg3Scroll.y;
                             gBg0Scroll.x = 0;
                             gBg0Scroll.y = 0;
                             gFieldWork.player_facing = gSpriteEntries[47].unk20;
@@ -252,11 +253,11 @@ void field_walk_update(void) {
         break;
     case 3:
         if (run_blend_fade_transition(0x7FFF))
-            gUnk_03005310.unk1 = 4;
+            gFieldState.step = 4;
         break;
     case 4:
         field_warp_to_area();
-        gUnk_03005310.unk1 = 0;
+        gFieldState.step = 0;
         gGameMode = 1;
         gGameState = 1;
         gGameSubState = 1;
@@ -268,8 +269,8 @@ void field_walk_update(void) {
     update_entity_sprites_on_screen();
 }
 
-// guess: resets the field frame handler (field_walk_update runs a state machine on unk1)
+// guess: resets the field frame handler (field_walk_update runs a state machine on gFieldState.step)
 static void field_walk_reset(void) {
-    gUnk_03005310.unk0 = 1;
-    gUnk_03005310.unk1 = 0;
+    gFieldState.unk0 = 1;
+    gFieldState.step = 0;
 }

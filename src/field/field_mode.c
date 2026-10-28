@@ -5,16 +5,16 @@
 #include "global.h"
 
 static void field_clear_ram(void) {
-    memzero_bytes((u8 *)&gUnk_03005310, 0x3C);
+    memzero_bytes((u8 *)&gFieldState, 0x3C);
     memzero_bytes((u8 *)&gFieldDebug, 0x38);
     memzero_bytes((u8 *)&gFieldTilemapBuf, 4);
     memzero_bytes((u8 *)&gUnk_030057DC, 4);
     memzero_bytes((u8 *)&gUnk_0300534C, 4);
-    memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+    memzero_bytes((u8 *)gEntityStates, 0x200);
     memzero_bytes((u8 *)gAffineParams, 0x200);
     memzero_bytes((u8 *)&gBlendEffect, 0x34);
-    memzero_bytes((u8 *)&gUnk_03006D38, 8);
-    memzero_bytes((u8 *)&gUnk_03006D20, 0x10);
+    memzero_bytes((u8 *)&gFieldSceneParams, 8);
+    memzero_bytes((u8 *)&gScriptCmdWork, 0x10);
     memzero_bytes((u8 *)&gEventFlags, 4);
     memzero_bytes((u8 *)&gMapScriptData, 4);
     memzero_bytes((u8 *)&gFieldEffect, 0x240);
@@ -30,7 +30,7 @@ void field_mode_dispatch(void) {
 void field_resume(u32 a) {
     switch (a) {
     case 0:
-        gUnk_03005310.sceneResult = gGameWork.unk9C;
+        gFieldState.sceneResult = gGameWork.unk9C;
         if (gFieldWork.script_running != 0) {
             gGameMode = 1;
             gGameState = 1;
@@ -73,10 +73,10 @@ void dispatch_by_index_0476e8(u32 idx) {
         gGameSubState = 8;
         return;
     case 7:
-        gUnk_03006D20.unkC = 7;
+        gScriptCmdWork.mode_result = 7;
         break;
     case 8:
-        gUnk_03006D20.unkC = 8;
+        gScriptCmdWork.mode_result = 8;
         break;
     case 10:
         field_clear_ram();

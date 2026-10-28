@@ -192,7 +192,7 @@ void vehicle_menu_reload(void) {
 
     clear_vram_tiles_1000();
     memzero_bytes((u8 *)gSpriteEntries, 0x2000);
-    memzero_bytes((u8 *)gUnk_030055A0, 0x200);
+    memzero_bytes((u8 *)gEntityStates, 0x200);
     zero = 0;
     DmaSet(3, &zero, OAM, 0x85000100);
     REG_DISPCNT = 0x1F40;

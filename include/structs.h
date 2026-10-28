@@ -108,16 +108,18 @@ struct SoundMixChannel {
     u32 idleFrames; // counts frames while no sample is set
 };
 
-struct Unk_03006D20 {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
+// Work area of the running map script command (gScriptCmdWork, 16 bytes, cleared when a script ends).
+struct ScriptCmdWork {
+    u8 counter;      // frames / steps left (blink, walk-in-place state, step countdown)
+    u8 blink_phase;  // odd = sprite hidden (script_sprite_blink_step)
+    u8 timer;        // frames until the next blink toggle / walk animation frames left
+    u8 timer_reload; // blink toggle period
     u8 filler4[0x4];
-    u16 unk8; // base y of a sprite hop (script_sprite_hop_step)
-    u8 unkA;  // sprite slot (gSpriteEntries index)
-    u8 unkB;
-    u8 unkC;
+    u16 hop_base_y;     // base y of a sprite hop (script_sprite_hop_step)
+    u8 sprite_slot;     // sprite the command moves (gSpriteEntries index: map object + 49, script object + 79)
+    u8 transition_step; // step of scene_state_dispatch (fade out of the field into another mode)
+    u8 mode_result;     // result code of a mode left from a script (field_resume: 7 / 8), read by
+                        // map_script_update_link_start (7 = go on)
     u8 fillerD[0x3];
 };
 
@@ -397,8 +399,9 @@ struct SpriteEntry {
     u8 filler3C[0x4];
 };
 
-struct Unk_030055A0 {
-    u16 unk0;
+// Per-sprite entity state (gEntityStates, one per gSpriteEntries slot, 0x200 bytes).
+struct EntityState {
+    u16 active; // non-zero (0xFFFF) while the slot holds a field entity; drawn by update_entity_sprites_on_screen
     u16 unk2;
 };
 
@@ -1296,46 +1299,49 @@ struct InterpCand {
     s32 abs;
 };
 
-struct Unk_03005310 {
-    u8 unk0;
-    u8 unk1;
+// Field state (gFieldState, 0x3C bytes, cleared by field_clear_ram): the current field state handler's step,
+// the frame counter, the BG2 affine matrix, and the BG scrolls saved while a menu or scene covers the field.
+struct FieldState {
+    u8 unk0; // set to 1 by field_walk_reset, never read in C
+    u8 step; // step of the current field sub-state handler (field_walk_update, field_update_*)
     u8 filler2[0x2];
-    u32 unk4;  // frame counter
-    s16 unk8;  // affine pa (identity 0x100, bg2_affine_reset)
-    s16 unkA;  // pb
-    s16 unkC;  // pc
-    s16 unkE;  // pd
-    s32 unk10; // affine x
-    s32 unk14; // affine y
-    u16 unk18; // cleared with the gAffineParams affine params (affine_params_reset)
-    u16 unk1A;
-    u16 unk1C; // BG0 x scroll (new_game_init)
-    u16 unk1E; // BG1-3 x scroll (area_load_graphics)
-    u16 unk20;
-    u16 unk22;
-    u16 unk24; // BG0 y scroll
-    u16 unk26; // BG1-3 y scroll
-    u16 unk28;
-    u16 unk2A;
-    s16 unk2C;
-    s16 unk2E;
-    s16 unk30;
-    s16 unk32; // 0x100 (bg2_affine_reset)
-    s16 unk34; // 0x100
-    u16 unk36; // 0-255, stepped by RIGHT / LEFT in debug_bg_scroll_input
-    u8 unk38;
+    u32 frame_counter; // +1 per field frame (field_update); NPC idle animations, random rolls
+    s16 bg2_pa;        // BG2 affine matrix (identity 0x100, bg2_affine_reset)
+    s16 bg2_pb;
+    s16 bg2_pc;
+    s16 bg2_pd;
+    s32 bg2_x; // BG2 affine reference point
+    s32 bg2_y;
+    u16 affine_debug_flag;  // toggled by A in affine_debug_input
+    u16 affine_debug_level; // 0-15, R / L in affine_debug_input
+    u16 saved_bg0_x;        // BG scrolls saved when the Medawatch menu opens (field_walk_update),
+    u16 saved_bg1_x;        // restored by area_load_graphics; saved_bg1_x / y are also the
+    u16 saved_bg2_x;        // base of the screen shake (map_script_update_shake_screen)
+    u16 saved_bg3_x;
+    u16 saved_bg0_y;
+    u16 saved_bg1_y;
+    u16 saved_bg2_y;
+    u16 saved_bg3_y;
+    s16 bg2_center_x; // BG2 rotation centre offset (bg2_affine_update_matrix)
+    s16 bg2_center_y;
+    s16 unk30;       // cleared by bg2_affine_reset, never read
+    s16 bg2_scale_x; // 0x100 = 1.0 (bg2_affine_reset)
+    s16 bg2_scale_y;
+    u16 bg2_angle;  // 0-255, stepped by RIGHT / LEFT in debug_bg_scroll_input
+    u8 unk38;       // cleared when a map script ends, never read in C
     u8 sceneResult; // result of the last battle / minigame: 1 won, 2 lost (map script branch
                     // map_script_cmd_jump_if_lost)
 };
 
-struct Unk_03006D38 {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    u8 unk4; // selected item id (item menu, item_menu_handle_input)
-    u8 unk5;
-    u8 unk6;
+// Parameters passed between the field, its scripts and the scenes they start (gFieldSceneParams, 8 bytes).
+struct FieldSceneParams {
+    u8 race_id;          // race to run (map_script_cmd_race -> race_init)
+    u8 event_picture_id; // event picture to show (map_script_cmd_event_picture); also gEventPictureSongs row
+    u8 area_speed_id;    // the area's walk speed factor (gWalkSpeedFactors index, sprite_walk_speed)
+    u8 warp_sound;       // high nibble of the warp's dir byte: gWarpSoundEffects index (4 = also a step sound)
+    u8 selected_item;    // selected item id (item menu, item_menu_handle_input)
+    u8 town_map_place;   // place chosen on the town map: gTownMapWarpAreas / Positions index (field effect 0x12)
+    u8 bot_gender;       // gender of the team bot found by the script helper; picks palettes 0x28+ in area tiles
 };
 
 // Field effect state (gFieldEffect, 0x240 bytes, cleared by field_effect_start); field_effect_run views the
