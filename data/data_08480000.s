@@ -4,8 +4,8 @@
 gData_08480000:
 	.incbin "baserom.gba", 0x480000, 0x37A0
 
-	.global gUnk_084837A0
-gUnk_084837A0:
+	.global gAreaNpcRecords
+gAreaNpcRecords:
 	.incbin "baserom.gba", 0x4837A0, 0x300
 
 	.global gMenuDigitPalette
@@ -372,8 +372,8 @@ gMfMenuRightPanelTiles:
 gPartsMenuRightPanelTiles:
 	.incbin "baserom.gba", 0x4881EC, 0x108
 
-	.global gUnk_084882F4
-gUnk_084882F4:
+	.global gArmorPanelDecorTilesLz
+gArmorPanelDecorTilesLz:
 	.incbin "baserom.gba", 0x4882F4, 0x48
 
 	.global gTradeChoiceWindowTiles
@@ -412,8 +412,8 @@ gChoiceMenuLabelTilemap:
 gMedaforceGaugeFrameTilemap:
 	.incbin "baserom.gba", 0x488744, 0x20
 
-	.global gUnk_08488764
-gUnk_08488764:
+	.global gBattleBg3TilemapLz
+gBattleBg3TilemapLz:
 	.incbin "baserom.gba", 0x488764, 0x40
 
 	.global gActionSelectPanelTilemap
@@ -476,8 +476,8 @@ gBattleBgPalette12:
 gBattleBgPalette11:
 	.incbin "baserom.gba", 0x488B04, 0x20
 
-	.global gUnk_08488B24
-gUnk_08488B24:
+	.global gArmorPanelDecorPalette
+gArmorPanelDecorPalette:
 	.incbin "baserom.gba", 0x488B24, 0x20
 
 	.global gTradeChoiceWindowPalette
@@ -632,8 +632,8 @@ gStatusScreenCornerTiles:
 gAltFontGlyphs:
 	.incbin "baserom.gba", 0x4C5188, 0x1440
 
-	.global gUnk_084C65C8
-gUnk_084C65C8:
+	.global gArmorPanelPartIconTilesLz
+gArmorPanelPartIconTilesLz:
 	.incbin "baserom.gba", 0x4C65C8, 0xF0
 
 	.global gPrizeGameBgTiles2
@@ -672,8 +672,8 @@ gBattleBgPalette8:
 gBattleBgPalette13:
 	.incbin "baserom.gba", 0x4C6A38, 0x20
 
-	.global gUnk_084C6A58
-gUnk_084C6A58:
+	.global gArmorPanelPartIconPalette
+gArmorPanelPartIconPalette:
 	.incbin "baserom.gba", 0x4C6A58, 0x20
 
 	.global gPrebattleWipePalette
@@ -868,28 +868,28 @@ gSkillCastHopTiles:
 gTeamAttackTurretTilesLz:
 	.incbin "baserom.gba", 0x4D513C, 0x380
 
-	.global gUnk_084D54BC
-gUnk_084D54BC:
+	.global gBreakFormTilesLz
+gBreakFormTilesLz:
 	.incbin "baserom.gba", 0x4D54BC, 0x114
 
 	.global gStabilitySparkleTiles
 gStabilitySparkleTiles:
 	.incbin "baserom.gba", 0x4D55D0, 0x1B8
 
-	.global gUnk_084D5788
-gUnk_084D5788:
+	.global gForceBindOrbTilesLz
+gForceBindOrbTilesLz:
 	.incbin "baserom.gba", 0x4D5788, 0xD8
 
-	.global gUnk_084D5860
-gUnk_084D5860:
+	.global gAutorecoverOrbTilesLz
+gAutorecoverOrbTilesLz:
 	.incbin "baserom.gba", 0x4D5860, 0x2A8
 
-	.global gUnk_084D5B08
-gUnk_084D5B08:
+	.global gReactivateOrbTilesLz
+gReactivateOrbTilesLz:
 	.incbin "baserom.gba", 0x4D5B08, 0x270
 
-	.global gUnk_084D5D78
-gUnk_084D5D78:
+	.global gScoutTilesLz
+gScoutTilesLz:
 	.incbin "baserom.gba", 0x4D5D78, 0x144
 
 	.global gConcealDomeTiles
@@ -900,12 +900,12 @@ gConcealDomeTiles:
 gChargeHourglassTiles:
 	.incbin "baserom.gba", 0x4D6098, 0x144
 
-	.global gUnk_084D61DC
-gUnk_084D61DC:
+	.global gRapidChargeHourglassTilesLz
+gRapidChargeHourglassTilesLz:
 	.incbin "baserom.gba", 0x4D61DC, 0x144
 
-	.global gUnk_084D6320
-gUnk_084D6320:
+	.global gDrainChargeHourglassTilesLz
+gDrainChargeHourglassTilesLz:
 	.incbin "baserom.gba", 0x4D6320, 0x144
 
 	.global gPushoverBananaTiles
@@ -948,8 +948,8 @@ gCounterAttackBallTilesLz:
 gChangeEffectTilesLz:
 	.incbin "baserom.gba", 0x4D7528, 0x444
 
-	.global gUnk_084D796C
-gUnk_084D796C:
+	.global gSkillLevelUpTilesLz
+gSkillLevelUpTilesLz:
 	.incbin "baserom.gba", 0x4D796C, 0x330
 
 	.global gNewPartSpriteTiles
@@ -1092,12 +1092,12 @@ gMedaforceAntiProtectionTiles:
 gPrizeGameObjTiles:
 	.incbin "baserom.gba", 0x4E20F8, 0x858
 
-	.global gUnk_084E2950
-gUnk_084E2950:
+	.global gBattleMarkerTilesLz
+gBattleMarkerTilesLz:
 	.incbin "baserom.gba", 0x4E2950, 0x2C8
 
-	.global gUnk_084E2C18
-gUnk_084E2C18:
+	.global gBattleMarkerAltTilesLz
+gBattleMarkerAltTilesLz:
 	.incbin "baserom.gba", 0x4E2C18, 0x220
 
 	.global gSpriteFontPalette
@@ -1112,8 +1112,8 @@ gCursorArrowPalette:
 gHelpCursorPalette:
 	.incbin "baserom.gba", 0x4E2E78, 0x20
 
-	.global gUnk_084E2E98
-gUnk_084E2E98:
+	.global gCommonObjPalette
+gCommonObjPalette:
 	.incbin "baserom.gba", 0x4E2E98, 0x20
 
 	.global gMedabotsCursorObjPalette
@@ -1156,8 +1156,8 @@ gPrebattleObjPalette:
 gBattleBannerPalette:
 	.incbin "baserom.gba", 0x4E2FD8, 0x20
 
-	.global gUnk_084E2FF8
-gUnk_084E2FF8:
+	.global gActionPhaseObjPalette
+gActionPhaseObjPalette:
 	.incbin "baserom.gba", 0x4E2FF8, 0x20
 
 	.global gMedaforceActivatePalette
@@ -1176,8 +1176,8 @@ gMfChargeSparklePalette:
 gMissPopupPalette:
 	.incbin "baserom.gba", 0x4E3078, 0x20
 
-	.global gUnk_084E3098
-gUnk_084E3098:
+	.global gArmorPanelGaugePalette
+gArmorPanelGaugePalette:
 	.incbin "baserom.gba", 0x4E3098, 0x20
 
 	.global gEffectCommonPalette
@@ -1668,28 +1668,28 @@ gSkillCastHopPalette:
 gTeamAttackTurretPalette:
 	.incbin "baserom.gba", 0x50E678, 0x20
 
-	.global gUnk_0850E698
-gUnk_0850E698:
+	.global gBreakFormPalette
+gBreakFormPalette:
 	.incbin "baserom.gba", 0x50E698, 0x20
 
 	.global gStabilitySparklePalette
 gStabilitySparklePalette:
 	.incbin "baserom.gba", 0x50E6B8, 0x20
 
-	.global gUnk_0850E6D8
-gUnk_0850E6D8:
+	.global gForceBindOrbPalette
+gForceBindOrbPalette:
 	.incbin "baserom.gba", 0x50E6D8, 0x20
 
-	.global gUnk_0850E6F8
-gUnk_0850E6F8:
+	.global gAutorecoverOrbPalettes
+gAutorecoverOrbPalettes:
 	.incbin "baserom.gba", 0x50E6F8, 0x40
 
-	.global gUnk_0850E738
-gUnk_0850E738:
+	.global gReactivateOrbPalettes
+gReactivateOrbPalettes:
 	.incbin "baserom.gba", 0x50E738, 0x40
 
-	.global gUnk_0850E778
-gUnk_0850E778:
+	.global gScoutPalettes
+gScoutPalettes:
 	.incbin "baserom.gba", 0x50E778, 0x40
 
 	.global gConcealDomePalette
@@ -1700,12 +1700,12 @@ gConcealDomePalette:
 gChargeHourglassPalette:
 	.incbin "baserom.gba", 0x50E7D8, 0x20
 
-	.global gUnk_0850E7F8
-gUnk_0850E7F8:
+	.global gRapidChargeHourglassPalette
+gRapidChargeHourglassPalette:
 	.incbin "baserom.gba", 0x50E7F8, 0x20
 
-	.global gUnk_0850E818
-gUnk_0850E818:
+	.global gDrainChargeHourglassPalette
+gDrainChargeHourglassPalette:
 	.incbin "baserom.gba", 0x50E818, 0x20
 
 	.global gPushoverBananaPalette

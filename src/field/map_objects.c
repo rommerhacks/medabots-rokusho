@@ -642,6 +642,6 @@ u32 event_counter_get(u16 id) {
 }
 
 void load_battle_terrain_data(void) {
-    memcpy_u8(gUnk_083D2918[gFieldWork.loaded_form], gFieldWork.tile_actions, 8);
+    memcpy_u8(gFormTileActions[gFieldWork.loaded_form], gFieldWork.tile_actions, 8);
     gSpriteEntries[47].unk2A = gPlayerFormSpeedIds[gFieldWork.player_form];
 }

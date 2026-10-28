@@ -36,8 +36,8 @@ gMapSpriteSheet48Palette:
 gMapSpriteSheet48Tiles:
 	.incbin "baserom.gba", 0x5E3AC8, 0x1661C
 
-	.global gUnk_085FA0E4
-gUnk_085FA0E4:
+	.global gFieldSharedSpritePalette
+gFieldSharedSpritePalette:
 	.incbin "baserom.gba", 0x5FA0E4, 0x20
 
 	.global gUnk_085FA104

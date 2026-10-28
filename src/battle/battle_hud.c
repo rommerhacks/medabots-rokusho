@@ -4,7 +4,7 @@
 #include "global.h"
 
 void load_bg3_tilemap_08488764(void) {
-    set_tilemap_and_decompress_bg(14, 3, gUnk_08488764, REG_BG3CNT, 0x200);
+    set_tilemap_and_decompress_bg(14, 3, gBattleBg3TilemapLz, REG_BG3CNT, 0x200);
 }
 
 void draw_battle_bot_portraits(void) {

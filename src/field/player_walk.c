@@ -27,7 +27,7 @@ void load_map_npc_sprites(s32 mode) {
     n = 0;
     j = 0;
     for (k = 0; k < 32; k++) {
-        for (e = gUnk_084837A0[gFieldWork.area_id]; e->x != 0xFF; e++) {
+        for (e = gAreaNpcRecords[gFieldWork.area_id]; e->x != 0xFF; e++) {
             if (!((e->unk6 >> gFieldWork.story_phase) & 1))
                 continue;
             if (e->unk5 != k)

@@ -532,8 +532,8 @@ void break_form_begin(void) {
 }
 
 void break_form_sprite_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D54BC, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E698, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gBreakFormTilesLz, (void *)0x06014800);
+    CpuFastSet(gBreakFormPalette, (void *)0x050002E0, 8);
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x39], 0x21);
     if (gBattleWork.actorSideFlags & 1)
         gSpriteEntries[0x21].unk0 |= 0x1000;
@@ -775,8 +775,8 @@ void force_bind_begin(void) {
 void force_bind_orbs_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gUnk_084D5788, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E6D8, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gForceBindOrbTilesLz, (void *)0x06014800);
+    CpuFastSet(gForceBindOrbPalette, (void *)0x050002E0, 8);
     for (i = 0; i < 4; i++) {
         gSpriteEntries[0x21 + i].unk0 = 0xC604;
         gSpriteEntries[0x21 + i].unk1C = 0;
@@ -979,8 +979,8 @@ void autorecover_begin(void) {
 }
 
 void autorecover_orb_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D5860, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E6F8, (void *)0x050002C0, 0x10);
+    lz_decompress_dispatch(gAutorecoverOrbTilesLz, (void *)0x06014800);
+    CpuFastSet(gAutorecoverOrbPalettes, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].unk0 |= 0x200;
     gSpriteEntries[0x21].unk8 = 0x40;
     gSpriteEntries[0x21].unk9 = 0x40;
@@ -1117,8 +1117,8 @@ void reactivate_begin(void) {
 }
 
 void reactivate_orb_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D5B08, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E738, (void *)0x050002C0, 0x10);
+    lz_decompress_dispatch(gReactivateOrbTilesLz, (void *)0x06014800);
+    CpuFastSet(gReactivateOrbPalettes, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].unk0 |= 0x200;
     gSpriteEntries[0x21].unk8 = 0x40;
     gSpriteEntries[0x21].unk9 = 0x40;

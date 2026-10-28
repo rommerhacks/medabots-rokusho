@@ -101,7 +101,7 @@ extern const u8 gPlayerFormSpeedIds[]; // player_form -> gWalkSpeedFactors index
 extern const u8 gPlayerFormSpriteSheets[]; // player form -> map sprite sheet id (its palette in gFieldSpritePalettes)
 extern const u8 gEventPictureSongs[];      // 4 per event picture: stop song?, song, after-mode (1 = play), song after
 extern const u16 *const gFieldSpritePalettes[]; // 16-colour OBJ palette per map sprite sheet id (NULL: none)
-extern const u8 gUnk_083D2918[][8];
+extern const u8 gFormTileActions[][8];   // field tile actions per player form (copied to gFieldWork.tile_actions)
 extern const u8 gSpriteSheetHasShadow[]; // per map sprite sheet id: give the sprite a shadow (sprite 0x90)
 extern const u8 gUnk_083D28C3[][16];
 extern const u8 gAreaMapSizes[][2];
@@ -132,8 +132,8 @@ extern const u32 gMedalNames[]; // Medal names by Medal id (0 KUWAGATA, 6 SNAKE.
 // 16 bytes per Medal: [0-2] Medaforce ids (gMedaforceRecords), [3-6] Medal levels (guess: when each one unlocks),
 // [7] icon, [8-15] guess: aptitude per skill type
 extern const u8 gMedalRecords[][16];
-extern const u8 gMedabotSpriteNodeDescs[]; // SpriteNodeDesc pointers of the Medabot sprite tree
-extern const u32 gUnk_083BA4D8[];
+extern const u8 gMedabotSpriteNodeDescs[];   // SpriteNodeDesc pointers of the Medabot sprite tree
+extern const u32 gMedabotNames[];            // Medabot name strings by head part id (medabot_name)
 extern const u8 gMedalAttributeBaseSkills[]; // 8 bytes per Medal attribute: base skill levels (init_enemy_bot_medal)
 extern const u8 gAiPartOrders[][4];          // 32 part orders (0xFF = end) tried by select_bot_battle_action
 extern const u32 gMedapartNames[][4];        // Medapart name pointers: [part id][kind: head, right arm, left arm, legs]
@@ -431,7 +431,7 @@ extern const u8 gMedalsListBg2Tilemap[];
 extern const u8 gMedalsListBg3Tilemap[];
 extern const u16 gMedalsListBgPalette[];
 extern const u16 gTradeChoiceWindowPalette[]; // BG palette 11 of the trade choice window
-extern const u16 gUnk_084E2E98[];
+extern const u16 gCommonObjPalette[];         // OBJ palette loaded with gCommonObjTilesLz by several menus. guess
 extern const u8 gMedalAbilityBgTiles[];
 extern const u8 gMedalAbilityBg0Tilemap[];
 extern const u8 gMedalAbilityBg1Tilemap[];
@@ -569,7 +569,7 @@ extern const u16 gBattleBannerPalette[]; // its OBJ palette 15
 
 extern const u16 gGradientPaletteOrange[];
 
-extern const u8 gUnk_08488764[];        // Robattle screen tilemaps (compressed)
+extern const u8 gBattleBg3TilemapLz[];  // Robattle screen tilemaps (compressed)
 extern const u8 gLeftBotPanelTilemap[]; // left (player side) Medabot name panel at (0,13), tiles gLeftBotPanelTiles
 extern const u8
     gMedaforceGaugeFrameTilemap[]; // Medaforce gauge strip at (0,17) / (20,17), tiles gMedaforceGaugeFrameTiles
@@ -672,38 +672,38 @@ extern const u16 gGameOverIkkiFrames[];   // sprite 1 animation frames, by unk1A
 extern const s8 gGameOverLogoBounce[];    // sprite 0 y offsets, 13 steps (game_over_logo_drop)
 extern const u16 gTitleMenuBgPalette[];   // title menu BG palette (0x100 colors)
 extern u8 gOptionTimeLimit;               // picks the Robattle TIME limit: 0 = 40, 1 = 30, 2 = 20 (robattle_time_init)
-extern u8 gOptionBattleMusic;             // index into gUnk_083AD3B0 (battle music)
-extern const u8 gUnk_083AD3B0[];          // battle song ids (select_battle_music)
+extern u8 gOptionBattleMusic;             // index into gBattleSongs (battle music)
+extern const u8 gBattleSongs[];           // battle song ids (select_battle_music)
 // Per leg type (skill id - 100), 11 bytes: one per battlefield (gBattleWork.battlefield); added to moveDelay
 // (bot_move_delay_add_terrain).
 extern const u8 gTerrainMoveDelays[];
-extern const s8 gUnk_083AD3B3[];   // 32 y steps of the number pop-up over a Medabot (battle_number_popup_update)
-extern const u8 gRandomBotOrder[]; // 32 random record orders (find_next_active_bot)
+extern const s8 gNumberPopupYSteps[]; // 32 y steps of the number pop-up over a Medabot (battle_number_popup_update)
+extern const u8 gRandomBotOrder[];    // 32 random record orders (find_next_active_bot)
 extern const u8
     gLinkBotRecordSwap[]; // record remap when gLinkPlayerId is set in a link Robattle (find_next_active_bot)
-extern const u8 gTargetSwapSideTable[]; // record + 1 -> same slot on the other side (bot_target_swap_side)
-extern const struct GfxListEntry *const gUnk_083CE480[]; // graphics lists (decompress_indexed_graphics_to_ewram)
-extern const void *const gUnk_083B2584[];                // pairs: compressed tiles [i * 2], palette [i * 2 + 1]
-extern const Func gBattleMessageSteps[];                 // message steps by gBattleWork.unkA1[0] (battle_message_show)
-extern const Func gMissPopupSteps[];                     // steps by gBattleWork.unk9C[0] (miss_popup_run)
-extern const Func gTargetPanelSteps[];                   // steps by gBattleWork.unk9C[0] (target_panels_show)
-extern const Func gTrapHitSteps[];                       // by gBattleWork.step (trap_hit_run)
-extern const Func gActionPartCheckSteps[];               // by gBattleWork.step (action_part_check_run)
-extern const Func gTargetPartCheckSteps[];               // by gBattleWork.step (target_part_check_run)
-extern const Func gActionFlashSteps[];                   // by gBattleWork.step (action_flash_run)
-extern const Func gGuardSteps[];                         // by gBattleWork.step (guard_run)
-extern const Func gActionAnnounceSteps[];                // by gBattleWork.step (action_announce_run)
-extern const Func gCloseupEnterSteps[];                  // by gBattleWork.step (closeup_enter_run)
-extern const Func gAttackHitSteps[];                     // by gBattleWork.step (attack_hit_run)
-extern const u8 gMissPopupTiles[];                       // compressed OBJ tiles (miss_popup_load)
-extern const u16 gMissPopupPalette[];                    // OBJ palette (miss_popup_load)
-extern const u16 gTargetLinePalette[];                   // OBJ palette 8 (target_panels_line_init)
-extern const u16 gTargetArrowsPalette[];                 // OBJ palette 9 (target_panels_arrows_init)
-extern const u8 gGrapTrapTiles[];                        // compressed OBJ tiles, trap_hit_load_graphics case 0
-extern const u8 gShotTrapTiles[];                        // case 1
-extern const u8 gAttackClrTrapTiles[];                   // case 2
-extern const u8 gMedaforceTrapTiles[];                   // case 3
-extern const u16 gGrapTrapPalette[];                     // OBJ palettes for the same cases
+extern const u8 gTargetSwapSideTable[];              // record + 1 -> same slot on the other side (bot_target_swap_side)
+extern const struct GfxListEntry *const gGfxLists[]; // graphics lists (decompress_indexed_graphics_to_ewram)
+extern const void *const gGfxListData[];             // pairs: compressed tiles [i * 2], palette [i * 2 + 1]
+extern const Func gBattleMessageSteps[];             // message steps by gBattleWork.unkA1[0] (battle_message_show)
+extern const Func gMissPopupSteps[];                 // steps by gBattleWork.unk9C[0] (miss_popup_run)
+extern const Func gTargetPanelSteps[];               // steps by gBattleWork.unk9C[0] (target_panels_show)
+extern const Func gTrapHitSteps[];                   // by gBattleWork.step (trap_hit_run)
+extern const Func gActionPartCheckSteps[];           // by gBattleWork.step (action_part_check_run)
+extern const Func gTargetPartCheckSteps[];           // by gBattleWork.step (target_part_check_run)
+extern const Func gActionFlashSteps[];               // by gBattleWork.step (action_flash_run)
+extern const Func gGuardSteps[];                     // by gBattleWork.step (guard_run)
+extern const Func gActionAnnounceSteps[];            // by gBattleWork.step (action_announce_run)
+extern const Func gCloseupEnterSteps[];              // by gBattleWork.step (closeup_enter_run)
+extern const Func gAttackHitSteps[];                 // by gBattleWork.step (attack_hit_run)
+extern const u8 gMissPopupTiles[];                   // compressed OBJ tiles (miss_popup_load)
+extern const u16 gMissPopupPalette[];                // OBJ palette (miss_popup_load)
+extern const u16 gTargetLinePalette[];               // OBJ palette 8 (target_panels_line_init)
+extern const u16 gTargetArrowsPalette[];             // OBJ palette 9 (target_panels_arrows_init)
+extern const u8 gGrapTrapTiles[];                    // compressed OBJ tiles, trap_hit_load_graphics case 0
+extern const u8 gShotTrapTiles[];                    // case 1
+extern const u8 gAttackClrTrapTiles[];               // case 2
+extern const u8 gMedaforceTrapTiles[];               // case 3
+extern const u16 gGrapTrapPalette[];                 // OBJ palettes for the same cases
 extern const u16 gShotTrapPalette[];
 extern const u16 gAttackClrTrapPalette[];
 extern const u16 gMedaforceTrapPalette[];
@@ -721,146 +721,147 @@ extern const u16 gHalfBlockShieldPalette[];
 extern const u8 gRightBotPanelTilemap[]; // right (opponent side) Medabot panel at (18,13), tiles gRightBotPanelTiles
 extern u8 gOptionSkipMessages; // Robattle: nonzero skips the message windows unless gGameWork.skipBotSetup == 1
                                // (battle_message_open..battle_message_finish)
-extern const u8 gMfChargeSparklePalette[];     // 32-byte OBJ palette, copied to OBJ palette 6 (mf_charge_sparkles_init)
-extern u32 gUnk_030018A8[16];                  // cleared in two 32-byte halves by battle_action_cleanup
-extern const u8 gGaugeFillTiles[];             // 9 tiles: an 8-px bar segment filled 0..8. guess: gauge fill steps
-extern const u8 gUnk_084882F4[];               // compressed tiles (code_0801C988)
-extern const u8 gUnk_084C65C8[];               // compressed tiles (code_0801C988)
-extern const u8 gUnk_08488B24[];               // 32-byte OBJ palette (code_0801C988)
-extern const u8 gUnk_084E3098[];               // 32-byte OBJ palette (code_0801C988)
-extern const u8 gUnk_084C6A58[];               // 32-byte OBJ palette (code_0801C988)
-extern const u8 gCriticalHitTiles[];           // compressed OBJ tiles (battle/action_steps)
-extern const u8 gCriticalHitPalette[];         // OBJ palette (battle/action_steps)
-extern const u8 gDestroyMarkerTiles[];         // compressed OBJ tiles (battle/action_steps)
-extern const u8 gDestroyMarkerPalette[];       // OBJ palette (battle/action_steps)
-extern const u8 gHeadMarkerTiles[];            // compressed OBJ tiles (battle/action_steps)
-extern const u8 gHeadMarkerPalette[];          // OBJ palette (battle/action_steps)
-extern const u8 gRightArmMarkerTiles[];        // compressed OBJ tiles (battle/action_steps)
-extern const u8 gRightArmMarkerPalette[];      // OBJ palette (battle/action_steps)
-extern const u8 gLeftArmMarkerTiles[];         // compressed OBJ tiles (battle/action_steps)
-extern const u8 gLeftArmMarkerPalette[];       // OBJ palette (battle/action_steps)
-extern const u8 gLegsMarkerTiles[];            // compressed OBJ tiles (battle/action_steps)
-extern const u8 gLegsMarkerPalette[];          // OBJ palette (battle/action_steps)
-extern const u8 gDamageNumberTiles[];          // compressed OBJ tiles (battle/action_steps)
-extern const u8 gDamageNumberPalette[];        // OBJ palette (battle/action_steps)
-extern const u8 gPartBreakBurstTiles[];        // compressed OBJ tiles (battle/action_steps)
-extern const u8 gPartBreakBurstPalette[];      // OBJ palette (battle/action_steps)
-extern const u8 gCarryOverMarkerTiles[];       // compressed OBJ tiles (battle/action_steps)
-extern const u8 gCarryOverMarkerPalette[];     // OBJ palette (battle/action_steps)
-extern const u8 gAttackMissTiles[];            // compressed OBJ tiles (battle/action_steps)
-extern const u8 gAttackMissPalette[];          // OBJ palette (battle/action_steps)
-extern const u8 gAttackNullifiedTiles[];       // compressed OBJ tiles (battle/action_steps)
-extern const u8 gAttackNullifiedPalette[];     // OBJ palette (battle/action_steps)
-extern const u8 gAttackAbsorbedTiles[];        // compressed OBJ tiles (battle/action_steps)
-extern const u8 gAttackAbsorbedPalette[];      // OBJ palette (battle/action_steps)
-extern const u8 gAbsorbSparkleTiles[];         // compressed OBJ tiles (battle/action_steps)
-extern const u8 gAbsorbSparklePalette[];       // OBJ palette (battle/action_steps)
-extern const u8 gHealNumberPalette[];          // OBJ palette (battle/action_steps)
-extern const Func gStatusAttackSteps[];        // by gBattleWork.step (status_attack_run)
-extern const u8 gStatusFlashTiles[];           // compressed OBJ tiles (battle/action_steps)
-extern const u8 gStatusFlashPalette[];         // OBJ palette (battle/action_steps)
-extern const u8 gBugEffectTiles[];             // compressed OBJ tiles (battle/action_steps)
-extern const u8 gBugEffectPalette[];           // OBJ palette (battle/action_steps)
-extern const u8 gThunderEffectTiles[];         // compressed OBJ tiles (battle/action_steps)
-extern const u8 gThunderEffectPalette[];       // OBJ palette (battle/action_steps)
-extern const u8 gWaveEffectTiles[];            // compressed OBJ tiles (battle/action_steps)
-extern const u8 gWaveEffectPalette[];          // OBJ palette (battle/action_steps)
-extern const u8 gFireEffectTiles[];            // compressed OBJ tiles (battle/action_steps)
-extern const u8 gFireEffectPalette[];          // OBJ palette (battle/action_steps)
-extern const u8 gBugIconTiles[];               // compressed OBJ tiles (battle/action_steps)
-extern const u8 gBugIconPalette[];             // OBJ palette (battle/action_steps)
-extern const u8 gThunderIconTiles[];           // compressed OBJ tiles (battle/action_steps)
-extern const u8 gThunderIconPalette[];         // OBJ palette (battle/action_steps)
-extern const u8 gWaveIconTiles[];              // compressed OBJ tiles (battle/action_steps)
-extern const u8 gWaveIconPalette[];            // OBJ palette (battle/action_steps)
-extern const u8 gFireIconTiles[];              // compressed OBJ tiles (battle/action_steps)
-extern const u8 gFireIconPalette[];            // OBJ palette (battle/action_steps)
-extern const Func gCloseupExitSteps[];         // by gBattleWork.step (closeup_exit_run)
-extern struct UiTilemapTable gUiTilemapsNamed; // same address as gUiTilemaps
-extern const Func gBotDefeatSteps[];           // by gBattleWork.step (bot_defeat_run)
-extern const u8 gReactionRiseTiles[];          // compressed OBJ tiles (battle/action_steps)
-extern const u8 gReactionRiseFxTiles[];        // compressed OBJ tiles (battle/action_steps)
-extern const u8 gReactionNullifyTiles[];       // compressed OBJ tiles (battle/action_steps)
-extern const u8 gReactionAbsorbTiles[];        // compressed OBJ tiles (battle/action_steps)
-extern const u8 gReactionRisePalette[];        // OBJ palette (battle/action_steps)
-extern const u8 gReactionRiseFxPalette[];      // OBJ palette (battle/action_steps)
-extern const u8 gReactionNullifyPalette[];     // OBJ palette (battle/action_steps)
-extern const u8 gReactionAbsorbPalette[];      // OBJ palette (battle/action_steps)
-extern const Func gReactionSteps[];            // by gBattleWork.step (reaction_run)
-extern const Func gSacrificeSteps[];           // by gBattleWork.step (sacrifice_run)
-extern const Func gDestroyCheckSteps[];        // by gBattleWork.step (destroy_check_run)
-extern const Func gRecoverySteps[];            // by gBattleWork.step (recovery_run)
-extern const Func gRecoveryHealSteps[];        // by gBattleWork.step (recovery_heal_run)
-extern const Func gRepairSteps[];              // by gBattleWork.step (repair_run)
-extern const Func gRepairApplySteps[];         // by gBattleWork.step (repair_apply_run)
-extern const Func gTrapSteps[];                // by gBattleWork.step (trap_run)
-extern const Func gBreakFormSteps[];           // by gBattleWork.step (break_form_run)
-extern const u8 gSkillCastHopTiles[];          // compressed tiles (battle skill effects)
-extern const u8 gSkillCastHopPalette[];        // 32-byte OBJ palette (battle skill effects)
-extern const u8 gTeamAttackTurretTilesLz[];    // compressed tiles (interrupt skill effect)
-extern const u8 gTeamAttackTurretPalette[];    // 32-byte OBJ palette (interrupt skill effect)
-extern const u8 gUnk_084D54BC[];               // compressed tiles (code_080209B0)
-extern const u8 gUnk_0850E698[];               // 32-byte OBJ palette (code_080209B0)
-extern const Func gStabilitySteps[];           // by gBattleWork.step (stability_run)
-extern const Func gForceBindSteps[];           // by gBattleWork.step (force_bind_run)
-extern const Func gDefenceSteps[];             // by gBattleWork.step (defence_run)
-extern const u8 gStabilitySparkleTiles[];      // compressed tiles (battle skill effects)
-extern const u8 gStabilitySparklePalette[];    // 32-byte OBJ palette (battle skill effects)
-extern const u8 gUnk_084D5788[];               // compressed tiles (code_080209B0)
-extern const u8 gUnk_0850E6D8[];               // 32-byte OBJ palette (code_080209B0)
-extern const Func gAutoRecoverSteps[];         // by gBattleWork.step (autorecover_run)
-extern const u8 gUnk_084D5860[];               // compressed tiles (code_080209B0)
-extern const u8 gUnk_0850E6F8[];               // 2 OBJ palettes (code_080209B0)
-extern const Func gReactivateSteps[];          // by gBattleWork.step (reactivate_run)
-extern const u8 gUnk_084D5B08[];               // compressed tiles (code_080209B0)
-extern const u8 gUnk_0850E738[];               // 2 OBJ palettes (code_080209B0)
-extern const Func gScoutSteps[];               // by gBattleWork.step (scout_run)
-extern const u8 gUnk_084D5D78[];               // compressed tiles (code_080209B0)
-extern const u8 gUnk_0850E778[];               // 2 OBJ palettes (code_080209B0)
-extern const Func gConcealSteps[];             // by gBattleWork.step (conceal_run)
-extern const u8 gConcealDomeTiles[];           // compressed tiles (battle skill effects)
-extern const u8 gConcealDomePalette[];         // 32-byte OBJ palette (battle skill effects)
-extern const Func gBoostChargeSteps[];         // by gBattleWork.step (boost_charge_run)
-extern const u8 gChargeHourglassTiles[];       // compressed tiles (battle skill effects)
-extern const u8 gChargeHourglassPalette[];     // 32-byte OBJ palette (battle skill effects)
-extern const Func gRapidChargeSteps[];         // by gBattleWork.step (rapid_charge_run)
-extern const u8 gUnk_084D61DC[];               // compressed tiles (code_080209B0)
-extern const u8 gUnk_0850E7F8[];               // 32-byte OBJ palette (code_080209B0)
-extern const Func gDrainChargeSteps[];         // by gBattleWork.step (drain_charge_run)
-extern const u8 gUnk_084D6320[];               // compressed tiles (code_080209B0)
-extern const u8 gUnk_0850E818[];               // 32-byte OBJ palette (code_080209B0)
-extern const Func gPushoverSteps[];            // by gBattleWork.step (pushover_run)
-extern const u8 gPushoverBananaTiles[];        // compressed tiles (battle skill effects)
-extern const u8 gPushoverBananaPalette[];      // 32-byte OBJ palette (battle skill effects)
-extern const u8 gBurstSpriteDirections[];      // 4 bytes, sprite unk25 for slots 0x26-0x29 (pushover_burst_spawn)
-extern const Func gImpairSteps[];              // by gBattleWork.step (impair_run)
-extern const u8 gImpairPortraitTiles[];        // compressed tiles (battle skill effects)
-extern const u8 gImpairPortraitPalette[];      // 32-byte OBJ palette (battle skill effects)
-extern const u8 gConfusionBallTilesLz[];       // compressed tiles (interrupt skill effect)
-extern const u8 gConfusionBallPalettes[];      // 64-byte OBJ palettes (interrupt skill effect)
-extern const Func gConfusionSteps[];           // by gBattleWork.step (confusion_run)
-extern const Func gUseDrainSteps[];            // by gBattleWork.step (use_drain_run)
-extern const u8 gDrainBubbleTilesLz[];         // compressed tiles (interrupt skill effect)
-extern const u8 gDrainBubblePalettes[];        // 64-byte OBJ palettes (interrupt skill effect)
-extern const u8 gBattlePopupDigitTiles[];      // compressed tiles (battle skill effects)
-extern const Func gNoEscapeDefenseSteps[];     // by gBattleWork.step (no_escape_defense_run)
-extern const u8 gNoEscapeIconTilesLz[];        // compressed tiles (interrupt skill effect)
-extern const u8 gNoEscapeIconPalette[];        // 32-byte OBJ palette (interrupt skill effect)
-extern const u8 gDefenseIconTilesLz[];         // compressed tiles (interrupt skill effect)
-extern const u8 gDefenseIconPalette[];         // 32-byte OBJ palette (interrupt skill effect)
-extern const Func gForcedrainSteps[];          // by gBattleWork.step (forcedrain_run)
-extern const u8 gForcedrainGlassTiles[];       // compressed tiles (battle skill effects)
-extern const u8 gForcedrainGlassPalettes[];    // 32-byte OBJ palette (battle skill effects)
-extern const Func gTeamAttackCheckSteps[];     // by gBattleWork.step (team_attack_check_run)
-extern const Func gTeamAttackTurretSteps[];    // by gBattleWork.step (team_attack_turrets_run)
-extern const Func gCounterAttackSteps[];       // by gBattleWork.step (counter_attack_run)
-extern const u8 gCounterAttackBallTilesLz[];   // compressed tiles (interrupt skill effect)
-extern const u8 gCounterAttackBallPalette[];   // 32-byte OBJ palette (interrupt skill effect)
-extern const Func gChangeSteps[];              // by gBattleWork.step (change_run)
-extern const u8 gChangeEffectTilesLz[];        // compressed tiles (interrupt skill effect)
-extern const u8 gChangeEffectPalettes[];       // 64-byte OBJ palettes (interrupt skill effect)
-extern const Func gMedaforceSpiralBoltSteps[]; // by gBattleWork.step (medaforce_spiral_bolt_run)
-extern const Func gMedaforceHitSteps[];        // by gBattleWork.step (medaforce_hit_run)
+extern const u8 gMfChargeSparklePalette[]; // 32-byte OBJ palette, copied to OBJ palette 6 (mf_charge_sparkles_init)
+extern u32 gUnk_030018A8[16];              // cleared in two 32-byte halves by battle_action_cleanup
+extern const u8 gGaugeFillTiles[];         // 9 tiles: an 8-px bar segment filled 0..8. guess: gauge fill steps
+extern const u8
+    gArmorPanelDecorTilesLz[]; // compressed BG tiles, 6 small frame pieces (attack_hit_load_graphics). guess
+extern const u8 gArmorPanelPartIconTilesLz[];   // compressed BG tiles, 2x2 part icons (attack_hit_load_graphics). guess
+extern const u8 gArmorPanelDecorPalette[];      // BG palette 10 (attack_hit_load_graphics)
+extern const u8 gArmorPanelGaugePalette[];      // BG palette 8 (attack_hit_load_graphics). guess: armor gauge
+extern const u8 gArmorPanelPartIconPalette[];   // BG palette 11 (attack_hit_load_graphics)
+extern const u8 gCriticalHitTiles[];            // compressed OBJ tiles (battle/action_steps)
+extern const u8 gCriticalHitPalette[];          // OBJ palette (battle/action_steps)
+extern const u8 gDestroyMarkerTiles[];          // compressed OBJ tiles (battle/action_steps)
+extern const u8 gDestroyMarkerPalette[];        // OBJ palette (battle/action_steps)
+extern const u8 gHeadMarkerTiles[];             // compressed OBJ tiles (battle/action_steps)
+extern const u8 gHeadMarkerPalette[];           // OBJ palette (battle/action_steps)
+extern const u8 gRightArmMarkerTiles[];         // compressed OBJ tiles (battle/action_steps)
+extern const u8 gRightArmMarkerPalette[];       // OBJ palette (battle/action_steps)
+extern const u8 gLeftArmMarkerTiles[];          // compressed OBJ tiles (battle/action_steps)
+extern const u8 gLeftArmMarkerPalette[];        // OBJ palette (battle/action_steps)
+extern const u8 gLegsMarkerTiles[];             // compressed OBJ tiles (battle/action_steps)
+extern const u8 gLegsMarkerPalette[];           // OBJ palette (battle/action_steps)
+extern const u8 gDamageNumberTiles[];           // compressed OBJ tiles (battle/action_steps)
+extern const u8 gDamageNumberPalette[];         // OBJ palette (battle/action_steps)
+extern const u8 gPartBreakBurstTiles[];         // compressed OBJ tiles (battle/action_steps)
+extern const u8 gPartBreakBurstPalette[];       // OBJ palette (battle/action_steps)
+extern const u8 gCarryOverMarkerTiles[];        // compressed OBJ tiles (battle/action_steps)
+extern const u8 gCarryOverMarkerPalette[];      // OBJ palette (battle/action_steps)
+extern const u8 gAttackMissTiles[];             // compressed OBJ tiles (battle/action_steps)
+extern const u8 gAttackMissPalette[];           // OBJ palette (battle/action_steps)
+extern const u8 gAttackNullifiedTiles[];        // compressed OBJ tiles (battle/action_steps)
+extern const u8 gAttackNullifiedPalette[];      // OBJ palette (battle/action_steps)
+extern const u8 gAttackAbsorbedTiles[];         // compressed OBJ tiles (battle/action_steps)
+extern const u8 gAttackAbsorbedPalette[];       // OBJ palette (battle/action_steps)
+extern const u8 gAbsorbSparkleTiles[];          // compressed OBJ tiles (battle/action_steps)
+extern const u8 gAbsorbSparklePalette[];        // OBJ palette (battle/action_steps)
+extern const u8 gHealNumberPalette[];           // OBJ palette (battle/action_steps)
+extern const Func gStatusAttackSteps[];         // by gBattleWork.step (status_attack_run)
+extern const u8 gStatusFlashTiles[];            // compressed OBJ tiles (battle/action_steps)
+extern const u8 gStatusFlashPalette[];          // OBJ palette (battle/action_steps)
+extern const u8 gBugEffectTiles[];              // compressed OBJ tiles (battle/action_steps)
+extern const u8 gBugEffectPalette[];            // OBJ palette (battle/action_steps)
+extern const u8 gThunderEffectTiles[];          // compressed OBJ tiles (battle/action_steps)
+extern const u8 gThunderEffectPalette[];        // OBJ palette (battle/action_steps)
+extern const u8 gWaveEffectTiles[];             // compressed OBJ tiles (battle/action_steps)
+extern const u8 gWaveEffectPalette[];           // OBJ palette (battle/action_steps)
+extern const u8 gFireEffectTiles[];             // compressed OBJ tiles (battle/action_steps)
+extern const u8 gFireEffectPalette[];           // OBJ palette (battle/action_steps)
+extern const u8 gBugIconTiles[];                // compressed OBJ tiles (battle/action_steps)
+extern const u8 gBugIconPalette[];              // OBJ palette (battle/action_steps)
+extern const u8 gThunderIconTiles[];            // compressed OBJ tiles (battle/action_steps)
+extern const u8 gThunderIconPalette[];          // OBJ palette (battle/action_steps)
+extern const u8 gWaveIconTiles[];               // compressed OBJ tiles (battle/action_steps)
+extern const u8 gWaveIconPalette[];             // OBJ palette (battle/action_steps)
+extern const u8 gFireIconTiles[];               // compressed OBJ tiles (battle/action_steps)
+extern const u8 gFireIconPalette[];             // OBJ palette (battle/action_steps)
+extern const Func gCloseupExitSteps[];          // by gBattleWork.step (closeup_exit_run)
+extern struct UiTilemapTable gUiTilemapsNamed;  // same address as gUiTilemaps
+extern const Func gBotDefeatSteps[];            // by gBattleWork.step (bot_defeat_run)
+extern const u8 gReactionRiseTiles[];           // compressed OBJ tiles (battle/action_steps)
+extern const u8 gReactionRiseFxTiles[];         // compressed OBJ tiles (battle/action_steps)
+extern const u8 gReactionNullifyTiles[];        // compressed OBJ tiles (battle/action_steps)
+extern const u8 gReactionAbsorbTiles[];         // compressed OBJ tiles (battle/action_steps)
+extern const u8 gReactionRisePalette[];         // OBJ palette (battle/action_steps)
+extern const u8 gReactionRiseFxPalette[];       // OBJ palette (battle/action_steps)
+extern const u8 gReactionNullifyPalette[];      // OBJ palette (battle/action_steps)
+extern const u8 gReactionAbsorbPalette[];       // OBJ palette (battle/action_steps)
+extern const Func gReactionSteps[];             // by gBattleWork.step (reaction_run)
+extern const Func gSacrificeSteps[];            // by gBattleWork.step (sacrifice_run)
+extern const Func gDestroyCheckSteps[];         // by gBattleWork.step (destroy_check_run)
+extern const Func gRecoverySteps[];             // by gBattleWork.step (recovery_run)
+extern const Func gRecoveryHealSteps[];         // by gBattleWork.step (recovery_heal_run)
+extern const Func gRepairSteps[];               // by gBattleWork.step (repair_run)
+extern const Func gRepairApplySteps[];          // by gBattleWork.step (repair_apply_run)
+extern const Func gTrapSteps[];                 // by gBattleWork.step (trap_run)
+extern const Func gBreakFormSteps[];            // by gBattleWork.step (break_form_run)
+extern const u8 gSkillCastHopTiles[];           // compressed tiles (battle skill effects)
+extern const u8 gSkillCastHopPalette[];         // 32-byte OBJ palette (battle skill effects)
+extern const u8 gTeamAttackTurretTilesLz[];     // compressed tiles (interrupt skill effect)
+extern const u8 gTeamAttackTurretPalette[];     // 32-byte OBJ palette (interrupt skill effect)
+extern const u8 gBreakFormTilesLz[];            // compressed OBJ tiles (break_form_sprite_spawn)
+extern const u8 gBreakFormPalette[];            // OBJ palette 7 (break_form_sprite_spawn)
+extern const Func gStabilitySteps[];            // by gBattleWork.step (stability_run)
+extern const Func gForceBindSteps[];            // by gBattleWork.step (force_bind_run)
+extern const Func gDefenceSteps[];              // by gBattleWork.step (defence_run)
+extern const u8 gStabilitySparkleTiles[];       // compressed tiles (battle skill effects)
+extern const u8 gStabilitySparklePalette[];     // 32-byte OBJ palette (battle skill effects)
+extern const u8 gForceBindOrbTilesLz[];         // compressed OBJ tiles (force_bind_orbs_spawn)
+extern const u8 gForceBindOrbPalette[];         // OBJ palette 7 (force_bind_orbs_spawn)
+extern const Func gAutoRecoverSteps[];          // by gBattleWork.step (autorecover_run)
+extern const u8 gAutorecoverOrbTilesLz[];       // compressed OBJ tiles (autorecover_orb_spawn)
+extern const u8 gAutorecoverOrbPalettes[];      // OBJ palettes 6-7 (autorecover_orb_spawn)
+extern const Func gReactivateSteps[];           // by gBattleWork.step (reactivate_run)
+extern const u8 gReactivateOrbTilesLz[];        // compressed OBJ tiles (reactivate_orb_spawn)
+extern const u8 gReactivateOrbPalettes[];       // OBJ palettes 6-7 (reactivate_orb_spawn)
+extern const Func gScoutSteps[];                // by gBattleWork.step (scout_run)
+extern const u8 gScoutTilesLz[];                // compressed OBJ tiles (scout_load_graphics)
+extern const u8 gScoutPalettes[];               // OBJ palettes 6-7 (scout_load_graphics)
+extern const Func gConcealSteps[];              // by gBattleWork.step (conceal_run)
+extern const u8 gConcealDomeTiles[];            // compressed tiles (battle skill effects)
+extern const u8 gConcealDomePalette[];          // 32-byte OBJ palette (battle skill effects)
+extern const Func gBoostChargeSteps[];          // by gBattleWork.step (boost_charge_run)
+extern const u8 gChargeHourglassTiles[];        // compressed tiles (battle skill effects)
+extern const u8 gChargeHourglassPalette[];      // 32-byte OBJ palette (battle skill effects)
+extern const Func gRapidChargeSteps[];          // by gBattleWork.step (rapid_charge_run)
+extern const u8 gRapidChargeHourglassTilesLz[]; // compressed OBJ tiles (rapid_charge_hourglass_spawn)
+extern const u8 gRapidChargeHourglassPalette[]; // OBJ palette 7 (rapid_charge_hourglass_spawn)
+extern const Func gDrainChargeSteps[];          // by gBattleWork.step (drain_charge_run)
+extern const u8 gDrainChargeHourglassTilesLz[]; // compressed OBJ tiles (drain_charge_hourglass_spawn)
+extern const u8 gDrainChargeHourglassPalette[]; // OBJ palette 7 (drain_charge_hourglass_spawn)
+extern const Func gPushoverSteps[];             // by gBattleWork.step (pushover_run)
+extern const u8 gPushoverBananaTiles[];         // compressed tiles (battle skill effects)
+extern const u8 gPushoverBananaPalette[];       // 32-byte OBJ palette (battle skill effects)
+extern const u8 gBurstSpriteDirections[];       // 4 bytes, sprite unk25 for slots 0x26-0x29 (pushover_burst_spawn)
+extern const Func gImpairSteps[];               // by gBattleWork.step (impair_run)
+extern const u8 gImpairPortraitTiles[];         // compressed tiles (battle skill effects)
+extern const u8 gImpairPortraitPalette[];       // 32-byte OBJ palette (battle skill effects)
+extern const u8 gConfusionBallTilesLz[];        // compressed tiles (interrupt skill effect)
+extern const u8 gConfusionBallPalettes[];       // 64-byte OBJ palettes (interrupt skill effect)
+extern const Func gConfusionSteps[];            // by gBattleWork.step (confusion_run)
+extern const Func gUseDrainSteps[];             // by gBattleWork.step (use_drain_run)
+extern const u8 gDrainBubbleTilesLz[];          // compressed tiles (interrupt skill effect)
+extern const u8 gDrainBubblePalettes[];         // 64-byte OBJ palettes (interrupt skill effect)
+extern const u8 gBattlePopupDigitTiles[];       // compressed tiles (battle skill effects)
+extern const Func gNoEscapeDefenseSteps[];      // by gBattleWork.step (no_escape_defense_run)
+extern const u8 gNoEscapeIconTilesLz[];         // compressed tiles (interrupt skill effect)
+extern const u8 gNoEscapeIconPalette[];         // 32-byte OBJ palette (interrupt skill effect)
+extern const u8 gDefenseIconTilesLz[];          // compressed tiles (interrupt skill effect)
+extern const u8 gDefenseIconPalette[];          // 32-byte OBJ palette (interrupt skill effect)
+extern const Func gForcedrainSteps[];           // by gBattleWork.step (forcedrain_run)
+extern const u8 gForcedrainGlassTiles[];        // compressed tiles (battle skill effects)
+extern const u8 gForcedrainGlassPalettes[];     // 32-byte OBJ palette (battle skill effects)
+extern const Func gTeamAttackCheckSteps[];      // by gBattleWork.step (team_attack_check_run)
+extern const Func gTeamAttackTurretSteps[];     // by gBattleWork.step (team_attack_turrets_run)
+extern const Func gCounterAttackSteps[];        // by gBattleWork.step (counter_attack_run)
+extern const u8 gCounterAttackBallTilesLz[];    // compressed tiles (interrupt skill effect)
+extern const u8 gCounterAttackBallPalette[];    // 32-byte OBJ palette (interrupt skill effect)
+extern const Func gChangeSteps[];               // by gBattleWork.step (change_run)
+extern const u8 gChangeEffectTilesLz[];         // compressed tiles (interrupt skill effect)
+extern const u8 gChangeEffectPalettes[];        // 64-byte OBJ palettes (interrupt skill effect)
+extern const Func gMedaforceSpiralBoltSteps[];  // by gBattleWork.step (medaforce_spiral_bolt_run)
+extern const Func gMedaforceHitSteps[];         // by gBattleWork.step (medaforce_hit_run)
 extern const Func gMedaforceLifeDrainHealSteps[];   // by gBattleWork.step (medaforce_life_drain_heal_run)
 extern const Func gMedaforceSideBoltSteps[];        // by gBattleWork.step (medaforce_side_bolt_run)
 extern const u8 gMedaforceSideBoltTiles[];          // compressed tiles (battle/medaforce_effects)
@@ -896,24 +897,26 @@ extern const u16 gBattleBgPalette12[];              // BG palette 12: left Medab
 extern const u16 gBattleBgPalette11[];              // BG palette 11: right Medabot panel, parts menu left panel
 extern const u16 gBattleBgPalette10[];              // BG palette 10: Medaforce gauge frame / label
 extern const u16 gBattleBgPalette8[];               // BG palette 8: center pillar, Medabot icons (BG3)
-extern const u8 gUnk_084E2C18[];                    // battle graphics (battle_load_graphics_step)
-extern const u8 gUnk_084E2950[];                    // battle graphics (battle_load_graphics_step)
-extern const u8 gBattleNumberSpriteTiles[];         // OBJ 0x06013000: digits 0-9, + and -, hit effect frames. guess
-extern const u8 gLeftBotPanelTiles[];               // VRAM 0x06004B00 (tile 0x258)
-extern const u8 gActionSelectSidePanelTiles[];      // VRAM 0x06004800 (tile 0x240)
-extern const u8 gActionSelectPanelTiles[];          // VRAM 0x06004600 (tile 0x230)
-extern const u8 gBotShadowTiles[];                  // OBJ 0x06017F80, 4 dithered tiles. guess: shadow under a Medabot
-extern const u8 gBattleUiSpriteTiles[];             // OBJ 0x06012000: battle cursors, MF / F / ! badges, TIME label
-extern const u8 gPartsMenuRightPanelTiles[];        // VRAM 0x06005A00 (tile 0x2D0)
-extern const u8 gMfMenuRightPanelTiles[];           // VRAM 0x06005700 (tile 0x2B8); same data as gMfMenuLeftPanelTiles
-extern const u8 gMfMenuLeftPanelTiles[];            // VRAM 0x06005400 (tile 0x2A0)
-extern const u8 gPartsMenuLeftPanelTiles[];         // VRAM 0x06005100 (tile 0x288)
-extern const u8 gRightBotPanelTiles[];              // VRAM 0x06004E00 (tile 0x270)
-extern const u8 gBattlePillarCapTiles[];            // BG3 0x0600C600, two framed boxes. guess: pillar ends
-extern const u8 gBattlePillarTiles[];               // BG3 0x0600C000: the column in the middle of the battlefield
-extern const u8 gMedaforceGaugeFrameEndTiles[];     // VRAM 0x06004300 (tile 0x218). guess: gauge frame end
-extern const u8 gMedaforceGaugeFrameTiles[];        // VRAM 0x06004200 (tile 0x210)
-extern const u8 gMedaforceLabelTiles[];             // "MF>" label, two colors (VRAM 0x06004140)
+extern const u8 gBattleMarkerAltTilesLz[];          // OBJ tiles at 0x06014200, 48 small marks in 4 colours
+                                                    // (battle_load_graphics_step). guess
+extern const u8
+    gBattleMarkerTilesLz[]; // OBJ tiles at 0x06013C00, 48 small marks in 4 colours (battle_load_graphics_step). guess
+extern const u8 gBattleNumberSpriteTiles[];     // OBJ 0x06013000: digits 0-9, + and -, hit effect frames. guess
+extern const u8 gLeftBotPanelTiles[];           // VRAM 0x06004B00 (tile 0x258)
+extern const u8 gActionSelectSidePanelTiles[];  // VRAM 0x06004800 (tile 0x240)
+extern const u8 gActionSelectPanelTiles[];      // VRAM 0x06004600 (tile 0x230)
+extern const u8 gBotShadowTiles[];              // OBJ 0x06017F80, 4 dithered tiles. guess: shadow under a Medabot
+extern const u8 gBattleUiSpriteTiles[];         // OBJ 0x06012000: battle cursors, MF / F / ! badges, TIME label
+extern const u8 gPartsMenuRightPanelTiles[];    // VRAM 0x06005A00 (tile 0x2D0)
+extern const u8 gMfMenuRightPanelTiles[];       // VRAM 0x06005700 (tile 0x2B8); same data as gMfMenuLeftPanelTiles
+extern const u8 gMfMenuLeftPanelTiles[];        // VRAM 0x06005400 (tile 0x2A0)
+extern const u8 gPartsMenuLeftPanelTiles[];     // VRAM 0x06005100 (tile 0x288)
+extern const u8 gRightBotPanelTiles[];          // VRAM 0x06004E00 (tile 0x270)
+extern const u8 gBattlePillarCapTiles[];        // BG3 0x0600C600, two framed boxes. guess: pillar ends
+extern const u8 gBattlePillarTiles[];           // BG3 0x0600C000: the column in the middle of the battlefield
+extern const u8 gMedaforceGaugeFrameEndTiles[]; // VRAM 0x06004300 (tile 0x218). guess: gauge frame end
+extern const u8 gMedaforceGaugeFrameTiles[];    // VRAM 0x06004200 (tile 0x210)
+extern const u8 gMedaforceLabelTiles[];         // "MF>" label, two colors (VRAM 0x06004140)
 // buff sprite params (= gStatusSpriteParams[10..11]): 4 bytes copied to gGameWork.partAbility, palette, x offset + 4
 extern const u8 gBuffSpriteParams[][4];
 // status / action sprite params, 4 bytes each, by status kind (battle_setup_part_sprite reads them)
@@ -977,11 +980,11 @@ extern const u16
 extern const u16 gSpriteBobYSteps[];  // 32 y offsets added to a sprite's unk4 by sprite_bob_step
 extern const u8 gSpriteHopYSteps[];   // 16 y offsets added to a sprite's unk4 by advance_sprite_anim_frame
 extern const u8 gSpriteSlideXSteps[]; // 16 x offsets added to / subtracted from a sprite's unk2 by sprite_slide_x_step
-extern const u8 gUnk_083AF210[]; // 256 speed steps (quarter pixels) by a sprite's unk30 (sprite_move_toward_target,
-                                 // update_sprite_deceleration)
+extern const u8 gSpriteSpeedSteps[]; // 256 speed steps (quarter pixels) by a sprite's unk30 (sprite_move_toward_target,
+                                     // update_sprite_deceleration)
 extern const u16 gParticleSwayOffsets[];     // 16 x steps by a sprite's unk2D & 15 (particle_sway_down)
 extern const u8 gParticleOrbitRadiusSteps[]; // orbit radius steps (+1 / -1, byte pairs) by a sprite's unk2D & 31
-extern const u8 gUnk_083AF330[];             // 8 entries per bot_intact_parts_class result, one picked at random
+extern const u8 gRandomPartByIntactClass[];  // 8 entries per bot_intact_parts_class result, one picked at random
                                              // (get_random_battle_weight_entry)
 extern const u8 gArmorPanelFrameTilemap[];   // compressed tilemap (armor_panel_draw_frame)
 extern u8 gEffectSpriteSlot;                 // sprite slot whose handler is running (= gGameWork.runningSpriteSlot)
@@ -1001,8 +1004,8 @@ extern const Func gBattleSeqCommands[]; // battle sequence commands, by battle_s
 extern const Func gParticleShotHandlers[]; // shot states by sprite unk29 (particle_run_shot_handlers)
 extern u16 gPartSpriteOffsets[]; // x, y offset pairs by part (effect_sprite_spawn_at_part); not const: hit_sparks_spawn
                                  // reloads it per iteration
-extern const u8 gUnk_083AF200[]; // 16 values, two random picks summed into gBattleWork.dice1 / unk189
-                                 // (script_op_roll_dice_damage)
+extern const u8 gDiceRollValues[]; // 16 values, two random picks summed into gBattleWork.dice1 / unk189
+                                   // (script_op_roll_dice_damage)
 extern u8 gUnk_03003470[]; // IWRAM buffer; script_op_guard_restore copies 4 x 0x40 bytes from +0xE40 + (rec * 0x100) to
                            // its start
 extern const u8
@@ -1021,11 +1024,12 @@ extern const Func gAiTargetPickers[];    // Robattle AI: action selection handle
                                          // (ai_pick_part_target)
 extern const u8 gLevelUpSkillPalettes[]; // sprite 0x22 palette bits (unkA) by the levelled-up skill type
                                          // gBattleWork.levelUpSkill (action_phase_level_up_skill_init)
-extern const u8 gUnk_084D796C[];         // compressed OBJ tiles at 0x06014800 (action_phase_level_up_init)
-extern u8 gLinkPartnerName[];    // = gBattleWork.partnerName: link partner's player name (link_robattle_exchange_names)
-extern u8 gPlayerName[];         // gPlayerRecord.name; copied for message 2 when gGameWork.unk9C == 1
-                                 // (action_phase_show_winner_message; guess: player name)
-extern const u8 gUnk_084E2FF8[]; // 32-byte OBJ palette (code_0802CA5C)
+extern const u8 gSkillLevelUpTilesLz[];  // compressed OBJ tiles at 0x06014800: Medal skill level-up popup
+                                         // (action_phase_level_up_init)
+extern u8 gLinkPartnerName[]; // = gBattleWork.partnerName: link partner's player name (link_robattle_exchange_names)
+extern u8 gPlayerName[];      // gPlayerRecord.name; copied for message 2 when gGameWork.unk9C == 1
+                              // (action_phase_show_winner_message; guess: player name)
+extern const u8 gActionPhaseObjPalette[];           // OBJ palette 6 (action_phase_load_gfx)
 extern const Func gActionPhaseSteps[];              // by gGameSubState (battle_action_state_update)
 extern const u8 gMedaforceAntiProtectionTiles[];    // compressed tiles (battle/medaforce_effects)
 extern const Func gMedaforceAntiProtectionSteps[];  // by gBattleWork.step (medaforce_anti_protection_run)
@@ -1138,10 +1142,10 @@ extern const u8
     gBattlefieldAnimTileCounts[];         // per battlefield: animation tile count / 8 (advance_battle_animation_frame)
 extern const u8 gBattlefieldAnimFrames[]; // [battlefield][0x80]: animation tile block per frame, 0xFF = loop
 extern const u8 *const
-    gMedabotPartSpriteTiles[];   // 6 compressed sprite tile pointers per Medabot (decompress_sprite_to_vram_08042D94)
-extern const s16 gCosTableQ8[];  // cosine x256 per angle 0-0xFF (calc_polar_to_screen_coords x;
-                                 // gJumpArcTable is the y factor)
-extern const u8 gUnk_0847EB80[]; // per area id (gFieldWork.area_id), used unless song == 0xFF (area_song_id)
+    gMedabotPartSpriteTiles[];  // 6 compressed sprite tile pointers per Medabot (decompress_sprite_to_vram_08042D94)
+extern const s16 gCosTableQ8[]; // cosine x256 per angle 0-0xFF (calc_polar_to_screen_coords x;
+                                // gJumpArcTable is the y factor)
+extern const u8 gAreaSongs[];   // per area id (gFieldWork.area_id), used unless song == 0xFF (area_song_id)
 extern struct PartSpriteLayer gRightArmPartLayer;
 extern struct PartSpriteLayer gLeftArmPartLayer;
 extern struct PartSpriteLayer gHeadPartLayer;
@@ -1161,12 +1165,12 @@ extern const u16 gFallbackAreaPalette2[];  // fallback BG palette (area_load_bg_
 extern const u16 gFallbackAreaPalette3[];  // fallback BG palette (area_load_bg_palettes)
 extern const u16 gFallbackAreaPalette4[];  // fallback BG palette (area_load_bg_palettes)
 extern const u16 gFallbackAreaPalette5[];  // fallback BG palette (area_load_bg_palettes)
-extern const Func gUnk_083D1F84[];         // by gGameState (field_mode_dispatch)
+extern const Func gFieldModeStates[];      // by gGameState (field_mode_dispatch)
 extern const u8 *const
     gAreaSpriteSheetIds[]; // per area id: tile ids, resolved through resolve_sprite_sheet_id (area_sprite_sheet_id)
 extern const u8 *const
     gFieldSpriteTiles[]; // per sprite sheet id: LZ77 OBJ tiles, NULL entries fall back to 1 (area_load_sprite_sheets)
-extern const u16 gUnk_085FA0E4[]; // palette copied to 0x0202F9C0 (area_load_sprite_palettes)
+extern const u16 gFieldSharedSpritePalette[]; // palette copied to 0x0202F9C0 (area_load_sprite_palettes)
 extern u32 gUnk_0300534C;
 extern struct AffineParam gAffineParams[32];
 extern struct BattleEntity3D *gFieldEffectEntities;
@@ -1226,7 +1230,7 @@ extern const u8 gShopPartTypeIconPos[4][2];        // icon x, y in BG2 tiles (sh
 struct FuncTable7 {
     Func f[7];
 };
-extern const struct FuncTable7 gUnk_080AFA20;     // sub-state handlers by gGameSubState (dispatch_substate_handler)
+extern const struct FuncTable7 gShopSubStates;    // sub-state handlers by gGameSubState (dispatch_substate_handler)
 extern const struct FuncTable7 gTextScrollStates; // sub-state handlers by gGameSubState (text_scroll_update)
 struct TextBufTable4 {
     u8 *p[4];
@@ -1236,7 +1240,7 @@ extern const struct ObjAffineDstData
 extern const struct ObjAffineDstData gAffineIdentity; // identity affine matrix (render_sprite_node_recursive)
 extern const u8 gMirroredPartNode[]; // mirrored sprite node index per node (render_sprite_node_recursive)
 extern const struct TextBufTable4
-    gUnk_080ABBFC;                     // the 4 text buffers 0x030004DE + 0x14 * n (copy_string_to_text_buffer)
+    gTextBufferPtrs;                   // the 4 text buffers 0x030004DE + 0x14 * n (copy_string_to_text_buffer)
 extern const u8 gTextScrollHeadingX[]; // first tilemap column by gMenuWork->cursor (text_scroll_shift_row)
 struct U16PtrArray8 {
     const u16 *v[8];
@@ -1310,15 +1314,15 @@ struct FuncTable12 {
 };
 extern const struct FuncTable12
     gMedalTradeStates; // link Medal exchange sub-states by gGameSubState (medal_trade_update)
-extern const struct FuncTable4 gScrollBannerStates; // sub-states by gGameSubState (scene_dispatch_and_tick)
-extern const struct FuncTable2 gUnk_080AFAE0;       // sub-states by gGameSubState (link_medal_sync_update)
+extern const struct FuncTable4 gScrollBannerStates;     // sub-states by gGameSubState (scene_dispatch_and_tick)
+extern const struct FuncTable2 gLinkMedalSyncSubStates; // sub-states by gGameSubState (link_medal_sync_update)
 struct FuncTable8 {
     Func f[8];
 };
 extern const struct FuncTable8
-    gLinkStartStates;                         // sub-state handlers by gGameSubState (dispatch_battle_cutscene_substate)
-extern const Func gMedalRenameStates[];       // Medal list screen sub-states (medal_rename_main)
-extern const struct FuncTable7 gUnk_080AFEC4; // sub-state handlers by gGameSubState (medal_transform_update)
+    gLinkStartStates;                   // sub-state handlers by gGameSubState (dispatch_battle_cutscene_substate)
+extern const Func gMedalRenameStates[]; // Medal list screen sub-states (medal_rename_main)
+extern const struct FuncTable7 gMedalLevelUpSubStates; // sub-state handlers by gGameSubState (medal_transform_update)
 struct S32Array3 {
     s32 v[3];
 };
@@ -1540,7 +1544,7 @@ extern struct SpriteFrame *const *const gSpriteFrameSets[];
 extern struct SpriteFrame *const *const gSpriteFrameSets1[];
 extern struct SpriteFrame *const *const gMenuSpriteFrameSets[];
 extern struct SpriteFrame *const *const gSpriteFrameSets3[];
-extern const struct MapNpcRecord *const gUnk_084837A0[];
+extern const struct MapNpcRecord *const gAreaNpcRecords[];
 extern u8 gListWorkBuffer[];  // shared work buffer; the shop list keeps the cart there (quantity per sell-list entry)
 extern const u8 gShopStock[]; // 4 Medapart ids per shop (gShopId * 4 + i); 0xFF ends
 extern u16 gUnk_03006432;     // guess: battle field grid origin x (field_debug_draw_sprite_preview)

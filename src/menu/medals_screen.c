@@ -98,7 +98,7 @@ void medals_list_load_gfx(void) {
     CpuFastSet(gMenuObjPalettes, (void *)0x05000200, 0x40);
     CpuFastSet(gGradientPaletteOlive, (void *)0x05000300, 8);
     CpuFastSet(gGradientPaletteOlive - 0x20, (void *)0x05000320, 8);
-    CpuFastSet(gUnk_084E2E98, (void *)0x050003A0, 8);
+    CpuFastSet(gCommonObjPalette, (void *)0x050003A0, 8);
     CpuFastSet(gGradientPaletteOlive + 0x60, (void *)0x05000340, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     zero = 0;

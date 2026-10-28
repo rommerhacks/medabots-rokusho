@@ -23,7 +23,7 @@ void set_display_digit_type(
 void battle_number_popup_init(
     u8 *buf,
     u32 rec); // digit sprites 10 + rec * 4 .. from set_display_digit_type's buffer, centred over the Medabot's sprite
-void battle_number_popup_update(u32 rec); // bounces the 3 digit sprites up (gUnk_083AD3B3), one step per frame
+void battle_number_popup_update(u32 rec); // bounces the 3 digit sprites up (gNumberPopupYSteps), one step per frame
 void battle_number_popup_init_slot(u8 *buf, u32 rec,
                                    u32 slot); // battle_number_popup_init for up to 5 digit sprites from slot + rec * 4
 void battle_text_popup_init_slot(u8 *buf, u32 rec, u32 slot);             // same with tiles 0x5100 + digit, palette 0xC

@@ -589,7 +589,7 @@ void medal_trade_init_screen(void) {
     CpuFastSet(gMedalTradeBgPalettes, (void *)PLTT, 0x50);
     CpuFastSet(gGradientPaletteGold + 0x30, (void *)0x050003A0, 8);
     CpuFastSet(gGradientPaletteGold + 0x30, (void *)0x0202F9A0, 8);
-    CpuFastSet(gUnk_084E2E98, (void *)0x05000200, 8);
+    CpuFastSet(gCommonObjPalette, (void *)0x05000200, 8);
     CpuFastSet(gGradientPaletteGold + 0x20, (void *)0x05000220, 8);
     CpuFastSet(gGradientPaletteGold, (void *)0x05000240, 8);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);

@@ -46,8 +46,8 @@ u32 battle_load_graphics_step(u32 direct) {
         break;
     case 6:
         lz_decompress_dispatch(gBattleNumberSpriteTiles, (void *)0x06013000);
-        lz_decompress_dispatch(gUnk_084E2950, (void *)0x06013C00);
-        lz_decompress_dispatch(gUnk_084E2C18, (void *)0x06014200);
+        lz_decompress_dispatch(gBattleMarkerTilesLz, (void *)0x06013C00);
+        lz_decompress_dispatch(gBattleMarkerAltTilesLz, (void *)0x06014200);
         gGameWork.unk13A++;
         break;
     case 7:

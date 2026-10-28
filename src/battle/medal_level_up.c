@@ -1,5 +1,5 @@
 // Mode-2 state 24, started by start_medal_transform from battle/prebattle.c after a won Robattle for each Medal with
-// new stats. Sub-states gUnk_080AFEC4: decompress the Medal sprite, sparkle sprites, two messages, then back
+// new stats. Sub-states gMedalLevelUpSubStates: decompress the Medal sprite, sparkle sprites, two messages, then back
 // to mode 0 state 6 (after-battle). Messages 0x11/0x12: "Wow!!! <Medal>!!! It's transformed into a new shape!",
 // so this is the Medal transformation that follows a level-up (new variant unk8 of the Medal sprite).
 #include "global.h"
@@ -90,7 +90,7 @@ void medal_transform_init(void) {
     CpuFastSet(gMedalSceneObjPalettes, (void *)0x0202FA00, 0x80);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
     lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
-    CpuFastSet(gUnk_084E2E98, (void *)0x0202F800, 8);
+    CpuFastSet(gCommonObjPalette, (void *)0x0202F800, 8);
     CpuFastSet(gGradientPaletteOlive, (void *)0x0202F820, 8);
     CpuFastSet(gGradientPaletteOlive - 0x20, (void *)0x0202F840, 8);
     CpuFastSet(pal, (void *)0x0202F860, 8);
@@ -236,7 +236,7 @@ void medal_transform_exit(void) {
 }
 
 void medal_transform_update(void) {
-    struct FuncTable7 t = gUnk_080AFEC4;
+    struct FuncTable7 t = gMedalLevelUpSubStates;
     t.f[gGameSubState]();
     gBg2Scroll.y++;
 }

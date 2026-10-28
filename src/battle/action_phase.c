@@ -31,7 +31,7 @@ void action_phase_load_gfx(void) {
         gGameWork.setupStep++;
         break;
     case 2:
-        CpuFastSet(gUnk_084E2FF8, (void *)0x050002C0, 8);
+        CpuFastSet(gActionPhaseObjPalette, (void *)0x050002C0, 8);
         gGameSubState++;
         gGameWork.setupStep = 0;
         break;
@@ -385,7 +385,7 @@ void action_phase_exit(void) {
 
 // Medal skill level-up popup above the acting Medabot (sprite 0x21), then the skill type (0x22) and level.
 void action_phase_level_up_init(void) {
-    lz_decompress_dispatch(gUnk_084D796C, (void *)0x06014800);
+    lz_decompress_dispatch(gSkillLevelUpTilesLz, (void *)0x06014800);
     gSpriteEntries[0x21].unk0 = 0xC404;
     gSpriteEntries[0x21].unk1C = 0;
     gSpriteEntries[0x21].unk2 = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].unk2;

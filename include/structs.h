@@ -217,7 +217,7 @@ struct TileAnim {
     u16 frameTiles; // tiles per frame
 };
 
-// Graphics list entry (gUnk_083CE480 lists, end at size 0): size in 32-byte tiles, gUnk_083B2584 index.
+// Graphics list entry (gGfxLists lists, end at size 0): size in 32-byte tiles, gGfxListData index.
 struct GfxListEntry {
     u16 size;
     u16 index;
@@ -765,7 +765,7 @@ struct BattleWork {
     u8 unk16E[3][8];
     u8 resultsMember; // after-battle screen: team member being shown (0-2, 3 = done)
     u8 lossBot;       // gBattleBots record index (battle_loss_take_part)
-    u8 dice1;         // two rolls from gUnk_083AF200 (script_op_roll_dice_damage); amount = (dice1 + dice2) * 10
+    u8 dice1;         // two rolls from gDiceRollValues (script_op_roll_dice_damage); amount = (dice1 + dice2) * 10
     u8 dice2;
     u8 partnerName[0x10]; // link Robattle: the partner's player name (link_robattle_exchange_names)
     // Link prize game (after a link Robattle, link/link_robattle.c):
@@ -996,7 +996,7 @@ struct FieldWork {
     u8 tile_actions[0x8];        // tile value -> result of check_tile_and_trigger_battle_action
     u8 saved_tile_actions[0x8];  // saved copy of tile_actions
     u8 script_tile_actions[0x8]; // tile_actions kept aside while a scripted walk clears them
-    u8 loaded_form;              // player form whose palette and tile actions are loaded (gUnk_083D2918)
+    u8 loaded_form;              // player form whose palette and tile actions are loaded (gFormTileActions)
     u8 encounter_rate;           // area byte 0 of gAreaBattleSettings (area_load_encounter_rate)
     u8 battle_id;                // battle to set up (map script Robattle command, debug menu "Battle" entry)
     u8 encounter_steps;          // steps since the last random encounter (one at 32, chance 1/32 per step after 16)
@@ -1862,7 +1862,7 @@ struct ObjSortEntry {
     u16 pad;
 };
 
-// Per-area NPC records (gUnk_084837A0[area]), end at x == 0xFF.
+// Per-area NPC records (gAreaNpcRecords[area]), end at x == 0xFF.
 struct MapNpcRecord {
     u8 x;
     u8 y;

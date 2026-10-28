@@ -1055,12 +1055,12 @@ void attack_hit_load_graphics(void) {
     u32 side;
 
     lz_decompress_dispatch(gGaugeFillTiles, (void *)0x06006400);
-    lz_decompress_dispatch(gUnk_084882F4, (void *)0x06006520);
+    lz_decompress_dispatch(gArmorPanelDecorTilesLz, (void *)0x06006520);
     lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06006600);
-    lz_decompress_dispatch(gUnk_084C65C8, (void *)0x06006800);
-    CpuFastSet(gUnk_08488B24, (void *)0x05000140, 8);
-    CpuFastSet(gUnk_084E3098, (void *)0x05000100, 8);
-    CpuFastSet(gUnk_084C6A58, (void *)0x05000160, 8);
+    lz_decompress_dispatch(gArmorPanelPartIconTilesLz, (void *)0x06006800);
+    CpuFastSet(gArmorPanelDecorPalette, (void *)0x05000140, 8);
+    CpuFastSet(gArmorPanelGaugePalette, (void *)0x05000100, 8);
+    CpuFastSet(gArmorPanelPartIconPalette, (void *)0x05000160, 8);
     if (!(gBattleWork.actorSideFlags & 2))
         side = 1;
     else

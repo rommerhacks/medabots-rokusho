@@ -733,8 +733,8 @@ void script_op_damage_equals_target_armor(void) {
 
 // Opcode 0x4D: two random digits (unk188, unk189); damage = their sum * 10.
 void script_op_roll_dice_damage(void) {
-    gBattleWork.dice1 = gUnk_083AF200[rng_next_byte() & 0xF];
-    gBattleWork.dice2 = gUnk_083AF200[rng_next_byte() & 0xF];
+    gBattleWork.dice1 = gDiceRollValues[rng_next_byte() & 0xF];
+    gBattleWork.dice2 = gDiceRollValues[rng_next_byte() & 0xF];
     gBattleWork.amount = (gBattleWork.dice1 + gBattleWork.dice2) * 10;
     battle_script_advance();
 }

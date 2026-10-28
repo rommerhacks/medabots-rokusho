@@ -1,7 +1,7 @@
 // Thin wrappers the field event code calls: sound and music, data table lookups, message steps, text buffer
 // fills (numbers, strings), money, items, Medals, Medaparts and team (inventory/inventory), plus checks on the
 // player's team gTeamSlots (9 slots; unk0 == 3 = a complete Medabot) and the yes/no choice window
-// (text/choice_menu). Name tables: gMedalNames Medals, gUnk_083BA4D8 Medabots (by head part id),
+// (text/choice_menu). Name tables: gMedalNames Medals, gMedabotNames Medabots (by head part id),
 // gMedapartNames Medaparts, gItemNames items.
 
 #include "global.h"
@@ -23,7 +23,7 @@ u32 medal_name(u32 idx) {
 }
 
 u32 medabot_name(u32 idx) {
-    return gUnk_083BA4D8[idx];
+    return gMedabotNames[idx];
 }
 
 u32 medapart_name(u32 a, u32 b) {
@@ -66,7 +66,7 @@ u32 message_step_run(u8 a, u8 b, u8 c, const void *text) {
 
 void format_number_to_text_buffer(u32 slot, u32 n) {
     u8 buf[12];
-    struct TextBufTable4 t = gUnk_080ABBFC;
+    struct TextBufTable4 t = gTextBufferPtrs;
     u8 *d = t.p[slot];
     s32 len = count_decimal_digits(n);
     s32 i;
@@ -79,7 +79,7 @@ void format_number_to_text_buffer(u32 slot, u32 n) {
 
 void copy_string_to_text_buffer(u32 slot, u32 str) {
     u8 *s = (u8 *)str;
-    struct TextBufTable4 t = gUnk_080ABBFC;
+    struct TextBufTable4 t = gTextBufferPtrs;
     u8 *d = t.p[slot];
     s32 i;
 
@@ -91,7 +91,7 @@ void copy_string_to_text_buffer(u32 slot, u32 str) {
 // Formats the money amount n into text buffer slot (used by the give / take money script steps).
 void format_money_to_text_buffer(u32 slot, u32 n) {
     u8 buf[12];
-    struct TextBufTable4 t = gUnk_080ABBFC;
+    struct TextBufTable4 t = gTextBufferPtrs;
     divide_by_10000_b(t.p[slot], n);
 }
 

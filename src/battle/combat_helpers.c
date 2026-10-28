@@ -124,7 +124,7 @@ u32 sprite_move_toward_target(u32 slot, s16 x, s16 y) {
     u32 step;
     u32 pos;
 
-    s->unk25 += gUnk_083AF210[s->unk30];
+    s->unk25 += gSpriteSpeedSteps[s->unk30];
     step = s->unk25;
     s->unk25 = step % 4;
     pos = ((step >> 2) + (u16)s->unk4) & 0xFF;
@@ -145,7 +145,7 @@ u32 update_sprite_deceleration(u32 slot, s16 a, s16 b) {
     u8 *frac = &s->unk25;
     u32 step;
     u32 pos;
-    *frac = *frac + gUnk_083AF210[0xFF - s->unk30];
+    *frac = *frac + gSpriteSpeedSteps[0xFF - s->unk30];
     step = *frac;
     *frac &= 3;
     pos = (u16)s->unk4 - (step >> 2);
@@ -231,10 +231,10 @@ void battle_target_nearest_enemy(u32 rec) {
 
 // get_random_battle_weight_entry inlined, with the "- 1" inside
 static inline u32 pick_evasion_weight(u32 n) {
-    return gUnk_083AF330[bot_intact_parts_class(n - 1) * 8 + (rng_next_byte() & 7)];
+    return gRandomPartByIntactClass[bot_intact_parts_class(n - 1) * 8 + (rng_next_byte() & 7)];
 }
 
-// Picks a random intact part of the target (unkE1), weighted by gUnk_083AF330 per intact-part class.
+// Picks a random intact part of the target (unkE1), weighted by gRandomPartByIntactClass per intact-part class.
 void battle_pick_random_target_part(u32 rec) {
     struct BattleBot *base = gBattleBots;
     struct BattleBot *b = &base[rec];
@@ -244,10 +244,10 @@ void battle_pick_random_target_part(u32 rec) {
 }
 
 u32 get_random_battle_weight_entry(u32 rec) {
-    return gUnk_083AF330[bot_intact_parts_class(rec) * 8 + (rng_next_byte() & 7)];
+    return gRandomPartByIntactClass[bot_intact_parts_class(rec) * 8 + (rng_next_byte() & 7)];
 }
 
-// Which of the arms and legs are intact, as 0-8 (right arm 1, left arm 3, legs 5): row of gUnk_083AF330.
+// Which of the arms and legs are intact, as 0-8 (right arm 1, left arm 3, legs 5): row of gRandomPartByIntactClass.
 u32 bot_intact_parts_class(u32 rec) {
     u32 n = gBattleBots[rec].parts[1].unk11 != 0;
     if (gBattleBots[rec].parts[2].unk11 != 0)

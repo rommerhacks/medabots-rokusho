@@ -30,8 +30,8 @@ void scout_begin(void) {
 }
 
 void scout_load_graphics(void) {
-    lz_decompress_dispatch(gUnk_084D5D78, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E778, (void *)0x050002C0, 0x10);
+    lz_decompress_dispatch(gScoutTilesLz, (void *)0x06014800);
+    CpuFastSet(gScoutPalettes, (void *)0x050002C0, 0x10);
     gBattleWork.step++;
 }
 
@@ -346,8 +346,8 @@ void rapid_charge_begin(void) {
 }
 
 void rapid_charge_hourglass_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D61DC, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E7F8, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gRapidChargeHourglassTilesLz, (void *)0x06014800);
+    CpuFastSet(gRapidChargeHourglassPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x220;
     gSpriteEntries[0x21].unk8 = 0x40;
     gSpriteEntries[0x21].unk9 = 0x40;
@@ -404,8 +404,8 @@ void drain_charge_begin(void) {
 }
 
 void drain_charge_hourglass_spawn(void) {
-    lz_decompress_dispatch(gUnk_084D6320, (void *)0x06014800);
-    CpuFastSet(gUnk_0850E818, (void *)0x050002E0, 8);
+    lz_decompress_dispatch(gDrainChargeHourglassTilesLz, (void *)0x06014800);
+    CpuFastSet(gDrainChargeHourglassPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].unk0 |= 0x220;
     gSpriteEntries[0x21].unk8 = 0x40;
     gSpriteEntries[0x21].unk9 = 0x40;

@@ -1,5 +1,5 @@
 // Mode-2 state 25: entered from the Medaparts screen (menu/medaparts_screen.c) to go back to the shop.
-// dispatch_substate_handler runs gUnk_080AFA20, which mixes shop_menu.c and shop_list.c sub-states with the
+// dispatch_substate_handler runs gShopSubStates, which mixes shop_menu.c and shop_list.c sub-states with the
 // two here (redraw the money / icons, fade out). Name is a guess.
 #include "global.h"
 
@@ -50,6 +50,6 @@ void fade_out_transition_step(void) {
 }
 
 void dispatch_substate_handler(void) {
-    struct FuncTable7 t = gUnk_080AFA20;
+    struct FuncTable7 t = gShopSubStates;
     t.f[gGameSubState]();
 }

@@ -12,8 +12,8 @@ gAffineIdentityRotated:
 gAffineIdentity:
 	.incbin "baserom.gba", 0xABBF4, 0x8
 
-	.global gUnk_080ABBFC
-gUnk_080ABBFC:
+	.global gTextBufferPtrs
+gTextBufferPtrs:
 	.incbin "baserom.gba", 0xABBFC, 0x898
 
 	.global gFieldDebugLabelMd
@@ -428,8 +428,8 @@ gShopPartTypeIconPos:
 gShopkeeperPortraitSets:
 	.incbin "baserom.gba", 0xAFA10, 0x10
 
-	.global gUnk_080AFA20
-gUnk_080AFA20:
+	.global gShopSubStates
+gShopSubStates:
 	.incbin "baserom.gba", 0xAFA20, 0x1C
 
 	.global gPartTradeSpritePositions
@@ -452,8 +452,8 @@ gMedalTradeStates:
 gScrollBannerStates:
 	.incbin "baserom.gba", 0xAFAD0, 0x10
 
-	.global gUnk_080AFAE0
-gUnk_080AFAE0:
+	.global gLinkMedalSyncSubStates
+gLinkMedalSyncSubStates:
 	.incbin "baserom.gba", 0xAFAE0, 0x8
 
 	.global gMedalRenameObjPalette
@@ -500,8 +500,8 @@ gTextScrollPages:
 gTextScrollStates:
 	.incbin "baserom.gba", 0xAFEA8, 0x1C
 
-	.global gUnk_080AFEC4
-gUnk_080AFEC4:
+	.global gMedalLevelUpSubStates
+gMedalLevelUpSubStates:
 	.incbin "baserom.gba", 0xAFEC4, 0x1C
 
 	.global gRaceTileBlockWidths

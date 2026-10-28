@@ -118,11 +118,11 @@ void area_load_bg_palettes(void) {
     }
 }
 
-// The area's song (gUnk_0847EB80), or the script override in script_song while song is 0xFF.
+// The area's song (gAreaSongs), or the script override in script_song while song is 0xFF.
 u8 area_song_id(void) {
     if (gFieldWork.song == 0xFF)
         return gFieldWork.script_song;
-    return gUnk_0847EB80[gFieldWork.area_id];
+    return gAreaSongs[gFieldWork.area_id];
 }
 
 // area_song_id returns its u8 widened: the original uses r0 untruncated here.
@@ -262,7 +262,7 @@ void area_load_sprite_palettes(void) {
             t = 1;
         DmaSet(3, gFieldSpritePalettes[t], 0x0202F800 + i * 0x20, 0x84000008);
     }
-    DmaSet(3, gUnk_085FA0E4, 0x0202F9C0, 0x84000008);
+    DmaSet(3, gFieldSharedSpritePalette, 0x0202F9C0, 0x84000008);
 }
 
 void fill_sprite_palettes(s32 arg) {

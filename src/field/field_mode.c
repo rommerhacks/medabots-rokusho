@@ -1,4 +1,4 @@
-// Game mode 1 (field) entry: field RAM reset (field_clear_ram), the mode-1 state dispatcher (gUnk_083D1F84),
+// Game mode 1 (field) entry: field RAM reset (field_clear_ram), the mode-1 state dispatcher (gFieldModeStates),
 // and the transitions out of field scripts into other modes and states (switch_game_mode: battle, shop,
 // title-mode screens, minigames). Called by the field, menu, shop and minigame modules.
 
@@ -23,7 +23,7 @@ static void field_clear_ram(void) {
 }
 
 void field_mode_dispatch(void) {
-    gUnk_083D1F84[gGameState]();
+    gFieldModeStates[gGameState]();
 }
 
 // guess: back to the field after a battle (0: sub-state 5 or 13) or into field state 2 (1).

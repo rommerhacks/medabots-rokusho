@@ -37,31 +37,31 @@ void init_battle_sprite_entry_0801BC04(u32 rec) {
 }
 
 void decompress_indexed_graphics_to_ewram(u32 list) {
-    const struct GfxListEntry *e = gUnk_083CE480[list];
+    const struct GfxListEntry *e = gGfxLists[list];
     u8 *dst = (u8 *)0x02000000;
     u32 i;
 
     for (i = 0; e[i].size != 0; i++) {
-        lz_decompress(gUnk_083B2584[e[i].index * 2], dst);
+        lz_decompress(gGfxListData[e[i].index * 2], dst);
         dst += e[i].size * 32;
     }
 }
 
 void decompress_fixed_graphics_to_ewram(void) {
-    const struct GfxListEntry *e = gUnk_083CE480[0x3C];
+    const struct GfxListEntry *e = gGfxLists[0x3C];
     u8 *dst = (u8 *)0x02016000;
     u32 i;
 
     for (i = 0; e[i].size != 0; i++) {
-        lz_decompress(gUnk_083B2584[e[i].index * 2], dst);
+        lz_decompress(gGfxListData[e[i].index * 2], dst);
         dst += e[i].size * 32;
     }
 }
 
 void load_battle_entity_palette(u32 list, u32 entry, u32 slot) {
-    const struct GfxListEntry *l = gUnk_083CE480[list];
+    const struct GfxListEntry *l = gGfxLists[list];
 
-    CpuFastSet(gUnk_083B2584[l[entry].index * 2 + 1], (void *)(0x05000000 + slot * 32), 8);
+    CpuFastSet(gGfxListData[l[entry].index * 2 + 1], (void *)(0x05000000 + slot * 32), 8);
 }
 
 // Tile animation slots (gGameWork.tileAnims): tile_anim_run steps a script of (frames, tile) pairs that

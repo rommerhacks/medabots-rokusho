@@ -148,7 +148,7 @@ void battle_number_popup_update(u32 rec) {
             return;
         if (gSpriteEntries[rec * 4 + 10 + i].unk21 <= 0x1F) {
             if (gSpriteEntries[rec * 4 + 10 + i].unk20 == 0) {
-                gSpriteEntries[rec * 4 + 10 + i].unk4 += gUnk_083AD3B3[gSpriteEntries[rec * 4 + 10 + i].unk21];
+                gSpriteEntries[rec * 4 + 10 + i].unk4 += gNumberPopupYSteps[gSpriteEntries[rec * 4 + 10 + i].unk21];
                 gSpriteEntries[rec * 4 + 10 + i].unk9 += 2;
                 gSpriteEntries[rec * 4 + 10 + i].unk21++;
             } else
@@ -295,7 +295,7 @@ void battle_popup_update_slot(u8 *buf, u32 rec, u32 slot) {
             return;
         if (gSpriteEntries[slot + rec * 4 + i].unk21 <= 0x1F) {
             if (gSpriteEntries[slot + rec * 4 + i].unk20 == 0) {
-                gSpriteEntries[slot + rec * 4 + i].unk4 += gUnk_083AD3B3[gSpriteEntries[slot + rec * 4 + i].unk21];
+                gSpriteEntries[slot + rec * 4 + i].unk4 += gNumberPopupYSteps[gSpriteEntries[slot + rec * 4 + i].unk21];
                 gSpriteEntries[slot + rec * 4 + i].unk9 += 2;
                 gSpriteEntries[slot + rec * 4 + i].unk21++;
             } else

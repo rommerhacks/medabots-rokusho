@@ -94,7 +94,7 @@ void init_enemy_bot_medal(u8 i) {
     gBattleBots[i + 3].medal.aimSkillType = (&gGameWork.partAbility)[2];
     gBattleBots[i + 3].medal.compatibility = (&gGameWork.partAbility)[7];
     gBattleBots[i + 3].medal.rotationLen = gBattleWork.encounterBots[i].unkA;
-    memcpy_bytes_08041D04((const void *)gUnk_083BA4D8[gBattleWork.encounterBots[i].parts[0]],
+    memcpy_bytes_08041D04((const void *)gMedabotNames[gBattleWork.encounterBots[i].parts[0]],
                           gBattleBots[i + 3].medal.name, 0xE);
     for (k = 0; k <= 3; k++) {
         gBattleBots[i + 3].medal.rotation[k * 2] = gBattleWork.encounterBots[i].unk6[k] >> 4;

@@ -315,12 +315,12 @@ gPartSelectCenterFrames:
 gTeamBotScreenPositions:
 	.incbin "baserom.gba", 0x3AD3A4, 0xC
 
-	.global gUnk_083AD3B0
-gUnk_083AD3B0:
+	.global gBattleSongs
+gBattleSongs:
 	.incbin "baserom.gba", 0x3AD3B0, 0x3
 
-	.global gUnk_083AD3B3
-gUnk_083AD3B3:
+	.global gNumberPopupYSteps
+gNumberPopupYSteps:
 	.incbin "baserom.gba", 0x3AD3B3, 0x20
 
 	.global gRandomBotOrder
@@ -667,20 +667,20 @@ gAiActionChecks:
 gActionScriptCommands:
 	.incbin "baserom.gba", 0x3AF000, 0x200
 
-	.global gUnk_083AF200
-gUnk_083AF200:
+	.global gDiceRollValues
+gDiceRollValues:
 	.incbin "baserom.gba", 0x3AF200, 0x10
 
-	.global gUnk_083AF210
-gUnk_083AF210:
+	.global gSpriteSpeedSteps
+gSpriteSpeedSteps:
 	.incbin "baserom.gba", 0x3AF210, 0x100
 
 	.global gSpriteHopOffsets
 gSpriteHopOffsets:
 	.incbin "baserom.gba", 0x3AF310, 0x20
 
-	.global gUnk_083AF330
-gUnk_083AF330:
+	.global gRandomPartByIntactClass
+gRandomPartByIntactClass:
 	.incbin "baserom.gba", 0x3AF330, 0x50
 
 	.global gPartFlyStepsHead
@@ -823,8 +823,8 @@ gBattlefieldTilesets:
 gBattlefieldGraphics:
 	.incbin "baserom.gba", 0x3B24A8, 0xDC
 
-	.global gUnk_083B2584
-gUnk_083B2584:
+	.global gGfxListData
+gGfxListData:
 	.incbin "baserom.gba", 0x3B2584, 0x218
 
 	.global gMessageStates
@@ -970,8 +970,8 @@ gRotationActionMessages:
 gMedapartData:
 	.incbin "baserom.gba", 0x3B827C, 0x225C
 
-	.global gUnk_083BA4D8
-gUnk_083BA4D8:
+	.global gMedabotNames
+gMedabotNames:
 	.incbin "baserom.gba", 0x3BA4D8, 0x14F4
 
 	.global gMedapartNames
@@ -1098,8 +1098,8 @@ gBattleSeqScripts:
 gBattleSeqOperandCounts:
 	.incbin "baserom.gba", 0x3CE1F4, 0x28C
 
-	.global gUnk_083CE480
-gUnk_083CE480:
+	.global gGfxLists
+gGfxLists:
 	.incbin "baserom.gba", 0x3CE480, 0x7F4
 
 	.global gBattleSeqTileAnims
@@ -1190,8 +1190,8 @@ gPoseKeyframeOffsets:
 gPoseKeyframeEnds:
 	.incbin "baserom.gba", 0x3D1E98, 0xEC
 
-	.global gUnk_083D1F84
-gUnk_083D1F84:
+	.global gFieldModeStates
+gFieldModeStates:
 	.incbin "baserom.gba", 0x3D1F84, 0x28
 
 	.global gFieldSubStates
@@ -1230,8 +1230,8 @@ gUnk_083D2903:
 gPlayerFormSpeedIds:
 	.incbin "baserom.gba", 0x3D2908, 0x10
 
-	.global gUnk_083D2918
-gUnk_083D2918:
+	.global gFormTileActions
+gFormTileActions:
 	.incbin "baserom.gba", 0x3D2918, 0x80
 
 	.global gScriptPlayerForms
@@ -1414,8 +1414,8 @@ gScriptItemMessages:
 gUnk_0847E948:
 	.incbin "baserom.gba", 0x47E948, 0x238
 
-	.global gUnk_0847EB80
-gUnk_0847EB80:
+	.global gAreaSongs
+gAreaSongs:
 	.incbin "baserom.gba", 0x47EB80, 0xC0
 
 	.global gFieldEffectObjPalettes

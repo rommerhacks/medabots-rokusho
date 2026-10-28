@@ -63,7 +63,7 @@ void link_medal_sync_exchange(void) {
 }
 
 void link_medal_sync_update(void) {
-    struct FuncTable2 t = gUnk_080AFAE0;
+    struct FuncTable2 t = gLinkMedalSyncSubStates;
 
     t.f[gGameSubState]();
 }
