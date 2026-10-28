@@ -300,7 +300,7 @@ void action_phase_show_winner_message(void) {
     if (gGameWork.unk9C == 1)
         memcpy_bytes_0803F63C(gPlayerName, gGameWork.textBuf, 0xE);
     else if (gGameWork.skipBotSetup != 1)
-        memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
+        memcpy_bytes_0803F63C(gOpponentNames[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
     else
         memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.textBuf, 0x12);
     if (run_message(gBattleMessages[2]))
@@ -340,7 +340,7 @@ void action_phase_show_time_up_message(void) {
     if (gGameWork.unk9C == 1)
         memcpy_bytes_0803F63C(gPlayerName, gGameWork.textBuf, 0xE);
     else if (gGameWork.skipBotSetup != 1)
-        memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
+        memcpy_bytes_0803F63C(gOpponentNames[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
     else
         memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.textBuf, 0x12);
     if (run_message(gBattleMessages[3]))

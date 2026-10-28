@@ -128,9 +128,10 @@ extern const u16 gSoundSemitoneRatios[12];  // 2^(i/12) * 0x1000
 extern const u16 gSoundFinetuneRatios[128]; // 2^(i/(12*128)) * 0x1000
 extern const u32 gSoundEffectTracks[6];     // track indices of the sound effect tracks (4-7, 10, 11)
 extern const Func gGameStateHandlers_083AC148[];
-extern const u32 gMedalNames[];      // Medal names by Medal id (0 KUWAGATA, 6 SNAKE...); +0x20: "Rokusho" / "Metabee"
-extern const u8 gUnk_083B6158[][16]; // 16-byte records per Medal graphic index (byte 1 compared with a Medapart's
-                                     // skill, byte 7 icon)
+extern const u32 gMedalNames[]; // Medal names by Medal id (0 KUWAGATA, 6 SNAKE...); +0x20: "Rokusho" / "Metabee"
+// 16 bytes per Medal: [0-2] Medaforce ids (gMedaforceRecords), [3-6] Medal levels (guess: when each one unlocks),
+// [7] icon, [8-15] guess: aptitude per skill type
+extern const u8 gMedalRecords[][16];
 extern const u8 gMedabotSpriteNodeDescs[]; // SpriteNodeDesc pointers of the Medabot sprite tree
 extern const u32 gUnk_083BA4D8[];
 extern const u8 gMedalAttributeBaseSkills[]; // 8 bytes per Medal attribute: base skill levels (init_enemy_bot_medal)
@@ -297,12 +298,12 @@ extern const Func gUnk_083AC248[];        // game state 0 sub-state handlers (gu
 extern const Func gFieldMenuHandlers[];   // game state 1 (field pause menu) sub-state handlers
 extern const void
     *const gMenuMessages[]; // menu messages: debug menu (0-3), Medals screen hints / help (4-15), pre-battle (20-21)
-extern const void *const gLinkMessages[];       // message table (run_message)
-extern const u8 gUnk_083AC420[];                // orbit centre x, y per gGameWork.medabotsCursor
-extern const u8 gUnk_083AC432[];                // per slot sprite priority base
-extern const u8 gUnk_083AC43B[];                // x, y per team select slot (9)
-extern const u8 gUnk_083AC468[];                // team select: cursor slot to move to after a pick, per slot
-extern const u8 gUnk_083AC44D[];                // tile x, y per team select slot (9)
+extern const void *const gLinkMessages[];             // message table (run_message)
+extern const u8 gMedabotsCursorOrbitCenters[];        // orbit centre x, y per gGameWork.medabotsCursor
+extern const u8 gMedabotsSlotSpritePriorities[];      // per slot sprite priority base
+extern const u8 gMedabotsSlotPositions[];             // x, y per team select slot (9)
+extern const u8 gTeamSelectNextSlot[];                // team select: cursor slot to move to after a pick, per slot
+extern const u8 gMedabotsSlotPedestalTilePositions[]; // tile x, y per team select slot (9)
 extern const u8 *const gMedabotSlotDpadMoves[]; // up, down, left, right: next slot (gGameWork.medabotsCursor) per slot
 extern const void *const gUiTilemaps[];         // tilemaps (field menu rows: open/close animation frames)
 extern const void *gBattleSpriteAnimScripts[];  // battle sprite animation command lists (battle_sprite_anim_init /
@@ -353,25 +354,25 @@ extern const u8 gUnk_084C1FD4[];
 extern u8 gTextGlyphTile[];   // message text: the next glyph, shifted then ORed into gTextComposeTile
                               // (text_render_glyph_step)
 extern u8 gTextComposeTile[]; // message text: the 8x16 tile being composed, flushed to the window tiles when full
-extern u8 gUnk_02020800[];    // BG tile backup (0x800 bytes of VRAM 0x06002800 while a Medawatch submenu runs)
+extern u8 gBgTileBackup[];    // BG tile backup (0x800 bytes of VRAM 0x06002800 while a Medawatch submenu runs)
 extern const Func gMedabotsScreenHandlers[];        // game state 3 sub-state handlers
 extern const Func gMedalsScreenHandlers[];          // game state 4 (Medals screen) sub-state handlers
 extern const Func gMedapartsScreenHandlers[];       // game state 5 (Medaparts screen) sub-state handlers
 extern const Func gMedapartTradeChoiceCloseSteps[]; // sprite 4 sub-state handlers, by gSpriteEntries[4].unk29
                                                     // (medapart_trade_choice_close_step)
 extern const Func gPrebattleScreenHandlers[];       // game state 6 ("Get ready to Robattle") sub-state handlers
-extern const u8 gUnk_084C696C[];
-extern const void *const gUnk_083C2BBC[]; // pre-battle opponent lines, by gBattleWork.encounterMessage
-extern const u16 gUnk_084C6A78[];
-extern const u8 gUnk_084E6C9C[];
-extern const u8 gUnk_084C7D10[];
-extern const u8 gUnk_084EFA34[];
-extern const u16 gUnk_084F29E0[];
-extern const u16 gUnk_084C69D8[];
-extern const u16 gUnk_084C69F8[];
-extern const u16 gUnk_0850DCF8[];
-extern const u16 gUnk_084E2FB8[];
-extern const u16 gUnk_084E2F98[];
+extern const u8 gPrebattleWipeTiles[];
+extern const void *const gOpponentPreBattleMessages[]; // pre-battle opponent lines, by gBattleWork.encounterMessage
+extern const u16 gPrebattleWipePalette[];
+extern const u8 gPrebattleBgTiles[];
+extern const u8 gPrebattleObjTiles[]; // guess: OBJ tiles of the opponent screen (0x06012800)
+extern const u8 gPrebattleBg1Tilemap[];
+extern const u16 gPrebattleBgPalette[];
+extern const u16 gLegTypePedestalPalette[];  // BG palette 8 (gLegTypePedestalTiles)
+extern const u16 gLegTypePedestalPalette2[]; // BG palette 9 (gLegTypePedestalTiles2)
+extern const u16
+    gGradientPaletteYellow[]; // first of the 16-colour ramps up to gBlackObjPalettes; code indexes across them
+extern const u16 gPrebattleObjPalette[];
 extern u8
     gMedapartInventory[4 * 120 * 2]; // 2 bytes per Medapart, 120 per kind (head, right arm, left arm, legs): [0] count
                                      // owned (runtime-checked), [1] count equipped (team_lose_equipped_part)
@@ -451,30 +452,31 @@ extern const u16 gMedalRotationBgPalette[];
 extern const void *const gMedaforceDescMessages[];  // messages (run_message), indexed by medal_medaforce_get_selected()
 extern const void *const gRotationActionMessages[]; // messages (run_message), indexed by a Medal record byte at +0x18
                                                     // (guess: rotation entries)
-extern const u8 gUnk_084E5650[];
-extern const u8 gUnk_084C48B4[];
-extern const u8 gUnk_084C4A34[];
-extern const u8 gUnk_084C7428[];
-extern const u8 gUnk_084EF2D8[];
-extern const u8 gUnk_084EF95C[];
-extern const u8 gUnk_084F02B8[];
-extern const u8 gUnk_084F122C[];
-extern const u16 gUnk_084F2680[];
-extern const u16 gUnk_0850DEF8[];
-extern const u16 gUnk_0850DD18[];
-extern const u16 gUnk_084E2EB8[];
-extern const u16 gUnk_084E2ED8[];
-extern const u8 gUnk_084E61CC[];
+extern const u8 gMedabotsBgTiles[];
+// BG tiles 0x300+: the 2x2 pedestals under each Medabot, picked by leg type (draw_tilemap_with_offset)
+extern const u8 gLegTypePedestalTiles[];
+extern const u8 gLegTypePedestalTiles2[];
+extern const u8 gTeamRoleLabelTiles[]; // OBJ: "LEADER" / "PARTNER" over the team picks
+extern const u8 gMedabotsBg0Tilemap[];
+extern const u8 gMedabotsBg1Tilemap[];
+extern const u8 gMedabotsBg2Tilemap[];
+extern const u8 gMedabotsBg3Tilemap[];
+extern const u16 gMedabotsBgPalette[];
+extern const u16 gMenuObjPalettes[]; // OBJ palettes 0-7 of most menus (3 character palettes, then black)
+extern const u16 gGradientPaletteGold[];
+extern const u16 gMedabotsCursorObjPalette[];
+extern const u16 gTeamRoleLabelObjPalette[];
+extern const u8 gMedabotBuildBgTiles[];
 extern const u8 gSmallDigitTiles[]; // small digits (Medal levels; runtime: blanking 0x06006280 on the Medals list)
 extern const u8 gCompatibilityIconTiles[]; // Ability page compatibility icon (runtime)
-extern const u8 gUnk_084C4DB0[];
-extern const u8 gCursorArrowTiles[]; // arrow cursor OBJ tiles at 0x06017E00 (runtime: Medals list cursor)
-extern const u8 gUnk_084EF310[];
-extern const u8 gUnk_084EF9C8[];
-extern const u8 gUnk_084F03EC[];
-extern const u8 gUnk_084F13C0[];
-extern const u16 gUnk_084F2820[];
-extern const u16 gUnk_0850DD58[];
+extern const u8 gPartSlotIconTiles[];      // head / arm / legs icons beside the part names
+extern const u8 gCursorArrowTiles[];       // arrow cursor OBJ tiles at 0x06017E00 (runtime: Medals list cursor)
+extern const u8 gMedabotBuildBg0Tilemap[];
+extern const u8 gMedabotBuildBg1Tilemap[];
+extern const u8 gMedabotBuildBg2Tilemap[];
+extern const u8 gMedabotBuildBg3Tilemap[];
+extern const u16 gMedabotBuildBgPalette[];
+extern const u16 gGradientPaletteOlive[];
 
 extern const u8 gMedalIconTiles[];            // Medal icon tiles, 0x80 bytes per graphic index
 extern const u8 gMedalIconBlankTiles[];       // blank Medal icon tile
@@ -519,22 +521,24 @@ extern const u32 gMedaforceNames[]; // Medaforce names, indexed by Medaforce id
 extern const u32 gLegTypeNames[];   // Medapart skill names for ids >= 100 (medapart_detail_draw_skill)
 extern u16 gRobattleCounts[2]; // gPlayerRecord.robattleCounts: [0] fought, [1] won (gGameWork.unk9C == 1); capped at
                                // 9999 (runtime-checked; guess: Robattles fought / won)
-extern const void *const gUnk_083C3984[];   // after-battle opponent lines, by gBattleWork.encounterMessage
+extern const void *const gOpponentAfterBattleMessages[]; // after-battle opponent lines, by gBattleWork.encounterMessage
 extern const void *const gBattleMessages[]; // battle message pointers (after-battle screen uses 107, 109, 118)
 extern const u8 *const gPartKindNames[];    // Medapart kind names, by kind
-extern const u8 gUnk_084D7C9C[];            // LZ tiles (after-battle screen sprite 1)
-extern const u8 gUnk_084D7DB0[];            // LZ tiles (after-battle screen sprite 2)
-extern const u16 gUnk_0850E9D8[];           // OBJ palette (sprite 1)
-extern const u16 gUnk_084E2F98[];           // OBJ palette (sprite 2)
+extern const u8 gNewPartSpriteTiles[];      // LZ tiles (after-battle screen sprite 1)
+extern const u8 gPartIconSpriteTiles[];     // LZ tiles (after-battle screen sprite 2)
+extern const u16 gResultSpritePalettes[];   // OBJ palettes, 0x20 bytes each (also indexed by a table at 0x083AF8E8)
+extern const u16 gPartIconSpritePalette[];  // OBJ palette (sprite 2)
 
-extern const u8 *const gUnk_083C3F38[]; // opponent names, by gBattleWork.encounterMessage
-extern const u8 *const gUnk_083BE9E8[]; // battlefield names, by gBattleWork.battlefield
-extern const u8 gUnk_083BEA90[][8];     // per area: [1] = battlefield (load_area_battlefield)
+extern const u8 *const gOpponentNames[];    // opponent names, by gBattleWork.encounterMessage
+extern const u8 *const gBattlefieldNames[]; // battlefield names, by gBattleWork.battlefield
+extern const u8 gAreaBattleSettings[][8];   // per area: [1] = battlefield (load_area_battlefield)
 extern const u8
-    gUnk_083BF090[][4]; // per area: random encounter ids, picked 40/30/20/10% (setup_random_encounter_enemies)
-extern const u8 *const gUnk_083C1A00[]; // encounter setups (0x28 bytes copied to gBattleWork), by gFieldWork.battle_id
-extern const u8 gUnk_083ACEE4[][2];     // per opponent Medabot: sprite position (init_opponent_medabot_sprites)
-extern const u8 gUnk_083ACEEA[][2];     // per opponent Medabot: leg type icon position (draw_opponent_leg_type_icons)
+    gAreaRandomEncounters[][4]; // per area: random encounter ids, picked 40/30/20/10% (setup_random_encounter_enemies)
+extern const u8
+    *const gEncounterSetups[]; // encounter setups (0x28 bytes copied to gBattleWork), by gFieldWork.battle_id
+extern const u8 gOpponentSpritePositions[][2]; // per opponent Medabot: sprite position (init_opponent_medabot_sprites)
+extern const u8
+    gOpponentLegIconPositions[][2];       // per opponent Medabot: leg type icon position (draw_opponent_leg_type_icons)
 extern const u8 gRandomBotSlotStarts[16]; // random starting opponent slot 0-2 (afterbattle_pick_unowned_part,
                                           // battle_pick_random_bot_part)
 extern const u8 gBattlefieldParams[][8];  // per battlefield (battlefield_load_params)
@@ -558,7 +562,7 @@ extern const u16 gUnk_084F37E0[];
 extern const u8 gUnk_084C84E4[];
 extern const u16 gUnk_084E2FD8[];
 
-extern const u16 gUnk_0850DDF8[];
+extern const u16 gGradientPaletteOrange[];
 
 extern const u8 gUnk_08488764[];        // Robattle screen tilemaps (compressed)
 extern const u8 gLeftBotPanelTilemap[]; // left (player side) Medabot name panel at (0,13), tiles gLeftBotPanelTiles
@@ -585,7 +589,7 @@ extern const u8
 extern const u8 gPartsMenuRightPanelTilemap[]; // command ring parts menu, right panel (BG1)
 extern const u8 gMfMenuLeftPanelTilemap[];     // Medaforce menu, left panel (BG0)
 extern const u8 gMfMenuRightPanelTilemap[];    // Medaforce menu, right panel (BG1)
-extern u8 gUnk_02021000[];                     // BG tile backup, second half (see gUnk_02020800)
+extern u8 gBgTileBackupHigh[];                 // BG tile backup, second half (see gBgTileBackup)
 extern const u8 gUnk_083AD39A[];               // Robattle sub-state per command ring slot (command_ring_goto_selected)
 extern const u8 gUnk_083AD3A4[]; // battle bot screen positions (x, y) per record 0-5 (position_battle_team_cursors)
 
@@ -1221,7 +1225,7 @@ extern const u8 gUnk_087A3E64[];                // race scene BG2 tilemap (decom
 extern const u8 gUnk_087A40A0[];                // race scene BG3 tilemap (decompress_and_write_tilemap)
 extern const u32 gUnk_087A1410[];               // race scene BG tiles (dma3_copy_or_decompress)
 extern const u8 gUnk_087A13B0[];                // race scene BG palettes (0x60 bytes to 0x0202FA00)
-extern const u8 gUnk_0850DEB8[];                // OBJ palette (0x20 bytes to 0x05000200)
+extern const u8 gBlackObjPalettes[];            // OBJ palette (0x20 bytes to 0x05000200)
 struct PtrTable3 {
     const u8 *const *p[3];
 };
@@ -1478,7 +1482,7 @@ extern const u8 gPartTradeAnimFramesTilemap[]; // 4 frames at screen 27, copied 
 extern const u8 gPartTradeBg3Tilemap[];
 extern const u32 gPartTradeBgTiles[];
 extern const u8 gPartTradeBgPalette[];
-extern const u8 gUnk_0850DD78[];
+extern const u8 gGradientPaletteCyan[];
 
 extern s32 *gUnk_083D5D84[];        // field effect scripts, picked by gUnk_03005350.unk1D4 & 0x3F (field_effect_run)
 extern const void *gUnk_0847ECC0[]; // battle sequence sprite graphics (opcode 27)

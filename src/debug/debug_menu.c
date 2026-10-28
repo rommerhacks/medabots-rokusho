@@ -12,7 +12,7 @@ void debug_menu_init(void) {
     vu32 zero;
 
     REG_DISPCNT |= 0x1000;
-    DmaSet(3, gSpriteEntries, gUnk_02020800, 0x84000400);
+    DmaSet(3, gSpriteEntries, gBgTileBackup, 0x84000400);
     zero = 0;
     DmaSet(3, &zero, gSpriteEntries, 0x85000400);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
@@ -56,7 +56,7 @@ void debug_menu_select_input(void) {
 }
 
 void debug_menu_exit(void) {
-    DmaSet(3, gUnk_02020800, gSpriteEntries, 0x84000400);
+    DmaSet(3, gBgTileBackup, gSpriteEntries, 0x84000400);
     gGameState = gGameWork.debugReturnState;
     gGameSubState = gGameWork.debugReturnSubState;
 }
@@ -137,7 +137,7 @@ void debug_process_input(void) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & 1) {
-        DmaSet(3, gUnk_02020800, gSpriteEntries, 0x84000400);
+        DmaSet(3, gBgTileBackup, gSpriteEntries, 0x84000400);
         gGameMode = gGameWork.debugValues[0];
         gGameState = gGameWork.debugValues[1];
         gGameSubState = gGameWork.debugValues[2];

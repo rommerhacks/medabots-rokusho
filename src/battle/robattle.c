@@ -186,7 +186,7 @@ void robattle_command_ring_reopen(void) {
     update_battle_sprite_orbiting_positions(gBattleWork.unk80 * 4 + 0x5A, gBattleWork.unk80, 0);
     decompress_two_bg1_layers();
     command_ring_init_icons_hidden();
-    read_vram_tilemap_rect(6, 5, 0xC, 0x15, REG_BG1CNT, gUnk_02020800);
+    read_vram_tilemap_rect(6, 5, 0xC, 0x15, REG_BG1CNT, gBgTileBackup);
     gGameWork.unk84 = 0;
     gGameSubState++;
 }
@@ -261,7 +261,7 @@ void robattle_parts_menu_open(void) {
     clear_battle_sprite_slot(0x1E, 0xB);
     parts_menu_load_frame();
     determine_battle_part_action_priority();
-    read_vram_tilemap_rect(0xC, 4, 9, 0x15, REG_BG0CNT, gUnk_02020800);
+    read_vram_tilemap_rect(0xC, 4, 9, 0x15, REG_BG0CNT, gBgTileBackup);
     gGameWork.unk84 = 0;
     gGameSubState++;
 }
@@ -355,7 +355,7 @@ void robattle_mf_menu_open(void) {
     clear_battle_sprite_slot(0, 6);
     clear_battle_sprite_slot(0x1E, 0xB);
     mf_menu_load_frame();
-    read_vram_tilemap_rect(0xC, 4, 9, 0x15, REG_BG0CNT, gUnk_02020800);
+    read_vram_tilemap_rect(0xC, 4, 9, 0x15, REG_BG0CNT, gBgTileBackup);
     gGameWork.unk84 = 0;
     gGameSubState++;
 }
@@ -608,7 +608,7 @@ void robattle_status_screen_init(void) {
     lz_decompress_dispatch(gUnk_084ED4C4, (void *)0x06004000);
     lz_decompress_dispatch(gUnk_084C50D8, (void *)0x06006000);
     lz_decompress_dispatch(gCompatibilityIconTiles, (void *)0x06006800);
-    lz_decompress_dispatch(gUnk_084C4DB0, (void *)0x06006E00);
+    lz_decompress_dispatch(gPartSlotIconTiles, (void *)0x06006E00);
     lz_decompress_dispatch(gTallDigitTiles, (void *)0x06007200);
     lz_decompress_dispatch(gUnk_084C50BC, (void *)0x06007480);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
@@ -617,10 +617,10 @@ void robattle_status_screen_init(void) {
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0D24, REG_BG2CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F205C, REG_BG3CNT, 0x200);
     CpuFastSet(gUnk_084F37E0, (void *)0x05000000, 0x70);
-    CpuFastSet(gUnk_0850DEF8, (void *)0x05000200, 0x40);
-    CpuFastSet(gUnk_0850DD58, (void *)0x05000380, 8);
-    CpuFastSet(&gUnk_0850DD58[0x20], (void *)0x050003A0, 8);
-    CpuFastSet(&gUnk_0850DD58[-0x20], (void *)0x050003E0, 8);
+    CpuFastSet(gMenuObjPalettes, (void *)0x05000200, 0x40);
+    CpuFastSet(gGradientPaletteOlive, (void *)0x05000380, 8);
+    CpuFastSet(&gGradientPaletteOlive[0x20], (void *)0x050003A0, 8);
+    CpuFastSet(&gGradientPaletteOlive[-0x20], (void *)0x050003E0, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     fill = 0;
     CpuFastSet(&fill, gSpriteEntries, 0x01000800);
@@ -786,7 +786,7 @@ void robattle_start_banner(void) {
     default:
         if (++gGameWork.unk86 == 0x3C) {
             clear_battle_sprite_slot(3, 2);
-            CpuFastSet(gUnk_0850DDF8, (void *)0x050003E0, 8);
+            CpuFastSet(gGradientPaletteOrange, (void *)0x050003E0, 8);
             gGameSubState++;
         }
         break;

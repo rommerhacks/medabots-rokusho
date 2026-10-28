@@ -588,20 +588,20 @@ gPartPowerMarkTiles:
 gSkillRangeIconTiles:
 	.incbin "baserom.gba", 0x4C47E0, 0xD4
 
-	.global gUnk_084C48B4
-gUnk_084C48B4:
+	.global gLegTypePedestalTiles
+gLegTypePedestalTiles:
 	.incbin "baserom.gba", 0x4C48B4, 0x180
 
-	.global gUnk_084C4A34
-gUnk_084C4A34:
+	.global gLegTypePedestalTiles2
+gLegTypePedestalTiles2:
 	.incbin "baserom.gba", 0x4C4A34, 0x178
 
 	.global gBotActionIconTiles
 gBotActionIconTiles:
 	.incbin "baserom.gba", 0x4C4BAC, 0x204
 
-	.global gUnk_084C4DB0
-gUnk_084C4DB0:
+	.global gPartSlotIconTiles
+gPartSlotIconTiles:
 	.incbin "baserom.gba", 0x4C4DB0, 0x150
 
 	.global gGaugeFillTiles
@@ -644,8 +644,8 @@ gUnk_084C66B8:
 gUnk_084C68E0:
 	.incbin "baserom.gba", 0x4C68E0, 0x8C
 
-	.global gUnk_084C696C
-gUnk_084C696C:
+	.global gPrebattleWipeTiles
+gPrebattleWipeTiles:
 	.incbin "baserom.gba", 0x4C696C, 0x2C
 
 	.global gTextWindowObjPalette
@@ -656,12 +656,12 @@ gTextWindowObjPalette:
 gUnk_084C69B8:
 	.incbin "baserom.gba", 0x4C69B8, 0x20
 
-	.global gUnk_084C69D8
-gUnk_084C69D8:
+	.global gLegTypePedestalPalette
+gLegTypePedestalPalette:
 	.incbin "baserom.gba", 0x4C69D8, 0x20
 
-	.global gUnk_084C69F8
-gUnk_084C69F8:
+	.global gLegTypePedestalPalette2
+gLegTypePedestalPalette2:
 	.incbin "baserom.gba", 0x4C69F8, 0x20
 
 	.global gBattleBgPalette8
@@ -676,8 +676,8 @@ gBattleBgPalette13:
 gUnk_084C6A58:
 	.incbin "baserom.gba", 0x4C6A58, 0x20
 
-	.global gUnk_084C6A78
-gUnk_084C6A78:
+	.global gPrebattleWipePalette
+gPrebattleWipePalette:
 	.incbin "baserom.gba", 0x4C6A78, 0x20
 
 	.global gSpriteFontTiles
@@ -692,16 +692,16 @@ gFieldMenuCursorTiles:
 gCursorArrowTiles:
 	.incbin "baserom.gba", 0x4C7318, 0x110
 
-	.global gUnk_084C7428
-gUnk_084C7428:
+	.global gTeamRoleLabelTiles
+gTeamRoleLabelTiles:
 	.incbin "baserom.gba", 0x4C7428, 0x20C
 
 	.global gBattleUiSpriteTiles
 gBattleUiSpriteTiles:
 	.incbin "baserom.gba", 0x4C7634, 0x6DC
 
-	.global gUnk_084C7D10
-gUnk_084C7D10:
+	.global gPrebattleObjTiles
+gPrebattleObjTiles:
 	.incbin "baserom.gba", 0x4C7D10, 0x2B0
 
 	.global gBattleNumberSpriteTiles
@@ -952,12 +952,12 @@ gUnk_084D7528:
 gUnk_084D796C:
 	.incbin "baserom.gba", 0x4D796C, 0x330
 
-	.global gUnk_084D7C9C
-gUnk_084D7C9C:
+	.global gNewPartSpriteTiles
+gNewPartSpriteTiles:
 	.incbin "baserom.gba", 0x4D7C9C, 0x114
 
-	.global gUnk_084D7DB0
-gUnk_084D7DB0:
+	.global gPartIconSpriteTiles
+gPartIconSpriteTiles:
 	.incbin "baserom.gba", 0x4D7DB0, 0x39D8
 
 	.global gMedaforceSideBoltTiles
@@ -1116,12 +1116,12 @@ gHelpCursorPalette:
 gUnk_084E2E98:
 	.incbin "baserom.gba", 0x4E2E98, 0x20
 
-	.global gUnk_084E2EB8
-gUnk_084E2EB8:
+	.global gMedabotsCursorObjPalette
+gMedabotsCursorObjPalette:
 	.incbin "baserom.gba", 0x4E2EB8, 0x20
 
-	.global gUnk_084E2ED8
-gUnk_084E2ED8:
+	.global gTeamRoleLabelObjPalette
+gTeamRoleLabelObjPalette:
 	.incbin "baserom.gba", 0x4E2ED8, 0x20
 
 	.global gTargetLinePalette
@@ -1144,12 +1144,12 @@ gUnk_084E2F58:
 gUnk_084E2F78:
 	.incbin "baserom.gba", 0x4E2F78, 0x20
 
-	.global gUnk_084E2F98
-gUnk_084E2F98:
+	.global gPartIconSpritePalette
+gPartIconSpritePalette:
 	.incbin "baserom.gba", 0x4E2F98, 0x20
 
-	.global gUnk_084E2FB8
-gUnk_084E2FB8:
+	.global gPrebattleObjPalette
+gPrebattleObjPalette:
 	.incbin "baserom.gba", 0x4E2FB8, 0x20
 
 	.global gUnk_084E2FD8
@@ -1188,16 +1188,16 @@ gEffectCommonPalette:
 gUnk_084E30D8:
 	.incbin "baserom.gba", 0x4E30D8, 0x2578
 
-	.global gUnk_084E5650
-gUnk_084E5650:
+	.global gMedabotsBgTiles
+gMedabotsBgTiles:
 	.incbin "baserom.gba", 0x4E5650, 0xB7C
 
-	.global gUnk_084E61CC
-gUnk_084E61CC:
+	.global gMedabotBuildBgTiles
+gMedabotBuildBgTiles:
 	.incbin "baserom.gba", 0x4E61CC, 0xAD0
 
-	.global gUnk_084E6C9C
-gUnk_084E6C9C:
+	.global gPrebattleBgTiles
+gPrebattleBgTiles:
 	.incbin "baserom.gba", 0x4E6C9C, 0x5C8
 
 	.global gMedalsListBgTiles
@@ -1236,12 +1236,12 @@ gUnk_084ED4C4:
 gUnk_084EDEF0:
 	.incbin "baserom.gba", 0x4EDEF0, 0x13E8
 
-	.global gUnk_084EF2D8
-gUnk_084EF2D8:
+	.global gMedabotsBg0Tilemap
+gMedabotsBg0Tilemap:
 	.incbin "baserom.gba", 0x4EF2D8, 0x38
 
-	.global gUnk_084EF310
-gUnk_084EF310:
+	.global gMedabotBuildBg0Tilemap
+gMedabotBuildBg0Tilemap:
 	.incbin "baserom.gba", 0x4EF310, 0x38
 
 	.global gMedalsListBg0Tilemap
@@ -1284,16 +1284,16 @@ gUnk_084EF668:
 gUnk_084EF6A0:
 	.incbin "baserom.gba", 0x4EF6A0, 0x2BC
 
-	.global gUnk_084EF95C
-gUnk_084EF95C:
+	.global gMedabotsBg1Tilemap
+gMedabotsBg1Tilemap:
 	.incbin "baserom.gba", 0x4EF95C, 0x6C
 
-	.global gUnk_084EF9C8
-gUnk_084EF9C8:
+	.global gMedabotBuildBg1Tilemap
+gMedabotBuildBg1Tilemap:
 	.incbin "baserom.gba", 0x4EF9C8, 0x6C
 
-	.global gUnk_084EFA34
-gUnk_084EFA34:
+	.global gPrebattleBg1Tilemap
+gPrebattleBg1Tilemap:
 	.incbin "baserom.gba", 0x4EFA34, 0x128
 
 	.global gMedalsListBg1Tilemap
@@ -1336,12 +1336,12 @@ gUnk_084F0194:
 gUnk_084F023C:
 	.incbin "baserom.gba", 0x4F023C, 0x7C
 
-	.global gUnk_084F02B8
-gUnk_084F02B8:
+	.global gMedabotsBg2Tilemap
+gMedabotsBg2Tilemap:
 	.incbin "baserom.gba", 0x4F02B8, 0x134
 
-	.global gUnk_084F03EC
-gUnk_084F03EC:
+	.global gMedabotBuildBg2Tilemap
+gMedabotBuildBg2Tilemap:
 	.incbin "baserom.gba", 0x4F03EC, 0x104
 
 	.global gMedalsListBg2Tilemap
@@ -1384,12 +1384,12 @@ gUnk_084F0D9C:
 gUnk_084F0F2C:
 	.incbin "baserom.gba", 0x4F0F2C, 0x300
 
-	.global gUnk_084F122C
-gUnk_084F122C:
+	.global gMedabotsBg3Tilemap
+gMedabotsBg3Tilemap:
 	.incbin "baserom.gba", 0x4F122C, 0x194
 
-	.global gUnk_084F13C0
-gUnk_084F13C0:
+	.global gMedabotBuildBg3Tilemap
+gMedabotBuildBg3Tilemap:
 	.incbin "baserom.gba", 0x4F13C0, 0x194
 
 	.global gMedalsListBg3Tilemap
@@ -1432,16 +1432,16 @@ gUnk_084F21E8:
 gUnk_084F24E0:
 	.incbin "baserom.gba", 0x4F24E0, 0x1A0
 
-	.global gUnk_084F2680
-gUnk_084F2680:
+	.global gMedabotsBgPalette
+gMedabotsBgPalette:
 	.incbin "baserom.gba", 0x4F2680, 0x1A0
 
-	.global gUnk_084F2820
-gUnk_084F2820:
+	.global gMedabotBuildBgPalette
+gMedabotBuildBgPalette:
 	.incbin "baserom.gba", 0x4F2820, 0x1C0
 
-	.global gUnk_084F29E0
-gUnk_084F29E0:
+	.global gPrebattleBgPalette
+gPrebattleBgPalette:
 	.incbin "baserom.gba", 0x4F29E0, 0x1C0
 
 	.global gMedalsListBgPalette
@@ -1480,36 +1480,36 @@ gUnk_084F37E0:
 gUnk_084F39A0:
 	.incbin "baserom.gba", 0x4F39A0, 0x1A358
 
-	.global gUnk_0850DCF8
-gUnk_0850DCF8:
+	.global gGradientPaletteYellow
+gGradientPaletteYellow:
 	.incbin "baserom.gba", 0x50DCF8, 0x20
 
-	.global gUnk_0850DD18
-gUnk_0850DD18:
+	.global gGradientPaletteGold
+gGradientPaletteGold:
 	.incbin "baserom.gba", 0x50DD18, 0x40
 
-	.global gUnk_0850DD58
-gUnk_0850DD58:
+	.global gGradientPaletteOlive
+gGradientPaletteOlive:
 	.incbin "baserom.gba", 0x50DD58, 0x20
 
-	.global gUnk_0850DD78
-gUnk_0850DD78:
+	.global gGradientPaletteCyan
+gGradientPaletteCyan:
 	.incbin "baserom.gba", 0x50DD78, 0x40
 
 	.global gBattleObjPalettes13
 gBattleObjPalettes13:
 	.incbin "baserom.gba", 0x50DDB8, 0x40
 
-	.global gUnk_0850DDF8
-gUnk_0850DDF8:
+	.global gGradientPaletteOrange
+gGradientPaletteOrange:
 	.incbin "baserom.gba", 0x50DDF8, 0xC0
 
-	.global gUnk_0850DEB8
-gUnk_0850DEB8:
+	.global gBlackObjPalettes
+gBlackObjPalettes:
 	.incbin "baserom.gba", 0x50DEB8, 0x40
 
-	.global gUnk_0850DEF8
-gUnk_0850DEF8:
+	.global gMenuObjPalettes
+gMenuObjPalettes:
 	.incbin "baserom.gba", 0x50DEF8, 0x100
 
 	.global gHealNumberPalette
@@ -1744,8 +1744,8 @@ gUnk_0850E978:
 gUnk_0850E998:
 	.incbin "baserom.gba", 0x50E998, 0x40
 
-	.global gUnk_0850E9D8
-gUnk_0850E9D8:
+	.global gResultSpritePalettes
+gResultSpritePalettes:
 	.incbin "baserom.gba", 0x50E9D8, 0x160
 
 	.global gMedaforceSideBoltPalette

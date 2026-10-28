@@ -131,7 +131,7 @@ void text_scroll_init(void) {
     CpuFastSet(gUnk_087A13B0, (void *)0x0202FA00, 0x18);
     CpuFastSet(pal, (void *)0x0202F800, 0x20);
     lz_decompress_dispatch(gUnk_08785F34, (void *)0x06010000);
-    CpuFastSet(gUnk_0850DEB8, (void *)0x05000200, 8);
+    CpuFastSet(gBlackObjPalettes, (void *)0x05000200, 8);
     for (i = 0; i < sizeof(gMenuWork->ring_center_x); i++) {
         gMenuWork->ring_center_x[i] = 0x78;
         gMenuWork->ring_center_y[i] = 0x50;

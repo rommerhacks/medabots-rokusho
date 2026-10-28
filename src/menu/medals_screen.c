@@ -84,8 +84,8 @@ void medals_list_load_gfx(void) {
     lz_decompress_dispatch(gMedalsListBgTiles, (void *)0x06004000);
     lz_decompress_dispatch(gMedalsTabNumberTiles, (void *)0x06006000);
     lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06006280);
-    lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06007400);
-    lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06007600);
+    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)0x06007400);
+    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)0x06007600);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     lz_decompress_dispatch(gTradeChoiceWindowTiles, (void *)0x06006A00);
@@ -95,11 +95,11 @@ void medals_list_load_gfx(void) {
     set_tilemap_and_decompress_bg(0, 0, gMedalsListBg3Tilemap, REG_BG3CNT, 0x200);
     CpuFastSet(gMedalsListBgPalette, (void *)0x05000000, 0x70);
     CpuFastSet(gTradeChoiceWindowPalette, (void *)0x05000160, 8);
-    CpuFastSet(gUnk_0850DEF8, (void *)0x05000200, 0x40);
-    CpuFastSet(gUnk_0850DD58, (void *)0x05000300, 8);
-    CpuFastSet(gUnk_0850DD58 - 0x20, (void *)0x05000320, 8);
+    CpuFastSet(gMenuObjPalettes, (void *)0x05000200, 0x40);
+    CpuFastSet(gGradientPaletteOlive, (void *)0x05000300, 8);
+    CpuFastSet(gGradientPaletteOlive - 0x20, (void *)0x05000320, 8);
     CpuFastSet(gUnk_084E2E98, (void *)0x050003A0, 8);
-    CpuFastSet(gUnk_0850DD58 + 0x60, (void *)0x05000340, 8);
+    CpuFastSet(gGradientPaletteOlive + 0x60, (void *)0x05000340, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
@@ -214,10 +214,10 @@ void medal_ability_load_gfx(void) {
     set_tilemap_and_decompress_bg(0, 0, gMedalAbilityBg2Tilemap, REG_BG2CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalAbilityBg3Tilemap, REG_BG3CNT, 0x200);
     CpuFastSet(gMedalAbilityBgPalette, (void *)0x05000000, 0x70);
-    CpuFastSet(gUnk_0850DD58 + 0x70, (void *)0x05000340, 8);
-    CpuFastSet(gUnk_0850DD58 + 0x40, (void *)0x05000360, 8);
-    CpuFastSet(gUnk_0850DD58 - 0x20, (void *)0x05000380, 8);
-    CpuFastSet(gUnk_0850DD58 - 0x10, (void *)0x050003A0, 8);
+    CpuFastSet(gGradientPaletteOlive + 0x70, (void *)0x05000340, 8);
+    CpuFastSet(gGradientPaletteOlive + 0x40, (void *)0x05000360, 8);
+    CpuFastSet(gGradientPaletteOlive - 0x20, (void *)0x05000380, 8);
+    CpuFastSet(gGradientPaletteOlive - 0x10, (void *)0x050003A0, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
@@ -351,10 +351,10 @@ void medal_medaforce_load_gfx(void) {
     set_tilemap_and_decompress_bg(0, 0, gMedalMedaforceBg2Tilemap, REG_BG2CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalMedaforceBg3Tilemap, REG_BG3CNT, 0x200);
     CpuFastSet(gMedalMedaforceBgPalette, (void *)0x05000000, 0x70);
-    CpuFastSet(gUnk_0850DD58 + 0x30, (void *)0x05000340, 8);
-    CpuFastSet(gUnk_0850DD58 + 0x40, (void *)0x05000360, 8);
-    CpuFastSet(gUnk_0850DD58 - 0x20, (void *)0x05000380, 8);
-    CpuFastSet(gUnk_0850DD58 - 0x10, (void *)0x050003A0, 8);
+    CpuFastSet(gGradientPaletteOlive + 0x30, (void *)0x05000340, 8);
+    CpuFastSet(gGradientPaletteOlive + 0x40, (void *)0x05000360, 8);
+    CpuFastSet(gGradientPaletteOlive - 0x20, (void *)0x05000380, 8);
+    CpuFastSet(gGradientPaletteOlive - 0x10, (void *)0x050003A0, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
@@ -457,17 +457,17 @@ void medal_rotation_load_gfx(void) {
     lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06006280);
     lz_decompress_dispatch(gRotationActionIconTiles, (void *)0x06006800);
     lz_decompress_dispatch(gRotationPathTiles, (void *)0x06006C00);
-    lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06007400);
-    lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06007600);
+    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)0x06007400);
+    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)0x06007600);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
     set_tilemap_and_decompress_bg(0, 0, gMedalRotationBg0Tilemap, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalRotationBg1Tilemap, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalRotationBg2Tilemap, REG_BG2CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalRotationBg3Tilemap, REG_BG3CNT, 0x200);
     CpuFastSet(gMedalRotationBgPalette, (void *)0x05000000, 0x70);
-    CpuFastSet(gUnk_0850DEF8, (void *)0x05000200, 0x40);
-    CpuFastSet(gUnk_0850DD18, (void *)0x05000380, 8);
-    CpuFastSet(gUnk_0850DD18 + 0x10, (void *)0x050003A0, 8);
+    CpuFastSet(gMenuObjPalettes, (void *)0x05000200, 0x40);
+    CpuFastSet(gGradientPaletteGold, (void *)0x05000380, 8);
+    CpuFastSet(gGradientPaletteGold + 0x10, (void *)0x050003A0, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
@@ -655,8 +655,8 @@ void medal_skill_load_gfx(void) {
     set_tilemap_and_decompress_bg(0, 0, gMedalSkillBg2Tilemap, REG_BG2CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalSkillBg3Tilemap, REG_BG3CNT, 0x200);
     CpuFastSet(gMedalSkillBgPalette, (void *)0x05000000, 0x70);
-    CpuFastSet(gUnk_0850DD18, (void *)0x05000380, 8);
-    CpuFastSet(gUnk_0850DD18 + 0x10, (void *)0x050003A0, 8);
+    CpuFastSet(gGradientPaletteGold, (void *)0x05000380, 8);
+    CpuFastSet(gGradientPaletteGold + 0x10, (void *)0x050003A0, 8);
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
     zero = 0;
     CpuFastSet(&zero, gSpriteEntries, 0x01000800);
@@ -1911,7 +1911,7 @@ static void increment_medal_level_on_input(void) {
     if (gMedals[gGameWork.shownId].flags & 0x80 && KEYS_LO(gHeldKeys) & 8 && KEYS_HI(gRepeatKeys) & 2 &&
         gMedals[gGameWork.shownId].level != 100) {
         gMedals[gGameWork.shownId].level++;
-        memcpy_bytes_08041D04(gUnk_083B6158[gMedals[gGameWork.shownId].graphicId], &gGameWork.partAbility, 16);
+        memcpy_bytes_08041D04(gMedalRecords[gMedals[gGameWork.shownId].graphicId], &gGameWork.partAbility, 16);
         gMedals[gGameWork.shownId].spriteVariant = medal_tier_for_level(
             gMedals[gGameWork.shownId].level, gGameWork.partGender, gGameWork.unkF2, gGameWork.unkF3, gGameWork.unkF4);
         load_medal_sprite();

@@ -73,13 +73,13 @@ void medaparts_list_load_gfx(void) {
     if (gGameWork.medalPage == 1) {
         CpuFastSet(gMedapartsListBgPalette, (void *)0x0202FA00, 0x70);
         CpuFastSet((void *)0x05000200, (void *)0x0202F800, 0x80);
-        CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x0202F9A0, 8);
+        CpuFastSet(gGradientPaletteOlive + 0x10, (void *)0x0202F9A0, 8);
         CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
         CpuFastSet(gTradeChoiceWindowPalette, (void *)0x0202FB60, 8);
         gGameWork.unk84 = 0;
     } else {
         CpuFastSet(gMedapartsListBgPalette, (void *)0x05000000, 0x70);
-        CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x050003A0, 8);
+        CpuFastSet(gGradientPaletteOlive + 0x10, (void *)0x050003A0, 8);
         CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
         CpuFastSet(gTradeChoiceWindowPalette, (void *)0x05000160, 8);
         set_blend_effect_mode(5, 0x3F, 0x20);
@@ -247,14 +247,14 @@ void medapart_detail_load_gfx(void) {
     if (gGameWork.openedFrom == 0 || gGameWork.openedFrom == 4) {
         CpuFastSet(gMedapartDetailBgPalette, (void *)0x0202FA00, 0x70);
         CpuFastSet((void *)0x05000200, (void *)0x0202F800, 0x80);
-        CpuFastSet(gUnk_0850DD58 + 0x40, (void *)0x0202F980, 8);
-        CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x0202F9A0, 8);
+        CpuFastSet(gGradientPaletteOlive + 0x40, (void *)0x0202F980, 8);
+        CpuFastSet(gGradientPaletteOlive + 0x10, (void *)0x0202F9A0, 8);
         CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
         gGameWork.unk84 = 0;
     } else {
         CpuFastSet(gMedapartDetailBgPalette, (void *)0x05000000, 0x70);
-        CpuFastSet(gUnk_0850DD58 + 0x40, (void *)0x05000380, 8);
-        CpuFastSet(gUnk_0850DD58 + 0x10, (void *)0x050003A0, 8);
+        CpuFastSet(gGradientPaletteOlive + 0x40, (void *)0x05000380, 8);
+        CpuFastSet(gGradientPaletteOlive + 0x10, (void *)0x050003A0, 8);
         CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
         medapart_detail_init_sprite();
         medapart_draw_sprite();

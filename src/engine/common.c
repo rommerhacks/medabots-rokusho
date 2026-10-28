@@ -688,7 +688,7 @@ u32 find_medabot_slot_by_medal(u8 medal) {
 }
 
 void area_load_encounter_rate(void) {
-    memcpy_bytes_08041D04(gUnk_083BEA90[gFieldWork.area_id], &gGameWork.partAbility, 1);
+    memcpy_bytes_08041D04(gAreaBattleSettings[gFieldWork.area_id], &gGameWork.partAbility, 1);
     gFieldWork.encounter_rate = gGameWork.partAbility;
     gFieldWork.encounter_steps = 0;
 }

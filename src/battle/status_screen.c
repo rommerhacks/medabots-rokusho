@@ -165,7 +165,7 @@ void status_draw_part_ability_icons(void) {
     for (i = 0; i <= 3; i++) {
         load_part_data(gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].parts[i].unk17, i,
                        &gGameWork.partAbility);
-        memcpy_bytes_08041D04(gUnk_083B6158[gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].medal.graphicId],
+        memcpy_bytes_08041D04(gMedalRecords[gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].medal.graphicId],
                               gGameWork.medalGfxRecord, 16);
         if (gGameWork.partAbility == gGameWork.medalGfxRecord[1])
             draw_tile_block(2, 2, 0xB, i * 2 + 4, REG_BG1CNT, gGameWork.medalGfxRecord[7] * 4 + 0xD340);

@@ -9,7 +9,7 @@ void medal_remove_by_id(u8 id);
 void medapart_add_quantity(u8 id, u8 kind, u8 n);
 void reduce_medapart_stat(u8 id, u8 kind, u8 n); // takes n of Medapart (id, kind), floor 0
 u32 medal_tier_for_level(u8 level, u8 a, u8 b, u8 c,
-                         u8 d); // guess: Medal sprite variant (0-4) from its level and four gUnk_083B6158 record bytes
+                         u8 d); // guess: Medal sprite variant (0-4) from its level and four gMedalRecords record bytes
 u32 medapart_get_counts(u8 a, u8 b);
 u32 team_is_full(void); // 1 when all 9 gTeamSlots slots are in use (runtime-checked)
 void team_add_tinpet(

@@ -99,7 +99,7 @@ void race_load_teams(void) {
         decompress_sprite_to_vram_08042D94(gRaceRunnerParts[0][0][i], gRaceRunnerParts[0][1][i],
                                            gRaceRunnerParts[0][2][i], gRaceRunnerParts[0][3][i], 2 - i);
     }
-    setup = gUnk_083C1A00[gRaces[gRaceId].rival1Setup];
+    setup = gEncounterSetups[gRaces[gRaceId].rival1Setup];
     setup += 4;
     for (i = 0; i < 3; i++) {
         gRaceRunnerParts[1][0][i] = *setup++;
@@ -111,7 +111,7 @@ void race_load_teams(void) {
         decompress_sprite_to_vram_08042D94(gRaceRunnerParts[1][0][i], gRaceRunnerParts[1][1][i],
                                            gRaceRunnerParts[1][2][i], gRaceRunnerParts[1][3][i], 5 - i);
     }
-    setup = gUnk_083C1A00[gRaces[gRaceId].rival2Setup];
+    setup = gEncounterSetups[gRaces[gRaceId].rival2Setup];
     setup += 4;
     for (i = 0; i < 3; i++) {
         gRaceRunnerParts[2][0][i] = *setup++;
@@ -386,10 +386,10 @@ void race_load_character_sprites(void) {
     LZ77UnCompVram(gRaceObjTiles, (void *)0x06012E00);
     LZ77UnCompVram(gUnk_083F80F4[0], (void *)0x06015100);
     DmaSet(3, gFieldSpritePalettes[0], 0x05000300, 0x84000008);
-    setup = gUnk_083C1A00[gRaces[gRaceId].rival1Setup];
+    setup = gEncounterSetups[gRaces[gRaceId].rival1Setup];
     LZ77UnCompVram(gUnk_083F80F4[setup[0]], (void *)0x06015A00);
     DmaSet(3, gFieldSpritePalettes[setup[0]], 0x05000320, 0x84000008);
-    setup = gUnk_083C1A00[gRaces[gRaceId].rival2Setup];
+    setup = gEncounterSetups[gRaces[gRaceId].rival2Setup];
     LZ77UnCompVram(gUnk_083F80F4[setup[0]], (void *)0x06016300);
     DmaSet(3, gFieldSpritePalettes[setup[0]], 0x05000340, 0x84000008);
     DmaSet(3, gUnk_0807C300, 0x050003A0, 0x84000008);
@@ -443,7 +443,7 @@ static void race_place_all_runners(void) {
         gSpriteEntries[23 + i].unk4 = 0x45;
         gSpriteEntries[26 + i].unk4 = 0x5D;
     }
-    DmaSet(3, gUnk_0850DEF8, 0x05000200, 0x84000040);
+    DmaSet(3, gMenuObjPalettes, 0x05000200, 0x84000040);
 }
 
 static void race_init_referee_sprite(void) {
@@ -521,7 +521,7 @@ static bool32 race_announce_field_step(void) {
         text_window_init(1, 2, 0);
         race_init_referee_sprite();
         race_set_sprite_motion(0, 1, 0x20, 0x58);
-        race_set_message_name(gUnk_030004DE, (u8 *)gUnk_083BE9E8[gRaceField]);
+        race_set_message_name(gUnk_030004DE, (u8 *)gBattlefieldNames[gRaceField]);
         gRaceStep++;
         return FALSE;
     case 1:
@@ -582,8 +582,8 @@ bool32 race_introduce_teams_step(void) {
     case 17:
         if (run_message(gRaceMessages[5])) {
             message_next();
-            setup = gUnk_083C1A00[gRaces[gRaceId].rival1Setup];
-            race_set_message_name(gUnk_030004DE, (u8 *)gUnk_083C3F38[setup[0]]);
+            setup = gEncounterSetups[gRaces[gRaceId].rival1Setup];
+            race_set_message_name(gUnk_030004DE, (u8 *)gOpponentNames[setup[0]]);
             race_set_sprite_motion(0, 2, 0x40, 0);
             gSpriteEntries[1].unk2 = 0x68;
             gRaceStep++;
@@ -598,8 +598,8 @@ bool32 race_introduce_teams_step(void) {
     case 19:
         if (run_message(gRaceMessages[gRaces[gRaceId].rivalMessage])) {
             message_next();
-            setup = gUnk_083C1A00[gRaces[gRaceId].rival2Setup];
-            race_set_message_name(gUnk_030004DE, (u8 *)gUnk_083C3F38[setup[0]]);
+            setup = gEncounterSetups[gRaces[gRaceId].rival2Setup];
+            race_set_message_name(gUnk_030004DE, (u8 *)gOpponentNames[setup[0]]);
             race_set_sprite_motion(0, 2, 0x40, 0);
             gSpriteEntries[1].unk2 = 0xA8;
             gRaceStep++;
@@ -639,12 +639,12 @@ static bool32 race_results_step(void) {
             race_set_message_name(gUnk_030004DE, gPlayerName);
         } else if (gRaceFinishOrder[0] == 2) {
             race_set_sprite_motion(0, 1, 0x58, 0x58);
-            e = gUnk_083C1A00[gRaces[gRaceId].rival1Setup];
-            race_set_message_name(gUnk_030004DE, (u8 *)gUnk_083C3F38[e[0]]);
+            e = gEncounterSetups[gRaces[gRaceId].rival1Setup];
+            race_set_message_name(gUnk_030004DE, (u8 *)gOpponentNames[e[0]]);
         } else if (gRaceFinishOrder[0] == 3) {
             race_set_sprite_motion(0, 1, 0x98, 0x58);
-            e = gUnk_083C1A00[gRaces[gRaceId].rival2Setup];
-            race_set_message_name(gUnk_030004DE, (u8 *)gUnk_083C3F38[e[0]]);
+            e = gEncounterSetups[gRaces[gRaceId].rival2Setup];
+            race_set_message_name(gUnk_030004DE, (u8 *)gOpponentNames[e[0]]);
         }
         REG_DISPCNT |= 0x400;
         gRaceStep++;

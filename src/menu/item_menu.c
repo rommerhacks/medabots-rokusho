@@ -108,7 +108,7 @@ void item_menu_init(void) {
         gSpriteEntries[0x52].unk0 |= 0x4000;
     }
     w->swap_pending = 0;
-    CpuFastSet(gUnk_0850DCF8, gPaletteBackup, 0x80);
+    CpuFastSet(gGradientPaletteYellow, gPaletteBackup, 0x80);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 8);
     CpuFastSet(gUnk_080AF7C0, (void *)0x0202F9C0, 8);
     CpuFastSet(gUnk_0878AE78, gPaletteBackupBg, 0x80);

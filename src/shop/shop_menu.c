@@ -108,7 +108,7 @@ void shop_menu_load_graphics(void) {
     size = dma3_copy_or_decompress(gUnk_0879691C, gDecompressBuffer);
     off = 0x4000;
     CpuCopy16(gDecompressBuffer, (void *)(off + vram), size);
-    n = lz_decompress_dispatch(gUnk_084C4DB0, vram_at(size));
+    n = lz_decompress_dispatch(gPartSlotIconTiles, vram_at(size));
     gMenuWork->obj_tile_base = (size >> 5) - 1;
     size += n;
     tilemap_offset_tiles_and_palette(size >> 5, 0, 0x1B);

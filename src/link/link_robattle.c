@@ -126,19 +126,19 @@ void link_robattle_screen_load(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x590A;
     REG_BG3CNT = 0x5B0B;
-    lz_decompress_dispatch(gUnk_084E6C9C, (void *)0x06004000);
-    lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06006000);
-    lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06006200);
+    lz_decompress_dispatch(gPrebattleBgTiles, (void *)0x06004000);
+    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)0x06006000);
+    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)0x06006200);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG1CNT, 0);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EFA34, REG_BG1CNT, 0x200);
-    CpuFastSet(gUnk_084F29E0, (void *)0x0202FA00, 0x70);
-    CpuFastSet(gUnk_084C69D8, (void *)0x0202FB00, 8);
-    CpuFastSet(gUnk_084C69F8, (void *)0x0202FB20, 8);
-    CpuFastSet(gUnk_0850DEF8, (void *)0x0202F800, 0x40);
-    CpuFastSet(gUnk_0850DCF8 + 0xB0, (void *)0x0202F980, 8);
-    CpuFastSet(gUnk_0850DCF8, (void *)0x0202F9A0, 8);
+    set_tilemap_and_decompress_bg(0, 0, gPrebattleBg1Tilemap, REG_BG1CNT, 0x200);
+    CpuFastSet(gPrebattleBgPalette, (void *)0x0202FA00, 0x70);
+    CpuFastSet(gLegTypePedestalPalette, (void *)0x0202FB00, 8);
+    CpuFastSet(gLegTypePedestalPalette2, (void *)0x0202FB20, 8);
+    CpuFastSet(gMenuObjPalettes, (void *)0x0202F800, 0x40);
+    CpuFastSet(gGradientPaletteYellow + 0xB0, (void *)0x0202F980, 8);
+    CpuFastSet(gGradientPaletteYellow, (void *)0x0202F9A0, 8);
     decompress_tileset_to_vram(gBattleWork.battlefield, 1);
     zero_sprites = 0;
     CpuFastSet(&zero_sprites, gSpriteEntries, 0x01000800);
@@ -171,7 +171,7 @@ void link_robattle_open_text_window(void) {
 
 void link_robattle_intro_message(void) {
     update_scroll_movement_a();
-    if (run_message(gUnk_083C2BBC[1]))
+    if (run_message(gOpponentPreBattleMessages[1]))
         gGameSubState++;
 }
 
@@ -227,7 +227,7 @@ void link_robattle_play_result_song(void) {
 
 void link_robattle_outro_message(void) {
     update_scroll_movement_a();
-    if (run_message(gUnk_083C3984[1]) && (*(u8 *)&gNewKeys & 3)) {
+    if (run_message(gOpponentAfterBattleMessages[1]) && (*(u8 *)&gNewKeys & 3)) {
         gGameWork.endModeStep = 0;
         play_sound_effect(0xD);
         gGameSubState++;
@@ -657,14 +657,15 @@ static void link_robattle_draw_partner_name(void) {
 }
 
 static void link_robattle_draw_battlefield_name(void) {
-    memcpy_bytes_0803F63C(gUnk_083BE9E8[gBattleWork.battlefield], gGameWork.textBuf, 0xB);
+    memcpy_bytes_0803F63C(gBattlefieldNames[gBattleWork.battlefield], gGameWork.textBuf, 0xB);
     render_text_sprites_08040DB8(gGameWork.textBuf, 0x1E, 1, 3, 8, 0xC, 0, 1);
 }
 
 static void link_robattle_draw_frame(void) {
     u32 i;
     for (i = 0; i <= 2; i++)
-        draw_tilemap_with_offset(0xFF, gUnk_083ACEEA[i][0], gUnk_083ACEEA[i][1], REG_BG0CNT, 0x8300);
+        draw_tilemap_with_offset(0xFF, gOpponentLegIconPositions[i][0], gOpponentLegIconPositions[i][1], REG_BG0CNT,
+                                 0x8300);
 }
 
 static void link_robattle_load_battlefield_info(void) {

@@ -159,7 +159,7 @@ void medal_rename_load_palettes(void) {
     CpuFastSet(gUnk_08483AA0, (void *)0x0202FA20, 8);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 8);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
-    CpuFastSet(gUnk_0850DD18, (void *)0x0202F9A0, 8);
+    CpuFastSet(gGradientPaletteGold, (void *)0x0202F9A0, 8);
     CpuFastSet(gUnk_08799B98, gPaletteBackupBg, 0x80);
     CpuFastSet(gUnk_080AFAE8, (void *)0x0202F940, 8);
     gGameWork.unk84 = 0;

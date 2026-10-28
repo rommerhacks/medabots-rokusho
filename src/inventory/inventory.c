@@ -24,7 +24,7 @@ u32 find_medal_slot_by_id(u8 id) {
 u32 medal_add_by_id(u8 id) {
     u32 i;
 
-    memcpy_bytes_08041D04(gUnk_083B6158[id], &gGameWork.partAbility, 16);
+    memcpy_bytes_08041D04(gMedalRecords[id], &gGameWork.partAbility, 16);
     for (i = 0; i < 30; i++) {
         if (!(gMedals[i].flags & 0x80)) {
             gMedals[i].flags |= 0x80;

@@ -113,7 +113,7 @@ void medawatch_menu_select_fade(void) {
 
 // Saves the BG tiles at 0x06002800 and enters game state 3 (Medabots), 4 (Medals) or 5 (Medaparts).
 void medawatch_menu_run_choice(void) {
-    DmaSet(3, 0x06002800, gUnk_02020800, 0x84000200);
+    DmaSet(3, 0x06002800, gBgTileBackup, 0x84000200);
     switch (gGameWork.medawatchCursor) {
     case 0:
         mem_fill8((u8 *)&gGameWork + 0x50, 0x14, 0);
@@ -143,7 +143,7 @@ void medawatch_menu_return_init(void) {
     REG_BG3CNT = 0x1A07;
     lz_decompress_dispatch(gUnk_084E30D8, (void *)0x06004000);
     medawatch_menu_load_icon();
-    DmaSet(3, gUnk_02020800, 0x06002800, 0x84000200);
+    DmaSet(3, gBgTileBackup, 0x06002800, 0x84000200);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084EF6A0, REG_BG1CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F023C, REG_BG2CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gUnk_084F0F2C, REG_BG3CNT, 0);

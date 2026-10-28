@@ -86,7 +86,7 @@ void init_enemy_bot_medal(u8 i) {
     u32 v;
     u32 lvl;
 
-    memcpy_bytes_08041D04(gUnk_083B6158[gBattleWork.encounterBots[i].unk4], &gGameWork.partAbility, 16);
+    memcpy_bytes_08041D04(gMedalRecords[gBattleWork.encounterBots[i].unk4], &gGameWork.partAbility, 16);
     gBattleBots[i + 3].medal.flags = 0x80;
     gBattleBots[i + 3].medal.graphicId = (&gGameWork.partAbility)[0];
     gBattleBots[i + 3].medal.attribute = (&gGameWork.partAbility)[1];

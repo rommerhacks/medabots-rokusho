@@ -111,24 +111,24 @@ gMedawatchMenuHandlers:
 gMedabotsScreenHandlers:
 	.incbin "baserom.gba", 0x3AC320, 0x100
 
-	.global gUnk_083AC420
-gUnk_083AC420:
+	.global gMedabotsCursorOrbitCenters
+gMedabotsCursorOrbitCenters:
 	.incbin "baserom.gba", 0x3AC420, 0x12
 
-	.global gUnk_083AC432
-gUnk_083AC432:
+	.global gMedabotsSlotSpritePriorities
+gMedabotsSlotSpritePriorities:
 	.incbin "baserom.gba", 0x3AC432, 0x9
 
-	.global gUnk_083AC43B
-gUnk_083AC43B:
+	.global gMedabotsSlotPositions
+gMedabotsSlotPositions:
 	.incbin "baserom.gba", 0x3AC43B, 0x12
 
-	.global gUnk_083AC44D
-gUnk_083AC44D:
+	.global gMedabotsSlotPedestalTilePositions
+gMedabotsSlotPedestalTilePositions:
 	.incbin "baserom.gba", 0x3AC44D, 0x1B
 
-	.global gUnk_083AC468
-gUnk_083AC468:
+	.global gTeamSelectNextSlot
+gTeamSelectNextSlot:
 	.incbin "baserom.gba", 0x3AC468, 0x1C
 
 	.global gMedabotSlotDpadMoves
@@ -263,12 +263,12 @@ gMedapartTradeChoiceCloseSteps:
 gPrebattleScreenHandlers:
 	.incbin "baserom.gba", 0x3ACCA4, 0x240
 
-	.global gUnk_083ACEE4
-gUnk_083ACEE4:
+	.global gOpponentSpritePositions
+gOpponentSpritePositions:
 	.incbin "baserom.gba", 0x3ACEE4, 0x6
 
-	.global gUnk_083ACEEA
-gUnk_083ACEEA:
+	.global gOpponentLegIconPositions
+gOpponentLegIconPositions:
 	.incbin "baserom.gba", 0x3ACEEA, 0x6
 
 	.global gRandomBotSlotStarts
@@ -906,8 +906,8 @@ gBattleSpriteAnimScripts:
 gUnk_083B6010:
 	.incbin "baserom.gba", 0x3B6010, 0x148
 
-	.global gUnk_083B6158
-gUnk_083B6158:
+	.global gMedalRecords
+gMedalRecords:
 	.incbin "baserom.gba", 0x3B6158, 0x2B8
 
 	.global gMedalNames
@@ -998,32 +998,32 @@ gMedapartLegDetailHelpMessages:
 gLegTypeNames:
 	.incbin "baserom.gba", 0x3BE97C, 0x6C
 
-	.global gUnk_083BE9E8
-gUnk_083BE9E8:
+	.global gBattlefieldNames
+gBattlefieldNames:
 	.incbin "baserom.gba", 0x3BE9E8, 0x2C
 
 	.global gUnk_083BEA14
 gUnk_083BEA14:
 	.incbin "baserom.gba", 0x3BEA14, 0x7C
 
-	.global gUnk_083BEA90
-gUnk_083BEA90:
+	.global gAreaBattleSettings
+gAreaBattleSettings:
 	.incbin "baserom.gba", 0x3BEA90, 0x600
 
-	.global gUnk_083BF090
-gUnk_083BF090:
+	.global gAreaRandomEncounters
+gAreaRandomEncounters:
 	.incbin "baserom.gba", 0x3BF090, 0x2970
 
-	.global gUnk_083C1A00
-gUnk_083C1A00:
+	.global gEncounterSetups
+gEncounterSetups:
 	.incbin "baserom.gba", 0x3C1A00, 0x11BC
 
-	.global gUnk_083C2BBC
-gUnk_083C2BBC:
+	.global gOpponentPreBattleMessages
+gOpponentPreBattleMessages:
 	.incbin "baserom.gba", 0x3C2BBC, 0xDC8
 
-	.global gUnk_083C3984
-gUnk_083C3984:
+	.global gOpponentAfterBattleMessages
+gOpponentAfterBattleMessages:
 	.incbin "baserom.gba", 0x3C3984, 0x180
 
 	.global gBattlefieldParams
@@ -1034,8 +1034,8 @@ gBattlefieldParams:
 gUnk_083C3B5C:
 	.incbin "baserom.gba", 0x3C3B5C, 0x3DC
 
-	.global gUnk_083C3F38
-gUnk_083C3F38:
+	.global gOpponentNames
+gOpponentNames:
 	.incbin "baserom.gba", 0x3C3F38, 0x180
 
 	.global gUnk_083C40B8

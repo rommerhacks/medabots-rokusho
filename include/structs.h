@@ -335,7 +335,7 @@ struct GameWork {
     u8 unkF6;
     u8 unkF7;
     u8 fillerF8[0x16];
-    u8 medalGfxRecord[0x10]; // 16-byte record from gUnk_083B6158 (per Medal graphic index)
+    u8 medalGfxRecord[0x10]; // 16-byte record from gMedalRecords (per Medal graphic index)
     u8 filler11E[0x10];
     u8 oamUploadPending;  // set: copy gOamBuffer to OAM at the next vblank
     u8 runningSpriteSlot; // sprite slot whose handler is running (also gEffectSpriteSlot;
@@ -532,7 +532,7 @@ struct SpriteWork {
 // Opponent Medabot in an encounter setup (gBattleWork.encounterBots).
 struct EncounterBot {
     u8 parts[4]; // head, right arm, left arm, legs part ids
-    u8 unk4;     // Medal (gUnk_083B6158 record; init_enemy_bot_medal)
+    u8 unk4;     // Medal (gMedalRecords record; init_enemy_bot_medal)
     u8 unk5;     // Medal level
     u8 unk6[4];  // two 4-bit Medal record unk18 entries per byte
     u8 unkA;     // Medal record unk9
@@ -602,7 +602,7 @@ struct BattleSideTrap {
 };
 
 struct BattleWork {
-    u8 encounterMessage; // encounter: opponent message index (gUnk_083C2BBC)
+    u8 encounterMessage; // encounter: opponent message index (gOpponentPreBattleMessages)
     u8 unk1;
     u8 opponentCount; // opponent Medabot count
     u8 fixedParts;    // nonzero: fixed opponent parts (else each part is re-rolled by random_pick_weighted4)
@@ -994,7 +994,7 @@ struct FieldWork {
     u8 saved_tile_actions[0x8];  // saved copy of tile_actions
     u8 script_tile_actions[0x8]; // tile_actions kept aside while a scripted walk clears them
     u8 loaded_form;              // player form whose palette and tile actions are loaded (gUnk_083D2918)
-    u8 encounter_rate;           // area byte 0 of gUnk_083BEA90 (area_load_encounter_rate)
+    u8 encounter_rate;           // area byte 0 of gAreaBattleSettings (area_load_encounter_rate)
     u8 battle_id;                // battle to set up (map script Robattle command, debug menu "Battle" entry)
     u8 encounter_steps;          // steps since the last random encounter (one at 32, chance 1/32 per step after 16)
     u8 encounters_off;           // bit 0: no random encounters (map script opcode 0x5F, debug menu "Rnd.tk")
@@ -1685,7 +1685,7 @@ struct SaveData {
 struct RaceInfo {
     u8 fixedField;     // nonzero: the race runs on field; else a random one (race_pick_field)
     u8 field;          // battlefield id
-    s16 rival1Setup;   // encounter setup (gUnk_083C1A00) of the second team
+    s16 rival1Setup;   // encounter setup (gEncounterSetups) of the second team
     u8 rival1Portrait; // decompress_indexed_asset set for the second leader's portrait (0x06004800)
     u8 filler5[1];
     s16 rival2Setup;   // encounter setup of the third team

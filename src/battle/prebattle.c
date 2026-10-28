@@ -90,8 +90,8 @@ void prebattle_wipe_init(void) {
     REG_BG0CNT = 0x500;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
-    lz_decompress_dispatch(gUnk_084C696C, (void *)0x06002600);
-    DmaSet(3, gUnk_084C6A78, 0x050001A0, 0x84000008);
+    lz_decompress_dispatch(gPrebattleWipeTiles, (void *)0x06002600);
+    DmaSet(3, gPrebattleWipePalette, 0x050001A0, 0x84000008);
     gGameWork.unk3F = 0;
     gGameWork.unk48 = 0;
     gGameWork.unk84 = 0;
@@ -138,22 +138,22 @@ void prebattle_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x590A;
     REG_BG3CNT = 0x5B0B;
-    lz_decompress_dispatch(gUnk_084E6C9C, (void *)0x06004000);
-    lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06006000);
-    lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06006200);
-    lz_decompress_dispatch(gUnk_084C7D10, (void *)0x06012800);
+    lz_decompress_dispatch(gPrebattleBgTiles, (void *)0x06004000);
+    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)0x06006000);
+    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)0x06006200);
+    lz_decompress_dispatch(gPrebattleObjTiles, (void *)0x06012800);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EFA34, REG_BG1CNT, 0x200);
-    DmaSet(3, gUnk_084F29E0, 0x0202FA00, 0x84000070);
-    DmaSet(3, gUnk_084C69D8, 0x0202FB00, 0x84000008);
-    DmaSet(3, gUnk_084C69F8, 0x0202FB20, 0x84000008);
-    DmaSet(3, gUnk_0850DEF8, 0x0202F800, 0x84000040);
-    DmaSet(3, gUnk_0850DCF8 + 0xB0, 0x0202F980, 0x84000008);
-    DmaSet(3, gUnk_0850DCF8, 0x0202F9A0, 0x84000008);
-    DmaSet(3, gUnk_084E2FB8, 0x0202F940, 0x84000008);
-    DmaSet(3, gUnk_084E2F98, 0x0202F960, 0x84000008);
+    set_tilemap_and_decompress_bg(0, 0, gPrebattleBg1Tilemap, REG_BG1CNT, 0x200);
+    DmaSet(3, gPrebattleBgPalette, 0x0202FA00, 0x84000070);
+    DmaSet(3, gLegTypePedestalPalette, 0x0202FB00, 0x84000008);
+    DmaSet(3, gLegTypePedestalPalette2, 0x0202FB20, 0x84000008);
+    DmaSet(3, gMenuObjPalettes, 0x0202F800, 0x84000040);
+    DmaSet(3, gGradientPaletteYellow + 0xB0, 0x0202F980, 0x84000008);
+    DmaSet(3, gGradientPaletteYellow, 0x0202F9A0, 0x84000008);
+    DmaSet(3, gPrebattleObjPalette, 0x0202F940, 0x84000008);
+    DmaSet(3, gPartIconSpritePalette, 0x0202F960, 0x84000008);
     decompress_tileset_to_vram(gBattleWork.battlefield, 1);
     zero = 0;
     DmaSet(3, &zero, gSpriteEntries, 0x85000800);
@@ -191,7 +191,7 @@ void prebattle_open_text_window(void) {
 
 void prebattle_show_opponent_line(void) {
     update_scroll_movement_a();
-    if (run_message(gUnk_083C2BBC[gBattleWork.encounterMessage])) {
+    if (run_message(gOpponentPreBattleMessages[gBattleWork.encounterMessage])) {
         update_all_battle_sprite_orbits();
         gGameWork.unk84 = 8;
         gGameWork.unk85 = 8;
@@ -337,7 +337,7 @@ void afterbattle_check_won(void) {
 void afterbattle_show_opponent_line(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (run_message(gUnk_083C3984[gBattleWork.encounterMessage]) && (KEYS_LO(gNewKeys) & 3)) {
+    if (run_message(gOpponentAfterBattleMessages[gBattleWork.encounterMessage]) && (KEYS_LO(gNewKeys) & 3)) {
         gGameWork.endModeStep = 0;
         play_sound_effect(13);
         gGameSubState++;
@@ -400,8 +400,8 @@ void afterbattle_load_new_part_sprite(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
-    lz_decompress_dispatch(gUnk_084D7C9C, (void *)0x06012400);
-    DmaSet(3, gUnk_0850E9D8, 0x05000340, 0x84000008);
+    lz_decompress_dispatch(gNewPartSpriteTiles, (void *)0x06012400);
+    DmaSet(3, gResultSpritePalettes, 0x05000340, 0x84000008);
     gSpriteEntries[1].unk0 = 0xC624;
     gSpriteEntries[1].unk1C = 0;
     gSpriteEntries[1].unk2 = 0xC0;
@@ -430,8 +430,8 @@ void afterbattle_load_part_icon_sprite(void) {
     update_scroll_movement_a();
     setup_battle_result_sprite();
     afterbattle_pulse_new_sprite();
-    lz_decompress_dispatch(gUnk_084D7DB0, (void *)0x06016C00);
-    DmaSet(3, gUnk_084E2F98, 0x05000360, 0x84000008);
+    lz_decompress_dispatch(gPartIconSpriteTiles, (void *)0x06016C00);
+    DmaSet(3, gPartIconSpritePalette, 0x05000360, 0x84000008);
     gSpriteEntries[2].unk0 = 0xC404;
     gSpriteEntries[2].unk1C = 0;
     gSpriteEntries[2].unk2 = 8;
@@ -680,7 +680,7 @@ void afterbattle_part_detail_fade_out(void) {
 }
 
 void afterbattle_part_detail_save_screen(void) {
-    DmaSet(3, 0x06002800, gUnk_02020800, 0x84000200);
+    DmaSet(3, 0x06002800, gBgTileBackup, 0x84000200);
     DmaSet(3, 0x06000280, 0x02021000, 0x84000380);
     DmaSet(3, gSpriteEntries, 0x02028000, 0x84000800);
     set_blend_effect_mode(5, 0x3F, 0x20);
@@ -750,28 +750,28 @@ void afterbattle_part_detail_restore_screen(void) {
     REG_BG3CNT = 0x5B0B;
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
-    lz_decompress_dispatch(gUnk_084E6C9C, (void *)0x06004000);
-    lz_decompress_dispatch(gUnk_084C48B4, (void *)0x06006000);
-    lz_decompress_dispatch(gUnk_084C4A34, (void *)0x06006200);
-    lz_decompress_dispatch(gUnk_084C7D10, (void *)0x06012800);
+    lz_decompress_dispatch(gPrebattleBgTiles, (void *)0x06004000);
+    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)0x06006000);
+    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)0x06006200);
+    lz_decompress_dispatch(gPrebattleObjTiles, (void *)0x06012800);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
-    set_tilemap_and_decompress_bg(0, 0, gUnk_084EFA34, REG_BG1CNT, 0x200);
-    DmaSet(3, gUnk_084F29E0, 0x0202FA00, 0x84000070);
-    DmaSet(3, gUnk_084C69D8, 0x0202FB00, 0x84000008);
-    DmaSet(3, gUnk_084C69F8, 0x0202FB20, 0x84000008);
-    DmaSet(3, gUnk_0850DEF8, 0x0202F800, 0x84000040);
-    DmaSet(3, gUnk_0850DCF8 + 0xB0, 0x0202F980, 0x84000008);
-    DmaSet(3, gUnk_0850DCF8, 0x0202F9A0, 0x84000008);
-    DmaSet(3, gUnk_084E2FB8, 0x0202F940, 0x84000008);
-    DmaSet(3, gUnk_084E2F98, 0x0202F960, 0x84000008);
+    set_tilemap_and_decompress_bg(0, 0, gPrebattleBg1Tilemap, REG_BG1CNT, 0x200);
+    DmaSet(3, gPrebattleBgPalette, 0x0202FA00, 0x84000070);
+    DmaSet(3, gLegTypePedestalPalette, 0x0202FB00, 0x84000008);
+    DmaSet(3, gLegTypePedestalPalette2, 0x0202FB20, 0x84000008);
+    DmaSet(3, gMenuObjPalettes, 0x0202F800, 0x84000040);
+    DmaSet(3, gGradientPaletteYellow + 0xB0, 0x0202F980, 0x84000008);
+    DmaSet(3, gGradientPaletteYellow, 0x0202F9A0, 0x84000008);
+    DmaSet(3, gPrebattleObjPalette, 0x0202F940, 0x84000008);
+    DmaSet(3, gPartIconSpritePalette, 0x0202F960, 0x84000008);
     decompress_tileset_to_vram(gBattleWork.battlefield, 1);
-    lz_decompress_dispatch(gUnk_084D7C9C, (void *)0x06012400);
-    DmaSet(3, gUnk_0850E9D8, 0x0202F940, 0x84000008);
-    lz_decompress_dispatch(gUnk_084D7DB0, (void *)0x06016C00);
-    DmaSet(3, gUnk_084E2F98, 0x0202F960, 0x84000008);
+    lz_decompress_dispatch(gNewPartSpriteTiles, (void *)0x06012400);
+    DmaSet(3, gResultSpritePalettes, 0x0202F940, 0x84000008);
+    lz_decompress_dispatch(gPartIconSpriteTiles, (void *)0x06016C00);
+    DmaSet(3, gPartIconSpritePalette, 0x0202F960, 0x84000008);
     zero = 0;
     DmaSet(3, &zero, gSpriteEntries, 0x85000800);
-    DmaSet(3, gUnk_02020800, 0x06002800, 0x84000200);
+    DmaSet(3, gBgTileBackup, 0x06002800, 0x84000200);
     DmaSet(3, 0x02021000, 0x06000280, 0x84000380);
     DmaSet(3, 0x02028000, gSpriteEntries, 0x84000800);
     REG_DISPCNT |= 0x1F60;
@@ -919,7 +919,7 @@ static void load_encounter_into_battle_setup(void) {
 }
 
 void load_area_battlefield(void) {
-    memcpy_bytes_08041D04(gUnk_083BEA90[gFieldWork.area_id], &gGameWork.partAbility, 2);
+    memcpy_bytes_08041D04(gAreaBattleSettings[gFieldWork.area_id], &gGameWork.partAbility, 2);
     gBattleWork.battlefield = (&gGameWork.partAbility)[1];
 }
 
@@ -936,7 +936,7 @@ void setup_random_encounter_enemies(void) {
     flag = gFieldWork.fixed_battle;
     st = &gFieldWork;
     if (!flag) {
-        memcpy_bytes_08041D04(gUnk_083BF090[st->area_id], &gGameWork.partAbility, 4);
+        memcpy_bytes_08041D04(gAreaRandomEncounters[st->area_id], &gGameWork.partAbility, 4);
         r = rng_percent();
         if (r < 40)
             id = (&gGameWork.partAbility)[0];
@@ -948,7 +948,7 @@ void setup_random_encounter_enemies(void) {
             id = (&gGameWork.partAbility)[3];
         st->battle_id = id;
     }
-    memcpy_bytes_08041D04(gUnk_083C1A00[st->battle_id], &gBattleWork, 0x28);
+    memcpy_bytes_08041D04(gEncounterSetups[st->battle_id], &gBattleWork, 0x28);
     if (!gBattleWork.fixedParts) {
         for (i = 0; i < 3; i++) {
             a = random_pick_weighted4(gBattleWork.encounterBots[i].parts[0], gBattleWork.encounterBots[i].parts[1],
@@ -981,12 +981,12 @@ u32 random_pick_weighted4(u32 a, u32 b, u32 c, u32 d) {
 }
 
 static void prebattle_draw_opponent_name(void) {
-    memcpy_bytes_0803F63C(gUnk_083C3F38[gBattleWork.encounterMessage], gGameWork.textBuf, 18);
+    memcpy_bytes_0803F63C(gOpponentNames[gBattleWork.encounterMessage], gGameWork.textBuf, 18);
     render_text_sprites_08040EE4(gGameWork.textBuf, 10, 18, 3, 10, 13, 0, 1, 0, -4);
 }
 
 static void prebattle_draw_battlefield_name(void) {
-    memcpy_bytes_0803F63C(gUnk_083BE9E8[gBattleWork.battlefield], gGameWork.textBuf, 11);
+    memcpy_bytes_0803F63C(gBattlefieldNames[gBattleWork.battlefield], gGameWork.textBuf, 11);
     render_text_sprites_08040DB8(gGameWork.textBuf, 30, 1, 3, 8, 12, 0, 1);
 }
 
@@ -1005,7 +1005,8 @@ void init_opponent_medabot_sprites(void) {
     for (i = 0; i < gBattleWork.opponentCount; i++) {
         init_battle_medabot_sprites(gBattleWork.encounterBots[i].parts[0], gBattleWork.encounterBots[i].parts[1],
                                     gBattleWork.encounterBots[i].parts[2], gBattleWork.encounterBots[i].parts[3], i,
-                                    40 + i * 4, gUnk_083ACEE4[i][0], gUnk_083ACEE4[i][1], 1, 1, 0);
+                                    40 + i * 4, gOpponentSpritePositions[i][0], gOpponentSpritePositions[i][1], 1, 1,
+                                    0);
         battle_sprite_group_set_anim(40 + i * 4, 8);
     }
 }
@@ -1023,10 +1024,11 @@ void draw_opponent_leg_type_icons(void) {
     for (i = 0; i < 3; i++) {
         if (gBattleWork.opponentCount > i) {
             load_part_data(gBattleWork.encounterBots[i].parts[3], 3, &gGameWork.partAbility);
-            draw_tilemap_with_offset((&gGameWork.partAbility)[1] - 100, gUnk_083ACEEA[i][0], gUnk_083ACEEA[i][1],
-                                     REG_BG0CNT, 0x8300);
+            draw_tilemap_with_offset((&gGameWork.partAbility)[1] - 100, gOpponentLegIconPositions[i][0],
+                                     gOpponentLegIconPositions[i][1], REG_BG0CNT, 0x8300);
         } else
-            draw_tilemap_with_offset(0xFF, gUnk_083ACEEA[i][0], gUnk_083ACEEA[i][1], REG_BG0CNT, 0x8300);
+            draw_tilemap_with_offset(0xFF, gOpponentLegIconPositions[i][0], gOpponentLegIconPositions[i][1], REG_BG0CNT,
+                                     0x8300);
     }
 }
 
@@ -1313,7 +1315,7 @@ static void battle_check_medal_level_up(void) {
         medal->level++;
         medal->nextLevelExp = (medal->level + 1) * 100;
         gBattleWork.unk16E[i][0] = medal->graphicId + 1;
-        memcpy_bytes_08041D04(gUnk_083B6158[medal->graphicId], &gGameWork.partAbility, 16);
+        memcpy_bytes_08041D04(gMedalRecords[medal->graphicId], &gGameWork.partAbility, 16);
         variant = medal_tier_for_level(medal->level, (&gGameWork.partAbility)[3], (&gGameWork.partAbility)[4],
                                        (&gGameWork.partAbility)[5], (&gGameWork.partAbility)[6]);
         if (variant != medal->spriteVariant) {

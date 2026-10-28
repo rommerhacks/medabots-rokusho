@@ -97,7 +97,7 @@ gLinkTradeData       = 0x03002B68;
 /* code_0800025C: Medawatch menu (game state 2) */
 gTextComposeTile       = 0x02020000;
 gTextGlyphTile       = 0x02020040;
-gUnk_02020800       = 0x02020800;
+gBgTileBackup       = 0x02020800;
 
 /* code_0800025C: game state 3 */
 
@@ -111,7 +111,7 @@ gRobattleCounts      = 0x03002B84;
 /* code_08010794: game state 7 (Robattle) */
 
 /* code_080147FC: Robattle screen tilemaps */
-gUnk_02021000       = 0x02021000;
+gBgTileBackupHigh       = 0x02021000;
 gOptionSkipMessages       = 0x03001360;
 gUnk_030018A8       = 0x030018A8;
 gUnk_03003470       = 0x03003470;
