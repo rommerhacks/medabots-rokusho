@@ -36,11 +36,11 @@ static void medabot_detail_draw_larm_name(void);
 static void medabot_detail_draw_larm_skill_icon(void);
 static void medabot_detail_draw_legs_name(void);
 static void medabot_detail_draw_legs_skill_icon(void);
-static void medabot_detail_draw_row_icon_0(u32 a);
-static void medabot_detail_draw_row_icon_1(u32 a);
-static void medabot_detail_draw_row_icon_2(u32 a);
-static void medabot_detail_draw_row_icon_3(u32 a);
-static void medabot_detail_draw_row_icon_4(u32 a);
+static void medabot_detail_draw_row_icon_0(u32 highlighted);
+static void medabot_detail_draw_row_icon_1(u32 highlighted);
+static void medabot_detail_draw_row_icon_2(u32 highlighted);
+static void medabot_detail_draw_row_icon_3(u32 highlighted);
+static void medabot_detail_draw_row_icon_4(u32 highlighted);
 static void medabot_detail_draw_legs_type_icon(void);
 static void medabot_detail_load_icon_gfx(void);
 static void medabot_detail_place_icon(void);
@@ -160,7 +160,7 @@ void medabots_screen_load_gfx(void) {
 }
 
 void medabots_screen_fade_in(void) {
-    struct GameWork *s;
+    struct GameWork *work;
     u8 *flag;
 
     medabots_scroll_bg3();
@@ -171,14 +171,14 @@ void medabots_screen_fade_in(void) {
     medabots_screen_draw_bot_sprite();
     medabots_screen_update_reorder_icons();
     medabots_screen_animate_invalid_bot();
-    s = &gGameWork;
-    flag = &s->enteredFromSubmenu;
+    work = &gGameWork;
+    flag = &work->enteredFromSubmenu;
     if (*flag == 1) {
-        if (s->stepCounter > 8)
+        if (work->stepCounter > 8)
             goto done;
-        bg_palettes_blend_masked_now(0, 32 - s->stepCounter * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 32 - s->stepCounter * 4, 0xF0FF);
-        s->stepCounter++;
+        bg_palettes_blend_masked_now(0, 32 - work->stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 32 - work->stepCounter * 4, 0xF0FF);
+        work->stepCounter++;
     } else if (update_blend_effect()) {
     done:
         *flag = 0;
@@ -407,7 +407,7 @@ void medabot_detail_fade_in(void) {
 }
 
 void medabot_detail_handle_input(void) {
-    u8 r;
+    u8 select_result;
 
     medabots_scroll_bg3();
     medabot_detail_draw_bot_sprite();
@@ -428,10 +428,10 @@ void medabot_detail_handle_input(void) {
         medabot_detail_redraw_bot_sprite();
         medabot_detail_place_icon();
     } else {
-        r = medabot_detail_check_row_select();
-        if (r == 2)
+        select_result = medabot_detail_check_row_select();
+        if (select_result == 2)
             play_sound_effect(6);
-        else if (r == 1) {
+        else if (select_result == 1) {
             play_sound_effect(4);
             gGameSubState = 24;
         }
@@ -440,7 +440,7 @@ void medabot_detail_handle_input(void) {
 
 void medabot_detail_exit_start(void) {
     struct GameWork *st;
-    u8 v;
+    u8 mode;
 
     medabots_scroll_bg3();
     medabot_detail_draw_bot_sprite();
@@ -449,10 +449,10 @@ void medabot_detail_exit_start(void) {
     medabot_detail_update_invalid_bot();
     medabot_detail_animate_invalid_bot();
     st = &gGameWork;
-    v = st->medabotsMode;
-    if (v == 0) {
+    mode = st->medabotsMode;
+    if (mode == 0) {
         palette_backup_from_hardware();
-        st->stepCounter = v;
+        st->stepCounter = mode;
     } else
         set_blend_effect_mode(6, 0x3F, 0x20);
     gGameSubState++;
@@ -711,32 +711,32 @@ void team_select_link_exchange_init(void) {
 // scratch/sub_08004AF8_nearmiss.c (one literal load order and an orrs/adds for the 0x8000 header).
 
 void team_select_link_exchange_bots(void) {
-    struct BattleWork *s;
+    struct BattleWork *work;
     s16 flag;
     u8 *src;
 
     medabots_scroll_bg3();
     medabots_screen_draw_bot_sprite();
-    s = &gBattleWork;
-    if (s->unk51 != 3) {
-        src = (u8 *)&gBattleBots[s->unk51];
-        gLinkPackets.sendData = src[s->unk52] + (flag = ((s->linkSendToggle << 8) & 0x100) + 0x8000);
+    work = &gBattleWork;
+    if (work->unk51 != 3) {
+        src = (u8 *)&gBattleBots[work->unk51];
+        gLinkPackets.sendData = src[work->unk52] + (flag = ((work->linkSendToggle << 8) & 0x100) + 0x8000);
         if (++gGameWork.stepTimer == 4) {
             gGameWork.stepTimer = 0;
-            s->linkSendToggle ^= 1;
-            if (++s->unk52 == 0x48) {
-                s->unk51++;
-                s->unk52 = 0;
+            work->linkSendToggle ^= 1;
+            if (++work->unk52 == 0x48) {
+                work->unk51++;
+                work->unk52 = 0;
             }
         }
     }
     if (gBattleWork.unk53 != 3) {
-        u16 v = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
+        u16 packet = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
 
-        if ((v & 0x8000) && (u16)(v & 0x100) >> 8 != gBattleWork.linkRecvToggle) {
+        if ((packet & 0x8000) && (u16)(packet & 0x100) >> 8 != gBattleWork.linkRecvToggle) {
             gBattleWork.linkRecvToggle ^= 1;
-            ((struct LinkRow256 *)gLinkPartnerBotData)[gBattleWork.unk53].b[gBattleWork.linkRecvPos] = v;
-            gBattleWork.linkRecvSum = (gBattleWork.linkRecvSum + (v & 0xFF)) & 0x7FFF;
+            ((struct LinkRow256 *)gLinkPartnerBotData)[gBattleWork.unk53].b[gBattleWork.linkRecvPos] = packet;
+            gBattleWork.linkRecvSum = (gBattleWork.linkRecvSum + (packet & 0xFF)) & 0x7FFF;
             if (++gBattleWork.linkRecvPos == 0x48) {
                 gBattleWork.unk53++;
                 gBattleWork.linkRecvPos = 0;
@@ -770,7 +770,7 @@ void team_select_link_checksum_init(void) {
 }
 
 void team_select_link_compare_checksums(void) {
-    u16 v;
+    u16 packet;
 
     medabots_scroll_bg3();
     medabots_screen_draw_bot_sprite();
@@ -785,14 +785,14 @@ void team_select_link_compare_checksums(void) {
         }
         gBattleWork.unk51++;
     }
-    v = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
-    if (v & 0x8000) {
+    packet = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
+    if (packet & 0x8000) {
         switch (gBattleWork.unk52) {
         case 0:
-            gBattleWork.linkPartnerSentSum = v & 0x7FFF;
+            gBattleWork.linkPartnerSentSum = packet & 0x7FFF;
             break;
         case 1:
-            gBattleWork.linkPartnerRecvSum = v & 0x7FFF;
+            gBattleWork.linkPartnerRecvSum = packet & 0x7FFF;
             break;
         }
         if (++gBattleWork.unk52 == 2) {
@@ -868,10 +868,10 @@ static void medabots_screen_init_cursor_icons(void) {
 static void medabots_screen_orbit_cursor_icon(u32 i) {
     u32 cx = gMedabotsCursorOrbitCenters[gGameWork.medabotsCursor * 2];
     u32 cy = gMedabotsCursorOrbitCenters[gGameWork.medabotsCursor * 2 + 1];
-    struct Vec16 p = compute_polar_to_screen_position(((gSpriteEntries[i].unk23 + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
+    struct Vec16 pos = compute_polar_to_screen_position(((gSpriteEntries[i].unk23 + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
 
-    gSpriteEntries[i].x = p.x;
-    gSpriteEntries[i].y = p.y;
+    gSpriteEntries[i].x = pos.x;
+    gSpriteEntries[i].y = pos.y;
     gSpriteEntries[i].frame = 0x400;
     gSpriteEntries[i].palette = 12;
     gSpriteEntries[i].frame_table = 0;
@@ -967,23 +967,23 @@ static void medabots_screen_draw_medal_icon(void) {
 
 static void medabots_screen_init_bot_sprite(void) {
     struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
-    u8 *b;
-    u8 *c;
+    u8 *oam_buf;
+    u8 *slots;
     u32 fill;
 
     mem_fill8((u8 *)obj, 0xD0, 0);
-    b = (u8 *)0x020260D0;
-    mem_fill8(b, 0x800, 0);
-    c = (u8 *)0x020268D0;
-    mem_fill8(c, 0x60, 0);
+    oam_buf = (u8 *)0x020260D0;
+    mem_fill8(oam_buf, 0x800, 0);
+    slots = (u8 *)0x020268D0;
+    mem_fill8(slots, 0x60, 0);
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
+    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slots;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
-                     (struct SpriteNodeOam *)b);
-    obj->oams = (struct SpriteNodeOam *)b;
+                     (struct SpriteNodeOam *)oam_buf);
+    obj->oams = (struct SpriteNodeOam *)oam_buf;
     if (gGameWork.detailBot)
         setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gTeamSlots[gGameWork.medabotsCursor].head,
                                    gTeamSlots[gGameWork.medabotsCursor].rightArm,
@@ -1094,10 +1094,10 @@ static void medabots_screen_start_reorder_orbit(void) {
 static void medabots_screen_orbit_reorder_icon(u32 i) {
     u32 cx = gMedabotsCursorOrbitCenters[(gGameWork.reorderPick & 0x7F) * 2];
     u32 cy = gMedabotsCursorOrbitCenters[(gGameWork.reorderPick & 0x7F) * 2 + 1] - 4;
-    struct Vec16 p = compute_polar_to_screen_position(((gSpriteEntries[i].unk23 + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
+    struct Vec16 pos = compute_polar_to_screen_position(((gSpriteEntries[i].unk23 + 16) & 0x3F) * 4, 16, cx, cy, 8, 0);
 
-    gSpriteEntries[i].x = p.x;
-    gSpriteEntries[i].y = p.y;
+    gSpriteEntries[i].x = pos.x;
+    gSpriteEntries[i].y = pos.y;
     gSpriteEntries[i].frame = 0x400;
     gSpriteEntries[i].palette = 12;
     gSpriteEntries[i].frame_table = 0;
@@ -1360,36 +1360,36 @@ static void medabot_detail_draw_legs_skill_icon(void) {
 
 // Icon left of detail row 0-4 (Medal, head, right arm, left arm, legs); medabot_detail_blink_row_icon
 // alternates a = 0 / 1 on the selected row every 8 frames.
-static void medabot_detail_draw_row_icon_0(u32 a) {
-    if (a == 0)
+static void medabot_detail_draw_row_icon_0(u32 highlighted) {
+    if (highlighted == 0)
         draw_tile_block(2, 2, 14, 9, REG_BG1CNT, 0xC370);
     else
         draw_tile_block(2, 2, 14, 9, REG_BG1CNT, 0xC384);
 }
 
-static void medabot_detail_draw_row_icon_1(u32 a) {
-    if (a == 0)
+static void medabot_detail_draw_row_icon_1(u32 highlighted) {
+    if (highlighted == 0)
         draw_tile_block(2, 2, 14, 11, REG_BG1CNT, 0xC374);
     else
         draw_tile_block(2, 2, 14, 11, REG_BG1CNT, 0xC388);
 }
 
-static void medabot_detail_draw_row_icon_2(u32 a) {
-    if (a == 0)
+static void medabot_detail_draw_row_icon_2(u32 highlighted) {
+    if (highlighted == 0)
         draw_tile_block(2, 2, 14, 13, REG_BG1CNT, 0xC378);
     else
         draw_tile_block(2, 2, 14, 13, REG_BG1CNT, 0xC388);
 }
 
-static void medabot_detail_draw_row_icon_3(u32 a) {
-    if (a == 0)
+static void medabot_detail_draw_row_icon_3(u32 highlighted) {
+    if (highlighted == 0)
         draw_tile_block(2, 2, 14, 15, REG_BG1CNT, 0xC37C);
     else
         draw_tile_block(2, 2, 14, 15, REG_BG1CNT, 0xC388);
 }
 
-static void medabot_detail_draw_row_icon_4(u32 a) {
-    if (a == 0)
+static void medabot_detail_draw_row_icon_4(u32 highlighted) {
+    if (highlighted == 0)
         draw_tile_block(2, 2, 14, 17, REG_BG1CNT, 0xC380);
     else
         draw_tile_block(2, 2, 14, 17, REG_BG1CNT, 0xC388);
@@ -1444,23 +1444,23 @@ static void medabot_detail_blink_row_arrows(void) {
 
 static void medabot_detail_init_bot_sprite(void) {
     struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
-    u8 *b;
-    u8 *c;
+    u8 *oam_buf;
+    u8 *slots;
     u32 fill;
 
     mem_fill8((u8 *)obj, 0xD0, 0);
-    b = (u8 *)0x020260D0;
-    mem_fill8(b, 0x800, 0);
-    c = (u8 *)0x020268D0;
-    mem_fill8(c, 0x60, 0);
+    oam_buf = (u8 *)0x020260D0;
+    mem_fill8(oam_buf, 0x800, 0);
+    slots = (u8 *)0x020268D0;
+    mem_fill8(slots, 0x60, 0);
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
+    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slots;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
-                     (struct SpriteNodeOam *)b);
-    obj->oams = (struct SpriteNodeOam *)b;
+                     (struct SpriteNodeOam *)oam_buf);
+    obj->oams = (struct SpriteNodeOam *)oam_buf;
     if (gGameWork.detailBot)
         setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gGameWork.shownHead, gGameWork.shownRightArm,
                                    gGameWork.shownLeftArm, gGameWork.shownLegs, 0x28, 0x28, 0x1C2, 8, 1, 1);
@@ -1775,15 +1775,15 @@ static u32 medabot_detail_prev_part_id(volatile u32 part) {
 // unk53 set while validate_medapart_stats rejects the shown Medal + Medaparts: the Medabot sprite
 // switches to palette 8 (and medabot_detail_animate_invalid_bot animates it); cleared and redrawn once valid again.
 static void medabot_detail_update_invalid_bot(void) {
-    u32 r;
+    u32 invalid;
 
     if (gGameWork.detailInvalid) {
-        r = validate_medapart_stats(gGameWork.shownMedal, gGameWork.shownHead, gGameWork.shownRightArm,
-                                    gGameWork.shownLeftArm, gGameWork.shownLegs);
-        if (r == 0) {
+        invalid = validate_medapart_stats(gGameWork.shownMedal, gGameWork.shownHead, gGameWork.shownRightArm,
+                                          gGameWork.shownLeftArm, gGameWork.shownLegs);
+        if (invalid == 0) {
             init_battle_medabot_sprites(gGameWork.shownHead, gGameWork.shownRightArm, gGameWork.shownLeftArm,
-                                        gGameWork.shownLegs, r, 6, 0xA8, 0x20, gGameWork.detailBot, 1, 5);
-            gGameWork.detailInvalid = r;
+                                        gGameWork.shownLegs, invalid, 6, 0xA8, 0x20, gGameWork.detailBot, 1, 5);
+            gGameWork.detailInvalid = invalid;
         }
     } else {
         if (validate_medapart_stats(gGameWork.shownMedal, gGameWork.shownHead, gGameWork.shownRightArm,

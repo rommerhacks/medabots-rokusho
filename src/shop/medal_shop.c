@@ -13,14 +13,14 @@ static inline void *vram_at(u32 off) {
 void medal_rename_draw_list(u8 start) {
     s32 i, j;
     s32 n;
-    u8 *p = &gMenuWork->medal_list_count;
-    if (*p > 3)
+    u8 *count = &gMenuWork->medal_list_count;
+    if (*count > 3)
         n = 4;
     else
-        n = *p;
+        n = *count;
     i = 0;
     while (i < n) {
-        u16 v;
+        u16 tile;
         u16 *dst;
         for (j = 0; j <= 10; j++)
             gSpriteEntries[i * 10 + 12 + j].flags &= (u16)~SPRITE_FLAG_VISIBLE;
@@ -30,15 +30,15 @@ void medal_rename_draw_list(u8 start) {
                 break;
         }
         render_text_sprites_08040DB8(gMenuWork->name_buf, i * 10 + 12, 6, i * 2 + 3, 10, 13, 1, 1);
-        v = gMenuWork->bg_tile_base + (gMedals[gMenuWork->medal_list[i + start]].graphicId * 4 + 1);
-        v |= 0x6000;
+        tile = gMenuWork->bg_tile_base + (gMedals[gMenuWork->medal_list[i + start]].graphicId * 4 + 1);
+        tile |= 0x6000;
         dst = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 3 + (i * 2 + 3) * 32;
-        *dst = v;
+        *dst = tile;
         dst++;
-        *dst = v + 1;
+        *dst = tile + 1;
         dst += 31;
-        dst[0] = v + 2;
-        dst[1] = v + 3;
+        dst[0] = tile + 2;
+        dst[1] = tile + 3;
         i++;
     }
 }
@@ -92,21 +92,21 @@ void medal_rename_build_list(void) {
 
 void medal_rename_load_graphics(void) {
     u32 size;
-    u16 v;
+    u16 bgcnt;
     vu16 *bg1, *bg2, *bg3;
     u32 zero;
     u8 i;
     u32 z2;
 
     bg1 = &REG_BG1CNT;
-    v = 0x1F05;
-    *bg1 = v;
+    bgcnt = 0x1F05;
+    *bg1 = bgcnt;
     bg2 = &REG_BG2CNT;
-    v -= 0xFF;
-    *bg2 = v;
+    bgcnt -= 0xFF;
+    *bg2 = bgcnt;
     bg3 = &REG_BG3CNT;
-    v -= 0xFF;
-    *bg3 = v;
+    bgcnt -= 0xFF;
+    *bg3 = bgcnt;
     decompress_and_write_tilemap(gMedalRenameBg1Tilemap, *bg1);
     decompress_and_write_tilemap(gMedalRenameBg2Tilemap, *bg2);
     decompress_and_write_tilemap(gMedalRenameBg3Tilemap, *bg3);
@@ -168,11 +168,11 @@ void medal_rename_load_palettes(void) {
 }
 
 void medal_rename_fade_in(void) {
-    struct GameWork *s = &gGameWork;
-    if (s->stepCounter <= 8) {
-        bg_palettes_blend_masked_now(0, 32 - s->stepCounter * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 32 - s->stepCounter * 4, 0xFFFF);
-        s->stepCounter++;
+    struct GameWork *game = &gGameWork;
+    if (game->stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, 32 - game->stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 32 - game->stepCounter * 4, 0xFFFF);
+        game->stepCounter++;
     } else {
         gMenuWork->message_pending = 0;
         text_window_init(1, 0, 0);
@@ -182,7 +182,7 @@ void medal_rename_fade_in(void) {
 }
 
 void medal_rename_select_medal(void) {
-    u32 r = 1;
+    u32 busy = 1;
     u8 keys;
     u32 se;
     if (gMenuWork->message_pending) {
@@ -191,8 +191,8 @@ void medal_rename_select_medal(void) {
             text_window_init(1, 0, 0);
         }
     } else if (run_message(gSystemMessages[13]))
-        r = 0;
-    if (r != 0)
+        busy = 0;
+    if (busy != 0)
         return;
     sprite_bob_x(8, gFrameCounter, 12);
     gSpriteEntries[8].flags |= SPRITE_FLAG_VISIBLE;
@@ -268,11 +268,11 @@ void medal_rename_select_medal(void) {
 
 void medal_rename_fade_to_name_entry(void) {
     if (game_state_execute_handler_a()) {
-        struct GameWork *s = &gGameWork;
-        if (s->stepCounter <= 8) {
-            bg_palettes_blend_masked_now(0, s->stepCounter * 4, 0xFFFF);
-            obj_palettes_blend_masked_now(0, s->stepCounter * 4, 0xFFFF);
-            s->stepCounter++;
+        struct GameWork *game = &gGameWork;
+        if (game->stepCounter <= 8) {
+            bg_palettes_blend_masked_now(0, game->stepCounter * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, game->stepCounter * 4, 0xFFFF);
+            game->stepCounter++;
         } else {
             REG_DISPCNT &= ~0x200;
             gGameState = 6;
@@ -283,11 +283,11 @@ void medal_rename_fade_to_name_entry(void) {
 
 void medal_rename_fade_to_field(void) {
     if (game_state_execute_handler_a()) {
-        struct GameWork *s = &gGameWork;
-        if (s->stepCounter <= 8) {
-            bg_palettes_blend_masked_now(0, s->stepCounter * 4, 0xFFFF);
-            obj_palettes_blend_masked_now(0, s->stepCounter * 4, 0xFFFF);
-            s->stepCounter++;
+        struct GameWork *game = &gGameWork;
+        if (game->stepCounter <= 8) {
+            bg_palettes_blend_masked_now(0, game->stepCounter * 4, 0xFFFF);
+            obj_palettes_blend_masked_now(0, game->stepCounter * 4, 0xFFFF);
+            game->stepCounter++;
         } else {
             REG_DISPCNT &= ~0x200;
             clear_battle_sprite_slot(0, 0x80);
@@ -297,15 +297,15 @@ void medal_rename_fade_to_field(void) {
 }
 
 void medal_rename_no_money(void) {
-    u32 r = 1;
+    u32 busy = 1;
     if (gMenuWork->message_pending) {
         if (game_state_execute_handler_a()) {
             gMenuWork->message_pending = 0;
             text_window_init(1, 0, 0);
         }
     } else if (run_message(gSystemMessages[15]))
-        r = 0;
-    if (r == 0 && KEYS_LO(gNewKeys) & 3) {
+        busy = 0;
+    if (busy == 0 && KEYS_LO(gNewKeys) & 3) {
         message_next();
         gGameSubState = 5;
     }
@@ -313,7 +313,7 @@ void medal_rename_no_money(void) {
 
 // "It'll cost you 100. Is that OK?": Yes pays and goes on to name entry for gCurrentMedalSlot.
 void medal_rename_confirm_payment(void) {
-    u32 r = 1;
+    u32 status = 1;
     u32 sel;
     if (gMenuWork->message_pending) {
         if (game_state_execute_handler_a()) {
@@ -321,10 +321,10 @@ void medal_rename_confirm_payment(void) {
             text_window_init(1, 0, 0);
         }
     } else if (run_message(gSystemMessages[14]))
-        r = 0;
-    if (r == 0 && (r = poll_choice_menu()) != 0) {
-        u32 c = r & 0xF0;
-        if (c) {
+        status = 0;
+    if (status == 0 && (status = poll_choice_menu()) != 0) {
+        u32 declined = status & 0xF0;
+        if (declined) {
             gMenuWork->message_pending = 1;
             gGameSubState = 5;
         } else if (gMoney <= 99) {
@@ -334,7 +334,7 @@ void medal_rename_confirm_payment(void) {
         } else {
             gMoney -= 100;
             gCurrentMedalSlot = gMenuWork->medal_list[gMenuWork->medal_list_top + gMenuWork->medal_list_cursor];
-            gGameWork.stepCounter = c;
+            gGameWork.stepCounter = declined;
             gGameSubState = 6;
         }
     }

@@ -35,8 +35,8 @@ void shop_return_init(void) {
 }
 
 void fade_out_transition_step(void) {
-    struct GameWork *s = &gGameWork;
-    u8 *n = &s->stepCounter;
+    struct GameWork *game = &gGameWork;
+    u8 *n = &game->stepCounter;
 
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, 32 - *n * 4, 0xFFFF);
@@ -51,6 +51,6 @@ void fade_out_transition_step(void) {
 }
 
 void dispatch_substate_handler(void) {
-    struct FuncTable7 t = gShopSubStates;
-    t.f[gGameSubState]();
+    struct FuncTable7 states = gShopSubStates;
+    states.f[gGameSubState]();
 }

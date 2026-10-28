@@ -15,11 +15,11 @@ void item_menu_update(void) {
 }
 
 // While a SELECT swap is active, blinks the swap marker (sprite 84) if the marked item is on this page.
-static void item_menu_blink_swap_marker(u32 a) {
+static void item_menu_blink_swap_marker(u32 frame) {
     struct MenuWork *w = gMenuWork;
     if (w->swap_pending) {
         if (w->swap_from >= w->list_top && w->swap_from < w->list_top + 5) {
-            if (a & 1)
+            if (frame & 1)
                 gSpriteEntries[84].flags &= (u16)~SPRITE_FLAG_VISIBLE;
             else
                 gSpriteEntries[84].flags |= SPRITE_FLAG_VISIBLE;
@@ -44,17 +44,17 @@ void item_menu_load_graphics(void) {
     u32 size;
     u8 i;
     vu16 *bg1, *bg2, *bg3;
-    u16 v;
+    u16 bgcnt;
 
     bg1 = &REG_BG1CNT;
-    v = 0x1E05;
-    *bg1 = v;
+    bgcnt = 0x1E05;
+    *bg1 = bgcnt;
     bg2 = &REG_BG2CNT;
-    v = 0x1C06;
-    *bg2 = v;
+    bgcnt = 0x1C06;
+    *bg2 = bgcnt;
     bg3 = &REG_BG3CNT;
-    v = 0x3D07;
-    *bg3 = v;
+    bgcnt = 0x3D07;
+    *bg3 = bgcnt;
     decompress_and_write_tilemap(gItemMenuBg1Tilemap, *bg1);
     decompress_and_write_tilemap(gItemMenuBg2Tilemap, *bg2);
     decompress_and_write_tilemap(gItemMenuBg3Tilemap, *bg3);
@@ -124,12 +124,12 @@ void item_menu_init(void) {
 }
 
 void item_menu_fade_in(void) {
-    struct GameWork *b = &gGameWork;
-    if (b->stepCounter <= 8) {
+    struct GameWork *game = &gGameWork;
+    if (game->stepCounter <= 8) {
         if (gMenuWork->returning == 0)
-            bg_palettes_blend_masked_now(0, 0x20 - b->stepCounter * 4, 0x3FFF);
+            bg_palettes_blend_masked_now(0, 0x20 - game->stepCounter * 4, 0x3FFF);
         else
-            bg_palettes_blend_masked_now(0, 0x20 - b->stepCounter * 4, 0xFFFF);
+            bg_palettes_blend_masked_now(0, 0x20 - game->stepCounter * 4, 0xFFFF);
         obj_palettes_blend_masked_now(0, 0x20 - gGameWork.stepCounter * 4, 0xFFFF);
         gGameWork.stepCounter++;
     } else {
@@ -145,8 +145,8 @@ void item_menu_show_description(void) {
     sprite_bob_x(0x53, gFrameCounter, 0x54);
     w = gMenuWork;
     if (w->item_count) {
-        struct ItemListEntry *l = (struct ItemListEntry *)0x02040000;
-        id = l[w->item_cursor].id;
+        struct ItemListEntry *list = (struct ItemListEntry *)0x02040000;
+        id = list[w->item_cursor].id;
     } else
         id = 0x3F;
     if (run_message(gItemDescriptions[id]))
@@ -338,11 +338,11 @@ void item_menu_close_message(void) {
 }
 
 void item_menu_fade_out_exit(void) {
-    struct GameWork *b = &gGameWork;
-    if (b->stepCounter <= 8) {
-        bg_palettes_blend_masked_now(0, b->stepCounter * 4, 0x3FFF);
-        obj_palettes_blend_masked_now(0, b->stepCounter * 4, 0xFFFF);
-        b->stepCounter++;
+    struct GameWork *game = &gGameWork;
+    if (game->stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, game->stepCounter * 4, 0x3FFF);
+        obj_palettes_blend_masked_now(0, game->stepCounter * 4, 0xFFFF);
+        game->stepCounter++;
     } else {
         REG_DISPCNT &= 0xFDFF;
         REG_DISPCNT &= 0xFBFF;

@@ -18,20 +18,20 @@ void reset_bg_scroll(void) {
     gBg3Scroll.y = 0;
 }
 
-void open_choice_menu(u8 a, u8 b, u8 c) {
+void open_choice_menu(u8 cursor, u8 tile_x, u8 tile_y) {
     mem_fill8(&gGameWork.choiceResult, 8, 0);
-    gGameWork.choiceCursor = a;
+    gGameWork.choiceCursor = cursor;
     gGameWork.scrollSpriteSlot = 0x7F;
-    gGameWork.transTileX = b;
-    gGameWork.transTileY = c;
+    gGameWork.transTileX = tile_x;
+    gGameWork.transTileY = tile_y;
 }
 
-static void init_window_params(u8 a, u8 b, u8 c, u8 d) {
+static void init_window_params(u8 cursor, u8 tile_x, u8 tile_y, u8 sprite_slot) {
     mem_fill8(&gGameWork.choiceResult, 8, 0);
-    gGameWork.choiceCursor = a;
-    gGameWork.scrollSpriteSlot = d;
-    gGameWork.transTileX = b;
-    gGameWork.transTileY = c;
+    gGameWork.choiceCursor = cursor;
+    gGameWork.scrollSpriteSlot = sprite_slot;
+    gGameWork.transTileX = tile_x;
+    gGameWork.transTileY = tile_y;
 }
 
 u32 poll_choice_menu(void) {
@@ -57,85 +57,85 @@ void clear_tilemap_and_advance_state(void) {
 
 void clear_and_copy_tilemap_rows(void) {
     u32 i, j;
-    u16 *d = (u16 *)(VRAM + 0x2800) + gGameWork.transTileY * 32 + gGameWork.transTileX;
-    u16 *row = d;
-    u16 *s;
+    u16 *dst = (u16 *)(VRAM + 0x2800) + gGameWork.transTileY * 32 + gGameWork.transTileX;
+    u16 *row = dst;
+    u16 *src;
 
     for (j = 0; j < 2; j++) {
         for (i = 0; i < 8; i++)
-            *d++ = 0;
+            *dst++ = 0;
         row += 32;
-        d = row;
+        dst = row;
     }
-    s = (u16 *)(VRAM + 0x2D40);
+    src = (u16 *)(VRAM + 0x2D40);
     for (i = 0; i < 8; i++)
-        *d++ = *s++;
+        *dst++ = *src++;
     row += 32;
-    d = row;
-    s = (u16 *)(VRAM + 0x2E80);
+    dst = row;
+    src = (u16 *)(VRAM + 0x2E80);
     for (i = 0; i < 8; i++)
-        *d++ = *s++;
+        *dst++ = *src++;
     row += 32;
-    d = row;
+    dst = row;
     for (j = 0; j < 2; j++) {
         for (i = 0; i < 8; i++)
-            *d++ = 0;
+            *dst++ = 0;
         row += 32;
-        d = row;
+        dst = row;
     }
     gGameWork.choiceState++;
 }
 
 void transition_draw_tile_strip(void) {
     u32 i, j;
-    u16 *d = (u16 *)(VRAM + 0x2800) + gGameWork.transTileY * 32 + gGameWork.transTileX;
-    u16 *row = d;
-    u16 *s;
+    u16 *dst = (u16 *)(VRAM + 0x2800) + gGameWork.transTileY * 32 + gGameWork.transTileX;
+    u16 *row = dst;
+    u16 *src;
     u16 *srow;
 
     for (i = 0; i < 8; i++)
-        *d++ = 0;
+        *dst++ = 0;
     row += 32;
-    s = (u16 *)(VRAM + 0x2D40);
-    srow = s;
-    d = row;
+    src = (u16 *)(VRAM + 0x2D40);
+    srow = src;
+    dst = row;
     for (j = 0; j < 2; j++) {
         for (i = 0; i < 8; i++)
-            *d++ = *s++;
+            *dst++ = *src++;
         row += 32;
-        d = row;
+        dst = row;
         srow += 32;
-        s = srow;
+        src = srow;
     }
-    s = (u16 *)(VRAM + 0x2E40);
-    srow = s;
+    src = (u16 *)(VRAM + 0x2E40);
+    srow = src;
     for (j = 0; j < 2; j++) {
         for (i = 0; i < 8; i++)
-            *d++ = *s++;
+            *dst++ = *src++;
         row += 32;
-        d = row;
+        dst = row;
         srow += 32;
-        s = srow;
+        src = srow;
     }
     for (i = 0; i < 8; i++)
-        *d++ = 0;
+        *dst++ = 0;
     gGameWork.choiceState++;
 }
 
 void copy_transition_tiles_to_bg2(void) {
     u32 i, j;
-    u16 *d = (u16 *)(VRAM + 0x2800) + gGameWork.transTileY * 32 + gGameWork.transTileX;
-    u16 *s = (u16 *)(VRAM + 0x2D40);
-    u16 *srow = s;
-    u16 *row = d;
+    u16 *dst = (u16 *)(VRAM + 0x2800) + gGameWork.transTileY * 32 + gGameWork.transTileX;
+    u16 *src = (u16 *)(VRAM + 0x2D40);
+    u16 *srow = src;
+    u16 *row = dst;
 
     for (j = 0; j < 6; j++) {
         for (i = 0; i < 8; i++)
-            *d++ = *s++;
+            *dst++ = *src++;
         row += 32;
-        d = row;
+        dst = row;
         srow += 32;
-        s = srow;
+        src = srow;
     }
     gGameWork.choiceState++;
 }

@@ -14,19 +14,19 @@ static void message_cmd_wait_skippable(void);
 static void message_cmd_wait(void);
 static void message_cmd_end(void);
 
-void text_window_init(u8 a, u8 b, u32 c) {
-    u8 c8 = c;
+void text_window_init(u8 keep_palettes, u8 portrait_mode, u32 no_frame) {
+    u8 no_frame_u8 = no_frame;
 
     mem_fill8((u8 *)&gGameWork, 0x28, 0);
-    gGameWork.msgKeepPalettes = a;
-    gGameWork.portraitMode = b;
-    gGameWork.noWindowFrame = c8;
+    gGameWork.msgKeepPalettes = keep_palettes;
+    gGameWork.portraitMode = portrait_mode;
+    gGameWork.noWindowFrame = no_frame_u8;
     gGameWork.portraitSide = 0xFF;
     gGameWork.portraitSet = -1;
     gGameWork.portraitIndex = -1;
     decompress_bg_tiles_to_vram_bg();
     CpuFastSet(gTextWindowObjPalette, (void *)(OBJ_PLTT - 0x40), 8);
-    if (c8 == 1)
+    if (no_frame_u8 == 1)
         setup_bg0_display_layer();
 }
 
@@ -57,10 +57,10 @@ u32 run_message(const void *msg) {
 
 // run_message state 0: back up the palettes, then dim them (state 1); unk0 != 0 skips to state 2.
 void message_open(void) {
-    u8 v = gGameWork.msgKeepPalettes;
-    if (v == 0) {
+    u8 keep_palettes = gGameWork.msgKeepPalettes;
+    if (keep_palettes == 0) {
         palette_backup_from_hardware();
-        gGameWork.dimLevel = v;
+        gGameWork.dimLevel = keep_palettes;
         gGameWork.msgState++;
     } else {
         gGameWork.msgState = 2;
@@ -218,27 +218,27 @@ static void message_cmd_portrait(void) {
     u32 anim, set, idx;
     u32 x;
     u8 zero;
-    u8 m;
-    u8 r;
-    struct GameWork *s;
+    u8 mode;
+    u8 anim_result;
+    struct GameWork *work;
     u8 n;
     if (((struct TextColBits *)&gGameWork)->col) {
         u8 col = (gGameWork.penX + 8) / 8 - 1;
         CpuFastSet(gTextComposeTile, (void *)(col * 0x40 + VRAM + 0x280 + gGameWork.textLine * 0x680), 16);
     }
-    s = &gGameWork;
+    work = &gGameWork;
     zero = 0;
-    s->penX = zero;
-    if (s->portraitMode != 2) {
-        anim = s->msgText[s->msgPos + 1];
-        set = (u8)resolve_area_sprite_set(s->msgText[s->msgPos + 2]);
-        idx = s->msgText[s->msgPos + 3];
-        if (s->portraitShown == 1) {
-            if (s->portraitSide == 0)
+    work->penX = zero;
+    if (work->portraitMode != 2) {
+        anim = work->msgText[work->msgPos + 1];
+        set = (u8)resolve_area_sprite_set(work->msgText[work->msgPos + 2]);
+        idx = work->msgText[work->msgPos + 3];
+        if (work->portraitShown == 1) {
+            if (work->portraitSide == 0)
                 x = 0x13;
             else
                 x = 3;
-            if ((u8)s->portraitSide == (u8)anim && (u8)s->portraitSet == set) {
+            if ((u8)work->portraitSide == (u8)anim && (u8)work->portraitSet == set) {
                 if (set == 0xFF)
                     vram_fill_tilemap_rect(8, 8, x, 5, REG_BG0CNT, zero);
                 else
@@ -248,15 +248,15 @@ static void message_cmd_portrait(void) {
                 gGameWork.portraitIndex = idx;
                 gGameWork.msgPos += 4;
             } else {
-                struct GameWork *p = &gGameWork;
-                if ((n = p->portraitMode) == 0) {
-                    if ((u8)message_portrait_anim_step((u8)p->portraitSet, (u8)p->portraitIndex, x, 5, p->portraitSide,
-                                                       1) != 1)
+                struct GameWork *game = &gGameWork;
+                if ((n = game->portraitMode) == 0) {
+                    if ((u8)message_portrait_anim_step((u8)game->portraitSet, (u8)game->portraitIndex, x, 5,
+                                                       game->portraitSide, 1) != 1)
                         return;
                 } else
                     vram_fill_tilemap_rect(8, 8, x, 5, REG_BG0CNT, n = 0);
-                p->portraitAnimFrame = n;
-                p->portraitShown = n;
+                game->portraitAnimFrame = n;
+                game->portraitShown = n;
             }
             return;
         }
@@ -264,29 +264,29 @@ static void message_cmd_portrait(void) {
         if (anim == 0)
             x = 0x13;
         if (set == 0xFF) {
-            s->portraitSide = anim;
-            s->portraitSet = set;
-            s->portraitIndex = idx;
+            work->portraitSide = anim;
+            work->portraitSet = set;
+            work->portraitIndex = idx;
             goto inc;
         }
-        if ((m = s->portraitMode) != 0) {
+        if ((mode = work->portraitMode) != 0) {
             load_bg0_tilemap(set, idx, x, 5, anim);
-            s->portraitShown = 1;
-            s->portraitSide = anim;
-            s->portraitSet = set;
-            s->portraitIndex = idx;
+            work->portraitShown = 1;
+            work->portraitSide = anim;
+            work->portraitSet = set;
+            work->portraitIndex = idx;
             goto inc;
         }
-        if ((r = message_portrait_anim_step(set, idx, x, 5, anim, m)) != 1)
+        if ((anim_result = message_portrait_anim_step(set, idx, x, 5, anim, mode)) != 1)
             return;
-        s->portraitAnimFrame = m;
-        s->portraitShown = r;
-        s->portraitSide = anim;
-        s->portraitSet = set;
-        s->portraitIndex = idx;
+        work->portraitAnimFrame = mode;
+        work->portraitShown = anim_result;
+        work->portraitSide = anim;
+        work->portraitSet = set;
+        work->portraitIndex = idx;
     }
 inc:
-    s->msgPos += 4;
+    work->msgPos += 4;
 }
 
 void text_render_glyph_step(void) {
@@ -379,7 +379,7 @@ void message_print_var_step(void) {
     u8 w;
     u8 n;
     u8 i;
-    u8 c;
+    u8 glyph;
     u8 done;
 
     if (gGameWork.wordFits == 0) {
@@ -406,13 +406,13 @@ void message_print_var_step(void) {
                 gGameWork.varText = gPlayerName;
                 break;
             }
-            c = gGameWork.varText[gGameWork.varPos + n++];
+            glyph = gGameWork.varText[gGameWork.varPos + n++];
             if (gGameWork.altFont)
-                w += gAltFontWidths[c][0];
+                w += gAltFontWidths[glyph][0];
             else
-                w += gFontWidths[c][0];
-            c = gGameWork.varText[gGameWork.varPos + n];
-            if (c > 0xF7)
+                w += gFontWidths[glyph][0];
+            glyph = gGameWork.varText[gGameWork.varPos + n];
+            if (glyph > 0xF7)
                 done = 1;
         } while (!done);
         gGameWork.wordPixelsLeft = w;
@@ -422,28 +422,28 @@ void message_print_var_step(void) {
             gGameWork.wordFits = 1;
     }
     if (gGameWork.lineFull == 0) {
-        c = gGameWork.varText[gGameWork.varPos];
+        glyph = gGameWork.varText[gGameWork.varPos];
         if (gGameWork.altFont)
-            w = gAltFontWidths[c][0];
+            w = gAltFontWidths[glyph][0];
         else
-            w = gFontWidths[c][0];
+            w = gFontWidths[glyph][0];
         gGameWork.penX += w;
         gGameWork.wordPixelsLeft -= w;
         if (gGameWork.composePixels == 0) {
             if (gGameWork.altFont)
-                gGameWork.composePixels = gAltFontWidths[c][0];
+                gGameWork.composePixels = gAltFontWidths[glyph][0];
             else
-                gGameWork.composePixels = gFontWidths[c][0];
+                gGameWork.composePixels = gFontWidths[glyph][0];
             if (gGameWork.altFont)
-                CpuSet(&gAltFontGlyphs[c * 64], gTextComposeTile, 0x20);
+                CpuSet(&gAltFontGlyphs[glyph * 64], gTextComposeTile, 0x20);
             else
-                CpuSet(&gFontGlyphs[c * 64], gTextComposeTile, 0x20);
+                CpuSet(&gFontGlyphs[glyph * 64], gTextComposeTile, 0x20);
         } else {
             n = gGameWork.composePixels;
             if (gGameWork.altFont)
-                CpuSet(gAltFontGlyphs + c * 64, gTextGlyphTile, 0x20);
+                CpuSet(gAltFontGlyphs + glyph * 64, gTextGlyphTile, 0x20);
             else
-                CpuSet(gFontGlyphs + c * 64, gTextGlyphTile, 0x20);
+                CpuSet(gFontGlyphs + glyph * 64, gTextGlyphTile, 0x20);
             for (i = 0; i <= 15; i++)
                 ((u32 *)gTextComposeTile)[i] |= ((u32 *)gTextGlyphTile)[i] << (n * 4);
             gGameWork.composePixels += w;
@@ -522,16 +522,16 @@ u8 message_wait_next_page(void) {
 
 // 0xFA n: wait n frames (0xFF = forever); A or B ends the wait early unless unk89 (demo) is set.
 static void message_cmd_wait_skippable(void) {
-    u16 c;
+    u16 pos;
     if (gGameWork.msgWait == 0) {
         if (((struct TextColBits *)&gGameWork)->col) {
             u8 col = (gGameWork.penX + 8) / 8 - 1;
             CpuFastSet(gTextComposeTile, (void *)(col * 0x40 + VRAM + 0x280 + gGameWork.textLine * 0x680), 16);
         }
-        c = gGameWork.msgPos;
+        pos = gGameWork.msgPos;
         gGameWork.msgWait = gGameWork.msgText[*(vu16 *)&gGameWork.msgPos + 1];
         if (*(vu8 *)&gGameWork.msgWait == 0xFF)
-            gGameWork.msgPos = c + 2;
+            gGameWork.msgPos = pos + 2;
     } else if (gGameWork.msgWait == 0xFF || --gGameWork.msgWait == 0)
         gGameWork.msgPos += 2;
     else if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 3)) {
@@ -542,16 +542,16 @@ static void message_cmd_wait_skippable(void) {
 
 // 0xF7 n: wait n frames (0xFF = forever).
 static void message_cmd_wait(void) {
-    u16 c;
+    u16 pos;
     if (gGameWork.msgWait == 0) {
         if (((struct TextColBits *)&gGameWork)->col) {
             u8 col = (gGameWork.penX + 8) / 8 - 1;
             CpuFastSet(gTextComposeTile, (void *)(col * 0x40 + VRAM + 0x280 + gGameWork.textLine * 0x680), 16);
         }
-        c = gGameWork.msgPos;
+        pos = gGameWork.msgPos;
         gGameWork.msgWait = gGameWork.msgText[*(vu16 *)&gGameWork.msgPos + 1];
         if (*(vu8 *)&gGameWork.msgWait == 0xFF)
-            gGameWork.msgPos = c + 2;
+            gGameWork.msgPos = pos + 2;
     } else if (gGameWork.msgWait == 0xFF || --gGameWork.msgWait == 0)
         gGameWork.msgPos += 2;
 }
@@ -609,22 +609,23 @@ void message_end_keep(void) {
 
 // End step 0: clear the speaker portrait.
 void message_close_portrait(void) {
-    struct GameWork *p = &gGameWork;
+    struct GameWork *game = &gGameWork;
     u8 x;
-    u8 m;
-    u32 r;
+    u8 mode;
+    u32 shown;
 
-    if ((m = p->portraitMode) != 2 && (r = p->portraitShown) == 1) {
-        x = p->portraitSide == 0 ? 0x13 : 3;
-        if (m == 0) {
-            if ((u8)message_portrait_anim_step((u8)p->portraitSet, (u8)p->portraitIndex, x, 5, p->portraitSide, r) != 1)
+    if ((mode = game->portraitMode) != 2 && (shown = game->portraitShown) == 1) {
+        x = game->portraitSide == 0 ? 0x13 : 3;
+        if (mode == 0) {
+            if ((u8)message_portrait_anim_step((u8)game->portraitSet, (u8)game->portraitIndex, x, 5, game->portraitSide,
+                                               shown) != 1)
                 return;
         } else
-            vram_fill_tilemap_rect(8, 8, x, 5, REG_BG0CNT, m = 0);
-        p->portraitAnimFrame = m;
-        p->portraitShown = m;
+            vram_fill_tilemap_rect(8, 8, x, 5, REG_BG0CNT, mode = 0);
+        game->portraitAnimFrame = mode;
+        game->portraitShown = mode;
     }
-    p->endModeStep++;
+    game->endModeStep++;
 }
 
 // End step 1: a frameless window (unk2 == 1) is just cleared, skipping the frame animation.

@@ -9,29 +9,29 @@ static inline void *vram_at(u32 off) {
 }
 
 void shop_highlight_part_type_icon(u32 sel, u32 frame) {
-    u16 t = (s16)(sel * 4 + gMenuWork->obj_tile_base + 5) | (s16)0xC000;
+    u16 tile = (s16)(sel * 4 + gMenuWork->obj_tile_base + 5) | (s16)0xC000;
     s32 i, j;
-    u16 *a, *b;
+    u16 *top_row, *bottom_row;
     u16 pal;
 
-    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000152) = t++;
-    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000154) = t++;
-    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000192) = t++;
-    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000194) = t;
+    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000152) = tile++;
+    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000154) = tile++;
+    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000192) = tile++;
+    *(u16 *)(((REG_BG2CNT >> 8) & 0x1F) * 0x800 + 0x06000194) = tile;
     for (i = 0; i < 4; i++) {
-        a = (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + gShopPartTypeIconPos[i][0] +
-            gShopPartTypeIconPos[i][1] * 32;
-        b = (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + gShopPartTypeIconPos[i][0] +
-            (gShopPartTypeIconPos[i][1] + 1) * 32;
+        top_row = (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + gShopPartTypeIconPos[i][0] +
+                  gShopPartTypeIconPos[i][1] * 32;
+        bottom_row = (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + gShopPartTypeIconPos[i][0] +
+                     (gShopPartTypeIconPos[i][1] + 1) * 32;
         if (frame & 8)
             pal = (i == sel) ? 0x6000 : 0x5000;
         else
             pal = 0x5000;
         for (j = 0; j < 8; j++) {
-            *a = (*a & 0xFFF) | pal;
-            a++;
-            *b = (*b & 0xFFF) | pal;
-            b++;
+            *top_row = (*top_row & 0xFFF) | pal;
+            top_row++;
+            *bottom_row = (*bottom_row & 0xFFF) | pal;
+            bottom_row++;
         }
     }
 }
@@ -73,7 +73,7 @@ void shop_menu_goto_init(void) {
 void shop_menu_load_graphics(void) {
     u32 zero;
     vu16 *bg1, *bg2, *bg3;
-    u16 v;
+    u16 bgcnt;
     u32 size;
     u32 n;
     u32 vram;
@@ -89,20 +89,20 @@ void shop_menu_load_graphics(void) {
     REG_BLDCNT = 0xC42;
     REG_BLDALPHA = 0x10;
     bg1 = &REG_BG1CNT;
-    v = 0x1B05;
-    *bg1 = v;
+    bgcnt = 0x1B05;
+    *bg1 = bgcnt;
     decompress_and_write_tilemap(gShopMenuPanelTilemap1, *bg1);
     bg2 = &REG_BG2CNT;
-    v = 0x1A06;
-    *bg2 = v;
+    bgcnt = 0x1A06;
+    *bg2 = bgcnt;
     decompress_and_write_tilemap(gShopMenuPanelTilemap2, *bg2);
-    v = 0x1E05;
-    *bg1 = v;
-    v -= 0xFF;
-    *bg2 = v;
+    bgcnt = 0x1E05;
+    *bg1 = bgcnt;
+    bgcnt -= 0xFF;
+    *bg2 = bgcnt;
     bg3 = &REG_BG3CNT;
-    v -= 0xFF;
-    *bg3 = v;
+    bgcnt -= 0xFF;
+    *bg3 = bgcnt;
     decompress_and_write_tilemap(gShopMenuBg1Tilemap, *bg1);
     decompress_and_write_tilemap(gShopMenuBg2Tilemap, *bg2);
     decompress_and_write_tilemap(gShopMenuBg3Tilemap, *bg3);
@@ -188,12 +188,12 @@ void shop_menu_show_layers(void) {
 // State 3: fade in from white; back from the list (unk6 == 1) it goes straight to the part types (state 9).
 void shop_menu_fade_in(void) {
     if (gMenuWork->returning == 1) {
-        struct GameWork *s;
+        struct GameWork *game;
         u8 *n;
 
         shop_highlight_part_type_icon(gMenuWork->part_kind, 8);
-        s = &gGameWork;
-        n = &s->stepCounter;
+        game = &gGameWork;
+        n = &game->stepCounter;
         if (*n <= 8) {
             bg_palettes_blend_masked_now(0, 0x20 - *n * 4, 0x7FFE);
             obj_palettes_blend_masked_now(0, 0x20 - *n * 4, 0x7FFD);
@@ -207,8 +207,8 @@ void shop_menu_fade_in(void) {
             gGameSubState = 9;
         }
     } else {
-        struct GameWork *s = &gGameWork;
-        u8 *n = &s->stepCounter;
+        struct GameWork *game = &gGameWork;
+        u8 *n = &game->stepCounter;
 
         if (*n <= 8) {
             bg_palettes_blend_masked_now(0, 0x20 - *n * 4, 0xFFFF);
@@ -288,8 +288,8 @@ void shop_menu_close_message(void) {
 }
 
 void shop_menu_fade_out_exit(void) {
-    struct GameWork *s = &gGameWork;
-    u8 *n = &s->stepCounter;
+    struct GameWork *game = &gGameWork;
+    u8 *n = &game->stepCounter;
 
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, *n * 4, 0xFFFF);
@@ -305,7 +305,7 @@ void shop_menu_fade_out_exit(void) {
 }
 
 void shop_menu_open_part_types(void) {
-    u8 t = gMenuWork->timer++;
+    u8 fade = gMenuWork->timer++;
 
     if (gSpriteEntries[8].scale_x > 4) {
         gSpriteEntries[8].scale_x -= 4;
@@ -313,8 +313,8 @@ void shop_menu_open_part_types(void) {
     } else {
         gSpriteEntries[8].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     }
-    if (t <= 16) {
-        REG_BLDALPHA = (t << 8) | (16 - t);
+    if (fade <= 16) {
+        REG_BLDALPHA = (fade << 8) | (16 - fade);
     } else {
         REG_BLDALPHA = 0x1000;
         REG_DISPCNT &= 0xFDFF;
@@ -389,7 +389,7 @@ void shop_menu_choose_part_type(void) {
 }
 
 void shop_menu_close_part_types(void) {
-    u8 t = gMenuWork->timer--;
+    u8 fade = gMenuWork->timer--;
 
     if (gSpriteEntries[8].scale_x < 0x40) {
         gSpriteEntries[8].scale_x += 4;
@@ -397,8 +397,8 @@ void shop_menu_close_part_types(void) {
     } else {
         gSpriteEntries[8].scale_y = 0x40;
     }
-    if (t != 0) {
-        REG_BLDALPHA = (t << 8) | (16 - t);
+    if (fade != 0) {
+        REG_BLDALPHA = (fade << 8) | (16 - fade);
     } else {
         REG_BLDALPHA = 16;
         message_next();
@@ -407,12 +407,12 @@ void shop_menu_close_part_types(void) {
 }
 
 void shop_menu_part_type_chosen(void) {
-    u8 *t;
+    u8 *delay;
 
     shop_highlight_part_type_icon(gMenuWork->part_kind, gFrameCounter * 2);
-    t = &gMenuWork->counter;
-    if (*t != 0)
-        (*t)--;
+    delay = &gMenuWork->counter;
+    if (*delay != 0)
+        (*delay)--;
     else if (game_state_execute_handler_a()) {
         gGameWork.stepCounter = 0;
         gGameSubState++;
@@ -420,8 +420,8 @@ void shop_menu_part_type_chosen(void) {
 }
 
 void shop_menu_fade_out_to_list(void) {
-    struct GameWork *s = &gGameWork;
-    u8 *n = &s->stepCounter;
+    struct GameWork *game = &gGameWork;
+    u8 *n = &game->stepCounter;
     s32 i;
 
     if (*n <= 8) {
@@ -435,12 +435,12 @@ void shop_menu_fade_out_to_list(void) {
         gMenuWork->list_cursor = 0;
         *(u8 *)0x02023078 = 0;
         {
-            u8 *b;
+            u8 *dst;
             u32 z = 0;
             i = 0x77;
-            b = (u8 *)0x02023077;
+            dst = (u8 *)0x02023077;
             for (; i >= 0; i--)
-                *b-- = z;
+                *dst-- = z;
         }
         gGameState = 12;
         gGameSubState = 0;

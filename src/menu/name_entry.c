@@ -5,44 +5,44 @@
 #include "global.h"
 #include "constants/sprites.h"
 
-void name_entry_animate_sprite(u16 a) {
-    gSpriteEntries[20].frame = gNameEntrySpriteFrames[a & 3];
+void name_entry_animate_sprite(u16 anim_counter) {
+    gSpriteEntries[20].frame = gNameEntrySpriteFrames[anim_counter & 3];
 }
 
-static s32 calc_text_pixel_width(const u8 *s) {
+static s32 calc_text_pixel_width(const u8 *text) {
     s32 w = 0;
     s32 i;
-    for (i = 0; i < 10 && *s != 0xFE; i++)
-        w += gFontWidths[*s++][0];
+    for (i = 0; i < 10 && *text != 0xFE; i++)
+        w += gFontWidths[*text++][0];
     return w;
 }
 
-static inline u32 ato(u32 s, u32 c) {
-    return (s << 11) + c * 2;
+static inline u32 ato(u32 screen_block, u32 col) {
+    return (screen_block << 11) + col * 2;
 }
 
-static void name_entry_draw_name_tiles(const u8 *s) {
+static void name_entry_draw_name_tiles(const u8 *name) {
     u16 *top;
     u16 *bot;
     s32 i;
-    u8 c, col, row;
+    u8 char_idx, col, row;
     u32 scr;
 
     top = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 0x65;
     bot = (u16 *)(VRAM + (((REG_BG1CNT >> 8) & 0x1F) << 11)) + 0x85;
     for (i = 0; i < 10; i++) {
-        if (*s != 0) {
-            c = *s - 1;
+        if (*name != 0) {
+            char_idx = *name - 1;
             scr = (REG_BG1CNT >> 8) & 0x1F;
-            col = c % 26;
-            row = c / 26;
+            col = char_idx % 26;
+            row = char_idx / 26;
             *top++ = *((u16 *)(VRAM + 0x204) + ((ato(scr, col) + row * 192) >> 1));
             *bot++ = *((u16 *)(VRAM + 0x244) + ((ato((REG_BG1CNT >> 8) & 0x1F, col) + row * 192) >> 1));
         } else {
             *top++ = 0;
             *bot++ = 0;
         }
-        s++;
+        name++;
     }
 }
 
@@ -64,14 +64,14 @@ void name_entry_clear(void) {
 
 // Inline helpers keep agbcc from refolding the sums (see CONTRIBUTING: mul9/sub8) and make it
 // reload 0x06004000 instead of keeping it in a callee-saved register.
-static inline s32 half8(s32 v) {
-    return v / 2 - 0x50;
+static inline s32 half8(s32 step) {
+    return step / 2 - 0x50;
 }
-static inline s32 half4(s32 v) {
-    return v / 2 + 0x40;
+static inline s32 half4(s32 step) {
+    return step / 2 + 0x40;
 }
-static inline s32 mul16(u8 v) {
-    return v * 16;
+static inline s32 mul16(u8 row) {
+    return row * 16;
 }
 static inline void *vram_at2(u32 off) {
     return (void *)(0x06004000 + off);
@@ -81,7 +81,7 @@ static inline void *vram_at2(u32 off) {
 // and cursor sprites.
 void name_entry_init_graphics(void) {
     u32 size;
-    u16 v;
+    u16 bgcnt;
     vu16 *bg1;
     vu16 *bg2;
     vu16 *bg3;
@@ -89,21 +89,21 @@ void name_entry_init_graphics(void) {
     u32 zero2;
     vu16 **pbg2;
     u8 i;
-    u16 t;
+    u16 tile;
     u32 base;
-    u16 *d;
+    u16 *tile_ptr;
     u16 *map;
     s32 y;
     bg1 = &REG_BG1CNT;
-    v = 0x1F05;
-    *bg1 = v;
+    bgcnt = 0x1F05;
+    *bg1 = bgcnt;
     bg2 = &REG_BG2CNT;
-    v -= 0xFF;
+    bgcnt -= 0xFF;
     pbg2 = &bg2;
-    *(*pbg2) = v;
+    *(*pbg2) = bgcnt;
     bg3 = &REG_BG3CNT;
-    v -= 0xFF;
-    *bg3 = v;
+    bgcnt -= 0xFF;
+    *bg3 = bgcnt;
     decompress_and_write_tilemap(gNameEntryBg1Tilemap, *bg1);
     decompress_and_write_tilemap(gNameEntryBg2Tilemap, *(*pbg2));
     decompress_and_write_tilemap(gNameEntryBg3Tilemap, *bg3);
@@ -134,18 +134,18 @@ void name_entry_init_graphics(void) {
     if (gNameEntryMode == 0) {
         gSpriteEntries[20].flags |= SPRITE_FLAG_VISIBLE;
     } else {
-        t = gMenuWork->bg_tile_base + ((gMedals[gCurrentMedalSlot].graphicId * 4) + 1);
-        t |= 0x6000;
+        tile = gMenuWork->bg_tile_base + ((gMedals[gCurrentMedalSlot].graphicId * 4) + 1);
+        tile |= 0x6000;
         base = ((REG_BG1CNT >> 8) & 0x1F) << 11;
         map = (u16 *)(0x06000000 + base);
-        d = (u16 *)(base + 0x060000C4);
-        *d = t;
-        d = &map[0x63];
-        *d = t + 1;
-        d = &map[0x82];
-        *d = t + 2;
-        d = &map[0x83];
-        *d = t + 3;
+        tile_ptr = (u16 *)(base + 0x060000C4);
+        *tile_ptr = tile;
+        tile_ptr = &map[0x63];
+        *tile_ptr = tile + 1;
+        tile_ptr = &map[0x82];
+        *tile_ptr = tile + 2;
+        tile_ptr = &map[0x83];
+        *tile_ptr = tile + 3;
     }
     for (i = 0; i < 2; i++) {
         gSpriteEntries[i + 2].flags = SPRITE_FLAG_ENABLED;
@@ -246,11 +246,11 @@ void name_entry_load_name(void) {
 }
 
 void name_entry_fade_in(void) {
-    struct GameWork *b = &gGameWork;
-    if (b->stepCounter <= 8) {
-        bg_palettes_blend_masked_now(0, 0x20 - b->stepCounter * 4, 0xFFFF);
-        obj_palettes_blend_masked_now(0, 0x20 - b->stepCounter * 4, 0xFFFF);
-        b->stepCounter++;
+    struct GameWork *game = &gGameWork;
+    if (game->stepCounter <= 8) {
+        bg_palettes_blend_masked_now(0, 0x20 - game->stepCounter * 4, 0xFFFF);
+        obj_palettes_blend_masked_now(0, 0x20 - game->stepCounter * 4, 0xFFFF);
+        game->stepCounter++;
     } else {
         gMenuWork->timer = 0;
         gMenuWork->returning = 0;
@@ -265,7 +265,8 @@ void name_entry_input(void) {
     s32 x;
     u8 blank;
     u8 col;
-    s32 t;
+    // FAKEMATCH: assigned inline in the arrow position expressions only to shape codegen
+    s32 arrow_offset;
 
     gSpriteEntries[4].frame = ((gFrameCounter / 6) & 3) + 0x26;
     if (gMenuWork->returning) {
@@ -334,9 +335,9 @@ void name_entry_input(void) {
     }
 
     if (gMenuWork->grid_row == 3) {
-        gSpriteEntries[0].x = gMenuWork->grid_col * 64 - (t = (s32)gMenuWork->step / 2 - 0x18);
+        gSpriteEntries[0].x = gMenuWork->grid_col * 64 - (arrow_offset = (s32)gMenuWork->step / 2 - 0x18);
         gSpriteEntries[0].y = 0x8C;
-        gSpriteEntries[1].x = gMenuWork->grid_col * 64 + (t = (s32)gMenuWork->step / 2 + 0x58);
+        gSpriteEntries[1].x = gMenuWork->grid_col * 64 + (arrow_offset = (s32)gMenuWork->step / 2 + 0x58);
         gSpriteEntries[1].y = gSpriteEntries[0].y;
         gSpriteEntries[0].frame = 5;
         gSpriteEntries[1].frame = 5;
@@ -344,9 +345,9 @@ void name_entry_input(void) {
         gSpriteEntries[1].flags |= SPRITE_FLAG_HFLIP;
     } else {
         gSpriteEntries[0].x = gMenuWork->grid_col * 8 + 0x14;
-        gSpriteEntries[0].y = gMenuWork->grid_row * 24 + (t = (s32)gMenuWork->step / 2 + 0x40);
+        gSpriteEntries[0].y = gMenuWork->grid_row * 24 + (arrow_offset = (s32)gMenuWork->step / 2 + 0x40);
         gSpriteEntries[1].x = gSpriteEntries[0].x;
-        gSpriteEntries[1].y = gMenuWork->grid_row * 24 - (t = (s32)gMenuWork->step / 2 - 0x50);
+        gSpriteEntries[1].y = gMenuWork->grid_row * 24 - (arrow_offset = (s32)gMenuWork->step / 2 - 0x50);
         gSpriteEntries[0].frame = 8;
         gSpriteEntries[1].frame = 8;
         gSpriteEntries[0].flags |= SPRITE_FLAG_VFLIP;
@@ -450,16 +451,16 @@ void name_entry_input(void) {
 }
 
 void name_entry_wait_sound(void) {
-    u32 r = is_sound_effect_playing(7);
-    if (r == 0) {
-        gGameWork.stepCounter = r;
+    u32 playing = is_sound_effect_playing(7);
+    if (playing == 0) {
+        gGameWork.stepCounter = playing;
         gGameSubState++;
     }
 }
 
 void name_entry_fade_out_store_name(void) {
-    struct GameWork *s = &gGameWork;
-    u8 *n = &s->stepCounter;
+    struct GameWork *game = &gGameWork;
+    u8 *n = &game->stepCounter;
 
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, *n * 4, 0xFFFF);

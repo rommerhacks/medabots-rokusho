@@ -137,7 +137,7 @@ void medals_list_fade_in(void) {
 }
 
 void medals_list_handle_input(void) {
-    u8 b;
+    u8 cancel_pressed;
 
     medals_scroll_bg();
     medals_list_blink_tab_arrows();
@@ -146,7 +146,7 @@ void medals_list_handle_input(void) {
     medals_list_row_input();
     medals_list_tab_input();
     medals_list_swap_input();
-    if ((b = KEYS_LO(gNewKeys) & 2)) {
+    if ((cancel_pressed = KEYS_LO(gNewKeys) & 2)) {
         if (gGameWork.partSlot & 0x80) {
             play_sound_effect(2);
             gGameWork.partSlot = 0;
@@ -162,7 +162,7 @@ void medals_list_handle_input(void) {
             if (gGameWork.openedFrom == 4)
                 gGameSubState = 0x60;
             else {
-                gGameWork.medalPage = b;
+                gGameWork.medalPage = cancel_pressed;
                 set_blend_effect_mode(6, 0x3F, 0x20);
                 gGameSubState = 7;
             }
@@ -716,17 +716,17 @@ void medal_skill_start_fade_out(void) {
 // Debug Skill level editor (sub-state 64, no handler jumps there; UP/DOWN pick a skill, RIGHT/LEFT change its level,
 // SELECT, B -> 58)
 void medal_skill_debug_edit_input(void) {
-    u8 b;
+    u8 up_pressed;
 
     medal_skill_debug_init_cursor();
-    if ((b = KEYS_LO(gRepeatKeys) & 0x40)) {
+    if ((up_pressed = KEYS_LO(gRepeatKeys) & 0x40)) {
         if (gGameWork.subCounter == 0)
             gGameWork.subCounter = 7;
         else
             gGameWork.subCounter--;
     } else if (KEYS_LO(gRepeatKeys) & 0x80) {
         if (gGameWork.subCounter == 7)
-            gGameWork.subCounter = b;
+            gGameWork.subCounter = up_pressed;
         else
             gGameWork.subCounter++;
     } else if (KEYS_LO(gRepeatKeys) & 0x10 && gMedals[gGameWork.shownId].skillLevel[gGameWork.subCounter] != 100) {
@@ -760,11 +760,11 @@ void medals_help_show_intro(void) {
 }
 
 void medals_help_cursor_input(void) {
-    u8 b;
+    u8 up_pressed;
 
     medals_scroll_bg();
     process_sprite_anim_commands(gBattleSpriteAnimScripts[3], 6);
-    if ((b = KEYS_LO(gRepeatKeys) & 0x40)) {
+    if ((up_pressed = KEYS_LO(gRepeatKeys) & 0x40)) {
         if (gGameWork.helpPage == 0)
             gGameWork.helpPage = gGameWork.helpPageCount - 1;
         else
@@ -772,7 +772,7 @@ void medals_help_cursor_input(void) {
         goto moved;
     } else if (KEYS_LO(gRepeatKeys) & 0x80) {
         if (gGameWork.helpPage == gGameWork.helpPageCount - 1)
-            gGameWork.helpPage = b;
+            gGameWork.helpPage = up_pressed;
         else
             gGameWork.helpPage++;
     moved:

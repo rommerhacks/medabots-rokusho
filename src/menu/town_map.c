@@ -5,26 +5,26 @@
 
 void town_map_update_cursor(void) {
     u8 row = gMenuWork->cursor_style;
-    const u8 *t;
+    const u8 *place_pos;
 
     if (++gSpriteEntries[0].unk1A > 0x60)
         gSpriteEntries[0].unk1A = 0;
-    t = (const u8 *)gTownMapPlacePositions;
+    place_pos = (const u8 *)gTownMapPlacePositions;
     gSpriteEntries[0].x =
-        t[gMenuWork->town_map_place * 2] * 8 + gTownMapCursorOffsetX[row][(gSpriteEntries[0].unk1A >> 3) & 3];
-    gSpriteEntries[0].y = t[(u16)(gMenuWork->town_map_place * 2 + 1)] * 8 +
+        place_pos[gMenuWork->town_map_place * 2] * 8 + gTownMapCursorOffsetX[row][(gSpriteEntries[0].unk1A >> 3) & 3];
+    gSpriteEntries[0].y = place_pos[(u16)(gMenuWork->town_map_place * 2 + 1)] * 8 +
                           gTownMapCursorOffsetY[row][(gSpriteEntries[0].unk1A >> 3) & 3];
     gSpriteEntries[0].frame = gTownMapCursorFrames[row][(gSpriteEntries[0].unk1A >> 3) & 3];
 }
 
 void town_map_animate_tiles(void) {
-    s32 t;
+    s32 frame;
 
     if ((u16)++gMenuWork->frame > 0x6D)
         gMenuWork->frame = 0;
-    t = gMenuWork->frame;
-    if ((s16)(t % 10) == 0)
-        CpuSet(gDecompressBuffer + (gTownMapAnimFrameOrder[(s16)(t / 10)] + 1) * 480, (void *)0x06004020, 0xF0);
+    frame = gMenuWork->frame;
+    if ((s16)(frame % 10) == 0)
+        CpuSet(gDecompressBuffer + (gTownMapAnimFrameOrder[(s16)(frame / 10)] + 1) * 480, (void *)0x06004020, 0xF0);
 }
 
 void town_map_dispatch(void) {
@@ -50,46 +50,48 @@ void town_map_load_graphics(void) {
     u32 off;
     register u32 cb asm("r5");
     u8 i;
-    vu16 tmp;
+    vu16 fill_zero;
     vu16 *bg1, *bg2, *bg3;
-    u16 v;
-    struct MenuWork *p;
+    u16 bgcnt;
+    struct MenuWork *menu;
 
     cb = 1;
     bg1 = &REG_BG1CNT;
-    v = 0x1E05;
-    *bg1 = v;
+    bgcnt = 0x1E05;
+    *bg1 = bgcnt;
     bg2 = &REG_BG2CNT;
-    v -= 0xFF;
-    *bg2 = v;
+    bgcnt -= 0xFF;
+    *bg2 = bgcnt;
     bg3 = &REG_BG3CNT;
-    v -= 0xFF;
-    *bg3 = v;
+    bgcnt -= 0xFF;
+    *bg3 = bgcnt;
     decompress_and_write_tilemap(gTownMapBg1Tilemap, *bg1);
     decompress_and_write_tilemap(gTownMapBg2Tilemap, *bg2);
     decompress_and_write_tilemap(gTownMapBg3Tilemap, *bg3);
     {
-        struct MenuWork *q;
+        struct MenuWork *style_menu;
         if (gGameState == 0x17) {
-            q = gMenuWork;
-            q->cursor_style = 1;
+            style_menu = gMenuWork;
+            style_menu->cursor_style = 1;
         } else {
             *(u16 *)(((*bg3 >> 8) & 0x1F) * 0x800 + (VRAM + 0x248)) =
                 *(u16 *)(((*bg3 >> 8) & 0x1F) * 0x800 + (VRAM + 0x21E));
-            q = gMenuWork;
-            q->cursor_style = 0;
+            style_menu = gMenuWork;
+            style_menu->cursor_style = 0;
         }
     }
     switch (gFieldWork.town_map_phase) {
     case 0:
         for (i = 0; i <= 2; i++) {
-            tmp = 0;
-            CpuSet((void *)&tmp, (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + 13 + (i + 10) * 32, 0x01000005);
+            fill_zero = 0;
+            CpuSet((void *)&fill_zero, (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + 13 + (i + 10) * 32,
+                   0x01000005);
         }
     case 1:
         for (i = 0; i <= 2; i++) {
-            tmp = 0;
-            CpuSet((void *)&tmp, (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + 8 + (i + 4) * 32, 0x01000005);
+            fill_zero = 0;
+            CpuSet((void *)&fill_zero, (u16 *)(VRAM + ((REG_BG2CNT >> 8) & 0x1F) * 0x800) + 8 + (i + 4) * 32,
+                   0x01000005);
         }
         break;
     }
@@ -105,18 +107,18 @@ void town_map_load_graphics(void) {
     gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[0].frame_table = 2;
     gSpriteEntries[0].y = 0x3C;
-    p = gMenuWork;
-    gSpriteEntries[0].palette = p->cursor_style;
+    menu = gMenuWork;
+    gSpriteEntries[0].palette = menu->cursor_style;
     gSpriteEntries[0].frame = 0x10D;
     gSpriteEntries[0].unk1A = 0;
     gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[1].frame_table = 2;
-    gSpriteEntries[1].x = gTownMapPlacePositions[0][p->town_map_place * 2] * 8;
-    gSpriteEntries[1].y = gTownMapPlacePositions[0][p->town_map_place * 2 + 1] * 8;
+    gSpriteEntries[1].x = gTownMapPlacePositions[0][menu->town_map_place * 2] * 8;
+    gSpriteEntries[1].y = gTownMapPlacePositions[0][menu->town_map_place * 2 + 1] * 8;
     gSpriteEntries[1].palette = 2;
     gSpriteEntries[1].frame = 0x10E;
-    gSpriteEntries[0].x = gTownMapPlacePositions[0][p->town_map_place * 2] * 8;
-    gSpriteEntries[0].y = gTownMapPlacePositions[0][p->town_map_place * 2 + 1] * 8;
+    gSpriteEntries[0].x = gTownMapPlacePositions[0][menu->town_map_place * 2] * 8;
+    gSpriteEntries[0].y = gTownMapPlacePositions[0][menu->town_map_place * 2 + 1] * 8;
     dma3_copy_or_decompress(gTownMapAnimTiles, (void *)0x020301E0);
     gGameSubState++;
 }
@@ -133,12 +135,12 @@ void town_map_enable_layers(void) {
 }
 
 void town_map_fade_in(void) {
-    struct MenuWork *p = gMenuWork;
+    struct MenuWork *menu = gMenuWork;
 
-    if (p->fade_level != 0) {
-        REG_BLDY = --p->fade_level * 2;
+    if (menu->fade_level != 0) {
+        REG_BLDY = --menu->fade_level * 2;
     } else {
-        p->timer = 0;
+        menu->timer = 0;
         text_window_init(1, 2, 0);
         gGameSubState++;
     }
@@ -191,13 +193,13 @@ void town_map_close_message(void) {
 }
 
 void town_map_fade_out_exit(void) {
-    struct GameWork *s;
+    struct GameWork *game;
     u8 *n;
 
     town_map_update_cursor();
     town_map_animate_tiles();
-    s = &gGameWork;
-    n = &s->stepCounter;
+    game = &gGameWork;
+    n = &game->stepCounter;
     if (*n <= 8) {
         bg_palettes_blend_masked_now(0, *n * 4, 0xFFFF);
         obj_palettes_blend_masked_now(0, *n * 4, 0xFFFF);

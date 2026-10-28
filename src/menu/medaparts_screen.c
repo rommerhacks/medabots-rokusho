@@ -595,7 +595,7 @@ void medapart_trade_choice_open(void) {
 }
 
 void medapart_trade_choice_input(void) {
-    s32 r;
+    s32 counts;
 
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
@@ -603,8 +603,8 @@ void medapart_trade_choice_input(void) {
     medapart_trade_choice_cursor_input();
     if (KEYS_LO(gNewKeys) & 1) {
         if (gGameWork.tradeChoice == 1) {
-            r = (u16)medapart_get_counts(gGameWork.shownId, gGameWork.partSlot);
-            if ((r >> 8 & 0xFF) != (r & 0xFF))
+            counts = (u16)medapart_get_counts(gGameWork.shownId, gGameWork.partSlot);
+            if ((counts >> 8 & 0xFF) != (counts & 0xFF))
                 goto ok;
             play_sound_effect(6);
             return;
@@ -857,25 +857,25 @@ static u32 medaparts_list_kind_input(void) {
 
 static void medaparts_list_load_part_sprite(void) {
     struct SpriteTree *obj;
-    u8 *b;
-    u8 *c;
+    u8 *oam_buf;
+    u8 *slot_buf;
     u32 fill;
 
     gGameWork.shownId = gGameWork.listTab * 4 + gGameWork.medalRow;
     obj = (struct SpriteTree *)0x02026000;
     mem_fill8((u8 *)obj, 0xD0, 0);
-    b = (u8 *)0x020260D0;
-    mem_fill8(b, 0x800, 0);
-    c = (u8 *)0x020268D0;
-    mem_fill8(c, 0x60, 0);
+    oam_buf = (u8 *)0x020260D0;
+    mem_fill8(oam_buf, 0x800, 0);
+    slot_buf = (u8 *)0x020268D0;
+    mem_fill8(slot_buf, 0x60, 0);
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
+    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slot_buf;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
-                     (struct SpriteNodeOam *)b);
-    obj->oams = (struct SpriteNodeOam *)b;
+                     (struct SpriteNodeOam *)oam_buf);
+    obj->oams = (struct SpriteNodeOam *)oam_buf;
     draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, gGameWork.partSlot, 0x3C, 0x28, 0x1C2, 8, 1);
 }
 
@@ -946,23 +946,23 @@ static void load_medapart_sprite_by_slot(void) {
 
 static void medapart_detail_init_sprite(void) {
     struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
-    u8 *b;
-    u8 *c;
+    u8 *oam_buf;
+    u8 *slot_buf;
     u32 fill;
 
     mem_fill8((u8 *)obj, 0xD0, 0);
-    b = (u8 *)0x020260D0;
-    mem_fill8(b, 0x800, 0);
-    c = (u8 *)0x020268D0;
-    mem_fill8(c, 0x60, 0);
+    oam_buf = (u8 *)0x020260D0;
+    mem_fill8(oam_buf, 0x800, 0);
+    slot_buf = (u8 *)0x020268D0;
+    mem_fill8(slot_buf, 0x60, 0);
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)0x02024000;
     fill = 0;
     CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
-    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)c;
+    gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slot_buf;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
-                     (struct SpriteNodeOam *)b);
-    obj->oams = (struct SpriteNodeOam *)b;
+                     (struct SpriteNodeOam *)oam_buf);
+    obj->oams = (struct SpriteNodeOam *)oam_buf;
     draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, gGameWork.partSlot, 0x3C, 0x28, 0x1C2, 8, 1);
 }
 
@@ -1074,16 +1074,16 @@ static void medapart_detail_draw_stats(void) {
 
 void count_compatible_medaparts(void) {
     u32 i;
-    u16 r;
+    u16 counts;
 
     gGameWork.freeMedalCount = 0;
     if ((u8)(gGameWork.openedFrom - 2) > 1) {
         for (i = 0; i < 120; i++) {
-            r = medapart_get_counts(i, gGameWork.partSlot);
-            if (r) {
+            counts = medapart_get_counts(i, gGameWork.partSlot);
+            if (counts) {
                 if (gGameWork.openedFrom == 1) {
-                    u32 hi = r >> 8;
-                    if (hi != (r & 0xFF)) {
+                    u32 hi = counts >> 8;
+                    if (hi != (counts & 0xFF)) {
                         load_part_data(i, gGameWork.partSlot, gGameWork.medalGfxRecord);
                         if (gTeamSlots[gGameWork.medabotsCursor].gender == gGameWork.medalGfxRecord[3])
                             gGameWork.freeMedalCount++;
@@ -1129,7 +1129,7 @@ static void medapart_detail_blink_arrows(void) {
 }
 
 static u32 medapart_detail_cycle_part_input(void) {
-    u16 r;
+    u16 counts;
 
     if (gGameWork.freeMedalCount <= 1)
         goto none;
@@ -1139,13 +1139,13 @@ static u32 medapart_detail_cycle_part_input(void) {
                 gGameWork.shownId = 119;
             else
                 gGameWork.shownId--;
-            r = medapart_get_counts(gGameWork.shownId, gGameWork.partSlot);
-            if (r) {
+            counts = medapart_get_counts(gGameWork.shownId, gGameWork.partSlot);
+            if (counts) {
                 if (gGameWork.openedFrom != 1)
                     break;
                 {
-                    u32 hi = r >> 8;
-                    if (hi != (r & 0xFF)) {
+                    u32 hi = counts >> 8;
+                    if (hi != (counts & 0xFF)) {
                         load_part_data(gGameWork.shownId, gGameWork.partSlot, gGameWork.medalGfxRecord);
                         if (gTeamSlots[gGameWork.medabotsCursor].gender == gGameWork.medalGfxRecord[3])
                             break;
@@ -1160,13 +1160,13 @@ static u32 medapart_detail_cycle_part_input(void) {
                 gGameWork.shownId = 0;
             else
                 gGameWork.shownId++;
-            r = medapart_get_counts(gGameWork.shownId, gGameWork.partSlot);
-            if (r) {
+            counts = medapart_get_counts(gGameWork.shownId, gGameWork.partSlot);
+            if (counts) {
                 if (gGameWork.openedFrom != 1)
                     break;
                 {
-                    u32 hi = r >> 8;
-                    if (hi != (r & 0xFF)) {
+                    u32 hi = counts >> 8;
+                    if (hi != (counts & 0xFF)) {
                         load_part_data(gGameWork.shownId, gGameWork.partSlot, gGameWork.medalGfxRecord);
                         if (gTeamSlots[gGameWork.medabotsCursor].gender == gGameWork.medalGfxRecord[3])
                             break;

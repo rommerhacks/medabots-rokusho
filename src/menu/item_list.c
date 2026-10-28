@@ -11,20 +11,20 @@ static void upload_palette_buffers(void) {
     CpuFastSet(gPaletteBufferBg, (void *)PLTT, 0x80);
 }
 
-static void obj_palette_blend_to_color(u16 color, s32 t, u32 pal) {
+static void obj_palette_blend_to_color(u16 color, s32 blend, u32 pal) {
     u32 inv;
     u32 i;
 
-    if (t < 0)
-        t = 0;
-    if (t > 32)
-        t = 32;
-    inv = 32 - t;
+    if (blend < 0)
+        blend = 0;
+    if (blend > 32)
+        blend = 32;
+    inv = 32 - blend;
     for (i = 0; i < 0x100; i++) {
         if (i >= pal * 16 && i < (pal + 1) * 16) {
-            gPaletteBuffer[i] = (((color & 0x1F) * t + inv * (gPaletteBackup[i] & 0x1F)) >> 5) |
-                                ((((color & 0x3E0) * t + inv * (gPaletteBackup[i] & 0x3E0)) >> 5) & 0x3E0) |
-                                ((((color & 0x7C00) * t + inv * (gPaletteBackup[i] & 0x7C00)) >> 5) & 0x7C00);
+            gPaletteBuffer[i] = (((color & 0x1F) * blend + inv * (gPaletteBackup[i] & 0x1F)) >> 5) |
+                                ((((color & 0x3E0) * blend + inv * (gPaletteBackup[i] & 0x3E0)) >> 5) & 0x3E0) |
+                                ((((color & 0x7C00) * blend + inv * (gPaletteBackup[i] & 0x7C00)) >> 5) & 0x7C00);
         } else {
             gPaletteBuffer[i] = gPaletteBackup[i];
         }
@@ -32,21 +32,21 @@ static void obj_palette_blend_to_color(u16 color, s32 t, u32 pal) {
     gVBlankOnceCallback = upload_palette_buffers;
 }
 
-static void bg_palettes_blend_to_color(u16 color, s32 t) {
+static void bg_palettes_blend_to_color(u16 color, s32 blend) {
     u32 inv;
     u32 i;
 
-    if (t < 0)
-        t = 0;
-    if (t > 32)
-        t = 32;
-    inv = 32 - t;
+    if (blend < 0)
+        blend = 0;
+    if (blend > 32)
+        blend = 32;
+    inv = 32 - blend;
     for (i = 0x100; i < 0x200; i++) {
-        u16 *d = &gPaletteBuffer[i];
-        u16 *s = &gPaletteBackup[i];
-        *d = (((*s & 0x1F) * inv + (color & 0x1F) * t) >> 5) |
-             ((((*s & 0x3E0) * inv + (color & 0x3E0) * t) >> 5) & 0x3E0) |
-             ((((*s & 0x7C00) * inv + (color & 0x7C00) * t) >> 5) & 0x7C00);
+        u16 *dst = &gPaletteBuffer[i];
+        u16 *src = &gPaletteBackup[i];
+        *dst = (((*src & 0x1F) * inv + (color & 0x1F) * blend) >> 5) |
+               ((((*src & 0x3E0) * inv + (color & 0x3E0) * blend) >> 5) & 0x3E0) |
+               ((((*src & 0x7C00) * inv + (color & 0x7C00) * blend) >> 5) & 0x7C00);
     }
     gVBlankOnceCallback = upload_palette_buffers;
 }
@@ -55,60 +55,60 @@ void unpack_item_inventory_to_buffer(void) {
     u16 n = 0;
     s16 i;
     for (i = 0; i < 64; i++) {
-        u8 f = gItemInventory[i][0] & 0x80;
-        if (f) {
+        u8 owned = gItemInventory[i][0] & 0x80;
+        if (owned) {
             ((struct ItemListEntry *)0x02040000)[i].id = gItemInventory[i][0] & 0x7F;
             ((struct ItemListEntry *)0x02040000)[i].count = gItemInventory[0][i * 2 + 1];
             n++;
         } else
-            ((struct ItemListEntry *)0x02040000)[i].count = f;
+            ((struct ItemListEntry *)0x02040000)[i].count = owned;
     }
     gMenuWork->item_count = n;
 }
 
 void update_battle_medapart_icons(void) {
-    u16 t0, t1;
+    u16 icon_tile_top, icon_tile_bottom;
     s32 n = 5;
     u8 ids[n];
     u8 counts[n];
     s8 i;
 
     for (i = 0; i < n; i++) {
-        struct ItemListEntry *l = (struct ItemListEntry *)0x02040000;
-        ids[i] = l[gMenuWork->list_top + i].id;
-        counts[i] = l[gMenuWork->list_top + i].count;
+        struct ItemListEntry *list = (struct ItemListEntry *)0x02040000;
+        ids[i] = list[gMenuWork->list_top + i].id;
+        counts[i] = list[gMenuWork->list_top + i].count;
     }
     for (i = 0; i < n; i++) {
         disable_sprites(i * 16, 0x10);
         clear_item_list_map_run(0x18, i * 2 + 3, 3);
         clear_item_list_map_run(0x18, i * 2 + 4, 3);
     }
-    t0 = *(u16 *)0x0600F0EE;
-    t1 = *(u16 *)0x0600F12E;
+    icon_tile_top = *(u16 *)0x0600F0EE;
+    icon_tile_bottom = *(u16 *)0x0600F12E;
     for (i = 0; i < n; i++) {
         if (counts[i]) {
             memcpy_bytes_0803F63C((void *)gItemNames[ids[i]], gTextArgBuffer, 0x11);
             render_text_sprites_08040DB8(gTextArgBuffer, i * 15, 0xC, i * 2 + 3, 7, 8, 1, 2);
             draw_number_2digits_tall(counts[i], 0x18, i * 2 + 3);
-            *((u16 *)0x0600F02E + ((i * 2 + 3) << 5)) = t0;
-            *((u16 *)0x0600F02E + ((i * 2 + 4) << 5)) = t1;
+            *((u16 *)0x0600F02E + ((i * 2 + 3) << 5)) = icon_tile_top;
+            *((u16 *)0x0600F02E + ((i * 2 + 4) << 5)) = icon_tile_bottom;
             gSpriteEntries[i + 0x55].flags |= SPRITE_FLAG_VISIBLE;
             gSpriteEntries[i + 0x55].frame = item_is_usable(ids[i]) ? 0x21 : 0x22;
         } else {
             u16 *map = (u16 *)0x0600F02E;
-            u16 *p;
-            p = map + ((i * 2 + 3) << 5);
-            *p = 0;
-            p = map + 1 + ((i * 2 + 3) << 5);
-            *p = 0;
-            p = map + 2 + ((i * 2 + 3) << 5);
-            *p = 0;
-            p = map + ((i * 2 + 4) << 5);
-            *p = 0;
-            p = map + 1 + ((i * 2 + 4) << 5);
-            *p = 0;
-            p = map + 2 + ((i * 2 + 4) << 5);
-            *p = 0;
+            u16 *tile;
+            tile = map + ((i * 2 + 3) << 5);
+            *tile = 0;
+            tile = map + 1 + ((i * 2 + 3) << 5);
+            *tile = 0;
+            tile = map + 2 + ((i * 2 + 3) << 5);
+            *tile = 0;
+            tile = map + ((i * 2 + 4) << 5);
+            *tile = 0;
+            tile = map + 1 + ((i * 2 + 4) << 5);
+            *tile = 0;
+            tile = map + 2 + ((i * 2 + 4) << 5);
+            *tile = 0;
             gSpriteEntries[i + 0x55].flags &= ~SPRITE_FLAG_VISIBLE;
         }
     }
@@ -138,11 +138,11 @@ void shop_build_sell_list(void) {
     price = (u32 *)0x02040004; // &((struct ShopSellEntry *)0x02040000)->price
     for (; i <= 0x77; i++) {
         if (gMedapartInventory[row + i * 2] > gMedapartInventory[row + i * 2 + 1]) {
-            struct ShopSellEntry *e = &((struct ShopSellEntry *)0x02040000)[n];
-            e->id = i;
-            e->count = gMedapartInventory[row + i * 2] - gMedapartInventory[row + i * 2 + 1];
+            struct ShopSellEntry *entry = &((struct ShopSellEntry *)0x02040000)[n];
+            entry->id = i;
+            entry->count = gMedapartInventory[row + i * 2] - gMedapartInventory[row + i * 2 + 1];
             load_part_data(i, kind, pd);
-            e->unk3 = pd[3];
+            entry->unk3 = pd[3];
             price[n * 2] = pd[0xB] * 100;
             n++;
         }
@@ -232,10 +232,10 @@ void render_battle_medapart_list(u32 mode) {
 
 static void clear_item_list_map_run(s32 x, s32 y, s32 n) {
     u16 *base = (u16 *)0x0600B000 + x;
-    u16 *p = base + y * 32;
+    u16 *dst = base + y * 32;
     u16 i;
     for (i = 0; i < n; i++)
-        *p++ = 0;
+        *dst++ = 0;
 }
 
 void item_menu_draw_page_numbers(void) {
@@ -259,8 +259,8 @@ void item_menu_update_swap_marker(struct SpriteEntry *attr) {
 }
 
 bool32 item_is_usable(u32 id) {
-    bool32 r = FALSE;
+    bool32 usable = FALSE;
     if (gItemUsable[id] == 1)
-        r = TRUE;
-    return r;
+        usable = TRUE;
+    return usable;
 }
