@@ -880,6 +880,7 @@ void race_update_runners(void) {
                         u8 piece_style = gRandomBytes[(gFrameCounter + k) & 0xFF];
                         piece_style &= 3;
                         // the original passes k + 4 untruncated: called without (or with an int-slot) prototype
+                        // FAKEMATCH: called without its prototype so the arguments are not narrowed to u8 / u16 first
                         ((void (*)())sprite_entry_init)(k + 4, 0xC400, piece_style + 0x10C, 0xB, 3);
                         gSpriteEntries[k + 4].order = 0x64;
                         race_set_sprite_motion(k + 4, 8, piece_style, (k * 16) & 0x7F);

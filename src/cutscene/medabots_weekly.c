@@ -659,6 +659,7 @@ u32 weekly_fx_right_curtain_close(u8 sprite) {
                     next = 1;
                 } else {
                     next = sprite + 1;
+                    // FAKEMATCH: called without its prototype so the arguments are not narrowed to u8 / u16 first
                     ((void (*)())sprite_entry_init)(
                         next, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2), 0x50E, 4, 3);
                 }
@@ -701,6 +702,7 @@ u32 weekly_fx_left_curtain_close(u8 sprite) {
                     next = 12;
                 } else {
                     next = sprite + 1;
+                    // FAKEMATCH: called without its prototype so the arguments are not narrowed to u8 / u16 first
                     ((void (*)())sprite_entry_init)(
                         next, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2), 0x50E, 4, 3);
                 }

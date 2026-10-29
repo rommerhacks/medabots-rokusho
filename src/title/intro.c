@@ -189,11 +189,13 @@ void intro_load_scan_screen(void) {
     gSpriteEntries[10].x = zero;
     gSpriteEntries[10].y = 0x90;
     for (i = 0; i <= 2; i++) {
+        // FAKEMATCH: called without its prototype so the arguments are not narrowed to u8 / u16 first
         ((void (*)())sprite_entry_init)(i + 11, 0xC400, i + 0x400, 0, 3);
         gSpriteEntries[i + 11].x = 0xC0;
         gSpriteEntries[i + 11].y = 0xC8;
     }
     for (i = 0; i <= 5; i++) {
+        // FAKEMATCH: called without its prototype so the arguments are not narrowed to u8 / u16 first
         ((void (*)())sprite_entry_init)(i + 3, 0xC400, 0x408, 2, 3);
         gSpriteEntries[i + 3].x = i * 8 + 0xA0;
         gSpriteEntries[i + 3].y = 0xC8;
@@ -718,11 +720,13 @@ u32 intro_draw_pointer_line(u8 part) {
     if (gSceneWork.lineStep <= 1) {
         if (ROW_ENT(3) + gSceneWork.lineStep < ROW_ENT(1)) {
             slot = gSceneWork.lineIdx * 2 + (gSceneWork.lineStep + first_slot);
+            // FAKEMATCH: called without its prototype so the arguments are not narrowed to u8 / u16 first
             ((void (*)())sprite_entry_init)(slot, 0xC400, 0x403, 0, 3);
             gSpriteEntries[slot].x = (ROW_ENT(0) + gSceneWork.lineStep) * 8;
             gSpriteEntries[slot].y = (ROW_ENT(1) - gSceneWork.lineStep) * 8 - 4;
         } else if (ROW_ENT(1) + gSceneWork.lineStep < ROW_ENT(3)) {
             slot = gSceneWork.lineIdx * 2 + (gSceneWork.lineStep + first_slot);
+            // FAKEMATCH: called without its prototype so the arguments are not narrowed to u8 / u16 first
             ((void (*)())sprite_entry_init)(slot, 0xE400, 0x403, 0, 3);
             gSpriteEntries[slot].x = (ROW_ENT(0) + gSceneWork.lineStep) * 8;
             gSpriteEntries[slot].y = (ROW_ENT(1) + gSceneWork.lineStep) * 8 + 12;

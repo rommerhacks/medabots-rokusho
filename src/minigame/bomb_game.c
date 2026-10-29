@@ -496,6 +496,7 @@ void bomb_game_drop_bombs(void) {
         work->nextDropTime += work->bombsLeft * work->bombsLeft / 50 + work->dropInterval;
         for (i = 0; i < 8; i++) {
             if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == BOMB_FREE) {
+                // FAKEMATCH: called without its prototype so the arguments are not narrowed to u8 / u16 first
                 ((void (*)())sprite_entry_init)(BOMB_SPR_BOMBS + i, 0xC800, 0x10, 2, 3);
                 gSpriteEntries[BOMB_SPR_BOMBS + i].x = gSpriteEntries[BOMB_SPR_THROWER].x;
                 gSpriteEntries[BOMB_SPR_BOMBS + i].y = 0xC;
@@ -504,6 +505,7 @@ void bomb_game_drop_bombs(void) {
                 gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] =
                     gBombGameWork.bombLanes[gBombGameWork.bombsLeft];
                 shadow = BOMB_SPR_BOMB_SHADOWS + i;
+                // FAKEMATCH: called without its prototype so the arguments are not narrowed to u8 / u16 first
                 ((void (*)())sprite_entry_init)(shadow, 0xCC08, 0x12, 2, 3);
                 gSpriteEntries[shadow].x = gSpriteEntries[BOMB_SPR_BOMBS + i].x;
                 gSpriteEntries[shadow].y = 0x10;
@@ -598,6 +600,7 @@ static void bomb_game_update_bombs(void) {
             break;
         case BOMB_EXPLODING:
             if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer == 0)
+                // FAKEMATCH: called without its prototype so the arguments are not narrowed to u8 / u16 first
                 ((void (*)())sprite_entry_init)(BOMB_SPR_BOMBS + i, 0xC400, 0x13, 3, 3);
             else if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer > 0xF)
                 clear_sprite_entry(BOMB_SPR_BOMBS + i);
