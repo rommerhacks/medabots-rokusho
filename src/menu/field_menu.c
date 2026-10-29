@@ -14,13 +14,13 @@ void field_menu_update(void) {
 void field_menu_load_gfx(void) {
     REG_DISPCNT = 0x1F60;
     REG_BG0CNT = 0x500;
-    lz_decompress_dispatch(gFieldMenuMedawatchLabelTiles, (void *)0x06001800);
-    lz_decompress_dispatch(gFieldMenuItemLabelTiles, (void *)0x06001B00);
-    lz_decompress_dispatch(gFieldMenuVehicleLabelTiles, (void *)0x06001E00);
-    lz_decompress_dispatch(gFieldMenuSaveLabelTiles, (void *)0x06002100);
-    lz_decompress_dispatch(gMoneyWindowTiles, (void *)0x06002400);
+    lz_decompress_dispatch(gFieldMenuMedawatchLabelTiles, (void *)(BG_VRAM + 0x1800));
+    lz_decompress_dispatch(gFieldMenuItemLabelTiles, (void *)(BG_VRAM + 0x1B00));
+    lz_decompress_dispatch(gFieldMenuVehicleLabelTiles, (void *)(BG_VRAM + 0x1E00));
+    lz_decompress_dispatch(gFieldMenuSaveLabelTiles, (void *)(BG_VRAM + 0x2100));
+    lz_decompress_dispatch(gMoneyWindowTiles, (void *)(BG_VRAM + 0x2400));
     DmaSet(3, gMenuBgPalette, 0x050001E0, 0x80000010);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     DmaSet(3, gSpriteFontPalette, 0x050003E0, 0x80000010);
     play_song(6);
     gGameWork.stepCounter = 0;
@@ -37,11 +37,11 @@ void field_menu_open_anim(void) {
     if ((u8)(gGameWork.stepCounter - 6) <= 12)
         write_tilemap_rect(12, 2, 18, 7, gUiTilemaps[gGameWork.stepCounter + 0x34], REG_BG0CNT, 0);
     if (gGameWork.stepCounter == 10) {
-        lz_decompress_dispatch(gMoneyWindowHalfTiles, (void *)0x06002400);
+        lz_decompress_dispatch(gMoneyWindowHalfTiles, (void *)(BG_VRAM + 0x2400));
         set_tilemap_and_decompress_bg(0x15, 9, gMoneyWindowHalfTilemap, REG_BG0CNT, 0x120);
     }
     if (gGameWork.stepCounter == 12) {
-        lz_decompress_dispatch(gMoneyWindowTiles, (void *)0x06002400);
+        lz_decompress_dispatch(gMoneyWindowTiles, (void *)(BG_VRAM + 0x2400));
         set_tilemap_and_decompress_bg(0x15, 9, gMoneyWindowTilemap, REG_BG0CNT, 0x120);
     }
     if (++gGameWork.stepCounter > 18) {
@@ -88,7 +88,7 @@ void field_menu_close_anim(void) {
     if ((u8)(gGameWork.stepCounter - 6) <= 12)
         write_tilemap_rect(12, 2, 18, 7, gUiTilemaps[0x4C - gGameWork.stepCounter], REG_BG0CNT, 0);
     if (gGameWork.stepCounter == 10) {
-        lz_decompress_dispatch(gMoneyWindowHalfTiles, (void *)0x06002400);
+        lz_decompress_dispatch(gMoneyWindowHalfTiles, (void *)(BG_VRAM + 0x2400));
         set_tilemap_and_decompress_bg(0x15, 9, gMoneyWindowHalfTilemap, REG_BG0CNT, 0x120);
     }
     if (gGameWork.stepCounter == 12)
@@ -129,7 +129,7 @@ void field_menu_select_collapse(void) {
                        REG_BG0CNT, 0);
     vram_fill_tilemap_rect(12, 1, 18, gGameWork.menuRowAnim + 1, REG_BG0CNT, 0);
     if (--gGameWork.menuRowAnim == 0) {
-        lz_decompress_dispatch(gMenuSlideLineTile, (void *)0x060017E0);
+        lz_decompress_dispatch(gMenuSlideLineTile, (void *)(BG_VRAM + 0x17E0));
         palette_backup_from_hardware();
         gGameWork.stepCounter = 0;
         if (gGameWork.fieldMenuCursor == 0)
@@ -252,7 +252,7 @@ void field_menu_return_expand(void) {
 }
 
 static void field_menu_init_cursor(void) {
-    lz_decompress_dispatch(gFieldMenuCursorTiles, (void *)0x06016C00);
+    lz_decompress_dispatch(gFieldMenuCursorTiles, (void *)(OBJ_VRAM0 + 0x6C00));
     DmaSet(3, gCursorArrowPalette, 0x050003C0, 0x84000008);
     gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0].x = 0x88;

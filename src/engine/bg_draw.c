@@ -15,8 +15,8 @@ static void clear_vram_bg2_tilemap(void) {
     vu16 *bg2;
     u16 bgcnt;
 
-    CpuFastSet(&zero, (void *)0x06008000, 0x01001000);
-    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)0x06008020);
+    CpuFastSet(&zero, (void *)BG_CHAR_ADDR(2), 0x01001000);
+    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)(BG_VRAM + 0x8020));
     CpuFastSet(gMenuDigitPalette, (void *)0x05000020, 8);
     bg2 = &REG_BG2CNT;
     bgcnt = 0x1608;
@@ -29,8 +29,8 @@ static void clear_vram_bg1_tilemap(void) {
     vu16 *bg1;
     u16 bgcnt;
 
-    CpuFastSet(&zero, (void *)0x06004000, 0x01001000);
-    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)0x06004020);
+    CpuFastSet(&zero, (void *)BG_CHAR_ADDR(1), 0x01001000);
+    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)(BG_VRAM + 0x4020));
     bg1 = &REG_BG1CNT;
     bgcnt = 0x1E04;
     *bg1 = bgcnt;
@@ -42,7 +42,7 @@ static void clear_vram_bg2_screenblock(void) {
     vu16 *bg2;
     u16 bgcnt;
 
-    CpuFastSet(&zero, (void *)0x06008400, 0x01000F00);
+    CpuFastSet(&zero, (void *)(BG_VRAM + 0x8400), 0x01000F00);
     bg2 = &REG_BG2CNT;
     bgcnt = 0x1608;
     *bg2 = bgcnt;

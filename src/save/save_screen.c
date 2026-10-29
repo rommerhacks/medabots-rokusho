@@ -7,7 +7,7 @@
 #include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
-    return (void *)(0x06004000 + off);
+    return (void *)(BG_CHAR_ADDR(1) + off);
 }
 
 // Item menu state 14 (the last entry of gItemMenuStates): fade out and return to the field, which applies
@@ -69,7 +69,7 @@ void save_screen_load_graphics(void) {
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     lz_decompress_dispatch(gMenuDigitTilesLz, vram_at(size));
     gMenuWork->bg_tile_base = (size >> 5) - 1;
-    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)OBJ_VRAM0);
     gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[0].frame_table = 2;
     gSpriteEntries[0].palette = 0;

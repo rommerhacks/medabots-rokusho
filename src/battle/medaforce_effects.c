@@ -34,7 +34,7 @@ void medaforce_spiral_bolt_set_damage(void) {
 void medaforce_spiral_bolt_digits_spawn(void) {
     s16 x, y;
 
-    lz_decompress_dispatch(gDamageNumberTiles, (void *)0x06010000);
+    lz_decompress_dispatch(gDamageNumberTiles, (void *)OBJ_VRAM0);
     CpuFastSet(gDamageNumberPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.closeupRightX;
@@ -89,7 +89,7 @@ void medaforce_spiral_bolt_break_burst_spawn(void) {
     u16 x, y;
     s32 shown = 0;
 
-    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)0x06010800);
+    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)(OBJ_VRAM0 + 0x800));
     CpuFastSet(gPartBreakBurstPalette, (void *)0x050003C0, 8);
     if (!(gBattleWork.actorSideFlags & 2)) {
         x = gBattleWork.closeupRightX;
@@ -184,7 +184,7 @@ void medaforce_hit_carry_over_retarget(void) {
 }
 
 void medaforce_part_marker_spawn(void) {
-    lz_decompress_dispatch(gCarryOverMarkerTiles, (void *)0x06010000);
+    lz_decompress_dispatch(gCarryOverMarkerTiles, (void *)OBJ_VRAM0);
     CpuFastSet(gCarryOverMarkerPalette, (void *)0x050003C0, 8);
     gSpriteEntries[0xA].frame = 0x1500;
     play_sound_effect(0x2A);
@@ -285,7 +285,7 @@ void medaforce_side_bolt_calc(void) {
 // guess: sprite meaning unsure; two big scaled sprites (0x21/0x22) at screen centre
 
 void medaforce_side_bolt_halves_spawn(void) {
-    lz_decompress_dispatch(gMedaforceSideBoltTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceSideBoltTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceSideBoltPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
                                  SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
@@ -476,7 +476,7 @@ void decompress_sprite_tiles_to_vram_obj_4800_alt(void) {
     u32 done = 0;
     u32 i;
 
-    lz_decompress_dispatch(gBreakRingTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gBreakRingTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gBreakRingPalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] & 0x80) {
@@ -507,7 +507,7 @@ void medaforce_team_break_burst_wait(void) {
 void medaforce_team_break_anim_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gHitSparksTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gHitSparksTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gHitSparksPalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] & 0x80) {
@@ -576,24 +576,24 @@ void medaforce_form_begin(void) {
 }
 
 void medaforce_form_emblem_spawn(void) {
-    lz_decompress_dispatch(gMedaforceFormEmblemTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceFormEmblemTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gEffectCommonPalette, (void *)0x050002C0, 8);
     switch (gBattleBots[gBattleWork.actor].medaforce[0]) {
     case 4:
     case 5:
-        lz_decompress_dispatch(gMedaforceOpticFormTiles, (void *)0x06014C00);
+        lz_decompress_dispatch(gMedaforceOpticFormTiles, (void *)(OBJ_VRAM0 + 0x4C00));
         CpuFastSet(gMedaforceOpticFormPalette, (void *)0x050002E0, 8);
         play_sound_effect(0x27);
         break;
     case 6:
     case 7:
-        lz_decompress_dispatch(gMedaforceBombFormTiles, (void *)0x06014C00);
+        lz_decompress_dispatch(gMedaforceBombFormTiles, (void *)(OBJ_VRAM0 + 0x4C00));
         CpuFastSet(gMedaforceBombFormPalette, (void *)0x050002E0, 8);
         play_sound_effect(0x45);
         break;
     case 8:
     default:
-        lz_decompress_dispatch(gMedaforceGravityFormTiles, (void *)0x06014C00);
+        lz_decompress_dispatch(gMedaforceGravityFormTiles, (void *)(OBJ_VRAM0 + 0x4C00));
         CpuFastSet(gMedaforceGravityFormPalette, (void *)0x050002E0, 8);
         play_sound_effect(0x33);
         break;
@@ -735,7 +735,7 @@ void medaforce_anti_attack_trap_run(void) {
 }
 
 void medaforce_anti_attack_trap_trap_spawn(void) {
-    lz_decompress_dispatch(gMedaforceTrapTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceTrapTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceTrapPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
     gSpriteEntries[0x21].scale_y = 0x40;
@@ -813,7 +813,7 @@ void medaforce_cancel_formation_run(void) {
 }
 
 void medaforce_cancel_formation_load_graphics(void) {
-    lz_decompress_dispatch(gMedaforceCancelFormationTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceCancelFormationTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceCancelFormationPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].frame = 0x6A00;
     gSpriteEntries[0x21].y += 4;
@@ -888,31 +888,31 @@ void medaforce_inflict_status_begin(void) {
 void medaforce_inflict_status_orb_spawn(void) {
     switch (gBattleBots[gBattleWork.actor].medaforce[0]) {
     case 0xC:
-        lz_decompress_dispatch(gMedaforceMovementEmblemTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gMedaforceMovementEmblemTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gMedaforceMovementEmblemPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].work[FX_ORB_EMBLEM] = 0;
         gSpriteEntries[0x21].work[PARTICLE_ANIM] = 0x5B;
         break;
     case 0xE:
-        lz_decompress_dispatch(gMedaforceStopEmblemTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gMedaforceStopEmblemTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gMedaforceStopEmblemPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].work[FX_ORB_EMBLEM] = 1;
         gSpriteEntries[0x21].work[PARTICLE_ANIM] = 0x5B;
         break;
     case 0x10:
-        lz_decompress_dispatch(gMedaforceBindEmblemTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gMedaforceBindEmblemTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gMedaforceBindEmblemPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].work[FX_ORB_EMBLEM] = 2;
         gSpriteEntries[0x21].work[PARTICLE_ANIM] = 0x5B;
         break;
     case 0x12:
-        lz_decompress_dispatch(gMedaforceFlowEmblemTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gMedaforceFlowEmblemTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gMedaforceFlowEmblemPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].work[FX_ORB_EMBLEM] = 3;
         gSpriteEntries[0x21].work[PARTICLE_ANIM] = 0x5C;
         break;
     case 0x28:
-        lz_decompress_dispatch(gMedaforceChaosEmblemTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gMedaforceChaosEmblemTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gMedaforceChaosEmblemPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].work[FX_ORB_EMBLEM] = 4;
         gSpriteEntries[0x21].work[PARTICLE_ANIM] = 0x5B;
@@ -1008,7 +1008,7 @@ void medaforce_inflict_status_check_any(void) {
 void medaforce_inflict_status_icons_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gMedaforceTargetBurstTiles, (void *)0x06016000);
+    lz_decompress_dispatch(gMedaforceTargetBurstTiles, (void *)(OBJ_VRAM0 + 0x6000));
     CpuFastSet(gMedaforceTargetBurstPalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -1112,22 +1112,22 @@ void medaforce_cancel_status_begin(void) {
 void medaforce_cancel_status_emblem_spawn(void) {
     switch (gBattleWork.scratch) {
     case 0:
-        lz_decompress_dispatch(gMedaforceMovementEmblemTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gMedaforceMovementEmblemTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gMedaforceMovementEmblemPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].work[FX_SPR_ANIM] = 0x5B;
         break;
     case 1:
-        lz_decompress_dispatch(gMedaforceStopEmblemTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gMedaforceStopEmblemTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gMedaforceStopEmblemPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].work[FX_SPR_ANIM] = 0x5B;
         break;
     case 2:
-        lz_decompress_dispatch(gMedaforceBindEmblemTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gMedaforceBindEmblemTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gMedaforceBindEmblemPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].work[FX_SPR_ANIM] = 0x5B;
         break;
     case 3:
-        lz_decompress_dispatch(gMedaforceFlowEmblemTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gMedaforceFlowEmblemTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gMedaforceFlowEmblemPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].work[FX_SPR_ANIM] = 0x5C;
         break;
@@ -1189,7 +1189,7 @@ void medaforce_cancel_status_emblem_hold(void) {
 }
 
 void medaforce_cancel_status_shatter_spawn(void) {
-    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gPartBreakBurstPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].scale_x = 0x40;
     gSpriteEntries[0x21].scale_y = 0x40;
@@ -1237,7 +1237,7 @@ void medaforce_cancel_status_shatter_wait(void) {
 void medaforce_cancel_status_sparkle_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gMedaforceCancelStatusSparkleTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceCancelStatusSparkleTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceCancelStatusSparklePalette, (void *)0x050002E0, 8);
     medaforce_clear_hit_list();
     gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.actor);
@@ -1349,7 +1349,7 @@ void medaforce_status_restore_run(void) {
 }
 
 void medaforce_status_restore_orb_spawn(void) {
-    lz_decompress_dispatch(gMedaforceStatusRestoreTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceStatusRestoreTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceStatusRestorePalette, (void *)0x050002E0, 8);
     CpuFastSet(gEffectCommonPalette, (void *)0x050002C0, 8);
     gSpriteEntries[0x21].flags =
@@ -1401,7 +1401,7 @@ void medaforce_status_restore_check_targets(void) {
 void medaforce_status_restore_sparkle_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gStabilitySparkleTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gStabilitySparkleTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gStabilitySparklePalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -1460,7 +1460,7 @@ void medaforce_total_recovery_run(void) {
 }
 
 void medaforce_total_recovery_orb_spawn(void) {
-    lz_decompress_dispatch(gMedaforceTotalRecoveryTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceTotalRecoveryTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceTotalRecoveryPalette, (void *)0x050002E0, 8);
     CpuFastSet(gEffectCommonPalette, (void *)0x050002C0, 8);
     gSpriteEntries[0x21].flags =
@@ -1512,7 +1512,7 @@ void medaforce_total_recovery_check_targets(void) {
 void medaforce_team_heal_sparkle_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gMedaforceTotalRecoverySparkleTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceTotalRecoverySparkleTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceTotalRecoverySparklePalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -1638,7 +1638,7 @@ void medaforce_full_body_repair_run(void) {
 }
 
 void medaforce_full_body_repair_begin(void) {
-    lz_decompress_dispatch(gMedaforceFullBodyRepairTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceFullBodyRepairTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceFullBodyRepairPalette, (void *)0x050002E0, 8);
     CpuFastSet(gEffectCommonPalette, (void *)0x050002C0, 8);
     gSpriteEntries[0x21].flags =
@@ -1727,7 +1727,7 @@ void medaforce_full_body_up_run(void) {
 }
 
 void medaforce_full_body_up_begin(void) {
-    lz_decompress_dispatch(gMedaforceFullBodyUpTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceFullBodyUpTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceFullBodyUpPalette, (void *)0x050002E0, 8);
     CpuFastSet(gEffectCommonPalette, (void *)0x050002C0, 8);
     gSpriteEntries[0x21].flags =
@@ -1866,7 +1866,7 @@ void medaforce_full_body_up_apply_head_uses(void) {
 void medaforce_team_text_popups_init(void) {
     u32 i;
 
-    lz_decompress_dispatch(gBattlePopupDigitTiles, (void *)0x06017E00);
+    lz_decompress_dispatch(gBattlePopupDigitTiles, (void *)(OBJ_VRAM0 + 0x7E00));
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
             continue;
@@ -1902,7 +1902,7 @@ void medaforce_full_body_rad_run(void) {
 }
 
 void medaforce_full_body_rad_begin(void) {
-    lz_decompress_dispatch(gMedaforceFullBodyRadTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceFullBodyRadTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceFullBodyRadPalette, (void *)0x050002E0, 8);
     CpuFastSet(gEffectCommonPalette, (void *)0x050002C0, 8);
     gSpriteEntries[0x21].flags =
@@ -2013,7 +2013,7 @@ void medaforce_iron_wall_run(void) {
 }
 
 void medaforce_iron_wall_begin(void) {
-    lz_decompress_dispatch(gMedaforceIronWallTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceIronWallTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceIronWallPalette, (void *)0x050002E0, 8);
     // FAKEMATCH: the constant is a negative s16 in the original (literal pool value)
     gSpriteEntries[0x21].flags = (s16)(SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) |
@@ -2064,7 +2064,7 @@ void medaforce_power_up_run(void) {
 }
 
 void medaforce_power_up_begin(void) {
-    lz_decompress_dispatch(gMedaforcePowerUpTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforcePowerUpTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforcePowerUpPalette, (void *)0x050002E0, 8);
     // FAKEMATCH: the constant is a negative s16 in the original (literal pool value)
     gSpriteEntries[0x21].flags = (s16)(SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) |
@@ -2146,7 +2146,7 @@ void medaforce_anti_terrain_run(void) {
 }
 
 void medaforce_anti_terrain_beam_spawn(void) {
-    lz_decompress_dispatch(gMedaforceAntiTerrainBeamTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceAntiTerrainBeamTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceAntiTerrainBeamPalettes, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
@@ -2204,7 +2204,7 @@ void medaforce_anti_terrain_check_targets(void) {
 void medaforce_anti_terrain_bolts_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gMedaforceAntiTerrainBoltTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceAntiTerrainBoltTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceAntiTerrainBoltPalettes, (void *)0x050002C0, 0x10);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -2254,7 +2254,7 @@ void medaforce_anti_terrain_bolts_fly(void) {
 void medaforce_anti_terrain_burst_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gMedaforceTargetBurstTiles, (void *)0x06016000);
+    lz_decompress_dispatch(gMedaforceTargetBurstTiles, (void *)(OBJ_VRAM0 + 0x6000));
     CpuFastSet(gMedaforceTargetBurstPalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -2408,7 +2408,7 @@ void medaforce_legs_stat_up_begin(void) {
 void medaforce_legs_stat_up_arrows_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gMedaforceUpArrowTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceUpArrowTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceUpArrowPalettes, (void *)0x050002C0, 0x10);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -2727,7 +2727,7 @@ void medaforce_hide_n_seek_run(void) {
 void medaforce_hide_n_seek_domes_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gConcealDomeTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gConcealDomeTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gConcealDomePalette, (void *)0x050002E0, 8);
     gBattleWork.targetSideFirst = battle_side_first_record(gBattleWork.actor);
     for (i = 0; i <= 2; i++) {
@@ -2825,7 +2825,7 @@ void medaforce_charge_run(void) {
 }
 
 void medaforce_charge_begin(void) {
-    lz_decompress_dispatch(gMedaforceChargeTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceChargeTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceChargePalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
@@ -2894,7 +2894,7 @@ void medaforce_charge_hourglass_spawn(void) {
     u32 i;
 
     clear_battle_sprite_slot(0x21, 1);
-    lz_decompress_dispatch(gChargeHourglassTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gChargeHourglassTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gChargeHourglassPalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -3022,7 +3022,7 @@ void medaforce_pushover_attack_begin(void) {
 void medaforce_pushover_attack_banana_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gPushoverBananaTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gPushoverBananaTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gPushoverBananaPalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -3311,7 +3311,7 @@ void medaforce_useless_run(void) {
 }
 
 void medaforce_useless_begin(void) {
-    lz_decompress_dispatch(gMedaforceUselessTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceUselessTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceUselessPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
@@ -3351,7 +3351,7 @@ void medaforce_useless_orbs_spawn(void) {
     u32 i;
 
     clear_battle_sprite_slot(0x21, 1);
-    lz_decompress_dispatch(gImpairPortraitTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gImpairPortraitTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gImpairPortraitPalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -3541,7 +3541,7 @@ void medaforce_destroyer_run(void) {
 }
 
 void medaforce_destroyer_begin(void) {
-    lz_decompress_dispatch(gMedaforceDestroyerTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceDestroyerTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceDestroyerPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
@@ -3793,7 +3793,7 @@ void medaforce_crazy_find_targets(void) {
 void medaforce_crazy_orbs_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gForcedrainGlassTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gForcedrainGlassTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gForcedrainGlassPalettes, (void *)0x050002E0, 0x10);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -3948,9 +3948,9 @@ void medaforce_crazy_orbs_shrink(void) {
 void medaforce_crazy_shots_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gMedaforceCrazyShotTiles, (void *)0x06017000);
+    lz_decompress_dispatch(gMedaforceCrazyShotTiles, (void *)(OBJ_VRAM0 + 0x7000));
     CpuFastSet(gMedaforceCrazyShotPalette, (void *)0x050002E0, 8);
-    lz_decompress_dispatch(gMissPopupTiles, (void *)0x06014E00);
+    lz_decompress_dispatch(gMissPopupTiles, (void *)(OBJ_VRAM0 + 0x4E00));
     CpuFastSet(gMedaforceActivatePalette, (void *)0x050002C0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -4029,7 +4029,7 @@ void medaforce_up_find_targets(void) {
 void medaforce_up_sparkles_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gForcedrainGlassTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gForcedrainGlassTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gForcedrainGlassPalettes, (void *)0x050002E0, 0x10);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -4095,7 +4095,7 @@ void decrement_timer_and_decompress_sprite(void) {
         gGameWork.stepTimer--;
         return;
     }
-    lz_decompress_dispatch(gMedaforceUpTiles, (void *)0x06015400);
+    lz_decompress_dispatch(gMedaforceUpTiles, (void *)(OBJ_VRAM0 + 0x5400));
     CpuFastSet(gEffectCommonPalette, (void *)0x050002C0, 8);
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
@@ -4177,7 +4177,7 @@ void medaforce_formation_orders_run(void) {
 }
 
 void medaforce_formation_orders_begin(void) {
-    lz_decompress_dispatch(gSkillCastHopTiles, (void *)0x06015800);
+    lz_decompress_dispatch(gSkillCastHopTiles, (void *)(OBJ_VRAM0 + 0x5800));
     CpuFastSet(gSkillCastHopPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
                                  SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
@@ -4288,7 +4288,7 @@ void medaforce_formation_orders_shrink(void) {
 }
 
 void medaforce_formation_orders_burst_spawn(void) {
-    lz_decompress_dispatch(gMedaforceUpArrowTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceUpArrowTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceUpArrowPalettes, (void *)0x050002E0, 0x10);
     gSpriteEntries[0x21].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_FLAG_PART_PALETTE;
@@ -4344,7 +4344,7 @@ void medaforce_leg_crash_find_targets(void) {
 void medaforce_leg_crash_begin(void) {
     u32 i;
 
-    lz_decompress_dispatch(gMedaforceLegCrashTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceLegCrashTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceLegCrashPalette, (void *)0x050002E0, 8);
     CpuFastSet(gEffectCommonPalette, (void *)0x050002C0, 8);
     for (i = 0; i <= 2; i++) {
@@ -4439,7 +4439,7 @@ void medaforce_protector_run(void) {
 }
 
 void medaforce_protector_begin(void) {
-    lz_decompress_dispatch(gMedaforceProtectorTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceProtectorTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceProtectorPalettes, (void *)0x050002C0, 8);
     CpuFastSet(gEffectCommonPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags =
@@ -4570,7 +4570,7 @@ void medaforce_anti_protection_run(void) {
 }
 
 void medaforce_anti_protection_begin(void) {
-    lz_decompress_dispatch(gMedaforceAntiProtectionTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gMedaforceAntiProtectionTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gMedaforceProtectorPalettes, (void *)0x050002C0, 8);
     CpuFastSet(gEffectCommonPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags =

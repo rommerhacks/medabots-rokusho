@@ -165,9 +165,9 @@ static void dma_load_sprite_tiles(const u32 *src, u16 tile, void *buf, u32 useCp
         u32 size = dma3_copy_or_decompress(src, buf);
 
         if (useCpu)
-            CpuSet(buf, (void *)(0x06010000 + tile * 32), ((size / 4) & 0x1FFFFF) | CPU_SET_32BIT);
+            CpuSet(buf, (void *)(OBJ_VRAM0 + tile * 32), ((size / 4) & 0x1FFFFF) | CPU_SET_32BIT);
         else
-            DmaSet(0, buf, 0x06010000 + tile * 32, (size >> 2) | 0x94000000);
+            DmaSet(0, buf, OBJ_VRAM0 + tile * 32, (size >> 2) | 0x94000000);
     }
 }
 
@@ -207,9 +207,9 @@ static void decompress_and_load_sprite_tiles(const u32 *src, s32 shape, s32 size
 
         copy_sprite_tiles_to_vram(out, buf, shape, size, rows, cols, bpp);
         if (useCpu)
-            CpuSet(out, (void *)(0x06010000 + tile * 32), ((n / 4) & 0x1FFFFF) | CPU_SET_32BIT);
+            CpuSet(out, (void *)(OBJ_VRAM0 + tile * 32), ((n / 4) & 0x1FFFFF) | CPU_SET_32BIT);
         else
-            DmaSet(0, out, 0x06010000 + tile * 32, (n >> 2) | 0x94000000);
+            DmaSet(0, out, OBJ_VRAM0 + tile * 32, (n >> 2) | 0x94000000);
     }
 }
 
@@ -254,7 +254,7 @@ u32 setup_oam_sprite_entries(struct OamData *oams, void *tiles, void *pal, const
     // the copy (assigned here, not at the top) puts the hoisted desc word in the matching spill slot
     desc8 = DESC;
     decompress_and_load_sprite_tiles(tiles, desc8->shape << 14, DESC->size << 30, desc8->w, DESC->h, DESC->bpp, tile, n,
-                                     (u8 *)0x02030000, 1);
+                                     gDecompressBuffer, 1);
 #undef DESC
     if (pal != NULL)
         CpuSet(pal, (void *)(OBJ_PLTT + palNum * 32), 0x10);
@@ -336,7 +336,7 @@ static void setup_sprite_from_oam_descriptor(const u32 *src, const struct Sprite
         n >>= 1;
     n = n * desc8->w * desc8->h;
     decompress_and_load_sprite_tiles(src, desc8->shape << 14, desc8->size << 30, desc8->w, desc8->h, desc8->bpp, tile,
-                                     n, (u8 *)0x02030000, useCpu);
+                                     n, gDecompressBuffer, useCpu);
 }
 
 static u16 binary_search_sorted_table(struct SortEntry *arr, u16 n, u16 key) {
@@ -727,7 +727,7 @@ u32 load_sprite_tree_recursive(struct SpriteNodeDesc **nodes, struct SpriteTileR
     if (size != 0 && desc->frames[frame] != NULL) {
         size = dma3_copy_or_decompress(desc->frames[frame], (void *)0x02030800);
         if (size != 0)
-            CpuCopy16((void *)0x02030800, (void *)(0x06010000 + *tile * 32), size);
+            CpuCopy16((void *)0x02030800, (void *)(OBJ_VRAM0 + *tile * 32), size);
         obj = &oams[node];
         *tile += init_oam_sprite_entry(&obj->oam, desc, pal, *tile);
         if (gGameWork.noAffineSprites)
@@ -752,7 +752,7 @@ static void load_sprite_tiles_by_table(struct SpriteNodeDesc **nodes, struct Spr
             if (node == list->node) {
                 s32 size = dma3_copy_or_decompress(desc->frames[list->frame * 2], (void *)0x02030800);
                 if (size != 0)
-                    CpuCopy16((void *)0x02030800, (void *)(0x06010000 + oams[k].oam.tileNum * 32), size);
+                    CpuCopy16((void *)0x02030800, (void *)(OBJ_VRAM0 + oams[k].oam.tileNum * 32), size);
                 return;
             }
             list++;

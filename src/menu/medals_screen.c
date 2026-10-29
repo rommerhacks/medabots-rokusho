@@ -86,14 +86,14 @@ void medals_list_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x1902;
     REG_BG3CNT = 0x1A03;
-    lz_decompress_dispatch(gMedalsListBgTiles, (void *)0x06004000);
-    lz_decompress_dispatch(gMedalsTabNumberTiles, (void *)0x06006000);
-    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06006280);
-    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)0x06007400);
-    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)0x06007600);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
-    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
-    lz_decompress_dispatch(gTradeChoiceWindowTiles, (void *)0x06006A00);
+    lz_decompress_dispatch(gMedalsListBgTiles, (void *)BG_CHAR_ADDR(1));
+    lz_decompress_dispatch(gMedalsTabNumberTiles, (void *)(BG_VRAM + 0x6000));
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)(BG_VRAM + 0x6280));
+    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)(BG_VRAM + 0x7400));
+    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)(BG_VRAM + 0x7600));
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)(OBJ_VRAM0 + 0x7E00));
+    lz_decompress_dispatch(gTradeChoiceWindowTiles, (void *)(BG_VRAM + 0x6A00));
     set_tilemap_and_decompress_bg(0, 0, gMedalsListBg0Tilemap, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalsListBg1Tilemap, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalsListBg2Tilemap, REG_BG2CNT, 0x200);
@@ -210,10 +210,10 @@ void medal_ability_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x1902;
     REG_BG3CNT = 0x1A03;
-    lz_decompress_dispatch(gMedalAbilityBgTiles, (void *)0x06004000);
-    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06006280);
-    lz_decompress_dispatch(gCompatibilityIconTiles, (void *)0x06006800);
-    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    lz_decompress_dispatch(gMedalAbilityBgTiles, (void *)BG_CHAR_ADDR(1));
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)(BG_VRAM + 0x6280));
+    lz_decompress_dispatch(gCompatibilityIconTiles, (void *)(BG_VRAM + 0x6800));
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)(OBJ_VRAM0 + 0x7E00));
     set_tilemap_and_decompress_bg(0, 0, gMedalAbilityBg0Tilemap, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalAbilityBg1Tilemap, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalAbilityBg2Tilemap, REG_BG2CNT, 0x200);
@@ -346,11 +346,11 @@ void medal_medaforce_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x1902;
     REG_BG3CNT = 0x1A03;
-    lz_decompress_dispatch(gMedalMedaforceBgTiles, (void *)0x06004000);
-    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06006280);
-    lz_decompress_dispatch(gMedaforceTypeIconTiles, (void *)0x06006000);
-    lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06006680);
-    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    lz_decompress_dispatch(gMedalMedaforceBgTiles, (void *)BG_CHAR_ADDR(1));
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)(BG_VRAM + 0x6280));
+    lz_decompress_dispatch(gMedaforceTypeIconTiles, (void *)(BG_VRAM + 0x6000));
+    lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)(BG_VRAM + 0x6680));
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)(OBJ_VRAM0 + 0x7E00));
     set_tilemap_and_decompress_bg(0, 0, gMedalMedaforceBg0Tilemap, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalMedaforceBg1Tilemap, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalMedaforceBg2Tilemap, REG_BG2CNT, 0x200);
@@ -458,13 +458,13 @@ void medal_rotation_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x1902;
     REG_BG3CNT = 0x1A03;
-    lz_decompress_dispatch(gMedalRotationBgTiles, (void *)0x06004000);
-    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06006280);
-    lz_decompress_dispatch(gRotationActionIconTiles, (void *)0x06006800);
-    lz_decompress_dispatch(gRotationPathTiles, (void *)0x06006C00);
-    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)0x06007400);
-    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)0x06007600);
-    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    lz_decompress_dispatch(gMedalRotationBgTiles, (void *)BG_CHAR_ADDR(1));
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)(BG_VRAM + 0x6280));
+    lz_decompress_dispatch(gRotationActionIconTiles, (void *)(BG_VRAM + 0x6800));
+    lz_decompress_dispatch(gRotationPathTiles, (void *)(BG_VRAM + 0x6C00));
+    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)(BG_VRAM + 0x7400));
+    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)(BG_VRAM + 0x7600));
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)(OBJ_VRAM0 + 0x7E00));
     set_tilemap_and_decompress_bg(0, 0, gMedalRotationBg0Tilemap, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalRotationBg1Tilemap, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalRotationBg2Tilemap, REG_BG2CNT, 0x200);
@@ -651,10 +651,10 @@ void medal_skill_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x1902;
     REG_BG3CNT = 0x1A03;
-    lz_decompress_dispatch(gMedalSkillBgTiles, (void *)0x06004000);
-    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06007480);
-    lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06007880);
-    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    lz_decompress_dispatch(gMedalSkillBgTiles, (void *)BG_CHAR_ADDR(1));
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)(BG_VRAM + 0x7480));
+    lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)(BG_VRAM + 0x7880));
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)(OBJ_VRAM0 + 0x7E00));
     set_tilemap_and_decompress_bg(0, 0, gMedalSkillBg0Tilemap, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalSkillBg1Tilemap, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedalSkillBg2Tilemap, REG_BG2CNT, 0x200);
@@ -1067,9 +1067,9 @@ static void render_medal_sprite_tile(void) {
 
     for (i = gGameWork.listTab * 6; i < gGameWork.listTab * 6 + 6; n++, i++) {
         if (gMedals[i].flags & 0x80)
-            CpuFastSet(gMedalIconTiles + gMedals[i].graphicId * 0x80, (void *)0x06006600 + n * 0x80, 0x20);
+            CpuFastSet(gMedalIconTiles + gMedals[i].graphicId * 0x80, (void *)(BG_VRAM + 0x6600) + n * 0x80, 0x20);
         else
-            CpuFastSet(gMedalIconBlankTiles, (void *)0x06006600 + n * 0x80, 0x20);
+            CpuFastSet(gMedalIconBlankTiles, (void *)(BG_VRAM + 0x6600) + n * 0x80, 0x20);
     }
     write_tilemap_rect(2, 12, 4, 4, gUiTilemaps[0x50], REG_BG1CNT, 0x200);
 }
@@ -1122,7 +1122,7 @@ void load_medal_sprite(void) {
     if (gMedals[gGameWork.shownId].flags & 0x80) {
         lz_decompress_dispatch(
             gMedalSpriteGfx[gMedals[gGameWork.shownId].graphicId][gMedals[gGameWork.shownId].spriteVariant],
-            (void *)0x06010000);
+            (void *)OBJ_VRAM0);
         gSpriteEntries[0].flags =
             SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[0].x = 0xC0;
@@ -1343,12 +1343,12 @@ static void draw_medal_position_tile(void) {
 }
 
 static void medal_page_draw_icon(void) {
-    CpuFastSet(gMedalIconTiles + gMedals[gGameWork.shownId].graphicId * 0x80, (void *)0x06006600, 0x20);
+    CpuFastSet(gMedalIconTiles + gMedals[gGameWork.shownId].graphicId * 0x80, (void *)(BG_VRAM + 0x6600), 0x20);
     draw_tile_block(2, 2, 2, 3, REG_BG1CNT, 0x6330);
 }
 
 static void medal_skill_draw_icon(void) {
-    CpuFastSet(gMedalIconTiles + gMedals[gGameWork.shownId].graphicId * 0x80, (void *)0x06007800, 0x20);
+    CpuFastSet(gMedalIconTiles + gMedals[gGameWork.shownId].graphicId * 0x80, (void *)(BG_VRAM + 0x7800), 0x20);
     draw_tile_block(2, 2, 2, 3, REG_BG1CNT, 0x63C0);
 }
 
@@ -1825,7 +1825,8 @@ void medal_skill_load_shine_frame(void) {
     u32 i;
 
     for (i = 0; i < 5; i++)
-        CpuFastSet(gMedalSkillShineTiles + (i * 0x100 + gGameWork.listTab * 0x20), (void *)0x06007A00 + i * 0x20, 8);
+        CpuFastSet(gMedalSkillShineTiles + (i * 0x100 + gGameWork.listTab * 0x20),
+                   (void *)(BG_VRAM + 0x7A00) + i * 0x20, 8);
 }
 
 static void medal_skill_animate_shine(void) {

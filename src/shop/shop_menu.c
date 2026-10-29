@@ -5,7 +5,7 @@
 #include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
-    return (void *)(0x06004000 + off);
+    return (void *)(BG_CHAR_ADDR(1) + off);
 }
 
 void shop_highlight_part_type_icon(u32 sel, u32 frame) {
@@ -117,9 +117,9 @@ void shop_menu_load_graphics(void) {
     CpuCopy16(gDecompressBuffer, dst, n);
     gMenuWork->bg_tile_base = ((size + n) >> 5) - 1;
     lz_decompress_dispatch(gMenuDigitTilesLz, dst += n);
-    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
-    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)OBJ_VRAM0);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)(OBJ_VRAM0 + 0x7E00));
     gGameSubState++;
 }
 
@@ -128,7 +128,7 @@ void shop_menu_init(void) {
     u8 i;
 
     zero = 0;
-    CpuFastSet(&zero, (void *)0x0600DA80, 0x01000080);
+    CpuFastSet(&zero, (void *)(BG_VRAM + 0xDA80), 0x01000080);
     clear_battle_sprite_slot(0, 0x80);
     gSpriteEntries[8].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[8].frame_table = 0;

@@ -80,7 +80,7 @@ static void medal_trade_show_medal_sprite(u32 medal, u32 frame) {
     struct SpriteEntry *sprite;
     u8 zero;
 
-    lz_decompress_dispatch(gMedalSpriteGfx[medal][frame], (void *)0x06010000);
+    lz_decompress_dispatch(gMedalSpriteGfx[medal][frame], (void *)OBJ_VRAM0);
     sprite = gSpriteEntries;
     zero = 0;
     sprite->flags = SPRITE_FLAG_ENABLED | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE |
@@ -130,14 +130,14 @@ static void trade_tiles_speed_up_two_rows(void) {
         gMenuWork->frame = 0x3F;
     i = 0;
     next_frame = anim_frame + 2;
-    tiles = 0x0600D800;
+    tiles = BG_VRAM + 0xD800;
     dst_off = 0x1C0;
     src_off = anim_frame << 9;
     for (; i < 8; i++) {
         other_frame = anim_frame;
-        CpuSet((void *)(src_off + tiles), (void *)(0x0600E804 + dst_off), 0xC);
+        CpuSet((void *)(src_off + tiles), (void *)((BG_VRAM + 0xE804) + dst_off), 0xC);
         other_frame = next_frame & 3;
-        CpuSet((void *)((other_frame * 8 + i) * 0x40 + tiles), (void *)(0x0600E820 + dst_off), 0xC);
+        CpuSet((void *)((other_frame * 8 + i) * 0x40 + tiles), (void *)((BG_VRAM + 0xE820) + dst_off), 0xC);
         dst_off += 0x40;
         src_off += 0x40;
     }
@@ -169,9 +169,9 @@ static void trade_tiles_speed_up(void) {
     anim_frame &= 3;
     if (--gMenuWork->frame < 0)
         gMenuWork->frame = 0x3F;
-    dst = (u8 *)0x0600E9E2;
+    dst = (u8 *)(BG_VRAM + 0xE9E2);
     anim_frame <<= 9;
-    src = (u8 *)0x0600D800 + anim_frame;
+    src = (u8 *)(BG_VRAM + 0xD800) + anim_frame;
     for (i = 0; i < 8; i++) {
         CpuSet(src, dst, 0xC);
         dst += 0x40;
@@ -212,14 +212,14 @@ static void trade_tiles_slow_down_two_rows(void) {
         gMenuWork->frame = 0x3F;
     i = 0;
     next_frame = anim_frame + 2;
-    tiles = 0x0600D800;
+    tiles = BG_VRAM + 0xD800;
     dst_off = 0x1C0;
     src_off = anim_frame << 9;
     for (; i < 8; i++) {
         other_frame = anim_frame;
-        CpuSet((void *)(src_off + tiles), (void *)(0x0600E804 + dst_off), 0xC);
+        CpuSet((void *)(src_off + tiles), (void *)((BG_VRAM + 0xE804) + dst_off), 0xC);
         other_frame = next_frame & 3;
-        CpuSet((void *)((other_frame * 8 + i) * 0x40 + tiles), (void *)(0x0600E820 + dst_off), 0xC);
+        CpuSet((void *)((other_frame * 8 + i) * 0x40 + tiles), (void *)((BG_VRAM + 0xE820) + dst_off), 0xC);
         dst_off += 0x40;
         src_off += 0x40;
     }
@@ -252,9 +252,9 @@ static void trade_tiles_slow_down(void) {
     anim_frame &= 3;
     if (--gMenuWork->frame < 0)
         gMenuWork->frame = 0x3F;
-    dst = (u8 *)0x0600E9E2;
+    dst = (u8 *)(BG_VRAM + 0xE9E2);
     anim_frame <<= 9;
-    src = (u8 *)0x0600D800 + anim_frame;
+    src = (u8 *)(BG_VRAM + 0xD800) + anim_frame;
     for (i = 0; i < 8; i++) {
         CpuSet(src, dst, 0xC);
         dst += 0x40;
@@ -290,14 +290,14 @@ void medapart_trade_init_screen(void) {
     decompress_and_write_tilemap(gPartTradeBg3Tilemap, REG_BG3CNT);
     REG_BG2CNT = 0x1D06;
     size = dma3_copy_or_decompress(gPartTradeBgTiles, gDecompressBuffer);
-    CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
-    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)(0x06004000 + size));
+    CpuCopy16(gDecompressBuffer, (void *)BG_CHAR_ADDR(1), size);
+    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)(BG_CHAR_ADDR(1) + size));
     gMenuWork->bg_tile_base = size / 32 - 1;
     CpuFastSet(gPartTradeBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gGradientPaletteCyan, (void *)(PLTT + 0x3A0), 8);
     CpuFastSet(gGradientPaletteCyan, &gPaletteBackup[0xD0], 8);
-    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06011E00);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)OBJ_VRAM0);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x1E00));
     gMenuWork->frame = 0x280;
     medapart_copy_name(gMenuWork->own_part_id * 4 + gMenuWork->own_part_kind, 0);
     render_text_string_to_sprites(gGameWork.textBuf, 0, 0, 10, 16, 13, z, 1);
@@ -319,7 +319,7 @@ void medapart_trade_init_screen(void) {
 }
 
 static inline void *vram_at(u32 off) {
-    return (void *)(0x06004000 + off);
+    return (void *)(BG_CHAR_ADDR(1) + off);
 }
 
 void medapart_trade_fade_in(void) {
@@ -547,7 +547,7 @@ void medapart_trade_update(void) {
     }
 }
 
-#define TM(cnt, i) (*(u16 *)(BGCNT_SCREEN_OFFSET(cnt) + (0x06000000 + (i) * 2)))
+#define TM(cnt, i) (*(u16 *)(BGCNT_SCREEN_OFFSET(cnt) + (BG_SCREEN_ADDR(0) + (i) * 2)))
 
 void medal_trade_init_screen(void) {
     u8 *src;
@@ -585,17 +585,17 @@ void medal_trade_init_screen(void) {
     *bg2 = 0x1D06;
     decompress_and_write_tilemap(gMedalTradeBg2Tilemap, *bg2);
     size = dma3_copy_or_decompress(gMedalTradeBgTiles, (void *)0x02030000);
-    CpuCopy16((void *)0x02030000, (void *)0x06004000, size);
-    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)(size + 0x06004000));
+    CpuCopy16((void *)0x02030000, (void *)BG_CHAR_ADDR(1), size);
+    lz_decompress_dispatch(gMenuDigitTilesLz, (void *)(size + BG_CHAR_ADDR(1)));
     gMenuWork->bg_tile_base = (size >> 5) + 4;
-    lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + 0x06004080));
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + (BG_VRAM + 0x4080)));
     CpuFastSet(gMedalTradeBgPalettes, (void *)PLTT, 0x50);
     CpuFastSet(gGradientPaletteGold + 0x30, (void *)0x050003A0, 8);
     CpuFastSet(gGradientPaletteGold + 0x30, (void *)0x0202F9A0, 8);
     CpuFastSet(gCommonObjPalette, (void *)0x05000200, 8);
     CpuFastSet(gGradientPaletteGold + 0x20, (void *)0x05000220, 8);
     CpuFastSet(gGradientPaletteGold, (void *)0x05000240, 8);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     w = gMenuWork;
     w->frame = 0x280;
     partner_chose = w->partner_chose;
@@ -632,7 +632,7 @@ void medal_trade_init_screen(void) {
             TM(REG_BG1CNT, 0x10E) = (gMenuWork->bg_tile_base + lvl % 10 * 2) | 0x7000;
             TM(REG_BG1CNT, 0x12E) = (gMenuWork->bg_tile_base + lvl % 10 * 2 + 1) | 0x7000;
         }
-        CpuSet(gMedalIconTiles + medal * 0x80, (void *)(size + 0x06004000), 0x40);
+        CpuSet(gMedalIconTiles + medal * 0x80, (void *)(size + BG_CHAR_ADDR(1)), 0x40);
         icon_tile16 = icon_tile;
         tile = icon_tile16 | 0x6000;
         map = BG_TILEMAP(REG_BG1CNT) + 3 + 8 * 32;

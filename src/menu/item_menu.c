@@ -37,7 +37,7 @@ void item_menu_reset(void) {
 }
 
 static inline void *vram_at(u32 off) {
-    return (void *)(0x06004000 + off);
+    return (void *)(BG_CHAR_ADDR(1) + off);
 }
 
 void item_menu_load_graphics(void) {
@@ -62,7 +62,7 @@ void item_menu_load_graphics(void) {
     CpuCopy16(gDecompressBuffer, vram_at(0), size);
     lz_decompress_dispatch(gMenuDigitTilesLz, vram_at(size));
     gMenuWork->bg_tile_base = (size >> 5) - 1;
-    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)OBJ_VRAM0);
     for (i = 0; i <= 1; i++) {
         gSpriteEntries[i + 0x51].flags = SPRITE_FLAG_ENABLED;
         gSpriteEntries[i + 0x51].frame_table = 2;
@@ -86,7 +86,7 @@ void item_menu_load_graphics(void) {
         gSpriteEntries[i + 0x55].x = 0xE0;
         gSpriteEntries[i + 0x55].y = i * 16 + 0x20;
     }
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     gGameSubState++;
 }
 

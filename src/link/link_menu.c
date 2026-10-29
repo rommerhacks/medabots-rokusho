@@ -20,10 +20,10 @@ void clear_vram_bg(void) {
     decompress_and_write_tilemap(gLinkMenuBg2Tilemap, REG_BG2CNT);
     decompress_and_write_tilemap(gLinkMenuBg3Tilemap, REG_BG3CNT);
     size = dma3_copy_or_decompress(gLinkMenuBgTiles, gDecompressBuffer);
-    CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
+    CpuCopy16(gDecompressBuffer, (void *)BG_CHAR_ADDR(1), size);
     CpuFastSet(gLinkMenuBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gCursorArrowPalette, (void *)0x050003C0, 8);
-    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)OBJ_VRAM0);
     CpuFastSet(gBlackObjPalettes, (void *)0x05000200, 8);
     gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED;
     gSpriteEntries[0].frame_table = 2;

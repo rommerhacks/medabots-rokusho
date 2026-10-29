@@ -19,7 +19,7 @@ void medawatch_menu_load_gfx(void) {
     REG_BG1CNT = 0x1805;
     REG_BG2CNT = 0x1906;
     REG_BG3CNT = 0x1A07;
-    lz_decompress_dispatch(gMedawatchBgTilesLz, (void *)0x06004000);
+    lz_decompress_dispatch(gMedawatchBgTilesLz, (void *)BG_CHAR_ADDR(1));
     medawatch_menu_load_icon();
     set_tilemap_and_decompress_bg(0, 0, gMedawatchBg1Tilemap, REG_BG1CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gMedawatchBg2Tilemap, REG_BG2CNT, 0);
@@ -114,7 +114,7 @@ void medawatch_menu_select_fade(void) {
 
 // Saves the BG tiles at 0x06002800 and enters game state 3 (Medabots), 4 (Medals) or 5 (Medaparts).
 void medawatch_menu_run_choice(void) {
-    DmaSet(3, 0x06002800, gBgTileBackup, 0x84000200);
+    DmaSet(3, BG_VRAM + 0x2800, gBgTileBackup, 0x84000200);
     switch (gGameWork.medawatchCursor) {
     case 0:
         mem_fill8((u8 *)&gGameWork + 0x50, 0x14, 0);
@@ -142,9 +142,9 @@ void medawatch_menu_return_init(void) {
     REG_BG1CNT = 0x1805;
     REG_BG2CNT = 0x1906;
     REG_BG3CNT = 0x1A07;
-    lz_decompress_dispatch(gMedawatchBgTilesLz, (void *)0x06004000);
+    lz_decompress_dispatch(gMedawatchBgTilesLz, (void *)BG_CHAR_ADDR(1));
     medawatch_menu_load_icon();
-    DmaSet(3, gBgTileBackup, 0x06002800, 0x84000200);
+    DmaSet(3, gBgTileBackup, BG_VRAM + 0x2800, 0x84000200);
     set_tilemap_and_decompress_bg(0, 0, gMedawatchBg1Tilemap, REG_BG1CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gMedawatchBg2Tilemap, REG_BG2CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gMedawatchBg3Tilemap, REG_BG3CNT, 0);
@@ -184,11 +184,11 @@ static void medawatch_menu_load_icon(void) {
         src = gMedawatchIconMedapartsTiles;
         break;
     }
-    lz_decompress_dispatch(src, (void *)0x06007E00);
+    lz_decompress_dispatch(src, (void *)(BG_VRAM + 0x7E00));
 }
 
 static void medawatch_menu_init_cursor(void) {
-    lz_decompress_dispatch(gFieldMenuCursorTiles, (void *)0x06016C00);
+    lz_decompress_dispatch(gFieldMenuCursorTiles, (void *)(OBJ_VRAM0 + 0x6C00));
     DmaSet(3, gCursorArrowPalette, 0x050003C0, 0x84000008);
     gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0].x = 0x88 - gGameWork.medawatchCursor * 8;

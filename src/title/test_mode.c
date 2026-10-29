@@ -5,7 +5,7 @@
 #include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
-    return (void *)(0x06004000 + off);
+    return (void *)(BG_CHAR_ADDR(1) + off);
 }
 
 void test_mode_dispatch(void) {
@@ -56,7 +56,7 @@ void test_mode_load_graphics(void) {
     zero = 0;
     CpuFastSet(gTestModeBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gMenuDigitPalette, (void *)(PLTT + 0x1C0), 8);
-    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)OBJ_VRAM0);
     CpuFastSet(gCursorArrowPalette, (void *)(PLTT + 0x3C0), 8);
     gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED;
     gSpriteEntries[0].frame_table = 2;

@@ -194,7 +194,7 @@ void trap_begin(void) {
 // Steps 4-7 of most skill sequences (also the Interrupt skills): a sprite hops over the user, then a
 // burst animation plays. guess: the "skill cast" effect.
 void skill_cast_hop_spawn(void) {
-    lz_decompress_dispatch(gSkillCastHopTiles, (void *)0x06015800);
+    lz_decompress_dispatch(gSkillCastHopTiles, (void *)(OBJ_VRAM0 + 0x5800));
     CpuFastSet(gSkillCastHopPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_PART_PALETTE;
@@ -235,7 +235,7 @@ void skill_cast_hop(void) {
 }
 
 void skill_cast_flash_init(void) {
-    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gPartBreakBurstPalette, (void *)0x050002E0, 8);
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x23], 0x21);
     gBattleWork.step++;
@@ -250,25 +250,25 @@ void skill_cast_flash_wait(void) {
 void trap_sprite_spawn(void) {
     switch (gBattleWork.scratch) {
     case 0:
-        lz_decompress_dispatch(gGrapTrapTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gGrapTrapTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gGrapTrapPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].y = 0x3C;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x19], 0x21);
         break;
     case 1:
-        lz_decompress_dispatch(gShotTrapTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gShotTrapTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gShotTrapPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].y = 0x3C;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x1A], 0x21);
         break;
     case 2:
-        lz_decompress_dispatch(gAttackClrTrapTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gAttackClrTrapTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gAttackClrTrapPalette, (void *)0x050002E0, 8);
         gSpriteEntries[0x21].y = 0x3C;
         gSpriteEntries[0x21].frame = 0xD00;
         break;
     case 3:
-        lz_decompress_dispatch(gTeamAttackTurretTilesLz, (void *)0x06014800);
+        lz_decompress_dispatch(gTeamAttackTurretTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gTeamAttackTurretPalette, (void *)0x050002E0, 8);
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x38], 0x21);
         break;
@@ -535,7 +535,7 @@ void break_form_begin(void) {
 }
 
 void break_form_sprite_spawn(void) {
-    lz_decompress_dispatch(gBreakFormTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gBreakFormTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gBreakFormPalette, (void *)0x050002E0, 8);
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x39], 0x21);
     if (gBattleWork.actorSideFlags & 1)
@@ -615,7 +615,7 @@ void break_form_hit_wait(void) {
 void break_form_shatter_init(void) {
     u32 i;
 
-    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gPartBreakBurstTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gPartBreakBurstPalette, (void *)0x050002E0, 8);
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x23], 0x21);
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x23], 0x22);
@@ -698,7 +698,7 @@ void stability_begin(void) {
 }
 
 void stability_sprite_spawn(void) {
-    lz_decompress_dispatch(gStabilitySparkleTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gStabilitySparkleTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gStabilitySparklePalette, (void *)0x050002E0, 8);
     if (gBattleWork.actorSideFlags & 1)
         gSpriteEntries[0x21].flags |= SPRITE_FLAG_HFLIP;
@@ -779,7 +779,7 @@ void force_bind_begin(void) {
 void force_bind_orbs_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gForceBindOrbTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gForceBindOrbTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gForceBindOrbPalette, (void *)0x050002E0, 8);
     for (i = 0; i < 4; i++) {
         gSpriteEntries[0x21 + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) |
@@ -873,15 +873,15 @@ void defence_begin(void) {
 void defence_shields_spawn(void) {
     switch (gBattleWork.scratch) {
     case 0:
-        lz_decompress_dispatch(gDefenceShieldTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gDefenceShieldTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gDefenceShieldPalette, (void *)0x050002E0, 8);
         break;
     case 1:
-        lz_decompress_dispatch(gFullBlockShieldTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gFullBlockShieldTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gFullBlockShieldPalette, (void *)0x050002E0, 8);
         break;
     default:
-        lz_decompress_dispatch(gHalfBlockShieldTiles, (void *)0x06014800);
+        lz_decompress_dispatch(gHalfBlockShieldTiles, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gHalfBlockShieldPalette, (void *)0x050002E0, 8);
         break;
     }
@@ -986,7 +986,7 @@ void autorecover_begin(void) {
 }
 
 void autorecover_orb_spawn(void) {
-    lz_decompress_dispatch(gAutorecoverOrbTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gAutorecoverOrbTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gAutorecoverOrbPalettes, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE;
     gSpriteEntries[0x21].scale_x = 0x40;
@@ -1126,7 +1126,7 @@ void reactivate_begin(void) {
 }
 
 void reactivate_orb_spawn(void) {
-    lz_decompress_dispatch(gReactivateOrbTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gReactivateOrbTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gReactivateOrbPalettes, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE;
     gSpriteEntries[0x21].scale_x = 0x40;

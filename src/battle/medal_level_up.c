@@ -69,33 +69,33 @@ void medal_transform_init(void) {
     decompress_and_write_tilemap(gMedalSceneBg2Tilemap, REG_BG2CNT);
     decompress_and_write_tilemap(gMedalSceneBg3Tilemap, REG_BG3CNT);
     size = dma3_copy_or_decompress(gMedalSceneBgTiles, (void *)0x02030000);
-    CpuFastSet((void *)0x02030000, (void *)0x06004000, (size << 9) >> 11);
+    CpuFastSet((void *)0x02030000, (void *)BG_CHAR_ADDR(1), (size << 9) >> 11);
     size = 0x1800;
     gMenuWork->bg_tile_base = 0xC4;
     CpuFastSet(gMedalIconTiles + gMedals[slot].graphicId * 0x80, vram + size, 0x20);
-    lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + 0x06000080));
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + (BG_VRAM + 0x80)));
     {
         u16 tile = 0x60C0;
         u32 bg = BGCNT_SCREEN_OFFSET(REG_BG0CNT);
-        u32 tile_addr = 0x06000286;
+        u32 tile_addr = BG_VRAM + 0x286;
         u16 *tile_ptr;
         tile_ptr = (u16 *)(bg + tile_addr);
         *tile_ptr = tile;
         tile_ptr = (u16 *)(bg + (tile_addr + 2));
         *tile_ptr = tile + 1;
-        tile_ptr = (u16 *)(bg + 0x060002C6);
+        tile_ptr = (u16 *)(bg + (BG_VRAM + 0x2C6));
         *tile_ptr = tile + 2;
-        tile_ptr = (u16 *)(bg + 0x060002C8);
+        tile_ptr = (u16 *)(bg + (BG_VRAM + 0x2C8));
         *tile_ptr = tile + 3;
     }
     CpuFastSet(gMedalSceneObjPalettes, (void *)0x0202FA00, 0x80);
     CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
-    lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
+    lz_decompress_dispatch(gCommonObjTilesLz, (void *)OBJ_VRAM0);
     CpuFastSet(gCommonObjPalette, (void *)0x0202F800, 8);
     CpuFastSet(gGradientPaletteOlive, (void *)0x0202F820, 8);
     CpuFastSet(gGradientPaletteOlive - 0x20, (void *)0x0202F840, 8);
     CpuFastSet(pal, (void *)0x0202F860, 8);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     for (i = 0; i < 16; i++) {
         gSpriteEntries[i + 1].flags =
             SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE;
@@ -122,7 +122,7 @@ void medal_transform_draw_medal(void) {
 
     id = gMedals[gCurrentMedalSlot].graphicId;
     fr = gMedals[gCurrentMedalSlot].spriteVariant - 1;
-    lz_decompress_dispatch(gMedalSpriteGfx[id][fr], (void *)0x06010000);
+    lz_decompress_dispatch(gMedalSpriteGfx[id][fr], (void *)OBJ_VRAM0);
     sprite = gSpriteEntries;
     zero = 0;
     sprite->flags =
@@ -142,18 +142,18 @@ void medal_transform_draw_medal(void) {
     }
     render_text_sprites_08040DB8(gTextArgBuffer, 0x14, 5, 10, 10, 1, 1, 0);
     if (gMedals[gCurrentMedalSlot].level == 100) {
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x0600029A) = (gMenuWork->bg_tile_base + 0x14) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x060002DA) = (gMenuWork->bg_tile_base + 0x15) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x0600029C) = (gMenuWork->bg_tile_base + 0x16) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x060002DC) = (gMenuWork->bg_tile_base + 0x17) | 0x7000;
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x29A)) = (gMenuWork->bg_tile_base + 0x14) | 0x7000;
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x2DA)) = (gMenuWork->bg_tile_base + 0x15) | 0x7000;
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x29C)) = (gMenuWork->bg_tile_base + 0x16) | 0x7000;
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x2DC)) = (gMenuWork->bg_tile_base + 0x17) | 0x7000;
     } else {
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x0600029A) =
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x29A)) =
             (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level / 10u) * 2) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x060002DA) =
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x2DA)) =
             (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level / 10u) * 2 + 1) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x0600029C) =
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x29C)) =
             (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level % 10u) * 2) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + 0x060002DC) =
+        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x2DC)) =
             (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level % 10u) * 2 + 1) | 0x7000;
     }
     render_text_sprites_08040DB8(gMedals[gCurrentMedalSlot].name, 0x1E, 0x11, 10, 10, 2, 0, 0);
@@ -199,7 +199,7 @@ void medal_transform_flash_in(void) {
                 struct MedalData *medals = gMedals;
                 struct MedalData *medal = &medals[gCurrentMedalSlot];
                 u8 id = medal->graphicId;
-                lz_decompress_dispatch(gMedalSpriteGfx[id][medal->spriteVariant], (void *)0x06010000);
+                lz_decompress_dispatch(gMedalSpriteGfx[id][medal->spriteVariant], (void *)OBJ_VRAM0);
                 gMenuWork->frame = 0;
                 gGameSubState++;
             }

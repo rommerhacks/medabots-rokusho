@@ -203,9 +203,9 @@ void title_menu_load_graphics(void) {
     decompress_and_write_tilemap(gTitleMenuBg2Tilemap, *bg2);
     decompress_and_write_tilemap(gTitleMenuBg3Tilemap, *bg3);
     size = dma3_copy_or_decompress(gTitleMenuBgTiles, gDecompressBuffer);
-    CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
+    CpuCopy16(gDecompressBuffer, (void *)BG_CHAR_ADDR(1), size);
     gMenuWork->bg_tile_base = (size >> 5) - 1;
-    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)OBJ_VRAM0);
     CpuFastSet(gTitleMenuBgPalette, gPaletteBackupBg, 0x80);
     CpuFastSet(gTitleMenuBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 0x80);

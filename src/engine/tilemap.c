@@ -146,8 +146,8 @@ void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src,
 }
 
 void decompress_bg_tiles_to_vram_bg(void) {
-    lz_decompress_dispatch(gMessageWindowTiles, (void *)0x06000020);
-    lz_decompress_dispatch(gMessageWindowIconTiles, (void *)0x06001780);
+    lz_decompress_dispatch(gMessageWindowTiles, (void *)(BG_VRAM + 0x20));
+    lz_decompress_dispatch(gMessageWindowIconTiles, (void *)(BG_VRAM + 0x1780));
     CpuFastSet(gMenuBgPalette, (void *)(PLTT + 0x1E0), 8);
 }
 
@@ -172,7 +172,7 @@ void decompress_indexed_asset(u32 set, u32 idx, void *dst, u32 pal, u32 toBuffer
 void load_bg0_tilemap(u32 set, u32 idx, u32 x, u32 y, u32 anim) {
     REG_DISPCNT |= 0x100;
     REG_BG0CNT = 0x500;
-    lz_decompress_dispatch(gPortraitTiles[set][idx], (void *)0x06000F80);
+    lz_decompress_dispatch(gPortraitTiles[set][idx], (void *)(BG_VRAM + 0xF80));
     CpuFastSet(gPortraitPalettes[set], (void *)0x050001A0, 8);
     write_tilemap_rect(8, 8, x, y, gUiTilemaps[anim * 9 + 8], REG_BG0CNT, 0);
 }
@@ -199,7 +199,7 @@ u32 message_portrait_anim_step(u32 set, u32 idx, u32 x, u32 y, s32 anim, u32 rev
     if (gGameWork.portraitAnimFrame == 0) {
         REG_DISPCNT |= 0x100;
         REG_BG0CNT = 0x500;
-        lz_decompress_dispatch(gPortraitTiles[set][idx], (void *)0x06000F80);
+        lz_decompress_dispatch(gPortraitTiles[set][idx], (void *)(BG_VRAM + 0xF80));
         CpuFastSet(gPortraitPalettes[set], (void *)0x050001A0, 8);
     }
     if (reverse == 0)

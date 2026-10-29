@@ -47,11 +47,11 @@ void save_lost_load_graphics(void) {
     decompress_and_write_tilemap(gSaveLostBg1Tilemap, *bg1);
     decompress_and_write_tilemap(gSaveLostBg3Tilemap, *bg3);
     size = dma3_copy_or_decompress(gSaveLostBgTiles, gDecompressBuffer);
-    CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
+    CpuCopy16(gDecompressBuffer, (void *)BG_CHAR_ADDR(1), size);
     gMenuWork->bg_tile_base = size / 32 - 1;
     CpuFastSet(gSaveLostBgPalette, (void *)PLTT, 0x38);
     CpuFastSet(gSaveLostSpritePalette, (void *)(PLTT + 0x200), 8);
-    lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
+    lz_decompress_dispatch(gCommonObjTilesLz, (void *)OBJ_VRAM0);
     gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
     gSpriteEntries[0].frame_table = 2;
     gSpriteEntries[0].palette = 0;

@@ -38,7 +38,7 @@ void impair_begin(void) {
 }
 
 void impair_portrait_spawn(void) {
-    lz_decompress_dispatch(gImpairPortraitTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gImpairPortraitTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gImpairPortraitPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
     gSpriteEntries[0x21].scale_x = 0x40;
@@ -177,7 +177,7 @@ void confusion_begin(void) {
 }
 
 void confusion_ball_spawn(void) {
-    lz_decompress_dispatch(gConfusionBallTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gConfusionBallTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gConfusionBallPalettes, (void *)0x050002C0, 0x10);
     if (gBattleWork.actorSideFlags & 1)
         gSpriteEntries[0x21].flags |= SPRITE_FLAG_HFLIP;
@@ -265,7 +265,7 @@ void use_drain_begin(void) {
 }
 
 void use_drain_bubble_spawn(void) {
-    lz_decompress_dispatch(gDrainBubbleTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gDrainBubbleTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gDrainBubblePalettes, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
     gSpriteEntries[0x21].scale_x = 0x40;
@@ -371,7 +371,7 @@ void use_drain_apply(void) {
 }
 
 void use_drain_popup_init(void) {
-    lz_decompress_dispatch(gBattlePopupDigitTiles, (void *)0x06017E00);
+    lz_decompress_dispatch(gBattlePopupDigitTiles, (void *)(OBJ_VRAM0 + 0x7E00));
     set_display_digit_type(&gGameWork.partAbility, gBattleWork.scratch, 1);
     battle_text_popup_init_slot(&gGameWork.partAbility, gBattleWork.target, 0x21);
     set_display_digit_type(&gGameWork.partAbility + 0x20, gBattleWork.scratchValue, 0);
@@ -424,10 +424,10 @@ void no_escape_defense_begin(void) {
 // Ability 46 (0x2E) shows the running-person icon, 47 the shield icon.
 void no_escape_defense_icon_load(void) {
     if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == 0x2E) {
-        lz_decompress_dispatch(gNoEscapeIconTilesLz, (void *)0x06014800);
+        lz_decompress_dispatch(gNoEscapeIconTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gNoEscapeIconPalette, (void *)0x050002E0, 0x10);
     } else {
-        lz_decompress_dispatch(gDefenseIconTilesLz, (void *)0x06014800);
+        lz_decompress_dispatch(gDefenseIconTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
         CpuFastSet(gDefenseIconPalette, (void *)0x050002E0, 0x10);
     }
     gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
@@ -500,7 +500,7 @@ void forcedrain_begin(void) {
 }
 
 void forcedrain_glass_spawn(void) {
-    lz_decompress_dispatch(gForcedrainGlassTiles, (void *)0x06014800);
+    lz_decompress_dispatch(gForcedrainGlassTiles, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gForcedrainGlassPalettes, (void *)0x050002E0, 0x10);
     gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
     gSpriteEntries[0x21].scale_x = 0x40;
@@ -628,7 +628,7 @@ void team_attack_turrets_run(void) {
 void team_attack_turrets_spawn(void) {
     u32 i;
 
-    lz_decompress_dispatch(gTeamAttackTurretTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gTeamAttackTurretTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gTeamAttackTurretPalette, (void *)0x050002E0, 8);
     for (i = 0; i <= 2; i++) {
         gSpriteEntries[i + 0x21].flags =
@@ -688,7 +688,7 @@ void counter_attack_begin(void) {
 }
 
 void counter_attack_ball_spawn(void) {
-    lz_decompress_dispatch(gCounterAttackBallTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gCounterAttackBallTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gCounterAttackBallPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
                                  SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
@@ -790,7 +790,7 @@ void change_begin(void) {
 }
 
 void change_effect_spawn(void) {
-    lz_decompress_dispatch(gChangeEffectTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gChangeEffectTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gChangeEffectPalettes, (void *)0x050002C0, 0x10);
     gSpriteEntries[0x21].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;

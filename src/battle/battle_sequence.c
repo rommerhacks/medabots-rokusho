@@ -410,7 +410,7 @@ void battle_seq_cmd_wait_camera(void) {
 // Opcode 0x17: loads effect tiles gBattleSeqEffectGfx[operand 0] to OBJ VRAM and OBJ palette 14.
 void battle_seq_cmd_load_effect_gfx(void) {
     battle_seq_load_operands();
-    lz_decompress_dispatch(gBattleSeqEffectGfx[gBattleWork.seqOperands[0] * 2], (void *)0x06010000);
+    lz_decompress_dispatch(gBattleSeqEffectGfx[gBattleWork.seqOperands[0] * 2], (void *)OBJ_VRAM0);
     CpuFastSet(gBattleSeqEffectGfx[gBattleWork.seqOperands[0] * 2 + 1], (void *)0x050003C0, 8);
     battle_seq_advance();
 }
@@ -934,7 +934,7 @@ void battle_seq_cmd_load_skill_gfx(void) {
 void battle_seq_cmd_load_effect_gfx_at(void) {
     battle_seq_load_operands();
     lz_decompress_dispatch(gBattleSeqEffectGfx[gBattleWork.seqOperands[0] * 2],
-                           (void *)(gBattleWork.seqOperands[1] * 32 + 0x06010000));
+                           (void *)(gBattleWork.seqOperands[1] * 32 + OBJ_VRAM0));
     CpuFastSet(gBattleSeqEffectGfx[gBattleWork.seqOperands[0] * 2 + 1], (void *)0x050003C0, 8);
     battle_seq_advance();
 }
@@ -990,10 +990,10 @@ void battle_seq_cmd_armor_panel(void) {
     u8 mirrored;
 
     battle_seq_load_operands();
-    lz_decompress_dispatch(gGaugeFillTiles, (void *)0x06006400);
-    lz_decompress_dispatch(gArmorPanelDecorTilesLz, (void *)0x06006520);
-    lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06006600);
-    lz_decompress_dispatch(gArmorPanelPartIconTilesLz, (void *)0x06006800);
+    lz_decompress_dispatch(gGaugeFillTiles, (void *)(BG_VRAM + 0x6400));
+    lz_decompress_dispatch(gArmorPanelDecorTilesLz, (void *)(BG_VRAM + 0x6520));
+    lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)(BG_VRAM + 0x6600));
+    lz_decompress_dispatch(gArmorPanelPartIconTilesLz, (void *)(BG_VRAM + 0x6800));
     CpuFastSet(gArmorPanelDecorPalette, (void *)0x05000140, 8);
     CpuFastSet(gArmorPanelGaugePalette, (void *)0x05000100, 8);
     CpuFastSet(gArmorPanelPartIconPalette, (void *)0x05000160, 8);

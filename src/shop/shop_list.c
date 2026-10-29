@@ -5,7 +5,7 @@
 #include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
-    return (void *)(0x06004000 + off);
+    return (void *)(BG_CHAR_ADDR(1) + off);
 }
 
 void shop_list_dispatch(void) {
@@ -27,7 +27,7 @@ void shop_list_init(void) {
     REG_DISPCNT |= 0x200;
     REG_BG1CNT = 0x1B05;
     REG_BG2CNT = 0x1A06;
-    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)OBJ_VRAM0);
     gSpriteEntries[8].flags = SPRITE_FLAG_ENABLED | SPRITE_PRIORITY(1);
     gSpriteEntries[8].frame_table = 2;
     gSpriteEntries[8].palette = 2;
@@ -66,7 +66,7 @@ void shop_list_init(void) {
         gSpriteEntries[0x6E + i].y = i * 16 + 0x50;
     }
     REG_BLDALPHA = 0x10;
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     gSpriteEntries[8].x = 8;
     gSpriteEntries[8].y = gMenuWork->list_cursor * 16 + 0x54;
     if (gMenuWork->cursor == 1) {

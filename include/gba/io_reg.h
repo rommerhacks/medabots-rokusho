@@ -8,6 +8,13 @@
 #define VRAM 0x06000000
 #define OAM 0x07000000
 
+// VRAM regions: BG tiles and tilemaps in the first 64 KB, sprite (OBJ) tiles from 0x06010000.
+#define BG_VRAM VRAM
+#define OBJ_VRAM0 (VRAM + 0x10000)
+// BG character (tile) base block n (BGxCNT bits 2-3) and screen (tilemap) block n (bits 8-12).
+#define BG_CHAR_ADDR(n) (BG_VRAM + (n) * 0x4000)
+#define BG_SCREEN_ADDR(n) (BG_VRAM + (n) * 0x800)
+
 // BIOS interrupt check flags and IRQ vector, at the top of IWRAM.
 #define INTR_CHECK (*(u16 *)0x03007FF8)
 #define INTR_VECTOR (*(void **)0x03007FFC)

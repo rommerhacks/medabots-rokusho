@@ -31,10 +31,10 @@ void setup_screen_transition_effect_080682CC(u8 step, u8 frames_per_level, u16 f
     case 3:
         for (i = 0; i < 0x80; i++)
             tiles[i] = 0x11;
-        DmaSet(3, tiles, 0x0600FF80, 0x80000040);
+        DmaSet(3, tiles, BG_VRAM + 0xFF80, 0x80000040);
         for (i = 0; i < 0x280; i++)
             map[i] = (gRandomBytes[(gFrameCounter + i) & 0xFF] % 4) + 0xF1FC;
-        DmaSet(3, map, 0x0600F800, 0x84000140);
+        DmaSet(3, map, BG_SCREEN_ADDR(31), 0x84000140);
         DmaSet(3, &gTransitionFadeColor, 0x050001E2, 0x80000001);
         REG_BG0CNT = 0x1F0C;
         REG_DISPCNT |= 0x100;
@@ -83,10 +83,10 @@ void setup_screen_transition_effect_080684F0(u8 step, u8 frames_per_level, u16 f
     case 3:
         for (i = 0; i < 0x80; i++)
             tiles[i] = 0x11;
-        DmaSet(3, tiles, 0x0600FF80, 0x80000040);
+        DmaSet(3, tiles, BG_VRAM + 0xFF80, 0x80000040);
         for (i = 0; i < 0x280; i++)
             map[i] = (gRandomBytes[(gFrameCounter + i) & 0xFF] % 4) + 0xF1FC;
-        DmaSet(3, map, 0x0600F800, 0x84000140);
+        DmaSet(3, map, BG_SCREEN_ADDR(31), 0x84000140);
         DmaSet(3, &gTransitionFadeColor, 0x050001E2, 0x80000001);
         REG_BG0CNT = 0x1F0C;
         REG_DISPCNT |= 0x100;
@@ -164,10 +164,10 @@ bool32 scene_step_wipe_clear_bg0(void) {
         u8 n = *np;
         frame = *frames_ptr;
         if (frame % n == 0) {
-            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + 0x0600C000, 0x80000001);
-            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + 0x0600C004, 0x80000001);
-            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + 0x0600C008, 0x80000001);
-            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + 0x0600C00C, 0x80000001);
+            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + BG_SCREEN_ADDR(24), 0x80000001);
+            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + (BG_VRAM + 0xC004), 0x80000001);
+            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + (BG_VRAM + 0xC008), 0x80000001);
+            DmaSet(3, &zero, gTransitionWipeRows[frame / *np] + (BG_VRAM + 0xC00C), 0x80000001);
         }
     }
     if (*frames_ptr == *np * 16) {
@@ -220,10 +220,10 @@ bool32 scene_step_wipe_fill_bg0(void) {
         REG_DISPCNT |= 0x100;
     np = &gTransitionFramesPerLevel;
     if (*frames_ptr % *np == 0) {
-        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + 0x0600C000, 0x80000001);
-        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + 0x0600C004, 0x80000001);
-        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + 0x0600C008, 0x80000001);
-        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + 0x0600C00C, 0x80000001);
+        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + BG_SCREEN_ADDR(24), 0x80000001);
+        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + (BG_VRAM + 0xC004), 0x80000001);
+        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + (BG_VRAM + 0xC008), 0x80000001);
+        DmaSet(3, &fill, gTransitionWipeRows[*frames_ptr / *np] + (BG_VRAM + 0xC00C), 0x80000001);
     }
     if (*frames_ptr == *np * 16)
         return TRUE;

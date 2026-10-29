@@ -9,47 +9,47 @@
 u32 battle_load_graphics_step(u32 direct) {
     switch (gGameWork.gfxLoadStep) {
     case 0:
-        lz_decompress_dispatch(gGaugeFillTiles, (void *)0x06004000);
-        lz_decompress_dispatch(gMedaforceLabelTiles, (void *)0x06004140);
-        lz_decompress_dispatch(gMedaforceGaugeFrameTiles, (void *)0x06004200);
+        lz_decompress_dispatch(gGaugeFillTiles, (void *)BG_CHAR_ADDR(1));
+        lz_decompress_dispatch(gMedaforceLabelTiles, (void *)(BG_VRAM + 0x4140));
+        lz_decompress_dispatch(gMedaforceGaugeFrameTiles, (void *)(BG_VRAM + 0x4200));
         gGameWork.gfxLoadStep++;
         break;
     case 1:
-        lz_decompress_dispatch(gMedaforceGaugeFrameEndTiles, (void *)0x06004300);
-        lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)0x06004400);
-        lz_decompress_dispatch(gBattlePillarTiles, (void *)0x0600C000);
-        lz_decompress_dispatch(gBattlePillarCapTiles, (void *)0x0600C600);
+        lz_decompress_dispatch(gMedaforceGaugeFrameEndTiles, (void *)(BG_VRAM + 0x4300));
+        lz_decompress_dispatch(gMedaforceGaugeTiles, (void *)(BG_VRAM + 0x4400));
+        lz_decompress_dispatch(gBattlePillarTiles, (void *)BG_CHAR_ADDR(3));
+        lz_decompress_dispatch(gBattlePillarCapTiles, (void *)(BG_VRAM + 0xC600));
         gGameWork.gfxLoadStep++;
         break;
     case 2:
-        lz_decompress_dispatch(gRightBotPanelTiles, (void *)0x06004E00);
-        lz_decompress_dispatch(gPartsMenuLeftPanelTiles, (void *)0x06005100);
-        lz_decompress_dispatch(gMfMenuLeftPanelTiles, (void *)0x06005400);
-        lz_decompress_dispatch(gMfMenuRightPanelTiles, (void *)0x06005700);
-        lz_decompress_dispatch(gPartsMenuRightPanelTiles, (void *)0x06005A00);
+        lz_decompress_dispatch(gRightBotPanelTiles, (void *)(BG_VRAM + 0x4E00));
+        lz_decompress_dispatch(gPartsMenuLeftPanelTiles, (void *)(BG_VRAM + 0x5100));
+        lz_decompress_dispatch(gMfMenuLeftPanelTiles, (void *)(BG_VRAM + 0x5400));
+        lz_decompress_dispatch(gMfMenuRightPanelTiles, (void *)(BG_VRAM + 0x5700));
+        lz_decompress_dispatch(gPartsMenuRightPanelTiles, (void *)(BG_VRAM + 0x5A00));
         gGameWork.gfxLoadStep++;
         break;
     case 3:
-        lz_decompress_dispatch(gBotActionIconTiles, (void *)0x0600C280);
-        lz_decompress_dispatch(gBattleUiSpriteTiles, (void *)0x06012000);
-        lz_decompress_dispatch(gMissPopupTiles, (void *)0x06014E00);
-        lz_decompress_dispatch(gBotShadowTiles, (void *)0x06017F80);
-        lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+        lz_decompress_dispatch(gBotActionIconTiles, (void *)(BG_VRAM + 0xC280));
+        lz_decompress_dispatch(gBattleUiSpriteTiles, (void *)(OBJ_VRAM0 + 0x2000));
+        lz_decompress_dispatch(gMissPopupTiles, (void *)(OBJ_VRAM0 + 0x4E00));
+        lz_decompress_dispatch(gBotShadowTiles, (void *)(OBJ_VRAM0 + 0x7F80));
+        lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
         gGameWork.gfxLoadStep++;
         break;
     case 4:
-        lz_decompress_dispatch(gActionSelectPanelTiles, (void *)0x06004600);
-        lz_decompress_dispatch(gActionSelectSidePanelTiles, (void *)0x06004800);
-        lz_decompress_dispatch(gLeftBotPanelTiles, (void *)0x06004B00);
+        lz_decompress_dispatch(gActionSelectPanelTiles, (void *)(BG_VRAM + 0x4600));
+        lz_decompress_dispatch(gActionSelectSidePanelTiles, (void *)(BG_VRAM + 0x4800));
+        lz_decompress_dispatch(gLeftBotPanelTiles, (void *)(BG_VRAM + 0x4B00));
         gGameWork.gfxLoadStep++;
         break;
     case 5:
         gGameWork.gfxLoadStep++;
         break;
     case 6:
-        lz_decompress_dispatch(gBattleNumberSpriteTiles, (void *)0x06013000);
-        lz_decompress_dispatch(gBattleMarkerTilesLz, (void *)0x06013C00);
-        lz_decompress_dispatch(gBattleMarkerAltTilesLz, (void *)0x06014200);
+        lz_decompress_dispatch(gBattleNumberSpriteTiles, (void *)(OBJ_VRAM0 + 0x3000));
+        lz_decompress_dispatch(gBattleMarkerTilesLz, (void *)(OBJ_VRAM0 + 0x3C00));
+        lz_decompress_dispatch(gBattleMarkerAltTilesLz, (void *)(OBJ_VRAM0 + 0x4200));
         gGameWork.gfxLoadStep++;
         break;
     case 7:

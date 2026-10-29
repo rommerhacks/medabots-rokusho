@@ -83,19 +83,19 @@ void update_battle_medapart_icons(void) {
         clear_item_list_map_run(0x18, i * 2 + 3, 3);
         clear_item_list_map_run(0x18, i * 2 + 4, 3);
     }
-    icon_tile_top = *(u16 *)0x0600F0EE;
-    icon_tile_bottom = *(u16 *)0x0600F12E;
+    icon_tile_top = *(u16 *)(BG_VRAM + 0xF0EE);
+    icon_tile_bottom = *(u16 *)(BG_VRAM + 0xF12E);
     for (i = 0; i < n; i++) {
         if (counts[i]) {
             memcpy_bytes_0803F63C((void *)gItemNames[ids[i]], gTextArgBuffer, 0x11);
             render_text_sprites_08040DB8(gTextArgBuffer, i * 15, 0xC, i * 2 + 3, 7, 8, 1, 2);
             draw_number_2digits_tall(counts[i], 0x18, i * 2 + 3);
-            *((u16 *)0x0600F02E + ((i * 2 + 3) << 5)) = icon_tile_top;
-            *((u16 *)0x0600F02E + ((i * 2 + 4) << 5)) = icon_tile_bottom;
+            *((u16 *)(BG_VRAM + 0xF02E) + ((i * 2 + 3) << 5)) = icon_tile_top;
+            *((u16 *)(BG_VRAM + 0xF02E) + ((i * 2 + 4) << 5)) = icon_tile_bottom;
             gSpriteEntries[i + 0x55].flags |= SPRITE_FLAG_VISIBLE;
             gSpriteEntries[i + 0x55].frame = item_is_usable(ids[i]) ? 0x21 : 0x22;
         } else {
-            u16 *map = (u16 *)0x0600F02E;
+            u16 *map = (u16 *)(BG_VRAM + 0xF02E);
             u16 *tile;
             tile = map + ((i * 2 + 3) << 5);
             *tile = 0;
@@ -153,19 +153,20 @@ void shop_build_sell_list(void) {
 void load_battle_sprite_tiles(u32 id, s32 kind, s32 slot) {
     switch (kind) {
     case 0:
-        lz_decompress_dispatch(gMedabotPartSpriteTiles[((id << 2) + (id << 1))], (void *)(slot * 0x80 + 0x06013340));
+        lz_decompress_dispatch(gMedabotPartSpriteTiles[((id << 2) + (id << 1))],
+                               (void *)(slot * 0x80 + (OBJ_VRAM0 + 0x3340)));
         break;
     case 1:
         lz_decompress_dispatch(gMedabotPartSpriteTiles[((id << 2) + (id << 1)) + 1],
-                               (void *)(slot * 0x80 + 0x06013340));
+                               (void *)(slot * 0x80 + (OBJ_VRAM0 + 0x3340)));
         break;
     case 2:
         lz_decompress_dispatch(gMedabotPartSpriteTiles[((id << 2) + (id << 1)) + 3],
-                               (void *)(slot * 0x80 + 0x06013340));
+                               (void *)(slot * 0x80 + (OBJ_VRAM0 + 0x3340)));
         break;
     case 3:
         lz_decompress_dispatch(gMedabotPartSpriteTiles[((id << 2) + (id << 1)) + 5],
-                               (void *)(slot * 0x80 + 0x06013340));
+                               (void *)(slot * 0x80 + (OBJ_VRAM0 + 0x3340)));
         break;
     }
     gSpriteEntries[slot + 0x6E].palette = gMedabotSpritePalettes[id] + 4;
@@ -231,7 +232,7 @@ void render_battle_medapart_list(u32 mode) {
 }
 
 static void clear_item_list_map_run(s32 x, s32 y, s32 n) {
-    u16 *base = (u16 *)0x0600B000 + x;
+    u16 *base = (u16 *)(BG_VRAM + 0xB000) + x;
     u16 *dst = base + y * 32;
     u16 i;
     for (i = 0; i < n; i++)

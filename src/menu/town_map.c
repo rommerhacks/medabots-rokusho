@@ -24,7 +24,8 @@ void town_map_animate_tiles(void) {
         gMenuWork->frame = 0;
     frame = gMenuWork->frame;
     if ((s16)(frame % 10) == 0)
-        CpuSet(gDecompressBuffer + (gTownMapAnimFrameOrder[(s16)(frame / 10)] + 1) * 480, (void *)0x06004020, 0xF0);
+        CpuSet(gDecompressBuffer + (gTownMapAnimFrameOrder[(s16)(frame / 10)] + 1) * 480, (void *)(BG_VRAM + 0x4020),
+               0xF0);
 }
 
 void town_map_dispatch(void) {
@@ -34,9 +35,9 @@ void town_map_dispatch(void) {
 void town_map_save_bg2_and_reset(void) {
     u32 zero;
 
-    CpuFastSet((void *)0x06002800, (void *)0x02020800, 0x28);
+    CpuFastSet((void *)(BG_VRAM + 0x2800), (void *)gBgTileBackup, 0x28);
     zero = 0;
-    CpuFastSet(&zero, (void *)0x06002800, 0x01000200);
+    CpuFastSet(&zero, (void *)(BG_VRAM + 0x2800), 0x01000200);
     reset_bg_scroll();
     free_all_sprites();
     REG_DISPCNT = 0x60;
@@ -98,7 +99,7 @@ void town_map_load_graphics(void) {
     lz_decompress_dispatch(gMenuDigitTilesLz, (void *)(VRAM + off + size));
     gMenuWork->bg_tile_base = size / 32 - 1;
     CpuFastSet(gTownMapBgPalettes, (void *)PLTT, 0x70);
-    lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
+    lz_decompress_dispatch(gCommonObjTilesLz, (void *)OBJ_VRAM0);
     CpuFastSet(gTownMapObjPalettes, (void *)(PLTT + 0x200), 0x18);
     gMenuWork->town_map_place = gAreaTownMapPlace[gFieldWork.area_id];
     gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
@@ -204,7 +205,7 @@ void town_map_fade_out_exit(void) {
     } else {
         REG_DISPCNT &= 0xFDFF;
         REG_DISPCNT &= 0xFEFF;
-        CpuFastSet((void *)0x02020800, (void *)0x06002800, 0x28);
+        CpuFastSet((void *)gBgTileBackup, (void *)(BG_VRAM + 0x2800), 0x28);
         if (gGameState == 10) {
             gGameState = 4;
             gGameSubState = 0;

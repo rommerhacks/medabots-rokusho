@@ -16,7 +16,7 @@ void debug_menu_init(void) {
     DmaSet(3, gSpriteEntries, gBgTileBackup, 0x84000400);
     zero = 0;
     DmaSet(3, &zero, gSpriteEntries, 0x85000400);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     DmaSet(3, gSpriteFontPalette, 0x050003E0, 0x84000008);
     gGameSubState++;
 }
@@ -627,7 +627,7 @@ void debug_mdlpic_input(void) {
         gGameSubState = 1;
     } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         DmaSet(3, gCommonObjPalette, 0x050003E0, 0x84000008);
-        lz_decompress_dispatch(gMedalSpriteGfx[gGameWork.debugValues[0]][gGameWork.debugValues[1]], (void *)0x06010000);
+        lz_decompress_dispatch(gMedalSpriteGfx[gGameWork.debugValues[0]][gGameWork.debugValues[1]], (void *)OBJ_VRAM0);
         gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[0].x = 0x40;
         gSpriteEntries[0].y = 0x50;

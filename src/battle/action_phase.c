@@ -29,7 +29,7 @@ void action_phase_load_gfx(void) {
         gGameWork.setupStep++;
         break;
     case 1:
-        lz_decompress_dispatch(gMissPopupTiles, (void *)0x06014E00);
+        lz_decompress_dispatch(gMissPopupTiles, (void *)(OBJ_VRAM0 + 0x4E00));
         gGameWork.setupStep++;
         break;
     case 2:
@@ -230,7 +230,7 @@ void action_phase_show_message(void) {
 // After an action: Medal skill levels, then record 0 (our leader) down = lost (battleResult 2), record 3 (their
 // leader) down = won (battleResult 1); otherwise on to the TIME check.
 void action_phase_end_check(void) {
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     increment_medal_skill_level(gBattleWork.actor);
     battle_action_cleanup(gBattleWork.actor);
     gGameWork.battleResult = 0;
@@ -250,7 +250,7 @@ void action_phase_end_check(void) {
 
 // End banner (sprite 0x21, tile 0x902) zooming in at the screen centre.
 void action_phase_win_banner_init(void) {
-    lz_decompress_dispatch(gBattleBannerTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gBattleBannerTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gBattleBannerPalette, (void *)0x050003E0, 8);
     gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
                                  SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
@@ -325,7 +325,7 @@ void action_phase_time_check(void) {
 }
 
 void action_phase_time_up_banner_init(void) {
-    lz_decompress_dispatch(gBattleBannerTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gBattleBannerTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gBattleBannerPalette, (void *)0x050003E0, 8);
     gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
                                  SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
@@ -389,7 +389,7 @@ void action_phase_exit(void) {
 
 // Medal skill level-up popup above the acting Medabot (sprite 0x21), then the skill type (0x22) and level.
 void action_phase_level_up_init(void) {
-    lz_decompress_dispatch(gSkillLevelUpTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gSkillLevelUpTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     gSpriteEntries[0x21].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
@@ -428,7 +428,7 @@ void action_phase_level_up_skill_slide(void) {
 }
 
 void action_phase_level_up_digits_init(void) {
-    lz_decompress_dispatch(gBattlePopupDigitTiles, (void *)0x06017E00);
+    lz_decompress_dispatch(gBattlePopupDigitTiles, (void *)(OBJ_VRAM0 + 0x7E00));
     set_display_digit_type(&gGameWork.partAbility, gBattleWork.levelUpLevel, 2);
     battle_text_popup_init_at(&gGameWork.partAbility, gBattleWork.actor, 0x23,
                               gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x + 0x18,

@@ -15,7 +15,7 @@ void scroll_banner_init(void) {
     REG_BG2CNT = 0xDB06;
     REG_BG3CNT = 0x1F07;
     dma3_copy_or_decompress(gScrollBannerStripTiles, gDecompressBuffer);
-    dst = (u8 *)0x0600D800;
+    dst = (u8 *)(BG_VRAM + 0xD800);
     src = gDecompressBuffer;
     for (i = 31; i >= 0; i--) {
         CpuFastSet(src, dst, 0x10);
@@ -28,7 +28,7 @@ void scroll_banner_init(void) {
         dst += 0x40;
         src += 0x80;
     }
-    src = (u8 *)0x02031000;
+    src = gWeeklyAnimTiles;
     for (i = 31; i >= 0; i--) {
         CpuFastSet(src, dst, 0x10);
         dst += 0x40;
@@ -42,9 +42,9 @@ void scroll_banner_init(void) {
     }
     decompress_and_write_tilemap(gScrollBannerBg3Tilemap, REG_BG3CNT);
     size = dma3_copy_or_decompress(gScrollBannerBgTiles, gDecompressBuffer);
-    CpuCopy16(gDecompressBuffer, (void *)0x06004000, size);
+    CpuCopy16(gDecompressBuffer, (void *)BG_CHAR_ADDR(1), size);
     size2 = dma3_copy_or_decompress(gScrollBannerBgTiles2, gDecompressBuffer);
-    CpuCopy16(gDecompressBuffer, (void *)(size + 0x06004000), size2);
+    CpuCopy16(gDecompressBuffer, (void *)(size + BG_CHAR_ADDR(1)), size2);
     tilemap_offset_tiles_and_palette(size >> 5, 0, 0x1F);
     CpuFastSet(gScrollBannerBgPalette, (void *)PLTT, 0x48);
     REG_DISPCNT |= 0x400;

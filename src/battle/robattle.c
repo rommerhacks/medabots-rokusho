@@ -487,10 +487,10 @@ void robattle_fade_to_white(void) {
 }
 
 void robattle_backup_screen(void) {
-    CpuFastSet((void *)0x06002800, (void *)0x02020800, 0x200);
-    CpuFastSet((void *)0x0600C800, (void *)0x02021000, 0x200);
-    CpuFastSet((void *)0x0600D000, (void *)0x02021800, 0x200);
-    CpuFastSet((void *)0x0600D800, (void *)0x02022000, 0x200);
+    CpuFastSet((void *)(BG_VRAM + 0x2800), (void *)gBgTileBackup, 0x200);
+    CpuFastSet((void *)(BG_VRAM + 0xC800), (void *)gBgTileBackupHigh, 0x200);
+    CpuFastSet((void *)(BG_VRAM + 0xD000), (void *)0x02021800, 0x200);
+    CpuFastSet((void *)(BG_VRAM + 0xD800), (void *)0x02022000, 0x200);
     CpuFastSet(gSpriteEntries, (void *)0x02028000, 0x800);
     set_blend_effect_mode(5, 0x3F, 0x20);
     gVBlankCallback = empty_callback;
@@ -543,13 +543,13 @@ void robattle_restore_screen(void) {
         gGameWork.setupStep++;
         break;
     case 3:
-        CpuFastSet((void *)0x02020800, (void *)0x06002800, 0x200);
-        CpuFastSet((void *)0x02021000, (void *)0x0600C800, 0x200);
+        CpuFastSet((void *)gBgTileBackup, (void *)(BG_VRAM + 0x2800), 0x200);
+        CpuFastSet((void *)gBgTileBackupHigh, (void *)(BG_VRAM + 0xC800), 0x200);
         gGameWork.setupStep++;
         break;
     case 4:
-        CpuFastSet((void *)0x02021800, (void *)0x0600D000, 0x200);
-        CpuFastSet((void *)0x02022000, (void *)0x0600D800, 0x200);
+        CpuFastSet((void *)0x02021800, (void *)(BG_VRAM + 0xD000), 0x200);
+        CpuFastSet((void *)0x02022000, (void *)(BG_VRAM + 0xD800), 0x200);
         gGameWork.setupStep++;
         break;
     case 5:
@@ -607,13 +607,13 @@ void robattle_status_screen_init(void) {
     REG_BG1CNT = 0x1901;
     REG_BG2CNT = 0x1A02;
     REG_BG3CNT = 0x1B03;
-    lz_decompress_dispatch(gStatusScreenBgTilesLz, (void *)0x06004000);
-    lz_decompress_dispatch(gStatusScreenCornerTiles, (void *)0x06006000);
-    lz_decompress_dispatch(gCompatibilityIconTiles, (void *)0x06006800);
-    lz_decompress_dispatch(gPartSlotIconTiles, (void *)0x06006E00);
-    lz_decompress_dispatch(gTallDigitTiles, (void *)0x06007200);
-    lz_decompress_dispatch(gSlashTiles, (void *)0x06007480);
-    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
+    lz_decompress_dispatch(gStatusScreenBgTilesLz, (void *)BG_CHAR_ADDR(1));
+    lz_decompress_dispatch(gStatusScreenCornerTiles, (void *)(BG_VRAM + 0x6000));
+    lz_decompress_dispatch(gCompatibilityIconTiles, (void *)(BG_VRAM + 0x6800));
+    lz_decompress_dispatch(gPartSlotIconTiles, (void *)(BG_VRAM + 0x6E00));
+    lz_decompress_dispatch(gTallDigitTiles, (void *)(BG_VRAM + 0x7200));
+    lz_decompress_dispatch(gSlashTiles, (void *)(BG_VRAM + 0x7480));
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)(OBJ_VRAM0 + 0x7E00));
     set_tilemap_and_decompress_bg(0, 0, gStatusScreenBg0Tilemap, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gStatusScreenBg1Tilemap, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gStatusScreenBg2Tilemap, REG_BG2CNT, 0x200);
@@ -734,7 +734,7 @@ void robattle_status_screen_fade_out(void) {
 void robattle_start_banner_init(void) {
     count_team_skill_uses();
     gBattleWork.battleStarted = 1;
-    lz_decompress_dispatch(gBattleBannerTilesLz, (void *)0x06014800);
+    lz_decompress_dispatch(gBattleBannerTilesLz, (void *)(OBJ_VRAM0 + 0x4800));
     CpuFastSet(gBattleBannerPalette, (void *)0x050003E0, 8);
     fade_out_music(8);
     play_sound_effect(0x6E);

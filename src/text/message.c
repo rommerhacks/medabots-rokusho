@@ -118,7 +118,7 @@ void message_clear_text_area(void) {
     u32 i;
     u8 *dst;
 
-    for (i = 0, dst = (u8 *)0x06000280; i <= 0x33; i++) {
+    for (i = 0, dst = (u8 *)(BG_VRAM + 0x280); i <= 0x33; i++) {
         CpuFastSet(gFontGlyphs, dst, 0x10);
         dst += 0x40;
     }
@@ -513,7 +513,7 @@ u8 message_wait_next_page(void) {
         gGameWork.cursorBlink = 0;
         write_tilemap_rect(2, 1, 0xE, 0x12, gUiTilemapsNamed.more_cursor_off, REG_BG0CNT, 0);
         for (i = 0; i <= 0x33; i++)
-            CpuSet(gFontGlyphs, (void *)(0x06000280 + i * 0x40), 0x20);
+            CpuSet(gFontGlyphs, (void *)((BG_VRAM + 0x280) + i * 0x40), 0x20);
         gGameWork.msgStopPrint = 0;
         return 1;
     }

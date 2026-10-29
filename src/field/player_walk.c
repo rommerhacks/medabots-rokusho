@@ -149,7 +149,7 @@ void init_battle_field_setup(void) {
     field_set_player_facing(gFieldWork.player_facing);
     follower_turn_toward_player(3);
     gSpriteEntries[47].order = 0x40;
-    LZ77UnCompVram(gShadowTilesLz, (void *)0x06017FC0);
+    LZ77UnCompVram(gShadowTilesLz, (void *)(OBJ_VRAM0 + 0x7FC0));
     sprite_entry_init(89,
                       SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3) | SPRITE_OBJ_MODE(1) |
                           SPRITE_FLAG_PART_PALETTE,

@@ -41,7 +41,7 @@ void animate_area_bg_tiles(void) {
             if (anim[gFieldWork.bg_anim_frame + 3] == 0xFF)
                 gFieldWork.bg_anim_frame = 0;
             src = gAreaAnimTileSrc + anim[gFieldWork.bg_anim_frame + 3] * n * 32;
-            DmaSet(3, src, 0x06009020, 0x80000000 | (n << 4));
+            DmaSet(3, src, BG_VRAM + 0x9020, 0x80000000 | (n << 4));
             gFieldWork.bg_anim_frame++;
             gFieldWork.bg_anim_timer = 2;
         }
@@ -71,7 +71,7 @@ s32 resolve_sprite_sheet_id(s32 sheet_id) {
 
 void area_load_sprite_sheets(void) {
     s32 i = 0;
-    u8 *dst = (u8 *)0x06010000;
+    u8 *dst = (u8 *)OBJ_VRAM0;
     u32 sheet_id;
 
     while ((sheet_id = area_sprite_sheet_id(i)) != 0xFF) {
@@ -91,7 +91,7 @@ void fill_sprite_sheets(s32 sheet_code) {
     s32 sheet_id = resolve_sprite_sheet_id(sheet_code);
 
     tbl = gFieldSpriteTiles;
-    dst = (u8 *)0x06010000;
+    dst = (u8 *)OBJ_VRAM0;
     for (i = 11; i >= 0; i--) {
         if (tbl[sheet_id] == NULL)
             sheet_id = 1;

@@ -869,7 +869,7 @@ u32 field_effect_run(void) {
             E[n].part_sprite[part] = n * 4 + part;
             E[n].part_x[part] = 0;
             E[n].part_y[part] = 0;
-            LZ77UnCompVram(gFieldEffectObjTiles[S.effect_id], (void *)0x06016C00);
+            LZ77UnCompVram(gFieldEffectObjTiles[S.effect_id], (void *)(OBJ_VRAM0 + 0x6C00));
             if (!(S.flags & 0x80))
                 DmaSet(3, gFieldEffectObjPalettes[S.effect_id], 0x050003A0,
                        0x84000008) else DmaSet(3, gFieldEffectObjPalettes[S.effect_id], 0x0202F9A0, 0x84000008)

@@ -83,15 +83,15 @@ void medabots_weekly_init(void) {
 void weekly_load_studio(void) {
     s32 i;
 
-    LZ77UnCompVram(gWeeklyStudioBgTiles, (void *)0x06004000);
-    LZ77UnCompVram(gWeeklyLectureBgTiles, (void *)0x06008000);
-    LZ77UnCompVram(gWeeklyStudioBg1Tilemap, (void *)0x06006800);
-    LZ77UnCompVram(gWeeklyStudioBg2Tilemap, (void *)0x06007000);
-    LZ77UnCompVram(gWeeklyStudioBg3Tilemap, (void *)0x06007800);
-    LZ77UnCompVram(gWeeklyLectureBg1Tilemap, (void *)0x0600A800);
-    LZ77UnCompVram(gWeeklyLectureBg2Tilemap, (void *)0x0600B000);
-    LZ77UnCompVram(gWeeklyLectureBg3Tilemap, (void *)0x0600B800);
-    LZ77UnCompVram(gWeeklyObjTiles, (void *)0x06010000);
+    LZ77UnCompVram(gWeeklyStudioBgTiles, (void *)BG_CHAR_ADDR(1));
+    LZ77UnCompVram(gWeeklyLectureBgTiles, (void *)BG_CHAR_ADDR(2));
+    LZ77UnCompVram(gWeeklyStudioBg1Tilemap, (void *)BG_SCREEN_ADDR(13));
+    LZ77UnCompVram(gWeeklyStudioBg2Tilemap, (void *)BG_SCREEN_ADDR(14));
+    LZ77UnCompVram(gWeeklyStudioBg3Tilemap, (void *)BG_SCREEN_ADDR(15));
+    LZ77UnCompVram(gWeeklyLectureBg1Tilemap, (void *)BG_SCREEN_ADDR(21));
+    LZ77UnCompVram(gWeeklyLectureBg2Tilemap, (void *)BG_SCREEN_ADDR(22));
+    LZ77UnCompVram(gWeeklyLectureBg3Tilemap, (void *)BG_SCREEN_ADDR(23));
+    LZ77UnCompVram(gWeeklyObjTiles, (void *)OBJ_VRAM0);
 
     for (i = 0; i <= 10; i++) {
         sprite_entry_init(i, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2), 0x50E, 4, 3);
@@ -137,10 +137,10 @@ void weekly_load_studio(void) {
 void weekly_show_studio(void) {
     LZ77UnCompVram(gWeeklyAnimTilesLz, (void *)0x02031000);
     DmaSet(3, gWeeklyStudioBgPalettes, PLTT, 0x84000068);
-    LZ77UnCompVram(gMapSpriteSheet48Tiles, (void *)0x06011B00);
-    LZ77UnCompVram(gMapSpriteSheet46Tiles, (void *)0x06012400);
-    LZ77UnCompVram(gMapSpriteSheet40Tiles, (void *)0x06012D00);
-    LZ77UnCompVram(gMapSpriteSheet37Tiles, (void *)0x06013600);
+    LZ77UnCompVram(gMapSpriteSheet48Tiles, (void *)(OBJ_VRAM0 + 0x1B00));
+    LZ77UnCompVram(gMapSpriteSheet46Tiles, (void *)(OBJ_VRAM0 + 0x2400));
+    LZ77UnCompVram(gMapSpriteSheet40Tiles, (void *)(OBJ_VRAM0 + 0x2D00));
+    LZ77UnCompVram(gMapSpriteSheet37Tiles, (void *)(OBJ_VRAM0 + 0x3600));
     DmaSet(3, gMapSpriteSheet48Palette, PLTT + 0x200, 0x80000010);
     DmaSet(3, gMapSpriteSheet46Palette, PLTT + 0x220, 0x80000010);
     DmaSet(3, gMapSpriteSheet40Palette, PLTT + 0x240, 0x80000010);

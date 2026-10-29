@@ -99,11 +99,11 @@ void medabots_screen_load_gfx(void) {
         REG_BG1CNT = 0x1801;
         REG_BG2CNT = 0x1902;
         REG_BG3CNT = 0x1A03;
-        lz_decompress_dispatch(gMedabotsBgTiles, (void *)0x06004000);
-        lz_decompress_dispatch(gLegTypePedestalTiles, (void *)0x06006000);
-        lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)0x06006200);
-        lz_decompress_dispatch(gTeamRoleLabelTiles, (void *)0x06016C00);
-        lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+        lz_decompress_dispatch(gMedabotsBgTiles, (void *)BG_CHAR_ADDR(1));
+        lz_decompress_dispatch(gLegTypePedestalTiles, (void *)(BG_VRAM + 0x6000));
+        lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)(BG_VRAM + 0x6200));
+        lz_decompress_dispatch(gTeamRoleLabelTiles, (void *)(OBJ_VRAM0 + 0x6C00));
+        lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
         gGameWork.setupStep++;
         break;
     case 1:
@@ -313,14 +313,14 @@ void medabot_detail_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x1902;
     REG_BG3CNT = 0x1A03;
-    lz_decompress_dispatch(gMedabotBuildBgTiles, (void *)0x06004000);
-    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)0x06006000);
-    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)0x06006200);
-    lz_decompress_dispatch(gSmallDigitTiles, (void *)0x06007480);
-    lz_decompress_dispatch(gCompatibilityIconTiles, (void *)0x06006800);
-    lz_decompress_dispatch(gPartSlotIconTiles, (void *)0x06006E00);
-    lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gMedabotBuildBgTiles, (void *)BG_CHAR_ADDR(1));
+    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)(BG_VRAM + 0x6000));
+    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)(BG_VRAM + 0x6200));
+    lz_decompress_dispatch(gSmallDigitTiles, (void *)(BG_VRAM + 0x7480));
+    lz_decompress_dispatch(gCompatibilityIconTiles, (void *)(BG_VRAM + 0x6800));
+    lz_decompress_dispatch(gPartSlotIconTiles, (void *)(BG_VRAM + 0x6E00));
+    lz_decompress_dispatch(gCursorArrowTiles, (void *)(OBJ_VRAM0 + 0x7E00));
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     set_tilemap_and_decompress_bg(0, 0, gMedabotBuildBg0Tilemap, REG_BG0CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedabotBuildBg1Tilemap, REG_BG1CNT, 0x200);
     set_tilemap_and_decompress_bg(0, 0, gMedabotBuildBg2Tilemap, REG_BG2CNT, 0x200);
@@ -963,9 +963,10 @@ static void medabots_screen_draw_medal_kind_name(void) {
 
 static void medabots_screen_draw_medal_icon(void) {
     if (gTeamSlots[gGameWork.medabotsCursor].state > 1)
-        CpuFastSet(gMedalIconTiles + gTeamSlots[gGameWork.medabotsCursor].medal * 0x80, (void *)0x06006600, 0x20);
+        CpuFastSet(gMedalIconTiles + gTeamSlots[gGameWork.medabotsCursor].medal * 0x80, (void *)(BG_VRAM + 0x6600),
+                   0x20);
     else
-        CpuFastSet(gMedalIconBlankTiles, (void *)0x06006600, 0x20);
+        CpuFastSet(gMedalIconBlankTiles, (void *)(BG_VRAM + 0x6600), 0x20);
     draw_tile_block(2, 2, 1, 16, REG_BG1CNT, 0x6330);
 }
 
@@ -1224,9 +1225,9 @@ static void medabot_detail_draw_medal_nickname(void) {
 
 static void medabot_detail_draw_medal_icon(void) {
     if (gGameWork.shownMedal < 30)
-        CpuFastSet(gMedalIconTiles + gMedals[gGameWork.shownMedal].graphicId * 0x80, (void *)0x06007800, 0x20);
+        CpuFastSet(gMedalIconTiles + gMedals[gGameWork.shownMedal].graphicId * 0x80, (void *)(BG_VRAM + 0x7800), 0x20);
     else
-        CpuFastSet(gMedalIconBlankTiles, (void *)0x06007800, 0x20);
+        CpuFastSet(gMedalIconBlankTiles, (void *)(BG_VRAM + 0x7800), 0x20);
     draw_tile_block(2, 2, 16, 9, REG_BG1CNT, 0x63C0);
 }
 

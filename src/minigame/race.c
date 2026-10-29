@@ -226,7 +226,7 @@ void race_exit(void) {
 
 static void race_clear_screen(void) {
     u32 zero = 0;
-    DmaSet(3, &zero, 0x06000000, 0x85006000);
+    DmaSet(3, &zero, BG_VRAM, 0x85006000);
     REG_DISPCNT = 0x60;
     zero = 0;
     DmaSet(3, &zero, gSpriteEntries, 0x85000800);
@@ -243,9 +243,9 @@ static void race_clear_screen(void) {
 // The three team leaders' 64x64 portraits on BG2 (revealed row by row by race_reveal_portrait_row).
 void race_load_leader_portraits(void) {
     gRaceStaticBg = 0;
-    decompress_indexed_asset(0, 0, (void *)0x06004000, 9, 0);
-    decompress_indexed_asset(gRaces[gRaceId].rival1Portrait, 0, (void *)0x06004800, 10, 0);
-    decompress_indexed_asset(gRaces[gRaceId].rival2Portrait, 0, (void *)0x06005000, 11, 0);
+    decompress_indexed_asset(0, 0, (void *)BG_CHAR_ADDR(1), 9, 0);
+    decompress_indexed_asset(gRaces[gRaceId].rival1Portrait, 0, (void *)(BG_VRAM + 0x4800), 10, 0);
+    decompress_indexed_asset(gRaces[gRaceId].rival2Portrait, 0, (void *)(BG_VRAM + 0x5000), 11, 0);
     REG_BG2CNT = 0x1E02;
     gBg2Scroll.x = -24;
     gBg2Scroll.y = -96;
@@ -259,7 +259,7 @@ static void race_reveal_portrait_row(u8 row) {
         buf[i + 8] = row * 8 - 0x5DC0 + i;
         buf[i + 16] = row * 8 - 0x4D80 + i;
     }
-    DmaSet(3, buf, row * 64 + 0x0600F000, 0x80000018);
+    DmaSet(3, buf, row * 64 + (BG_VRAM + 0xF000), 0x80000018);
     gBg2Scroll.y = -((12 - row) * 8);
 }
 
@@ -288,10 +288,10 @@ void race_load_track_screen(void) {
     load_battle_script_entry_b();
     apply_battle_blend_effect_b();
     decompress_to_ewram_27000(gBattlefieldGraphics[gBattleWork.battlefield * 5 + 1]);
-    LZ77UnCompVram(gRaceFieldBgTiles, (void *)0x0600C800);
-    LZ77UnCompVram(gRaceFieldBgTiles2, (void *)0x0600C880);
-    LZ77UnCompVram(gRaceFieldBgTiles3, (void *)0x0600C9C0);
-    LZ77UnCompVram(gRaceFieldBgTiles4, (void *)0x0600CC40);
+    LZ77UnCompVram(gRaceFieldBgTiles, (void *)(BG_VRAM + 0xC800));
+    LZ77UnCompVram(gRaceFieldBgTiles2, (void *)(BG_VRAM + 0xC880));
+    LZ77UnCompVram(gRaceFieldBgTiles3, (void *)(BG_VRAM + 0xC9C0));
+    LZ77UnCompVram(gRaceFieldBgTiles4, (void *)(BG_VRAM + 0xCC40));
     DmaSet(3, gRaceFieldBgPalettes, 0x05000100, 0x84000008);
     DmaSet(3, gRaceFieldBgPalettes2, 0x05000120, 0x84000008);
     DmaSet(3, gRaceFieldBgPalettes3, 0x05000140, 0x84000008);
@@ -313,9 +313,9 @@ void race_load_track_screen(void) {
 
 void race_load_track_status_bar(void) {
     vu16 zero = 0;
-    DmaSet(3, &zero, 0x0600E800, 0x81000400);
-    LZ77UnCompVram(gRaceStatusBarTiles, (void *)0x0600CD00);
-    LZ77UnCompVram(gRaceStatusBarTiles2, (void *)0x0600D0A0);
+    DmaSet(3, &zero, BG_VRAM + 0xE800, 0x81000400);
+    LZ77UnCompVram(gRaceStatusBarTiles, (void *)(BG_VRAM + 0xCD00));
+    LZ77UnCompVram(gRaceStatusBarTiles2, (void *)(BG_VRAM + 0xD0A0));
     DmaSet(3, gRaceStatusBarPalettes, 0x05000180, 0x84000008);
     DmaSet(3, gRaceStatusBarPalettes2, 0x050001A0, 0x84000008);
     race_draw_tile_block(4, 1, 0xE);
@@ -365,8 +365,8 @@ void race_draw_tile_block(u8 block, u8 x, u8 y) {
             else
                 tile = *tile_ptr + first[block] + pal[block];
             if (block <= 3)
-                DmaSet(3, &tile, tilemap_addr(0x0600F800, x + j, i + y),
-                       0x80000001) else DmaSet(3, &tile, tilemap_addr(0x0600E800, x + j, i + y), 0x80000001) tile_ptr++;
+                DmaSet(3, &tile, tilemap_addr(BG_SCREEN_ADDR(31), x + j, i + y), 0x80000001) else DmaSet(
+                    3, &tile, tilemap_addr(BG_SCREEN_ADDR(29), x + j, i + y), 0x80000001) tile_ptr++;
         }
     }
 }
@@ -375,17 +375,17 @@ void race_load_frame_bgs(void) {
     u16 buf[0x400];
     vu32 zero;
     int i;
-    LZ77UnCompVram(gRaceBgTiles, (void *)0x0600C000);
+    LZ77UnCompVram(gRaceBgTiles, (void *)BG_CHAR_ADDR(3));
     zero = 0;
     DmaSet(3, &zero, buf, 0x85000200);
     LZ77UnCompVram(gRaceBg2Tilemap, buf);
     for (i = 0; i < 0x280; i++)
         buf[i] += 0xC000;
-    DmaSet(3, buf, 0x0600E800, 0x80000400);
+    DmaSet(3, buf, BG_VRAM + 0xE800, 0x80000400);
     LZ77UnCompVram(gRaceBg3Tilemap, buf);
     for (i = 0; i < 0x400; i++)
         buf[i] += 0xC000;
-    DmaSet(3, buf, 0x0600F800, 0x80000400);
+    DmaSet(3, buf, BG_VRAM + 0xF800, 0x80000400);
     DmaSet(3, gRaceBgPalette, 0x05000180, 0x80000020);
     REG_BG1CNT = 0x1D0D;
     REG_BG3CNT = 0x1F0F;
@@ -393,16 +393,16 @@ void race_load_frame_bgs(void) {
 
 void race_load_character_sprites(void) {
     const u8 *setup;
-    LZ77UnCompVram(gFieldSpriteTiles[0x25], (void *)0x06012400);
+    LZ77UnCompVram(gFieldSpriteTiles[0x25], (void *)(OBJ_VRAM0 + 0x2400));
     DmaSet(3, gFieldSpritePalettes[0x25], 0x05000200, 0x80000010);
-    LZ77UnCompVram(gRaceObjTiles, (void *)0x06012E00);
-    LZ77UnCompVram(gFieldSpriteTiles[0], (void *)0x06015100);
+    LZ77UnCompVram(gRaceObjTiles, (void *)(OBJ_VRAM0 + 0x2E00));
+    LZ77UnCompVram(gFieldSpriteTiles[0], (void *)(OBJ_VRAM0 + 0x5100));
     DmaSet(3, gFieldSpritePalettes[0], 0x05000300, 0x84000008);
     setup = gEncounterSetups[gRaces[gRaceId].rival1Setup];
-    LZ77UnCompVram(gFieldSpriteTiles[setup[0]], (void *)0x06015A00);
+    LZ77UnCompVram(gFieldSpriteTiles[setup[0]], (void *)(OBJ_VRAM0 + 0x5A00));
     DmaSet(3, gFieldSpritePalettes[setup[0]], 0x05000320, 0x84000008);
     setup = gEncounterSetups[gRaces[gRaceId].rival2Setup];
-    LZ77UnCompVram(gFieldSpriteTiles[setup[0]], (void *)0x06016300);
+    LZ77UnCompVram(gFieldSpriteTiles[setup[0]], (void *)(OBJ_VRAM0 + 0x6300));
     DmaSet(3, gFieldSpritePalettes[setup[0]], 0x05000340, 0x84000008);
     DmaSet(3, gRaceRunnerObjPalette, 0x050003A0, 0x84000008);
 }

@@ -11,7 +11,7 @@ void new_game_prompt_init(void) {
     reset_bg_scroll();
     REG_DISPCNT = 0x60;
     CpuFastSet(gSpriteFontPalette, &gPaletteBackup[0xF0], 8);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     text_window_init(1, 2, 0);
     REG_DISPCNT |= 0x1000;
     gGameSubState++;

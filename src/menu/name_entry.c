@@ -74,7 +74,7 @@ static inline s32 mul16(u8 row) {
     return row * 16;
 }
 static inline void *vram_at2(u32 off) {
-    return (void *)(0x06004000 + off);
+    return (void *)(BG_CHAR_ADDR(1) + off);
 }
 
 // First step of the name-entry screen (runs once as it opens): BG1-3 tilemaps, tiles, palettes, the letter
@@ -115,8 +115,8 @@ void name_entry_init_graphics(void) {
     CpuFastSet(&zero, (void *)0x05000000, 0x01000080);
     zero2 = 0;
     CpuFastSet(&zero2, (void *)0x05000200, 0x01000080);
-    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)OBJ_VRAM0);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     for (i = 0; i < 2; i++) {
         gSpriteEntries[i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE;
         gSpriteEntries[i].frame_table = 2;
@@ -137,8 +137,8 @@ void name_entry_init_graphics(void) {
         tile = gMenuWork->bg_tile_base + ((gMedals[gCurrentMedalSlot].graphicId * 4) + 1);
         tile |= 0x6000;
         base = BGCNT_SCREEN_OFFSET(REG_BG1CNT);
-        map = (u16 *)(0x06000000 + base);
-        tile_ptr = (u16 *)(base + 0x060000C4);
+        map = (u16 *)(BG_SCREEN_ADDR(0) + base);
+        tile_ptr = (u16 *)(base + (BG_VRAM + 0xC4));
         *tile_ptr = tile;
         tile_ptr = &map[0x63];
         *tile_ptr = tile + 1;

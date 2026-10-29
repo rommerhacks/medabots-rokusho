@@ -136,7 +136,7 @@ void status_draw_row_icons(void) {
 
 void status_load_medal_icon(void) {
     CpuFastSet(gMedalIconTiles + gBattleBots[gGameWork.shownId + gGameWork.openedFrom * 3].medal.graphicId * 0x80,
-               (void *)0x06007800, 0x20);
+               (void *)(BG_VRAM + 0x7800), 0x20);
 }
 
 void status_draw_medal_name(void) {

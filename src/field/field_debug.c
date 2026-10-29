@@ -651,21 +651,21 @@ static void field_debug_draw_decimal3(u8 *value, s32 x, s32 y) {
     tens = (*value - hundreds * 100) / 10;
     ones = *value - hundreds * 100 - tens * 10;
 
-    DmaSet(3, &gFieldDebugFont[(hundreds + '0') * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
+    DmaSet(3, &gFieldDebugFont[(hundreds + '0') * 32], (OBJ_VRAM0 + 0x7A00) + gFieldDebug.next_sprite * 32, 0x84000008);
     sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
                       gFieldDebug.next_sprite + 0x99, 14, 1);
     gSpriteEntries[gFieldDebug.next_sprite].x = x;
     gSpriteEntries[gFieldDebug.next_sprite].y = y;
     gFieldDebug.next_sprite++;
 
-    DmaSet(3, &gFieldDebugFont[(tens + '0') * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
+    DmaSet(3, &gFieldDebugFont[(tens + '0') * 32], (OBJ_VRAM0 + 0x7A00) + gFieldDebug.next_sprite * 32, 0x84000008);
     sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
                       gFieldDebug.next_sprite + 0x99, 14, 1);
     gSpriteEntries[gFieldDebug.next_sprite].x = x + 8;
     gSpriteEntries[gFieldDebug.next_sprite].y = y;
     gFieldDebug.next_sprite++;
 
-    DmaSet(3, &gFieldDebugFont[(ones + '0') * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
+    DmaSet(3, &gFieldDebugFont[(ones + '0') * 32], (OBJ_VRAM0 + 0x7A00) + gFieldDebug.next_sprite * 32, 0x84000008);
     sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
                       gFieldDebug.next_sprite + 0x99, 14, 1);
     gSpriteEntries[gFieldDebug.next_sprite].x = x + 16;
@@ -702,14 +702,14 @@ static void field_debug_draw_hex(u32 value, s32 bits, s32 x, s32 y) {
         hi = byte >> 4;
         lo = byte - hi * 16;
 
-        DmaSet(3, &gFieldDebugFont[hex[hi] * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
+        DmaSet(3, &gFieldDebugFont[hex[hi] * 32], (OBJ_VRAM0 + 0x7A00) + gFieldDebug.next_sprite * 32, 0x84000008);
         sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
                           gFieldDebug.next_sprite + 0x99, 14, 1);
         gSpriteEntries[gFieldDebug.next_sprite].x = x + i * 16;
         gSpriteEntries[gFieldDebug.next_sprite].y = y;
         gFieldDebug.next_sprite++;
 
-        DmaSet(3, &gFieldDebugFont[hex[lo] * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
+        DmaSet(3, &gFieldDebugFont[hex[lo] * 32], (OBJ_VRAM0 + 0x7A00) + gFieldDebug.next_sprite * 32, 0x84000008);
         sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
                           gFieldDebug.next_sprite + 0x99, 14, 1);
         gSpriteEntries[gFieldDebug.next_sprite].x = x + i * 16 + 8;
@@ -722,7 +722,7 @@ void field_debug_draw_label(const u8 *digits, s32 count, s32 x, s32 y) {
     s32 i;
 
     for (i = 0; i < count; i++) {
-        DmaSet(3, &gFieldDebugFont[*digits * 32], 0x06017A00 + gFieldDebug.next_sprite * 32, 0x84000008);
+        DmaSet(3, &gFieldDebugFont[*digits * 32], (OBJ_VRAM0 + 0x7A00) + gFieldDebug.next_sprite * 32, 0x84000008);
         sprite_entry_init(gFieldDebug.next_sprite, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE,
                           gFieldDebug.next_sprite + 0x99, 14, 1);
         gSpriteEntries[gFieldDebug.next_sprite].x = x;

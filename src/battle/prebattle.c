@@ -92,7 +92,7 @@ void prebattle_wipe_init(void) {
     REG_BG0CNT = 0x500;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
-    lz_decompress_dispatch(gPrebattleWipeTiles, (void *)0x06002600);
+    lz_decompress_dispatch(gPrebattleWipeTiles, (void *)(BG_VRAM + 0x2600));
     DmaSet(3, gPrebattleWipePalette, 0x050001A0, 0x84000008);
     gGameWork.listTab = 0;
     gGameWork.subCounter = 0;
@@ -140,11 +140,11 @@ void prebattle_load_gfx(void) {
     REG_BG1CNT = 0x1801;
     REG_BG2CNT = 0x590A;
     REG_BG3CNT = 0x5B0B;
-    lz_decompress_dispatch(gPrebattleBgTiles, (void *)0x06004000);
-    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)0x06006000);
-    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)0x06006200);
-    lz_decompress_dispatch(gPrebattleObjTiles, (void *)0x06012800);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gPrebattleBgTiles, (void *)BG_CHAR_ADDR(1));
+    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)(BG_VRAM + 0x6000));
+    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)(BG_VRAM + 0x6200));
+    lz_decompress_dispatch(gPrebattleObjTiles, (void *)(OBJ_VRAM0 + 0x2800));
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gPrebattleBg1Tilemap, REG_BG1CNT, 0x200);
@@ -403,7 +403,7 @@ void afterbattle_load_new_part_sprite(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
-    lz_decompress_dispatch(gNewPartSpriteTiles, (void *)0x06012400);
+    lz_decompress_dispatch(gNewPartSpriteTiles, (void *)(OBJ_VRAM0 + 0x2400));
     DmaSet(3, gResultSpritePalettes, 0x05000340, 0x84000008);
     gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_AFFINE |
                               SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
@@ -434,7 +434,7 @@ void afterbattle_load_part_icon_sprite(void) {
     update_scroll_movement_a();
     setup_battle_result_sprite();
     afterbattle_pulse_new_sprite();
-    lz_decompress_dispatch(gPartIconSpriteTiles, (void *)0x06016C00);
+    lz_decompress_dispatch(gPartIconSpriteTiles, (void *)(OBJ_VRAM0 + 0x6C00));
     DmaSet(3, gPartIconSpritePalette, 0x05000360, 0x84000008);
     gSpriteEntries[2].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[2].frame_table = 0;
@@ -685,8 +685,8 @@ void afterbattle_part_detail_fade_out(void) {
 }
 
 void afterbattle_part_detail_save_screen(void) {
-    DmaSet(3, 0x06002800, gBgTileBackup, 0x84000200);
-    DmaSet(3, 0x06000280, 0x02021000, 0x84000380);
+    DmaSet(3, BG_VRAM + 0x2800, gBgTileBackup, 0x84000200);
+    DmaSet(3, BG_VRAM + 0x280, 0x02021000, 0x84000380);
     DmaSet(3, gSpriteEntries, 0x02028000, 0x84000800);
     set_blend_effect_mode(5, 0x3F, 0x20);
     gVBlankCallback = empty_callback;
@@ -755,11 +755,11 @@ void afterbattle_part_detail_restore_screen(void) {
     REG_BG3CNT = 0x5B0B;
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(32, 32, 0, 0, REG_BG1CNT, 0);
-    lz_decompress_dispatch(gPrebattleBgTiles, (void *)0x06004000);
-    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)0x06006000);
-    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)0x06006200);
-    lz_decompress_dispatch(gPrebattleObjTiles, (void *)0x06012800);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gPrebattleBgTiles, (void *)BG_CHAR_ADDR(1));
+    lz_decompress_dispatch(gLegTypePedestalTiles, (void *)(BG_VRAM + 0x6000));
+    lz_decompress_dispatch(gLegTypePedestalTiles2, (void *)(BG_VRAM + 0x6200));
+    lz_decompress_dispatch(gPrebattleObjTiles, (void *)(OBJ_VRAM0 + 0x2800));
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     set_tilemap_and_decompress_bg(0, 0, gPrebattleBg1Tilemap, REG_BG1CNT, 0x200);
     DmaSet(3, gPrebattleBgPalette, 0x0202FA00, 0x84000070);
     DmaSet(3, gLegTypePedestalPalette, 0x0202FB00, 0x84000008);
@@ -770,14 +770,14 @@ void afterbattle_part_detail_restore_screen(void) {
     DmaSet(3, gPrebattleObjPalette, 0x0202F940, 0x84000008);
     DmaSet(3, gPartIconSpritePalette, 0x0202F960, 0x84000008);
     decompress_tileset_to_vram(gBattleWork.battlefield, 1);
-    lz_decompress_dispatch(gNewPartSpriteTiles, (void *)0x06012400);
+    lz_decompress_dispatch(gNewPartSpriteTiles, (void *)(OBJ_VRAM0 + 0x2400));
     DmaSet(3, gResultSpritePalettes, 0x0202F940, 0x84000008);
-    lz_decompress_dispatch(gPartIconSpriteTiles, (void *)0x06016C00);
+    lz_decompress_dispatch(gPartIconSpriteTiles, (void *)(OBJ_VRAM0 + 0x6C00));
     DmaSet(3, gPartIconSpritePalette, 0x0202F960, 0x84000008);
     zero = 0;
     DmaSet(3, &zero, gSpriteEntries, 0x85000800);
-    DmaSet(3, gBgTileBackup, 0x06002800, 0x84000200);
-    DmaSet(3, 0x02021000, 0x06000280, 0x84000380);
+    DmaSet(3, gBgTileBackup, BG_VRAM + 0x2800, 0x84000200);
+    DmaSet(3, 0x02021000, BG_VRAM + 0x280, 0x84000380);
     DmaSet(3, 0x02028000, gSpriteEntries, 0x84000800);
     REG_DISPCNT |= 0x1F60;
     prebattle_draw_opponent_name();

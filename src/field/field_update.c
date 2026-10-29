@@ -624,36 +624,39 @@ void load_room_graphics(void) {
               (gFieldWork.map_height >> 1) * (gFieldWork.map_width >> 1));
     tbl = (const void *const *)gAreaBgTilemaps;
     if (area_gfx(tbl, gFieldWork.area_id * 3) != NULL && gAreaBgTiles[gFieldWork.area_id] != NULL) {
-        LZ77UnCompVram(gAreaBgTiles[gFieldWork.area_id], (void *)0x06009000);
+        LZ77UnCompVram(gAreaBgTiles[gFieldWork.area_id], (void *)(BG_VRAM + 0x9000));
         LZ77UnCompVram(area_gfx(tbl, gFieldWork.area_id * 3), gFieldTilemapBuf);
-        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)0x06003000, gFieldWork.bg_map_height,
+        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)BG_SCREEN_ADDR(6), gFieldWork.bg_map_height,
                                           gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
         LZ77UnCompVram(area_gfx(tbl, gFieldWork.area_id * 3 + 1), gFieldTilemapBuf);
-        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)0x06005000, gFieldWork.bg_map_height,
+        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)BG_SCREEN_ADDR(10), gFieldWork.bg_map_height,
                                           gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
         LZ77UnCompVram(area_gfx(tbl, gFieldWork.area_id * 3 + 2), gFieldTilemapBuf);
-        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)0x06007000, gFieldWork.bg_map_height,
+        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)BG_SCREEN_ADDR(14), gFieldWork.bg_map_height,
                                           gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
         if (gAreaAnimBgTiles[gFieldWork.area_id] != NULL)
             LZ77UnCompVram(gAreaAnimBgTiles[gFieldWork.area_id], gAreaAnimTileSrc);
     } else {
-        memzero_bytes((u8 *)0x06009000, 0x80);
-        DmaSet(3, gFallbackAreaTiles0, 0x06009080, 0x80000040);
-        DmaSet(3, gFallbackAreaTiles1, 0x06009100, 0x80000040);
-        DmaSet(3, gFallbackAreaTiles2, 0x06009180, 0x80000040);
-        DmaSet(3, gFallbackAreaTiles3, 0x06009200, 0x80000040);
-        DmaSet(3, gFallbackAreaTiles0, 0x06009280, 0x80000040);
-        DmaSet(3, gFallbackAreaTiles0, 0x06009300, 0x80000040);
-        DmaSet(3, gFallbackAreaTiles0, 0x06009380, 0x80000040);
-        DmaSet(3, gFallbackAreaTiles4, 0x06009400, 0x80000040);
-        DmaSet(3, gFallbackAreaTiles5, 0x06009480, 0x80000040);
+        memzero_bytes((u8 *)(BG_VRAM + 0x9000), 0x80);
+        DmaSet(3, gFallbackAreaTiles0, BG_VRAM + 0x9080, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles1, BG_VRAM + 0x9100, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles2, BG_VRAM + 0x9180, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles3, BG_VRAM + 0x9200, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles0, BG_VRAM + 0x9280, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles0, BG_VRAM + 0x9300, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles0, BG_VRAM + 0x9380, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles4, BG_VRAM + 0x9400, 0x80000040);
+        DmaSet(3, gFallbackAreaTiles5, BG_VRAM + 0x9480, 0x80000040);
         memset_bytes((u8 *)gFieldTilemapBuf, gFieldWork.map_height * gFieldWork.map_width, 8);
-        copy_tiles_to_bg_tilemap(gFieldTilemapBuf, (void *)0x06003000, gFieldWork.map_height, gFieldWork.map_width,
-                                 0x40, 0x40, gFieldWork.map_origin_y / 8, gFieldWork.map_origin_x / 8, 0x80);
-        copy_tiles_to_bg_tilemap(gFieldTilemapBuf, (void *)0x06005000, gFieldWork.map_height, gFieldWork.map_width,
-                                 0x40, 0x40, gFieldWork.map_origin_y / 8, gFieldWork.map_origin_x / 8, 0x80);
-        copy_tiles_to_bg_tilemap(gFieldWork.tile_map, (void *)0x06007000, gFieldWork.map_height, gFieldWork.map_width,
-                                 0x40, 0x40, gFieldWork.map_origin_y / 8, gFieldWork.map_origin_x / 8, 0x80);
+        copy_tiles_to_bg_tilemap(gFieldTilemapBuf, (void *)BG_SCREEN_ADDR(6), gFieldWork.map_height,
+                                 gFieldWork.map_width, 0x40, 0x40, gFieldWork.map_origin_y / 8,
+                                 gFieldWork.map_origin_x / 8, 0x80);
+        copy_tiles_to_bg_tilemap(gFieldTilemapBuf, (void *)BG_SCREEN_ADDR(10), gFieldWork.map_height,
+                                 gFieldWork.map_width, 0x40, 0x40, gFieldWork.map_origin_y / 8,
+                                 gFieldWork.map_origin_x / 8, 0x80);
+        copy_tiles_to_bg_tilemap(gFieldWork.tile_map, (void *)BG_SCREEN_ADDR(14), gFieldWork.map_height,
+                                 gFieldWork.map_width, 0x40, 0x40, gFieldWork.map_origin_y / 8,
+                                 gFieldWork.map_origin_x / 8, 0x80);
     }
     field_center_camera_on_player();
     check_and_update_battlefield_palette();

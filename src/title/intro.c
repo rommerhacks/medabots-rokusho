@@ -211,7 +211,7 @@ void intro_load_scan_screen(void) {
 }
 
 void intro_load_scan_sprites(void) {
-    LZ77UnCompVram(gIntroScanObjTiles[1], (void *)0x06010000);
+    LZ77UnCompVram(gIntroScanObjTiles[1], (void *)OBJ_VRAM0);
     LZ77UnCompVram(gIntroScanTextGlyphs, gSceneWork.scanTextGlyphs);
     gGameSubState = 6;
 }
@@ -649,7 +649,7 @@ u32 intro_type_part_name(u8 part) {
             gSceneWork.partNameTiles[gSceneWork.partNameLen] = 0;
         else
             gSceneWork.partNameTiles[gSceneWork.partNameLen] = 0x9078;
-        DmaSet(3, gSceneWork.partNameTiles, 0x0600FC44, 0x8000000D);
+        DmaSet(3, gSceneWork.partNameTiles, BG_VRAM + 0xFC44, 0x8000000D);
         return 1;
     }
     ch = *str;
@@ -658,7 +658,7 @@ u32 intro_type_part_name(u8 part) {
     else
         gSceneWork.partNameTiles[gSceneWork.partNameLen] = ch + 0x9064;
     gSceneWork.partNameLen++;
-    DmaSet(3, gSceneWork.partNameTiles, 0x0600FC44, 0x8000000D);
+    DmaSet(3, gSceneWork.partNameTiles, BG_VRAM + 0xFC44, 0x8000000D);
     return 0;
 }
 
@@ -672,7 +672,7 @@ u32 intro_type_scan_text(u8 glyph_base) {
         u8 cell = *(vu8 *)&gSceneWork.scanTextLen;
         u32 offset = (u8)(cell / 10) * 64 + (u8)(cell % 10) * 2;
         tile = gSceneWork.scanTextGlyphs[cell + glyph_base] + 0x8001;
-        DmaSet(3, &tile, 0x0600FB0A + offset, 0x80000001);
+        DmaSet(3, &tile, (BG_VRAM + 0xFB0A) + offset, 0x80000001);
         gSceneWork.scanTextLen = len + 1;
     }
     return 0;
@@ -695,7 +695,7 @@ static void intro_draw_counters(void) {
     buf[5] = rest % 10 + 0x90C8;
     rest /= 10;
     buf[4] = rest % 10 + 0x90C8;
-    DmaSet(3, buf, 0x0600F86C, 0x80000007);
+    DmaSet(3, buf, BG_VRAM + 0xF86C, 0x80000007);
 }
 
 // Pointer line `lineIdx` of scan `part`: start column, row, end column, end row.
@@ -728,11 +728,11 @@ u32 intro_draw_pointer_line(u8 part) {
             gSpriteEntries[slot].y = (ROW_ENT(1) + gSceneWork.lineStep) * 8 + 12;
         } else {
             pos = gSceneWork.lineStep + (ROW_ENT(0) + ROW_ENT(3) * 32);
-            DmaSet(3, &tile, (u16 *)0x0600F800 + pos, 0x80000001);
+            DmaSet(3, &tile, (u16 *)(BG_VRAM + 0xF800) + pos, 0x80000001);
         }
     } else {
         pos = gSceneWork.lineStep + (ROW_ENT(0) + ROW_ENT(3) * 32);
-        DmaSet(3, &tile, (u16 *)0x0600F800 + pos, 0x80000001);
+        DmaSet(3, &tile, (u16 *)(BG_VRAM + 0xF800) + pos, 0x80000001);
     }
     gSceneWork.lineStep++;
     return 0;
@@ -746,20 +746,20 @@ static void intro_clear_part_name(void) {
     for (i = 0; i < 13; i++)
         gSceneWork.partNameTiles[i] = 0;
     gSceneWork.partNameLen = 0;
-    DmaSet(3, gSceneWork.partNameTiles, 0x0600FC44, 0x8000000D);
+    DmaSet(3, gSceneWork.partNameTiles, BG_VRAM + 0xFC44, 0x8000000D);
 }
 
 static void intro_clear_scan_text(void) {
     vu16 fill;
 
     fill = 0;
-    DmaSet(3, &fill, 0x0600FB0A, 0x8100000A);
+    DmaSet(3, &fill, BG_VRAM + 0xFB0A, 0x8100000A);
     fill = 0;
-    DmaSet(3, &fill, 0x0600FB4A, 0x8100000A);
+    DmaSet(3, &fill, BG_VRAM + 0xFB4A, 0x8100000A);
     fill = 0;
-    DmaSet(3, &fill, 0x0600FB8A, 0x8100000A);
+    DmaSet(3, &fill, BG_VRAM + 0xFB8A, 0x8100000A);
     fill = 0;
-    DmaSet(3, &fill, 0x0600FBCA, 0x8100000A);
+    DmaSet(3, &fill, BG_VRAM + 0xFBCA, 0x8100000A);
     gSceneWork.scanTextLen = 0;
 }
 
@@ -769,7 +769,7 @@ static void intro_clear_counters(void) {
     gSceneWork.noiseCounter = 0;
     gSceneWork.frameCounter = 0;
     fill = 0;
-    DmaSet(3, &fill, 0x0600F86C, 0x81000007);
+    DmaSet(3, &fill, BG_VRAM + 0xF86C, 0x81000007);
 }
 
 static void intro_clear_pointer_lines(void) {
@@ -779,7 +779,7 @@ static void intro_clear_pointer_lines(void) {
     gSceneWork.lineStep = 0;
     gSceneWork.lineIdx = 0;
     fill = 0;
-    DmaSet(3, &fill, 0x0600F800, 0x850000A0);
+    DmaSet(3, &fill, BG_VRAM + 0xF800, 0x850000A0);
     for (i = 0; i < 6; i++)
         gSpriteEntries[i + 0xE].y = 0xC8;
 }

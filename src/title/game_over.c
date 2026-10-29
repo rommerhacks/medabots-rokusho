@@ -6,7 +6,7 @@
 #include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
-    return (void *)(0x06004000 + off);
+    return (void *)(BG_CHAR_ADDR(1) + off);
 }
 
 static void game_over_draw_wipe(s32 step) {
@@ -102,7 +102,7 @@ void game_over_load_graphics(void) {
     zero16 = 0;
     CpuFastSet(gGameOverBgPalette, (void *)PLTT, 0x80);
     CpuFastSet(gGameOverObjPalettes, (void *)(PLTT + 0x200), 0x10);
-    lz_decompress_dispatch(gCommonObjTilesLz, (void *)0x06010000);
+    lz_decompress_dispatch(gCommonObjTilesLz, (void *)OBJ_VRAM0);
     gSpriteEntries[0].flags = SPRITE_FLAG_ENABLED | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
     gSpriteEntries[0].frame_table = 2;
     gSpriteEntries[0].x = 0x78;

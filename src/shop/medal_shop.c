@@ -6,7 +6,7 @@
 #include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
-    return (void *)(0x06004000 + off);
+    return (void *)(BG_CHAR_ADDR(1) + off);
 }
 
 // Draws up to 4 Medal names (and their icons) of the owned list, from entry start.
@@ -115,8 +115,8 @@ void medal_rename_load_graphics(void) {
     gMenuWork->bg_tile_base = (size >> 5) - 1;
     zero = 0;
     CpuFastSet(gMedalIconTiles, vram_at(size), 0x400);
-    lz_decompress_dispatch(gMenuObjTilesLz, (void *)0x06010000);
-    lz_decompress_dispatch(gSpriteFontTiles, (void *)0x06017400);
+    lz_decompress_dispatch(gMenuObjTilesLz, (void *)OBJ_VRAM0);
+    lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     gSpriteEntries[8].flags = SPRITE_FLAG_ENABLED;
     gSpriteEntries[8].frame_table = 2;
     gSpriteEntries[8].palette = zero;
