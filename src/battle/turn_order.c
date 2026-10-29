@@ -5,7 +5,7 @@
 #include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
-// unkBA == 2: set by reset_battle_bot_state when a Medabot stops functioning.
+// present == 2: set by reset_battle_bot_state when a Medabot stops functioning.
 static u32 count_knocked_out_bots(u32 first) {
     u32 n = 0;
     u32 i;
@@ -32,7 +32,7 @@ static u32 battle_count_broken_parts(u32 first) {
     return n;
 }
 
-// Decides the Robattle winner from the team / opponent records: fewer Medabots with unkBA == 2, then fewer
+// Decides the Robattle winner from the team / opponent records: fewer Medabots with present == 2, then fewer
 // broken parts, then the larger gBattleWork.traps[side].actionPoints, then a coin flip (mirrored on link player 1).
 // gGameWork.battleResult = 1 team wins, 2 opponents win. Called by action_phase_time_check when TIME (timeLeft) is 0.
 void robattle_judge_time_up(void) {

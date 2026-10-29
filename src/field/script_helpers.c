@@ -1,6 +1,6 @@
 // Thin wrappers the field event code calls: sound and music, data table lookups, message steps, text buffer
 // fills (numbers, strings), money, items, Medals, Medaparts and team (inventory/inventory), plus checks on the
-// player's team gTeamSlots (9 slots; unk0 == 3 = a complete Medabot) and the yes/no choice window
+// player's team gTeamSlots (9 slots; state == 3 = a complete Medabot) and the yes/no choice window
 // (text/choice_menu). Name tables: gMedalNames Medals, gMedabotNames Medabots (by head part id),
 // gMedapartNames Medaparts, gItemNames items.
 

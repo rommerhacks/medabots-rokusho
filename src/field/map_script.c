@@ -68,7 +68,7 @@ void map_script_cmd_end(void) {
     gFieldWork.script_field_update = 0;
     gFieldWork.equipped_legs_value = 0;
     gFieldSceneParams.bot_gender = 0;
-    gFieldState.unk38 = 0;
+    gFieldState.unused38 = 0;
     memzero_bytes(gFieldWork.script_object_slots, 16);
     memzero_bytes((u8 *)&gScriptCmdWork, 16);
     gSpriteEntries[47].work[FIELD_SPR_SCRIPT_FLAG] = 1;
@@ -951,7 +951,7 @@ void map_script_cmd_move_queue_begin(void) {
     memzero_bytes(gFieldScriptWork.queue_pos, 8);
     memzero_bytes(gFieldScriptWork.queue[0], 64);
     memzero_bytes(&gFieldScriptWork.queue_len, 1);
-    memzero_bytes(&gFieldScriptWork.unk53, 1);
+    memzero_bytes(&gFieldScriptWork.unused53, 1);
     memzero_bytes(gFieldScriptWork.queue_sprite, 8);
     gFieldWork.cmd = read_map_script_byte();
     gFieldWork.cmd_busy = 0;

@@ -84,17 +84,17 @@ void vehicle_menu_load_gfx(void) {
         lz_decompress_dispatch(gChoiceMenuFrameTiles, (void *)0x06002600);
     lz_decompress_dispatch(gChoiceMenuLabelTiles, (void *)0x060026E0);
     lz_decompress_dispatch(gCursorArrowTiles, (void *)0x06017E00);
-    DmaCopy32(3, gCursorArrowPalette, OBJ_PLTT + 0x1C0, 32) gFieldScriptWork.unk66 = 0;
+    DmaCopy32(3, gCursorArrowPalette, OBJ_PLTT + 0x1C0, 32) gFieldScriptWork.unused66 = 0;
     gFieldScriptWork.frame = 0;
     gFieldScriptWork.slideStep = 0;
-    gFieldScriptWork.unk6E = gFieldScriptWork.cursorY = gFieldScriptWork.cursorX = 0;
+    gFieldScriptWork.unused6E = gFieldScriptWork.cursorY = gFieldScriptWork.cursorX = 0;
     gFieldScriptWork.cursorX = 0x10;
     gFieldScriptWork.cursorY = 3;
     game_substate_advance();
 }
 
 void vehicle_menu_slide_in(void) {
-    gFieldScriptWork.unk66 = 0;
+    gFieldScriptWork.unused66 = 0;
     if (gFieldScriptWork.slideStep < 0x10) {
         gFieldScriptWork.slideStep++;
         copy_tilemap_rect_with_offset(gFieldTilemapBuf + 0x400, (u16 *)0x06002800, 2, 0x1E - gFieldScriptWork.slideStep,

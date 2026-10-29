@@ -162,16 +162,16 @@ u32 update_sprite_deceleration(u32 slot, s16 min_y, s16 max_y) {
     return 0;
 }
 
-void sprite_shake_x_step(u32 slot, u32 frame, u32 y) {
+void sprite_shake_x_step(u32 slot, u32 frame, u32 base_x) {
     switch ((frame & 6) >> 1) {
     case 1:
-        gSpriteEntries[slot].x = y + 1;
+        gSpriteEntries[slot].x = base_x + 1;
         break;
     case 3:
-        gSpriteEntries[slot].x = y - 1;
+        gSpriteEntries[slot].x = base_x - 1;
         break;
     default:
-        gSpriteEntries[slot].x = y;
+        gSpriteEntries[slot].x = base_x;
         break;
     }
 }

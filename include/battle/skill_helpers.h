@@ -38,7 +38,7 @@ void reset_battle_bot_state(u32 rec);
 void battle_set_damage_display(u32 rec, u32 part, s32 amount);
 void calc_head_uses_taken(
     u32 rec,
-    s32 amount); // gBattleWork.appliedAmount / cappedAmount = min(amount, head unk10), overflowAmount = the rest
+    s32 amount); // gBattleWork.appliedAmount / cappedAmount = min(amount, head headUses), overflowAmount = the rest
 void calc_head_uses_given(u32 rec, s32 amount); // same, clamped to head data[8] - headUses
 u32 battle_find_enemy_same_legs(u32 base, u32 rec);
 u32 battle_find_guarding_enemy(u32 base); // record on side base, or 0xFF

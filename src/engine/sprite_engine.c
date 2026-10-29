@@ -221,7 +221,7 @@ struct SpriteDesc8 {
     u8 size : 2;
     u8 w : 4;
     u8 h : 4;
-    u16 unk2;
+    u16 unused16; // struct SpriteDesc.unused16
 };
 
 // Local view of struct SpriteAnchor with the x / y / attribute bitfields.
@@ -229,7 +229,7 @@ struct SpriteAnchorFull {
     u8 filler0[2];
     s16 x;
     u16 y;
-    s8 unk6;
+    s8 depth;
     u8 affineMode : 2;
     u8 objMode : 2;
 };
@@ -516,8 +516,8 @@ static u16 batch_copy_oam_entries_sorted(struct SpriteOamBatch *batch, struct Oa
 }
 
 struct DepthEntry {
-    u32 unk0;
-    s16 unk4;
+    u32 value; // carried along by the sort
+    s16 value2;
     s16 depth;
 };
 
@@ -653,8 +653,8 @@ u16 render_sprite_if_visible_rotated(struct SpriteOamList *list, void *dst, u16 
 
 // guess: unused; clears the two bytes after affineIdx, whose use is unknown
 static void sprite_work_clear_spare(struct SpriteWork *work) {
-    work->unk1096 = 0;
-    work->unk1097 = 0;
+    work->spare1096 = 0;
+    work->spare1097 = 0;
 }
 
 u16 init_oam_sprite_entry(struct OamFull *oam, struct SpriteNodeDesc *desc, u8 pal, u16 tile) {
@@ -792,7 +792,7 @@ u8 build_medabot_sprite(struct SpriteWork *work, u16 *affine, u32 side, struct O
     init_sprite_tree(&obj.o, (u8 *)work, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs, oams);
     gSpriteWork->oamCount = zero;
     gSpriteWork->affineIdx = side;
-    gSpriteWork->unk1097 = zero;
+    gSpriteWork->spare1097 = zero;
     base = 0x160;
     gHeadPartLayer = gHeadPartLayerTemplate;
     gLeftArmPartLayer = gLeftArmPartLayerTemplate;

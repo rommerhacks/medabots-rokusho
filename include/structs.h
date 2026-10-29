@@ -52,9 +52,9 @@ struct SoundTrack {
     u8 noteMode;    // 0xFE: 0 notes, 1 raw frequencies, 2 drum kit
     u8 channelType; // 0 square 1, 1 square 2, 2 wave, 3 noise, 4 FIFO A, 5 FIFO B
     u8 volume;
-    u8 envVolume;  // current envelope volume (0..15)
-    u8 instrument; // duty bits (PSG), wave pattern (wave), sample index (FIFO)
-    u8 unk68;
+    u8 envVolume;   // current envelope volume (0..15)
+    u8 instrument;  // duty bits (PSG), wave pattern (wave), sample index (FIFO)
+    u8 unused68;    // cleared with the track, never read
     u8 noiseParams; // SOUND4CNT_H low byte (0xE2)
     u8 transpose;   // 0xE8, signed
     u8 echoDelay;   // 0xE9: frames back in echoBuffer the echo note is taken from, 0 = off
@@ -517,8 +517,8 @@ struct SpriteWork {
     u16 affineBuf[0x84]; // affine parameters, 4 per matrix (copy_oam_affine_params)
     u8 oamCount;         // OAM entries used in oamBuf
     u8 affineIdx;        // next affine matrix (wraps after 31); low bits also give the matrix / flip bits
-    u8 unk1096;
-    u8 unk1097;
+    u8 spare1096;        // only cleared (sprite_work_clear_spare)
+    u8 spare1097;        // only cleared
 };
 
 // Opponent Medabot in an encounter setup (gBattleWork.encounterBots).
@@ -592,8 +592,7 @@ struct BattleSideTrap {
     u8 durability;   // traps: worn down by the caught Medabot's legs (trap_hit_wear); Attack Clr: uses left;
                      // Team Form: added to the attack power (action_calc)
     u8 power;        // trap: damage dealt when it springs (trap_hit_calc_damage)
-    u8 unk6;
-    u8 unk7;
+    u8 filler6[0x2];
 };
 
 struct BattleWork {
@@ -682,9 +681,8 @@ struct BattleWork {
     u8 hitResult; // attack result: 1 missed (target dodged, battle_check_dodged), 3 countered (reaction_check_counter)
     u8 blockResult; // attack result: 2 nullified (Full / Half Block, immunities), 4 absorbed as healing
                     // (attack_hit_branch)
-    u8 unkB9;       // only cleared (attack_hit_branch)
-    u8 unkBA;
-    u8 unkBB;
+    u8 unusedB9;    // only cleared (attack_hit_branch)
+    u8 fillerBA[0x2];
     u16 scriptOffset; // Robattle action script: offset of the current command (battle_script_read_byte /
                       // battle_script_advance)
     u8 nullifyReason; // why the attack was nullified: 1 Half Block, 5 Full Block, 2-4 / 6 immunities
@@ -722,10 +720,10 @@ struct BattleWork {
     u8 animSkill;      // skill shown by the action script command script_op_skill_anim_start: chosen part's data[1], or
                        // Medaforce actorSkill[0] + 0x50
     u8 fillerFA;
-    u8 unkFB; // cleared by script_op_skill_anim_start
-    u8 unkFC;
-    u8 seqCondition; // skill animation condition (battle_seq_cmd_test_*), picks battle_seq_cmd_branch's label
-    u8 unkFE;
+    u8 unusedFB;        // cleared by script_op_skill_anim_start
+    u8 unusedFC;        // cleared by script_op_skill_anim_start
+    u8 seqCondition;    // skill animation condition (battle_seq_cmd_test_*), picks battle_seq_cmd_branch's label
+    u8 unusedFE;        // cleared by script_op_skill_anim_start
     u8 closeupRedraw;   // bits 0 / 1: left / right close-up Medabot must be redrawn with pose base 0x28 before its pose
                         // plays (battle_seq_spr_pose_set)
     u16 seqOffset;      // battle sequence: offset of the current command in gBattleSeqScripts[animSkill] (cleared by
@@ -869,7 +867,7 @@ struct BattleBot {
     u8 powerBonus;       // added to gBattleWork.amount by script_op_calc_damage (Power Up)
     u8 ironWallBonus;    // raised by gBattleWork.amount up to 0xFF (medaforce_iron_wall_apply_defence, written as
                          // &powerBonus + 1 to match)
-    u8 unkD2;
+    u8 fillerD2;
     u8 meleeBonus;   // added to gBattleWork.amount for parts with data[2] 0 / 1 (script_op_calc_damage)
     u8 rangedBonus;  // added for data[2] 2 / 3 (script_op_calc_damage)
     u8 trapBonus;    // added to gBattleWork.amount for traps[side].power (trap_apply; Formation Orders)
@@ -880,7 +878,7 @@ struct BattleBot {
     u16 defence;     // cleared, then raised by gBattleWork.amount up to 0xFF (defence_apply)
     u8 moveStep;     // movement: whole pixels moved this frame
     u8 fillerDB;
-    u8 unkDC;           // 8 bytes from here (to fillerE2[1]) cleared by reset_battle_bot_state
+    u8 unusedDC;        // 8 bytes from here (to fillerE2[1]) cleared by reset_battle_bot_state
     u8 chosenAction;    // chosen command: 0 none, 1-3 head / right arm / left arm, 4+ Medaforce 0..; exchanged over the
                         // serial link in link Robattles (robattle_link_exchange_commands)
     u8 lastAction;      // copy of chosenAction (battle_action_cleanup)
@@ -944,10 +942,10 @@ struct MapObject {
     u8 y;
     u16 event;          // bits 12-15: type (8 = event), bits 0-11: event id (event flag and map script id)
     u8 sprite_slot : 5; // sprite slot (gSpriteEntries index - 49)
-    u8 unk4_5 : 1;
-    u8 has_sprite : 1; // has a sprite (slot + 49, shadow slot + 91)
-    u8 present : 1;    // placed and shown (hide_self clears it; idle objects with it set animate at random)
-    u8 anim_state;     // animation state
+    u8 unused4_5 : 1;   // never accessed
+    u8 has_sprite : 1;  // has a sprite (slot + 49, shadow slot + 91)
+    u8 present : 1;     // placed and shown (hide_self clears it; idle objects with it set animate at random)
+    u8 anim_state;      // animation state
     u8 filler6[0x2];
 };
 
@@ -960,18 +958,18 @@ struct FieldScriptWork {
     u8 queue_pos[8];       // current step in each list (anim frame for the anim queue)
     u8 queue[8][8];        // the queued lists
     u8 queue_len;          // number of lists queued
-    u8 unk53;              // only cleared
+    u8 unused53;           // only cleared
     u8 queue_sprite[8];    // sprite slot of each list's actor
     u8 queue_walk_step[8]; // walk sub-step (0 start, 1 walking, 2 done)
     u8 choice_step;        // choice menu step (yes_no_menu_poll: 0 setup, 1 wait handler, 2 poll)
     // Vehicle menu (vehicle_menu_load_gfx .. vehicle_menu_reload) reuses the area after the choice menu.
-    u8 cursor; // selected entry (enum VehicleId)
-    u8 unk66;
-    u8 frame; // counter for the cursor wobble
+    u8 cursor;   // selected entry (enum VehicleId)
+    u8 unused66; // cleared by the vehicle menu, never read
+    u8 frame;    // counter for the cursor wobble
     u8 filler68[0x4];
-    u8 cursorX; // cursor tile x
-    u8 cursorY; // cursor tile y
-    u8 unk6E;
+    u8 cursorX;   // cursor tile x
+    u8 cursorY;   // cursor tile y
+    u8 unused6E;  // cleared by the vehicle menu, never read
     u8 slideStep; // window slide-in progress (0..16)
     u8 textPage;  // page of the missing-parts message (0..5)
     u8 filler71;
@@ -983,7 +981,7 @@ struct ScriptSpriteSave {
     u8 x; // tile
     u8 y;
     u8 id : 5;
-    u8 unk2_5 : 1;
+    u8 unused2_5 : 1;    // never accessed
     u8 blink_hidden : 1; // blinked off (gSpriteEntries[].work[FIELD_SPR_BLINK_HIDDEN]): not re-created by
                          // restore_script_sprites
     u8 active : 1;
@@ -1178,9 +1176,9 @@ struct AnimInterp {
     float base; // value before the move (modes > 1)
     u8 filler8[4];
     s32 mode;             // 0 = idle; 0x10-0x14 (anim_interp_init) pick the curve
-    float unk10;          // params[1] / 256, never read in C
+    float unusedParam1;   // params[1] / 256, never read in C
     float phase;          // sine table index
-    float unk18;          // params[3] / 256, never read in C
+    float unusedParam3;   // params[3] / 256, never read in C
     float frame;          // frame counter
     s32 start;            // frame the move starts
     s32 end;              // frame it ends, 0xFFFF = none
@@ -1316,8 +1314,8 @@ struct InterpCand {
 // Field state (gFieldState, 0x3C bytes, cleared by field_clear_ram): the current field state handler's step,
 // the frame counter, the BG2 affine matrix, and the BG scrolls saved while a menu or scene covers the field.
 struct FieldState {
-    u8 unk0; // set to 1 by field_walk_reset, never read in C
-    u8 step; // step of the current field sub-state handler (field_walk_update, field_update_*)
+    u8 unused0; // set to 1 by field_walk_reset, never read in C
+    u8 step;    // step of the current field sub-state handler (field_walk_update, field_update_*)
     u8 filler2[0x2];
     u32 frame_counter; // +1 per field frame (field_update); NPC idle animations, random rolls
     s16 bg2_pa;        // BG2 affine matrix (identity 0x100, bg2_affine_reset)
@@ -1338,11 +1336,11 @@ struct FieldState {
     u16 saved_bg3_y;
     s16 bg2_center_x; // BG2 rotation centre offset (bg2_affine_update_matrix)
     s16 bg2_center_y;
-    s16 unk30;       // cleared by bg2_affine_reset, never read
+    s16 unused30;    // cleared by bg2_affine_reset, never read
     s16 bg2_scale_x; // 0x100 = 1.0 (bg2_affine_reset)
     s16 bg2_scale_y;
     u16 bg2_angle;  // 0-255, stepped by RIGHT / LEFT in debug_bg_scroll_input
-    u8 unk38;       // cleared when a map script ends, never read in C
+    u8 unused38;    // cleared when a map script ends, never read in C
     u8 sceneResult; // result of the last battle / minigame: 1 won, 2 lost (map script branch
                     // map_script_cmd_jump_if_lost)
 };

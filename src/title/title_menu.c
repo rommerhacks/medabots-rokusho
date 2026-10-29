@@ -2,7 +2,7 @@
 // the title menu (title_menu_update runs the sub-states at gTitleMenuStates: load graphics, New Game / Continue /
 // options input, the options menu, loading the save through save/save_data.c). Leaves to the field (mode 1),
 // the new-game prompt (state 28) or mode 0.
-// Rows: 0 Continue (hidden when there is no save: unk4 = first selectable row), 1 New Game, 2 Options.
+// Rows: 0 Continue (hidden when there is no save: first_entry = first selectable row), 1 New Game, 2 Options.
 // Options rows: gOptionTimeLimit, gOptionSkipMessages, gOptionBattleMusic (saved in SaveData.flags).
 #include "global.h"
 #include "constants/sprites.h"

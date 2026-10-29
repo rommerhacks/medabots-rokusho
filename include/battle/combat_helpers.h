@@ -39,8 +39,8 @@ void battle_set_action_target_part(
     u32 part); // guess: record rec targets part part - 1 (targetPart, gBattleWork.targetPart)
 u32 sprite_move_toward_target(u32 slot, s16 x, s16 y);
 void bg3_shake_step(u32 frame);
-void sprite_shake_x_step(u32 slot, u32 frame, u32 y);     // sprite unk2 = y, +1 / -1 on frames 2-3 / 6-7 of 8
-void reduce_bot_part_stat(u32 rec, u32 part, s32 amount); // part armor (armor) -= amount, not below 0
+void sprite_shake_x_step(u32 slot, u32 frame, u32 base_x); // sprite x = base_x, +1 / -1 on frames 2-3 / 6-7 of 8
+void reduce_bot_part_stat(u32 rec, u32 part, s32 amount);  // part armor (armor) -= amount, not below 0
 void bot_halve_broken_leg_stats(u32 rec);
 void set_target_sprite_position(u32 rec, u32 dir, u32 axis);
 void update_target_cursor_position(u32 rec);

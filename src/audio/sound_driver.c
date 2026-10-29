@@ -757,7 +757,7 @@ static void sound_track_start(struct SoundTrack *track, u8 *seq) {
     track->volume = 15;
     track->envVolume = 0;
     track->instrument = 0;
-    track->unk68 = 0;
+    track->unused68 = 0;
     track->noiseParams = 0;
     track->transpose = 0;
     track->echoDelay = 0;

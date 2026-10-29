@@ -487,7 +487,7 @@ extern const u16 gGradientPaletteOlive[];
 extern const u8 gMedalIconTiles[];            // Medal icon tiles, 0x80 bytes per graphic index
 extern const u8 gMedalIconBlankTiles[];       // blank Medal icon tile
 extern const u8 *const gMedalSpriteGfx[][5];  // compressed Medal sprites (load_medal_sprite)
-extern const u32 gAttributeNames[];           // Medal Attribute names, indexed by Medal record unk4 (Ability page)
+extern const u32 gAttributeNames[];           // Medal Attribute names, indexed by Medal record attribute (Ability page)
 extern const u32 gSkillTypeNames[];           // skill type names (Shoot, Strike, ...): Medal Aim, Medaforce skill
 extern const u8 *const gHelpCursorLayouts[];  // Medals / Medaparts help cursor layouts: count, then (x, y) tile pairs
                                               // (medals_help_init_cursor)
@@ -1019,7 +1019,7 @@ extern u8 gGuardSpriteEntryBytes[]; // = (u8 *)&gSpriteEntries[33]: script_op_gu
                                     // Medabot's 4 saved part sprites (entries 90 + 4 * rec) back over 33-36
 extern const u8
     gActionScriptOperandCounts[];    // Robattle action script: operand count per command byte (battle_script_advance)
-extern const u8 gSpriteHopOffsets[]; // 32 y offsets added to a sprite's unk4 by sprite_hop_step
+extern const u8 gSpriteHopOffsets[]; // 32 y offsets added to a sprite's y by sprite_hop_step
 extern const u8
     *const gActionScripts[]; // Robattle action scripts by skill id gBattleWork.actorSkill (battle_script_read_byte)
 extern const Func

@@ -107,7 +107,7 @@ void reset_battle_bot_state(u32 rec) {
     gBattleBots[rec].stateFlags &= 0xE4;
     gBattleBots[rec].hitFlags = 0;
     mem_fill8(&gBattleBots[rec].buffType, 0xC, 0);
-    mem_fill8(&gBattleBots[rec].unkDC, 8, 0);
+    mem_fill8(&gBattleBots[rec].unusedDC, 8, 0);
 }
 
 void staggered_sprites_spawn(u32 slot, s16 x, s16 y, u32 n) {

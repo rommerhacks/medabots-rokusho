@@ -55,7 +55,7 @@ u32 run_message(const void *msg) {
     return 0;
 }
 
-// run_message state 0: back up the palettes, then dim them (state 1); unk0 != 0 skips to state 2.
+// run_message state 0: back up the palettes, then dim them (state 1); msgKeepPalettes != 0 skips to state 2.
 void message_open(void) {
     u8 keep_palettes = gGameWork.msgKeepPalettes;
     if (keep_palettes == 0) {
@@ -77,7 +77,7 @@ void message_dim_palettes_step(void) {
         gGameWork.dimLevel++;
 }
 
-// run_message state 2: unk2 == 1 jumps to state 4; else show BG0 (the window) at BG0CNT 0x500.
+// run_message state 2: noWindowFrame == 1 jumps to state 4; else show BG0 (the window) at BG0CNT 0x500.
 void message_show_window(void) {
     if (gGameWork.noWindowFrame == 1) {
         gGameWork.msgState = 4;
@@ -629,7 +629,7 @@ void message_close_portrait(void) {
     game->endModeStep++;
 }
 
-// End step 1: a frameless window (unk2 == 1) is just cleared, skipping the frame animation.
+// End step 1: a frameless window (noWindowFrame == 1) is just cleared, skipping the frame animation.
 void message_close_check_frame(void) {
     if (gGameWork.noWindowFrame == 1) {
         vram_fill_tilemap_rect(0x1E, 6, 0, 0xD, REG_BG0CNT, 0);
@@ -661,7 +661,7 @@ void message_close_window_frame(void) {
     }
 }
 
-// End step 3: undim the palettes only if message_open dimmed them (unk0 == 0).
+// End step 3: undim the palettes only if message_open dimmed them (msgKeepPalettes == 0).
 void message_close_check_dim(void) {
     if (gGameWork.msgKeepPalettes == 0)
         gGameWork.endModeStep += 1;

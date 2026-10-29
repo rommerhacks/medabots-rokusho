@@ -1207,9 +1207,9 @@ void anim_interp_init(struct AnimInterp *anim, s32 *params) {
     float x, phase;
 
     anim->mode = mode = params[0];
-    anim->unk10 = params[1] / 256;
+    anim->unusedParam1 = params[1] / 256;
     anim->phase = params[2];
-    anim->unk18 = params[3] * (1.0f / 256);
+    anim->unusedParam3 = params[3] * (1.0f / 256);
     anim->frame = params[4];
     anim->start = params[5];
     anim->end = params[6];

@@ -273,6 +273,6 @@ void field_walk_update(void) {
 
 // guess: resets the field frame handler (field_walk_update runs a state machine on gFieldState.step)
 static void field_walk_reset(void) {
-    gFieldState.unk0 = 1;
+    gFieldState.unused0 = 1;
     gFieldState.step = 0;
 }

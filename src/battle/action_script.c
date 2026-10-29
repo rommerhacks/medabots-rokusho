@@ -315,10 +315,10 @@ void script_op_skill_anim_start(void) {
     clear_battle_sprite_slot(0, 0x28);
     CpuFastSet(gEffectCommonPalette, (void *)0x05000380, 8);
     gBattleWork.seqOffset = 0;
-    gBattleWork.unkFB = 0;
-    gBattleWork.unkFC = 0;
+    gBattleWork.unusedFB = 0;
+    gBattleWork.unusedFC = 0;
     gBattleWork.seqCondition = 0;
-    gBattleWork.unkFE = 0;
+    gBattleWork.unusedFE = 0;
     if (gBattleBots[gBattleWork.actor].chosenAction <= 3)
         gBattleWork.animSkill = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1];
     else

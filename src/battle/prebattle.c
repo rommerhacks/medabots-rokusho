@@ -1053,7 +1053,8 @@ static void prebattle_init_rubberobo_sprite(void) {
     }
 }
 
-// guess: copies the battlefield's 8 parameter bytes (gBattlefieldParams[unk38]) into gBattleWork.battlefieldParams.
+// guess: copies the battlefield's 8 parameter bytes (gBattlefieldParams[battlefield]) into
+// gBattleWork.battlefieldParams.
 void battlefield_load_params(void) {
     memcpy_bytes_0803F63C(gBattlefieldParams[gBattleWork.battlefield], gBattleWork.battlefieldParams, 8);
 }

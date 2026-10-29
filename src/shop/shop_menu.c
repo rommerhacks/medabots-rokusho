@@ -183,7 +183,7 @@ void shop_menu_show_layers(void) {
     gGameSubState++;
 }
 
-// State 3: fade in from white; back from the list (unk6 == 1) it goes straight to the part types (state 9).
+// State 3: fade in from white; back from the list (returning == 1) it goes straight to the part types (state 9).
 void shop_menu_fade_in(void) {
     if (gMenuWork->returning == 1) {
         struct GameWork *game;

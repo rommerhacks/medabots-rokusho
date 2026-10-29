@@ -13,7 +13,7 @@ void unpack_item_inventory_to_buffer(
 void update_battle_medapart_icons(void);
 void render_battle_medapart_list(u32 mode);
 void item_menu_set_cursor_pos(
-    struct SpriteEntry *sprite); // list cursor sprite: unk2 = 0x54, unk4 = 0x1C + 16 * (gMenuWork->item_cursor % 5)
+    struct SpriteEntry *sprite); // list cursor sprite: x = 0x54, y = 0x1C + 16 * (gMenuWork->item_cursor % 5)
 void shop_build_sell_list(void);
 
 #endif // GUARD_MENU_ITEM_LIST_H

@@ -116,7 +116,7 @@ void bg2_affine_reset(void) {
     state->bg2_pb = 0;
     state->bg2_pc = 0;
     state->bg2_pd = 0x100;
-    state->unk30 = 0;
+    state->unused30 = 0;
     state->bg2_scale_x = 0x100;
     state->bg2_scale_y = 0x100;
     state->bg2_angle = 0;

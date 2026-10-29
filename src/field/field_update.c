@@ -221,7 +221,7 @@ void field_continue_load(void) {
     gFieldWork.script_id = 0;
     gFieldWork.script_field_update = 0;
     gFieldWork.equipped_legs_value = 0;
-    gFieldState.unk38 = 0;
+    gFieldState.unused38 = 0;
     memzero_bytes((u8 *)&gScriptCmdWork, 16);
     clear_vram_tiles_1000();
     gFieldState.step = 0;

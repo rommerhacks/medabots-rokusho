@@ -346,7 +346,7 @@ void ai_target_repair(void) {
     ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
-// Reactivate: a teammate that is out of action (unkBA == 2).
+// Reactivate: a teammate that is out of action (present == 2).
 void ai_target_reactivate(void) {
     u32 i;
 

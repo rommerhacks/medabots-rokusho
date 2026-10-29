@@ -1083,7 +1083,7 @@ void attack_hit_load_graphics(void) {
 }
 
 void attack_hit_branch(void) {
-    gBattleWork.unkB9 = 0;
+    gBattleWork.unusedB9 = 0;
     if (gBattleWork.hitResult & 1)
         gBattleWork.step = 0x28;
     else if (gBattleWork.hitResult & 3) {
