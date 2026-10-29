@@ -93,8 +93,8 @@ void miss_popup_wait(void) {
     }
 }
 
-// Shows who acts on whom: a pointer line from the acting Medabot (unk87) and its panel; with show_target != 0
-// the arrows then run to the target's (unk88) panel. 1 once the panels are up (the last step idles).
+// Shows who acts on whom: a pointer line from the acting Medabot (actor) and its panel; with show_target != 0
+// the arrows then run to the target's (target) panel. 1 once the panels are up (the last step idles).
 u32 target_panels_show(u32 show_target) {
     gBattleWork.substep[1] = show_target;
     gTargetPanelSteps[gBattleWork.substep[0]]();
@@ -170,7 +170,7 @@ void target_panels_arrows_idle(void) {
 }
 
 // Script opcode 0x04: a trap (Grap Trap / Shot Trap / Attack Clr) laid on the acting Medabot's side by the other side
-// (trap_apply, unk28[side]) springs on it. stepResult = 0 the action goes on, 1 it was stopped (Attack Clr), 2 the
+// (trap_apply, traps[side]) springs on it. stepResult = 0 the action goes on, 1 it was stopped (Attack Clr), 2 the
 // actor's head broke.
 void trap_hit_run(void) {
     gBattleWork.stepDone = 0;
@@ -178,9 +178,9 @@ void trap_hit_run(void) {
 }
 
 // Does the trap catch this action? Grap Trap (0xA) catches part kinds 0-1, Shot Trap (0xB) kinds 2-3, Attack Clr
-// (0xC) any attack; type 0x5A (unk51 3) is the trap a Medaforce lays
-// (medaforce_effects). unkA6 = the "Caught in a ..."
-// message. Bit 1 of the actor's unkC0, or a part with skill 0x15 (combat_helpers), keeps it out.
+// (0xC) any attack; type 0x5A (scratch 3) is the trap a Medaforce lays
+// (medaforce_effects). messageId = the "Caught in a ..."
+// message. Bit 1 of the actor's guardFlags, or a part with skill 0x15 (combat_helpers), keeps it out.
 void trap_hit_check(void) {
     struct BattleWork *battle;
     u32 break_part;
@@ -201,7 +201,7 @@ void trap_hit_check(void) {
             goto fail;
     okA:
         battle->messageId = 0xE;
-        battle->unk51 = break_part;
+        battle->scratch = break_part;
         battle->step++;
     } else if (type == 0xB) {
         k = gBattleBots[battle->actor].parts[gBattleBots[battle->actor].chosenAction - 1].data[2];
@@ -211,19 +211,19 @@ void trap_hit_check(void) {
             goto fail;
     okB:
         battle->messageId = 0xF;
-        battle->unk51 = 1;
+        battle->scratch = 1;
         battle->step++;
     } else if (type == 0xC) {
         if (gBattleBots[battle->actor].parts[gBattleBots[battle->actor].chosenAction - 1].data[2] > 3)
             goto fail;
         battle->messageId = 0x10;
-        battle->unk51 = 2;
+        battle->scratch = 2;
         battle->step++;
     } else if (type == 0x5A) {
         if (gBattleBots[battle->actor].parts[gBattleBots[battle->actor].chosenAction - 1].data[2] > 3)
             goto fail;
         battle->messageId = 0x11;
-        battle->unk51 = 3;
+        battle->scratch = 3;
         battle->step++;
     } else {
     fail:
@@ -247,7 +247,7 @@ void trap_hit_calc_damage(void) {
 }
 
 void trap_hit_load_graphics(void) {
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         lz_decompress_dispatch(gGrapTrapTiles, (void *)0x06014800);
         CpuFastSet(gGrapTrapPalette, (void *)0x050002C0, 8);
@@ -281,12 +281,12 @@ void trap_hit_sprite_spawn(void) {
         gSpriteEntries[0x21].x = 0x68;
     } else
         gSpriteEntries[0x21].x = 0x88;
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         gSpriteEntries[0x21].order = 5;
         gSpriteEntries[0x21].scale_x = 8;
         gSpriteEntries[0x21].y = 0x3C;
-        gBattleWork.unk52 = 0x19;
+        gBattleWork.scratchValue = 0x19;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x19], 0x21);
         play_sound_effect(0x3E);
         gBattleWork.step++;
@@ -295,7 +295,7 @@ void trap_hit_sprite_spawn(void) {
         gSpriteEntries[0x21].order = 5;
         gSpriteEntries[0x21].scale_x = 8;
         gSpriteEntries[0x21].y = 0x3C;
-        gBattleWork.unk52 = 0x1A;
+        gBattleWork.scratchValue = 0x1A;
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x1A], 0x21);
         play_sound_effect(0x3E);
         gBattleWork.step++;
@@ -335,8 +335,8 @@ void trap_hit_sprite_grow(void) {
 }
 
 void trap_hit_sprite_animate(void) {
-    set_target_sprite_position(gBattleWork.actor, gFrameCounter, gBattleWork.unk51);
-    process_sprite_anim_commands(gBattleSpriteAnimScripts[gBattleWork.unk52], 0x21);
+    set_target_sprite_position(gBattleWork.actor, gFrameCounter, gBattleWork.scratch);
+    process_sprite_anim_commands(gBattleSpriteAnimScripts[gBattleWork.scratchValue], 0x21);
     if (gSpriteEntries[0x21].work[SPR_CMD_STATE] == SPR_CMD_ENDED) {
         update_target_cursor_position(gBattleWork.actor);
         gBattleWork.step++;
@@ -434,7 +434,7 @@ void trap_hit_erase_shake_sprite(void) {
 }
 
 void trap_hit_erase_branch(void) {
-    if (gBattleWork.unk51 == 2)
+    if (gBattleWork.scratch == 2)
         gBattleWork.step++;
     else
         gBattleWork.step = 8;
@@ -482,7 +482,7 @@ void trap_hit_break_burst_wait(void) {
         clear_battle_sprite_slot(0x21, 1);
         load_all_bot_part_sprites();
         iterate_bots_setup_battle_sprites();
-        switch (gBattleWork.unk51) {
+        switch (gBattleWork.scratch) {
         case 0:
             lz_decompress_dispatch(gGrapTrapTiles, (void *)0x06014800);
             CpuFastSet(gGrapTrapPalette, (void *)0x050002C0, 8);
@@ -509,7 +509,7 @@ void trap_hit_break_burst_wait(void) {
 void trap_hit_wear(void) {
     u8 wear;
 
-    if (gBattleWork.unk51 != 2) {
+    if (gBattleWork.scratch != 2) {
         wear = gBattleBots[gBattleWork.actor].parts[3].propulsion >> 1;
         if (wear >= gBattleWork.traps[gBattleWork.actorSide].durability) {
             gBattleWork.step++;
@@ -527,7 +527,7 @@ void trap_hit_wear(void) {
 }
 
 void trap_disarm_load_graphics(void) {
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         lz_decompress_dispatch(gGrapTrapTiles, (void *)0x06015400);
         break;
@@ -560,7 +560,7 @@ void trap_disarm_sprite_spawn(void) {
         gSpriteEntries[0x21].x = 0x68;
     } else
         gSpriteEntries[0x21].x = 0x88;
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         gSpriteEntries[0x21].frame = 0xB00;
         break;
@@ -602,7 +602,7 @@ void trap_disarm_hop(void) {
 }
 
 void trap_disarm_end(void) {
-    if (gBattleWork.unk51 == 2)
+    if (gBattleWork.scratch == 2)
         gBattleWork.step = 0x2E;
     else
         gBattleWork.step = 0x2D;
@@ -716,9 +716,9 @@ void action_flash_finish(void) {
     }
 }
 
-// Script opcode 0x09: a teammate of the target with Defence / Full Block / Half Block ready (unkBD bit 3, skill in
-// unkDF 0x1B-0x1D) jumps in front of it, shows its shield, message 0x16 "<name> protected!!" and becomes the new
-// target. script_op_guard_restore (opcode 0x0A) puts its sprites back.
+// Script opcode 0x09: a teammate of the target with Defence / Full Block / Half Block ready (stateFlags bit 3, skill in
+// lastActionSkill 0x1B-0x1D) jumps in front of it, shows its shield, message 0x16 "<name> protected!!" and becomes the
+// new target. script_op_guard_restore (opcode 0x0A) puts its sprites back.
 void guard_run(void) {
     gBattleWork.stepDone = 0;
     gGuardSteps[gBattleWork.step]();
@@ -1053,9 +1053,9 @@ void closeup_enter_end(void) {
 }
 
 // Opcode 0x1E, the hit (gAttackHitSteps). Runtime: runs after every attack, after reaction_run. Step 1 branches on
-// the result flags: unkB7 bit 0 = missed (step 40), unkB8 2 = nullified (48), unkB8 4 = absorbed as healing (56).
-// A hit shows the target's armor panel, sparks and the damage number, drains the armor, breaks the part (burst,
-// defeat check) and carries leftover damage to the next part (Destroy repeats unkEC times).
+// the result flags: hitResult bit 0 = missed (step 40), blockResult 2 = nullified (48), blockResult 4 = absorbed as
+// healing (56). A hit shows the target's armor panel, sparks and the damage number, drains the armor, breaks the part
+// (burst, defeat check) and carries leftover damage to the next part (Destroy repeats amount times).
 void attack_hit_run(void) {
     gBattleWork.stepDone = 0;
     gAttackHitSteps[gBattleWork.step]();
@@ -1100,7 +1100,7 @@ void attack_hit_branch(void) {
     }
 }
 
-// guess: unkBC bit 6 is set with bits 2-3 by battle_check_damage_threshold (a clean / critical hit).
+// guess: hitFlags bit 6 is set with bits 2-3 by battle_check_damage_threshold (a clean / critical hit).
 void attack_hit_check_critical(void) {
     if (gBattleBots[gBattleWork.target].hitFlags & 0x40)
         gBattleWork.step++;
@@ -1136,7 +1136,7 @@ void attack_effect_hop(void) {
     }
 }
 
-// Destroy, or a hit moved to the strongest part by evasion (unkBC bit 5): show which part is hit first.
+// Destroy, or a hit moved to the strongest part by evasion (hitFlags bit 5): show which part is hit first.
 void attack_hit_check_part_marker(void) {
     if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == SKILL_DESTROY)
         gBattleWork.step++;
@@ -1350,7 +1350,7 @@ void attack_hit_check_defeated(void) {
     }
 }
 
-// Leftover damage (unkCA) goes on to another part with actor formFlags bit 1 or a piercing part (data[7]).
+// Leftover damage (overflowAmount) goes on to another part with actor formFlags bit 1 or a piercing part (data[7]).
 void attack_hit_check_carry_over(void) {
     if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == SKILL_DESTROY) {
         if (--gBattleWork.amount != 0) {
@@ -1418,7 +1418,7 @@ void attack_hit_goto_sparks(void) {
     gBattleWork.step = 10;
 }
 
-// The miss branch (unkB7 bit 0: the target dodged, unkBC bit 4).
+// The miss branch (hitResult bit 0: the target dodged, hitFlags bit 4).
 void attack_miss_sprite_spawn(void) {
     lz_decompress_dispatch(gAttackMissTiles, (void *)0x06010000);
     CpuFastSet(gAttackMissPalette, (void *)0x050003C0, 8);
@@ -1452,7 +1452,7 @@ void attack_miss_sprite_drop(void) {
     }
 }
 
-// The nullified branch (unkB8 == 2: Full / Half Block and the immunity checks of action_calc.c).
+// The nullified branch (blockResult == 2: Full / Half Block and the immunity checks of action_calc.c).
 void attack_nullified_sprite_spawn(void) {
     lz_decompress_dispatch(gAttackNullifiedTiles, (void *)0x06010000);
     CpuFastSet(gAttackNullifiedPalette, (void *)0x050003C0, 8);
@@ -1474,7 +1474,7 @@ void attack_nullified_sprite_spawn(void) {
     gBattleWork.step++;
 }
 
-// The absorbed branch (unkB8 == 4): the damage heals the target's most damaged parts instead.
+// The absorbed branch (blockResult == 4): the damage heals the target's most damaged parts instead.
 void attack_absorbed_sprite_spawn(void) {
     lz_decompress_dispatch(gAttackAbsorbedTiles, (void *)0x06010000);
     CpuFastSet(gAttackAbsorbedPalette, (void *)0x050003C0, 8);
@@ -1594,7 +1594,7 @@ void attack_absorbed_goto_sparkle(void) {
 }
 
 // Opcode 0x1F (gStatusAttackSteps): after a hit, skills 0xD-0x14 inflict their status unless the target missed /
-// nullified / absorbed, is defeated, has Stability or a status guard. unk51 = kind: 0 Bug / Virus, 1 Thunder /
+// nullified / absorbed, is defeated, has Stability or a status guard. scratch = kind: 0 Bug / Virus, 1 Thunder /
 // Freeze, 2 Wave / Hold, 3 Fire / Melt (skill names from the ROM list).
 void status_attack_run(void) {
     gBattleWork.stepDone = 0;
@@ -1624,7 +1624,7 @@ void status_attack_check(void) {
         if (skill != 0xE)
             goto c1;
     s0:
-        battle->unk51 = 0;
+        battle->scratch = 0;
         battle->step = 2;
         return;
     c1:
@@ -1633,7 +1633,7 @@ void status_attack_check(void) {
         if (skill != 0x10)
             goto c2;
     s1:
-        battle->unk51 = 1;
+        battle->scratch = 1;
         battle->step = 2;
         return;
     c2:
@@ -1642,7 +1642,7 @@ void status_attack_check(void) {
         if (skill != 0x12)
             goto c3;
     s2:
-        battle->unk51 = 2;
+        battle->scratch = 2;
         battle->step = 2;
         return;
     c3:
@@ -1651,7 +1651,7 @@ void status_attack_check(void) {
         if (skill != 0x14)
             goto nx;
     s3:
-        battle->unk51 = 3;
+        battle->scratch = 3;
         battle->step = 2;
         return;
     nx:
@@ -1686,7 +1686,7 @@ void status_attack_flash_spawn(void) {
     gSpriteEntries[10].order = 0xF0;
     gSpriteEntries[10].frame = 0x1600;
     gSpriteEntries[10].work[FX_SPR_FLAG] = 0;
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         lz_decompress_dispatch(gBugEffectTiles, (void *)0x06010800);
         CpuFastSet(gBugEffectPalette, (void *)0x050003A0, 8);
@@ -1740,7 +1740,7 @@ void status_attack_icons_spawn(void) {
         x = gBattleWork.closeupLeftX + 4;
         y = gBattleWork.closeupLeftY;
     }
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         lz_decompress_dispatch(gBugIconTiles, (void *)0x06010000);
         CpuFastSet(gBugIconPalette, (void *)0x050003C0, 8);
@@ -1904,11 +1904,11 @@ void bot_defeat_find(void) {
 
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.defeatedQueue[i]) {
-            gBattleWork.unk51 = gBattleWork.defeatedQueue[i] - 1;
+            gBattleWork.scratch = gBattleWork.defeatedQueue[i] - 1;
             gBattleWork.defeatedQueue[i] = 0;
             load_all_bot_part_sprites();
             iterate_bots_setup_battle_sprites();
-            reset_battle_bot_state(gBattleWork.unk51);
+            reset_battle_bot_state(gBattleWork.scratch);
             gBattleWork.step = 2;
             return;
         }
@@ -1919,8 +1919,8 @@ void bot_defeat_find(void) {
 void bot_defeat_ring_init(void) {
     lz_decompress_dispatch(gBreakRingTiles, (void *)0x06014800);
     CpuFastSet(gBreakRingPalette, (void *)0x050002E0, 8);
-    staggered_sprites_spawn(0x21, gSpriteEntries[gBattleWork.unk51 * 4 + 0x5D].x,
-                            gSpriteEntries[gBattleWork.unk51 * 4 + 0x5D].y - 4, 8);
+    staggered_sprites_spawn(0x21, gSpriteEntries[gBattleWork.scratch * 4 + 0x5D].x,
+                            gSpriteEntries[gBattleWork.scratch * 4 + 0x5D].y - 4, 8);
     gBattleWork.step++;
 }
 
@@ -1934,8 +1934,8 @@ void bot_defeat_burst_init(void) {
     CpuFastSet(gHitSparksPalette, (void *)0x050002E0, 8);
     gSpriteEntries[0x21].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
-    gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.unk51 * 4 + 0x5D].x;
-    gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.unk51 * 4 + 0x5D].y - 4;
+    gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.scratch * 4 + 0x5D].x;
+    gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.scratch * 4 + 0x5D].y - 4;
     gSpriteEntries[0x21].palette = 7;
     gSpriteEntries[0x21].order = 0xF0;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x22], 0x21);
@@ -1946,14 +1946,14 @@ void bot_defeat_burst_wait(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x22], 0x21);
     if (gSpriteEntries[0x21].work[SPR_CMD_STATE] == SPR_CMD_ENDED) {
         clear_battle_sprite_slot(0x21, 1);
-        disable_sprites(0x5A + gBattleWork.unk51 * 4, 4);
-        disable_sprites(gBattleWork.unk51 + 0x72, 1);
+        disable_sprites(0x5A + gBattleWork.scratch * 4, 4);
+        disable_sprites(gBattleWork.scratch + 0x72, 1);
         gBattleWork.step++;
     }
 }
 
 void bot_defeat_message(void) {
-    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.unk51].medal.name, gGameWork.textBuf, 0xE);
+    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.scratch].medal.name, gGameWork.textBuf, 0xE);
     gBattleWork.messageId = 0x14;
     gBattleWork.step++;
 }
@@ -1963,9 +1963,9 @@ void bot_defeat_next(void) {
 }
 
 // Opcode 0x22 (gReactionSteps). guess: the target's prepared reaction (reactionFlags bit 0, set by
-// battle_check_guard_or_cover for a guard or a readied part): a sprite rises; with unkB7 == 3 it turns into a counter
-// (reaction_counter_begin swaps the sides), else it drops back with a nullify or absorb effect. Runtime: runs first in
-// each attack, skipped there.
+// battle_check_guard_or_cover for a guard or a readied part): a sprite rises; with hitResult == 3 it turns into a
+// counter (reaction_counter_begin swaps the sides), else it drops back with a nullify or absorb effect. Runtime: runs
+// first in each attack, skipped there.
 void reaction_run(void) {
     gBattleWork.stepDone = 0;
     gReactionSteps[gBattleWork.step]();
@@ -2194,7 +2194,7 @@ void sacrifice_message(void) {
 }
 
 // Opcode 0x24 (gDestroyCheckSteps): Destroy fails with message 0x19 "Destroy only works against Medabots facing away"
-// and the MISS!! popup unless the target has unkBD bit 2.
+// and the MISS!! popup unless the target has stateFlags bit 2.
 void destroy_check_run(void) {
     gBattleWork.stepDone = 0;
     gDestroyCheckSteps[gBattleWork.step]();

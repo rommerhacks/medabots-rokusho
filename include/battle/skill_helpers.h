@@ -6,7 +6,7 @@
 void reaction_counter_begin(void);
 u32 part_broken_or_undamaged(u32 rec, u32 part); // 1 if the part is broken or at full armor
 u32 decrement_battle_timer_and_check_zero(void);
-void calc_battle_stat_ratio(u32 rec, u32 part); // unkEC = (unkE8 / 4 + part data[6]) / part data[0xC], at least 1
+void calc_battle_stat_ratio(u32 rec, u32 part); // amount = (success / 4 + part data[6]) / part data[0xC], at least 1
 u32 clamp_1_99(u32 value);                      // clamps to 1..99
 u8 pick_random_change_part(u32 change_skill, u32 kind); // random part id (by change_skill and the part kind)
 void medaforce_calc_success(u32 rec);

@@ -54,7 +54,7 @@ static void bot_calc_move_delay(u32 rec) {
 }
 
 // The chosen action's delay: Medaforce 12, head 6, an arm its part data[8] on the way out and data[9] on the way
-// back (unkBD bit 2); nothing for a broken part.
+// back (stateFlags bit 2); nothing for a broken part.
 static void bot_move_delay_add_action(u32 rec) {
     if (gBattleBots[rec].chosenAction == 0)
         return;

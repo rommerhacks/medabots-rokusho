@@ -96,9 +96,9 @@ void link_robattle_receive_seed(void) {
 
 void link_robattle_start_name_exchange(void) {
     gGameWork.stepCounter = 0;
-    gBattleWork.unk51 = 0;
-    gBattleWork.unk52 = 0;
-    gBattleWork.unk53 = 0;
+    gBattleWork.scratch = 0;
+    gBattleWork.scratchValue = 0;
+    gBattleWork.scratchAux = 0;
     gBattleWork.linkRecvPos = 0;
     gBattleWork.linkSentSum = 0;
     gBattleWork.linkRecvSum = 0;
@@ -616,18 +616,18 @@ void link_robattle_exchange_names(void) {
     u16 packet;
     s16 flag;
     link->sendData =
-        gPlayerRecord.name[gBattleWork.unk51] + (flag = ((gBattleWork.linkSendToggle << 8) & 0x100) + 0x8000);
+        gPlayerRecord.name[gBattleWork.scratch] + (flag = ((gBattleWork.linkSendToggle << 8) & 0x100) + 0x8000);
     gGameWork.stepTimer++;
     if (!(gGameWork.stepTimer & 1)) {
         gBattleWork.linkSendToggle ^= 1;
-        gBattleWork.unk51++;
+        gBattleWork.scratch++;
     }
     packet = link->recv[gLinkPlayerId ^ 1][1];
     if (packet & 0x8000) {
         if ((u16)(packet & 0x100) >> 8 != gBattleWork.linkRecvToggle) {
             gBattleWork.linkRecvToggle ^= 1;
-            gBattleWork.partnerName[gBattleWork.unk52] = packet;
-            if (++gBattleWork.unk52 > 10) {
+            gBattleWork.partnerName[gBattleWork.scratchValue] = packet;
+            if (++gBattleWork.scratchValue > 10) {
                 gGameWork.stepTimer = 0;
                 gGameSubState++;
             }
@@ -887,7 +887,7 @@ void prize_game_pick_prize_part(void) {
 }
 
 u32 link_error_check(void) {
-    // unk1C..unk1F read as one word (the struct has no u32 there)
+    // bytes 0x1C-0x1F (recvTimeouts[3], playerJoined, linkLost) read as one word (the struct has no u32 there)
     if (gGameWork.skipBotSetup == 1 && (((struct {
                                             u8 f[0x1C];
                                             u32 x;

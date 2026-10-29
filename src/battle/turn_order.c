@@ -34,7 +34,7 @@ static u32 battle_count_broken_parts(u32 first) {
 
 // Decides the Robattle winner from the team / opponent records: fewer Medabots with unkBA == 2, then fewer
 // broken parts, then the larger gBattleWork.traps[side].actionPoints, then a coin flip (mirrored on link player 1).
-// gGameWork.battleResult = 1 team wins, 2 opponents win. Called by action_phase_time_check when TIME (unk57) is 0.
+// gGameWork.battleResult = 1 team wins, 2 opponents win. Called by action_phase_time_check when TIME (timeLeft) is 0.
 void robattle_judge_time_up(void) {
     u32 team = count_knocked_out_bots(0);
     u32 opp = count_knocked_out_bots(3);
@@ -90,7 +90,7 @@ void reset_bot_status_and_init_palette_transfers(u32 rec) {
     CpuSet(&z4, gBattleWorkActionVars + 47, 0x05000001);
 }
 
-// unkF8 = first record of the acting Medabot's side (0 team, 3 opponents).
+// actorSideFlags = first record of the acting Medabot's side (0 team, 3 opponents).
 void battle_set_actor_side(u32 rec) {
     if (rec <= 2)
         gBattleWork.actorSideFlags = 0;

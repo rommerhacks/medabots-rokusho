@@ -162,7 +162,7 @@ void field_team_add_tinpet(u8 id) {
 void message_reset_hook(void) {}
 
 // guess: if a team Medabot has part id equipped in slot which, returns that bot's legs part byte 1 - 100
-// (load_part_data) and stores the bot's unk1 in gFieldSceneParams.bot_gender; else -1.
+// (load_part_data) and stores its TeamSlot.gender in gFieldSceneParams.bot_gender; else -1.
 u32 team_equipped_part_legs_value(u8 id, u8 which) {
     u8 buf[16];
     s32 legs_value;

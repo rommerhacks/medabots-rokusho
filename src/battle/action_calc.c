@@ -34,7 +34,7 @@ void battle_calc_attack_success(void) {
     subtract_s16_floored(&gBattleWork.success, gBattleBots[gBattleWork.target].evasionBonus);
 }
 
-// guess: a guarding teammate (unkDE) or the target's cover part (unkBD bit 4) takes the hit: stepResult = 1.
+// guess: a guarding teammate (guardBot) or the target's cover part (stateFlags bit 4) takes the hit: stepResult = 1.
 void battle_check_guard_or_cover(void) {
     gBattleBots[gBattleWork.target].hitFlags &= 3;
     gBattleBots[gBattleWork.target].stateFlags |= 2;

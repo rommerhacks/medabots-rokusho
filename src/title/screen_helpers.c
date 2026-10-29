@@ -51,7 +51,8 @@ static u32 sprite_wave_bob8(struct SpriteEntry *spr) {
     return done;
 }
 
-// D-pad moves the town map cursor (unk17) through the neighbour table of the current map; returns 1 on a press.
+// D-pad moves the town map cursor (town_map_place) through the neighbour table of the current map; returns 1 on a
+// press.
 u32 town_map_move_cursor(void) {
     struct MenuWork **pw = &gMenuWork;
     struct MenuWork *w = *pw;

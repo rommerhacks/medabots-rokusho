@@ -207,7 +207,7 @@ void robattle_command_ring_reopen_anim(void) {
 }
 
 // Stores the chosen command of Medabot commandBot and moves on to the next one (sub-state 4), or to
-// sub-state 0x40 (0x90 when unk89 is 1) after the last one.
+// sub-state 0x40 (0x90 when gGameWork.skipBotSetup is 1) after the last one.
 void robattle_command_commit(void) {
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.commandBot);
@@ -575,7 +575,7 @@ void robattle_return_fade_in(void) {
     }
 }
 
-// Sub-state 0x38: the Auto command sets the Medabot's bit in unk44 and lets the AI choose (commit, 0x0D).
+// Sub-state 0x38: the Auto command sets the Medabot's bit in autoCommandBits and lets the AI choose (commit, 0x0D).
 void robattle_command_auto(void) {
     update_all_battle_status_sprites();
     bot_pointer_line_animate(gBattleWork.commandBot);
@@ -808,7 +808,7 @@ void robattle_turn_loop_init(void) {
     gGameSubState = 0x44;
 }
 
-// Robattle sub-state 0x44: turn loop (TIME counter on screen); unk55 flags 2/4/8/0x10 -> 0x60/0x68/0x70/0x78.
+// Robattle sub-state 0x44: turn loop (TIME counter on screen); resultFlags flags 2/4/8/0x10 -> 0x60/0x68/0x70/0x78.
 void robattle_turn_loop(void) {
     if (gBattleWork.resultFlags == 0) {
         robattle_time_tick();
@@ -833,7 +833,7 @@ void robattle_turn_loop(void) {
     }
 }
 
-// Sub-state 0x45: takes the head of the action queue; a Medabot back home (unkBD bit 2) chooses a
+// Sub-state 0x45: takes the head of the action queue; a Medabot back home (stateFlags bit 2) chooses a
 // command (0x47), one at the front line acts (game state 8).
 void robattle_turn_next_action(void) {
     struct BattleBot *rec;
@@ -948,7 +948,7 @@ void robattle_bots_extra_move(void) {
     }
 }
 
-// Sub-states 0x60-0x61 / 0x68-0x69: timed effect A / B ended (unkCE bit 0 / 1): its icon over the
+// Sub-states 0x60-0x61 / 0x68-0x69: timed effect A / B ended (effectShownFlags bit 0 / 1): its icon over the
 // Medabot shrinks away.
 void robattle_effect_a_end_init(void) {
     u32 i;
@@ -1021,7 +1021,7 @@ void robattle_effect_b_end_anim(void) {
 }
 
 // Robattle (game state 7) handlers 0x70/0x71 and 0x78/0x79: show a number over each Medabot with
-// unkCE bit 2 (unkC8) / bit 3 (unkCD) for 90 frames (guess: damage / repair numbers).
+// effectShownFlags bit 2 (buffNumber) / bit 3 (statusNumber) for 90 frames (guess: damage / repair numbers).
 void robattle_effect_a_number_init(void) {
     u32 i;
 
@@ -1122,9 +1122,9 @@ void robattle_link_delay(void) {
 }
 
 void robattle_link_exchange_init(void) {
-    gBattleWork.unk51 = 0;
-    gBattleWork.unk52 = 0;
-    gBattleWork.unk53 = 0;
+    gBattleWork.scratch = 0;
+    gBattleWork.scratchValue = 0;
+    gBattleWork.scratchAux = 0;
     gBattleWork.linkRecvPos = 0;
     gBattleWork.linkSentSum = 0;
     gBattleWork.linkSendToggle = 0;
@@ -1137,25 +1137,25 @@ void robattle_link_exchange_commands(void) {
     u16 packet;
     s16 flag;
 
-    if (gBattleWork.unk51 != 3) {
-        gLinkPackets.sendData =
-            gBattleBots[gBattleWork.unk51].chosenAction + (flag = ((gBattleWork.linkSendToggle << 8) & 0x100) + 0x8000);
+    if (gBattleWork.scratch != 3) {
+        gLinkPackets.sendData = gBattleBots[gBattleWork.scratch].chosenAction +
+                                (flag = ((gBattleWork.linkSendToggle << 8) & 0x100) + 0x8000);
         gGameWork.stepTimer++;
         if (!(gGameWork.stepTimer & 1)) {
             gBattleWork.linkSendToggle ^= 1;
-            gBattleWork.unk51++;
+            gBattleWork.scratch++;
         }
     }
-    if (gBattleWork.unk53 != 3) {
+    if (gBattleWork.scratchAux != 3) {
         packet = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
         if ((packet & 0x8000) && ((u16)(packet & 0x100) >> 8) != gBattleWork.linkRecvToggle) {
             gBattleWork.linkRecvToggle ^= 1;
-            gBattleBots[gBattleWork.unk53 + 3].chosenAction = packet;
-            gBattleWork.unk53++;
+            gBattleBots[gBattleWork.scratchAux + 3].chosenAction = packet;
+            gBattleWork.scratchAux++;
         }
     }
-    if (gBattleWork.unk51 == 3) {
-        if (gBattleWork.unk53 == 3) {
+    if (gBattleWork.scratch == 3) {
+        if (gBattleWork.scratchAux == 3) {
             gGameSubState++;
             gGameWork.stepTimer = 0;
         }

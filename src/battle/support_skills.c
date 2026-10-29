@@ -1,13 +1,13 @@
 // Effect sequences of the Support abilities: action script opcodes 0x30-0x35.
-// Each runner (*_run: clears unkB5 and calls entry [unkAA] of its step table) is one action script command
-// (gActionScriptCommands, opcode order = ROM order); its step handlers follow it and the last step sets unkB5.
+// Each runner (*_run: clears stepDone and calls entry [step] of its step table) is one action script command
+// (gActionScriptCommands, opcode order = ROM order); its step handlers follow it and the last step sets stepDone.
 // Abilities are part data[1], and the script of ability n is gActionScripts[n]:
 //   0x30 Scout (36), 0x31 Conceal (37), 0x32 Boost Chrg (38), 0x33 Rapid Chrg (39), 0x34 Drain Chrg (41),
 //   0x35 Pushover (42; guess, see pushover_run). Ability 40 (Accel Chrg) has an empty script: it works
 //   while equipped. Skill names from the parts that carry them (re/tables/parts.json) and a public FAQ.
-// The *_begin step of each sequence ends the action on a battle time-out (unkA6 0x1A); otherwise it skips
+// The *_begin step of each sequence ends the action on a battle time-out (messageId 0x1A); otherwise it skips
 // the time-out steps 1-3 and starts the effect at step 4. A target with a working Stability part shrugs off
-// the Charge effects (unkA6 0x39, battle_bot_lacks_stability).
+// the Charge effects (messageId 0x39, battle_bot_lacks_stability).
 
 #include "global.h"
 #include "constants/skill_sprites.h"
@@ -226,7 +226,7 @@ void conceal_blink_wait(void) {
     }
 }
 
-// Raises the user's unkB9 by unkEC (up to 0x78): Conceal raises evasion.
+// Raises the user's evasionBonus by amount (up to 0x78): Conceal raises evasion.
 void conceal_apply_evasion(void) {
     add_u8_capped(&gBattleBots[gBattleWork.actor].index + 1, gBattleWork.amount, 0x78);
     gBattleWork.step++;
@@ -490,7 +490,7 @@ void drain_charge_finish(void) {
 }
 
 // guess: Pushover (ability 42, the Majoram head): a thrown object spins onto the target, the target hops
-// and falls over, its head takes unkEC damage (1 if unkBD bit 2 is set) and the script goes on with
+// and falls over, its head takes amount damage (1 if stateFlags bit 2 is set) and the script goes on with
 // opcode 0x21. The guide describes Pushover as "throws a banana, very little damage, erases orders".
 void pushover_run(void) {
     gBattleWork.stepDone = 0;
@@ -660,7 +660,7 @@ void pushover_apply_head_damage(void) {
         gBattleWork.step = 0x13;
 }
 
-// guess: unkBD bit 2 set -> step 0x14, which leads to pushover_flag_target (unkBD bit 0).
+// guess: stateFlags bit 2 set -> step 0x14, which leads to pushover_flag_target (stateFlags bit 0).
 void pushover_check_target_flag(void) {
     if (gBattleBots[gBattleWork.target].stateFlags & 4)
         gBattleWork.step++;

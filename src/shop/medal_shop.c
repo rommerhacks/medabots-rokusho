@@ -62,7 +62,7 @@ void medal_rename_reset_cursor(void) {
     gGameSubState++;
 }
 
-// Builds the owned Medal list in unkB0; outside rename mode it hands over to name entry at once.
+// Builds the owned Medal list in gMenuWork->medal_list; outside rename mode it hands over to name entry at once.
 void medal_rename_build_list(void) {
     u32 zero;
     u32 z = 0;

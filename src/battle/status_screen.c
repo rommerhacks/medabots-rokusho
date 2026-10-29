@@ -8,8 +8,8 @@
 static void status_switch_side(void);
 
 // Robattle Status screen (ring slot 2, sub-states 0x23-0x26; runtime-checked, re/scratch/b34_status_probe.txt):
-// gGameWork.openedFrom = side shown (0 team, 1 opponents, R / L switches), unk3D = selected Medabot, D-pad moves it.
-// Draws the record's sprite if it is the selected one (unk3D) or the one in unk46.
+// gGameWork.openedFrom = side shown (0 team, 1 opponents, R / L switches), shownId = selected Medabot, D-pad moves it.
+// Draws the record's sprite if it is the selected one (shownId) or the one in pageCursor.
 static void status_draw_bot_sprite(u32 rec, u32 x, u32 y) {
     u32 slot, side, k;
 
@@ -256,7 +256,7 @@ void scroll_bg3_diagonal(void) {
     }
 }
 
-// Status screen: advance unk46 to the next Medabot slot (0-2), skipping the selected one
+// Status screen: advance pageCursor to the next Medabot slot (0-2), skipping the selected one
 void status_next_other_slot(void) {
     if (gGameWork.pageCursor == 2)
         gGameWork.pageCursor = 0;

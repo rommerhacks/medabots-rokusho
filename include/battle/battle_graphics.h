@@ -24,7 +24,7 @@ void target_arrows_animate(u32 bot);
 void battle_substeps_reset(void);
 void battle_message_reset(void);
 void clear_battle_ui_tilemaps(void);
-// Moves one point from gBattleWork.unk51 into the Medaforce gauge (max 80) and redraws it; 1 when done.
+// Moves one point from gBattleWork.scratch into the Medaforce gauge (max 80) and redraws it; 1 when done.
 u32 medaforce_gauge_fill_step(u32 bot);
 // The same, taking one point out of the gauge.
 u32 medaforce_gauge_drain_step(u32 bot);
@@ -32,11 +32,11 @@ u32 medaforce_gauge_drain_step(u32 bot);
 // spins them up and around it and returns 1 when all 8 are gone.
 void mf_charge_sparkles_init(u32 bot);
 u32 mf_charge_sparkles_update(u32 bot);
-// End of a Medabot's action: unkDE / unkDF = chosen part and its skill, clears the per-turn part and defence
-// state, then restore_changed_part.
+// End of a Medabot's action: lastAction / lastActionSkill = chosen part and its skill, clears the per-turn part and
+// defence state, then restore_changed_part.
 void battle_action_cleanup(u32 bot);
 // Writes the part saved by a Change skill (gBattleWork.savedPart, flag partChanged) back into the acting Medabot's
-// part unkA7 and reloads the part sprites.
+// part actorPart and reloads the part sprites.
 void restore_changed_part(u32 bot);
 
 #endif // GUARD_BATTLE_BATTLE_GRAPHICS_H

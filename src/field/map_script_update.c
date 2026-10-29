@@ -500,7 +500,7 @@ void map_script_update_yes_no_keep_window(void) {
     }
 }
 
-// Opcode 0x33: start Robattle (battle id unkC2A) and keep its result (1 won, 2 lost) in sceneResult.
+// Opcode 0x33: start Robattle (battle id battle_id) and keep its result (1 won, 2 lost) in sceneResult.
 void map_script_update_robattle(void) {
     struct FieldWork *work = &gFieldWork;
 

@@ -159,7 +159,7 @@ void side_add_action_point(void) {
     gBattleWork.traps[gBattleWork.actorSide].actionPoints++;
 }
 
-// The Medabot in unk88 gains 20 Medaforce (40 with unkC0 bit 3), up to the full 80.
+// The Medabot in gBattleWork.target gains 20 Medaforce (40 with guardFlags bit 3), up to the full 80.
 void charge_target_medaforce(void) {
     u32 add;
     u32 gauge;

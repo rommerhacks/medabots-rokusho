@@ -61,7 +61,7 @@ void action_phase_cursor_anim(void) {
     }
 }
 
-// Fails with message 4 when the acting Medabot has unkBD bit 0 set; no part chosen (action == 0) goes to
+// Fails with message 4 when the acting Medabot has stateFlags bit 0 set; no part chosen (action == 0) goes to
 // sub-state 0x10, otherwise on to action_phase_resolve_command.
 void action_phase_check_command(void) {
     if (gBattleBots[gBattleWork.actor].stateFlags & 1) {
@@ -197,14 +197,14 @@ void action_phase_show_charge_message(void) {
         gGameSubState++;
 }
 
-// Charge sparkles; unk51 = gauge fill amount, 80 with unkC0 bit 3 set, else 40.
+// Charge sparkles; scratch = gauge fill amount, 80 with guardFlags bit 3 set, else 40.
 void action_phase_charge_init(void) {
     target_panels_show(0);
     play_sound_effect(0x51);
     if (gBattleBots[gBattleWork.actor].guardFlags & 8)
-        gBattleWork.unk51 = 0x50;
+        gBattleWork.scratch = 0x50;
     else
-        gBattleWork.unk51 = 0x28;
+        gBattleWork.scratch = 0x28;
     mf_charge_sparkles_init(gBattleWork.actor);
     gGameSubState++;
 }
@@ -310,7 +310,7 @@ void action_phase_show_winner_message(void) {
         gGameSubState++;
 }
 
-// TIME left: a levelled-up Medal skill (unk165) shows the level-up popup, else next turn. Time up: judge it.
+// TIME left: a levelled-up Medal skill (skillLevelledUp) shows the level-up popup, else next turn. Time up: judge it.
 void action_phase_time_check(void) {
     if (gBattleWork.timeLeft) {
         if (gBattleWork.skillLevelledUp)
@@ -374,7 +374,7 @@ void action_phase_exit_fade_step(void) {
         gGameSubState++;
 }
 
-// Leaves the battle: after-battle state 6, or link state 10 for a link battle (unk89 == 1).
+// Leaves the battle: after-battle state 6, or link state 10 for a link battle (gGameWork.skipBotSetup == 1).
 void action_phase_exit(void) {
     gVBlankCallback = empty_callback;
     gGameWork.battleOver = 1;
@@ -450,7 +450,7 @@ void action_phase_level_up_done(void) {
     gGameSubState = 0x4F;
 }
 
-// Medaforce chosen (unkA7 = slot 0-2): blocked (unk58, message 0x79), Medal level too low for the slot
+// Medaforce chosen (actorPart = slot 0-2): blocked (medaforceBlocked, message 0x79), Medal level too low for the slot
 // (below 10 / 30 / 60, message 0x36) or gauge not full (message 0x37) fail; otherwise activate it.
 void action_phase_medaforce_check(void) {
     battle_substeps_reset();
@@ -492,7 +492,7 @@ void action_phase_medaforce_anim_init(void) {
     gSpriteEntries[0x22].palette = 7;
     gSpriteEntries[0x22].order = gBattleWork.actor * 4 + 0x59;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x4E], 0x22);
-    gBattleWork.unk51 = gBattleBots[gBattleWork.actor].medaforce[2];
+    gBattleWork.scratch = gBattleBots[gBattleWork.actor].medaforce[2];
     gGameSubState++;
 }
 
@@ -516,7 +516,7 @@ void action_phase_medaforce_name(void) {
     gGameSubState++;
 }
 
-// Runs the Medaforce as action unkA8[0] + 0x50 in battle state 9.
+// Runs the Medaforce as action actorSkill[0] + 0x50 in battle state 9.
 void action_phase_start_medaforce(void) {
     gBattleWork.skillGrowthOn = 1;
     gBattleWork.actorSkill = gBattleBots[gBattleWork.actor].medaforce[0] + 0x50;

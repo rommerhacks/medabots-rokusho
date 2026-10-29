@@ -583,7 +583,7 @@ void medaparts_help_exit(void) {
     gGameSubState = 0x13;
 }
 
-// Medaparts screen sub-states 64-71: A on a part in link trade mode (unk3C == 4) opens a 3-entry choice (cursor
+// Medaparts screen sub-states 64-71: A on a part in link trade mode (openedFrom == 4) opens a 3-entry choice (cursor
 // sprite 4, choice in gGameWork.tradeChoice): 0 opens the part's detail page, 1 offers it for trade (refused with
 // sound 6 when every owned copy is equipped), 2 goes back to the list. Twin of the Medals screen's medal_trade_*.
 // Code-read only (needs a link partner).

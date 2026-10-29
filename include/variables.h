@@ -294,7 +294,7 @@ extern const void
 extern const u32 *const gTextTable[];             // text pointers, banks 0-1 (guess)
 extern const u32 *const *const gTextBankTables[]; // text pointer tables, bank 2+ (guess)
 extern const s16 gJumpArcTable[][8];              // jump arc: [n][0] / 16 = sprite y offset at frame n (hops / jumps)
-extern const u8 gScriptPlayerForms[];     // map script terrain/palette id -> player_form/saved_player_form/unkC28
+extern const u8 gScriptPlayerForms[];     // map script terrain/palette id -> player_form/saved_player_form/loaded_form
                                           // (map_script_update_set_player_form)
 extern struct PlayerRecord gPlayerRecord; // gMoney is its first field
 extern const Func gDevTestStates[];       // game state 0 (developer test screen) sub-state handlers
@@ -404,9 +404,8 @@ extern const u8 gMedapartsListBg3Tilemap[];
 extern const u8
     gMedapartDetailBgTiles[]; // Medapart detail page (medapart_detail_load_gfx; runtime: VRAM dump of the page)
 extern const u8
-    gMedapartStatLabelTiles[]; // ARMOR / RATE OF SUCCESS / POWER / AMOUNT OF USES / ... labels, 12 tiles each
-extern const u8
-    gPartPowerMarkTiles[]; // 2 tiles beside POWER when the part record byte unkF5 is set. guess: power bonus mark
+    gMedapartStatLabelTiles[];          // ARMOR / RATE OF SUCCESS / POWER / AMOUNT OF USES / ... labels, 12 tiles each
+extern const u8 gPartPowerMarkTiles[];  // 2 tiles beside POWER when gGameWork.partStat3 is set. guess: power bonus mark
 extern const u8 gSkillRangeIconTiles[]; // 2x2 icons: proximity, remote (skill_type_is_remote); Medapart detail page
 extern const u8 gBotActionIconTiles[];  // 2x2-tile icons beside each Medabot on the field (BG3 tiles 0x214+); also the
                                         // Medaparts screen. guess: action / skill type icons
@@ -715,7 +714,7 @@ extern const u16 gBreakRingPalette[];     // its OBJ palette (palette 7)
 extern const u8 gHitSparksTiles[];        // compressed OBJ tiles (trap_hit_break_burst_init)
 extern const u16 gHitSparksPalette[];     // its OBJ palette (palette 7)
 extern const u16 gActionFlashPalette[];   // OBJ palette 6 (action_flash_load_palette)
-extern const u8 gDefenceShieldTiles[];    // compressed OBJ tiles, guard_load_graphics for unkDF 0x1B
+extern const u8 gDefenceShieldTiles[];    // compressed OBJ tiles, guard_load_graphics for guardSkill 0x1B
 extern const u8 gFullBlockShieldTiles[];  // 0x1C
 extern const u8 gHalfBlockShieldTiles[];  // 0x1D
 extern const u16 gDefenceShieldPalette[]; // their OBJ palettes
@@ -1014,7 +1013,7 @@ extern const Func gBattleSeqCommands[]; // battle sequence commands, by battle_s
 extern const Func gParticleShotHandlers[]; // shot states by sprite work[PARTICLE_STATE] (particle_run_shot_handlers)
 extern u16 gPartSpriteOffsets[]; // x, y offset pairs by part (effect_sprite_spawn_at_part); not const: hit_sparks_spawn
                                  // reloads it per iteration
-extern const u8 gDiceRollValues[];  // 16 values, two random picks summed into gBattleWork.dice1 / unk189
+extern const u8 gDiceRollValues[];  // 16 values, two random picks summed into gBattleWork.dice1 / dice2
                                     // (script_op_roll_dice_damage)
 extern u8 gGuardSpriteEntryBytes[]; // = (u8 *)&gSpriteEntries[33]: script_op_guard_restore copies the guarding
                                     // Medabot's 4 saved part sprites (entries 90 + 4 * rec) back over 33-36
@@ -1025,14 +1024,15 @@ extern const u8
     *const gActionScripts[]; // Robattle action scripts by skill id gBattleWork.actorSkill (battle_script_read_byte)
 extern const Func
     gActionScriptCommands[]; // Robattle action script commands by script byte < 0x80 (battle_run_action_script; script
-                             // from gActionScripts[gBattleWork.actorSkill] at offset unkBC, battle_script_read_byte)
+                             // from gActionScripts[gBattleWork.actorSkill] at offset scriptOffset,
+                             // battle_script_read_byte)
 extern const Func gAiActionChecks[];     // Robattle AI: action validity checks by part skill id data[1]; set
-                                         // gBattleWork.unk51 = 1 to reject (ai_action_unusable)
+                                         // gBattleWork.scratch = 1 to reject (ai_action_unusable)
 extern const u8 gRandomSlots[];          // 16 slot numbers 0-2 picked by rng & 15 (rng_random_slot)
 extern const Func gAiAfterPick[];        // Robattle AI: action handlers by part skill id data[1] (ai_run_after_pick)
 extern const Func gAiTargetPickers[];    // Robattle AI: action selection handlers by part skill id data[1]
                                          // (ai_pick_part_target)
-extern const u8 gLevelUpSkillPalettes[]; // sprite 0x22 palette bits (unkA) by the levelled-up skill type
+extern const u8 gLevelUpSkillPalettes[]; // sprite 0x22 palette bits (SpriteEntry.palette) by the levelled-up skill type
                                          // gBattleWork.levelUpSkill (action_phase_level_up_skill_init)
 extern const u8 gSkillLevelUpTilesLz[];  // compressed OBJ tiles at 0x06014800: Medal skill level-up popup
                                          // (action_phase_level_up_init)
@@ -1551,7 +1551,7 @@ extern s32 gSpritePerspOffsetY;
 extern s32 gSpritePerspCenterY;
 extern struct Vec16 gSpriteCameraPos;    // sprite camera position
 extern struct Vec16 gSpriteScreenOffset; // added to every sprite's screen position (guess: screen shake)
-// frame set tables by SpriteEntry.unk1C & 0xF: 0 default, 2 menu sprites, 1 / 3 not seen set in C
+// frame set tables by SpriteEntry.frame_table & 0xF: 0 default, 2 menu sprites, 1 / 3 not seen set in C
 extern struct SpriteFrame *const *const gSpriteFrameSets[];
 extern struct SpriteFrame *const *const gSpriteFrameSets1[];
 extern struct SpriteFrame *const *const gMenuSpriteFrameSets[];

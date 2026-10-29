@@ -58,7 +58,7 @@ void load_all_bot_part_sprites(void) {
     }
 }
 
-// Team sprites face right, opponents left; flag bit 2 of unkBD turns a Medabot round.
+// Team sprites face right, opponents left; flag bit 2 of stateFlags turns a Medabot round.
 u32 bot_sprite_is_flipped(u32 rec) {
     if (rec <= 2) {
         if (gBattleBots[rec].stateFlags & 4)

@@ -554,7 +554,7 @@ void field_debug_reload_area(void) {
 
 void field_state_unused(void) {}
 
-// Marks each of the area's gAreaWarps cells as 2 in the collision map (unk810).
+// Marks each of the area's gAreaWarps cells as 2 in the collision map (tile_map).
 static void field_mark_warp_tiles(void) {
     const struct AreaWarp *warps = gAreaWarps[gFieldWork.area_id];
     s32 i;
@@ -600,7 +600,7 @@ static void clear_vram_bg2_tiles(void) {
     memset_bytes((u8 *)(VRAM + 0x3000), 0x6000, 0x80);
 }
 
-// gAreaBgTilemaps indexed as a flat pointer array (three LZ77 tilemaps per area: unk0, unk4, unk8);
+// gAreaBgTilemaps indexed as a flat pointer array (three LZ77 tilemaps per area);
 // the index has to reach the load unfolded ((area * 3 + 1) << 2), hence the helper.
 static inline const void *area_gfx(const void *const *table, u32 i) {
     return table[i];

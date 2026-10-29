@@ -2,7 +2,7 @@
 // work[PARTICLE_STATE] indexes one of four handler tables (gParticleOrbitHandlers, gParticleSparkHandlers,
 // gParticleShotHandlers, gParticleSweepHandlers) and each state bumps it when it is done. work[PARTICLE_TIMER] is the
 // state's frame counter, scale_x / scale_y the affine scale (shrinking to nothing ends a particle), angle the
-// rotation. gBattleWork.unk51 picks the effect variant (sprite frames, sound). Called from battle/medaforce_effects.
+// rotation. gBattleWork.scratch picks the effect variant (sprite frames, sound). Called from battle/medaforce_effects.
 
 #include "global.h"
 #include "constants/battle_seq_sprites.h"
@@ -22,7 +22,7 @@ static void particle_spawn_trail_a(u32 src) {
     struct SpriteEntry *orbiter, *particle;
     struct SpriteEntry *base;
 
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         mask = 0xF;
         break;
@@ -57,7 +57,7 @@ static void particle_spawn_trail_a(u32 src) {
         particle->scale_y = 0x40;
         particle->palette = 6;
         particle->order = 0xE0;
-        switch (gBattleWork.unk51) {
+        switch (gBattleWork.scratch) {
         case 0:
             gSpriteEntries[slot].frame = (rng_next_byte() & 3) + 0x6B01;
             gSpriteEntries[slot].work[PARTICLE_STATE] = 0x10;
@@ -91,7 +91,7 @@ void particle_spawn_trail_b(u32 src) {
     struct SpriteEntry *orbiter, *particle;
     struct SpriteEntry *base;
 
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         mask = 7;
         break;
@@ -117,7 +117,7 @@ void particle_spawn_trail_b(u32 src) {
         particle->scale_y = 0x40;
         particle->palette = 6;
         particle->order = 0xE0;
-        switch (gBattleWork.unk51) {
+        switch (gBattleWork.scratch) {
         case 0:
             particle->frame = 0x7201;
             particle->work[PARTICLE_STATE] = 0x30;
@@ -173,7 +173,7 @@ void particle_orbit_a(void) {
         return;
     }
     if (!(gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_TIMER] & 0x3F)) {
-        switch (gBattleWork.unk51) {
+        switch (gBattleWork.scratch) {
         case 0:
             play_sound_effect(0x36);
             break;
@@ -196,7 +196,7 @@ void particle_orbit_a(void) {
     gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_ORBIT_RADIUS] +=
         gParticleOrbitRadiusSteps[(gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_TIMER] & 0x1F) * 2];
     if (!(gBattleWork.actorSideFlags & 1)) {
-        if (gBattleWork.unk51 != 3)
+        if (gBattleWork.scratch != 3)
             gSpriteEntries[gGameWork.runningSpriteSlot].angle =
                 (gSpriteEntries[gGameWork.runningSpriteSlot].angle - 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_ORBIT_ANGLE]--;
@@ -204,7 +204,7 @@ void particle_orbit_a(void) {
                                           gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_ORBIT_RADIUS], 0xB8,
                                           0x34);
     } else {
-        if (gBattleWork.unk51 != 3)
+        if (gBattleWork.scratch != 3)
             gSpriteEntries[gGameWork.runningSpriteSlot].angle =
                 (gSpriteEntries[gGameWork.runningSpriteSlot].angle + 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_ORBIT_ANGLE]++;
@@ -230,7 +230,7 @@ void particle_orbit_b(void) {
         return;
     }
     if (!(gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_TIMER] & 0x3F)) {
-        switch (gBattleWork.unk51) {
+        switch (gBattleWork.scratch) {
         case 0:
             play_sound_effect(0x5D);
             break;
@@ -245,7 +245,7 @@ void particle_orbit_b(void) {
     gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_ORBIT_RADIUS] +=
         gParticleOrbitRadiusSteps[(gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_TIMER] & 0x1F) * 2];
     if (gBattleWork.actorSideFlags & 1) {
-        if (gBattleWork.unk51 == 0)
+        if (gBattleWork.scratch == 0)
             gSpriteEntries[gGameWork.runningSpriteSlot].angle =
                 (gSpriteEntries[gGameWork.runningSpriteSlot].angle - 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_ORBIT_ANGLE]--;
@@ -253,7 +253,7 @@ void particle_orbit_b(void) {
                                           gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_ORBIT_RADIUS], 0xB8,
                                           0x34);
     } else {
-        if (gBattleWork.unk51 == 0)
+        if (gBattleWork.scratch == 0)
             gSpriteEntries[gGameWork.runningSpriteSlot].angle =
                 (gSpriteEntries[gGameWork.runningSpriteSlot].angle + 0x10) & 0x3FF;
         gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_ORBIT_ANGLE]++;

@@ -43,21 +43,21 @@ static void medal_medaforce_draw_selected(void);
 static void medal_medaforce_init_cursor(void);
 static u32 medal_medaforce_cursor_input(void);
 static u32 medal_medaforce_redraw(void);
-// Moves the help cursor sprite to entry unk44.
+// Moves the help cursor sprite to entry helpPage.
 static void medals_help_move_cursor(void);
-// Arrow path under the slots for the Repetition count (Medal unk9).
+// Arrow path under the slots for the Repetition count (MedalData.rotationLen).
 static void medal_rotation_draw_repeat_path(void);
 static void medal_rotation_redraw(void);
-// Up/down arrow sprites 1-2 above and below action slot unk46.
+// Up/down arrow sprites 1-2 above and below action slot pageCursor.
 static void medal_rotation_init_slot_arrows(void);
-// Repetition cursor sprite 3 at slot unk9.
+// Repetition cursor sprite 3 at slot rotationLen.
 static void medal_rotation_init_repeat_cursor(void);
 static void medal_rotation_blink_slot_arrows(void);
-// UP/DOWN cycles the action (0-7) in slot unk46; returns 1 on change.
+// UP/DOWN cycles the action (0-7) in slot pageCursor; returns 1 on change.
 static u32 medal_rotation_action_input(void);
-// LEFT/RIGHT moves the slot cursor unk46 (0-7); returns 1 on change.
+// LEFT/RIGHT moves the slot cursor pageCursor (0-7); returns 1 on change.
 static u32 medal_rotation_slot_input(void);
-// LEFT/RIGHT changes the Repetition count (Medal unk9, 0-7); returns 1 on change.
+// LEFT/RIGHT changes the Repetition count (MedalData.rotationLen, 0-7); returns 1 on change.
 static u32 medal_rotation_repeat_input(void);
 // The next three show the Medabot the Medal is set in (nothing if it's in none).
 static void medal_page_load_bot_gfx(void);
@@ -71,7 +71,7 @@ static void medal_trade_init_choice_cursor(void);
 static void medal_trade_choice_cursor_input(void);
 
 // Game state 4: the Medals screen (runtime-checked from Medawatch > Medals). Sub-states 0-5 = Medal
-// list (unk3F tab, unk40 row); A opens a Medal's pages, L/R cycle unk42: 8.. Ability, 24.. Medaforce,
+// list (listTab tab, medalRow row); A opens a Medal's pages, L/R cycle medalPage: 8.. Ability, 24.. Medaforce,
 // 40.. Rotation, 56.. Skill. START = help (0x48..).
 void medals_screen_update(void) {
     if (link_error_check() == 0)
@@ -940,8 +940,8 @@ void medals_help_exit(void) {
     }
 }
 
-// Medals screen sub-states 96-104: A on a Medal in link trade mode (unk3C == 4) opens a 3-entry choice (cursor
-// unk4A): 0 opens the Medal's pages, 1 offers it for trade, 2 goes back to the list. Code-read only (needs a link
+// Medals screen sub-states 96-104: A on a Medal in link trade mode (openedFrom == 4) opens a 3-entry choice (cursor
+// tradeChoice): 0 opens the Medal's pages, 1 offers it for trade, 2 goes back to the list. Code-read only (needs a link
 // partner). guess: the refusal messages are gLinkMessages[9] for Medal flag 0x40 and [8] for a Medal kind the
 // partner already has (gLinkTradeData is synced from the partner in link_medal_sync).
 void medal_trade_choice_open(void) {

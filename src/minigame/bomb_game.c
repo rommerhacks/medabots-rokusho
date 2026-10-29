@@ -743,7 +743,7 @@ static u32 bomb_game_over_banner(void) {
     return 0;
 }
 
-// Zooms and fades the round intro banner (scale in unk8 / unk9).
+// Zooms and fades the round intro banner (scale in scale_x / scale_y).
 void bomb_game_animate_round_banner(void) {
     u8 alpha_a[8];
     u8 alpha_b[8];

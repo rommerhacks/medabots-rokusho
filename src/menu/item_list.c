@@ -243,7 +243,7 @@ void item_menu_draw_page_numbers(void) {
     draw_number_3digits((gMenuWork->item_count - 1) / 5 + 1, 5, 3);
 }
 
-// guess: SELECT reorder, swaps the marked item (unk13) with the cursor item (unkC)
+// guess: SELECT reorder, swaps the marked item (swap_from) with the cursor item (item_cursor)
 void swap_inventory_items(void) {
     memswap(gItemInventory[gMenuWork->swap_from], gItemInventory[gMenuWork->item_cursor], 2);
 }

@@ -401,7 +401,7 @@ u32 hit_list_set_part_damage(u32 rec, u32 part, u32 amount) {
     }
 }
 
-// guess: a random living bot from base..base+2 that is guarding (unkBD bit 3 or 4) with its guard part intact.
+// guess: a random living bot from base..base+2 that is guarding (stateFlags bit 3 or 4) with its guard part intact.
 u32 battle_find_guarding_enemy(u32 base) {
     u32 i, j, dir;
 

@@ -321,7 +321,7 @@ moved:
     item_menu_blink_swap_marker(gFrameCounter);
 }
 
-// Starts the SELECT reorder: shows the swap marker (sprite 0x54) on the cursor item and remembers it in unk13.
+// Starts the SELECT reorder: shows the swap marker (sprite 0x54) on the cursor item and remembers it in swap_from.
 void item_menu_start_swap(void) {
     struct MenuWork **pw = &gMenuWork;
     item_menu_set_cursor_pos(&gSpriteEntries[0x54]);

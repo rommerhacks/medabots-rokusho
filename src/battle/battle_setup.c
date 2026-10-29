@@ -10,7 +10,7 @@ static inline u32 sub1(u32 x) {
     return x - 1;
 }
 
-// Adds one to the bot's per-skill-type use counter (unkB0) for its chosen action: a part (action 1-3) or
+// Adds one to the bot's per-skill-type use counter (skillUseCount) for its chosen action: a part (action 1-3) or
 // one of the three Medal skills (4-6, available from Medal level 10 / 30 / 60).
 void count_bot_skill_use(u32 rec) {
     u8 k;

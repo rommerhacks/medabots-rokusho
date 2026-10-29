@@ -67,7 +67,7 @@ void message_open(void) {
     }
 }
 
-// run_message state 1: blend all palettes toward 0x01B2 by unk1C * 2 / 32, 10 frames.
+// run_message state 1: blend all palettes toward 0x01B2 by dimLevel * 2 / 32, 10 frames.
 void message_dim_palettes_step(void) {
     bg_palettes_blend_masked_now(0x1B2, gGameWork.dimLevel * 2, 0x1FFF);
     obj_palettes_blend_masked_now(0x1B2, gGameWork.dimLevel * 2, 0x3FFF);
@@ -89,8 +89,8 @@ void message_show_window(void) {
     }
 }
 
-// run_message state 3: draws the window frame in three frames (unk26 0-2, reverse of message_close_window_frame), then
-// state 4.
+// run_message state 3: draws the window frame in three frames (frameAnimStep 0-2, reverse of
+// message_close_window_frame), then state 4.
 void message_open_window_frame(void) {
     switch (gGameWork.frameAnimStep) {
     case 0:
@@ -374,7 +374,7 @@ void text_render_glyph_step(void) {
     gGameWork.msgPos++;
 }
 
-// 0xF9 n: print string variable n (0 = gPlayerName, 1-4 = 20-byte buffers from unk9E), one glyph a call.
+// 0xF9 n: print string variable n (0 = gPlayerName, 1-4 = 20-byte buffers from textBuf), one glyph a call.
 void message_print_var_step(void) {
     u8 w;
     u8 n;
@@ -520,7 +520,7 @@ u8 message_wait_next_page(void) {
     return 0;
 }
 
-// 0xFA n: wait n frames (0xFF = forever); A or B ends the wait early unless unk89 (demo) is set.
+// 0xFA n: wait n frames (0xFF = forever); A or B ends the wait early unless gGameWork.skipBotSetup (demo) is set.
 static void message_cmd_wait_skippable(void) {
     u16 pos;
     if (gGameWork.msgWait == 0) {
@@ -582,7 +582,8 @@ static void message_cmd_end(void) {
     }
 }
 
-// run_message state 6: run end mode gMessageEndModes[unk8[unkC + 1]] (each steps through its own table by unk1B).
+// run_message state 6: run end mode gMessageEndModes[msgText[msgPos + 1]] (each steps through its own table by
+// endModeStep).
 void message_run_command(void) {
     gMessageEndModes[gGameWork.msgText[gGameWork.msgPos + 1]]();
 }
@@ -668,7 +669,7 @@ void message_close_check_dim(void) {
         gGameWork.endModeStep += 2;
 }
 
-// Message close step: undo message_dim_palettes_step one frame at a time (unk1C down to 0).
+// Message close step: undo message_dim_palettes_step one frame at a time (dimLevel down to 0).
 void message_undim_palettes_step(void) {
     bg_palettes_blend_masked_now(0x1B2, gGameWork.dimLevel * 2, 0x1FFF);
     obj_palettes_blend_masked_now(0x1B2, gGameWork.dimLevel * 2, 0x1FFF);

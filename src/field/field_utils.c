@@ -125,7 +125,7 @@ void bg2_affine_reset(void) {
 }
 
 // Not called directly (hidden in the tail of bg2_affine_reset). Guess: debug, B + D-pad scrolls BG1-3,
-// RIGHT/LEFT step unk36 (0-255).
+// RIGHT/LEFT step gFieldState.bg2_angle (0-255).
 void debug_bg_scroll_input(void) {
     if (KEYS_LO(gHeldKeys) & 2) {
         if (KEYS_LO(gHeldKeys) & 0x40) {

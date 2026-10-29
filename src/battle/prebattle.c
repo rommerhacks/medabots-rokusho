@@ -307,7 +307,7 @@ void prebattle_rubberobo_return_to_field(void) {
     }
 }
 
-// A on the pre-battle screen: Medabots screen in team select mode (game state 3, unk50 = 2)
+// A on the pre-battle screen: Medabots screen in team select mode (game state 3, medabotsMode = 2)
 void prebattle_open_team_select(void) {
     mem_fill8(&gGameWork.medabotsMode, 0x14, 0);
     gGameWork.medabotsMode = 2;
@@ -317,7 +317,7 @@ void prebattle_open_team_select(void) {
 
 // Game state 6 sub-states 48+ = after the Robattle (runtime-checked from a debug battle,
 // re/scratch/afterbattle_probe.txt): 53 opponent line, 55-61 Medapart won (START = details),
-// 64-65 experience, 66+ Medal level-ups and Medaforces per team member (unk186)
+// 64-65 experience, 66+ Medal level-ups and Medaforces per team member (resultsMember)
 void afterbattle_count_battle(void) {
     inc_u16_saturating(&gRobattleCounts[0], 9999);
     if (gGameWork.battleResult == 1) {
@@ -693,7 +693,7 @@ void afterbattle_part_detail_save_screen(void) {
 }
 
 // Guess: START on "Medapart was acquired": open the Medaparts detail page (game state 5 sub 0x10) of the
-// won part (gBattleWork.wonPartKind = part kind, unk169 = part id).
+// won part (gBattleWork.wonPartKind = part kind, wonPartId = part id).
 void afterbattle_part_detail_open_screen(void) {
     struct GameWork *game;
     struct BattleWork *battle;
@@ -827,7 +827,7 @@ void afterbattle_show_lost_message(void) {
     }
 }
 
-// 0x71, after the loss message: a map-script battle (unkC2F set) just fades out (0x72); a random battle goes on
+// 0x71, after the loss message: a map-script battle (story_battle set) just fades out (0x72); a random battle goes on
 // to 0x77, where a Medapart is taken.
 void afterbattle_lost_check_story_battle(void) {
     update_all_battle_sprite_orbits();
@@ -927,8 +927,8 @@ void load_area_battlefield(void) {
     gBattleWork.battlefield = (&gGameWork.partAbility)[1];
 }
 
-// Picks the encounter (area table unless a debug battle set unkC2A), copies its setup and re-rolls
-// each opponent part with random_pick_weighted4 unless the setup has fixed parts (unk3).
+// Picks the encounter (area table unless a debug battle set battle_id), copies its setup and re-rolls
+// each opponent part with random_pick_weighted4 unless the setup has fixed parts (fixedParts).
 void setup_random_encounter_enemies(void) {
     struct FieldWork *st;
     u8 flag;
@@ -1058,8 +1058,8 @@ void battlefield_load_params(void) {
     memcpy_bytes_0803F63C(gBattlefieldParams[gBattleWork.battlefield], gBattleWork.battlefieldParams, 8);
 }
 
-// Chooses the won Medapart (unk168 kind, unk169 id): afterbattle_broken_part_chance (10 per broken opponent part)
-// against a 0-100 roll, then afterbattle_pick_unowned_part (a part the player doesn't own yet), else any opponent
+// Chooses the won Medapart (wonPartKind kind, wonPartId id): afterbattle_broken_part_chance (10 per broken opponent
+// part) against a 0-100 roll, then afterbattle_pick_unowned_part (a part the player doesn't own yet), else any opponent
 // part (battle_pick_random_bot_part(3)).
 static void afterbattle_choose_won_part(void) {
     s32 n = afterbattle_broken_part_chance();
@@ -1097,8 +1097,8 @@ end:
     return sum;
 }
 
-// Looks for an opponent part the player owns none of, from a random opponent and kind; 1 and sets unk168 / unk169
-// when found.
+// Looks for an opponent part the player owns none of, from a random opponent and kind; 1 and sets wonPartKind /
+// wonPartId when found.
 u32 afterbattle_pick_unowned_part(void) {
     u32 slot, n, j, part, k;
     u8 *part_id;
@@ -1127,8 +1127,8 @@ u32 afterbattle_pick_unowned_part(void) {
     return 0;
 }
 
-// Picks a random part of a present Medabot of one side (first = 0 player, 3 opponents): unk168 kind, unk169 id,
-// unk187 the Medabot record.
+// Picks a random part of a present Medabot of one side (first = 0 player, 3 opponents): wonPartKind kind, wonPartId id,
+// lossBot the Medabot record.
 void battle_pick_random_bot_part(u32 first) {
     u32 slot, dir, i, k;
 
@@ -1203,7 +1203,7 @@ static void setup_battle_result_sprite_animation(void) {
 }
 
 // Experience points for the won Robattle (gBattleWork.score), from the opponents' Medal levels,
-// their count, the level gap to the team, their parts (guess: broken ones), unk16B and armor.
+// their count, the level gap to the team, their parts (guess: broken ones), timeTicks and armor.
 void calculate_battle_score_summary(void) {
     gBattleWork.score = 0;
     calc_average_bot_stat_080125B4();

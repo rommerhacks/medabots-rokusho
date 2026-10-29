@@ -1,7 +1,7 @@
 // Mode-2 state 24, started by start_medal_transform from battle/prebattle.c after a won Robattle for each Medal with
 // new stats. Sub-states gMedalLevelUpSubStates: decompress the Medal sprite, sparkle sprites, two messages, then back
 // to mode 0 state 6 (after-battle). Messages 0x11/0x12: "Wow!!! <Medal>!!! It's transformed into a new shape!",
-// so this is the Medal transformation that follows a level-up (new variant unk8 of the Medal sprite).
+// so this is the Medal transformation that follows a level-up (new MedalData.spriteVariant of the Medal sprite).
 #include "global.h"
 #include "constants/sprites.h"
 

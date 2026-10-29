@@ -25,13 +25,14 @@ void debug_mdlpic_input(void); // rows: Medal graphic 0-29, sprite variant 0-4; 
 void debug_rndtk_update(void);
 void debug_rndtk_input(void); // toggles gFieldWork.encounters_off
 void debug_battle_update(void);
-void debug_battle_input(void); // A: unkC2A = id, starts game state 6 (Robattle intro)
+void debug_battle_input(void); // A: battle_id = id, starts game state 6 (Robattle intro)
 void debug_sound_update(void);
 void debug_sound_input(void); // rows: sound effect 0-0x7F, song 0-0x35; B stops the music
 void debug_motion_update(void);
 void debug_motion_init(void);
 void debug_motion_load(void);
-void debug_motion_input(void); // START / SELECT change the Medabot model (unk39), A plays animation unk35[0]
+void debug_motion_input(
+    void); // START / SELECT change the Medabot model (debugMotion), A plays animation debugValues[0]
 void debug_motion_play(void);
 
 #endif // GUARD_DEBUG_DEBUG_MENU_H

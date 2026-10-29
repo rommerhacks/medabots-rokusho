@@ -28,9 +28,11 @@ void init_scene_buffers_080445F4(void);
 void setup_scene_with_bg_and_sprites(); // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8
 void draw_medabot_sprite();             // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8
 u32 medabot_pose_anim_step(u32 slot, u32 anim, u32 legs);
-u32 medabot_detail_is_full_set(void); // 1 if gGameWork.shownHead-9B (the four shown Medaparts) are all the same set
-u32 count_assembled_medabots(void);   // team slots (gTeamSlots) with state 3
-void battle_sprite_group_set_anim(u32 sprite, u32 anim); // sets anim script unk24 on the 4 sprites from sprite
+u32 medabot_detail_is_full_set(
+    void); // 1 if gGameWork.shownHead..shownLegs (the four shown Medaparts) are all the same set
+u32 count_assembled_medabots(void); // team slots (gTeamSlots) with state 3
+void battle_sprite_group_set_anim(
+    u32 sprite, u32 anim); // sets work[SPR_WALK_SPEED] = anim on the 4 sprites from sprite, the first 3 affine
 void update_battle_sprite_orbiting_positions(
     u32 sprite, u32 idx,
     u32 unused); // guess: idle animation of a part-sprite Medabot (legs anchor, arms swing on a circle, head bobs)
@@ -73,7 +75,7 @@ u32 calculate_direction_index(
     s32 ty); // direction from (x, y) to (tx, ty), stored in sprite work[SPR_MOTION_ROW] (move_sprite_toward_target)
 struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x,
                                             s32 y); // returned in memory (hidden pointer in r0)
-void battle_bg_scroll_vblank(void);                 // gVBlankCallback: BG2/BG3 scroll movement (unk39)
+void battle_bg_scroll_vblank(void); // gVBlankCallback: BG2/BG3 scroll movement (gBattleWork.battlefieldParams)
 void advance_battle_animation_frame(u32 field); // steps the battlefield tile animation (gBattleWork.fieldAnimFrame-7F)
 void race_enter_team_select(void);
 void decompress_sprite_to_vram_08043C08(u32 idx, u32 backup);

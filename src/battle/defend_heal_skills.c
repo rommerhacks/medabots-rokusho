@@ -2,9 +2,9 @@
 // action script opcodes 0x25/0x26 Recovery (30), 0x27/0x28 Repair (32), 0x29 Grap Trap / Shot Trap /
 // Attack Clr / Team Form (10-12, 51), 0x2A Break Form (21), 0x2B Stability (22), 0x2C Force Bind (23),
 // 0x2D Defence / Full Block / Half Block (27-29), 0x2E AutoRecover (31), 0x2F Reactivate (33).
-// Each *_run clears unkB5 and calls entry [unkAA] of its *Steps table; it is one action script command
+// Each *_run clears stepDone and calls entry [step] of its *Steps table; it is one action script command
 // (gActionScriptCommands -> script_op_*). Step 0 (*_begin) checks the time-out and whether the skill can work,
-// the last step sets unkA6 (the result message) and unkB5. The skill id is part data[1].
+// the last step sets messageId (the result message) and stepDone. The skill id is part data[1].
 
 #include "global.h"
 #include "constants/skill_sprites.h"
@@ -175,19 +175,19 @@ void trap_begin(void) {
     side_add_action_point();
     switch (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]) {
     case 0xA:
-        gBattleWork.unk51 = timed_out;
+        gBattleWork.scratch = timed_out;
         break;
     case 0xB:
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
         break;
     case 0xC:
-        gBattleWork.unk51 = 2;
+        gBattleWork.scratch = 2;
         break;
     default:
-        gBattleWork.unk51 = 3;
+        gBattleWork.scratch = 3;
         break;
     }
-    gBattleWork.unk52 = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1];
+    gBattleWork.scratchValue = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1];
     gBattleWork.step = 4;
 }
 
@@ -248,7 +248,7 @@ void skill_cast_flash_wait(void) {
 }
 
 void trap_sprite_spawn(void) {
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         lz_decompress_dispatch(gGrapTrapTiles, (void *)0x06014800);
         CpuFastSet(gGrapTrapPalette, (void *)0x050002E0, 8);
@@ -285,7 +285,7 @@ void trap_sprite_spawn(void) {
 
 void trap_sprite_grow(void) {
     if ((gSpriteEntries[0x21].scale_x += 8) == 0x40) {
-        if (gBattleWork.unk51 == 3)
+        if (gBattleWork.scratch == 3)
             gGameWork.stepTimer = 1;
         else
             gGameWork.stepTimer = 0x3C;
@@ -298,7 +298,7 @@ void trap_sprite_hold(void) {
     if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
         gGameWork.stepTimer = 0;
     if (gGameWork.stepTimer == 0) {
-        switch (gBattleWork.unk51) {
+        switch (gBattleWork.scratch) {
         case 0:
         case 1:
         case 2:
@@ -328,10 +328,10 @@ void trap_sprite_slide(void) {
 // The side already holds this trap: pulse the sprite and add to it; Attack Clr skips the pulse.
 void trap_check_existing(void) {
     if (gBattleWork.traps[gBattleWork.otherSide].active &&
-        gBattleWork.traps[gBattleWork.otherSide].skill == gBattleWork.unk52) {
+        gBattleWork.traps[gBattleWork.otherSide].skill == gBattleWork.scratchValue) {
         gSpriteEntries[0x21].work[FX_SPR_FRAMES] = 0;
         gBattleWork.step++;
-    } else if (gBattleWork.unk51 == 2) {
+    } else if (gBattleWork.scratch == 2) {
         gBattleWork.step = 0x14;
     } else {
         play_sound_effect(0x3E);
@@ -341,7 +341,7 @@ void trap_check_existing(void) {
 
 void trap_sprite_pulse(void) {
     if (gSpriteEntries[0x21].work[FX_SPR_FRAMES] == 0x10) {
-        if (gBattleWork.unk51 == 2) {
+        if (gBattleWork.scratch == 2) {
             gBattleWork.step = 0x14;
         } else {
             play_sound_effect(0x3E);
@@ -365,12 +365,12 @@ void trap_sprite_shrink(void) {
     }
 }
 
-// unk28[side]: the side's trap / Team Form record (active, skill kind, power); a repeat stacks half.
+// traps[side]: the side's trap / Team Form record (active, skill kind, power); a repeat stacks half.
 void trap_apply(void) {
     if (gBattleWork.traps[gBattleWork.otherSide].active &&
-        gBattleWork.traps[gBattleWork.otherSide].skill == gBattleWork.unk52) {
-        gBattleWork.unk53 = 1;
-        if (gBattleWork.unk51 != 2) {
+        gBattleWork.traps[gBattleWork.otherSide].skill == gBattleWork.scratchValue) {
+        gBattleWork.scratchAux = 1;
+        if (gBattleWork.scratch != 2) {
             add_u8_capped(&gBattleWork.traps[gBattleWork.otherSide].durability, gBattleWork.success >> 1, 0xFF);
             add_u8_capped(&gBattleWork.traps[gBattleWork.otherSide].power,
                           (gBattleWork.amount + gBattleBots[gBattleWork.actor].trapBonus) >> 1, 0xFF);
@@ -380,12 +380,12 @@ void trap_apply(void) {
             gBattleWork.step++;
         }
     } else {
-        gBattleWork.unk53 = 0;
+        gBattleWork.scratchAux = 0;
         gBattleWork.traps[gBattleWork.otherSide].active = 1;
-        gBattleWork.traps[gBattleWork.otherSide].skill = gBattleWork.unk52;
+        gBattleWork.traps[gBattleWork.otherSide].skill = gBattleWork.scratchValue;
         gBattleWork.traps[gBattleWork.otherSide].durability = 0;
         gBattleWork.traps[gBattleWork.otherSide].power = 0;
-        if (gBattleWork.unk51 != 2) {
+        if (gBattleWork.scratch != 2) {
             add_u8_capped(&gBattleWork.traps[gBattleWork.otherSide].durability, gBattleWork.success, 0xFF);
             add_u8_capped(&gBattleWork.traps[gBattleWork.otherSide].power,
                           gBattleWork.amount + gBattleBots[gBattleWork.actor].trapBonus, 0xFF);
@@ -397,7 +397,7 @@ void trap_apply(void) {
 }
 
 void trap_finish(void) {
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         gBattleWork.messageId = 0x1E;
         break;
@@ -411,7 +411,7 @@ void trap_finish(void) {
         gBattleWork.messageId = 0x21;
         break;
     }
-    if (gBattleWork.unk53)
+    if (gBattleWork.scratchAux)
         gBattleWork.messageId = 0x71;
     gBattleWork.step++;
 }
@@ -476,7 +476,7 @@ void team_form_move(void) {
 
 void team_form_check_existing(void) {
     if (gBattleWork.traps[gBattleWork.otherSide].active &&
-        gBattleWork.traps[gBattleWork.otherSide].skill == gBattleWork.unk52) {
+        gBattleWork.traps[gBattleWork.otherSide].skill == gBattleWork.scratchValue) {
         gSpriteEntries[0x21].work[FX_SPR_FRAMES] = 0;
         gBattleWork.step++;
     } else {
@@ -726,7 +726,7 @@ void stability_sprite_fly(void) {
     }
 }
 
-// Stability cures the target's negative status (unkC9-unkCC, set by Impair, Confusion...).
+// Stability cures the target's negative status (statusType-statusAmount, set by Impair, Confusion...).
 void stability_apply(void) {
     gBattleBots[gBattleWork.target].statusType = 0;
     gBattleBots[gBattleWork.target].statusPart = 0;
@@ -856,13 +856,13 @@ void defence_begin(void) {
         side_add_action_point();
         switch (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]) {
         case 0x1B:
-            gBattleWork.unk51 = timed_out;
+            gBattleWork.scratch = timed_out;
             break;
         case 0x1C:
-            gBattleWork.unk51 = 1;
+            gBattleWork.scratch = 1;
             break;
         default:
-            gBattleWork.unk51 = 2;
+            gBattleWork.scratch = 2;
             break;
         }
         calc_battle_stat_ratio(gBattleWork.actor, gBattleWork.actorPart);
@@ -871,7 +871,7 @@ void defence_begin(void) {
 }
 
 void defence_shields_spawn(void) {
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         lz_decompress_dispatch(gDefenceShieldTiles, (void *)0x06014800);
         CpuFastSet(gDefenceShieldPalette, (void *)0x050002E0, 8);
@@ -949,7 +949,7 @@ void defence_shield_anim_wait(void) {
     }
 }
 
-// Marks the user as guarding (unkBD bit 3) with this skill (Defence, Full Block or Half Block).
+// Marks the user as guarding (stateFlags bit 3) with this skill (Defence, Full Block or Half Block).
 void defence_apply(void) {
     gBattleBots[gBattleWork.actor].stateFlags |= 8;
     gBattleBots[gBattleWork.actor].lastActionSkill =
@@ -1090,7 +1090,7 @@ void heal_ring_spin(void) {
     }
 }
 
-// Gives the target the AutoRecover status (unkC4 = skill 31) with this action's power.
+// Gives the target the AutoRecover status (buffType = skill 31) with this action's power.
 void autorecover_apply(void) {
     gBattleBots[gBattleWork.target].buffType = 0x1F;
     gBattleBots[gBattleWork.target].buffPart = 0;

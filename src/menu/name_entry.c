@@ -259,7 +259,7 @@ void name_entry_fade_in(void) {
 }
 
 // Per-frame update of the name-entry screen (runs every frame while naming a Medal): cursor blink and
-// movement (rows 0-2 letters, row 3 Space / Back / End), Start / R / A / B, edits the name in unk58.
+// movement (rows 0-2 letters, row 3 Space / Back / End), Start / R / A / B, edits the name in gMenuWork->name_buf.
 void name_entry_input(void) {
     s32 i;
     s32 x;

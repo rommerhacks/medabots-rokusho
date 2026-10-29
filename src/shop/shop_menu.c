@@ -233,7 +233,7 @@ void shop_menu_greeting(void) {
     }
 }
 
-// State 5: Buy / Sell / Exit cursor (unk5 = 0 / 1 / 2). Buy and Sell -> 8, Exit or B -> 6.
+// State 5: Buy / Sell / Exit cursor (cursor = 0 / 1 / 2). Buy and Sell -> 8, Exit or B -> 6.
 void shop_menu_choose_action(void) {
     sprite_bob_x(8, gFrameCounter, 8);
     if (KEYS_LO(gRepeatKeys) & 0x40) {
@@ -331,7 +331,7 @@ void shop_menu_part_type_prompt(void) {
         gGameSubState++;
 }
 
-// State 10: part type (unk19): Up head, Left right arm, Right left arm, Down legs. A -> 12, B -> 11.
+// State 10: part type (part_kind): Up head, Left right arm, Right left arm, Down legs. A -> 12, B -> 11.
 void shop_menu_choose_part_type(void) {
     s8 i;
 

@@ -36,7 +36,7 @@ void battle_sequence_run_command(void) {
     gBattleSeqCommands[gSpriteEntries[0].work[SEQ_RUN_OPCODE]]();
 }
 
-// Opcode 0x01: ends the sequence (yields and sets the step-done flag unkB5).
+// Opcode 0x01: ends the sequence (yields and sets the step-done flag stepDone).
 void battle_seq_cmd_end(void) {
     gSpriteEntries[0].work[SEQ_RUN_YIELD] = 1;
     gBattleWork.stepDone = 1;
@@ -60,7 +60,7 @@ void battle_seq_cmd_goto(void) {
     }
 }
 
-// Opcode 0x03: jumps to label operand[unkFD], the condition set by the test_* commands.
+// Opcode 0x03: jumps to label operand[seqCondition], the condition set by the test_* commands.
 void battle_seq_cmd_branch(void) {
     const s16 *seq;
     vu8 done = 0;
@@ -78,7 +78,7 @@ void battle_seq_cmd_branch(void) {
     }
 }
 
-// Opcode 0x04: condition = the attack missed (unkB7 == 1).
+// Opcode 0x04: condition = the attack missed (hitResult == 1).
 void battle_seq_cmd_test_missed(void) {
     if (gBattleWork.hitResult == 1)
         gBattleWork.seqCondition = 1;
@@ -96,7 +96,7 @@ void battle_seq_cmd_test_reaction(void) {
     battle_seq_advance();
 }
 
-// Opcode 0x06: condition = the attack was nullified (unkB8 == 2).
+// Opcode 0x06: condition = the attack was nullified (blockResult == 2).
 void battle_seq_cmd_test_nullified(void) {
     if (gBattleWork.blockResult == 2)
         gBattleWork.seqCondition = 1;
@@ -105,7 +105,7 @@ void battle_seq_cmd_test_nullified(void) {
     battle_seq_advance();
 }
 
-// Opcode 0x07: condition = the attack was absorbed (unkB8 == 4).
+// Opcode 0x07: condition = the attack was absorbed (blockResult == 4).
 void battle_seq_cmd_test_absorbed(void) {
     if (gBattleWork.blockResult == 4)
         gBattleWork.seqCondition = 1;
@@ -316,7 +316,7 @@ void battle_seq_cmd_actor_move(void) {
     battle_seq_advance();
 }
 
-// Opcode 0x12: condition = target unkBC bit 5 (guess: evaded onto its strongest part).
+// Opcode 0x12: condition = target hitFlags bit 5 (guess: evaded onto its strongest part).
 void battle_seq_cmd_test_evaded(void) {
     u8 evaded = gBattleBots[gBattleWork.target].hitFlags & 0x20;
     if (evaded)
@@ -1052,7 +1052,7 @@ void battle_seq_cmd_bg_effect_noflip(void) {
     battle_seq_advance();
 }
 
-// Opcode 0x3A: two sprites hop and show the digits unk188 / unk189. guess: the two rolls.
+// Opcode 0x3A: two sprites hop and show the digits dice1 / dice2. guess: the two rolls.
 void battle_seq_cmd_show_rolls(void) {
     u32 i;
 

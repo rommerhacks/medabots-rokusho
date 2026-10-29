@@ -1,7 +1,7 @@
 // Link trade scenes (mode 2). State 16 (medapart_trade_update): both players swap one Medapart; each side sends
 // its part as a 0x4000-tagged packet through gLinkPackets, then reduce_medapart_stat / medapart_add_quantity apply
-// the swap. State 17 (medal_trade_update): the player who chose the link menu entry (unk7A == 0) gives a Medal; its
-// 0x40-byte record is sent one byte per packet (0xC000 | index << 8 | byte) and the receiver adds it with
+// the swap. State 17 (medal_trade_update): the player who chose the link menu entry (partner_chose == 0) gives a Medal;
+// its 0x40-byte record is sent one byte per packet (0xC000 | index << 8 | byte) and the receiver adds it with
 // medal_add_from_buffer while the giver removes it. Their sub-state tables gPartTradeStates (13) and gMedalTradeStates
 // (12) are adjacent in ROM. Entered from link_enter_medapart_trade / link_enter_medal_trade; both end in link_menu
 // (state 20). Not runnable in the single-GBA harness: names come from the code.
@@ -97,7 +97,8 @@ static void medal_trade_show_medal_sprite(u32 medal, u32 frame) {
     sprite->scale_y = 0x40;
 }
 
-// The trade screen's BG tile animation (two tile rows): frame from unk3A, which counts down, so the frames speed up.
+// The trade screen's BG tile animation (two tile rows): frame from gMenuWork->frame, which counts down, so the frames
+// speed up.
 static void trade_tiles_speed_up_two_rows(void) {
     s32 anim_frame;
     s32 i;
@@ -178,7 +179,7 @@ static void trade_tiles_speed_up(void) {
     }
 }
 
-// As trade_tiles_speed_up_two_rows, with the speed table reversed (slows down as unk3A counts down).
+// As trade_tiles_speed_up_two_rows, with the speed table reversed (slows down as frame counts down).
 static void trade_tiles_slow_down_two_rows(void) {
     s32 anim_frame;
     s32 i;

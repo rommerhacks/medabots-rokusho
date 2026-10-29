@@ -486,7 +486,7 @@ void damage_divide_by_part_divisor(u32 rec, u32 part) {
         battle->amount = 1;
 }
 
-// Scrolls BG2/BG3 to x 0x110 when the actor is an opponent (unkF8 bit 0), else to 0: the action close-up
+// Scrolls BG2/BG3 to x 0x110 when the actor is an opponent (actorSideFlags bit 0), else to 0: the action close-up
 // background faces the acting side.
 void action_bg_set_side_scroll(void) {
     u32 right_side = gBattleWork.actorSideFlags & 1;

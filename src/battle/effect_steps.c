@@ -1,6 +1,6 @@
 // Step handlers shared by many ability and Medaforce effect sequences (entries of several step sub-tables, no
-// direct callers): show the battle message unkA6, the "MISS!!" popup, wait for a timer (gGameWork.stepTimer) or a
-// press of A, play an animation on sprite 0x21, and effect_step_end, the last step of most lists (unkB5 = done).
+// direct callers): show the battle message messageId, the "MISS!!" popup, wait for a timer (gGameWork.stepTimer) or a
+// press of A, play an animation on sprite 0x21, and effect_step_end, the last step of most lists (stepDone = done).
 
 #include "global.h"
 #include "constants/sprites.h"

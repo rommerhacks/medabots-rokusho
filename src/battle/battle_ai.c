@@ -4,7 +4,7 @@
 // Medabot). The chosen target record + 1 and part + 1 go to the part's aiTargetBot / aiTargetPart.
 // Each picker narrows the candidates in passes: first the bots that suit the skill and have a part of the user's
 // Medal Aim skill type, then just the ones that suit the skill, then (usually) the Aim match alone, and last any
-// present bot. ai_action_unusable runs gAiActionChecks[skill], which set gBattleWork.unk51 when the skill
+// present bot. ai_action_unusable runs gAiActionChecks[skill], which set gBattleWork.scratch when the skill
 // can't be used on the chosen target (battle_part_unusable). Reads the bot records gBattleBots.
 
 #include "global.h"
@@ -155,7 +155,7 @@ void ai_target_anti_sea(void) {
     ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
-// Stability: a teammate without Stability that has a negative status (unkC9) to clear.
+// Stability: a teammate without Stability that has a negative status (statusType) to clear.
 void ai_target_stability(void) {
     u32 i;
 
@@ -252,7 +252,7 @@ void ai_target_recovery(void) {
     ai_store_target(gBattleWork.aiBot, gBattleWork.aiPart);
 }
 
-// AutoRecover, Boost Chrg: a teammate without Stability or a positive status (unkC4).
+// AutoRecover, Boost Chrg: a teammate without Stability or a positive status (buffType).
 void ai_target_buff(void) {
     u32 i;
 
@@ -795,28 +795,28 @@ void ai_clear_target_part(void) {
 
 // 1 if the skill of rec's part (1-3) can't be used on its chosen target (gAiActionChecks).
 u32 ai_action_unusable(u32 rec, u32 part) {
-    gBattleWork.unk51 = 0;
+    gBattleWork.scratch = 0;
     gBattleWork.aiBot = rec;
     gBattleWork.aiPart = --part;
     gAiActionChecks[gBattleBots[rec].parts[part].data[1]]();
-    return gBattleWork.unk51;
+    return gBattleWork.scratch;
 }
 
 // Break Form: needs a trap or Team Form laid by the other side.
 void ai_check_break_form(void) {
     if (gBattleWork.traps[bot_side_index(gBattleWork.aiBot, 0)].active == 0)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // Stability: needs a target with a negative status.
 void ai_check_stability(void) {
     if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1].statusType == 0)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // Cancel*, Accel Chrg, Strengthen: never chosen as an action.
 void ai_check_never(void) {
-    gBattleWork.unk51 = 1;
+    gBattleWork.scratch = 1;
 }
 
 // Defence, Full Block, Half Block: need a teammate to guard.
@@ -829,7 +829,7 @@ void ai_check_guard(void) {
             n++;
     }
     if (n <= 1)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // Recovery: the target part must be damaged but not broken.
@@ -842,7 +842,7 @@ void ai_check_recovery(void) {
                 .armor == gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1]
                               .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetPart - 1]
                               .data[4])
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // AutoRecover, Boost Chrg: target without a positive status or Stability.
@@ -850,15 +850,15 @@ void ai_check_buff(void) {
     u32 rec = gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1;
 
     if (gBattleBots[rec].buffType != 0 || battle_bot_lacks_stability(rec) == 0)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // Drain Chrg, Impair, Confusion, No Escape, No Defense: target without a negative status or Stability.
 void ai_check_status(void) {
     if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1].statusType != 0)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
     if (battle_bot_lacks_stability(gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1) == 0)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // Repair: the target part must be broken.
@@ -866,38 +866,38 @@ void ai_check_repair(void) {
     if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1]
             .parts[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetPart - 1]
             .armor != 0)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // Reactivate: the target must be out of action.
 void ai_check_reactivate(void) {
     if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1].present != 2)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // Rapid Chrg: not on the user itself.
 void ai_check_rapid_chrg(void) {
     if (gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1 == gBattleWork.aiBot)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // Use Drain: the target's head must have uses left.
 void ai_check_use_drain(void) {
     if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1].parts[0].headUses == 0)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // Forcedrain: the target must have Medaforce charge.
 void ai_check_forcedrain(void) {
     if (gBattleBots[gBattleBots[gBattleWork.aiBot].parts[gBattleWork.aiPart].aiTargetBot - 1].medaforceGauge == 0)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // TeamAttack: needs the side's Team Form.
 void ai_check_team_attack(void) {
     if (gBattleWork.traps[bot_side_index(gBattleWork.aiBot, 1)].active == 0 ||
         gBattleWork.traps[bot_side_index(gBattleWork.aiBot, 1)].skill != SKILL_TEAM_FORM)
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
 }
 
 // Grap Trap: an opponent must have a Strike or Berserk part.
@@ -917,7 +917,7 @@ void ai_check_grap_trap(void) {
             }
         }
     }
-    gBattleWork.unk51 = 1;
+    gBattleWork.scratch = 1;
 }
 
 // Shot Trap: an opponent must have a Shoot or Aim Shot part.
@@ -937,7 +937,7 @@ void ai_check_shot_trap(void) {
             }
         }
     }
-    gBattleWork.unk51 = 1;
+    gBattleWork.scratch = 1;
 }
 
 // Team Form: a teammate must have a TeamAttack part.
@@ -954,5 +954,5 @@ void ai_check_team_form(void) {
             }
         }
     }
-    gBattleWork.unk51 = 1;
+    gBattleWork.scratch = 1;
 }

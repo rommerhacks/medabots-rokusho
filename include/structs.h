@@ -610,11 +610,14 @@ struct BattleWork {
     u8 autoCommandBits;             // Robattle: bit (1 << team Medabot) set by robattle_command_auto
     u8 actionQueue[6][2];           // Robattle action queue: record + 1 (0 = free), priority = legs Propulsion
                           // (battle_queue_add, sorted by battle_queue_sort; robattle_turn_next_action tests [0][0])
-    u8 unk51; // Robattle: Medaforce gauge points left to add / remove one per frame (medaforce_gauge_fill_step /
-              // _drain_step)
-              // also the AI result: 1 = skill unusable (gAiActionChecks, ai_action_unusable)
-    u8 unk52;
-    u8 unk53;
+    // Three work bytes each routine uses for its own purpose:
+    u8 scratch;          // Medaforce gauge points left to add / remove one per frame (medaforce_gauge_fill_step /
+                         // _drain_step); AI result 1 = skill unusable (gAiActionChecks, ai_action_unusable); the effect
+                         // variant of a Medaforce (particles); trap kind 0-3: Grap Trap, Shot Trap, Attack Clr, other
+                         // (defend_heal_skills)
+    u8 scratchValue;     // trap skill id (defend_heal_skills), sprite anim script (action_steps), drained amount
+                         // (interrupt_skills); link exchange: byte position in the record being sent
+    u8 scratchAux;       // trap replaced flag (defend_heal_skills, medaforce_effects); link exchange: records received
     u8 linkRecvPos;      // link exchange: byte position in the record being received (team_select_link_exchange_bots)
     u8 resultFlags;      // Robattle: result flags (2, 4, 8, 0x10 pick sub-states 0x60-0x78 in robattle_turn_loop)
     u8 timeFrame;        // Robattle: frame counter, mod 32 (robattle_time_tick)
@@ -679,8 +682,7 @@ struct BattleWork {
     u8 hitResult; // attack result: 1 missed (target dodged, battle_check_dodged), 3 countered (reaction_check_counter)
     u8 blockResult; // attack result: 2 nullified (Full / Half Block, immunities), 4 absorbed as healing
                     // (attack_hit_branch)
-    u8 unkB9;       // raised by gBattleWork.amount up to 0x78 on the own side, lowered on the other
-                    // (medaforce_hide_n_seek_apply_evasion, written as &index + 1 to match)
+    u8 unkB9;       // only cleared (attack_hit_branch)
     u8 unkBA;
     u8 unkBB;
     u16 scriptOffset; // Robattle action script: offset of the current command (battle_script_read_byte /
@@ -862,7 +864,7 @@ struct BattleBot {
     u8 effectShownFlags; // flags: bit 0 / bit 1 = sprites 0x46 / 0x47 + 3 * record shown (robattle_effect_a_end_init ..
                          // robattle_effect_b_end_anim), bit 2 / bit 3 = numbers shown by robattle_effect_a_number_init
                          // / robattle_effect_b_number_init
-    u8 statusGuardFlags; // flags: bits 0/1/2/3 set by medaforce_cancel_status_apply (by gBattleWork.unk51); guard
+    u8 statusGuardFlags; // flags: bits 0/1/2/3 set by medaforce_cancel_status_apply (by gBattleWork.scratch); guard
                          // against status skill pairs 0xD/0xE, 0x11/0x12, 0x13/0x14, 0xF/0x10 (bot_has_status_guard)
     u8 powerBonus;       // added to gBattleWork.amount by script_op_calc_damage (Power Up)
     u8 ironWallBonus;    // raised by gBattleWork.amount up to 0xFF (medaforce_iron_wall_apply_defence, written as
@@ -878,7 +880,7 @@ struct BattleBot {
     u16 defence;     // cleared, then raised by gBattleWork.amount up to 0xFF (defence_apply)
     u8 moveStep;     // movement: whole pixels moved this frame
     u8 fillerDB;
-    u8 unkDC;           // unkDC..unkE3 cleared by reset_battle_bot_state
+    u8 unkDC;           // 8 bytes from here (to fillerE2[1]) cleared by reset_battle_bot_state
     u8 chosenAction;    // chosen command: 0 none, 1-3 head / right arm / left arm, 4+ Medaforce 0..; exchanged over the
                         // serial link in link Robattles (robattle_link_exchange_commands)
     u8 lastAction;      // copy of chosenAction (battle_action_cleanup)

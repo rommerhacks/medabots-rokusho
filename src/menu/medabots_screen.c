@@ -60,7 +60,7 @@ static u32 medabot_detail_cycle_rarm_input(void);
 static u32 medabot_detail_cycle_larm_input(void);
 static u32 medabot_detail_cycle_legs_input(void);
 static u32 medabot_detail_equip_full_set_input(void);
-// previous Medapart id: 0 wraps to 120 + slot unk1, >= 120 clamps to 119
+// previous Medapart id: 0 wraps to 120 + the slot gender, >= 120 clamps to 119
 static u32 medabot_detail_prev_part_id(u32 part);
 static void medabot_detail_update_invalid_bot(void);
 static void medabot_detail_animate_invalid_bot(void);
@@ -560,7 +560,7 @@ void medabot_detail_open_info(void) {
 }
 
 // Sub-states 32-35 (battle) and 40-43 (race): the team is picked; the pick markers blink for 60 frames, then
-// the screen fades out. A link battle (unk50 == 1) goes to 48 instead.
+// the screen fades out. A link battle (medabotsMode == 1) goes to 48 instead.
 void team_select_done_start(void) {
     medabots_scroll_bg3();
     medabots_screen_place_team_icons();
@@ -693,9 +693,9 @@ void team_select_link_exchange_init(void) {
     st = &gGameWork;
     timer = &st->stepTimer;
     if (*timer == 24) {
-        gBattleWork.unk51 = 0;
-        gBattleWork.unk52 = 0;
-        gBattleWork.unk53 = 0;
+        gBattleWork.scratch = 0;
+        gBattleWork.scratchValue = 0;
+        gBattleWork.scratchAux = 0;
         gBattleWork.linkRecvPos = 0;
         gBattleWork.linkSentSum = 0;
         gBattleWork.linkRecvSum = 0;
@@ -721,33 +721,33 @@ void team_select_link_exchange_bots(void) {
     medabots_scroll_bg3();
     medabots_screen_draw_bot_sprite();
     work = &gBattleWork;
-    if (work->unk51 != 3) {
-        src = (u8 *)&gBattleBots[work->unk51];
-        gLinkPackets.sendData = src[work->unk52] + (flag = ((work->linkSendToggle << 8) & 0x100) + 0x8000);
+    if (work->scratch != 3) {
+        src = (u8 *)&gBattleBots[work->scratch];
+        gLinkPackets.sendData = src[work->scratchValue] + (flag = ((work->linkSendToggle << 8) & 0x100) + 0x8000);
         if (++gGameWork.stepTimer == 4) {
             gGameWork.stepTimer = 0;
             work->linkSendToggle ^= 1;
-            if (++work->unk52 == 0x48) {
-                work->unk51++;
-                work->unk52 = 0;
+            if (++work->scratchValue == 0x48) {
+                work->scratch++;
+                work->scratchValue = 0;
             }
         }
     }
-    if (gBattleWork.unk53 != 3) {
+    if (gBattleWork.scratchAux != 3) {
         u16 packet = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
 
         if ((packet & 0x8000) && (u16)(packet & 0x100) >> 8 != gBattleWork.linkRecvToggle) {
             gBattleWork.linkRecvToggle ^= 1;
-            ((struct LinkRow256 *)gLinkPartnerBotData)[gBattleWork.unk53].b[gBattleWork.linkRecvPos] = packet;
+            ((struct LinkRow256 *)gLinkPartnerBotData)[gBattleWork.scratchAux].b[gBattleWork.linkRecvPos] = packet;
             gBattleWork.linkRecvSum = (gBattleWork.linkRecvSum + (packet & 0xFF)) & 0x7FFF;
             if (++gBattleWork.linkRecvPos == 0x48) {
-                gBattleWork.unk53++;
+                gBattleWork.scratchAux++;
                 gBattleWork.linkRecvPos = 0;
             }
         }
     }
-    if (gBattleWork.unk51 == 3)
-        if (gBattleWork.unk53 == 3) {
+    if (gBattleWork.scratch == 3)
+        if (gBattleWork.scratchAux == 3) {
             gGameSubState = 58;
             gGameWork.stepTimer = 0;
         }
@@ -762,9 +762,9 @@ void team_select_link_checksum_init(void) {
     st = &gGameWork;
     timer = &st->stepTimer;
     if (*timer == 16) {
-        gBattleWork.unk51 = 0;
-        gBattleWork.unk52 = 0;
-        gBattleWork.unk53 = 0;
+        gBattleWork.scratch = 0;
+        gBattleWork.scratchValue = 0;
+        gBattleWork.scratchAux = 0;
         gBattleWork.linkRecvPos = 0;
         *timer = 0;
         gGameSubState++;
@@ -777,8 +777,8 @@ void team_select_link_compare_checksums(void) {
 
     medabots_scroll_bg3();
     medabots_screen_draw_bot_sprite();
-    if (gBattleWork.unk51 < 2) {
-        switch (gBattleWork.unk51) {
+    if (gBattleWork.scratch < 2) {
+        switch (gBattleWork.scratch) {
         case 0:
             gLinkPackets.sendData = 0x8000 + gBattleWork.linkSentSum;
             break;
@@ -786,11 +786,11 @@ void team_select_link_compare_checksums(void) {
             gLinkPackets.sendData = 0x8000 + gBattleWork.linkRecvSum;
             break;
         }
-        gBattleWork.unk51++;
+        gBattleWork.scratch++;
     }
     packet = gLinkPackets.recv[gLinkPlayerId ^ 1][1];
     if (packet & 0x8000) {
-        switch (gBattleWork.unk52) {
+        switch (gBattleWork.scratchValue) {
         case 0:
             gBattleWork.linkPartnerSentSum = packet & 0x7FFF;
             break;
@@ -798,7 +798,7 @@ void team_select_link_compare_checksums(void) {
             gBattleWork.linkPartnerRecvSum = packet & 0x7FFF;
             break;
         }
-        if (++gBattleWork.unk52 == 2) {
+        if (++gBattleWork.scratchValue == 2) {
             if (gBattleWork.linkSentSum == gBattleWork.linkPartnerRecvSum &&
                 gBattleWork.linkRecvSum == gBattleWork.linkPartnerSentSum)
                 gGameSubState++;
@@ -935,7 +935,7 @@ static void medabots_screen_draw_legs_type_icons(void) {
     }
 }
 
-// The selected Medabot's Medal nickname (Medal record unkA) as text sprites, or blanks.
+// The selected Medabot's Medal nickname (MedalData.name) as text sprites, or blanks.
 static void medabots_screen_draw_medal_nickname(void) {
     disable_sprites(0x32, 10);
     if (gTeamSlots[gGameWork.medabotsCursor].state > 1)
@@ -1141,8 +1141,8 @@ static void medabots_screen_update_reorder_icons(void) {
     }
 }
 
-// SELECT ("REORDER"): first press picks the slot (unk52 = slot | 0x80, icons orbit it), second press
-// swaps the two gTeamSlots entries. Runtime-checked: slot 3 picked (unk52 0x83), then swapped with 0.
+// SELECT ("REORDER"): first press picks the slot (reorderPick = slot | 0x80, icons orbit it), second press
+// swaps the two gTeamSlots entries. Runtime-checked: slot 3 picked (reorderPick 0x83), then swapped with 0.
 static u32 medabots_screen_reorder_input(void) {
     if (gGameWork.medabotsMode == 0 && (KEYS_LO(gNewKeys) & 4)) {
         play_sound_effect(2);
@@ -1186,10 +1186,10 @@ static void medabots_screen_animate_invalid_bot(void) {
         update_battle_sprite_orbiting_positions(gGameWork.medabotsCursor * 4 + 10, gGameWork.medabotsCursor, 0);
 }
 
-// Detail screen entry: takes the selected Medabot apart into the edit copy: Medal slot (unk97, 0x1E = none) and
-// parts to unk98-9B, the parts back into the inventory, slot marked empty (assign_medal_to_team_slot puts it back).
-// guess: matches the Build screen (parts can be swapped freely), not runtime-checked.
-// back into the inventory (modify_medapart_quantity), slot marked empty.
+// Detail screen entry: takes the selected Medabot apart into the edit copy: Medal slot (shownMedal, 0x1E = none) and
+// parts to shownHead..shownLegs, the parts back into the inventory, slot marked empty (assign_medal_to_team_slot puts
+// it back). guess: matches the Build screen (parts can be swapped freely), not runtime-checked. back into the inventory
+// (modify_medapart_quantity), slot marked empty.
 static void medabot_detail_take_apart(void) {
     if (gTeamSlots[gGameWork.medabotsCursor].medal == 0x1E)
         gGameWork.shownMedal = 0x1E;
@@ -1777,7 +1777,7 @@ static u32 medabot_detail_prev_part_id(volatile u32 part) {
     return part;
 }
 
-// unk53 set while validate_medapart_stats rejects the shown Medal + Medaparts: the Medabot sprite
+// detailInvalid set while validate_medapart_stats rejects the shown Medal + Medaparts: the Medabot sprite
 // switches to palette 8 (and medabot_detail_animate_invalid_bot animates it); cleared and redrawn once valid again.
 static void medabot_detail_update_invalid_bot(void) {
     u32 invalid;

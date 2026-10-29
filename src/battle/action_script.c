@@ -7,7 +7,7 @@
 #include "constants/battle_seq_sprites.h"
 
 // Runs the acting Medabot's action script (gActionScripts[gBattleWork.actorSkill]): commands < 0x80 go to
-// gActionScriptCommands, others are skipped; a command sets unk163 to run the next one in the same frame.
+// gActionScriptCommands, others are skipped; a command sets runNextStep to run the next one in the same frame.
 void battle_run_action_script(void) {
     if (link_error_check() == 0) {
         if (gVBlankOamMode == 2) {
@@ -139,7 +139,7 @@ void script_op_guard_restore(void) {
     battle_script_advance();
 }
 
-// Opcode 0x0B: sets the actor's unkBC bits 1 / 0 by skill type (data[2]: 0 Strike, 1 Berserk, 3 Aim Shot).
+// Opcode 0x0B: sets the actor's hitFlags bits 1 / 0 by skill type (data[2]: 0 Strike, 1 Berserk, 3 Aim Shot).
 void script_op_set_attack_type_flags(void) {
     u32 type = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2];
 
@@ -155,7 +155,7 @@ void script_op_set_attack_type_flags(void) {
     battle_script_advance();
 }
 
-// Opcode 0x0C: the attack's success value (unkE8).
+// Opcode 0x0C: the attack's success value (success).
 void script_op_calc_success(void) {
     battle_calc_attack_success();
     battle_script_advance();
@@ -167,7 +167,7 @@ void script_op_guard_check(void) {
     battle_script_advance();
 }
 
-// Opcode 0x0E: guess: sets the target's unkBC bits 2 / 3 (no dodge) from its status effect and attack type.
+// Opcode 0x0E: guess: sets the target's hitFlags bits 2 / 3 (no dodge) from its status effect and attack type.
 void script_op_set_target_no_dodge_flags(void) {
     u32 type;
 
@@ -219,7 +219,7 @@ void script_op_success_bonus(void) {
     battle_script_advance();
 }
 
-// Opcode 0x14: the damage (unkEC) from the part's power (data[6]) and the actor's and target's modifiers.
+// Opcode 0x14: the damage (amount) from the part's power (data[6]) and the actor's and target's modifiers.
 void script_op_calc_damage(void) {
     u32 type;
 
@@ -260,7 +260,7 @@ void script_op_calc_damage(void) {
     battle_script_advance();
 }
 
-// Opcode 0x15: Half Block guard: damage below the guard's threshold (unkD8) is nullified.
+// Opcode 0x15: Half Block guard: damage below the guard's threshold (defence) is nullified.
 void script_op_half_block_check(void) {
     if (gBattleWork.guardBot != 0 && gBattleWork.guardSkill == 0x1D && gBattleWork.blockResult == 0 &&
         gBattleWork.amount < (s16)gBattleBots[gBattleWork.target].defence) {
@@ -279,7 +279,7 @@ void script_op_full_block_check(void) {
     battle_script_advance();
 }
 
-// Opcode 0x17: guess: the target counters (unkB7 = 3) damage above its threshold (unkD8).
+// Opcode 0x17: guess: the target counters (hitResult = 3) damage above its threshold (defence).
 void script_op_counter_check(void) {
     if ((gBattleBots[gBattleWork.target].stateFlags & 0x10) &&
         gBattleBots[gBattleWork.target].parts[gBattleBots[gBattleWork.target].lastAction - 1].armor != 0 &&
@@ -597,7 +597,7 @@ void script_op_target_random_enemy(void) {
     battle_script_advance();
 }
 
-// Opcode 0x42: Medaforce success and damage (unkA8 = the Medaforce record).
+// Opcode 0x42: Medaforce success and damage (actorSkill = the Medaforce record).
 void script_op_medaforce_damage(void) {
     medaforce_calc_success(gBattleWork.actor);
     medaforce_calc_damage(gBattleWork.actor);
@@ -711,7 +711,7 @@ void script_op_damage_from_broken_parts(void) {
     battle_script_advance();
 }
 
-// Opcode 0x4B: targets a guarding enemy's guard part; none: a random enemy, nullified (unkB8 = 2).
+// Opcode 0x4B: targets a guarding enemy's guard part; none: a random enemy, nullified (blockResult = 2).
 void script_op_target_guarding_enemy(void) {
     u32 target;
 
@@ -736,7 +736,7 @@ void script_op_damage_equals_target_armor(void) {
     battle_script_advance();
 }
 
-// Opcode 0x4D: two random digits (unk188, unk189); damage = their sum * 10.
+// Opcode 0x4D: two random digits (dice1, dice2); damage = their sum * 10.
 void script_op_roll_dice_damage(void) {
     gBattleWork.dice1 = gDiceRollValues[rng_next_byte() & 0xF];
     gBattleWork.dice2 = gDiceRollValues[rng_next_byte() & 0xF];

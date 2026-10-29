@@ -3,7 +3,7 @@
 
 // Prototypes for game functions (decompiled or still in asm), in ROM order.
 
-// elsewhere (unk3C 2/3) or the part is owned
+// elsewhere (openedFrom 2/3) or the part is owned
 // Robattle action step dispatchers run by the action script (code_08030CAC wrappers)
 // amount/32, for the 16-colour palettes in mask
 // h, u8 i, u8 j): callers were compiled without a prototype

@@ -14,8 +14,10 @@ void particle_slide_lead_sprite(
     void); // moves sprite 0x21 4 px (right if gBattleWork.actorSideFlags bit 1 clear, else left)
 void particle_spawn_trail_b(u32 src);
 
-void medaforce_clear_hit_list(void);        // clears gBattleWork.partBreaks[0..2] / partDamage[0..2]
-void bot_clear_effects(u32 rec, u32 flags); // flags bit 0: clears effect B (unkC9-unkCC), bit 1: effect A (unkC4-unkC7)
-void battle_queue_remove_bot(u32 rec);      // frees every action queue entry of record rec
+void medaforce_clear_hit_list(void); // clears gBattleWork.partBreaks[0..2] / partDamage[0..2]
+void bot_clear_effects(
+    u32 rec,
+    u32 flags); // flags bit 0: clears effect B (statusType-statusAmount), bit 1: effect A (buffType-buffAmount)
+void battle_queue_remove_bot(u32 rec); // frees every action queue entry of record rec
 
 #endif // GUARD_BATTLE_PARTICLES_H

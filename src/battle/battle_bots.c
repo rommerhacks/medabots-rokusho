@@ -224,7 +224,7 @@ void select_bot_battle_action(u32 rec) {
     battle_bot_select_part(rec, 0);
 }
 
-// Effect B type 0x2B disables the part in unkCA.
+// Effect B type 0x2B disables the part in statusPart.
 u32 part_blocked_by_effect(u32 rec, u32 part) {
     if (gBattleBots[rec].statusType == 0x2B && gBattleBots[rec].statusPart == part)
         return 1;

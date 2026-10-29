@@ -1,6 +1,6 @@
 // Effect sequences of the Interrupt abilities (and two Defend ones): action script opcodes 0x36-0x3F.
-// Each runner (*_run: clears unkB5 and calls entry [unkAA] of its step table) is one action script command
-// (gActionScriptCommands, opcode order = ROM order); its step handlers follow it and the last step sets unkA6.
+// Each runner (*_run: clears stepDone and calls entry [step] of its step table) is one action script command
+// (gActionScriptCommands, opcode order = ROM order); its step handlers follow it and the last step sets messageId.
 // Abilities are part data[1], and the script of ability n is gActionScripts[n]:
 //   0x36 Impair (43), 0x37 Confusion (44), 0x38 Use Drain (45), 0x39 No Escape (46) / No Defense (47),
 //   0x3A Forcedrain (50), 0x3B / 0x3C TeamAttack (52: a Shoot script with the Team Form check and the turret
@@ -9,8 +9,8 @@
 // Skill names from the in-game skill list and help texts (text at 0x083BE4D4); effects match a
 // public FAQ's skill table. Steps 1-3 of each table are the shared time-out steps and 4-7 the shared
 // "small Medabot tosses something" steps of battle/action_steps.
-// Statuses set on the target: unkC9 = skill id (0x2B Impair, 0x2C Confusion, 0x2E / 0x2F No Escape /
-// No Defense), unkCA = Impair's part kind + 1, unkCB / unkCC = durations (clamp_1_99).
+// Statuses set on the target: statusType = skill id (0x2B Impair, 0x2C Confusion, 0x2E / 0x2F No Escape /
+// No Defense), statusPart = Impair's part kind + 1, statusTimer / statusAmount = durations (clamp_1_99).
 
 #include "global.h"
 #include "constants/skill_sprites.h"
@@ -52,7 +52,7 @@ void impair_portrait_spawn(void) {
     gBattleWork.step++;
 }
 
-// Shows the portrait icon with the targeted part (unk8B: 0 head, 1 right arm, 2 left arm) highlighted.
+// Shows the portrait icon with the targeted part (targetPart: 0 head, 1 right arm, 2 left arm) highlighted.
 void impair_part_icon_spawn(void) {
     disable_sprites(0x21, 1);
     gSpriteEntries[0x22].flags =
@@ -247,7 +247,7 @@ void use_drain_run(void) {
     gUseDrainSteps[gBattleWork.step]();
 }
 
-// Fails (unkA6 0x34) when the target's head has no uses left.
+// Fails (messageId 0x34) when the target's head has no uses left.
 void use_drain_begin(void) {
     calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
     apply_battle_bot_damage_reduction(gBattleWork.actor);
@@ -361,20 +361,20 @@ void use_drain_bubble_shrink(void) {
 // Moves head uses (parts[0].headUses) from the target to the user, capped by the user's maximum (data[8]).
 void use_drain_apply(void) {
     calc_head_uses_taken(gBattleWork.target, gBattleWork.amount);
-    gBattleWork.unk51 = gBattleWork.appliedAmount;
-    subtract_u8_floored(&gBattleBots[gBattleWork.target].parts[0].headUses, gBattleWork.unk51);
-    calc_head_uses_given(gBattleWork.actor, gBattleWork.unk51);
-    gBattleWork.unk52 = gBattleWork.appliedAmount;
-    add_u8_capped(&gBattleBots[gBattleWork.actor].parts[0].headUses, gBattleWork.unk52,
+    gBattleWork.scratch = gBattleWork.appliedAmount;
+    subtract_u8_floored(&gBattleBots[gBattleWork.target].parts[0].headUses, gBattleWork.scratch);
+    calc_head_uses_given(gBattleWork.actor, gBattleWork.scratch);
+    gBattleWork.scratchValue = gBattleWork.appliedAmount;
+    add_u8_capped(&gBattleBots[gBattleWork.actor].parts[0].headUses, gBattleWork.scratchValue,
                   gBattleBots[gBattleWork.actor].parts[0].data[8]);
     gBattleWork.step++;
 }
 
 void use_drain_popup_init(void) {
     lz_decompress_dispatch(gBattlePopupDigitTiles, (void *)0x06017E00);
-    set_display_digit_type(&gGameWork.partAbility, gBattleWork.unk51, 1);
+    set_display_digit_type(&gGameWork.partAbility, gBattleWork.scratch, 1);
     battle_text_popup_init_slot(&gGameWork.partAbility, gBattleWork.target, 0x21);
-    set_display_digit_type(&gGameWork.partAbility + 0x20, gBattleWork.unk52, 0);
+    set_display_digit_type(&gGameWork.partAbility + 0x20, gBattleWork.scratchValue, 0);
     battle_text_popup_init_slot(&gGameWork.partAbility + 0x20, gBattleWork.actor, 0x21);
     play_sound_effect(0x5B);
     gGameWork.stepCounter = 0;
@@ -395,7 +395,7 @@ void use_drain_popup_wait(void) {
 }
 
 void use_drain_finish(void) {
-    divide_by_100000_b(gGameWork.textBuf, gBattleWork.unk51, 0x35);
+    divide_by_100000_b(gGameWork.textBuf, gBattleWork.scratch, 0x35);
     gBattleWork.messageId = 0x35;
     gBattleWork.step++;
 }
@@ -482,7 +482,7 @@ void forcedrain_run(void) {
     gForcedrainSteps[gBattleWork.step]();
 }
 
-// Fails (unkA6 0x74) when the target has no Medaforce (unkC1).
+// Fails (messageId 0x74) when the target has no Medaforce (medaforceGauge).
 void forcedrain_begin(void) {
     calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
     apply_battle_bot_damage_reduction(gBattleWork.actor);
@@ -517,16 +517,16 @@ void forcedrain_glass_spawn(void) {
     gBattleWork.step++;
 }
 
-// Drains up to unkEC Medaforce from the target and gives it to the user (doubled when unkC0 bit 3 is set);
-// the gauge steps run on the target first (unk87 swapped, restored by forcedrain_glass_return).
+// Drains up to amount Medaforce from the target and gives it to the user (doubled when guardFlags bit 3 is set);
+// the gauge steps run on the target first (actor swapped, restored by forcedrain_glass_return).
 void forcedrain_calc(void) {
     calc_drain_amount(gBattleBots[gBattleWork.target].medaforceGauge, gBattleWork.amount);
-    gBattleWork.unk51 = gBattleWork.appliedAmount;
+    gBattleWork.scratch = gBattleWork.appliedAmount;
     if (gBattleBots[gBattleWork.actor].guardFlags & 8)
-        calc_fill_amount(gBattleBots[gBattleWork.actor].medaforceGauge, 0x50, gBattleWork.unk51 * 2);
+        calc_fill_amount(gBattleBots[gBattleWork.actor].medaforceGauge, 0x50, gBattleWork.scratch * 2);
     else
-        calc_fill_amount(gBattleBots[gBattleWork.actor].medaforceGauge, 0x50, gBattleWork.unk51);
-    gBattleWork.unk52 = gBattleWork.appliedAmount;
+        calc_fill_amount(gBattleBots[gBattleWork.actor].medaforceGauge, 0x50, gBattleWork.scratch);
+    gBattleWork.scratchValue = gBattleWork.appliedAmount;
     gBattleWork.partIds[0] = gBattleWork.actor;
     gBattleWork.actor = gBattleWork.target;
     battle_substeps_reset();
@@ -561,7 +561,7 @@ void forcedrain_gauge_drain(void) {
 
 void forcedrain_glass_return(void) {
     gBattleWork.actor = gBattleWork.partIds[0];
-    gBattleWork.unk51 = gBattleWork.unk52;
+    gBattleWork.scratch = gBattleWork.scratchValue;
     gSpriteEntries[0x21].flags |= SPRITE_FLAG_AFFINE | SPRITE_FLAG_DOUBLE_SIZE;
     gSpriteEntries[0x21].scale_x = 0x40;
     gSpriteEntries[0x21].scale_y = 0x40;
@@ -607,8 +607,8 @@ void team_attack_check_run(void) {
     gTeamAttackCheckSteps[gBattleWork.step]();
 }
 
-// guess: TeamAttack needs the queued action of slot unk8A to be Team Form (skill 0x33); else it fails
-// with unkA6 0x22.
+// guess: TeamAttack needs the queued action of slot otherSide to be Team Form (skill 0x33); else it fails
+// with messageId 0x22.
 void team_attack_check_form(void) {
     if (gBattleWork.traps[gBattleWork.otherSide].active && gBattleWork.traps[gBattleWork.otherSide].skill == 0x33) {
         gBattleWork.stepResult = 0;
@@ -748,7 +748,7 @@ void counter_attack_glove_pulse_shrink(void) {
     }
 }
 
-// Arms the counter on the user: unkBD bit 4, unkDF = the skill id, unkD8 = the part's data[6].
+// Arms the counter on the user: stateFlags bit 4, lastActionSkill = the skill id, defence = the part's data[6].
 void counter_attack_apply(void) {
     clear_battle_sprite_slot(0x21, 1);
     gBattleBots[gBattleWork.actor].stateFlags |= 0x10;
@@ -849,7 +849,7 @@ void change_transform_part(void) {
     gBattleWork.step++;
 }
 
-// Copies the old and the new part names into the message buffer for the change message (unkA6 0x2F).
+// Copies the old and the new part names into the message buffer for the change message (messageId 0x2F).
 void change_finish(void) {
     clear_battle_sprite_slot(0x21, 2);
     memcpy_bytes_08041D04((const void *)gMedapartNames[0][gBattleWork.savedPart.partId * 4 + gBattleWork.actorPart],

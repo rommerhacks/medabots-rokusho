@@ -232,9 +232,9 @@ void clear_battle_ui_tilemaps(void) {
 }
 
 u32 medaforce_gauge_fill_step(u32 bot) {
-    if (gBattleWork.unk51 != 0 && gBattleBots[bot].medaforceGauge != 0x50) {
+    if (gBattleWork.scratch != 0 && gBattleBots[bot].medaforceGauge != 0x50) {
         gBattleBots[bot].medaforceGauge++;
-        gBattleWork.unk51--;
+        gBattleWork.scratch--;
         draw_medaforce_gauge_bar(bot);
         draw_medaforce_gauge_value(bot);
         return 0;
@@ -243,9 +243,9 @@ u32 medaforce_gauge_fill_step(u32 bot) {
 }
 
 u32 medaforce_gauge_drain_step(u32 bot) {
-    if (gBattleWork.unk51 != 0 && gBattleBots[bot].medaforceGauge != 0) {
+    if (gBattleWork.scratch != 0 && gBattleBots[bot].medaforceGauge != 0) {
         gBattleBots[bot].medaforceGauge--;
-        gBattleWork.unk51--;
+        gBattleWork.scratch--;
         draw_medaforce_gauge_bar(bot);
         draw_medaforce_gauge_value(bot);
         return 0;

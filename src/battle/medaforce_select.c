@@ -310,7 +310,7 @@ void mf_menu_blink_selected_icon(void) {
     }
 }
 
-// Cost bar of the selected Medaforce: 8-tile bar at BG0 (1..8, 17), lit tiles = unk10E[2] / 10, and the number;
+// Cost bar of the selected Medaforce: 8-tile bar at BG0 (1..8, 17), lit tiles = medalGfxRecord[2] / 10, and the number;
 // a != 0 puts the gauge back.
 static void mf_menu_draw_cost_bar(u32 clear) {
     u32 i = 0;

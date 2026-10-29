@@ -1,9 +1,10 @@
 // Medaforce effect sequences: action script opcodes 0x40-0x6A. A Medaforce runs script 0x50 + its id
-// (unkF9 = unkA8[0] + 0x50, script_op_skill_anim_start), so scripts 80-131 use these; 0x45 (side_add_action_point) and
-// a few script-side commands sit elsewhere. Each runner (medaforce_*_run, clears unkB5 and calls entry [unkAA] of its
-// gMedaforce*Steps table) is one action script command (gActionScriptCommands, opcode order = ROM order); its step
-// handlers follow it and the last step sets unkB5. Runner names come from the Medaforce names (gMedaforceNames) of
-// the scripts that use each opcode. Abilities are part data[1], and the script of ability n is gActionScripts[n].
+// (animSkill = actorSkill[0] + 0x50, script_op_skill_anim_start), so scripts 80-131 use these; 0x45
+// (side_add_action_point) and a few script-side commands sit elsewhere. Each runner (medaforce_*_run, clears stepDone
+// and calls entry [step] of its gMedaforce*Steps table) is one action script command (gActionScriptCommands, opcode
+// order = ROM order); its step handlers follow it and the last step sets stepDone. Runner names come from the Medaforce
+// names (gMedaforceNames) of the scripts that use each opcode. Abilities are part data[1], and the script of ability n
+// is gActionScripts[n].
 
 #include "global.h"
 #include "constants/battle_seq_sprites.h"
@@ -553,22 +554,22 @@ void medaforce_form_run(void) {
 void medaforce_form_begin(void) {
     switch (gBattleBots[gBattleWork.actor].medaforce[0]) {
     case 4:
-        gBattleWork.unk51 = 0;
+        gBattleWork.scratch = 0;
         break;
     case 5:
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
         break;
     case 6:
-        gBattleWork.unk51 = 2;
+        gBattleWork.scratch = 2;
         break;
     case 7:
-        gBattleWork.unk51 = 3;
+        gBattleWork.scratch = 3;
         break;
     case 8:
-        gBattleWork.unk51 = 4;
+        gBattleWork.scratch = 4;
         break;
     default:
-        gBattleWork.unk51 = 5;
+        gBattleWork.scratch = 5;
         break;
     }
     gBattleWork.step++;
@@ -607,7 +608,7 @@ void medaforce_form_emblem_spawn(void) {
     gSpriteEntries[0x21].angle = 0;
     gSpriteEntries[0x21].palette = 6;
     gSpriteEntries[0x21].order = 0xF0;
-    if (gBattleWork.unk51 & 1)
+    if (gBattleWork.scratch & 1)
         gSpriteEntries[0x21].frame = 0x6601;
     else
         gSpriteEntries[0x21].frame = 0x6600;
@@ -782,13 +783,13 @@ void medaforce_anti_attack_trap_trap_pulse(void) {
 
 void medaforce_anti_attack_trap_apply(void) {
     if (gBattleWork.traps[gBattleWork.otherSide].active && gBattleWork.traps[gBattleWork.otherSide].skill == 0x5A) {
-        gBattleWork.unk53 = 1;
+        gBattleWork.scratchAux = 1;
         add_u8_capped(&gBattleWork.traps[gBattleWork.otherSide].durability, gBattleWork.success >> 1, 0xFF);
         add_u8_capped(&gBattleWork.traps[gBattleWork.otherSide].power,
                       (gBattleWork.amount + gBattleBots[gBattleWork.actor].trapBonus) >> 1, 0xFF);
         gBattleWork.step++;
     } else {
-        gBattleWork.unk53 = 0;
+        gBattleWork.scratchAux = 0;
         gBattleWork.traps[gBattleWork.otherSide].active = 1;
         gBattleWork.traps[gBattleWork.otherSide].skill = 0x5A;
         gBattleWork.traps[gBattleWork.otherSide].durability = 0;
@@ -866,19 +867,19 @@ void medaforce_inflict_status_run(void) {
 void medaforce_inflict_status_begin(void) {
     switch (gBattleBots[gBattleWork.actor].medaforce[0]) {
     case 0xC:
-        gBattleWork.unk51 = 0;
+        gBattleWork.scratch = 0;
         break;
     case 0xE:
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
         break;
     case 0x10:
-        gBattleWork.unk51 = 2;
+        gBattleWork.scratch = 2;
         break;
     case 0x12:
-        gBattleWork.unk51 = 3;
+        gBattleWork.scratch = 3;
         break;
     case 0x28:
-        gBattleWork.unk51 = 4;
+        gBattleWork.scratch = 4;
         break;
     }
     gBattleWork.step++;
@@ -1020,7 +1021,7 @@ void medaforce_inflict_status_icons_spawn(void) {
         gSpriteEntries[0x21 + i].palette = 7;
         gSpriteEntries[0x21 + i].order = 0xF0;
         gSpriteEntries[0x21 + i].work[FX_SPR_STEP] = 0;
-        switch (gBattleWork.unk51) {
+        switch (gBattleWork.scratch) {
         case 0:
             gSpriteEntries[0x21 + i].frame = 0x6F00;
             break;
@@ -1061,7 +1062,7 @@ void medaforce_team_icons_anim_wait(void) {
 
 void medaforce_inflict_status_set_message(void) {
     clear_battle_sprite_slot(0x21, 3);
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         gBattleWork.messageId = 0x46;
         break;
@@ -1093,23 +1094,23 @@ void medaforce_cancel_status_run(void) {
 void medaforce_cancel_status_begin(void) {
     switch (gBattleBots[gBattleWork.actor].medaforce[0]) {
     case 0xD:
-        gBattleWork.unk51 = 0;
+        gBattleWork.scratch = 0;
         break;
     case 0xF:
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
         break;
     case 0x11:
-        gBattleWork.unk51 = 2;
+        gBattleWork.scratch = 2;
         break;
     case 0x13:
-        gBattleWork.unk51 = 3;
+        gBattleWork.scratch = 3;
         break;
     }
     gBattleWork.step++;
 }
 
 void medaforce_cancel_status_emblem_spawn(void) {
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         lz_decompress_dispatch(gMedaforceMovementEmblemTiles, (void *)0x06014800);
         CpuFastSet(gMedaforceMovementEmblemPalette, (void *)0x050002E0, 8);
@@ -1160,11 +1161,11 @@ void medaforce_cancel_status_emblem_rise(void) {
     }
     gSpriteEntries[0x21].y = (gSpriteEntries[0x21].y + 2) & 0xFF;
     if (gBattleWork.actorSideFlags & 1) {
-        if (gBattleWork.unk51 != 3)
+        if (gBattleWork.scratch != 3)
             gSpriteEntries[gGameWork.runningSpriteSlot].angle =
                 (gSpriteEntries[gGameWork.runningSpriteSlot].angle - 0x10) & 0x3FF;
     } else {
-        if (gBattleWork.unk51 != 3)
+        if (gBattleWork.scratch != 3)
             gSpriteEntries[gGameWork.runningSpriteSlot].angle =
                 (gSpriteEntries[gGameWork.runningSpriteSlot].angle + 0x10) & 0x3FF;
     }
@@ -1173,10 +1174,10 @@ void medaforce_cancel_status_emblem_rise(void) {
 void medaforce_cancel_status_emblem_hold(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[gSpriteEntries[0x21].work[FX_SPR_ANIM]], 0x21);
     if (gBattleWork.actorSideFlags & 1) {
-        if (gBattleWork.unk51 != 3)
+        if (gBattleWork.scratch != 3)
             gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle - 0x10) & 0x3FF;
     } else {
-        if (gBattleWork.unk51 != 3)
+        if (gBattleWork.scratch != 3)
             gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle + 0x10) & 0x3FF;
     }
     if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
@@ -1281,7 +1282,7 @@ void medaforce_cancel_status_apply(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
             continue;
-        switch (gBattleWork.unk51) {
+        switch (gBattleWork.scratch) {
         case 0:
             gBattleBots[gBattleWork.targetSideFirst + i].statusGuardFlags |= 1;
             if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == 0xD)
@@ -1324,7 +1325,7 @@ void medaforce_cancel_status_apply(void) {
 }
 
 void medaforce_cancel_status_set_message(void) {
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         gBattleWork.messageId = 0x55;
         break;
@@ -1371,7 +1372,7 @@ void medaforce_status_restore_orb_spawn(void) {
         gSpriteEntries[0x21].x = 0xB8;
     else
         gSpriteEntries[0x21].x = 0x38;
-    gBattleWork.unk51 = 0;
+    gBattleWork.scratch = 0;
     gBattleWork.step++;
 }
 
@@ -1482,7 +1483,7 @@ void medaforce_total_recovery_orb_spawn(void) {
         gSpriteEntries[0x21].x = 0xB8;
     else
         gSpriteEntries[0x21].x = 0x38;
-    gBattleWork.unk51 = 1;
+    gBattleWork.scratch = 1;
     gBattleWork.step++;
 }
 
@@ -1660,7 +1661,7 @@ void medaforce_full_body_repair_begin(void) {
         gSpriteEntries[0x21].x = 0xB8;
     else
         gSpriteEntries[0x21].x = 0x38;
-    gBattleWork.unk51 = 2;
+    gBattleWork.scratch = 2;
     gBattleWork.step++;
 }
 
@@ -2387,16 +2388,16 @@ void medaforce_legs_stat_up_begin(void) {
     }
     switch (gBattleBots[gBattleWork.actor].medaforce[0]) {
     case 0x1F:
-        gBattleWork.unk51 = 0;
+        gBattleWork.scratch = 0;
         break;
     case 0x21:
-        gBattleWork.unk51 = 1;
+        gBattleWork.scratch = 1;
         break;
     case 0x23:
-        gBattleWork.unk51 = 2;
+        gBattleWork.scratch = 2;
         break;
     case 0x25:
-        gBattleWork.unk51 = 3;
+        gBattleWork.scratch = 3;
         break;
     }
     gBattleWork.step++;
@@ -2485,7 +2486,7 @@ void medaforce_legs_stat_up_icon_spawn(void) {
         gSpriteEntries[i + 0x21].order = 0xE0;
         gSpriteEntries[i + 0x21].y += 8;
         gSpriteEntries[i + 0x21].palette = 7;
-        gSpriteEntries[i + 0x21].frame = 0x7C04 + gBattleWork.unk51;
+        gSpriteEntries[i + 0x21].frame = 0x7C04 + gBattleWork.scratch;
     }
     gGameWork.stepTimer = 0;
     play_sound_effect(0x2E);
@@ -2522,7 +2523,7 @@ void medaforce_legs_stat_up_apply_stat(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
             continue;
-        switch (gBattleWork.unk51) {
+        switch (gBattleWork.scratch) {
         case 0:
             add_u8_capped(&gBattleBots[gBattleWork.targetSideFirst + i].parts[3].data[5], gBattleWork.amount, 0xFF);
             break;
@@ -2543,7 +2544,7 @@ void medaforce_legs_stat_up_apply_stat(void) {
 }
 
 void medaforce_legs_stat_up_finish(void) {
-    switch (gBattleWork.unk51) {
+    switch (gBattleWork.scratch) {
     case 0:
         gBattleWork.messageId = 0x3D;
         break;
