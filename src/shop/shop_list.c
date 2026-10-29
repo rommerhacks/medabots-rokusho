@@ -150,7 +150,7 @@ void shop_list_fade_in(void) {
         obj_palettes_blend_masked_now(0, 32 - *n * 4, 0x7FFD);
         (*n)++;
     } else {
-        update_battle_sprite_priority_flags();
+        update_list_scroll_arrows();
         gMenuWork->timer = 0;
         gGameSubState++;
     }
@@ -169,7 +169,7 @@ void shop_purchase_menu_handler(void) {
     s8 i;
 
     sprite_bob_x(8, gFrameCounter, 4);
-    update_battle_sprite_priority_flags();
+    update_list_scroll_arrows();
     if (KEYS_LO(gRepeatKeys) & START_BUTTON) {
         if (gMenuWork->list_count == 0)
             goto fail;
@@ -234,7 +234,7 @@ void shop_purchase_menu_handler(void) {
                 gListScrollTop++;
             scroll:
                 render_battle_medapart_list(1);
-                update_battle_sprite_priority_flags();
+                update_list_scroll_arrows();
                 goto changed;
             }
             if (gMenuWork->list_cursor >= gMenuWork->list_count)

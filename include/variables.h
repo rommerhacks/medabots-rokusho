@@ -80,7 +80,8 @@ extern u16 gPaletteBufferBg[0x100];  // = gPaletteBuffer + 0x100
 #define OBJ_PAL_BUFFER_ADDR(n) (0x0202FC00 + (n) * 0x20)
 #define BG_PAL_BUFFER_ADDR(n) (0x0202FE00 + (n) * 0x20)
 // EWRAM work areas the menus and screens use by address, as integer constants (same reason as above).
-#define LIST_WORK_BUFFER_ADDR 0x02023000 // = gListWorkBuffer
+#define LIST_WORK_BUFFER_ADDR 0x02023000                    // = gListWorkBuffer
+#define LIST_SCROLL_TOP_ADDR (LIST_WORK_BUFFER_ADDR + 0x78) // = gListScrollTop
 #define SPRITE_WORK_ADDR 0x02024000 // the struct SpriteWork the Medabot / part preview screens point gSpriteWork at
 #define SPRITE_TREE_ADDR 0x02026000 // their struct SpriteTree
 #define SPRITE_TREE_OAMS_ADDR(n) (0x020260D0 + (n) * 0x410)      // per-node OAM block of preview sprite n
@@ -625,7 +626,7 @@ extern const u32 gTitleMenuBlendAlphas[];   // BLDALPHA values by fade step / 8 
 extern const u16 gSaveScreenSpriteFrames[]; // sprite 0 tile by (frame >> 3) & 3 (save_screen_animate_sprite)
 extern const u16 gNameEntrySpriteFrames[];  // sprite 20 tile by (frame >> 3) & 3 (name_entry_animate_sprite)
 
-extern u8 gListScrollTop;                        // first visible list entry (update_battle_sprite_priority_flags)
+extern u8 gListScrollTop;                        // first visible list entry (update_list_scroll_arrows)
 extern struct Vec16 gScanlineScrollEven[160][4]; // per-scanline BG0-3 scroll, even frames (start_scanline_wave_scroll)
 extern struct Vec16 gScanlineScrollOdd[160][4];  // per-scanline BG0-3 scroll, odd frames (start_scanline_wave_scroll)
 

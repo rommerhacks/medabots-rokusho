@@ -10,7 +10,7 @@ void init_multiplayer_id(void);
 void keys_update_from(u16 keys); // link: gNewKeys / gReleasedKeys from the other player's keys
 void tilemap_offset_tiles_and_palette(u32 tiles, u32 palette,
                                       u32 blk); // (u16, u8, u8): callers pass full ints; adds tiles to the tile
-void update_battle_sprite_priority_flags(void);
+void update_list_scroll_arrows(void);
 u32 town_map_move_cursor(void);
 
 #endif // GUARD_TITLE_SCREEN_HELPERS_H

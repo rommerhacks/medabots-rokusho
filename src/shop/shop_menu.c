@@ -431,7 +431,7 @@ void shop_menu_fade_out_to_list(void) {
             gSpriteEntries[12 + i].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         gMenuWork->returning = 1;
         gMenuWork->list_cursor = 0;
-        *(u8 *)0x02023078 = 0;
+        *(u8 *)LIST_SCROLL_TOP_ADDR = 0;
         {
             u8 *dst;
             u32 z = 0;

@@ -75,15 +75,16 @@ none:
     return 0;
 }
 
-void update_battle_sprite_priority_flags(void) {
+// Blinks the up / down arrow sprites (104 / 105) of a 4-row list while it can scroll that way.
+void update_list_scroll_arrows(void) {
     if (gMenuWork->list_count > 4) {
-        if ((*(u8 *)0x02023078) == 0)
+        if ((*(u8 *)LIST_SCROLL_TOP_ADDR) == 0)
             gSpriteEntries[104].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         else if (gFrameCounter & 8)
             gSpriteEntries[104].flags |= SPRITE_FLAG_VISIBLE;
         else
             gSpriteEntries[104].flags &= (u16)~SPRITE_FLAG_VISIBLE;
-        if ((*(u8 *)0x02023078) + 3 == gMenuWork->list_count - 1)
+        if ((*(u8 *)LIST_SCROLL_TOP_ADDR) + 3 == gMenuWork->list_count - 1)
             gSpriteEntries[105].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         else if (gFrameCounter & 8)
             gSpriteEntries[105].flags |= SPRITE_FLAG_VISIBLE;
@@ -98,7 +99,7 @@ void decompress_and_write_tilemap(const void *src, u32 bgcnt) {
 
     LZ77UnCompWram(src, gDecompressBuffer);
     w = *(u32 *)gDecompressBuffer;
-    h = *(u32 *)0x02030004;
+    h = *(u32 *)(DECOMPRESS_BUFFER_ADDR + 4);
     data = (u16 *)(gDecompressBuffer + 0x10);
     dst = BG_TILEMAP(bgcnt);
     cols = (((bgcnt & 0xC000) >> 14) & 1) ? 64 : 32;

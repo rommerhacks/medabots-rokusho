@@ -43,7 +43,7 @@ void fade_out_transition_step(void) {
         obj_palettes_blend_masked_now(0, 32 - *n * 4, 0xFFFF);
         (*n)++;
     } else {
-        update_battle_sprite_priority_flags();
+        update_list_scroll_arrows();
         gMenuWork->timer = 0;
         gGameState = 12;
         gGameSubState = 4;
