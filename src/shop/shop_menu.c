@@ -236,14 +236,14 @@ void shop_menu_greeting(void) {
 // State 5: Buy / Sell / Exit cursor (cursor = 0 / 1 / 2). Buy and Sell -> 8, Exit or B -> 6.
 void shop_menu_choose_action(void) {
     sprite_bob_x(8, gFrameCounter, 8);
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         play_sound_effect(2);
         if (gMenuWork->cursor != 0)
             gMenuWork->cursor--;
         else
             gMenuWork->cursor = 2;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         play_sound_effect(2);
         if (gMenuWork->cursor <= 1)
             gMenuWork->cursor++;
@@ -251,7 +251,7 @@ void shop_menu_choose_action(void) {
             gMenuWork->cursor = 0;
     }
     gSpriteEntries[8].y = gMenuWork->cursor * 24 + 0x20;
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         switch (gMenuWork->cursor) {
         case 0:
@@ -272,7 +272,7 @@ void shop_menu_choose_action(void) {
             gGameSubState = 6;
             break;
         }
-    } else if (KEYS_LO(gNewKeys) & 2) {
+    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         goto cancel;
     }
@@ -341,29 +341,29 @@ void shop_menu_choose_part_type(void) {
         else if (gMenuWork->part_kind == i)
             gSpriteEntries[12 + gMenuWork->part_kind].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     }
-    if (KEYS_LO(gNewKeys) & 0x40) {
+    if (KEYS_LO(gNewKeys) & DPAD_UP) {
         play_sound_effect(2);
         gMenuWork->part_kind = 0;
         shop_highlight_part_type_icon(0, gFrameCounter);
     }
-    if (KEYS_LO(gNewKeys) & 0x80) {
+    if (KEYS_LO(gNewKeys) & DPAD_DOWN) {
         play_sound_effect(2);
         gMenuWork->part_kind = 3;
         shop_highlight_part_type_icon(3, gFrameCounter);
     }
-    if (KEYS_LO(gNewKeys) & 0x20) {
+    if (KEYS_LO(gNewKeys) & DPAD_LEFT) {
         play_sound_effect(2);
         gMenuWork->part_kind = 1;
         shop_highlight_part_type_icon(1, gFrameCounter);
     }
-    if (KEYS_LO(gNewKeys) & 0x10) {
+    if (KEYS_LO(gNewKeys) & DPAD_RIGHT) {
         play_sound_effect(2);
         gMenuWork->part_kind = 2;
         shop_highlight_part_type_icon(2, gFrameCounter);
     }
     if (!(gFrameCounter & 7))
         shop_highlight_part_type_icon(gMenuWork->part_kind, gFrameCounter);
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         for (i = 0; i < 4; i++)
             gSpriteEntries[12 + i].flags |= SPRITE_FLAG_VISIBLE;
@@ -375,7 +375,7 @@ void shop_menu_choose_part_type(void) {
             gMenuWork->counter = 0x2D;
             gGameSubState = 0xC;
         }
-    } else if (KEYS_LO(gNewKeys) & 2) {
+    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         for (i = 0; i < 4; i++)
             gSpriteEntries[12 + i].flags &= (u16)~SPRITE_FLAG_VISIBLE;

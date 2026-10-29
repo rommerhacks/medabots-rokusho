@@ -46,7 +46,7 @@ void medawatch_menu_fade_in(void) {
 void medawatch_menu_handle_input(void) {
     medawatch_scroll_bg3();
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0], 0);
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         if (gGameWork.medawatchCursor == 0)
             gGameWork.medawatchCursor = 2;
         else
@@ -56,7 +56,7 @@ void medawatch_menu_handle_input(void) {
         gSpriteEntries[0].x = 0x88 - gGameWork.medawatchCursor * 8;
         gSpriteEntries[0].y = gGameWork.medawatchCursor * 24 + 32;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         if (gGameWork.medawatchCursor == 2)
             gGameWork.medawatchCursor = 0;
         else
@@ -66,11 +66,11 @@ void medawatch_menu_handle_input(void) {
         gSpriteEntries[0].x = 0x88 - gGameWork.medawatchCursor * 8;
         gSpriteEntries[0].y = gGameWork.medawatchCursor * 24 + 32;
     }
-    if (KEYS_LO(gNewKeys) & 2) {
+    if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         gGameSubState++;
     }
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         battle_sprite_anim_init(gBattleSpriteAnimScripts[1], 0);
         set_blend_effect_mode(6, 0x3F, 0x20);

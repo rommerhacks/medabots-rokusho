@@ -156,14 +156,14 @@ void medaparts_list_handle_input(void) {
         return;
     if (medaparts_list_kind_input())
         return;
-    if (KEYS_LO(gNewKeys) & 2) {
+    if (KEYS_LO(gNewKeys) & B_BUTTON) {
         if (gGameWork.openedFrom == 4) {
             play_sound_effect(6);
         } else {
             play_sound_effect(5);
             gGameSubState++;
         }
-    } else if (KEYS_LO(gNewKeys) & 1) {
+    } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         if ((u16)medapart_get_counts(gGameWork.shownId, gGameWork.partSlot)) {
             play_sound_effect(4);
             if (gGameWork.openedFrom == 4)
@@ -327,10 +327,10 @@ void medapart_detail_handle_input(void) {
     if (medapart_detail_cycle_part_input()) {
         message_next();
         gGameSubState--;
-    } else if (KEYS_LO(gNewKeys) & 2) {
+    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         gGameSubState++;
-    } else if (KEYS_LO(gNewKeys) & 8) {
+    } else if (KEYS_LO(gNewKeys) & START_BUTTON) {
         play_sound_effect(4);
         switch (gGameWork.partSlot) {
         case 0:
@@ -453,26 +453,26 @@ void medaparts_help_cursor_input(void) {
     medaparts_scroll_bg();
     load_medapart_sprite_by_slot();
     process_sprite_anim_commands(gBattleSpriteAnimScripts[3], 6);
-    if ((up = KEYS_LO(gRepeatKeys) & 0x40)) {
+    if ((up = KEYS_LO(gRepeatKeys) & DPAD_UP)) {
         if (gGameWork.helpPage == 0)
             gGameWork.helpPage = gGameWork.helpPageCount - 1;
         else
             gGameWork.helpPage--;
         play_sound_effect(2);
         medaparts_help_move_cursor();
-    } else if (KEYS_LO(gRepeatKeys) & 0x80) {
+    } else if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         if (gGameWork.helpPage == gGameWork.helpPageCount - 1)
             gGameWork.helpPage = up;
         else
             gGameWork.helpPage++;
         play_sound_effect(2);
         medaparts_help_move_cursor();
-    } else if (KEYS_LO(gNewKeys) & 1) {
+    } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         medaparts_help_init_cursor();
         message_next();
         gGameSubState++;
-    } else if (KEYS_LO(gNewKeys) & 0xA) {
+    } else if (KEYS_LO(gNewKeys) & (B_BUTTON | START_BUTTON)) {
         play_sound_effect(5);
         gGameSubState = 0x24;
     }
@@ -605,7 +605,7 @@ void medapart_trade_choice_input(void) {
     load_medapart_sprite_by_slot();
     sprite_bob_x(4, gFrameCounter, 0xA8);
     medapart_trade_choice_cursor_input();
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         if (gGameWork.tradeChoice == 1) {
             counts = (u16)medapart_get_counts(gGameWork.shownId, gGameWork.partSlot);
             if ((counts >> 8 & 0xFF) != (counts & 0xFF))
@@ -615,7 +615,7 @@ void medapart_trade_choice_input(void) {
         }
     ok:
         play_sound_effect(4);
-    } else if (KEYS_LO(gNewKeys) & 2) {
+    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         gGameWork.tradeChoice = 2;
     } else
@@ -773,19 +773,19 @@ static void medaparts_list_init_cursor(void) {
 static u32 medaparts_list_row_input(void) {
     u32 ret;
 
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         if (gGameWork.medalRow == 0)
             gGameWork.medalRow = 3;
         else
             gGameWork.medalRow--;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         if (gGameWork.medalRow == 3)
             gGameWork.medalRow = 0;
         else
             gGameWork.medalRow++;
     }
-    if (!(KEYS_LO(gRepeatKeys) & 0xC0)) {
+    if (!(KEYS_LO(gRepeatKeys) & (DPAD_UP | DPAD_DOWN))) {
         ret = 0;
     } else {
         play_sound_effect(2);
@@ -800,19 +800,19 @@ static u32 medaparts_list_row_input(void) {
 static u32 medaparts_list_page_input(void) {
     u32 ret;
 
-    if (KEYS_LO(gRepeatKeys) & 0x20) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
         if (gGameWork.listTab == 0)
             gGameWork.listTab = 29;
         else
             gGameWork.listTab--;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x10) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         if (gGameWork.listTab == 29)
             gGameWork.listTab = 0;
         else
             gGameWork.listTab++;
     }
-    if (!(KEYS_LO(gRepeatKeys) & 0x30)) {
+    if (!(KEYS_LO(gRepeatKeys) & (DPAD_RIGHT | DPAD_LEFT))) {
         ret = 0;
     } else {
         play_sound_effect(2);
@@ -831,19 +831,19 @@ static u32 medaparts_list_page_input(void) {
 static u32 medaparts_list_kind_input(void) {
     u32 ret;
 
-    if (KEYS_HI(gNewKeys) & 2) {
+    if (KEYS_HI(gNewKeys) & L_BUTTON_HI) {
         if (gGameWork.partSlot == 0)
             gGameWork.partSlot = 3;
         else
             gGameWork.partSlot--;
     }
-    if (KEYS_HI(gNewKeys) & 1) {
+    if (KEYS_HI(gNewKeys) & R_BUTTON_HI) {
         if (gGameWork.partSlot == 3)
             gGameWork.partSlot = 0;
         else
             gGameWork.partSlot++;
     }
-    if (!(KEYS_HI(gNewKeys) & 3)) {
+    if (!(KEYS_HI(gNewKeys) & (R_BUTTON_HI | L_BUTTON_HI))) {
         ret = 0;
     } else {
         play_sound_effect(2);
@@ -1137,7 +1137,7 @@ static u32 medapart_detail_cycle_part_input(void) {
 
     if (gGameWork.freeMedalCount <= 1)
         goto none;
-    if (KEYS_LO(gRepeatKeys) & 0x20) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
         while (1) {
             if (gGameWork.shownId == 0)
                 gGameWork.shownId = 119;
@@ -1158,7 +1158,7 @@ static u32 medapart_detail_cycle_part_input(void) {
             }
         }
     }
-    if (KEYS_LO(gRepeatKeys) & 0x10) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         while (1) {
             if (gGameWork.shownId == 119)
                 gGameWork.shownId = 0;
@@ -1179,7 +1179,7 @@ static u32 medapart_detail_cycle_part_input(void) {
             }
         }
     }
-    if (KEYS_LO(gRepeatKeys) & 0x30) {
+    if (KEYS_LO(gRepeatKeys) & (DPAD_RIGHT | DPAD_LEFT)) {
         play_sound_effect(2);
         load_part_data(gGameWork.shownId, gGameWork.partSlot, &gGameWork.partAbility);
         medapart_detail_draw_skill();
@@ -1232,19 +1232,19 @@ static void medapart_trade_init_choice_cursor(void) {
 }
 
 static void medapart_trade_choice_cursor_input(void) {
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         if (gGameWork.tradeChoice == 0)
             gGameWork.tradeChoice = 2;
         else
             gGameWork.tradeChoice--;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         if (gGameWork.tradeChoice == 2)
             gGameWork.tradeChoice = 0;
         else
             gGameWork.tradeChoice++;
     }
-    if (KEYS_LO(gRepeatKeys) & 0xC0) {
+    if (KEYS_LO(gRepeatKeys) & (DPAD_UP | DPAD_DOWN)) {
         play_sound_effect(2);
         gSpriteEntries[4].y = gGameWork.tradeChoice * 16 + 0x38;
     }

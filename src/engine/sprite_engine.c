@@ -165,7 +165,7 @@ static void dma_load_sprite_tiles(const u32 *src, u16 tile, void *buf, u32 useCp
         u32 size = dma3_copy_or_decompress(src, buf);
 
         if (useCpu)
-            CpuSet(buf, (void *)(0x06010000 + tile * 32), ((size / 4) & 0x1FFFFF) | 0x04000000);
+            CpuSet(buf, (void *)(0x06010000 + tile * 32), ((size / 4) & 0x1FFFFF) | CPU_SET_32BIT);
         else
             DmaSet(0, buf, 0x06010000 + tile * 32, (size >> 2) | 0x94000000);
     }
@@ -189,7 +189,7 @@ static void copy_sprite_tiles_to_vram(u8 *dst, u8 *src, s32 shape, s32 size, s32
         for (j = 0; j < cols; j++) {
             colStart = src;
             for (k = 0; k < dim[0]; k++) {
-                CpuSet(src, dst, (dim[1] >> 2) | 0x04000000);
+                CpuSet(src, dst, (dim[1] >> 2) | CPU_SET_32BIT);
                 src += dim[1] * cols;
                 dst += dim[1];
             }
@@ -207,7 +207,7 @@ static void decompress_and_load_sprite_tiles(const u32 *src, s32 shape, s32 size
 
         copy_sprite_tiles_to_vram(out, buf, shape, size, rows, cols, bpp);
         if (useCpu)
-            CpuSet(out, (void *)(0x06010000 + tile * 32), ((n / 4) & 0x1FFFFF) | 0x04000000);
+            CpuSet(out, (void *)(0x06010000 + tile * 32), ((n / 4) & 0x1FFFFF) | CPU_SET_32BIT);
         else
             DmaSet(0, out, 0x06010000 + tile * 32, (n >> 2) | 0x94000000);
     }
@@ -257,7 +257,7 @@ u32 setup_oam_sprite_entries(struct OamData *oams, void *tiles, void *pal, const
                                      (u8 *)0x02030000, 1);
 #undef DESC
     if (pal != NULL)
-        CpuSet(pal, (void *)(0x05000200 + palNum * 32), 0x10);
+        CpuSet(pal, (void *)(OBJ_PLTT + palNum * 32), 0x10);
     n = (dims[0] >> 3) * (dims[1] >> 3);
     for (i = 0; i < desc8->w; i++) {
         for (j = 0; j < desc8->h; j++) {

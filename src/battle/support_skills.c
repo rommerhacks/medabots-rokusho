@@ -215,7 +215,7 @@ void conceal_dome_close(void) {
 void conceal_blink_wait(void) {
     gGameWork.stepCounter++;
     battle_bot_sprites_blink(gBattleWork.actor, gGameWork.stepCounter, 2);
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1)) {
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON)) {
         battle_bot_sprites_show(gBattleWork.actor);
         gBattleWork.step++;
     } else if (gGameWork.stepTimer)
@@ -276,7 +276,7 @@ void boost_charge_hourglass_spawn(void) {
 
 void charge_hourglass_hold(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[gGameWork.stepCounter], 0x21);
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON))
         gBattleWork.step++;
     else if (gGameWork.stepTimer)
         gGameWork.stepTimer--;
@@ -639,7 +639,7 @@ void pushover_damage_init(void) {
 void pushover_damage_popup(void) {
     battle_popup_update_slot(&gGameWork.partAbility, gBattleWork.target, 0x21);
     if (++gGameWork.stepCounter,
-        gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & 1) && gGameWork.stepCounter > 0x32)
+        gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON) && gGameWork.stepCounter > 0x32)
         gGameWork.stepCounter = 0x78;
     if (gGameWork.stepCounter == 0x78) {
         clear_battle_sprite_slot(gBattleWork.target * 4 + 0x21, 4);

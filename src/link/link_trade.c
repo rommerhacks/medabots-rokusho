@@ -511,7 +511,7 @@ void medapart_trade_scroll_in(void) {
 void medapart_trade_wait_confirm(void) {
     load_medapart_sprite_animation(gMenuWork->own_part_id, gMenuWork->own_part_kind, 0);
     load_medapart_sprite_animation(gMenuWork->partner_part_id, gMenuWork->partner_part_kind, 1);
-    if (run_message(gLinkMenuMessages[gMenuWork->own_part_kind + 0x14]) && (KEYS_LO(gNewKeys) & 1)) {
+    if (run_message(gLinkMenuMessages[gMenuWork->own_part_kind + 0x14]) && (KEYS_LO(gNewKeys) & A_BUTTON)) {
         gLinkPackets.sendData = 0xFF07;
         play_sound_effect(0xD);
     }
@@ -852,7 +852,7 @@ void medal_trade_scroll_in(void) {
 
 void medal_trade_wait_confirm(void) {
     if (run_message(gLinkMenuMessages[gMenuWork->partner_chose ? 26 : 27])) {
-        if (KEYS_LO(gRepeatKeys) & 1) {
+        if (KEYS_LO(gRepeatKeys) & A_BUTTON) {
             play_sound_effect(0xD);
             gGameSubState++;
         } else if (gLinkPackets.recv[gLinkPlayerId == 0][1] == 0xFEFF)

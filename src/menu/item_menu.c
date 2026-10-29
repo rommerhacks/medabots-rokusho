@@ -178,7 +178,7 @@ void item_menu_handle_input(void) {
 
     w = gMenuWork;
     if (w->item_count > 1) {
-        if (KEYS_LO(gRepeatKeys) & 0x40) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
             if (w->item_cursor == w->list_top) {
                 if ((u8)(w->list_top / n) == (u8)(w->item_count / n))
                     w->item_cursor = w->list_top + w->item_count % n - 1;
@@ -187,7 +187,7 @@ void item_menu_handle_input(void) {
             } else
                 w->item_cursor--;
             goto moved;
-        } else if (KEYS_LO(gRepeatKeys) & 0x80) {
+        } else if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
             if ((u8)(w->list_top / n) == (u8)(w->item_count / n)) {
                 if (w->item_cursor == w->list_top + (u8)(w->item_count % n) - 1)
                     w->item_cursor = w->list_top;
@@ -201,12 +201,12 @@ void item_menu_handle_input(void) {
             }
             goto moved;
         } else if ((cnt = w->item_count) >= n + 1) {
-            if (KEYS_LO(gRepeatKeys) & 0x10) {
+            if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
                 if (w->list_top + n >= cnt)
                     w->list_top = 0;
                 else
                     w->list_top += n;
-            } else if (KEYS_LO(gRepeatKeys) & 0x20) {
+            } else if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
                 if (w->list_top >= n)
                     w->list_top -= n;
                 else if ((u8)(cnt % n) == 0)
@@ -226,12 +226,12 @@ other:
     w2 = gMenuWork;
     if (w2->swap_pending) {
         item_menu_blink_swap_marker(gFrameCounter);
-        if (KEYS_LO(gNewKeys) & 2) {
+        if (KEYS_LO(gNewKeys) & B_BUTTON) {
             gSpriteEntries[0x54].flags &= (u16)~SPRITE_FLAG_VISIBLE;
             gMenuWork->swap_pending = 0;
             goto moved;
         }
-        if (!(KEYS_LO(gNewKeys) & 5))
+        if (!(KEYS_LO(gNewKeys) & (A_BUTTON | SELECT_BUTTON)))
             return;
         gSpriteEntries[0x54].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         gMenuWork->swap_pending = 0;
@@ -240,7 +240,7 @@ other:
         update_battle_medapart_icons();
         goto moved;
     }
-    if (w2->item_count > 1 && (KEYS_LO(gNewKeys) & 4)) {
+    if (w2->item_count > 1 && (KEYS_LO(gNewKeys) & SELECT_BUTTON)) {
         w2->timer = 0;
         play_sound_effect(2);
         item_menu_start_swap();
@@ -248,7 +248,7 @@ other:
     w3 = gMenuWork;
     if (w3->swap_pending)
         return;
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         if (w3->item_count == 0)
             goto cancel;
         sel = &gFieldSceneParams;
@@ -304,7 +304,7 @@ other:
             return;
         }
     }
-    if (KEYS_LO(gNewKeys) & 2) {
+    if (KEYS_LO(gNewKeys) & B_BUTTON) {
     cancel:
         play_sound_effect(5);
         palette_backup_from_hardware();
@@ -360,7 +360,7 @@ void item_menu_show_cannot_use(void) {
 }
 
 void item_menu_wait_message_key(void) {
-    if (*(u8 *)&gNewKeys & 3) {
+    if (KEYS_LO(gNewKeys) & (A_BUTTON | B_BUTTON)) {
         play_sound_effect(2);
         message_next();
         gGameSubState = 4;

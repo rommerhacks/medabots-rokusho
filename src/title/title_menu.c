@@ -116,7 +116,7 @@ static void title_options_pulse_palette(u8 step) {
     u16 buf[32];
     s32 i;
     step = step > 15 ? step - 16 : 0;
-    CpuSet((void *)0x0202FB00, buf, 0x04000010);
+    CpuSet((void *)0x0202FB00, buf, CPU_SET_32BIT | 0x10);
     for (i = 0; i < 16; i++) {
         u16 color = buf[i];
         u16 target = buf[i + 16];
@@ -131,14 +131,14 @@ static void title_options_pulse_palette(u8 step) {
         blue = (blue - target_blue) * step / 32 + target_blue;
         buf[i] = (blue << 10) | (green << 5) | red;
     }
-    CpuSet(buf, (void *)0x05000140, 0x04000008);
+    CpuSet(buf, (void *)(PLTT + 0x140), CPU_SET_32BIT | 0x8);
 }
 
 static void title_menu_pulse_selected(u8 sel, u8 blend) {
     u16 buf[32];
     s32 i, j;
     for (j = 0; j <= 2; j++) {
-        CpuSet((void *)(j * 0x40 + 0x0202FA00), buf, 0x04000010);
+        CpuSet((void *)(j * 0x40 + 0x0202FA00), buf, CPU_SET_32BIT | 0x10);
         if (j == sel) {
             for (i = 0; i < 16; i++) {
                 u16 color = buf[i];
@@ -155,7 +155,7 @@ static void title_menu_pulse_selected(u8 sel, u8 blend) {
                 buf[i] = (blue << 10) | (green << 5) | red;
             }
         }
-        CpuSet(buf, (void *)(j * 0x40 + PLTT), 0x04000008);
+        CpuSet(buf, (void *)(j * 0x40 + PLTT), CPU_SET_32BIT | 0x8);
     }
 }
 
@@ -271,7 +271,7 @@ void title_menu_input(void) {
 
     gMenuWork->frame = title_menu_blend_step(gMenuWork->frame);
     title_menu_pulse_selected(gMenuWork->cursor, gFrameCounter & 0x1F);
-    if (KEYS_LO(gNewKeys) & 0x40) {
+    if (KEYS_LO(gNewKeys) & DPAD_UP) {
         play_sound_effect(2);
         w = gMenuWork;
         if (w->cursor == w->first_entry)
@@ -279,7 +279,7 @@ void title_menu_input(void) {
         else
             w->cursor--;
     }
-    if (KEYS_LO(gNewKeys) & 0x80) {
+    if (KEYS_LO(gNewKeys) & DPAD_DOWN) {
         play_sound_effect(2);
         w = gMenuWork;
         if (w->cursor == 2)
@@ -287,7 +287,7 @@ void title_menu_input(void) {
         else
             w->cursor++;
     }
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         if (gMenuWork->cursor == 2) {
             gMenuWork->cursor = 0;
@@ -316,7 +316,7 @@ void title_options_input(void) {
     if (gMenuWork->timer)
         gMenuWork->timer--;
 
-    if (KEYS_LO(gNewKeys) & 0x40) {
+    if (KEYS_LO(gNewKeys) & DPAD_UP) {
         play_song(1);
         play_sound_effect(2);
         if (gMenuWork->cursor == 0)
@@ -326,7 +326,7 @@ void title_options_input(void) {
         if (gMenuWork->cursor == 2)
             play_song(gBattleMusicOptionSongs[gOptionBattleMusic]);
         gMenuWork->timer = 20;
-    } else if (KEYS_LO(gNewKeys) & 0x80) {
+    } else if (KEYS_LO(gNewKeys) & DPAD_DOWN) {
         play_song(1);
         play_sound_effect(2);
         if (gMenuWork->cursor == 2)
@@ -339,14 +339,14 @@ void title_options_input(void) {
     } else {
         switch (gMenuWork->cursor) {
         case 0:
-            if (KEYS_LO(gNewKeys) & 0x20) {
+            if (KEYS_LO(gNewKeys) & DPAD_LEFT) {
                 play_sound_effect(2);
                 if (gOptionTimeLimit == 0)
                     gOptionTimeLimit = 2;
                 else
                     gOptionTimeLimit--;
             }
-            if (KEYS_LO(gNewKeys) & 0x10) {
+            if (KEYS_LO(gNewKeys) & DPAD_RIGHT) {
                 play_sound_effect(2);
                 if (gOptionTimeLimit == 2)
                     gOptionTimeLimit = 0;
@@ -361,14 +361,14 @@ void title_options_input(void) {
             }
             break;
         case 2:
-            if (KEYS_LO(gNewKeys) & 0x20) {
+            if (KEYS_LO(gNewKeys) & DPAD_LEFT) {
                 if (gOptionBattleMusic == 0)
                     gOptionBattleMusic = 2;
                 else
                     gOptionBattleMusic--;
                 play_song(gBattleMusicOptionSongs[gOptionBattleMusic]);
             }
-            if (KEYS_LO(gNewKeys) & 0x10) {
+            if (KEYS_LO(gNewKeys) & DPAD_RIGHT) {
                 if (gOptionBattleMusic == 2)
                     gOptionBattleMusic = 0;
                 else
@@ -377,7 +377,7 @@ void title_options_input(void) {
             }
             break;
         }
-        if (KEYS_LO(gNewKeys) & 0x30)
+        if (KEYS_LO(gNewKeys) & (DPAD_RIGHT | DPAD_LEFT))
             title_options_draw_values(gMenuWork->cursor);
         if (KEY_BITS(gNewKeys).a | KEY_BITS(gNewKeys).b) {
             play_song(1);

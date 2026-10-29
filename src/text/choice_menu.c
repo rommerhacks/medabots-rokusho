@@ -167,14 +167,14 @@ void advance_sprite_scroll_animation(void) {
 }
 
 void handle_battle_sprite_scroll_input(void) {
-    if (KEYS_LO(gNewKeys) & 0xC0) {
+    if (KEYS_LO(gNewKeys) & (DPAD_UP | DPAD_DOWN)) {
         play_sound_effect(2);
         gGameWork.choiceCursor ^= 1;
         gSpriteEntries[gGameWork.scrollSpriteSlot].y = gGameWork.choiceCursor * 16 + 0x48;
     }
     sprite_bob_x(gGameWork.scrollSpriteSlot, gGameWork.stepCounter, gGameWork.transTileX * 8 + 0x14);
     gGameWork.stepCounter++;
-    if (KEYS_LO(gNewKeys) & 2) {
+    if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         gGameWork.choiceCursor = 1;
         gSpriteEntries[gGameWork.scrollSpriteSlot].x = gGameWork.transTileX * 8 + 0x14;
@@ -182,7 +182,7 @@ void handle_battle_sprite_scroll_input(void) {
         gGameWork.stepCounter = 0;
         gGameWork.choiceState++;
     }
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         gSpriteEntries[gGameWork.scrollSpriteSlot].x = gGameWork.transTileX * 8 + 0x14;
         gGameWork.stepCounter = 0;

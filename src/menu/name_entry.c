@@ -285,7 +285,7 @@ void name_entry_input(void) {
         }
     }
 
-    if (KEYS_LO(gRepeatKeys) & 0x10) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         play_sound_effect(2);
         col = gMenuWork->grid_col;
         if (gMenuWork->grid_row == 3 ? col == 2 : col == 0x19)
@@ -293,14 +293,14 @@ void name_entry_input(void) {
         else
             gMenuWork->grid_col++;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x20) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
         play_sound_effect(2);
         if (gMenuWork->grid_col == 0) {
             gMenuWork->grid_col = gMenuWork->grid_row == 3 ? 2 : 0x19;
         } else
             gMenuWork->grid_col--;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         play_sound_effect(2);
         if (gMenuWork->grid_row == 0) {
             gMenuWork->grid_row = 3;
@@ -316,7 +316,7 @@ void name_entry_input(void) {
                 gMenuWork->grid_col = gNameEntryColumnRemap[gMenuWork->grid_col];
         }
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         play_sound_effect(2);
         if (gMenuWork->grid_row == 3) {
             gMenuWork->grid_row = 0;
@@ -354,12 +354,12 @@ void name_entry_input(void) {
         gSpriteEntries[1].flags &= (u16)~SPRITE_FLAG_HFLIP;
     }
 
-    if (KEYS_LO(gNewKeys) & 8) {
+    if (KEYS_LO(gNewKeys) & START_BUTTON) {
     start:
         play_sound_effect(4);
         gMenuWork->grid_row = 3;
         gMenuWork->grid_col = 2;
-    } else if (*((u8 *)&gNewKeys + 1) & 1) {
+    } else if (KEYS_HI(gNewKeys) & R_BUTTON_HI) {
     space:
         if (gMenuWork->name_len <= 9) {
             play_sound_effect(4);
@@ -374,7 +374,7 @@ void name_entry_input(void) {
         } else
             play_sound_effect(6);
         goto redraw;
-    } else if (KEYS_LO(gNewKeys) & 1) {
+    } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         if (gMenuWork->grid_row == 3) {
             switch (gMenuWork->grid_col) {
             case 1:
@@ -414,7 +414,7 @@ void name_entry_input(void) {
     redraw:
         disable_sprites(5, 10);
         render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
-    } else if (gNewKeys & 0x202) {
+    } else if (gNewKeys & (B_BUTTON | L_BUTTON)) {
     back:
         play_sound_effect(5);
         if (gMenuWork->name_len != 0) {

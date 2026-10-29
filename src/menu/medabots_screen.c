@@ -200,11 +200,11 @@ void medabots_screen_handle_input(void) {
     medabots_screen_animate_invalid_bot();
     team_select_draw_pick_markers();
     if (medabots_screen_reorder_input() == 0 && medabots_screen_cursor_input() == 0) {
-        if (KEYS_LO(gNewKeys) & 2)
+        if (KEYS_LO(gNewKeys) & B_BUTTON)
             medabots_screen_cancel_input();
-        else if (KEYS_LO(gNewKeys) & 1)
+        else if (KEYS_LO(gNewKeys) & A_BUTTON)
             team_select_confirm_pick();
-        else if (KEYS_LO(gNewKeys) & 8)
+        else if (KEYS_LO(gNewKeys) & START_BUTTON)
             team_select_finish_input();
     }
 }
@@ -422,10 +422,10 @@ void medabot_detail_handle_input(void) {
         medabot_detail_cycle_rarm_input() || medabot_detail_cycle_larm_input() || medabot_detail_cycle_legs_input() ||
         medabot_detail_equip_full_set_input())
         return;
-    if (KEYS_LO(gNewKeys) & 2) {
+    if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         gGameSubState++;
-    } else if (*((u8 *)&gNewKeys + 1) & 3) {
+    } else if (KEYS_HI(gNewKeys) & (R_BUTTON_HI | L_BUTTON_HI)) {
         play_sound_effect(2);
         gGameWork.detailBot ^= 1;
         medabot_detail_redraw_bot_sprite();
@@ -1042,19 +1042,19 @@ static u32 medabots_screen_cursor_input(void) {
     u32 moved = 0;
     const u8 *next;
 
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         next = gMedabotSlotDpadMoves[0];
         moved = 1;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         next = gMedabotSlotDpadMoves[1];
         moved = 1;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x20) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
         next = gMedabotSlotDpadMoves[2];
         moved = 1;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x10) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         next = gMedabotSlotDpadMoves[3];
         moved = 1;
     }
@@ -1144,7 +1144,7 @@ static void medabots_screen_update_reorder_icons(void) {
 // SELECT ("REORDER"): first press picks the slot (reorderPick = slot | 0x80, icons orbit it), second press
 // swaps the two gTeamSlots entries. Runtime-checked: slot 3 picked (reorderPick 0x83), then swapped with 0.
 static u32 medabots_screen_reorder_input(void) {
-    if (gGameWork.medabotsMode == 0 && (KEYS_LO(gNewKeys) & 4)) {
+    if (gGameWork.medabotsMode == 0 && (KEYS_LO(gNewKeys) & SELECT_BUTTON)) {
         play_sound_effect(2);
         if (gGameWork.reorderPick & 0x80) {
             gGameWork.reorderPick &= 0x7F;
@@ -1543,13 +1543,13 @@ static void medabot_detail_blink_row_icon(void) {
 }
 
 static u32 medabot_detail_row_cursor_input(void) {
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         if (gGameWork.detailRow == 0)
             gGameWork.detailRow = 4;
         else
             gGameWork.detailRow--;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         if (gGameWork.detailRow == 4)
             gGameWork.detailRow = 0;
         else
@@ -1574,9 +1574,9 @@ static u32 medabot_detail_cycle_medal_input(void) {
     if (gGameWork.detailRow != 0)
         goto none;
     old = gGameWork.shownMedal;
-    if (KEYS_LO(gRepeatKeys) & 0x20)
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT)
         gGameWork.shownMedal = find_next_free_medal(old, 1);
-    if (KEYS_LO(gRepeatKeys) & 0x10)
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT)
         gGameWork.shownMedal = find_next_free_medal(gGameWork.shownMedal, 0);
     if (old == gGameWork.shownMedal) {
     none:
@@ -1600,9 +1600,9 @@ static u32 medabot_detail_cycle_head_input(void) {
     if (gGameWork.detailRow != 1)
         goto none;
     old = gGameWork.shownHead;
-    if (KEYS_LO(gRepeatKeys) & 0x20)
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT)
         gGameWork.shownHead = find_next_available_medapart_slot(old, 0, 1, gTeamSlots[gGameWork.medabotsCursor].gender);
-    if (KEYS_LO(gRepeatKeys) & 0x10)
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT)
         gGameWork.shownHead =
             find_next_available_medapart_slot(gGameWork.shownHead, 0, 0, gTeamSlots[gGameWork.medabotsCursor].gender);
     if (old == gGameWork.shownHead) {
@@ -1624,10 +1624,10 @@ static u32 medabot_detail_cycle_rarm_input(void) {
     if (gGameWork.detailRow != 2)
         goto none;
     old = gGameWork.shownRightArm;
-    if (KEYS_LO(gRepeatKeys) & 0x20)
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT)
         gGameWork.shownRightArm =
             find_next_available_medapart_slot(old, 1, 1, gTeamSlots[gGameWork.medabotsCursor].gender);
-    if (KEYS_LO(gRepeatKeys) & 0x10)
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT)
         gGameWork.shownRightArm = find_next_available_medapart_slot(gGameWork.shownRightArm, 1, 0,
                                                                     gTeamSlots[gGameWork.medabotsCursor].gender);
     if (old == gGameWork.shownRightArm) {
@@ -1649,10 +1649,10 @@ static u32 medabot_detail_cycle_larm_input(void) {
     if (gGameWork.detailRow != 3)
         goto none;
     old = gGameWork.shownLeftArm;
-    if (KEYS_LO(gRepeatKeys) & 0x20)
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT)
         gGameWork.shownLeftArm =
             find_next_available_medapart_slot(old, 2, 1, gTeamSlots[gGameWork.medabotsCursor].gender);
-    if (KEYS_LO(gRepeatKeys) & 0x10)
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT)
         gGameWork.shownLeftArm = find_next_available_medapart_slot(gGameWork.shownLeftArm, 2, 0,
                                                                    gTeamSlots[gGameWork.medabotsCursor].gender);
     if (old == gGameWork.shownLeftArm) {
@@ -1674,9 +1674,9 @@ static u32 medabot_detail_cycle_legs_input(void) {
     if (gGameWork.detailRow != 4)
         goto none;
     old = gGameWork.shownLegs;
-    if (KEYS_LO(gRepeatKeys) & 0x20)
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT)
         gGameWork.shownLegs = find_next_available_medapart_slot(old, 3, 1, gTeamSlots[gGameWork.medabotsCursor].gender);
-    if (KEYS_LO(gRepeatKeys) & 0x10)
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT)
         gGameWork.shownLegs =
             find_next_available_medapart_slot(gGameWork.shownLegs, 3, 0, gTeamSlots[gGameWork.medabotsCursor].gender);
     if (old == gGameWork.shownLegs) {
@@ -1697,7 +1697,7 @@ static u32 medabot_detail_equip_full_set_input(void) {
     volatile u32 kind;
     volatile u32 part;
 
-    if (KEYS_LO(gNewKeys) & 8) {
+    if (KEYS_LO(gNewKeys) & START_BUTTON) {
         play_sound_effect(4);
         kind = 0;
         if (gGameWork.detailRow)
@@ -1807,7 +1807,7 @@ static void medabot_detail_animate_invalid_bot(void) {
 // A on the detail screen: 1 if the selected row holds a Medal / Medapart, 2 if it is empty.
 // No A press falls off the end (no return value, r0 is left as is; the caller tests 1 / 2).
 static u8 medabot_detail_check_row_select(void) {
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         switch (gGameWork.detailRow) {
         case 0:
             if (gGameWork.shownMedal == 30)

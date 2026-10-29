@@ -264,7 +264,7 @@ u32 bomb_game_round_intro(void) {
     case 1:
         if (gSpriteEntries[BOMB_SPR_BANNER].timer < 0x18) {
             gSpriteEntries[BOMB_SPR_BANNER].timer++;
-        } else if (++gSpriteEntries[BOMB_SPR_BANNER].timer > 0xB4 || (KEYS_LO(gNewKeys) & 9)) {
+        } else if (++gSpriteEntries[BOMB_SPR_BANNER].timer > 0xB4 || (KEYS_LO(gNewKeys) & (A_BUTTON | START_BUTTON))) {
             gSpriteEntries[BOMB_SPR_BANNER].timer = 0;
             gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP]++;
         }
@@ -360,7 +360,7 @@ static void bomb_game_update_hint_arrow(void) {
 
 // R / L move the player Medabot right / left (playerPos -8..8); it drifts back to the middle when released.
 void bomb_game_move_player(void) {
-    u32 dir = KEYS_HI(gHeldKeys) & 3;
+    u32 dir = KEYS_HI(gHeldKeys) & (R_BUTTON_HI | L_BUTTON_HI);
 
     if (dir == 1) {
         if (++gBombGameWork.playerPos > 8)
@@ -673,7 +673,7 @@ static bool32 bomb_game_clear_banner(void) {
         banner->timer++;
         if (banner->timer % 8 == 0)
             gSpriteEntries[BOMB_SPR_THROWER].y -= 2;
-        if (banner->timer > 0xEB || (KEYS_LO(gNewKeys) & 9)) {
+        if (banner->timer > 0xEB || (KEYS_LO(gNewKeys) & (A_BUTTON | START_BUTTON))) {
             clear_sprite_entry(BOMB_SPR_BANNER);
             return 1;
         }
@@ -725,7 +725,7 @@ static u32 bomb_game_over_banner(void) {
             gSpriteEntries[BOMB_SPR_BASE].x = (gSpriteEntries[BOMB_SPR_BANNER].timer & 4) ? 0x7A : 0x76;
             gSpriteEntries[BOMB_SPR_BASE].y++;
         }
-        if (gSpriteEntries[BOMB_SPR_BANNER].timer > 0xEB || (KEYS_LO(gNewKeys) & 9)) {
+        if (gSpriteEntries[BOMB_SPR_BANNER].timer > 0xEB || (KEYS_LO(gNewKeys) & (A_BUTTON | START_BUTTON))) {
             clear_sprite_entry(BOMB_SPR_BANNER);
             clear_sprite_entry(BOMB_SPR_BASE);
             return 1;

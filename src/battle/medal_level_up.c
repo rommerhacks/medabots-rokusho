@@ -224,7 +224,7 @@ void medal_transform_flash_out(void) {
 
 void medal_transform_wait_confirm(void) {
     medal_transform_update_sparkles();
-    if (run_message(gSystemMessages[0x12]) && (*(u8 *)&gNewKeys & 1)) {
+    if (run_message(gSystemMessages[0x12]) && (KEYS_LO(gNewKeys) & A_BUTTON)) {
         init_blend_effect(gMenuWork->blend, 0, 0, 1, 0xC0);
         gGameSubState++;
     }

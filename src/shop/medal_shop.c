@@ -211,7 +211,7 @@ void medal_rename_select_medal(void) {
         else
             gSpriteEntries[11].flags &= (u16)~SPRITE_FLAG_VISIBLE;
     }
-    if ((keys = KEYS_LO(gRepeatKeys) & 0x40)) {
+    if ((keys = KEYS_LO(gRepeatKeys) & DPAD_UP)) {
         se = 2;
         if (gMenuWork->medal_list_top != 0)
             gMenuWork->medal_list_top--;
@@ -225,7 +225,7 @@ void medal_rename_select_medal(void) {
             play_sound_effect(se);
     skip:
         medal_rename_draw_list(gMenuWork->medal_list_cursor);
-    } else if (KEYS_LO(gRepeatKeys) & 0x80) {
+    } else if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         se = 2;
         if (gMenuWork->medal_list_count <= 3) {
             if (gMenuWork->medal_list_top == gMenuWork->medal_list_count - 1)
@@ -242,7 +242,7 @@ void medal_rename_select_medal(void) {
         if (se != 0)
             play_sound_effect(se);
         medal_rename_draw_list(gMenuWork->medal_list_cursor);
-    } else if (KEYS_LO(gNewKeys) & 1) {
+    } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         gSpriteEntries[10].flags &= (u16)~SPRITE_FLAG_VISIBLE;
         gSpriteEntries[11].flags &= (u16)~SPRITE_FLAG_VISIBLE;
@@ -253,7 +253,7 @@ void medal_rename_select_medal(void) {
         open_choice_menu(1, 0x16, 7);
         return;
     } else {
-        if (KEYS_LO(gNewKeys) & 2) {
+        if (KEYS_LO(gNewKeys) & B_BUTTON) {
             play_sound_effect(5);
             gSpriteEntries[8].flags &= (u16)~SPRITE_FLAG_VISIBLE;
             gGameWork.endModeStep = 0;
@@ -305,7 +305,7 @@ void medal_rename_no_money(void) {
         }
     } else if (run_message(gSystemMessages[15]))
         busy = 0;
-    if (busy == 0 && KEYS_LO(gNewKeys) & 3) {
+    if (busy == 0 && KEYS_LO(gNewKeys) & (A_BUTTON | B_BUTTON)) {
         message_next();
         gGameSubState = 5;
     }

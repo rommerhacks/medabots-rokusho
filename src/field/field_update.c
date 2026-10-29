@@ -660,17 +660,17 @@ void load_room_graphics(void) {
 }
 
 static void update_blend_effect_from_input(void) {
-    if (KEYS_LO(gNewKeys) & 0x40) {
+    if (KEYS_LO(gNewKeys) & DPAD_UP) {
         gBlendEffect.evy_level += 1.0f;
         gBlendEffect.evy_level = (s32)((u32)gBlendEffect.evy_level & 0xF);
         REG_BLDY = (u32)gBlendEffect.evy_level % 64;
     }
-    if (KEYS_HI(gNewKeys) & 1) {
+    if (KEYS_HI(gNewKeys) & R_BUTTON_HI) {
         gBlendEffect.eva_level += 1.0f;
         gBlendEffect.eva_level = (s32)((u32)gBlendEffect.eva_level & 0xF);
         REG_BLDALPHA = (((u32)gBlendEffect.evb_level & 0x3F) << 8) | ((u32)gBlendEffect.eva_level & 0x3F);
     }
-    if (KEYS_HI(gNewKeys) & 2) {
+    if (KEYS_HI(gNewKeys) & L_BUTTON_HI) {
         gBlendEffect.evb_level += 1.0f;
         gBlendEffect.evb_level = (s32)((u32)gBlendEffect.evb_level & 0xF);
         REG_BLDALPHA = (((u32)gBlendEffect.evb_level & 0x3F) << 8) | ((u32)gBlendEffect.eva_level & 0x3F);

@@ -110,7 +110,7 @@ static void sound_output_wave_freq(struct SoundTrack *track, vu16 *out) {
 
     *flags &= ~0x10;
     if (*flags & 1) {
-        trigger = (*(vu16 *)0x04000084 & 4) ? 0 : 0x8000;
+        trigger = (REG_SOUNDCNT_X & 4) ? 0 : 0x8000;
         freq = track->freq + track->detune + (track->vibratoOffset >> 4);
         if ((s16)freq < 0)
             freq = 0;
@@ -153,7 +153,7 @@ static void sound_output_echo(struct SoundTrack *track, vu16 *cnt_, vu16 *freq_)
                 vu16 trigger;
 
                 *cnt = gSoundWaveVolumes[(*vol * 3) >> 12] << 8;
-                trigger = (*(vu16 *)0x04000084 & 4) ? 0 : 0x8000;
+                trigger = (REG_SOUNDCNT_X & 4) ? 0 : 0x8000;
                 *freq = freq_bits | trigger;
             } else {
                 *cnt = ((*vol * 3) & (s16)0xF000) | track->instrument;
@@ -189,45 +189,45 @@ static void sound_output_pan(struct SoundTrack *track) {
             pan = track->pan;
         mask = gSoundOutputMasks[track->channelType];
         bits = gSoundOutputBits[track->channelType][pan];
-        *(vu8 *)0x04000081 = (mask & *(vu8 *)0x04000081) | bits;
+        REG_NR51 = (mask & REG_NR51) | bits;
         *flags &= ~0x40;
     }
 }
 
 void sound_output_sq1(struct SoundTrack *track) {
     if (track->echoBuffer && track->echoDelay && !track->envVolume && !(track->dirty & 0x10)) {
-        sound_output_echo(track, (vu16 *)0x04000062, (vu16 *)0x04000064);
+        sound_output_echo(track, (vu16 *)REG_ADDR_SOUND1CNT_H, (vu16 *)REG_ADDR_SOUND1CNT_X);
     } else {
-        sound_output_sweep(track, (u16 *)0x04000060);
-        sound_output_psg_volume(track, (vu16 *)0x04000062, (vu8 *)0x04000065);
-        sound_output_psg_freq(track, (vu16 *)0x04000064);
+        sound_output_sweep(track, (u16 *)REG_ADDR_SOUND1CNT_L);
+        sound_output_psg_volume(track, (vu16 *)REG_ADDR_SOUND1CNT_H, (vu8 *)REG_ADDR_NR14);
+        sound_output_psg_freq(track, (vu16 *)REG_ADDR_SOUND1CNT_X);
         sound_output_pan(track);
     }
 }
 
 void sound_output_sq2(struct SoundTrack *track) {
     if (track->echoBuffer && track->echoDelay && !track->envVolume && !(track->dirty & 0x10)) {
-        sound_output_echo(track, (vu16 *)0x04000068, (vu16 *)0x0400006C);
+        sound_output_echo(track, (vu16 *)REG_ADDR_SOUND2CNT_L, (vu16 *)REG_ADDR_SOUND2CNT_H);
     } else {
-        sound_output_psg_volume(track, (vu16 *)0x04000068, (vu8 *)0x0400006D);
-        sound_output_psg_freq(track, (vu16 *)0x0400006C);
+        sound_output_psg_volume(track, (vu16 *)REG_ADDR_SOUND2CNT_L, (vu8 *)REG_ADDR_NR24);
+        sound_output_psg_freq(track, (vu16 *)REG_ADDR_SOUND2CNT_H);
         sound_output_pan(track);
     }
 }
 
 void sound_output_wave(struct SoundTrack *track) {
     if (track->echoBuffer && track->echoDelay && !track->envVolume && !(track->dirty & 0x10)) {
-        sound_output_echo(track, (vu16 *)0x04000072, (vu16 *)0x04000074);
+        sound_output_echo(track, (vu16 *)REG_ADDR_SOUND3CNT_H, (vu16 *)REG_ADDR_SOUND3CNT_X);
     } else {
-        sound_output_wave_volume(track, (vu16 *)0x04000072);
-        sound_output_wave_freq(track, (vu16 *)0x04000074);
+        sound_output_wave_volume(track, (vu16 *)REG_ADDR_SOUND3CNT_H);
+        sound_output_wave_freq(track, (vu16 *)REG_ADDR_SOUND3CNT_X);
         sound_output_pan(track);
     }
 }
 
 void sound_output_noise(struct SoundTrack *track) {
-    sound_output_noise_volume(track, (vu16 *)0x04000078);
-    sound_output_noise_freq(track, (u16 *)0x0400007C);
+    sound_output_noise_volume(track, (vu16 *)REG_ADDR_SOUND4CNT_L);
+    sound_output_noise_freq(track, (u16 *)REG_ADDR_SOUND4CNT_H);
     sound_output_pan(track);
 }
 
@@ -297,7 +297,7 @@ void sound_update_master_volume(void) {
     struct SoundWork *work = gSoundWork;
 
     if (work->flags & 1) {
-        *(vu16 *)0x04000080 = (work->volumeLeft << 4) | 0xFF00 | work->volumeRight;
+        REG_SOUNDCNT_L = (work->volumeLeft << 4) | 0xFF00 | work->volumeRight;
         work->flags &= ~1;
     }
 }
@@ -305,22 +305,22 @@ void sound_update_master_volume(void) {
 static void load_wave_pattern(u32 n) {
     vu16 cnt;
 
-    CpuSet(gSoundWavePatterns[n], (void *)0x04000090, 0x04000004);
-    cnt = *(vu16 *)0x04000070;
-    *(vu16 *)0x04000070 = (cnt == 0x80) ? 0xC0 : 0x80;
+    CpuSet(gSoundWavePatterns[n], (void *)REG_ADDR_WAVE_RAM, CPU_SET_32BIT | 0x4);
+    cnt = REG_SOUND3CNT_L;
+    REG_SOUND3CNT_L = (cnt == 0x80) ? 0xC0 : 0x80;
 }
 
 void sound_init_wave_channel(void) {
-    *(vu16 *)0x04000084 = 0x80;
-    *(vu16 *)0x04000082 = 0x400E;
-    *(vu16 *)0x04000070 = 0xC0;
+    REG_SOUNDCNT_X = 0x80;
+    REG_SOUNDCNT_H = 0x400E;
+    REG_SOUND3CNT_L = 0xC0;
     load_wave_pattern(0);
     sound_set_master_volume(7, 7);
 }
 
 // Streams samples from src into FIFO A (n = 1) or B (n = 2) with DMA n, timed by the sound FIFO.
 static void sound_start_fifo_dma(s32 n, u32 src) {
-    vu32 *dma = (vu32 *)(0x040000B0 + n * 12);
+    vu32 *dma = (vu32 *)(REG_ADDR_DMA0 + n * 12);
     dma[0] = src;
     dma[1] = (u32)gSoundFifoAddrs[n - 1];
     dma[2] = 0xF6400004;
@@ -331,7 +331,7 @@ static void sound_start_fifo(s32 n, u32 *src) {
     u32 *word;
     s32 i;
 
-    *(vu8 *)0x04000083 |= gSoundFifoResetBits[n - 1];
+    REG_SOUNDCNT_H_HI |= gSoundFifoResetBits[n - 1];
     fifo = gSoundFifoAddrs[n - 1];
     word = src;
     for (i = 7; i >= 0; i--)
@@ -411,7 +411,7 @@ static void sound_mix_stop_dma(struct SoundMixChannel *ch) {
     if (*gSoundTimerRegs[ch->fifo - 1] & 0x800000) {
         sound_stop_fifo_dma(ch->fifo);
         *gSoundTimerRegs[ch->fifo - 1] = 0;
-        *(vu16 *)0x04000082 &= ~gSoundFifoEnableBits[ch->fifo - 1];
+        REG_SOUNDCNT_H &= ~gSoundFifoEnableBits[ch->fifo - 1];
     }
 }
 
@@ -424,9 +424,8 @@ static void sound_mix_apply_output(struct SoundMixChannel *ch) {
         route = ch->panOverride;
     else
         route = ch->pan;
-    *(vu16 *)0x04000082 =
-        (*(vu16 *)0x04000082 & gSoundFifoOutputMasks[ch->fifo - 1] & gSoundFifoVolumeMasks[ch->fifo - 1]) |
-        gSoundFifoOutputBits[ch->fifo - 1][route] | gSoundFifoVolumeBits[ch->fifo - 1][ch->volume];
+    REG_SOUNDCNT_H = (REG_SOUNDCNT_H & gSoundFifoOutputMasks[ch->fifo - 1] & gSoundFifoVolumeMasks[ch->fifo - 1]) |
+                     gSoundFifoOutputBits[ch->fifo - 1][route] | gSoundFifoVolumeBits[ch->fifo - 1][ch->volume];
 }
 
 static void sound_mix_play_from(struct SoundMixChannel *ch, u32 offset) {
@@ -627,7 +626,7 @@ static void sound_mix_refill(struct SoundMixChannel *ch) {
 static void sound_track_clear_echo(struct SoundTrack *track) {
     if (track->echoBuffer != NULL) {
         u32 fill = 0xFFFFFFFF;
-        CpuSet(&fill, track->echoBuffer, 0x0500000C);
+        CpuSet(&fill, track->echoBuffer, CPU_SET_SRC_FIXED | CPU_SET_32BIT | 0xC);
         track->echoBuffer[0x30] = 0;
     }
 }
@@ -669,13 +668,13 @@ static void sound_set_paused_nolock(u32 pause) {
 
     if (pause) {
         (*pw)->flags |= 2;
-        *(vu16 *)0x04000062 &= 0x0FFF;
-        *(vu16 *)0x04000064 |= 0x8000;
-        *(vu16 *)0x04000068 &= 0x0FFF;
-        *(vu16 *)0x0400006C |= 0x8000;
-        *(vu16 *)0x04000072 &= 0x1FFF;
-        *(vu16 *)0x04000078 &= 0x0FFF;
-        *(vu16 *)0x0400007C |= 0x8000;
+        REG_SOUND1CNT_H &= 0x0FFF;
+        REG_SOUND1CNT_X |= 0x8000;
+        REG_SOUND2CNT_L &= 0x0FFF;
+        REG_SOUND2CNT_H |= 0x8000;
+        REG_SOUND3CNT_H &= 0x1FFF;
+        REG_SOUND4CNT_L &= 0x0FFF;
+        REG_SOUND4CNT_H |= 0x8000;
         if ((*pw)->tracks[10].seqPos)
             sound_mix_queue_stop(&(*pw)->fifoA);
         else if ((*pw)->tracks[8].seqPos)

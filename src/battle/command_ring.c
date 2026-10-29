@@ -144,11 +144,11 @@ void command_ring_input(void) {
             command_ring_draw_name();
         }
     } else {
-        if (KEYS_LO(gRepeatKeys) & 0x10) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
             play_sound_effect(2);
             gBattleWork.ringTurning = 1;
         }
-        if (KEYS_LO(gRepeatKeys) & 0x20) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
             play_sound_effect(2);
             gBattleWork.ringTurning = 2;
         }

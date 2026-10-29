@@ -283,7 +283,7 @@ void use_drain_bubble_spawn(void) {
 
 void use_drain_bubble_hold(void) {
     sprite_bob_step(0x21);
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON))
         gBattleWork.step++;
     else if (gGameWork.stepTimer)
         gGameWork.stepTimer--;
@@ -385,7 +385,7 @@ void use_drain_popup_wait(void) {
     battle_popup_update_slot(&gGameWork.partAbility, gBattleWork.target, 0x21);
     battle_popup_update_slot(&gGameWork.partAbility + 0x20, gBattleWork.actor, 0x21);
     if (++gGameWork.stepCounter,
-        gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & 1) && gGameWork.stepCounter > 0x32)
+        gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON) && gGameWork.stepCounter > 0x32)
         gGameWork.stepCounter = 0x78;
     if (gGameWork.stepCounter == 0x78) {
         clear_battle_sprite_slot(gBattleWork.target * 4 + 0x21, 4);

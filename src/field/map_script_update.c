@@ -162,16 +162,16 @@ void map_script_update_player_jump(void) {
         clear_input_keys();
         switch (gFieldWork.cmd_args[0]) {
         case 0:
-            KEYS_LO(gHeldKeys) |= 0x40;
+            KEYS_LO(gHeldKeys) |= DPAD_UP;
             break;
         case 1:
-            KEYS_LO(gHeldKeys) |= 0x80;
+            KEYS_LO(gHeldKeys) |= DPAD_DOWN;
             break;
         case 2:
-            KEYS_LO(gHeldKeys) |= 0x20;
+            KEYS_LO(gHeldKeys) |= DPAD_LEFT;
             break;
         case 3:
-            KEYS_LO(gHeldKeys) |= 0x10;
+            KEYS_LO(gHeldKeys) |= DPAD_RIGHT;
             break;
         }
         gSpriteEntries[46].x = gSpriteEntries[47].x;
@@ -210,16 +210,16 @@ void map_script_update_player_walk(void) {
             break;
         switch ((gFieldWork.cmd_args[gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP]] & 0xF0) >> 4) {
         case 0:
-            KEYS_LO(gHeldKeys) |= 0x40;
+            KEYS_LO(gHeldKeys) |= DPAD_UP;
             break;
         case 1:
-            KEYS_LO(gHeldKeys) |= 0x80;
+            KEYS_LO(gHeldKeys) |= DPAD_DOWN;
             break;
         case 2:
-            KEYS_LO(gHeldKeys) |= 0x20;
+            KEYS_LO(gHeldKeys) |= DPAD_LEFT;
             break;
         case 3:
-            KEYS_LO(gHeldKeys) |= 0x10;
+            KEYS_LO(gHeldKeys) |= DPAD_RIGHT;
             break;
         }
         gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER]--;
@@ -248,16 +248,16 @@ void map_script_update_player_walk(void) {
                                  gSpriteEntries[47].work[FIELD_SPR_SPEED]);
         switch (gFieldWork.cmd_args[gSpriteEntries[47].work[FIELD_SPR_SCRIPT_STEP]] >> 4) {
         case 0:
-            KEYS_LO(gHeldKeys) |= 0x40;
+            KEYS_LO(gHeldKeys) |= DPAD_UP;
             break;
         case 1:
-            KEYS_LO(gHeldKeys) |= 0x80;
+            KEYS_LO(gHeldKeys) |= DPAD_DOWN;
             break;
         case 2:
-            KEYS_LO(gHeldKeys) |= 0x20;
+            KEYS_LO(gHeldKeys) |= DPAD_LEFT;
             break;
         case 3:
-            KEYS_LO(gHeldKeys) |= 0x10;
+            KEYS_LO(gHeldKeys) |= DPAD_RIGHT;
             break;
         }
         break;

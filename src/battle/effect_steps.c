@@ -16,7 +16,7 @@ void effect_step_miss_popup(void) {
 }
 
 void effect_step_wait_clear_sprite(void) {
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1)) {
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON)) {
         clear_battle_sprite_slot(0xA, 1);
         gBattleWork.step++;
     } else if (gGameWork.stepTimer)
@@ -28,7 +28,7 @@ void effect_step_wait_clear_sprite(void) {
 }
 
 void effect_step_wait(void) {
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON))
         gBattleWork.step++;
     else if (gGameWork.stepTimer)
         gGameWork.stepTimer--;
@@ -39,7 +39,7 @@ void effect_step_wait(void) {
 void effect_step_wait_clear_sprites(void) {
     u32 i;
 
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1)) {
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON)) {
         for (i = 0; i < 0x14; i++) {
             if (gSpriteEntries[0xA + i].flags & SPRITE_FLAG_ENABLED)
                 clear_battle_sprite_slot(0xA + i, 1);
@@ -62,7 +62,7 @@ void effect_step_wait_spin(void) {
         gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle - 0x40) & 0x3FF;
     else
         gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle + 0x40) & 0x3FF;
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON))
         gBattleWork.step++;
     else if (gGameWork.stepTimer)
         gGameWork.stepTimer--;

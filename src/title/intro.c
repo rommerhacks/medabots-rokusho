@@ -35,7 +35,7 @@ static void intro_draw_rokusho_pose(void) {
 }
 
 static void intro_check_skip(void) {
-    if (KEYS_LO(gHeldKeys) & 8) {
+    if (KEYS_LO(gHeldKeys) & START_BUTTON) {
         gTitleSkipIntro = 1;
         gVBlankOamMode = 0;
         gGameMode = 3;

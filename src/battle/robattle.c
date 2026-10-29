@@ -131,7 +131,7 @@ void robattle_command_input(void) {
     if (gBattleWork.ringTurning)
         return;
     command_ring_pulse_selected();
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         if (gGameWork.skipBotSetup == 1 && gBattleWork.ringSlot == 5) {
             play_sound_effect(6);
             return;
@@ -140,7 +140,7 @@ void robattle_command_input(void) {
         mf_gauge_draw_panel();
         gGameWork.stepCounter = 0;
         gGameSubState++;
-    } else if (KEYS_LO(gNewKeys) & 2) {
+    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
         if (gBattleWork.battleStarted == 0 && gBattleWork.commandBot != 0) {
             play_sound_effect(5);
             setup_battle_bot_sprite_group(gBattleWork.commandBot, 0x28, (u8)(gBattleWork.commandBot % 3) * 24 + 0x24);
@@ -303,7 +303,7 @@ void robattle_parts_menu_input(void) {
     part_select_blink_selected_icon();
     part_select_input();
     part_select_blink_status();
-    if ((cancel_pressed = KEYS_LO(gNewKeys) & 2)) {
+    if ((cancel_pressed = KEYS_LO(gNewKeys) & B_BUTTON)) {
         play_sound_effect(5);
         clear_battle_sprite_slot(0, 6);
         target_marker_hide();
@@ -311,7 +311,7 @@ void robattle_parts_menu_input(void) {
         vram_fill_tilemap_rect(7, 1, 0xE, 0xC, REG_BG0CNT, 0);
         gGameWork.stepCounter = 0;
         gGameSubState++;
-    } else if (KEYS_LO(gNewKeys) & 1) {
+    } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         target_marker_hide();
         gGameWork.stepTimer = 0;
@@ -392,7 +392,7 @@ void robattle_mf_menu_input(void) {
     mf_menu_blink_selected_icon();
     mf_menu_input();
     mf_menu_draw_status(1);
-    if ((cancel_pressed = KEYS_LO(gNewKeys) & 2)) {
+    if ((cancel_pressed = KEYS_LO(gNewKeys) & B_BUTTON)) {
         play_sound_effect(5);
         vram_fill_tilemap_rect(8, 1, 1, 0x11, REG_BG0CNT, 0);
         draw_medaforce_gauge_value(gBattleWork.commandBot);
@@ -400,7 +400,7 @@ void robattle_mf_menu_input(void) {
         clear_battle_sprite_slot(0x14, 0x24);
         gGameWork.stepCounter = 0;
         gGameSubState++;
-    } else if (KEYS_LO(gNewKeys) & 1) {
+    } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         gGameWork.stepTimer = 0;
         gGameSubState = 0x1D;
@@ -669,17 +669,17 @@ void robattle_status_screen_input(void) {
         status_draw_team_sprites();
         sprite_bob_x(8, gFrameCounter, status_cursor_x());
         status_select_input();
-        if ((KEYS_HI(gNewKeys) & 1) && gGameWork.openedFrom == 0) {
+        if ((KEYS_HI(gNewKeys) & R_BUTTON_HI) && gGameWork.openedFrom == 0) {
             play_sound_effect(2);
             status_begin_side_change();
             gGameWork.medalRow = 0;
             gGameWork.listTab++;
-        } else if ((KEYS_HI(gNewKeys) & 2) && gGameWork.openedFrom == 1) {
+        } else if ((KEYS_HI(gNewKeys) & L_BUTTON_HI) && gGameWork.openedFrom == 1) {
             play_sound_effect(2);
             status_begin_side_change();
             gGameWork.medalRow = 0;
             gGameWork.listTab++;
-        } else if (KEYS_LO(gNewKeys) & 2) {
+        } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
             play_sound_effect(5);
             set_blend_effect_mode(6, 0x3F, 0x20);
             gGameSubState++;
@@ -903,7 +903,7 @@ void robattle_bot_ready_for_command(void) {
             gGameSubState = 0xA0;
     } else {
         if (team_bot_command_kept(gBattleWork.actor)) {
-            if (!(KEYS_LO(gHeldKeys) & 2)) {
+            if (!(KEYS_LO(gHeldKeys) & B_BUTTON)) {
                 process_bot_battle_turn(gBattleWork.actor);
                 count_bot_skill_use(gBattleWork.actor);
                 gGameSubState = 0x45;

@@ -74,8 +74,8 @@ void AgbMain(void) {
 }
 
 void irq_init(void) {
-    CpuSet(gIntrTableTemplate, gIntrTable, 0x0400000E);
-    CpuSet(irq_dispatch_arm, gIntrMain, 0x04000200);
+    CpuSet(gIntrTableTemplate, gIntrTable, CPU_SET_32BIT | 0xE);
+    CpuSet(irq_dispatch_arm, gIntrMain, CPU_SET_32BIT | 0x200);
     INTR_VECTOR = gIntrMain;
     gVBlankOnceCallback = empty_callback;
     gVBlankCallback = empty_callback;
@@ -195,7 +195,7 @@ void read_keys(void) {
     u16 prev;
 
     gPrevKeys = prev = gHeldKeys;
-    gHeldKeys = REG_KEYINPUT ^ 0x3FF;
+    gHeldKeys = REG_KEYINPUT ^ KEYS_MASK;
     gNewKeys = gHeldKeys & ~prev;
     gReleasedKeys = prev & ~gHeldKeys;
     gRepeatKeys = 0;
@@ -241,7 +241,7 @@ void soft_reset(void) {
 }
 
 static u32 check_soft_reset(void) {
-    if ((*(u8 *)&gHeldKeys & 0xF) == 0xF && (*(u8 *)&gNewKeys & 8)) {
+    if ((KEYS_LO(gHeldKeys) & SOFT_RESET_KEYS) == SOFT_RESET_KEYS && (KEYS_LO(gNewKeys) & START_BUTTON)) {
         soft_reset();
         read_keys();
         return 1;

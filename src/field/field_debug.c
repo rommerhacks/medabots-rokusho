@@ -106,24 +106,24 @@ void field_debug_update_page(u32 mode) {
         }
         break;
     case 2:
-        if (KEYS_LO(gRepeatKeys) & 0x40)
+        if (KEYS_LO(gRepeatKeys) & DPAD_UP)
             gFieldWork.player_y -= 0x10;
-        if (KEYS_LO(gRepeatKeys) & 0x80)
+        if (KEYS_LO(gRepeatKeys) & DPAD_DOWN)
             gFieldWork.player_y += 0x10;
-        if (KEYS_LO(gRepeatKeys) & 0x20)
+        if (KEYS_LO(gRepeatKeys) & DPAD_LEFT)
             gFieldWork.player_x -= 0x10;
-        if (KEYS_LO(gRepeatKeys) & 0x10)
+        if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT)
             gFieldWork.player_x += 0x10;
         gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
         gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
         field_center_camera_on_player();
         break;
     case 3:
-        if (KEYS_LO(gRepeatKeys) & 0x20) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
             if (--gFieldDebug.effect_id == 0xFF)
                 gFieldDebug.effect_id = 0x1F;
         }
-        if (KEYS_LO(gRepeatKeys) & 0x10) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
             if (++gFieldDebug.effect_id > 0x1F)
                 gFieldDebug.effect_id = 0;
         }
@@ -204,11 +204,11 @@ void field_debug_update_page(u32 mode) {
         }
         switch (gFieldDebug.rows[gFieldDebug.page]) {
         case 2:
-            if (KEYS_LO(gRepeatKeys) & 1)
+            if (KEYS_LO(gRepeatKeys) & A_BUTTON)
                 field_play_song(gFieldDebug.song_id);
             break;
         case 3:
-            if (KEYS_LO(gRepeatKeys) & 1)
+            if (KEYS_LO(gRepeatKeys) & A_BUTTON)
                 field_play_sound_effect(gFieldDebug.sound_id);
             break;
         case 1:
@@ -217,15 +217,15 @@ void field_debug_update_page(u32 mode) {
         break;
     }
 
-    if (KEYS_LO(gNewKeys) & 4) {
+    if (KEYS_LO(gNewKeys) & SELECT_BUTTON) {
         if (++gFieldDebug.page > 7)
             gFieldDebug.page = 0;
         field_debug_clear_sprites();
         field_debug_enter_page(gFieldDebug.page);
     }
-    if (KEYS_LO(gRepeatKeys) & 2)
+    if (KEYS_LO(gRepeatKeys) & B_BUTTON)
         field_debug_close();
-    if (KEYS_LO(gRepeatKeys) & 1) {
+    if (KEYS_LO(gRepeatKeys) & A_BUTTON) {
         switch (gFieldDebug.page) {
         case 3:
             gFieldDebug.labels_drawn = 0;
@@ -273,12 +273,12 @@ void field_debug_update_page(u32 mode) {
 }
 
 void field_debug_cycle_row(s32 max) {
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         gFieldDebug.rows[gFieldDebug.page]--;
         if (gFieldDebug.rows[gFieldDebug.page] < 0)
             gFieldDebug.rows[gFieldDebug.page] = max - 1;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         gFieldDebug.rows[gFieldDebug.page]++;
         if (gFieldDebug.rows[gFieldDebug.page] >= max)
             gFieldDebug.rows[gFieldDebug.page] = 0;
@@ -290,15 +290,15 @@ static void field_debug_cycle_event_value(u32 idx, s32 max) {
     u16 *value_ptr;
     s32 step = 1;
 
-    if (KEYS_HI(gHeldKeys) & 1)
+    if (KEYS_HI(gHeldKeys) & R_BUTTON_HI)
         step = 0x10;
 
-    if ((left = KEYS_LO(gRepeatKeys) & 0x20)) {
+    if ((left = KEYS_LO(gRepeatKeys) & DPAD_LEFT)) {
         value_ptr = gFieldDebugEventValues[idx];
         if ((u16)(*value_ptr -= step) == 0xFFFF)
             *value_ptr = max - 1;
         field_debug_apply_event_value(gFieldDebug.page, gFieldDebug.rows[gFieldDebug.page]);
-    } else if (KEYS_LO(gRepeatKeys) & 0x10) {
+    } else if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         value_ptr = gFieldDebugEventValues[idx];
         *value_ptr += step;
         if (*value_ptr >= max)
@@ -312,17 +312,17 @@ static void field_debug_cycle_message_value(u32 idx, s32 max) {
     u16 *value_ptr;
     s32 step = 1;
 
-    if (KEYS_HI(gHeldKeys) & 1)
+    if (KEYS_HI(gHeldKeys) & R_BUTTON_HI)
         step = 0x10;
 
-    if (KEYS_LO(gRepeatKeys) & 0x20) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
         value_ptr = gFieldDebugMessageValues[idx];
         value = *value_ptr;
         value -= step;
         if (value == -1)
             value = max - 1;
         *value_ptr = value;
-    } else if (KEYS_LO(gRepeatKeys) & 0x10) {
+    } else if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         value_ptr = gFieldDebugMessageValues[idx];
         value = *value_ptr;
         value += step;
@@ -336,11 +336,11 @@ static void field_debug_cycle_sound_value(u32 idx, s32 max) {
     u8 left;
     u8 *value_ptr;
 
-    if ((left = KEYS_LO(gRepeatKeys) & 0x20)) {
+    if ((left = KEYS_LO(gRepeatKeys) & DPAD_LEFT)) {
         value_ptr = gFieldDebugSoundValues[idx];
         if ((s8)-- * value_ptr == -1)
             *value_ptr = max - 1;
-    } else if (KEYS_LO(gRepeatKeys) & 0x10) {
+    } else if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         value_ptr = gFieldDebugSoundValues[idx];
         (*value_ptr)++;
         if (*value_ptr >= max)
@@ -353,7 +353,7 @@ static void field_debug_cycle_page_value(u32 idx, u32 sub, s32 max) {
     s32 value;
     u8 **row;
 
-    if (KEYS_LO(gRepeatKeys) & 0x20) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
         u8 *value_ptr;
         row = gFieldDebugPageValues[idx];
         value_ptr = row[sub];
@@ -363,7 +363,7 @@ static void field_debug_cycle_page_value(u32 idx, u32 sub, s32 max) {
             value = max - 1;
         *value_ptr = value;
         changed = 1;
-    } else if (KEYS_LO(gRepeatKeys) & 0x10) {
+    } else if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         u8 *value_ptr;
         row = gFieldDebugPageValues[idx];
         value_ptr = row[sub];

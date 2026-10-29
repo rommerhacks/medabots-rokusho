@@ -802,7 +802,7 @@ static void race_draw_rankings(void) {
 // every 8 frames.
 void race_update_speeds(void) {
     int i, j;
-    if (gRaceRunner[0] <= 2 && (*(u8 *)&gNewKeys & 1)) {
+    if (gRaceRunner[0] <= 2 && (KEYS_LO(gNewKeys) & A_BUTTON)) {
         if ((u8)(gRaceAnimDelay[0] -= 4) < 4)
             gRaceAnimDelay[0] = 4;
         gSpriteEntries[gRaceRunnerSlots[0][gRaceRunner[0]]].timer += 3;

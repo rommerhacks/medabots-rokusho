@@ -180,25 +180,25 @@ void handle_battle_menu_selection(void) {
         run_message(gLinkMenuMessages[gLinkMenuHelpMessageIds[gMenuWork->cursor]]);
 
     if (gMenuWork->cursor > 4) {
-        if (KEYS_LO(gRepeatKeys) & 0xC1) {
+        if (KEYS_LO(gRepeatKeys) & (A_BUTTON | DPAD_UP | DPAD_DOWN)) {
             gMenuWork->cursor = gMenuWork->cursor == 5 ? 1 : 4;
             message_next();
         }
         return;
     }
 
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         gMenuWork->cursor = gMenuWork->cursor != 0 ? gMenuWork->cursor - 1 : 4;
         message_next();
         play_sound_effect(2);
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         gMenuWork->cursor = gMenuWork->cursor <= 3 ? gMenuWork->cursor + 1 : 0;
         message_next();
         play_sound_effect(2);
     }
     gSpriteEntries[0].y = gMenuWork->cursor * 16 + 0x1C;
-    if (KEYS_LO(gRepeatKeys) & 1) {
+    if (KEYS_LO(gRepeatKeys) & A_BUTTON) {
         if (gMenuWork->cursor == 1 && gMenuWork->link_battle_ok == 0) {
             gMenuWork->cursor = 5;
             message_next();

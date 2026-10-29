@@ -201,21 +201,21 @@ void field_walk_update(void) {
                     warp = 1;
                 }
                 if (!npc && !warp) {
-                    if (KEYS_LO(gHeldKeys) & 1) {
+                    if (KEYS_LO(gHeldKeys) & A_BUTTON) {
                         gSpriteEntries[47].work[FIELD_SPR_SPEED] = 1;
                         gSpriteEntries[48].work[FIELD_SPR_SPEED] = 1;
                     } else {
                         gSpriteEntries[48].work[FIELD_SPR_SPEED] = gSpriteEntries[47].work[FIELD_SPR_SPEED] =
                             gPlayerFormSpeedIds[gFieldWork.player_form];
                     }
-                    if (KEYS_LO(gNewKeys) & 1) {
+                    if (KEYS_LO(gNewKeys) & A_BUTTON) {
                         if (map_cursor_move_and_check_event())
                             done = 1;
                         else if (check_room_exit_at_position() != -1) {
                             gGameSubState = 8;
                             done = 1;
                         }
-                    } else if (KEYS_LO(gNewKeys) & 2) {
+                    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
                         if (gFieldWork.medawatch_enabled) {
                             message_reset_hook();
                             gGameMode = 0;
@@ -238,14 +238,14 @@ void field_walk_update(void) {
                             gFieldWork.npc_load_mode = 2;
                             done = 1;
                         }
-                    } else if (KEYS_HI(gNewKeys) & 1 && gFieldWork.player_form == 1) {
+                    } else if (KEYS_HI(gNewKeys) & R_BUTTON_HI && gFieldWork.player_form == 1) {
                         field_play_sound_effect(0x74);
                     }
                 }
             }
         }
         if (!done && !npc && !warp) {
-            if (KEYS_HI(gNewKeys) & 1 && gFieldWork.player_form == 1)
+            if (KEYS_HI(gNewKeys) & R_BUTTON_HI && gFieldWork.player_form == 1)
                 field_play_sound_effect(0x74);
             field_player_walk_input();
         } else {

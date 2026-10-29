@@ -342,9 +342,9 @@ void battle_action_cleanup(u32 bot) {
         gBattleBots[bot].parts[i].aiTargetPart = 0;
     }
     zero = 0;
-    CpuSet(&zero, gBattleWorkActionVars, 0x05000008);
+    CpuSet(&zero, gBattleWorkActionVars, CPU_SET_SRC_FIXED | CPU_SET_32BIT | 0x8);
     zero2 = 0;
-    CpuSet(&zero2, gBattleWorkActionVars + 8, 0x05000008);
+    CpuSet(&zero2, gBattleWorkActionVars + 8, CPU_SET_SRC_FIXED | CPU_SET_32BIT | 0x8);
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState && (gBattleBots[i].stateFlags & 0x18) &&
             (u8)(gBattleBots[i].lastAction - 1) <= 2 && gBattleBots[i].parts[gBattleBots[i].lastAction - 1].armor == 0)
@@ -372,5 +372,5 @@ void restore_changed_part(u32 bot) {
         iterate_bots_setup_battle_sprites();
     }
     zero = 0;
-    CpuSet(&zero, &gBattleWork.partChanged, 0x05000009);
+    CpuSet(&zero, &gBattleWork.partChanged, CPU_SET_SRC_FIXED | CPU_SET_32BIT | 0x9);
 }

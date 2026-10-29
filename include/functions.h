@@ -9,6 +9,10 @@
 // h, u8 i, u8 j): callers were compiled without a prototype
 // h, u8 i, u8 j, u8 base): callers were compiled without a prototype
 
+// CpuSet control word: bits 0-20 = unit count; 32-bit units; fill dest with *src instead of copying.
+#define CPU_SET_32BIT 0x04000000
+#define CPU_SET_SRC_FIXED 0x01000000
+
 void CpuSet(const void *src, void *dest, u32 control);
 s32 Div(s32 num, s32 denom);    // BIOS SWI 6
 s32 DivArm(s32 denom, s32 num); // BIOS SWI 7

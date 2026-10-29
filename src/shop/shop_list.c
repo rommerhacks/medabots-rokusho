@@ -167,7 +167,7 @@ void shop_purchase_menu_handler(void) {
 
     sprite_bob_x(8, gFrameCounter, 4);
     update_battle_sprite_priority_flags();
-    if (KEYS_LO(gRepeatKeys) & 8) {
+    if (KEYS_LO(gRepeatKeys) & START_BUTTON) {
         if (gMenuWork->list_count == 0)
             goto fail;
         play_sound_effect(4);
@@ -214,7 +214,7 @@ void shop_purchase_menu_handler(void) {
     }
 
     if (gMenuWork->list_count > 1) {
-        if (KEYS_LO(gRepeatKeys) & 0x40) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
             if (gMenuWork->list_cursor == 0) {
                 if (gListScrollTop == 0)
                     goto cursor;
@@ -224,7 +224,7 @@ void shop_purchase_menu_handler(void) {
             gMenuWork->list_cursor--;
             play_sound_effect(2);
             goto cursor;
-        } else if (KEYS_LO(gRepeatKeys) & 0x80) {
+        } else if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
             if (gMenuWork->list_cursor + gListScrollTop >= gMenuWork->list_count - 1)
                 goto cursor;
             if (gMenuWork->list_cursor == 3) {
@@ -242,7 +242,7 @@ void shop_purchase_menu_handler(void) {
         }
     }
 
-    if (KEYS_LO(gRepeatKeys) & 0x10) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         struct MenuWork *menu = gMenuWork;
         u8 *buf = (u8 *)0x02023000;
         struct ShopSellEntry *list = SHOP;
@@ -264,14 +264,14 @@ void shop_purchase_menu_handler(void) {
             goto changed;
         }
     }
-    if (KEYS_LO(gRepeatKeys) & 0x20) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
         idx = gMenuWork->list_cursor + CART[0x78];
         if (CART[idx] != 0) {
             CART[idx]--;
             goto changed;
         }
     }
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         if (gMenuWork->total == 0) {
         fail:
             play_sound_effect(6);
@@ -285,7 +285,7 @@ void shop_purchase_menu_handler(void) {
         gGameSubState = 6;
         return;
     }
-    if (KEYS_LO(gNewKeys) & 2) {
+    if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         disable_sprites(0x61, 7);
         disable_sprites(0xD, 0x34);

@@ -15,9 +15,9 @@ void serial_link_init(void) {
     REG_SIOCNT = 0x2000;
     REG_SIOCNT |= 0x4003;
     zero = 0;
-    CpuSet(&zero, &gSioLink, 0x05000036);
-    CpuSet(link_buffer_swap_arm, gLinkBufferSwapIwram, 0x04000010);
-    CpuSet(serial_multiplayer_transfer_handler, gSerialTransferHandlerIwram, 0x04000048);
+    CpuSet(&zero, &gSioLink, CPU_SET_SRC_FIXED | CPU_SET_32BIT | 0x36);
+    CpuSet(link_buffer_swap_arm, gLinkBufferSwapIwram, CPU_SET_32BIT | 0x10);
+    CpuSet(serial_multiplayer_transfer_handler, gSerialTransferHandlerIwram, CPU_SET_32BIT | 0x48);
     gSioLink.sendIdx = 6;
     gSioLink.recvIdx = 6;
     gSioLink.nextSend = &gSioLink.sendBuf[0];
@@ -84,7 +84,7 @@ void serial_prepare_send_packet(u16 *packet) {
     gSioLink.nextSend->frame = gSioLink.frame;
     gSioLink.nextSend->errFlags = gSioLink.connected ^ gSioLink.recvOk;
     gSioLink.nextSend->checksum = 0;
-    CpuSet(packet, gSioLink.nextSend->data, 0x04000001);
+    CpuSet(packet, gSioLink.nextSend->data, CPU_SET_32BIT | 0x1);
     for (i = 0; i < 4; i++)
         sum += ((u16 *)gSioLink.nextSend)[i];
     gSioLink.nextSend->checksum = ~sum;
@@ -109,11 +109,11 @@ static u8 serial_link_receive_packets(u32 *dst) {
             for (j = 0; j < 4; j++)
                 sum += ((u16 *)pkt)[j];
             if ((s16)sum == -1) {
-                CpuSet(pkt->data, &dst[i], 0x04000001);
+                CpuSet(pkt->data, &dst[i], CPU_SET_32BIT | 0x1);
                 gSioLink.recvOk |= 1 << i;
             }
             zero = 0;
-            CpuSet((void *)&zero, pkt->data, 0x05000001);
+            CpuSet((void *)&zero, pkt->data, CPU_SET_SRC_FIXED | CPU_SET_32BIT | 0x1);
         }
     }
     gSioLink.connected |= gSioLink.recvOk;

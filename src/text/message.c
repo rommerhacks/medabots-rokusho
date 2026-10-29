@@ -503,7 +503,7 @@ u8 message_wait_next_page(void) {
         write_tilemap_rect(2, 1, 0xE, 0x12, gUiTilemapsNamed.more_cursor_on, REG_BG0CNT, blink);
     gGameWork.cursorBlink++;
     gGameWork.msgStopPrint = 1;
-    if (*(u8 *)&gRepeatKeys & 3) {
+    if (KEYS_LO(gRepeatKeys) & (A_BUTTON | B_BUTTON)) {
         play_sound_effect(0xD);
         gGameWork.penX = 0;
         gGameWork.composePixels = 0;
@@ -534,7 +534,7 @@ static void message_cmd_wait_skippable(void) {
             gGameWork.msgPos = pos + 2;
     } else if (gGameWork.msgWait == 0xFF || --gGameWork.msgWait == 0)
         gGameWork.msgPos += 2;
-    else if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 3)) {
+    else if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & (A_BUTTON | B_BUTTON))) {
         gGameWork.msgWait = 0;
         gGameWork.msgPos += 2;
     }
@@ -567,7 +567,7 @@ static void message_cmd_end(void) {
     case 0:
     case 2:
     case 3:
-        if (*(u8 *)&gRepeatKeys & 3) {
+        if (KEYS_LO(gRepeatKeys) & (A_BUTTON | B_BUTTON)) {
             play_sound_effect(0xD);
             gGameWork.msgState++;
         }

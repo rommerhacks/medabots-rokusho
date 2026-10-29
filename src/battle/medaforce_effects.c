@@ -464,7 +464,7 @@ void medaforce_team_popup_wait(void) {
         }
     }
     gGameWork.stepCounter++;
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.stepCounter > 0x32)
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON) && gGameWork.stepCounter > 0x32)
         gGameWork.stepCounter = 0x78;
     if (gGameWork.stepCounter == 0x78) {
         clear_battle_sprite_slot(gBattleWork.targetSideFirst * 4 + 0x21, 0xC);
@@ -655,7 +655,7 @@ void medaforce_form_ring_shrink(void) {
 void medaforce_form_hold(void) {
     gGameWork.stepTimer++;
     gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle + 0x40) & 0x3FF;
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1)) {
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON)) {
         play_sound_effect(0x2B);
         gBattleWork.step++;
     } else if (gGameWork.stepCounter) {
@@ -1180,7 +1180,7 @@ void medaforce_cancel_status_emblem_hold(void) {
         if (gBattleWork.scratch != 3)
             gSpriteEntries[0x21].angle = (gSpriteEntries[0x21].angle + 0x10) & 0x3FF;
     }
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON))
         gBattleWork.step++;
     else if (gGameWork.stepTimer)
         gGameWork.stepTimer--;
@@ -1618,7 +1618,7 @@ void medaforce_team_marked_popup_wait(void) {
         }
     }
     gGameWork.stepCounter++;
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.stepCounter > 0x32)
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON) && gGameWork.stepCounter > 0x32)
         gGameWork.stepCounter = 0x78;
     if (gGameWork.stepCounter == 0x78) {
         clear_battle_sprite_slot(gBattleWork.targetSideFirst * 4 + 0x21, 0xC);
@@ -3267,7 +3267,7 @@ void medaforce_pushover_attack_damage_popup_wait(void) {
         }
     }
     gGameWork.stepCounter++;
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.stepCounter > 0x32)
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON) && gGameWork.stepCounter > 0x32)
         gGameWork.stepCounter = 0x78;
     if (gGameWork.stepCounter == 0x78) {
         for (i = 0; i <= 2; i++) {
@@ -3761,7 +3761,7 @@ void medaforce_destroyer_damage_popups_wait(void) {
         }
     }
     gGameWork.stepCounter++;
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1) && gGameWork.stepCounter > 0x32)
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON) && gGameWork.stepCounter > 0x32)
         gGameWork.stepCounter = 0x78;
     if (gGameWork.stepCounter == 0x78) {
         clear_battle_sprite_slot(gBattleWork.targetSideFirst * 4 + 0x21, 0xC);

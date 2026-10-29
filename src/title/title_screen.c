@@ -17,12 +17,12 @@
 static void title_sprite_start_effect(u8 effect, u8 sprite);
 
 static void title_screen_check_skip_or_test_mode(void) {
-    if (gSceneWork.nextSubState == 5 && ((KEYS_LO(gHeldKeys) & 8) || gTitleSkipIntro != 0)) {
+    if (gSceneWork.nextSubState == 5 && ((KEYS_LO(gHeldKeys) & START_BUTTON) || gTitleSkipIntro != 0)) {
         gTitleSkipIntro = 0;
         gGameMode = 3;
         gGameState = 2;
         gGameSubState = 10;
-    } else if ((KEYS_LO(gHeldKeys) & 4) && (KEYS_LO(gNewKeys) & 8)) {
+    } else if ((KEYS_LO(gHeldKeys) & SELECT_BUTTON) && (KEYS_LO(gNewKeys) & START_BUTTON)) {
         gGameMode = 2;
         gGameState = 7;
         gGameSubState = 0;
@@ -259,7 +259,7 @@ void title_screen_start_wave(void) {
 
 void title_screen_wait_start(void) {
     u8 start;
-    if ((start = KEYS_LO(gNewKeys) & 8) != 0) {
+    if ((start = KEYS_LO(gNewKeys) & START_BUTTON) != 0) {
         title_sprite_start_effect(6, 2);
         play_sound_effect(3);
         gSceneWork.timer = 0;

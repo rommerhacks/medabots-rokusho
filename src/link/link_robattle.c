@@ -229,7 +229,7 @@ void link_robattle_play_result_song(void) {
 
 void link_robattle_outro_message(void) {
     update_scroll_movement_a();
-    if (run_message(gOpponentAfterBattleMessages[1]) && (*(u8 *)&gNewKeys & 3)) {
+    if (run_message(gOpponentAfterBattleMessages[1]) && (KEYS_LO(gNewKeys) & (A_BUTTON | B_BUTTON))) {
         gGameWork.endModeStep = 0;
         play_sound_effect(0xD);
         gGameSubState++;
@@ -354,7 +354,7 @@ void prize_game_gauge_input(void) {
     if (gGameWork.battleResult == 1) {
         prize_game_gauge_step();
         prize_game_draw_gauge();
-        if (!(*(u8 *)&gNewKeys & 1))
+        if (!(KEYS_LO(gNewKeys) & A_BUTTON))
             return;
         play_sound_effect(4);
         gLinkPackets.sendData = gBattleWork.prizePower + 0x8000;

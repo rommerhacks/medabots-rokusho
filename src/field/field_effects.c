@@ -204,60 +204,60 @@ void advance_sprite_animation_frame(u8 idx) {
 // guess: debug editor for affine entry 0 / sprite 0 position: A toggles affine_debug_flag, SELECT + D-pad
 // scales and rotates, D-pad moves, R/L change affine_debug_level, START resets the affine params.
 static u32 affine_debug_input(void) {
-    if (KEYS_LO(gNewKeys) & 1)
+    if (KEYS_LO(gNewKeys) & A_BUTTON)
         gFieldState.affine_debug_flag ^= 1;
-    if (KEYS_LO(gHeldKeys) & 4) {
-        if (KEYS_LO(gHeldKeys) & 0x40) {
+    if (KEYS_LO(gHeldKeys) & SELECT_BUTTON) {
+        if (KEYS_LO(gHeldKeys) & DPAD_UP) {
             gAffineParams[0].scaleY += 16;
             if (gAffineParams[0].scaleY > 0x400)
                 gAffineParams[0].scaleY = 0x400;
         }
-        if (KEYS_LO(gHeldKeys) & 0x80) {
+        if (KEYS_LO(gHeldKeys) & DPAD_DOWN) {
             gAffineParams[0].scaleY -= 8;
             if (gAffineParams[0].scaleY < 0x40)
                 gAffineParams[0].scaleY = 0x40;
         }
-        if (KEYS_LO(gHeldKeys) & 0x20)
+        if (KEYS_LO(gHeldKeys) & DPAD_LEFT)
             gAffineParams[0].scaleX -= 8;
-        if (KEYS_LO(gHeldKeys) & 0x10) {
+        if (KEYS_LO(gHeldKeys) & DPAD_RIGHT) {
             gAffineParams[0].scaleX += 16;
             if (gAffineParams[0].scaleX > 0x400)
                 gAffineParams[0].scaleX = 0x400;
             gAffineParams[0].angle = (gAffineParams[0].angle + 1) & 0xFF;
         }
-        if (KEYS_LO(gHeldKeys) & 0x20)
+        if (KEYS_LO(gHeldKeys) & DPAD_LEFT)
             gAffineParams[0].angle = (gAffineParams[0].angle + 0xFF) & 0xFF;
     } else {
-        if (KEYS_LO(gHeldKeys) & 0x40) {
+        if (KEYS_LO(gHeldKeys) & DPAD_UP) {
             gSpriteEntries[0].y -= 2;
             if (gSpriteEntries[0].y < -80)
                 gSpriteEntries[0].y = -80;
         }
-        if (KEYS_LO(gHeldKeys) & 0x80) {
+        if (KEYS_LO(gHeldKeys) & DPAD_DOWN) {
             gSpriteEntries[0].y += 2;
             if (gSpriteEntries[0].y > 80)
                 gSpriteEntries[0].y = 80;
         }
-        if (KEYS_LO(gHeldKeys) & 0x10) {
+        if (KEYS_LO(gHeldKeys) & DPAD_RIGHT) {
             gSpriteEntries[0].x += 2;
             if (gSpriteEntries[0].x > 120)
                 gSpriteEntries[0].x = 120;
         }
-        if (KEYS_LO(gHeldKeys) & 0x20) {
+        if (KEYS_LO(gHeldKeys) & DPAD_LEFT) {
             gSpriteEntries[0].x -= 2;
             if (gSpriteEntries[0].x < -120)
                 gSpriteEntries[0].x = -120;
         }
-        if (KEYS_HI(gNewKeys) & 1) {
+        if (KEYS_HI(gNewKeys) & R_BUTTON_HI) {
             if (gFieldState.affine_debug_level <= 14)
                 gFieldState.affine_debug_level++;
         }
-        if (KEYS_HI(gNewKeys) & 2) {
+        if (KEYS_HI(gNewKeys) & L_BUTTON_HI) {
             if (gFieldState.affine_debug_level != 0)
                 gFieldState.affine_debug_level--;
         }
     }
-    if (KEYS_LO(gNewKeys) & 8)
+    if (KEYS_LO(gNewKeys) & START_BUTTON)
         affine_params_reset();
     return 0;
 }

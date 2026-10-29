@@ -119,7 +119,7 @@ void vehicle_menu_handle_input(void) {
     gFieldScriptWork.frame++;
     vehicle_menu_update_cursor();
     vehicle_menu_move_cursor(VEHICLE_COUNT);
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         result = vehicle_check_usable(gFieldScriptWork.cursor);
         if (result != VEHICLE_USABLE) {
             gFieldScriptWork.frame = 0;
@@ -147,7 +147,7 @@ void vehicle_menu_handle_input(void) {
             field_play_sound_effect(4);
             gGameSubState = 0xA;
         }
-    } else if (KEYS_LO(gNewKeys) & 2) {
+    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
         field_play_sound_effect(5);
         sprite_entry_clear(0x7F);
         gFieldScriptWork.slideStep = 0x10;
@@ -519,7 +519,7 @@ static void vehicle_menu_move_cursor(s32 count) {
     struct FieldScriptWork *menu;
 
     gFieldDebug.frame++;
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         field_play_sound_effect(2);
         menu = &gFieldScriptWork;
         if (--menu->cursor == 0xFF)
@@ -527,7 +527,7 @@ static void vehicle_menu_move_cursor(s32 count) {
         menu->cursorY = gVehicleMenuCursorRows[menu->cursor];
         vehicle_menu_update_cursor();
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         field_play_sound_effect(2);
         menu = &gFieldScriptWork;
         menu->cursor++;

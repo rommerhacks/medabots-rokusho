@@ -85,7 +85,7 @@ void miss_popup_drop(void) {
 
 void miss_popup_wait(void) {
     gBattleWork.substep[1]++;
-    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & 1))
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON))
         gBattleWork.substep[1] = 60;
     if (gBattleWork.substep[1] == 60) {
         clear_battle_sprite_slot(3, 1);
@@ -363,7 +363,7 @@ void trap_hit_damage_popup_init(void) {
 void trap_hit_damage_popup_wait(void) {
     battle_popup_update_slot(&gGameWork.partAbility, gBattleWork.actor, 0x21);
     if (++gGameWork.stepCounter,
-        gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & 1) && gGameWork.stepCounter > 0x32)
+        gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON) && gGameWork.stepCounter > 0x32)
         gGameWork.stepCounter = 0x78;
     if (gGameWork.stepCounter == 0x78) {
         clear_battle_sprite_slot(gBattleWork.actor * 4 + 0x21, 4);

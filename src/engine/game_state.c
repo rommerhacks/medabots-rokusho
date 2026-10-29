@@ -27,30 +27,30 @@ void devtest_init(void) {
 // guess: debug map viewer input (D-pad scrolls gBg1Scroll, START/SELECT open text windows)
 // Sub-state 1: D-pad scrolls BG1; A, Start and Select start the tests, B leaves for the field menu state.
 void devtest_update(void) {
-    if (KEYS_LO(gHeldKeys) & 0x40)
+    if (KEYS_LO(gHeldKeys) & DPAD_UP)
         gBg1Scroll.y++;
-    if (KEYS_LO(gHeldKeys) & 0x80)
+    if (KEYS_LO(gHeldKeys) & DPAD_DOWN)
         gBg1Scroll.y--;
-    if (KEYS_LO(gHeldKeys) & 0x20)
+    if (KEYS_LO(gHeldKeys) & DPAD_LEFT)
         gBg1Scroll.x++;
-    if (KEYS_LO(gHeldKeys) & 0x10)
+    if (KEYS_LO(gHeldKeys) & DPAD_RIGHT)
         gBg1Scroll.x--;
-    if (KEYS_LO(gNewKeys) & 2)
+    if (KEYS_LO(gNewKeys) & B_BUTTON)
         gGameWork.menuRowAnim ^= 1;
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         gGameWork.portraitAnimFrame = 0;
         gGameSubState++;
         gGameWork.repeatCounter ^= 1;
     }
-    if (KEYS_LO(gNewKeys) & 2) {
+    if (KEYS_LO(gNewKeys) & B_BUTTON) {
         gGameState = 1;
         gGameSubState = 0;
     }
-    if (KEYS_LO(gNewKeys) & 8) {
+    if (KEYS_LO(gNewKeys) & START_BUTTON) {
         text_window_init(0, 0, 0);
         gGameSubState += 2;
     }
-    if (KEYS_LO(gNewKeys) & 4) {
+    if (KEYS_LO(gNewKeys) & SELECT_BUTTON) {
         text_window_init(0, 0, 0);
         gGameSubState += 3;
     }

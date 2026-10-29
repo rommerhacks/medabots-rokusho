@@ -112,7 +112,7 @@ void tile_anim_run(const u16 *script, u32 slot) {
                             ewram_offset(gGameWork.tileAnims[slot].frameTiles,
                                          script[gGameWork.tileAnims[slot].pos + 1] * 32)),
                    (void *)(gGameWork.tileAnims[slot].objTile * 0x1200 + 0x06004000),
-                   (gGameWork.tileAnims[slot].frameTiles * 8) | 0x04000000);
+                   (gGameWork.tileAnims[slot].frameTiles * 8) | CPU_SET_32BIT);
             gGameWork.tileAnims[slot].pos += 2;
             break;
         }
@@ -205,7 +205,7 @@ void tile_anim_run_dup(const u16 *script, u32 slot) {
                             ewram_offset(gGameWork.tileAnims[slot].frameTiles,
                                          script[gGameWork.tileAnims[slot].pos + 1] * 32)),
                    (void *)(gGameWork.tileAnims[slot].objTile * 32 + 0x06010000),
-                   (gGameWork.tileAnims[slot].frameTiles * 8) | 0x04000000);
+                   (gGameWork.tileAnims[slot].frameTiles * 8) | CPU_SET_32BIT);
             gGameWork.tileAnims[slot].pos += 2;
             break;
         }

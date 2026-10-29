@@ -19,7 +19,7 @@ void battle_cutscene_dispatch(void) {
     save_err = 0;
     // FAKEMATCH: byte access to gSaveStatus (bit 1 linkIntroSeen, bit 0 saveExists); the bitfield loads a word
     if (!(*(u8 *)&gSaveStatus & 2)) {
-        if (run_message(gLinkMenuMessages[gLinkIntroMessageIds[gMenuWork->step]]) && KEYS_LO(gNewKeys) & 1) {
+        if (run_message(gLinkMenuMessages[gLinkIntroMessageIds[gMenuWork->step]]) && KEYS_LO(gNewKeys) & A_BUTTON) {
             play_sound_effect(0xD);
             if (++gMenuWork->step > 2) {
                 gGameWork.stepCounter = save_err;
@@ -33,7 +33,7 @@ void battle_cutscene_dispatch(void) {
     }
     switch (gMenuWork->step) {
     case 0:
-        if (run_message(gLinkMenuMessages[gLinkStartMessageIds[gMenuWork->step]]) && KEYS_LO(gNewKeys) & 1) {
+        if (run_message(gLinkMenuMessages[gLinkStartMessageIds[gMenuWork->step]]) && KEYS_LO(gNewKeys) & A_BUTTON) {
             play_sound_effect(0xD);
             gMenuWork->step++;
             message_next();
@@ -88,7 +88,7 @@ void battle_cutscene_dispatch(void) {
 }
 
 void link_start_show_messages(void) {
-    if (run_message(gLinkMenuMessages[gMenuWork->step ? 7 : 6]) && KEYS_LO(gNewKeys) & 1) {
+    if (run_message(gLinkMenuMessages[gMenuWork->step ? 7 : 6]) && KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(0xD);
         if ((s32)++gMenuWork->step > 1) {
             gGameWork.stepCounter = 0;
@@ -111,7 +111,7 @@ void fade_transition_and_input_check(void) {
         if (w->step == 0) {
             gGameSubState++;
             w->frame = w->step;
-        } else if (KEYS_LO(gNewKeys) & 1) {
+        } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
             play_sound_effect(0xD);
             gGameWork.stepCounter = 0;
             gGameWork.endModeStep = 0;

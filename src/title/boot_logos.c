@@ -5,7 +5,7 @@
 void boot_logos_check_skip(void) {
     if (--gSceneWork.progress.w == 0)
         play_song(3);
-    if (gSceneWork.param.b != 0 && (KEYS_LO(gNewKeys) & 8)) {
+    if (gSceneWork.param.b != 0 && (KEYS_LO(gNewKeys) & START_BUTTON)) {
         gGameMode = 3;
         gGameState = 2;
         gGameSubState = 0;

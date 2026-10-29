@@ -127,31 +127,31 @@ void bg2_affine_reset(void) {
 // Not called directly (hidden in the tail of bg2_affine_reset). Guess: debug, B + D-pad scrolls BG1-3,
 // RIGHT/LEFT step gFieldState.bg2_angle (0-255).
 void debug_bg_scroll_input(void) {
-    if (KEYS_LO(gHeldKeys) & 2) {
-        if (KEYS_LO(gHeldKeys) & 0x40) {
+    if (KEYS_LO(gHeldKeys) & B_BUTTON) {
+        if (KEYS_LO(gHeldKeys) & DPAD_UP) {
             gFieldState.saved_bg1_y -= 4;
             gFieldState.saved_bg2_y -= 4;
             gFieldState.saved_bg3_y -= 4;
         }
-        if (KEYS_LO(gHeldKeys) & 0x80) {
+        if (KEYS_LO(gHeldKeys) & DPAD_DOWN) {
             gFieldState.saved_bg1_y += 4;
             gFieldState.saved_bg2_y += 4;
             gFieldState.saved_bg3_y += 4;
         }
-        if (KEYS_LO(gHeldKeys) & 0x20) {
+        if (KEYS_LO(gHeldKeys) & DPAD_LEFT) {
             gFieldState.saved_bg1_x -= 4;
             gFieldState.saved_bg2_x -= 4;
             gFieldState.saved_bg3_x -= 4;
         }
-        if (KEYS_LO(gHeldKeys) & 0x10) {
+        if (KEYS_LO(gHeldKeys) & DPAD_RIGHT) {
             gFieldState.saved_bg1_x += 4;
             gFieldState.saved_bg2_x += 4;
             gFieldState.saved_bg3_x += 4;
         }
     }
-    if (KEYS_LO(gHeldKeys) & 0x10)
+    if (KEYS_LO(gHeldKeys) & DPAD_RIGHT)
         gFieldState.bg2_angle = ++gFieldState.bg2_angle & 0xFF;
-    if (KEYS_LO(gHeldKeys) & 0x20)
+    if (KEYS_LO(gHeldKeys) & DPAD_LEFT)
         gFieldState.bg2_angle = (gFieldState.bg2_angle + 0xFF) & 0xFF;
 }
 

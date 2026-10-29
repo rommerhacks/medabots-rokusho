@@ -129,7 +129,7 @@ void test_mode_update(void) {
         if (--gMenuWork->counter == 0)
             play_sound_effect(2);
     }
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         if (gMenuWork->cursor != 0)
             gMenuWork->cursor--;
         else
@@ -137,7 +137,7 @@ void test_mode_update(void) {
         play_song(0);
         gMenuWork->counter = 2;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         if (gMenuWork->cursor <= 2)
             gMenuWork->cursor++;
         else
@@ -178,14 +178,14 @@ void test_mode_update(void) {
     }
     switch (gMenuWork->cursor) {
     case 0:
-        if (KEYS_LO(gRepeatKeys) & 0x20) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
             if (gMenuWork->sound_test_song != 0)
                 gMenuWork->sound_test_song--;
             else
                 gMenuWork->sound_test_song = 0x33;
             draw_number(gMenuWork->sound_test_song, -2, 0x10, 4, 2, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
         }
-        if (KEYS_LO(gRepeatKeys) & 0x10) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
             if (gMenuWork->sound_test_song <= 0x32)
                 gMenuWork->sound_test_song++;
             else
@@ -194,14 +194,14 @@ void test_mode_update(void) {
         }
         break;
     case 1:
-        if (KEYS_LO(gRepeatKeys) & 0x20) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
             if (gMenuWork->sound_test_effect != 0)
                 gMenuWork->sound_test_effect--;
             else
                 gMenuWork->sound_test_effect = 0x75;
             draw_number(gMenuWork->sound_test_effect, -3, 0xF, 6, 2, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
         }
-        if (KEYS_LO(gRepeatKeys) & 0x10) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
             if (gMenuWork->sound_test_effect <= 0x74)
                 gMenuWork->sound_test_effect++;
             else
@@ -216,7 +216,7 @@ void test_mode_update(void) {
         play_sound_effect(gMenuWork->pending_sound);
         gMenuWork->pending_sound = 0;
     }
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         switch (gMenuWork->cursor) {
         case 0:
             play_song(gSoundTestSongs[gMenuWork->sound_test_song]);
@@ -239,7 +239,7 @@ void test_mode_update(void) {
         default:
             return;
         }
-    } else if (KEYS_LO(gNewKeys) & 2) {
+    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
         gMenuWork->aux = 1;
     } else {
         return;

@@ -170,7 +170,7 @@ void map_script_cmd_player_jump(void) {
 
 void map_script_cmd_player_walk(void) {
     read_map_script_bytes(4);
-    *(u8 *)&gHeldKeys = 0; // drops the held buttons (A, B, D-pad...)
+    KEYS_LO(gHeldKeys) = 0; // drops the held buttons (A, B, D-pad...)
     memcpy_u8(gFieldWork.tile_actions, gFieldWork.script_tile_actions, 8);
     memzero_bytes(gFieldWork.tile_actions, 8);
     gSpriteEntries[47].work[FIELD_SPR_STEP_TIMER] = 0;

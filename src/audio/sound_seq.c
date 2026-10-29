@@ -13,7 +13,7 @@ void sound_engine_init(struct SoundWork *work) {
 
     gSoundWork = work;
     zero = 0;
-    CpuSet(&zero, work, 0x050001CD);
+    CpuSet(&zero, work, CPU_SET_SRC_FIXED | CPU_SET_32BIT | 0x1CD);
     sound_init_tracks();
     gSoundWork->fifoA.fifo = 1;
     gSoundWork->fifoB.fifo = 2;

@@ -297,7 +297,7 @@ void status_select_input(void) {
     slot = gGameWork.shownId;
     base = gGameWork.openedFrom * 3;
     if (gGameWork.openedFrom == 0) {
-        if (KEYS_LO(gRepeatKeys) & 0xA0) {
+        if (KEYS_LO(gRepeatKeys) & (DPAD_LEFT | DPAD_DOWN)) {
             if (gGameWork.shownId != 2) {
                 if (gBattleBots[slot + 1 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);
@@ -309,7 +309,7 @@ void status_select_input(void) {
                     moved = 1;
                 }
             }
-        } else if (KEYS_LO(gRepeatKeys) & 0x50) {
+        } else if (KEYS_LO(gRepeatKeys) & (DPAD_RIGHT | DPAD_UP)) {
             if (gGameWork.shownId != 0) {
                 if (gBattleBots[slot - 1 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);
@@ -323,7 +323,7 @@ void status_select_input(void) {
             }
         }
     } else {
-        if (KEYS_LO(gRepeatKeys) & 0x60) {
+        if (KEYS_LO(gRepeatKeys) & (DPAD_LEFT | DPAD_UP)) {
             if (gGameWork.shownId != 0) {
                 if (gBattleBots[slot - 1 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);
@@ -335,7 +335,7 @@ void status_select_input(void) {
                     moved = 1;
                 }
             }
-        } else if (KEYS_LO(gRepeatKeys) & 0x90) {
+        } else if (KEYS_LO(gRepeatKeys) & (DPAD_RIGHT | DPAD_DOWN)) {
             if (gGameWork.shownId != 2) {
                 if (gBattleBots[slot + 1 + base].teamState) {
                     setup_bot_battle_sprites_08017A7C(0, x, y);

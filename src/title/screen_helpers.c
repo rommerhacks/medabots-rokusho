@@ -59,13 +59,13 @@ u32 town_map_move_cursor(void) {
     u8 old = w->town_map_place;
     u32 off = old * 4 + gFieldWork.town_map_phase * 40;
     const u8 *tbl = w->cursor_style ? gTownMapNeighboursAlt : gTownMapNeighbours;
-    if (*(u8 *)&gNewKeys & 0x20)
+    if (KEYS_LO(gNewKeys) & DPAD_LEFT)
         w->town_map_place = tbl[off];
-    else if (*(u8 *)&gNewKeys & 0x10)
+    else if (KEYS_LO(gNewKeys) & DPAD_RIGHT)
         w->town_map_place = tbl[off + 1];
-    else if (*(u8 *)&gNewKeys & 0x40)
+    else if (KEYS_LO(gNewKeys) & DPAD_UP)
         w->town_map_place = tbl[off + 2];
-    else if (*(u8 *)&gNewKeys & 0x80)
+    else if (KEYS_LO(gNewKeys) & DPAD_DOWN)
         w->town_map_place = tbl[off + 3];
     else
         goto none;
@@ -135,7 +135,7 @@ void tilemap_offset_tiles_and_palette(u32 tiles, u32 palette, u32 blk) {
 void init_multiplayer_id(void) {
     u8 buf[4];
     memcpy_optimized(buf, gMultiplayerIdUnusedBytes, 4);
-    gLinkPlayerId = (*(vu32 *)0x04000128 << 26) >> 30;
+    gLinkPlayerId = (*(vu32 *)REG_ADDR_SIOCNT << 26) >> 30;
 }
 
 // guess: link play uses a key word received over the link; new / released keys from it (no callers).

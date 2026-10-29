@@ -81,7 +81,7 @@ void update_scroll_animation_step(void) {
     scroll->y = (u32)(menu->frame * 16 + 0x1B8) % 512;
     scroll->x = (s16)(menu->frame & 0x20) ? 0x100 : 0;
     menu->frame++;
-    if (KEYS_LO(gRepeatKeys) & 1) {
+    if (KEYS_LO(gRepeatKeys) & A_BUTTON) {
         init_blend_effect(menu->blend, 0, 0, 1, 0xC0);
         gGameSubState++;
     }

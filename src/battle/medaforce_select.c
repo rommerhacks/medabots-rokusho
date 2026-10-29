@@ -262,13 +262,13 @@ void mf_menu_draw_status(u32 blink_errors) {
 void mf_menu_input(void) {
     u8 old = gBattleWork.partCursor;
 
-    if (KEYS_LO(gNewKeys) & 0x40)
+    if (KEYS_LO(gNewKeys) & DPAD_UP)
         gBattleWork.partCursor = 1;
-    if (KEYS_LO(gNewKeys) & 0x80)
+    if (KEYS_LO(gNewKeys) & DPAD_DOWN)
         gBattleWork.partCursor = 0;
-    if (KEYS_LO(gNewKeys) & 0x20)
+    if (KEYS_LO(gNewKeys) & DPAD_LEFT)
         gBattleWork.partCursor = 2;
-    if (KEYS_LO(gNewKeys) & 0x10)
+    if (KEYS_LO(gNewKeys) & DPAD_RIGHT)
         gBattleWork.partCursor = 3;
     if (gBattleWork.partCursor != old) {
         play_sound_effect(2);

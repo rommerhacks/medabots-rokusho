@@ -83,7 +83,7 @@ void save_lost_fade_in(void) {
 
 void save_lost_wait_for_a(void) {
     save_lost_animate_sprite();
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         gMenuWork->fade_level = 0;
         gGameSubState++;
@@ -115,7 +115,7 @@ void save_lost_erase_and_restart(void) {
         REG_IE = 0x2020;
         REG_IME = 1;
         zero = playing;
-        CpuSet(&zero, buf, 0x05000002);
+        CpuSet(&zero, buf, CPU_SET_SRC_FIXED | CPU_SET_32BIT | 0x2);
         for (i = 0; i <= 3; i++) {
             if (ProgramEepromDwordEx(0, buf) == 0)
                 break;

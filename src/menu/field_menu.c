@@ -55,24 +55,24 @@ void field_menu_open_anim(void) {
 
 void field_menu_handle_input(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0], 0);
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         play_sound_effect(2);
         gGameWork.fieldMenuCursor = (gGameWork.fieldMenuCursor - 1) & 3;
         gSpriteEntries[0].y = gGameWork.fieldMenuCursor * 16 + 8;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         play_sound_effect(2);
         gGameWork.fieldMenuCursor = (gGameWork.fieldMenuCursor + 1) & 3;
         gSpriteEntries[0].y = gGameWork.fieldMenuCursor * 16 + 8;
     }
-    if (KEYS_LO(gNewKeys) & 2) {
+    if (KEYS_LO(gNewKeys) & B_BUTTON) {
         fade_out_music(0x10);
         play_sound_effect(5);
         clear_battle_sprite_slot(0, 1);
         clear_battle_sprite_slot(10, 7);
         gGameWork.stepCounter = 0;
         gGameSubState = 3;
-    } else if (KEYS_LO(gNewKeys) & 1) {
+    } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         gGameSubState = 6;
     }

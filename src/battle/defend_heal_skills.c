@@ -295,7 +295,7 @@ void trap_sprite_grow(void) {
 
 void trap_sprite_hold(void) {
     gGameWork.stepTimer--;
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON))
         gGameWork.stepTimer = 0;
     if (gGameWork.stepTimer == 0) {
         switch (gBattleWork.scratch) {
@@ -443,7 +443,7 @@ void team_form_split(void) {
     struct SpriteEntry *spr;
 
     gGameWork.stepTimer--;
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON))
         gGameWork.stepTimer = 0;
     if (gGameWork.stepTimer == 0) {
         spr = &gSpriteEntries[0x21];
@@ -555,7 +555,7 @@ void break_form_anim_wait(void) {
 void break_form_hold(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3B], 0x21);
     gGameWork.stepTimer--;
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON))
         gGameWork.stepTimer = 0;
     if (gGameWork.stepTimer == 0)
         gBattleWork.step++;
@@ -1002,7 +1002,7 @@ void autorecover_orb_spawn(void) {
 
 void heal_orb_hold(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3E], 0x21);
-    if (gGameWork.skipBotSetup == 0 && (*(u8 *)&gRepeatKeys & 1))
+    if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & A_BUTTON))
         gBattleWork.step++;
     else if (gGameWork.stepTimer)
         gGameWork.stepTimer--;

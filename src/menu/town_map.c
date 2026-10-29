@@ -159,12 +159,12 @@ void town_map_handle_input(void) {
     town_map_update_cursor();
     town_map_animate_tiles();
     if (town_map_move_cursor() == 0) {
-        if (!((keys = KEYS_LO(gNewKeys)) & 3))
+        if (!((keys = KEYS_LO(gNewKeys)) & (A_BUTTON | B_BUTTON)))
             return;
         if (gGameState == 10) {
             play_sound_effect(5);
             gMenuWork->counter = 1;
-        } else if (keys & 1) {
+        } else if (keys & A_BUTTON) {
             play_sound_effect(4);
             gMenuWork->counter = 1;
         } else {

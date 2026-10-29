@@ -104,16 +104,16 @@ static void set_bg2_affine_transform(s32 scale, u32 angle, s32 cx, s32 cy, s32 s
     pb = Div(gSineTableQ14[(angle & 0x3FF)] * 4, scale);
     pc = Div(-gSineTableQ14[(angle & 0x3FF)] * 4, scale);
     pd = Div(gSineTableQ14[(angle & 0x3FF) + 0x100] * 4, scale);
-    *(vu16 *)0x04000030 = pa;
-    *(vu16 *)0x04000032 = pb;
-    *(vu16 *)0x04000034 = pc;
-    *(vu16 *)0x04000036 = pd;
+    REG_BG3PA = pa;
+    REG_BG3PB = pb;
+    REG_BG3PC = pc;
+    REG_BG3PD = pd;
     x = -(pa * sx) - pb * sy - cx;
     y = -(pc * sx) - pd * sy - cy;
-    *(vu16 *)0x04000038 = x;
-    *(vu16 *)0x0400003A = (x & 0x0FFF0000) >> 16;
-    *(vu16 *)0x0400003C = y;
-    *(vu16 *)0x0400003E = (y & 0x0FFF0000) >> 16;
+    REG_BG3X_L = x;
+    REG_BG3X_H = (x & 0x0FFF0000) >> 16;
+    REG_BG3Y_L = y;
+    REG_BG3Y_H = (y & 0x0FFF0000) >> 16;
 }
 
 // New local struct: one scanline of BG2 affine registers (BG2PA..BG2PD, BG2X, BG2Y), 16 bytes.
@@ -161,7 +161,7 @@ static void compute_bg_affine_scanline_params(s32 step, u32 angle, s32 unused, s
 // the rest of the lines.
 static void hblank_dma0_bg2affine(void) {
     vu32 *dma = (vu32 *)REG_ADDR_DMA0;
-    vu16 *dst = (vu16 *)0x04000020;
+    vu16 *dst = (vu16 *)REG_ADDR_BG2PA;
     u16 *src;
 
     if (gFrameCounter & 1)

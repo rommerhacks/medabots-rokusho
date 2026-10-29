@@ -150,7 +150,7 @@ void medals_list_handle_input(void) {
     medals_list_row_input();
     medals_list_tab_input();
     medals_list_swap_input();
-    if ((cancel_pressed = KEYS_LO(gNewKeys) & 2)) {
+    if ((cancel_pressed = KEYS_LO(gNewKeys) & B_BUTTON)) {
         if (gGameWork.partSlot & 0x80) {
             play_sound_effect(2);
             gGameWork.partSlot = 0;
@@ -159,7 +159,7 @@ void medals_list_handle_input(void) {
             play_sound_effect(5);
             gGameSubState++;
         }
-    } else if (KEYS_LO(gNewKeys) & 1) {
+    } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         gGameWork.shownId = gGameWork.listTab * 6 + gGameWork.medalRow;
         if (gMedals[gGameWork.shownId].flags & 0x80) {
             play_sound_effect(4);
@@ -267,18 +267,18 @@ void medal_ability_handle_input(void) {
     medal_page_blink_medal_arrows();
     medal_page_cycle_medal_input();
     medal_ability_redraw();
-    if (KEYS_LO(gNewKeys) & 2) {
+    if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         gGameSubState++;
-    } else if (*((u8 *)&gNewKeys + 1) & 2) {
+    } else if (KEYS_HI(gNewKeys) & L_BUTTON_HI) {
         play_sound_effect(2);
         gGameWork.medalPage = (gGameWork.medalPage - 1) & 3;
         gGameSubState = 0x14;
-    } else if (*((u8 *)&gNewKeys + 1) & 1) {
+    } else if (KEYS_HI(gNewKeys) & R_BUTTON_HI) {
         play_sound_effect(2);
         gGameWork.medalPage = (gGameWork.medalPage + 1) & 3;
         gGameSubState = 0x14;
-    } else if (KEYS_LO(gNewKeys) & 8) {
+    } else if (KEYS_LO(gNewKeys) & START_BUTTON) {
         play_sound_effect(4);
         gGameWork.helpFromPage = 0;
         gGameSubState = 0x48;
@@ -416,18 +416,18 @@ void medal_medaforce_handle_input(void) {
     if (medal_medaforce_redraw()) {
         message_next();
         gGameSubState++;
-    } else if (KEYS_LO(gNewKeys) & 2) {
+    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         gGameSubState = 0x1E;
-    } else if (*((u8 *)&gNewKeys + 1) & 2) {
+    } else if (KEYS_HI(gNewKeys) & L_BUTTON_HI) {
         play_sound_effect(2);
         gGameWork.medalPage = (gGameWork.medalPage - 1) & 3;
         gGameSubState = 0x24;
-    } else if (*((u8 *)&gNewKeys + 1) & 1) {
+    } else if (KEYS_HI(gNewKeys) & R_BUTTON_HI) {
         play_sound_effect(2);
         gGameWork.medalPage = (gGameWork.medalPage + 1) & 3;
         gGameSubState = 0x24;
-    } else if (KEYS_LO(gNewKeys) & 8) {
+    } else if (KEYS_LO(gNewKeys) & START_BUTTON) {
         play_sound_effect(4);
         gGameWork.helpFromPage = 1;
         gGameSubState = 0x48;
@@ -520,24 +520,24 @@ void medal_rotation_handle_input(void) {
     medal_page_blink_medal_arrows();
     medal_page_cycle_medal_input();
     medal_rotation_redraw();
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         disable_sprites(1, 2);
         gGameWork.pageCursor = 0;
         gGameWork.listTab = 0;
         gGameSubState = 0x30;
-    } else if (KEYS_LO(gNewKeys) & 2) {
+    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         gGameSubState++;
-    } else if (*((u8 *)&gNewKeys + 1) & 2) {
+    } else if (KEYS_HI(gNewKeys) & L_BUTTON_HI) {
         play_sound_effect(2);
         gGameWork.medalPage = (gGameWork.medalPage - 1) & 3;
         gGameSubState = 0x34;
-    } else if (*((u8 *)&gNewKeys + 1) & 1) {
+    } else if (KEYS_HI(gNewKeys) & R_BUTTON_HI) {
         play_sound_effect(2);
         gGameWork.medalPage = (gGameWork.medalPage + 1) & 3;
         gGameSubState = 0x34;
-    } else if (KEYS_LO(gNewKeys) & 8) {
+    } else if (KEYS_LO(gNewKeys) & START_BUTTON) {
         play_sound_effect(4);
         gGameWork.helpFromPage = 2;
         gGameSubState = 0x48;
@@ -590,7 +590,7 @@ void medal_rotation_edit_input(void) {
             gGameSubState--;
             return;
         }
-        if (KEYS_LO(gNewKeys) & 1) {
+        if (KEYS_LO(gNewKeys) & A_BUTTON) {
             play_sound_effect(4);
             disable_sprites(1, 2);
             medal_rotation_init_repeat_cursor();
@@ -599,7 +599,7 @@ void medal_rotation_edit_input(void) {
             gGameSubState--;
             return;
         }
-        if (KEYS_LO(gNewKeys) & 2) {
+        if (KEYS_LO(gNewKeys) & B_BUTTON) {
             play_sound_effect(5);
             disable_sprites(1, 2);
             gGameWork.pageCursor = 0;
@@ -616,7 +616,7 @@ void medal_rotation_edit_input(void) {
             medal_rotation_init_repeat_cursor();
             return;
         }
-        if (KEYS_LO(gNewKeys) & 1) {
+        if (KEYS_LO(gNewKeys) & A_BUTTON) {
             play_sound_effect(4);
             disable_sprites(3, 1);
             gGameWork.pageCursor = 0;
@@ -625,7 +625,7 @@ void medal_rotation_edit_input(void) {
             gGameSubState = 0x2B;
             return;
         }
-        if (KEYS_LO(gNewKeys) & 2) {
+        if (KEYS_LO(gNewKeys) & B_BUTTON) {
             play_sound_effect(5);
             disable_sprites(3, 1);
             medal_rotation_init_slot_arrows();
@@ -635,7 +635,7 @@ void medal_rotation_edit_input(void) {
             return;
         }
     }
-    if (KEYS_LO(gNewKeys) & 8) {
+    if (KEYS_LO(gNewKeys) & START_BUTTON) {
         play_sound_effect(4);
         gGameWork.pageCursor |= 0x80;
         gGameWork.helpFromPage = 2;
@@ -695,14 +695,14 @@ void medal_skill_handle_input(void) {
     medal_skill_animate_shine();
     medal_page_cycle_medal_input();
     medal_skill_redraw();
-    if (KEYS_LO(gNewKeys) & 2) {
+    if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         gGameSubState++;
-    } else if (*((u8 *)&gNewKeys + 1) & 2) {
+    } else if (KEYS_HI(gNewKeys) & L_BUTTON_HI) {
         play_sound_effect(2);
         gGameWork.medalPage = (gGameWork.medalPage - 1) & 3;
         gGameSubState = 0x44;
-    } else if (*((u8 *)&gNewKeys + 1) & 1) {
+    } else if (KEYS_HI(gNewKeys) & R_BUTTON_HI) {
         play_sound_effect(2);
         gGameWork.medalPage = (gGameWork.medalPage + 1) & 3;
         gGameSubState = 0x44;
@@ -723,26 +723,27 @@ void medal_skill_debug_edit_input(void) {
     u8 up_pressed;
 
     medal_skill_debug_init_cursor();
-    if ((up_pressed = KEYS_LO(gRepeatKeys) & 0x40)) {
+    if ((up_pressed = KEYS_LO(gRepeatKeys) & DPAD_UP)) {
         if (gGameWork.subCounter == 0)
             gGameWork.subCounter = 7;
         else
             gGameWork.subCounter--;
-    } else if (KEYS_LO(gRepeatKeys) & 0x80) {
+    } else if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         if (gGameWork.subCounter == 7)
             gGameWork.subCounter = up_pressed;
         else
             gGameWork.subCounter++;
-    } else if (KEYS_LO(gRepeatKeys) & 0x10 && gMedals[gGameWork.shownId].skillLevel[gGameWork.subCounter] != 100) {
+    } else if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT &&
+               gMedals[gGameWork.shownId].skillLevel[gGameWork.subCounter] != 100) {
         gMedals[gGameWork.shownId].skillLevel[gGameWork.subCounter]++;
         render_medal_skill_stats();
-    } else if (KEYS_LO(gRepeatKeys) & 0x20 && gMedals[gGameWork.shownId].skillLevel[gGameWork.subCounter] != 0) {
+    } else if (KEYS_LO(gRepeatKeys) & DPAD_LEFT && gMedals[gGameWork.shownId].skillLevel[gGameWork.subCounter] != 0) {
         gMedals[gGameWork.shownId].skillLevel[gGameWork.subCounter]--;
         render_medal_skill_stats();
-    } else if (KEYS_LO(gNewKeys) & 4) {
+    } else if (KEYS_LO(gNewKeys) & SELECT_BUTTON) {
         gMedals[gGameWork.shownId].skillExp[gGameWork.subCounter] = 7;
         draw_medal_skill_bars();
-    } else if (KEYS_LO(gNewKeys) & 2) {
+    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
         clear_battle_sprite_slot(0x7F, 1);
         gGameSubState = 0x3A;
     }
@@ -768,13 +769,13 @@ void medals_help_cursor_input(void) {
 
     medals_scroll_bg();
     process_sprite_anim_commands(gBattleSpriteAnimScripts[3], 6);
-    if ((up_pressed = KEYS_LO(gRepeatKeys) & 0x40)) {
+    if ((up_pressed = KEYS_LO(gRepeatKeys) & DPAD_UP)) {
         if (gGameWork.helpPage == 0)
             gGameWork.helpPage = gGameWork.helpPageCount - 1;
         else
             gGameWork.helpPage--;
         goto moved;
-    } else if (KEYS_LO(gRepeatKeys) & 0x80) {
+    } else if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         if (gGameWork.helpPage == gGameWork.helpPageCount - 1)
             gGameWork.helpPage = up_pressed;
         else
@@ -782,12 +783,12 @@ void medals_help_cursor_input(void) {
     moved:
         play_sound_effect(2);
         medals_help_move_cursor();
-    } else if (KEYS_LO(gNewKeys) & 1) {
+    } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         medals_help_init_cursor();
         message_next();
         gGameSubState++;
-    } else if (KEYS_LO(gNewKeys) & 0xA) {
+    } else if (KEYS_LO(gNewKeys) & (B_BUTTON | START_BUTTON)) {
         play_sound_effect(5);
         gGameSubState = 0x4E;
     }
@@ -960,9 +961,9 @@ void medal_trade_choice_input(void) {
     medals_list_update_swap_marker();
     sprite_bob_x(7, gFrameCounter, 0xA8);
     medal_trade_choice_cursor_input();
-    if (KEYS_LO(gNewKeys) & 1) {
+    if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
-    } else if (KEYS_LO(gNewKeys) & 2) {
+    } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_sound_effect(5);
         gGameWork.tradeChoice = 2;
     } else {
@@ -1194,19 +1195,19 @@ static void medals_list_blink_tab_arrows(void) {
 }
 
 static void medals_list_row_input(void) {
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         if (gGameWork.medalRow == 0)
             gGameWork.medalRow = 5;
         else
             gGameWork.medalRow--;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         if (gGameWork.medalRow == 5)
             gGameWork.medalRow = 0;
         else
             gGameWork.medalRow++;
     }
-    if (KEYS_LO(gRepeatKeys) & 0xC0) {
+    if (KEYS_LO(gRepeatKeys) & (DPAD_UP | DPAD_DOWN)) {
         play_sound_effect(2);
         gSpriteEntries[3].y = gGameWork.medalRow * 16 + 0x28;
         render_medal_name_display();
@@ -1219,19 +1220,19 @@ static void medals_list_row_input(void) {
 }
 
 static void medals_list_tab_input(void) {
-    if (KEYS_LO(gRepeatKeys) & 0x20) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
         if (gGameWork.listTab == 0)
             gGameWork.listTab = 4;
         else
             gGameWork.listTab--;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x10) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         if (gGameWork.listTab == 4)
             gGameWork.listTab = 0;
         else
             gGameWork.listTab++;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x30) {
+    if (KEYS_LO(gRepeatKeys) & (DPAD_RIGHT | DPAD_LEFT)) {
         play_sound_effect(2);
         write_tilemap_rect(10, 2, 5, 2, gUiTilemaps[gGameWork.listTab + 0x4B], REG_BG1CNT, 0x200);
         render_medal_sprite_tile();
@@ -1272,7 +1273,7 @@ static void medals_list_update_swap_marker(void) {
 static void medals_list_swap_input(void) {
     u32 cur;
 
-    if (KEYS_LO(gNewKeys) & 4) {
+    if (KEYS_LO(gNewKeys) & SELECT_BUTTON) {
         play_sound_effect(2);
         if (gGameWork.partSlot & 0x80) {
             gGameWork.partSlot &= 0x7F;
@@ -1423,7 +1424,7 @@ static void medal_page_cycle_medal_input(void) {
     u32 found;
 
     if (gGameWork.freeMedalCount > 1) {
-        if (KEYS_LO(gRepeatKeys) & 0x20) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
             play_sound_effect(2);
             found = 0;
             do {
@@ -1439,7 +1440,7 @@ static void medal_page_cycle_medal_input(void) {
                 }
             } while (!found);
         }
-        if (KEYS_LO(gRepeatKeys) & 0x10) {
+        if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
             play_sound_effect(2);
             found = 0;
             do {
@@ -1459,7 +1460,7 @@ static void medal_page_cycle_medal_input(void) {
 }
 
 static void medal_ability_redraw(void) {
-    if (KEYS_LO(gRepeatKeys) & 0x30) {
+    if (KEYS_LO(gRepeatKeys) & (DPAD_RIGHT | DPAD_LEFT)) {
         medal_page_draw_icon();
         medal_page_draw_kind_name();
         medal_page_draw_name();
@@ -1564,19 +1565,19 @@ static void medal_medaforce_init_cursor(void) {
 }
 
 static u32 medal_medaforce_cursor_input(void) {
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         if (gGameWork.pageCursor == 0)
             gGameWork.pageCursor = 2;
         else
             gGameWork.pageCursor--;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         if (gGameWork.pageCursor == 2)
             gGameWork.pageCursor = 0;
         else
             gGameWork.pageCursor++;
     }
-    if (KEYS_LO(gRepeatKeys) & 0xC0) {
+    if (KEYS_LO(gRepeatKeys) & (DPAD_UP | DPAD_DOWN)) {
         play_sound_effect(2);
         gSpriteEntries[3].y = gGameWork.pageCursor * 16 + 0x38;
         medal_medaforce_draw_selected();
@@ -1586,7 +1587,7 @@ static u32 medal_medaforce_cursor_input(void) {
 }
 
 static u32 medal_medaforce_redraw(void) {
-    if (KEYS_LO(gRepeatKeys) & 0x30) {
+    if (KEYS_LO(gRepeatKeys) & (DPAD_RIGHT | DPAD_LEFT)) {
         medal_page_draw_icon();
         medal_page_draw_kind_name();
         medal_page_draw_name();
@@ -1658,7 +1659,7 @@ static void medal_rotation_draw_repeat_path(void) {
 }
 
 static void medal_rotation_redraw(void) {
-    if (KEYS_LO(gRepeatKeys) & 0x30) {
+    if (KEYS_LO(gRepeatKeys) & (DPAD_RIGHT | DPAD_LEFT)) {
         medal_page_draw_icon();
         medal_page_draw_kind_name();
         medal_page_draw_name();
@@ -1711,7 +1712,7 @@ static void medal_rotation_blink_slot_arrows(void) {
 static u32 medal_rotation_action_input(void) {
     u8 up;
 
-    if ((up = KEYS_LO(gRepeatKeys) & 0x40)) {
+    if ((up = KEYS_LO(gRepeatKeys) & DPAD_UP)) {
         play_sound_effect(2);
         if (gMedals[gGameWork.shownId].rotation[gGameWork.pageCursor] == 0)
             gMedals[gGameWork.shownId].rotation[gGameWork.pageCursor] = 7;
@@ -1719,7 +1720,7 @@ static u32 medal_rotation_action_input(void) {
             gMedals[gGameWork.shownId].rotation[gGameWork.pageCursor]--;
         return 1;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         play_sound_effect(2);
         if (gMedals[gGameWork.shownId].rotation[gGameWork.pageCursor] == 7)
             gMedals[gGameWork.shownId].rotation[gGameWork.pageCursor] = up;
@@ -1733,7 +1734,7 @@ static u32 medal_rotation_action_input(void) {
 static u32 medal_rotation_slot_input(void) {
     u8 left;
 
-    if ((left = KEYS_LO(gRepeatKeys) & 0x20)) {
+    if ((left = KEYS_LO(gRepeatKeys) & DPAD_LEFT)) {
         play_sound_effect(2);
         if (gGameWork.pageCursor == 0)
             gGameWork.pageCursor = 7;
@@ -1742,7 +1743,7 @@ static u32 medal_rotation_slot_input(void) {
         medal_rotation_init_slot_arrows();
         return 1;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x10) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         play_sound_effect(2);
         if (gGameWork.pageCursor == 7)
             gGameWork.pageCursor = left;
@@ -1757,7 +1758,7 @@ static u32 medal_rotation_slot_input(void) {
 static u32 medal_rotation_repeat_input(void) {
     u8 left;
 
-    if ((left = KEYS_LO(gRepeatKeys) & 0x20)) {
+    if ((left = KEYS_LO(gRepeatKeys) & DPAD_LEFT)) {
         play_sound_effect(2);
         if (gMedals[gGameWork.shownId].rotationLen == 0)
             gMedals[gGameWork.shownId].rotationLen = 7;
@@ -1765,7 +1766,7 @@ static u32 medal_rotation_repeat_input(void) {
             gMedals[gGameWork.shownId].rotationLen--;
         return 1;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x10) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         play_sound_effect(2);
         if (gMedals[gGameWork.shownId].rotationLen == 7)
             gMedals[gGameWork.shownId].rotationLen = left;
@@ -1898,7 +1899,7 @@ void draw_medal_skill_bars(void) {
 }
 
 static void medal_skill_redraw(void) {
-    if (KEYS_LO(gRepeatKeys) & 0x30) {
+    if (KEYS_LO(gRepeatKeys) & (DPAD_RIGHT | DPAD_LEFT)) {
         medal_skill_draw_icon();
         medal_page_draw_kind_name();
         medal_page_draw_name();
@@ -1917,8 +1918,8 @@ void medal_rotation_store_to_battle_bot(void) {
 }
 
 static void increment_medal_level_on_input(void) {
-    if (gMedals[gGameWork.shownId].flags & 0x80 && KEYS_LO(gHeldKeys) & 8 && KEYS_HI(gRepeatKeys) & 2 &&
-        gMedals[gGameWork.shownId].level != 100) {
+    if (gMedals[gGameWork.shownId].flags & 0x80 && KEYS_LO(gHeldKeys) & START_BUTTON &&
+        KEYS_HI(gRepeatKeys) & L_BUTTON_HI && gMedals[gGameWork.shownId].level != 100) {
         gMedals[gGameWork.shownId].level++;
         memcpy_bytes_08041D04(gMedalRecords[gMedals[gGameWork.shownId].graphicId], &gGameWork.partAbility, 16);
         gMedals[gGameWork.shownId].spriteVariant =
@@ -1930,8 +1931,8 @@ static void increment_medal_level_on_input(void) {
 }
 
 static void handle_medal_level_down_input(void) {
-    if (gMedals[gGameWork.shownId].flags & 0x80 && KEYS_LO(gHeldKeys) & 8 && KEYS_HI(gRepeatKeys) & 1 &&
-        gMedals[gGameWork.shownId].nextLevelExp > 99) {
+    if (gMedals[gGameWork.shownId].flags & 0x80 && KEYS_LO(gHeldKeys) & START_BUTTON &&
+        KEYS_HI(gRepeatKeys) & R_BUTTON_HI && gMedals[gGameWork.shownId].nextLevelExp > 99) {
         gMedals[gGameWork.shownId].nextLevelExp -= 100;
         render_medal_level_display();
     }
@@ -1964,19 +1965,19 @@ static void medal_trade_init_choice_cursor(void) {
 }
 
 static void medal_trade_choice_cursor_input(void) {
-    if (KEYS_LO(gRepeatKeys) & 0x40) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_UP) {
         if (gGameWork.tradeChoice == 0)
             gGameWork.tradeChoice = 2;
         else
             gGameWork.tradeChoice--;
     }
-    if (KEYS_LO(gRepeatKeys) & 0x80) {
+    if (KEYS_LO(gRepeatKeys) & DPAD_DOWN) {
         if (gGameWork.tradeChoice == 2)
             gGameWork.tradeChoice = 0;
         else
             gGameWork.tradeChoice++;
     }
-    if (KEYS_LO(gRepeatKeys) & 0xC0) {
+    if (KEYS_LO(gRepeatKeys) & (DPAD_UP | DPAD_DOWN)) {
         play_sound_effect(2);
         gSpriteEntries[7].y = gGameWork.tradeChoice * 16 + 0x70;
     }

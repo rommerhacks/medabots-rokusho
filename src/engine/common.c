@@ -783,17 +783,17 @@ static void scanline_scroll_vblank(void) {
         src = (u16 *)gScanlineScrollEven;
     else
         src = (u16 *)gScanlineScrollOdd;
-    *(vu16 *)0x04000010 = src[0];
-    *(vu16 *)0x04000012 = src[1];
-    *(vu16 *)0x04000014 = src[2];
-    *(vu16 *)0x04000016 = src[3];
-    *(vu16 *)0x04000018 = src[4];
-    *(vu16 *)0x0400001A = src[5];
-    *(vu16 *)0x0400001C = src[6];
-    *(vu16 *)0x0400001E = src[7];
+    REG_BG0HOFS = src[0];
+    REG_BG0VOFS = src[1];
+    REG_BG1HOFS = src[2];
+    REG_BG1VOFS = src[3];
+    REG_BG2HOFS = src[4];
+    REG_BG2VOFS = src[5];
+    REG_BG3HOFS = src[6];
+    REG_BG3VOFS = src[7];
     REG_DMA0CNT_H = 0;
     dma[0] = (u32)(src + 8);
-    dma[1] = 0x04000010;
+    dma[1] = REG_ADDR_BG0HOFS;
     dma[2] = 0xA6600004;
 }
 
@@ -999,7 +999,7 @@ void advance_battle_animation_frame(u32 field) {
             memcpy_bytes_08041D04(&gBattlefieldAnimFrames[field * 128], &gBattleWork.fieldAnimBlock, 1);
         }
         CpuSet((void *)(0x02027000 + gBattleWork.fieldAnimTiles * gBattleWork.fieldAnimBlock * 32),
-               (void *)(VRAM + 0x8020), (gBattleWork.fieldAnimTiles * 8) | 0x04000000);
+               (void *)(VRAM + 0x8020), (gBattleWork.fieldAnimTiles * 8) | CPU_SET_32BIT);
     }
 }
 

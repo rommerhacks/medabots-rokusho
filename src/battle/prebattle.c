@@ -206,10 +206,10 @@ void prebattle_show_opponent_line(void) {
 void prebattle_wait_for_start_input(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if ((KEYS_LO(gNewKeys) & 8) && get_item_quantity_by_id(50) && gFieldWork.fixed_battle == 0) {
+    if ((KEYS_LO(gNewKeys) & START_BUTTON) && get_item_quantity_by_id(50) && gFieldWork.fixed_battle == 0) {
         play_sound_effect(4);
         gGameSubState++;
-    } else if (KEYS_LO(gNewKeys) & 1) {
+    } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         play_sound_effect(4);
         gGameSubState = 32;
     }
@@ -339,7 +339,8 @@ void afterbattle_check_won(void) {
 void afterbattle_show_opponent_line(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
-    if (run_message(gOpponentAfterBattleMessages[gBattleWork.encounterMessage]) && (KEYS_LO(gNewKeys) & 3)) {
+    if (run_message(gOpponentAfterBattleMessages[gBattleWork.encounterMessage]) &&
+        (KEYS_LO(gNewKeys) & (A_BUTTON | B_BUTTON))) {
         gGameWork.endModeStep = 0;
         play_sound_effect(13);
         gGameSubState++;
@@ -450,12 +451,12 @@ void afterbattle_part_details_input(void) {
     update_scroll_movement_a();
     setup_battle_result_sprite();
     afterbattle_pulse_new_sprite();
-    if (KEYS_LO(gNewKeys) & 3) {
+    if (KEYS_LO(gNewKeys) & (A_BUTTON | B_BUTTON)) {
         clear_battle_sprite_slot(1, 2);
         gVBlankOamMode = 0;
         play_sound_effect(13);
         gGameSubState++;
-    } else if (KEYS_LO(gNewKeys) & 8) {
+    } else if (KEYS_LO(gNewKeys) & START_BUTTON) {
         play_sound_effect(4);
         gGameSubState = 0x60;
     }
@@ -888,7 +889,7 @@ void battle_loss_show_part_taken(void) {
     update_all_battle_sprite_orbits();
     update_scroll_movement_a();
     setup_battle_result_sprite();
-    if (run_message(gBattleMessages[108]) && (KEYS_LO(gNewKeys) & 3)) {
+    if (run_message(gBattleMessages[108]) && (KEYS_LO(gNewKeys) & (A_BUTTON | B_BUTTON))) {
         gVBlankOamMode = 0;
         play_sound_effect(13);
         gGameSubState++;

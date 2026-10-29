@@ -12,7 +12,7 @@ s32 save_dispatch(s32 mode) {
     u16 ie;
     s32 i;
 
-    CpuSet(&zero, buf, 0x0500072E);
+    CpuSet(&zero, buf, CPU_SET_SRC_FIXED | CPU_SET_32BIT | 0x72E);
     REG_IME = ret;
     ie = REG_IE;
     REG_IE = 0x2020;

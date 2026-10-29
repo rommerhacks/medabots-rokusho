@@ -224,7 +224,7 @@ void game_over_logo_drop(void) {
     if (++gSpriteEntries[1].timer > 0x47)
         gSpriteEntries[1].timer = 0;
     gSpriteEntries[1].frame = gGameOverIkkiFrames[gSpriteEntries[1].timer / 6];
-    if ((KEYS_LO(gNewKeys) & 1) && done) {
+    if ((KEYS_LO(gNewKeys) & A_BUTTON) && done) {
         gSpriteEntries[1].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_AFFINE |
                                   SPRITE_FLAG_DOUBLE_SIZE;
         gMenuWork->frame = 0;

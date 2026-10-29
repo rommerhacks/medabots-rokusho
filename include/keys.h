@@ -1,6 +1,26 @@
 #ifndef GUARD_KEYS_H
 #define GUARD_KEYS_H
 
+// Key masks (KEYINPUT bit order; gHeldKeys etc. are 1 = pressed).
+#define A_BUTTON 0x0001
+#define B_BUTTON 0x0002
+#define SELECT_BUTTON 0x0004
+#define START_BUTTON 0x0008
+#define DPAD_RIGHT 0x0010
+#define DPAD_LEFT 0x0020
+#define DPAD_UP 0x0040
+#define DPAD_DOWN 0x0080
+#define R_BUTTON 0x0100
+#define L_BUTTON 0x0200
+#define KEYS_MASK 0x03FF
+
+// Held A + B + SELECT, then START pressed: soft reset (main.c).
+#define SOFT_RESET_KEYS (A_BUTTON | B_BUTTON | SELECT_BUTTON | START_BUTTON)
+
+// R and L as bits of the high byte (KEYS_HI).
+#define R_BUTTON_HI (R_BUTTON >> 8)
+#define L_BUTTON_HI (L_BUTTON >> 8)
+
 // Bit view of a key word (KEYINPUT order). Some code reads keys through it: `lsls #31; lsrs #31`.
 struct KeyBits {
     u32 a : 1;
