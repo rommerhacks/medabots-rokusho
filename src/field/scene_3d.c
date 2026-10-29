@@ -871,8 +871,8 @@ u32 field_effect_run(void) {
             E[n].part_y[part] = 0;
             LZ77UnCompVram(gFieldEffectObjTiles[S.effect_id], (void *)(OBJ_VRAM0 + 0x6C00));
             if (!(S.flags & 0x80))
-                DmaSet(3, gFieldEffectObjPalettes[S.effect_id], 0x050003A0,
-                       0x84000008) else DmaSet(3, gFieldEffectObjPalettes[S.effect_id], 0x0202F9A0, 0x84000008)
+                DmaSet(3, gFieldEffectObjPalettes[S.effect_id], 0x050003A0, 0x84000008) else DmaSet(
+                    3, gFieldEffectObjPalettes[S.effect_id], OBJ_PAL_BACKUP_ADDR(13), 0x84000008)
                     sprite_entry_init(E[n].part_sprite[part], x, (u16)y, 0xD, 1);
             gSpriteEntries[E[n].part_sprite[part]].flags |= attr;
             gSpriteEntries[E[n].part_sprite[part]].affine_idx = n * 4 + part;

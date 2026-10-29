@@ -236,9 +236,9 @@ void name_entry_load_name(void) {
             x += tb[0x43][0];
         }
     }
-    CpuFastSet(gMenuDigitPalette, (void *)0x0202FA20, 8);
-    CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
-    CpuFastSet(gSpriteFontPalette, (void *)0x0202F9A0, 8);
+    CpuFastSet(gMenuDigitPalette, (void *)BG_PAL_BACKUP_ADDR(1), 8);
+    CpuFastSet(gCursorArrowPalette, (void *)OBJ_PAL_BACKUP_ADDR(14), 8);
+    CpuFastSet(gSpriteFontPalette, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);
     CpuFastSet(gNameEntryObjPalette, gPaletteBackup, 8);
     CpuFastSet(gNameEntryBgPalettes, gPaletteBackupBg, 0x80);
     gGameWork.stepCounter = 0;

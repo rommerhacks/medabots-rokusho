@@ -164,7 +164,7 @@ void setup_bg0_display_layer(void) {
 void decompress_indexed_asset(u32 set, u32 idx, void *dst, u32 pal, u32 toBuffer) {
     lz_decompress_dispatch(gPortraitTiles[set][idx], dst);
     if (toBuffer)
-        CpuFastSet(gPortraitPalettes[set], (void *)(0x0202FA00 + pal * 32), 8);
+        CpuFastSet(gPortraitPalettes[set], (void *)(BG_PAL_BACKUP_ADDR(0) + pal * 32), 8);
     else
         CpuFastSet(gPortraitPalettes[set], (void *)(PLTT + pal * 32), 8);
 }

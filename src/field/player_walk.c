@@ -316,7 +316,7 @@ void load_battle_palette_via_dma(u32 toBuffer) {
     if (toBuffer == 0)
         DmaCopy32(3, gFieldSpritePalettes[gPlayerFormSpriteSheets[gFieldWork.player_form]], OBJ_PLTT,
                   32) else DmaCopy32(3, gFieldSpritePalettes[gPlayerFormSpriteSheets[gFieldWork.player_form]],
-                                     0x0202F800, 32) gFieldWork.loaded_form = gFieldWork.player_form;
+                                     OBJ_PAL_BACKUP_ADDR(0), 32) gFieldWork.loaded_form = gFieldWork.player_form;
     load_battle_terrain_data();
 }
 

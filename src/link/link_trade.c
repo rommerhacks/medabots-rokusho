@@ -431,7 +431,7 @@ void medapart_trade_swap_palettes(void) {
     u16 *staged, *backup;
     u32 zero, one;
 
-    staged = (u16 *)0x0202F880;
+    staged = (u16 *)OBJ_PAL_BACKUP_ADDR(4);
     backup = gPaletteBackup;
     for (i = 3; i >= 0; i--) {
         CpuFastSet(backup, buf, 8);
@@ -591,7 +591,7 @@ void medal_trade_init_screen(void) {
     lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + (BG_VRAM + 0x4080)));
     CpuFastSet(gMedalTradeBgPalettes, (void *)PLTT, 0x50);
     CpuFastSet(gGradientPaletteGold + 0x30, (void *)0x050003A0, 8);
-    CpuFastSet(gGradientPaletteGold + 0x30, (void *)0x0202F9A0, 8);
+    CpuFastSet(gGradientPaletteGold + 0x30, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);
     CpuFastSet(gCommonObjPalette, (void *)0x05000200, 8);
     CpuFastSet(gGradientPaletteGold + 0x20, (void *)0x05000220, 8);
     CpuFastSet(gGradientPaletteGold, (void *)0x05000240, 8);

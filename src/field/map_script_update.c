@@ -292,8 +292,8 @@ void map_script_update_set_player_form(void) {
     if (gFieldSpritePalettes[i] == NULL)
         i = 1;
     if (obj)
-        DmaCopy32(3, gFieldSpritePalettes[i], OBJ_PLTT, 32) else DmaCopy32(3, gFieldSpritePalettes[i], 0x0202F800, 32)
-            map_script_command_done();
+        DmaCopy32(3, gFieldSpritePalettes[i], OBJ_PLTT,
+                  32) else DmaCopy32(3, gFieldSpritePalettes[i], OBJ_PAL_BACKUP_ADDR(0), 32) map_script_command_done();
 }
 
 void map_script_update_self_anim(void) {

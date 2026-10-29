@@ -174,11 +174,11 @@ void shop_menu_show_layers(void) {
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
-    CpuFastSet(gCursorArrowPalette, (void *)0x0202F800, 8);
-    CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
-    CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
-    CpuFastSet(gShopObjPalette, (void *)0x0202F820, 8);
-    CpuFastSet(gShopMenuBgPalettes, (void *)0x0202FA00, 0x80);
+    CpuFastSet(gCursorArrowPalette, (void *)OBJ_PAL_BACKUP_ADDR(0), 8);
+    CpuFastSet(gSpriteFontPalette, (void *)OBJ_PAL_BACKUP_ADDR(15), 8);
+    CpuFastSet(gCursorArrowPalette, (void *)OBJ_PAL_BACKUP_ADDR(14), 8);
+    CpuFastSet(gShopObjPalette, (void *)OBJ_PAL_BACKUP_ADDR(1), 8);
+    CpuFastSet(gShopMenuBgPalettes, (void *)BG_PAL_BACKUP_ADDR(0), 0x80);
     gGameWork.stepCounter = 0;
     gGameSubState++;
 }

@@ -184,7 +184,7 @@ void field_menu_return_init(void) {
     gPlayTimeRunning = 1;
     if (gGameWork.fieldMenuCursor != 2) {
         REG_DISPCNT &= 0xF1FF;
-        DmaSet(3, gSpriteFontPalette, 0x0202F9E0, 0x84000008);
+        DmaSet(3, gSpriteFontPalette, OBJ_PAL_BACKUP_ADDR(15), 0x84000008);
         area_load_graphics();
         blend_set_alpha_12_10();
         setup_blend_effect(0x40, 0x2F00, 5, 16, 16, 16, 12, 10, 0);

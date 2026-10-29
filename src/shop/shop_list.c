@@ -114,14 +114,14 @@ void shop_list_init(void) {
 
 void enable_obj_layer_and_load_palette(void) {
     REG_DISPCNT |= 0x1000;
-    CpuFastSet(gGradientPaletteOlive + 0x30, (void *)0x0202F9A0, 8);
-    CpuFastSet(gCursorArrowPalette, (void *)0x0202F840, 8);
-    CpuFastSet(gShopListObjPalette, (void *)0x0202F860, 8);
-    CpuFastSet(gGradientPaletteOlive + 0xB0, (void *)0x0202F9C0, 8);
-    CpuFastSet(gGradientPaletteOlive - 0x30, (void *)0x0202F9E0, 8);
-    CpuFastSet(gGradientPaletteOlive - 0x30, (void *)0x0202F980, 8);
-    CpuFastSet(gMenuObjPalettes, (void *)0x0202F880, 0x40);
-    CpuFastSet(gShopListBgPalettes, (void *)0x0202FA00, 0x80);
+    CpuFastSet(gGradientPaletteOlive + 0x30, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);
+    CpuFastSet(gCursorArrowPalette, (void *)OBJ_PAL_BACKUP_ADDR(2), 8);
+    CpuFastSet(gShopListObjPalette, (void *)OBJ_PAL_BACKUP_ADDR(3), 8);
+    CpuFastSet(gGradientPaletteOlive + 0xB0, (void *)OBJ_PAL_BACKUP_ADDR(14), 8);
+    CpuFastSet(gGradientPaletteOlive - 0x30, (void *)OBJ_PAL_BACKUP_ADDR(15), 8);
+    CpuFastSet(gGradientPaletteOlive - 0x30, (void *)OBJ_PAL_BACKUP_ADDR(12), 8);
+    CpuFastSet(gMenuObjPalettes, (void *)OBJ_PAL_BACKUP_ADDR(4), 0x40);
+    CpuFastSet(gShopListBgPalettes, (void *)BG_PAL_BACKUP_ADDR(0), 0x80);
     gGameWork.stepCounter = 0;
     render_battle_medapart_list(gMenuWork->cursor);
     if (gMenuWork->list_count != 0) {

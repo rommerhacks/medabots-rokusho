@@ -135,12 +135,12 @@ void link_robattle_screen_load(void) {
     vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG0CNT, 0);
     vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG1CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gPrebattleBg1Tilemap, REG_BG1CNT, 0x200);
-    CpuFastSet(gPrebattleBgPalette, (void *)0x0202FA00, 0x70);
-    CpuFastSet(gLegTypePedestalPalette, (void *)0x0202FB00, 8);
-    CpuFastSet(gLegTypePedestalPalette2, (void *)0x0202FB20, 8);
-    CpuFastSet(gMenuObjPalettes, (void *)0x0202F800, 0x40);
-    CpuFastSet(gGradientPaletteYellow + 0xB0, (void *)0x0202F980, 8);
-    CpuFastSet(gGradientPaletteYellow, (void *)0x0202F9A0, 8);
+    CpuFastSet(gPrebattleBgPalette, (void *)BG_PAL_BACKUP_ADDR(0), 0x70);
+    CpuFastSet(gLegTypePedestalPalette, (void *)BG_PAL_BACKUP_ADDR(8), 8);
+    CpuFastSet(gLegTypePedestalPalette2, (void *)BG_PAL_BACKUP_ADDR(9), 8);
+    CpuFastSet(gMenuObjPalettes, (void *)OBJ_PAL_BACKUP_ADDR(0), 0x40);
+    CpuFastSet(gGradientPaletteYellow + 0xB0, (void *)OBJ_PAL_BACKUP_ADDR(12), 8);
+    CpuFastSet(gGradientPaletteYellow, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);
     decompress_tileset_to_vram(gBattleWork.battlefield, 1);
     zero_sprites = 0;
     CpuFastSet(&zero_sprites, gSpriteEntries, 0x01000800);

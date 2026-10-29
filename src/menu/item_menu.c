@@ -111,7 +111,7 @@ void item_menu_init(void) {
     w->swap_pending = 0;
     CpuFastSet(gGradientPaletteYellow, gPaletteBackup, 0x80);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 8);
-    CpuFastSet(gItemMenuObjPalette, (void *)0x0202F9C0, 8);
+    CpuFastSet(gItemMenuObjPalette, (void *)OBJ_PAL_BACKUP_ADDR(14), 8);
     CpuFastSet(gItemMenuBgPalettes, gPaletteBackupBg, 0x80);
     zero = 0;
     CpuFastSet(&zero, (void *)(PLTT + 0x1A0), 0x01000008);

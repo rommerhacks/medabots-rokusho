@@ -157,12 +157,12 @@ void medal_rename_load_palettes(void) {
             ;
     } else
         medal_rename_draw_list(gMenuWork->medal_list_cursor);
-    CpuFastSet(gMenuDigitPalette, (void *)0x0202FA20, 8);
+    CpuFastSet(gMenuDigitPalette, (void *)BG_PAL_BACKUP_ADDR(1), 8);
     CpuFastSet(gCursorArrowPalette, gPaletteBackup, 8);
-    CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
-    CpuFastSet(gGradientPaletteGold, (void *)0x0202F9A0, 8);
+    CpuFastSet(gSpriteFontPalette, (void *)OBJ_PAL_BACKUP_ADDR(15), 8);
+    CpuFastSet(gGradientPaletteGold, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);
     CpuFastSet(gMedalRenameBgPalettes, gPaletteBackupBg, 0x80);
-    CpuFastSet(gMedalRenameObjPalette, (void *)0x0202F940, 8);
+    CpuFastSet(gMedalRenameObjPalette, (void *)OBJ_PAL_BACKUP_ADDR(10), 8);
     gGameWork.stepCounter = 0;
     gGameSubState++;
 }

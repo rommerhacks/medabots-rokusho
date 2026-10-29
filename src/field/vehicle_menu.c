@@ -208,8 +208,10 @@ void vehicle_menu_reload(void) {
     lz_decompress_dispatch(gFieldMenuVehicleLabelTiles, (void *)(BG_VRAM + 0x1E00));
     lz_decompress_dispatch(gFieldMenuSaveLabelTiles, (void *)(BG_VRAM + 0x2100));
     lz_decompress_dispatch(gMoneyWindowTiles, (void *)(BG_VRAM + 0x2400));
-    DmaCopy32(3, gMenuBgPalette, 0x0202FBE0, 32) lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
-    DmaCopy32(3, gSpriteFontPalette, 0x0202F9E0, 32) LZ77UnCompVram(gVehicleMenuNameTiles, (void *)(BG_VRAM + 0xF80));
+    DmaCopy32(3, gMenuBgPalette, BG_PAL_BACKUP_ADDR(15), 32)
+        lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
+    DmaCopy32(3, gSpriteFontPalette, OBJ_PAL_BACKUP_ADDR(15), 32)
+        LZ77UnCompVram(gVehicleMenuNameTiles, (void *)(BG_VRAM + 0xF80));
     LZ77UnCompVram(gVehicleMenuBlankRowTiles, (void *)(BG_VRAM + 0x2100));
     memzero_bytes((u8 *)gFieldTilemapBuf, 0x2000);
     DmaSet(3, gVehicleMenuNamesTilemap, gFieldTilemapBuf, DMA_ENABLE | (0xE0 / 2));
@@ -269,14 +271,15 @@ void vehicle_menu_reload(void) {
 
     lz_decompress_dispatch(gMessageWindowTiles, (void *)(BG_VRAM + 0x20));
     lz_decompress_dispatch(gMessageWindowIconTiles, (void *)(BG_VRAM + 0x1780));
-    DmaCopy32(3, gMenuBgPalette, 0x0202FBE0, 32) DmaCopy32(3, gTextWindowObjPalette, 0x0202FBC0, 32)
-        lz_decompress_dispatch(gChoiceMenuFrameTiles, (void *)(BG_VRAM + 0x2600));
+    DmaCopy32(3, gMenuBgPalette, BG_PAL_BACKUP_ADDR(15), 32)
+        DmaCopy32(3, gTextWindowObjPalette, BG_PAL_BACKUP_ADDR(14), 32)
+            lz_decompress_dispatch(gChoiceMenuFrameTiles, (void *)(BG_VRAM + 0x2600));
     lz_decompress_dispatch(gChoiceMenuLabelTiles, (void *)(BG_VRAM + 0x26E0));
     lz_decompress_dispatch(gCursorArrowTiles, (void *)(OBJ_VRAM0 + 0x7E00));
-    DmaCopy32(3, gCursorArrowPalette, 0x0202F9C0, 32) copy_tilemap_rect_with_offset(
+    DmaCopy32(3, gCursorArrowPalette, OBJ_PAL_BACKUP_ADDR(14), 32) copy_tilemap_rect_with_offset(
         gFieldScriptWork.savedBg, (u16 *)BG_SCREEN_ADDR(5), 0, 0, 0x1E, 0x14, 0x20, 0x20, 0, 0);
-    DmaCopy32(3, gVehicleIconPalette, 0x0202F980, 32) DmaCopy32(3, gVehicleIconDimPalette, 0x0202F9A0, 32)
-        vehicle_menu_place_icons(0);
+    DmaCopy32(3, gVehicleIconPalette, OBJ_PAL_BACKUP_ADDR(12), 32)
+        DmaCopy32(3, gVehicleIconDimPalette, OBJ_PAL_BACKUP_ADDR(13), 32) vehicle_menu_place_icons(0);
     setup_palette_fade_to_color(0, 32.0f, 0.0f, 8.0f);
     game_substate_advance();
 }

@@ -24,7 +24,7 @@ void medawatch_menu_load_gfx(void) {
     set_tilemap_and_decompress_bg(0, 0, gMedawatchBg1Tilemap, REG_BG1CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gMedawatchBg2Tilemap, REG_BG2CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gMedawatchBg3Tilemap, REG_BG3CNT, 0);
-    DmaSet(3, gMedawatchBgPalettes, 0x0202FA00, 0x84000060);
+    DmaSet(3, gMedawatchBgPalettes, BG_PAL_BACKUP_ADDR(0), 0x84000060);
     write_tilemap_rect(4, 4, 5, 9, gUiTilemaps[0x48], REG_BG1CNT, 0);
     REG_DISPCNT |= 0x1F60;
     gGameWork.stepCounter = 0;

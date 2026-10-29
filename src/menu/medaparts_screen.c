@@ -78,9 +78,9 @@ void medaparts_list_load_gfx(void) {
     if (gGameWork.medalPage == 1) {
         CpuFastSet(gMedapartsListBgPalette, (void *)gPaletteBackupBg, 0x70);
         CpuFastSet((void *)0x05000200, (void *)gPaletteBackup, 0x80);
-        CpuFastSet(gGradientPaletteOlive + 0x10, (void *)0x0202F9A0, 8);
-        CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
-        CpuFastSet(gTradeChoiceWindowPalette, (void *)0x0202FB60, 8);
+        CpuFastSet(gGradientPaletteOlive + 0x10, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);
+        CpuFastSet(gCursorArrowPalette, (void *)OBJ_PAL_BACKUP_ADDR(14), 8);
+        CpuFastSet(gTradeChoiceWindowPalette, (void *)BG_PAL_BACKUP_ADDR(11), 8);
         gGameWork.stepCounter = 0;
     } else {
         CpuFastSet(gMedapartsListBgPalette, (void *)0x05000000, 0x70);
@@ -252,9 +252,9 @@ void medapart_detail_load_gfx(void) {
     if (gGameWork.openedFrom == 0 || gGameWork.openedFrom == 4) {
         CpuFastSet(gMedapartDetailBgPalette, (void *)gPaletteBackupBg, 0x70);
         CpuFastSet((void *)0x05000200, (void *)gPaletteBackup, 0x80);
-        CpuFastSet(gGradientPaletteOlive + 0x40, (void *)0x0202F980, 8);
-        CpuFastSet(gGradientPaletteOlive + 0x10, (void *)0x0202F9A0, 8);
-        CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
+        CpuFastSet(gGradientPaletteOlive + 0x40, (void *)OBJ_PAL_BACKUP_ADDR(12), 8);
+        CpuFastSet(gGradientPaletteOlive + 0x10, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);
+        CpuFastSet(gCursorArrowPalette, (void *)OBJ_PAL_BACKUP_ADDR(14), 8);
         gGameWork.stepCounter = 0;
     } else {
         CpuFastSet(gMedapartDetailBgPalette, (void *)0x05000000, 0x70);

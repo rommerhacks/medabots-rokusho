@@ -105,17 +105,17 @@ void area_load_bg_palettes(void) {
     const u16 *pal = gAreaBgPalettes[gFieldWork.area_id];
 
     if (pal != NULL) {
-        DmaSet(3, pal, 0x0202FA00, 0x84000068);
+        DmaSet(3, pal, BG_PAL_BACKUP_ADDR(0), 0x84000068);
     } else {
-        DmaSet(3, gFallbackAreaPalette0, 0x0202FA00, 0x84000008);
-        DmaSet(3, gFallbackAreaPalette1, 0x0202FA20, 0x84000008);
-        DmaSet(3, gFallbackAreaPalette2, 0x0202FA40, 0x84000008);
-        DmaSet(3, gFallbackAreaPalette3, 0x0202FA60, 0x84000008);
-        DmaSet(3, gFallbackAreaPalette0, 0x0202FA80, 0x84000008);
-        DmaSet(3, gFallbackAreaPalette0, 0x0202FAA0, 0x84000008);
-        DmaSet(3, gFallbackAreaPalette0, 0x0202FAC0, 0x84000008);
-        DmaSet(3, gFallbackAreaPalette4, 0x0202FAE0, 0x84000008);
-        DmaSet(3, gFallbackAreaPalette5, 0x0202FB00, 0x84000008);
+        DmaSet(3, gFallbackAreaPalette0, BG_PAL_BACKUP_ADDR(0), 0x84000008);
+        DmaSet(3, gFallbackAreaPalette1, BG_PAL_BACKUP_ADDR(1), 0x84000008);
+        DmaSet(3, gFallbackAreaPalette2, BG_PAL_BACKUP_ADDR(2), 0x84000008);
+        DmaSet(3, gFallbackAreaPalette3, BG_PAL_BACKUP_ADDR(3), 0x84000008);
+        DmaSet(3, gFallbackAreaPalette0, BG_PAL_BACKUP_ADDR(4), 0x84000008);
+        DmaSet(3, gFallbackAreaPalette0, BG_PAL_BACKUP_ADDR(5), 0x84000008);
+        DmaSet(3, gFallbackAreaPalette0, BG_PAL_BACKUP_ADDR(6), 0x84000008);
+        DmaSet(3, gFallbackAreaPalette4, BG_PAL_BACKUP_ADDR(7), 0x84000008);
+        DmaSet(3, gFallbackAreaPalette5, BG_PAL_BACKUP_ADDR(8), 0x84000008);
     }
 }
 
@@ -261,9 +261,9 @@ void area_load_sprite_palettes(void) {
         sheet_id = area_sprite_sheet_id(i);
         if (gFieldSpritePalettes[sheet_id] == NULL)
             sheet_id = 1;
-        DmaSet(3, gFieldSpritePalettes[sheet_id], 0x0202F800 + i * 0x20, 0x84000008);
+        DmaSet(3, gFieldSpritePalettes[sheet_id], OBJ_PAL_BACKUP_ADDR(0) + i * 0x20, 0x84000008);
     }
-    DmaSet(3, gFieldSharedSpritePalette, 0x0202F9C0, 0x84000008);
+    DmaSet(3, gFieldSharedSpritePalette, OBJ_PAL_BACKUP_ADDR(14), 0x84000008);
 }
 
 void fill_sprite_palettes(s32 sheet_code) {

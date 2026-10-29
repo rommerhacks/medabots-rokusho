@@ -88,13 +88,13 @@ void medal_transform_init(void) {
         tile_ptr = (u16 *)(bg + (BG_VRAM + 0x2C8));
         *tile_ptr = tile + 3;
     }
-    CpuFastSet(gMedalSceneObjPalettes, (void *)0x0202FA00, 0x80);
-    CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
+    CpuFastSet(gMedalSceneObjPalettes, (void *)BG_PAL_BACKUP_ADDR(0), 0x80);
+    CpuFastSet(gSpriteFontPalette, (void *)OBJ_PAL_BACKUP_ADDR(15), 8);
     lz_decompress_dispatch(gCommonObjTilesLz, (void *)OBJ_VRAM0);
-    CpuFastSet(gCommonObjPalette, (void *)0x0202F800, 8);
-    CpuFastSet(gGradientPaletteOlive, (void *)0x0202F820, 8);
-    CpuFastSet(gGradientPaletteOlive - 0x20, (void *)0x0202F840, 8);
-    CpuFastSet(pal, (void *)0x0202F860, 8);
+    CpuFastSet(gCommonObjPalette, (void *)OBJ_PAL_BACKUP_ADDR(0), 8);
+    CpuFastSet(gGradientPaletteOlive, (void *)OBJ_PAL_BACKUP_ADDR(1), 8);
+    CpuFastSet(gGradientPaletteOlive - 0x20, (void *)OBJ_PAL_BACKUP_ADDR(2), 8);
+    CpuFastSet(pal, (void *)OBJ_PAL_BACKUP_ADDR(3), 8);
     lz_decompress_dispatch(gSpriteFontTiles, (void *)(OBJ_VRAM0 + 0x7400));
     for (i = 0; i < 16; i++) {
         gSpriteEntries[i + 1].flags =

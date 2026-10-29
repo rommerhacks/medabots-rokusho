@@ -702,15 +702,15 @@ void battle_seq_cmd_palette_fade(void) {
 // Opcode 0x28: copies OBJ palettes 8-11 (actor on the left) or 4-7 to the backup buffer.
 void battle_seq_cmd_backup_bot_palettes(void) {
     if (!(gBattleWork.actorSideFlags & 2)) {
-        CpuFastSet((void *)0x05000300, (void *)0x0202F900, 8);
-        CpuFastSet((void *)0x05000320, (void *)0x0202F920, 8);
-        CpuFastSet((void *)0x05000340, (void *)0x0202F940, 8);
-        CpuFastSet((void *)0x05000360, (void *)0x0202F960, 8);
+        CpuFastSet((void *)0x05000300, (void *)OBJ_PAL_BACKUP_ADDR(8), 8);
+        CpuFastSet((void *)0x05000320, (void *)OBJ_PAL_BACKUP_ADDR(9), 8);
+        CpuFastSet((void *)0x05000340, (void *)OBJ_PAL_BACKUP_ADDR(10), 8);
+        CpuFastSet((void *)0x05000360, (void *)OBJ_PAL_BACKUP_ADDR(11), 8);
     } else {
-        CpuFastSet((void *)0x05000280, (void *)0x0202F880, 8);
-        CpuFastSet((void *)0x050002A0, (void *)0x0202F8A0, 8);
-        CpuFastSet((void *)0x050002C0, (void *)0x0202F8C0, 8);
-        CpuFastSet((void *)0x050002E0, (void *)0x0202F8E0, 8);
+        CpuFastSet((void *)0x05000280, (void *)OBJ_PAL_BACKUP_ADDR(4), 8);
+        CpuFastSet((void *)0x050002A0, (void *)OBJ_PAL_BACKUP_ADDR(5), 8);
+        CpuFastSet((void *)0x050002C0, (void *)OBJ_PAL_BACKUP_ADDR(6), 8);
+        CpuFastSet((void *)0x050002E0, (void *)OBJ_PAL_BACKUP_ADDR(7), 8);
     }
     battle_seq_advance();
 }
@@ -720,10 +720,10 @@ void battle_seq_cmd_backup_palette(void) {
     battle_seq_load_operands();
     if (gBattleWork.seqOperands[0] == 0)
         CpuFastSet((void *)(gBattleWork.seqOperands[1] * 32 + 0x05000000),
-                   (void *)(gBattleWork.seqOperands[1] * 32 + 0x0202FA00), 8);
+                   (void *)(gBattleWork.seqOperands[1] * 32 + BG_PAL_BACKUP_ADDR(0)), 8);
     else
         CpuFastSet((void *)(gBattleWork.seqOperands[1] * 32 + 0x05000200),
-                   (void *)(gBattleWork.seqOperands[1] * 32 + 0x0202F800), 8);
+                   (void *)(gBattleWork.seqOperands[1] * 32 + OBJ_PAL_BACKUP_ADDR(0)), 8);
     battle_seq_advance();
 }
 

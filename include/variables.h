@@ -72,6 +72,13 @@ extern u16 gPaletteBackup[0x200];    // OBJ then BG palette (palette_backup_from
 extern u16 gPaletteBackupBg[0x100];  // = gPaletteBackup + 0x100
 extern u16 gPaletteBuffer[0x200];    // OBJ then BG palette (palette_buffer_upload)
 extern u16 gPaletteBufferBg[0x100];  // = gPaletteBuffer + 0x100
+
+// Addresses of 16-color palette n in those copies, as integer constants: unlike the symbols they fold with nearby
+// literals, so the original literal pools stay shared.
+#define OBJ_PAL_BACKUP_ADDR(n) (0x0202F800 + (n) * 0x20)
+#define BG_PAL_BACKUP_ADDR(n) (0x0202FA00 + (n) * 0x20)
+#define OBJ_PAL_BUFFER_ADDR(n) (0x0202FC00 + (n) * 0x20)
+#define BG_PAL_BUFFER_ADDR(n) (0x0202FE00 + (n) * 0x20)
 extern u32 gRngCounter;
 extern u32 gRngValue;
 extern u32 gRngState;

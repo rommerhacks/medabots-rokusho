@@ -60,19 +60,19 @@ u32 battle_load_graphics_step(u32 direct) {
         if (direct == 0) {
             vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG0CNT, direct);
             decompress_sprite_to_vram_08043C08(gBattleWork.battlefield, 1);
-            CpuFastSet(gBattleBgPalette8, (void *)0x0202FB00, 8);
-            CpuFastSet(gBattleBgPalette10, (void *)0x0202FB40, 8);
-            CpuFastSet(gBattleBgPalette11, (void *)0x0202FB60, 8);
-            CpuFastSet(gBattleBgPalette12, (void *)0x0202FB80, 8);
-            CpuFastSet(gBattleBgPalette13, (void *)0x0202FBA0, 8);
-            CpuFastSet(gTargetLinePalette, (void *)0x0202F900, 8);
-            CpuFastSet(gTargetArrowsPalette, (void *)0x0202F920, 8);
-            CpuFastSet(gBattleObjPalette10, (void *)0x0202F940, 8);
-            CpuFastSet(gHealNumberPalette, (void *)0x0202F960, 16);
-            CpuFastSet(gBattleObjPalettes13, (void *)0x0202F9A0, 8);
-            CpuFastSet(gBattleObjPalettes13 + 0x20, (void *)0x0202F9C0, 8);
-            CpuFastSet(gBattleObjPalettes13 + 0x40, (void *)0x0202F9E0, 8);
-            CpuFastSet(gBattleObjPalette5, (void *)0x0202F8A0, 8);
+            CpuFastSet(gBattleBgPalette8, (void *)BG_PAL_BACKUP_ADDR(8), 8);
+            CpuFastSet(gBattleBgPalette10, (void *)BG_PAL_BACKUP_ADDR(10), 8);
+            CpuFastSet(gBattleBgPalette11, (void *)BG_PAL_BACKUP_ADDR(11), 8);
+            CpuFastSet(gBattleBgPalette12, (void *)BG_PAL_BACKUP_ADDR(12), 8);
+            CpuFastSet(gBattleBgPalette13, (void *)BG_PAL_BACKUP_ADDR(13), 8);
+            CpuFastSet(gTargetLinePalette, (void *)OBJ_PAL_BACKUP_ADDR(8), 8);
+            CpuFastSet(gTargetArrowsPalette, (void *)OBJ_PAL_BACKUP_ADDR(9), 8);
+            CpuFastSet(gBattleObjPalette10, (void *)OBJ_PAL_BACKUP_ADDR(10), 8);
+            CpuFastSet(gHealNumberPalette, (void *)OBJ_PAL_BACKUP_ADDR(11), 16);
+            CpuFastSet(gBattleObjPalettes13, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);
+            CpuFastSet(gBattleObjPalettes13 + 0x20, (void *)OBJ_PAL_BACKUP_ADDR(14), 8);
+            CpuFastSet(gBattleObjPalettes13 + 0x40, (void *)OBJ_PAL_BACKUP_ADDR(15), 8);
+            CpuFastSet(gBattleObjPalette5, (void *)OBJ_PAL_BACKUP_ADDR(5), 8);
         } else {
             decompress_sprite_to_vram_08043C08(gBattleWork.battlefield, 0);
             CpuFastSet(gBattleBgPalette8, (void *)0x05000100, 8);

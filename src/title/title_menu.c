@@ -116,7 +116,7 @@ static void title_options_pulse_palette(u8 step) {
     u16 buf[32];
     s32 i;
     step = step > 15 ? step - 16 : 0;
-    CpuSet((void *)0x0202FB00, buf, CPU_SET_32BIT | 0x10);
+    CpuSet((void *)BG_PAL_BACKUP_ADDR(8), buf, CPU_SET_32BIT | 0x10);
     for (i = 0; i < 16; i++) {
         u16 color = buf[i];
         u16 target = buf[i + 16];
@@ -138,7 +138,7 @@ static void title_menu_pulse_selected(u8 sel, u8 blend) {
     u16 buf[32];
     s32 i, j;
     for (j = 0; j <= 2; j++) {
-        CpuSet((void *)(j * 0x40 + 0x0202FA00), buf, CPU_SET_32BIT | 0x10);
+        CpuSet((void *)(j * 0x40 + BG_PAL_BACKUP_ADDR(0)), buf, CPU_SET_32BIT | 0x10);
         if (j == sel) {
             for (i = 0; i < 16; i++) {
                 u16 color = buf[i];

@@ -109,8 +109,8 @@ void save_screen_draw_info(void) {
     render_text_sprites_08040DB8(gPlayerRecord.name, 13, 14, 4, 10, 13, 0, 0);
     open_choice_menu(1, 0x16, 7);
     CpuFastSet(gSaveScreenBgPalettes, gPaletteBackupBg, 0x80);
-    CpuFastSet(gGradientPaletteYellow, (void *)0x0202F9A0, 8);
-    CpuFastSet(gSpriteFontPalette, (void *)0x0202F9E0, 8);
+    CpuFastSet(gGradientPaletteYellow, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);
+    CpuFastSet(gSpriteFontPalette, (void *)OBJ_PAL_BACKUP_ADDR(15), 8);
     CpuFastSet(gSaveScreenObjPalette, gPaletteBackup, 8);
     gGameWork.stepCounter = 0;
     gGameSubState++;

@@ -116,10 +116,10 @@ void medabots_screen_load_gfx(void) {
         if (gGameWork.enteredFromSubmenu == 1) {
             CpuFastSet(gMedabotsBgPalette, gPaletteBackupBg, 0x60);
             CpuFastSet(gMenuObjPalettes, gPaletteBackup, 0x40);
-            CpuFastSet(gGradientPaletteGold, (void *)0x0202F9A0, 8);
-            CpuFastSet(gGradientPaletteGold + 0x10, (void *)0x0202F9C0, 8);
-            CpuFastSet(gMedabotsCursorObjPalette, (void *)0x0202F980, 8);
-            CpuFastSet(gTeamRoleLabelObjPalette, (void *)0x0202F9E0, 8);
+            CpuFastSet(gGradientPaletteGold, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);
+            CpuFastSet(gGradientPaletteGold + 0x10, (void *)OBJ_PAL_BACKUP_ADDR(14), 8);
+            CpuFastSet(gMedabotsCursorObjPalette, (void *)OBJ_PAL_BACKUP_ADDR(12), 8);
+            CpuFastSet(gTeamRoleLabelObjPalette, (void *)OBJ_PAL_BACKUP_ADDR(15), 8);
             gGameWork.stepCounter = 0;
         } else {
             CpuFastSet(gMedabotsBgPalette, (void *)0x05000000, 0x60);
@@ -328,10 +328,10 @@ void medabot_detail_load_gfx(void) {
     if (gGameWork.enteredFromSubmenu == 0) {
         CpuFastSet(gMedabotBuildBgPalette, gPaletteBackupBg, 0x70);
         CpuFastSet(gMenuObjPalettes, gPaletteBackup, 0x40);
-        CpuFastSet(gGradientPaletteOlive, (void *)0x0202F980, 8);
-        CpuFastSet(gGradientPaletteOlive + 0x20, (void *)0x0202F9A0, 8);
-        CpuFastSet(gGradientPaletteOlive - 0x20, (void *)0x0202F9E0, 8);
-        CpuFastSet(gCursorArrowPalette, (void *)0x0202F9C0, 8);
+        CpuFastSet(gGradientPaletteOlive, (void *)OBJ_PAL_BACKUP_ADDR(12), 8);
+        CpuFastSet(gGradientPaletteOlive + 0x20, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);
+        CpuFastSet(gGradientPaletteOlive - 0x20, (void *)OBJ_PAL_BACKUP_ADDR(15), 8);
+        CpuFastSet(gCursorArrowPalette, (void *)OBJ_PAL_BACKUP_ADDR(14), 8);
         gGameWork.detailRow = 0;
         medabot_detail_take_apart();
         gGameWork.stepCounter = 0;

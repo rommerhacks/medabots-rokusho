@@ -130,8 +130,8 @@ void text_scroll_init(void) {
     decompress_and_write_tilemap(gTextScrollBg3Tilemap, REG_BG3CNT);
     size = dma3_copy_or_decompress(gTextScrollBgTiles, (void *)0x02030000);
     CpuFastSet((void *)0x02030000, (void *)BG_CHAR_ADDR(1), (size << 9) >> 11);
-    CpuFastSet(gTextScrollBgPalettes, (void *)0x0202FA00, 0x18);
-    CpuFastSet(pal, (void *)0x0202F800, 0x20);
+    CpuFastSet(gTextScrollBgPalettes, (void *)BG_PAL_BACKUP_ADDR(0), 0x18);
+    CpuFastSet(pal, (void *)OBJ_PAL_BACKUP_ADDR(0), 0x20);
     lz_decompress_dispatch(gCommonObjTilesLz, (void *)OBJ_VRAM0);
     CpuFastSet(gBlackObjPalettes, (void *)0x05000200, 8);
     for (i = 0; i < sizeof(gMenuWork->ring_center_x); i++) {
