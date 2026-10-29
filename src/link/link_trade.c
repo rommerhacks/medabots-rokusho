@@ -20,8 +20,8 @@ static void medapart_trade_init_sprite_tree(u32 side) {
         mem_fill8((u8 *)obj, 0xD0, 0);
         oams = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
         mem_fill8(oams, 0x820, 0);
-        mem_fill8((u8 *)0x020264E0, 0x820, 0);
-        slots = (u8 *)0x020268F0;
+        mem_fill8((u8 *)SPRITE_TREE_OAMS_ADDR(1), 0x820, 0);
+        slots = (u8 *)SPRITE_SLOTS_TWO_ADDR;
         mem_fill8(slots, 0x60, 0);
         gVBlankOamMode = 2;
         gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
@@ -37,8 +37,8 @@ static void medapart_trade_init_sprite_tree(u32 side) {
         struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
 
         init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
-                         (struct SpriteNodeOam *)0x020264E0);
-        obj->oams = (struct SpriteNodeOam *)0x020264E0;
+                         (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(1));
+        obj->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(1);
         draw_medapart_sprite(gSpriteWork->oamBuf, obj, gMenuWork->partner_part_id, gMenuWork->partner_part_kind, 0x3C,
                              0x28, 0xC7, 4, 2);
     }

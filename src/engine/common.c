@@ -998,7 +998,7 @@ void advance_battle_animation_frame(u32 field) {
             gBattleWork.fieldAnimFrame = 0;
             memcpy_bytes_08041D04(&gBattlefieldAnimFrames[field * 128], &gBattleWork.fieldAnimBlock, 1);
         }
-        CpuSet((void *)(0x02027000 + gBattleWork.fieldAnimTiles * gBattleWork.fieldAnimBlock * 32),
+        CpuSet((void *)(BATTLEFIELD_ANIM_TILES_ADDR + gBattleWork.fieldAnimTiles * gBattleWork.fieldAnimBlock * 32),
                (void *)(VRAM + 0x8020), (gBattleWork.fieldAnimTiles * 8) | CPU_SET_32BIT);
     }
 }
@@ -1061,7 +1061,7 @@ void write_vram_tilemap_rect(u32 w, u32 h, u32 x, u32 y, u32 bgcnt, const void *
 }
 
 void decompress_to_ewram_27000(const u8 *src) {
-    lz_decompress_dispatch(src, (void *)0x02027000);
+    lz_decompress_dispatch(src, (void *)BATTLEFIELD_ANIM_TILES_ADDR);
 }
 
 void race_enter_team_select(void) {
@@ -1219,7 +1219,7 @@ void init_scene_buffers_080445F4(void) {
     mem_fill8((u8 *)obj, 0xD0, 0);
     node_oams = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
     mem_fill8(node_oams, 0x820, 0);
-    slots = (u8 *)0x020268F0;
+    slots = (u8 *)SPRITE_SLOTS_TWO_ADDR;
     mem_fill8(slots, 0x60, 0);
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
@@ -1362,7 +1362,8 @@ u32 medabot_pose_anim_step(u32 slot, u32 anim, u32 legs) {
     u8 *pos;
     u32 zero;
     s32 done;
-    register struct SpriteTree *obj asm("r1"); // pinned: the original loads 0x02026000 before 0x020260CE
+    register struct SpriteTree *obj asm(
+        "r1"); // pinned: the original loads SPRITE_TREE_ADDR before SPRITE_TREE_POSE_KEY_ADDR
     // `done` is deliberately uninitialized: the original reads ip when *pos >= n
 
     anim = gPoseAnimIds[anim][gLegPartPoseSets[legs]];
@@ -1374,7 +1375,7 @@ u32 medabot_pose_anim_step(u32 slot, u32 anim, u32 legs) {
                 break;
         } while (gPoseKeyframeEnds[anim][n] != 0);
     }
-    cnt = (u8 *)0x020260CC + slot;
+    cnt = (u8 *)SPRITE_TREE_POSE_FRAME_ADDR + slot;
     {
         // (*cnt)++ with the zero set between the add and the store
         u8 new_cnt = *cnt + 1;
@@ -1382,7 +1383,7 @@ u32 medabot_pose_anim_step(u32 slot, u32 anim, u32 legs) {
         *cnt = new_cnt;
     }
     obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
-    pos = (u8 *)0x020260CE + slot;
+    pos = (u8 *)SPRITE_TREE_POSE_KEY_ADDR + slot;
     if (*pos < n) {
         obj->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(slot);
         done = interpolate_entity_positions((struct InterpEnt *)obj->oams, gPoseKeyframeAngles[anim],

@@ -870,7 +870,7 @@ static void medaparts_list_load_part_sprite(void) {
     mem_fill8((u8 *)obj, 0xD0, 0);
     oam_buf = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
     mem_fill8(oam_buf, 0x800, 0);
-    slot_buf = (u8 *)0x020268D0;
+    slot_buf = (u8 *)SPRITE_SLOTS_ONE_ADDR;
     mem_fill8(slot_buf, 0x60, 0);
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
@@ -957,7 +957,7 @@ static void medapart_detail_init_sprite(void) {
     mem_fill8((u8 *)obj, 0xD0, 0);
     oam_buf = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
     mem_fill8(oam_buf, 0x800, 0);
-    slot_buf = (u8 *)0x020268D0;
+    slot_buf = (u8 *)SPRITE_SLOTS_ONE_ADDR;
     mem_fill8(slot_buf, 0x60, 0);
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;

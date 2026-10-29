@@ -83,9 +83,14 @@ extern u16 gPaletteBufferBg[0x100];  // = gPaletteBuffer + 0x100
 #define LIST_WORK_BUFFER_ADDR 0x02023000 // = gListWorkBuffer
 #define SPRITE_WORK_ADDR 0x02024000 // the struct SpriteWork the Medabot / part preview screens point gSpriteWork at
 #define SPRITE_TREE_ADDR 0x02026000 // their struct SpriteTree
-#define SPRITE_TREE_OAMS_ADDR(n) (0x020260D0 + (n) * 0x410) // per-node OAM block of preview sprite n
-#define DECOMPRESS_BUFFER_ADDR 0x02030000 // = gDecompressBuffer; also the field tilemap buffer and the save image
-#define MENU_LIST_ADDR 0x02040000         // item list / shop sell list (an EWRAM mirror of 0x02000000)
+#define SPRITE_TREE_OAMS_ADDR(n) (0x020260D0 + (n) * 0x410)      // per-node OAM block of preview sprite n
+#define SPRITE_TREE_POSE_FRAME_ADDR (SPRITE_TREE_ADDR + 0xCC)    // u8[2] per sprite: pose animation frame counter
+#define SPRITE_TREE_POSE_KEY_ADDR (SPRITE_TREE_ADDR + 0xCE)      // u8[2] per sprite: current pose keyframe
+#define SPRITE_SLOTS_ONE_ADDR (SPRITE_TREE_OAMS_ADDR(0) + 0x800) // gMedabotSpriteSlots after one 0x800 OAM block
+#define SPRITE_SLOTS_TWO_ADDR SPRITE_TREE_OAMS_ADDR(2) // gMedabotSpriteSlots after two OAM blocks (0x820 cleared)
+#define BATTLEFIELD_ANIM_TILES_ADDR 0x02027000 // decompressed battlefield animation tiles, copied to VRAM per frame
+#define DECOMPRESS_BUFFER_ADDR 0x02030000      // = gDecompressBuffer; also the field tilemap buffer and the save image
+#define MENU_LIST_ADDR 0x02040000              // item list / shop sell list (an EWRAM mirror of 0x02000000)
 extern u32 gRngCounter;
 extern u32 gRngValue;
 extern u32 gRngState;

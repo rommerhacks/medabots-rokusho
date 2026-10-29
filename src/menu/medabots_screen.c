@@ -979,7 +979,7 @@ static void medabots_screen_init_bot_sprite(void) {
     mem_fill8((u8 *)obj, 0xD0, 0);
     oam_buf = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
     mem_fill8(oam_buf, 0x800, 0);
-    slots = (u8 *)0x020268D0;
+    slots = (u8 *)SPRITE_SLOTS_ONE_ADDR;
     mem_fill8(slots, 0x60, 0);
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
@@ -1457,7 +1457,7 @@ static void medabot_detail_init_bot_sprite(void) {
     mem_fill8((u8 *)obj, 0xD0, 0);
     oam_buf = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
     mem_fill8(oam_buf, 0x800, 0);
-    slots = (u8 *)0x020268D0;
+    slots = (u8 *)SPRITE_SLOTS_ONE_ADDR;
     mem_fill8(slots, 0x60, 0);
     gVBlankOamMode = 2;
     gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
