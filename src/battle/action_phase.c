@@ -516,7 +516,8 @@ void action_phase_medaforce_name(void) {
     gGameSubState++;
 }
 
-// Runs the Medaforce as action actorSkill[0] + 0x50 in battle state 9.
+// Runs the Medaforce as action actorSkill[0] + 0x50 in battle state 9. The target is cleared, so a single-target
+// Medaforce (Spiral Bolt) hits the nearest enemy (script_op_resolve_target), not the Medal's Aim target.
 void action_phase_start_medaforce(void) {
     gBattleWork.skillGrowthOn = 1;
     gBattleWork.actorSkill = gBattleBots[gBattleWork.actor].medaforce[0] + 0x50;
