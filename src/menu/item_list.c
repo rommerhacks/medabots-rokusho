@@ -57,11 +57,11 @@ void unpack_item_inventory_to_buffer(void) {
     for (i = 0; i < 64; i++) {
         u8 owned = gItemInventory[i][0] & 0x80;
         if (owned) {
-            ((struct ItemListEntry *)0x02040000)[i].id = gItemInventory[i][0] & 0x7F;
-            ((struct ItemListEntry *)0x02040000)[i].count = gItemInventory[0][i * 2 + 1];
+            ((struct ItemListEntry *)MENU_LIST_ADDR)[i].id = gItemInventory[i][0] & 0x7F;
+            ((struct ItemListEntry *)MENU_LIST_ADDR)[i].count = gItemInventory[0][i * 2 + 1];
             n++;
         } else
-            ((struct ItemListEntry *)0x02040000)[i].count = owned;
+            ((struct ItemListEntry *)MENU_LIST_ADDR)[i].count = owned;
     }
     gMenuWork->item_count = n;
 }
@@ -74,7 +74,7 @@ void update_battle_medapart_icons(void) {
     s8 i;
 
     for (i = 0; i < n; i++) {
-        struct ItemListEntry *list = (struct ItemListEntry *)0x02040000;
+        struct ItemListEntry *list = (struct ItemListEntry *)MENU_LIST_ADDR;
         ids[i] = list[gMenuWork->list_top + i].id;
         counts[i] = list[gMenuWork->list_top + i].count;
     }
@@ -129,16 +129,16 @@ void shop_build_sell_list(void) {
     {
         u8 zero = 0;
         for (i = 0x77; i >= 0; i--)
-            ((struct ShopSellEntry *)0x02040000)[i].count = zero;
+            ((struct ShopSellEntry *)MENU_LIST_ADDR)[i].count = zero;
     }
     row = kind * 240;
     i = 0;
     n = 0;
-    pd = (u8 *)0x0300052E;     // &gGameWork.partAbility (the symbol form does not match)
-    price = (u32 *)0x02040004; // &((struct ShopSellEntry *)0x02040000)->price
+    pd = (u8 *)0x0300052E;               // &gGameWork.partAbility (the symbol form does not match)
+    price = (u32 *)(MENU_LIST_ADDR + 4); // &((struct ShopSellEntry *)MENU_LIST_ADDR)->price
     for (; i <= 0x77; i++) {
         if (gMedapartInventory[row + i * 2] > gMedapartInventory[row + i * 2 + 1]) {
-            struct ShopSellEntry *entry = &((struct ShopSellEntry *)0x02040000)[n];
+            struct ShopSellEntry *entry = &((struct ShopSellEntry *)MENU_LIST_ADDR)[n];
             entry->id = i;
             entry->count = gMedapartInventory[row + i * 2] - gMedapartInventory[row + i * 2 + 1];
             load_part_data(i, kind, pd);
@@ -184,10 +184,10 @@ void render_battle_medapart_list(u32 mode) {
 
     first = gListScrollTop;
     for (i = 0; i < n; i++) {
-        ids[i] = ((struct ShopSellEntry *)0x02040000)[first].id;
-        counts[i] = ((struct ShopSellEntry *)0x02040000)[first].count;
-        genders[i] = ((struct ShopSellEntry *)0x02040000)[first].gender;
-        prices[i] = ((struct ShopSellEntry *)0x02040000)[first].price;
+        ids[i] = ((struct ShopSellEntry *)MENU_LIST_ADDR)[first].id;
+        counts[i] = ((struct ShopSellEntry *)MENU_LIST_ADDR)[first].count;
+        genders[i] = ((struct ShopSellEntry *)MENU_LIST_ADDR)[first].gender;
+        prices[i] = ((struct ShopSellEntry *)MENU_LIST_ADDR)[first].price;
         if (mode)
             prices[i] /= 2;
         first++;

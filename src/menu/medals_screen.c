@@ -1029,7 +1029,7 @@ void medal_trade_refused_message(void) {
 }
 
 void medal_trade_copy_medal(void) {
-    memcpy_bytes_0803F63C(&gMedals[gGameWork.shownId], (void *)0x02023000, 0x40);
+    memcpy_bytes_0803F63C(&gMedals[gGameWork.shownId], (void *)LIST_WORK_BUFFER_ADDR, 0x40);
     gGameSubState++;
 }
 

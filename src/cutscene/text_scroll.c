@@ -128,8 +128,8 @@ void text_scroll_init(void) {
     REG_BG3CNT = 0x1C07;
     decompress_and_write_tilemap(gTextScrollBg2Tilemap, REG_BG2CNT);
     decompress_and_write_tilemap(gTextScrollBg3Tilemap, REG_BG3CNT);
-    size = dma3_copy_or_decompress(gTextScrollBgTiles, (void *)0x02030000);
-    CpuFastSet((void *)0x02030000, (void *)BG_CHAR_ADDR(1), (size << 9) >> 11);
+    size = dma3_copy_or_decompress(gTextScrollBgTiles, (void *)DECOMPRESS_BUFFER_ADDR);
+    CpuFastSet((void *)DECOMPRESS_BUFFER_ADDR, (void *)BG_CHAR_ADDR(1), (size << 9) >> 11);
     CpuFastSet(gTextScrollBgPalettes, (void *)BG_PAL_BACKUP_ADDR(0), 0x18);
     CpuFastSet(pal, (void *)OBJ_PAL_BACKUP_ADDR(0), 0x20);
     lz_decompress_dispatch(gCommonObjTilesLz, (void *)OBJ_VRAM0);

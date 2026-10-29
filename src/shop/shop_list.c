@@ -78,8 +78,8 @@ void shop_list_init(void) {
 
         tbl = gShopStock;
         i = 0;
-        list = (struct ShopSellEntry *)0x02040000;
-        prices = (u32 *)0x02040004;
+        list = (struct ShopSellEntry *)MENU_LIST_ADDR;
+        prices = (u32 *)(MENU_LIST_ADDR + 4);
         for (; i < 4; i++) {
             const u8 *stock = (const u8 *)(gShopId * 4 + i + (u32)tbl);
 
@@ -93,18 +93,18 @@ void shop_list_init(void) {
                 break;
             }
         }
-        ((struct ShopSellEntry *)0x02040000)[i].count = 0;
+        ((struct ShopSellEntry *)MENU_LIST_ADDR)[i].count = 0;
         gMenuWork->list_count = i;
     }
     for (i = 0; i < 4; i++) {
         if (gMenuWork->list_count > i)
-            load_battle_sprite_tiles(((struct ShopSellEntry *)0x02040000)[i].id, gMenuWork->part_kind, i);
+            load_battle_sprite_tiles(((struct ShopSellEntry *)MENU_LIST_ADDR)[i].id, gMenuWork->part_kind, i);
         else
             break;
     }
     gMenuWork->total = 0;
     for (i = 0; i < gMenuWork->list_count; i++)
-        gMenuWork->total += ((u8 *)0x02023000)[i] * ((u32 *)0x02040004)[i * 2];
+        gMenuWork->total += ((u8 *)LIST_WORK_BUFFER_ADDR)[i] * ((u32 *)(MENU_LIST_ADDR + 4))[i * 2];
     if (gMenuWork->cursor)
         gMenuWork->total /= 2;
     if (gMenuWork->total > 99999)
@@ -125,16 +125,19 @@ void enable_obj_layer_and_load_palette(void) {
     gGameWork.stepCounter = 0;
     render_battle_medapart_list(gMenuWork->cursor);
     if (gMenuWork->list_count != 0) {
-        u8 *buf = (u8 *)0x02023000;
+        u8 *buf = (u8 *)LIST_WORK_BUFFER_ADDR;
         draw_number_tall(buf[buf[0x78]], 2, 0x1B, 10, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
         gSpriteEntries[8].flags |= SPRITE_FLAG_VISIBLE;
     }
     if (gMenuWork->list_count > 1)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 1], 2, 0x1B, 12, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
+        draw_number_tall(((u8 *)LIST_WORK_BUFFER_ADDR)[gListScrollTop + 1], 2, 0x1B, 12, 6,
+                         BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     if (gMenuWork->list_count > 2)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 2], 2, 0x1B, 14, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
+        draw_number_tall(((u8 *)LIST_WORK_BUFFER_ADDR)[gListScrollTop + 2], 2, 0x1B, 14, 6,
+                         BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     if (gMenuWork->list_count > 3)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 3], 2, 0x1B, 16, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
+        draw_number_tall(((u8 *)LIST_WORK_BUFFER_ADDR)[gListScrollTop + 3], 2, 0x1B, 16, 6,
+                         BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     gGameSubState++;
 }
 
@@ -154,11 +157,11 @@ void shop_list_fade_in(void) {
 }
 
 #define CART gListWorkBuffer
-#define SHOP ((struct ShopSellEntry *)0x02040000)
-#define PRICE ((u32 *)0x02040004)
+#define SHOP ((struct ShopSellEntry *)MENU_LIST_ADDR)
+#define PRICE ((u32 *)(MENU_LIST_ADDR + 4))
 
 static inline u32 cart_cost(s32 i) {
-    return ((u8 *)0x02023000)[i] * PRICE[i * 2];
+    return ((u8 *)LIST_WORK_BUFFER_ADDR)[i] * PRICE[i * 2];
 }
 
 void shop_purchase_menu_handler(void) {
@@ -182,7 +185,7 @@ void shop_purchase_menu_handler(void) {
             {
                 u32 *money = &gPlayerRecord.money;
                 u32 sum = CART[0];
-                u32 *list_words = (u32 *)0x02040000;
+                u32 *list_words = (u32 *)MENU_LIST_ADDR;
                 u8 k;
                 u32 off;
 
@@ -244,7 +247,7 @@ void shop_purchase_menu_handler(void) {
 
     if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
         struct MenuWork *menu = gMenuWork;
-        u8 *buf = (u8 *)0x02023000;
+        u8 *buf = (u8 *)LIST_WORK_BUFFER_ADDR;
         struct ShopSellEntry *list = SHOP;
 
         idx = menu->list_cursor + buf[0x78];
@@ -306,11 +309,14 @@ changed:
     if (gMenuWork->list_count != 0)
         draw_number_tall(CART[CART[0x78]], 2, 0x1B, 0xA, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     if (gMenuWork->list_count > 1)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 1], 2, 0x1B, 0xC, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
+        draw_number_tall(((u8 *)LIST_WORK_BUFFER_ADDR)[gListScrollTop + 1], 2, 0x1B, 0xC, 6,
+                         BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     if (gMenuWork->list_count > 2)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 2], 2, 0x1B, 0xE, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
+        draw_number_tall(((u8 *)LIST_WORK_BUFFER_ADDR)[gListScrollTop + 2], 2, 0x1B, 0xE, 6,
+                         BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     if (gMenuWork->list_count > 3)
-        draw_number_tall(((u8 *)0x02023000)[gListScrollTop + 3], 2, 0x1B, 0x10, 6, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
+        draw_number_tall(((u8 *)LIST_WORK_BUFFER_ADDR)[gListScrollTop + 3], 2, 0x1B, 0x10, 6,
+                         BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     gMenuWork->total = 0;
     for (i = 0; i < 0x78; i++) {
         if (gMenuWork->cursor == 0)
@@ -336,7 +342,7 @@ void transition_fade_to_battle(void) {
     } else if (gMenuWork->counter != 0) {
         struct MenuWork *menu = gMenuWork;
         u8 mode = menu->part_kind;
-        struct ShopSellEntry *list = (struct ShopSellEntry *)0x02040000;
+        struct ShopSellEntry *list = (struct ShopSellEntry *)MENU_LIST_ADDR;
 
         init_battle_scene(mode, list[menu->list_cursor].id);
         gGameMode = 0;
@@ -378,9 +384,9 @@ void shop_complete_transaction(void) {
             gPlayerRecord.money -= gMenuWork->total;
             for (i = 0; i < 120; i++) {
                 u8 *inv = gMedapartInventory;
-                struct ShopSellEntry *list = (struct ShopSellEntry *)0x02040000;
+                struct ShopSellEntry *list = (struct ShopSellEntry *)MENU_LIST_ADDR;
                 u8 *count_ptr = &inv[list[i].id * 2 + gMenuWork->part_kind * 240];
-                *count_ptr += ((u8 *)0x02023000)[i];
+                *count_ptr += ((u8 *)LIST_WORK_BUFFER_ADDR)[i];
             }
         } else {
             u32 money = gPlayerRecord.money + gMenuWork->total;
@@ -391,9 +397,9 @@ void shop_complete_transaction(void) {
                 gPlayerRecord.money = 99999;
             for (i = 0; i < 120; i++) {
                 u8 *inv = gMedapartInventory;
-                struct ShopSellEntry *list = (struct ShopSellEntry *)0x02040000;
+                struct ShopSellEntry *list = (struct ShopSellEntry *)MENU_LIST_ADDR;
                 u8 *count_ptr = &inv[list[i].id * 2 + gMenuWork->part_kind * 240];
-                *count_ptr -= ((u8 *)0x02023000)[i];
+                *count_ptr -= ((u8 *)LIST_WORK_BUFFER_ADDR)[i];
             }
         }
         disable_sprites(0, 7);
@@ -428,7 +434,7 @@ void shop_list_fade_out_exit(void) {
     } else {
         struct MenuWork *menu = gMenuWork;
         u8 mode = menu->part_kind;
-        struct ShopSellEntry *list = (struct ShopSellEntry *)0x02040000;
+        struct ShopSellEntry *list = (struct ShopSellEntry *)MENU_LIST_ADDR;
         init_battle_scene(mode, list[menu->list_cursor + gListScrollTop].id);
         gGameMode = 0;
     }

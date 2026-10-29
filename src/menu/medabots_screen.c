@@ -971,20 +971,20 @@ static void medabots_screen_draw_medal_icon(void) {
 }
 
 static void medabots_screen_init_bot_sprite(void) {
-    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     u8 *oam_buf;
     u8 *slots;
     u32 fill;
 
     mem_fill8((u8 *)obj, 0xD0, 0);
-    oam_buf = (u8 *)0x020260D0;
+    oam_buf = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
     mem_fill8(oam_buf, 0x800, 0);
     slots = (u8 *)0x020268D0;
     mem_fill8(slots, 0x60, 0);
     gVBlankOamMode = 2;
-    gSpriteWork = (struct SpriteWork *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
     fill = 0;
-    CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+    CpuFastSet(&fill, (void *)SPRITE_WORK_ADDR, 0x01000426);
     gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slots;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                      (struct SpriteNodeOam *)oam_buf);
@@ -1002,10 +1002,10 @@ static void medabots_screen_init_bot_sprite(void) {
 }
 
 static void medabots_screen_redraw_bot_sprite(void) {
-    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     u32 fill;
 
-    obj->oams = (struct SpriteNodeOam *)0x020260D0;
+    obj->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(0);
     if (gGameWork.detailBot)
         setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gTeamSlots[gGameWork.medabotsCursor].head,
                                    gTeamSlots[gGameWork.medabotsCursor].rightArm,
@@ -1026,12 +1026,12 @@ static void medabots_screen_draw_bot_sprite(void) {
     if (gTeamSlots[gGameWork.medabotsCursor].state) {
         if (gGameWork.detailBot)
             setup_medabot_part_sprites(
-                gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gTeamSlots[gGameWork.medabotsCursor].head,
+                gSpriteWork->oamBuf, (struct SpriteTree *)SPRITE_TREE_ADDR, gTeamSlots[gGameWork.medabotsCursor].head,
                 gTeamSlots[gGameWork.medabotsCursor].rightArm, gTeamSlots[gGameWork.medabotsCursor].leftArm,
                 gTeamSlots[gGameWork.medabotsCursor].legs, 0x3C, 0x32, 0x1C2, 8, 5, 1);
         else
             setup_medabot_part_sprites(
-                gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gTeamSlots[gGameWork.medabotsCursor].head,
+                gSpriteWork->oamBuf, (struct SpriteTree *)SPRITE_TREE_ADDR, gTeamSlots[gGameWork.medabotsCursor].head,
                 gTeamSlots[gGameWork.medabotsCursor].rightArm, gTeamSlots[gGameWork.medabotsCursor].leftArm,
                 gTeamSlots[gGameWork.medabotsCursor].legs, 0x3C, 0x32, 0x1C2, 8, 5, 0);
     }
@@ -1449,20 +1449,20 @@ static void medabot_detail_blink_row_arrows(void) {
 }
 
 static void medabot_detail_init_bot_sprite(void) {
-    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     u8 *oam_buf;
     u8 *slots;
     u32 fill;
 
     mem_fill8((u8 *)obj, 0xD0, 0);
-    oam_buf = (u8 *)0x020260D0;
+    oam_buf = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
     mem_fill8(oam_buf, 0x800, 0);
     slots = (u8 *)0x020268D0;
     mem_fill8(slots, 0x60, 0);
     gVBlankOamMode = 2;
-    gSpriteWork = (struct SpriteWork *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
     fill = 0;
-    CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+    CpuFastSet(&fill, (void *)SPRITE_WORK_ADDR, 0x01000426);
     gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slots;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                      (struct SpriteNodeOam *)oam_buf);
@@ -1476,10 +1476,10 @@ static void medabot_detail_init_bot_sprite(void) {
 }
 
 static void medabot_detail_redraw_bot_sprite(void) {
-    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     u32 fill;
 
-    obj->oams = (struct SpriteNodeOam *)0x020260D0;
+    obj->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(0);
     if (gGameWork.detailBot)
         setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gGameWork.shownHead, gGameWork.shownRightArm,
                                    gGameWork.shownLeftArm, gGameWork.shownLegs, 0x28, 0x28, 0x1C2, 8, 1, 1);
@@ -1494,11 +1494,11 @@ static void medabot_detail_redraw_bot_sprite(void) {
 
 static void medabot_detail_draw_bot_sprite(void) {
     if (gGameWork.detailBot)
-        setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gGameWork.shownHead,
+        setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)SPRITE_TREE_ADDR, gGameWork.shownHead,
                                    gGameWork.shownRightArm, gGameWork.shownLeftArm, gGameWork.shownLegs, 0x3C, 0x32,
                                    0x1C2, 8, 5, 1);
     else
-        setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gGameWork.shownHead,
+        setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)SPRITE_TREE_ADDR, gGameWork.shownHead,
                                    gGameWork.shownRightArm, gGameWork.shownLeftArm, gGameWork.shownLegs, 0x3C, 0x32,
                                    0x1C2, 8, 5, 0);
 }

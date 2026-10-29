@@ -866,16 +866,16 @@ static void medaparts_list_load_part_sprite(void) {
     u32 fill;
 
     gGameWork.shownId = gGameWork.listTab * 4 + gGameWork.medalRow;
-    obj = (struct SpriteTree *)0x02026000;
+    obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     mem_fill8((u8 *)obj, 0xD0, 0);
-    oam_buf = (u8 *)0x020260D0;
+    oam_buf = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
     mem_fill8(oam_buf, 0x800, 0);
     slot_buf = (u8 *)0x020268D0;
     mem_fill8(slot_buf, 0x60, 0);
     gVBlankOamMode = 2;
-    gSpriteWork = (struct SpriteWork *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
     fill = 0;
-    CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+    CpuFastSet(&fill, (void *)SPRITE_WORK_ADDR, 0x01000426);
     gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slot_buf;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                      (struct SpriteNodeOam *)oam_buf);
@@ -884,10 +884,10 @@ static void medaparts_list_load_part_sprite(void) {
 }
 
 static void medapart_draw_sprite(void) {
-    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     u32 fill;
 
-    obj->oams = (struct SpriteNodeOam *)0x020260D0;
+    obj->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(0);
     switch (gGameWork.partSlot) {
     case 0:
         draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 0, 0x3C, 0x32, 0x1C2, 8, 1);
@@ -912,8 +912,8 @@ static void load_medapart_sprite_by_slot(void) {
     struct SpriteTree *obj;
 
     if ((u8)(gGameWork.openedFrom - 2) <= 1) {
-        obj = (struct SpriteTree *)0x02026000;
-        obj->oams = (struct SpriteNodeOam *)0x020260D0;
+        obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
+        obj->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(0);
         switch (gGameWork.partSlot) {
         case 0:
             draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 0, 0x3C, 0x32, 0x1C2, 8, 5);
@@ -929,8 +929,8 @@ static void load_medapart_sprite_by_slot(void) {
             break;
         }
     } else if (medapart_get_counts(gGameWork.shownId, gGameWork.partSlot)) {
-        obj = (struct SpriteTree *)0x02026000;
-        obj->oams = (struct SpriteNodeOam *)0x020260D0;
+        obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
+        obj->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(0);
         switch (gGameWork.partSlot) {
         case 0:
             draw_medapart_sprite(gSpriteWork->oamBuf, obj, gGameWork.shownId, 0, 0x3C, 0x32, 0x1C2, 8, 5);
@@ -949,20 +949,20 @@ static void load_medapart_sprite_by_slot(void) {
 }
 
 static void medapart_detail_init_sprite(void) {
-    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     u8 *oam_buf;
     u8 *slot_buf;
     u32 fill;
 
     mem_fill8((u8 *)obj, 0xD0, 0);
-    oam_buf = (u8 *)0x020260D0;
+    oam_buf = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
     mem_fill8(oam_buf, 0x800, 0);
     slot_buf = (u8 *)0x020268D0;
     mem_fill8(slot_buf, 0x60, 0);
     gVBlankOamMode = 2;
-    gSpriteWork = (struct SpriteWork *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
     fill = 0;
-    CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+    CpuFastSet(&fill, (void *)SPRITE_WORK_ADDR, 0x01000426);
     gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slot_buf;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                      (struct SpriteNodeOam *)oam_buf);

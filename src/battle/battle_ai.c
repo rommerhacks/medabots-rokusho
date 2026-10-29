@@ -720,7 +720,7 @@ u32 find_most_damaged_part(u32 rec) {
     u32 zero = 0;
     u32 i;
 
-    CpuFastSet(&zero, (void *)0x02023000, 0x01000080);
+    CpuFastSet(&zero, (void *)LIST_WORK_BUFFER_ADDR, 0x01000080);
     for (i = 0; i <= 3; i++) {
         SORT_BUFFER[i].value = i;
         if (gBattleBots[rec].parts[i].armor != 0 &&

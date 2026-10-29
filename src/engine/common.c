@@ -1210,21 +1210,21 @@ u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty) {
 }
 
 void init_scene_buffers_080445F4(void) {
-    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     u8 *node_oams;
     u8 *slots;
     u32 fill;
     u32 fill2;
 
     mem_fill8((u8 *)obj, 0xD0, 0);
-    node_oams = (u8 *)0x020260D0;
+    node_oams = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
     mem_fill8(node_oams, 0x820, 0);
     slots = (u8 *)0x020268F0;
     mem_fill8(slots, 0x60, 0);
     gVBlankOamMode = 2;
-    gSpriteWork = (struct SpriteWork *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
     fill = 0;
-    CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+    CpuFastSet(&fill, (void *)SPRITE_WORK_ADDR, 0x01000426);
     gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slots;
     fill2 = 0x200;
     CpuFastSet(&fill2, gSpriteWork->oamBuf, 0x01000100);
@@ -1266,9 +1266,9 @@ u8 pal, bank, step, side;
     flags = 0;
     if (step == 1)
         flags = 4;
-    ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
-    setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, head, rarm, larm, legs, (s16)x,
-                               (s16)y, depth, pal, bank | flags, side);
+    ((struct SpriteTree *)SPRITE_TREE_ADDR)->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(slot);
+    setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)SPRITE_TREE_ADDR, head, rarm, larm, legs,
+                               (s16)x, (s16)y, depth, pal, bank | flags, side);
     if (step == 2) {
         fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
@@ -1309,9 +1309,9 @@ u8 pal, bank, step, side, base;
     flags = 0;
     if (step == 1)
         flags = 4;
-    ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
-    setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, head, rarm, larm, legs, (s16)x,
-                               (s16)y, depth, pal, bank | flags, side);
+    ((struct SpriteTree *)SPRITE_TREE_ADDR)->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(slot);
+    setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)SPRITE_TREE_ADDR, head, rarm, larm, legs,
+                               (s16)x, (s16)y, depth, pal, bank | flags, side);
     if (step == 2) {
         fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
@@ -1345,9 +1345,9 @@ void setup_sprite_animation_entry(u32 slot, u8 id, u8 kind, u16 y, u16 x, u32 de
     flags = 0;
     if (step == 1)
         flags = 4;
-    ((struct SpriteTree *)0x02026000)->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
-    draw_medapart_sprite(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, id, kind, (s16)x, (s16)y, depth, pal,
-                         bank | flags);
+    ((struct SpriteTree *)SPRITE_TREE_ADDR)->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(slot);
+    draw_medapart_sprite(gSpriteWork->oamBuf, (struct SpriteTree *)SPRITE_TREE_ADDR, id, kind, (s16)x, (s16)y, depth,
+                         pal, bank | flags);
     if (step == 2) {
         fill = 0x200;
         CpuFastSet(&fill, gSpriteWork->oamBuf, 0x01000100);
@@ -1381,10 +1381,10 @@ u32 medabot_pose_anim_step(u32 slot, u32 anim, u32 legs) {
         zero = 0;
         *cnt = new_cnt;
     }
-    obj = (struct SpriteTree *)0x02026000;
+    obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     pos = (u8 *)0x020260CE + slot;
     if (*pos < n) {
-        obj->oams = (struct SpriteNodeOam *)(0x020260D0 + slot * 0x410);
+        obj->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(slot);
         done = interpolate_entity_positions((struct InterpEnt *)obj->oams, gPoseKeyframeAngles[anim],
                                             gPoseKeyframeOffsets[anim], gPoseKeyframeEnds[anim], anim, *cnt, *pos, 0x40,
                                             n);

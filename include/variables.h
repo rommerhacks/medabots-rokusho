@@ -79,6 +79,13 @@ extern u16 gPaletteBufferBg[0x100];  // = gPaletteBuffer + 0x100
 #define BG_PAL_BACKUP_ADDR(n) (0x0202FA00 + (n) * 0x20)
 #define OBJ_PAL_BUFFER_ADDR(n) (0x0202FC00 + (n) * 0x20)
 #define BG_PAL_BUFFER_ADDR(n) (0x0202FE00 + (n) * 0x20)
+// EWRAM work areas the menus and screens use by address, as integer constants (same reason as above).
+#define LIST_WORK_BUFFER_ADDR 0x02023000 // = gListWorkBuffer
+#define SPRITE_WORK_ADDR 0x02024000 // the struct SpriteWork the Medabot / part preview screens point gSpriteWork at
+#define SPRITE_TREE_ADDR 0x02026000 // their struct SpriteTree
+#define SPRITE_TREE_OAMS_ADDR(n) (0x020260D0 + (n) * 0x410) // per-node OAM block of preview sprite n
+#define DECOMPRESS_BUFFER_ADDR 0x02030000 // = gDecompressBuffer; also the field tilemap buffer and the save image
+#define MENU_LIST_ADDR 0x02040000         // item list / shop sell list (an EWRAM mirror of 0x02000000)
 extern u32 gRngCounter;
 extern u32 gRngValue;
 extern u32 gRngState;

@@ -68,8 +68,8 @@ void medal_transform_init(void) {
     decompress_and_write_tilemap(gMedalSceneBg1Tilemap, REG_BG1CNT);
     decompress_and_write_tilemap(gMedalSceneBg2Tilemap, REG_BG2CNT);
     decompress_and_write_tilemap(gMedalSceneBg3Tilemap, REG_BG3CNT);
-    size = dma3_copy_or_decompress(gMedalSceneBgTiles, (void *)0x02030000);
-    CpuFastSet((void *)0x02030000, (void *)BG_CHAR_ADDR(1), (size << 9) >> 11);
+    size = dma3_copy_or_decompress(gMedalSceneBgTiles, (void *)DECOMPRESS_BUFFER_ADDR);
+    CpuFastSet((void *)DECOMPRESS_BUFFER_ADDR, (void *)BG_CHAR_ADDR(1), (size << 9) >> 11);
     size = 0x1800;
     gMenuWork->bg_tile_base = 0xC4;
     CpuFastSet(gMedalIconTiles + gMedals[slot].graphicId * 0x80, vram + size, 0x20);

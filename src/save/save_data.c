@@ -24,7 +24,7 @@ s32 save_dispatch(s32 mode) {
         *status_ptr |= 1;
     }
         serialize_save_data((struct SaveData *)buf);
-        ret = write_save_to_eeprom((u16 *)0x02030000, 0);
+        ret = write_save_to_eeprom((u16 *)DECOMPRESS_BUFFER_ADDR, 0);
         break;
     case 1:
         ret = validate_save_data((struct SaveData *)buf);
@@ -34,7 +34,7 @@ s32 save_dispatch(s32 mode) {
         gSaveStatus.saveExists = 0;
         for (i = 0; i < 16; i++)
             gDecompressBuffer[i] = gSaveMagicErased[i];
-        ret = write_save_to_eeprom((u16 *)0x02030000, 0);
+        ret = write_save_to_eeprom((u16 *)DECOMPRESS_BUFFER_ADDR, 0);
         break;
     }
     REG_IE |= ie;

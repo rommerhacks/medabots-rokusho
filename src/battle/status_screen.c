@@ -198,21 +198,21 @@ void set_portrait_parts(u8 head, u8 right_arm, u8 left_arm, u8 legs) {
 }
 
 void status_init_portrait(void) {
-    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     u8 *oam_buf;
     u8 *slots;
     u32 fill;
 
     mem_fill8((u8 *)obj, 0xD0, 0);
-    oam_buf = (u8 *)0x020260D0;
+    oam_buf = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
     mem_fill8(oam_buf, 0x800, 0);
     slots = (u8 *)0x020268D0;
     mem_fill8(slots, 0x60, 0);
     gGameWork.noAffineSprites = 1;
     gVBlankOamMode = 2;
-    gSpriteWork = (struct SpriteWork *)0x02024000;
+    gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
     fill = 0;
-    CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+    CpuFastSet(&fill, (void *)SPRITE_WORK_ADDR, 0x01000426);
     gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slots;
     init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                      (struct SpriteNodeOam *)oam_buf);
@@ -222,10 +222,10 @@ void status_init_portrait(void) {
 }
 
 void status_reset_portrait(void) {
-    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     u32 fill;
 
-    obj->oams = (struct SpriteNodeOam *)0x020260D0;
+    obj->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(0);
     setup_medabot_part_sprites(gSpriteWork->oamBuf, obj, gGameWork.shownHead, gGameWork.shownRightArm,
                                gGameWork.shownLeftArm, gGameWork.shownLegs, 0x28, 0x28, 0x1C2, 8, 1, 0);
     fill = 0x200;
@@ -235,7 +235,7 @@ void status_reset_portrait(void) {
 }
 
 void status_update_portrait(void) {
-    setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)0x02026000, gGameWork.shownHead,
+    setup_medabot_part_sprites(gSpriteWork->oamBuf, (struct SpriteTree *)SPRITE_TREE_ADDR, gGameWork.shownHead,
                                gGameWork.shownRightArm, gGameWork.shownLeftArm, gGameWork.shownLegs, 0x44, 0x2A, 0x1C2,
                                8, 5, 0);
 }

@@ -145,7 +145,7 @@ void item_menu_show_description(void) {
     sprite_bob_x(0x53, gFrameCounter, 0x54);
     w = gMenuWork;
     if (w->item_count) {
-        struct ItemListEntry *list = (struct ItemListEntry *)0x02040000;
+        struct ItemListEntry *list = (struct ItemListEntry *)MENU_LIST_ADDR;
         id = list[w->item_cursor].id;
     } else
         id = 0x3F;
@@ -153,7 +153,7 @@ void item_menu_show_description(void) {
         gGameSubState++;
 }
 
-#define ITEM_LIST ((struct ItemListEntry *)0x02040000)
+#define ITEM_LIST ((struct ItemListEntry *)MENU_LIST_ADDR)
 
 // Item list input: 5 items per page; UP/DOWN move, LEFT/RIGHT page, SELECT starts a swap, A uses, B closes.
 void item_menu_handle_input(void) {

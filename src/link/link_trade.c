@@ -12,21 +12,21 @@
 
 static void medapart_trade_init_sprite_tree(u32 side) {
     if (side == 0) {
-        struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+        struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
         u8 *oams;
         u8 *slots;
         u32 fill;
 
         mem_fill8((u8 *)obj, 0xD0, 0);
-        oams = (u8 *)0x020260D0;
+        oams = (u8 *)SPRITE_TREE_OAMS_ADDR(0);
         mem_fill8(oams, 0x820, 0);
         mem_fill8((u8 *)0x020264E0, 0x820, 0);
         slots = (u8 *)0x020268F0;
         mem_fill8(slots, 0x60, 0);
         gVBlankOamMode = 2;
-        gSpriteWork = (struct SpriteWork *)0x02024000;
+        gSpriteWork = (struct SpriteWork *)SPRITE_WORK_ADDR;
         fill = side;
-        CpuFastSet(&fill, (void *)0x02024000, 0x01000426);
+        CpuFastSet(&fill, (void *)SPRITE_WORK_ADDR, 0x01000426);
         gMedabotSpriteSlots = (struct MedabotSpriteSlot *)slots;
         init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                          (struct SpriteNodeOam *)oams);
@@ -34,7 +34,7 @@ static void medapart_trade_init_sprite_tree(u32 side) {
         draw_medapart_sprite(gSpriteWork->oamBuf, obj, gMenuWork->own_part_id, gMenuWork->own_part_kind, 0x3C, 0x28,
                              0xC7, side, 1);
     } else {
-        struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+        struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
 
         init_sprite_tree(obj, (u8 *)gSpriteWork, (struct SpriteNodeDesc **)gMedabotSpriteNodeDescs,
                          (struct SpriteNodeOam *)0x020264E0);
@@ -45,10 +45,10 @@ static void medapart_trade_init_sprite_tree(u32 side) {
 }
 
 void load_medapart_sprite_animation(u8 id, u8 kind, u32 which) {
-    struct SpriteTree *obj = (struct SpriteTree *)0x02026000;
+    struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     u8 x, y;
 
-    obj->oams = (struct SpriteNodeOam *)(0x020260D0 + which * 0x410);
+    obj->oams = (struct SpriteNodeOam *)SPRITE_TREE_OAMS_ADDR(which);
     x = gPartTradeSpritePositions[which][kind][0];
     y = gPartTradeSpritePositions[which][kind][1];
     if (which)
@@ -561,7 +561,7 @@ void medal_trade_init_screen(void) {
     s32 j;
     vu16 *bg2, *bg3;
 
-    src = (u8 *)0x02023000;
+    src = (u8 *)LIST_WORK_BUFFER_ADDR;
     dst = (u8 *)&gMenuWork->trade_medal;
     for (i = 0; i < 0x40; i++)
         *dst++ = *src++;
@@ -584,8 +584,8 @@ void medal_trade_init_screen(void) {
     decompress_and_write_tilemap(gMedalTradeBg3Tilemap, *bg3);
     *bg2 = 0x1D06;
     decompress_and_write_tilemap(gMedalTradeBg2Tilemap, *bg2);
-    size = dma3_copy_or_decompress(gMedalTradeBgTiles, (void *)0x02030000);
-    CpuCopy16((void *)0x02030000, (void *)BG_CHAR_ADDR(1), size);
+    size = dma3_copy_or_decompress(gMedalTradeBgTiles, (void *)DECOMPRESS_BUFFER_ADDR);
+    CpuCopy16((void *)DECOMPRESS_BUFFER_ADDR, (void *)BG_CHAR_ADDR(1), size);
     lz_decompress_dispatch(gMenuDigitTilesLz, (void *)(size + BG_CHAR_ADDR(1)));
     gMenuWork->bg_tile_base = (size >> 5) + 4;
     lz_decompress_dispatch(gSmallDigitTiles, (void *)(size + (BG_VRAM + 0x4080)));
