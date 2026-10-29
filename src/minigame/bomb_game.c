@@ -8,6 +8,32 @@
 #include "global.h"
 #include "constants/sprites.h"
 
+// Lanes (BombGameWork.bombLanes, bombs' work[BOMB_SPR_BOMB_LANE])
+#define BOMB_LANE_LEFT 0
+#define BOMB_LANE_MIDDLE 1
+#define BOMB_LANE_RIGHT 2
+#define BOMB_LANE_COUNT 3
+
+// Bomb states (work[BOMB_SPR_BOMB_STATE])
+#define BOMB_FREE 0
+#define BOMB_ROLLING 1
+#define BOMB_BATTED 2
+#define BOMB_EXPLODING 3
+
+// A rolling bomb can be batted while its timer is BOMB_BAT_START..BOMB_BAT_END; past that it explodes.
+#define BOMB_BAT_START 0x39
+#define BOMB_BAT_END 0x3F
+
+#define BOMB_MAX_BOMBS 50     // bombs in the first round, and the cap after a lost life
+#define BOMB_DROP_INTERVAL 12 // base frames between drops in the first round
+#define BOMB_START_LIVES 3
+
+// Sub-states (gBombGameStates) set out of order
+#define BOMB_STATE_ROUND_INTRO 3
+#define BOMB_STATE_CLEARED 6
+#define BOMB_STATE_GAME_OVER 7
+#define BOMB_STATE_FADE_OUT 8
+
 // gSpriteEntries slots
 #define BOMB_SPR_BANNER 0        // round intro countdown, CONGRATULATIONS / GAME OVER
 #define BOMB_SPR_BOMB_ICON 10    // BOMB counter icon
@@ -67,9 +93,9 @@ void bomb_game_init(void) {
     gSceneWork.nextMode = 3;
     gSceneWork.nextState = 5;
     gSceneWork.timer = 0;
-    gSceneWork.param.s[1] = 12; // dropInterval
-    gSceneWork.param.s[0] = 50; // roundBombs
-    gSceneWork.param.s[2] = 0;  // bombsLeft
+    gSceneWork.param.s[1] = BOMB_DROP_INTERVAL; // dropInterval
+    gSceneWork.param.s[0] = BOMB_MAX_BOMBS;     // roundBombs
+    gSceneWork.param.s[2] = 0;                  // bombsLeft
     play_song(0);
     setup_screen_transition_effect_080682CC(3, 2, 0);
     gBg0Scroll.x = 0;
@@ -107,7 +133,7 @@ void bomb_game_load_graphics(void) {
     gSpriteEntries[BOMB_SPR_PLAYER].scale_y = 0x40;
     gSpriteEntries[BOMB_SPR_PLAYER].angle = 0;
     gBombGameWork.playerPos = 0;
-    gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_LIVES] = 3;
+    gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_LIVES] = BOMB_START_LIVES;
     gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] = 0;
 
     sprite_entry_init(BOMB_SPR_THROWER, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(3), 7, 1, 3);
@@ -168,7 +194,7 @@ void bomb_game_round_intro_state(void) {
 void bomb_game_pick_lanes_state(void) {
     s32 i;
 
-    gBombGameWork.bombLanes[0] = gRandomBytes[(gFrameCounter + i) & 0xFF] % 3;
+    gBombGameWork.bombLanes[0] = gRandomBytes[(gFrameCounter + i) & 0xFF] % BOMB_LANE_COUNT;
     for (i = 1; i < gBombGameWork.roundBombs; i++) {
         switch ((u8)(gRandomBytes[(gFrameCounter + i) & 0xFF] % 7)) {
         case 0:
@@ -177,12 +203,16 @@ void bomb_game_pick_lanes_state(void) {
         case 1:
         case 2:
         case 3:
-            gBombGameWork.bombLanes[i] = gBombGameWork.bombLanes[i - 1] == 0 ? 1 : gBombGameWork.bombLanes[i - 1] - 1;
+            gBombGameWork.bombLanes[i] = gBombGameWork.bombLanes[i - 1] == BOMB_LANE_LEFT
+                                             ? BOMB_LANE_MIDDLE
+                                             : gBombGameWork.bombLanes[i - 1] - 1;
             break;
         case 4:
         case 5:
         case 6:
-            gBombGameWork.bombLanes[i] = gBombGameWork.bombLanes[i - 1] == 2 ? 1 : gBombGameWork.bombLanes[i - 1] + 1;
+            gBombGameWork.bombLanes[i] = gBombGameWork.bombLanes[i - 1] == BOMB_LANE_RIGHT
+                                             ? BOMB_LANE_MIDDLE
+                                             : gBombGameWork.bombLanes[i - 1] + 1;
             break;
         }
     }
@@ -214,7 +244,7 @@ void bomb_game_clear_state(void) {
     if (bomb_game_clear_banner()) {
         gFieldState.sceneResult = 1;
         fade_out_music(0x30);
-        gGameSubState = 8;
+        gGameSubState = BOMB_STATE_FADE_OUT;
     }
 }
 
@@ -226,7 +256,7 @@ void bomb_game_over_state(void) {
     if (bomb_game_over_banner()) {
         gFieldState.sceneResult = 2;
         fade_out_music(0x30);
-        gGameSubState = 8;
+        gGameSubState = BOMB_STATE_FADE_OUT;
     }
 }
 
@@ -331,7 +361,7 @@ static void bomb_game_update_hint_arrow(void) {
     if (gSpriteEntries[BOMB_SPR_HELP_ARROW].work[BOMB_SPR_ARROW_STATE] == 0) {
         lowest_y = 0;
         for (i = 0; i < 8; i++) {
-            if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == 1 &&
+            if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == BOMB_ROLLING &&
                 lowest_y < gSpriteEntries[BOMB_SPR_BOMBS + i].y) {
                 lowest_y = gSpriteEntries[BOMB_SPR_BOMBS + i].y;
                 gSpriteEntries[BOMB_SPR_HELP_ARROW].work[BOMB_SPR_ARROW_STATE] =
@@ -453,24 +483,24 @@ void bomb_game_drop_bombs(void) {
     if (work->nextDropTime < work->timer) {
         if (work->bombsLeft == 0) {
             for (i = 0; i < 8; i++) {
-                if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] != 0)
+                if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] != BOMB_FREE)
                     return;
             }
             play_song(0);
             play_song(0xE);
-            gGameSubState = 6;
+            gGameSubState = BOMB_STATE_CLEARED;
             return;
         }
         work->bombsLeft--;
         bomb_game_draw_bomb_count();
         work->nextDropTime += work->bombsLeft * work->bombsLeft / 50 + work->dropInterval;
         for (i = 0; i < 8; i++) {
-            if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == 0) {
+            if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == BOMB_FREE) {
                 ((void (*)())sprite_entry_init)(BOMB_SPR_BOMBS + i, 0xC800, 0x10, 2, 3);
                 gSpriteEntries[BOMB_SPR_BOMBS + i].x = gSpriteEntries[BOMB_SPR_THROWER].x;
                 gSpriteEntries[BOMB_SPR_BOMBS + i].y = 0xC;
                 gSpriteEntries[BOMB_SPR_BOMBS + i].timer = 0;
-                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 1;
+                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = BOMB_ROLLING;
                 gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] =
                     gBombGameWork.bombLanes[gBombGameWork.bombsLeft];
                 shadow = BOMB_SPR_BOMB_SHADOWS + i;
@@ -493,18 +523,18 @@ static void bomb_game_update_bombs(void) {
 
     for (i = 0; i < 8; i++) {
         switch (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE]) {
-        case 0:
+        case BOMB_FREE:
             break;
-        case 1:
+        case BOMB_ROLLING:
             gSpriteEntries[BOMB_SPR_BOMBS + i].x = (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] - 1) *
                                                        ((gSpriteEntries[BOMB_SPR_BOMBS + i].timer >> 2) + 0x18) +
                                                    0x78;
             gSpriteEntries[BOMB_SPR_BOMBS + i].y = gSpriteEntries[BOMB_SPR_BOMBS + i].timer * 2 + 0xC;
             gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].x = gSpriteEntries[BOMB_SPR_BOMBS + i].x;
             gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].y = gSpriteEntries[BOMB_SPR_BOMBS + i].y + 4;
-            if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer > 0x38) {
-                if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer > 0x3F) {
-                    gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 3;
+            if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer >= BOMB_BAT_START) {
+                if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer > BOMB_BAT_END) {
+                    gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = BOMB_EXPLODING;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].timer = 0;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].y = 0x90;
                     gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].y = 0xC8;
@@ -513,7 +543,7 @@ static void bomb_game_update_bombs(void) {
                         gSpriteEntries[BOMB_SPR_PLAYER].timer = 0;
                         if ((s8)(gBombGameWork.playerPos / 5) == 0)
                             gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT_RIGHT] =
-                                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] != 2;
+                                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] != BOMB_LANE_RIGHT;
                         else
                             gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT_RIGHT] =
                                 gBombGameWork.playerPos > 0;
@@ -532,9 +562,9 @@ static void bomb_game_update_bombs(void) {
                 } else if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] == 0) {
                     if ((s8)(gBombGameWork.playerPos / 5) + 1 ==
                         gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE]) {
-                        if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] == 1)
+                        if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] == BOMB_LANE_MIDDLE)
                             gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] = gBombGameWork.bombsLeft & 2;
-                        gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 2;
+                        gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = BOMB_BATTED;
                         sprite_entry_init(BOMB_SPR_HIT_SPARK,
                                           SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x17, 4, 3);
                         gSpriteEntries[BOMB_SPR_HIT_SPARK].x = gSpriteEntries[BOMB_SPR_BOMBS + i].x;
@@ -550,8 +580,8 @@ static void bomb_game_update_bombs(void) {
             }
             gSpriteEntries[BOMB_SPR_BOMBS + i].timer++;
             break;
-        case 2:
-            if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] == 0)
+        case BOMB_BATTED:
+            if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] == BOMB_LANE_LEFT)
                 gSpriteEntries[BOMB_SPR_BOMBS + i].x -= 4;
             else
                 gSpriteEntries[BOMB_SPR_BOMBS + i].x += 4;
@@ -559,14 +589,14 @@ static void bomb_game_update_bombs(void) {
             gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].x = gSpriteEntries[BOMB_SPR_BOMBS + i].x;
             gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].y = gSpriteEntries[BOMB_SPR_BOMBS + i].y + 4;
             if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer < 0x28) {
-                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] = 0;
-                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 0;
+                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_LANE] = BOMB_LANE_LEFT;
+                gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = BOMB_FREE;
                 gSpriteEntries[BOMB_SPR_BOMBS + i].y = 0xC8;
                 gSpriteEntries[BOMB_SPR_BOMB_SHADOWS + i].y = 0xC8;
             }
             gSpriteEntries[BOMB_SPR_BOMBS + i].timer--;
             break;
-        case 3:
+        case BOMB_EXPLODING:
             if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer == 0)
                 ((void (*)())sprite_entry_init)(BOMB_SPR_BOMBS + i, 0xC400, 0x13, 3, 3);
             else if (gSpriteEntries[BOMB_SPR_BOMBS + i].timer > 0xF)
@@ -596,8 +626,8 @@ void bomb_game_player_blown_up(void) {
                 debris_times.v[gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_LIVES] - 1] &&
             (gSpriteEntries[BOMB_SPR_PLAYER].timer & 7) == 0) {
             for (i = 0; i < 8; i++) {
-                if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == 0) {
-                    gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 3;
+                if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == BOMB_FREE) {
+                    gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = BOMB_EXPLODING;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].x = (gRandomBytes[(gFrameCounter + i) & 0xFF] & 0x3F) + 0x58;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].y = 0x90;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].timer = 0;
@@ -619,7 +649,7 @@ void bomb_game_player_blown_up(void) {
         if (gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_LIVES] != 0) {
             u16 zero;
 
-            gGameSubState = 3;
+            gGameSubState = BOMB_STATE_ROUND_INTRO;
             gSpriteEntries[BOMB_SPR_BANNER].work[BOMB_SPR_BANNER_STEP] = 3;
             gSpriteEntries[BOMB_SPR_PLAYER].work[BOMB_SPR_PLAYER_HIT] = 0;
             gSpriteEntries[BOMB_SPR_PLAYER].frame = 0;
@@ -637,14 +667,14 @@ void bomb_game_player_blown_up(void) {
             zero = 0;
             DmaSet(3, &zero, &gSpriteEntries[BOMB_SPR_THROWER].work[BOMB_SPR_THROW_STATE], 0x81000008);
             gBombGameWork.roundBombs = gBombGameWork.bombsLeft + 10;
-            if (gBombGameWork.roundBombs > 0x32)
-                gBombGameWork.roundBombs = 0x32;
+            if (gBombGameWork.roundBombs > BOMB_MAX_BOMBS)
+                gBombGameWork.roundBombs = BOMB_MAX_BOMBS;
             gBombGameWork.dropInterval += 4;
             gBombGameWork.timer = 0;
         } else {
             play_song(0);
             play_song(0xF);
-            gGameSubState = 7;
+            gGameSubState = BOMB_STATE_GAME_OVER;
             gBombGameWork.timer = 0;
         }
     }
@@ -712,8 +742,8 @@ static u32 bomb_game_over_banner(void) {
     case 1:
         if (gSpriteEntries[BOMB_SPR_BANNER].timer <= 0x90 && !(gSpriteEntries[BOMB_SPR_BANNER].timer % 4)) {
             for (i = 0; i <= 5; i++) {
-                if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == 0) {
-                    gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = 3;
+                if (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] == BOMB_FREE) {
+                    gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE] = BOMB_EXPLODING;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].x = (gRandomBytes[(gFrameCounter + i) & 0xFF] & 0x3F) + 0x58;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].y = gSpriteEntries[BOMB_SPR_BASE].y - 0x10;
                     gSpriteEntries[BOMB_SPR_BOMBS + i].timer = 0;
@@ -903,12 +933,12 @@ void bomb_game_animate_bombs(void) {
 
     for (i = 0; i < 8; i++) {
         switch (gSpriteEntries[BOMB_SPR_BOMBS + i].work[BOMB_SPR_BOMB_STATE]) {
-        case 1:
-        case 2:
+        case BOMB_ROLLING:
+        case BOMB_BATTED:
             gSpriteEntries[BOMB_SPR_BOMBS + i].frame = (gSpriteEntries[BOMB_SPR_BOMBS + i].timer & 8) ? 0x10 : 0x11;
             gSpriteEntries[BOMB_SPR_BOMBS + i].y -= gHalfSineArc[gSpriteEntries[BOMB_SPR_BOMBS + i].timer & 0x3F];
             break;
-        case 3:
+        case BOMB_EXPLODING:
             gSpriteEntries[BOMB_SPR_BOMBS + i].frame = (gSpriteEntries[BOMB_SPR_BOMBS + i].timer - 1) / 4 + 0x13;
             break;
         }
