@@ -75,8 +75,8 @@ static void init_battle_bot_sprite(u32 rec, u32 x, u32 y) {
     u32 flip;
     get_bot_part_effective_values(rec, part_ids);
     flip = bot_sprite_is_flipped(rec);
-    init_battle_medabot_sprites(part_ids[0], part_ids[1], part_ids[2], part_ids[3], rec, rec * 4 + 0x5A, x, y, flip,
-                                gBattleWork.battlefieldParams[3] + 2, rec * 4 + 0x5A);
+    init_battle_medabot_sprites(part_ids[0], part_ids[1], part_ids[2], part_ids[3], rec, BOT_SPRITE_HEAD(rec), x, y,
+                                flip, gBattleWork.battlefieldParams[3] + 2, BOT_SPRITE_HEAD(rec));
 }
 
 void setup_all_battle_bot_sprite_positions(void) {
@@ -96,12 +96,12 @@ void setup_battle_bot_sprite_group(u32 rec, u32 x, u32 y) {
     u32 flip;
     get_bot_part_effective_values(rec, part_ids);
     flip = bot_sprite_is_flipped(rec);
-    setup_battle_sprite_group(part_ids[0], part_ids[1], part_ids[2], part_ids[3], rec, rec * 4 + 0x5A, x, y, flip,
-                              gBattleWork.battlefieldParams[3] + 2, rec * 4 + 0x5A);
-    gSpriteEntries[rec * 4 + 0x5B].flags &= (u16)~SPRITE_FLAG_AFFINE;
-    gSpriteEntries[rec * 4 + 0x5C].flags &= (u16)~SPRITE_FLAG_AFFINE;
-    gSpriteEntries[rec * 4 + 0x5B].angle = 0;
-    gSpriteEntries[rec * 4 + 0x5C].angle = 0;
+    setup_battle_sprite_group(part_ids[0], part_ids[1], part_ids[2], part_ids[3], rec, BOT_SPRITE_HEAD(rec), x, y, flip,
+                              gBattleWork.battlefieldParams[3] + 2, BOT_SPRITE_HEAD(rec));
+    gSpriteEntries[BOT_SPRITE_RIGHT_ARM(rec)].flags &= (u16)~SPRITE_FLAG_AFFINE;
+    gSpriteEntries[BOT_SPRITE_LEFT_ARM(rec)].flags &= (u16)~SPRITE_FLAG_AFFINE;
+    gSpriteEntries[BOT_SPRITE_RIGHT_ARM(rec)].angle = 0;
+    gSpriteEntries[BOT_SPRITE_LEFT_ARM(rec)].angle = 0;
 }
 
 void load_battle_bg_layers(void) {

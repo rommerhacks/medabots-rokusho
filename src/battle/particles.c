@@ -506,15 +506,15 @@ void particle_shot_fly(void) {
 void particle_shot_shake_target(void) {
     gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_SHAKE_FRAME]++;
     if (gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_SHAKE_FRAME] & 2)
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))) * 4 + 0x5D].y =
+        gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].y =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].y + 2;
     else
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))) * 4 + 0x5D].y =
+        gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].y =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].y + 4;
     target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)));
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x6B], gGameWork.runningSpriteSlot);
     if (gSpriteEntries[gGameWork.runningSpriteSlot].work[SPR_CMD_STATE] == SPR_CMD_ENDED) {
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))) * 4 + 0x5D].y =
+        gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].y =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].y + 4;
         target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)));
         clear_battle_sprite_slot(gGameWork.runningSpriteSlot, 1);
@@ -549,7 +549,7 @@ void particle_sweep_across(void) {
     if (!(gBattleWork.actorSideFlags & 1)) {
         gSpriteEntries[gGameWork.runningSpriteSlot].x = (gSpriteEntries[gGameWork.runningSpriteSlot].x + 4) & 0x1FF;
         if (gSpriteEntries[gGameWork.runningSpriteSlot].x >
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x &&
+                gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].x &&
             gBattleWork.partDamage[gGameWork.runningSpriteSlot - 0x21] != 0 &&
             gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_SWEEP_HIT] == 0) {
             play_sound_effect(0x54);
@@ -557,9 +557,10 @@ void particle_sweep_across(void) {
                 SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].frame_table = 0;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].x =
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x;
+                gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].x;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].y =
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].y - 4;
+                gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].y -
+                4;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].palette = 6;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].order = 0xF1;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].work[PARTICLE_STATE] = 2;
@@ -570,7 +571,7 @@ void particle_sweep_across(void) {
     } else {
         gSpriteEntries[gGameWork.runningSpriteSlot].x = (gSpriteEntries[gGameWork.runningSpriteSlot].x - 4) & 0x1FF;
         if (gSpriteEntries[gGameWork.runningSpriteSlot].x <
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x &&
+                gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].x &&
             gBattleWork.partDamage[gGameWork.runningSpriteSlot - 0x21] != 0 &&
             gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_SWEEP_HIT] == 0) {
             play_sound_effect(0x54);
@@ -579,9 +580,10 @@ void particle_sweep_across(void) {
                                                                     SPRITE_FLAG_PART_PALETTE;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].frame_table = 0;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].x =
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].x;
+                gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].x;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].y =
-                gSpriteEntries[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21)) * 4 + 0x5D].y - 4;
+                gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x21))].y -
+                4;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].palette = 6;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].order = 0xF1;
             gSpriteEntries[gGameWork.runningSpriteSlot + 3].work[PARTICLE_STATE] = 2;
@@ -600,15 +602,15 @@ void particle_sweep_across(void) {
 void particle_sweep_shake_target(void) {
     gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_SHAKE_FRAME]++;
     if (gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_SHAKE_FRAME] & 2)
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))) * 4 + 0x5D].x =
+        gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))].x =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))].x + 2;
     else
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))) * 4 + 0x5D].x =
+        gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))].x =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))].x - 2;
     target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24)));
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x6E], gGameWork.runningSpriteSlot);
     if (gSpriteEntries[gGameWork.runningSpriteSlot].work[SPR_CMD_STATE] == SPR_CMD_ENDED) {
-        gSpriteEntries[((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))) * 4 + 0x5D].x =
+        gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))].x =
             gBattleWork.botPositions[(gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24))].x;
         target_cursor_place_markers((gBattleWork.targetSideFirst + (gGameWork.runningSpriteSlot - 0x24)));
         clear_battle_sprite_slot(gGameWork.runningSpriteSlot, 1);

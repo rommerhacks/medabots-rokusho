@@ -46,4 +46,12 @@
 #define SPR_WALK_SPEED 0x4 // added to SPR_WALK_PHASE every frame
 #define SPR_WALK_PHASE 0x6 // 0-0x3F, the step advances when it wraps
 
+// Robattle Medabot sprites: four gSpriteEntries per battle slot rec (0-2 player team, 3-5 opponents), set up by
+// setup_battle_sprite_group. The legs sprite sits at the bot's position, so the battle code reads its x / y as
+// where the bot stands; the head is drawn 8 px higher.
+#define BOT_SPRITE_HEAD(rec) ((rec) * 4 + 0x5A)
+#define BOT_SPRITE_RIGHT_ARM(rec) ((rec) * 4 + 0x5B)
+#define BOT_SPRITE_LEFT_ARM(rec) ((rec) * 4 + 0x5C)
+#define BOT_SPRITE_LEGS(rec) ((rec) * 4 + 0x5D)
+
 #endif // GUARD_CONSTANTS_SPRITES_H

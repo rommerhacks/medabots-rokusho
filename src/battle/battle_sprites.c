@@ -10,8 +10,8 @@ void copy_battle_entity_positions(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        gBattleWork.botPositions[i].x = gSpriteEntries[0x5D + i * 4].x;
-        gBattleWork.botPositions[i].y = gSpriteEntries[0x5D + i * 4].y - 4;
+        gBattleWork.botPositions[i].x = gSpriteEntries[BOT_SPRITE_LEGS(i)].x;
+        gBattleWork.botPositions[i].y = gSpriteEntries[BOT_SPRITE_LEGS(i)].y - 4;
     }
 }
 
@@ -31,8 +31,8 @@ void init_bot_shadow_sprite(u32 rec) {
     gSpriteEntries[rec + 0x72].flags = SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) | SPRITE_FLAG_ENABLED |
                                        SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[rec + 0x72].frame_table = 0;
-    gSpriteEntries[rec + 0x72].x = gSpriteEntries[rec * 4 + 0x5D].x;
-    gSpriteEntries[rec + 0x72].y = gSpriteEntries[rec * 4 + 0x5D].y + 8;
+    gSpriteEntries[rec + 0x72].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x;
+    gSpriteEntries[rec + 0x72].y = gSpriteEntries[BOT_SPRITE_LEGS(rec)].y + 8;
     gSpriteEntries[rec + 0x72].palette = 5;
     gSpriteEntries[rec + 0x72].order = 1;
     gSpriteEntries[rec + 0x72].frame = 0xF00;

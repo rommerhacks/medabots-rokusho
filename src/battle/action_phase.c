@@ -44,8 +44,8 @@ void action_phase_load_gfx(void) {
 void action_phase_cursor_init(void) {
     gSpriteEntries[3].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[3].frame_table = 0;
-    gSpriteEntries[3].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
-    gSpriteEntries[3].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
+    gSpriteEntries[3].x = gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].x;
+    gSpriteEntries[3].y = gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].y - 4;
     gSpriteEntries[3].palette = 6;
     gSpriteEntries[3].order = 0x81;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x15], 3);
@@ -393,8 +393,8 @@ void action_phase_level_up_init(void) {
     gSpriteEntries[0x21].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
-    gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
-    gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
+    gSpriteEntries[0x21].x = gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].x;
+    gSpriteEntries[0x21].y = gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].y - 4;
     gSpriteEntries[0x21].palette = 0xC;
     gSpriteEntries[0x21].order = 0x80;
     gSpriteEntries[0x21].frame = 0x5800;
@@ -412,8 +412,8 @@ void action_phase_level_up_skill_init(void) {
     gSpriteEntries[0x22].flags =
         SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1) | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x22].frame_table = 0;
-    gSpriteEntries[0x22].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x - 0x10;
-    gSpriteEntries[0x22].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y + 4;
+    gSpriteEntries[0x22].x = gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].x - 0x10;
+    gSpriteEntries[0x22].y = gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].y + 4;
     gSpriteEntries[0x22].palette = gLevelUpSkillPalettes[gBattleWork.levelUpSkill];
     gSpriteEntries[0x22].order = 0x80;
     gSpriteEntries[0x22].frame = 0x5801 + gBattleWork.levelUpSkill;
@@ -431,8 +431,8 @@ void action_phase_level_up_digits_init(void) {
     lz_decompress_dispatch(gBattlePopupDigitTiles, (void *)(OBJ_VRAM0 + 0x7E00));
     set_display_digit_type(&gGameWork.partAbility, gBattleWork.levelUpLevel, 2);
     battle_text_popup_init_at(&gGameWork.partAbility, gBattleWork.actor, 0x23,
-                              gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x + 0x18,
-                              gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y + 4);
+                              gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].x + 0x18,
+                              gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].y + 4);
     gGameWork.stepCounter = 0;
     gGameSubState++;
 }
@@ -479,16 +479,16 @@ void action_phase_medaforce_anim_init(void) {
     gSpriteEntries[0x21].flags = SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) | SPRITE_FLAG_ENABLED |
                                  SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x21].frame_table = 0;
-    gSpriteEntries[0x21].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
-    gSpriteEntries[0x21].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
+    gSpriteEntries[0x21].x = gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].x;
+    gSpriteEntries[0x21].y = gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].y - 4;
     gSpriteEntries[0x21].palette = 7;
     gSpriteEntries[0x21].order = 0x81;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x4D], 0x21);
     gSpriteEntries[0x22].flags = SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) | SPRITE_FLAG_ENABLED |
                                  SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[0x22].frame_table = 0;
-    gSpriteEntries[0x22].x = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].x;
-    gSpriteEntries[0x22].y = gSpriteEntries[gBattleWork.actor * 4 + 0x5D].y - 4;
+    gSpriteEntries[0x22].x = gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].x;
+    gSpriteEntries[0x22].y = gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.actor)].y - 4;
     gSpriteEntries[0x22].palette = 7;
     gSpriteEntries[0x22].order = gBattleWork.actor * 4 + 0x59;
     battle_sprite_anim_init(gBattleSpriteAnimScripts[0x4E], 0x22);

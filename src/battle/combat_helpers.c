@@ -36,47 +36,47 @@ void set_target_sprite_position(u32 rec, u32 dir, u32 axis) {
     if (axis == 0) {
         switch ((dir & 6) >> 1) {
         case 1:
-            gSpriteEntries[rec * 4 + 0x5D].x = gBattleWork.botPositions[rec].x + 1;
-            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y;
+            gSpriteEntries[BOT_SPRITE_LEGS(rec)].x = gBattleWork.botPositions[rec].x + 1;
+            gSpriteEntries[BOT_SPRITE_LEGS(rec)].y = gBattleWork.botPositions[rec].y;
             break;
         case 3:
-            gSpriteEntries[rec * 4 + 0x5D].x = gBattleWork.botPositions[rec].x - 1;
-            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y;
+            gSpriteEntries[BOT_SPRITE_LEGS(rec)].x = gBattleWork.botPositions[rec].x - 1;
+            gSpriteEntries[BOT_SPRITE_LEGS(rec)].y = gBattleWork.botPositions[rec].y;
             break;
         default:
-            gSpriteEntries[rec * 4 + 0x5D].x = gBattleWork.botPositions[rec].x;
-            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y;
+            gSpriteEntries[BOT_SPRITE_LEGS(rec)].x = gBattleWork.botPositions[rec].x;
+            gSpriteEntries[BOT_SPRITE_LEGS(rec)].y = gBattleWork.botPositions[rec].y;
             break;
         }
     } else {
         switch ((dir & 6) >> 1) {
         case 1:
-            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y - 2;
+            gSpriteEntries[BOT_SPRITE_LEGS(rec)].y = gBattleWork.botPositions[rec].y - 2;
             break;
         case 3:
-            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y;
+            gSpriteEntries[BOT_SPRITE_LEGS(rec)].y = gBattleWork.botPositions[rec].y;
             break;
         default:
-            gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y - 1;
+            gSpriteEntries[BOT_SPRITE_LEGS(rec)].y = gBattleWork.botPositions[rec].y - 1;
             break;
         }
     }
     target_cursor_place_markers(rec);
 }
 
-// Places the three marker sprites above, left of and right of the target cursor sprite (rec * 4 + 0x5D).
+// Places the three marker sprites above, left of and right of the target cursor sprite (BOT_SPRITE_LEGS(rec)).
 void target_cursor_place_markers(u32 rec) {
-    gSpriteEntries[rec * 4 + 0x5A].x = gSpriteEntries[rec * 4 + 0x5D].x;
-    gSpriteEntries[rec * 4 + 0x5A].y = gSpriteEntries[rec * 4 + 0x5D].y - 8;
-    gSpriteEntries[rec * 4 + 0x5B].x = gSpriteEntries[rec * 4 + 0x5D].x - 8;
-    gSpriteEntries[rec * 4 + 0x5B].y = gSpriteEntries[rec * 4 + 0x5D].y;
-    gSpriteEntries[rec * 4 + 0x5C].x = gSpriteEntries[rec * 4 + 0x5D].x + 8;
-    gSpriteEntries[rec * 4 + 0x5C].y = gSpriteEntries[rec * 4 + 0x5D].y;
+    gSpriteEntries[BOT_SPRITE_HEAD(rec)].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x;
+    gSpriteEntries[BOT_SPRITE_HEAD(rec)].y = gSpriteEntries[BOT_SPRITE_LEGS(rec)].y - 8;
+    gSpriteEntries[BOT_SPRITE_RIGHT_ARM(rec)].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x - 8;
+    gSpriteEntries[BOT_SPRITE_RIGHT_ARM(rec)].y = gSpriteEntries[BOT_SPRITE_LEGS(rec)].y;
+    gSpriteEntries[BOT_SPRITE_LEFT_ARM(rec)].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x + 8;
+    gSpriteEntries[BOT_SPRITE_LEFT_ARM(rec)].y = gSpriteEntries[BOT_SPRITE_LEGS(rec)].y;
 }
 
 void update_target_cursor_position(u32 rec) {
-    gSpriteEntries[rec * 4 + 0x5D].x = gBattleWork.botPositions[rec].x;
-    gSpriteEntries[rec * 4 + 0x5D].y = gBattleWork.botPositions[rec].y + 4;
+    gSpriteEntries[BOT_SPRITE_LEGS(rec)].x = gBattleWork.botPositions[rec].x;
+    gSpriteEntries[BOT_SPRITE_LEGS(rec)].y = gBattleWork.botPositions[rec].y + 4;
     target_cursor_place_markers(rec);
 }
 
@@ -207,7 +207,8 @@ static void battle_sprite_blink_update(u32 slot, u8 *counter, u8 *n) {
     }
 }
 
-// guess: targets the living enemy whose sprite is closest in x (smallest x for the team, largest for opponents).
+// Targets the living enemy that stands nearest the other side (its legs sprite x: the smallest for the player
+// team's attacker, the largest for an opponent's). Used when an action has no target yet (script_op_resolve_target).
 void battle_target_nearest_enemy(u32 rec) {
     u32 best_x;
     s32 i;
@@ -215,16 +216,16 @@ void battle_target_nearest_enemy(u32 rec) {
     if (rec <= 2) {
         best_x = 0xFF;
         for (i = 5, best = 5; i > 2; i--) {
-            if (gBattleBots[i].teamState != 0 && gSpriteEntries[i * 4 + 0x5D].x < best_x) {
-                best_x = gSpriteEntries[i * 4 + 0x5D].x;
+            if (gBattleBots[i].teamState != 0 && gSpriteEntries[BOT_SPRITE_LEGS(i)].x < best_x) {
+                best_x = gSpriteEntries[BOT_SPRITE_LEGS(i)].x;
                 best = i;
             }
         }
     } else {
         best_x = 0;
         for (i = 2, best = 2; i >= 0; i--) {
-            if (gBattleBots[i].teamState != 0 && gSpriteEntries[i * 4 + 0x5D].x > best_x) {
-                best_x = gSpriteEntries[i * 4 + 0x5D].x;
+            if (gBattleBots[i].teamState != 0 && gSpriteEntries[BOT_SPRITE_LEGS(i)].x > best_x) {
+                best_x = gSpriteEntries[BOT_SPRITE_LEGS(i)].x;
                 best = i;
             }
         }

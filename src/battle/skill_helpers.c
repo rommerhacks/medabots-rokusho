@@ -218,23 +218,23 @@ void battle_set_damage_display(u32 rec, u32 part, s32 amount) {
 
 void battle_bot_sprites_blink(u32 rec, u32 frame, u32 mask) {
     if (frame & mask) {
-        gSpriteEntries[rec * 4 + 0x5A].flags |= SPRITE_FLAG_ENABLED;
-        gSpriteEntries[rec * 4 + 0x5B].flags |= SPRITE_FLAG_ENABLED;
-        gSpriteEntries[rec * 4 + 0x5C].flags |= SPRITE_FLAG_ENABLED;
-        gSpriteEntries[rec * 4 + 0x5D].flags |= SPRITE_FLAG_ENABLED;
+        gSpriteEntries[BOT_SPRITE_HEAD(rec)].flags |= SPRITE_FLAG_ENABLED;
+        gSpriteEntries[BOT_SPRITE_RIGHT_ARM(rec)].flags |= SPRITE_FLAG_ENABLED;
+        gSpriteEntries[BOT_SPRITE_LEFT_ARM(rec)].flags |= SPRITE_FLAG_ENABLED;
+        gSpriteEntries[BOT_SPRITE_LEGS(rec)].flags |= SPRITE_FLAG_ENABLED;
     } else {
-        gSpriteEntries[rec * 4 + 0x5A].flags &= (u16)~SPRITE_FLAG_ENABLED;
-        gSpriteEntries[rec * 4 + 0x5B].flags &= (u16)~SPRITE_FLAG_ENABLED;
-        gSpriteEntries[rec * 4 + 0x5C].flags &= (u16)~SPRITE_FLAG_ENABLED;
-        gSpriteEntries[rec * 4 + 0x5D].flags &= (u16)~SPRITE_FLAG_ENABLED;
+        gSpriteEntries[BOT_SPRITE_HEAD(rec)].flags &= (u16)~SPRITE_FLAG_ENABLED;
+        gSpriteEntries[BOT_SPRITE_RIGHT_ARM(rec)].flags &= (u16)~SPRITE_FLAG_ENABLED;
+        gSpriteEntries[BOT_SPRITE_LEFT_ARM(rec)].flags &= (u16)~SPRITE_FLAG_ENABLED;
+        gSpriteEntries[BOT_SPRITE_LEGS(rec)].flags &= (u16)~SPRITE_FLAG_ENABLED;
     }
 }
 
 void battle_bot_sprites_show(u32 rec) {
-    gSpriteEntries[rec * 4 + 0x5A].flags |= SPRITE_FLAG_ENABLED;
-    gSpriteEntries[rec * 4 + 0x5B].flags |= SPRITE_FLAG_ENABLED;
-    gSpriteEntries[rec * 4 + 0x5C].flags |= SPRITE_FLAG_ENABLED;
-    gSpriteEntries[rec * 4 + 0x5D].flags |= SPRITE_FLAG_ENABLED;
+    gSpriteEntries[BOT_SPRITE_HEAD(rec)].flags |= SPRITE_FLAG_ENABLED;
+    gSpriteEntries[BOT_SPRITE_RIGHT_ARM(rec)].flags |= SPRITE_FLAG_ENABLED;
+    gSpriteEntries[BOT_SPRITE_LEFT_ARM(rec)].flags |= SPRITE_FLAG_ENABLED;
+    gSpriteEntries[BOT_SPRITE_LEGS(rec)].flags |= SPRITE_FLAG_ENABLED;
 }
 
 void sprite_bob_step(u32 slot) {

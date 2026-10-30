@@ -31,7 +31,7 @@ void battle_bot_status_sprite_update(u32 rec) {
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[15], rec * 3 + 0x46);
         copy_bytes_short(gBuffSpriteParams[0], &gGameWork.partAbility, 4);
-        battle_setup_part_sprite(rec, 0, 0, gSpriteEntries[rec * 4 + 0x5D].order + 4);
+        battle_setup_part_sprite(rec, 0, 0, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
     } else if (gBattleBots[rec].buffType == 0x26 || gBattleBots[rec].buffType == 0x29) {
         if (gSpriteEntries[rec * 3 + 0x46].flags &&
             gSpriteEntries[rec * 3 + 0x46].work[STATUS_SPR_ID] == gBattleBots[rec].buffType)
@@ -39,7 +39,7 @@ void battle_bot_status_sprite_update(u32 rec) {
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[8], rec * 3 + 0x46);
         copy_bytes_short(gBuffSpriteParams[1], &gGameWork.partAbility, 4);
-        battle_setup_part_sprite(rec, 0, 0, gSpriteEntries[rec * 4 + 0x5D].order + 4);
+        battle_setup_part_sprite(rec, 0, 0, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
     }
 }
 
@@ -53,7 +53,7 @@ static void battle_update_status_effect_sprite(u32 rec) {
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[6], rec * 3 + 0x47);
         copy_bytes_short(gStatusSpriteParams[0], &gGameWork.partAbility, 4);
-        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
+        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
     } else if ((u8)(gBattleBots[rec].statusType - 0x11) <= 1 || gBattleBots[rec].statusType == 0x29) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 &&
             gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == gBattleBots[rec].statusType)
@@ -61,7 +61,7 @@ static void battle_update_status_effect_sprite(u32 rec) {
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[8], rec * 3 + 0x47);
         copy_bytes_short(gStatusSpriteParams[3], &gGameWork.partAbility, 4);
-        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
+        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
     } else if ((u8)(gBattleBots[rec].statusType - 0x13) <= 1) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 &&
             gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == gBattleBots[rec].statusType) {
@@ -79,7 +79,7 @@ static void battle_update_status_effect_sprite(u32 rec) {
             copy_bytes_short(gStatusSpriteParams[4], &gGameWork.partAbility, 4);
         else
             copy_bytes_short(gStatusSpriteParams[5], &gGameWork.partAbility, 4);
-        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order - 2);
+        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order - 2);
     } else if ((u8)(gBattleBots[rec].statusType - 0xF) <= 1) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 &&
             gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == gBattleBots[rec].statusType)
@@ -90,35 +90,35 @@ static void battle_update_status_effect_sprite(u32 rec) {
             copy_bytes_short(gStatusSpriteParams[1], &gGameWork.partAbility, 4);
         else
             copy_bytes_short(gStatusSpriteParams[2], &gGameWork.partAbility, 4);
-        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
+        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
     } else if (gBattleBots[rec].statusType == 0x2B) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2B)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[16], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[16], rec * 3 + 0x47);
         copy_bytes_short(gStatusSpriteParams[12], &gGameWork.partAbility, 4);
-        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
+        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
     } else if (gBattleBots[rec].statusType == 0x2C) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2C)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[17], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[17], rec * 3 + 0x47);
         copy_bytes_short(gStatusSpriteParams[13], &gGameWork.partAbility, 4);
-        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
+        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
     } else if (gBattleBots[rec].statusType == 0x2E) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2E)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[18], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[18], rec * 3 + 0x47);
         copy_bytes_short(gStatusSpriteParams[14], &gGameWork.partAbility, 4);
-        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
+        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
     } else if (gBattleBots[rec].statusType == 0x2F) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2F)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[19], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[19], rec * 3 + 0x47);
         copy_bytes_short(gStatusSpriteParams[15], &gGameWork.partAbility, 4);
-        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
+        battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
     }
 }
 
@@ -174,7 +174,7 @@ static void update_battle_status_effect_sprite(u32 rec) {
             copy_bytes_short(gStatusSpriteParams[6], &gGameWork.partAbility, 4);
             break;
         }
-        battle_setup_part_sprite(rec, 2, 2, gSpriteEntries[rec * 4 + 0x5D].order + 4);
+        battle_setup_part_sprite(rec, 2, 2, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
     } else if (gBattleBots[rec].stateFlags & 0x10) {
         if (gBattleBots[rec].parts[gBattleBots[rec].lastAction - 1].armor == 0) {
             disable_sprites(rec * 3 + 0x48, 1);
@@ -186,7 +186,7 @@ static void update_battle_status_effect_sprite(u32 rec) {
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[20], rec * 3 + 0x48);
         copy_bytes_short(gStatusSpriteParams[16], &gGameWork.partAbility, 4);
-        battle_setup_part_sprite(rec, 2, 2, gSpriteEntries[rec * 4 + 0x5D].order + 4);
+        battle_setup_part_sprite(rec, 2, 2, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
     }
 }
 
@@ -200,7 +200,7 @@ static void battle_setup_part_sprite(u32 rec, u32 slot, u32 kind, u32 attr) {
     gSpriteEntries[rec * 3 + 0x46 + slot].frame_table = 0;
     gSpriteEntries[rec * 3 + 0x46 + slot].palette = gGameWork.partSkillType + 0xB;
     gSpriteEntries[rec * 3 + 0x46 + slot].order = attr;
-    gSpriteEntries[rec * 3 + 0x46 + slot].y = gSpriteEntries[rec * 4 + 0x5D].y + (s16)(gGameWork.partSkill - 4);
+    gSpriteEntries[rec * 3 + 0x46 + slot].y = gSpriteEntries[BOT_SPRITE_LEGS(rec)].y + (s16)(gGameWork.partSkill - 4);
     gSpriteEntries[rec * 3 + 0x46 + slot].flags &= ~SPRITE_FLAG_HFLIP;
     switch (kind) {
     case 0:
@@ -217,10 +217,10 @@ static void battle_setup_part_sprite(u32 rec, u32 slot, u32 kind, u32 attr) {
     if (raw_off & 0x80)
         off = raw_off - 0x100;
     if (bot_sprite_is_flipped(rec)) {
-        gSpriteEntries[rec * 3 + 0x46 + slot].x = gSpriteEntries[rec * 4 + 0x5D].x - off;
+        gSpriteEntries[rec * 3 + 0x46 + slot].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x - off;
         if (gGameWork.partGender)
             gSpriteEntries[rec * 3 + 0x46 + slot].flags |= SPRITE_FLAG_HFLIP;
     } else {
-        gSpriteEntries[rec * 3 + 0x46 + slot].x = gSpriteEntries[rec * 4 + 0x5D].x + (signed_off = (s16)off);
+        gSpriteEntries[rec * 3 + 0x46 + slot].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x + (signed_off = (s16)off);
     }
 }

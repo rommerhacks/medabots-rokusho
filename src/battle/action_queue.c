@@ -44,10 +44,10 @@ u32 battle_bot_at_front_line(u32 rec, u32 peek) {
 
     if (!(gBattleBots[rec].stateFlags & 4)) {
         if (rec <= 2) {
-            if (gSpriteEntries[rec * 4 + 0x5D].x == 0x68)
+            if (gSpriteEntries[BOT_SPRITE_LEGS(rec)].x == 0x68)
                 reached = 1;
         } else {
-            if (gSpriteEntries[rec * 4 + 0x5D].x == 0x88)
+            if (gSpriteEntries[BOT_SPRITE_LEGS(rec)].x == 0x88)
                 reached = 1;
         }
         if (peek == 0 && reached)
@@ -61,10 +61,10 @@ u32 battle_bot_at_home_line(u32 rec, u32 peek) {
 
     if (gBattleBots[rec].stateFlags & 4) {
         if (rec <= 2) {
-            if (gSpriteEntries[rec * 4 + 0x5D].x == 0x28)
+            if (gSpriteEntries[BOT_SPRITE_LEGS(rec)].x == 0x28)
                 reached = 1;
         } else {
-            if (gSpriteEntries[rec * 4 + 0x5D].x == 0xC8)
+            if (gSpriteEntries[BOT_SPRITE_LEGS(rec)].x == 0xC8)
                 reached = 1;
         }
         if (peek == 0 && reached)
@@ -93,7 +93,8 @@ void iterate_bots_setup_battle_sprites(void) {
 
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState)
-            setup_battle_bot_sprite_group(i, gSpriteEntries[0x5D + i * 4].x, gSpriteEntries[0x5D + i * 4].y - 4);
+            setup_battle_bot_sprite_group(i, gSpriteEntries[BOT_SPRITE_LEGS(i)].x,
+                                          gSpriteEntries[BOT_SPRITE_LEGS(i)].y - 4);
     }
 }
 
@@ -118,7 +119,7 @@ void battle_number_popup_init(u8 *buf, u32 rec) {
         gSpriteEntries[rec * 4 + 10 + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE |
                                                  SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[rec * 4 + 10 + i].frame_table = 0;
-        gSpriteEntries[rec * 4 + 10 + i].y = gSpriteEntries[rec * 4 + 0x5D].y + 4;
+        gSpriteEntries[rec * 4 + 10 + i].y = gSpriteEntries[BOT_SPRITE_LEGS(rec)].y + 4;
         gSpriteEntries[rec * 4 + 10 + i].order = 0x90;
         gSpriteEntries[rec * 4 + 10 + i].frame = buf[i] + 0x800;
         gSpriteEntries[rec * 4 + 10 + i].work[POPUP_SPR_DELAY] = i * 4;
@@ -128,16 +129,16 @@ void battle_number_popup_init(u8 *buf, u32 rec) {
         gSpriteEntries[rec * 4 + 10 + i].palette = buf[0] + 1;
         switch (buf[6]) {
         case 1:
-            gSpriteEntries[rec * 4 + 10 + i].x = gSpriteEntries[rec * 4 + 0x5D].x + i * 8;
+            gSpriteEntries[rec * 4 + 10 + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x + i * 8;
             break;
         case 2:
-            gSpriteEntries[rec * 4 + 10 + i].x = gSpriteEntries[rec * 4 + 0x5D].x - 4 + i * 8;
+            gSpriteEntries[rec * 4 + 10 + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x - 4 + i * 8;
             break;
         case 3:
-            gSpriteEntries[rec * 4 + 10 + i].x = gSpriteEntries[rec * 4 + 0x5D].x - 8 + i * 8;
+            gSpriteEntries[rec * 4 + 10 + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x - 8 + i * 8;
             break;
         case 4:
-            gSpriteEntries[rec * 4 + 10 + i].x = gSpriteEntries[rec * 4 + 0x5D].x - 12 + i * 8;
+            gSpriteEntries[rec * 4 + 10 + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x - 12 + i * 8;
             break;
         }
     }
@@ -214,7 +215,7 @@ void battle_number_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
         gSpriteEntries[rec * 4 + slot + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE |
                                                    SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[rec * 4 + slot + i].frame_table = 0;
-        gSpriteEntries[rec * 4 + slot + i].y = gSpriteEntries[rec * 4 + 0x5D].y + 4;
+        gSpriteEntries[rec * 4 + slot + i].y = gSpriteEntries[BOT_SPRITE_LEGS(rec)].y + 4;
         gSpriteEntries[rec * 4 + slot + i].order = 0x90;
         gSpriteEntries[rec * 4 + slot + i].frame = buf[i] + 0x800;
         gSpriteEntries[rec * 4 + slot + i].work[POPUP_SPR_DELAY] = i * 4;
@@ -224,16 +225,16 @@ void battle_number_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
         gSpriteEntries[rec * 4 + slot + i].palette = buf[0] + 1;
         switch (buf[6]) {
         case 1:
-            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[rec * 4 + 0x5D].x + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x + i * 8;
             break;
         case 2:
-            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[rec * 4 + 0x5D].x - 4 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x - 4 + i * 8;
             break;
         case 3:
-            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[rec * 4 + 0x5D].x - 8 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x - 8 + i * 8;
             break;
         case 4:
-            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[rec * 4 + 0x5D].x - 12 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x - 12 + i * 8;
             break;
         }
     }
@@ -248,7 +249,7 @@ void battle_text_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
         gSpriteEntries[rec * 4 + slot + i].flags = SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_AFFINE |
                                                    SPRITE_FLAG_DOUBLE_SIZE | SPRITE_FLAG_PART_PALETTE;
         gSpriteEntries[rec * 4 + slot + i].frame_table = 0;
-        gSpriteEntries[rec * 4 + slot + i].y = gSpriteEntries[rec * 4 + 0x5D].y + 4;
+        gSpriteEntries[rec * 4 + slot + i].y = gSpriteEntries[BOT_SPRITE_LEGS(rec)].y + 4;
         gSpriteEntries[rec * 4 + slot + i].order = 0x90;
         gSpriteEntries[rec * 4 + slot + i].frame = buf[i] + 0x5100;
         gSpriteEntries[rec * 4 + slot + i].work[POPUP_SPR_DELAY] = i * 4;
@@ -258,16 +259,16 @@ void battle_text_popup_init_slot(u8 *buf, u32 rec, u32 slot) {
         gSpriteEntries[rec * 4 + slot + i].palette = 0xC;
         switch (buf[6]) {
         case 1:
-            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[rec * 4 + 0x5D].x + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x + i * 8;
             break;
         case 2:
-            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[rec * 4 + 0x5D].x - 4 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x - 4 + i * 8;
             break;
         case 3:
-            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[rec * 4 + 0x5D].x - 8 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x - 8 + i * 8;
             break;
         case 4:
-            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[rec * 4 + 0x5D].x - 12 + i * 8;
+            gSpriteEntries[rec * 4 + slot + i].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x - 12 + i * 8;
             break;
         }
     }
