@@ -1,6 +1,6 @@
-// Mode-2 state 20 (dispatch_battle_menu_and_update_counters, sub-states gLinkMenuStates), entered from
+// Mode-2 state 20 (link_menu_dispatch, sub-states gLinkMenuStates), entered from
 // field/field_mode (case 5) and when the link trade scenes end: the link menu hub with its own save + connect
-// step and yes/no confirmation. Name is a guess.
+// step and yes/no confirmation.
 #include "global.h"
 #include "constants/sprites.h"
 
@@ -372,7 +372,7 @@ void menu_yes_no_confirmation_handler(void) {
     }
 }
 
-void dispatch_battle_menu_and_update_counters(void) {
+void link_menu_dispatch(void) {
     struct FuncTable13 states = gLinkMenuStates;
     states.f[gGameSubState]();
     if (gFrameCounter & 1) {

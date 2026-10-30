@@ -1,4 +1,4 @@
-// Mode-2 state 19 (scene_dispatch_and_tick, sub-states gScrollBannerStates): loads a background strip into a window,
+// Mode-2 state 19 (scroll_banner_dispatch, sub-states gScrollBannerStates): loads a background strip into a window,
 // scrolls BG2 behind it and fades in/out on A. No direct writer of state 19 was found; purpose unknown.
 #include "global.h"
 
@@ -100,7 +100,7 @@ void scene_fade_and_scroll_camera(void) {
     menu->frame++;
 }
 
-void scene_dispatch_and_tick(void) {
+void scroll_banner_dispatch(void) {
     struct FuncTable4 states = gScrollBannerStates;
 
     states.f[gGameSubState]();

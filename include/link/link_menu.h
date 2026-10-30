@@ -3,6 +3,6 @@
 
 // Mode-2 state 20: link menu hub
 
-void dispatch_battle_menu_and_update_counters(void); // gLinkMenuStates[gGameSubState]()
+void link_menu_dispatch(void); // gLinkMenuStates[gGameSubState]()
 
 #endif // GUARD_LINK_LINK_MENU_H

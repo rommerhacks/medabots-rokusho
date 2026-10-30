@@ -1260,7 +1260,7 @@ extern const u8 gShopPartTypeIconPos[4][2];        // icon x, y in BG2 tiles (sh
 struct FuncTable7 {
     Func f[7];
 };
-extern const struct FuncTable7 gShopSubStates;    // sub-state handlers by gGameSubState (dispatch_substate_handler)
+extern const struct FuncTable7 gShopSubStates;    // sub-state handlers by gGameSubState (shop_return_dispatch)
 extern const struct FuncTable7 gTextScrollStates; // sub-state handlers by gGameSubState (text_scroll_update)
 struct TextBufTable4 {
     u8 *p[4];
@@ -1298,8 +1298,7 @@ extern const struct FuncTable13
     gPartTradeStates;                 // link Medapart trade sub-states by gGameSubState (medapart_trade_update)
 extern const s16 gSineTable[0x140];   // sin(i * 2pi / 256) * 0x100, 256 + 64 entries (cos(x) = [x + 0x40])
 extern const s8 gLinkMenuGameModes[]; // game mode by gMenuWork->cursor (link_menu_fade_out_exit)
-extern const struct FuncTable13
-    gLinkMenuStates; // link menu sub-states by gGameSubState (dispatch_battle_menu_and_update_counters)
+extern const struct FuncTable13 gLinkMenuStates; // link menu sub-states by gGameSubState (link_menu_dispatch)
 extern const u8
     gLinkSavePromptMessage[]; // guess: yes/no question before saving and linking (setup_dialogue_script_from_rom)
 extern const u8 gLinkMenuBg1Tilemap[];    // link menu BG1-3 tilemaps, tiles at 0x06004000, BG palette (clear_vram_bg)
@@ -1344,14 +1343,13 @@ struct FuncTable12 {
 };
 extern const struct FuncTable12
     gMedalTradeStates; // link Medal exchange sub-states by gGameSubState (medal_trade_update)
-extern const struct FuncTable4 gScrollBannerStates;     // sub-states by gGameSubState (scene_dispatch_and_tick)
+extern const struct FuncTable4 gScrollBannerStates;     // sub-states by gGameSubState (scroll_banner_dispatch)
 extern const struct FuncTable2 gLinkMedalSyncSubStates; // sub-states by gGameSubState (link_medal_sync_update)
 struct FuncTable8 {
     Func f[8];
 };
-extern const struct FuncTable8
-    gLinkStartStates;                   // sub-state handlers by gGameSubState (dispatch_battle_cutscene_substate)
-extern const Func gMedalRenameStates[]; // Medal list screen sub-states (medal_rename_main)
+extern const struct FuncTable8 gLinkStartStates;       // sub-state handlers by gGameSubState (link_start_dispatch)
+extern const Func gMedalRenameStates[];                // Medal list screen sub-states (medal_rename_main)
 extern const struct FuncTable7 gMedalLevelUpSubStates; // sub-state handlers by gGameSubState (medal_transform_update)
 struct S32Array3 {
     s32 v[3];

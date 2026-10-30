@@ -49,13 +49,13 @@ enum {
     MODE2_STATE_MEDAPART_TRADE = 16, // medapart_trade_update
     MODE2_STATE_MEDAL_TRADE,         // medal_trade_update
     MODE2_STATE_MEDAL_RENAME,        // medal_rename_main
-    MODE2_STATE_SCROLL_BANNER,       // scene_dispatch_and_tick (no writer found)
-    MODE2_STATE_LINK_MENU,           // dispatch_battle_menu_and_update_counters
-    MODE2_STATE_LINK_START,          // dispatch_battle_cutscene_substate
+    MODE2_STATE_SCROLL_BANNER,       // scroll_banner_dispatch (no writer found)
+    MODE2_STATE_LINK_MENU,           // link_menu_dispatch
+    MODE2_STATE_LINK_START,          // link_start_dispatch
     MODE2_STATE_TEXT_SCROLL,         // text_scroll_update
     MODE2_STATE_TOWN_MAP_2,          // town_map_dispatch again (field_mode case 6)
     MODE2_STATE_MEDAL_TRANSFORM,     // medal_transform_update
-    MODE2_STATE_SHOP_RETURN,         // dispatch_substate_handler: back to the shop from the Medaparts screen
+    MODE2_STATE_SHOP_RETURN,         // shop_return_dispatch: back to the shop from the Medaparts screen
     MODE2_STATE_LINK_HANDSHAKE,      // link_handshake_update
     MODE2_STATE_LINK_MEDAL_SYNC,     // link_medal_sync_update
     MODE2_STATE_NEW_GAME_PROMPT      // new_game_prompt_update

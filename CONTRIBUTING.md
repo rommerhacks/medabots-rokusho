@@ -200,7 +200,7 @@
   prototype). `(s16)x` on a `u16` param gets dropped under the mask; see the near misses in NOTES
   (hit_sparks_spawn, effect_sprite_spawn_at_part, staggered_sprites_spawn).
 * A pointer table copied to the stack with `ldm` / `stm` before an indexed call: copy a struct that
-  wraps the array, `struct FuncTable7 t = gShopSubStates; t.f[i]();` (dispatch_substate_handler). The
+  wraps the array, `struct FuncTable7 t = gShopSubStates; t.f[i]();` (shop_return_dispatch). The
   ROM table stays in the data blob; only a symbol is needed.
 * A switch whose `case 0` and `case 1` jump to the same code but whose compare tree is `1 / >1 / 0`
   (not a `0..1` range): write the two case bodies out in full; gcc's cross-jumping merges them later.

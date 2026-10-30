@@ -1,6 +1,6 @@
-// Mode-2 state 21 (dispatch_battle_cutscene_substate, sub-states gLinkStartStates), entered from field/field_mode
+// Mode-2 state 21 (link_start_dispatch, sub-states gLinkStartStates), entered from field/field_mode
 // (case 4): message and yes/no prompts, saves the game (save_dispatch) and starts the serial link
-// (serial_link_init). Name is a guess.
+// (serial_link_init).
 #include "global.h"
 
 void link_start_init(void) {
@@ -186,7 +186,7 @@ void link_start_exit_finished(void) {
         dispatch_by_index_0476e8(7);
 }
 
-void dispatch_battle_cutscene_substate(void) {
+void link_start_dispatch(void) {
     struct FuncTable8 states = gLinkStartStates;
     states.f[gGameSubState]();
 }

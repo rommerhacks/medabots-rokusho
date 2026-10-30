@@ -210,13 +210,13 @@
 08483B40	medapart_trade_update
 08483B44	medal_trade_update
 08483B48	medal_rename_main
-08483B4C	scene_dispatch_and_tick
-08483B50	dispatch_battle_menu_and_update_counters
-08483B54	dispatch_battle_cutscene_substate
+08483B4C	scroll_banner_dispatch
+08483B50	link_menu_dispatch
+08483B54	link_start_dispatch
 08483B58	text_scroll_update
 08483B5C	town_map_dispatch
 08483B60	medal_transform_update
-08483B64	dispatch_substate_handler
+08483B64	shop_return_dispatch
 08483B68	link_handshake_update
 08483B6C	link_medal_sync_update
 08483B70	new_game_prompt_update
