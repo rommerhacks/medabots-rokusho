@@ -22,20 +22,20 @@ void init_battle_bot_sprites(void) {
         if (gBattleBots[i].teamState)
             init_bot_shadow_sprite(i);
         else
-            disable_sprites(0x72 + i, 1);
+            disable_sprites(BOT_SPRITE_SHADOW(i), 1);
     }
 }
 
-// guess: the shadow under the bot (entry 0x72 + rec, 8 px below its body sprite)
+// Sets up the shadow sprite under battle slot rec, 8 px below its legs sprite.
 void init_bot_shadow_sprite(u32 rec) {
-    gSpriteEntries[rec + 0x72].flags = SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) | SPRITE_FLAG_ENABLED |
-                                       SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
-    gSpriteEntries[rec + 0x72].frame_table = 0;
-    gSpriteEntries[rec + 0x72].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x;
-    gSpriteEntries[rec + 0x72].y = gSpriteEntries[BOT_SPRITE_LEGS(rec)].y + 8;
-    gSpriteEntries[rec + 0x72].palette = 5;
-    gSpriteEntries[rec + 0x72].order = 1;
-    gSpriteEntries[rec + 0x72].frame = 0xF00;
+    gSpriteEntries[BOT_SPRITE_SHADOW(rec)].flags = SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) |
+                                                   SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
+    gSpriteEntries[BOT_SPRITE_SHADOW(rec)].frame_table = 0;
+    gSpriteEntries[BOT_SPRITE_SHADOW(rec)].x = gSpriteEntries[BOT_SPRITE_LEGS(rec)].x;
+    gSpriteEntries[BOT_SPRITE_SHADOW(rec)].y = gSpriteEntries[BOT_SPRITE_LEGS(rec)].y + 8;
+    gSpriteEntries[BOT_SPRITE_SHADOW(rec)].palette = 5;
+    gSpriteEntries[BOT_SPRITE_SHADOW(rec)].order = 1;
+    gSpriteEntries[BOT_SPRITE_SHADOW(rec)].frame = 0xF00;
 }
 
 void decompress_indexed_graphics_to_ewram(u32 list) {

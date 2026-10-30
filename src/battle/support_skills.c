@@ -543,7 +543,7 @@ void pushover_target_hop_init(void) {
     gSpriteEntries[BOT_SPRITE_RIGHT_ARM(gBattleWork.target)].work[FX_SPR_STEP] = 0;
     gSpriteEntries[BOT_SPRITE_LEFT_ARM(gBattleWork.target)].work[FX_SPR_STEP] = 0;
     gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.target)].work[FX_SPR_STEP] = 0;
-    sprite_enable_affine_unit_scale(gBattleWork.target + 0x72);
+    sprite_enable_affine_unit_scale(BOT_SPRITE_SHADOW(gBattleWork.target));
     play_sound_effect(0x34);
     gBattleWork.step++;
 }
@@ -576,9 +576,9 @@ void pushover_target_hop(void) {
         gSpriteEntries[BOT_SPRITE_LEFT_ARM(gBattleWork.target)].flags |= SPRITE_FLAG_VFLIP;
         gSpriteEntries[BOT_SPRITE_LEGS(gBattleWork.target)].flags |= SPRITE_FLAG_VFLIP;
     }
-    check_sprite_overlap_and_adjust(BOT_SPRITE_LEGS(gBattleWork.target), gBattleWork.target + 0x72);
+    check_sprite_overlap_and_adjust(BOT_SPRITE_LEGS(gBattleWork.target), BOT_SPRITE_SHADOW(gBattleWork.target));
     if (landed) {
-        sprite_disable_affine(gBattleWork.target + 0x72);
+        sprite_disable_affine(BOT_SPRITE_SHADOW(gBattleWork.target));
         play_sound_effect(0x41);
         gBattleWork.step++;
     }

@@ -53,5 +53,7 @@
 #define BOT_SPRITE_RIGHT_ARM(rec) ((rec) * 4 + 0x5B)
 #define BOT_SPRITE_LEFT_ARM(rec) ((rec) * 4 + 0x5C)
 #define BOT_SPRITE_LEGS(rec) ((rec) * 4 + 0x5D)
+// The bot's shadow, 8 px below the legs sprite (init_bot_shadow_sprite).
+#define BOT_SPRITE_SHADOW(rec) ((rec) + 0x72)
 
 #endif // GUARD_CONSTANTS_SPRITES_H

@@ -839,7 +839,7 @@ void guard_slide_center(void) {
         gSpriteEntries[gBattleWork.guardBot * 4 + 0x59].work16[FX_FALL_SPEED] = 0;
         gSpriteEntries[gBattleWork.guardBot * 4 + 0x59].x = 0x78;
         gSpriteEntries[gBattleWork.guardBot + 0x71].x = 0x78;
-        gSpriteEntries[gBattleWork.guardBot + 0x71].y = gSpriteEntries[gBattleWork.actor + 0x72].y;
+        gSpriteEntries[gBattleWork.guardBot + 0x71].y = gSpriteEntries[BOT_SPRITE_SHADOW(gBattleWork.actor)].y;
         gBattleWork.step++;
     }
 }
@@ -1947,7 +1947,7 @@ void bot_defeat_burst_wait(void) {
     if (gSpriteEntries[0x21].work[SPR_CMD_STATE] == SPR_CMD_ENDED) {
         clear_battle_sprite_slot(0x21, 1);
         disable_sprites(BOT_SPRITE_HEAD(gBattleWork.scratch), 4);
-        disable_sprites(gBattleWork.scratch + 0x72, 1);
+        disable_sprites(BOT_SPRITE_SHADOW(gBattleWork.scratch), 1);
         gBattleWork.step++;
     }
 }
