@@ -66,6 +66,11 @@ Robattles (mode 0 state 10) and the mode-2 link menu, trade and Medal handshake 
 
 **Menus** (`src/menu/`). The field pause menu and the screens it opens: Medawatch, Medabots, Medals,
 Medaparts, items, Town Map, plus name entry. They read and change the inventory.
+The Medabots screen (`src/menu/medabots_screen.c`) rebuilds a team slot with the D-pad: UP / DOWN move between
+the Medal, head, arm and legs rows (`gGameWork.detailRow`), LEFT / RIGHT step that row's preview
+(`gGameWork.shownHead` etc.) through the owned parts that are not all equipped, in part-id order, skipping parts
+of the other gender (`find_next_available_medapart_slot`). The team slot in `gTeamSlots` only changes when B
+leaves the screen (seen at runtime); A opens the part's details instead.
 
 **Inventory** (`src/inventory/`). The Medals, Medaparts, items and team the player owns, with the list sorts.
 Used by menus, shops, battle and field scripts.
