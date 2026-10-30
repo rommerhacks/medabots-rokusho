@@ -49,7 +49,7 @@ void new_game_prompt_fade_out(void) {
 
 void new_game_prompt_return_to_title(void) {
     if (blend_effect_step(gMenuWork->blend)) {
-        gGameState = 3;
+        gGameState = MODE2_STATE_TITLE_MENU;
         gGameSubState = 0;
     }
 }

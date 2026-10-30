@@ -81,7 +81,7 @@ void medal_rename_build_list(void) {
     }
     gMenuWork->medal_list_count = n;
     if (gNameEntryMode != 2) {
-        gGameState = 6;
+        gGameState = MODE2_STATE_NAME_ENTRY;
         gGameSubState = 0;
     } else {
         reset_bg_scroll();
@@ -275,7 +275,7 @@ void medal_rename_fade_to_name_entry(void) {
             game->stepCounter++;
         } else {
             REG_DISPCNT &= ~0x200;
-            gGameState = 6;
+            gGameState = MODE2_STATE_NAME_ENTRY;
             gGameSubState = 0;
         }
     }

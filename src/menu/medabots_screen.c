@@ -643,8 +643,8 @@ void team_select_exit_race(void) {
         gBattleWork.raceParts[i][2] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].leftArm;
         gBattleWork.raceParts[i][3] = gTeamSlots[gBattleWork.teamPicks[i] & 0xF].legs;
     }
-    gGameMode = 3;
-    gGameState = 4;
+    gGameMode = GAME_MODE_SCENE;
+    gGameState = MODE3_STATE_RACE;
     gGameSubState = 5;
 }
 

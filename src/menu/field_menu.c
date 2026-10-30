@@ -162,8 +162,8 @@ void field_menu_run_choice(void) {
         clear_battle_sprite_slot(0x28, 0x57);
         break;
     case 1:
-        gGameMode = 2;
-        gGameState = 4;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_ITEM_MENU;
         gGameSubState = 0;
         clear_battle_sprite_slot(0x28, 0x57);
         break;
@@ -172,8 +172,8 @@ void field_menu_run_choice(void) {
         break;
     default:
         gPlayTimeRunning = 0;
-        gGameMode = 2;
-        gGameState = 5;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_SAVE_SCREEN;
         gGameSubState = 0;
         clear_battle_sprite_slot(0x28, 0x57);
         break;

@@ -7,8 +7,8 @@
 
 void start_medal_transform(u8 slot) {
     gCurrentMedalSlot = slot;
-    gGameMode = 2;
-    gGameState = 0x18;
+    gGameMode = GAME_MODE_MENU;
+    gGameState = MODE2_STATE_MEDAL_TRANSFORM;
     gGameSubState = 0;
 }
 
@@ -232,7 +232,7 @@ void medal_transform_wait_confirm(void) {
 
 void medal_transform_exit(void) {
     if (blend_effect_step(gMenuWork->blend)) {
-        gGameMode = 0;
+        gGameMode = GAME_MODE_MENU_BATTLE;
         gGameState = MODE0_STATE_PREBATTLE;
         gGameSubState = 0x50;
     }

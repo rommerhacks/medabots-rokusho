@@ -1005,8 +1005,8 @@ void advance_battle_animation_frame(u32 field) {
 
 // Back to the field: mode 1, state 1, sub-state 7 (restores the script sprites, then resumes the map).
 void return_to_field(void) {
-    gGameMode = 1;
-    gGameState = 1;
+    gGameMode = GAME_MODE_FIELD;
+    gGameState = MODE1_STATE_FIELD;
     gGameSubState = 7;
 }
 
@@ -1076,8 +1076,8 @@ void race_enter_team_select(void) {
     gBattleWork.teamPicks[0] = 0;
     gBattleWork.teamPicks[1] = 0;
     gBattleWork.teamPicks[2] = 0;
-    gGameMode = 0;
-    gGameState = 3;
+    gGameMode = GAME_MODE_MENU_BATTLE;
+    gGameState = MODE0_STATE_MEDABOTS;
     gGameSubState = 0;
 }
 
@@ -1449,8 +1449,8 @@ void init_battle_scene(u32 mode, u32 id) {
         gGameWork.partSlot = mode;
         break;
     }
-    gGameMode = 0;
-    gGameState = 5;
+    gGameMode = GAME_MODE_MENU_BATTLE;
+    gGameState = MODE0_STATE_MEDAPARTS;
     gGameSubState = 0x10;
 }
 
@@ -1463,26 +1463,26 @@ void init_game_mode(u32 mode) {
     switch (mode) {
     case 0:
         gGameWork.openedFrom = 4;
-        gGameMode = 0;
-        gGameState = 4;
+        gGameMode = GAME_MODE_MENU_BATTLE;
+        gGameState = MODE0_STATE_MEDALS;
         gGameSubState = 0;
         break;
     case 1:
         gGameWork.openedFrom = 4;
-        gGameMode = 0;
-        gGameState = 5;
+        gGameMode = GAME_MODE_MENU_BATTLE;
+        gGameState = MODE0_STATE_MEDAPARTS;
         gGameSubState = 0;
         break;
     case 2:
         gGameWork.prizeGamePending = 0;
-        gGameMode = 0;
-        gGameState = 10;
+        gGameMode = GAME_MODE_MENU_BATTLE;
+        gGameState = MODE0_STATE_LINK_ROBATTLE;
         gGameSubState = 0;
         break;
     case 3:
         gGameWork.prizeGamePending = 1;
-        gGameMode = 0;
-        gGameState = 10;
+        gGameMode = GAME_MODE_MENU_BATTLE;
+        gGameState = MODE0_STATE_LINK_ROBATTLE;
         gGameSubState = 0;
         break;
     }

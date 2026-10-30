@@ -32,18 +32,18 @@ void field_resume(u32 mode) {
     case 0:
         gFieldState.sceneResult = gGameWork.battleResult;
         if (gFieldWork.script_running != 0) {
-            gGameMode = 1;
-            gGameState = 1;
+            gGameMode = GAME_MODE_FIELD;
+            gGameState = MODE1_STATE_FIELD;
             gGameSubState = 5;
         } else {
-            gGameMode = 1;
-            gGameState = 1;
+            gGameMode = GAME_MODE_FIELD;
+            gGameState = MODE1_STATE_FIELD;
             gGameSubState = 13;
         }
         break;
     case 1:
-        gGameMode = 1;
-        gGameState = 2;
+        gGameMode = GAME_MODE_FIELD;
+        gGameState = MODE1_STATE_VEHICLE_MENU;
         gGameSubState = 0;
         break;
     }
@@ -58,18 +58,18 @@ void dispatch_by_index_0476e8(u32 idx) {
     case 12:
         break;
     case 4:
-        gGameMode = 1;
-        gGameState = 1;
+        gGameMode = GAME_MODE_FIELD;
+        gGameState = MODE1_STATE_FIELD;
         gGameSubState = 0x10;
         return;
     case 5:
-        gGameMode = 1;
-        gGameState = 1;
+        gGameMode = GAME_MODE_FIELD;
+        gGameState = MODE1_STATE_FIELD;
         gGameSubState = 0x20;
         return;
     case 6:
-        gGameMode = 1;
-        gGameState = 2;
+        gGameMode = GAME_MODE_FIELD;
+        gGameState = MODE1_STATE_VEHICLE_MENU;
         gGameSubState = 8;
         return;
     case 7:
@@ -82,8 +82,8 @@ void dispatch_by_index_0476e8(u32 idx) {
         field_clear_ram();
         memzero_bytes((u8 *)&gFieldWork, 0xCC0);
         gPlayTimeRunning = 1;
-        gGameMode = 1;
-        gGameState = 1;
+        gGameMode = GAME_MODE_FIELD;
+        gGameState = MODE1_STATE_FIELD;
         gGameSubState = 0;
         return;
     case 11:
@@ -91,8 +91,8 @@ void dispatch_by_index_0476e8(u32 idx) {
         gFieldWork.script_running = 0;
         gFieldWork.cmd_busy = 0;
         gPlayTimeRunning = 1;
-        gGameMode = 1;
-        gGameState = 1;
+        gGameMode = GAME_MODE_FIELD;
+        gGameState = MODE1_STATE_FIELD;
         gGameSubState = 10;
         return;
     case 9:
@@ -101,8 +101,8 @@ void dispatch_by_index_0476e8(u32 idx) {
     default:
         return;
     }
-    gGameMode = 1;
-    gGameState = 1;
+    gGameMode = GAME_MODE_FIELD;
+    gGameState = MODE1_STATE_FIELD;
     gGameSubState = 5;
 }
 
@@ -111,8 +111,8 @@ void field_return_from_scene(s32 mode) {
         return;
     if (mode < 0)
         return;
-    gGameMode = 1;
-    gGameState = 1;
+    gGameMode = GAME_MODE_FIELD;
+    gGameState = MODE1_STATE_FIELD;
     gGameSubState = 5;
 }
 
@@ -121,99 +121,99 @@ void switch_game_mode(u32 mode, u32 shop_id) {
     switch (mode) {
     case 0x20:
         gFieldWork.fixed_battle = 1;
-        gGameMode = 0;
-        gGameState = 6;
+        gGameMode = GAME_MODE_MENU_BATTLE;
+        gGameState = MODE0_STATE_PREBATTLE;
         gGameSubState = 0;
         break;
     case 0x21:
         gFieldWork.fixed_battle = 0;
-        gGameMode = 0;
-        gGameState = 6;
+        gGameMode = GAME_MODE_MENU_BATTLE;
+        gGameState = MODE0_STATE_PREBATTLE;
         gGameSubState = 0;
         break;
     case 0x40:
-        gGameMode = 0;
-        gGameState = 1;
+        gGameMode = GAME_MODE_MENU_BATTLE;
+        gGameState = MODE0_STATE_FIELD_MENU;
         gGameSubState = 0x10;
         break;
     case 0x41:
-        gGameMode = 1;
-        gGameState = 1;
+        gGameMode = GAME_MODE_FIELD;
+        gGameState = MODE1_STATE_FIELD;
         gGameSubState = 0x18;
         break;
     case 0x42:
-        gGameMode = 1;
-        gGameState = 1;
+        gGameMode = GAME_MODE_FIELD;
+        gGameState = MODE1_STATE_FIELD;
         gGameSubState = 0x1C;
         break;
     case 0x43:
-        gGameMode = 1;
-        gGameState = 1;
+        gGameMode = GAME_MODE_FIELD;
+        gGameState = MODE1_STATE_FIELD;
         gGameSubState = 0x28;
         break;
     case 0:
         gNameEntryMode = 0;
-        gGameMode = 2;
-        gGameState = 0x12;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_MEDAL_RENAME;
         gGameSubState = 0;
         break;
     case 1:
         gNameEntryMode = 1;
-        gGameMode = 2;
-        gGameState = 0x12;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_MEDAL_RENAME;
         gGameSubState = 0;
         break;
     case 2:
         gNameEntryMode = 2;
-        gGameMode = 2;
-        gGameState = 0x12;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_MEDAL_RENAME;
         gGameSubState = 0;
         break;
     case 3:
         gShopId = shop_id;
-        gGameMode = 2;
-        gGameState = 0xB;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_SHOP_MENU;
         gGameSubState = 0;
         break;
     case 4:
-        gGameMode = 2;
-        gGameState = 0x15;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_LINK_START;
         gGameSubState = 0;
         break;
     case 5:
         gPlayTimeRunning = 0;
-        gGameMode = 2;
-        gGameState = 0x14;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_LINK_MENU;
         gGameSubState = 0;
         break;
     case 6:
-        gGameMode = 2;
-        gGameState = 0x17;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_TOWN_MAP_2;
         gGameSubState = 0;
         break;
     case 8:
-        gGameMode = 2;
-        gGameState = 0x16;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_TEXT_SCROLL;
         gGameSubState = 0;
         break;
     case 0x10:
-        gGameMode = 3;
-        gGameState = 4;
+        gGameMode = GAME_MODE_SCENE;
+        gGameState = MODE3_STATE_RACE;
         gGameSubState = 0;
         break;
     case 0x11:
-        gGameMode = 3;
-        gGameState = 5;
+        gGameMode = GAME_MODE_SCENE;
+        gGameState = MODE3_STATE_BOMB_GAME;
         gGameSubState = 0;
         break;
     case 0x12:
-        gGameMode = 3;
-        gGameState = 3;
+        gGameMode = GAME_MODE_SCENE;
+        gGameState = MODE3_STATE_STORY_INTRO;
         gGameSubState = 0;
         break;
     case 0x13:
-        gGameMode = 3;
-        gGameState = 6;
+        gGameMode = GAME_MODE_SCENE;
+        gGameState = MODE3_STATE_MEDABOTS_WEEKLY;
         gGameSubState = 0;
         break;
     }

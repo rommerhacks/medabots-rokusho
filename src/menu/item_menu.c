@@ -347,7 +347,7 @@ void item_menu_fade_out_exit(void) {
         REG_DISPCNT &= 0xFDFF;
         REG_DISPCNT &= 0xFBFF;
         clear_battle_sprite_slot(0, 0x80);
-        gGameMode = 0;
+        gGameMode = GAME_MODE_MENU_BATTLE;
         gGameState = MODE0_STATE_FIELD_MENU;
         gGameSubState = 0x10;
     }
@@ -381,7 +381,7 @@ void item_menu_fade_to_town_map(void) {
         REG_DISPCNT &= 0xFBFF;
         clear_battle_sprite_slot(0, 0x80);
         gMenuWork->returning = 1;
-        gGameState = 10;
+        gGameState = MODE2_STATE_TOWN_MAP;
         gGameSubState = 0;
     }
 }

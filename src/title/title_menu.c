@@ -12,8 +12,8 @@ void menu_mode_update(void) {
     gLinkPackets.sendData = 0;
     gMenuWork = (struct MenuWork *)&gBattleWork;
     if (gLinkMultiplayerActive != 0 && (*(u32 *)&gLinkPackets.recvTimeouts[3] & 0x00FFFF00)) {
-        gGameMode = 0;
-        gGameState = 10;
+        gGameMode = GAME_MODE_MENU_BATTLE;
+        gGameState = MODE0_STATE_LINK_ROBATTLE;
         gGameSubState = 0x10;
     } else {
         gMenuModeStates[gGameState]();
@@ -233,7 +233,7 @@ void title_menu_load_save(void) {
     ret = load_save_with_retries();
     if (ret != 0) {
         if (ret < 0) {
-            gGameState = 9;
+            gGameState = MODE2_STATE_SAVE_LOST;
             gGameSubState = 0;
             return;
         }
@@ -439,7 +439,7 @@ void title_menu_start_new_game(void) {
     eeprom_setup_timer_irq();
     for (i = 0; i <= 15; i++)
         gPlayerName[i] = 0xFE;
-    gGameState = 28;
+    gGameState = MODE2_STATE_NEW_GAME_PROMPT;
     gGameSubState = 0;
 }
 
@@ -448,8 +448,8 @@ void title_menu_continue_game(void) {
 
     play_song(0);
     play_sound_effect(0);
-    gGameMode = 1;
-    gGameState = 1;
+    gGameMode = GAME_MODE_FIELD;
+    gGameState = MODE1_STATE_FIELD;
     gGameSubState = zero;
     dispatch_by_index_0476e8(11);
 }
@@ -459,7 +459,7 @@ void title_menu_fade_to_save_lost(void) {
         gMenuWork->fade_level++;
         REG_BLDY = gMenuWork->fade_level >> 1;
     } else {
-        gGameState = 9;
+        gGameState = MODE2_STATE_SAVE_LOST;
         gGameSubState = 0;
     }
 }

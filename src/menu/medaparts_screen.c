@@ -422,8 +422,8 @@ void medapart_detail_exit(void) {
         zero4 = 0;
         CpuFastSet(&zero4, (void *)0x05000000, 0x01000080);
         gVBlankOamMode = 0;
-        gGameMode = 2;
-        gGameState = 0x19;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_SHOP_RETURN;
         gGameSubState = 0;
         break;
     }

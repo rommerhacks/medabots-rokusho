@@ -345,7 +345,7 @@ void transition_fade_to_battle(void) {
         struct ShopSellEntry *list = (struct ShopSellEntry *)MENU_LIST_ADDR;
 
         init_battle_scene(mode, list[menu->list_cursor].id);
-        gGameMode = 0;
+        gGameMode = GAME_MODE_MENU_BATTLE;
     } else {
         s8 i;
 
@@ -362,7 +362,7 @@ void transition_fade_to_battle(void) {
         REG_BLDALPHA = 0x1000;
         REG_BG1CNT = 0x1E05;
         REG_BG2CNT = 0x1D06;
-        gGameState = 0xB;
+        gGameState = MODE2_STATE_SHOP_MENU;
         gGameSubState = 1;
     }
 }
@@ -436,6 +436,6 @@ void shop_list_fade_out_exit(void) {
         u8 mode = menu->part_kind;
         struct ShopSellEntry *list = (struct ShopSellEntry *)MENU_LIST_ADDR;
         init_battle_scene(mode, list[menu->list_cursor + gListScrollTop].id);
-        gGameMode = 0;
+        gGameMode = GAME_MODE_MENU_BATTLE;
     }
 }

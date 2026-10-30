@@ -862,8 +862,8 @@ void afterbattle_exit_to_field(void) {
     gFieldWork.story_battle = 0;
     gVBlankCallback = empty_callback;
     set_blend_effect_mode(3, 0x3F, 0x20);
-    gGameMode = 2;
-    gGameState = 8;
+    gGameMode = GAME_MODE_MENU;
+    gGameState = MODE2_STATE_GAME_OVER;
     gGameSubState = 0;
 }
 

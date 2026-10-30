@@ -225,8 +225,8 @@ void save_screen_fade_out(void) {
         REG_DISPCNT &= 0xFDFF;
         REG_DISPCNT &= 0xFBFF;
         clear_battle_sprite_slot(0, 0x80);
-        gGameMode = 0;
-        gGameState = 1;
+        gGameMode = GAME_MODE_MENU_BATTLE;
+        gGameState = MODE0_STATE_FIELD_MENU;
         gGameSubState = 16;
     }
 }
@@ -244,8 +244,8 @@ void init_linking_mode(void) {
     REG_BLDCNT = 0xFF;
     REG_BLDY = 0x10;
     REG_SOUNDCNT_X = 0;
-    gGameMode = 3;
-    gGameState = 0;
+    gGameMode = GAME_MODE_SCENE;
+    gGameState = MODE3_STATE_BOOT_LOGOS;
     gGameSubState = 0;
     REG_DMA0CNT_H = 0;
     VBlankIntrWait();

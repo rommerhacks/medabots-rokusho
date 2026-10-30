@@ -53,7 +53,7 @@ void link_medal_sync_exchange(void) {
     }
     if (gLinkPackets.recv[0][1] == 0xFC0F && gLinkPackets.recv[1][1] == gLinkPackets.recv[0][1]) {
         if (gMenuWork->partner_chose) {
-            gGameState = 0x11;
+            gGameState = MODE2_STATE_MEDAL_TRADE;
             gGameSubState = 0;
         } else {
             gLinkTradeData = gMenuWork->total;
@@ -71,31 +71,31 @@ void link_medal_sync_update(void) {
 void link_handshake_update(void) {
     gLinkPackets.sendData = 0xFEDF;
     if (gLinkPackets.recv[0][1] == 0xFEDF && gLinkPackets.recv[1][1] == gLinkPackets.recv[0][1]) {
-        gGameState = 0x14;
+        gGameState = MODE2_STATE_LINK_MENU;
         gGameSubState = 0;
     }
 }
 
 void link_enter_handshake(void) {
-    gGameMode = 2;
-    gGameState = 0x1a;
+    gGameMode = GAME_MODE_MENU;
+    gGameState = MODE2_STATE_LINK_HANDSHAKE;
     gGameSubState = 0;
 }
 
 void link_enter_medal_trade(void) {
-    gGameMode = 2;
-    gGameState = 0x11;
+    gGameMode = GAME_MODE_MENU;
+    gGameState = MODE2_STATE_MEDAL_TRADE;
     gGameSubState = 0;
 }
 
 void link_enter_medapart_trade(void) {
-    gGameMode = 2;
-    gGameState = 0x10;
+    gGameMode = GAME_MODE_MENU;
+    gGameState = MODE2_STATE_MEDAPART_TRADE;
     gGameSubState = 0;
 }
 
 void link_enter_menu(void) {
-    gGameMode = 2;
-    gGameState = 0x14;
+    gGameMode = GAME_MODE_MENU;
+    gGameState = MODE2_STATE_LINK_MENU;
     gGameSubState = 0;
 }

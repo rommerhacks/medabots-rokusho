@@ -45,7 +45,7 @@ void fade_out_transition_step(void) {
     } else {
         update_list_scroll_arrows();
         gMenuWork->timer = 0;
-        gGameState = 12;
+        gGameState = MODE2_STATE_SHOP_LIST;
         gGameSubState = 4;
     }
 }

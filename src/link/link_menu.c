@@ -268,7 +268,7 @@ void link_menu_fade_out_exit(void) {
         if (gMenuWork->cursor <= 2)
             init_game_mode(gLinkMenuGameModes[gMenuWork->cursor]);
         else {
-            gGameState = 0x1B;
+            gGameState = MODE2_STATE_LINK_MEDAL_SYNC;
             gGameSubState = 0;
         }
     }

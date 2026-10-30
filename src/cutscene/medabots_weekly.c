@@ -64,8 +64,8 @@ void medabots_weekly_init(void) {
     DmaSet(3, &zero, &gMedabotsWeekly, 0x85000005);
     play_song(0);
     REG_DISPCNT = 0x60;
-    gMedabotsWeekly.nextMode = 3;
-    gMedabotsWeekly.nextState = 6;
+    gMedabotsWeekly.nextMode = GAME_MODE_SCENE;
+    gMedabotsWeekly.nextState = MODE3_STATE_MEDABOTS_WEEKLY;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;

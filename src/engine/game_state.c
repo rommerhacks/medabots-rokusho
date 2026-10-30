@@ -43,7 +43,7 @@ void devtest_update(void) {
         gGameWork.repeatCounter ^= 1;
     }
     if (KEYS_LO(gNewKeys) & B_BUTTON) {
-        gGameState = 1;
+        gGameState = MODE0_STATE_FIELD_MENU;
         gGameSubState = 0;
     }
     if (KEYS_LO(gNewKeys) & START_BUTTON) {

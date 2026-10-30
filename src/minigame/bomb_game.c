@@ -90,8 +90,8 @@ void bomb_game_init(void) {
     DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     zero = 0;
     DmaSet(3, &zero, &gSceneWork, 0x85000012);
-    gSceneWork.nextMode = 3;
-    gSceneWork.nextState = 5;
+    gSceneWork.nextMode = GAME_MODE_SCENE;
+    gSceneWork.nextState = MODE3_STATE_BOMB_GAME;
     gSceneWork.timer = 0;
     gSceneWork.param.s[1] = BOMB_DROP_INTERVAL; // dropInterval
     gSceneWork.param.s[0] = BOMB_MAX_BOMBS;     // roundBombs

@@ -483,7 +483,7 @@ void name_entry_fade_out_store_name(void) {
             break;
         case 2:
             CpuSet(gMenuWork->name_buf, gMedals[gCurrentMedalSlot].name, 7);
-            gGameState = 0x12;
+            gGameState = MODE2_STATE_MEDAL_RENAME;
             gGameSubState = 10;
             break;
         }

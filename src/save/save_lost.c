@@ -121,8 +121,8 @@ void save_lost_erase_and_restart(void) {
                 break;
         }
         REG_IE |= ie;
-        gGameMode = 3;
-        gGameState = 2;
+        gGameMode = GAME_MODE_SCENE;
+        gGameState = MODE3_STATE_TITLE_SCREEN;
         gGameSubState = 0;
         gTitleSkipIntro = 1;
     }

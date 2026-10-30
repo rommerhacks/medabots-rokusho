@@ -1,7 +1,8 @@
 // Boot and the main loop: AgbMain initialises the hardware, interrupts, sound and serial link, then runs one
-// frame per VBlank: read_keys, the gGameMode handler (gGameModeHandlers: 0 menus/battle via engine/game_state.c,
-// 1 field, 2 title, 3 boot/intro/minigames), the OAM build (engine/oam.c) and the link packet. The VBlank /
-// HBlank / sound DMA interrupt handlers and the soft reset (A+B+START+SELECT) live here too.
+// frame per VBlank: read_keys, the gGameMode handler (gGameModeHandlers, GAME_MODE_* in constants/game_states.h:
+// menus/battle, field, menu screens incl. the title menu, scenes such as boot/intro/minigames), the OAM build
+// (engine/oam.c) and the link packet. The VBlank / HBlank / sound DMA interrupt handlers and the soft reset
+// (A+B+START+SELECT) live here too.
 
 #include "global.h"
 
@@ -15,8 +16,8 @@ void AgbMain(void) {
     hw_reset_init();
     irq_init();
     REG_DISPCNT = 0x60;
-    gGameMode = 3;
-    gGameState = 0;
+    gGameMode = GAME_MODE_SCENE;
+    gGameState = MODE3_STATE_BOOT_LOGOS;
     gGameSubState = 0;
     serial_link_init();
     sound_init(&gSoundWorkArea);
@@ -62,8 +63,8 @@ void AgbMain(void) {
             if (gLinkPlayerId == 0)
                 other = 1;
             if (gLinkPackets.recv[other][0] == 0xFFFF && gLinkPackets.recv[other][1] == gLinkPackets.recv[other][0]) {
-                gGameMode = 0;
-                gGameState = 10;
+                gGameMode = GAME_MODE_MENU_BATTLE;
+                gGameState = MODE0_STATE_LINK_ROBATTLE;
                 gGameSubState = 16;
             }
         }
@@ -234,8 +235,8 @@ void soft_reset(void) {
     hw_reset_init();
     irq_init();
     serial_link_init();
-    gGameMode = 3;
-    gGameState = 0;
+    gGameMode = GAME_MODE_SCENE;
+    gGameState = MODE3_STATE_BOOT_LOGOS;
     gGameSubState = 0;
     REG_DMA0CNT_H = 0;
 }

@@ -6,8 +6,8 @@ void boot_logos_check_skip(void) {
     if (--gSceneWork.progress.w == 0)
         play_song(3);
     if (gSceneWork.param.b != 0 && (KEYS_LO(gNewKeys) & START_BUTTON)) {
-        gGameMode = 3;
-        gGameState = 2;
+        gGameMode = GAME_MODE_SCENE;
+        gGameState = MODE3_STATE_TITLE_SCREEN;
         gGameSubState = 0;
         gTitleSkipIntro = 1;
     }
@@ -52,8 +52,8 @@ void boot_logos_init(void) {
     DmaSet(3, &zero, &gSceneWork, 0x85000005);
     play_song(0);
     REG_DISPCNT = 0x60;
-    gSceneWork.nextMode = 3;
-    gSceneWork.nextState = 0;
+    gSceneWork.nextMode = GAME_MODE_SCENE;
+    gSceneWork.nextState = MODE3_STATE_BOOT_LOGOS;
     gSceneWork.timer = 0;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
@@ -170,7 +170,7 @@ void boot_logos_hold_overlay(void) {
 }
 
 void boot_logos_end(void) {
-    gGameMode = 3;
-    gGameState = 1;
+    gGameMode = GAME_MODE_SCENE;
+    gGameState = MODE3_STATE_INTRO;
     gGameSubState = 0;
 }

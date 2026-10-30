@@ -524,7 +524,7 @@ void medapart_trade_wait_confirm(void) {
 void medapart_trade_fade_out(void) {
     if (blend_effect_step(gMenuWork->blend)) {
         clear_battle_sprite_slot(0, 0x80);
-        gGameState = 0x14;
+        gGameState = MODE2_STATE_LINK_MENU;
         gGameSubState = 0;
     } else {
         load_medapart_sprite_animation(gMenuWork->own_part_id, gMenuWork->own_part_kind, 0);
@@ -676,7 +676,7 @@ void medal_trade_handshake(void) {
     if (gMenuWork->partner_chose)
         run_message(gLinkMenuMessages[24]);
     if (gLinkPackets.recv[gLinkPlayerId == 0][1] == 0xFEDF)
-        gGameState = 0x1A;
+        gGameState = MODE2_STATE_LINK_HANDSHAKE;
     else if (gLinkPackets.recv[0][1] == 0xFDEF && gLinkPackets.recv[1][1] == gLinkPackets.recv[0][1]) {
         gGameSubState++;
         gMenuWork->counter = 0;
@@ -872,7 +872,7 @@ void medal_trade_sync_done(void) {
 
 void medal_trade_fade_out(void) {
     if (blend_effect_step(gMenuWork->blend)) {
-        gGameState = 0x14;
+        gGameState = MODE2_STATE_LINK_MENU;
         gGameSubState = 0;
     }
 }

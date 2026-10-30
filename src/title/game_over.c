@@ -238,8 +238,8 @@ void game_over_fade_out_exit(void) {
         REG_BLDY = gMenuWork->fade_level >> 1;
     } else {
         REG_DISPCNT &= 0xFDFF;
-        gGameMode = 3;
-        gGameState = 0;
+        gGameMode = GAME_MODE_SCENE;
+        gGameState = MODE3_STATE_BOOT_LOGOS;
         gGameSubState = 0;
     }
 }

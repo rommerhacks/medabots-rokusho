@@ -38,8 +38,8 @@ static void intro_check_skip(void) {
     if (KEYS_LO(gHeldKeys) & START_BUTTON) {
         gTitleSkipIntro = 1;
         gVBlankOamMode = 0;
-        gGameMode = 3;
-        gGameState = 2;
+        gGameMode = GAME_MODE_SCENE;
+        gGameState = MODE3_STATE_TITLE_SCREEN;
         gGameSubState = 0;
     }
 }
@@ -108,8 +108,8 @@ void intro_init(void) {
     zero = 0;
     DmaSet(3, &zero, &gSceneWork, 0x8500003E);
     REG_DISPCNT = 0x60;
-    gSceneWork.nextMode = 3;
-    gSceneWork.nextState = 1;
+    gSceneWork.nextMode = GAME_MODE_SCENE;
+    gSceneWork.nextState = MODE3_STATE_INTRO;
     gSceneWork.timer = 0;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
@@ -546,8 +546,8 @@ void intro_closeup_art_state(void) {
 
 // Sub-state 18: the intro is over, go to the title screen.
 void intro_go_to_title(void) {
-    gGameMode = 3;
-    gGameState = 2;
+    gGameMode = GAME_MODE_SCENE;
+    gGameState = MODE3_STATE_TITLE_SCREEN;
     gGameSubState = 0;
 }
 

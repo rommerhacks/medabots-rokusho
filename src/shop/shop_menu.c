@@ -440,7 +440,7 @@ void shop_menu_fade_out_to_list(void) {
             for (; i >= 0; i--)
                 *dst-- = z;
         }
-        gGameState = 12;
+        gGameState = MODE2_STATE_SHOP_LIST;
         gGameSubState = 0;
     }
 }

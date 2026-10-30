@@ -688,7 +688,7 @@ void debug_battle_input(void) {
         gFieldWork.story_battle = b_pressed;
         gFieldWork.fixed_battle = 1;
         gFieldWork.battle_id = gGameWork.debugValues[gGameWork.debugRow];
-        gGameState = 6;
+        gGameState = MODE0_STATE_PREBATTLE;
         gGameSubState = b_pressed;
     }
 }

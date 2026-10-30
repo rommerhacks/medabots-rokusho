@@ -262,8 +262,8 @@ void test_mode_fade_out_exit(void) {
         REG_BLDY = gMenuWork->fade_level >> 1;
     } else {
         REG_DISPCNT &= 0xFDFF;
-        gGameMode = 3;
-        gGameState = 2;
+        gGameMode = GAME_MODE_SCENE;
+        gGameState = MODE3_STATE_TITLE_SCREEN;
         gGameSubState = 0;
         gTitleSkipIntro = 1;
     }

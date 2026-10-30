@@ -19,12 +19,12 @@ static void title_sprite_start_effect(u8 effect, u8 sprite);
 static void title_screen_check_skip_or_test_mode(void) {
     if (gSceneWork.nextSubState == 5 && ((KEYS_LO(gHeldKeys) & START_BUTTON) || gTitleSkipIntro != 0)) {
         gTitleSkipIntro = 0;
-        gGameMode = 3;
-        gGameState = 2;
+        gGameMode = GAME_MODE_SCENE;
+        gGameState = MODE3_STATE_TITLE_SCREEN;
         gGameSubState = 10;
     } else if ((KEYS_LO(gHeldKeys) & SELECT_BUTTON) && (KEYS_LO(gNewKeys) & START_BUTTON)) {
-        gGameMode = 2;
-        gGameState = 7;
+        gGameMode = GAME_MODE_MENU;
+        gGameState = MODE2_STATE_TEST_MODE;
         gGameSubState = 0;
     }
 }
@@ -121,8 +121,8 @@ void title_screen_reset(void) {
     zero = 0;
     DmaSet(3, &zero, &gSceneWork, 0x8500000B);
     REG_DISPCNT = 0x61;
-    gSceneWork.nextMode = 3;
-    gSceneWork.nextState = 2;
+    gSceneWork.nextMode = GAME_MODE_SCENE;
+    gSceneWork.nextState = MODE3_STATE_TITLE_SCREEN;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;
@@ -268,7 +268,7 @@ void title_screen_wait_start(void) {
         gSceneWork.timer = start;
         clear_sprite_entry(2);
         scene_fade_out_start(4, 1, 0);
-        gSceneWork.nextMode = 3;
+        gSceneWork.nextMode = GAME_MODE_SCENE;
         gSceneWork.nextState = start;
         gSceneWork.nextSubState = start;
         gGameSubState = 2;
@@ -282,8 +282,8 @@ void title_screen_start_pressed(void) {
         gSceneWork.timer = 0;
         clear_sprite_entry(2);
         scene_fade_out_start(4, 1, 0);
-        gSceneWork.nextMode = 2;
-        gSceneWork.nextState = 3;
+        gSceneWork.nextMode = GAME_MODE_MENU;
+        gSceneWork.nextState = MODE2_STATE_TITLE_MENU;
         gSceneWork.nextSubState = 0;
         gGameSubState = 2;
     } else {

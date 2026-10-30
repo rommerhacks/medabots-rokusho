@@ -2,7 +2,7 @@
 // gLinkRobattleHandlers[gGameSubState]. Sub-states (messages from gLinkMessages / decoded text):
 //   0x00-0x06  handshake: sync, player 0 sends the RNG seed (gGameWork.rngIndex), 0x50-0x54 swap player names
 //              (link_robattle_exchange_names), pick a random battlefield
-//   0x07-0x0E  intro screen "Okay let's Robattle!", fade out, gGameState = 3 (the Robattle)
+//   0x07-0x0E  intro screen "Okay let's Robattle!", fade out, gGameState = MODE0_STATE_MEDABOTS (team select)
 //   0x10-0x18  link error: "A link error has occurred", soft reset to the title
 //   0x20-0x2D  after the battle: "That was a great Robattle!", "Checking connection", then the prize game if
 //              gGameWork.prizeGamePending is set, else back to the link menu
@@ -215,7 +215,7 @@ void link_robattle_clear_screen(void) {
 void link_robattle_start_battle(void) {
     mem_fill8(&gGameWork.medabotsMode, 0x14, 0);
     gGameWork.medabotsMode = 1;
-    gGameState = 3;
+    gGameState = MODE0_STATE_MEDABOTS;
     gGameSubState = 0;
 }
 
@@ -894,8 +894,8 @@ u32 link_error_check(void) {
                                         } *)&gLinkPackets)
                                             ->x &
                                         0xFFFF00)) {
-        gGameMode = 0;
-        gGameState = 10;
+        gGameMode = GAME_MODE_MENU_BATTLE;
+        gGameState = MODE0_STATE_LINK_ROBATTLE;
         gGameSubState = 0x10;
         return 1;
     }
@@ -911,8 +911,8 @@ void soft_reset_to_title(void) {
     hw_reset_init();
     irq_init();
     serial_link_init();
-    gGameMode = 3;
-    gGameState = 0;
+    gGameMode = GAME_MODE_SCENE;
+    gGameState = MODE3_STATE_BOOT_LOGOS;
     gGameSubState = 0;
     REG_DMA0CNT_H = 0;
     VBlankIntrWait();

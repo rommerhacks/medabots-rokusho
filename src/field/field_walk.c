@@ -218,8 +218,8 @@ void field_walk_update(void) {
                     } else if (KEYS_LO(gNewKeys) & B_BUTTON) {
                         if (gFieldWork.medawatch_enabled) {
                             message_reset_hook();
-                            gGameMode = 0;
-                            gGameState = 1;
+                            gGameMode = GAME_MODE_MENU_BATTLE;
+                            gGameState = MODE0_STATE_FIELD_MENU;
                             gGameSubState = 0;
                             gFieldState.saved_bg0_x = gBg0Scroll.x;
                             gFieldState.saved_bg0_y = gBg0Scroll.y;
@@ -260,8 +260,8 @@ void field_walk_update(void) {
     case 4:
         field_warp_to_area();
         gFieldState.step = 0;
-        gGameMode = 1;
-        gGameState = 1;
+        gGameMode = GAME_MODE_FIELD;
+        gGameState = MODE1_STATE_FIELD;
         gGameSubState = 1;
         gFieldWork.npc_load_mode = 1;
         break;

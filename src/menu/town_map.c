@@ -71,7 +71,7 @@ void town_map_load_graphics(void) {
     decompress_and_write_tilemap(gTownMapBg3Tilemap, *bg3);
     {
         struct MenuWork *style_menu;
-        if (gGameState == 0x17) {
+        if (gGameState == MODE2_STATE_TOWN_MAP_2) {
             style_menu = gMenuWork;
             style_menu->cursor_style = 1;
         } else {
@@ -162,7 +162,7 @@ void town_map_handle_input(void) {
     if (town_map_move_cursor() == 0) {
         if (!((keys = KEYS_LO(gNewKeys)) & (A_BUTTON | B_BUTTON)))
             return;
-        if (gGameState == 10) {
+        if (gGameState == MODE2_STATE_TOWN_MAP) {
             play_sound_effect(5);
             gMenuWork->counter = 1;
         } else if (keys & A_BUTTON) {
@@ -206,8 +206,8 @@ void town_map_fade_out_exit(void) {
         REG_DISPCNT &= 0xFDFF;
         REG_DISPCNT &= 0xFEFF;
         CpuFastSet((void *)gBgTileBackup, (void *)(BG_VRAM + 0x2800), 0x28);
-        if (gGameState == 10) {
-            gGameState = 4;
+        if (gGameState == MODE2_STATE_TOWN_MAP) {
+            gGameState = MODE2_STATE_ITEM_MENU;
             gGameSubState = 0;
         } else if (gMenuWork->counter) {
             gFieldSceneParams.town_map_place = gMenuWork->town_map_place;

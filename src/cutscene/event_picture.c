@@ -37,8 +37,8 @@ void event_picture_init(void) {
     zero = 0;
     DmaSet(3, &zero, &gSceneWork, 0x85000004);
     REG_DISPCNT = 0x60;
-    gSceneWork.nextMode = 3;
-    gSceneWork.nextState = 3;
+    gSceneWork.nextMode = GAME_MODE_SCENE;
+    gSceneWork.nextState = MODE3_STATE_STORY_INTRO;
     gSceneWork.param.h = gFieldSceneParams.event_picture_id;
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
