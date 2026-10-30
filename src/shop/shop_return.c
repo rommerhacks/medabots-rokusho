@@ -31,7 +31,7 @@ void shop_return_init(void) {
     gSpriteEntries[7].x = 0x98;
     gSpriteEntries[7].y = 0;
     divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0, 0x15, 1, 7, 0xF, 1, 0);
+    render_text_sprites_at(gGameWork.textBuf, 0, 0x15, 1, 7, 0xF, 1, 0);
 }
 
 void fade_out_transition_step(void) {

@@ -534,7 +534,7 @@ void prize_game_transfer_part(void) {
         medapart_add_quantity(gBattleWork.prizePart, (gBattleWork.prizeSlots + 0)[gBattleWork.prizeRow], 1);
     else
         team_lose_equipped_part(gBattleWork.prizeMedal, (gBattleWork.prizeSlots + 0)[gBattleWork.prizeRow]);
-    memcpy_bytes_08041D04(
+    copy_bytes_short(
         (const void *)gMedapartNames[0][gBattleWork.prizePart * 4 + gBattleWork.prizeSlots[gBattleWork.prizeRow]],
         gGameWork.textBuf, 0xF);
     gGameSubState++;
@@ -656,12 +656,12 @@ u32 link_sync_both_ready(void) {
 }
 
 static void link_robattle_draw_partner_name(void) {
-    render_text_sprites_08040EE4(gLinkPartnerName, 10, 0x12, 3, 10, 13, 0, 1, 0, -4);
+    render_text_sprites_offset(gLinkPartnerName, 10, 0x12, 3, 10, 13, 0, 1, 0, -4);
 }
 
 static void link_robattle_draw_battlefield_name(void) {
-    memcpy_bytes_0803F63C(gBattlefieldNames[gBattleWork.battlefield], gGameWork.textBuf, 0xB);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x1E, 1, 3, 8, 0xC, 0, 1);
+    copy_bytes(gBattlefieldNames[gBattleWork.battlefield], gGameWork.textBuf, 0xB);
+    render_text_sprites_at(gGameWork.textBuf, 0x1E, 1, 3, 8, 0xC, 0, 1);
 }
 
 static void link_robattle_draw_frame(void) {
@@ -672,7 +672,7 @@ static void link_robattle_draw_frame(void) {
 }
 
 static void link_robattle_load_battlefield_info(void) {
-    memcpy_bytes_0803F63C(gBattlefieldParams[gBattleWork.battlefield], gBattleWork.battlefieldParams, 8);
+    copy_bytes(gBattlefieldParams[gBattleWork.battlefield], gBattleWork.battlefieldParams, 8);
 }
 
 static void prize_game_scroll_bg3(void) {

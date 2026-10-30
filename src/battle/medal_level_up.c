@@ -140,7 +140,7 @@ void medal_transform_draw_medal(void) {
         if (gTextArgBuffer[i] == 0xFE)
             break;
     }
-    render_text_sprites_08040DB8(gTextArgBuffer, 0x14, 5, 10, 10, 1, 1, 0);
+    render_text_sprites_at(gTextArgBuffer, 0x14, 5, 10, 10, 1, 1, 0);
     if (gMedals[gCurrentMedalSlot].level == 100) {
         *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x29A)) = (gMenuWork->bg_tile_base + 0x14) | 0x7000;
         *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x2DA)) = (gMenuWork->bg_tile_base + 0x15) | 0x7000;
@@ -156,7 +156,7 @@ void medal_transform_draw_medal(void) {
         *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x2DC)) =
             (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level % 10u) * 2 + 1) | 0x7000;
     }
-    render_text_sprites_08040DB8(gMedals[gCurrentMedalSlot].name, 0x1E, 0x11, 10, 10, 2, 0, 0);
+    render_text_sprites_at(gMedals[gCurrentMedalSlot].name, 0x1E, 0x11, 10, 10, 2, 0, 0);
     REG_DISPCNT |= 0x200;
     REG_DISPCNT |= 0x400;
     REG_DISPCNT |= 0x800;
@@ -231,7 +231,7 @@ void medal_transform_wait_confirm(void) {
 }
 
 void medal_transform_exit(void) {
-    if (blend_fade_step_08065598(gMenuWork->blend)) {
+    if (blend_effect_step(gMenuWork->blend)) {
         gGameMode = 0;
         gGameState = MODE0_STATE_PREBATTLE;
         gGameSubState = 0x50;

@@ -1,4 +1,4 @@
-// Blend fade effect: init_blend_effect sets up a BLDCNT/BLDY fade state, blend_fade_step_08065598 advances it
+// Blend fade effect: init_blend_effect sets up a BLDCNT/BLDY fade state, blend_effect_step advances it
 // once per frame and reports when it is done. Used by the title, link and race screens.
 #include "global.h"
 
@@ -17,7 +17,7 @@ void init_blend_effect(void *state, u8 level, u8 delay, s8 step, u16 mode) {
     *reg = blend->level;
 }
 
-u32 blend_fade_step_08065598(void *state) {
+u32 blend_effect_step(void *state) {
     struct BlendEffect *blend = state;
     u32 done = 0;
     if (blend->step == 0) {

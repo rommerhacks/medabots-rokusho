@@ -97,7 +97,7 @@ void bomb_game_init(void) {
     gSceneWork.param.s[0] = BOMB_MAX_BOMBS;     // roundBombs
     gSceneWork.param.s[2] = 0;                  // bombsLeft
     play_song(0);
-    setup_screen_transition_effect_080682CC(3, 2, 0);
+    scene_fade_in_start(3, 2, 0);
     gBg0Scroll.x = 0;
     gBg0Scroll.y = 0;
     gBg1Scroll.x = 0;
@@ -177,7 +177,7 @@ void bomb_game_load_graphics(void) {
 
 // Sub-state 2: waits for the fade-in, then starts the minigame song.
 void bomb_game_fade_in_state(void) {
-    if (scene_transition_step_080686F4()) {
+    if (scene_fade_in_step()) {
         play_song(0x14);
         gGameSubState++;
     }
@@ -261,7 +261,7 @@ void bomb_game_over_state(void) {
 }
 
 void bomb_game_fade_out_state(void) {
-    if (execute_scene_step()) {
+    if (scene_fade_out_step()) {
         u32 zero = 0;
         DmaSet(3, &zero, gSpriteEntries, 0x85000800);
         gGameSubState++;

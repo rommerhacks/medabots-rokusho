@@ -24,7 +24,7 @@ u32 find_medal_slot_by_id(u8 id) {
 u32 medal_add_by_id(u8 id) {
     u32 i;
 
-    memcpy_bytes_08041D04(gMedalRecords[id], &gGameWork.partAbility, 16);
+    copy_bytes_short(gMedalRecords[id], &gGameWork.partAbility, 16);
     for (i = 0; i < 30; i++) {
         if (!(gMedals[i].flags & 0x80)) {
             gMedals[i].flags |= 0x80;
@@ -93,7 +93,7 @@ void medal_add_from_buffer(const void *src) {
     for (i = 0; i < 30; i++) {
         if (!(gMedals[i].flags & 0x80)) {
             u32 slot_order = gMedals[i].flags & 0x1F;
-            memcpy_bytes_0803F63C(src, &gMedals[i], 0x40);
+            copy_bytes(src, &gMedals[i], 0x40);
             gMedals[i].flags = (gMedals[i].flags & 0x80) | slot_order;
             return;
         }

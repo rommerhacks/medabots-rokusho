@@ -323,7 +323,7 @@ static inline void *vram_at(u32 off) {
 }
 
 void medapart_trade_fade_in(void) {
-    if (blend_fade_step_08065598(gMenuWork->blend)) {
+    if (blend_effect_step(gMenuWork->blend)) {
         gGameSubState++;
         gMenuWork->ticks = 0x258;
         text_window_init(1, 0, 1);
@@ -522,7 +522,7 @@ void medapart_trade_wait_confirm(void) {
 }
 
 void medapart_trade_fade_out(void) {
-    if (blend_fade_step_08065598(gMenuWork->blend)) {
+    if (blend_effect_step(gMenuWork->blend)) {
         clear_battle_sprite_slot(0, 0x80);
         gGameState = 0x14;
         gGameSubState = 0;
@@ -611,14 +611,14 @@ void medal_trade_init_screen(void) {
 
         medal = w->trade_medal.graphicId;
         medal_trade_show_medal_sprite(medal, w->trade_medal.spriteVariant);
-        render_text_sprites_08040DB8(gMenuWork->trade_medal.name, 0x20, 4, 4, 0xA, 2, partner_chose, 1);
+        render_text_sprites_at(gMenuWork->trade_medal.name, 0x20, 4, 4, 0xA, 2, partner_chose, 1);
         j = 0;
         icon_tile = size >> 5;
         buf = (u32)gGameWork.textBuf;
         names = (const u8 *const *)gMedalNames;
         for (; j <= 9; j++)
             *(u8 *)(j + buf) = names[medal][j];
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 5, 8, 0xA, 1, 1, 1);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 5, 8, 0xA, 1, 1, 1);
         w2 = gMenuWork;
         lvl = w2->trade_medal.level;
         if (lvl == 100) {
@@ -663,7 +663,7 @@ void medal_trade_init_screen(void) {
 }
 
 void medal_trade_fade_in(void) {
-    if (blend_fade_step_08065598(gMenuWork->blend)) {
+    if (blend_effect_step(gMenuWork->blend)) {
         CpuFastSet((void *)0x05000200, gPaletteBackup, 0x40);
         gGameSubState++;
         gMenuWork->ticks = 600;
@@ -771,10 +771,10 @@ void medal_trade_flip_close(void) {
         }
         gSpriteEntries[0].flags |= SPRITE_FLAG_VISIBLE;
         lvl = menu->trade_medal.level;
-        render_text_sprites_08040DB8(menu->trade_medal.name, 0x20, 4, 4, 10, 2, 0, 1);
+        render_text_sprites_at(menu->trade_medal.name, 0x20, 4, 4, 10, 2, 0, 1);
         for (i = 0; i <= 9; i++)
             gGameWork.textBuf[i] = ((const u8 *)gMedalNames[gMenuWork->trade_medal.graphicId])[i];
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 5, 8, 10, 1, 1, 1);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 5, 8, 10, 1, 1, 1);
         BG2(0x218) = gMenuWork->saved_tiles[0];
         BG2(0x21A) = gMenuWork->saved_tiles[1];
         BG2(0x258) = gMenuWork->saved_tiles[2];
@@ -871,7 +871,7 @@ void medal_trade_sync_done(void) {
 }
 
 void medal_trade_fade_out(void) {
-    if (blend_fade_step_08065598(gMenuWork->blend)) {
+    if (blend_effect_step(gMenuWork->blend)) {
         gGameState = 0x14;
         gGameSubState = 0;
     }

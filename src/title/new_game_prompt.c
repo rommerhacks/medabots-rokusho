@@ -48,7 +48,7 @@ void new_game_prompt_fade_out(void) {
 }
 
 void new_game_prompt_return_to_title(void) {
-    if (blend_fade_step_08065598(gMenuWork->blend)) {
+    if (blend_effect_step(gMenuWork->blend)) {
         gGameState = 3;
         gGameSubState = 0;
     }

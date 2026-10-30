@@ -1,4 +1,4 @@
-// Byte-wise memory helpers: fill (mem_fill8), copy (memcpy_bytes_0803F63C) and swap (memswap).
+// Byte-wise memory helpers: fill (mem_fill8), copy (copy_bytes) and swap (memswap).
 // Used all over the game instead of the BIOS CpuSet for small or unaligned buffers.
 
 #include "global.h"
@@ -9,7 +9,7 @@ void mem_fill8(u8 *dst, u32 size, u8 val) {
         *dst++ = val;
 }
 
-void memcpy_bytes_0803F63C(const void *src, void *dst, u32 n) {
+void copy_bytes(const void *src, void *dst, u32 n) {
     u32 i;
     for (i = 0; i < n; i++) {
         *(u8 *)dst = *(const u8 *)src;

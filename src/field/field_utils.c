@@ -168,7 +168,7 @@ static void copy_tilemap_rows_add(u16 *src, u16 *dst, s32 h, s32 w, s32 maxh, s3
 }
 
 // Copies a w x h tilemap (u16 entries, row pitch w) into a 64x64 BG screen (four 32x32 blocks), adding add.
-void copy_tilemap_with_offset_08048CA4(const void *src, void *dst, s32 h, s32 w, s32 dst_h, s32 dst_w, s32 add) {
+void copy_tilemap_quadrants(const void *src, void *dst, s32 h, s32 w, s32 dst_h, s32 dst_w, s32 add) {
     s32 i, j, n;
     s32 rows;
 

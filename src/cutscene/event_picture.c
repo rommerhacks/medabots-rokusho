@@ -4,12 +4,12 @@
 // logos and intro tables. Name is a guess.
 #include "global.h"
 
-void dispatch_game_substate_handler_0806DFA4(void) {
+void story_intro_dispatch(void) {
     gStoryIntroHandlers[gGameSubState]();
 }
 
 void scene_switch_after_transition(void) {
-    if (scene_transition_step_080686F4()) {
+    if (scene_fade_in_step()) {
         gGameMode = gSceneWork.nextMode;
         gGameState = gSceneWork.nextState;
         gGameSubState = gSceneWork.nextSubState;
@@ -17,7 +17,7 @@ void scene_switch_after_transition(void) {
 }
 
 void scene_complete_dma_and_restore_state(void) {
-    if (execute_scene_step()) {
+    if (scene_fade_out_step()) {
         u32 zero = 0;
         DmaSet(3, &zero, gSpriteEntries, 0x85000800);
         REG_DISPCNT &= 0x80FF;
@@ -67,7 +67,7 @@ void battle_init_tilemap_and_palette(void) {
     DmaSet(3, out, VRAM + 0x7800, 0x84000140);
     DmaSet(3, gStoryIntroPalettes[gSceneWork.param.h], PLTT, 0x800000E0);
     REG_BG1CNT = 0xF8B;
-    setup_screen_transition_effect_080682CC(2, 1, 0);
+    scene_fade_in_start(2, 1, 0);
     text_window_init(1, 2, 0);
     REG_DISPCNT |= 0x200;
     gSceneWork.nextSubState = 4;

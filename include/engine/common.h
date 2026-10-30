@@ -12,7 +12,7 @@ s32 rng_next_byte(void);
 void load_part_data(u32 part, u32 kind, u8 *dst);
 struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32 cy, u32 inset_y, u32 inset_x);
 u32 find_medabot_slot_by_medal(u8 medal); // team slot (gTeamSlots) holding Medal id `medal`, or 0xFF
-void decompress_sprite_to_vram_08042D94(u32 head, u32 right_arm, u32 left_arm, u32 legs, u32 slot);
+void load_medabot_part_tiles(u32 head, u32 right_arm, u32 left_arm, u32 legs, u32 slot);
 void init_battle_medabot_sprites(
     u32 head, u32 rarm, u32 larm, u32 legs, u32 tile, u32 sprite, u32 x, u32 y, u32 flip, u32 prio,
     u32 pal); // creates the 4 part sprites of a Medabot (head, arms, legs) at sprite..sprite+3
@@ -24,7 +24,7 @@ u32 find_next_free_medal(
 u32 find_next_available_medapart_slot(
     u32 part, u32 kind, u32 backward,
     u32 gender); // next / previous owned Medapart id of the gender; gender + 0x78 if none
-void init_scene_buffers_080445F4(void);
+void init_medabot_sprite_tree(void);
 void setup_scene_with_bg_and_sprites(); // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8
 void draw_medabot_sprite();             // (u32 slot, u8 head, u8 rarm, u8 larm, u8 legs, u16 y, u16 x, u32 f, u8 g, u8
 u32 medabot_pose_anim_step(u32 slot, u32 anim, u32 legs);
@@ -78,7 +78,7 @@ struct Coords16 calc_polar_to_screen_coords(u32 angle, u32 radius, s32 x,
 void battle_bg_scroll_vblank(void); // gVBlankCallback: BG2/BG3 scroll movement (gBattleWork.battlefieldParams)
 void advance_battle_animation_frame(u32 field); // steps the battlefield tile animation (gBattleWork.fieldAnimFrame-7F)
 void race_enter_team_select(void);
-void decompress_sprite_to_vram_08043C08(u32 idx, u32 backup);
+void load_battlefield_graphics(u32 idx, u32 backup);
 void init_battle_scene(u32 mode, u32 id);
 void init_game_mode(u32 mode);
 u32 medaparts_all_equipped(void); // 1 if no Medapart has a spare copy (owned == in use)

@@ -680,12 +680,11 @@ static void medaparts_list_draw_names(void) {
     disable_sprites(10, 60);
     for (i = 0; i < 4; i++) {
         if (gMedapartInventory[gGameWork.partSlot * 240 + (page = gGameWork.listTab * 4) * 2 + i * 2]) {
-            memcpy_bytes_08041D04((void *)gMedapartNames[0][(page + i) * 4 + gGameWork.partSlot], gGameWork.textBuf,
-                                  15);
-            render_text_sprites_08040DB8(gGameWork.textBuf, i * 15 + 10, 11, i * 2 + 5, 10, 13, 1, 1);
+            copy_bytes_short((void *)gMedapartNames[0][(page + i) * 4 + gGameWork.partSlot], gGameWork.textBuf, 15);
+            render_text_sprites_at(gGameWork.textBuf, i * 15 + 10, 11, i * 2 + 5, 10, 13, 1, 1);
         } else {
             fill_text_blank(gGameWork.textBuf, 13);
-            render_text_sprites_08040DB8(gGameWork.textBuf, i * 15 + 10, 11, i * 2 + 5, 10, 13, 1, 1);
+            render_text_sprites_at(gGameWork.textBuf, i * 15 + 10, 11, i * 2 + 5, 10, 13, 1, 1);
         }
     }
 }
@@ -983,18 +982,18 @@ s32 medapart_detail_skill_help_index(void) {
 void medapart_detail_draw_skill(void) {
     disable_sprites(10, 15);
     if (gGameWork.partSkill < 100) {
-        memcpy_bytes_0803F63C((void *)gSkillTypeNames[gGameWork.partSkillType], gGameWork.textBuf, 14);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 10, 1, 9, 10, 12, 0, 1);
+        copy_bytes((void *)gSkillTypeNames[gGameWork.partSkillType], gGameWork.textBuf, 14);
+        render_text_sprites_at(gGameWork.textBuf, 10, 1, 9, 10, 12, 0, 1);
     } else {
-        memcpy_bytes_0803F63C((void *)gLegTypeNames[gGameWork.partSkill - 100], gGameWork.textBuf, 14);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 10, 1, 9, 10, 12, 0, 1);
+        copy_bytes((void *)gLegTypeNames[gGameWork.partSkill - 100], gGameWork.textBuf, 14);
+        render_text_sprites_at(gGameWork.textBuf, 10, 1, 9, 10, 12, 0, 1);
     }
 }
 
 static void medapart_detail_draw_ability(void) {
     disable_sprites(25, 15);
-    memcpy_bytes_0803F63C((void *)gAttributeNames[gGameWork.partAbility], gGameWork.textBuf, 14);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 25, 2, 11, 8, 12, 0, 1);
+    copy_bytes((void *)gAttributeNames[gGameWork.partAbility], gGameWork.textBuf, 14);
+    render_text_sprites_at(gGameWork.textBuf, 25, 2, 11, 8, 12, 0, 1);
 }
 
 static void medapart_detail_draw_skill_icon(void) {
@@ -1006,8 +1005,8 @@ static void medapart_detail_draw_skill_icon(void) {
 
 static void medapart_detail_draw_name(void) {
     disable_sprites(40, 15);
-    memcpy_bytes_08041D04((void *)gMedapartNames[0][gGameWork.shownId * 4 + gGameWork.partSlot], gGameWork.textBuf, 15);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 40, 11, 3, 10, 13, 0, 1);
+    copy_bytes_short((void *)gMedapartNames[0][gGameWork.shownId * 4 + gGameWork.partSlot], gGameWork.textBuf, 15);
+    render_text_sprites_at(gGameWork.textBuf, 40, 11, 3, 10, 13, 0, 1);
 }
 
 static void medapart_detail_draw_gender_icon(void) {

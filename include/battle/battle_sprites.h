@@ -10,7 +10,7 @@ void tile_anim_run_dup(const u16 *script, u32 slot);            // same as tile_
 void tile_anim_run(const u16 *script, u32 slot);                // steps gGameWork.tileAnims[slot]
 void inc_u16_saturating(u16 *counter, u16 max);
 void init_battle_bot_sprites(void);
-void init_battle_sprite_entry_0801BC04(u32 rec);
+void init_bot_shadow_sprite(u32 rec);
 void increment_medal_skill_level(u32 rec);
 void copy_battle_entity_positions(void);
 void decompress_indexed_graphics_to_ewram(u32 list);

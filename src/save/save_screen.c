@@ -105,8 +105,8 @@ void save_screen_draw_info(void) {
     ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(gPlayerRecord.robattleCounts[0], 0, 8, 11, 13,
                                                           BGCNT_SCREEN_BLOCK(REG_BG1CNT));
     divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 1, 15, 9, 7, 15, 1, 0);
-    render_text_sprites_08040DB8(gPlayerRecord.name, 13, 14, 4, 10, 13, 0, 0);
+    render_text_sprites_at(gGameWork.textBuf, 1, 15, 9, 7, 15, 1, 0);
+    render_text_sprites_at(gPlayerRecord.name, 13, 14, 4, 10, 13, 0, 0);
     open_choice_menu(1, 0x16, 7);
     CpuFastSet(gSaveScreenBgPalettes, gPaletteBackupBg, 0x80);
     CpuFastSet(gGradientPaletteYellow, (void *)OBJ_PAL_BACKUP_ADDR(13), 8);

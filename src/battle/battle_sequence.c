@@ -1520,23 +1520,23 @@ void battle_seq_spr_bg_sweep(void) {
     if ((gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_SWEEP_FRAME] & 1) &&
         gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_SWEEP_STOP] == 0) {
         if (!(gBattleWork.actorSideFlags & 2))
-            write_tilemap_to_vram_0803F1C8(
-                gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_WIDTH],
-                gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_HEIGHT],
-                (gSpriteEntries[gGameWork.runningSpriteSlot].x +
-                 gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_SWEEP_COLUMN]) &
-                    0x3F,
-                gSpriteEntries[gGameWork.runningSpriteSlot].y,
-                gUiTilemaps[gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_TILEMAP]], REG_BG0CNT, 0);
+            write_tilemap_block_at(gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_WIDTH],
+                                   gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_HEIGHT],
+                                   (gSpriteEntries[gGameWork.runningSpriteSlot].x +
+                                    gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_SWEEP_COLUMN]) &
+                                       0x3F,
+                                   gSpriteEntries[gGameWork.runningSpriteSlot].y,
+                                   gUiTilemaps[gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_TILEMAP]],
+                                   REG_BG0CNT, 0);
         else
-            write_tilemap_to_vram_0803F1C8(
-                gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_WIDTH],
-                gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_HEIGHT],
-                (gSpriteEntries[gGameWork.runningSpriteSlot].x -
-                 gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_SWEEP_COLUMN]) &
-                    0x3F,
-                gSpriteEntries[gGameWork.runningSpriteSlot].y,
-                gUiTilemaps[gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_TILEMAP]], REG_BG0CNT, 0);
+            write_tilemap_block_at(gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_WIDTH],
+                                   gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_HEIGHT],
+                                   (gSpriteEntries[gGameWork.runningSpriteSlot].x -
+                                    gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_SWEEP_COLUMN]) &
+                                       0x3F,
+                                   gSpriteEntries[gGameWork.runningSpriteSlot].y,
+                                   gUiTilemaps[gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_TILEMAP]],
+                                   REG_BG0CNT, 0);
         gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_SWEEP_COLUMN]++;
     }
 }
@@ -1555,7 +1555,7 @@ void battle_seq_spr_bg_effect_at(void) {
                           REG_BG0CNT, 0);
         clear_battle_sprite_slot(gGameWork.runningSpriteSlot, 1);
     } else if (gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_NO_DRAW] == 0) {
-        write_tilemap_to_vram_0803F1C8(
+        write_tilemap_block_at(
             gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_WIDTH],
             gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_HEIGHT],
             gSpriteEntries[gGameWork.runningSpriteSlot].x, gSpriteEntries[gGameWork.runningSpriteSlot].y,
@@ -1573,7 +1573,7 @@ void battle_seq_spr_bg_effect_keep(void) {
     if (gGameWork.tileAnims[0].state == 0xFF) {
         clear_battle_sprite_slot(gGameWork.runningSpriteSlot, 1);
     } else if (gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_NO_DRAW] == 0) {
-        write_tilemap_to_vram_0803F1C8(
+        write_tilemap_block_at(
             gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_WIDTH],
             gSpriteEntries[gGameWork.runningSpriteSlot].work[SEQ_BG_HEIGHT],
             gSpriteEntries[gGameWork.runningSpriteSlot].x, gSpriteEntries[gGameWork.runningSpriteSlot].y,

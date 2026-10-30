@@ -626,14 +626,14 @@ void load_room_graphics(void) {
     if (area_gfx(tbl, gFieldWork.area_id * 3) != NULL && gAreaBgTiles[gFieldWork.area_id] != NULL) {
         LZ77UnCompVram(gAreaBgTiles[gFieldWork.area_id], (void *)(BG_VRAM + 0x9000));
         LZ77UnCompVram(area_gfx(tbl, gFieldWork.area_id * 3), gFieldTilemapBuf);
-        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)BG_SCREEN_ADDR(6), gFieldWork.bg_map_height,
-                                          gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
+        copy_tilemap_quadrants(gFieldTilemapBuf + 8, (void *)BG_SCREEN_ADDR(6), gFieldWork.bg_map_height,
+                               gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
         LZ77UnCompVram(area_gfx(tbl, gFieldWork.area_id * 3 + 1), gFieldTilemapBuf);
-        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)BG_SCREEN_ADDR(10), gFieldWork.bg_map_height,
-                                          gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
+        copy_tilemap_quadrants(gFieldTilemapBuf + 8, (void *)BG_SCREEN_ADDR(10), gFieldWork.bg_map_height,
+                               gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
         LZ77UnCompVram(area_gfx(tbl, gFieldWork.area_id * 3 + 2), gFieldTilemapBuf);
-        copy_tilemap_with_offset_08048CA4(gFieldTilemapBuf + 8, (void *)BG_SCREEN_ADDR(14), gFieldWork.bg_map_height,
-                                          gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
+        copy_tilemap_quadrants(gFieldTilemapBuf + 8, (void *)BG_SCREEN_ADDR(14), gFieldWork.bg_map_height,
+                               gFieldWork.bg_map_width, 0x40, 0x40, 0x80);
         if (gAreaAnimBgTiles[gFieldWork.area_id] != NULL)
             LZ77UnCompVram(gAreaAnimBgTiles[gFieldWork.area_id], gAreaAnimTileSrc);
     } else {

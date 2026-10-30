@@ -66,7 +66,7 @@ extern u32 gVBlankOamMode;           // vblank_body OAM mode (0, 2)
 extern u8 gVBlankBgFlags;            // bit 0: vblank_body skips the BG scroll registers
 extern struct Vec16 gBgScrollOffset; // scroll added to every BG layer
 extern struct Vec16 gBg0Scroll;      // BG0 scroll
-extern u16 gTilemapBaseEntry;        // added to every tilemap entry by write_tilemap_to_vram_08000E94
+extern u16 gTilemapBaseEntry;        // added to every tilemap entry by write_tilemap_with_base
 extern u8 gDecompressBuffer[];       // EWRAM buffer the tilemap loaders decompress into
 extern u16 gPaletteBackup[0x200];    // OBJ then BG palette (palette_backup_from_hardware)
 extern u16 gPaletteBackupBg[0x100];  // = gPaletteBackup + 0x100
@@ -216,10 +216,10 @@ extern const u8 gRaceLegDelays[][7]; // [field][leg type]: frames per step of a 
 extern bool32 (*const gRaceSpriteMotions[])(
     u8);           // race sprite animations, by gSpriteEntries[].work[RACE_SPR_MOTION] - 1 (race_run_sprite_motions)
 extern u8 gRaceId; // race (gRaces index), copied from gFieldSceneParams.race_id by race_init
-extern s32 gSceneStepFrames;                // scene step frame counter, reset when a step finishes (execute_scene_step)
-extern u8 gSceneStep;                       // scene step, gSceneSteps index
-extern bool32 (*const gSceneSteps[])(void); // scene steps (execute_scene_step)
-extern bool32 (*const gSceneTransitionSteps[])(void); // transition steps (scene_transition_step_080686F4)
+extern s32 gSceneStepFrames; // scene step frame counter, reset when a step finishes (scene_fade_out_step)
+extern u8 gSceneStep;        // scene step, gSceneFadeOutSteps index
+extern bool32 (*const gSceneFadeOutSteps[])(void); // scene steps (scene_fade_out_step)
+extern bool32 (*const gSceneFadeInSteps[])(void);  // transition steps (scene_fade_in_step)
 extern const u16 gTitleObjPalettes[]; // title OBJ palettes (0x60 colours), then 0x1C bytes copied to gSceneWork + 0xC
                                       // (title_screen_load_graphics)
 extern const Func gBombGameStates[];  // game mode 3 state 5 sub-states, by gGameSubState (bomb_game_dispatch)
@@ -238,7 +238,7 @@ extern s32 (*const gTitleSpriteEffects[])(u8); // title sprite effects, by gSpri
                                                // 0 = done, 0xFF = hide (title_screen_update_sprite_effects)
 extern const u8 gTitleSpriteEffectPeriods[];   // title sprite effects: frame period, by work[TITLE_SPR_EFFECT] - 1
 extern const Func gStoryIntroHandlers[];       // game mode 3 state 3 (story intro) sub-states, by gGameSubState
-                                               // (dispatch_game_substate_handler_0806DFA4)
+                                               // (story_intro_dispatch)
 extern const Func
     gBootLogosSubStates[]; // game mode 3 state 0 (boot logos) sub-states, by gGameSubState (boot_logos_update)
 extern const Func gIntroSubStates[]; // game mode 3 state 1 (the animated intro after the logos) sub-states, by
@@ -341,7 +341,7 @@ extern const u8 gMoneyWindowHalfTiles[]; // money window frame halfway open / cl
 extern const u16 gMenuBgPalette[];
 extern const u8 gMoneyWindowHalfTilemap[];
 extern const u8 gMoneyWindowTilemap[];
-extern const u8 gSpriteFontTiles[]; // 8x16 OBJ font (letters, digits, $) at 0x06017400, render_text_sprites
+extern const u8 gSpriteFontTiles[]; // 8x16 OBJ font (letters, digits, $) at 0x06017400, render_text_sprites_at
 extern const u16 gSpriteFontPalette[];
 extern const u8 gFieldMenuCursorTiles[];
 extern const u16 gCursorArrowPalette[]; // OBJ palette 14 of the arrow cursor (gCursorArrowTiles)
@@ -1171,11 +1171,11 @@ extern const u8 gChoiceMenuLabelTilemap[];     // compressed tilemap
 extern const u8
     gBattlefieldAnimTileCounts[];         // per battlefield: animation tile count / 8 (advance_battle_animation_frame)
 extern const u8 gBattlefieldAnimFrames[]; // [battlefield][0x80]: animation tile block per frame, 0xFF = loop
-extern const u8 *const
-    gMedabotPartSpriteTiles[];  // 6 compressed sprite tile pointers per Medabot (decompress_sprite_to_vram_08042D94)
-extern const s16 gCosTableQ8[]; // cosine x256 per angle 0-0xFF (calc_polar_to_screen_coords x;
-                                // gJumpArcTable is the y factor)
-extern const u8 gAreaSongs[];   // per area id (gFieldWork.area_id), used unless song == 0xFF (area_song_id)
+extern const u8
+    *const gMedabotPartSpriteTiles[]; // 6 compressed sprite tile pointers per Medabot (load_medabot_part_tiles)
+extern const s16 gCosTableQ8[];       // cosine x256 per angle 0-0xFF (calc_polar_to_screen_coords x;
+                                      // gJumpArcTable is the y factor)
+extern const u8 gAreaSongs[];         // per area id (gFieldWork.area_id), used unless song == 0xFF (area_song_id)
 extern struct PartSpriteLayer gRightArmPartLayer;
 extern struct PartSpriteLayer gLeftArmPartLayer;
 extern struct PartSpriteLayer gHeadPartLayer;

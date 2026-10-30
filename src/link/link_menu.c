@@ -156,7 +156,7 @@ void fade_state_dispatch(void) {
 }
 
 void link_menu_fade_in(void) {
-    if (blend_fade_step_08065598(gMenuWork->blend)) {
+    if (blend_effect_step(gMenuWork->blend)) {
         gGameSubState++;
         text_window_init(1, 0, 1);
         gSpriteEntries[0].flags |= SPRITE_FLAG_VISIBLE;
@@ -214,7 +214,7 @@ void handle_battle_menu_selection(void) {
     }
 }
 
-void update_fade_transition_state_080662CC(void) {
+void link_menu_sync_choice(void) {
     struct MenuWork *menu = gMenuWork;
 
     if (menu->partner_chose != 0) {
@@ -242,7 +242,7 @@ void update_fade_transition_state_080662CC(void) {
 }
 
 void advance_fade_and_play_music(void) {
-    if (blend_fade_step_08065598(gMenuWork->blend) && !is_sound_effect_playing(4)) {
+    if (blend_effect_step(gMenuWork->blend) && !is_sound_effect_playing(4)) {
         play_song(0);
         play_sound_effect(0);
         eeprom_setup_timer_irq();
@@ -264,7 +264,7 @@ void init_link_save_and_connect(void) {
 }
 
 void link_menu_fade_out_exit(void) {
-    if (blend_fade_step_08065598(gMenuWork->blend)) {
+    if (blend_effect_step(gMenuWork->blend)) {
         if (gMenuWork->cursor <= 2)
             init_game_mode(gLinkMenuGameModes[gMenuWork->cursor]);
         else {

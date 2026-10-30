@@ -493,8 +493,8 @@ void particle_shot_fly(void) {
         gSpriteEntries[gGameWork.runningSpriteSlot].palette = 6;
         gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_SHAKE_FRAME] = 0;
         gSpriteEntries[gGameWork.runningSpriteSlot].work[PARTICLE_STATE]++;
-        memcpy_bytes_0803F63C(&gSpriteEntries[gGameWork.runningSpriteSlot],
-                              &gSpriteEntries[gGameWork.runningSpriteSlot + 3], 0x40);
+        copy_bytes(&gSpriteEntries[gGameWork.runningSpriteSlot], &gSpriteEntries[gGameWork.runningSpriteSlot + 3],
+                   0x40);
         battle_sprite_anim_init(gBattleSpriteAnimScripts[0x6C], gGameWork.runningSpriteSlot + 3);
         gSpriteEntries[gGameWork.runningSpriteSlot + 3].order =
             (gGameWork.runningSpriteSlot + (gBattleWork.targetSideFirst + 0xDF)) * 4 + 0x59;

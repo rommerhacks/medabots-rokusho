@@ -18,7 +18,7 @@ void boot_logos_update(void) {
     boot_logos_check_skip();
 }
 
-static bool32 blend_fade_step_0806E2F8(void) {
+static bool32 boot_logos_crossfade_step(void) {
     if ((gSceneWork.timer & 3) == 0) {
         u8 eva = 16 - (gSceneWork.timer >> 2);
         u8 evb = 16 - eva;
@@ -31,7 +31,7 @@ static bool32 blend_fade_step_0806E2F8(void) {
 }
 
 void scene_switch_after_blend_fade(void) {
-    if (blend_fade_step_0806E2F8()) {
+    if (boot_logos_crossfade_step()) {
         gSceneWork.timer = 0;
         gGameMode = gSceneWork.nextMode;
         gGameState = gSceneWork.nextState;
@@ -64,7 +64,7 @@ void boot_logos_init(void) {
     gBg3Scroll.x = 0;
     gBg3Scroll.y = 0;
     gTitleSkipIntro = 0;
-    setup_screen_transition_effect_080682CC(2, 4, 0);
+    scene_fade_in_start(2, 4, 0);
     gGameSubState = 4;
 }
 
@@ -161,7 +161,7 @@ void boot_logos_hold_overlay(void) {
         REG_DISPCNT &= 0xFEFF;
     } else if (gSceneWork.timer > 60) {
         gSceneWork.timer = 0;
-        setup_screen_transition_effect_080684F0(2, 4, 0);
+        scene_fade_out_start(2, 4, 0);
         gSceneWork.nextSubState = 10;
         gGameSubState = 2;
         return;

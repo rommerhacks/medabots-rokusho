@@ -328,7 +328,7 @@ changed:
         gMenuWork->total = 99999;
     disable_sprites(0x61, 7);
     divide_by_10000(gGameWork.textBuf, gMenuWork->total);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x61, 0x13, 5, 7, 0xC, 2, 0);
+    render_text_sprites_at(gGameWork.textBuf, 0x61, 0x13, 5, 7, 0xC, 2, 0);
 }
 
 void transition_fade_to_battle(void) {
@@ -404,7 +404,7 @@ void shop_complete_transaction(void) {
         }
         disable_sprites(0, 7);
         divide_by_10000(gGameWork.textBuf, gPlayerRecord.money);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0, 0x15, 1, 7, 0xF, 1, 0);
+        render_text_sprites_at(gGameWork.textBuf, 0, 0x15, 1, 7, 0xF, 1, 0);
         gGameWork.stepCounter = 0;
     }
     gGameSubState++;

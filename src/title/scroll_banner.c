@@ -63,7 +63,7 @@ void scene_scroll_with_fade(void) {
     struct MenuWork *menu;
     struct Vec16 *scroll;
 
-    if (blend_fade_step_08065598(gMenuWork->blend))
+    if (blend_effect_step(gMenuWork->blend))
         gGameSubState++;
     scroll = &gBg2Scroll;
     menu = gMenuWork;
@@ -91,7 +91,7 @@ void scene_fade_and_scroll_camera(void) {
     struct MenuWork *menu;
     struct Vec16 *scroll;
 
-    if (blend_fade_step_08065598(gMenuWork->blend))
+    if (blend_effect_step(gMenuWork->blend))
         gGameSubState = 0;
     scroll = &gBg2Scroll;
     menu = gMenuWork;

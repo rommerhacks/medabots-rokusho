@@ -95,8 +95,8 @@ static void bot_move_delay_add_broken_legs(u32 rec) {
 
 // + the battlefield's delay for the leg type (gTerrainMoveDelays).
 void bot_move_delay_add_terrain(u32 rec) {
-    memcpy_bytes_08041D04(&gTerrainMoveDelays[gBattleWork.battlefield + (gBattleBots[rec].parts[3].data[1] - 100) * 11],
-                          &gGameWork.partAbility, 1);
+    copy_bytes_short(&gTerrainMoveDelays[gBattleWork.battlefield + (gBattleBots[rec].parts[3].data[1] - 100) * 11],
+                     &gGameWork.partAbility, 1);
     bot_move_delay_add(rec, gGameWork.partAbility);
 }
 

@@ -117,7 +117,7 @@
 080AFB4C	fade_state_dispatch
 080AFB50	link_menu_fade_in
 080AFB54	handle_battle_menu_selection
-080AFB58	update_fade_transition_state_080662CC
+080AFB58	link_menu_sync_choice
 080AFB5C	advance_fade_and_play_music
 080AFB60	link_menu_fade_out_exit
 080AFB64	init_link_save_and_connect

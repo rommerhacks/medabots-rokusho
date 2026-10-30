@@ -373,7 +373,7 @@ void trap_hit_damage_popup_wait(void) {
 
 // Message 0x12: "Medapart <kind> received <n> damage".
 void trap_hit_damage_message(void) {
-    memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.damagePart], gGameWork.textBuf, 0xE);
+    copy_bytes(gPartKindNames[gBattleWork.damagePart], gGameWork.textBuf, 0xE);
     divide_by_100000_b(gGameWork.textBuf + 0x14, gBattleWork.appliedAmount, 0x35);
     gBattleWork.messageId = 0x12;
     gBattleWork.step++;
@@ -772,10 +772,10 @@ void guard_load_graphics(void) {
 }
 
 void guard_sprite_copy(void) {
-    memcpy_bytes_0803F63C(&gSpriteEntries[(gBattleWork.guardBot - 1) * 4 + 0x5A], &gSpriteEntries[0x21], 0x40);
-    memcpy_bytes_0803F63C(&gSpriteEntries[(gBattleWork.guardBot - 1) * 4 + 0x5B], &gSpriteEntries[0x22], 0x40);
-    memcpy_bytes_0803F63C(&gSpriteEntries[(gBattleWork.guardBot - 1) * 4 + 0x5C], &gSpriteEntries[0x23], 0x40);
-    memcpy_bytes_0803F63C(&gSpriteEntries[(gBattleWork.guardBot - 1) * 4 + 0x5D], &gSpriteEntries[0x24], 0x40);
+    copy_bytes(&gSpriteEntries[(gBattleWork.guardBot - 1) * 4 + 0x5A], &gSpriteEntries[0x21], 0x40);
+    copy_bytes(&gSpriteEntries[(gBattleWork.guardBot - 1) * 4 + 0x5B], &gSpriteEntries[0x22], 0x40);
+    copy_bytes(&gSpriteEntries[(gBattleWork.guardBot - 1) * 4 + 0x5C], &gSpriteEntries[0x23], 0x40);
+    copy_bytes(&gSpriteEntries[(gBattleWork.guardBot - 1) * 4 + 0x5D], &gSpriteEntries[0x24], 0x40);
     disable_sprites(0x21, 4);
     get_bot_part_effective_values(gBattleWork.guardBot - 1, gBattleWork.partIds);
     setup_battle_sprite_group(
@@ -902,7 +902,7 @@ void guard_shield_shrink(void) {
 void guard_shield_animate(void) {
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x1C], 0x21);
     if (gSpriteEntries[0x21].work[SPR_CMD_STATE] == SPR_CMD_ENDED) {
-        memcpy_bytes_0803F63C(gBattleBots[gBattleWork.guardBot - 1].medal.name, gGameWork.textBuf, 0xE);
+        copy_bytes(gBattleBots[gBattleWork.guardBot - 1].medal.name, gGameWork.textBuf, 0xE);
         gBattleWork.messageId = 0x16;
         clear_battle_sprite_slot(0x21, 1);
         gBattleWork.step++;
@@ -922,10 +922,10 @@ void action_announce_run(void) {
 }
 
 void action_announce_prepare(void) {
-    memcpy_bytes_0803F63C((void *)gSkillTypeNames[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2]],
-                          gGameWork.textBuf, 0xE);
-    memcpy_bytes_0803F63C((void *)gSkillNames[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]],
-                          gGameWork.textBuf + 0x14, 0xE);
+    copy_bytes((void *)gSkillTypeNames[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[2]],
+               gGameWork.textBuf, 0xE);
+    copy_bytes((void *)gSkillNames[gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1]],
+               gGameWork.textBuf + 0x14, 0xE);
     gBattleWork.messageId = 0x17;
     gBattleWork.step++;
 }
@@ -1953,7 +1953,7 @@ void bot_defeat_burst_wait(void) {
 }
 
 void bot_defeat_message(void) {
-    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.scratch].medal.name, gGameWork.textBuf, 0xE);
+    copy_bytes(gBattleBots[gBattleWork.scratch].medal.name, gGameWork.textBuf, 0xE);
     gBattleWork.messageId = 0x14;
     gBattleWork.step++;
 }
@@ -2188,7 +2188,7 @@ void sacrifice_break_part(void) {
 }
 
 void sacrifice_message(void) {
-    memcpy_bytes_0803F63C(gPartKindNames[gBattleWork.actorPart], gGameWork.textBuf, 0xE);
+    copy_bytes(gPartKindNames[gBattleWork.actorPart], gGameWork.textBuf, 0xE);
     gBattleWork.messageId = 0x18;
     gBattleWork.step++;
 }

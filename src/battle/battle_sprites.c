@@ -20,13 +20,14 @@ void init_battle_bot_sprites(void) {
 
     for (i = 0; i <= 5; i++) {
         if (gBattleBots[i].teamState)
-            init_battle_sprite_entry_0801BC04(i);
+            init_bot_shadow_sprite(i);
         else
             disable_sprites(0x72 + i, 1);
     }
 }
 
-void init_battle_sprite_entry_0801BC04(u32 rec) {
+// guess: the shadow under the bot (entry 0x72 + rec, 8 px below its body sprite)
+void init_bot_shadow_sprite(u32 rec) {
     gSpriteEntries[rec + 0x72].flags = SPRITE_PRIORITY(gBattleWork.battlefieldParams[3] + 2) | SPRITE_FLAG_ENABLED |
                                        SPRITE_FLAG_VISIBLE | SPRITE_FLAG_PART_PALETTE;
     gSpriteEntries[rec + 0x72].frame_table = 0;

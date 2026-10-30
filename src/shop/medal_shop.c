@@ -29,7 +29,7 @@ void medal_rename_draw_list(u8 start) {
             if (gMenuWork->name_buf[j] == 0xFE)
                 break;
         }
-        render_text_sprites_08040DB8(gMenuWork->name_buf, i * 10 + 12, 6, i * 2 + 3, 10, 13, 1, 1);
+        render_text_sprites_at(gMenuWork->name_buf, i * 10 + 12, 6, i * 2 + 3, 10, 13, 1, 1);
         tile = gMenuWork->bg_tile_base + (gMedals[gMenuWork->medal_list[i + start]].graphicId * 4 + 1);
         tile |= 0x6000;
         dst = BG_TILEMAP(REG_BG1CNT) + 3 + (i * 2 + 3) * 32;
@@ -140,7 +140,7 @@ void medal_rename_load_graphics(void) {
     gSpriteEntries[7].x = 0x98;
     gSpriteEntries[7].y = z2;
     divide_by_10000(gTextArgBuffer, gMoney);
-    render_text_sprites_08040DB8(gTextArgBuffer, 0, 0x15, 1, 7, 0xF, 1, z2);
+    render_text_sprites_at(gTextArgBuffer, 0, 0x15, 1, 7, 0xF, 1, z2);
     gGameSubState++;
 }
 

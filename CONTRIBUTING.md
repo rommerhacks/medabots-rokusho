@@ -105,7 +105,7 @@
 * Two halves of one buffer loaded as two separate literals (`=0x0202F800` and `=0x0202FA00`) with
   no base register reused: the original names each half (separate symbols), not `buf + 0x100`.
 * `*d++ = ...` row loops: `dst + (i << 5)` and `dst + i * 32` can give different register orders
-  (write_tilemap_to_vram_08000E94 only matched with the shift).
+  (write_tilemap_with_base only matched with the shift).
 * Registers read back after a store through a `u16 *` pointer: gcc must reload the globals if the
   pointer may alias them; registers written through a plain (non-volatile) pointer still reload
   `u16` globals. Copy the values to locals or a struct pointer to keep them in registers.
@@ -154,7 +154,7 @@
   `strb [r0, #1]`): `u8 *p = buf; *p++ = a; *p = b;`.
 * A string loop whose pointer copy and table address are set up *after* the first `*p != 0xFE`
   test: index it, `for (i = 0; str[i] != 0xFE; i++)`, also for the slot (`gArr[slot + i]`)
-  (render_text_sprites_08040DB8).
+  (render_text_sprites_at).
 * `struct` field addresses above 0xFF on a global that the original materializes as
   `ldr rA, =gX; ldr rB, =0x12F; adds`: access the field directly every time
   (`gArr[gGameWork.runningSpriteSlot]`), not through a `u8 *slot` local.
@@ -215,7 +215,7 @@
   `static inline void *vram_at(u32 off) { return (void *)(0x06004000 + off); }` used for both destinations
   (save_screen_load_graphics, item_menu_load_graphics; retry game_over_load_graphics, load_battle_background_graphics this way).
 * `id * 6` where the original computes `(id << 2) + (id << 1)`: write the shifts out
-  (load_battle_sprite_tiles; retry decompress_sprite_to_vram_08042D94).
+  (load_battle_sprite_tiles; retry load_medabot_part_tiles).
 * Variable-length arrays (`s32 n = 5; u8 ids[n];`) reproduced a stack frame where the constant only
   appears through reload (update_battle_medapart_icons, render_battle_medapart_list).
 * A function that matches standalone can break when an unrelated function earlier in the file becomes C
@@ -241,10 +241,10 @@
 * **A constant gcc folds into a sum** that the original adds separately: load it into a pinned local in
   its own statement, `t = k + off; register u32 q asm("r0") = (u32)base->unkB0; t += q;` (count_bot_skill_use).
 * **A clamp whose two results land in ip / r8 swapped:** `if (h > 32) do { h = 32; } while (0);` (likely a
-  clamp macro in the original; copy_tilemap_with_offset_08000F78).
+  clamp macro in the original; write_wide_tilemap_with_base).
 * **Old near misses that copy the asm's control flow** (duplicated increments, gotos) often match once
   written the obvious way (a plain `for` with `break`s): gcc duplicates the increments by itself
-  (lz_decompress_custom_08000A0C).
+  (lz_decompress_bytes).
 * **One block of I/O writes that throws off the registers of the whole function:** write each register
   directly (`REG_BG0HOFS = gBg0Scroll.x + off.x;`), not through a pointer or a loop (vblank_body).
 * **Several pointers walking one struct array from different field offsets:** write some fields through the
@@ -620,7 +620,7 @@
 * `if (s < 0) y = x + mid; else y = mid - x;` where one arm in the original is `negs` and both arms
   share an `adds r0, #80`: write that arm as `-x + mid` (sprite_wave_bob8).
 * A table value reduced to 0-3 where `& 3` gives the wrong registers for the whole block: write `% 4`
-  (setup_screen_transition_effect_080684F0).
+  (scene_fade_out_start).
 * A store through `map[0x62]` whose address constant lands in the wrong register while the next stores
   (`d = &map[0x63]; *d = ...`) are right: write the first one from the raw base,
   `d = (u16 *)(base + 0x060000C4); *d = t;` (name_entry_init_graphics).

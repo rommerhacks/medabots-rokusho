@@ -30,7 +30,7 @@ void battle_bot_status_sprite_update(u32 rec) {
             process_sprite_anim_commands(gBattleSpriteAnimScripts[15], rec * 3 + 0x46);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[15], rec * 3 + 0x46);
-        memcpy_bytes_08041D04(gBuffSpriteParams[0], &gGameWork.partAbility, 4);
+        copy_bytes_short(gBuffSpriteParams[0], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 0, 0, gSpriteEntries[rec * 4 + 0x5D].order + 4);
     } else if (gBattleBots[rec].buffType == 0x26 || gBattleBots[rec].buffType == 0x29) {
         if (gSpriteEntries[rec * 3 + 0x46].flags &&
@@ -38,7 +38,7 @@ void battle_bot_status_sprite_update(u32 rec) {
             process_sprite_anim_commands(gBattleSpriteAnimScripts[8], rec * 3 + 0x46);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[8], rec * 3 + 0x46);
-        memcpy_bytes_08041D04(gBuffSpriteParams[1], &gGameWork.partAbility, 4);
+        copy_bytes_short(gBuffSpriteParams[1], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 0, 0, gSpriteEntries[rec * 4 + 0x5D].order + 4);
     }
 }
@@ -52,7 +52,7 @@ static void battle_update_status_effect_sprite(u32 rec) {
             process_sprite_anim_commands(gBattleSpriteAnimScripts[6], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[6], rec * 3 + 0x47);
-        memcpy_bytes_08041D04(gStatusSpriteParams[0], &gGameWork.partAbility, 4);
+        copy_bytes_short(gStatusSpriteParams[0], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
     } else if ((u8)(gBattleBots[rec].statusType - 0x11) <= 1 || gBattleBots[rec].statusType == 0x29) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 &&
@@ -60,7 +60,7 @@ static void battle_update_status_effect_sprite(u32 rec) {
             process_sprite_anim_commands(gBattleSpriteAnimScripts[8], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[8], rec * 3 + 0x47);
-        memcpy_bytes_08041D04(gStatusSpriteParams[3], &gGameWork.partAbility, 4);
+        copy_bytes_short(gStatusSpriteParams[3], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
     } else if ((u8)(gBattleBots[rec].statusType - 0x13) <= 1) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 &&
@@ -76,9 +76,9 @@ static void battle_update_status_effect_sprite(u32 rec) {
                 battle_sprite_anim_init(gBattleSpriteAnimScripts[10], rec * 3 + 0x47);
         }
         if (gBattleBots[rec].statusType == 0x13)
-            memcpy_bytes_08041D04(gStatusSpriteParams[4], &gGameWork.partAbility, 4);
+            copy_bytes_short(gStatusSpriteParams[4], &gGameWork.partAbility, 4);
         else
-            memcpy_bytes_08041D04(gStatusSpriteParams[5], &gGameWork.partAbility, 4);
+            copy_bytes_short(gStatusSpriteParams[5], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order - 2);
     } else if ((u8)(gBattleBots[rec].statusType - 0xF) <= 1) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 &&
@@ -87,37 +87,37 @@ static void battle_update_status_effect_sprite(u32 rec) {
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[7], rec * 3 + 0x47);
         if (gBattleBots[rec].statusType == 0xF)
-            memcpy_bytes_08041D04(gStatusSpriteParams[1], &gGameWork.partAbility, 4);
+            copy_bytes_short(gStatusSpriteParams[1], &gGameWork.partAbility, 4);
         else
-            memcpy_bytes_08041D04(gStatusSpriteParams[2], &gGameWork.partAbility, 4);
+            copy_bytes_short(gStatusSpriteParams[2], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
     } else if (gBattleBots[rec].statusType == 0x2B) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2B)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[16], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[16], rec * 3 + 0x47);
-        memcpy_bytes_08041D04(gStatusSpriteParams[12], &gGameWork.partAbility, 4);
+        copy_bytes_short(gStatusSpriteParams[12], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
     } else if (gBattleBots[rec].statusType == 0x2C) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2C)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[17], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[17], rec * 3 + 0x47);
-        memcpy_bytes_08041D04(gStatusSpriteParams[13], &gGameWork.partAbility, 4);
+        copy_bytes_short(gStatusSpriteParams[13], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
     } else if (gBattleBots[rec].statusType == 0x2E) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2E)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[18], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[18], rec * 3 + 0x47);
-        memcpy_bytes_08041D04(gStatusSpriteParams[14], &gGameWork.partAbility, 4);
+        copy_bytes_short(gStatusSpriteParams[14], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
     } else if (gBattleBots[rec].statusType == 0x2F) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2F)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[19], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[19], rec * 3 + 0x47);
-        memcpy_bytes_08041D04(gStatusSpriteParams[15], &gGameWork.partAbility, 4);
+        copy_bytes_short(gStatusSpriteParams[15], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[rec * 4 + 0x5D].order + 4);
     }
 }
@@ -162,16 +162,16 @@ static void update_battle_status_effect_sprite(u32 rec) {
         }
         switch (gBattleBots[rec].lastActionSkill) {
         case 0x1B:
-            memcpy_bytes_08041D04(gStatusSpriteParams[7], &gGameWork.partAbility, 4);
+            copy_bytes_short(gStatusSpriteParams[7], &gGameWork.partAbility, 4);
             break;
         case 0x1C:
-            memcpy_bytes_08041D04(gStatusSpriteParams[8], &gGameWork.partAbility, 4);
+            copy_bytes_short(gStatusSpriteParams[8], &gGameWork.partAbility, 4);
             break;
         case 0x1D:
-            memcpy_bytes_08041D04(gStatusSpriteParams[9], &gGameWork.partAbility, 4);
+            copy_bytes_short(gStatusSpriteParams[9], &gGameWork.partAbility, 4);
             break;
         default:
-            memcpy_bytes_08041D04(gStatusSpriteParams[6], &gGameWork.partAbility, 4);
+            copy_bytes_short(gStatusSpriteParams[6], &gGameWork.partAbility, 4);
             break;
         }
         battle_setup_part_sprite(rec, 2, 2, gSpriteEntries[rec * 4 + 0x5D].order + 4);
@@ -185,7 +185,7 @@ static void update_battle_status_effect_sprite(u32 rec) {
             process_sprite_anim_commands(gBattleSpriteAnimScripts[20], rec * 3 + 0x48);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[20], rec * 3 + 0x48);
-        memcpy_bytes_08041D04(gStatusSpriteParams[16], &gGameWork.partAbility, 4);
+        copy_bytes_short(gStatusSpriteParams[16], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 2, 2, gSpriteEntries[rec * 4 + 0x5D].order + 4);
     }
 }

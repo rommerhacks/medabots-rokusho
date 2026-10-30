@@ -447,8 +447,8 @@ void team_form_split(void) {
         gGameWork.stepTimer = 0;
     if (gGameWork.stepTimer == 0) {
         spr = &gSpriteEntries[0x21];
-        memcpy_bytes_0803F63C(spr, spr + 1, 0x40);
-        memcpy_bytes_0803F63C(spr, spr + 2, 0x40);
+        copy_bytes(spr, spr + 1, 0x40);
+        copy_bytes(spr, spr + 2, 0x40);
         spr[0].work16[FX_SPR_TARGET_Y] = 0x58;
         spr[0].work[SPR_MOTION_TABLE] = 6;
         spr[1].work16[FX_SPR_TARGET_Y] = 0x40;
@@ -566,8 +566,8 @@ void break_form_split(void) {
 
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x3B], 0x21);
     spr = &gSpriteEntries[0x21];
-    memcpy_bytes_0803F63C(spr, spr + 1, 0x40);
-    memcpy_bytes_0803F63C(spr, spr + 2, 0x40);
+    copy_bytes(spr, spr + 1, 0x40);
+    copy_bytes(spr, spr + 2, 0x40);
     spr[0].work16[FX_SPR_TARGET_Y] = 0x58;
     spr[0].work[SPR_MOTION_TABLE] = 6;
     spr[1].work16[FX_SPR_TARGET_Y] = 0x40;
@@ -1187,7 +1187,7 @@ void reactivate_apply(void) {
 }
 
 void reactivate_finish(void) {
-    memcpy_bytes_0803F63C(gBattleBots[gBattleWork.target].medal.name, gGameWork.textBuf, 0xE);
+    copy_bytes(gBattleBots[gBattleWork.target].medal.name, gGameWork.textBuf, 0xE);
     gBattleWork.messageId = 0x28;
     gBattleWork.step++;
 }

@@ -9,7 +9,7 @@ s32 count_decimal_digits(s32 n); // number of decimal digits of n (1 for 0); was
 s16 fixed_point_multiply(s16 lhs, s16 rhs);
 u32 item_get_use_result(u32 item_id);
 void bg2_affine_reset(void);
-void copy_tilemap_with_offset_08048CA4(const void *src, void *dst, s32 h, s32 w, s32 dst_h, s32 dst_w, s32 add);
+void copy_tilemap_quadrants(const void *src, void *dst, s32 h, s32 w, s32 dst_h, s32 dst_w, s32 add);
 void copy_tiles_to_bg_tilemap(const void *src, void *dst, s32 h, s32 w, s32 dst_h, s32 dst_w, s32 y, s32 x, s32 tile);
 void debug_bg_scroll_input(void);
 

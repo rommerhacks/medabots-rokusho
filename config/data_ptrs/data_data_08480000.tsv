@@ -698,7 +698,7 @@
 08485C48	boot_logos_update
 08485C4C	intro_update
 08485C50	title_screen_update
-08485C54	dispatch_game_substate_handler_0806DFA4
+08485C54	story_intro_dispatch
 08485C58	race_dispatch_substate
 08485C5C	bomb_game_dispatch
 08485C60	medabots_weekly_update

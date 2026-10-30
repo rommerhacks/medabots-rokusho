@@ -3,13 +3,13 @@
 
 #include "global.h"
 
-static void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map);
+static void write_wide_tilemap_with_base(u16 *dst, struct Tilemap *map);
 static void hblank_dma0_bg2affine(void);
 
 void set_tilemap_and_decompress_bg(u32 x, u32 y, const u8 *src, u32 bgcnt, u16 base) {
     gTilemapBaseEntry = base;
     lz_decompress_dispatch(src, gDecompressBuffer);
-    write_tilemap_to_vram_08000E94(x, y, (struct Tilemap *)gDecompressBuffer, bgcnt);
+    write_tilemap_with_base(x, y, (struct Tilemap *)gDecompressBuffer, bgcnt);
 }
 
 static void decompress_to_ewram_buffer(u32 x, u32 y, const u8 *src, u32 bgcnt) {
@@ -22,14 +22,14 @@ static void decompress_to_bg_scroll_buffer(const u8 *src, void *dst) {
     CpuCopy16(gDecompressBuffer, dst, size);
 }
 
-void write_tilemap_to_vram_08000E94(u32 x, u32 y, struct Tilemap *map, u32 bgcnt) {
+void write_tilemap_with_base(u32 x, u32 y, struct Tilemap *map, u32 bgcnt) {
     u16 *dst = BG_TILEMAP(bgcnt) + x + y * 32;
     u16 *src = map->data;
     u16 *dst_row;
     u32 i, j;
 
     if (((bgcnt & 0xC000) >> 14) & 1) {
-        copy_tilemap_with_offset_08000F78(dst, map);
+        write_wide_tilemap_with_base(dst, map);
     } else {
         for (i = 0; i < map->height; i++) {
             dst_row = dst + (i << 5);
@@ -50,7 +50,7 @@ void load_tilemap_rows_to_vram(u32 x, u32 y, struct Tilemap *map, u32 bgcnt) {
     }
 }
 
-static void copy_tilemap_with_offset_08000F78(u16 *dst, struct Tilemap *map) {
+static void write_wide_tilemap_with_base(u16 *dst, struct Tilemap *map) {
     s32 w, hh;
     s32 i, j;
     u16 *src_row, *dst_row;

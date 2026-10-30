@@ -258,7 +258,7 @@ void title_menu_load_save(void) {
 }
 
 void title_menu_fade_in(void) {
-    if (blend_fade_step_08065598(gMenuWork->blend)) {
+    if (blend_effect_step(gMenuWork->blend)) {
         gGameSubState++;
         gMenuWork->frame = 0;
         gMenuWork->frame = title_menu_blend_step(0);

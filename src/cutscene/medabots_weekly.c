@@ -156,7 +156,7 @@ void weekly_show_studio(void) {
     gBg3Scroll.x = 0;
     gBg3Scroll.y = 0;
     gMedabotsWeekly.animTiles = 1;
-    setup_screen_transition_effect_080682CC(4, 2, 0);
+    scene_fade_in_start(4, 2, 0);
     REG_DISPCNT |= 0x1E00;
     gGameSubState = 1;
 }
@@ -214,7 +214,7 @@ void weekly_show_lecture(void) {
 
     gMedabotsWeekly.scrollBg3 = 1;
     gMedabotsWeekly.animTiles = 0;
-    setup_screen_transition_effect_080682CC(4, 2, 0);
+    scene_fade_in_start(4, 2, 0);
     REG_DISPCNT |= 0x1E00;
     gGameSubState = 1;
 }
@@ -406,7 +406,7 @@ void weekly_lecture(void) {
             gSceneWork.timer++;
         break;
     default:
-        setup_screen_transition_effect_080684F0(4, 2, 0);
+        scene_fade_out_start(4, 2, 0);
         gSceneWork.timer = 0;
         gSceneWork.nextSubState = 0xE;
         gGameSubState = 2;
@@ -969,7 +969,7 @@ u32 weekly_lecture_show_medabot(void) {
         sprites[1].y = 0x42;
     if (sprites[1].timer++ > 0x1F) {
         clear_sprite_entry(1);
-        init_scene_buffers_080445F4();
+        init_medabot_sprite_tree();
         fill = 0x200;
         DmaSet(3, &fill, gSpriteWork->oamBuf, 0x85000100);
         setup_scene_with_bg_and_sprites(0, 0x2A, 0x2A, 0x2A, 0x2A, 0x40, 0x42, 2, 8, 0, 0, 0);

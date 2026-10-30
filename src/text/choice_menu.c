@@ -261,7 +261,7 @@ u32 game_state_execute_handler_b(void) {
     return 0;
 }
 
-void memcpy_bytes_08041D04(const void *src, void *dst, u8 n) {
+void copy_bytes_short(const void *src, void *dst, u8 n) {
     u32 i;
 
     for (i = 0; i < n; i++) {

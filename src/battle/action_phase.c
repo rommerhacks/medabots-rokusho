@@ -301,11 +301,11 @@ void action_phase_time_up_banner_hold(void) {
 // Puts the winner's name (player, opponent or link partner) in the message buffer.
 void action_phase_show_winner_message(void) {
     if (gGameWork.battleResult == 1)
-        memcpy_bytes_0803F63C(gPlayerName, gGameWork.textBuf, 0xE);
+        copy_bytes(gPlayerName, gGameWork.textBuf, 0xE);
     else if (gGameWork.skipBotSetup != 1)
-        memcpy_bytes_0803F63C(gOpponentNames[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
+        copy_bytes(gOpponentNames[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
     else
-        memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.textBuf, 0x12);
+        copy_bytes(gLinkPartnerName, gGameWork.textBuf, 0x12);
     if (run_message(gBattleMessages[2]))
         gGameSubState++;
 }
@@ -342,11 +342,11 @@ void action_phase_time_up_banner_init(void) {
 
 void action_phase_show_time_up_message(void) {
     if (gGameWork.battleResult == 1)
-        memcpy_bytes_0803F63C(gPlayerName, gGameWork.textBuf, 0xE);
+        copy_bytes(gPlayerName, gGameWork.textBuf, 0xE);
     else if (gGameWork.skipBotSetup != 1)
-        memcpy_bytes_0803F63C(gOpponentNames[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
+        copy_bytes(gOpponentNames[gBattleWork.encounterMessage], gGameWork.textBuf, 0x12);
     else
-        memcpy_bytes_0803F63C(gLinkPartnerName, gGameWork.textBuf, 0x12);
+        copy_bytes(gLinkPartnerName, gGameWork.textBuf, 0x12);
     if (run_message(gBattleMessages[3]))
         gGameSubState++;
 }
@@ -510,8 +510,7 @@ void action_phase_medaforce_anim(void) {
 }
 
 void action_phase_medaforce_name(void) {
-    memcpy_bytes_0803F63C((void *)gMedaforceNames[gBattleBots[gBattleWork.actor].medaforce[0]], gGameWork.textBuf,
-                          0x11);
+    copy_bytes((void *)gMedaforceNames[gBattleBots[gBattleWork.actor].medaforce[0]], gGameWork.textBuf, 0x11);
     gBattleWork.messageId = 0x38;
     gGameSubState++;
 }

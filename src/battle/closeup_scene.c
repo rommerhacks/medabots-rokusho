@@ -5,7 +5,7 @@
 #include "global.h"
 
 void init_battle_closeup_scene(void) {
-    init_scene_buffers_080445F4();
+    init_medabot_sprite_tree();
     if (!(gBattleWork.actorSideFlags & 1)) {
         gBattleWork.closeupLeftX = 0x3C;
         gBattleWork.closeupPoseBase[0] = 0;

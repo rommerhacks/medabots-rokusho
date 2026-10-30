@@ -3,19 +3,21 @@
 
 #include "global.h"
 
-static u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size);
-static u32 lz_decompress_custom_08000B14(const u8 *src, void *dst);
+// Byte-wise LZ decoder for WRAM destinations.
+static u32 lz_decompress_bytes(const u8 *src, u8 *dst, u32 size);
+// LZ decoder for VRAM / IO destinations: every byte goes through a 16-bit read-modify-write.
+static u32 lz_decompress_halfwords(const u8 *src, void *dst);
 
 u32 lz_decompress_dispatch(const u8 *src, void *dst) {
     if (src[0] != 'L' || src[1] != 'e')
         return 0;
     if ((u32)dst - 0x04000001 <= 0x03FFFFFE)
-        return lz_decompress_custom_08000B14(src, dst);
+        return lz_decompress_halfwords(src, dst);
     else
-        return lz_decompress_custom_08000A0C(src, dst, src[2] | (src[3] << 8) | (src[4] << 16));
+        return lz_decompress_bytes(src, dst, src[2] | (src[3] << 8) | (src[4] << 16));
 }
 
-static u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size) {
+static u32 lz_decompress_bytes(const u8 *src, u8 *dst, u32 size) {
     u32 left = size;
     u8 *out = dst;
     const u8 *in = src + 6;
@@ -61,7 +63,7 @@ static u32 lz_decompress_custom_08000A0C(const u8 *src, u8 *dst, u32 size) {
     return size;
 }
 
-static u32 lz_decompress_custom_08000B14(const u8 *src, void *dst) {
+static u32 lz_decompress_halfwords(const u8 *src, void *dst) {
     u32 size;
     u32 left;
     u8 *out;

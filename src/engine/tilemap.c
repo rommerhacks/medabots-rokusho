@@ -85,7 +85,7 @@ void write_tilemap_rect(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, 
     }
 }
 
-void write_tilemap_to_vram_0803F1C8(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base) {
+void write_tilemap_block_at(u32 w, u32 h, u32 x, u32 y, const void *src, u32 bgcnt, u32 base) {
     u16 *dst;
     u16 *out;
     const u16 *in;

@@ -46,7 +46,7 @@ void race_init(void) {
     race_load_frame_bgs();
     race_load_field_bg();
     play_song(0x13);
-    setup_screen_transition_effect_080682CC(4, 1, 0);
+    scene_fade_in_start(4, 1, 0);
     REG_DISPCNT |= 0x1E00;
     gRaceStep = 0;
     gRaceFinishOrder[0] = 0;
@@ -61,13 +61,13 @@ void race_init(void) {
 
 // Sub-state 1: wait for the fade in, then go to gRaceNextSubState.
 void race_wait_fade_in(void) {
-    if (scene_transition_step_080686F4())
+    if (scene_fade_in_step())
         gGameSubState = gRaceNextSubState;
 }
 
 // Sub-state 2: wait for the fade out, clear the sprites, then go to gRaceNextSubState.
 void race_wait_fade_out(void) {
-    if (execute_scene_step()) {
+    if (scene_fade_out_step()) {
         u32 zero = 0;
         DmaSet(3, &zero, gSpriteEntries, 0x85000800);
         gVBlankCallback = empty_callback;
@@ -108,8 +108,8 @@ void race_load_teams(void) {
         gRaceRunnerParts[0][1][i] = gBattleWork.raceParts[i][1];
         gRaceRunnerParts[0][2][i] = gBattleWork.raceParts[i][2];
         gRaceRunnerParts[0][3][i] = gBattleWork.raceParts[i][3];
-        decompress_sprite_to_vram_08042D94(gRaceRunnerParts[0][0][i], gRaceRunnerParts[0][1][i],
-                                           gRaceRunnerParts[0][2][i], gRaceRunnerParts[0][3][i], 2 - i);
+        load_medabot_part_tiles(gRaceRunnerParts[0][0][i], gRaceRunnerParts[0][1][i], gRaceRunnerParts[0][2][i],
+                                gRaceRunnerParts[0][3][i], 2 - i);
     }
     setup = gEncounterSetups[gRaces[gRaceId].rival1Setup];
     setup += 4;
@@ -120,8 +120,8 @@ void race_load_teams(void) {
         gRaceRunnerParts[1][3][i] = *setup;
         setup += 9;
         gRaceLegTypes[1][i] = gMedapartData[gRaceRunnerParts[1][3][i] * 64 + 0x31] - 0x64;
-        decompress_sprite_to_vram_08042D94(gRaceRunnerParts[1][0][i], gRaceRunnerParts[1][1][i],
-                                           gRaceRunnerParts[1][2][i], gRaceRunnerParts[1][3][i], 5 - i);
+        load_medabot_part_tiles(gRaceRunnerParts[1][0][i], gRaceRunnerParts[1][1][i], gRaceRunnerParts[1][2][i],
+                                gRaceRunnerParts[1][3][i], 5 - i);
     }
     setup = gEncounterSetups[gRaces[gRaceId].rival2Setup];
     setup += 4;
@@ -132,11 +132,11 @@ void race_load_teams(void) {
         gRaceRunnerParts[2][3][i] = *setup;
         setup += 9;
         gRaceLegTypes[2][i] = gMedapartData[gRaceRunnerParts[2][3][i] * 64 + 0x31] - 0x64;
-        decompress_sprite_to_vram_08042D94(gRaceRunnerParts[2][0][i], gRaceRunnerParts[2][1][i],
-                                           gRaceRunnerParts[2][2][i], gRaceRunnerParts[2][3][i], 8 - i);
+        load_medabot_part_tiles(gRaceRunnerParts[2][0][i], gRaceRunnerParts[2][1][i], gRaceRunnerParts[2][2][i],
+                                gRaceRunnerParts[2][3][i], 8 - i);
     }
     play_song(0x13);
-    setup_screen_transition_effect_080682CC(2, 2, 0);
+    scene_fade_in_start(2, 2, 0);
     REG_DISPCNT |= 0x1E00;
     gRaceNextSubState = 6;
     gGameSubState = 1;
@@ -156,7 +156,7 @@ void race_init_track(void) {
     race_place_all_runners();
     race_load_track_status_bar();
     play_song(0);
-    setup_screen_transition_effect_080682CC(4, 1, 0);
+    scene_fade_in_start(4, 1, 0);
     play_song(0x17);
     REG_DISPCNT |= 0x1E00;
     gRaceNextSubState = 8;
@@ -196,7 +196,7 @@ void race_init_results(void) {
     race_load_leader_portraits();
     race_load_frame_bgs();
     play_song(0);
-    setup_screen_transition_effect_080682CC(2, 2, 0);
+    scene_fade_in_start(2, 2, 0);
     play_song(0x13);
     REG_DISPCNT |= 0x1A00;
     gRaceNextSubState = 11;
@@ -269,7 +269,7 @@ static void race_load_field_bg(void) {
     REG_BG3CNT = 0x1F0B;
     gBattleWork.battlefield = gRaceField;
     decompress_tileset_to_vram(gBattleWork.battlefield, 0);
-    memcpy_bytes_0803F63C(gBattlefieldParams[gBattleWork.battlefield], gBattleWork.battlefieldParams, 8);
+    copy_bytes(gBattlefieldParams[gBattleWork.battlefield], gBattleWork.battlefieldParams, 8);
     apply_battle_blend_effect_a();
     decompress_to_ewram_27000(gBattlefieldTilesets[gBattleWork.battlefield * 5 + 1]);
     gBg2Scroll.x = 0;
@@ -284,7 +284,7 @@ void race_load_track_screen(void) {
     REG_BG2CNT = 0x1E0A;
     REG_BG3CNT = 0x1F0B;
     gBattleWork.battlefield = gRaceField;
-    decompress_sprite_to_vram_08043C08(gBattleWork.battlefield, 0);
+    load_battlefield_graphics(gBattleWork.battlefield, 0);
     load_battle_script_entry_b();
     apply_battle_blend_effect_b();
     decompress_to_ewram_27000(gBattlefieldGraphics[gBattleWork.battlefield * 5 + 1]);

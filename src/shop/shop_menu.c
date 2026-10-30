@@ -165,7 +165,7 @@ void shop_menu_init(void) {
     gSpriteEntries[15].x = 0x50;
     gSpriteEntries[15].y = 0x3E;
     divide_by_10000(gTextArgBuffer, gPlayerRecord.money);
-    render_text_sprites_08040DB8(gTextArgBuffer, 0, 0x15, 1, 7, 0xF, 1, 0);
+    render_text_sprites_at(gTextArgBuffer, 0, 0x15, 1, 7, 0xF, 1, 0);
     gGameSubState++;
 }
 

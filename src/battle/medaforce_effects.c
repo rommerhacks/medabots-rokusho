@@ -1798,7 +1798,7 @@ void medaforce_full_body_up_orbs_spawn(void) {
             continue;
         if (gBattleBots[gBattleWork.targetSideFirst + i].parts[0].armor == 0)
             continue;
-        memcpy_bytes_0803F63C(&gSpriteEntries[0x22], &gSpriteEntries[0x23 + i], 0x40);
+        copy_bytes(&gSpriteEntries[0x22], &gSpriteEntries[0x23 + i], 0x40);
         gSpriteEntries[0x23 + i].work16[FX_SPR_TARGET_X] =
             gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5D].x;
         gSpriteEntries[0x23 + i].work16[FX_SPR_TARGET_Y] =
@@ -1987,7 +1987,7 @@ void medaforce_full_body_rad_push_back(void) {
         process_sprite_anim_commands(gBattleSpriteAnimScripts[0x63], 0x22 + i);
         gSpriteEntries[0x22 + i].x = gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5D].x;
         gSpriteEntries[0x22 + i].y = gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5D].y - 0x10;
-        init_battle_sprite_entry_0801BC04(gBattleWork.targetSideFirst + i);
+        init_bot_shadow_sprite(gBattleWork.targetSideFirst + i);
     }
     process_sprite_anim_commands(gBattleSpriteAnimScripts[0x62], 0x21);
     if (!(gGameWork.stepTimer & 0x3F))
@@ -3096,14 +3096,11 @@ void medaforce_pushover_attack_target_hop_init(void) {
         if (gBattleWork.partBreaks[i] == 0)
             continue;
         gSpriteEntries[0x21 + i].work[FX_SPR_STEP] = 0;
-        memcpy_bytes_0803F63C(&gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5A],
-                              &gSpriteEntries[(j = i * 4) + 0x24], 0x40);
-        memcpy_bytes_0803F63C(&gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5B], &gSpriteEntries[j + 0x25],
-                              0x40);
-        memcpy_bytes_0803F63C(&gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5C], &gSpriteEntries[j + 0x26],
-                              0x40);
-        memcpy_bytes_0803F63C(&gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5D], &gSpriteEntries[j + 0x27],
-                              0x40);
+        copy_bytes(&gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5A], &gSpriteEntries[(j = i * 4) + 0x24],
+                   0x40);
+        copy_bytes(&gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5B], &gSpriteEntries[j + 0x25], 0x40);
+        copy_bytes(&gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5C], &gSpriteEntries[j + 0x26], 0x40);
+        copy_bytes(&gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5D], &gSpriteEntries[j + 0x27], 0x40);
         disable_sprites(j + 0x24, 4);
         gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5A].work[FX_SPR_STEP] = 0;
         gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5B].work[FX_SPR_STEP] = 0;
@@ -3198,14 +3195,14 @@ void medaforce_pushover_attack_burst(void) {
         for (i = 0; i <= 2; i++) {
             if (gBattleWork.partBreaks[i] == 0)
                 continue;
-            memcpy_bytes_0803F63C(&gSpriteEntries[0x24 + i * 4],
-                                  &gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5A], 0x40);
-            memcpy_bytes_0803F63C(&gSpriteEntries[0x25 + i * 4],
-                                  &gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5B], 0x40);
-            memcpy_bytes_0803F63C(&gSpriteEntries[0x26 + i * 4],
-                                  &gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5C], 0x40);
-            memcpy_bytes_0803F63C(&gSpriteEntries[0x27 + i * 4],
-                                  &gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5D], 0x40);
+            copy_bytes(&gSpriteEntries[0x24 + i * 4], &gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5A],
+                       0x40);
+            copy_bytes(&gSpriteEntries[0x25 + i * 4], &gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5B],
+                       0x40);
+            copy_bytes(&gSpriteEntries[0x26 + i * 4], &gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5C],
+                       0x40);
+            copy_bytes(&gSpriteEntries[0x27 + i * 4], &gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5D],
+                       0x40);
             gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5A].flags |= SPRITE_FLAG_ENABLED;
             gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5B].flags |= SPRITE_FLAG_ENABLED;
             gSpriteEntries[(gBattleWork.targetSideFirst + i) * 4 + 0x5C].flags |= SPRITE_FLAG_ENABLED;

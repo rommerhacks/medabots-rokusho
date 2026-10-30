@@ -1,13 +1,14 @@
 // Mode-3 dispatcher (gGameStateHandlers: boot logos, intro, race, bomb game, Medabots Weekly...) and the screen
 // transitions those scenes share: random tile-mosaic in / out effects and the fade / wipe step tables
-// gSceneTransitionSteps (scene_transition_step_080686F4) and gSceneSteps (execute_scene_step).
+// gSceneFadeInSteps (scene_fade_in_step) and gSceneFadeOutSteps (scene_fade_out_step).
 #include "global.h"
 
 void dispatch_game_mode_handler(void) {
     gGameStateHandlers[gGameState]();
 }
 
-void setup_screen_transition_effect_080682CC(u8 step, u8 frames_per_level, u16 fade_color) {
+// Starts a fade-in transition (gSceneFadeInSteps[step]); scene_fade_in_step runs it each frame.
+void scene_fade_in_start(u8 step, u8 frames_per_level, u16 fade_color) {
     u8 tiles[0x80];
     u16 map[0x280];
     u16 pal[0x200];
@@ -62,7 +63,8 @@ void setup_screen_transition_effect_080682CC(u8 step, u8 frames_per_level, u16 f
     }
 }
 
-void setup_screen_transition_effect_080684F0(u8 step, u8 frames_per_level, u16 fade_color) {
+// Starts a fade-out transition (gSceneFadeOutSteps[step]); scene_fade_out_step runs it each frame.
+void scene_fade_out_start(u8 step, u8 frames_per_level, u16 fade_color) {
     u8 tiles[0x80];
     u16 map[0x280];
     int i;
@@ -116,8 +118,8 @@ static void scene_restore_palette(void) {
     DmaSet(3, gTransitionSourcePalette, PLTT, 0x80000200);
 }
 
-bool32 scene_transition_step_080686F4(void) {
-    if (gSceneTransitionSteps[gSceneStep]()) {
+bool32 scene_fade_in_step(void) {
+    if (gSceneFadeInSteps[gSceneStep]()) {
         gSceneStepFrames = 0;
         if (gSceneStep == 3)
             REG_DISPCNT &= 0xFEFF;
@@ -127,8 +129,8 @@ bool32 scene_transition_step_080686F4(void) {
     return FALSE;
 }
 
-bool32 execute_scene_step(void) {
-    if (gSceneSteps[gSceneStep]()) {
+bool32 scene_fade_out_step(void) {
+    if (gSceneFadeOutSteps[gSceneStep]()) {
         gSceneStepFrames = 0;
         return TRUE;
     }

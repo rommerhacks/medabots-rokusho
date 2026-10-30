@@ -107,7 +107,7 @@ u32 find_next_free_sprite_slot(u8 first, u8 count) {
     return first;
 }
 
-void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align, u16 prio) {
+void render_text_sprites_at(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align, u16 prio) {
     u8 len;
     u8 w;
     u32 i;
@@ -160,8 +160,8 @@ void render_text_sprites_08040DB8(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 p
     }
 }
 
-void render_text_sprites_08040EE4(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align, u16 prio, s32 dx,
-                                  s32 dy) {
+// render_text_sprites_at with an extra pixel offset (dx, dy).
+void render_text_sprites_offset(u8 *str, u8 slot, u32 x, u32 y, u8 width, u8 pal, u8 align, u16 prio, s32 dx, s32 dy) {
     u8 len;
     u8 w;
     u32 i;
@@ -371,7 +371,9 @@ void divide_by_10000_b(u8 *out, u32 n) {
     }
 }
 
-void divide_by_100000_08041370(u8 *out, u32 n) {
+// Writes n as sprite-font digits without leading zeros (0xFE-terminated); n > 99999 gives a fixed 5-char
+// placeholder.
+void format_number_5_digits(u8 *out, u32 n) {
     u8 digits[6];
     vu32 remainder;
     u8 i, k, started;

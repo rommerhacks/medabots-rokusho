@@ -150,7 +150,7 @@ void impair_finish(void) {
         kind_name = gPartKindNames[0];
         break;
     }
-    memcpy_bytes_0803F63C(kind_name, gGameWork.textBuf, 0xE);
+    copy_bytes(kind_name, gGameWork.textBuf, 0xE);
     gBattleWork.messageId = 0x30;
     gBattleWork.step++;
 }
@@ -832,7 +832,7 @@ void change_transform_part(void) {
     gBattleWork.partChanged = 1;
     gBattleWork.changeSkill = gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] - 0x37;
     gBattleWork.changePartId = pick_random_change_part(gBattleWork.changeSkill, gBattleWork.actorPart);
-    memcpy_bytes_0803F63C(&gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart], &gBattleWork.savedPart, 0x18);
+    copy_bytes(&gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart], &gBattleWork.savedPart, 0x18);
     load_part_data(gBattleWork.changePartId, gBattleWork.actorPart, &gGameWork.partAbility);
     gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[0] = (&gGameWork.partAbility)[0];
     gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] = (&gGameWork.partAbility)[1];
@@ -852,10 +852,10 @@ void change_transform_part(void) {
 // Copies the old and the new part names into the message buffer for the change message (messageId 0x2F).
 void change_finish(void) {
     clear_battle_sprite_slot(0x21, 2);
-    memcpy_bytes_08041D04((const void *)gMedapartNames[0][gBattleWork.savedPart.partId * 4 + gBattleWork.actorPart],
-                          gGameWork.textBuf, 0xF);
-    memcpy_bytes_08041D04((const void *)gMedapartNames[0][gBattleWork.changePartId * 4 + gBattleWork.actorPart],
-                          gGameWork.textBuf + 0x14, 0xF);
+    copy_bytes_short((const void *)gMedapartNames[0][gBattleWork.savedPart.partId * 4 + gBattleWork.actorPart],
+                     gGameWork.textBuf, 0xF);
+    copy_bytes_short((const void *)gMedapartNames[0][gBattleWork.changePartId * 4 + gBattleWork.actorPart],
+                     gGameWork.textBuf + 0x14, 0xF);
     gBattleWork.messageId = 0x2F;
     gBattleWork.step++;
 }

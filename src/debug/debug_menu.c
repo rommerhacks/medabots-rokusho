@@ -39,14 +39,14 @@ void debug_menu_select_input(void) {
     if (gFrameCounter & 4)
         clear_battle_sprite_slot(0, 8);
     else {
-        memcpy_bytes_0803F63C(gDebugMenuLabels[gGameWork.debugCursor], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0, 1, 0, 8, 15, 1, 0);
+        copy_bytes(gDebugMenuLabels[gGameWork.debugCursor], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0, 1, 0, 8, 15, 1, 0);
     }
     if ((b_pressed = KEYS_LO(gNewKeys) & B_BUTTON))
         gGameSubState++;
     else if (KEYS_LO(gNewKeys) & A_BUTTON) {
-        memcpy_bytes_0803F63C(gDebugMenuLabels[gGameWork.debugCursor], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0, 1, 0, 8, 15, 1, b_pressed);
+        copy_bytes(gDebugMenuLabels[gGameWork.debugCursor], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0, 1, 0, 8, 15, 1, b_pressed);
         gGameWork.debugSubState = b_pressed;
         gGameWork.debugRow = b_pressed;
         gGameWork.debugValues[0] = b_pressed;
@@ -88,37 +88,37 @@ void debug_process_input(void) {
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(8, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugProcessLabels[0], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+            copy_bytes(gDebugProcessLabels[0], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugProcessLabels[1], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugProcessLabels[2], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+        copy_bytes(gDebugProcessLabels[1], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+        copy_bytes(gDebugProcessLabels[2], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         break;
     case 1:
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(0x10, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugProcessLabels[1], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+            copy_bytes(gDebugProcessLabels[1], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugProcessLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugProcessLabels[2], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+        copy_bytes(gDebugProcessLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugProcessLabels[2], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         break;
     default:
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(0x18, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugProcessLabels[2], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+            copy_bytes(gDebugProcessLabels[2], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugProcessLabels[1], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugProcessLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugProcessLabels[1], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+        copy_bytes(gDebugProcessLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         break;
     }
     if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT)
@@ -126,14 +126,14 @@ void debug_process_input(void) {
     if (KEYS_LO(gRepeatKeys) & DPAD_LEFT)
         gGameWork.debugValues[gGameWork.debugRow]--;
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[0]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[0]);
+    render_text_sprites_at(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     clear_battle_sprite_slot(0x23, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[1]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[1]);
+    render_text_sprites_at(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
     clear_battle_sprite_slot(0x26, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[2]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x26, 8, 6, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[2]);
+    render_text_sprites_at(gGameWork.textBuf, 0x26, 8, 6, 3, 15, 1, 0);
     if (KEYS_LO(gNewKeys) & B_BUTTON) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
@@ -170,37 +170,37 @@ void debug_medal_input(void) {
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(8, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugMedalLabels[0], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+            copy_bytes(gDebugMedalLabels[0], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugMedalLabels[1], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugMedalLabels[2], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+        copy_bytes(gDebugMedalLabels[1], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+        copy_bytes(gDebugMedalLabels[2], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         break;
     case 1:
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(0x10, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugMedalLabels[1], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+            copy_bytes(gDebugMedalLabels[1], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugMedalLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugMedalLabels[2], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+        copy_bytes(gDebugMedalLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugMedalLabels[2], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         break;
     default:
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(0x18, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugMedalLabels[2], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+            copy_bytes(gDebugMedalLabels[2], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugMedalLabels[1], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugMedalLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugMedalLabels[1], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+        copy_bytes(gDebugMedalLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         break;
     }
     if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
@@ -216,14 +216,14 @@ void debug_medal_input(void) {
             gGameWork.debugValues[gGameWork.debugRow]--;
     }
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[0]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[0]);
+    render_text_sprites_at(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     clear_battle_sprite_slot(0x23, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[1]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[1]);
+    render_text_sprites_at(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
     clear_battle_sprite_slot(0x26, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[2]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x26, 8, 6, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[2]);
+    render_text_sprites_at(gGameWork.textBuf, 0x26, 8, 6, 3, 15, 1, 0);
     if ((b_pressed = KEYS_LO(gNewKeys) & B_BUTTON)) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
@@ -232,8 +232,7 @@ void debug_medal_input(void) {
         case 0:
             if (gGameWork.debugValues[0] < 30 && !find_medal_slot_by_id(gGameWork.debugValues[0])) {
                 slot = medal_add_by_id(gGameWork.debugValues[gGameWork.debugRow]);
-                memcpy_bytes_0803F63C((void *)gMedalNames[gGameWork.debugValues[gGameWork.debugRow]],
-                                      gMedals[slot].name, 11);
+                copy_bytes((void *)gMedalNames[gGameWork.debugValues[gGameWork.debugRow]], gMedals[slot].name, 11);
             }
             break;
         case 1:
@@ -244,7 +243,7 @@ void debug_medal_input(void) {
             for (gGameWork.debugValues[2] = b_pressed; gGameWork.debugValues[2] < 30; gGameWork.debugValues[2]++) {
                 if (!find_medal_slot_by_id(gGameWork.debugValues[2])) {
                     slot = medal_add_by_id(gGameWork.debugValues[2]);
-                    memcpy_bytes_0803F63C((void *)gMedalNames[gGameWork.debugValues[2]], gMedals[slot].name, 11);
+                    copy_bytes((void *)gMedalNames[gGameWork.debugValues[2]], gMedals[slot].name, 11);
                 }
             }
             break;
@@ -276,37 +275,37 @@ void debug_parts_input(void) {
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(8, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugPartsLabels[0], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+            copy_bytes(gDebugPartsLabels[0], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugPartsLabels[1], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugPartsLabels[2], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+        copy_bytes(gDebugPartsLabels[1], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+        copy_bytes(gDebugPartsLabels[2], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         break;
     case 1:
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(0x10, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugPartsLabels[1], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+            copy_bytes(gDebugPartsLabels[1], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugPartsLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugPartsLabels[2], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+        copy_bytes(gDebugPartsLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugPartsLabels[2], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         break;
     default:
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(0x18, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugPartsLabels[2], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+            copy_bytes(gDebugPartsLabels[2], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugPartsLabels[1], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugPartsLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugPartsLabels[1], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+        copy_bytes(gDebugPartsLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         break;
     }
     if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
@@ -322,14 +321,14 @@ void debug_parts_input(void) {
             gGameWork.debugValues[gGameWork.debugRow]--;
     }
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[0]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[0]);
+    render_text_sprites_at(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     clear_battle_sprite_slot(0x23, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[1]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[1]);
+    render_text_sprites_at(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
     clear_battle_sprite_slot(0x26, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[2]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x26, 8, 6, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[2]);
+    render_text_sprites_at(gGameWork.textBuf, 0x26, 8, 6, 3, 15, 1, 0);
     if ((b_pressed = KEYS_LO(gNewKeys) & B_BUTTON)) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
@@ -371,14 +370,14 @@ void debug_tinpet_input(void) {
     if (gFrameCounter & 4)
         clear_battle_sprite_slot(8, 8);
     else {
-        memcpy_bytes_0803F63C(gDebugTinpetLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugTinpetLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
     }
     if (KEYS_LO(gRepeatKeys) & (DPAD_RIGHT | DPAD_LEFT))
         gGameWork.debugValues[gGameWork.debugRow] ^= 1;
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[0]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[0]);
+    render_text_sprites_at(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     if (KEYS_LO(gNewKeys) & B_BUTTON) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
@@ -412,37 +411,37 @@ void debug_item_input(void) {
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(8, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugItemLabels[0], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+            copy_bytes(gDebugItemLabels[0], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugItemLabels[1], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugItemLabels[2], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+        copy_bytes(gDebugItemLabels[1], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+        copy_bytes(gDebugItemLabels[2], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         break;
     case 1:
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(0x10, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugItemLabels[1], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+            copy_bytes(gDebugItemLabels[1], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugItemLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugItemLabels[2], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+        copy_bytes(gDebugItemLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugItemLabels[2], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         break;
     default:
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(0x18, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugItemLabels[2], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
+            copy_bytes(gDebugItemLabels[2], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 0x18, 2, 6, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugItemLabels[1], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
-        memcpy_bytes_0803F63C(gDebugItemLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugItemLabels[1], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+        copy_bytes(gDebugItemLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         break;
     }
     if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
@@ -458,14 +457,14 @@ void debug_item_input(void) {
             gGameWork.debugValues[gGameWork.debugRow]--;
     }
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[0]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[0]);
+    render_text_sprites_at(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     clear_battle_sprite_slot(0x23, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[1]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[1]);
+    render_text_sprites_at(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
     clear_battle_sprite_slot(0x26, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[2]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x26, 8, 6, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[2]);
+    render_text_sprites_at(gGameWork.textBuf, 0x26, 8, 6, 3, 15, 1, 0);
     if ((b_pressed = KEYS_LO(gNewKeys) & B_BUTTON)) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
@@ -501,21 +500,21 @@ void debug_face_input(void) {
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(8, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugFaceLabels[0], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+            copy_bytes(gDebugFaceLabels[0], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugFaceLabels[1], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+        copy_bytes(gDebugFaceLabels[1], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
         break;
     case 1:
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(0x10, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugFaceLabels[1], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+            copy_bytes(gDebugFaceLabels[1], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugFaceLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugFaceLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         break;
     }
     if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
@@ -545,11 +544,11 @@ void debug_face_input(void) {
         }
     }
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[0]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[0]);
+    render_text_sprites_at(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     clear_battle_sprite_slot(0x23, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[1]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[1]);
+    render_text_sprites_at(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
     if ((b_pressed = KEYS_LO(gNewKeys) & B_BUTTON)) {
         vram_fill_tilemap_rect(0x11, 8, 0, 7, REG_BG0CNT, 0);
         clear_battle_sprite_slot(8, 0x21);
@@ -572,21 +571,21 @@ void debug_mdlpic_input(void) {
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(8, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugFaceLabels[0], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+            copy_bytes(gDebugFaceLabels[0], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugFaceLabels[1], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+        copy_bytes(gDebugFaceLabels[1], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
         break;
     case 1:
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(0x10, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugFaceLabels[1], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+            copy_bytes(gDebugFaceLabels[1], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugFaceLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugFaceLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         break;
     }
     if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
@@ -616,11 +615,11 @@ void debug_mdlpic_input(void) {
         }
     }
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[0]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[0]);
+    render_text_sprites_at(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     clear_battle_sprite_slot(0x23, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[1]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[1]);
+    render_text_sprites_at(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
     if (KEYS_LO(gNewKeys) & B_BUTTON) {
         clear_battle_sprite_slot(0, 1);
         clear_battle_sprite_slot(8, 0x21);
@@ -646,14 +645,14 @@ void debug_rndtk_input(void) {
     if (gFrameCounter & 4)
         clear_battle_sprite_slot(8, 8);
     else {
-        memcpy_bytes_0803F63C(gDebugRndTkLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugRndTkLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
     }
     if (KEYS_LO(gRepeatKeys) & (DPAD_RIGHT | DPAD_LEFT))
         gFieldWork.encounters_off ^= 1;
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gFieldWork.encounters_off);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gFieldWork.encounters_off);
+    render_text_sprites_at(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     if (KEYS_LO(gNewKeys) & B_BUTTON) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
@@ -670,16 +669,16 @@ void debug_battle_input(void) {
     if (gFrameCounter & 4)
         clear_battle_sprite_slot(8, 8);
     else {
-        memcpy_bytes_0803F63C(gDebugBattleLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugBattleLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
     }
     if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT)
         gGameWork.debugValues[gGameWork.debugRow]++;
     if (KEYS_LO(gRepeatKeys) & DPAD_LEFT)
         gGameWork.debugValues[gGameWork.debugRow]--;
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[gGameWork.debugRow]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[gGameWork.debugRow]);
+    render_text_sprites_at(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     if ((b_pressed = KEYS_LO(gNewKeys) & B_BUTTON)) {
         clear_battle_sprite_slot(8, 0x21);
         gGameSubState = 1;
@@ -706,21 +705,21 @@ void debug_sound_input(void) {
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(8, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugSoundLabels[0], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+            copy_bytes(gDebugSoundLabels[0], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugSoundLabels[1], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+        copy_bytes(gDebugSoundLabels[1], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
         break;
     case 1:
         if (gFrameCounter & 4)
             clear_battle_sprite_slot(0x10, 8);
         else {
-            memcpy_bytes_0803F63C(gDebugSoundLabels[1], gGameWork.textBuf, 8);
-            render_text_sprites_08040DB8(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
+            copy_bytes(gDebugSoundLabels[1], gGameWork.textBuf, 8);
+            render_text_sprites_at(gGameWork.textBuf, 0x10, 2, 4, 8, 15, 1, 0);
         }
-        memcpy_bytes_0803F63C(gDebugSoundLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugSoundLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
         break;
     }
     if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT) {
@@ -750,11 +749,11 @@ void debug_sound_input(void) {
         }
     }
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[0]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[0]);
+    render_text_sprites_at(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     clear_battle_sprite_slot(0x23, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[1]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[1]);
+    render_text_sprites_at(gGameWork.textBuf, 0x23, 8, 4, 3, 15, 1, 0);
     if (KEYS_LO(gNewKeys) & B_BUTTON) {
         play_song(0);
         clear_battle_sprite_slot(8, 0x21);
@@ -778,7 +777,7 @@ void debug_motion_init(void) {
 }
 
 void debug_motion_load(void) {
-    init_scene_buffers_080445F4();
+    init_medabot_sprite_tree();
     setup_scene_with_bg_and_sprites(0, gGameWork.debugMotion, gGameWork.debugMotion, gGameWork.debugMotion,
                                     gGameWork.debugMotion, 0x38, 0x68, 0, 4, 0, 0, 0);
     setup_scene_with_bg_and_sprites(1, gGameWork.debugMotion, gGameWork.debugMotion, gGameWork.debugMotion,
@@ -799,16 +798,16 @@ void debug_motion_input(void) {
     if (gFrameCounter & 4)
         clear_battle_sprite_slot(8, 8);
     else {
-        memcpy_bytes_0803F63C(gDebugMotionLabels[0], gGameWork.textBuf, 8);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
+        copy_bytes(gDebugMotionLabels[0], gGameWork.textBuf, 8);
+        render_text_sprites_at(gGameWork.textBuf, 8, 2, 2, 8, 15, 1, 0);
     }
     if (KEYS_LO(gRepeatKeys) & DPAD_RIGHT)
         gGameWork.debugValues[gGameWork.debugRow]++;
     if (KEYS_LO(gRepeatKeys) & DPAD_LEFT)
         gGameWork.debugValues[gGameWork.debugRow]--;
     clear_battle_sprite_slot(0x20, 3);
-    divide_by_100000_08041370(gGameWork.textBuf, gGameWork.debugValues[gGameWork.debugRow]);
-    render_text_sprites_08040DB8(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
+    format_number_5_digits(gGameWork.textBuf, gGameWork.debugValues[gGameWork.debugRow]);
+    render_text_sprites_at(gGameWork.textBuf, 0x20, 8, 2, 3, 15, 1, 0);
     if (KEYS_LO(gRepeatKeys) & START_BUTTON) {
         if (gGameWork.debugMotion == 0x79)
             gGameWork.debugMotion = 0;

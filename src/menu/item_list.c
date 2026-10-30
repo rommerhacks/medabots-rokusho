@@ -87,8 +87,8 @@ void update_battle_medapart_icons(void) {
     icon_tile_bottom = *(u16 *)(BG_VRAM + 0xF12E);
     for (i = 0; i < n; i++) {
         if (counts[i]) {
-            memcpy_bytes_0803F63C((void *)gItemNames[ids[i]], gTextArgBuffer, 0x11);
-            render_text_sprites_08040DB8(gTextArgBuffer, i * 15, 0xC, i * 2 + 3, 7, 8, 1, 2);
+            copy_bytes((void *)gItemNames[ids[i]], gTextArgBuffer, 0x11);
+            render_text_sprites_at(gTextArgBuffer, i * 15, 0xC, i * 2 + 3, 7, 8, 1, 2);
             draw_number_2digits_tall(counts[i], 0x18, i * 2 + 3);
             *((u16 *)(BG_VRAM + 0xF02E) + ((i * 2 + 3) << 5)) = icon_tile_top;
             *((u16 *)(BG_VRAM + 0xF02E) + ((i * 2 + 4) << 5)) = icon_tile_bottom;
@@ -201,34 +201,34 @@ void render_battle_medapart_list(u32 mode) {
     for (i = 0; i < n; i++) {
         if (mode == 0) {
             if (gMenuWork->list_count > i) {
-                render_text_sprites_08040DB8((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
-                                             13, 1, 1);
+                render_text_sprites_at((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14, 13,
+                                       1, 1);
                 draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
                 gSpriteEntries[i + 0x6A].flags |= SPRITE_FLAG_VISIBLE;
                 gSpriteEntries[i + 0x6A].frame = genders[i] + 0x1B;
                 gSpriteEntries[i + 0x6E].flags |= SPRITE_FLAG_VISIBLE;
                 load_battle_sprite_tiles(ids[i], kind, i);
                 divide_by_10000(gTextArgBuffer, prices[i]);
-                render_text_sprites_08040DB8(gTextArgBuffer, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
+                render_text_sprites_at(gTextArgBuffer, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
             } else
                 break;
         } else {
             if (counts[i]) {
-                render_text_sprites_08040DB8((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14,
-                                             13, 1, 1);
+                render_text_sprites_at((u8 *)gMedapartNames[0][ids[i] * 4 + kind], i * 14 + 13, 2, i * 2 + 10, 14, 13,
+                                       1, 1);
                 draw_number_tall(counts[i], 2, 13, i * 2 + 10, 5, BGCNT_SCREEN_BLOCK(REG_BG1CNT));
                 gSpriteEntries[i + 0x6A].flags |= SPRITE_FLAG_VISIBLE;
                 gSpriteEntries[i + 0x6A].frame = genders[i] + 0x1B;
                 gSpriteEntries[i + 0x6E].flags |= SPRITE_FLAG_VISIBLE;
                 load_battle_sprite_tiles(ids[i], kind, i);
                 divide_by_10000(gTextArgBuffer, prices[i]);
-                render_text_sprites_08040DB8(gTextArgBuffer, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
+                render_text_sprites_at(gTextArgBuffer, i * 7 + 0x45, 0x12, i * 2 + 10, 7, 13, 2, 1);
             } else
                 break;
         }
     }
     divide_by_10000(gTextArgBuffer, gMenuWork->total);
-    render_text_sprites_08040DB8(gTextArgBuffer, 0x61, 0x13, 5, 7, 12, 2, 0);
+    render_text_sprites_at(gTextArgBuffer, 0x61, 0x13, 5, 7, 12, 2, 0);
 }
 
 static void clear_item_list_map_run(s32 x, s32 y, s32 n) {

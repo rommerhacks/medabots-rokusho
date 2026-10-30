@@ -339,7 +339,7 @@ struct Vec16 compute_polar_to_screen_position(u32 angle, u32 radius, u32 cx, u32
 // chunk 0 from part id head, 1-2 from right_arm, 3-4 from left_arm, 5 from legs (gMedabotPartSpriteTiles has 6
 // pointers per Medabot).
 // The index is written as (n << 2) + (n << 1): `n * 6` compiles to (n * 3) << 1.
-void decompress_sprite_to_vram_08042D94(u32 head, u32 right_arm, u32 left_arm, u32 legs, u32 slot) {
+void load_medabot_part_tiles(u32 head, u32 right_arm, u32 left_arm, u32 legs, u32 slot) {
     lz_decompress_dispatch(gMedabotPartSpriteTiles[(head << 2) + (head << 1)], (void *)(VRAM + 0x10000 + slot * 0x400));
     lz_decompress_dispatch(gMedabotPartSpriteTiles[(right_arm << 2) + (right_arm << 1) + 1],
                            (void *)(VRAM + 0x10000 + 0x80 + slot * 0x400));
@@ -704,7 +704,7 @@ u32 find_medabot_slot_by_medal(u8 medal) {
 }
 
 void area_load_encounter_rate(void) {
-    memcpy_bytes_08041D04(gAreaBattleSettings[gFieldWork.area_id], &gGameWork.partAbility, 1);
+    copy_bytes_short(gAreaBattleSettings[gFieldWork.area_id], &gGameWork.partAbility, 1);
     gFieldWork.encounter_rate = gGameWork.partAbility;
     gFieldWork.encounter_steps = 0;
 }
@@ -818,7 +818,7 @@ void decompress_tileset_to_vram(u32 idx, u32 backup) {
         CpuFastSet(gBattlefieldTilesets[i + 1], (void *)PLTT, 0x40);
 }
 
-void decompress_sprite_to_vram_08043C08(u32 idx, u32 backup) {
+void load_battlefield_graphics(u32 idx, u32 backup) {
     lz_decompress_dispatch(gBattlefieldGraphics[idx * 5], (void *)(VRAM + 0x8000));
     set_tilemap_and_decompress_bg(0, 0, gBattlefieldGraphics[idx * 5 + 3], REG_BG2CNT, 0);
     set_tilemap_and_decompress_bg(0, 0, gBattlefieldGraphics[idx * 5 + 4], REG_BG3CNT, 0);
@@ -917,7 +917,7 @@ void battle_bg_scroll_vblank(void) {
 }
 
 void load_battle_script_entry_b(void) {
-    memcpy_bytes_0803F63C(gBattlefieldEffectParams[gBattleWork.battlefield], gBattleWork.battlefieldEffect, 8);
+    copy_bytes(gBattlefieldEffectParams[gBattleWork.battlefield], gBattleWork.battlefieldEffect, 8);
 }
 
 static void update_scroll_movement_b(void) {
@@ -991,12 +991,12 @@ void advance_battle_animation_frame(u32 field) {
     if (++gBattleWork.fieldAnimTick > 2) {
         gBattleWork.fieldAnimTick = 0;
         gBattleWork.fieldAnimFrame = (gBattleWork.fieldAnimFrame + 1) & 0x7F;
-        memcpy_bytes_08041D04(&gBattlefieldAnimTileCounts[field], &gBattleWork.fieldAnimTiles, 1);
-        memcpy_bytes_08041D04(&gBattlefieldAnimFrames[field * 128 + gBattleWork.fieldAnimFrame],
-                              &gBattleWork.fieldAnimBlock, 1);
+        copy_bytes_short(&gBattlefieldAnimTileCounts[field], &gBattleWork.fieldAnimTiles, 1);
+        copy_bytes_short(&gBattlefieldAnimFrames[field * 128 + gBattleWork.fieldAnimFrame], &gBattleWork.fieldAnimBlock,
+                         1);
         if (gBattleWork.fieldAnimBlock == 0xFF) {
             gBattleWork.fieldAnimFrame = 0;
-            memcpy_bytes_08041D04(&gBattlefieldAnimFrames[field * 128], &gBattleWork.fieldAnimBlock, 1);
+            copy_bytes_short(&gBattlefieldAnimFrames[field * 128], &gBattleWork.fieldAnimBlock, 1);
         }
         CpuSet((void *)(BATTLEFIELD_ANIM_TILES_ADDR + gBattleWork.fieldAnimTiles * gBattleWork.fieldAnimBlock * 32),
                (void *)(VRAM + 0x8020), (gBattleWork.fieldAnimTiles * 8) | CPU_SET_32BIT);
@@ -1209,7 +1209,7 @@ u32 calculate_direction_index(s32 x, s32 y, s32 tx, s32 ty) {
     }
 }
 
-void init_scene_buffers_080445F4(void) {
+void init_medabot_sprite_tree(void) {
     struct SpriteTree *obj = (struct SpriteTree *)SPRITE_TREE_ADDR;
     u8 *node_oams;
     u8 *slots;

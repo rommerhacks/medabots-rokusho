@@ -4,7 +4,7 @@
 #include "global.h"
 #include "constants/sprites.h"
 
-void load_bg3_tilemap_08488764(void) {
+void battle_hud_load_bg3_tilemap(void) {
     set_tilemap_and_decompress_bg(14, 3, gBattleBg3TilemapLz, REG_BG3CNT, 0x200);
 }
 
@@ -47,7 +47,7 @@ void get_bot_part_effective_values(u32 bot, u8 *out) {
 void load_bot_part_sprite(u32 rec) {
     u8 *part_ids = gBattleWork.partIds;
     get_bot_part_effective_values(rec, part_ids);
-    decompress_sprite_to_vram_08042D94(part_ids[0], part_ids[1], part_ids[2], part_ids[3], rec);
+    load_medabot_part_tiles(part_ids[0], part_ids[1], part_ids[2], part_ids[3], rec);
 }
 
 void load_all_bot_part_sprites(void) {
@@ -119,10 +119,10 @@ void decompress_two_bg1_layers(void) {
 void render_bot_name_sprites(u32 rec) {
     if (rec <= 2) {
         disable_sprites(10, 10);
-        render_text_sprites_08040DB8(gBattleBots[rec].medal.name, 10, 1, 14, 10, 15, 0, 1);
+        render_text_sprites_at(gBattleBots[rec].medal.name, 10, 1, 14, 10, 15, 0, 1);
     } else {
         disable_sprites(20, 13);
-        render_text_sprites_08040DB8(gBattleBots[rec].medal.name, 20, 19, 14, 10, 15, 0, 1);
+        render_text_sprites_at(gBattleBots[rec].medal.name, 20, 19, 14, 10, 15, 0, 1);
     }
 }
 

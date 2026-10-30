@@ -534,10 +534,10 @@ void pushover_banana_fly(void) {
 
 void pushover_target_hop_init(void) {
     gSpriteEntries[0x21].work[FX_SPR_STEP] = 0;
-    memcpy_bytes_0803F63C(&gSpriteEntries[gBattleWork.target * 4 + 0x5A], &gSpriteEntries[0x22], 0x40);
-    memcpy_bytes_0803F63C(&gSpriteEntries[gBattleWork.target * 4 + 0x5B], &gSpriteEntries[0x23], 0x40);
-    memcpy_bytes_0803F63C(&gSpriteEntries[gBattleWork.target * 4 + 0x5C], &gSpriteEntries[0x24], 0x40);
-    memcpy_bytes_0803F63C(&gSpriteEntries[gBattleWork.target * 4 + 0x5D], &gSpriteEntries[0x25], 0x40);
+    copy_bytes(&gSpriteEntries[gBattleWork.target * 4 + 0x5A], &gSpriteEntries[0x22], 0x40);
+    copy_bytes(&gSpriteEntries[gBattleWork.target * 4 + 0x5B], &gSpriteEntries[0x23], 0x40);
+    copy_bytes(&gSpriteEntries[gBattleWork.target * 4 + 0x5C], &gSpriteEntries[0x24], 0x40);
+    copy_bytes(&gSpriteEntries[gBattleWork.target * 4 + 0x5D], &gSpriteEntries[0x25], 0x40);
     disable_sprites(0x22, 4);
     gSpriteEntries[gBattleWork.target * 4 + 0x5A].work[FX_SPR_STEP] = 0;
     gSpriteEntries[gBattleWork.target * 4 + 0x5B].work[FX_SPR_STEP] = 0;
@@ -610,10 +610,10 @@ void pushover_burst(void) {
         update_sprite_animation_position(0x26 + i);
     if (gGameWork.stepCounter == 0x10) {
         clear_battle_sprite_slot(0x26, 4);
-        memcpy_bytes_0803F63C(&gSpriteEntries[0x22], &gSpriteEntries[gBattleWork.target * 4 + 0x5A], 0x40);
-        memcpy_bytes_0803F63C(&gSpriteEntries[0x23], &gSpriteEntries[gBattleWork.target * 4 + 0x5B], 0x40);
-        memcpy_bytes_0803F63C(&gSpriteEntries[0x24], &gSpriteEntries[gBattleWork.target * 4 + 0x5C], 0x40);
-        memcpy_bytes_0803F63C(&gSpriteEntries[0x25], &gSpriteEntries[gBattleWork.target * 4 + 0x5D], 0x40);
+        copy_bytes(&gSpriteEntries[0x22], &gSpriteEntries[gBattleWork.target * 4 + 0x5A], 0x40);
+        copy_bytes(&gSpriteEntries[0x23], &gSpriteEntries[gBattleWork.target * 4 + 0x5B], 0x40);
+        copy_bytes(&gSpriteEntries[0x24], &gSpriteEntries[gBattleWork.target * 4 + 0x5C], 0x40);
+        copy_bytes(&gSpriteEntries[0x25], &gSpriteEntries[gBattleWork.target * 4 + 0x5D], 0x40);
         gSpriteEntries[gBattleWork.target * 4 + 0x5A].flags |= SPRITE_FLAG_ENABLED;
         gSpriteEntries[gBattleWork.target * 4 + 0x5B].flags |= SPRITE_FLAG_ENABLED;
         gSpriteEntries[gBattleWork.target * 4 + 0x5C].flags |= SPRITE_FLAG_ENABLED;

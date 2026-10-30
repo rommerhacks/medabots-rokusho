@@ -148,12 +148,12 @@ gLinkMenuMessages:
 gGameStateHandlers:
 	.incbin "baserom.gba", 0x485C48, 0x20
 
-	.global gSceneTransitionSteps
-gSceneTransitionSteps:
+	.global gSceneFadeInSteps
+gSceneFadeInSteps:
 	.incbin "baserom.gba", 0x485C68, 0x14
 
-	.global gSceneSteps
-gSceneSteps:
+	.global gSceneFadeOutSteps
+gSceneFadeOutSteps:
 	.incbin "baserom.gba", 0x485C7C, 0x14
 
 	.global gRaceSubStates

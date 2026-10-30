@@ -59,7 +59,7 @@ u32 battle_load_graphics_step(u32 direct) {
     case 8:
         if (direct == 0) {
             vram_fill_tilemap_rect(0x20, 0x20, 0, 0, REG_BG0CNT, direct);
-            decompress_sprite_to_vram_08043C08(gBattleWork.battlefield, 1);
+            load_battlefield_graphics(gBattleWork.battlefield, 1);
             CpuFastSet(gBattleBgPalette8, (void *)BG_PAL_BACKUP_ADDR(8), 8);
             CpuFastSet(gBattleBgPalette10, (void *)BG_PAL_BACKUP_ADDR(10), 8);
             CpuFastSet(gBattleBgPalette11, (void *)BG_PAL_BACKUP_ADDR(11), 8);
@@ -74,7 +74,7 @@ u32 battle_load_graphics_step(u32 direct) {
             CpuFastSet(gBattleObjPalettes13 + 0x40, (void *)OBJ_PAL_BACKUP_ADDR(15), 8);
             CpuFastSet(gBattleObjPalette5, (void *)OBJ_PAL_BACKUP_ADDR(5), 8);
         } else {
-            decompress_sprite_to_vram_08043C08(gBattleWork.battlefield, 0);
+            load_battlefield_graphics(gBattleWork.battlefield, 0);
             CpuFastSet(gBattleBgPalette8, (void *)0x05000100, 8);
             CpuFastSet(gBattleBgPalette10, (void *)0x05000140, 8);
             CpuFastSet(gBattleBgPalette11, (void *)0x05000160, 8);

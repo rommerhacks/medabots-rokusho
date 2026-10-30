@@ -1628,7 +1628,7 @@ struct MenuWork {
     u8 sound_delay;
     u8 message_pending; // message pending (medal_rename_no_money)
     u8 filler4D[0x3];
-    u8 blend[8];         // struct BlendEffect (init_blend_effect, blend_fade_step_08065598)
+    u8 blend[8];         // struct BlendEffect (init_blend_effect, blend_effect_step)
     u8 name_buf[0x20];   // name text buffer (name_entry_fade_out_store_name copies it to the player or Medal name)
     u16 prev_keys;       // link: the other player's keys last frame (keys_update_from)
     s8 partner_chose;    // link menu: 1 the choice came from the other GBA, 0 this side chose (-1 at start)
@@ -1654,7 +1654,7 @@ struct MenuWork {
     u8 message_buf[0x30];         // message text buffer (shop_menu_greeting)
 };
 
-// BLDY fade state (init_blend_effect / blend_fade_step_08065598; MenuWork.blend)
+// BLDY fade state (init_blend_effect / blend_effect_step; MenuWork.blend)
 struct BlendEffect {
     u16 mode;   // BLDCNT effect bits (| 0x3F)
     u8 level;   // BLDY level

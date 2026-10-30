@@ -220,7 +220,7 @@ void name_entry_load_name(void) {
     CpuSet(gMenuWork->name_buf, gMenuWork->name_buf + 0x10, 8);
     gSpriteEntries[4].x = calc_text_pixel_width(gMenuWork->name_buf) + 0x28;
     gSpriteEntries[4].y = 0x1B;
-    render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
+    render_text_sprites_at(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
     x = gSpriteEntries[4].x + 2;
     {
         register const u8(*tb)[2] asm("r4");
@@ -368,7 +368,7 @@ void name_entry_input(void) {
             if (gMenuWork->name_len == 10) {
                 gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
                 disable_sprites(5, 10);
-                render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
+                render_text_sprites_at(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
                 goto start;
             }
         } else
@@ -393,7 +393,7 @@ void name_entry_input(void) {
                 if (blank)
                     CpuSet(gMenuWork->name_buf + 0x10, gMenuWork->name_buf, 8);
                 disable_sprites(5, 10);
-                render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
+                render_text_sprites_at(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
                 play_sound_effect(7);
                 gGameSubState++;
                 return;
@@ -406,14 +406,14 @@ void name_entry_input(void) {
             if (gMenuWork->name_len == 10) {
                 gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
                 disable_sprites(5, 10);
-                render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
+                render_text_sprites_at(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
                 goto start;
             }
         } else
             play_sound_effect(6);
     redraw:
         disable_sprites(5, 10);
-        render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
+        render_text_sprites_at(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
     } else if (gNewKeys & (B_BUTTON | L_BUTTON)) {
     back:
         play_sound_effect(5);
@@ -425,7 +425,7 @@ void name_entry_input(void) {
             gMenuWork->name_buf[gMenuWork->name_len] = 0xFE;
         }
         disable_sprites(5, 10);
-        render_text_sprites_08040DB8(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
+        render_text_sprites_at(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
         gSpriteEntries[4].flags |= SPRITE_FLAG_VISIBLE;
     } else
         return;

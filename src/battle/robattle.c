@@ -61,7 +61,7 @@ void robattle_load_scene(void) {
         gGameWork.setupStep++;
         break;
     case 2:
-        load_bg3_tilemap_08488764();
+        battle_hud_load_bg3_tilemap();
         draw_battle_bot_portraits();
         load_all_bot_part_sprites();
         setup_all_battle_bot_sprite_positions();

@@ -897,7 +897,7 @@ static void medabots_screen_load_team_icon_gfx(void) {
     bot = gTeamSlots;
     do {
         if (bot->state)
-            decompress_sprite_to_vram_08042D94(bot->head, bot->rightArm, bot->leftArm, bot->legs, i);
+            load_medabot_part_tiles(bot->head, bot->rightArm, bot->leftArm, bot->legs, i);
         bot++;
         i++;
     } while (i <= 8);
@@ -939,12 +939,12 @@ static void medabots_screen_draw_legs_type_icons(void) {
 static void medabots_screen_draw_medal_nickname(void) {
     disable_sprites(0x32, 10);
     if (gTeamSlots[gGameWork.medabotsCursor].state > 1)
-        render_text_sprites_08040DB8((u8 *)0x03000BAA +
-                                         find_medal_slot_by_id(gTeamSlots[gGameWork.medabotsCursor].medal) * 64,
-                                     0x32, 1, 13, 10, 13, 0, 2);
+        render_text_sprites_at((u8 *)0x03000BAA +
+                                   find_medal_slot_by_id(gTeamSlots[gGameWork.medabotsCursor].medal) * 64,
+                               0x32, 1, 13, 10, 13, 0, 2);
     else {
         fill_text_blank(gGameWork.textBuf, 10);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x32, 1, 13, 10, 13, 0, 2);
+        render_text_sprites_at(gGameWork.textBuf, 0x32, 1, 13, 10, 13, 0, 2);
     }
 }
 
@@ -952,12 +952,11 @@ static void medabots_screen_draw_medal_nickname(void) {
 static void medabots_screen_draw_medal_kind_name(void) {
     disable_sprites(0x3C, 10);
     if (gTeamSlots[gGameWork.medabotsCursor].state > 1) {
-        memcpy_bytes_0803F63C((const void *)gMedalNames[gTeamSlots[gGameWork.medabotsCursor].medal], gGameWork.textBuf,
-                              11);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x3C, 4, 16, 7, 14, 1, 2);
+        copy_bytes((const void *)gMedalNames[gTeamSlots[gGameWork.medabotsCursor].medal], gGameWork.textBuf, 11);
+        render_text_sprites_at(gGameWork.textBuf, 0x3C, 4, 16, 7, 14, 1, 2);
     } else {
         fill_text_blank(gGameWork.textBuf, 9);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x3C, 4, 16, 7, 14, 1, 2);
+        render_text_sprites_at(gGameWork.textBuf, 0x3C, 4, 16, 7, 14, 1, 2);
     }
 }
 
@@ -1216,10 +1215,10 @@ static void medabot_detail_take_apart(void) {
 static void medabot_detail_draw_medal_nickname(void) {
     disable_sprites(10, 10);
     if (gGameWork.shownMedal < 30)
-        render_text_sprites_08040DB8(gMedals[gGameWork.shownMedal].name, 10, 1, 13, 10, 15, 0, 2);
+        render_text_sprites_at(gMedals[gGameWork.shownMedal].name, 10, 1, 13, 10, 15, 0, 2);
     else {
         fill_text_blank(gGameWork.textBuf, 10);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 10, 1, 13, 10, 15, 0, 2);
+        render_text_sprites_at(gGameWork.textBuf, 10, 1, 13, 10, 15, 0, 2);
     }
 }
 
@@ -1241,12 +1240,11 @@ static void medabot_detail_draw_medal_level(void) {
 static void medabot_detail_draw_medal_kind_name(void) {
     disable_sprites(0x14, 10);
     if (gGameWork.shownMedal < 30) {
-        memcpy_bytes_0803F63C((const void *)gMedalNames[gMedals[gGameWork.shownMedal].graphicId], gGameWork.textBuf,
-                              11);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x14, 0x12, 9, 7, 12, 1, 2);
+        copy_bytes((const void *)gMedalNames[gMedals[gGameWork.shownMedal].graphicId], gGameWork.textBuf, 11);
+        render_text_sprites_at(gGameWork.textBuf, 0x14, 0x12, 9, 7, 12, 1, 2);
     } else {
         fill_text_blank(gGameWork.textBuf, 9);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x14, 0x12, 9, 7, 12, 1, 2);
+        render_text_sprites_at(gGameWork.textBuf, 0x14, 0x12, 9, 7, 12, 1, 2);
     }
 }
 
@@ -1254,11 +1252,11 @@ static void medabot_detail_draw_medal_kind_name(void) {
 static void medabot_detail_draw_head_name(void) {
     disable_sprites(0x1E, 14);
     if (gGameWork.shownHead < 120) {
-        memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownHead * 4 + 0], gGameWork.textBuf, 15);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x1E, 0x12, 11, 10, 13, 1, 2);
+        copy_bytes_short((const void *)gMedapartNames[0][gGameWork.shownHead * 4 + 0], gGameWork.textBuf, 15);
+        render_text_sprites_at(gGameWork.textBuf, 0x1E, 0x12, 11, 10, 13, 1, 2);
     } else {
         fill_text_blank(gGameWork.textBuf, 13);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x1E, 0x12, 11, 10, 13, 1, 2);
+        render_text_sprites_at(gGameWork.textBuf, 0x1E, 0x12, 11, 10, 13, 1, 2);
     }
 }
 
@@ -1267,7 +1265,7 @@ static void medabot_detail_draw_head_skill_icon(void) {
     if (gGameWork.shownHead < 120) {
         if (gGameWork.shownMedal < 30) {
             load_part_data(gGameWork.shownHead, 0, &gGameWork.partAbility);
-            memcpy_bytes_08041D04(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
+            copy_bytes_short(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
             if (gGameWork.partAbility == gGameWork.medalGfxRecord[1])
                 draw_tile_block(2, 2, 16, 11, REG_BG1CNT, 0xD340 + gGameWork.medalGfxRecord[7] * 4);
             else
@@ -1283,11 +1281,11 @@ static void medabot_detail_draw_head_skill_icon(void) {
 static void medabot_detail_draw_rarm_name(void) {
     disable_sprites(0x2C, 14);
     if (gGameWork.shownRightArm < 120) {
-        memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownRightArm * 4 + 1], gGameWork.textBuf, 15);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x2C, 0x12, 13, 10, 13, 1, 2);
+        copy_bytes_short((const void *)gMedapartNames[0][gGameWork.shownRightArm * 4 + 1], gGameWork.textBuf, 15);
+        render_text_sprites_at(gGameWork.textBuf, 0x2C, 0x12, 13, 10, 13, 1, 2);
     } else {
         fill_text_blank(gGameWork.textBuf, 13);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x2C, 0x12, 13, 10, 13, 1, 2);
+        render_text_sprites_at(gGameWork.textBuf, 0x2C, 0x12, 13, 10, 13, 1, 2);
     }
 }
 
@@ -1295,7 +1293,7 @@ static void medabot_detail_draw_rarm_skill_icon(void) {
     if (gGameWork.shownRightArm < 120) {
         if (gGameWork.shownMedal < 30) {
             load_part_data(gGameWork.shownRightArm, 1, &gGameWork.partAbility);
-            memcpy_bytes_08041D04(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
+            copy_bytes_short(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
             if (gGameWork.partAbility == gGameWork.medalGfxRecord[1])
                 draw_tile_block(2, 2, 16, 13, REG_BG1CNT, 0xD340 + gGameWork.medalGfxRecord[7] * 4);
             else
@@ -1311,11 +1309,11 @@ static void medabot_detail_draw_rarm_skill_icon(void) {
 static void medabot_detail_draw_larm_name(void) {
     disable_sprites(0x3A, 14);
     if (gGameWork.shownLeftArm < 120) {
-        memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownLeftArm * 4 + 2], gGameWork.textBuf, 15);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x3A, 0x12, 15, 10, 13, 1, 2);
+        copy_bytes_short((const void *)gMedapartNames[0][gGameWork.shownLeftArm * 4 + 2], gGameWork.textBuf, 15);
+        render_text_sprites_at(gGameWork.textBuf, 0x3A, 0x12, 15, 10, 13, 1, 2);
     } else {
         fill_text_blank(gGameWork.textBuf, 13);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x3A, 0x12, 15, 10, 13, 1, 2);
+        render_text_sprites_at(gGameWork.textBuf, 0x3A, 0x12, 15, 10, 13, 1, 2);
     }
 }
 
@@ -1323,7 +1321,7 @@ static void medabot_detail_draw_larm_skill_icon(void) {
     if (gGameWork.shownLeftArm < 120) {
         if (gGameWork.shownMedal < 30) {
             load_part_data(gGameWork.shownLeftArm, 2, &gGameWork.partAbility);
-            memcpy_bytes_08041D04(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
+            copy_bytes_short(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
             if (gGameWork.partAbility == gGameWork.medalGfxRecord[1])
                 draw_tile_block(2, 2, 16, 15, REG_BG1CNT, 0xD340 + gGameWork.medalGfxRecord[7] * 4);
             else
@@ -1339,11 +1337,11 @@ static void medabot_detail_draw_larm_skill_icon(void) {
 static void medabot_detail_draw_legs_name(void) {
     disable_sprites(0x48, 14);
     if (gGameWork.shownLegs < 120) {
-        memcpy_bytes_08041D04((const void *)gMedapartNames[0][gGameWork.shownLegs * 4 + 3], gGameWork.textBuf, 15);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x48, 0x12, 17, 10, 13, 1, 2);
+        copy_bytes_short((const void *)gMedapartNames[0][gGameWork.shownLegs * 4 + 3], gGameWork.textBuf, 15);
+        render_text_sprites_at(gGameWork.textBuf, 0x48, 0x12, 17, 10, 13, 1, 2);
     } else {
         fill_text_blank(gGameWork.textBuf, 13);
-        render_text_sprites_08040DB8(gGameWork.textBuf, 0x48, 0x12, 17, 10, 13, 1, 2);
+        render_text_sprites_at(gGameWork.textBuf, 0x48, 0x12, 17, 10, 13, 1, 2);
     }
 }
 
@@ -1351,7 +1349,7 @@ static void medabot_detail_draw_legs_skill_icon(void) {
     if (gGameWork.shownLegs < 120) {
         if (gGameWork.shownMedal < 30) {
             load_part_data(gGameWork.shownLegs, 3, &gGameWork.partAbility);
-            memcpy_bytes_08041D04(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
+            copy_bytes_short(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
             if (gGameWork.partAbility == gGameWork.medalGfxRecord[1])
                 draw_tile_block(2, 2, 16, 17, REG_BG1CNT, 0xD340 + gGameWork.medalGfxRecord[7] * 4);
             else
@@ -1412,8 +1410,8 @@ static void medabot_detail_draw_legs_type_icon(void) {
 }
 
 static void medabot_detail_load_icon_gfx(void) {
-    decompress_sprite_to_vram_08042D94(gGameWork.shownHead, gGameWork.shownRightArm, gGameWork.shownLeftArm,
-                                       gGameWork.shownLegs, 0);
+    load_medabot_part_tiles(gGameWork.shownHead, gGameWork.shownRightArm, gGameWork.shownLeftArm, gGameWork.shownLegs,
+                            0);
 }
 
 static void medabot_detail_place_icon(void) {

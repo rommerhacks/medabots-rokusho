@@ -84,7 +84,7 @@ void title_screen_hblank(void) {
 }
 
 void title_screen_fade_out_exit(void) {
-    if (execute_scene_step()) {
+    if (scene_fade_out_step()) {
         u32 zero = 0;
         DmaSet(3, &zero, gSpriteEntries, 0x85000800);
         REG_DISPCNT &= 0x80FF;
@@ -147,7 +147,7 @@ void title_screen_load_graphics(void) {
     LZ77UnCompVram(gTitleObjTiles, (void *)(VRAM + 0x10000));
     DmaSet(3, gTitleObjPalettes, PLTT + 0x200, 0x80000060);
     DmaSet(3, gTitleObjPalettes + 0x60, &gSceneWork.param, 0x8000000E);
-    setup_screen_transition_effect_080682CC(2, 1, 0);
+    scene_fade_in_start(2, 1, 0);
     gSceneWork.nextSubState = 5;
     gGameSubState = 1;
 }
@@ -170,7 +170,7 @@ void title_screen_show_logo(void) {
     if (gSpriteEntries[0].work[TITLE_SPR_EFFECT] == 0) {
         gSceneWork.nextSubState = 6;
         gSceneWork.timer = 0;
-        setup_screen_transition_effect_080682CC(4, 4, 0x7FFF);
+        scene_fade_in_start(4, 4, 0x7FFF);
         clear_sprite_entry(1);
         sprite_entry_init(0, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x21B, 4, 3);
         REG_DISPCNT |= 0x300;
@@ -267,7 +267,7 @@ void title_screen_wait_start(void) {
     } else if (gSceneWork.timer > 0x547) {
         gSceneWork.timer = start;
         clear_sprite_entry(2);
-        setup_screen_transition_effect_080684F0(4, 1, 0);
+        scene_fade_out_start(4, 1, 0);
         gSceneWork.nextMode = 3;
         gSceneWork.nextState = start;
         gSceneWork.nextSubState = start;
@@ -281,7 +281,7 @@ void title_screen_start_pressed(void) {
     if (gSceneWork.timer > 0x28) {
         gSceneWork.timer = 0;
         clear_sprite_entry(2);
-        setup_screen_transition_effect_080684F0(4, 1, 0);
+        scene_fade_out_start(4, 1, 0);
         gSceneWork.nextMode = 2;
         gSceneWork.nextState = 3;
         gSceneWork.nextSubState = 0;
@@ -292,7 +292,7 @@ void title_screen_start_pressed(void) {
 }
 
 void title_screen_skip_intro(void) {
-    setup_screen_transition_effect_080682CC(4, 2, 0x7FFF);
+    scene_fade_in_start(4, 2, 0x7FFF);
     REG_BLDY = 0;
     play_song(0);
     sprite_entry_init(0, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(1), 0x21B, 4, 3);

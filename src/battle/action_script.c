@@ -121,17 +121,16 @@ void script_op_guard(void) {
 
 void script_op_guard_restore(void) {
     if (gBattleWork.guardBot) {
-        memcpy_bytes_0803F63C(gGuardSpriteEntryBytes,
-                              gGuardSpriteEntryBytes + 0xE40 + ((gBattleWork.guardBot - 1) << 8), 0x40);
-        memcpy_bytes_0803F63C(gGuardSpriteEntryBytes + 0x40,
-                              gGuardSpriteEntryBytes + 0xE80 + ((gBattleWork.guardBot - 1) << 8), 0x40);
-        memcpy_bytes_0803F63C(gGuardSpriteEntryBytes + 0x80,
-                              gGuardSpriteEntryBytes + 0xEC0 + ((gBattleWork.guardBot - 1) << 8), 0x40);
-        memcpy_bytes_0803F63C(gGuardSpriteEntryBytes + 0xC0,
-                              gGuardSpriteEntryBytes + 0xF00 + ((gBattleWork.guardBot - 1) << 8), 0x40);
+        copy_bytes(gGuardSpriteEntryBytes, gGuardSpriteEntryBytes + 0xE40 + ((gBattleWork.guardBot - 1) << 8), 0x40);
+        copy_bytes(gGuardSpriteEntryBytes + 0x40, gGuardSpriteEntryBytes + 0xE80 + ((gBattleWork.guardBot - 1) << 8),
+                   0x40);
+        copy_bytes(gGuardSpriteEntryBytes + 0x80, gGuardSpriteEntryBytes + 0xEC0 + ((gBattleWork.guardBot - 1) << 8),
+                   0x40);
+        copy_bytes(gGuardSpriteEntryBytes + 0xC0, gGuardSpriteEntryBytes + 0xF00 + ((gBattleWork.guardBot - 1) << 8),
+                   0x40);
         clear_battle_sprite_slot(0x21, 4);
         enable_sprites(gBattleWork.guardBot * 4 + 0x56, 4);
-        init_battle_sprite_entry_0801BC04(gBattleWork.guardBot - 1);
+        init_bot_shadow_sprite(gBattleWork.guardBot - 1);
         gBattleWork.guardBot = 0;
         load_all_bot_part_sprites();
         iterate_bots_setup_battle_sprites();

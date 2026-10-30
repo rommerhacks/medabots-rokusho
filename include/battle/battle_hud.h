@@ -11,7 +11,7 @@ u32 scale_to_bar_fill(u32 value, u32 max,
                       u32 bar_len); // (float)value / max * bar_len, packed: full 8-pixel tiles << 16 | remaining pixels
 void draw_medaforce_gauge_bar(u32 rec);
 void draw_medaforce_gauge_value(u32 rec);
-void load_bg3_tilemap_08488764(void);
+void battle_hud_load_bg3_tilemap(void);
 void draw_battle_bot_portraits(void);
 void load_all_bot_part_sprites(void);
 void setup_all_battle_bot_sprite_positions(void);

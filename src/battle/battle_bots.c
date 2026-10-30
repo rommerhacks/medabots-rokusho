@@ -35,15 +35,15 @@ static void copy_player_medals_to_battle_bots(void) {
     u32 i;
 
     for (i = 0; i < gBattleWork.teamCount; i++)
-        memcpy_bytes_0803F63C(&gMedals[find_medal_slot_by_id(gTeamSlots[gBattleWork.teamPicks[i] & 0xF].medal) - 1],
-                              &gBattleBots[i], 0x40);
+        copy_bytes(&gMedals[find_medal_slot_by_id(gTeamSlots[gBattleWork.teamPicks[i] & 0xF].medal) - 1],
+                   &gBattleBots[i], 0x40);
 }
 
 void copy_team_slots_to_battle_bots(void) {
     u32 i;
 
     for (i = 0; i < gBattleWork.teamCount; i++)
-        memcpy_bytes_0803F63C(&gTeamSlots[gBattleWork.teamPicks[i] & 0xF], &gBattleBots[i].teamState, 8);
+        copy_bytes(&gTeamSlots[gBattleWork.teamPicks[i] & 0xF], &gBattleBots[i].teamState, 8);
 }
 
 void battle_bots_load_parts(u32 rec, u32 n) {
@@ -53,21 +53,21 @@ void battle_bots_load_parts(u32 rec, u32 n) {
         gBattleBots[rec].index = rec;
         gBattleBots[rec].present = 1;
         load_part_data(gBattleBots[rec].head, 0, &gGameWork.partAbility);
-        memcpy_bytes_0803F63C(&gGameWork.partAbility, gBattleBots[rec].parts[0].data, 0xD);
+        copy_bytes(&gGameWork.partAbility, gBattleBots[rec].parts[0].data, 0xD);
         gBattleBots[rec].parts[0].headUses = gBattleBots[rec].parts[0].data[8];
         gBattleBots[rec].parts[0].armor = gBattleBots[rec].parts[0].data[4];
         gBattleBots[rec].parts[0].partId = gBattleBots[rec].head;
         load_part_data(gBattleBots[rec].rightArm, 1, &gGameWork.partAbility);
-        memcpy_bytes_0803F63C(&gGameWork.partAbility, gBattleBots[rec].parts[1].data, 0xD);
+        copy_bytes(&gGameWork.partAbility, gBattleBots[rec].parts[1].data, 0xD);
         gBattleBots[rec].parts[1].armor = gBattleBots[rec].parts[1].data[4];
         gBattleBots[rec].parts[1].partId = gBattleBots[rec].rightArm;
         load_part_data(gBattleBots[rec].leftArm, 2, &gGameWork.partAbility);
-        memcpy_bytes_0803F63C(&gGameWork.partAbility, gBattleBots[rec].parts[2].data, 0xD);
+        copy_bytes(&gGameWork.partAbility, gBattleBots[rec].parts[2].data, 0xD);
         gBattleBots[rec].parts[2].armor = gBattleBots[rec].parts[2].data[4];
         gBattleBots[rec].parts[2].partId = gBattleBots[rec].leftArm;
         load_part_data(gBattleBots[rec].legs, 3, &gGameWork.partAbility);
-        memcpy_bytes_0803F63C(&gGameWork.partAbility, gBattleBots[rec].parts[3].data, 0xD);
-        memcpy_bytes_0803F63C(&gBattleBots[rec].parts[3].data[4], &gBattleBots[rec].parts[3].armor, 6);
+        copy_bytes(&gGameWork.partAbility, gBattleBots[rec].parts[3].data, 0xD);
+        copy_bytes(&gBattleBots[rec].parts[3].data[4], &gBattleBots[rec].parts[3].armor, 6);
         gBattleBots[rec].parts[3].partId = gBattleBots[rec].legs;
     }
 }
@@ -86,7 +86,7 @@ void init_enemy_bot_medal(u8 i) {
     u32 skill_level;
     u32 lvl;
 
-    memcpy_bytes_08041D04(gMedalRecords[gBattleWork.encounterBots[i].medal], &gGameWork.partAbility, 16);
+    copy_bytes_short(gMedalRecords[gBattleWork.encounterBots[i].medal], &gGameWork.partAbility, 16);
     gBattleBots[i + 3].medal.flags = 0x80;
     gBattleBots[i + 3].medal.graphicId = (&gGameWork.partAbility)[0];
     gBattleBots[i + 3].medal.attribute = (&gGameWork.partAbility)[1];
@@ -94,8 +94,8 @@ void init_enemy_bot_medal(u8 i) {
     gBattleBots[i + 3].medal.aimSkillType = (&gGameWork.partAbility)[2];
     gBattleBots[i + 3].medal.compatibility = (&gGameWork.partAbility)[7];
     gBattleBots[i + 3].medal.rotationLen = gBattleWork.encounterBots[i].rotationLen;
-    memcpy_bytes_08041D04((const void *)gMedabotNames[gBattleWork.encounterBots[i].parts[0]],
-                          gBattleBots[i + 3].medal.name, 0xE);
+    copy_bytes_short((const void *)gMedabotNames[gBattleWork.encounterBots[i].parts[0]], gBattleBots[i + 3].medal.name,
+                     0xE);
     for (k = 0; k <= 3; k++) {
         gBattleBots[i + 3].medal.rotation[k * 2] = gBattleWork.encounterBots[i].rotation[k] >> 4;
         gBattleBots[i + 3].medal.rotation[k * 2 + 1] = gBattleWork.encounterBots[i].rotation[k] & 0xF;
@@ -311,13 +311,13 @@ static u32 opponent_medaforce_locked(u32 rec) {
 }
 
 void battle_bot_select_medaforce(u32 rec, u32 part) {
-    memcpy_bytes_08041D04(&gMedalMedaforceIds[gBattleBots[rec].medal.graphicId * 3], &gGameWork.partAbility, 3);
-    memcpy_bytes_08041D04(&gMedaforceRecords[(&gGameWork.partAbility)[part] * 6], gBattleBots[rec].medaforce, 6);
+    copy_bytes_short(&gMedalMedaforceIds[gBattleBots[rec].medal.graphicId * 3], &gGameWork.partAbility, 3);
+    copy_bytes_short(&gMedaforceRecords[(&gGameWork.partAbility)[part] * 6], gBattleBots[rec].medaforce, 6);
     battle_bot_select_part(rec, part + 4);
 }
 
 void battle_ai_roll_part_order(void) {
-    memcpy_bytes_08041D04(gAiPartOrders[rng_next_byte() & 0x1F], gBattleWork.partIds, 4);
+    copy_bytes_short(gAiPartOrders[rng_next_byte() & 0x1F], gBattleWork.partIds, 4);
 }
 
 static u32 battle_part_unusable(u32 rec, u32 part) {
