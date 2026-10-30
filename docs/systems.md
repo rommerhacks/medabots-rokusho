@@ -49,8 +49,9 @@ and minigames. The player's walk, warps and map objects live in `player_walk.c`,
 Random encounters: at the end of each step `player_walk.c` calls `check_random_encounter`
 (`src/engine/common.c`). An area with a non-zero `gAreaBattleSettings` rate counts steps in
 `gFieldWork.encounter_steps`; from step 17 each step has a 1-in-32 chance, and step 32 always starts a battle. The
-counter is reset on area load and by a random battle, not by a scripted one. The step that triggers a map event
-is not counted. `setup_random_encounter_enemies` (`src/battle/prebattle.c`) then picks the team from
+counter is reset by a random battle and by `area_load_encounter_rate`, which runs on area load, on Continue from
+a save (`field_continue_load`) and on some returns from a battle (`field_battle_return_load`); other scripted
+battles leave it as it was. The step that triggers a map event is not counted. `setup_random_encounter_enemies` (`src/battle/prebattle.c`) then picks the team from
 `gAreaRandomEncounters`.
 
 **Battle** (`src/battle/`). Mode 0 states 6-9. `prebattle.c` runs the intro before and the results after a
