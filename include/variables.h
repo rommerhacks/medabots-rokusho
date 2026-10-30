@@ -148,7 +148,7 @@ extern const u8 gSoundWaveVolumes[16];      // envelope volume -> SOUND3CNT_H vo
 extern const u16 gSoundSemitoneRatios[12];  // 2^(i/12) * 0x1000
 extern const u16 gSoundFinetuneRatios[128]; // 2^(i/(12*128)) * 0x1000
 extern const u32 gSoundEffectTracks[6];     // track indices of the sound effect tracks (4-7, 10, 11)
-extern const Func gGameStateHandlers_083AC148[];
+extern const Func gMenuBattleModeStates[];
 extern const u32 gMedalNames[]; // Medal names by Medal id (0 KUWAGATA, 6 SNAKE...); +0x20: "Rokusho" / "Metabee"
 // 16 bytes per Medal: [0-2] Medaforce ids (gMedaforceRecords), [3-6] Medal levels (guess: when each one unlocks),
 // [7] icon, [8-15] guess: aptitude per skill type

@@ -101,7 +101,7 @@ void medawatch_menu_exit_fade(void) {
 
 void medawatch_menu_return_to_field_menu(void) {
     play_song(6);
-    gGameState = 1;
+    gGameState = MODE0_STATE_FIELD_MENU;
     gGameSubState = 16;
 }
 
@@ -118,17 +118,17 @@ void medawatch_menu_run_choice(void) {
     switch (gGameWork.medawatchCursor) {
     case 0:
         mem_fill8((u8 *)&gGameWork + 0x50, 0x14, 0);
-        gGameState = 3;
+        gGameState = MODE0_STATE_MEDABOTS;
         gGameSubState = 0;
         break;
     case 1:
         mem_fill8((u8 *)&gGameWork + 0x3C, 0x14, 0);
-        gGameState = 4;
+        gGameState = MODE0_STATE_MEDALS;
         gGameSubState = 0;
         break;
     default:
         mem_fill8((u8 *)&gGameWork + 0x3C, 0x14, 0);
-        gGameState = 5;
+        gGameState = MODE0_STATE_MEDAPARTS;
         gGameSubState = 0;
         break;
     }

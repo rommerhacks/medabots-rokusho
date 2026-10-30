@@ -233,7 +233,7 @@ void medal_transform_wait_confirm(void) {
 void medal_transform_exit(void) {
     if (blend_fade_step_08065598(gMenuWork->blend)) {
         gGameMode = 0;
-        gGameState = 6;
+        gGameState = MODE0_STATE_PREBATTLE;
         gGameSubState = 0x50;
     }
 }

@@ -145,7 +145,7 @@ void action_phase_resolve_command(void) {
     gBattleWork.actorSkill =
         gBattleBots[gBattleWork.actor].parts[gBattleBots[gBattleWork.actor].chosenAction - 1].data[1];
     gBattleWork.actorPart = gBattleBots[gBattleWork.actor].chosenAction - 1;
-    gGameState = 9;
+    gGameState = MODE0_STATE_ACTION_SCRIPT;
     gGameSubState = 0;
 }
 
@@ -161,7 +161,7 @@ void action_phase_next_turn(void) {
     CpuFastSet(gTargetLinePalette, (void *)0x05000300, 8);
     CpuFastSet(gTargetArrowsPalette, (void *)0x05000320, 8);
     CpuFastSet(gBattleObjPalette10, (void *)0x05000340, 8);
-    gGameState = 7;
+    gGameState = MODE0_STATE_ROBATTLE;
     gGameSubState = 0x46;
 }
 
@@ -379,10 +379,10 @@ void action_phase_exit(void) {
     gVBlankCallback = empty_callback;
     gGameWork.battleOver = 1;
     if (gGameWork.skipBotSetup != 1) {
-        gGameState = 6;
+        gGameState = MODE0_STATE_PREBATTLE;
         gGameSubState = 0x30;
     } else {
-        gGameState = 10;
+        gGameState = MODE0_STATE_LINK_ROBATTLE;
         gGameSubState = 0x20;
     }
 }
@@ -523,7 +523,7 @@ void action_phase_start_medaforce(void) {
     gBattleWork.actorSkill = gBattleBots[gBattleWork.actor].medaforce[0] + 0x50;
     gBattleBots[gBattleWork.actor].targetBot = 0;
     gBattleBots[gBattleWork.actor].targetPart = 0;
-    gGameState = 9;
+    gGameState = MODE0_STATE_ACTION_SCRIPT;
     gGameSubState = 0;
 }
 

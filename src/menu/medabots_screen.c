@@ -239,7 +239,7 @@ void medabots_screen_return_to_medawatch(void) {
     clear_battle_sprite_slot(0, 0x80);
     gGameWork.noAffineSprites = 0;
     gVBlankOamMode = 0;
-    gGameState = 2;
+    gGameState = MODE0_STATE_MEDAWATCH;
     gGameSubState = 16;
 }
 
@@ -521,7 +521,7 @@ void medabot_detail_open_info(void) {
         gGameWork.openedFrom = 1;
         gGameWork.shownId = gGameWork.shownMedal;
         count_unequipped_medals();
-        gGameState = 4;
+        gGameState = MODE0_STATE_MEDALS;
         gGameSubState = 8;
         break;
     case 1:
@@ -529,7 +529,7 @@ void medabot_detail_open_info(void) {
         gGameWork.openedFrom = 1;
         gGameWork.shownId = gGameWork.shownHead;
         gGameWork.partSlot = 0;
-        gGameState = 5;
+        gGameState = MODE0_STATE_MEDAPARTS;
         gGameSubState = 16;
         break;
     case 2:
@@ -537,7 +537,7 @@ void medabot_detail_open_info(void) {
         gGameWork.openedFrom = 1;
         gGameWork.shownId = gGameWork.shownRightArm;
         gGameWork.partSlot = 1;
-        gGameState = 5;
+        gGameState = MODE0_STATE_MEDAPARTS;
         gGameSubState = 16;
         break;
     case 3:
@@ -545,7 +545,7 @@ void medabot_detail_open_info(void) {
         gGameWork.openedFrom = 1;
         gGameWork.shownId = gGameWork.shownLeftArm;
         gGameWork.partSlot = 2;
-        gGameState = 5;
+        gGameState = MODE0_STATE_MEDAPARTS;
         gGameSubState = 16;
         break;
     case 4:
@@ -553,7 +553,7 @@ void medabot_detail_open_info(void) {
         gGameWork.openedFrom = 1;
         gGameWork.shownId = gGameWork.shownLegs;
         gGameWork.partSlot = 3;
-        gGameState = 5;
+        gGameState = MODE0_STATE_MEDAPARTS;
         gGameSubState = 16;
         break;
     }
@@ -606,7 +606,7 @@ void team_select_exit_battle(void) {
     clear_battle_sprite_slot(0, 0x80);
     gGameWork.noAffineSprites = 0;
     gVBlankOamMode = 0;
-    gGameState = 7;
+    gGameState = MODE0_STATE_ROBATTLE;
     gGameSubState = 0;
 }
 
@@ -838,7 +838,7 @@ void team_select_link_exit_battle(void) {
     clear_battle_sprite_slot(0, 0x80);
     gGameWork.noAffineSprites = 0;
     gVBlankOamMode = 0;
-    gGameState = 7;
+    gGameState = MODE0_STATE_ROBATTLE;
     gGameSubState = 0;
 }
 

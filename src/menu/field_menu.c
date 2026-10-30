@@ -157,7 +157,7 @@ void field_menu_run_choice(void) {
     case 0:
         play_song(7);
         gGameWork.medawatchCursor = 0;
-        gGameState = 2;
+        gGameState = MODE0_STATE_MEDAWATCH;
         gGameSubState = 0;
         clear_battle_sprite_slot(0x28, 0x57);
         break;

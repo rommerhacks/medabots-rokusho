@@ -29,7 +29,7 @@
 083ABCC8	gUnk_083ABCAC
 083ABCDC	sub_0807C784
 083ABD0C	gUnk_083ABCB8
-083ABE18	dispatch_game_state_handler_08002534
+083ABE18	menu_battle_mode_update
 083ABE1C	field_mode_dispatch
 083ABE20	menu_mode_update
 083ABE24	dispatch_game_mode_handler
@@ -231,7 +231,7 @@
 083AC13C	gSineTableQ14+0x606C
 083AC140	gSineTableQ14+0x606C
 083AC144	gSineTableQ14+0x606C
-083AC148	dispatch_game_substate_handler_08002554
+083AC148	devtest_dispatch
 083AC14C	field_menu_update
 083AC150	medawatch_menu_update
 083AC154	medabots_screen_update

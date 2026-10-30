@@ -91,8 +91,8 @@ gMenuSpriteFrameSets:
 gSpriteFrameSets3:
 	.incbin "baserom.gba", 0x3AC108, 0x40
 
-	.global gGameStateHandlers_083AC148
-gGameStateHandlers_083AC148:
+	.global gMenuBattleModeStates
+gMenuBattleModeStates:
 	.incbin "baserom.gba", 0x3AC148, 0x100
 
 	.global gDevTestStates

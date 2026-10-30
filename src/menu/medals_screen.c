@@ -197,7 +197,7 @@ void medals_list_exit(void) {
     if (gGameWork.openedFrom == 4)
         goto_link_scene(0);
     else {
-        gGameState = 2;
+        gGameState = MODE0_STATE_MEDAWATCH;
         gGameSubState = 0x10;
     }
 }
@@ -300,7 +300,7 @@ void medal_page_exit(void) {
     switch (gGameWork.openedFrom) {
     case 1:
         gGameWork.shownMedal = gGameWork.shownId;
-        gGameState = 3;
+        gGameState = MODE0_STATE_MEDABOTS;
         gGameSubState = 0x10;
         break;
     case 2:
@@ -309,7 +309,7 @@ void medal_page_exit(void) {
         CpuFastSet(&zero, (void *)0x05000200, 0x01000080);
         zero2 = 0;
         CpuFastSet(&zero2, (void *)0x05000000, 0x01000080);
-        gGameState = 7;
+        gGameState = MODE0_STATE_ROBATTLE;
         gGameSubState = 0x3C;
         break;
     case 0:

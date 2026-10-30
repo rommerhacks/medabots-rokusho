@@ -9,7 +9,7 @@
 #include "constants/skill_sprites.h"
 #include "constants/sprites.h"
 
-// Game state 7 = Robattle (gGameStateHandlers_083AC148[7]); sub-states in gRobattleHandlers.
+// Game state 7 = Robattle (gMenuBattleModeStates[7]); sub-states in gRobattleHandlers.
 void robattle_update(void) {
     u32 fill;
 
@@ -507,7 +507,7 @@ void robattle_rotation_open_medals_screen(void) {
     gGameWork.freeMedalCount = 1;
     gGameWork.medalPage = 2;
     clear_bg_scroll();
-    gGameState = 4;
+    gGameState = MODE0_STATE_MEDALS;
     gGameSubState = 0x28;
 }
 
@@ -855,7 +855,7 @@ void robattle_turn_next_action(void) {
         gGameSubState = 0x47;
     } else {
         iterate_bots_setup_battle_sprites();
-        gGameState = 8;
+        gGameState = MODE0_STATE_ACTION_PHASE;
         gGameSubState = flag;
     }
 }

@@ -348,7 +348,7 @@ void item_menu_fade_out_exit(void) {
         REG_DISPCNT &= 0xFBFF;
         clear_battle_sprite_slot(0, 0x80);
         gGameMode = 0;
-        gGameState = 1;
+        gGameState = MODE0_STATE_FIELD_MENU;
         gGameSubState = 0x10;
     }
 }

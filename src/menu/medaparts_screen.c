@@ -198,7 +198,7 @@ void medaparts_list_wait_fade(void) {
 void medaparts_list_exit(void) {
     clear_battle_sprite_slot(0, 0x80);
     gVBlankOamMode = 0;
-    gGameState = 2;
+    gGameState = MODE0_STATE_MEDAWATCH;
     gGameSubState = 0x10;
 }
 
@@ -390,7 +390,7 @@ void medapart_detail_exit(void) {
         break;
     case 1:
         gVBlankOamMode = 0;
-        gGameState = 3;
+        gGameState = MODE0_STATE_MEDABOTS;
         gGameSubState = 0x10;
         switch (gGameWork.partSlot) {
         case 0:
@@ -413,7 +413,7 @@ void medapart_detail_exit(void) {
         zero2 = 0;
         CpuFastSet(&zero2, (void *)0x05000000, 0x01000080);
         gVBlankOamMode = 0;
-        gGameState = 6;
+        gGameState = MODE0_STATE_PREBATTLE;
         gGameSubState = 0x65;
         break;
     case 3:

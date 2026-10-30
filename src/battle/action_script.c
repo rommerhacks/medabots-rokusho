@@ -31,7 +31,7 @@ void battle_run_action_script(void) {
 
 // Opcode 0x01: ends the action script (battle state 8, sub-state 0x40).
 void script_op_end_action(void) {
-    gGameState = 8;
+    gGameState = MODE0_STATE_ACTION_PHASE;
     gGameSubState = 0x40;
 }
 
@@ -572,7 +572,7 @@ void script_op_change(void) {
         if (gBattleWork.stepResult == 1)
             battle_script_advance();
         else {
-            gGameState = 8;
+            gGameState = MODE0_STATE_ACTION_PHASE;
             gGameSubState = 0;
         }
     }

@@ -311,7 +311,7 @@ void prebattle_rubberobo_return_to_field(void) {
 void prebattle_open_team_select(void) {
     mem_fill8(&gGameWork.medabotsMode, 0x14, 0);
     gGameWork.medabotsMode = 2;
-    gGameState = 3;
+    gGameState = MODE0_STATE_MEDABOTS;
     gGameSubState = 0;
 }
 
@@ -713,7 +713,7 @@ void afterbattle_part_detail_open_screen(void) {
         game->openedFrom = 2;
         game->shownId = battle->wonPartId;
         game->partSlot = kind;
-        gGameState = 5;
+        gGameState = MODE0_STATE_MEDAPARTS;
         gGameSubState = 0x10;
         break;
     case 1:
@@ -721,7 +721,7 @@ void afterbattle_part_detail_open_screen(void) {
         game->openedFrom = 2;
         game->shownId = battle->wonPartId;
         game->partSlot = kind;
-        gGameState = 5;
+        gGameState = MODE0_STATE_MEDAPARTS;
         gGameSubState = 0x10;
         break;
     case 2:
@@ -729,7 +729,7 @@ void afterbattle_part_detail_open_screen(void) {
         game->openedFrom = 2;
         game->shownId = battle->wonPartId;
         game->partSlot = kind;
-        gGameState = 5;
+        gGameState = MODE0_STATE_MEDAPARTS;
         gGameSubState = 0x10;
         break;
     case 3:
@@ -737,7 +737,7 @@ void afterbattle_part_detail_open_screen(void) {
         game->openedFrom = 2;
         game->shownId = battle->wonPartId;
         game->partSlot = kind;
-        gGameState = 5;
+        gGameState = MODE0_STATE_MEDAPARTS;
         gGameSubState = 0x10;
         break;
     }

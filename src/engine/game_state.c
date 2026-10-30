@@ -1,14 +1,14 @@
-// Game mode 0 dispatcher (dispatch_game_state_handler_08002534 runs gGameState's handler: field menu,
-// Medawatch, Medabots, Medals, Medaparts, pre-battle, Robattle, debug menu...) and game state 0, a developer
-// test screen (BG scroll, message / text window / choice menu tests; not reachable in normal play).
+// Game mode 0 dispatcher (menu_battle_mode_update runs gGameState's handler, MODE0_STATE_* in constants/game_states.h:
+// field menu, Medawatch, Medabots, Medals, Medaparts, pre-battle, Robattle, debug menu...) and game state 0, a
+// developer test screen (BG scroll, message / text window / choice menu tests; not reachable in normal play).
 
 #include "global.h"
 
-void dispatch_game_state_handler_08002534(void) {
-    gGameStateHandlers_083AC148[gGameState]();
+void menu_battle_mode_update(void) {
+    gMenuBattleModeStates[gGameState]();
 }
 
-void dispatch_game_substate_handler_08002554(void) {
+void devtest_dispatch(void) {
     gDevTestStates[gGameSubState]();
 }
 
