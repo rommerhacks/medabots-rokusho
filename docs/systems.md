@@ -46,6 +46,13 @@ take several frames. Script commands move script sprites, change areas, give ite
 and minigames. The player's walk, warps and map objects live in `player_walk.c`, `field_walk.c` and
 `map_objects.c`.
 
+Random encounters: at the end of each step `player_walk.c` calls `check_random_encounter`
+(`src/engine/common.c`). An area with a non-zero `gAreaBattleSettings` rate counts steps in
+`gFieldWork.encounter_steps`; from step 17 each step has a 1-in-32 chance, and step 32 always starts a battle. The
+counter is reset on area load and by a random battle, not by a scripted one. The step that triggers a map event
+is not counted. `setup_random_encounter_enemies` (`src/battle/prebattle.c`) then picks the team from
+`gAreaRandomEncounters`.
+
 **Battle** (`src/battle/`). Mode 0 states 6-9. `prebattle.c` runs the intro before and the results after a
 Robattle; `robattle.c` is the turn loop (command ring, part select, Medaforce select, status screen); state 8
 (`action_phase.c`) picks actions, with the AI in `battle_ai.c`; state 9 (`action_script.c`) runs the action
