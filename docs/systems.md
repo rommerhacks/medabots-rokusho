@@ -60,6 +60,9 @@ Robattle; `robattle.c` is the turn loop (command ring, part select, Medaforce se
 scripts, whose opcodes are split by ability type across `action_steps.c`, `defend_heal_skills.c`,
 `support_skills.c`, `interrupt_skills.c` and `medaforce_effects.c`. Damage and stat helpers, sprites, particles
 and the close-up scenes are the rest. Battle uses the engine, text and inventory systems.
+Losing a story Robattle (the Medabot Island jail guards, for one; also on "Time's Up!") leads to
+`MODE2_STATE_GAME_OVER`, and pressing on from there restarts at the mode-3 boot logos. A few story battles
+(Dr. Armond's special-guest match) carry on after a loss instead.
 
 **Link** (`src/link/`). The serial transfer (`serial.c`, also used by the main loop every frame), link
 Robattles (mode 0 state 10) and the mode-2 link menu, trade and Medal handshake screens.
