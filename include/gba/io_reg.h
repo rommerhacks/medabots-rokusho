@@ -14,6 +14,8 @@
 // BG character (tile) base block n (BGxCNT bits 2-3) and screen (tilemap) block n (bits 8-12).
 #define BG_CHAR_ADDR(n) (BG_VRAM + (n) * 0x4000)
 #define BG_SCREEN_ADDR(n) (BG_VRAM + (n) * 0x800)
+// Tilemap entry (x, y) of screen block n (32 x 32 entries of 16 bits).
+#define BG_SCREEN_ENTRY(n, x, y) (((u16 *)BG_SCREEN_ADDR(n))[(y) * 32 + (x)])
 
 // BIOS interrupt check flags and IRQ vector, at the top of IWRAM.
 #define INTR_CHECK (*(u16 *)0x03007FF8)

@@ -22,7 +22,7 @@ static void text_scroll_draw_bar(s32 len, s32 step) {
     u32 zero = 0;
     CpuFastSet(&zero, buf, 0x01000010);
     if (step <= 13) {
-        u16 tile = *(u16 *)(BG_VRAM + 0xDD3E);
+        u16 tile = BG_SCREEN_ENTRY(27, 31, 20);
         int i;
         for (i = 0; i < len; i++) {
             int n = step * 29 / 13;
@@ -31,9 +31,9 @@ static void text_scroll_draw_bar(s32 len, s32 step) {
         }
     }
     if (buf[0] == 0)
-        buf[0] = *(u16 *)(BG_VRAM + 0xD8C0);
+        buf[0] = BG_SCREEN_ENTRY(27, 0, 3);
     else
-        buf[0] = *(u16 *)(BG_VRAM + 0xD940);
+        buf[0] = BG_SCREEN_ENTRY(27, 0, 5);
     CpuFastSet(buf, BG_TILEMAP(REG_BG0CNT) + 16 * 32, 0x10);
 }
 
@@ -47,7 +47,7 @@ void text_scroll_shift_row(s32 row, s32 step) {
         int i;
         u16 tile;
         CpuFastSet((u8 *)VRAM + BGCNT_SCREEN_OFFSET(REG_BG1CNT) + row * 64, buf, 0x10);
-        buf[31] = *(u16 *)(BG_VRAM + 0xDD3E) | 0x800;
+        buf[31] = BG_SCREEN_ENTRY(27, 31, 20) | 0x800;
         tile = 0;
         for (i = 10; i < 30; i++) {
             if (buf[i] != 0)
@@ -205,7 +205,7 @@ void text_scroll_page_start(void) {
             gMenuWork->text_len = text_line_glyph_count((u8 *)*work->scene_text);
         }
     } else
-        BG_TILEMAP(REG_BG0CNT)[(menu->frame + 2) * 32] = *(u16 *)(BG_VRAM + 0xD8C0);
+        BG_TILEMAP(REG_BG0CNT)[(menu->frame + 2) * 32] = BG_SCREEN_ENTRY(27, 0, 3);
 }
 
 void text_scroll_lines(void) {

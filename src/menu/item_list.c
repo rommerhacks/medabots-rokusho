@@ -83,15 +83,15 @@ void update_battle_medapart_icons(void) {
         clear_item_list_map_run(0x18, i * 2 + 3, 3);
         clear_item_list_map_run(0x18, i * 2 + 4, 3);
     }
-    icon_tile_top = *(u16 *)(BG_VRAM + 0xF0EE);
-    icon_tile_bottom = *(u16 *)(BG_VRAM + 0xF12E);
+    icon_tile_top = BG_SCREEN_ENTRY(30, 23, 3);
+    icon_tile_bottom = BG_SCREEN_ENTRY(30, 23, 4);
     for (i = 0; i < n; i++) {
         if (counts[i]) {
             copy_bytes((void *)gItemNames[ids[i]], gTextArgBuffer, 0x11);
             render_text_sprites_at(gTextArgBuffer, i * 15, 0xC, i * 2 + 3, 7, 8, 1, 2);
             draw_number_2digits_tall(counts[i], 0x18, i * 2 + 3);
-            *((u16 *)(BG_VRAM + 0xF02E) + ((i * 2 + 3) << 5)) = icon_tile_top;
-            *((u16 *)(BG_VRAM + 0xF02E) + ((i * 2 + 4) << 5)) = icon_tile_bottom;
+            (&BG_SCREEN_ENTRY(30, 23, 0))[(i * 2 + 3) << 5] = icon_tile_top;
+            (&BG_SCREEN_ENTRY(30, 23, 0))[(i * 2 + 4) << 5] = icon_tile_bottom;
             gSpriteEntries[i + 0x55].flags |= SPRITE_FLAG_VISIBLE;
             gSpriteEntries[i + 0x55].frame = item_is_usable(ids[i]) ? 0x21 : 0x22;
         } else {
