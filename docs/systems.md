@@ -68,7 +68,9 @@ Losing a story Robattle (the Medabot Island jail guards, for one; also on "Time'
 `MODE2_STATE_GAME_OVER`, and pressing on from there restarts at the mode-3 boot logos. A few story battles
 (Dr. Armond's special-guest match) carry on after a loss instead. A lost Medalink battle (Medashop 2F pods),
 "Time's Up!" included, puts Ikki back on the pod seat with no game over, and the story waits for a win (seen at
-runtime). When TIME runs out, `robattle_judge_time_up` (`turn_order.c`) gives the win to the side with fewer
+runtime). A pod can hold a queue of opponents: after the Baron, each talk to the bottom-right pod starts the
+next of Select Corps, Sloan, Rubberobo A and Milky, and once all four are beaten it answers "There is no opponent
+available at this time" (seen at runtime). When TIME runs out, `robattle_judge_time_up` (`turn_order.c`) gives the win to the side with fewer
 knocked-out Medabots, then fewer broken parts, then more action points, else a coin flip: a story Robattle
 (the Screws, the Baron) can be won on time without touching the leader. The Medaforce entry of the command ring opens a list whose first, default entry is "Charge MF"; the
 Medal's learned Medaforces follow it (Rokusho's Spiral Bolt is one UP from the default).
