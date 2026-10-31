@@ -92,7 +92,11 @@ after a lost Robattle, and the mode-3 boot logos, intro and title screen.
 screen.
 
 **Shop** (`src/shop/`). The Medaparts shop (Buy / Sell, lists and cart) and the Medal shop (guess), entered
-from field scripts.
+from field scripts. Selling (observed in the Medamall): pick a part type, Right on a row adds one to the cart,
+A -> "Are you all set?" -> Yes credits the total. Money (`gPlayerRecord.money`) is in cents. Winning a
+Robattle pays nothing, so selling parts and the money that map scripts give (opcode `map_script_update_give_money`)
+are the only income; gift items such as the Medamall's Telephoto Lens are map-script purchases
+(`map_script_update_take_money`, "Used $20.00"), not this screen.
 
 **Cutscenes** (`src/cutscene/`). The scrolling-text scene, the event picture with a message and Medabots
 Weekly, the in-game TV show: curtains open on a studio, four characters walk on and talk, the "Medabots
