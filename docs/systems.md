@@ -66,7 +66,10 @@ Attacks come in skill pairs that defences single out: optic (Laser / Beam), bomb
 make any skill count as one pair, or turn a pair's damage into healing for the target (`is_*_absorbed`).
 Losing a story Robattle (the Medabot Island jail guards, for one; also on "Time's Up!") leads to
 `MODE2_STATE_GAME_OVER`, and pressing on from there restarts at the mode-3 boot logos. A few story battles
-(Dr. Armond's special-guest match) carry on after a loss instead.
+(Dr. Armond's special-guest match) carry on after a loss instead. A lost Medalink battle (Medashop 2F pods),
+"Time's Up!" included, puts Ikki back on the pod seat with no game over, and the story waits for a win (seen at
+runtime). The Medaforce entry of the command ring opens a list whose first, default entry is "Charge MF"; the
+Medal's learned Medaforces follow it (Rokusho's Spiral Bolt is one UP from the default).
 
 **Link** (`src/link/`). The serial transfer (`serial.c`, also used by the main loop every frame), link
 Robattles (mode 0 state 10) and the mode-2 link menu, trade and Medal handshake screens.
