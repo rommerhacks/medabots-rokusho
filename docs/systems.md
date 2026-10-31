@@ -60,6 +60,10 @@ Robattle; `robattle.c` is the turn loop (command ring, part select, Medaforce se
 scripts, whose opcodes are split by ability type across `action_steps.c`, `defend_heal_skills.c`,
 `support_skills.c`, `interrupt_skills.c` and `medaforce_effects.c`. Damage and stat helpers, sprites, particles
 and the close-up scenes are the rest. Battle uses the engine, text and inventory systems.
+Attacks come in skill pairs that defences single out: optic (Laser / Beam), bomb (Missile / Napalm) and gravity
+(Break / Press). Any intact Cancel Optic / Bomb / Grav part on the target nullifies the matching pair
+(`battle_check_nullified` in `action_calc.c`, checks `is_*_cancelled` in `combat_helpers.c`); Medaforce forms can
+make any skill count as one pair, or turn a pair's damage into healing for the target (`is_*_absorbed`).
 Losing a story Robattle (the Medabot Island jail guards, for one; also on "Time's Up!") leads to
 `MODE2_STATE_GAME_OVER`, and pressing on from there restarts at the mode-3 boot logos. A few story battles
 (Dr. Armond's special-guest match) carry on after a loss instead.
