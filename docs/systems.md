@@ -68,7 +68,9 @@ Losing a story Robattle (the Medabot Island jail guards, for one; also on "Time'
 `MODE2_STATE_GAME_OVER`, and pressing on from there restarts at the mode-3 boot logos. A few story battles
 (Dr. Armond's special-guest match) carry on after a loss instead. A lost Medalink battle (Medashop 2F pods),
 "Time's Up!" included, puts Ikki back on the pod seat with no game over, and the story waits for a win (seen at
-runtime). The Medaforce entry of the command ring opens a list whose first, default entry is "Charge MF"; the
+runtime). When TIME runs out, `robattle_judge_time_up` (`turn_order.c`) gives the win to the side with fewer
+knocked-out Medabots, then fewer broken parts, then more action points, else a coin flip: a story Robattle
+(the Screws, the Baron) can be won on time without touching the leader. The Medaforce entry of the command ring opens a list whose first, default entry is "Charge MF"; the
 Medal's learned Medaforces follow it (Rokusho's Spiral Bolt is one UP from the default).
 
 **Link** (`src/link/`). The serial transfer (`serial.c`, also used by the main loop every frame), link
@@ -79,7 +81,8 @@ Medaparts, items, Town Map, plus name entry. They read and change the inventory.
 The Medabots screen (`src/menu/medabots_screen.c`) rebuilds a team slot with the D-pad: UP / DOWN move between
 the Medal, head, arm and legs rows (`gGameWork.detailRow`), LEFT / RIGHT step that row's preview
 (`gGameWork.shownHead` etc.) through the owned parts that are not all equipped, in part-id order, skipping parts
-of the other gender (`find_next_available_medapart_slot`). The team slot in `gTeamSlots` only changes when B
+of the other gender (`find_next_available_medapart_slot`); after part 119 the cycle shows 120 + the tinpet's gender,
+the bare tinpet with no part (`medabot_detail_prev_part_id`). The team slot in `gTeamSlots` only changes when B
 leaves the screen (seen at runtime); A opens the part's details instead.
 
 **Inventory** (`src/inventory/`). The Medals, Medaparts, items and team the player owns, with the list sorts.
