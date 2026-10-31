@@ -176,8 +176,8 @@ void reaction_counter_begin(void) {
     } else
         gBattleWork.closeupPoseBase[1] = 0;
     gBattleWork.blockResult = 0;
-    select_ai_action_type();
-    determine_battle_target_mode();
+    battle_check_nullified_on_actor();
+    battle_check_absorbed_on_actor();
 }
 
 // 1 if the part is broken or at full armor (nothing for a heal to restore).

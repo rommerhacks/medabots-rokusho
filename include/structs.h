@@ -873,7 +873,7 @@ struct BattleBot {
     u8 trapBonus;    // added to gBattleWork.amount for traps[side].power (trap_apply; Formation Orders)
     u8 formFlags;    // Medaforce "form" flags, set by medaforce_form_apply from medaforce[0] 4..9: bits 0/1/2 make
                      // any skill count as skill pair 4/5, 6/7, 8/9 (bit 1 also carries leftover damage over, +10);
-                     // bits 3/4/5 are the matching guards (check_can_target_bot and friends)
+                     // bits 3/4/5 are the matching guards (is_optic_absorbed and friends)
     u8 moveSubpixel; // movement: sub-pixel accumulator, + (0x20 - moveDelay) per frame, 1/16 px (battle_bot_move)
     u16 defence;     // cleared, then raised by gBattleWork.amount up to 0xFF (defence_apply)
     u8 moveStep;     // movement: whole pixels moved this frame

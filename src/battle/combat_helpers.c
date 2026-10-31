@@ -380,14 +380,18 @@ void accumulate_battle_speed_value(u32 rec) {
     battle->evasion += rng_next_byte() & 7;
 }
 
-u32 check_bot_ability_type_strike(u32 rec, u32 part, u32 target) {
-    if (gBattleBots[rec].parts[part].data[1] == 0x22 && gBattleBots[target].parts[3].data[1] == 0x64)
+// Anti-Air part against a target on air legs (and Anti-Sea against sea legs below): the success / damage bonus
+// cases of battle_calc_attack_success and battle_calculate_damage_modifier.
+u32 is_anti_air_vs_air_legs(u32 rec, u32 part, u32 target) {
+    if (gBattleBots[rec].parts[part].data[1] == SKILL_ANTI_AIR &&
+        gBattleBots[target].parts[3].data[1] == SKILL_LEGS_AIR)
         return 1;
     return 0;
 }
 
-u32 check_bot_ability_type_shoot(u32 rec, u32 part, u32 target) {
-    if (gBattleBots[rec].parts[part].data[1] == 0x23 && gBattleBots[target].parts[3].data[1] == 0x6A)
+u32 is_anti_sea_vs_sea_legs(u32 rec, u32 part, u32 target) {
+    if (gBattleBots[rec].parts[part].data[1] == SKILL_ANTI_SEA &&
+        gBattleBots[target].parts[3].data[1] == SKILL_LEGS_SEA)
         return 1;
     return 0;
 }
@@ -409,7 +413,7 @@ void battle_set_action_target_part(u32 rec, u32 part) {
     gBattleWork.targetPart = part - 1;
 }
 
-// Whether any part with armor left has the given skill id (0x18 CancelOptic for check_bot_can_shoot).
+// Whether any part with armor left has the given skill id (the Cancel Optic / Bomb / Grav checks below).
 static u32 bot_has_intact_part_with_skill(u32 rec, u32 skill) {
     u32 i;
     for (i = 0; i <= 3; i++)
@@ -418,49 +422,55 @@ static u32 bot_has_intact_part_with_skill(u32 rec, u32 skill) {
     return 0;
 }
 
-u32 check_bot_can_shoot(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 4) <= 1 || (gBattleBots[rec].formFlags & 1)) &&
-        bot_has_intact_part_with_skill(target, 0x18))
+// The nullify checks of battle_check_nullified: an optic attack (Laser / Beam, or any skill under the Medaforce
+// optic form) is cancelled by an intact Cancel Optic part on the target (the Flash parts); bombs (Missile / Napalm)
+// by Cancel Bomb, gravity (Break / Press) by Cancel Grav.
+u32 is_optic_cancelled(u32 rec, u32 part, u32 target) {
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - SKILL_LASER) <= 1 || (gBattleBots[rec].formFlags & 1)) &&
+        bot_has_intact_part_with_skill(target, SKILL_CANCEL_OPTIC))
         return 1;
     return 0;
 }
 
-u32 check_bot_can_support(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 6) <= 1 || (gBattleBots[rec].formFlags & 2)) &&
-        bot_has_intact_part_with_skill(target, 0x19))
+u32 is_bomb_cancelled(u32 rec, u32 part, u32 target) {
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - SKILL_MISSILE) <= 1 || (gBattleBots[rec].formFlags & 2)) &&
+        bot_has_intact_part_with_skill(target, SKILL_CANCEL_BOMB))
         return 1;
     return 0;
 }
 
-u32 check_bot_can_use_shoot_part(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 8) <= 1 || (gBattleBots[rec].formFlags & 4)) &&
-        bot_has_intact_part_with_skill(target, 0x1A))
+u32 is_grav_cancelled(u32 rec, u32 part, u32 target) {
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - SKILL_BREAK) <= 1 || (gBattleBots[rec].formFlags & 4)) &&
+        bot_has_intact_part_with_skill(target, SKILL_CANCEL_GRAV))
         return 1;
     return 0;
 }
 
-u32 check_bot_status_effect_4(u32 rec, u32 part, u32 target) {
-    if ((gBattleBots[target].guardFlags & 2) && gBattleBots[rec].parts[part].data[1] == 0x34)
+// guess: guardFlags bit 1 (which also keeps traps from springing) makes the target immune to Team Attack.
+u32 is_team_attack_nullified(u32 rec, u32 part, u32 target) {
+    if ((gBattleBots[target].guardFlags & 2) && gBattleBots[rec].parts[part].data[1] == SKILL_TEAM_ATTACK)
         return 1;
     return 0;
 }
 
-u32 check_can_target_bot(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 4) <= 1 || (gBattleBots[rec].formFlags & 1)) &&
+// The absorb checks of battle_check_absorbed: the same skill pairs against a target whose Medaforce form flags
+// (bits 3 / 4 / 5) turn optic / bomb / gravity damage into healing.
+u32 is_optic_absorbed(u32 rec, u32 part, u32 target) {
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - SKILL_LASER) <= 1 || (gBattleBots[rec].formFlags & 1)) &&
         (gBattleBots[target].formFlags & 8))
         return 1;
     return 0;
 }
 
-u32 check_battle_can_support_target(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 6) <= 1 || (gBattleBots[rec].formFlags & 2)) &&
+u32 is_bomb_absorbed(u32 rec, u32 part, u32 target) {
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - SKILL_MISSILE) <= 1 || (gBattleBots[rec].formFlags & 2)) &&
         (gBattleBots[target].formFlags & 0x10))
         return 1;
     return 0;
 }
 
-u32 check_battle_can_special_target(u32 rec, u32 part, u32 target) {
-    if (((u8)(gBattleBots[rec].parts[part].data[1] - 8) <= 1 || (gBattleBots[rec].formFlags & 4)) &&
+u32 is_grav_absorbed(u32 rec, u32 part, u32 target) {
+    if (((u8)(gBattleBots[rec].parts[part].data[1] - SKILL_BREAK) <= 1 || (gBattleBots[rec].formFlags & 4)) &&
         (gBattleBots[target].formFlags & 0x20))
         return 1;
     return 0;

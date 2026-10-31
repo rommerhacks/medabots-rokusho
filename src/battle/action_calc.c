@@ -1,6 +1,6 @@
 // Action calculations for the action script (battle/action_script): action speed, damage modifiers and
-// thresholds, turn speed, the strongest part, and the AI's action type and target mode
-// (select_ai_action_type, determine_battle_target_mode). Uses the checks in battle/combat_helpers.
+// thresholds, turn speed, the strongest part, and the nullify / absorb checks (Cancel Optic / Bomb / Grav and the
+// Medaforce absorb forms; also against the actor itself). Uses the checks in battle/combat_helpers.
 
 #include "global.h"
 
@@ -13,9 +13,9 @@ static u32 battle_find_strongest_part(u32 rec);
 void battle_calc_attack_success(void) {
     gBattleWork.success = 0;
     calc_battle_action_speed(gBattleWork.actor, gBattleWork.actorPart);
-    if (check_bot_ability_type_strike(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target))
+    if (is_anti_air_vs_air_legs(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target))
         gBattleWork.success += gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[5] << 4;
-    if (check_bot_ability_type_shoot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target))
+    if (is_anti_sea_vs_sea_legs(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target))
         gBattleWork.success += gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[5] << 4;
     if (gBattleBots[gBattleWork.actor].formFlags & 4)
         gBattleWork.success += gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[5];
@@ -70,12 +70,12 @@ void battle_begin_action_phase(void) {
 static u32 battle_calculate_damage_modifier(void) {
     u8 type;
 
-    if (check_bot_ability_type_strike(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
+    if (is_anti_air_vs_air_legs(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         if (battle_check_damage_threshold(gBattleWork.evasion))
             return 1;
         return 0;
     }
-    if (check_bot_ability_type_shoot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
+    if (is_anti_sea_vs_sea_legs(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         if (battle_check_damage_threshold(gBattleWork.evasion))
             return 1;
         return 0;
@@ -190,58 +190,60 @@ void battle_check_dodged(void) {
 }
 
 void battle_check_nullified(void) {
-    if (check_bot_can_shoot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
+    if (is_optic_cancelled(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 2;
         gBattleWork.nullifyReason = 2;
-    } else if (check_bot_can_support(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
+    } else if (is_bomb_cancelled(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 2;
         gBattleWork.nullifyReason = 3;
-    } else if (check_bot_can_use_shoot_part(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
+    } else if (is_grav_cancelled(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 2;
         gBattleWork.nullifyReason = 4;
-    } else if (check_bot_status_effect_4(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
+    } else if (is_team_attack_nullified(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 2;
         gBattleWork.nullifyReason = 6;
     }
 }
 
-void select_ai_action_type(void) {
-    if (check_bot_can_shoot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
+// The nullify checks with the actor as the target (reaction_counter_begin: a counter hits its own attacker).
+void battle_check_nullified_on_actor(void) {
+    if (is_optic_cancelled(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 2;
         gBattleWork.nullifyReason = 2;
-    } else if (check_bot_can_support(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
+    } else if (is_bomb_cancelled(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 2;
         gBattleWork.nullifyReason = 3;
-    } else if (check_bot_can_use_shoot_part(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
+    } else if (is_grav_cancelled(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 2;
         gBattleWork.nullifyReason = 4;
-    } else if (check_bot_status_effect_4(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
+    } else if (is_team_attack_nullified(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 2;
         gBattleWork.nullifyReason = 6;
     }
 }
 
 void battle_check_absorbed(void) {
-    if (check_can_target_bot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
+    if (is_optic_absorbed(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 4;
         gBattleWork.absorbReason = 2;
-    } else if (check_battle_can_support_target(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
+    } else if (is_bomb_absorbed(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 4;
         gBattleWork.absorbReason = 3;
-    } else if (check_battle_can_special_target(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
+    } else if (is_grav_absorbed(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.target)) {
         gBattleWork.blockResult = 4;
         gBattleWork.absorbReason = 4;
     }
 }
 
-void determine_battle_target_mode(void) {
-    if (check_can_target_bot(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
+// The absorb checks with the actor as the target (reaction_counter_begin).
+void battle_check_absorbed_on_actor(void) {
+    if (is_optic_absorbed(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 4;
         gBattleWork.absorbReason = 2;
-    } else if (check_battle_can_support_target(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
+    } else if (is_bomb_absorbed(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 4;
         gBattleWork.absorbReason = 3;
-    } else if (check_battle_can_special_target(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
+    } else if (is_grav_absorbed(gBattleWork.actor, gBattleWork.actorPart, gBattleWork.actor)) {
         gBattleWork.blockResult = 4;
         gBattleWork.absorbReason = 4;
     }
