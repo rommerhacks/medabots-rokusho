@@ -5,6 +5,12 @@
 #include "global.h"
 #include "constants/sprites.h"
 
+// BG0 tilemap entry at tile (x, y). FAKEMATCH: the screen-block offset is added last; BG_TILEMAP() reorders the adds.
+#define BG0_ENTRY(x, y) (*(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + ((y) * 32 + (x)) * 2)))
+
+// The level digits sit at tiles (13..14, 10..11), drawn with BG palette 7
+#define LEVEL_DIGITS_PAL 0x7000
+
 void start_medal_transform(u8 slot) {
     gCurrentMedalSlot = slot;
     gGameMode = GAME_MODE_MENU;
@@ -142,19 +148,19 @@ void medal_transform_draw_medal(void) {
     }
     render_text_sprites_at(gTextArgBuffer, 0x14, 5, 10, 10, 1, 1, 0);
     if (gMedals[gCurrentMedalSlot].level == 100) {
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x29A)) = (gMenuWork->bg_tile_base + 0x14) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x2DA)) = (gMenuWork->bg_tile_base + 0x15) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x29C)) = (gMenuWork->bg_tile_base + 0x16) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x2DC)) = (gMenuWork->bg_tile_base + 0x17) | 0x7000;
+        BG0_ENTRY(13, 10) = (gMenuWork->bg_tile_base + 0x14) | LEVEL_DIGITS_PAL;
+        BG0_ENTRY(13, 11) = (gMenuWork->bg_tile_base + 0x15) | LEVEL_DIGITS_PAL;
+        BG0_ENTRY(14, 10) = (gMenuWork->bg_tile_base + 0x16) | LEVEL_DIGITS_PAL;
+        BG0_ENTRY(14, 11) = (gMenuWork->bg_tile_base + 0x17) | LEVEL_DIGITS_PAL;
     } else {
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x29A)) =
-            (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level / 10u) * 2) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x2DA)) =
-            (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level / 10u) * 2 + 1) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x29C)) =
-            (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level % 10u) * 2) | 0x7000;
-        *(u16 *)(BGCNT_SCREEN_OFFSET(REG_BG0CNT) + (BG_VRAM + 0x2DC)) =
-            (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level % 10u) * 2 + 1) | 0x7000;
+        BG0_ENTRY(13, 10) =
+            (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level / 10u) * 2) | LEVEL_DIGITS_PAL;
+        BG0_ENTRY(13, 11) =
+            (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level / 10u) * 2 + 1) | LEVEL_DIGITS_PAL;
+        BG0_ENTRY(14, 10) =
+            (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level % 10u) * 2) | LEVEL_DIGITS_PAL;
+        BG0_ENTRY(14, 11) =
+            (gMenuWork->bg_tile_base + (u8)(gMedals[gCurrentMedalSlot].level % 10u) * 2 + 1) | LEVEL_DIGITS_PAL;
     }
     render_text_sprites_at(gMedals[gCurrentMedalSlot].name, 0x1E, 0x11, 10, 10, 2, 0, 0);
     REG_DISPCNT |= 0x200;
