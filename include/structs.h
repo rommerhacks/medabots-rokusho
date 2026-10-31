@@ -244,7 +244,7 @@ struct GameWork {
     u8 textLine;          // text line 0-1
     u8 wordFits;          // 1 = the current word has been measured and fits
     u8 lineFull;          // 1 = line full, 2 = page full (wait for A / B)
-    u8 msgWait;           // wait counter (0xF7 / 0xFA codes)
+    u8 msgWait;           // wait counter (0xF7 / 0xFA codes); TEXT_WAIT_INSTANT = no per-glyph stops
     u8 endModeStep;       // end mode step
     u8 dimLevel;          // palette dim level 0-9
     u8 filler1D[0x3];

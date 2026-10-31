@@ -83,7 +83,10 @@ leaves the screen (seen at runtime); A opens the part's details instead.
 Used by menus, shops, battle and field scripts.
 
 **Text** (`src/text/`). The message window (`message.c`): text printing, glyphs and message commands; the
-yes/no choice menu. Used by nearly every screen.
+yes/no choice menu. Used by nearly every screen. Message bytes below 0xF7 are font characters; 0xF7-0xFF are
+control codes (`TEXT_CODE_*` in `include/constants/text.h`: waits, alternate font, string variables, speaker
+portrait, page / line breaks, end of message). 0xFE (`TEXT_EOS`) also ends names. A wait of 0xFF
+(`TEXT_WAIT_INSTANT`) skips the wait and prints the rest of the message at once.
 
 **Title** (`src/title/`). The mode-2 dispatcher and title menu, the new-game prompt, TEST MODE, the screen
 after a lost Robattle, and the mode-3 boot logos, intro and title screen.

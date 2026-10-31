@@ -143,7 +143,7 @@ void medal_transform_draw_medal(void) {
     sprite->scale_y = 0x40;
     for (i = 0; i < 16; i++) {
         gTextArgBuffer[i] = ((const u8 *)gMedalNames[gMedals[gCurrentMedalSlot].graphicId])[i];
-        if (gTextArgBuffer[i] == 0xFE)
+        if (gTextArgBuffer[i] == TEXT_EOS)
             break;
     }
     render_text_sprites_at(gTextArgBuffer, 0x14, 5, 10, 10, 1, 1, 0);

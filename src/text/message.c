@@ -3,8 +3,8 @@
 // message_print_step, then the end mode from gMessageEndModes, close). Message text is font characters
 // plus control codes: 0xF7 n wait n frames, 0xF8 toggle the alternate font, 0xF9 n print string variable
 // n, 0xFA n wait n frames (A / B skips), 0xFB anim set idx portrait, 0xFC wait for A / B and clear the
-// page, 0xFD new line, 0xFE ignored, 0xFF mode end of message (end modes 0-4). Draws through engine/tilemap and
-// engine/palette_blend; used by every scene with text.
+// page, 0xFD new line, 0xFE ignored, 0xFF mode end of message (end modes 0-4); the TEXT_CODE_* names are in
+// constants/text.h. Draws through engine/tilemap and engine/palette_blend; used by every scene with text.
 
 #include "global.h"
 
@@ -131,7 +131,7 @@ void message_print_step(void) {
     gGameWork.msgStopPrint = 0;
     do {
         switch (gGameWork.msgText[gGameWork.msgPos]) {
-        case 0xF9:
+        case TEXT_CODE_VAR:
             if (gGameWork.lineFull == 1) {
                 gGameWork.msgStopPrint = 0;
                 message_new_line();
@@ -141,33 +141,33 @@ void message_print_step(void) {
             } else {
                 gGameWork.msgStopPrint = 0;
                 message_print_var_step();
-                if (gGameWork.msgWait == 0xFF)
+                if (gGameWork.msgWait == TEXT_WAIT_INSTANT)
                     gGameWork.msgStopPrint = 0;
             }
             break;
-        case 0xFA:
+        case TEXT_CODE_WAIT_SKIPPABLE:
             message_cmd_wait_skippable();
-            if (gGameWork.msgWait == 0xFF)
+            if (gGameWork.msgWait == TEXT_WAIT_INSTANT)
                 gGameWork.msgStopPrint = 0;
             else
                 gGameWork.msgStopPrint = 1;
             break;
-        case 0xF7:
+        case TEXT_CODE_WAIT:
             message_cmd_wait();
-            if (gGameWork.msgWait == 0xFF)
+            if (gGameWork.msgWait == TEXT_WAIT_INSTANT)
                 gGameWork.msgStopPrint = 0;
             else
                 gGameWork.msgStopPrint = 1;
             break;
-        case 0xFB:
+        case TEXT_CODE_PORTRAIT:
             message_cmd_portrait();
             gGameWork.msgStopPrint = 1;
             break;
-        case 0xFC:
+        case TEXT_CODE_NEXT_PAGE:
             if (message_wait_next_page() == 1)
                 gGameWork.msgPos++;
             break;
-        case 0xFD:
+        case TEXT_CODE_NEW_LINE:
             if (gGameWork.lineFull == 2) {
                 gGameWork.msgStopPrint = 1;
                 if (message_wait_next_page() == 1)
@@ -179,14 +179,14 @@ void message_print_step(void) {
                     gGameWork.msgPos++;
             }
             break;
-        case 0xFE:
+        case TEXT_EOS:
             message_cmd_skip();
             break;
-        case 0xF8:
+        case TEXT_CODE_ALT_FONT:
             gGameWork.altFont ^= 1;
             gGameWork.msgPos++;
             break;
-        case 0xFF:
+        case TEXT_CODE_END:
             message_cmd_end();
             gGameWork.msgStopPrint = 1;
             break;
@@ -200,7 +200,7 @@ void message_print_step(void) {
             } else {
                 gGameWork.msgStopPrint = 0;
                 text_render_glyph_step();
-                if (gGameWork.msgWait == 0xFF)
+                if (gGameWork.msgWait == TEXT_WAIT_INSTANT)
                     gGameWork.msgStopPrint = 0;
             }
             break;
@@ -308,7 +308,7 @@ void text_render_glyph_step(void) {
             else
                 width += gFontWidths[ch][0];
             ch = gGameWork.msgText[gGameWork.msgPos + shift];
-            if (ch > 0xF7)
+            if (ch > TEXT_CODE_WAIT) // any control code but TEXT_CODE_WAIT ends the word
                 break;
             if (ch == 0) {
                 done = 1;
@@ -412,7 +412,7 @@ void message_print_var_step(void) {
             else
                 w += gFontWidths[glyph][0];
             glyph = gGameWork.varText[gGameWork.varPos + n];
-            if (glyph > 0xF7)
+            if (glyph > TEXT_CODE_WAIT) // any control code but TEXT_CODE_WAIT ends the word
                 done = 1;
         } while (!done);
         gGameWork.wordPixelsLeft = w;
@@ -520,7 +520,8 @@ u8 message_wait_next_page(void) {
     return 0;
 }
 
-// 0xFA n: wait n frames (0xFF = forever); A or B ends the wait early unless gGameWork.skipBotSetup (demo) is set.
+// 0xFA n: wait n frames (0xFF = no wait, print the rest instantly); A or B ends the wait early unless
+// gGameWork.skipBotSetup (demo) is set.
 static void message_cmd_wait_skippable(void) {
     u16 pos;
     if (gGameWork.msgWait == 0) {
@@ -530,9 +531,9 @@ static void message_cmd_wait_skippable(void) {
         }
         pos = gGameWork.msgPos;
         gGameWork.msgWait = gGameWork.msgText[*(vu16 *)&gGameWork.msgPos + 1];
-        if (*(vu8 *)&gGameWork.msgWait == 0xFF)
+        if (*(vu8 *)&gGameWork.msgWait == TEXT_WAIT_INSTANT)
             gGameWork.msgPos = pos + 2;
-    } else if (gGameWork.msgWait == 0xFF || --gGameWork.msgWait == 0)
+    } else if (gGameWork.msgWait == TEXT_WAIT_INSTANT || --gGameWork.msgWait == 0)
         gGameWork.msgPos += 2;
     else if (gGameWork.skipBotSetup == 0 && (KEYS_LO(gRepeatKeys) & (A_BUTTON | B_BUTTON))) {
         gGameWork.msgWait = 0;
@@ -540,7 +541,7 @@ static void message_cmd_wait_skippable(void) {
     }
 }
 
-// 0xF7 n: wait n frames (0xFF = forever).
+// 0xF7 n: wait n frames (0xFF = no wait, print the rest instantly).
 static void message_cmd_wait(void) {
     u16 pos;
     if (gGameWork.msgWait == 0) {
@@ -550,9 +551,9 @@ static void message_cmd_wait(void) {
         }
         pos = gGameWork.msgPos;
         gGameWork.msgWait = gGameWork.msgText[*(vu16 *)&gGameWork.msgPos + 1];
-        if (*(vu8 *)&gGameWork.msgWait == 0xFF)
+        if (*(vu8 *)&gGameWork.msgWait == TEXT_WAIT_INSTANT)
             gGameWork.msgPos = pos + 2;
-    } else if (gGameWork.msgWait == 0xFF || --gGameWork.msgWait == 0)
+    } else if (gGameWork.msgWait == TEXT_WAIT_INSTANT || --gGameWork.msgWait == 0)
         gGameWork.msgPos += 2;
 }
 

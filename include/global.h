@@ -17,6 +17,7 @@ asm(".include \"asm/macros.inc\"");
 #include "keys.h"
 #include "constants/game_states.h"
 #include "constants/skills.h"
+#include "constants/text.h"
 #include "constants/sprites.h"
 
 #endif // GUARD_GLOBAL_H

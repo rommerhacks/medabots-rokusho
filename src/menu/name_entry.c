@@ -12,7 +12,7 @@ void name_entry_animate_sprite(u16 anim_counter) {
 static s32 calc_text_pixel_width(const u8 *text) {
     s32 w = 0;
     s32 i;
-    for (i = 0; i < 10 && *text != 0xFE; i++)
+    for (i = 0; i < 10 && *text != TEXT_EOS; i++)
         w += gFontWidths[*text++][0];
     return w;
 }
@@ -180,13 +180,13 @@ void name_entry_load_name(void) {
     REG_DISPCNT |= 0x800;
     REG_DISPCNT |= 0x1000;
     for (i = 0; i < 16; i++)
-        gMenuWork->name_buf[i] = 0xFE;
+        gMenuWork->name_buf[i] = TEXT_EOS;
     disable_sprites(5, 10);
     switch (gNameEntryMode) {
     case 0:
         for (i = 0; i < 16; i++) {
             gMenuWork->name_buf[i] = gDefaultPlayerName[i];
-            if (gMenuWork->name_buf[i] == 0xFE)
+            if (gMenuWork->name_buf[i] == TEXT_EOS)
                 break;
         }
         gMenuWork->name_len = i;
@@ -196,13 +196,13 @@ void name_entry_load_name(void) {
         if (k <= 1) {
             for (i = 0; i < 16; i++) {
                 gMenuWork->name_buf[i] = ((const u8 *)gMedalNames[k + 0x20])[i];
-                if (gMenuWork->name_buf[i] == 0xFE)
+                if (gMenuWork->name_buf[i] == TEXT_EOS)
                     break;
             }
         } else {
             for (i = 0; i < 16; i++) {
                 gMenuWork->name_buf[i] = ((const u8 *)gMedalNames[k])[i];
-                if (gMenuWork->name_buf[i] == 0xFE)
+                if (gMenuWork->name_buf[i] == TEXT_EOS)
                     break;
             }
         }
@@ -211,7 +211,7 @@ void name_entry_load_name(void) {
     case 2:
         for (i = 0; i < 16; i++) {
             gMenuWork->name_buf[i] = gMedals[gCurrentMedalSlot].name[i];
-            if (gMenuWork->name_buf[i] == 0xFE)
+            if (gMenuWork->name_buf[i] == TEXT_EOS)
                 break;
         }
         gMenuWork->name_len = i;
@@ -384,7 +384,7 @@ void name_entry_input(void) {
             case 2:
                 gSpriteEntries[4].flags &= (u16)~SPRITE_FLAG_VISIBLE;
                 blank = 1;
-                for (i = 0; (u32)i < 16 && gMenuWork->name_buf[i] != 0xFE; i++) {
+                for (i = 0; (u32)i < 16 && gMenuWork->name_buf[i] != TEXT_EOS; i++) {
                     if (gMenuWork->name_buf[i] != 0) {
                         blank = 0;
                         break;
@@ -419,10 +419,10 @@ void name_entry_input(void) {
         play_sound_effect(5);
         if (gMenuWork->name_len != 0) {
             gMenuWork->name_len--;
-            gMenuWork->name_buf[gMenuWork->name_len] = 0xFE;
+            gMenuWork->name_buf[gMenuWork->name_len] = TEXT_EOS;
         } else {
             gMenuWork->name_len = 0;
-            gMenuWork->name_buf[gMenuWork->name_len] = 0xFE;
+            gMenuWork->name_buf[gMenuWork->name_len] = TEXT_EOS;
         }
         disable_sprites(5, 10);
         render_text_sprites_at(gMenuWork->name_buf, 5, 5, 3, 10, 13, 1, 0);
