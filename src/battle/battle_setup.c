@@ -26,6 +26,8 @@ void count_bot_skill_use(u32 rec) {
     if (bot->chosenAction == 0)
         return;
     if (bot->chosenAction <= 3) {
+        // FAKEMATCH: bot->parts[chosenAction - 1].data[2] (the skill type) written out: the struct form folds
+        // the 0x4A offset differently and does not match
         k = *(u8 *)(sub1(bot->chosenAction) * 24 + off + (u32)base + 0x4A);
     } else {
         switch (bot->chosenAction - 4) {
