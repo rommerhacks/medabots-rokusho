@@ -5,6 +5,7 @@
 
 #include "global.h"
 #include "constants/sprites.h"
+#include "constants/encounters.h"
 
 static void scanline_scroll_vblank(void);
 
@@ -710,11 +711,12 @@ void area_load_encounter_rate(void) {
 }
 
 static inline u32 roll_encounter(void) {
-    if ((rng_next_byte() & 0x1F) == 0x1F)
+    if ((rng_next_byte() & (ENCOUNTER_CHANCE - 1)) == ENCOUNTER_CHANCE - 1)
         return 1;
     return 0;
 }
 
+// Called once per step: 1 when this step starts a random Robattle (see constants/encounters.h).
 u32 check_random_encounter(void) {
     u8 n;
 
@@ -727,7 +729,7 @@ u32 check_random_encounter(void) {
     if (gFieldWork.encounters_off & 1)
         return 0;
     n = ++gFieldWork.encounter_steps;
-    if (n > 0x10 && (n > 0x1F || roll_encounter())) {
+    if (n > ENCOUNTER_SAFE_STEPS && (n >= ENCOUNTER_FORCED_STEP || roll_encounter())) {
         gFieldWork.encounter_steps = 0;
         gFieldWork.battle_flags = 0;
         gFieldWork.story_battle = 0;
