@@ -1410,8 +1410,8 @@ gTextBankTables:
 gScriptItemMessages:
 	.incbin "baserom.gba", 0x47E8C4, 0x84
 
-	.global gArea53DpadTiles
-gArea53DpadTiles:
+	.global gDpadRemapFloorTiles
+gDpadRemapFloorTiles:
 	.incbin "baserom.gba", 0x47E948, 0x238
 
 	.global gAreaSongs

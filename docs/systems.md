@@ -46,6 +46,11 @@ take several frames. Script commands move script sprites, change areas, give ite
 and minigames. The player's walk, warps and map objects live in `player_walk.c`, `field_walk.c` and
 `map_objects.c`.
 
+Areas: `gFieldWork.area_id` indexes every per-area table (warps, collision, tiles, songs, sprite sheets,
+battle settings). `constants/areas.h` names the ids identified by playing the game (`AREA_LAB` = 23, where a
+new game starts). One area, `AREA_DPAD_REMAP_ROOM`, has floor tiles that reverse or rotate the D-pad
+(`remap_dpad_by_floor_tile`).
+
 Map objects: each area places up to 64 objects in `gFieldWork.objects`. The top nibble of `event` is the kind
 (`constants/map_objects.h`): people (`MAP_OBJ_NPC`) turn to Ikki when talked to; intercoms, displays and
 signs (`MAP_OBJ_EXAMINE`) are talked to without turning, so a gate intercom is used by facing its post, not the

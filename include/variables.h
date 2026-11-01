@@ -127,9 +127,11 @@ extern const u8 gEventPictureSongs[];      // 4 per event picture: stop song?, s
 extern const u16 *const gFieldSpritePalettes[]; // 16-colour OBJ palette per map sprite sheet id (NULL: none)
 extern const u8 gFormTileActions[][8];   // field tile actions per player form (copied to gFieldWork.tile_actions)
 extern const u8 gSpriteSheetHasShadow[]; // per map sprite sheet id: give the sprite a shadow (sprite 0x90)
-extern const u8 gDpadRemaps[][16];       // D-pad bits remapped by an area 0x53 tile (1 same, 2 reversed, 3 / 4 rotated)
+extern const u8
+    gDpadRemaps[][16]; // D-pad bits remapped by an AREA_DPAD_REMAP_ROOM floor tile (1 same, 2 reversed, 3 / 4 rotated)
 extern const u8 gAreaMapSizes[][2];
-extern const u8 gArea53DpadTiles[]; // area 0x53, per tile: 1-4 = the gDpadRemaps row + 1 (area53_remap_dpad)
+extern const u8
+    gDpadRemapFloorTiles[]; // AREA_DPAD_REMAP_ROOM, per tile: 1-4 = the gDpadRemaps row + 1 (remap_dpad_by_floor_tile)
 extern const struct AreaWarp *const gAreaWarps[];
 extern void (*const gMapScriptCommands[])(void); // map script command handlers
 extern void (*const gMapScriptUpdates[])(void);  // per-command update handlers, run each frame while cmd_busy is set

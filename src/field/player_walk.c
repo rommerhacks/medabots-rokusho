@@ -3,6 +3,7 @@
 // behind the player. Called from the field frame handler (field/field_walk) and the field sub-states
 // (field/field_update); uses field/map_objects for collision, events and exits.
 #include "global.h"
+#include "constants/areas.h"
 #include "constants/field_sprites.h"
 #include "constants/map_objects.h"
 #include "constants/sprites.h"
@@ -238,9 +239,10 @@ void field_player_step(u8 dir) {
     }
 }
 
-// Area 0x53 only: tiles that reverse or rotate the D-pad.
-static u8 area53_remap_dpad(u8 dir) {
-    u32 tile = gArea53DpadTiles[gFieldWork.player_tile_y * (gFieldWork.map_width >> 1) + gFieldWork.player_tile_x] - 1;
+// AREA_DPAD_REMAP_ROOM only: tiles that reverse or rotate the D-pad.
+static u8 remap_dpad_by_floor_tile(u8 dir) {
+    u32 tile =
+        gDpadRemapFloorTiles[gFieldWork.player_tile_y * (gFieldWork.map_width >> 1) + gFieldWork.player_tile_x] - 1;
 
     if (tile <= 3)
         dir = gDpadRemaps[tile][dir];
@@ -271,8 +273,8 @@ void field_player_walk_input(void) {
         any = gHeldKeyBits.down | gHeldKeyBits.up | gHeldKeyBits.left | gHeldKeyBits.right;
         if (any) {
             input = (gHeldKeyBits.down << 3) | (gHeldKeyBits.up << 2) | (gHeldKeyBits.left << 1) | gHeldKeyBits.right;
-            if (gFieldWork.script_running == 0 && gFieldWork.area_id == 0x53)
-                input = area53_remap_dpad(input);
+            if (gFieldWork.script_running == 0 && gFieldWork.area_id == AREA_DPAD_REMAP_ROOM)
+                input = remap_dpad_by_floor_tile(input);
             switch (input) {
             case 4:
                 dir = zero;

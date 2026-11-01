@@ -13,6 +13,7 @@
 // field/area_graphics and the engine.
 
 #include "global.h"
+#include "constants/areas.h"
 #include "constants/field_sprites.h"
 #include "constants/sprites.h"
 
@@ -113,7 +114,7 @@ void new_game_init(void) {
     gBg3Scroll.y = 0;
     memzero_bytes(&gFieldWork.warp_unused0, 0x454);
     gFieldWork.npc_load_mode = 0;
-    gFieldWork.area_id = 0x17;
+    gFieldWork.area_id = AREA_LAB;
     gFieldWork.warp_unused0 = 0xE;
     gFieldWork.warp_unused1 = 7;
     gFieldWork.player_x = gFieldWork.map_origin_x + 0x120;
