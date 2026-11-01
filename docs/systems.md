@@ -80,6 +80,13 @@ available at this time" (seen at runtime). When TIME runs out, `robattle_judge_t
 knocked-out Medabots, then fewer broken parts, then more action points, else a coin flip: a story Robattle
 (the Screws, the Baron) can be won on time without touching the leader. The Medaforce entry of the command ring opens a list whose first, default entry is "Charge MF"; the
 Medal's learned Medaforces follow it (Rokusho's Spiral Bolt is one UP from the default).
+Targets: `ai_pick_bot_targets` (`battle_ai.c`) gives each action part a target through `gAiTargetPickers[skill]`.
+An attack (`ai_target_attack`) picks at random among the opposing Medabots that still have an intact head or arm
+whose action type equals the attacker's Medal Aim (`MedalData.aimSkillType`), and only falls back to any opponent
+when none has one. So a Medabot can draw attacks or avoid them through the action types of its parts: Squidguts'
+Avikings aim at Berserk parts, and a team whose leader carries none sends their Sacrifices to the allies that do
+(seen at runtime). A single-target Medaforce (Spiral Bolt) clears the target and hits the enemy standing nearest
+the centre when it runs (`battle_target_nearest_enemy`, `combat_helpers.c`), not the Aim target.
 
 **Link** (`src/link/`). The serial transfer (`serial.c`, also used by the main loop every frame), link
 Robattles (mode 0 state 10) and the mode-2 link menu, trade and Medal handshake screens.
