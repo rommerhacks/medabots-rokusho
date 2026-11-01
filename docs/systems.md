@@ -46,6 +46,12 @@ take several frames. Script commands move script sprites, change areas, give ite
 and minigames. The player's walk, warps and map objects live in `player_walk.c`, `field_walk.c` and
 `map_objects.c`.
 
+Map objects: each area places up to 64 objects in `gFieldWork.objects`. The top nibble of `event` is the kind
+(`constants/map_objects.h`): people (`MAP_OBJ_NPC`) turn to Ikki when talked to; intercoms, displays and
+signs (`MAP_OBJ_EXAMINE`) are talked to without turning, so a gate intercom is used by facing its post, not the
+gate; door and scene tiles (`MAP_OBJ_STEP`) run their event when Ikki steps on them. The low 12 bits are the
+event id, which is both the map script to run and the event flag that hides the object once set.
+
 Random encounters: at the end of each step `player_walk.c` calls `check_random_encounter`
 (`src/engine/common.c`). An area with a non-zero `gAreaBattleSettings` rate counts steps in
 `gFieldWork.encounter_steps`; from step 17 each step has a 1-in-32 chance, and step 32 always starts a battle. The

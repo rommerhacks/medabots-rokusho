@@ -4,6 +4,7 @@
 // field/field_walk, field/field_update and the map script commands.
 #include "global.h"
 #include "constants/field_sprites.h"
+#include "constants/map_objects.h"
 #include "constants/sprites.h"
 
 void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj) {
@@ -16,7 +17,7 @@ void update_npc_random_animation(void) {
 
     if ((gFieldState.frame_counter & 3) == 0) {
         obj += field_random(64);
-        if (obj->present && (obj->event >> 12) == 0)
+        if (obj->present && (obj->event >> MAP_OBJ_KIND_SHIFT) == MAP_OBJ_NPC)
             set_sprite_anim_and_store(obj->sprite_slot + 49, field_random(4), obj);
     }
 }
@@ -36,7 +37,7 @@ void update_npc_sprite_animations(void) {
             active = 1;
         }
     check:
-        if (active && (obj->event >> 12) == 6) {
+        if (active && (obj->event >> MAP_OBJ_KIND_SHIFT) == MAP_OBJ_ANIMATED) {
             s32 idx = obj->sprite_slot + 49;
             if (gSpriteEntries[idx].work[SPR_ANIM_SCRIPT] != 0xFF)
                 advance_sprite_animation_frame(idx);
@@ -84,12 +85,12 @@ u32 map_cursor_move_and_check_event(void) {
     found = 0;
     for (i = 0; i < 64; i++) {
         if (obj->x == x && obj->y == y) {
-            switch ((obj->event & 0xF000) >> 12) {
-            case 0:
-            case 4:
-            case 6:
+            switch ((obj->event & MAP_OBJ_KIND_MASK) >> MAP_OBJ_KIND_SHIFT) {
+            case MAP_OBJ_NPC:
+            case MAP_OBJ_EXAMINE:
+            case MAP_OBJ_ANIMATED:
                 gFieldWork.script_running = 1;
-                gFieldWork.last_script_id = gFieldWork.script_id = obj->event & 0xFFF;
+                gFieldWork.last_script_id = gFieldWork.script_id = obj->event & MAP_OBJ_EVENT_ID_MASK;
                 gFieldWork.cmd_busy = 0;
                 gFieldWork.script_pos = 0;
                 gFieldWork.script_object = i;
@@ -97,7 +98,7 @@ u32 map_cursor_move_and_check_event(void) {
                 found = 1;
                 break;
             }
-            if ((obj->event & 0xF000) == 0) {
+            if ((obj->event & MAP_OBJ_KIND_MASK) == MAP_OBJ_NPC) {
                 u8 *facing = &gSpriteEntries[47].work[FIELD_SPR_FACING];
                 u8 slot = obj->sprite_slot + 49;
                 const u8 *facing_table = gNpcFacingTowardPlayer;
@@ -118,9 +119,10 @@ u32 find_npc_event_match(void) {
 
     for (i = 0; i < 64; i++) {
         if (obj->x == gFieldWork.player_tile_x) {
-            if (obj->y == gFieldWork.player_tile_y && (obj->event & 0xF000) >> 12 == 8) {
+            if (obj->y == gFieldWork.player_tile_y &&
+                (obj->event & MAP_OBJ_KIND_MASK) >> MAP_OBJ_KIND_SHIFT == MAP_OBJ_STEP) {
                 gFieldWork.script_running = 1;
-                gFieldWork.last_script_id = gFieldWork.script_id = obj->event & 0xFFF;
+                gFieldWork.last_script_id = gFieldWork.script_id = obj->event & MAP_OBJ_EVENT_ID_MASK;
                 gFieldWork.cmd_busy = 0;
                 gFieldWork.script_pos = 0;
                 gFieldWork.script_object = i;

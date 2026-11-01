@@ -4,6 +4,7 @@
 // (field/field_update); uses field/map_objects for collision, events and exits.
 #include "global.h"
 #include "constants/field_sprites.h"
+#include "constants/map_objects.h"
 #include "constants/sprites.h"
 
 static void follower_step(u8 dir);
@@ -34,7 +35,7 @@ void load_map_npc_sprites(s32 mode) {
                 continue;
             if (rec->load_order != k)
                 continue;
-            if (event_flag_get(rec->event & 0xFFF))
+            if (event_flag_get(rec->event & MAP_OBJ_EVENT_ID_MASK))
                 continue;
             skip = 0;
             found = 0;
@@ -45,7 +46,7 @@ void load_map_npc_sprites(s32 mode) {
             if (mode >= 0)
                 if (mode <= 2) {
                     for (j = 0; j < 64; j++) {
-                        if ((rec->event & 0xFFF) == (saved[j].event & 0xFFF))
+                        if ((rec->event & MAP_OBJ_EVENT_ID_MASK) == (saved[j].event & MAP_OBJ_EVENT_ID_MASK))
                             found = 1;
                         if (found)
                             break;
@@ -71,10 +72,10 @@ void load_map_npc_sprites(s32 mode) {
             gFieldWork.objects[n].x = rec->x;
             gFieldWork.objects[n].y = rec->y;
             gFieldWork.objects[n].event = rec->event;
-            switch (rec->event >> 12) {
-            case 0:
-            case 4:
-            case 6:
+            switch (rec->event >> MAP_OBJ_KIND_SHIFT) {
+            case MAP_OBJ_NPC:
+            case MAP_OBJ_EXAMINE:
+            case MAP_OBJ_ANIMATED:
                 gFieldWork.tile_map[rec->y * (gFieldWork.map_width >> 1) + rec->x] = 7;
                 break;
             }
@@ -82,11 +83,11 @@ void load_map_npc_sprites(s32 mode) {
             if (rec->anim == 0xFF)
                 goto next;
             if (count < 30) {
-                switch (rec->event >> 12) {
-                case 0:
-                case 2:
-                case 4:
-                case 6: {
+                switch (rec->event >> MAP_OBJ_KIND_SHIFT) {
+                case MAP_OBJ_NPC:
+                case MAP_OBJ_SPRITE:
+                case MAP_OBJ_EXAMINE:
+                case MAP_OBJ_ANIMATED: {
                     u8 slot = count + 49;
                     u32 frame_base = anim * 12;
                     u8 sheet_anim = anim;
@@ -105,7 +106,7 @@ void load_map_npc_sprites(s32 mode) {
                 }
                 gFieldWork.objects[n].sprite_slot = count;
                 anim = rec->anim >> 4;
-                gEntityStates[count + 49].active = rec->event & 0xFFF;
+                gEntityStates[count + 49].active = rec->event & MAP_OBJ_EVENT_ID_MASK;
                 gSpriteEntries[count + 49].work[FIELD_SPR_ANIM_SET] = anim;
                 gSpriteEntries[count + 49].pos_x = rec->x * 16 + gFieldWork.map_origin_x;
                 gSpriteEntries[count + 49].pos_y = rec->y * 16 + gFieldWork.map_origin_y;
@@ -128,7 +129,7 @@ void load_map_npc_sprites(s32 mode) {
     }
     if (gFieldWork.script_id != 0) {
         for (i = 0; i < 64; obj++, i++) {
-            if ((obj->event & 0xFFF) == gFieldWork.script_id) {
+            if ((obj->event & MAP_OBJ_EVENT_ID_MASK) == gFieldWork.script_id) {
                 gFieldWork.script_object = i;
                 break;
             }

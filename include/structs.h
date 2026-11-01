@@ -940,7 +940,7 @@ struct MapExit {
 struct MapObject {
     u8 x;
     u8 y;
-    u16 event;          // bits 12-15: type (8 = event), bits 0-11: event id (event flag and map script id)
+    u16 event;          // bits 12-15: kind (MAP_OBJ_*), bits 0-11: event id (event flag and map script id)
     u8 sprite_slot : 5; // sprite slot (gSpriteEntries index - 49)
     u8 unused4_5 : 1;   // never accessed
     u8 has_sprite : 1;  // has a sprite (slot + 49, shadow slot + 91)
