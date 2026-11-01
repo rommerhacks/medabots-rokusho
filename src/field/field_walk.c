@@ -4,6 +4,7 @@
 // Talks to field/field_mode, field/field_update, field/script_sprites and the engine.
 #include "global.h"
 #include "constants/field_sprites.h"
+#include "constants/player_forms.h"
 
 u32 field_effect_run_and_restore(void) {
     if ((gFieldEffect.flags & 0x3F) == 0xD || (gFieldEffect.flags & 0x3F) == 0x16) {
@@ -238,14 +239,14 @@ void field_walk_update(void) {
                             gFieldWork.npc_load_mode = 2;
                             done = 1;
                         }
-                    } else if (KEYS_HI(gNewKeys) & R_BUTTON_HI && gFieldWork.player_form == 1) {
+                    } else if (KEYS_HI(gNewKeys) & R_BUTTON_HI && gFieldWork.player_form == PLAYER_FORM_CAR) {
                         field_play_sound_effect(0x74);
                     }
                 }
             }
         }
         if (!done && !npc && !warp) {
-            if (KEYS_HI(gNewKeys) & R_BUTTON_HI && gFieldWork.player_form == 1)
+            if (KEYS_HI(gNewKeys) & R_BUTTON_HI && gFieldWork.player_form == PLAYER_FORM_CAR)
                 field_play_sound_effect(0x74);
             field_player_walk_input();
         } else {

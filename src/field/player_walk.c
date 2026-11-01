@@ -7,6 +7,7 @@
 #include "constants/field_sprites.h"
 #include "constants/map_objects.h"
 #include "constants/sprites.h"
+#include "constants/player_forms.h"
 
 static void follower_step(u8 dir);
 
@@ -231,7 +232,7 @@ void field_player_step(u8 dir) {
                 if (gFieldSceneParams.warp_sound)
                     field_play_sound_effect(gWarpSoundEffects[gFieldSceneParams.warp_sound]);
                 setup_palette_fade_to_color_with_obj(0x7FFF, 0.0f, 32.0f, 8.0f);
-            } else if (gFieldWork.player_form != 1 && check_random_encounter()) {
+            } else if (gFieldWork.player_form != PLAYER_FORM_CAR && check_random_encounter()) {
                 save_script_sprites();
                 switch_game_mode(0x21, 0);
             }
@@ -303,7 +304,7 @@ void field_player_walk_input(void) {
                 gFieldWork.player_step_frames = 16 / sprite_walk_speed(0x2F);
                 field_player_step(gFieldWork.player_move_dir);
                 follower_turn_toward_player(3);
-                if (gFieldWork.player_form == 2 || gFieldWork.player_form == 9)
+                if (gFieldWork.player_form == PLAYER_FORM_SWIM || gFieldWork.player_form == 9)
                     field_play_sound_effect(0x57);
                 follower_step(gFieldWork.follower_move_dir);
             }

@@ -8,6 +8,7 @@
 #include "global.h"
 #include "constants/field_sprites.h"
 #include "constants/sprites.h"
+#include "constants/player_forms.h"
 
 static void field_debug_enter_page(u32 idx);
 static void field_debug_cycle_event_value(u32 idx, s32 max);
@@ -232,9 +233,9 @@ void field_debug_update_page(u32 mode) {
             field_debug_clear_sprites();
             field_effect_start(gFieldDebug.effect_id, gFieldWork.player_x, gFieldWork.player_y, 0);
             if (gFieldDebug.effect_id == 0xE)
-                gFieldWork.player_form = 0xC;
+                gFieldWork.player_form = PLAYER_FORM_TELEPORT;
             else if (gFieldDebug.effect_id == 0x12)
-                gFieldWork.player_form = 0xB;
+                gFieldWork.player_form = PLAYER_FORM_MAP_WARP;
             if (gFieldDebug.effect_id == 0xE || gFieldDebug.effect_id == 0x12) {
                 area_load_sprite_sheets();
                 DmaCopy32(3, gFieldSpritePalettes[gPlayerFormSpriteSheets[gFieldWork.player_form]], OBJ_PLTT, 32);
@@ -598,7 +599,7 @@ u32 field_debug_page_done(void) {
         return 1;
     case 3:
         if (field_effect_run() == 4) {
-            gFieldWork.player_form = 0;
+            gFieldWork.player_form = PLAYER_FORM_NORMAL;
             if (gFieldDebug.effect_id == 0xE || gFieldDebug.effect_id == 0x12) {
                 area_load_sprite_sheets();
                 DmaCopy32(3, gFieldSpritePalettes[gPlayerFormSpriteSheets[gFieldWork.player_form]],

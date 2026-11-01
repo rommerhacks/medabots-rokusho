@@ -5,6 +5,7 @@
 //   save/save_screen.c). Lists are drawn by menu/item_list.c; uses text/ messages and engine/ sprites.
 #include "global.h"
 #include "constants/sprites.h"
+#include "constants/player_forms.h"
 
 void item_menu_update(void) {
     gItemMenuStates[gGameSubState]();
@@ -284,7 +285,7 @@ other:
                 gFieldWork.player_form = 8;
                 break;
             case 19:
-                gFieldWork.player_form = 6;
+                gFieldWork.player_form = PLAYER_FORM_RUBBEROBO;
                 break;
             case 39:
                 gFieldWork.player_form = 7;

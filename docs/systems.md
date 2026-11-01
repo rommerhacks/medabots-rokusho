@@ -73,6 +73,14 @@ a save (`field_continue_load`) and on some returns from a battle (`field_battle_
 battles leave it as it was. The step that triggers a map event is not counted. `setup_random_encounter_enemies` (`src/battle/prebattle.c`) then picks the team from
 `gAreaRandomEncounters`.
 
+Vehicles and player forms: `gFieldWork.player_form` (`include/constants/player_forms.h`) says how Ikki looks and
+moves: normal, the car, swimming, a disguise (the Rubberobo costume is form 6) or a warp effect. The Vehicle
+menu (`vehicle_menu.c`) turns a key item into a form, but `vehicle_check_usable` only allows it when the team
+has all four parts of the matching Medabot equipped (Landmotor for the Mini S. Wheel, Femjet for the Wings of
+Wind, Aquamar for the Periscope; `include/constants/vehicles.h`). In the car Ikki moves a tile in 8 frames and
+`player_walk.c` skips the encounter roll; loading an area that forbids the car (`area_allows_vehicle`) drops it
+in `map_objects.c`.
+
 **Battle** (`src/battle/`). Mode 0 states 6-9. `prebattle.c` runs the intro before and the results after a
 Robattle; `robattle.c` is the turn loop (command ring, part select, Medaforce select, status screen); state 8
 (`action_phase.c`) picks actions, with the AI in `battle_ai.c`; state 9 (`action_script.c`) runs the action

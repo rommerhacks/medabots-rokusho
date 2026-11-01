@@ -16,6 +16,7 @@
 #include "constants/areas.h"
 #include "constants/field_sprites.h"
 #include "constants/sprites.h"
+#include "constants/player_forms.h"
 
 static u32 field_effect_sequence_done(void);
 
@@ -123,7 +124,7 @@ void new_game_init(void) {
     gFieldWork.bg_anim_enabled = 1;
     gFieldWork.player_tile_x = field_pixel_x_to_tile(gFieldWork.player_x);
     gFieldWork.player_tile_y = field_pixel_y_to_tile(gFieldWork.player_y);
-    gFieldWork.player_form = 0;
+    gFieldWork.player_form = PLAYER_FORM_NORMAL;
     gFieldWork.player_visible = 1;
     sprite_entry_init(0x2F, SPRITE_FLAG_ENABLED | SPRITE_FLAG_VISIBLE | SPRITE_PRIORITY(2) | SPRITE_FLAG_PART_PALETTE,
                       3, 0, 1);
@@ -297,8 +298,8 @@ void field_battle_return_fade_in(void) {
 // one; using the current one again turns it off. guess: from the item menu code, not watched at runtime.
 void field_disguise_update(void) {
     if (gFieldWork.player_form == gFieldWork.saved_player_form) {
-        gFieldWork.player_form = 0;
-        gFieldWork.saved_player_form = 0;
+        gFieldWork.player_form = PLAYER_FORM_NORMAL;
+        gFieldWork.saved_player_form = PLAYER_FORM_NORMAL;
     } else
         gFieldWork.saved_player_form = gFieldWork.player_form;
     game_substate_advance();
@@ -350,9 +351,9 @@ static void field_unused_advance_b(void) {
 
 // Vehicle menu entry 0 (switch_game_mode 0x41): toggle player form 1.
 void field_form1_toggle(void) {
-    if (gFieldWork.player_form != 1) {
+    if (gFieldWork.player_form != PLAYER_FORM_CAR) {
         gFieldWork.saved_player_form = gFieldWork.player_form;
-        gFieldWork.player_form = 1;
+        gFieldWork.player_form = PLAYER_FORM_CAR;
     } else
         gFieldWork.player_form = gFieldWork.saved_player_form;
     load_battle_palette_via_dma(0);
@@ -372,9 +373,9 @@ void field_form2_wait(void) {
 
 // Vehicle menu entry 3 (switch_game_mode 0x42): toggle player form 2.
 void field_form2_toggle(void) {
-    if (gFieldWork.player_form != 2) {
+    if (gFieldWork.player_form != PLAYER_FORM_SWIM) {
         gFieldWork.saved_player_form = gFieldWork.player_form;
-        gFieldWork.player_form = 2;
+        gFieldWork.player_form = PLAYER_FORM_SWIM;
     } else
         gFieldWork.player_form = gFieldWork.saved_player_form;
     load_battle_palette_via_dma(0);
@@ -429,7 +430,7 @@ void field_map_warp_load(void) {
 
 void field_map_warp_start_effect(void) {
     if (run_blend_fade_transition(0)) {
-        gFieldWork.player_form = 0xB;
+        gFieldWork.player_form = PLAYER_FORM_MAP_WARP;
         load_battle_palette_via_dma(0);
         field_effect_start(0x12, gFieldWork.player_x, gFieldWork.player_y, 0);
         game_substate_advance();
@@ -465,7 +466,7 @@ static void field_update_unused_stub_2(void) {}
 // Sub-states 40-41 (vehicle menu entry 1, switch_game_mode 0x43): effect sequence 0xE (form 0xC).
 // guess: a teleport, from the effect only.
 void field_teleport_start_effect(void) {
-    gFieldWork.player_form = 0xC;
+    gFieldWork.player_form = PLAYER_FORM_TELEPORT;
     load_battle_palette_via_dma(0);
     field_update_music(9, 0);
     field_effect_start(0xE, gFieldWork.player_x, gFieldWork.player_y, 0);

@@ -6,6 +6,7 @@
 #include "constants/field_sprites.h"
 #include "constants/map_objects.h"
 #include "constants/sprites.h"
+#include "constants/player_forms.h"
 
 void set_sprite_anim_and_store(u8 idx, u8 state, struct MapObject *obj) {
     set_sprite_animation_state(idx, state);
@@ -164,7 +165,7 @@ bool32 check_tile_and_trigger_battle_action(u8 dir) {
     u8 tile;
     u32 ret;
 
-    if (gFieldWork.player_form == 2) {
+    if (gFieldWork.player_form == PLAYER_FORM_SWIM) {
         tile = get_adjacent_tile_value(dir);
         if (tile == 0 || tile == 2) {
             gFieldWork.player_form = gFieldWork.saved_player_form;
@@ -422,7 +423,7 @@ void field_set_player_sprite_visible(u8 on) {
 }
 
 void check_and_update_battlefield_palette(void) {
-    if (gFieldWork.player_form == 1 && area_allows_vehicle(0) == 0) {
+    if (gFieldWork.player_form == PLAYER_FORM_CAR && area_allows_vehicle(0) == 0) {
         gFieldWork.player_form = gFieldWork.saved_player_form;
         load_battle_palette_via_dma(1);
     }

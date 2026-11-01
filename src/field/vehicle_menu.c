@@ -6,6 +6,8 @@
 // with gVehicleIconPalette when usable, else dimmed (gVehicleIconDimPalette, *IconDimTiles).
 #include "global.h"
 #include "constants/sprites.h"
+#include "constants/player_forms.h"
+#include "constants/vehicles.h"
 
 static u32 vehicle_check_usable(s32 vehicle);
 static void vehicle_menu_move_cursor(s32 count);
@@ -430,14 +432,14 @@ static u32 vehicle_check_usable(s32 vehicle) {
 
     switch (vehicle) {
     case VEHICLE_MINI_S_WHEEL:
-        flag = field_item_quantity(0x12);
+        flag = field_item_quantity(ITEM_MINI_S_WHEEL);
         result = VEHICLE_NOT_OWNED;
         if (!flag)
             break;
-        parts = team_has_part_equipped(0x55, 0);
-        parts += team_has_part_equipped(0x55, 1);
-        parts += team_has_part_equipped(0x55, 2);
-        parts += team_has_part_equipped(0x55, 3);
+        parts = team_has_part_equipped(MODEL_LANDMOTOR, 0);
+        parts += team_has_part_equipped(MODEL_LANDMOTOR, 1);
+        parts += team_has_part_equipped(MODEL_LANDMOTOR, 2);
+        parts += team_has_part_equipped(MODEL_LANDMOTOR, 3);
         result = VEHICLE_BOT_INCOMPLETE;
         if (parts != 4)
             break;
@@ -450,11 +452,11 @@ static u32 vehicle_check_usable(s32 vehicle) {
         if (flag)
             break;
         result = VEHICLE_USABLE;
-        if (gFieldWork.player_form == 2)
+        if (gFieldWork.player_form == PLAYER_FORM_SWIM)
             result = VEHICLE_FORM_CONFLICT;
         break;
     case VEHICLE_SILVER_LOCKET:
-        flag = field_item_quantity(0x18);
+        flag = field_item_quantity(ITEM_SILVER_LOCKET);
         result = VEHICLE_NOT_OWNED;
         if (!flag)
             break;
@@ -463,18 +465,18 @@ static u32 vehicle_check_usable(s32 vehicle) {
         if (flag)
             break;
         result = VEHICLE_USABLE;
-        if (gFieldWork.player_form == 1 || gFieldWork.player_form == 2)
+        if (gFieldWork.player_form == PLAYER_FORM_CAR || gFieldWork.player_form == PLAYER_FORM_SWIM)
             result = VEHICLE_FORM_CONFLICT;
         break;
     case VEHICLE_WINGS_OF_WIND:
-        flag = field_item_quantity(0x19);
+        flag = field_item_quantity(ITEM_WINGS_OF_WIND);
         result = VEHICLE_NOT_OWNED;
         if (!flag)
             break;
-        parts = team_has_part_equipped(0xB, 0);
-        parts += team_has_part_equipped(0xB, 1);
-        parts += team_has_part_equipped(0xB, 2);
-        parts += team_has_part_equipped(0xB, 3);
+        parts = team_has_part_equipped(MODEL_FEMJET, 0);
+        parts += team_has_part_equipped(MODEL_FEMJET, 1);
+        parts += team_has_part_equipped(MODEL_FEMJET, 2);
+        parts += team_has_part_equipped(MODEL_FEMJET, 3);
         result = VEHICLE_BOT_INCOMPLETE;
         if (parts != 4)
             break;
@@ -489,18 +491,18 @@ static u32 vehicle_check_usable(s32 vehicle) {
         if (flag)
             break;
         result = VEHICLE_USABLE;
-        if (gFieldWork.player_form == 1 || gFieldWork.player_form == 2)
+        if (gFieldWork.player_form == PLAYER_FORM_CAR || gFieldWork.player_form == PLAYER_FORM_SWIM)
             result = VEHICLE_FORM_CONFLICT;
         break;
     case VEHICLE_PERISCOPE:
-        flag = field_item_quantity(0x26);
+        flag = field_item_quantity(ITEM_PERISCOPE);
         result = VEHICLE_NOT_OWNED;
         if (!flag)
             break;
-        parts = team_has_part_equipped(0x6B, 0);
-        parts += team_has_part_equipped(0x6B, 1);
-        parts += team_has_part_equipped(0x6B, 2);
-        parts += team_has_part_equipped(0x6B, 3);
+        parts = team_has_part_equipped(MODEL_AQUAMAR, 0);
+        parts += team_has_part_equipped(MODEL_AQUAMAR, 1);
+        parts += team_has_part_equipped(MODEL_AQUAMAR, 2);
+        parts += team_has_part_equipped(MODEL_AQUAMAR, 3);
         result = VEHICLE_BOT_INCOMPLETE;
         if (parts != 4)
             break;
