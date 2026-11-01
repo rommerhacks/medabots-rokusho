@@ -13,7 +13,7 @@ static inline u32 sub1(u32 x) {
 // Adds one to the bot's per-skill-type use counter (skillUseCount) for its chosen action: a part (action 1-3) or
 // one of the three Medal skills (4-6, available from Medal level 10 / 30 / 60).
 void count_bot_skill_use(u32 rec) {
-    u8 k;
+    u8 skill_type;
     struct BattleBot *base;
     struct BattleBot *bot;
     u32 off;
@@ -28,7 +28,7 @@ void count_bot_skill_use(u32 rec) {
     if (bot->chosenAction <= 3) {
         // FAKEMATCH: bot->parts[chosenAction - 1].data[2] (the skill type) written out: the struct form folds
         // the 0x4A offset differently and does not match
-        k = *(u8 *)(sub1(bot->chosenAction) * 24 + off + (u32)base + 0x4A);
+        skill_type = *(u8 *)(sub1(bot->chosenAction) * 24 + off + (u32)base + 0x4A);
     } else {
         switch (bot->chosenAction - 4) {
         case 0:
@@ -36,28 +36,28 @@ void count_bot_skill_use(u32 rec) {
                 return;
             copy_bytes_short(&gMedalMedaforceIds[bot->medal.graphicId * 3], &gGameWork.partAbility, 3);
             copy_bytes_short(&gMedaforceRecords[(&gGameWork.partAbility)[0] * 6], gGameWork.medalGfxRecord, 6);
-            k = gGameWork.medalGfxRecord[1];
+            skill_type = gGameWork.medalGfxRecord[1];
             break;
         case 1:
             if (bot->medal.level <= 29)
                 return;
             copy_bytes_short(&gMedalMedaforceIds[bot->medal.graphicId * 3], &gGameWork.partAbility, 3);
             copy_bytes_short(&gMedaforceRecords[(&gGameWork.partAbility)[1] * 6], gGameWork.medalGfxRecord, 6);
-            k = gGameWork.medalGfxRecord[1];
+            skill_type = gGameWork.medalGfxRecord[1];
             break;
         case 2:
             if (bot->medal.level <= 59)
                 return;
             copy_bytes_short(&gMedalMedaforceIds[bot->medal.graphicId * 3], &gGameWork.partAbility, 3);
             copy_bytes_short(&gMedaforceRecords[(&gGameWork.partAbility)[2] * 6], gGameWork.medalGfxRecord, 6);
-            k = gGameWork.medalGfxRecord[1];
+            skill_type = gGameWork.medalGfxRecord[1];
             break;
         default:
             return;
         }
     }
     {
-        u32 counter_addr = k + off;
+        u32 counter_addr = skill_type + off;
         // FAKEMATCH: pins the skillUseCount base address to r0
         register u32 counts_base asm("r0") = (u32)base->skillUseCount;
         counter_addr += counts_base;
