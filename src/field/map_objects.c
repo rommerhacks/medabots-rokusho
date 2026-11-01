@@ -579,6 +579,8 @@ void follower_update_screen_pos(void) {
     gSpriteEntries[90].y = gSpriteEntries[48].y - 5;
 }
 
+// Each event id owns one nibble of gEventFlags[id >> 1] (even ids the high nibble, odd ids the low one): the top
+// bit is the event flag, the other three a counter (0-7) that map scripts branch on (opcode 0x2F).
 void event_flag_clear(u16 id) {
     if (!(id & 1)) {
         u8 *flags = gEventFlags;

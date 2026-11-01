@@ -57,6 +57,14 @@ signs (`MAP_OBJ_EXAMINE`) are talked to without turning, so a gate intercom is u
 gate; door and scene tiles (`MAP_OBJ_STEP`) run their event when Ikki steps on them. The low 12 bits are the
 event id, which is both the map script to run and the event flag that hides the object once set.
 
+Event flags and counters: every event id has a nibble in `gEventFlags` (`map_objects.c`): one flag bit and a
+3-bit counter. A script usually starts with `map_script_cmd_switch_event_counter` (opcode 0x2F), so its own
+counter picks what the person says; story progress is other scripts setting that counter
+(`map_script_cmd_set_event_counter`, 0x17, or `..._increment_event_counter`, 0x18). Example: the man waiting
+by the dog statue at the train station (event 0x439) repeats his line until the Select Corps HQ scene with the
+ex-Rubberobo kid sets his counter to 1; then talking to him brings his girlfriend, and after that Dr. Armond
+challenges Ikki.
+
 Random encounters: at the end of each step `player_walk.c` calls `check_random_encounter`
 (`src/engine/common.c`). An area with a non-zero `gAreaBattleSettings` rate counts steps in
 `gFieldWork.encounter_steps`; from step 17 each step has a 1-in-32 chance, and step 32 always starts a battle. The
