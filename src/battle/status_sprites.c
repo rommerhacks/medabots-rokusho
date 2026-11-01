@@ -46,7 +46,7 @@ void battle_bot_status_sprite_update(u32 rec) {
 static void battle_update_status_effect_sprite(u32 rec) {
     if (gBattleBots[rec].statusType == 0)
         return;
-    if ((u8)(gBattleBots[rec].statusType - 0xD) <= 1) {
+    if ((u8)(gBattleBots[rec].statusType - SKILL_BUG) <= 1) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 &&
             gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == gBattleBots[rec].statusType)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[6], rec * 3 + 0x47);
@@ -54,7 +54,7 @@ static void battle_update_status_effect_sprite(u32 rec) {
             battle_sprite_anim_init(gBattleSpriteAnimScripts[6], rec * 3 + 0x47);
         copy_bytes_short(gStatusSpriteParams[0], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
-    } else if ((u8)(gBattleBots[rec].statusType - 0x11) <= 1 || gBattleBots[rec].statusType == 0x29) {
+    } else if ((u8)(gBattleBots[rec].statusType - SKILL_WAVE) <= 1 || gBattleBots[rec].statusType == SKILL_DRAIN_CHRG) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 &&
             gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == gBattleBots[rec].statusType)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[8], rec * 3 + 0x47);
@@ -62,57 +62,57 @@ static void battle_update_status_effect_sprite(u32 rec) {
             battle_sprite_anim_init(gBattleSpriteAnimScripts[8], rec * 3 + 0x47);
         copy_bytes_short(gStatusSpriteParams[3], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
-    } else if ((u8)(gBattleBots[rec].statusType - 0x13) <= 1) {
+    } else if ((u8)(gBattleBots[rec].statusType - SKILL_FIRE) <= 1) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 &&
             gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == gBattleBots[rec].statusType) {
-            if (gBattleBots[rec].statusType == 0x13)
+            if (gBattleBots[rec].statusType == SKILL_FIRE)
                 process_sprite_anim_commands(gBattleSpriteAnimScripts[9], rec * 3 + 0x47);
             else
                 process_sprite_anim_commands(gBattleSpriteAnimScripts[10], rec * 3 + 0x47);
         } else {
-            if (gBattleBots[rec].statusType == 0x13)
+            if (gBattleBots[rec].statusType == SKILL_FIRE)
                 battle_sprite_anim_init(gBattleSpriteAnimScripts[9], rec * 3 + 0x47);
             else
                 battle_sprite_anim_init(gBattleSpriteAnimScripts[10], rec * 3 + 0x47);
         }
-        if (gBattleBots[rec].statusType == 0x13)
+        if (gBattleBots[rec].statusType == SKILL_FIRE)
             copy_bytes_short(gStatusSpriteParams[4], &gGameWork.partAbility, 4);
         else
             copy_bytes_short(gStatusSpriteParams[5], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order - 2);
-    } else if ((u8)(gBattleBots[rec].statusType - 0xF) <= 1) {
+    } else if ((u8)(gBattleBots[rec].statusType - SKILL_THUNDER) <= 1) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 &&
             gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == gBattleBots[rec].statusType)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[7], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[7], rec * 3 + 0x47);
-        if (gBattleBots[rec].statusType == 0xF)
+        if (gBattleBots[rec].statusType == SKILL_THUNDER)
             copy_bytes_short(gStatusSpriteParams[1], &gGameWork.partAbility, 4);
         else
             copy_bytes_short(gStatusSpriteParams[2], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
-    } else if (gBattleBots[rec].statusType == 0x2B) {
+    } else if (gBattleBots[rec].statusType == SKILL_IMPAIR) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2B)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[16], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[16], rec * 3 + 0x47);
         copy_bytes_short(gStatusSpriteParams[12], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
-    } else if (gBattleBots[rec].statusType == 0x2C) {
+    } else if (gBattleBots[rec].statusType == SKILL_CONFUSION) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2C)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[17], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[17], rec * 3 + 0x47);
         copy_bytes_short(gStatusSpriteParams[13], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
-    } else if (gBattleBots[rec].statusType == 0x2E) {
+    } else if (gBattleBots[rec].statusType == SKILL_NO_ESCAPE) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2E)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[18], rec * 3 + 0x47);
         else
             battle_sprite_anim_init(gBattleSpriteAnimScripts[18], rec * 3 + 0x47);
         copy_bytes_short(gStatusSpriteParams[14], &gGameWork.partAbility, 4);
         battle_setup_part_sprite(rec, 1, 1, gSpriteEntries[BOT_SPRITE_LEGS(rec)].order + 4);
-    } else if (gBattleBots[rec].statusType == 0x2F) {
+    } else if (gBattleBots[rec].statusType == SKILL_NO_DEFENSE) {
         if (gSpriteEntries[rec * 3 + 0x47].flags != 0 && gSpriteEntries[rec * 3 + 0x47].work[STATUS_SPR_ID] == 0x2F)
             process_sprite_anim_commands(gBattleSpriteAnimScripts[19], rec * 3 + 0x47);
         else

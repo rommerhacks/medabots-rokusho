@@ -21,7 +21,7 @@ void battle_bots_move_all(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].teamState && (u8)(gBattleBots[i].statusType - 0xF) > 1) {
+        if (gBattleBots[i].teamState && (u8)(gBattleBots[i].statusType - SKILL_THUNDER) > 1) {
             bot_calc_move_delay(i);
             battle_bot_move(i);
             bot_update_walk_anim(i);
@@ -34,7 +34,7 @@ void battle_bots_update_walk_anims(void) {
     u32 i;
 
     for (i = 0; i <= 5; i++) {
-        if (gBattleBots[i].teamState && (u8)(gBattleBots[i].statusType - 0xF) > 1) {
+        if (gBattleBots[i].teamState && (u8)(gBattleBots[i].statusType - SKILL_THUNDER) > 1) {
             bot_update_walk_anim(i);
         }
     }
@@ -105,7 +105,7 @@ void bot_move_delay_add_terrain(u32 rec) {
 // + the status amount while slowed by Wave / Hold (effect B 0x11 / 0x12) or Bind (0x29).
 static void bot_move_delay_add_slow_status(u32 rec) {
     if (gBattleBots[rec].statusType != 0 &&
-        ((u8)(gBattleBots[rec].statusType - 0x11) <= 1 || gBattleBots[rec].statusType == 0x29))
+        ((u8)(gBattleBots[rec].statusType - SKILL_WAVE) <= 1 || gBattleBots[rec].statusType == SKILL_DRAIN_CHRG))
         bot_move_delay_add(rec, gBattleBots[rec].statusAmount);
 }
 

@@ -86,7 +86,7 @@ void action_phase_resolve_command(void) {
         gGameSubState = 0x20;
         return;
     }
-    if (gBattleBots[gBattleWork.actor].statusType == 0x2B &&
+    if (gBattleBots[gBattleWork.actor].statusType == SKILL_IMPAIR &&
         gBattleBots[gBattleWork.actor].statusPart == gBattleBots[gBattleWork.actor].chosenAction) {
         gBattleWork.messageId = 6;
         gGameSubState = 0x20;

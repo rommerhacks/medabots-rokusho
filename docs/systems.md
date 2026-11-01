@@ -85,6 +85,10 @@ available at this time" (seen at runtime). When TIME runs out, `robattle_judge_t
 knocked-out Medabots, then fewer broken parts, then more action points, else a coin flip: a story Robattle
 (the Screws, the Baron) can be won on time without touching the leader. The Medaforce entry of the command ring opens a list whose first, default entry is "Charge MF"; the
 Medal's learned Medaforces follow it (Rokusho's Spiral Bolt is one UP from the default).
+Statuses: `BattleBot.statusType` holds the `SKILL_*` id that set it (`battle_inflict_status`). A Medabot under
+`SKILL_CONFUSION` gets no command ring: `robattle_bot_ready_for_command` lets it pick its own action. A team of
+three confused Medabots (Turnmonkey + Volume10, the Rubberobo kid) plays out on its own until TIME runs out
+(seen at runtime).
 Targets: `ai_pick_bot_targets` (`battle_ai.c`) gives each action part a target through `gAiTargetPickers[skill]`.
 An attack (`ai_target_attack`) picks at random among the opposing Medabots that still have an intact head or arm
 whose action type equals the attacker's Medal Aim (`MedalData.aimSkillType`), and only falls back to any opponent

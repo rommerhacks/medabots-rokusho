@@ -119,7 +119,7 @@ void interrupt_cross_shake(void) {
 }
 
 void impair_apply(void) {
-    gBattleBots[gBattleWork.target].statusType = 0x2B;
+    gBattleBots[gBattleWork.target].statusType = SKILL_IMPAIR;
     gBattleBots[gBattleWork.target].statusTimer = clamp_1_99(gBattleWork.success);
     gBattleBots[gBattleWork.target].statusAmount = clamp_1_99(gBattleWork.amount);
     switch (gBattleWork.targetPart) {
@@ -230,7 +230,7 @@ void confusion_marks_spawn(void) {
 
 void confusion_apply(void) {
     clear_battle_sprite_slot(0x21, 1);
-    gBattleBots[gBattleWork.target].statusType = 0x2C;
+    gBattleBots[gBattleWork.target].statusType = SKILL_CONFUSION;
     gBattleBots[gBattleWork.target].statusPart = 0;
     gBattleBots[gBattleWork.target].statusTimer = clamp_1_99(gBattleWork.success);
     gBattleBots[gBattleWork.target].statusAmount = clamp_1_99(gBattleWork.amount);
@@ -463,9 +463,9 @@ void no_escape_defense_apply(void) {
     gBattleBots[gBattleWork.target].statusTimer = clamp_1_99(gBattleWork.success);
     gBattleBots[gBattleWork.target].statusAmount = clamp_1_99(gBattleWork.amount);
     if (gBattleBots[gBattleWork.actor].parts[gBattleWork.actorPart].data[1] == 0x2E)
-        gBattleBots[gBattleWork.target].statusType = 0x2E;
+        gBattleBots[gBattleWork.target].statusType = SKILL_NO_ESCAPE;
     else
-        gBattleBots[gBattleWork.target].statusType = 0x2F;
+        gBattleBots[gBattleWork.target].statusType = SKILL_NO_DEFENSE;
     gBattleWork.step++;
 }
 

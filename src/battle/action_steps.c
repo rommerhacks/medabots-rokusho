@@ -740,7 +740,7 @@ void guard_find(void) {
             continue;
         if (gBattleWork.target == base + i)
             continue;
-        if (gBattleBots[base + i].statusType == 0x2F)
+        if (gBattleBots[base + i].statusType == SKILL_NO_DEFENSE)
             continue;
         if (gBattleBots[base + i].parts[gBattleBots[base + i].lastAction - 1].armor == 0)
             continue;

@@ -369,7 +369,7 @@ void calc_battle_action_speed(u32 rec, u32 part) {
 }
 
 void apply_battle_bot_damage_reduction(u32 rec) {
-    if ((u8)(gBattleBots[rec].statusType - 0xD) <= 1)
+    if ((u8)(gBattleBots[rec].statusType - SKILL_BUG) <= 1)
         subtract_s16_floored(&gBattleWork.success, gBattleBots[rec].statusAmount);
 }
 

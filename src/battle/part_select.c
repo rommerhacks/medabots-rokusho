@@ -140,7 +140,7 @@ void part_select_draw_skill_type(void) {
         if (k <= 3) {
             if (gBattleBots[gBattleWork.commandBot].parts[k - 1].armor == 0)
                 copy_bytes_short(gBattleMenuTexts[0], gGameWork.textBuf, 14);
-            else if (gBattleBots[gBattleWork.commandBot].statusType == 0x2B &&
+            else if (gBattleBots[gBattleWork.commandBot].statusType == SKILL_IMPAIR &&
                      k == gBattleBots[gBattleWork.commandBot].statusPart)
                 copy_bytes_short(gBattleMenuTexts[1], gGameWork.textBuf, 14);
             else if (part_skill_is_passive(gBattleWork.commandBot, gBattleWork.partCursor - 1))
@@ -168,7 +168,7 @@ void part_select_blink_status(void) {
             if (gBattleBots[gBattleWork.commandBot].parts[k - 1].armor == 0) {
                 copy_bytes_short(gBattleMenuTexts[0], gGameWork.textBuf, 14);
                 show = 1;
-            } else if (gBattleBots[gBattleWork.commandBot].statusType == 0x2B &&
+            } else if (gBattleBots[gBattleWork.commandBot].statusType == SKILL_IMPAIR &&
                        k == gBattleBots[gBattleWork.commandBot].statusPart) {
                 copy_bytes_short(gBattleMenuTexts[1], gGameWork.textBuf, 14);
                 show = 1;

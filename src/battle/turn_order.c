@@ -99,7 +99,7 @@ void battle_set_actor_side(u32 rec) {
 }
 
 void select_next_bot_and_action(u32 rec) {
-    if (gBattleBots[rec].statusType == 0x2C) {
+    if (gBattleBots[rec].statusType == SKILL_CONFUSION) {
         if (gBattleBots[rec].parts[gBattleBots[rec].chosenAction - 1].data[2] <= 3 ||
             gBattleBots[rec].parts[gBattleBots[rec].chosenAction - 1].data[1] == 0x34) {
             gBattleBots[rec].targetBot = find_next_active_bot(rec) + 1;
@@ -133,19 +133,22 @@ void determine_battle_part_action_priority(void) {
         gBattleWork.partBlockReason[0] = 4;
     if (part_skill_is_passive(gBattleWork.commandBot, 0))
         gBattleWork.partBlockReason[0] = 3;
-    if (gBattleBots[gBattleWork.commandBot].statusType == 0x2B && gBattleBots[gBattleWork.commandBot].statusPart == 1)
+    if (gBattleBots[gBattleWork.commandBot].statusType == SKILL_IMPAIR &&
+        gBattleBots[gBattleWork.commandBot].statusPart == 1)
         gBattleWork.partBlockReason[0] = 2;
 
     if (part_skill_is_passive(gBattleWork.commandBot, 1))
         gBattleWork.partBlockReason[1] = 3;
-    if (gBattleBots[gBattleWork.commandBot].statusType == 0x2B && gBattleBots[gBattleWork.commandBot].statusPart == 2)
+    if (gBattleBots[gBattleWork.commandBot].statusType == SKILL_IMPAIR &&
+        gBattleBots[gBattleWork.commandBot].statusPart == 2)
         gBattleWork.partBlockReason[1] = 2;
     if (gBattleBots[gBattleWork.commandBot].parts[1].armor == 0)
         gBattleWork.partBlockReason[1] = 1;
 
     if (part_skill_is_passive(gBattleWork.commandBot, 2))
         gBattleWork.partBlockReason[2] = 3;
-    if (gBattleBots[gBattleWork.commandBot].statusType == 0x2B && gBattleBots[gBattleWork.commandBot].statusPart == 3)
+    if (gBattleBots[gBattleWork.commandBot].statusType == SKILL_IMPAIR &&
+        gBattleBots[gBattleWork.commandBot].statusPart == 3)
         gBattleWork.partBlockReason[2] = 2;
     if (gBattleBots[gBattleWork.commandBot].parts[2].armor == 0)
         gBattleWork.partBlockReason[2] = 1;

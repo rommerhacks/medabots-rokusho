@@ -1290,36 +1290,36 @@ void medaforce_cancel_status_apply(void) {
         switch (gBattleWork.scratch) {
         case 0:
             gBattleBots[gBattleWork.targetSideFirst + i].statusGuardFlags |= 1;
-            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == 0xD)
+            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == SKILL_BUG)
                 goto call_0xD;
-            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != 0xE)
+            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != SKILL_VIRUS)
                 break;
         call_0xD:
             bot_clear_effects(gBattleWork.targetSideFirst + i, 1);
             break;
         case 1:
             gBattleBots[gBattleWork.targetSideFirst + i].statusGuardFlags |= 8;
-            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == 0xF)
+            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == SKILL_THUNDER)
                 goto call_0xF;
-            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != 0x10)
+            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != SKILL_FREEZE)
                 break;
         call_0xF:
             bot_clear_effects(gBattleWork.targetSideFirst + i, 1);
             break;
         case 2:
             gBattleBots[gBattleWork.targetSideFirst + i].statusGuardFlags |= 2;
-            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == 0x11)
+            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == SKILL_WAVE)
                 goto call_0x11;
-            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != 0x12)
+            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != SKILL_HOLD)
                 break;
         call_0x11:
             bot_clear_effects(gBattleWork.targetSideFirst + i, 1);
             break;
         case 3:
             gBattleBots[gBattleWork.targetSideFirst + i].statusGuardFlags |= 4;
-            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == 0x13)
+            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType == SKILL_FIRE)
                 goto call_0x13;
-            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != 0x14)
+            if (gBattleBots[gBattleWork.targetSideFirst + i].statusType != SKILL_MELT)
                 break;
         call_0x13:
             bot_clear_effects(gBattleWork.targetSideFirst + i, 1);
@@ -2339,25 +2339,25 @@ void medaforce_anti_terrain_apply_status(void) {
             battle_inflict_status(gBattleWork.targetSideFirst + i, 0x10, gBattleWork.success, gBattleWork.amount);
             break;
         case 4:
-            gBattleBots[gBattleWork.targetSideFirst + i].statusType = 0x2B;
+            gBattleBots[gBattleWork.targetSideFirst + i].statusType = SKILL_IMPAIR;
             gBattleBots[gBattleWork.targetSideFirst + i].statusTimer = clamp_1_99(gBattleWork.success);
             gBattleBots[gBattleWork.targetSideFirst + i].statusAmount = clamp_1_99(gBattleWork.amount);
             gBattleBots[gBattleWork.targetSideFirst + i].statusPart = 1;
             break;
         case 5:
-            gBattleBots[gBattleWork.targetSideFirst + i].statusType = 0x2C;
+            gBattleBots[gBattleWork.targetSideFirst + i].statusType = SKILL_CONFUSION;
             gBattleBots[gBattleWork.targetSideFirst + i].statusPart = 0;
             gBattleBots[gBattleWork.targetSideFirst + i].statusTimer = clamp_1_99(gBattleWork.success);
             gBattleBots[gBattleWork.targetSideFirst + i].statusAmount = clamp_1_99(gBattleWork.amount);
             break;
         case 6:
-            gBattleBots[gBattleWork.targetSideFirst + i].statusType = 0x2E;
+            gBattleBots[gBattleWork.targetSideFirst + i].statusType = SKILL_NO_ESCAPE;
             gBattleBots[gBattleWork.targetSideFirst + i].statusPart = 0;
             gBattleBots[gBattleWork.targetSideFirst + i].statusTimer = clamp_1_99(gBattleWork.success);
             gBattleBots[gBattleWork.targetSideFirst + i].statusAmount = clamp_1_99(gBattleWork.amount);
             break;
         case 7:
-            gBattleBots[gBattleWork.targetSideFirst + i].statusType = 0x2F;
+            gBattleBots[gBattleWork.targetSideFirst + i].statusType = SKILL_NO_DEFENSE;
             gBattleBots[gBattleWork.targetSideFirst + i].statusPart = 0;
             gBattleBots[gBattleWork.targetSideFirst + i].statusTimer = clamp_1_99(gBattleWork.success);
             gBattleBots[gBattleWork.targetSideFirst + i].statusAmount = clamp_1_99(gBattleWork.amount);
@@ -3516,7 +3516,7 @@ void medaforce_useless_apply_impair(void) {
     for (i = 0; i <= 2; i++) {
         if (gBattleWork.partBreaks[i] == 0)
             continue;
-        gBattleBots[gBattleWork.targetSideFirst + i].statusType = 0x2B;
+        gBattleBots[gBattleWork.targetSideFirst + i].statusType = SKILL_IMPAIR;
         gBattleBots[gBattleWork.targetSideFirst + i].statusTimer = clamp_1_99(gBattleWork.success);
         gBattleBots[gBattleWork.targetSideFirst + i].statusAmount = clamp_1_99(gBattleWork.amount);
         switch (gBattleWork.partBreaks[i] & 0x7F) {

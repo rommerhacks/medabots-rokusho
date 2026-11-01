@@ -473,7 +473,7 @@ void drain_charge_hourglass_burst(void) {
 
 // Effect B 0x29 on the target (Bind: slower CRG/RAD) and effect A 0x29 on the user (Time).
 void drain_charge_apply(void) {
-    gBattleBots[gBattleWork.target].statusType = 0x29;
+    gBattleBots[gBattleWork.target].statusType = SKILL_DRAIN_CHRG;
     gBattleBots[gBattleWork.target].statusPart = 0;
     gBattleBots[gBattleWork.target].statusTimer = clamp_1_99(gBattleWork.success);
     gBattleBots[gBattleWork.target].statusAmount = clamp_1_99(gBattleWork.amount);

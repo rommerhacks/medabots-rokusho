@@ -890,11 +890,12 @@ void robattle_bot_ready_for_command(void) {
             process_bot_battle_turn(gBattleWork.actor);
             gGameSubState = 0x45;
         } else {
-            if (gBattleBots[gBattleWork.actor].statusType == 0x2C)
+            if (gBattleBots[gBattleWork.actor].statusType == SKILL_CONFUSION)
                 process_bot_battle_turn(gBattleWork.actor);
             gGameSubState = 0xA0;
         }
-    } else if (gBattleBots[gBattleWork.actor].statusType == 0x2C) {
+    } else if (gBattleBots[gBattleWork.actor].statusType == SKILL_CONFUSION) {
+        // a confused player Medabot gets no command ring: it acts on its own until the status wears off
         process_bot_battle_turn(gBattleWork.actor);
         count_bot_skill_use(gBattleWork.actor);
         if (gGameWork.skipBotSetup != 1)

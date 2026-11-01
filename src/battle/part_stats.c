@@ -80,7 +80,7 @@ void battle_tick_status_effect(u32 rec) {
         return;
     }
     gBattleBots[rec].statusTimer = frames;
-    if ((u8)(gBattleBots[rec].statusType - 0x13) > 1)
+    if ((u8)(gBattleBots[rec].statusType - SKILL_FIRE) > 1)
         return;
     gBattleWork.effectAmountLeft = gBattleBots[rec].statusAmount;
     gBattleWork.effectAmountTotal = 0;

@@ -38,11 +38,11 @@ u32 bot_has_status_guard(u32 rec, u32 skill) {
         if (gBattleBots[rec].statusGuardFlags & 8)
             return 1;
         return 0;
-    } else if (skill - 0x11 <= 1) {
+    } else if (skill - SKILL_WAVE <= 1) {
         if (gBattleBots[rec].statusGuardFlags & 2)
             return 1;
         return 0;
-    } else if (skill - 0x13 <= 1) {
+    } else if (skill - SKILL_FIRE <= 1) {
         if (gBattleBots[rec].statusGuardFlags & 4)
             return 1;
         return 0;
@@ -70,22 +70,22 @@ u32 clamp_1_99(u32 value) {
 }
 
 void battle_inflict_status(u32 rec, u32 skill, s32 duration, u32 power) {
-    if (skill - 0xD <= 1) {
+    if (skill - SKILL_BUG <= 1) {
         gBattleBots[rec].statusType = skill;
         gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
         gBattleBots[rec].statusTimer = clamp_1_99(duration);
         gBattleBots[rec].statusAmount = clamp_1_99(power * 2);
-    } else if (skill - 0xF <= 1) {
+    } else if (skill - SKILL_THUNDER <= 1) {
         gBattleBots[rec].statusType = skill;
         gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
         gBattleBots[rec].statusTimer = clamp_1_99(power >> 3);
         gBattleBots[rec].statusAmount = 0;
-    } else if (skill - 0x11 <= 1) {
+    } else if (skill - SKILL_WAVE <= 1) {
         gBattleBots[rec].statusType = skill;
         gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
         gBattleBots[rec].statusTimer = clamp_1_99(duration);
         gBattleBots[rec].statusAmount = clamp_1_99(power >> 2);
-    } else if (skill - 0x13 <= 1) {
+    } else if (skill - SKILL_FIRE <= 1) {
         gBattleBots[rec].statusType = skill;
         gBattleBots[rec].statusPart = gBattleWork.targetPart + 1;
         gBattleBots[rec].statusTimer = clamp_1_99(duration);

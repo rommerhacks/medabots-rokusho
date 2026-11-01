@@ -853,8 +853,9 @@ struct BattleBot {
     u8 buffTimer;
     u8 buffAmount;
     u8 buffNumber; // number shown by the Robattle handler 0x70 (robattle_effect_a_number_init)
-    u8 statusType; // effect B type (0x13/0x14: armor changes each tick, battle_tick_status_effect; 0x2C checked by
-                   // robattle_bot_ready_for_command / process_bot_battle_turn, 0x2B by part_blocked_by_effect)
+    u8 statusType; // effect B type = the SKILL_* id that set it (Fire / Melt: armor changes each tick,
+                   // battle_tick_status_effect; SKILL_CONFUSION checked by robattle_bot_ready_for_command /
+                   // process_bot_battle_turn, SKILL_IMPAIR by part_blocked_by_effect)
     u8 statusPart; // effect B part (compared by part_blocked_by_effect; find_burnable_part starts there)
     u8 statusTimer;
     u8 statusAmount;

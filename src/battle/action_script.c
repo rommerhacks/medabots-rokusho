@@ -170,9 +170,9 @@ void script_op_guard_check(void) {
 void script_op_set_target_no_dodge_flags(void) {
     u32 type;
 
-    if (gBattleBots[gBattleWork.target].statusType == 0x2E)
+    if (gBattleBots[gBattleWork.target].statusType == SKILL_NO_ESCAPE)
         gBattleBots[gBattleWork.target].hitFlags |= 4;
-    if (gBattleBots[gBattleWork.target].statusType == 0x2F)
+    if (gBattleBots[gBattleWork.target].statusType == SKILL_NO_DEFENSE)
         gBattleBots[gBattleWork.target].hitFlags |= 8;
     type = gBattleBots[gBattleWork.target].statusType;
     if (type == 0xF)

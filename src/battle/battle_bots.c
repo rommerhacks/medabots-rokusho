@@ -159,8 +159,10 @@ void battle_process_bot_actions_for_side(u32 side) {
     }
 }
 
+// Picks a bot's next action: a confused one (Confusion) always gets an AI pick (select_bot_battle_action), others
+// follow their Medal's rotation (battle_dispatch_action_by_type) and fall back to the AI.
 void process_bot_battle_turn(u32 rec) {
-    if (gBattleBots[rec].statusType == 0x2C)
+    if (gBattleBots[rec].statusType == SKILL_CONFUSION)
         select_bot_battle_action(rec);
     else if (battle_dispatch_action_by_type(rec))
         select_bot_battle_action(rec);
@@ -226,7 +228,7 @@ void select_bot_battle_action(u32 rec) {
 
 // Effect B type 0x2B disables the part in statusPart.
 u32 part_blocked_by_effect(u32 rec, u32 part) {
-    if (gBattleBots[rec].statusType == 0x2B && gBattleBots[rec].statusPart == part)
+    if (gBattleBots[rec].statusType == SKILL_IMPAIR && gBattleBots[rec].statusPart == part)
         return 1;
     return 0;
 }
