@@ -3,6 +3,7 @@
 // (0x20 - delay) / 16 px between its home line and the front line. Called from battle/robattle.
 
 #include "global.h"
+#include "constants/battlefields.h"
 #include "constants/sprites.h"
 
 static void bot_calc_move_delay(u32 rec);
@@ -95,7 +96,8 @@ static void bot_move_delay_add_broken_legs(u32 rec) {
 
 // + the battlefield's delay for the leg type (gTerrainMoveDelays).
 void bot_move_delay_add_terrain(u32 rec) {
-    copy_bytes_short(&gTerrainMoveDelays[gBattleWork.battlefield + (gBattleBots[rec].parts[3].data[1] - 100) * 11],
+    copy_bytes_short(&gTerrainMoveDelays[gBattleWork.battlefield +
+                                         (gBattleBots[rec].parts[3].data[1] - SKILL_LEGS_AIR) * NUM_BATTLEFIELDS],
                      &gGameWork.partAbility, 1);
     bot_move_delay_add(rec, gGameWork.partAbility);
 }

@@ -92,6 +92,13 @@ when none has one. So a Medabot can draw attacks or avoid them through the actio
 Avikings aim at Berserk parts, and a team whose leader carries none sends their Sacrifices to the allies that do
 (seen at runtime). A single-target Medaforce (Spiral Bolt) clears the target and hits the enemy standing nearest
 the centre when it runs (`battle_target_nearest_enemy`, `combat_helpers.c`), not the Aim target.
+A teammate that used Defence / Full Block / Half Block stays ready to guard: it jumps in front of an attack on an
+ally and takes it on its guard part for as long as that part is intact (`guard_find`, `action_steps.c`); Erika's
+two Pretty Primes shield her leader Brass this way, so attacks aimed at Brass only wear down their shields (seen at
+runtime). Terrain: each frame a Medabot's move delay adds `gTerrainMoveDelays[battlefield + (legs skill -
+SKILL_LEGS_AIR) * NUM_BATTLEFIELDS]` (`bot_move_delay_add_terrain`, `bot_movement.c`). On the Woods
+(`BATTLEFIELD_WOODS`, Erika's and Nae's Robattles) two-legged legs add 0, float 6, air / multi-legged / tank / sea
+12 and wheels 18, which is why the guide asks for two-legged legs there.
 
 **Link** (`src/link/`). The serial transfer (`serial.c`, also used by the main loop every frame), link
 Robattles (mode 0 state 10) and the mode-2 link menu, trade and Medal handshake screens.
