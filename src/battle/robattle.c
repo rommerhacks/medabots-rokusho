@@ -489,9 +489,9 @@ void robattle_fade_to_white(void) {
 void robattle_backup_screen(void) {
     CpuFastSet((void *)(BG_VRAM + 0x2800), (void *)gBgTileBackup, 0x200);
     CpuFastSet((void *)(BG_VRAM + 0xC800), (void *)gBgTileBackupHigh, 0x200);
-    CpuFastSet((void *)(BG_VRAM + 0xD000), (void *)0x02021800, 0x200);
-    CpuFastSet((void *)(BG_VRAM + 0xD800), (void *)0x02022000, 0x200);
-    CpuFastSet(gSpriteEntries, (void *)0x02028000, 0x800);
+    CpuFastSet((void *)BG_SCREEN_ADDR(26), (void *)BATTLE_SCREEN_BACKUP_ADDR(0), 0x200);
+    CpuFastSet((void *)BG_SCREEN_ADDR(27), (void *)BATTLE_SCREEN_BACKUP_ADDR(1), 0x200);
+    CpuFastSet(gSpriteEntries, (void *)SPRITE_ENTRIES_BACKUP_ADDR, 0x800);
     set_blend_effect_mode(5, 0x3F, 0x20);
     gVBlankCallback = empty_callback;
     gGameSubState++;
@@ -548,12 +548,12 @@ void robattle_restore_screen(void) {
         gGameWork.setupStep++;
         break;
     case 4:
-        CpuFastSet((void *)0x02021800, (void *)(BG_VRAM + 0xD000), 0x200);
-        CpuFastSet((void *)0x02022000, (void *)(BG_VRAM + 0xD800), 0x200);
+        CpuFastSet((void *)BATTLE_SCREEN_BACKUP_ADDR(0), (void *)BG_SCREEN_ADDR(26), 0x200);
+        CpuFastSet((void *)BATTLE_SCREEN_BACKUP_ADDR(1), (void *)BG_SCREEN_ADDR(27), 0x200);
         gGameWork.setupStep++;
         break;
     case 5:
-        CpuFastSet((void *)0x02028000, gSpriteEntries, 0x800);
+        CpuFastSet((void *)SPRITE_ENTRIES_BACKUP_ADDR, gSpriteEntries, 0x800);
         gVBlankCallback = battle_vblank_update_bg;
         gGameSubState++;
         gGameWork.setupStep = 0;

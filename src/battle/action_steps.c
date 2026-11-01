@@ -969,12 +969,12 @@ void closeup_enter_save_vram(void) {
     case 0:
         CpuFastSet((void *)(BG_VRAM + 0x2800), (void *)gBgTileBackup, 0x200);
         CpuFastSet((void *)(BG_VRAM + 0xC800), (void *)gBgTileBackupHigh, 0x200);
-        CpuFastSet((void *)(BG_VRAM + 0xD000), (void *)0x02021800, 0x200);
-        CpuFastSet((void *)(BG_VRAM + 0xD800), (void *)0x02022000, 0x200);
+        CpuFastSet((void *)BG_SCREEN_ADDR(26), (void *)BATTLE_SCREEN_BACKUP_ADDR(0), 0x200);
+        CpuFastSet((void *)BG_SCREEN_ADDR(27), (void *)BATTLE_SCREEN_BACKUP_ADDR(1), 0x200);
         gGameWork.setupStep++;
         break;
     case 1:
-        CpuFastSet(gSpriteEntries, (void *)0x02028000, 0x800);
+        CpuFastSet(gSpriteEntries, (void *)SPRITE_ENTRIES_BACKUP_ADDR, 0x800);
         gGameWork.setupStep++;
         break;
     case 2:
@@ -1863,12 +1863,12 @@ void closeup_exit_reload(void) {
         break;
     case 2:
         CpuFastSet((void *)gBgTileBackupHigh, (void *)(BG_VRAM + 0xC800), 0x200);
-        CpuFastSet((void *)0x02021800, (void *)(BG_VRAM + 0xD000), 0x200);
-        CpuFastSet((void *)0x02022000, (void *)(BG_VRAM + 0xD800), 0x200);
+        CpuFastSet((void *)BATTLE_SCREEN_BACKUP_ADDR(0), (void *)BG_SCREEN_ADDR(26), 0x200);
+        CpuFastSet((void *)BATTLE_SCREEN_BACKUP_ADDR(1), (void *)BG_SCREEN_ADDR(27), 0x200);
         gGameWork.setupStep++;
         break;
     case 3:
-        CpuFastSet((void *)0x02028000, gSpriteEntries, 0x800);
+        CpuFastSet((void *)SPRITE_ENTRIES_BACKUP_ADDR, gSpriteEntries, 0x800);
         gGameWork.setupStep++;
         break;
     case 4:

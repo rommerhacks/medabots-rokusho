@@ -685,8 +685,8 @@ void afterbattle_part_detail_fade_out(void) {
 
 void afterbattle_part_detail_save_screen(void) {
     DmaSet(3, BG_VRAM + 0x2800, gBgTileBackup, 0x84000200);
-    DmaSet(3, BG_VRAM + 0x280, 0x02021000, 0x84000380);
-    DmaSet(3, gSpriteEntries, 0x02028000, 0x84000800);
+    DmaSet(3, BG_VRAM + 0x280, BG_TILE_BACKUP_HIGH_ADDR, 0x84000380);
+    DmaSet(3, gSpriteEntries, SPRITE_ENTRIES_BACKUP_ADDR, 0x84000800);
     set_blend_effect_mode(5, 0x3F, 0x20);
     gVBlankCallback = empty_callback;
     gGameSubState++;
@@ -776,8 +776,8 @@ void afterbattle_part_detail_restore_screen(void) {
     zero = 0;
     DmaSet(3, &zero, gSpriteEntries, 0x85000800);
     DmaSet(3, gBgTileBackup, BG_VRAM + 0x2800, 0x84000200);
-    DmaSet(3, 0x02021000, BG_VRAM + 0x280, 0x84000380);
-    DmaSet(3, 0x02028000, gSpriteEntries, 0x84000800);
+    DmaSet(3, BG_TILE_BACKUP_HIGH_ADDR, BG_VRAM + 0x280, 0x84000380);
+    DmaSet(3, SPRITE_ENTRIES_BACKUP_ADDR, gSpriteEntries, 0x84000800);
     REG_DISPCNT |= 0x1F60;
     prebattle_draw_opponent_name();
     prebattle_draw_battlefield_name();

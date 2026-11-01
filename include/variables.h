@@ -80,6 +80,11 @@ extern u16 gPaletteBufferBg[0x100];  // = gPaletteBuffer + 0x100
 #define OBJ_PAL_BUFFER_ADDR(n) (0x0202FC00 + (n) * 0x20)
 #define BG_PAL_BUFFER_ADDR(n) (0x0202FE00 + (n) * 0x20)
 // EWRAM work areas the menus and screens use by address, as integer constants (same reason as above).
+#define BG_TILE_BACKUP_HIGH_ADDR 0x02021000 // = gBgTileBackupHigh
+// Robattle screen backup while a submenu or close-up replaces it: BG screen blocks 26 + n (n = 0, 1), and the
+// 0x2000 bytes of gSpriteEntries.
+#define BATTLE_SCREEN_BACKUP_ADDR(n) (0x02021800 + (n) * 0x800)
+#define SPRITE_ENTRIES_BACKUP_ADDR 0x02028000
 #define LIST_WORK_BUFFER_ADDR 0x02023000                    // = gListWorkBuffer
 #define LIST_SCROLL_TOP_ADDR (LIST_WORK_BUFFER_ADDR + 0x78) // = gListScrollTop
 #define SPRITE_WORK_ADDR 0x02024000 // the struct SpriteWork the Medabot / part preview screens point gSpriteWork at
