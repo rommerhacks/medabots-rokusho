@@ -77,5 +77,7 @@
 #define AREA_SQUIDGUTS_ROOM 145     // its ladder comes up in AREA_RESIDENTIAL_SOUTH
 #define AREA_MEETING_PLACE 146      // the Rubberobo meeting place: the stage, six seats and the statue
 #define AREA_UNDERGROUND_COLONY 147 // below the meeting place's statue (the ant colony)
+#define AREA_ANT_QUEENS_ROOM 148    // behind the colony's door guards: four chests and the Ant Statue
+#define AREA_COLONY_TECH_AREA 186   // through the Queen's room's top door once the Ant Statue is melted
 
 #endif // GUARD_CONSTANTS_AREAS_H
