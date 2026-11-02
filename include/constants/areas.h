@@ -84,6 +84,11 @@
 #define AREA_COLONY_TECH_AREA 186   // through the Queen's room's top door once the Ant Statue is melted
 
 // Kodine Kingdom (the past)
-#define AREA_KODINE_SUMMONING_ROOM 152 // where the Oracle summons the Great Hero (the time warp lands here)
+#define AREA_KODINE_PALACE_SQUARE 151   // outside the palace: the houses, the prison stairs, the guarded west exit
+#define AREA_KODINE_SUMMONING_ROOM 152  // where the Oracle summons the Great Hero (the time warp lands here)
+#define AREA_KODINE_PALACE_ROOMS 153    // through the summoning room's top doors: Ikki's room (the meal)
+#define AREA_KODINE_PRISON 156          // down the stairs east of the palace: the jailer and the cell
+#define AREA_KODINE_NORTHWEST_HOUSE 158 // where the first Rubberobo hides
+#define AREA_KODINE_SHORE 161 // the palace square's east exit: the sleeping guard, the Princess, a Female Tinpet chest
 
 #endif // GUARD_CONSTANTS_AREAS_H
