@@ -78,6 +78,12 @@
 #define AREA_MEETING_PLACE 146      // the Rubberobo meeting place: the stage, six seats and the statue
 #define AREA_UNDERGROUND_COLONY 147 // below the meeting place's statue (the ant colony)
 #define AREA_ANT_QUEENS_ROOM 148    // behind the colony's door guards: four chests and the Ant Statue
+#define AREA_COLONY_ROCK_MAZE 149   // east of the tech area: the Blasto / Arma-Head rocks, Gillgirl in the centre
+#define AREA_UNDERWATER_ROOM 150 // below the rock maze's floor after Gillgirl: the doors' light, the time warp platform
+#define AREA_COLONY_CENTRE_ROOM 172 // the tech area's middle door: the empty pedestal where the tag game starts
 #define AREA_COLONY_TECH_AREA 186   // through the Queen's room's top door once the Ant Statue is melted
+
+// Kodine Kingdom (the past)
+#define AREA_KODINE_SUMMONING_ROOM 152 // where the Oracle summons the Great Hero (the time warp lands here)
 
 #endif // GUARD_CONSTANTS_AREAS_H

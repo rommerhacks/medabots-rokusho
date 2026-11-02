@@ -112,6 +112,9 @@ when none has one. So a Medabot can draw attacks or avoid them through the actio
 Avikings aim at Berserk parts, and a team whose leader carries none sends their Sacrifices to the allies that do
 (seen at runtime). A single-target Medaforce (Spiral Bolt) clears the target and hits the enemy standing nearest
 the centre when it runs (`battle_target_nearest_enemy`, `combat_helpers.c`), not the Aim target.
+In Gillgirl's boss Robattle (Circulis, all Support parts, plus two Gloomegs, all Missile parts) only a Medal
+aiming at Support reaches the leader, and a Shutter part (`SKILL_CANCEL_BOMB`) on each of our Medabots soaks
+the Missiles (seen at runtime). On the command ring, LEFT picks the right arm and RIGHT the left arm.
 A teammate that used Defence / Full Block / Half Block stays ready to guard: it jumps in front of an attack on an
 ally and takes it on its guard part for as long as that part is intact (`guard_find`, `action_steps.c`); Erika's
 two Pretty Primes shield her leader Brass this way, so attacks aimed at Brass only wear down their shields (seen at
