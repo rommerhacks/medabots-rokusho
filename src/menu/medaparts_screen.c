@@ -5,6 +5,7 @@
 
 #include "global.h"
 #include "constants/sprites.h"
+#include "constants/medaparts.h"
 
 // gSpriteEntries work[] indices
 #define MEDAPARTS_SPR_BLINK_TIMER 0x7 // trade choice cursor (sprite 4): blink frames, 0-30
@@ -1081,7 +1082,7 @@ void count_compatible_medaparts(void) {
 
     gGameWork.freeMedalCount = 0;
     if ((u8)(gGameWork.openedFrom - 2) > 1) {
-        for (i = 0; i < 120; i++) {
+        for (i = 0; i < MEDAPART_COUNT; i++) {
             counts = medapart_get_counts(i, gGameWork.partSlot);
             if (counts) {
                 if (gGameWork.openedFrom == 1) {
@@ -1139,7 +1140,7 @@ static u32 medapart_detail_cycle_part_input(void) {
     if (KEYS_LO(gRepeatKeys) & DPAD_LEFT) {
         while (1) {
             if (gGameWork.shownId == 0)
-                gGameWork.shownId = 119;
+                gGameWork.shownId = MEDAPART_COUNT - 1;
             else
                 gGameWork.shownId--;
             counts = medapart_get_counts(gGameWork.shownId, gGameWork.partSlot);

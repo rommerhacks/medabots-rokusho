@@ -4,6 +4,7 @@
 
 #include "global.h"
 #include "constants/medals.h"
+#include "constants/medaparts.h"
 
 static u32 medal_new_level(void);
 
@@ -169,7 +170,7 @@ void team_lose_equipped_part(u8 slot_id, u8 kind) {
             u8 *parts = &gTeamSlots[i].head;
             u8 old_part = parts[kind];
 
-            parts[kind] = gTeamSlots[i].gender + 0x78;
+            parts[kind] = gTeamSlots[i].gender + MEDAPART_BARE_TINPET;
             gTeamSlots[i].state = 2;
             gMedapartInventory[kind * 240 + old_part * 2]--;
             gMedapartInventory[kind * 240 + old_part * 2 + 1]--;

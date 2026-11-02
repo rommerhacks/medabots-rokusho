@@ -3,6 +3,7 @@
 
 #include "global.h"
 #include "constants/sprites.h"
+#include "constants/medaparts.h"
 
 void battle_hud_load_bg3_tilemap(void) {
     set_tilemap_and_decompress_bg(14, 3, gBattleBg3TilemapLz, REG_BG3CNT, 0x200);
@@ -29,19 +30,19 @@ void get_bot_part_effective_values(u32 bot, u8 *out) {
     if (gBattleBots[bot].parts[0].armor)
         *out++ = gBattleBots[bot].parts[0].partId;
     else
-        *out++ = gBattleBots[bot].gender + 0x78;
+        *out++ = gBattleBots[bot].gender + MEDAPART_BARE_TINPET;
     if (gBattleBots[bot].parts[1].armor)
         *out++ = gBattleBots[bot].parts[1].partId;
     else
-        *out++ = gBattleBots[bot].gender + 0x78;
+        *out++ = gBattleBots[bot].gender + MEDAPART_BARE_TINPET;
     if (gBattleBots[bot].parts[2].armor)
         *out++ = gBattleBots[bot].parts[2].partId;
     else
-        *out++ = gBattleBots[bot].gender + 0x78;
+        *out++ = gBattleBots[bot].gender + MEDAPART_BARE_TINPET;
     if (gBattleBots[bot].parts[3].armor)
         *out = gBattleBots[bot].parts[3].partId;
     else
-        *out = gBattleBots[bot].gender + 0x78;
+        *out = gBattleBots[bot].gender + MEDAPART_BARE_TINPET;
 }
 
 void load_bot_part_sprite(u32 rec) {

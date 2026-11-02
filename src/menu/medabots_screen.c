@@ -4,6 +4,7 @@
 
 #include "global.h"
 #include "constants/medals.h"
+#include "constants/medaparts.h"
 #include "constants/sprites.h"
 
 // gSpriteEntries work[] indices
@@ -61,7 +62,8 @@ static u32 medabot_detail_cycle_rarm_input(void);
 static u32 medabot_detail_cycle_larm_input(void);
 static u32 medabot_detail_cycle_legs_input(void);
 static u32 medabot_detail_equip_full_set_input(void);
-// previous Medapart id: 0 wraps to 120 + the slot gender, >= 120 clamps to 119
+// previous Medapart id: 0 wraps to the bare Tinpet (MEDAPART_BARE_TINPET + the slot gender), a bare Tinpet id
+// clamps to the last model
 static u32 medabot_detail_prev_part_id(u32 part);
 static void medabot_detail_update_invalid_bot(void);
 static void medabot_detail_animate_invalid_bot(void);
@@ -923,7 +925,7 @@ static void medabots_screen_draw_legs_type_icons(void) {
 
     for (i = 0; i <= 8; i++) {
         if (gTeamSlots[i].state) {
-            if (gTeamSlots[i].legs <= 0x77) {
+            if (gTeamSlots[i].legs < MEDAPART_COUNT) {
                 load_part_data(gTeamSlots[i].legs, 3, &gGameWork.partAbility);
                 draw_tilemap_with_offset(gGameWork.partSkill - 100, gMedabotsSlotPedestalTilePositions[i * 2],
                                          gMedabotsSlotPedestalTilePositions[i * 2 + 1], REG_BG1CNT, 0x8300);
@@ -1203,13 +1205,13 @@ static void medabot_detail_take_apart(void) {
     if (gGameWork.shownMedal != 0x1E)
         gMedals[gGameWork.shownMedal].flags &= ~MEDAL_FLAG_IN_MEDABOT;
     gTeamSlots[gGameWork.medabotsCursor].state = 1;
-    if (gGameWork.shownHead <= 0x77)
+    if (gGameWork.shownHead < MEDAPART_COUNT)
         modify_medapart_quantity(gGameWork.shownHead, 0, 1, 1, 1);
-    if (gGameWork.shownRightArm <= 0x77)
+    if (gGameWork.shownRightArm < MEDAPART_COUNT)
         modify_medapart_quantity(gGameWork.shownRightArm, 1, 1, 1, 1);
-    if (gGameWork.shownLeftArm <= 0x77)
+    if (gGameWork.shownLeftArm < MEDAPART_COUNT)
         modify_medapart_quantity(gGameWork.shownLeftArm, 2, 1, 1, 1);
-    if (gGameWork.shownLegs <= 0x77)
+    if (gGameWork.shownLegs < MEDAPART_COUNT)
         modify_medapart_quantity(gGameWork.shownLegs, 3, 1, 1, 1);
 }
 
@@ -1252,7 +1254,7 @@ static void medabot_detail_draw_medal_kind_name(void) {
 // Medapart names (gMedapartNames[part][kind]: head, right arm, left arm, legs) at rows 11-17 (runtime-checked).
 static void medabot_detail_draw_head_name(void) {
     disable_sprites(0x1E, 14);
-    if (gGameWork.shownHead < 120) {
+    if (gGameWork.shownHead < MEDAPART_COUNT) {
         copy_bytes_short((const void *)gMedapartNames[0][gGameWork.shownHead * 4 + 0], gGameWork.textBuf, 15);
         render_text_sprites_at(gGameWork.textBuf, 0x1E, 0x12, 11, 10, 13, 1, 2);
     } else {
@@ -1263,7 +1265,7 @@ static void medabot_detail_draw_head_name(void) {
 
 // Icon after the part name when the Medal's skill (gMedalRecords[...][1]) matches the part's (load_part_data byte 0).
 static void medabot_detail_draw_head_skill_icon(void) {
-    if (gGameWork.shownHead < 120) {
+    if (gGameWork.shownHead < MEDAPART_COUNT) {
         if (gGameWork.shownMedal < 30) {
             load_part_data(gGameWork.shownHead, 0, &gGameWork.partAbility);
             copy_bytes_short(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
@@ -1281,7 +1283,7 @@ static void medabot_detail_draw_head_skill_icon(void) {
 
 static void medabot_detail_draw_rarm_name(void) {
     disable_sprites(0x2C, 14);
-    if (gGameWork.shownRightArm < 120) {
+    if (gGameWork.shownRightArm < MEDAPART_COUNT) {
         copy_bytes_short((const void *)gMedapartNames[0][gGameWork.shownRightArm * 4 + 1], gGameWork.textBuf, 15);
         render_text_sprites_at(gGameWork.textBuf, 0x2C, 0x12, 13, 10, 13, 1, 2);
     } else {
@@ -1291,7 +1293,7 @@ static void medabot_detail_draw_rarm_name(void) {
 }
 
 static void medabot_detail_draw_rarm_skill_icon(void) {
-    if (gGameWork.shownRightArm < 120) {
+    if (gGameWork.shownRightArm < MEDAPART_COUNT) {
         if (gGameWork.shownMedal < 30) {
             load_part_data(gGameWork.shownRightArm, 1, &gGameWork.partAbility);
             copy_bytes_short(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
@@ -1309,7 +1311,7 @@ static void medabot_detail_draw_rarm_skill_icon(void) {
 
 static void medabot_detail_draw_larm_name(void) {
     disable_sprites(0x3A, 14);
-    if (gGameWork.shownLeftArm < 120) {
+    if (gGameWork.shownLeftArm < MEDAPART_COUNT) {
         copy_bytes_short((const void *)gMedapartNames[0][gGameWork.shownLeftArm * 4 + 2], gGameWork.textBuf, 15);
         render_text_sprites_at(gGameWork.textBuf, 0x3A, 0x12, 15, 10, 13, 1, 2);
     } else {
@@ -1319,7 +1321,7 @@ static void medabot_detail_draw_larm_name(void) {
 }
 
 static void medabot_detail_draw_larm_skill_icon(void) {
-    if (gGameWork.shownLeftArm < 120) {
+    if (gGameWork.shownLeftArm < MEDAPART_COUNT) {
         if (gGameWork.shownMedal < 30) {
             load_part_data(gGameWork.shownLeftArm, 2, &gGameWork.partAbility);
             copy_bytes_short(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
@@ -1337,7 +1339,7 @@ static void medabot_detail_draw_larm_skill_icon(void) {
 
 static void medabot_detail_draw_legs_name(void) {
     disable_sprites(0x48, 14);
-    if (gGameWork.shownLegs < 120) {
+    if (gGameWork.shownLegs < MEDAPART_COUNT) {
         copy_bytes_short((const void *)gMedapartNames[0][gGameWork.shownLegs * 4 + 3], gGameWork.textBuf, 15);
         render_text_sprites_at(gGameWork.textBuf, 0x48, 0x12, 17, 10, 13, 1, 2);
     } else {
@@ -1347,7 +1349,7 @@ static void medabot_detail_draw_legs_name(void) {
 }
 
 static void medabot_detail_draw_legs_skill_icon(void) {
-    if (gGameWork.shownLegs < 120) {
+    if (gGameWork.shownLegs < MEDAPART_COUNT) {
         if (gGameWork.shownMedal < 30) {
             load_part_data(gGameWork.shownLegs, 3, &gGameWork.partAbility);
             copy_bytes_short(gMedalRecords[gMedals[gGameWork.shownMedal].graphicId], gGameWork.medalGfxRecord, 16);
@@ -1402,7 +1404,7 @@ static void medabot_detail_draw_row_icon_4(u32 highlighted) {
 
 // Legs type icon above the Medal row (part data byte 1 - 100, 0xFF = none).
 static void medabot_detail_draw_legs_type_icon(void) {
-    if (gGameWork.shownLegs < 120) {
+    if (gGameWork.shownLegs < MEDAPART_COUNT) {
         load_part_data(gGameWork.shownLegs, 3, &gGameWork.partAbility);
         draw_tilemap_with_offset(gGameWork.partSkill - 100, 20, 6, REG_BG1CNT, 0x8300);
     } else {
@@ -1769,9 +1771,9 @@ static u32 medabot_detail_equip_full_set_input(void) {
 
 static u32 medabot_detail_prev_part_id(volatile u32 part) {
     if (part == 0)
-        part = gTeamSlots[gGameWork.medabotsCursor].gender + 120;
-    else if (part > 119)
-        part = 119;
+        part = gTeamSlots[gGameWork.medabotsCursor].gender + MEDAPART_BARE_TINPET;
+    else if (part >= MEDAPART_COUNT)
+        part = MEDAPART_COUNT - 1;
     else
         part = part - 1;
     return part;
@@ -1814,19 +1816,19 @@ static u8 medabot_detail_check_row_select(void) {
                 return 2;
             return 1;
         case 1:
-            if (gGameWork.shownHead > 119)
+            if (gGameWork.shownHead >= MEDAPART_COUNT)
                 return 2;
             return 1;
         case 2:
-            if (gGameWork.shownRightArm > 119)
+            if (gGameWork.shownRightArm >= MEDAPART_COUNT)
                 return 2;
             return 1;
         case 3:
-            if (gGameWork.shownLeftArm > 119)
+            if (gGameWork.shownLeftArm >= MEDAPART_COUNT)
                 return 2;
             return 1;
         case 4:
-            if (gGameWork.shownLegs > 119)
+            if (gGameWork.shownLegs >= MEDAPART_COUNT)
                 return 2;
             return 1;
         }
@@ -1846,22 +1848,22 @@ static void assign_medal_to_team_slot(void) {
         n = 1;
     }
     gTeamSlots[gGameWork.medabotsCursor].head = gGameWork.shownHead;
-    if (gGameWork.shownHead < 120) {
+    if (gGameWork.shownHead < MEDAPART_COUNT) {
         modify_medapart_quantity(gGameWork.shownHead, 0, 1, 0, 1);
         n++;
     }
     gTeamSlots[gGameWork.medabotsCursor].rightArm = gGameWork.shownRightArm;
-    if (gGameWork.shownRightArm < 120) {
+    if (gGameWork.shownRightArm < MEDAPART_COUNT) {
         modify_medapart_quantity(gGameWork.shownRightArm, 1, 1, 0, 1);
         n++;
     }
     gTeamSlots[gGameWork.medabotsCursor].leftArm = gGameWork.shownLeftArm;
-    if (gGameWork.shownLeftArm < 120) {
+    if (gGameWork.shownLeftArm < MEDAPART_COUNT) {
         modify_medapart_quantity(gGameWork.shownLeftArm, 2, 1, 0, 1);
         n++;
     }
     gTeamSlots[gGameWork.medabotsCursor].legs = gGameWork.shownLegs;
-    if (gGameWork.shownLegs < 120) {
+    if (gGameWork.shownLegs < MEDAPART_COUNT) {
         modify_medapart_quantity(gGameWork.shownLegs, 3, 1, 0, 1);
         n++;
     }

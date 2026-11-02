@@ -5,6 +5,7 @@
 
 #include "global.h"
 #include "constants/medals.h"
+#include "constants/medaparts.h"
 #include "constants/sprites.h"
 #include "constants/encounters.h"
 
@@ -649,7 +650,7 @@ u32 find_next_available_medapart_slot(vu32 part, vu32 kind, vu32 backward, vu32 
     if (backward) {
         while (part != 0) {
             part--;
-            if (part == 0x78)
+            if (part == MEDAPART_BARE_TINPET)
                 part--;
             load_part_data(part, kind, gGameWork.medalGfxRecord);
             if (gender == gGameWork.medalGfxRecord[3] && gMedapartInventory[kind * 240 + part * 2] != 0 &&
@@ -659,12 +660,12 @@ u32 find_next_available_medapart_slot(vu32 part, vu32 kind, vu32 backward, vu32 
     } else {
         while (1) {
             part++;
-            if (gender != 0 && part == 0x78)
-                part = 0x79;
-            if (part == gender + 0x79)
+            if (gender != TINPET_MALE && part == MEDAPART_BARE_TINPET)
+                part = MEDAPART_BARE_TINPET + 1;
+            if (part == gender + MEDAPART_BARE_TINPET + 1)
                 part = 0;
-            if (part == gender + 0x78)
-                return gender + 0x78;
+            if (part == gender + MEDAPART_BARE_TINPET)
+                return gender + MEDAPART_BARE_TINPET;
             load_part_data(part, kind, gGameWork.medalGfxRecord);
             if (gender == gGameWork.medalGfxRecord[3] && gMedapartInventory[kind * 240 + part * 2] != 0 &&
                 gMedapartInventory[kind * 240 + part * 2] - gMedapartInventory[kind * 240 + part * 2 + 1] != 0)
@@ -675,7 +676,7 @@ u32 find_next_available_medapart_slot(vu32 part, vu32 kind, vu32 backward, vu32 
 found:
     return part;
 fail:
-    return gender + 0x78;
+    return gender + MEDAPART_BARE_TINPET;
 }
 
 u32 medabot_detail_is_full_set(void) {
@@ -689,7 +690,8 @@ u32 medabot_detail_is_full_set(void) {
 }
 
 u32 validate_medapart_stats(u8 medal, u8 head, u8 rarm, u8 larm, u8 legs) {
-    if (medal != 0x1E && head <= 0x77 && rarm <= 0x77 && larm <= 0x77 && legs <= 0x77)
+    if (medal != 0x1E && head < MEDAPART_COUNT && rarm < MEDAPART_COUNT && larm < MEDAPART_COUNT &&
+        legs < MEDAPART_COUNT)
         return 1;
     return 0;
 }
