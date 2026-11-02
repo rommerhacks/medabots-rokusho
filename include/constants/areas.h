@@ -57,6 +57,7 @@
 #define AREA_MEDASHOP_1F 87
 #define AREA_MEDASHOP_2F 88 // the Medalink floor
 #define AREA_SELECT_CORPS_HQ 90
+#define AREA_STATION_SQUARE 95 // the train station; the dog statue hides the stairs to the sewer
 #define AREA_RESIDENTIAL 101
 #define AREA_ROSEWOOD_1F 102 // Rosewood Private School
 #define AREA_ROSEWOOD_2F 112
@@ -70,5 +71,11 @@
 #define AREA_AWANO_HOUSE_1F 122 // garden and ground floor
 #define AREA_AWANO_HOUSE_2F 123
 #define AREA_RESIDENTIAL_SOUTH 128
+
+// Under Medaropolis
+#define AREA_SEWER 142              // the Rubberobo costume goes on here; the Manhole Key opens a cover to 146
+#define AREA_SQUIDGUTS_ROOM 145     // its ladder comes up in AREA_RESIDENTIAL_SOUTH
+#define AREA_MEETING_PLACE 146      // the Rubberobo meeting place: the stage, six seats and the statue
+#define AREA_UNDERGROUND_COLONY 147 // below the meeting place's statue (the ant colony)
 
 #endif // GUARD_CONSTANTS_AREAS_H
