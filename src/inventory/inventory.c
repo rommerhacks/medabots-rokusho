@@ -46,30 +46,36 @@ u32 medal_add_by_id(u8 id) {
                 gMedals[i].skillLevel[1] = 100;
             else
                 gMedals[i].skillLevel[1] = gGameWork.partStat5 + gGameWork.partStat5 * (gMedals[i].level / 10);
-            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[0] + gGameWork.fillerF8[0] > 100)
+            if ((u8)(gMedals[i].level / 10) * gGameWork.medalSkillSteps[0] + gGameWork.medalSkillSteps[0] > 100)
                 gMedals[i].skillLevel[2] = 100;
             else
-                gMedals[i].skillLevel[2] = gGameWork.fillerF8[0] + gGameWork.fillerF8[0] * (gMedals[i].level / 10);
-            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[1] + gGameWork.fillerF8[1] > 100)
+                gMedals[i].skillLevel[2] =
+                    gGameWork.medalSkillSteps[0] + gGameWork.medalSkillSteps[0] * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.medalSkillSteps[1] + gGameWork.medalSkillSteps[1] > 100)
                 gMedals[i].skillLevel[3] = 100;
             else
-                gMedals[i].skillLevel[3] = gGameWork.fillerF8[1] + gGameWork.fillerF8[1] * (gMedals[i].level / 10);
-            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[2] + gGameWork.fillerF8[2] > 100)
+                gMedals[i].skillLevel[3] =
+                    gGameWork.medalSkillSteps[1] + gGameWork.medalSkillSteps[1] * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.medalSkillSteps[2] + gGameWork.medalSkillSteps[2] > 100)
                 gMedals[i].skillLevel[4] = 100;
             else
-                gMedals[i].skillLevel[4] = gGameWork.fillerF8[2] + gGameWork.fillerF8[2] * (gMedals[i].level / 10);
-            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[3] + gGameWork.fillerF8[3] > 100)
+                gMedals[i].skillLevel[4] =
+                    gGameWork.medalSkillSteps[2] + gGameWork.medalSkillSteps[2] * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.medalSkillSteps[3] + gGameWork.medalSkillSteps[3] > 100)
                 gMedals[i].skillLevel[5] = 100;
             else
-                gMedals[i].skillLevel[5] = gGameWork.fillerF8[3] + gGameWork.fillerF8[3] * (gMedals[i].level / 10);
-            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[4] + gGameWork.fillerF8[4] > 100)
+                gMedals[i].skillLevel[5] =
+                    gGameWork.medalSkillSteps[3] + gGameWork.medalSkillSteps[3] * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.medalSkillSteps[4] + gGameWork.medalSkillSteps[4] > 100)
                 gMedals[i].skillLevel[6] = 100;
             else
-                gMedals[i].skillLevel[6] = gGameWork.fillerF8[4] + gGameWork.fillerF8[4] * (gMedals[i].level / 10);
-            if ((u8)(gMedals[i].level / 10) * gGameWork.fillerF8[5] + gGameWork.fillerF8[5] > 100)
+                gMedals[i].skillLevel[6] =
+                    gGameWork.medalSkillSteps[4] + gGameWork.medalSkillSteps[4] * (gMedals[i].level / 10);
+            if ((u8)(gMedals[i].level / 10) * gGameWork.medalSkillSteps[5] + gGameWork.medalSkillSteps[5] > 100)
                 gMedals[i].skillLevel[7] = 100;
             else
-                gMedals[i].skillLevel[7] = gGameWork.fillerF8[5] + gGameWork.fillerF8[5] * (gMedals[i].level / 10);
+                gMedals[i].skillLevel[7] =
+                    gGameWork.medalSkillSteps[5] + gGameWork.medalSkillSteps[5] * (gMedals[i].level / 10);
             return i;
         }
     }

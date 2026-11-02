@@ -336,10 +336,11 @@ struct GameWork {
     u8 partStat0;     // stats: head Armor, Success, Power, (partStat3 power icon flag), Uses; legs Armor, Propulsion,
     u8 partStat1;     // Evasion, Defense, Proximity, Remoteness (runtime-checked on the detail page). Medal record:
     u8 partStat2;     // partStat0-2 tier thresholds (medal_tier_for_level), partStat3 compatibility,
-    u8 partStat3;     // partStat4 / partStat5 / fillerF8[0] skill level step per 10 levels (medal_add_by_id)
+    u8 partStat3;     // partStat4 / partStat5 / medalSkillSteps[] skill level step per 10 levels (medal_add_by_id)
     u8 partStat4;
     u8 partStat5;
-    u8 fillerF8[0x16];
+    u8 medalSkillSteps[6]; // Medal record bytes 10-15: level steps of skills 2-7 (skills 0-1: partStat4 / partStat5)
+    u8 fillerFE[0x10];
     u8 medalGfxRecord[0x10]; // 16-byte record from gMedalRecords (per Medal graphic index)
     u8 filler11E[0x10];
     u8 oamUploadPending;  // set: copy gOamBuffer to OAM at the next vblank
