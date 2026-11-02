@@ -92,5 +92,6 @@
 #define AREA_KODINE_PRISON 156       // down the stairs east of the palace: the jailer and the cell
 #define AREA_KODINE_NORTHWEST_HOUSE 158 // where the first Rubberobo hides
 #define AREA_KODINE_SHORE 161 // the palace square's east exit: the sleeping guard, the Princess, a Female Tinpet chest
+#define AREA_KODINE_OCEAN 162 // the palace square's guarded west exit: the beach, the crates Rubberobos hide in
 
 #endif // GUARD_CONSTANTS_AREAS_H
