@@ -133,7 +133,9 @@ the bare tinpet with no part (`medabot_detail_prev_part_id`). The team slot in `
 leaves the screen (seen at runtime); A opens the part's details instead.
 
 **Inventory** (`src/inventory/`). The Medals, Medaparts, items and team the player owns, with the list sorts.
-Used by menus, shops, battle and field scripts.
+Used by menus, shops, battle and field scripts. `gMedals` has 30 slots (`struct MedalData`, 0x40 bytes each):
+`flags` holds `MEDAL_FLAG_OWNED` / `MEDAL_FLAG_IN_MEDABOT` (`include/constants/medals.h`) above the slot's place in
+the list order, and `graphicId` is the Medal's id. `medal_add_by_id` fills the first unowned slot.
 
 **Text** (`src/text/`). The message window (`message.c`): text printing, glyphs and message commands; the
 yes/no choice menu. Used by nearly every screen. Message bytes below 0xF7 are font characters; 0xF7-0xFF are

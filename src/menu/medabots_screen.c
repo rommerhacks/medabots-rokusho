@@ -3,6 +3,7 @@
 // race (also over the link). Opens the Medals (game state 4) and Medaparts (5) info screens.
 
 #include "global.h"
+#include "constants/medals.h"
 #include "constants/sprites.h"
 
 // gSpriteEntries work[] indices
@@ -1200,7 +1201,7 @@ static void medabot_detail_take_apart(void) {
     gGameWork.shownLeftArm = gTeamSlots[gGameWork.medabotsCursor].leftArm;
     gGameWork.shownLegs = gTeamSlots[gGameWork.medabotsCursor].legs;
     if (gGameWork.shownMedal != 0x1E)
-        gMedals[gGameWork.shownMedal].flags &= 0xBF;
+        gMedals[gGameWork.shownMedal].flags &= ~MEDAL_FLAG_IN_MEDABOT;
     gTeamSlots[gGameWork.medabotsCursor].state = 1;
     if (gGameWork.shownHead <= 0x77)
         modify_medapart_quantity(gGameWork.shownHead, 0, 1, 1, 1);
@@ -1841,7 +1842,7 @@ static void assign_medal_to_team_slot(void) {
     } else {
         gTeamSlots[gGameWork.medabotsCursor].state = 2;
         gTeamSlots[gGameWork.medabotsCursor].medal = gMedals[gGameWork.shownMedal].graphicId;
-        gMedals[gGameWork.shownMedal].flags |= 0x40;
+        gMedals[gGameWork.shownMedal].flags |= MEDAL_FLAG_IN_MEDABOT;
         n = 1;
     }
     gTeamSlots[gGameWork.medabotsCursor].head = gGameWork.shownHead;
@@ -1872,8 +1873,8 @@ void count_unequipped_medals(void) {
     u32 i;
 
     for (i = 0; i < 30; i++) {
-        if (gMedals[i].flags & 0x80) {
-            if (!(gMedals[i].flags & 0x40))
+        if (gMedals[i].flags & MEDAL_FLAG_OWNED) {
+            if (!(gMedals[i].flags & MEDAL_FLAG_IN_MEDABOT))
                 gGameWork.freeMedalCount++;
         }
     }

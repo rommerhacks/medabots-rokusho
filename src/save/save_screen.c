@@ -4,6 +4,7 @@
 // 12 "Failed to save.", 9-11 leave and fade out back to the field. init_linking_mode (end of the file) switches to mode
 // 3 for the link scenes.
 #include "global.h"
+#include "constants/medals.h"
 #include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
@@ -87,7 +88,7 @@ void save_screen_draw_info(void) {
 
     n = 0;
     for (i = 0; i < 30; i++) {
-        if (gMedals[i].flags & 0x80)
+        if (gMedals[i].flags & MEDAL_FLAG_OWNED)
             n++;
     }
     ((void (*)(s32, s32, s32, s32, s32, s32))draw_number)(n, 2, 10, 4, 10, BGCNT_SCREEN_BLOCK(REG_BG1CNT));

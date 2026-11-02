@@ -3,6 +3,7 @@
 // selection and the AI's part order. Called from battle/robattle and battle/prebattle.
 
 #include "global.h"
+#include "constants/medals.h"
 
 static void copy_player_medals_to_battle_bots(void);
 static u32 battle_dispatch_action_by_type(u32 rec);
@@ -87,7 +88,7 @@ void init_enemy_bot_medal(u8 i) {
     u32 lvl;
 
     copy_bytes_short(gMedalRecords[gBattleWork.encounterBots[i].medal], &gGameWork.partAbility, 16);
-    gBattleBots[i + 3].medal.flags = 0x80;
+    gBattleBots[i + 3].medal.flags = MEDAL_FLAG_OWNED;
     gBattleBots[i + 3].medal.graphicId = (&gGameWork.partAbility)[0];
     gBattleBots[i + 3].medal.attribute = (&gGameWork.partAbility)[1];
     gBattleBots[i + 3].medal.level = gBattleWork.encounterBots[i].medalLevel;

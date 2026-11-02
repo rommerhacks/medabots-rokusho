@@ -4,6 +4,7 @@
 // link_enter_* are the mode-2 entry points that goto_link_scene in engine/sprite_engine.c picks from: 26 (from the
 // Medals list), 17 Medal trade (Medals screen), 16 Medapart trade (Medaparts screen), 20 link menu (link Robattle).
 #include "global.h"
+#include "constants/medals.h"
 
 // guess: Medal flag 0x80 = owned; one bit per Medal graphic index.
 void link_medal_sync_init(void) {
@@ -11,7 +12,7 @@ void link_medal_sync_init(void) {
     s32 i;
 
     for (i = 0; i < 30; i++) {
-        if (gMedals[i].flags & 0x80)
+        if (gMedals[i].flags & MEDAL_FLAG_OWNED)
             mask |= 1 << gMedals[i].graphicId;
     }
     gMenuWork->counter = 0;

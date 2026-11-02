@@ -2,6 +2,7 @@
 // Rotation, Skill), the START help, and the drawing helpers for Medal sprites, names, levels and skill bars.
 
 #include "global.h"
+#include "constants/medals.h"
 #include "constants/sprites.h"
 
 // gSpriteEntries work[] indices
@@ -161,7 +162,7 @@ void medals_list_handle_input(void) {
         }
     } else if (KEYS_LO(gNewKeys) & A_BUTTON) {
         gGameWork.shownId = gGameWork.listTab * 6 + gGameWork.medalRow;
-        if (gMedals[gGameWork.shownId].flags & 0x80) {
+        if (gMedals[gGameWork.shownId].flags & MEDAL_FLAG_OWNED) {
             play_sound_effect(4);
             if (gGameWork.openedFrom == 4)
                 gGameSubState = 0x60;
@@ -1005,7 +1006,7 @@ void medal_trade_check_medal(void) {
 
     medals_scroll_bg();
     medals_list_update_swap_marker();
-    if (gMedals[gGameWork.shownId].flags & 0x40) {
+    if (gMedals[gGameWork.shownId].flags & MEDAL_FLAG_IN_MEDABOT) {
         text_window_init(1, 2, 0);
         gGameWork.stepCounter = 9;
         gGameSubState++;
@@ -1056,7 +1057,7 @@ static void count_owned_medals(void) {
 
     gGameWork.freeMedalCount = 0;
     for (i = 0; i < 30; i++) {
-        if (gMedals[i].flags & 0x80)
+        if (gMedals[i].flags & MEDAL_FLAG_OWNED)
             gGameWork.freeMedalCount++;
     }
 }
@@ -1066,7 +1067,7 @@ static void render_medal_sprite_tile(void) {
     u8 i;
 
     for (i = gGameWork.listTab * 6; i < gGameWork.listTab * 6 + 6; n++, i++) {
-        if (gMedals[i].flags & 0x80)
+        if (gMedals[i].flags & MEDAL_FLAG_OWNED)
             CpuFastSet(gMedalIconTiles + gMedals[i].graphicId * 0x80, (void *)(BG_VRAM + 0x6600) + n * 0x80, 0x20);
         else
             CpuFastSet(gMedalIconBlankTiles, (void *)(BG_VRAM + 0x6600) + n * 0x80, 0x20);
@@ -1080,7 +1081,7 @@ static void render_medal_list_entries(void) {
 
     disable_sprites(10, 0x3C);
     for (i = gGameWork.listTab * 6; i < gGameWork.listTab * 6 + 6; n++, i++) {
-        if (gMedals[i].flags & 0x80) {
+        if (gMedals[i].flags & MEDAL_FLAG_OWNED) {
             copy_bytes((void *)gMedalNames[gMedals[i].graphicId], gGameWork.textBuf, 11);
             render_text_sprites_at(gGameWork.textBuf, n * 10 + 10, 6, n * 2 + 4, 7, 8, 1, 2);
         } else {
@@ -1095,7 +1096,7 @@ static void render_medal_slots_in_menu(void) {
     u32 n;
 
     for (n = 0, i = gGameWork.listTab * 6; i < gGameWork.listTab * 6 + 6; n++, i++) {
-        if (gMedals[i].flags & 0x80) {
+        if (gMedals[i].flags & MEDAL_FLAG_OWNED) {
             fill_tilemap_pair_or_divide(gMedals[i].level, 14, (u8)(n * 2 + 4), REG_BG1CNT, 0xD314);
         } else {
             draw_tile_block(1, 2, 14, n * 2 + 4, REG_BG1CNT, 0xD32C);
@@ -1109,7 +1110,7 @@ static void render_medal_name_display(void) {
 
     gGameWork.shownId = gGameWork.listTab * 6 + gGameWork.medalRow;
     disable_sprites(0x46, 10);
-    if ((has = gMedals[gGameWork.shownId].flags & 0x80)) {
+    if ((has = gMedals[gGameWork.shownId].flags & MEDAL_FLAG_OWNED)) {
         render_text_sprites_at(gMedals[gGameWork.shownId].name, 0x46, 0x13, 3, 10, 9, 0, 2);
     } else {
         fill_text_blank(gGameWork.textBuf, 10);
@@ -1119,7 +1120,7 @@ static void render_medal_name_display(void) {
 
 void load_medal_sprite(void) {
     gGameWork.shownId = gGameWork.listTab * 6 + gGameWork.medalRow;
-    if (gMedals[gGameWork.shownId].flags & 0x80) {
+    if (gMedals[gGameWork.shownId].flags & MEDAL_FLAG_OWNED) {
         lz_decompress_dispatch(
             gMedalSpriteGfx[gMedals[gGameWork.shownId].graphicId][gMedals[gGameWork.shownId].spriteVariant],
             (void *)OBJ_VRAM0);
@@ -1141,7 +1142,7 @@ void render_medal_level_display(void) {
 
     gGameWork.shownId = gGameWork.listTab * 6 + gGameWork.medalRow;
     disable_sprites(0x50, 6);
-    if (gMedals[gGameWork.shownId].flags & 0x80) {
+    if (gMedals[gGameWork.shownId].flags & MEDAL_FLAG_OWNED) {
         if (gMedals[gGameWork.shownId].level != 100) {
             buf = gGameWork.textBuf;
             format_number_5_digits(buf, gMedals[gGameWork.shownId].nextLevelExp);
@@ -1300,7 +1301,7 @@ static void medals_list_swap_input(void) {
 }
 
 static u32 get_medal_active_slot(u8 medal) {
-    if (gMedals[medal].flags & 0x80 && gMedals[medal].flags & 0x40)
+    if (gMedals[medal].flags & MEDAL_FLAG_OWNED && gMedals[medal].flags & MEDAL_FLAG_IN_MEDABOT)
         return find_medabot_slot_by_medal(gMedals[medal].graphicId);
     return 0xFF;
 }
@@ -1432,10 +1433,10 @@ static void medal_page_cycle_medal_input(void) {
                     gGameWork.shownId = 29;
                 else
                     gGameWork.shownId--;
-                if (gMedals[gGameWork.shownId].flags & 0x80) {
+                if (gMedals[gGameWork.shownId].flags & MEDAL_FLAG_OWNED) {
                     if (gGameWork.openedFrom != 1)
                         found = 1;
-                    else if (!(gMedals[gGameWork.shownId].flags & 0x40))
+                    else if (!(gMedals[gGameWork.shownId].flags & MEDAL_FLAG_IN_MEDABOT))
                         found = 1;
                 }
             } while (!found);
@@ -1448,10 +1449,10 @@ static void medal_page_cycle_medal_input(void) {
                     gGameWork.shownId = 0;
                 else
                     gGameWork.shownId++;
-                if (gMedals[gGameWork.shownId].flags & 0x80) {
+                if (gMedals[gGameWork.shownId].flags & MEDAL_FLAG_OWNED) {
                     if (gGameWork.openedFrom != 1)
                         found = 1;
-                    else if (!(gMedals[gGameWork.shownId].flags & 0x40))
+                    else if (!(gMedals[gGameWork.shownId].flags & MEDAL_FLAG_IN_MEDABOT))
                         found = 1;
                 }
             } while (!found);
@@ -1916,7 +1917,7 @@ void medal_rotation_store_to_battle_bot(void) {
 }
 
 static void increment_medal_level_on_input(void) {
-    if (gMedals[gGameWork.shownId].flags & 0x80 && KEYS_LO(gHeldKeys) & START_BUTTON &&
+    if (gMedals[gGameWork.shownId].flags & MEDAL_FLAG_OWNED && KEYS_LO(gHeldKeys) & START_BUTTON &&
         KEYS_HI(gRepeatKeys) & L_BUTTON_HI && gMedals[gGameWork.shownId].level != 100) {
         gMedals[gGameWork.shownId].level++;
         copy_bytes_short(gMedalRecords[gMedals[gGameWork.shownId].graphicId], &gGameWork.partAbility, 16);
@@ -1929,7 +1930,7 @@ static void increment_medal_level_on_input(void) {
 }
 
 static void handle_medal_level_down_input(void) {
-    if (gMedals[gGameWork.shownId].flags & 0x80 && KEYS_LO(gHeldKeys) & START_BUTTON &&
+    if (gMedals[gGameWork.shownId].flags & MEDAL_FLAG_OWNED && KEYS_LO(gHeldKeys) & START_BUTTON &&
         KEYS_HI(gRepeatKeys) & R_BUTTON_HI && gMedals[gGameWork.shownId].nextLevelExp > 99) {
         gMedals[gGameWork.shownId].nextLevelExp -= 100;
         render_medal_level_display();

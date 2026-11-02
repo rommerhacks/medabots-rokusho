@@ -4,6 +4,7 @@
 // effects of the battle field, tilemap rect copies, scene setup and init_game_mode.
 
 #include "global.h"
+#include "constants/medals.h"
 #include "constants/sprites.h"
 #include "constants/encounters.h"
 
@@ -623,8 +624,8 @@ u32 find_next_free_medal(volatile u32 medal, volatile u32 backward) {
             struct MedalData *medals2 = gMedals; // FAKEMATCH: second base copy
         loop:
             medal--;
-            if (medals2[medal].flags & 0x80) {
-                if (!(medals[medal].flags & 0x40))
+            if (medals2[medal].flags & MEDAL_FLAG_OWNED) {
+                if (!(medals[medal].flags & MEDAL_FLAG_IN_MEDABOT))
                     return medal;
             }
             if (medal != 0)
@@ -637,7 +638,7 @@ u32 find_next_free_medal(volatile u32 medal, volatile u32 backward) {
                 medal = 0;
             if (medal == 30)
                 goto none;
-        } while (!(gMedals[medal].flags & 0x80) || (gMedals[medal].flags & 0x40));
+        } while (!(gMedals[medal].flags & MEDAL_FLAG_OWNED) || (gMedals[medal].flags & MEDAL_FLAG_IN_MEDABOT));
         return medal;
     }
 none:
@@ -1416,7 +1417,7 @@ u32 resolve_area_sprite_set(u8 set) {
 
 // Map script: puts the first Medabot in team slot 0 (Medal 0 owned and set, parts 0x2A in use).
 void give_starter_medabot(void) {
-    gMedals[0].flags |= 0xC0;
+    gMedals[0].flags |= MEDAL_FLAG_OWNED | MEDAL_FLAG_IN_MEDABOT;
     gTeamSlots[0].state = 3;
     gTeamSlots[0].medal = 0;
     gTeamSlots[0].head = 0x2A;

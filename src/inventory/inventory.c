@@ -3,6 +3,7 @@
 // the menus, the debug menu, battles (rewards) and link trades.
 
 #include "global.h"
+#include "constants/medals.h"
 
 static u32 medal_new_level(void);
 
@@ -16,7 +17,7 @@ u32 find_medal_slot_by_id(u8 id) {
     u32 i;
 
     for (i = 0; i < 30; i++)
-        if ((gMedals[i].flags & 0x80) && gMedals[i].graphicId == id)
+        if ((gMedals[i].flags & MEDAL_FLAG_OWNED) && gMedals[i].graphicId == id)
             return i + 1;
     return 0;
 }
@@ -26,8 +27,8 @@ u32 medal_add_by_id(u8 id) {
 
     copy_bytes_short(gMedalRecords[id], &gGameWork.partAbility, 16);
     for (i = 0; i < 30; i++) {
-        if (!(gMedals[i].flags & 0x80)) {
-            gMedals[i].flags |= 0x80;
+        if (!(gMedals[i].flags & MEDAL_FLAG_OWNED)) {
+            gMedals[i].flags |= MEDAL_FLAG_OWNED;
             gMedals[i].graphicId = id;
             gMedals[i].attribute = gGameWork.partSkill;
             gMedals[i].aimSkillType = gGameWork.partSkillType;
@@ -78,8 +79,8 @@ void medal_remove_by_id(u8 id) {
     u32 i;
 
     for (i = 0; i < 30; i++) {
-        if ((gMedals[i].flags & 0x80) && gMedals[i].graphicId == id) {
-            u8 slot_order = gMedals[i].flags & 0x1F;
+        if ((gMedals[i].flags & MEDAL_FLAG_OWNED) && gMedals[i].graphicId == id) {
+            u8 slot_order = gMedals[i].flags & MEDAL_ORDER_MASK;
             mem_fill8((u8 *)&gMedals[i], 0x40, 0);
             gMedals[i].flags = slot_order;
             return;
@@ -91,10 +92,10 @@ void medal_add_from_buffer(const void *src) {
     u32 i;
 
     for (i = 0; i < 30; i++) {
-        if (!(gMedals[i].flags & 0x80)) {
-            u32 slot_order = gMedals[i].flags & 0x1F;
+        if (!(gMedals[i].flags & MEDAL_FLAG_OWNED)) {
+            u32 slot_order = gMedals[i].flags & MEDAL_ORDER_MASK;
             copy_bytes(src, &gMedals[i], 0x40);
-            gMedals[i].flags = (gMedals[i].flags & 0x80) | slot_order;
+            gMedals[i].flags = (gMedals[i].flags & MEDAL_FLAG_OWNED) | slot_order;
             return;
         }
     }

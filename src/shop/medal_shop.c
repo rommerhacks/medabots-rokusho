@@ -3,6 +3,7 @@
 // "Do you want to change a Medal name?", pick an owned Medal, pay 100, then rename it in name entry.
 // Its sub-state table gMedalRenameStates directly follows the shop list's (gShopListHandlers, shop/shop_list.c).
 #include "global.h"
+#include "constants/medals.h"
 #include "constants/sprites.h"
 
 static inline void *vram_at(u32 off) {
@@ -74,7 +75,7 @@ void medal_rename_build_list(void) {
     *(u16 *)PLTT = z;
     n = 0;
     for (i = 0; i < 30; i++) {
-        if (gMedals[i].flags & 0x80) {
+        if (gMedals[i].flags & MEDAL_FLAG_OWNED) {
             gMenuWork->medal_list[n] = i;
             n++;
         }

@@ -792,7 +792,7 @@ struct BattleWork {
 };
 
 struct MedalData {
-    u8 flags;         // bit 7: owned, bit 6: in a Medabot (0x40 tested by medal_trade_check_medal)
+    u8 flags;         // MEDAL_FLAG_* (constants/medals.h): owned, in a Medabot; low bits = list order
     u8 graphicId;     // Medal graphic index (0x80-byte tiles at 0x084C21BC)
     u16 nextLevelExp; // shown as "NEXT Lv" on the Medals list (render_medal_level_display; blank at level 100)
     u8 attribute; // Attribute (gAttributeNames name, Ability page); Medals help: gAttributeHelpMessages message index
