@@ -100,8 +100,11 @@
 #define AREA_FIYUN_FACTORY 165         // the oil cans; the left one at the centre holds a male Tinpet
 #define AREA_FIYUN_LANDING 166         // where the Wings of Wind land: one corridor down to the techno room
 #define AREA_FIYUN_TECHNO_ROOM 167     // pink floor, three Air Medabots in the way, the greenhouse (the Lemon)
+#define AREA_FIYUN_GARDEN_ROOM 168     // behind the living quarters' guarded door: walled gardens, each with a guard
 #define AREA_FIYUN_LIVING_QUARTERS 169 // library, beds and the computer; a bookshelf makes the Lemon Battery
 #define AREA_FIYUN_CENTRAL_SQUARE 170  // the garden ring where Harvey leads the Medabots; two locked south doors
+#define AREA_FIYUN_STAIRS_SCENE 171    // the short scene at the top of the garden room's stairs (segment 79)
+#define AREA_FIYUN_TANK_ROOM 185       // after the stairs scene: tank-type Medabots, the Digmole trio
 
 // gAreaTypes: the region of each area (0 Riverview, 1-2 Mt. Odoro and its caves, 3-6 Medaropolis, 9 Medabot Island,
 // ...). Region 10 holds the areas with no Town Map region: the river (40-44), the sewer, the Rubberobo base, the
