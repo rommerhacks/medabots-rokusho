@@ -93,5 +93,7 @@
 #define AREA_KODINE_NORTHWEST_HOUSE 158 // where the first Rubberobo hides
 #define AREA_KODINE_SHORE 161 // the palace square's east exit: the sleeping guard, the Princess, a Female Tinpet chest
 #define AREA_KODINE_OCEAN 162 // the palace square's guarded west exit: the beach, the crates Rubberobos hide in
+#define AREA_KODINE_OCEAN_DIVE 163 // the ocean's top-left exit: three Rubberobos explain, Ikki dives in
+#define AREA_CAFE_OLE_ISLAND 164   // where the dive lands: Cafe Ole (Margarita's Medabot) challenges Ikki
 
 #endif // GUARD_CONSTANTS_AREAS_H
