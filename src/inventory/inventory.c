@@ -201,7 +201,7 @@ void team_add_tinpet(u8 gender) {
         if (gTeamSlots[i].state == 0) {
             gTeamSlots[i].state = 1;
             gTeamSlots[i].gender = gender & 1;
-            gTeamSlots[i].medal = 0x1E;
+            gTeamSlots[i].medal = MEDAL_NONE;
             gTeamSlots[i].head = (gender & 1) + 0x78;
             gTeamSlots[i].rightArm = (gender & 1) + 0x78;
             gTeamSlots[i].leftArm = (gender & 1) + 0x78;

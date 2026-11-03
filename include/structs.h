@@ -794,7 +794,7 @@ struct BattleWork {
 
 struct MedalData {
     u8 flags;         // MEDAL_FLAG_* (constants/medals.h): owned, in a Medabot; low bits = list order
-    u8 graphicId;     // Medal graphic index (0x80-byte tiles at 0x084C21BC)
+    u8 graphicId;     // Medal id (MEDAL_*, constants/medals.h); also its graphic index (0x80-byte tiles)
     u16 nextLevelExp; // shown as "NEXT Lv" on the Medals list (render_medal_level_display; blank at level 100)
     u8 attribute; // Attribute (gAttributeNames name, Ability page); Medals help: gAttributeHelpMessages message index
     u8 level;     // level (Medals help: Medaforce slots open at 10 / 30 / 60)
@@ -893,7 +893,7 @@ struct BattleBot {
 struct TeamSlot {
     u8 state;  // 0 empty, 1 bare Tinpet (team_add_tinpet), 2 has a Medal, 3 assembled (count_assembled_medabots)
     u8 gender; // Tinpet gender, 0 male / 1 female (team_add_tinpet; Medapart gender gGameWork.partGender must match)
-    u8 medal;  // Medal id (0x1E none)
+    u8 medal;  // Medal id (MEDAL_*, MEDAL_NONE = none)
     u8 head;   // Medapart ids (validate_medapart_stats); a bare Tinpet part is 0x78 + gender
     u8 rightArm;
     u8 leftArm;

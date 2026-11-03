@@ -1421,7 +1421,7 @@ u32 resolve_area_sprite_set(u8 set) {
 void give_starter_medabot(void) {
     gMedals[0].flags |= MEDAL_FLAG_OWNED | MEDAL_FLAG_IN_MEDABOT;
     gTeamSlots[0].state = 3;
-    gTeamSlots[0].medal = 0;
+    gTeamSlots[0].medal = MEDAL_KUWAGATA;
     gTeamSlots[0].head = 0x2A;
     gTeamSlots[0].rightArm = 0x2A;
     gTeamSlots[0].leftArm = 0x2A;

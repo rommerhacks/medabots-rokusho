@@ -1189,20 +1189,20 @@ static void medabots_screen_animate_invalid_bot(void) {
         update_battle_sprite_orbiting_positions(gGameWork.medabotsCursor * 4 + 10, gGameWork.medabotsCursor, 0);
 }
 
-// Detail screen entry: takes the selected Medabot apart into the edit copy: Medal slot (shownMedal, 0x1E = none) and
-// parts to shownHead..shownLegs, the parts back into the inventory, slot marked empty (assign_medal_to_team_slot puts
-// it back). guess: matches the Build screen (parts can be swapped freely), not runtime-checked. back into the inventory
-// (modify_medapart_quantity), slot marked empty.
+// Detail screen entry: takes the selected Medabot apart into the edit copy: Medal slot (shownMedal, MEDAL_SLOT_NONE =
+// none) and parts to shownHead..shownLegs, the parts back into the inventory, slot marked empty
+// (assign_medal_to_team_slot puts it back). guess: matches the Build screen (parts can be swapped freely), not
+// runtime-checked. back into the inventory (modify_medapart_quantity), slot marked empty.
 static void medabot_detail_take_apart(void) {
-    if (gTeamSlots[gGameWork.medabotsCursor].medal == 0x1E)
-        gGameWork.shownMedal = 0x1E;
+    if (gTeamSlots[gGameWork.medabotsCursor].medal == MEDAL_NONE)
+        gGameWork.shownMedal = MEDAL_SLOT_NONE;
     else
         gGameWork.shownMedal = find_medal_slot_by_id(gTeamSlots[gGameWork.medabotsCursor].medal) - 1;
     gGameWork.shownHead = gTeamSlots[gGameWork.medabotsCursor].head;
     gGameWork.shownRightArm = gTeamSlots[gGameWork.medabotsCursor].rightArm;
     gGameWork.shownLeftArm = gTeamSlots[gGameWork.medabotsCursor].leftArm;
     gGameWork.shownLegs = gTeamSlots[gGameWork.medabotsCursor].legs;
-    if (gGameWork.shownMedal != 0x1E)
+    if (gGameWork.shownMedal != MEDAL_SLOT_NONE)
         gMedals[gGameWork.shownMedal].flags &= ~MEDAL_FLAG_IN_MEDABOT;
     gTeamSlots[gGameWork.medabotsCursor].state = 1;
     if (gGameWork.shownHead < MEDAPART_COUNT)
@@ -1812,7 +1812,7 @@ static u8 medabot_detail_check_row_select(void) {
     if (KEYS_LO(gNewKeys) & A_BUTTON) {
         switch (gGameWork.detailRow) {
         case 0:
-            if (gGameWork.shownMedal == 30)
+            if (gGameWork.shownMedal == MEDAL_SLOT_NONE)
                 return 2;
             return 1;
         case 1:
@@ -1838,9 +1838,9 @@ static u8 medabot_detail_check_row_select(void) {
 static void assign_medal_to_team_slot(void) {
     u8 n = 0;
 
-    if (gGameWork.shownMedal == 30) {
+    if (gGameWork.shownMedal == MEDAL_SLOT_NONE) {
         gTeamSlots[gGameWork.medabotsCursor].state = 1;
-        gTeamSlots[gGameWork.medabotsCursor].medal = 30;
+        gTeamSlots[gGameWork.medabotsCursor].medal = MEDAL_NONE;
     } else {
         gTeamSlots[gGameWork.medabotsCursor].state = 2;
         gTeamSlots[gGameWork.medabotsCursor].medal = gMedals[gGameWork.shownMedal].graphicId;
