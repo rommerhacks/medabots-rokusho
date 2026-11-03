@@ -4,6 +4,7 @@
 
 #include "global.h"
 #include "constants/medals.h"
+#include "constants/story.h"
 
 static void copy_player_medals_to_battle_bots(void);
 static u32 battle_dispatch_action_by_type(u32 rec);
@@ -306,9 +307,9 @@ u32 check_medaforce_availability(u32 rec, u32 slot, u32 random) {
     }
 }
 
-// Opponents can't use Medaforce until the story phase (gFieldWork.story_phase) is past 2.
+// Opponents can't use Medaforce before Medabot Island (records 0-2 always can).
 static u32 opponent_medaforce_locked(u32 rec) {
-    if (rec <= 2 || gFieldWork.story_phase > 2)
+    if (rec <= 2 || gFieldWork.story_phase > STORY_PHASE_MT_ODORO)
         return 0;
     return 1;
 }

@@ -999,7 +999,7 @@ struct FieldWork {
     u8 warp_unused0; // two warp target bytes (map_script_read_warp; new game 0xE, 7), never read
     u8 warp_unused1;
     u8 area_id;
-    u8 story_phase;   // story chapter (map script opcode 0x6B; MapNpcRecord.phase_mask bit n = present in phase n)
+    u8 story_phase;   // STORY_PHASE_* (map script opcode 0x6B; MapNpcRecord.phase_mask bit n = present in phase n)
     u16 map_width;    // in 8-px tiles (twice the 16-px tile count; tile_map rows are map_width / 2 long)
     u16 map_height;   // in 8-px tiles
     u16 bg_map_width; // BG layer tilemap size in tiles (area tilemap header, field_tilemap_header_word)
