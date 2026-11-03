@@ -5,6 +5,7 @@
 // used. The menu state lives in gFieldScriptWork after the choice menu fields. Icons are drawn
 // with gVehicleIconPalette when usable, else dimmed (gVehicleIconDimPalette, *IconDimTiles).
 #include "global.h"
+#include "constants/areas.h"
 #include "constants/sprites.h"
 #include "constants/player_forms.h"
 #include "constants/vehicles.h"
@@ -481,7 +482,7 @@ static u32 vehicle_check_usable(s32 vehicle) {
         if (parts != 4)
             break;
         allowed = area_allows_vehicle(1);
-        if (gAreaTypes[gFieldWork.area_id] == 0xA)
+        if (gAreaTypes[gFieldWork.area_id] == AREA_TYPE_NO_TOWN_MAP)
             allowed = 0;
         result = VEHICLE_AREA_FORBIDS;
         if (!allowed)

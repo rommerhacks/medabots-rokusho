@@ -2,6 +2,7 @@
 // setup, a debug BG scroller, and copies of tilemaps and 2x2 metatile maps into 64x64 BG screens.
 
 #include "global.h"
+#include "constants/areas.h"
 
 s32 count_decimal_digits(s32 n) {
     s32 i, j, power;
@@ -41,15 +42,15 @@ s32 truncate_to_digit_count(s32 n, u8 k) {
     return rem;
 }
 
-// Whether item item_id can be used now: 0 not a usable item, 1 yes, 2-4 not here (2: town map in an area of type
-// 0xA, 3: blocked by a gFieldWork.useBlockFlags flag, 4: disguise while player_form is 1-2). Items 1, 5, 12, 13, 19,
-// 39, 40 are the disguises ("Transform Goods").
+// Whether item item_id can be used now: 0 not a usable item, 1 yes, 2-4 not here (2: town map in an
+// AREA_TYPE_NO_TOWN_MAP area, 3: blocked by a gFieldWork.useBlockFlags flag, 4: disguise while player_form is 1-2).
+// Items 1, 5, 12, 13, 19, 39, 40 are the disguises ("Transform Goods").
 u32 item_get_use_result(u32 item_id) {
     u32 result;
 
     switch (item_id) {
     case 0:
-        if (gAreaTypes[gFieldWork.area_id] == 0xA) {
+        if (gAreaTypes[gFieldWork.area_id] == AREA_TYPE_NO_TOWN_MAP) {
             result = 2;
             break;
         }

@@ -96,4 +96,9 @@
 #define AREA_KODINE_OCEAN_DIVE 163 // the ocean's top-left exit: three Rubberobos explain, Ikki dives in
 #define AREA_CAFE_OLE_ISLAND 164   // where the dive lands: Cafe Ole (Margarita's Medabot) challenges Ikki
 
+// gAreaTypes: the region of each area (0 Riverview, 1-2 Mt. Odoro and its caves, 3-6 Medaropolis, 9 Medabot Island,
+// ...). Region 10 holds the areas with no Town Map region: the river (40-44), the sewer, the Rubberobo base, the
+// colony and the Kodine Kingdom (142-164) and the island pier (189). The Town Map and the Wings of Wind refuse them.
+#define AREA_TYPE_NO_TOWN_MAP 10
+
 #endif // GUARD_CONSTANTS_AREAS_H

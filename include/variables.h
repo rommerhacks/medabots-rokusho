@@ -1435,7 +1435,7 @@ extern const u8 gFallbackAreaTiles2[];
 extern const u8 gFallbackAreaTiles3[];
 extern const u8 gFallbackAreaTiles4[];
 extern const u8 gFallbackAreaTiles5[];
-extern const u8 gAreaTypes[]; // per area_id; type 0xA forbids the town map and Wings of Wind (guess: indoor/past)
+extern const u8 gAreaTypes[]; // per area_id: its region; AREA_TYPE_NO_TOWN_MAP forbids the Town Map and Wings of Wind
 extern const u8 gVehicleMenuCursorRows[];
 extern const u8 gVehicleMenuNameTiles[];
 extern const u8 gVehicleMenuBlankRowTiles[];
