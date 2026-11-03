@@ -96,6 +96,13 @@
 #define AREA_KODINE_OCEAN_DIVE 163 // the ocean's top-left exit: three Rubberobos explain, Ikki dives in
 #define AREA_CAFE_OLE_ISLAND 164   // where the dive lands: Cafe Ole (Margarita's Medabot) challenges Ikki
 
+// The Floating Fortress Fiyun (walkthrough segment 78: leaving Nae's room with the Femjet assembled flies here)
+#define AREA_FIYUN_FACTORY 165         // the oil cans; the left one at the centre holds a male Tinpet
+#define AREA_FIYUN_LANDING 166         // where the Wings of Wind land: one corridor down to the techno room
+#define AREA_FIYUN_TECHNO_ROOM 167     // pink floor, three Air Medabots in the way, the greenhouse (the Lemon)
+#define AREA_FIYUN_LIVING_QUARTERS 169 // library, beds and the computer; a bookshelf makes the Lemon Battery
+#define AREA_FIYUN_CENTRAL_SQUARE 170  // the garden ring where Harvey leads the Medabots; two locked south doors
+
 // gAreaTypes: the region of each area (0 Riverview, 1-2 Mt. Odoro and its caves, 3-6 Medaropolis, 9 Medabot Island,
 // ...). Region 10 holds the areas with no Town Map region: the river (40-44), the sewer, the Rubberobo base, the
 // colony and the Kodine Kingdom (142-164) and the island pier (189). The Town Map and the Wings of Wind refuse them.
