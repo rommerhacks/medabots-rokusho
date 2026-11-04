@@ -80,6 +80,8 @@
 #define AREA_ANT_QUEENS_ROOM 148    // behind the colony's door guards: four chests and the Ant Statue
 #define AREA_COLONY_ROCK_MAZE 149   // east of the tech area: the Blasto / Arma-Head rocks, Gillgirl in the centre
 #define AREA_UNDERWATER_ROOM 150 // below the rock maze's floor after Gillgirl: the doors' light, the time warp platform
+// The Fiyun crystal sits on AREA_COLONY_CENTRE_ROOM's pedestal after the Fiyun bosses, and the tech area
+// is also reached through AREA_FIYUN_CENTRAL_SQUARE's south doors.
 #define AREA_COLONY_CENTRE_ROOM 172 // the tech area's middle door: the empty pedestal where the tag game starts
 #define AREA_COLONY_TECH_AREA 186   // through the Queen's room's top door once the Ant Statue is melted
 
@@ -102,7 +104,7 @@
 #define AREA_FIYUN_TECHNO_ROOM 167     // pink floor, three Air Medabots in the way, the greenhouse (the Lemon)
 #define AREA_FIYUN_GARDEN_ROOM 168     // behind the living quarters' guarded door: walled gardens, each with a guard
 #define AREA_FIYUN_LIVING_QUARTERS 169 // library, beds and the computer; a bookshelf makes the Lemon Battery
-#define AREA_FIYUN_CENTRAL_SQUARE 170  // the garden ring where Harvey leads the Medabots; two locked south doors
+#define AREA_FIYUN_CENTRAL_SQUARE 170  // the garden ring where Harvey leads the Medabots; two south doors to 186
 #define AREA_FIYUN_COCKPIT 171         // Dr. Armond's control room; the garden room's stairs play a short scene here
 #define AREA_FIYUN_SIDE_ROOM 184       // through the cockpit's left door: a pipe maze with the Spydertrap chest
 #define AREA_FIYUN_TANK_ROOM 185       // after the stairs scene: tank-type Medabots, the Digmole trio, Hat Trick
