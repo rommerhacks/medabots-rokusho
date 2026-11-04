@@ -80,8 +80,8 @@
 #define AREA_ANT_QUEENS_ROOM 148    // behind the colony's door guards: four chests and the Ant Statue
 #define AREA_COLONY_ROCK_MAZE 149   // east of the tech area: the Blasto / Arma-Head rocks, Gillgirl in the centre
 #define AREA_UNDERWATER_ROOM 150 // below the rock maze's floor after Gillgirl: the doors' light, the time warp platform
-// The Fiyun crystal sits on AREA_COLONY_CENTRE_ROOM's pedestal after the Fiyun bosses, and the tech area
-// is also reached through AREA_FIYUN_CENTRAL_SQUARE's south doors.
+// The Fiyun crystal sits on AREA_COLONY_CENTRE_ROOM's pedestal after the Fiyun bosses (the last Dr. Armond boss is
+// fought there), and the tech area is also reached through AREA_FIYUN_CENTRAL_SQUARE's south doors.
 #define AREA_COLONY_CENTRE_ROOM 172 // the tech area's middle door: the empty pedestal where the tag game starts
 #define AREA_COLONY_TECH_AREA 186   // through the Queen's room's top door once the Ant Statue is melted
 
@@ -98,7 +98,10 @@
 #define AREA_KODINE_OCEAN_DIVE 163 // the ocean's top-left exit: three Rubberobos explain, Ikki dives in
 #define AREA_CAFE_OLE_ISLAND 164   // where the dive lands: Cafe Ole (Margarita's Medabot) challenges Ikki
 
-// The Floating Fortress Fiyun (walkthrough segment 78: leaving Nae's room with the Femjet assembled flies here)
+// The Floating Fortress Fiyun (walkthrough segment 78: leaving Nae's room with the Femjet assembled flies here).
+// After the last Dr. Armond boss (segment 82) the cockpit's six seats are filled: the top-centre Medabot gives the
+// Alien Medal, then Ikki sends Karin, a flying Medabot from the landing zone and one from the living quarters, and
+// takes the last (top-left) seat himself. The techno room's stairs lead up into AREA_FIYUN_SIDE_ROOM.
 #define AREA_FIYUN_FACTORY 165         // the oil cans; the left one at the centre holds a male Tinpet
 #define AREA_FIYUN_LANDING 166         // where the Wings of Wind land: one corridor down to the techno room
 #define AREA_FIYUN_TECHNO_ROOM 167     // pink floor, three Air Medabots in the way, the greenhouse (the Lemon)
