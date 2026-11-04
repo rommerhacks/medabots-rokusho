@@ -102,6 +102,8 @@
 // After the last Dr. Armond boss (segment 82) the cockpit's six seats are filled: the top-centre Medabot gives the
 // Alien Medal, then Ikki sends Karin, a flying Medabot from the landing zone and one from the living quarters, and
 // takes the last (top-left) seat himself. The techno room's stairs lead up into AREA_FIYUN_SIDE_ROOM.
+// After the crash (segment 83: the Select 3 Robattle in the square) the landing zone's north side leads outside
+// (AREA_FIYUN_CRASH_SITE), whose north exit ends the chapter back home in Riverview.
 #define AREA_FIYUN_FACTORY 165         // the oil cans; the left one at the centre holds a male Tinpet
 #define AREA_FIYUN_LANDING 166         // where the Wings of Wind land: one corridor down to the techno room
 #define AREA_FIYUN_TECHNO_ROOM 167     // pink floor, three Air Medabots in the way, the greenhouse (the Lemon)
@@ -111,6 +113,7 @@
 #define AREA_FIYUN_COCKPIT 171         // Dr. Armond's control room; the garden room's stairs play a short scene here
 #define AREA_FIYUN_SIDE_ROOM 184       // through the cockpit's left door: a pipe maze with the Spydertrap chest
 #define AREA_FIYUN_TANK_ROOM 185       // after the stairs scene: tank-type Medabots, the Digmole trio, Hat Trick
+#define AREA_FIYUN_CRASH_SITE 187      // the landed fortress among tree stumps: Captain Awamori holds Dr. Armond
 
 // gAreaTypes: the region of each area (0 Riverview, 1-2 Mt. Odoro and its caves, 3-6 Medaropolis, 9 Medabot Island,
 // ...). Region 10 holds the areas with no Town Map region: the river (40-44), the sewer, the Rubberobo base, the
