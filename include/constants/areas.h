@@ -20,7 +20,8 @@
 #define AREA_NAES_ROOM 26
 #define AREA_MEDAL_ROOM 27
 #define AREA_WAREHOUSE 29
-#define AREA_DOCKS 188 // the boat to Medabot Island
+#define AREA_DOCKS_FINALE 31 // the Docks once the Shark stops sailing: Select Corps, Periscope
+#define AREA_DOCKS 188       // the boat to Medabot Island
 
 // Mt. Odoro
 #define AREA_MT_ODORO 33
@@ -34,6 +35,7 @@
 #define AREA_RIVER 42
 
 // Medabot Island
+#define AREA_SEA 44 // Aquamar's crossing (Periscope) from the Docks to the island's south pier
 #define AREA_SHIP 45
 #define AREA_ARCADE 56
 #define AREA_PARK 57
@@ -51,6 +53,7 @@
 #define AREA_CASTLE_LIFT 79
 #define AREA_DPAD_REMAP_ROOM 83 // the only area with D-pad remapping tiles (gArea53DpadTiles); not visited yet
 #define AREA_MEDABOT_ISLAND_PIER 189
+#define AREA_WITCHS_CASTLE_FINALE 190 // the castle screen in the finale: the Select 3 Robattle at the door
 
 // Medaropolis
 #define AREA_MEDAROPOLIS 85
@@ -71,6 +74,9 @@
 #define AREA_AWANO_HOUSE_1F 122 // garden and ground floor
 #define AREA_AWANO_HOUSE_2F 123
 #define AREA_RESIDENTIAL_SOUTH 128
+#define AREA_MEDABOTS_CORP_LOBBY 135
+#define AREA_MEDABOTS_CORP_RIGHT_WING 136 // break room + work room
+#define AREA_MEDABOTS_CORP_LEFT_WING 137  // the labs: Landmotor, later the Periscope + Aquamar
 
 // Under Medaropolis
 #define AREA_SEWER 142              // the Rubberobo costume goes on here; the Manhole Key opens a cover to 146
