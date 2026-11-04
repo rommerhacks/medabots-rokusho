@@ -45,13 +45,15 @@
 #define AREA_WITCHS_CASTLE 68
 #define AREA_CASTLE_JAIL 69
 #define AREA_CASTLE_1F 70
-#define AREA_DARK_MASTERS_ROOM 71
+#define AREA_DARK_MASTERS_ROOM 71 // in the finale his stairs at (6,3) lead down to AREA_CASTLE_UNDERGROUND
+#define AREA_MILKYS_ROOM 72 // the pond room: stairs (11,3) down to the jail, guarded by a Rappy doll in the finale
 #define AREA_CASTLE_2F 73
 #define AREA_SUN_ROOM 74
 #define AREA_MOON_ROOM 75
 #define AREA_STAR_MAZE 76
 #define AREA_CASTLE_LIFT 79
-#define AREA_DPAD_REMAP_ROOM 83 // the only area with D-pad remapping tiles (gArea53DpadTiles); not visited yet
+#define AREA_CASTLE_UNDERGROUND 80 // the secret base under Medabot Island (finale), below the Dark Master's room
+#define AREA_DPAD_REMAP_ROOM 83    // the only area with D-pad remapping tiles (gArea53DpadTiles); not visited yet
 #define AREA_MEDABOT_ISLAND_PIER 189
 #define AREA_WITCHS_CASTLE_FINALE 190 // the castle screen in the finale: the Select 3 Robattle at the door
 
