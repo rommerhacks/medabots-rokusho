@@ -103,8 +103,9 @@
 #define AREA_FIYUN_GARDEN_ROOM 168     // behind the living quarters' guarded door: walled gardens, each with a guard
 #define AREA_FIYUN_LIVING_QUARTERS 169 // library, beds and the computer; a bookshelf makes the Lemon Battery
 #define AREA_FIYUN_CENTRAL_SQUARE 170  // the garden ring where Harvey leads the Medabots; two locked south doors
-#define AREA_FIYUN_STAIRS_SCENE 171    // the short scene at the top of the garden room's stairs (segment 79)
-#define AREA_FIYUN_TANK_ROOM 185       // after the stairs scene: tank-type Medabots, the Digmole trio
+#define AREA_FIYUN_COCKPIT 171         // Dr. Armond's control room; the garden room's stairs play a short scene here
+#define AREA_FIYUN_SIDE_ROOM 184       // through the cockpit's left door: a pipe maze with the Spydertrap chest
+#define AREA_FIYUN_TANK_ROOM 185       // after the stairs scene: tank-type Medabots, the Digmole trio, Hat Trick
 
 // gAreaTypes: the region of each area (0 Riverview, 1-2 Mt. Odoro and its caves, 3-6 Medaropolis, 9 Medabot Island,
 // ...). Region 10 holds the areas with no Town Map region: the river (40-44), the sewer, the Rubberobo base, the
