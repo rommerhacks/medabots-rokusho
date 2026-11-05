@@ -62,6 +62,8 @@
 #define AREA_DPAD_REMAP_ROOM 83 // the only area with D-pad remapping tiles (gDpadRemapFloorTiles), behind the keypad
 // door of AREA_SECRET_BASE_LOWER (Water): the cell with Karin and Koji (2,5) opens for a Slipper head, the door
 // below (2,10) for a Plate Beam head; random encounters include Kappalord, whose head is Plate Beam
+// (2,10) opens onto more of this area: Seaslug's arrow-tile room (three Rubberobo Robattles, solid ground at
+// (13,11)) and, up through (10,9), Shrimplips' room (four Robattles in a row, then Shrimplips himself)
 #define AREA_MEDABOT_ISLAND_PIER 189
 #define AREA_WITCHS_CASTLE_FINALE 190 // the castle screen in the finale: the Select 3 Robattle at the door
 
