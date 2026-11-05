@@ -64,6 +64,10 @@
 // below (2,10) for a Plate Beam head; random encounters include Kappalord, whose head is Plate Beam
 // (2,10) opens onto more of this area: Seaslug's arrow-tile room (three Rubberobo Robattles, solid ground at
 // (13,11)) and, up through (10,9), Shrimplips' room (four Robattles in a row, then Shrimplips himself)
+// East of it: six chests, then the doorway (17,10) down to the soda pond room (Seaslug's boss Robattle; the Periscope
+// works from the stairs (17,20)). The Switch on the panel (19,7) starts the conveyor, whose top tread (19,5) leads to
+// AREA_RESEARCH_ROOM
+#define AREA_RESEARCH_ROOM 84 // reached by the conveyor of AREA_DPAD_REMAP_ROOM: the spy researcher (7,8), Phantom Lady
 #define AREA_MEDABOT_ISLAND_PIER 189
 #define AREA_WITCHS_CASTLE_FINALE 190 // the castle screen in the finale: the Select 3 Robattle at the door
 
