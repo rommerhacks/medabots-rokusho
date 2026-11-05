@@ -68,8 +68,8 @@
 // works from the stairs (17,20)). The Switch on the panel (19,7) starts the conveyor, whose top tread (19,5) leads to
 // AREA_RESEARCH_ROOM
 // The bottom room holds Phantom Lady (8,24) and the event tile (7,19): the Robo-Emperor scene, both Mega-Emperor fights
-// After them the tile (14,15) refuses until the Phantoms are talked to, at the door (1,22) or at (9,19). The way back is
-// the lower conveyor tile (1,6); Babyblu in the holding tank (7,7) is an optional boss
+// After them the tile (14,15) refuses until the Phantoms are talked to, at the door (1,22) or at (9,19). The way back
+// is the lower conveyor tile (1,6); Babyblu in the holding tank (7,7) is an optional boss
 #define AREA_RESEARCH_ROOM 84 // reached by the conveyor of AREA_DPAD_REMAP_ROOM: the spy researcher (7,8), Phantom Lady
 #define AREA_MEDABOT_ISLAND_PIER 189  // south of the park; in the finale its scene leads to AREA_DOCKS and the credits
 #define AREA_WITCHS_CASTLE_FINALE 190 // the castle screen in the finale: the Select 3 Robattle at the door
