@@ -59,7 +59,9 @@
 // the four-keyword keypad door (6,5) and the stairs (20,2) up to Gillgirl's room in AREA_SECRET_BASE_UPPER
 #define AREA_SECRET_BASE_VENT_SHAFT 82 // entered from the shelf (13,9) in Squidguts' room; leads down to the sleeping
 // quarters (1,16)
-#define AREA_DPAD_REMAP_ROOM 83 // the only area with D-pad remapping tiles (gArea53DpadTiles); not visited yet
+#define AREA_DPAD_REMAP_ROOM 83 // the only area with D-pad remapping tiles (gDpadRemapFloorTiles), behind the keypad
+// door of AREA_SECRET_BASE_LOWER (Water): the cell with Karin and Koji (2,5) opens for a Slipper head, the door
+// below (2,10) for a Plate Beam head; random encounters include Kappalord, whose head is Plate Beam
 #define AREA_MEDABOT_ISLAND_PIER 189
 #define AREA_WITCHS_CASTLE_FINALE 190 // the castle screen in the finale: the Select 3 Robattle at the door
 
