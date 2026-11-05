@@ -55,7 +55,8 @@
 #define AREA_SECRET_BASE_UPPER 80 // finale Rubberobo base under the castle (Desert): meeting room, dining hall
 #define AREA_SECRET_BASE_LOWER 81 // its lower level, down the stairs at the top of the upper level's east hallway
 // (Woods): the Screws' computer room (SE), nine quiz machines read from the tile below each (S), Squidguts' room (N),
-// the sleeping quarters (W, entered from the vent shaft; the three sleeping Rubberobos block the way to its door)
+// the sleeping quarters (W, entered from the vent shaft; the three sleeping Rubberobos block the way to its door),
+// the four-keyword keypad door (6,5) and the stairs (20,2) up to Gillgirl's room in AREA_SECRET_BASE_UPPER
 #define AREA_SECRET_BASE_VENT_SHAFT 82 // entered from the shelf (13,9) in Squidguts' room; leads down to the sleeping
 // quarters (1,16)
 #define AREA_DPAD_REMAP_ROOM 83 // the only area with D-pad remapping tiles (gArea53DpadTiles); not visited yet
