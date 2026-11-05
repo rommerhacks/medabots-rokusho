@@ -54,7 +54,8 @@
 #define AREA_CASTLE_LIFT 79
 #define AREA_SECRET_BASE_UPPER 80 // finale Rubberobo base under the castle (Desert): meeting room, dining hall
 #define AREA_SECRET_BASE_LOWER 81 // its lower level, down the stairs at the top of the upper level's east hallway
-#define AREA_DPAD_REMAP_ROOM 83   // the only area with D-pad remapping tiles (gArea53DpadTiles); not visited yet
+// (Woods): the Screws' computer room (SE), nine quiz machines read from the tile below each (S), Squidguts' room (N)
+#define AREA_DPAD_REMAP_ROOM 83 // the only area with D-pad remapping tiles (gArea53DpadTiles); not visited yet
 #define AREA_MEDABOT_ISLAND_PIER 189
 #define AREA_WITCHS_CASTLE_FINALE 190 // the castle screen in the finale: the Select 3 Robattle at the door
 
